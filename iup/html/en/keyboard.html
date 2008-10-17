@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>Keyboard</title>
+<link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+
+<h2 align="center" style="text-align:center">
+Keyboard</h2>
+<p>Keyboard navigation is the dialog uses the &quot;Tab&quot; key to 
+  change the keyboard focus from one control to another. All IUP interactive 
+  controls have Tab stops, but the navigation order is related to the order the 
+  controls are placed in the dialog and can not be changed. When the focus is at 
+  a Multiline control to change focus the combination &quot;Ctrl+Tab&quot; must be used, 
+  because &quot;Tab&quot; is a valid character for the Multiline. The application can also 
+  control the focus using the functions: <strong>IupGetFocus</strong>, 
+<strong>IupSetFocus</strong>,
+  <strong>IupNextField</strong> and 
+<strong>IupPreviousField</strong>. And when the 
+  focus is changed the application is notified trough the callbacks 
+GETFOCUS_CB and 
+KILLFOCUS_CB.</p>
+<p>Two keys are also important in keyboard navigation: 
+  &quot;Enter&quot; and &quot;Esc&quot;. But they are only active is the application register the 
+  attributes DEFAULTENTER and DEFAULTESC of the
+  <a href="dlg/iupdialog.html">IupDialog</a>. These attributes 
+  configure buttons to be activated when the respective key is pressed. Again 
+  &quot;Enter&quot; is a valid key for the Multiline so the combination &quot;Ctrl+Enter&quot; must 
+  be used instead. If the focus is at a button then the Enter key will activate 
+  this button independent from the DEFAULTENTER attribute.</p>
+<p>Usualy the application will process keyboard input in the 
+  canvas using the KEYPRESS_CB 
+  callback. But there is also the K_ANY 
+  callback that can be used for all the controls, but it does not have control 
+  of the press state. Both callbacks use the key codification explained in
+  <a href="attrib/key.html">Keyboard Codes</a>. These codes are also used in the
+  ACTION callbacks of <strong>IupText</strong> 
+  and <strong>IupMultiline</strong>, and in 
+  shortcuts for menu items and submenus using the KEY attribute of <strong>IupItem</strong> and 
+<strong>IupSubmenu</strong>. Finally all the keyboard 
+  codes can be used as callback names to implement application hot keys.</p>
+
+</body>
+
+</html>

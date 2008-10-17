@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>DROPFILES_CB</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>DROPFILES_CB</h2>
+<p>Action called when a file is &quot;dragged&quot; to the 
+  application. When several files are dragged, the callback is called several times, once for each file. 
+</p>
+<p>[Windows and GTK Only]</p>
+<h3>Callback</h3>
+<pre>int function(Ihandle *<strong>ih</strong>, const char* <strong>filename</strong>, int <strong>num</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
+<strong>elem</strong>:dropfiles_cb(<strong>filename</strong>: string; <strong>num, x, y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+<strong>filename</strong>:
+  Name of the dragged file.<br>
+<strong>num</strong>:
+  Number of the dragged file. If several files 
+  are dragged, num counts the number of dragged files starting from &quot;total-1&quot; to &quot;0&quot;.<br>
+<strong>x</strong>:
+  X coordinate of the point where the user 
+  released the mouse button.<br>
+<strong>y</strong>:
+  Y coordinate of the point where the user 
+  released the mouse button.</p>
+<p><u>Return</u>: If IUP_IGNORE is returned the callback will NOT be called  for 
+the next dropped files, and processing of dropped files will be interrupted.</p>
+<h3>Affects</h3>
+<p><a href="../dlg/iupdialog.html">IupDialog</a>,
+  <a href="../elem/iupcanvas.html">IupCanvas</a>,
+  <a href="../ctrl/iupglcanvas.html">IupGLCanvas</a>,
+<a href="../elem/iuptext.html">IupText</a></p>
+
+</body>
+
+</html>

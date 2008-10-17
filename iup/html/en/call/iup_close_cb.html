@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>CLOSE_CB</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>CLOSE_CB</h2>
+<p>Called just before a dialog is hidden due to 
+  some action over it - for example, double clicking the system's menu box, usually located to the left in the title bar.</p>
+<h3>Callback</h3>
+<pre>int function(Ihandle *<b>ih</b>); [in C]
+<strong>elem</strong>:close_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p><strong>ih</strong>:
+  identifies the element that activated the 
+  event.</p>
+<p><u>Return</u>: if IUP_IGNORE, it prevents the dialog from being hidden. 
+  If you destroy the dialog in this callback, you must return IUP_IGNORE. 
+IUP_CLOSE will be processed.</p>
+<h3>Affects</h3>
+<p><a href="../dlg/iupdialog.html">IupDialog</a></p>
+
+</body>
+
+</html>

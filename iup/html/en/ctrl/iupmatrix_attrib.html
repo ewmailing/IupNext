@@ -1,0 +1,253 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupMatrix Attributes</title>
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupMatrix Attributes</h2>
+<h3>Cell Attributes</h3>
+<p><i><strong><a name="L:C">L</a></strong></i><a name="L:C"><strong>:<i>C</i></strong></a>:
+  Text of the cell located in line 
+  L and column 
+  C, where L and C are integer numbers. <br>
+<strong><i>L</i>:0</strong>:
+  Title of line 
+  L.<br>
+<strong>0:<i>C</i></strong>:
+  Title of column 
+  C.<br>
+<strong>0:0</strong>:
+  Title of the area between the line and 
+  column titles.</p>
+<p class="info">These are valid only in normal mode. No redraw is done for all cases, the application must explicity set the REDRAW 
+  attribute.</p>
+<p><strong><a name="ALIGNMENTn">ALIGNMENT<i>n</a></i></strong>:
+  Alignment of the cells in column 
+  n (n &gt;= 0). 
+  No redraw is done.
+  Possible values:</p>
+<p class="info">&quot;ALEFT&quot;, &quot;ACENTER&quot; or &quot;ARIGHT&quot;. Default: 
+    &quot;ALEFT&quot; for n=0 and &quot;ACENTER&quot; for n&gt;0.</p>
+<p><b><a name="BGCOLOR">BGCOLOR</a></b>:
+  Background color of the matrix. <br>
+<strong>BGCOLOR*:<i>C</i></strong>:
+  Background color of column 
+  C (no redraw is done for this case).<br>
+<strong>BGCOLOR<i>L</i>:*</strong>:
+  Background color of line 
+  L (no redraw is done for this case).<br>
+<strong>BGCOLOR<i>L</i>:<i>C</i></strong>:
+  Background color of the cell in line 
+  L and column 
+  C (no redraw is done for this case).</p>
+<p class="info">When more than one attribute are defined, the background color will be 
+    selected following this priority: BGCOLORL:C, BGCOLORL:*, BGCOLOR*:C, and 
+    last BGCOLOR.
+    (L or C &gt;= 0) <br>
+    Default BGCOLOR is white (255 255 255) for cells and the parent's BGCOLOR for titles.<br>
+    Since the matrix control can be larger than the matrix itself, the empty area will always be filled with the 
+    parent's BGCOLOR.</p>
+<p><b><a name="FGCOLOR">FGCOLOR</a></b>:
+  Text color. <br>
+<strong>FGCOLOR*:<i>C</i></strong>:
+  Text color of column 
+  C (no redraw is done for this case).<strong><br>
+FGCOLOR<i>L</i>:*</strong>:
+  Text color of line 
+  L (no redraw is done for this case).<br>
+<strong>FGCOLOR<i>L</i>:<i>C</i></strong>:
+  Text color of the cell in line 
+  L and column 
+  C (no redraw is done for this case).<p class="info">When more than one attribute are define, the text color of a cell will be selected 
+    following this priority: FGCOLORL:C, FGCOLORL:*, FGCOLOR*:C, and last
+    FGCOLOR. 
+    (L or C &gt;= 0)</p>
+    <p class="info">Default FGCOLOR is black (0 0 0).</p>
+<p><b><a href="../attrib/iup_font.html" name="FONT">FONT</a></b>:
+  Character font of the text. <br>
+<strong>FONT<i>L</i>:*</strong>:
+  Text 
+  font of the cells in line L (no redraw is done for this case).<br>
+<strong>FONT*:<i>C</i></strong>:
+  Text 
+  font of the cells in column C (no redraw is done for this case).<br>
+<strong>FONT<i>L</i>:<i>C</i></strong>:
+  Text font of the cell in line L and column C (no redraw is done for this case).</p>
+<p class="info">This attribute must be set before the control is showed. It affects the calculation of the size of all the matrix 
+    cells. The cell size is always calculated from the base FONT attribute.</p>
+<p><strong>FRAMEVERTCOLOR</strong>L:C: Color of the vertical right frame of the 
+cell. Used only if CHECKFRAMECOLOR=YES. When not defined the <strong>
+FRAMECOLOR</strong> is used.<br>
+<strong>FRAMEHORIZCOLOR</strong>L:C: Color of the horizontal bottom frame of the 
+cell. Used only if CHECKFRAMECOLOR=YES. When not defined the <strong>
+FRAMECOLOR</strong> is used.</p>
+<p><strong><a name="FOCUS_CELL">FOCUS_CELL</a></strong>:
+  Defines the currently focused cell.</p>
+<p class="info">Two numbers in the L:C format, 
+    &nbsp;(L and C&gt;=1). Default: &quot;1:1&quot;.</p>
+<p><strong><a name="VALUE">VALUE</a></strong>:
+  Allows setting or verifying the value of the 
+  current cell. Is the same as using the L:C attribute, L and C corresponding to the current cells line and column. 
+But when updated or retreived during cell editing, the edit control will be 
+updated or consulted instead of the matrix cell. When retrieved inside the 
+<strong>EDITION_CB</strong> callback when mode is 0, then the return value is the new value 
+  that will be updated in the cell. </p>
+<p><a name="SORTSIGNn"><strong>SORTSIGNn</strong></a>: Shows a sort sign (up or 
+  down arrow) in the
+  column 
+  n 
+  title. Possible values: &quot;UP&quot;, &quot;DOWN&quot; 
+  and &quot;NO&quot;. Default: NO.</p>
+<p><strong><a name="MASKL:C">MASKL:C</a></strong>: Defines a mask that will filter text input. The
+<a href="../attrib/iup_mask.html">MASK</a> auxiliar attributes are also available 
+adding the line and column at the end of the attribute name.</p>
+<h3>Size Attributes</h3>
+<p><strong><a name="NUMCOL">NUMCOL</a></strong>:
+  Defines the number of columns in the matrix.</p>
+<p class="info">Must be an integer number. Default: &quot;0&quot;.</p>
+<p><strong><a name="NUMCOL_VISIBLE">NUMCOL_VISIBLE</a></strong>:
+  When set defines the minimum number of 
+  visible columns in the matrix. 
+  When retrieved returns the current number of visible lines. The remaining columns will be accessible 
+  only by using the scrollbar.</p>
+<p class="info">Must be an integer number. Default: &quot;4&quot;.</p>
+<p><strong><a name="NUMLIN">NUMLIN</a></strong>:
+  Defines the number of lines in the matrix.</p>
+<p class="info">Must be an integer number. Default: &quot;0&quot;.</p>
+<p><strong><a name="NUMLIN_VISIBLE">NUMLIN_VISIBLE</a></strong>:
+  When set defines the 
+  minimum number of visible lines in the matrix. When 
+  retrieved returns the current number of visible lines. The remaining lines will be accessible only by using the 
+  scrollbar.</p>
+<p class="info">Must be an integer number. Default: &quot;3&quot;.</p>
+<p><strong><a name="WIDTHDEF">WIDTHDEF</a></strong>:
+  Default column width.</p>
+<p class="info">Must be an integer number. Default: Width 
+    corresponding to 20 characters.</p>
+<p><strong><a name="WIDTHn">WIDTHn</a></strong>:
+  Width of column n, where n is the number of the wished column (n&gt;=0). 
+  If the width value is 0, the column will not be shown on the screen.</p>
+<blockquote>
+<p>Must be an integer number. Default: Width 
+    defined in the <strong>WIDTHDEF</strong> attribute. Use the same units as SIZE.</p>
+</blockquote>
+<p><strong><a name="HEIGHTn">HEIGHTn</a></strong>:
+  Height of column n, where n is the number of the wished column 
+  (n&gt;=0). If the height value is 0, the column will not be shown on the screen.</p>
+<p><strong><a name="RASTERWIDTHn">RASTERWIDTHn</a></strong>: Same as WIDTHn but in pixels.</p>
+<p><strong><a name="RASTERHEIGHTn">RASTERHEIGHTn</a></strong>: Same as HEIGHTn but in pixels.</p>
+<p><strong><a name="RESIZEMATRIX">RESIZEMATRIX</a></strong>:
+  Defines if the width of a column can be 
+  interactively changed. When this is possible, the user can change the size of a column by dragging the column title 
+  right border. Possible values:</p>
+<p class="info">&quot;YES&quot; or &quot;NO&quot;. Default: 
+    &quot;NO&quot; (does not allow interactive width change).</p>
+<h3>Mark Attributes</h3>
+<p><strong><a name="AREA">AREA</a></strong>:
+  Defines if the area to be interactively 
+  marked by the user will be continuous or not. Possible values:</p>
+<p class="info">&quot;CONTINUOUS&quot; or &quot;NOT_CONTINUOUS&quot;. Default: &quot;CONTINUOUS&quot;.</p>
+<p><strong><a name="MARK_MODE">MARK_MODE</a></strong>:
+  Defines the entity that can be marked: none, 
+  lines, columns, lines and/or columns, and cells. Possible values:</p>
+<p class="info">&quot;NO&quot;, &quot;LIN&quot;, &quot;COL&quot;, 
+    &quot;LINCOL&quot; or &quot;CELL&quot;. Default: &quot;NO&quot; 
+    (no mark).</p>
+<p><strong><a name="MARKED">MARKED</a></strong>:
+  Vector of 0 or 1 characters, informing which cells are 
+  marked (indicated by value 1). The NULL value indicates there is no marked cell. 
+  The format of this character vector depends on the value of the <strong>MARK_MODE</strong> attribute: if its value is CELL, the vector will have NUMLIN x NUMCOL positions, corresponding to all the cells in the matrix. If its value is LIN, the vector will begin with letter L and will have further NUMLIN positions, each one corresponding to a line 
+  in the matrix. If its value is COL, the vector will begin with letter C and will have further 
+<strong>NUMCOL</strong> positions, each one corresponding to a 
+  column in the matrix. If its value is LINCOL, the first letter, which can be either L or C, will indicate which of the above formats is being used.</p>
+<p class="info">The values must be numbers in a vector of 
+    characters 0 and 1. Default: 
+    NULL.</p>
+<p><strong><a name="MULTIPLE">MULTIPLE</a></strong>:
+  Defines if more than one entity defined by
+  <strong>MARK_MODE</strong> can be marked. Possible values:</p>
+<p class="info">&quot;YES&quot; or &quot;NO&quot;. Default: 
+    &quot;NO&quot;.</p>
+<h3>Action Attributes</h3>
+<p><strong><a name="ADDCOL">ADDCOL</a></strong>:
+  Adds a new column to the matrix after the 
+  number of the specified column. To insert a column at the top of the spreadsheet, value 0 must be used. To add more than one column, use format &quot;<strong>C-C</strong>&quot;, where the first number corresponds to the base column and the second number corresponds to 
+  the number of columns to be added. It is valid only in normal mode.</p>
+<p class="info">The value must be a column number.</p>
+<p><strong><a name="ADDLIN">ADDLIN</a></strong>:
+  Adds a new line to the matrix after the 
+  number of the specified line. To insert a line at the top of the spreadsheet, value 0 must be used. To add more than one line, use format &quot;<strong>L-L</strong>&quot;, where the first number corresponds to the base line and the second number corresponds to the 
+  number of lines to be added. It is valid only in normal mode.</p>
+<p class="info">The value must be a line number.</p>
+<p><strong><a name="DELCOL">DELCOL</a></strong>:
+  Removes the given column from the matrix. To 
+  remove more than one column, use format &quot;<strong>C-C</strong>&quot;, where the first number corresponds to the base column and the second number corresponds to 
+  the number of columns to be removed. It is valid only in normal mode.</p>
+<p class="info">The value must be a column number.</p>
+<p><strong><a name="DELLIN">DELLIN</a></strong>:
+  Removes the given line from the matrix. To 
+  remove more than one line, use format &quot;<strong>L-L</strong>&quot;, where the first number corresponds to the base line and the second number corresponds to the 
+  number of lines to be removed. It is valid only in normal mode.</p>
+<p class="info">The value must be a line number.</p>
+<p><strong><a name="EDIT_MODE">EDIT_MODE</a></strong>:
+  When set to YES, programatically puts the 
+  current cell in edition mode, allowing the user to modify its value. When consulted informs if the the current cell is 
+  being edited. Possible values:</p>
+<p class="info">&quot;YES&quot; or &quot;NO&quot;.</p>
+<p><strong><a name="ORIGIN">ORIGIN</a></strong>:
+  Scroll the visible area to the given cell. 
+  Returns the cell at the upper left corner. To move only a line or a column, use a value such as L:*or *:C 
+  (L and C&gt;=1). Possible values: two numbers in the L:C format.</p>
+<p><strong><a name="REDRAW">REDRAW</a></strong>:
+  The user can inform the matrix that the data 
+  has changed, and it must be redrawn. Values:</p>
+<p class="info">&quot;ALL&quot;:
+    Redraws the whole matrix.<br>
+    &quot;L%d&quot;:
+    Redraws the given line (e. g.: L3 redraws line 3)<br>
+    &quot;L%d:%d&quot;:
+    Redraws the lines in the given region (e.g.: 
+    L2:4 redraws lines 2, 3 and 4)<br>
+    &quot;C%d&quot;:
+    Redraws the given column (e.g.: C3 redraws column 3)<br>
+    &quot;C%d:%d&quot;:
+    Redraws the columns in the given region 
+    (e.g: C2:4 redraws columns 2, 3 and 4)</p>
+<p>No redraw is done when the application sets cell, line or column graphics attributes attributes: 
+<strong>0:0</strong>, <strong>0:C</strong>, <strong>L:0</strong>, <strong>L:C</strong>, 
+<strong>ALIGNMENTn</strong>, <strong>BGCOLORL</strong>:*,
+    <strong>BGCOLOR</strong>*:C, <strong>BGCOLORL</strong>:C,
+    <strong>FGCOLORL</strong>:*, <strong>FGCOLOR</strong>*:C,
+    <strong>FGCOLORL:C</strong>, <strong>FONT</strong>L:*, <strong>FONT</strong>*:C,
+    <strong>FONTL:C</strong>. Global and size attributes always automatically redraw the 
+    matrix.</p>
+<h3>General Attributes</h3>
+<p><strong><a name="CURSOR">CURSOR</a></strong>:
+  Default cursor used by the matrix. The 
+  default cursor is a symbol that looks like a cross. If you need to refer to this default cursor, use the name IupMatrixCrossCursor.</p>
+<p><strong><a name="FRAMECOLOR">FRAMECOLOR</a></strong>:
+  Sets the color to be used in the matrix's frame lines.</p>
+<p><strong>CHECKFRAMECOLOR</strong>: Enable the <strong>FRAMEVERTCOLOR</strong>L:C 
+and <strong>FRAMEHORIZCOLOR</strong>L:C attributes. Default: NO.</p>
+<p><b><a name="SCROLLBAR">SCROLLBAR</a></b>:
+  Associates a horizontal and/or vertical 
+  scrollbar
+  to 
+  the matrix. Is only effective if defined before the 
+  matrix is mapped. Default is YES.</p>
+<p><b><a name="CARET">CARET</a></b>:
+  Allows specifying and verifying the carets 
+  position of the text box in edition mode.</p>
+<p><b><a name="SELECTION">SELECTION</a></b>:
+  Allows specifying and verifying selection 
+  interval 
+  of the text box in edition mode.</p>
+<p><strong><a name="HIDEFOCUS">HIDEFOCUS</a></strong>: do not show the focus mark when 
+  drawing the matrix. Default is NO.</p>
+
+</body>
+
+</html>

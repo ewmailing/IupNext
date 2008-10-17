@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupGetFile</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupGetFile</h2>
+<p>Shows a modal dialog of the native interface 
+  system to select a filename. Uses the <a href="iupfiledlg.html">IupFileDlg</a> element.</p>
+<h3>Creation and Show</h3>
+<dl>
+  <dd>
+  <pre>int IupGetFile(char *<strong>filename</strong>); [in C]
+iup.GetFile(<strong>filename</strong>: string) -&gt; (<strong>filename</strong>: string, <strong>status</strong>: number) [in Lua]</pre>
+  </dd>
+</dl>
+<p><strong>filename</strong>:
+  This parameter is used as an input value to 
+  define the default filter and directory. Example: &quot;../docs/*.txt&quot;. As an output value, it is used to contain the filename entered by the user.</p>
+<p><strong>status</strong>:
+  The function returns a code, whose values 
+  can be:</p>
+<p>&nbsp;1:
+    The name defined by the user is that of a 
+    new file<br>
+    &nbsp;0:
+    The name defined by the user is that of an 
+    already existent file<br>
+    -1:
+    The operation was cancelled by the user</p>
+<h3>Notes</h3>
+<p>The <b>IupGetFile</b> function does not allocate memory space to store the complete filename entered by the 
+  user. Therefore, the file parameter must be large enough to contain the directory and file names.</p>
+<p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 
+  global attribute called &quot;ICON&quot; as the dialog icon if it is defined.</p>
+<h3><a href="../../examples/dlg/iupgetfile/">Examples</a></h3>
+<h3>See Also</h3>
+<p><a href="iupmessage.html">IupMessage</a>, <a href="iupscanf.html">IupScanf</a>,
+  <a href="iuplistdialog.html">IupListDialog</a>, <a href="iupalarm.html">IupAlarm</a>,
+  <a href="../func/iupsetlanguage.html">IupSetLanguage</a>.</p>
+
+</body>
+
+</html>

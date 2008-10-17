@@ -1,0 +1,26 @@
+
+mnmain = menu (
+               item[KEY=K_N, ACTIVE=YES] ("NewLoad", newload),
+             item[KEY=K_X] ("eXit",exit)
+              )
+
+#Novo diálogo de seleção de arquivos
+escolhe_arq = filedlg
+[
+ TITLE="Forneça um arquivo do tipo LED",
+ TYPE=OPEN,
+ FILTER="*.led",
+ FILTERINFO="LED: Ling. de Especificação de Diálogos",
+ ALLOWNEW=NO,
+ NOCHANGEDIR=YES,
+ DIRECTORY="D:\\mark\\softbasico\\2003-2\\T1\\grupo12\\CVS"
+]()
+
+corpo = button ("Carrega Outro", loadteste)
+
+load = dialog
+        [
+         TITLE="Teste IupFileDlg",
+         MENU=mnmain,
+         K_mX=exit
+        ] (corpo)

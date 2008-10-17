@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupSetHandle</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupSetHandle</h2>
+<p>Associates a name with an interface element.</p>
+<h3>
+Parameters/Return</h3>
+<pre>Ihandle *IupSetHandle(const char *<strong>name</strong>, Ihandle *<strong>ih</strong>); [in C]
+iup.SetHandle(<strong>name</strong>: string, <strong>ih</strong>: ihandle) -&gt; <strong>old_ih</strong>: ihandle [in Lua]</pre>
+<p><b>name</b>: name of the interface element.<br>
+<b>ih</b>: identifier of the interface element. Use NULL to remove the association.</p>
+<p>Returns the identifier of the interface 
+  element previously associated to the parameter <b>name</b>.</p>
+<h3>See Also</h3>
+<p><a href="iupgethandle.html">IupGetHandle</a></p>
+
+</body>
+
+</html>

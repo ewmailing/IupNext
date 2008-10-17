@@ -1,0 +1,94 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupVal</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	font-size: large;
+}
+.style2 {
+	color: #FF0000;
+}
+.style3 {
+	color: #000000;
+}
+</style>
+</head>
+<body>
+<div id="navigation">
+  <ul>
+    <li><a href="#Creation">Creation</a></li>
+    <li><a href="#Attributes">Attributes</a></li>
+    <li><a href="#Callbacks">Callbacks</a></li>
+    <li><a href="#Notes">Notes</a></li>
+    <li><a href="#Examples">Examples</a></li>
+    <li><a href="#SeeAlso">See Also</a></li>
+  </ul>
+</div>
+
+<h2>IupVal <span class="style1">(Deprecated since 3.0)</span></h2>
+<p><span class="style2"><strong>This control was moved to the main library under 
+the same name, see </strong></span> <a href="../elem/iupval.html"><strong>IupVal</strong></a>.</p>
+<p class="style2"><span class="style2">If you still need to use the old version, then you must call the function
+</span><span class="style3">
+<strong>IupOldValOpen()</strong></span>. It will replace the registration of the new IupVal 
+by the old IupVal.</p>
+<p>This is an additional control that depends on the CD library. It is included 
+in the 
+<a href="../iupcontrols.html">Controls Library</a>.</p>
+<p>It inherits from
+  <a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
+<h3>Old <a name="Attributes">Attributes</a> <span class="style2">(not supported 
+in the new IupVal)</span></h3>
+
+
+<p><b>HANDLER_IMAGE</b><strong> </strong>(<font SIZE="3">non inheritable</font>): Handler image name. When defined the handle will not be drawn 
+  an this image will be used instead.</p>
+<p><b>HANDLER_IMAGE_INACTIVE</b><strong> </strong>(<font SIZE="3">non inheritable</font>): Inactive handler image name. Used when <b>HANDLER_IMAGE</b> is used and the control is inactive.</p>
+<h3>Old <a name="Callbacks">Callbacks</a></h3>
+
+<p><strong>MOUSEMOVE_CB</strong>:
+  Called each time the user moves the 
+  valuators thumb keeping the mouse button pressed. The value of VALUE is passed as parameter.</p>
+<pre>int function(Ihandle *<strong>ih</strong>, double <strong>val</strong>); [in C]
+<strong>elem</strong>:mousemove_cb(<strong>val</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+    <strong>val</strong>:
+    the valuator value.</p>
+<p><strong>BUTTON_PRESS_CB</strong>:
+  Called when the user presses the left mouse 
+  button over the valuator. The value of VALUE is passed as parameter. The thumb is always repositioned to the current mouse position.</p>
+<pre>int function(Ihandle *<strong>ih</strong>, double <strong>val</strong>); [in C]
+<strong>elem</strong>:button_press_cb(<strong>val</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+    <strong>val</strong>:
+    the valuator value.</p>
+<p><strong>BUTTON_RELEASE_CB</strong>:
+  Called when the user releases the mouse 
+  button, after having pressed it over the valuator. The value of VALUE is passed as parameter.</p>
+<pre>int function(Ihandle *<strong>ih</strong>, double <strong>val</strong>); [in C]
+<strong>elem</strong>:button_release_cb(<strong>val</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+    <strong>val</strong>:
+    the valuator value.</p>
+<h3><a name="Notes">Notes</a></h3>
+<p>When the keyboard arrows are pressed and released, or the mouse wheel is rotated, the mouse press and the mouse 
+  release callbacks are called, in this order. If you hold the key down a mouse move callback is also called. In these cases the value is incremented by 10% of the interval max-min. </p>
+<h3><a name="Examples">Examples</a></h3>
+<p align="center"><img src="images/iupval.png"> </p>
+<h3><a name="SeeAlso">See Also</a></h3>
+
+<p><a href="../elem/iupcanvas.html">IupCanvas</a>, <a href="../elem/iupval.html">IupVal (3.0)</a></p>
+
+</body>
+
+</html>

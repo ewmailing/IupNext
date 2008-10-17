@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IUP-IM</title>
+
+<link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+
+<h2>IUP-IM Functions</h2>
+<p>Functions to load and save an IupImage from 
+  file using the IM library. The function can load or save the formats: BMP, JPEG, GIF, TIFF, PNG, PNM, PCX, ICO 
+  and others. For more information about the IM library see 
+<a target="_blank" href="http://www.tecgraf.puc-rio.br/im">http://www.tecgraf.puc-rio.br/im</a>.</p>
+<h3>Initialization and Usage</h3>
+<p>To generate an application that uses this 
+  function, the program must be linked with the IM library and with the function library (im 
+and iupim libraries). The iupim.h file must also be included in the source code. 
+</p>
+<p>To make the function available in Lua, use the initialization function in C, 
+  iupimlua_open, after calling <b>iuplua_open</b>.
+  The iupluaim.h file must also be included in the source code. The program must be linked to the 
+lua functions 
+  library (iupluaim library).</p>
+<h3>Load</h3>
+<div>
+  <pre>Ihandle* IupLoadImage(const char* <strong>file_name</strong>); [in C]
+iup.LoadImage{<strong>file_name</strong>: string} -&gt; (<strong>elem</strong>: ihandle) [in Lua]</pre>
+</div>
+<p><strong>file_name</strong>:
+  Name of the file to be loaded.</p>
+<p>This function returns the identifier of the 
+  created image, or NULL if an error occurs. When failed a message box describing the error is displayed.</p>
+<h3>Save</h3>
+<div>
+  <pre>int IupSaveImage(Ihandle* <b>elem</b>, const char* <strong>file_name, </strong>const char* <strong>format</strong>); [in C]
+iup.SaveImage{<strong>elem</strong>: ihandle<strong>, file_name, format</strong>: string} -&gt; (<b>ret</b>: number) [in Lua]</pre>
+</div>
+<p><strong>elem:</strong> handle of the IupImage.<br>
+  file_name:
+  Name of the file to be loaded.<br>
+  format: format descriptor for IM.</p>
+<p>This function returns zero if failed. 
+  When failed a message box describing the error is displayed.</p>
+<h3><a name="SeeAlso">See Also</a></h3>
+
+<p><a href="elem/iupimage.html">IupImage</a></p>
+
+</body>
+
+</html>

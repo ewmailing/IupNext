@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>Additional Controls</title>
+<link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+
+<h1 align="center">Additional Controls</h1>
+<h2>Controls Library</h2>
+<p>Most of the additional controls are included in only one library. Some of these controls are drawn by IUP and are 
+  not native controls.</p>
+<p>The <b>iupcontrols.h</b> file must be included in the source code. If you plan to use the control in Lua, you 
+  should also include <b>iupluacontrols.h</b>.</p>
+<p>The <b>IupControlsOpen</b> function must be called after <b>IupOpen</b>. To make the controls available in Lua, use the initialization function in C, 
+<b>iupcontrolslua_open</b>, after calling <b>iuplua_open</b>.</p>
+<p>Your application must be linked to the CPI 
+  control library (<strong>iupcontrols</strong>), the CD_IUP driver (<strong>iupcd</strong>), and with the 
+<a href="http://www.tecgraf.puc-rio.br/cd" target="_top">CD</a> 
+  library (<strong>cd</strong>). To use its bindings to Lua, the program must also be linked to the 
+<strong>iupluacontrols</strong> library.</p>
+<h2>OpenGL Canvas</h2>
+<p>The drawing canvas compatible with OpenGL is called 
+<a href="ctrl/iupglcanvas.html">IupGLCanvas</a>.</p>
+<h2>Speech Control</h2>
+<p>Creates a speech engine that allows speech recognition 
+  and speech. Uses Microsoft Speech SDK 5.1. See 
+  <a target="_self" href="ctrl/iupspeech.html">IupSpeech</a>.</p>
+
+</body>
+
+</html>

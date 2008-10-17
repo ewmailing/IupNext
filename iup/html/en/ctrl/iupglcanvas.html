@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupGLCanvas</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<div id="navigation">
+  <ul>
+    <li><a href="#Creation">Creation</a></li>
+    <li><a href="#Attributes">Attributes</a></li>
+    <li><a href="#Callbacks">Callbacks</a></li>
+    <li><a href="#Notes">Notes</a></li>
+    <li><a href="#Examples">Examples</a></li>
+    <li><a href="#SeeAlso">See Also</a></li>
+  </ul>
+</div>
+
+<h2>IupGLCanvas</h2>
+<p>Creates an OpenGL canvas (drawing area for 
+  OpenGL). It inherits from 
+<a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
+<h3>Initialization and Usage</h3>
+<p>The <b>IupGLCanvasOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
+  The &quot;iupgl.h&quot; file must also be included in the source code. The program must be linked to the controls 
+  library (iupgl), and with the OpenGL library.</p>
+<p>To make the control available in Lua, use the initialization function in C, 
+<b>iupgllua_open</b>, after calling <b>iuplua_open</b>.
+  &nbsp;The iupluagl.h file must also be included in the source code. The program must be linked to the 
+lua control 
+  library (iupluagl).</p>
+<p>To link with the OpenGL libraries in Windows add:
+  opengl32.lib. 
+  In Motif add before the Motif libraries: -LGL.</p>
+<p>The Lua binding does not include OpenGL functions. But you can use any OpenGL 
+binding available.</p>
+<h3><a name="Creation">Creation</a></h3>
+<div>
+  <pre>Ihandle* IupGLCanvas(const char* <strong>action</strong>); [in C]
+iup.glcanvas{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+glcanvas(<strong>action</strong>) [in LED]</pre>
+</div>
+<p><strong>action</strong>:
+  Name of the action generated when the canvas 
+  needs to be redrawn. It can be NULL.</p>
+  <p>
+  <u>Returns:</u> the identifier of the 
+  created element, or NULL if an error occurs.</p>
+
+<h3><a name="Attributes">Attributes</a></h3>
+
+
+<p>The 
+  IupGLCanvas element handle all attributes defined for a conventional canvas, 
+  see <a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
+<p>Apart from these attributes, 
+  IupGLCanvas handle specific attributes used to define the kind of buffer to be instanced. Such 
+  attributes are all <strong>creation only </strong>attributes and must be set before the element is mapped 
+on the native system. After the mapping, specifying these special 
+  attributes has no effect.</p>
+<blockquote>
+  <hr>
+</blockquote>
+<p><strong>BUFFER</strong>:
+  Indicates if the buffer will be single
+  &quot;SINGLE&quot; or double 
+  &quot;DOUBLE&quot;. Default is 
+  &quot;SINGLE&quot;.</p>
+<p><strong>COLOR</strong>:
+  Indicates the color model to be adopted: &quot;INDEX&quot; or &quot;RGBA&quot;. Default is &quot;RGBA&quot;.</p>
+<p><strong>BUFFER_SIZE</strong>:
+  Indicates the number of bits for 
+  representing the color indices (valid only for INDEX). Default is 8 (256-color palette).</p>
+<p><strong>RED_SIZE</strong>,<strong> GREEN_SIZE</strong> and<strong> 
+  BLUE_SIZE</strong>:
+  Indicate the number of bits for representing 
+  each color component (valid only for RGBA). Default is 8 for each component (True Color support).</p>
+<p><strong>ALPHA_SIZE</strong>:
+  Indicates the number of bits for 
+  representing each colors alpha component (valid only for RGBA and for hardware that store the alpha component). Default is &quot;0&quot;.</p>
+<p><strong>DEPTH_SIZE</strong>:
+  Indicates the number of bits for 
+  representing the <i>z</i> coordinate in the z-buffer. Value 0 means the z-buffer is not necessary.&nbsp;</p>
+<p><strong>STENCIL_SIZE</strong>:
+  Indicates the number of bits in the stencil 
+  buffer. Value 0 means the stencil buffer is not necessary. 
+  Default is 0.</p>
+<p><strong>ACCUM_RED_SIZE</strong>,<strong> ACCUM_GREEN_SIZE</strong>,<strong> 
+  ACCUM_BLUE_SIZE</strong> and<strong> ACCUM_ALPHA_SIZE</strong>:
+  Indicate the number of bits for representing 
+  the color components in the accumulation buffer. Value 0 means the accumulation buffer is not necessary. Default is 0.</p>
+<p><b>STEREO</b>: Creates a stereo GL canvas (special glasses are required to 
+  visualize it correctly). Possible values: &quot;YES&quot; or &quot;NO&quot;. 
+  Default: &quot;NO&quot;.</p>
+<p><strong>SHAREDCONTEXT</strong>: name of another IupGLCanvas that will share its 
+  display lists and textures. That canvas must be mapped before this canvas.</p>
+<p><b>ERROR</b> (read-only): If an error is found, returns a string containing a description of 
+  the error in English.</p>
+<p><strong>CONTEXT, VISUAL</strong> and <strong>COLORMAP</strong> (read-only)<strong>:</strong> Returns &quot;GLXContext&quot;, &quot;XVisualInfo*&quot; and &quot;Colormap&quot; 
+respectively, in UNIX. And &quot;HGLRC&quot;, &quot;HDC&quot; and &quot;HPALETTE&quot; respectively, in Win32.</p>
+<h3><a name="Callbacks">Callbacks</a></h3>
+
+<p>The 
+  IupGLCanvas element understands all callbacks defined for a conventional canvas, 
+  see <a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
+<p>Addicionally:</p>
+<p><a href="../call/iup_resize_cb.html">RESIZE_CB</a>: 
+  By default the resize callback sets:</p>
+<pre>glViewport(0,0,width,height);</pre>
+<h3>Auxiliary Functions</h3>
+<pre>void <b>IupGLMakeCurrent</b>(Ihandle* <b>ih</b>); [in C]
+<b>iup.GLMakeCurrent</b>(<b>ih</b>: ihandle) [in Lua]</pre>
+<p>Activates the given canvas as the current OpenGL context. All subsequent OpenGL commands are directed to 
+    such canvas.</p>
+<pre>int <b>IupGLIsCurrent</b>(Ihandle* <b>ih</b>); [in C]
+<b>iup.GLIsCurrent</b>(<b>ih</b>: ihandle) -&gt; status: number [in Lua]</pre>
+<p>Returns a non zero value if the given canvas is the current OpenGL context.</p>
+<pre>void <b>IupGLSwapBuffers</b>(Ihandle* <b>ih</b>); [in C]
+<b>iup.GLSwapBuffers</b>(<b>ih</b>: ihandle) [in Lua]</pre>
+<p>Makes the BACK buffer visible. This function is necessary when a double buffer is used.</p>
+<pre>void <b>IupGLPalette</b>(Ihandle* <b>ih</b>, int <b>index</b>, float <b>r</b>, float <b>g</b>, float <b>b</b>); [in C]
+<b>iup.GLPalette</b>(<b>ih</b>: ihandle, <b>index</b>, <b>r</b>, <b>g</b>, <b>b</b>: number); [in Lua]</pre>
+<p>Defines a color in the color palette. This 
+    function is necessary when INDEX color is used.</p>
+<h3><a name="Notes">Notes</a></h3>
+<p>In Windows, if the COMPOSITE attribute is enabled then the hardware 
+acceleration will be disabled.</p>
+<p>The IupGLCanvas works with the GTK base driver in Windows and in UNIX 
+(X-Windows).</p>
+<h3><a name="Examples">Examples</a></h3>
+<p><a href="../../examples/ctrl/iupglcanvas/">Browse Example Files</a></p>
+<p class="style1"><img src="images/iupglcanvas.png" width="300" height="300"></p>
+<h3><a name="SeeAlso">See Also</a></h3>
+
+<p><a href="../elem/iupcanvas.html">IupCanvas</a></p>
+
+</body>
+
+</html>

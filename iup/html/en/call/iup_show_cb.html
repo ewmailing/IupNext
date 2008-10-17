@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>SHOW_CB</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>SHOW_CB</h2>
+<p>Called right after the dialog is opened, 
+  minimized or restored from a minimization.</p>
+<h3>Callback</h3>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>state</strong>); [in C]
+<strong>elem</strong>:show_cb(<strong>state</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p><strong>ih</strong>:
+  identifier of the element that activated the event.<br>
+<b>state:</b> indicates which of the following situations generated the event:</p>
+<blockquote>
+<p>IUP_HIDE, IUP_SHOW, 
+    IUP_RESTORE (was minimized or maximized), IUP_MINIMIZE or
+    IUP_MAXIMIZE.&nbsp; (IUP_HIDE and IUP_MAXIMIZE since 3.0)</p>
+<p>IUP_MAXIMIZE is not received in Motif when activated from the maximize button.</p>
+</blockquote>
+<p><u>Return</u>: IUP_CLOSE will be processed.</p>
+<h3>Affects</h3>
+<p><a href="../dlg/iupdialog.html">IupDialog</a></p>
+
+</body>
+
+</html>

@@ -1,0 +1,85 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupSpeech</title>
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	font-size: large;
+}
+</style>
+</head>
+<body>
+<div id="navigation">
+  <ul>
+    <li><a href="#Creation">Creation</a></li>
+    <li><a href="#Attributes">Attributes</a></li>
+    <li><a href="#Callbacks">Callbacks</a></li>
+    <li><a href="#Notes">Notes</a></li>
+    <li><a href="#Examples">Examples</a></li>
+    <li><a href="#SeeAlso">See Also</a></li>
+  </ul>
+</div>
+
+<h2>IupSpeech <span class="style1">[Windows only]</span></h2>
+<p>Creates a speech engine that allows speech recognition and speech.</p>
+<h3>Initialization and Usage</h3>
+<p>The <b>IupSpeechOpen</b> 
+  function must be called after a <b>IupOpen</b>, 
+  so that the 
+  Speech 
+  control can be used (no binding available yet.) </p>
+<p>To generate an application that uses this control, the program must be linked to the control library (iupspeech). The <b>iupspeech.h</b> 
+  file must also be included in the source code.</span></p>
+<p>Even to just test the IupSpeech sample, the <strong>Microsoft Speech SDK 5.1</strong> must be 
+  installed in the system, download from the
+<a target="_blank" href="http://www.microsoft.com/speech/">Microsoft Speech</a> 
+site. The distribution files can be incorporated to the application setup using 
+Windows Installer. </p>
+<h3><a name="Creation">Creation</a></h3>
+
+<pre>Ihandle* IupCreate(&quot;speech&quot;); [in C]
+[Not available in IupLua] </pre>
+<p>
+  <u>Returns:</u> the identifier of the 
+  created element, or NULL if an error occurs.</p>
+<h3><a name="Attributes">Attributes</a></h3>
+
+
+<p><strong>GRAMMAR</strong>: Accepts a full directory path to a .xml file 
+defining the grammar that the speech engine will be considering.</p>
+<p><strong>SAY</strong>:
+  Speaks the given text.</p>
+<p><strong>SYNC</strong>: Set the speak mode to syncronous. Default: NO.</p>
+<h3><a name="Callbacks">Callbacks</a></h3>
+
+<p><strong>ACTION_CB</strong>: 
+  Called when the engine recognizes a word/sentence.
+</p>
+<pre>int function(Ihandle *<strong>ih</strong>, char *<b>text</b>, int <b>rule_id</b>, int <b>prop_value_id</b>); [in C]</pre>
+<p class="info">
+<b>ih</b>: Ihandle.<br>
+<b>text</b>: Full recognized text based on given grammar.<br>
+<strong>rule_id</strong>: identifier of a rule.<br>
+<b>prop_value_id</b>: identifier of a property.</p>
+  <h3><a name="Notes">Notes</a></h3>
+<p align="left">Check <a href="http://www.microsoft.com/speech/SDK/51/sapi.chm">Speech SDK help</a> file for more 
+  information on how to create an input xml file.</p>
+<p id align="left">IUP's speech interface will create a &quot;shared-recognizer&quot;, i.e., a unique recognizer that will work 
+  for the entire system. That means that the input focus can be anywhere in the system and still the recognition will be 
+  triggered.</p>
+<p align="left">Only one process in the system can initialize IupSpeech.</p>
+<p align="left">The system is greatly improved by training. Look in the control-panel in the Speech tab for more 
+  details.</p>
+<h3><a name="Examples">Examples</a></h3>
+<p><a href="../../examples/ctrl/iupspeech/">Browse Example Files</a></p>
+
+<p>The example will load two grammars. Check the XML files for the available 
+words, for example:</p>
+<pre>say &quot;computer next&quot;, then (if recognized) it will print &quot;Recognized1: Computer Next (254 0)&quot;
+say &quot;please enter shop&quot;, then (if recognized) it will print &quot;Recognized2: Please Enter shop (10 2)&quot;</pre>
+
+</body>
+
+</html>

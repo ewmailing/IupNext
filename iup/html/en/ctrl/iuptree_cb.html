@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupTree Callbacks</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h3>IupTree Callbacks</h3>
+<p><strong>SELECTION_CB</strong>:
+  Action generated when an element is selected 
+  or deselected. This action occurs when the user clicks with the mouse or uses the keyboard with the appropriate 
+  combination of keys. </p>
+<pre>int function(Ihandle *<strong>self</strong>, int <strong>id, int </strong>status) [in C]
+<strong>elem</strong>:selection_cb(<strong>id, status:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>self</strong>:
+    Identifier of the IupTree interacting with the user. <br>
+<strong>id</strong>:
+    Node identifier.<br>
+    status: 1 - node was selected, 0 - node was unselected. </p>
+<p class="info">This function must return 
+    IUP_IGNORE for the selected node not to be changed, or IUP_DEFAULT to change it.</p>
+<p><strong>MULTISELECTION_CB</strong>:
+  Action generated 
+  when multiple nodes are selected with the mouse and the shift key pressed. </p>
+<pre>int function(Ihandle *<strong>self</strong>, int* <strong>ids, int </strong>n) [in C]
+<strong>elem</strong>:multiselection_cb(<strong>ids: </strong>table<strong>, n:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>self</strong>:
+    Identifier of the IupTree interacting with the user. <br>
+<strong>ids</strong>:
+    Array of node identifiers.<br>
+<b>n</b>: Number of nodes in the array.</p>
+<p class="info">This function must return 
+    IUP_IGNORE for the selected nodes not to be changed, or IUP_DEFAULT to change it.</p>
+<p><strong>BRANCHOPEN_CB</strong>:
+  Action generated when a branch is expanded. 
+  This action occurs when the user clicks the &quot;+&quot; sign on the left of the branch, or when double clicks the branch 
+  image, or hits Enter on a collapsed branch.</p>
+<pre>int function(Ihandle *<strong>self</strong>, int <strong>id</strong>) [in C] 
+<strong>elem</strong>:branchopen_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>self</strong>:
+    Identifier of the IupTree interacting with the user. <br>
+<strong>id</strong>:
+    Node identifier. </p>
+<p class="info">This function must return IUP_IGNORE for the branch not to be opened, or IUP_DEFAULT for the branch to be opened.</p>
+<p><strong>BRANCHCLOSE_CB</strong>:
+  Action generated when a branch is collapsed. 
+  This action occurs when the user clicks the &quot;-&quot; 
+  sign on the left of the branch, or when double 
+  clicks 
+  the branch <b>image</b>, or hits Enter on an expanded branch.
+  </p>
+<pre>int function(Ihandle *<strong>self</strong>, int <strong>id</strong>); [in C]
+<strong>elem</strong>:branchclose_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>self</strong>:
+    Identifier of the IupTree interacting with the user. <br>
+<strong>id</strong>:
+    Identifier of the clicked node. </p>
+<p class="info">This function must return IUP_IGNORE for the branch not to be closed, or IUP_DEFAULT for the branch to be closed.</p>
+<p><strong>EXECUTELEAF_CB</strong>:
+  Action generated when a leaf is to be 
+  executed. This action occurs when the user double clicks the 
+  leaf <b>image</b>, or hits Enter on a leaf.
+  </p>
+<pre>int function(Ihandle *<strong>self</strong>, int <strong>id</strong>); [in C] 
+<strong>elem</strong>:executeleaf_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>self</strong>:
+    Identifier of the IupTree interacting with the user. <br>
+<strong>id</strong>:
+    Identifier of the clicked node.&nbsp;
+    <br>
+</p>
+<p><strong>RENAMENODE_CB</strong>:
+  Action generated when a node is to be 
+  renamed. It occurs only when the user double clicks the <b>text</b> associated to a node (leaf or branch) or press 
+<b>F2</b>, 
+  and <strong>SHOWRENAME</strong>=NO.</p>
+<pre>int function(Ihandle *<strong>self</strong>, int <strong>id</strong>, char *<strong>name</strong>); [in C]<strong>
+elem</strong>:renamenode_cb(<strong>id:</strong> number, <strong>name</strong>:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>self</strong>:
+    Identifier of the IupTree interacting with the user. <br>
+<strong>id</strong>:
+    Identifier of the clicked node. <br>
+<strong>name</strong>: Current name of the clicked node. <br>
+</p>
+<p><strong>SHOWRENAME_CB</strong>:
+  Action generated when a node is to be 
+  renamed in place and <strong>SHOWRENAME</strong>=<strong>YES</strong>. 
+  It occurs only when the user double clicks the <b>text</b> associated to a node (leaf or branch) or press 
+<b>F2</b>, 
+  and <strong>SHOWRENAME</strong>=<strong>YES</strong>.</p>
+<pre>int function(Ihandle *<strong>self</strong>, int <strong>id</strong>); [in C]<strong>
+elem</strong>:showrename_cb(<strong>id:</strong> number:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>self</strong>:
+    Identifier of the IupTree interacting with the user. <br>
+<strong>id</strong>:
+    Identifier of the clicked node.&nbsp;
+    <br>
+</p>
+<p><strong>RENAME_CB</strong>:
+  Action generated after a node was renamed in 
+  place. It occurs when the user press <b>Enter</b> after editing the name, or when the text box looses it focus.</p>
+<pre>int function(Ihandle *<strong>self</strong>, int <strong>id</strong>, char *<strong>name</strong>); [in C]<strong>
+elem</strong>:rename_cb(<strong>id:</strong> number, <strong>name</strong>:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>self</strong>:
+    Identifier of the IupTree interacting with the user. <br>
+<strong>id</strong>:
+    Identifier of the clicked node. <br>
+<strong>name</strong>:
+    New name of the clicked node. </p>
+<p class="info">The new name is accepted only if the callback returns IUP_DEFAULT. If the callback does not exists the new name 
+    is always accepted. If the user pressed <b>Enter</b> and the callback returns IUP_IGNORE the editing continues. If 
+    the text box looses its focus the editing stops always.<br>
+</p>
+<p><strong>DRAGDROP_CB</strong>:
+  Action generated when 
+  a drag &amp; drop is executed. Only active if SHOWDRAGDRO<strong>P=YES.</strong></p>
+<pre>int function(Ihandle *<strong>self</strong>, int <b>drag_id</b>, int <b>drop_id</b>, int <b>isshift</b>, int <b>iscontrol</b>); [in C] 
+<strong>elem</strong>:dragdrop_cb(<b>drag_id</b>, <b>drop_id</b>, <b>isshift</b>, <b>iscontrol</b><strong>:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>self</strong>:
+    Identifier of the IupTree interacting with the user. <br>
+<strong>drag_id</strong>:
+    Identifier of the clicked node where the 
+    drag start. <br>
+<strong>drop_id</strong>:
+    Identifier of the clicked node where the 
+    drop were executed.<br>
+<strong>isshift</strong>: Boolean flag indicatinf the shift key state. <br>
+<strong>iscontrol</strong>: Boolean flag indicatinf the control key state.<br>
+</p>
+<p><strong>RIGHTCLICK_CB</strong>:
+  Action generated when the right mouse button 
+  is pressed over the IupTree.</p>
+<pre>int function(Ihandle *<strong>self</strong>, int <strong>id</strong>); [in C] 
+<strong>elem</strong>:rightclick_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>self</strong>:
+    Identifier of the IupTree interacting with the user. <br>
+<strong>id</strong>:
+    Identifier of the clicked node. </p>
+<hr>
+<p>The canvas callbacks 
+  KEYPRESS_CB,
+  <a href="../call/iup_action.html">ACTION</a>,
+  <a href="../call/iup_scroll_cb.html">SCROLL_CB</a>,
+  <a href="../call/iup_map_cb.html">MAP_CB</a>,
+  <a href="../call/iup_resize_cb.html">RESIZE_CB</a> and
+  <a href="../call/iup_button_cb.html">BUTTON_CB</a> can be changed but you 
+  should save and call the original definitions or the tree will not correctly work. This can not be done in Lua.</p>
+<p>See also <a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,106 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupColorDlg</title>
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	border-width: 0;
+}
+</style>
+</head>
+<body>
+<div id="navigation">
+  <ul>
+    <li><a href="#Creation">Creation</a></li>
+    <li><a href="#Attributes">Attributes</a></li>
+    <li><a href="#Callbacks">Callbacks</a></li>
+    <li><a href="#Notes">Notes</a></li>
+    <li><a href="#Examples">Examples</a></li>
+    <li><a href="#SeeAlso">See Also</a></li>
+  </ul>
+</div>
+
+<h2>IupColorDlg<font size="4"> (Windows and GTK only) (since 3.0)</font></h2>
+<p>Creates the Color Dialog element. It is a predefined dialog for 
+  selecting a color. The dialog can be shown with the
+  IupPopup function only.</p>
+<h3><a name="Creation">Creation</a></h3>
+<pre>Ihandle* IupColorDlg(void); [in C]
+iup.colordlg() -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+colordlg() [in LED]</pre>
+<p><u>Returns:</u> the identifier of the 
+  created element, or NULL if an error occurs.</p>
+
+<h3><a name="Attributes">Attributes</a></h3>
+<p><b>ALPHA</b> (GTK only) (in/out): if defined enable an alpha selection addicional 
+control with its initial value. If the user pressed the Ok button contains the 
+returned value.</p>
+<p><b>COLORTABLE</b> (in/out): list os colors separated by &quot;;&quot;. In GTK accepts 20 values 
+and if not present the palette will not be visible. In Windows accepts 16 values 
+and will be always visible, even if the colors are not defined (in this case are 
+initialized with black).</p>
+<p><a href="../attrib/iup_parentdialog.html">PARENTDIALOG</a>:
+  (Creation Only) Name of a dialog to be used as parent. This dialog will 
+  be always in front of the parent dialog. </p>
+<p><b>STATUS</b> (out): defined to &quot;1&quot; if the user pressed the Ok button, NULL if 
+pressed the Cancel button.</p>
+<p><a href="../attrib/iup_title.html">TITLE</a>:
+  Dialog title.</p>
+<p><strong>VALUE</strong> (in/out): The initial color value and the returned selected 
+value if the user pressed the Ok button.</p>
+<h3><a name="Callbacks">Callbacks</a></h3>
+<p><a href="../call/iup_help_cb.html">HELP_CB</a>: Action generated when the 
+Help button is pressed.</p>
+<h3><a name="Notes">Notes</a></h3>
+<p>The <b>IupColorDlg</b> is a native pre-defined dialog not altered by <b>IupSetLanguage</b>.</p>
+<p>To show the dialog, use function <b>IupPopup</b>. In Lua, use the <b>popup</b> function.</p>
+<p>The dialog is mapped only inside <b>IupPopup</b>, <b>IupMap</b> does nothing.</p>
+<h3><a name="Examples">Examples</a></h3>
+<pre>Ihandle* dlg = IupColorDlg();
+
+IupSetAttribute(dlg, "VALUE", "128 0 255");
+IupSetAttribute(dlg, "ALPHA", "142");
+IupSetAttribute(dlg, "COLORTABLE", "128 0 255;0 0 128;253 20 119");
+IupSetAttribute(dlg, "TITLE", "IupColorDlg Test");
+IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
+
+IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+
+if (IupGetInt(dlg, "STATUS"))
+{
+  printf("OK\n");
+  printf("  COLOR(%s)\n", IupGetAttribute(dlg, "COLOR"));
+  printf("  COLORTABLE(%s)\n", IupGetAttribute(dlg, "COLORTABLE"));
+}
+else
+  printf("CANCEL\n");
+
+IupDestroy(dlg);  </pre>
+<div align="center">
+  <center>
+  <table border="0" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1">
+    <tr>
+      <th>Windows XP</th>
+    </tr>
+    <tr>
+      <td class="style1"><img border="0" src="images/colordlg_win.png" width="453" height="341"></td>
+    </tr>
+    <tr>
+      <th>GTK/GNOME</th>
+    </tr>
+    <tr>
+      <td class="style1"><img border="0" src="images/colordlg_gtk.png" width="541" height="357"></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3><a name="SeeAlso">See Also</a></h3>
+<p><a href="iupmessagedlg.html">IupMessageDlg</a>, 
+<a href="iupgetfiledlg.html">IupFileDlg</a>, 
+<a href="../func/iuppopup.html">IupPopup</a></p>
+
+</body>
+
+</html>

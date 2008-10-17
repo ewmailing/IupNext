@@ -1,0 +1,32 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupGetClassAttributes</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupGetClassAttributes</h2>
+<p>Returns the names of all registered attributes of the class of an element.</p>
+<h3>
+Parameters/Return</h3>
+<pre>int IupGetClassAttributes(Ihandle*<strong> ih, </strong>char *<strong>names</strong>[], int <strong>max_n</strong>); [in C]
+iup.GetClassAttributes(<strong>ih</strong>: ihandle<strong>, max_n</strong>: number) -&gt; (<strong>names</strong>: table<strong>, n</strong>: number) [in Lua]</pre>
+<p>
+  <b>ih</b>: identifier of the interface element.
+<b><br>
+names</b>: table receiving the names<br>
+<b>max_n</b>: maximum number of names the table can receive.</p>
+<p>Returns the number of names loaded to the 
+  table.</p>
+<h3>See Also</h3>
+<p>
+<a href="iupgetclassname.html">IupGetClassName</a>,
+<a href="iupgetclasstype.html">IupGetClassType</a>,
+<a href="iupgetallattributes.html">IupGetAllAttributes</a></p>
+
+</body>
+
+</html>

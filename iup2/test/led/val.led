@@ -1,0 +1,14 @@
+
+valv = VAL[SIZE   = "80x10",
+                 MAX = "2.00",
+                 MIN = "0.00",
+                 VALUE = "2.00",
+                 MOUSEMOVE_CB      = vecmvm,
+                 BUTTON_PRESS_CB   = vecbtpr,
+                 BUTTON_RELEASE_CB = vecbtrl]("HORIZONTAL")
+                 
+                 
+dlg = DIALOG[TITLE="Dialog",SIZE="270x150"]
+(
+VBOX[GAP="5",ALIGNMENT="ARIGHT",MARGIN="5x5"](valv)
+)

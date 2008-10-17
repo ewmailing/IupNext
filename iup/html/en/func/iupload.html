@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupLoad</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupLoad</h2>
+<p>Compiles a LED specification.</p>
+<h3>
+Parameters/Return</h3>
+<pre>char *IupLoad(const char *<strong>name_file</strong>); [in C]
+iup.Load(<strong>name_file</strong>: string) -&gt; <strong>error</strong>: string [in Lua]</pre>
+<p><b>name_file</b>: name of the file containing the LED specification.</p>
+<p>This function returns NULL (nil in Lua) if the file was successfully 
+  compiled; otherwise it returns a pointer to a string containing the error message.</p>
+<h3>Notes</h3>
+<p>Each time the function loads a LED file, the 
+  elements contained in it are created. Therefore, the same LED file cannot be loaded several times, otherwise the 
+  elements will also be created several times. The same applies for running Lua files several times.</p>
+<p>&nbsp;</p>
+
+</body>
+
+</html>

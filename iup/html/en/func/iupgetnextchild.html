@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupGetNextChild</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupGetNextChild</h2>
+<p>Returns the a child of the given control given its brother.</p>
+<h3>
+Parameters/Return</h3>
+<div>
+  <pre>Ihandle *IupGetNextChild(Ihandle*<strong> ih</strong>, Ihandle*<strong> child</strong>); [in C]
+iup.GetNextChild(<strong>ih, child</strong>: ihandle) -&gt; <strong>next_child</strong>: ihandle [in Lua]</pre>
+</div>
+<div>
+  <p><b>ih</b>: identifier of the interface element.
+    <br>
+    <strong>child</strong>: Identifier of the child brother to be used as 
+	reference. 
+	To get the first child use NULL.</div>
+<h3>Notes</h3>
+<p>This function will return the children of the control in the exact same order in which they were assigned.</p>
+<h3>Example</h3>
+<pre>/* Lists all children of a IupVbox */</pre>
+<pre>#include &lt;stdio.h&gt;
+#include &quot;iup.h&quot;
+
+int main()
+{
+  Ihandle *dialog, *bt, *lb, *vbox, *tmp = NULL;
+
+  IupOpen();
+
+  bt = IupButton(&quot;Button&quot;, &quot;&quot;);
+  lb = IupLabel(&quot;Label&quot;);
+
+  vbox = IupVbox(bt, lb, NULL);
+
+  dialog = IupDialog(vbox);
+  IupShow(dialog);
+
+  while(1)
+  {
+    tmp = IupGetNextChild(vbox, tmp);
+    if(tmp)
+      printf(&quot;vbox has a child of type %s\n&quot;, IupGetType(tmp));
+    else
+      break;
+  }
+
+  IupMainLoop();
+  IupClose();
+
+  return 0;
+}</pre>
+<h3>See Also</h3>
+<p><a href="iupgetbrother.html">IupGetBrother</a>, <a href="iupgetparent.html">IupGetParent</a>,
+  <a href="iupgetchild.html">IupGetChild</a></p>
+
+</body>
+
+</html>

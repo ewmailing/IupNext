@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupHelp</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupHelp</h2>
+<p>Opens the given URL. In UNIX executes 
+  Netscape or Firefox (in Linux) passing the desired URL as a parameter. In Windows calls the default application 
+  that handle URLs.</p>
+<p>In UNIX you can change the used browser setting the environment variable IUP_HELPAPP or using the global attribute 
+  &quot;HELPAPP&quot;.</p>
+<h3>
+Parameters/Return</h3>
+<pre>int IupHelp(const char* <strong>url</strong>); [in C]
+iup.Help(<strong>url</strong>: string) [in Lua]</pre>
+<p><strong>url</strong>:
+  may be any kind of address accepted by the 
+  Browser, that is, it can include 'http://', or be just a file name, etc.</p>
+<p>Returns 1 if successfull, -1 if failed. In Windows can return -2 if file not found.</p>
+
+</body>
+
+</html>

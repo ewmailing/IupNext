@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupStoreAttribute</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupStoreAttribute</h2>
+<p>Defines an attribute for an interface 
+  element.</p>
+<h3>
+Parameters/Return</h3>
+<pre>void IupStoreAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, const char *<strong>value</strong>); [in C]
+iup.StoreAttribute(<strong>ih</strong>: iulua_tag, <strong>name</strong>: string, <strong>value</strong>: string) [in Lua] </pre>
+<p><b>ih</b>: identifier of the interface element. If
+  NULL will set in the global environment.<br>
+<b>name</b>: name of the attribute.<br>
+<b>value</b>: value of the attribute. If NULL (nil in IupLua), the attribute will be removed from the element.</p>
+<h3>Notes</h3>
+<p>The value stored is duplicated if not 
+  processed by the element specific implementation. Usually you will not use this function to 
+  store private attributes of the application.</p>
+<h3>See Also</h3>
+<p><a href="iupgetattribute.html">IupGetAttribute</a>, 
+<a href="iupsetattribute.html">IupSetAttribute</a></p>
+
+</body>
+
+</html>

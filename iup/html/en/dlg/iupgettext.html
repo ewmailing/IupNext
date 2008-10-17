@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupGetText</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupGetText</h2>
+<p>Shows a modal dialog to edit a multiline 
+  text.</p>
+<h3>Creation and Show</h3>
+<dl>
+  <dd>
+  <pre>int IupGetText(const char* <b>title</b>, char *<strong>text</strong>); [in C]
+iup.GetText(<b>title, text</b>: string) -&gt; (<strong>text</strong>: string) [in Lua]</pre>
+  </dd>
+</dl>
+<p><strong>text</strong>: It contains the initial value of the text and the returned 
+  text. It must have room for the edited string.</p>
+<p>The function returns a non zero value if 
+  successfull. In Lua if an error occured returns nil.</p>
+<h3>Notes</h3>
+<p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 
+  global attribute called &quot;ICON&quot; as the dialog icon if it is defined.</p>
+<h3>See Also</h3>
+<p><a href="iupmessage.html">IupMessage</a>, <a href="iupscanf.html">IupScanf</a>,
+  <a href="iuplistdialog.html">IupListDialog</a>, <a href="iupalarm.html">IupAlarm</a>,
+  <a href="../func/iupsetlanguage.html">IupSetLanguage</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupGetAttributes</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupGetAttributes</h2>
+<p>Returns all attributes of a given element 
+  that are in the internal attribute environment. The known attributes that are pointers (not strings) are 
+  returned as integers.</p>
+<p>The internal attributes are not returned (attributes prefixed with &quot;_IUP&quot;).</p>
+<p>Before calling this function the applciation must ensure that there is no pointer attributes set for that element.</p>
+<p>This function should be avoided. Use <b>IupGetAllAttributes</b> instead.</p>
+<h3>
+Parameters/Return</h3>
+<pre>char* IupGetAttributes (Ihandle *<strong>ih</strong>); [in C]
+iup.GetAttributes(<strong>ih</strong>: iulua_tag) -&gt; (<strong>str</strong>: string) [in Lua] </pre>
+<p><b>ih</b>: Identifier of the interface element.<br>
+<b>str</b>: in the form v1=a1,v2=a2,... where vi is the name of an attribute and ai is its value.</p>
+<p>Returns a string with all attributes in the 
+  format: &quot;NAME=VALUE, NAME=&quot;VALUE&quot;, ...&quot;.</p>
+<h3>See Also</h3>
+<p><a href="iupgetattribute.html">IupGetAttribute</a>, 
+<a href="iupgetallattributes.html">IupGetAllAttributes</a>, 
+<a href="iupsetattribute.html">IupSetAttribute</a>, 
+<a href="iupsetattributes.html">IupSetAttributes</a>, 
+<a href="iupstoreattribute.html">IupStoreAttribute</a></p>
+
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>Win32</title>
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>Win32 System Driver</h2>
+<p>This driver was designed for the modern 
+  Microsoft Windows in 32 bits or 64 bits (2000/XP/2003/Vista).</p>
+<h3>DLL</h3>
+<p>To use DLL, it is necessary to link the 
+  application with the IUP.lib and IUPSTUB.lib libraries (for technical reasons, these libraries cannot be unified). Note that 
+  IUP.lib is a library specially generated to work with 
+  iup.dll, and is usually distributed in the same directory as 
+  iup.dll. the IUP DLL depends on the MSVCRT.DLL, that it is already installed in Windows.</p>
+<p>For the program to work, IUP.dll must be inside a PATH directory. Usually the program does not need to be relinked when 
+  the DLL is updated.</p>
+<h3>Debug Versions&nbsp;</h3>
+<p>While using the debug version, two types of 
+  fatal errors can occur:</p>
+<p class="info">1)
+    Protection errors: &quot;Unhandled 
+    exception: access violation&quot;<br>
+    2)
+    Assertive errors: &quot;Assertion failed!&quot;</p>
+<p>In the second type, a dialog is shown with 
+  buttons Abort, Retry and Ignore, as well as a number of information, among which:</p>
+<p class="info">+
+    Name of the font file where the error 
+    occurred<br>
+    +
+    Line number</p>
+<p>The bug-correction process (if it exists) 
+  becomes <u>a lot faster</u> when this information is provided. Therefore, if you receive such error, please send this 
+  information along in the e-mail.</p>
+<h3>Tips</h3>
+<h4>COM Initialization</h4>
+<p>IupOpen calls &quot;CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);&quot;, if you need another concurrency model call 
+  CoInitializeEx with other options before calling IupOpen. Be aware that some features in some controls require 
+  single-thread apartment, and they will stop working, this includes: IupFileDLg when selecting a folder, and IupOle.</p>
+<h4>InitCommonCtrlEx Linker Error</h4>
+<p>On Windows a common error occurs: 
+  &quot;Cannot find function <b>InitCommonCtrlEx</b>()&quot;
+  This error occurs if you forgot to add the
+  comctl32.lib library to be linked with the program. This library is <b>not</b> usually in the 
+  libraries list for the Visual C++, you must add it.</p>
+<h4>Custom IupFileDlg </h4>
+<p>To use some cursors and the preview area of <b>IupFileDlg</b> you must include the 
+  &quot;iup.rc&quot; file into your makefile. Or include the contents of it into your resource file, you will need also to copy 
+  the cursor files.</p>
+<h4>Windows XP Visual Styles</h4>
+<p>Windows XP Visual Styles can be enabled using a manifest file. Uncomment the manifest file section in &quot;iup.rc&quot; file or copy 
+  it to your own resource file, you will need also to copy the manifest file &quot;iup.manifest&quot;.</p>
+<p>When using Visual C++ 8 with &quot;iup.manifest&quot;, configure the linker properties 
+of your project to do NOT generate a manifest file or the Windows XP Visual 
+Styles won't work.</p>
+<p>If your Windows XP is using the Windows Classic style or any other style, IUP 
+controls appearance will follow the system appearance if you are using a 
+Manifest. If not, it will always look like Windows Classic.</p>
+<h4><b>Black Canvas</b></h4>
+<p>The IupGLCanvas does not work when inside an IupFrame, the result is a black canvas with no drawing.</p>
+
+<h4><b>Help in CHM format fail to open</b></h4>
+<p>When you download a CHM file from the Internet Windows blocks your access to 
+the file. You must unblock it manually. Right click the file in Explorer and 
+select&nbsp; &quot;Unblock&quot; at the bottom of the dialog.</p>
+
+</body>
+
+</html>

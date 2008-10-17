@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupSbox</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+<div id="navigation">
+  <ul>
+    <li><a href="#Creation">Creation</a></li>
+    <li><a href="#Attributes">Attributes</a></li>
+    <li><a href="#Callbacks">Callbacks</a></li>
+    <li><a href="#Notes">Notes</a></li>
+    <li><a href="#Examples">Examples</a></li>
+    <li><a href="#SeeAlso">See Also</a></li>
+  </ul>
+</div>
+
+<h2>IupSbox</h2>
+<p>Creates a split panel control. Allows the provided control to be enclosed in a box that allows resizing. 
+  The IupSbox inherits from the IupCanvas, so all the canvas attributes and callbacks are valid. The IupSbox contains a 
+  IupZbox where all the children are inserted, and contains another IupCanvas to implement the split handler.</p>
+<h3><a name="Creation">Creation</a></h3>
+
+<pre>Ihandle* IupSbox(Ihandle*<strong> elem</strong>); [in C]
+iup.sbox{<strong>elem</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+sbox(<strong>elem</strong>) [in LED]</pre>
+<p>elem:
+  This function receives as parameter the 
+  element that will be enclosed in a 
+  Sbox. </p>
+<p>This function returns the created Sboxs identifier, or NULL if an error occurs.</p>
+<h3><a name="Attributes">Attributes</a></h3>
+
+
+<p><strong>DIRECTION</strong>:
+  Indicates the direction of the resize. Possible values are:</p>
+<p class="info">&quot;NORTH&quot;, &quot;SOUTH&quot;, &quot;EAST&quot;, &quot;WEST&quot;. Default: &quot;EAST&quot;.</p>
+<p><strong>COLOR</strong>: Changes the color of the
+  Sboxs thumb. The value should be given in &quot;R G B&quot; color style.</p>
+<h3>Notes</h3>
+<p>The controls that you want to be resized must have the EXPAND=YES attribute set.</p>
+<h3><a name="Examples">Examples</a></h3>
+<p><a href="../../examples/ctrl/iupsbox">Browse Example Files</a></p>
+<p align="center"><img border="0" src="iupsbox.gif" width="463" height="383"><br>
+<b>Example 2 image</b></p>
+<p align="center">&nbsp;</p>
+
+</body>
+
+</html>

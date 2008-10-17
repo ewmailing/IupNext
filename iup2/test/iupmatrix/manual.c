@@ -1,0 +1,330 @@
+#if 0
+/* To check for memory leaks */
+#define VLD_MAX_DATA_DUMP 80
+#include <vld.h>
+#endif
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "iup.h"
+#include "iupcontrols.h"
+#include <cd.h>
+
+int leave(Ihandle *self, int lin, int col)
+{
+  printf("leaveitem_cb(%d, %d)\n", lin, col);
+  //if(lin == 3 && col ==2)
+  //  return IUP_IGNORE;   /* notice that this will lock the matrix in this cell */
+  return IUP_DEFAULT;
+}
+
+char* value(Ihandle *self, int lin, int col)
+{
+  static char str[50];
+  sprintf(str, "%d-%d", lin, col);
+  return str;
+}
+
+int enter(Ihandle *self, int lin, int col)
+{
+  printf("enteritem_cb(%d, %d)\n", lin, col);
+  if(lin == 2 && col == 2)
+  {
+    IupSetAttribute(IupGetHandle("mat1"), IUP_REDRAW, "ALL");
+    IupSetAttribute(IupGetHandle("mat2"), IUP_REDRAW, "ALL");
+    IupSetAttribute(IupGetHandle("mat3"), IUP_REDRAW, "ALL");
+    IupSetAttribute(IupGetHandle("mat4"), IUP_REDRAW, "ALL");
+    IupSetAttribute(IupGetHandle("mat5"), IUP_REDRAW, "ALL");
+    IupSetAttribute(IupGetHandle("mat6"), IUP_REDRAW, "ALL");
+  }
+  return IUP_DEFAULT;
+}
+
+int dropselect(Ihandle *self, int lin, int col, Ihandle *drop, char *t, int i, int v)
+{
+  printf("dropselect_cb(%d, %d)\n", lin, col);
+  return IUP_DEFAULT;
+}
+
+int mdrop = 1;
+int dropcheck(Ihandle *self, int lin, int col)
+{
+  if(lin == 1 && col == 1)
+  {
+    if (mdrop)
+      return IUP_DEFAULT;
+    else
+      return IUP_IGNORE;
+  }
+  return IUP_IGNORE;
+}
+
+int click(Ihandle *self, int lin, int col)
+{
+  char* value = IupMatGetAttribute(self, "", lin, col);
+  if (!value) value = "NULL";
+  printf("click_cb(%d, %d)\n", lin, col);
+  printf("  VALUE%d:%d = %s\n", lin, col, value);
+  return IUP_DEFAULT;
+}
+
+int drop(Ihandle *self, Ihandle *drop, int lin, int col)
+{
+  printf("drop_cb(%d, %d)\n", lin, col);
+  if(lin == 1 && col == 1 && mdrop)
+  {
+    IupSetAttribute(drop, "1", "A - Test of Very Big String for Dropdown!");
+    IupSetAttribute(drop, "2", "B");
+    IupSetAttribute(drop, "3", "C");
+    IupSetAttribute(drop, "4", "XXX");
+    IupSetAttribute(drop, "5", "5");
+    IupSetAttribute(drop, "6", "6");
+    IupSetAttribute(drop, "7", "7");
+    IupSetAttribute(drop, "8", NULL);
+    return IUP_DEFAULT;
+  }
+  return IUP_IGNORE;
+}
+
+int edition(Ihandle *self, int lin, int col, int mode) 
+{
+  printf("edition_cb(lin=%d, col=%d, mode=%d)\n", lin, col, mode);
+  if (mode==1)
+  {
+    IupSetAttribute(self, IUP_CARET, "3");
+
+    if(lin == 3 && col == 2)
+      return IUP_IGNORE;
+  }
+
+  //if(lin == 1 && col == 1 && mode==0 && mdrop == 1)
+  //{
+  //  mdrop = 0;
+  //  IupSetAttribute(self, "EDIT_MODE", "NO");
+  //  IupSetAttribute(self, "EDIT_MODE", "YES");
+  //  return IUP_IGNORE;
+  //}
+
+  return IUP_DEFAULT;
+}
+int drawcb(Ihandle *h, int lin, int col,int x1, int x2, int y1, int y2)
+{
+  if (lin < 4)
+    return IUP_IGNORE;
+
+  cdForeground(CD_RED);
+  cdLine(x1, y1, x2, y2);
+  cdLine(x1, y2, x2, y1);
+
+  {
+    char s[50];
+    sprintf(s, "%d:%d", lin, col);
+    cdTextAlignment(CD_CENTER);
+    cdText((x1+x2)/2, (y1+y2)/2, s);
+  }
+
+  return IUP_DEFAULT;
+}
+
+int actioncb(Ihandle *h, int c, int lin, int col, int active, char* after)
+{
+  printf("action_cb(lin=%d, col=%d, active=%d, after=%s)\n", lin, col, active, after);
+  if (lin == 2 && col == 3 && active && after)
+  {
+    char str[100];
+    strcpy(str, after);
+    strcat(str, "xxx");
+    IupStoreAttribute(h,"VALUE", str);
+
+    IupSetAttribute(h,"CARET","1");
+
+    IupSetAttribute(h,"REDRAW","ALL");
+  }
+
+  return IUP_DEFAULT;
+}
+
+
+Ihandle *create_mat(void)
+{
+  Ihandle *mat = IupMatrix(NULL); 
+  static int mati = 1;
+  char name[30];
+
+  sprintf(name, "mat%d", mati);
+  mati++;
+
+  IupSetHandle(name, mat);
+  
+  IupSetAttribute(mat,IUP_NUMCOL,"15"); 
+  IupSetAttribute(mat,IUP_NUMLIN,"18"); 
+  
+  IupSetAttribute(mat,IUP_NUMCOL_VISIBLE,"5") ;
+  IupSetAttribute(mat,IUP_NUMLIN_VISIBLE,"8") ;
+
+//  IupSetAttribute(mat,IUP_EXPAND, "NO");
+//  IupSetAttribute(mat,IUP_SCROLLBAR, "NO");
+  IupSetAttribute(mat,"RESIZEMATRIX", "YES");
+
+  IupSetAttribute(mat,IUP_MARK_MODE, "CELL");
+//  IupSetAttribute(mat,IUP_MARK_MODE, "LINCOL");
+  IupSetAttribute(mat,IUP_MULTIPLE, "YES");
+//  IupSetAttribute(mat,"AREA", "NOT_CONTINUOUS");
+ IupSetAttribute(mat, "AREA", "CONTINUOUS");
+
+  IupSetAttribute(mat,"0:0","Inflation");
+  IupSetAttribute(mat,"1:0","Medicine ");
+  IupSetAttribute(mat,"2:0","Food"); 
+  IupSetAttribute(mat,"3:0","Energy"); 
+  IupSetAttribute(mat,"0:1","January 2000"); 
+  IupSetAttribute(mat,"0:2","February 2000"); 
+  IupSetAttribute(mat,"1:1","5.6");
+  IupSetAttribute(mat,"2:1","2.2");
+  IupSetAttribute(mat,"3:1","7.2");
+  IupSetAttribute(mat,"1:2","4.5");
+  IupSetAttribute(mat,"2:2","8.1");
+  IupSetAttribute(mat,"3:2","3.4 (RO)");
+
+  IupSetAttribute(mat,"BGCOLOR","255 255 255");
+  IupSetAttribute(mat,"BGCOLOR1:*","255 128 0");
+  IupSetAttribute(mat,"BGCOLOR2:1","255 128 0");
+  IupSetAttribute(mat,"FGCOLOR2:0","255 0 128");
+  IupSetAttribute(mat,"BGCOLOR0:*","255 0 128");
+  IupSetAttribute(mat,"FGCOLOR1:1","255 0 128");
+  IupSetAttribute(mat,"BGCOLOR3:*","255 128 0");
+  IupSetAttribute(mat,"BGCOLOR*:4","255 128 0");
+  //IupSetAttribute(mat,"FONT2:*", "Times New Roman:BOLD:8");
+  //IupSetAttribute(mat,"FONT*:2", "Courier::12");
+  IupSetAttribute(mat,"SORTSIGN1","UP");
+//  IupSetAttribute(mat,"SORTSIGN2","DOWN");
+  IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 255");
+  IupSetAttribute(mat,"CHECKFRAMECOLOR","YES");
+
+  IupSetCallback(mat,"LEAVEITEM_CB",(Icallback)leave);
+  IupSetCallback(mat,"ENTERITEM_CB",(Icallback)enter);
+  IupSetCallback(mat,"DROPSELECT_CB",(Icallback)dropselect);
+  IupSetCallback(mat,"DROP_CB",(Icallback)drop);
+  IupSetCallback(mat,"DROPCHECK_CB",(Icallback)dropcheck);
+  IupSetCallback(mat,"EDITION_CB",(Icallback)edition);
+  IupSetCallback(mat,"CLICK_CB",(Icallback)click);
+  IupSetCallback(mat,"DRAW_CB",(Icallback)drawcb);
+  IupSetCallback(mat,"ACTION_CB",(Icallback)actioncb);
+
+//  IupSetCallback(mat,"VALUE_CB",(Icallback)value);
+//  IupSetAttribute(mat,"WIDTH0","24");
+//  IupSetAttribute(mat,"HEIGHT0","8");
+
+//  iupmaskMatSet(mat, IUPMASK_FLOAT, 0, 1, 2, 1) ;
+
+  return mat;
+}
+
+
+int redraw(Ihandle *self) 
+{
+  //IupSetAttribute(IupGetHandle("mat1"),"REDRAW","ALL"); 
+  //IupSetAttribute(IupGetHandle("mat2"),"REDRAW","ALL"); 
+  //IupSetAttribute(IupGetHandle("mat3"),"REDRAW","ALL"); 
+  //IupSetAttribute(IupGetHandle("mat4"),"REDRAW","ALL"); 
+  //IupSetAttribute(IupGetHandle("mat5"),"REDRAW","ALL"); 
+  //IupSetAttribute(IupGetHandle("mat6"),"REDRAW","ALL"); 
+
+  Ihandle* mat = IupGetHandle("mat1");
+  if (IupGetInt(mat, "VISIBLE"))
+  {
+    IupSetAttribute(mat,"VISIBLE","NO"); 
+    IupStoreAttribute(mat, "OLD_SIZE", IupGetAttribute(mat, "RASTERSIZE"));
+    IupSetAttribute(mat, "RASTERSIZE", "1x1");
+  }
+  else
+  {
+    IupStoreAttribute(mat, "RASTERSIZE", IupGetAttribute(mat, "OLD_SIZE"));
+    IupSetAttribute(mat,"VISIBLE","YES"); 
+  }
+
+  return IUP_DEFAULT;
+}
+
+int removeline(Ihandle *self) 
+{
+  IupSetAttribute(IupGetHandle("mat1"),"DELLIN","1"); 
+  return IUP_DEFAULT;
+}
+
+int addline(Ihandle *self) 
+{
+  IupSetAttribute(IupGetHandle("mat1"),"ADDLIN","0"); 
+  return IUP_DEFAULT;
+}
+
+int removecol(Ihandle *self) 
+{
+  IupSetAttribute(IupGetHandle("mat1"),"DELCOL","1"); 
+  return IUP_DEFAULT;
+}
+
+int addcol(Ihandle *self) 
+{
+  IupSetAttribute(IupGetHandle("mat1"),"ADDCOL","0"); 
+  return IUP_DEFAULT;
+}
+
+void createmenu(void)
+{
+  Ihandle* menu = IupMenu(
+    IupSubmenu("submenu", IupMenu(IupItem("item1","x"), IupItem("item2","x"), NULL)),
+    IupItem("remove line","removeline"), 
+    IupItem("add line","addline"), 
+    IupItem("remove col","removecol"), 
+    IupItem("add col","addcol"), 
+    IupItem("redraw","redraw"), 
+    NULL);
+  IupSetHandle("mymenu", menu);
+}
+
+/* Main program */
+int main(int argc, char **argv)
+{
+  Ihandle *dlg;
+  IupOpen(&argc, &argv);       
+  IupControlsOpen();
+ 
+  IupSetFunction("removeline", (Icallback)removeline);
+  IupSetFunction("addline", (Icallback)addline);
+  IupSetFunction("removecol", (Icallback)removecol);
+  IupSetFunction("addcol", (Icallback)addcol);
+  IupSetFunction("redraw", (Icallback)redraw);
+
+  createmenu();
+  
+  dlg = IupDialog(
+          IupTabs(
+            IupSetAttributes(
+              IupVbox((create_mat()), IupText(""), IupLabel("Label Text"), IupVal("HORIZONTAL"), 
+                NULL), "MARGIN=10x10, GAP=10, TABTITLE=Test1"),
+            IupSetAttributes(
+              IupVbox(IupFrame(create_mat()), IupText(""), IupLabel("Label Text"), IupVal("HORIZONTAL"), 
+//                NULL), "BGCOLOR=\"0 255 255\", MARGIN=10x10, GAP=10, TABTITLE=Test2,FONT=HELVETICA_ITALIC_14"), 
+                NULL), "FONT=HELVETICA_NORMAL_12, BGCOLOR=\"0 255 255\", MARGIN=10x10, GAP=10, TABTITLE=Test2"), 
+            NULL)); 
+  IupSetAttribute(dlg,IUP_TITLE, "IupMatrix");
+  IupSetAttribute(dlg,IUP_MENU, "mymenu");
+//  IupSetAttribute(dlg,"BGCOLOR", "255 0 255");
+
+  //IupSetAttribute(dlg,"COMPOSITED", "YES");
+  //IupSetAttribute(dlg,"LAYERED", "YES");
+  //IupSetAttribute(dlg,"LAYERALPHA", "192");
+
+  IupShowXY(dlg,IUP_CENTER,IUP_CENTER) ;
+  IupMainLoop();
+
+  iupmaskMatRemove(IupGetHandle("mat1"), 2, 1) ;
+  iupmaskMatRemove(IupGetHandle("mat2"), 2, 1) ;
+  IupDestroy(dlg);
+
+  IupControlsClose();
+  IupClose();  
+  return 0;
+}

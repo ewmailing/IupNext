@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>GTK</title>
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	font-size: large;
+}
+</style>
+</head>
+<body>
+
+<h2>GTK System Driver<span class="style1"> (since 3.0)</span></h2>
+<p>This driver was designed for the GTK+ 
+  version 2. It can be compiled in Windows or UNIX.</p>
+<p>Although GTK has layout elements they are not used. IUP fill, vbox, hbox and 
+zbox containers are implemented independent from the native system.</p>
+<h3>Tips</h3>
+<p>The GTK driver can be compiled and used in Windows, but it is not recomended since it is slower and 
+much more memory 
+  consuming than the IUP native Windows driver.</p>
+<p>GTK uses UTF-8 as its charset for all displayed text, so IUP will 
+automatically convert all strings to (SetAttribute) and from (GetAttribute) 
+UTF-8. To use UTF-8 strings set the global attribute UTF8AUTOCONVERT to NO.</p>
+<p>&nbsp;</p>
+
+</body>
+
+</html>

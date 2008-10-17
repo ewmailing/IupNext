@@ -1,0 +1,172 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>System Guide</title>
+<link rel="stylesheet" type="text/css" href="../style.css">
+<style type="text/css">
+.style1 {
+	color: #FF0000;
+}
+</style>
+</head>
+<body>
+
+<h2 align="center" style="text-align:center">System Guide</h2>
+<h3><a name="init">Initialization</a></h3>
+<p>Before running any of IUP&#8217;s functions, function <b>IupOpen</b> must be run to initialize the toolkit.</p>
+<p>After running the last IUP function, function <b>IupClose</b> must be run so that the toolkit can free internal memory and close the 
+  interface system.</p>
+<p>Executing these functions in this order is crucial for the correct functioning of the toolkit.</p>
+<p>Between calls to the IupOpen and
+  IupClose functions, the application can create dialogs and 
+  display them. </p>
+<p>Therefore, usually an application employing IUP will have a code in the main function similar to the following:</p>
+<pre>int main(int argc, char* argv[])
+{
+  if (IupOpen(&amp;argc, &amp;argv) == IUP_ERROR)
+  {
+    fprintf(stderr, &quot;Error Opening IUP.&quot;)
+    return;
+  }
+
+  ...
+  IupMainLoop();
+  IupClose();
+
+  return 0;
+}</pre>
+<h3><a name="led">LED</a></h3>
+<p>LED is a dialog-specification language whose purpose is not to be a complete programming 
+  language, but rather to make dialog specification simpler than in C. </p>
+<p>In LED, attributes and expressions follow this form:</p>
+<p>elem = element[<b>attribute1=value1,attribute2=value2,</b>...](...expression...)</p>
+<p>The names of the elements must not contain the &#8220;iup&#8221; 
+  prefix. Attribute values are always interpreted as strings, but they need to be in quotes (&#8220;&#8230;&#8221;) only when they include 
+  spaces. The &#8220;IUP_&#8221; prefix must not be added to the names of 
+  the attributes and predefined values. Expressions contain parameters for creating the element.<u1:p>
+</u1:p>
+<u1:p></u1:p>
+</p>
+<p>In LED there is no distinction between upper and lower case, except for attribute names.<u1:p>
+</u1:p>
+<u1:p></u1:p>
+</p>
+<p>Though the LED files are text files, there is no way to interpret a text in memory &#8211; there is only the
+  IupLoad function, which loads 
+  a LED file and creates the IUP elements defined in it. Naturally, the same file cannot be loaded more than once, 
+  because the elements would be created again. This file interpretation does not map the elements to the native system.</p>
+<p>The LED files are dynamically loaded and must be sent together with the application&#8217;s executable. However, this 
+  often becomes an inconvenience. To deal with it, there is the 
+<a href="ledc.html">LEDC</a> compiler that creates a C 
+  module from the LED contents. </p>
+<p>To simply view a LED file objects use the LED viewer application, see <b>IupView</b> in the applications included 
+  in the distribution.
+  <u1:p>Available at the <a href="download.html">Download</a>.</u1:p></p>
+<h3><a name="iuplua">IupLua</a></h3>
+<p>The Lua Binding is an interface between the <a href="http://www.lua.org/">Lua</a> language and IUP, a portable 
+  user-interface system. The main purpose of this package is to provide facilities for constructing IUP dialogs using 
+  the Lua language. Abstractions were used to create a programming environment similar to that of object-oriented 
+  languages, even though Lua is not one of such languages. The concept of event-oriented programming is broadly used 
+  here, because the IUP library is based on this model. Most constructions used in IupLua were strongly based on the 
+  corresponding constructions in LED. </p>
+<p>In IupLua, attributes and expressions follow this form:</p>
+<p>elem = iup.element{...<b>expression</b>...;
+    <b>attribute1=value1,attribute2=value2,</b>...}</p>
+<p>The names of element creation functions are in lower case, since they are actually constructors of Lua tables. 
+</p>
+<p>Callbacks can be implemented directly in Lua see <a href="call_guide.html">Events and Callbacks Guide</a>.</p>
+<p>Even though there are sintatic sugars used to handle callbacks and attributes in Lua, most of the functions defined 
+  in C are exported to Lua, such as IupSetAttribute, IupGetBrother among others.</p>
+<p>In IupLua we follow the same organization of the Lua libraries using a namespace 
+(&quot;iup&quot;) before all the definitions.</p>
+<ul type="disc">
+  <li>All exported functions are accessed only through <b>iup.FunctionName</b>, including control 
+    initialization like <b>iup.label</b>.</li>
+  <li>All callbacks in are accessed through their exact name in the C API. 
+  </li>
+  <li>Numeric definitions where kept in upper case without the IUP_ prefix, such 
+  as <strong>iup.DEFAULT</strong>.</li>
+  <li>String definitions for values are no longer supported, always use &quot;YES&quot;, &quot;NO&quot;, &quot;ACENTER&quot;, etc.</li>
+</ul>
+<p>IUP&#8217;s binding for Lua was made <i>a posteriori</i> and completely replaces the LED files. Besides, Lua is a 
+  complete language, so a good deal of the application can be implemented with it. However, this means that the 
+  application must link its program to the Lua and to the IupLua libraries, as well as the IUP library.<u1:p>
+</u1:p>
+<u1:p></u1:p>
+</p>
+<p>The Lua files are dynamically loaded and must be sent together with the application&#8217;s executable. However, this 
+  often becomes an inconvenience. To deal with it, there is the <b>LuaC</b> compiler that creates a C module from the 
+  Lua contents. For example:</p>
+<pre>luac -o myfile.lo myfile.lua
+bin2c myfile.lo &gt; myfile.loh</pre>
+<p>In C, you can used a define to interchanged the use of .LOH files:</p>
+<pre>#ifdef _DEBUG
+  ret_val = lua_dofile(&quot;myfile.lua&quot;);
+#else
+#include &quot;myfile.loh&quot;
+#endif</pre>
+<p>The distribution files include an executable called <b>iuplua51</b>, 
+  that you can use to test your Lua code. It has support for all the addicional controls, 
+for IM, CD and OpenGL calls. It is
+<u1:p> 
+  available at the <a href="download.html">Download</a>.</u1:p></p>
+<h3><a name="iupluainit">IupLua Initialization</a></h3>
+<p>Before running any function from the Lua Binding, you must run the <b>iuplua_open</b> function to initialize the toolkit. This 
+  function should be run after a call to function <b>IupOpen</b>. 
+  All this is done in C in Lua&#8217;s host program.</p>
+<p>Example:</p>
+<pre>int main(int argc, char* argv[])
+{
+  IupOpen(&amp;argc, &amp;argv);
+  IupControlsOpen();
+
+  /* Lua 5 initialization */
+  L = lua_open();   
+  luaL_openlibs(L);
+
+  <span class="style1"><strong>iuplua_open(L);</strong></span>      /* Initialize Binding Lua */
+  <strong><span class="style1">iupcontrolslua_open(L);</span></strong> /* Initialize additional controls binding Lua */
+
+  /* do other things, like running a lua script */
+  lua_dofile(L, &quot;myfile.lua&quot;);
+
+  IupMainLoop(); /* could be here or inside &quot;myfile.lua&quot; */
+
+  lua_close(L);
+
+  IupClose();
+
+  return 0;
+}</pre>
+<p>See the example <a href="../examples/func/iuplua51_init.c">iuplua51_init.c</a> for Lua 5.1.</p>
+<p>It is also allowed to call <b>iuplua_open</b> without calling <b>IupOpen</b>. Then 
+<b>IupOpen</b> 
+  will be internally called. This enable you to dynamically load IUP using Lua 5 &quot;loadlib&quot;. This is also valid for all 
+  the additional controls when IUP is&nbsp; dynamically loaded. To call <b>IupClose</b> in this way you must call 
+<b>iuplua_close</b>.</p>
+<p>Here is an example on how to dynamically load IUP in Lua 5.1:</p>
+<pre>local iuplua_open = package.loadlib(&quot;iuplua51.dll&quot;, &quot;iuplua_open&quot;)
+iuplua_open()
+local iupcontrolslua_open = package.loadlib(&quot;iupluacontrols51.dll&quot;, &quot;iupcontrolslua_open&quot;)
+iupcontrolslua_open() </pre>
+<p><strong>Lua</strong> 5.1 &quot;require&quot; can be used for all the <strong>
+IupLua</strong> 
+libraries. You can use <b>require</b>&quot;<b>iuplua</b>&quot; and so on, but the LUA_CPATH 
+must also contains the following: </p>
+
+<pre>"./lib?51.so;"    [in UNIX]
+
+".\\?51.dll;"     [in Windows]</pre>
+<p>The LuaBinaries distribution already includes these modifications on the 
+default search path.</p>
+<p>The simplest form <b>require</b>&quot;<b>iup</b>&quot; 
+and so on, can not be used because there are IUP dynamic libraries with names 
+that will conflict with the names used by <b>require</b> during search.</p>
+<p>When using <strong>require</strong> the Iup initialization functions are not necessary. The 
+initialization is automatically done inside the Lua initialization function 
+during require.</p>
+
+</body>
+
+</html>

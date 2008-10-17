@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupSetAttributes</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>IupSetAttributes</h2>
+<p>Defines a set of attributes for an interface 
+  element. This function keeps a copy of the attributes&#8217; parameters.</p>
+<h3>
+Parameters/Return</h3>
+<pre>Ihandle *IupSetAttributes(Ihandle *<strong>ih</strong>, const char *<strong>str</strong>); [in C]
+iup.SetAttributes(<strong>ih</strong>: iuplua_tag, <strong>str</strong>: string) -&gt; <strong>ih</strong>: iulua_tag [in Lua] </pre>
+<p><strong>ih</strong>: Identifier of the interface element.<br>
+<b>str</b>: string with the attributes in the format &quot;v1=a1, v2=a2,...&quot; where vi is the name of an attribute and ai is its value.</p>
+<p>This function returns <b>ih</b> if all attributes were defined, or NULL (nil in Lua) otherwise.</p>
+<h3>Notes</h3>
+<p>Internally will call <strong>IupStoreAttribute</strong>.</p>
+<h3>Examples</h3>
+<p>This function returns the same Ihandle it receives. This way, it is a lot 
+easier to create dialogs in C.</p>
+<pre>dialog = IupSetAttributes(
+  IupDialog(
+    IupVBox(
+      IupSetAttributes(IupFill(), &quot;SIZE = 5&quot;),
+      IupHBox(
+        IupSetAttributes(IupFill(), &quot;SIZE = 5&quot;),
+        canvas = IupSetAttributes(IupCanvas(&quot;repaind_cb&quot;), &quot;BORDER=NO, RASTERSIZE=100x100&quot;),
+        IupSetAttributes(IupFill(), &quot;SIZE = 5&quot;),
+        NULL),
+      IupSetAttributes(IupFill(), &quot;SIZE = 5&quot;),
+      NULL)), 
+  &quot;TITLE = Teste&quot;)</pre>
+<p>Creates a list with country names and 
+  defines Japan as the selected option.</p>
+<pre>Ihandle *lista = IupList (&quot;acao_lista&quot;);
+IupSetAttributes(lista,&quot;VALUE=3,1=Brazil,2=USA,3=Japan,4=France&quot;);</pre>
+<h3>See Also</h3>
+<p><a href="iupgetattribute.html">IupGetAttribute</a>, 
+<a href="iupsetattribute.html">IupSetAttribute</a>, 
+<a href="iupgetattributes.html">IupGetAttributes</a>, 
+<a href="iupstoreattribute.html">IupStoreAttribute</a></p>
+
+</body>
+
+</html>
