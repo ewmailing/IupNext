@@ -1481,10 +1481,6 @@ wb_usr.tree =
               name= {nl= "IupUnMapFont"},
               link= "func/iupunmapfont.html"
             },
-            {
-              name= {en= "Old Character Fonts"},
-              link= "attrib/font.html"
-            }
           }
         },
         {
@@ -1600,7 +1596,7 @@ wb_usr.tree =
           {
             {
               name= {nl= "Simple Array"},
-              link= "../doxygen/group__array.html"
+              link= "../doxygen/group__iarray.html"
             },
             {
               name= {nl= "Assert Utilities"},
