@@ -1,0 +1,202 @@
+/*
+ * iupolectl.cpp
+ *
+ *   CPI que implementa um container OLE
+ */
+
+#include "tOleHandler.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+
+#include "iup.h"
+#include "iupole.h"
+
+#include "iup_object.h"
+#include "iup_register.h"
+#include "iup_attrib.h"
+#include "iup_stdcontrols.h"
+#include "iup_str.h"
+#include "iup_layout.h"
+
+
+struct _IcontrolData
+{
+  iupCanvas canvas;  /* from IupCanvas (must reserve it) */
+
+  tOleHandler* olehandler;
+};
+
+static int iOleControlSetDesignModeAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->olehandler->m_ambientProp.setDesignMode(true, true);
+  else
+    ih->data->olehandler->m_ambientProp.setDesignMode(false, true);
+  return 1;
+}
+
+static int iOleControlSetDesignModeDontNotifyAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->olehandler->m_ambientProp.setDesignMode(true, false);
+  else
+    ih->data->olehandler->m_ambientProp.setDesignMode(false, false);
+  return 1;
+}
+
+static char* iOleControlGetIUnknownAttrib(Ihandle* ih)
+{
+  IUnknown *punk = NULL;
+  ih->data->olehandler->ObjectGet(&punk);
+  return (char*)punk;
+}
+
+static int iOleControlResize_CB(Ihandle *ih)
+{
+  if (!ih->data->olehandler->m_hWnd)
+    return IUP_DEFAULT;
+
+  ih->data->olehandler->OnShow();
+
+  return IUP_DEFAULT;
+}
+
+static void iOleControlComputeNaturalSizeMethod(Ihandle* ih)
+{
+  /* always initialize the natural size using the user size */
+  ih->naturalwidth = ih->userwidth;
+  ih->naturalheight = ih->userheight;
+
+  /* if user size is not defined, then calculate the natural size */
+  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
+  {
+    long natural_w = 0, natural_h = 0;
+
+    ih->data->olehandler->GetNaturalSize(&natural_w, &natural_h);
+
+    /* only update the natural size if user size is not defined. */
+    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
+    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
+  }
+}
+
+static void iOleControlLayoutUpdateMethod(Ihandle* ih)
+{
+  SIZEL szl;
+  szl.cx = ih->currentwidth;
+  szl.cy = ih->currentheight;
+  ih->data->olehandler->SizeSet(&szl, TRUE, TRUE);
+  ih->data->olehandler->UpdateInPlaceObjectRects(NULL, TRUE);
+}
+
+static int iOleControlMapMethod(Ihandle* ih)
+{
+  /* reset the canvas BGCOLOR */
+  IupSetAttribute(ih, "BACKGROUND", NULL); 
+
+  ih->data->olehandler->m_hWnd = ih->handle;
+
+  return IUP_NOERROR;
+}
+
+static int iOleControlCreateMethod(Ihandle* ih, void **params)
+{
+  CLSID clsid;
+
+  if (!params || !(params[0]))
+    return IUP_ERROR;
+
+  char *progID = (char*)params[0];
+
+  /* free the data alocated by IupCanvas */
+  if (ih->data) free(ih->data);
+  ih->data = iupALLOCCTRLDATA();
+
+  /* change the IupCanvas default values */
+  iupAttribSetStr(ih, "BORDER", "NO");
+
+  /* IupCanvas callbacks */
+  IupSetCallback(ih,"RESIZE_CB",(Icallback)iOleControlResize_CB);
+
+  size_t len = strlen(progID)+1;
+  wchar_t* wcProgId = (wchar_t*) malloc(len * sizeof(wchar_t));
+  mbstowcs(wcProgId, progID, len);
+  HRESULT hr = CLSIDFromProgID(wcProgId, &clsid);
+  free(wcProgId);
+  if(FAILED(hr))
+    return IUP_ERROR;
+
+  ih->data->olehandler = new tOleHandler();
+  if (ih->data->olehandler->Create(&clsid) == CREATE_FAILED)
+    return IUP_ERROR;
+
+  return IUP_NOERROR;
+}
+
+static void iOleControlDestroyMethod(Ihandle* ih)
+{
+  ih->data->olehandler->Close(true);
+  delete ih->data->olehandler;
+}
+
+static int iolecontrol_opened = 0;
+
+static void iOleControlRelease(Iclass* ic)
+{
+  (void)ic;
+  OleUninitialize();
+  iolecontrol_opened = 0;
+}
+
+static Iclass* iOleControlGetClass(void)
+{
+  Iclass* ic = iupClassNew(iupCanvasGetClass());
+
+  ic->name = "olecontrol";
+  ic->format = "s"; /* one string */
+  ic->nativetype = IUP_TYPECANVAS;
+  ic->childtype = IUP_CHILDNONE;
+  ic->is_interactive = 1;
+
+  /* Class functions */
+  ic->Create = iOleControlCreateMethod;
+  ic->Destroy = iOleControlDestroyMethod;
+  ic->Release = iOleControlRelease;
+  ic->Map = iOleControlMapMethod;
+  ic->LayoutUpdate = iOleControlLayoutUpdateMethod;
+  ic->ComputeNaturalSize = iOleControlComputeNaturalSizeMethod;
+
+  iupClassRegisterAttribute(ic, "DESIGNMODE", NULL, iOleControlSetDesignModeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DESIGNMODE_DONT_NOTIFY", NULL, iOleControlSetDesignModeDontNotifyAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IUNKNOWN", iOleControlGetIUnknownAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "IUPOLECONTROL", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+
+  return ic;
+}
+
+Ihandle *IupOleControl(const char *ProgID)
+{
+  void *params[2];
+  params[0] = (void*)ProgID;
+  params[1] = NULL;
+  return IupCreatev("olecontrol", params);
+}
+
+int IupOleControlOpen(void)
+{
+  if (iolecontrol_opened)
+    return IUP_OPENED;
+
+  HRESULT retval = OleInitialize(NULL);
+  if (retval != S_OK && retval != S_FALSE)
+    return IUP_ERROR;
+
+  iolecontrol_opened = 1;
+  iupRegisterClass(iOleControlGetClass());
+
+  return IUP_NOERROR;
+}

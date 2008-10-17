@@ -1,0 +1,494 @@
+/** \file
+* \brief iuptabs control
+*
+* See Copyright Notice in iup.h
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include <math.h>
+
+#include "iup.h"
+#include "iupcbs.h"
+#include "iuptabs.h"
+
+#include "iup_object.h"
+#include "iup_attrib.h"
+#include "iup_str.h"
+#include "iup_drv.h"
+#include "iup_drvfont.h"
+#include "iup_stdcontrols.h"
+#include "iup_layout.h"
+#include "iup_image.h"
+#include "iup_tabs.h"
+
+
+
+char* iupTabsGetPaddingAttrib(Ihandle* ih)
+{
+  char *str = iupStrGetMemory(50);
+  sprintf(str, "%dx%d", ih->data->horiz_padding, ih->data->vert_padding);
+  return str;
+}
+
+char* iupTabsAttribGetStrId(Ihandle* ih, const char* name, int pos)
+{
+  char str[50];
+  sprintf(str, "%s%d", name, pos);
+  return iupAttribGetStr(ih, str);
+}
+
+static int iTabsGetMaxWidth(Ihandle* ih)
+{
+  int max_width = 0, width, pos;
+  char *tabtitle, *tabimage;
+  Ihandle* child;
+
+  for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
+  {
+    tabtitle = iupAttribGetStr(child, "TABTITLE");
+    if (!tabtitle) tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
+    tabimage = iupAttribGetStr(child, "TABIMAGE");
+    if (!tabimage) tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    if (!tabtitle && !tabimage)
+      tabtitle = "     ";
+
+    width = 0;
+    if (tabtitle)
+      width += iupdrvFontGetStringWidth(ih, tabtitle);
+
+    if (tabimage)
+    {
+      void* img = iupImageGetImage(tabimage, ih, 0, "TABIMAGE");
+      if (img)
+      {
+        int w;
+        iupdrvImageGetInfo(img, &w, NULL, NULL);
+        width += w;
+      }
+    }
+
+    if (width > max_width) max_width = width;
+  }
+
+  return max_width;
+}
+
+static int iTabsGetMaxHeight(Ihandle* ih)
+{
+  int max_height = 0, h, pos;
+  char *tabimage;
+  Ihandle* child;
+
+  for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
+  {
+    tabimage = iupAttribGetStr(child, "TABIMAGE");
+    if (!tabimage) tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+
+    if (tabimage)
+    {
+      void* img = iupImageGetImage(tabimage, ih, 0, "TABIMAGE");
+      if (img)
+      {
+        iupdrvImageGetInfo(img, NULL, &h, NULL);
+        if (h > max_height) max_height = h;
+      }
+    }
+  }
+
+  iupdrvFontGetCharSize(ih, NULL, &h);
+  if (h > max_height) max_height = h;
+
+  return max_height;
+}
+
+static void iTabsGetDecorSize(Ihandle* ih, int *width, int *height)
+{
+  if (ih->data->type == ITABS_LEFT || ih->data->type == ITABS_RIGHT)
+  {
+    if (ih->data->orientation == ITABS_HORIZONTAL)
+    {
+      int max_width = iTabsGetMaxWidth(ih);
+      *width  = 4 + (3 + max_width + 3) + 2 + 4;
+      *height = 4 + 4;
+
+      if (iupdrvTabsExtraDecor(ih))
+      {
+        int h;
+        iupdrvFontGetCharSize(ih, NULL, &h);
+        *height += h + 4;
+      }
+    }
+    else
+    {
+      int max_height = iTabsGetMaxHeight(ih);
+      *width  = 4 + (3 + max_height + 3) + 2 + 4;
+      *height = 4 + 4;
+
+      if (ih->handle && ih->data->is_multiline)
+      {
+        int num_lin = iupdrvTabsGetLineCountAttrib(ih);
+        *width += (num_lin-1)*(3 + max_height + 3 + 1);
+      }
+    }
+  }
+  else /* "BOTTOM" or "TOP" */
+  {
+    if (ih->data->orientation == ITABS_HORIZONTAL)
+    {
+      int max_height = iTabsGetMaxHeight(ih);
+      *width  = 4 + 4;
+      *height = 4 + (3 + max_height + 3) + 2 + 4;
+
+      if (ih->handle && ih->data->is_multiline)
+      {
+        int num_lin = iupdrvTabsGetLineCountAttrib(ih);
+        *height += (num_lin-1)*(3 + max_height + 3 + 1);
+      }
+
+      if (iupdrvTabsExtraDecor(ih))
+      {
+        int h;
+        iupdrvFontGetCharSize(ih, NULL, &h);
+        *width += h + 4;
+      }
+    }
+    else
+    {
+      int max_width = iTabsGetMaxWidth(ih);
+      *width  = 4 + 4;
+      *height = 4 + (3 + max_width + 3) + 2 + 4;
+    }
+  }
+
+  *width  += ih->data->horiz_padding;
+  *height += ih->data->vert_padding;
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* TABS - Sets and Gets - Accessors                                          */
+/* ------------------------------------------------------------------------- */
+
+static int iTabsSetValueHandleAttrib(Ihandle* ih, const char* value)
+{
+  int pos;
+  Ihandle *child;
+
+  child = (Ihandle*)value;
+  if (!iupObjectCheck(child))
+    return 0;
+
+  pos = IupGetChildPos(ih, child);
+  if (pos != -1) /* found child */
+  {
+    if (ih->handle)
+      iupdrvTabsSetCurrentTab(ih, pos);
+    else
+      iupAttribSetStr(ih, "_IUPTABS_VALUE_HANDLE", (char*)child);
+  }
+ 
+  return 0;
+}
+
+char* iupTabsGetTabTypeAttrib(Ihandle* ih)
+{
+  switch(ih->data->type)
+  {
+  case ITABS_BOTTOM:
+    return "BOTTOM";
+  case ITABS_LEFT:
+    return "LEFT";
+  case ITABS_RIGHT:
+    return "RIGHT";
+  default:
+    return "TOP";
+  }
+}
+
+char* iupTabsGetTabOrientationAttrib(Ihandle* ih)
+{
+  if (ih->data->orientation == ITABS_HORIZONTAL)
+    return "HORIZONTAL";
+  else
+    return "VERTICAL";
+}
+
+static char* iTabsGetValueHandleAttrib(Ihandle* ih)
+{
+  if (ih->handle)
+  {
+    int pos = iupdrvTabsGetCurrentTab(ih);
+    return (char*)IupGetChild(ih, pos);
+  }
+  else
+    return iupAttribGetStr(ih, "_IUPTABS_VALUE_HANDLE");
+}
+
+static int iTabsSetValuePosAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle* child;
+  int pos;
+
+  if (!iupStrToInt(value, &pos))
+    return 0;
+
+  child = IupGetChild(ih, pos);
+  if (child) /* found child */
+  {
+    if (ih->handle)
+      iupdrvTabsSetCurrentTab(ih, pos);
+    else
+      iupAttribSetStr(ih, "_IUPTABS_VALUE_HANDLE", (char*)child);
+  }
+ 
+  return 0;
+}
+
+static char* iTabsGetValuePosAttrib(Ihandle* ih)
+{
+  if (ih->handle)
+  {
+    int pos = iupdrvTabsGetCurrentTab(ih);
+    char *str = iupStrGetMemory(50);
+    sprintf(str, "%d", pos);
+    return str;
+  }
+  else
+  {
+    Ihandle* child = (Ihandle*)iupAttribGetStr(ih, "_IUPTABS_VALUE_HANDLE");
+    int pos = IupGetChildPos(ih, child);
+    if (pos != -1) /* found child */
+    {
+      char *str = iupStrGetMemory(50);
+      sprintf(str, "%d", pos);
+      return str;
+    }
+  }
+
+  return NULL;
+}
+
+static int iTabsSetValueAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle *child;
+
+  if (!value)
+    return 0;
+
+  child = IupGetHandle(value);
+  if (!child)
+    return 0;
+
+  iTabsSetValueHandleAttrib(ih, (char*)child);
+
+  return 0;
+}
+
+static char* iTabsGetValueAttrib(Ihandle* ih)
+{
+  Ihandle* child = (Ihandle*)iTabsGetValueHandleAttrib(ih);
+  return IupGetName(child);
+}
+
+static char* iTabsGetClientSizeAttrib(Ihandle* ih)
+{
+  int width, height, decorwidth, decorheight;
+  char* str = iupStrGetMemory(20);
+  width = ih->currentwidth;
+  height = ih->currentheight;
+  iTabsGetDecorSize(ih, &decorwidth, &decorheight);
+  width -= decorwidth;
+  height -= decorheight;
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+  sprintf(str, "%dx%d", width, height);
+  return str;
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* TABS - Methods                                                            */
+/* ------------------------------------------------------------------------- */
+
+static void iTabsComputeNaturalSizeMethod(Ihandle* ih)
+{
+  iupBaseContainerUpdateExpand(ih);
+
+  /* always initialize the natural size using the user size */
+  ih->naturalwidth  = ih->userwidth;
+  ih->naturalheight = ih->userheight;
+
+  if (ih->firstchild)
+  {
+    Ihandle* child;
+    int children_expand, 
+        children_naturalwidth, children_naturalheight;
+    int decorwidth, decorheight;
+
+    /* calculate total children natural size (even for hidden children) */
+    children_expand = 0;
+    children_naturalwidth = 0;
+    children_naturalheight = 0;
+    for (child = ih->firstchild; child; child = child->brother)
+    {
+      /* update child natural size first */
+      iupClassObjectComputeNaturalSize(child);
+
+      children_expand |= child->expand;
+      children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
+      children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
+    }
+
+    iTabsGetDecorSize(ih, &decorwidth, &decorheight);
+
+    ih->expand &= children_expand; /* compose but only expand where the box can expand */
+    ih->naturalwidth = iupMAX(ih->naturalwidth, children_naturalwidth + decorwidth);
+    ih->naturalheight = iupMAX(ih->naturalheight, children_naturalheight + decorheight);
+  }
+}
+
+static void iTabsSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+{
+  if (shrink)
+  {
+    /* if expand use the given size, else use the natural size */
+    ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)  ? w : ih->naturalwidth;
+    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT) ? h : ih->naturalheight;
+  }
+  else
+  {
+    /* if expand use the given size (if greater than natural size), else use the natural size */
+    ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)  ? iupMAX(ih->naturalwidth, w)  : ih->naturalwidth;
+    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT) ? iupMAX(ih->naturalheight, h) : ih->naturalheight;
+  }
+
+  if (ih->firstchild)
+  {
+    Ihandle* child;
+    int width, height, decorwidth, decorheight;
+
+    iTabsGetDecorSize(ih, &decorwidth, &decorheight);
+
+    width = ih->currentwidth-decorwidth;
+    height = ih->currentheight-decorheight;
+    if (width < 0) width = 0;
+    if (height < 0) height = 0;
+
+    for (child = ih->firstchild; child; child = child->brother)
+    {
+      iupClassObjectSetCurrentSize(child, width, height, shrink);
+    }
+  }
+}
+
+static void iTabsSetPositionMethod(Ihandle* ih, int x, int y)
+{
+  iupBaseSetPositionMethod(ih, x, y);
+
+  if (ih->firstchild)
+  {
+    Ihandle* child;
+
+    /* IupTabs is the native parent of its children,
+       so the position is restarted at (0,0).
+       In all systems, each tab is a native window covering the client area.
+       Child coordinates are relative to client left-top corner of the tab page. */
+    for (child = ih->firstchild; child; child = child->brother)
+    {
+      iupClassObjectSetPosition(child, 0, 0);
+    }
+  }
+}
+
+static void* iTabsGetInnerNativeContainerMethod(Ihandle* ih, Ihandle* child)
+{
+  while (child && child->parent != ih)
+    child = child->parent;
+  return iupAttribGetStr(child, "_IUPTAB_CONTAINER");
+}
+
+static int iTabsCreateMethod(Ihandle* ih, void **params)
+{
+  ih->data = iupALLOCCTRLDATA();
+
+  /* add children */
+  if(params)
+  {
+    Ihandle** iparams = (Ihandle**)params;
+    while (*iparams) 
+    {
+      IupAppend(ih, *iparams);
+      iparams++;
+    }
+  }
+  return IUP_NOERROR;
+}
+
+Iclass* iupTabsGetClass(void)
+{
+  Iclass* ic = iupClassNew(NULL);
+
+  ic->name = "tabs";
+  ic->format = "g"; /* array of Ihandle */
+  ic->nativetype = IUP_TYPECONTROL;
+  ic->childtype  = IUP_CHILDMANY;
+  ic->is_interactive = 1;
+  ic->has_attrib_id = 1;
+
+  /* Class functions */
+  ic->Create  = iTabsCreateMethod;
+  ic->GetInnerNativeContainerHandle = iTabsGetInnerNativeContainerMethod;
+
+  ic->ComputeNaturalSize = iTabsComputeNaturalSizeMethod;
+  ic->SetCurrentSize     = iTabsSetCurrentSizeMethod;
+  ic->SetPosition        = iTabsSetPositionMethod;
+
+  ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
+  ic->UnMap = iupdrvBaseUnMapMethod;
+
+  /* IupTabs Callbacks */
+  iupClassRegisterCallback(ic, "TABCHANGE_CB", "nn");
+
+  /* Common */
+  iupBaseRegisterCommonAttrib(ic);
+
+  /* Visual */
+  iupBaseRegisterVisualAttrib(ic);
+
+  /* IupTabs only */
+  iupClassRegisterAttribute(ic, "VALUE", iTabsGetValueAttrib, iTabsSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUEPOS", iTabsGetValuePosAttrib, iTabsSetValuePosAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE_HANDLE", iTabsGetValueHandleAttrib, iTabsSetValueHandleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+
+  /* Base Container */
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iTabsGetClientSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+
+  iupdrvTabsInitClass(ic);
+
+  return ic;
+}
+
+Ihandle* IupTabs(Ihandle* first,...)
+{
+  Ihandle **params;
+  Ihandle *ih;
+
+  va_list arglist;
+  va_start(arglist, first);
+  params = (Ihandle**)iupObjectGetParamList(first, arglist);
+  va_end(arglist);
+
+  ih = IupCreatev("tabs", (void**)params);
+  free(params);
+
+  return ih;
+}
+
+Ihandle* IupTabsv(Ihandle** params)
+{
+  return IupCreatev("tabs", (void**)params);
+}

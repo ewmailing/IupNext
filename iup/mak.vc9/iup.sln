@@ -1,0 +1,127 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iup", "iup.vcproj", "{2C7E83B9-7FE8-432A-97BA-FCF4D0728408}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupgtk", "iupgtk.vcproj", "{2C7E83B9-7FE8-5555-97BA-FCF4D0728408}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408} = {2C7E83B9-7FE8-432A-97BA-FCF4D0728408}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupmot", "iupmot.vcproj", "{2C7E83B9-1234-432A-97BA-FCF4D0728408}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuptest", "iuptest.vcproj", "{2F92EC58-D94C-40BF-8C82-77607C72E1E3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5EEFE977-C56D-462F-BDEE-12A5452EB8CC} = {5EEFE977-C56D-462F-BDEE-12A5452EB8CC}
+		{2C7E83B9-123A-BCDF-97BA-FCF4D0728408} = {2C7E83B9-123A-BCDF-97BA-FCF4D0728408}
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408} = {2C7E83B9-7FE8-432A-97BA-FCF4D0728408}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuptestgtk", "iuptestgtk.vcproj", "{2F92EC58-1234-40BF-5678-77607C72E1E3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C7E83B9-7FE8-5555-97BA-FCF4D0728408} = {2C7E83B9-7FE8-5555-97BA-FCF4D0728408}
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408} = {2C7E83B9-7FE8-432A-97BA-FCF4D0728408}
+		{5EEFE977-C56D-462F-BDEE-12A5452EB8CC} = {5EEFE977-C56D-462F-BDEE-12A5452EB8CC}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupwin", "iupwin.vcproj", "{2C7E83B9-123A-BCDF-97BA-FCF4D0728408}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408} = {2C7E83B9-7FE8-432A-97BA-FCF4D0728408}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupgl", "iupgl.vcproj", "{E251B4F4-0B0A-482B-BA18-2509ADC4B6AA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408} = {2C7E83B9-7FE8-432A-97BA-FCF4D0728408}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupcontrols", "iupcontrols.vcproj", "{5EEFE977-C56D-462F-BDEE-12A5452EB8CC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408} = {2C7E83B9-7FE8-432A-97BA-FCF4D0728408}
+		{BE7472E1-E76E-4969-A35F-054614F5884E} = {BE7472E1-E76E-4969-A35F-054614F5884E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iup_pplot", "iup_pplot.vcproj", "{5A42018B-95AC-A789-E4E4-59A692649DCA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408} = {2C7E83B9-7FE8-432A-97BA-FCF4D0728408}
+		{BE7472E1-E76E-4969-A35F-054614F5884E} = {BE7472E1-E76E-4969-A35F-054614F5884E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupole", "iupole.vcproj", "{0C80BBEE-1B00-4567-1234-067292C84EDB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupspeech", "iupspeech.vcproj", "{0C80BBEE-1B00-4D0D-B571-067292C84EDB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupimglib", "iupimglib.vcproj", "{E251B4F4-0B0A-482B-BB33-1234ADC4B6AA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupcd", "iupcd.vcproj", "{BE7472E1-E76E-4969-A35F-054614F5884E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408} = {2C7E83B9-7FE8-432A-97BA-FCF4D0728408}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408}.Debug|Win32.Build.0 = Debug|Win32
+		{2C7E83B9-7FE8-5555-97BA-FCF4D0728408}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2C7E83B9-7FE8-5555-97BA-FCF4D0728408}.Debug|Win32.Build.0 = Debug|Win32
+		{2C7E83B9-1234-432A-97BA-FCF4D0728408}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2F92EC58-D94C-40BF-8C82-77607C72E1E3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2F92EC58-D94C-40BF-8C82-77607C72E1E3}.Debug|Win32.Build.0 = Debug|Win32
+		{2F92EC58-1234-40BF-5678-77607C72E1E3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2F92EC58-1234-40BF-5678-77607C72E1E3}.Debug|Win32.Build.0 = Debug|Win32
+		{2C7E83B9-123A-BCDF-97BA-FCF4D0728408}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2C7E83B9-123A-BCDF-97BA-FCF4D0728408}.Debug|Win32.Build.0 = Debug|Win32
+		{E251B4F4-0B0A-482B-BA18-2509ADC4B6AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5EEFE977-C56D-462F-BDEE-12A5452EB8CC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5EEFE977-C56D-462F-BDEE-12A5452EB8CC}.Debug|Win32.Build.0 = Debug|Win32
+		{5A42018B-95AC-A789-E4E4-59A692649DCA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C80BBEE-1B00-4567-1234-067292C84EDB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C80BBEE-1B00-4D0D-B571-067292C84EDB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E251B4F4-0B0A-482B-BB33-1234ADC4B6AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BE7472E1-E76E-4969-A35F-054614F5884E}.Debug|Win32.ActiveCfg = Debug|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+EndGlobal

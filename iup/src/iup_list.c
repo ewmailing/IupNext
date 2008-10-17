@@ -1,0 +1,744 @@
+/** \file
+ * \brief List Control
+ *
+ * See Copyright Notice in iup.ih
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "iup.h"
+#include "iupcbs.h"
+
+#include "iup_assert.h"
+#include "iup_object.h"
+#include "iup_attrib.h"
+#include "iup_str.h"
+#include "iup_drv.h"
+#include "iup_drvfont.h"
+#include "iup_stdcontrols.h"
+#include "iup_layout.h"
+#include "iup_mask.h"
+#include "iup_list.h"
+
+
+void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos)
+{
+  char *text;
+  char str[10];
+
+  if (pos<=0)
+    return;
+
+  sprintf(str, "%d", pos);
+  text = IupGetAttribute(ih, str);
+
+  if (cb(ih, pos, text) == IUP_CLOSE)
+    IupExitLoop();
+}
+
+static void iListCallActionCallback(Ihandle* ih, IFnsii cb, int pos, int state)
+{
+  char *text;
+  char str[10];
+
+  if (pos<=0)
+    return;
+
+  sprintf(str, "%d", pos);
+  text = IupGetAttribute(ih, str);
+
+  if (cb(ih, text, pos, state) == IUP_CLOSE)
+    IupExitLoop();
+}
+
+void iupListSingleCallActionCallback(Ihandle* ih, IFnsii cb, int pos)
+{
+  char* old_str = iupAttribGetStr(ih, "_IUPLIST_OLDVALUE");
+  if (old_str)
+  {
+    int oldpos = atoi(old_str);
+    if (oldpos != pos)
+    {
+      iListCallActionCallback(ih, cb, oldpos, 0);
+      iListCallActionCallback(ih, cb, pos, 1);
+    }
+  }
+  else
+    iListCallActionCallback(ih, cb, pos, 1);
+  iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos);
+}
+
+void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, int* pos, int sel_count)
+{
+  int i, count = iupdrvListGetCount(ih);
+
+  char* old_str = iupAttribGetStr(ih, "_IUPLIST_OLDVALUE");
+  int old_count = old_str? strlen(old_str): 0;
+
+  char* str = iupStrGetMemory(count+1);
+  memset(str, '-', count);
+  str[count]=0;
+  for (i=0; i<sel_count; i++)
+    str[pos[i]] = '+';
+
+  if (old_count != count)
+  {
+    old_count = 0;
+    old_str = NULL;
+  }
+
+  if (multi_cb)
+  {
+    int unchanged = 1;
+    for (i=0; i<count && old_str; i++)
+    {
+      if (str[i] == old_str[i])
+        str[i] = 'x';    /* mark unchanged values */
+      else
+        unchanged = 0;
+    }
+
+    if (old_str && unchanged)
+      return;
+
+    if (multi_cb(ih, str) == IUP_CLOSE)
+      IupExitLoop();
+
+    for (i=0; i<count && old_str; i++)
+    {
+      if (str[i] == 'x')
+        str[i] = old_str[i];    /* restore unchanged values */
+    }
+  }
+  else
+  {
+    /* must simulate the click on each item */
+    for (i=0; i<count; i++)
+    {
+      if (i >= old_count)  /* new items, if selected then call the callback */
+      {
+        if (str[i] == '+')
+          iListCallActionCallback(ih, cb, i+1, 1);
+      }
+      else if (str[i] != old_str[i])
+      {
+        if (str[i] == '+')
+          iListCallActionCallback(ih, cb, i+1, 1);
+        else
+          iListCallActionCallback(ih, cb, i+1, 0);
+      }
+    }
+  }
+
+  iupAttribStoreStr(ih, "_IUPLIST_OLDVALUE", str);
+}
+
+int iupListGetPos(Ihandle* ih, const char* name_id)
+{
+  int pos;
+  if (iupStrToInt(name_id, &pos))
+  {
+    int count = iupdrvListGetCount(ih);
+
+    pos--; /* IUP items start at 1 */
+
+    if (pos < 0) return -1;
+    if (pos > count-1) return -1;
+
+    return pos;
+  }
+  return -1;
+}
+
+void iupListSetInitialItems(Ihandle* ih)
+{
+  char str[20], *value;
+  int i = 1;
+  sprintf(str, "%d", i);
+  while ((value = iupAttribGetStr(ih, str))!=NULL)
+  {
+    iupdrvListAppendItem(ih, value);
+    iupAttribSetStr(ih, str, NULL);
+
+    i++;
+    sprintf(str, "%d", i);
+  }
+}
+
+char* iupListGetSpacingAttrib(Ihandle* ih)
+{
+  if (!ih->data->is_dropdown)
+  {
+    char *str = iupStrGetMemory(50);
+    sprintf(str, "%d", ih->data->spacing);
+    return str;
+  }
+  else
+    return NULL;
+}
+
+char* iupListGetPaddingAttrib(Ihandle* ih)
+{
+  if (ih->data->has_editbox)
+  {
+    char *str = iupStrGetMemory(50);
+    sprintf(str, "%dx%d", ih->data->horiz_padding, ih->data->vert_padding);
+    return str;
+  }
+  else
+    return NULL;
+}
+
+char* iupListGetNCAttrib(Ihandle* ih)
+{
+  if (ih->data->has_editbox)
+  {
+    char* str = iupStrGetMemory(100);
+    sprintf(str, "%d", ih->data->nc);
+    return str;
+  }
+  else
+    return NULL;
+}
+
+int iupListSetIdValueAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  int pos;
+  if (iupStrToInt(name_id, &pos))
+  {
+    int count = iupdrvListGetCount(ih);
+
+    pos--; /* IUP starts at 1 */
+
+    if (!value)
+    {
+      if (pos >= 0 && pos <= count-1)
+      {
+        if (pos == 0)
+          iupdrvListRemoveAllItems(ih);
+        else
+        {
+          int i = pos;
+          while (i < count)
+          {
+            iupdrvListRemoveItem(ih, pos);
+            i++;
+          }
+        }
+      }
+    }
+    else
+    {
+      if (pos >= 0 && pos <= count-1)
+      {
+        iupdrvListRemoveItem(ih, pos);
+        iupdrvListInsertItem(ih, pos, value);
+      }
+      else if (pos == count)
+        iupdrvListAppendItem(ih, value);
+    }
+  }
+  return 1;
+}
+
+static int iListSetAppendItemAttrib(Ihandle* ih, const char* value)
+{
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
+  if (value)
+    iupdrvListAppendItem(ih, value);
+  return 0;
+}
+
+static int iListSetInsertItemAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
+  if (value)
+  {
+    int pos = iupListGetPos(ih, name_id);
+    if (pos!=-1)
+      iupdrvListInsertItem(ih, pos, value);
+  }
+  return 0;
+}
+
+static int iListSetRemoveItemAttrib(Ihandle* ih, const char* value)
+{
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
+  if (!value)
+    iupdrvListRemoveAllItems(ih);
+  else
+  {
+    int pos = iupListGetPos(ih, value);
+    if (pos!=-1)
+      iupdrvListRemoveItem(ih, pos);
+  }
+  return 0;
+}
+
+static int iListGetCount(Ihandle* ih)
+{
+  int count;
+  if (ih->handle)
+    count = iupdrvListGetCount(ih);
+  else
+  {
+    char str[20];
+    count = 0;
+    sprintf(str, "%d", count+1);
+    while (iupAttribGetStr(ih, str))
+    {
+      count++;
+      sprintf(str, "%d", count+1);
+    }
+  }
+  return count;
+}
+
+static char* iListGetCountAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(50);
+  sprintf(str, "%d", iListGetCount(ih));
+  return str;
+}
+
+static int iListSetDropdownAttrib(Ihandle* ih, const char* value)
+{
+  /* valid only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+  {
+    ih->data->is_dropdown = 1;
+    ih->data->is_multiple = 0;
+  }
+  else
+    ih->data->is_dropdown = 0;
+
+  return 0;
+}
+
+static char* iListGetDropdownAttrib(Ihandle* ih)
+{
+  if (ih->data->is_dropdown)
+    return "YES";
+  else
+    return "NO";
+}
+
+static int iListSetMultipleAttrib(Ihandle* ih, const char* value)
+{
+  /* valid only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+  {
+    ih->data->is_multiple = 1;
+    ih->data->is_dropdown = 0;
+    ih->data->has_editbox = 0;
+  }
+  else
+    ih->data->is_multiple = 0;
+
+  return 0;
+}
+
+static char* iListGetMultipleAttrib(Ihandle* ih)
+{
+  if (ih->data->is_multiple)
+    return "YES";
+  else
+    return "NO";
+}
+
+static int iListSetEditboxAttrib(Ihandle* ih, const char* value)
+{
+  /* valid only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+  {
+    ih->data->has_editbox = 1;
+    ih->data->is_multiple = 0;
+  }
+  else
+    ih->data->has_editbox = 0;
+
+  return 0;
+}
+
+static char* iListGetEditboxAttrib(Ihandle* ih)
+{
+  if (ih->data->has_editbox)
+    return "YES";
+  else
+    return "NO";
+}
+
+static int iListSetScrollbarAttrib(Ihandle* ih, const char* value)
+{
+  /* valid only before map */
+  if (ih->handle)
+    return 0;
+
+  else if (iupStrBoolean(value))
+    ih->data->sb = 1;
+  else
+    ih->data->sb = 0;
+
+  return 0;
+}
+
+static char* iListGetScrollbarAttrib(Ihandle* ih)
+{
+  if (ih->data->sb)
+    return "YES";
+  else
+    return "NO";
+}
+
+static char* iListGetMaskDataAttrib(Ihandle* ih)
+{
+  if (!ih->data->has_editbox)
+    return NULL;
+
+  /* Used only by the OLD iupmask API */
+  return (char*)ih->data->mask;
+}
+
+static int iListSetMaskAttrib(Ihandle* ih, const char* value)
+{
+  if (!ih->data->has_editbox)
+    return 0;
+
+  if (!value)
+  {
+    if (ih->data->mask)
+      iupMaskDestroy(ih->data->mask);
+  }
+  else
+  {
+    int casei = iupAttribGetInt(ih, "MASKCASEI");
+    Imask* mask = iupMaskCreate(value,casei);
+    if (mask)
+    {
+      if (ih->data->mask)
+        iupMaskDestroy(ih->data->mask);
+
+      ih->data->mask = mask;
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
+static int iListSetMaskIntAttrib(Ihandle* ih, const char* value)
+{
+  if (!ih->data->has_editbox)
+    return 0;
+
+  if (!value)
+  {
+    if (ih->data->mask)
+      iupMaskDestroy(ih->data->mask);
+
+    iupAttribSetStr(ih, "MASK", NULL);
+  }
+  else
+  {
+    Imask* mask;
+    int min, max;
+
+    if (iupStrToIntInt(value, &min, &max, ':')!=2)
+      return 0;
+
+    mask = iupMaskCreateInt(min,max);
+
+    if (ih->data->mask)
+      iupMaskDestroy(ih->data->mask);
+
+    ih->data->mask = mask;
+
+    if (min < 0)
+      iupAttribSetStr(ih, "MASK", IUPMASK_INT);
+    else
+      iupAttribSetStr(ih, "MASK", IUPMASK_UINT);
+  }
+
+  return 0;
+}
+
+static int iListSetMaskFloatAttrib(Ihandle* ih, const char* value)
+{
+  if (!ih->data->has_editbox)
+    return 0;
+
+  if (!value)
+  {
+    if (ih->data->mask)
+      iupMaskDestroy(ih->data->mask);
+
+    iupAttribSetStr(ih, "MASK", NULL);
+  }
+  else
+  {
+    Imask* mask;
+    float min, max;
+
+    if (iupStrToFloatFloat(value, &min, &max, ':')!=2)
+      return 0;
+
+    mask = iupMaskCreateFloat(min,max);
+
+    if (ih->data->mask)
+      iupMaskDestroy(ih->data->mask);
+
+    ih->data->mask = mask;
+
+    if (min < 0)
+      iupAttribSetStr(ih, "MASK", IUPMASK_FLOAT);
+    else
+      iupAttribSetStr(ih, "MASK", IUPMASK_UFLOAT);
+  }
+
+  return 0;
+}
+
+
+/*****************************************************************************************/
+
+
+static int iListCreateMethod(Ihandle* ih, void** params)
+{
+  if (params && params[0])
+    iupAttribStoreStr(ih, "ACTION", (char*)(params[0]));
+
+  ih->data = iupALLOCCTRLDATA();
+  ih->data->sb = 1;
+
+  return IUP_NOERROR;
+}
+
+static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
+{
+  char *value;
+  int visiblecolumns, 
+      count = iListGetCount(ih);
+
+  *w = 0;
+  *h = 0;
+
+  visiblecolumns = iupAttribGetInt(ih, "VISIBLECOLUMNS");
+  if (visiblecolumns)
+  {
+    iupdrvFontGetCharSize(ih, w, h);
+    *w = visiblecolumns*(*w);
+  }
+  else
+  {
+    int item_w, i;
+    char str[20];
+
+    for (i=1; i<=count; i++)
+    {
+      sprintf(str, "%d", i);
+      value = IupGetAttribute(ih, str);  /* must use IupGetAttribute to check the native system */
+      if (value)
+      {
+        item_w = iupdrvFontGetStringWidth(ih, value);
+        if (item_w > *w)
+          *w = item_w;
+      }
+    }
+
+    if (ih->data->has_editbox)
+    {
+      value = IupGetAttribute(ih, "VALUE");
+      if (value)
+      {
+        item_w = iupdrvFontGetStringWidth(ih, value);
+        if (item_w > *w)
+          *w = item_w;
+      }
+    }
+
+    if (*w == 0) /* default is 5 characters in 1 item */
+      *w = iupdrvFontGetStringWidth(ih, "WWWWW");
+
+    iupdrvFontGetCharSize(ih, NULL, h);
+  }
+
+  /* compute height for multiple lines, drodown is just 1 line */
+  if (!ih->data->is_dropdown)
+  {
+    int visiblelines, num_lines, line_size = *h;
+
+    iupdrvListAddItemSpace(ih, h);  /* this independs from spacing */
+
+    *h += 2*ih->data->spacing;  /* this will be multiplied by the number of lines */
+    *w += 2*ih->data->spacing;  /* include also horizontal spacing */
+
+    num_lines = count;
+    if (num_lines == 0) num_lines = 1;
+
+    visiblelines = iupAttribGetInt(ih, "VISIBLELINES");
+    if (visiblelines)
+      num_lines = visiblelines;   
+
+    *h = *h * num_lines;
+
+    if (ih->data->has_editbox) 
+      *h += line_size;
+  }
+}
+
+static void iListComputeNaturalSizeMethod(Ihandle* ih)
+{
+  /* always initialize the natural size using the user size */
+  ih->naturalwidth = ih->userwidth;
+  ih->naturalheight = ih->userheight;
+
+  /* if user size is not defined, then calculate the natural size */
+  if ((ih->naturalwidth <= 0  && !(ih->expand & IUP_EXPAND_WIDTH)) || 
+      (ih->naturalheight <= 0 && !(ih->expand & IUP_EXPAND_HEIGHT)))
+  {
+    int natural_w, natural_h;
+    int sb_size = iupdrvGetScrollbarSize();
+
+    iListGetNaturalItemsSize(ih, &natural_w, &natural_h);
+
+    /* compute the borders space */
+    iupdrvListAddBorders(ih, &natural_w, &natural_h);
+
+    if (ih->data->is_dropdown)
+    {
+      /* add room for dropdown box */
+      natural_w += sb_size;
+
+      if (natural_h < sb_size)
+        natural_h = sb_size;
+    }
+    else
+    {
+      /* add room for scrollbar */
+      if (ih->data->sb)
+      {
+        natural_h += sb_size;
+        natural_w += sb_size;
+      }
+    }
+
+    if (ih->data->has_editbox)
+    {
+      natural_w += 2*ih->data->horiz_padding;
+      natural_h += 2*ih->data->vert_padding;
+    }
+
+    /* For IupList only update the natural size 
+       if user size is not defined and expand is NOT set. */
+    if (ih->naturalwidth <= 0  && !(ih->expand & IUP_EXPAND_WIDTH)) ih->naturalwidth = natural_w;
+    if (ih->naturalheight <= 0 && !(ih->expand & IUP_EXPAND_HEIGHT)) ih->naturalheight = natural_h;
+  }
+}
+
+static void iListDestroyMethod(Ihandle* ih)
+{
+  if (ih->data->mask)
+    iupMaskDestroy(ih->data->mask);
+}
+
+
+/******************************************************************************/
+
+
+Ihandle* IupList(const char* action)
+{
+  void *params[2];
+  params[0] = (void*)action;
+  params[1] = NULL;
+  return IupCreatev("list", params);
+}
+
+Iclass* iupListGetClass(void)
+{
+  Iclass* ic = iupClassNew(NULL);
+
+  ic->name = "list";
+  ic->format = "S"; /* one optional string */
+  ic->nativetype = IUP_TYPECONTROL;
+  ic->childtype = IUP_CHILDNONE;
+  ic->is_interactive = 1;
+  ic->has_attrib_id = 1;
+
+  /* Class functions */
+  ic->Create = iListCreateMethod;
+  ic->Destroy = iListDestroyMethod;
+  ic->ComputeNaturalSize = iListComputeNaturalSizeMethod;
+
+  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
+  ic->SetPosition = iupBaseSetPositionMethod;
+
+  ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
+  ic->UnMap = iupdrvBaseUnMapMethod;
+
+  /* Callbacks */
+  iupClassRegisterCallback(ic, "ACTION", "sii");
+  iupClassRegisterCallback(ic, "MULTISELECT_CB", "s");
+  iupClassRegisterCallback(ic, "DROPFILES_CB", "siii");
+  iupClassRegisterCallback(ic, "DROPDOWN_CB", "i");
+  iupClassRegisterCallback(ic, "DBLCLICK_CB", "is");
+
+  iupClassRegisterCallback(ic, "EDIT_CB", "is");
+  iupClassRegisterCallback(ic, "CARET_CB", "iii");
+
+
+  /* Common */
+  iupBaseRegisterCommonAttrib(ic);
+
+  /* Visual */
+  iupBaseRegisterVisualAttrib(ic);
+
+  /* IupList only */
+  iupClassRegisterAttribute(ic, "SCROLLBAR", iListGetScrollbarAttrib, iListSetScrollbarAttrib, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "MULTIPLE", iListGetMultipleAttrib, iListSetMultipleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DROPDOWN", iListGetDropdownAttrib, iListSetDropdownAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITBOX", iListGetEditboxAttrib, iListSetEditboxAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COUNT", iListGetCountAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERTITEM", NULL, (IattribSetFunc)iListSetInsertItemAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "APPENDITEM", NULL, iListSetAppendItemAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REMOVEITEM", NULL, iListSetRemoveItemAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AUTOHIDE", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "MASK", NULL, iListSetMaskAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASKINT", NULL, iListSetMaskIntAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iListSetMaskFloatAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "_IUPMASK_DATA", iListGetMaskDataAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+
+  iupdrvListInitClass(ic);
+
+  return ic;
+}
+
+void IupListConvertXYToItem(Ihandle* ih, int x, int y, int *pos)
+{
+  *pos = 0;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (!ih->handle)
+    return;
+    
+  if (iupStrEqual(ih->iclass->name, "list"))
+    iupdrvListConvertXYToItem(ih, x, y, pos);
+}
