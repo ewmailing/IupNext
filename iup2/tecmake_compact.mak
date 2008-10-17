@@ -550,14 +550,14 @@ ifdef USE_CDLUA
   override USE_CD = Yes
   ifdef USE_STATIC
     ifdef USE_IUP
-      ifndef USE_NEWNAMES
+      ifdef USE_OLDNAMES
         SLIB += $(CD)/lib/$(TEC_UNAME)/libcdluaiup$(LIBLUASUFX).a
       endif
     endif
     SLIB += $(CD)/lib/$(TEC_UNAME)/libcdlua$(LIBLUASUFX).a
   else
     ifdef USE_IUP
-      ifndef USE_NEWNAMES
+      ifdef USE_OLDNAMES
         LIBS += cdluaiup$(LIBLUASUFX)
       endif
     endif
@@ -569,7 +569,7 @@ ifdef USE_IUPLUA
   override USE_IUP = Yes
   ifdef USE_STATIC
     ifdef USE_CD
-      ifdef USE_NEWNAMES
+      ifndef USE_OLDNAMES
         SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupluacd$(LIBLUASUFX).a
       endif
     endif
@@ -579,7 +579,7 @@ ifdef USE_IUPLUA
     SLIB += $(IUP)/lib/$(TEC_UNAME)/libiuplua$(LIBLUASUFX).a
   else
     ifdef USE_CD
-      ifdef USE_NEWNAMES
+      ifndef USE_OLDNAMES
         LIBS += iupluacd$(LIBLUASUFX)
       endif
     endif
@@ -604,7 +604,7 @@ ifdef USE_LUA
     LDIR += $(LUA)/lib/$(TEC_UNAME)
   endif
   INCLUDES += $(LUA)/include
-  LUABINDIR := $(LUA)/bin/$(TEC_UNAME)
+  LUABINDIR ?= $(LUA)/bin/$(TEC_UNAME)
   BIN2C     := $(LUABINDIR)/bin2c$(LUASUFX)
   LUAC      := $(LUABINDIR)/luac$(LUASUFX)
   LUABIN    := $(LUABINDIR)/lua$(LUASUFX)
@@ -620,7 +620,7 @@ ifdef USE_IUP
   endif
   ifdef USE_STATIC
     ifdef USE_CD
-      ifdef USE_NEWNAMES
+      ifndef USE_OLDNAMES
         SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupcd.a
       endif
     endif
@@ -630,7 +630,7 @@ ifdef USE_IUP
     SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup$(LIB_SFX).a
   else
     ifdef USE_CD
-      ifdef USE_NEWNAMES
+      ifndef USE_OLDNAMES
         LIBS += iupcd
       endif
     endif
@@ -647,12 +647,12 @@ ifdef USE_CD
   override USE_X11 = Yes
   ifdef USE_STATIC
     ifdef USE_IUP
-      ifndef USE_NEWNAMES
+      ifdef USE_OLDNAMES
         SLIB += $(CD)/lib/$(TEC_UNAME)/libcdiup.a
       endif
     endif
     ifdef USE_XRENDER
-      ifndef USE_NEWNAMES
+      ifdef USE_OLDNAMES
         SLIB += $(CD)/lib/$(TEC_UNAME)/libcdxrender.a
       else
         SLIB += $(CD)/lib/$(TEC_UNAME)/libcdcontextplus.a
@@ -663,7 +663,7 @@ ifdef USE_CD
       LIBS += Xrender Xft
     else
       ifndef USE_GTK
-        ifdef USE_NEWNAMES
+        ifndef USE_OLDNAMES
           # Freetype is included in GTK
           SLIB += $(CD)/lib/$(TEC_UNAME)/libfreetype.a
         endif 
@@ -671,7 +671,7 @@ ifdef USE_CD
     endif
   else
     ifdef USE_XRENDER
-      ifndef USE_NEWNAMES
+      ifdef USE_OLDNAMES
         LIBS += cdxrender
       else
         LIBS += cdcontextplus
@@ -683,7 +683,7 @@ ifdef USE_CD
       LIBS += Xrender Xft
     else
       ifndef USE_GTK
-        ifdef USE_NEWNAMES
+        ifndef USE_OLDNAMES
           # Freetype is included in GTK
           LIBS += freetype
         endif
@@ -801,13 +801,8 @@ endif
 #---------------------------------#
 # Definitions of private variables
 
-# Library flags for application linker
+# Library flags for application and dynamic library linker
 LFLAGS += $(LDIR) $(LIBS)
-# Library flags for dynamic library linker
-ifdef ADDTO_LDFLAGS
-  LDFLAGS += $(LFLAGS)
-endif
-
 # C compiler flags
 CFLAGS   = $(FLAGS) $(STDFLAGS) $(INCLUDES) $(STDINCS) $(EXTRAINCS) $(DEFINES) $(STDDEFS)
 # C++ compiler flags
@@ -881,7 +876,7 @@ print-start:
 dynamic-lib: $(TARGETDIR)/lib$(TARGETNAME).$(DLIBEXT)
 
 $(TARGETDIR)/lib$(TARGETNAME).$(DLIBEXT) : $(LOHS) $(OBJS) $(EXTRADEPS)
-	$(LD) $(STDLDFLAGS) -o $@ $(OBJS) $(SLIB) $(LDFLAGS)
+	$(LD) $(STDLDFLAGS) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
 	@echo 'Tecmake - Dynamic Library ($@) Done.'; echo ''
 
   
@@ -892,7 +887,7 @@ $(TARGETDIR)/lib$(TARGETNAME).$(DLIBEXT) : $(LOHS) $(OBJS) $(EXTRADEPS)
 static-lib: $(TARGETDIR)/lib$(TARGETNAME).a
 
 $(TARGETDIR)/lib$(TARGETNAME).a : $(LOHS) $(OBJS) $(EXTRADEPS)
-	$(AR) $(STDLFLAGS) $@ $(OBJS) $(SLIB)
+	$(AR) $(STDLFLAGS) $@ $(OBJS) $(SLIB) $(LCFLAGS)
 	-$(RANLIB) $@
 	@echo 'Tecmake - Static Library ($@) Done.'; echo ''
 
