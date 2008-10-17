@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
-<html>
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <title>Other Toolkits</title>
@@ -47,9 +47,9 @@
   <tr>
     <td>
     <p align="center" style="text-align:center"><a href="http://www.fox-toolkit.org/">FOX</a></td>
-    <td>LGPL*</td>
-    <td>1997-2006/08</td>
-    <td>1.7.4</td>
+    <td>LGPL</td>
+    <td>1997-2008/07</td>
+    <td>1.6.34</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X</td>
@@ -62,8 +62,8 @@
     <td>
     <p align="center" style="text-align:center"><a href="http://www.fltk.org/">FLTK</a></td>
     <td>LGPL*</td>
-    <td>1998-2006/01</td>
-    <td>1.1.7</td>
+    <td>1998-2008/04</td>
+    <td>1.1.9</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
@@ -76,22 +76,22 @@
     <td>
     <p align="center" style="text-align:center"><a href="http://www.gtk.org/">GTK+</a></td>
     <td>LGPL*</td>
-    <td>1997-2006/07</td>
-    <td>2.10.1</td>
+    <td>1997-2008/09</td>
+    <td>2.14.3</td>
     <td>
     <o:p>C</o:p></td>
     <td>Win, X, Mac</td>
     <td>
     <o:p>own</o:p></td>
-    <td>9</td>
+    <td>10</td>
     <td>target for<o:p> X-Windows, basis of GNOME, Windows is apart, Mac using X</o:p></td>
   </tr>
   <tr>
     <td>
     <p align="center" style="text-align:center"><a href="http://www.trolltech.com">Qt</a></td>
     <td>GPL</td>
-    <td>1994-2006/06</td>
-    <td>4.1.4</td>
+    <td>1994-2008/09</td>
+    <td>4.4.3</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
@@ -103,8 +103,8 @@
     <td>
     <p align="center" style="text-align:center"><a href="http://www.wxwidgets.org/">wxWidgets</a></td>
     <td>LGPL*</td>
-    <td>1992-2006/08</td>
-    <td>2.7.0</td>
+    <td>1992-2008/09</td>
+    <td>2.8.9</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
@@ -115,8 +115,8 @@
   <tr>
     <td>
     <p align="center"><a href="http://www.tecgraf.puc-rio.br/iup/">IUP</a></td>
-    <td>MIT*</td>
-    <td>1994-2006/09</td>
+    <td>MIT</td>
+    <td>1994-2008/10</td>
     <td>2.5.1</td>
     <td>C</td>
     <td>Win, X, Mac</td>
@@ -126,7 +126,7 @@
     <o:p>X can use Motif or GTK, Mac using X</o:p></td>
   </tr>
 </table>
-<p>Table Last Update: August 2006</p>
+<p>Table Last Update: October 2008</p>
 <p>More toolkits can be found here:
   <a href="http://www.geocities.com/SiliconValley/Vista/7184/guitool.html" ADD_DATE="851377089" LAST_VISIT="857454078" LAST_MODIFIED="851377011">The GUI Toolkit, Framework Page</a>.<br>
   An interesting article can be found here: 
@@ -136,18 +136,21 @@
 <p>From the selected toolkits using the defined approach we can eliminate some toolkits:</p>
 <p>The gray ones are not updated anymore or the development is very slow or needs a better organization.</p>
 <p>FOX has a great look but the license can be restrictive in some cases. </p>
-<p>FLTK promises a new version with a better look, but until then it does not have a pretty good look. The FLTK 
+<p>FLTK promises a new version with a better look and new features, but there 
+are no concrete release dates. The FLTK 
   documentation also does not help.</p>
 <p>GTK+ can be used as a replacement for Motif, but not as a fully &quot;portable&quot; toolkit since is was target for 
   X-Windows. Nowadays GTK+ 2 is a great free C toolkit. But some predefined dialogs could be the native ones, like the 
-  File Selection, specially in Windows. The Windows port works ok but it is not Windows behavior neither look and feel.
-  </p>
+  File Selection, specially in Windows. The Windows port works did not have the 
+Windows native look and feel, now it seems that the Windows port is incorporated 
+and its is becaming fully featured. A MacOS X port without using X-Windows is on 
+the way, so the future is promessing.</p>
 <p>Qt has several license limitations, although is a very stable and powerful toolkit. Qt can be also used as a 
   replacement for Motif.</p>
-<p>The &quot;best&quot; free solution that we choose would be wxWidgets because of the native 
-  controls and its portability. But since version 2, GTK+ is a very strong option because 
-  it is in C and had its visual improved.</p>
-<p>It is very hard to compare IUP with wxWidgets and Qt since they are much more than an Interface Toolkit. They are 
+<p>wxWidgets is an excelent choice because of the native controls and its 
+portability.</p>
+<p>It is hard to compare IUP with wxWidgets and Qt since they are much more than an 
+User Interface Toolkit. They are 
   complete development platforms that include several secondary libraries not related to User Interface. In IUP we focus 
   only in Graphical User Interface.</p>
 <h3>Developing IUP</h3>
@@ -160,9 +163,11 @@
 <p>IUP does not have a wide localization feature, it only includes support for messages in English and Portuguese. And 
   it does not have support for Unicode characters.</p>
 <p><b>Why Not Mac? </b>The first Mac driver was developed for MacOS 9 and had several memory limitations so it was 
-  abandoned. With Mac OS X we have the opportunity to do something better. Today IUP runs on Mac OS X using X11 and 
+  abandoned. With Mac OS X we have the opportunity to do something better. Today IUP runs on Mac OS X using X11 
+with 
   Motif or GTK. We plan for the future to build a native Carbon driver.</p>
-<p><b>Why Motif? </b>Motif is still very important for non Linux systems, some Tecgraf applications run on AIX, SGI 
+<p><b>Why Still Motif? </b>Motif is very important for non Linux systems, some Tecgraf applications run on 
+old AIX, SGI 
   and Sun systems, that only have Motif installed and we can not force the installation of other toolkits like GTK. 
 </p>
 <p><em>.. &quot;Make it Reusable, Make it Simple, Make it Small&quot; ...</em></p>
