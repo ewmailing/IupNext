@@ -869,7 +869,7 @@ char* iTreeGSGetDepth(Ihandle* ih, const char* id_string)
    - id : node identifier
    - userid : user id that identifies the node
 */
-int IupTreeGSSetUserId(Ihandle* ih, int id, void* userid)
+int IupTreeSetUserId(Ihandle* ih, int id, void* userid)
 {
   Node node;
   char* id_string = iupStrGetMemory(10);
@@ -889,7 +889,7 @@ int IupTreeGSSetUserId(Ihandle* ih, int id, void* userid)
 /* Gets a node's id
    - userid : user id that identifies the node
 */
-int IupTreeGSGetId(Ihandle* ih, void* userid)
+int IupTreeGetId(Ihandle* ih, void* userid)
 {
   Node node = (Node)ih->data->root;
   int id = 0;
@@ -909,7 +909,7 @@ int IupTreeGSGetId(Ihandle* ih, void* userid)
 /* Gets the user id
    - id_string : node's id that identifies the node
 */
-void* IupTreeGSGetUserId(Ihandle* ih, int id)
+void* IupTreeGetUserId(Ihandle* ih, int id)
 {
   Node node;
   char* id_string = iupStrGetMemory(10);
