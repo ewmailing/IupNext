@@ -1,4 +1,6 @@
 ﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <title>Library Download Tips</title>
@@ -34,32 +36,39 @@ http://sourceforge.net/project/showfiles.php?group_id=241310</a>.<br>
 <p>The DLLs were built using the <b>cdecl</b> calling convention. This should be 
 a problem for Visual Basic users.</p>
 <p>In Visual C++ we use the single thread C Run Time Library for static libraries and the multi thread C RTL for DLLs. 
-  Because this is the default in Visual Studio for new projects. Since Visual C++ 8 both use the multi thread C RTL.</p>
+  Because this is the default in Visual Studio for new projects. Since Visual C++ 8, both use the multi thread C RTL.</p>
 <h3><a name="pack">Packaging</a></h3>
 <p>The package files available for download are named according to the platform where they were build.</p>
 <p>In UNIX all strings are based in the result of the command &quot;uname -a&quot;. The package name is a concatenation of the 
   platform <b>uname</b>, the system <b>major</b> version number and the system 
 <b>minor</b> version number. Some times a 
-  suffix must be added to complement the name. The default compiler is gcc, if the native compiler is used the name 
-  receive the suffix &quot;cc&quot;. Binaries for 64-bits receive the suffix: &quot;_64&quot;. In Linux when gcc is changed for the same 
-  uname in a new platform the major version number of the compiler is added as a suffix: &quot;g3&quot; for gcc 3 and &quot;g4&quot; for gcc 
+  suffix must be added to complement the name. The compiler used is always gcc. Binaries for 64-bits receive the suffix: &quot;_64&quot;. In Linux when 
+there are different versions of gcc for the same 
+  uname, the platform name is created adding the major version number of the compiler added as a suffix: &quot;g3&quot; for gcc 3 and &quot;g4&quot; for gcc 
   4.</p>
 <p>In Windows the platform name is the <b>compiler</b> and its <b>major</b> version number. 
 </p>
-<p>All library packages contains binaries for the specified platform and includes. Packages with &quot;_bin&quot; suffix 
+<p>All library packages <strong>(*_lib*)</strong> contains pre-compiled binaries for the specified platform and includes. Packages with 
+<strong>&quot;_bin&quot;</strong> suffix 
   contains executables only.</p>
 <p>The package name is a general reference for the platform. If you have the same platform it will work fine, but it 
   may also work in similar platforms.</p>
-<p>Here are some examples of packages:</p>
-<p class="info"><b>iup2_4_AIX43_64_bin.tar.gz</b> = IUP 2.4 64-bits Executables for AIX version 4.3<br>
-<b>iup2_4_Linux26g4_lib.tar.gz</b> = IUP 2.4 32-bits Libraries and Includes for Linux with Kernel version 2.6 built with 
-    gcc 4.<br>
-<b>iup2_4_Win32_vc7_lib.tar.gz</b> = IUP 2.4 32-bits Libraries and Includes for Windows to use with Visual C++ 7.<br>
+<p>Here are some examples of packages: </p>
+<p class="info">
+<b>iup2_4_Linux26_lib.tar.gz</b> = IUP 2.4 32-bits Libraries and Includes for Linux with Kernel version 2.6 built with 
+    gcc 3.<br>
+<b>iup2_4_</b><strong>Linux26g4_64</strong><b>_bin.tar.gz</b> = IUP 2.4 64-bits Executables for 
+Linux&nbsp; with Kernel version 2.6 built with gcc 4.<br>
+<b>iup2_4_Win32_vc8_lib.tar.gz</b> = IUP 2.4 32-bits Static Libraries and Includes for Windows to use with Visual C++ 
+8 (2005).<br>
+<b>iup2_4_Win32_dll9_lib.tar.gz</b> = IUP 2.4 32-bits Dynamic Libraries (DLLs), 
+stub libraries and Includes for Windows to use with Visual C++ 
+9 (2008).<br>
 <b>iup2_4_Docs_html.tar.gz</b> = IUP 2.4 documentation files in HTML format (the web site files can be browsed 
     locally).<br>
 <b>iup2_4_Win32_bin.tar.gz</b> = IUP 2.4 32-bits Executables for Windows.</p>
 <p>The documentation files are in HTML format. They do not include the CHM and PDF versions. These two files are 
-  provided only as a separate download, but they all have the same documentation.</p>
+  provided as a separate download, but they all have the same documentation.</p>
 <h3><a name="install">Installation</a></h3>
 <p>For any platform we recommend you to create a folder to contain the third party libraries you download. Then just 
   unpack the packages you download in that folder. The packages already contains a directory structure that separates 
@@ -70,7 +79,8 @@ a problem for Visual Basic users.</p>
             html\
             include\
             lib\Linux26
-            lib\vc7
+            lib\Linux26g4_64
+            lib\vc8
             src
         cd\
         im\
@@ -99,19 +109,12 @@ a problem for Visual Basic users.</p>
 http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
 </p>
 <h3><a name="plat">Available Platforms</a></h3>
+      <p>The following platforms can be available:</p>
 <table border="0" cellpadding="3" style="border-collapse: collapse" bordercolor="#111111" align="center">
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>AIX43</b></td>
     <td bgcolor="#DDDDDD">&nbsp;IBM AIX 4.3 (ppc) / gcc 2.95 / Motif 2.1 
     </td>
-  </tr>
-  <tr>
-    <td bgcolor="#DDDDDD" align="right"><b>AIX43cc</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;IBM AIX 4.3 (ppc) / cc 4.4 / Motif 2.1 </td>
-  </tr>
-  <tr>
-    <td bgcolor="#DDDDDD" align="right"><b>AIX43_64</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;IBM AIX 4.3 (ppc) (64 bits libraries) / cc 4.4 / Motif 2.1</td>
   </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>IRIX65</b></td>
@@ -121,15 +124,6 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>IRIX6465</b></td>
     <td bgcolor="#C0C0C0">&nbsp;SGI IRIX 6.5 (mips) / gcc 3.3 / Motif 1.2</td>
-  </tr>
-  <tr>
-    <td bgcolor="#C0C0C0" align="right"><b>IRIX6465cc</b></td>
-    <td bgcolor="#C0C0C0">&nbsp;SGI IRIX 6.5 (mips) / cc MIPSpro 7.4 / Motif 1.2 
-    </td>
-  </tr>
-  <tr>
-    <td bgcolor="#C0C0C0" align="right"><b>IRIX6465_64</b></td>
-    <td bgcolor="#C0C0C0">&nbsp;SGI IRIX 6.5 (mips) (64 bits libraries) / cc MIPSpro 7.4 / Motif 1.2</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Linux24</b></td>
@@ -182,28 +176,8 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
     </td>
   </tr>
   <tr>
-    <td bgcolor="#C0C0C0" align="right"><b>SunOS57cc</b></td>
-    <td bgcolor="#C0C0C0">&nbsp;Sun Solaris 7 (sparc) / cc 5.2 (Sun WorkShop 6 update 1) / Motif 2.1 
-    </td>
-  </tr>
-  <tr>
-    <td bgcolor="#C0C0C0" align="right"><b>SunOS57_64</b></td>
-    <td bgcolor="#C0C0C0">&nbsp;Sun Solaris 7 (sparc) (64 bits libraries) / cc 5.2 (Sun WorkShop 6 update 1) / Motif 2.1
-      </td>
-  </tr>
-  <tr>
     <td bgcolor="#C0C0C0" align="right"><b>SunOS58</b></td>
     <td bgcolor="#C0C0C0">&nbsp;Sun Solaris 8 (sparc) / gcc 3.4 / Motif 2.1 
-    </td>
-  </tr>
-  <tr>
-    <td bgcolor="#C0C0C0" align="right"><b>SunOS58cc</b></td>
-    <td bgcolor="#C0C0C0">&nbsp;Sun Solaris 8 (sparc) / Sun WorkShop 6 update 2 C++ 5.3 / Motif 2.1 
-    </td>
-  </tr>
-  <tr>
-    <td bgcolor="#C0C0C0" align="right"><b>SunOS58_64</b></td>
-    <td bgcolor="#C0C0C0">&nbsp;Sun Solaris 8 (sparc) / Sun WorkShop 6 update 2 C++ 5.3 / Motif 2.1 
     </td>
   </tr>
   <tr>
@@ -215,10 +189,6 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
     <td bgcolor="#DDDDDD" align="right"><b>FreeBSD54</b></td>
     <td bgcolor="#DDDDDD">&nbsp;Free BSD 5.4 (x86) / gcc 3.4 / Open Motif 2.2 
     <sup><span class="style1">3</span></sup></td>
-  </tr>
-  <tr>
-    <td bgcolor="#DDDDDD" align="right"><b>HP-UXB11</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;HP-UX 11 (9000) / HP ANSI C++ B3910B / Motif 2.1</td>
   </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Darwin811</b></td>
@@ -256,7 +226,7 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
     ¹</td>
   </tr>
   <tr>
-    <td bgcolor="#C0C0C0" align="right"><b>Win32_dll</b></td>
+    <td bgcolor="#C0C0C0" align="right"><b>Win32_dll6</b></td>
     <td bgcolor="#C0C0C0">&nbsp;built using vc6, creates dependency with MSVCRT.DLL<br>
       &nbsp;(either other libraries or new applications).</td>
   </tr>
