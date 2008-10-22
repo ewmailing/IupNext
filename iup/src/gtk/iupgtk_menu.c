@@ -282,8 +282,13 @@ static int gtkItemSetTitleAttrib(Ihandle* ih, const char* value)
   char *str;
   GtkWidget* label;
 
-  if (!value) value = "     ";
-  str = iupMenuGetTitle(ih, value);
+  if (!value)
+  {
+    str = "     ";
+    value = str;
+  }
+  else
+    str = iupMenuGetTitle(ih, value);
 
   label = gtk_bin_get_child((GtkBin*)ih->handle);
 

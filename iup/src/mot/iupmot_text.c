@@ -493,6 +493,7 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
   if (iupStrEqualNoCase(value, "COPY"))
   {
     char *str = XmTextGetSelection(ih->handle);
+    if (!str) return 0;
 
     XmTextCopy(ih->handle, CurrentTime);
 
@@ -503,6 +504,7 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
   else if (iupStrEqualNoCase(value, "CUT"))
   {
     char *str = XmTextGetSelection(ih->handle);
+    if (!str) return 0;
 
     /* disable callbacks */
     iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
@@ -520,6 +522,7 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
   {
     int size;
     char* str = XFetchBytes(iupmot_display, &size);
+    if (!str) return 0;
 
     /* disable callbacks */
     iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
@@ -781,29 +784,13 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
   {
     KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
     if (motcode == XK_c)
-    {
       motTextSetClipboardAttrib(ih, "COPY");
-      *cont = False;
-      return;
-    }
     else if (motcode == XK_x)
-    {
       motTextSetClipboardAttrib(ih, "CUT");
-      *cont = False;
-      return;
-    }
     else if (motcode == XK_v)
-    {
       motTextSetClipboardAttrib(ih, "PASTE");
-      *cont = False;
-      return;
-    }
     else if (motcode == XK_a)
-    {
       XmTextSetSelection(ih->handle, 0, XmTextGetLastPosition(ih->handle), CurrentTime);
-      *cont = False;
-      return;
-    }
   }
 
   iupmotKeyPressEvent(w, ih, (XEvent*)evt, cont);

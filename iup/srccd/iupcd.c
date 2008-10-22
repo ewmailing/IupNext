@@ -1,7 +1,7 @@
 /** \file
  * \brief IUP Driver
  *
- * See Copyright Notice in cd.h
+ * See Copyright Notice in iup.h
  */
 
 #include <stdlib.h>

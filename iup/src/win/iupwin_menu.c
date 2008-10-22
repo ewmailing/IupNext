@@ -438,11 +438,17 @@ static int winItemSetTitleAttrib(Ihandle* ih, const char* value)
   if (ih->handle == (InativeHandle*)-1) /* check if submenu is actually created */
     return 1;
 
-  if (!value) value = "     ";
-  str = iupMenuGetTitle(ih, value);
+  if (!value)
+  {
+    str = "     ";
+    value = str;
+  }
+  else
+    str = iupMenuGetTitle(ih, value);
 
   menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
-  menuiteminfo.fMask = MIIM_STRING; 
+  menuiteminfo.fMask = MIIM_TYPE;
+  menuiteminfo.fType = MFT_STRING;
   menuiteminfo.dwTypeData = str;
   menuiteminfo.cch = strlen(str);
 
@@ -638,8 +644,3 @@ void iupdrvSeparatorInitClass(Iclass* ic)
   ic->Map = winSeparatorMapMethod;
   ic->UnMap = winMenuChildUnMapMethod;
 }
-
-#if 0
-HMENU GetSystemMenu(HWND hWnd, BOOL bRevert);  ->   WM_INITMENU 
-WM_MENURBUTTONUP -> TrackPopupMenu ->  TPM_RECURSE.
-#endif

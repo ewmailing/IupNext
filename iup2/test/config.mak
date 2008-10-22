@@ -1,10 +1,10 @@
 APPNAME = iuptest
-SRC = tabs.c
+SRC = juli.c
 
 USE_IUP = Yes 
 #USE_IUPLUA = Yes 
 #USE_LUA5 = Yes 
-USE_IUPCONTROLS = Yes
+#USE_IUPCONTROLS = Yes
 #DBG=Yes
 
 USE_STATIC = Yes

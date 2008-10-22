@@ -226,8 +226,13 @@ static int motItemSetTitleAttrib(Ihandle* ih, const char* value)
 {
   char *str;
 
-  if (!value) value = "     ";
-  str = iupMenuGetTitle(ih, value);
+  if (!value)
+  {
+    str = "     ";
+    value = str;
+  }
+  else
+    str = iupMenuGetTitle(ih, value);
 
   if (XmIsToggleButton(ih->handle))
   {
