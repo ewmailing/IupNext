@@ -1,6 +1,7 @@
 
 .PHONY: all iup iupcd iupcontrols iupgl iup_pplot iupim iuplua3 iuplua5 iupconsole ledc iupview
-all: iup iupcd iupcontrols iupgl iup_pplot iupim iuplua3 iuplua5 iupconsole ledc iupview
+#all: iup iupcd iupcontrols iupgl iup_pplot iupim iuplua3 iuplua5 iupconsole ledc iupview
+all: iup iupcd iupcontrols iupgl iup_pplot iupim iuplua5 iupconsole ledc iupview
 
 iup:
 	@$(MAKE) --no-print-directory -C ./src/
