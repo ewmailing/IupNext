@@ -1,5 +1,5 @@
 APPNAME = iuptest
-SRC = juli.c
+SRC = iuplist/iuplist.c
 
 USE_IUP = Yes 
 #USE_IUPLUA = Yes 
