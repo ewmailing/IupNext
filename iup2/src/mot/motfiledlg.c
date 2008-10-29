@@ -2,7 +2,7 @@
  * \brief Motif Driver IupFileDlg
  *
  * See Copyright Notice in iup.h
- * $Id: motfiledlg.c,v 1.1 2008-10-17 06:19:25 scuri Exp $
+ * $Id: motfiledlg.c,v 1.2 2008-10-29 19:27:01 scuri Exp $
  */
 
 #if defined(__STDC__) && defined(ULTRIX)
@@ -233,11 +233,9 @@ static void motFileDlgSet(Ihandle *h, char *attr, char *val)
 
   if (iupStrEqualNoCase(attr, IUP_DIRECTORY))
   {
-    XmString xmstr = XmStringCreateLocalized( val );
+    XmString xmstr;
     if (val)
-    {
-      xmstr = XmStringCreateLocalized( val );
-    }
+      xmstr = XmStringCreateLocalized(val);
     else
     {
       /* teoricamente, bastaria setar XmNdirectory para NULL. mas, por

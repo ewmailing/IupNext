@@ -13,7 +13,7 @@
 
 #pragma warning (disable: 4786)
 
-#ifdef __WATCOMC__  /* M.T. - 2006-09-26 - hacked to compile wiht OW ver. 1.5 */
+#ifdef __WATCOMC__  /* M.T. - 2006-09-26 - hacked to compile with OW ver. 1.5 */
 #include <vector>
 #include <string>
 #include <map>
@@ -244,7 +244,7 @@ class DummyPainter: public Painter {
    virtual long GetHeight () const {return 100;};
    virtual void SetLineColor (int inR, int inG, int inB){};
    virtual void SetFillColor (int inR, int inG, int inB){};
-   virtual long CalculateTextDrawSize (const char *inString){return strlen (inString);};
+   virtual long CalculateTextDrawSize (const char *inString){return 0;};
    virtual long GetFontHeight () const {return 10;};
 #ifdef _IUP_PPLOT_
    virtual void FillArrow (int inX1, int inY1, int inX2, int inY2, int inX3, int inY3){};
