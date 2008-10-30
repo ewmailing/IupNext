@@ -31,7 +31,8 @@ strings or not. This can be very useful, for instance, used inside
 <p>When an attribute is updated (<b>Set</b>) it is  stored internally at the hash 
 table of the control only if the driver implementation of the control class 
 allows the storage.
-  If the value is NULL, the attribute will also be removed from the hash table.  Finally the attribute is 
+  If the value is NULL, the attribute will also be removed from the hash table 
+and the default value will be used if there is on defined.  Finally the attribute is 
 updated for the children of the control if they do not 
   have the attribute defined in their own hash table. Here is a pseudo-code:</p>
 
@@ -84,16 +85,19 @@ implementation can not process the attribute, then the attribute is simply
 stored in the hash table. After the element is mapped its attributes are 
 re-processed to be updated in the native system and they can be removed from the 
 hash table at that time.</p>
+<p>All this flexibility turns the attribute system very complex with several 
+nuances. If the attribute is checked before the control is mapped and just 
+after, its value can be completely different. Depending on how the attribute is 
+stored its inheritance can be completly ignored.</p>
 <p>Attribute <span class="style1">names</span> are always upper case, lower case names will not work. But attribute 
 <span class="style1">values</span> like &quot;YES&quot;, &quot;NO&quot;, 
   &quot;TOP&quot;, are case insensitive, so &quot;Yes&quot;, &quot;no&quot;, &quot;top&quot;, and other variations will work. 
 Boolean attributes accept the values &quot;1&quot;, &quot;YES&quot;, &quot;ON&quot; or &quot;TRUE&quot; for <b>true</b>, 
 and NULL (not defined), &quot;0&quot;, &quot;NO&quot;, &quot;OFF&quot; or &quot;FALSE&quot; for <b>false</b>, even if in 
 the documentation is only one of these combinations.</p>
-<p>There are attributes common to all the elements. These attributes sometimes are not mentioned in 
-  each element documentation. We assume that the programmer knows they exist. In some cases, common attributes behave 
+<p>There are attributes common to all the elements. In some cases, common attributes behave 
   differently in different elements, but in such cases, there are comments in 
-the documentation of the element explaining the behavior.</p>
+the documentation of the element explaining the different behavior.</p>
 <p>In LED there is no  
   quotation marks for attributes, names or values. In Lua attribute names can be 
 lower case.</p>

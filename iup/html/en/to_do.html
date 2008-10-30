@@ -55,6 +55,12 @@ small fixes (not fully working yet)<br>
 	<li class="style1">IupTabs using native controls in Windows Vista when 
 	COMPOSITE=YES works only if MULTILINE=YES, so it is internally overwritten 
 	until the problem is solved. (since 3.0)</li>
+	<li class="style1"><strong><em>PROPOSAL</em></strong>: <strong>to remove the 
+	inheritance from the attribute system</strong>. Implement only 2 new 
+	functions to will set and get attributes recursively. They will do it for 
+	all children when set, and check at parent when get. This will dramatically 
+	reduce the complexity of the attribute system, but can implicate in several 
+	changes for the applications that already depend on it.</li>
 </ul>
 <h3>Motif</h3>
 <ul>

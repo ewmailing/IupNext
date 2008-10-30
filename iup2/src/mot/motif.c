@@ -2,7 +2,7 @@
  * \brief Motif Driver Core and Initialization
  *
  * See Copyright Notice in iup.h
- * $Id: motif.c,v 1.2 2008-10-29 12:22:51 scuri Exp $
+ * $Id: motif.c,v 1.3 2008-10-30 18:10:22 scuri Exp $
  */
 
 #if defined(__STDC__) && defined(ULTRIX)
@@ -684,6 +684,11 @@ int IupOpen (int *argc, char ***argv)
   };
   int   nargs = 0;
   Arg args[3];
+  int    dummy_argc = 0;
+  char** dummy_argv = {0};
+
+  if (!argc) argc = &dummy_argc;
+  if (!argv) argv = &dummy_argv;
 
   if (iup_opened)
     return IUP_OPENED;
@@ -704,8 +709,8 @@ int IupOpen (int *argc, char ***argv)
     progname,  /* class name */
     NULL,      /* options* */
     0,         /* num options */
-    argc,     /* argc* */
-    argv? *argv: NULL);  /* argv* */
+    argc,      /* argc* */
+    *argv);    /* argv* */
   if (!iupmot_display)
   {
     fprintf (stderr, "IUP error: cannot open display.\n");
