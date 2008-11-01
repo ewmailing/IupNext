@@ -2,7 +2,7 @@
  * \brief iupgc pre-defined dialog control
  *
  * See Copyright Notice in iup.h
- * $Id: iupgc.c,v 1.1 2008-10-17 06:20:15 scuri Exp $
+ * $Id: iupgc.c,v 1.2 2008-11-01 16:43:05 scuri Exp $
  */
 
 #include <stdio.h>
@@ -383,13 +383,9 @@ static void init_usr_pal(void)
 /************************************************************\
 * Inicializa os valores iniciais para o elemento.            *
 \************************************************************/
-static void init_defaults(p_context con, unsigned char r, unsigned char g, 
-  unsigned char b)
+static void init_defaults(p_context con, unsigned char r, unsigned char g, unsigned char b)
 {
-  char buffer[20];
-  
-  sprintf(buffer, "%3d %3d %3d", (int) r, (int) g, (int) b);
-  IupSetAttribute(con->hls_cb, IUP_RGB, buffer);
+  IupSetfAttribute(con->hls_cb, IUP_RGB, "%3d %3d %3d", (int) r, (int) g, (int) b);
   txt_init(con);
   con->cur_r = r;
   con->cur_g = g;
