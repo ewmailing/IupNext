@@ -145,6 +145,8 @@ static void iColorBrowserDlgView_Update(IcolorDlgData* colordlg_data)
 \***********************************************/
 static void iColorBrowserDlgInit_Defaults(IcolorDlgData* colordlg_data)
 {
+  Ihandle* box;
+
   IupSetAttribute(colordlg_data->color_browser, "RGB", "0 0 0");
 
   IupSetAttribute(colordlg_data->red_txt,   "VALUE", "0");
@@ -155,22 +157,26 @@ static void iColorBrowserDlgInit_Defaults(IcolorDlgData* colordlg_data)
   IupSetAttribute(colordlg_data->saturation_txt, "VALUE", "0");
   IupSetAttribute(colordlg_data->intensity_txt,  "VALUE", "0");
 
-  IupSetAttribute(colordlg_data->colorhex_txt,  "VALUE", "000000");
+  IupSetAttribute(colordlg_data->colorhex_txt, "VALUE", "000000");
 
   IupSetAttribute(colordlg_data->alpha_val, "VALUE", "255");
   IupSetAttribute(colordlg_data->alpha_txt, "VALUE", "255");
 
   iColorBrowserDlgRGB2HSI(colordlg_data);
+
+  box = IupGetParent(colordlg_data->alpha_val);
+  IupSetAttribute(box, "FLOATING", "YES");
+  IupSetAttribute(box, "VISIBLE", "NO");
+
+  box = IupGetParent(colordlg_data->colortable_cbar);
+  IupSetAttribute(box, "FLOATING", "YES");
+  IupSetAttribute(box, "VISIBLE", "NO");
+
+  box = IupGetParent(colordlg_data->colorhex_txt);
+  IupSetAttribute(box, "FLOATING", "YES");
+  IupSetAttribute(box, "VISIBLE", "NO");
 }
 
-/*******************************************\
-* Sets an attribute and returns the element *
-\*******************************************/
-static Ihandle* iColorBrowserDlgSetAttribute(Ihandle* ih, const char* a, const char* v)
-{
-  IupSetAttribute(ih, a, v);
-  return ih;
-}
 
 
 /**************************************************************************************************************/
@@ -194,7 +200,7 @@ static int iColorBrowserDlgButtonCancel_CB(Ihandle* ih)
 
 static int iColorBrowserDlgButtonHelp_CB(Ihandle* ih)
 {
-  Icallback cb = IupGetCallback(ih, "HELP_CB");
+  Icallback cb = IupGetCallback(IupGetDialog(ih), "HELP_CB");
   if (cb && cb(ih) == IUP_CLOSE)
   {
     IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
@@ -218,7 +224,7 @@ static int iColorBrowserDlgColorCnvRepaint_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iColorBrowserDlgRGBKillfocus_CB(Ihandle* ih) 
+static int iColorBrowserDlgRGBChange_CB(Ihandle* ih) 
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
 
@@ -234,7 +240,7 @@ static int iColorBrowserDlgRGBKillfocus_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iColorBrowserDlgHSIKillfocus_CB(Ihandle* ih) 
+static int iColorBrowserDlgHSIChange_CB(Ihandle* ih) 
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
 
@@ -250,7 +256,7 @@ static int iColorBrowserDlgHSIKillfocus_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iColorBrowserDlgHexDisplayKillfocus_CB(Ihandle* ih) 
+static int iColorBrowserDlgHexChange_CB(Ihandle* ih) 
 {
   unsigned int ri, gi, bi;
   
@@ -306,7 +312,7 @@ static int iColorBrowserDlgAlphaVal_CB(Ihandle* ih, double val)
   return IUP_DEFAULT;  
 }
 
-static int iColorBrowserDlgAlphaKillfocus_CB(Ihandle* ih) 
+static int iColorBrowserDlgAlphaChange_CB(Ihandle* ih) 
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
 
@@ -380,6 +386,60 @@ static char* iColorBrowserDlgGetStatusAttrib(Ihandle* ih)
     return NULL;
 }
 
+static int iColorBrowserDlgSetShowHexAttrib(Ihandle* ih, const char* value)
+{
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+
+  /* valid only before map */
+  if (ih->handle)
+    return 1;
+
+  if (iupStrBoolean(value))
+  {
+    Ihandle* box = IupGetParent(colordlg_data->colorhex_txt);
+    IupSetAttribute(box, "FLOATING", NULL);
+    IupSetAttribute(box, "VISIBLE", "YES");
+  }
+
+  return 1;
+}
+
+static int iColorBrowserDlgSetShowColorTableAttrib(Ihandle* ih, const char* value)
+{
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+
+  /* valid only before map */
+  if (ih->handle)
+    return 1;
+
+  if (iupStrBoolean(value))
+  {
+    Ihandle* box = IupGetParent(colordlg_data->colortable_cbar);
+    IupSetAttribute(box, "FLOATING", NULL);
+    IupSetAttribute(box, "VISIBLE", "YES");
+  }
+
+  return 1;
+}
+
+static int iColorBrowserDlgSetShowAlphaAttrib(Ihandle* ih, const char* value)
+{
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+
+  /* valid only before map */
+  if (ih->handle)
+    return 1;
+
+  if (iupStrBoolean(value))
+  {
+    Ihandle* box = IupGetParent(colordlg_data->alpha_val);
+    IupSetAttribute(box, "FLOATING", NULL);
+    IupSetAttribute(box, "VISIBLE", "YES");
+  }
+
+  return 1;
+}
+
 static int iColorBrowserDlgSetAlphaAttrib(Ihandle* ih, const char* value)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
@@ -390,6 +450,9 @@ static int iColorBrowserDlgSetAlphaAttrib(Ihandle* ih, const char* value)
     IupSetfAttribute(colordlg_data->alpha_txt, "VALUE", "%d", (int)colordlg_data->alpha);
     IupSetfAttribute(colordlg_data->alpha_val, "VALUE", "%d", (int)colordlg_data->alpha);
     iColorBrowserDlgColorCnvRepaint(colordlg_data);
+
+    if (!ih->handle)  /* do it only before map */
+      iColorBrowserDlgSetShowAlphaAttrib(ih, "YES");
   }
  
   return 1;
@@ -450,6 +513,9 @@ static int iColorBrowserDlgSetColorTableAttrib(Ihandle* ih, const char* value)
   char str[30];
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
 
+  if (!ih->handle)    /* do it only before map */
+    iColorBrowserDlgSetShowColorTableAttrib(ih, "YES");
+
   while (value && *value && i < 20)
   {
     if (!iupStrToRGB(value, &r, &g, &b))
@@ -470,23 +536,6 @@ static int iColorBrowserDlgSetColorTableAttrib(Ihandle* ih, const char* value)
 /**************************************************************************************************************/
 /*                                     Methods                                                                */
 /**************************************************************************************************************/
-
-static int iColorBrowserDlgMapMethod(Ihandle* ih)
-{
-  char* value;
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
-
-  value = iupAttribGetStr(ih, "ALPHA");
-  if (!value)
-  {
-    Ihandle* alpha_box = IupGetParent(colordlg_data->alpha_val);
-    IupSetAttribute(alpha_box, "VISIBLE", "NO");
-  }
-
-  value = iupAttribGetStr(ih, "COLORTABLE");
-
-  return IUP_NOERROR;
-}
 
 static void iColorBrowserDlgDestroyMethod(Ihandle* ih)
 {
@@ -557,8 +606,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
 
   colordlg_data->colorhex_txt = IupText(NULL);      /* Hex of the color */
   IupSetAttribute(colordlg_data->colorhex_txt, "SIZE", "32");
-  IupSetAttribute(colordlg_data->colorhex_txt, "VALUE", "000000");
-  IupSetCallback (colordlg_data->colorhex_txt, "KILLFOCUS_CB", (Icallback)iColorBrowserDlgHexDisplayKillfocus_CB);
+  IupSetCallback (colordlg_data->colorhex_txt, "ACTION", (Icallback)iColorBrowserDlgHexChange_CB);
 
   /* ======================================================================= */
   /* ALPHA TRANSPARENCY   ================================================== */
@@ -581,8 +629,9 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->red_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->red_txt, "SPINMAX", "255");
   IupSetAttribute(colordlg_data->red_txt, "SPININC", "1");
-  IupSetCallback (colordlg_data->red_txt, "KILLFOCUS_CB", (Icallback)iColorBrowserDlgRGBKillfocus_CB);
-  iupmaskSet(colordlg_data->red_txt, "/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)", 0, 0);
+  IupSetCallback (colordlg_data->red_txt, "ACTION", (Icallback)iColorBrowserDlgRGBChange_CB);
+  IupSetCallback (colordlg_data->red_txt, "SPIN_CB", (Icallback)iColorBrowserDlgRGBChange_CB);
+  IupSetAttribute(colordlg_data->red_txt, "MASKINT", "0:255");
 
   colordlg_data->green_txt = IupText(NULL);                        /* Green value */
   IupSetAttribute(colordlg_data->green_txt, "SIZE", "32");
@@ -590,8 +639,9 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->green_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->green_txt, "SPINMAX", "255");
   IupSetAttribute(colordlg_data->green_txt, "SPININC", "1");
-  IupSetCallback (colordlg_data->green_txt, "KILLFOCUS_CB", (Icallback)iColorBrowserDlgRGBKillfocus_CB);
-  iupmaskSet(colordlg_data->green_txt, "/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)", 0, 0);
+  IupSetCallback (colordlg_data->green_txt, "ACTION", (Icallback)iColorBrowserDlgRGBChange_CB);
+  IupSetCallback (colordlg_data->green_txt, "SPIN_CB", (Icallback)iColorBrowserDlgRGBChange_CB);
+  IupSetAttribute(colordlg_data->green_txt, "MASKINT", "0:255");
 
   colordlg_data->blue_txt = IupText(NULL);                          /* Blue value */
   IupSetAttribute(colordlg_data->blue_txt, "SIZE", "32");
@@ -599,14 +649,19 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->blue_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->blue_txt, "SPINMAX", "255");
   IupSetAttribute(colordlg_data->blue_txt, "SPININC", "1");
-  IupSetCallback (colordlg_data->blue_txt, "KILLFOCUS_CB", (Icallback)iColorBrowserDlgRGBKillfocus_CB);
-  iupmaskSet(colordlg_data->blue_txt, "/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)", 0, 0);
+  IupSetCallback (colordlg_data->blue_txt, "ACTION", (Icallback)iColorBrowserDlgRGBChange_CB);
+  IupSetCallback (colordlg_data->blue_txt, "SPIN_CB", (Icallback)iColorBrowserDlgRGBChange_CB);
+  IupSetAttribute(colordlg_data->blue_txt, "MASKINT", "0:255");
 
   colordlg_data->alpha_txt = IupText(NULL);                        /* Alpha value */
   IupSetAttribute(colordlg_data->alpha_txt, "SIZE", "32");
-  IupSetAttribute(colordlg_data->alpha_txt, "VALUE", "255");
-  IupSetCallback (colordlg_data->alpha_txt, "KILLFOCUS_CB", (Icallback)iColorBrowserDlgAlphaKillfocus_CB);
-  iupmaskSet(colordlg_data->alpha_txt, "/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)", 0, 0);
+  IupSetAttribute(colordlg_data->alpha_txt, "SPIN", "YES");
+  IupSetAttribute(colordlg_data->alpha_txt, "SPINMIN", "0");
+  IupSetAttribute(colordlg_data->alpha_txt, "SPINMAX", "255");
+  IupSetAttribute(colordlg_data->alpha_txt, "SPININC", "1");
+  IupSetCallback (colordlg_data->alpha_txt, "ACTION", (Icallback)iColorBrowserDlgAlphaChange_CB);
+  IupSetCallback (colordlg_data->alpha_txt, "SPIN_CB", (Icallback)iColorBrowserDlgAlphaChange_CB);
+  IupSetAttribute(colordlg_data->alpha_txt, "MASKINT", "0:255");
 
   /* ======================================================================= */
   /* HSI TEXT FIELDS   ===================================================== */
@@ -617,8 +672,9 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->hue_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->hue_txt, "SPINMAX", "360");
   IupSetAttribute(colordlg_data->hue_txt, "SPININC", "1");
-  IupSetCallback(colordlg_data->hue_txt, "KILLFOCUS_CB", (Icallback)iColorBrowserDlgHSIKillfocus_CB);
-  iupmaskSet(colordlg_data->hue_txt, "/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)", 0, 0);
+  IupSetCallback(colordlg_data->hue_txt, "ACTION", (Icallback)iColorBrowserDlgHSIChange_CB);
+  IupSetCallback(colordlg_data->hue_txt, "SPIN_CB", (Icallback)iColorBrowserDlgHSIChange_CB);
+  IupSetAttribute(colordlg_data->hue_txt, "MASKINT", "0:360");
 
   colordlg_data->saturation_txt = IupText(NULL);              /* Saturation value */
   IupSetAttribute(colordlg_data->saturation_txt, "SIZE", "32");
@@ -626,8 +682,9 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->saturation_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->saturation_txt, "SPINMAX", "100");
   IupSetAttribute(colordlg_data->saturation_txt, "SPININC", "1");
-  IupSetCallback(colordlg_data->saturation_txt, "KILLFOCUS_CB", (Icallback)iColorBrowserDlgHSIKillfocus_CB);
-  iupmaskSet(colordlg_data->saturation_txt, "/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)", 0, 0);
+  IupSetCallback(colordlg_data->saturation_txt, "ACTION", (Icallback)iColorBrowserDlgHSIChange_CB);
+  IupSetCallback(colordlg_data->saturation_txt, "SPIN_CB", (Icallback)iColorBrowserDlgHSIChange_CB);
+  IupSetAttribute(colordlg_data->saturation_txt, "MASKINT", "0:100");
 
   colordlg_data->intensity_txt = IupText(NULL);                /* Intensity value */
   IupSetAttribute(colordlg_data->intensity_txt, "SIZE", "32");
@@ -635,41 +692,41 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->intensity_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->intensity_txt, "SPINMAX", "100");
   IupSetAttribute(colordlg_data->intensity_txt, "SPININC", "1");
-  IupSetCallback(colordlg_data->intensity_txt, "KILLFOCUS_CB", (Icallback)iColorBrowserDlgHSIKillfocus_CB);
-  iupmaskSet(colordlg_data->intensity_txt, "/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)", 0, 0);
+  IupSetCallback(colordlg_data->intensity_txt, "ACTION", (Icallback)iColorBrowserDlgHSIChange_CB);
+  IupSetCallback(colordlg_data->intensity_txt, "SPIN_CB", (Icallback)iColorBrowserDlgHSIChange_CB);
+  IupSetAttribute(colordlg_data->intensity_txt, "MASKINT", "0:100");
 
   /* =================== */
   /* 1st line = Controls */
   /* =================== */
   box1 = IupHbox(NULL);
 
-  col1 = IupVbox(IupHbox(IupFill(), colordlg_data->color_browser,  IupFill(), NULL), 
-                 IupHbox(IupFill(), colordlg_data->color_cnv, IupFill(), NULL), 
+  col1 = IupVbox(IupHbox(colordlg_data->color_browser,  NULL), 
+                 IupHbox(colordlg_data->color_cnv, NULL), 
                  NULL);
   IupAppend(box1, col1);
 
-  hsi_vb = IupVbox(IupHbox(iColorBrowserDlgSetAttribute(IupLabel(iupStrMessageGet("IUP_HUE")), "SIZE", "32"),
-                           colordlg_data->hue_txt, IupFill(), NULL),
-                   IupHbox(iColorBrowserDlgSetAttribute(IupLabel(iupStrMessageGet("IUP_SATURATION")), "SIZE", "32"),
-                           colordlg_data->saturation_txt, IupFill(), NULL),
-                   IupHbox(iColorBrowserDlgSetAttribute(IupLabel(iupStrMessageGet("IUP_INTENSITY")), "SIZE", "32"),
-                           colordlg_data->intensity_txt, IupFill(), NULL),
+  hsi_vb = IupVbox(IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_HUE")), "SIZE=32"),
+                           colordlg_data->hue_txt, NULL),
+                   IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_SATURATION")), "SIZE=32"),
+                           colordlg_data->saturation_txt, NULL),
+                   IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_INTENSITY")), "SIZE=32"),
+                           colordlg_data->intensity_txt, NULL),
                    NULL);
 
-  rgb_vb = IupVbox(IupHbox(IupFill(), iColorBrowserDlgSetAttribute(IupLabel(iupStrMessageGet("IUP_RED")), "SIZE", "32"),
+  rgb_vb = IupVbox(IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_RED")), "SIZE=32"),
                            colordlg_data->red_txt, NULL),
-                   IupHbox(IupFill(), iColorBrowserDlgSetAttribute(IupLabel(iupStrMessageGet("IUP_GREEN")), "SIZE", "32"),
+                   IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_GREEN")), "SIZE=32"),
                            colordlg_data->green_txt, NULL), 
-                   IupHbox(IupFill(), iColorBrowserDlgSetAttribute(IupLabel(iupStrMessageGet("IUP_BLUE")), "SIZE", "32"),
+                   IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_BLUE")), "SIZE=32"),
                            colordlg_data->blue_txt, NULL), 
                    NULL);
   
-  clr_vb = IupVbox(IupHbox(IupFill(), iColorBrowserDlgSetAttribute(IupLabel(NULL), "SEPARATOR", "HORIZONTAL"),
-                           IupFill(), NULL),
-                   IupHbox(iColorBrowserDlgSetAttribute(IupLabel(iupStrMessageGet("IUP_OPACITY")), "SIZE", "35"),
-                           colordlg_data->alpha_val, colordlg_data->alpha_txt, IupFill(), NULL),
-                   IupHbox(IupLabel("Hex"), colordlg_data->colorhex_txt, IupFill(), NULL), 
-                   IupHbox(IupFill(), IupLabel(iupStrMessageGet("IUP_PALETTE")), colordlg_data->colortable_cbar, NULL), 
+  clr_vb = IupVbox(IupHbox(IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"), NULL),
+                   IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_OPACITY")), "SIZE=32"),
+                           colordlg_data->alpha_val, colordlg_data->alpha_txt, NULL),
+                   IupHbox(IupLabel("Hex"), colordlg_data->colorhex_txt, NULL), 
+                   IupHbox(IupLabel(iupStrMessageGet("IUP_PALETTE")), colordlg_data->colortable_cbar, NULL), 
                    NULL);
 
   col2 = IupVbox(IupHbox(hsi_vb, rgb_vb, NULL), IupHbox(clr_vb, NULL), NULL);
@@ -680,10 +737,10 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   /* ================== */
   box2 = IupHbox(NULL);
 
-  col3 = IupVbox(IupHbox(colordlg_data->help_bt, IupFill(), NULL), NULL);
+  col3 = IupVbox(IupHbox(colordlg_data->help_bt, NULL), NULL);
   IupAppend(box2, col3);
 
-  col4 = IupVbox(IupHbox(IupFill(), colordlg_data->cancel_bt, colordlg_data->ok_bt, NULL), NULL);
+  col4 = IupVbox(IupHbox(colordlg_data->cancel_bt, colordlg_data->ok_bt, NULL), NULL);
   IupAppend(box2, col4);
 
   IupAppend(ih, IupVbox(box1, box2, NULL));
@@ -700,27 +757,30 @@ Iclass* iupColorBrowserDlgGetClass(void)
 
   ic->Create = iColorBrowserDlgCreateMethod;
   ic->Destroy = iColorBrowserDlgDestroyMethod;
-  ic->Map = iColorBrowserDlgMapMethod;
 
   ic->name = "colordlg";   /* this will hide the GTK and Windows implementations */
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
   ic->childtype = IUP_CHILD_ONE;
 
-  iupClassRegisterAttribute(ic, "COLORTABLE", iColorBrowserDlgGetColorTableAttrib, iColorBrowserDlgSetColorTableAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "STATUS", iColorBrowserDlgGetStatusAttrib, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COLORTABLE", iColorBrowserDlgGetColorTableAttrib, iColorBrowserDlgSetColorTableAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STATUS", iColorBrowserDlgGetStatusAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", iColorBrowserDlgGetValueAttrib, iColorBrowserDlgSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ALPHA", iColorBrowserDlgGetAlphaAttrib, iColorBrowserDlgSetAlphaAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALPHA", iColorBrowserDlgGetAlphaAttrib, iColorBrowserDlgSetAlphaAttrib, "255", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWALPHA", NULL, iColorBrowserDlgSetShowAlphaAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWCOLORTABLE", NULL, iColorBrowserDlgSetShowColorTableAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWHEX", NULL, iColorBrowserDlgSetShowHexAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
   return ic;
 }
 
 /*
+MASKINT limits
+atualizacao do ACTION
+
 desenho do alpha
-SHOWHEX
+desenho antes/depois
+mnemonics
 
-mudar atualizacao para ACTION em vez de focus
-      verificar atualizacao do SPIN
-
-K_ANY GTK
+K_ANY GTK dialog, sem filhos
 */

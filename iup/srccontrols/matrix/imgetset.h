@@ -3,7 +3,7 @@
  * attributes set and get.
  *
  * See Copyright Notice in iup.h
- * $Id: imgetset.h,v 1.1 2008-10-17 06:05:36 scuri Exp $
+ * $Id: imgetset.h,v 1.2 2008-11-03 20:03:28 scuri Exp $
  */
  
 #ifndef __IMGETSET_H 
@@ -13,7 +13,7 @@
 extern "C" {
 #endif
 
-void* iMatrixSetCell(Ihandle* ih, int lin, int col, char* v);
+void* iMatrixSetCell(Ihandle* ih, int lin, int col, const char* v);
 char* iMatrixGetCell(Ihandle* ih, int lin, int col);
 
 void  iMatrixSetFocusPosition (Ihandle* ih, const char* v, int call_cb);

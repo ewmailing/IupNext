@@ -3,7 +3,7 @@
  * attributes set and get
  *
  * See Copyright Notice in iup.h
- * $Id: imgetset.c,v 1.1 2008-10-17 06:05:36 scuri Exp $
+ * $Id: imgetset.c,v 1.2 2008-11-03 20:03:28 scuri Exp $
  */
 
 #include <stdio.h>
@@ -44,7 +44,7 @@
                  left top corner cell
    -> v : string with the new cell value
 */
-void* iMatrixSetCell(Ihandle* ih, int lin ,int col, char* v)
+void* iMatrixSetCell(Ihandle* ih, int lin ,int col, const char* v)
 {
   int cellvisible;
   int visible = IupGetInt(ih, "VISIBLE");
@@ -67,7 +67,7 @@ void* iMatrixSetCell(Ihandle* ih, int lin ,int col, char* v)
 
   if(ih->data->valeditcb)
   {
-    ih->data->valeditcb(ih, lin+1, col+1, v);
+    ih->data->valeditcb(ih, lin+1, col+1, (char*)v);
   }
   else if(!ih->data->valcb)
   {
@@ -81,7 +81,7 @@ void* iMatrixSetCell(Ihandle* ih, int lin ,int col, char* v)
     iMatrixShowFocus(ih);
   }
 
-  return v;
+  return (char*)v;
 }
 
 /* Return a cell value of the matrix.

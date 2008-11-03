@@ -400,13 +400,6 @@
 		<File
 			RelativePath="..\test\predialogs.c"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="..\test\progressbar.c"

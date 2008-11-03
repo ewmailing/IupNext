@@ -393,7 +393,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
 
   /* NOT necessary because the iupgtkKeyPressEvent of the control with the focus will propagate the key up to the dialog. */
   /* If enabled, when a Key callback is defined at the dialog, it will be called twice */
-  /* g_signal_connect(G_OBJECT(ih->handle), "key-press-event",    G_CALLBACK(iupgtkKeyPressEvent), ih);  */
+  g_signal_connect(G_OBJECT(ih->handle), "key-press-event",    G_CALLBACK(iupgtkKeyPressEvent), ih);
 
   g_signal_connect(G_OBJECT(ih->handle), "configure-event",    G_CALLBACK(gtkDialogConfigureEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "window-state-event", G_CALLBACK(gtkDialogWindowStateEvent), ih);

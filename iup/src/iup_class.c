@@ -90,6 +90,11 @@ static Ihandle* iClassGetInnerContainer(Iclass* ic, Ihandle* ih)
 {
   Ihandle* ih_container = ih;
 
+  if (ic->parent)
+    ih_container = iClassGetInnerContainer(ic->parent, ih);
+
+  /* if the class implements the function it will ignore the result of the parent class */
+
   if (ic->GetInnerContainer)
     ih_container = ic->GetInnerContainer(ih);
 
@@ -99,6 +104,11 @@ static Ihandle* iClassGetInnerContainer(Iclass* ic, Ihandle* ih)
 static void* iClassGetInnerNativeContainerHandle(Iclass* ic, Ihandle* ih, Ihandle* child)
 {
   void* container_handle = ih->handle;
+
+  if (ic->parent)
+    container_handle = iClassGetInnerNativeContainerHandle(ic->parent, ih, child);
+
+  /* if the class implements the function it will ignore the result of the parent class */
 
   if (ic->GetInnerNativeContainerHandle)
     container_handle = ic->GetInnerNativeContainerHandle(ih, child);
