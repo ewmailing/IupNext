@@ -121,7 +121,10 @@ void iupDlgListDestroyAll(void)
 
   count = i;
   for (i = 0; i < count; i++)
-    IupDestroy(ih_array[i]);   /* this will also destroy the list */
+  {
+    if (iupObjectCheck(ih_array[i]))
+      IupDestroy(ih_array[i]);   /* this will also destroy the list */
+  }
 
   free(ih_array);
 }

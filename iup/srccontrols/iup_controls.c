@@ -30,13 +30,12 @@ int IupControlsOpen(void)
   iupRegisterClass(iupMatrixGetClass());
   iupRegisterClass(iupTreeGetClass());
   iupRegisterClass(iupGaugeGetClass());
-
-  //IupGetColorOpen(); /* this must be after colorbrowser open */
+  iupRegisterClass(iupColorBrowserDlgGetClass());
 
   return IUP_NOERROR;
 }
 
-void IupControlsClose(void)
+void IupControlsClose(void)  /* for backward compatibility */
 {
 }
 

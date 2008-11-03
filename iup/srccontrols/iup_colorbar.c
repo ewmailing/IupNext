@@ -55,7 +55,7 @@ struct _IcontrolData
   int bufferize;          /* bufferation flag                                       */
   long int transparency;  /* transparency color                                     */
   int show_secondary;     /* secondary color selction flag                          */
-  int preview_size;       /* preview size (pixels)                                  */
+  int preview_size;       /* preview size (pixels) 0=disabled, -1=automatic         */
   int fgcolor_idx;        /* current primary index selected                         */
   int bgcolor_idx;        /* current secondary index selected                       */
 };
@@ -150,16 +150,18 @@ static void iColorbarGetPreviewLimit(Ihandle* ih, int* xmin, int* xmax, int* ymi
   if (ih->data->vertical)
   { 
     *xmax = ih->data->w;
-    *ymax = ih->data->h / num_itens;
     if (ih->data->preview_size > 0)
       *ymax = *ymin + ih->data->preview_size;
+    else
+      *ymax = ih->data->h / num_itens;
   }
   else
   { 
     *ymax = ih->data->h;
-    *xmax = ih->data->w / num_itens;
     if (ih->data->preview_size > 0)
       *xmax = *xmin + ih->data->preview_size;
+    else
+      *xmax = ih->data->w / num_itens;
   }
   if (ih->data->squared)
     iColorbarFitSquare(xmin, xmax, ymin, ymax);
@@ -168,13 +170,14 @@ static void iColorbarGetPreviewLimit(Ihandle* ih, int* xmin, int* xmax, int* ymi
 /* This function is used to get a cell bounding box. */
 static void iColorbarGetCellLimit(Ihandle* ih, int idx, int* xmin, int* xmax, int* ymin, int* ymax)
 {
-  int delta, trash;
+  int delta, dummy;
   int wcell, hcell;
-  int px, py;
+  int px = 0, py = 0;
   int posx, posy;
   int num_itens = ih->data->num_cells / ih->data->num_parts;
 
-  iColorbarGetPreviewLimit(ih, &trash, &px, &trash, &py);
+  if (ih->data->preview_size != 0)
+    iColorbarGetPreviewLimit(ih, &dummy, &px, &dummy, &py);
 
   if (ih->data->vertical)  /* Vertical orientation */
   { 
@@ -241,6 +244,9 @@ static void iColorbarRenderPreview(Ihandle* ih)
   int xhalf, yhalf;
   int bg = ih->data->bgcolor_idx;
   int fg = ih->data->fgcolor_idx;
+
+  if (ih->data->preview_size == 0)
+    return;
 
   iColorbarGetPreviewLimit(ih, &xmin, &xmax, &ymin, &ymax);
 
@@ -523,7 +529,7 @@ static int iColorbarSetShowPreviewAttrib(Ihandle* ih, const char* value)
   if (iupStrEqualNoCase(value, "NO"))
     ih->data->preview_size = 0;
   else
-    ih->data->preview_size = -9;
+    ih->data->preview_size = -1;  /* reset to automatic */
   
   iColorbarRepaint(ih);
   return 1;
@@ -538,10 +544,14 @@ static int iColorbarSetPreviewSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iColorbarGetPreviewSizeAttrib(Ihandle* ih)
 {
-  if (ih->data->preview_size) 
-    return "YES";
+  if (ih->data->preview_size == -1)  /* automatic */
+    return NULL;
   else 
-    return "NO";
+  {
+    char* buffer = iupStrGetMemory(100);
+    sprintf(buffer, "%d", ih->data->preview_size);
+    return buffer;
+  }
 }
 
 static int iColorbarSetCellAttrib(Ihandle* ih, const char* name_id, const char* value)
@@ -850,7 +860,7 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   ih->data->vertical  = 1;
   ih->data->squared   = 1;
   ih->data->shadowed  = 1;
-  ih->data->preview_size = -9;
+  ih->data->preview_size = -1;  /* automatic */
   ih->data->fgcolor_idx  = 0;   /* black */
   ih->data->bgcolor_idx  = 15;  /* white */
   ih->data->transparency = ICOLORBAR_NO_COLOR;

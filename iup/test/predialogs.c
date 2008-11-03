@@ -9,6 +9,7 @@
 
 #include "iup.h"
 #include "iupkey.h"
+#include "iupcontrols.h"
 
 
 #ifdef WIN32
@@ -122,8 +123,8 @@ void new_color(void)
 
   IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
   IupSetAttribute(dlg, "VALUE", "128 0 255");
-  IupSetAttribute(dlg, "ALPHA", "142");
-  IupSetAttribute(dlg, "COLORTABLE", "128 0 255;0 0 128;253 20 119");
+  //IupSetAttribute(dlg, "ALPHA", "142");
+  //IupSetAttribute(dlg, "COLORTABLE", "128 0 255;0 0 128;253 20 119");
   IupSetAttribute(dlg, "TITLE", "IupColorDlg Test");
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
 
@@ -345,6 +346,7 @@ void main_dialog(void)
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
+  IupControlsOpen();
 
   main_dialog();
 
@@ -354,5 +356,3 @@ int main(int argc, char* argv[])
 
   return 0;
 }
-
-// TODO: test IupGetText, IupListDialog

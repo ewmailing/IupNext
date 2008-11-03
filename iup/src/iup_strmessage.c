@@ -76,6 +76,8 @@ typedef struct _IstdMessage
   const char* lng_msg[3]; /* 2+1 for expansion */
 } IstdMessage;
 
+/* Edit this table to add support for more languages */
+
 static IstdMessage iStdMessages[] =
 {
   {"IUP_ERROR", {"Error", "Erro", NULL}},
@@ -91,6 +93,16 @@ static IstdMessage iStdMessages[] =
   {"IUP_OPEN", {"Open", "Abrir", NULL}},
   {"IUP_SELECTDIR", {"Select Directory", "Selecionar Diretório", NULL}},
   {"IUP_CANCEL", {"Cancel", "Cancela", NULL}},
+  {"IUP_GETCOLOR", {"Color Selection", "Seleção de Cor", NULL}},
+  {"IUP_HELP", {"Help", "Ajuda", NULL}},
+  {"IUP_RED", {"Red", "Vermelho", NULL}},
+  {"IUP_GREEN", {"Green", "Verde", NULL}},
+  {"IUP_BLUE", {"Blue", "Azul", NULL}},
+  {"IUP_HUE", {"Hue", "Matiz", NULL}},
+  {"IUP_SATURATION", {"Saturation", "Saturação", NULL}},
+  {"IUP_INTENSITY", {"Intensity", "Intensidade", NULL}},
+  {"IUP_OPACITY", {"Opacity", "Opacidade", NULL}},
+  {"IUP_PALETTE", {"Palette", "Paleta", NULL}},
   {NULL, {NULL, NULL, NULL}}
 };
 

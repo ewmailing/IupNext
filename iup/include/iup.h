@@ -45,6 +45,8 @@ int  IupScanf(const char *format, ...);
 int  IupListDialog(int type, const char *title, int size, const char *lst[],
                    int op, int col, int line, int marks[]);
 int  IupGetText(const char* title, char* text);
+int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
+
 
 /************************************************************************/
 /*                      Functions                                       */

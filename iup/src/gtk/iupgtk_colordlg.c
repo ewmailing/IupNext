@@ -19,12 +19,6 @@
 #include "iupgtk_drv.h"
 
 
-/* This code assumes that the GTK dialog shows 20 colors in the palette */
-
-const char* default_colortable = "0 0 0;255 255 255;127 127 127;255 0 0;160 32 240;0 0 255;173 216 230;"
-                                 "0 255 0;255 255 0;255 165 0;230 230 250;165 42 42;139 105 20;30 144 255;"
-                                 "255 192 203;144 238 144;26 26 26;77 77 77;191 191 191;229 229 229";
-
 static char* gtkColorDlgPaletteToString(const char* palette)
 {
   char iup_str[20], *gtk_str, *palette_p;
@@ -200,6 +194,4 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
 void iupdrvColorDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = gtkColorDlgPopup;
-
-  iupClassRegisterAttribute(ic, "COLORTABLE", NULL, NULL, default_colortable, IUP_MAPPED, IUP_NO_INHERIT);
 }

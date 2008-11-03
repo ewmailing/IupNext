@@ -5,7 +5,7 @@ DBG = Yes
 
 INCLUDES = ../include ../src .
 
-SRCCOLOR = iup_colorbrowser.c iup_colorhsi.c
+SRCCOLOR = iup_colorbrowser.c iup_colorhsi.c iup_colordlg.c
 SRCCOLOR := $(addprefix color/, $(SRCCOLOR))
 
 SRCTREE = itdraw.c itgetset.c iuptree.c itfind.c itlimits.c \

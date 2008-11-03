@@ -17,7 +17,6 @@
 #include "iuptree.h"
 //#include "iupsbox.h"
 #include "iupmask.h"
-//#include "iupgc.h"
 #include "iupcb.h"
 #include "iupspin.h"
 //#include "iupgetparam.h"
@@ -27,7 +26,7 @@ extern "C" {
 #endif
 
 int IupControlsOpen(void);
-void IupControlsClose(void);
+void IupControlsClose(void);   /* for backward compatibility only, does nothing since IUP 3 */
 
 #ifdef __cplusplus
 }

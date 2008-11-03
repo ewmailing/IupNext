@@ -377,24 +377,6 @@ static void iTreeComputeNaturalSizeMethod(Ihandle* ih)
 }
 
 
-static void iTreeDestroyImage(char* name)
-{
-  Ihandle *image = IupGetHandle(name);
-  if (image) IupDestroy(image);
-}
-
-static void iTreeReleaseMethod(Iclass* ic)
-{
-  (void)ic;
-  iTreeDestroyImage("IupTreeDragCursor");
-
-  iTreeDestroyImage("IMGLEAF");
-  iTreeDestroyImage("IMGCOLLAPSED");
-  iTreeDestroyImage("IMGEXPANDED");
-  iTreeDestroyImage("IMGBLANK");
-  iTreeDestroyImage("IMGPAPER");
-}
-
 /*****************************************************************************/
 /***** SET AND GET ATTRIBUTES ************************************************/
 /*****************************************************************************/
@@ -714,7 +696,6 @@ Iclass* iupTreeGetClass(void)
   ic->Destroy = iTreeDestroyMethod;
   ic->Map     = iTreeMapMethod;
   ic->ComputeNaturalSize = iTreeComputeNaturalSizeMethod;
-  ic->Release = iTreeReleaseMethod;
 
   /* Do not need to set base attributes because they are inherited from IupCanvas */
 

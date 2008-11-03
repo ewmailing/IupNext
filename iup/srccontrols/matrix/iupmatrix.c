@@ -2,7 +2,7 @@
  * \brief iupmatrix control core
  *
  * See Copyright Notice in iup.h
- * $Id: iupmatrix.c,v 1.1 2008-10-17 06:05:36 scuri Exp $
+ * $Id: iupmatrix.c,v 1.2 2008-11-03 13:13:16 scuri Exp $
  */
 
 #include <stdio.h>  /*sprintf*/
@@ -820,12 +820,6 @@ static void iMatrixDestroyMethod(Ihandle* ih)
     free(ih->data->col.inactive); 
 }
 
-static void iMatrixReleaseMethod(Iclass* ic)
-{
-  (void)ic;
-  IupDestroy(IupGetHandle("IupMatrixCrossCursor"));
-}
-
 static int iMatrixMapMethod(Ihandle* ih)
 {
   /* ensure the default values */
@@ -962,7 +956,6 @@ Iclass* iupMatrixGetClass(void)
   ic->Destroy = iMatrixDestroyMethod;
   ic->Map     = iMatrixMapMethod;
   ic->ComputeNaturalSize = iMatrixComputeNaturalSizeMethod;
-  ic->Release = iMatrixReleaseMethod;
 
   /* Do not need to set base attributes because they are inherited from IupCanvas */
 

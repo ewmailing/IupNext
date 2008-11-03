@@ -53,7 +53,7 @@ static int CB_lista (Ihandle *h, char *n, int o, int v)
 int IupListDialog (int tipo, const char *titulo, int tam, const char *lista[],
                    int opcao, int max_col, int max_lin, int marcas[])
 {
-  Ihandle *listaiup, *ok, *dialog, *cancel, *dlg_box, *button_box;
+  Ihandle *lst, *ok, *dlg, *cancel, *dlg_box, *button_box;
   int i, bt;
   char op[5];
   char lastop[5];
@@ -64,15 +64,15 @@ int IupListDialog (int tipo, const char *titulo, int tam, const char *lista[],
   if (tam > 999)
     tam = 999;
 
-  listaiup = IupList(NULL);
+  lst = IupList(NULL);
 
   for (i=0;i<tam;i++)
   {
     sprintf(op,"%d",i+1);
-    IupSetAttribute(listaiup,op,(char*)lista[i]);
+    IupSetAttribute(lst,op,(char*)lista[i]);
   }
   sprintf(lastop,"%d",tam+1);
-  IupSetAttribute(listaiup,lastop,NULL);
+  IupSetAttribute(lst,lastop,NULL);
 
   ok = IupButton("OK", NULL);
   IupSetAttribute (ok   ,"SIZE" ,"50x");
@@ -93,7 +93,7 @@ int IupListDialog (int tipo, const char *titulo, int tam, const char *lista[],
   IupSetAttribute(button_box,"MARGIN","0x0");
 
   dlg_box = IupVbox(
-    listaiup,
+    lst,
     IupSetAttributes(IupFill(), "SIZE=1x"),
     button_box,
     NULL);
@@ -101,15 +101,15 @@ int IupListDialog (int tipo, const char *titulo, int tam, const char *lista[],
   IupSetAttribute(dlg_box,"MARGIN","10x10");
   IupSetAttribute(dlg_box,"GAP","5");
 
-  dialog = IupDialog (dlg_box);
+  dlg = IupDialog (dlg_box);
 
   if (tipo == 1)
   {
     if (opcao<1 || opcao>tam) opcao=1;
-    IupSetfAttribute(dialog, "_LIST_NUMBER", "%d", opcao-1);
+    IupSetfAttribute(dlg, "_LIST_NUMBER", "%d", opcao-1);
     sprintf(opcaoini,"%d",opcao);
-    IupSetAttribute(listaiup,"VALUE",opcaoini);
-    IupSetCallback (listaiup, "ACTION", (Icallback)CB_lista);
+    IupSetAttribute(lst,"VALUE",opcaoini);
+    IupSetCallback (lst, "ACTION", (Icallback)CB_lista);
   }
   else if ((tipo == 2) && (marcas != NULL))
   {
@@ -117,36 +117,35 @@ int IupListDialog (int tipo, const char *titulo, int tam, const char *lista[],
     for (i=0;i<tam;i++)
       m[i] = marcas[i] ? '+' : '-';
     m[i]='\0';
-    IupSetAttribute(listaiup,"MULTIPLE","YES");
-    IupSetAttribute(listaiup,"VALUE",m);
+    IupSetAttribute(lst,"MULTIPLE","YES");
+    IupSetAttribute(lst,"VALUE",m);
   }
 
   sprintf (maxsize,"%dx%d",max_col*5,max_lin==1?16:max_lin*9+4);
-  IupSetAttribute (listaiup,"SIZE" , maxsize);
+  IupSetAttribute (lst,"SIZE" , maxsize);
 
-  IupSetAttribute(dialog,"TITLE",(char*)titulo);
-  IupSetAttribute(dialog,"MINBOX","NO");
-  IupSetAttribute(dialog,"MAXBOX","NO");
-  IupSetAttribute(dialog,"RESIZE","NO");
-  IupSetAttribute(dialog,"DEFAULTENTER","IupListOkButton");
-  IupSetAttribute(dialog,"DEFAULTESC","IupListCancelButton");
-  IupSetAttribute(dialog,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttribute(dialog,"ICON", IupGetGlobal("ICON"));
+  IupSetAttribute(dlg,"TITLE", titulo);
+  IupSetAttribute(dlg,"MINBOX","NO");
+  IupSetAttribute(dlg,"MAXBOX","NO");
+  IupSetAttribute(dlg,"DEFAULTENTER","IupListOkButton");
+  IupSetAttribute(dlg,"DEFAULTESC","IupListCancelButton");
+  IupSetAttribute(dlg,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 
-  IupPopup(dialog,IUP_CENTER,IUP_CENTER);
+  IupPopup(dlg,IUP_CENTER,IUP_CENTER);
 
   if ((tipo == 2) && (marcas != NULL))
   {
-    m=IupGetAttribute(listaiup,"VALUE");
+    m=IupGetAttribute(lst,"VALUE");
     for (i=0;i<tam;i++)
       marcas[i] = (m[i] == '+');
   }
 
-  bt = IupGetInt(dialog, "STATUS");
+  bt = IupGetInt(dlg, "STATUS");
   if (bt != -1 && tipo == 1)
-    bt = IupGetInt(dialog, "_LIST_NUMBER");
+    bt = IupGetInt(dlg, "_LIST_NUMBER");
 
-  IupDestroy(dialog);
+  IupDestroy(dlg);
 
   return bt;
 }
@@ -159,7 +158,7 @@ static int CB_button(Ihandle *ih)
 
 int IupAlarm (const char *title, const char *m, const char *b1, const char *b2, const char *b3)
 {
-  Ihandle  *dialog, *dlg_box, *lbl_box, *botoes, *button;
+  Ihandle  *dlg, *dlg_box, *lbl_box, *botoes, *button;
   char *aux, *linha, *default_esc;
   int i, bt, wb;
   char button_size[10];
@@ -239,18 +238,16 @@ int IupAlarm (const char *title, const char *m, const char *b1, const char *b2, 
   IupSetAttribute(dlg_box,"MARGIN","10x10");
   IupSetAttribute(dlg_box,"GAP","5");
 
-  dialog = IupDialog(dlg_box);
+  dlg = IupDialog(dlg_box);
 
-  IupSetAttribute(dialog,"TITLE",(char*)(title ? title : ""));
-  IupSetAttribute(dialog,"MINBOX" ,"NO");
-  IupSetAttribute(dialog,"MAXBOX" ,"NO");
-  IupSetAttribute(dialog,"RESIZE" ,"NO");
-  IupSetAttribute(dialog,"DEFAULTENTER","IupAlarmButton1");
-  IupSetAttribute(dialog,"DEFAULTESC",default_esc);
-  IupSetAttribute(dialog,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttribute(dialog,"ICON", IupGetGlobal("ICON"));
+  IupSetAttribute(dlg,"TITLE",(title ? title : ""));
+  IupSetAttribute(dlg,"DIALOGFRAME","YES");
+  IupSetAttribute(dlg,"DEFAULTENTER","IupAlarmButton1");
+  IupSetAttribute(dlg,"DEFAULTESC",default_esc);
+  IupSetAttribute(dlg,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 
-  IupMap(dialog);
+  IupMap(dlg);
 
   wb = IupGetInt(IupGetHandle("IupAlarmButton1"), "SIZE");
 
@@ -271,15 +268,15 @@ int IupAlarm (const char *title, const char *m, const char *b1, const char *b2, 
   IupSetAttribute(IupGetHandle("IupAlarmButton2"), "SIZE", button_size);
   IupSetAttribute(IupGetHandle("IupAlarmButton3"), "SIZE", button_size);
 
-  /* Force to calculate dialog's size again. */
-  IupSetAttribute(dialog, "RASTERSIZE", NULL);
-  IupRefresh(dialog);
+  /* Force to calculate dlg's size again. */
+  IupSetAttribute(dlg, "RASTERSIZE", NULL);
+  IupRefresh(dlg);
 
-  IupPopup(dialog,IUP_CENTER,IUP_CENTER);
+  IupPopup(dlg,IUP_CENTER,IUP_CENTER);
 
-  bt = IupGetInt(dialog, "_BUTTON_NUMBER");
+  bt = IupGetInt(dlg, "_BUTTON_NUMBER");
 
-  IupDestroy(dialog);
+  IupDestroy(dlg);
   free(aux);
 
   return bt;
@@ -294,7 +291,7 @@ int  iupDataEntry  (int    maxlin,
 
 {
   int i, bt;
-  Ihandle *ok, *cancel, *dialog, *vb, *hb, **txt, *button_box, *dlg_box;
+  Ihandle *ok, *cancel, *dlg, *vb, *hb, **txt, *button_box, *dlg_box;
   char scroll[20];
   char sizecol[20];
 
@@ -312,6 +309,7 @@ int  iupDataEntry  (int    maxlin,
     IupSetAttribute(txt[i],"VALUE",data[i]);
     IupStoreAttribute(txt[i],"SIZE",scroll);
     IupStoreAttribute(txt[i],"NC",sizecol);
+    IupSetAttribute(txt[i],"EXPAND","YES");
 
     hb = IupHbox(IupLabel(text[i]), IupFill(), txt[i],NULL);
     IupSetAttribute(hb,"MARGIN","0x0");
@@ -345,18 +343,17 @@ int  iupDataEntry  (int    maxlin,
   IupSetAttribute(dlg_box,"MARGIN","10x10");
   IupSetAttribute(dlg_box,"GAP","5");
 
-  dialog = IupDialog(dlg_box);
+  dlg = IupDialog(dlg_box);
 
-  IupSetAttribute(dialog,"TITLE",title);
-  IupSetAttribute(dialog,"MINBOX","NO");
-  IupSetAttribute(dialog,"MAXBOX","NO");
-  IupSetAttribute(dialog,"RESIZE","NO");
-  IupSetAttribute(dialog,"DEFAULTENTER","iupDataEntryOkButton");
-  IupSetAttribute(dialog,"DEFAULTESC","iupDataEntryCancelButton");
-  IupSetAttribute(dialog,"PARENTDIALOG",IupGetGlobal("PARENTDIALOG"));
-  IupSetAttribute(dialog,"ICON", IupGetGlobal("ICON"));
+  IupSetAttribute(dlg,"TITLE",title);
+  IupSetAttribute (dlg,"MINBOX","NO");
+  IupSetAttribute (dlg,"MAXBOX","NO");
+  IupSetAttribute(dlg,"DEFAULTENTER","iupDataEntryOkButton");
+  IupSetAttribute(dlg,"DEFAULTESC","iupDataEntryCancelButton");
+  IupSetAttribute(dlg,"PARENTDIALOG",IupGetGlobal("PARENTDIALOG"));
+  IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 
-  IupPopup(dialog,IUP_CENTER,IUP_CENTER);
+  IupPopup(dlg,IUP_CENTER,IUP_CENTER);
 
   for (i=0; i<maxlin; i++)
   {
@@ -365,12 +362,12 @@ int  iupDataEntry  (int    maxlin,
 
   free(txt);
 
-  bt = IupGetInt(dialog, "STATUS");
-  IupDestroy(dialog);
+  bt = IupGetInt(dlg, "STATUS");
+  IupDestroy(dlg);
   return bt;
 }
 
-int IupGetFile( char* file )
+int IupGetFile(char* file)
 {
   Ihandle *gf = 0;
   int i,ret,n;
@@ -407,11 +404,11 @@ int IupGetFile( char* file )
   IupSetAttribute(gf, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(gf, "ICON", IupGetGlobal("ICON"));
 
-  IupPopup( gf, IUP_CENTER, IUP_CENTER );
+  IupPopup(gf, IUP_CENTER, IUP_CENTER);
 
-  value = IupGetAttribute( gf, "VALUE" );
-  if (value) strcpy( file, value );
-  ret = IupGetInt( gf, "STATUS" );
+  value = IupGetAttribute(gf, "VALUE");
+  if (value) strcpy(file, value);
+  ret = IupGetInt(gf, "STATUS");
 
   IupDestroy(gf);
 
@@ -420,7 +417,7 @@ int IupGetFile( char* file )
 
 int IupGetText(const char* title, char* text)
 {
-  Ihandle *ok, *cancel, *multi_text, *button_box, *dlg_box, *dialog;
+  Ihandle *ok, *cancel, *multi_text, *button_box, *dlg_box, *dlg;
   int bt;
 
   multi_text = IupMultiLine("do_nothing");
@@ -456,49 +453,67 @@ int IupGetText(const char* title, char* text)
   IupSetAttribute(dlg_box,"MARGIN","10x10");
   IupSetAttribute(dlg_box,"GAP","5");
 
-  dialog = IupDialog (dlg_box);
+  dlg = IupDialog (dlg_box);
 
-  IupSetAttribute (dialog,"TITLE",(char*)title);
-  IupSetAttribute (dialog,"MINBOX","NO");
-  IupSetAttribute (dialog,"MAXBOX","NO");
-  IupSetAttribute (dialog,"DEFAULTENTER","IupGetTextOkButton");
-  IupSetAttribute (dialog,"DEFAULTESC","IupGetTextCancelButton");
-  IupSetAttribute (dialog,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttribute (dialog,"ICON", IupGetGlobal("ICON"));
+  IupSetAttribute (dlg,"TITLE", title);
+  IupSetAttribute (dlg,"MINBOX","NO");
+  IupSetAttribute (dlg,"MAXBOX","NO");
+  IupSetAttribute (dlg,"DEFAULTENTER","IupGetTextOkButton");
+  IupSetAttribute (dlg,"DEFAULTESC","IupGetTextCancelButton");
+  IupSetAttribute (dlg,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttribute (dlg,"ICON", IupGetGlobal("ICON"));
 
-  IupPopup(dialog, IUP_CENTER, IUP_CENTER);
+  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
 
-  bt = IupGetInt(dialog, "STATUS");
+  bt = IupGetInt(dlg, "STATUS");
   if (bt==1)
     strcpy(text, IupGetAttribute(multi_text, "VALUE"));
 
-  IupDestroy(dialog);
+  IupDestroy(dlg);
   return bt;
+}
+
+int IupGetColor(int x, int y, unsigned char *r, unsigned char *g, unsigned char *b)
+{
+  int ret;
+  Ihandle* dlg = IupColorDlg();
+
+  IupSetAttribute(dlg, "TITLE",  iupStrMessageGet("IUP_GETCOLOR"));
+  IupSetfAttribute(dlg, "VALUE", "%d %d %d", *r, *g, *b);
+  IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+
+  IupPopup(dlg, x, y);
+
+  ret = IupGetInt(dlg, "STATUS");
+  if (ret)
+    iupStrToRGB(IupGetAttribute(dlg, "VALUE"), r, g, b);
+
+  IupDestroy(dlg);
+
+  return ret;
 }
 
 void iupVersionDlg(void)
 {
-   Ihandle* dial, *ok;
+  Ihandle* dlg, *ok;
 
-   dial = IupDialog(IupVbox(IupFrame(IupVbox(
-                        IupLabel(IUP_VERSION),
-                        IupLabel(IUP_VERSION_DATE),
-                        IupLabel(IUP_COPYRIGHT),
-                        NULL)), 
-                      ok = IupButton("Ok", NULL),
-                      NULL));
+  dlg = IupDialog(IupVbox(IupFrame(IupVbox(
+                      IupLabel(IUP_VERSION),
+                      IupLabel(IUP_VERSION_DATE),
+                      IupLabel(IUP_COPYRIGHT),
+                      NULL)), 
+                    ok = IupButton("Ok", NULL),
+                    NULL));
 
-   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
+  IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
-   IupSetAttribute(dial,"TITLE","IUP Version");
-   IupSetAttribute(dial,"MENUBOX","NO");
-   IupSetAttribute(dial,"MINBOX","NO");
-   IupSetAttribute(dial,"MAXBOX","NO");
-   IupSetAttribute(dial,"RESIZE","NO");
+  IupSetAttribute(dlg,"TITLE","IUP Version");
+  IupSetAttribute(dlg,"DIALOGFRAME","YES");
 
-   IupSetAttribute(dial,"GAP","5");
-   IupSetAttribute(dial,"MARGIN","5");
+  IupSetAttribute(dlg,"GAP","5");
+  IupSetAttribute(dlg,"MARGIN","5");
 
-   IupPopup(dial, IUP_CENTER, IUP_CENTER);
-   IupDestroy(dial);
+  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+  IupDestroy(dlg);
 }

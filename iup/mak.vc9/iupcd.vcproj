@@ -92,6 +92,10 @@
 			RelativePath="..\srccd\iupcd.c"
 			>
 		</File>
+		<File
+			RelativePath="..\srccd\iupcd.def"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

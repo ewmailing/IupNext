@@ -46,7 +46,10 @@ void iupNamesDestroyHandles(void)
 
   count = i;
   for (i = 0; i < count; i++)
-    IupDestroy(ih_array[i]);
+  {
+    if (iupObjectCheck(ih_array[i]))
+      IupDestroy(ih_array[i]);
+  }
 
   free(ih_array);
 }
