@@ -670,15 +670,6 @@ static int iColorBrowserKeypress_CB(Ihandle* ih, int c, int press)
 /*********************************************************************************/
 
 
-static int iupStrGetHSI(const char *str, float *h, float *s, float *i)
-{
-  if (!str) return 0;
-  if (sscanf(str, "%f %f %f", h, s, i) != 3) return 0;
-  if (*h > 360 || *s > 1 || *i > 1) return 0;
-  if (*h < 0 || *s < 0 || *i < 0) return 0;
-  return 1;
-}
-
 static char* iColorBrowserGetHSIAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(100);
@@ -688,14 +679,9 @@ static char* iColorBrowserGetHSIAttrib(Ihandle* ih)
 
 static int iColorBrowserSetHSIAttrib(Ihandle* ih, const char* value)
 {
-  float h, s, i;
-  if (!iupStrGetHSI(value, &h, &s, &i))
+  if (!iupStrToHSI(value, &ih->data->hue, &ih->data->saturation, &ih->data->intensity))
     return 0;
   
-  ih->data->hue = h;
-  ih->data->saturation = s;
-  ih->data->intensity = i;
-
   if (ih->data->cddbuffer)
   {
     iColorBrowserUpdateCursorHue(ih);

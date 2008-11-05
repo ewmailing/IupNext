@@ -7,6 +7,7 @@
 
 
 #include <math.h>
+#include <stdio.h>
 #include "iup_colorhsi.h"
 
 static const float rad60 =  1.0471975f;
@@ -324,4 +325,17 @@ void iupColorHSI2RGB(float h, float s, float i, unsigned char *r, unsigned char 
   *r = iColorQuantize(fr);
   *g = iColorQuantize(fg);
   *b = iColorQuantize(fb);
+}
+
+int iupStrToHSI(const char *str, float *h, float *s, float *i)
+{
+  float fh, fs, fi;
+  if (!str) return 0;
+  if (sscanf(str, "%f %f %f", &fh, &fs, &fi) != 3) return 0;
+  if (fh > 360 || fs > 1 || fi > 1) return 0;
+  if (fh < 0 || fs < 0 || fi < 0) return 0;
+  *h = fh;
+  *s = fs;
+  *i = fi;
+  return 1;
 }

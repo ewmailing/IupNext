@@ -13,6 +13,8 @@ STRIP =
 OPT = YES      
 # DBG = Yes
 
+# IM and IupPPlot uses C++
+LINKER = $(CPPC)
 
 ifdef DBG
   # Statically link everything only when debugging
@@ -22,9 +24,6 @@ ifdef DBG
   USE_STATIC = Yes
   USE_LUA51 = Yes
 
-  # IM and IupPPlot uses C++
-  LINKER = $(CPPC)
-  
   ifeq "$(TEC_UNAME)" "SunOS510x86"
     IUPLUA_NO_GL = Yes
   endif

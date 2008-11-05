@@ -25,6 +25,8 @@ void iupColorRGB2HSI(unsigned char r, unsigned char g, unsigned char b, float *h
  */
 void iupColorHSI2RGB(float h, float s, float i, unsigned char *r, unsigned char *g, unsigned char *b);
 
+int iupStrToHSI(const char *str, float *h, float *s, float *i);
+
 
 #if defined(__cplusplus)
 }
