@@ -139,3 +139,8 @@ void iupMaskDestroy(Imask* mask)
   free(mask->fsm); 
   free(mask); 
 }
+
+char* iupMaskGetStr(Imask* mask)
+{
+  return mask->mask_str;
+}

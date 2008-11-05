@@ -95,14 +95,14 @@ static IstdMessage iStdMessages[] =
   {"IUP_CANCEL", {"Cancel", "Cancela", NULL}},
   {"IUP_GETCOLOR", {"Color Selection", "Seleção de Cor", NULL}},
   {"IUP_HELP", {"Help", "Ajuda", NULL}},
-  {"IUP_RED", {"Red", "Vermelho", NULL}},
-  {"IUP_GREEN", {"Green", "Verde", NULL}},
-  {"IUP_BLUE", {"Blue", "Azul", NULL}},
-  {"IUP_HUE", {"Hue", "Matiz", NULL}},
-  {"IUP_SATURATION", {"Saturation", "Saturação", NULL}},
-  {"IUP_INTENSITY", {"Intensity", "Intensidade", NULL}},
-  {"IUP_OPACITY", {"Opacity", "Opacidade", NULL}},
-  {"IUP_PALETTE", {"Palette", "Paleta", NULL}},
+  {"IUP_RED", {"&Red:", "&Vermelho:", NULL}},
+  {"IUP_GREEN", {"&Green:", "V&erde:", NULL}},
+  {"IUP_BLUE", {"&Blue:", "&Azul:", NULL}},
+  {"IUP_HUE", {"&Hue:", "&Matiz:", NULL}},
+  {"IUP_SATURATION", {"&Saturation:", "&Saturação:", NULL}},
+  {"IUP_INTENSITY", {"&Intensity:", "&Intensidade:", NULL}},
+  {"IUP_OPACITY", {"&Opacity:", "&Opacidade:", NULL}},
+  {"IUP_PALETTE", {"&Palette:", "&Paleta:", NULL}},
   {NULL, {NULL, NULL, NULL}}
 };
 

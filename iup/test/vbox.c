@@ -38,8 +38,8 @@ int main(int argc, char* argv[])
   IupSetAttribute(vbox_1, "ALIGNMENT", "ALEFT");
 //  IupSetAttribute(vbox_1, "MARGIN", "20x20");
 //  IupSetAttribute(vbox_1, "GAP", "10");
-//  IupSetAttribute(vbox_1, "HOMOGENEOUS", "YES");
-//  IupSetAttribute(vbox_1, "EXPANDCHILDREN", "YES");
+  IupSetAttribute(vbox_1, "HOMOGENEOUS", "YES");
+  IupSetAttribute(vbox_1, "EXPANDCHILDREN", "YES");
 //  IupSetAttribute(btn_12, "VISIBLE", "NO");
 //  IupSetAttribute(btn_12, "FLOATING", "YES");
 
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
     )
   );
 
-  IupSetAttribute(dlg, "TITLE", "IupHbox Test"); /* Sets dlg's title */
+  IupSetAttribute(dlg, "TITLE", "IupVbox Test"); /* Sets dlg's title */
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "GAP", "10");
   IupSetAttribute(fr1, "MARGIN", "0x0");   /* avoid attribute propagation */

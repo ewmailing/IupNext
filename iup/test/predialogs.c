@@ -125,7 +125,7 @@ void new_color(void)
   IupSetAttribute(dlg, "VALUE", "128 0 255");
   IupSetAttribute(dlg, "ALPHA", "142");
   IupSetAttribute(dlg, "COLORTABLE", "128 0 255;0 0 128;253 20 119");
-  //IupSetAttribute(dlg, "SHOWHEX", "YES");
+  IupSetAttribute(dlg, "SHOWHEX", "YES");
   //IupSetAttribute(dlg, "SHOWCOLORTABLE", "YES");
   //IupSetAttribute(dlg, "SHOWALPHA", "YES");
   IupSetAttribute(dlg, "TITLE", "IupColorDlg Test");

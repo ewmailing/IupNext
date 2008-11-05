@@ -19,19 +19,24 @@ int main(int argc, char* argv[])
   (
     h1=IupHbox
     (
-      IupFill(),
+//      IupFill(),
       b11=IupButton("1", NULL),
       b12=IupButton("2", NULL),
       b13=IupButton("3", NULL),
-      IupFill(),
+//      IupFill(),
       NULL
     )
   );
-  IupSetAttribute(fr1, "TITLE", "ALIGNMENT=ATOP");
-  IupSetAttribute(b11, "SIZE", "30x30");
-  IupSetAttribute(b12, "SIZE", "30x40");
-  IupSetAttribute(b13, "SIZE", "30x50");
+//  IupSetAttribute(fr1, "TITLE", "ALIGNMENT=ATOP");
+  IupSetAttribute(fr1, "TITLE", "IupHbox");
+  IupSetAttribute(b11, "SIZE", "10x10");
+  IupSetAttribute(b12, "SIZE", "20x16");
+  IupSetAttribute(b13, "SIZE", "30x20");
   IupSetAttributes(h1, "ALIGNMENT=ATOP"); /* Sets hbox's alignment, gap and size */
+  IupSetAttribute(h1, "HOMOGENEOUS", "YES");
+  IupSetAttribute(h1, "EXPANDCHILDREN", "YES");
+//  IupSetAttribute(b12, "VISIBLE", "NO");
+//  IupSetAttribute(b12, "FLOATING", "YES");
 
   /* Creates frame with three buttons */
   fr2 = IupFrame

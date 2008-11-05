@@ -112,6 +112,14 @@ static char* iTextGetMaskDataAttrib(Ihandle* ih)
   return (char*)ih->data->mask;
 }
 
+static char* iTextGetMaskAttrib(Ihandle* ih)
+{
+  if (ih->data->mask)
+    return iupMaskGetStr(ih->data->mask);
+  else
+    return NULL;
+}
+
 static int iTextSetMaskAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
@@ -129,7 +137,7 @@ static int iTextSetMaskAttrib(Ihandle* ih, const char* value)
         iupMaskDestroy(ih->data->mask);
 
       ih->data->mask = mask;
-      return 1;
+      return 0;
     }
   }
 
@@ -142,8 +150,6 @@ static int iTextSetMaskIntAttrib(Ihandle* ih, const char* value)
   {
     if (ih->data->mask)
       iupMaskDestroy(ih->data->mask);
-
-    iupAttribSetStr(ih, "MASK", NULL);
   }
   else
   {
@@ -159,11 +165,6 @@ static int iTextSetMaskIntAttrib(Ihandle* ih, const char* value)
       iupMaskDestroy(ih->data->mask);
 
     ih->data->mask = mask;
-
-    if (min < 0)
-      iupAttribSetStr(ih, "MASK", IUPMASK_INT);
-    else
-      iupAttribSetStr(ih, "MASK", IUPMASK_UINT);
   }
 
   return 0;
@@ -175,8 +176,6 @@ static int iTextSetMaskFloatAttrib(Ihandle* ih, const char* value)
   {
     if (ih->data->mask)
       iupMaskDestroy(ih->data->mask);
-
-    iupAttribSetStr(ih, "MASK", NULL);
   }
   else
   {
@@ -192,11 +191,6 @@ static int iTextSetMaskFloatAttrib(Ihandle* ih, const char* value)
       iupMaskDestroy(ih->data->mask);
 
     ih->data->mask = mask;
-
-    if (min < 0)
-      iupAttribSetStr(ih, "MASK", IUPMASK_FLOAT);
-    else
-      iupAttribSetStr(ih, "MASK", IUPMASK_UFLOAT);
   }
 
   return 0;
@@ -469,7 +463,7 @@ Iclass* iupTextGetClass(void)
   iupClassRegisterAttribute(ic, "SCROLLBAR", iTextGetScrollbarAttrib, iTextSetScrollbarAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
   iupClassRegisterAttribute(ic, "MULTILINE", iTextGetMultilineAttrib, iTextSetMultilineAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "APPENDNEWLINE", iTextGetAppendNewlineAttrib, iTextSetAppendNewlineAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MASK", NULL, iTextSetMaskAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASK", iTextGetMaskAttrib, iTextSetMaskAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKINT", NULL, iTextSetMaskIntAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iTextSetMaskFloatAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "_IUPMASK_DATA", iTextGetMaskDataAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);

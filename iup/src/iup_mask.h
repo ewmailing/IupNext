@@ -34,14 +34,18 @@ Imask* iupMaskCreateInt(int min, int max);
  * \ingroup mask */
 Imask* iupMaskCreateFloat(float min, float max);
 
+/** Destroys the mask.
+ * \ingroup mask */
+void iupMaskDestroy(Imask* mask);
+
 /** Check if the value is valid using the mask to filter it.
  * Returns 1 if full match, -1 if partial match, and 0 otherwise.
  * \ingroup mask */
 int iupMaskCheck(Imask* mask, const char *value);
 
-/** Destroys the mask.
+/** Returns the mask string.
  * \ingroup mask */
-void iupMaskDestroy(Imask* mask);
+char* iupMaskGetStr(Imask* mask);
 
 
 #ifdef __cplusplus
