@@ -58,6 +58,7 @@ struct _IcontrolData
   int preview_size;       /* preview size (pixels) 0=disabled, -1=automatic         */
   int fgcolor_idx;        /* current primary index selected                         */
   int bgcolor_idx;        /* current secondary index selected                       */
+  int focus_cell;         /* cell with focus if the control has the focus, else -1  */
 };
 
 /* Default colors used for a widget */
@@ -267,6 +268,21 @@ static void iColorbarRenderPreview(Ihandle* ih)
   }
 }
 
+static void iColorbarDrawFocusCell(Ihandle* ih)
+{
+  int delta = 4;
+  int xmin, ymin;
+  int xmax, ymax;
+
+  iColorbarGetCellLimit(ih, ih->data->focus_cell, &xmin, &xmax, &ymin, &ymax);
+  xmin += delta;
+  xmax -= delta;
+  ymin += delta;
+  ymax -= delta;
+
+  cdIupDrawFocusRect(ih, ih->data->cdcanvas, xmin, ymin, xmax, ymax);
+}
+
 /* This function is used to repaint a cell. */
 static void iColorbarRenderCell(Ihandle* ih, int idx)
 {
@@ -310,6 +326,8 @@ static void iColorbarRepaint(Ihandle* ih)
 
   /* update display */
   cdCanvasFlush(ih->data->cddbuffer);
+  if (ih->data->focus_cell != -1)
+    iColorbarDrawFocusCell(ih);
 }
 
 static int iColorbarCheckPreview(Ihandle* ih, int x, int y)
@@ -327,16 +345,16 @@ static int iColorbarCheckPreview(Ihandle* ih, int x, int y)
     yhalf = 2 * (ymax - ymin - 2 * delta) / 3 + delta;
 
     if (x > xmin+delta && x < xmin+xhalf && y > ymax-yhalf && y < ymax-delta)
-      return -1;
+      return IUP_PRIMARY;
     if (x > xmax-xhalf && x < xmax-delta && y > ymin+delta && y < ymin+yhalf)
-      return -2;
+      return IUP_SECONDARY;
     if (x > xmin && x < xmax && y > ymin && y < ymax)
       return 1;  /* switch */
   }
   else
   { 
     if (x > xmin+delta && x < xmax-delta && y > ymin+delta && y < ymax-delta)
-      return -1;
+      return IUP_PRIMARY;
   }
 
   return 0;
@@ -638,6 +656,8 @@ static int iColorbarRepaint_CB(Ihandle* ih)
 
   /* update display */
   cdCanvasFlush(ih->data->cddbuffer);
+  if (ih->data->focus_cell != -1)
+    iColorbarDrawFocusCell(ih);
 
   return IUP_DEFAULT;
 }
@@ -686,29 +706,190 @@ static void iColorbarRenderPartsRepaint(Ihandle* ih, int preview, int idx)
 
   /* update display */
   cdCanvasFlush(ih->data->cddbuffer);
+  if (ih->data->focus_cell != -1)
+    iColorbarDrawFocusCell(ih);
+}
+
+static int iColorbarFocus_CB(Ihandle* ih, int focus)
+{
+  if (focus)
+    ih->data->focus_cell = 0;
+  else
+    ih->data->focus_cell = -1;
+
+  if (ih->data->cddbuffer)
+  {
+    cdCanvasFlush(ih->data->cddbuffer);
+    if (ih->data->focus_cell != -1)
+      iColorbarDrawFocusCell(ih);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static void iColorbarCallExtentedCb(Ihandle* ih, int idx)
+{
+  IFni extended_cb = (IFni)IupGetCallback(ih, "EXTENDED_CB");
+  if (!extended_cb)
+    return;
+
+  if (extended_cb(ih, idx) == IUP_IGNORE)
+    return;
+
+  iColorbarRenderPartsRepaint(ih, 1, ICOLORBAR_RENDER_ALL);   /* the preview and all the cells are rendered */
+}
+    
+static void iColorbarCallSelectCb(Ihandle* ih, int idx, int type)
+{ 
+  IFnii select_cb;
+
+  if (type == IUP_SECONDARY && !ih->data->show_secondary)
+    return;
+
+  select_cb = (IFnii)IupGetCallback(ih, "SELECT_CB");
+  if (!select_cb)
+    return;
+
+  if (select_cb(ih, idx, type) == IUP_IGNORE)
+    return;
+
+  if (type == IUP_PRIMARY)
+    ih->data->fgcolor_idx = idx;
+  else
+    ih->data->bgcolor_idx = idx;
+
+  iColorbarRenderPartsRepaint(ih, 1, ICOLORBAR_RENDER_NONE);   /* only the preview area is rendered */
+}
+
+static void iColorbarCallCellCb(Ihandle* ih, int idx)
+{
+  char* returned;
+  sIFni cell_cb = (sIFni)IupGetCallback(ih, "CELL_CB");
+  if (!cell_cb)
+    return;
+
+  returned = cell_cb(ih, idx);  /* the application can change the color */
+  if (returned) 
+  {
+    int preview = 0;
+    /* check if the preview area should be rendered */
+    if (idx == ih->data->fgcolor_idx || idx == ih->data->bgcolor_idx)
+      preview = 1;
+
+    ih->data->colors[idx] = cdIupConvertColor(returned);
+    iColorbarRenderPartsRepaint(ih, preview, idx);   /* the preview and the cell are rendered */
+  }
+}
+
+static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
+{
+  if (c != K_LEFT && c != K_UP && c != K_RIGHT && c != K_DOWN &&
+      c != K_HOME && c != K_END &&
+      c != K_SP && c != K_sCR && c != K_sSP && c != K_cSP)
+    return IUP_DEFAULT;
+
+  if (!press || ih->data->focus_cell==-1)
+    return IUP_DEFAULT;
+
+  switch(c)
+  {
+  case K_LEFT:
+    if (ih->data->vertical)
+    {
+      int cells_per_line = ih->data->num_cells / ih->data->num_parts;
+      if (ih->data->focus_cell > cells_per_line)
+        ih->data->focus_cell -= cells_per_line;
+    }
+    else
+    {
+      if (ih->data->focus_cell > 0)
+        ih->data->focus_cell--;
+    }
+    break;
+  case K_DOWN:
+    if (ih->data->vertical)
+    {
+      if (ih->data->focus_cell > 0)
+        ih->data->focus_cell--;
+    }
+    else
+    {
+      int cells_per_line = ih->data->num_cells / ih->data->num_parts;
+      if (ih->data->focus_cell > cells_per_line)
+        ih->data->focus_cell -= cells_per_line;
+    }
+    break;
+  case K_RIGHT:
+    if (ih->data->vertical)
+    {
+      int cells_per_line = ih->data->num_cells / ih->data->num_parts;
+      if (ih->data->focus_cell+cells_per_line < ih->data->num_cells-1)
+        ih->data->focus_cell += cells_per_line;
+    }
+    else
+    {
+      if (ih->data->focus_cell < ih->data->num_cells-1)
+        ih->data->focus_cell++;
+    }
+    break;
+  case K_UP:
+    if (ih->data->vertical)
+    {
+      if (ih->data->focus_cell < ih->data->num_cells-1)
+        ih->data->focus_cell++;
+    }
+    else
+    {
+      int cells_per_line = ih->data->num_cells / ih->data->num_parts;
+      if (ih->data->focus_cell+cells_per_line < ih->data->num_cells-1)
+        ih->data->focus_cell += cells_per_line;
+    }
+    break;
+  case K_HOME:
+    ih->data->focus_cell = 0;
+    break;
+  case K_END:
+    ih->data->focus_cell = ih->data->num_cells-1;
+    break;
+  case K_sCR:
+    iColorbarCallCellCb(ih, ih->data->focus_cell);
+    return IUP_DEFAULT;
+  case K_SP:
+    iColorbarCallSelectCb(ih, ih->data->focus_cell, IUP_PRIMARY);
+    return IUP_DEFAULT;
+  case K_cSP:
+    iColorbarCallSelectCb(ih, ih->data->focus_cell, IUP_SECONDARY);
+    return IUP_DEFAULT;
+  case K_sSP:
+    iColorbarCallExtentedCb(ih, ih->data->focus_cell);
+    return IUP_DEFAULT;
+  }
+
+  if (ih->data->cddbuffer)
+  {
+    cdCanvasFlush(ih->data->cddbuffer);
+    if (ih->data->focus_cell != -1)
+      iColorbarDrawFocusCell(ih);
+  }
+
+  return IUP_DEFAULT;
 }
 
 static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
 {
   int idx;
-  int ret;
-  int preview;
-  char* returned;
 
   if (m == 0)
     return IUP_DEFAULT;
 
   y = cdIupInvertYAxis(y, ih->data->h);
+
   if (b == IUP_BUTTON1 && isdouble(r)) 
   { 
-    sIFni cell_cb = (sIFni)IupGetCallback(ih, "CELL_CB");
-    returned = NULL;
     idx = iColorbarGetIndexColor(ih, x, y); 
-
     if (idx < 0  || idx >= ih->data->num_cells) 
     {
-      ret = iColorbarCheckPreview(ih, x, y);
-
+      int ret = iColorbarCheckPreview(ih, x, y);
       if (ret)
       {
         if (ret == 1)
@@ -730,85 +911,51 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
         }
         else
         {
-          if (ret == -1)  /* PRIMARY */
+          if (ret == IUP_PRIMARY)
             idx = ih->data->fgcolor_idx;
           else
             idx = ih->data->bgcolor_idx;
 
-          if (cell_cb) 
-            returned = cell_cb(ih, idx);   /* the application can change the color */
-
-          if (returned)
-          {                        
-            ih->data->colors[idx] = cdIupConvertColor(returned);
-            iColorbarRenderPartsRepaint(ih, 1, idx);   /* the preview and the cell are rendered */
-          }
+          iColorbarCallCellCb(ih, idx);
         }
       }
 
       return IUP_DEFAULT;
     }
 
-    if (cell_cb)
-      returned = cell_cb(ih, idx);  /* the application can change the color */
+    ih->data->focus_cell = idx;
 
-    if (returned) 
-    {
-      preview = 0;
-      /* check if the preview area should be rendered */
-      if (idx == ih->data->fgcolor_idx || idx == ih->data->bgcolor_idx)
-        preview = 1;
-
-      ih->data->colors[idx] = cdIupConvertColor(returned);
-      iColorbarRenderPartsRepaint(ih, preview, idx);   /* the preview and the cell are rendered */
-    }
+    iColorbarCallCellCb(ih, idx);
   }
   else if (b == IUP_BUTTON1)
   { 
-    IFnii select_cb = (IFnii)IupGetCallback(ih, "SELECT_CB");
     idx = iColorbarGetIndexColor(ih, x, y);
-
     if (idx < 0  || idx >= ih->data->num_cells)
       return IUP_DEFAULT;
 
-    if (select_cb && select_cb(ih, idx, -1) == IUP_IGNORE) 
-      return IUP_DEFAULT;
+    ih->data->focus_cell = idx;
 
-    ih->data->fgcolor_idx = idx;
-    
-    iColorbarRenderPartsRepaint(ih, 1, ICOLORBAR_RENDER_NONE);   /* only the preview area is rendered */
+    iColorbarCallSelectCb(ih, idx, IUP_PRIMARY);
   }
   else if (b == IUP_BUTTON3 && isshift(r)) 
   { 
-    IFni extended_cb = (IFni)IupGetCallback(ih, "EXTENDED_CB");
-    if (extended_cb == NULL)
-      return IUP_DEFAULT;
-
     idx = iColorbarGetIndexColor(ih, x, y); 
     if (idx < 0  || idx >= ih->data->num_cells)
       return IUP_DEFAULT;
 
-    if (extended_cb(ih, idx) == IUP_IGNORE)
-      return IUP_DEFAULT;
+    ih->data->focus_cell = idx;
 
-    iColorbarRenderPartsRepaint(ih, 1, ICOLORBAR_RENDER_ALL);   /* the preview and all the cells are rendered */
+    iColorbarCallExtentedCb(ih, idx);
   }
   else if (b == IUP_BUTTON3) 
   { 
-    IFnii select_cb = (IFnii)IupGetCallback(ih, "SELECT_CB");
-    if (!ih->data->show_secondary)
-      return IUP_DEFAULT;
-
     idx = iColorbarGetIndexColor(ih, x, y); 
     if (idx < 0  || idx >= ih->data->num_cells)
       return IUP_DEFAULT;
 
-    if (select_cb && select_cb(ih, idx, -2) == IUP_IGNORE)
-      return IUP_DEFAULT;
+    ih->data->focus_cell = idx;
 
-    ih->data->bgcolor_idx = idx;
-
-    iColorbarRenderPartsRepaint(ih, 1, ICOLORBAR_RENDER_NONE);   /* only the preview area is rendered */
+    iColorbarCallSelectCb(ih, idx, IUP_SECONDARY);
   }
 
   return IUP_DEFAULT;
@@ -860,6 +1007,7 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   ih->data->vertical  = 1;
   ih->data->squared   = 1;
   ih->data->shadowed  = 1;
+  ih->data->focus_cell = -1;
   ih->data->preview_size = -1;  /* automatic */
   ih->data->fgcolor_idx  = 0;   /* black */
   ih->data->bgcolor_idx  = 15;  /* white */
@@ -880,6 +1028,8 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "RESIZE_CB", (Icallback)iColorbarResize_CB);
   IupSetCallback(ih, "ACTION",    (Icallback)iColorbarRepaint_CB);
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iColorbarButton_CB);
+  IupSetCallback(ih, "FOCUS_CB", (Icallback)iColorbarFocus_CB);
+  IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iColorbarKeyPress_CB);
 
   return IUP_NOERROR;
 }

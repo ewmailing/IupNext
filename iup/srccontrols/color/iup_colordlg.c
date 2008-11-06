@@ -1035,7 +1035,6 @@ Iclass* iupColorBrowserDlgGetClass(void)
 fill so´ funciona depois do resize
 bugs redesenho colorbrowser
 tratar descontinuidade em 360
-focus feedback palette
 
 COMPOSITE/CLIPCHILDREN - Vista
 K_ANY GTK dialog, sem filhos

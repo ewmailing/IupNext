@@ -15,6 +15,9 @@ local ctrl = {
   include = "iupcolorbar.h",
 }
 
+PRIMARY = -1
+SECONDARY = -2
+
 function ctrl.createElement(class, arg)
    return Colorbar(arg.action)
 end

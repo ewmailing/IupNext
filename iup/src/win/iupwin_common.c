@@ -23,6 +23,7 @@
 #include "iup_focus.h"
 #include "iup_image.h"
 #include "iup_dialog.h"
+#include "iup_drvinfo.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
@@ -228,7 +229,7 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
   case WM_KEYUP:
     {
       int ret;
-      if (wp == VK_SNAPSHOT) /* called only on key up */
+      if (wp == VK_SNAPSHOT || wp == VK_RETURN) /* called only on key up */
         ret = iupwinKeyEvent(ih, (int)wp, 1);
       else
         ret = iupwinKeyEvent(ih, (int)wp, 0);
@@ -340,6 +341,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       {
         if (HIWORD(wp) == 0)
         {
+          char key[5];
           Ihandle* bt;
           char* default_but = LOWORD(wp) == IDOK? "DEFAULTENTER": LOWORD(wp) == IDCANCEL? "DEFAULTESC": NULL;
 
@@ -353,10 +355,14 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
             }
           }
 
-          /* try the default buttons */
-          bt = IupGetAttributeHandle(ih, default_but);
-          if (iupObjectCheck(bt) && iupStrEqual(bt->iclass->name, "button"))
-            iupdrvActivate(bt);
+          iupdrvGetKeyState(key);
+          if (iupStrEqual(key, "    "))
+          {
+            /* try the default buttons */
+            bt = IupGetAttributeHandle(ih, default_but);
+            if (iupObjectCheck(bt) && iupStrEqual(bt->iclass->name, "button"))
+              iupdrvActivate(bt);
+          }
         }
       }
       else if (child)

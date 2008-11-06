@@ -153,6 +153,16 @@ default
 <a href="../call/iup_k_any.html">K_ANY</a>,
   <a href="../call/iup_help_cb.html">HELP_CB</a>: All common callbacks are 
 supported.</p>
+<h3><a name="Notes">Notes</a></h3>
+<p>When the control has the focus the keyboard can be used to change the colors 
+and activate the callbacks. Use the arrow keys to move from cell to cell,
+<strong>Home</strong> goes to the first cell, <strong>End</strong> goes to the 
+last cell. <strong>Space</strong> will activate the <strong>SELECT_CB</strong> 
+callback for the primary color, <strong>Ctrl</strong>+<strong>Space</strong> 
+will activate the <strong>SELECT_CB</strong> callback for the secondary color.
+<strong>Shift</strong>+<strong>Space</strong> will activate the <strong>EXTENTED_CB</strong> 
+callback. <strong>Shift</strong>+<strong>Enter</strong> will activate the <strong>
+CELL_CB</strong> callback.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/ctrl/iupcolorbar/">Browse Example Files</a></p>
 <p>Creates a Colorbar for selection of two colors.</p>

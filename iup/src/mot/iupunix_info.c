@@ -254,6 +254,8 @@ void iupdrvGetKeyState(char* key)
   else
     key[3] = ' ';
 
+  key[4] = 0;
+
   XFreeModifiermap(modMap);
 }
 
