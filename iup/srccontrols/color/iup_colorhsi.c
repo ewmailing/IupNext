@@ -222,7 +222,7 @@ static void iColorRGB2HSI(float r, float g, float b, float *h, float *s, float *
   
   if (*s == 0.0f)
   {
-    *h = 360.0f;  /* by definition */
+    /*  *h = <any>  (left unchanged) */
     ImaxS = 1.0f/3.0f;
   }
   else
@@ -240,7 +240,10 @@ static void iColorRGB2HSI(float r, float g, float b, float *h, float *s, float *
     if (Smax == 0.0f)
       *s = 0.0f;
     else
+    {
       *s /= Smax;
+      if (*s > 1.0f) *s = 1.0f;
+    }
 
     ImaxS = iColorHSI_ImaxS((float)H, cosH, sinH);
 
@@ -332,7 +335,7 @@ int iupStrToHSI(const char *str, float *h, float *s, float *i)
   float fh, fs, fi;
   if (!str) return 0;
   if (sscanf(str, "%f %f %f", &fh, &fs, &fi) != 3) return 0;
-  if (fh > 360 || fs > 1 || fi > 1) return 0;
+  if (fh > 359 || fs > 1 || fi > 1) return 0;
   if (fh < 0 || fs < 0 || fi < 0) return 0;
   *h = fh;
   *s = fs;

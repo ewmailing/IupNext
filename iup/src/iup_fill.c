@@ -31,24 +31,31 @@ static int iFillGetDir(Ihandle* ih)
   if (!ih->parent)
     return IUP_FILL_NONE;
 
+  if (ih->data->dir != IUP_FILL_NONE)
+    return ih->data->dir;
+
   /* Its parent must be an IupHbox or an IupVbox. */
   if (ih->parent->iclass->nativetype == IUP_TYPEVOID)
   {
     if (iupStrEqual(ih->parent->iclass->name, "hbox"))
-      return IUP_FILL_HORIZ;
-
-    if (iupStrEqual(ih->parent->iclass->name, "vbox"))
-      return IUP_FILL_VERT;
+      ih->data->dir = IUP_FILL_HORIZ;
+    else if (iupStrEqual(ih->parent->iclass->name, "vbox"))
+      ih->data->dir = IUP_FILL_VERT;
   }
 
-  return IUP_FILL_NONE;
+  return ih->data->dir;
 }
 
 static int iFillMapMethod(Ihandle* ih)
 {
   ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
-  ih->data->dir = iFillGetDir(ih);
+  iFillGetDir(ih);
   return IUP_NOERROR;
+}
+
+static void iFillUnMapMethod(Ihandle* ih)
+{
+  ih->data->dir = IUP_FILL_NONE;
 }
 
 static int iFillSetRasterSizeAttrib(Ihandle* ih, const char* value)
@@ -61,7 +68,7 @@ static int iFillSetRasterSizeAttrib(Ihandle* ih, const char* value)
   else
   {
     int s = 0;
-    if (ih->data->dir == IUP_FILL_NONE)  /* if Fill is not yet a child of a Vbox or Hbox */
+    if (iFillGetDir(ih) == IUP_FILL_NONE)  /* if Fill is not yet a child of a Vbox or Hbox */
     {
       iupAttribSetStr(ih, "SIZE", NULL);
       return 1;
@@ -70,7 +77,7 @@ static int iFillSetRasterSizeAttrib(Ihandle* ih, const char* value)
     iupStrToInt(value, &s);
     if (s > 0) 
     {
-      if (ih->data->dir == IUP_FILL_HORIZ)
+      if (iFillGetDir(ih) == IUP_FILL_HORIZ)
       {
         ih->userwidth = s;  /* inside HBOX */
         ih->userheight = 0;
@@ -96,7 +103,7 @@ static int iFillSetSizeAttrib(Ihandle* ih, const char* value)
   else
   {
     int s = 0;
-    if (ih->data->dir == IUP_FILL_NONE) /* if Fill is not yet a child of a Vbox or Hbox */
+    if (iFillGetDir(ih) == IUP_FILL_NONE) /* if Fill is not yet a child of a Vbox or Hbox */
     {
       iupAttribSetStr(ih, "RASTERSIZE", NULL);
       return 1;
@@ -107,7 +114,7 @@ static int iFillSetSizeAttrib(Ihandle* ih, const char* value)
     {
       int charwidth, charheight;
       iupdrvFontGetCharSize(ih, &charwidth, &charheight);
-      if (ih->data->dir == IUP_FILL_HORIZ)
+      if (iFillGetDir(ih) == IUP_FILL_HORIZ)
       {
         ih->userwidth = iupWIDTH2RASTER(s, charwidth);  /* inside HBOX */
         ih->userheight = 0;
@@ -125,11 +132,11 @@ static int iFillSetSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iFillGetExpandAttrib(Ihandle* ih)
 {
-  if (ih->data->dir == IUP_FILL_NONE) /* if Fill is not yet a child of a Vbox or Hbox */
+  if (iFillGetDir(ih) == IUP_FILL_NONE) /* if Fill is not yet a child of a Vbox or Hbox */
     return "NO";
 
   /* if size is not defined, then expansion on that direction is permited */
-  if (ih->data->dir == IUP_FILL_HORIZ)
+  if (iFillGetDir(ih) == IUP_FILL_HORIZ)
   {
     if (ih->userwidth <= 0)
       return "HORIZONTAL";
@@ -170,12 +177,12 @@ static void iFillComputeNaturalSizeMethod(Ihandle* ih)
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
 
-  if (ih->data->dir == IUP_FILL_NONE) /* if Fill is not a child of a Vbox or Hbox */
+  if (iFillGetDir(ih) == IUP_FILL_NONE) /* if Fill is not a child of a Vbox or Hbox */
     return;
 
   /* if size is not defined, then expansion on that direction is permited */
 
-  if (ih->data->dir == IUP_FILL_HORIZ)
+  if (iFillGetDir(ih) == IUP_FILL_HORIZ)
   {
     if (ih->naturalwidth <= 0)
       ih->expand = IUP_EXPAND_W0;
@@ -214,6 +221,7 @@ Iclass* iupFillGetClass(void)
   /* Class functions */
   ic->Create = iFillCreateMethod;
   ic->Map = iFillMapMethod;
+  ic->UnMap = iFillUnMapMethod;
   ic->ComputeNaturalSize = iFillComputeNaturalSizeMethod;
 
   ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;

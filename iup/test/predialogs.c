@@ -124,9 +124,9 @@ void new_color(void)
   IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
   IupSetAttribute(dlg, "VALUE", "128 0 255");
   IupSetAttribute(dlg, "ALPHA", "142");
-  IupSetAttribute(dlg, "COLORTABLE", "128 0 255;0 0 128;253 20 119");
+  //IupSetAttribute(dlg, "COLORTABLE", ";;177 29 234;;;0 0 23;253 20 119");
   IupSetAttribute(dlg, "SHOWHEX", "YES");
-  //IupSetAttribute(dlg, "SHOWCOLORTABLE", "YES");
+  IupSetAttribute(dlg, "SHOWCOLORTABLE", "YES");
   //IupSetAttribute(dlg, "SHOWALPHA", "YES");
   IupSetAttribute(dlg, "TITLE", "IupColorDlg Test");
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);

@@ -32,13 +32,11 @@
 #include "iup_image.h"
 #include "iup_colorhsi.h"
 
-
-const char* default_colortable_cells[20] = {
-       {"0 0 0"}, {"255 255 255"}, {"127 127 127"},     {"255 0 0"},
-  {"160 32 240"},     {"0 0 255"}, {"173 216 230"},     {"0 255 0"},
-   {"255 255 0"},   {"255 165 0"}, {"230 230 250"},   {"165 42 42"},
-  {"139 105 20"},  {"30 144 255"}, {"255 192 203"}, {"144 238 144"},
-    {"26 26 26"},    {"77 77 77"}, {"191 191 191"}, {"229 229 229"}
+       
+const char* default_colortable_cells[20] = 
+{
+  {"0 0 0"}, {"64 64 64"}, {"128 128 128"}, {"144 144 144"}, {"0 128 128"}, {"128 0 128"}, {"128 128 0"}, {"128 0 0"}, {"0 128 0"}, {"0 0 128"},
+  {"255 255 255"}, {"240 240 240"}, {"224 224 224"}, {"192 192 192"}, {"0 255 255"}, {"255 0 255"}, {"255 255 0"}, {"255 0 0"}, {"0 255 0"}, {"0 0 255"},
 };
 
 typedef struct _IcolorDlgData
@@ -153,12 +151,21 @@ static void iColorBrowserDlgRGB_TXT_Update(IcolorDlgData* colordlg_data)
   IupSetfAttribute(colordlg_data->blue_txt, "VALUE", "%d", (int) colordlg_data->blue);
 }
 
-/*****************************************\
-* Sets the RGB color in the Color browser *
-\*****************************************/
-static void iColorBrowserDlgView_Update(IcolorDlgData* colordlg_data)
+static void iColorBrowserDlgBrowserRGB_Update(IcolorDlgData* colordlg_data)
 {
   IupSetfAttribute(colordlg_data->color_browser, "RGB", "%d %d %d", colordlg_data->red, colordlg_data->green, colordlg_data->blue);
+}
+
+static void iColorBrowserDlgBrowserHSI_Update(IcolorDlgData* colordlg_data)
+{
+  IupSetfAttribute(colordlg_data->color_browser, "HSI", "%f %f %f", (double)colordlg_data->hue, (double)colordlg_data->saturation, (double)colordlg_data->intensity);
+}
+
+/*****************************************\
+* Sets the RGB color in the Color Canvas *
+\*****************************************/
+static void iColorBrowserDlgColor_Update(IcolorDlgData* colordlg_data)
+{
   colordlg_data->color = cdEncodeColor(colordlg_data->red, colordlg_data->green, colordlg_data->blue);
   colordlg_data->color = cdEncodeAlpha(colordlg_data->color, colordlg_data->alpha);
   iColorBrowserDlgColorCnvRepaint(colordlg_data);
@@ -167,17 +174,19 @@ static void iColorBrowserDlgView_Update(IcolorDlgData* colordlg_data)
 static void iColorBrowserDlgHSIChanged(IcolorDlgData* colordlg_data) 
 {
   iColorBrowserDlgHSI2RGB(colordlg_data);
+  iColorBrowserDlgBrowserHSI_Update(colordlg_data);
   iColorBrowserDlgHex_TXT_Update(colordlg_data);
   iColorBrowserDlgRGB_TXT_Update(colordlg_data);
-  iColorBrowserDlgView_Update(colordlg_data);
+  iColorBrowserDlgColor_Update(colordlg_data);
 }
 
 static void iColorBrowserDlgRGBChanged(IcolorDlgData* colordlg_data) 
 {
   iColorBrowserDlgRGB2HSI(colordlg_data);
+  iColorBrowserDlgBrowserRGB_Update(colordlg_data);
   iColorBrowserDlgHex_TXT_Update(colordlg_data);
   iColorBrowserDlgHSI_TXT_Update(colordlg_data);
-  iColorBrowserDlgView_Update(colordlg_data);
+  iColorBrowserDlgColor_Update(colordlg_data);
 }
 
 /***********************************************\
@@ -195,8 +204,7 @@ static void iColorBrowserDlgInit_Defaults(IcolorDlgData* colordlg_data)
   IupSetAttribute(colordlg_data->green_txt, "VALUE", "0");
   IupSetAttribute(colordlg_data->blue_txt,  "VALUE", "0");
 
-  colordlg_data->hue = 360;
-  IupSetAttribute(colordlg_data->hue_txt,        "VALUE", "360");
+  IupSetAttribute(colordlg_data->hue_txt,        "VALUE", "0");
   IupSetAttribute(colordlg_data->saturation_txt, "VALUE", "0");
   IupSetAttribute(colordlg_data->intensity_txt,  "VALUE", "0");
   
@@ -279,7 +287,7 @@ static int iColorBrowserDlgRedAction_CB(Ihandle* ih, int c, char *value)
 
   if (iupStrToInt(value, &vi))
   {
-    colordlg_data->red   = (unsigned char)vi;
+    colordlg_data->red = (unsigned char)vi;
     iColorBrowserDlgRGBChanged(colordlg_data);
   }
 
@@ -291,7 +299,7 @@ static int iColorBrowserDlgRedSpin_CB(Ihandle* ih, int vi)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
 
-  colordlg_data->red   = (unsigned char)vi;
+  colordlg_data->red = (unsigned char)vi;
   iColorBrowserDlgRGBChanged(colordlg_data);
 
   return IUP_DEFAULT;
@@ -304,7 +312,7 @@ static int iColorBrowserDlgGreenAction_CB(Ihandle* ih, int c, char *value)
 
   if (iupStrToInt(value, &vi))
   {
-    colordlg_data->green   = (unsigned char)vi;
+    colordlg_data->green = (unsigned char)vi;
     iColorBrowserDlgRGBChanged(colordlg_data);
   }
 
@@ -316,7 +324,7 @@ static int iColorBrowserDlgGreenSpin_CB(Ihandle* ih, int vi)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
 
-  colordlg_data->green   = (unsigned char)vi;
+  colordlg_data->green = (unsigned char)vi;
   iColorBrowserDlgRGBChanged(colordlg_data);
 
   return IUP_DEFAULT;
@@ -329,7 +337,7 @@ static int iColorBrowserDlgBlueAction_CB(Ihandle* ih, int c, char *value)
 
   if (iupStrToInt(value, &vi))
   {
-    colordlg_data->blue   = (unsigned char)vi;
+    colordlg_data->blue = (unsigned char)vi;
     iColorBrowserDlgRGBChanged(colordlg_data);
   }
 
@@ -341,7 +349,7 @@ static int iColorBrowserDlgBlueSpin_CB(Ihandle* ih, int vi)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
 
-  colordlg_data->blue   = (unsigned char)vi;
+  colordlg_data->blue = (unsigned char)vi;
   iColorBrowserDlgRGBChanged(colordlg_data);
 
   return IUP_DEFAULT;
@@ -354,7 +362,7 @@ static int iColorBrowserDlgHueAction_CB(Ihandle* ih, int c, char *value)
 
   if (iupStrToInt(value, &vi))
   {
-    colordlg_data->hue   = (float)vi;
+    colordlg_data->hue = (float)vi;
     iColorBrowserDlgHSIChanged(colordlg_data);
   }
 
@@ -379,7 +387,7 @@ static int iColorBrowserDlgSaturationAction_CB(Ihandle* ih, int c, char *value)
 
   if (iupStrToInt(value, &vi))
   {
-    colordlg_data->saturation   = (float)vi/100.0f;
+    colordlg_data->saturation = (float)vi/100.0f;
     iColorBrowserDlgHSIChanged(colordlg_data);
   }
 
@@ -429,9 +437,10 @@ static int iColorBrowserDlgHexAction_CB(Ihandle* ih, int c, char* value)
   if (iupStrHexToRGB(value, &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue))
   {
     iColorBrowserDlgRGB2HSI(colordlg_data);
+    iColorBrowserDlgBrowserRGB_Update(colordlg_data);
     iColorBrowserDlgHSI_TXT_Update(colordlg_data);
     iColorBrowserDlgRGB_TXT_Update(colordlg_data);
-    iColorBrowserDlgView_Update(colordlg_data);
+    iColorBrowserDlgColor_Update(colordlg_data);
   }
 
   (void)c;
@@ -674,13 +683,31 @@ static char* iColorBrowserDlgGetValueAttrib(Ihandle* ih)
   return buffer;
 }
 
+static int iupStrToHSI_Int(const char *str, int *h, int *s, int *i)
+{
+  int fh, fs, fi;
+  if (!str) return 0;
+  if (sscanf(str, "%d %d %d", &fh, &fs, &fi) != 3) return 0;
+  if (fh > 359 || fs > 100 || fi > 100) return 0;
+  if (fh < 0 || fs < 0 || fi < 0) return 0;
+  *h = fh;
+  *s = fs;
+  *i = fi;
+  return 1;
+}
+
 static int iColorBrowserDlgSetHSIAttrib(Ihandle* ih, const char* value)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  int hue, saturation, intensity;
 
-  if (!iupStrToHSI(value, &colordlg_data->hue, &colordlg_data->saturation, &colordlg_data->intensity))
+  if (!iupStrToHSI_Int(value, &hue, &saturation, &intensity))
     return 0;
   
+  colordlg_data->hue = hue;
+  colordlg_data->saturation = (float)saturation/100.0f;
+  colordlg_data->intensity = (float)intensity/100.0f;
+
   iColorBrowserDlgHSI2RGB(colordlg_data);
   colordlg_data->previous_color = cdEncodeColor(colordlg_data->red, colordlg_data->green, colordlg_data->blue);
   colordlg_data->previous_color = cdEncodeAlpha(colordlg_data->previous_color, colordlg_data->alpha);
@@ -693,7 +720,7 @@ static char* iColorBrowserDlgGetHSIAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(100);
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
-  sprintf(buffer, "%f %f %f", (double)colordlg_data->hue, (double)colordlg_data->saturation, (double)colordlg_data->intensity);
+  sprintf(buffer, "%d %d %d", (int)colordlg_data->hue, (int)(colordlg_data->saturation*100), (int)(colordlg_data->intensity*100));
   return buffer;
 }
 
@@ -708,9 +735,10 @@ static int iColorBrowserDlgSetHexAttrib(Ihandle* ih, const char* value)
   colordlg_data->previous_color = cdEncodeAlpha(colordlg_data->previous_color, colordlg_data->alpha);
 
   iColorBrowserDlgRGB2HSI(colordlg_data);
+  iColorBrowserDlgBrowserRGB_Update(colordlg_data);
   iColorBrowserDlgHSI_TXT_Update(colordlg_data);
   iColorBrowserDlgRGB_TXT_Update(colordlg_data);
-  iColorBrowserDlgView_Update(colordlg_data);
+  iColorBrowserDlgColor_Update(colordlg_data);
   return 0;
 }
 
@@ -910,12 +938,12 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->hue_txt, "SIZE", "32");
   IupSetAttribute(colordlg_data->hue_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->hue_txt, "SPINMIN", "0");
-  IupSetAttribute(colordlg_data->hue_txt, "SPINMAX", "359");  /* avoid 360 */
+  IupSetAttribute(colordlg_data->hue_txt, "SPINMAX", "359");
   IupSetAttribute(colordlg_data->hue_txt, "SPINWRAP", "YES");
   IupSetAttribute(colordlg_data->hue_txt, "SPININC", "1");
   IupSetCallback(colordlg_data->hue_txt, "ACTION", (Icallback)iColorBrowserDlgHueAction_CB);
   IupSetCallback(colordlg_data->hue_txt, "SPIN_CB", (Icallback)iColorBrowserDlgHueSpin_CB);
-  IupSetAttribute(colordlg_data->hue_txt, "MASKINT", "0:360");
+  IupSetAttribute(colordlg_data->hue_txt, "MASKINT", "0:359");
 
   colordlg_data->saturation_txt = IupText(NULL);              /* Saturation value */
   IupSetAttribute(colordlg_data->saturation_txt, "SIZE", "32");
@@ -1032,9 +1060,8 @@ Iclass* iupColorBrowserDlgGetClass(void)
 }
 
 /*
-fill so´ funciona depois do resize
-bugs redesenho colorbrowser
-tratar descontinuidade em 360
+pulo ao mudar intensidade
+bug redesenho
 
 COMPOSITE/CLIPCHILDREN - Vista
 K_ANY GTK dialog, sem filhos

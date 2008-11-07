@@ -67,7 +67,7 @@ struct _IcontrolData
   long bgcolor;
 
   /* attributes */
-  float hue,          /* 0<=H<=360 */
+  float hue,          /* 0<=H<=359 */
         saturation,   /* 0<=S<=1 */
         intensity;    /* 0<=I<=1 */
   unsigned char red, green, blue;  /* 0<=x<=255 */
@@ -311,8 +311,11 @@ static void iColorBrowserRenderImageSI(Ihandle* ih)
 
 static void iColorBrowserUpdateCursorSI(Ihandle* ih)
 {
-  ih->data->si_y = (int)(ih->data->intensity*(ih->data->Iy2 - ih->data->Iy1)) + ih->data->Iy1;
-  ih->data->si_x = (int)(ih->data->saturation*iColorBrowserSXmax(ih, ih->data->si_y)) + ih->data->Ix;
+  int x;
+  int y = (int)(ih->data->intensity*(ih->data->Iy2 - ih->data->Iy1)) + ih->data->Iy1;
+  ih->data->si_y = iupROUND(y);
+  x = (int)(ih->data->saturation*iColorBrowserSXmax(ih, ih->data->si_y)) + ih->data->Ix;
+  ih->data->si_x = iupROUND(x);
 }
 
 static void iColorBrowserSetCursorSI(Ihandle* ih, int x, int y)
@@ -350,8 +353,10 @@ static void iColorBrowserUpdateCursorHue(Ihandle* ih)
   float angle = ih->data->hue * ICB_DEG2RAD;
   float cos_angle = cosf(angle);
   float sin_angle = sinf(angle);
-  ih->data->h_x = (int)(rc*cos_angle + ih->data->xc);
-  ih->data->h_y = (int)(rc*sin_angle + ih->data->yc);
+  float x = rc*cos_angle + ih->data->xc;
+  float y = rc*sin_angle + ih->data->yc;
+  ih->data->h_x = iupROUND(x);
+  ih->data->h_y = iupROUND(y);
 }
 
 static void iColorBrowserSetCursorHue(Ihandle* ih, int x, int y)
@@ -679,13 +684,19 @@ static char* iColorBrowserGetHSIAttrib(Ihandle* ih)
 
 static int iColorBrowserSetHSIAttrib(Ihandle* ih, const char* value)
 {
+  float old_hue = ih->data->hue,
+        old_saturation = ih->data->saturation,
+        old_intensity = ih->data->intensity;
+
   if (!iupStrToHSI(value, &ih->data->hue, &ih->data->saturation, &ih->data->intensity))
     return 0;
   
   if (ih->data->cddbuffer)
   {
-    iColorBrowserUpdateCursorHue(ih);
-    iColorBrowserUpdateCursorSI(ih);
+    if (old_hue != ih->data->hue) 
+      iColorBrowserUpdateCursorHue(ih);
+    if (old_saturation != ih->data->saturation || old_intensity != ih->data->intensity) 
+      iColorBrowserUpdateCursorSI(ih);
     iColorBrowserHSI2RGB(ih);
     iColorBrowserRenderImageSI(ih);
     iColorBrowserUpdateDisplay(ih);
