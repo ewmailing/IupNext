@@ -1895,12 +1895,14 @@ static int iTabsKeyPress_CB(Ihandle* ih, int c, int press)
     int result;
     int next_tab = iTabsGetNextTab(ih);
     if (next_tab == -1)
-      return IUP_DEFAULT;
+      return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
 
     result = iTabsCallTabChangeCb(ih, iTabsGetTabIhandle(ih, next_tab), 
                                       iTabsGetTabIhandle(ih, ih->data->current_tab));
     if (result != IUP_IGNORE)
       iTabsSetNewCurrentTab(ih, next_tab);
+
+    return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
   }
   else if (((c == K_LEFT || c == K_sLEFT) && (ih->data->tabs_type == ITABS_TOP  || ih->data->tabs_type == ITABS_BOTTOM)) || 
           ((c == K_UP   || c == K_sUP)   && (ih->data->tabs_type == ITABS_LEFT || ih->data->tabs_type == ITABS_RIGHT)))
@@ -1908,12 +1910,14 @@ static int iTabsKeyPress_CB(Ihandle* ih, int c, int press)
     int result;
     int previous_tab = iTabsGetPreviousTab(ih);
     if (previous_tab == -1)
-      return IUP_DEFAULT;
+      return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
 
     result = iTabsCallTabChangeCb(ih, iTabsGetTabIhandle(ih, previous_tab), 
                                       iTabsGetTabIhandle(ih, ih->data->current_tab));
     if (result != IUP_IGNORE)
       iTabsSetNewCurrentTab(ih, previous_tab);
+
+    return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
   }
 
   return IUP_DEFAULT;

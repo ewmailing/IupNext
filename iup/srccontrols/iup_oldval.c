@@ -474,7 +474,7 @@ static int iValKeypress_CB(Ihandle *ih, int c, int press)
   cb = (IFnd) IupGetCallback(ih, cb_name);
   if (cb) cb(ih,ih->data->val);
 
-  return IUP_DEFAULT;
+  return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
 }
 
 static int iValWheel_CB(Ihandle *ih, float delta)

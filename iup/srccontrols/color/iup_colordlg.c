@@ -696,7 +696,7 @@ static int iupStrToHSI_Int(const char *str, int *h, int *s, int *i)
   return 1;
 }
 
-static int iColorBrowserDlgSetHSIAttrib(Ihandle* ih, const char* value)
+static int iColorBrowserDlgSetValueHSIAttrib(Ihandle* ih, const char* value)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
   int hue, saturation, intensity;
@@ -704,7 +704,7 @@ static int iColorBrowserDlgSetHSIAttrib(Ihandle* ih, const char* value)
   if (!iupStrToHSI_Int(value, &hue, &saturation, &intensity))
     return 0;
   
-  colordlg_data->hue = hue;
+  colordlg_data->hue = (float)hue;
   colordlg_data->saturation = (float)saturation/100.0f;
   colordlg_data->intensity = (float)intensity/100.0f;
 
@@ -716,7 +716,7 @@ static int iColorBrowserDlgSetHSIAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static char* iColorBrowserDlgGetHSIAttrib(Ihandle* ih)
+static char* iColorBrowserDlgGetValueHSIAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(100);
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
@@ -780,11 +780,11 @@ static int iColorBrowserDlgSetColorTableAttrib(Ihandle* ih, const char* value)
 
   while (value && *value && i < 20)
   {
-    if (!iupStrToRGB(value, &r, &g, &b))
-      return 0;
-
-    sprintf(str, "CELL%d", i);
-    IupSetfAttribute(colordlg_data->colortable_cbar, str, "%d %d %d", (int)r, (int)g, (int)b);
+    if (iupStrToRGB(value, &r, &g, &b))
+    {
+      sprintf(str, "CELL%d", i);
+      IupSetfAttribute(colordlg_data->colortable_cbar, str, "%d %d %d", (int)r, (int)g, (int)b);
+    }
 
     value = strchr(value, ';');
     if (value) value++;
@@ -854,13 +854,14 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   colordlg_data->color_cnv = IupCanvas(NULL);  /* Canvas of the color */
   IupSetAttribute(colordlg_data->color_cnv, "SIZE", "x12");
   IupSetAttribute(colordlg_data->color_cnv, "BORDER", "YES");
+  IupSetAttribute(colordlg_data->color_cnv, "CANFOCUS", "NO");
   IupSetAttribute(colordlg_data->color_cnv, "EXPAND", "HORIZONTAL");
   IupSetCallback (colordlg_data->color_cnv, "ACTION", (Icallback)iColorBrowserDlgColorCnvRepaint_CB);
   IupSetCallback (colordlg_data->color_cnv, "MAP_CB", (Icallback)iColorBrowserDlgColorCnvMap_CB);
   IupSetCallback (colordlg_data->color_cnv, "UNMAP_CB", (Icallback)iColorBrowserDlgColorCnvUnMap_CB);
 
   colordlg_data->colorhex_txt = IupText(NULL);      /* Hex of the color */
-  IupSetAttribute(colordlg_data->colorhex_txt, "SIZE", "32");
+  IupSetAttribute(colordlg_data->colorhex_txt, "SIZE", "40");
   IupSetCallback (colordlg_data->colorhex_txt, "ACTION", (Icallback)iColorBrowserDlgHexAction_CB);
   IupSetAttribute(colordlg_data->colorhex_txt, "MASK", "#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]");
 
@@ -1049,7 +1050,7 @@ Iclass* iupColorBrowserDlgGetClass(void)
   iupClassRegisterAttribute(ic, "STATUS", iColorBrowserDlgGetStatusAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", iColorBrowserDlgGetValueAttrib, iColorBrowserDlgSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ALPHA", iColorBrowserDlgGetAlphaAttrib, iColorBrowserDlgSetAlphaAttrib, "255", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HSI", iColorBrowserDlgGetHSIAttrib, iColorBrowserDlgSetHSIAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUEHSI", iColorBrowserDlgGetValueHSIAttrib, iColorBrowserDlgSetValueHSIAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HEX", iColorBrowserDlgGetHexAttrib, iColorBrowserDlgSetHexAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWALPHA", NULL, iColorBrowserDlgSetShowAlphaAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWCOLORTABLE", NULL, iColorBrowserDlgSetShowColorTableAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
@@ -1060,9 +1061,6 @@ Iclass* iupColorBrowserDlgGetClass(void)
 }
 
 /*
-pulo ao mudar intensidade
-bug redesenho
-
-COMPOSITE/CLIPCHILDREN - Vista
 K_ANY GTK dialog, sem filhos
+COMPOSITE/CLIPCHILDREN - Vista
 */

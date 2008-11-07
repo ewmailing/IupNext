@@ -872,7 +872,7 @@ static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
       iColorbarDrawFocusCell(ih);
   }
 
-  return IUP_DEFAULT;
+  return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
 }
 
 static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)

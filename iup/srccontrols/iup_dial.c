@@ -571,7 +571,7 @@ static int iDialKeyPress_CB(Ihandle* ih, int c, int press)
   if (cb)
     cb(ih, ih->data->angle * ih->data->unit);
 
-  return IUP_DEFAULT;
+  return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
 }
 
 static int iDialWheel_CB(Ihandle* ih, float delta)

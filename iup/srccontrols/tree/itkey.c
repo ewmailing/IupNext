@@ -234,5 +234,5 @@ int iTreeKey(Ihandle* ih, int c)
       return IUP_CONTINUE;
   }
   
-  return IUP_IGNORE;
+  return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
 }

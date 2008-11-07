@@ -668,7 +668,7 @@ static int iColorBrowserKeypress_CB(Ihandle* ih, int c, int press)
   iColorBrowserUpdateDisplay(ih);
   iColorBrowserCallChangeCb(ih);
 
-  return IUP_DEFAULT;
+  return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
 }
 
 
