@@ -1061,6 +1061,5 @@ Iclass* iupColorBrowserDlgGetClass(void)
 }
 
 /*
-K_ANY GTK dialog, sem filhos
 COMPOSITE/CLIPCHILDREN - Vista
 */

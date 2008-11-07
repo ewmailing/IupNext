@@ -391,8 +391,8 @@ static int gtkDialogMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "show-help",          G_CALLBACK(iupgtkShowHelp), ih);
 
-  /* NOT necessary because the iupgtkKeyPressEvent of the control with the focus will propagate the key up to the dialog. */
-  /* If enabled, when a Key callback is defined at the dialog, it will be called twice */
+  /* The iupgtkKeyPressEvent of the control with the focus will propagate the key up to the dialog. */
+  /* Inside iupgtkKeyPressEvent we test this to avoid duplicate calls. */
   g_signal_connect(G_OBJECT(ih->handle), "key-press-event",    G_CALLBACK(iupgtkKeyPressEvent), ih);
 
   g_signal_connect(G_OBJECT(ih->handle), "configure-event",    G_CALLBACK(gtkDialogConfigureEvent), ih);
