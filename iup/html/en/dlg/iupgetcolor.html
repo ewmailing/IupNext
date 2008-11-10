@@ -20,9 +20,7 @@
 
 <h2>IupGetColor</h2>
 <p>Shows a modal dialog which allows the user 
-  to select a color.</p>
-<p>This dialog is included in the 
-<a href="../iupcontrols.html">Controls Library</a>. </p>
+  to select a color. Based on <a href="iupcolordlg.html">IupColorDlg</a>.</p>
 <h3><a name="Creation">Creation</a> and Show</h3>
 <dl>
   <dd>
@@ -47,16 +45,10 @@ iup.GetColor(<strong>x</strong>, <strong>y[, r, g, b</strong>: number]) -&gt; (<
   </dd>
 </dl>
 <h3><a name="Notes">Notes</a></h3>
-<p>In systems with few colors available (256), 
-  this function will show the colors by automatically performing dithering, providing good results. However, if only a 
-  few colors are available at the system&#8217;s palette, strange artifacts may appear.</p>
 <p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 
   global attribute called &quot;ICON&quot; as the dialog icon if it is defined.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/ctrl/iupgetcolor/">Browse Example Files</a></p>
-<p align="center">
-<img ALIGN="CENTER" alt="iupgetcolor.gif" src="iupgetcolor.gif" width="374" height="222">
-</p>
 <h3><a name="SeeAlso">See Also</a></h3>
 
 <p><a href="iupmessage.html">IupMessage</a>, 

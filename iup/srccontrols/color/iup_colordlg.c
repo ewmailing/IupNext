@@ -35,8 +35,8 @@
        
 const char* default_colortable_cells[20] = 
 {
-  {"0 0 0"}, {"64 64 64"}, {"128 128 128"}, {"144 144 144"}, {"0 128 128"}, {"128 0 128"}, {"128 128 0"}, {"128 0 0"}, {"0 128 0"}, {"0 0 128"},
-  {"255 255 255"}, {"240 240 240"}, {"224 224 224"}, {"192 192 192"}, {"0 255 255"}, {"255 0 255"}, {"255 255 0"}, {"255 0 0"}, {"0 255 0"}, {"0 0 255"},
+  "0 0 0", "64 64 64", "128 128 128", "144 144 144", "0 128 128", "128 0 128", "128 128 0", "128 0 0", "0 128 0", "0 0 128",
+  "255 255 255", "240 240 240", "224 224 224", "192 192 192", "0 255 255", "255 0 255", "255 255 0", "255 0 0", "0 255 0", "0 0 255"
 };
 
 typedef struct _IcolorDlgData
@@ -724,7 +724,7 @@ static char* iColorBrowserDlgGetValueHSIAttrib(Ihandle* ih)
   return buffer;
 }
 
-static int iColorBrowserDlgSetHexAttrib(Ihandle* ih, const char* value)
+static int iColorBrowserDlgSetValueHexAttrib(Ihandle* ih, const char* value)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
 
@@ -742,7 +742,7 @@ static int iColorBrowserDlgSetHexAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static char* iColorBrowserDlgGetHexAttrib(Ihandle* ih)
+static char* iColorBrowserDlgGetValueHexAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(100);
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
@@ -1051,7 +1051,7 @@ Iclass* iupColorBrowserDlgGetClass(void)
   iupClassRegisterAttribute(ic, "VALUE", iColorBrowserDlgGetValueAttrib, iColorBrowserDlgSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ALPHA", iColorBrowserDlgGetAlphaAttrib, iColorBrowserDlgSetAlphaAttrib, "255", IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUEHSI", iColorBrowserDlgGetValueHSIAttrib, iColorBrowserDlgSetValueHSIAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HEX", iColorBrowserDlgGetHexAttrib, iColorBrowserDlgSetHexAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUEHEX", iColorBrowserDlgGetValueHexAttrib, iColorBrowserDlgSetValueHexAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWALPHA", NULL, iColorBrowserDlgSetShowAlphaAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWCOLORTABLE", NULL, iColorBrowserDlgSetShowColorTableAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWHEX", NULL, iColorBrowserDlgSetShowHexAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
@@ -1059,7 +1059,3 @@ Iclass* iupColorBrowserDlgGetClass(void)
 
   return ic;
 }
-
-/*
-COMPOSITE/CLIPCHILDREN - Vista
-*/

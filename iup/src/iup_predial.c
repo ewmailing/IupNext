@@ -73,6 +73,7 @@ int IupListDialog (int tipo, const char *titulo, int tam, const char *lista[],
   }
   sprintf(lastop,"%d",tam+1);
   IupSetAttribute(lst,lastop,NULL);
+  IupSetAttribute(lst,"EXPAND","YES");
 
   ok = IupButton("OK", NULL);
   IupSetAttribute (ok   ,"SIZE" ,"50x");
@@ -85,7 +86,7 @@ int IupListDialog (int tipo, const char *titulo, int tam, const char *lista[],
   IupSetHandle( "IupListCancelButton", cancel );
 
   button_box = IupHbox(
-    IupSetAttributes(IupFill(), "EXPAND=HORIZONTAL"),  // TODO: this is useless
+    IupFill(), 
     ok,
     IupSetAttributes(IupFill(), "SIZE=1x"),
     cancel,
@@ -328,7 +329,7 @@ int  iupDataEntry  (int    maxlin,
   IupSetHandle("iupDataEntryCancelButton", cancel );
 
   button_box = IupHbox(
-    IupSetAttributes(IupFill(), "EXPAND=HORIZONTAL"),
+    IupFill(), 
     ok,
     IupSetAttributes(IupFill(), "SIZE=1x"),
     cancel,
@@ -437,7 +438,7 @@ int IupGetText(const char* title, char* text)
   IupSetHandle( "IupGetTextCancelButton", cancel );
 
   button_box = IupHbox(
-    IupSetAttributes(IupFill(), "EXPAND=HORIZONTAL"),
+    IupFill(), 
     ok,
     IupSetAttributes(IupFill(), "SIZE=1x"),
     cancel,
