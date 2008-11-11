@@ -108,7 +108,7 @@ static int winColorDlgPopup(Ihandle* ih, int x, int y)
     choosecolor.Flags |= CC_SHOWHELP;
 
   choosecolor.Flags |= CC_ENABLEHOOK;
-  choosecolor.lpfnHook = (LPCCHOOKPROC)winColorDlgHookProc;    
+  choosecolor.lpfnHook = (LPCCHOOKPROC)winColorDlgHookProc;
 
   if (!ChooseColor(&choosecolor))
   {
