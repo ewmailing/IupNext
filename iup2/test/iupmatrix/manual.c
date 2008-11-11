@@ -199,8 +199,8 @@ Ihandle *create_mat(void)
   //IupSetAttribute(mat,"FONT*:2", "Courier::12");
   IupSetAttribute(mat,"SORTSIGN1","UP");
 //  IupSetAttribute(mat,"SORTSIGN2","DOWN");
-  IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 255");
-  IupSetAttribute(mat,"CHECKFRAMECOLOR","YES");
+//  IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 255");
+//  IupSetAttribute(mat,"CHECKFRAMECOLOR","YES");
 
   IupSetCallback(mat,"LEAVEITEM_CB",(Icallback)leave);
   IupSetCallback(mat,"ENTERITEM_CB",(Icallback)enter);

@@ -3,7 +3,7 @@
  * draw functions
  *
  * See Copyright Notice in iup.h
- * $Id: imdraw.c,v 1.1 2008-10-17 06:20:15 scuri Exp $
+ * $Id: imdraw.c,v 1.2 2008-11-11 18:18:11 scuri Exp $
  */
 
 #include <assert.h>
@@ -1027,18 +1027,13 @@ void iupmatDrawCells(Ihandle *h, int l1, int c1, int l2, int c2)
    iupmatDrawEmptyArea(h,0,oldx2,y2,oldy2);
  }
 
-
  /***** Exibe os valores das celulas */
  xc1 = x1;
  yc1 = y1;
 
  iupGetColor(h, IUP_FRAMECOLOR, &r, &g, &b);
  framecolor = cdEncodeColor((unsigned char) r, (unsigned char) g, (unsigned char) b);
-// cdCanvasForeground(mat->cddbuffer, framecolor);
 
-
- /* primeira linha vertical (inclui todas as linhas na regiao) */
-// CdLine(xc1-1,y1,xc1-1,y2-1);
  for(j=c1;j<=c2;j++)  /* Para todas as colunas na regiao */
  {
   if (mat_w(mat)[j] == 0)
@@ -1048,8 +1043,6 @@ void iupmatDrawCells(Ihandle *h, int l1, int c1, int l2, int c2)
 
   xc2 = xc1 + (j==mat_lc(mat)?mat_wlc(mat):mat_w(mat)[j]);
 
-  /* primeira linha horizontal (somente desta coluna) */
-  CdLine(xc1,yc1-1,xc2-1,yc1-1);
   for(i=l1;i<=l2;i++)   /* Para todas as linhas na regiao */
   {
    if (mat_h(mat)[i] == 0)
@@ -1110,8 +1103,6 @@ void iupmatDrawCells(Ihandle *h, int l1, int c1, int l2, int c2)
 
   xc1 = xc2;
   yc1 = y1;
-  /* linha vertical (inclui todas as linhas na regiao) */
-//  CdLine(xc1-1,y1,xc1-1,y2-1);
  }
 }
 

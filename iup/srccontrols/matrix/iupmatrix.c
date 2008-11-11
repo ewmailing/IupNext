@@ -2,7 +2,7 @@
  * \brief iupmatrix control core
  *
  * See Copyright Notice in iup.h
- * $Id: iupmatrix.c,v 1.2 2008-11-03 13:13:16 scuri Exp $
+ * $Id: iupmatrix.c,v 1.3 2008-11-11 18:18:11 scuri Exp $
  */
 
 #include <stdio.h>  /*sprintf*/
@@ -134,6 +134,23 @@ static int iMatrixSetCaretAttrib(Ihandle* ih, const char* value)
 static char* iMatrixGetCaretAttrib(Ihandle* ih)
 {
   return IupGetAttribute(ih->data->texth, "CARET");
+}
+
+static int iMatrixSetCheckFrameColorAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "YES"))
+    ih->data->checkframecolor = 1;
+  else
+    ih->data->checkframecolor = 0;
+  return 0;
+}
+
+static char* iMatrixGetCheckFrameColorAttrib(Ihandle* ih)
+{
+  if (ih->data->checkframecolor)
+    return "YES";
+  else
+    return "NO";
 }
 
 static int iMatrixSetSelectionAttrib(Ihandle* ih, const char* value)
@@ -1025,6 +1042,7 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttribute(ic, "CARET", iMatrixGetCaretAttrib, iMatrixSetCaretAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", iMatrixGetSelectionAttrib, iMatrixSetSelectionAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "CHECKFRAMECOLOR", iMatrixGetCheckFrameColorAttrib, iMatrixSetCheckFrameColorAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, "100 100 100", IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iMatrixSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);

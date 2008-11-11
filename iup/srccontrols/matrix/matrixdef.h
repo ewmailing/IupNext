@@ -2,7 +2,7 @@
  * \brief iupmatrix. definitions.
  *
  * See Copyright Notice in iup.h
- * $Id: matrixdef.h,v 1.1 2008-10-17 06:05:36 scuri Exp $
+ * $Id: matrixdef.h,v 1.2 2008-11-11 18:18:11 scuri Exp $
  */
  
 #ifndef __MATRIXDEF_H 
@@ -95,6 +95,7 @@ struct _IcontrolData
   cdCanvas* cddbuffer;
   cdCanvas* cdcanvas;
   int redraw;
+  int checkframecolor;
 
   Tlincol lin;
   Tlincol col;

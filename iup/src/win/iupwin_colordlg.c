@@ -64,10 +64,8 @@ static void winColorDlgStringToColors(char* str, COLORREF* lpCustColors)
 
   while (str && *str && i < 16)
   {
-    if (!iupStrToRGB(str, &r, &g, &b))
-      return;
-
-    *lpCustColors = RGB(r,g,b);
+    if (iupStrToRGB(str, &r, &g, &b))
+      *lpCustColors = RGB(r,g,b);
 
     str = strchr(str, ';');
     if (str) str++;
@@ -98,14 +96,12 @@ static int winColorDlgPopup(Ihandle* ih, int x, int y)
   if (value)
     winColorDlgStringToColors(value, lpCustColors);
 
+  ZeroMemory(&choosecolor, sizeof(CHOOSECOLOR));
   choosecolor.lStructSize = sizeof(CHOOSECOLOR);
   choosecolor.hwndOwner = parent;
-  choosecolor.hInstance = NULL;
   choosecolor.rgbResult = RGB(r, g, b);
-  choosecolor.lpTemplateName = NULL;
   choosecolor.lpCustColors = lpCustColors;
   choosecolor.lCustData = (LPARAM)ih;
-  choosecolor.lpfnHook = NULL;
 
   choosecolor.Flags = CC_RGBINIT|CC_FULLOPEN;
   if (IupGetCallback(ih, "HELP_CB"))

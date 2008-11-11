@@ -3,7 +3,7 @@
  * draw functions
  *
  * See Copyright Notice in iup.h
- * $Id: imdraw.c,v 1.1 2008-10-17 06:05:36 scuri Exp $
+ * $Id: imdraw.c,v 1.2 2008-11-11 18:18:11 scuri Exp $
  */
 
 #include <stdio.h>
@@ -58,7 +58,7 @@
 #define IMATRIX_BOXW 16
 
 
-typedef int (*IFniiiiiiC)(Ihandle *h, int lin, int col,int x1, int x2, int y1, int y2, cdCanvas* cnv);  // DRAW_CB
+typedef int (*IFniiiiiiC)(Ihandle *h, int lin, int col,int x1, int x2, int y1, int y2, cdCanvas* cnv);
 
 
 /**************************************************************************/
@@ -877,6 +877,9 @@ void iMatrixDrawCells(Ihandle* ih, int l1, int c1, int l2, int c2)
   int x1, y1, x2, y2, oldx2, oldy1, oldy2;
   int yc1, yc2, xc1, xc2, i, j;
   int align;
+  long framecolor;
+  char str[30];
+  unsigned char r,g,b;
 
   /* If there are no cells in the matrix, returns */
   if(ih->data->lin.num == 0 || ih->data->col.num == 0)
@@ -953,9 +956,9 @@ void iMatrixDrawCells(Ihandle* ih, int l1, int c1, int l2, int c2)
   /***** Show the cell values */
   xc1 = x1;
   yc1 = y1;
-  iMatrixSetCdFrameColor(ih);
+  iupStrToRGB(iupAttribGetStrDefault(ih, "FRAMECOLOR"), &r, &g, &b);
+  framecolor = cdEncodeColor((unsigned char) r, (unsigned char) g, (unsigned char) b);
 
-  CdLine(xc1-1, y1, xc1-1, y2-1);
   for(j = c1; j <= c2; j++)  /* For all the columns in the region */
   {
     if(ih->data->col.wh[j] == 0)
@@ -965,9 +968,7 @@ void iMatrixDrawCells(Ihandle* ih, int l1, int c1, int l2, int c2)
 
     xc2 = xc1 + (j == ih->data->col.last ? ih->data->col.lastwh : ih->data->col.wh[j]);
 
-    /* First horizontal line */
-    CdLine(xc1, yc1-1, xc2-1, yc1-1);
-    for(i = l1; i <= l2; i++)
+    for(i = l1; i <= l2; i++)     /* For all lines in the region */
     {
       if(ih->data->lin.wh[i] == 0)
         continue;
@@ -978,7 +979,7 @@ void iMatrixDrawCells(Ihandle* ih, int l1, int c1, int l2, int c2)
       {
         int drop = 0;
         int cor  = IMATRIX_ELEM_COLOR;
-        char *str = iMatrixGetCellValue(ih, i, j);
+        char *cell_value;
 
         if(iMatrixCallDropDownCheckCb(ih, i, j))
           drop = IMATRIX_BOXW;
@@ -987,22 +988,46 @@ void iMatrixDrawCells(Ihandle* ih, int l1, int c1, int l2, int c2)
         if(iMatrixMarkCellGet(ih, i, j))
           cor = IMATRIX_REVERSE_COLOR;
 
-        iMatrixDrawText(ih, xc1, xc1+ih->data->col.wh[j]-1-drop, yc1, yc2-1, str, align, xc2, cor, i+1, j+1);
+        cell_value = iMatrixGetCellValue(ih, i, j);
+        iMatrixDrawText(ih, xc1, xc1+ih->data->col.wh[j]-1-drop, yc1, yc2-1, cell_value, align, xc2, cor, i+1, j+1);
 
         if(drop)
           iMatrixDrawComboFeedback(ih, xc1+ih->data->col.wh[j]-1, yc1, yc2, i+1, j+1, cor);
       }
 
-      iMatrixSetCdFrameColor(ih);
-      yc1  = yc2 + 1;
-      /* horizontal line */
-      CdLine(xc1, yc1-1, xc2-1, yc1-1);
+      if (ih->data->checkframecolor)
+      {
+        sprintf(str, "FRAMEHORIZCOLOR%d:%d", i, j);
+        if (iupStrToRGB(iupAttribGetStr(ih, str), &r, &g, &b))
+          cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor((unsigned char) r, (unsigned char) g, (unsigned char) b));
+        else
+          cdCanvasForeground(ih->data->cddbuffer, framecolor);
+      }
+      else
+        cdCanvasForeground(ih->data->cddbuffer, framecolor);
+    
+      /* horizontal line (only for this column) */
+      CdLine(xc1, yc2, xc2-1, yc2);
+      
+      if (ih->data->checkframecolor)
+      {
+        sprintf(str, "FRAMEVERTCOLOR%d:%d", i+1, j+1);
+        if (iupStrToRGB(iupAttribGetStr(ih, str), &r, &g, &b))
+          cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor((unsigned char) r, (unsigned char) g, (unsigned char) b));
+        else
+          cdCanvasForeground(ih->data->cddbuffer, framecolor);
+      }
+      else
+        cdCanvasForeground(ih->data->cddbuffer, framecolor);
+
+      /* vertical line (only for this line) */
+      CdLine(xc2-1,yc1,xc2-1,yc2-1);
+
+      yc1  = yc2+1;
     }
 
     xc1 = xc2;
     yc1 = y1;
-    /* vertical line */
-    CdLine(xc1-1, y1, xc1-1, y2-1);
   }
 }
 

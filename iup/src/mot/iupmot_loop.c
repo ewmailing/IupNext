@@ -75,6 +75,7 @@ int IupMainLoopLevel(void)
 int IupMainLoop(void)
 {
   mot_mainloop++;
+  mot_exitmainloop = 0;
 
   while (!mot_exitmainloop)
   {
@@ -82,6 +83,7 @@ int IupMainLoop(void)
       break;
   }
 
+  mot_exitmainloop = 0;
   mot_mainloop--;
   return IUP_NOERROR;
 }
