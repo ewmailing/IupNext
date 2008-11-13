@@ -46,12 +46,13 @@ vbox(<strong>child</strong>, ...) [in LED]</pre>
   Horizontally aligns the elements. Possible 
   values: &quot;ALEFT&quot;, &quot;ACENTER&quot;, &quot;ARIGHT&quot;. Default: &quot;ALEFT&quot;.</p>
 
-  <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>):
-  The default value is &quot;YES&quot;.</p>
+  <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable*</font>):
+  The default value is &quot;YES&quot;. See the documentation of the attribute 
+	for EXPAND inheritance.</p>
 <p><strong>EXPANDCHILDREN</strong> (<font SIZE="3">non inheritable</font>): 
 forces all children to expand horizontally. Default: &quot;NO&quot;. This will compose and 
 overwrite with the child EXPAND attribute (the vertical expansion will be 
-preserved) (since 3.0)</p>
+preserved). (since 3.0)</p>
 
   <p><a href="../attrib/iup_floating.html">FLOATING</a> (<font SIZE="3">non inheritable</font>)
 	<strong>(for child use)</strong>: If a child has FLOATING=YES then its size 
@@ -71,6 +72,11 @@ all children to get equal vertical space. Default: &quot;NO&quot;. (since 3.0)</
   and <i>height</i> 
   are integer values corresponding to the horizontal and vertical margins, respectively. Default:
   &quot;0x0&quot; (no margin).</p>
+<p><strong>NORMALIZESIZE</strong> (<font SIZE="3">non inheritable</font>): 
+normalizes all children natural size to be the biggest natural size among them. 
+All natural width will be set to the biggest width, and all natural height will 
+be set to the biggest height according to is value. Can be NO, HORIZONTAL, 
+VERTICAL or BOTH. Default: &quot;NO&quot;. (since 3.0)</p>
 
 
 <p><a href="../attrib/iup_size.html">SIZE</a> /
@@ -101,6 +107,10 @@ supported.</p>
 
 <p>The box can be created with no elements and be dynamic filled using
   <a href="../func/iupappend.html">IupAppend</a>.</p>
+<p>The box will NOT expand its children, it will allow its children to expand 
+according to the space left in the box parent. So for the expansion to occour, 
+the children must be expandable with EXPAND!=NO, and there must be room in the 
+box parent.</p>
 
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/elem/iupvbox/">Browse Example Files</a></p>

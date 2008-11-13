@@ -12,6 +12,9 @@
 .style2 {
 	font-size: large;
 }
+.style3 {
+	text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -43,6 +46,13 @@ but this is equivalent of setting the other value to 0. For example: &quot;x40&q
     for the current <strong>FONT</strong> of each control.</li>
 </ul>
 <p>So, a SIZE=&quot;4x8&quot; means 1 character width and 1 character height.</p>
+<p>Notice that this is the <span class="style3">average</span> character size, 
+the space occupied by a specific string is always different than its number of 
+character times its average character size, except when using a monospaced font 
+like Courier. Usually for common strings this size is smaller than the actual 
+size, so it is a good practice to leave more room than expected if you use the 
+SIZE attribute. For smaller font sizes this difference is more noticeable than 
+for larger font sizes.</p>
 <p>When this attribute is changed, the 
   <a href="iup_rastersize.html">RASTERSIZE</a>
   attribute is automatically updated.</p>

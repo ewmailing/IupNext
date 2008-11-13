@@ -65,6 +65,9 @@ void      IupExitLoop      (void);
 void      IupUpdate        (Ihandle* ih);
 void      IupUpdateChildren(Ihandle* ih);
 void      IupRefresh       (Ihandle* ih);
+void      IupNormalizeSize (const char* value, Ihandle* ih_first, ...);
+void      IupNormalizeSizev(const char* value, Ihandle** ih_list);
+
 char*     IupMapFont       (const char *iupfont);
 char*     IupUnMapFont     (const char *driverfont);
 int       IupHelp          (const char* url);
@@ -119,7 +122,7 @@ Ihandle*  IupNextField     (Ihandle* ih);
 
 Icallback IupGetCallback(Ihandle* ih, const char *name);
 Icallback IupSetCallback(Ihandle* ih, const char *name, Icallback func);
-Ihandle*  IupSetCallbacks(Ihandle* ih, ...);
+Ihandle*  IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...);
 
 Icallback   IupGetFunction   (const char *name);
 Icallback   IupSetFunction   (const char *name, Icallback func);
@@ -183,6 +186,7 @@ Ihandle*  IupTabsv      (Ihandle* *children);
 
 void IupTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos);
 void IupListConvertXYToItem(Ihandle* ih, int x, int y, int *pos);
+
 
 #ifdef __cplusplus
 }

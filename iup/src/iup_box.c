@@ -20,6 +20,35 @@
 #include "iup_box.h"
 
 
+void iupBoxNormalizeSize(Ihandle *ih, int children_natural_maxwidth, int children_natural_maxheight)
+{
+  Ihandle* child;
+  enum{NORMALIZE_NONE, NORMALIZE_WIDTH, NORMALIZE_HEIGHT};
+  int normalize = NORMALIZE_NONE;
+
+  char* value = iupAttribGetStr(ih, "NORMALIZESIZE");
+  if (!value)
+    return;
+
+  if (iupStrEqualNoCase(value, "HORIZONTAL"))
+    normalize = NORMALIZE_WIDTH;
+  else if (iupStrEqualNoCase(value, "VERTICAL"))
+    normalize = NORMALIZE_HEIGHT;
+  else if (iupStrEqualNoCase(value, "BOTH"))
+    normalize = NORMALIZE_WIDTH|NORMALIZE_HEIGHT;
+  else 
+    return;
+
+  /* reset the natural width and/or height */
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    if (normalize & NORMALIZE_WIDTH)
+      child->naturalwidth = children_natural_maxwidth;
+    if (normalize & NORMALIZE_HEIGHT)
+      child->naturalheight = children_natural_maxheight;
+  }
+}
+
 static int iBoxCreateMethod(Ihandle* ih, void** params)
 {
   ih->data = iupALLOCCTRLDATA();

@@ -4,7 +4,9 @@
  * See Copyright Notice in iup.h
  */
 
+#include <stdlib.h>  
 #include <stdio.h>  
+#include <stdarg.h>  
 
 #include "iup.h"
 
@@ -16,6 +18,54 @@
 #include "iup_assert.h" 
 
  
+void IupNormalizeSizev(const char* value, Ihandle** ih_list)
+{
+  Ihandle* ih;
+  int i, natural_maxwidth = 0, natural_maxheight = 0;
+  enum{NORMALIZE_NONE, NORMALIZE_WIDTH, NORMALIZE_HEIGHT};
+  int normalize = NORMALIZE_NONE;
+
+  if (iupStrEqualNoCase(value, "HORIZONTAL"))
+    normalize = NORMALIZE_WIDTH;
+  else if (iupStrEqualNoCase(value, "VERTICAL"))
+    normalize = NORMALIZE_HEIGHT;
+  else if (iupStrEqualNoCase(value, "BOTH"))
+    normalize = NORMALIZE_WIDTH|NORMALIZE_HEIGHT;
+  else 
+    return;
+
+  for (i = 0; ih_list[i]; i++)
+  {
+    ih = ih_list[i];
+    iupClassObjectComputeNaturalSize(ih);
+    natural_maxwidth = iupMAX(natural_maxwidth, ih->naturalwidth);
+    natural_maxheight = iupMAX(natural_maxheight, ih->naturalheight);
+  }
+
+  for (i = 0; ih_list[i]; i++)
+  {
+    ih = ih_list[i];
+    if (normalize & NORMALIZE_WIDTH)
+      ih->userwidth = natural_maxwidth;
+    if (normalize & NORMALIZE_HEIGHT)
+      ih->userheight = natural_maxheight;
+  }
+}
+
+void IupNormalizeSize(const char* value, Ihandle* ih_first, ...)
+{
+  va_list arglist;
+  Ihandle **ih_list;
+
+  va_start(arglist, ih_first);
+  ih_list = (Ihandle **)iupObjectGetParamList(ih_first, arglist);
+  va_end(arglist);
+
+  IupNormalizeSizev(value, ih_list);
+
+  free(ih_list);
+}
+
 void IupRefresh(Ihandle* ih)
 {
   Ihandle* dialog;

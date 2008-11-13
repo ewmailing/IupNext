@@ -13,7 +13,8 @@ extern "C" {
 
 
 void iupdrvTextInitClass(Iclass* ic);
-void iupdrvTextAddBorders(int *x, int *y);
+void iupdrvTextAddBorders(int *w, int *h);
+void iupdrvTextAddSpin(int *w, int h);
 void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag);
 void iupdrvTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos);
 

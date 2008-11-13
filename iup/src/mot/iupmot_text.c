@@ -46,11 +46,16 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
   (void)formattag;
 }
 
-void iupdrvTextAddBorders(int *x, int *y)
+void iupdrvTextAddSpin(int *w, int h)
+{
+  *w += h/2;
+}
+
+void iupdrvTextAddBorders(int *w, int *h)
 {
   int border_size = 2*5;
-  (*x) += border_size;
-  (*y) += border_size;
+  (*w) += border_size;
+  (*h) += border_size;
 }
 
 static void motTextGetLinColFromPosition(const char *str, int pos, int *lin, int *col )
@@ -151,24 +156,6 @@ static char* motTextGetReadOnlyAttrib(Ihandle* ih)
     return "NO";
 }
 
-static int motTextSetValueAttrib(Ihandle* ih, const char* value)
-{
-  if (!value) value = "";
-  /* disable callbacks */
-  iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
-  XmTextSetString(ih->handle, (char*)value);
-  iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
-  return 0;
-}
-
-static char* motTextGetValueAttrib(Ihandle* ih)
-{
-  char* value = XmTextGetString(ih->handle);
-  char* str = iupStrGetMemoryCopy(value);
-  XtFree(value);
-  return str;
-}
-                       
 static int motTextSetInsertAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
@@ -582,7 +569,11 @@ static int motTextSetSpinMinAttrib(Ihandle* ih, const char* value)
   {
     int min;
     if (iupStrToInt(value, &min))
+    {
+      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
       XtVaSetValues(ih->handle, XmNminimumValue, min, NULL);
+      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    }
   }
   return 1;
 }
@@ -594,7 +585,11 @@ static int motTextSetSpinMaxAttrib(Ihandle* ih, const char* value)
   {
     int max;
     if (iupStrToInt(value, &max))
+    {
+      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
       XtVaSetValues(ih->handle, XmNmaximumValue, max, NULL);
+      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    }
   }
   return 1;
 }
@@ -606,7 +601,11 @@ static int motTextSetSpinIncAttrib(Ihandle* ih, const char* value)
   {
     int inc;
     if (iupStrToInt(value, &inc))
+    {
+      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
       XtVaSetValues(ih->handle, XmNincrementValue, inc, NULL);
+      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    }
   }
   return 1;
 }
@@ -619,8 +618,9 @@ static int motTextSetSpinValueAttrib(Ihandle* ih, const char* value)
     int pos;
     if (iupStrToInt(value, &pos))
     {
-      iupAttribSetStr(ih, "_IUPMOT_SPIN_DISABLE_TEXT_CB", "1");
+      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
       XtVaSetValues(ih->handle, XmNposition, pos, NULL);
+      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
     }
   }
   return 1;
@@ -640,6 +640,25 @@ static char* motTextGetSpinValueAttrib(Ihandle* ih)
   return NULL;
 }
 
+static int motTextSetValueAttrib(Ihandle* ih, const char* value)
+{
+  if (!value) value = "";
+  /* disable callbacks */
+  iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+  XmTextSetString(ih->handle, (char*)value);
+  motTextSetSpinValueAttrib(ih, value);
+  iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+  return 0;
+}
+
+static char* motTextGetValueAttrib(Ihandle* ih)
+{
+  char* value = XmTextGetString(ih->handle);
+  char* str = iupStrGetMemoryCopy(value);
+  XtFree(value);
+  return str;
+}
+                       
 
 /******************************************************************************/
 
@@ -741,6 +760,30 @@ static void motTextModifyVerifyCallback(Widget w, Ihandle *ih, XmTextVerifyPtr t
     }
   }
 
+  if (text->doit)
+  {
+    /* Spin is not automatically updated when you directly edit the text */
+    Widget spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+    if (spinbox && XmIsSpinBox(spinbox))
+    {
+      int pos;
+      if (iupStrToInt(new_value, &pos))
+      {
+        XmTextPosition caret_pos = text->currInsert;
+        iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+        XtVaSetValues(ih->handle, XmNposition, pos, NULL);
+        iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+        /* do not handle all situations, but handle the basic ones */
+        if (text->startPos == text->endPos) /* insert */
+          caret_pos++;
+        else if (text->startPos < text->endPos && text->startPos < text->currInsert)  /* backspace */
+          caret_pos--;
+        XmTextSetInsertionPosition(ih->handle, caret_pos);
+        text->doit = False;
+      }
+    }
+  }
+
   if (new_value != value) free(new_value);
   XtFree(value);
   (void)w;
@@ -771,7 +814,6 @@ static void motTextMotionVerifyCallback(Widget w, Ihandle* ih, XmTextVerifyCallb
   if (pos != ih->data->last_caret_pos)
   {
     ih->data->last_caret_pos = pos;
-
     cb(ih, lin, col, pos);
   }
 
@@ -780,6 +822,8 @@ static void motTextMotionVerifyCallback(Widget w, Ihandle* ih, XmTextVerifyCallb
 
 static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *cont)
 {
+  Widget spinbox;
+
   if (evt->state & ControlMask)   /* Ctrl */
   {
     KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
@@ -791,6 +835,20 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
       motTextSetClipboardAttrib(ih, "PASTE");
     else if (motcode == XK_a)
       XmTextSetSelection(ih->handle, 0, XmTextGetLastPosition(ih->handle), CurrentTime);
+  }
+
+  spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  if (spinbox && XmIsSpinBox(spinbox))
+  {
+    KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
+    if (motcode == XK_Left || motcode == XK_Right)
+    {
+      /* avoid spin increment using Left/Right arrows, 
+         but must manually handle the new cursor position */
+      XmTextPosition caret_pos = XmTextGetInsertionPosition(ih->handle);
+      XmTextSetInsertionPosition(ih->handle, (motcode == XK_Left)? caret_pos-1: caret_pos+1);
+      *cont = False; 
+    }
   }
 
   iupmotKeyPressEvent(w, ih, (XEvent*)evt, cont);

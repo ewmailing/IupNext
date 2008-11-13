@@ -31,6 +31,12 @@
 #include "iupgtk_drv.h"
 
 
+void iupdrvTextAddSpin(int *w, int h)
+{
+  int spin_size = 16;
+  *w += spin_size;
+}
+
 void iupdrvTextAddBorders(int *x, int *y)
 {
   int border_size = 2*5;

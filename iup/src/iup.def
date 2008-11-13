@@ -312,3 +312,5 @@ iupMaskCreateFloat
 iupMaskCheck
 iupMaskDestroy
 IupGetColor
+IupNormalizeSize
+IupNormalizeSizev

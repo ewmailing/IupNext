@@ -114,6 +114,9 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih)
       }
     }
 
+    /* reset to max natural width and/or height if NORMALIZESIZE is defined */
+    iupBoxNormalizeSize(ih, children_natural_maxwidth, children_natural_maxheight);
+
     ih->expand &= children_expand; /* compose but only expand where the box can expand */
 
     if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))

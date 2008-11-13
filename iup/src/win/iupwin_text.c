@@ -40,11 +40,16 @@
 #define WM_CARET WM_APP+1   /* Custom IUP message */
 
 
-void iupdrvTextAddBorders(int *x, int *y)
+void iupdrvTextAddSpin(int *w, int h)
+{
+  *w += h;
+}
+
+void iupdrvTextAddBorders(int *w, int *h)
 {
   int border_size = 2*3;
-  (*x) += border_size;
-  (*y) += border_size;
+  (*w) += border_size;
+  (*h) += border_size;
 }
 
 static void winTextParseParagraphFormat(Ihandle* formattag, PARAFORMAT2 *paraformat, int convert2twips)

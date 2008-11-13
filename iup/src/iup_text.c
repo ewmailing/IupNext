@@ -356,6 +356,9 @@ static void iTextComputeNaturalSizeMethod(Ihandle* ih)
     if (IupGetInt(ih, "BORDER"))              /* Use IupGetInt for inheritance */
       iupdrvTextAddBorders(&natural_w, &natural_h);
 
+    if (iupAttribGetInt(ih, "SPIN"))
+      iupdrvTextAddSpin(&natural_w, natural_h);
+
     natural_w += 2*ih->data->horiz_padding;
     natural_h += 2*ih->data->vert_padding;
 

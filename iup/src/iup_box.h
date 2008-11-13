@@ -21,6 +21,7 @@ struct _IcontrolData
 };
 
 Iclass* iupBoxClassBase(void);
+void iupBoxNormalizeSize(Ihandle *ih, int children_natural_maxwidth, int children_natural_maxheight);
 
 
 #ifdef __cplusplus

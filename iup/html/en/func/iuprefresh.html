@@ -18,8 +18,10 @@ Parameters/Return</h3>
 iup.Refresh(<strong>ih</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><b>ih</b>: identifier of the interface element.</p>
 <h3>Notes</h3>
-<p>Can be used for any control, but it will always affects the whole dialog.</p>
-<p>The elements are immediately repositioned.</p>
+<p>Can be used for any control, but it will always affect the whole dialog. Can 
+be called even if the dialog is not mapped.</p>
+<p>The elements are immediately repositioned, if the dialog is visible then the 
+change will be reflected on the display.</p>
 <p>This function will NOT change the size of 
   the dialog, except when the SIZE or RASTERSIZE attributes of the dialog where changed before the call.</p>
 <p>If you also want to change the size of the dialog use:</p>

@@ -682,6 +682,10 @@ wb_usr.tree =
               link= "func/iupsetcallback.html"
             },
             {
+              name= {nl= "IupSetCallbacks"},
+              link= "func/iupsetcallbacks.html"
+            },
+            {
               name= {nl= "IupGetActionName"},
               link= "func/iupgetactionname.html"
             },
@@ -908,7 +912,7 @@ wb_usr.tree =
           }
         },
         {
-          name= {en= "Display"},
+          name= {en= "Utilities"},
           folder=
           {
             {
@@ -918,6 +922,10 @@ wb_usr.tree =
             {
               name= {nl= "IupUpdate"},
               link= "func/iupupdate.html"
+            },
+            {
+              name= {nl= "IupNormalizeSize"},
+              link= "func/iupnormalizesize.html"
             }
           }
         }

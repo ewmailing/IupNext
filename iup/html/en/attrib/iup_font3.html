@@ -24,6 +24,18 @@
 .style10 {
 	margin-left: 40px;
 }
+.style11 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14pt;
+}
+.style12 {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 14pt;
+}
+.style13 {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 14pt;
+}
 </style>
 </head>
 <body>
@@ -102,21 +114,25 @@ table bellow:</p>
 		<th>Windows</th>
 		<th>Motif</th>
 		<th>GTK</th>
+		<th>Description</th>
 	</tr>
 	<tr>
 		<td>Arial</td>
 		<td>Helvetica</td>
 		<td>Sans</td>
+		<td class="style11">without serif, variable spacing</td>
 	</tr>
 	<tr>
 		<td>Courier New</td>
 		<td>Courier</td>
 		<td>Monospace</td>
+		<td class="style12">with serif, fixed spacing</td>
 	</tr>
 	<tr>
 		<td>Times New Roman</td>
 		<td>Times</td>
 		<td>Serif</td>
+		<td class="style13">with serif, variable spacing</td>
 	</tr>
 </table>
 
@@ -136,7 +152,7 @@ removed.</p>
 <p>Returns the face name of the current FONT attribute.</p>
 <h4><a name="CHARSIZE">CHARSIZE</a> (read-only, non inheritable) </h4>
 <p>Returns the average character size of the current FONT attribute. This is 
-used by the SIZE attribute to convert its units to pixels.</p>
+the factor used by the SIZE attribute to convert its units to pixels.</p>
 <h4>FOUNDRY [Motif Only] (non inheritable) </h4>
 <p>Allows to select a foundry for the FONT being selected. Must be set before 
 setting the FONT attribute.</p>

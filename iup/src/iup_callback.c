@@ -64,17 +64,17 @@ Icallback IupSetCallback(Ihandle *ih, const char *name, Icallback func)
   return old_func;
 }
 
-Ihandle* IupSetCallbacks(Ihandle* ih, ...)
+Ihandle* IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...)
 {
-  const char* name;
-  Icallback func;
   va_list arglist;
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return NULL;
 
-  va_start(arglist, ih);
+  IupSetCallback(ih, name, func);
+
+  va_start(arglist, func);
 
   name=va_arg(arglist, const char*);
   do

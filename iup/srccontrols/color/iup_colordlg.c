@@ -762,7 +762,8 @@ static char* iColorBrowserDlgGetColorTableAttrib(Ihandle* ih)
     color_str = IupGetAttribute(colordlg_data->colortable_cbar, attrib_str);
     inc = strlen(color_str);
     memcpy(str+off, color_str, inc);
-    off += inc;
+    memcpy(str+off+inc, ";", 1);
+    off += inc+1;
   }
   str[off-1] = 0; /* remove last separator */
   return str;
@@ -830,17 +831,17 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   /* BUTTONS   ============================================================= */
   /* ======================================================================= */
   ok_bt = IupButton("OK", NULL);                      /* Ok Button */
-  IupSetAttribute(ok_bt, "SIZE",   "32");      /* 12 Characters */
+  IupSetAttribute(ok_bt, "PADDING", "10x2");
   IupSetCallback (ok_bt, "ACTION", (Icallback)iColorBrowserDlgButtonOK_CB);
   IupSetAttributeHandle(ih, "DEFAULTENTER", ok_bt);
 
   cancel_bt = IupButton(iupStrMessageGet("IUP_CANCEL"), NULL);          /* Cancel Button */
-  IupSetAttribute(cancel_bt, "SIZE",   "32");  
+  IupSetAttribute(cancel_bt, "PADDING", "10x2");
   IupSetCallback (cancel_bt, "ACTION", (Icallback)iColorBrowserDlgButtonCancel_CB);
   IupSetAttributeHandle(ih, "DEFAULTESC", cancel_bt);
 
   colordlg_data->help_bt = IupButton(iupStrMessageGet("IUP_HELP"), NULL);            /* Help Button */
-  IupSetAttribute(colordlg_data->help_bt, "SIZE",   "32");
+  IupSetAttribute(colordlg_data->help_bt, "PADDING", "10x2");
   IupSetCallback (colordlg_data->help_bt, "ACTION", (Icallback)iColorBrowserDlgButtonHelp_CB);
 
   /* ======================================================================= */
@@ -861,7 +862,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback (colordlg_data->color_cnv, "UNMAP_CB", (Icallback)iColorBrowserDlgColorCnvUnMap_CB);
 
   colordlg_data->colorhex_txt = IupText(NULL);      /* Hex of the color */
-  IupSetAttribute(colordlg_data->colorhex_txt, "SIZE", "40");
+  IupSetAttribute(colordlg_data->colorhex_txt, "VISIBLECOLUMNS", "10");
   IupSetCallback (colordlg_data->colorhex_txt, "ACTION", (Icallback)iColorBrowserDlgHexAction_CB);
   IupSetAttribute(colordlg_data->colorhex_txt, "MASK", "#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]");
 
@@ -869,16 +870,17 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   /* ALPHA TRANSPARENCY   ================================================== */
   /* ======================================================================= */
   colordlg_data->alpha_val = IupVal("HORIZONTAL");
+  IupSetAttribute(colordlg_data->alpha_val, "EXPAND", "HORIZONTAL");
   IupSetAttribute(colordlg_data->alpha_val, "MIN", "0");
   IupSetAttribute(colordlg_data->alpha_val, "MAX", "255");
   IupSetAttribute(colordlg_data->alpha_val, "VALUE", "255");
-  IupSetAttribute(colordlg_data->alpha_val, "SIZE", "70x12");
+  IupSetAttribute(colordlg_data->alpha_val, "SIZE", "80x12");
   IupSetCallback (colordlg_data->alpha_val, "MOUSEMOVE_CB", (Icallback)iColorBrowserDlgAlphaVal_CB);
   IupSetCallback (colordlg_data->alpha_val, "BUTTON_PRESS_CB", (Icallback)iColorBrowserDlgAlphaVal_CB);
   IupSetCallback (colordlg_data->alpha_val, "BUTTON_RELEASE_CB", (Icallback)iColorBrowserDlgAlphaVal_CB);
 
   colordlg_data->alpha_txt = IupText(NULL);                        /* Alpha value */
-  IupSetAttribute(colordlg_data->alpha_txt, "SIZE", "32");
+  IupSetAttribute(colordlg_data->alpha_txt, "VISIBLECOLUMNS", "5");
   IupSetAttribute(colordlg_data->alpha_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->alpha_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->alpha_txt, "SPINMAX", "255");
@@ -903,7 +905,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   /* RGB TEXT FIELDS   ===================================================== */
   /* ======================================================================= */
   colordlg_data->red_txt = IupText(NULL);                            /* Red value */
-  IupSetAttribute(colordlg_data->red_txt, "SIZE", "32");
+  IupSetAttribute(colordlg_data->red_txt, "VISIBLECOLUMNS", "5");
   IupSetAttribute(colordlg_data->red_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->red_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->red_txt, "SPINMAX", "255");
@@ -913,7 +915,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->red_txt, "MASKINT", "0:255");
 
   colordlg_data->green_txt = IupText(NULL);                        /* Green value */
-  IupSetAttribute(colordlg_data->green_txt, "SIZE", "32");
+  IupSetAttribute(colordlg_data->green_txt, "VISIBLECOLUMNS", "5");
   IupSetAttribute(colordlg_data->green_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->green_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->green_txt, "SPINMAX", "255");
@@ -923,7 +925,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->green_txt, "MASKINT", "0:255");
 
   colordlg_data->blue_txt = IupText(NULL);                          /* Blue value */
-  IupSetAttribute(colordlg_data->blue_txt, "SIZE", "32");
+  IupSetAttribute(colordlg_data->blue_txt, "VISIBLECOLUMNS", "5");
   IupSetAttribute(colordlg_data->blue_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->blue_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->blue_txt, "SPINMAX", "255");
@@ -936,7 +938,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   /* HSI TEXT FIELDS   ===================================================== */
   /* ======================================================================= */
   colordlg_data->hue_txt = IupText(NULL);                            /* Hue value */
-  IupSetAttribute(colordlg_data->hue_txt, "SIZE", "32");
+  IupSetAttribute(colordlg_data->hue_txt, "VISIBLECOLUMNS", "5");
   IupSetAttribute(colordlg_data->hue_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->hue_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->hue_txt, "SPINMAX", "359");
@@ -947,7 +949,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->hue_txt, "MASKINT", "0:359");
 
   colordlg_data->saturation_txt = IupText(NULL);              /* Saturation value */
-  IupSetAttribute(colordlg_data->saturation_txt, "SIZE", "32");
+  IupSetAttribute(colordlg_data->saturation_txt, "VISIBLECOLUMNS", "5");
   IupSetAttribute(colordlg_data->saturation_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->saturation_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->saturation_txt, "SPINMAX", "100");
@@ -957,7 +959,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->saturation_txt, "MASKINT", "0:100");
 
   colordlg_data->intensity_txt = IupText(NULL);                /* Intensity value */
-  IupSetAttribute(colordlg_data->intensity_txt, "SIZE", "32");
+  IupSetAttribute(colordlg_data->intensity_txt, "VISIBLECOLUMNS", "5");
   IupSetAttribute(colordlg_data->intensity_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->intensity_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->intensity_txt, "SPINMAX", "100");
@@ -972,46 +974,60 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
 
   col1 = IupVbox(colordlg_data->color_browser, IupSetAttributes(IupHbox(colordlg_data->color_cnv, NULL), "MARGIN=30x0"),NULL);
 
-  hsi_vb = IupVbox(IupSetAttributes(IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_HUE")), "SIZE=36"),
+  hsi_vb = IupVbox(IupSetAttributes(IupHbox(IupLabel(iupStrMessageGet("IUP_HUE")), 
                                             colordlg_data->hue_txt, 
-                                            NULL), "ALIGNMENT=ACENTER, GAP=0"),
-                   IupSetAttributes(IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_SATURATION")), "SIZE=36"),
+                                            NULL), "ALIGNMENT=ACENTER"),
+                   IupSetAttributes(IupHbox(IupLabel(iupStrMessageGet("IUP_SATURATION")), 
                                             colordlg_data->saturation_txt, 
-                                            NULL), "ALIGNMENT=ACENTER, GAP=0"),
-                   IupSetAttributes(IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_INTENSITY")), "SIZE=36"),
+                                            NULL), "ALIGNMENT=ACENTER"),
+                   IupSetAttributes(IupHbox(IupLabel(iupStrMessageGet("IUP_INTENSITY")), 
                                             colordlg_data->intensity_txt, 
-                                            NULL), "ALIGNMENT=ACENTER, GAP=0"),
+                                            NULL), "ALIGNMENT=ACENTER"),
                    NULL);
   IupSetAttribute(hsi_vb, "GAP", "5");
   
-  rgb_vb = IupVbox(IupSetAttributes(IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_RED")), "SIZE=24"),
+  rgb_vb = IupVbox(IupSetAttributes(IupHbox(IupLabel(iupStrMessageGet("IUP_RED")), 
                                             colordlg_data->red_txt, 
-                                            NULL), "ALIGNMENT=ACENTER, GAP=0"),
-                   IupSetAttributes(IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_GREEN")), "SIZE=24"),
+                                            NULL), "ALIGNMENT=ACENTER"),
+                   IupSetAttributes(IupHbox(IupLabel(iupStrMessageGet("IUP_GREEN")), 
                                             colordlg_data->green_txt, 
-                                            NULL), "ALIGNMENT=ACENTER, GAP=0"),
-                   IupSetAttributes(IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_BLUE")), "SIZE=24"),
+                                            NULL), "ALIGNMENT=ACENTER"),
+                   IupSetAttributes(IupHbox(IupLabel(iupStrMessageGet("IUP_BLUE")), 
                                             colordlg_data->blue_txt, 
-                                            NULL), "ALIGNMENT=ACENTER, GAP=0"),
+                                            NULL), "ALIGNMENT=ACENTER"),
                    NULL);
   IupSetAttribute(rgb_vb, "GAP", "5");
   
-  clr_vb = IupVbox(IupSetAttributes(IupHbox(IupSetAttributes(IupLabel(iupStrMessageGet("IUP_OPACITY")), "SIZE=36"),
+  clr_vb = IupVbox(IupSetAttributes(IupHbox(IupLabel(iupStrMessageGet("IUP_OPACITY")), 
                                             colordlg_data->alpha_txt, colordlg_data->alpha_val, 
-                                            NULL), "ALIGNMENT=ACENTER, GAP=0"),
-                   IupSetAttributes(IupHbox(IupSetAttributes(IupLabel("Hexa:"), "SIZE=36"), 
+                                            NULL), "ALIGNMENT=ACENTER"),
+                   IupSetAttributes(IupHbox(IupLabel("He&xa:"), 
                                             colordlg_data->colorhex_txt, 
-                                            NULL), "ALIGNMENT=ACENTER, GAP=0"),
+                                            NULL), "ALIGNMENT=ACENTER"),
                    IupSetAttributes(IupVbox(IupLabel(iupStrMessageGet("IUP_PALETTE")), 
                                             colordlg_data->colortable_cbar,
-                                            NULL), "GAP=0"),
+                                            NULL), "GAP=3"),
                    NULL);
   IupSetAttribute(clr_vb, "GAP", "5");
+  IupSetAttribute(clr_vb, "EXPAND", "YES");
 
-  col2 = IupSetAttributes(IupVbox(IupSetAttributes(IupHbox(hsi_vb, rgb_vb, NULL), "GAP=30"), 
-                                  IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"), 
-                                  clr_vb, 
-                                  NULL), "EXPAND=NO, GAP=10");
+  IupNormalizeSize("HORIZONTAL", IupGetChild(IupGetChild(hsi_vb, 0), 0),  /* Hue Label */
+                                 IupGetChild(IupGetChild(hsi_vb, 1), 0),  /* Saturation Label */
+                                 IupGetChild(IupGetChild(hsi_vb, 2), 0),  /* Intensity Label */
+                                 IupGetChild(IupGetChild(clr_vb, 0), 0),  /* Opacity Label */
+                                 IupGetChild(IupGetChild(clr_vb, 1), 0),  /* Hexa Label */
+                                 NULL);
+
+  IupNormalizeSize("HORIZONTAL", IupGetChild(IupGetChild(rgb_vb, 0), 0),  /* Red Label */
+                                 IupGetChild(IupGetChild(rgb_vb, 1), 0),  /* Green Label */
+                                 IupGetChild(IupGetChild(rgb_vb, 2), 0),  /* Blue Label */
+                                 NULL);
+
+  col2 = IupVbox(IupSetAttributes(IupHbox(hsi_vb, IupFill(), rgb_vb, NULL), "EXPAND=YES"), 
+                 IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"), 
+                 clr_vb,
+                 NULL);
+  IupSetAttributes(col2, "EXPAND=NO, GAP=10");
 
   lin1 = IupHbox(col1, col2, NULL);
   IupSetAttribute(lin1, "GAP", "10");
@@ -1024,8 +1040,10 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   lin2 = IupHbox(IupFill(), ok_bt, cancel_bt, colordlg_data->help_bt, NULL);
   IupSetAttribute(lin2, "GAP", "5");
   IupSetAttribute(lin2, "MARGIN", "0x0");
+  IupSetAttribute(lin2, "NORMALIZESIZE", "HORIZONTAL");
 
-  IupAppend(ih, IupSetAttributes(IupVbox(lin1, lin2, NULL), "MARGIN=10x10, GAP=10"));
+//  IupAppend(ih, IupSetAttributes(IupVbox(IupFrame(lin1), lin2, NULL), "MARGIN=10x10, GAP=10"));
+  IupAppend(ih, IupSetAttributes(IupVbox(lin1, IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"), lin2, NULL), "MARGIN=10x10, GAP=10"));
 
   iColorBrowserDlgInit_Defaults(colordlg_data);
 
