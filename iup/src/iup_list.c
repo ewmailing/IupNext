@@ -540,7 +540,8 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
   if (visiblecolumns)
   {
     iupdrvFontGetCharSize(ih, w, h);
-    *w = visiblecolumns*(*w);
+    *w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
+    *w = (visiblecolumns*(*w))/10;
   }
   else
   {

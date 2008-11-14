@@ -25,11 +25,11 @@
 
 typedef struct _ImotFont 
 {
+  char standardfont[1024];
   char xlfd[1024];  /* X-Windows Font Description */
-  char standardfont[1024];   /* IUP Native formats */
   XmFontList fontlist;  /* same as XmRenderTable */
   XFontStruct *fontstruct;
-  int max_width;
+  int charwidth, charheight;
 } ImotFont;
 
 static Iarray* mot_fonts = NULL;
@@ -158,7 +158,7 @@ static XmFontList motFontCreateRenderTable(XFontStruct* fontstruct, int is_under
   return fontlist;
 }
 
-static int motFontCalcMaxWidth(XFontStruct *fontstruct)
+static int motFontCalcCharWidth(XFontStruct *fontstruct)
 {
   if (fontstruct->per_char)
   {
@@ -175,7 +175,7 @@ static int motFontCalcMaxWidth(XFontStruct *fontstruct)
     return fontstruct->max_bounds.width;
 }
 
-static ImotFont* motGetFont(const char* foundry, const char *standardfont)
+static ImotFont* motFindFont(const char* foundry, const char *standardfont)
 {
   char xlfd[1024];
   XFontStruct* fontstruct;
@@ -224,9 +224,97 @@ static ImotFont* motGetFont(const char* foundry, const char *standardfont)
   strcpy(fonts[i].xlfd, xlfd);
   fonts[i].fontstruct = fontstruct;
   fonts[i].fontlist = motFontCreateRenderTable(fontstruct, is_underline, is_strikeout);
-  fonts[i].max_width = motFontCalcMaxWidth(fontstruct);
+  fonts[i].charwidth = motFontCalcCharWidth(fontstruct);
+  fonts[i].charheight = fontstruct->ascent + fontstruct->descent;
 
   return &fonts[i];
+}
+
+char* iupdrvGetSystemFont(void)
+{
+  static char systemfont[200] = "";
+  ImotFont* motfont = NULL;
+  char* font = XGetDefault(iupmot_display, "Iup", "fontList");
+  if (font)
+    motfont = motFindFont(NULL, font);
+
+  if (!motfont)
+  {
+    font = "Fixed, 11";
+    motfont = motFindFont("misc", font);
+  }
+
+  strcpy(systemfont, font);
+  return systemfont;
+}
+
+XmFontList iupmotFontCreateNativeFont(const char* value)
+{
+  ImotFont *motfont = motFindFont(NULL, value);
+  if (!motfont) 
+  {
+    iupERROR1("Failed to create Font: %s", value); 
+    return NULL;
+  }
+
+  return motfont->fontlist;
+}
+
+static ImotFont* motFontCreateNativeFont(Ihandle* ih, const char* value)
+{
+  ImotFont *motfont = motFindFont(iupAttribGetStr(ih, "FOUNDRY"), value);
+  if (!motfont) 
+  {
+    iupERROR1("Failed to create Font: %s", value); 
+    return NULL;
+  }
+
+  iupAttribSetStr(ih, "_IUPMOT_FONT", (char*)motfont);
+  iupAttribSetStr(ih, "XLFD", motfont->xlfd);
+  return motfont;
+}
+
+static ImotFont* motGetFont(Ihandle *ih)
+{
+  ImotFont* motfont = (ImotFont*)iupAttribGetStr(ih, "_IUPMOT_FONT");
+  if (!motfont)
+    motfont = motFontCreateNativeFont(ih, iupGetFontAttrib(ih));
+  return motfont;
+}
+
+char* iupmotGetFontListAttrib(Ihandle *ih)
+{
+  ImotFont* motfont = motGetFont(ih);
+  if (!motfont)
+    return NULL;
+  else
+    return (char*)motfont->fontlist;
+}
+
+char* iupmotGetFontStructAttrib(Ihandle *ih)
+{
+  ImotFont* motfont = motGetFont(ih);
+  if (!motfont)
+    return NULL;
+  else
+    return (char*)motfont->fontstruct;
+}
+
+int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
+{
+  ImotFont *motfont = motFontCreateNativeFont(ih, value);
+  if (!motfont) 
+    return 1;
+
+  /* If FONT is changed, must update the SIZE attribute */
+  iupBaseUpdateSizeAttrib(ih);
+
+  /* FONT attribute must be able to be set before mapping, 
+    so the font is enable for size calculation. */
+  if (ih->handle && (ih->iclass->nativetype != IUP_TYPEVOID))
+    XtVaSetValues(ih->handle, XmNrenderTable, motfont->fontlist, NULL);
+
+  return 1;
 }
 
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
@@ -256,7 +344,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
   const char *curstr; 
   const char *nextstr;
   int len, num_lin, lw, max_w;
-  XFontStruct* fontstruct;
+  ImotFont* motfont;
 
   if (!str || str[0]==0)
   {
@@ -265,8 +353,8 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
     return;
   }
 
-  fontstruct = (XFontStruct*)iupmotGetFontStructAttrib(ih);
-  if (!fontstruct)
+  motfont = motGetFont(ih);
+  if (!motfont)
   {
     if (w) *w = 0;
     if (h) *h = 0;
@@ -279,7 +367,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
   do
   {
     nextstr = iupStrNextLine(curstr, &len);
-    lw = XTextWidth(fontstruct, curstr, len);
+    lw = XTextWidth(motfont->fontstruct, curstr, len);
     max_w = iupMAX(max_w, lw);
 
     curstr = nextstr;
@@ -287,14 +375,14 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
   } while(*nextstr);
 
   if (w) *w = max_w;
-  if (h) *h = (fontstruct->ascent + fontstruct->descent) * num_lin;  /* (charheight*num_lin) */
+  if (h) *h = motfont->charheight * num_lin;
 }
 
 
 void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 {
-  XFontStruct* fontstruct = (XFontStruct*)iupmotGetFontStructAttrib(ih);
-  if (!fontstruct)
+  ImotFont* motfont = motGetFont(ih);
+  if (!motfont)
   {
     if (charwidth)  *charwidth = 0;
     if (charheight) *charheight = 0;
@@ -302,104 +390,10 @@ void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
   }
 
   if (charheight) 
-    *charheight = fontstruct->ascent + fontstruct->descent;
+    *charheight = motfont->charheight;
 
   if (charwidth)
-  {
-    ImotFont* motfont = (ImotFont*)iupAttribGetStr(ih, "_IUPMOT_FONT");
-    *charwidth = motfont->max_width;
-  }
-}
-
-char* iupdrvGetSystemFont(void)
-{
-  static char systemfont[200] = "";
-  ImotFont* motfont = NULL;
-  char* font = XGetDefault(iupmot_display, "Iup", "fontList");
-  if (font)
-    motfont = motGetFont(NULL, font);
-
-  if (!motfont)
-  {
-    font = "Fixed, 11";
-    motfont = motGetFont("misc", font);
-  }
-
-  strcpy(systemfont, font);
-  return systemfont;
-}
-
-XmFontList iupmotFontCreateNativeFont(const char* value)
-{
-  ImotFont *motfont = motGetFont(NULL, value);
-  if (!motfont) 
-  {
-    iupERROR1("Failed to create Font: %s", value); 
-    return NULL;
-  }
-
-  return motfont->fontlist;
-}
-
-static ImotFont* motFontCreateNativeFont(Ihandle* ih, const char* value)
-{
-  ImotFont *motfont = motGetFont(iupAttribGetStr(ih, "FOUNDRY"), value);
-  if (!motfont) 
-  {
-    iupERROR1("Failed to create Font: %s", value); 
-    return NULL;
-  }
-
-  iupAttribSetStr(ih, "_IUPMOT_FONT", (char*)motfont);
-  iupAttribSetStr(ih, "XLFD", motfont->xlfd);
-  return motfont;
-}
-
-char* iupmotGetFontListAttrib(Ihandle *ih)
-{
-  ImotFont* motfont = (ImotFont*)iupAttribGetStr(ih, "_IUPMOT_FONT");
-  if (!motfont)
-  {
-    motfont = motFontCreateNativeFont(ih, iupGetFontAttrib(ih));
-    if (motfont)
-      return (char*)motfont->fontlist;
-    else
-      return NULL;
-  }
-  else
-    return (char*)motfont->fontlist;
-}
-
-char* iupmotGetFontStructAttrib(Ihandle *ih)
-{
-  ImotFont* motfont = (ImotFont*)iupAttribGetStr(ih, "_IUPMOT_FONT");
-  if (!motfont)
-  {
-    motfont = motFontCreateNativeFont(ih, iupGetFontAttrib(ih));
-    if (motfont)
-      return (char*)motfont->fontstruct;
-    else
-      return NULL;
-  }
-  else
-    return (char*)motfont->fontstruct;
-}
-
-int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
-{
-  ImotFont *motfont = motFontCreateNativeFont(ih, value);
-  if (!motfont) 
-    return 1;
-
-  /* If FONT is changed, must update the SIZE attribute */
-  iupBaseUpdateSizeAttrib(ih);
-
-  /* FONT attribute must be able to be set before mapping, 
-    so the font is enable for size calculation. */
-  if (ih->handle && (ih->iclass->nativetype != IUP_TYPEVOID))
-    XtVaSetValues(ih->handle, XmNrenderTable, motfont->fontlist, NULL);
-
-  return 1;
+    *charwidth = motfont->charwidth;
 }
 
 void iupdrvFontInit(void)

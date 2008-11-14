@@ -862,7 +862,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback (colordlg_data->color_cnv, "UNMAP_CB", (Icallback)iColorBrowserDlgColorCnvUnMap_CB);
 
   colordlg_data->colorhex_txt = IupText(NULL);      /* Hex of the color */
-  IupSetAttribute(colordlg_data->colorhex_txt, "VISIBLECOLUMNS", "10");
+  IupSetAttribute(colordlg_data->colorhex_txt, "VISIBLECOLUMNS", "7");
   IupSetCallback (colordlg_data->colorhex_txt, "ACTION", (Icallback)iColorBrowserDlgHexAction_CB);
   IupSetAttribute(colordlg_data->colorhex_txt, "MASK", "#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]");
 
@@ -880,7 +880,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback (colordlg_data->alpha_val, "BUTTON_RELEASE_CB", (Icallback)iColorBrowserDlgAlphaVal_CB);
 
   colordlg_data->alpha_txt = IupText(NULL);                        /* Alpha value */
-  IupSetAttribute(colordlg_data->alpha_txt, "VISIBLECOLUMNS", "5");
+  IupSetAttribute(colordlg_data->alpha_txt, "VISIBLECOLUMNS", "3");
   IupSetAttribute(colordlg_data->alpha_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->alpha_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->alpha_txt, "SPINMAX", "255");
@@ -905,7 +905,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   /* RGB TEXT FIELDS   ===================================================== */
   /* ======================================================================= */
   colordlg_data->red_txt = IupText(NULL);                            /* Red value */
-  IupSetAttribute(colordlg_data->red_txt, "VISIBLECOLUMNS", "5");
+  IupSetAttribute(colordlg_data->red_txt, "VISIBLECOLUMNS", "3");
   IupSetAttribute(colordlg_data->red_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->red_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->red_txt, "SPINMAX", "255");
@@ -915,7 +915,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->red_txt, "MASKINT", "0:255");
 
   colordlg_data->green_txt = IupText(NULL);                        /* Green value */
-  IupSetAttribute(colordlg_data->green_txt, "VISIBLECOLUMNS", "5");
+  IupSetAttribute(colordlg_data->green_txt, "VISIBLECOLUMNS", "3");
   IupSetAttribute(colordlg_data->green_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->green_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->green_txt, "SPINMAX", "255");
@@ -925,7 +925,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->green_txt, "MASKINT", "0:255");
 
   colordlg_data->blue_txt = IupText(NULL);                          /* Blue value */
-  IupSetAttribute(colordlg_data->blue_txt, "VISIBLECOLUMNS", "5");
+  IupSetAttribute(colordlg_data->blue_txt, "VISIBLECOLUMNS", "3");
   IupSetAttribute(colordlg_data->blue_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->blue_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->blue_txt, "SPINMAX", "255");
@@ -938,7 +938,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   /* HSI TEXT FIELDS   ===================================================== */
   /* ======================================================================= */
   colordlg_data->hue_txt = IupText(NULL);                            /* Hue value */
-  IupSetAttribute(colordlg_data->hue_txt, "VISIBLECOLUMNS", "5");
+  IupSetAttribute(colordlg_data->hue_txt, "VISIBLECOLUMNS", "3");
   IupSetAttribute(colordlg_data->hue_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->hue_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->hue_txt, "SPINMAX", "359");
@@ -949,7 +949,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->hue_txt, "MASKINT", "0:359");
 
   colordlg_data->saturation_txt = IupText(NULL);              /* Saturation value */
-  IupSetAttribute(colordlg_data->saturation_txt, "VISIBLECOLUMNS", "5");
+  IupSetAttribute(colordlg_data->saturation_txt, "VISIBLECOLUMNS", "3");
   IupSetAttribute(colordlg_data->saturation_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->saturation_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->saturation_txt, "SPINMAX", "100");
@@ -959,7 +959,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->saturation_txt, "MASKINT", "0:100");
 
   colordlg_data->intensity_txt = IupText(NULL);                /* Intensity value */
-  IupSetAttribute(colordlg_data->intensity_txt, "VISIBLECOLUMNS", "5");
+  IupSetAttribute(colordlg_data->intensity_txt, "VISIBLECOLUMNS", "3");
   IupSetAttribute(colordlg_data->intensity_txt, "SPIN", "YES");
   IupSetAttribute(colordlg_data->intensity_txt, "SPINMIN", "0");
   IupSetAttribute(colordlg_data->intensity_txt, "SPINMAX", "100");

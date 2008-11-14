@@ -347,7 +347,10 @@ static void iTextComputeNaturalSizeMethod(Ihandle* ih)
     {
       iupdrvFontGetCharSize(ih, &natural_w, &natural_h);
       if (visiblecolumns)
-        natural_w = visiblecolumns*natural_w;
+      {
+        natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
+        natural_w = (visiblecolumns*natural_w)/10;
+      }
       else
         natural_w = iupdrvFontGetStringWidth(ih, value);
     }
