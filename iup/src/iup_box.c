@@ -100,6 +100,43 @@ static char* iBoxGetClientSizeAttrib(Ihandle* ih)
   return str;
 }
 
+static int iBoxSetCGapAttrib(Ihandle* ih, const char* value)
+{
+  int cgap;
+  iupStrToInt(value, &cgap);
+  if (iupStrEqual(ih->iclass->name, "vbox"))
+  {
+    int charheight;
+    iupdrvFontGetCharSize(ih, NULL, &charheight);
+    ih->data->gap = iupHEIGHT2RASTER(cgap, charheight);
+  }
+  else
+  {
+    int charwidth;
+    iupdrvFontGetCharSize(ih, &charwidth, NULL);
+    ih->data->gap = iupWIDTH2RASTER(cgap, charwidth);
+  }
+  return 0;
+}
+
+static char* iBoxGetCGapAttrib(Ihandle* ih)
+{
+  char *str = iupStrGetMemory(50);
+  if (iupStrEqual(ih->iclass->name, "vbox"))
+  {
+    int charheight;
+    iupdrvFontGetCharSize(ih, NULL, &charheight);
+    sprintf(str, "%d", iupRASTER2HEIGHT(ih->data->gap, charheight));
+  }
+  else
+  {
+    int charwidth;
+    iupdrvFontGetCharSize(ih, &charwidth, NULL);
+    sprintf(str, "%d", iupRASTER2WIDTH(ih->data->gap, charwidth));
+  }
+  return str;
+}
+
 static int iBoxSetGapAttrib(Ihandle* ih, const char* value)
 {
   iupStrToInt(value, &ih->data->gap);
@@ -110,6 +147,28 @@ static char* iBoxGetGapAttrib(Ihandle* ih)
 {
   char *str = iupStrGetMemory(50);
   sprintf(str, "%d", ih->data->gap);
+  return str;
+}
+
+static int iBoxSetCMarginAttrib(Ihandle* ih, const char* value)
+{
+  int cmargin_x=-1, cmargin_y=-1;
+  int charwidth, charheight;
+  iupdrvFontGetCharSize(ih, &charwidth, &charheight);
+  iupStrToIntInt(value, &cmargin_x, &cmargin_y, 'x');
+  if (cmargin_x!=-1)
+    ih->data->margin_x = iupHEIGHT2RASTER(cmargin_x, charheight);
+  if (cmargin_y!=-1)
+    ih->data->margin_x = iupWIDTH2RASTER(cmargin_y, charwidth);
+  return 0;
+}
+
+static char* iBoxGetCMarginAttrib(Ihandle* ih)
+{
+  char *str = iupStrGetMemory(50);
+  int charwidth, charheight;
+  iupdrvFontGetCharSize(ih, &charwidth, &charheight);
+  sprintf(str, "%dx%d", iupRASTER2WIDTH(ih->data->margin_x, charwidth), iupRASTER2HEIGHT(ih->data->margin_y, charheight));
   return str;
 }
 
@@ -152,7 +211,9 @@ Iclass* iupBoxClassBase(void)
 
   /* boxes only */
   iupClassRegisterAttribute(ic, "GAP", iBoxGetGapAttrib, iBoxSetGapAttrib, "0", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "CGAP", iBoxGetCGapAttrib, iBoxSetCGapAttrib, "0", IUP_NOT_MAPPED, IUP_INHERIT);
   iupClassRegisterAttribute(ic, "MARGIN", iBoxGetMarginAttrib, iBoxSetMarginAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "CMARGIN", iBoxGetCMarginAttrib, iBoxSetCMarginAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
 
   return ic;
 }
