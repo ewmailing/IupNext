@@ -223,6 +223,9 @@ static void winDialogResize(Ihandle* ih, int width, int height)
 
   IupRefresh(ih);
 
+  if (iupwinIsVista())
+    RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_FRAME|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_ALLCHILDREN);
+
   ih->data->ignore_resize = 0;
 }
 
