@@ -411,12 +411,7 @@ static char* winToggleGetBgColorAttrib(Ihandle* ih)
   }
 
   if (ih->data->type == IUP_TOGGLE_TEXT)
-  {
-    char* color = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-    if (!color) color = iupAttribGetStrNativeParent(ih, "BACKGROUND");
-    if (!color) color = IupGetGlobal("DLGBGCOLOR");
-    return color;
-  }
+    return iupBaseNativeParentGetBgColorAttrib(ih);
   else
     return IupGetGlobal("DLGBGCOLOR");
 }

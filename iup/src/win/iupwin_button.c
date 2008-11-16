@@ -449,12 +449,7 @@ static char* winButtonGetBgColorAttrib(Ihandle* ih)
   }
 
   if (iupAttribGetStr(ih, "IMPRESS"))
-  {
-    char* color = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-    if (!color) color = iupAttribGetStrNativeParent(ih, "BACKGROUND");
-    if (!color) color = IupGetGlobal("DLGBGCOLOR");
-    return color;
-  }
+    return iupBaseNativeParentGetBgColorAttrib(ih);
   else
     return IupGetGlobal("DLGBGCOLOR");
 }

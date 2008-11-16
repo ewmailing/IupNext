@@ -519,9 +519,7 @@ int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color)
 int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr)
 {
   unsigned char r, g, b;
-  char* color = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!color) color = iupAttribGetStrNativeParent(ih, "BACKGROUND");
-  if (!color) color = IupGetGlobal("DLGBGCOLOR");
+  char* color = iupBaseNativeParentGetBgColorAttrib(ih);
   if (iupStrToRGB(color, &r, &g, &b))
   {
     *cr = RGB(r,g,b);

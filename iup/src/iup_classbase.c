@@ -231,6 +231,14 @@ int iupBaseSetVisibleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+char* iupBaseNativeParentGetBgColorAttrib(Ihandle* ih)
+{
+  char* color = iupAttribGetStrNativeParent(ih, "BGCOLOR");
+  if (!color) color = iupAttribGetStrNativeParent(ih, "BACKGROUND");
+  if (!color) color = IupGetGlobal("DLGBGCOLOR");
+  return color;
+}
+
 int iupBaseGetScrollbar(Ihandle* ih)
 {
   int sb = IUP_SB_NONE;  /* NO scrollbar by default */

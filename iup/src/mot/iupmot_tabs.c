@@ -416,10 +416,7 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
         XtVaSetValues(tab_button, XmNlabelPixmap, pixmap, NULL);
     }
 
-    background = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-    if (!background) background = iupAttribGetStrNativeParent(ih, "BACKGROUND");
-    if (!background) background = IupGetGlobal("DLGBGCOLOR");
-
+    background = iupBaseNativeParentGetBgColorAttrib(ih);
     color = iupmotColorGetPixelStr(background);
     if (color != -1)
       iupmotSetBgColor(child_manager, color);

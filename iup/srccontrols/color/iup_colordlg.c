@@ -1042,7 +1042,6 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(lin2, "MARGIN", "0x0");
   IupSetAttribute(lin2, "NORMALIZESIZE", "HORIZONTAL");
 
-//  IupAppend(ih, IupSetAttributes(IupVbox(IupFrame(lin1), lin2, NULL), "MARGIN=10x10, GAP=10"));
   IupAppend(ih, IupSetAttributes(IupVbox(lin1, IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"), lin2, NULL), "MARGIN=10x10, GAP=10"));
 
   iColorBrowserDlgInit_Defaults(colordlg_data);

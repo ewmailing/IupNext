@@ -248,16 +248,6 @@ static int winLabelSetBgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static char* winLabelGetBgColorAttrib(Ihandle* ih)
-{
-  /* the most important use of this is to provide
-     the correct background for images */
-  char* color = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!color) color = iupAttribGetStrNativeParent(ih, "BACKGROUND");
-  if (!color) color = IupGetGlobal("DLGBGCOLOR");
-  return color;
-}
-
 static int winLabelSetFgColorAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
@@ -330,7 +320,8 @@ void iupdrvLabelInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winLabelGetBgColorAttrib, NULL, IupGetGlobal("DLGBGCOLOR"), IUP_MAPPED, IUP_INHERIT);  
+  /* the most important use of this is to provide the correct background for images */
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, IupGetGlobal("DLGBGCOLOR"), IUP_MAPPED, IUP_INHERIT);  
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winLabelSetFgColorAttrib, IupGetGlobal("DLGFGCOLOR"), IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    

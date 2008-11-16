@@ -354,10 +354,7 @@ static int winTabsCtlColor(Ihandle* ih, HDC hdc, LRESULT *result)
 {
   /* works only when NOT winTabsUsingXPStyles */
   unsigned char r, g, b;
-  char* color = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!color) color = iupAttribGetStrNativeParent(ih, "BACKGROUND");
-  if (!color) color = IupGetGlobal("DLGBGCOLOR");
-
+  char* color = iupBaseNativeParentGetBgColorAttrib(ih);
   if (iupStrToRGB(color, &r, &g, &b))
   {
     SetDCBrushColor(hdc, RGB(r,g,b));

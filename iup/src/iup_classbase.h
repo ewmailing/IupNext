@@ -106,6 +106,7 @@ int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value);
 int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value);
 int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value);
 int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value);
+char* iupBaseNativeParentGetBgColorAttrib(Ihandle* ih);
 
 /* other */
 char* iupBaseContainerGetExpandAttrib(Ihandle* ih);

@@ -16,6 +16,7 @@
 #include "iup.h"
 
 #include "iup_attrib.h"
+#include "iup_class.h"
 #include "iup_str.h"
 
 #include "iupwin_drv.h"
@@ -300,9 +301,7 @@ void iupwinDrawRemoveTheme(HWND hwnd)
 void iupwinDrawParentBackground(Ihandle* ih, HDC hDC, RECT* rect)
 {
   unsigned char r=0, g=0, b=0;
-  char* color = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!color) color = iupAttribGetStrNativeParent(ih, "BACKGROUND");
-  if (!color) color = IupGetGlobal("DLGBGCOLOR");
+  char* color = iupBaseNativeParentGetBgColorAttrib(ih);
   iupStrToRGB(color, &r, &g, &b);
   SetDCBrushColor(hDC, RGB(r,g,b));
   FillRect(hDC, rect, (HBRUSH)GetStockObject(DC_BRUSH));
