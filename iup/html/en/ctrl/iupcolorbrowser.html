@@ -28,12 +28,15 @@
 cylindrical projection of the RGB cube. The transformation defines a coordinate 
 color system called HSI, that is still the RGB color space but using cylindrical 
 coordinates.</p>
-<p>H is for Hue, and it is the angle around the RGB cube diagonal starting at 
+<p><strong>H</strong> is for Hue, and it is the angle around the RGB cube diagonal starting at 
 red (RGB=255 0 0).</p>
-<p>S is for Saturation, and it is the minimum distance from the color to the 
-diagonal. This also defines a point at the diagonal.</p>
-<p>I is for Intensity, and it is the distance from the point defined at the 
-diagonal to black (RGB=0 0 0).</p>
+<p><strong>S</strong> is for Saturation, and it is the normal distance from the 
+color to the diagonal, normalized by its maximum value at the specified Hue. 
+This also defines a point at the diagonal used to define <strong>I</strong>.</p>
+<p><strong>I</strong> is for Intensity, and it is the distance from the point defined at the 
+diagonal to black (RGB=0 0 0). <strong>I</strong> can also be seen as the 
+projection of the color vector onto the diagonal. But <strong>I</strong> is not 
+linear, see <a href="#Notes">Notes</a> bellow.</p>
 <p>This is an additional control that depends on the CD library. It is included 
 in the 
 <a href="../iupcontrols.html">Controls Library</a>.</p>
@@ -60,8 +63,8 @@ But it can be freely changed.</p>
 <p><b>RGB</b> (<font SIZE="3">non inheritable</font>): the color selected in the control, in the &#8220;r g b” format; 
 r, g and b are integers ranging from 0 to 255. Default: &quot;255 0 0&quot;.</p>
 <p><strong>HSI</strong> (<font SIZE="3">non inheritable</font>): the color selected in the control, in the “h s i” 
-format; h, s and i are floating point numbers ranging from 0 to 1, and 0 to 360 
-for H. </p>
+format; h, s and i are floating point numbers ranging from 0-360, 0-1 and 0-1 
+respectively. </p>
 
 
 <blockquote>
@@ -116,12 +119,16 @@ Home(0), PageUp, PageDn and End(180) keys to move the cursor inside the Hue
 circle.</p>
 <p>The Hue in the HSI coordinate system defines a plane that it is a triangle in 
 the RGB cube. But the maximum saturation in this triangle is different for each 
-Hue because of the geometry of the cube. In IupColorBrowser this point is fixed 
-at the center of the I axis. So the I axis is not completely linear, it is 
+Hue because of the geometry of the cube. In ColorBrowser this point is fixed 
+at the center of the <strong>I</strong> axis. So the <strong>I</strong> axis is not completely linear, it is 
 linear in two parts, one from 0 to 0.5, and another from 0.5 to 1.0. Although 
 the selected values are linear specified you can notice that when Hue is changed 
 the gray scale also changes, visually compacting values above or bellow the 
 I=0.5 line according to the selected Hue.</p>
+<p>This is the same HSI specified in the
+<a target="_top" href="http://www.tecgraf.puc-rio.br/im">IM</a> toolkit, except 
+for the non linearity of <strong>I</strong>. This non linearity were introduced 
+so a simple triangle could be used to represent the SI plane.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/ctrl/iupcolorbrowser/">Browse Example Files</a></p>
 <p class="style1"><img src="images/iupcolorbrowser.png"></p>

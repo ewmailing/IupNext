@@ -136,9 +136,9 @@ static int iupStrHexToRGB(const char *str, unsigned char *r, unsigned char *g, u
 \*************************************************/
 static void iColorBrowserDlgHSI_TXT_Update(IcolorDlgData* colordlg_data)
 {
-  IupSetfAttribute(colordlg_data->hue_txt, "VALUE", "%d", (int) colordlg_data->hue);
-  IupSetfAttribute(colordlg_data->saturation_txt, "VALUE", "%d", (int) (colordlg_data->saturation * 100));
-  IupSetfAttribute(colordlg_data->intensity_txt, "VALUE", "%d", (int) (colordlg_data->intensity * 100));
+  IupSetfAttribute(colordlg_data->hue_txt, "VALUE", "%d", iupROUND(colordlg_data->hue));
+  IupSetfAttribute(colordlg_data->saturation_txt, "VALUE", "%d", iupROUND(colordlg_data->saturation * 100));
+  IupSetfAttribute(colordlg_data->intensity_txt, "VALUE", "%d", iupROUND(colordlg_data->intensity * 100));
 }
 
 /*************************************************\
