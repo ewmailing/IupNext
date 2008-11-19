@@ -31,6 +31,44 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 
+/* Cygwin and MingW Win32api does not define these */
+
+#ifndef PFN_ARABIC
+#define PFN_ARABIC		2
+#define PFN_LCLETTER	3
+#define	PFN_UCLETTER	4
+#define	PFN_LCROMAN		5
+#define	PFN_UCROMAN		6
+#endif
+
+#ifndef PFNS_PAREN
+#define PFNS_PAREN		0x000
+#define	PFNS_PARENS		0x100
+#define PFNS_PERIOD		0x200
+#define PFNS_PLAIN		0x300
+#define PFNS_NONUMBER	0x400
+#endif
+
+#ifndef CFM_BACKCOLOR
+#define CFM_BACKCOLOR		0x04000000
+#define	CFM_UNDERLINETYPE	0x00800000		// Many displayed by 3.0 
+#define	CFM_WEIGHT			0x00400000
+#define CFM_DISABLED		0x2000
+#define	CFE_DISABLED		CFM_DISABLED
+#endif
+
+#ifndef CFU_UNDERLINEDOTTED
+#define	CFU_UNDERLINEDOTTED				4
+#define	CFU_UNDERLINEDOUBLE				3	// (*) display as single
+#define CFU_UNDERLINE					1
+#define CFU_UNDERLINENONE				0
+#endif
+
+#ifndef SES_UPPERCASE
+#define SES_UPPERCASE			512
+#define	SES_LOWERCASE			1024
+#endif
+/*   End Cygwin/MingW */
 
 #ifndef EM_SETCUEBANNER      /* defined only if _WIN32_WINNT >= 0x501 */
 #define ECM_FIRST               0x1500      /* Edit control messages */

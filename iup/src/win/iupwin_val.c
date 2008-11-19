@@ -28,6 +28,10 @@
 #include "iupwin_draw.h"
 
 
+#ifndef SHRT_MAX
+#define SHRT_MAX 32767
+#endif
+
 void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
 {
   int ticks_size = 0;

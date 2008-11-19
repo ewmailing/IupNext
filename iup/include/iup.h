@@ -91,6 +91,7 @@ Ihandle*  IupGetBrother   (Ihandle* ih);
 Ihandle*  IupGetParent    (Ihandle* ih);
 Ihandle*  IupGetDialog    (Ihandle* ih);
 Ihandle*  IupGetDialogChild(Ihandle* ih, const char* name);
+int       IupReparent     (Ihandle* ih, Ihandle* new_parent);
 
 int       IupPopup         (Ihandle* ih, int x, int y);
 int       IupShow          (Ihandle* ih);

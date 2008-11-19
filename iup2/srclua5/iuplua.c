@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua.c,v 1.1 2008-10-17 06:21:23 scuri Exp $
+* $Id: iuplua.c,v 1.2 2008-11-19 03:18:21 scuri Exp $
 */
 
 #include <stdio.h>
@@ -626,13 +626,13 @@ static int Idlecall(void)
 static int SetIdle(lua_State *L)
 {
   if lua_isnoneornil(L,1)
-    IupSetFunction(IUP_IDLE_ACTION, NULL);
+    IupSetFunction("IDLE_ACTION", NULL);
   else
   {
     luaL_checktype(L, 1, LUA_TFUNCTION);
     lua_pushvalue(L,1);
     lua_setglobal(L, "_IUP_LUA_IDLE_FUNC_");
-    IupSetFunction(IUP_IDLE_ACTION, (Icallback) Idlecall);
+    IupSetFunction("IDLE_ACTION", (Icallback) Idlecall);
   }
   return 0;
 }

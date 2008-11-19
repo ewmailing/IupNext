@@ -26,6 +26,10 @@
 #include "iupwin_handle.h"
 
 
+#ifndef SHRT_MAX
+#define SHRT_MAX 32767
+#endif
+
 #ifndef PBS_MARQUEE             /* it is defined only when _WIN32_WINNT >= 0x0501 */
 #define PBS_MARQUEE             0x08
 #define PBM_SETMARQUEE          (WM_USER+10)

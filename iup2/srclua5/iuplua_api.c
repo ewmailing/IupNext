@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua_api.c,v 1.1 2008-10-17 06:21:23 scuri Exp $
+* $Id: iuplua_api.c,v 1.2 2008-11-19 03:18:21 scuri Exp $
 */
 
 #include <stdio.h>
@@ -18,17 +18,20 @@
 #include "il.h"
 
 
-int iupIsPointer(const char *attr); /* re-declared here to avoid inclusion of iglobal.h */
-int iupIsInternal(const char* name);
-
-
 #if (IUP_VERSION_NUMBER >= 300000)
+#include "iup_attrib.h"
 static int Reparent(lua_State *L)
 {
   lua_pushnumber(L, IupReparent(iuplua_checkihandle(L, 1),
                                 iuplua_checkihandle(L,2)));
   return 1;
 }
+#define iupIsPointer iupAttribIsPointer
+#define iupIsInternal iupAttribIsInternal
+#define xCODE IUPxCODE
+#else
+int iupIsPointer(const char *attr); /* re-declared here to avoid inclusion of iglobal.h */
+int iupIsInternal(const char* name);
 #endif
 
 static int Append(lua_State *L)

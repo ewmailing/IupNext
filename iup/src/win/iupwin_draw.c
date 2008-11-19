@@ -4,6 +4,8 @@
  * See Copyright Notice in iup.h
  */
 
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
 #include <windows.h>
 #include <uxtheme.h>
 #include <tmschema.h>
@@ -23,14 +25,10 @@
 #include "iupwin_info.h"
 #include "iupwin_draw.h"
 
-//#ifndef ODS_HOTLIGHT     TODO: Check where this is not defined
-//#define ODS_HOTLIGHT        0x0040
-//#endif
 
 #ifndef TABP_AEROWIZARDBODY
 #define TABP_AEROWIZARDBODY  11  /* manually added definition */
 #endif
-
 
 typedef HTHEME  (STDAPICALLTYPE *_winThemeOpenData)(HWND hwnd, LPCWSTR pszClassList);
 typedef HRESULT (STDAPICALLTYPE *_winThemeCloseData)(HTHEME hTheme);

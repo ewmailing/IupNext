@@ -3,7 +3,7 @@
  * IupScanf special implementation. 
  *
  * See Copyright Notice in iup.h
- * $Id: scanf.c,v 1.1 2008-10-17 06:21:23 scuri Exp $
+ * $Id: scanf.c,v 1.2 2008-11-19 03:18:21 scuri Exp $
  */
 
 #include <stdio.h>
@@ -17,8 +17,14 @@
 #include "iuplua.h"
 
 #include "il.h"
+
+#if (IUP_VERSION_NUMBER >= 300000)
+#include "iup_str.h"
+#include "iup_predial.h"
+#else
 #include "istrutil.h"
 #include "ipredial.h"
+#endif
 
 #define ALLOC(n,t)  ((t *)calloc((n),sizeof(t)))
 #define REQUIRE(b)	{if (!(b)) goto cleanup;}
