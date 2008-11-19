@@ -2,7 +2,7 @@
  * \brief IUPLua5 internal Functions
  *
  * See Copyright Notice in iup.h
- * $Id: il.h,v 1.1 2008-10-17 06:21:23 scuri Exp $
+ * $Id: il.h,v 1.2 2008-11-19 03:47:19 scuri Exp $
  */
  
 #ifndef __IL_H 
@@ -33,6 +33,15 @@ int iupseparatorlua_open (lua_State * L);
 int iupradiolua_open (lua_State * L);
 int iupmultilinelua_open (lua_State * L);
 int iupmenulua_open (lua_State * L);
+int iupcboxlua_open (lua_State * L);
+int iupspinboxlua_open (lua_State * L);
+int iupspinlua_open (lua_State * L);
+int iupsboxlua_open (lua_State * L);
+
+#if (IUP_VERSION_NUMBER >= 300000)
+int iupvallua_open (lua_State * L);
+int iuptabslua_open (lua_State * L);
+#endif
 
 int iupluaScanf(lua_State *L);
 int iupluaapi_open(lua_State * L);

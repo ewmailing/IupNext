@@ -14,7 +14,10 @@ LIBS = iupcontrols
 USE_LUA51 = Yes
 
 LOHDIR = loh
-SRCLUA = val.lua dial.lua gauge.lua colorbrowser.lua colorbar.lua tabs.lua sbox.lua matrix.lua tree.lua spin.lua spinbox.lua cbox.lua cells.lua
+SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua tree.lua cells.lua
+ifndef BUILD_IUP3
+  SRCLUA += val.lua tabs.lua
+endif
 EC = mask.c controls.c treefuncs.c matrixfuncs.c getparam.c gc.c
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
 

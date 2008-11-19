@@ -145,6 +145,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\srclua5\cbox.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\dialog.c"
 					>
 					<FileConfiguration
@@ -289,6 +293,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\srclua5\sbox.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\separator.c"
 					>
 					<FileConfiguration
@@ -299,6 +307,14 @@
 							WarningLevel="4"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\srclua5\spin.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\spinbox.c"
+					>
 				</File>
 				<File
 					RelativePath="..\srclua5\submenu.c"
