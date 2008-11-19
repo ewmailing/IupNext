@@ -5,7 +5,7 @@
 #-------------------------------------------------------------------------#
 
 # Tecmake Version
-VERSION = 3.15
+VERSION = 3.16
 
 # First target 
 .PHONY: build
@@ -452,13 +452,13 @@ endif
 
 #---------------------------------#
 # Tecgraf Libraries Location
-TECTOOLS_HOME ?= /home/tecgraf
+TECTOOLS_HOME ?= ../..
 
-IUP=$(TECTOOLS_HOME)/iup
-CD=$(TECTOOLS_HOME)/cd
-IM=$(TECTOOLS_HOME)/im
-LUA=$(TECTOOLS_HOME)/lua
-LUA51?=$(TECTOOLS_HOME)/lua5.1
+IUP   ?= $(TECTOOLS_HOME)/iup
+CD    ?= $(TECTOOLS_HOME)/cd
+IM    ?= $(TECTOOLS_HOME)/im
+LUA   ?= $(TECTOOLS_HOME)/lua
+LUA51 ?= $(TECTOOLS_HOME)/lua5.1
 
 
 #---------------------------------#
