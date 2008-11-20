@@ -27,14 +27,12 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "treedef.h"
-#include "treecd.h"
+#include "itdraw.h"
+#include "itdef.h"
 #include "itcallback.h"
 #include "itkey.h"
 #include "itfind.h"
 #include "itgetset.h"
-#include "itdraw.h"
-#include "itlimits.h"
 #include "itmouse.h"
 #include "itedit.h"
 
@@ -280,7 +278,7 @@ static void iTreeMouseLeftPress(Ihandle* ih, int xmouse, int ymouse, int mouse_s
     node = node->next;
   }
 
-  /* Deselects all nodes control and tree_shift were not pressed */
+  /* Deselects all nodes if control and tree_shift were not pressed */
   if(!tree_ctrl && !tree_shift)
     iTreeGSSetValue(ih, "CLEARALL", 1);
 
@@ -479,6 +477,23 @@ int iTreeMouseMotionCB(Ihandle* ih, int x, int y, char* r)
   }
   
   return IUP_DEFAULT;
+}
+
+/* Determines if a pixel is inside a region
+   c   : canvas 
+   x   : pixel horizontal coordinate
+   y   : pixel vertical coordinate
+   x0  : region left border
+   y0  : region top border
+   w   : region width
+   h   : region height
+*/
+static int iTreeLimitsInsideRegion(cdCanvas* c, int x, int y, int x0, int y0, int w, int h )
+{
+  cdCanvasUpdateYAxis(c, &y);
+  y++;
+  
+  return (x >= x0 && x <= x0 + w && y >= y0 && y <= y0 + h);
 }
 
 int iTreeMouseCollapseButton(Ihandle* ih, int xmouse, int ymouse, int x, int y)

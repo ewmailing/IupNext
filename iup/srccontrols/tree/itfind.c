@@ -21,10 +21,12 @@
 #include "iup_stdcontrols.h"
 #include "iup_controls.h"
 
-#include "treedef.h" 
+#include <cd.h>
+
+#include "itdraw.h"
+#include "itdef.h" 
 #include "itgetset.h"
 #include "itfind.h"
-#include "itdraw.h"
 #include "itmouse.h"
 
 

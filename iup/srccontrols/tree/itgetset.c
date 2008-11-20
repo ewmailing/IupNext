@@ -28,11 +28,11 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "treedef.h"
+#include "itdraw.h"
+#include "itdef.h"
 #include "itgetset.h"
 #include "itfind.h"
 #include "itcallback.h"
-#include "itdraw.h"
 #include "itscroll.h"
 
 #define NO      0
@@ -578,13 +578,12 @@ int iTreeGSSetValue(Ihandle* ih, const char* value, int call_cb)
   {
     iTreeGSSetMarked(ih, YES, call_cb);
   }
-  /* INVERTALL *MUST* appear before INVERT, or else INVERTALL will
-  * never be called...*/
+  /* INVERTALL *MUST* appear before INVERT, or else INVERTALL will never be called. */
   else if(iupStrEqualNoCase(value, "INVERTALL"))
   {
     iTreeGSSetMarked(ih, ITREE_INVERT, call_cb);
   }
-  else if(iupStrEqualNoCase(value, "INVERT"))
+  else if(iupStrEqualPartial(value, "INVERT"))   /* allows the use of "INVERTid" form */
   {
     iTreeGSInvertSelection(ih,&value[strlen("INVERT")], call_cb);
   }
@@ -686,7 +685,7 @@ int iTreeGSSetShift(Ihandle* ih, const char* mode)
    - marked_color : marked color array
    - range        : ITREE_NODE or ITREE_TREE
 */
-int iTreeGSSetImage(const char* name, char* image, unsigned long int* color, unsigned long int* marked_color, int range, Node node)
+int iTreeGSSetImage(const char* name, unsigned char* image, unsigned long int* color, unsigned long int* marked_color, int range, Node node)
 {
   Ihandle *img = IupGetHandle(name);  
   int x, y;

@@ -25,9 +25,13 @@
 #include "iup_controls.h"
 #include "iup_dialog.h"
 
-#include "treedef.h"
+#include <cd.h>
+
+#include "itdraw.h"
+#include "itdef.h"
 #include "itedit.h"
 #include "itcallback.h"
+#include "itgetset.h"
 
 
 static int iTreeEditTextActionCB(Ihandle* ih, int c, char *after)
@@ -135,7 +139,8 @@ void iTreeEditShow(Ihandle* ih, int text_x, int x, int y)
     w = ih->data->XmaxC - x;
 
   /* set attributes */
-  IupSetAttribute(ih->data->texth, "VALUE", IupGetAttribute(ih, "NAME"));
+  IupSetAttribute(ih->data->texth, "VALUE", iTreeGSGetName(ih, iTreeGSGetValue(ih)));  /* get the current node name selected */
+  /* IupSetAttribute(ih->data->texth, "VALUE", IupGetAttribute(ih, "NAME")); TODO: check this */
   IupSetAttribute(ih->data->texth, "FONT",  IupGetAttribute(ih, "FONT"));
 
   /* set position */
@@ -182,6 +187,9 @@ void iTreeEditShow(Ihandle* ih, int text_x, int x, int y)
 void iTreeEditCreate(Ihandle* ih)
 {
   ih->data->texth = IupText(NULL);
+  ih->firstchild = ih->data->texth;
+  ih->data->texth->parent = ih;
+
   IupSetCallback(ih->data->texth, "ACTION",       (Icallback)iTreeEditTextActionCB);
   IupSetCallback(ih->data->texth, "KILLFOCUS_CB", (Icallback)iTreeEditTextKillFocusCB);
   IupSetAttribute(ih->data->texth, "VALUE",  "");

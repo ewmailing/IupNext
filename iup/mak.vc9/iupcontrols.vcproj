@@ -312,10 +312,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\tree\itlimits.c"
-				>
-			</File>
-			<File
 				RelativePath="..\srccontrols\tree\itmouse.c"
 				>
 			</File>
@@ -368,10 +364,6 @@
 				</File>
 				<File
 					RelativePath="..\srccontrols\tree\itscroll.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\treecd.h"
 					>
 				</File>
 				<File

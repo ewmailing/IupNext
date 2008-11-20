@@ -18,11 +18,14 @@
 #include "iup_stdcontrols.h"
 #include "iup_controls.h"
 
-#include "treedef.h"
+#include <cd.h>
+
 #include "itdraw.h"
+#include "itdef.h"
 #include "itimage.h"
 
-char tree_collapse_image[] = 
+
+unsigned char tree_collapse_image[] = 
 {
    0,  0,  1,  0,  1,  0,  1,  0,  0,
    1,  2,  2,  2,  2,  2,  2,  2,  1,
@@ -43,7 +46,7 @@ long int tree_collapse_colors[4] =
   0x000000L
 } ;
 
-char tree_expand_image[] = 
+unsigned char tree_expand_image[] = 
 {
    0,  0,  1,  0,  1,  0,  1,  0,  0,
    1,  2,  2,  2,  2,  2,  2,  2,  1,
@@ -64,7 +67,7 @@ long int tree_expand_colors[4] =
   0x000000L
 } ;
 
-char tree_blank_image[] =
+unsigned char tree_blank_image[] =
 {
    0,  0,  1,  0,  1,  0,  1,  0,  0,
    1,  2,  2,  2,  2,  2,  2,  2,  1,
@@ -93,7 +96,7 @@ void iTreeImageInitializeImages(void)
   Ihandle *image_blank;  
   Ihandle *image_paper;  
   
-  static char img_leaf[] = 
+  unsigned char img_leaf[] = 
   {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -113,7 +116,7 @@ void iTreeImageInitializeImages(void)
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
   } ;
   
-  static char img_collapsed[] =
+  unsigned char img_collapsed[] =
   {
      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  
      1, 1, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1,  
@@ -133,7 +136,7 @@ void iTreeImageInitializeImages(void)
      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1  
   };
 
-  static char img_expanded[] =
+  unsigned char img_expanded[] =
   {
    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
    1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 
@@ -153,7 +156,7 @@ void iTreeImageInitializeImages(void)
    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 
 } ;
 
-  static char img_blank[] =
+  unsigned char img_blank[] =
   {
    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
    1, 1, 4, 3, 4, 3, 4, 3, 4, 3, 4, 3, 1, 1, 1, 1,
@@ -173,7 +176,7 @@ void iTreeImageInitializeImages(void)
    1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1
 } ;
 
-  static char img_paper[] =
+  unsigned char img_paper[] =
   {
    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
    1, 1, 4, 3, 4, 3, 4, 3, 4, 3, 4, 3, 1, 1, 1, 1,

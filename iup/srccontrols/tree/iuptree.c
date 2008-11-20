@@ -30,10 +30,9 @@
 #include "iup_dialog.h"
 #include "iup_cdutil.h"
 
-#include "treedef.h"
-#include "treecd.h"
-#include "itgetset.h"
 #include "itdraw.h"
+#include "itdef.h"
+#include "itgetset.h"
 #include "itkey.h"
 #include "itmouse.h"
 #include "itfind.h"
@@ -165,12 +164,10 @@ static int iTreeResizeCB(Ihandle* ih, int dx, int dy)
 /* Callback called when the tree is scrolled.  */
 static int iTreeScrollCB(Ihandle* ih)
 {
-  int err;
-
-  CdActivate(ih, err);
-  
-  if(err == CD_OK)
+  if (ih->data->cddbuffer)
   {
+    cdCanvasActivate(ih->data->cddbuffer);
+  
     iTreeEditCheckHidden(ih);
 
     cdCanvasNativeFont(ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
@@ -226,23 +223,18 @@ static int iTreeRepaintCB(Ihandle* ih)
 /* Callback called when the tree needs to be redrawn. */
 int iTreeRepaint(Ihandle* ih)
 {
-  int err;
-
   if(!ih->data->cddbuffer)
     return IUP_DEFAULT;
 
-  CdActivate(ih, err);
+  cdCanvasActivate(ih->data->cddbuffer);
   
-  if(err == CD_OK)
-  {
-    cdCanvasNativeFont(ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
-    iTreeDrawTree(ih);  /* FIXME: split the calcsize from the redraw */
-    iTreeUpdateScrollPos(ih);
+  cdCanvasNativeFont(ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
+  iTreeDrawTree(ih);  /* FIXME: split the calcsize from the redraw */
+  iTreeUpdateScrollPos(ih);
 
-    CdActivate(ih, err);
-    iTreeDrawTree(ih);
-    cdCanvasFlush(ih->data->cddbuffer);
-  }
+  cdCanvasActivate(ih->data->cddbuffer);
+  iTreeDrawTree(ih);
+  cdCanvasFlush(ih->data->cddbuffer);
 
   if(ih && ih->data->selected && ih->data->selected->visible == NO)
     iTreeGSSetValue(ih, "PREVIOUS", 1);

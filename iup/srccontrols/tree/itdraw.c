@@ -27,21 +27,21 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "treedef.h"
-#include "itcallback.h"
 #include "itdraw.h"
+#include "itdef.h"
+#include "itcallback.h"
 #include "itfind.h"
 
 #define ITREE_MAX(a, b) ((a) > (b) ? (a) : (b))
 
 /* Images */
-extern char tree_collapse_image[ITREE_TREE_COLLAPSE_SIZE];
+extern unsigned char tree_collapse_image[ITREE_TREE_COLLAPSE_SIZE];
 extern long int tree_collapse_colors[ITREE_BOX_COLORS];
 
-extern char tree_expand_image[ITREE_TREE_EXPAND_SIZE];
+extern unsigned char tree_expand_image[ITREE_TREE_EXPAND_SIZE];
 extern long int tree_expand_colors[ITREE_BOX_COLORS];
 
-extern char tree_blank_image[ITREE_TREE_EXPAND_SIZE];
+extern unsigned char tree_blank_image[ITREE_TREE_EXPAND_SIZE];
 extern long int tree_blank_colors[ITREE_BOX_COLORS];
 
 
@@ -80,8 +80,8 @@ static void iTreeDrawUpdateScrollDx(Ihandle* ih, int maxx)
   if(dx > 1.0)
     dx = 1.0;
  
-  IupSetfAttribute(ih, "DY", "%.f", dy);
-  IupSetfAttribute(ih, "DX", "%.f", dx);
+  IupSetfAttribute(ih, "DY", "%f", (double)dy);
+  IupSetfAttribute(ih, "DX", "%f", (double)dx);
 } 
 
 static void iTreeDrawBorder(Ihandle* ih)

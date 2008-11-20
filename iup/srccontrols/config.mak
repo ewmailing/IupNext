@@ -8,8 +8,8 @@ INCLUDES = ../include ../src .
 SRCCOLOR = iup_colorbrowser.c iup_colorhsi.c iup_colordlg.c
 SRCCOLOR := $(addprefix color/, $(SRCCOLOR))
 
-SRCTREE = itdraw.c itgetset.c iuptree.c itfind.c itlimits.c \
-          itkey.c itmouse.c itcallback.c itscroll.c itimage.c itedit.c
+SRCTREE = itdraw.c itgetset.c iuptree.c itfind.c itimage.c \
+          itkey.c itmouse.c itcallback.c itscroll.c itedit.c
 SRCTREE := $(addprefix tree/, $(SRCTREE))
 
 SRCMATRIX = imkey.c immark.c imaux.c immem.c immouse.c imnumlc.c \
@@ -17,7 +17,7 @@ SRCMATRIX = imkey.c immark.c imaux.c immem.c immouse.c imnumlc.c \
             imscroll.c imedit.c
 SRCMATRIX := $(addprefix matrix/, $(SRCMATRIX))
 
-#SRC = iupgetparam.c iupspin.c
+#SRC = iupgetparam.c
 
 SRC = iup_cdutil.c iup_gauge.c iup_cells.c iup_colorbar.c iup_controls.c \
       iup_dial.c iup_oldtabs.c iup_oldval.c iup_oldmask.c \

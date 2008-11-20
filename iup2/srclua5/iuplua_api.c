@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua_api.c,v 1.2 2008-11-19 03:18:21 scuri Exp $
+* $Id: iuplua_api.c,v 1.3 2008-11-20 18:30:12 scuri Exp $
 */
 
 #include <stdio.h>
@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "iup.h"
+#include "iupkey.h"
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -298,13 +299,13 @@ static int ListDialog(lua_State *L)
   char** lista = iuplua_checkstring_array(L, 4);
   int * marcas = iuplua_checkint_array(L,8);
   int i, ret = IupListDialog(tipo, 
-                             (char *)luaL_checkstring(L, 2), 
+                             luaL_checkstring(L, 2), 
                              tam, 
                              lista, 
                              luaL_checkint(L, 5), 
                              luaL_checkint(L, 6), 
                              luaL_checkint(L, 7), 
-                              marcas);
+                             marcas);
 
   if(tipo==2)
   {

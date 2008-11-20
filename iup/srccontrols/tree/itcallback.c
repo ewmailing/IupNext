@@ -22,7 +22,10 @@
 #include "iup_stdcontrols.h"
 #include "iup_controls.h"
 
-#include "treedef.h"
+#include <cd.h>
+
+#include "itdraw.h"
+#include "itdef.h"
 #include "itcallback.h"
 #include "itkey.h"
 #include "itfind.h"

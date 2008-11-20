@@ -7,9 +7,6 @@
 #ifndef __TREEDEF_H 
 #define __TREEDEF_H
 
-#include <cd.h>
-#include "itdraw.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -46,13 +43,13 @@ struct Node_
   void* userid;  /* User id that identifies the node */
 
   int imageinuse;                                     /* YES or NO [default] */
-  char image[ITREE_NODE_SIZE];                        /* Node's image */ 
+  unsigned char image[ITREE_NODE_SIZE];               /* Node's image */ 
   unsigned long int color[ITREE_NODE_COLORS];         /* Node's color */
   unsigned long int marked_color[ITREE_NODE_COLORS];  /* Node's marked color */
   long int text_color;
  
-  int expandedimageinuse;               /* YES or NO [default] */
-  char expandedimage[ITREE_NODE_SIZE];  /* Node's image */ 
+  int expandedimageinuse;                                     /* YES or NO [default] */
+  unsigned char expandedimage[ITREE_NODE_SIZE];               /* Node's image */ 
   unsigned long int expandedcolor[ITREE_NODE_COLORS];         /* Node's color */
   unsigned long int expandedmarked_color[ITREE_NODE_COLORS];  /* Node's marked color */
 };
@@ -76,9 +73,9 @@ struct _IcontrolData
   cdCanvas* cddbuffer;
 
   /* Treeview's images */ 
-  char image_leaf[ITREE_NODE_SIZE];  
-  char image_collapsed[ITREE_NODE_SIZE]; 
-  char image_expanded[ITREE_NODE_SIZE];              
+  unsigned char image_leaf[ITREE_NODE_SIZE];  
+  unsigned char image_collapsed[ITREE_NODE_SIZE]; 
+  unsigned char image_expanded[ITREE_NODE_SIZE];              
   
   /* Treeview's colors */
   unsigned long int color_leaf[ITREE_NODE_COLORS];

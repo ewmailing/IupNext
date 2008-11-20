@@ -22,13 +22,16 @@
 #include "iup_stdcontrols.h"
 #include "iup_controls.h"
 
-#include "treedef.h"
+#include <cd.h>
+
+#include "itdraw.h"
+#include "itdef.h"
 #include "itcallback.h"
 #include "itkey.h"
 #include "itfind.h"
 #include "itgetset.h"
 #include "itedit.h"
-#include "treecd.h"
+
 
 int tree_ctrl  = 0;
 int tree_shift = 0;
@@ -36,14 +39,13 @@ int tree_shift = 0;
 
 int iTreeKeyNodeCalcPos(Ihandle* ih, int* x, int* y, int* text_x)
 {
-  int err;
   Node node  = (Node)ih->data->root;
   float posy = IupGetFloat(ih, "POSY");
   float dy   = IupGetFloat(ih, "DY");
   float posx = IupGetFloat(ih, "POSX");
   float dx   = IupGetFloat(ih, "DX");
 
-  CdActivate(ih, err);
+  cdCanvasActivate(ih->data->cddbuffer);
 
   *y = (int)((1.0 + posy/dy)*(ih->data->YmaxC-ITREE_TREE_TOP_MARGIN));
 
@@ -65,7 +67,7 @@ int iTreeKeyNodeCalcPos(Ihandle* ih, int* x, int* y, int* text_x)
   if(node->name)
   {
     /* Calculates its dimensions */
-    text_x = iupdrvFontGetStringWidth(ih, node->name);
+    *text_x = iupdrvFontGetStringWidth(ih, node->name);
   }
 
   return 1;

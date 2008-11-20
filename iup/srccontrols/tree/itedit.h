@@ -8,8 +8,6 @@
 #ifndef __ITEDIT_H 
 #define __ITEDIT_H
 
-#include "iuptree.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

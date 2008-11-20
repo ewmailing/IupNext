@@ -8,8 +8,6 @@
 #ifndef __ITFIND_H 
 #define __ITFIND_H
 
-#include "iuptree.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -8,8 +8,6 @@
 #ifndef __ITGETSET_H 
 #define __ITGETSET_H
 
-#include "iuptree.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,7 +24,7 @@ int iTreeGSSetState(Ihandle* ih, const char* id_string, const char* mode);
 int iTreeGSSetDepth(Ihandle* ih, const char* id_string, const char* dep);
 int iTreeGSSetCtrl(Ihandle* ih, const char* mode);
 int iTreeGSSetShift(Ihandle* ih, const char* mode);
-int iTreeGSSetImage(const char* name, char* image, unsigned long int* colors, unsigned long int* selected, int range, Node node);
+int iTreeGSSetImage(const char* name, unsigned char* image, unsigned long int* colors, unsigned long int* selected, int range, Node node);
 
 char* iTreeGSGetName(Ihandle* ih, const char* id_string);
 char* iTreeGSGetKind(Ihandle* ih, const char* id_string);
