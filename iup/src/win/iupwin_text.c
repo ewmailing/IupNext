@@ -1164,9 +1164,19 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
   selection = iupAttribGetStr(formattag, "SELECTION");
   if (selection)
   {
-    /* In Windows, the format messaged use the current selection */
+    /* In Windows, the format message use the current selection */
     winTextSetSelectionAttrib(ih, selection);
     iupAttribSetStr(ih, "SELECTION", NULL);
+  }
+  else
+  {
+    char* selectionpos = iupAttribGetStr(formattag, "SELECTIONPOS");
+    if (selectionpos)
+    {
+      /* In Windows, the format message use the current selection */
+      winTextSetSelectionPosAttrib(ih, selectionpos);
+      iupAttribSetStr(ih, "SELECTIONPOS", NULL);
+    }
   }
 
   if (iupAttribGetStr(formattag, "FONTSCALE") && !iupAttribGetStr(formattag, "FONTSIZE"))
