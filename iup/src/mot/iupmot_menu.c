@@ -312,7 +312,10 @@ static int motItemMapMethod(Ihandle* ih)
     }
     else
     {
-      iupmotSetArg(args[num_args++], XmNindicatorOn, XmINDICATOR_CHECK);
+      if (iupAttribGetInt(ih, "HIDEMARK"))
+        iupmotSetArg(args[num_args++], XmNindicatorOn, XmINDICATOR_NONE)
+      else
+        iupmotSetArg(args[num_args++], XmNindicatorOn, XmINDICATOR_CHECK)
       iupmotSetArg(args[num_args++], XmNlabelType, iupAttribGetStr(ih, "TITLEIMAGE")? XmPIXMAP: XmSTRING);
     }
 

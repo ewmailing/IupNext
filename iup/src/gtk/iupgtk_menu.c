@@ -310,11 +310,13 @@ static int gtkItemSetValueAttrib(Ihandle* ih, const char* value)
     g_signal_handlers_unblock_by_func(G_OBJECT(ih->handle), G_CALLBACK(gtkItemActivate), ih);
     return 0;
   }
-  else
+  else if (GTK_IS_IMAGE_MENU_ITEM(ih->handle))
   {
     gtkItemUpdateImage(ih, value, iupAttribGetStr(ih, "IMAGE"), iupAttribGetStr(ih, "IMPRESS"));
     return 1;
   }
+  else
+    return 0;
 }
 
 static char* gtkItemGetValueAttrib(Ihandle* ih)
@@ -353,7 +355,12 @@ static int gtkItemMapMethod(Ihandle* ih)
       iupAttribSetStr(ih->parent, "_IUPGTK_LASTRADIOITEM", (char*)ih->handle);
     }
     else
-      ih->handle = gtk_check_menu_item_new_with_label("");
+    {
+      if (iupAttribGetInt(ih, "HIDEMARK"))
+        ih->handle = gtk_menu_item_new_with_label("");
+      else
+        ih->handle = gtk_check_menu_item_new_with_label("");
+    }
   }
 
   if (!ih->handle)
