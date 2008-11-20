@@ -2,7 +2,7 @@
  * \brief iupmatrix control core
  *
  * See Copyright Notice in iup.h
- * $Id: iupmatrix.c,v 1.3 2008-11-11 18:18:11 scuri Exp $
+ * $Id: iupmatrix.c,v 1.4 2008-11-20 21:15:38 scuri Exp $
  */
 
 #include <stdio.h>  /*sprintf*/
@@ -1001,11 +1001,11 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterCallback(ic, "MARKEDIT_CB", "iii");
 
   /* IupMatrix Attributes - CELL */
-  iupClassRegisterAttribute(ic, "IDVALUE", (IattribGetFunc)iMatrixGetMatrixCellAttrib, (IattribSetFunc)iMatrixSetMatrixCellAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, (IattribSetFunc)iMatrixSetAlignmentAttrib, "ALEFT", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FGCOLOR", (IattribGetFunc)iMatrixGetFgColorAttrib, (IattribSetFunc)iMatrixSetFgColorAttrib, "0 0 0", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", (IattribGetFunc)iMatrixGetBgColorAttrib, (IattribSetFunc)iMatrixSetBgColorAttrib, "255 255 255", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FONT", (IattribGetFunc)iMatrixGetFontAttrib, (IattribSetFunc)iMatrixSetFontAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IDVALUE", iMatrixGetMatrixCellAttrib, iMatrixSetMatrixCellAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ALIGNMENT", NULL, iMatrixSetAlignmentAttrib, "ALEFT", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FGCOLOR", iMatrixGetFgColorAttrib, iMatrixSetFgColorAttrib, "0 0 0", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "BGCOLOR", iMatrixGetBgColorAttrib, iMatrixSetBgColorAttrib, "255 255 255", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FONT", iMatrixGetFontAttrib, iMatrixSetFontAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FOCUS_CELL", iMatrixGetFocusCellAttrib, iMatrixSetFocusCellAttrib, "1:1", IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", iMatrixGetValueAttrib, iMatrixSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
@@ -1015,11 +1015,11 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttribute(ic, "NUMLIN_VISIBLE", iMatrixGetNumLinVisibleAttrib, NULL, "3", IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMCOL_VISIBLE", iMatrixGetNumColVisibleAttrib, NULL, "4", IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WIDTHDEF", NULL, NULL, "80", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WIDTH", (IattribGetFunc)iMatrixGetWidthAttrib, (IattribSetFunc)iMatrixSetWidthAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "WIDTH", iMatrixGetWidthAttrib, iMatrixSetWidthAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HEIGHTDEF", NULL, NULL, "8", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HEIGHT", (IattribGetFunc)iMatrixGetHeightAttrib, (IattribSetFunc)iMatrixSetHeightAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RASTERWIDTH", (IattribGetFunc)iMatrixGetRasterWidthAttrib, (IattribSetFunc)iMatrixSetRasterWidthAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RASTERHEIGHT", (IattribGetFunc)iMatrixGetRasterHeightAttrib, (IattribSetFunc)iMatrixSetRasterHeightAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "HEIGHT", iMatrixGetHeightAttrib, iMatrixSetHeightAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "RASTERWIDTH", iMatrixGetRasterWidthAttrib, iMatrixSetRasterWidthAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "RASTERHEIGHT", iMatrixGetRasterHeightAttrib, iMatrixSetRasterHeightAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
   /* IupMatrix Attributes - MARK */
   iupClassRegisterAttribute(ic, "MARKED", iMatrixGetMarkedAttrib, iMatrixSetMarkedAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
@@ -1035,8 +1035,8 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttribute(ic, "ORIGIN", iMatrixGetOriginAttrib, iMatrixSetOriginAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDIT_MODE", iMatrixGetEditModeAttrib, iMatrixSetEditModeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iMatrixSetRedrawAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ACTIVELIN", NULL, (IattribSetFunc)iMatrixSetActiveLinAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ACTIVECOL", NULL, (IattribSetFunc)iMatrixSetActiveColAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ACTIVELIN", NULL, iMatrixSetActiveLinAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ACTIVECOL", NULL, iMatrixSetActiveColAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "CARET", iMatrixGetCaretAttrib, iMatrixSetCaretAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);

@@ -2,7 +2,7 @@
  * \brief iupmatrix. cel selection.
  *
  * See Copyright Notice in iup.h
- * $Id: immark.h,v 1.1 2008-10-17 06:05:36 scuri Exp $
+ * $Id: immark.h,v 1.2 2008-11-20 21:15:38 scuri Exp $
  */
  
 #ifndef __IMMARK_H 
@@ -39,9 +39,9 @@ int iMatrixMarkGetMode      (Ihandle* ih);
 int iMatrixMarkFullLin(void);
 int iMatrixMarkFullCol(void);
 
-void *iMatrixMarkSet    (Ihandle* ih, char* v);
+void *iMatrixMarkSet    (Ihandle* ih, const char* v);
 char* iMatrixMarkGet    (Ihandle* ih);
-void *iMatrixMarkSetMode(Ihandle* ih, char* v);
+void *iMatrixMarkSetMode(Ihandle* ih, const char* v);
 
 #ifdef __cplusplus
 }

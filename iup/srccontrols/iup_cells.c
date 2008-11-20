@@ -978,7 +978,7 @@ Iclass* iupCellsGetClass(void)
 
   iupClassRegisterAttribute(ic, "FULL_VISIBLE", NULL, iCellsSetFullVisibleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REPAINT", NULL, iCellsSetRepaintAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LIMITS", (IattribGetFunc)iCellsGetLimitsAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "LIMITS", iCellsGetLimitsAttrib, (IattribSetIdFunc)iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIRST_COL", iCellsGetFirstColAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIRST_LINE", iCellsGetFirstLineAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGE_CANVAS", iCellsGetImageCanvasAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);

@@ -15,7 +15,7 @@ DBG = Yes
 
 #SRC = tray.c
 #SRC = dialog.c
-SRC = predialogs.c
+#SRC = predialogs.c
 #SRC = timer.c
 #SRC = label.c
 #SRC = canvas.c
@@ -31,7 +31,7 @@ SRC = predialogs.c
 #SRC = val.c
 #SRC = tabs.c
 #SRC = sample.c
-#SRC = menu.c
+SRC = menu.c
 #SRC = spin.c
 #SRC = text_spin.c
 #SRC = list.c
@@ -50,7 +50,7 @@ SRC = predialogs.c
 #SRC = glcanvas.c
 #SRC = glcanvas_cube.c
 
-USE_IUPCONTROLS = Yes
+#USE_IUPCONTROLS = Yes
 #SRC = tabs.c
 #SRC = val.c
 #SRC = colorbrowser.c

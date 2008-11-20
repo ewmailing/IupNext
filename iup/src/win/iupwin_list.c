@@ -1384,7 +1384,7 @@ void iupdrvListInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IupGetGlobal("TXTFGCOLOR"), IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    
 
   /* IupList only */
-  iupClassRegisterAttribute(ic, "IDVALUE", (IattribGetFunc)winListGetIdValueAttrib, (IattribSetFunc)iupListSetIdValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IDVALUE", winListGetIdValueAttrib, iupListSetIdValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", winListGetValueAttrib, winListSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, winListSetShowDropdownAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOPITEM", NULL, winListSetTopItemAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);

@@ -3,7 +3,7 @@
  * cell selection
  *
  * See Copyright Notice in iup.h
- * $Id: immark.c,v 1.1 2008-10-17 06:05:36 scuri Exp $
+ * $Id: immark.c,v 1.2 2008-11-20 21:15:38 scuri Exp $
  */
 
 /**************************************************************************/
@@ -485,7 +485,7 @@ void iMatrixMarkBlock(Ihandle* ih, int lin, int col)
 void iMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark)
 {
   if(!ih->data->valcb)
-    ih->data->v[lin][col].mark = mark;
+    ih->data->v[lin][col].mark = (unsigned char)mark;
   else if(ih->data->markeditcb)
     ih->data->markeditcb(ih, lin + 1, col + 1, mark);
   else
@@ -777,10 +777,10 @@ void iMatrixMarkShow(Ihandle* ih, int ctrl, int lin, int col, int oldlin, int ol
           are the columns of the line number 1, the next C are the columns of
           the line number 2, and so on.
 */
-void* iMatrixMarkSet(Ihandle* ih, char* v)
+void* iMatrixMarkSet(Ihandle* ih, const char* v)
 {
   int i, j, old;
-  char* p = v;
+  const char* p = v;
   int visible = IupGetInt(ih, "VISIBLE");
   int err;
 
@@ -880,7 +880,7 @@ void* iMatrixMarkSet(Ihandle* ih, char* v)
   IsCanvasSet(ih, err);
   if(visible && err == CD_OK)
     iMatrixDrawCells(ih, ih->data->lin.first, ih->data->col.first, ih->data->lin.last, ih->data->col.last);
-  return v;
+  return (char*)v;
 }
 
 /* Return the marked cells */
@@ -968,7 +968,7 @@ char* iMatrixMarkGet(Ihandle* ih)
    cells that are marked.
    -> v : new mark mode. Currently, it is not used.
 */
-void* iMatrixMarkSetMode(Ihandle* ih, char* v)
+void* iMatrixMarkSetMode(Ihandle* ih, const char* v)
 {
   int visible = IupGetInt(ih, "VISIBLE");
   int err;
@@ -978,5 +978,5 @@ void* iMatrixMarkSetMode(Ihandle* ih, char* v)
   if(visible && err == CD_OK)
     iMatrixMarkUncheckAll(ih);
 
-  return v;
+  return (char*)v;
 }

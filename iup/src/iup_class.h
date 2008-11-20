@@ -254,6 +254,15 @@ void iupClassRegisterAttribute(Iclass* ic, const char* name,
                                            Imap mapped,
                                            Iinherit inherit);
 
+/** Same as \ref iupClassRegisterAttribute for attributes with Ids.
+ * \ingroup iclass */
+void iupClassRegisterAttributeId(Iclass* ic, const char* name, 
+                                           IattribGetIdFunc get, 
+                                           IattribSetIdFunc set, 
+                                           const char* default_value, 
+                                           Imap mapped,
+                                           Iinherit inherit);
+
 /** Returns the attribute handling functions.
  * \ingroup iclass */
 void iupClassRegisterGetAttribute(Iclass* ic, const char* name, 
@@ -261,7 +270,8 @@ void iupClassRegisterGetAttribute(Iclass* ic, const char* name,
                                            IattribSetFunc *set, 
                                            const char* *default_value, 
                                            Imap *mapped,
-                                           Iinherit *inherit);
+                                           Iinherit *inherit,
+                                           int *has_id);
 
 /** Register the parameters of a callback.
  * Used by language bindings.

@@ -1059,7 +1059,7 @@ Iclass* iupColorbarGetClass(void)
   iupClassRegisterCallback(ic, "EXTENDED_CB", "i");
 
   /* IupColorbar only */
-  iupClassRegisterAttribute(ic, "CELL", (IattribGetFunc)iColorbarGetCellAttrib, (IattribSetFunc)iColorbarSetCellAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "CELL", iColorbarGetCellAttrib, iColorbarSetCellAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUM_CELLS", iColorbarGetNumCellsAttrib, iColorbarSetNumCellsAttrib, "16", IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUM_PARTS", iColorbarGetNumPartsAttrib, iColorbarSetNumPartsAttrib, "1", IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PREVIEW_SIZE", iColorbarGetPreviewSizeAttrib, iColorbarSetPreviewSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);

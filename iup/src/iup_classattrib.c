@@ -26,6 +26,7 @@ typedef struct _IattribFunc
   const char* default_value;
   Imap mapped;
   Iinherit inherit;
+  int has_id;
 } IattribFunc;
 
 
@@ -103,7 +104,15 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
         if (!value)
           value = afunc->default_value;
       }
-      ret = afunc->set(ih, value);
+
+      if (afunc->has_id)
+      {
+        IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
+        return id_set(ih, "", value);  /* empty Id */
+      }
+      else
+        ret = afunc->set(ih, value);
+
       if (*inherit)
         return 1;   /* inheritable attributes are always stored in the hash table, */
       else          /* to indicate that they are set at the control.               */
@@ -153,7 +162,15 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
     *def_value = (char*)afunc->default_value;
     *inherit = afunc->inherit;
     if (afunc->get && (ih->handle || !afunc->mapped))
-      return afunc->get(ih);
+    {
+      if (afunc->has_id)
+      {
+        IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
+        return id_get(ih, "");  /* empty Id */
+      }
+      else
+        return afunc->get(ih);
+    }
   }
   return NULL;
 }
@@ -180,13 +197,33 @@ void iupClassRegisterAttribute(Iclass* ic, const char* name,
   afunc->default_value = _default_value;
   afunc->mapped = _mapped;
   afunc->inherit = _inherit;
+  afunc->has_id = 0;
+
+  iupTableSet(ic->attrib_func, name, (void*)afunc, IUPTABLE_POINTER);
+}
+
+void iupClassRegisterAttributeId(Iclass* ic, const char* name, 
+                               IattribGetIdFunc _get, IattribSetIdFunc _set, 
+                               const char* _default_value, Imap _mapped, Iinherit _inherit)
+{
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
+  if (afunc)
+    free(afunc);  /* overwrite a previous registration */
+
+  afunc = (IattribFunc*)malloc(sizeof(IattribFunc));
+  afunc->get = (IattribGetFunc)_get;
+  afunc->set = (IattribSetFunc)_set;
+  afunc->default_value = _default_value;
+  afunc->mapped = _mapped;
+  afunc->inherit = _inherit;
+  afunc->has_id = 1;
 
   iupTableSet(ic->attrib_func, name, (void*)afunc, IUPTABLE_POINTER);
 }
 
 void iupClassRegisterGetAttribute(Iclass* ic, const char* name, 
                                   IattribGetFunc *_get, IattribSetFunc *_set, 
-                                  const char* *_default_value, Imap *_mapped, Iinherit *_inherit)
+                                  const char* *_default_value, Imap *_mapped, Iinherit *_inherit, int *_has_id)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
   if (afunc)
@@ -196,6 +233,7 @@ void iupClassRegisterGetAttribute(Iclass* ic, const char* name,
     if (_default_value) *_default_value = afunc->default_value;
     if (_mapped) *_mapped = afunc->mapped;
     if (_inherit) *_inherit = afunc->inherit;
+    if (_has_id) *_has_id = afunc->has_id;
   }
 }
 
