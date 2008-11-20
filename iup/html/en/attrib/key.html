@@ -12,21 +12,26 @@
   value, defined in the &quot;iupkey.h&quot; file header, which should be included in the application to use the key 
   definitions. These keys are used in K_ANY and KEYPRESS_CB callbacks to inform the key that was pressed in the 
   keyboard.</p>
-<p>In Lua, it is necessary to call &quot;iup.key_open()&quot; to register the keys in the 
+<p>In Lua, it is necessary to call &quot;<strong>iup.key_open()</strong>&quot; to register the keys in the 
 Lua environment. See the <a href="../func/iupkey_open.html">iupkey_open</a> 
 documentation.</p>
 <p>IUP uses the US default codification this means that if you installed a keyboard specific for your country the key 
   codes will be different from the real keys for a small group of keys. Except for the Brazilian ABNT keyboard which 
   works in Windows and Linux. This does not affect the IupText and IupMultiline text input.</p>
 <p>Notice that somes key combinations are not available because they are restrited by the system.</p>
-<p>The iup_isprint(key) macro informs if a key can be directly used as a printable character. The 
-isxkey(key) macro informs if a given key is an extended code. These macros are also available in Lua as a 
-  function with the same name.</p>
+<p>The <strong>iup_isprint(key)</strong> macro informs if a key can be directly used as a printable character. The
+<strong>iup_isXkey(key)</strong> macro informs if a given key is an extended code. 
+The <strong>iup_isShiftXkey(key)</strong> macro informs if a given key is an 
+extended code using the Shift modifier, the <strong>iup_isCtrlXkey(key)</strong> 
+macro for the Ctrl modifier, the <strong>iup_isAltXkey(key)</strong> macro for 
+the Alt modifier, and the <strong>iup_isSysXkey(key)</strong> macro for the Sys 
+modifier. These macros are also available in Lua as a 
+  function with the same name (iup.isprint(key), iup.isxkey(key), and so on).</p>
 <p>In the table bellow there are the most common definitions. Change the definition to K_s*, K_c*, K_m* and K_y* when 
   the repective modifier is pressed (Shift, Control, Alt and Sys). Sys in Windows is the Windows key and in Mac is the 
   Apple key. Check the &quot;iupkey.h&quot; file header for all the definitions. To detect the combination of two or 
   more modifiers use global attribute &quot;MODKEYSTATE&quot;.</p>
-<p>Note: Using the GTK in Windows does not generates the Win modifier key, the K_Print and the K_Pause keys (up to GTK 
+<p>Note: GTK in Windows does not generates the Win modifier key, the K_Print and the K_Pause keys (up to GTK 
   version 2.8.18).</p>
   <table align="center">
     <tr>
