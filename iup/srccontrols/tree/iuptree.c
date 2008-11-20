@@ -124,63 +124,6 @@ static int iTreeInitTree(Ihandle* ih)
 ***************************************************************************
 ***************************************************************************/
 
-static void iTreeCreateCanvas(Ihandle* ih)
-{
-  /* update canvas size */
-  cdCanvasActivate(ih->data->cdcanvas);
-
-  /* this can fail if canvas size is zero */
-  ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
-
-  if(!ih->data->cddbuffer)
-    return;
-
-  /* update canvas size */
-  cdCanvasActivate(ih->data->cddbuffer);
-
-  iTreeInitTree(ih);
-}
-
-/* Callback called when the tree has its size altered
-   dx, dy: Canvas size, in pixels.                    */
-static int iTreeResizeCB(Ihandle* ih, int dx, int dy)
-{
-  if(!ih->data->cddbuffer)
-    iTreeCreateCanvas(ih);
-
-  if(!ih->data->cddbuffer)
-    return IUP_DEFAULT;
-
-  cdCanvasActivate(ih->data->cddbuffer);
-
-  ih->data->XmaxC = dx - 1;
-  ih->data->YmaxC = dy - 1;
-
-  iTreeEditCheckHidden(ih);
-  
-  return IUP_DEFAULT;
-}
-
-/* Callback called when the tree is scrolled.  */
-static int iTreeScrollCB(Ihandle* ih)
-{
-  if (ih->data->cddbuffer)
-  {
-    cdCanvasActivate(ih->data->cddbuffer);
-  
-    iTreeEditCheckHidden(ih);
-
-    cdCanvasNativeFont(ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
-    iTreeDrawTree(ih);
-    cdCanvasFlush(ih->data->cddbuffer);
-  }
-
-  if(ih && ih->data->selected && ih->data->selected->visible == NO)
-    iTreeGSSetValue(ih, "PREVIOUS", 0);
-  
-  return IUP_DEFAULT;
-}
-
 static void iTreeSafeStrcpy(char *dest, char *orig)
 {
   if(orig && dest)
@@ -212,12 +155,53 @@ static void iTreeUpdateScrollPos(Ihandle* ih)
     IupStoreAttribute(ih, "POSX", posx);
 }
 
-static int iTreeRepaintCB(Ihandle* ih)
+/* Callback called when the tree has its size altered
+   dx, dy: Canvas size, in pixels.                    */
+static int iTreeResizeCB(Ihandle* ih, int dx, int dy)
 {
+  if(!ih->data->cddbuffer)
+  {
+    /* update canvas size */
+    cdCanvasActivate(ih->data->cdcanvas);
+
+    /* this can fail if canvas size is zero */
+    ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
+    if(ih->data->cddbuffer)
+      iTreeInitTree(ih);
+  }
+
   if(!ih->data->cddbuffer)
     return IUP_DEFAULT;
 
-  return iTreeRepaint(ih);
+  /* update canvas size */
+  cdCanvasActivate(ih->data->cddbuffer);
+  ih->data->XmaxC = dx - 1;
+  ih->data->YmaxC = dy - 1;
+
+  /* update render */
+  iTreeEditCheckHidden(ih);
+  
+  return IUP_DEFAULT;
+}
+
+/* Callback called when the tree is scrolled.  */
+static int iTreeScrollCB(Ihandle* ih)
+{
+  if (ih->data->cddbuffer)
+  {
+    cdCanvasActivate(ih->data->cddbuffer);
+  
+    iTreeEditCheckHidden(ih);
+
+    cdCanvasNativeFont(ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
+    iTreeDrawTree(ih);
+    cdCanvasFlush(ih->data->cddbuffer);
+  }
+
+  if(ih && ih->data->selected && ih->data->selected->visible == NO)
+    iTreeGSSetValue(ih, "PREVIOUS", 0);
+  
+  return IUP_DEFAULT;
 }
 
 /* Callback called when the tree needs to be redrawn. */
@@ -242,6 +226,14 @@ int iTreeRepaint(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int iTreeRepaintCB(Ihandle* ih)
+{
+  if(!ih->data->cddbuffer)
+    return IUP_DEFAULT;
+
+  return iTreeRepaint(ih);
+}
+
 /***************************************************************************/
 /***************************************************************************/
 /***************************************************************************/
@@ -259,6 +251,11 @@ static int iTreeCreateMethod(Ihandle* ih, void **params)
   if(ih->data) free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
+  /* change the IupCanvas default values */
+  /* The tree has scrollbar by default */
+  iupAttribSetStr(ih, "SCROLLBAR", "YES");
+  iupAttribSetStr(ih, "BORDER", "NO");
+
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION",      (Icallback)iTreeRepaintCB);
   IupSetCallback(ih, "RESIZE_CB",   (Icallback)iTreeResizeCB);
@@ -268,7 +265,7 @@ static int iTreeCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iTreeCallKeyPressCB);
 
   /* Creates the rename node text field */
-//  iTreeEditCreate(ih);
+  iTreeEditCreate(ih);
 
   iTreeInitTreeRoot(ih);
 
@@ -278,12 +275,7 @@ static int iTreeCreateMethod(Ihandle* ih, void **params)
 
   /* Initially marked element is root */
   iTreeGSSetValue(ih, "0", 0);
-
-  /* change the IupCanvas default values */
-  /* The tree has scrollbar by default */
-  iupAttribSetStr(ih, "SCROLLBAR", "YES");
-  iupAttribSetStr(ih, "BORDER", "NO");
-
+  
   return IUP_NOERROR;
 }
 
@@ -318,8 +310,8 @@ static int iTreeMapMethod(Ihandle* ih)
 
   /* this can fail if canvas size is zero */
   ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
-
-  iTreeInitTree(ih);
+  if(ih->data->cddbuffer)
+    iTreeInitTree(ih);
 
   return IUP_NOERROR;
 }
@@ -372,7 +364,7 @@ static void iTreeComputeNaturalSizeMethod(Ihandle* ih)
 /*****************************************************************************/
 /***** SET AND GET ATTRIBUTES ************************************************/
 /*****************************************************************************/
-/* Scrollbar, Font, ShowDragDrop, ShowRename... will not be defined...       */
+
 
 static int iTreeSetAddExpandedAttrib(Ihandle* ih, const char* value)
 {
@@ -406,9 +398,9 @@ static char* iTreeGetRenameSelectionAttrib(Ihandle* ih)
 
 static int iTreeSetValueAttrib(Ihandle* ih, const char* value)
 {
-  /* Unmarks all nodes if control is not pressed and value is not ITREE_INVERT,
-  * because ITREE_INVERT does not depend on the control iTreeKey status. */
-  if(tree_ctrl == NO && value && !iupStrEqualNoCase(value, "ITREE_INVERT"))
+  /* Unmarks all nodes if control is not pressed and value is not INVERT,
+  * because INVERT does not depend on the control iTreeKey status. */
+  if(tree_ctrl == NO && value && !iupStrEqualPartial(value, "INVERT"))
     iTreeGSSetMarked(ih, NO, 0);
 
   iTreeGSSetValue(ih, value, 0);
@@ -428,14 +420,13 @@ static char* iTreeGetValueAttrib(Ihandle* ih)
 
 static int iTreeSetMarkedAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  iTreeGSMark(ih, &name_id[strlen("MARKED")], value);
-  iupAttribSetStr(ih, name_id, NULL);  /* Do not store id dependent attributes in the environment */
+  iTreeGSMark(ih, name_id, value);
   return 1;
 }
 
 static char* iTreeGetMarkedAttrib(Ihandle* ih, const char* name_id)
 {
-  return iTreeGSGetMarked(ih, &name_id[strlen("MARKED")]);
+  return iTreeGSGetMarked(ih, name_id);
 }
 
 static int iTreeSetCtrlAttrib(Ihandle* ih, const char* value)
@@ -489,88 +480,83 @@ static int iTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-/* IUP_IMAGEEXPANDED *MUST* appear before IUP_IMAGE, or else 
-   IUP_IMAGEEXPANDED will never be called...*/
 static int iTreeSetImageExpandedAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  Node node = iTreeFindNodeFromString(ih, &name_id[strlen("IMAGEEXPANDED")]);
+  Node node = iTreeFindNodeFromString(ih, name_id);
   iTreeGSSetImage(value, node->expandedimage, node->expandedcolor, node->expandedmarked_color, ITREE_NODEEXPANDED, node);
-  iupAttribSetStr(ih, name_id, NULL);  /* Do not store id dependent attributes in the environment */
   return 1;
 }
 
 static int iTreeSetImageAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  Node node = iTreeFindNodeFromString(ih, &name_id[strlen("IMAGE")]);
+  Node node = iTreeFindNodeFromString(ih, name_id);
   iTreeGSSetImage(value, node->image, node->color, node->marked_color, ITREE_NODE, node);
-  iupAttribSetStr(ih, name_id, NULL);  /* Do not store id dependent attributes in the environment */
   return 1;
 }
 
 static int iTreeSetNameAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  iTreeGSSetName(ih, &name_id[strlen("NAME")], value);
+  iTreeGSSetName(ih, name_id, value);
   return 1;
 }
 
 static char* iTreeGetNameAttrib(Ihandle* ih, const char* name_id)
 {
-  return iTreeGSGetName(ih, &name_id[strlen("NAME")]);
+  return iTreeGSGetName(ih, name_id);
 }
 
 static int iTreeSetStateAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  iTreeGSSetState(ih, &name_id[strlen("STATE")], value);
+  iTreeGSSetState(ih, name_id, value);
   return 1;
 }
 
 static char* iTreeGetStateAttrib(Ihandle* ih, const char* name_id)
 {
-  return iTreeGSGetState(ih, &name_id[strlen("STATE")]);
+  return iTreeGSGetState(ih, name_id);
 }
 
 static int iTreeSetDepthAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  iTreeGSSetDepth(ih, &name_id[strlen("DEPTH")], value);
+  iTreeGSSetDepth(ih, name_id, value);
   return 1;
 }
 
 static char* iTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
 {
-  return iTreeGSGetDepth(ih, &name_id[strlen("DEPTH")]);
+  return iTreeGSGetDepth(ih, name_id);
 }
 
 static char* iTreeGetKindAttrib(Ihandle* ih, const char* name_id)
 {
-  return iTreeGSGetKind(ih, &name_id[strlen("KIND")]);
+  return iTreeGSGetKind(ih, name_id);
 }
 
 static char* iTreeGetParentAttrib(Ihandle* ih, const char* name_id)
 {
-  return iTreeGSGetParent(ih, &name_id[strlen("PARENT")]);
+  return iTreeGSGetParent(ih, name_id);
 }
 
 static int iTreeSetColorAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  iTreeGSSetColor(ih, &name_id[strlen("COLOR")], value);
+  iTreeGSSetColor(ih, name_id, value);
   return 1;
 }
 
 static char* iTreeGetColorAttrib(Ihandle* ih, const char* name_id)
 {
-  return iTreeGSGetColor(ih, &name_id[strlen("COLOR")]);
+  return iTreeGSGetColor(ih, name_id);
 }
 
 static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   char* next = iupStrGetMemory(10);
-
-  if(!iupStrEqualNoCase(name_id, "ADDLEAF"))
-    sprintf(next, "%d", atoi(&name_id[strlen("ADDLEAF")]) + 1);
+  if (name_id[0])
+    sprintf(next, "%d", atoi(name_id) + 1);
   else
     sprintf(next, "%d", atoi(IupGetAttribute(ih, "VALUE")) + 1);
 
-  if(iTreeGSAddNode(ih, &name_id[strlen("ADDLEAF")], ITREE_LEAF))
+  if(iTreeGSAddNode(ih, name_id, ITREE_LEAF))
     iTreeGSSetName(ih, next, value);
 
   return 1;
@@ -579,13 +565,12 @@ static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* v
 static int iTreeSetAddBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   char* next = iupStrGetMemory(10);
-
-  if(!iupStrEqualNoCase(name_id, "ADDBRANCH"))
-    sprintf(next, "%d", atoi(&name_id[strlen("ADDBRANCH")]) + 1);
+  if (name_id[0])
+    sprintf(next, "%d", atoi(name_id) + 1);
   else
     sprintf(next, "%d", atoi(IupGetAttribute(ih, "VALUE")) + 1);
 
-  if(iTreeGSAddNode(ih, &name_id[strlen("ADDBRANCH")], ITREE_BRANCH))
+  if(iTreeGSAddNode(ih, name_id, ITREE_BRANCH))
     iTreeGSSetName(ih, next, value);
 
   return 1;
@@ -593,7 +578,7 @@ static int iTreeSetAddBranchAttrib(Ihandle* ih, const char* name_id, const char*
 
 static int iTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  iTreeGSDelNode(ih, &name_id[strlen("DELNODE")], value);
+  iTreeGSDelNode(ih, name_id, value);
   return 1;
 }
 
@@ -677,7 +662,6 @@ Iclass* iupTreeGetClass(void)
   Iclass* ic = iupClassNew(iupCanvasGetClass());
 
   ic->name = "tree";
-  ic->format = "S"; /* one optional string */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
@@ -707,7 +691,6 @@ Iclass* iupTreeGetClass(void)
   iupClassRegisterAttribute(ic, "ADDEXPANDED", NULL, iTreeSetAddExpandedAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAMECARET", iTreeGetRenameCaretAttrib, iTreeSetRenameCaretAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAMESELECTION", iTreeGetRenameSelectionAttrib, iTreeSetRenameSelectionAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  /* Falta SCROLLBAR (YES), FONT (NULL), SHOWDRAGDROP (NO), SHOWRENAME (NO) ??? */
 
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttribute(ic, "VALUE",  iTreeGetValueAttrib, iTreeSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);

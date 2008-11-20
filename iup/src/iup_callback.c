@@ -77,13 +77,13 @@ Ihandle* IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...)
   va_start(arglist, func);
 
   name=va_arg(arglist, const char*);
-  do
+  while (name)
   {
     func=va_arg(arglist, Icallback);
     IupSetCallback(ih, name, func);
 
     name=va_arg(arglist, const char*);
-  } while (name);
+  } 
 
   va_end (arglist);
   return ih;

@@ -19,7 +19,7 @@ CTRLUA = button.lua canvas.lua dialog.lua \
        sbox.lua spin.lua spinbox.lua cbox.lua
        
 ifdef BUILD_IUP3
-  SRCLUA += val.lua tabs.lua
+  CTRLUA += val.lua tabs.lua
 endif
 
 GC = $(addsuffix .c, $(basename $(CTRLUA)))

@@ -926,12 +926,12 @@ void* IupTreeGetUserId(Ihandle* ih, int id)
 
 void iTreeGSMark(Ihandle* ih, const char* node, const char* attr)
 {
-  Node n = iTreeFindNodeFromString(ih, node );
+  Node n = iTreeFindNodeFromString(ih, node);
 
-  if(attr && iupStrEqualNoCase(attr, "NO"))
+  if(iupStrEqualNoCase(attr, "NO"))
     n->marked = NO;
 
-  if(attr && iupStrEqualNoCase(attr, "YES"))
+  if(iupStrEqualNoCase(attr, "YES"))
     n->marked = YES;
 }
 
