@@ -222,8 +222,12 @@ iupole -&gt; iup
 iupspeech -&gt; iup
           -&gt; <strong><span class="style1">Speech SDK</span></strong> (system - Windows)</pre>
 <p>As a general rule (excluding system dependencies): IUP depends on CD and IM, 
-and IUPLua depends on Lua, CDLua and IMLua. Just notice that not all IUP 
+and IUPLua depends on Lua, CDLua and IMLua. Notice that not all IUP 
 libraries depend on CD and IM.</p>
+<p>The Lua bindings for IUP, CD and IM (Makfiles and Pre-compiled binaries) 
+depend on the <a href="http://luabinaries.luaforge.net/">LuaBinaries</a> 
+distribution. So if you are going to build all use the <strong>LuaBinaries</strong> 
+source package also, not the <strong>Lua.org</strong> original source package.&nbsp;&nbsp; </p>
 <p>In Ubuntu you will need to install the following packages:</p>
 <pre>libmotif-dev
 x11proto-print-dev
