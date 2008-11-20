@@ -86,9 +86,11 @@ visible.</p>
 the first character of the current selection. The caret is only displayed if the 
 element has the keyboard focus, but its position can be changed even if not 
 visible. When changed it will also change the selection.</p>
+<p class="info">See the Notes bellow if using UTF-8 strings in GTK.</p>
   <p><strong>CARETPOS</strong> (<font SIZE="3">non inheritable</font>):
   Also the position of the insertion point, but using a zero based character 
-	unique index &quot;pos&quot;. Usefull for indexing the VALUE string. (since 
+	unique index &quot;pos&quot;. Usefull for indexing the VALUE string. See the 
+	Notes bellow if using UTF-8 strings in GTK. (since 
 	3.0)</p>
 <p><strong>CLIPBOARD</strong> (write-only): clear, cut, copy or paste the selection to 
 or from the clipboard. Values: &quot;CLEAR&quot;, &quot;CUT&quot;, &quot;COPY&quot; or &quot;PASTE&quot;. 
@@ -169,10 +171,12 @@ the last selected character.</p>
 also changed.</p>
 <p class="info">The values ALL and NONE are also accepted independently of 
 MULTILINE (since 3.0).</p>
+<p class="info">See the Notes bellow if using UTF-8 strings in GTK. </p>
   <p><strong>SELECTIONPOS</strong> (<font SIZE="3">non inheritable</font>):
   Also the selection interval, but using a zero based character 
 	index &quot;<strong>pos1</strong>:<strong>pos2</strong>&quot;. Usefull for indexing the VALUE string. 
-	The values ALL and NONE are also accepted. (since 3.0)</p>
+	The values ALL and NONE are also accepted. See the Notes bellow if using 
+	UTF-8 strings in GTK. (since 3.0)</p>
   <p><a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>):
   Text size. The natural size is defined by the number of lines in the text and 
 	the with of the largest line. Default: room for 5 characters in 1 line.&nbsp;When the <strong>User Size</strong> 
@@ -315,6 +319,9 @@ supported.</p>
 	press &lt;Ctrl&gt;+&lt;Tab&gt;.</p>
 <p>In Windows, if you press a Ctrl+key combination that is not supported by the 
 control, then a beep is sound.</p>
+<p>When using UTF-8 strings in GTK be aware that all attributes are indexed by 
+characters, NOT by byte index, because some characters in UTF-8 can use more 
+than one byte.</p>
 <h4>Navigation, Selection and Clipboard Keys</h4>
 <p>Here is a list of the common keys for all drivers. Other keys are available 
 depending on the driver.</p>

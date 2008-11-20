@@ -35,6 +35,7 @@ void iupdrvTextAddSpin(int *w, int h)
 {
   int spin_size = 16;
   *w += spin_size;
+  (void)h;
 }
 
 void iupdrvTextAddBorders(int *x, int *y)
@@ -1099,6 +1100,16 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
     /* simulate Windows behavior and change the current selection */
     gtkTextSetSelectionAttrib(ih, selection);
     iupAttribSetStr(ih, "SELECTION", NULL);
+  }
+  else
+  {
+    char* selectionpos = iupAttribGetStr(formattag, "SELECTIONPOS");
+    if (selectionpos)
+    {
+      /* simulate Windows behavior and change the current selection */
+      gtkTextSetSelectionPosAttrib(ih, selectionpos);
+      iupAttribSetStr(ih, "SELECTIONPOS", NULL);
+    }
   }
 
   buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
