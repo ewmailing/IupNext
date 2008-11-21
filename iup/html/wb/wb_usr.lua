@@ -1318,10 +1318,6 @@ wb_usr.tree =
             {
               name= {nl= "IupOleControl"},
               link= "ctrl/iupole.html"
-            },
-            {
-              name= {nl= "IupSpeech"},
-              link= "ctrl/iupspeech.html"
             }
           }
         }

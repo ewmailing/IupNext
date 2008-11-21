@@ -391,31 +391,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="iupspeech"
-			>
-			<File
-				RelativePath="..\iupspeech\manual.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)4.obj"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\iupspeech\test.xml"
-				>
-			</File>
-			<File
-				RelativePath="..\iupspeech\test2.xml"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="iupimage"
 			>
 			<File

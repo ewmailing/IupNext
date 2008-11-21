@@ -467,18 +467,6 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="..\test\speech.c"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath="..\test\spin.c"
 			>
 			<FileConfiguration
@@ -577,13 +565,6 @@
 		<File
 			RelativePath="..\test\tree.c"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="..\test\val.c"
