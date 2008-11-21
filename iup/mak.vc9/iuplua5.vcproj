@@ -197,6 +197,14 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\srclua5\gc.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\getparam.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\hbox.c"
 					>
 					<FileConfiguration
@@ -329,6 +337,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\srclua5\tabs.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\text.c"
 					>
 					<FileConfiguration
@@ -363,6 +375,10 @@
 							WarningLevel="4"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\srclua5\val.c"
+					>
 				</File>
 				<File
 					RelativePath="..\srclua5\vbox.c"
@@ -418,6 +434,10 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\canvas.lua"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\cbox.lua"
 					>
 				</File>
 				<File
@@ -489,11 +509,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\srclua5\sbox.lua"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\separator.lua"
 					>
 				</File>
 				<File
+					RelativePath="..\srclua5\spin.lua"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\spinbox.lua"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\submenu.lua"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\tabs.lua"
 					>
 				</File>
 				<File
@@ -506,6 +542,10 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\toggle.lua"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\val.lua"
 					>
 				</File>
 				<File

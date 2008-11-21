@@ -449,9 +449,9 @@ static char* getfolder(void)
 
   IupPopup(filedlg, IUP_CENTER, IUP_CENTER); 
 
-  if (IupGetInt(filedlg, IUP_STATUS) != -1)
+  if (IupGetInt(filedlg, "STATUS") != -1)
   {
-    strcpy(folder, IupGetAttribute(filedlg, IUP_VALUE));
+    strcpy(folder, IupGetAttribute(filedlg, "VALUE"));
     IupDestroy(filedlg);
     return folder;
   }
@@ -532,9 +532,9 @@ static int GetSaveAsFile(char* file, char* imgtype)
   IupSetAttribute(gf, "FILE", file);
   IupPopup(gf, IUP_CENTER, IUP_CENTER);
 
-  value = IupGetAttribute( gf, IUP_VALUE );
+  value = IupGetAttribute( gf, "VALUE" );
   if (value) strcpy( file, value );
-  ret = IupGetInt( gf, IUP_STATUS );
+  ret = IupGetInt( gf, "STATUS" );
 
   IupDestroy(gf);
 
@@ -953,9 +953,9 @@ static int GetOpenFileName(char* file)
   IupSetAttribute(gf, "MULTIPLEFILES", "YES");
   IupPopup(gf, IUP_CENTER, IUP_CENTER);
 
-  value = IupGetAttribute( gf, IUP_VALUE );
+  value = IupGetAttribute( gf, "VALUE" );
   if (value) strcpy( file, value );
-  ret = IupGetInt( gf, IUP_STATUS );
+  ret = IupGetInt( gf, "STATUS" );
 
   IupDestroy(gf);
 

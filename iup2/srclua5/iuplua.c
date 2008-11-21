@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua.c,v 1.3 2008-11-19 03:47:19 scuri Exp $
+* $Id: iuplua.c,v 1.4 2008-11-21 04:21:25 scuri Exp $
 */
 
 #include <stdio.h>
@@ -888,6 +888,8 @@ int iuplua_open(lua_State * L)
   iupcboxlua_open(L);
 
 #if (IUP_VERSION_NUMBER >= 300000)
+  iupgclua_open(L);
+  iupgetparamlua_open(L);
   iupvallua_open(L);
   iuptabslua_open(L);
 #endif
