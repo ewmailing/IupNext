@@ -8,13 +8,17 @@ SRC = iuplua51.c
 
 
 # Disable strip
-STRIP = 
+#STRIP = 
 # Optimize
-OPT = YES      
-# DBG = Yes
+#OPT = YES      
+DBG = Yes
 
 # IM and IupPPlot uses C++
 LINKER = $(CPPC)
+
+ifneq ($(findstring Linux, $(TEC_UNAME)), )
+  USE_GTK=Yes
+endif
 
 ifdef DBG
   # Statically link everything only when debugging
@@ -23,6 +27,8 @@ ifdef DBG
   USE_IUP = Yes
   USE_STATIC = Yes
   USE_LUA51 = Yes
+  
+  DEFINES = USE_STATIC
 
   ifeq "$(TEC_UNAME)" "SunOS510x86"
     IUPLUA_NO_GL = Yes
@@ -32,24 +38,27 @@ ifdef DBG
   ifndef IUPLUA_NO_GL 
     USE_OPENGL = Yes
   else
-    DEFINES = IUPLUA_NO_GL
-  endif
-
-  #IUPLUA_NO_IM = Yes
-  ifndef IUPLUA_NO_IM
-    USE_IMLUA = Yes
-    LIBS += iupim iupluaim$(LIBLUASUFX) imlua_process$(LIBLUASUFX) im_process
-  else
-    DEFINES += IUPLUA_NO_IM
+    DEFINES += IUPLUA_NO_GL
   endif
 
   #IUPLUA_NO_CD = Yes
   ifndef IUPLUA_NO_CD 
     USE_CDLUA = Yes
     USE_IUPCONTROLS = Yes
-    LIBS += iup_pplot iuplua_pplot$(LIBLUASUFX)
+    ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+      LIBS += iuplua_pplot$(LIBLUASUFX) iup_pplot
+    else
+      IUPLIB = $(IUP)/lib/$(TEC_UNAME)
+      SLIB += $(IUPLIB)/libiuplua_pplot$(LIBLUASUFX).a $(IUPLIB)/libiup_pplot.a
+    endif
+      
     ifndef IUPLUA_NO_IM
-      LIBS += cdluaim$(LIBLUASUFX)
+      ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+        LIBS += cdluaim$(LIBLUASUFX)
+      else
+        CDLIB = $(CD)/lib/$(TEC_UNAME)
+        SLIB += $(CDLIB)/libcdluaim$(LIBLUASUFX).a
+      endif
     endif
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
       USE_GDIPLUS=Yes
@@ -60,10 +69,31 @@ ifdef DBG
     DEFINES += IUPLUA_NO_CD
   endif
 
+  #IUPLUA_NO_IM = Yes
+  ifndef IUPLUA_NO_IM
+    USE_IMLUA = Yes
+    
+    ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+      LIBS += imlua_process$(LIBLUASUFX) iupluaim$(LIBLUASUFX) im_process iupim
+    else
+      IUPLIB = $(IUP)/lib/$(TEC_UNAME)
+      IMLIB = $(IM)/lib/$(TEC_UNAME)
+      SLIB +=  $(IMLIB)/libimlua_process$(LIBLUASUFX).a $(IUPLIB)/libiupluaim$(LIBLUASUFX).a $(IMLIB)/libim_process.a $(IUPLIB)/libiupim.a
+    endif
+    
+  else
+    DEFINES += IUPLUA_NO_IM
+  endif
+
   IUPLUA_IMGLIB = Yes
   ifdef IUPLUA_IMGLIB
     DEFINES += IUPLUA_IMGLIB
-    LIBS += iupimglib
+    ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+      LIBS += iupluaimglib iupimglib
+    else
+      IUPLIB = $(IUP)/lib/$(TEC_UNAME)
+      SLIB += $(IUPLIB)/libiupluaimglib$(LIBLUASUFX).a $(IUPLIB)/libiupimglib.a
+    endif
   endif
 else
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
