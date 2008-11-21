@@ -24,6 +24,9 @@ endif
 
 GC = $(addsuffix .c, $(basename $(CTRLUA)))
 EC = iuplua.c scanf.c iuplua_api.c
+ifdef BUILD_IUP3
+  EC += getparam.c gc.c
+endif
 SRCLUA = iuplua.lua constants.lua $(CTRLUA)
 LOHDIR = loh
 

@@ -18,7 +18,10 @@ SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua tree.lua ce
 ifndef BUILD_IUP3
   SRCLUA += val.lua tabs.lua
 endif
-EC = mask.c controls.c treefuncs.c matrixfuncs.c getparam.c gc.c
+EC = mask.c controls.c treefuncs.c matrixfuncs.c
+ifndef BUILD_IUP3
+  EC += getparam.c gc.c
+endif
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
 
 $(GC) : %.c : %.lua generator.lua
