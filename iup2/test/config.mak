@@ -1,5 +1,5 @@
 APPNAME = iuptest
-SRC = iuplist/iuplist.c
+SRC = iupmultiline/iupmultiline.c
 
 USE_IUP = Yes 
 #USE_IUPLUA = Yes 

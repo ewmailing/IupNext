@@ -1,15 +1,45 @@
-#!/bin/csh
 #This builds all the libraries for 1 uname
-#Important: because of this script depends on csh, the secondary scripts should also depend on csh
 
-#foreach dir ( src srccd srccontrols srcgl srcpplot srcim srcledc srcview srclua3 srclua5 srcconsole )
-foreach dir ( src srccd srccontrols srcgl srcpplot srcim srcledc srcview srclua5 srcconsole )
-  if (-d $dir) then
-    if (-f $dir/make_uname) then
-      echo make_uname $dir
-      cd $dir
-      ./make_uname $1 $2 $3 $4 $5 $6 $7 $8
-      cd ..
-    endif
-  endif
-end
+cd src
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
+cd srccd
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
+cd srccontrols
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
+cd srcgl
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
+cd srcpplot
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
+cd srcim
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
+cd srcledc
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
+cd srcview
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
+#cd srclua3
+#./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+#cd ..
+
+cd srclua5
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
+cd srcconsole
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..

@@ -2,7 +2,7 @@
  * \brief Motif Driver controls creation
  *
  * See Copyright Notice in iup.h
- * $Id: motcreat.c,v 1.1 2008-10-17 06:19:25 scuri Exp $
+ * $Id: motcreat.c,v 1.2 2008-11-21 00:50:42 scuri Exp $
  */
 
 #if defined(__STDC__) && defined(ULTRIX)
@@ -898,7 +898,7 @@ static void createList (Ihandle *n)
     /* XtVaSetValues(cblist, XmNscrollBarDisplayPolicy, XmAS_NEEDED, NULL); */
     {
       int sbstyle = 1;  /* VERTICAL scroll by default */
-      char* value = IupGetAttribute(n, "SCROLLBAR");
+      char* value = iupGetEnv(n, "SCROLLBAR");
       if (value)
       {
         if (iupStrEqualNoCase(value, "YES"))
@@ -1042,7 +1042,7 @@ static void createMultiline (Ihandle *n)
    Iwidgetdata *d = XtNew (Iwidgetdata);
 
   int sbstyle = 3;  /* BOTH scrollbars by default */
-  char* value = IupGetAttribute(n, "SCROLLBAR");
+  char* value = iupGetEnv(n, "SCROLLBAR");
   if (value)
   {
     if (iupStrEqualNoCase(value, "VERTICAL"))
