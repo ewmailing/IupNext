@@ -158,6 +158,7 @@ Ihandle*  IupHboxv      (Ihandle* *children);
 
 Ihandle*  IupCbox       (Ihandle* child, ...);
 Ihandle*  IupCboxv      (Ihandle* *children);
+Ihandle*  IupSbox       (Ihandle *child);
 
 Ihandle*  IupFrame      (Ihandle* child);
 
