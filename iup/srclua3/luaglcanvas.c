@@ -2,7 +2,7 @@
  * \brief Bindig of iupgl to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: luaglcanvas.c,v 1.1 2008-11-21 03:00:12 scuri Exp $
+ * $Id: luaglcanvas.c,v 1.2 2008-11-21 05:45:45 scuri Exp $
  */
  
 #include <stdlib.h>
@@ -66,26 +66,26 @@ int iupgllua_open (void)
   iuplua_register("IupGLSwapBuffers",swapbuffers);
   iuplua_register("IupGLPalette",palette);
 
-  iuplua_regstring(IUP_BUFFER, "IUP_BUFFER");
-  iuplua_regstring(IUP_STEREO, "IUP_STEREO");
-  iuplua_regstring(IUP_COLOR, "IUP_COLOR");
-  iuplua_regstring(IUP_BUFFER_SIZE, "IUP_BUFFER_SIZE");
-  iuplua_regstring(IUP_RED_SIZE, "IUP_RED_SIZE");
-  iuplua_regstring(IUP_GREEN_SIZE, "IUP_GREEN_SIZE");
-  iuplua_regstring(IUP_BLUE_SIZE, "IUP_BLUE_SIZE");
-  iuplua_regstring(IUP_ALPHA_SIZE, "IUP_ALPHA_SIZE");
-  iuplua_regstring(IUP_DEPTH_SIZE, "IUP_DEPTH_SIZE");
-  iuplua_regstring(IUP_STENCIL_SIZE, "IUP_STENCIL_SIZE");
-  iuplua_regstring(IUP_ACCUM_RED_SIZE, "IUP_ACCUM_RED_SIZE");
-  iuplua_regstring(IUP_ACCUM_GREEN_SIZE, "IUP_ACCUM_GREEN_SIZE");
-  iuplua_regstring(IUP_ACCUM_BLUE_SIZE, "IUP_ACCUM_BLUE_SIZE");
-  iuplua_regstring(IUP_ACCUM_ALPHA_SIZE, "IUP_ACCUM_ALPHA_SIZE");
-  iuplua_regstring(IUP_DOUBLE, "IUP_DOUBLE");
-  iuplua_regstring(IUP_SINGLE, "IUP_SINGLE");
-  iuplua_regstring(IUP_INDEX, "IUP_INDEX");
-  iuplua_regstring(IUP_RGBA, "IUP_RGBA");
-  iuplua_regstring(IUP_YES, "IUP_YES");
-  iuplua_regstring(IUP_NO, "IUP_NO");
+  iuplua_regstring("BUFFER", "IUP_BUFFER");
+  iuplua_regstring("STEREO", "IUP_STEREO");
+  iuplua_regstring("COLOR", "IUP_COLOR");
+  iuplua_regstring("BUFFER_SIZE", "IUP_BUFFER_SIZE");
+  iuplua_regstring("RED_SIZE", "IUP_RED_SIZE");
+  iuplua_regstring("GREEN_SIZE", "IUP_GREEN_SIZE");
+  iuplua_regstring("BLUE_SIZE", "IUP_BLUE_SIZE");
+  iuplua_regstring("ALPHA_SIZE", "IUP_ALPHA_SIZE");
+  iuplua_regstring("DEPTH_SIZE", "IUP_DEPTH_SIZE");
+  iuplua_regstring("STENCIL_SIZE", "IUP_STENCIL_SIZE");
+  iuplua_regstring("ACCUM_RED_SIZE", "IUP_ACCUM_RED_SIZE");
+  iuplua_regstring("ACCUM_GREEN_SIZE", "IUP_ACCUM_GREEN_SIZE");
+  iuplua_regstring("ACCUM_BLUE_SIZE", "IUP_ACCUM_BLUE_SIZE");
+  iuplua_regstring("ACCUM_ALPHA_SIZE", "IUP_ACCUM_ALPHA_SIZE");
+  iuplua_regstring("DOUBLE", "IUP_DOUBLE");
+  iuplua_regstring("SINGLE", "IUP_SINGLE");
+  iuplua_regstring("INDEX", "IUP_INDEX");
+  iuplua_regstring("RGBA", "IUP_RGBA");
+  iuplua_regstring("YES", "IUP_YES");
+  iuplua_regstring("NO", "IUP_NO");
 
   return lua_dostring("IUPGLCANVAS = {parent = IUPCANVAS}\n"
                       "function IUPGLCANVAS:CreateIUPelement (obj)\n"

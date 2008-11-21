@@ -2,7 +2,7 @@
  * \brief iupim utilities
  *
  * See Copyright Notice in iup.h
- * $Id: iupim.c,v 1.1 2008-11-21 03:00:11 scuri Exp $
+ * $Id: iupim.c,v 1.2 2008-11-21 05:45:39 scuri Exp $
  */
 
 #include <im.h>
@@ -21,7 +21,7 @@
 #if (IUP_VERSION_NUMBER < 300000)
 void* iupGetImageData(Ihandle* self);
 #else
-void* iupGetImageData(Ihandle* self)
+static void* iupGetImageData(Ihandle* self)
 {
   return IupGetAttribute(self, "WID");
 }

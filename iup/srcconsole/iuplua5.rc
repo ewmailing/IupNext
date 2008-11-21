@@ -1,9 +1,9 @@
 0  ICON  "lua.ico"
-iupTecgrafIcon ICON "..\\etc\\tecgraf.ico"
+TECGRAF_ICON ICON "..\\etc\\tecgraf.ico"
 
 1 VERSIONINFO
- FILEVERSION 2,7,0,0
- PRODUCTVERSION 2,7,0,0
+ FILEVERSION 3,0,0,0
+ PRODUCTVERSION 3,0,0,0
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
@@ -12,18 +12,15 @@ BEGIN
             VALUE "Comments", "www.tecgraf.puc-rio.br/iup\0"
             VALUE "CompanyName", "Tecgraf/PUC-Rio\0"
             VALUE "FileDescription", "Lua Windows Standalone Interpreter with IUP\0"
-            VALUE "FileVersion", "2.7.0\0"
+            VALUE "FileVersion", "3.0.0\0"
             VALUE "LegalCopyright", "Copyright © 1994-2008 Tecgraf, PUC-Rio.\0"
             VALUE "OriginalFilename", "iuplua51.exe\0"
             VALUE "ProductName", "IUP for Windows\0"
-            VALUE "ProductVersion", "2.7.0\0"
+            VALUE "ProductVersion", "3.0.0\0"
         END
     END
 END
 
-RESIZE_C CURSOR "..\\etc\\splith.cur"      /* IupSbox cursor */
-CURSOR_HAND CURSOR "..\\etc\\hand.cur"
-CURSOR_HELP CURSOR "..\\etc\\iup.cur"
 CURSOR_PEN CURSOR "..\\etc\\pen.cur"
 
 /* To avoid the inclusion of <winuser.h> */

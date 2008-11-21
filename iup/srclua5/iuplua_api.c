@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua_api.c,v 1.1 2008-11-21 03:00:12 scuri Exp $
+* $Id: iuplua_api.c,v 1.2 2008-11-21 05:45:45 scuri Exp $
 */
 
 #include <stdio.h>
@@ -23,7 +23,7 @@
 #include "iup_attrib.h"
 static int Reparent(lua_State *L)
 {
-  lua_pushnumber(L, IupReparent(iuplua_checkihandle(L, 1),
+  lua_pushnumber(L, IupReparent(iuplua_checkihandle(L,1),
                                 iuplua_checkihandle(L,2)));
   return 1;
 }
@@ -37,7 +37,7 @@ int iupIsInternal(const char* name);
 
 static int Append(lua_State *L)
 {
-  iuplua_pushihandle(L, IupAppend(iuplua_checkihandle(L, 1),
+  iuplua_pushihandle(L, IupAppend(iuplua_checkihandle(L,1),
                                   iuplua_checkihandle(L,2)));
   return 1;
 }

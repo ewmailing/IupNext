@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="iupluacd3"
 	ProjectGUID="{B4823266-DF8C-4EFB-91C0-C7E78C234EAC}"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -42,7 +43,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\include;..\..\lua\include;..\..\cd\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,CD_NO_OLD_INTERFACE,_CRT_SECURE_NO_DEPRECATE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="1"
 				PrecompiledHeaderFile=""
 				AssemblerListingLocation="..\obj\iupluacd3/"
 				ObjectFile="..\obj\iupluacd3/"

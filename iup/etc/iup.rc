@@ -40,11 +40,5 @@ BEGIN
   CONTROL  "", IUP_PREVIEWCANVAS, "STATIC", SS_OWNERDRAW, 70, 0, 120, 90, WS_EX_STATICEDGE
 END
 
-#ifndef IUP_DLL
 /* The following line will enable Windows XP Visual Styles */
-#ifdef WIN64
-1 24 "iup64.manifest"
-#else
 1 24 "iup.manifest"
-#endif
-#endif

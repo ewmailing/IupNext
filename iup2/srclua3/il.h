@@ -2,7 +2,7 @@
  * \brief iupLua internal declarations
  *
  * See Copyright Notice in iup.h
- * $Id: il.h,v 1.1 2008-10-17 06:21:03 scuri Exp $
+ * $Id: il.h,v 1.2 2008-11-21 05:46:06 scuri Exp $
  */
  
 #ifndef __IL_H 
@@ -14,6 +14,18 @@ extern "C" {
 
 int iupluaapi_open(void);
 int iupluawidgets_open(int tag);
+void iupluaScanf(void);
+
+int sboxlua_open(void);
+int spinlua_open(void);
+int cboxlua_open(void);
+
+#if (IUP_VERSION_NUMBER >= 300000)
+void getparamlua_open (void);
+int gclua_open (void);
+int vallua_open (void);
+int tabslua_open (void);
+#endif
 
 /** First function called inside a callback. 
  * It prepares the stack for the call and returns the Lua state.

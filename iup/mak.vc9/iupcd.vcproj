@@ -43,7 +43,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\include;..\..\cd\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,CD_NO_OLD_INTERFACE,_CRT_SECURE_NO_DEPRECATE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="1"
 				PrecompiledHeaderFile="..\obj\iup/iupcd.pch"
 				AssemblerListingLocation=""
 				ObjectFile="$(IntDir)/"

@@ -152,6 +152,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\srccontrols\color\iup_colordlg.c"
+				>
+			</File>
+			<File
 				RelativePath="..\srccontrols\color\iup_colorhsi.c"
 				>
 			</File>
@@ -308,10 +312,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\tree\itlimits.c"
-				>
-			</File>
-			<File
 				RelativePath="..\srccontrols\tree\itmouse.c"
 				>
 			</File>
@@ -367,10 +367,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\tree\treecd.h"
-					>
-				</File>
-				<File
 					RelativePath="..\srccontrols\tree\treedef.h"
 					>
 				</File>
@@ -417,7 +413,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCustomBuildTool"

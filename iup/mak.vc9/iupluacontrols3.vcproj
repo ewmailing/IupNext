@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="iupluacontrols3"
 	ProjectGUID="{1EBC7A53-4677-4C3A-8DFF-49DFF4417D85}"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -42,7 +43,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\src;..\include;..\..\lua\include;..\..\cd\include;..\srclua3"
 				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELOH,_CRT_SECURE_NO_DEPRECATE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -93,10 +94,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srclua3\luacbox.c"
-				>
-			</File>
-			<File
 				RelativePath="..\srclua3\luacells.c"
 				>
 			</File>
@@ -117,14 +114,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srclua3\luagc.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luagetparam.c"
-				>
-			</File>
-			<File
 				RelativePath="..\srclua3\luamask.c"
 				>
 			</File>
@@ -133,23 +122,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srclua3\luasbox.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luaspin.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luatabs.c"
-				>
-			</File>
-			<File
 				RelativePath="..\srclua3\luatree.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luaval.c"
 				>
 			</File>
 		</Filter>
@@ -181,23 +154,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srclua3\luasbox.lua"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luaspin.lua"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luatabs.lua"
-				>
-			</File>
-			<File
 				RelativePath="..\srclua3\luatree.lua"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luaval.lua"
 				>
 			</File>
 		</Filter>
