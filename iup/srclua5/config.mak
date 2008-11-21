@@ -1,3 +1,5 @@
+BUILD_IUP3 = Yes
+
 PROJNAME = iup
 LIBNAME  = iuplua51
 OPT = YES

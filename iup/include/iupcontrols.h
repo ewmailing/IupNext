@@ -7,19 +7,20 @@
 #ifndef __IUPCONTROLS_H 
 #define __IUPCONTROLS_H
 
+/* Now in the main library, just keep these includes here for backward compatibility */
+#include "iuptabs.h"
+#include "iupval.h"
+#include "iupspin.h"
+#include "iupgetparam.h"
+
 #include "iupdial.h"
 #include "iupcells.h"
 #include "iupcolorbar.h"
 #include "iupgauge.h"
-#include "iuptabs.h"
-#include "iupval.h"
 #include "iupmatrix.h"
 #include "iuptree.h"
-//#include "iupsbox.h"
 #include "iupmask.h"
 #include "iupcb.h"
-#include "iupspin.h"
-//#include "iupgetparam.h"
 
 #ifdef __cplusplus
 extern "C" {
