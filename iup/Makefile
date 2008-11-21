@@ -15,6 +15,8 @@ iupgl:
 	@$(MAKE) --no-print-directory -C ./srcgl/
 iupim:
 	@$(MAKE) --no-print-directory -C ./srcim/
+iupimglib:
+	@$(MAKE) --no-print-directory -C ./srcimglib/
 iuplua3:
 	@$(MAKE) --no-print-directory -C ./srclua3/
 iuplua5:

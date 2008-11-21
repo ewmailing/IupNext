@@ -24,6 +24,10 @@ cd srcim
 ./umake_uname.bat $1 $2 $3 $4 $5 $6 $7 $8
 cd ..
 
+cd srcimglib
+./umake_uname.bat $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
 cd srcledc
 ./umake_uname.bat $1 $2 $3 $4 $5 $6 $7 $8
 cd ..

@@ -1,5 +1,9 @@
 -- Utilities
 
+-- Dummy require
+function require()
+end
+
 function printvars()
   local n,v = nextvar(nil)
   print("--printvars Start--")
