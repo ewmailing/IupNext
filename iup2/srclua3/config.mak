@@ -1,4 +1,4 @@
-BUILD_IUP3 = Yes
+#BUILD_IUP3 = Yes
 
 PROJNAME = iup
 LIBNAME = iuplua3

@@ -18,7 +18,7 @@
 #if (IUP_VERSION_NUMBER < 300000)
 void* iupGetImageData(Ihandle* self);
 #else
-void* iupGetImageData(Ihandle* self)
+static void* iupGetImageData(Ihandle* self)
 {
   return IupGetAttribute(self, "WID");
 }

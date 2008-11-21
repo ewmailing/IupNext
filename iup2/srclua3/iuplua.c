@@ -2,7 +2,7 @@
  * \brief IULUA core - Bindig of iup to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua.c,v 1.1 2008-10-17 06:21:03 scuri Exp $
+ * $Id: iuplua.c,v 1.2 2008-11-21 05:46:06 scuri Exp $
  */
  
 #include <string.h>
@@ -17,8 +17,11 @@
 
 #include "iuplua.h"
 #include "il.h"
+#if (IUP_VERSION_NUMBER >= 300000)
+#include "iup_str.h"
+#else
 #include "istrutil.h"
-
+#endif
 
 /* from iupkey.c */
 void iupKeyForEach(void (*func)(char *name, int code, void* user_data), void* user_data);
@@ -145,7 +148,7 @@ static void IupSetIdle(void)
   {
     lua_unref(idle_ref);
     idle_ref = 0;
-    IupSetFunction(IUP_IDLE_ACTION, (Icallback) NULL);
+    IupSetFunction("IDLE_ACTION", (Icallback) NULL);
   } 
   else 
   {
@@ -153,7 +156,7 @@ static void IupSetIdle(void)
       lua_error("IupSetIdle: parameter must be a function or a cfunction");
     lua_pushobject(obj);
     idle_ref = lua_ref(1);
-    IupSetFunction(IUP_IDLE_ACTION, (Icallback) default_idle);
+    IupSetFunction("IDLE_ACTION", (Icallback) default_idle);
   }
 
   if (old == LUA_NOOBJECT)
@@ -462,6 +465,17 @@ int iuplua_open(void)
 #endif
 
   iupluawidgets_open(iuplua_tag);
+
+  sboxlua_open();
+  spinlua_open();
+  cboxlua_open();
+
+#if (IUP_VERSION_NUMBER >= 300000)
+  vallua_open();
+  tabslua_open();
+  gclua_open();
+  getparamlua_open();
+#endif
 
   return 1;
 }

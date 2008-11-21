@@ -2,7 +2,7 @@
  * \brief Iup API in Lua
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_api.c,v 1.1 2008-10-17 06:21:03 scuri Exp $
+ * $Id: iuplua_api.c,v 1.2 2008-11-21 05:46:06 scuri Exp $
  */
  
 #include <string.h>
@@ -13,16 +13,25 @@
 #include <lauxlib.h>
 
 #include "iup.h"
+#include "iupkey.h"
 
 #include "iuplua.h"
 #include "il.h"
-#include "istrutil.h"
-#include "ipredial.h"
 
-
-/* re-declared here to avoid inclusion of iglobal.h */
-int iupIsPointer(const char *attr); 
+#if (IUP_VERSION_NUMBER >= 300000)
+#include "iup_attrib.h"
+static void Reparent(void)
+{
+  lua_pushnumber(IupReparent(iuplua_checkihandle(1),
+                             iuplua_checkihandle(2)));
+}
+#define iupIsPointer iupAttribIsPointer
+#define iupIsInternal iupAttribIsInternal
+#define xCODE IUPxCODE
+#else
+int iupIsPointer(const char *attr); /* re-declared here to avoid inclusion of iglobal.h */
 int iupIsInternal(const char* name);
+#endif
 
 
 static void IupLuaPreviousField(void)
@@ -246,13 +255,6 @@ static void Append(void)
 {
   iuplua_pushihandle(IupAppend(iuplua_checkihandle(1), iuplua_checkihandle(2)));
 }
-
-#if (IUP_VERSION_NUMBER >= 300000)
-static void Reparent(void)
-{
-  lua_pushnumber(IupReparent(iuplua_checkihandle(1), iuplua_checkihandle(2)));
-}
-#endif
 
 static void GetNextChild(void)
 {
@@ -484,189 +486,6 @@ static void Help(void)
   IupHelp(luaL_check_string(1));
 }
 
-#define ALLOC(n,t)  ((t *)calloc((n),sizeof(t)))
-#define REQUIRE(b)  {if (!(b)) goto cleanup;}
-
-static void Scanf(void)
-{
-  char *format;
-  int i;
-  int rc = (-1);                /* return code if not error (erro <  0) */
-  int erro = (-1);                /* return code if error     (erro >= 0) */
-  int fields;
-  int *width = NULL;
-  int *scroll = NULL;
-  char **prompt = NULL;
-  char **text = NULL;
-  char *title = NULL;
-  char *s = NULL;
-  char *s1 = NULL;
-  char *outf = NULL;
-  int indParam;                /* va_list va; */
-
-  format = luaL_check_string(1);
-  fields = iupStrCountChar(format, '\n') - 1;
-  REQUIRE(fields > 0);
-  width = ALLOC(fields, int);
-  REQUIRE(width != NULL);
-  scroll = ALLOC(fields, int);
-  REQUIRE(scroll != NULL);
-  prompt = ALLOC(fields, char *);
-  REQUIRE(prompt != NULL);
-  text = ALLOC(fields, char *);
-  REQUIRE(text != NULL);
-
-  indParam = 2;                /* va_start(va,format); */
-  REQUIRE((s1 = s = (char *) iupStrDup(format)) != NULL);
-  title = iupStrCopyUntil(&s, '\n');
-  REQUIRE(title != NULL);
-  for (i = 0; i < fields; ++i) {
-    int n;
-    prompt[i] = iupStrCopyUntil(&s, '%');
-    REQUIRE(prompt[i] != NULL);
-    n = sscanf(s, "%d.%d", width + i, scroll + i);
-    REQUIRE(n == 2);
-    s = strchr(s, '%');
-    REQUIRE(s != NULL);
-    if (outf) free(outf);
-    outf = iupStrCopyUntil(&s, '\n');
-    text[i] = ALLOC(width[i] + 1, char);
-    REQUIRE(text[i] != NULL);
-
-    switch (s[-2]) {
-        case 'd':
-        case 'i':
-        case 'o':
-        case 'u':
-        case 'x':
-        case 'X':
-          if (s[-3] == 'l')
-            sprintf(text[i], outf, luaL_check_long(indParam++));
-          else if (s[-3] == 'h')
-            sprintf(text[i], outf, (short)luaL_check_int(indParam++));
-          else
-            sprintf(text[i], outf, luaL_check_int(indParam++));
-          break;
-        case 'e':
-        case 'f':
-        case 'g':
-        case 'E':
-        case 'G':
-          if (s[-3] == 'l')
-            sprintf(text[i], outf, luaL_check_number(indParam++));
-          else
-            sprintf(text[i], outf, (float)luaL_check_number(indParam++));
-          break;
-        case 's':
-          sprintf(text[i], outf, (char *)luaL_check_string(indParam++));
-          break;
-        default:
-          goto cleanup;
-    }
-  }
-  /* va_end(va); */
-
-  REQUIRE(iupDataEntry(fields, width, scroll, title, prompt, text)>0);
-
-  rc = 0;
-  /* va_start(va,format); */
-  s = strchr(format, '\n') + 1;
-  for (i = 0; i < fields; ++i) {
-    s = strchr(s, '\n') + 1;
-    switch (s[-2]) {
-        case 'd':
-        case 'u':
-          if (s[-3] == 'l') {
-            long l;
-            if (sscanf(text[i], "%ld", &l) != 1)
-              if (erro < 0)
-                erro = rc;
-            lua_pushnumber(l);
-          } else if (s[-3] == 'h') {
-            short l;
-            if (sscanf(text[i], "%hd", &l) != 1)
-              if (erro < 0)
-                erro = rc;
-            lua_pushnumber(l);
-          } else {
-            int l;
-            if (sscanf(text[i], "%d", &l) != 1)
-              if (erro < 0)
-                erro = rc;
-            lua_pushnumber(l);
-          }
-          break;
-        case 'i':
-        case 'o':
-        case 'x':
-        case 'X':
-          if (s[-3] == 'l') {
-            long l;
-            if (sscanf(text[i], "%li", &l) != 1)
-              if (erro < 0)
-                erro = rc;
-            lua_pushnumber(l);
-          } else if (s[-3] == 'h') {
-            short l;
-            if (sscanf(text[i], "%hi", &l) != 1)
-              if (erro < 0)
-                erro = rc;
-            lua_pushnumber(l);
-          } else {
-            int l;
-            if (sscanf(text[i], "%i", &l) != 1)
-              if (erro < 0)
-                erro = rc;
-            lua_pushnumber(l);
-          }
-          break;
-        case 'e':
-        case 'f':
-        case 'g':
-        case 'E':
-        case 'G':
-          if (s[-3] == 'l') {
-            double l;
-            if (sscanf(text[i], "%lg", &l) != 1)
-              if (erro < 0)
-                erro = rc;
-            lua_pushnumber(l);
-          } else {
-            float l;
-            if (sscanf(text[i], "%g", &l) != 1)
-              if (erro < 0)
-                erro = rc;
-            lua_pushnumber(l);
-          }
-          break;
-        case 's':
-          {
-            lua_pushstring(text[i]);
-          }
-          break;
-    }
-    ++rc;
-  }
-  /* va_end(va); */
-
-cleanup:
-  if (s1) free(s1);
-  if (title) free(title);
-  if (width) free(width);
-  if (scroll) free(scroll);
-  if (outf) free(outf);
-  if (prompt) {
-    for (i = 0; i < fields; ++i)
-      if (prompt[i]) free(prompt[i]);
-    free(prompt);
-  }
-  if (text) {
-    for (i = 0; i < fields; ++i)
-      if (text[i]) free(text[i]);
-    free(text);
-  }
-}
-
 int iupluaapi_open(void)
 {
   struct FuncList {
@@ -724,7 +543,7 @@ int iupluaapi_open(void)
     { "IupFlush", IupFlush },
     { "IupVersion", Version },
     { "IupHelp", Help },
-    { "IupScanf", Scanf },
+    { "IupScanf", iupluaScanf },
     { "IupPreviousField", IupLuaPreviousField },
     { "IupNextField", IupLuaNextField },
     { "IupMainLoop", (lua_CFunction)IupMainLoop }

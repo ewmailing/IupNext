@@ -23,12 +23,14 @@ static int imagelibopen(lua_State *L)
   return 0;
 }
 
+#if (IUP_VERSION_NUMBER < 300000)
 static int imagelibclose(lua_State *L)
 {
   (void)L;
   IupImageLibClose();
   return 0;
 }
+#endif
 
 static int iupluaimglib_open (lua_State *L)
 {
@@ -36,7 +38,9 @@ static int iupluaimglib_open (lua_State *L)
   
   iuplua_changeEnv(L);
   iuplua_register(L, imagelibopen, "ImageLibOpen");
+#if (IUP_VERSION_NUMBER < 300000)
   iuplua_register(L, imagelibclose, "ImageLibClose");
+#endif
   iuplua_returnEnv(L);
   return 0; /* nothing in stack */
 }
