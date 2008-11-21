@@ -31,10 +31,11 @@ DBG = Yes
 #SRC = val.c
 #SRC = tabs.c
 #SRC = sample.c
-SRC = menu.c
+#SRC = menu.c
 #SRC = spin.c
 #SRC = text_spin.c
 #SRC = list.c
+SRC = sysinfo.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
@@ -83,3 +84,5 @@ endif
 #else
 #  USE_XRENDER=Yes
 #endif
+
+
