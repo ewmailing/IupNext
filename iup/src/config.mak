@@ -16,7 +16,7 @@ SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font
       iup_colordlg.c iup_fontdlg.c iup_filedlg.c iup_strmessage.c iup_menu.c iup_frame.c \
       iup_user.c iup_button.c iup_radio.c iup_toggle.c iup_progressbar.c iup_text.c iup_val.c \
       iup_box.c iup_hbox.c iup_vbox.c iup_class.c iup_classbase.c iup_maskmatch.c \
-      iup_mask.c iup_maskparse.c iup_tabs.c iup_spin.c iup_list.c
+      iup_mask.c iup_maskparse.c iup_tabs.c iup_spin.c iup_list.c iup_getparam.c iup_sbox.c
 
 ifdef USE_GTK
   LIBNAME = iupgtk

@@ -420,6 +420,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\iup_getparam.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\iup_hbox.c"
 				>
 			</File>
@@ -453,6 +457,10 @@
 			</File>
 			<File
 				RelativePath="..\src\iup_radio.c"
+				>
+			</File>
+			<File
+				RelativePath="..\src\iup_sbox.c"
 				>
 			</File>
 			<File

@@ -3,7 +3,6 @@ IupColorbar
 IupColorBrowser
 IupDial
 IupGauge
-IupGetColor
 IupCells 
 IupTreeSetAttribute  
 IupTreeStoreAttribute
@@ -22,10 +21,6 @@ IupMatGetAttribute
 IupMatGetInt        
 IupMatGetFloat      
 IupMatSetfAttribute 
-IupGetParam
-IupGetParamv
-IupGetParamType
-IupGetParamCount
 
 IupControlsOpen
 IupControlsClose

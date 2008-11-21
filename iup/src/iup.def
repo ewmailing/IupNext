@@ -118,6 +118,13 @@ IupTabs
 IupTabsv
 IupGetClassAttributes
 IupSaveClassAttributes
+IupGetColor
+IupGetParam
+IupGetParamv
+IupGetParamType
+IupGetParamCount
+IupNormalizeSize
+IupNormalizeSizev
 
 
 iupStrMessageShowError
@@ -311,6 +318,3 @@ iupMaskCreateInt
 iupMaskCreateFloat
 iupMaskCheck
 iupMaskDestroy
-IupGetColor
-IupNormalizeSize
-IupNormalizeSizev

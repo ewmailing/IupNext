@@ -17,8 +17,6 @@ SRCMATRIX = imkey.c immark.c imaux.c immem.c immouse.c imnumlc.c \
             imscroll.c imedit.c
 SRCMATRIX := $(addprefix matrix/, $(SRCMATRIX))
 
-#SRC = iupgetparam.c
-
 SRC = iup_cdutil.c iup_gauge.c iup_cells.c iup_colorbar.c iup_controls.c \
       iup_dial.c iup_oldtabs.c iup_oldval.c iup_oldmask.c \
       $(SRCCOLOR) $(SRCMATRIX) $(SRCTREE)
