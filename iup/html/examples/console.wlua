@@ -87,7 +87,7 @@ end
 
 iupluacmd.butLoadFile.action = function ()
    local fd=iup.filedlg{dialogtype="OPEN", title="Load File", 
-                        filter="*.lua;*.wlua", filterinfo="Lua Files", allownew="NO"}
+                        filter="*.wlua;*.lua", filterinfo="Lua Files", allownew="NO"}
    fd:popup(iup.CENTER, iup.CENTER)
    local status = fd.status
    local filename = fd.value
