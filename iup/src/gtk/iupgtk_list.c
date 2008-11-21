@@ -150,8 +150,11 @@ static int gtkListSetStandardFontAttrib(Ihandle* ih, const char* value)
     if (ih->data->is_dropdown)
     {
       GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGetStr(ih, "_IUPGTK_RENDERER");
-      g_object_set(G_OBJECT(renderer), "font-desc", (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih), NULL);
-      iupgtkFontUpdateObjectPangoLayout(ih, G_OBJECT(renderer));
+      if (renderer)
+      {
+        g_object_set(G_OBJECT(renderer), "font-desc", (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih), NULL);
+        iupgtkFontUpdateObjectPangoLayout(ih, G_OBJECT(renderer));
+      }
     }
 
     if (ih->data->has_editbox)
@@ -227,7 +230,8 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
     color.green = iupCOLOR8TO16(g);
     color.blue = iupCOLOR8TO16(b);
 
-    g_object_set(G_OBJECT(renderer), "cell-background-gdk", &color, NULL);
+    if (renderer)
+      g_object_set(G_OBJECT(renderer), "cell-background-gdk", &color, NULL);
   }
 
   return iupdrvBaseSetBgColorAttrib(ih, value);
@@ -255,7 +259,8 @@ static int gtkListSetFgColorAttrib(Ihandle* ih, const char* value)
     color.green = iupCOLOR8TO16(g);
     color.blue = iupCOLOR8TO16(b);
 
-    g_object_set(G_OBJECT(renderer), "foreground-gdk", &color, NULL);
+    if (renderer)
+      g_object_set(G_OBJECT(renderer), "foreground-gdk", &color, NULL);
   }
 
   return 1;
@@ -1144,12 +1149,13 @@ static int gtkListMapMethod(Ihandle* ih)
 {
   GtkScrolledWindow* scrolled_window = NULL;
   GtkListStore *store;
-  GtkCellRenderer *renderer;
 
   store = gtk_list_store_new(1, G_TYPE_STRING);
 
   if (ih->data->is_dropdown)
   {
+    GtkCellRenderer *renderer = NULL;
+
     if (ih->data->has_editbox)
       ih->handle = gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL(store), 0);
     else
@@ -1164,9 +1170,11 @@ static int gtkListMapMethod(Ihandle* ih)
     if (ih->data->has_editbox)
     {
       GtkWidget *entry;
+#if GTK_CHECK_VERSION(2, 12, 0)
       GList* list = gtk_cell_layout_get_cells(GTK_CELL_LAYOUT(ih->handle));
       renderer = list->data;
       g_list_free(list);
+#endif
 
       entry = gtk_bin_get_child(GTK_BIN(ih->handle));
       iupAttribSetStr(ih, "_IUPGTK_ENTRY", (char*)entry);
@@ -1215,9 +1223,12 @@ static int gtkListMapMethod(Ihandle* ih)
     g_signal_connect(ih->handle, "changed", G_CALLBACK(gtkListComboBoxChanged), ih);
     g_signal_connect(ih->handle, "notify::popup-shown", G_CALLBACK(gtkListComboBoxPopupShownChanged), ih);
 
-    renderer->xpad = 0;
-    renderer->ypad = 0;
-    iupAttribSetStr(ih, "_IUPGTK_RENDERER", (char*)renderer);
+    if (renderer)
+    {
+      renderer->xpad = 0;
+      renderer->ypad = 0;
+      iupAttribSetStr(ih, "_IUPGTK_RENDERER", (char*)renderer);
+    }
   }
   else
   {
