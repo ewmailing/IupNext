@@ -5,6 +5,10 @@
  */
 
 #include <gtk/gtk.h>
+
+#ifdef HILDON
+#include <hildon/hildon-program.h>
+#endif
                                          
 #include <stdlib.h>
 #include <stdio.h>
@@ -372,7 +376,13 @@ static int gtkDialogMapMethod(Ihandle* ih)
   InativeHandle* parent;
   GtkWidget* fixed;
 
-  ih->handle = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+#ifdef HILDON
+  HildonProgram *program = HILDON_PROGRAM(hildon_program_get_instance());
+  ih->handle = hildon_window_new();
+  hildon_program_add_window(program, HILDON_WINDOW(ih->handle));
+#else
+   ih->handle = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+#endif
   if (!ih->handle)
     return IUP_ERROR;
 

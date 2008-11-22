@@ -36,6 +36,12 @@ ifdef USE_GTK
   else
     SRC += mot/iupunix_help.c mot/iupunix_info.c
   endif
+  
+  ifdef USE_HILDON
+    DEFINES += HILDON
+    INCLUDES += /usr/include/hildon-1
+    LIBS += hildon-1
+  endif
 else
   ifeq "$(TEC_SYSNAME)" "Win32"
   

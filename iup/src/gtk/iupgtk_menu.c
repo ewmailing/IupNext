@@ -7,6 +7,10 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#ifdef HILDON
+#include <hildon/hildon-window.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -192,12 +196,21 @@ static int gtkMenuMapMethod(Ihandle* ih)
   if (iupMenuIsMenuBar(ih))
   {
     /* top level menu used for MENU attribute in IupDialog (a menu bar) */
+#ifdef HILDON
+    Ihandle *pih;
+    ih->handle = gtk_menu_new();
+    if (!ih->handle)
+      return IUP_ERROR;
 
+    pih = iupChildTreeGetNativeParent(ih);
+    hildon_window_set_menu(HILDON_WINDOW(pih->handle), GTK_MENU(ih->handle));
+#else
     ih->handle = gtk_menu_bar_new();
     if (!ih->handle)
       return IUP_ERROR;
 
     iupgtkBaseAddToParent(ih);
+#endif
   }
   else
   {
