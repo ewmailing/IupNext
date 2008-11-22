@@ -2,7 +2,7 @@
  * \brief iupim utilities
  *
  * See Copyright Notice in iup.h
- * $Id: iupim.c,v 1.2 2008-11-21 05:45:39 scuri Exp $
+ * $Id: iupim.c,v 1.3 2008-11-22 21:10:34 scuri Exp $
  */
 
 #include <im.h>
@@ -21,6 +21,8 @@
 #if (IUP_VERSION_NUMBER < 300000)
 void* iupGetImageData(Ihandle* self);
 #else
+#include "iup_object.h"
+#include "iup_assert.h"
 static void* iupGetImageData(Ihandle* self)
 {
   return IupGetAttribute(self, "WID");
@@ -95,10 +97,18 @@ Ihandle* IupLoadImage(const char* file_name)
   Ihandle* iup_image = NULL;
   const unsigned char* transp_index;
   void* image_data = NULL;
+  imCounterCallback old_callback;
+  imFile* ifile;
 
-  imCounterCallback old_callback = imCounterSetCallback(NULL, NULL);
+#if (IUP_VERSION_NUMBER >= 300000)
+  iupASSERT(file_name);
+  if (!file_name)
+    return 0;
+#endif
 
-  imFile* ifile = imFileOpen(file_name, &error);
+  old_callback = imCounterSetCallback(NULL, NULL);
+
+  ifile = imFileOpen(file_name, &error);
   if (error)
     goto load_finish;
 
@@ -179,25 +189,36 @@ load_finish:
   return iup_image;
 }
 
-int IupSaveImage(Ihandle* image, const char* file_name, const char* format)
+int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
 {
   int width, height, i, bpp;
   unsigned char* data;
   int error;
   long palette[256];
+  imFile* ifile;
 
-  imFile* ifile = imFileNew(file_name, format, &error);
+#if (IUP_VERSION_NUMBER >= 300000)
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return 0;
+
+  iupASSERT(file_name);
+  if (!file_name)
+    return 0;
+#endif
+
+  ifile = imFileNew(file_name, format, &error);
   if (!ifile)
   {
     PrintError(error);
     return 0;
   }
 
-  data = (unsigned char*)iupGetImageData(image);
+  data = (unsigned char*)iupGetImageData(ih);
 
-  width = IupGetInt(image, "WIDTH");
-  height = IupGetInt(image, "HEIGHT");
-  bpp = IupGetInt(image, "BPP");
+  width = IupGetInt(ih, "WIDTH");
+  height = IupGetInt(ih, "HEIGHT");
+  bpp = IupGetInt(ih, "BPP");
 
   if (bpp == 24)
     error = imFileWriteImageInfo(ifile, width, height, IM_RGB|IM_TOPDOWN|IM_PACKED, IM_BYTE);
@@ -212,7 +233,7 @@ int IupSaveImage(Ihandle* image, const char* file_name, const char* format)
       char* color;
 
       sprintf(str, "%d", i);
-      color = IupGetAttribute(image, str);
+      color = IupGetAttribute(ih, str);
       if (!color)
         break;
 

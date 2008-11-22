@@ -1,10 +1,10 @@
 PROJNAME = iup
 LIBNAME = iup
-#OPT = YES
+OPT = YES
 
-IUP_ASSERT=Yes
-DBG=YES
-NO_DYNAMIC=Yes
+ifdef DBG
+  DEFINES += IUP_ASSERT
+endif  
 
 INCLUDES = ../include .
 
@@ -59,10 +59,6 @@ else
   
     INCLUDES += win
     DEFINES += _WIN32_WINNT=0x0500 _WIN32_IE=0x0500 WINVER=0x0500 NOTREEVIEW
-    
-  	ifneq ($(findstring dll, $(TEC_UNAME)), )
-  	  SRC += ../etc/iup.rc
-  	endif
   else
     SRC += mot/iupmot_common.c mot/iupmot_color.c mot/iupmot_focus.c mot/iupmot_font.c \
            mot/iupmot_key.c mot/iupmot_loop.c mot/iupmot_open.c mot/iupmot_tips.c \
@@ -85,14 +81,9 @@ ifeq "$(TEC_SYSNAME)" "SunOS"
   #DEFINES += NO_PATH_MODE_RELATIVE
 endif
 
-ifdef IUP_ASSERT
-  DEFINES += IUP_ASSERT
-endif
-
 ifneq ($(findstring dll, $(TEC_UNAME)), )
   DEFINES += IUP_DLL
-  SRC += iup.rc
-  INCLUDES += ../lib
+  SRC += iup_dll.rc
 endif
 
 ifeq "$(TEC_UNAME)" "owc1"

@@ -108,7 +108,7 @@ int main(int argc, char **argv)
   IupSetCallback(list1, "EDIT_CB", (Icallback)edit_cb);
   IupSetCallback(list3, "EDIT_CB", (Icallback)edit_cb);
 
-/*  IupSetAttribute(list3, IUP_READONLY, IUP_YES); */
+/*  IupSetAttribute(list3, IUP_READONLY, "YES"); */
 
   box1 = IupVbox(list1, bt1, NULL);
   box2 = IupVbox(list2, bt2, NULL);

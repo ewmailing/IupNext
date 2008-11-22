@@ -1,9 +1,12 @@
 PROJNAME = iup
 LIBNAME  = iup_pplot
-#OPT = YES
-DBG = Yes
+OPT = YES
 
 USE_CD = Yes
+
+ifdef DBG
+  DEFINES += IUP_ASSERT
+endif  
 
 INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  

@@ -24,7 +24,7 @@ void main(int argc, char **argv)
 
   item_undo = IupItem ("Undo", NULL);
   IupSetAttribute(item_undo, IUP_KEY, "U");
-  IupSetAttribute(item_undo, IUP_ACTIVE, IUP_NO);
+  IupSetAttribute(item_undo, "ACTIVE", "NO");
 
   item_exit = IupItem ("Exit", NULL);
   IupSetAttribute(item_exit, IUP_KEY, "x");

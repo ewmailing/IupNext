@@ -1,4 +1,4 @@
-/*IUP_IDLE_ACTION Example in C
+/*"IDLE_ACTION" Example in C
 Creating a program that computes a number’s factorial using the idle function.*/
 
 #include <stdio.h>
@@ -18,7 +18,7 @@ static struct
 ************************************************************************************/
 static int fim_calculo (void)
 {
-  IupSetFunction (IUP_IDLE_ACTION, (Icallback) NULL);
+  IupSetFunction ("IDLE_ACTION", (Icallback) NULL);
   return IUP_DEFAULT;
 }
 
@@ -51,7 +51,7 @@ static int inicio_calculo (void)
 {
   calc.passo = 0;
   calc.fatorial = 1.0;
-  IupSetFunction (IUP_IDLE_ACTION, (Icallback) idle_function);
+  IupSetFunction ("IDLE_ACTION", (Icallback) idle_function);
   IupSetAttribute (IupGetHandle("mens"), "VALUE", "Computing...");
   return IUP_DEFAULT;
 }

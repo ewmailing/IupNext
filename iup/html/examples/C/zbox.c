@@ -54,7 +54,7 @@ int main(int argc, char **argv)
   IupSetHandle ("zbox", zbox) ;
 
   /* Sets zbox alignment */
-  IupSetAttribute (zbox, "ALIGNMENT", IUP_ACENTER) ;
+  IupSetAttribute (zbox, "ALIGNMENT", "ACENTER") ;
 
   /* Creates frame */
   frm = IupFrame

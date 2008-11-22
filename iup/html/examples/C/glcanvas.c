@@ -25,7 +25,7 @@ int k_any(Ihandle *self, int c)
 int redraw(Ihandle *self, float x, float y)
 {
   int w, h;
-  char *size = IupGetAttribute(self, IUP_RASTERSIZE);
+  char *size = IupGetAttribute(self, "RASTERSIZE");
   sscanf(size, "%dx%d", &w, &h);
 
   IupGLMakeCurrent(self);
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
   canvas = IupGLCanvas(NULL);
   IupSetCallback(canvas, "ACTION", (Icallback) redraw);
   IupSetAttribute(canvas, IUP_BUFFER, IUP_DOUBLE);
-  IupSetAttribute(canvas, IUP_RASTERSIZE, "123x200");
+  IupSetAttribute(canvas, "RASTERSIZE", "123x200");
 
   finale = IupHbox(IupFill(), 
                    canvas, 

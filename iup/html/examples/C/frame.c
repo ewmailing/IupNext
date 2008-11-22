@@ -1,5 +1,5 @@
 /*IupFrame Example in C 
-Draws a frame around a button. Note that IUP_FGCOLOR is added to the frame but it is inherited by the button. */
+Draws a frame around a button. Note that "FGCOLOR" is added to the frame but it is inherited by the button. */
 
 /* IupFrame example */
 #include <stdio.h>

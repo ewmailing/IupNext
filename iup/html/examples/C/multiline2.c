@@ -148,7 +148,7 @@ int btn_caret_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_CARET) ; else get_attribute (IUP_CARET) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute ("CARET") ; else get_attribute ("CARET") ;
   
   return IUP_DEFAULT ;
 }
@@ -279,7 +279,7 @@ int main(int argc, char **argv)
   list = IupList (NULL) ;
 
   /* Turns on multiline expand ans text horizontal expand */
-  IupSetAttribute (mltline, "EXPAND", IUP_YES) ;
+  IupSetAttribute (mltline, "EXPAND", "YES") ;
   IupSetAttribute (text, "EXPAND", IUP_HORIZONTAL) ;
 
   /* Associates handles to multiline, text and list */

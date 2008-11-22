@@ -84,19 +84,19 @@ int main(int argc, char **argv)
   IupSetHandle ( "img_cursor", img_cursor );
 
   btn = IupButton ( "Dummy", "" ) ;
-  IupSetAttribute ( btn, IUP_IMAGE, "img_x" ) ;
+  IupSetAttribute ( btn, "IMAGE", "img_x" ) ;
 
   lbl = IupLabel ( "Dummy" ) ;
-  IupSetAttribute ( lbl, IUP_IMAGE, "img_x" ) ;
+  IupSetAttribute ( lbl, "IMAGE", "img_x" ) ;
 
   tgl = IupToggle ( "Dummy", NULL ) ;
-  IupSetAttribute ( tgl, IUP_IMAGE, "img_x" ) ;
+  IupSetAttribute ( tgl, "IMAGE", "img_x" ) ;
 
   tgl_radio_1 = IupToggle ( "Dummy", NULL ) ;
   tgl_radio_2 = IupToggle ( "Dummy", NULL ) ;
 
-  IupSetAttribute ( tgl_radio_1, IUP_IMAGE, "img_x" ) ;
-  IupSetAttribute ( tgl_radio_2, IUP_IMAGE, "img_x" ) ;
+  IupSetAttribute ( tgl_radio_1, "IMAGE", "img_x" ) ;
+  IupSetAttribute ( tgl_radio_2, "IMAGE", "img_x" ) ;
 
   sprintf ( string_size, "\"X\" image width = %s; \"X\" image height = %s", IupGetAttribute ( img_x, IUP_WIDTH ), IupGetAttribute ( img_x, IUP_HEIGHT ) ) ; 
 

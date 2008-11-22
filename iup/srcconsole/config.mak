@@ -8,10 +8,9 @@ SRC = iuplua51.c
 
 
 # Disable strip
-#STRIP = 
+STRIP = 
 # Optimize
-#OPT = YES      
-DBG = Yes
+OPT = YES      
 
 # IM and IupPPlot uses C++
 LINKER = $(CPPC)

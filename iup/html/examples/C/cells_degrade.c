@@ -87,8 +87,8 @@ static Ihandle* create(void) {
   IupSetCallback(cells, IUP_HSPAN_CB, (Icallback)hspan_cb);
   IupSetCallback(cells, IUP_VSPAN_CB, (Icallback)vspan_cb);
   IupSetCallback(cells, IUP_SCROLLING_CB, (Icallback)scrolling_cb);
-  IupSetAttribute(cells, IUP_BOXED, IUP_NO);
-  IupSetAttribute(cells, IUP_RASTERSIZE,"395x255");
+  IupSetAttribute(cells, IUP_BOXED, "NO");
+  IupSetAttribute(cells, "RASTERSIZE","395x255");
 
   return cells;
 }

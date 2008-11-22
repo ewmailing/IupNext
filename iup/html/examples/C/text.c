@@ -69,7 +69,7 @@ int main(int argc, char **argv)
   IupSetCallback(text, IUP_K_ANY, (Icallback) k_any);
 
   pwd = IupText(NULL);
-  IupSetAttribute(pwd, IUP_READONLY, IUP_YES);
+  IupSetAttribute(pwd, IUP_READONLY, "YES");
   IupSetAttribute(pwd, "SIZE", "200x");
 
   dlg = IupDialog(IupVbox(text, pwd, NULL));

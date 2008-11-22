@@ -102,16 +102,16 @@ int btn_on_off_cb(Ihandle *self)
   btn_image = IupGetHandle( "btn_image" );
   
   /* If the button with with image is active...*/
-  if(!strcmp( IupGetAttribute( btn_image, IUP_ACTIVE ), IUP_YES ) )
+  if(!strcmp( IupGetAttribute( btn_image, "ACTIVE" ), "YES" ) )
   {
     /* Deactivates the button with image */
-    IupSetAttribute( btn_image, IUP_ACTIVE,IUP_NO );
+    IupSetAttribute( btn_image, "ACTIVE","NO" );
   }
   /* else it is inactive */
   else
   {
     /* Activates the button with image */
-    IupSetAttribute( btn_image, IUP_ACTIVE, IUP_YES );
+    IupSetAttribute( btn_image, "ACTIVE", "YES" );
   }
 
   /* Executed function sucessfully */
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
   text = IupText( NULL );                                  
   
   /* Turns on read-only mode */
-  IupSetAttribute( text, IUP_READONLY, IUP_YES);
+  IupSetAttribute( text, IUP_READONLY, "YES");
   
   /* Associates text with handle "text" */
   IupSetHandle ( "text", text );                            
@@ -255,7 +255,7 @@ int main(int argc, char **argv)
   btn_image = IupButton ( "Button with image", "btn_image, "ACTION" );       
   
   /* Sets released, pressed and inactive button images */  
-  IupSetAttribute( btn_image, IUP_IMAGE, "img_release" );        
+  IupSetAttribute( btn_image, "IMAGE", "img_release" );        
   IupSetAttribute( btn_image, IUP_IMPRESS, "img_press" );      
   IupSetAttribute( btn_image, IUP_IMINACTIVE, "img_inactive" );  
   

@@ -287,7 +287,7 @@ Ihandle* createDialog (void)
 
 //  IupSetAttribute(dlg,"BGCOLOR","255 0 255");
 //  IupSetAttribute(dlg,"FONT","Times New Roman:ITALIC:10");
-//  IupSetAttribute(dlg, IUP_FONT, IUP_TIMES_BOLD_14);
+//  IupSetAttribute(dlg, "FONT", IUP_TIMES_BOLD_14);
 //  IupSetAttribute(_vbox_1,"ACTIVE","NO");
 
   //IupSetAttribute(dlg,"COMPOSITED", "YES");

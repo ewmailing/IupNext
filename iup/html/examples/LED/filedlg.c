@@ -17,7 +17,7 @@ int main(int argc, char **argv)
   dlg = IupGetHandle("dlg");  
   IupPopup(dlg, IUP_CENTER, IUP_CENTER); 
 
-  switch(IupGetInt(dlg, IUP_STATUS))
+  switch(IupGetInt(dlg, "STATUS"))
   {
     case 1: 
       IupMessage("New file",IupGetAttribute(dlg, "VALUE"));	    

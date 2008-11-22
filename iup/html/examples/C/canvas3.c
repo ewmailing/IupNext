@@ -32,7 +32,7 @@ int redraw(void)
     int i;
 
     need_redraw = 0;
-    IupSetAttribute(bt, IUP_FGCOLOR, "255 0 0");
+    IupSetAttribute(bt, "FGCOLOR", "255 0 0");
     IupFlush();
 
     cdCanvasActivate(cdcanvas);
@@ -47,7 +47,7 @@ int redraw(void)
       IupLoopStep();
     }
 
-    IupSetAttribute(bt, IUP_FGCOLOR, "255 255 255");
+    IupSetAttribute(bt, "FGCOLOR", "255 255 255");
     IupFlush();
   }
   return IUP_DEFAULT;
@@ -59,7 +59,7 @@ void init(void)
   cv    = IupCanvas(NULL);
   bt    = IupButton("Restart", NULL);
   IupSetAttribute(bt,    "SIZE", "50x50");
-  IupSetAttribute(bt,    IUP_FGCOLOR, "255 255 255");
+  IupSetAttribute(bt,    "FGCOLOR", "255 255 255");
   IupSetAttribute(gauge, "SIZE", "200x15");
   IupSetAttribute(cv,    "SIZE", "200x200");
   dlg   = IupDialog(IupVbox(cv, IupHbox(gauge, bt, NULL), NULL));
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
   
   init();
 
-  IupSetFunction(IUP_IDLE_ACTION, (Icallback)redraw);
+  IupSetFunction("IDLE_ACTION", (Icallback)redraw);
 
   IupMap(dlg);
   

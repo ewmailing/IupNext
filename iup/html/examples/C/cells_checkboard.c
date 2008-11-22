@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
    cells = create();
    dlg = IupDialog(cells) ;
 
-   IupSetAttribute(dlg,IUP_RASTERSIZE,"400x400");
+   IupSetAttribute(dlg,"RASTERSIZE","400x400");
    IupSetAttribute(dlg,"TITLE","IupCells");
 
    IupShowXY(dlg,IUP_CENTER,IUP_CENTER) ;

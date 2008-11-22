@@ -1,7 +1,6 @@
 PROJNAME = iup
 LIBNAME = iupcontrols
-#OPT = YES
-DBG = Yes
+OPT = YES
 
 INCLUDES = ../include ../src .
 

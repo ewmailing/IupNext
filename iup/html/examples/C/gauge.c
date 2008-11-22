@@ -173,10 +173,10 @@ int idle_cb(void)
 
 int btn_pause_cb(void)
 {
-  if(!IupGetFunction(IUP_IDLE_ACTION))
-    IupSetFunction(IUP_IDLE_ACTION, (Icallback) idle_cb);
+  if(!IupGetFunction("IDLE_ACTION"))
+    IupSetFunction("IDLE_ACTION", (Icallback) idle_cb);
   else
-    IupSetFunction(IUP_IDLE_ACTION, NULL);
+    IupSetFunction("IDLE_ACTION", NULL);
   
   return IUP_DEFAULT;
 }
@@ -204,13 +204,13 @@ int btn_show_cb(void)
 {
   if(!IupGetInt(gauge,ICTL_SHOW_TEXT))
   {
-    IupSetAttribute (gauge, ICTL_SHOW_TEXT, IUP_YES);
-    IupSetAttribute (gauge, ICTL_DASHED, IUP_NO);
+    IupSetAttribute (gauge, ICTL_SHOW_TEXT, "YES");
+    IupSetAttribute (gauge, ICTL_DASHED, "NO");
   }
   else
   {
-    IupSetAttribute (gauge, ICTL_SHOW_TEXT, IUP_NO);
-    IupSetAttribute (gauge, ICTL_DASHED, IUP_YES);
+    IupSetAttribute (gauge, ICTL_SHOW_TEXT, "NO");
+    IupSetAttribute (gauge, ICTL_DASHED, "YES");
   }
   
   return IUP_DEFAULT;
@@ -228,7 +228,7 @@ int main(int argc, char **argv)
   
   gauge = IupGauge();
  
-  IupSetAttribute(gauge,"EXPAND",IUP_YES);
+  IupSetAttribute(gauge,"EXPAND","YES");
 //  IupSetAttribute(gauge,IUP_MAX,"3.5");
 //  IupSetAttribute(gauge,IUP_MIN,"0.7");
 
@@ -272,7 +272,7 @@ int main(int argc, char **argv)
   IupSetCallback( btn_decelerate, "ACTION", (Icallback) btn_decelerate_cb );
   IupSetCallback( btn_show, "ACTION", (Icallback) btn_show_cb );
   
-  IupSetFunction( IUP_IDLE_ACTION, (Icallback) idle_cb);
+  IupSetFunction( "IDLE_ACTION", (Icallback) idle_cb);
   
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
   IupMainLoop ();

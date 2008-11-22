@@ -22,9 +22,9 @@ void main(int argc, char **argv)
 
   ml = IupMultiLine(NULL);
   IupSetCallback(ml, "ACTION", (Icallback)mlaction);
-  IupSetAttribute(ml, "EXPAND", IUP_YES);
+  IupSetAttribute(ml, "EXPAND", "YES");
   IupSetAttribute(ml, "VALUE",  "I ignore the DEL key!");
-  IupSetAttribute(ml, IUP_BORDER, IUP_YES);
+  IupSetAttribute(ml, IUP_BORDER, "YES");
 
   dlg = IupDialog(ml);
   IupSetAttribute(dlg, "TITLE", "IupMultiline");

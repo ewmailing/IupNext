@@ -61,7 +61,7 @@ static Ihandle* create(void) {
   IupSetCallback(cells, IUP_HEIGHT_CB, (Icallback)height_cb);
   IupSetCallback(cells, IUP_NLINES_CB, (Icallback)nlines_cb);
   IupSetCallback(cells, IUP_NCOLS_CB, (Icallback)ncols_cb);
-  IupSetAttribute(cells, IUP_BOXED,IUP_NO);
+  IupSetAttribute(cells, IUP_BOXED,"NO");
 
   return cells;
 }
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
   cells = create();
   dlg = IupDialog(cells) ;
 
-  IupSetAttribute(dlg,IUP_RASTERSIZE,"500x500");
+  IupSetAttribute(dlg,"RASTERSIZE","500x500");
   IupSetAttribute(dlg,"TITLE","IupCells");
   
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER) ;   

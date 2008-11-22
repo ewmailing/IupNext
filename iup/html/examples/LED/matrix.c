@@ -5,7 +5,7 @@
 #include <string.h>
 #include "iup.h"
 #include "iupkey.h"
-#include "iupmatrx.h"
+#include "iupmatrix.h"
 #include "cd.h"
 #include "cdiup.h"
 
@@ -48,7 +48,7 @@ int titulo_ok_cb(void)
 /* function that changes the title */
 void alterar_titulo(int modo)
 {
-  if((IupGetAttribute(matriz,IUP_MARKED) == NULL)&&(modo != -1))
+  if((IupGetAttribute(matriz,"MARKED") == NULL)&&(modo != -1))
   {
     IupMessage("Alterar título","Não há células marcadas");
   }
@@ -97,7 +97,7 @@ void alterar_titulo(int modo)
       else
       {
         marked = (char*)malloc(sizeof(char)*(lin*col)+1);
-        strcpy(marked, IupGetAttribute(matriz,IUP_MARKED));
+        strcpy(marked, IupGetAttribute(matriz,"MARKED"));
         string = (char*)malloc((sizeof(char)*2*dimensao_limite+strlen(":"))+1);
         temp = (char*)malloc((sizeof(char)*dimensao_limite)+1);
         
@@ -155,7 +155,7 @@ int titulolin_cb(void)
 
 void alterarcol(char* modo, int pos)
 {
-  if(IupGetAttribute(matriz,IUP_MARKED) == NULL)
+  if(IupGetAttribute(matriz,"MARKED") == NULL)
   {
     IupMessage("Alterar coluna","Não há células marcadas");
   }
@@ -170,7 +170,7 @@ void alterarcol(char* modo, int pos)
     char* marked;
     char* temp;
     marked = (char*)malloc((sizeof(char)*lin*col)+1);
-    strcpy(marked, IupGetAttribute(matriz,IUP_MARKED));
+    strcpy(marked, IupGetAttribute(matriz,"MARKED"));
     temp = (char*)malloc((sizeof(char)*dimensao_limite)+1);
     
     while(i < col*lin && marked[i] == '0') { i++ ; c++ ; if(c == col+pos) c=pos ; }
@@ -228,7 +228,7 @@ int removercoldir_cb(void)
 
 void alterarlin(char* modo, int pos)
 {
-  if(IupGetAttribute(matriz,IUP_MARKED) == NULL)
+  if(IupGetAttribute(matriz,"MARKED") == NULL)
   {
     IupMessage("Alterar linha","Não há células marcadas");
   }
@@ -243,7 +243,7 @@ void alterarlin(char* modo, int pos)
     char* marked;
     char* temp;
     marked = (char*)malloc((sizeof(char)*lin*col)+1);
-    strcpy(marked, IupGetAttribute(matriz,IUP_MARKED));
+    strcpy(marked, IupGetAttribute(matriz,"MARKED"));
     temp = (char*)malloc((sizeof(char)*dimensao_limite)+1);
         
     while(i < col*lin && marked[i] == '0') i++ ;
@@ -323,7 +323,7 @@ int dimensao_texto_cb(Ihandle* self, int c, char* after)
     string = (char*)malloc((sizeof(char)*dimensao_limite)+1) ;
     sprintf(string,"%c",c) ;
     IupSetAttribute(self,"VALUE",string);
-    IupSetAttribute(self,IUP_CARET,"2");
+    IupSetAttribute(self,"CARET","2");
     free(string);
   }
 
@@ -348,7 +348,7 @@ int dimensao_ok_cb(void)
 
 void alterar_dimensao(char* modo)
 {
-  if(IupGetAttribute(matriz,IUP_MARKED) == NULL)
+  if(IupGetAttribute(matriz,"MARKED") == NULL)
   {
     IupMessage("Alterar dimensão","Não há células marcadas");
   }
@@ -383,7 +383,7 @@ void alterar_dimensao(char* modo)
     if(strcmp(valor,"0")) 
     {
       marked = (char*)malloc(sizeof(char)*(lin*col)+1);
-      strcpy(marked, IupGetAttribute(matriz,IUP_MARKED));
+      strcpy(marked, IupGetAttribute(matriz,"MARKED"));
       string = (char*)malloc((sizeof(char)*strlen(modo)+dimensao_limite)+1);
       temp = (char*)malloc((sizeof(char)*dimensao_limite)+1);
         
@@ -431,7 +431,7 @@ int largura_cb(void)
 
 void alin(char* pos)
 {
-  if(IupGetAttribute(matriz,IUP_MARKED) == NULL)
+  if(IupGetAttribute(matriz,"MARKED") == NULL)
   {
     IupMessage("Alinhamento","Não há células marcadas");
   }
@@ -442,7 +442,7 @@ void alin(char* pos)
     char* string;
     char* temp;
     marked = (char*)malloc(sizeof(char)*(lin*col)+1);
-    strcpy(marked, IupGetAttribute(matriz,IUP_MARKED));
+    strcpy(marked, IupGetAttribute(matriz,"MARKED"));
     string = (char*)malloc((sizeof(char)*strlen("ALIGNMENT")+dimensao_limite)+1);
     temp = (char*)malloc((sizeof(char)*dimensao_limite)+1);
         
@@ -467,36 +467,36 @@ void alin(char* pos)
 
 int alinesq_cb(void)
 {
-  alin(IUP_ALEFT) ;
+  alin("ALEFT") ;
 
   return IUP_DEFAULT ;
 }
 
 int alincent_cb(void)
 {
-  alin(IUP_ACENTER) ;
+  alin("ACENTER") ;
 
   return IUP_DEFAULT ;
 }
 
 int alindir_cb(void)
 {
-  alin(IUP_ARIGHT) ;
+  alin("ARIGHT") ;
 
   return IUP_DEFAULT ;
 }
 
 int marcacao_continua_cb(void)
 {
-  if(strcmp(IupGetAttribute(matriz,IUP_AREA) , "CONTINUOUS") == 0)
+  if(strcmp(IupGetAttribute(matriz,"AREA") , "CONTINUOUS") == 0)
   {
-    IupSetAttribute(IupGetHandle("marcacao_continua"),"VALUE",IUP_OFF);
-    IupSetAttribute(matriz,IUP_AREA,"NOT_CONTINUOUS");
+    IupSetAttribute(IupGetHandle("marcacao_continua"),"VALUE","OFF");
+    IupSetAttribute(matriz,"AREA","NOT_CONTINUOUS");
   }
   else
   {
-    IupSetAttribute(IupGetHandle("marcacao_continua"),"VALUE",IUP_ON);
-    IupSetAttribute(matriz,IUP_AREA,"CONTINUOUS");
+    IupSetAttribute(IupGetHandle("marcacao_continua"),"VALUE","ON");
+    IupSetAttribute(matriz,"AREA","CONTINUOUS");
   }
 
   return IUP_DEFAULT;
@@ -504,15 +504,15 @@ int marcacao_continua_cb(void)
 
 int marcacao_multipla_cb(void)
 {
-  if(strcmp(IupGetAttribute(matriz,IUP_MULTIPLE), IUP_YES) == 0)
+  if(strcmp(IupGetAttribute(matriz,"MULTIPLE"), "YES") == 0)
   {
-    IupSetAttribute(matriz,IUP_MULTIPLE,IUP_NO);
-    IupSetAttribute(IupGetHandle("marcacao_multipla"),"VALUE",IUP_OFF);
+    IupSetAttribute(matriz,"MULTIPLE","NO");
+    IupSetAttribute(IupGetHandle("marcacao_multipla"),"VALUE","OFF");
   }
   else
   {
-    IupSetAttribute(matriz,IUP_MULTIPLE,IUP_YES);
-    IupSetAttribute(IupGetHandle("marcacao_multipla"),"VALUE",IUP_ON);
+    IupSetAttribute(matriz,"MULTIPLE","YES");
+    IupSetAttribute(IupGetHandle("marcacao_multipla"),"VALUE","ON");
   }
 
   return IUP_DEFAULT;
@@ -520,15 +520,15 @@ int marcacao_multipla_cb(void)
 
 int tamanho_editavel_cb(void)
 {
-  if(strcmp(IupGetAttribute(matriz,IUP_RESIZEMATRIX), IUP_YES) == 0)
+  if(strcmp(IupGetAttribute(matriz,IUP_RESIZEMATRIX), "YES") == 0)
   {
-    IupSetAttribute(matriz,IUP_RESIZEMATRIX,IUP_NO);
-    IupSetAttribute(IupGetHandle("tamanho_editavel"),"VALUE",IUP_OFF);
+    IupSetAttribute(matriz,IUP_RESIZEMATRIX,"NO");
+    IupSetAttribute(IupGetHandle("tamanho_editavel"),"VALUE","OFF");
   }
   else
   {
-    IupSetAttribute(matriz,IUP_RESIZEMATRIX,IUP_YES);
-    IupSetAttribute(IupGetHandle("tamanho_editavel"),"VALUE",IUP_ON);
+    IupSetAttribute(matriz,IUP_RESIZEMATRIX,"YES");
+    IupSetAttribute(IupGetHandle("tamanho_editavel"),"VALUE","ON");
   }
 
   return IUP_DEFAULT;
@@ -536,7 +536,7 @@ int tamanho_editavel_cb(void)
 
 void alterar_cor(char* modo,char* cor)
 {
-  if(IupGetAttribute(matriz,IUP_MARKED) == NULL)
+  if(IupGetAttribute(matriz,"MARKED") == NULL)
   {
     IupMessage("Mudança de cor","Não há células marcadas");
   }
@@ -547,7 +547,7 @@ void alterar_cor(char* modo,char* cor)
     char* string;
     char* temp;
     marked = (char*)malloc(sizeof(char)*(lin*col)+1);
-    strcpy(marked, IupGetAttribute(matriz,IUP_MARKED));
+    strcpy(marked, IupGetAttribute(matriz,"MARKED"));
     string = (char*)malloc((sizeof(char)*strlen(modo)+2*dimensao_limite+strlen(":"))+1);
     temp = (char*)malloc((sizeof(char)*dimensao_limite)+1);
         
@@ -653,7 +653,7 @@ int main(int argc, char **argv)
 
   /* initializes the matrix library; must be
    * called only once during the program */
-  IupMatrixOpen();  
+  IupControlsOpen();  
 
   /* loads LED */
   if(error = IupLoad("iupmatrix.led"))

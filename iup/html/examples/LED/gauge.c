@@ -28,15 +28,15 @@ int idle_cb(void)
 /* pause button callback */
 int pausa_cb(void)
 {
-  if(IupGetFunction(IUP_IDLE_ACTION) == NULL)
+  if(IupGetFunction("IDLE_ACTION") == NULL)
   {
     // set idle callback 
-    IupSetFunction(IUP_IDLE_ACTION, (Icallback) idle_cb);
+    IupSetFunction("IDLE_ACTION", (Icallback) idle_cb);
   }
   else
   {
     // reset idle callback 
-    IupSetFunction(IUP_IDLE_ACTION, NULL);
+    IupSetFunction("IDLE_ACTION", NULL);
   }
   return IUP_DEFAULT ;
 }
@@ -70,15 +70,15 @@ int freia_cb(void)
 /* show button callback */
 int exibe_cb(void)
 {
-  if(IupGetAttribute(gauge,ICTL_SHOW_TEXT) == IUP_NO)
+  if(IupGetAttribute(gauge,ICTL_SHOW_TEXT) == "NO")
   {
     /* shows percentage in gauge */
-    IupSetAttribute(gauge,ICTL_SHOW_TEXT,IUP_YES);
+    IupSetAttribute(gauge,ICTL_SHOW_TEXT,"YES");
   }  
   else
   {
     /* does not show percentage in gauge */
-    IupSetAttribute(gauge,ICTL_SHOW_TEXT,IUP_NO);
+    IupSetAttribute(gauge,ICTL_SHOW_TEXT,"NO");
   }	
   return IUP_DEFAULT ;
 }
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
   IupSetFunction( "acao_acelera", (Icallback) acelera_cb );
   IupSetFunction( "acao_freia", (Icallback) freia_cb );
   IupSetFunction( "acao_exibe", (Icallback) exibe_cb );
-  IupSetFunction( IUP_IDLE_ACTION, (Icallback) idle_cb);
+  IupSetFunction( "IDLE_ACTION", (Icallback) idle_cb);
   
   /* shows dialog */
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);

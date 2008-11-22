@@ -48,7 +48,7 @@ int main(int argc, char **argv)
   Ihandle* control = IupOleControl("Shell.Explorer.2");
 
   // Sets production mode
-  IupSetAttribute(control, "DESIGNMODE", IUP_NO);
+  IupSetAttribute(control, "DESIGNMODE", "NO");
 
   // Creates a dialog containing the OLE control
   Ihandle* dlg = IupDialog(IupVbox(IupHbox(txt = IupText(""), bt = IupButton("Load", NULL), NULL), control, NULL));

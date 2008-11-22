@@ -1,7 +1,10 @@
 PROJNAME = iup
 LIBNAME  = iupgl
-#OPT = YES
-DBG = Yes
+OPT = YES
+
+ifdef DBG
+  DEFINES += IUP_ASSERT
+endif  
 
 INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  

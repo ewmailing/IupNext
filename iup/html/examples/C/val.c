@@ -40,11 +40,11 @@ static int button_press(Ihandle *c,double a)
   switch(type[0])
   {
     case 'V':
-      IupSetAttribute(lbl_v, IUP_FGCOLOR, "255 0 0");
+      IupSetAttribute(lbl_v, "FGCOLOR", "255 0 0");
       break;
 
     case 'H':
-      IupSetAttribute(lbl_h, IUP_FGCOLOR, "255 0 0");
+      IupSetAttribute(lbl_h, "FGCOLOR", "255 0 0");
       break;
   }
 
@@ -60,11 +60,11 @@ static int button_release(Ihandle *c,double a)
   switch(type[0])
   {
     case 'V':
-      IupSetAttribute(lbl_v, IUP_FGCOLOR, "0 0 0");
+      IupSetAttribute(lbl_v, "FGCOLOR", "0 0 0");
       break;
 
     case 'H':
-      IupSetAttribute(lbl_h, IUP_FGCOLOR, "0 0 0");
+      IupSetAttribute(lbl_h, "FGCOLOR", "0 0 0");
       break;
   }
 

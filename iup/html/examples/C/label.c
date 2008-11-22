@@ -64,7 +64,7 @@ int main(int argc, char **argv)
   lbl_star = IupLabel ( "Does not matter" ) ;
 
   /* Associates image "img_star" with label lbl_star */
-  IupSetAttribute ( lbl_star, IUP_IMAGE, "img_star" ) ;
+  IupSetAttribute ( lbl_star, "IMAGE", "img_star" ) ;
   
   /* Creates dialog with the label */
   dlg = IupDialog ( IupVbox ( lbl, IupHbox ( lbl_explain, lbl_star, NULL ), NULL ) ) ;

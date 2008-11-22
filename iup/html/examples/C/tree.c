@@ -18,7 +18,7 @@ int addleaf(void)
   int id = IupGetInt(tree,"VALUE");
   sprintf(attr,"ADDLEAF%d",id);
   IupSetAttribute(tree,attr,"");
-  IupSetAttribute(tree, IUP_REDRAW, IUP_YES);
+  IupSetAttribute(tree, IUP_REDRAW, "YES");
   return IUP_DEFAULT;
 }
 
@@ -30,7 +30,7 @@ int addbranch(void)
   int id = IupGetInt(tree,"VALUE");
   sprintf(attr,"ADDBRANCH%d",id);
   IupSetAttribute(tree,attr,"");
-  IupSetAttribute(tree, IUP_REDRAW, IUP_YES);
+  IupSetAttribute(tree, IUP_REDRAW, "YES");
   return IUP_DEFAULT;
 }
 
@@ -43,7 +43,7 @@ int text_cb(Ihandle* self, int c, char *after)
   {
     Ihandle *tree = IupGetHandle("tree");
     IupSetAttribute(tree,IUP_NAME,after);
-    IupSetAttribute(tree, IUP_REDRAW, IUP_YES);
+    IupSetAttribute(tree, IUP_REDRAW, "YES");
     return IUP_CLOSE;
   }
   return IUP_DEFAULT;
@@ -53,8 +53,8 @@ int text_cb(Ihandle* self, int c, char *after)
 int removenode(void)
 {
   Ihandle* tree = IupGetHandle("tree");
-  IupSetAttribute(tree,IUP_DELNODE,IUP_MARKED);
-  IupSetAttribute(tree, IUP_REDRAW, IUP_YES);
+  IupSetAttribute(tree,IUP_DELNODE,"MARKED");
+  IupSetAttribute(tree, IUP_REDRAW, "YES");
   return IUP_DEFAULT;
 }
 
@@ -107,8 +107,8 @@ int k_any_cb(Ihandle* h, int c)
 {
   if (c == K_DEL) 
   {
-    IupSetAttribute(h,IUP_DELNODE,IUP_MARKED);
-    IupSetAttribute(h, IUP_REDRAW, IUP_YES);
+    IupSetAttribute(h,IUP_DELNODE,"MARKED");
+    IupSetAttribute(h, IUP_REDRAW, "YES");
   }
 
   return IUP_DEFAULT;
@@ -118,7 +118,7 @@ int selectnode(Ihandle* h)
 {
   Ihandle* tree = IupGetHandle("tree");
   IupSetAttribute(tree,"VALUE",IupGetAttribute(h, "TITLE"));
-  IupSetAttribute(tree, IUP_REDRAW, IUP_YES);
+  IupSetAttribute(tree, IUP_REDRAW, "YES");
   return IUP_DEFAULT;
 }
 
@@ -214,14 +214,14 @@ void init_tree_atributes(void)
   IupSetAttribute(tree, "ADDLEAF2","isoceles");
   IupSetAttribute(tree, "ADDLEAF2","equilateral");
   IupSetAttribute(tree, "VALUE","6");
-  IupSetAttribute(tree, "CTRL",IUP_YES);
-  IupSetAttribute(tree, "SHIFT",IUP_YES);
-  IupSetAttribute(tree, "ADDEXPANDED", IUP_NO);
-  IupSetAttribute(tree, "SHOWDRAGDROP", IUP_YES);
+  IupSetAttribute(tree, "CTRL","YES");
+  IupSetAttribute(tree, "SHIFT","YES");
+  IupSetAttribute(tree, "ADDEXPANDED", "NO");
+  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
   IupSetAttribute(tree, "SHOWRENAME", "YES");
 
 
-  IupSetAttribute(tree, IUP_REDRAW, IUP_YES);
+  IupSetAttribute(tree, IUP_REDRAW, "YES");
 }
 
 /* Main program */
