@@ -90,12 +90,12 @@ int main(int argc, char **argv)
   IupSetAttribute(toggle2, IUP_IMAGE,   "img2");              /* Toggle 2 uses image                 */
   IupSetAttribute(toggle2, IUP_ACTIVE,  IUP_NO);              /* Toggle 2 inactive                   */
   IupSetAttribute(toggle4, IUP_FGCOLOR, "0 0 255");           /* Toggle 4 has blue foreground color  */
-  IupSetAttribute(toggle5, IUP_BGCOLOR, "255 0 0");           /* Toggle 5 has red background color   */
+  IupSetAttribute(toggle5, "BGCOLOR", "255 0 0");           /* Toggle 5 has red background color   */
   IupSetAttribute(toggle6, IUP_FGCOLOR, "0 255 0");           /* Toggle 6 has green foreground color */
-  IupSetAttribute(toggle6, IUP_BGCOLOR, "0 0 0");             /* Toggle 6 has black background color */
+  IupSetAttribute(toggle6, "BGCOLOR", "0 0 0");             /* Toggle 6 has black background color */
   IupSetAttribute(toggle7, IUP_ACTIVE,  IUP_NO);              /* Toggle 7 inactive                   */
   IupSetAttribute(toggle8, IUP_FONT,    IUP_COURIER_BOLD_14); /* Toggle 8 has Courier 14 Bold font   */
-  IupSetAttribute(toggle9, IUP_SIZE,    "EIGHTHxEIGHTH");     /* Toggle 9 has size EIGHTxEIGHT       */
+  IupSetAttribute(toggle9, "SIZE",    "EIGHTHxEIGHTH");     /* Toggle 9 has size EIGHTxEIGHT       */
 
   /* Creating box that contains the toggles */
   caixa = 
@@ -112,11 +112,11 @@ int main(int argc, char **argv)
       NULL  );
 
   toggles = IupRadio( caixa ); /* Grouping toggles */
-  IupSetAttribute(toggles, IUP_EXPAND, IUP_YES);
+  IupSetAttribute(toggles, "EXPAND", IUP_YES);
 
   /* Dialog */
   dlg = IupDialog(toggles);
-  IupSetAttribute (dlg, IUP_TITLE, "IupToggle"); 
+  IupSetAttribute (dlg, "TITLE", "IupToggle"); 
   IupSetAttributes(dlg, "MARGIN=5x5, GAP=5, RESIZE=NO"); 
 
   /* Associates a menu to the dialog */

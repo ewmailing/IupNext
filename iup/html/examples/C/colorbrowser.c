@@ -41,11 +41,11 @@ static int clrbrwsr_drag_cb(Ihandle *self, unsigned char r, unsigned char g, uns
   char buf[10];
 
   sprintf(buf, "%d", (int) r);
-  IupSetAttribute(text_red, IUP_VALUE, buf);
+  IupSetAttribute(text_red, "VALUE", buf);
   sprintf(buf, "%d", (int) g);
-  IupSetAttribute(text_green, IUP_VALUE, buf);
+  IupSetAttribute(text_green, "VALUE", buf);
   sprintf(buf, "%d", (int) b);
-  IupSetAttribute(text_blue, IUP_VALUE, buf);
+  IupSetAttribute(text_blue, "VALUE", buf);
 
   /* Gives IUP a time to call the OS and update the text field. */
   IupLoopStep();
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
   dlg = IupDialog (hbox_final) ;
   
   /* Sets title of the dialog */
-  IupSetAttribute (dlg, IUP_TITLE, "IupColorBrowser") ;
+  IupSetAttribute (dlg, "TITLE", "IupColorBrowser") ;
   
   /* Shows dialog in the center of the screen */
   IupShowXY (dlg, IUP_CENTER, IUP_CENTER) ;

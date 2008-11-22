@@ -11,8 +11,8 @@ unsigned char image[640][400];
 int repaint_cb(Ihandle* self, float sx, float sy)
 {
   int x, y;
-  sx = IupGetFloat(self, IUP_POSX);
-  sy = -IupGetFloat(self, IUP_POSY);
+  sx = IupGetFloat(self, "POSX");
+  sy = -IupGetFloat(self, "POSY");
 
   if(cdActiveCanvas())
     cdClear();
@@ -28,8 +28,8 @@ int repaint_cb(Ihandle* self, float sx, float sy)
 
 int button_cb(Ihandle* self, int botao, int estado, int x, int y)
 {
-  float sx = IupGetFloat(self, IUP_POSX);
-  float sy = -IupGetFloat(self, IUP_POSY);
+  float sx = IupGetFloat(self, "POSX");
+  float sy = -IupGetFloat(self, "POSY");
 	
   cdUpdateYAxis(&y);
   if(botao == IUP_BUTTON1 && estado)
@@ -45,14 +45,14 @@ int motion_cb(Ihandle* self, int x, int y)
 {
   Ihandle* label;
   static char buffer[40];	
-  float sx = IupGetFloat(self, IUP_POSX);
+  float sx = IupGetFloat(self, "POSX");
 
-  float sy = -IupGetFloat(self, IUP_POSY);
+  float sy = -IupGetFloat(self, "POSY");
 
   sprintf(buffer,"(%d, %d)",(int)(320.0*sx)+x,(int)(200.0*sy)+y) ;
 
   label = IupGetHandle("label");
-  IupStoreAttribute(label,IUP_TITLE,buffer);  
+  IupStoreAttribute(label,"TITLE",buffer);  
 
   return IUP_DEFAULT;
 }
@@ -78,7 +78,7 @@ int leave_cb(Ihandle* self)
   cdBackground(CD_GRAY);	
   repaint_cb(self,0.0,0.0);
   label = IupGetHandle("label");
-  IupSetAttribute(label,IUP_TITLE,"IupCanvas");  
+  IupSetAttribute(label,"TITLE","IupCanvas");  
 	
   return IUP_DEFAULT;
 }

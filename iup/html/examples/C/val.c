@@ -22,11 +22,11 @@ static int mousemove(Ihandle *c,double a)
   switch(type[0])
   {
     case 'V':
-      IupStoreAttribute(lbl_v, IUP_TITLE, buffer);
+      IupStoreAttribute(lbl_v, "TITLE", buffer);
       break;
 
     case 'H':
-      IupStoreAttribute(lbl_h, IUP_TITLE, buffer);
+      IupStoreAttribute(lbl_h, "TITLE", buffer);
       break;
   }
 
@@ -85,8 +85,8 @@ void main(int argc, char* argv[])
   val_h = IupVal(ICTL_HORIZONTAL);
   lbl_v = IupLabel("VALUE=");
   lbl_h = IupLabel("VALUE=");
-  IupSetAttribute(lbl_v, IUP_SIZE, "50x");
-  IupSetAttribute(lbl_h, IUP_SIZE, "50x");
+  IupSetAttribute(lbl_v, "SIZE", "50x");
+  IupSetAttribute(lbl_h, "SIZE", "50x");
   IupSetAttribute(val_v, "SHOWTICKS", "5");
 
   dlg_val = IupDialog
@@ -117,8 +117,8 @@ void main(int argc, char* argv[])
   IupSetCallback(val_h, "BUTTON_RELEASE_CB",  (Icallback)button_release);
   IupSetCallback(val_h, "MOUSEMOVE_CB", (Icallback)mousemove); 
 
-  IupSetAttribute(dlg_val, IUP_TITLE, "IupVal");
-  IupSetAttribute(dlg_val, IUP_MARGIN, "10x10");
+  IupSetAttribute(dlg_val, "TITLE", "IupVal");
+  IupSetAttribute(dlg_val, "MARGIN", "10x10");
   IupShowXY(dlg_val,IUP_CENTER,IUP_CENTER);
 
   IupMainLoop();

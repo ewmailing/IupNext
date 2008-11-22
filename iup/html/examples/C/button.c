@@ -157,13 +157,13 @@ int btn_image_button_cb( Ihandle *self,int b, int e )
     if(e == 1) 
     {
       /* Sets text's value */ 
-      IupSetAttribute( text, IUP_VALUE, "Red button pressed" );
+      IupSetAttribute( text, "VALUE", "Red button pressed" );
     }
     /* else the button was released */
     else       
     {
       /* Sets text's value */ 
-      IupSetAttribute( text, IUP_VALUE, "Red button released" );
+      IupSetAttribute( text, "VALUE", "Red button released" );
     }
   }
   
@@ -269,7 +269,7 @@ int main(int argc, char **argv)
   btn_big = IupButton( "Big useless button", "" );             
   
   /* Sets big button size */
-  IupSetAttribute( btn_big, IUP_SIZE, "EIGHTHxEIGHTH" );
+  IupSetAttribute( btn_big, "SIZE", "EIGHTHxEIGHTH" );
   
   /* Creates a button entitled Exit associated with action exit_act */
   btn_exit = IupButton( "Exit", "btn_exit, "ACTION" );

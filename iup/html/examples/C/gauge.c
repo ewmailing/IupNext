@@ -144,21 +144,21 @@ void createimg_s (void)
   IupSetHandle ("img_show", img_show);
   
   IupSetAttribute (img_start, "1", "0 0 0"); 
-  IupSetAttribute (img_start, "2", IUP_BGCOLOR);
+  IupSetAttribute (img_start, "2", "BGCOLOR");
   IupSetAttribute (img_play, "1", "0 0 0"); 
-  IupSetAttribute (img_play, "2", IUP_BGCOLOR); 
+  IupSetAttribute (img_play, "2", "BGCOLOR"); 
   IupSetAttribute (img_forward, "1", "0 0 0"); 
-  IupSetAttribute (img_forward, "2", IUP_BGCOLOR); 
+  IupSetAttribute (img_forward, "2", "BGCOLOR"); 
   IupSetAttribute (img_rewind, "1", "0 0 0"); 
-  IupSetAttribute (img_rewind, "2", IUP_BGCOLOR); 
+  IupSetAttribute (img_rewind, "2", "BGCOLOR"); 
   IupSetAttribute (img_show, "1", "0 0 0"); 
-  IupSetAttribute (img_show, "2", IUP_BGCOLOR); 
+  IupSetAttribute (img_show, "2", "BGCOLOR"); 
 }
 
 int idle_cb(void)
 {
   char newvalue[40];
-  double value = (double)IupGetFloat(gauge, IUP_VALUE);
+  double value = (double)IupGetFloat(gauge, "VALUE");
   
   value += speed;
   
@@ -166,7 +166,7 @@ int idle_cb(void)
   
   sprintf(newvalue, "%.7f",value);
   
-  IupSetAttribute(gauge, IUP_VALUE, newvalue);
+  IupSetAttribute(gauge, "VALUE", newvalue);
 
   return IUP_DEFAULT;
 }
@@ -183,7 +183,7 @@ int btn_pause_cb(void)
 
 int btn_start_cb(void)
 {
-  IupSetAttribute(gauge, IUP_VALUE, IupGetAttribute(gauge, IUP_MIN));
+  IupSetAttribute(gauge, "VALUE", IupGetAttribute(gauge, IUP_MIN));
   return IUP_DEFAULT;
 }
 
@@ -228,7 +228,7 @@ int main(int argc, char **argv)
   
   gauge = IupGauge();
  
-  IupSetAttribute(gauge,IUP_EXPAND,IUP_YES);
+  IupSetAttribute(gauge,"EXPAND",IUP_YES);
 //  IupSetAttribute(gauge,IUP_MAX,"3.5");
 //  IupSetAttribute(gauge,IUP_MIN,"0.7");
 
@@ -259,8 +259,8 @@ int main(int argc, char **argv)
          );
 
   vbox = IupVbox ( gauge , hbox, NULL );
-  IupSetAttribute(vbox, IUP_MARGIN, "10x10");
-  IupSetAttribute(vbox, IUP_GAP, "5");
+  IupSetAttribute(vbox, "MARGIN", "10x10");
+  IupSetAttribute(vbox, "GAP", "5");
 
   dlg = IupDialog(vbox);
   

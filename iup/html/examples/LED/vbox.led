@@ -1,5 +1,5 @@
 #IupVbox Example in LED 
-#Creates a dialog with buttons placed one above the other, showing the organization possibilities of the elements inside a vbox. The IUP_ALIGNMENT attribute is explored in all its possibilities to obtain the effects. 
+#Creates a dialog with buttons placed one above the other, showing the organization possibilities of the elements inside a vbox. The "ALIGNMENT" attribute is explored in all its possibilities to obtain the effects. 
 
 Alinhav = DIALOG [TITLE="Alignment", SIZE=140] 
 (

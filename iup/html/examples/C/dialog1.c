@@ -76,8 +76,8 @@ int main(int argc, char **argv)
 
   /* Creating main dialog */ 
   dialog = IupDialog(IupVbox(quit_bt,NULL));
-  IupSetAttribute(dialog, IUP_TITLE, "IupDialog");
-  IupSetAttribute(dialog, IUP_MENU, "menu");
+  IupSetAttribute(dialog, "TITLE", "IupDialog");
+  IupSetAttribute(dialog, "MENU", "menu");
   IupSetAttribute(dialog, IUP_CURSOR, "CROSS");
   IupSetAttribute(dialog, IUP_ICON, "icon");
   IupSetAttribute(dialog, IUP_DEFAULTESC, "quit");

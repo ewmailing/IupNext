@@ -16,11 +16,11 @@ void main(int argc, char **argv)
   text = IupText("");
   test = iupmaskSet(text, "/d*", 0, 1);
 
-  IupSetAttribute(text, IUP_SIZE,   "100x");
-  IupSetAttribute(text, IUP_EXPAND, IUP_HORIZONTAL);
+  IupSetAttribute(text, "SIZE",   "100x");
+  IupSetAttribute(text, "EXPAND", IUP_HORIZONTAL);
 
   dg = IupDialog(text);
-  IupSetAttribute(dg, IUP_TITLE, "IupMask");
+  IupSetAttribute(dg, "TITLE", "IupMask");
 
   IupShow(dg);
   IupMainLoop();

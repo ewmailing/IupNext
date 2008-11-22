@@ -22,13 +22,13 @@ void main(int argc, char **argv)
 
   ml = IupMultiLine(NULL);
   IupSetCallback(ml, "ACTION", (Icallback)mlaction);
-  IupSetAttribute(ml, IUP_EXPAND, IUP_YES);
-  IupSetAttribute(ml, IUP_VALUE,  "I ignore the DEL key!");
+  IupSetAttribute(ml, "EXPAND", IUP_YES);
+  IupSetAttribute(ml, "VALUE",  "I ignore the DEL key!");
   IupSetAttribute(ml, IUP_BORDER, IUP_YES);
 
   dlg = IupDialog(ml);
-  IupSetAttribute(dlg, IUP_TITLE, "IupMultiline");
-  IupSetAttribute(dlg, IUP_SIZE,  "QUARTERxQUARTER");
+  IupSetAttribute(dlg, "TITLE", "IupMultiline");
+  IupSetAttribute(dlg, "SIZE",  "QUARTERxQUARTER");
 
   IupShow(dlg);
   IupMainLoop();

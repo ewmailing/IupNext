@@ -30,9 +30,9 @@ int set_attribute (char* attribute)
 
   mltline = IupGetHandle ("mltline");
   text = IupGetHandle ("text") ;
-  IupSetAttribute (mltline, attribute, IupGetAttribute (text, IUP_VALUE)) ;
+  IupSetAttribute (mltline, attribute, IupGetAttribute (text, "VALUE")) ;
 
-  sprintf (string_message, "Attribute %s set with value %s", attribute, IupGetAttribute (text, IUP_VALUE));
+  sprintf (string_message, "Attribute %s set with value %s", attribute, IupGetAttribute (text, "VALUE"));
 
   IupMessage ("Set attribute", string_message) ;
 
@@ -60,9 +60,9 @@ int get_attribute (char* attribute)
 
   mltline = IupGetHandle ("mltline");
   text = IupGetHandle ("text") ;
-  IupSetAttribute (text, IUP_VALUE, IupGetAttribute(mltline, attribute));
+  IupSetAttribute (text, "VALUE", IupGetAttribute(mltline, attribute));
 
-  sprintf (string_message, "Attribute %s get with value %s", attribute, IupGetAttribute (text, IUP_VALUE));
+  sprintf (string_message, "Attribute %s get with value %s", attribute, IupGetAttribute (text, "VALUE"));
 
   IupMessage ("Get attribute", string_message) ;
 
@@ -85,7 +85,7 @@ int btn_append_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, IUP_VALUE) == 1) set_attribute (IUP_APPEND) ; else get_attribute (IUP_APPEND) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_APPEND) ; else get_attribute (IUP_APPEND) ;
 
   return IUP_DEFAULT ;
 }
@@ -106,7 +106,7 @@ int btn_insert_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, IUP_VALUE) == 1) set_attribute (IUP_INSERT) ; else get_attribute (IUP_INSERT) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_INSERT) ; else get_attribute (IUP_INSERT) ;
   
   return IUP_DEFAULT ;
 }
@@ -127,7 +127,7 @@ int btn_border_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, IUP_VALUE) == 1) set_attribute (IUP_BORDER) ; else get_attribute (IUP_BORDER) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_BORDER) ; else get_attribute (IUP_BORDER) ;
   
   return IUP_DEFAULT ;
 }
@@ -148,7 +148,7 @@ int btn_caret_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, IUP_VALUE) == 1) set_attribute (IUP_CARET) ; else get_attribute (IUP_CARET) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_CARET) ; else get_attribute (IUP_CARET) ;
   
   return IUP_DEFAULT ;
 }
@@ -169,7 +169,7 @@ int btn_readonly_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, IUP_VALUE) == 1) set_attribute (IUP_READONLY) ; else get_attribute (IUP_READONLY) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_READONLY) ; else get_attribute (IUP_READONLY) ;
   
   return IUP_DEFAULT ;
 }
@@ -190,7 +190,7 @@ int btn_selection_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, IUP_VALUE) == 1) set_attribute (IUP_SELECTION) ; else get_attribute (IUP_SELECTION) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_SELECTION) ; else get_attribute (IUP_SELECTION) ;
   
   return IUP_DEFAULT ;
 }
@@ -211,7 +211,7 @@ int btn_selectedtext_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, IUP_VALUE) == 1) set_attribute (IUP_SELECTEDTEXT) ; else get_attribute (IUP_SELECTEDTEXT) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_SELECTEDTEXT) ; else get_attribute (IUP_SELECTEDTEXT) ;
   
   return IUP_DEFAULT ;
 }
@@ -232,7 +232,7 @@ int btn_nc_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, IUP_VALUE) == 1) set_attribute (IUP_NC) ; else get_attribute (IUP_NC) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_NC) ; else get_attribute (IUP_NC) ;
   
   return IUP_DEFAULT ;
 }
@@ -253,7 +253,7 @@ int btn_value_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, IUP_VALUE) == 1) set_attribute (IUP_VALUE) ; else get_attribute (IUP_VALUE) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute ("VALUE") ; else get_attribute ("VALUE") ;
   
   return IUP_DEFAULT ;
 }
@@ -279,8 +279,8 @@ int main(int argc, char **argv)
   list = IupList (NULL) ;
 
   /* Turns on multiline expand ans text horizontal expand */
-  IupSetAttribute (mltline, IUP_EXPAND, IUP_YES) ;
-  IupSetAttribute (text, IUP_EXPAND, IUP_HORIZONTAL) ;
+  IupSetAttribute (mltline, "EXPAND", IUP_YES) ;
+  IupSetAttribute (text, "EXPAND", IUP_HORIZONTAL) ;
 
   /* Associates handles to multiline, text and list */
   IupSetHandle ("mltline", mltline) ;

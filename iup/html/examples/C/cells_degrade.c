@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
 
   dlg = IupDialog(box) ;
 
-  IupSetAttribute(dlg,IUP_TITLE,"IupCells");
+  IupSetAttribute(dlg,"TITLE","IupCells");
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER) ;
   IupMainLoop() ;
   IupDestroy(dlg);

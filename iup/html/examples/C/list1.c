@@ -29,7 +29,7 @@ int main(int argc, char **argv)
                           "VALUE=4, SIZE=EIGHTHxEIGHTH");
 
   frm_medal = IupFrame (list);
-  IupSetAttribute (frm_medal, IUP_TITLE, "Best medal");
+  IupSetAttribute (frm_medal, "TITLE", "Best medal");
   list_multiple = IupList(NULL);
   
   IupSetAttributes (list_multiple, "1=\"100m dash\", 2=\"Long jump\", 3=\"Javelin throw\", 4=\"110m hurdlers\", 5=\"Hammer throw\",6=\"High jump\","
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
   
   frm_sport = IupFrame (list_multiple);
   
-  IupSetAttribute (frm_sport, IUP_TITLE, "Competed in");
+  IupSetAttribute (frm_sport, "TITLE", "Competed in");
 
   list_dropdown = IupList (NULL);
   
@@ -47,10 +47,10 @@ int main(int argc, char **argv)
                                    "DROPDOWN=YES, VISIBLE_ITEMS=5");
   
   frm_prize = IupFrame (list_dropdown);
-  IupSetAttribute (frm_prize, IUP_TITLE, "Prizes won");
+  IupSetAttribute (frm_prize, "TITLE", "Prizes won");
 
   dlg = IupDialog (IupHbox (frm_medal, frm_sport, frm_prize, NULL));
-  IupSetAttribute (dlg, IUP_TITLE, "IupList Example");
+  IupSetAttribute (dlg, "TITLE", "IupList Example");
   IupShowXY (dlg, IUP_CENTER, IUP_CENTER);
 
   IupMainLoop ();

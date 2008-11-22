@@ -675,7 +675,7 @@ int main(int argc, char **argv)
   
   dlg = IupDialog(hbox);
   IupSetAttributes(dlg, "SIZE=600x240" ) ;
-  IupSetAttribute(dlg, IUP_TITLE, "IupPPlot Example");
+  IupSetAttribute(dlg, "TITLE", "IupPPlot Example");
 
   InitPlots(); // It must be able to be done independent of dialog Mapping
 

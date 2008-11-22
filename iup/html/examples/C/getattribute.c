@@ -33,7 +33,7 @@ void main(int argc, char **argv)
 
   campo = IupText("acao_numero");                           /* creates TEXT field */
   IupSetFunction ("acao_numero", (Icallback)acao_numero);   /* registers callback */
-  IupSetAttribute (campo, IUP_VALUE, "1.0");                /* defines initial value */
+  IupSetAttribute (campo, "VALUE", "1.0");                /* defines initial value */
 
   mensagem = IupLabel("Entre com um número: "); /* creates message */
   prompt = IupHbox(mensagem, campo, NULL);  /* creates prompt */
@@ -42,9 +42,9 @@ void main(int argc, char **argv)
   IupShow(dlg); /* displays and creates dialog */
   IupMainLoop ();               /* interacts with user */
 
-  printf ("Número Inteiro: %d", IupGetInt (campo, IUP_VALUE));   /* prints the integer number entered by the user */
-  printf ("Número Real: %g", IupGetFloat (campo, IUP_VALUE));       /* prints the real number entered by the user */
-  printf ("Texto Digitado: %s", IupGetAttribute(campo, IUP_VALUE));  /* prints the text entered by the user */
+  printf ("Número Inteiro: %d", IupGetInt (campo, "VALUE"));   /* prints the integer number entered by the user */
+  printf ("Número Real: %g", IupGetFloat (campo, "VALUE"));       /* prints the real number entered by the user */
+  printf ("Texto Digitado: %s", IupGetAttribute(campo, "VALUE"));  /* prints the text entered by the user */
 
   IupDestroy(dlg);
   IupClose ();  /* ends IUP */  

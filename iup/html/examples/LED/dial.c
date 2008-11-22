@@ -29,8 +29,8 @@ static void printdial(Ihandle *c, double a, char* color)
 
   if (label)
   {
-    IupSetfAttribute(label, IUP_TITLE, "%.3g", a);
-    IupSetAttribute(label, IUP_BGCOLOR, color);
+    IupSetfAttribute(label, "TITLE", "%.3g", a);
+    IupSetAttribute(label, "BGCOLOR", color);
   }
 } 
 

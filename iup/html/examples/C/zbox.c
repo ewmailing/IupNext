@@ -11,7 +11,7 @@ int list_cb (Ihandle *h, char *t, int o, int selected)
   Ihandle* zbox = IupGetHandle ("zbox") ;
   
   if (selected == 1)
-    IupSetAttribute (zbox, IUP_VALUE, t) ;
+    IupSetAttribute (zbox, "VALUE", t) ;
   
   return IUP_DEFAULT ;
 }
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
   IupSetHandle ("zbox", zbox) ;
 
   /* Sets zbox alignment */
-  IupSetAttribute (zbox, IUP_ALIGNMENT, IUP_ACENTER) ;
+  IupSetAttribute (zbox, "ALIGNMENT", IUP_ACENTER) ;
 
   /* Creates frame */
   frm = IupFrame
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
   ) ;
 
   IupSetAttributes (list, "1 = fill, 2 = text, 3 = lbl, 4 = btn") ;
-  IupSetAttribute (frm, IUP_TITLE, "Select an element") ;
+  IupSetAttribute (frm, "TITLE", "Select an element") ;
   IupSetAttributes (dlg, "SIZE = QUARTER, TITLE = \"IupZbox Example\"") ;
   IupSetCallback (list, "ACTION", (Icallback) list_cb) ;
 

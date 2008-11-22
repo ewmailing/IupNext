@@ -42,7 +42,7 @@ void main(int argc, char **argv)
   menu = IupMenu(sub1_menu, NULL);
   IupSetHandle("mymenu", menu);
   dg = IupDialog(IupCanvas(""));
-  IupSetAttribute(dg, IUP_MENU, "mymenu");
+  IupSetAttribute(dg, "MENU", "mymenu");
 
   IupShow(dg);
   IupMainLoop();

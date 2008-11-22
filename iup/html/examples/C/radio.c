@@ -27,14 +27,14 @@ int main(int argc, char **argv)
   );
   IupSetHandle("male", male);
   IupSetHandle("female", female);
-  IupSetAttribute(exclusive, IUP_VALUE, "female");
+  IupSetAttribute(exclusive, "VALUE", "female");
   IupSetAttribute(exclusive, IUP_TIP, "Two state button - Exclusive - RADIO");
 
   frame = IupFrame
   (
     exclusive
   );
-  IupSetAttribute (frame, IUP_TITLE, "Gender");
+  IupSetAttribute (frame, "TITLE", "Gender");
 
   dialog = IupDialog
   (

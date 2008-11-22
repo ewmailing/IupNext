@@ -29,8 +29,8 @@ int main(int argc, char **argv)
 
   /* Creating main dialog */
   dialog = IupDialog(IupVbox(text, NULL));
-  IupSetAttribute(dialog, IUP_TITLE, "timer example");
-  IupSetAttribute(dialog, IUP_SIZE, "200x200");
+  IupSetAttribute(dialog, "TITLE", "timer example");
+  IupSetAttribute(dialog, "SIZE", "200x200");
   IupShowXY(dialog, IUP_CENTER, IUP_CENTER);
 
   timer1 = IupTimer();

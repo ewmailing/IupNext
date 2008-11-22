@@ -17,11 +17,11 @@ int main(int argc, char **argv)
   IupSetAttribute(box, "COLOR", "0 0 255");
 
   ml = IupMultiLine(NULL);
-  IupSetAttribute(ml, IUP_EXPAND, "YES");
+  IupSetAttribute(ml, "EXPAND", "YES");
   vbox = IupVbox(box, ml, NULL);
 
   lb = IupLabel("Label");
-  IupSetAttribute(lb, IUP_EXPAND, "YES");
+  IupSetAttribute(lb, "EXPAND", "YES");
   dg = IupDialog(IupHbox(vbox, lb, NULL));
 
   IupShow(dg);

@@ -64,7 +64,7 @@ int main(int argc, char **argv)
                    NULL);
 
   dg = IupDialog(finale);
-  IupSetAttribute(dg, IUP_TITLE, "IupGLCanvas");
+  IupSetAttribute(dg, "TITLE", "IupGLCanvas");
 
   IupShow(dg);
   IupMainLoop();

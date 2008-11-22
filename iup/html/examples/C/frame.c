@@ -33,7 +33,7 @@ int main(int argc, char **argv)
   dialog = IupDialog(frame);
 
   /* Sets dialog's title */
-  IupSetAttribute(dialog, IUP_TITLE, "IupFrame");
+  IupSetAttribute(dialog, "TITLE", "IupFrame");
 
   IupShow( dialog ) ;  /* Shows dialog in the center of the screen */
   IupMainLoop() ;      /* Initializes IUP main loop */

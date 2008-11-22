@@ -20,11 +20,11 @@ int main(int argc, char **argv)
   switch(IupGetInt(dlg, IUP_STATUS))
   {
     case 1: 
-      IupMessage("New file",IupGetAttribute(dlg, IUP_VALUE));	    
+      IupMessage("New file",IupGetAttribute(dlg, "VALUE"));	    
     break ;	    
     
     case 0 : 
-      IupMessage("File already exists.",IupGetAttribute(dlg, IUP_VALUE));
+      IupMessage("File already exists.",IupGetAttribute(dlg, "VALUE"));
     break ;	    
     
     case -1 : 

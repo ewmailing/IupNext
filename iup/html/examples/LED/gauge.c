@@ -15,12 +15,12 @@ double velocidade = 0.001 ;
 int idle_cb(void)
 {
   char newvalue[40];
-  double value = IupGetFloat(gauge, IUP_VALUE) ;
+  double value = IupGetFloat(gauge, "VALUE") ;
   value+=velocidade ;
   if(value < 0.0) value = 0.0 ;
   if(value > 1.0) value = 1.0 ;
   sprintf(newvalue, "%.7f",value) ;
-  IupSetAttribute(gauge, IUP_VALUE, newvalue) ;
+  IupSetAttribute(gauge, "VALUE", newvalue) ;
 
   return IUP_DEFAULT ;
 }
@@ -44,7 +44,7 @@ int pausa_cb(void)
 /* start button callback */
 int inicio_cb(void)
 {
-  IupSetAttribute(gauge, IUP_VALUE, "0") ;
+  IupSetAttribute(gauge, "VALUE", "0") ;
 	
   return IUP_DEFAULT ;
 }

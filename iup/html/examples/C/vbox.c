@@ -1,5 +1,5 @@
 /*IupVbox Example in C 
-Creates a dialog with buttons placed one above the other, showing the organization possibilities of the elements inside a vbox. The IUP_ALIGNMENT attribute is explored in all its possibilities to obtain the effects. The attributes IUP_GAP, IUP_MARGIN and IUP_SIZE are also tested. */
+Creates a dialog with buttons placed one above the other, showing the organization possibilities of the elements inside a vbox. The "ALIGNMENT" attribute is explored in all its possibilities to obtain the effects. The attributes "GAP", "MARGIN" and "SIZE" are also tested. */
 
 /* IupVbox Example */	
 
@@ -44,12 +44,12 @@ int main(int argc, char **argv)
   ) ;
 
   /* Sets title of frame 1 */
-  IupSetAttribute (frm_1, IUP_TITLE, "ALIGNMENT = ALEFT, GAP = 10") ;
+  IupSetAttribute (frm_1, "TITLE", "ALIGNMENT = ALEFT, GAP = 10") ;
 
   /* Sets attributes of buttons inside frame 1 */
-  IupSetAttribute (btn_11, IUP_SIZE, "20x30") ;
-  IupSetAttribute (btn_12, IUP_SIZE, "30x30") ;
-  IupSetAttribute (btn_13, IUP_SIZE, "40x30") ;
+  IupSetAttribute (btn_11, "SIZE", "20x30") ;
+  IupSetAttribute (btn_12, "SIZE", "30x30") ;
+  IupSetAttribute (btn_13, "SIZE", "40x30") ;
 
   /* Sets attributes of vbox 1 */
   IupSetAttributes (vbox_1, "ALIGNMENT = ALEFT, GAP = 10") ;
@@ -73,12 +73,12 @@ int main(int argc, char **argv)
   );
 
   /* Sets title of frame 1 */
-  IupSetAttribute (frm_2, IUP_TITLE, "ALIGNMENT = ACENTER, MARGIN = 15") ;
+  IupSetAttribute (frm_2, "TITLE", "ALIGNMENT = ACENTER, MARGIN = 15") ;
 
   /* Sets attributes of buttons inside frame 2 */
-  IupSetAttribute (btn_21, IUP_SIZE, "20x30") ;
-  IupSetAttribute (btn_22, IUP_SIZE, "30x30") ;
-  IupSetAttribute (btn_23, IUP_SIZE, "40x30") ;
+  IupSetAttribute (btn_21, "SIZE", "20x30") ;
+  IupSetAttribute (btn_22, "SIZE", "30x30") ;
+  IupSetAttribute (btn_23, "SIZE", "40x30") ;
 
   /* Sets attributes of vbox 2 */
   IupSetAttributes (vbox_2, "ALIGNMENT = ACENTER, MARGIN = 15") ;
@@ -102,12 +102,12 @@ int main(int argc, char **argv)
   ) ;
 
   /* Sets title of frame 3 */
-  IupSetAttribute (frm_3, IUP_TITLE, "ALIGNMENT = ARIGHT, SIZE = 20") ;
+  IupSetAttribute (frm_3, "TITLE", "ALIGNMENT = ARIGHT, SIZE = 20") ;
 
   /* Sets attributes of buttons inside frame 3 */
-  IupSetAttribute (btn_31, IUP_SIZE, "20x30") ;
-  IupSetAttribute (btn_32, IUP_SIZE, "30x30") ;
-  IupSetAttribute (btn_33, IUP_SIZE, "40x30") ;
+  IupSetAttribute (btn_31, "SIZE", "20x30") ;
+  IupSetAttribute (btn_32, "SIZE", "30x30") ;
+  IupSetAttribute (btn_33, "SIZE", "40x30") ;
 
   /* Sets attributes of vbox 3 */
   IupSetAttributes (vbox_3, "ALIGNMENT = ARIGHT, SIZE = 20") ;

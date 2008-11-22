@@ -40,7 +40,7 @@ int titulo_ok_cb(void)
 
   texto = IupGetHandle("titulo_texto");
   
-  IupSetHandle("valor_do_titulo",IupGetAttribute(texto,IUP_VALUE));
+  IupSetHandle("valor_do_titulo",IupGetAttribute(texto,"VALUE"));
 
   return IUP_CLOSE ;
 }
@@ -71,19 +71,19 @@ void alterar_titulo(int modo)
     
     if(modo == -1)
     {
-      IupSetAttribute(dlg_titulo, IUP_TITLE, "Geral");
+      IupSetAttribute(dlg_titulo, "TITLE", "Geral");
     }
     else
     if(modo == 0)
     {
-      IupSetAttribute(dlg_titulo, IUP_TITLE, "Coluna");
+      IupSetAttribute(dlg_titulo, "TITLE", "Coluna");
     }
     else
     {
-      IupSetAttribute(dlg_titulo, IUP_TITLE, "Linha");
+      IupSetAttribute(dlg_titulo, "TITLE", "Linha");
     }
 
-    IupSetAttribute(titulo_texto,IUP_VALUE,"");
+    IupSetAttribute(titulo_texto,"VALUE","");
     IupSetHandle("valor_do_titulo","\b");
     IupPopup(dlg_titulo,IUP_CENTER,IUP_CENTER);
     strcpy(valor, IupGetHandle("valor_do_titulo"));
@@ -317,12 +317,12 @@ int dimensao_texto_cb(Ihandle* self, int c, char* after)
     return IUP_IGNORE ;
   }
   else
-  if(strcmp(IupGetAttribute(self,IUP_VALUE),"0")==0)
+  if(strcmp(IupGetAttribute(self,"VALUE"),"0")==0)
   {
     char* string ;
     string = (char*)malloc((sizeof(char)*dimensao_limite)+1) ;
     sprintf(string,"%c",c) ;
-    IupSetAttribute(self,IUP_VALUE,string);
+    IupSetAttribute(self,"VALUE",string);
     IupSetAttribute(self,IUP_CARET,"2");
     free(string);
   }
@@ -335,13 +335,13 @@ int dimensao_ok_cb(void)
   Ihandle* texto ;
 
   texto = IupGetHandle("dimensao_texto");
-  if(strcmp(IupGetAttribute(texto,IUP_VALUE),"0")==0)
+  if(strcmp(IupGetAttribute(texto,"VALUE"),"0")==0)
   {
     IupMessage("Dimensao","Dimensao não pode ser nula");
 
     return IUP_CLOSE ;
   }
-  IupSetHandle("valor_da_dimensao",IupGetAttribute(texto,IUP_VALUE));
+  IupSetHandle("valor_da_dimensao",IupGetAttribute(texto,"VALUE"));
 
   return IUP_CLOSE ;
 }
@@ -369,13 +369,13 @@ void alterar_dimensao(char* modo)
     
     if(strcmp(modo,"HEIGHT")==0)
     {
-      IupSetAttribute(dlg_dimensao, IUP_TITLE, "Altura");
+      IupSetAttribute(dlg_dimensao, "TITLE", "Altura");
     }
     else
     {
-      IupSetAttribute(dlg_dimensao, IUP_TITLE, "Largura");
+      IupSetAttribute(dlg_dimensao, "TITLE", "Largura");
     }
-    IupSetAttribute(dimensao_texto,IUP_VALUE,0);
+    IupSetAttribute(dimensao_texto,"VALUE",0);
     IupSetHandle("valor_da_dimensao","0");
     IupPopup(dlg_dimensao,IUP_CENTER,IUP_CENTER);
     strcpy(valor, IupGetHandle("valor_da_dimensao"));
@@ -490,12 +490,12 @@ int marcacao_continua_cb(void)
 {
   if(strcmp(IupGetAttribute(matriz,IUP_AREA) , "CONTINUOUS") == 0)
   {
-    IupSetAttribute(IupGetHandle("marcacao_continua"),IUP_VALUE,IUP_OFF);
+    IupSetAttribute(IupGetHandle("marcacao_continua"),"VALUE",IUP_OFF);
     IupSetAttribute(matriz,IUP_AREA,"NOT_CONTINUOUS");
   }
   else
   {
-    IupSetAttribute(IupGetHandle("marcacao_continua"),IUP_VALUE,IUP_ON);
+    IupSetAttribute(IupGetHandle("marcacao_continua"),"VALUE",IUP_ON);
     IupSetAttribute(matriz,IUP_AREA,"CONTINUOUS");
   }
 
@@ -507,12 +507,12 @@ int marcacao_multipla_cb(void)
   if(strcmp(IupGetAttribute(matriz,IUP_MULTIPLE), IUP_YES) == 0)
   {
     IupSetAttribute(matriz,IUP_MULTIPLE,IUP_NO);
-    IupSetAttribute(IupGetHandle("marcacao_multipla"),IUP_VALUE,IUP_OFF);
+    IupSetAttribute(IupGetHandle("marcacao_multipla"),"VALUE",IUP_OFF);
   }
   else
   {
     IupSetAttribute(matriz,IUP_MULTIPLE,IUP_YES);
-    IupSetAttribute(IupGetHandle("marcacao_multipla"),IUP_VALUE,IUP_ON);
+    IupSetAttribute(IupGetHandle("marcacao_multipla"),"VALUE",IUP_ON);
   }
 
   return IUP_DEFAULT;
@@ -523,12 +523,12 @@ int tamanho_editavel_cb(void)
   if(strcmp(IupGetAttribute(matriz,IUP_RESIZEMATRIX), IUP_YES) == 0)
   {
     IupSetAttribute(matriz,IUP_RESIZEMATRIX,IUP_NO);
-    IupSetAttribute(IupGetHandle("tamanho_editavel"),IUP_VALUE,IUP_OFF);
+    IupSetAttribute(IupGetHandle("tamanho_editavel"),"VALUE",IUP_OFF);
   }
   else
   {
     IupSetAttribute(matriz,IUP_RESIZEMATRIX,IUP_YES);
-    IupSetAttribute(IupGetHandle("tamanho_editavel"),IUP_VALUE,IUP_ON);
+    IupSetAttribute(IupGetHandle("tamanho_editavel"),"VALUE",IUP_ON);
   }
 
   return IUP_DEFAULT;

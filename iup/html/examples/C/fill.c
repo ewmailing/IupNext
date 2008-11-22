@@ -28,7 +28,7 @@ int main(int argc, char **argv)
   ) ;
 
   /* Sets frame's title */
-  IupSetAttribute( frame_left, IUP_TITLE, "Left aligned" ) ;
+  IupSetAttribute( frame_left, "TITLE", "Left aligned" ) ;
 
   /* Creates frame with centered button */
   frame_center = IupFrame
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
   ) ;
 
   /* Sets frame's title */
-  IupSetAttribute( frame_center, IUP_TITLE, "Centered" ) ;
+  IupSetAttribute( frame_center, "TITLE", "Centered" ) ;
 
   /* Creates frame with right aligned button */
   frame_right = IupFrame
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
   ) ;
 
   /* Sets frame's title */
-  IupSetAttribute( frame_right, IUP_TITLE, "Right aligned" ) ;
+  IupSetAttribute( frame_right, "TITLE", "Right aligned" ) ;
 
   /* Creates dialog with these three frames */
   dialog = IupDialog

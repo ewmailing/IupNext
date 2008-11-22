@@ -42,7 +42,7 @@ int redraw(void)
     for(i = 0; i < 300000; i++)
     {
       cdCanvasBox(cdcanvas, 0, 300, 0, i/1000);
-      IupSetfAttribute(gauge, IUP_VALUE, "%f", (float)i/300000);
+      IupSetfAttribute(gauge, "VALUE", "%f", (float)i/300000);
 
       IupLoopStep();
     }
@@ -58,12 +58,12 @@ void init(void)
   gauge = IupGauge();
   cv    = IupCanvas(NULL);
   bt    = IupButton("Restart", NULL);
-  IupSetAttribute(bt,    IUP_SIZE, "50x50");
+  IupSetAttribute(bt,    "SIZE", "50x50");
   IupSetAttribute(bt,    IUP_FGCOLOR, "255 255 255");
-  IupSetAttribute(gauge, IUP_SIZE, "200x15");
-  IupSetAttribute(cv,    IUP_SIZE, "200x200");
+  IupSetAttribute(gauge, "SIZE", "200x15");
+  IupSetAttribute(cv,    "SIZE", "200x200");
   dlg   = IupDialog(IupVbox(cv, IupHbox(gauge, bt, NULL), NULL));
-  IupSetAttribute(dlg, IUP_TITLE, "Redraw test");
+  IupSetAttribute(dlg, "TITLE", "Redraw test");
 }
 
 int main(int argc, char **argv) 

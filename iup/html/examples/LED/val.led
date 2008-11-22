@@ -1,8 +1,8 @@
 #IupVal Example in LED 
 #Creates two Valuator controls, exemplifying the two possible types - vertical and horizontal. 
 
-lbl_h = label[SIZE=70x]("IUP_VALUE=")
-lbl_v = label[SIZE=70x]("IUP_VALUE=")
+lbl_h = label[SIZE=70x](""VALUE"=")
+lbl_v = label[SIZE=70x](""VALUE"=")
 
 val_v = VAL
 [

@@ -24,7 +24,7 @@ int exit_cb(Ihandle * self)
 
 int tabchange_ignore_cb(Ihandle * self, Ihandle* new_tab, Ihandle* old_tab)
 {
-  char *texto = IupGetAttribute(IupGetHandle("texto_a_preencher"), IUP_VALUE);
+  char *texto = IupGetAttribute(IupGetHandle("texto_a_preencher"), "VALUE");
 
   if(texto != NULL)
     if(strlen(texto) > 0)
@@ -43,10 +43,10 @@ int tabchange_ignore_cb(Ihandle * self, Ihandle* new_tab, Ihandle* old_tab)
 int tabchange_cb(Ihandle * self, Ihandle* new_tab, Ihandle* old_tab)
 {
   IupSetAttribute(IupGetHandle("tab_atual"),
-    IUP_VALUE,IupGetAttribute(new_tab, ICTL_TABTITLE));
+    "VALUE",IupGetAttribute(new_tab, ICTL_TABTITLE));
 
   IupSetAttribute(IupGetHandle("tab_anterior"),
-    IUP_VALUE,IupGetAttribute(old_tab, ICTL_TABTITLE));
+    "VALUE",IupGetAttribute(old_tab, ICTL_TABTITLE));
   
   return IUP_DEFAULT;
 }
@@ -77,7 +77,7 @@ int tabs_em_c_cb(Ihandle* self)
   frame = IupFrame(IupCanvas(NULL));
   vbox = IupVbox(frame, NULL);
   IupSetAttribute(vbox, ICTL_TABTITLE, "Quarto Tab");
-  IupSetAttribute(frame, IUP_TITLE, "Frame");
+  IupSetAttribute(frame, "TITLE", "Frame");
 
   /* Creates tabs */
   tabs = IupTabs(label, button, text, vbox, NULL);
@@ -101,7 +101,7 @@ int tabs_em_c_cb(Ihandle* self)
       )
     );
 
-  IupSetAttribute(dlg, IUP_TITLE, "Exemplo 1 de Utilizacao do Tabs");
+  IupSetAttribute(dlg, "TITLE", "Exemplo 1 de Utilizacao do Tabs");
   
   IupPopup(dlg, IUP_CENTER, IUP_CENTER);
   IupDestroy(dlg);

@@ -8,7 +8,7 @@ Creates a dialog with three frames, each one containing a list. The first is a s
 int list_cb (Ihandle *self, char *t, int i, int v)
 {
   Ihandle *lbl = (Ihandle*)IupGetAttribute(self, "_LABEL");
-  IupStoreAttribute(lbl, IUP_TITLE, t);
+  IupStoreAttribute(lbl, "TITLE", t);
   return IUP_DEFAULT;
 }
 
@@ -16,7 +16,7 @@ int edit_cb (Ihandle *self, int c, char *after)
 {
   Ihandle *lbl = (Ihandle*)IupGetAttribute(self, "_LABEL");
   if (isxkey(c) && c != K_DEL) return IUP_DEFAULT;
-  IupStoreAttribute(lbl, IUP_TITLE, after);
+  IupStoreAttribute(lbl, "TITLE", after);
   return IUP_DEFAULT;
 }
 
@@ -28,21 +28,21 @@ int btclose_cb(Ihandle *self)
 int bt_cb(Ihandle *self)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(self, "_LIST");
-  IupMessagef ("List", "Value=%s", IupGetAttribute(list, IUP_VALUE));
+  IupMessagef ("List", "Value=%s", IupGetAttribute(list, "VALUE"));
   return IUP_DEFAULT;
 }
 
 int getfocus_cb(Ihandle *self)
 {
   Ihandle *bt = (Ihandle*)IupGetAttribute(self, "_BUTTON");
-  IupSetAttribute(bt, IUP_BGCOLOR, "255 0 128");
+  IupSetAttribute(bt, "BGCOLOR", "255 0 128");
   return IUP_DEFAULT;
 }
 
 int killfocus_cb(Ihandle *self)
 {
   Ihandle *bt = (Ihandle*)IupGetAttribute(self, "_BUTTON");
-  IupSetAttribute(bt, IUP_BGCOLOR, NULL);
+  IupSetAttribute(bt, "BGCOLOR", NULL);
   return IUP_DEFAULT;
 }
 
@@ -91,10 +91,10 @@ int main(int argc, char **argv)
   IupSetAttribute(list3, "_BUTTON", (char*)bt3);
   IupSetAttribute(list4, "_BUTTON", (char*)bt4);
 
-  IupSetAttribute(bt1, IUP_BGCOLOR, "192 192 192");
-  IupSetAttribute(bt2, IUP_BGCOLOR, "192 192 192");
-  IupSetAttribute(bt3, IUP_BGCOLOR, "192 192 192");
-  IupSetAttribute(bt4, IUP_BGCOLOR, "192 192 192");
+  IupSetAttribute(bt1, "BGCOLOR", "192 192 192");
+  IupSetAttribute(bt2, "BGCOLOR", "192 192 192");
+  IupSetAttribute(bt3, "BGCOLOR", "192 192 192");
+  IupSetAttribute(bt4, "BGCOLOR", "192 192 192");
 
   IupSetCallback(list1, IUP_GETFOCUS_CB, (Icallback)getfocus_cb);
   IupSetCallback(list1, IUP_KILLFOCUS_CB, (Icallback)killfocus_cb);
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
   IupSetAttribute(btok, "_LIST4", (char*)list4);
            
   dlg = IupDialog(IupSetAttributes(IupVbox(IupHbox(box1, box2, box3, box4, NULL), lbl, btok, btcancel, NULL),"MARGIN=10x10, GAP=10"));
-  IupSetAttribute(dlg, IUP_TITLE, "IupList Example");
+  IupSetAttribute(dlg, "TITLE", "IupList Example");
   IupSetAttribute(dlg, "_LABEL", (char*)lbl);
   IupSetAttribute(dlg, IUP_DEFAULTENTER, "btok");
   IupSetAttribute(dlg, IUP_DEFAULTESC, "btcancel");

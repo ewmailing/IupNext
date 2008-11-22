@@ -43,7 +43,7 @@ static int action(Ihandle *self, int c, char *after)
       if (size==0)
         return IUP_IGNORE;
       password[size-1] = 0;
-      IupSetAttribute(pwd, IUP_VALUE, password);
+      IupSetAttribute(pwd, "VALUE", password);
       return IUP_DEFAULT;
     default:
       if (k_any(self, c) == IUP_IGNORE)
@@ -53,7 +53,7 @@ static int action(Ihandle *self, int c, char *after)
       password[size+1] = 0;
       break;
   }
-  IupSetAttribute(pwd, IUP_VALUE, password);
+  IupSetAttribute(pwd, "VALUE", password);
   return K_asterisk;
 }
 
@@ -64,13 +64,13 @@ int main(int argc, char **argv)
   memset(password, 0, 100);
 
   text = IupText(NULL);
-  IupSetAttribute(text, IUP_SIZE,  "200x");
+  IupSetAttribute(text, "SIZE",  "200x");
   IupSetCallback(text, "ACTION", (Icallback) action);
   IupSetCallback(text, IUP_K_ANY, (Icallback) k_any);
 
   pwd = IupText(NULL);
   IupSetAttribute(pwd, IUP_READONLY, IUP_YES);
-  IupSetAttribute(pwd, IUP_SIZE, "200x");
+  IupSetAttribute(pwd, "SIZE", "200x");
 
   dlg = IupDialog(IupVbox(text, pwd, NULL));
   IupSetAttribute(dlg, "TITLE", "IupText");

@@ -115,7 +115,7 @@ int main(int argc, char **argv)
   dlg = IupDialog(IupHbox(cnvs, cb, NULL));
   
   /* Sets the dialog's title, so that it is mapped properly */
-  IupSetAttribute(dlg, IUP_TITLE, "IupColorbar");
+  IupSetAttribute(dlg, "TITLE", "IupColorbar");
   
   /* Maps the dialog. This must be done before the creation of the CD canvas */
   IupMap(dlg);

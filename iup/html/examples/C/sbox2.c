@@ -39,7 +39,7 @@ int main(int argc, char **argv)
   IupSetAttribute(sbox, "DIRECTION", "EAST");
 
   cv = IupCanvas(NULL);
-  IupSetAttribute(cv, IUP_EXPAND, "YES");
+  IupSetAttribute(cv, "EXPAND", "YES");
 
   ml = IupMultiLine("");
   IupSetAttribute(ml, "EXPAND", "YES");
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   vbox = IupHbox(sbox, cv, sbox2, NULL);
 
   lb = IupLabel("This is a label");
-  IupSetAttribute(lb, IUP_EXPAND, "NO");
+  IupSetAttribute(lb, "EXPAND", "NO");
   sbox3 = IupSbox(lb);
   IupSetAttribute(sbox3, "DIRECTION", "NORTH");
   dg = IupDialog(IupVbox(vbox, sbox3, NULL));

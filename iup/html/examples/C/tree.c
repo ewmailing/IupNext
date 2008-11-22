@@ -15,7 +15,7 @@ int addleaf(void)
 {
   static char attr[10];
   Ihandle* tree = IupGetHandle("tree");
-  int id = IupGetInt(tree,IUP_VALUE);
+  int id = IupGetInt(tree,"VALUE");
   sprintf(attr,"ADDLEAF%d",id);
   IupSetAttribute(tree,attr,"");
   IupSetAttribute(tree, IUP_REDRAW, IUP_YES);
@@ -27,7 +27,7 @@ int addbranch(void)
 {
   static char attr[10];
   Ihandle* tree = IupGetHandle("tree");
-  int id = IupGetInt(tree,IUP_VALUE);
+  int id = IupGetInt(tree,"VALUE");
   sprintf(attr,"ADDBRANCH%d",id);
   IupSetAttribute(tree,attr,"");
   IupSetAttribute(tree, IUP_REDRAW, IUP_YES);
@@ -117,7 +117,7 @@ int k_any_cb(Ihandle* h, int c)
 int selectnode(Ihandle* h)
 {
   Ihandle* tree = IupGetHandle("tree");
-  IupSetAttribute(tree,IUP_VALUE,IupGetAttribute(h, IUP_TITLE));
+  IupSetAttribute(tree,"VALUE",IupGetAttribute(h, "TITLE"));
   IupSetAttribute(tree, IUP_REDRAW, IUP_YES);
   return IUP_DEFAULT;
 }
@@ -158,7 +158,7 @@ int rightclick_cb(Ihandle* h, int id)
   IupSetFunction("renamenode", (Icallback)renamenode);
 
   sprintf(id_string,"%d",id);
-  IupSetAttribute(h, IUP_VALUE, id_string);
+  IupSetAttribute(h, "VALUE", id_string);
   IupPopup(popup_menu,IUP_MOUSEPOS,IUP_MOUSEPOS);
 
   IupDestroy(popup_menu);
@@ -189,10 +189,10 @@ void init_dlg(void)
   Ihandle* tree = IupGetHandle("tree");
   Ihandle* box = IupVbox(IupHbox(tree, IupButton("teste", "xx"), NULL), NULL);
   Ihandle* dlg = IupDialog(box) ;
-  IupSetAttribute(dlg, IUP_TITLE, "IupTree");
-  IupSetAttribute(tree, IUP_SIZE,"QUARTERxTHIRD");
-  IupSetAttribute(box, IUP_MARGIN, "20x20");
-  IupSetAttribute(dlg, IUP_BGCOLOR, "192 192 192");
+  IupSetAttribute(dlg, "TITLE", "IupTree");
+  IupSetAttribute(tree, "SIZE","QUARTERxTHIRD");
+  IupSetAttribute(box, "MARGIN", "20x20");
+  IupSetAttribute(dlg, "BGCOLOR", "192 192 192");
   IupSetHandle("dlg",dlg);
 }
 

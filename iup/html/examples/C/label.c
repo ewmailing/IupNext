@@ -70,7 +70,7 @@ int main(int argc, char **argv)
   dlg = IupDialog ( IupVbox ( lbl, IupHbox ( lbl_explain, lbl_star, NULL ), NULL ) ) ;
 
   /* Sets title of the dialog */
-  IupSetAttribute ( dlg, IUP_TITLE, "IupLabel Example" ) ;
+  IupSetAttribute ( dlg, "TITLE", "IupLabel Example" ) ;
 
   /* Shows dialog in the center of the screen */
   IupShowXY ( dlg, IUP_CENTER, IUP_CENTER ) ;

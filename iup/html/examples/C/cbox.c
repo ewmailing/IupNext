@@ -84,7 +84,7 @@ static Ihandle *create_mat(void)
   IupSetAttribute(mat,IUP_NUMLIN,"3"); 
   IupSetAttribute(mat,IUP_NUMCOL_VISIBLE,"1") ;
   IupSetAttribute(mat,IUP_NUMLIN_VISIBLE,"3") ;
-  IupSetAttribute(mat,IUP_EXPAND, "NO");
+  IupSetAttribute(mat,"EXPAND", "NO");
   IupSetAttribute(mat,IUP_SCROLLBAR, "NO");
 
   IupSetAttribute(mat,"0:0","Inflation");
@@ -158,7 +158,7 @@ void func_1 (void)
       IupSetAttributes(IupButton("", "action"), "IMAGE=img1,CINDEX=2"),
       IupSetAttributes(IupButton("", "action"), "IMAGE=img1,IMPRESS=img2,CINDEX=3"),
       NULL));
-  IupSetAttribute(_frm_1,IUP_TITLE,"IupButton");
+  IupSetAttribute(_frm_1,"TITLE","IupButton");
   IupSetAttribute(_frm_1,"CX","10");
   IupSetAttribute(_frm_1,"CY","180");
 
@@ -168,7 +168,7 @@ void func_1 (void)
       IupSetAttributes(IupLabel(""), "SEPARATOR=HORIZONTAL,CINDEX=2"),
       IupSetAttributes(IupLabel(""), "IMAGE=img1,CINDEX=3"),
       NULL));
-  IupSetAttribute(_frm_2,IUP_TITLE,"IupLabel");
+  IupSetAttribute(_frm_2,"TITLE","IupLabel");
   IupSetAttribute(_frm_2,"CX","200");
   IupSetAttribute(_frm_2,"CY","250");
 
@@ -181,26 +181,26 @@ void func_1 (void)
         IupSetAttributes(IupToggle("Toggle Text", "action"), "CINDEX=4"),
         NULL))), "TITLE=IupRadio"),
       NULL));
-  IupSetAttribute(_frm_3,IUP_TITLE,"IupToggle");
+  IupSetAttribute(_frm_3,"TITLE","IupToggle");
   IupSetAttribute(_frm_3,"CX","400");
   IupSetAttribute(_frm_3,"CY","250");
 
   _text_1 = IupText( "action");
-  IupSetAttribute(_text_1,IUP_VALUE,"IupText Text");
-  IupSetAttribute(_text_1,IUP_SIZE,"80x");
+  IupSetAttribute(_text_1,"VALUE","IupText Text");
+  IupSetAttribute(_text_1,"SIZE","80x");
   IupSetAttribute(_text_1,"CINDEX","1");
   IupSetAttribute(_text_1,"CX","10");
   IupSetAttribute(_text_1,"CY","100");
 
   _ml_1 = IupMultiLine( "action");
-  IupSetAttribute(_ml_1,IUP_VALUE,"IupMultiline Text\nSecond Line\nThird Line");
-  IupSetAttribute(_ml_1,IUP_SIZE,"80x60");
+  IupSetAttribute(_ml_1,"VALUE","IupMultiline Text\nSecond Line\nThird Line");
+  IupSetAttribute(_ml_1,"SIZE","80x60");
   IupSetAttribute(_ml_1,"CINDEX","1");
   IupSetAttribute(_ml_1,"CX","200");
   IupSetAttribute(_ml_1,"CY","100");
 
   _list_1 = IupList( "action");
-  IupSetAttribute(_list_1,IUP_VALUE,"1");
+  IupSetAttribute(_list_1,"VALUE","1");
   IupSetAttribute(_list_1,"1","Item 1 Text");
   IupSetAttribute(_list_1,"2","Item 2 Text");
   IupSetAttribute(_list_1,"3","Item 3 Text");
@@ -209,8 +209,8 @@ void func_1 (void)
   IupSetAttribute(_list_1,"CY","10");
 
   _list_2 = IupList( "action");
-  IupSetAttribute(_list_2,IUP_DROPDOWN,"YES");
-  IupSetAttribute(_list_2,IUP_VALUE,"2");
+  IupSetAttribute(_list_2,"DROPDOWN","YES");
+  IupSetAttribute(_list_2,"VALUE","2");
   IupSetAttribute(_list_2,"1","Item 1 Text");
   IupSetAttribute(_list_2,"2","Item 2 Text");
   IupSetAttribute(_list_2,"3","Item 3 Text");
@@ -220,7 +220,7 @@ void func_1 (void)
 
   _list_3 = IupList( "action");
   IupSetAttribute(_list_3,"EDITBOX","YES");
-  IupSetAttribute(_list_3,IUP_VALUE,"3");
+  IupSetAttribute(_list_3,"VALUE","3");
   IupSetAttribute(_list_3,"1","Item 1 Text");
   IupSetAttribute(_list_3,"2","Item 2 Text");
   IupSetAttribute(_list_3,"3","Item 3 Text");
@@ -230,9 +230,9 @@ void func_1 (void)
 
   _cnv_1 = IupCanvas( "do_nothing");
   IupSetAttribute(_cnv_1,IUP_RASTERSIZE,"100x100");
-  IupSetAttribute(_cnv_1,IUP_POSX,"0.0");
-  IupSetAttribute(_cnv_1,IUP_POSY,"0.0");
-  IupSetAttribute(_cnv_1,IUP_BGCOLOR,"128 255 0");
+  IupSetAttribute(_cnv_1,"POSX","0.0");
+  IupSetAttribute(_cnv_1,"POSY","0.0");
+  IupSetAttribute(_cnv_1,"BGCOLOR","128 255 0");
   IupSetAttribute(_cnv_1,"CX","400");
   IupSetAttribute(_cnv_1,"CY","150");
 
@@ -254,14 +254,14 @@ void func_1 (void)
     _frm_2,
     _frm_3,
     NULL);
-  IupSetAttribute(_cbox,IUP_SIZE,"480x200");
+  IupSetAttribute(_cbox,"SIZE","480x200");
 
   hbox = IupHbox(IupSetAttributes(IupFill(), "SIZE=10"), 
          IupVbox(IupSetAttributes(IupFill(), "SIZE=10"), _cbox, NULL), NULL);
 
   dlg = IupDialog(hbox);
   IupSetHandle("dlg",dlg);
-  IupSetAttribute(dlg,IUP_TITLE,"Cbox Test");
+  IupSetAttribute(dlg,"TITLE","Cbox Test");
 }
 
 int main(int argc, char **argv)
