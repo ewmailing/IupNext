@@ -120,7 +120,8 @@ IupGetParamType
 IupGetParamCount
 IupNormalizeSize
 IupNormalizeSizev
-
+IupGetClassType
+IupGetClassName
 
 iupStrMessageShowError
 iupStrMessageGet
@@ -311,3 +312,10 @@ iupMaskCreateInt
 iupMaskCreateFloat
 iupMaskCheck
 iupMaskDestroy
+iupClassRegisterAttribute
+iupCanvasGetClass
+iupClassRegisterAttributeId
+iupImageColorMakeInactive
+iupAttribSetHandleName
+iupDialogGetClass
+iupImageStockSet

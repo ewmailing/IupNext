@@ -6,7 +6,7 @@ USE_DLL = Yes
 
 INCLUDES = ../include
 
-SRC = win/iupwin_main.c 
+SRC = win/iupwindows_main.c 
 
 iupstup-dll:
 	@move /y ..\lib\vc6\iupstub.lib ..\lib\dll
