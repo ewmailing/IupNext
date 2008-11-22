@@ -275,7 +275,6 @@ iupClassCallbackGetFormat
 iupClassObjectGetAttribute
 iupClassObjectGetAttributeDefault
 iupdrvBaseGetClientSizeAttrib
-iupdrvBaseGetTitleAttrib
 iupClassNew
 iupClassObjectGetInnerContainer
 iupBaseGetScrollbar
@@ -292,7 +291,6 @@ iupdrvBaseSetCursorAttrib
 iupdrvBaseSetTipAttrib
 iupdrvBaseSetTipVisibleAttrib
 iupdrvBaseSetZorderAttrib
-iupdrvBaseSetTitleAttrib
 iupClassObjectChildAdded
 iupClassObjectChildRemoved
 iupClassObjectComputeNaturalSize

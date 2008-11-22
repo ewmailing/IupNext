@@ -2,7 +2,7 @@
 REM This builds all the libraries of the folder for 1 uname
 
 call tecmake %1 %2 %3 %4 %5 %6
-REM call tecmake "USE_GTK=Yes" %1 %2 %3 %4 %5 %6
+call tecmake %1 "USE_GTK=Yes" %2 %3 %4 %5 %6
 
 if "%1"=="dll" goto stub_dll
 if "%1"=="dll7" goto stub_dll7

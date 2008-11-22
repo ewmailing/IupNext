@@ -84,6 +84,7 @@ endif
 ifneq ($(findstring dll, $(TEC_UNAME)), )
   DEFINES += IUP_DLL
   SRC += iup_dll.rc
+  DEF_FILE = iup.def
 endif
 
 ifeq "$(TEC_UNAME)" "owc1"
