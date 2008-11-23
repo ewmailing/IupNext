@@ -55,6 +55,7 @@ int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char
 int       IupOpen          (int *argc, char ***argv);
 void      IupClose         (void);
 void      IupImageLibOpen  (void);
+void      IupImageLibLoadAll(void);
 
 int       IupMainLoop      (void);
 int       IupLoopStep      (void);

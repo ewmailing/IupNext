@@ -21,7 +21,7 @@
 
 typedef struct _IimageStock
 {
-  iupImageStockFunc func;
+  iupImageStockCreateFunc func;
   Ihandle* image;            /* cache image */
   const char* native_name;   /* used to map to GTK stock images */
 } IimageStock;
@@ -49,7 +49,7 @@ void iupImageStockFinish(void)
   istock_table = NULL;
 }
 
-void iupImageStockSet(const char *name, iupImageStockFunc func, const char* native_name)
+void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char* native_name)
 {
   IimageStock* istock = (IimageStock*)iupTableGet(istock_table, name);
   if (istock)
@@ -79,6 +79,17 @@ static void iImageStockGet(const char* name, Ihandle* *ih, const char* *native_n
     }
   }
 }
+
+void iupImageStockLoad(const char *name)
+{
+  const char* native_name = NULL;
+  Ihandle* ih = NULL;
+  iImageStockGet(name, &ih, &native_name);
+  if (ih)
+    IupSetHandle(name, ih);
+}
+
+/**************************************************************************************************/
 
 static void iupColorSet(iupColor *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
@@ -500,7 +511,7 @@ static Iclass* iImageGetClassBase(char* name, int (*create_func)(Ihandle* ih, vo
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = name;
-  ic->format = "iic"; /* (int,int,unsigned char*) */
+  ic->format = "iiC"; /* (int,int,unsigned char*) */
   ic->nativetype = IUP_TYPEIMAGE;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;

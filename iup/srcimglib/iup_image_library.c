@@ -234,3 +234,76 @@ void IupImageLibOpen(void)
   iupImageStockSet("IUP_LogoPetrobras", load_image_LogoPetrobras, 0);
 #endif
 }
+ 
+void IupImageLibLoadAll(void)
+{
+  /* Bitmaps */
+  iupImageStockLoad("IUP_ActionCancel");
+  iupImageStockLoad("IUP_ActionOk");
+  iupImageStockLoad("IUP_ArrowDown");
+  iupImageStockLoad("IUP_ArrowLeft");
+  iupImageStockLoad("IUP_ArrowRight");
+  iupImageStockLoad("IUP_ArrowUp");
+  iupImageStockLoad("IUP_EditCopy");
+  iupImageStockLoad("IUP_EditCut");
+  iupImageStockLoad("IUP_EditErase");
+  iupImageStockLoad("IUP_EditFind");
+  iupImageStockLoad("IUP_EditPaste");
+  iupImageStockLoad("IUP_EditRedo");
+  iupImageStockLoad("IUP_EditUndo");
+  iupImageStockLoad("IUP_FileClose");
+  iupImageStockLoad("IUP_FileCloseAll");
+  iupImageStockLoad("IUP_FileNew");
+  iupImageStockLoad("IUP_FileOpen");
+  iupImageStockLoad("IUP_FileProperties");
+  iupImageStockLoad("IUP_FileSave");
+  iupImageStockLoad("IUP_FileSaveAll");
+  iupImageStockLoad("IUP_FileText");
+  iupImageStockLoad("IUP_FontBold");
+  iupImageStockLoad("IUP_FontDialog");
+  iupImageStockLoad("IUP_FontItalic");
+  iupImageStockLoad("IUP_MediaForward");
+  iupImageStockLoad("IUP_MediaGotoBegin");
+  iupImageStockLoad("IUP_MediaGoToEnd");
+  iupImageStockLoad("IUP_MediaPause");
+  iupImageStockLoad("IUP_MediaPlay");
+  iupImageStockLoad("IUP_MediaRecord");
+  iupImageStockLoad("IUP_MediaReverse");
+  iupImageStockLoad("IUP_MediaRewind");
+  iupImageStockLoad("IUP_MediaStop");
+  iupImageStockLoad("IUP_MessageError");
+  iupImageStockLoad("IUP_MessageHelp");
+  iupImageStockLoad("IUP_MessageInfo");
+  iupImageStockLoad("IUP_NavigateHome");
+  iupImageStockLoad("IUP_NavigateRefresh");
+  iupImageStockLoad("IUP_Print");
+  iupImageStockLoad("IUP_PrintPreview");
+  iupImageStockLoad("IUP_ToolsColor");
+  iupImageStockLoad("IUP_ToolsSettings");
+  iupImageStockLoad("IUP_ToolsSortAscend");
+  iupImageStockLoad("IUP_ToolsSortDescend");
+  iupImageStockLoad("IUP_ViewFullScreen");
+  iupImageStockLoad("IUP_WindowsCascade");
+  iupImageStockLoad("IUP_WindowsTile");
+  iupImageStockLoad("IUP_Zoom");
+  iupImageStockLoad("IUP_ZoomActualSize");
+  iupImageStockLoad("IUP_ZoomIn");
+  iupImageStockLoad("IUP_ZoomOut");
+  iupImageStockLoad("IUP_ZoomSelection");
+
+  /* Icons */
+  iupImageStockLoad("IUP_Tecgraf");
+  iupImageStockLoad("IUP_PUC-Rio");
+  iupImageStockLoad("IUP_BR");
+  iupImageStockLoad("IUP_Lua");
+  iupImageStockLoad("IUP_TecgrafPUC-Rio");
+  iupImageStockLoad("IUP_Petrobras");
+
+  /* Logos */
+  iupImageStockLoad("IUP_LogoTecgraf");
+  iupImageStockLoad("IUP_LogoPUC-Rio");
+  iupImageStockLoad("IUP_LogoBR");
+  iupImageStockLoad("IUP_LogoLua");
+  iupImageStockLoad("IUP_LogoTecgrafPUC-Rio");
+  iupImageStockLoad("IUP_LogoPetrobras");
+}

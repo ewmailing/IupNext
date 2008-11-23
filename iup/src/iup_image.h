@@ -39,8 +39,9 @@ void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char
 
 void iupImageStockInit(void);
 void iupImageStockFinish(void);
-typedef Ihandle* (*iupImageStockFunc)(void);
-void iupImageStockSet(const char *name, iupImageStockFunc func, const char* native_name);
+typedef Ihandle* (*iupImageStockCreateFunc)(void);
+void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char* native_name);
+void iupImageStockLoad(const char *name);
 
 
 #ifdef __cplusplus

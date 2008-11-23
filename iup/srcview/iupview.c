@@ -334,7 +334,11 @@ static int showallimages_cb(void)
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
+#if (IUP_VERSION_NUMBER < 300000)
     char* type = IupGetClassName(elem);
+#else
+    char* type = IupGetClassType(elem);
+#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -388,6 +392,7 @@ static int showallimages_cb(void)
   IupSetAttribute(box, "MARGIN", "10x10");
   IupSetAttribute(box, "GAP", "10");
   IupSetAttribute(tabs, "ALIGNMENT", "NW");
+  IupSetAttribute(tabs, "EXPAND", "YES");
   IupSetCallback(toggle, "ACTION", (Icallback)inactivetoggle_cb);
   IupSetAttribute(toggle, "TABS", (char*)tabs);
   IupSetAttribute(label, "EXPAND", "HORIZONTAL");
@@ -477,7 +482,11 @@ static int saveallimages_cb(void)
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
+#if (IUP_VERSION_NUMBER < 300000)
     char* type = IupGetClassName(elem);
+#else
+    char* type = IupGetClassType(elem);
+#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -600,7 +609,11 @@ static int saveallimagesone_cb(void)
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
+#if (IUP_VERSION_NUMBER < 300000)
     char* type = IupGetClassName(elem);
+#else
+    char* type = IupGetClassType(elem);
+#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -664,7 +677,11 @@ static int saveimage_cb(Ihandle* self)
   if (name) /* the list may be empty */
   {
     Ihandle* elem = IupGetHandle(name);
+#if (IUP_VERSION_NUMBER < 300000)
     char* type = IupGetClassName(elem);
+#else
+    char* type = IupGetClassType(elem);
+#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -857,11 +874,15 @@ static void mainUpdateList(Ihandle* self, char* file_name)
   }
 }
 
-static int imagelib_cb(Ihandle* self)
+static int loadimagelib_cb(Ihandle* self)
 {
   mainUpdateInternals();
 
+#if (IUP_VERSION_NUMBER < 300000)
   IupImageLibOpen();
+#else
+  IupImageLibLoadAll();
+#endif  
 
   mainUpdateList(self, "ImageLib");
 
@@ -1020,7 +1041,7 @@ static Ihandle* mainDialog(void)
   menu = IupMenu(
     IupSubmenu("File", IupMenu(
       IupSetCallbacks(IupItem("Load Led...", NULL), "ACTION", (Icallback)loadled_cb, NULL),
-      IupSetCallbacks(IupItem("Load Image Lib", NULL), "ACTION", (Icallback)imagelib_cb, NULL),
+      IupSetCallbacks(IupItem("Load Image Lib", NULL), "ACTION", (Icallback)loadimagelib_cb, NULL),
       IupSeparator(),
 #ifdef USE_IM
       IupSetCallbacks(IupItem("Import Image(s)...", NULL), "ACTION", (Icallback)loadimage_cb, NULL),
@@ -1081,6 +1102,9 @@ int main (int argc, char **argv)
   IupGLCanvasOpen();
 #endif  
   IupControlsOpen();
+#if (IUP_VERSION_NUMBER >= 300000)
+  IupImageLibOpen();
+#endif  
 
   mainUpdateInternals();
 
