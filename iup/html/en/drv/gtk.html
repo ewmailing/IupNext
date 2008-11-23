@@ -24,6 +24,11 @@ much more memory
 <p>GTK uses UTF-8 as its charset for all displayed text, so IUP will 
 automatically convert all strings to (SetAttribute) and from (GetAttribute) 
 UTF-8. To use UTF-8 strings set the global attribute UTF8AUTOCONVERT to NO.</p>
+<p>When using DLLs in Windows, the &quot;iup.dll&quot; uses the Win32 driver. So 
+applications that dynamically load IUP will always use the &quot;iup.dll&quot;, for 
+example Lua using require. To use the IUP GTK dll in Windows you must rename the 
+&quot;iupgtk.dll&quot; to &quot;iup.dll&quot;, so the GTK driver will be loaded instead of the Win32 
+driver.</p>
 <p>&nbsp;</p>
 
 </body>
