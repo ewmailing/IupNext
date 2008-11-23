@@ -369,10 +369,19 @@ static int gtkItemMapMethod(Ihandle* ih)
     }
     else
     {
+#if GTK_CHECK_VERSION(2, 14, 0)
+      char* hidemark = iupAttribGetStr(ih, "HIDEMARK");
+      if (!hidemark && !iupAttribGetStr(ih, "VALUE")) hidemark = "YES";
+      if (iupStrBoolean(hidemark))
+        ih->handle = gtk_menu_item_new_with_label("");
+      else
+        ih->handle = gtk_check_menu_item_new_with_label("");
+#else
       if (iupAttribGetInt(ih, "HIDEMARK"))
         ih->handle = gtk_menu_item_new_with_label("");
       else
         ih->handle = gtk_check_menu_item_new_with_label("");
+#endif
     }
   }
 

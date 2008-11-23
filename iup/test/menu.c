@@ -345,8 +345,8 @@ int main(int argc, char* argv[])
     IupSetAttributes(IupSubmenu("Create", menu_create), "IMAGE=image_tec"), 
     NULL);
   menu_help = IupMenu(
-    IupSetCallbacks(IupSetAttributes(IupItem("Append", NULL), "HIDEMARK=YES"), "ACTION", item_add_cb, "HELP_CB", item_help_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Insert", NULL), "HIDEMARK=YES"), "ACTION", item_insert_cb, "HELP_CB", item_help_cb, NULL),
+    IupSetCallbacks(IupItem("Append", NULL), "ACTION", item_add_cb, "HELP_CB", item_help_cb, NULL),
+    IupSetCallbacks(IupItem("Insert", NULL), "ACTION", item_insert_cb, "HELP_CB", item_help_cb, NULL),
     IupSetCallbacks(IupItem("Remove", NULL), "ACTION", item_remove_cb, "HELP_CB", item_help_cb, NULL),
     IupSeparator(), 
     NULL);

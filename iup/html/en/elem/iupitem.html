@@ -53,7 +53,11 @@ mnemonic support directly in the TITLE attribute.</p>
 If enabled the item cannot be checked, since the check box will not be shown. If 
 all items in a menu enable it, then no empty space will be shown in front of the 
 items. 
-Default: NO. (since 3.0)</p>
+Normally the unmarked check box will not be shown, but since GTK 2.14 the 
+unmarked check box is always shown. If your item will not be marked you must set 
+HIDEMARK=YES, since this is the most common case we changed the default value to 
+YES for this version of GTK, but if VALUE is defined the default goes back to 
+NO. Default: NO. (since 3.0)</p>
   <p><strong>IMAGE</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Image name of the check mark 
 	image when 
 	VALUE=OFF. 
@@ -123,6 +127,8 @@ supported.</p>
   <p>Menu items are activated using the Enter key.</p>
 <p>In Motif and GTK, the text font will be affected by the dialog font when the menu is 
 mapped.</p>
+<p>Since GTK 2.14 to have a menu item that can be marked you must set the VALUE 
+attribute to ON or OFF, or set HIDEMARK=NO, before mapping the control.</p>
 
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
