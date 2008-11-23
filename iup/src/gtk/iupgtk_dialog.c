@@ -137,7 +137,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
     if (native_border)
       *border = native_border;
     else
-      *border = 5;    /* TODO: Improve this code */
+      *border = 5;
   }
 
   *caption = 0;
@@ -146,7 +146,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
     if (native_caption)
       *caption = native_caption;
     else
-      *caption = 20;  /* TODO: Improve this code */
+      *caption = 20;
   }
 }
 
@@ -196,7 +196,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
     /* the dialog client area will cover the task bar */
     iupdrvGetFullSize(&width, &height);
 
-    height += menu; /* TODO: the menu is included in the client area size in GTK?????. */
+    height += menu; /* menu is inside the client area. */
 
     /* set the new size and position */
     /* The resize evt will update the layout */
@@ -267,7 +267,7 @@ static gboolean gtkDialogConfigureEvent(GtkWidget *widget, GdkEventConfigure *ev
     iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
 
     ih->currentwidth = evt->width + 2*border;
-    ih->currentheight = evt->height + 2*border + caption; /* TODO: menu is inside the manager??? */
+    ih->currentheight = evt->height + 2*border + caption;  /* menu is inside the window client area */
 
     cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
     if (cb) cb(ih, evt->width, evt->height - menu);  /* notify to the application size the client area size */
@@ -532,9 +532,8 @@ static void gtkDialogLayoutUpdateMethod(Ihandle *ih)
   iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
 
   /* set size excluding the border */
-  /* TODO and about the menu?      */
   width = ih->currentwidth - 2*border;
-  height = ih->currentheight - 2*border - caption;
+  height = ih->currentheight - 2*border - caption;   /* menu is inside the client area. */
   gtk_window_resize((GtkWindow*)ih->handle, width, height);
 
   if (!iupAttribGetIntDefault(ih, "RESIZE"))

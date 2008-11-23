@@ -129,7 +129,7 @@ static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rec
   char* title = iupdrvBaseGetTitleAttrib(ih);
   char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
   iupdrvFontGetMultiLineStringSize(ih, str, &txt_width, &txt_height);
-  if (str!=title) free(str);
+  if (str && str!=title) free(str);
 
   if (itemState & ODS_DISABLED)
     fgcolor = GetSysColor(COLOR_GRAYTEXT);
@@ -259,7 +259,7 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
   char* title = iupdrvBaseGetTitleAttrib(ih);
   char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
   iupdrvFontGetMultiLineStringSize(ih, str, &width, &height);
-  if (str!=title) free(str);
+  if (str && str!=title) free(str);
 
   if (itemState & ODS_DISABLED)
     fgcolor = GetSysColor(COLOR_GRAYTEXT);

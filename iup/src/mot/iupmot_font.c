@@ -341,38 +341,41 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
-  const char *curstr; 
-  const char *nextstr;
-  int len, num_lin, lw, max_w;
-  ImotFont* motfont;
+  int num_lin, max_w;
 
-  if (!str || str[0]==0)
-  {
-    if (w) *w = 0;
-    if (h) *h = 0;
-    return;
-  }
-
-  motfont = motGetFont(ih);
+  ImotFont* motfont = motGetFont(ih);
   if (!motfont)
   {
     if (w) *w = 0;
     if (h) *h = 0;
     return;
   }
+
+  if (!str)
+  {
+    if (w) *w = 0;
+    if (h) *h = motfont->charheight * 1;
+    return;
+  }
   
   max_w = 0;
-  curstr = str;
-  num_lin = 0;
-  do
+  num_lin = 1;
+  if (str[0])
   {
-    nextstr = iupStrNextLine(curstr, &len);
-    lw = XTextWidth(motfont->fontstruct, curstr, len);
-    max_w = iupMAX(max_w, lw);
+    int len, lw;
+    const char *nextstr;
+    const char *curstr = str;
+    do
+    {
+      nextstr = iupStrNextLine(curstr, &len);
+      lw = XTextWidth(motfont->fontstruct, curstr, len);
+      max_w = iupMAX(max_w, lw);
 
-    curstr = nextstr;
-    num_lin++;
-  } while(*nextstr);
+      curstr = nextstr;
+      if (*nextstr)
+        num_lin++;
+    } while(*nextstr);
+  }
 
   if (w) *w = max_w;
   if (h) *h = motfont->charheight * num_lin;

@@ -213,7 +213,7 @@ int iTreeRepaint(Ihandle* ih)
   cdCanvasActivate(ih->data->cddbuffer);
   
   cdCanvasNativeFont(ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
-  iTreeDrawTree(ih);  /* FIXME: split the calcsize from the redraw */
+  iTreeDrawTree(ih);  /* TODO: split the calcsize from the redraw */
   iTreeUpdateScrollPos(ih);
 
   cdCanvasActivate(ih->data->cddbuffer);

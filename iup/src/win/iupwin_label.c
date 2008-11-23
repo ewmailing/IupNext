@@ -91,7 +91,7 @@ static void winLabelDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_heig
   char* title = iupdrvBaseGetTitleAttrib(ih);
   char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
   iupdrvFontGetMultiLineStringSize(ih, str, &width, &height);
-  if (str!=title) free(str);
+  if (str && str!=title) free(str);
 
   if (ih->data->horiz_alignment == IUP_ALIGN_ARIGHT)
     style = DT_RIGHT;

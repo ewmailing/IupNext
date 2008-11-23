@@ -496,10 +496,6 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
       if (iupAttribGetInt(ih, "SHOWPREVIEW"))
       {
         Widget frame = XtVaCreateManagedWidget("preview_canvas", xmFrameWidgetClass, filebox, 
-                                                        //TODO: check this code
-                                                        //XmNwidth, 180, 
-                                                        //XmNheight, 150,
-                                                        //XmNresizePolicy, XmRESIZE_GROW,
                                                         XmNshadowType, XmSHADOW_ETCHED_IN,
                                                         NULL);
 

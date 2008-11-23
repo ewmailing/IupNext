@@ -3,7 +3,7 @@
  * change number of columns or lines
  *
  * See Copyright Notice in iup.h
- * $Id: imnumlc.c,v 1.1 2008-10-17 06:05:36 scuri Exp $
+ * $Id: imnumlc.c,v 1.2 2008-11-23 19:32:17 scuri Exp $
  */
 
 /**************************************************************************/
@@ -808,7 +808,7 @@ void iMatrixNlcAddCol(Ihandle* ih, const char* v)
   if(base < 0 || base > oldnc)  /* Out of the valid limits for the base */
     return;
 
-  if(ret != 2)  //* If it was identified one number, uses (b) format */
+  if(ret != 2)  /* If it was identified one number, uses (b) format */
     numcol = 1;
 
   /* leave of the edit mode */

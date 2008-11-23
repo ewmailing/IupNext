@@ -227,7 +227,7 @@ void new_alarm(void)
 void new_gettext(void)
 {
   char text[1024] = "text first line\nsecond line";
-  int ret = IupGetText("IupGetText Text", text);  // TODO add max_size
+  int ret = IupGetText("IupGetText Text", text);
   if (ret)
   {
     printf("OK\n");

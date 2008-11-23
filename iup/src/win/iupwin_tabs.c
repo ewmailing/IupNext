@@ -607,7 +607,7 @@ static void winTabsUnMapMethod(Ihandle* ih)
     ImageList_Destroy(image_list);
 
   bmp_array = (Iarray*)iupAttribGetStr(ih, "_IUPWIN_BMPARRAY");
-  if (!bmp_array)
+  if (bmp_array)
     iupArrayDestroy(bmp_array);
 
   iupdrvBaseUnMapMethod(ih);

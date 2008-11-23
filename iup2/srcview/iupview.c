@@ -24,7 +24,7 @@ static void* iupGetImageData(Ihandle* self)
 }
 #endif
 
-static void SaveImageC(char* file_name, Ihandle* elem, char* name, FILE *packfile)
+static void SaveImageC(const char* file_name, Ihandle* elem, const char* name, FILE *packfile)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
@@ -116,7 +116,7 @@ static void SaveImageC(char* file_name, Ihandle* elem, char* name, FILE *packfil
     fclose(file);
 }
 
-static void SaveImageLua(char* file_name, Ihandle* elem, char* name, FILE *packfile)
+static void SaveImageLua(const char* file_name, Ihandle* elem, const char* name, FILE *packfile)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
@@ -200,13 +200,14 @@ static void SaveImageLua(char* file_name, Ihandle* elem, char* name, FILE *packf
   }
 
   fprintf(file, "  }\n");
+  fprintf(file, "  return %s\n", name);
   fprintf(file, "end\n\n");
 
   if (!packfile)
     fclose(file);
 }
 
-static void SaveImageLED(char* file_name, Ihandle* elem, char* name, FILE *packfile)
+static void SaveImageLED(const char* file_name, Ihandle* elem, const char* name, FILE *packfile)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
@@ -334,7 +335,11 @@ static int showallimages_cb(void)
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
+#if (IUP_VERSION_NUMBER < 300000)
     char* type = IupGetClassName(elem);
+#else
+    char* type = IupGetClassType(elem);
+#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -388,6 +393,7 @@ static int showallimages_cb(void)
   IupSetAttribute(box, "MARGIN", "10x10");
   IupSetAttribute(box, "GAP", "10");
   IupSetAttribute(tabs, "ALIGNMENT", "NW");
+  IupSetAttribute(tabs, "EXPAND", "YES");
   IupSetCallback(toggle, "ACTION", (Icallback)inactivetoggle_cb);
   IupSetAttribute(toggle, "TABS", (char*)tabs);
   IupSetAttribute(label, "EXPAND", "HORIZONTAL");
@@ -477,7 +483,11 @@ static int saveallimages_cb(void)
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
+#if (IUP_VERSION_NUMBER < 300000)
     char* type = IupGetClassName(elem);
+#else
+    char* type = IupGetClassType(elem);
+#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -519,7 +529,7 @@ static int saveallimages_cb(void)
   return IUP_DEFAULT;
 }
 
-static int GetSaveAsFile(char* file, char* imgtype)
+static int GetSaveAsFile(char* file, const char* imgtype)
 {
   Ihandle *gf;
   int ret;
@@ -556,30 +566,44 @@ static void replaceDot(char* file_name)
   }
 }
 
-static char* mainGetFileTitle(char* file_name)
+static char* strdup_free(const char* str, char* str_ptr)
+{
+  int len = strlen(str);
+  char* tmp = malloc(len+1);
+  memcpy(tmp, str, len+1);
+  free(str_ptr);
+  return tmp;
+}
+
+static char* mainGetFileTitle(const char* file_name)
 {
   int i, last = 1, len = strlen(file_name);
-  char* dot = strchr(file_name, '.');
+  char* file_title = malloc(len+1);
+  char* dot, *ft_str = file_title;
+
+  memcpy(file_title, file_name, len+1);
+  
+  dot = strchr(file_title, '.');
   if (dot) *dot = 0;
 
   for(i = len-1; i >= 0; i--)
   {
-    if (last && file_name[i] == '.') 
+    if (last && file_title[i] == '.') 
     {
       /* cut last "." forward */
-      file_name[i] = 0;
+      file_title[i] = 0;
       last = 0;
     }
 
-    if (file_name[i] == '\\' || file_name[i] == '/') 
+    if (file_title[i] == '\\' || file_title[i] == '/') 
     {
-      replaceDot(file_name+i+1);
-      return file_name+i+1;
+      replaceDot(file_title+i+1);
+      return strdup_free(file_title+i+1, ft_str);
     }
   }
 
-  replaceDot(file_name);
-  return file_name;
+  replaceDot(file_title);
+  return strdup_free(file_title, ft_str);
 }
 
 static int saveallimagesone_cb(void)
@@ -600,7 +624,11 @@ static int saveallimagesone_cb(void)
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
+#if (IUP_VERSION_NUMBER < 300000)
     char* type = IupGetClassName(elem);
+#else
+    char* type = IupGetClassType(elem);
+#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -633,7 +661,9 @@ static int saveallimagesone_cb(void)
     if (strcmp(imgtype, "c") == 0)
     {
 #ifndef IUP_BUILDSTOCK
-      fprintf(packfile, "void load_all_images_%s(void)\n{\n", mainGetFileTitle(file_name));
+      char* title = mainGetFileTitle(file_name);
+      fprintf(packfile, "void load_all_images_%s(void)\n{\n", title);
+      free(title);
 
       for (i = 0; i < num_names; i++)
       {
@@ -664,7 +694,11 @@ static int saveimage_cb(Ihandle* self)
   if (name) /* the list may be empty */
   {
     Ihandle* elem = IupGetHandle(name);
+#if (IUP_VERSION_NUMBER < 300000)
     char* type = IupGetClassName(elem);
+#else
+    char* type = IupGetClassType(elem);
+#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -764,7 +798,7 @@ static int list_cb(Ihandle* self, char *t, int i, int v)
     char str_elem[100];
     Ihandle* elem = IupGetHandle(t);
     Ihandle* label = (Ihandle*)IupGetAttribute(self, "mainLabel");
-    sprintf(str_elem, "Type: %s - File: %s", IupGetClassName(elem), IupGetAttribute(elem, "_FILE_TITLE"));
+    sprintf(str_elem, "FileTitle: %s - Type: %s", IupGetAttribute(elem, "_FILE_TITLE"), IupGetClassName(elem));
     IupStoreAttribute(label, "TITLE", str_elem);
 
     /* double click simulation */
@@ -826,7 +860,7 @@ static int destroyall_cb(Ihandle* self)
   return IUP_DEFAULT;
 }
 
-static void mainUpdateList(Ihandle* self, char* file_name)
+static void mainUpdateList(Ihandle* self, const char* file_name)
 {
   char *names[MAX_NAMES];
   char str_item[20];
@@ -855,13 +889,19 @@ static void mainUpdateList(Ihandle* self, char* file_name)
     IupSetAttribute(list, "VALUE", "1");
     list_cb(list, IupGetAttribute(list, "1"), -1, 1);
   }
+
+  free(file_title);
 }
 
-static int imagelib_cb(Ihandle* self)
+static int loadimagelib_cb(Ihandle* self)
 {
   mainUpdateInternals();
 
+#if (IUP_VERSION_NUMBER < 300000)
   IupImageLibOpen();
+#else
+  IupImageLibLoadAll();
+#endif  
 
   mainUpdateList(self, "ImageLib");
 
@@ -931,12 +971,14 @@ static char* ParseDir(const char* FileName, int *offset)
 }
 #endif
 
-static void LoadImageFile(Ihandle* self, char* file_name)
+static void LoadImageFile(Ihandle* self, const char* file_name)
 {
   Ihandle* new_image = IupLoadImage(file_name);
   if (new_image)
   {
-    IupSetHandle(mainGetFileTitle(file_name), new_image);
+    char* file_title = mainGetFileTitle(file_name);
+    IupSetHandle(file_title, new_image);
+    free(file_title);
     mainUpdateList(self, file_name);
   }
 }
@@ -953,9 +995,9 @@ static int GetOpenFileName(char* file)
   IupSetAttribute(gf, "MULTIPLEFILES", "YES");
   IupPopup(gf, IUP_CENTER, IUP_CENTER);
 
-  value = IupGetAttribute( gf, "VALUE" );
-  if (value) strcpy( file, value );
-  ret = IupGetInt( gf, "STATUS" );
+  value = IupGetAttribute(gf, "VALUE");
+  if (value) strcpy(file, value);
+  ret = IupGetInt(gf, "STATUS");
 
   IupDestroy(gf);
 
@@ -1020,7 +1062,7 @@ static Ihandle* mainDialog(void)
   menu = IupMenu(
     IupSubmenu("File", IupMenu(
       IupSetCallbacks(IupItem("Load Led...", NULL), "ACTION", (Icallback)loadled_cb, NULL),
-      IupSetCallbacks(IupItem("Load Image Lib", NULL), "ACTION", (Icallback)imagelib_cb, NULL),
+      IupSetCallbacks(IupItem("Load Image Lib", NULL), "ACTION", (Icallback)loadimagelib_cb, NULL),
       IupSeparator(),
 #ifdef USE_IM
       IupSetCallbacks(IupItem("Import Image(s)...", NULL), "ACTION", (Icallback)loadimage_cb, NULL),
@@ -1061,9 +1103,9 @@ static Ihandle* mainDialog(void)
   main_dialog = IupDialog(box);
   IupSetAttribute(main_dialog, "TITLE", "IupView");
   IupSetAttribute(main_dialog, "MENU", "mainMenu");
-  IupSetCallback(main_dialog, "CLOSE_CB", (Icallback)close_cb);
   IupSetAttribute(main_dialog, "mainList", (char*)list);
   IupSetAttribute(main_dialog, "mainLabel", (char*)label);
+  IupSetCallback(main_dialog, "CLOSE_CB", (Icallback)close_cb);
   IupSetCallback(main_dialog, "DROPFILES_CB", (Icallback)dropfile_cb);   
   
   IupSetAttribute(menu, "mainList", (char*)list);
@@ -1081,6 +1123,9 @@ int main (int argc, char **argv)
   IupGLCanvasOpen();
 #endif  
   IupControlsOpen();
+#if (IUP_VERSION_NUMBER >= 300000)
+  IupImageLibOpen();
+#endif  
 
   mainUpdateInternals();
 

@@ -51,7 +51,7 @@
 
 #ifndef CFM_BACKCOLOR
 #define CFM_BACKCOLOR		0x04000000
-#define	CFM_UNDERLINETYPE	0x00800000		// Many displayed by 3.0 
+#define	CFM_UNDERLINETYPE	0x00800000
 #define	CFM_WEIGHT			0x00400000
 #define CFM_DISABLED		0x2000
 #define	CFE_DISABLED		CFM_DISABLED
@@ -59,7 +59,7 @@
 
 #ifndef CFU_UNDERLINEDOTTED
 #define	CFU_UNDERLINEDOTTED				4
-#define	CFU_UNDERLINEDOUBLE				3	// (*) display as single
+#define	CFU_UNDERLINEDOUBLE				3
 #define CFU_UNDERLINE					1
 #define CFU_UNDERLINENONE				0
 #endif

@@ -227,7 +227,7 @@ Iclass* iupItemGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "item";
-  ic->format = "SS";  /* two optional strings */
+  ic->format = "SA";  /* one optional string and one optional callback name */
   ic->nativetype = IUP_TYPEMENU;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

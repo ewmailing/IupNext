@@ -98,6 +98,9 @@ int iupStrLineCount(const char* str)
 {
   int num_lin = 1;
 
+  if (!str)
+    return num_lin;
+
   while(*str != 0)
   {
     while(*str!=0 && *str!='\n' && *str!='\r')

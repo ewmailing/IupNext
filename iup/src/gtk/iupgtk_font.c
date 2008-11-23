@@ -289,16 +289,7 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
-  IgtkFont* gtkfont;
-
-  if (!str || str[0]==0)
-  {
-    if (w) *w = 0;
-    if (h) *h = 0;
-    return;
-  }
-
-  gtkfont = gtkFontGet(ih);
+  IgtkFont* gtkfont = gtkFontGet(ih);
   if (!gtkfont)
   {
     if (w) *w = 0;
@@ -306,15 +297,24 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
     return;
   }
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "MARKUP")))
-    pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToUTF8(str), -1);
-  else
-    pango_layout_set_text(gtkfont->layout, iupgtkStrConvertToUTF8(str), -1);
+  if (!str)
+  {
+    if (w) *w = 0;
+    if (h) *h = gtkfont->charheight * 1;
+    return;
+  }
 
-  pango_layout_get_pixel_size(gtkfont->layout, w, h);
+  if (str[0])
+  {
+    if (iupStrBoolean(iupAttribGetStr(ih, "MARKUP")))
+      pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToUTF8(str), -1);
+    else
+      pango_layout_set_text(gtkfont->layout, iupgtkStrConvertToUTF8(str), -1);
 
-  if (h)
-    *h = gtkfont->charheight * iupStrLineCount(str);  /* (charheight*num_lin) */
+    pango_layout_get_pixel_size(gtkfont->layout, w, h);
+  }
+
+  if (h) *h = gtkfont->charheight * iupStrLineCount(str);
 }
 
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)

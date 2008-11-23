@@ -243,7 +243,7 @@ static Iclass* xGlCanvasGetClass(void)
   Iclass* ic = iupClassNew(iupCanvasGetClass());
 
   ic->name = "glcanvas";
-  ic->format = "S"; /* one optional string */
+  ic->format = "A"; /* one optional callback name */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

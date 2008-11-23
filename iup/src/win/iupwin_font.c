@@ -215,55 +215,52 @@ static void winFontReleaseDC(Ihandle* ih, HDC hdc)
 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
-  const char *curstr; 
-  const char *nextstr;
-  int len, num_lin, max_w;
-  SIZE size;
-  HDC hdc;
-  HFONT oldhfont, hfont;
+  int num_lin, max_w;
 
-  if (!str || str[0]==0)
+  IwinFont* winfont = winFontGet(ih);
+  if (!winfont)
   {
     if (w) *w = 0;
     if (h) *h = 0;
     return;
   }
 
-  hfont = (HFONT)iupwinGetHFontAttrib(ih);
-  if (!hfont)
+  if (!str)
   {
     if (w) *w = 0;
-    if (h) *h = 0;
+    if (h) *h = winfont->charheight * 1;
     return;
   }
-
-  hdc = winFontGetDC(ih);
-  oldhfont = SelectObject(hdc, hfont);
 
   max_w = 0;
-  curstr = str;
-  num_lin = 0;
-  do
+  num_lin = 1;
+  if (str[0])
   {
-    nextstr = iupStrNextLine(curstr, &len);
-    GetTextExtentPoint32(hdc, curstr, len, &size);
-    max_w = iupMAX(max_w, size.cx);
+    SIZE size;
+    int len;
+    const char *nextstr;
+    const char *curstr = str;
 
-    curstr = nextstr;
-    num_lin++;
-  } while(*nextstr);
+    HDC hdc = winFontGetDC(ih);
+    HFONT oldhfont = SelectObject(hdc, winfont->hfont);
 
-  if (w) *w = max_w;
+    do
+    {
+      nextstr = iupStrNextLine(curstr, &len);
+      GetTextExtentPoint32(hdc, curstr, len, &size);
+      max_w = iupMAX(max_w, size.cx);
 
-  if (h) 
-  {
-    TEXTMETRIC tm;
-    GetTextMetrics(hdc, &tm);
-    *h = tm.tmHeight*num_lin;  /* (charheight*number_of_lines) */
+      curstr = nextstr;
+      if (*nextstr)
+        num_lin++;
+    } while(*nextstr);
+
+    SelectObject(hdc, oldhfont);
+    winFontReleaseDC(ih, hdc);
   }
 
-  SelectObject(hdc, oldhfont);
-  winFontReleaseDC(ih, hdc);
+  if (w) *w = max_w;
+  if (h) *h = winfont->charheight*num_lin;
 }
 
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)

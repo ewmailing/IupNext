@@ -138,13 +138,13 @@ static void iButtonComputeNaturalSizeMethod(Ihandle* ih)
         }
       }
     }
-    else /* IUP_BUTTON_TEXT */
+    else /* IUP_BUTTON_TEXT only */
     {
       /* must use IupGetAttribute to check from the native implementation */
       char* title = IupGetAttribute(ih, "TITLE");
       char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
       iupdrvFontGetMultiLineStringSize(ih, str, &natural_w, &natural_h);
-      if (str!=title) free(str);
+      if (str && str!=title) free(str);
     }
 
     /* even when IMPRESS is set, must compute the borders space */
@@ -177,7 +177,7 @@ Iclass* iupButtonGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "button";
-  ic->format = "SS"; /* two optional strings */
+  ic->format = "SA"; /* one optional string, and one optional callback name */
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

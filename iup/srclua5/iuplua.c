@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua.c,v 1.2 2008-11-21 04:21:16 scuri Exp $
+* $Id: iuplua.c,v 1.3 2008-11-23 19:32:17 scuri Exp $
 */
 
 #include <stdio.h>
@@ -74,8 +74,6 @@ static int report (lua_State *L, int status, int concat_traceback)
   }
   return status;
 }
-
-//#ifdef LUA_VERSION_NUM /* Lua 5.1 */
 
 static int traceback (lua_State *L) {
   lua_getfield(L, LUA_GLOBALSINDEX, "debug");

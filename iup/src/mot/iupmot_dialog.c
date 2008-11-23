@@ -163,7 +163,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
     if (native_border)
       *border = native_border;
     else
-      *border = 5;    /* TODO: Improve this code */
+      *border = 5;
   }
 
   *caption = 0;
@@ -172,7 +172,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
     if (native_caption)
       *caption = native_caption;
     else
-      *caption = 20;  /* TODO: Improve this code */
+      *caption = 20;
   }
 }
 

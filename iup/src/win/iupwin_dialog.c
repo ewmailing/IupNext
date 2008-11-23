@@ -485,7 +485,6 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
       /* Except when they are children of other IupDialogs and the parent is destroyed.   */
       /* So we have to destroy the child dialog.                                          */
       /* The application is responsable for destroying the children before this happen.   */
-      /* TODO: check MDI behavior                                                         */
       IupDestroy(ih);
       break;
     }

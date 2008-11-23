@@ -18,6 +18,8 @@
 #include "iup_str.h"
 #include "iup_strmessage.h"
 
+/* from iup_open, but it is not exported, used only here */
+int iupIsOpened(void);
 
 void iupError(const char* format, ...)
 {
@@ -29,7 +31,10 @@ void iupError(const char* format, ...)
 #if IUP_ASSERT == CONSOLE 
   fprintf(stderr, msg);
 #else
-  iupStrMessageShowError(NULL, msg);
+  if (iupIsOpened())
+    iupStrMessageShowError(NULL, msg);
+  else
+    fprintf(stderr, msg);
 #endif
 }
 

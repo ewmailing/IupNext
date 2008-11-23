@@ -39,7 +39,7 @@ void iupImageStockFinish(void)
   while (name)
   {
     IimageStock* istock = (IimageStock*)iupTableGetCurr(istock_table);
-    if (istock->image)
+    if (iupObjectCheck(istock->image))
       IupDestroy(istock->image);
     free(istock);
     name = iupTableNext(istock_table);

@@ -322,16 +322,18 @@ static void iTextComputeNaturalSizeMethod(Ihandle* ih)
     {
       if (visiblecolumns && visiblelines)
       {
-        iupdrvFontGetCharSize(ih, &natural_w, &natural_h);
-        natural_w = visiblecolumns*natural_w;
+        iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
+        natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
+        natural_w = (visiblecolumns*natural_w)/10;
         natural_h = visiblelines*natural_h;
       }
       else if (visiblecolumns || visiblelines)
       {
-        iupdrvFontGetCharSize(ih, &natural_w, &natural_h);
+        iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
         if (visiblecolumns)
         {
-          natural_w = visiblecolumns*natural_w;
+          natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
+          natural_w = (visiblecolumns*natural_w)/10;
           natural_h = iupStrLineCount(value)*natural_h;
         }
         else
@@ -345,7 +347,7 @@ static void iTextComputeNaturalSizeMethod(Ihandle* ih)
     }
     else
     {
-      iupdrvFontGetCharSize(ih, &natural_w, &natural_h);
+      iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
       if (visiblecolumns)
       {
         natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
@@ -435,7 +437,7 @@ Iclass* iupTextGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "text";
-  ic->format = "S"; /* one optional strings */
+  ic->format = "A"; /* one optional callback name */
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
