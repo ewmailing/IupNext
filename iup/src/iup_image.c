@@ -145,8 +145,18 @@ int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
     if (!value)
       break;
 
-    iupStrToRGB(value, &red, &green, &blue);
-    iupColorSet(&colors[i], red, green, blue, 255);
+    if (iupStrEqual(value, "BGCOLOR"))
+    {
+      iupColorSet(&colors[i], 0, 0, 0, 0);
+      has_alpha = 1;
+    }
+    else
+    {
+      if (!iupStrToRGB(value, &red, &green, &blue))
+        break;
+
+      iupColorSet(&colors[i], red, green, blue, 255);
+    }
   }
 
   if (colors_count) *colors_count = i;
@@ -156,13 +166,7 @@ int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
 
 void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char *b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b)
 {
-  /* replace the colors different than the background color 
-     by a darker version of the background color. */
-  /* replace near white by the background color */
-  /* replace similar colors to the background color by the background color */
-
-  if (((*r) > 190 && (*g) > 190 && (*b) > 190) ||
-      ((abs(*r-bg_r) + abs(*g-bg_g) + abs(*b-bg_b))) < 15 )
+  if (*r=bg_r && *g==bg_g && *b==bg_b)  /* preserve colors identical to the background color */
   {
     *r = bg_r; 
     *g = bg_g; 
@@ -170,9 +174,19 @@ void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char
   }
   else
   {
-    *r = bg_r/2; 
-    *g = bg_g/2; 
-    *b = bg_b/2; 
+    int ir, ig, ib, 
+      i = (*r+*g+*b)/3;
+    i = (3*i)/5; /* make the intensity darker and use it as a factor to reduce the bgcolor intensity */
+    if (i == 0) i = 1;
+    ir = (bg_r*i)/255; 
+    ig = (bg_g*i)/255; 
+    ib = (bg_b*i)/255; 
+
+#define BYTEMAXCROP(_c) (unsigned char)(_c>255? 255: _c)
+
+    *r = BYTEMAXCROP(ir);
+    *g = BYTEMAXCROP(ig);
+    *b = BYTEMAXCROP(ib);
   }
 }
 

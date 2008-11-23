@@ -393,7 +393,7 @@ static int showallimages_cb(void)
   IupSetAttribute(box, "MARGIN", "10x10");
   IupSetAttribute(box, "GAP", "10");
   IupSetAttribute(tabs, "ALIGNMENT", "NW");
-  IupSetAttribute(tabs, "EXPAND", "YES");
+  IupSetAttribute(tabs, "SIZE", "150x80");
   IupSetCallback(toggle, "ACTION", (Icallback)inactivetoggle_cb);
   IupSetAttribute(toggle, "TABS", (char*)tabs);
   IupSetAttribute(label, "EXPAND", "HORIZONTAL");
@@ -1091,12 +1091,13 @@ static Ihandle* mainDialog(void)
   box = IupVbox(
     IupLabel("Elements:"),
     list = IupList(NULL),
+    IupSetAttributes(IupFill(), "SIZE=2"),
     IupFrame(label = IupLabel("")),
     NULL);
   IupSetAttribute(box, "MARGIN", "10x10");
   IupSetCallback(list, "ACTION", (Icallback)list_cb);
 
-  IupSetAttribute(list, "SIZE", "150x100");
+  IupSetAttribute(list, "SIZE", "150x80");
   IupSetAttribute(list, "EXPAND", "YES");
   IupSetAttribute(label, "EXPAND", "HORIZONTAL");
  
