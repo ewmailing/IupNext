@@ -85,7 +85,7 @@ int btn_append_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_APPEND) ; else get_attribute (IUP_APPEND) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute ("APPEND") ; else get_attribute ("APPEND") ;
 
   return IUP_DEFAULT ;
 }
@@ -106,7 +106,7 @@ int btn_insert_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_INSERT) ; else get_attribute (IUP_INSERT) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute ("INSERT") ; else get_attribute ("INSERT") ;
   
   return IUP_DEFAULT ;
 }
@@ -127,7 +127,7 @@ int btn_border_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_BORDER) ; else get_attribute (IUP_BORDER) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute ("BORDER") ; else get_attribute ("BORDER") ;
   
   return IUP_DEFAULT ;
 }
@@ -169,7 +169,7 @@ int btn_readonly_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_READONLY) ; else get_attribute (IUP_READONLY) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute ("READONLY") ; else get_attribute ("READONLY") ;
   
   return IUP_DEFAULT ;
 }
@@ -190,7 +190,7 @@ int btn_selection_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_SELECTION) ; else get_attribute (IUP_SELECTION) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute ("SELECTION") ; else get_attribute ("SELECTION") ;
   
   return IUP_DEFAULT ;
 }
@@ -211,7 +211,7 @@ int btn_selectedtext_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_SELECTEDTEXT) ; else get_attribute (IUP_SELECTEDTEXT) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute ("SELECTEDTEXT") ; else get_attribute ("SELECTEDTEXT") ;
   
   return IUP_DEFAULT ;
 }
@@ -232,7 +232,7 @@ int btn_nc_cb (void)
 
   list = IupGetHandle ("list") ;
 
-  if (IupGetInt (list, "VALUE") == 1) set_attribute (IUP_NC) ; else get_attribute (IUP_NC) ;
+  if (IupGetInt (list, "VALUE") == 1) set_attribute ("NC") ; else get_attribute ("NC") ;
   
   return IUP_DEFAULT ;
 }
@@ -279,8 +279,8 @@ int main(int argc, char **argv)
   list = IupList (NULL) ;
 
   /* Turns on multiline expand ans text horizontal expand */
-  IupSetAttribute (mltline, "EXPAND", "YES") ;
-  IupSetAttribute (text, "EXPAND", IUP_HORIZONTAL) ;
+  IupSetAttribute (mltline, "EXPAND", "YES");
+  IupSetAttribute (text, "EXPAND", "HORIZONTAL");
 
   /* Associates handles to multiline, text and list */
   IupSetHandle ("mltline", mltline) ;
@@ -333,6 +333,6 @@ int main(int argc, char **argv)
   /* Finishes IUP */
   IupClose () ;
 
-  /* Program finished sucessfully */
+  /* Program finished successfully */
   return 0 ;
 }

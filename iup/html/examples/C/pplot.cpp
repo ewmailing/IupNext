@@ -1,9 +1,9 @@
 /*
  * IupPPlot test 2
  * Description : Create all built-in plots.
- *               It is organised as two side-by-side panels:
+ *               It is organized as two side-by-side panels:
  *                 - left panel for current plot control
- *                 - right panel containg tabbed plots
+ *                 - right panel containing tabbed plots
  *      Remark : depend on libs IUP, CD, IUP_PPLOT
  * last update: 2006-10-11  DELL
  */
@@ -30,7 +30,7 @@ extern "C" {
 
 Ihandle *plot[MAXPLOT] = {NULL}; /* PPlot controls */
 Ihandle *dial1, *dial2,          /* dials for zooming */
-        *tgg1, *tgg2,            /* autoscale on|off toggles */
+        *tgg1, *tgg2,            /* auto scale on|off toggles */
         *tgg3, *tgg4,            /* grid show|hide toggles */
         *tgg5,                   /* legend show|hide toggle */
         *tabs;                   /* tabbed control */
@@ -547,10 +547,10 @@ int dial2_btnup_cb(Ihandle *self, double angle)
 
 int bt1_cb(Ihandle *self)
 {
-  int ii = tabs_get_index();
-  cdCanvas* cnv = cdCreateCanvas(CD_PDF, "pplot.pdf -o");
-  IupPPlotPaintTo(plot[ii], cnv);
-  cdKillCanvas(cnv);
+  //int ii = tabs_get_index();
+  //cdCanvas* cnv = cdCreateCanvas(CD_PDF, "pplot.pdf -o");
+  //IupPPlotPaintTo(plot[ii], cnv);
+  //cdKillCanvas(cnv);
   return IUP_DEFAULT;
 }
 
@@ -639,7 +639,7 @@ int main(int argc, char **argv)
 
   tgg3 = IupToggle("Vertical Grid", NULL);
   IupSetCallback(tgg3, "ACTION", (Icallback)tgg3_cb);
-  tgg4 = IupToggle("Hirozontal Grid", NULL);
+  tgg4 = IupToggle("Horizontal Grid", NULL);
   IupSetCallback(tgg4, "ACTION", (Icallback)tgg4_cb);
 
   lbl2 = IupLabel("");

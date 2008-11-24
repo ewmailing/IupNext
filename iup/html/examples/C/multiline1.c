@@ -1,6 +1,6 @@
-/*IupMultiline Simple Example in C 
-Shows a multiline that ignores the treatment of the DEL key, canceling its effect. */
-
+/* IupMultiline: Simple Example in C 
+   Shows a multiline that ignores the treatment of the DEL key, canceling its effect.
+*/
 
 #include <stdio.h>
 #include "iup.h"
@@ -8,7 +8,7 @@ Shows a multiline that ignores the treatment of the DEL key, canceling its effec
 
 int mlaction(Ihandle *self, int c, char* after)
 {
-  if(c==K_DEL)
+  if(c == K_DEL)
     return IUP_IGNORE;
   else
     return IUP_DEFAULT;
@@ -24,7 +24,7 @@ void main(int argc, char **argv)
   IupSetCallback(ml, "ACTION", (Icallback)mlaction);
   IupSetAttribute(ml, "EXPAND", "YES");
   IupSetAttribute(ml, "VALUE",  "I ignore the DEL key!");
-  IupSetAttribute(ml, IUP_BORDER, "YES");
+  IupSetAttribute(ml, "BORDER", "YES");
 
   dlg = IupDialog(ml);
   IupSetAttribute(dlg, "TITLE", "IupMultiline");

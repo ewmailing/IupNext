@@ -1,7 +1,9 @@
 /*IupVbox Example in C 
-Creates a dialog with buttons placed one above the other, showing the organization possibilities of the elements inside a vbox. The "ALIGNMENT" attribute is explored in all its possibilities to obtain the effects. The attributes "GAP", "MARGIN" and "SIZE" are also tested. */
+Creates a dialog with buttons placed one above the other, 
+showing the organization possibilities of the elements inside a vbox. 
+The "ALIGNMENT" attribute is explored in all its possibilities 
+to obtain the effects. The attributes "GAP", "MARGIN" and "SIZE" are also tested. */
 
-/* IupVbox Example */	
 
 /* ANSI C libraries include */
 #include <stdio.h>

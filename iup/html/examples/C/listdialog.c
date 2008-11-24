@@ -1,5 +1,6 @@
-/*IupListDialog Example in C 
-Shows a color-selection dialog. */
+/* IupListDialog: Example in C 
+   Shows a color-selection dialog.
+*/
 
 #include <stdio.h>
 #include <string.h>
@@ -21,7 +22,7 @@ int main(int argc, char **argv)
     "Brown"  } ;
 	  
   IupOpen(&argc, &argv);
-  IupSetLanguage(IUP_ENGLISH);
+  IupSetLanguage("ENGLISH");
   
   error = IupListDialog(2,"Color Selection",size,options,0,16,5,marks);
 

@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include "iup.h"          
 #include "iupgl.h"
+#include "iupkey.h"
 #include <windows.h>
 #include "GL/gl.h" 
 
@@ -29,16 +30,17 @@ int redraw(Ihandle *self, float x, float y)
   sscanf(size, "%dx%d", &w, &h);
 
   IupGLMakeCurrent(self);
+  
   glViewport(0, 0, w, h);
   glClearColor(1.0, 1.0, 1.0, 1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glColor3f(1.0,0.0,0.0);
   glBegin(GL_QUADS); 
-  glVertex2f(0.9f,0.9f); 
-  glVertex2f(0.9f,-0.9f); 
-  glVertex2f(-0.9f,-0.9f); 
-  glVertex2f(-0.9f,0.9f); 
+    glVertex2f( 0.9f,  0.9f); 
+    glVertex2f( 0.9f, -0.9f); 
+    glVertex2f(-0.9f, -0.9f); 
+    glVertex2f(-0.9f,  0.9f); 
   glEnd();
 
   IupGLSwapBuffers(self); 

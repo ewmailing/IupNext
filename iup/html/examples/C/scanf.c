@@ -1,7 +1,8 @@
-/* IupScanf Example in C 
+/* IupScanf: Example in C 
    Shows a dialog with three fields to be filled. 
    One receives a string, the other receives a real number and 
-   the last receives an integer number. */
+   the last receives an integer number.
+*/
 
 #include <stdio.h>
 #include "iup.h"
@@ -22,7 +23,7 @@ int main(int argc, char **argv)
   };
   
   IupOpen(&argc, &argv);
-  IupSetLanguage(IUP_ENGLISH);
+  IupSetLanguage("ENGLISH");
   fields_read = IupScanf (fmt, text, &real, &integer);
   
   if(fields_read == -1)
@@ -31,7 +32,7 @@ int main(int argc, char **argv)
   }
   else
   {
-    sprintf(string,"Text: %s\nReal: %f\nInteger: %d\nFields read sucessfully: %d",text,real,integer,fields_read);
+    sprintf(string,"Text: %s\nReal: %f\nInteger: %d\nFields read successfully: %d",text,real,integer,fields_read);
     IupMessage("IupScanf",string); 	  
   }
 

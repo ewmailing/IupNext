@@ -1,3 +1,7 @@
+/*
+ * IupCanvas Redraw example
+ */
+
 #include <stdio.h>
 #include <iup.h>
 #include <iupcontrols.h>

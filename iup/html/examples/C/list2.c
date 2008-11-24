@@ -1,9 +1,12 @@
-/*IupList Example in C 
-Creates a dialog with three frames, each one containing a list. The first is a simple list, the second one is a multiple list and the last one is a drop-down list. The second list has a callback associated. */
-
+/* IupList: Example in C 
+   Creates a dialog with three frames, each one containing a list.
+   The first is a simple list, the second one is a multiple list and the last one is a drop-down list.
+   The second list has a callback associated.
+*/
 
 #include <stdio.h>
 #include <iup.h>
+#include <iupkey.h>
 
 int list_cb (Ihandle *self, char *t, int i, int v)
 {
@@ -96,19 +99,19 @@ int main(int argc, char **argv)
   IupSetAttribute(bt3, "BGCOLOR", "192 192 192");
   IupSetAttribute(bt4, "BGCOLOR", "192 192 192");
 
-  IupSetCallback(list1, IUP_GETFOCUS_CB, (Icallback)getfocus_cb);
-  IupSetCallback(list1, IUP_KILLFOCUS_CB, (Icallback)killfocus_cb);
-  IupSetCallback(list2, IUP_GETFOCUS_CB, (Icallback)getfocus_cb);
-  IupSetCallback(list2, IUP_KILLFOCUS_CB, (Icallback)killfocus_cb);
-  IupSetCallback(list3, IUP_GETFOCUS_CB, (Icallback)getfocus_cb);
-  IupSetCallback(list3, IUP_KILLFOCUS_CB, (Icallback)killfocus_cb);
-  IupSetCallback(list4, IUP_GETFOCUS_CB, (Icallback)getfocus_cb);
-  IupSetCallback(list4, IUP_KILLFOCUS_CB, (Icallback)killfocus_cb);
+  IupSetCallback(list1, "GETFOCUS_CB",  (Icallback)getfocus_cb);
+  IupSetCallback(list1, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+  IupSetCallback(list2, "GETFOCUS_CB",  (Icallback)getfocus_cb);
+  IupSetCallback(list2, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+  IupSetCallback(list3, "GETFOCUS_CB",  (Icallback)getfocus_cb);
+  IupSetCallback(list3, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+  IupSetCallback(list4, "GETFOCUS_CB",  (Icallback)getfocus_cb);
+  IupSetCallback(list4, "KILLFOCUS_CB", (Icallback)killfocus_cb);
 
   IupSetCallback(list1, "EDIT_CB", (Icallback)edit_cb);
   IupSetCallback(list3, "EDIT_CB", (Icallback)edit_cb);
 
-/*  IupSetAttribute(list3, IUP_READONLY, "YES"); */
+/*  IupSetAttribute(list3, "READONLY", "YES"); */
 
   box1 = IupVbox(list1, bt1, NULL);
   box2 = IupVbox(list2, bt2, NULL);
@@ -133,8 +136,8 @@ int main(int argc, char **argv)
   dlg = IupDialog(IupSetAttributes(IupVbox(IupHbox(box1, box2, box3, box4, NULL), lbl, btok, btcancel, NULL),"MARGIN=10x10, GAP=10"));
   IupSetAttribute(dlg, "TITLE", "IupList Example");
   IupSetAttribute(dlg, "_LABEL", (char*)lbl);
-  IupSetAttribute(dlg, IUP_DEFAULTENTER, "btok");
-  IupSetAttribute(dlg, IUP_DEFAULTESC, "btcancel");
+  IupSetAttribute(dlg, "DEFAULTENTER", "btok");
+  IupSetAttribute(dlg, "DEFAULTESC", "btcancel");
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 

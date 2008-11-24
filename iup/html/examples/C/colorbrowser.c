@@ -1,12 +1,7 @@
-/*IupColorBrowser Example in C 
-Crates a IupColorBrowser element and updates, via callbacks, the values of texts representing the R, G and B colors selected. */
-
-/*****************************************************************************
- * IupColorBrowser example                                                   *
- * Author: Mark Stroetzel Glasberg                                           *
- * e-mail: mark@tecgraf.puc-rio.br                                           *
- * November 22, 2000                                                         *
- *****************************************************************************/
+/*  IupColorBrowser: Example in C 
+    Creates a IupColorBrowser element and updates, via callbacks, the values of
+    texts representing the R, G and B colors selected.
+*/
  
 /* ANSI C libraries include */
 #include <stdlib.h>
@@ -102,8 +97,8 @@ int main(int argc, char **argv)
   clrbrwsr = IupColorBrowser () ;
   
   /* Registers color browser callbacks */
-  IupSetCallback(clrbrwsr, IUP_CHANGE_CB, (Icallback) clrbrwsr_change_cb) ;
-  IupSetCallback(clrbrwsr, IUP_DRAG_CB, (Icallback) clrbrwsr_drag_cb) ;
+  IupSetCallback(clrbrwsr, "CHANGE_CB", (Icallback) clrbrwsr_change_cb) ;
+  IupSetCallback(clrbrwsr, "DRAG_CB", (Icallback) clrbrwsr_drag_cb) ;
 
   /* Creates a vbox */
   vbox = IupVbox
@@ -139,6 +134,6 @@ int main(int argc, char **argv)
   IupControlsClose() ;
   IupClose () ;  
 
-  /* Program finished sucessfully */
+  /* Program finished successfully */
   return 0 ;
 }

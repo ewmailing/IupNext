@@ -1,7 +1,7 @@
-/*IupFill Example in C 
-Uses the Fill element to horizontally centralize a button and to justify it to the left and right.*/
+/* IupFill: Example in C 
+   Uses the Fill element to horizontally centralize a button and to justify it to the left and right.
+*/
 
-/* IupFill example */
 #include <stdio.h>
 #include "iup.h"
 

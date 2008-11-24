@@ -1,6 +1,7 @@
-/* IupGetParam Example in C 
+/* IupGetParam: Example in C 
    Shows a dialog with all the possible fields. 
 */
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -48,7 +49,7 @@ int main(int argc, char **argv)
   
   IupOpen(&argc, &argv);
   IupControlsOpen();
-  IupSetLanguage(IUP_ENGLISH);
+  IupSetLanguage("ENGLISH");
 
   if (!IupGetParam("Title", param_action, 0,
                    "Boolean: %b[No,Yes]\n"

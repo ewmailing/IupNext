@@ -1,7 +1,8 @@
 /*IupZbox Example in C 
-An application of a zbox could be a program requesting several entries from the user according to a previous selection. In this example, a list of possible layouts, each one consisting of an element, is presented, and according to the selected option the dialog below the list is changed. */
-
-/* IupZbox Example */
+An application of a zbox could be a program requesting several entries 
+from the user according to a previous selection. 
+In this example, a list of possible layouts, each one consisting of an element, 
+is presented, and according to the selected option the dialog below the list is changed. */
 
 #include <stdio.h>
 #include "iup.h"

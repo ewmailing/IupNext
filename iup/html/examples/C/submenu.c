@@ -1,7 +1,7 @@
-/*IupSubmenu Example in C 
-Creates a dialog with a menu with three submenus. One of the submenus has a submenu, which has another submenu. */
-
-/* IupSubmenu example */
+/* IupSubmenu: Example in C 
+   Creates a dialog with a menu with three submenus.
+   One of the submenus has a submenu, which has another submenu.
+*/
 
 /* ANSI C libraries include */
 #include <stdio.h>
@@ -142,6 +142,6 @@ int main(int argc, char **argv)
   /* Finishes IUP */
   IupClose () ;  
 
-  /* Program finished sucessfully */
+  /* Program finished successfully */
   return 0 ;
 }

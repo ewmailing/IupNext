@@ -1,5 +1,6 @@
-/*IupMenu Example in C 
-Creates a dialog with a menu with two submenus. */
+/* IupMenu: Example in C 
+   Creates a dialog with a menu with two submenus.
+*/
 
 #include <stdio.h>
 #include "iup.h"
@@ -17,17 +18,17 @@ void main(int argc, char **argv)
   IupOpen(&argc, &argv);
 
   item_open = IupItem ("Open", NULL);
-  IupSetAttribute(item_open, IUP_KEY, "O");
+  IupSetAttribute(item_open, "KEY", "O");
 
   item_save = IupItem ("Save", NULL);
-  IupSetAttribute(item_save, IUP_KEY, "S");
+  IupSetAttribute(item_save, "KEY", "S");
 
   item_undo = IupItem ("Undo", NULL);
-  IupSetAttribute(item_undo, IUP_KEY, "U");
+  IupSetAttribute(item_undo, "KEY", "U");
   IupSetAttribute(item_undo, "ACTIVE", "NO");
 
   item_exit = IupItem ("Exit", NULL);
-  IupSetAttribute(item_exit, IUP_KEY, "x");
+  IupSetAttribute(item_exit, "KEY", "x");
   IupSetCallback(item_exit, "ACTION", (Icallback)exit_cb);
 
   file_menu = IupMenu(item_open, 

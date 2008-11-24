@@ -1,11 +1,9 @@
-/*IupHbox Example in C 
-Creates a dialog with buttons placed side by side, with the purpose of showing the organization possibilities of elements inside an hbox. The "ALIGNMENT" attribute is explored in all its possibilities to obtain the given effect. */
-
-/*
-	Program to exemplify the IupHbox element.
+/* IupHbox: Example in C 
+   Creates a dialog with buttons placed side by side, with the purpose of showing the organization
+   possibilities of elements inside an hbox. The "ALIGNMENT" attribute is explored in all its possibilities
+   to obtain the given effect.
 */
 
-/* IupHbox example */
 #include <stdio.h>
 #include "iup.h"
 

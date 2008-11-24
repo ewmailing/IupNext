@@ -1,7 +1,6 @@
-/*IupSeparator Example in C 
-Creates a dialog with a menu and some items. A IupSeparator was used to separate the menu items. */
-
-/* IupSeparator example */
+/* IupSeparator: Example in C 
+   Creates a dialog with a menu and some items. A IupSeparator was used to separate the menu items.
+*/
 
 /* ANSI C libraries include */
 #include <stdlib.h>
@@ -190,6 +189,6 @@ int main(int argc, char **argv)
   /* Finishes IUP */
   IupClose () ;  
 
-  /* Program finished sucessfully */
+  /* Program finished successfully */
   return 0 ;
 }

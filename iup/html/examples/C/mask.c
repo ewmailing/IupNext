@@ -1,5 +1,6 @@
-/*IupMask Example in C 
-Creates an IupText that accepts only numbers.*/
+/*  IupMask: Example in C 
+    Creates an IupText that accepts only numbers.
+*/
 
 #include <stdlib.h>
 #include "iup.h"
@@ -17,7 +18,7 @@ void main(int argc, char **argv)
   test = iupmaskSet(text, "/d*", 0, 1);
 
   IupSetAttribute(text, "SIZE",   "100x");
-  IupSetAttribute(text, "EXPAND", IUP_HORIZONTAL);
+  IupSetAttribute(text, "EXPAND", "HORIZONTAL");
 
   dg = IupDialog(text);
   IupSetAttribute(dg, "TITLE", "IupMask");

@@ -15,6 +15,6 @@ int main(int argc, char **argv)
   /* Finishes IUP */
   IupClose () ;
 
-  /* Program finished sucessfully */
+  /* Program finished successfully */
   return 0 ;
 }

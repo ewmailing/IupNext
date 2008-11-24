@@ -9,11 +9,11 @@ Ihandle *create_mat(void)
 {
   Ihandle *mat = IupMatrix(NULL); 
   
-  IupSetAttribute(mat,IUP_NUMCOL,"2"); 
-  IupSetAttribute(mat,IUP_NUMLIN,"3"); 
+  IupSetAttribute(mat,"NUMCOL","2"); 
+  IupSetAttribute(mat,"NUMLIN","3"); 
   
-  IupSetAttribute(mat,IUP_NUMCOL_VISIBLE,"2") ;
-  IupSetAttribute(mat,IUP_NUMLIN_VISIBLE,"3") ;
+  IupSetAttribute(mat,"NUMCOL_VISIBLE","2") ;
+  IupSetAttribute(mat,"NUMLIN_VISIBLE","3") ;
   
   IupSetAttribute(mat,"0:0","Inflation");
   IupSetAttribute(mat,"1:0","Medicine");

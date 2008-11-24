@@ -1,4 +1,5 @@
-/*IupTimer Example in C */
+/* IupTimer Example in C */
+
 #include <stdio.h>
 #include "iup.h"
 
@@ -36,11 +37,11 @@ int main(int argc, char **argv)
   timer1 = IupTimer();
   timer2 = IupTimer();
 
-  IupSetAttribute(timer1, "TIME", "100");
+  IupSetAttribute(timer1, "TIME", "1000");
   IupSetAttribute(timer1, "RUN", "YES");
   IupSetCallback(timer1, "ACTION_CB", (Icallback)timer_cb);
 
-  IupSetAttribute(timer2, "TIME", "400");
+  IupSetAttribute(timer2, "TIME", "4000");
   IupSetAttribute(timer2, "RUN", "YES");
   IupSetCallback(timer2, "ACTION_CB", (Icallback)timer_cb);
 

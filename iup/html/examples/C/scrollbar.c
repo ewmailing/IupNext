@@ -3,14 +3,14 @@
 #include "cd.h"
 #include "cdiup.h"
 
-cdCanvas *cdcanvas;
+cdCanvas *cdcanvas = NULL;
 
 /* Virtual space size: 600x400
    The canvas will be a window into that space.
    If canvas is smaller than the virtual space, scrollbars are active.
    
    The drawing is a red cross from the corners of the virtual space.
-   But CD must draw in the canvas space. So the position of the scroolbar
+   But CD must draw in the canvas space. So the position of the scrollbar
    will define the convertion between canvas space and virtual space.
 */
 
@@ -18,7 +18,13 @@ int action(Ihandle *ih, float posx, float posy)
 {
   int iposx = (int)posx;
   int iposy = (int)posy;
-  
+
+  if (!cdcanvas)
+    return IUP_DEFAULT;
+
+  /* update CD canvas size */
+  cdCanvasActivate(cdcanvas);
+
   /* invert scroll reference (YMAX-DY - POSY) */
   iposy = 399-IupGetInt(ih, "DY") - iposy;
   
@@ -40,16 +46,19 @@ int scroll_cb(Ihandle *ih, int op, float posx, float posy)
 
 int resize_cb(Ihandle *ih, int w, int h)
 {
-  /* update CD canvas size */
-  cdCanvasActivate(cdcanvas);
- 
   /* update page size, it is always the client size of the canvas */
   IupSetfAttribute(ih, "DX", "%d", w);
   IupSetfAttribute(ih, "DY", "%d", h);
   
-  /* refresh scroolbar in IUP 2.x */
+  /* refresh scrollbar in IUP 2.x */
   IupStoreAttribute(ih, "POSX", IupGetAttribute(ih, "POSX"));
   IupStoreAttribute(ih, "POSY", IupGetAttribute(ih, "POSY"));
+
+  if (!cdcanvas)
+    return IUP_DEFAULT;
+
+  /* update CD canvas size */
+  cdCanvasActivate(cdcanvas);
   return IUP_DEFAULT;
 }
 

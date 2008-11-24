@@ -1,5 +1,6 @@
-/*IupImage Example in C 
-Creates a button, a label, a toggle and a radio using an image. Uses an image for the cursor as well.. */
+/* IupImage: Example in C 
+   Creates a button, a label, a toggle and a radio using an image. Uses an image for the cursor as well.
+*/
 
 #include <stdio.h>
 #include "iup.h"
@@ -57,7 +58,7 @@ static unsigned char pixmap_cursor [ ] =
 
 int main(int argc, char **argv)
 {
-  char string_size [ 40 ] ;
+  char string_size [ 45 ] ;
   
   Ihandle *dlg ;
   Ihandle *img_x, *img_cursor ;
@@ -79,7 +80,7 @@ int main(int argc, char **argv)
   IupSetAttribute ( img_cursor, "1", "255 0 0" ) ; 
   IupSetAttribute ( img_cursor, "2", "128 0 0" ) ; 
 
-  IupSetAttribute ( img_cursor, IUP_HOTSPOT, "21:10" ) ;
+  IupSetAttribute ( img_cursor, "HOTSPOT", "21:10" ) ;
   
   IupSetHandle ( "img_cursor", img_cursor );
 
@@ -98,7 +99,8 @@ int main(int argc, char **argv)
   IupSetAttribute ( tgl_radio_1, "IMAGE", "img_x" ) ;
   IupSetAttribute ( tgl_radio_2, "IMAGE", "img_x" ) ;
 
-  sprintf ( string_size, "\"X\" image width = %s; \"X\" image height = %s", IupGetAttribute ( img_x, IUP_WIDTH ), IupGetAttribute ( img_x, IUP_HEIGHT ) ) ; 
+  sprintf ( string_size, "\"X\" image width = %s; \"X\" image height = %s", IupGetAttribute ( img_x, "WIDTH" ),
+                                                                            IupGetAttribute ( img_x, "HEIGHT" ) ) ; 
 
   lbl_size = IupLabel ( string_size ) ;
   
@@ -127,9 +129,9 @@ int main(int argc, char **argv)
   IupShowXY ( dlg, IUP_CENTER, IUP_CENTER ) ;
 
   IupMainLoop ( ) ;
-  IupDestroy(dlg);
-  IupDestroy(img_x);
   IupDestroy(img_cursor);
+  IupDestroy(img_x);
+  IupDestroy(dlg);
   IupClose ( ) ;
   return 0 ;
 }

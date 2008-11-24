@@ -66,10 +66,10 @@ int main(int argc, char **argv)
   text = IupText(NULL);
   IupSetAttribute(text, "SIZE",  "200x");
   IupSetCallback(text, "ACTION", (Icallback) action);
-  IupSetCallback(text, IUP_K_ANY, (Icallback) k_any);
+  IupSetCallback(text, "K_ANY", (Icallback) k_any);
 
   pwd = IupText(NULL);
-  IupSetAttribute(pwd, IUP_READONLY, "YES");
+  IupSetAttribute(pwd, "READONLY", "YES");
   IupSetAttribute(pwd, "SIZE", "200x");
 
   dlg = IupDialog(IupVbox(text, pwd, NULL));

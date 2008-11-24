@@ -1,7 +1,6 @@
-/*IupLabel Example in C 
-Creates three labels, one using all attributes except for image, other with normal text and the last one with an image.. */
-
-/* IupLabel example */
+/* IupLabel: Example in C 
+   Creates three labels, one using all attributes except for image, other with normal text and the last one with an image.
+*/
 
 /* ANSI C libraries include */
 #include <stdio.h>
@@ -84,6 +83,6 @@ int main(int argc, char **argv)
   /* Finishes IUP */
   IupClose ( ) ;
 
-  /* Program finished sucessfully */
+  /* Program finished successfully */
   return 0 ;
 }

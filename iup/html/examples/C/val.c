@@ -79,10 +79,9 @@ void main(int argc, char* argv[])
   Ihandle *dlg_val, *val_h, *val_v;
 
   IupOpen(&argc, &argv);
-  IupControlsOpen();
 
-  val_v = IupVal(ICTL_VERTICAL);
-  val_h = IupVal(ICTL_HORIZONTAL);
+  val_v = IupVal("VERTICAL");
+  val_h = IupVal("HORIZONTAL");
   lbl_v = IupLabel("VALUE=");
   lbl_h = IupLabel("VALUE=");
   IupSetAttribute(lbl_v, "SIZE", "50x");

@@ -1,5 +1,6 @@
-/*IupDialog Example in C
-Creates a dialog showing an icon, the IUP_DEFAULTESC attribute and a simple menu.*/
+/* IupDialog: Example in C
+   Creates a dialog showing an icon, the "DEFAULTESC" attribute and a simple menu
+*/
 
 #include <stdio.h>
 #include "iup.h"
@@ -78,9 +79,9 @@ int main(int argc, char **argv)
   dialog = IupDialog(IupVbox(quit_bt,NULL));
   IupSetAttribute(dialog, "TITLE", "IupDialog");
   IupSetAttribute(dialog, "MENU", "menu");
-  IupSetAttribute(dialog, IUP_CURSOR, "CROSS");
-  IupSetAttribute(dialog, IUP_ICON, "icon");
-  IupSetAttribute(dialog, IUP_DEFAULTESC, "quit");
+  IupSetAttribute(dialog, "CURSOR", "CROSS");
+  IupSetAttribute(dialog, "ICON", "icon");
+  IupSetAttribute(dialog, "DEFAULTESC", "quit");
 
   IupShowXY(dialog, IUP_CENTER, IUP_CENTER);
   IupMainLoop();

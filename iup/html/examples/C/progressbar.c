@@ -134,10 +134,10 @@ void createimg_s (void)
   Ihandle *img_restart, *img_play, *img_forward, *img_rewind, *img_pause;
   
   img_restart = IupImage(22,22, pixmap_restart);
-  img_play = IupImage(22,22, pixmap_play);
+  img_play    = IupImage(22,22, pixmap_play);
   img_forward = IupImage(22,22, pixmap_forward);
-  img_rewind = IupImage(22,22, pixmap_rewind);
-  img_pause = IupImage(22,22, pixmap_pause);
+  img_rewind  = IupImage(22,22, pixmap_rewind);
+  img_pause   = IupImage(22,22, pixmap_pause);
   
   IupSetHandle ("img_restart", img_restart); 
   IupSetHandle ("img_play", img_play);

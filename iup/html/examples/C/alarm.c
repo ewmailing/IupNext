@@ -1,7 +1,6 @@
-/*IupAlarm Example in C 
-Shows a dialog similar to the one shown when you exit a program without saving. */
-
-/* IupAlarm Example */
+/* Iup Alarm: Example in C 
+   Shows a dialog similar to the one shown when you exit a program without saving.
+*/
 
 /* IUP libraries include */
 #include "iup.h"
@@ -18,7 +17,7 @@ int main(int argc, char **argv)
   {
     /* Shows a message for each selected button */
     case 1:
-      IupMessage ("Save file", "File saved sucessfully - leaving program") ;
+      IupMessage ("Save file", "File saved successfully - leaving program") ;
     break ;
 
     case 2:
@@ -33,6 +32,6 @@ int main(int argc, char **argv)
   /* Finishes IUP */
   IupClose () ;
 
-  /* Program finished sucessfully */
+  /* Program finished successfully */
   return 0 ;
 }

@@ -1,5 +1,12 @@
 /*IupToggle Example in C 
-Creates 9 toggles: the first one has an image and an associated callback; the second has an image and is deactivated; the third is regular; the fourth has its foreground color changed; the fifth has its background color changed; the sixth has its foreground and background colors changed; the seventh is deactivated; the eight has its font changed; the ninth has its size changed.. */
+Creates 9 toggles: the first one has an image and an associated callback; 
+the second has an image and is deactivated; the third is regular; 
+the fourth has its foreground color changed; 
+the fifth has its background color changed; 
+the sixth has its foreground and background colors changed; 
+the seventh is deactivated; 
+the eight has its font changed; 
+the ninth has its size changed.. */
 
 
 #include <stdio.h>
@@ -94,7 +101,7 @@ int main(int argc, char **argv)
   IupSetAttribute(toggle6, "FGCOLOR", "0 255 0");           /* Toggle 6 has green foreground color */
   IupSetAttribute(toggle6, "BGCOLOR", "0 0 0");             /* Toggle 6 has black background color */
   IupSetAttribute(toggle7, "ACTIVE",  "NO");              /* Toggle 7 inactive                   */
-  IupSetAttribute(toggle8, "FONT",    IUP_COURIER_BOLD_14); /* Toggle 8 has Courier 14 Bold font   */
+  IupSetAttribute(toggle8, "FONT",    "COURIER_BOLD_14"); /* Toggle 8 has Courier 14 Bold font   */
   IupSetAttribute(toggle9, "SIZE",    "EIGHTHxEIGHTH");     /* Toggle 9 has size EIGHTxEIGHT       */
 
   /* Creating box that contains the toggles */

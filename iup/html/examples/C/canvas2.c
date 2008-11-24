@@ -1,5 +1,8 @@
-/*Advanced IupCanvas Example in C 
-This example shows how several canvas callbacks are used and how the scrollbar works. */
+/*
+* Advanced IupCanvas example
+* Description : This example shows how several canvas callbacks are used and how the scrollbar works.
+*      Remark : IUP must be linked to the CD library                      
+*/
 
 #include <stdio.h>
 #include "iup.h"
@@ -105,7 +108,7 @@ int main(int argc, char **argv)
   IupSetCallback(iupcanvas, "ACTION",(Icallback)repaint_cb);
   IupSetCallback(iupcanvas, "BUTTON_CB",(Icallback)button_cb);
   IupSetCallback(iupcanvas, "SCROLL_CB",(Icallback)scroll_cb);
-  IupSetCallback(iupcanvas, "MOTION_cb",(Icallback)motion_cb);
+  IupSetCallback(iupcanvas, "MOTION_CB",(Icallback)motion_cb);
   IupSetCallback(iupcanvas, "ENTERWINDOW_CB",(Icallback)enter_cb);
   IupSetCallback(iupcanvas, "LEAVEWINDOW_CB",(Icallback)leave_cb);
   

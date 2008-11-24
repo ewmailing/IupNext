@@ -22,7 +22,7 @@ int main(int argc, char **argv)
   luaL_openlibs(L);
 
   iuplua_open(L);      /* Initialize Binding Lua */
-  iupcontrolslua_open(L); /* Inicialize CPI controls binding Lua */
+  iupcontrolslua_open(L); /* Initialize CPI controls binding Lua */
 
   /* do other things, like running a lua script */
   lua_dofile(L, "myfile.lua");

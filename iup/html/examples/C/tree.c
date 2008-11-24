@@ -8,6 +8,7 @@ and the other, called when the right mouse button is pressed, opens a menu with 
 #include <stdlib.h>
 #include <string.h>
 #include <iup.h>
+#include <iupkey.h>
 #include <iupcontrols.h>
 
 /* Callback called when a leaf is added by the menu. */
@@ -171,14 +172,14 @@ void init_tree(void)
 {
   Ihandle* tree = IupTree(); 
 
-  IupSetCallback(tree, IUP_EXECUTELEAF_CB, (Icallback) executeleaf_cb);
-  IupSetCallback(tree, IUP_RENAMENODE_CB, (Icallback) renamenode_cb);
+  IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback) executeleaf_cb);
+  IupSetCallback(tree, "RENAMENODE_CB", (Icallback) renamenode_cb);
   IupSetCallback(tree, "RENAME_CB", (Icallback) rename_cb);
-  IupSetCallback(tree, IUP_BRANCHCLOSE_CB, (Icallback) branchclose_cb);
-  IupSetCallback(tree, IUP_BRANCHOPEN_CB, (Icallback) branchopen_cb);
+  IupSetCallback(tree, "BRANCHCLOSE_CB", (Icallback) branchclose_cb);
+  IupSetCallback(tree, "BRANCHOPEN_CB", (Icallback) branchopen_cb);
   IupSetCallback(tree, "DRAGDROP_CB", (Icallback) dragdrop_cb);
-  IupSetCallback(tree, IUP_RIGHTCLICK_CB, (Icallback) rightclick_cb);
-  IupSetCallback(tree, IUP_K_ANY, (Icallback) k_any_cb);
+  IupSetCallback(tree, "RIGHTCLICK_CB", (Icallback) rightclick_cb);
+  IupSetCallback(tree, "K_ANY", (Icallback) k_any_cb);
 
   IupSetHandle("tree",tree);
 }
@@ -201,7 +202,7 @@ void init_tree_atributes(void)
 {
   Ihandle* tree = IupGetHandle("tree");
 
-  IupSetAttribute(tree, "FONT",IUP_COURIER_NORMAL_10);
+//  IupSetAttribute(tree, "FONT","COURIER_NORMAL");
   IupSetAttribute(tree, "NAME","Figures");
   IupSetAttribute(tree, "ADDBRANCH","3D");
   IupSetAttribute(tree, "ADDBRANCH","2D");
@@ -220,8 +221,7 @@ void init_tree_atributes(void)
   IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
   IupSetAttribute(tree, "SHOWRENAME", "YES");
 
-
-  IupSetAttribute(tree, IUP_REDRAW, "YES");
+  IupSetAttribute(tree, "REDRAW", "YES");
 }
 
 /* Main program */

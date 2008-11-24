@@ -8,7 +8,7 @@ b = iup.Alarm("IupAlarm Example", "File not saved! Save it now?" ,"Yes" ,"No" ,"
   
 -- Shows a message for each selected button
 if b == 1 then 
-  iup.Message("Save file", "File saved sucessfully - leaving program")
+  iup.Message("Save file", "File saved successfully - leaving program")
 elseif b == 2 then 
   iup.Message("Save file", "File not saved - leaving program anyway")
 elseif b == 3 then 

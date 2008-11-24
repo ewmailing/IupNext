@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -28,7 +27,7 @@ int repaint_cb( Ihandle *self)
   cdVertex(100, 150);
   cdEnd();
   
-  /* Function executed sucessfully */
+  /* Function executed successfully */
   return IUP_DEFAULT;
 }
 
@@ -96,7 +95,7 @@ int main(int argc, char **argv)
   cnvs = IupCanvas(NULL) ;
   IupSetCallback(cnvs, "ACTION", (Icallback)repaint_cb);
   
-  /* Sets size, mininum and maximum values, position and size of the thumb   */
+  /* Sets size, minimum and maximum values, position and size of the thumb   */
   /* of the horizontal scrollbar of the canvas                               */
   IupSetAttributes(cnvs, "RASTERSIZE=200x300");
 
@@ -135,6 +134,6 @@ int main(int argc, char **argv)
   IupControlsClose();  
   IupClose();  
 
-  /* Program finished sucessfully */
+  /* Program finished successfully */
   return 0 ;
 }

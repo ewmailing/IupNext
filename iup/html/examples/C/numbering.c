@@ -25,7 +25,7 @@ static int width_cb(Ihandle* h, int j) {
 
 static int mouseclick_cb(Ihandle* h, int b, char* m, int i, int j, 
 int x, int y, char* r) {
-  static buffer[128];
+  static char* buffer[128];
   sprintf(buffer, "CLICK: %d: (%02d, %02d)\n", b, i, j);
 
   IupMessage("Hi!", buffer);
@@ -55,13 +55,13 @@ int ymin, int ymax) {
 
 static Ihandle* create(void) {
   Ihandle* cells = IupCells(); 
-  IupSetCallback(cells, IUP_MOUSECLICK_CB, (Icallback)mouseclick_cb);
-  IupSetCallback(cells, IUP_DRAW_CB, (Icallback)draw_cb);
-  IupSetCallback(cells, IUP_WIDTH_CB, (Icallback)width_cb);
-  IupSetCallback(cells, IUP_HEIGHT_CB, (Icallback)height_cb);
-  IupSetCallback(cells, IUP_NLINES_CB, (Icallback)nlines_cb);
-  IupSetCallback(cells, IUP_NCOLS_CB, (Icallback)ncols_cb);
-  IupSetAttribute(cells, IUP_BOXED,"NO");
+  IupSetCallback(cells, "MOUSECLICK_CB", (Icallback)mouseclick_cb);
+  IupSetCallback(cells, "DRAW_CB",   (Icallback)draw_cb);
+  IupSetCallback(cells, "WIDTH_CB",  (Icallback)width_cb);
+  IupSetCallback(cells, "HEIGHT_CB", (Icallback)height_cb);
+  IupSetCallback(cells, "NLINES_CB", (Icallback)nlines_cb);
+  IupSetCallback(cells, "NCOLS_CB",  (Icallback)ncols_cb);
+  IupSetAttribute(cells, "BOXED","NO");
 
   return cells;
 }

@@ -1,5 +1,6 @@
-/*IupGetColor Example in C 
-Creates a predefined color selection dialog. The user receives the color in the RGB format.*/
+/*  IupGetColor: Example in C
+    Creates a predefined color selection dialog. The user receives the color in the RGB format.
+*/
 
 #include <stdio.h>
 #include <stdlib.h>

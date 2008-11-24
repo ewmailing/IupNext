@@ -1,5 +1,6 @@
-/*IupGetFile Example in C 
-Shows a typical file-selection dialog. */
+/*  IupGetFile: Example in C 
+    Shows a typical file-selection dialog.
+*/
 
 #include <stdio.h>
 #include "iup.h"
@@ -8,7 +9,7 @@ int main(int argc, char **argv)
 {
   char file[256];
   IupOpen(&argc, &argv);
-  IupSetLanguage(IUP_ENGLISH);
+  IupSetLanguage("ENGLISH");
 
   strcpy(file, "*.txt");
 

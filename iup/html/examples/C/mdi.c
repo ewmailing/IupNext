@@ -84,7 +84,7 @@ static unsigned char img_bits2[] =
 static int line = 0;
 static int getfocus_cb(Ihandle *self)
 {
-  printf("%2d-getfocus(%s#%s)\n", line, IupGetType(self), 
+  printf("%2d-getfocus(%s#%s)\n", line, IupGetClassName(self), 
                                         IupGetAttribute(self, "CINDEX"));
   line++;
   return IUP_DEFAULT;
@@ -92,7 +92,7 @@ static int getfocus_cb(Ihandle *self)
 
 static int killfocus_cb(Ihandle *self)
 {
-  printf("%2d-killfocus(%s#%s)\n", line, IupGetType(self), 
+  printf("%2d-killfocus(%s#%s)\n", line, IupGetClassName(self), 
                                          IupGetAttribute(self, "CINDEX"));
   line++;
   return IUP_DEFAULT;
@@ -100,7 +100,7 @@ static int killfocus_cb(Ihandle *self)
 
 static int action(Ihandle* self)
 {
-  printf("%2d-action(%s#%s) Value=%s\n", line, IupGetType(self), 
+  printf("%2d-action(%s#%s) Value=%s\n", line, IupGetClassName(self), 
                                                IupGetAttribute(self, "CINDEX"), 
                                                IupGetAttribute(self, "VALUE"));
   line++;

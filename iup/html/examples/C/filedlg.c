@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 {
   Ihandle *filedlg; 
   IupOpen(&argc, &argv);
-  IupSetLanguage(IUP_ENGLISH);
+  IupSetLanguage("ENGLISH");
   
   filedlg = IupFileDlg(); 
  

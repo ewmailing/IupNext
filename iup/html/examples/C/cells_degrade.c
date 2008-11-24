@@ -78,16 +78,16 @@ int ymin, int ymax) {
 
 static Ihandle* create(void) {
   Ihandle* cells = IupCells(); 
-  IupSetCallback(cells, IUP_MOUSECLICK_CB, (Icallback)mouseclick_cb);
-  IupSetCallback(cells, IUP_DRAW_CB, (Icallback)draw_cb);
-  IupSetCallback(cells, IUP_WIDTH_CB, (Icallback)width_cb);
-  IupSetCallback(cells, IUP_HEIGHT_CB, (Icallback)height_cb);
-  IupSetCallback(cells, IUP_NLINES_CB, (Icallback)nlines_cb);
-  IupSetCallback(cells, IUP_NCOLS_CB, (Icallback)ncols_cb);
-  IupSetCallback(cells, IUP_HSPAN_CB, (Icallback)hspan_cb);
-  IupSetCallback(cells, IUP_VSPAN_CB, (Icallback)vspan_cb);
-  IupSetCallback(cells, IUP_SCROLLING_CB, (Icallback)scrolling_cb);
-  IupSetAttribute(cells, IUP_BOXED, "NO");
+  IupSetCallback(cells, "MOUSECLICK_CB", (Icallback)mouseclick_cb);
+  IupSetCallback(cells, "DRAW_CB",   (Icallback)draw_cb);
+  IupSetCallback(cells, "WIDTH_CB",  (Icallback)width_cb);
+  IupSetCallback(cells, "HEIGHT_CB", (Icallback)height_cb);
+  IupSetCallback(cells, "NLINES_CB", (Icallback)nlines_cb);
+  IupSetCallback(cells, "NCOLS_CB",  (Icallback)ncols_cb);
+  IupSetCallback(cells, "HSPAN_CB",  (Icallback)hspan_cb);
+  IupSetCallback(cells, "VSPAN_CB",  (Icallback)vspan_cb);
+  IupSetCallback(cells, "SCROLLING_CB", (Icallback)scrolling_cb);
+  IupSetAttribute(cells, "BOXED", "NO");
   IupSetAttribute(cells, "RASTERSIZE","395x255");
 
   return cells;

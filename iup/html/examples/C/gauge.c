@@ -162,7 +162,7 @@ int idle_cb(void)
   
   value += speed;
   
-  if(value > IupGetFloat(gauge, IUP_MAX)) value = IupGetFloat(gauge, IUP_MIN);
+  if(value > IupGetFloat(gauge, "MAX")) value = IupGetFloat(gauge, "MIN");
   
   sprintf(newvalue, "%.7f",value);
   
@@ -183,7 +183,7 @@ int btn_pause_cb(void)
 
 int btn_start_cb(void)
 {
-  IupSetAttribute(gauge, "VALUE", IupGetAttribute(gauge, IUP_MIN));
+  IupSetAttribute(gauge, "VALUE", IupGetAttribute(gauge, "MIN"));
   return IUP_DEFAULT;
 }
 
@@ -202,15 +202,15 @@ int btn_decelerate_cb(void)
 
 int btn_show_cb(void)
 {
-  if(!IupGetInt(gauge,ICTL_SHOW_TEXT))
+  if(!IupGetInt(gauge,"SHOW_TEXT"))
   {
-    IupSetAttribute (gauge, ICTL_SHOW_TEXT, "YES");
-    IupSetAttribute (gauge, ICTL_DASHED, "NO");
+    IupSetAttribute (gauge, "SHOW_TEXT", "YES");
+    IupSetAttribute (gauge, "DASHED", "NO");
   }
   else
   {
-    IupSetAttribute (gauge, ICTL_SHOW_TEXT, "NO");
-    IupSetAttribute (gauge, ICTL_DASHED, "YES");
+    IupSetAttribute (gauge, "SHOW_TEXT", "NO");
+    IupSetAttribute (gauge, "DASHED", "YES");
   }
   
   return IUP_DEFAULT;
@@ -229,8 +229,8 @@ int main(int argc, char **argv)
   gauge = IupGauge();
  
   IupSetAttribute(gauge,"EXPAND","YES");
-//  IupSetAttribute(gauge,IUP_MAX,"3.5");
-//  IupSetAttribute(gauge,IUP_MIN,"0.7");
+//  IupSetAttribute(gauge,"MAX","3.5");
+//  IupSetAttribute(gauge,"MIN","0.7");
 
   btn_start = IupButton ( "start", "btn_start_act" );
   btn_pause = IupButton ( "pause", "btn_pause_act" );
@@ -266,11 +266,11 @@ int main(int argc, char **argv)
   
   IupSetAttributes(dlg, "TITLE=IupGauge");
 
-  IupSetCallback( btn_pause, "ACTION", (Icallback) btn_pause_cb );
-  IupSetCallback( btn_start, "ACTION", (Icallback) btn_start_cb );
-  IupSetCallback( btn_accelerate, "ACTION", (Icallback) btn_accelerate_cb );
-  IupSetCallback( btn_decelerate, "ACTION", (Icallback) btn_decelerate_cb );
-  IupSetCallback( btn_show, "ACTION", (Icallback) btn_show_cb );
+  IupSetCallback(btn_pause, "ACTION", (Icallback) btn_pause_cb );
+  IupSetCallback(btn_start, "ACTION", (Icallback) btn_start_cb );
+  IupSetCallback(btn_accelerate, "ACTION", (Icallback) btn_accelerate_cb );
+  IupSetCallback(btn_decelerate, "ACTION", (Icallback) btn_decelerate_cb );
+  IupSetCallback(btn_show, "ACTION", (Icallback) btn_show_cb );
   
   IupSetFunction( "IDLE_ACTION", (Icallback) idle_cb);
   

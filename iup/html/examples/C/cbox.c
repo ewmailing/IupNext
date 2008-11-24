@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <iup.h>
 #include <iupcontrols.h>
-#include <iupcbox.h>
 
 static unsigned char img_bits1[] = 
 {
@@ -80,21 +79,21 @@ static Ihandle *create_mat(void)
 {
   Ihandle *mat = IupMatrix(NULL); 
  
-  IupSetAttribute(mat,IUP_NUMCOL,"1"); 
-  IupSetAttribute(mat,IUP_NUMLIN,"3"); 
-  IupSetAttribute(mat,IUP_NUMCOL_VISIBLE,"1") ;
-  IupSetAttribute(mat,IUP_NUMLIN_VISIBLE,"3") ;
-  IupSetAttribute(mat,"EXPAND", "NO");
-  IupSetAttribute(mat,IUP_SCROLLBAR, "NO");
+  IupSetAttribute(mat, "NUMCOL", "1"); 
+  IupSetAttribute(mat, "NUMLIN", "3"); 
+  IupSetAttribute(mat, "NUMCOL_VISIBLE", "1") ;
+  IupSetAttribute(mat, "NUMLIN_VISIBLE", "3") ;
+  IupSetAttribute(mat, "EXPAND", "NO");
+  IupSetAttribute(mat, "SCROLLBAR", "NO");
 
-  IupSetAttribute(mat,"0:0","Inflation");
-  IupSetAttribute(mat,"1:0","Medicine ");
-  IupSetAttribute(mat,"2:0","Food"); 
-  IupSetAttribute(mat,"3:0","Energy"); 
-  IupSetAttribute(mat,"0:1","January 2000"); 
-  IupSetAttribute(mat,"1:1","5.6");
-  IupSetAttribute(mat,"2:1","2.2");
-  IupSetAttribute(mat,"3:1","7.2");
+  IupSetAttribute(mat, "0:0", "Inflation");
+  IupSetAttribute(mat, "1:0", "Medicine ");
+  IupSetAttribute(mat, "2:0", "Food"); 
+  IupSetAttribute(mat, "3:0", "Energy"); 
+  IupSetAttribute(mat, "0:1", "January 2000"); 
+  IupSetAttribute(mat, "1:1", "5.6");
+  IupSetAttribute(mat, "2:1", "2.2");
+  IupSetAttribute(mat, "3:1", "7.2");
 
   IupSetAttribute(mat,"BGCOLOR","255 255 255");
   IupSetAttribute(mat,"BGCOLOR1:0","255 128 0");
@@ -121,7 +120,7 @@ static Ihandle *createtree(void)
                           ADDLEAF2=square, \
                           ADDBRANCH4=triangle, \
                           ADDLEAF5=scalenus, \
-                          ADDLEAF5=isoceles, \
+                          ADDLEAF5=isosceles, \
                           ADDLEAF5=equilateral, \
                           RASTERSIZE=180x180, \
                           VALUE=6, \

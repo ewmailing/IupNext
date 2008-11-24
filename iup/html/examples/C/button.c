@@ -1,6 +1,5 @@
 /*****************************************************************************
  *                             IupButton example                             * 
- *        Author : Claudio Coutinho de Biasi                                 * 
  *   Description : Creates four buttons. The first uses images, the second   * 
  *                 turns the first on and off, the third exits the           * 
  *                 application and the last does nothing                     * 
@@ -114,7 +113,7 @@ int btn_on_off_cb(Ihandle *self)
     IupSetAttribute( btn_image, "ACTIVE", "YES" );
   }
 
-  /* Executed function sucessfully */
+  /* Executed function successfully */
   return IUP_DEFAULT;
 }
 
@@ -167,7 +166,7 @@ int btn_image_button_cb( Ihandle *self,int b, int e )
     }
   }
   
-  /* Executed function sucessfully */
+  /* Executed function successfully */
   return IUP_DEFAULT;
 }
 
@@ -208,13 +207,11 @@ int main(int argc, char **argv)
   text = IupText( NULL );                                  
   
   /* Turns on read-only mode */
-  IupSetAttribute( text, IUP_READONLY, "YES");
+  IupSetAttribute( text, "READONLY", "YES");
   
   /* Associates text with handle "text" */
   IupSetHandle ( "text", text );                            
   
-  IupSetCallback(speech, "ACTION_CB", (Icallback) action_cb);
-
   /* Defines released button's image size */
   img_release = IupImage(16, 16, pixmap_release);        
   
@@ -252,15 +249,15 @@ int main(int argc, char **argv)
   IupSetHandle ("img_inactive", img_inactive );
 
   /* Creates a button */
-  btn_image = IupButton ( "Button with image", "btn_image, "ACTION" );       
+  btn_image = IupButton ( "Button with image", "btn_image");       
   
   /* Sets released, pressed and inactive button images */  
   IupSetAttribute( btn_image, "IMAGE", "img_release" );        
-  IupSetAttribute( btn_image, IUP_IMPRESS, "img_press" );      
-  IupSetAttribute( btn_image, IUP_IMINACTIVE, "img_inactive" );  
+  IupSetAttribute( btn_image, "IMPRESS", "img_press" );      
+  IupSetAttribute( btn_image, "IMINACTIVE", "img_inactive" );  
   
   /* Associates button callback with action bti_button_act */
-  IupSetAttribute( btn_image, IUP_BUTTON_CB, "btn_image_button, "ACTION" ); 
+  IupSetAttribute( btn_image, "BUTTON_CB", "btn_image_button"); 
   
   /* Associates btn_image with handle "btn_image" */
   IupSetHandle( "btn_image", btn_image );
@@ -272,10 +269,10 @@ int main(int argc, char **argv)
   IupSetAttribute( btn_big, "SIZE", "EIGHTHxEIGHTH" );
   
   /* Creates a button entitled Exit associated with action exit_act */
-  btn_exit = IupButton( "Exit", "btn_exit", "ACTION" );
+  btn_exit = IupButton( "Exit", "btn_exit");
   
   /* Creates a button entitled on/off associated with action onoff_act */
-  btn_on_off = IupButton( "on/off", "btn_on_off", "ACTION" );              
+  btn_on_off = IupButton( "on/off", "btn_on_off");              
 
   /* Creates dialog with the four buttons and the text*/
   dlg = IupDialog
@@ -319,6 +316,6 @@ int main(int argc, char **argv)
   /* Finishes IUP */
   IupClose();  
 
-  /* Program finished sucessfully */
+  /* Program finished successfully */
   return 0;
 }
