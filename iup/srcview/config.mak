@@ -13,7 +13,7 @@ USE_IUPCONTROLS = Yes
 USE_IUP = Yes
 
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
-  USE_GTK=Yes
+#  USE_GTK=Yes
 endif
 
 ifeq "$(TEC_UNAME)" "SunOS510x86"

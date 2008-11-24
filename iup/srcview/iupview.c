@@ -18,6 +18,7 @@
 #if (IUP_VERSION_NUMBER < 300000)
 void* iupGetImageData(Ihandle* self);
 #else
+void iupImageLibLoadAll(void);
 static void* iupGetImageData(Ihandle* self)
 {
   return IupGetAttribute(self, "WID");
@@ -313,8 +314,12 @@ static int about_cb(void)
 static int inactivetoggle_cb(Ihandle* self, int v)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(self, "TABS");
-  IupSetAttribute(tabs, "ACTIVE", v?"NO":"YES");
-  IupSetAttribute(tabs, "REDRAW", "YES");
+  Ihandle* child = IupGetNextChild(tabs, NULL);
+  while(child)
+  {
+    IupSetAttribute(child, "ACTIVE", v?"NO":"YES");
+    child = IupGetNextChild(tabs, child);
+  }
   return IUP_DEFAULT;
 }
 
@@ -900,7 +905,7 @@ static int loadimagelib_cb(Ihandle* self)
 #if (IUP_VERSION_NUMBER < 300000)
   IupImageLibOpen();
 #else
-  IupImageLibLoadAll();
+  iupImageLibLoadAll();
 #endif  
 
   mainUpdateList(self, "ImageLib");

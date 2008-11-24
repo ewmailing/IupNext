@@ -147,7 +147,11 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
             *b = iupALPHABLEND(*b, bg_b, *a);
             *a = 255;
           }
-          else
+
+          if (make_inactive)
+            iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
+
+          if (!flat_alpha)
           {
             *a = *(dat+3);
 
@@ -157,9 +161,6 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
             *b = iupALPHAPRE(*b,*a);
           }
         }
-
-        if (make_inactive)
-          iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
       }
       else /* bpp == 8 */
       {

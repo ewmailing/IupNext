@@ -175,15 +175,19 @@ void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char
   else
   {
     int ir, ig, ib, 
-      i = (*r+*g+*b)/3;
-    i = (3*i)/5; /* make the intensity darker and use it as a factor to reduce the bgcolor intensity */
-    if (i == 0) i = 1;
-    ir = (bg_r*i)/255; 
-    ig = (bg_g*i)/255; 
-    ib = (bg_b*i)/255; 
+      i = (*r+*g+*b)/3,
+      bg_i = (bg_r+bg_g+bg_b)/3;
+
+    ir = (bg_r*i)/bg_i; 
+    ig = (bg_g*i)/bg_i; 
+    ib = (bg_b*i)/bg_i; 
+
+#define LIGHTER(_c) ((255 + _c)/2)
+    ir = LIGHTER(ir);
+    ig = LIGHTER(ig);
+    ib = LIGHTER(ib);
 
 #define BYTEMAXCROP(_c) (unsigned char)(_c>255? 255: _c)
-
     *r = BYTEMAXCROP(ir);
     *g = BYTEMAXCROP(ig);
     *b = BYTEMAXCROP(ib);
