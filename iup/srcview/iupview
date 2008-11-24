@@ -1,2 +1,0 @@
-exec ../bin/$TEC_UNAME/iupview $*
-_UNAME}:/lib/${TEC_UNAME}:$LD_LIBRARY_PATH

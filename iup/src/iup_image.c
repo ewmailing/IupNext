@@ -87,9 +87,27 @@ void iupImageStockLoad(const char *name)
   iImageStockGet(name, &ih, &native_name);
   if (ih)
     IupSetHandle(name, ih);
+  else if (native_name)
+  {
+    /* dummy image to save the GTK stock name */
+    void* image = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
+    if (image)
+    {
+      int w, h, bpp;
+      iupdrvImageGetInfo(image, &w, &h, &bpp);
+      if (bpp == 32)
+        ih = IupImageRGBA(w,h,NULL);
+      else
+        ih = IupImageRGB(w,h,NULL);
+      IupSetHandle(native_name, ih);
+    }
+  }
 }
 
+
 /**************************************************************************************************/
+/**************************************************************************************************/
+
 
 static void iupColorSet(iupColor *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
@@ -166,7 +184,7 @@ int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
 
 void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char *b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b)
 {
-  if (*r=bg_r && *g==bg_g && *b==bg_b)  /* preserve colors identical to the background color */
+  if (*r==bg_r && *g==bg_g && *b==bg_b)  /* preserve colors identical to the background color */
   {
     *r = bg_r; 
     *g = bg_g; 
@@ -193,6 +211,11 @@ void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char
     *b = BYTEMAXCROP(ib);
   }
 }
+
+
+/**************************************************************************************************/
+/**************************************************************************************************/
+
 
 void* iupImageGetIcon(const char* name)
 {

@@ -15,8 +15,8 @@ OPT = YES
 # IM and IupPPlot uses C++
 LINKER = $(CPPC)
 
-ifneq ($(findstring Linux, $(TEC_UNAME)), )
-  USE_GTK=Yes
+ifdef USE_GTK
+  APPNAME = iuplua51gtk
 endif
 
 ifdef DBG

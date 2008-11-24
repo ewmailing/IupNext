@@ -207,34 +207,6 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
   return cursor;
 }
 
-static GtkIconSize gtkImageGetLargestSize(const char *name)
-{
-  GtkIconSet *set = gtk_icon_factory_lookup_default(name);
-  GtkIconSize *sizes;
-  gint n_sizes, i;
-  GtkIconSize best_size = GTK_ICON_SIZE_INVALID;
-  gint best_pixels = 0;
-
-  gtk_icon_set_get_sizes (set, &sizes, &n_sizes);
-
-  for (i = 0; i < n_sizes; i++)
-  {
-    gint width, height;
-    
-    gtk_icon_size_lookup (sizes[i], &width, &height);
-
-    if (width * height > best_pixels)
-    {
-      best_size = sizes[i];
-      best_pixels = width * height;
-    }
-  }
-  
-  g_free (sizes);
-
-  return best_size;
-}
-
 void* iupdrvImageLoad(const char* name, int type)
 {
   if (type == IUPIMAGE_CURSOR)
@@ -249,7 +221,7 @@ void* iupdrvImageLoad(const char* name, int type)
     {
       GError *error = NULL;
       pixbuf = gtk_icon_theme_load_icon(icon_theme, name,
-                                        gtkImageGetLargestSize(name), /* size */
+                                        24, /* size */
                                         0,  /* flags */
                                         &error);
       if (!pixbuf)

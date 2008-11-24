@@ -149,8 +149,8 @@ void IupImageLibOpen(void)
     iupImageStockSet("IUP_ActionOk", 0, "gtk-apply");
     iupImageStockSet("IUP_ArrowDown", 0, "gtk-go-down");
     iupImageStockSet("IUP_ArrowLeft", 0, "gtk-go-back-ltr");
-    iupImageStockSet("IUP_ArrowRight", 0, "gtk-go-forward-ltr");
-    iupImageStockSet("IUP_ArrowUp", 0, "gtk-go-up");
+    iupImageStockSet("IUP_ArrowRight", 0, "gtk-go-forward-ltr");  
+    iupImageStockSet("IUP_ArrowUp", 0, "gtk-go-up");       
     iupImageStockSet("IUP_EditCopy", 0, "gtk-copy");
     iupImageStockSet("IUP_EditCut", 0, "gtk-cut");
     iupImageStockSet("IUP_EditErase", 0, "gtk-close");

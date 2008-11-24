@@ -8,7 +8,7 @@
 #include "iupcontrols.h"
 #include "iupgl.h"
 
-/* #define IUP_BUILDSTOCK 1 */  /* Used to generate the IupImgLib */
+/* #define IUP_BUILDSTOCK 1 */  /* Used to generate the IupImgLib for IUP 2.x */
 #define MAX_NAMES 500
 
 #ifdef USE_IM
@@ -75,11 +75,11 @@ static void SaveImageC(const char* file_name, Ihandle* elem, const char* name, F
   if (channels == 1)
   {
     int c;
-    fprintf(file, "  char colors[] = {\n");
+
+    fprintf(file, "  Ihandle* image = IupImage(%d, %d, imgdata);\n", width, height);
 
     for (c = 0; c < 256; c++)
     {
-      unsigned int r, g, b;
       char str[20];
       char* color;
 
@@ -88,22 +88,8 @@ static void SaveImageC(const char* file_name, Ihandle* elem, const char* name, F
       if (!color)
         break;
 
-      if (c != 0)
-        fprintf(file, ", \"\n");
-
-      if (strcmp(color, "BGCOLOR") == 0)
-        fprintf(file, "    \"%d = BGCOLOR", c);
-      else
-      {
-        sscanf(color, "%d %d %d", &r, &g, &b);
-        fprintf(file, "    \"%d = \\\"%d %d %d\\\"", c, r, g, b);
-      }
+      fprintf(file, "  IupSetAttribute(image, \"%d\", \"%s\");\n", c, color);
     }
-
-    fprintf(file, "\"};\n\n");
-
-    fprintf(file, "  Ihandle* image = IupImage(%d, %d, imgdata);\n", width, height);
-    fprintf(file, "  IupSetAttributes(image, colors);\n");
   }
   else if (channels == 3)
     fprintf(file, "  Ihandle* image = IupImageRGB(%d, %d, imgdata);\n", width, height);
@@ -133,7 +119,6 @@ static void SaveImageLua(const char* file_name, Ihandle* elem, const char* name,
     IupMessage("Error!", "Failed to open file for writing.");
     return;
   }
-
   width = IupGetInt(elem, "WIDTH");
   height = IupGetInt(elem, "HEIGHT");
   channels = IupGetInt(elem, "CHANNELS");

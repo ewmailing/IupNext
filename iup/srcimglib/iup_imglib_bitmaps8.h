@@ -18,266 +18,263 @@ static Ihandle* load_image_Zoom8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 128 128, "
-    "2 = 255 255 255, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 128 128");
+  IupSetAttribute(image, "2", "255 255 255");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -301,266 +298,263 @@ static Ihandle* load_image_EditCut8(void)
     255, 255, 255, 255, 1, 255, 255, 1, 255, 255, 1, 1, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 1, 1, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 128, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 128");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -584,266 +578,263 @@ static Ihandle* load_image_EditErase8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 1, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 255 255 255, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "255 255 255");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -867,266 +858,263 @@ static Ihandle* load_image_ArrowUp8(void)
     255, 255, 255, 255, 255, 0, 1, 1, 1, 1, 0, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 76 178 127, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "76 178 127");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -1150,266 +1138,263 @@ static Ihandle* load_image_MediaGoToBegin8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -1433,266 +1418,263 @@ static Ihandle* load_image_MessageError8(void)
     255, 255, 255, 255, 3, 1, 1, 1, 1, 1, 3, 3, 3, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 3, 3, 3, 3, 3, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 0 0, "
-    "2 = 255 0 0, "
-    "3 = 128 128 128, "
-    "4 = 255 255 255, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 0 0");
+  IupSetAttribute(image, "2", "255 0 0");
+  IupSetAttribute(image, "3", "128 128 128");
+  IupSetAttribute(image, "4", "255 255 255");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -1716,266 +1698,263 @@ static Ihandle* load_image_ZoomIn8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 128 128, "
-    "2 = 255 255 255, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 128 128");
+  IupSetAttribute(image, "2", "255 255 255");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -1999,266 +1978,263 @@ static Ihandle* load_image_FontItalic8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -2282,266 +2258,263 @@ static Ihandle* load_image_FileNew8(void)
     255, 255, 255, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 255,
     255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 255 255 0, "
-    "2 = 128 128 128, "
-    "3 = 255 255 255, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "255 255 0");
+  IupSetAttribute(image, "2", "128 128 128");
+  IupSetAttribute(image, "3", "255 255 255");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -2566,266 +2539,263 @@ static Ihandle* load_image_FileCloseAll8(void)
     255, 255, 255, 255, 255, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 255,
     255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 128 0, "
-    "2 = 128 128 128, "
-    "3 = 255 255 255, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(17, 17, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 128 0");
+  IupSetAttribute(image, "2", "128 128 128");
+  IupSetAttribute(image, "3", "255 255 255");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -2849,266 +2819,263 @@ static Ihandle* load_image_EditFind8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 255 255 255, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "255 255 255");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -3136,18 +3103,15 @@ static Ihandle* load_image_ToolsSettings8(void)
     4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4,
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 128 0, "
-    "2 = 128 128 128, "
-    "3 = 192 192 192, "
-    "4 = BGCOLOR, "
-    "5 = 255 255 0, "
-    "6 = 255 255 255, "
-    "7 = 7 7 7"};
-
   Ihandle* image = IupImage(20, 20, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 128 0");
+  IupSetAttribute(image, "2", "128 128 128");
+  IupSetAttribute(image, "3", "192 192 192");
+  IupSetAttribute(image, "4", "BGCOLOR");
+  IupSetAttribute(image, "5", "255 255 0");
+  IupSetAttribute(image, "6", "255 255 255");
+  IupSetAttribute(image, "7", "7 7 7");
   return image;
 }
 
@@ -3171,266 +3135,263 @@ static Ihandle* load_image_ToolsSortAscend8(void)
     255, 3, 3, 3, 3, 3, 3, 255, 255, 255, 255, 255, 1, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 4 2 4, "
-    "2 = 4 2 132, "
-    "3 = 132 2 4, "
-    "4 = 132 130 132, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "4 2 4");
+  IupSetAttribute(image, "2", "4 2 132");
+  IupSetAttribute(image, "3", "132 2 4");
+  IupSetAttribute(image, "4", "132 130 132");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -3454,266 +3415,263 @@ static Ihandle* load_image_EditUndo8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -3737,266 +3695,263 @@ static Ihandle* load_image_ZoomSelection8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 86 86 86, "
-    "2 = 128 128 128, "
-    "3 = 134 134 134, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "86 86 86");
+  IupSetAttribute(image, "2", "128 128 128");
+  IupSetAttribute(image, "3", "134 134 134");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -4020,266 +3975,263 @@ static Ihandle* load_image_MediaRecord8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -4303,266 +4255,263 @@ static Ihandle* load_image_EditCopy8(void)
     255, 255, 255, 255, 255, 255, 255, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 128, "
-    "2 = 255 255 255, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 128");
+  IupSetAttribute(image, "2", "255 255 255");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -4586,266 +4535,263 @@ static Ihandle* load_image_MediaGoToEnd8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -4869,266 +4815,263 @@ static Ihandle* load_image_EditPaste8(void)
     255, 255, 255, 255, 255, 255, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 128, "
-    "2 = 128 128 0, "
-    "3 = 255 255 0, "
-    "4 = 128 128 128, "
-    "5 = 192 192 192, "
-    "6 = 255 255 255, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 128");
+  IupSetAttribute(image, "2", "128 128 0");
+  IupSetAttribute(image, "3", "255 255 0");
+  IupSetAttribute(image, "4", "128 128 128");
+  IupSetAttribute(image, "5", "192 192 192");
+  IupSetAttribute(image, "6", "255 255 255");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -5152,266 +5095,263 @@ static Ihandle* load_image_ZoomActualSize8(void)
     255, 0, 0, 255, 255, 255, 255, 0, 0, 255, 255, 255, 255, 0, 0, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -5435,266 +5375,263 @@ static Ihandle* load_image_MediaStop8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -5718,266 +5655,263 @@ static Ihandle* load_image_WindowsCascade8(void)
     255, 255, 255, 255, 255, 255, 255, 0, 1, 1, 1, 1, 1, 1, 0, 255,
     255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 255 255 255, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "255 255 255");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -6001,266 +5935,263 @@ static Ihandle* load_image_ZoomOut8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 128 128, "
-    "2 = 255 255 255, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 128 128");
+  IupSetAttribute(image, "2", "255 255 255");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -6284,266 +6215,263 @@ static Ihandle* load_image_MediaPause8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -6567,266 +6495,263 @@ static Ihandle* load_image_NavigateRefresh8(void)
     255, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 255, 255,
     255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 128 0, "
-    "2 = 255 255 255, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 128 0");
+  IupSetAttribute(image, "2", "255 255 255");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -6850,266 +6775,263 @@ static Ihandle* load_image_ActionCancel8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 0 0, "
-    "2 = 255 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 0 0");
+  IupSetAttribute(image, "2", "255 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -7133,266 +7055,263 @@ static Ihandle* load_image_FileSave8(void)
     255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 128 0, "
-    "2 = 192 192 192, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 128 0");
+  IupSetAttribute(image, "2", "192 192 192");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -7416,266 +7335,263 @@ static Ihandle* load_image_EditRedo8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -7699,266 +7615,263 @@ static Ihandle* load_image_FontDialog8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 128, "
-    "2 = 128 128 128, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 128");
+  IupSetAttribute(image, "2", "128 128 128");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -7982,266 +7895,263 @@ static Ihandle* load_image_FileSaveAll8(void)
     0, 1, 1, 0, 0, 0, 0, 2, 0, 1, 0, 255, 255, 255, 255, 255,
     255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 128 0, "
-    "2 = 192 192 192, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 128 0");
+  IupSetAttribute(image, "2", "192 192 192");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -8265,266 +8175,263 @@ static Ihandle* load_image_MessageHelp8(void)
     255, 255, 255, 255, 4, 4, 4, 4, 4, 4, 1, 3, 1, 4, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 1, 1, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 64 64 64, "
-    "2 = 64 64 128, "
-    "3 = 255 255 64, "
-    "4 = 128 128 128, "
-    "5 = 224 224 224, "
-    "6 = 255 255 255, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "64 64 64");
+  IupSetAttribute(image, "2", "64 64 128");
+  IupSetAttribute(image, "3", "255 255 64");
+  IupSetAttribute(image, "4", "128 128 128");
+  IupSetAttribute(image, "5", "224 224 224");
+  IupSetAttribute(image, "6", "255 255 255");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -8548,266 +8455,263 @@ static Ihandle* load_image_FontBold8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -8831,266 +8735,263 @@ static Ihandle* load_image_ActionOk8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 43 155 43, "
-    "2 = 92 249 105, "
-    "3 = 98 244 85, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "43 155 43");
+  IupSetAttribute(image, "2", "92 249 105");
+  IupSetAttribute(image, "3", "98 244 85");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -9114,266 +9015,263 @@ static Ihandle* load_image_FileOpen8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 128 0, "
-    "2 = 255 255 0, "
-    "3 = 255 255 255, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 128 0");
+  IupSetAttribute(image, "2", "255 255 0");
+  IupSetAttribute(image, "3", "255 255 255");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -9397,266 +9295,263 @@ static Ihandle* load_image_FileText8(void)
     255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 255 255 255, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "255 255 255");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -9680,266 +9575,263 @@ static Ihandle* load_image_ArrowDown8(void)
     255, 255, 255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 76 178 127, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "76 178 127");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -9963,266 +9855,263 @@ static Ihandle* load_image_FileClose8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 128 128 0, "
-    "2 = 128 128 128, "
-    "3 = 255 255 255, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "128 128 0");
+  IupSetAttribute(image, "2", "128 128 128");
+  IupSetAttribute(image, "3", "255 255 255");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -10246,266 +10135,263 @@ static Ihandle* load_image_NavigateHome8(void)
     255, 255, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 4 2 4, "
-    "2 = 132 2 4, "
-    "3 = 252 254 4, "
-    "4 = 252 254 252, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "4 2 4");
+  IupSetAttribute(image, "2", "132 2 4");
+  IupSetAttribute(image, "3", "252 254 4");
+  IupSetAttribute(image, "4", "252 254 252");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -10529,266 +10415,263 @@ static Ihandle* load_image_MediaForward8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -10812,266 +10695,263 @@ static Ihandle* load_image_MessageInfo8(void)
     255, 255, 255, 255, 2, 1, 1, 1, 1, 1, 2, 2, 2, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 2, 2, 2, 2, 2, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 47 93 185, "
-    "2 = 128 128 128, "
-    "3 = 208 219 235, "
-    "4 = 228 235 242, "
-    "5 = 239 245 251, "
-    "6 = 240 245 252, "
-    "7 = 255 255 255, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "47 93 185");
+  IupSetAttribute(image, "2", "128 128 128");
+  IupSetAttribute(image, "3", "208 219 235");
+  IupSetAttribute(image, "4", "228 235 242");
+  IupSetAttribute(image, "5", "239 245 251");
+  IupSetAttribute(image, "6", "240 245 252");
+  IupSetAttribute(image, "7", "255 255 255");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -11095,266 +10975,263 @@ static Ihandle* load_image_ViewFullScreen8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 4 2 4, "
-    "2 = 4 254 252, "
-    "3 = 132 130 132, "
-    "4 = 252 254 252, "
-    "5 = 255 255 255, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "4 2 4");
+  IupSetAttribute(image, "2", "4 254 252");
+  IupSetAttribute(image, "3", "132 130 132");
+  IupSetAttribute(image, "4", "252 254 252");
+  IupSetAttribute(image, "5", "255 255 255");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -11378,266 +11255,263 @@ static Ihandle* load_image_ArrowLeft8(void)
     255, 255, 255, 255, 255, 255, 255, 0, 1, 0, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 76 178 127, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "76 178 127");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -11661,266 +11535,263 @@ static Ihandle* load_image_MediaRewind8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -11944,266 +11815,263 @@ static Ihandle* load_image_ArrowRight8(void)
     255, 255, 255, 255, 255, 255, 0, 1, 0, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 76 178 127, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "76 178 127");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -12227,266 +12095,263 @@ static Ihandle* load_image_MediaReverse8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -12510,266 +12375,263 @@ static Ihandle* load_image_Print8(void)
     255, 255, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 64 64 64, "
-    "2 = 255 255 64, "
-    "3 = 128 128 128, "
-    "4 = 224 224 224, "
-    "5 = 255 255 255, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "64 64 64");
+  IupSetAttribute(image, "2", "255 255 64");
+  IupSetAttribute(image, "3", "128 128 128");
+  IupSetAttribute(image, "4", "224 224 224");
+  IupSetAttribute(image, "5", "255 255 255");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -12793,266 +12655,263 @@ static Ihandle* load_image_FileProperties8(void)
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 128, "
-    "2 = 192 192 192, "
-    "3 = 255 255 255, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 128");
+  IupSetAttribute(image, "2", "192 192 192");
+  IupSetAttribute(image, "3", "255 255 255");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -13076,266 +12935,263 @@ static Ihandle* load_image_ToolsSortDescend8(void)
     255, 2, 2, 2, 255, 2, 2, 2, 255, 255, 255, 255, 1, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 4 2 4, "
-    "2 = 4 2 132, "
-    "3 = 132 2 4, "
-    "4 = 132 130 132, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "4 2 4");
+  IupSetAttribute(image, "2", "4 2 132");
+  IupSetAttribute(image, "3", "132 2 4");
+  IupSetAttribute(image, "4", "132 130 132");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -13359,266 +13215,263 @@ static Ihandle* load_image_ToolsColor8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 255 255, "
-    "2 = 255 0 0, "
-    "3 = 128 0 128, "
-    "4 = 255 0 255, "
-    "5 = 255 255 0, "
-    "6 = 236 233 216, "
-    "7 = 255 255 255, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 255 255");
+  IupSetAttribute(image, "2", "255 0 0");
+  IupSetAttribute(image, "3", "128 0 128");
+  IupSetAttribute(image, "4", "255 0 255");
+  IupSetAttribute(image, "5", "255 255 0");
+  IupSetAttribute(image, "6", "236 233 216");
+  IupSetAttribute(image, "7", "255 255 255");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -13642,266 +13495,263 @@ static Ihandle* load_image_MediaPlay8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 0 0 0, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -13925,266 +13775,263 @@ static Ihandle* load_image_PrintPreview8(void)
     255, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 255, 255, 1,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 64 64 64, "
-    "2 = 64 255 255, "
-    "3 = 128 128 128, "
-    "4 = 224 224 224, "
-    "5 = 255 255 255, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "64 64 64");
+  IupSetAttribute(image, "2", "64 255 255");
+  IupSetAttribute(image, "3", "128 128 128");
+  IupSetAttribute(image, "4", "224 224 224");
+  IupSetAttribute(image, "5", "255 255 255");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
 
@@ -14208,266 +14055,262 @@ static Ihandle* load_image_WindowsTile8(void)
     0, 0, 0, 0, 0, 0, 0, 255, 255, 0, 0, 0, 0, 0, 0, 0,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-  char colors[] = {
-    "0 = 0 0 0, "
-    "1 = 255 255 255, "
-    "2 = 0 0 0, "
-    "3 = 0 0 0, "
-    "4 = 0 0 0, "
-    "5 = 0 0 0, "
-    "6 = 0 0 0, "
-    "7 = 0 0 0, "
-    "8 = 0 0 0, "
-    "9 = 0 0 0, "
-    "10 = 0 0 0, "
-    "11 = 0 0 0, "
-    "12 = 0 0 0, "
-    "13 = 0 0 0, "
-    "14 = 0 0 0, "
-    "15 = 0 0 0, "
-    "16 = 0 0 0, "
-    "17 = 0 0 0, "
-    "18 = 0 0 0, "
-    "19 = 0 0 0, "
-    "20 = 0 0 0, "
-    "21 = 0 0 0, "
-    "22 = 0 0 0, "
-    "23 = 0 0 0, "
-    "24 = 0 0 0, "
-    "25 = 0 0 0, "
-    "26 = 0 0 0, "
-    "27 = 0 0 0, "
-    "28 = 0 0 0, "
-    "29 = 0 0 0, "
-    "30 = 0 0 0, "
-    "31 = 0 0 0, "
-    "32 = 0 0 0, "
-    "33 = 0 0 0, "
-    "34 = 0 0 0, "
-    "35 = 0 0 0, "
-    "36 = 0 0 0, "
-    "37 = 0 0 0, "
-    "38 = 0 0 0, "
-    "39 = 0 0 0, "
-    "40 = 0 0 0, "
-    "41 = 0 0 0, "
-    "42 = 0 0 0, "
-    "43 = 0 0 0, "
-    "44 = 0 0 0, "
-    "45 = 0 0 0, "
-    "46 = 0 0 0, "
-    "47 = 0 0 0, "
-    "48 = 0 0 0, "
-    "49 = 0 0 0, "
-    "50 = 0 0 0, "
-    "51 = 0 0 0, "
-    "52 = 0 0 0, "
-    "53 = 0 0 0, "
-    "54 = 0 0 0, "
-    "55 = 0 0 0, "
-    "56 = 0 0 0, "
-    "57 = 0 0 0, "
-    "58 = 0 0 0, "
-    "59 = 0 0 0, "
-    "60 = 0 0 0, "
-    "61 = 0 0 0, "
-    "62 = 0 0 0, "
-    "63 = 0 0 0, "
-    "64 = 0 0 0, "
-    "65 = 0 0 0, "
-    "66 = 0 0 0, "
-    "67 = 0 0 0, "
-    "68 = 0 0 0, "
-    "69 = 0 0 0, "
-    "70 = 0 0 0, "
-    "71 = 0 0 0, "
-    "72 = 0 0 0, "
-    "73 = 0 0 0, "
-    "74 = 0 0 0, "
-    "75 = 0 0 0, "
-    "76 = 0 0 0, "
-    "77 = 0 0 0, "
-    "78 = 0 0 0, "
-    "79 = 0 0 0, "
-    "80 = 0 0 0, "
-    "81 = 0 0 0, "
-    "82 = 0 0 0, "
-    "83 = 0 0 0, "
-    "84 = 0 0 0, "
-    "85 = 0 0 0, "
-    "86 = 0 0 0, "
-    "87 = 0 0 0, "
-    "88 = 0 0 0, "
-    "89 = 0 0 0, "
-    "90 = 0 0 0, "
-    "91 = 0 0 0, "
-    "92 = 0 0 0, "
-    "93 = 0 0 0, "
-    "94 = 0 0 0, "
-    "95 = 0 0 0, "
-    "96 = 0 0 0, "
-    "97 = 0 0 0, "
-    "98 = 0 0 0, "
-    "99 = 0 0 0, "
-    "100 = 0 0 0, "
-    "101 = 0 0 0, "
-    "102 = 0 0 0, "
-    "103 = 0 0 0, "
-    "104 = 0 0 0, "
-    "105 = 0 0 0, "
-    "106 = 0 0 0, "
-    "107 = 0 0 0, "
-    "108 = 0 0 0, "
-    "109 = 0 0 0, "
-    "110 = 0 0 0, "
-    "111 = 0 0 0, "
-    "112 = 0 0 0, "
-    "113 = 0 0 0, "
-    "114 = 0 0 0, "
-    "115 = 0 0 0, "
-    "116 = 0 0 0, "
-    "117 = 0 0 0, "
-    "118 = 0 0 0, "
-    "119 = 0 0 0, "
-    "120 = 0 0 0, "
-    "121 = 0 0 0, "
-    "122 = 0 0 0, "
-    "123 = 0 0 0, "
-    "124 = 0 0 0, "
-    "125 = 0 0 0, "
-    "126 = 0 0 0, "
-    "127 = 0 0 0, "
-    "128 = 0 0 0, "
-    "129 = 0 0 0, "
-    "130 = 0 0 0, "
-    "131 = 0 0 0, "
-    "132 = 0 0 0, "
-    "133 = 0 0 0, "
-    "134 = 0 0 0, "
-    "135 = 0 0 0, "
-    "136 = 0 0 0, "
-    "137 = 0 0 0, "
-    "138 = 0 0 0, "
-    "139 = 0 0 0, "
-    "140 = 0 0 0, "
-    "141 = 0 0 0, "
-    "142 = 0 0 0, "
-    "143 = 0 0 0, "
-    "144 = 0 0 0, "
-    "145 = 0 0 0, "
-    "146 = 0 0 0, "
-    "147 = 0 0 0, "
-    "148 = 0 0 0, "
-    "149 = 0 0 0, "
-    "150 = 0 0 0, "
-    "151 = 0 0 0, "
-    "152 = 0 0 0, "
-    "153 = 0 0 0, "
-    "154 = 0 0 0, "
-    "155 = 0 0 0, "
-    "156 = 0 0 0, "
-    "157 = 0 0 0, "
-    "158 = 0 0 0, "
-    "159 = 0 0 0, "
-    "160 = 0 0 0, "
-    "161 = 0 0 0, "
-    "162 = 0 0 0, "
-    "163 = 0 0 0, "
-    "164 = 0 0 0, "
-    "165 = 0 0 0, "
-    "166 = 0 0 0, "
-    "167 = 0 0 0, "
-    "168 = 0 0 0, "
-    "169 = 0 0 0, "
-    "170 = 0 0 0, "
-    "171 = 0 0 0, "
-    "172 = 0 0 0, "
-    "173 = 0 0 0, "
-    "174 = 0 0 0, "
-    "175 = 0 0 0, "
-    "176 = 0 0 0, "
-    "177 = 0 0 0, "
-    "178 = 0 0 0, "
-    "179 = 0 0 0, "
-    "180 = 0 0 0, "
-    "181 = 0 0 0, "
-    "182 = 0 0 0, "
-    "183 = 0 0 0, "
-    "184 = 0 0 0, "
-    "185 = 0 0 0, "
-    "186 = 0 0 0, "
-    "187 = 0 0 0, "
-    "188 = 0 0 0, "
-    "189 = 0 0 0, "
-    "190 = 0 0 0, "
-    "191 = 0 0 0, "
-    "192 = 0 0 0, "
-    "193 = 0 0 0, "
-    "194 = 0 0 0, "
-    "195 = 0 0 0, "
-    "196 = 0 0 0, "
-    "197 = 0 0 0, "
-    "198 = 0 0 0, "
-    "199 = 0 0 0, "
-    "200 = 0 0 0, "
-    "201 = 0 0 0, "
-    "202 = 0 0 0, "
-    "203 = 0 0 0, "
-    "204 = 0 0 0, "
-    "205 = 0 0 0, "
-    "206 = 0 0 0, "
-    "207 = 0 0 0, "
-    "208 = 0 0 0, "
-    "209 = 0 0 0, "
-    "210 = 0 0 0, "
-    "211 = 0 0 0, "
-    "212 = 0 0 0, "
-    "213 = 0 0 0, "
-    "214 = 0 0 0, "
-    "215 = 0 0 0, "
-    "216 = 0 0 0, "
-    "217 = 0 0 0, "
-    "218 = 0 0 0, "
-    "219 = 0 0 0, "
-    "220 = 0 0 0, "
-    "221 = 0 0 0, "
-    "222 = 0 0 0, "
-    "223 = 0 0 0, "
-    "224 = 0 0 0, "
-    "225 = 0 0 0, "
-    "226 = 0 0 0, "
-    "227 = 0 0 0, "
-    "228 = 0 0 0, "
-    "229 = 0 0 0, "
-    "230 = 0 0 0, "
-    "231 = 0 0 0, "
-    "232 = 0 0 0, "
-    "233 = 0 0 0, "
-    "234 = 0 0 0, "
-    "235 = 0 0 0, "
-    "236 = 0 0 0, "
-    "237 = 0 0 0, "
-    "238 = 0 0 0, "
-    "239 = 0 0 0, "
-    "240 = 0 0 0, "
-    "241 = 0 0 0, "
-    "242 = 0 0 0, "
-    "243 = 0 0 0, "
-    "244 = 0 0 0, "
-    "245 = 0 0 0, "
-    "246 = 0 0 0, "
-    "247 = 0 0 0, "
-    "248 = 0 0 0, "
-    "249 = 0 0 0, "
-    "250 = 0 0 0, "
-    "251 = 0 0 0, "
-    "252 = 0 0 0, "
-    "253 = 0 0 0, "
-    "254 = 0 0 0, "
-    "255 = BGCOLOR"};
-
   Ihandle* image = IupImage(16, 16, imgdata);
-  IupSetAttributes(image, colors);
+  IupSetAttribute(image, "0", "0 0 0");
+  IupSetAttribute(image, "1", "255 255 255");
+  IupSetAttribute(image, "2", "0 0 0");
+  IupSetAttribute(image, "3", "0 0 0");
+  IupSetAttribute(image, "4", "0 0 0");
+  IupSetAttribute(image, "5", "0 0 0");
+  IupSetAttribute(image, "6", "0 0 0");
+  IupSetAttribute(image, "7", "0 0 0");
+  IupSetAttribute(image, "8", "0 0 0");
+  IupSetAttribute(image, "9", "0 0 0");
+  IupSetAttribute(image, "10", "0 0 0");
+  IupSetAttribute(image, "11", "0 0 0");
+  IupSetAttribute(image, "12", "0 0 0");
+  IupSetAttribute(image, "13", "0 0 0");
+  IupSetAttribute(image, "14", "0 0 0");
+  IupSetAttribute(image, "15", "0 0 0");
+  IupSetAttribute(image, "16", "0 0 0");
+  IupSetAttribute(image, "17", "0 0 0");
+  IupSetAttribute(image, "18", "0 0 0");
+  IupSetAttribute(image, "19", "0 0 0");
+  IupSetAttribute(image, "20", "0 0 0");
+  IupSetAttribute(image, "21", "0 0 0");
+  IupSetAttribute(image, "22", "0 0 0");
+  IupSetAttribute(image, "23", "0 0 0");
+  IupSetAttribute(image, "24", "0 0 0");
+  IupSetAttribute(image, "25", "0 0 0");
+  IupSetAttribute(image, "26", "0 0 0");
+  IupSetAttribute(image, "27", "0 0 0");
+  IupSetAttribute(image, "28", "0 0 0");
+  IupSetAttribute(image, "29", "0 0 0");
+  IupSetAttribute(image, "30", "0 0 0");
+  IupSetAttribute(image, "31", "0 0 0");
+  IupSetAttribute(image, "32", "0 0 0");
+  IupSetAttribute(image, "33", "0 0 0");
+  IupSetAttribute(image, "34", "0 0 0");
+  IupSetAttribute(image, "35", "0 0 0");
+  IupSetAttribute(image, "36", "0 0 0");
+  IupSetAttribute(image, "37", "0 0 0");
+  IupSetAttribute(image, "38", "0 0 0");
+  IupSetAttribute(image, "39", "0 0 0");
+  IupSetAttribute(image, "40", "0 0 0");
+  IupSetAttribute(image, "41", "0 0 0");
+  IupSetAttribute(image, "42", "0 0 0");
+  IupSetAttribute(image, "43", "0 0 0");
+  IupSetAttribute(image, "44", "0 0 0");
+  IupSetAttribute(image, "45", "0 0 0");
+  IupSetAttribute(image, "46", "0 0 0");
+  IupSetAttribute(image, "47", "0 0 0");
+  IupSetAttribute(image, "48", "0 0 0");
+  IupSetAttribute(image, "49", "0 0 0");
+  IupSetAttribute(image, "50", "0 0 0");
+  IupSetAttribute(image, "51", "0 0 0");
+  IupSetAttribute(image, "52", "0 0 0");
+  IupSetAttribute(image, "53", "0 0 0");
+  IupSetAttribute(image, "54", "0 0 0");
+  IupSetAttribute(image, "55", "0 0 0");
+  IupSetAttribute(image, "56", "0 0 0");
+  IupSetAttribute(image, "57", "0 0 0");
+  IupSetAttribute(image, "58", "0 0 0");
+  IupSetAttribute(image, "59", "0 0 0");
+  IupSetAttribute(image, "60", "0 0 0");
+  IupSetAttribute(image, "61", "0 0 0");
+  IupSetAttribute(image, "62", "0 0 0");
+  IupSetAttribute(image, "63", "0 0 0");
+  IupSetAttribute(image, "64", "0 0 0");
+  IupSetAttribute(image, "65", "0 0 0");
+  IupSetAttribute(image, "66", "0 0 0");
+  IupSetAttribute(image, "67", "0 0 0");
+  IupSetAttribute(image, "68", "0 0 0");
+  IupSetAttribute(image, "69", "0 0 0");
+  IupSetAttribute(image, "70", "0 0 0");
+  IupSetAttribute(image, "71", "0 0 0");
+  IupSetAttribute(image, "72", "0 0 0");
+  IupSetAttribute(image, "73", "0 0 0");
+  IupSetAttribute(image, "74", "0 0 0");
+  IupSetAttribute(image, "75", "0 0 0");
+  IupSetAttribute(image, "76", "0 0 0");
+  IupSetAttribute(image, "77", "0 0 0");
+  IupSetAttribute(image, "78", "0 0 0");
+  IupSetAttribute(image, "79", "0 0 0");
+  IupSetAttribute(image, "80", "0 0 0");
+  IupSetAttribute(image, "81", "0 0 0");
+  IupSetAttribute(image, "82", "0 0 0");
+  IupSetAttribute(image, "83", "0 0 0");
+  IupSetAttribute(image, "84", "0 0 0");
+  IupSetAttribute(image, "85", "0 0 0");
+  IupSetAttribute(image, "86", "0 0 0");
+  IupSetAttribute(image, "87", "0 0 0");
+  IupSetAttribute(image, "88", "0 0 0");
+  IupSetAttribute(image, "89", "0 0 0");
+  IupSetAttribute(image, "90", "0 0 0");
+  IupSetAttribute(image, "91", "0 0 0");
+  IupSetAttribute(image, "92", "0 0 0");
+  IupSetAttribute(image, "93", "0 0 0");
+  IupSetAttribute(image, "94", "0 0 0");
+  IupSetAttribute(image, "95", "0 0 0");
+  IupSetAttribute(image, "96", "0 0 0");
+  IupSetAttribute(image, "97", "0 0 0");
+  IupSetAttribute(image, "98", "0 0 0");
+  IupSetAttribute(image, "99", "0 0 0");
+  IupSetAttribute(image, "100", "0 0 0");
+  IupSetAttribute(image, "101", "0 0 0");
+  IupSetAttribute(image, "102", "0 0 0");
+  IupSetAttribute(image, "103", "0 0 0");
+  IupSetAttribute(image, "104", "0 0 0");
+  IupSetAttribute(image, "105", "0 0 0");
+  IupSetAttribute(image, "106", "0 0 0");
+  IupSetAttribute(image, "107", "0 0 0");
+  IupSetAttribute(image, "108", "0 0 0");
+  IupSetAttribute(image, "109", "0 0 0");
+  IupSetAttribute(image, "110", "0 0 0");
+  IupSetAttribute(image, "111", "0 0 0");
+  IupSetAttribute(image, "112", "0 0 0");
+  IupSetAttribute(image, "113", "0 0 0");
+  IupSetAttribute(image, "114", "0 0 0");
+  IupSetAttribute(image, "115", "0 0 0");
+  IupSetAttribute(image, "116", "0 0 0");
+  IupSetAttribute(image, "117", "0 0 0");
+  IupSetAttribute(image, "118", "0 0 0");
+  IupSetAttribute(image, "119", "0 0 0");
+  IupSetAttribute(image, "120", "0 0 0");
+  IupSetAttribute(image, "121", "0 0 0");
+  IupSetAttribute(image, "122", "0 0 0");
+  IupSetAttribute(image, "123", "0 0 0");
+  IupSetAttribute(image, "124", "0 0 0");
+  IupSetAttribute(image, "125", "0 0 0");
+  IupSetAttribute(image, "126", "0 0 0");
+  IupSetAttribute(image, "127", "0 0 0");
+  IupSetAttribute(image, "128", "0 0 0");
+  IupSetAttribute(image, "129", "0 0 0");
+  IupSetAttribute(image, "130", "0 0 0");
+  IupSetAttribute(image, "131", "0 0 0");
+  IupSetAttribute(image, "132", "0 0 0");
+  IupSetAttribute(image, "133", "0 0 0");
+  IupSetAttribute(image, "134", "0 0 0");
+  IupSetAttribute(image, "135", "0 0 0");
+  IupSetAttribute(image, "136", "0 0 0");
+  IupSetAttribute(image, "137", "0 0 0");
+  IupSetAttribute(image, "138", "0 0 0");
+  IupSetAttribute(image, "139", "0 0 0");
+  IupSetAttribute(image, "140", "0 0 0");
+  IupSetAttribute(image, "141", "0 0 0");
+  IupSetAttribute(image, "142", "0 0 0");
+  IupSetAttribute(image, "143", "0 0 0");
+  IupSetAttribute(image, "144", "0 0 0");
+  IupSetAttribute(image, "145", "0 0 0");
+  IupSetAttribute(image, "146", "0 0 0");
+  IupSetAttribute(image, "147", "0 0 0");
+  IupSetAttribute(image, "148", "0 0 0");
+  IupSetAttribute(image, "149", "0 0 0");
+  IupSetAttribute(image, "150", "0 0 0");
+  IupSetAttribute(image, "151", "0 0 0");
+  IupSetAttribute(image, "152", "0 0 0");
+  IupSetAttribute(image, "153", "0 0 0");
+  IupSetAttribute(image, "154", "0 0 0");
+  IupSetAttribute(image, "155", "0 0 0");
+  IupSetAttribute(image, "156", "0 0 0");
+  IupSetAttribute(image, "157", "0 0 0");
+  IupSetAttribute(image, "158", "0 0 0");
+  IupSetAttribute(image, "159", "0 0 0");
+  IupSetAttribute(image, "160", "0 0 0");
+  IupSetAttribute(image, "161", "0 0 0");
+  IupSetAttribute(image, "162", "0 0 0");
+  IupSetAttribute(image, "163", "0 0 0");
+  IupSetAttribute(image, "164", "0 0 0");
+  IupSetAttribute(image, "165", "0 0 0");
+  IupSetAttribute(image, "166", "0 0 0");
+  IupSetAttribute(image, "167", "0 0 0");
+  IupSetAttribute(image, "168", "0 0 0");
+  IupSetAttribute(image, "169", "0 0 0");
+  IupSetAttribute(image, "170", "0 0 0");
+  IupSetAttribute(image, "171", "0 0 0");
+  IupSetAttribute(image, "172", "0 0 0");
+  IupSetAttribute(image, "173", "0 0 0");
+  IupSetAttribute(image, "174", "0 0 0");
+  IupSetAttribute(image, "175", "0 0 0");
+  IupSetAttribute(image, "176", "0 0 0");
+  IupSetAttribute(image, "177", "0 0 0");
+  IupSetAttribute(image, "178", "0 0 0");
+  IupSetAttribute(image, "179", "0 0 0");
+  IupSetAttribute(image, "180", "0 0 0");
+  IupSetAttribute(image, "181", "0 0 0");
+  IupSetAttribute(image, "182", "0 0 0");
+  IupSetAttribute(image, "183", "0 0 0");
+  IupSetAttribute(image, "184", "0 0 0");
+  IupSetAttribute(image, "185", "0 0 0");
+  IupSetAttribute(image, "186", "0 0 0");
+  IupSetAttribute(image, "187", "0 0 0");
+  IupSetAttribute(image, "188", "0 0 0");
+  IupSetAttribute(image, "189", "0 0 0");
+  IupSetAttribute(image, "190", "0 0 0");
+  IupSetAttribute(image, "191", "0 0 0");
+  IupSetAttribute(image, "192", "0 0 0");
+  IupSetAttribute(image, "193", "0 0 0");
+  IupSetAttribute(image, "194", "0 0 0");
+  IupSetAttribute(image, "195", "0 0 0");
+  IupSetAttribute(image, "196", "0 0 0");
+  IupSetAttribute(image, "197", "0 0 0");
+  IupSetAttribute(image, "198", "0 0 0");
+  IupSetAttribute(image, "199", "0 0 0");
+  IupSetAttribute(image, "200", "0 0 0");
+  IupSetAttribute(image, "201", "0 0 0");
+  IupSetAttribute(image, "202", "0 0 0");
+  IupSetAttribute(image, "203", "0 0 0");
+  IupSetAttribute(image, "204", "0 0 0");
+  IupSetAttribute(image, "205", "0 0 0");
+  IupSetAttribute(image, "206", "0 0 0");
+  IupSetAttribute(image, "207", "0 0 0");
+  IupSetAttribute(image, "208", "0 0 0");
+  IupSetAttribute(image, "209", "0 0 0");
+  IupSetAttribute(image, "210", "0 0 0");
+  IupSetAttribute(image, "211", "0 0 0");
+  IupSetAttribute(image, "212", "0 0 0");
+  IupSetAttribute(image, "213", "0 0 0");
+  IupSetAttribute(image, "214", "0 0 0");
+  IupSetAttribute(image, "215", "0 0 0");
+  IupSetAttribute(image, "216", "0 0 0");
+  IupSetAttribute(image, "217", "0 0 0");
+  IupSetAttribute(image, "218", "0 0 0");
+  IupSetAttribute(image, "219", "0 0 0");
+  IupSetAttribute(image, "220", "0 0 0");
+  IupSetAttribute(image, "221", "0 0 0");
+  IupSetAttribute(image, "222", "0 0 0");
+  IupSetAttribute(image, "223", "0 0 0");
+  IupSetAttribute(image, "224", "0 0 0");
+  IupSetAttribute(image, "225", "0 0 0");
+  IupSetAttribute(image, "226", "0 0 0");
+  IupSetAttribute(image, "227", "0 0 0");
+  IupSetAttribute(image, "228", "0 0 0");
+  IupSetAttribute(image, "229", "0 0 0");
+  IupSetAttribute(image, "230", "0 0 0");
+  IupSetAttribute(image, "231", "0 0 0");
+  IupSetAttribute(image, "232", "0 0 0");
+  IupSetAttribute(image, "233", "0 0 0");
+  IupSetAttribute(image, "234", "0 0 0");
+  IupSetAttribute(image, "235", "0 0 0");
+  IupSetAttribute(image, "236", "0 0 0");
+  IupSetAttribute(image, "237", "0 0 0");
+  IupSetAttribute(image, "238", "0 0 0");
+  IupSetAttribute(image, "239", "0 0 0");
+  IupSetAttribute(image, "240", "0 0 0");
+  IupSetAttribute(image, "241", "0 0 0");
+  IupSetAttribute(image, "242", "0 0 0");
+  IupSetAttribute(image, "243", "0 0 0");
+  IupSetAttribute(image, "244", "0 0 0");
+  IupSetAttribute(image, "245", "0 0 0");
+  IupSetAttribute(image, "246", "0 0 0");
+  IupSetAttribute(image, "247", "0 0 0");
+  IupSetAttribute(image, "248", "0 0 0");
+  IupSetAttribute(image, "249", "0 0 0");
+  IupSetAttribute(image, "250", "0 0 0");
+  IupSetAttribute(image, "251", "0 0 0");
+  IupSetAttribute(image, "252", "0 0 0");
+  IupSetAttribute(image, "253", "0 0 0");
+  IupSetAttribute(image, "254", "0 0 0");
+  IupSetAttribute(image, "255", "BGCOLOR");
   return image;
 }
-

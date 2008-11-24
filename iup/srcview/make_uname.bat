@@ -8,15 +8,19 @@ goto end
 
 :iupexe32
 call tecmake vc8 relink %2 %3 %4 %5 %6 %7
+call tecmake vc8 "USE_GTK=Yes" relink %2 %3 %4 %5 %6 %7
 goto end
 
 :iupexe64
 call tecmake vc8_64 relink %2 %3 %4 %5 %6 %7
+call tecmake vc8_64 "USE_GTK=Yes" relink %2 %3 %4 %5 %6 %7
 goto end
 
 :iupexe
 call tecmake vc8 relink %2 %3 %4 %5 %6 %7
+call tecmake vc8 "USE_GTK=Yes" relink %2 %3 %4 %5 %6 %7
 call tecmake vc8_64 relink %2 %3 %4 %5 %6 %7
+call tecmake vc8_64 "USE_GTK=Yes" relink %2 %3 %4 %5 %6 %7
 goto end
 
 :end

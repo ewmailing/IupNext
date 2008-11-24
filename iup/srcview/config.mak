@@ -12,8 +12,8 @@ USE_CD = Yes
 USE_IUPCONTROLS = Yes
 USE_IUP = Yes
 
-ifneq ($(findstring Linux, $(TEC_UNAME)), )
-#  USE_GTK=Yes
+ifdef USE_GTK
+  APPNAME = iupviewgtk
 endif
 
 ifeq "$(TEC_UNAME)" "SunOS510x86"
