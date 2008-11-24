@@ -458,8 +458,8 @@ static void iImageUnMapMethod(Ihandle* ih)
 
 static int iImageCreate(Ihandle* ih, void** params, int bpp)
 {
-  int width, height, channels;
-  unsigned char *imgdata, *copy_imgdata;
+  int width, height, channels, count;
+  unsigned char *imgdata;
 
   iupASSERT(params!=NULL);
   if (!params)
@@ -467,7 +467,6 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
 
   width = (int)(params[0]);
   height = (int)(params[1]);
-  imgdata = params[2];      /* can be NULL */
 
   iupASSERT(width>0);
   iupASSERT(height>0);
@@ -484,10 +483,25 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
   else if (bpp == 32)
     channels = 4;
 
-  copy_imgdata = (unsigned char *)malloc(width*height*channels);
-  if (copy_imgdata && imgdata)
-    memcpy(copy_imgdata, imgdata, width*height*channels);
-  ih->handle = (InativeHandle*)copy_imgdata;  /* IupImage is always mapped */
+  count = width*height*channels;
+  imgdata = (unsigned char *)malloc(count);
+
+  if (!params[2] || !params[3]) /* compacted in one pointer */
+  {
+    if (imgdata && params[2])
+      memcpy(imgdata, params[2], count);
+  }
+  else /* one param for each element */
+  {
+    int i=0;
+    while(params[i+2] && i < count)
+    {
+      imgdata[i] = (unsigned char)((int)(params[i+2]));
+      i++;
+    }
+  }
+
+  ih->handle = (InativeHandle*)imgdata;  /* IupImage is always mapped */
 
   iupAttribSetInt(ih, "BPP", bpp);
   iupAttribSetInt(ih, "CHANNELS", channels);

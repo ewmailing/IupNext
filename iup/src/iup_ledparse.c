@@ -175,20 +175,19 @@ static Ihandle* iParseControl(Iclass *ic)
       }
       else    /* array */
       {
-        int j = i, match;
+        int match;
         do
         {
           if (num_arg == i)
           {
             num_arg++;
-
             if (num_arg >= alloc_arg)
             {
               alloc_arg = num_arg+20;
               params = realloc(params, sizeof(void*)*alloc_arg);
             }
           }
-          params[i] = iParseControlParam(format[j]);
+          params[i] = iParseControlParam(p_format);
           i++;
           IPARSE_RETURN_IF_ERRO2(iparse_error, params);
           match = iupLexSeenMatch(IUPLEX_TK_COMMA,&iparse_error);
