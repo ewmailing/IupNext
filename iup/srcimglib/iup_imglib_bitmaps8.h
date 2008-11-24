@@ -19,6 +19,7 @@ static Ihandle* load_image_Zoom8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 128 128");
   IupSetAttribute(image, "2", "255 255 255");
@@ -275,6 +276,7 @@ static Ihandle* load_image_Zoom8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -299,6 +301,7 @@ static Ihandle* load_image_EditCut8(void)
     255, 255, 255, 255, 255, 1, 1, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 128");
   IupSetAttribute(image, "2", "0 0 0");
@@ -555,6 +558,7 @@ static Ihandle* load_image_EditCut8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -579,6 +583,7 @@ static Ihandle* load_image_EditErase8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "255 255 255");
   IupSetAttribute(image, "2", "0 0 0");
@@ -835,6 +840,7 @@ static Ihandle* load_image_EditErase8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -859,6 +865,7 @@ static Ihandle* load_image_ArrowUp8(void)
     255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "76 178 127");
   IupSetAttribute(image, "2", "0 0 0");
@@ -1115,6 +1122,7 @@ static Ihandle* load_image_ArrowUp8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -1139,6 +1147,7 @@ static Ihandle* load_image_MediaGoToBegin8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -1395,6 +1404,7 @@ static Ihandle* load_image_MediaGoToBegin8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -1419,6 +1429,7 @@ static Ihandle* load_image_MessageError8(void)
     255, 255, 255, 255, 255, 255, 3, 3, 3, 3, 3, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 0 0");
   IupSetAttribute(image, "2", "255 0 0");
@@ -1675,6 +1686,7 @@ static Ihandle* load_image_MessageError8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -1699,6 +1711,7 @@ static Ihandle* load_image_ZoomIn8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 128 128");
   IupSetAttribute(image, "2", "255 255 255");
@@ -1955,6 +1968,7 @@ static Ihandle* load_image_ZoomIn8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -1979,6 +1993,7 @@ static Ihandle* load_image_FontItalic8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -2235,6 +2250,7 @@ static Ihandle* load_image_FontItalic8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -2259,6 +2275,7 @@ static Ihandle* load_image_FileNew8(void)
     255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "255 255 0");
   IupSetAttribute(image, "2", "128 128 128");
@@ -2515,6 +2532,7 @@ static Ihandle* load_image_FileNew8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -2540,6 +2558,7 @@ static Ihandle* load_image_FileCloseAll8(void)
     255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255};
 
   Ihandle* image = IupImage(17, 17, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 128 0");
   IupSetAttribute(image, "2", "128 128 128");
@@ -2796,6 +2815,7 @@ static Ihandle* load_image_FileCloseAll8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -2820,6 +2840,7 @@ static Ihandle* load_image_EditFind8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "255 255 255");
   IupSetAttribute(image, "2", "0 0 0");
@@ -3076,6 +3097,7 @@ static Ihandle* load_image_EditFind8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -3104,6 +3126,7 @@ static Ihandle* load_image_ToolsSettings8(void)
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4};
 
   Ihandle* image = IupImage(20, 20, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 128 0");
   IupSetAttribute(image, "2", "128 128 128");
@@ -3112,6 +3135,7 @@ static Ihandle* load_image_ToolsSettings8(void)
   IupSetAttribute(image, "5", "255 255 0");
   IupSetAttribute(image, "6", "255 255 255");
   IupSetAttribute(image, "7", "7 7 7");
+
   return image;
 }
 
@@ -3136,6 +3160,7 @@ static Ihandle* load_image_ToolsSortAscend8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "4 2 4");
   IupSetAttribute(image, "2", "4 2 132");
@@ -3392,6 +3417,7 @@ static Ihandle* load_image_ToolsSortAscend8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -3416,6 +3442,7 @@ static Ihandle* load_image_EditUndo8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -3672,6 +3699,7 @@ static Ihandle* load_image_EditUndo8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -3696,6 +3724,7 @@ static Ihandle* load_image_ZoomSelection8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "86 86 86");
   IupSetAttribute(image, "2", "128 128 128");
@@ -3952,6 +3981,7 @@ static Ihandle* load_image_ZoomSelection8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -3976,6 +4006,7 @@ static Ihandle* load_image_MediaRecord8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -4232,6 +4263,7 @@ static Ihandle* load_image_MediaRecord8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -4256,6 +4288,7 @@ static Ihandle* load_image_EditCopy8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 128");
   IupSetAttribute(image, "2", "255 255 255");
@@ -4512,6 +4545,7 @@ static Ihandle* load_image_EditCopy8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -4536,6 +4570,7 @@ static Ihandle* load_image_MediaGoToEnd8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -4792,6 +4827,7 @@ static Ihandle* load_image_MediaGoToEnd8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -4816,6 +4852,7 @@ static Ihandle* load_image_EditPaste8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 128");
   IupSetAttribute(image, "2", "128 128 0");
@@ -5072,6 +5109,7 @@ static Ihandle* load_image_EditPaste8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -5096,6 +5134,7 @@ static Ihandle* load_image_ZoomActualSize8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -5352,6 +5391,7 @@ static Ihandle* load_image_ZoomActualSize8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -5376,6 +5416,7 @@ static Ihandle* load_image_MediaStop8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -5632,6 +5673,7 @@ static Ihandle* load_image_MediaStop8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -5656,6 +5698,7 @@ static Ihandle* load_image_WindowsCascade8(void)
     255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "255 255 255");
   IupSetAttribute(image, "2", "0 0 0");
@@ -5912,6 +5955,7 @@ static Ihandle* load_image_WindowsCascade8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -5936,6 +5980,7 @@ static Ihandle* load_image_ZoomOut8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 128 128");
   IupSetAttribute(image, "2", "255 255 255");
@@ -6192,6 +6237,7 @@ static Ihandle* load_image_ZoomOut8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -6216,6 +6262,7 @@ static Ihandle* load_image_MediaPause8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -6472,6 +6519,7 @@ static Ihandle* load_image_MediaPause8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -6496,6 +6544,7 @@ static Ihandle* load_image_NavigateRefresh8(void)
     255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 128 0");
   IupSetAttribute(image, "2", "255 255 255");
@@ -6752,6 +6801,7 @@ static Ihandle* load_image_NavigateRefresh8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -6776,6 +6826,7 @@ static Ihandle* load_image_ActionCancel8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 0 0");
   IupSetAttribute(image, "2", "255 0 0");
@@ -7032,6 +7083,7 @@ static Ihandle* load_image_ActionCancel8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -7056,6 +7108,7 @@ static Ihandle* load_image_FileSave8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 128 0");
   IupSetAttribute(image, "2", "192 192 192");
@@ -7312,6 +7365,7 @@ static Ihandle* load_image_FileSave8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -7336,6 +7390,7 @@ static Ihandle* load_image_EditRedo8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -7592,6 +7647,7 @@ static Ihandle* load_image_EditRedo8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -7616,6 +7672,7 @@ static Ihandle* load_image_FontDialog8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 128");
   IupSetAttribute(image, "2", "128 128 128");
@@ -7872,6 +7929,7 @@ static Ihandle* load_image_FontDialog8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -7896,6 +7954,7 @@ static Ihandle* load_image_FileSaveAll8(void)
     255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 128 0");
   IupSetAttribute(image, "2", "192 192 192");
@@ -8152,6 +8211,7 @@ static Ihandle* load_image_FileSaveAll8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -8176,6 +8236,7 @@ static Ihandle* load_image_MessageHelp8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 1, 1, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "64 64 64");
   IupSetAttribute(image, "2", "64 64 128");
@@ -8432,6 +8493,7 @@ static Ihandle* load_image_MessageHelp8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -8456,6 +8518,7 @@ static Ihandle* load_image_FontBold8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -8712,6 +8775,7 @@ static Ihandle* load_image_FontBold8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -8736,6 +8800,7 @@ static Ihandle* load_image_ActionOk8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "43 155 43");
   IupSetAttribute(image, "2", "92 249 105");
@@ -8992,6 +9057,7 @@ static Ihandle* load_image_ActionOk8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -9016,6 +9082,7 @@ static Ihandle* load_image_FileOpen8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 128 0");
   IupSetAttribute(image, "2", "255 255 0");
@@ -9272,6 +9339,7 @@ static Ihandle* load_image_FileOpen8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -9296,6 +9364,7 @@ static Ihandle* load_image_FileText8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "255 255 255");
   IupSetAttribute(image, "2", "0 0 0");
@@ -9552,6 +9621,7 @@ static Ihandle* load_image_FileText8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -9576,6 +9646,7 @@ static Ihandle* load_image_ArrowDown8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "76 178 127");
   IupSetAttribute(image, "2", "0 0 0");
@@ -9832,6 +9903,7 @@ static Ihandle* load_image_ArrowDown8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -9856,6 +9928,7 @@ static Ihandle* load_image_FileClose8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "128 128 0");
   IupSetAttribute(image, "2", "128 128 128");
@@ -10112,6 +10185,7 @@ static Ihandle* load_image_FileClose8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -10136,6 +10210,7 @@ static Ihandle* load_image_NavigateHome8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "4 2 4");
   IupSetAttribute(image, "2", "132 2 4");
@@ -10392,6 +10467,7 @@ static Ihandle* load_image_NavigateHome8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -10416,6 +10492,7 @@ static Ihandle* load_image_MediaForward8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -10672,6 +10749,7 @@ static Ihandle* load_image_MediaForward8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -10696,6 +10774,7 @@ static Ihandle* load_image_MessageInfo8(void)
     255, 255, 255, 255, 255, 255, 2, 2, 2, 2, 2, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "47 93 185");
   IupSetAttribute(image, "2", "128 128 128");
@@ -10952,6 +11031,7 @@ static Ihandle* load_image_MessageInfo8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -10976,6 +11056,7 @@ static Ihandle* load_image_ViewFullScreen8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "4 2 4");
   IupSetAttribute(image, "2", "4 254 252");
@@ -11232,6 +11313,7 @@ static Ihandle* load_image_ViewFullScreen8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -11256,6 +11338,7 @@ static Ihandle* load_image_ArrowLeft8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "76 178 127");
   IupSetAttribute(image, "2", "0 0 0");
@@ -11512,6 +11595,7 @@ static Ihandle* load_image_ArrowLeft8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -11536,6 +11620,7 @@ static Ihandle* load_image_MediaRewind8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -11792,6 +11877,7 @@ static Ihandle* load_image_MediaRewind8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -11816,6 +11902,7 @@ static Ihandle* load_image_ArrowRight8(void)
     255, 255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "76 178 127");
   IupSetAttribute(image, "2", "0 0 0");
@@ -12072,6 +12159,7 @@ static Ihandle* load_image_ArrowRight8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -12096,6 +12184,7 @@ static Ihandle* load_image_MediaReverse8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -12352,6 +12441,7 @@ static Ihandle* load_image_MediaReverse8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -12376,6 +12466,7 @@ static Ihandle* load_image_Print8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "64 64 64");
   IupSetAttribute(image, "2", "255 255 64");
@@ -12632,6 +12723,7 @@ static Ihandle* load_image_Print8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -12656,6 +12748,7 @@ static Ihandle* load_image_FileProperties8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 128");
   IupSetAttribute(image, "2", "192 192 192");
@@ -12912,6 +13005,7 @@ static Ihandle* load_image_FileProperties8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -12936,6 +13030,7 @@ static Ihandle* load_image_ToolsSortDescend8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "4 2 4");
   IupSetAttribute(image, "2", "4 2 132");
@@ -13192,6 +13287,7 @@ static Ihandle* load_image_ToolsSortDescend8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -13216,6 +13312,7 @@ static Ihandle* load_image_ToolsColor8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 255 255");
   IupSetAttribute(image, "2", "255 0 0");
@@ -13472,6 +13569,7 @@ static Ihandle* load_image_ToolsColor8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -13496,6 +13594,7 @@ static Ihandle* load_image_MediaPlay8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "0 0 0");
   IupSetAttribute(image, "2", "0 0 0");
@@ -13752,6 +13851,7 @@ static Ihandle* load_image_MediaPlay8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -13776,6 +13876,7 @@ static Ihandle* load_image_PrintPreview8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "64 64 64");
   IupSetAttribute(image, "2", "64 255 255");
@@ -14032,6 +14133,7 @@ static Ihandle* load_image_PrintPreview8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
 
@@ -14056,6 +14158,7 @@ static Ihandle* load_image_WindowsTile8(void)
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
   Ihandle* image = IupImage(16, 16, imgdata);
+
   IupSetAttribute(image, "0", "0 0 0");
   IupSetAttribute(image, "1", "255 255 255");
   IupSetAttribute(image, "2", "0 0 0");
@@ -14312,5 +14415,7 @@ static Ihandle* load_image_WindowsTile8(void)
   IupSetAttribute(image, "253", "0 0 0");
   IupSetAttribute(image, "254", "0 0 0");
   IupSetAttribute(image, "255", "BGCOLOR");
+
   return image;
 }
+

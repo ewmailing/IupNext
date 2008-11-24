@@ -486,18 +486,17 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
   count = width*height*channels;
   imgdata = (unsigned char *)malloc(count);
 
-  if (!params[2] || !params[3]) /* compacted in one pointer */
+  if (((int)(params[2])==-1) || ((int)(params[3])==-1)) /* compacted in one pointer */
   {
-    if (imgdata && params[2])
+    if (imgdata && (int)(params[2])!=-1)
       memcpy(imgdata, params[2], count);
   }
   else /* one param for each element */
   {
-    int i=0;
-    while(params[i+2] && i < count)
+    int i;
+    for(i=0; i<count; i++)
     {
       imgdata[i] = (unsigned char)((int)(params[i+2]));
-      i++;
     }
   }
 
@@ -536,8 +535,8 @@ Ihandle* IupImage(int width, int height, const unsigned char *imgdata)
   void *params[4];
   params[0] = (void*)width;
   params[1] = (void*)height;
-  params[2] = (void*)imgdata;
-  params[3] = NULL;
+  params[2] = imgdata? (void*)imgdata: (void*)-1;
+  params[3] = (void*)-1;
   return IupCreatev("image", params);
 }
 
@@ -546,8 +545,8 @@ Ihandle* IupImageRGB(int width, int height, const unsigned char *imgdata)
   void *params[4];
   params[0] = (void*)width;
   params[1] = (void*)height;
-  params[2] = (void*)imgdata;
-  params[3] = NULL;
+  params[2] = imgdata? (void*)imgdata: (void*)-1;
+  params[3] = (void*)-1;
   return IupCreatev("imagergb", params);
 }
 
@@ -556,8 +555,8 @@ Ihandle* IupImageRGBA(int width, int height, const unsigned char *imgdata)
   void *params[4];
   params[0] = (void*)width;
   params[1] = (void*)height;
-  params[2] = (void*)imgdata;
-  params[3] = NULL;
+  params[2] = imgdata? (void*)imgdata: (void*)-1;
+  params[3] = (void*)-1;
   return IupCreatev("imagergba", params);
 }
 

@@ -4,6 +4,8 @@
  * See Copyright Notice in iup.h
  */
 
+#include <stdlib.h>
+
 #include "iup.h"
 
 #include "iup_str.h"
@@ -240,6 +242,37 @@ void IupImageLibOpen(void)
     iupImageStockSet("IUP_LogoTecgrafPUC-Rio", load_image_LogoTecgrafPUC_Rio, 0);
     iupImageStockSet("IUP_LogoPetrobras", load_image_LogoPetrobras, 0);
   }
+
+  if (win32)
+  {
+    iupImageStockSet("IUP_DeviceCamera", load_image_DeviceCamera, 0);
+    iupImageStockSet("IUP_DeviceCD", load_image_DeviceCD, 0);
+    iupImageStockSet("IUP_DeviceCellPhone", load_image_DeviceCellPhone, 0);
+    iupImageStockSet("IUP_DeviceComputer", load_image_DeviceComputer, 0);
+    iupImageStockSet("IUP_DeviceFax", load_image_DeviceFax, 0);
+    iupImageStockSet("IUP_DeviceMP3", load_image_DeviceMP3, 0);
+    iupImageStockSet("IUP_DeviceNetwork", load_image_DeviceNetwork, 0);
+    iupImageStockSet("IUP_DevicePDA", load_image_DevicePDA, 0);
+    iupImageStockSet("IUP_DevicePrinter", load_image_DevicePrinter, 0);
+    iupImageStockSet("IUP_DeviceScanner", load_image_DeviceScanner, 0);
+    iupImageStockSet("IUP_DeviceSound", load_image_DeviceSound, 0);
+    iupImageStockSet("IUP_DeviceVideo", load_image_DeviceVideo, 0);
+
+    iupImageStockSet("IUP_LogoMessageError", load_image_LogoMessageError, 0);
+    iupImageStockSet("IUP_LogoMessageHelp", load_image_LogoMessageHelp, 0);
+    iupImageStockSet("IUP_LogoMessageInfo", load_image_LogoMessageInfo, 0);
+    iupImageStockSet("IUP_LogoMessageSecurity", load_image_LogoMessageSecurity, 0);
+    iupImageStockSet("IUP_LogoMessageWarning", load_image_LogoMessageWarning, 0);
+  }
+
+  if (gtk)
+  {
+    iupImageStockSet("IUP_LogoMessageError", 0, "gtk-dialog-error");
+    iupImageStockSet("IUP_LogoMessageHelp", 0, "gtk-dialog-question");
+    iupImageStockSet("IUP_LogoMessageInfo", 0, "gtk-dialog-info");
+    iupImageStockSet("IUP_LogoMessageSecurity", 0, "gtk-dialog-authentication");
+    iupImageStockSet("IUP_LogoMessageWarning", 0, "gtk-dialog-warning");
+  }
 }
  
 void iupImageLibLoadAll(void)
@@ -313,4 +346,25 @@ void iupImageLibLoadAll(void)
   iupImageStockLoad("IUP_LogoLua");
   iupImageStockLoad("IUP_LogoTecgrafPUC-Rio");
   iupImageStockLoad("IUP_LogoPetrobras");
+
+  /* Logos - Win32 Only */
+  iupImageStockLoad("IUP_DeviceCamera");
+  iupImageStockLoad("IUP_DeviceCD");
+  iupImageStockLoad("IUP_DeviceCellPhone");
+  iupImageStockLoad("IUP_DeviceComputer");
+  iupImageStockLoad("IUP_DeviceFax");
+  iupImageStockLoad("IUP_DeviceMP3");
+  iupImageStockLoad("IUP_DeviceNetwork");
+  iupImageStockLoad("IUP_DevicePDA");
+  iupImageStockLoad("IUP_DevicePrinter");
+  iupImageStockLoad("IUP_DeviceScanner");
+  iupImageStockLoad("IUP_DeviceSound");
+  iupImageStockLoad("IUP_DeviceVideo");
+
+  /* Logos - GTK and Win32 Only */
+  iupImageStockLoad("IUP_LogoMessageError");
+  iupImageStockLoad("IUP_LogoMessageHelp");
+  iupImageStockLoad("IUP_LogoMessageInfo");
+  iupImageStockLoad("IUP_LogoMessageSecurity");
+  iupImageStockLoad("IUP_LogoMessageWarning");
 }

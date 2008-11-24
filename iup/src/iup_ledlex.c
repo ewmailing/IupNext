@@ -95,9 +95,10 @@ int iupLexSeenMatch(int t, int *erro)
 
 unsigned char iupLexByte(void)
 {
-  unsigned char b;
-  sscanf(ilex.name,"%c", &b);
-  return b;
+  unsigned int b;
+  sscanf(ilex.name,"%u", &b);  /* read as integer to avoid reading number as characters */
+  if (b>255) b = 255;
+  return (unsigned char)b;
 }
 
 int iupLexInt(void)

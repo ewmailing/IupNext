@@ -272,10 +272,10 @@ int main(int argc, char **argv)
   IupSetAttribute( btn_big, "SIZE", "EIGHTHxEIGHTH" );
   
   /* Creates a button entitled Exit associated with action exit_act */
-  btn_exit = IupButton( "Exit", "btn_exit, "ACTION" );
+  btn_exit = IupButton( "Exit", "btn_exit", "ACTION" );
   
   /* Creates a button entitled on/off associated with action onoff_act */
-  btn_on_off = IupButton( "on/off", "btn_on_off, "ACTION" );              
+  btn_on_off = IupButton( "on/off", "btn_on_off", "ACTION" );              
 
   /* Creates dialog with the four buttons and the text*/
   dlg = IupDialog

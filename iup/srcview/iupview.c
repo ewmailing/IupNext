@@ -8,7 +8,7 @@
 #include "iupcontrols.h"
 #include "iupgl.h"
 
-/* #define IUP_BUILDSTOCK 1 */  /* Used to generate the IupImgLib for IUP 2.x */
+
 #define MAX_NAMES 500
 
 #ifdef USE_IM
@@ -76,7 +76,7 @@ static void SaveImageC(const char* file_name, Ihandle* elem, const char* name, F
   {
     int c;
 
-    fprintf(file, "  Ihandle* image = IupImage(%d, %d, imgdata);\n", width, height);
+    fprintf(file, "  Ihandle* image = IupImage(%d, %d, imgdata);\n\n", width, height);
 
     for (c = 0; c < 256; c++)
     {
@@ -90,6 +90,8 @@ static void SaveImageC(const char* file_name, Ihandle* elem, const char* name, F
 
       fprintf(file, "  IupSetAttribute(image, \"%d\", \"%s\");\n", c, color);
     }
+
+    fprintf(file, "\n");
   }
   else if (channels == 3)
     fprintf(file, "  Ihandle* image = IupImageRGB(%d, %d, imgdata);\n", width, height);
@@ -287,7 +289,7 @@ static int close_cb(void)
 
 static int about_cb(void)
 {
-  IupMessage("About", "     IupView 1.2\n\n"
+  IupMessage("About", "     IupView\n\n"
                       "Show dialogs and popup menus\n"
                       "defined in LED files.\n"
                       "Can show all defined images.\n"
@@ -403,12 +405,13 @@ static int showallimages_cb(void)
 
 static char* getfileformat(int all)
 {
-#define NUM_FORMATS 7
+#define NUM_FORMATS 8
   int ret, count = NUM_FORMATS; 	
   static char *options[NUM_FORMATS] = {
     "led",
     "lua",
     "c",
+    "h",
     "ico",
     "bmp",
     "gif",
@@ -416,7 +419,7 @@ static char* getfileformat(int all)
   };
 
   if (!all)
-    count = 3;
+    count = 4;
 
   ret = IupListDialog(1,"File Format",count,options,1,10,count+1,NULL);
   if (ret == -1)
@@ -500,7 +503,7 @@ static int saveallimages_cb(void)
         SaveImageLED(file_name, elem, names[i], NULL);
       else if (strcmp(imgtype, "lua") == 0)
         SaveImageLua(file_name, elem, names[i], NULL);
-      else if (strcmp(imgtype, "c") == 0)
+      else if ((strcmp(imgtype, "c") == 0) || (strcmp(imgtype, "h") == 0))
         SaveImageC(file_name, elem, names[i], NULL);
 #ifdef USE_IM
       else 
@@ -637,7 +640,7 @@ static int saveallimagesone_cb(void)
         SaveImageLED(NULL, elem, names[i], packfile);
       else if (strcmp(imgtype, "lua") == 0)
         SaveImageLua(NULL, elem, names[i], packfile);
-      else if (strcmp(imgtype, "c") == 0)
+      else if ((strcmp(imgtype, "c") == 0) || (strcmp(imgtype, "h") == 0))
         SaveImageC(NULL, elem, names[i], packfile);
 
       n++;
@@ -650,7 +653,6 @@ static int saveallimagesone_cb(void)
   {
     if (strcmp(imgtype, "c") == 0)
     {
-#ifndef IUP_BUILDSTOCK
       char* title = mainGetFileTitle(file_name);
       fprintf(packfile, "void load_all_images_%s(void)\n{\n", title);
       free(title);
@@ -661,7 +663,6 @@ static int saveallimagesone_cb(void)
           fprintf(packfile, "  IupSetHandle(\"IUP_%s\", load_image_%s());\n", names[i], names[i]);
       }
       fprintf(packfile, "}\n\n");
-#endif
     }
 
     fclose(packfile);
@@ -705,7 +706,7 @@ static int saveimage_cb(Ihandle* self)
           SaveImageLED(file_name, elem, name, NULL);
         else if (strcmp(imgtype, "lua") == 0)
           SaveImageLua(file_name, elem, name, NULL);
-        else if (strcmp(imgtype, "c") == 0)
+        else if ((strcmp(imgtype, "c") == 0) || (strcmp(imgtype, "h") == 0))
           SaveImageC(file_name, elem, name, NULL);
 #ifdef USE_IM
         else 
