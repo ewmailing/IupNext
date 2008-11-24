@@ -892,7 +892,7 @@ void iupdrvDialogInitClass(Iclass* ic)
 #endif
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, IupGetGlobal("DLGBGCOLOR"), IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
 
   /* Overwrite Visual */
   iupClassRegisterAttribute(ic, "X", gtkDialogGetXAttrib, iupBaseNoSetAttrib, "0", IUP_MAPPED, IUP_NO_INHERIT);
@@ -905,7 +905,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TITLE", gtkDialogGetTitleAttrib, gtkDialogSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
 
   /* IupDialog only */
-  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, gtkDialogSetBackgroundAttrib, IupGetGlobal("DLGBGCOLOR"), IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, gtkDialogSetBackgroundAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ICON", NULL, gtkDialogSetIconAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FULLSCREEN", NULL, gtkDialogSetFullScreenAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MINSIZE", NULL, gtkDialogSetMinSizeAttrib, "1x1", IUP_MAPPED, IUP_NO_INHERIT);

@@ -655,10 +655,10 @@ void iupdrvButtonInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, winButtonSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winButtonGetBgColorAttrib, winButtonSetBgColorAttrib, IupGetGlobal("DLGBGCOLOR"), IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", winButtonGetBgColorAttrib, winButtonSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winButtonSetFgColorAttrib, IupGetGlobal("DLGFGCOLOR"), IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */  
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winButtonSetFgColorAttrib, "DLGFGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */  
   iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
 
   /* IupButton only */

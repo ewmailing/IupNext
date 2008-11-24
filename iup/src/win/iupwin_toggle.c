@@ -666,10 +666,10 @@ void iupdrvToggleInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "ACTIVE", winToggleGetActiveAttrib, winToggleSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winToggleGetBgColorAttrib, winToggleSetBgColorAttrib, IupGetGlobal("DLGBGCOLOR"), IUP_MAPPED, IUP_INHERIT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", winToggleGetBgColorAttrib, winToggleSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);  
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IupGetGlobal("DLGFGCOLOR"), IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */  
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "DLGFGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */  
   iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, winToggleSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
 
   /* IupToggle only */

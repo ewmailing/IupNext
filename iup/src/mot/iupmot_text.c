@@ -1086,10 +1086,10 @@ void iupdrvTextInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motTextSetBgColorAttrib, IupGetGlobal("TXTBGCOLOR"), IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motTextSetBgColorAttrib, "TXTBGCOLOR", IUP_MAPPED, IUP_INHERIT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, IupGetGlobal("TXTFGCOLOR"), IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "TXTFGCOLOR", IUP_MAPPED, IUP_INHERIT);
 
   /* IupText only */
   iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, motTextSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);

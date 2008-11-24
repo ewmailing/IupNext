@@ -397,8 +397,8 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "POSITION", iBaseGetPositionAttrib, iBaseSetPositionAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, IupGetGlobal("DEFAULTFONT"), IUP_NOT_MAPPED, IUP_INHERIT);  /* use inheritance to retrieve standard fonts */
-  iupClassRegisterAttribute(ic, "FONT", iupGetFontAttrib, iupSetFontAttrib, IupGetGlobal("DEFAULTFONT"), IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);  /* use inheritance to retrieve standard fonts */
+  iupClassRegisterAttribute(ic, "FONT", iupGetFontAttrib, iupSetFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FONTSTYLE", iupGetFontStyleAttrib, iupSetFontStyleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FONTSIZE", iupGetFontSizeAttrib, iupSetFontSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);

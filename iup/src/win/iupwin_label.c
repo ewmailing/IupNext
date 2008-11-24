@@ -321,10 +321,10 @@ void iupdrvLabelInitClass(Iclass* ic)
 
   /* Visual */
   /* the most important use of this is to provide the correct background for images */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, IupGetGlobal("DLGBGCOLOR"), IUP_MAPPED, IUP_INHERIT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);  
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winLabelSetFgColorAttrib, IupGetGlobal("DLGFGCOLOR"), IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winLabelSetFgColorAttrib, "DLGFGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    
   iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
 
   /* IupLabel only */

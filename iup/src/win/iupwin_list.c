@@ -1375,13 +1375,13 @@ void iupdrvListInitClass(Iclass* ic)
 
   /* Driver Dependent Attribute functions */
 
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winListSetStandardFontAttrib, IupGetGlobal("DEFAULTFONT"), IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winListSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, IupGetGlobal("TXTBGCOLOR"), IUP_NOT_MAPPED, IUP_INHERIT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, "TXTBGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IupGetGlobal("TXTFGCOLOR"), IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "TXTFGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    
 
   /* IupList only */
   iupClassRegisterAttributeId(ic, "IDVALUE", winListGetIdValueAttrib, iupListSetIdValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);

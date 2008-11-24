@@ -1320,7 +1320,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winDialogSetBgColorAttrib, IupGetGlobal("DLGBGCOLOR"), IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winDialogSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
@@ -1329,7 +1329,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iupdrvBaseGetClientSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
 
   /* IupDialog only */
-  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, winDialogSetBackgroundAttrib, IupGetGlobal("DLGBGCOLOR"), IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, winDialogSetBackgroundAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ICON", NULL, winDialogSetIconAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FULLSCREEN", NULL, winDialogSetFullScreenAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SAVEUNDER", NULL, iupBaseNoSetAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);

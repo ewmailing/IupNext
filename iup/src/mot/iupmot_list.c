@@ -1309,10 +1309,10 @@ void iupdrvListInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motListSetBgColorAttrib, IupGetGlobal("TXTBGCOLOR"), IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motListSetBgColorAttrib, "TXTBGCOLOR", IUP_MAPPED, IUP_INHERIT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motListSetFgColorAttrib, IupGetGlobal("TXTFGCOLOR"), IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motListSetFgColorAttrib, "TXTFGCOLOR", IUP_MAPPED, IUP_INHERIT);
 
   /* IupList only */
   iupClassRegisterAttributeId(ic, "IDVALUE", motListGetIdValueAttrib, iupListSetIdValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);

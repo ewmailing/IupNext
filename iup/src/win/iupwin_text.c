@@ -1888,14 +1888,14 @@ void iupdrvTextInitClass(Iclass* ic)
 
   /* Driver Dependent Attribute functions */
 
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winTextSetStandardFontAttrib, IupGetGlobal("DEFAULTFONT"), IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winTextSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winTextSetBgColorAttrib, IupGetGlobal("TXTBGCOLOR"), IUP_NOT_MAPPED, IUP_INHERIT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winTextSetBgColorAttrib, "TXTBGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  
   iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, winTextSetVisibleAttrib, "YES", IUP_MAPPED, IUP_NO_INHERIT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IupGetGlobal("TXTFGCOLOR"), IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "TXTFGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    
 
   /* IupText only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, winTextSetAlignmentAttrib, "ALEFT", IUP_MAPPED, IUP_NO_INHERIT);

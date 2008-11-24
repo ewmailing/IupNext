@@ -24,11 +24,29 @@ typedef struct _IattribFunc
   IattribGetFunc get;
   IattribSetFunc set;
   const char* default_value;
+  int call_global_default;
   Imap mapped;
   Iinherit inherit;
   int has_id;
 } IattribFunc;
 
+
+static int iClassIsGlobalDefault(const char* name)
+{
+  if (iupStrEqual(name, "DEFAULTFONT"))
+    return 1;
+  if (iupStrEqual(name, "DLGBGCOLOR"))
+    return 1;
+  if (iupStrEqual(name, "DLGFGCOLOR"))
+    return 1;
+  if (iupStrEqual(name, "TXTBGCOLOR"))
+    return 1;
+  if (iupStrEqual(name, "TXTFGCOLOR"))
+    return 1;
+  if (iupStrEqual(name, "MENUBGCOLOR"))
+    return 1;
+  return 0;
+}
 
 static const char* iClassFindId(const char* name)
 {
@@ -53,6 +71,15 @@ static const char* iClassCutNameId(const char* name, const char* name_id)
   memcpy(str, name, len);
   str[len] = 0;
   return str;
+}
+
+
+static char* iClassGetDefaultValue(IattribFunc* afunc)
+{
+  if (afunc->call_global_default)
+    return IupGetGlobal(afunc->default_value);
+  else
+    return (char*)afunc->default_value;
 }
 
 int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value, int *inherit)
@@ -102,7 +129,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
           value = iupAttribGetStrInherit(ih->parent, name); 
 
         if (!value)
-          value = afunc->default_value;
+          value = iClassGetDefaultValue(afunc);
       }
 
       if (afunc->has_id)
@@ -159,7 +186,7 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
   *inherit = 1; /* default is inheritable */
   if (afunc)
   {
-    *def_value = (char*)afunc->default_value;
+    *def_value = iClassGetDefaultValue(afunc);
     *inherit = afunc->inherit;
     if (afunc->get && (ih->handle || !afunc->mapped))
     {
@@ -179,7 +206,7 @@ char* iupClassObjectGetAttributeDefault(Ihandle* ih, const char* name)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
   if (afunc)
-    return (char*)afunc->default_value;
+    return iClassGetDefaultValue(afunc);
   return NULL;
 }
 
@@ -199,6 +226,11 @@ void iupClassRegisterAttribute(Iclass* ic, const char* name,
   afunc->inherit = _inherit;
   afunc->has_id = 0;
 
+  if (iClassIsGlobalDefault(_default_value))
+    afunc->call_global_default = 1;
+  else
+    afunc->call_global_default = 0;
+
   iupTableSet(ic->attrib_func, name, (void*)afunc, IUPTABLE_POINTER);
 }
 
@@ -217,6 +249,11 @@ void iupClassRegisterAttributeId(Iclass* ic, const char* name,
   afunc->mapped = _mapped;
   afunc->inherit = _inherit;
   afunc->has_id = 1;
+
+  if (iClassIsGlobalDefault(_default_value))
+    afunc->call_global_default = 1;
+  else
+    afunc->call_global_default = 0;
 
   iupTableSet(ic->attrib_func, name, (void*)afunc, IUPTABLE_POINTER);
 }

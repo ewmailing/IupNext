@@ -148,7 +148,7 @@ void iupdrvProgressBarInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motProgressBarSetBgColorAttrib, IupGetGlobal("DLGBGCOLOR"), IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motProgressBarSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motProgressBarSetFgColorAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
 
   /* XmScale does not uses FGCOLOR */
