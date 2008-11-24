@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\include;..\src"
-				PreprocessorDefinitions="WIN32,_DEBUG,_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUP_ASSERT"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
@@ -87,47 +87,38 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="src"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+		<File
+			RelativePath="..\srcgl\iup_glcanvas_win.c"
 			>
-			<File
-				RelativePath="..\srcgl\iup_glcanvas_win.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srcgl\iup_glcanvas_x.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="d:\lng\x11inc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\srcgl\iupgl.def"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-		</Filter>
-		<Filter
-			Name="include"
+		</File>
+		<File
+			RelativePath="..\srcgl\iup_glcanvas_x.c"
 			>
-			<File
-				RelativePath="..\include\iupgl.h"
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
 				>
-			</File>
-		</Filter>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories="d:\lng\x11inc"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="..\srcgl\iupgl.def"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="..\include\iupgl.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

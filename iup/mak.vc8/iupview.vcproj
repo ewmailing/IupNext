@@ -75,7 +75,7 @@
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="..\bin\iupview.pdb"
-				SubSystem="2"
+				SubSystem="1"
 			/>
 			<Tool
 				Name="VCALinkTool"

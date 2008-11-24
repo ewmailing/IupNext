@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
-	Name="iuplua5_exe"
-	ProjectGUID="{A60D658D-766C-40DB-BAE4-59AB884D86FB}"
+	Version="8,00"
+	Name="iuplua5gtk_exe"
+	ProjectGUID="{389DF3C9-A628-4F6D-8C52-8924FA01DE66}"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -67,11 +67,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="iup.lib iupwin.lib comctl32.lib iupcontrols.lib iupimglib.lib iup_pplot.lib iupgl.lib cd.lib iupcd.lib freetype6.lib cdgdiplus.lib lua5.1.lib iuplua51.lib iupluaim51.lib iupluaimglib51.lib iupluagl51.lib iupluacontrols51.lib iuplua_pplot51.lib iupim.lib opengl32.lib glu32.lib gdiplus.lib im.lib cdlua51.lib iupluacd51.lib imlua51.lib imlua_process51.lib cdluaim51.lib im_process.lib"
-				OutputFile="$(OutDir)/iuplua51.exe"
+				AdditionalDependencies="iup.lib iupgtk.lib comctl32.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib pango-1.0.lib pangowin32-1.0.lib gobject-2.0.lib gmodule-2.0.lib glib-2.0.lib iupcontrols.lib iupimglib.lib iup_pplot.lib iupgl.lib cd.lib iupcd.lib freetype6.lib cdgdiplus.lib lua5.1.lib iuplua51.lib iupluaim51.lib iupluaimglib51.lib iupluagl51.lib iupluacontrols51.lib iuplua_pplot51.lib iupim.lib opengl32.lib glu32.lib gdiplus.lib im.lib cdlua51.lib iupluacd51.lib imlua51.lib imlua_process51.lib cdluaim51.lib im_process.lib"
+				OutputFile="$(OutDir)/iuplua51gtk.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\im\lib;..\..\cd\lib;..\lib;..\..\lua5.1\lib\vc9"
+				AdditionalLibraryDirectories="..\..\im\lib;d:\lng\gtk\lib;..\..\cd\lib;..\lib;..\..\lua5.1\lib\vc9"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -108,10 +108,6 @@
 			>
 			<File
 				RelativePath="..\srcconsole\console5.lua"
-				>
-			</File>
-			<File
-				RelativePath="..\srcconsole\iuplua5.rc"
 				>
 			</File>
 			<File

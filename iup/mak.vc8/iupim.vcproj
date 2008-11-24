@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\include;..\src;..\..\im\include"
-				PreprocessorDefinitions="WIN32,_DEBUG,_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32,_DEBUG,_CRT_SECURE_NO_DEPRECATE;IUP_ASSERT"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
@@ -87,19 +87,14 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+		<File
+			RelativePath="..\srcim\iupim.c"
 			>
-			<File
-				RelativePath="..\srcim\iupim.c"
-				>
-			</File>
-			<File
-				RelativePath="..\include\iupim.h"
-				>
-			</File>
-		</Filter>
+		</File>
+		<File
+			RelativePath="..\include\iupim.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

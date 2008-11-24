@@ -102,10 +102,6 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="Includes"
-			>
-		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

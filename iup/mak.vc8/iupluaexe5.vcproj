@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="iuplua5exe"
+	Name="iuplua5_exe"
 	ProjectGUID="{A60D658D-766C-40DB-BAE4-59AB884D86FB}"
 	TargetFrameworkVersion="0"
 	>
@@ -38,7 +38,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName="..\bin\iuplua5.tlb"
+				TypeLibraryName="..\bin\iupluaexe5.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"

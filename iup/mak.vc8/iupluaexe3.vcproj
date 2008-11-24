@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="iuplua3exe"
+	Name="iuplua3_exe"
 	ProjectGUID="{A60D658D-766C-40DB-BAFF-59AB884D86FB}"
 	TargetFrameworkVersion="0"
 	>

@@ -85,7 +85,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Header Files"
+			Name="inc"
 			Filter="h;hpp;hxx;hm;inl;inc"
 			>
 			<File
@@ -122,7 +122,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Source Files"
+			Name="src"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
