@@ -80,14 +80,28 @@ void iupdrvDialogSetPosition(Ihandle *ih, int x, int y)
 
 static int gtkDialogGetMenuSize(Ihandle* ih)
 {
+#ifdef HILDON
+  return 0;
+#else
   if (ih->data->menu)
     return iupdrvMenuGetMenuBarSize(ih->data->menu);
   else
     return 0;
+#endif
 }
 
 void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu)
 {
+#ifdef HILDON
+  /* In Hildon, borders have fixed dimensions, but are drawn as part
+     of the client area! */
+  if (border)
+    *border = iupAttribGetInt(ih, "FULLSCREEN") ? 0 : 12;
+  if (caption)
+    *caption = 0;
+  if (menu)
+    *menu = 0;
+#else
   static int native_border = 0;
   static int native_caption = 0;
 
@@ -148,6 +162,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
     else
       *caption = 20;
   }
+#endif
 }
 
 int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
@@ -248,8 +263,11 @@ static gboolean gtkDialogConfigureEvent(GtkWidget *widget, GdkEventConfigure *ev
   int old_width, old_height;
   (void)widget;
 
+#ifndef HILDON
+  /* In hildon the menu is not a menubar */
   if (ih->data->menu && ih->data->menu->handle)
     gtk_widget_set_size_request(ih->data->menu->handle, evt->width, -1);
+#endif
 
   if (ih->data->ignore_resize) return FALSE; 
 
@@ -266,8 +284,14 @@ static gboolean gtkDialogConfigureEvent(GtkWidget *widget, GdkEventConfigure *ev
 
     iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
 
+#ifdef HILDON
+    /* In Hildon, the configure event contains the window size, not the client area size */
+    ih->currentwidth = evt->width;
+    ih->currentheight = evt->height;
+#else
     ih->currentwidth = evt->width + 2*border;
     ih->currentheight = evt->height + 2*border + caption;  /* menu is inside the window client area */
+#endif
 
     cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
     if (cb) cb(ih, evt->width, evt->height - menu);  /* notify to the application size the client area size */
@@ -379,6 +403,8 @@ static int gtkDialogMapMethod(Ihandle* ih)
 #ifdef HILDON
   HildonProgram *program = HILDON_PROGRAM(hildon_program_get_instance());
   ih->handle = hildon_window_new();
+  if (!ih->handle)
+    return IUP_ERROR;
   hildon_program_add_window(program, HILDON_WINDOW(ih->handle));
 #else
    ih->handle = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -410,6 +436,9 @@ static int gtkDialogMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "delete-event",       G_CALLBACK(iupgtkDialogDeleteEvent), ih);
                                     
   gtk_window_set_default_size((GtkWindow*)ih->handle, 100, 100); /* set this to avoid size calculation problems  */
+
+  if (iupAttribGetInt(ih, "DIALOGFRAME"))
+    gtk_window_set_type_hint(GTK_WINDOW(ih->handle), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   /* the container that will receive the child element. */
   fixed = gtk_fixed_new();

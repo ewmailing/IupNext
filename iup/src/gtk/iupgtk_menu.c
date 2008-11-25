@@ -352,9 +352,11 @@ static int gtkItemMapMethod(Ihandle* ih)
   if (!ih->parent)
     return IUP_ERROR;
 
+#ifndef HILDON
   if (iupMenuIsMenuBar(ih->parent))
     ih->handle = gtk_menu_item_new_with_label("");
   else
+#endif
   {
     if (iupAttribGetStr(ih, "IMAGE")||iupAttribGetStr(ih, "TITLEIMAGE"))
       ih->handle = gtk_image_menu_item_new_with_label("");
@@ -444,9 +446,11 @@ static int motSubmenuMapMethod(Ihandle* ih)
   if (!ih->parent)
     return IUP_ERROR;
 
+#ifndef HILDON
   if (iupMenuIsMenuBar(ih->parent))
     ih->handle = gtk_menu_item_new_with_label("");
   else
+#endif
     ih->handle = gtk_image_menu_item_new_with_label("");
 
   if (!ih->handle)
