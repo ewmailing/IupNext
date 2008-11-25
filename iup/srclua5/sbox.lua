@@ -5,8 +5,7 @@ local ctrl = {
 	nick = "sbox",
   parent = WIDGET,
 	creation = "i",
-  callback = {},
-  include="iupsbox.h"
+  callback = {}
 }
 
 function ctrl.createElement(class, arg)

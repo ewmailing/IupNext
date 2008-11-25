@@ -6,7 +6,6 @@ local ctrl = {
   parent = WIDGET,
   creation = "v",
   callback = {},
-  include = "iupcbox.h",
   funcname = "Cboxv",
   createfunc = [[
 static int Cboxv(lua_State *L)
