@@ -935,7 +935,7 @@ $(SRELEASE): $(MAKENAME)
 # Directories Creation
 
 .PHONY: directories
-directories: $(OBJDIR) $(TARGETDIR) $(EXTRADIR)
+directories: $(OBJDIR) $(TARGETDIR) $(EXTRADIR) $(LOHDIR)
 
 $(OBJDIR) $(TARGETDIR):
 	if [ ! -d $@ ] ; then mkdir -p $@ ; fi
@@ -945,6 +945,13 @@ ifdef EXTRADIR
 	  if [ ! -d $@ ] ; then mkdir -p $@ ; fi
 else
   $(EXTRADIR): ;
+endif
+
+ifdef LOHDIR
+  $(LOHDIR):
+	  if [ ! -d $@ ] ; then mkdir -p $@ ; fi
+else
+  $(LOHDIR): ;
 endif
 
 
