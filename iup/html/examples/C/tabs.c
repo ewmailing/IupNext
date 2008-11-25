@@ -4,14 +4,12 @@
 
 #include <stdio.h>
 #include "iup.h"
-#include "iupcontrols.h"
 
 int main(int argc, char **argv)
 {
   Ihandle *dlg, *vbox1, *vbox2, *tabs1, *tabs2, *box;
 
   IupOpen(&argc, &argv);
-  IupControlsOpen();                    /* Initializes the controls library */
 
   vbox1 = IupVbox(IupLabel("Inside Tab A"), IupButton("Button A", ""), NULL);
   vbox2 = IupVbox(IupLabel("Inside Tab B"), IupButton("Button B", ""), NULL);
@@ -41,7 +39,6 @@ int main(int argc, char **argv)
   IupShowXY (dlg, IUP_CENTER, IUP_CENTER);
   IupMainLoop () ;
   IupDestroy(dlg);
-  IupControlsClose();
   IupClose () ;
 
   return 0 ;

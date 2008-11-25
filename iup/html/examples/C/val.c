@@ -5,7 +5,6 @@
 #include <stdio.h>
 
 #include "iup.h"
-#include "iupcontrols.h"
 
 Ihandle *lbl_h=NULL, *lbl_v=NULL;
 
@@ -122,7 +121,6 @@ void main(int argc, char* argv[])
 
   IupMainLoop();
   IupDestroy(dlg_val);
-  IupControlsClose();
   IupClose();
 }
 

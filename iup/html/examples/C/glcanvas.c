@@ -1,18 +1,16 @@
-/*Example IupGLCanvas in C 
-	Creates a OpenGL canvas and draws a line in it.*/
-
 /********************************************************************
-** Tested on Windows, please change windows include.
-**
-** by Mark Stroetzel Glasberg, March 2001
-** mark@tecgraf.puc-rio.br
+ Example IupGLCanvas in C 
+ Creates a OpenGL canvas and draws a line in it.
+ *** by  Mark Stroetzel Glasberg, March 2001 ***
 ********************************************************************/
 
 #include <stdio.h>
 #include "iup.h"          
 #include "iupgl.h"
 #include "iupkey.h"
-#include <windows.h>
+#ifdef WIN32
+  #include <windows.h>
+#endif
 #include "GL/gl.h" 
 
 int k_any(Ihandle *self, int c)

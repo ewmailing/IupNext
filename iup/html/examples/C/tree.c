@@ -1,8 +1,8 @@
-/*IupTree Example in C 
-Creates a tree with some branches and leaves. 
-Two callbacks are registered: one deletes marked nodes when the Del key is pressed, 
-and the other, called when the right mouse button is pressed, opens a menu with options. */
-
+/* IupTree: Example in C 
+   Creates a tree with some branches and leaves. 
+   Two callbacks are registered: one deletes marked nodes when the Del key is pressed, 
+   and the other, called when the right mouse button is pressed, opens a menu with options.
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -188,7 +188,7 @@ void init_tree(void)
 void init_dlg(void)
 {
   Ihandle* tree = IupGetHandle("tree");
-  Ihandle* box = IupVbox(IupHbox(tree, IupButton("teste", "xx"), NULL), NULL);
+  Ihandle* box = IupVbox(IupHbox(tree, IupButton("test", "xx"), NULL), NULL);
   Ihandle* dlg = IupDialog(box) ;
   IupSetAttribute(dlg, "TITLE", "IupTree");
   IupSetAttribute(tree, "SIZE","QUARTERxTHIRD");

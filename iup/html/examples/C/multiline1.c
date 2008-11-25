@@ -1,5 +1,5 @@
 /* IupMultiline: Simple Example in C 
-   Shows a multiline that ignores the treatment of the "g" key, canceling its effect.
+   Shows a multiline that ignores the treatment of the DEL key, canceling its effect.
 */
 
 #include <stdio.h>

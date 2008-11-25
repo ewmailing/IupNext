@@ -1,5 +1,5 @@
 /*
- * IupCanvas Idle Redraw example
+ * IupCanvas Redraw example
  */
 
 #include <stdio.h>
@@ -19,6 +19,7 @@ int need_redraw, redraw_count = 0;
 
 int toggle_redraw(void)
 {
+  cdCanvasActivate(cdcanvas);
   need_redraw = !need_redraw;
   return IUP_DEFAULT;
 }
