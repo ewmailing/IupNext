@@ -45,10 +45,13 @@ void IupNormalizeSizev(const char* value, Ihandle** ih_list)
   for (i = 0; ih_list[i]; i++)
   {
     ih = ih_list[i];
-    if (normalize & NORMALIZE_WIDTH)
-      ih->userwidth = natural_maxwidth;
-    if (normalize & NORMALIZE_HEIGHT)
-      ih->userheight = natural_maxheight;
+    if (ih->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(ih->iclass->name, "fill"))
+    {
+      if (normalize & NORMALIZE_WIDTH)
+        ih->userwidth = natural_maxwidth;
+      if (normalize & NORMALIZE_HEIGHT)
+        ih->userheight = natural_maxheight;
+    }
   }
 }
 

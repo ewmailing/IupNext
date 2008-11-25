@@ -177,13 +177,12 @@ MULTILINE (since 3.0).</p>
 	index &quot;<strong>pos1</strong>:<strong>pos2</strong>&quot;. Usefull for indexing the VALUE string. 
 	The values ALL and NONE are also accepted. See the Notes bellow if using 
 	UTF-8 strings in GTK. (since 3.0)</p>
-  <p><a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>):
-  Text size. The natural size is defined by the number of lines in the text and 
-	the with of the largest line. Default: room for 5 characters in 1 line.&nbsp;When the <strong>User Size</strong> 
-	is NOT set, then the text natural size will be set to display its contents, 
-	but only when EXPAND=NO, if EXPAND is enabled then the text will not expand 
-	to its contents and it will respect the expansion of the dialog. The natural 
-	size is affected by the VISIBLECOLUMNS and VISIBLELINES attributes.</p>
+  <p><a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): 
+	Since the contents can be changed by the user, the <strong>Natural</strong>
+	<strong>Size</strong> is not affected by the text contents (since 3.0). In 
+	IUP 2.x the <strong>Natural</strong> <strong>Size</strong> was defined by 
+	the number of lines in the text and the with of the largest line. For IUP 3, 
+	use VISIBLECOLUMNS and VISIBLELINES to control the <strong>Natural Size</strong>.</p>
 <p><strong>SPIN</strong> (<font SIZE="3">non inheritable, </font>creation only): 
 enables a spin control attached to the element. Default: NO. The spin increments 
 and decrements an integer number. The editing in the element is still available. 
@@ -209,10 +208,11 @@ change is progressively accelerated when a spin button is pressed.</p>
   Text entered by the user. The '\n' character indicates a new line, valid only 
 when MULTILINE=YES.</p>
 <p><strong>VISIBLECOLUMNS</strong>: Defines the number of visible columns for 
-the natural size. It uses a wider character size then the one used for the SIZE 
-attribute so strings will fit better without the need of extra columns. (since 3.0)</p>
+the <strong>Natural</strong> <strong>Size</strong>. It uses a wider character size then the one used for the SIZE 
+attribute so strings will fit better without the need of extra columns. Default: 
+5 (since 3.0)</p>
 <p><strong>VISIBLELINES</strong>: When MULTILINE=YES defines the number of 
-visible lines for the natural size. (since 3.0)</p>
+visible lines for the <strong>Natural</strong> <strong>Size</strong>. Default: 1 (since 3.0)</p>
 <p><strong>WORDWRAP</strong> (creation only): Valid only when MULTILINE=YES. if enabled will force a word wrap of lines that are 
 greater than the with of the control. The horizontal scrollbar is removed. Default: NO.</p>
   <blockquote>

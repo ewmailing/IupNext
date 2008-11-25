@@ -831,17 +831,17 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   /* BUTTONS   ============================================================= */
   /* ======================================================================= */
   ok_bt = IupButton("OK", NULL);                      /* Ok Button */
-  IupSetAttribute(ok_bt, "PADDING", "10x2");
+  IupSetAttribute(ok_bt, "PADDING", "20x0");
   IupSetCallback (ok_bt, "ACTION", (Icallback)iColorBrowserDlgButtonOK_CB);
   IupSetAttributeHandle(ih, "DEFAULTENTER", ok_bt);
 
   cancel_bt = IupButton(iupStrMessageGet("IUP_CANCEL"), NULL);          /* Cancel Button */
-  IupSetAttribute(cancel_bt, "PADDING", "10x2");
+  IupSetAttribute(cancel_bt, "PADDING", "20x0");
   IupSetCallback (cancel_bt, "ACTION", (Icallback)iColorBrowserDlgButtonCancel_CB);
   IupSetAttributeHandle(ih, "DEFAULTESC", cancel_bt);
 
   colordlg_data->help_bt = IupButton(iupStrMessageGet("IUP_HELP"), NULL);            /* Help Button */
-  IupSetAttribute(colordlg_data->help_bt, "PADDING", "10x2");
+  IupSetAttribute(colordlg_data->help_bt, "PADDING", "20x0");
   IupSetCallback (colordlg_data->help_bt, "ACTION", (Icallback)iColorBrowserDlgButtonHelp_CB);
 
   /* ======================================================================= */

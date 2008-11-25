@@ -136,7 +136,7 @@ static void iVboxComputeNaturalSizeMethod(Ihandle* ih)
 static int iVboxCalcEmptyHeight(Ihandle *ih, int expand)
 {
   Ihandle* child;
-  int children_naturalheight;
+  int children_naturalheight, empty_height;
 
   int children_natural_totalheight=0;
   int children_natural_maxheight=0;
@@ -162,7 +162,9 @@ static int iVboxCalcEmptyHeight(Ihandle *ih, int expand)
     children_natural_totalheight = children_natural_maxheight*children_count;
 
   children_naturalheight = children_natural_totalheight + (children_count-1)*ih->data->gap + 2*ih->data->margin_y;
-  return (ih->currentheight - children_naturalheight)/expand_count;
+  empty_height = (ih->currentheight - children_naturalheight)/expand_count;
+  if (empty_height < 0) empty_height = 0;
+  return empty_height;
 }
 
 static int iVBoxGetExpandChildren(Ihandle* ih)

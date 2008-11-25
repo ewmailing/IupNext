@@ -252,7 +252,7 @@ void new_list(void)
     "Gray"   ,
     "Brown"  } ;
     
-  ret = IupListDialog(2,"IupListDialog Test",size,options,0,16,5,marks);
+  ret = IupListDialog(2,"IupListDialog Test",size,options,0,8,5,marks);
 
   if (ret == -1)
   {

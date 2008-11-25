@@ -316,54 +316,26 @@ static void iTextComputeNaturalSizeMethod(Ihandle* ih)
   ih->naturalheight = ih->userheight;
 
   /* if user size is not defined, then calculate the natural size */
-  if ((ih->naturalwidth <= 0  && !(ih->expand & IUP_EXPAND_WIDTH)) || 
-      (ih->naturalheight <= 0 && !(ih->expand & IUP_EXPAND_HEIGHT)))
+  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
   {
     int natural_w = 0, 
         natural_h = 0,
-        visiblecolumns = iupAttribGetInt(ih, "VISIBLECOLUMNS"),
-        visiblelines = iupAttribGetInt(ih, "VISIBLELINES");
+        visiblecolumns = iupAttribGetIntDefault(ih, "VISIBLECOLUMNS"),
+        visiblelines = iupAttribGetIntDefault(ih, "VISIBLELINES");
 
-    /* must use IupGetAttribute to check from the native implementation */
-    char* value = IupGetAttribute(ih, "VALUE");
-    if (!value || value[0]==0) value = "WWWWW";
+    /* Since the contents can be changed by the user, the size can not be dependent on it. */
     if (ih->data->is_multiline)
     {
-      if (visiblecolumns && visiblelines)
-      {
-        iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
-        natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
-        natural_w = (visiblecolumns*natural_w)/10;
-        natural_h = visiblelines*natural_h;
-      }
-      else if (visiblecolumns || visiblelines)
-      {
-        iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
-        if (visiblecolumns)
-        {
-          natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
-          natural_w = (visiblecolumns*natural_w)/10;
-          natural_h = iupStrLineCount(value)*natural_h;
-        }
-        else
-        {
-          iupdrvFontGetMultiLineStringSize(ih, value, &natural_w, NULL);
-          natural_h = visiblelines*natural_h;
-        }
-      }
-      else
-        iupdrvFontGetMultiLineStringSize(ih, value, &natural_w, &natural_h);
+      iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
+      natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
+      natural_w = (visiblecolumns*natural_w)/10;
+      natural_h = visiblelines*natural_h;
     }
     else
     {
       iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
-      if (visiblecolumns)
-      {
-        natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
-        natural_w = (visiblecolumns*natural_w)/10;
-      }
-      else
-        natural_w = iupdrvFontGetStringWidth(ih, value);
+      natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
+      natural_w = (visiblecolumns*natural_w)/10;
     }
 
     /* compute the borders space */
@@ -386,10 +358,8 @@ static void iTextComputeNaturalSizeMethod(Ihandle* ih)
         natural_h += sb_size;
     }
 
-    /* For IupText only update the natural size 
-       if user size is not defined and expand is NOT set. */
-    if (ih->naturalwidth <= 0  && !(ih->expand & IUP_EXPAND_WIDTH)) ih->naturalwidth = natural_w;
-    if (ih->naturalheight <= 0 && !(ih->expand & IUP_EXPAND_HEIGHT)) ih->naturalheight = natural_h;
+    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
+    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
   }
 }
 
@@ -486,9 +456,12 @@ Iclass* iupTextGetClass(void)
   iupClassRegisterAttribute(ic, "_IUPMASK_DATA", iTextGetMaskDataAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ADDFORMATTAG", NULL, iTextSetAddFormatTagAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ADDFORMATTAG_HANDLE", NULL, iTextSetAddFormatTagHandleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPINAUTO", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, "5", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, "1", IUP_MAPPED, IUP_NO_INHERIT);
 
   iupdrvTextInitClass(ic);
 

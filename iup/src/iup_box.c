@@ -42,10 +42,13 @@ void iupBoxNormalizeSize(Ihandle *ih, int children_natural_maxwidth, int childre
   /* reset the natural width and/or height */
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (normalize & NORMALIZE_WIDTH)
-      child->naturalwidth = children_natural_maxwidth;
-    if (normalize & NORMALIZE_HEIGHT)
-      child->naturalheight = children_natural_maxheight;
+    if (child->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(child->iclass->name, "fill"))
+    {
+      if (normalize & NORMALIZE_WIDTH) 
+        child->naturalwidth = children_natural_maxwidth;
+      if (normalize & NORMALIZE_HEIGHT)
+        child->naturalheight = children_natural_maxheight;
+    }
   }
 }
 

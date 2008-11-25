@@ -536,10 +536,11 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
   *w = 0;
   *h = 0;
 
+  iupdrvFontGetCharSize(ih, w, h);   /* one line height, and one character width */
+
   visiblecolumns = iupAttribGetInt(ih, "VISIBLECOLUMNS");
   if (visiblecolumns)
   {
-    iupdrvFontGetCharSize(ih, w, h);
     *w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
     *w = (visiblecolumns*(*w))/10;
   }
@@ -560,21 +561,8 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
       }
     }
 
-    if (ih->data->has_editbox)
-    {
-      value = IupGetAttribute(ih, "VALUE");
-      if (value)
-      {
-        item_w = iupdrvFontGetStringWidth(ih, value);
-        if (item_w > *w)
-          *w = item_w;
-      }
-    }
-
     if (*w == 0) /* default is 5 characters in 1 item */
       *w = iupdrvFontGetStringWidth(ih, "WWWWW");
-
-    iupdrvFontGetCharSize(ih, NULL, h);
   }
 
   /* compute height for multiple lines, drodown is just 1 line */
@@ -608,8 +596,7 @@ static void iListComputeNaturalSizeMethod(Ihandle* ih)
   ih->naturalheight = ih->userheight;
 
   /* if user size is not defined, then calculate the natural size */
-  if ((ih->naturalwidth <= 0  && !(ih->expand & IUP_EXPAND_WIDTH)) || 
-      (ih->naturalheight <= 0 && !(ih->expand & IUP_EXPAND_HEIGHT)))
+  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
   {
     int natural_w, natural_h;
     int sb_size = iupdrvGetScrollbarSize();
@@ -643,10 +630,8 @@ static void iListComputeNaturalSizeMethod(Ihandle* ih)
       natural_h += 2*ih->data->vert_padding;
     }
 
-    /* For IupList only update the natural size 
-       if user size is not defined and expand is NOT set. */
-    if (ih->naturalwidth <= 0  && !(ih->expand & IUP_EXPAND_WIDTH)) ih->naturalwidth = natural_w;
-    if (ih->naturalheight <= 0 && !(ih->expand & IUP_EXPAND_HEIGHT)) ih->naturalheight = natural_h;
+    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
+    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
   }
 }
 

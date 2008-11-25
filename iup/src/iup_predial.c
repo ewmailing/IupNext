@@ -57,7 +57,6 @@ int IupListDialog (int tipo, const char *titulo, int tam, const char *lista[],
   int i, bt;
   char op[5];
   char lastop[5];
-  char maxsize[20];
   char opcaoini[20];
   char *m=NULL;
 
@@ -76,26 +75,23 @@ int IupListDialog (int tipo, const char *titulo, int tam, const char *lista[],
   IupSetAttribute(lst,"EXPAND","YES");
 
   ok = IupButton("OK", NULL);
-  IupSetAttribute (ok   ,"SIZE" ,"50x");
-  IupSetCallback (ok, "ACTION", (Icallback)CB_button_OK);
-  IupSetHandle( "IupListOkButton", ok );
+  IupSetAttribute(ok,"PADDING" ,"20x0");
+  IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
   cancel = IupButton(iupStrMessageGet("IUP_CANCEL"), NULL);
-  IupSetAttribute (cancel,"SIZE" ,"50x");
-  IupSetCallback (cancel, "ACTION", (Icallback)CB_button_CANCEL);
-  IupSetHandle( "IupListCancelButton", cancel );
+  IupSetAttribute(cancel,"PADDING" ,"20x0");
+  IupSetCallback(cancel, "ACTION", (Icallback)CB_button_CANCEL);
 
   button_box = IupHbox(
     IupFill(), 
     ok,
-    IupSetAttributes(IupFill(), "SIZE=1x"),
     cancel,
     NULL);
   IupSetAttribute(button_box,"MARGIN","0x0");
+  IupSetAttribute(button_box, "NORMALIZESIZE", "HORIZONTAL");
 
   dlg_box = IupVbox(
     lst,
-    IupSetAttributes(IupFill(), "SIZE=1x"),
     button_box,
     NULL);
 
@@ -122,14 +118,15 @@ int IupListDialog (int tipo, const char *titulo, int tam, const char *lista[],
     IupSetAttribute(lst,"VALUE",m);
   }
 
-  sprintf (maxsize,"%dx%d",max_col*5,max_lin==1?16:max_lin*9+4);
-  IupSetAttribute (lst,"SIZE" , maxsize);
+  if (max_lin < 4) max_lin = 4;
+  IupSetfAttribute(lst, "VISIBLELINES", "%d", max_lin);
+  IupSetfAttribute(lst, "VISIBLECOLUMNS", "%d", max_col);
 
   IupSetAttribute(dlg,"TITLE", titulo);
   IupSetAttribute(dlg,"MINBOX","NO");
   IupSetAttribute(dlg,"MAXBOX","NO");
-  IupSetAttribute(dlg,"DEFAULTENTER","IupListOkButton");
-  IupSetAttribute(dlg,"DEFAULTESC","IupListCancelButton");
+  IupSetAttributeHandle(dlg,"DEFAULTENTER", ok);
+  IupSetAttributeHandle(dlg,"DEFAULTESC", cancel);
   IupSetAttribute(dlg,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 

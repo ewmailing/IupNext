@@ -134,7 +134,7 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih)
 static int iHboxCalcEmptyWidth(Ihandle *ih, int expand)
 {
   Ihandle* child;
-  int children_naturalwidth;
+  int children_naturalwidth, empty_width;
 
   int children_natural_totalwidth=0;
   int children_natural_maxwidth=0;
@@ -160,8 +160,9 @@ static int iHboxCalcEmptyWidth(Ihandle *ih, int expand)
     children_natural_totalwidth = children_natural_maxwidth*children_count;
 
   children_naturalwidth = children_natural_totalwidth + (children_count-1)*ih->data->gap + 2*ih->data->margin_x;
-  return (ih->currentwidth - children_naturalwidth)/expand_count;
-
+  empty_width = (ih->currentwidth - children_naturalwidth)/expand_count;
+  if (empty_width<0) empty_width = 0;
+  return empty_width;
 }
 
 static int iHBoxGetExpandChildren(Ihandle* ih)
