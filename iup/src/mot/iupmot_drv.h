@@ -54,7 +54,7 @@ char* iupmotConvertString(XmString str);
 void iupmotSetMnemonicTitle(Ihandle *ih, const char* value);
 void iupmotDisableDragSource(Widget w);
 void iupmotSetPixmap(Ihandle* ih, const char* name, const char* prop, int make_inactive, const char* attrib_name);
-void iupmotSetGlobalColorAttrib(Widget w, const char* xmname, const char* name, int reuse);
+void iupmotSetGlobalColorAttrib(Widget w, const char* xmname, const char* name);
 void iupmotSetBgColor(Widget w, Pixel color);
 char* iupmotGetBgColorAttrib(Ihandle* ih);
 

@@ -33,7 +33,7 @@ void* iupdrvGetDisplay(void)
   return iupmot_display;
 }
 
-void iupmotSetGlobalColorAttrib(Widget w, const char* xmname, const char* name, int reuse)
+void iupmotSetGlobalColorAttrib(Widget w, const char* xmname, const char* name)
 {
   unsigned char r, g, b; 
   Pixel color;
@@ -41,15 +41,7 @@ void iupmotSetGlobalColorAttrib(Widget w, const char* xmname, const char* name, 
   XtVaGetValues(w, xmname, &color, NULL);
   iupmotColorGetRGB(color, &r, &g, &b);
 
-  if (reuse)
-  {
-    char* value = IupGetGlobal(name);   /* use the same pointer because of the registered default values */
-    sprintf(value, "%d %d %d", (int)r, (int)g, (int)b);
-  }
-  else
-  {
-    IupSetfAttribute(NULL, name, "%3d %3d %3d", (int)r, (int)g, (int)b);
-  }
+  IupSetfAttribute(NULL, name, "%3d %3d %3d", (int)r, (int)g, (int)b);
 }
 
 int iupdrvOpen(int *argc, char ***argv)
@@ -107,7 +99,7 @@ int iupdrvOpen(int *argc, char ***argv)
 
   /* dialog background color */
   {
-    iupmotSetGlobalColorAttrib(iupmot_appshell, XmNbackground, "DLGBGCOLOR", 0);
+    iupmotSetGlobalColorAttrib(iupmot_appshell, XmNbackground, "DLGBGCOLOR");
     IupSetfAttribute(NULL, "DLGFGCOLOR", "%3d %3d %3d", 0, 0, 0);
     IupSetfAttribute(NULL, "TXTBGCOLOR", "%3d %3d %3d", 255, 255, 255);
     IupSetfAttribute(NULL, "TXTFGCOLOR", "%3d %3d %3d", 0, 0, 0);

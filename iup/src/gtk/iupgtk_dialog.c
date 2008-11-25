@@ -479,7 +479,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
     GtkStyle* style = gtk_widget_get_style(ih->handle);
     if (style && IupGetGlobal("_IUP_RESET_DLGBGCOLOR"))
     {
-      iupgtkUpdateGlobalColors(style, 1);
+      iupgtkUpdateGlobalColors(style);
       IupSetGlobal("_IUP_RESET_DLGBGCOLOR", NULL);
     }
   }

@@ -98,36 +98,26 @@ void* iupgtkGetColormapFromVisual(void* visual, void* colormap)
 
 #endif
 
-static void gtkSetGlobalColorAttrib(const char* name, GdkColor *color, int reuse)
+static void gtkSetGlobalColorAttrib(const char* name, GdkColor *color)
 {
-  if (reuse)
-  {
-    char* value = IupGetGlobal(name);   /* use the same pointer because of the registered default values */
-    sprintf(value, "%d %d %d", (int)iupCOLOR16TO8(color->red), 
-                               (int)iupCOLOR16TO8(color->green), 
-                               (int)iupCOLOR16TO8(color->blue));
-  }
-  else
-  {
-    IupSetfAttribute(NULL, name, "%3d %3d %3d", (int)iupCOLOR16TO8(color->red), 
-                                                (int)iupCOLOR16TO8(color->green), 
-                                                (int)iupCOLOR16TO8(color->blue));
-  }
+  IupSetfAttribute(NULL, name, "%3d %3d %3d", (int)iupCOLOR16TO8(color->red), 
+                                              (int)iupCOLOR16TO8(color->green), 
+                                              (int)iupCOLOR16TO8(color->blue));
 }
 
-void iupgtkUpdateGlobalColors(GtkStyle* style, int reuse)
+void iupgtkUpdateGlobalColors(GtkStyle* style)
 {
   GdkColor color = style->bg[GTK_STATE_NORMAL];
-  gtkSetGlobalColorAttrib("DLGBGCOLOR", &color, reuse);
+  gtkSetGlobalColorAttrib("DLGBGCOLOR", &color);
 
   color = style->fg[GTK_STATE_NORMAL];
-  gtkSetGlobalColorAttrib("DLGFGCOLOR", &color, reuse);
+  gtkSetGlobalColorAttrib("DLGFGCOLOR", &color);
 
   color = style->base[GTK_STATE_NORMAL];
-  gtkSetGlobalColorAttrib("TXTBGCOLOR", &color, reuse);
+  gtkSetGlobalColorAttrib("TXTBGCOLOR", &color);
 
   color = style->text[GTK_STATE_NORMAL];
-  gtkSetGlobalColorAttrib("TXTFGCOLOR", &color, reuse);
+  gtkSetGlobalColorAttrib("TXTFGCOLOR", &color);
 }
 
 int iupdrvOpen(int *argc, char ***argv)
@@ -147,7 +137,7 @@ int iupdrvOpen(int *argc, char ***argv)
                                                    gtk_micro_version);
 
   style = gtk_style_new();
-  iupgtkUpdateGlobalColors(style, 0);
+  iupgtkUpdateGlobalColors(style);
   IupSetGlobal("_IUP_RESET_DLGBGCOLOR", "YES");
   g_object_unref(style);
 

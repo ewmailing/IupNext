@@ -187,10 +187,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\iup_scanf.c"
-				>
-			</File>
-			<File
 				RelativePath="..\src\iup_show.c"
 				>
 			</File>
@@ -461,6 +457,10 @@
 			</File>
 			<File
 				RelativePath="..\src\iup_sbox.c"
+				>
+			</File>
+			<File
+				RelativePath="..\src\iup_scanf.c"
 				>
 			</File>
 			<File

@@ -1069,8 +1069,8 @@ static int motTextMapMethod(Ihandle* ih)
 
   if (IupGetGlobal("_IUP_SET_TXTCOLORS"))
   {
-    iupmotSetGlobalColorAttrib(ih->handle, XmNbackground, "TXTBGCOLOR", 1);
-    iupmotSetGlobalColorAttrib(ih->handle, XmNforeground, "TXTFGCOLOR", 1);
+    iupmotSetGlobalColorAttrib(ih->handle, XmNbackground, "TXTBGCOLOR");
+    iupmotSetGlobalColorAttrib(ih->handle, XmNforeground, "TXTFGCOLOR");
     IupSetGlobal("_IUP_SET_TXTCOLORS", NULL);
   }
 

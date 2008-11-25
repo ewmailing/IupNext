@@ -63,7 +63,7 @@ char* iupgtkGetNativeWindowHandle(Ihandle* ih);
 void* iupgtkGetColormapFromVisual(void* visual, void* colormap);
 void* iupgtkGetNativeGraphicsContext(GtkWidget* widget);
 void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc);
-void iupgtkUpdateGlobalColors(GtkStyle* style, int reuse);
+void iupgtkUpdateGlobalColors(GtkStyle* style);
 
 
 /* dialog */

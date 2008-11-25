@@ -1,5 +1,5 @@
 /*
- * IupCanvas Redraw example
+ * IupCanvas Idle Redraw example
  */
 
 #include <stdio.h>
@@ -15,7 +15,7 @@ Ihandle *tabs    = NULL;
 Ihandle *cv      = NULL;
 cdCanvas*cdcanvas= NULL;
 
-int need_redraw;
+int need_redraw, redraw_count = 0;
 
 int toggle_redraw(void)
 {
@@ -23,73 +23,52 @@ int toggle_redraw(void)
   return IUP_DEFAULT;
 }
 
-int fake_redraw(void)
-{
-  need_redraw = 1;
-  return IUP_DEFAULT;
-}
-
 int redraw(void)
 {
-  if(need_redraw == 1)
+  if (need_redraw)
   {
-    int i;
+    cdCanvasBox(cdcanvas, 0, 300, 0, redraw_count/100);
+    IupSetfAttribute(gauge, "VALUE", "%f", (float)redraw_count/30000.0f);
 
-    need_redraw = 0;
-    IupSetAttribute(bt, "FGCOLOR", "255 0 0");
-    IupFlush();
-
-    cdCanvasActivate(cdcanvas);
-    cdCanvasForeground(cdcanvas, CD_BLUE);
-    cdCanvasClear(cdcanvas);
-
-    for(i = 0; i < 300000; i++)
+    redraw_count++;
+    if (redraw_count == 30000)
     {
-      cdCanvasBox(cdcanvas, 0, 300, 0, i/1000);
-      IupSetfAttribute(gauge, "VALUE", "%f", (float)i/300000);
-
-      IupLoopStep();
+      cdCanvasClear(cdcanvas);
+      redraw_count = 0;
+      need_redraw = 0;
     }
-
-    IupSetAttribute(bt, "FGCOLOR", "255 255 255");
-    IupFlush();
   }
   return IUP_DEFAULT;
-}
-
-void init(void) 
-{
-  gauge = IupGauge();
-  cv    = IupCanvas(NULL);
-  bt    = IupButton("Restart", NULL);
-  IupSetAttribute(bt,    "SIZE", "50x50");
-  IupSetAttribute(bt,    "FGCOLOR", "255 255 255");
-  IupSetAttribute(gauge, "SIZE", "200x15");
-  IupSetAttribute(cv,    "SIZE", "200x200");
-  dlg   = IupDialog(IupVbox(cv, IupHbox(gauge, bt, NULL), NULL));
-  IupSetAttribute(dlg, "TITLE", "Redraw test");
 }
 
 int main(int argc, char **argv) 
 {
   IupOpen(&argc, &argv);
-  IupControlsOpen();
+//  IupControlsOpen();
   
-  init();
+  gauge = IupProgressBar();
+//  gauge = IupGauge();
+  cv    = IupCanvas(NULL);
+  bt    = IupButton("Start/Stop", NULL);
+  IupSetAttribute(bt,    "SIZE", "50x50");
+  IupSetAttribute(gauge, "SIZE", "200x15");
+  IupSetAttribute(cv,    "SIZE", "200x200");
+  dlg   = IupDialog(IupVbox(cv, IupHbox(gauge, bt, NULL), NULL));
+  IupSetAttribute(dlg, "TITLE", "Redraw test");
 
   IupSetFunction("IDLE_ACTION", (Icallback)redraw);
 
   IupMap(dlg);
   
-  cdcanvas = cdCreateCanvas(CD_IUP, cv) ;
+  cdcanvas = cdCreateCanvas(CD_IUP, cv);
+  cdCanvasForeground(cdcanvas, CD_BLUE);
+  cdCanvasClear(cdcanvas);
   
-  IupSetCallback(cv, "ACTION", (Icallback)fake_redraw);
   IupSetCallback(bt, "ACTION", (Icallback)toggle_redraw);
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
   IupMainLoop();
   IupDestroy(dlg);
-  IupControlsClose();
   IupClose();
 
   return 0;

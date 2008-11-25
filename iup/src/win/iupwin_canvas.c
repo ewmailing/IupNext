@@ -437,13 +437,13 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       /* Force focus on canvas click */
       SetFocus(ih->handle);
 
+      SetCapture(ih->handle);
+
       if (iupwinButtonDown(ih, msg, wp, lp))
       {
         /* refresh the cursor, it could have been changed in BUTTON_CB */
         SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(1,WM_MOUSEMOVE));
       }
-
-      SetCapture(ih->handle);
 
       if (msg==WM_XBUTTONDOWN || msg==WM_XBUTTONDBLCLK)
         *result = 1;
@@ -479,6 +479,12 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       if (msg==WM_XBUTTONUP)
         *result = 1;
       return 1;
+    }
+  case WM_KILLFOCUS:
+    {
+      if (GetCapture() == ih->handle)
+        ReleaseCapture();
+      break;
     }
   case WM_SETCURSOR: 
     { 

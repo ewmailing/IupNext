@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
   int fields_read;
   int integer = 12;
-  float real = 1e-3;
+  float real = 1e-3f;
   char text[300]="This is a vector of characters";
   char string[350];
   char *fmt =

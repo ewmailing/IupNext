@@ -125,7 +125,10 @@ static int iTextSetMaskAttrib(Ihandle* ih, const char* value)
   if (!value)
   {
     if (ih->data->mask)
+    {
       iupMaskDestroy(ih->data->mask);
+      ih->data->mask = NULL;
+    }
   }
   else
   {
@@ -149,7 +152,10 @@ static int iTextSetMaskIntAttrib(Ihandle* ih, const char* value)
   if (!value)
   {
     if (ih->data->mask)
+    {
       iupMaskDestroy(ih->data->mask);
+      ih->data->mask = NULL;
+    }
   }
   else
   {
@@ -175,7 +181,10 @@ static int iTextSetMaskFloatAttrib(Ihandle* ih, const char* value)
   if (!value)
   {
     if (ih->data->mask)
+    {
       iupMaskDestroy(ih->data->mask);
+      ih->data->mask = NULL;
+    }
   }
   else
   {

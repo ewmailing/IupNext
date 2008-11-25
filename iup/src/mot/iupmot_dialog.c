@@ -656,7 +656,7 @@ static int motDialogMapMethod(Ihandle* ih)
 
   if (IupGetGlobal("_IUP_SET_DLGFGCOLOR"))
   {
-    iupmotSetGlobalColorAttrib(dialog_manager, XmNforeground, "DLGFGCOLOR", 1);
+    iupmotSetGlobalColorAttrib(dialog_manager, XmNforeground, "DLGFGCOLOR");
     IupSetGlobal("_IUP_SET_DLGFGCOLOR", NULL);
   }
 

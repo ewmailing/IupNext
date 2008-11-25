@@ -205,6 +205,18 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\iup\html\examples\C\cells_numbering.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\html\examples\C\colorbar.c"
 				>
 				<FileConfiguration
@@ -533,7 +545,6 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -542,18 +553,6 @@
 			</File>
 			<File
 				RelativePath="..\html\examples\C\multiline2.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\html\examples\C\numbering.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -615,6 +614,14 @@
 			<File
 				RelativePath="..\html\examples\C\sample.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\html\examples\C\sbox1.c"

@@ -293,8 +293,6 @@ int  iupDataEntry  (int    maxlin,
 {
   int i, bt;
   Ihandle *ok, *cancel, *dlg, *vb, *hb, **txt, *button_box, *dlg_box;
-  char scroll[20];
-  char sizecol[20];
 
   txt = (Ihandle **) calloc(maxlin, sizeof(Ihandle*));
   if (txt == NULL) return -2;
@@ -303,14 +301,11 @@ int  iupDataEntry  (int    maxlin,
 
   for (i=0; i<maxlin; i++)
   {
-    sprintf(scroll, "%d", 4*maxscr[i]+4);
-    sprintf(sizecol, "%d", maxcol[i]);
-
     txt[i] = IupText("do_nothing");
     IupSetAttribute(txt[i],"VALUE",data[i]);
-    IupStoreAttribute(txt[i],"SIZE",scroll);
-    IupStoreAttribute(txt[i],"NC",sizecol);
-    IupSetAttribute(txt[i],"EXPAND","YES");
+    IupSetfAttribute(txt[i],"SIZE","%dx", 4*maxscr[i]+4);
+    IupSetfAttribute(txt[i],"NC", "%d", maxcol[i]);
+    IupSetAttribute(txt[i],"EXPAND","HORIZONTAL");
 
     hb = IupHbox(IupLabel(text[i]), IupFill(), txt[i],NULL);
     IupSetAttribute(hb,"MARGIN","0x0");

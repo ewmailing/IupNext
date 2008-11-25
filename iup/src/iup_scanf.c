@@ -177,6 +177,8 @@ int IupScanf (const char *format, ...)
   }
   va_end(va);
 
+  iupASSERT(fields_in_count == fields_out_count);
+
 cleanup:
   if (s1) free(s1);
   if (title) free(title);
@@ -195,9 +197,6 @@ cleanup:
       if (text[i]) free(text[i]);
     free(text);
   }
-
-  iupASSERT(fields_in_count > 0);
-  iupASSERT(fields_in_count != fields_out_count);
 
   return (erro < 0) ? fields_out_count : erro;
 }

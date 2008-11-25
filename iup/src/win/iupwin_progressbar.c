@@ -26,14 +26,12 @@
 #include "iupwin_handle.h"
 
 
-#ifndef SHRT_MAX
-#define SHRT_MAX 32767
-#endif
-
 #ifndef PBS_MARQUEE             /* it is defined only when _WIN32_WINNT >= 0x0501 */
 #define PBS_MARQUEE             0x08
 #define PBM_SETMARQUEE          (WM_USER+10)
 #endif
+
+#define IUP_PB_MAX 32000
 
 
 static int winProgressBarSetMarqueeAttrib(Ihandle* ih, const char* value)
@@ -72,7 +70,8 @@ static int winProgressBarSetValueAttrib(Ihandle* ih, const char* value)
   /* Shows when the marquee style is not set */
   if (!ih->data->marquee)
   {
-    int val = (int)(SHRT_MAX * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
+    double factor = (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin);
+    int val = (int)(IUP_PB_MAX * factor);
     SendMessage(ih->handle, PBM_SETPOS, (WPARAM)val, 0);
   }
 
@@ -141,7 +140,7 @@ static int winProgressBarMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* ensure the default values, that are different from the native ones */
-  SendMessage(ih->handle, PBM_SETRANGE, 0, MAKELPARAM(0, SHRT_MAX));
+  SendMessage(ih->handle, PBM_SETRANGE, 0, MAKELPARAM(0, IUP_PB_MAX));
 
   return IUP_NOERROR;
 }
