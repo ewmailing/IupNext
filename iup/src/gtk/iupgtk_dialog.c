@@ -401,13 +401,17 @@ static int gtkDialogMapMethod(Ihandle* ih)
   GtkWidget* fixed;
 
 #ifdef HILDON
-  HildonProgram *program = HILDON_PROGRAM(hildon_program_get_instance());
-  ih->handle = hildon_window_new();
-  if (!ih->handle)
-    return IUP_ERROR;
-  hildon_program_add_window(program, HILDON_WINDOW(ih->handle));
+  if (iupStrBoolean(iupAttribGetStr(ih, "DIALOGHINT"))) 
+    ih->handle = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  else 
+  {
+    HildonProgram *program = HILDON_PROGRAM(hildon_program_get_instance());
+    ih->handle = hildon_window_new();
+    if (ih->handle)
+      hildon_program_add_window(program, HILDON_WINDOW(ih->handle));
+  }
 #else
-   ih->handle = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  ih->handle = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 #endif
   if (!ih->handle)
     return IUP_ERROR;
@@ -437,7 +441,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
                                     
   gtk_window_set_default_size((GtkWindow*)ih->handle, 100, 100); /* set this to avoid size calculation problems  */
 
-  if (iupAttribGetInt(ih, "DIALOGFRAME"))
+  if (iupStrBoolean(iupAttribGetStr(ih, "DIALOGHINT"))) 
     gtk_window_set_type_hint(GTK_WINDOW(ih->handle), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   /* the container that will receive the child element. */
