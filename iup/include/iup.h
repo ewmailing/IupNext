@@ -10,9 +10,8 @@
 #ifndef __IUP_H 
 #define __IUP_H
 
-// TODO: uncomment this. Used now to remove old defines from new code.
-//#include <iupkey.h>
-//#include <iupdef.h>
+#include <iupkey.h>
+#include <iupdef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,8 +21,8 @@ extern "C" {
 #define IUP_NAME "IUP - Portable User Interface"
 #define IUP_COPYRIGHT  "Copyright (C) 1994-2008 Tecgraf, PUC-Rio."
 #define IUP_DESCRIPTION	"Portable toolkit for building graphical user interfaces."
-#define IUP_VERSION "3.0.0alpha"
-#define IUP_VERSION_DATE "2006/04/xx"  // When we started to work on version 3.0
+#define IUP_VERSION "3.0.0beta1"
+#define IUP_VERSION_DATE "2008/12/03"
 #define IUP_VERSION_NUMBER 300000
 
 typedef struct Ihandle_ Ihandle;
