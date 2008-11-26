@@ -107,7 +107,6 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih)
       if (!child->floating)
       {
         children_expand |= child->expand;
-        children_natural_totalwidth += child->naturalwidth;
         children_natural_maxwidth = iupMAX(children_natural_maxwidth, child->naturalwidth);
         children_natural_maxheight = iupMAX(children_natural_maxheight, child->naturalheight);
         children_count++;
@@ -116,6 +115,12 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih)
 
     /* reset to max natural width and/or height if NORMALIZESIZE is defined */
     iupBoxNormalizeSize(ih, children_natural_maxwidth, children_natural_maxheight);
+
+    for (child = ih->firstchild; child; child = child->brother)
+    {
+      if (!child->floating)
+        children_natural_totalwidth += child->naturalwidth;
+    }
 
     ih->expand &= children_expand; /* compose but only expand where the box can expand */
 

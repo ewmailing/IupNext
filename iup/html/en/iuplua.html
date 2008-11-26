@@ -19,8 +19,9 @@
 <pre>Ihandle* iuplua_checkihandle(lua_State *L, int pos);</pre>
 <p>In Lua, if the handle is a user data create with the above structure, but not mapped to a Lua object, use the 
   function:</p>
-<pre>iup.RegisterHandle(handle, typename)</pre>
-<p>where &quot;typename&quot; is the string returned in IupGetType(handle)</p>
+<pre>iup.RegisterHandle(handle, classname)</pre>
+<p>where &quot;classname&quot; is the string returned in
+<a href="func/iupgetclassname.html">IupGetClassName</a>.</p>
 <p>In Lua, to access a handle created in C as a Lua object, alternatively use the function:</p>
 <pre>handle = iup.GetFromC(name)</pre>
 <p class="MsoBodyText">where &quot;name&quot; is the name of the element previously defined with

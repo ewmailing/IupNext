@@ -12,19 +12,25 @@
 #include "iup.h"
 #include "iupkey.h"
 
+int k_any(Ihandle *self, int c)
+{
+  if (c == K_CR)
+    return IUP_CLOSE;
+  return IUP_CONTINUE;
+}
+
 int number_action (Ihandle *self, int c)
 {
   static char caracteres_validos[]="0123456789.+-Ee";
 
-  if (c == K_CR)  /* replaces TAB for ENTER */
-    return K_TAB;
-  else if (strchr (caracteres_validos, c))  /* c is a valid character */
+  if (strchr(caracteres_validos, c))  /* c is a valid character */
     return IUP_DEFAULT;
   else if (iscntrl(c))  /* c is a control character (TAB, BACKSPACE, ...) */
     return IUP_DEFAULT;
 
   return IUP_IGNORE;
 }
+
 void main(int argc, char **argv)
 {
   Ihandle *field;    /* TEXT interface element */
@@ -34,9 +40,11 @@ void main(int argc, char **argv)
 
   IupOpen(&argc, &argv);  /* initializes IUP */
 
-  field = IupText("number_action");                           /* creates TEXT field */
-  IupSetFunction ("number_action", (Icallback)number_action);   /* registers callback */
-  IupSetAttribute (field, "VALUE", "1.0");                /* defines initial value */
+  field = IupText(NULL);                           /* creates TEXT field */
+  IupSetCallback(field, "ACTION", (Icallback)number_action);   /* registers callback */
+  IupSetCallback(field, "K_ANY", (Icallback)k_any);   /* registers callback */
+  
+  IupSetAttribute(field, "VALUE", "1.0");                /* defines initial value */
 
   message = IupLabel("Please, type any number: "); /* creates message */
   prompt = IupHbox(message, field, NULL);  /* creates prompt */

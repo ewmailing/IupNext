@@ -12,7 +12,7 @@ int exit_cb(void)
 
 void main(int argc, char **argv)
 {
-  Ihandle *dg, *menu, *item_save, *item_open, *item_undo, *item_exit, *file_menu;
+  Ihandle *dlg, *menu, *item_save, *item_open, *item_undo, *item_exit, *file_menu;
   Ihandle *sub1_menu;
 
   IupOpen(&argc, &argv);
@@ -42,11 +42,12 @@ void main(int argc, char **argv)
 
   menu = IupMenu(sub1_menu, NULL);
   IupSetHandle("mymenu", menu);
-  dg = IupDialog(IupCanvas(""));
-  IupSetAttribute(dg, "MENU", "mymenu");
+  dlg = IupDialog(IupCanvas(""));
+  IupSetAttribute(dlg, "MENU", "mymenu");
+  IupSetAttribute(dlg, "TITLE", "IupMenu");
 
-  IupShow(dg);
+  IupShow(dlg);
   IupMainLoop();
-  IupDestroy(dg);
+  IupDestroy(dlg);
   IupClose();
 }

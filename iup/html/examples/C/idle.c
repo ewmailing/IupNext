@@ -57,25 +57,34 @@ static int start_calc (void)
   return IUP_DEFAULT;
 }
 
+int close(void)
+{
+  return IUP_CLOSE;
+}
+
 /************************************************************************************ 
 * main program
 ************************************************************************************/
 void main(int argc, char **argv)
 {
-  Ihandle *text, *bt, *dg;
+  Ihandle *text, *bt, *dlg;
   IupOpen(&argc, &argv);
  
-  text = IupText("");
+  text = IupText(NULL);
   IupSetAttribute(text, "SIZE", "100x20");
   IupSetHandle("mens", text);
+  IupSetCallback(text, "K_CR", (Icallback)close);
+
   bt = IupButton("Calculate", "calc");
+  IupSetCallback(bt, "ACTION", (Icallback)start_calc);
 
-  dg = IupDialog(IupVbox(text, bt, NULL));
+  dlg = IupDialog(IupVbox(text, bt, NULL));
+  IupSetAttribute(dlg, "TITLE", "Idle");
 
-  IupSetFunction ("calc",(Icallback) start_calc);
-  IupShowXY(dg, IUP_CENTER, IUP_CENTER);
+
+  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
   IupMainLoop();
-  IupDestroy(dg);
+  IupDestroy(dlg);
   IupClose();
 }

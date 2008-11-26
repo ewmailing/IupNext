@@ -18,7 +18,7 @@ int list_cb (Ihandle *self, char *t, int i, int v)
 int edit_cb (Ihandle *self, int c, char *after)
 {
   Ihandle *lbl = (Ihandle*)IupGetAttribute(self, "_LABEL");
-  if (isxkey(c) && c != K_DEL) return IUP_DEFAULT;
+  if (!c) return IUP_DEFAULT;
   IupStoreAttribute(lbl, "TITLE", after);
   return IUP_DEFAULT;
 }

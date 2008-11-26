@@ -45,7 +45,7 @@ void IupNormalizeSizev(const char* value, Ihandle** ih_list)
   for (i = 0; ih_list[i]; i++)
   {
     ih = ih_list[i];
-    if (ih->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(ih->iclass->name, "fill"))
+    if (!ih->floating && (ih->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(ih->iclass->name, "fill")))
     {
       if (normalize & NORMALIZE_WIDTH)
         ih->userwidth = natural_maxwidth;

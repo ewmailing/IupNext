@@ -227,7 +227,7 @@ void func_1 (void)
   IupSetAttribute(_list_3,"CX","400");
   IupSetAttribute(_list_3,"CY","10");
 
-  _cnv_1 = IupCanvas( "do_nothing");
+  _cnv_1 = IupCanvas( NULL);
   IupSetAttribute(_cnv_1,"RASTERSIZE","100x100");
   IupSetAttribute(_cnv_1,"POSX","0.0");
   IupSetAttribute(_cnv_1,"POSY","0.0");

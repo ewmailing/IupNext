@@ -39,8 +39,9 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);       
   IupControlsOpen () ;
 
-  dlg = IupDialog(create_mat()) ;
-  IupShowXY (dlg,IUP_CENTER,IUP_CENTER) ;
+  dlg = IupDialog(create_mat());
+  IupSetAttribute(dlg, "TITLE", "IupMatrix");
+  IupShowXY (dlg,IUP_CENTER,IUP_CENTER);
   IupMainLoop () ;
   IupDestroy(dlg);
   IupControlsClose() ;

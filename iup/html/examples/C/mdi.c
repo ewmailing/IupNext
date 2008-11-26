@@ -266,7 +266,7 @@ Ihandle* createDialog (void)
     _frm_5,
     NULL);
 
-  _cnv_1 = IupCanvas( "do_nothing");
+  _cnv_1 = IupCanvas( NULL);
   IupSetAttribute(_cnv_1,"BGCOLOR","128 255 0");
 
   _vbox_1 = IupVbox(
@@ -396,7 +396,7 @@ static void createMenu(void)
 static Ihandle* createFrame(void)
 {
   Ihandle *dlg, *cnv;
-  cnv = IupCanvas( "do_nothing");
+  cnv = IupCanvas( NULL);
   IupSetAttribute(cnv,"MDICLIENT","YES");
   IupSetHandle("mdiClient", cnv);
 

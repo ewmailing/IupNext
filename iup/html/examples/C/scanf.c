@@ -9,32 +9,27 @@
 
 int main(int argc, char **argv)
 {
-  int fields_read;
+  int ret;
   int integer = 12;
   float real = 1e-3f;
   char text[300]="This is a vector of characters";
-  char string[350];
   char *fmt =
   {
-   "Data entering example\n"
-   "text = %300.40%s\n"
-   "real = %20.10%g\n"
-   "integer = %20.10%d\n"
+   "IupScanf Example\n"
+   "Text: %300.5%s\n"
+   "Real: %20.10%g\n"
+   "Integer: %20.10%d\n"
   };
   
   IupOpen(&argc, &argv);
+
   IupSetLanguage("ENGLISH");
-  fields_read = IupScanf (fmt, text, &real, &integer);
-  
-  if(fields_read == -1)
-  { 
+
+  ret = IupScanf(fmt, text, &real, &integer);
+  if (ret == -1)
     IupMessage("IupScanf","Operation canceled");
-  }
   else
-  {
-    sprintf(string,"Text: %s\nReal: %f\nInteger: %d\nFields read successfully: %d",text,real,integer,fields_read);
-    IupMessage("IupScanf",string); 	  
-  }
+    IupMessagef("IupScanf","Text: %s\nReal: %f\nInteger: %d\nFields read successfully: %d",text,real,integer,ret);
 
   IupClose();
 

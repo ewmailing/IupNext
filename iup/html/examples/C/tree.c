@@ -35,21 +35,6 @@ int addbranch(void)
   return IUP_DEFAULT;
 }
 
-int text_cb(Ihandle* self, int c, char *after)
-{
-  if (c == K_ESC)
-    return IUP_CLOSE;
-
-  if (c == K_CR)
-  {
-    Ihandle *tree = IupGetHandle("tree");
-    IupSetAttribute(tree,IUP_NAME,after);
-    IupSetAttribute(tree, IUP_REDRAW, "YES");
-    return IUP_CLOSE;
-  }
-  return IUP_DEFAULT;
-}
-
 /* Callback called when a node is removed by the menu. */
 int removenode(void)
 {
@@ -188,7 +173,7 @@ void init_tree(void)
 void init_dlg(void)
 {
   Ihandle* tree = IupGetHandle("tree");
-  Ihandle* box = IupVbox(IupHbox(tree, IupButton("test", "xx"), NULL), NULL);
+  Ihandle* box = IupVbox(IupHbox(tree, IupButton("test", NULL), NULL), NULL);
   Ihandle* dlg = IupDialog(box) ;
   IupSetAttribute(dlg, "TITLE", "IupTree");
   IupSetAttribute(tree, "SIZE","QUARTERxTHIRD");

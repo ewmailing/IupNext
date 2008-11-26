@@ -111,13 +111,18 @@ static void iVboxComputeNaturalSizeMethod(Ihandle* ih)
         children_expand |= child->expand;
         children_natural_maxwidth = iupMAX(children_natural_maxwidth, child->naturalwidth);
         children_natural_maxheight = iupMAX(children_natural_maxheight, child->naturalheight);
-        children_natural_totalheight += child->naturalheight;
         children_count++;
       }
     }
 
     /* reset to max natural width and/or height if NORMALIZESIZE is defined */
     iupBoxNormalizeSize(ih, children_natural_maxwidth, children_natural_maxheight);
+
+    for (child = ih->firstchild; child; child = child->brother)
+    {
+      if (!child->floating)
+        children_natural_totalheight += child->naturalheight;
+    }
 
     ih->expand &= children_expand; /* compose but only expand where the box can expand */
 

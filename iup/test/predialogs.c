@@ -220,7 +220,7 @@ void new_file(char* dialogtype, int preview)
 
 void new_alarm(void)
 {
-  int ret = IupAlarm ("IupAlarm Test", "Message Text", "Button 1", "Button 2", "Button 3");
+  int ret = IupAlarm ("IupAlarm Test", "Message Text\nSecond Line", "But 1", "Button 2", "B3");
   printf("Button(%d)\n", ret);
 }
 

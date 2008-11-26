@@ -13,47 +13,45 @@ static int k_any(Ihandle *self, int c)
 {
   switch (c)
   {
-    case K_CR:
-    case K_SP:
-    case K_ESC:
-    case K_INS:
-    case K_DEL:
-    case K_TAB:
-    case K_HOME:
-    case K_UP:
-    case K_PGUP:
-    case K_LEFT:
-    case K_MIDDLE:
-    case K_RIGHT:
-    case K_END:
-    case K_DOWN:
-    case K_PGDN:
-      return IUP_IGNORE;
-    default:
-      return IUP_DEFAULT;
-  }
-}
-
-static int action(Ihandle *self, int c, char *after)
-{
-  int size = strlen(password);
-  switch (c)
-  {
-    case K_BS:
+  case K_BS:
+    {
+      int size = strlen(password);
       if (size==0)
         return IUP_IGNORE;
       password[size-1] = 0;
       IupSetAttribute(pwd, "VALUE", password);
       return IUP_DEFAULT;
-    default:
-      if (k_any(self, c) == IUP_IGNORE)
-        return IUP_IGNORE;
-
-      password[size] = (char)c;
-      password[size+1] = 0;
-      break;
+    }
+  case K_CR:
+  case K_SP:
+  case K_ESC:
+  case K_INS:
+  case K_DEL:
+  case K_TAB:
+  case K_HOME:
+  case K_UP:
+  case K_PGUP:
+  case K_LEFT:
+  case K_MIDDLE:
+  case K_RIGHT:
+  case K_END:
+  case K_DOWN:
+  case K_PGDN:
+    return IUP_IGNORE;
+  default:
+    return IUP_DEFAULT;
   }
-  IupSetAttribute(pwd, "VALUE", password);
+}
+
+static int action(Ihandle *self, int c, char *after)
+{
+  if (c)
+  {
+    int size = strlen(password);
+    password[size] = (char)c;
+    password[size+1] = 0;
+    IupSetAttribute(pwd, "VALUE", password);
+  }
   return K_asterisk;
 }
 

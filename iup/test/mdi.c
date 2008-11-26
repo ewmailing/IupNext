@@ -107,7 +107,7 @@ static void createMenu(void)
 static Ihandle* createFrame(void)
 {
   Ihandle *dlg, *cnv;
-  cnv = IupCanvas( "do_nothing");
+  cnv = IupCanvas( NULL);
   IupSetAttribute(cnv,"MDICLIENT","YES");
   IupSetHandle("mdiClient", cnv);
 
