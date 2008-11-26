@@ -16,164 +16,77 @@
 <h3>Version 3.0&nbsp; BETA (CVS module &quot;iup3&quot; - 26/Nov/2008)</h3>
 <h4>General</h4>
 <ul>
-  <li><span style="color: #008000">Changed:</span> <span class="style1"><strong>
-	ATENTION</strong></span><strong>
-  -</strong> Now attributes are stored in the 
-	hash table only if not processed or choosed by the element class implementation.</li>
-	<li><span style="color: #008000">Changed:</span>
-  SAVEUNDER dialog attribute now is also available in Motif.</li>
-	<li><span style="color: #008000">Changed:</span>
-  <strong>
-	IupControlsClose</strong> function does nothing, declaration still remains 
-	for compatibility.</li>
-  <li><span style="color: #008000">Changed:</span> <b>IupGetAttribute</b>, <b>IupSetAttribute</b> and 
-  <b>IupStoreAttribute</b> can also be used to access global attributes using NULL as 
-  element.</li>
-  <li><span style="color: #008000">Changed:</span> TIP and ZORDER attributes are now non inheritable.</li>
-  <li><span style="color: #008000">Changed:</span> Removed the conflicts: K_BS=K_cH, K_TAB=K_cI and K_CR=K_cM. 
-	New key code macros <strong>iup_isShiftXkey</strong>, <strong>iup_isCtrlXkey</strong>,
-	<strong>iup_isAltXkey</strong> and <strong>iup_isSysXkey</strong>.</li>
-  <li><span style="color: #008000">Changed:</span> The global attributes TRUECOLORCANVAS, SYSTEMLANGUAGE, SHIFTKEY and CONTROLKEY are now available in all drivers.</li>
-  <li><span style="color: #008000">Changed:</span> DROPFILES_CB callback is now available for all controls. It is only activated using DRAGDROP attribute. It is 
-  active by default only for <b>IupCanvas</b> and <b>IupDialog</b>.</li>
-	<li><span style="color: #008000">Changed: </span>the default value of the
-	<strong>IupDialog </strong>Windows attribute COMPOSITED is now YES.</li>
-  <li><span style="color: #008000">Changed:</span> MAP_CB is now available for all controls.</li>
-  <li><span style="color: #008000">Changed:</span> attribute FONT now uses a 
-  common a more flexible definition for all drivers.</li>
-  <li><span style="color: #008000">Changed:</span> child dialogs were automatically destroyed by the system but not by IUP.
-  <b>IupDestroy</b> is now automatically 
-  called for child dialogs when the parent is destroyed.</li>
-  <li><span style="color: #008000">Changed:</span> <b>IupAppend</b> and 
-  <b>IupDetach</b> can now be used for dynamic creation of menus, <b>IupSbox</b>,
-  <b>IupCbox</b> and <b>IupTabs</b>, 
-  even after the element is mapped.</li>
-  <li><span style="color: #008000">Changed:</span> <b>IupDetach</b> will now 
-  automatically unmap the element.</li>
-  <li><span style="color: #008000">Changed:</span> <b>IupAppend</b> will now return the 
-  actual parent.</li>
-  <li><span style="color: #008000">Changed:</span> ALIGNMENT attribute in 
-  IupLabel now includes vertical alignment values.</li>
-  <li><span style="color: #008000">Changed:</span> the default FONT in Motif is 
-  now &quot;Fixed, 10&quot;.</li>
-  <li><span style="color: #008000">Changed:</span> <b>IupImageLibOpen</b> will 
-  now only register names, but will not load the images. New 32bpp images for 
-  Windows. GTK aliases are also available. Many new images. <b>IupImageLib</b><strong>Close</strong> 
-	removed, loaded images will now be automatically unloaded. </li>
-  <li><span style="color: #008000">Changed:</span> in the <b>IupCanvas</b> if 
-  ACTION is defined nothing is painted in the canvas now also in Motif. BORDER 
-  is now also supported in Motif. Now scroolbar parameters min, max, page size 
-  and line size are updated when DX/DY are updated. POSX and POSY will only 
-  update the position of the scrollbar. Automatic hide of the scrollbar now 
-  works also in Motif.</li>
-  <li><span style="color: #008000">Changed:</span> LANGUAGE global attribute 
-  default from PORTUGUESE to ENGLISH.</li>
-	<li><span style="color: #008000">Changed:</span> the NO_COLOR attribute is 
-	deprecated, now it simply sets the BGCOLOR attribute in IupCells.</li>
-	<li><span style="color: #008000">Changed:</span> in <strong>IupColorBrowser</strong> moved 
-	from HLS to HSI, added support for resize, anti-aliasing, support for 
-	BGCOLOR attribute, feedback for ACTIVE attribute, feedback for focus. New 
-	HSI attribute. New support for mouse wheel to change Hue. New support for 
-	PgDn and PgUp keys to change Hue.</li>
-	<li><span style="color: #008000">Changed:</span> <strong>IupFrames</strong> now are native parents of their children.</li>
-	<li><span style="color: #008000">Changed:</span> <strong>IupButton</strong> 
-	now supports text with more than one line.</li>
-	<li><span style="color: #008000">Changed:</span> <strong>IupUpdate</strong> 
-	now only mark the control to be redraw instead of redrawing at the function 
-	call.</li>
-	<li><span style="color: #008000">Changed:</span> renamed MARGIN attribute to 
-	PADDING in <strong>IupGauge</strong>.</li>
-	<li><span style="color: #008000">Changed:</span> <strong>IupMultiline</strong> 
-	is now implemented as <strong>IupText</strong> with MULTILINE=YES.</li>
-	<li><span style="color: #008000">Changed:</span> the ACTION callback in 
-	<strong>IupText</strong> now does NOT process navigation keys. It is called 
-	only if the text is edited. The callback now is called before the text is 
-	updated on screen.</li>
-	<li><span style="color: #008000">Changed:</span> the SELECTION and CARET 
-	attribute in Windows of <strong>IupText</strong> 
-	do NOT change the focus anymore. The NC attribute now only restricts 
-	keyboard input.</li>
-	<li><span style="color: #008000">Changed:</span> <strong>IupVal</strong> 
-	implemented as a native control. Attributes HANDLER_IMAGE and 
-	HANDLER_IMAGE_INACTIVE are not supported anymore in <strong>IupVal</strong>.</li>
-	<li><span style="color: #008000">Changed:</span> <strong>IupCbox</strong> is 
-	not based on <strong>IupCanvas </strong>anymore.</li>
-	<li><span style="color: #008000">Changed:</span> now <b>IupText</b> also 
-	supports the DROPFILES_CB, BUTTON_CB and MOTION_CB callbacks. CARET_CB now 
-	includes 0 based character position.</li>
-	<li><span style="color: #008000">Changed:</span> now <b>IupText</b> Natural 
-	Size does not uses the text contents anymore. To control the Natural Size 
-	use the VISIBLECOLUMNS and VISIBLELINES attributes.</li>
-	<li><span style="color: #008000">Changed:</span> default value for ALIGNMENT 
-	in <strong>IupZbox</strong> is now &quot;NW&quot;.</li>
-	<li><span style="color: #008000">Changed:</span> <strong>IupTabs</strong> 
-	implemented as a native control. Attributes ALIGNMENT, FONT_ACTIVE, FONT_INACTIVE, TABSIZE and 
-	REPAINT are not supported anymore in <strong>IupTabs</strong>.</li>
+  <li><span style="color: #0000FF">New:</span> GTK driver, available in UNIX and Windows.</li>
+	<li><span style="color: #0000FF">New:</span> internal code reorganization. More clear and simple to create controls and drivers. All comments are now in 
+  English.</li>
+	<li><span style="color: #0000FF">New:</span> internal documentation and Guide to create new controls. Now all the controls use the same architecture using 
+  the same base class.</li>
+	<li><span style="color: #0000FF">New:</span> IUP_ASSERT compile flag.</li>
+	<li><span style="color: #0000FF">New:</span> IUP_IGNORE return code 
+	accepted for <strong>IDLE_ACTION</strong> callback to automatically remove 
+	the callback.</li>
+	<li><span style="color: #0000FF">New:</span><strong> IupMainLoopLevel</strong> 
+	function.</li>
+	<li><span style="color: #0000FF">New:</span> support for the HILDON 
+	framework that runs on top of GTK on the
+	<a target="_blank" href="http://www.maemo.org">Maemo</a> platform used by 
+	the Nokia Internet Tablets. Thanks to Otfried Cheong.</li>
 	<li><span style="color: #008000">Changed:</span> all dialogs and all 
 	elements that have names are now 
 	automatically destroyed in <strong>IupClose</strong>.</li>
-	<li><span style="color: #008000">Changed:</span> An <strong>IupGLCanvas</strong> 
-	when inside an <strong>IupFrame</strong> in Win32 will now work normally. 
-	But the dialog COMPOSITE attribute must be NO.</li>
+</ul>
+<h4>Common Attributes</h4>
+<ul>
+  <li><span style="color: #0000FF">New:</span> CHARSIZE and NAME common 
+	attribute.</li>
+	<li><span style="color: #0000FF">New:</span> font face name mappings for 
+	Courier, Times and Helvetica.</li>
+	<li><span style="color: #0000FF">New:</span> functions <strong>IupGetClassAttributes,</strong>
+	<b>IupGetIntInt</b>.</li>
+	<li><span style="color: #0000FF">New:</span> common attribute CLIENTSIZE. Returns the size of containers excluding their decoration.</li>
+	<li><span style="color: #0000FF">New:</span> TIP additional attributes 
+	(Motif and Windows): 
+	TIPFONT, TIPDELAY, TIPBGCOLOR, TIPFGCOLOR, TIPBALLON (Windows Only), TIPBALLONTITLE (Windows 
+  Only), TIPBALLONTITLEICON (Windows Only), TIPVISIBLE. Not available in GTK.</li>
+	<li><span style="color: #0000FF">New:</span> TIPRECT auxiliary attribute for 
+	the TIP common attribute.</li>
+	<li><span style="color: #008000">Changed:</span> attribute FONT now uses a 
+  common a more flexible definition for all drivers. The default FONT in Motif is 
+  now &quot;Fixed, 10&quot;.</li>
+  <li><span style="color: #008000">Changed:</span> <span class="style1"><strong>
+	ATENTION</strong></span><strong>
+  -</strong> Now attributes are stored in the 
+	hash table only if not processed or not decided by the element class implementation.</li>
+	<li><span style="color: #008000">Changed:</span> <b>IupGetAttribute</b>, <b>IupSetAttribute</b> and 
+  <b>IupStoreAttribute</b> can also be used to access global attributes using NULL as 
+  element.</li>
+  <li><span style="color: #008000">Changed:</span> TIP and ZORDER attributes are now non inheritable.</li>
 	<li><span style="color: #008000">Changed:</span> The BGCOLOR is now ignored 
 	in <strong>IupLabel</strong>, <strong>IupFrame</strong>, <strong>IupToggle</strong> (for the text) and 
 	<strong>IupVal</strong>. They will use 
 	the background color of the native parent.</li>
-	<li><span style="color: #008000">Changed:</span> The HIGHLIGHT_CB, OPEN_CB 
-	and MENUCLOSE_CB callbacks now work normally for popup menus. HIGHLIGHT_CB 
-	is called for items and submenus. OPEN_CB and MENUCLOSE_CB are called only 
-	for menus. TITLE for submenus can now be changed after the element is 
-	mapped. Children can be added or 
-	removed from menus even after the menu is mapped.</li>
-	<li><span style="color: #008000">Changed:</span> the automatic generation of 
-	inactive images for a more smooth one, still using a modified version of the 
-	background color to create the disabled effect.</li>
-	<li><span style="color: #0000FF">New:</span> GTK driver, available in UNIX and Windows.</li>
-	<li><span style="color: #0000FF">New:</span> global attributes APPSHELL, XDISPLAY, XSCREEN, XSERVERVENDOR, XVENDORRELEASE in Motif.</li>
-	<li><span style="color: #0000FF">New:</span> MODKEYSTATE global attribute in all drivers.</li>
-	<li><span style="color: #0000FF">New:</span> key definitions: K_acute, K_ccedilla, K_Print, K_Menu.</li>
-	<li><span style="color: #0000FF">New:</span> key definitions for the system key modifier K_y*. In Windows this is the Windows key and in Mac this is the 
-  Apple key.</li>
-	<li><span style="color: #0000FF">New:</span> &quot;UPARROW&quot; cursor in Motif. New cursors &quot;RESIZE_NS&quot;&nbsp; and &quot;RESIZE_WE&quot;. Updated cursor documentation with 
-  pictures of all pre-defined cursors. </li>
-	<li><span style="color: #0000FF">New:</span> dialog attributes: MINSIZE and MAXSIZE. InWindows MINSIZE is ignored for systems with multiple monitors. The 
-  Windowing system may impose a minimum default limit for the dialog that includes the title bar with all it buttons.</li>
-	<li><span style="color: #0000FF">New:</span> common attribute CLIENTSIZE. Returns the size of containers excluding their decoration.</li>
-	<li><span style="color: #0000FF">New:</span> ENTERWINDOW_CB, LEAVEWINDOW_CB for all controls.</li>
-	<li><span style="color: #0000FF">New:</span> DROPFILES_CB, RESIZE_CB callbacks for the 
-  	<b>IupDialog</b>.</li>
-	<li><span style="color: #0000FF">New:</span> IUP_CURRENT and IUP_CENTERPARENT positions for 
-	<b>IupShowXY</b> and 
-  <b>IupPopup</b>.</li>
-	<li><span style="color: #0000FF">New:</span> IUP_HIDE and IUP_MAXIMIZE flags for SHOW_CB callback.</li>
-	<li><span style="color: #0000FF">New:</span> MODAL attribute for the <b>IupDialog</b>.</li>
-	<li><span style="color: #0000FF">New:</span> function <b>IupGetClassType</b>.</li>
-	<li><span style="color: #0000FF">New:</span> <b>IupGetIntInt</b> utility function.</li>
-	<li><span style="color: #0000FF">New:</span> IUP_ASSERT compile flag.</li>
-	<li><span style="color: #0000FF">New:</span> internal documentation and Guide to create new controls. Now all the controls use the same architecture using 
-  the same base class.</li>
-	<li><span style="color: #0000FF">New:</span> internal code reorganization. More clear and simple to create controls and drivers. All comments are now in 
-  English.</li>
-	<li><span style="color: #0000FF">New:</span> TIP additional attributes: 
-	TIPFONT, TIPDELAY, TIPBGCOLOR, TIPFGCOLOR, TIPBALLON (Windows Only), TIPBALLONTITLE (Windows 
-  Only), TIPBALLONTITLEICON (Windows Only), TIPVISIBLE. Not available in GTK.</li>
-	<li><span style="color: #0000FF">New:</span> <b>IupColorDlg,</b> <b>IupFontDlg 
-	</b>and <b>IupMessageDlg</b> native pre-defined dialog as  elements.</li>
-	<li><span style="color: #0000FF">New:</span> support for 24 and 32 bpp images 
-  using <b>IupImageRGB</b> and <b>IupImageRGBA</b> constructors.</li>
-	<li><span style="color: #0000FF">New:</span> attributes PADDING, ELLIPSIS,  
-  WORDWRAP and MARKUP for <b>IupLabel</b>.</li>
-	<li><span style="color: #0000FF">New:</span> functions <b>IupUnmap</b> and 
-	<b>IupReparent</b>.</li>
-	<li><span style="color: #0000FF">New:</span> LINEX, LINEY, XAUTOHIDE and 
-  YAUTOHIDE attributes for the <b>IupCanvas</b> scrollbar.</li>
-	<li><span style="color: #0000FF">New:</span> SHOWHIDDEN attribute for <b>IupFileDLg</b>. Preview canvas support for the Motif driver.</li>
-	<li><span style="color: #0000FF">New:</span> functions <strong>IupInsert</strong> and 
-	<strong>IupGetClassAttributes</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> function <strong>IupUpdateChildren</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> CHARSIZE common attribute.</li>
-	<li><span style="color: #0000FF">New:</span> font face name mappings for 
-	Courier, Times and Helvetica.</li>
+</ul>
+<h4>Global Attributes</h4>
+<ul>
+  <li><span style="color: #0000FF">New:</span> APPSHELL, XDISPLAY, XSCREEN, XSERVERVENDOR, XVENDORRELEASE in Motif.</li>
+	<li><span style="color: #0000FF">New:</span> VIRTUALSCREEN and MONITORSINFO 
+	global attributes.</li>
+	<li><span style="color: #008000">Changed:</span> LANGUAGE  
+  default from PORTUGUESE to ENGLISH.</li>
+	<li><span style="color: #008000">Changed:</span> TRUECOLORCANVAS, SYSTEMLANGUAGE, SHIFTKEY and CONTROLKEY are now available in all drivers.</li>
+</ul>
+<h4>Common Callbacks</h4>
+<ul>
+  <li><span style="color: #0000FF">New:</span> UNMAP_CB.</li>
+	<li><span style="color: #008000">Changed:</span> MAP_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB for all controls.</li>
+</ul>
+
+<h4>Layout</h4>
+<ul>
+  <li><span style="color: #0000FF">New:</span> functions <b> <strong>IupGetDialogChild,</strong> 
+	IupUnmap,</b> 
+	<b>IupReparent,</b> <strong>IupInsert,</strong> <strong>IupUpdateChildren</strong>, <b>IupGetClassType, <strong>IupGetChildPos</strong></b> 
+	and <b> <strong>IupGetChildCount</strong>.</b>.</li>
 	<li><span style="color: #0000FF">New:</span> FLOATING attribute to control 
 	the inclusion of the element in layout processing for <strong>IupHbox</strong>,
 	<strong>IupVbox</strong> and <strong>IupZbox</strong>.</li>
@@ -183,67 +96,6 @@
 	<li><span style="color: #0000FF">New:</span> EXPANDCHILDREN attribute to 
 	control the expansion in layout processing for <strong>IupHbox</strong> and
 	<strong>IupVbox</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> IUP_IGNORE return code 
-	accepted for <strong>IDLE_ACTION</strong> callback to automatically remove 
-	the callback.</li>
-	<li><span style="color: #0000FF">New:</span> PADDING, MARKUP, 
-	FOCUSONCLICK and ALIGNMENT attributes for <strong>IupButton</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> common callback UNMAP_CB.</li>
-	<li><span style="color: #0000FF">New:</span> control <strong>IupProgressBar</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> APPENDNEWLINE and PADDING attribute for 
-	<strong>IupText</strong>. CUEBANNER and FILTER attributes for <strong>IupText</strong> in Windows.</li>
-	<li><span style="color: #0000FF">New:</span> INVERTED and TICKSPOS 
-	attributes in <strong>IupVal</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> MASK attribute for <strong>IupText</strong>, 
-	<strong>IupMultiline</strong>, <strong>IupList</strong> and <strong>IupMatrix</strong>. The iupmask functions are now obsolete, 
-	autofill option and MATCH_CB callback are not supported anymore.</li>
-	<li><span style="color: #0000FF">New:</span> function <strong>IupGetDialogChild</strong> 
-	and common attribute NAME.</li>
-	<li><span style="color: #0000FF">New:</span> support for image and text 
-	simultaneous in <strong>IupButton</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> support for mnemonics in
-	<strong>IupLabel</strong>, <strong>IupButton</strong> and <strong>IupToggle</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> text formatting for <strong>IupText</strong> using FORMATTING and ADDFORMATTAG attributes in Windows and 
-	GTK. New attribute OVERWRITE for IupText when using text formatting.</li>
-	<li><span style="color: #0000FF">New:</span> new ALL and NONE values for 
-	SELECTION attribute in <b>IupText</b>. New attribute SCROLLTO. New attributes 
-	SCROLLTOPOS, CARETPOS and SELECTIONPOS using 0 based character position. 
-	Function <strong>IupTextConvertXYToChar</strong> to convert (x,y) 
-	coordinates in (lin, col, pos) character positioning. </li>
-	<li><span style="color: #0000FF">New:</span> VALUEPOS and VALUE_HANDLE 
-	attributes for <strong>IupZbox</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> PADDING, VALUE_HANDLE, VALUEPOS, 
-	MULTILINE and TABIMAGE attributes for <strong>IupTabs</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> CLIPRECT attribute in <strong>IupCanvas</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> TIPRECT auxiliar attribute for 
-	the TIP common attribute.</li>
-	<li><span style="color: #0000FF">New:</span> VIRTUALSCREEN and MONITORSINFO 
-	global attributes.</li>
-	<li><span style="color: #0000FF">New:</span> function <strong>IupGetChildPos</strong> 
-	and <strong>IupGetChildCount</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> RADIO attribute for <strong>IupToggle</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> HIDEMARK, AUTOTOGGLE and TITLEIMAGE attributes for
-	<strong>IupItem</strong>. BGCOLOR support for <strong>IupMenu</strong>. 
-	Submenu now supports the IMAGE attribute. RADIO attribute for <strong>
-	IupMenu</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> SPIN, SPINVALUE, SPINMIN, 
-	SPINMAX, SPININC, SPINALIGN and SPINWRAP attributes in <strong>IupText</strong>. 
-	New SPIN_CB callback in <strong>IupText</strong>.</li>
-	<li><span style="color: #0000FF">New:</span> CANFOCUS attribute for <strong>
-	IupButton</strong>, <strong>IupTogle</strong>, <strong>IupText</strong>,
-	<strong>IupCanvas</strong> and <strong>IupVal</strong>.</li>
-	<li><span style="color: #0000FF">New:</span><strong> </strong>VISIBLECOLUMNS, VISIBLELINES 
-	attributes for <strong>IupText</strong>.</li>
-	<li><span style="color: #0000FF">New:</span><strong> </strong>APPENDVALUE, CANFOCUS, COUNT, DRAGDROP, INSERTITEMn, REMOVEITEM, TOPITEM, SPACING, VISIBLECOLUMNS, VISIBLELINES 
-	attributes for <strong>IupList</strong>.</li>
-	<li><span style="color: #0000FF">New:</span><strong> </strong>BUTTON_CB, DBLCLICK_CB, DROPDOWN_CB, DROPFILES_CB, MOTION_CB 
-	callbacks for <strong>IupList</strong>.</li>
-	<li><span style="color: #0000FF">New:</span><strong> IupListConvertXYToItem</strong> 
-	function for <strong>IupList</strong>.</li>
-	<li><span style="color: #0000FF">New:</span><strong> IupMainLoopLevel</strong> 
-	function.</li>
-	<li><span style="color: #0000FF">New:</span><strong> </strong>focus feedback 
-	and keyboard control for <strong>IupColorbar</strong>.</li>
 	<li><span style="color: #0000FF">New:</span> NORMALIZESIZE attribute to 
 	control the natural size in layout processing for <strong>IupHbox</strong> and
 	<strong>IupVbox</strong>.</li>
@@ -251,10 +103,216 @@
 	IupNormalizeSize</strong>.</li>
 	<li><span style="color: #0000FF">New:</span> CGAP and CMARGIN for <strong>
 	IupVbox</strong> and <strong>IupHbox</strong> that use SIZE units.</li>
-	<li><span style="color: #0000FF">New:</span> support for the HILDON 
-	framework that runs on top of GTK on the
-	<a target="_blank" href="http://www.maemo.org">Maemo</a> platform used by 
-	the Nokia Internet Tablets. Thanks to Otfried Cheong.</li>
+	<li><span style="color: #0000FF">New:</span> VALUEPOS and VALUE_HANDLE 
+	attributes for <strong>IupZbox</strong>.</li>
+	<li><span style="color: #008000">Changed:</span> default value for ALIGNMENT 
+	in <strong>IupZbox</strong> is now &quot;NW&quot;.</li>
+	<li><span style="color: #008000">Changed:</span> <b>IupAppend</b> and 
+  <b>IupDetach</b> can now be used for dynamic creation of menus, <b>IupSbox</b>,
+  <b>IupCbox</b> and <b>IupTabs</b>, even after the element is mapped.</li>
+  <li><span style="color: #008000">Changed:</span> <b>IupDetach</b> will now 
+	automatically unmap the element.</li>
+  <li><span style="color: #008000">Changed:</span> <b>IupAppend</b> will now 
+	return the actual parent.</li>
+	<li><span style="color: #008000">Changed:</span> <strong>IupUpdate</strong> 
+	now only mark the control to be redraw instead of redrawing at the function 
+	call.</li>
+</ul>
+
+<h4>Dialogs</h4>
+<ul>
+  <li><span style="color: #0000FF">New:</span> dialog attributes: MINSIZE and MAXSIZE. 
+	In Windows MINSIZE is ignored for systems with multiple monitors. The 
+  Windowing system may impose a minimum default limit for the dialog that includes the title bar with all it buttons.</li>
+	<li><span style="color: #0000FF">New:</span> DROPFILES_CB, RESIZE_CB callbacks for the 
+  	<b>IupDialog</b>.</li>
+	<li><span style="color: #0000FF">New:</span> IUP_CURRENT and IUP_CENTERPARENT positions for 
+	<b>IupShowXY</b> and 
+  <b>IupPopup</b>.</li>
+	<li><span style="color: #0000FF">New:</span> IUP_HIDE and IUP_MAXIMIZE flags for SHOW_CB callback.</li>
+	<li><span style="color: #0000FF">New:</span> MODAL attribute for the <b>IupDialog</b>.</li>
+	<li><span style="color: #0000FF">New:</span> <b>IupColorDlg,</b> <b>IupFontDlg 
+	</b>and <b>IupMessageDlg</b> native pre-defined dialog as  elements.</li>
+	<li><span style="color: #0000FF">New:</span> SHOWHIDDEN attribute for <b>IupFileDLg</b>. Preview canvas support for the Motif driver.</li>
+	<li><span style="color: #008000">Changed:</span>
+  SAVEUNDER dialog attribute now is also available in Motif.</li>
+  <li><span style="color: #008000">Changed:</span> DROPFILES_CB callback is now available for all controls. It is only activated using DRAGDROP attribute. It is 
+  active by default only for <b>IupCanvas</b> and <b>IupDialog</b>.</li>
+	<li><span style="color: #008000">Changed: </span>the default value of the
+	Windows attribute COMPOSITED is now YES, except in Windows Vista.</li>
+  <li><span style="color: #008000">Changed:</span><b> IupDestroy</b> is now automatically 
+  called for child dialogs when the parent is destroyed.</li>
+</ul>
+
+<h4><b>Canvas</b></h4>
+<ul>
+	<li><span style="color: #0000FF">New:</span> LINEX, LINEY, XAUTOHIDE and 
+  YAUTOHIDE attributes for the <b>IupCanvas</b> scrollbar.</li>
+	<li><span style="color: #0000FF">New:</span> CLIPRECT attribute in <strong>IupCanvas</strong>.</li>
+	<li><span style="color: #008000">Changed:</span> if 
+  ACTION is defined nothing is painted in the canvas now also in Motif. </li>
+	<li><span style="color: #008000">Changed:</span> BORDER 
+  is now also supported in Motif.</li>
+	<li><span style="color: #008000">Changed:</span> Now scrollbar parameters min, max, page size 
+  and line size are updated when DX/DY are updated. POSX and POSY will only 
+  update the position of the scrollbar. Automatic hide of the scrollbar now 
+  works also in Motif.</li>
+</ul>
+
+<h4>Label, Button and Toggle</h4>
+<ul>
+  <li><span style="color: #0000FF">New:</span> attributes PADDING, ELLIPSIS,  
+  WORDWRAP and MARKUP for <b>IupLabel</b>.</li>
+	<li><span style="color: #0000FF">New:</span> PADDING, MARKUP, 
+	FOCUSONCLICK and ALIGNMENT attributes for <strong>IupButton</strong>.</li>
+	<li><span style="color: #0000FF">New:</span> support for image and text 
+	simultaneous in <strong>IupButton</strong>.</li>
+	<li><span style="color: #0000FF">New:</span> support for mnemonics in
+	<strong>IupLabel</strong>, <strong>IupButton</strong> and <strong>IupToggle</strong>.</li>
+	<li><span style="color: #0000FF">New:</span> RADIO attribute for <strong>IupToggle</strong>.</li>
+	<li><span style="color: #008000">Changed:</span> ALIGNMENT attribute now includes vertical alignment values.</li>
+	<li><span style="color: #008000">Changed:</span> <strong>IupButton</strong> 
+	now supports text with more than one line.</li>
+</ul>
+
+<h4>Text and Multiline</h4>
+<ul>
+	<li><span style="color: #0000FF">New:</span> APPENDNEWLINE and PADDING attribute for 
+	<strong>IupText</strong>. CUEBANNER and FILTER attributes for <strong>IupText</strong> in Windows.</li>
+	<li><span style="color: #0000FF">New:</span> MASK attribute for <strong>IupText</strong>, 
+	<strong>IupMultiline</strong>, <strong>IupList</strong> and <strong>IupMatrix</strong>. The iupmask functions are now obsolete, 
+	autofill option and MATCH_CB callback are not supported anymore.</li>
+	<li><span style="color: #0000FF">New:</span> text formatting for <strong>IupText</strong> using FORMATTING and ADDFORMATTAG attributes in Windows and 
+	GTK. New attribute OVERWRITE for IupText when using text formatting.</li>
+	<li><span style="color: #0000FF">New:</span> new ALL and NONE values for 
+	SELECTION attribute in <b>IupText</b>. New attribute SCROLLTO. New attributes 
+	SCROLLTOPOS, CARETPOS and SELECTIONPOS using 0 based character position. 
+	Function <strong>IupTextConvertXYToChar</strong> to convert (x,y) 
+	coordinates in (lin, col, pos) character positioning. </li>
+	<li><span style="color: #0000FF">New:</span> SPIN, SPINVALUE, SPINMIN, 
+	SPINMAX, SPININC, SPINALIGN and SPINWRAP attributes in <strong>IupText</strong>. 
+	New SPIN_CB callback in <strong>IupText</strong>.</li>
+	<li><span style="color: #0000FF">New:</span><strong> </strong>VISIBLECOLUMNS, VISIBLELINES 
+	attributes for <strong>IupText</strong>.</li>
+	<li><span style="color: #008000">Changed:</span> <strong>IupMultiline</strong> 
+	is now implemented as <strong>IupText</strong> with MULTILINE=YES.</li>
+	<li><span style="color: #008000">Changed:</span> <span class="style1"><strong>
+	ATENTION</strong></span><strong>
+  -</strong> the ACTION callback in 
+	<strong>IupText</strong> now does NOT process navigation keys. It is called 
+	only if the text is edited. The callback now is called before the text is 
+	updated on screen.</li>
+	<li><span style="color: #008000">Changed:</span> the SELECTION and CARET 
+	attribute in Windows of <strong>IupText</strong> 
+	do NOT change the focus anymore. The NC attribute now only restricts 
+	keyboard input.</li>
+	<li><span style="color: #008000">Changed:</span> now <b>IupText</b> also 
+	supports the DROPFILES_CB, BUTTON_CB and MOTION_CB callbacks. CARET_CB now 
+	includes 0 based character position.</li>
+	<li><span style="color: #008000">Changed:</span> now <b>IupText</b> Natural 
+	Size does not uses the text contents anymore. To control the Natural Size 
+	use the VISIBLECOLUMNS and VISIBLELINES attributes.</li>
+</ul>
+
+<h4>List</h4>
+<ul>
+  <li><span style="color: #0000FF">New:</span><strong> </strong>APPENDVALUE, CANFOCUS, COUNT, DRAGDROP, INSERTITEMn, REMOVEITEM, TOPITEM, SPACING, VISIBLECOLUMNS, VISIBLELINES 
+	attributes for <strong>IupList</strong>.</li>
+	<li><span style="color: #0000FF">New:</span><strong> </strong>BUTTON_CB, DBLCLICK_CB, DROPDOWN_CB, DROPFILES_CB, MOTION_CB 
+	callbacks for <strong>IupList</strong>.</li>
+	<li><span style="color: #0000FF">New:</span><strong> IupListConvertXYToItem</strong> 
+	function for <strong>IupList</strong>.</li>
+</ul>
+
+<h4>Other Standard Controls</h4>
+<ul>
+	<li><span style="color: #0000FF">New:</span> INVERTED and TICKSPOS 
+	attributes in <strong>IupVal</strong>.</li>
+	<li><span style="color: #0000FF">New:</span> PADDING, VALUE_HANDLE, VALUEPOS, 
+	MULTILINE and TABIMAGE attributes for <strong>IupTabs</strong>.</li>
+	<li><span style="color: #0000FF">New:</span> control <strong>IupProgressBar</strong>.</li>
+	<li><span style="color: #008000">Changed:</span> <strong>IupFrames</strong> now are native parents of their children.</li>
+	<li><span style="color: #008000">Changed:</span> <strong>IupVal</strong> 
+	implemented as a native control. Attributes HANDLER_IMAGE and 
+	HANDLER_IMAGE_INACTIVE are not supported anymore in <strong>IupVal</strong>.</li>
+	<li><span style="color: #008000">Changed:</span> <strong>IupCbox</strong> is 
+	not based on <strong>IupCanvas </strong>anymore.</li>
+	<li><span style="color: #008000">Changed:</span> <strong>IupTabs</strong> 
+	implemented as a native control. Attributes ALIGNMENT, FONT_ACTIVE, FONT_INACTIVE, TABSIZE and 
+	REPAINT are not supported anymore in <strong>IupTabs</strong>.</li>
+</ul>
+
+<h4>Additional Controls</h4>
+<ul>
+  <li><span style="color: #0000FF">New:</span><strong> </strong>focus feedback 
+	and keyboard control for <strong>IupColorbar</strong>.</li>
+	<li><span style="color: #008000">Changed:</span>
+  <strong>
+	IupControlsClose</strong> is now deprecated. Declaration still remains 
+	for compatibility, actual function does nothing.</li>
+	<li><span style="color: #008000">Changed:</span> the NO_COLOR attribute is 
+	deprecated, now it simply sets the BGCOLOR attribute in <strong>IupCells</strong>.</li>
+	<li><span style="color: #008000">Changed:</span> in <strong>IupColorBrowser</strong> moved 
+	from HLS to HSI, added support for resize, anti-aliasing, support for 
+	BGCOLOR attribute, feedback for ACTIVE attribute, feedback for focus. New 
+	HSI attribute. New support for mouse wheel to change Hue. New support for 
+	PgDn and PgUp keys to change Hue.</li>
+	<li><span style="color: #008000">Changed:</span> <strong>IupTabs</strong> 
+	and <strong>IupVal</strong> not part of the additional controls anymore. 
+	They are now standard controls using native elements.</li>
+	<li><span style="color: #008000">Changed:</span> renamed MARGIN attribute to 
+	PADDING in <strong>IupGauge</strong>.</li>
+	<li><span style="color: #008000">Changed:</span> An <strong>IupGLCanvas</strong> 
+	when inside an <strong>IupFrame</strong> in Win32 will now work normally. 
+	But the dialog COMPOSITE attribute must be NO.</li>
+</ul>
+
+<h4>Menus</h4>
+<ul>
+  <li><span style="color: #0000FF">New:</span> HIDEMARK, AUTOTOGGLE and TITLEIMAGE attributes for
+	<strong>IupItem</strong>. </li>
+	<li><span style="color: #0000FF">New:</span> BGCOLOR support for <strong>IupMenu</strong>. 
+	</li>
+	<li><span style="color: #0000FF">New:</span> Submenu now supports the IMAGE attribute. </li>
+	<li><span style="color: #0000FF">New:</span> RADIO attribute for <strong>
+	IupMenu</strong>.</li>
+	<li><span style="color: #008000">Changed:</span> The HIGHLIGHT_CB, OPEN_CB 
+	and MENUCLOSE_CB callbacks now work normally for popup menus. HIGHLIGHT_CB 
+	is called for items and submenus. OPEN_CB and MENUCLOSE_CB are called only 
+	for menus.</li>
+	<li><span style="color: #008000">Changed:</span> TITLE for submenus can now be changed after the element is 
+	mapped. </li>
+	<li><span style="color: #008000">Changed:</span> Children can be added or 
+	removed from menus even after the menu is mapped.</li>
+</ul>
+
+<h4>Images</h4>
+<ul>
+	<li><span style="color: #0000FF">New:</span> support for 24 and 32 bpp images 
+  using <b>IupImageRGB</b> and <b>IupImageRGBA</b> constructors.</li>
+	<li><span style="color: #0000FF">New:</span> &quot;UPARROW&quot; cursor in Motif. New cursors &quot;RESIZE_NS&quot;&nbsp; and &quot;RESIZE_WE&quot;. Updated cursor documentation with 
+  pictures of all pre-defined cursors. </li>
+	<li><span style="color: #008000">Changed:</span> the automatic generation of 
+	inactive images for a more smooth one, still using a modified version of the 
+	background color to create the disabled effect.</li>
+  <li><span style="color: #008000">Changed:</span> <b>IupImageLibOpen</b> will 
+  now only register names, but will not load the images. New 32bpp images for 
+  Windows. GTK aliases are also available. Many new images. <b>IupImageLib</b><strong>Close</strong> 
+	removed, loaded images will now be automatically unloaded. </li>
+</ul>
+
+<h4>Keyboard</h4>
+<ul>
+  <li><span style="color: #0000FF">New:</span> MODKEYSTATE global attribute in all drivers.</li>
+	<li><span style="color: #0000FF">New:</span> key definitions: K_acute, K_ccedilla, K_Print, K_Menu.</li>
+	<li><span style="color: #0000FF">New:</span> key definitions for the system key modifier K_y*. In Windows this is the Windows key and in Mac this is the 
+  Apple key.</li>
+	<li><span style="color: #0000FF">New:</span> CANFOCUS attribute for <strong>
+	IupButton</strong>, <strong>IupTogle</strong>, <strong>IupText</strong>,
+	<strong>IupCanvas</strong> and <strong>IupVal</strong>.</li>
+	<li><span style="color: #008000">Changed:</span> Removed the conflicts: K_BS=K_cH, K_TAB=K_cI and K_CR=K_cM. 
+	New key code macros <strong>iup_isShiftXkey</strong>, <strong>iup_isCtrlXkey</strong>,
+	<strong>iup_isAltXkey</strong> and <strong>iup_isSysXkey</strong>.</li>
 </ul>
 
 <h3><a href="history2.html">History of Version 2.x</a></h3>
