@@ -24,18 +24,15 @@ ifdef BUILD_IUP3
   CTRLUA += val.lua tabs.lua
 endif
 
-GC = $(addsuffix .c, $(basename $(CTRLUA)))
-EC = iuplua.c scanf.c iuplua_api.c
-ifdef BUILD_IUP3
-  EC += getparam.c gc.c
-endif
+GC := $(addsuffix .c, $(basename $(CTRLUA)))
+GC := $(addprefix il_, $(GC))
 SRCLUA = iuplua.lua constants.lua $(CTRLUA)
 LOHDIR = loh
 
-$(GC) : %.c : %.lua generator.lua
+$(GC) : il_%.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC = $(GC) $(EC)
+SRC = iuplua.c iuplua_api.c il_scanf.c il_getparam.c il_getcolor.c $(GC)
 
 ifeq ($(findstring Win, $(TEC_SYSNAME)), )
   USE_MOTIF = Yes

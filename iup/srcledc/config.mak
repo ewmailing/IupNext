@@ -11,4 +11,4 @@ OPT = YES
 
 INCLUDES = .
 
-SRC = lex.yy.c y.tab.c main.c
+SRC = lex.yy.c y.tab.c ledc.c

@@ -89,7 +89,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="..\srccd\iupcd.c"
+			RelativePath="..\srccd\iup_cd.c"
 			>
 		</File>
 		<File

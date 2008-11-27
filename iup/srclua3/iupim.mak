@@ -5,7 +5,7 @@ OPT = YES
 USE_LUA  = Yes
 USE_IM = Yes
                      
-SRC = luaim.c
+SRC = iuplua_im.c
 
 INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  

@@ -3,7 +3,7 @@ LIBNAME  = iupluaim51
 OPT = YES
                      
 DEF_FILE = iupluaim5.def
-SRC = iupluaim.c
+SRC = iuplua_im.c
 
 INCLUDES = ../src
 LIBS = iupim

@@ -2,7 +2,7 @@ PROJNAME = iup
 APPNAME = iupview
 OPT = YES
 
-SRC = iupview.c
+SRC = iup_view.c
 
 IUP := ..
 

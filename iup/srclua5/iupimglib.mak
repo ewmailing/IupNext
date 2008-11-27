@@ -2,7 +2,7 @@ PROJNAME = iup
 LIBNAME = iupluaimglib51
 OPT = YES
 
-SRC = iupluaimglib.c
+SRC = iuplua_imglib.c
 DEF_FILE = iupluaimglib5.def
 
 INCLUDES = ../include

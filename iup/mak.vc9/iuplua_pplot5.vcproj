@@ -90,11 +90,11 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
-				RelativePath="..\srclua5\pplot.c"
+				RelativePath="..\srclua5\il_pplot.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srclua5\pplotfuncs.c"
+				RelativePath="..\srclua5\iuplua_pplot.c"
 				>
 			</File>
 		</Filter>

@@ -18,10 +18,9 @@ USE_LUA51 = Yes
 LOHDIR = loh
 SRCLUA = glcanvas.lua
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
+GC := $(addprefix il_, $(GC))
 
-EC = glcanvasfuncs.c 
-
-$(GC) : %.c : %.lua generator.lua
+$(GC) : il_%.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC	= $(GC) $(EC)
+SRC	= iuplua_glcanvas.c $(GC)

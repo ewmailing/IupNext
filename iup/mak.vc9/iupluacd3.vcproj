@@ -88,7 +88,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="..\srclua3\luacd.c"
+			RelativePath="..\srclua3\iuplua_cd.c"
 			>
 		</File>
 	</Files>

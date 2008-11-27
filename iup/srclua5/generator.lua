@@ -207,7 +207,7 @@ end
 dofile(arg[1])
 element.callback = adjustcallbacktable(element.callback)
 
-io.output(element.nick..".c")
+io.output("il_"..element.nick..".c")
 header(element.nick, element.include)
 write_callbacks(element.nick, element.callback)
 if element.createfunc == nil then 

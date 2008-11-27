@@ -15,10 +15,10 @@ USE_LUA51 = Yes
 
 LOHDIR = loh
 SRCLUA = pplot.lua
-EC = pplotfuncs.c
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
+GC := $(addprefix il_, $(GC))
 
-$(GC) : %.c : %.lua generator.lua
+$(GC) : il_%.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC := $(GC) $(EC)
+SRC := iuplua_pplot.c $(GC)

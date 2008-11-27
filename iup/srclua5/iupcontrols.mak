@@ -17,16 +17,10 @@ USE_LUA51 = Yes
 
 LOHDIR = loh
 SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua tree.lua cells.lua
-ifndef BUILD_IUP3
-  SRCLUA += val.lua tabs.lua
-endif
-EC = mask.c controls.c treefuncs.c matrixfuncs.c
-ifndef BUILD_IUP3
-  EC += getparam.c gc.c
-endif
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
+GC := $(addprefix il_, $(GC))
 
-$(GC) : %.c : %.lua generator.lua
+$(GC) : il_%.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC := $(GC) $(EC)
+SRC := iuplua_controls.c il_mask.c il_tree_aux.c il_matrix_aux.c $(GC)

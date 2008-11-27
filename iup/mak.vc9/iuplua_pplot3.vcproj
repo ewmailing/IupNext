@@ -90,7 +90,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
-				RelativePath="..\srclua3\luapplot.c"
+				RelativePath="..\srclua3\iuplua_pplot.c"
 				>
 			</File>
 		</Filter>
@@ -98,7 +98,7 @@
 			Name="Lua"
 			>
 			<File
-				RelativePath="..\srclua3\luapplot.lua"
+				RelativePath="..\srclua3\pplot.lua"
 				>
 			</File>
 		</Filter>

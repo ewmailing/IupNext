@@ -3,7 +3,7 @@ LIBNAME = iupluacd51
 OPT = YES
 
 DEFINES = CD_NO_OLD_INTERFACE
-SRC = iupluacd.c
+SRC = iuplua_cd.c
 DEF_FILE = iupluacd5.def
 
 # Can not use USE_IUPLUA because Tecmake will include "iupluacd51" in linker

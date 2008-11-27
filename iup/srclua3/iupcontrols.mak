@@ -8,16 +8,10 @@ USE_LUA  = Yes
 USE_CDLUA = Yes
 
 LOHDIR = loh
-SRCLUA =  luadial.lua luagauge.lua luacolorbar.lua \
-          luamatrix.lua luatree.lua luacb.lua luacells.lua
-ifndef BUILD_IUP3
-  SRCLUA += luaval.lua luatabs.lua
-endif
-SRC    =  luadial.c luagauge.c luacb.c luacolorbar.c luacells.c \
-          luamask.c luacontrols.c luamatrix.c luatree.c
-ifndef BUILD_IUP3
-  SRC += luaval.c luatabs.c luagc.c luagetparam.c
-endif
+SRCLUA =  dial.lua gauge.lua colorbar.lua \
+          matrix.lua tree.lua colorbrowser.lua cells.lua
+SRC    =  il_dial.c il_gauge.c il_colorbrowser.c il_colorbar.c il_cells.c \
+          il_mask.c il_matrix.c il_tree.c iuplua_controls.c
 
 DEFINES = IUPLUA_USELOH
 INCLUDES = ../include

@@ -10,7 +10,6 @@ local ctrl = {
     button_press_cb = "d",
     button_release_cb = "d",
   },
-  include = "iupval.h",
 }
 
 function ctrl.createElement(class, arg)

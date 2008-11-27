@@ -85,19 +85,14 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
+		<File
+			RelativePath="..\srclua3\iuplua_olecontrol.c"
 			>
-			<File
-				RelativePath="..\include\iupluaole.h"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luaole.c"
-				>
-			</File>
-		</Filter>
+		</File>
+		<File
+			RelativePath="..\include\iupluaole.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

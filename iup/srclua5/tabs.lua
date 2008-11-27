@@ -8,7 +8,6 @@ local ctrl = {
   callback = {
     tabchange_cb = "ii",
   },
-  include = "iuptabs.h",
   funcname = "Tabsv",
   createfunc = [[
 static int Tabsv(lua_State *L)

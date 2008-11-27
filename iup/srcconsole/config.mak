@@ -4,7 +4,7 @@ APPTYPE = console
 
 LOHDIR = loh
 SRCLUA = console5.lua
-SRC = iuplua51.c
+SRC = iup_lua51.c
 
 
 # Disable strip

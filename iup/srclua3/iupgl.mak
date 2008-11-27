@@ -5,7 +5,7 @@ OPT = YES
 USE_LUA  = Yes
 USE_OPENGL = Yes
                      
-SRC = luaglcanvas.c
+SRC = iuplua_glcanvas.c
 
 INCLUDES = ../include
 LDIR = ../lib/$(TEC_UNAME)  

@@ -3,7 +3,7 @@ LIBNAME = iupluacd3
 OPT = YES
 
 DEF_FILE = iupluacd3.def
-SRC = luacd.c
+SRC = iuplua_cd.c
 
 # Can not use USE_IUPLUA because Tecmake will include "iupluacd3" in linker
 

@@ -8,7 +8,7 @@ IUP := ..
 # IM is a C++ library with a C API                
 LINKER = $(CPPC)
 
-SRC = iuplua3.c
+SRC = iup_lua3.c
 SRCLUA = console3.lua
 LOHDIR = loh
 

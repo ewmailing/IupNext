@@ -5,14 +5,10 @@ LIBNAME = iuplua3
 OPT = YES
 
 LOHDIR = loh
-SRCLUA = iuplua.lua iuplua_widgets.lua constants.lua luaspin.lua luasbox.lua
-ifdef BUILD_IUP3
-  SRCLUA += luaval.lua luatabs.lua
-endif
-SRC    = iuplua.c iuplua_api.c iuplua_widgets.c scanf.c luacbox.c luasbox.c luaspin.c
-ifdef BUILD_IUP3
-  SRC += luaval.c luatabs.c luagc.c luagetparam.c
-endif
+SRCLUA = iuplua.lua iuplua_widgets.lua constants.lua spin.lua \
+         sbox.lua val.lua tabs.lua
+SRC    = iuplua.c iuplua_api.c iuplua_widgets.c il_scanf.c il_cbox.c \
+         il_sbox.c il_spin.c il_val.c il_tabs.c il_getcolor.c il_getparam.c
 
 USE_LUA = Yes
 

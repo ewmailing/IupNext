@@ -5,7 +5,7 @@ OPT = YES
 USE_LUA  = Yes
 USE_OPENGL = Yes
                      
-SRC    = luaole.c
+SRC    = iuplua_olecontrol.c
 
 INCLUDES = ../include
 LDIR = ../lib/$(TEC_UNAME)  
