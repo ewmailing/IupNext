@@ -2,7 +2,7 @@
  * \brief iupmatrix control core
  *
  * See Copyright Notice in iup.h
- * $Id: iupmatrix.c,v 1.5 2008-11-23 19:32:17 scuri Exp $
+ * $Id: iupmatrix.c,v 1.6 2008-11-27 06:33:30 scuri Exp $
  */
 
 #include <stdio.h>  /*sprintf*/
@@ -791,7 +791,7 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   iMatrixAllocMatrix(ih);
 
   /* Create the edit fields */
-  //TODO: iMatrixEditCreate(ih);
+  /* TODO: iMatrixEditCreate(ih); */
 
   /* change the IupCanvas default values */
   iupAttribSetStr(ih, "SCROLLBAR", "YES");

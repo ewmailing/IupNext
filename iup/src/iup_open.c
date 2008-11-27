@@ -41,7 +41,7 @@ int IupOpen(int *argc, char ***argv)
     return IUP_OPENED;
   iup_opened = 1;
 
-  if (!argc || !argv)
+  if (!argc || !(*argc) || !argv)
   {
     argc = &iup_dummy_argc;
     argv = &iup_dummy_argv;

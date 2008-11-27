@@ -866,7 +866,7 @@ static int motListSetClipboardAttrib(Ihandle *ih, const char *value)
     /* disable callbacks */
     iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
 
-    XmTextFieldPaste(cbedit); // TODO: this could force 2 pastes, check in CDE
+    XmTextFieldPaste(cbedit); /* TODO: this could force 2 pastes, check in CDE */
 
     /* do it also for the X clipboard */
     XmTextFieldRemove(cbedit);

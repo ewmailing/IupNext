@@ -435,7 +435,7 @@ static int motValMapMethod(Ihandle* ih)
   XtAddCallback(ih->handle, XmNvalueChangedCallback, (XtCallbackProc)motValvalueChangedCallback, (XtPointer)ih);
 
   {
-    Widget sb = XtNameToWidget(ih->handle, "Scrollbar");  // TODO: Test this in other Motifs
+    Widget sb = XtNameToWidget(ih->handle, "Scrollbar");  /* TODO: Test this in other Motifs */
     if (sb)
     {
       XtAddEventHandler(sb, FocusChangeMask, False, (XtEventHandler)motValFocusChangeEvent, (XtPointer)ih);

@@ -14,7 +14,7 @@ IUP = ..
 DBG = Yes
 
 #SRC = tray.c
-#SRC = dialog.c
+SRC = dialog.c
 #SRC = predialogs.c
 #SRC = timer.c
 #SRC = label.c
@@ -35,7 +35,7 @@ DBG = Yes
 #SRC = spin.c
 #SRC = text_spin.c
 #SRC = list.c
-SRC = sysinfo.c
+#SRC = sysinfo.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib

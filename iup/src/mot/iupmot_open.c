@@ -51,18 +51,31 @@ int iupdrvOpen(int *argc, char ***argv)
   /* XtSetLanguageProc(NULL, NULL, NULL); 
      Removed to avoid invalid locale in modern Linux that set LANG=en_US.UTF-8 */
 
-  iupmot_appshell = XtVaOpenApplication(&iupmot_appcontext, "Iup", NULL, 0, argc, *argv, NULL,
-                                        sessionShellWidgetClass, NULL);
+  /* We do NOT use XtVaOpenApplication because it crashes when using internal dummy argc and argv.
+     iupmot_appshell = XtVaOpenApplication(&iupmot_appcontext, "Iup", NULL, 0, argc, *argv, NULL,
+                                           sessionShellWidgetClass, NULL); */
+
+  XtToolkitInitialize();
+
+  iupmot_appcontext = XtCreateApplicationContext();
+
+  iupmot_display = XtOpenDisplay(iupmot_appcontext, NULL, NULL, "Iup", NULL, 0, argc, *argv);   
+  if (!iupmot_display)
+  {
+    fprintf (stderr, "IUP error: cannot open display.\n");
+    return IUP_ERROR;
+  }
+
+  iupmot_appshell = XtAppCreateShell(NULL, "Iup", sessionShellWidgetClass, iupmot_display, NULL, 0);
   if (!iupmot_appshell)
   {
-    fprintf(stderr, "IUP error: cannot open X-Windows.\n");
+    fprintf(stderr, "IUP error: cannot create shell.\n");
     return IUP_ERROR;
   }
   IupSetGlobal("APPSHELL", (char*)iupmot_appshell);
 
   IupStoreGlobal("SYSTEMLANGUAGE", setlocale(LC_ALL, NULL));
 
-  iupmot_display = XtDisplay(iupmot_appshell);
   iupmot_screen  = XDefaultScreen(iupmot_display);
 
   IupSetGlobal("XDISPLAY", (char*)iupmot_display);

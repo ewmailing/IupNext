@@ -514,7 +514,7 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
     /* disable callbacks */
     iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
 
-    XmTextPaste(ih->handle); // TODO: this could force 2 pastes, check in CDE
+    XmTextPaste(ih->handle); /* TODO: this could force 2 pastes, check in CDE */
 
     /* do it also for the X clipboard */
     XmTextRemove(ih->handle);
