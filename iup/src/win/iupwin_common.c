@@ -746,7 +746,7 @@ int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
       b = IUP_BUTTON5;
   }
 
-  if (cb(ih, b, 1, LOWORD(lp), HIWORD(lp), status) == IUP_CLOSE)
+  if (cb(ih, b, 1, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp), status) == IUP_CLOSE)
     IupExitLoop();
 
   return 1;
@@ -792,7 +792,7 @@ int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
     }
   }
 
-  if (cb(ih, b, 0, LOWORD(lp), HIWORD(lp), status) == IUP_CLOSE)
+  if (cb(ih, b, 0, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp), status) == IUP_CLOSE)
     IupExitLoop();
 
   return 1;
@@ -805,7 +805,7 @@ int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
   {
     char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
     iupwinButtonKeySetStatus(LOWORD(wp), status, 0);
-    cb(ih, LOWORD(lp), HIWORD(lp), status);
+    cb(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp), status);
     return 1;
   }
   (void)msg;

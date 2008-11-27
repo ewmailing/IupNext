@@ -5,7 +5,7 @@ require( "iuplua" )
 
 text = iup.text{value = "Write a text; press Ctrl-Q to exit"}
 
-function text:action(c)
+function text:k_any(c)
   if c == iup.K_cQ then 
     return iup.CLOSE 
   end

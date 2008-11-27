@@ -15,80 +15,26 @@ function dial_v:mousemove_cb(a)
    return iup.DEFAULT
 end
 
-function dial_v:button_press_cb(a)
-   lbl_v.bgcolor = "255 0 0"
-   return iup.DEFAULT
-end
-
-function dial_v:button_release_cb(a)
-   lbl_v.bgcolor = nil
-   return iup.DEFAULT
-end
-
 function dial_h:mousemove_cb(a)
    lbl_h.title = a
    return iup.DEFAULT
 end
 
-function dial_h:button_press_cb(a)
-   lbl_h.bgcolor = "255 0 0"
-   return iup.DEFAULT
-end
-
-function dial_h:button_release_cb(a)
-   lbl_h.bgcolor = nil
-   return iup.DEFAULT
-end
-
 dlg = iup.dialog
 {
-  iup.hbox
-  {
-    iup.fill{},
     iup.vbox
     {
-      iup.fill{},
-      iup.frame
+      iup.vbox
       {
-        iup.vbox
-        {
-          iup.hbox
-          {
-             iup.fill{},
-             dial_v,
-             iup.fill{}
-          } ,
-          iup.hbox
-          {
-             iup.fill{},
-             lbl_v,
-             iup.fill{}
-          }
-        }
+        dial_v,
+        lbl_v,
       },
-      iup.fill{},
-      iup.frame
-      {
-        iup.vbox
-        { 
-          iup.hbox
-          {
-             iup.fill{},
-             dial_h,
-             iup.fill{}
-          } ,
-          iup.hbox
-          {
-             iup.fill{},
-             lbl_h,
-             iup.fill{}
-          } ,
-        } 
-      },
-      iup.fill{},
-    },
-    iup.fill{}
-  }; title="IupDial"
+      iup.vbox
+      { 
+        dial_h,
+        lbl_h,
+      }; margin="10x10", gap="5"
+    }; title="IupDial"
 }
 
 dlg:showxy(iup.CENTER,iup.CENTER)

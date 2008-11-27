@@ -12,10 +12,10 @@ function idle_cb()
 end
 
 gauge = iup.gauge{}
-gauge.size = "QUARTERxEIGHTH"
 gauge.show_text = "YES"
 
 dlg = iup.dialog{gauge; title = "IupGauge"}
+dlg.size = "QUARTERxEIGHTH"
 
 -- Registers idle callback
 iup.SetIdle(idle_cb)

@@ -71,7 +71,7 @@ end
 
 function iup.console.butSaveasFile:action()
   local fd = iup.filedlg{dialogtype="SAVE", title="Save File",
-                         filter="*.lua", filterinfo="Lua files",allownew=yes}
+                         filter="*.wlua", filterinfo="Lua files",allownew=yes}
   fd:popup(iup.LEFT, iup.LEFT)
   local status = fd.status
   iup.console.lastfilename = fd.value
@@ -105,7 +105,7 @@ end
 
 function iup.console.butLoadFile:action()
   local fd=iup.filedlg{dialogtype="OPEN", title="Load File",
-                       filter="*.wlua;*.lua", filterinfo="Lua Files", allownew="NO"}
+                       filter="*.wlua", filterinfo="Lua Files", allownew="NO"}
   fd:popup(iup.CENTER, iup.CENTER)
   local status = fd.status
   local filename = fd.value

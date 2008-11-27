@@ -2,7 +2,7 @@ require( "iuplua" )
 require( "iupluacontrols" )
 
 -- Creates boxes
-vboxA = iup.vbox{iup.label{title="TABS AAA"}, iup.button{title="AAA"}}
+vboxA = iup.vbox{iup.fill{}, iup.label{title="TABS AAA", expand="HORIZONTAL"}, iup.button{title="AAA"}}
 vboxB = iup.vbox{iup.label{title="TABS BBB"}, iup.button{title="BBB"}}
 
 -- Sets titles of the vboxes
@@ -13,7 +13,7 @@ vboxB.tabtitle = "BBBBBB"
 tabs = iup.tabs{vboxA, vboxB}
 
 -- Creates dialog
-dlg = iup.dialog{tabs; title="Test IupTabs", size="200x80"}
+dlg = iup.dialog{iup.vbox{tabs; margin="10x10"}; title="Test IupTabs", size="150x80"}
 
 -- Shows dialog in the center of the screen
 dlg:showxy(iup.CENTER, iup.CENTER)
