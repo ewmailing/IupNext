@@ -24,7 +24,11 @@ img_star = iup.image {
 }
 
 -- Creates a label and sets all the attributes of label lbl, except for image
-lbl = iup.label { title = "This label has the following attributes set:\nBGCOLOR = 255 255 0\nFGCOLOR = 0 0 255\nFONT = COURIER_NORMAL_14\nSIZE = HALFxQUARTER\nTITLE = All text contained here\nALIGNMENT = ACENTER\n", bgcolor = "255 255 0", fgcolor = "0 0 255", font = "COURIER_NORMAL_14", size = "HALFxQUARTER", alignment = "ACENTER" }
+lbl = iup.label { title = "This label has the following attributes set:\nBGCOLOR = 255 255 0\nFGCOLOR = 0 0 255\nFONT = COURIER_NORMAL_14\nTITLE = All text contained here\nALIGNMENT = ACENTER", 
+                  bgcolor = "255 255 0", 
+                  fgcolor = "0 0 255", 
+                  font = "COURIER_NORMAL_14", 
+                  alignment = "ACENTER" }
   
 -- Creates a label to explain that the label on the right has an image
 lbl_explain = iup.label { title = "The label on the right has the image of a star" }
@@ -33,7 +37,7 @@ lbl_explain = iup.label { title = "The label on the right has the image of a sta
 lbl_star = iup.label { title = "Does not matter", image = img_star }
 
 -- Creates dialog with these three labels
-dlg = iup.dialog { iup.vbox { lbl, iup.hbox { lbl_explain, lbl_star } }
+dlg = iup.dialog { iup.vbox { lbl, iup.hbox { lbl_explain, lbl_star }; margin="10x10" }
       ; title = "IupLabel Example" }
 
 -- Shows dialog in the center of the screen 

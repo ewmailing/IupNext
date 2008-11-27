@@ -51,16 +51,16 @@ int main(int argc, char **argv)
     
   
   /* Creates a label */
-  lbl = IupLabel ( "This label has the following attributes set:\nBGCOLOR = 255 255 0\nFGCOLOR = 0 0 255\nFONT = COURIER_NORMAL_14\nSIZE = HALFxQUARTER\nTITLE = All text contained here\nALIGNMENT = ACENTER\n" );
+  lbl = IupLabel ( "This label has the following attributes set:\nBGCOLOR = 255 255 0\nFGCOLOR = 0 0 255\nFONT = COURIER_NORMAL_14\nTITLE = All text contained here\nALIGNMENT = ACENTER" );
   
   /* Sets all the attributes of label lbl, except for IMAGE */
-  IupSetAttributes ( lbl, "BGCOLOR = \"255 255 0\", FGCOLOR = \"0 0 255\", FONT = COURIER_NORMAL_14, SIZE = HALFxQUARTER, ALIGNMENT = ACENTER" ) ;
+  IupSetAttributes ( lbl, "BGCOLOR = \"255 255 0\", FGCOLOR = \"0 0 255\", FONT = COURIER_NORMAL_14, ALIGNMENT = ACENTER") ;
 
   /* Creates a label to explain that the label on the right has an image */
   lbl_explain = IupLabel ( "The label on the right has the image of a star" ) ;
 
   /* Creates a label whose title is not important, cause it will have an image */
-  lbl_star = IupLabel ( "Does not matter" ) ;
+  lbl_star = IupLabel (NULL) ;
 
   /* Associates image "img_star" with label lbl_star */
   IupSetAttribute ( lbl_star, "IMAGE", "img_star" ) ;

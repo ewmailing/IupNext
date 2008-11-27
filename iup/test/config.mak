@@ -14,9 +14,9 @@ IUP = ..
 DBG = Yes
 
 #SRC = tray.c
-SRC = dialog.c
+#SRC = dialog.c
 #SRC = predialogs.c
-#SRC = timer.c
+SRC = timer.c
 #SRC = label.c
 #SRC = canvas.c
 #SRC = frame.c

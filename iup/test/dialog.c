@@ -379,8 +379,8 @@ void destroy_images(void)
 
 int main(int argc, char* argv[])
 {
-  IupOpen(&argc, &argv);
-
+//  IupOpen(&argc, &argv);
+IupOpen(NULL, NULL);
   create_images();
 
   new_dialog(0, "IupDialog as a main window,\n"

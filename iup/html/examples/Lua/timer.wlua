@@ -19,7 +19,7 @@ end
 timer1.run = "YES"
 timer2.run = "YES"
 
-dg = iup.dialog{iup.label{}; title="Timer example"}
+dg = iup.dialog{iup.label{title="Wait..."}; title="Timer example"}
 dg:show()
 
 iup.MainLoop()

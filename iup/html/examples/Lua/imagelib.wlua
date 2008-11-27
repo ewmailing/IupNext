@@ -1,7 +1,7 @@
 require"iuplua"
 require"iupluaimglib"
 
-butt = iup.button{image= "IUP_IMGBUT_NEW"}
+butt = iup.button{image= "IUP_FileNew"}
 dlg = iup.dialog{butt,title="test"}
 
 function dlg:close_cb()
