@@ -1,12 +1,12 @@
 --  IupMultiline Simple Example in IupLua 
---  Shows a multiline that ignores the treatment of the DEL key, canceling its effect. 
+--  Shows a multiline that ignores the treatment of the 'g' key, canceling its effect. 
 
 require( "iuplua" )
 
-ml = iup.multiline{expand="YES", value="I ignore the DEL key!", border="YES"}
+ml = iup.multiline{expand="YES", value="I ignore the 'g' key!", border="YES"}
 
 ml.action = function(self, c, after)
-   if c == iup.K_DEL then
+   if c == iup.K_g then
      return iup.IGNORE
   else
     return iup.DEFAULT;
