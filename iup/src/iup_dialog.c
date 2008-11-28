@@ -469,6 +469,7 @@ void iupDialogAdjustPos(Ihandle *ih, int *x, int *y)
     if (parent)
     {
       iupdrvDialogGetPosition(parent, &parent_x, &parent_y);
+
       if (*x == IUP_CENTERPARENT && *y == IUP_CENTERPARENT)
         iupdrvDialogGetSize(parent, &screen_width, &screen_height);
       else if (*x == IUP_CENTERPARENT)
@@ -486,6 +487,11 @@ void iupDialogAdjustPos(Ihandle *ih, int *x, int *y)
     Ihandle* client = (Ihandle*)iupAttribGetStr(ih, "MDICLIENT_HANDLE");
     if (client)
     {
+      /* position is relative to mdi client */
+      parent_x = 0; 
+      parent_y = 0;
+
+      /* screen size is now the size of the mdi client */
       screen_width = client->currentwidth;
       screen_height = client->currentheight;
 

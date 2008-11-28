@@ -143,6 +143,7 @@ static void set_callbacks(Ihandle* ctrl)
 
 Ihandle* createDialog (void)
 {
+  static int id = 0;
   Ihandle *_hbox_1, *_cnv_1, *_vbox_1, *dlg, 
     *_frm_1, *_frm_2, *_frm_3, *_frm_4, *_frm_5,
     *_list_1, *_list_2, *_list_3, *_list_4, *_text_1, *_ml_1;
@@ -281,7 +282,7 @@ Ihandle* createDialog (void)
   set_callbacks(_vbox_1);  
 
   dlg = IupDialog(_vbox_1);
-  IupSetAttribute(dlg,"TITLE","IupDialog Title");
+  IupSetfAttribute(dlg,"TITLE","MDI Child (%d)", id); id++;
 //  IupSetAttribute(dlg,"SHRINK","YES");
 //  IupSetAttribute(dlg, "SIZE", "500x200");
 
@@ -353,7 +354,7 @@ static int mdi_new(Ihandle* ih)
 {
   Ihandle* dlg = createDialog();
   IupSetAttribute(dlg,"MDICHILD","YES");
-  IupSetAttribute(dlg,"MDICLIENT","mdiClient");
+  IupSetAttribute(dlg,"PARENTDIALOG","mdiFrame");
   IupSetCallback(dlg,"MDIACTIVATE_CB",(Icallback)mdi_activate);
 //  IupSetAttribute(dlg, "PLACEMENT", "MAXIMIZED");
 
@@ -369,7 +370,7 @@ static void createMenu(void)
   IupSubmenu("MDI",IupMenu(
       IupItem("New", "mdi_new"), 
       NULL)),
-  winmenu = IupSubmenu("Window", IupMenu(
+  IupSubmenu("Window", winmenu = IupMenu(
       IupItem("Tile Horizontal", "mdi_tilehoriz"), 
       IupItem("Tile Vertical", "mdi_tilevert"), 
       IupItem("Cascade", "mdi_cascade"), 
@@ -398,12 +399,13 @@ static Ihandle* createFrame(void)
   Ihandle *dlg, *cnv;
   cnv = IupCanvas( NULL);
   IupSetAttribute(cnv,"MDICLIENT","YES");
-  IupSetHandle("mdiClient", cnv);
+  IupSetAttribute(cnv,"MDIMENU","mdiMenu");
 
   dlg = IupDialog(cnv);
   IupSetAttribute(dlg,"TITLE","MDI Frame");
-  IupSetAttribute(dlg,"MDIMENU","mdiMenu");
+  IupSetAttribute(dlg,"MDIFRAME","YES");
   IupSetAttribute(dlg,"RASTERSIZE","800x600");
+  IupSetHandle("mdiFrame", dlg);
 
   return dlg;
 }

@@ -54,12 +54,17 @@ small fixes (not fully working yet)<br>
 	composte text on <strong>IupImage</strong>.</li>
 	<li class="style2">Support for changing the system menu in Windows. Support 
 	for cascading <strong>IupPopup</strong> for menus.</li>
+</ul>
+<h3>Windows</h3>
+<ul>
 	<li class="style1">In Windows Vista the COMPOSITE=YES attribute of the 
 	IupDialog is not working as expected. There is still some flicker when the 
 	dialog is resized. So we changed the default to NO.</li>
 	<li class="style1">IupTabs using native controls in Windows Vista when 
 	COMPOSITE=YES works only if MULTILINE=YES, so it is internally overwritten 
 	until the problem is solved. (since 3.0)</li>
+	<li class="style1">The MDI Window menu is not updated when the child mdi is 
+	closed.</li>
 </ul>
 <h3>Motif</h3>
 <ul>

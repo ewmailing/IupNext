@@ -43,6 +43,7 @@ Ihandle* iupwinMenuGetItemHandle(HMENU hMenu, int menuId)
   MENUITEMINFO menuiteminfo;
   menuiteminfo.cbSize = sizeof(MENUITEMINFO);
   menuiteminfo.fMask = MIIM_DATA;
+
   if (GetMenuItemInfo(hMenu, menuId, FALSE, &menuiteminfo))
     return (Ihandle*)menuiteminfo.dwItemData;
   else
@@ -100,6 +101,12 @@ static void winItemCheckToggle(Ihandle* ih)
     winMenuUpdateBar(ih);
   }
 }
+
+typedef struct _IchildId
+{
+  int id, menuid;
+  Ihandle* child;
+} IchildId;
 
 void iupwinMenuDialogProc(Ihandle* ih_dialog, UINT msg, WPARAM wp, LPARAM lp)
 {
@@ -159,8 +166,14 @@ void iupwinMenuDialogProc(Ihandle* ih_dialog, UINT msg, WPARAM wp, LPARAM lp)
     }
   case WM_MENUCOMMAND:
     {
+      int menuId = GetMenuItemID((HMENU)lp, (int)wp);
       Icallback cb;
-      Ihandle* ih = iupwinMenuGetItemHandle((HMENU)lp, GetMenuItemID((HMENU)lp, (int)wp));
+      Ihandle* ih;
+        
+      if (menuId >= IUP_MDICHILD_START)
+        break;
+        
+      ih  = iupwinMenuGetItemHandle((HMENU)lp, menuId);
       if (!ih)
         break;
 

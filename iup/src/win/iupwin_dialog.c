@@ -183,6 +183,38 @@ int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
   return 1;
 }
 
+static int winDialogMDICloseChildren(Ihandle* ih)
+{
+  Ihandle* client = (Ihandle*)iupAttribGetStr(ih, "MDICLIENT_HANDLE");
+  if (iupObjectCheck(client))
+  {
+    HWND hWndChild = (HWND)SendMessage(client->handle, WM_MDIGETACTIVE, 0, 0);
+
+    /* As long as the MDI client has a child, close it */
+    while (hWndChild)
+    {
+      Ihandle* child = iupwinHandleGet(hWndChild); 
+      if (iupObjectCheck(child) && iupAttribGetInt(child, "MDICHILD"))
+      {
+        Icallback cb = IupGetCallback(child, "CLOSE_CB");
+        if (cb)
+        {
+          int ret = cb(child);
+          if (ret == IUP_IGNORE)
+            return 0;
+          if (ret == IUP_CLOSE)
+            IupExitLoop();
+        }
+
+        IupDestroy(child);
+      }
+
+      hWndChild = (HWND)SendMessage(client->handle, WM_MDIGETACTIVE, 0, 0);
+    }
+  }
+  return 1;
+}
+
 
 /****************************************************************************
                             WindowProc
@@ -227,41 +259,6 @@ static void winDialogResize(Ihandle* ih, int width, int height)
     RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_FRAME|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_ALLCHILDREN);
 
   ih->data->ignore_resize = 0;
-}
-
-static int winDialogMDICloseChildren(Ihandle* client)
-{
-  HWND hwndT;
-
-  /* As long as the MDI client has a child, close it */
-  while ((hwndT = GetWindow(client->handle, GW_CHILD)) != NULL)
-  {
-    Ihandle* child;
-
-    /* Skip the icon title windows */
-    while (hwndT && GetWindow (hwndT, GW_OWNER))
-      hwndT = GetWindow(hwndT, GW_HWNDNEXT);
-
-    if (!hwndT)
-        break;
-
-    child = iupwinHandleGet(hwndT); 
-    if (child)
-    {
-      Icallback cb = IupGetCallback(child, "CLOSE_CB");
-      if (cb)
-      {
-        int ret = cb(child);
-        if (ret == IUP_IGNORE)
-          return 0;
-        if (ret == IUP_CLOSE)
-          IupExitLoop();
-        IupDestroy(child);
-      }
-    }
-  }
-
-  return 1;
 }
 
 static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
@@ -405,14 +402,10 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
         IupDestroy(ih);
       else
       {
-        Ihandle* client = (Ihandle*)iupAttribGetStr(ih, "MDICLIENT_HANDLE");
-        if (client)
+        if (!winDialogMDICloseChildren(ih))
         {
-          if (!winDialogMDICloseChildren(client))
-          {
-            *result = 0;
-            return 1;
-          }
+          *result = 0;
+          return 1;
         }
 
         IupHide(ih); /* IUP default processing */
@@ -574,6 +567,29 @@ static LRESULT CALLBACK winDialogMDIChildProc(HWND hwnd, UINT msg, WPARAM wp, LP
   return DefMDIChildProc(hwnd, msg, wp, lp);
 }
 
+static Ihandle* winDialogGetMdiChildId(Ihandle* ih, int mdi_child_id)
+{
+  int id, max_child_id, real_id = -1;
+  char name[50];
+  Ihandle* child;
+
+  max_child_id = iupAttribGetInt(ih, "_IUPWIN_MAX_MDI_ID");
+
+  for (id = 0; id < max_child_id; id++)
+  {
+    sprintf(name, "_IUPWIN_MDI_ID_[%d]", id);
+    child = (Ihandle*)iupAttribGetStr(ih, name);
+    if (iupObjectCheck(child))
+    {
+      real_id++;
+      if (real_id == mdi_child_id)
+        return child;
+    }
+  }
+
+  return NULL;
+}
+
 static LRESULT CALLBACK winDialogMDIFrameProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
   LRESULT result;
@@ -598,6 +614,22 @@ static LRESULT CALLBACK winDialogMDIFrameProc(HWND hwnd, UINT msg, WPARAM wp, LP
 
   if (winDialogBaseProc(ih, msg, wp, lp, &result))
     return result;
+
+  switch (msg)
+  {
+  case WM_MENUCOMMAND:
+    {
+      int menuId = GetMenuItemID((HMENU)lp, (int)wp);
+      if (menuId >= IUP_MDICHILD_START && hWndClient)
+      {
+        Ihandle* child = winDialogGetMdiChildId(ih, menuId-IUP_MDICHILD_START);
+        if (child)
+          SendMessage(hWndClient, WM_MDIACTIVATE, (WPARAM)child->handle, 0);
+        break;
+      }
+    }
+  }
+
 
   return DefFrameProc(hwnd, hWndClient, msg, wp, lp);
 }
@@ -656,8 +688,7 @@ static void winDialogRegisterClass(int mdi)
 
 static int winDialogMapMethod(Ihandle* ih)
 {
-  InativeHandle* parent = iupDialogGetNativeParent(ih);
-  int childid = 0;
+  InativeHandle* native_parent;
   DWORD dwStyle = WS_CLIPSIBLINGS, 
         dwStyleEx = 0;
   int has_titlebar = 0,
@@ -702,16 +733,32 @@ static int winDialogMapMethod(Ihandle* ih)
 
   if (iupAttribGetInt(ih, "MDICHILD"))
   {
-    static int mdi_child_id = IUP_MDICHILD_START;
+    static int mdi_child_id = 0;
+    Ihandle *client;
     char name[50];
-    Ihandle *client = IupGetAttributeHandle(ih, "MDICLIENT");
 
-    /* store the MDICLIENT handle in each MDICHILD also */
+    /* must have a parent dialog (the mdi frame) */
+    Ihandle* parent = IupGetAttributeHandle(ih, "PARENTDIALOG");
+    if (!parent || !parent->handle)
+      return IUP_ERROR;
+
+    /* set when the mdi client is mapped */
+    client = (Ihandle*)iupAttribGetStr(parent, "MDICLIENT_HANDLE");
+    if (!client)
+      return IUP_ERROR;
+
+    /* store the mdi client handle in each mdi child also */
     iupAttribSetStr(ih, "MDICLIENT_HANDLE", (char*)client);
+
+    sprintf(name, "_IUPWIN_MDI_ID_[%d]", mdi_child_id);
+    iupAttribSetStr(parent, name, (char*)ih);
+    mdi_child_id++;
+    iupAttribSetInt(parent, "_IUPWIN_MAX_MDI_ID", mdi_child_id);
 
     classname = "IupDialogMDIChild";
 
-    parent = client->handle;
+    /* The actual parent is the mdi client */
+    native_parent = client->handle;
 
     dwStyle |= WS_CHILD;
     if (has_titlebar)
@@ -719,17 +766,14 @@ static int winDialogMapMethod(Ihandle* ih)
     else if (has_border)
       dwStyle |= WS_BORDER;
 
-    dwStyleEx |= WS_EX_MDICHILD;
-
-    sprintf(name, "mdichild%d", mdi_child_id - (IUP_MDICHILD_START));
-    IupSetHandle(name, ih);
-
-    childid = mdi_child_id;
-    mdi_child_id++;
+    if (!IupGetName(ih))
+      iupAttribSetHandleName(ih);
   }
   else
   {
-    if (parent)
+    native_parent = iupDialogGetNativeParent(ih);
+
+    if (native_parent)
     {
       dwStyle |= WS_POPUP;
 
@@ -755,14 +799,14 @@ static int winDialogMapMethod(Ihandle* ih)
       }
     }
 
-    if (iupAttribGetStr(ih, "MDIMENU"))
+    if (iupAttribGetStr(ih, "MDIFRAME"))
       classname = "IupDialogMDIFrame";
   }
 
-  if (iupAttribGetInt(ih, "TOOLBOX") && parent)
+  if (iupAttribGetInt(ih, "TOOLBOX") && native_parent)
     dwStyleEx |= WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE;
 
-  if (iupAttribGetInt(ih, "DIALOGFRAME") && parent)
+  if (iupAttribGetInt(ih, "DIALOGFRAME") && native_parent)
     dwStyleEx |= WS_EX_DLGMODALFRAME;  /* this will hide the MENUBOX but not the close button */
 
   if (iupAttribGetIntDefault(ih, "COMPOSITED"))
@@ -773,7 +817,7 @@ static int winDialogMapMethod(Ihandle* ih)
   if (iupAttribGetInt(ih, "HELPBUTTON"))
     dwStyleEx |= WS_EX_CONTEXTHELP;
 
-  if (iupAttribGetInt(ih, "CONTROL") && parent) 
+  if (iupAttribGetInt(ih, "CONTROL") && native_parent) 
   {
     /* TODO: this were used by LuaCom to create embeded controls, 
        don't know if it is still working */
@@ -789,7 +833,19 @@ static int winDialogMapMethod(Ihandle* ih)
   /* size will be updated in IupRefresh -> winDialogLayoutUpdate */
   /* position will be updated in iupDialogShowXY              */
 
-  ih->handle = CreateWindowEx(dwStyleEx,          /* extended styles */
+  if (iupAttribGetInt(ih, "MDICHILD"))
+    ih->handle = CreateMDIWindow(classname, 
+                                title,              /* title */
+                                dwStyle,            /* style */
+                                0,                  /* x-position */
+                                0,                  /* y-position */
+                                100,                /* horizontal size - set this to avoid size calculation problems */
+                                100,                /* vertical size */
+                                native_parent,      /* owner window */
+                                iupwin_hinstance,   /* instance of app. */
+                                0);                 /* no creation parameters */
+  else
+    ih->handle = CreateWindowEx(dwStyleEx,          /* extended styles */
                               classname,          /* class */
                               title,              /* title */
                               dwStyle,            /* style */
@@ -797,8 +853,8 @@ static int winDialogMapMethod(Ihandle* ih)
                               0,                  /* y-position */
                               100,                /* horizontal size - set this to avoid size calculation problems */
                               100,                /* vertical size */
-                              parent,             /* owner window */
-                              (HMENU)childid,     /* Menu or child-window identifier */
+                              native_parent,      /* owner window */
+                              (HMENU)0,           /* Menu or child-window identifier */
                               iupwin_hinstance,   /* instance of app. */
                               NULL);              /* no creation parameters */
   if (!ih->handle)
@@ -1072,10 +1128,8 @@ static int winDialogSetMdiActivateAttrib(Ihandle *ih, const char *value)
 
 static int winDialogSetMdiCloseAllAttrib(Ihandle *ih, const char *value)
 {
-  Ihandle* client = (Ihandle*)iupAttribGetStr(ih, "MDICLIENT_HANDLE");
   (void)value;
-  if (client)
-    winDialogMDICloseChildren(client);
+  winDialogMDICloseChildren(ih);
   return 0;
 }
 

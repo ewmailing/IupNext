@@ -569,8 +569,10 @@ static int winCanvasMapMethod(Ihandle* ih)
       dwStyle |= WS_CLIPCHILDREN;
   }
 
-  if (iupAttribGetInt(ih, "MDICLIENT"))
+  if (iupAttribGetInt(ih, "MDICLIENT"))  
   {
+    /* creating a MDI Client that will be inside the MDI Frame, 
+       it will work as parent of all MDI children */
     Ihandle *winmenu = IupGetAttributeHandle(ih, "MDIMENU");
 
     classname = "mdiclient";
@@ -581,6 +583,11 @@ static int winCanvasMapMethod(Ihandle* ih)
 
     clientdata = &clientstruct;
     clientstruct.hWindowMenu = winmenu? winmenu->handle: NULL;
+
+    /* The system increments the identifier 
+       for each additional MDI child window the application creates, 
+       and reassigns identifiers when the application 
+       destroys a window to keep the range of identifiers contiguous. */
     clientstruct.idFirstChild = IUP_MDICHILD_START;
   }
   else 
@@ -632,32 +639,33 @@ static int winCanvasMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
+static void winCanvasMDICloseChildren(Ihandle* client)
+{
+  HWND hWndChild = (HWND)SendMessage(client->handle, WM_MDIGETACTIVE, 0, 0);
+
+  /* As long as the MDI client has a child, close it */
+  while (hWndChild)
+  {
+    Ihandle* child = iupwinHandleGet(hWndChild); 
+    if (iupObjectCheck(child) && iupAttribGetInt(child, "MDICHILD"))
+      IupDestroy(child);
+
+    hWndChild = (HWND)SendMessage(client->handle, WM_MDIGETACTIVE, 0, 0);
+  }
+}
+
 static void winCanvasUnMapMethod(Ihandle* ih)
 {
   if (iupAttribGetInt(ih, "MDICLIENT")) 
   {
-    HWND hwndT;
-
     /* hide the MDI client window to avoid multiple repaints */
     ShowWindow(ih->handle, SW_HIDE);
 
-    /* As long as the MDI client has a child, destroy it */
-    while ((hwndT = GetWindow(ih->handle, GW_CHILD)) != NULL)
-    {
-      Ihandle* child;
+    /* must destroy all MDI Children */
+    winCanvasMDICloseChildren(ih);
 
-      /* Skip the icon title windows */
-      while (hwndT && GetWindow (hwndT, GW_OWNER))
-        hwndT = GetWindow (hwndT, GW_HWNDNEXT);
+    DestroyWindow(ih->handle);
 
-      if (!hwndT)
-          break;
-
-      child = iupwinHandleGet(hwndT); 
-      if (child)
-        IupDestroy(child);
-    }
-                                        
     /* mdiclient class is not a IUP class, must return here */
     return;
   }

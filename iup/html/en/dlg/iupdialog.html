@@ -224,32 +224,43 @@ only): Embeds the dialog inside another window.</p>
     other dialogs in all applications. Default: NO.</p>
       
 <h4>Exclusive MDI [Windows Only]</h4>
-<p><strong>MDIACTIVE</strong> [Windows Only] (read-only): Returns the the name of the current 
-    active MDI child.</p>
+<p><strong><em>--- For the MDI Frame ---</em></strong></p>
+  <p><strong>MDIFRAME</strong> (creation only) [Windows Only] (<font SIZE="3">non inheritable</font>): Configure this 
+	dialog as a MDI frame. Can be YES or NO. Default: NO.</p>
+  <p><strong>MDIACTIVE</strong> [Windows Only] (read-only): Returns the name of the current 
+    active MDI child. Use IupGetAttributeHandle to directly retrieve the child 
+	handle.</p>
 <p><strong>MDIACTIVATE</strong> [Windows Only] (write-only): Name of a MDI child window to be 
     activated. If value is &quot;NEXT&quot; will activate the next window after the current active 
     window. If value is &quot;PREVIOUS&quot; will activate the previous one. </p>
 <p><strong>MDIARRANGE</strong> [Windows Only] (write-only): Action to arrange MDI child 
     windows. Possible values: TILEHORIZONTAL, TILEVERTICAL,
     CASCADE and ICON (arrange the minimized icons).</p>
-<p><strong>MDICHILD</strong> [Windows Only]: Configure this dialog to be a MDI child window. 
-    The MDICLIENT attribute must also be set. Each MDI child is automatically named 
-    (IupSetHandle) to &quot;mdichild%d&quot;, where &quot;%d&quot; is a sequencial number.</p>
-<p><strong>MDICLIENT</strong> [Windows Only]: Name of the IupCanvas used as MDI client window. 
-    The MDI frame window must have one and only one MDI client window.</p>
 <p><strong>MDICLOSEALL</strong> [Windows Only] (write-only): Action to close and destroy all 
     MDI child windows. The CLOSE_CB callback will be called for each child. </p>
 <p class="info">IMPORTANT: When a MDI child window is closed it is automatically destroyed. 
 The application can override this 
       returning IUP_IGNORE in CLOSE_CB.</p>
       
-<p><strong>MDIMENU</strong> [Windows Only]: Name of a IupSubmenu to be used as the Window list 
-    of a MDI frame window. The system will automatically add the list of MDI child windows there. Used in the IupDialog 
-    configured as a MDI frame. This dialog must contains one IupCanvas configured with 
-    MDICLIENT=YES.</p>
 <p><strong>MDINEXT</strong> [Windows Only] (read-only): Returns the name of the next available 
-    MDI child. Must use MDIACTIVE to retrieve the first child. If the application is 
+    MDI child. Use IupGetAttributeHandle to directly retrieve the child handle. Must use MDIACTIVE to retrieve the first child. If the application is 
     going to destroy the child retreive the next child before destroying the current.</p>
+<p><strong><em>--- For the MDI Client&nbsp; </em></strong>(a IupCanvas)<strong><em> 
+---</em></strong></p>
+  <p><strong>MDICLIENT</strong> (creation only) [Windows Only] (<font SIZE="3">non inheritable</font>): Configure the canvas as a MDI client. 
+	Can be YES or NO. No 
+  callbacks will be called. This canvas will be used internally only by the MDI 
+	Frame and its MDI Children. The MDI frame must have one and only one MDI 
+	client. Default: NO.</p>
+      
+<p><strong>MDIMENU</strong> (creation only) [Windows Only]: Name of a IupMenu to be used as the Window list 
+    of a MDI frame. The system will automatically add the list of MDI child 
+windows there.</p>
+<p><strong><em>--- For the MDI Children ---</em></strong></p>
+<p><strong>MDICHILD</strong> (creation only) [Windows Only]: Configure this 
+dialog to be a MDI child. Can be YES or NO. 
+    The PARENTDIALOG attribute must also be defined. Each MDI child is automatically named 
+    if it does not have one. Default: NO.</p>
       
 <h3><a name="Callbacks">Callbacks</a></h3>
 
