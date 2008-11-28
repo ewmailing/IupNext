@@ -82,27 +82,27 @@ static unsigned char img_bits2[] =
 };
 
 static int line = 0;
-static int getfocus_cb(Ihandle *self)
+static int getfocus_cb(Ihandle *ih)
 {
-  printf("%2d-getfocus(%s#%s)\n", line, IupGetClassName(self), 
-                                        IupGetAttribute(self, "CINDEX"));
+  printf("%2d-getfocus(%s#%s)\n", line, IupGetClassName(ih), 
+                                        IupGetAttribute(ih, "CINDEX"));
   line++;
   return IUP_DEFAULT;
 }
 
-static int killfocus_cb(Ihandle *self)
+static int killfocus_cb(Ihandle *ih)
 {
-  printf("%2d-killfocus(%s#%s)\n", line, IupGetClassName(self), 
-                                         IupGetAttribute(self, "CINDEX"));
+  printf("%2d-killfocus(%s#%s)\n", line, IupGetClassName(ih), 
+                                         IupGetAttribute(ih, "CINDEX"));
   line++;
   return IUP_DEFAULT;
 }
 
-static int action(Ihandle* self)
+static int action(Ihandle* ih)
 {
-  printf("%2d-action(%s#%s) Value=%s\n", line, IupGetClassName(self), 
-                                               IupGetAttribute(self, "CINDEX"), 
-                                               IupGetAttribute(self, "VALUE"));
+  printf("%2d-action(%s#%s) Value=%s\n", line, IupGetClassName(ih), 
+                                               IupGetAttribute(ih, "CINDEX"), 
+                                               IupGetAttribute(ih, "VALUE"));
   line++;
   return IUP_DEFAULT;
 }
@@ -300,56 +300,56 @@ Ihandle* createDialog (void)
   return dlg;
 }
 
-static int mdi_tilehoriz(Ihandle* self)
+static int mdi_tilehoriz(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIARRANGE", "TILEHORIZONTAL");
+  IupSetAttribute(IupGetDialog(ih), "MDIARRANGE", "TILEHORIZONTAL");
   return IUP_DEFAULT;
 }
 
-static int mdi_tilevert(Ihandle* self)
+static int mdi_tilevert(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIARRANGE", "TILEVERTICAL");
+  IupSetAttribute(IupGetDialog(ih), "MDIARRANGE", "TILEVERTICAL");
   return IUP_DEFAULT;
 }
 
-static int mdi_cascade(Ihandle* self)
+static int mdi_cascade(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIARRANGE", "CASCADE");
+  IupSetAttribute(IupGetDialog(ih), "MDIARRANGE", "CASCADE");
   return IUP_DEFAULT;
 }
 
-static int mdi_icon(Ihandle* self)
+static int mdi_icon(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIARRANGE", "ICON");
+  IupSetAttribute(IupGetDialog(ih), "MDIARRANGE", "ICON");
   return IUP_DEFAULT;
 }
 
-static int mdi_next(Ihandle* self)
+static int mdi_next(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIACTIVATE", "NEXT");
+  IupSetAttribute(IupGetDialog(ih), "MDIACTIVATE", "NEXT");
   return IUP_DEFAULT;
 }
 
-static int mdi_previous(Ihandle* self)
+static int mdi_previous(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIACTIVATE", "PREVIOUS");
+  IupSetAttribute(IupGetDialog(ih), "MDIACTIVATE", "PREVIOUS");
   return IUP_DEFAULT;
 }
 
-static int mdi_closeall(Ihandle* self)
+static int mdi_closeall(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDICLOSEALL", NULL);
+  IupSetAttribute(IupGetDialog(ih), "MDICLOSEALL", NULL);
   return IUP_DEFAULT;
 }
 
-static int mdi_activate(Ihandle* self)
+static int mdi_activate(Ihandle* ih)
 {
-  printf("%2d-mdi_activate(%s)\n", line, IupGetName(self));
+  printf("%2d-mdi_activate(%s)\n", line, IupGetName(ih));
   line++;
   return IUP_DEFAULT;
 }
 
-static int mdi_new(Ihandle* self)
+static int mdi_new(Ihandle* ih)
 {
   Ihandle* dlg = createDialog();
   IupSetAttribute(dlg,"MDICHILD","YES");
@@ -416,7 +416,7 @@ int main(int argc, char **argv)
   createImages();
   createMenu();
 
-  dlg = createFrame(); //createDialog();
+  dlg = createFrame();
 //  IupSetAttribute(dlg, "PLACEMENT", "MAXIMIZED");
   IupSetAttribute(dlg,"MENU","mnu");
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);

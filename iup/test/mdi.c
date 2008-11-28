@@ -3,55 +3,55 @@
 #include <iup.h>
 
 
-static int mdi_tilehoriz(Ihandle* self)
+static int mdi_tilehoriz(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIARRANGE", "TILEHORIZONTAL");
+  IupSetAttribute(IupGetDialog(ih), "MDIARRANGE", "TILEHORIZONTAL");
   return IUP_DEFAULT;
 }
 
-static int mdi_tilevert(Ihandle* self)
+static int mdi_tilevert(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIARRANGE", "TILEVERTICAL");
+  IupSetAttribute(IupGetDialog(ih), "MDIARRANGE", "TILEVERTICAL");
   return IUP_DEFAULT;
 }
 
-static int mdi_cascade(Ihandle* self)
+static int mdi_cascade(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIARRANGE", "CASCADE");
+  IupSetAttribute(IupGetDialog(ih), "MDIARRANGE", "CASCADE");
   return IUP_DEFAULT;
 }
 
-static int mdi_icon(Ihandle* self)
+static int mdi_icon(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIARRANGE", "ICON");
+  IupSetAttribute(IupGetDialog(ih), "MDIARRANGE", "ICON");
   return IUP_DEFAULT;
 }
 
-static int mdi_next(Ihandle* self)
+static int mdi_next(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIACTIVATE", "NEXT");
+  IupSetAttribute(IupGetDialog(ih), "MDIACTIVATE", "NEXT");
   return IUP_DEFAULT;
 }
 
-static int mdi_previous(Ihandle* self)
+static int mdi_previous(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDIACTIVATE", "PREVIOUS");
+  IupSetAttribute(IupGetDialog(ih), "MDIACTIVATE", "PREVIOUS");
   return IUP_DEFAULT;
 }
 
-static int mdi_closeall(Ihandle* self)
+static int mdi_closeall(Ihandle* ih)
 {
-  IupSetAttribute(self, "MDICLOSEALL", NULL);
+  IupSetAttribute(IupGetDialog(ih), "MDICLOSEALL", NULL);
   return IUP_DEFAULT;
 }
 
-static int mdi_activate(Ihandle* self)
+static int mdi_activate(Ihandle* ih)
 {
-  printf("mdi_activate(%s)\n", IupGetName(self));
+  printf("mdi_activate(%s)\n", IupGetName(ih));
   return IUP_DEFAULT;
 }
 
-static int mdi_new(Ihandle* self)
+static int mdi_new(Ihandle* ih)
 {
   Ihandle *box, *cnv, *dlg;
 
@@ -66,6 +66,7 @@ static int mdi_new(Ihandle* self)
   IupSetAttribute(dlg,"MDICHILD","YES");
   IupSetAttribute(dlg,"MDICLIENT","mdiClient");
   IupSetCallback(dlg,"MDIACTIVATE_CB",(Icallback)mdi_activate);
+  IupSetAttribute(dlg,"RASTERSIZE","300x300");
 //  IupSetAttribute(dlg, "PLACEMENT", "MAXIMIZED");
 
   IupShow(dlg);
@@ -113,7 +114,7 @@ static Ihandle* createFrame(void)
 
   dlg = IupDialog(cnv);
   IupSetAttribute(dlg,"TITLE","MDI Frame");
-//  IupSetAttribute(dlg,"MDIMENU","mdiMenu");
+  IupSetAttribute(dlg,"MDIMENU","mdiMenu");
   IupSetAttribute(dlg,"RASTERSIZE","800x600");
 
   return dlg;
@@ -125,11 +126,11 @@ int main(int argc, char* argv[])
 
   IupOpen(&argc, &argv);      
 
-//  createMenu();
+  createMenu();
 
   dlg = createFrame();
 //  IupSetAttribute(dlg, "PLACEMENT", "MAXIMIZED");
-//  IupSetAttribute(dlg,IUP_MENU,"mnu");
+  IupSetAttribute(dlg,IUP_MENU,"mnu");
   IupShow(dlg);
   IupMainLoop();
   IupDestroy(dlg);
