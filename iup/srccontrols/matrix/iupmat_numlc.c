@@ -3,7 +3,7 @@
  * change number of columns or lines
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_numlc.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_numlc.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 /**************************************************************************/
@@ -32,15 +32,15 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "matrixdef.h"
-#include "matrixcd.h"
-#include "imdraw.h"
-#include "imaux.h"
-#include "immem.h"
-#include "imgetset.h"
-#include "immark.h"
-#include "imnumlc.h"
-#include "imedit.h"
+#include "iupmat_def.h"
+#include "iupmat_cd.h"
+#include "iupmat_draw.h"
+#include "iupmat_aux.h"
+#include "iupmat_mem.h"
+#include "iupmat_getset.h"
+#include "iupmat_mark.h"
+#include "iupmat_numlc.h"
+#include "iupmat_edit.h"
 
 
 #define IMATRIX_INSERT    0     /* Insert a line or column */

@@ -27,10 +27,10 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "itdraw.h"
-#include "itdef.h"
-#include "itcallback.h"
-#include "itfind.h"
+#include "iuptree_draw.h"
+#include "iuptree_def.h"
+#include "iuptree_callback.h"
+#include "iuptree_find.h"
 
 #define ITREE_MAX(a, b) ((a) > (b) ? (a) : (b))
 

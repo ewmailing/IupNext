@@ -3,7 +3,7 @@
  * memory allocation
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_mem.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_mem.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 /**************************************************************************/
@@ -31,8 +31,8 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "matrixdef.h"
-#include "immem.h"
+#include "iupmat_def.h"
+#include "iupmat_mem.h"
 
 
 #define IMATRIX_BLOCKSIZE 25

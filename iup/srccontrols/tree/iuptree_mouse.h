@@ -5,8 +5,8 @@
  * See Copyright Notice in iup.h
  */
  
-#ifndef __ITMOUSE_H 
-#define __ITMOUSE_H
+#ifndef __IUPTREE_MOUSE_H 
+#define __IUPTREE_MOUSE_H
 
 #ifdef __cplusplus
 extern "C" {

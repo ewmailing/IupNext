@@ -27,11 +27,11 @@
 
 #include <cd.h>
 
-#include "itdraw.h"
-#include "itdef.h"
-#include "itedit.h"
-#include "itcallback.h"
-#include "itgetset.h"
+#include "iuptree_draw.h"
+#include "iuptree_def.h"
+#include "iuptree_edit.h"
+#include "iuptree_callback.h"
+#include "iuptree_getset.h"
 
 
 static int iTreeEditTextActionCB(Ihandle* ih, int c, char *after)

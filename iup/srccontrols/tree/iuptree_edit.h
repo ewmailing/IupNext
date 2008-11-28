@@ -5,8 +5,8 @@
  * See Copyright Notice in iup.h
  */
  
-#ifndef __ITEDIT_H 
-#define __ITEDIT_H
+#ifndef __IUPTREE_EDIT_H 
+#define __IUPTREE_EDIT_H
 
 #ifdef __cplusplus
 extern "C" {

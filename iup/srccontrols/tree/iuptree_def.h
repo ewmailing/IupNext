@@ -4,8 +4,8 @@
  * See Copyright Notice in iup.h
  */
  
-#ifndef __TREEDEF_H 
-#define __TREEDEF_H
+#ifndef __IUPTREE_DEF_H 
+#define __IUPTREE_DEF_H
 
 #ifdef __cplusplus
 extern "C" {

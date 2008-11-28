@@ -5,8 +5,8 @@
  * See Copyright Notice in iup.h
  */
  
-#ifndef __ITSCROLL_H 
-#define __ITSCROLL_H
+#ifndef __IUPTREE_SCROLL_H 
+#define __IUPTREE_SCROLL_H
 
 #ifdef __cplusplus
 extern "C" {

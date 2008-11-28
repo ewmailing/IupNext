@@ -2,11 +2,11 @@
  * \brief iupmatrix. keyboard control.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_key.h,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_key.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
-#ifndef __IMKEY_H 
-#define __IMKEY_H
+#ifndef __IUPMAT_KEY_H 
+#define __IUPMAT_KEY_H
 
 #ifdef __cplusplus
 extern "C" {

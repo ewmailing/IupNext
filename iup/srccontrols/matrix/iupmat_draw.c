@@ -3,7 +3,7 @@
  * draw functions
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_draw.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_draw.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 #include <stdio.h>
@@ -29,11 +29,11 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "matrixdef.h"
-#include "matrixcd.h"
-#include "imdraw.h"
-#include "imaux.h"
-#include "immark.h"
+#include "iupmat_def.h"
+#include "iupmat_cd.h"
+#include "iupmat_draw.h"
+#include "iupmat_aux.h"
+#include "iupmat_mark.h"
 
 /* Color attenuation factor in a marked cell */
 #define IMATRIX_ATENUATION_NO       1.0F

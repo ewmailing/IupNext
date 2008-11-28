@@ -7,13 +7,13 @@ INCLUDES = ../include ../src .
 SRCCOLOR = iup_colorbrowser.c iup_colorhsi.c iup_colordlg.c
 SRCCOLOR := $(addprefix color/, $(SRCCOLOR))
 
-SRCTREE = itdraw.c itgetset.c iuptree.c itfind.c itimage.c \
-          itkey.c itmouse.c itcallback.c itscroll.c itedit.c
+SRCTREE = iuptree_draw.c iuptree_getset.c iuptree.c iuptree_find.c iuptree_image.c \
+          iuptree_key.c iuptree_mouse.c iuptree_callback.c iuptree_scroll.c iuptree_edit.c
 SRCTREE := $(addprefix tree/, $(SRCTREE))
 
-SRCMATRIX = imkey.c immark.c imaux.c immem.c immouse.c imnumlc.c \
-            imcolres.c imdraw.c imfocus.c imgetset.c iupmatrix.c \
-            imscroll.c imedit.c
+SRCMATRIX = iupmat_key.c iupmat_mark.c iupmat_aux.c iupmat_mem.c iupmat_mouse.c iupmat_numlc.c \
+            iupmat_colres.c iupmat_draw.c iupmat_focus.c iupmat_getset.c iupmatrix.c \
+            iupmat_scroll.c iupmat_edit.c
 SRCMATRIX := $(addprefix matrix/, $(SRCMATRIX))
 
 SRC = iup_cdutil.c iup_gauge.c iup_cells.c iup_colorbar.c iup_controls.c \

@@ -23,11 +23,11 @@
 
 #include <cd.h>
 
-#include "itscroll.h"
-#include "itdraw.h"
-#include "itdef.h"
-#include "itgetset.h"
-#include "itfind.h"
+#include "iuptree_scroll.h"
+#include "iuptree_draw.h"
+#include "iuptree_def.h"
+#include "iuptree_getset.h"
+#include "iuptree_find.h"
 
 
 int iTreeScrollDown(Ihandle* ih)

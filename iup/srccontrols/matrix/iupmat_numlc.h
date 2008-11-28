@@ -2,11 +2,11 @@
  * \brief iupmatrix. change number of collumns or lines.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_numlc.h,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_numlc.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
-#ifndef __IMNUMLC_H 
-#define __IMNUMLC_H
+#ifndef __IUPMAT_NUMLC_H 
+#define __IUPMAT_NUMLC_H
 
 #ifdef __cplusplus
 extern "C" {

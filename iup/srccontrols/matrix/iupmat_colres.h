@@ -2,11 +2,11 @@
  * \brief iupmatrix column resize.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_colres.h,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_colres.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
-#ifndef __IMCOLRES_H 
-#define __IMCOLRES_H
+#ifndef __IUPMAT_COLRES_H 
+#define __IUPMAT_COLRES_H
 
 #ifdef __cplusplus
 extern "C" {

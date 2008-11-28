@@ -3,7 +3,7 @@
  * attributes set and get
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_getset.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_getset.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 #include <stdio.h>
@@ -27,16 +27,16 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "matrixdef.h"
-#include "matrixcd.h"
-#include "imdraw.h"
-#include "imscroll.h"
-#include "imaux.h"
-#include "immem.h"
-#include "imfocus.h"
-#include "immark.h"
-#include "imgetset.h"
-#include "imedit.h"
+#include "iupmat_def.h"
+#include "iupmat_cd.h"
+#include "iupmat_draw.h"
+#include "iupmat_scroll.h"
+#include "iupmat_aux.h"
+#include "iupmat_mem.h"
+#include "iupmat_focus.h"
+#include "iupmat_mark.h"
+#include "iupmat_getset.h"
+#include "iupmat_edit.h"
 
 
 /* Set a cell value of the matrix, redraw a cell if it is visible.

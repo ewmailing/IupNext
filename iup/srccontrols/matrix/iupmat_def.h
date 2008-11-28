@@ -2,13 +2,13 @@
  * \brief iupmatrix. definitions.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_def.h,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_def.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
-#ifndef __MATRIXDEF_H 
-#define __MATRIXDEF_H
+#ifndef __IUPMAT_DEF_H 
+#define __IUPMAT_DEF_H
 
-#include "imdraw.h"
+#include "iupmat_draw.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -2,7 +2,7 @@
  * \brief iMatrixrix focus control
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_focus.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_focus.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,15 +25,15 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "matrixcd.h"
-#include "matrixdef.h"
-#include "imaux.h"
-#include "imdraw.h"
-#include "imedit.h"
-#include "imfocus.h"
-#include "immark.h"
-#include "imscroll.h"
-#include "imgetset.h"
+#include "iupmat_cd.h"
+#include "iupmat_def.h"
+#include "iupmat_aux.h"
+#include "iupmat_draw.h"
+#include "iupmat_edit.h"
+#include "iupmat_focus.h"
+#include "iupmat_mark.h"
+#include "iupmat_scroll.h"
+#include "iupmat_getset.h"
 
 /* Verify if the cell that will contain the focus
    is in some visible area of the matrix.

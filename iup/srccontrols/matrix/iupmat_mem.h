@@ -3,11 +3,11 @@
  * memory allocation.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_mem.h,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_mem.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
-#ifndef __IMMEM_H 
-#define __IMMEM_H
+#ifndef __IUPMAT_MEM_H 
+#define __IUPMAT_MEM_H
 
 #ifdef __cplusplus
 extern "C" {

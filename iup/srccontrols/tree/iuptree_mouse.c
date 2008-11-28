@@ -27,14 +27,14 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "itdraw.h"
-#include "itdef.h"
-#include "itcallback.h"
-#include "itkey.h"
-#include "itfind.h"
-#include "itgetset.h"
-#include "itmouse.h"
-#include "itedit.h"
+#include "iuptree_draw.h"
+#include "iuptree_def.h"
+#include "iuptree_callback.h"
+#include "iuptree_key.h"
+#include "iuptree_find.h"
+#include "iuptree_getset.h"
+#include "iuptree_mouse.h"
+#include "iuptree_edit.h"
 
 
 /* Variable that stores the control iTreeKey status */

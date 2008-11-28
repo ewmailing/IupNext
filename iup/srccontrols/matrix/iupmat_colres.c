@@ -2,7 +2,7 @@
  * \brief iupmatrix column resize
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_colres.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_colres.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 #include <stdio.h>
@@ -27,12 +27,12 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "matrixcd.h"
-#include "matrixdef.h"
-#include "imdraw.h"
-#include "imaux.h"
-#include "imfocus.h"
-#include "imcolres.h"
+#include "iupmat_cd.h"
+#include "iupmat_def.h"
+#include "iupmat_draw.h"
+#include "iupmat_aux.h"
+#include "iupmat_focus.h"
+#include "iupmat_colres.h"
 
 #define IMATRIX_TOL       3
 

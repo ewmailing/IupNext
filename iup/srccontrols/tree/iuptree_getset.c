@@ -28,12 +28,12 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "itdraw.h"
-#include "itdef.h"
-#include "itgetset.h"
-#include "itfind.h"
-#include "itcallback.h"
-#include "itscroll.h"
+#include "iuptree_draw.h"
+#include "iuptree_def.h"
+#include "iuptree_getset.h"
+#include "iuptree_find.h"
+#include "iuptree_callback.h"
+#include "iuptree_scroll.h"
 
 #define NO      0
 #define YES     1

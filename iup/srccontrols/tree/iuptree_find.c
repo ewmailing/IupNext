@@ -23,11 +23,11 @@
 
 #include <cd.h>
 
-#include "itdraw.h"
-#include "itdef.h" 
-#include "itgetset.h"
-#include "itfind.h"
-#include "itmouse.h"
+#include "iuptree_draw.h"
+#include "iuptree_def.h" 
+#include "iuptree_getset.h"
+#include "iuptree_find.h"
+#include "iuptree_mouse.h"
 
 
 int iTreeFindNodeIdFromXY(Ihandle* ih, int xmouse, int ymouse)

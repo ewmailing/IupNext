@@ -2,11 +2,11 @@
  * \brief iupmatrix focus control.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_focus.h,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_focus.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
-#ifndef __IMFOCUS_H 
-#define __IMFOCUS_H
+#ifndef __IUPMAT_FOCUS_H 
+#define __IUPMAT_FOCUS_H
 
 #ifdef __cplusplus
 extern "C" {

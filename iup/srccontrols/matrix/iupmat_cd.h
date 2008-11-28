@@ -2,11 +2,11 @@
  * \brief iupmatrix. CD help macros.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_cd.h,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_cd.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
-#ifndef __MATRIXCD_H 
-#define __MATRIXCD_H
+#ifndef __IUPMAT_CD_H 
+#define __IUPMAT_CD_H
 
 #include <cd.h>
 #include <cdiup.h>

@@ -20,9 +20,9 @@
 
 #include <cd.h>
 
-#include "itdraw.h"
-#include "itdef.h"
-#include "itimage.h"
+#include "iuptree_draw.h"
+#include "iuptree_def.h"
+#include "iuptree_image.h"
 
 
 unsigned char tree_collapse_image[] = 

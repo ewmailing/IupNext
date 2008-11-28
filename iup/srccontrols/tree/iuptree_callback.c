@@ -24,12 +24,12 @@
 
 #include <cd.h>
 
-#include "itdraw.h"
-#include "itdef.h"
-#include "itcallback.h"
-#include "itkey.h"
-#include "itfind.h"
-#include "itgetset.h"
+#include "iuptree_draw.h"
+#include "iuptree_def.h"
+#include "iuptree_callback.h"
+#include "iuptree_key.h"
+#include "iuptree_find.h"
+#include "iuptree_getset.h"
 
 
 void iTreeCallDragDropCB(Ihandle* ih, int drag_id, int drop_id, int isshift, int iscontrol)

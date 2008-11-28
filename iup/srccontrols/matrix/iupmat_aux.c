@@ -3,7 +3,7 @@
  * auxiliary functions
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_aux.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
+ * $Id: iupmat_aux.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 #include <stdio.h>
@@ -28,13 +28,13 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "imdraw.h"
-#include "matrixdef.h"
-#include "imaux.h"
-#include "immem.h"
-#include "imfocus.h"
-#include "imedit.h"
-#include "matrixcd.h"
+#include "iupmat_draw.h"
+#include "iupmat_def.h"
+#include "iupmat_aux.h"
+#include "iupmat_mem.h"
+#include "iupmat_focus.h"
+#include "iupmat_edit.h"
+#include "iupmat_cd.h"
 
 /**************************************************************************/
 /*   Exported functions                                                   */

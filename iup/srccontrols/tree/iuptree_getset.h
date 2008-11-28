@@ -5,8 +5,8 @@
  * See Copyright Notice in iup.h
  */
  
-#ifndef __ITGETSET_H 
-#define __ITGETSET_H
+#ifndef __IUPTREE_GETSET_H 
+#define __IUPTREE_GETSET_H
 
 #ifdef __cplusplus
 extern "C" {
