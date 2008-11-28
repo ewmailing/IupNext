@@ -153,9 +153,9 @@ void func_1 (void)
 
   _frm_1 = IupFrame(
     IupVbox(
-      IupSetAttributes(IupButton("Button Text", "action"), "CINDEX=1"),
-      IupSetAttributes(IupButton("", "action"), "IMAGE=img1,CINDEX=2"),
-      IupSetAttributes(IupButton("", "action"), "IMAGE=img1,IMPRESS=img2,CINDEX=3"),
+      IupSetAttributes(IupButton("Button Text", NULL), "CINDEX=1"),
+      IupSetAttributes(IupButton("", NULL), "IMAGE=img1,CINDEX=2"),
+      IupSetAttributes(IupButton("", NULL), "IMAGE=img1,IMPRESS=img2,CINDEX=3"),
       NULL));
   IupSetAttribute(_frm_1,"TITLE","IupButton");
   IupSetAttribute(_frm_1,"CX","10");
@@ -173,32 +173,32 @@ void func_1 (void)
 
   _frm_3 = IupFrame(
     IupVbox(
-      IupSetAttributes(IupToggle("Toggle Text", "action"), "VALUE=ON,CINDEX=1"),
-      IupSetAttributes(IupToggle("", "action"), "IMAGE=img1,IMPRESS=img2,CINDEX=2"),
+      IupSetAttributes(IupToggle("Toggle Text", NULL), "VALUE=ON,CINDEX=1"),
+      IupSetAttributes(IupToggle("", NULL), "IMAGE=img1,IMPRESS=img2,CINDEX=2"),
       IupSetAttributes(IupFrame(IupRadio(IupVbox(
-        IupSetAttributes(IupToggle("Toggle Text", "action"), "CINDEX=3"),
-        IupSetAttributes(IupToggle("Toggle Text", "action"), "CINDEX=4"),
+        IupSetAttributes(IupToggle("Toggle Text", NULL), "CINDEX=3"),
+        IupSetAttributes(IupToggle("Toggle Text", NULL), "CINDEX=4"),
         NULL))), "TITLE=IupRadio"),
       NULL));
   IupSetAttribute(_frm_3,"TITLE","IupToggle");
   IupSetAttribute(_frm_3,"CX","400");
   IupSetAttribute(_frm_3,"CY","250");
 
-  _text_1 = IupText( "action");
+  _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","IupText Text");
   IupSetAttribute(_text_1,"SIZE","80x");
   IupSetAttribute(_text_1,"CINDEX","1");
   IupSetAttribute(_text_1,"CX","10");
   IupSetAttribute(_text_1,"CY","100");
 
-  _ml_1 = IupMultiLine( "action");
+  _ml_1 = IupMultiLine( NULL);
   IupSetAttribute(_ml_1,"VALUE","IupMultiline Text\nSecond Line\nThird Line");
   IupSetAttribute(_ml_1,"SIZE","80x60");
   IupSetAttribute(_ml_1,"CINDEX","1");
   IupSetAttribute(_ml_1,"CX","200");
   IupSetAttribute(_ml_1,"CY","100");
 
-  _list_1 = IupList( "action");
+  _list_1 = IupList( NULL);
   IupSetAttribute(_list_1,"VALUE","1");
   IupSetAttribute(_list_1,"1","Item 1 Text");
   IupSetAttribute(_list_1,"2","Item 2 Text");
@@ -207,7 +207,7 @@ void func_1 (void)
   IupSetAttribute(_list_1,"CX","10");
   IupSetAttribute(_list_1,"CY","10");
 
-  _list_2 = IupList( "action");
+  _list_2 = IupList( NULL);
   IupSetAttribute(_list_2,"DROPDOWN","YES");
   IupSetAttribute(_list_2,"VALUE","2");
   IupSetAttribute(_list_2,"1","Item 1 Text");
@@ -217,7 +217,7 @@ void func_1 (void)
   IupSetAttribute(_list_2,"CX","200");
   IupSetAttribute(_list_2,"CY","10");
 
-  _list_3 = IupList( "action");
+  _list_3 = IupList( NULL);
   IupSetAttribute(_list_3,"EDITBOX","YES");
   IupSetAttribute(_list_3,"VALUE","3");
   IupSetAttribute(_list_3,"1","Item 1 Text");
@@ -255,8 +255,7 @@ void func_1 (void)
     NULL);
   IupSetAttribute(_cbox,"SIZE","480x200");
 
-  hbox = IupHbox(IupSetAttributes(IupFill(), "SIZE=10"), 
-         IupVbox(IupSetAttributes(IupFill(), "SIZE=10"), _cbox, NULL), NULL);
+  hbox = IupSetAttributes(IupHbox(_cbox, NULL), "MARGIN=10x10");
 
   dlg = IupDialog(hbox);
   IupSetHandle("dlg",dlg);
