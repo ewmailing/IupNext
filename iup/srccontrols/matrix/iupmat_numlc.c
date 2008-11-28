@@ -3,7 +3,7 @@
  * change number of columns or lines
  *
  * See Copyright Notice in iup.h
- * $Id: imnumlc.c,v 1.2 2008-11-23 19:32:17 scuri Exp $
+ * $Id: iupmat_numlc.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
  */
 
 /**************************************************************************/

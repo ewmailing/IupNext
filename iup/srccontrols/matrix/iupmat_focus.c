@@ -2,7 +2,7 @@
  * \brief iMatrixrix focus control
  *
  * See Copyright Notice in iup.h
- * $Id: imfocus.c,v 1.1 2008-10-17 06:05:36 scuri Exp $
+ * $Id: iupmat_focus.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
  */
 #include <stdio.h>
 #include <stdlib.h>

@@ -3,7 +3,7 @@
  * attributes set and get.
  *
  * See Copyright Notice in iup.h
- * $Id: imgetset.h,v 1.2 2008-11-03 20:03:28 scuri Exp $
+ * $Id: iupmat_getset.h,v 1.1 2008-11-28 00:13:55 scuri Exp $
  */
  
 #ifndef __IMGETSET_H 

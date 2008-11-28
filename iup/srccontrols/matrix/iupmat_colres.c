@@ -2,7 +2,7 @@
  * \brief iupmatrix column resize
  *
  * See Copyright Notice in iup.h
- * $Id: imcolres.c,v 1.2 2008-11-28 00:02:49 scuri Exp $
+ * $Id: iupmat_colres.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
  */
 
 #include <stdio.h>

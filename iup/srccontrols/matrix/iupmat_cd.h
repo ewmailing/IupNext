@@ -2,7 +2,7 @@
  * \brief iupmatrix. CD help macros.
  *
  * See Copyright Notice in iup.h
- * $Id: matrixcd.h,v 1.1 2008-10-17 06:05:36 scuri Exp $
+ * $Id: iupmat_cd.h,v 1.1 2008-11-28 00:13:55 scuri Exp $
  */
  
 #ifndef __MATRIXCD_H 

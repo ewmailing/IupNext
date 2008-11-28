@@ -3,7 +3,7 @@
 * Functions used to edit a node name in place.
 *
 * See Copyright Notice in iup.h
-* $Id: imedit.c,v 1.2 2008-11-28 00:02:49 scuri Exp $
+* $Id: iupmat_edit.c,v 1.1 2008-11-28 00:13:55 scuri Exp $
 */
 
 #include <stdio.h>

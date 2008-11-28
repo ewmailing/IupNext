@@ -2,7 +2,7 @@
  * \brief iupmatrix. cel selection.
  *
  * See Copyright Notice in iup.h
- * $Id: immark.h,v 1.2 2008-11-20 21:15:38 scuri Exp $
+ * $Id: iupmat_mark.h,v 1.1 2008-11-28 00:13:55 scuri Exp $
  */
  
 #ifndef __IMMARK_H 
