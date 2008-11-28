@@ -3,7 +3,7 @@
  * auxiliary functions
  *
  * See Copyright Notice in iup.h
- * $Id: imaux.c,v 1.1 2008-10-17 06:05:35 scuri Exp $
+ * $Id: imaux.c,v 1.2 2008-11-28 00:02:49 scuri Exp $
  */
 
 #include <stdio.h>
@@ -478,7 +478,7 @@ int iMatrixGetLineCol(Ihandle* ih, int x, int y, int* l, int* c)
 
 /* Returns the value of the one cell. It is possible to get this value
    through matrix internal struct or through a query from a user callback.
-   -> lin, col : cell coordiantes that will have its value returned. (0,0) is
+   -> lin, col : cell coordinates that will have its value returned. (0,0) is
                  the cell coordinate localized in the left top corner of the
                  matrix. The value -1 indicates a line or column title.
 */

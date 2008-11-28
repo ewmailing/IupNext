@@ -3,7 +3,7 @@
  * draw functions
  *
  * See Copyright Notice in iup.h
- * $Id: imdraw.c,v 1.2 2008-11-11 18:18:11 scuri Exp $
+ * $Id: imdraw.c,v 1.3 2008-11-28 00:02:49 scuri Exp $
  */
 
 #include <stdio.h>
@@ -636,8 +636,8 @@ static int iMatrixGetColAlignment(Ihandle* ih, int col)
 
 /* Draw the line titles, visibles, between lin and lastlin, include it. 
    Line titles marked will be draw with the appropriate feedback.
-   -> lin - First line to have its title drawed
-   -> lastlin - Last line to have its title drawed
+   -> lin - First line to have its title drawn
+   -> lastlin - Last line to have its title drawn
 */
 int iMatrixDrawLineTitle(Ihandle* ih, int lin, int lastlin)
 {
@@ -647,7 +647,7 @@ int iMatrixDrawLineTitle(Ihandle* ih, int lin, int lastlin)
 
   /* If no has line title, also must return the position (in pixels).
      This position would be the vertical position in the end of the
-     last line drawed, if necessary the draw. This is a requirement
+     last line drawn, if necessary the draw. This is a requirement
      used by scroll function
   */
 
@@ -699,10 +699,10 @@ int iMatrixDrawLineTitle(Ihandle* ih, int lin, int lastlin)
   return y1;
 }
 
-/* Draw the column titles, visibles, between col and lastcol, include it. 
+/* Draw the column titles, visible, between col and lastcol, include it. 
    Column titles marked will be draw with the appropriate feedback.
-   -> col - First column to have its title drawed
-   -> lastcol - Last column to have its title drawed
+   -> col - First column to have its title drawn
+   -> lastcol - Last column to have its title drawn
 */
 int iMatrixDrawColumnTitle(Ihandle* ih, int col, int lastcol)
 {
@@ -712,7 +712,7 @@ int iMatrixDrawColumnTitle(Ihandle* ih, int col, int lastcol)
 
   /* If no has column title, also must return the position (in pixels).
      This position would be the horizontal position in the end of the
-     last column drawed, if necessary the draw. This is a requirement
+     last column drawn, if necessary the draw. This is a requirement
      used by scroll function
   */
 
@@ -764,7 +764,7 @@ int iMatrixDrawColumnTitle(Ihandle* ih, int col, int lastcol)
         w = 0;
       alignment = (w > x2 - x1 + 1 - IMATRIX_DECOR_X) ? IMATRIX_T_LEFT : IMATRIX_T_CENTER;
 
-      /* desenha o titulo */
+      /* draw the title */
       iMatrixTitleColumnBox(ih, j+1, x1, y1, x2-x1, y2-y1+1);
       iMatrixDrawText(ih, x1, x1 + ih->data->col.wh[j], y1, y2, str, alignment, x2, IMATRIX_TITLE_COLOR, 0, j+1);
       iMatrixSetCdFrameColor(ih);
@@ -1034,10 +1034,10 @@ void iMatrixDrawCells(Ihandle* ih, int l1, int c1, int l2, int c2)
 /* Draw the representation of a cell that have the focus, for cells that
    are not in the edit mode
    -> lin, col : the cell
-   -> coloca: 1 to put the draw of the focus
-              0 to remove the draw
+   -> set: 1 to put the draw of the focus
+           0 to remove the draw
 */
-void iMatrixDrawFocus(Ihandle* ih, int lin, int col, int coloca)
+void iMatrixDrawFocus(Ihandle* ih, int lin, int col, int set)
 {
   int x1, y1, x2, y2, dx, dy, oldbgc;
 
@@ -1049,7 +1049,7 @@ void iMatrixDrawFocus(Ihandle* ih, int lin, int col, int coloca)
 
   ih->data->redraw = 1;
 
-  if(coloca)          /* put the draw of the focus */
+  if(set)          /* put the draw of the focus */
     oldbgc = iMatrixSetFgColor(ih, lin+1, col+1, iMatrixMarkCellGet(ih, lin, col));
   else                /* remove the draw of the focus */
     oldbgc = iMatrixSetBgColor(ih, lin+1, col+1, IMATRIX_ELEM_COLOR, iMatrixMarkCellGet(ih, lin, col));

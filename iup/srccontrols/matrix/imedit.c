@@ -3,7 +3,7 @@
 * Functions used to edit a node name in place.
 *
 * See Copyright Notice in iup.h
-* $Id: imedit.c,v 1.1 2008-10-17 06:05:36 scuri Exp $
+* $Id: imedit.c,v 1.2 2008-11-28 00:02:49 scuri Exp $
 */
 
 #include <stdio.h>
@@ -371,8 +371,9 @@ static int iMatrixKeyAnyTextCb(Ihandle* ih, int c)
 {
   int ret = IUP_DEFAULT;
 
-  /* No motif, estas teclas nao geram callbacks em um texto, portanto
-  * tem de ser tratadas aqui. */
+  /* In Motif, these keys don't generate callbacks in a text.
+     Therefore, they need to be solve here.
+  */
   if(IMATRIX_EDITACTIONKEY(c))
     ret = iMatrixTextActionCb(ih, c, IupGetAttribute(ih, "VALUE"));
 
@@ -428,6 +429,9 @@ char* iMatrixEditGetValue(Ihandle* ih)
 void iMatrixEditCreate(Ihandle* ih)
 {
   ih->data->texth = IupText(NULL);
+  ih->firstchild = ih->data->texth;
+  ih->data->texth->parent = ih;
+
   IupSetCallback(ih->data->texth, "ACTION",       (Icallback)iMatrixTextActionCb);
   IupSetCallback(ih->data->texth, "KILLFOCUS_CB", (Icallback)iMatrixEditKillFocusCb);
   IupSetAttribute(ih->data->texth, "VALUE",  "");
@@ -441,6 +445,9 @@ void iMatrixEditCreate(Ihandle* ih)
 
   /* Create the Dropdown field */
   ih->data->droph = IupList(NULL);
+  ih->firstchild->brother = ih->data->droph;
+  ih->data->droph->parent = ih;
+
   IupSetCallback(ih->data->droph, "ACTION",       (Icallback)iMatrixDropCb);
   IupSetCallback(ih->data->droph, "KILLFOCUS_CB", (Icallback)iMatrixEditKillFocusCb);
   IupSetCallback(ih->data->droph, "K_ANY",        (Icallback)iMatrixKeyAnyDropCb);

@@ -2,7 +2,7 @@
  * \brief iupmatrix. definitions.
  *
  * See Copyright Notice in iup.h
- * $Id: matrixdef.h,v 1.2 2008-11-11 18:18:11 scuri Exp $
+ * $Id: matrixdef.h,v 1.3 2008-11-28 00:02:49 scuri Exp $
  */
  
 #ifndef __MATRIXDEF_H 
@@ -109,6 +109,8 @@ struct _IcontrolData
 
   int YmaxC;  /* Current size canvas variables */
   int XmaxC;  /* set when a callback is called */
+
+  int resizematrix;
 };
 
 /* Prototypes to set the scrollbar */
