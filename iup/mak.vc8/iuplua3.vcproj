@@ -90,6 +90,38 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
+				RelativePath="..\srclua3\il_cbox.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\il_getcolor.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\il_getparam.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\il_sbox.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\il_scanf.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\il_spin.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\il_tabs.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\il_val.c"
+				>
+			</File>
+			<File
 				RelativePath="..\srclua3\iuplua.c"
 				>
 			</File>
@@ -99,38 +131,6 @@
 			</File>
 			<File
 				RelativePath="..\srclua3\iuplua_widgets.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luacbox.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luagc.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luagetparam.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luasbox.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luaspin.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luatabs.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luaval.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\scanf.c"
 				>
 			</File>
 		</Filter>
@@ -150,19 +150,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srclua3\luasbox.lua"
+				RelativePath="..\srclua3\sbox.lua"
 				>
 			</File>
 			<File
-				RelativePath="..\srclua3\luaspin.lua"
+				RelativePath="..\srclua3\spin.lua"
 				>
 			</File>
 			<File
-				RelativePath="..\srclua3\luatabs.lua"
+				RelativePath="..\srclua3\tabs.lua"
 				>
 			</File>
 			<File
-				RelativePath="..\srclua3\luaval.lua"
+				RelativePath="..\srclua3\val.lua"
 				>
 			</File>
 		</Filter>

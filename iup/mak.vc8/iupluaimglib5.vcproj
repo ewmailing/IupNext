@@ -85,15 +85,10 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
+		<File
+			RelativePath="..\srclua5\iuplua_imglib.c"
 			>
-			<File
-				RelativePath="..\srclua5\iupluaimglib.c"
-				>
-			</File>
-		</Filter>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

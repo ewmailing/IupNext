@@ -108,7 +108,7 @@
 			>
 		</File>
 		<File
-			RelativePath="..\srcview\iupview.c"
+			RelativePath="..\srcview\iup_view.c"
 			>
 		</File>
 	</Files>

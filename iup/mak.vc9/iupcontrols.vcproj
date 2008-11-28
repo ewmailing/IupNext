@@ -168,51 +168,51 @@
 			Name="matrix"
 			>
 			<File
-				RelativePath="..\srccontrols\matrix\imaux.c"
+				RelativePath="..\srccontrols\matrix\iupmat_aux.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\imcolres.c"
+				RelativePath="..\srccontrols\matrix\iupmat_colres.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\imdraw.c"
+				RelativePath="..\srccontrols\matrix\iupmat_draw.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\imedit.c"
+				RelativePath="..\srccontrols\matrix\iupmat_edit.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\imfocus.c"
+				RelativePath="..\srccontrols\matrix\iupmat_focus.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\imgetset.c"
+				RelativePath="..\srccontrols\matrix\iupmat_getset.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\imkey.c"
+				RelativePath="..\srccontrols\matrix\iupmat_key.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\immark.c"
+				RelativePath="..\srccontrols\matrix\iupmat_mark.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\immem.c"
+				RelativePath="..\srccontrols\matrix\iupmat_mem.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\immouse.c"
+				RelativePath="..\srccontrols\matrix\iupmat_mouse.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\imnumlc.c"
+				RelativePath="..\srccontrols\matrix\iupmat_numlc.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\imscroll.c"
+				RelativePath="..\srccontrols\matrix\iupmat_scroll.c"
 				>
 			</File>
 			<File
@@ -223,59 +223,59 @@
 				Name="inc"
 				>
 				<File
-					RelativePath="..\srccontrols\matrix\imaux.h"
+					RelativePath="..\srccontrols\matrix\iupmat_aux.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\imcolres.h"
+					RelativePath="..\srccontrols\matrix\iupmat_cd.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\imdraw.h"
+					RelativePath="..\srccontrols\matrix\iupmat_colres.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\imedit.h"
+					RelativePath="..\srccontrols\matrix\iupmat_def.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\imfocus.h"
+					RelativePath="..\srccontrols\matrix\iupmat_draw.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\imgetset.h"
+					RelativePath="..\srccontrols\matrix\iupmat_edit.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\imkey.h"
+					RelativePath="..\srccontrols\matrix\iupmat_focus.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\immark.h"
+					RelativePath="..\srccontrols\matrix\iupmat_getset.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\immem.h"
+					RelativePath="..\srccontrols\matrix\iupmat_key.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\immouse.h"
+					RelativePath="..\srccontrols\matrix\iupmat_mark.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\imnumlc.h"
+					RelativePath="..\srccontrols\matrix\iupmat_mem.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\imscroll.h"
+					RelativePath="..\srccontrols\matrix\iupmat_mouse.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\matrixcd.h"
+					RelativePath="..\srccontrols\matrix\iupmat_numlc.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\matrix\matrixdef.h"
+					RelativePath="..\srccontrols\matrix\iupmat_scroll.h"
 					>
 				</File>
 			</Filter>
@@ -284,90 +284,86 @@
 			Name="tree"
 			>
 			<File
-				RelativePath="..\srccontrols\tree\itcallback.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\itdraw.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\itedit.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\itfind.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\itgetset.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\itimage.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\itkey.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\itmouse.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\itscroll.c"
-				>
-			</File>
-			<File
 				RelativePath="..\srccontrols\tree\iuptree.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srccontrols\tree\iuptree_callback.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srccontrols\tree\iuptree_draw.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srccontrols\tree\iuptree_edit.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srccontrols\tree\iuptree_find.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srccontrols\tree\iuptree_getset.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srccontrols\tree\iuptree_image.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srccontrols\tree\iuptree_key.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srccontrols\tree\iuptree_mouse.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srccontrols\tree\iuptree_scroll.c"
 				>
 			</File>
 			<Filter
 				Name="inc"
 				>
 				<File
-					RelativePath="..\srccontrols\tree\itcallback.h"
+					RelativePath="..\srccontrols\tree\iuptree_callback.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\tree\itdraw.h"
+					RelativePath="..\srccontrols\tree\iuptree_def.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\tree\itedit.h"
+					RelativePath="..\srccontrols\tree\iuptree_draw.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\tree\itfind.h"
+					RelativePath="..\srccontrols\tree\iuptree_edit.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\tree\itgetset.h"
+					RelativePath="..\srccontrols\tree\iuptree_find.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\tree\itimage.h"
+					RelativePath="..\srccontrols\tree\iuptree_getset.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\tree\itkey.h"
+					RelativePath="..\srccontrols\tree\iuptree_image.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\tree\itlimits.h"
+					RelativePath="..\srccontrols\tree\iuptree_key.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\tree\itmouse.h"
+					RelativePath="..\srccontrols\tree\iuptree_mouse.h"
 					>
 				</File>
 				<File
-					RelativePath="..\srccontrols\tree\itscroll.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\treedef.h"
+					RelativePath="..\srccontrols\tree\iuptree_scroll.h"
 					>
 				</File>
 			</Filter>

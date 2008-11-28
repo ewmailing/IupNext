@@ -90,11 +90,11 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
-				RelativePath="..\srclua5\glcanvas.c"
+				RelativePath="..\srclua5\il_glcanvas.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srclua5\glcanvasfuncs.c"
+				RelativePath="..\srclua5\iuplua_glcanvas.c"
 				>
 			</File>
 			<File

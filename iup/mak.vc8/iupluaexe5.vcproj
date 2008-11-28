@@ -102,23 +102,18 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+		<File
+			RelativePath="..\srcconsole\console5.lua"
 			>
-			<File
-				RelativePath="..\srcconsole\console5.lua"
-				>
-			</File>
-			<File
-				RelativePath="..\srcconsole\iuplua5.rc"
-				>
-			</File>
-			<File
-				RelativePath="..\srcconsole\iuplua51.c"
-				>
-			</File>
-		</Filter>
+		</File>
+		<File
+			RelativePath="..\srcconsole\iup_lua51.c"
+			>
+		</File>
+		<File
+			RelativePath="..\srcconsole\iuplua5.rc"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

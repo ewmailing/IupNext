@@ -90,11 +90,11 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
-				RelativePath="..\include\iupluaole.h"
+				RelativePath="..\srclua5\il_olecontrol.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srclua5\olecontrol.c"
+				RelativePath="..\include\iupluaole.h"
 				>
 			</File>
 		</Filter>

@@ -101,11 +101,11 @@
 			>
 		</File>
 		<File
-			RelativePath="..\srcledc\lex.yy.c"
+			RelativePath="..\srcledc\ledc.c"
 			>
 		</File>
 		<File
-			RelativePath="..\srcledc\main.c"
+			RelativePath="..\srcledc\lex.yy.c"
 			>
 		</File>
 		<File

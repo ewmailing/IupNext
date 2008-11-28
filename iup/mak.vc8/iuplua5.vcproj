@@ -105,304 +105,128 @@
 				RelativePath="..\srclua5\iuplua_api.c"
 				>
 			</File>
-			<File
-				RelativePath="..\srclua5\scanf.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						WarningLevel="4"
-					/>
-				</FileConfiguration>
-			</File>
 			<Filter
 				Name="controls"
 				>
 				<File
-					RelativePath="..\srclua5\button.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\canvas.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\cbox.c"
+					RelativePath="..\srclua5\il_button.c"
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\dialog.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\filedlg.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\fill.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\frame.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\gc.c"
+					RelativePath="..\srclua5\il_canvas.c"
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\getparam.c"
+					RelativePath="..\srclua5\il_cbox.c"
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\hbox.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\image.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\item.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\label.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\list.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\menu.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\multiline.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\radio.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\sbox.c"
+					RelativePath="..\srclua5\il_dialog.c"
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\separator.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\spin.c"
+					RelativePath="..\srclua5\il_filedlg.c"
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\spinbox.c"
+					RelativePath="..\srclua5\il_fill.c"
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\submenu.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\tabs.c"
+					RelativePath="..\srclua5\il_frame.c"
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\text.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\timer.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\toggle.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\srclua5\val.c"
+					RelativePath="..\srclua5\il_getcolor.c"
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\vbox.c"
+					RelativePath="..\srclua5\il_getparam.c"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\srclua5\zbox.c"
+					RelativePath="..\srclua5\il_hbox.c"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							WarningLevel="4"
-						/>
-					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_image.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_item.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_label.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_list.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_menu.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_multiline.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_radio.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_sbox.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_scanf.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_separator.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_spin.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_spinbox.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_submenu.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_tabs.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_text.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_timer.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_toggle.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_val.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_vbox.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_zbox.c"
+					>
 				</File>
 			</Filter>
 		</Filter>

@@ -28,6 +28,7 @@ Ihandle* create_matrix(void)
   IupSetAttribute(mat, "2:2", "8.1");
   IupSetAttribute(mat, "3:2", "3.4");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
+  IupSetAttribute(mat,"RESIZEMATRIX", "YES");
 
   return mat;
 }
