@@ -185,8 +185,8 @@ Ihandle*  IupVal        (const char *type);
 Ihandle*  IupTabs       (Ihandle* child, ...);
 Ihandle*  IupTabsv      (Ihandle* *children);
 
-void IupTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos);
-void IupListConvertXYToItem(Ihandle* ih, int x, int y, int *pos);
+void      IupTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos);
+void      IupListConvertXYToItem(Ihandle* ih, int x, int y, int *pos);
 
 
 #ifdef __cplusplus
