@@ -193,6 +193,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\srclua5\il_progressbar.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\il_radio.c"
 					>
 				</File>
@@ -346,6 +350,10 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\multiline.lua"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\progressbar.lua"
 					>
 				</File>
 				<File

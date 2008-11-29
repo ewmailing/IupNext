@@ -2,7 +2,7 @@
  * \brief IUPLua5 internal Functions
  *
  * See Copyright Notice in iup.h
- * $Id: il.h,v 1.3 2008-11-29 03:55:20 scuri Exp $
+ * $Id: il.h,v 1.4 2008-11-29 17:13:44 scuri Exp $
  */
  
 #ifndef __IL_H 
@@ -45,6 +45,7 @@ int iupmessagedlglua_open(lua_State * L);
 int iupcolordlglua_open(lua_State * L);
 int iupimagergbalua_open(lua_State * L);
 int iupimagergblua_open(lua_State * L);
+int iupprogressbarlua_open(lua_State * L);
 
 void iupgetparamlua_open (lua_State * L);
 

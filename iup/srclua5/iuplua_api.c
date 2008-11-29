@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua_api.c,v 1.4 2008-11-29 05:07:19 scuri Exp $
+* $Id: iuplua_api.c,v 1.5 2008-11-29 17:13:44 scuri Exp $
 */
 
 #include <stdio.h>
@@ -24,6 +24,14 @@ static int Reparent(lua_State *L)
 {
   lua_pushnumber(L, IupReparent(iuplua_checkihandle(L,1),
                                 iuplua_checkihandle(L,2)));
+  return 1;
+}
+
+static int Insert(lua_State *L)
+{
+  iuplua_pushihandle(L, IupInsert(iuplua_checkihandle(L,1),
+                                  iuplua_checkihandle(L,2),
+                                  iuplua_checkihandle(L,3)));
   return 1;
 }
 
@@ -209,8 +217,8 @@ static int GetName(lua_State *L)
 
 static int Help(lua_State *L)
 {
-  char *s = (char *) luaL_checkstring(L,1);
-  IupHelp(s);
+  const char *url = luaL_checkstring(L,1);
+  IupHelp(url);
   return 0;
 }
 
@@ -223,7 +231,7 @@ static int Hide(lua_State *L)
 
 static int Load(lua_State *L)
 {
-  char *s = (char *) luaL_checkstring(L,1);
+  const char *s = luaL_checkstring(L,1);
   const char *r = IupLoad(s);
   lua_pushstring(L,r);
   return 1;
@@ -270,7 +278,7 @@ static int Unmap(lua_State *L)
 
 static int MapFont(lua_State *L)
 {
-  char *font = (char *) luaL_checkstring(L,1);
+  const char *font = luaL_checkstring(L,1);
   const char *nfont = IupMapFont(font);
   lua_pushstring(L, nfont);
   return 1;
@@ -278,19 +286,19 @@ static int MapFont(lua_State *L)
 
 static int Message(lua_State *L)
 {
-  char *title = (char *) luaL_checkstring(L,1);
-  char *message = (char *) luaL_checkstring(L,2);
+  const char *title = luaL_checkstring(L,1);
+  const char *message = luaL_checkstring(L,2);
   IupMessage(title, message);
   return 0;
 }
 
 static int Alarm(lua_State *L)
 {
-  int n = IupAlarm((char *) luaL_checkstring(L, 1), 
-                   (char *) luaL_checkstring(L, 2), 
-                   (char *) luaL_checkstring(L, 3), 
-                   (char *) luaL_optstring(L, 4, NULL), 
-                   (char *) luaL_optstring(L, 5, NULL));
+  int n = IupAlarm(luaL_checkstring(L, 1), 
+                   luaL_checkstring(L, 2), 
+                   luaL_checkstring(L, 3), 
+                   luaL_optstring(L, 4, NULL), 
+                   luaL_optstring(L, 5, NULL));
   lua_pushnumber(L, n);
   return 1;
 }
@@ -336,8 +344,8 @@ static int ListDialog(lua_State *L)
 static int GetText(lua_State *L)
 {
   char buffer[10240];
-  char *title = (char *) luaL_checkstring(L,1);
-  char *text = (char *) luaL_checkstring(L,2);
+  const char *title = luaL_checkstring(L,1);
+  const char *text = luaL_checkstring(L,2);
   strcpy(buffer, text);
   if (IupGetText(title, buffer))
   {
@@ -540,10 +548,45 @@ static int GetBrother(lua_State *L)
   return 1;
 }
 
+static int GetDialogChild(lua_State *L)
+{
+  Ihandle * ih = iuplua_checkihandle(L,1);
+  const char* name = luaL_checkstring(L,2);
+  Ihandle * child = IupGetDialogChild(ih, name);
+  iuplua_pushihandle(L, child);
+  return 1;
+}
+
+static int ListConvertXYToItem(lua_State *L)
+{
+  int pos;
+  IupListConvertXYToItem(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &pos);
+  lua_pushinteger(L, pos);
+  return 1;
+}
+
+static int TextConvertXYToChar(lua_State *L)
+{
+  int lin, col, pos;
+  IupTextConvertXYToChar(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &lin, &col, &pos);
+  lua_pushinteger(L, lin);
+  lua_pushinteger(L, col);
+  lua_pushinteger(L, pos);
+  return 3;
+}
+
+static int NormalizeSize(lua_State *L)
+{
+  const char* value = luaL_checkstring(L,1);
+  Ihandle ** ih_list = iuplua_checkihandle_array(L, 2);
+  IupNormalizeSizev(value, ih_list);
+  return 0;
+}
+
 static int SetAttributes(lua_State *L)
 {
   Ihandle * ih = iuplua_checkihandle(L,1);
-  char *attributes = (char *) luaL_checkstring(L,2);
+  const char *attributes = luaL_checkstring(L,2);
   IupSetAttributes(ih, attributes);
   iuplua_pushihandle(L,ih);
   return 1;
@@ -559,8 +602,8 @@ static int SetFocus(lua_State *L)
 
 static int SetGlobal(lua_State *L)
 {
-  char *a = (char *) luaL_checkstring(L,1);
-  char *v = (char *) luaL_checkstring(L,2);
+  const char *a = luaL_checkstring(L,1);
+  const char *v = luaL_checkstring(L,2);
   IupSetGlobal(a,v);
   return 0;
 }
@@ -569,14 +612,14 @@ static int SetHandle(lua_State *L)
 {
   const char *name = luaL_checkstring(L,1);
   Ihandle *ih = iuplua_checkihandle(L,2);
-  Ihandle *last = IupSetHandle((char*)name, ih);
+  Ihandle *last = IupSetHandle(name, ih);
   iuplua_pushihandle(L, last);
   return 1;
 }
 
 static int SetLanguage(lua_State *L)
 {
-  IupSetLanguage((char *) luaL_checkstring(L,1));
+  IupSetLanguage(luaL_checkstring(L,1));
   return 0;
 }
 
@@ -622,20 +665,20 @@ static int ShowXY(lua_State *L)
 static int StoreAttribute(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  char *a = (char *) luaL_checkstring(L,2);
+  const char *a = luaL_checkstring(L,2);
   if (lua_isnil(L,3)) 
     IupSetAttribute(ih,a,NULL);
   else 
   {
-    char *v;
+    const char *v;
     if(lua_isuserdata(L,3)) 
     {
-      v = (char *) lua_touserdata(L,3);
+      v = lua_touserdata(L,3);
       IupSetAttribute(ih,a,v);
     }
     else 
     {
-      v = (char *) luaL_checkstring(L,3);
+      v = luaL_checkstring(L,3);
       IupStoreAttribute(ih,a,v);
     }
   }
@@ -644,16 +687,16 @@ static int StoreAttribute(lua_State *L)
 
 static int StoreGlobal(lua_State *L)
 {
-  char *a = (char *) luaL_checkstring(L,1);
-  char *v = (char *) luaL_checkstring(L,2);
+  const char *a = luaL_checkstring(L,1);
+  const char *v = luaL_checkstring(L,2);
   IupStoreGlobal(a,v);
   return 0;
 }
 
 static int UnMapFont (lua_State *L)
 {
-  char *s = (char *) luaL_checkstring(L,1);
-  char *n = (char *) IupUnMapFont(s);
+  const char *s = luaL_checkstring(L,1);
+  const char *n = IupUnMapFont(s);
   lua_pushstring(L,n);
   return 1;
 }
@@ -668,6 +711,7 @@ int iupluaapi_open(lua_State * L)
 {
   struct luaL_reg funcs[] = {
     {"Append", Append},
+    {"Insert", Insert},
     {"Reparent", Reparent},
     {"Destroy", Destroy},
     {"Detach", Detach},
@@ -721,6 +765,7 @@ int iupluaapi_open(lua_State * L)
     {"GetChildPos", GetChildPos},
     {"VersionNumber", VersionNumber},
     {"GetBrother", GetBrother},
+    {"GetDialogChild", GetDialogChild},
     {"SetFocus", SetFocus},
     {"SetGlobal", SetGlobal},
     {"SetHandle", SetHandle},
@@ -743,6 +788,9 @@ int iupluaapi_open(lua_State * L)
     {"isCtrlXkey", cf_isCtrlXkey},
     {"isAltXkey", cf_isAltXkey},
     {"isSysXkey", cf_isSysXkey},
+    {"TextConvertXYToChar", TextConvertXYToChar},
+    {"ListConvertXYToItem", ListConvertXYToItem},
+    {"NormalizeSize", NormalizeSize},
     {NULL, NULL},
   };
 

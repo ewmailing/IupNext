@@ -794,6 +794,19 @@ end
 iup.imagergba = iupimagergba
 
 
+-- ###############
+IUPPROGRESSBAR = {parent = WIDGET}
+
+function IUPPROGRESSBAR:CreateIUPelement ()
+  return iupCreateProgressBar()
+end
+
+function iupprogressbar (o)
+  return IUPPROGRESSBAR:Constructor (o)
+end
+iup.progressbar = iupprogressbar
+
+
 -- #################################################################################
 --                                     Callbacks
 -- #################################################################################

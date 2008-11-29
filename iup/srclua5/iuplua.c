@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua.c,v 1.4 2008-11-29 03:55:20 scuri Exp $
+* $Id: iuplua.c,v 1.5 2008-11-29 17:13:44 scuri Exp $
 */
 
 #include <stdio.h>
@@ -893,6 +893,7 @@ int iuplua_open(lua_State * L)
   iupcolordlglua_open(L);
   iupimagergbalua_open(L);
   iupimagergblua_open(L);
+  iupprogressbarlua_open(L);
 
   iuplua_returnEnv(L);
 

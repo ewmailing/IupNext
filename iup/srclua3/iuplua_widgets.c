@@ -2,7 +2,7 @@
  * \brief IULUA core - Bindig of iup to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_widgets.c,v 1.2 2008-11-29 03:55:20 scuri Exp $
+ * $Id: iuplua_widgets.c,v 1.3 2008-11-29 17:13:44 scuri Exp $
  */
  
 #include <string.h>
@@ -372,6 +372,11 @@ static void CreateColorDlg(void)
   lua_pushusertag(IupColorDlg(), iuplua_tag);
 }
 
+static void CreateProgressBar(void)
+{
+  lua_pushusertag(IupProgressBar(), iuplua_tag);
+}
+
 static void CreateUser(void)
 {
   lua_pushusertag(IupUser(), iuplua_tag);
@@ -539,6 +544,7 @@ int iupluawidgets_open(int tag)
     { "iupCreateFill", CreateFill },
     { "iupCreateRadio", CreateRadio },
     { "iupCreateMenu", CreateMenu },
+    { "iupCreateProgressBar", CreateProgressBar },
 
     { "iup_action_timer", (lua_CFunction)timer_action},
     { "iup_action_text", (lua_CFunction)text_action},

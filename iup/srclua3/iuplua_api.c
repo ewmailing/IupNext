@@ -2,7 +2,7 @@
  * \brief Iup API in Lua
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_api.c,v 1.4 2008-11-29 05:07:19 scuri Exp $
+ * $Id: iuplua_api.c,v 1.5 2008-11-29 17:13:44 scuri Exp $
  */
  
 #include <string.h>
@@ -275,6 +275,11 @@ static void Popup(void)
                           luaL_opt_int(2, IUP_CURRENT), luaL_opt_int(3, IUP_CURRENT)));
 }
 
+static void Insert(void)
+{
+  iuplua_pushihandle(IupInsert(iuplua_checkihandle(1), iuplua_checkihandle(2), iuplua_checkihandle(3)));
+}
+
 static void Append(void)
 {
   iuplua_pushihandle(IupAppend(iuplua_checkihandle(1), iuplua_checkihandle(2)));
@@ -288,9 +293,37 @@ static void GetNextChild(void)
     iuplua_pushihandle(IupGetNextChild(iuplua_checkihandle(1), iuplua_checkihandle(2)));
 }
 
+static void ListConvertXYToItem(void)
+{
+  int pos;
+  IupListConvertXYToItem(iuplua_checkihandle(1), luaL_check_int(2), luaL_check_int(3), &pos);
+  lua_pushnumber(pos);
+}
+
+static void TextConvertXYToChar(void)
+{
+  int lin, col, pos;
+  IupTextConvertXYToChar(iuplua_checkihandle(1), luaL_check_int(2), luaL_check_int(3), &lin, &col, &pos);
+  lua_pushnumber(lin);
+  lua_pushnumber(col);
+  lua_pushnumber(pos);
+}
+
+static void NormalizeSize(void)
+{
+  const char* value = luaL_check_string(1);
+  Ihandle ** ih_list = iuplua_checkihandle_array(2);
+  IupNormalizeSizev(value, ih_list);
+}
+
 static void GetChildPos(void)
 {
   lua_pushnumber(IupGetChildPos(iuplua_checkihandle(1), iuplua_checkihandle(2)));
+}
+
+static void GetDialogChild(void)
+{
+  iuplua_pushihandle(IupGetDialogChild(iuplua_checkihandle(1), luaL_check_string(2)));
 }
 
 static void GetBrother(void)
@@ -551,10 +584,12 @@ int iupluaapi_open(void)
     { "IupHide", Hide },
     { "IupPopup", Popup },
     { "IupAppend", Append },
+    { "IupInsert", Insert },
     { "IupReparent", Reparent },
     { "IupGetNextChild", GetNextChild },
     { "IupGetChildPos", GetChildPos },
     { "IupGetBrother", GetBrother },
+    { "IupGetDialogChild", GetDialogChild },
     { "IupGetClassName", ClassName },
     { "IupGetClassType", ClassType },
     { "IupGetFocus", GetFocus },
@@ -584,6 +619,9 @@ int iupluaapi_open(void)
     { "IupVersion", Version },
     { "IupHelp", Help },
     { "IupScanf", iupluaScanf },
+    { "IupTextConvertXYToChar", TextConvertXYToChar},
+    { "IupListConvertXYToItem", ListConvertXYToItem},
+    { "IupNormalizeSize", NormalizeSize},
     { "IupPreviousField", PreviousField },
     { "IupNextField", NextField }
   };
