@@ -121,6 +121,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\srclua5\il_colordlg.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\il_dialog.c"
 					>
 				</File>
@@ -130,6 +134,10 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\il_fill.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_fontdlg.c"
 					>
 				</File>
 				<File
@@ -153,6 +161,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\srclua5\il_imagergb.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_imagergba.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\il_item.c"
 					>
 				</File>
@@ -166,6 +182,10 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\il_menu.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_messagedlg.c"
 					>
 				</File>
 				<File
