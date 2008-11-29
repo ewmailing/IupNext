@@ -428,28 +428,28 @@ int iTreeMouseButtonCB(Ihandle* ih, int b, int press, int x, int y, char* r)
       int shift   = 0;
 
       if(ih->data->tree_ctrl == YES)
-        control = iscontrol(r);
+        control = iup_iscontrol(r);
       if(ih->data->tree_shift == YES)
-        shift = isshift(r);
+        shift = iup_isshift(r);
 
       iTreeMouseDrop(ih, x, y, shift, control);
     }
 
-    if((!press || isdouble(r)) && !tree_drag)
+    if((!press || iup_isdouble(r)) && !tree_drag)
     {
-      int dclick  = isdouble(r); 
+      int dclick  = iup_isdouble(r); 
       int control = 0;
       int shift   = 0;
 
       if(ih->data->tree_ctrl == YES)
-        control = iscontrol(r);
+        control = iup_iscontrol(r);
       if(ih->data->tree_shift == YES)
-        shift = isshift(r);
+        shift = iup_isshift(r);
 
       iTreeMouseLeftPress(ih, x, y, shift, control, dclick);
     }
 
-    if(press && !isdouble(r))
+    if(press && !iup_isdouble(r))
     {
       if(iupAttribGetInt(ih, "SHOWDRAGDROP"))
         iTreeMouseDrag(ih, x, y);

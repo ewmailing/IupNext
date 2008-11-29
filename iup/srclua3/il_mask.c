@@ -2,7 +2,7 @@
  * \brief Bindig of iupmask to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: il_mask.c,v 1.1 2008-11-27 23:33:33 scuri Exp $
+ * $Id: il_mask.c,v 1.2 2008-11-29 05:07:19 scuri Exp $
  */
  
 #include <stdlib.h>
@@ -111,11 +111,16 @@ static int match_cb (Ihandle *handle)
 
 int masklua_open(void)
 {
-  iuplua_regstring_mask(IUPMASK_FLOAT, "IUPMASK_FLOAT");
-  iuplua_regstring_mask(IUPMASK_UFLOAT, "IUPMASK_UFLOAT");
-  iuplua_regstring_mask(IUPMASK_EFLOAT, "IUPMASK_EFLOAT");
-  iuplua_regstring_mask(IUPMASK_INT, "IUPMASK_INT");
-  iuplua_regstring_mask(IUPMASK_UINT, "IUPMASK_UINT");
+  iuplua_regstring_mask(IUP_MASK_FLOAT, "IUPMASK_FLOAT");
+  iuplua_regstring_mask(IUP_MASK_UFLOAT, "IUPMASK_UFLOAT");
+  iuplua_regstring_mask(IUP_MASK_EFLOAT, "IUPMASK_EFLOAT");
+  iuplua_regstring_mask(IUP_MASK_INT, "IUPMASK_INT");
+  iuplua_regstring_mask(IUP_MASK_UINT, "IUPMASK_UINT");
+  iuplua_regstring(IUP_MASK_FLOAT, "IUP_MASK_FLOAT");
+  iuplua_regstring(IUP_MASK_UFLOAT, "IUP_MASK_UFLOAT");
+  iuplua_regstring(IUP_MASK_EFLOAT, "IUP_MASK_EFLOAT");
+  iuplua_regstring(IUP_MASK_INT, "IUP_MASK_INT");
+  iuplua_regstring(IUP_MASK_UINT, "IUP_MASK_UINT");
 
   iuplua_register("iupmaskRemove", cfMaskRemove);
   iuplua_register("iupmaskMatRemove", cfMaskMatRemove);

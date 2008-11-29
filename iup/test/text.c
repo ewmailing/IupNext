@@ -291,7 +291,7 @@ int main(int argc, char* argv[])
   IupSetAttribute(mltline, "VALUE", "First Line\nSecond Line Big Big Big\nThird Line\nmore\nmore\nηγυασι"); // Windows-1252
   IupSetAttribute(mltline, "TIP", "First Line\nSecond Line\nThird Line");
 //  IupSetAttribute(mltline, "FONT", "Helvetica, 14");
-//  IupSetAttribute(mltline, "MASK", IUPMASK_FLOAT);
+//  IupSetAttribute(mltline, "MASK", IUP_MASK_FLOAT);
 //  IupSetAttribute(mltline, "FILTER", "UPPERCASE");
   IupSetAttribute (opt, "VALUE", "ON");
 

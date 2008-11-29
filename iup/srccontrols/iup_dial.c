@@ -358,7 +358,7 @@ static int iDialMotionVertical_CB(Ihandle* ih, int x, int y, char *status)
   IFnd cb;
   (void)x; /* not used */
   
-  if (!isbutton1(status))     
+  if (!iup_isbutton1(status))     
     return IUP_DEFAULT;
 
   y = cdIupInvertYAxis(y, ih->data->h);
@@ -378,7 +378,7 @@ static int iDialMotionHorizontal_CB(Ihandle* ih, int x, int y, char *status)
 {
   IFnd cb;
   
-  if (!isbutton1(status))     
+  if (!iup_isbutton1(status))     
     return IUP_DEFAULT;
 
   y = cdIupInvertYAxis(y, ih->data->h);
@@ -401,7 +401,7 @@ static int iDialMotionCircular_CB(Ihandle* ih, int x, int y, char *status)
   double vet, xa, ya, xb, yb, ma, mb, ab;
   IFnd cb;
 
-  if (!isbutton1(status))     
+  if (!iup_isbutton1(status))     
     return IUP_DEFAULT;
 
   y = cdIupInvertYAxis(y, ih->data->h);

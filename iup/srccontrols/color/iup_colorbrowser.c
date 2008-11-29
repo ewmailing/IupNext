@@ -515,7 +515,7 @@ static int iColorBrowserButton_CB(Ihandle* ih, int b, int press, int x, int y)
 /* Callback for the mouse motion in the canvas */
 static int iColorBrowserMotion_CB(Ihandle* ih, int x, int y, char *status)
 {
-  if (!isbutton1(status))
+  if (!iup_isbutton1(status))
   {
     ih->data->h_down = 0;
     ih->data->si_down = 0;

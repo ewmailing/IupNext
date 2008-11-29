@@ -69,7 +69,7 @@ static int iSpinTimerCB(Ihandle* ih)
 
   iupAttribSetInt(ih, "_IUPSPIN_COUNT", count + 1);
 
-  return iSpinCallCB(spin_button, isshift(status), iscontrol(status), spin_dir);
+  return iSpinCallCB(spin_button, iup_isshift(status), iup_iscontrol(status), spin_dir);
 }
 
 static void iSpinPrepareTimer(Ihandle* ih, char* status, char* dir)
@@ -119,7 +119,7 @@ static int iSpinButtonCB(Ihandle* ih, int but, int pressed, int x, int y, char* 
     
     iSpinPrepareTimer(ih, status, iupAttribGetStr(ih, "_IUPSPIN_DIR"));
     
-    return iSpinCallCB(ih, isshift(status), iscontrol(status), dir);
+    return iSpinCallCB(ih, iup_isshift(status), iup_iscontrol(status), dir);
   }
   else if (!pressed && but == IUP_BUTTON1)
   {

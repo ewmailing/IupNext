@@ -468,9 +468,9 @@ static int iListSetMaskIntAttrib(Ihandle* ih, const char* value)
     ih->data->mask = mask;
 
     if (min < 0)
-      iupAttribSetStr(ih, "MASK", IUPMASK_INT);
+      iupAttribSetStr(ih, "MASK", IUP_MASK_INT);
     else
-      iupAttribSetStr(ih, "MASK", IUPMASK_UINT);
+      iupAttribSetStr(ih, "MASK", IUP_MASK_UINT);
   }
 
   return 0;
@@ -504,9 +504,9 @@ static int iListSetMaskFloatAttrib(Ihandle* ih, const char* value)
     ih->data->mask = mask;
 
     if (min < 0)
-      iupAttribSetStr(ih, "MASK", IUPMASK_FLOAT);
+      iupAttribSetStr(ih, "MASK", IUP_MASK_FLOAT);
     else
-      iupAttribSetStr(ih, "MASK", IUPMASK_UFLOAT);
+      iupAttribSetStr(ih, "MASK", IUP_MASK_UFLOAT);
   }
 
   return 0;

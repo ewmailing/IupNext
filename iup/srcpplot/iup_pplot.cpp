@@ -2407,17 +2407,17 @@ void PPainterIup::MouseButton(int btn, int stat, int x, int y, char *r)
   _mouse_SHIFT = 0;
   _mouse_CTRL = 0;
 
-  if (isalt(r))  /* signal Alt */
+  if (iup_isalt(r))  /* signal Alt */
   {
     theModifierKeys = (theModifierKeys | PMouseEvent::kAlt);
     _mouse_ALT = 1;
   }
-  if (iscontrol(r))  /* signal Ctrl */
+  if (iup_iscontrol(r))  /* signal Ctrl */
   {
     theModifierKeys = (theModifierKeys | PMouseEvent::kControl);
     _mouse_SHIFT = 1;
   }
-  if (isshift(r))  /* signal Shift */
+  if (iup_isshift(r))  /* signal Shift */
   {
     theModifierKeys = (theModifierKeys | PMouseEvent::kShift);
     _mouse_CTRL = 1;

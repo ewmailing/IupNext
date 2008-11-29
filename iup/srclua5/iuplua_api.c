@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua_api.c,v 1.3 2008-11-29 03:55:20 scuri Exp $
+* $Id: iuplua_api.c,v 1.4 2008-11-29 05:07:19 scuri Exp $
 */
 
 #include <stdio.h>
@@ -169,6 +169,13 @@ static int GetClassName(lua_State *L)
   return 1;
 }
 
+static int GetClassType(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  lua_pushstring(L, IupGetClassType(ih));
+  return 1;
+}
+
 static int GetGlobal(lua_State *L)
 {
   const char *a = luaL_checkstring(L,1);
@@ -238,6 +245,12 @@ static int ExitLoop(lua_State *L)
 static int MainLoop(lua_State *L)
 {
   lua_pushnumber(L,IupMainLoop());
+  return 1;
+}
+
+static int MainLoopLevel(lua_State *L)
+{
+  lua_pushnumber(L,IupMainLoopLevel());
   return 1;
 }
 
@@ -376,14 +389,42 @@ static int cf_xCODE(lua_State *L)
 static int cf_isxkey(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
-  lua_pushnumber(L, isxkey(value));
+  lua_pushnumber(L, iup_isXkey(value));
+  return 1;
+}
+
+static int cf_isShiftXkey(lua_State *L)
+{
+  int value = luaL_checkint(L, 1);
+  lua_pushnumber(L, iup_isShiftXkey(value));
+  return 1;
+}
+
+static int cf_isCtrlXkey(lua_State *L)
+{
+  int value = luaL_checkint(L, 1);
+  lua_pushnumber(L, iup_isCtrlXkey(value));
+  return 1;
+}
+
+static int cf_isAltXkey(lua_State *L)
+{
+  int value = luaL_checkint(L, 1);
+  lua_pushnumber(L, iup_isAltXkey(value));
+  return 1;
+}
+
+static int cf_isSysXkey(lua_State *L)
+{
+  int value = luaL_checkint(L, 1);
+  lua_pushnumber(L, iup_isSysXkey(value));
   return 1;
 }
 
 static int cf_isbutton1(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (isbutton1(value)) lua_pushnumber(L, 1);
+  if (iup_isbutton1(value)) lua_pushnumber(L, 1);
   else lua_pushnil(L);
   return 1;
 }
@@ -391,7 +432,7 @@ static int cf_isbutton1(lua_State *L)
 static int cf_isbutton2(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (isbutton2(value)) lua_pushnumber(L, 1);
+  if (iup_isbutton2(value)) lua_pushnumber(L, 1);
   else lua_pushnil(L);
   return 1;
 }
@@ -399,7 +440,7 @@ static int cf_isbutton2(lua_State *L)
 static int cf_isbutton3(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (isbutton3(value)) lua_pushnumber(L, 1);
+  if (iup_isbutton3(value)) lua_pushnumber(L, 1);
   else lua_pushnil(L);
   return 1;
 }
@@ -407,7 +448,7 @@ static int cf_isbutton3(lua_State *L)
 static int cf_isshift(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (isshift(value)) lua_pushnumber(L, 1);
+  if (iup_isshift(value)) lua_pushnumber(L, 1);
   else lua_pushnil(L);
   return 1;
 }
@@ -415,7 +456,7 @@ static int cf_isshift(lua_State *L)
 static int cf_iscontrol(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iscontrol(value)) lua_pushnumber(L, 1);
+  if (iup_iscontrol(value)) lua_pushnumber(L, 1);
   else lua_pushnil(L);
   return 1;
 }
@@ -423,7 +464,7 @@ static int cf_iscontrol(lua_State *L)
 static int cf_isdouble(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (isdouble(value)) lua_pushnumber(L, 1);
+  if (iup_isdouble(value)) lua_pushnumber(L, 1);
   else lua_pushnil(L);
   return 1;
 }
@@ -431,7 +472,7 @@ static int cf_isdouble(lua_State *L)
 static int cf_isalt(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (isalt(value)) lua_pushnumber(L, 1);
+  if (iup_isalt(value)) lua_pushnumber(L, 1);
   else lua_pushnil(L);
   return 1;
 }
@@ -439,7 +480,7 @@ static int cf_isalt(lua_State *L)
 static int cf_issys(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (issys(value)) lua_pushnumber(L, 1);
+  if (iup_issys(value)) lua_pushnumber(L, 1);
   else lua_pushnil(L);
   return 1;
 }
@@ -447,7 +488,7 @@ static int cf_issys(lua_State *L)
 static int cf_isbutton4(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (isbutton4(value)) lua_pushnumber(L, 1);
+  if (iup_isbutton4(value)) lua_pushnumber(L, 1);
   else lua_pushnil(L);
   return 1;
 }
@@ -455,7 +496,7 @@ static int cf_isbutton4(lua_State *L)
 static int cf_isbutton5(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (isbutton5(value)) lua_pushnumber(L, 1);
+  if (iup_isbutton5(value)) lua_pushnumber(L, 1);
   else lua_pushnil(L);
   return 1;
 }
@@ -476,10 +517,18 @@ static int VersionNumber(lua_State *L)
 
 static int GetNextChild(lua_State *L)
 {
-  Ihandle * parent = iuplua_checkihandle(L,1);
-  Ihandle * next = iuplua_checkihandleornil(L,2);
-  Ihandle * nextchild = IupGetNextChild(parent, next);
+  Ihandle* parent = iuplua_checkihandle(L,1);
+  Ihandle* next = iuplua_checkihandleornil(L,2);
+  Ihandle* nextchild = IupGetNextChild(parent, next);
   iuplua_pushihandle(L, nextchild);
+  return 1;
+}
+
+static int GetChildPos(lua_State *L)
+{
+  Ihandle* ih = iuplua_checkihandle(L,1);
+  Ihandle* child = iuplua_checkihandle(L,2);
+  lua_pushnumber(L, IupGetChildPos(ih, child));
   return 1;
 }
 
@@ -531,6 +580,12 @@ static int SetLanguage(lua_State *L)
   return 0;
 }
 
+static int GetChildCount (lua_State *L)
+{
+  lua_pushnumber(L, IupGetChildCount(iuplua_checkihandle(L,1)));
+  return 1;
+}
+
 static int Show (lua_State *L)
 {
   lua_pushnumber(L, IupShow(iuplua_checkihandle(L,1)));
@@ -546,6 +601,12 @@ static int Refresh (lua_State *L)
 static int Update (lua_State *L)
 {
   IupUpdate(iuplua_checkihandle(L,1));
+  return 0;
+}
+
+static int UpdateChildren (lua_State *L)
+{
+  IupUpdateChildren(iuplua_checkihandle(L,1));
   return 0;
 }
 
@@ -621,6 +682,7 @@ int iupluaapi_open(lua_State * L)
     {"GetFile", GetFile},
     {"GetFocus", GetFocus},
     {"GetClassName", GetClassName},
+    {"GetClassType", GetClassType},
     {"GetGlobal", GetGlobal},
     {"GetHandle", GetHandle},
     {"GetLanguage", GetLanguage},
@@ -631,6 +693,7 @@ int iupluaapi_open(lua_State * L)
     {"LoopStep", LoopStep},
     {"ExitLoop", ExitLoop},
     {"MainLoop", MainLoop},
+    {"MainLoopLevel", MainLoopLevel},
     {"Map", Map},
     {"Unmap", Unmap},
     {"MapFont", MapFont},
@@ -655,6 +718,7 @@ int iupluaapi_open(lua_State * L)
     {"isbutton5", cf_isbutton5},
     {"GetParent", GetParent},
     {"GetNextChild", GetNextChild},
+    {"GetChildPos", GetChildPos},
     {"VersionNumber", VersionNumber},
     {"GetBrother", GetBrother},
     {"SetFocus", SetFocus},
@@ -662,8 +726,10 @@ int iupluaapi_open(lua_State * L)
     {"SetHandle", SetHandle},
     {"SetLanguage", SetLanguage},
     {"Show", Show},
+    {"GetChildCount", GetChildCount},
     {"Refresh", Refresh},
     {"Update", Update},
+    {"UpdateChildren", UpdateChildren},
     {"ShowXY", ShowXY},
     {"StoreAttribute", StoreAttribute},
     {"StoreGlobal", StoreGlobal},
@@ -672,6 +738,11 @@ int iupluaapi_open(lua_State * L)
     {"isprint", cf_isprint},
     {"IUPxCODE", cf_xCODE},
     {"isxkey", cf_isxkey},
+    {"isXkey", cf_isxkey},
+    {"isShiftXkey", cf_isShiftXkey},
+    {"isCtrlXkey", cf_isCtrlXkey},
+    {"isAltXkey", cf_isAltXkey},
+    {"isSysXkey", cf_isSysXkey},
     {NULL, NULL},
   };
 

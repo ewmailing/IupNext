@@ -13,10 +13,10 @@
 #include "iup_str.h"
 
 
-#define IUPMASK_FLOAT      "[+/-]?(/d+/.?/d*|/./d+)"
-#define IUPMASK_UFLOAT     "(/d+/.?/d*|/./d+)"
-#define IUPMASK_INT	      "[+/-]?/d+"
-#define IUPMASK_UINT     	"/d+"
+#define IUP_MASK_FLOAT      "[+/-]?(/d+/.?/d*|/./d+)"
+#define IUP_MASK_UFLOAT     "(/d+/.?/d*|/./d+)"
+#define IUP_MASK_INT	      "[+/-]?/d+"
+#define IUP_MASK_UINT     	"/d+"
 
 struct _Imask
 {
@@ -100,9 +100,9 @@ Imask* iupMaskCreateInt(int min, int max)
   Imask* mask;
 
   if (min < 0)
-    mask = iupMaskCreate(IUPMASK_INT, 0);
+    mask = iupMaskCreate(IUP_MASK_INT, 0);
   else
-    mask = iupMaskCreate(IUPMASK_UINT, 0);
+    mask = iupMaskCreate(IUP_MASK_UINT, 0);
 
   if (mask)
   {
@@ -119,9 +119,9 @@ Imask* iupMaskCreateFloat(float min, float max)
   Imask* mask;
 
   if (min < 0)
-    mask = iupMaskCreate(IUPMASK_FLOAT, 0);
+    mask = iupMaskCreate(IUP_MASK_FLOAT, 0);
   else
-    mask = iupMaskCreate(IUPMASK_UFLOAT, 0);
+    mask = iupMaskCreate(IUP_MASK_UFLOAT, 0);
 
   if (mask)
   {

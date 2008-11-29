@@ -314,7 +314,7 @@ static int iValMotion_CB(Ihandle *ih,int x,int y,char *r)
 {
   IFnd cb;
 
-  if (!isbutton1(r)) return IUP_DEFAULT;
+  if (!iup_isbutton1(r)) return IUP_DEFAULT;
   if (!ih->data->moving) return IUP_DEFAULT;
 
   ih->data->SetPosition(ih,x,y);

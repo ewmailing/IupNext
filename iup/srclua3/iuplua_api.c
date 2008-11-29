@@ -2,7 +2,7 @@
  * \brief Iup API in Lua
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_api.c,v 1.3 2008-11-29 03:55:20 scuri Exp $
+ * $Id: iuplua_api.c,v 1.4 2008-11-29 05:07:19 scuri Exp $
  */
  
 #include <string.h>
@@ -26,12 +26,12 @@ static void Reparent(void)
                              iuplua_checkihandle(2)));
 }
 
-static void IupLuaPreviousField(void)
+static void PreviousField(void)
 {
   iuplua_pushihandle(IupPreviousField(iuplua_checkihandle(1)));
 }
 
-static void IupLuaNextField(void)
+static void NextField(void)
 {
   iuplua_pushihandle(IupNextField(iuplua_checkihandle(1)));
 }
@@ -48,15 +48,39 @@ static void codekey(void)
   lua_pushnumber(IUPxCODE(cod));
 }
 
-static void iscodekey(void)
+static void cf_isxkey(void)
 {
   int cod = luaL_check_int(1);
-  lua_pushnumber(isxkey(cod));
+  lua_pushnumber(iup_isXkey(cod));
+}
+
+static void cf_isShiftXkey(void)
+{
+  int cod = luaL_check_int(1);
+  lua_pushnumber(iup_isShiftXkey(cod));
+}
+
+static void cf_isCtrlXkey(void)
+{
+  int cod = luaL_check_int(1);
+  lua_pushnumber(iup_isCtrlXkey(cod));
+}
+
+static void cf_isAltXkey(void)
+{
+  int cod = luaL_check_int(1);
+  lua_pushnumber(iup_isAltXkey(cod));
+}
+
+static void cf_isSysXkey(void)
+{
+  int cod = luaL_check_int(1);
+  lua_pushnumber(iup_isSysXkey(cod));
 }
 
 static void cf_isbutton1(void)
 {
-  if(isbutton1(luaL_check_string(1)))
+  if(iup_isbutton1(luaL_check_string(1)))
     lua_pushnumber(1);
   else
     lua_pushnil();
@@ -64,7 +88,7 @@ static void cf_isbutton1(void)
 
 static void cf_isbutton2(void)
 {
-  if(isbutton2(luaL_check_string(1)))
+  if(iup_isbutton2(luaL_check_string(1)))
     lua_pushnumber(1);
   else
     lua_pushnil();
@@ -72,7 +96,7 @@ static void cf_isbutton2(void)
 
 static void cf_isbutton3(void)
 {
-  if(isbutton3(luaL_check_string(1)))
+  if(iup_isbutton3(luaL_check_string(1)))
     lua_pushnumber(1);
   else
     lua_pushnil();
@@ -80,7 +104,7 @@ static void cf_isbutton3(void)
 
 static void cf_isshift(void)
 {
-  if(isshift(luaL_check_string(1)))
+  if(iup_isshift(luaL_check_string(1)))
     lua_pushnumber(1);
   else
     lua_pushnil();
@@ -88,7 +112,7 @@ static void cf_isshift(void)
 
 static void cf_isdouble(void)
 {
-  if(isdouble(luaL_check_string(1)))
+  if(iup_isdouble(luaL_check_string(1)))
     lua_pushnumber(1);
   else
     lua_pushnil();
@@ -96,7 +120,7 @@ static void cf_isdouble(void)
 
 static void cf_isalt(void)
 {
-  if(isalt(luaL_check_string(1)))
+  if(iup_isalt(luaL_check_string(1)))
     lua_pushnumber(1);
   else
     lua_pushnil();
@@ -104,7 +128,7 @@ static void cf_isalt(void)
 
 static void cf_isbutton4(void)
 {
-  if(isbutton4(luaL_check_string(1)))
+  if(iup_isbutton4(luaL_check_string(1)))
     lua_pushnumber(1);
   else
     lua_pushnil();
@@ -112,7 +136,7 @@ static void cf_isbutton4(void)
 
 static void cf_isbutton5(void)
 {
-  if(isbutton5(luaL_check_string(1)))
+  if(iup_isbutton5(luaL_check_string(1)))
     lua_pushnumber(1);
   else
     lua_pushnil();
@@ -120,7 +144,7 @@ static void cf_isbutton5(void)
 
 static void cf_issys(void)
 {
-  if(issys(luaL_check_string(1)))
+  if(iup_issys(luaL_check_string(1)))
     lua_pushnumber(1);
   else
     lua_pushnil();
@@ -128,7 +152,7 @@ static void cf_issys(void)
 
 static void cf_iscontrol(void)
 {
-  if(iscontrol(luaL_check_string(1)))
+  if(iup_iscontrol(luaL_check_string(1)))
     lua_pushnumber(1);
   else
     lua_pushnil();
@@ -209,6 +233,11 @@ static void Show(void)
   lua_pushnumber(IupShow(iuplua_checkihandle(1)));
 }
 
+static void GetChildCount(void)
+{
+  lua_pushnumber(IupGetChildCount(iuplua_checkihandle(1)));
+}
+
 static void Refresh(void)
 {
   IupRefresh(iuplua_checkihandle(1));
@@ -217,6 +246,11 @@ static void Refresh(void)
 static void Update(void)
 {
   IupUpdate(iuplua_checkihandle(1));
+}
+
+static void UpdateChildren(void)
+{
+  IupUpdateChildren(iuplua_checkihandle(1));
 }
 
 static void VersionNumber(void)
@@ -254,6 +288,11 @@ static void GetNextChild(void)
     iuplua_pushihandle(IupGetNextChild(iuplua_checkihandle(1), iuplua_checkihandle(2)));
 }
 
+static void GetChildPos(void)
+{
+  lua_pushnumber(IupGetChildPos(iuplua_checkihandle(1), iuplua_checkihandle(2)));
+}
+
 static void GetBrother(void)
 {
   iuplua_pushihandle(IupGetBrother(iuplua_checkihandle(1)));
@@ -262,6 +301,11 @@ static void GetBrother(void)
 static void ClassName(void)
 {
   lua_pushstring(IupGetClassName(iuplua_checkihandle(1)));
+}
+
+static void ClassType(void)
+{
+  lua_pushstring(IupGetClassType(iuplua_checkihandle(1)));
 }
 
 static void GetFocus(void)
@@ -466,6 +510,11 @@ static void MainLoop(void)
   lua_pushnumber(IupMainLoop());
 }
 
+static void MainLoopLevel(void)
+{
+  lua_pushnumber(IupMainLoopLevel());
+}
+
 static void Open(void)
 {
   lua_pushnumber(IupOpen(NULL, NULL));
@@ -493,8 +542,10 @@ int iupluaapi_open(void)
     { "IupMap", Map },
     { "IupUnmap", Unmap },
     { "IupShow", Show },
+    { "IupGetChildCount", GetChildCount },
     { "IupRefresh", Refresh },
     { "IupUpdate", Update },
+    { "IupUpdateChildren", UpdateChildren },
     { "IupVersionNumber", VersionNumber },
     { "IupShowXY", ShowXY },
     { "IupHide", Hide },
@@ -502,8 +553,10 @@ int iupluaapi_open(void)
     { "IupAppend", Append },
     { "IupReparent", Reparent },
     { "IupGetNextChild", GetNextChild },
+    { "IupGetChildPos", GetChildPos },
     { "IupGetBrother", GetBrother },
     { "IupGetClassName", ClassName },
+    { "IupGetClassType", ClassType },
     { "IupGetFocus", GetFocus },
     { "IupSetFocus", SetFocus },
     { "IupGetName", GetName },
@@ -524,15 +577,15 @@ int iupluaapi_open(void)
     { "IupLoopStep", LoopStep },
     { "IupExitLoop", ExitLoop },
     { "IupMainLoop", MainLoop },
+    { "IupMainLoopLevel", MainLoopLevel },
     { "IupOpen", Open },
     { "IupClose", (lua_CFunction)IupClose },
     { "IupFlush", IupFlush },
     { "IupVersion", Version },
     { "IupHelp", Help },
     { "IupScanf", iupluaScanf },
-    { "IupPreviousField", IupLuaPreviousField },
-    { "IupNextField", IupLuaNextField },
-    { "IupMainLoop", (lua_CFunction)IupMainLoop }
+    { "IupPreviousField", PreviousField },
+    { "IupNextField", NextField }
   };
   int SizeFuncList = (sizeof(FuncList)/sizeof(struct FuncList));
   int i;
@@ -552,7 +605,12 @@ int iupluaapi_open(void)
   iuplua_register_macro("isbutton5",cf_isbutton5);
   iuplua_register_macro("isprint",cf_isprint);
   iuplua_register_macro("IUPxCODE", codekey);
-  iuplua_register_macro("isxkey", iscodekey);
+  iuplua_register_macro("isxkey", cf_isxkey);
+  iuplua_register_macro("isXkey", cf_isxkey);
+  iuplua_register_macro("isShiftXkey", cf_isShiftXkey);
+  iuplua_register_macro("isCtrlXkey", cf_isCtrlXkey);
+  iuplua_register_macro("isAltXkey", cf_isAltXkey);
+  iuplua_register_macro("isSysXkey", cf_isSysXkey);
 
   return 1;
 }

@@ -2,7 +2,7 @@
  * \brief iupmask binding for Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: il_mask.c,v 1.1 2008-11-27 23:33:33 scuri Exp $
+ * $Id: il_mask.c,v 1.2 2008-11-29 05:07:19 scuri Exp $
  */
 
 #include <lua.h>
@@ -112,11 +112,11 @@ static int match_cb (Ihandle *handle)
 
 void iupmasklua_open(lua_State *L)
 {
-  iuplua_regstring(L, IUPMASK_FLOAT, "MASK_FLOAT");
-  iuplua_regstring(L, IUPMASK_UFLOAT, "MASK_UFLOAT");
-  iuplua_regstring(L, IUPMASK_EFLOAT, "MASK_EFLOAT");
-  iuplua_regstring(L, IUPMASK_INT, "MASK_INT");
-  iuplua_regstring(L, IUPMASK_UINT, "MASK_UINT");
+  iuplua_regstring(L, IUP_MASK_FLOAT, "MASK_FLOAT");
+  iuplua_regstring(L, IUP_MASK_UFLOAT, "MASK_UFLOAT");
+  iuplua_regstring(L, IUP_MASK_EFLOAT, "MASK_EFLOAT");
+  iuplua_regstring(L, IUP_MASK_INT, "MASK_INT");
+  iuplua_regstring(L, IUP_MASK_UINT, "MASK_UINT");
 
   iuplua_register(L, cfMaskRemove, "maskRemove");
   iuplua_register(L, cfMaskMatRemove, "maskMatRemove");

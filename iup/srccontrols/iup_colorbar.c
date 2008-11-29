@@ -884,7 +884,7 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
 
   y = cdIupInvertYAxis(y, ih->data->h);
 
-  if (b == IUP_BUTTON1 && isdouble(r)) 
+  if (b == IUP_BUTTON1 && iup_isdouble(r)) 
   { 
     idx = iColorbarGetIndexColor(ih, x, y); 
     if (idx < 0  || idx >= ih->data->num_cells) 
@@ -937,7 +937,7 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
 
     iColorbarCallSelectCb(ih, idx, IUP_PRIMARY);
   }
-  else if (b == IUP_BUTTON3 && isshift(r)) 
+  else if (b == IUP_BUTTON3 && iup_isshift(r)) 
   { 
     idx = iColorbarGetIndexColor(ih, x, y); 
     if (idx < 0  || idx >= ih->data->num_cells)
