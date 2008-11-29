@@ -2,7 +2,7 @@
  * \brief iupim utilities
  *
  * See Copyright Notice in iup.h
- * $Id: iup_im.c,v 1.1 2008-11-27 23:33:33 scuri Exp $
+ * $Id: iup_im.c,v 1.2 2008-11-29 03:55:20 scuri Exp $
  */
 
 #include <im.h>
@@ -17,17 +17,9 @@
 #include <stdio.h>
 #include <string.h>
 
-
-#if (IUP_VERSION_NUMBER < 300000)
-void* iupGetImageData(Ihandle* self);
-#else
 #include "iup_object.h"
 #include "iup_assert.h"
-static void* iupGetImageData(Ihandle* self)
-{
-  return IupGetAttribute(self, "WID");
-}
-#endif
+
 
 static void PrintError(int error)
 {
@@ -100,11 +92,9 @@ Ihandle* IupLoadImage(const char* file_name)
   imCounterCallback old_callback;
   imFile* ifile;
 
-#if (IUP_VERSION_NUMBER >= 300000)
   iupASSERT(file_name);
   if (!file_name)
     return 0;
-#endif
 
   old_callback = imCounterSetCallback(NULL, NULL);
 
@@ -117,14 +107,12 @@ Ihandle* IupLoadImage(const char* file_name)
     goto load_finish;
 
   flags = IM_TOPDOWN;
-#if (IUP_VERSION_NUMBER >= 300000)
   flags |= IM_PACKED;
   if (imColorModeHasAlpha(color_mode))
   {
     has_alpha = 1;
     flags |= IM_ALPHA;
   }
-#endif
 
   color_mode = imColorModeToBitmap(color_mode);
   data_type = IM_BYTE;
@@ -139,21 +127,11 @@ Ihandle* IupLoadImage(const char* file_name)
 
   if (color_mode == IM_RGB)
   {
-#if (IUP_VERSION_NUMBER < 300000)
-    int plane_size = width*height;
-    palette_count = 256;
-    imConvertRGB2Map(width, height, (unsigned char*)image_data, 
-                             (unsigned char*)image_data + plane_size, 
-                             (unsigned char*)image_data + 2*plane_size, 
-                             (unsigned char*)image_data, palette, &palette_count);
-    iup_image = IupImage(width, height, (unsigned char*)image_data);
-#else
     if (has_alpha)
       iup_image = IupImageRGBA(width, height, (unsigned char*)image_data);
     else
       iup_image = IupImageRGB(width, height, (unsigned char*)image_data);
     palette_count = 0;
-#endif
   }
   else
   {
@@ -197,7 +175,6 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
   long palette[256];
   imFile* ifile;
 
-#if (IUP_VERSION_NUMBER >= 300000)
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return 0;
@@ -205,7 +182,6 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
   iupASSERT(file_name);
   if (!file_name)
     return 0;
-#endif
 
   ifile = imFileNew(file_name, format, &error);
   if (!ifile)
@@ -214,7 +190,7 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
     return 0;
   }
 
-  data = (unsigned char*)iupGetImageData(ih);
+  data = (unsigned char*)IupGetAttribute(ih, "WID");
 
   width = IupGetInt(ih, "WIDTH");
   height = IupGetInt(ih, "HEIGHT");

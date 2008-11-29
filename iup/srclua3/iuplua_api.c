@@ -2,7 +2,7 @@
  * \brief Iup API in Lua
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_api.c,v 1.2 2008-11-21 05:45:45 scuri Exp $
+ * $Id: iuplua_api.c,v 1.3 2008-11-29 03:55:20 scuri Exp $
  */
  
 #include <string.h>
@@ -18,21 +18,13 @@
 #include "iuplua.h"
 #include "il.h"
 
-#if (IUP_VERSION_NUMBER >= 300000)
 #include "iup_attrib.h"
+
 static void Reparent(void)
 {
   lua_pushnumber(IupReparent(iuplua_checkihandle(1),
                              iuplua_checkihandle(2)));
 }
-#define iupIsPointer iupAttribIsPointer
-#define iupIsInternal iupAttribIsInternal
-#define xCODE IUPxCODE
-#else
-int iupIsPointer(const char *attr); /* re-declared here to avoid inclusion of iglobal.h */
-int iupIsInternal(const char* name);
-#endif
-
 
 static void IupLuaPreviousField(void)
 {
@@ -53,7 +45,7 @@ static void cf_isprint(void)
 static void codekey(void)
 {
   int cod = luaL_check_int(1);
-  lua_pushnumber(xCODE(cod));
+  lua_pushnumber(IUPxCODE(cod));
 }
 
 static void iscodekey(void)
@@ -155,11 +147,11 @@ static void GetAttribute(void)
 {
   char *name = luaL_check_string(2);
   char *value = IupGetAttribute(iuplua_checkihandle(1), name);
-  if (!value || iupIsInternal(name))
+  if (!value || iupAttribIsInternal(name))
     lua_pushnil();
   else
   {
-    if (iupIsPointer(name))
+    if (iupAttribIsPointer(name))
       lua_pushuserdata((void*)value);
     else
       lua_pushstring(value);
@@ -207,12 +199,10 @@ static void Map(void)
   lua_pushnumber(IupMap(iuplua_checkihandle(1)));
 }
 
-#if (IUP_VERSION_NUMBER >= 300000)
 static void Unmap(void)
 {
   IupUnmap(iuplua_checkihandle(1));
 }
-#endif
 
 static void Show(void)
 {
@@ -501,9 +491,7 @@ int iupluaapi_open(void)
     { "IupDestroy", Destroy },
     { "IupDetach", Detach },
     { "IupMap", Map },
-#if (IUP_VERSION_NUMBER >= 300000)
     { "IupUnmap", Unmap },
-#endif
     { "IupShow", Show },
     { "IupRefresh", Refresh },
     { "IupUpdate", Update },
@@ -512,9 +500,7 @@ int iupluaapi_open(void)
     { "IupHide", Hide },
     { "IupPopup", Popup },
     { "IupAppend", Append },
-#if (IUP_VERSION_NUMBER >= 300000)
     { "IupReparent", Reparent },
-#endif
     { "IupGetNextChild", GetNextChild },
     { "IupGetBrother", GetBrother },
     { "IupGetClassName", ClassName },
@@ -565,7 +551,7 @@ int iupluaapi_open(void)
   iuplua_register_macro("isbutton4",cf_isbutton4);
   iuplua_register_macro("isbutton5",cf_isbutton5);
   iuplua_register_macro("isprint",cf_isprint);
-  iuplua_register_macro("xCODE", codekey);
+  iuplua_register_macro("IUPxCODE", codekey);
   iuplua_register_macro("isxkey", iscodekey);
 
   return 1;

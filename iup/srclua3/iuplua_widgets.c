@@ -2,7 +2,7 @@
  * \brief IULUA core - Bindig of iup to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_widgets.c,v 1.1 2008-11-21 03:00:12 scuri Exp $
+ * $Id: iuplua_widgets.c,v 1.2 2008-11-29 03:55:20 scuri Exp $
  */
  
 #include <string.h>
@@ -140,6 +140,12 @@ static int dialog_show(Ihandle* handle, int v)
 {
   iuplua_call_start(handle, "showcb");
   lua_pushnumber(v);
+  return iuplua_call();
+}
+
+static int iupluaUnMapCb(Ihandle* handle)
+{
+  iuplua_call_start(handle, "unmapcb");
   return iuplua_call();
 }
 
@@ -351,7 +357,6 @@ static void CreateFileDlg(void)
   lua_pushusertag(IupFileDlg(), iuplua_tag);
 }
 
-#if (IUP_VERSION_NUMBER >= 300000)
 static void CreateMessageDlg(void)
 {
   lua_pushusertag(IupMessageDlg(), iuplua_tag);
@@ -366,7 +371,6 @@ static void CreateColorDlg(void)
 {
   lua_pushusertag(IupColorDlg(), iuplua_tag);
 }
-#endif
 
 static void CreateUser(void)
 {
@@ -438,7 +442,6 @@ static void CreateImage(void)
   free(pixels);
 }
 
-#if (IUP_VERSION_NUMBER >= 300000)
 static void CreateImageRGB(void)
 {
   int i, count, width, height;
@@ -498,7 +501,6 @@ static void CreateImageRGBA(void)
   lua_pushusertag(IupImageRGBA(width, height, pixels), iuplua_tag);
   free(pixels);
 }
-#endif
 
 /***********************************************************************************
 ***********************************************************************************/
@@ -524,20 +526,16 @@ int iupluawidgets_open(int tag)
     { "iupCreateSubmenu", CreateSubmenu },
     { "iupCreateSeparator", CreateSeparator },
     { "iupCreateFileDlg", CreateFileDlg },
-#if (IUP_VERSION_NUMBER >= 300000)
     { "iupCreateMessageDlg", CreateMessageDlg},
     { "iupCreateColorDlg", CreateColorDlg},
     { "iupCreateFontDlg", CreateFontDlg},
-#endif
     { "iupCreateUser", CreateUser },
     { "iupCreateFrame", CreateFrame },
     { "iupCreateCanvas", CreateCanvas },
     { "iupCreateList", CreateList },
     { "iupCreateImage", CreateImage },
-#if (IUP_VERSION_NUMBER >= 300000)
     { "iupCreateImageRGB", CreateImageRGB },
     { "iupCreateImageRGBA", CreateImageRGBA },
-#endif
     { "iupCreateFill", CreateFill },
     { "iupCreateRadio", CreateRadio },
     { "iupCreateMenu", CreateMenu },
@@ -563,6 +561,7 @@ int iupluawidgets_open(int tag)
     { "iup_close_cb", (lua_CFunction)dialog_close},
     { "iup_show_cb", (lua_CFunction)dialog_show},
     { "iup_map_cb", (lua_CFunction)iupluaMapCb},
+    { "iup_unmap_cb", (lua_CFunction)iupluaUnMapCb},
     { "iup_dropfiles_cb", (lua_CFunction)iupluaDropfilesCb},
     { "iup_trayclick_cb", (lua_CFunction)dialog_trayclick},
     { "iup_getfocus_cb", (lua_CFunction)iupluaGetfocusCb},

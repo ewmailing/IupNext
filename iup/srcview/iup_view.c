@@ -15,15 +15,8 @@
 #include "iupim.h"
 #endif
 
-#if (IUP_VERSION_NUMBER < 300000)
-void* iupGetImageData(Ihandle* self);
-#else
+/* IupImgLin internal function, used only here */
 void iupImageLibLoadAll(void);
-static void* iupGetImageData(Ihandle* self)
-{
-  return IupGetAttribute(self, "WID");
-}
-#endif
 
 static void SaveImageC(const char* file_name, Ihandle* elem, const char* name, FILE *packfile)
 {
@@ -45,10 +38,9 @@ static void SaveImageC(const char* file_name, Ihandle* elem, const char* name, F
   width = IupGetInt(elem, "WIDTH");
   height = IupGetInt(elem, "HEIGHT");
   channels = IupGetInt(elem, "CHANNELS");
-  if (!channels) channels = 1; /* IUP 2.x */
   linesize = width*channels;
 
-  data = (unsigned char*)iupGetImageData(elem);
+  data = (unsigned char*)IupGetAttribute(elem, "WID");
 
   fprintf(file, "static Ihandle* load_image_%s(void)\n", name);
   fprintf(file, "{\n");
@@ -124,10 +116,9 @@ static void SaveImageLua(const char* file_name, Ihandle* elem, const char* name,
   width = IupGetInt(elem, "WIDTH");
   height = IupGetInt(elem, "HEIGHT");
   channels = IupGetInt(elem, "CHANNELS");
-  if (!channels) channels = 1; /* IUP 2.x */
   linesize = width*channels;
 
-  data = (unsigned char*)iupGetImageData(elem);
+  data = (unsigned char*)IupGetAttribute(elem, "WID");
 
   fprintf(file, "function load_image_%s()\n", name);
 
@@ -215,10 +206,9 @@ static void SaveImageLED(const char* file_name, Ihandle* elem, const char* name,
   width = IupGetInt(elem, "WIDTH");
   height = IupGetInt(elem, "HEIGHT");
   channels = IupGetInt(elem, "CHANNELS");
-  if (!channels) channels = 1; /* IUP 2.x */
   linesize = width*channels;
 
-  data = (unsigned char*)iupGetImageData(elem);
+  data = (unsigned char*)IupGetAttribute(elem, "WID");
 
   if (channels == 1)
   {

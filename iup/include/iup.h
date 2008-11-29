@@ -198,8 +198,8 @@ void IupListConvertXYToItem(Ihandle* ih, int x, int y, int *pos);
 /************************************************************************/
 #define IUP_ERROR     1
 #define IUP_NOERROR   0
-#define IUP_OPENED    -1
-#define IUP_INVALID   -1
+#define IUP_OPENED   -1
+#define IUP_INVALID  -1
 
 /************************************************************************/
 /*                   Callback Return Values                             */
@@ -217,7 +217,7 @@ void IupListConvertXYToItem(Ihandle* ih, int x, int y, int *pos);
 #define IUP_RIGHT         0xFFFD  /* 65533 */
 #define IUP_MOUSEPOS      0xFFFC  /* 65532 */
 #define IUP_CURRENT       0xFFFB  /* 65531 */
-#define IUP_CENTERPARENT  0xFFFA
+#define IUP_CENTERPARENT  0xFFFA  /* 65530 */
 #define IUP_TOP       IUP_LEFT
 #define IUP_BOTTOM    IUP_RIGHT
 
@@ -241,25 +241,41 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 #define IUP_BUTTON4   '4'
 #define IUP_BUTTON5   '5'
 
-#define isshift(_s)    (_s[0]=='S')
-#define iscontrol(_s)  (_s[1]=='C')
-#define isbutton1(_s)  (_s[2]=='1')
-#define isbutton2(_s)  (_s[3]=='2')
-#define isbutton3(_s)  (_s[4]=='3')
-#define isdouble(_s)   (_s[5]=='D')
-#define isalt(_s)      (_s[6]=='A')
-#define issys(_s)      (_s[7]=='Y')
-#define isbutton4(_s)  (_s[8]=='4')
-#define isbutton5(_s)  (_s[9]=='5')
+#define iup_isshift(_s)    (_s[0]=='S')
+#define iup_iscontrol(_s)  (_s[1]=='C')
+#define iup_isbutton1(_s)  (_s[2]=='1')
+#define iup_isbutton2(_s)  (_s[3]=='2')
+#define iup_isbutton3(_s)  (_s[4]=='3')
+#define iup_isdouble(_s)   (_s[5]=='D')
+#define iup_isalt(_s)      (_s[6]=='A')
+#define iup_issys(_s)      (_s[7]=='Y')
+#define iup_isbutton4(_s)  (_s[8]=='4')
+#define iup_isbutton5(_s)  (_s[9]=='5')
+#define isshift     iup_isshift
+#define iscontrol   iup_iscontrol
+#define isbutton1   iup_isbutton1
+#define isbutton2   iup_isbutton2
+#define isbutton3   iup_isbutton3
+#define isdouble    iup_isdouble
+#define isalt       iup_isalt
+#define issys       iup_issys
+#define isbutton4   iup_isbutton4
+#define isbutton5   iup_isbutton5
+
 
 /************************************************************************/
 /*                      Pre-Defined Masks                               */
 /************************************************************************/
-#define IUPMASK_FLOAT      "[+/-]?(/d+/.?/d*|/./d+)"
-#define IUPMASK_UFLOAT     "(/d+/.?/d*|/./d+)"
-#define IUPMASK_EFLOAT		"[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
-#define IUPMASK_INT	      "[+/-]?/d+"
-#define IUPMASK_UINT     	"/d+"
+#define IUP_MASK_FLOAT    "[+/-]?(/d+/.?/d*|/./d+)"
+#define IUP_MASK_UFLOAT   "(/d+/.?/d*|/./d+)"
+#define IUP_MASK_EFLOAT   "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
+#define IUP_MASK_INT      "[+/-]?/d+"
+#define IUP_MASK_UINT     "/d+"
+#define IUPMASK_FLOAT     IUP_MASK_FLOAT
+#define IUPMASK_UFLOAT    IUP_MASK_UFLOAT
+#define IUPMASK_EFLOAT    IUP_MASK_EFLOAT
+#define IUPMASK_INT	      IUP_MASK_INT
+#define IUPMASK_UINT      IUP_MASK_UINT
 
 
 /************************************************************************/

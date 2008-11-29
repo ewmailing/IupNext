@@ -38,13 +38,17 @@
   keyboard keys at the moment the event is generated. The following macros must be used for verification: 
 </p>
 <blockquote>
-<p>isshift(<strong style="font-weight: 400">status</strong>)
+<p>iup_isshift(<strong style="font-weight: 400">status</strong>)
     <br>
-    iscontrol(<strong style="font-weight: 400">status</strong>) <br>
-    isbutton1(<strong style="font-weight: 400">status</strong>) <br>
-    isbutton2(<strong style="font-weight: 400">status</strong>) <br>
-    isbutton3(<strong style="font-weight: 400">status</strong>)<br>
-    isdouble(<strong style="font-weight: 400">status</strong>) </p>
+    iup_iscontrol(<strong style="font-weight: 400">status</strong>) <br>
+    iup_isbutton1(<strong style="font-weight: 400">status</strong>) <br>
+    iup_isbutton2(<strong style="font-weight: 400">status</strong>) <br>
+    iup_isbutton3(<strong style="font-weight: 400">status</strong>)<br>
+iup_isbutton4(status)<br>
+iup_isbutton5(status)<br>
+    iup_isdouble(<strong style="font-weight: 400">status</strong>) <br>
+iup_isalt(status)<br>
+iup_issys(status)</p>
 <p>They return 
   1 if the respective key or button is pressed, 
   and 

@@ -12,11 +12,16 @@ extern "C" {
 #endif
 
 /* pre-defined masks */
-#define IUPMASK_FLOAT      "[+/-]?(/d+/.?/d*|/./d+)"
-#define IUPMASK_UFLOAT     "(/d+/.?/d*|/./d+)"
-#define IUPMASK_EFLOAT		"[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
-#define IUPMASK_INT	      "[+/-]?/d+"
-#define IUPMASK_UINT     	"/d+"
+#define IUP_MASK_FLOAT    "[+/-]?(/d+/.?/d*|/./d+)"
+#define IUP_MASK_UFLOAT   "(/d+/.?/d*|/./d+)"
+#define IUP_MASK_EFLOAT   "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
+#define IUP_MASK_INT      "[+/-]?/d+"
+#define IUP_MASK_UINT     "/d+"
+#define IUPMASK_FLOAT     IUP_MASK_FLOAT
+#define IUPMASK_UFLOAT    IUP_MASK_UFLOAT
+#define IUPMASK_EFLOAT    IUP_MASK_EFLOAT
+#define IUPMASK_INT	      IUP_MASK_INT
+#define IUPMASK_UINT      IUP_MASK_UINT
 
 
 int  iupmaskSet     (Ihandle *h, const char *mask, int autofill, int casei);

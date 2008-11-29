@@ -1,5 +1,3 @@
-BUILD_IUP3 = Yes
-
 PROJNAME = iup
 LIBNAME = iupluacontrols51
 OPT = YES

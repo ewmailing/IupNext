@@ -10,13 +10,13 @@ IUP_OPENED    = -1          iup.OPENED    = IUP_OPENED
 IUP_INVALID   = -1          iup.INVALID   = IUP_INVALID
                   
 IUP_CENTER   = 65535        iup.CENTER    = IUP_CENTER 
-IUP_LEFT     = 65534		iup.LEFT      = IUP_LEFT   
-IUP_RIGHT    = 65533		iup.RIGHT     = IUP_RIGHT  
+IUP_LEFT     = 65534        iup.LEFT      = IUP_LEFT   
+IUP_RIGHT    = 65533        iup.RIGHT     = IUP_RIGHT  
 IUP_MOUSEPOS = 65532        iup.MOUSEPOS  = IUP_MOUSEPOS
-IUP_CURRENT  = 65531		iup.CURRENT   = IUP_CURRENT 
+IUP_CURRENT  = 65531        iup.CURRENT   = IUP_CURRENT 
 IUP_CENTERPARENT = 65530    iup.CENTERPARENT = IUP_CENTERPARENT
 IUP_TOP      = IUP_LEFT     iup.TOP       = IUP_TOP   
-IUP_BOTTOM   = IUP_RIGHT	iup.BOTTOM    = IUP_BOTTOM
+IUP_BOTTOM   = IUP_RIGHT    iup.BOTTOM    = IUP_BOTTOM
 
 IUP_BUTTON1   =   49        iup.BUTTON1   = IUP_BUTTON1     -- '1'  
 IUP_BUTTON2   =   50        iup.BUTTON2   = IUP_BUTTON2     -- '2'  
@@ -141,3 +141,8 @@ IUP_TIMES_NORMAL_14 =      "TIMES_NORMAL_14"          iup.TIMES_NORMAL_14 =     
 IUP_TIMES_ITALIC_14 =      "TIMES_ITALIC_14"          iup.TIMES_ITALIC_14 =      IUP_TIMES_ITALIC_14
 IUP_TIMES_BOLD_14 =        "TIMES_BOLD_14"            iup.TIMES_BOLD_14 =        IUP_TIMES_BOLD_14
 
+iup.MASK_FLOAT   = "[+/-]?(/d+/.?/d*|/./d+)"
+iup.MASK_UFLOAT  = "(/d+/.?/d*|/./d+)"
+iup.MASK_EFLOAT  = "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
+iup.MASK_INT     = "[+/-]?/d+"
+iup.MASK_UINT    = "/d+"

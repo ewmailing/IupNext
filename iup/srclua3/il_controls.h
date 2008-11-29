@@ -2,7 +2,7 @@
  * \brief iupLua Controls initialization
  *
  * See Copyright Notice in iup.h
- * $Id: il_controls.h,v 1.2 2008-11-21 05:45:42 scuri Exp $
+ * $Id: il_controls.h,v 1.3 2008-11-29 03:55:20 scuri Exp $
  */
  
 #ifndef __IL_CONTROLS_H 
@@ -20,13 +20,6 @@ int treelua_open (void);
 int cblua_open (void);
 int colorbarlua_open (void);
 int cellslua_open(void);
-
-#if (IUP_VERSION_NUMBER < 300000)
-void iupgetparamlua_open (void);
-int iupgclua_open (void);
-int iupvallua_open (void);
-int iuptabslua_open (void);
-#endif
 
 #ifdef __cplusplus
 }

@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua_api.c,v 1.2 2008-11-21 05:45:45 scuri Exp $
+* $Id: iuplua_api.c,v 1.3 2008-11-29 03:55:20 scuri Exp $
 */
 
 #include <stdio.h>
@@ -18,22 +18,14 @@
 #include "iuplua.h"
 #include "il.h"
 
-
-#if (IUP_VERSION_NUMBER >= 300000)
 #include "iup_attrib.h"
+
 static int Reparent(lua_State *L)
 {
   lua_pushnumber(L, IupReparent(iuplua_checkihandle(L,1),
                                 iuplua_checkihandle(L,2)));
   return 1;
 }
-#define iupIsPointer iupAttribIsPointer
-#define iupIsInternal iupAttribIsInternal
-#define xCODE IUPxCODE
-#else
-int iupIsPointer(const char *attr); /* re-declared here to avoid inclusion of iglobal.h */
-int iupIsInternal(const char* name);
-#endif
 
 static int Append(lua_State *L)
 {
@@ -86,11 +78,11 @@ static int GetAttribute (lua_State *L)
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *attribute = luaL_checkstring(L,2);
   const char *value = IupGetAttribute(ih, (char *)attribute);
-  if (!value || iupIsInternal(attribute))
+  if (!value || iupAttribIsInternal(attribute))
     lua_pushnil(L);
   else
   {
-    if (iupIsPointer(attribute))
+    if (iupAttribIsPointer(attribute))
       lua_pushlightuserdata(L, (void*)value);
     else
       lua_pushstring(L,value);
@@ -256,14 +248,12 @@ static int Map(lua_State *L)
   return 1;
 }
 
-#if (IUP_VERSION_NUMBER >= 300000)
 static int Unmap(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   IupUnmap(ih);
   return 0;
 }
-#endif
 
 static int MapFont(lua_State *L)
 {
@@ -379,7 +369,7 @@ static int cf_isprint(lua_State *L)
 static int cf_xCODE(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
-  lua_pushnumber(L, xCODE(value));
+  lua_pushnumber(L, IUPxCODE(value));
   return 1;
 }
 
@@ -617,9 +607,7 @@ int iupluaapi_open(lua_State * L)
 {
   struct luaL_reg funcs[] = {
     {"Append", Append},
-#if (IUP_VERSION_NUMBER >= 300000)
     {"Reparent", Reparent},
-#endif
     {"Destroy", Destroy},
     {"Detach", Detach},
     {"Flush", Flush},
@@ -644,9 +632,7 @@ int iupluaapi_open(lua_State * L)
     {"ExitLoop", ExitLoop},
     {"MainLoop", MainLoop},
     {"Map", Map},
-#if (IUP_VERSION_NUMBER >= 300000)
     {"Unmap", Unmap},
-#endif
     {"MapFont", MapFont},
     {"Message", Message},
     {"Alarm", Alarm},  
@@ -684,7 +670,7 @@ int iupluaapi_open(lua_State * L)
     {"UnMapFont", UnMapFont},
     {"Scanf", iupluaScanf},
     {"isprint", cf_isprint},
-    {"xCODE", cf_xCODE},
+    {"IUPxCODE", cf_xCODE},
     {"isxkey", cf_isxkey},
     {NULL, NULL},
   };
