@@ -12,9 +12,9 @@
 <p><strong><a name="IUP_ACTION">ACTION_CB</a></strong>:
   Action generated when a keyboard event 
   occurs.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>c</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>active</strong>, char* <strong>after</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>c</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>active</strong>, char* <strong>after</strong>); [in C]
 <strong>elem</strong>:action_cb(<strong>c, lin, col</strong>, <strong>active, after</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix where the user 
     typed something.<br>
 <strong>c</strong>:
@@ -37,9 +37,9 @@ cell does not have a value and the key pressed is not a character.</p>
 <p><strong><a name="CLICK_CB">CLICK_CB</a></strong>:
   Action generated when any mouse button is 
   pressed over a cell. This callback is always called after other callbacks.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
 <strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>:string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -53,9 +53,9 @@ the moment the event is generated. The same as
 <p><strong><a name="RELEASE_CB">RELEASE_CB</a></strong>:
   Action generated when any mouse button is 
   released over a cell. This callback is always called after other callbacks.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>r</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>r</strong>); [in C]
 <strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>r</strong>:string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -71,9 +71,9 @@ the moment the event is generated. The same as
 <p><strong><a name="MOUSEMOVE_CB">MOUSEMOVE_CB</a></strong>:
   Action generated to notify the application 
   that the mouse has moved over the matrix.&nbsp;</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:mousemove_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -82,9 +82,9 @@ the moment the event is generated. The same as
 <p><strong><a name="ENTERITEM_CB">ENTERITEM_CB</a></strong>:
   Action generated when a matrix cell is 
   selected, becoming the current cell.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:enteritem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -94,9 +94,9 @@ the moment the event is generated. The same as
 <p><strong><a name="LEAVEITEM_CB">LEAVEITEM_CB</a></strong>:
   Action generated when a cell is no longer 
   the current cell.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:leaveitem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -111,9 +111,9 @@ the moment the event is generated. The same as
 <p><strong><a name="SCROLLTOP_CB">SCROLLTOP_CB</a></strong>:
   Action generated when the matrix 
   is scrolled with the scrollbars or with the keyboard. Can be used together with the &quot;ORIGIN&quot; attribute to synchronize the movement of two or more matrices.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:scrolltop_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -124,9 +124,9 @@ the moment the event is generated. The same as
 <p><a name="BGCOLOR_CB"><strong>BGCOLOR_CB</strong></a> -
   Action generated to retrieve the background 
   color of a cell when it needs to be redrawn. </p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, unsigned int <strong>*red</strong>, unsigned int <strong>*green</strong>, unsigned int <strong>*blue</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, unsigned int <strong>*red</strong>, unsigned int <strong>*green</strong>, unsigned int <strong>*blue</strong>); [in C]
 <strong>elem</strong>:bgcolor_cb(<strong>lin, col</strong>: number) -&gt; (<strong>red, green, blue, ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix where the user 
     typed something.<br>
     lin, <strong>col</strong>:
@@ -141,9 +141,9 @@ the moment the event is generated. The same as
 <p><a name="FGCOLOR_CB"><strong>FGCOLOR_CB</strong></a> -
   Action generated to retrieve the foreground 
   color of a cell when it needs to be redrawn. </p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, unsigned int <strong>*red</strong>, unsigned int <strong>*green</strong>, unsigned int <strong>*blue</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, unsigned int <strong>*red</strong>, unsigned int <strong>*green</strong>, unsigned int <strong>*blue</strong>); [in C]
 <strong>elem</strong>:fgcolor_cb(<strong>lin, col</strong>: number) -&gt; (<strong>red, green, blue, ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix where the user 
     typed something.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -162,9 +162,9 @@ the moment the event is generated. The same as
   Allows to draw a custom cell contents. You must use the 
 <a target="_blank" href="http://www.tecgraf.puc-rio.br/cd/">CD</a> 
   library primitives.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>x1</strong>, int <strong>x2</strong>, int <strong>y1</strong>, int <strong>y2</strong>, cdCanvas* <strong>cnv</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>x1</strong>, int <strong>x2</strong>, int <strong>y1</strong>, int <strong>y2</strong>, cdCanvas* <strong>cnv</strong>); [in C]
 <strong>elem</strong>:draw_cb(<strong>lin, col, x1, x2, y1, y2</strong>: number, <strong>cnv</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -182,9 +182,9 @@ the moment the event is generated. The same as
   the current cell is redrawn to determine if a dropdown 
   feedback should be shown. If this action is not registered, no feedback will be shown. 
 </p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:dropcheck_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -201,9 +201,9 @@ the moment the event is generated. The same as
   to any list (the drop parameter is the handle of the dropdown 
   list to be shown). You should also set the lists current value (&quot;VALUE&quot;), the default is always &quot;1&quot;. The previously cell value can be verified from the given
   drop Ihandle via the &quot;PREVIOUSVALUE&quot; attribute.</p>
-<pre>int function(Ihandle *<strong>self</strong>, Ihandle *<strong>drop</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, Ihandle *<strong>drop</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:drop_cb(<strong>drop: </strong>ihandle, <strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>drop</strong>:
@@ -216,9 +216,9 @@ the moment the event is generated. The same as
   Action generated when an element in the 
   dropdown list is selected. If returns
   IUP_CONTINUE the value is accepted as a new value and the matrix leaves edition mode.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, Ihandle *<strong>drop</strong>, char *<strong>t</strong>, int <strong>i, </strong>int <strong>v</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, Ihandle *<strong>drop</strong>, char *<strong>t</strong>, int <strong>i, </strong>int <strong>v</strong>); [in C]
 <strong>elem</strong>:dropselect_cb(<strong>lin, col</strong>: number, <strong>drop: </strong>ihandle,<strong> t</strong>: string, <strong>i, v</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua] </pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
     lin, <strong>col</strong>:
@@ -234,9 +234,9 @@ the moment the event is generated. The same as
 <p><strong><a name="EDITION_CB">EDITION_CB</a></strong>:
   Action generated when the current cell 
   enters or leaves the edition mode.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>mode</strong>);  [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>mode</strong>);  [in C]
 <strong>elem</strong>:edition_cb(<strong>lin, col</strong>, <strong>mode</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
     lin, <strong>col</strong>:
@@ -261,9 +261,9 @@ and it is always accepted. </p>
 <p><strong><a name="VALUE_CB">VALUE_CB</a></strong>:
   Action generated to verify the value of a 
   cell. Called both for common cells and for line and column titles.</p>
-<pre>char* function(Ihandle* <strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:value_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
     lin, <strong>col</strong>:
@@ -276,9 +276,9 @@ and it is always accepted. </p>
   that the value of a cell was edited. Since it is a notification, it cannot refuse the value modification (which can be 
   done by the &quot;EDITION_CB&quot; callback). This callback is usually set in callback mode, but also works in 
   normal mode.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>newval</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>newval</strong>); [in C]
 <strong>elem</strong>:value_edit_cb(<strong>lin, col</strong>: number<strong>, newval</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
     lin, <strong>col</strong>:
@@ -288,9 +288,9 @@ and it is always accepted. </p>
 <p><strong><a name="MARK_CB">MARK_CB</a></strong>:
   Action generated to verify the selection 
   state of a cell. Called only for common cells and only in callback mode.</p>
-<pre>int function(Ihandle* <strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<pre>int function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:mark_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -302,9 +302,9 @@ and it is always accepted. </p>
   Action generated to notify the application 
   that the selection state of a cell was changed. Since it is a notification, it cannot refuse the mark modification.
   &nbsp;Called only for common cells and only in callback mode.</p>
-<pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <b>marked</b>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <b>marked</b>); [in C]
 <strong>elem</strong>:markedit_cb(<strong>lin, col, </strong><b>marked</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>self</strong>:
+<p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:

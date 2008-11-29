@@ -44,9 +44,9 @@ spin() [in LED]</pre>
 <p><strong>IupSpinbox</strong> inherits from a <strong>IupHbox</strong> and 
 contains a <strong>IupSpin</strong>.</p>
 <div>
-  <pre>Ihandle* IupSpinbox(Ihandle* <b>ctrl</b>); [in C]
-iup.spinbox{<b>ctrl: </b>ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
-spinbox(<strong>ctrl</strong>)  [in LED]</pre>
+  <pre>Ihandle* IupSpinbox(Ihandle* <b>child</b>); [in C]
+iup.spinbox{<b>child: </b>ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+spinbox(<strong>child</strong>)  [in LED]</pre>
 </div>
   <p>
   <u>Returns:</u> the identifier of the 
@@ -59,7 +59,7 @@ spinbox(<strong>ctrl</strong>)  [in LED]</pre>
 key will set a factor of 2, holding Ctrl a 
   factor of 10, and both a factor of 100.</p>
 <div align="left">
-  <pre>int function(Ihandle *<strong>self</strong>, int <strong>inc</strong>); [in C]
+  <pre>int function(Ihandle *ih, int <strong>inc</strong>); [in C]
 <strong>elem</strong>:spin_cb(<strong>inc</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 </div>
 

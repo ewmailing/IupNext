@@ -241,7 +241,7 @@ also accepted.</p>
 changed. Can be generated when using the keyboard, undo system or from 
 the clipboard.</p>
   
-    <pre>int function(Ihandle *<strong>self</strong>, int <strong>c</strong>, char *<strong>new_value</strong>); [in C]
+    <pre>int function(Ihandle *<strong>ih</strong>, int <strong>c</strong>, char *<strong>new_value</strong>); [in C]
 <strong>elem</strong>:action(<strong>c</strong>: number, <strong>new_value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -265,7 +265,7 @@ the clipboard.</p>
   Action generated when the caret/cursor 
   position is changed. </p>
   
-    <pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>pos</strong>); [in C]
+    <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>pos</strong>); [in C]
 <strong>elem</strong>:caret_cb(<strong>lin</strong>, <b>col, pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -286,7 +286,7 @@ the clipboard.</p>
   Action generated when a spin button is pressed. Valid only when SPIN=YES. 
 	(since 3.0)</p>
   
-    <pre>int function(Ihandle *<strong>self</strong>, int <strong>pos</strong>); [in C]
+    <pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>); [in C]
 <strong>elem</strong>:spin_cb(<b>pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -308,8 +308,8 @@ supported.</p>
 
 
 <h3>Auxiliary Functions</h3>
-<pre>void <strong>IupTextConvertXYToChar</strong>(Ihandle* ih, int x, int y, int *lin, int *col, int *pos); [in C]
-<b>iup.TextConvertXYToChar</b>(<b>ih</b>: ihandle, x, y: number) -&gt; <strong>lin</strong>, <strong>col</strong>, <strong>pos</strong>: number [in Lua]</pre>
+<pre>void <strong>IupTextConvertXYToChar</strong>(Ihandle* <strong>ih</strong>, int <strong>x</strong>, int <strong>y</strong>, int *<strong>lin</strong>, int *<strong>col</strong>, int *<strong>pos</strong>); [in C]
+<b>iup.TextConvertXYToChar</b>(<b>ih</b>: ihandle, <strong>x</strong>, <strong>y</strong>: number) -&gt; <strong>lin</strong>, <strong>col</strong>, <strong>pos</strong>: number [in Lua]</pre>
 <p>Converts a (x,y) coordinates in a (lin, col, pos) character positioning. For single line controls <strong>lin</strong> is always 1, and
 <strong>pos</strong> is always &quot;<strong>col</strong>-1&quot;. (since 3.0)</p>
 

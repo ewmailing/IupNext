@@ -847,6 +847,8 @@ iup_callbacks =
   multiselect = {"MULTISELECT_CB", iup_multiselect_cb},
   filecb      = {"FILE_CB", iup_file_cb},
   mdiactivatecb = {"MDIACTIVATE_CB", iup_mdiactivate_cb},
+  dropdowncb = {"DROPDOWN_CB", iup_dropdown_cb},
+  dblclickcb = {"DBLCLICK_CB", iup_dblclick_cb},
 }
 
 iup_callbacks.action.toggle = iup_action_toggle
@@ -890,3 +892,5 @@ iup_callbacks.edit_cb        = iup_callbacks.edit
 iup_callbacks.multiselect_cb = iup_callbacks.multiselect 
 iup_callbacks.mdiactivate_cb = iup_callbacks.mdiactivatecb
 iup_callbacks.file_cb        = iup_callbacks.filecb 
+iup_callbacks.dropdown_cb    = iup_callbacks.dropdowncb 
+iup_callbacks.dblclick_cb    = iup_callbacks.dblclickcb 

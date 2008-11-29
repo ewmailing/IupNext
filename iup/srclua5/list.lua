@@ -9,6 +9,8 @@ local ctrl = {
      action = "snn", 
      multiselect_cb = "s",
      edit_cb = "ns",
+     dropdown_cb = "n",
+     dblclick_cb = "ns",
    }
 } 
 

@@ -216,7 +216,7 @@ state=0 value.</p>
   &nbsp;Valid only when
   EDITBOX=YES.</p>
   
-    <pre>int function(Ihandle *<strong>self</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>pos</strong>); [in C]
+    <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>pos</strong>); [in C]
 <strong>elem</strong>:caret_cb(<strong>lin</strong>, <b>col, pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -311,8 +311,8 @@ supported.</p>
 
 
 <h3>Auxiliary Functions</h3>
-<pre>void <strong>IupListConvertXYToItem</strong>(Ihandle* ih, int x, int y, int *pos); [in C]
-<b>iup.ListConvertXYToItem</b>(<b>ih</b>: ihandle, x, y: number) -&gt; <strong>pos</strong>: number [in Lua]</pre>
+<pre>void <strong>IupListConvertXYToItem</strong>(Ihandle* <strong>ih</strong>, int <strong>x</strong>, int <strong>y</strong>, int *<strong>pos</strong>); [in C]
+<b>iup.ListConvertXYToItem</b>(<b>ih</b>: ihandle, <strong>x</strong>, <strong>y</strong>: number) -&gt; <strong>pos</strong>: number [in Lua]</pre>
 <p>Converts a (x,y) coordinates in an item position. <strong>pos</strong> gets 
 the 0 value if not over an item. (since 3.0)</p>
 

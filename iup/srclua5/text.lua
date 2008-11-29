@@ -7,7 +7,7 @@ local ctrl = {
   creation = "-", 
   callback = {
     action = "ns",
-    caret_cb = "nn", 
+    caret_cb = "nnn", 
   }
 }
 

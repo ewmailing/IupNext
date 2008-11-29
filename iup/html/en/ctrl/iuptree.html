@@ -168,12 +168,12 @@ tree() [in LED]</pre>
   with Control.</p>
 <h4>Removing a Node with &quot;Del&quot;</h4>
 <p>You can simply implement a K_ANY callback:</p>
-<pre>int k_any(Ihandle* self, int c)
+<pre>int k_any(Ihandle* ih, int c)
 {
   if (c == K_DEL) 
   {
-    IupSetAttribute(self,&quot;DELNODE&quot;,&quot;MARKED&quot;);
-    IupSetAttribute(self,&quot;REDRAW&quot;,&quot;&quot;);
+    IupSetAttribute(ih,&quot;DELNODE&quot;,&quot;MARKED&quot;);
+    IupSetAttribute(ih,&quot;REDRAW&quot;,&quot;&quot;);
   }
   return IUP_DEFAULT;
 }</pre>
@@ -211,10 +211,10 @@ tree() [in LED]</pre>
   a node. In order to do that, you provide the id of the node and the pointer (userid); even 
   if the node's id changes later on, the userid will still be associated with the given node. In IupLua, instead of a 
   pointer the same functions are defined for table and userdata.</p>
-<pre>int IupTreeSetUserId(Ihandle *<strong>self</strong>, int <strong>id</strong>, void *<strong>userid</strong>); [in C]
-iup.TreeSetUserId(<strong>self: </strong>ihandle, <strong>id: </strong>number, <strong>userid: </strong>userdata) [in Lua]
-iup.TreeSetTableId(<strong>self: </strong>ihandle, <strong>id: </strong>number, <strong>table: </strong>table) [in Lua]</pre>
-<p><strong>self</strong>:
+<pre>int IupTreeSetUserId(Ihandle *<strong>ih</strong>, int <strong>id</strong>, void *<strong>userid</strong>); [in C]
+iup.TreeSetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number, <strong>userid: </strong>userdata) [in Lua]
+iup.TreeSetTableId(<strong>ih: </strong>ihandle, <strong>id: </strong>number, <strong>table: </strong>table) [in Lua]</pre>
+<p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user. <br>
 <strong>id</strong>:
       Node identifier. <br>
@@ -228,19 +228,19 @@ iup.TreeSetTableId(<strong>self: </strong>ihandle, <strong>id: </strong>number, 
       means also that the associated object will not be garbage collected until its reference is removed.</p>
 <p>Also, the user should not use the same table to reference different nodes (neither in the same nor across 
       different trees.)</p>
-<pre>void* IupTreeGetUserId(Ihandle *<strong>self</strong>, int <strong>id</strong>); [in C] 
-iup.TreeGetUserId(<strong>self: </strong>ihandle, <strong>id: </strong>number) -&gt; (<b>ret:</b> userdata) [in Lua]
-iup.TreeGetTable(<strong>self: </strong>ihandle, <strong>id: </strong>number) -&gt; (<b>ret:</b> table) [in Lua]</pre>
-<p><strong>self</strong>:
+<pre>void* IupTreeGetUserId(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
+iup.TreeGetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number) -&gt; (<b>ret:</b> userdata) [in Lua]
+iup.TreeGetTable(<strong>ih: </strong>ihandle, <strong>id: </strong>number) -&gt; (<b>ret:</b> table) [in Lua]</pre>
+<p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user. <br>
 <strong>id</strong>:
       Node identifier.</p>
 <p>Returns the pointer or table associated to 
       the node. </p>
-<pre>int IupTreeGetId(Ihandle *<strong>self</strong>, void *<strong>userid</strong>); [in C] 
-iup.TreeGetId(<strong>self: </strong>ihandle, <strong>userid: </strong>userdata) -&gt; (<b>ret:</b> number) [in Lua]
-iup.TreeGetTableId(<strong>self: </strong>ihandle, <strong>table: </strong>table) -&gt; (<b>ret:</b> number) [in Lua]</pre>
-<p><strong>self</strong>:
+<pre>int IupTreeGetId(Ihandle *<strong>ih</strong>, void *<strong>userid</strong>); [in C] 
+iup.TreeGetId(<strong>ih: </strong>ihandle, <strong>userid: </strong>userdata) -&gt; (<b>ret:</b> number) [in Lua]
+iup.TreeGetTableId(<strong>ih: </strong>ihandle, <strong>table: </strong>table) -&gt; (<b>ret:</b> number) [in Lua]</pre>
+<p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user. <br>
 <strong>userid</strong>:
       Pointer associated to the node. <br>
@@ -248,8 +248,8 @@ iup.TreeGetTableId(<strong>self: </strong>ihandle, <strong>table: </strong>table
       Table that should be associated to the node or leaf.</p>
 <p>Returns the id of the node on success and -1 
       (nil) on failure. </p>
-<pre>iup.TreeSetValue(<strong>self: </strong>ihandle, <strong>tree: </strong>table) [in Lua]</pre>
-<p><strong>self</strong>:
+<pre>iup.TreeSetValue(<strong>ih: </strong>ihandle, <strong>tree: </strong>table) [in Lua]</pre>
+<p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user.<br>
 <strong>tree</strong>: table of nodes.</p>
 <p>Initializes the tree using the given Lua table as values for the tree nodes. For example:</p>

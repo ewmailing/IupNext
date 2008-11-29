@@ -2,7 +2,7 @@
  * \brief IULUA core - Bindig of iup to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_widgets.c,v 1.3 2008-11-29 17:13:44 scuri Exp $
+ * $Id: iuplua_widgets.c,v 1.4 2008-11-29 17:47:33 scuri Exp $
  */
  
 #include <string.h>
@@ -122,11 +122,27 @@ static int iupluaCanvasScrollCb(Ihandle *handle, int op, float posx, float posy)
   return iuplua_call();
 }
 
-static int text_caret(Ihandle *handle, int row, int col)
+static int text_caret(Ihandle *handle, int row, int col, int pos)
 {
   iuplua_call_start(handle, "caretcb");
   lua_pushnumber(row);
   lua_pushnumber(col);
+  lua_pushnumber(pos);
+  return iuplua_call();
+}
+                  
+static int list_dblclick_cb(Ihandle *handle, int p0, char * p1)
+{
+  iuplua_call_start(handle, "dblclick_cb");
+  lua_pushnumber(p0);
+  lua_pushstring(p1);
+  return iuplua_call();
+}
+
+static int list_dropdown_cb(Ihandle *handle, int p0)
+{
+  iuplua_call_start(handle, "dropdown_cb");
+  lua_pushnumber(p0);
   return iuplua_call();
 }
 
@@ -579,7 +595,9 @@ int iupluawidgets_open(int tag)
     { "iup_multiselect_cb", (lua_CFunction)list_multiselect},
     { "iup_open_cb", (lua_CFunction)menu_open},
     { "iup_menuclose_cb", (lua_CFunction)menu_close},
-    { "iup_file_cb", (lua_CFunction)file_cb}
+    { "iup_file_cb", (lua_CFunction)file_cb},
+    { "iup_dropdown_cb", (lua_CFunction)list_dropdown_cb},
+    { "iup_dblclick_cb", (lua_CFunction)list_dblclick_cb}
   };
 
   int SizeFuncList = (sizeof(FuncList)/sizeof(struct FuncList));
