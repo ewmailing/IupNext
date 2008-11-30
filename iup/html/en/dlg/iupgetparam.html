@@ -22,8 +22,6 @@
 <p>Shows a modal dialog for capturing 
   parameter
   values using several types of controls.</p>
-<p>This dialog is included in the 
-<a href="../iupcontrols.html">Controls Library</a>. </p>
 <h3><a name="Creation">Creation</a> and Show</h3>
 <dl>
   <dd>
@@ -100,7 +98,7 @@ iup.GetParamParam(<strong>dialog: </strong>ihandle, <b>param_index</b><strong>: 
 <p><strong>dialog</strong>:
     Identifier of the 
     dialog. <br>
-<strong>para_index</strong>: parameter to be retrieved.</p>
+<strong>param_index</strong>: parameter to be retrieved.</p>
 <h3><a name="Notes">Notes</a></h3>
 <p>The format string must have the following 
   format, notice the &quot;\n&quot; at the end</p>
@@ -114,12 +112,13 @@ iup.GetParamParam(<strong>dialog: </strong>ihandle, <b>param_index</b><strong>: 
 <p style="margin-left: 40px">
 <strong>b</strong> = boolean 
         (shows a True/False toggle, use &quot;int&quot; in C)<strong><br>
-i</strong> = integer (shows a integer filtered text 
+i</strong> = integer (shows a integer number filtered text 
         box, use &quot;int&quot; in C)<strong><br>
 r</strong> 
-        = real (shows a real filtered text box, use &quot;float&quot; in C)<strong><br>
+        = real (shows a real number filtered text box, use &quot;float&quot; in C)<strong><br>
 a</strong> = angle in degrees (shows 
-        a real filtered text box and a dial, use &quot;float&quot; in C)<br>
+        a real number filtered text box and a dial [if IupControlsOpen is 
+called], use &quot;float&quot; in C)<br>
 <strong>s</strong> 
         = string (shows a text box, use &quot;char*&quot; in C, it must have 
         room enough for your string)<br>
@@ -149,7 +148,9 @@ must be also specified. <strong>step</strong> is the size of the increment.<br>
         or '<strong>]</strong>'.<strong><br>
 mask</strong> is an optional mask for the 
   <u>string</u> 
-        and <u>multiline</u> types. The dialog uses the <a href="iupmask.html">IupMask</a> internally. In this case we 
+        and <u>multiline</u> types. The dialog uses the 
+<a href="../attrib/iup_mask.html">MASK</a> 
+attribute internally. In this case we 
         do no use the brackets '<strong>[</strong>' and '<strong>]</strong>' to avoid confusion with the specified 
         mask.<br>
 <strong>|item0|item1|item2,...|</strong> are the items of the <u>list</u>. At least 
@@ -163,7 +164,7 @@ empty values to use the default values.</p>
   will not count as parameters.</p>
 <p>The dialog is resizable if it contains a string, a multiline string or a 
   number with a valuator. All the multiline strings will increase size equally in both directions.</p>
-<p>The dialog uses a global attribute called IUP_PARENTDIALOG as the parent dialog if it is defined. It also uses a 
+<p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 
   global attribute called &quot;ICON&quot; as the dialog icon if it is defined.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
