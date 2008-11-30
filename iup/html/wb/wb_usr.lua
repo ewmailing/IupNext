@@ -1049,6 +1049,14 @@ wb_usr.tree =
               link= "dlg/iupgetfile.html"
             },
             {
+              name= {nl= "IupGetColor"},
+              link= "dlg/iupgetcolor.html"
+            },
+            {
+              name= {nl= "IupGetParam"},
+              link= "dlg/iupgetparam.html"
+            },
+            {
               name= {nl= "IupGetText"},
               link= "dlg/iupgettext.html"
             },
@@ -1064,15 +1072,6 @@ wb_usr.tree =
               name= {nl= "IupScanf"},
               link= "dlg/iupscanf.html"
             },
-            { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupGetColor"},
-              link= "dlg/iupgetcolor.html"
-            },
-            {
-              name= {nl= "IupGetParam"},
-              link= "dlg/iupgetparam.html"
-            }
           }
         }
       }
