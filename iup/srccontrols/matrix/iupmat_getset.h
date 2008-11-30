@@ -3,7 +3,6 @@
  * attributes set and get.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_getset.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
 #ifndef __IUPMAT_GETSET_H 
@@ -13,24 +12,24 @@
 extern "C" {
 #endif
 
-void* iMatrixSetCell(Ihandle* ih, int lin, int col, const char* v);
-char* iMatrixGetCell(Ihandle* ih, int lin, int col);
+void* iupMatrixGSSetCell(Ihandle* ih, int lin, int col, const char* v);
+char* iupMatrixGSGetCell(Ihandle* ih, int lin, int col);
 
-void  iMatrixSetFocusPosition (Ihandle* ih, const char* v, int call_cb);
-char* iMatrixGetFocusPosition (Ihandle* ih);
+void  iupMatrixGSSetFocusPosition (Ihandle* ih, const char* v, int call_cb);
+char* iupMatrixGSGetFocusPosition (Ihandle* ih);
 
-void  iMatrixSetColAlign(Ihandle* ih, int col);
+void  iupMatrixGSSetColAlign(Ihandle* ih, int col);
 
-void  iMatrixSetTitleLine  (Ihandle* ih, int lin);
-void  iMatrixSetTitleColumn(Ihandle* ih, int col);
+void  iupMatrixGSSetTitleLine  (Ihandle* ih, int lin);
+void  iupMatrixGSSetTitleColumn(Ihandle* ih, int col);
 
-void  iMatrixSetOrigin(Ihandle* ih, const char* value);
-char* iMatrixGetOrigin(Ihandle* ih);
+void  iupMatrixGSSetOrigin(Ihandle* ih, const char* value);
+char* iupMatrixGSGetOrigin(Ihandle* ih);
 
-void  iMatrixSetRedraw(Ihandle* ih, const char* value);
-void  iMatrixSetRedrawCell (Ihandle* ih, int lin, int col);
+void  iupMatrixGSSetRedraw(Ihandle* ih, const char* value);
+void  iupMatrixGSSetRedrawCell (Ihandle* ih, int lin, int col);
 
-void  iMatrixSetActive(Ihandle* ih, int mode, int lincol, const char* val);
+void  iupMatrixGSSetActive(Ihandle* ih, int mode, int lincol, const char* val);
 
 #ifdef __cplusplus
 }

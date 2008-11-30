@@ -60,12 +60,12 @@ extern "C" {
 #define ITREE_TREE_COLLAPSE_SIZE  ITREE_TREE_COLLAPSE_WIDTH * ITREE_TREE_COLLAPSE_HEIGHT
 #define ITREE_TREE_EXPAND_SIZE    ITREE_TREE_EXPAND_WIDTH   * ITREE_TREE_EXPAND_HEIGHT
 
-void iTreeDrawTree(Ihandle* ih);
+void iupTreeDrawTree(Ihandle* ih);
 
-int  iTreeDrawGetTop(Ihandle* ih);
-int  iTreeDrawGetCanvasTop(Ihandle* ih);
-int  iTreeDrawGetLeft(Ihandle* ih);
-void iTreeDrawSetVisibility(Ihandle* ih);
+int  iupTreeDrawGetTop       (Ihandle* ih);
+int  iupTreeDrawGetCanvasTop (Ihandle* ih);
+int  iupTreeDrawGetLeft      (Ihandle* ih);
+void iupTreeDrawSetVisibility(Ihandle* ih);
   
 #ifdef __cplusplus
 }

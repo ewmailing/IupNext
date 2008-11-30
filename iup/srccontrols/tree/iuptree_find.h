@@ -12,18 +12,18 @@
 extern "C" {
 #endif
 
-int   iTreeFindNodeIdFromXY(Ihandle* ih, int xmouse, int ymouse);
-void  iTreeFindStartEndSelection(Ihandle* ih, int* begin, int* end);
-Node  iTreeFindNodeFromId(Ihandle* ih, int id);
-Node  iTreeFindNodeFromString(Ihandle* ih, const char* id_string);
-Node  iTreeFindMarked(Ihandle* ih, const char* id_string);
-Node  iTreeFindPrevious(Node temp, Node node);
-Node  iTreeFindParent(Ihandle* ih, const char* id_string);
-int   iTreeFindMaxDepth(Node node);
-int   iTreeFindNumNodes(Ihandle* ih);
-float iTreeFindNumNodesInCanvas(Ihandle* ih);
-int   iTreeFindNodeId(Ihandle* ih, Node node);
-int   iTreeFindTotNumNodes(Ihandle* ih);
+int   iupTreeFindNodeIdFromXY(Ihandle* ih, int xmouse, int ymouse);
+void  iupTreeFindStartEndSelection(Ihandle* ih, int* begin, int* end);
+ItreeNodePtr  iupTreeFindNodeFromId(Ihandle* ih, int id);
+ItreeNodePtr  iupTreeFindNodeFromString(Ihandle* ih, const char* id_string);
+ItreeNodePtr  iupTreeFindMarked(Ihandle* ih, const char* id_string);
+ItreeNodePtr  iupTreeFindPrevious(ItreeNodePtr temp, ItreeNodePtr node);
+ItreeNodePtr  iupTreeFindParent(Ihandle* ih, const char* id_string);
+int   iupTreeFindMaxDepth(ItreeNodePtr node);
+int   iupTreeFindNumNodes(Ihandle* ih);
+float iupTreeFindNumNodesInCanvas(Ihandle* ih);
+int   iupTreeFindNodeId(Ihandle* ih, ItreeNodePtr node);
+int   iupTreeFindTotNumNodes(Ihandle* ih);
 
 #ifdef __cplusplus
 }

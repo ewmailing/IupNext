@@ -103,6 +103,8 @@ static IstdMessage iStdMessages[] =
   {"IUP_INTENSITY", {"&Intensity:", "&Intensidade:", NULL}},
   {"IUP_OPACITY", {"&Opacity:", "&Opacidade:", NULL}},
   {"IUP_PALETTE", {"&Palette:", "&Paleta:", NULL}},
+  {"IUP_TRUE", {"True", "Verdadeiro", NULL}},
+  {"IUP_FALSE", {"False", "Falso", NULL}},
   {NULL, {NULL, NULL, NULL}}
 };
 

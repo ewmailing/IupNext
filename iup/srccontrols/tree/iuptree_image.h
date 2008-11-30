@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-void iTreeImageInitializeImages(void);
+void iupTreeImageInitializeImages(void);
   
 #ifdef __cplusplus
 }

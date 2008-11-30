@@ -30,23 +30,23 @@
 #include "iuptree_find.h"
 
 
-int iTreeScrollDown(Ihandle* ih)
+int iupTreeScrollDown(Ihandle* ih)
 {
   if(ih->data->selected_y < ITREE_NODE_Y + ITREE_NODE_Y / 2)
-    IupSetfAttribute(ih, "POSY", "%f", IupGetFloat(ih, "POSY") + IupGetFloat(ih, "DY") / iTreeFindNumNodesInCanvas(ih));
+    IupSetfAttribute(ih, "POSY", "%f", IupGetFloat(ih, "POSY") + IupGetFloat(ih, "DY") / iupTreeFindNumNodesInCanvas(ih));
 
   return IUP_DEFAULT;
 }
 
-int iTreeScrollUp(Ihandle* ih)
+int iupTreeScrollUp(Ihandle* ih)
 {
   if(ih->data->selected_y > ih->data->YmaxC - ITREE_TREE_TOP_MARGIN - ITREE_NODE_Y - ITREE_NODE_Y)
-    IupSetfAttribute(ih, "POSY", "%f", IupGetFloat(ih, "POSY") - IupGetFloat(ih, "DY") / iTreeFindNumNodesInCanvas(ih));
+    IupSetfAttribute(ih, "POSY", "%f", IupGetFloat(ih, "POSY") - IupGetFloat(ih, "DY") / iupTreeFindNumNodesInCanvas(ih));
 
   return IUP_DEFAULT;
 }
 
-int iTreeScrollPgUp(Ihandle* ih)
+int iupTreeScrollPgUp(Ihandle* ih)
 {
   float temp = IupGetFloat(ih, "POSY") - IupGetFloat(ih, "DY");
 
@@ -57,7 +57,7 @@ int iTreeScrollPgUp(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int iTreeScrollPgDn(Ihandle* ih)
+int iupTreeScrollPgDn(Ihandle* ih)
 {
   double temp = IupGetFloat(ih, "POSY") + IupGetFloat(ih, "DY");
 
@@ -68,29 +68,29 @@ int iTreeScrollPgDn(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int iTreeScrollEnd(Ihandle* ih)
+int iupTreeScrollEnd(Ihandle* ih)
 {
   IupSetfAttribute(ih, "POSY", "%f", 1.0 - IupGetFloat(ih, "DY"));
 
   return IUP_DEFAULT;
 }
 
-int iTreeScrollBegin(Ihandle* ih)
+int iupTreeScrollBegin(Ihandle* ih)
 {
   IupSetAttribute(ih, "POSY", "0.0");
 
   return IUP_DEFAULT;
 }
 
-int iTreeScrollShow(Ihandle* ih)
+int iupTreeScrollShow(Ihandle* ih)
 {
   /* If node is above the canvas, scrolls down to make it visible */
   if(ih->data->selected_y > ih->data->YmaxC - ITREE_TREE_TOP_MARGIN)
-    IupSetfAttribute(ih, "POSY", "%f", atof(iTreeGSGetValue(ih)) / (float)iTreeFindNumNodes(ih));
+    IupSetfAttribute(ih, "POSY", "%f", atof(iupTreeGSGetValue(ih)) / (float)iupTreeFindNumNodes(ih));
   else
   /* If node is below the canvas, scrolls up to make it visible */
   if(ih->data->selected_y < 0)
-    IupSetfAttribute(ih, "POSY", "%f", (atof(iTreeGSGetValue(ih)) - (iTreeFindNumNodesInCanvas(ih) - 1)) / (float)iTreeFindNumNodes(ih));
+    IupSetfAttribute(ih, "POSY", "%f", (atof(iupTreeGSGetValue(ih)) - (iupTreeFindNumNodesInCanvas(ih) - 1)) / (float)iupTreeFindNumNodes(ih));
 
   return IUP_DEFAULT;
 }

@@ -12,16 +12,16 @@
 extern "C" {
 #endif
 
-void iTreeCallDragDropCB(Ihandle* ih, int drag_id, int drop_id, int isshift, int iscontrol);
-int  iTreeCallBranchOpenCB(Ihandle* ih, Node n);
-int  iTreeCallBranchCloseCB(Ihandle* ih, Node n);
-void iTreeCallExecuteLeafCB(Ihandle* ih);
-void iTreeCallRenameNodeCB(Ihandle* ih);
-int  iTreeCallShowRenameCB(Ihandle* ih);
-int  iTreeCallRenameCB(Ihandle* ih, char* after);
-int  iTreeCallKeyPressCB(Ihandle* ih, int c, int press);
-void iTreeCallRightClickCB(Ihandle* ih, int id, char* r);
-int  iTreeCallSelectionCB(Ihandle* ih, int node, int s);
+void iupTreeCallbackDragDropCB   (Ihandle* ih, int drag_id, int drop_id, int isshift, int iscontrol);
+int  iupTreeCallbackBranchOpenCB (Ihandle* ih, ItreeNodePtr n);
+int  iupTreeCallbackBranchCloseCB(Ihandle* ih, ItreeNodePtr n);
+void iupTreeCallbackExecuteLeafCB(Ihandle* ih);
+void iupTreeCallbackRenameNodeCB (Ihandle* ih);
+int  iupTreeCallbackShowRenameCB (Ihandle* ih);
+int  iupTreeCallbackRenameCB     (Ihandle* ih, char* after);
+int  iupTreeCallbackKeyPressCB   (Ihandle* ih, int c, int press);
+void iupTreeCallbackRightClickCB (Ihandle* ih, int id, char* r);
+int  iupTreeCallbackSelectionCB  (Ihandle* ih, int node, int s);
 
 #ifdef __cplusplus
 }

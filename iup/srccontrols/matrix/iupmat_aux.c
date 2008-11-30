@@ -3,7 +3,6 @@
  * auxiliary functions
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_aux.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 #include <stdio.h>
@@ -42,7 +41,7 @@
 
 /* Verify if a cell is visible (1) or not (0)
    -> lin, col: cell coordinates               */
-int iMatrixIsCellVisible(Ihandle* ih, int lin, int col)
+int iupMatrixAuxIsCellVisible(Ihandle* ih, int lin, int col)
 {
   /* No lines or columns, the cell is not visible */
   if((ih->data->col.num == 0) || (ih->data->lin.num == 0))
@@ -64,11 +63,11 @@ int iMatrixIsCellVisible(Ihandle* ih, int lin, int col)
    -> x, y - left-bottom coordinates
    -> dx, dy - width and height of the cell                                
 */
-int iMatrixGetCellDim(Ihandle* ih, int lin, int col, int* x, int* y, int* dx, int* dy)
+int iupMatrixAuxGetCellDim(Ihandle* ih, int lin, int col, int* x, int* y, int* dx, int* dy)
 {
   int i;
 
-  if(!iMatrixIsCellVisible(ih, lin, col))
+  if(!iupMatrixAuxIsCellVisible(ih, lin, col))
     return 0;
 
   /* find the position where the column starts */
@@ -92,14 +91,14 @@ int iMatrixGetCellDim(Ihandle* ih, int lin, int col, int* x, int* y, int* dx, in
 
 /* Calculate the size, in pixels, of the invisible columns/lines,
    the left/above of the first column/line.
-   -> m : choose will operate on lines or columns [IMATRIX_MAT_LIN|IMATRIX_MAT_COL]
+   -> m : choose will operate on lines or columns [IMAT_MAT_LIN|IMAT_MAT_COL]
 */
-void iMatrixGetPos(Ihandle* ih, int m)
+void iupMatrixAuxGetPos(Ihandle* ih, int m)
 {
   int i;
-  Tlincol *p;
+  ImatLinColData *p;
 
-  if(m == IMATRIX_MAT_LIN)
+  if(m == IMAT_MAT_LIN)
     p = &(ih->data->lin);
   else
     p = &(ih->data->col);
@@ -111,14 +110,14 @@ void iMatrixGetPos(Ihandle* ih, int m)
 
 /* Calculate which is the last visible column/line of the matrix and
    also its width/height.
-   -> m : choose will operate on lines or columns [IMATRIX_MAT_LIN|IMATRIX_MAT_COL]
+   -> m : choose will operate on lines or columns [IMAT_MAT_LIN|IMAT_MAT_COL]
 */
-void iMatrixGetLastWidth(Ihandle* ih, int m)
+void iupMatrixAuxGetLastWidth(Ihandle* ih, int m)
 {
   int i, soma = 0, osoma;
-  Tlincol *p;
+  ImatLinColData *p;
 
-  if(m == IMATRIX_MAT_LIN)
+  if(m == IMAT_MAT_LIN)
     p = &(ih->data->lin);
   else
     p = &(ih->data->col);
@@ -174,7 +173,7 @@ void iMatrixGetLastWidth(Ihandle* ih, int m)
 /* Return the width of the column of the line titles. Verify if have an value
    set to WIDTH0. If yes, returns the value, already with its size converted
    to pixels. If no, returns the size in pixels of the largest line title        */
-int iMatrixGetTitlelineSize(Ihandle* ih)
+int iupMatrixAuxGetTitlelineSize(Ihandle* ih)
 {
   int i, wt = 0;
   char* tline;
@@ -190,7 +189,7 @@ int iMatrixGetTitlelineSize(Ihandle* ih)
     iupdrvFontGetCharSize(ih, &charwidth, &charheight);
 
     if(iupStrToInt(larg, &wt))
-      wt = (int)((wt/4.) * charwidth) + IMATRIX_DECOR_X;
+      wt = (int)((wt/4.) * charwidth) + IMAT_DECOR_X;
   }
   else 
   {
@@ -198,7 +197,7 @@ int iMatrixGetTitlelineSize(Ihandle* ih)
     if(larg)
     {
       if(iupStrToInt(larg, &wt))
-        wt += IMATRIX_DECOR_X;
+        wt += IMAT_DECOR_X;
     }
     else if(!ih->data->valcb)
     {
@@ -210,7 +209,7 @@ int iMatrixGetTitlelineSize(Ihandle* ih)
       wt = 0;
       for(i = 0; i < ih->data->lin.num; i++)
       {
-        sprintf(aux, IMATRIX_TITLE_LIN, i+1);
+        sprintf(aux, IMAT_TITLE_LIN, i+1);
         tline = iupAttribGetStr(ih, aux);
         if(tline)
         {
@@ -221,7 +220,7 @@ int iMatrixGetTitlelineSize(Ihandle* ih)
       }
 
       if(wt > 0)   /* have title column, add decoration */
-        wt += IMATRIX_DECOR_X;
+        wt += IMAT_DECOR_X;
     }
   }
   return wt;
@@ -230,7 +229,7 @@ int iMatrixGetTitlelineSize(Ihandle* ih)
 /* Return the height of the line of the column titles. Verify if have an value
    set to HEIGHT0. If yes, returns the value, already with its size converted
    to pixels. If no, returns the size in pixels of the largest column title       */
-int iMatrixGetTitlecolumnSize(Ihandle* ih)
+int iupMatrixAuxGetTitlecolumnSize(Ihandle* ih)
 {
   char *alt;
   int ht = 0;
@@ -244,7 +243,7 @@ int iMatrixGetTitlecolumnSize(Ihandle* ih)
     iupdrvFontGetCharSize(ih, &charwidth, &charheight);
   
     if(iupStrToInt(alt, &ht))
-      return (int)((ht/8.) * charheight) + IMATRIX_DECOR_Y;
+      return (int)((ht/8.) * charheight) + IMAT_DECOR_Y;
   }
   else
   {
@@ -252,7 +251,7 @@ int iMatrixGetTitlecolumnSize(Ihandle* ih)
     if(alt)
     {
       if(iupStrToInt(alt, &ht))
-        return ht + IMATRIX_DECOR_Y;
+        return ht + IMAT_DECOR_Y;
     }
     else if(!ih->data->valcb)
     {
@@ -260,18 +259,18 @@ int iMatrixGetTitlecolumnSize(Ihandle* ih)
       int max = 0;
       char* aux = iupStrGetMemory(100);
 
-      for(i = -1; i < ih->data->col.num; i++)  /* Comeca de -1 para verificar celula 0:0 */
+      for(i = -1; i < ih->data->col.num; i++)  /* Initial values is -1 because it is necessary to verify the 0:0 cell */
       {
-        sprintf(aux, IMATRIX_TITLE_COL, i+1);
+        sprintf(aux, IMAT_TITLE_COL, i+1);
         alt = iupAttribGetStr(ih, aux);
         if(alt)
         {
-          iMatrixTextHeight(ih, alt, &ht, NULL, NULL);
+          iupMatrixAuxTextHeight(ih, alt, &ht, NULL, NULL);
           if(ht > max) max = ht;
         }
       }
       if(max)
-        return max + IMATRIX_DECOR_Y;
+        return max + IMAT_DECOR_Y;
     }
   }
   return 0;
@@ -279,7 +278,7 @@ int iMatrixGetTitlecolumnSize(Ihandle* ih)
 
 /* Find the width of a column.
    col : number of the column (0 = first column)  */
-int iMatrixGetColumnWidth(Ihandle* ih, int col)
+int iupMatrixAuxGetColumnWidth(Ihandle* ih, int col)
 {
   int w;
   char* aux = iupStrGetMemory(100);
@@ -299,20 +298,20 @@ int iMatrixGetColumnWidth(Ihandle* ih, int col)
   }
 
   if(!larg)
-    larg = iupAttribGetStrDefault(ih, "WIDTHDEF");  /* Attempts to attribute the default width */
+    larg = IupGetAttribute(ih, "WIDTHDEF");  /* Attempts to attribute the default width */
 
   if(iupStrToInt(larg, &w))
   {
     if(w == 0)
       return 0;
     else if(w < 0)
-      return charwidth * 10 + IMATRIX_DECOR_X;
+      return charwidth * 10 + IMAT_DECOR_X;
     else
     {
       if(pixels)
-        return w + IMATRIX_DECOR_X;
+        return w + IMAT_DECOR_X;
       else
-        return (int)(((w/4.) * charwidth) + IMATRIX_DECOR_X);
+        return (int)(((w/4.) * charwidth) + IMAT_DECOR_X);
     }
   }
   return 0;
@@ -324,7 +323,7 @@ int iMatrixGetColumnWidth(Ihandle* ih, int col)
    returns the size occupied by title.
    -> lin : number of line (0 = first line)
 */
-int iMatrixGetLineHeight(Ihandle* ih, int lin)
+int iupMatrixAuxGetLineHeight(Ihandle* ih, int lin)
 {
   int a, numl;
   char* aux = iupStrGetMemory(100);
@@ -345,12 +344,12 @@ int iMatrixGetLineHeight(Ihandle* ih, int lin)
 
   if(!alt)
   {
-    sprintf(aux, IMATRIX_TITLE_LIN, lin+1);
-    numl = iMatrixTextHeight(ih, iupAttribGetStr(ih, aux), &a, NULL, NULL);
+    sprintf(aux, IMAT_TITLE_LIN, lin+1);
+    numl = iupMatrixAuxTextHeight(ih, iupAttribGetStr(ih, aux), &a, NULL, NULL);
     if(numl > 1)
-      return a + IMATRIX_DECOR_Y;
+      return a + IMAT_DECOR_Y;
 
-    alt  = iupAttribGetStrDefault(ih, "HEIGHTDEF");  /* Attempts to attribute the default height */
+    alt  = IupGetAttribute(ih, "HEIGHTDEF");  /* Attempts to attribute the default height */
   }
   
   if(iupStrToInt(alt, &a))
@@ -358,13 +357,13 @@ int iMatrixGetLineHeight(Ihandle* ih, int lin)
     if(a == 0)
       return 0;
     else if(a < 0)
-      return charheight + IMATRIX_DECOR_Y;
+      return charheight + IMAT_DECOR_Y;
     else
     {
       if(pixels)
-        return a + IMATRIX_DECOR_Y;
+        return a + IMAT_DECOR_Y;
       else
-        return (int)((a/8.) * charheight) + IMATRIX_DECOR_Y;
+        return (int)((a/8.) * charheight) + IMAT_DECOR_Y;
     }
   }
   return 0;
@@ -373,7 +372,7 @@ int iMatrixGetLineHeight(Ihandle* ih, int lin)
 /* Fill the ih->data->col.wh vector with the width of all the columns.
    Calculate the value of ih->data->col.totalwh
 */
-void iMatrixFillWidthVec(Ihandle* ih)
+void iupMatrixAuxFillWidthVec(Ihandle* ih)
 {
   int i;
 
@@ -381,7 +380,7 @@ void iMatrixFillWidthVec(Ihandle* ih)
   ih->data->col.totalwh = 0;
   for(i = 0; i < ih->data->col.num; i++)
   {
-    ih->data->col.wh[i] = iMatrixGetColumnWidth(ih, i);
+    ih->data->col.wh[i] = iupMatrixAuxGetColumnWidth(ih, i);
 /*
     if(ih->data->col.wh[i] > ih->data->col.size)  // This condition was changed the width...
       ih->data->col.wh[i] = ih->data->col.size;   // ih->data->col.size was always zero or a negative value
@@ -393,7 +392,7 @@ void iMatrixFillWidthVec(Ihandle* ih)
 /* Fill the ih->data->lin.wh vector with the height of all the columns.
    Calculate the value of ih->data->lin.totalwh
 */
-void iMatrixFillHeightVec(Ihandle* ih)
+void iupMatrixAuxFillHeightVec(Ihandle* ih)
 {
   int i;
 
@@ -401,7 +400,7 @@ void iMatrixFillHeightVec(Ihandle* ih)
   ih->data->lin.totalwh = 0;
   for(i = 0; i < ih->data->lin.num; i++)
   {
-    ih->data->lin.wh[i] = iMatrixGetLineHeight(ih, i);
+    ih->data->lin.wh[i] = iupMatrixAuxGetLineHeight(ih, i);
 /*
     if(ih->data->lin.wh[i] > ih->data->lin.size)  // This condition was changed the height...
       ih->data->lin.wh[i] = ih->data->lin.size;   // ih->data->lin.size was always zero or a negative value
@@ -410,7 +409,7 @@ void iMatrixFillHeightVec(Ihandle* ih)
   }
 }
 
-/* Given a x, y positon, this function returns the correspondent cell,
+/* Given a x, y position, this function returns the correspondent cell,
    in row and column, being lin = -1 for row title and col = -1 for column title.
    If it is on the vertical scrollbar, col = -2; and on the horizontal scrollbar,
    lin = -2. When the matrix doesn't have columns, col = -2; and doesn't have
@@ -418,7 +417,7 @@ void iMatrixFillHeightVec(Ihandle* ih)
    If the coordinate doesn't have inside the matrix, returns 0.
    When the cell is valid (inside the matrix), returns 1.
 */
-int iMatrixGetLineCol(Ihandle* ih, int x, int y, int* l, int* c)
+int iupMatrixAuxGetLineCol(Ihandle* ih, int x, int y, int* l, int* c)
 {
   int width, lin, col;
 
@@ -482,7 +481,7 @@ int iMatrixGetLineCol(Ihandle* ih, int x, int y, int* l, int* c)
                  the cell coordinate localized in the left top corner of the
                  matrix. The value -1 indicates a line or column title.
 */
-char* iMatrixGetCellValue(Ihandle* ih, int lin, int col)
+char* iupMatrixAuxGetCellValue(Ihandle* ih, int lin, int col)
 {
   char* aux = iupStrGetMemory(100);
 
@@ -498,12 +497,12 @@ char* iMatrixGetCellValue(Ihandle* ih, int lin, int col)
     }
     else if(lin == -1)  /* Column title */
     {
-      sprintf(aux, IMATRIX_TITLE_COL, col+1);
+      sprintf(aux, IMAT_TITLE_COL, col+1);
       return iupAttribGetStr(ih, aux);
     }
     else if(col == -1)  /* Line title */
     {
-      sprintf(aux, IMATRIX_TITLE_LIN, lin+1);
+      sprintf(aux, IMAT_TITLE_LIN, lin+1);
       return iupAttribGetStr(ih, aux);
     }
     else
@@ -515,12 +514,12 @@ char* iMatrixGetCellValue(Ihandle* ih, int lin, int col)
 
 
 /* Get the edit value and update in the structure */
-void iMatrixUpdateCellValue(Ihandle* ih)
+void iupMatrixAuxUpdateCellValue(Ihandle* ih)
 {
   char *valor;
   int  tam=0;
 
-  valor = iMatrixEditGetValue(ih);
+  valor = iupMatrixEditGetValue(ih);
 
   if(ih->data->valeditcb)
   {
@@ -535,7 +534,7 @@ void iMatrixUpdateCellValue(Ihandle* ih)
 
   if(tam != 0)
   {
-    iMatrixMemAlocCell(ih, ih->data->lin.active, ih->data->col.active, tam);
+    iupMatrixMemAlocCell(ih, ih->data->lin.active, ih->data->col.active, tam);
     strcpy(ih->data->v[ih->data->lin.active][ih->data->col.active].value, valor);
   }
   else if(ih->data->v[ih->data->lin.active][ih->data->col.active].value != NULL)
@@ -543,7 +542,7 @@ void iMatrixUpdateCellValue(Ihandle* ih)
 }
 
 /* Call the user callback associated with the event of a cell leave the focus */
-int iMatrixCallLeavecellCb(Ihandle* ih)
+int iupMatrixAuxCallLeavecellCb(Ihandle* ih)
 {
   IFnii cb = (IFnii)IupGetCallback(ih, "LEAVEITEM_CB");
   if(cb)
@@ -558,7 +557,7 @@ int iMatrixCallLeavecellCb(Ihandle* ih)
 
 /* Call the user callback associated with the event of a cell enter the focus */
 
-void iMatrixCallEntercellCb(Ihandle* ih)
+void iupMatrixAuxCallEntercellCb(Ihandle* ih)
 {
   IFnii cb = (IFnii)IupGetCallback(ih, "ENTERITEM_CB");
   if(cb)
@@ -569,7 +568,7 @@ void iMatrixCallEntercellCb(Ihandle* ih)
   }
 }
 
-int iMatrixCallEditionCbLinCol(Ihandle* ih, int lin, int col, int modo)
+int iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int modo)
 {
   int rc = IUP_DEFAULT;
   IFniii cb = (IFniii)IupGetCallback(ih, "EDITION_CB");
@@ -588,7 +587,7 @@ int iMatrixCallEditionCbLinCol(Ihandle* ih, int lin, int col, int modo)
    -> lineh   : number of pixels to draw a line
    -> spacing : number of pixels to the spacing between lines
 */
-int iMatrixTextHeight(Ihandle* ih, char *text, int* totalh, int* lineh, int* spacing)
+int iupMatrixAuxTextHeight(Ihandle* ih, char *text, int* totalh, int* lineh, int* spacing)
 {
   int numlines = 1;
   char *c;
@@ -614,9 +613,9 @@ int iMatrixTextHeight(Ihandle* ih, char *text, int* totalh, int* lineh, int* spa
 
   iupdrvFontGetCharSize(ih, &charwidth, &charheight);
 
-  if(spacing) *spacing = IMATRIX_DECOR_Y/2;
+  if(spacing) *spacing = IMAT_DECOR_Y/2;
   if(lineh  ) *lineh   = charheight;
-  if(totalh ) *totalh  = charheight * numlines + (IMATRIX_DECOR_Y/2) * (numlines-1);
+  if(totalh ) *totalh  = charheight * numlines + (IMAT_DECOR_Y/2) * (numlines-1);
 
   return numlines;
 }
@@ -626,7 +625,7 @@ int iMatrixTextHeight(Ihandle* ih, char *text, int* totalh, int* lineh, int* spa
    -> text : text to analysis
    -> width  : number of pixels to draw, completely, the largest text line
 */
-void iMatrixTextWidth(Ihandle* ih, char *text, int* width)
+void iupMatrixAuxTextWidth(Ihandle* ih, char *text, int* width)
 {
   char *p, *q, *newtext;
   int w, maxwidth=0;

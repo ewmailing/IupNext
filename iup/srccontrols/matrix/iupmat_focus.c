@@ -1,9 +1,9 @@
 /** \file
- * \brief iMatrixrix focus control
+ * \brief iupmatrix focus control
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_focus.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
+ 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,9 +38,9 @@
 /* Verify if the cell that will contain the focus
    is in some visible area of the matrix.
 */
-int iMatrixIsFocusVisible(Ihandle* ih)
+int iupMatrixFocusIsFocusVisible(Ihandle* ih)
 {
-  if (!iMatrixIsCellVisible(ih, ih->data->lin.active, ih->data->col.active))
+  if (!iupMatrixAuxIsCellVisible(ih, ih->data->lin.active, ih->data->col.active))
     return 0;
 
   return 1;
@@ -52,28 +52,28 @@ int iMatrixIsFocusVisible(Ihandle* ih)
    (who called the function must do it...)
    Set the IUP focus to the matrix or to the edit field
 */
-void iMatrixShowFocus(Ihandle* ih)
+void iupMatrixFocusShowFocus(Ihandle* ih)
 {
-  if(!iMatrixIsFocusVisible(ih) || !ih->data->hasiupfocus)
+  if(!iupMatrixFocusIsFocusVisible(ih) || !ih->data->hasiupfocus)
     return;
 
-  iMatrixDrawFocus(ih, ih->data->lin.active, ih->data->col.active, 1);
+  iupMatrixDrawFocus(ih, ih->data->lin.active, ih->data->col.active, 1);
 }
 
 /* Hide the focus representation */
-void iMatrixHideFocus(Ihandle* ih)
+void iupMatrixFocusHideFocus(Ihandle* ih)
 {
-  if(iMatrixIsFocusVisible(ih)) 
-    iMatrixDrawFocus(ih, ih->data->lin.active, ih->data->col.active, 0);
+  if(iupMatrixFocusIsFocusVisible(ih)) 
+    iupMatrixDrawFocus(ih, ih->data->lin.active, ih->data->col.active, 0);
 }
 
 /* Set which cell contains the focus. DO NOT show the focus
-   representation... iMatrixShowFocus is responsible for it.
+   representation... iupMatrixFocusShowFocus is responsible for it.
    MUST NOT be call when the focus representation is visible
    in the screen
    -> lin, col - cell coordinates to receive the focus
 */
-void iMatrixSetFocusPos(Ihandle* ih, int lin, int col)
+void iupMatrixFocusSetFocusPos(Ihandle* ih, int lin, int col)
 {
   ih->data->lin.active = lin;
   ih->data->col.active = col;
@@ -83,24 +83,24 @@ void iMatrixSetFocusPos(Ihandle* ih, int lin, int col)
    many cases where hide/set/show should be called in sequence
    -> lin, col - cell coordinates to receive the focus
 */
-void iMatrixHideSetShowFocus(Ihandle* ih, int lin, int col)
+void iupMatrixFocusHideSetShowFocus(Ihandle* ih, int lin, int col)
 {
-  iMatrixHideFocus(ih);
-  iMatrixSetFocusPos(ih, lin, col);
-  iMatrixShowFocus(ih);
+  iupMatrixFocusHideFocus(ih);
+  iupMatrixFocusSetFocusPos(ih, lin, col);
+  iupMatrixFocusShowFocus(ih);
 }
 
 /* Set the focus position and show it... just a compact way to the
    many cases where set/show should be called in sequence
    -> lin, col - cell coordinates to receive the focus
 */
-void iMatrixSetShowFocus(Ihandle* ih, int lin, int col)
+void iupMatrixFocusSetShowFocus(Ihandle* ih, int lin, int col)
 {
-  iMatrixSetFocusPos(ih, lin, col);
-  iMatrixShowFocus(ih);
+  iupMatrixFocusSetFocusPos(ih, lin, col);
+  iupMatrixFocusShowFocus(ih);
 }
 
-int iMatrixFocusCB(Ihandle* ih, int focus)
+int iupMatrixFocusFocusCB(Ihandle* ih, int focus)
 {
   int err;
   int rc = IUP_DEFAULT;
@@ -122,16 +122,16 @@ int iMatrixFocusCB(Ihandle* ih, int focus)
   {
     if(focus)
     {
-      SetSbV(ih);
-      SetSbH(ih);
+      iupMatrixSetSbV(ih);
+      iupMatrixSetSbH(ih);
 
       ih->data->hasiupfocus = 1;
-      iMatrixShowFocus(ih);
+      iupMatrixFocusShowFocus(ih);
     }
     else
     {
       ih->data->hasiupfocus = 0;
-      iMatrixHideFocus(ih);
+      iupMatrixFocusHideFocus(ih);
     }
 
     if (ih->data->redraw)
@@ -142,9 +142,9 @@ int iMatrixFocusCB(Ihandle* ih, int focus)
   }
 
   if(focus)
-    iMatrixCallEntercellCb(ih);
+    iupMatrixAuxCallEntercellCb(ih);
   else
-    iMatrixCallLeavecellCb(ih);
+    iupMatrixAuxCallLeavecellCb(ih);
 
   return rc;
 }

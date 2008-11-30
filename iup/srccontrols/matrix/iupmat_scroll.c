@@ -3,7 +3,6 @@
  * scrolling
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_scroll.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 #include <stdio.h>
@@ -39,9 +38,9 @@
 #include "iupmat_edit.h"
 
 
-static void iMatrixCb_Scroll         (Ihandle* ih);
-static void iMatrixOpenLineColumn    (Ihandle* ih, int m);
-static void iMatrixGetFirstLineColumn(Ihandle* ih, int pos, int m);
+static void iMatrixScrollCb_Scroll         (Ihandle* ih);
+static void iMatrixScrollOpenLineColumn    (Ihandle* ih, int m);
+static void iMatrixScrollGetFirstLineColumn(Ihandle* ih, int pos, int m);
 
 
 /**************************************************************************/
@@ -50,15 +49,15 @@ static void iMatrixGetFirstLineColumn(Ihandle* ih, int pos, int m);
 
 /* Get columns/lines in the left/top side of the matriz until the last
    column/line is fully visible
-   -> m : Define the mode of operation: lines or columns [IMATRIX_MAT_LIN|IMATRIX_MAT_COL]
+   -> m : Define the mode of operation: lines or columns [IMAT_MAT_LIN|IMAT_MAT_COL]
 */
-static void iMatrixOpenLineColumn(Ihandle* ih, int m)
+static void iMatrixScrollOpenLineColumn(Ihandle* ih, int m)
 {
   int i = 0;
   int old;
-  Tlincol* p;
+  ImatLinColData* p;
 
-  if(m == IMATRIX_MAT_LIN)
+  if(m == IMAT_MAT_LIN)
     p = &(ih->data->lin);
   else
     p = &(ih->data->col);
@@ -70,30 +69,30 @@ static void iMatrixOpenLineColumn(Ihandle* ih, int m)
   {
     i++;
     p->first++;
-    iMatrixGetLastWidth(ih, m);
+    iupMatrixAuxGetLastWidth(ih, m);
   } while(p->last == old &&
           p->last != (p->num - 1) && /* It is not the last column/line */
           p->lastwh != p->wh[p->last]);
 
-  iMatrixGetPos(ih, m);
-  if(m == IMATRIX_MAT_COL)
-    iMatrixScroll(ih, IMATRIX_SCROLL_RIGHT, old, i);
+  iupMatrixAuxGetPos(ih, m);
+  if(m == IMAT_MAT_COL)
+    iupMatrixScroll(ih, IMAT_SCROLL_RIGHT, old, i);
   else
-    iMatrixScroll(ih, IMATRIX_SCROLL_DOWN,  old, i);
+    iupMatrixScroll(ih, IMAT_SCROLL_DOWN,  old, i);
 }
 
 /* Compute which must be the first visible column/line, so that the
    sum of widths of the invisible columns/lines, in the left/top side, is
    as near as possible the value.
    -> pos: size of the line
-   -> m : Define the mode of operation: lines or columns [IMATRIX_MAT_LIN|IMATRIX_MAT_COL]
+   -> m : Define the mode of operation: lines or columns [IMAT_MAT_LIN|IMAT_MAT_COL]
 */
-static void iMatrixGetFirstLineColumn(Ihandle* ih, int pos, int m)
+static void iMatrixScrollGetFirstLineColumn(Ihandle* ih, int pos, int m)
 {
   int i;
-  Tlincol* p;
+  ImatLinColData* p;
 
-  if(m == IMATRIX_MAT_LIN)
+  if(m == IMAT_MAT_LIN)
     p = &(ih->data->lin);
   else
     p = &(ih->data->col);
@@ -116,7 +115,7 @@ static void iMatrixGetFirstLineColumn(Ihandle* ih, int pos, int m)
 /* Callback to report to the user which visualization area of
    the matrix changed.
 */
-static void iMatrixCb_Scroll(Ihandle* ih)
+static void iMatrixScrollCb_Scroll(Ihandle* ih)
 {
   IFnii cb = (IFnii)IupGetCallback(ih, "SCROLLTOP_CB");
 
@@ -135,11 +134,11 @@ static void iMatrixCb_Scroll(Ihandle* ih)
    lines on top or down, using the ScrollImage primitive. To the left, just
    move one column - to the right, can move more than one. On top, just
    move only one column - on down, can move more than one.
-   -> dir : [IMATRIX_SCROLL_LEFT| IMATRIX_SCROLL_RIGHT | IMATRIX_SCROLL_UP | IMATRIX_SCROLL_DOWN]
+   -> dir : [IMAT_SCROLL_LEFT| IMAT_SCROLL_RIGHT | IMAT_SCROLL_UP | IMAT_SCROLL_DOWN]
    -> ref : First column/line to be redrawn when the move is to right or on down.
    -> num : Number of columns/lines to be moved,  when the move is to right or on down.
 */
-void iMatrixScroll(Ihandle* ih, int dir, int ref, int num)
+void iupMatrixScroll(Ihandle* ih, int dir, int ref, int num)
 {
   int x1, x2, y1, y2, xt2, yt2;
   int i;
@@ -152,94 +151,94 @@ void iMatrixScroll(Ihandle* ih, int dir, int ref, int num)
 
   ih->data->redraw = 1;
 
-  if(dir == IMATRIX_SCROLL_LEFT)
+  if(dir == IMAT_SCROLL_LEFT)
   {
     x1  = ih->data->col.titlewh;      /* skip the line title */
     x2 -= ih->data->col.wh[ih->data->col.first];
     if(x1 >= x2)
     {
-     iMatrixDrawMatrix(ih, IMATRIX_DRAW_COL);
+     iupMatrixDrawMatrix(ih, IMAT_DRAW_COL);
      return;
     }
 
     cdCanvasScrollArea(ih->data->cddbuffer, x1, x2, y1, y2, ih->data->col.wh[ih->data->col.first], 0);
 
-    iMatrixDrawColumnTitle(ih, ih->data->col.first, ih->data->col.first);
+    iupMatrixDrawColumnTitle(ih, ih->data->col.first, ih->data->col.first);
 
-    iMatrixSetCdFrameColor(ih);
+    iupMatrixCDSetCdFrameColor(ih);
     cdCanvasLine(ih->data->cddbuffer, ih->data->XmaxC, y1, ih->data->XmaxC, y2);
 
-    iMatrixDrawCells(ih, ih->data->lin.first, ih->data->col.first, ih->data->lin.last, ih->data->col.first);
+    iupMatrixDrawCells(ih, ih->data->lin.first, ih->data->col.first, ih->data->lin.last, ih->data->col.first);
   }
-  else if(dir == IMATRIX_SCROLL_UP)
+  else if(dir == IMAT_SCROLL_UP)
   {
     y2 -= ih->data->lin.titlewh;      /* skip the column title */
     y1 += ih->data->lin.wh[ih->data->lin.first];
     if(y1 >= y2)
     {
-     iMatrixDrawMatrix(ih, IMATRIX_DRAW_LIN);
+     iupMatrixDrawMatrix(ih, IMAT_DRAW_LIN);
      return;
     }
 
     cdCanvasScrollArea(ih->data->cddbuffer, x1, x2, y1, y2, 0, -ih->data->lin.wh[ih->data->lin.first]);
-    iMatrixDrawLineTitle(ih, ih->data->lin.first, ih->data->lin.first);
-    iMatrixDrawCells(ih, ih->data->lin.first, ih->data->col.first, ih->data->lin.first, ih->data->col.last);
+    iupMatrixDrawLineTitle(ih, ih->data->lin.first, ih->data->lin.first);
+    iupMatrixDrawCells(ih, ih->data->lin.first, ih->data->col.first, ih->data->lin.first, ih->data->col.last);
   }
-  else if(dir == IMATRIX_SCROLL_RIGHT)
+  else if(dir == IMAT_SCROLL_RIGHT)
   {
     x1 = ih->data->col.titlewh;      /* skip the line title */
     for(i = 1; i <= num; i++)
       x1 += ih->data->col.wh[ih->data->col.first-i];
     if(x1 >= x2)
     {
-     iMatrixDrawMatrix(ih, IMATRIX_DRAW_COL);
+     iupMatrixDrawMatrix(ih, IMAT_DRAW_COL);
      return;
     }
 
     cdCanvasScrollArea(ih->data->cddbuffer, x1, x2/*-1*/, y1, y2, ih->data->col.titlewh-x1, 0);
 
-    xt2 = iMatrixDrawColumnTitle(ih, ref, ih->data->col.last);
+    xt2 = iupMatrixDrawColumnTitle(ih, ref, ih->data->col.last);
 
     if(xt2 < x2)          /* clear the right area that doesn't have column */
     {
-      iMatrixDrawEmptyArea(ih, xt2, x2, y1, y2);
+      iupMatrixDrawEmptyArea(ih, xt2, x2, y1, y2);
     }
     else
     {
-      iMatrixSetCdFrameColor(ih);
+      iupMatrixCDSetCdFrameColor(ih);
       cdCanvasLine(ih->data->cddbuffer, x2, y1, x2, y2);
     }
 
     /* draw the cells */
-    iMatrixDrawCells(ih, ih->data->lin.first, ref, ih->data->lin.last, ih->data->col.last);
+    iupMatrixDrawCells(ih, ih->data->lin.first, ref, ih->data->lin.last, ih->data->col.last);
   }
-  else if(dir == IMATRIX_SCROLL_DOWN)
+  else if(dir == IMAT_SCROLL_DOWN)
   {
     y2 -= ih->data->lin.titlewh;      /* skip the column title */
     for(i = 1; i <= num; i++)
       y2 -= ih->data->lin.wh[ih->data->lin.first-i];
     if(y1 >= y2)
     {
-     iMatrixDrawMatrix(ih, IMATRIX_DRAW_LIN);
+     iupMatrixDrawMatrix(ih, IMAT_DRAW_LIN);
      return;
     }
 
     cdCanvasScrollArea(ih->data->cddbuffer, x1, x2/*-1*/, y1, y2, 0, ih->data->YmaxC-ih->data->lin.titlewh-y2);
 
-    yt2 = iMatrixDrawLineTitle(ih, ref, ih->data->lin.last);
+    yt2 = iupMatrixDrawLineTitle(ih, ref, ih->data->lin.last);
 
     if(yt2 < y1)          /* clear the right area that doesn't have column */
     {
-     iMatrixDrawEmptyArea(ih, x1, x2, y1, yt2);
+     iupMatrixDrawEmptyArea(ih, x1, x2, y1, yt2);
     }
     else
     {
-     iMatrixSetCdFrameColor(ih);
+     iupMatrixCDSetCdFrameColor(ih);
      cdCanvasLine(ih->data->cddbuffer, x1, y1, x2, y1);
     }
 
     /* desenha as celulas */
-    iMatrixDrawCells(ih, ref, ih->data->col.first, ih->data->lin.last, ih->data->col.last);
+    iupMatrixDrawCells(ih, ref, ih->data->col.first, ih->data->lin.last, ih->data->col.last);
   }
 }
 
@@ -254,27 +253,27 @@ void iMatrixScroll(Ihandle* ih, int dir, int ref, int num)
    functions, verifying if it is necessary to call or not the scroll
    callback. This is only done here.
    -> func - pointer to the function that will make the movement
-   -> modo - parameter passed to func, specify if the movement request is of
+   -> mode - parameter passed to func, specify if the movement request is of
              the scrollbar or the keyboard
    -> pos  - parameter passed to func, that will be the handle position function
              of the scrollbar, returning the scrollbar thumb position...
              if func is other function, this parameter will be ignored
    -> m    - parameter passed to func, specify which is the mode of operation:
-             lines or columns [IMATRIX_MAT_LIN|IMATRIX_MAT_COL]
+             lines or columns [IMAT_MAT_LIN|IMAT_MAT_COL]
 */
-int iMatrixScrollMoveCursor(iMatrixScrollMoveF func, Ihandle* ih, int modo, float pos, int m)
+int iupMatrixScrollMoveCursor(iupMatrixScrollMoveF func, Ihandle* ih, int mode, float pos, int m)
 {
   int oldfl  = ih->data->lin.first;
   int oldfc  = ih->data->col.first;
   int oldlin = ih->data->lin.active;
   int oldcol = ih->data->col.active;
 
-  iMatrixEditCheckHidden(ih);
+  iupMatrixEditCheckHidden(ih);
 
-  func(ih, modo, pos, m);
+  func(ih, mode, pos, m);
 
   if(ih->data->lin.first != oldfl || ih->data->col.first != oldfc)
-    iMatrixCb_Scroll(ih);
+    iMatrixScrollCb_Scroll(ih);
 
   if(ih->data->lin.active != oldlin || ih->data->col.active != oldcol)
     return 1;
@@ -286,24 +285,24 @@ int iMatrixScrollMoveCursor(iMatrixScrollMoveF func, Ihandle* ih, int modo, floa
    Call the scroll callback, if necessary.
    -> lin, col : cell coordinates that will contain the focus.
 */
-void iMatrixScrollOpen(Ihandle* ih, int lin, int col)
+void iupMatrixScrollOpen(Ihandle* ih, int lin, int col)
 {
   int oldfl = ih->data->lin.first;
   int oldfc = ih->data->col.first;
 
   if(col == ih->data->col.last && ih->data->col.lastwh != ih->data->col.wh[ih->data->col.last])
   {
-    iMatrixOpenLineColumn(ih, IMATRIX_MAT_COL);
-    SetSbH(ih);
+    iMatrixScrollOpenLineColumn(ih, IMAT_MAT_COL);
+    iupMatrixSetSbH(ih);
   }
   if(lin == ih->data->lin.last && ih->data->lin.lastwh != ih->data->lin.wh[ih->data->lin.last])
   {
-    iMatrixOpenLineColumn(ih, IMATRIX_MAT_LIN);
-    SetSbV(ih);
+    iMatrixScrollOpenLineColumn(ih, IMAT_MAT_LIN);
+    iupMatrixSetSbV(ih);
   }
 
   if(ih->data->lin.first != oldfl || ih->data->col.first != oldfc)
-    iMatrixCb_Scroll(ih);
+    iMatrixScrollCb_Scroll(ih);
 }
 
 /* This function is called when the "home" key is pressed.
@@ -312,51 +311,51 @@ void iMatrixScrollOpen(Ihandle* ih, int lin, int col)
    In the third time, go to the beginning of the matrix.
    -> mode and pos : DO NOT USED.
 */
-void iMatrixScrollHome(Ihandle* ih, int mode, float pos, int m)
+void iupMatrixScrollHome(Ihandle* ih, int mode, float pos, int m)
 {
   (void)m;
   (void)mode;
   (void)pos;
 
-  if(iMatrixGetHomeKeyCount() == 0)  /* go to the beginning of the line */
+  if(iupMatrixKeyGetHomeKeyCount() == 0)  /* go to the beginning of the line */
   {
     if(ih->data->col.active != 0)
     {
-      iMatrixHideFocus(ih);
+      iupMatrixFocusHideFocus(ih);
       if(ih->data->col.first != 0)
       {
         ih->data->col.first = 0;
         while(ih->data->col.first < ih->data->col.num && ih->data->col.wh[ih->data->col.first] == 0)
           ih->data->col.first++;
 
-        iMatrixGetLastWidth(ih, IMATRIX_MAT_COL);
-        iMatrixGetPos(ih, IMATRIX_MAT_COL);
-        SetSbH(ih);
-        iMatrixDrawMatrix(ih, IMATRIX_DRAW_COL);
+        iupMatrixAuxGetLastWidth(ih, IMAT_MAT_COL);
+        iupMatrixAuxGetPos(ih, IMAT_MAT_COL);
+        iupMatrixSetSbH(ih);
+        iupMatrixDrawMatrix(ih, IMAT_DRAW_COL);
       }
-      iMatrixSetShowFocus(ih, ih->data->lin.active, ih->data->col.first);
+      iupMatrixFocusSetShowFocus(ih, ih->data->lin.active, ih->data->col.first);
     }
   }
-  else if(iMatrixGetHomeKeyCount() == 1)   /* go to the beginning of the page */
+  else if(iupMatrixKeyGetHomeKeyCount() == 1)   /* go to the beginning of the page */
   {
     if(ih->data->lin.active != ih->data->lin.first)
     {
-      iMatrixHideSetShowFocus(ih, ih->data->lin.first, ih->data->col.first);
+      iupMatrixFocusHideSetShowFocus(ih, ih->data->lin.first, ih->data->col.first);
     }
   }
-  else if(iMatrixGetHomeKeyCount() == 2)   /* go to the beginning of the matrix 1:1 */
+  else if(iupMatrixKeyGetHomeKeyCount() == 2)   /* go to the beginning of the matrix 1:1 */
   {
     if(ih->data->lin.active != 0)
     {
-      iMatrixHideFocus(ih);
+      iupMatrixFocusHideFocus(ih);
       ih->data->lin.first = 0;
       while(ih->data->lin.first < ih->data->lin.num && ih->data->lin.wh[ih->data->lin.first] == 0)
         ih->data->lin.first++;
-      iMatrixGetLastWidth(ih, IMATRIX_MAT_LIN);
-      iMatrixGetPos(ih, IMATRIX_MAT_LIN);
-      SetSbV(ih);
-      iMatrixDrawMatrix(ih, IMATRIX_DRAW_LIN);
-      iMatrixSetShowFocus(ih, 0, ih->data->col.first);
+      iupMatrixAuxGetLastWidth(ih, IMAT_MAT_LIN);
+      iupMatrixAuxGetPos(ih, IMAT_MAT_LIN);
+      iupMatrixSetSbV(ih);
+      iupMatrixDrawMatrix(ih, IMAT_DRAW_LIN);
+      iupMatrixFocusSetShowFocus(ih, 0, ih->data->col.first);
     }
   }
 }
@@ -367,17 +366,17 @@ void iMatrixScrollHome(Ihandle* ih, int mode, float pos, int m)
    In the third time, go to the end of the matrix.
    -> mode and pos : DO NOT USED.
 */
-void iMatrixScrollEnd(Ihandle* ih, int mode, float pos, int m)
+void iupMatrixScrollEnd(Ihandle* ih, int mode, float pos, int m)
 {
   (void)m;
   (void)mode;
   (void)pos;
 
-  if(iMatrixGetEndKeyCount() == 0)  /* go to the end of the line */
+  if(iupMatrixKeyGetEndKeyCount() == 0)  /* go to the end of the line */
   {
     if(ih->data->col.active != ih->data->col.num-1)
     {
-      iMatrixHideFocus(ih);
+      iupMatrixFocusHideFocus(ih);
       if(ih->data->col.last != ih->data->col.num-1 ||
          ih->data->col.wh[ih->data->col.last] != ih->data->col.lastwh)
       {
@@ -400,31 +399,31 @@ void iMatrixScrollEnd(Ihandle* ih, int mode, float pos, int m)
           soma -= ih->data->col.wh[i];
 
         ih->data->col.pos = ih->data->col.totalwh - soma;
-        SetSbH(ih);
-        iMatrixDrawMatrix(ih, IMATRIX_DRAW_COL);
+        iupMatrixSetSbH(ih);
+        iupMatrixDrawMatrix(ih, IMAT_DRAW_COL);
       }
-      iMatrixSetShowFocus(ih, ih->data->lin.active, ih->data->col.last);
+      iupMatrixFocusSetShowFocus(ih, ih->data->lin.active, ih->data->col.last);
     }
   }
-  else if(iMatrixGetEndKeyCount() == 1)   /* go to the end of the page */
+  else if(iupMatrixKeyGetEndKeyCount() == 1)   /* go to the end of the page */
   {
     if(ih->data->lin.active != ih->data->lin.last ||
        ih->data->lin.wh[ih->data->lin.last] != ih->data->lin.lastwh)
     {
       int old = ih->data->lin.last;
-      iMatrixHideFocus(ih);
+      iupMatrixFocusHideFocus(ih);
       if(ih->data->lin.wh[ih->data->lin.last] != ih->data->lin.lastwh)
-        iMatrixOpenLineColumn(ih, IMATRIX_MAT_LIN);
-      iMatrixSetShowFocus(ih, old, ih->data->col.active);
-      SetSbV(ih);
+        iMatrixScrollOpenLineColumn(ih, IMAT_MAT_LIN);
+      iupMatrixFocusSetShowFocus(ih, old, ih->data->col.active);
+      iupMatrixSetSbV(ih);
     }
   }
-  else if(iMatrixGetEndKeyCount() == 2)   /* go to the end of the matrix */
+  else if(iupMatrixKeyGetEndKeyCount() == 2)   /* go to the end of the matrix */
   {
     if(ih->data->lin.active != ih->data->lin.num-1)
     {
       int i, soma;
-      iMatrixHideFocus(ih);
+      iupMatrixFocusHideFocus(ih);
 
       ih->data->lin.last = ih->data->lin.num-1;
       while(ih->data->lin.last > 0 && ih->data->lin.wh[ih->data->lin.last] == 0)
@@ -444,26 +443,26 @@ void iMatrixScrollEnd(Ihandle* ih, int mode, float pos, int m)
 
       ih->data->lin.pos = ih->data->lin.totalwh - soma;
 
-      SetSbV(ih);
-      iMatrixDrawMatrix(ih, IMATRIX_DRAW_LIN);
-      iMatrixSetShowFocus(ih, ih->data->lin.num-1, ih->data->col.active);
+      iupMatrixSetSbV(ih);
+      iupMatrixDrawMatrix(ih, IMAT_DRAW_LIN);
+      iupMatrixFocusSetShowFocus(ih, ih->data->lin.num-1, ih->data->col.active);
     }
   }
 }
 
 /* This function is called to move a cell to the left or up.
-   -> modo : indicate if the command was from the keyboard or the scrollbar. If scrollbar,
+   -> mode : indicate if the command was from the keyboard or the scrollbar. If scrollbar,
              do not change the focus.
    -> pos  : DO NOT USED
-   -> m    : define the mode of operation: lines or columns [IMATRIX_MAT_LIN|IMATRIX_MAT_COL]
+   -> m    : define the mode of operation: lines or columns [IMAT_MAT_LIN|IMAT_MAT_COL]
 */
-void iMatrixScrollLeftUp(Ihandle* ih, int modo, float pos, int m)
+void iupMatrixScrollLeftUp(Ihandle* ih, int mode, float pos, int m)
 {
   int nextfirst, nextactive;
-  Tlincol* p;
+  ImatLinColData* p;
   (void)pos;
 
-  if(m == IMATRIX_MAT_LIN)
+  if(m == IMAT_MAT_LIN)
     p = &(ih->data->lin);
   else
     p = &(ih->data->col);
@@ -477,63 +476,63 @@ void iMatrixScrollLeftUp(Ihandle* ih, int modo, float pos, int m)
     nextactive--;
 
   /* if the command was from the scrollbar or if the focus is on the first column/line */
-  if(modo == SCROLL || nextactive < p->first)
+  if(mode == IMAT_SCROLL || nextactive < p->first)
   {
     int old = p->first;
 
     if(nextfirst < 0)
       return;
 
-    iMatrixHideFocus(ih);
+    iupMatrixFocusHideFocus(ih);
 
     p->first = nextfirst;
-    iMatrixGetLastWidth(ih, m);
-    iMatrixGetPos(ih, m);
+    iupMatrixAuxGetLastWidth(ih, m);
+    iupMatrixAuxGetPos(ih, m);
 
-    if(m == IMATRIX_MAT_COL)
-      iMatrixScroll(ih, IMATRIX_SCROLL_LEFT, old, old-nextfirst);
+    if(m == IMAT_MAT_COL)
+      iupMatrixScroll(ih, IMAT_SCROLL_LEFT, old, old-nextfirst);
     else
-      iMatrixScroll(ih, IMATRIX_SCROLL_UP, old, old-nextfirst);
+      iupMatrixScroll(ih, IMAT_SCROLL_UP, old, old-nextfirst);
 
-    SetSb(ih, m);
+    iupMatrixSetSb(ih, m);
 
-    if(m == IMATRIX_MAT_COL)
-      iMatrixSetShowFocus(ih, ih->data->lin.active, modo==SCROLL ? ih->data->col.active : nextfirst);
+    if(m == IMAT_MAT_COL)
+      iupMatrixFocusSetShowFocus(ih, ih->data->lin.active, mode==IMAT_SCROLL ? ih->data->col.active : nextfirst);
     else
-      iMatrixSetShowFocus(ih, modo == SCROLL ? ih->data->lin.active : nextfirst, ih->data->col.active);
+      iupMatrixFocusSetShowFocus(ih, mode == IMAT_SCROLL ? ih->data->lin.active : nextfirst, ih->data->col.active);
   }
   else
   {
     if(nextactive < 0)
       return;
-    if(m == IMATRIX_MAT_COL)
-      iMatrixHideSetShowFocus(ih, ih->data->lin.active, nextactive);
+    if(m == IMAT_MAT_COL)
+      iupMatrixFocusHideSetShowFocus(ih, ih->data->lin.active, nextactive);
     else
-      iMatrixHideSetShowFocus(ih, nextactive, ih->data->col.active);
+      iupMatrixFocusHideSetShowFocus(ih, nextactive, ih->data->col.active);
   }
 }
 
 /* This function is called to move a cell to the right or down.
-   -> modo : indicate if the command from the keyboard or the scrollbar. If scrollbar,
+   -> mode : indicate if the command from the keyboard or the scrollbar. If scrollbar,
              do not change the focus.
    -> pos  : DO NOT USED
-   -> m    : define the mode of operation: lines or columns [IMATRIX_MAT_LIN|IMATRIX_MAT_COL]
+   -> m    : define the mode of operation: lines or columns [IMAT_MAT_LIN|IMAT_MAT_COL]
 */
-void iMatrixScrollRightDown(Ihandle* ih, int modo, float pos, int m)
+void iupMatrixScrollRightDown(Ihandle* ih, int mode, float pos, int m)
 {
   int old;
   int next;
-  Tlincol* p;
+  ImatLinColData* p;
   (void)pos;
 
-  if(m == IMATRIX_MAT_LIN)
+  if(m == IMAT_MAT_LIN)
     p = &(ih->data->lin);
   else
     p = &(ih->data->col);
 
   old = p->last;
 
-  if(modo == KEY)
+  if(mode == IMAT_KEY)
   {
     int abre = 0;
     /* In the last line/column, but not fully visible.
@@ -560,23 +559,23 @@ void iMatrixScrollRightDown(Ihandle* ih, int modo, float pos, int m)
     /* If it is necessary to open some line/column */
     if(abre)
     {
-      iMatrixHideFocus(ih);
-      iMatrixOpenLineColumn(ih, m);
-      SetSb(ih, m);
-      if(m == IMATRIX_MAT_COL)
-        iMatrixSetShowFocus(ih, ih->data->lin.active, next);
+      iupMatrixFocusHideFocus(ih);
+      iMatrixScrollOpenLineColumn(ih, m);
+      iupMatrixSetSb(ih, m);
+      if(m == IMAT_MAT_COL)
+        iupMatrixFocusSetShowFocus(ih, ih->data->lin.active, next);
       else
-        iMatrixSetShowFocus(ih, next, ih->data->col.active);
+        iupMatrixFocusSetShowFocus(ih, next, ih->data->col.active);
     }
     else
     {
-      if(m == IMATRIX_MAT_COL)
-        iMatrixHideSetShowFocus(ih, ih->data->lin.active, next);
+      if(m == IMAT_MAT_COL)
+        iupMatrixFocusHideSetShowFocus(ih, ih->data->lin.active, next);
       else
-        iMatrixHideSetShowFocus(ih, next, ih->data->col.active);
+        iupMatrixFocusHideSetShowFocus(ih, next, ih->data->col.active);
     }
   }
-  else  /* SCROLL */
+  else  /* IMAT_SCROLL */
   {
     int oldf = p->first;
 
@@ -594,35 +593,35 @@ void iMatrixScrollRightDown(Ihandle* ih, int modo, float pos, int m)
     if(p->first >= p->num)
       return;
 
-    iMatrixGetLastWidth(ih, m);
-    iMatrixGetPos(ih, m);
+    iupMatrixAuxGetLastWidth(ih, m);
+    iupMatrixAuxGetPos(ih, m);
 
-    iMatrixHideFocus(ih);
-    if(m == IMATRIX_MAT_COL)
-      iMatrixScroll(ih, IMATRIX_SCROLL_RIGHT, old, p->first-oldf);
+    iupMatrixFocusHideFocus(ih);
+    if(m == IMAT_MAT_COL)
+      iupMatrixScroll(ih, IMAT_SCROLL_RIGHT, old, p->first-oldf);
     else
-      iMatrixScroll(ih, IMATRIX_SCROLL_DOWN,  old, p->first-oldf);
+      iupMatrixScroll(ih, IMAT_SCROLL_DOWN,  old, p->first-oldf);
 
-    SetSb(ih, m);
+    iupMatrixSetSb(ih, m);
 
-    iMatrixShowFocus(ih);
+    iupMatrixFocusShowFocus(ih);
   }
 }
 
 /* This function is called to move a page to the left or up.
-   -> modo : indicate if the command was from the keyboard or the scrollbar. If scrollbar,
+   -> mode : indicate if the command was from the keyboard or the scrollbar. If scrollbar,
              do not change the focus.
    -> pos  : DO NOT USED
-   -> m    : define the mode of operation: lines (PgLeft) or columns (PgUp) [IMATRIX_MAT_LIN|IMATRIX_MAT_COL]
+   -> m    : define the mode of operation: lines (PgLeft) or columns (PgUp) [IMAT_MAT_LIN|IMAT_MAT_COL]
 */
-void iMatrixScrollPgLeftUp(Ihandle* ih, int mode, float pos, int m)
+void iupMatrixScrollPgLeftUp(Ihandle* ih, int mode, float pos, int m)
 {
   int soma;
-  Tlincol* p;
+  ImatLinColData* p;
   int old;
   (void)pos;
 
-  if(m == IMATRIX_MAT_LIN)
+  if(m == IMAT_MAT_LIN)
     p = &(ih->data->lin);
   else
     p = &(ih->data->col);
@@ -632,8 +631,8 @@ void iMatrixScrollPgLeftUp(Ihandle* ih, int mode, float pos, int m)
     /* If it is the first page of the matrix, and the command was from the keyboard,
        then change the focus to the start of page.
     */
-    if(mode == KEY)
-      iMatrixHideSetShowFocus(ih, 0, ih->data->col.active);
+    if(mode == IMAT_KEY)
+      iupMatrixFocusHideSetShowFocus(ih, 0, ih->data->col.active);
     return;
   }
 
@@ -648,40 +647,40 @@ void iMatrixScrollPgLeftUp(Ihandle* ih, int mode, float pos, int m)
      p->first--;
   }
 
-  iMatrixGetLastWidth(ih, m);
-  iMatrixGetPos(ih, m);
+  iupMatrixAuxGetLastWidth(ih, m);
+  iupMatrixAuxGetPos(ih, m);
 
-  iMatrixHideFocus(ih);
-  SetSb(ih, m);
-  iMatrixDrawMatrix(ih, m);
+  iupMatrixFocusHideFocus(ih);
+  iupMatrixSetSb(ih, m);
+  iupMatrixDrawMatrix(ih, m);
 
-  if(mode == KEY)
+  if(mode == IMAT_KEY)
   {
-    /* If mode == KEY, m == IMATRIX_MAT_LIN, and there is not PgLeft
+    /* If mode == IMAT_KEY, m == IMAT_MAT_LIN, and there is not PgLeft
        on the key
     */
     int newl = ih->data->lin.active + (p->first - old);
     if(newl <= 0)
       newl = 0;
-    iMatrixSetShowFocus(ih, newl, ih->data->col.active);
+    iupMatrixFocusSetShowFocus(ih, newl, ih->data->col.active);
   }
   else
-    iMatrixSetShowFocus(ih, ih->data->lin.active, ih->data->col.active);
+    iupMatrixFocusSetShowFocus(ih, ih->data->lin.active, ih->data->col.active);
 }
 
 /* This function is called to move a page to the right or down.
-   -> modo : indicate if the command was from the keyboard or the scrollbar. If scrollbar,
+   -> mode : indicate if the command was from the keyboard or the scrollbar. If scrollbar,
              do not change the focus.
    -> pos  : DO NOT USED
-   -> m    : define the mode of operation: lines (PgDown) or columns (PgRight) [IMATRIX_MAT_LIN|IMATRIX_MAT_COL]
+   -> m    : define the mode of operation: lines (PgDown) or columns (PgRight) [IMAT_MAT_LIN|IMAT_MAT_COL]
 */
-void iMatrixScrollPgRightDown(Ihandle* ih, int mode, float pos, int m)
+void iupMatrixScrollPgRightDown(Ihandle* ih, int mode, float pos, int m)
 {
-  Tlincol* p;
+  ImatLinColData* p;
   int old;
   (void)pos;
 
-  if(m == IMATRIX_MAT_LIN)
+  if(m == IMAT_MAT_LIN)
     p = &(ih->data->lin);
   else
     p = &(ih->data->col);
@@ -694,12 +693,12 @@ void iMatrixScrollPgRightDown(Ihandle* ih, int mode, float pos, int m)
        and the command was from the keyboard,
        then change the focus to the last line.
     */
-    if(mode == KEY)
-      iMatrixHideSetShowFocus(ih, p->num-1, ih->data->col.active);
+    if(mode == IMAT_KEY)
+      iupMatrixFocusHideSetShowFocus(ih, p->num-1, ih->data->col.active);
     return;
   }
 
-  iMatrixHideFocus(ih);
+  iupMatrixFocusHideFocus(ih);
 
   old = p->first;
   /* Next first column = old last visible.
@@ -709,26 +708,26 @@ void iMatrixScrollPgRightDown(Ihandle* ih, int mode, float pos, int m)
   p->first = p->last;
   if(p->wh[p->last] == p->lastwh)
     p->first++;
-  iMatrixGetLastWidth(ih, m);
-  iMatrixGetPos(ih, m);
-  SetSb(ih, m);
-  iMatrixDrawMatrix(ih, m);
+  iupMatrixAuxGetLastWidth(ih, m);
+  iupMatrixAuxGetPos(ih, m);
+  iupMatrixSetSb(ih, m);
+  iupMatrixDrawMatrix(ih, m);
 
-  if(mode == KEY)
+  if(mode == IMAT_KEY)
   {
-    /* If mode == KEY, m == IMATRIX_MAT_LIN, and there is not PgRight
+    /* If mode == IMAT_KEY, m == IMAT_MAT_LIN, and there is not PgRight
        on the key
     */
     int newl = ih->data->lin.active + (p->first - old);
     if(newl > p->num-1)
       newl = p->num-1;
-    iMatrixSetShowFocus(ih, newl, ih->data->col.active);
+    iupMatrixFocusSetShowFocus(ih, newl, ih->data->col.active);
   }
   else
-    iMatrixSetShowFocus(ih, ih->data->lin.active, ih->data->col.active);
+    iupMatrixFocusSetShowFocus(ih, ih->data->lin.active, ih->data->col.active);
 }
 
-void iMatrixScrollCr(Ihandle* ih, int mode, float pos, int m)
+void iupMatrixScrollCr(Ihandle* ih, int mode, float pos, int m)
 {
   int redraw = 0;
   int lin = 0, col = 0; /* random initialization */
@@ -736,7 +735,7 @@ void iMatrixScrollCr(Ihandle* ih, int mode, float pos, int m)
   int oldlin = ih->data->lin.active;
   int oldcol = ih->data->col.active;
 
-  iMatrixScrollRightDown(ih, mode, pos, m);
+  iupMatrixScrollRightDown(ih, mode, pos, m);
 
   if(ih->data->lin.active == oldlin && ih->data->col.active == oldcol)
   {
@@ -756,8 +755,8 @@ void iMatrixScrollCr(Ihandle* ih, int mode, float pos, int m)
           width -= ih->data->col.wh[ih->data->col.first];
           ih->data->col.first++;
         }
-        iMatrixGetLastWidth(ih, IMATRIX_MAT_COL);
-        iMatrixGetPos(ih, IMATRIX_MAT_COL);
+        iupMatrixAuxGetLastWidth(ih, IMAT_MAT_COL);
+        iupMatrixAuxGetPos(ih, IMAT_MAT_COL);
         redraw = 1;
       }
 
@@ -767,18 +766,18 @@ void iMatrixScrollCr(Ihandle* ih, int mode, float pos, int m)
       if(ih->data->lin.first != lin)
       {
         ih->data->lin.first = lin;
-        iMatrixGetLastWidth(ih, IMATRIX_MAT_LIN);
-        iMatrixGetPos(ih, IMATRIX_MAT_LIN);
+        iupMatrixAuxGetLastWidth(ih, IMAT_MAT_LIN);
+        iupMatrixAuxGetPos(ih, IMAT_MAT_LIN);
         redraw = 1;
       }
 
-      iMatrixHideFocus(ih);
-      iMatrixSetFocusPos(ih, lin, col);
+      iupMatrixFocusHideFocus(ih);
+      iupMatrixFocusSetFocusPos(ih, lin, col);
       if(redraw)
       {
-        SetSbV(ih);
-        SetSbH(ih);
-        iMatrixDrawMatrix(ih, IMATRIX_DRAW_ALL);
+        iupMatrixSetSbV(ih);
+        iupMatrixSetSbH(ih);
+        iupMatrixDrawMatrix(ih, IMAT_DRAW_ALL);
       }
     }
   }
@@ -787,16 +786,16 @@ void iMatrixScrollCr(Ihandle* ih, int mode, float pos, int m)
 /* This function is called when a drag is performed in the scrollbar.
    -> x    : scrollbar thumb position, value between 0 and 1
    -> mode : DO NOT USED
-   -> m    : define the mode of operation: lines or columns [IMATRIX_MAT_LIN|IMATRIX_MAT_COL]
+   -> m    : define the mode of operation: lines or columns [IMAT_MAT_LIN|IMAT_MAT_COL]
 */
-void iMatrixScrollPos(Ihandle* ih, int mode, float x, int m)
+void iupMatrixScrollPos(Ihandle* ih, int mode, float x, int m)
 {
   int   pos;
   float dx;
-  Tlincol* p;
+  ImatLinColData* p;
   (void)mode;
 
-  if(m == IMATRIX_MAT_LIN)
+  if(m == IMAT_MAT_LIN)
   {
     p = &(ih->data->lin);
     dx = IupGetFloat(ih, "DY");
@@ -809,11 +808,11 @@ void iMatrixScrollPos(Ihandle* ih, int mode, float x, int m)
 
   pos = (int)(x * p->totalwh + 0.5);
 
-  iMatrixHideFocus(ih);
-  iMatrixGetFirstLineColumn(ih, pos, m);
-  iMatrixGetLastWidth(ih, m);
+  iupMatrixFocusHideFocus(ih);
+  iMatrixScrollGetFirstLineColumn(ih, pos, m);
+  iupMatrixAuxGetLastWidth(ih, m);
 
-  /* The count executed by iMatrixGetFirstLineColumn function finds the column
+  /* The count executed by iMatrixScrollGetFirstLineColumn function finds the column
      with the position most closely of the scrollbar. But, when the scrollbar is
      nearly in the end of rigth side, this count can not solve the problem,
      because the last column will not be fully visible...
@@ -828,16 +827,16 @@ void iMatrixScrollPos(Ihandle* ih, int mode, float x, int m)
     do
     {
       p->first++;
-      iMatrixGetLastWidth(ih, m);
+      iupMatrixAuxGetLastWidth(ih, m);
     } while(p->lastwh != p->wh[p->num-1] ||
             p->last   != (p->num-1));
 
-    iMatrixGetPos(ih, m);
+    iupMatrixAuxGetPos(ih, m);
   }
 
-  SetSb(ih, m);
-  iMatrixDrawMatrix(ih, m);
-  iMatrixSetShowFocus(ih, ih->data->lin.active, ih->data->col.active);
+  iupMatrixSetSb(ih, m);
+  iupMatrixDrawMatrix(ih, m);
+  iupMatrixFocusSetShowFocus(ih, ih->data->lin.active, ih->data->col.active);
 }
 
 /* This callback is called when some action is performed on the
@@ -845,7 +844,7 @@ void iMatrixScrollPos(Ihandle* ih, int mode, float x, int m)
    -> action : type of action that call the event.
    -> x,y    : scrollbar thumb positions, value between 0 and 1
 */
-int iMatrixScrollCB(Ihandle* ih, int action, float x, float y)
+int iupMatrixScrollCB(Ihandle* ih, int action, float x, float y)
 {
   int err;
 

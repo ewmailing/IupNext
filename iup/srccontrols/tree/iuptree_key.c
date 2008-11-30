@@ -32,14 +32,13 @@
 #include "iuptree_getset.h"
 #include "iuptree_edit.h"
 
-
 int tree_ctrl  = 0;
 int tree_shift = 0;
 
 
-int iTreeKeyNodeCalcPos(Ihandle* ih, int* x, int* y, int* text_x)
+int iupTreeKeyNodeCalcPos(Ihandle* ih, int* x, int* y, int* text_x)
 {
-  Node node  = (Node)ih->data->root;
+  ItreeNodePtr node  = (ItreeNodePtr)ih->data->root;
   float posy = IupGetFloat(ih, "POSY");
   float dy   = IupGetFloat(ih, "DY");
   float posx = IupGetFloat(ih, "POSX");
@@ -73,7 +72,7 @@ int iTreeKeyNodeCalcPos(Ihandle* ih, int* x, int* y, int* text_x)
   return 1;
 }
 
-int iTreeKey(Ihandle* ih, int c)
+int iupTreeKey(Ihandle* ih, int c)
 {
   tree_ctrl = NO;
   tree_shift = NO;
@@ -88,10 +87,10 @@ int iTreeKey(Ihandle* ih, int c)
       if(tree_shift == NO)
         tree_ctrl = YES;      
     case K_HOME:
-      iTreeGSSetValue(ih, "ROOT", 1);
+      iupTreeGSSetValue(ih, "ROOT", 1);
       if(tree_shift == NO && tree_ctrl == NO)
-        iTreeGSSetStarting(ih, iTreeGSGetValue(ih));
-      iTreeRepaint(ih);
+        iupTreeGSSetStarting(ih, iupTreeGSGetValue(ih));
+      iupTreeRepaint(ih);
     break;
     
     case K_sEND:
@@ -106,10 +105,10 @@ int iTreeKey(Ihandle* ih, int c)
         tree_ctrl = YES;
       }
     case K_END:
-      iTreeGSSetValue(ih, "LAST", 1);
+      iupTreeGSSetValue(ih, "LAST", 1);
       if(tree_shift == NO && tree_ctrl == NO)
-        iTreeGSSetStarting(ih, iTreeGSGetValue(ih));
-      iTreeRepaint(ih);
+        iupTreeGSSetStarting(ih, iupTreeGSGetValue(ih));
+      iupTreeRepaint(ih);
     break;
 
     case K_sPGUP: 
@@ -124,10 +123,10 @@ int iTreeKey(Ihandle* ih, int c)
         tree_ctrl = YES; 
       }
     case K_PGUP:
-      iTreeGSSetValue(ih, "PGUP", 1);
+      iupTreeGSSetValue(ih, "PGUP", 1);
       if(tree_shift == NO && tree_ctrl == NO)
-        iTreeGSSetStarting(ih, iTreeGSGetValue(ih));
-      iTreeRepaint(ih);
+        iupTreeGSSetStarting(ih, iupTreeGSGetValue(ih));
+      iupTreeRepaint(ih);
     break;
      
     case K_sPGDN:
@@ -142,10 +141,10 @@ int iTreeKey(Ihandle* ih, int c)
         tree_ctrl = YES;
       }
     case K_PGDN:
-      iTreeGSSetValue(ih, "PGDN", 1);
+      iupTreeGSSetValue(ih, "PGDN", 1);
       if(tree_shift == NO && tree_ctrl == NO)
-        iTreeGSSetStarting(ih, iTreeGSGetValue(ih));
-      iTreeRepaint(ih);
+        iupTreeGSSetStarting(ih, iupTreeGSGetValue(ih));
+      iupTreeRepaint(ih);
     break;
     
     case K_sUP:
@@ -160,10 +159,10 @@ int iTreeKey(Ihandle* ih, int c)
         tree_ctrl = YES;
       }
     case K_UP:
-      iTreeGSSetValue(ih, "PREVIOUS", 1);
+      iupTreeGSSetValue(ih, "PREVIOUS", 1);
       if(tree_shift == NO && tree_ctrl == NO)
-        iTreeGSSetStarting(ih, iTreeGSGetValue(ih));
-      iTreeRepaint(ih);
+        iupTreeGSSetStarting(ih, iupTreeGSGetValue(ih));
+      iupTreeRepaint(ih);
     break;
 
     case K_sDOWN:
@@ -178,33 +177,33 @@ int iTreeKey(Ihandle* ih, int c)
         tree_ctrl = YES;
       }
     case K_DOWN:
-      iTreeGSSetValue(ih, "NEXT", 1);
+      iupTreeGSSetValue(ih, "NEXT", 1);
       if(tree_shift == NO && tree_ctrl == NO)
-        iTreeGSSetStarting(ih, iTreeGSGetValue(ih));
-      iTreeRepaint(ih);
+        iupTreeGSSetStarting(ih, iupTreeGSGetValue(ih));
+      iupTreeRepaint(ih);
     break;
 
     case K_LEFT:
-      iTreeGSSetState(ih, "", "COLLAPSED");
-      iTreeRepaint(ih);
+      iupTreeGSSetState(ih, "", "COLLAPSED");
+      iupTreeRepaint(ih);
     break;
 
     case K_RIGHT:
-      iTreeGSSetState(ih, "", "EXPANDED");
-      iTreeRepaint(ih);
+      iupTreeGSSetState(ih, "", "EXPANDED");
+      iupTreeRepaint(ih);
     break;
 
     case K_F2:
       {
         int x, y, text_x;
 
-        if(!iTreeKeyNodeCalcPos(ih, &x, &y, &text_x))
+        if(!iupTreeKeyNodeCalcPos(ih, &x, &y, &text_x))
           break;
 
         if(IupGetInt(ih, "SHOWRENAME"))
-          iTreeEditShow(ih, text_x, x, y);
+          iupTreeEditShow(ih, text_x, x, y);
         else
-          iTreeCallRenameNodeCB(ih);
+          iupTreeCallbackRenameNodeCB(ih);
       }
     break; 
 
@@ -212,9 +211,9 @@ int iTreeKey(Ihandle* ih, int c)
       if(iupStrEqualNoCase(IupGetAttribute(ih, "CTRL"), "YES"))
       {
         tree_ctrl = 1;
-        iTreeGSSetValue(ih, "INVERT", 1);
-        iTreeGSSetStarting(ih, iTreeGSGetValue(ih));
-        iTreeRepaint(ih);
+        iupTreeGSSetValue(ih, "INVERT", 1);
+        iupTreeGSSetStarting(ih, iupTreeGSGetValue(ih));
+        iupTreeRepaint(ih);
       }
     break; 
 
@@ -222,14 +221,14 @@ int iTreeKey(Ihandle* ih, int c)
       if(iupStrEqualNoCase(IupGetAttribute(ih, "KIND"), "BRANCH"))
       {
         if(iupStrEqualNoCase(IupGetAttribute(ih, "STATE"), "EXPANDED"))
-          iTreeGSSetState(ih, "", "COLLAPSED");
+          iupTreeGSSetState(ih, "", "COLLAPSED");
         else
-          iTreeGSSetState(ih, "", "EXPANDED");
+          iupTreeGSSetState(ih, "", "EXPANDED");
 
-        iTreeRepaint(ih);
+        iupTreeRepaint(ih);
       }
       else
-        iTreeCallExecuteLeafCB(ih);
+        iupTreeCallbackExecuteLeafCB(ih);
     break;
 
     default:

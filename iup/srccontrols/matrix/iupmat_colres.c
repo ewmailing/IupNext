@@ -2,7 +2,6 @@
  * \brief iupmatrix column resize
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_colres.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 #include <stdio.h>
@@ -27,14 +26,16 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 
-#include "iupmat_cd.h"
 #include "iupmat_def.h"
+#include "iupmat_cd.h"
 #include "iupmat_draw.h"
+#include "iupmat_scroll.h"
 #include "iupmat_aux.h"
+#include "iupmat_mark.h"
 #include "iupmat_focus.h"
-#include "iupmat_colres.h"
 
-#define IMATRIX_TOL       3
+
+#define IMAT_TOL       3
 
 static int  Dragging=0,      /* this flag indicates if it is being made a resize  */
             DragCol,         /* column in changed - value is zero-based, 0 if it
@@ -45,9 +46,9 @@ static int  Dragging=0,      /* this flag indicates if it is being made a resize
 
 static int  Lastxpos;  /* previous position of the feedback line in the screen */
 
-static void iMatrixChangeMatrixWH(Ihandle* ih, int col, int largura, int m);
+static void iMatrixColResChangeMatrixWH(Ihandle* ih, int col, int largura, int m);
 
-#define IMATRIX_RESIZE_COLOR  0x666666L
+#define IMAT_RESIZE_COLOR  0x666666L
 
 /**************************************************************************/
 /* Interactive Column Resize Functions                                    */
@@ -56,11 +57,10 @@ static void iMatrixChangeMatrixWH(Ihandle* ih, int col, int largura, int m);
 /* Verify if the mouse is in the intersection between two of column titles,
    the resize is started (x,y : mouse coordinates (canvas coordinates))
 */
-int iMatrixColResTry(Ihandle* ih, int x, int y)
+int iupMatrixColResTry(Ihandle* ih, int x, int y)
 {
   int found, width, col;
-  //int ativo = !iupAttribGetInt(ih, "RESIZEMATRIX");
-  int ativo = ih->data->resizematrix;
+  int ativo = IupGetInt(ih, "RESIZEMATRIX");
 
   if(ih->data->lin.titlewh && y < ih->data->lin.titlewh && ativo)
   {
@@ -68,7 +68,7 @@ int iMatrixColResTry(Ihandle* ih, int x, int y)
     found = 0;
     width = ih->data->col.titlewh;
 
-    if(abs(width-x) < IMATRIX_TOL)
+    if(abs(width-x) < IMAT_TOL)
     {
       /* interface between the column titles and the first column... */
       col = 0;
@@ -82,7 +82,7 @@ int iMatrixColResTry(Ihandle* ih, int x, int y)
       for(col = ih->data->col.first; col <= ih->data->col.last && !found; col++)
       {
         width += ih->data->col.wh[col];
-        if(abs(width-x) < IMATRIX_TOL)
+        if(abs(width-x) < IMAT_TOL)
           found = 1;
         if(!found)
           DragColStartPos= width;
@@ -104,13 +104,13 @@ int iMatrixColResTry(Ihandle* ih, int x, int y)
 /* Finish the interactive resize of columns. Call ChangeMatrixWidth to truly change
    the column size (x : x mouse coordinate (canvas coordinate)).
 */
-void iMatrixColResFinish(Ihandle* ih, int x)
+void iupMatrixColResFinish(Ihandle* ih, int x)
 {
   int charwidth, charheight, width;
   int y1, y2;
 
   iupdrvFontGetCharSize(ih, &charwidth, &charheight);
-  width = x - DragColStartPos - IMATRIX_DECOR_X;
+  width = x - DragColStartPos - IMAT_DECOR_X;
 
   if(width < charwidth)
     width = charwidth ;  /* min size to the cell */
@@ -122,34 +122,34 @@ void iMatrixColResFinish(Ihandle* ih, int x)
     y2 = ih->data->YmaxC;
 
     cdCanvasWriteMode(ih->data->cdcanvas, CD_XOR);
-    cdCanvasForeground(ih->data->cdcanvas, IMATRIX_RESIZE_COLOR);
+    cdCanvasForeground(ih->data->cdcanvas, IMAT_RESIZE_COLOR);
     cdCanvasLine(ih->data->cdcanvas, Lastxpos, (ih->data->YmaxC - (y1)), Lastxpos, (ih->data->YmaxC - (y2)));
     cdCanvasWriteMode(ih->data->cdcanvas, CD_REPLACE);
   }
 
-  iMatrixChangeMatrixWH(ih, DragCol, width + IMATRIX_DECOR_X, IMATRIX_MAT_COL);
+  iMatrixColResChangeMatrixWH(ih, DragCol, width + IMAT_DECOR_X, IMAT_MAT_COL);
   Dragging = 0;
 }
 
 /* Change the column width interactively, just change the line in the screen.
-   When the user finishes the drag, the iMatrixColResFinish function is called
+   When the user finishes the drag, the iupMatrixColResFinish function is called
    to truly change the column width (x : x mouse coordinate (canvas coordinate)).
 */
-void iMatrixColResMove(Ihandle* ih, int x)
+void iupMatrixColResMove(Ihandle* ih, int x)
 {
   int y1, y2, charwidth, charheight;
 
   iupdrvFontGetCharSize(ih, &charwidth, &charheight);
 
   /* If the size column was tiny, no change the size column */
-  if(x < DragColStartPos + charwidth + IMATRIX_DECOR_X)
+  if(x < DragColStartPos + charwidth + IMAT_DECOR_X)
     return;
 
   y1 = ih->data->lin.titlewh;
   y2 = ih->data->YmaxC;
 
   cdCanvasWriteMode(ih->data->cdcanvas, CD_XOR);
-  cdCanvasForeground(ih->data->cdcanvas, IMATRIX_RESIZE_COLOR);
+  cdCanvasForeground(ih->data->cdcanvas, IMAT_RESIZE_COLOR);
 
   /* If it is not the first time, move old line */
   if(Lastxpos != -1)
@@ -162,7 +162,7 @@ void iMatrixColResMove(Ihandle* ih, int x)
 }
 
 
-static void iMatrixResetMatrixCursor(Ihandle* ih)
+static void iMatrixColResResetMatrixCursor(Ihandle* ih)
 {
   char *cursor = iupAttribGetStr(ih, "_IUPMAT_CURSOR");
   if (cursor)
@@ -174,24 +174,23 @@ static void iMatrixResetMatrixCursor(Ihandle* ih)
 /* Change the cursor when it passes over a group of the column titles.
    -> x,y : mouse coordinates (canvas coordinates)
 */
-void iMatrixColResChangeCursor(Ihandle* ih, int x, int y)
+void iupMatrixColResChangeCursor(Ihandle* ih, int x, int y)
 {
-  //int ativo = !iupAttribGetInt(ih, "RESIZEMATRIX");
-  int ativo = ih->data->resizematrix;
+  int ativo = IupGetInt(ih, "RESIZEMATRIX");
 
   if(ih->data->lin.titlewh && y < ih->data->lin.titlewh && ativo)
   {
     /* It is in the column titles area and the resize mode is on */
     int found = 0, width = ih->data->col.titlewh, col;
 
-    if(abs(width - x) < IMATRIX_TOL)
+    if(abs(width - x) < IMAT_TOL)
       found = 1;    /* line titles */
     else
     {
       for(col = ih->data->col.first; col <= ih->data->col.last && !found; col++)
       {
         width += ih->data->col.wh[col];
-        if(abs(width - x) < IMATRIX_TOL)
+        if(abs(width - x) < IMAT_TOL)
           found = 1;
       }
     }
@@ -202,14 +201,14 @@ void iMatrixColResChangeCursor(Ihandle* ih, int x, int y)
       IupSetAttribute(ih, "CURSOR", "RESIZE_W");
     }
     else /* It is in the empty area after the last column */
-      iMatrixResetMatrixCursor(ih); 
+      iMatrixColResResetMatrixCursor(ih); 
   }
   else
-    iMatrixResetMatrixCursor(ih);
+    iMatrixColResResetMatrixCursor(ih);
 }
 
 /* Return the resize flag */
-int iMatrixColResResizing(void)
+int iupMatrixColResResizing(void)
 {
   return Dragging;
 }
@@ -225,15 +224,15 @@ int iMatrixColResResizing(void)
          the first column, col = -1 and the column of titles. The same
          representation is used to lines.
    -> largura: width, in pixels, of the column/line col.
-   -> m : indicate if it is acting on a column (IMATRIX_MAT_COL) or line (IMATRIX_MAT_LIN).
+   -> m : indicate if it is acting on a column (IMAT_MAT_COL) or line (IMAT_MAT_LIN).
 */
-static void iMatrixChangeMatrixWH(Ihandle* ih, int col, int largura, int m)
+static void iMatrixColResChangeMatrixWH(Ihandle* ih, int col, int largura, int m)
 {
  int visible = IupGetInt(ih, "VISIBLE");
  int err, drawmode = m;
- Tlincol *p;
+ ImatLinColData *p;
 
- if(m == IMATRIX_MAT_LIN)
+ if(m == IMAT_MAT_LIN)
    p = &(ih->data->lin);
  else
    p = &(ih->data->col);
@@ -257,29 +256,29 @@ static void iMatrixChangeMatrixWH(Ihandle* ih, int col, int largura, int m)
    p->size    = p->size + p->titlewh - largura;
    p->titlewh = largura;
 
-   drawmode = IMATRIX_DRAW_ALL; /* Line/column titles also must be repaint */
+   drawmode = IMAT_DRAW_ALL; /* Line/column titles also must be repaint */
  }
- iMatrixGetLastWidth(ih, m);
+ iupMatrixAuxGetLastWidth(ih, m);
 
  /* If the column/line is visible, repaint the matrix */
  if(((col >= p->first) && (col <= p->last)) || col==-1)
   if(visible && err == CD_OK)
   {
-    SetSb(ih, m);
-    iMatrixDrawMatrix(ih, drawmode);
-    iMatrixShowFocus(ih);
+    iupMatrixSetSb(ih, m);
+    iupMatrixDrawMatrix(ih, drawmode);
+    iupMatrixFocusShowFocus(ih);
   }
 }
 
 /* Change the width/height of a column/line. Call when the WIDTHx or HEIGHTx
    attributes are changed.
    Get the nes size of column/line, pass of the IUP unit to pixels and call the
-   iMatrixChangeMatrixWH function
+   iMatrixColResChangeMatrixWH function
    -> col : column/ line that will take its width changed. col = 1 is the first column/line.
             col = 0 is the column/line of titles.
-   -> m : indicate if it is acting on a column (IMATRIX_MAT_COL) or line (IMATRIX_MAT_LIN).
+   -> m : indicate if it is acting on a column (IMAT_MAT_COL) or line (IMAT_MAT_LIN).
 */
-void iMatrixColResSet(Ihandle* ih, const char* value, int col, int m, int pixels)
+void iupMatrixColResSet(Ihandle* ih, const char* value, int col, int m, int pixels)
 {
  int largura = 0;
 
@@ -291,23 +290,23 @@ void iMatrixColResSet(Ihandle* ih, const char* value, int col, int m, int pixels
    {
      if(pixels)
      {
-       if(m == IMATRIX_MAT_COL)
-         largura = (int)(largura + IMATRIX_DECOR_X);
+       if(m == IMAT_MAT_COL)
+         largura = (int)(largura + IMAT_DECOR_X);
        else
-         largura = (int)(largura + IMATRIX_DECOR_Y);
+         largura = (int)(largura + IMAT_DECOR_Y);
      }
      else
      {
        int charwidth, charheight;
        iupdrvFontGetCharSize(ih, &charwidth, &charheight);
        /* Transform in pixels */
-       if(m == IMATRIX_MAT_COL)
-         largura = (int)((largura / 4.) * charwidth ) + IMATRIX_DECOR_X;
+       if(m == IMAT_MAT_COL)
+         largura = (int)((largura / 4.) * charwidth ) + IMAT_DECOR_X;
        else 
-         largura = (int)((largura / 8.) * charheight) + IMATRIX_DECOR_Y;
+         largura = (int)((largura / 8.) * charheight) + IMAT_DECOR_Y;
      }
    }
-   iMatrixChangeMatrixWH(ih, col, largura, m);
+   iMatrixColResChangeMatrixWH(ih, col, largura, m);
  }   
 }
 
@@ -317,15 +316,15 @@ void iMatrixColResSet(Ihandle* ih, const char* value, int col, int m, int pixels
    its WIDTH and HEIGHT attributes defined (widht and height default)
    -> col : column/ line that will take its width collected. col = 1 is the first column/line.
             col = 0 is the column/line of titles.
-   -> m : indicate if it is acting on a column (IMATRIX_MAT_COL) or line (IMATRIX_MAT_LIN).
+   -> m : indicate if it is acting on a column (IMAT_MAT_COL) or line (IMAT_MAT_LIN).
 */
-char *iMatrixColResGet(Ihandle* ih, int col, int m, int pixels)
+char *iupMatrixColResGet(Ihandle* ih, int col, int m, int pixels)
 {
   char* width = iupStrGetMemory(100);
   int w;
-  Tlincol *p;
+  ImatLinColData *p;
 
-  if(m == IMATRIX_MAT_LIN)
+  if(m == IMAT_MAT_LIN)
     p = &(ih->data->lin);
   else
     p = &(ih->data->col);
@@ -345,19 +344,19 @@ char *iMatrixColResGet(Ihandle* ih, int col, int m, int pixels)
   {
     if(pixels)
     {
-      if(m == IMATRIX_MAT_COL)
-        sprintf(width, "%d", (int)(w - IMATRIX_DECOR_X));
+      if(m == IMAT_MAT_COL)
+        sprintf(width, "%d", (int)(w - IMAT_DECOR_X));
       else
-        sprintf(width, "%d", (int)(w - IMATRIX_DECOR_Y));
+        sprintf(width, "%d", (int)(w - IMAT_DECOR_Y));
     }
     else
     {
       int charwidth, charheight;
       iupdrvFontGetCharSize(ih, &charwidth, &charheight);
-      if(m == IMATRIX_MAT_COL)
-        sprintf(width, "%d", (int)((w - IMATRIX_DECOR_X) * 4 / charwidth));
+      if(m == IMAT_MAT_COL)
+        sprintf(width, "%d", (int)((w - IMAT_DECOR_X) * 4 / charwidth));
       else
-        sprintf(width, "%d", (int)((w - IMATRIX_DECOR_Y) * 8 / charheight));
+        sprintf(width, "%d", (int)((w - IMAT_DECOR_Y) * 8 / charheight));
     }
   }
   else

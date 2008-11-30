@@ -12,13 +12,13 @@
 extern "C" {
 #endif
 
-int iTreeScrollDown(Ihandle* ih);
-int iTreeScrollUp(Ihandle* ih);
-int iTreeScrollPgUp(Ihandle* ih);
-int iTreeScrollPgDn(Ihandle* ih);
-int iTreeScrollEnd(Ihandle* ih);
-int iTreeScrollBegin(Ihandle* ih);
-int iTreeScrollShow(Ihandle* ih);
+int iupTreeScrollDown (Ihandle* ih);
+int iupTreeScrollUp   (Ihandle* ih);
+int iupTreeScrollPgUp (Ihandle* ih);
+int iupTreeScrollPgDn (Ihandle* ih);
+int iupTreeScrollEnd  (Ihandle* ih);
+int iupTreeScrollBegin(Ihandle* ih);
+int iupTreeScrollShow (Ihandle* ih);
 
 #ifdef __cplusplus
 }

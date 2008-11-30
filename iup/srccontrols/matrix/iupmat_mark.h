@@ -1,8 +1,7 @@
 /** \file
- * \brief iupmatrix. cel selection.
+ * \brief iupmatrix. cell selection.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_mark.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
 #ifndef __IUPMAT_MARK_H 
@@ -12,36 +11,36 @@
 extern "C" {
 #endif
 
-/* Modo usado para marcar/desmarcar celulas */
-#define IMATRIX_MARK_NO      0
-#define IMATRIX_MARK_CELL    1
-#define IMATRIX_MARK_LIN     2
-#define IMATRIX_MARK_COL     3
-#define IMATRIX_MARK_LINCOL  4
+/* Used to mark (or not mark) cells */
+#define IMAT_MARK_NO      0
+#define IMAT_MARK_CELL    1
+#define IMAT_MARK_LIN     2
+#define IMAT_MARK_COL     3
+#define IMAT_MARK_LINCOL  4
 
-void iMatrixMarkDrag(Ihandle* ih, int x, int y);
+void iupMatrixMarkDrag(Ihandle* ih, int x, int y);
 
-void iMatrixMarkBlock         (Ihandle* ih, int lin, int col);
-void iMatrixMarkUncheckBlock (Ihandle* ih);
+void iupMatrixMarkBlock         (Ihandle* ih, int lin, int col);
+void iupMatrixMarkUncheckedBlock(Ihandle* ih);
 
-int  iMatrixMarkCritica (Ihandle* ih, int* lin, int* col, int* shift, int* ctrl,  int* duplo);
-void iMatrixMarkShow    (Ihandle* ih, int ctrl, int lin,  int col,    int oldlin, int oldcol);
-int  iMatrixMarkHide    (Ihandle* ih, int ctrl);
-void iMatrixMarkReset   (void);
+int  iupMatrixMarkCritica(Ihandle* ih, int* lin, int* col, int* shift, int* ctrl,  int* duplo);
+void iupMatrixMarkShow   (Ihandle* ih, int ctrl, int lin,  int col,    int oldlin, int oldcol);
+int  iupMatrixMarkHide   (Ihandle* ih, int ctrl);
+void iupMatrixMarkReset  (void);
 
-int  iMatrixMarkCellGet   (Ihandle* ih, int lin, int col);
-void iMatrixMarkCellSet   (Ihandle* ih, int lin, int col, int mark);
+int  iupMatrixMarkCellGet(Ihandle* ih, int lin, int col);
+void iupMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark);
 
-int iMatrixMarkColumnMarked (Ihandle* ih, int col);
-int iMatrixMarkLineMarked   (Ihandle* ih, int lin);
-int iMatrixMarkGetMode      (Ihandle* ih);
+int iupMatrixMarkColumnMarked(Ihandle* ih, int col);
+int iupMatrixMarkLineMarked  (Ihandle* ih, int lin);
+int iupMatrixMarkGetMode     (Ihandle* ih);
 
-int iMatrixMarkFullLin(void);
-int iMatrixMarkFullCol(void);
+int iupMatrixMarkFullLin(void);
+int iupMatrixMarkFullCol(void);
 
-void *iMatrixMarkSet    (Ihandle* ih, const char* v);
-char* iMatrixMarkGet    (Ihandle* ih);
-void *iMatrixMarkSetMode(Ihandle* ih, const char* v);
+void *iupMatrixMarkSet    (Ihandle* ih, const char* v);
+char* iupMatrixMarkGet    (Ihandle* ih);
+void *iupMatrixMarkSetMode(Ihandle* ih, const char* v);
 
 #ifdef __cplusplus
 }

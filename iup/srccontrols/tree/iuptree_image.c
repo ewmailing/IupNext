@@ -88,7 +88,7 @@ long int tree_blank_colors[4] =
   0x000000L
 } ;
 
-void iTreeImageInitializeImages(void)
+void iupTreeImageInitializeImages(void)
 {
   Ihandle *image_leaf;  
   Ihandle *image_collapsed;  

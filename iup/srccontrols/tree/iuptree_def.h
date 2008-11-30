@@ -28,30 +28,30 @@ extern "C" {
 #define ITREE_INVERT              -1
 
 
-typedef struct Node_ *Node;
+typedef struct ItreeNode *ItreeNodePtr;
 
 /* Structure of each node of the tree */
-struct Node_
+struct ItreeNode
 {
-  Node next;     /* Points to next node. NULL if node is the last node */
-  int kind;      /* Node kind. (ITREE_BRANCH or ITREE_LEAF) */
+  ItreeNodePtr next;     /* Points to next node. NULL if node is the last node */
+  int kind;      /* ItreeNodePtr kind. (ITREE_BRANCH or ITREE_LEAF) */
   int depth;     /* Depth of the node. 0 = root */
   int state;     /* Branch state (ITREE_EXPANDED or ITREE_COLLAPSED). Unused if leaf */
-  int visible;   /* Node's visibility (YES or NO [default] ) */
+  int visible;   /* ItreeNodePtr's visibility (YES or NO [default] ) */
   int marked;    /* Is node marked? (YES or NO [default] )   */
-  char* name;    /* Node's name */
+  char* name;    /* ItreeNodePtr's name */
   void* userid;  /* User id that identifies the node */
 
   int imageinuse;                                     /* YES or NO [default] */
-  unsigned char image[ITREE_NODE_SIZE];               /* Node's image */ 
-  unsigned long int color[ITREE_NODE_COLORS];         /* Node's color */
-  unsigned long int marked_color[ITREE_NODE_COLORS];  /* Node's marked color */
+  unsigned char image[ITREE_NODE_SIZE];               /* ItreeNodePtr's image */ 
+  unsigned long int color[ITREE_NODE_COLORS];         /* ItreeNodePtr's color */
+  unsigned long int marked_color[ITREE_NODE_COLORS];  /* ItreeNodePtr's marked color */
   long int text_color;
  
   int expandedimageinuse;                                     /* YES or NO [default] */
-  unsigned char expandedimage[ITREE_NODE_SIZE];               /* Node's image */ 
-  unsigned long int expandedcolor[ITREE_NODE_COLORS];         /* Node's color */
-  unsigned long int expandedmarked_color[ITREE_NODE_COLORS];  /* Node's marked color */
+  unsigned char expandedimage[ITREE_NODE_SIZE];               /* ItreeNodePtr's image */ 
+  unsigned long int expandedcolor[ITREE_NODE_COLORS];         /* ItreeNodePtr's color */
+  unsigned long int expandedmarked_color[ITREE_NODE_COLORS];  /* ItreeNodePtr's marked color */
 };
 
 /* Structure of the tree */
@@ -59,9 +59,9 @@ struct _IcontrolData
 {
   iupCanvas canvas;  /* from IupCanvas (must reserve it) */
 
-  Node root;        /* Treeview's root */
-  Node selected;    /* Marked node     */
-  Node starting;    /* Starting node (when marking with the tree_shift) */
+  ItreeNodePtr root;        /* Treeview's root */
+  ItreeNodePtr selected;    /* Marked node     */
+  ItreeNodePtr starting;    /* Starting node (when marking with the tree_shift) */
 
   int addexpanded;  /* Defines if the created branches will be expanded */
   int tree_ctrl;    /* Defines if the tree_ctrl will be active or not   */
@@ -94,7 +94,7 @@ struct _IcontrolData
 };
 
 
-int iTreeRepaint(Ihandle* ih);
+int iupTreeRepaint(Ihandle* ih);
 
 #define NO      0
 #define YES     1

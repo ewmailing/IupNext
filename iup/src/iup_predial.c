@@ -227,6 +227,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
 
   IupSetAttribute(dlg,"TITLE", title);
   IupSetAttribute(dlg,"DIALOGFRAME","YES");
+  IupSetAttribute(dlg,"DIALOGHINT","YES");
   IupSetAttributeHandle(dlg,"DEFAULTENTER", default_enter);
   IupSetAttributeHandle(dlg,"DEFAULTESC", default_esc);
   IupSetAttribute(dlg,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
@@ -294,7 +295,7 @@ int  iupDataEntry(int    maxlin,
     button_box,
     NULL);
   IupSetAttribute(dlg_box,"MARGIN","10x10");
-  IupSetAttribute(dlg_box,"GAP","10");
+  IupSetAttribute(dlg_box,"GAP","5");
 
   dlg = IupDialog(dlg_box);
 
@@ -469,6 +470,7 @@ void iupVersionDlg(void)
 
   IupSetAttribute(dlg,"TITLE","IUP Version");
   IupSetAttribute(dlg,"DIALOGFRAME","YES");
+  IupSetAttribute(dlg,"DIALOGHINT","YES");
   IupSetAttribute(dlg,"GAP","10");
   IupSetAttribute(dlg,"MARGIN","10x10");
 

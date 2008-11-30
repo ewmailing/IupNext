@@ -32,7 +32,7 @@
 #include "iuptree_getset.h"
 
 
-void iTreeCallDragDropCB(Ihandle* ih, int drag_id, int drop_id, int isshift, int iscontrol)
+void iupTreeCallbackDragDropCB(Ihandle* ih, int drag_id, int drop_id, int isshift, int iscontrol)
 {
   IFniiii cb = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
   
@@ -44,7 +44,7 @@ void iTreeCallDragDropCB(Ihandle* ih, int drag_id, int drop_id, int isshift, int
    - node: node's users.
    - s   : node's status (1 = selected, 0 = deselected).
 */
-int iTreeCallSelectionCB(Ihandle* ih, int node, int s)
+int iupTreeCallbackSelectionCB(Ihandle* ih, int node, int s)
 {
   IFnii cb = (IFnii)IupGetCallback(ih, "SELECTION_CB");
   
@@ -55,14 +55,14 @@ int iTreeCallSelectionCB(Ihandle* ih, int node, int s)
 }
 
 /* Calls the user callback associated with the event of opening a folder. */
-int iTreeCallBranchOpenCB(Ihandle* ih, Node n)
+int iupTreeCallbackBranchOpenCB(Ihandle* ih, ItreeNodePtr n)
 {
   IFni cb = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
 
   if(cb && n->kind  == ITREE_BRANCH && 
            n->state == ITREE_COLLAPSED)
   {
-    int id = iTreeFindNodeId(ih, n);
+    int id = iupTreeFindNodeId(ih, n);
     return cb(ih, id);
   }
 
@@ -70,14 +70,14 @@ int iTreeCallBranchOpenCB(Ihandle* ih, Node n)
 }
 
 /* Calls the user callback associated with the event of closing a folder. */
-int iTreeCallBranchCloseCB(Ihandle* ih, Node n)
+int iupTreeCallbackBranchCloseCB(Ihandle* ih, ItreeNodePtr n)
 {
   IFni cb = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
 
   if(cb && n->kind  == ITREE_BRANCH && 
            n->state == ITREE_EXPANDED)
   {
-    int id = iTreeFindNodeId(ih, n);
+    int id = iupTreeFindNodeId(ih, n);
     return cb(ih, id);
   }
 
@@ -85,14 +85,14 @@ int iTreeCallBranchCloseCB(Ihandle* ih, Node n)
 }
 
 /* Calls the user callback associated with the event of double clicking a leaf. */
-void iTreeCallExecuteLeafCB(Ihandle* ih)
+void iupTreeCallbackExecuteLeafCB(Ihandle* ih)
 {
   IFni cb = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
 
   if(cb)
   {
     int id;
-    char* id_string = iTreeGSGetValue(ih);
+    char* id_string = iupTreeGSGetValue(ih);
 
     id = atoi(id_string);
     cb(ih, id);
@@ -100,7 +100,7 @@ void iTreeCallExecuteLeafCB(Ihandle* ih)
 }
 
 /* Calls the user callback associated with the event of renaming a node. */
-void iTreeCallRenameNodeCB(Ihandle* ih)
+void iupTreeCallbackRenameNodeCB(Ihandle* ih)
 {
   IFnis cb = (IFnis)IupGetCallback(ih, "RENAMENODE_CB");
   
@@ -108,7 +108,7 @@ void iTreeCallRenameNodeCB(Ihandle* ih)
   {
     int id ;
     char* v;
-    char* id_string = iTreeGSGetValue(ih);
+    char* id_string = iupTreeGSGetValue(ih);
 
     if(id_string == NULL)
       return;
@@ -125,14 +125,14 @@ void iTreeCallRenameNodeCB(Ihandle* ih)
 
 /* This will update the node name: if the callback does not exists 
    or if it exists and it returns IUP_DEFAULT */
-int iTreeCallRenameCB(Ihandle* ih, char* after)
+int iupTreeCallbackRenameCB(Ihandle* ih, char* after)
 {
   char* v;
   char* id_string;
   int   ret = IUP_DEFAULT;
   IFnis cb;
 
-  id_string = iTreeGSGetValue(ih);
+  id_string = iupTreeGSGetValue(ih);
   if(id_string == NULL)
     return IUP_IGNORE;
 
@@ -149,7 +149,7 @@ int iTreeCallRenameCB(Ihandle* ih, char* after)
 
   if(ret == IUP_DEFAULT)
   {
-    iTreeGSSetName(ih, id_string, after);
+    iupTreeGSSetName(ih, id_string, after);
     IupSetAttribute(ih, "REDRAW", "YES");
   }
 
@@ -157,14 +157,14 @@ int iTreeCallRenameCB(Ihandle* ih, char* after)
   return ret;
 }
 
-int iTreeCallShowRenameCB(Ihandle* ih)
+int iupTreeCallbackShowRenameCB(Ihandle* ih)
 {
   IFni cb = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
 
   if(cb)
   {
     int id ;
-    char* id_string = iTreeGSGetValue(ih);
+    char* id_string = iupTreeGSGetValue(ih);
 
     if(id_string == NULL)
       return IUP_IGNORE;
@@ -182,13 +182,13 @@ int iTreeCallShowRenameCB(Ihandle* ih)
    - id : node's id
    - r  : vector containing mouse button info
 */
-void iTreeCallRightClickCB(Ihandle* ih, int id, char* r)
+void iupTreeCallbackRightClickCB(Ihandle* ih, int id, char* r)
 {
   IFnis cb = (IFnis)IupGetCallback(ih, "RIGHTCLICK_CB");
   
   if(cb)
   {
-    char* id_string = iTreeGSGetValue(ih);
+    char* id_string = iupTreeGSGetValue(ih);
     
     if(id == -1)
       id = atoi(id_string);
@@ -201,12 +201,12 @@ void iTreeCallRightClickCB(Ihandle* ih, int id, char* r)
    being the focus with the tree.
    - c : character pressed.
 */
-int iTreeCallKeyPressCB(Ihandle* ih, int c, int press)
+int iupTreeCallbackKeyPressCB(Ihandle* ih, int c, int press)
 {
   int ret = IUP_DEFAULT;
   if(press)
   {
-    ret = iTreeKey(ih, c);
+    ret = iupTreeKey(ih, c);
   }
   return ret;
 }

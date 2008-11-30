@@ -2,7 +2,6 @@
  * \brief iupmatrix focus control.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_focus.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
 #ifndef __IUPMAT_FOCUS_H 
@@ -12,16 +11,16 @@
 extern "C" {
 #endif
 
-int  iMatrixFocusCB(Ihandle* ih, int focus);
+int  iupMatrixFocusFocusCB(Ihandle* ih, int focus);
 
-void iMatrixShowFocus  (Ihandle* ih);
-void iMatrixHideFocus  (Ihandle* ih);
-void iMatrixSetFocusPos(Ihandle* ih, int lin, int col);
+void iupMatrixFocusShowFocus  (Ihandle* ih);
+void iupMatrixFocusHideFocus  (Ihandle* ih);
+void iupMatrixFocusSetFocusPos(Ihandle* ih, int lin, int col);
 
-void iMatrixHideSetShowFocus(Ihandle* ih, int lin, int col);
-void iMatrixSetShowFocus    (Ihandle* ih, int lin, int col);
+void iupMatrixFocusHideSetShowFocus(Ihandle* ih, int lin, int col);
+void iupMatrixFocusSetShowFocus    (Ihandle* ih, int lin, int col);
 
-int  iMatrixIsFocusVisible(Ihandle* ih);
+int  iupMatrixFocusIsFocusVisible(Ihandle* ih);
 
 #ifdef __cplusplus
 }

@@ -3,7 +3,6 @@
  * change number of columns or lines
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_numlc.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 /**************************************************************************/
@@ -35,16 +34,18 @@
 #include "iupmat_def.h"
 #include "iupmat_cd.h"
 #include "iupmat_draw.h"
+#include "iupmat_scroll.h"
+#include "iupmat_focus.h"
 #include "iupmat_aux.h"
-#include "iupmat_mem.h"
-#include "iupmat_getset.h"
+#include "iupmat_key.h"
 #include "iupmat_mark.h"
-#include "iupmat_numlc.h"
+#include "iupmat_getset.h"
 #include "iupmat_edit.h"
+#include "iupmat_mem.h"
 
 
-#define IMATRIX_INSERT    0     /* Insert a line or column */
-#define IMATRIX_REMOVE    1     /* Remove a line or column */
+#define IMAT_INSERT    0     /* Insert a line or column */
+#define IMAT_REMOVE    1     /* Remove a line or column */
 
 
 /**************************************************************************/
@@ -55,7 +56,7 @@
    It also changes the number of visible lines to show the new size.
    -> num : new number of lines of the matrix.
 */
-static void iMatrixChangeNumLines(Ihandle* ih, int num)
+static void iMatrixNumLCChangeNumLines(Ihandle* ih, int num)
 {
   int oldnl = ih->data->lin.num;
   int wt, i;
@@ -63,22 +64,22 @@ static void iMatrixChangeNumLines(Ihandle* ih, int num)
   ih->data->lin.num = num;
 
   /* the largest title line may have been erased... */
-  wt = iMatrixGetTitlelineSize(ih);
+  wt = iupMatrixAuxGetTitlelineSize(ih);
   if(wt != ih->data->col.titlewh)
   {
     ih->data->col.size = (ih->data->XmaxC+1) - wt;
     ih->data->col.titlewh = wt;
-    iMatrixGetLastWidth(ih, IMATRIX_MAT_COL);
+    iupMatrixAuxGetLastWidth(ih, IMAT_MAT_COL);
   }
 
   if(num > oldnl) /* increasing the matrix */
   {
-    iMatrixMemRealocLines(ih, num-oldnl, oldnl);
+    iupMatrixMemRealocLines(ih, num-oldnl, oldnl);
 
     /* recalculating the total height of the matrix */
     for(i = oldnl; i < ih->data->lin.num; i++)
     {
-      ih->data->lin.wh[i] = iMatrixGetLineHeight(ih, i);
+      ih->data->lin.wh[i] = iupMatrixAuxGetLineHeight(ih, i);
 /*
       if(ih->data->lin.wh[i] > ih->data->lin.size)  // This condition was changed the height...
         ih->data->lin.wh[i] = ih->data->lin.size;   // ih->data->lin.size was always zero or a negative value
@@ -102,14 +103,14 @@ static void iMatrixChangeNumLines(Ihandle* ih, int num)
       ih->data->lin.totalwh -= ih->data->lin.wh[i];
     }
   }
-  iMatrixGetLastWidth(ih, IMATRIX_MAT_LIN);
+  iupMatrixAuxGetLastWidth(ih, IMAT_MAT_LIN);
 }
 
 /* Change the number of columns of the matrix and realloc memory, if necessary. 
    It also changes the number of visible columns to show the new size.
    -> num : new number of columns of the matrix.
 */
-static void iMatrixChangeNumCols(Ihandle* ih, int num)
+static void iMatrixNumLCChangeNumCols(Ihandle* ih, int num)
 {
   int oldnc = ih->data->col.num;
   int i;
@@ -119,12 +120,12 @@ static void iMatrixChangeNumCols(Ihandle* ih, int num)
   if(num > oldnc)
   {
     /* increasing the matrix */
-    iMatrixMemRealocColumns(ih, num-oldnc, oldnc);
+    iupMatrixMemRealocColumns(ih, num-oldnc, oldnc);
 
     /* recalculating the total width of the matrix */
     for(i = oldnc; i < ih->data->col.num; i++)
     {
-      ih->data->col.wh[i] = iMatrixGetColumnWidth(ih, i);
+      ih->data->col.wh[i] = iupMatrixAuxGetColumnWidth(ih, i);
 /*
       if(ih->data->col.wh[i] > ih->data->col.size)  // This condition was changed the width...
         ih->data->col.wh[i] = ih->data->col.size;   // ih->data->col.size was always zero or a negative value
@@ -148,7 +149,7 @@ static void iMatrixChangeNumCols(Ihandle* ih, int num)
       ih->data->col.totalwh -= ih->data->col.wh[i];
     }
   }
-  iMatrixGetLastWidth(ih, IMATRIX_MAT_COL);
+  iupMatrixAuxGetLastWidth(ih, IMAT_MAT_COL);
 }
 
 /* When the matrix has its number of lines increased, and these lines are
@@ -156,10 +157,10 @@ static void iMatrixChangeNumCols(Ihandle* ih, int num)
    must be put in the cells
    -> oldnumlin - number of lines that were in the matrix.
 */
-static void iMatrixGetNewLineAttributes(Ihandle* ih, int oldnumlin)
+static void iMatrixNumLCGetNewLineAttributes(Ihandle* ih, int oldnumlin)
 {
   int i, j;
-  char* valor;
+  char* value;
   char* attr = iupStrGetMemory(100);
 
   if(ih->data->valcb)
@@ -170,11 +171,11 @@ static void iMatrixGetNewLineAttributes(Ihandle* ih, int oldnumlin)
     for(j = 0; j < ih->data->col.num; j++)
     {
       sprintf(attr, "%d:%d", i+1, j+1);
-      valor = (char*)iupAttribGetStr(ih, attr);
-      if(valor && *valor)
+      value = (char*)iupAttribGetStr(ih, attr);
+      if(value && *value)
       {
-        iMatrixMemAlocCell(ih, i, j, strlen(valor));
-        strcpy(ih->data->v[i][j].value, valor);
+        iupMatrixMemAlocCell(ih, i, j, strlen(value));
+        strcpy(ih->data->v[i][j].value, value);
       }
     }
   }
@@ -185,10 +186,10 @@ static void iMatrixGetNewLineAttributes(Ihandle* ih, int oldnumlin)
    must be put in the cells
    -> oldnumcol - number of columns that were in the matrix.
 */
-static void iMatrixGetNewColumnAttributes(Ihandle* ih, int oldnumcol)
+static void iMatrixNumLCGetNewColumnAttributes(Ihandle* ih, int oldnumcol)
 {
   int i, j;
-  char* valor;
+  char* value;
   char* attr = iupStrGetMemory(100);
 
   if(ih->data->valcb)
@@ -199,11 +200,11 @@ static void iMatrixGetNewColumnAttributes(Ihandle* ih, int oldnumcol)
     for(j = oldnumcol; j < ih->data->col.num; j++) /* Shouldn't this be <= ? */  
     {
       sprintf(attr, "%d:%d", i+1, j+1);
-      valor = (char*)iupAttribGetStr(ih, attr);
-      if(valor && *valor)
+      value = (char*)iupAttribGetStr(ih, attr);
+      if(value && *value)
       {
-        iMatrixMemAlocCell(ih, i, j, strlen(valor));
-        strcpy(ih->data->v[i][j].value, valor);
+        iupMatrixMemAlocCell(ih, i, j, strlen(value));
+        strcpy(ih->data->v[i][j].value, value);
       }
     }
   }
@@ -221,23 +222,23 @@ static void iMatrixGetNewColumnAttributes(Ihandle* ih, int oldnumcol)
       If this is a deletion, points to the first line where will be deleted.
       Note that its value is 1 when it deletes the line 1;
    -> numlin : number of lines to be inserted/ removed;
-   -> modo : IMATRIX_INSERT or IMATRIX_REMOVE.
+   -> modo : IMAT_INSERT or IMAT_REMOVE.
 */
-static void iMatrixChangeLineAttributes(Ihandle* ih, int base, int numlin, int modo)
+static void iMatrixNumLCChangeLineAttributes(Ihandle* ih, int base, int numlin, int modo)
 {
   int   i;
   char* aux = iupStrGetMemory(10);
   char* v;
-  Tx**  tmp = NULL;
+  ImatCell**  tmp = NULL;
 
-  /* Allocate space to store, temporarily, pointers for Tx structs,
+  /* Allocate space to store, temporarily, pointers for ImatCell struct,
      allocated in ChangeNumLin. It is necessary to do not
      lose the allocated space, during the move of attributes.
   */
   if(!ih->data->valcb)
-    tmp = (Tx**) malloc(numlin*sizeof(Tx*));
+    tmp = (ImatCell**) malloc(numlin*sizeof(ImatCell*));
 
-  if(modo == IMATRIX_INSERT)
+  if(modo == IMAT_INSERT)
   {
     /* Inserting lines */
     if(!ih->data->valcb)
@@ -249,9 +250,9 @@ static void iMatrixChangeLineAttributes(Ihandle* ih, int base, int numlin, int m
     /* Moving line attributes down */
     for(i = ih->data->lin.num-1-numlin; i >= base; i--)
     {
-      sprintf(aux, IMATRIX_TITLE_LIN, i+1);        /* Get the current line title and put in the right place */
+      sprintf(aux, IMAT_TITLE_LIN, i+1);        /* Get the current line title and put in the right place */
       v = iupAttribGetStr(ih, aux);                /* The attribute is "i+1:0", because the attributes      */
-      sprintf(aux, IMATRIX_TITLE_LIN, i+1+numlin); /* starts in 1 and internally, starts in zero.           */
+      sprintf(aux, IMAT_TITLE_LIN, i+1+numlin); /* starts in 1 and internally, starts in zero.           */
       iupAttribStoreStr(ih, aux, v);
 
       if(!ih->data->valcb)
@@ -265,7 +266,7 @@ static void iMatrixChangeLineAttributes(Ihandle* ih, int base, int numlin, int m
     for(i = 0; i < numlin; i++)
     {
       /* Set the titles of the new lines as "" */
-      sprintf(aux, IMATRIX_TITLE_LIN, base+1+i);
+      sprintf(aux, IMAT_TITLE_LIN, base+1+i);
       iupAttribSetStr(ih, aux, "");
 
       /* Restore the allocated region in the right position */
@@ -331,7 +332,7 @@ static void iMatrixChangeLineAttributes(Ihandle* ih, int base, int numlin, int m
     if(ih->data->lin.active >= base) /* If the focus is after line where the new line was inserted, plus "numlin" and focus line */
       ih->data->lin.active += numlin;
   }
-  else /* modo == IMATRIX_REMOVE */
+  else /* modo == IMAT_REMOVE */
   {
     if(!ih->data->valcb)
     {
@@ -341,9 +342,9 @@ static void iMatrixChangeLineAttributes(Ihandle* ih, int base, int numlin, int m
 
     for(i = base-1; i < ih->data->lin.num; i++)
     {
-      sprintf(aux, IMATRIX_TITLE_LIN, i+1+numlin);  /* Get the next line title */
+      sprintf(aux, IMAT_TITLE_LIN, i+1+numlin);  /* Get the next line title */
       v = iupAttribGetStr(ih, aux);
-      sprintf(aux, IMATRIX_TITLE_LIN, i+1);         /* and put in the current line */
+      sprintf(aux, IMAT_TITLE_LIN, i+1);         /* and put in the current line */
       iupAttribStoreStr(ih,aux,v);
 
       if(!ih->data->valcb)
@@ -407,12 +408,12 @@ static void iMatrixChangeLineAttributes(Ihandle* ih, int base, int numlin, int m
 
   {
     /* Adjust the width of the title column, and the visible size of the matrix */
-    int wt  = iMatrixGetTitlelineSize(ih);
+    int wt  = iupMatrixAuxGetTitlelineSize(ih);
     if(wt != ih->data->col.titlewh)
     {
       ih->data->col.size = (ih->data->XmaxC+1) - wt;
       ih->data->col.titlewh = wt;
-      iMatrixGetLastWidth(ih, IMATRIX_MAT_COL);
+      iupMatrixAuxGetLastWidth(ih, IMAT_MAT_COL);
     }
   }
 
@@ -432,26 +433,26 @@ static void iMatrixChangeLineAttributes(Ihandle* ih, int base, int numlin, int m
       If this is a deletion, points to the first column where will be deleted.
       Note that its value is 1 when it deletes the line 1;
    -> numcol : number of column to be inserted/ removed;
-   -> modo : IMATRIX_INSERT or IMATRIX_REMOVE.
+   -> modo : IMAT_INSERT or IMAT_REMOVE.
 */
-static void iMatrixChangeColumnAttributes(Ihandle* ih, int base, int numcol, int modo)
+static void iMatrixNumLCChangeColumnAttributes(Ihandle* ih, int base, int numcol, int modo)
 {
   int i, j, k;
   char*  aux = iupStrGetMemory(10);
   char*  v;
-  Tx*    tmp = NULL;
+  ImatCell*    tmp = NULL;
   int*   newwidth;
 
-  /* Allocate space to store, temporarily, pointers for Tx structs,
+  /* Allocate space to store, temporarily, pointers for ImatCell structs,
      allocated in ChangeNumCol. It is necessary to do not
      lose the allocated space, during the move of attributes.
   */
   if(!ih->data->valcb)
-    tmp = (Tx*) malloc(numcol * sizeof(Tx));
+    tmp = (ImatCell*) malloc(numcol * sizeof(ImatCell));
   
   newwidth = (int*) malloc(numcol * sizeof(int));
 
-  if(modo == IMATRIX_INSERT)
+  if(modo == IMAT_INSERT)
   {
     for(i = 0; i < numcol; i++)
       newwidth[i] = ih->data->col.wh[ih->data->col.num-numcol+i]; /* store width, calculated previously */
@@ -459,9 +460,9 @@ static void iMatrixChangeColumnAttributes(Ihandle* ih, int base, int numcol, int
     /* Move column titles and widths */
     for(i = ih->data->col.num-1-numcol; i >= base; i--)
     {
-      sprintf(aux, IMATRIX_TITLE_COL, i+1);        /* Get the current column title and put in the right place */
+      sprintf(aux, IMAT_TITLE_COL, i+1);        /* Get the current column title and put in the right place */
       v = iupAttribGetStr(ih, aux);                /* The attribute is "0:i+1", because the attributes        */
-      sprintf(aux, IMATRIX_TITLE_COL, i+1+numcol); /* starts in 1 and internally, starts in zero.             */
+      sprintf(aux, IMAT_TITLE_COL, i+1+numcol); /* starts in 1 and internally, starts in zero.             */
       iupAttribStoreStr(ih, aux, v);
 
       ih->data->col.wh[i+numcol] = ih->data->col.wh[i];   /* Reorder the width of columns */
@@ -474,7 +475,7 @@ static void iMatrixChangeColumnAttributes(Ihandle* ih, int base, int numcol, int
     /* Restore stored widths and set new titles */
     for(i = 0; i < numcol; i++)
     {
-      sprintf(aux, IMATRIX_TITLE_COL, base+1+i);
+      sprintf(aux, IMAT_TITLE_COL, base+1+i);
       iupAttribSetStr(ih, aux, "");
 
       ih->data->col.wh[base+i] = newwidth[i];
@@ -555,14 +556,14 @@ static void iMatrixChangeColumnAttributes(Ihandle* ih, int base, int numcol, int
     if(ih->data->col.active >= base) /* If the focus is after column where the new column was inserted, plus "numcol" and focus column */
       ih->data->col.active += numcol;
   }
-  else /* modo == IMATRIX_REMOVE */
+  else /* modo == IMAT_REMOVE */
   {
     /* Move column titles and widths */
     for(i = base-1; i < ih->data->col.num; i++)
     {
-      sprintf(aux, IMATRIX_TITLE_COL, i+1+numcol);  /* Get the next column title */     
+      sprintf(aux, IMAT_TITLE_COL, i+1+numcol);  /* Get the next column title */     
       v = iupAttribGetStr(ih, aux);                                                   
-      sprintf(aux, IMATRIX_TITLE_COL, i+1);         /* and put in the current line */ 
+      sprintf(aux, IMAT_TITLE_COL, i+1);         /* and put in the current line */ 
       iupAttribStoreStr(ih, aux, v);
 
       ih->data->col.wh[i] = ih->data->col.wh[i+numcol];  /* Reorder the width of columns */
@@ -634,7 +635,7 @@ static void iMatrixChangeColumnAttributes(Ihandle* ih, int base, int numcol, int
       ih->data->col.active -= numcol;
   }
 
-  iMatrixGetLastWidth(ih, IMATRIX_MAT_COL);
+  iupMatrixAuxGetLastWidth(ih, IMAT_MAT_COL);
   
   if(tmp)
     free(tmp);
@@ -648,7 +649,7 @@ static void iMatrixChangeColumnAttributes(Ihandle* ih, int base, int numcol, int
 /**************************************************************************/
 
 /* Return the number of lines that the matrix has. */
-char* iMatrixNlcGetNumLin(Ihandle* ih)
+char* iupMatrixNumLCGetNumLin(Ihandle* ih)
 {
   char* num = iupStrGetMemory(100);
   sprintf(num, "%d", ih->data->lin.num);
@@ -656,7 +657,7 @@ char* iMatrixNlcGetNumLin(Ihandle* ih)
 }
 
 /* Return the number of columns that the matrix has. */
-char* iMatrixNlcGetNumCol(Ihandle* ih)
+char* iupMatrixNumLCGetNumCol(Ihandle* ih)
 {
   char* num = iupStrGetMemory(100);
   sprintf(num, "%d", ih->data->col.num);
@@ -671,7 +672,7 @@ char* iMatrixNlcGetNumCol(Ihandle* ih)
               number of lines.
           b) "%d" insert after the line using the number.
 */
-void iMatrixNlcAddLin(Ihandle* ih, const char* v)
+void iupMatrixNumLCAddLin(Ihandle* ih, const char* v)
 {
   int base = 0, oldnl = ih->data->lin.num, numlin;
   int visible = IupGetInt(ih, "VISIBLE");
@@ -686,28 +687,28 @@ void iMatrixNlcAddLin(Ihandle* ih, const char* v)
   if(base < 0 || base > oldnl)  /* Out of the valid limits for the base */
     return;
 
-  if(ret != 2) /* If it was identifyed one number, uses (b) format */
+  if(ret != 2) /* If it was identified one number, uses (b) format */
     numlin = 1;
 
   /* leave of the edit mode */
-  iMatrixEditCheckHidden(ih);
+  iupMatrixEditCheckHidden(ih);
 
   IsCanvasSet(ih, err);
 
   if(visible && err == CD_OK)
     IupSetAttribute(ih, "VISIBLE", "NO");
 
-  iMatrixChangeNumLines(ih, oldnl+numlin);
+  iMatrixNumLCChangeNumLines(ih, oldnl+numlin);
 
   if(base != oldnl)  /* If there is not insertion after last line... */
-    iMatrixChangeLineAttributes(ih, base, numlin, IMATRIX_INSERT);  /* change attributes and 'base' line values until the end... */
+    iMatrixNumLCChangeLineAttributes(ih, base, numlin, IMAT_INSERT);  /* change attributes and 'base' line values until the end... */
   else
-    iMatrixGetNewLineAttributes(ih, oldnl);
+    iMatrixNumLCGetNewLineAttributes(ih, oldnl);
 
   if(visible && err == CD_OK)
   {
-    SetSbV(ih);
-    SetSbH(ih);
+    iupMatrixSetSbV(ih);
+    iupMatrixSetSbH(ih);
     IupSetAttribute(ih, "VISIBLE", "YES");
   }
 }
@@ -720,7 +721,7 @@ void iMatrixNlcAddLin(Ihandle* ih, const char* v)
               number of lines.
           b) "%d" delete the line using the number.
 */
-void iMatrixNlcDelLin(Ihandle* ih, const char* v)
+void iupMatrixNumLCDelLin(Ihandle* ih, const char* v)
 {
   int base, oldnl=ih->data->lin.num, numlin;
   int visible = IupGetInt(ih, "VISIBLE");
@@ -745,7 +746,7 @@ void iMatrixNlcDelLin(Ihandle* ih, const char* v)
     numlin = oldnl-base+1;
 
   /* leave of the edit mode */
-  iMatrixEditCheckHidden(ih);
+  iupMatrixEditCheckHidden(ih);
 
   if(ih->data->lin.active+1 >= base && ih->data->lin.active <= base+numlin-2)
   {
@@ -762,7 +763,7 @@ void iMatrixNlcDelLin(Ihandle* ih, const char* v)
     }      
 
     /* Mark the focused cell */
-    iMatrixMarkShow(ih, 0, ih->data->lin.active, ih->data->col.active, ih->data->lin.active, ih->data->col.active);
+    iupMatrixMarkShow(ih, 0, ih->data->lin.active, ih->data->col.active, ih->data->lin.active, ih->data->col.active);
   }
 
   IsCanvasSet(ih, err);
@@ -770,17 +771,17 @@ void iMatrixNlcDelLin(Ihandle* ih, const char* v)
   if(visible && err == CD_OK)
     IupSetAttribute(ih, "VISIBLE", "NO");
 
-  iMatrixChangeNumLines(ih, oldnl-numlin);
+  iMatrixNumLCChangeNumLines(ih, oldnl-numlin);
 
   if(base != oldnl)  /* If there is not deletion the last line... */
-    iMatrixChangeLineAttributes(ih, base, numlin, IMATRIX_REMOVE);  /* change attributes and 'base' line values until the end... */
+    iMatrixNumLCChangeLineAttributes(ih, base, numlin, IMAT_REMOVE);  /* change attributes and 'base' line values until the end... */
   else
-    iMatrixGetNewLineAttributes(ih, oldnl);
+    iMatrixNumLCGetNewLineAttributes(ih, oldnl);
 
   if(visible && err == CD_OK)
   {
-    SetSbV(ih);
-    SetSbH(ih);
+    iupMatrixSetSbV(ih);
+    iupMatrixSetSbH(ih);
     IupSetAttribute(ih, "VISIBLE", "YES");
   }
 }
@@ -793,7 +794,7 @@ void iMatrixNlcDelLin(Ihandle* ih, const char* v)
               number of columns.
           b) "%d" insert after the column using the number.
 */
-void iMatrixNlcAddCol(Ihandle* ih, const char* v)
+void iupMatrixNumLCAddCol(Ihandle* ih, const char* v)
 {
   int base = 0, oldnc = ih->data->col.num, numcol;
   int visible = IupGetInt(ih, "VISIBLE");
@@ -812,23 +813,23 @@ void iMatrixNlcAddCol(Ihandle* ih, const char* v)
     numcol = 1;
 
   /* leave of the edit mode */
-  iMatrixEditCheckHidden(ih);
+  iupMatrixEditCheckHidden(ih);
 
   IsCanvasSet(ih, err);
   if(visible && err == CD_OK)
     IupSetAttribute(ih, "VISIBLE", "NO");
 
-  iMatrixChangeNumCols(ih, oldnc+numcol);
+  iMatrixNumLCChangeNumCols(ih, oldnc+numcol);
 
   if(base != oldnc)  /* If there is not insertion last column... */
-    iMatrixChangeColumnAttributes(ih, base, numcol, IMATRIX_INSERT);  /* change attributes and 'base' column values until the end... */
+    iMatrixNumLCChangeColumnAttributes(ih, base, numcol, IMAT_INSERT);  /* change attributes and 'base' column values until the end... */
   else
-    iMatrixGetNewColumnAttributes(ih, oldnc);
+    iMatrixNumLCGetNewColumnAttributes(ih, oldnc);
 
   if(visible && err == CD_OK)
   {
-    SetSbV(ih);
-    SetSbH(ih);
+    iupMatrixSetSbV(ih);
+    iupMatrixSetSbH(ih);
     IupSetAttribute(ih, "VISIBLE", "YES");
   }
 }
@@ -841,7 +842,7 @@ void iMatrixNlcAddCol(Ihandle* ih, const char* v)
               number of columns.
           b) "%d" delete the column using the number.
 */
-void iMatrixNlcDelCol(Ihandle* ih, const char* v)
+void iupMatrixNumLCDelCol(Ihandle* ih, const char* v)
 {
   int base = 0, oldnc = ih->data->col.num, numcol;
   int visible = IupGetInt(ih, "VISIBLE");
@@ -866,7 +867,7 @@ void iMatrixNlcDelCol(Ihandle* ih, const char* v)
     numcol = oldnc-base+1;
 
   /* leave of the edit mode */
-  iMatrixEditCheckHidden(ih);
+  iupMatrixEditCheckHidden(ih);
 
   if(ih->data->col.active+1 >= base && ih->data->col.active <= base+numcol-2)
   {
@@ -883,30 +884,30 @@ void iMatrixNlcDelCol(Ihandle* ih, const char* v)
     }
 
     /* Mark the focused cell */
-    iMatrixMarkShow(ih, 0, ih->data->lin.active, ih->data->col.active, ih->data->lin.active, ih->data->col.active);
+    iupMatrixMarkShow(ih, 0, ih->data->lin.active, ih->data->col.active, ih->data->lin.active, ih->data->col.active);
   }
 
   IsCanvasSet(ih, err);
   if(visible && err == CD_OK)
     IupSetAttribute(ih, "VISIBLE", "NO");
 
-  iMatrixChangeNumCols(ih, oldnc-numcol);
+  iMatrixNumLCChangeNumCols(ih, oldnc-numcol);
 
   if(base != oldnc)  /* If there is not deletion the last column... */
-    iMatrixChangeColumnAttributes(ih, base, numcol, IMATRIX_REMOVE);  /* change attributes and 'base' column values until the end... */
+    iMatrixNumLCChangeColumnAttributes(ih, base, numcol, IMAT_REMOVE);  /* change attributes and 'base' column values until the end... */
   else
-    iMatrixGetNewColumnAttributes(ih, oldnc);
+    iMatrixNumLCGetNewColumnAttributes(ih, oldnc);
 
   if(visible && err == CD_OK)
   {
-    SetSbV(ih);
-    SetSbH(ih);
+    iupMatrixSetSbV(ih);
+    iupMatrixSetSbH(ih);
     IupSetAttribute(ih, "VISIBLE", "YES");
   }
 }
 
 /* Change the number of lines of the matrix, cut and put lines at end */
-void iMatrixNlcNumLin(Ihandle* ih, const char* v)
+void iupMatrixNumLCNumLin(Ihandle* ih, const char* v)
 {
   int num = 0, oldnl = ih->data->lin.num;
   int visible = IupGetInt(ih, "VISIBLE");
@@ -918,20 +919,20 @@ void iMatrixNlcNumLin(Ihandle* ih, const char* v)
     if(visible && err == CD_OK)
       IupSetAttribute(ih, "VISIBLE", "NO");
 
-    iMatrixChangeNumLines(ih, num);
-    iMatrixGetNewLineAttributes(ih, oldnl);
+    iMatrixNumLCChangeNumLines(ih, num);
+    iMatrixNumLCGetNewLineAttributes(ih, oldnl);
 
     if(visible && err == CD_OK)
     {
-      SetSbV(ih);
-      SetSbH(ih);
+      iupMatrixSetSbV(ih);
+      iupMatrixSetSbH(ih);
       IupSetAttribute(ih, "VISIBLE", "YES");
     }
   }
 }
 
 /* Change the number of columns of the matrix, cut and put lines at end */
-void iMatrixNlcNumCol(Ihandle* ih, const char* v)
+void iupMatrixNumLCNumCol(Ihandle* ih, const char* v)
 {
   int num = 0, oldnc = ih->data->col.num;
   int visible = IupGetInt(ih, "VISIBLE");
@@ -943,13 +944,13 @@ void iMatrixNlcNumCol(Ihandle* ih, const char* v)
     if(visible && err == CD_OK)
       IupSetAttribute(ih, "VISIBLE", "NO");
 
-    iMatrixChangeNumCols(ih, num);
-    iMatrixGetNewColumnAttributes(ih, oldnc); /* Unnecessary call when adding columns? */
+    iMatrixNumLCChangeNumCols(ih, num);
+    iMatrixNumLCGetNewColumnAttributes(ih, oldnc); /* Unnecessary call when adding columns? */
 
     if(visible && err == CD_OK)
     {
-      SetSbV(ih);
-      SetSbH(ih);
+      iupMatrixSetSbV(ih);
+      iupMatrixSetSbH(ih);
       IupSetAttribute(ih, "VISIBLE", "YES");
     }
   }

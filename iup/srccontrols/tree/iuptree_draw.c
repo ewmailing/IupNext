@@ -71,7 +71,7 @@ static void iTreeDrawPutImage(cdCanvas* c, int w, int h, unsigned char* index, l
 
 static void iTreeDrawUpdateScrollDx(Ihandle* ih, int maxx)
 {
-  float dy = iTreeFindNumNodesInCanvas(ih) / (float)(iTreeFindNumNodes(ih) + ITREE_TREE_BOTTOM_MARGIN);
+  float dy = iupTreeFindNumNodesInCanvas(ih) / (float)(iupTreeFindNumNodes(ih) + ITREE_TREE_BOTTOM_MARGIN);
   float dx = (float)(ih->data->XmaxC - ITREE_NODE_X) / (float)maxx;
 
   if(dy > 1.0)
@@ -94,14 +94,14 @@ static void iTreeDrawBorder(Ihandle* ih)
 }
 
 /* Redraws the whole tree */
-void iTreeDrawTree(Ihandle* ih)
+void iupTreeDrawTree(Ihandle* ih)
 {
- Node node = (Node)ih->data->root;
- int x, y = iTreeDrawGetTop(ih);
+ ItreeNodePtr node = (ItreeNodePtr)ih->data->root;
+ int x, y = iupTreeDrawGetTop(ih);
  int first_leaf = 1;
  int maxx = 0;
 
- iTreeDrawSetVisibility(ih);
+ iupTreeDrawSetVisibility(ih);
 
  cdCanvasClear(ih->data->cddbuffer);
 
@@ -113,7 +113,7 @@ void iTreeDrawTree(Ihandle* ih)
 
    text_x = 0;
       
-   x = iTreeDrawGetLeft(ih) + ITREE_NODE_X * node->depth;
+   x = iupTreeDrawGetLeft(ih) + ITREE_NODE_X * node->depth;
 
    if(node->visible == YES)
    {
@@ -182,7 +182,7 @@ void iTreeDrawTree(Ihandle* ih)
      /* if node is a branch */
      if(kind == ITREE_BRANCH)
      {
-       Node temp = node;
+       ItreeNodePtr temp = node;
        int l;
 
        if(node->visible == YES)     
@@ -227,7 +227,7 @@ void iTreeDrawTree(Ihandle* ih)
            /* If the following visible node is a branch, draws the rest of the line */
            {
              int depth = node->depth;
-             Node temp = node->next;
+             ItreeNodePtr temp = node->next;
        
              while(temp && depth >= node->depth && temp->visible == NO)
              {
@@ -309,7 +309,7 @@ void iTreeDrawTree(Ihandle* ih)
      }
      else /* node is a leaf */
      {
-       Node temp = node;
+       ItreeNodePtr temp = node;
        int l;
      
        if(node->visible == YES)
@@ -396,7 +396,7 @@ void iTreeDrawTree(Ihandle* ih)
  iTreeDrawUpdateScrollDx(ih, maxx);
 }
 
-int iTreeDrawGetTop(Ihandle* ih)
+int iupTreeDrawGetTop(Ihandle* ih)
 {
   float posy = IupGetFloat(ih, "POSY");     
   float   dy = IupGetFloat(ih, "DY");
@@ -404,7 +404,7 @@ int iTreeDrawGetTop(Ihandle* ih)
   return (int)((1.0 + posy / dy) * (ih->data->YmaxC - ITREE_TREE_TOP_MARGIN));
 }
 
-int iTreeDrawGetCanvasTop(Ihandle* ih)
+int iupTreeDrawGetCanvasTop(Ihandle* ih)
 {
   float posy = IupGetFloat(ih, "POSY");
   float   dy = IupGetFloat(ih, "DY");
@@ -412,7 +412,7 @@ int iTreeDrawGetCanvasTop(Ihandle* ih)
   return (int)((posy / dy) * (ih->data->YmaxC - ITREE_TREE_TOP_MARGIN));
 }
 
-int iTreeDrawGetLeft(Ihandle* ih)
+int iupTreeDrawGetLeft(Ihandle* ih)
 {
   float posx = IupGetFloat(ih, "POSX");
   float   dx = IupGetFloat(ih, "DX");
@@ -473,9 +473,9 @@ static void iTreeDrawRectangle(cdCanvas* c, int x1, int x2, int y1, int y2)
   iTreeDrawDottedRect(c, x1, x2, y1, y2);
 }
 
-void iTreeDrawSetVisibility(Ihandle* ih)
+void iupTreeDrawSetVisibility(Ihandle* ih)
 {
-  Node node = (Node)ih->data->root;
+  ItreeNodePtr node = (ItreeNodePtr)ih->data->root;
   int hide = 0;
   int visible = YES;
  

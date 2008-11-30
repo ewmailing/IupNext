@@ -30,9 +30,9 @@
 #include "iuptree_mouse.h"
 
 
-int iTreeFindNodeIdFromXY(Ihandle* ih, int xmouse, int ymouse)
+int iupTreeFindNodeIdFromXY(Ihandle* ih, int xmouse, int ymouse)
 {
-  Node node  = (Node)ih->data->root;
+  ItreeNodePtr node  = (ItreeNodePtr)ih->data->root;
   int id = 0;
   int kind;
   int x;
@@ -62,18 +62,18 @@ int iTreeFindNodeIdFromXY(Ihandle* ih, int xmouse, int ymouse)
           if(node->state == ITREE_EXPANDED)
           {
             /* if node isn't root, looks for button to collapse */
-            if(node != ih->data->root && iTreeMouseCollapseButton(ih, xmouse, ymouse, x, y))
+            if(node != ih->data->root && iupTreeMouseCollapseButton(ih, xmouse, ymouse, x, y))
               return id;
           }
           else
           {
             /* if node isn't root, looks for button to expand */
-            if((node != ih->data->root && iTreeMouseExpandButton(ih, xmouse, ymouse, x, y)))
+            if((node != ih->data->root && iupTreeMouseExpandButton(ih, xmouse, ymouse, x, y)))
               return id;
           }
       
           /* Looks for branch */
-          if(iTreeMouseCollapsedBranch(ih, xmouse, ymouse, x, y))
+          if(iupTreeMouseCollapsedBranch(ih, xmouse, ymouse, x, y))
             return id;
         }
         break;
@@ -81,7 +81,7 @@ int iTreeFindNodeIdFromXY(Ihandle* ih, int xmouse, int ymouse)
       case ITREE_LEAF:
         {
           /* Looks for leaf */
-          if(iTreeMouseLeaf(ih, xmouse, ymouse, x, y))
+          if(iupTreeMouseLeaf(ih, xmouse, ymouse, x, y))
             return id;  
         }
         break;
@@ -93,7 +93,7 @@ int iTreeFindNodeIdFromXY(Ihandle* ih, int xmouse, int ymouse)
     }
 
     /* Looks for associated text */
-    if(iTreeMouseText(ih, node, text_x, xmouse, ymouse, x, y))
+    if(iupTreeMouseText(ih, node, text_x, xmouse, ymouse, x, y))
       return id;
 
     node = node->next;
@@ -103,7 +103,7 @@ int iTreeFindNodeIdFromXY(Ihandle* ih, int xmouse, int ymouse)
   return -1;
 }
 
-void iTreeFindStartEndSelection(Ihandle* ih, int* begin, int* end)
+void iupTreeFindStartEndSelection(Ihandle* ih, int* begin, int* end)
 {
   *begin = atoi(IupGetAttribute(ih, "STARTING"));
   *end   = atoi(IupGetAttribute(ih, "VALUE"));
@@ -117,9 +117,9 @@ void iTreeFindStartEndSelection(Ihandle* ih, int* begin, int* end)
   }
 }
 
-Node iTreeFindNodeFromId(Ihandle* ih, int id)
+ItreeNodePtr iupTreeFindNodeFromId(Ihandle* ih, int id)
 {
-  Node node = ih->data->root;
+  ItreeNodePtr node = ih->data->root;
 
   while(node != NULL && id != 0)
   {
@@ -130,9 +130,9 @@ Node iTreeFindNodeFromId(Ihandle* ih, int id)
 }
 
 /*  If given id_string is "" returns the selected node */
-Node iTreeFindNodeFromString(Ihandle* ih, const char* id_string)
+ItreeNodePtr iupTreeFindNodeFromString(Ihandle* ih, const char* id_string)
 {
-  Node node = (Node)ih->data->selected;
+  ItreeNodePtr node = (ItreeNodePtr)ih->data->selected;
 
   if(id_string[0])
   {
@@ -151,17 +151,17 @@ Node iTreeFindNodeFromString(Ihandle* ih, const char* id_string)
 }
 
 /* Returns the first marked node found (root does not count!!!) */
-Node iTreeFindMarked(Ihandle* ih, const char* id_string)
+ItreeNodePtr iupTreeFindMarked(Ihandle* ih, const char* id_string)
 {
-  Node node;
+  ItreeNodePtr node;
 
   if(id_string[0])
   {
-    node = (Node) iTreeFindNodeFromString(ih, id_string);    
+    node = (ItreeNodePtr) iupTreeFindNodeFromString(ih, id_string);    
   }
   else
   {
-    node = (Node)ih->data->root;    
+    node = (ItreeNodePtr)ih->data->root;    
   }
   
   while(node)
@@ -176,7 +176,7 @@ Node iTreeFindMarked(Ihandle* ih, const char* id_string)
   return NULL;  
 }
   
-Node iTreeFindPrevious(Node temp, Node node)
+ItreeNodePtr iupTreeFindPrevious(ItreeNodePtr temp, ItreeNodePtr node)
 {
   if(node == NULL)
     return NULL;
@@ -187,23 +187,23 @@ Node iTreeFindPrevious(Node temp, Node node)
   return temp;
 }
 
-Node iTreeFindParent(Ihandle* ih, const char* id_string)
+ItreeNodePtr iupTreeFindParent(Ihandle* ih, const char* id_string)
 {
 
-  Node node = iTreeFindNodeFromString(ih, id_string);
-  Node temp = (Node)ih->data->root;
+  ItreeNodePtr node = iupTreeFindNodeFromString(ih, id_string);
+  ItreeNodePtr temp = (ItreeNodePtr)ih->data->root;
 
   if(node == temp)return NULL;
   
-  while(node && (node->depth >= (iTreeFindNodeFromString(ih, id_string))->depth))
+  while(node && (node->depth >= (iupTreeFindNodeFromString(ih, id_string))->depth))
   {
-    node = iTreeFindPrevious(temp, node);    
+    node = iupTreeFindPrevious(temp, node);    
   }
   
   return node;
 }
 
-int iTreeFindMaxDepth(Node node)
+int iupTreeFindMaxDepth(ItreeNodePtr node)
 {
   int depth = 0;
   
@@ -215,10 +215,10 @@ int iTreeFindMaxDepth(Node node)
   return depth;
 }
 
-int iTreeFindNumNodes(Ihandle* ih)
+int iupTreeFindNumNodes(Ihandle* ih)
 {
 
-  Node node = (Node)ih->data->root;
+  ItreeNodePtr node = (ItreeNodePtr)ih->data->root;
   int i = 0;
     
   while(node)
@@ -230,10 +230,10 @@ int iTreeFindNumNodes(Ihandle* ih)
   return i; 
 }
 
-int iTreeFindTotNumNodes(Ihandle* ih)
+int iupTreeFindTotNumNodes(Ihandle* ih)
 {
 
-  Node node = (Node)ih->data->root;
+  ItreeNodePtr node = (ItreeNodePtr)ih->data->root;
   int i = 0;
     
   while(node)
@@ -245,14 +245,14 @@ int iTreeFindTotNumNodes(Ihandle* ih)
   return i; 
 }
 
-float iTreeFindNumNodesInCanvas(Ihandle* ih)
+float iupTreeFindNumNodesInCanvas(Ihandle* ih)
 {
   return ((float)(ih->data->YmaxC - (float)ITREE_TREE_TOP_MARGIN) / (float)ITREE_NODE_Y);
 }
 
-int iTreeFindNodeId(Ihandle* ih, Node node)
+int iupTreeFindNodeId(Ihandle* ih, ItreeNodePtr node)
 {
-  Node tmp = ih->data->root;
+  ItreeNodePtr tmp = ih->data->root;
   int i = 0;
 
   while(node != tmp)

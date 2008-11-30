@@ -3,7 +3,6 @@
  * cell selection
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_mark.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 /**************************************************************************/
@@ -39,7 +38,7 @@
 #include "iupmat_mark.h"
 
 
-#define IMATRIX_MINMAX(a, b, min, max)  ((a > b) ? (min = b, max = a) : (min = a, max = b))
+#define IMAT_MINMAX(a, b, min, max)  ((a > b) ? (min = b, max = a) : (min = a, max = b))
 
 
 /* MarkLin and MarkCol are used to store the current cell when a block is being selected */
@@ -64,36 +63,36 @@ static void iMatrixMarkColumn(Ihandle* ih, int col, int redraw)
   int i;
 
   for(i = 0; i < ih->data->lin.num; i++, MarkedCells++)
-    iMatrixMarkCellSet(ih, i, col, 1);
+    iupMatrixMarkCellSet(ih, i, col, 1);
 
   ih->data->col.marked[col]++;
 
   if(redraw)
   {
     if(ih->data->col.marked[col] == 1)
-      iMatrixDrawColumnTitle(ih, col, col);
-    iMatrixDrawCells(ih, ih->data->lin.first, col, ih->data->lin.last, col);
+      iupMatrixDrawColumnTitle(ih, col, col);
+    iupMatrixDrawCells(ih, ih->data->lin.first, col, ih->data->lin.last, col);
   }
 }
 
-/* Uncheck (unselect) a full column. Redraw it.
-   -> col : column to be uncheck.
+/* Unchecked (unselected) a full column. Redraw it.
+   -> col : column to be Unchecked.
    -> redraw: define the redraw or not
 */
-static void iMatrixMarkUncheckColumn(Ihandle* ih, int col, int redraw)
+static void iMatrixMarkUncheckedColumn(Ihandle* ih, int col, int redraw)
 {
   int i;
 
   for(i = 0; i < ih->data->lin.num; i++, MarkedCells--)
-    iMatrixMarkCellSet(ih, i, col, 0);
+    iupMatrixMarkCellSet(ih, i, col, 0);
 
   ih->data->col.marked[col]--;
 
   if(redraw)
   {
     if(!ih->data->col.marked[col])
-      iMatrixDrawColumnTitle(ih, col, col);
-    iMatrixDrawCells(ih, ih->data->lin.first, col, ih->data->lin.last, col);
+      iupMatrixDrawColumnTitle(ih, col, col);
+    iupMatrixDrawCells(ih, ih->data->lin.first, col, ih->data->lin.last, col);
   }
 }
 
@@ -106,40 +105,40 @@ static void iMatrixMarkLine(Ihandle* ih, int lin, int redraw)
   int i;
 
   for(i = 0; i < ih->data->col.num; i++, MarkedCells++)
-    iMatrixMarkCellSet(ih, lin, i, 1);
+    iupMatrixMarkCellSet(ih, lin, i, 1);
 
   ih->data->lin.marked[lin]++;
 
   if(redraw)
   {
     if(ih->data->lin.marked[lin] == 1)
-      iMatrixDrawLineTitle(ih, lin, lin);
-    iMatrixDrawCells(ih, lin, ih->data->col.first, lin, ih->data->col.last);
+      iupMatrixDrawLineTitle(ih, lin, lin);
+    iupMatrixDrawCells(ih, lin, ih->data->col.first, lin, ih->data->col.last);
   }
 }
 
-/* Uncheck (unselect) a full line. Redraw it.
-   -> lin : line to be uncheck.
+/* Unchecked (unselected) a full line. Redraw it.
+   -> lin : line to be Unchecked.
    -> redraw: define the redraw or not
 */
 
-static void iMatrixMarkUncheckLine(Ihandle* ih, int lin, int redraw)
+static void iMatrixMarkUncheckedLine(Ihandle* ih, int lin, int redraw)
 {
   int i;
 
   for(i = 0; i < ih->data->col.num; i++, MarkedCells--)
-    iMatrixMarkCellSet(ih, lin, i, 0);
+    iupMatrixMarkCellSet(ih, lin, i, 0);
   ih->data->lin.marked[lin]--;
 
   if(redraw)
   {
     if(!ih->data->lin.marked[lin])
-      iMatrixDrawLineTitle(ih, lin, lin);
-    iMatrixDrawCells(ih, lin, ih->data->col.first, lin, ih->data->col.last);
+      iupMatrixDrawLineTitle(ih, lin, lin);
+    iupMatrixDrawCells(ih, lin, ih->data->col.first, lin, ih->data->col.last);
   }
 }
 
-/* Mark or unmark a region of lines (using drag).
+/* Mark (or not) a region of lines using drag.
    -> lin: final line of selection.
 */
 static void iMatrixMarkRegionLin(Ihandle* ih, int lin)
@@ -148,8 +147,8 @@ static void iMatrixMarkRegionLin(Ihandle* ih, int lin)
     return;
 
   if((lin >= ih->data->lin.active && lin < MarkLin) ||
-     (lin <= ih->data->lin.active && lin > MarkLin))     /* Unmark */
-    iMatrixMarkUncheckLine(ih, MarkLin, 1);
+     (lin <= ih->data->lin.active && lin > MarkLin))     /* Unmarked */
+    iMatrixMarkUncheckedLine(ih, MarkLin, 1);
   else
     iMatrixMarkLine(ih, lin, 1);
 
@@ -157,7 +156,7 @@ static void iMatrixMarkRegionLin(Ihandle* ih, int lin)
   MarkCol = ih->data->col.num - 1;
 }
 
-/* Mark or unmark a region of columns (using drag).
+/* Mark (or not) a region of columns (using drag).
    -> col: final column of selection.
 */
 static void iMatrixMarkRegionCol(Ihandle* ih, int col)
@@ -166,8 +165,8 @@ static void iMatrixMarkRegionCol(Ihandle* ih, int col)
     return;
 
   if((col >= ih->data->col.active && col < MarkCol) ||
-     (col <= ih->data->col.active && col > MarkCol))     /* Unmark */
-    iMatrixMarkUncheckColumn(ih, MarkCol, 1);
+     (col <= ih->data->col.active && col > MarkCol))     /* unmarked */
+    iMatrixMarkUncheckedColumn(ih, MarkCol, 1);
   else /* Marcando */
     iMatrixMarkColumn(ih, col, 1);
 
@@ -175,7 +174,7 @@ static void iMatrixMarkRegionCol(Ihandle* ih, int col)
   MarkLin = ih->data->lin.num - 1;
 }
 
-/* Mark or unmark a region of the matrix (using drag).
+/* Mark (or not) a region of the matrix (using drag).
    The block to be selected is defined by the cell passed as parameter,
    and MarkLin and MarkCol.
    -> lin, col : final cell of the selection.
@@ -187,13 +186,13 @@ static void iMatrixMarkRegion(Ihandle* ih, int lin, int col)
   int colend    =  0, linend    =  0;
   int i;
 
-  if(MarkFullCol)  /* Mark/unmark full columns */
+  if(MarkFullCol)  /* Mark/unmarked full columns */
   {
     iMatrixMarkRegionCol(ih, col);
     return;
   }
 
-  if(MarkFullLin)  /* Mark/unmark full lines */
+  if(MarkFullLin)  /* Mark/unmarked full lines */
   {
     iMatrixMarkRegionLin(ih, lin);
     return;
@@ -202,10 +201,10 @@ static void iMatrixMarkRegion(Ihandle* ih, int lin, int col)
   if(lin != MarkLin)
   {
     /* Put the "<" of "ih->data->col.active" and "MarkCol" in "colstart", and the other in "colend" */
-    IMATRIX_MINMAX(ih->data->col.active, MarkCol, colstart, colend);
+    IMAT_MINMAX(ih->data->col.active, MarkCol, colstart, colend);
 
     if((lin >= ih->data->lin.active && lin < MarkLin) ||
-       (lin <= ih->data->lin.active && lin > MarkLin))     /* Unmark */
+       (lin <= ih->data->lin.active && lin > MarkLin))     /* unmarked */
     {
        /* lin and MarkLin differ, in max, of 1 */
 
@@ -213,7 +212,7 @@ static void iMatrixMarkRegion(Ihandle* ih, int lin, int col)
        /* So, cells of other region, already marked and being superpose by */
        /* current region, are not erased */
        for(i = colstart; i <= colend; i++)
-         iMatrixMarkCellSet(ih, MarkLin, i, 0);
+         iupMatrixMarkCellSet(ih, MarkLin, i, 0);
 
        MarkedCells -= (colend - colstart + 1);
        RedrawLin    = MarkLin;
@@ -222,7 +221,7 @@ static void iMatrixMarkRegion(Ihandle* ih, int lin, int col)
     {
        /* lin and MarkLin differ, in max, of 1 */
        for(i = colstart; i <= colend; i++)
-         iMatrixMarkCellSet(ih, lin, i, 1);
+         iupMatrixMarkCellSet(ih, lin, i, 1);
 
        MarkedCells += (colend - colstart + 1);
        RedrawLin    = lin;
@@ -233,14 +232,14 @@ static void iMatrixMarkRegion(Ihandle* ih, int lin, int col)
   if(col != MarkCol)
   {
     /* Put the "<" of "ih->data->lin.active" and "MarkLin" in "linstart", and the other in "linend" */
-    IMATRIX_MINMAX(ih->data->lin.active, MarkLin, linstart, linend);
+    IMAT_MINMAX(ih->data->lin.active, MarkLin, linstart, linend);
 
     if((col >= ih->data->col.active && col < MarkCol) ||
-       (col <= ih->data->col.active && col > MarkCol))     /* Unmark */
+       (col <= ih->data->col.active && col > MarkCol))     /* unmarked */
     {
        /* col and MarkCol differ, in max, of 1 */
        for(i = linstart; i <= linend; i++)
-         iMatrixMarkCellSet(ih, i, MarkCol, 0);
+         iupMatrixMarkCellSet(ih, i, MarkCol, 0);
 
        MarkedCells -= (linend - linstart + 1);
        RedrawCol    = MarkCol;
@@ -249,7 +248,7 @@ static void iMatrixMarkRegion(Ihandle* ih, int lin, int col)
     {
        /* col and MarkCol differ, in max, of 1 */
        for(i = linstart; i <= linend; i++)
-         iMatrixMarkCellSet(ih, i, col, 1);
+         iupMatrixMarkCellSet(ih, i, col, 1);
 
        MarkedCells += (linend - linstart + 1);
        RedrawCol    = col;
@@ -258,26 +257,26 @@ static void iMatrixMarkRegion(Ihandle* ih, int lin, int col)
   }
 
   if(RedrawLin != -1)
-    iMatrixDrawCells(ih, RedrawLin, colstart, RedrawLin, colend);
+    iupMatrixDrawCells(ih, RedrawLin, colstart, RedrawLin, colend);
   if(RedrawCol != -1)
-    iMatrixDrawCells(ih, linstart, RedrawCol, linend, RedrawCol);
+    iupMatrixDrawCells(ih, linstart, RedrawCol, linend, RedrawCol);
 }
 
 /* This function is called when the many cells is being selected.
    Make the scroll of the spreadsheet if the draw get out of the visualization area.
    -> x, y : mouse coordinates (canvas coordinates).
 */
-void iMatrixMarkDrag(Ihandle* ih, int x, int y)
+void iupMatrixMarkDrag(Ihandle* ih, int x, int y)
 {
   int lin, col, i, j, incl, incc;
   int err;
-  int mark_mode = iMatrixMarkGetMode(ih);
+  int mark_mode = iupMatrixMarkGetMode(ih);
 
-  if(mark_mode == IMATRIX_MARK_NO)
+  if(mark_mode == IMAT_MARK_NO)
     return;
 
   /* Get the cursor coordinate (lin,col) */
-  if(!iMatrixGetLineCol(ih, x, y, &lin, &col))
+  if(!iupMatrixAuxGetLineCol(ih, x, y, &lin, &col))
     return;
 
   /* There is no drag inside the same cell... */
@@ -285,21 +284,21 @@ void iMatrixMarkDrag(Ihandle* ih, int x, int y)
     return;
 
   /* Critics according to the mark mode */
-  if(mark_mode == IMATRIX_MARK_LIN)
+  if(mark_mode == IMAT_MARK_LIN)
   {
     if(col != -1)
       return;
     if(!ih->data->lin.marked[ih->data->lin.active])
       return;
   }
-  else if(mark_mode == IMATRIX_MARK_COL)
+  else if(mark_mode == IMAT_MARK_COL)
   {
     if(lin != -1)
       return;
     if(!ih->data->col.marked[ih->data->col.active])
       return;
   }
-  else if(mark_mode == IMATRIX_MARK_LINCOL)
+  else if(mark_mode == IMAT_MARK_LINCOL)
   {
     if((lin != -1) && (col != -1))
       return;
@@ -377,11 +376,11 @@ void iMatrixMarkDrag(Ihandle* ih, int x, int y)
 ***************************************************************************
 ***************************************************************************/
 
-/* Uncheck (unselect) the last block marked. The block limits are defined
+/* Unchecked (unselected) the last block marked. The block limits are defined
    by the cell that contains the focus and by the cell stored in MarkLin
    and MarkCol. DO NOT redraw the matrix.
 */
-void iMatrixMarkUncheckBlock(Ihandle* ih)
+void iupMatrixMarkUncheckedBlock(Ihandle* ih)
 {
   int i, j, inc;
 
@@ -393,7 +392,7 @@ void iMatrixMarkUncheckBlock(Ihandle* ih)
     inc = ih->data->lin.active < MarkLin ? 1 : -1;
     for(i = ih->data->lin.active;  ; i += inc)
     {
-      iMatrixMarkUncheckLine(ih, i, 0);
+      iMatrixMarkUncheckedLine(ih, i, 0);
       if(i == MarkLin)
         break;
     }
@@ -403,7 +402,7 @@ void iMatrixMarkUncheckBlock(Ihandle* ih)
     inc = ih->data->col.active < MarkCol ? 1 : -1;
     for(i = ih->data->col.active;  ; i += inc)
     {
-      iMatrixMarkUncheckColumn(ih, i, 0);
+      iMatrixMarkUncheckedColumn(ih, i, 0);
       if(i == MarkCol)
         break;
     }
@@ -417,7 +416,7 @@ void iMatrixMarkUncheckBlock(Ihandle* ih)
     {
       for(j = ih->data->col.active;  ; j += inccol)
       {
-        iMatrixMarkCellSet(ih, i, j, 0);
+        iupMatrixMarkCellSet(ih, i, j, 0);
         MarkedCells--;
         if(j == MarkCol)
           break;
@@ -434,11 +433,11 @@ void iMatrixMarkUncheckBlock(Ihandle* ih)
    DO NOT redraw the matrix.
    -> lin, col : cell coordinates that define the block to be marked.
 */
-void iMatrixMarkBlock(Ihandle* ih, int lin, int col)
+void iupMatrixMarkBlock(Ihandle* ih, int lin, int col)
 {
   int i, j, inc;
 
-  if(iMatrixMarkFullLin())
+  if(iupMatrixMarkFullLin())
   {
     inc = ih->data->lin.active < lin ? 1 : -1;
     for(i = ih->data->lin.active;  ; i += inc)
@@ -449,7 +448,7 @@ void iMatrixMarkBlock(Ihandle* ih, int lin, int col)
     }
     MarkLin = lin;
   }
-  else if(iMatrixMarkFullCol())
+  else if(iupMatrixMarkFullCol())
   {
     inc = ih->data->col.active < col ? 1 : -1;
     for(i = ih->data->col.active;  ; i += inc)
@@ -469,7 +468,7 @@ void iMatrixMarkBlock(Ihandle* ih, int lin, int col)
     {
       for(j = ih->data->col.active;  ; j += inccol)
       {
-        iMatrixMarkCellSet(ih, i, j, 1);
+        iupMatrixMarkCellSet(ih, i, j, 1);
         MarkedCells++;
         if(j == col)
           break;
@@ -482,7 +481,7 @@ void iMatrixMarkBlock(Ihandle* ih, int lin, int col)
   }
 }
 
-void iMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark)
+void iupMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark)
 {
   if(!ih->data->valcb)
     ih->data->v[lin][col].mark = (unsigned char)mark;
@@ -500,7 +499,7 @@ void iMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark)
   }
 }
 
-int iMatrixMarkCellGet(Ihandle* ih, int lin, int col)
+int iupMatrixMarkCellGet(Ihandle* ih, int lin, int col)
 {
   if(!ih->data->valcb)
     return ih->data->v[lin][col].mark;
@@ -518,10 +517,10 @@ int iMatrixMarkCellGet(Ihandle* ih, int lin, int col)
   }
 }
 
-/* Unmark (uncheck) all the marked cells.
+/* unmarked (Unchecked) all the marked cells.
    Redraw the cells of this region.
 */
-static void iMatrixMarkUncheckAll(Ihandle* ih)
+static void iMatrixMarkUncheckedAll(Ihandle* ih)
 {
   int i, j, old;
   int min_col = ih->data->col.num + 1,
@@ -533,8 +532,8 @@ static void iMatrixMarkUncheckAll(Ihandle* ih)
   {
     for(j = 0; j < ih->data->col.num; j++)
     {
-      old = iMatrixMarkCellGet(ih, i, j);
-      iMatrixMarkCellSet(ih, i, j, 0);
+      old = iupMatrixMarkCellGet(ih, i, j);
+      iupMatrixMarkCellSet(ih, i, j, 0);
       if(old)
       {
         if(i < min_lin)
@@ -550,7 +549,7 @@ static void iMatrixMarkUncheckAll(Ihandle* ih)
     old = ih->data->lin.marked[i];
     ih->data->lin.marked[i] = 0;
     if(old)
-      iMatrixDrawLineTitle(ih, i, i);
+      iupMatrixDrawLineTitle(ih, i, i);
   }
   MarkedCells = 0;
   for(j = 0; j < ih->data->col.num; j++)
@@ -558,14 +557,14 @@ static void iMatrixMarkUncheckAll(Ihandle* ih)
     old = ih->data->col.marked[j];
     ih->data->col.marked[j] = 0;
     if(old)
-      iMatrixDrawColumnTitle(ih, j, j);
+      iupMatrixDrawColumnTitle(ih, j, j);
   }
 
   /* If it is necessary to redraw some cell, the min_lin, max_lin, 
      min_col e max_col values were changed, but only one of them must test
   */
   if(max_lin != -1)
-    iMatrixDrawCells(ih, min_lin, min_col, max_lin, max_col);
+    iupMatrixDrawCells(ih, min_lin, min_col, max_lin, max_col);
 }
 
 
@@ -573,17 +572,17 @@ static void iMatrixMarkUncheckAll(Ihandle* ih)
 /* Consult functions                                                      */
 /**************************************************************************/
 
-int iMatrixMarkFullLin(void)
+int iupMatrixMarkFullLin(void)
 {
   return MarkFullLin;
 }
 
-int iMatrixMarkFullCol(void)
+int iupMatrixMarkFullCol(void)
 {
   return MarkFullCol;
 }
 
-void iMatrixMarkReset(void)
+void iupMatrixMarkReset(void)
 {
   LastMarkFullLin = MarkFullLin;
   LastMarkFullCol = MarkFullCol;
@@ -596,7 +595,7 @@ void iMatrixMarkReset(void)
    -> col - number of column. Note that the number is NOT presented in the common way.
       0 represents the column of titles and 1 the first column of the matrix.
 */
-int iMatrixMarkColumnMarked(Ihandle* ih, int col)
+int iupMatrixMarkColumnMarked(Ihandle* ih, int col)
 {
   if(col == 0)  /* Line titles are never marked... */
     return 0;
@@ -608,7 +607,7 @@ int iMatrixMarkColumnMarked(Ihandle* ih, int col)
    -> lin - number of line. Note that the number is NOT presented in the common way.
       0 represents the line of titles and 1 the first line of the matrix.
 */
-int iMatrixMarkLineMarked (Ihandle* ih, int lin)
+int iupMatrixMarkLineMarked (Ihandle* ih, int lin)
 {
   if(lin == 0) /* Column titles are never marked... */
     return 0;
@@ -616,41 +615,41 @@ int iMatrixMarkLineMarked (Ihandle* ih, int lin)
   return ih->data->lin.marked[lin-1];
 }
 
-/* Return the mark mode set by user. Consults "IMATRIX_MARK_MODE" attribute and
+/* Return the mark mode set by user. Consults "IMAT_MARK_MODE" attribute and
    returns a constant showing the chosen mode.
 */
-int iMatrixMarkGetMode(Ihandle* ih)
+int iupMatrixMarkGetMode(Ihandle* ih)
 {
-  char* mode = iupAttribGetStr(ih, "MARK_MODE");
+  char* mode = IupGetAttribute(ih, "MARK_MODE");
 
   if (mode && *mode)
   {
     if(iupStrEqualNoCase(mode, "CELL"))
-      return IMATRIX_MARK_CELL;
+      return IMAT_MARK_CELL;
     if(iupStrEqualNoCase(mode, "LIN"))
-      return IMATRIX_MARK_LIN;
+      return IMAT_MARK_LIN;
     if(iupStrEqualNoCase(mode, "COL"))
-      return IMATRIX_MARK_COL;
+      return IMAT_MARK_COL;
     if(iupStrEqualNoCase(mode, "LINCOL"))
-      return IMATRIX_MARK_LINCOL;
+      return IMAT_MARK_LINCOL;
   }
-  return IMATRIX_MARK_NO;
+  return IMAT_MARK_NO;
 }
 
-int iMatrixMarkCritica(Ihandle* ih, int* lin, int* col, int* shift, int* ctrl, int* duplo)
+int iupMatrixMarkCritica(Ihandle* ih, int* lin, int* col, int* shift, int* ctrl, int* duplo)
 {
-  int  mark_mode = iMatrixMarkGetMode(ih);
+  int  mark_mode = iupMatrixMarkGetMode(ih);
   int  mult = !iupAttribGetInt(ih, "MULTIPLE") ? 0 : 1;
-  int  cont = (iupStrEqualNoCase(iupAttribGetStrDefault(ih, "AREA"), "CONTINUOUS")) ? 1 : 0;
+  int  cont = (iupStrEqualNoCase(IupGetAttribute(ih, "AREA"), "CONTINUOUS")) ? 1 : 0;
 
   /* If it was pointing for a column title... */
   if(*lin == -1)
   {
     *lin   = ih->data->lin.first;
-    *duplo = 0; /* Garante que nao vai interpretar como um double-click */
-    if(mark_mode != IMATRIX_MARK_NO && ((mark_mode == IMATRIX_MARK_CELL && mult) || 
-                                         mark_mode == IMATRIX_MARK_COL || 
-                                         mark_mode == IMATRIX_MARK_LINCOL))
+    *duplo = 0; /* Guarantee that it will be set as a double-click */
+    if(mark_mode != IMAT_MARK_NO && ((mark_mode == IMAT_MARK_CELL && mult) || 
+                                         mark_mode == IMAT_MARK_COL || 
+                                         mark_mode == IMAT_MARK_LINCOL))
       MarkFullCol = 1;
   }
   /* If it was pointing for a line title... */
@@ -658,9 +657,9 @@ int iMatrixMarkCritica(Ihandle* ih, int* lin, int* col, int* shift, int* ctrl, i
   {
     *col   = ih->data->col.first;
     *duplo = 0;  /* Ensures that will not interpret as a double-click */
-    if(mark_mode != IMATRIX_MARK_NO && ((mark_mode == IMATRIX_MARK_CELL && mult) || 
-                                         mark_mode == IMATRIX_MARK_LIN || 
-                                         mark_mode == IMATRIX_MARK_LINCOL))
+    if(mark_mode != IMAT_MARK_NO && ((mark_mode == IMAT_MARK_CELL && mult) || 
+                                         mark_mode == IMAT_MARK_LIN || 
+                                         mark_mode == IMAT_MARK_LINCOL))
       MarkFullLin = 1;
   }
 
@@ -678,26 +677,26 @@ int iMatrixMarkCritica(Ihandle* ih, int* lin, int* col, int* shift, int* ctrl, i
   /* Consistency tests between the type of mark requested and
      the type of mark mode that is being performed
   */
-  if(mark_mode == IMATRIX_MARK_LIN && !MarkFullLin)
-    mark_mode = IMATRIX_MARK_NO;
-  else if(mark_mode == IMATRIX_MARK_COL && !MarkFullCol)
-    mark_mode = IMATRIX_MARK_NO;
-  else if(mark_mode == IMATRIX_MARK_LINCOL && !(MarkFullCol || MarkFullLin))
-    mark_mode = IMATRIX_MARK_NO;
+  if(mark_mode == IMAT_MARK_LIN && !MarkFullLin)
+    mark_mode = IMAT_MARK_NO;
+  else if(mark_mode == IMAT_MARK_COL && !MarkFullCol)
+    mark_mode = IMAT_MARK_NO;
+  else if(mark_mode == IMAT_MARK_LINCOL && !(MarkFullCol || MarkFullLin))
+    mark_mode = IMAT_MARK_NO;
 
-  if(mark_mode == IMATRIX_MARK_LINCOL)
+  if(mark_mode == IMAT_MARK_LINCOL)
   {
-    if((MarkFullCol && (ih->data->MarkLinCol == IMATRIX_MARK_LIN)) ||
-       (MarkFullLin && (ih->data->MarkLinCol == IMATRIX_MARK_COL)))
+    if((MarkFullCol && (ih->data->MarkLinCol == IMAT_MARK_LIN)) ||
+       (MarkFullLin && (ih->data->MarkLinCol == IMAT_MARK_COL)))
     {
       *ctrl = 0;
       *shift = 0;
     }
-    ih->data->MarkLinCol = (MarkFullCol) ? IMATRIX_MARK_COL : IMATRIX_MARK_LIN;
+    ih->data->MarkLinCol = (MarkFullCol) ? IMAT_MARK_COL : IMAT_MARK_LIN;
   }
 
   /* Consistency tests in reference to multiple attribute */
-  if(!mult || (mark_mode == IMATRIX_MARK_NO))
+  if(!mult || (mark_mode == IMAT_MARK_NO))
   {
      *ctrl = 0;
      *shift = 0;
@@ -710,36 +709,36 @@ int iMatrixMarkCritica(Ihandle* ih, int* lin, int* col, int* shift, int* ctrl, i
   return mark_mode;
 }
 
-int iMatrixMarkHide(Ihandle* ih, int ctrl)
+int iupMatrixMarkHide(Ihandle* ih, int ctrl)
 {
-  /* If the CTRL are not pressed, unmark (uncheck) ALL the marked cells */
+  /* If the CTRL are not pressed, unmarked (unchecked) ALL the marked cells */
   if(!ctrl)
-    iMatrixMarkUncheckAll(ih);
+    iMatrixMarkUncheckedAll(ih);
   return 1;
 }
 
-void iMatrixMarkShow(Ihandle* ih, int ctrl, int lin, int col, int oldlin, int oldcol)
+void iupMatrixMarkShow(Ihandle* ih, int ctrl, int lin, int col, int oldlin, int oldcol)
 {
-  if(iMatrixMarkFullLin())
+  if(iupMatrixMarkFullLin())
   {
     iMatrixMarkLine(ih, lin, 1);
     col = ih->data->col.num - 1;
   }
-  else if(iMatrixMarkFullCol())
+  else if(iupMatrixMarkFullCol())
   {
     iMatrixMarkColumn(ih, col, 1);
     lin = ih->data->lin.num - 1;
   }
   else
   {
-    if(iMatrixMarkCellGet(ih, lin, col))
+    if(iupMatrixMarkCellGet(ih, lin, col))
     {
-      iMatrixMarkCellSet(ih, lin, col, 0);
+      iupMatrixMarkCellSet(ih, lin, col, 0);
       MarkedCells--;
     }
     else
     {
-      iMatrixMarkCellSet(ih, lin, col, 1);
+      iupMatrixMarkCellSet(ih, lin, col, 1);
       MarkedCells++;
     }
   }
@@ -748,11 +747,11 @@ void iMatrixMarkShow(Ihandle* ih, int ctrl, int lin, int col, int oldlin, int ol
     (so, change the feedback of the previous cell)...
   */
   if(ctrl)
-    iMatrixDrawCells(ih, oldlin, oldcol, oldlin, oldcol);
+    iupMatrixDrawCells(ih, oldlin, oldcol, oldlin, oldcol);
 
   /* Redraw the focused cell with the current marked value */
   if(lin >= 0 && col >= 0)
-    iMatrixDrawCells(ih, lin, col, lin, col);
+    iupMatrixDrawCells(ih, lin, col, lin, col);
 
   MarkLin = lin;
   MarkCol = col;
@@ -762,7 +761,7 @@ void iMatrixMarkShow(Ihandle* ih, int ctrl, int lin, int col, int oldlin, int ol
 /* Set, Get and Change the mark mode                                      */
 /**************************************************************************/
 
-/* Set which cells are marked. Unmark all cells that already were marked.
+/* Set which cells are marked. unmarked all cells that already were marked.
    -> v : this string contains the representation of cells to be marked.
           There are three possible representation:
        a) "C...." when .... consists a number of 0s and 1s equal to the
@@ -777,7 +776,7 @@ void iMatrixMarkShow(Ihandle* ih, int ctrl, int lin, int col, int oldlin, int ol
           are the columns of the line number 1, the next C are the columns of
           the line number 2, and so on.
 */
-void* iMatrixMarkSet(Ihandle* ih, const char* v)
+void* iupMatrixMarkSet(Ihandle* ih, const char* v)
 {
   int i, j, old;
   const char* p = v;
@@ -786,7 +785,7 @@ void* iMatrixMarkSet(Ihandle* ih, const char* v)
 
   if(p == NULL)
   {
-    iMatrixMarkUncheckAll(ih);
+    iMatrixMarkUncheckedAll(ih);
     return NULL;
   }
   else if(*p == 'C' || *p == 'c')
@@ -795,7 +794,7 @@ void* iMatrixMarkSet(Ihandle* ih, const char* v)
     MarkedCells = 0;
     for(j = 0; j < ih->data->col.num; j++)
     {
-      /* Set the counter of cell to 1.  The functions of mark and unmark lines
+      /* Set the counter of cell to 1.  The functions of mark and unmarked lines
          increment and decrement the counter... so, it can not use them.
       */
       old = ih->data->col.marked[j];
@@ -803,18 +802,18 @@ void* iMatrixMarkSet(Ihandle* ih, const char* v)
       {
         /* Mark all the cells of the j column */
         for(i = 0; i < ih->data->lin.num; i++, MarkedCells++)
-          iMatrixMarkCellSet(ih, i, j, 1);
+          iupMatrixMarkCellSet(ih, i, j, 1);
         ih->data->col.marked[j] = 1;
-        iMatrixDrawColumnTitle(ih, j, j);
+        iupMatrixDrawColumnTitle(ih, j, j);
       }
       else
       {
-        /* Unmark all the cells of the j column */
+        /* unmarked all the cells of the j column */
         for(i = 0; i < ih->data->lin.num; i++)
-          iMatrixMarkCellSet(ih, i, j, 0);
+          iupMatrixMarkCellSet(ih, i, j, 0);
         ih->data->col.marked[j] = 0;
         if(old)
-          iMatrixDrawColumnTitle(ih, j, j);
+          iupMatrixDrawColumnTitle(ih, j, j);
       }
     }
   }
@@ -824,7 +823,7 @@ void* iMatrixMarkSet(Ihandle* ih, const char* v)
     MarkedCells = 0;
     for(i = 0; i < ih->data->lin.num; i++)
     {
-      /* Set the counter of cell to 1.  The functions of mark and unmark lines
+      /* Set the counter of cell to 1.  The functions of mark and unmarked lines
          increment and decrement the counter... so, it can not use them.
       */
       old = ih->data->lin.marked[i];
@@ -832,18 +831,18 @@ void* iMatrixMarkSet(Ihandle* ih, const char* v)
       {
         /* Mark all the cells of the i line */
         for(j = 0; j < ih->data->col.num; j++, MarkedCells++)
-          iMatrixMarkCellSet(ih, i, j, 1);
+          iupMatrixMarkCellSet(ih, i, j, 1);
         ih->data->lin.marked[i] = 1;
-        iMatrixDrawLineTitle(ih, i, i);
+        iupMatrixDrawLineTitle(ih, i, i);
       }
       else
       {
-        /* Unmark all the cells of the i line */
+        /* unmarked all the cells of the i line */
         for(j = 0; j < ih->data->col.num; j++)
-          iMatrixMarkCellSet(ih, i, j, 0);
+          iupMatrixMarkCellSet(ih, i, j, 0);
         ih->data->lin.marked[i] = 0;
         if(old)
-          iMatrixDrawLineTitle(ih, i, i);
+          iupMatrixDrawLineTitle(ih, i, i);
       }
     }
   }
@@ -856,35 +855,35 @@ void* iMatrixMarkSet(Ihandle* ih, const char* v)
       {
         if(*p++ == '1')
         {
-          iMatrixMarkCellSet(ih, i, j, 1);
+          iupMatrixMarkCellSet(ih, i, j, 1);
           MarkedCells++;
         }
         else
-          iMatrixMarkCellSet(ih, i, j, 0);
+          iupMatrixMarkCellSet(ih, i, j, 0);
       }
       old = ih->data->lin.marked[i];
       ih->data->lin.marked[i] = 0;
       if(old)
-        iMatrixDrawLineTitle(ih, i, i);
+        iupMatrixDrawLineTitle(ih, i, i);
     }
     for(j = 0; j < ih->data->col.num; j++)
     {
       old = ih->data->col.marked[j];
       ih->data->col.marked[j] = 0;
       if(old)
-        iMatrixDrawColumnTitle(ih, j, j);
+        iupMatrixDrawColumnTitle(ih, j, j);
     }
   }
   /* Redraw the visible cells */
 
   IsCanvasSet(ih, err);
   if(visible && err == CD_OK)
-    iMatrixDrawCells(ih, ih->data->lin.first, ih->data->col.first, ih->data->lin.last, ih->data->col.last);
+    iupMatrixDrawCells(ih, ih->data->lin.first, ih->data->col.first, ih->data->lin.last, ih->data->col.last);
   return (char*)v;
 }
 
 /* Return the marked cells */
-char* iMatrixMarkGet(Ihandle* ih)
+char* iupMatrixMarkGet(Ihandle* ih)
 {
   static int   numbaloc = 0;
   static char* marked   = NULL;
@@ -892,9 +891,9 @@ char* iMatrixMarkGet(Ihandle* ih)
   int i, j, numbneeded;
   char* p;
   int exist_mark = 0;           /* Show if there is someone marked */
-  int mark_mode  = iMatrixMarkGetMode(ih);
+  int mark_mode  = iupMatrixMarkGetMode(ih);
 
-  if(mark_mode == IMATRIX_MARK_NO)
+  if(mark_mode == IMAT_MARK_NO)
    return NULL;
 
   numbneeded = ih->data->lin.num * ih->data->col.num + 2; /* plus 2 because of L or C and the '\0'*/
@@ -910,7 +909,7 @@ char* iMatrixMarkGet(Ihandle* ih)
 
   p = marked;
 
-  if(mark_mode == IMATRIX_MARK_LINCOL)
+  if(mark_mode == IMAT_MARK_LINCOL)
     mark_mode = ih->data->MarkLinCol;
 
   exist_mark = 0;
@@ -918,9 +917,9 @@ char* iMatrixMarkGet(Ihandle* ih)
   /* Define the format to be returned, based in mark_mode */
   switch(mark_mode)
   {
-    case IMATRIX_MARK_CELL:  for(i = 0; i < ih->data->lin.num; i++)
+    case IMAT_MARK_CELL:  for(i = 0; i < ih->data->lin.num; i++)
                                for(j = 0; j < ih->data->col.num; j++)
-                                 if(iMatrixMarkCellGet(ih, i, j))
+                                 if(iupMatrixMarkCellGet(ih, i, j))
                                  {
                                    exist_mark = 1;
                                    *p++ = '1';
@@ -932,9 +931,9 @@ char* iMatrixMarkGet(Ihandle* ih)
                              *p = 0;
                              break;
 
-    case IMATRIX_MARK_LIN:   *p++ = 'L';
+    case IMAT_MARK_LIN:   *p++ = 'L';
                              for(i = 0; i < ih->data->lin.num; i++)
-                               if(iMatrixMarkCellGet(ih,i,0))
+                               if(iupMatrixMarkCellGet(ih,i,0))
                                {
                                  exist_mark = 1;
                                  *p++ = '1';
@@ -946,9 +945,9 @@ char* iMatrixMarkGet(Ihandle* ih)
                              *p = 0;
                              break;
 
-    case IMATRIX_MARK_COL:   *p++ = 'C';
+    case IMAT_MARK_COL:   *p++ = 'C';
                              for(j = 0; j < ih->data->col.num; j++)
-                               if(iMatrixMarkCellGet(ih,0,j))
+                               if(iupMatrixMarkCellGet(ih,0,j))
                                {
                                  exist_mark = 1;
                                  *p++ = '1';
@@ -964,11 +963,11 @@ char* iMatrixMarkGet(Ihandle* ih)
   return exist_mark ? marked : NULL;
 }
 
-/* This function is called when the mark mode is changed. Unmark all the
+/* This function is called when the mark mode is changed. unmarked all the
    cells that are marked.
    -> v : new mark mode. Currently, it is not used.
 */
-void* iMatrixMarkSetMode(Ihandle* ih, const char* v)
+void* iupMatrixMarkSetMode(Ihandle* ih, const char* v)
 {
   int visible = IupGetInt(ih, "VISIBLE");
   int err;
@@ -976,7 +975,7 @@ void* iMatrixMarkSetMode(Ihandle* ih, const char* v)
   IsCanvasSet(ih, err);
 
   if(visible && err == CD_OK)
-    iMatrixMarkUncheckAll(ih);
+    iMatrixMarkUncheckedAll(ih);
 
   return (char*)v;
 }

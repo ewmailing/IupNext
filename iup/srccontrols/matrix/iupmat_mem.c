@@ -3,7 +3,7 @@
  * memory allocation
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_mem.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
+ * $Id: iupmat_mem.c,v 1.3 2008-11-30 03:48:58 scuri Exp $
  */
 
 /**************************************************************************/
@@ -35,7 +35,7 @@
 #include "iupmat_mem.h"
 
 
-#define IMATRIX_BLOCKSIZE 25
+#define IMAT_BLOCKSIZE 25
 
 
 /**************************************************************************/
@@ -46,7 +46,7 @@
    space for the vectors of: column widths, line heights and line and selection
    of lines and columns. Initialize all the cells with "".
 */
-void iMatrixMemAloc(Ihandle* ih)
+void iupMatrixMemAloc(Ihandle* ih)
 {
   int i;
 
@@ -67,9 +67,9 @@ void iMatrixMemAloc(Ihandle* ih)
 
   if(!ih->data->valcb)
   {
-    ih->data->v = (Tx**)calloc(ih->data->lin.numaloc, sizeof(Tx*));
+    ih->data->v = (ImatCell**)calloc(ih->data->lin.numaloc, sizeof(ImatCell*));
     for(i = 0; i < ih->data->lin.numaloc; i++)
-      ih->data->v[i] = (Tx*)calloc(ih->data->col.numaloc, sizeof(Tx));
+      ih->data->v[i] = (ImatCell*)calloc(ih->data->col.numaloc, sizeof(ImatCell));
   }
 
   ih->data->col.wh    = (int*)calloc(ih->data->col.numaloc, sizeof(int));
@@ -85,7 +85,7 @@ void iMatrixMemAloc(Ihandle* ih)
    -> nlines : number of lines to be allocate
    -> nl     : old number of lines
 */
-void iMatrixMemRealocLines(Ihandle* ih,int nlines, int nl)
+void iupMatrixMemRealocLines(Ihandle* ih,int nlines, int nl)
 {
   int i, j;
 
@@ -96,9 +96,9 @@ void iMatrixMemRealocLines(Ihandle* ih,int nlines, int nl)
 
     if(!ih->data->valcb)
     {
-      ih->data->v = (Tx**)realloc(ih->data->v, ih->data->lin.numaloc*sizeof(Tx*));
+      ih->data->v = (ImatCell**)realloc(ih->data->v, ih->data->lin.numaloc*sizeof(ImatCell*));
       for(i = 0; i < nlines; i++)
-        ih->data->v[nl+i] = (Tx*)calloc(ih->data->col.numaloc, sizeof(Tx));
+        ih->data->v[nl+i] = (ImatCell*)calloc(ih->data->col.numaloc, sizeof(ImatCell));
     }
 
     ih->data->lin.wh = (int*)realloc(ih->data->lin.wh, ih->data->lin.numaloc*sizeof(int));
@@ -130,7 +130,7 @@ void iMatrixMemRealocLines(Ihandle* ih,int nlines, int nl)
    -> ncols : number of columns to be allocate
    -> nc    : old number of columns
 */
-void iMatrixMemRealocColumns(Ihandle* ih, int ncols, int nc)
+void iupMatrixMemRealocColumns(Ihandle* ih, int ncols, int nc)
 {
   int i, j;
 
@@ -142,7 +142,7 @@ void iMatrixMemRealocColumns(Ihandle* ih, int ncols, int nc)
     {
       for(i = 0; i < ih->data->lin.numaloc; i++)
       {
-        ih->data->v[i] = (Tx*)realloc(ih->data->v[i], ih->data->col.numaloc*sizeof(Tx));
+        ih->data->v[i] = (ImatCell*)realloc(ih->data->v[i], ih->data->col.numaloc*sizeof(ImatCell));
         for(j = 0; j < ncols; j++)
         {
           ih->data->v[i][nc+j].nba   = 0;
@@ -176,16 +176,16 @@ void iMatrixMemRealocColumns(Ihandle* ih, int ncols, int nc)
 }
 
 /* Allocate space to store the cell values. This space is allocated
-   in packages of the IMATRIX_BLOCKSIZE bytes.
+   in packages of the IMAT_BLOCKSIZE bytes.
    -> lin, col : cell coordinates to which will be allocated space
    -> numc : number of characteres (size) of the string that will be
              store in the cell
 */
-void iMatrixMemAlocCell(Ihandle* ih, int lin, int col, int numc)
+void iupMatrixMemAlocCell(Ihandle* ih, int lin, int col, int numc)
 {
   if(ih->data->v[lin][col].nba <= numc)
   {
-    int numbytes = IMATRIX_BLOCKSIZE * (numc / IMATRIX_BLOCKSIZE + 1);
+    int numbytes = IMAT_BLOCKSIZE * (numc / IMAT_BLOCKSIZE + 1);
 
     if(ih->data->v[lin][col].nba > 0)
       free (ih->data->v[lin][col].value);

@@ -12,8 +12,8 @@
 extern "C" {
 #endif
 
-int iTreeKeyNodeCalcPos(Ihandle* ih, int* x, int* y, int* text_x);
-int iTreeKey(Ihandle* ih, int c); 
+int iupTreeKeyNodeCalcPos(Ihandle* ih, int* x, int* y, int* text_x);
+int iupTreeKey(Ihandle* ih, int c); 
 
 #ifdef __cplusplus
 }

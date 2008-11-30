@@ -51,7 +51,7 @@ static int iTreeEditTextActionCB(Ihandle* ih, int c, char *after)
   {
     int ret;
     IupSetAttribute(ih, "_IUPTREE_CALL_RENAME", "1");
-    ret = iTreeCallRenameCB(ih, after);
+    ret = iupTreeCallbackRenameCB(ih, after);
     IupSetAttribute(ih, "_IUPTREE_CALL_RENAME", NULL);
 
     if(ret == IUP_IGNORE)
@@ -82,7 +82,7 @@ static int iTreeEditKeyAnyTextCB(Ihandle* ih, int c)
 
 /* called whenever something happened that 
    the edit control should be closed if visible */
-void iTreeEditCheckHidden(Ihandle* ih)
+void iupTreeEditCheckHidden(Ihandle* ih)
 {
   if(IupGetInt(ih->data->texth, "VISIBLE"))
   {
@@ -93,7 +93,7 @@ void iTreeEditCheckHidden(Ihandle* ih)
       return;
 
     value = iupStrDup(IupGetAttribute(ih->data->texth, "VALUE"));
-    iTreeCallRenameCB(ih, value);
+    iupTreeCallbackRenameCB(ih, value);
     free(value);
     IupSetAttribute(ih->data->texth, "VISIBLE", "NO");
     IupSetAttribute(ih->data->texth, "ACTIVE",  "NO");
@@ -110,11 +110,11 @@ static int iTreeEditTextKillFocusCB(Ihandle* ih)
   }
 #endif
 
-  iTreeEditCheckHidden(ih);
+  iupTreeEditCheckHidden(ih);
   return IUP_DEFAULT;
 }
 
-void iTreeEditShow(Ihandle* ih, int text_x, int x, int y)
+void iupTreeEditShow(Ihandle* ih, int text_x, int x, int y)
 {
   char* s = iupStrGetMemory(30);
   int w, h;
@@ -125,7 +125,7 @@ void iTreeEditShow(Ihandle* ih, int text_x, int x, int y)
     return;
 
   /* notify application */
-  if(iTreeCallShowRenameCB(ih) == IUP_IGNORE)
+  if(iupTreeCallbackShowRenameCB(ih) == IUP_IGNORE)
     return;
 
   /* calc size */
@@ -139,7 +139,7 @@ void iTreeEditShow(Ihandle* ih, int text_x, int x, int y)
     w = ih->data->XmaxC - x;
 
   /* set attributes */
-  IupSetAttribute(ih->data->texth, "VALUE", iTreeGSGetName(ih, iTreeGSGetValue(ih)));  /* get the current node name selected */
+  IupSetAttribute(ih->data->texth, "VALUE", iupTreeGSGetName(ih, iupTreeGSGetValue(ih)));  /* get the current node name selected */
   /* IupSetAttribute(ih->data->texth, "VALUE", IupGetAttribute(ih, "NAME")); TODO: check this */
   IupSetAttribute(ih->data->texth, "FONT",  IupGetAttribute(ih, "FONT"));
 
@@ -164,7 +164,7 @@ void iTreeEditShow(Ihandle* ih, int text_x, int x, int y)
 
   /* update text attributes */
   {
-    char* selection = iupAttribGetStr(ih, "SELECTION");
+    char* selection = IupGetAttribute(ih, "SELECTION");
     if(selection)
     {
       /* this allow the user to set the SELECTION inside the SHOWRENAME_CB */
@@ -173,7 +173,7 @@ void iTreeEditShow(Ihandle* ih, int text_x, int x, int y)
     }
     else
     {
-      char* caret = iupAttribGetStr(ih, "CARET");
+      char* caret = IupGetAttribute(ih, "CARET");
       if(caret)
       {
         /* this allow the user to set the CARET inside the SHOWRENAME_CB */
@@ -184,7 +184,7 @@ void iTreeEditShow(Ihandle* ih, int text_x, int x, int y)
   }
 }
 
-void iTreeEditCreate(Ihandle* ih)
+void iupTreeEditCreate(Ihandle* ih)
 {
   ih->data->texth = IupText(NULL);
   ih->firstchild = ih->data->texth;

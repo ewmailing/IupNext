@@ -49,7 +49,7 @@ extern int tree_shift;
 /* Sets the created branch state. It can be created collapsed ("NO") or 
    expanded ("YES").
 */
-int iTreeGSAddExpanded(Ihandle* ih, const char* value)
+int iupTreeGSAddExpanded(Ihandle* ih, const char* value)
 {
   if(iupStrEqualNoCase(value, "YES"))
     ih->data->addexpanded = YES;
@@ -65,13 +65,13 @@ int iTreeGSAddExpanded(Ihandle* ih, const char* value)
    - id   : node identifier
    - kind : node kind (ITREE_LEAF or ITREE_BRANCH)
 */
-int iTreeGSAddNode(Ihandle* ih, const char* id_string, int kind)
+int iupTreeGSAddNode(Ihandle* ih, const char* id_string, int kind)
 {
-  Node node = iTreeFindNodeFromString(ih, id_string);
+  ItreeNodePtr node = iupTreeFindNodeFromString(ih, id_string);
 
   if(node)
   {
-    iTreeGSCreateNode(ih, node, kind);
+    iupTreeGSCreateNode(ih, node, kind);
     return 1;
   }
   
@@ -88,21 +88,21 @@ int iTreeGSAddNode(Ihandle* ih, const char* id_string, int kind)
    - selected: pointer to selected node
    - kind    : node kind (ITREE_LEAF or ITREE_BRANCH)  
 */
-int iTreeGSCreateNode(Ihandle* ih, Node selected, int kind)
+int iupTreeGSCreateNode(Ihandle* ih, ItreeNodePtr selected, int kind)
 {
-  Node newnode;
+  ItreeNodePtr newnode;
 
   if(selected == NULL)
     return 0;
 
-  newnode = (Node)malloc(sizeof(struct Node_));
+  newnode = (ItreeNodePtr)malloc(sizeof(struct ItreeNode));
   if(newnode == NULL)
     return 0;
 
   /* Initializes new node's depth */
   newnode->depth = selected->depth + (selected->kind == ITREE_BRANCH);
 
-  /* Node kind */
+  /* ItreeNodePtr kind */
   newnode->kind = kind;
 
   /* Branch state depends on the attribute addexpanded */
@@ -111,9 +111,9 @@ int iTreeGSCreateNode(Ihandle* ih, Node selected, int kind)
   else
     newnode->state = ITREE_COLLAPSED;
 
-  newnode->visible = YES;   /* Node is visible by default    */
-  newnode->marked  = NO;    /* Node is not marked by default */
-  newnode->name    = NULL;  /* Node value is NULL by default */
+  newnode->visible = YES;   /* ItreeNodePtr is visible by default    */
+  newnode->marked  = NO;    /* ItreeNodePtr is not marked by default */
+  newnode->name    = NULL;  /* ItreeNodePtr value is NULL by default */
   
   /* New node points to the node following the selected node */
   newnode->next = selected->next;
@@ -126,10 +126,10 @@ int iTreeGSCreateNode(Ihandle* ih, Node selected, int kind)
   return 1;
 }
 
-static void iTreeGSDeleteLeaf(Ihandle* ih, Node node)
+static void iTreeGSDeleteLeaf(Ihandle* ih, ItreeNodePtr node)
 {
-  Node next; 
-  Node prev; 
+  ItreeNodePtr next; 
+  ItreeNodePtr prev; 
 
   /* Parameter checking */
   if(!node || node->kind != ITREE_LEAF)
@@ -140,7 +140,7 @@ static void iTreeGSDeleteLeaf(Ihandle* ih, Node node)
 
   /* Basic variables */
   next = node->next;
-  prev = iTreeFindPrevious(ih->data->root, node);
+  prev = iupTreeFindPrevious(ih->data->root, node);
 
   prev->next = next;
 
@@ -148,7 +148,7 @@ static void iTreeGSDeleteLeaf(Ihandle* ih, Node node)
     free(node->name);
   free(node);
 
-  if(iTreeFindNodeId(ih, ih->data->selected) == -1)
+  if(iupTreeFindNodeId(ih, ih->data->selected) == -1)
   {
     ih->data->selected = prev;
     ih->data->starting = prev;
@@ -156,14 +156,14 @@ static void iTreeGSDeleteLeaf(Ihandle* ih, Node node)
 }
 
 /* Deletes a branch and returns the next node */
-static Node iTreeGSDeleteBranch(Ihandle* ih, Node node, int del_self)
+static ItreeNodePtr iTreeGSDeleteBranch(Ihandle* ih, ItreeNodePtr node, int del_self)
 {
-  Node next, prev;
+  ItreeNodePtr next, prev;
   int depth;
 
   /* Parameter checking */
   if(node == NULL)
-    return NULL;     /* Node cannot be NULL     */
+    return NULL;     /* ItreeNodePtr cannot be NULL     */
   
   if(node == ih->data->root && del_self == 1)
     return NULL;     /* Cannot delete tree root */
@@ -173,14 +173,14 @@ static Node iTreeGSDeleteBranch(Ihandle* ih, Node node, int del_self)
 
   /* Basic variables */
   depth = node->depth;
-  prev  = iTreeFindPrevious(ih->data->root, node);
+  prev  = iupTreeFindPrevious(ih->data->root, node);
 
   next  = node->next;
   
   /* Loop with recursion */
   while(next && depth < next->depth)
   {
-    Node tmp = next->next;
+    ItreeNodePtr tmp = next->next;
   
     if(next->kind == ITREE_BRANCH)
       tmp = iTreeGSDeleteBranch(ih, next, 1);
@@ -200,7 +200,7 @@ static Node iTreeGSDeleteBranch(Ihandle* ih, Node node, int del_self)
   else
     node->next = next;
 
-  if(iTreeFindNodeId(ih, ih->data->selected) == -1)
+  if(iupTreeFindNodeId(ih, ih->data->selected) == -1)
   {
     ih->data->selected = prev;
     ih->data->starting = prev;
@@ -208,9 +208,9 @@ static Node iTreeGSDeleteBranch(Ihandle* ih, Node node, int del_self)
   return next;
 }
 
-int iTreeGSSetColor(Ihandle* ih, const char* id, const char* color)
+int iupTreeGSSetColor(Ihandle* ih, const char* id, const char* color)
 {
-  Node current = (Node)iTreeFindNodeFromString(ih, id);
+  ItreeNodePtr current = (ItreeNodePtr)iupTreeFindNodeFromString(ih, id);
 
   if(current)
   {
@@ -222,11 +222,11 @@ int iTreeGSSetColor(Ihandle* ih, const char* id, const char* color)
   return 0;
 }
 
-char* iTreeGSGetColor(Ihandle* ih, const char* id)
+char* iupTreeGSGetColor(Ihandle* ih, const char* id)
 {
   unsigned char r, g, b;
   char* buffer = iupStrGetMemory(12);
-  Node current = (Node)iTreeFindNodeFromString(ih, id);
+  ItreeNodePtr current = (ItreeNodePtr)iupTreeFindNodeFromString(ih, id);
 
   cdDecodeColor(current->text_color, &r, &g, &b);
   sprintf(buffer, "%d %d %d", r, g, b);
@@ -239,11 +239,11 @@ char* iTreeGSGetColor(Ihandle* ih, const char* id)
                  "SELECTED": deletes the selected node (and it's children)
                  "MARKED"  : deletes all marked nodes and it's children
 */
-int iTreeGSDelNode(Ihandle* ih, const char* id_string, const char* mode)
+int iupTreeGSDelNode(Ihandle* ih, const char* id_string, const char* mode)
 {
   if(iupStrEqualNoCase(mode, "SELECTED"))
   {
-    Node current = (Node)iTreeFindNodeFromString(ih, id_string);
+    ItreeNodePtr current = (ItreeNodePtr)iupTreeFindNodeFromString(ih, id_string);
     if(!current)
       return 0;
     
@@ -256,7 +256,7 @@ int iTreeGSDelNode(Ihandle* ih, const char* id_string, const char* mode)
   }
   else if(iupStrEqualNoCase(mode, "CHILDREN"))
   {
-    Node node = (Node)iTreeFindNodeFromString(ih, id_string);
+    ItreeNodePtr node = (ItreeNodePtr)iupTreeFindNodeFromString(ih, id_string);
     if(!node)
       return 0;
 
@@ -268,7 +268,7 @@ int iTreeGSDelNode(Ihandle* ih, const char* id_string, const char* mode)
   }
   else if(iupStrEqualNoCase(mode, "MARKED"))
   {
-    Node node = iTreeFindMarked(ih, id_string);
+    ItreeNodePtr node = iupTreeFindMarked(ih, id_string);
     while(node)
     {
       if(node->kind == ITREE_BRANCH)
@@ -276,7 +276,7 @@ int iTreeGSDelNode(Ihandle* ih, const char* id_string, const char* mode)
       else
         iTreeGSDeleteLeaf(ih, node);
      
-      node = iTreeFindMarked(ih, id_string);
+      node = iupTreeFindMarked(ih, id_string);
     }
     return 1;
   }
@@ -284,9 +284,9 @@ int iTreeGSDelNode(Ihandle* ih, const char* id_string, const char* mode)
 }
 
 /* Sets the selected node's name */
-int iTreeGSSetName(Ihandle* ih, const char* id_string, const char* name)
+int iupTreeGSSetName(Ihandle* ih, const char* id_string, const char* name)
 {
-  Node node = iTreeFindNodeFromString(ih, id_string);
+  ItreeNodePtr node = iupTreeFindNodeFromString(ih, id_string);
 
   if(iupStrEqual(name,""))
     name = NULL;
@@ -312,9 +312,9 @@ int iTreeGSSetName(Ihandle* ih, const char* id_string, const char* name)
 }
 
 /* Gets the selected node's name. */
-char* iTreeGSGetName(Ihandle* ih, const char* id_string)
+char* iupTreeGSGetName(Ihandle* ih, const char* id_string)
 {
-  Node node = iTreeFindNodeFromString(ih, id_string);
+  ItreeNodePtr node = iupTreeFindNodeFromString(ih, id_string);
 
   if(node == NULL)
     return NULL;
@@ -330,9 +330,9 @@ char* iTreeGSGetName(Ihandle* ih, const char* id_string)
    If the path does not exist, does nothing
    - path : string with the specified path
 */
-int iTreeGSSetPath(Ihandle* ih, const char* path)
+int iupTreeGSSetPath(Ihandle* ih, const char* path)
 {
-  Node node = (Node)ih->data->root;
+  ItreeNodePtr node = (ItreeNodePtr)ih->data->root;
 
   /* If path is NULL, node is the root */
   if(path == NULL)
@@ -342,7 +342,7 @@ int iTreeGSSetPath(Ihandle* ih, const char* path)
   }
 
   /* Otherwise, searches in the given path */
-   node = iTreeFindNodeFromString(ih, path);
+   node = iupTreeFindNodeFromString(ih, path);
 
    if(node)
    {
@@ -352,21 +352,21 @@ int iTreeGSSetPath(Ihandle* ih, const char* path)
    return 0;
 }
 
-static void iTreeGSKeyboardMark(Ihandle* ih, Node node, int call_cb)
+static void iTreeGSKeyboardMark(Ihandle* ih, ItreeNodePtr node, int call_cb)
 {
   int test = IUP_DEFAULT;
-  int id   = iTreeFindNodeId(ih, node);
+  int id   = iupTreeFindNodeId(ih, node);
 
-  /* When control iTreeKey is pressed, does not mark or unmark anything */
+  /* When control iupTreeKey is pressed, does not mark or unmarked anything */
   if(tree_ctrl == YES)
     return;
 
-  /* Without the tree_shift iTreeKey, unselect all */
+  /* Without the tree_shift iupTreeKey, unselected all */
   if(tree_shift == NO)
-    iTreeGSSetMarked(ih, NO, call_cb);
+    iupTreeGSSetMarked(ih, NO, call_cb);
 
   if(call_cb)
-    test = iTreeCallSelectionCB(ih, id, 1);
+    test = iupTreeCallbackSelectionCB(ih, id, 1);
   if(test != IUP_IGNORE)
     node->marked = YES;
 }
@@ -378,9 +378,9 @@ static void iTreeGSKeyboardMark(Ihandle* ih, Node node, int call_cb)
    - callcb: indicates if any callback should be called (user actions
              call callbacks, attribute setting does not call cb)
 */
-int iTreeGSSetValue(Ihandle* ih, const char* value, int call_cb)
+int iupTreeGSSetValue(Ihandle* ih, const char* value, int call_cb)
 {
-  Node node = (Node)ih->data->selected;
+  ItreeNodePtr node = (ItreeNodePtr)ih->data->selected;
 
   if(iupStrEqualNoCase(value, "ROOT"))
   {
@@ -403,40 +403,40 @@ int iTreeGSSetValue(Ihandle* ih, const char* value, int call_cb)
   else if(iupStrEqualNoCase(value, "PGUP"))
   {
     char* buffer = iupStrGetMemory(10);
-    Node tmp;
+    ItreeNodePtr tmp;
     int i, newid;
 
-    i = (int)iTreeFindNumNodesInCanvas(ih);
+    i = (int)iupTreeFindNumNodesInCanvas(ih);
 
     tmp = node;
-    newid = iTreeFindNodeId(ih, node);
+    newid = iupTreeFindNodeId(ih, node);
 
     /* Now we skip i visible nodes */
     while(tmp && i > 0 && newid > 0)
     {
       if(tmp->visible == YES)
         i--;
-      tmp = iTreeFindNodeFromId(ih, --newid);
+      tmp = iupTreeFindNodeFromId(ih, --newid);
     }
 
     sprintf(buffer, "%d", newid);
-    iTreeGSSetValue(ih, buffer, call_cb);
-    iTreeScrollPgUp(ih);
-    iTreeScrollShow(ih);
+    iupTreeGSSetValue(ih, buffer, call_cb);
+    iupTreeScrollPgUp(ih);
+    iupTreeScrollShow(ih);
   }
   else if(iupStrEqualNoCase(value, "PGDN"))
   {
     char* buffer = iupStrGetMemory(10);
-    Node tmp;
+    ItreeNodePtr tmp;
     int newid, i;
 
-    i = (int)iTreeFindNumNodesInCanvas(ih);
-    newid = iTreeFindNodeId(ih, node);
+    i = (int)iupTreeFindNumNodesInCanvas(ih);
+    newid = iupTreeFindNodeId(ih, node);
 
     /* Now we skip i visible nodes */
     tmp = node;
 
-    while(tmp && i > 0 && newid <= iTreeFindTotNumNodes(ih))
+    while(tmp && i > 0 && newid <= iupTreeFindTotNumNodes(ih))
     {
       if(tmp->visible == YES)
         i--;
@@ -458,9 +458,9 @@ int iTreeGSSetValue(Ihandle* ih, const char* value, int call_cb)
     }
 
     sprintf(buffer, "%d", newid);
-    iTreeGSSetValue(ih, buffer, call_cb);
-    iTreeScrollPgDn(ih);
-    iTreeScrollShow(ih);
+    iupTreeGSSetValue(ih, buffer, call_cb);
+    iupTreeScrollPgDn(ih);
+    iupTreeScrollShow(ih);
   }
   else if(iupStrEqualNoCase(value, "NEXT"))
   {
@@ -470,27 +470,27 @@ int iTreeGSSetValue(Ihandle* ih, const char* value, int call_cb)
       {
         ih->data->selected = node->next;
         
-        iTreeScrollDown(ih);
+        iupTreeScrollDown(ih);
 
         /* If node is the last one, scrolls to the end */
         if(node->next->next == NULL)
         {
-          iTreeScrollEnd(ih);
+          iupTreeScrollEnd(ih);
         }
-        iTreeScrollShow(ih);
-        iTreeRepaint(ih);
+        iupTreeScrollShow(ih);
+        iupTreeRepaint(ih);
   
         iTreeGSKeyboardMark(ih, ih->data->selected, 1);
         return 1;
       }
       node = node->next;
     }
-    iTreeScrollEnd(ih);
+    iupTreeScrollEnd(ih);
 
   }
   else if(iupStrEqualNoCase(value, "PREVIOUS"))
   {
-    Node temp = ih->data->root;
+    ItreeNodePtr temp = ih->data->root;
     while(temp != node)
     {
       while(temp->next != node)
@@ -499,40 +499,40 @@ int iTreeGSSetValue(Ihandle* ih, const char* value, int call_cb)
       {
         ih->data->selected = temp;
         iTreeGSKeyboardMark(ih, temp, 1);
-        iTreeScrollUp(ih);
+        iupTreeScrollUp(ih);
 
         /* If node is the first one, scrolls to the begin */
         if(temp == ih->data->root)
         {
-          iTreeScrollBegin(ih);  
+          iupTreeScrollBegin(ih);  
         }
-        iTreeScrollShow(ih);
-        iTreeRepaint(ih);
+        iupTreeScrollShow(ih);
+        iupTreeRepaint(ih);
   
         return 1;
       }
       node = temp;
       temp = ih->data->root;
     }
-    iTreeScrollBegin(ih);
+    iupTreeScrollBegin(ih);
   }
   else if(iupStrEqualNoCase(value, "BLOCK"))
   {
     IFnIi ms_cb;
-    Node node; 
+    ItreeNodePtr node; 
     int begin;
     int end;
     int i;
 
-    iTreeFindStartEndSelection(ih, &begin, &end);
-    node = iTreeFindNodeFromId(ih, begin);
+    iupTreeFindStartEndSelection(ih, &begin, &end);
+    node = iupTreeFindNodeFromId(ih, begin);
 
     ms_cb = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
     if(ms_cb)
     {
       int* ms_nodes = (int*)malloc((end - begin + 1)* sizeof(int));
       int ms_n = 0;
-      Node begin_node = node;
+      ItreeNodePtr begin_node = node;
 
       for(i = begin; i <= end; i++)
       {
@@ -563,7 +563,7 @@ int iTreeGSSetValue(Ihandle* ih, const char* value, int call_cb)
       {
         int test = IUP_DEFAULT;
         if(node->marked == NO)
-          test = iTreeCallSelectionCB(ih, i, 1);
+          test = iupTreeCallbackSelectionCB(ih, i, 1);
         if(test != IUP_IGNORE)
           node->marked = YES;
         node = node->next;
@@ -572,24 +572,24 @@ int iTreeGSSetValue(Ihandle* ih, const char* value, int call_cb)
   }
   else if(iupStrEqualNoCase(value, "CLEARALL"))
   {
-    iTreeGSSetMarked(ih, NO, call_cb);
+    iupTreeGSSetMarked(ih, NO, call_cb);
   }
   else if(iupStrEqualNoCase(value, "MARKALL"))
   {
-    iTreeGSSetMarked(ih, YES, call_cb);
+    iupTreeGSSetMarked(ih, YES, call_cb);
   }
   /* INVERTALL *MUST* appear before INVERT, or else INVERTALL will never be called. */
   else if(iupStrEqualNoCase(value, "INVERTALL"))
   {
-    iTreeGSSetMarked(ih, ITREE_INVERT, call_cb);
+    iupTreeGSSetMarked(ih, ITREE_INVERT, call_cb);
   }
   else if(iupStrEqualPartial(value, "INVERT"))   /* allows the use of "INVERTid" form */
   {
-    iTreeGSInvertSelection(ih,&value[strlen("INVERT")], call_cb);
+    iupTreeGSInvertSelection(ih,&value[strlen("INVERT")], call_cb);
   }
   else
   {
-    ih->data->selected = iTreeFindNodeFromString(ih, value );
+    ih->data->selected = iupTreeFindNodeFromString(ih, value );
     iTreeGSKeyboardMark(ih, ih->data->selected, 1);
   }
   
@@ -600,22 +600,22 @@ int iTreeGSSetValue(Ihandle* ih, const char* value, int call_cb)
 } 
 
 /* Sets the selected branch state. */
-int iTreeGSSetStateOfNode(Ihandle* ih, Node node, const char* mode)
+int iupTreeGSSetStateOfNode(Ihandle* ih, ItreeNodePtr node, const char* mode)
 {
   if(iupStrEqualNoCase(mode, "COLLAPSED"))
   {
-    if(iTreeCallBranchCloseCB(ih, node) == IUP_DEFAULT) 
+    if(iupTreeCallbackBranchCloseCB(ih, node) == IUP_DEFAULT) 
     {
       node->state = ITREE_COLLAPSED;
-      iTreeDrawSetVisibility(ih); /* Reset all nodes visibility status */
+      iupTreeDrawSetVisibility(ih); /* Reset all nodes visibility status */
     }
   }
   else if(iupStrEqualNoCase(mode, "EXPANDED"))
   {
-    if(iTreeCallBranchOpenCB(ih, node) == IUP_DEFAULT)  
+    if(iupTreeCallbackBranchOpenCB(ih, node) == IUP_DEFAULT)  
     {
       node->state = ITREE_EXPANDED;
-      iTreeDrawSetVisibility(ih); /* Reset all nodes visibility status */
+      iupTreeDrawSetVisibility(ih); /* Reset all nodes visibility status */
     }
   }
   else 
@@ -628,19 +628,19 @@ int iTreeGSSetStateOfNode(Ihandle* ih, Node node, const char* mode)
    - id_string : node identifier
    - mode : EXPANDED or COLLAPSED.
 */
-int iTreeGSSetState(Ihandle* ih, const char* id_string, const char* mode)
+int iupTreeGSSetState(Ihandle* ih, const char* id_string, const char* mode)
 {
-  Node node = iTreeFindNodeFromString(ih, id_string);
-  return iTreeGSSetStateOfNode(ih, node, mode);
+  ItreeNodePtr node = iupTreeFindNodeFromString(ih, id_string);
+  return iupTreeGSSetStateOfNode(ih, node, mode);
 }
 
 /* Sets the depth of a node.
    - id_string : node identifier
    - dep       : node depth
 */
-int iTreeGSSetDepth(Ihandle* ih, const char* id_string, const char* dep)
+int iupTreeGSSetDepth(Ihandle* ih, const char* id_string, const char* dep)
 {
-  Node node = (Node)iTreeFindNodeFromString(ih, id_string);
+  ItreeNodePtr node = (ItreeNodePtr)iupTreeFindNodeFromString(ih, id_string);
   int depth;
   depth = atoi(dep);
 
@@ -653,10 +653,10 @@ int iTreeGSSetDepth(Ihandle* ih, const char* id_string, const char* dep)
   return 1;
 }
 
-/* Turns on and off the tree_ctrl iTreeKey.
+/* Turns on and off the tree_ctrl iupTreeKey.
    - mode : "YES" or "NO".
 */
-int iTreeGSSetCtrl(Ihandle* ih, const char* mode)
+int iupTreeGSSetCtrl(Ihandle* ih, const char* mode)
 {
   if(iupStrEqualNoCase(mode, "YES"))
     ih->data->tree_ctrl = YES;    
@@ -666,10 +666,10 @@ int iTreeGSSetCtrl(Ihandle* ih, const char* mode)
   return 1;
 }
 
-/* Turns on and off the tree_shift iTreeKey.
+/* Turns on and off the tree_shift iupTreeKey.
    - mode : "YES" or "NO".
 */
-int iTreeGSSetShift(Ihandle* ih, const char* mode)
+int iupTreeGSSetShift(Ihandle* ih, const char* mode)
 {
   if(iupStrEqualNoCase(mode, "YES"))
     ih->data->tree_shift = YES;    
@@ -685,7 +685,7 @@ int iTreeGSSetShift(Ihandle* ih, const char* mode)
    - marked_color : marked color array
    - range        : ITREE_NODE or ITREE_TREE
 */
-int iTreeGSSetImage(const char* name, unsigned char* image, unsigned long int* color, unsigned long int* marked_color, int range, Node node)
+int iupTreeGSSetImage(const char* name, unsigned char* image, unsigned long int* color, unsigned long int* marked_color, int range, ItreeNodePtr node)
 {
   Ihandle *img = IupGetHandle(name);  
   int x, y;
@@ -756,9 +756,9 @@ int iTreeGSSetImage(const char* name, unsigned char* image, unsigned long int* c
 }
       
 /* Retrieves the selected branch state */
-char* iTreeGSGetState(Ihandle* ih, const char* id_string)
+char* iupTreeGSGetState(Ihandle* ih, const char* id_string)
 {
-  Node node = iTreeFindNodeFromString(ih, id_string);
+  ItreeNodePtr node = iupTreeFindNodeFromString(ih, id_string);
 
   if(node->state == ITREE_COLLAPSED)
     return "COLLAPSED";
@@ -769,8 +769,8 @@ char* iTreeGSGetState(Ihandle* ih, const char* id_string)
   return 0;
 }
 
-/* Retrieves the tree_ctrl iTreeKey state */
-char* iTreeGSGetCtrl(Ihandle* ih)
+/* Retrieves the tree_ctrl iupTreeKey state */
+char* iupTreeGSGetCtrl(Ihandle* ih)
 {
   if(ih->data->tree_ctrl == YES)
     return "YES";
@@ -778,8 +778,8 @@ char* iTreeGSGetCtrl(Ihandle* ih)
   return "NO";
 }
 
-/* Retrieves the tree_shift iTreeKey state */
-char* iTreeGSGetShift(Ihandle* ih)
+/* Retrieves the tree_shift iupTreeKey state */
+char* iupTreeGSGetShift(Ihandle* ih)
 {
   if(ih->data->tree_shift == YES)
     return "YES";
@@ -788,9 +788,9 @@ char* iTreeGSGetShift(Ihandle* ih)
 }
 
 /* Retrieves the selected node kind */
-char* iTreeGSGetKind(Ihandle* ih, const char* id_string)
+char* iupTreeGSGetKind(Ihandle* ih, const char* id_string)
 {
-  Node node = iTreeFindNodeFromString(ih, id_string);
+  ItreeNodePtr node = iupTreeFindNodeFromString(ih, id_string);
 
   if(node->kind == ITREE_LEAF)
     return "LEAF";
@@ -802,9 +802,9 @@ char* iTreeGSGetKind(Ihandle* ih, const char* id_string)
 }
 
 /* Retrieves the selected node id */
-char* iTreeGSGetValue(Ihandle* ih)
+char* iupTreeGSGetValue(Ihandle* ih)
 {
-  Node node = (Node)ih->data->root;
+  ItreeNodePtr node = (ItreeNodePtr)ih->data->root;
 
   int i = 0;
   char* id = iupStrGetMemory(16);
@@ -825,14 +825,14 @@ char* iTreeGSGetValue(Ihandle* ih)
 }
 
 /* Retrieves the selected node's parent */
-char* iTreeGSGetParent(Ihandle* ih, const char* id_string)
+char* iupTreeGSGetParent(Ihandle* ih, const char* id_string)
 {
-  Node temp = (Node)ih->data->root;  
-  Node node;
+  ItreeNodePtr temp = (ItreeNodePtr)ih->data->root;  
+  ItreeNodePtr node;
   int i = 0;
   char* id = iupStrGetMemory(10);
 
-  node = iTreeFindParent(ih, id_string);
+  node = iupTreeFindParent(ih, id_string);
 
   if(node)
   {
@@ -849,9 +849,9 @@ char* iTreeGSGetParent(Ihandle* ih, const char* id_string)
 }
 
 /* Retrieves the selected node depth */
-char* iTreeGSGetDepth(Ihandle* ih, const char* id_string)
+char* iupTreeGSGetDepth(Ihandle* ih, const char* id_string)
 {
-  Node node = (Node)iTreeFindNodeFromString(ih, id_string);
+  ItreeNodePtr node = (ItreeNodePtr)iupTreeFindNodeFromString(ih, id_string);
   int dep = -1; 
   char* depth = iupStrGetMemory(10);
 
@@ -870,12 +870,12 @@ char* iTreeGSGetDepth(Ihandle* ih, const char* id_string)
 */
 int IupTreeSetUserId(Ihandle* ih, int id, void* userid)
 {
-  Node node;
+  ItreeNodePtr node;
   char* id_string = iupStrGetMemory(10);
 
   sprintf(id_string, "%d", id);
  
-  node = (Node)iTreeFindNodeFromString(ih, id_string);
+  node = (ItreeNodePtr)iupTreeFindNodeFromString(ih, id_string);
 
   if(node)
   {
@@ -890,7 +890,7 @@ int IupTreeSetUserId(Ihandle* ih, int id, void* userid)
 */
 int IupTreeGetId(Ihandle* ih, void* userid)
 {
-  Node node = (Node)ih->data->root;
+  ItreeNodePtr node = (ItreeNodePtr)ih->data->root;
   int id = 0;
 
   while(node)
@@ -910,12 +910,12 @@ int IupTreeGetId(Ihandle* ih, void* userid)
 */
 void* IupTreeGetUserId(Ihandle* ih, int id)
 {
-  Node node;
+  ItreeNodePtr node;
   char* id_string = iupStrGetMemory(10);
 
   sprintf(id_string, "%d", id);
  
-  node = (Node)iTreeFindNodeFromString(ih, id_string);
+  node = (ItreeNodePtr)iupTreeFindNodeFromString(ih, id_string);
 
   if(node)
   {
@@ -924,9 +924,9 @@ void* IupTreeGetUserId(Ihandle* ih, int id)
   return NULL;
 }
 
-void iTreeGSMark(Ihandle* ih, const char* node, const char* attr)
+void iupTreeGSMark(Ihandle* ih, const char* node, const char* attr)
 {
-  Node n = iTreeFindNodeFromString(ih, node);
+  ItreeNodePtr n = iupTreeFindNodeFromString(ih, node);
 
   if(iupStrEqualNoCase(attr, "NO"))
     n->marked = NO;
@@ -935,9 +935,9 @@ void iTreeGSMark(Ihandle* ih, const char* node, const char* attr)
     n->marked = YES;
 }
 
-void iTreeGSSetMarked(Ihandle* ih, int mode, int call_cb)
+void iupTreeGSSetMarked(Ihandle* ih, int mode, int call_cb)
 {
-  Node node = (Node)ih->data->root;
+  ItreeNodePtr node = (ItreeNodePtr)ih->data->root;
   int i = 0;
 
   while(node)
@@ -948,7 +948,7 @@ void iTreeGSSetMarked(Ihandle* ih, int mode, int call_cb)
       {
         int test = IUP_DEFAULT;
         if(call_cb)
-          test = iTreeCallSelectionCB(ih, i, 0);
+          test = iupTreeCallbackSelectionCB(ih, i, 0);
         if(test != IUP_IGNORE)
           node->marked = NO;
       }
@@ -956,7 +956,7 @@ void iTreeGSSetMarked(Ihandle* ih, int mode, int call_cb)
       {
         int test = IUP_DEFAULT;
         if(call_cb)
-          test = iTreeCallSelectionCB(ih, i, 1);
+          test = iupTreeCallbackSelectionCB(ih, i, 1);
         if(test != IUP_IGNORE)
           node->marked = YES;
       }
@@ -966,9 +966,9 @@ void iTreeGSSetMarked(Ihandle* ih, int mode, int call_cb)
       int test = IUP_DEFAULT;
 
       if(mode == YES && node->marked == NO && call_cb == 1)
-        test = iTreeCallSelectionCB(ih, i, 1);
+        test = iupTreeCallbackSelectionCB(ih, i, 1);
       else if(mode == NO && node->marked == YES && call_cb == 1)
-        test = iTreeCallSelectionCB(ih, i, 0);
+        test = iupTreeCallbackSelectionCB(ih, i, 0);
 
       if(test != IUP_IGNORE)
         node->marked = mode;
@@ -981,9 +981,9 @@ void iTreeGSSetMarked(Ihandle* ih, int mode, int call_cb)
 /* Sets the starting node when tree_shift is pressed
    - value : id of the node 
 */
-int iTreeGSSetStarting(Ihandle* ih, const char* value)
+int iupTreeGSSetStarting(Ihandle* ih, const char* value)
 {
-  ih->data->starting = iTreeFindNodeFromString(ih, value);
+  ih->data->starting = iupTreeFindNodeFromString(ih, value);
   if(ih->data->starting)
     return 1;
   
@@ -991,9 +991,9 @@ int iTreeGSSetStarting(Ihandle* ih, const char* value)
 }
 
 /* Retrieves the starting node when tree_shift is pressed */
-char* iTreeGSGetStarting(Ihandle* ih)
+char* iupTreeGSGetStarting(Ihandle* ih)
 {
-  Node node = (Node)ih->data->root;
+  ItreeNodePtr node = (ItreeNodePtr)ih->data->root;
 
   int i = 0;
   char* id = iupStrGetMemory(10);
@@ -1012,10 +1012,10 @@ char* iTreeGSGetStarting(Ihandle* ih)
 /* Invert the selected node's selection
    - value : node's value
 */
-int iTreeGSInvertSelection(Ihandle* ih, const char* id_string, int call_cb)
+int iupTreeGSInvertSelection(Ihandle* ih, const char* id_string, int call_cb)
 {
-  Node node = iTreeFindNodeFromString(ih, id_string);
-  int id = iTreeFindNodeId(ih, node);
+  ItreeNodePtr node = iupTreeFindNodeFromString(ih, id_string);
+  int id = iupTreeFindNodeId(ih, node);
   
   if(node)
   {
@@ -1023,7 +1023,7 @@ int iTreeGSInvertSelection(Ihandle* ih, const char* id_string, int call_cb)
     {
       int test = IUP_DEFAULT;
       if(call_cb)
-        test = iTreeCallSelectionCB(ih, id, 0);
+        test = iupTreeCallbackSelectionCB(ih, id, 0);
 
       if(test != IUP_IGNORE)
         node->marked = NO;
@@ -1032,7 +1032,7 @@ int iTreeGSInvertSelection(Ihandle* ih, const char* id_string, int call_cb)
     {
       int test = IUP_DEFAULT;
       if(call_cb)
-        test = iTreeCallSelectionCB(ih, id, 1);
+        test = iupTreeCallbackSelectionCB(ih, id, 1);
 
       if(test != IUP_IGNORE)
         node->marked = YES;
@@ -1045,9 +1045,9 @@ int iTreeGSInvertSelection(Ihandle* ih, const char* id_string, int call_cb)
 }
 
 /* Retrieves the marking state of the node */
-char* iTreeGSGetMarked(Ihandle* ih, const char* id_string)
+char* iupTreeGSGetMarked(Ihandle* ih, const char* id_string)
 {
-  Node node = iTreeFindNodeFromString(ih, id_string);
+  ItreeNodePtr node = iupTreeFindNodeFromString(ih, id_string);
 
   if(node)
   {

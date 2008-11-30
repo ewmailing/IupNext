@@ -12,9 +12,9 @@
 extern "C" {
 #endif
 
-void iTreeEditShow(Ihandle* ih, int text_x, int x, int y);
-void iTreeEditCheckHidden(Ihandle* ih);
-void iTreeEditCreate(Ihandle* ih);
+void iupTreeEditShow       (Ihandle* ih, int text_x, int x, int y);
+void iupTreeEditCheckHidden(Ihandle* ih);
+void iupTreeEditCreate     (Ihandle* ih);
 
 #ifdef __cplusplus
 }

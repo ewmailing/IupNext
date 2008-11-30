@@ -3,7 +3,6 @@
  * keyboard control
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_key.c,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
 
 /**************************************************************************/
@@ -45,7 +44,7 @@
 
 
 /* keys that are not chars */
-#define IMATRIX_ACTIONKEY(c) \
+#define IMAT_ACTIONKEY(c) \
   ((c) == K_LEFT  || (c) == K_sLEFT  || (c) == K_cLEFT  || \
    (c) == K_RIGHT || (c) == K_sRIGHT || (c) == K_cRIGHT || \
    (c) == K_UP    || (c) == K_sUP    || (c) == K_cUP    || \
@@ -69,16 +68,16 @@ static int homekeycount = 0, endkeycount = 0;
 /* This function handles all the keys in the matrix.
    -> c: pressed key.
 */
-int iMatrixKey(Ihandle* ih, int c)
+int iupMatrixKey(Ihandle* ih, int c)
 {
   int ret = IUP_IGNORE;
 
   /* Hide (off) the marked cells if the key is not tab/shift-tab/del */
   if(c != K_TAB && c != K_sTAB && c != K_DEL && c != K_sDEL)
-    iMatrixMarkHide(ih, 0);
+    iupMatrixMarkHide(ih, 0);
 
   /* If the focus is not visible, a scroll is done for that the focus to be visible */
-  if(!iMatrixIsFocusVisible(ih))
+  if(!iupMatrixFocusIsFocusVisible(ih))
   {
     /* this will end edition mode */
     ScrollPosVer(ih, (float)ih->data->lin.active / ih->data->lin.num);
@@ -87,31 +86,31 @@ int iMatrixKey(Ihandle* ih, int c)
 
   switch (c)
   {
-    case K_CR + 1000:   /* used by the iMatrixTextActionCb */
-      if(iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+    case K_CR + 1000:   /* used by the iMatrixEditTextActionCb */
+      if(iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
         break;
       ScrollKeyCr(ih);
-      iMatrixCallEntercellCb(ih);
+      iupMatrixAuxCallEntercellCb(ih);
       break;
 
     case K_cHOME:
     case K_sHOME:
     case K_HOME:
-      if(iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+      if(iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
         break;
       ScrollKeyHome(ih);
       homekeycount++;
-      iMatrixCallEntercellCb(ih);
+      iupMatrixAuxCallEntercellCb(ih);
       break;
 
     case K_cEND:
     case K_sEND:
     case K_END:
-      if(iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+      if(iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
         break;
       ScrollKeyEnd(ih);
       endkeycount++;
-      iMatrixCallEntercellCb(ih);
+      iupMatrixAuxCallEntercellCb(ih);
       break;
 
     case K_sTAB:
@@ -121,59 +120,59 @@ int iMatrixKey(Ihandle* ih, int c)
     case K_cLEFT:
     case K_sLEFT:
     case K_LEFT:
-      if(iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+      if(iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
         break;
       ScrollKeyLeft(ih);
-      iMatrixCallEntercellCb(ih);
+      iupMatrixAuxCallEntercellCb(ih);
       break;
 
     case K_cRIGHT:
     case K_sRIGHT:
     case K_RIGHT:
-      if(iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+      if(iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
         break;
       ScrollKeyRight(ih);
-      iMatrixCallEntercellCb(ih);
+      iupMatrixAuxCallEntercellCb(ih);
       break;
 
     case K_cUP:
     case K_sUP:
     case K_UP:
-      if(iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+      if(iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
         break;
       ScrollKeyUp(ih);
-      iMatrixCallEntercellCb(ih);
+      iupMatrixAuxCallEntercellCb(ih);
       break ;
 
     case K_cDOWN:
     case K_sDOWN:
     case K_DOWN:
-      if(iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+      if(iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
         break;
       ScrollKeyDown(ih);
-      iMatrixCallEntercellCb(ih);
+      iupMatrixAuxCallEntercellCb(ih);
       break;
 
     case K_sPGUP:
     case K_PGUP:
-      if(iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+      if(iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
         break;
       ScrollKeyPgUp(ih);
-      iMatrixCallEntercellCb(ih);
+      iupMatrixAuxCallEntercellCb(ih);
       break;
 
     case K_sPGDN:
     case K_PGDN:
-      if(iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+      if(iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
         break;
       ScrollKeyPgDown(ih);
-      iMatrixCallEntercellCb(ih);
+      iupMatrixAuxCallEntercellCb(ih);
       break;
 
     case K_SP:
     case K_CR:
     case K_sCR:
-      if(iMatrixEditShow(ih))
+      if(iupMatrixEditShow(ih))
       {
         return IUP_IGNORE; /* do not show mark and focus */
       }
@@ -187,10 +186,10 @@ int iMatrixKey(Ihandle* ih, int c)
         {
           for(cm = 0; cm < ih->data->col.num; cm++)
           {
-            if(iMatrixMarkCellGet(ih, lm, cm))
+            if(iupMatrixMarkCellGet(ih, lm, cm))
             {
-              if(iMatrixCallEditionCbLinCol(ih, lm + 1, cm + 1, 1) != IUP_IGNORE)
-                iMatrixSetCell(ih, lm + 1, cm + 1, "");
+              if(iupMatrixAuxCallEditionCbLinCol(ih, lm + 1, cm + 1, 1) != IUP_IGNORE)
+                iupMatrixGSSetCell(ih, lm + 1, cm + 1, "");
             }
           }
         }
@@ -206,8 +205,8 @@ int iMatrixKey(Ihandle* ih, int c)
       if(!isxkey(c) && c != K_ESC && isgraph(c))
       {
         static char newval[2] = {0,0};
-        newval[0]=c;
-        if(iMatrixEditShow(ih))
+        newval[0] = (char)c;
+        if(iupMatrixEditShow(ih))
         {
           if(ih->data->datah == ih->data->texth)
           {
@@ -221,7 +220,7 @@ int iMatrixKey(Ihandle* ih, int c)
       break;
   }
 
-  iMatrixShowFocus(ih);
+  iupMatrixFocusShowFocus(ih);
 
   if(ih->data->redraw)
   {
@@ -238,19 +237,19 @@ int iMatrixKey(Ihandle* ih, int c)
 /**************************************************************************/
 
 /* Reset the number of times that the "home" and "end" keys were pressed  */
-void iMatrixResetKeyCount(void)
+void iupMatrixKeyResetKeyCount(void)
 {
   homekeycount = endkeycount = 0;
 }
 
 /* Return the number of times that the "home" was pressed */
-int iMatrixGetHomeKeyCount(void)
+int iupMatrixKeyGetHomeKeyCount(void)
 {
   return homekeycount;
 }
 
 /* Return the number of times that the "end" was pressed */
-int iMatrixGetEndKeyCount(void)
+int iupMatrixKeyGetEndKeyCount(void)
 {
   return endkeycount;
 }
@@ -259,7 +258,7 @@ int iMatrixGetEndKeyCount(void)
    with the matrix. Call the user callback.
    -> c : charactere pressed
 */
-int iMatrixKeyPressCB(Ihandle* ih, int c, int press)
+int iupMatrixKeyKeyPressCB(Ihandle* ih, int c, int press)
 {
   int oldc = c;
   IFniiiis cb;
@@ -274,15 +273,15 @@ int iMatrixKeyPressCB(Ihandle* ih, int c, int press)
   cb = (IFniiiis)IupGetCallback(ih, "ACTION_CB");
   if(cb)
   {
-    if(IMATRIX_ACTIONKEY(c))
+    if(IMAT_ACTIONKEY(c))
     {
       c = cb(ih, c, ih->data->lin.active+1, ih->data->col.active+1, 0,
-             iMatrixGetCellValue(ih, ih->data->lin.active, ih->data->col.active));
+             iupMatrixAuxGetCellValue(ih, ih->data->lin.active, ih->data->col.active));
     }
     else
     {
       char future[2]={0,0};
-      future[0] = c;
+      future[0] = (char)c;
       c = cb(ih, c, ih->data->lin.active+1, ih->data->col.active+1, 0, future);
     }
     if(c == IUP_IGNORE || c == IUP_CLOSE || c == IUP_CONTINUE)
@@ -298,5 +297,5 @@ int iMatrixKeyPressCB(Ihandle* ih, int c, int press)
 
   IsCanvasSet(ih, err);
 
-  return iMatrixKey(ih, c);
+  return iupMatrixKey(ih, c);
 }

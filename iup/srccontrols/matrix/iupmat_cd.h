@@ -2,7 +2,6 @@
  * \brief iupmatrix. CD help macros.
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_cd.h,v 1.2 2008-11-28 00:19:04 scuri Exp $
  */
  
 #ifndef __IUPMAT_CD_H 
@@ -49,7 +48,7 @@ extern "C" {
 
 #define CdRestoreBgColor()        cdCanvasForeground(ih->data->cddbuffer,oldbgc);
 
-void iMatrixSetCdFrameColor(Ihandle *h);
+void iupMatrixCDSetCdFrameColor(Ihandle *h);
 
 #ifdef __cplusplus
 }

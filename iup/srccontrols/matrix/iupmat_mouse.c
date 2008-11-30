@@ -3,7 +3,6 @@
  * mouse events
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_mouse.c,v 1.3 2008-11-29 05:07:19 scuri Exp $
  */
 
 /**************************************************************************/
@@ -61,7 +60,7 @@ static int RightClickCol;
 /* Call the user callback to the mouse move event on the matrix.
    -> lin, col : cell coordinates
 */
-static void iMatrixCallMoveCb(Ihandle* ih, int lin, int col)
+static void iMatrixMouseCallMoveCb(Ihandle* ih, int lin, int col)
 {
    IFnii cb;
 
@@ -77,7 +76,7 @@ static void iMatrixCallMoveCb(Ihandle* ih, int lin, int col)
 /* Call the user callback to the mouse click event on a cell.
    -> lin, col : cell coordinates
 */
-static int iMatrixCallClickCb(Ihandle* ih, int press, int x, int y, char* r)
+static int iMatrixMouseCallClickCb(Ihandle* ih, int press, int x, int y, char* r)
 {
   IFniis cb;
 
@@ -89,84 +88,84 @@ static int iMatrixCallClickCb(Ihandle* ih, int press, int x, int y, char* r)
   if(cb)
   { 
     int lin, col;
-    iMatrixGetLineCol(ih, x, y, &lin, &col);
-    return cb(ih, lin + 1, col + 1, r);  /* internamente : lin = -1 -> linha de titulo */
-  }                                      /*                col = -1 -> coluna de titulo */
+    iupMatrixAuxGetLineCol(ih, x, y, &lin, &col);
+    return cb(ih, lin + 1, col + 1, r);  /* internally : lin = -1 -> title line   */
+  }                                      /*              col = -1 -> column title */
                        
   return IUP_DEFAULT;
 }
 
 /* Action when the mouse is moved on the matrix.
    Verify if there is a resize is being done on a column.
-   Change the cursor format if it is passed on a join envolving two
+   Change the cursor format if it is passed on a join involving two
    column titles (when RESIZEMATRIX = YES)
    Make the cell selection, when necessary.
    -> x, y : mouse coordinates (canvas coordinates)
 */
-static void iMatrixMouseMove(Ihandle* ih, int x, int y)
+static void iMatrixMouseMouseMove(Ihandle* ih, int x, int y)
 {
   int mult = !iupAttribGetInt(ih, "MULTIPLE") ? 0 : 1;
 
   if(LeftPressed && mult)
   {
-    /* the right canvas is activated inside iMatrixMarkDrag */
-    iMatrixMarkDrag(ih, x, y);
+    /* the right canvas is activated inside iupMatrixMarkDrag */
+    iupMatrixMarkDrag(ih, x, y);
   }
-  else if(iMatrixColResResizing()) /* Make a resize in a column size */
+  else if(iupMatrixColResResizing()) /* Make a resize in a column size */
   {
-    /* the right canvas is activated inside iMatrixColResMove */
-    iMatrixColResMove(ih, x);
+    /* the right canvas is activated inside iupMatrixColResMove */
+    iupMatrixColResMove(ih, x);
   }
-  else /* Change cursor when it is passed on a join envolving column titles */
+  else /* Change cursor when it is passed on a join involving column titles */
   {
-    iMatrixColResChangeCursor(ih, x, y);
+    iupMatrixColResChangeCursor(ih, x, y);
   }
 }
 
-/* Function calls by iMatrixLeftPress to handle selections with the shift key pressed
-   Uncheck (unmark) the previous block, and mark a new block, starting in the
+/* Function calls by iMatrixMouseLeftPress to handle selections with the shift key pressed
+   Unchecked (unmarked) the previous block, and mark a new block, starting in the
    clicked position until the focus position. If there is more than one block,
-   just uncheck that block was being marked last.
+   just unchecked that block was being marked last.
    DO NOT change the focus position...
    -> lin, col : cell coordinates
 */
-static void iMatrixLeftClickShift(Ihandle* ih, int lin, int col)
+static void iMatrixMouseLeftClickShift(Ihandle* ih, int lin, int col)
 {
-  iMatrixMarkUncheckBlock(ih);
-  iMatrixMarkBlock(ih, lin, col);
+  iupMatrixMarkUncheckedBlock(ih);
+  iupMatrixMarkBlock(ih, lin, col);
 
   /* Redraw all the visible area */
-  iMatrixDrawMatrix(ih, IMATRIX_DRAW_ALL);
+  iupMatrixDrawMatrix(ih, IMAT_DRAW_ALL);
 
   /* Redraw erases the focus border */
-  iMatrixDrawFocus(ih, ih->data->lin.active, ih->data->col.active, 1);
+  iupMatrixDrawFocus(ih, ih->data->lin.active, ih->data->col.active, 1);
 }
 
-/* This function handles the pressing of the button. Called by iMatrixLeftPress.
+/* This function handles the pressing of the button. Called by iMatrixMouseLeftPress.
    -> lin, col : cell coordinates
    -> ctrl : status of CTRL key (1 is pressed, 0 is not)
-   -> duplo: show if it was or not double click.
+   -> dclick: show if it was or not double click.
    -> mark_mode : mark (selection) mode.
 */
-static void iMatrixLeftClick(Ihandle* ih, int lin, int col, int ctrl, int duplo, int mark_mode)
+static void iMatrixMouseLeftClick(Ihandle* ih, int lin, int col, int ctrl, int dclick, int mark_mode)
 {
-  if(duplo)
+  if(dclick)
   {
     LeftPressed = 0;
-    iMatrixMarkReset();
+    iupMatrixMarkReset();
 
     /* if a double click NOT in the current cell */
     if(lin != ih->data->lin.active || col != ih->data->col.active)
     {
       /* leave the previous cell if the matrix previously had the focus */
-      if(ih->data->hasiupfocus && iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+      if(ih->data->hasiupfocus && iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
         return;
 
-      iMatrixSetFocusPos(ih, lin, col);
-      iMatrixCallEntercellCb(ih);
+      iupMatrixFocusSetFocusPos(ih, lin, col);
+      iupMatrixAuxCallEntercellCb(ih);
     }
     
-    if(iMatrixEditShow(ih))
+    if(iupMatrixEditShow(ih))
     {
       if(ih->data->datah == ih->data->droph) 
         IupSetAttribute(ih->data->datah, "SHOWDROPDOWN", "YES");
@@ -184,84 +183,84 @@ static void iMatrixLeftClick(Ihandle* ih, int lin, int col, int ctrl, int duplo,
     int oldcol = ih->data->col.active;
 
     /* leave the previous cell if the matrix previously had the focus */
-    if(ih->data->hasiupfocus && iMatrixCallLeavecellCb(ih) == IUP_IGNORE)
+    if(ih->data->hasiupfocus && iupMatrixAuxCallLeavecellCb(ih) == IUP_IGNORE)
       return;
 
-    iMatrixHideFocus(ih);
+    iupMatrixFocusHideFocus(ih);
 
     /* hide the cell selection, if appropriated... */
-    mark_show = iMatrixMarkHide(ih, ctrl);
+    mark_show = iupMatrixMarkHide(ih, ctrl);
 
-    iMatrixSetFocusPos(ih, lin, col);
+    iupMatrixFocusSetFocusPos(ih, lin, col);
 
     /* show the cell selection, if appropriated... */
-    if((mark_mode != IMATRIX_MARK_NO) && mark_show)
-      iMatrixMarkShow(ih, ctrl, lin, col, oldlin, oldcol);
+    if((mark_mode != IMAT_MARK_NO) && mark_show)
+      iupMatrixMarkShow(ih, ctrl, lin, col, oldlin, oldcol);
 
-    iMatrixCallEntercellCb(ih);
-    iMatrixShowFocus(ih);
+    iupMatrixAuxCallEntercellCb(ih);
+    iupMatrixFocusShowFocus(ih);
   }
 }
 
-static void iMatrixLeftPress(Ihandle* ih, int x, int y, int shift, int ctrl, int duplo)
+static void iMatrixMouseLeftPress(Ihandle* ih, int x, int y, int shift, int ctrl, int dclick)
 {
   int lin, col;
   int mark_mode;
 
-  iMatrixResetKeyCount();
+  iupMatrixKeyResetKeyCount();
 
-  if(iMatrixColResTry(ih, x, y))
+  if(iupMatrixColResTry(ih, x, y))
     return;                      /* Resize of the width a of a column was started */
 
   /* If x, y are not of a cell of the matrix, return.
      If the cell are -1,-1 (left top corner), return.
   */
-  if(!iMatrixGetLineCol(ih, x, y, &lin, &col) || lin == -2 || col == -2 ||
+  if(!iupMatrixAuxGetLineCol(ih, x, y, &lin, &col) || lin == -2 || col == -2 ||
      (lin == -1 && col == -1))
     return;
 
   /* Apply a set of relevant critics when the selection (mark) is on. The critics works
      changing the value of the control variables: shift, ctrl, ...
   */
-  mark_mode = iMatrixMarkCritica(ih, &lin, &col, &shift, &ctrl, &duplo);
+  mark_mode = iupMatrixMarkCritica(ih, &lin, &col, &shift, &ctrl, &dclick);
 
   LeftPressed = 1;
 
   if(shift)
-    iMatrixLeftClickShift(ih, lin, col);
+    iMatrixMouseLeftClickShift(ih, lin, col);
   else
-    iMatrixLeftClick(ih, lin, col, ctrl, duplo, mark_mode);
+    iMatrixMouseLeftClick(ih, lin, col, ctrl, dclick, mark_mode);
 }
 
 /* This function is called when the left button is released.
    -> x, y : mouse coordinates (canvas coordinates)
 */
-static void iMatrixLeftRelease(Ihandle* ih, int x)
+static void iMatrixMouseLeftRelease(Ihandle* ih, int x)
 {
   LeftPressed = 0;   /* The left button is released */
 
-  iMatrixMarkReset();
+  iupMatrixMarkReset();
 
-  if(iMatrixColResResizing())  /* If it was made a column resize, finish it */
-    iMatrixColResFinish(ih, x);
+  if(iupMatrixColResResizing())  /* If it was made a column resize, finish it */
+    iupMatrixColResFinish(ih, x);
 }
 
 /* This function is called when the mouse button is pressed.
    Stores the cell that was pressed, comparing when the button is released.
    -> x, y : mouse coordinates (canvas coordinates)
 */
-static void iMatrixRightPress(Ihandle* ih, int x, int y)
+static void iMatrixMouseRightPress(Ihandle* ih, int x, int y)
 {
   int lin, col;
 
-  if(iMatrixGetLineCol(ih, x, y, &lin, &col) && (lin!= -2) && (col != -2))
+  if(iupMatrixAuxGetLineCol(ih, x, y, &lin, &col) && (lin!= -2) && (col != -2))
   {
     RightClickLin = lin;
     RightClickCol = col;
   }
   else
   {
-    RightClickLin = -9; /* this value never be return by iMatrixGetLineCol */
+    RightClickLin = -9; /* this value never be return by iupMatrixAuxGetLineCol */
     RightClickCol = -9;
   }
 }
@@ -271,11 +270,11 @@ static void iMatrixRightPress(Ihandle* ih, int x, int y)
    it was pressed. 
    -> x, y : mouse coordinates (canvas coordinates)
 */
-static void iMatrixRightRelease(Ihandle* ih, int x, int y)
+static void iMatrixMouseRightRelease(Ihandle* ih, int x, int y)
 {
   int lin, col;
 
-  if(iMatrixGetLineCol(ih, x, y, &lin, &col) &&
+  if(iupMatrixAuxGetLineCol(ih, x, y, &lin, &col) &&
      (lin == RightClickLin) && (col == RightClickCol));
 }
 
@@ -289,7 +288,7 @@ static void iMatrixRightRelease(Ihandle* ih, int x, int y)
    -> x, y : mouse position
    -> r : string that contain which keys are pressed [SHIFT,CTRL and ALT]
 */
-int iMatrixMouseButtonCB (Ihandle* ih, int b, int press, int x, int y, char* r)
+int iupMatrixMouseButtonCB (Ihandle* ih, int b, int press, int x, int y, char* r)
 {
   int ret = IUP_DEFAULT;
 
@@ -297,27 +296,30 @@ int iMatrixMouseButtonCB (Ihandle* ih, int b, int press, int x, int y, char* r)
   {
     /* The edit Kill Focus is not called when the user clicks in the parent canvas. 
        so we have to compensate that. */
-    iMatrixEditCheckHidden(ih);
+    iupMatrixEditCheckHidden(ih);
 
     ih->data->hasiupfocus = 1;
   }
 
   if(b == IUP_BUTTON1)
   {
-    if (press)
-      iMatrixLeftPress(ih, x, y, iup_isshift(r), iup_iscontrol(r), iup_isdouble(r));
+    if(press)
+    {
+      int dclick = isdouble(r);
+      iMatrixMouseLeftPress(ih, x, y, isshift(r), iscontrol(r), dclick);
+    }
     else
-      iMatrixLeftRelease(ih, x);
+      iMatrixMouseLeftRelease(ih, x);
   }
   else if(b == IUP_BUTTON3)
   {
-    if (press)
-      iMatrixRightPress(ih, x, y);
+    if(press)
+      iMatrixMouseRightPress(ih, x, y);
     else
-      iMatrixRightRelease(ih, x, y);
+      iMatrixMouseRightRelease(ih, x, y);
   }
 
-  ret = iMatrixCallClickCb(ih, press, x, y, r);
+  ret = iMatrixMouseCallClickCb(ih, press, x, y, r);
   if(ret == IUP_IGNORE)
     return ret;
 
@@ -333,14 +335,14 @@ int iMatrixMouseButtonCB (Ihandle* ih, int b, int press, int x, int y, char* r)
    -> x, y : mouse position.
 %o Retorna IUP_DEFAULT.
 */
-int iMatrixMouseMoveCB(Ihandle* ih, int x, int y)
+int iupMatrixMouseMoveCB(Ihandle* ih, int x, int y)
 {
   int lin, col;
 
-  iMatrixMouseMove(ih, x, y);
+  iMatrixMouseMouseMove(ih, x, y);
 
-  iMatrixGetLineCol(ih, x, y, &lin, &col);
-  iMatrixCallMoveCb(ih, lin, col);
+  iupMatrixAuxGetLineCol(ih, x, y, &lin, &col);
+  iMatrixMouseCallMoveCb(ih, lin, col);
 
   return IUP_DEFAULT;
 }
