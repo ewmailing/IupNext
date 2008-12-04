@@ -327,6 +327,7 @@ static int iDialButtonPress(Ihandle* ih, int button, int x, int y)
     ih->data->angle=0;
 
   cb = (IFnd)IupGetCallback(ih, "BUTTON_PRESS_CB");
+  if (!cb) cb = (IFnd)IupGetCallback(ih, "CHANGEVALUE_CB");
   if (cb)
     cb(ih, ih->data->angle * ih->data->unit);
 
@@ -343,6 +344,7 @@ static int iDialButtonRelease(Ihandle* ih, int button)
   iDialRepaint(ih);
 
   cb = (IFnd)IupGetCallback(ih, "BUTTON_RELEASE_CB");
+  if (!cb) cb = (IFnd)IupGetCallback(ih, "CHANGEVALUE_CB");
   if (cb)
     cb(ih, ih->data->angle * ih->data->unit);
 
@@ -368,6 +370,7 @@ static int iDialMotionVertical_CB(Ihandle* ih, int x, int y, char *status)
   iDialRepaint(ih);
 
   cb = (IFnd)IupGetCallback(ih, "MOUSEMOVE_CB");
+  if (!cb) cb = (IFnd)IupGetCallback(ih, "CHANGEVALUE_CB");
   if (cb)
     cb(ih, ih->data->angle * ih->data->unit);
 
@@ -388,6 +391,7 @@ static int iDialMotionHorizontal_CB(Ihandle* ih, int x, int y, char *status)
   iDialRepaint(ih);
 
   cb = (IFnd)IupGetCallback(ih, "MOUSEMOVE_CB");
+  if (!cb) cb = (IFnd)IupGetCallback(ih, "CHANGEVALUE_CB");
   if (cb)
     cb(ih, ih->data->angle * ih->data->unit);
 
@@ -431,6 +435,7 @@ static int iDialMotionCircular_CB(Ihandle* ih, int x, int y, char *status)
   ih->data->py = y;
 
   cb = (IFnd)IupGetCallback(ih, "MOUSEMOVE_CB");
+  if (!cb) cb = (IFnd)IupGetCallback(ih, "CHANGEVALUE_CB");
   if (cb)
     cb(ih, ih->data->angle * ih->data->unit);
 
@@ -568,6 +573,7 @@ static int iDialKeyPress_CB(Ihandle* ih, int c, int press)
   iDialRepaint(ih);
 
   cb = (IFnd)IupGetCallback(ih, cb_name);
+  if (!cb) cb = (IFnd)IupGetCallback(ih, "CHANGEVALUE_CB");
   if (cb)
     cb(ih, ih->data->angle * ih->data->unit);
 
@@ -586,6 +592,7 @@ static int iDialWheel_CB(Ihandle* ih, float delta)
   iDialRepaint(ih);
 
   cb = (IFnd)IupGetCallback(ih, "MOUSEMOVE_CB");
+  if (!cb) cb = (IFnd)IupGetCallback(ih, "CHANGEVALUE_CB");
   if (cb)
     cb(ih, ih->data->angle * ih->data->unit);
 
