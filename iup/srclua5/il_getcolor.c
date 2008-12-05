@@ -2,7 +2,6 @@
  * \brief IupGetColor bindig to Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: il_getcolor.c,v 1.1 2008-11-27 23:33:33 scuri Exp $
  */
  
 #include <stdlib.h>

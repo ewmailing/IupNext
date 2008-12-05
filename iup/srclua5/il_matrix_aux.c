@@ -2,7 +2,6 @@
  * \brief matrix binding for Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: il_matrix_aux.c,v 1.1 2008-11-27 23:33:33 scuri Exp $
  */
 
 #include <lua.h>

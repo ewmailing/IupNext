@@ -2,7 +2,6 @@
  * \brief IupGetParam bindig to Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: il_getparam.c,v 1.2 2008-12-05 03:01:19 scuri Exp $
  */
  
 #include <stdlib.h>

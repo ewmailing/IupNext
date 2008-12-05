@@ -2,7 +2,6 @@
  * \brief iupim utilities
  *
  * See Copyright Notice in iup.h
- * $Id: iup_im.c,v 1.2 2008-11-29 03:55:20 scuri Exp $
  */
 
 #include <im.h>

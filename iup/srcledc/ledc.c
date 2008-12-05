@@ -2,7 +2,6 @@
  * \brief LED to C converter
  *
  * See Copyright Notice in iup.h
- * $Id: ledc.c,v 1.1 2008-11-27 23:33:33 scuri Exp $
  */
 
 #include <stdio.h>
@@ -48,43 +47,38 @@ struct {
 } headerfile[] = {
   { "iup",        1 },
   { "iupdial",    0 },
-  { "iupval",     0 },
   { "iupgauge",   0 },
   { "iupmatrix",  0 },
-  { "iupsbox",    0 },
-  { "iuptabs",    0 },
   { "iupgl",      0 },
   { "iuptree",    0 },
   { "iupcolorbar",0 },
   { "iupcb",      0 },
   { "iupcells",   0 },
-  { "iupcbox",    0 },
   { "iupole",     0 },
-  { "iupspin",    0 }
+  { "iupspin",    0 },
+  { "iup_pplot",  0 }
 };
 #define nheaders (sizeof(headerfile)/sizeof(headerfile[0]))
 
 enum headers { 
   IUP_H, 
   DIAL_H, 
-  VAL_H, 
   GAUGE_H, 
   MATRIX_H, 
-  SBOX_H, 
-  TABS_H, 
   GL_H, 
   TREE_H, 
   COLORBAR_H, 
   CB_H,
   CELLS_H,
-  CBOX_H,
   OLE_H,
-  SPIN_H
+  SPIN_H,
+  PPLOT_H
 };
 
 static void check_empty( Telem* elem );
-static void check_color( Telem* elem );
 static void check_image( Telem* elem );
+static void check_imagergb( Telem* elem );
+static void check_imagergba( Telem* elem );
 static void check_string( Telem* elem );
 static void check_cb( Telem* elem );
 static void check_elem( Telem* elem );
@@ -95,7 +89,6 @@ static void check_iupCpi( Telem* elem );
 static void code_image( Telem* elem );
 static void code_iupCpi( Telem* elem );
 
-static void code_color( Telem* elem );
 static void code_empty( Telem* elem );
 static void code_string( Telem* elem );
 static void code_string_cb( Telem* elem );
@@ -114,7 +107,8 @@ static struct {
 elems[] =
 {
   { "Image",        code_image,        check_image,       0  },    
-  { "Color",        code_color,        check_color,       0  },
+  { "ImageRGB",     code_image,        check_imagergb,    0  },    
+  { "ImageRGBA",    code_image,        check_imagergba,   0  },    
   { "User",         code_empty,        check_empty,       0  },
   { "Button",       code_string_cb,    check_string_cb,   0  },
   { "Canvas",       code_string,       check_cb,          0  },
@@ -124,6 +118,10 @@ elems[] =
   { "Dialog",       code_elem,         check_elem,        0  },
   { "Fill",         code_empty,        check_empty,       0  },
   { "FileDlg",      code_empty,        check_empty,       0  },
+  { "MessageDlg",   code_empty,        check_empty,       0  },
+  { "ColorDlg",     code_empty,        check_empty,       0  },
+  { "FontDlg",      code_empty,        check_empty,       0  },
+  { "ProgressBar",  code_empty,        check_empty,       0  },
   { "Frame",        code_elem,         check_elem,        0  },
   { "Gauge",        code_empty,        check_empty,       GAUGE_H  },
   { "GLCanvas",     code_string,       check_cb,          GL_H  },
@@ -132,24 +130,25 @@ elems[] =
   { "Label",        code_string,       check_string,      0  },
   { "List",         code_string,       check_cb,          0  },
   { "Matrix",       code_string,       check_cb,          MATRIX_H  },
-  { "Sbox",         code_elem,         check_elem,        SBOX_H  },
+  { "Sbox",         code_elem,         check_elem,        0  },
   { "Menu",         code_elemlist,     check_elemlist,    0  },
   { "MultiLine",    code_string,       check_cb,          0  },
   { "Radio",        code_elem,         check_elem,        0  },
   { "Separator",    code_empty,        check_empty,       0  },
   { "Submenu",      code_string_elem,  check_string_elem, 0  },
   { "Text",         code_string,       check_cb,          0  },
-  { "Val",          code_string,       check_string,      VAL_H  },
+  { "Val",          code_string,       check_string,      0  },
   { "Tree",         code_empty,        check_empty,       TREE_H  },
-  { "Tabs",         code_elemlist,     check_elemlist,    TABS_H  },
+  { "Tabs",         code_elemlist,     check_elemlist,    0  },
   { "Toggle",       code_string_cb,    check_string_cb,   0  },
   { "Vbox",         code_elemlist,     check_elemlist,    0  },
   { "Zbox",         code_elemlist,     check_elemlist,    0  },
   { "OleControl",   code_string,       check_cb,          OLE_H  },
-  { "Cbox",         code_elemlist,     check_elemlist,    CBOX_H  },
+  { "Cbox",         code_elemlist,     check_elemlist,    0  },
   { "Cells",        code_empty,        check_empty,       CELLS_H  },
   { "Spin",         code_empty,        check_empty,       SPIN_H  },
   { "Spinbox",      code_elem,         check_elem,        SPIN_H  },
+  { "PPlot",        code_empty,        check_empty,       PPLOT_H  },
   { "@@@",          code_iupCpi,       check_iupCpi,      0  }
 };
 #define nelems (sizeof(elems)/sizeof(elems[0]))
@@ -315,14 +314,6 @@ static void check_empty( Telem* elem )
   verify_nparams( 0, 0, elem );
 }
 
-static void check_color( Telem* elem )
-{
-  if (!verify_nparams( 3, 3, elem )) return;
-  param_number( elem->params, 1 );
-  param_number( elem->params, 2 );
-  param_number( elem->params, 3 );
-}
-
 static void check_image( Telem* elem )
 {
   int i, w, h, size;
@@ -333,7 +324,41 @@ static void check_image( Telem* elem )
   h = atoi( elem->params[1]->data.name );
   size = w*h;
   if (!verify_nparams( size+2, size+2, elem )) return;
-  for (i=0; i<w*h; i++)
+  for (i=0; i<size; i++)
+    param_number( elem->params, i+3 );
+
+  elem->data.image.w = w;
+  elem->data.image.h = h;
+}
+
+static void check_imagergb( Telem* elem )
+{
+  int i, w, h, size;
+  if (!verify_nparams( 2, -1, elem )) return;
+  param_number( elem->params, 1 );
+  param_number( elem->params, 2 );
+  w = atoi( elem->params[0]->data.name );
+  h = atoi( elem->params[1]->data.name );
+  size = w*h*3;
+  if (!verify_nparams( size+2, size+2, elem )) return;
+  for (i=0; i<size; i++)
+    param_number( elem->params, i+3 );
+
+  elem->data.image.w = w;
+  elem->data.image.h = h;
+}
+
+static void check_imagergba( Telem* elem )
+{
+  int i, w, h, size;
+  if (!verify_nparams( 2, -1, elem )) return;
+  param_number( elem->params, 1 );
+  param_number( elem->params, 2 );
+  w = atoi( elem->params[0]->data.name );
+  h = atoi( elem->params[1]->data.name );
+  size = w*h*4;
+  if (!verify_nparams( size+2, size+2, elem )) return;
+  for (i=0; i<size; i++)
     param_number( elem->params, i+3 );
 
   elem->data.image.w = w;
@@ -591,7 +616,7 @@ static void code_image( Telem* elem )
   fprintf( outfile,
     " (void)\n"
     "{\n"
-    "  char map[] = {" );
+    "  unsigned char map[] = {" );
 
   for (i=0; i<w*h; i++)
   {
@@ -610,16 +635,9 @@ static void code_image( Telem* elem )
   unindent();
 }
 
-static void code_color( Telem* elem )
-{
-  fprintf( outfile, "( %3d, %3d, %3d )",
-    atoi(elem->params[0]->data.name),
-    atoi(elem->params[1]->data.name),
-    atoi(elem->params[2]->data.name) );
-}
-
 static void code_empty( Telem* elem )
 {
+  (void) elem;
   fprintf( outfile, "()" );
 }
 
@@ -676,7 +694,7 @@ static void code_string_elem( Telem* elem )
 static char* strlower( char* str )
 {
   int i=0;
-  while (str[i]) { str[i]=tolower(str[i]); i++; }
+  while (str[i]) { str[i]=(char)tolower(str[i]); i++; }
   return str;
 }
 

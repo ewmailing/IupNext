@@ -3,7 +3,6 @@
  * memory allocation
  *
  * See Copyright Notice in iup.h
- * $Id: iupmat_mem.c,v 1.3 2008-11-30 03:48:58 scuri Exp $
  */
 
 /**************************************************************************/

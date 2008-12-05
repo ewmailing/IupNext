@@ -6,7 +6,6 @@
  * for the user.
  *
  * See Copyright Notice in iup.h
- * $Id: iup_lua3.c,v 1.1 2008-11-27 23:33:32 scuri Exp $
  */
 
 #include <stdio.h>

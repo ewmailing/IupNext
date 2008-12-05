@@ -2,7 +2,6 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua.c,v 1.5 2008-11-29 17:13:44 scuri Exp $
 */
 
 #include <stdio.h>

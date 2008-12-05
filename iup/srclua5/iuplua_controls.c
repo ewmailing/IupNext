@@ -2,7 +2,6 @@
  * \brief Bindig of iupcontrols to Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_controls.c,v 1.2 2008-11-29 03:55:20 scuri Exp $
  */
  
 #include <lua.h>

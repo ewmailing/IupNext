@@ -2,7 +2,6 @@
  * \brief iupmask binding for Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: il_mask.c,v 1.2 2008-11-29 05:07:19 scuri Exp $
  */
 
 #include <lua.h>

@@ -2,7 +2,6 @@
  * \brief IUPLua5 internal Functions
  *
  * See Copyright Notice in iup.h
- * $Id: il.h,v 1.4 2008-11-29 17:13:44 scuri Exp $
  */
  
 #ifndef __IL_H 

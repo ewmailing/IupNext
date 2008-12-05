@@ -2,7 +2,6 @@
  * \brief iupLua internal declarations
  *
  * See Copyright Notice in iup.h
- * $Id: il.h,v 1.3 2008-11-29 03:55:20 scuri Exp $
  */
  
 #ifndef __IL_H 
