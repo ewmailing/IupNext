@@ -2,7 +2,7 @@
  * \brief IupGetParam bindig to Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: il_getparam.c,v 1.1 2008-11-27 23:33:33 scuri Exp $
+ * $Id: il_getparam.c,v 1.2 2008-12-05 03:01:19 scuri Exp $
  */
  
 #include <stdlib.h>
@@ -68,16 +68,16 @@ static int GetParam(lua_State *L)
 
   for (i = 0; i < param_count; i++)
   {
-    char* t = IupGetParamType(f, &line_size);
+    char t = IupGetParamType(f, &line_size);
 
-    if (*t == 't') /* if separator */
+    if (t == 't') /* if separator */
     {
       f += line_size;
       i--; /* compensate next increment */
       continue;
     }
 
-    switch(*t)
+    switch(t)
     {
     case 'b':
     case 'i':
@@ -102,7 +102,7 @@ static int GetParam(lua_State *L)
       break;
     }
 
-    param_type[i] = *t;
+    param_type[i] = t;
     f += line_size;
   }
 

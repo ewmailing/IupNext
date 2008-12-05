@@ -2,7 +2,7 @@
  * \brief IupGetParam
  *
  * See Copyright Notice in iup.h
- * $Id: iup_getparam.c,v 1.6 2008-12-04 20:57:21 scuri Exp $
+ * $Id: iup_getparam.c,v 1.7 2008-12-05 03:01:19 scuri Exp $
  */
 
 #include <stdio.h>
@@ -704,54 +704,40 @@ static Ihandle* IupParamDlgP(Ihandle** params)
   return dialog;
 }
 
-static Ihandle *IupParam(const char *title)
+static char* iParamGetNextStrItem(char* line, char sep, int *count)
 {
-  Ihandle* param = IupUser();
-  iupAttribStoreStr(param, "TITLE", (char*)title);
-  return param;
-}
+  int i = 0;
 
-static char* iParamGetBoolNames(char* interval, Ihandle* param)
-{
-  int i = 0, d = 0;
-  char *falsestr, *truestr = NULL, *tip = NULL;
-
-  if (*interval != '[')
+  while (line[i] != '\n' && line[i] != 0)
   {
-    iupAttribStoreStr(param, "_TRUE", iupStrMessageGet("IUP_TRUE"));
-    iupAttribStoreStr(param, "_FALSE", iupStrMessageGet("IUP_FALSE"));
-    return interval;
-  }
-  interval++;
-
-  falsestr = interval;
-  while (interval[i] != '\n' && interval[i] != '{')
-  {
-    if (interval[i] == ',' || interval[i] == ']')
+    if (line[i] == sep)
     {
-      interval[i] = 0;
-      if (i == 0)
-        break;
-
-      d++;
-      interval += i+1;
-
-      if (d == 1)
-        truestr = interval;
-
-      if (d == 2)
-        break;
-
-      i = -1;
+      line[i] = 0;
+      *count = i+1;
+      return line;
     }
 
     i++;
   }
 
-  if (*interval == '{')
-    tip = interval;
+  /* last item may not have the separator */
+  line[i] = 0;
+  *count = i;
+  return line;
+}
 
-  if (d == 2)
+static void iParamSetBoolNames(char* extra, Ihandle* param)
+{
+  char *falsestr = NULL, *truestr = NULL;
+  int count;
+
+  if (extra)
+  {
+    falsestr = iParamGetNextStrItem(extra, ',', &count);  extra += count;
+    truestr = iParamGetNextStrItem(extra, ',', &count);
+  }
+
+  if (falsestr && truestr)
   {
     iupAttribStoreStr(param, "_TRUE", truestr);
     iupAttribStoreStr(param, "_FALSE", falsestr);
@@ -761,300 +747,217 @@ static char* iParamGetBoolNames(char* interval, Ihandle* param)
     iupAttribStoreStr(param, "_TRUE", iupStrMessageGet("IUP_TRUE"));
     iupAttribStoreStr(param, "_FALSE", iupStrMessageGet("IUP_FALSE"));
   }
-
-  return tip;
 }
 
-static char* iParamGetFileOptions(char* options, Ihandle* param)
+static void iParamSetInterval(char* extra, Ihandle* param)
 {
-  int i = 0, d = 0;
-  char *type = NULL, *filter = NULL, *directory = NULL, *nochangedir = NULL, *nooverwriteprompt = NULL, *tip = NULL;
+  char *min, *max, *step;
+  int count;
 
-  if (*options != '[')
-  {
-    iupAttribSetStr(param, "_DIALOGTYPE", type);
-    iupAttribSetStr(param, "_FILTER", filter);
-    iupAttribSetStr(param, "_DIRECTORY", directory);
-    iupAttribSetStr(param, "_NOCHANGEDIR", nochangedir);
-    iupAttribSetStr(param, "_NOOVERWRITEPROMPT", nooverwriteprompt);
-    return options;
-  }
-  options++;
+  if (!extra)
+    return;
 
-  if (*options)  /* not empty */
-    type = options;
+  min = iParamGetNextStrItem(extra, ',', &count);  extra += count;
+  if (!min)
+    return;
 
-  while (options[i] != '\n' && options[i] != '{')
-  {
-    if (options[i] == '|' || options[i] == ']')
-    {
-      options[i] = 0;
-      if (i == 0)
-        break;
+  max = iParamGetNextStrItem(extra, ',', &count);  extra += count;
+  step = iParamGetNextStrItem(extra, ',', &count);  
 
-      d++;
-      options+= i+1;
-
-      if (d == 1 && *options)
-        filter= options;
-      else if (d == 2 && *options)
-        directory= options;
-      else if (d == 3 && *options)
-        nochangedir= options;
-      else if (d == 4 && *options)
-        nooverwriteprompt = options;
-
-      if (d == 5)
-        break;
-
-      i = -1;
-    }
-
-    i++;
-  }
-
-  if (options[i] == '{')
-    tip = &options[i];
-
-  iupAttribStoreStr(param, "_DIALOGTYPE", type);
-  iupAttribStoreStr(param, "_FILTER", filter);
-  iupAttribStoreStr(param, "_DIRECTORY", directory);
-  iupAttribStoreStr(param, "_NOCHANGEDIR", nochangedir);
-  iupAttribStoreStr(param, "_NOOVERWRITEPROMPT", nooverwriteprompt);
-
-  return tip;
-}
-
-static char* iParamGetInterval(char* interval, Ihandle* param)
-{
-  int i = 0, d = 0;
-  char *min, *max = NULL, *step = NULL, *tip = NULL;
-
-  if (*interval != '[')
-    return interval;
-  interval++;
-
-  min = interval;
-  while (interval[i] != '\n' && interval[i] != '{')
-  {
-    if (interval[i] == ',' || interval[i] == ']')
-    {
-      interval[i] = 0;
-      if (i == 0)
-        break;
-
-      d++;
-      interval += i+1;
-
-      if (d == 1)
-        max = interval;
-
-      if (d == 2)
-        step = interval;
-
-      if (d == 3)
-        break;
-
-      i = -1;
-    }
-
-    i++;
-  }
-
-  if (interval[i] == '{')
-    tip = &interval[i];
-
-  if (d == 1)
-  {
-    iupAttribSetStr(param, "PARTIAL", "1");
-    iupAttribStoreStr(param, "MIN", min);
-  }
-  else if (d == 2 || d == 3)
+  if (max && step)
   {
     iupAttribSetStr(param, "INTERVAL", "1");
     iupAttribStoreStr(param, "MIN", min);
     iupAttribStoreStr(param, "MAX", max);
     iupAttribStoreStr(param, "STEP", step);
   }
-
-  return tip;
+  else
+  {
+    iupAttribSetStr(param, "PARTIAL", "1");
+    iupAttribStoreStr(param, "MIN", min);
+  }
 }
 
-static void iParamGetTip(char* tip, Ihandle* param)
+static void iParamSetFileOptions(char* extra, Ihandle* param)
 {
-  int i = 0;
+  char *type, *filter, *directory, *nochangedir, *nooverwriteprompt;
+  int count;
 
-  if (!tip || *tip != '{')
+  if (!extra)
     return;
-  tip++;
 
-  while (tip[i] != '\n')
-  {
-    if (tip[i] == '}')
-    {
-      tip[i] = 0;
-      iupAttribStoreStr(param, "TIP", tip);
-      return;
-    }
-    i++;
-  }
+  type = iParamGetNextStrItem(extra, '|', &count);  extra += count;
+  filter = iParamGetNextStrItem(extra, '|', &count);  extra += count;
+  directory = iParamGetNextStrItem(extra, '|', &count);  extra += count;
+  nochangedir = iParamGetNextStrItem(extra, '|', &count);  extra += count;
+  nooverwriteprompt = iParamGetNextStrItem(extra, '|', &count);  extra += count;
+
+  iupAttribStoreStr(param, "_DIALOGTYPE", type);
+  iupAttribStoreStr(param, "_FILTER", filter);
+  iupAttribStoreStr(param, "_DIRECTORY", directory);
+  iupAttribStoreStr(param, "_NOCHANGEDIR", nochangedir);
+  iupAttribStoreStr(param, "_NOOVERWRITEPROMPT", nooverwriteprompt);
 }
 
-static char* iParamGetListItems(char* list, Ihandle* param)
+static void iParamSetListItems(char* extra, Ihandle* param)
 {
-  int i = 0, d = 1;
-  char str[20], *tip = NULL;
+  int d = 1, count;
+  char str[20], *item;
 
-  if (*list != '|')
-    return list;
-  list++;
+  if (!extra)
+    return;
 
-  while (list[i] != '\n' && list[i] != '{')
+  item = iParamGetNextStrItem(extra, '|', &count);  extra += count;
+  while (item && *item)
   {
-    if (list[i] == '|')
-    {
-      list[i] = 0;
-      if (i == 0)
-        break;
+    sprintf(str, "%d", d);
+    iupAttribStoreStr(param, str, item);
 
-      sprintf(str, "%d", d);
-      iupAttribStoreStr(param, str, list);
-
-      d++;
-      list += i+1;
-      i = -1;
-    }
-
-    i++;
+    item = iParamGetNextStrItem(extra, '|', &count);  extra += count;
+    d++;
   }
-
-  if (list[i] == '{')
-    tip = &list[i];
 
   sprintf(str, "%d", d);
   iupAttribSetStr(param, str, "");
-
-  return tip;
 }
 
-static char* iParamGetStringMask(char* interval, Ihandle* param)
-{                         
-  char* tip = NULL;
-  int i = 0;
-  while (interval[i] != '\n' && interval[i] != '{')
-    i++;
-
-  if (i != 0)
-  {
-    char tmp = interval[i];
-    interval[i] = 0;
-    iupAttribStoreStr(param, "MASK", interval);
-    interval[i] = tmp;
-    interval += i;
-  }
-  
-  if (interval[i] == '{')
-    tip = &interval[i];
-  
-  return tip;
-}
-
-static char *iParamGetStrLine(const char* format, int *line_size, int *title_end)
+static char* iParamGetStrExtra(char* line, char start, char end, int *count)
 {
-  static char line[4096];
+  int i = 0, end_pos = -1;
+
+  if (*line != start)
+  {
+    *count = 0;
+    return NULL;
+  }
+  line++;
+
+  while (line[i] != '\n' && line[i] != 0)
+  {
+    if (line[i] == end)
+      end_pos = i;
+
+    i++;
+  }
+
+  if (end_pos != -1)
+  {
+    line[end_pos] = 0;
+    *count = 1+end_pos+1;
+    return line;
+  }
+  else
+  {
+    *count = 0;
+    return NULL;
+  }
+}
+
+static int iParamCopyStrLine(char* line, const char* format)
+{
   int i = 0;
-
-  *title_end = 0;
-
-  while (format[i] != '\n')
+  while (format[i] != '\n' && format[i] != 0)
   {
     line[i] = format[i];
-    if (line[i] == '%')
-      *title_end = i;
     i++;
-    if (i > 4000)
+    if (i > 4094)   /* to avoid being bigger than the local array */
       break;
   }
   line[i] = '\n';
   line[i+1] = 0;
-  *line_size = i+1;
-
-  if (*title_end == 0)
-    return NULL;
-
-  line[*title_end] = 0;
-
-  return line; 
+  return i+1; 
 }
 
-char *IupGetParamType(const char* format, int *line_size)
+char IupGetParamType(const char* format, int *line_size)
 {
-  int title_end = 0;
-  char* line = iParamGetStrLine(format, line_size, &title_end);
-  return &line[title_end+1];
+  char* type = strchr(format, '%');
+  char* line_end = strchr(format, '\n');
+  if (line_end)
+    *line_size = line_end-format+1;
+  if (type)
+    return *(type+1);
+  else
+    return 0;
 }
 
 static Ihandle *IupParamf(const char* format, int *line_size)
 {
   Ihandle* param;
-  char* line, *type_desc, *tip;
-  int title_end = 0;
+  char line[4096];
+  char* line_ptr = &line[0], *title, type, *tip, *extra, *mask;
+  int count;
 
-  line = iParamGetStrLine(format, line_size, &title_end);
-  param = IupParam(line);
-  type_desc = &line[title_end+1];
+  *line_size = iParamCopyStrLine(line, format);
 
-  switch(*type_desc)
+  title = iParamGetNextStrItem(line_ptr, '%', &count);  line_ptr += count;
+  param = IupUser();
+  iupAttribStoreStr(param, "TITLE", title);
+  
+  type = *line_ptr;
+  line_ptr++;
+
+  switch(type)
   {
   case 'b':
     iupAttribSetStr(param, "TYPE", "BOOLEAN");
     iupAttribSetStr(param, "DATA_TYPE", "1");
-    tip = iParamGetBoolNames(type_desc+1, param);
+    extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
+    iParamSetBoolNames(extra, param);
     break;
   case 'l':
     iupAttribSetStr(param, "TYPE", "LIST");
     iupAttribSetStr(param, "DATA_TYPE", "1");
-    tip = iParamGetListItems(type_desc+1, param);
+    extra = iParamGetStrExtra(line_ptr, '|', '|', &count);  line_ptr += count;
+    iParamSetListItems(extra, param);
     break;
   case 'a':
     iupAttribSetStr(param, "TYPE", "REAL");
     iupAttribSetStr(param, "DATA_TYPE", "2");
     iupAttribSetStr(param, "ANGLE", "1");
-    tip = iParamGetInterval(type_desc+1, param);
+    extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
+    iParamSetInterval(extra, param);
     break;
   case 'm':
     iupAttribSetStr(param, "MULTILINE", "1");
-    tip = type_desc+1;
   case 's':
     iupAttribSetStr(param, "TYPE", "STRING");
     iupAttribSetStr(param, "DATA_TYPE", "0");
-    tip = iParamGetStringMask(type_desc+1, param);
+    mask = iParamGetNextStrItem(line_ptr, '{', &count);  
+    if (mask && *mask) 
+      iupAttribStoreStr(param, "MASK", mask);
+    line_ptr += count-1; /* ignore the fake separator */
+    line_ptr[0] = '{';   /* restore possible separator */
     break;
   case 'i':
     iupAttribSetStr(param, "TYPE", "INTEGER");
     iupAttribSetStr(param, "DATA_TYPE", "1");
-    tip = iParamGetInterval(type_desc+1, param);
+    extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
+    iParamSetInterval(extra, param);
     break;
   case 'r':
     iupAttribSetStr(param, "TYPE", "REAL");
     iupAttribSetStr(param, "DATA_TYPE", "2");
-    tip = iParamGetInterval(type_desc+1, param);
+    extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
+    iParamSetInterval(extra, param);
     break;
   case 'f':
     iupAttribSetStr(param, "TYPE", "FILE");
     iupAttribSetStr(param, "DATA_TYPE", "0");
-    tip = iParamGetFileOptions(type_desc+1, param);
+    extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
+    iParamSetFileOptions(extra, param);
     break;
   case 't':
     iupAttribSetStr(param, "TYPE", "SEPARATOR");
     iupAttribSetStr(param, "DATA_TYPE", "-1");
-    tip = type_desc+1;
     break;
   default:
     return NULL;
   }
 
-  iParamGetTip(tip, param);
+  tip = iParamGetStrExtra(line_ptr, '{', '}', &count);
+  if (tip)
+    iupAttribStoreStr(param, "TIP", tip);
+
   return param;
 }
 

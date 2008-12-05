@@ -52,19 +52,19 @@ int main(int argc, char **argv)
   IupSetLanguage("ENGLISH");
 
   if (!IupGetParam("Title", param_action, 0,
-                   "Boolean: %b[No,Yes]\n"
-                   "Integer: %i\n"
-                   "Real 1: %r\n"
+                   "Boolean: %b[No,Yes]{Boolean Tip}\n"
+                   "Integer: %i{Integer Tip}\n"
+                   "Real 1: %r{Real Tip}\n"
                    "Sep1 %t\n"
-                   "Integer: %i[0,255]\n"
-                   "Real 2: %r[-1.5,1.5]\n"
+                   "Integer: %i[0,255]{Integer Tip 2}\n"
+                   "Real 2: %r[-1.5,1.5]{Real Tip 2}\n"
                    "Sep2 %t\n"
-                   "Angle: %a[0,360]\n"
-                   "String: %s\n"
-                   "List: %l|item1|item2|item3|\n" 
-                   "File: %f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]\n"
+                   "Angle: %a[0,360]{Angle Tip}\n"
+                   "String: %s{String Tip}\n"
+                   "List: %l|item1|item2|item3|{List Tip}\n" 
+                   "File: %f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]{File Tip}\n"
                    "Sep3 %t\n"
-                   "Multiline: %m\n",
+                   "Multiline: %m{Multiline Tip}\n",
                    &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &plist, file_name, pstring2, NULL))
     return IUP_DEFAULT;
   

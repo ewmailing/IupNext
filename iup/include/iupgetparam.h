@@ -18,7 +18,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
 
 /* Utility functions to parse one param line string. Used by the Lua binding. */
 int IupGetParamCount(const char *format, int *param_extra);
-char *IupGetParamType(const char* format, int *line_size);
+char IupGetParamType(const char* format, int *line_size);
 
 #ifdef __cplusplus
 }
