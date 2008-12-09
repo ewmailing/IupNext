@@ -1,7 +1,7 @@
 /** \file
  * \brief iupmatrix. change number of collumns or lines.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMAT_NUMLC_H 

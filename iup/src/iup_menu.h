@@ -1,7 +1,7 @@
 /** \file
  * \brief IUP Menu Class
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_MENU_H 

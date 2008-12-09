@@ -1,7 +1,7 @@
 /** \file
  * \brief Windows System Information
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPWIN_INFO_H 

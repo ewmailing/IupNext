@@ -1,7 +1,7 @@
 /** \file
  * \brief PPlot component for Iup.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPPPLOT_H 

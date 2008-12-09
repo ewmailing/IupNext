@@ -1,7 +1,7 @@
 /** \file
  * \brief Manage keys encoding and decoding.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <memory.h>

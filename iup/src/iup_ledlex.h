@@ -1,7 +1,7 @@
 /** \file
  * \brief lexical analysis manager for LED.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_LEX_H 

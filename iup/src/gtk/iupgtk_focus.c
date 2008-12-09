@@ -1,7 +1,7 @@
 /** \file
  * \brief GTK Focus
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <gtk/gtk.h>

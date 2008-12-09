@@ -1,7 +1,7 @@
 /** \file
  * \brief Frame Control
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <windows.h>

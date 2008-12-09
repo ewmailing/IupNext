@@ -1,7 +1,7 @@
 /** \file
  * \brief global attributes enviroment
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_GLOBALATTRIB_H 

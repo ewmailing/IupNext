@@ -1,7 +1,7 @@
 /** \file
 * \brief Tabs Control
 *
-* See Copyright Notice in iup.h
+* See Copyright Notice in "iup.h"
 */
 
 #undef _WIN32_WINNT

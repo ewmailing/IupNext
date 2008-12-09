@@ -1,7 +1,7 @@
 /** \file
  * \brief Driver Interface. Each driver must export the symbols defined here.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_DRV_H 

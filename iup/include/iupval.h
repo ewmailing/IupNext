@@ -1,7 +1,7 @@
 /** \file
  * \brief iupval control.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPVAL_H 

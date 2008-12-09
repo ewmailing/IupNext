@@ -1,7 +1,7 @@
 /** \file
  * \brief Ihandle Class Attribute Management
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdlib.h>

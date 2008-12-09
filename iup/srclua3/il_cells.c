@@ -2,7 +2,7 @@
  * \brief Bindig of IupCells to Lua 3.
  * @author André Luiz Clinio.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #include <stdlib.h>

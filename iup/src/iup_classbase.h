@@ -1,7 +1,7 @@
 /** \file
  * \brief Base Class
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_CLASSBASE_H 
@@ -59,6 +59,11 @@ void iupBaseUpdateSizeAttrib(Ihandle* ih);
 /** The \ref Iclass::SetCurrentSize method for controls that are not containers.
  * \ingroup iclassbasemethod */
 void iupBaseSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink);
+
+/** Partial \ref Iclass::SetCurrentSize method for containers, 
+ * it must be complemented with a loop for the children removing the element decoration or margins.
+ * \ingroup iclassbasemethod */
+void iupBaseContainerSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink);
 
 /** The \ref Iclass::SetPositionSize method for controls that are not containers.
  * \ingroup iclassbasemethod */

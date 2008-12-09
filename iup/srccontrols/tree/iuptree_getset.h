@@ -2,7 +2,7 @@
  * \brief iuptree control
  * Functions to set and get attributes.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPTREE_GETSET_H 

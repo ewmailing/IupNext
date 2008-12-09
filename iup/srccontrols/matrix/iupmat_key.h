@@ -1,7 +1,7 @@
 /** \file
  * \brief iupmatrix. keyboard control.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMAT_KEY_H 

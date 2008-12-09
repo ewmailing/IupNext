@@ -1,7 +1,7 @@
 /** \file
  * \brief iupcontrols Binding for Lua.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPLUACONTROLS_H 

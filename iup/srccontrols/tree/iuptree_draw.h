@@ -2,7 +2,7 @@
  * \brief iuptree control
  * Functions used to draw a tree.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPTREE_DRAW_H 

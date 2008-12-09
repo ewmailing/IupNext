@@ -1,7 +1,7 @@
 /** \file
  * \brief iupcolorbar control.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPCOLORBAR_H 

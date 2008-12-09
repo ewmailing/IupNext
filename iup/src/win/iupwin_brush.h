@@ -1,7 +1,7 @@
 /** \file
  * \brief Windows Brush Cache
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPWIN_BRUSH_H 

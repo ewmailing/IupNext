@@ -1,7 +1,7 @@
 /** \file
  * \brief imask parser
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>

@@ -1,7 +1,7 @@
 /** \file
  * \brief list of all created dialogs
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdlib.h>

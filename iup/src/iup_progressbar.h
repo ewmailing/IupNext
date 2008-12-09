@@ -1,7 +1,7 @@
 /** \file
  * \brief ProgressBar Control
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_PROGRESSBAR_H 

@@ -1,7 +1,7 @@
 /** \file
  * \brief Bindig of iupgauge to Lua 3.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #include <stdlib.h>

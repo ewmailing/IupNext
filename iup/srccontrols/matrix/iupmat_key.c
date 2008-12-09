@@ -2,7 +2,7 @@
  * \brief iupmatrix control
  * keyboard control
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 /**************************************************************************/

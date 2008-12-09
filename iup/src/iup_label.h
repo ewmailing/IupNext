@@ -1,7 +1,7 @@
 /** \file
  * \brief Label Controls Private Declarations
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_LABEL_H 

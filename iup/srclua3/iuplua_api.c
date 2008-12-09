@@ -1,7 +1,7 @@
 /** \file
  * \brief Iup API in Lua
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #include <string.h>

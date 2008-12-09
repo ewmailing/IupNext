@@ -1,7 +1,7 @@
 /** \file
  * \brief Mask match private definitions
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_MASKMATCH_H 

@@ -1,7 +1,7 @@
 /** \file
  * \brief Ihandle <-> Name table manager.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdlib.h>

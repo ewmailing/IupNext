@@ -1,7 +1,7 @@
 /** \file
  * \brief IupFileDlg pre-defined dialog
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <windows.h>

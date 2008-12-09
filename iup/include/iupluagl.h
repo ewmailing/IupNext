@@ -1,7 +1,7 @@
 /** \file
  * \brief Binding of iupglcanvas to Lua.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPLUAGL_H 

@@ -1,7 +1,7 @@
 /** \file
  * \brief IupGetColor bindig to Lua 5.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #include <stdlib.h>

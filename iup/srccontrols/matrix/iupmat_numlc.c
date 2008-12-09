@@ -2,7 +2,7 @@
  * \brief iupmatrix control
  * change number of columns or lines
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 /**************************************************************************/

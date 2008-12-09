@@ -2,7 +2,7 @@
  * \brief iuptree control
  * Functions used to find nodes in the tree.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPTREE_FIND_H 

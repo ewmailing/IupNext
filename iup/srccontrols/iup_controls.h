@@ -1,7 +1,7 @@
 /** \file
  * \brief Additional Controls Class Initialization functions.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_CONTROLS_H 

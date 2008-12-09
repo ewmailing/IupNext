@@ -1,7 +1,7 @@
 /** \file
  * \brief Ihandle management
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>  

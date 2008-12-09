@@ -1,7 +1,7 @@
 /** \file
  * \brief iupmatrix. CD help macros.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMAT_CD_H 

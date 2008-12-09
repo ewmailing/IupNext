@@ -2,7 +2,7 @@
  * \brief iuptree control
  * Stores all the pre-defined images
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include "iup.h"

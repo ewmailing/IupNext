@@ -2,7 +2,7 @@
  * \brief HSI Color Manipulation
  * Copied and adapted from IM
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #ifndef __IUP_COLORHSI_H

@@ -2,7 +2,7 @@
  * \brief iupmatrix control
  * mouse events
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 /**************************************************************************/

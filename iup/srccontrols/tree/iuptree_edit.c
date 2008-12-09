@@ -2,7 +2,7 @@
  * \brief iuptree control
  * Functions used to edit a node name in place.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>

@@ -1,7 +1,7 @@
 /** \file
  * \brief Ihandle Class Base Functions
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdlib.h>
@@ -19,6 +19,21 @@
 #include "iup_assert.h"
 
 
+void iupBaseContainerSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+{
+  if (shrink)
+  {
+    /* if expand use the given size, else use the natural size */
+    ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)  ? w : ih->naturalwidth;
+    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT) ? h : ih->naturalheight;
+  }
+  else
+  {
+    /* if expand use the given size (if greater than natural size), else use the natural size */
+    ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)  ? iupMAX(ih->naturalwidth, w)  : ih->naturalwidth;
+    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT) ? iupMAX(ih->naturalheight, h) : ih->naturalheight;
+  }
+}
 
 void iupBaseSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
 {
@@ -255,6 +270,19 @@ int iupBaseGetScrollbar(Ihandle* ih)
   return sb;
 }
 
+static int iBaseSetNormalizeGroupAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle* ih_normalizer = IupGetHandle(value);
+  if (!ih_normalizer)
+  {
+    ih_normalizer = IupNormalizer();
+    IupSetHandle(value, ih_normalizer);
+  }
+
+  IupAppend(ih_normalizer, ih);
+  return 1;
+}
+
 static Ihandle* iBaseFindChild(Ihandle* ih, const char* name)
 {
   Ihandle* child = ih->firstchild;
@@ -386,6 +414,7 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FLOATING", iBaseGetFloatingAttrib, iBaseSetFloatingAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iBaseGetExpandAttrib, iBaseSetExpandAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NORMALIZEGROUP", NULL, iBaseSetNormalizeGroupAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
   /* make sure everyone has the correct default value */
   iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_INHERIT);

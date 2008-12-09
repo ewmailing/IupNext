@@ -1,7 +1,7 @@
 /** \file
  * \brief Dialog Public and Private Declarations
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_DIALOG_H 

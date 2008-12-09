@@ -1,7 +1,7 @@
 /** \file
  * \brief iupmatrix. cell selection.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMAT_MARK_H 

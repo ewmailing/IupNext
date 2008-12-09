@@ -1,7 +1,7 @@
 /** \file
  * \brief GTK Driver iupdrvSetGlobal
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>

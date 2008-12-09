@@ -1,7 +1,7 @@
 /** \file
  * \brief Windows Driver
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPWIN_DRV_H 

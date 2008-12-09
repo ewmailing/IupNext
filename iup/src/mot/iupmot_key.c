@@ -1,7 +1,7 @@
 /** \file
  * \brief Motif Driver keyboard mapping
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <Xm/Xm.h>

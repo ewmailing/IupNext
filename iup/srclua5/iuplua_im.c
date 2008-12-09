@@ -1,7 +1,7 @@
 /** \file
  * \brief IULUA core - Bindig of iup to Lua 5.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #include "iup.h"

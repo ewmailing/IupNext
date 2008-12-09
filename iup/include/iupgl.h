@@ -1,7 +1,7 @@
 /** \file
  * \brief OpenGL canvas for Iup.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPGL_H 

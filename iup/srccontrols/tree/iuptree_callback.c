@@ -2,7 +2,7 @@
  * \brief iuptree control
  * Calls the user callbacks
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>

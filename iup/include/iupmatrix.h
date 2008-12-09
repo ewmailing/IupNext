@@ -1,7 +1,7 @@
 /** \file
  * \brief iupmatrix control.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMATRIX_H 

@@ -1,7 +1,7 @@
 /** \file
  * \brief Motif Driver TIPS Control
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <Xm/Xm.h>

@@ -1,7 +1,7 @@
 /** \file
  * \brief iuptabs control.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPTABS_H 

@@ -1,7 +1,7 @@
 /** \file
  * \brief Abstract Layout Management
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdlib.h>  
@@ -18,57 +18,6 @@
 #include "iup_assert.h" 
 
  
-void IupNormalizeSizev(const char* value, Ihandle** ih_list)
-{
-  Ihandle* ih;
-  int i, natural_maxwidth = 0, natural_maxheight = 0;
-  enum{NORMALIZE_NONE, NORMALIZE_WIDTH, NORMALIZE_HEIGHT};
-  int normalize = NORMALIZE_NONE;
-
-  if (iupStrEqualNoCase(value, "HORIZONTAL"))
-    normalize = NORMALIZE_WIDTH;
-  else if (iupStrEqualNoCase(value, "VERTICAL"))
-    normalize = NORMALIZE_HEIGHT;
-  else if (iupStrEqualNoCase(value, "BOTH"))
-    normalize = NORMALIZE_WIDTH|NORMALIZE_HEIGHT;
-  else 
-    return;
-
-  for (i = 0; ih_list[i]; i++)
-  {
-    ih = ih_list[i];
-    iupClassObjectComputeNaturalSize(ih);
-    natural_maxwidth = iupMAX(natural_maxwidth, ih->naturalwidth);
-    natural_maxheight = iupMAX(natural_maxheight, ih->naturalheight);
-  }
-
-  for (i = 0; ih_list[i]; i++)
-  {
-    ih = ih_list[i];
-    if (!ih->floating && (ih->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(ih->iclass->name, "fill")))
-    {
-      if (normalize & NORMALIZE_WIDTH)
-        ih->userwidth = natural_maxwidth;
-      if (normalize & NORMALIZE_HEIGHT)
-        ih->userheight = natural_maxheight;
-    }
-  }
-}
-
-void IupNormalizeSize(const char* value, Ihandle* ih_first, ...)
-{
-  va_list arglist;
-  Ihandle **ih_list;
-
-  va_start(arglist, ih_first);
-  ih_list = (Ihandle **)iupObjectGetParamList(ih_first, arglist);
-  va_end(arglist);
-
-  IupNormalizeSizev(value, ih_list);
-
-  free(ih_list);
-}
-
 void IupRefresh(Ihandle* ih)
 {
   Ihandle* dialog;
@@ -143,8 +92,8 @@ void iupLayoutCompute(Ihandle* ih)
      for standard controls will replace the minimum visible size.
      So the native size will be the maximum value between 
      minimum visible size and defined user size.
-     First calculate the native size for the children, then for the element.
-     Also calculates the expand configuration for each element. */
+     Also calculates the expand configuration for each element, but expand is used only in SetCurrentSize.
+     SEQUENCE: will first calculate the native size for the children, then for the element. */
   iupClassObjectComputeNaturalSize(ih);
 
   /* Set the current size (not reflected in the native element yet) based on
@@ -152,10 +101,11 @@ void iupLayoutCompute(Ihandle* ih)
      If shrink is 0 (default) the current size of containers can be only larger than the natural size,
      the result will depend on the EXPAND attribute.
      If shrink is 1 the containers can be resized to sizes smaller than the natural size.
-     Now, will first calculate the current size of the element, then for the children. */
+     SEQUENCE: will first calculate the current size of the element, then for the children. */
   iupClassObjectSetCurrentSize(ih, 0, 0, shrink);
 
   /* Now that the current size is known, set the position of the elements 
-     relative to the parent. */ 
+     relative to the parent.
+     SEQUENCE: will first set the position of the element, then for the children. */
   iupClassObjectSetPosition(ih, 0, 0);
 }

@@ -1,7 +1,7 @@
 /** \file
  * \brief Timer for the Windows Driver.
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <windows.h>

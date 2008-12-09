@@ -64,8 +64,6 @@ void      IupExitLoop      (void);
 void      IupUpdate        (Ihandle* ih);
 void      IupUpdateChildren(Ihandle* ih);
 void      IupRefresh       (Ihandle* ih);
-void      IupNormalizeSize (const char* value, Ihandle* ih_first, ...);
-void      IupNormalizeSizev(const char* value, Ihandle** ih_list);
 
 char*     IupMapFont       (const char *iupfont);
 char*     IupUnMapFont     (const char *driverfont);
@@ -154,6 +152,8 @@ Ihandle*  IupZbox       (Ihandle* child, ...);
 Ihandle*  IupZboxv      (Ihandle* *children);
 Ihandle*  IupHbox       (Ihandle* child,...);
 Ihandle*  IupHboxv      (Ihandle* *children);
+Ihandle*  IupNormalizer (Ihandle* child, ...);
+Ihandle*  IupNormalizerv(Ihandle* *children);
 
 Ihandle*  IupCbox       (Ihandle* child, ...);
 Ihandle*  IupCboxv      (Ihandle* *children);

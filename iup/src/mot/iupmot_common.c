@@ -1,7 +1,7 @@
 /** \file
  * \brief Motif Base Functions
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>

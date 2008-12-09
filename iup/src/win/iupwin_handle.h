@@ -1,7 +1,7 @@
 /** \file
  * \brief HWND to ihandle table
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPWIN_HANDLE_H 

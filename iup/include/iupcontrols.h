@@ -1,7 +1,7 @@
 /** \file
  * \brief initializes iupdial, iupgauge, iuptabs, iupcb, iupgc and iupval controls.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPCONTROLS_H 

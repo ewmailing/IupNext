@@ -1,7 +1,7 @@
 /** \file
  * \brief Assert Utilities
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
  

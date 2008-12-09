@@ -2,7 +2,7 @@
  * \brief Simple hash table C API.
  * Does not allow 0 values for items...
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_TABLE_H 

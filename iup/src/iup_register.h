@@ -1,7 +1,7 @@
 /** \file
  * \brief Register the Controls
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_REGISTER_H 

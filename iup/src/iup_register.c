@@ -1,7 +1,7 @@
 /** \file
 * \brief Register the Internal Controls
 *
-* See Copyright Notice in iup.h
+* See Copyright Notice in "iup.h"
 */
 
 #include <stdlib.h>
@@ -71,6 +71,7 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupVboxGetClass());
   iupRegisterClass(iupZboxGetClass());
   iupRegisterClass(iupCboxGetClass());
+  iupRegisterClass(iupNormalizerGetClass());
 
   iupRegisterClass(iupMenuGetClass());
   iupRegisterClass(iupItemGetClass());

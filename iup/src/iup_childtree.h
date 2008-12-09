@@ -1,7 +1,7 @@
 /** \file
  * \brief Control Hierarchy Tree management.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_CHILDTREE_H 

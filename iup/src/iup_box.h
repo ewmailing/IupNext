@@ -1,7 +1,7 @@
 /** \file
  * \brief Base for box Controls.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_BOX_H 
@@ -21,7 +21,9 @@ struct _IcontrolData
 };
 
 Iclass* iupBoxClassBase(void);
-void iupBoxNormalizeSize(Ihandle *ih, int children_natural_maxwidth, int children_natural_maxheight);
+
+/* Implemented in iup_normalizer.c */
+void iupNormalizeSizeBoxChild(Ihandle *ih, int children_natural_maxwidth, int children_natural_maxheight);
 
 
 #ifdef __cplusplus

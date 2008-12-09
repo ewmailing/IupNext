@@ -2,7 +2,7 @@
  * \brief iupmatrix. 
  * Functions used to edit a cell in place.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMAT_EDIT_H 

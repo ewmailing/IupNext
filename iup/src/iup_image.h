@@ -1,7 +1,7 @@
 /** \file
  * \brief Image Resource Private Declarations
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_IMAGE_H 

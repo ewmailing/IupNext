@@ -1,7 +1,7 @@
 /** \file
  * \brief Driver Font Management
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_DRVFONT_H 

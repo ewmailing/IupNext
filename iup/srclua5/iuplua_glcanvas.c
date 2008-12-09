@@ -1,7 +1,7 @@
 /** \file
  * \brief iupgl binding for Lua 5.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <lua.h>

@@ -1,7 +1,7 @@
 /** \file
  * \brief Ihandle Class Interface
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_CLASS_H 

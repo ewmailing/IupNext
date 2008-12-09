@@ -2,7 +2,7 @@
  * \brief Control tree hierarchy manager.  
  * implements also IupDestroy
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h> 

@@ -1,7 +1,7 @@
 /** \file
  * \brief Mask internal functions
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_MASKPARSE_H 

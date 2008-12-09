@@ -1,7 +1,7 @@
 /** \file
  * \brief Ole control.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPOLE_H 

@@ -1,7 +1,7 @@
 /** \file
  * \brief iupgl control for X11
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <X11/Xlib.h>

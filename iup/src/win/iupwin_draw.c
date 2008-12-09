@@ -1,7 +1,7 @@
 /** \file
  * \brief Draw Functions
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #undef _WIN32_WINNT

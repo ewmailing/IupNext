@@ -1,7 +1,7 @@
 /** \file
  * \brief IupColorDlg pre-defined dialog control
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>

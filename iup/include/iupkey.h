@@ -1,7 +1,7 @@
 /** \file
  * \brief Keyboard Keys definitions.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPKEY_H 

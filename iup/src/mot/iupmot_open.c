@@ -1,7 +1,7 @@
 /** \file
  * \brief Motif Open/Close
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdlib.h>    

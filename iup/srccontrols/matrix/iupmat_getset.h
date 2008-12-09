@@ -2,7 +2,7 @@
  * \brief iupmatrix control
  * attributes set and get.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMAT_GETSET_H 

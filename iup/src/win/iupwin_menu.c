@@ -1,7 +1,7 @@
 /** \file
  * \brief Menu Resources
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <windows.h>

@@ -1,7 +1,7 @@
 /** \file
  * \brief Simple expandable array
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdlib.h>

@@ -1,7 +1,7 @@
 /** \file
  * \brief Tabs Control
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_TABS_H 

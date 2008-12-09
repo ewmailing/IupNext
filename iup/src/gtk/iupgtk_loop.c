@@ -1,7 +1,7 @@
 /** \file
  * \brief GTK Message Loop
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>    

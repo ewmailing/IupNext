@@ -2,7 +2,7 @@
  * \brief iupmatrix control
  * auxiliary functions.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMAT_AUX_H 

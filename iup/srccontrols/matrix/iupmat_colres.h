@@ -1,7 +1,7 @@
 /** \file
  * \brief iupmatrix column resize.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMAT_COLRES_H 

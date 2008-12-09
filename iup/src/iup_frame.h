@@ -1,7 +1,7 @@
 /** \file
  * \brief Frame Control Private Declarations
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_FRAME_H 

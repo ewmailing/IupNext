@@ -1,7 +1,7 @@
 /** \file
  * \brief Windows Base Procedure
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>              

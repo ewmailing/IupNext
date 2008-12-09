@@ -1,7 +1,7 @@
 /** \file
  * \brief Standard Controls Class Initialization functions.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_STDCONTROLS_H 
@@ -43,6 +43,7 @@ Iclass* iupHboxGetClass(void);
 Iclass* iupVboxGetClass(void);
 Iclass* iupZboxGetClass(void);
 Iclass* iupCboxGetClass(void);
+Iclass* iupNormalizerGetClass(void);
 
 Iclass* iupTimerGetClass(void);
 Iclass* iupImageGetClass(void);

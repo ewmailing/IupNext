@@ -1,7 +1,7 @@
 /** \file
  * \brief Motif Color Management
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMOT_COLOR_H 

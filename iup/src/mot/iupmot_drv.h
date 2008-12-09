@@ -1,7 +1,7 @@
 /** \file
  * \brief Motif Driver 
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMOT_DRV_H 

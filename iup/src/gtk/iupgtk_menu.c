@@ -1,7 +1,7 @@
 /** \file
  * \brief Menu Resources
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <gtk/gtk.h>

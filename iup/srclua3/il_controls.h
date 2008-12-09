@@ -1,7 +1,7 @@
 /** \file
  * \brief iupLua Controls initialization
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IL_CONTROLS_H 

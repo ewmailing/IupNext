@@ -1,7 +1,7 @@
 /** \file
  * \brief mask pattern matching
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdlib.h>

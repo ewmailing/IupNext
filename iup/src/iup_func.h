@@ -1,7 +1,7 @@
 /** \file
  * \brief Global Function table.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_FUNC_H 

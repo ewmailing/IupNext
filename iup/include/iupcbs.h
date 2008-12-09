@@ -1,7 +1,7 @@
 /** \file
  * \brief Contains all function pointer typedefs.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPCBS_H 

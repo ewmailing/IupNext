@@ -1,7 +1,7 @@
 /** \file
  * \brief Bindig of iupim functions to Lua.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPLUAIM_H

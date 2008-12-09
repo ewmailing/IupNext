@@ -1,7 +1,7 @@
 /** \file
  * \brief iupgl control for Windows
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <windows.h>

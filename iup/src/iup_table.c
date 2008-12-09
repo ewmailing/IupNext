@@ -2,7 +2,7 @@
  * \brief iupTable functions.
  * Implementation by Danny Reinhold and Antonio Scuri. 
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdlib.h>

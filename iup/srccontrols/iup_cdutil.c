@@ -1,7 +1,7 @@
 /** \file
  * \brief cdiuputil. CD and IUP utilities for the IupControls
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 

@@ -2,7 +2,7 @@
  * \brief iupmatrix control
  * scrolling.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUPMAT_SCROLL_H 

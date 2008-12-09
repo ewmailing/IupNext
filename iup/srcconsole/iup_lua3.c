@@ -5,7 +5,7 @@
  * internal Lua code will be executed to provide a basic interface
  * for the user.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>

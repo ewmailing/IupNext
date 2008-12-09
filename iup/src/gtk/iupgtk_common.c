@@ -1,7 +1,7 @@
 /** \file
  * \brief GTK Base Functions
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>              

@@ -1,7 +1,7 @@
 /** \file
  * \brief IUP Core pre-defined dialogs.
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
  
 #ifndef __IUP_PREDIAL_H 

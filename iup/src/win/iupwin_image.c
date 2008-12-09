@@ -1,7 +1,7 @@
 /** \file
  * \brief Image Resource.
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <windows.h>

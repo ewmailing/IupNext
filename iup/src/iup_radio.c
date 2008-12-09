@@ -1,7 +1,7 @@
 /** \file
  * \brief Radio Control.
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>
@@ -157,18 +157,7 @@ static void iRadioComputeNaturalSizeMethod(Ihandle* ih)
 
 static void iRadioSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
 {
-  if (shrink)
-  {
-    /* if expand use the given size, else use the natural size */
-    ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)? w: ih->naturalwidth;
-    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? h: ih->naturalheight;
-  }
-  else
-  {
-    /* if expand use the given size (if greater than natural size), else use the natural size */
-    ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)? iupMAX(ih->naturalwidth, w): ih->naturalwidth;
-    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? iupMAX(ih->naturalheight, h) : ih->naturalheight;
-  }
+  iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
 
   if (ih->firstchild)
     iupClassObjectSetCurrentSize(ih->firstchild, ih->currentwidth, ih->currentheight, shrink);

@@ -1,7 +1,7 @@
 /** \file
  * \brief IUP Ihandle Class C Interface
  *
- * See Copyright Notice in iup.h
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdlib.h>

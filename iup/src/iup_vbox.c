@@ -1,7 +1,7 @@
 /** \file
  * \brief Vbox Control.
  *
- * See Copyright Notice in iup.ih
+ * See Copyright Notice in "iup.h"
  */
 
 #include <stdio.h>
@@ -116,7 +116,7 @@ static void iVboxComputeNaturalSizeMethod(Ihandle* ih)
     }
 
     /* reset to max natural width and/or height if NORMALIZESIZE is defined */
-    iupBoxNormalizeSize(ih, children_natural_maxwidth, children_natural_maxheight);
+    iupNormalizeSizeBoxChild(ih, children_natural_maxwidth, children_natural_maxheight);
 
     for (child = ih->firstchild; child; child = child->brother)
     {
@@ -182,18 +182,7 @@ static int iVBoxGetExpandChildren(Ihandle* ih)
 
 static void iVboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
 {
-  if (shrink)
-  {
-    /* if expand use the given size, else use the natural size */
-    ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)? w: ih->naturalwidth;
-    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? h: ih->naturalheight;
-  }
-  else
-  {
-    /* if expand use the given size (if greater than natural size), else use the natural size */
-    ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)? iupMAX(ih->naturalwidth, w): ih->naturalwidth;
-    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? iupMAX(ih->naturalheight, h) : ih->naturalheight;
-  }
+  iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
 
   if (ih->firstchild)
   {
