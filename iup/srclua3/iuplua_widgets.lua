@@ -667,6 +667,35 @@ iup.user = iupuser
 
 
 -- ###############
+IUPNORMALIZER = {parent = WIDGET}
+
+function IUPNORMALIZER:checkParams (obj)
+  local i = 1
+  while obj[i] do
+    if not type_widget (obj[i]) then
+      error("parameter " .. i .. " has wrong value or is not initialized")
+    end
+    i = i + 1
+  end
+end
+
+function IUPNORMALIZER:CreateIUPelement (obj)
+  local handle = iupCreateNormalizer ()
+  local i = 1
+  while obj[i] do
+    handle.addcontrol = obj[i]
+    i = i + 1
+  end
+  return handle
+end
+
+function iupnormalizer ()
+  return IUPNORMALIZER:Constructor ()
+end
+iup.normalizer = iupnormalizer
+
+
+-- ###############
 IUPFRAME = {parent = WIDGET, type = {type_widget}}
 
 function IUPFRAME:CreateIUPelement (obj)

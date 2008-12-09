@@ -327,6 +327,11 @@ static void CreateFill(void)
   lua_pushusertag(IupFill(), iuplua_tag);
 }
 
+static void CreateNormalizer(void)
+{
+  lua_pushusertag(IupNormalizer(NULL), iuplua_tag);
+}
+
 static void CreateButton(void)
 {
   lua_pushusertag(IupButton(luaL_opt_string(1, NULL), NULL), iuplua_tag);
@@ -560,6 +565,7 @@ int iupluawidgets_open(int tag)
     { "iupCreateRadio", CreateRadio },
     { "iupCreateMenu", CreateMenu },
     { "iupCreateProgressBar", CreateProgressBar },
+    { "iupCreateNormalizer", CreateNormalizer },
 
     { "iup_action_timer", (lua_CFunction)timer_action},
     { "iup_action_text", (lua_CFunction)text_action},

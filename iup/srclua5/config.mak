@@ -12,9 +12,9 @@ LDIR = ../lib/$(TEC_UNAME)
 LIBS = iup
 
 CTRLUA = button.lua canvas.lua dialog.lua colordlg.lua \
-       filedlg.lua fill.lua frame.lua hbox.lua \
+       filedlg.lua fill.lua frame.lua hbox.lua normalizer.lua \
        item.lua image.lua imagergb.lua imagergba.lua label.lua \
-       menu.lua multiline.lua list.lua separator.lua \
+       menu.lua multiline.lua list.lua separator.lua user.lua \
        submenu.lua text.lua toggle.lua vbox.lua zbox.lua timer.lua \
        sbox.lua spin.lua spinbox.lua cbox.lua messagedlg.lua \
        radio.lua val.lua tabs.lua fontdlg.lua progressbar.lua
