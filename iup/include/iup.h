@@ -152,8 +152,9 @@ Ihandle*  IupZbox       (Ihandle* child, ...);
 Ihandle*  IupZboxv      (Ihandle* *children);
 Ihandle*  IupHbox       (Ihandle* child,...);
 Ihandle*  IupHboxv      (Ihandle* *children);
-Ihandle*  IupNormalizer (Ihandle* child, ...);
-Ihandle*  IupNormalizerv(Ihandle* *children);
+
+Ihandle*  IupNormalizer (Ihandle* ih_first, ...);
+Ihandle*  IupNormalizerv(Ihandle* *ih_list);
 
 Ihandle*  IupCbox       (Ihandle* child, ...);
 Ihandle*  IupCboxv      (Ihandle* *children);

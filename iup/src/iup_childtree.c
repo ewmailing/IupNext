@@ -116,6 +116,9 @@ static void iChildInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
   Ihandle *c, 
           *c_prev = NULL;
 
+  if (!ref_child)
+    ref_child = parent->firstchild;
+
   /* Finds the reference child entry inside the parent's child list */
   for (c = parent->firstchild; c; c = c->brother)
   {
@@ -139,12 +142,10 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
 {
   Ihandle* top_parent = parent;
 
+  /* ref_child can be NULL */
+
   iupASSERT(iupObjectCheck(parent));
   if (!iupObjectCheck(parent))
-    return NULL;
-
-  iupASSERT(iupObjectCheck(ref_child));
-  if (!iupObjectCheck(ref_child))
     return NULL;
 
   iupASSERT(iupObjectCheck(child));

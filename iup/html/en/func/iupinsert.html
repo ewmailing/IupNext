@@ -21,7 +21,8 @@ Parameters/Return</h3>
 <pre>Ihandle* IupInsert(Ihandle*<strong> ih</strong>, Ihandle*<strong> ref_child</strong>, Ihandle*<strong> new_child</strong>); [in C]
 iup.Append(<strong>ih, ref_child, new_child</strong>: ihandle) -&gt; (<strong>parent</strong>: ihandle) [in Lua]</pre>
 <p><strong>ih</strong>: Identifier of a container like hbox, vbox, zbox and menu.<br>
-<strong>ref_child</strong>: Identifier of the element to be used as reference.<br>
+<strong>ref_child</strong>: Identifier of the element to be used as reference. 
+Can be NULL to insert as the first element.<br>
 <strong>new_child</strong>: Identifier of the element to be inserted before the 
 reference.</p>
 <p>This function returns 

@@ -272,7 +272,7 @@ int  iupDataEntry(int    maxlin,
     IupAppend(vb, hb);
   }
   lbl[i] = NULL;
-  IupSetAttribute(IupNormalizerv(lbl), "NORMALIZE", "HORIZONTAL");
+  IupInsert(vb, NULL, IupNormalizerv(lbl));
 
   ok = IupButton("OK", NULL);
   IupSetAttribute(ok, "PADDING", "20x0");

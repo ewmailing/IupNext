@@ -29,7 +29,7 @@ static int Reparent(lua_State *L)
 static int Insert(lua_State *L)
 {
   iuplua_pushihandle(L, IupInsert(iuplua_checkihandle(L,1),
-                                  iuplua_checkihandle(L,2),
+                                  iuplua_checkihandleornil(L,2),
                                   iuplua_checkihandle(L,3)));
   return 1;
 }

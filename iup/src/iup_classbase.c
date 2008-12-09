@@ -275,11 +275,11 @@ static int iBaseSetNormalizeGroupAttrib(Ihandle* ih, const char* value)
   Ihandle* ih_normalizer = IupGetHandle(value);
   if (!ih_normalizer)
   {
-    ih_normalizer = IupNormalizer();
+    ih_normalizer = IupNormalizer(NULL);
     IupSetHandle(value, ih_normalizer);
   }
 
-  IupAppend(ih_normalizer, ih);
+  IupSetAttribute(ih_normalizer, "ADDCONTROL_HANDLE", (char*)ih);
   return 1;
 }
 

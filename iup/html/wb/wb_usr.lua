@@ -845,6 +845,10 @@ wb_usr.tree =
               name= {nl= "IupRadio"},
               link= "elem/iupradio.html"
             },
+            {
+              name= {nl= "IupNormalizer"},
+              link= "elem/iupnormalizer.html"
+            },
             { link= "", name= {en= "" } },
             {
               name= {nl= "IupCbox"},
@@ -922,10 +926,6 @@ wb_usr.tree =
             {
               name= {nl= "IupUpdate"},
               link= "func/iupupdate.html"
-            },
-            {
-              name= {nl= "IupNormalizeSize"},
-              link= "func/iupnormalizesize.html"
             }
           }
         }

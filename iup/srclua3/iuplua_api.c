@@ -276,7 +276,10 @@ static void Popup(void)
 
 static void Insert(void)
 {
-  iuplua_pushihandle(IupInsert(iuplua_checkihandle(1), iuplua_checkihandle(2), iuplua_checkihandle(3)));
+  if (lua_isnil(lua_getparam(2)))
+    iuplua_pushihandle(IupInsert(iuplua_checkihandle(1), NULL, iuplua_checkihandle(3)));
+  else
+    iuplua_pushihandle(IupInsert(iuplua_checkihandle(1), iuplua_checkihandle(2), iuplua_checkihandle(3)));
 }
 
 static void Append(void)
