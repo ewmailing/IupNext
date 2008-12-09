@@ -78,9 +78,13 @@ char *iupStrGetMemoryCopy(const char* str);
  * \ingroup str */
 void iupStrLower(char* dstr, const char* sstr);
 
-/** Extract a RGB triple from the string.
+/** Extract a RGB triple from the string. Returns 0 or 1.
  * \ingroup str */
 int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned char *b);
+
+/** Extract a RGBA quad from the string, alpha is optional. Returns 0, 3 or 4.
+ * \ingroup str */
+int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a);
 
 /** Converts the string to an int. The string must contains only the integer value.
  * Returns a a non zero value if sucessfull.

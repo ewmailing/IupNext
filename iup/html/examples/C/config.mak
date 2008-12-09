@@ -48,7 +48,7 @@ DBG = Yes
 #SRC = val.c
 #SRC = vbox.c
 #SRC = zbox.c
-SRC = sample.c
+#SRC = sample.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
@@ -64,7 +64,7 @@ SRC = sample.c
 #USE_OPENGL = Yes
 #SRC = glcanvas.c
 
-#USE_IUPCONTROLS = Yes
+USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
 #SRC = cbox.c
 #SRC = cells_checkboard.c
@@ -74,7 +74,7 @@ SRC = sample.c
 #SRC = colorbrowser.c
 #SRC = gauge.c
 #SRC = getcolor.c
-#SRC = getparam.c
+SRC = getparam.c
 #SRC = matrix.c
 #SRC = mdi.c
 #SRC = sbox1.c

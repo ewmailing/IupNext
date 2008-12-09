@@ -102,7 +102,7 @@ iup.GetParamParam(<strong>dialog: </strong>ihandle, <b>param_index</b><strong>: 
 <h3><a name="Notes">Notes</a></h3>
 <p>The format string must have the following 
   format, notice the &quot;\n&quot; at the end</p>
-<p>&quot;<strong><em>text</em></strong>%<strong><em>x</em>[<em>extra</em>]</strong>\n&quot;, where:</p>
+<p>&quot;<strong><em>text</em></strong>%<strong><em>x</em>[<em>extra</em>]{tip}</strong>\n&quot;, where:</p>
 <p><strong><em>text</em></strong>
       is a descriptive text, to be placed to the 
       left of the entry field in a label.</p>
@@ -130,7 +130,9 @@ called], use &quot;float&quot; in C)<br>
 <strong>t</strong> = separator 
         (shows a horizontal line separator label, in this case text can be an empty string)<br>
 <strong>f</strong> = string (same as <strong>s</strong>, but also show a button 
-to open a file selection dialog box)</p>
+to open a file selection dialog box)<br>
+<strong>c</strong> = string (same as <strong>s</strong>, but also show a color button 
+to open a color selection dialog box)</p>
 <p>
 <strong><em>extra</em></strong> is one or 
       more additional options for the given type</p>
@@ -159,8 +161,13 @@ attribute internally. In this case we
 <strong>[dialogtype|filter|directory|nochangedir|nooverwriteprompt]</strong> are 
 the respective attribute values passed to the <a href="iupfiledlg.html">
 IupFileDlg</a> control when activated. All commas must exist, but you can let 
-empty values to use the default values.</p>
-        <p>The number of lines in the format string (&quot;\n&quot;s) will determine the number of required parameters. But separators 
+empty values to use the default values. No mask can be set.</p>
+        <p><strong>tip</strong> is a string that is displayed in a TIP for the 
+		main control of the parameter. (since 3.0)</p>
+<p>There is no extra parameters for the color string. The mask is automatically 
+set to capture 3 or 4 unsigned integers from 0 to 255 (R G B) or (R G B A) 
+(alpha is optional).</p>
+<p>The number of lines in the format string (&quot;\n&quot;s) will determine the number of required parameters. But separators 
   will not count as parameters.</p>
 <p>The dialog is resizable if it contains a string, a multiline string or a 
   number with a valuator. All the multiline strings will increase size equally in both directions.</p>
@@ -179,25 +186,27 @@ empty values to use the default values.</p>
   float preal2 = 0.5f;
   float pangle = 90;
   char pstring[100] = "string text";
+  char pcolor[100] = "255 0 128";
   int plist = 2;
   char pstring2[200] = "second text\nsecond line";
-  char file_name[500] = "test.jpg";
+  char pfile_name[500] = "test.jpg";
   
-  if (!IupGetParam("Title", NULL, 0,
-                   "Boolean: %b[No,Yes]\n"
-                   "Integer: %i\n"
-                   "Real 1: %r\n"
+  if (!IupGetParam("Title", param_action, 0,
+                   "Boolean: %b[No,Yes]{Boolean Tip}\n"
+                   "Integer: %i{Integer Tip}\n"
+                   "Real 1: %r{Real Tip}\n"
                    "Sep1 %t\n"
-                   "Integer: %i[0,255]\n"
-                   "Real 2: %r[-1.5,1.5,0.05]\n"
+                   "Integer: %i[0,255]{Integer Tip 2}\n"
+                   "Real 2: %r[-1.5,1.5]{Real Tip 2}\n"
                    "Sep2 %t\n"
-                   "Angle: %a[0,360]\n"
-                   "String: %s\n"
-                   "List: %l|item1|item2|item3|\n" 
-                   "File: %f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]\n"
+                   "Angle: %a[0,360]{Angle Tip}\n"
+                   "String: %s{String Tip}\n"
+                   "List: %l|item1|item2|item3|{List Tip}\n" 
+                   "File: %f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]{File Tip}\n"
+                   "Color: %c{Color Tip}\n"
                    "Sep3 %t\n"
-                   "Multiline: %m\n",
-                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &plist, file_name, pstring2, NULL))
+                   "Multiline: %m{Multiline Tip}\n",
+                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &plist, pfile_name, pcolor, pstring2, NULL))
     return IUP_DEFAULT;
 </pre>
 

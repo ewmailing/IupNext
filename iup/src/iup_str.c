@@ -228,6 +228,25 @@ char *iupStrGetMemoryCopy(const char* str)
     return NULL;
 }
 
+int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)
+{
+  unsigned int ri = 0, gi = 0, bi = 0, ai = 0, ret;
+  if (!str) return 0;
+  ret = sscanf(str, "%u %u %u %u", &ri, &gi, &bi, &ai);
+  if (ret < 3) return 0;
+  if (ri > 255 || gi > 255 || bi > 255 || ai > 255) return 0;
+  *r = (unsigned char)ri;
+  *g = (unsigned char)gi;
+  *b = (unsigned char)bi;
+  if (ret == 4)
+  {
+    *a = (unsigned char)ai;
+    return 4;
+  }
+  else
+    return 3;
+}
+
 int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned char *b)
 {
   unsigned int ri = 0, gi = 0, bi = 0;

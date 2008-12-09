@@ -618,12 +618,28 @@ static int motTextSetSpinValueAttrib(Ihandle* ih, const char* value)
     int pos;
     if (iupStrToInt(value, &pos))
     {
+      char* value = NULL;
+      int min, max;
       iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+      XtVaGetValues(ih->handle, XmNminimumValue, &min, 
+                                XmNmaximumValue, &max, NULL);
+      if (pos < min) pos = min;
+      if (pos > max) pos = max;
+      if (iupAttribGetStr(ih, "_IUPMOT_SPIN_NOAUTO"))
+        value = XmTextGetString(ih->handle);
+
       XtVaSetValues(ih->handle, XmNposition, pos, NULL);
+
+      if (value)
+      {
+        XmTextSetString(ih->handle, (char*)value);
+        XtFree(value);
+      }
       iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+      return 1;
     }
   }
-  return 1;
+  return 0;
 }
 
 static char* motTextGetSpinValueAttrib(Ihandle* ih)
@@ -645,8 +661,9 @@ static int motTextSetValueAttrib(Ihandle* ih, const char* value)
   if (!value) value = "";
   /* disable callbacks */
   iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
-  XmTextSetString(ih->handle, (char*)value);
-  motTextSetSpinValueAttrib(ih, value);
+//  if (!motTextSetSpinValueAttrib(ih, value))
+    motTextSetSpinValueAttrib(ih, value);
+    XmTextSetString(ih->handle, (char*)value);
   iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   return 0;
 }
@@ -764,7 +781,7 @@ static void motTextModifyVerifyCallback(Widget w, Ihandle *ih, XmTextVerifyPtr t
   {
     /* Spin is not automatically updated when you directly edit the text */
     Widget spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
-    if (spinbox && XmIsSpinBox(spinbox))
+    if (spinbox && XmIsSpinBox(spinbox) && !iupAttribGetStr(ih, "_IUPMOT_SPIN_NOAUTO"))
     {
       int pos;
       if (iupStrToInt(new_value, &pos))

@@ -42,6 +42,14 @@ static void winCanvasSetScrollInfo(HWND hWnd, int imin, int imax, int ipos, int 
   SetScrollInfo(hWnd, flag, &scrollinfo, TRUE);
 }
 
+static int winCanvasSetBgColorAttrib(Ihandle *ih, const char *value)
+{
+  (void)value;
+  /* Instead of iupwinRedrawNow this will redraw after the attribute is stored. */
+  InvalidateRect(ih->handle, NULL, TRUE);  /* erase background so BGCOLOR is used */ 
+  return 1;
+}
+
 static int winCanvasSetDXAttrib(Ihandle *ih, const char *value)
 {
   if (ih->data->sb & IUP_SB_HORIZ)
@@ -698,7 +706,7 @@ void iupdrvCanvasInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, "255 255 255", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winCanvasSetBgColorAttrib, "255 255 255", IUP_MAPPED, IUP_INHERIT);
 
   /* IupCanvas only */
   iupClassRegisterAttribute(ic, "DRAWSIZE", iupdrvBaseGetClientSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);

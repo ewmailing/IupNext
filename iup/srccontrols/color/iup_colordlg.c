@@ -646,7 +646,7 @@ static int iColorBrowserDlgSetAlphaAttrib(Ihandle* ih, const char* value)
     iColorBrowserDlgColorCnvRepaint(colordlg_data);
 
     if (!ih->handle)  /* do it only before map */
-      iColorBrowserDlgSetShowAlphaAttrib(ih, "YES");
+      IupSetAttribute(ih, "SHOWALPHA", "YES");
   }
  
   return 1;
@@ -663,15 +663,25 @@ static char* iColorBrowserDlgGetAlphaAttrib(Ihandle* ih)
 static int iColorBrowserDlgSetValueAttrib(Ihandle* ih, const char* value)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
-  if (!iupStrToRGB(value, &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue))
+  int ret = iupStrToRGBA(value, &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue, &colordlg_data->alpha);
+  if (!ret)
     return 0;
   
   colordlg_data->previous_color = cdEncodeColor(colordlg_data->red, colordlg_data->green, colordlg_data->blue);
   colordlg_data->previous_color = cdEncodeAlpha(colordlg_data->previous_color, colordlg_data->alpha);
 
+  if (ret == 4)
+  {
+    IupSetfAttribute(colordlg_data->alpha_txt, "VALUE", "%d", (int)colordlg_data->alpha);
+    IupSetfAttribute(colordlg_data->alpha_val, "VALUE", "%d", (int)colordlg_data->alpha);
+
+    if (!ih->handle)  /* do it only before map */
+      IupSetAttribute(ih, "SHOWALPHA", "YES");
+  }
+
   iColorBrowserDlgRGB_TXT_Update(colordlg_data);
   iColorBrowserDlgRGBChanged(colordlg_data);
- 
+
   return 0;
 }
 
@@ -679,7 +689,10 @@ static char* iColorBrowserDlgGetValueAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(100);
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
-  sprintf(buffer, "%d %d %d", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue);
+  if (iupStrBoolean(iupAttribGetStr(ih, "SHOWALPHA")))
+    sprintf(buffer, "%d %d %d %d", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue, (int)colordlg_data->alpha);
+  else
+    sprintf(buffer, "%d %d %d", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue);
   return buffer;
 }
 

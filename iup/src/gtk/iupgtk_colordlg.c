@@ -101,8 +101,8 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
   GtkColorSelection* colorsel;
   GdkColor color;
   char *value;
-  unsigned char r, g, b;
-  int response;
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+  int response, ret;
 
   iupAttribSetInt(ih, "_IUPDLG_X", x);
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
@@ -114,7 +114,7 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
   if (parent)
     gtk_window_set_transient_for((GtkWindow*)dialog, (GtkWindow*)parent);
 
-  iupStrToRGB(iupAttribGetStr(ih, "VALUE"), &r, &g, &b);
+  ret = iupStrToRGBA(iupAttribGetStr(ih, "VALUE"), &r, &g, &b, &a);
 
   colorsel = (GtkColorSelection*)dialog->colorsel;
   iupgdkColorSet(&color, r, g, b);
@@ -126,14 +126,16 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
     int alpha;
     if (iupStrToInt(value, &alpha))
     {
+      if (alpha<0) alpha=0;
+      if (alpha>255) alpha=255;
       gtk_color_selection_set_has_opacity_control(colorsel, TRUE);
       gtk_color_selection_set_current_alpha(colorsel, iupCOLOR8TO16(alpha));
     }
   }
-  else if (iupStrBoolean(iupAttribGetStr(ih, "SHOWALPHA")))
+  else if (iupStrBoolean(iupAttribGetStr(ih, "SHOWALPHA")) || ret == 4)
   {
     gtk_color_selection_set_has_opacity_control(colorsel, TRUE);
-    gtk_color_selection_set_current_alpha(colorsel, iupCOLOR8TO16(255));
+    gtk_color_selection_set_current_alpha(colorsel, iupCOLOR8TO16(a));
   }
   else
     gtk_color_selection_set_has_opacity_control(colorsel, FALSE);
@@ -175,14 +177,16 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
   {
     GdkColor color;
     gtk_color_selection_get_current_color(colorsel, &color);
-    iupAttribSetStrf(ih, "VALUE", "%d %d %d", (int)(color.red/257), (int)(color.green/257), (int)(color.blue/257));
     IupSetAttribute(ih, "STATUS", "1");
 
     if (gtk_color_selection_get_has_opacity_control(colorsel))
     {
-      int alpha = iupCOLOR16TO8(gtk_color_selection_get_current_alpha(colorsel));
-      iupAttribSetInt(ih, "ALPHA", alpha);
+      int alpha = gtk_color_selection_get_current_alpha(colorsel);
+      iupAttribSetInt(ih, "ALPHA", (int)iupCOLOR16TO8(alpha));
+      iupAttribSetStrf(ih, "VALUE", "%d %d %d %d", (int)iupCOLOR16TO8(color.red), (int)iupCOLOR16TO8(color.green), (int)iupCOLOR16TO8(color.blue), (int)iupCOLOR16TO8(alpha));
     }
+    else
+      iupAttribSetStrf(ih, "VALUE", "%d %d %d", (int)iupCOLOR16TO8(color.red), (int)iupCOLOR16TO8(color.green), (int)iupCOLOR16TO8(color.blue));
 
     if (gtk_color_selection_get_has_palette(colorsel))
       gtkColorDlgGetPalette(ih, colorsel);

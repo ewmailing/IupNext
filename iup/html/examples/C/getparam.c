@@ -43,12 +43,13 @@ int main(int argc, char **argv)
   float preal2 = 0.5f;
   float pangle = 90;
   char pstring[100] = "string text";
+  char pcolor[100] = "255 0 128";
   int plist = 2;
   char pstring2[200] = "second text\nsecond line";
-  char file_name[500] = "test.jpg";
+  char pfile_name[500] = "test.jpg";
   
   IupOpen(&argc, &argv);
-  IupControlsOpen();
+  IupControlsOpen();   /* so we can show the IupDial, but can be tested without it */
   IupSetLanguage("ENGLISH");
 
   if (!IupGetParam("Title", param_action, 0,
@@ -63,9 +64,10 @@ int main(int argc, char **argv)
                    "String: %s{String Tip}\n"
                    "List: %l|item1|item2|item3|{List Tip}\n" 
                    "File: %f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]{File Tip}\n"
+                   "Color: %c{Color Tip}\n"
                    "Sep3 %t\n"
                    "Multiline: %m{Multiline Tip}\n",
-                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &plist, file_name, pstring2, NULL))
+                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &plist, pfile_name, pcolor, pstring2, NULL))
     return IUP_DEFAULT;
   
   IupMessagef("IupGetParam",
@@ -78,10 +80,10 @@ int main(int argc, char **argv)
               "String: %s\n"
               "List Index: %d\n" 
               "FileName: %s\n"
+              "Color: %s\n"
               "Multiline: %s",
-              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, plist, file_name, pstring2);
+              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, plist, pfile_name, pcolor, pstring2);
 
-  IupControlsClose() ;
   IupClose();
 
   return 0;
