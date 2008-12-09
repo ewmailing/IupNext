@@ -250,7 +250,7 @@ static int motButtonMapMethod(Ihandle* ih)
   }
   else
   {
-    if (value)
+    if (value && !iupAttribGetStr(ih, "IMPRESSBORDER"))
       XtVaSetValues(ih->handle, XmNshadowThickness, 0, NULL);
     else
       XtVaSetValues(ih->handle, XmNshadowThickness, 2, NULL);

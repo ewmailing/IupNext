@@ -362,7 +362,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
   }
   else
   {
-    if (impress)
+    if (impress && !iupAttribGetStr(ih, "IMPRESSBORDER"))
       gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NONE);
     else
       gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NORMAL);
