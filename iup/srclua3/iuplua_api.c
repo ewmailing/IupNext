@@ -308,13 +308,6 @@ static void TextConvertXYToChar(void)
   lua_pushnumber(pos);
 }
 
-static void NormalizeSize(void)
-{
-  const char* value = luaL_check_string(1);
-  Ihandle ** ih_list = iuplua_checkihandle_array(2);
-  IupNormalizeSizev(value, ih_list);
-}
-
 static void GetChildPos(void)
 {
   lua_pushnumber(IupGetChildPos(iuplua_checkihandle(1), iuplua_checkihandle(2)));
@@ -620,7 +613,6 @@ int iupluaapi_open(void)
     { "IupScanf", iupluaScanf },
     { "IupTextConvertXYToChar", TextConvertXYToChar},
     { "IupListConvertXYToItem", ListConvertXYToItem},
-    { "IupNormalizeSize", NormalizeSize},
     { "IupPreviousField", PreviousField },
     { "IupNextField", NextField }
   };

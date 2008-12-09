@@ -118,8 +118,8 @@ IupGetParam
 IupGetParamv
 IupGetParamType
 IupGetParamCount
-IupNormalizeSize
-IupNormalizeSizev
+IupNormalizer
+IupNormalizerv
 IupGetClassType
 IupGetClassName
 

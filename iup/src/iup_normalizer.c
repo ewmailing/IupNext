@@ -140,6 +140,3 @@ Ihandle *IupNormalizer(Ihandle* child, ...)
 
   return ih;
 }
-
-void IupNormalizeSize (const char* value, Ihandle* ih_first, ...);
-void IupNormalizeSizev(const char* value, Ihandle** ih_list);

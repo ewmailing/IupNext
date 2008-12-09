@@ -574,14 +574,6 @@ static int TextConvertXYToChar(lua_State *L)
   return 3;
 }
 
-static int NormalizeSize(lua_State *L)
-{
-  const char* value = luaL_checkstring(L,1);
-  Ihandle ** ih_list = iuplua_checkihandle_array(L, 2);
-  IupNormalizeSizev(value, ih_list);
-  return 0;
-}
-
 static int SetAttributes(lua_State *L)
 {
   Ihandle * ih = iuplua_checkihandle(L,1);
@@ -789,7 +781,6 @@ int iupluaapi_open(lua_State * L)
     {"isSysXkey", cf_isSysXkey},
     {"TextConvertXYToChar", TextConvertXYToChar},
     {"ListConvertXYToItem", ListConvertXYToItem},
-    {"NormalizeSize", NormalizeSize},
     {NULL, NULL},
   };
 
