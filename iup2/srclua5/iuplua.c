@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua.c,v 1.5 2008-11-23 19:32:50 scuri Exp $
+* $Id: iuplua.c,v 1.6 2008-12-11 19:02:57 scuri Exp $
 */
 
 #include <stdio.h>
@@ -755,7 +755,7 @@ static void setinfo (lua_State *L)
   lua_settable (L, -3);
 
   lua_pushliteral (L, "_VERSION");
-  lua_pushliteral (L, IUP_VERSION);
+  lua_pushstring (L, IupVersion());
   lua_settable (L, -3);
 
   lua_pushliteral (L, "_VERSION_DATE");
@@ -763,7 +763,7 @@ static void setinfo (lua_State *L)
   lua_settable (L, -3);
 
   lua_pushliteral (L, "_VERSION_NUMBER");
-  lua_pushinteger (L, IUP_VERSION_NUMBER);
+  lua_pushinteger (L, IupVersionNumber());
   lua_settable (L, -3);
 }
 

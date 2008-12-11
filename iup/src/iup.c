@@ -58,21 +58,21 @@
 #include "iup.h"
 
 /* This appears only here to avoid changing the iup.h header fo bug fixes */
-#define IUP_VERSION_FIX 0
-#define IUP_VERSION_FIX_STR ".0"
+#define IUP_VERSION_FIX ""
+#define IUP_VERSION_FIX_NUMBER 0
 
 const char iup_ident[] = 
-  "$IUP: " IUP_VERSION IUP_VERSION_FIX_STR " " IUP_COPYRIGHT " $\n"
+  "$IUP: " IUP_VERSION IUP_VERSION_FIX " " IUP_COPYRIGHT " $\n"
   "$URL: www.tecgraf.puc-rio.br/iup $\n";
 
 /* Using this, if you look for the string TECVER, you will find also the library version. */
-const char *iup_tecver = "TECVERID.str:Iup:LIB:" IUP_VERSION IUP_VERSION_FIX_STR;
+const char *iup_tecver = "TECVERID.str:Iup:LIB:" IUP_VERSION IUP_VERSION_FIX;
 
 char* IupVersion(void)
 {
   (void)iup_tecver;
   (void)iup_ident;
-  return IUP_VERSION IUP_VERSION_FIX_STR;
+  return IUP_VERSION IUP_VERSION_FIX;
 }
 
 char* IupVersionDate(void)
@@ -82,5 +82,5 @@ char* IupVersionDate(void)
  
 int IupVersionNumber(void)
 {
-  return IUP_VERSION_NUMBER+IUP_VERSION_FIX;
+  return IUP_VERSION_NUMBER+IUP_VERSION_FIX_NUMBER;
 }

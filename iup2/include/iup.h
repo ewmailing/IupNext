@@ -21,7 +21,7 @@ extern "C" {
 #define IUP_NAME "IUP - Portable User Interface"
 #define IUP_COPYRIGHT	"Copyright (C) 1994-2008 Tecgraf, PUC-Rio."
 #define IUP_DESCRIPTION	"Portable toolkit for building graphical user interfaces."
-#define IUP_VERSION "2.7.0"
+#define IUP_VERSION "2.7"
 #define IUP_VERSION_DATE "2008/10/14"
 #define IUP_VERSION_NUMBER 207000
 

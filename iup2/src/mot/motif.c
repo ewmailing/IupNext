@@ -2,7 +2,7 @@
  * \brief Motif Driver Core and Initialization
  *
  * See Copyright Notice in iup.h
- * $Id: motif.c,v 1.3 2008-10-30 18:10:22 scuri Exp $
+ * $Id: motif.c,v 1.4 2008-12-11 19:02:57 scuri Exp $
  */
 
 #if defined(__STDC__) && defined(ULTRIX)
@@ -573,7 +573,7 @@ we recommend using the following fallback resources when initializing the X tool
 "*dragReceiverProtocolStyle: DRAG_NONE" */
 static int motSetShellWidget(Widget w)
 {
-  IupSetGlobal( "VERSION",  IUP_VERSION );
+  IupSetGlobal( "VERSION",  IupVersion());
   IupSetGlobal( "COPYRIGHT",  IUP_COPYRIGHT );
   IupSetGlobal( "DRIVER",   "Motif" );
   {
@@ -603,7 +603,7 @@ static int motSetShellWidget(Widget w)
     char* env = getenv("IUP_QUIET");
     if (first && env && strcmp(env, "NO")==0)
     {
-      printf("IUP "IUP_VERSION" "IUP_COPYRIGHT"\n");
+      printf("IUP %s %s\n", IupVersion(), IUP_COPYRIGHT);
       first = 0;
     }
   }

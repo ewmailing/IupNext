@@ -2,7 +2,7 @@
  * \brief Windows Driver version functions
  *
  * See Copyright Notice in iup.h
- * $Id: winver.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
+ * $Id: winver.c,v 1.2 2008-12-11 19:02:57 scuri Exp $
  */
 
 #include <stdio.h>
@@ -26,7 +26,7 @@ void iupwinVersion(void)
    Ihandle* dial, *ok;
 
    dial = IupDialog(IupVbox(IupFrame(IupVbox(
-                        IupLabel(IUP_VERSION),
+                        IupLabel(IupVersion()),
                         IupLabel(IUP_VERSION_DATE),
                         IupLabel(IUP_COPYRIGHT),
                         NULL)), 

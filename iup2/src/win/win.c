@@ -2,7 +2,7 @@
  * \brief Windows Driver Core
  *
  * See Copyright Notice in iup.h
- * $Id: win.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
+ * $Id: win.c,v 1.2 2008-12-11 19:02:57 scuri Exp $
  */
 
 #include <stdio.h>              /* NULL */
@@ -901,7 +901,7 @@ int IupOpen (int *argc, char ***argv)
     IupSetLanguage(IUP_PORTUGUESE);
 
   IupSetGlobal("HINSTANCE", (char*) iupwin_hinstance);
-  IupSetGlobal("VERSION", IUP_VERSION);
+  IupSetGlobal("VERSION", IupVersion());
   IupSetGlobal("COPYRIGHT",  IUP_COPYRIGHT );
   IupSetGlobal(IUP_DRIVER,  "Win32" );
   IupStoreGlobal( IUP_SYSTEM, iupwinGetSystemName());
@@ -972,7 +972,7 @@ int IupOpen (int *argc, char ***argv)
     char* env = getenv("IUP_QUIET");
     if (first && env && strcmp(env, "NO")==0)
     {
-      printf("IUP "IUP_VERSION" "IUP_COPYRIGHT"\n");
+      printf("IUP %s %s\n", IupVersion(), IUP_COPYRIGHT);
       first = 0;
     }
   }
