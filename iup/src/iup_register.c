@@ -71,6 +71,7 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupVboxGetClass());
   iupRegisterClass(iupZboxGetClass());
   iupRegisterClass(iupCboxGetClass());
+  iupRegisterClass(iupSboxGetClass());
   iupRegisterClass(iupNormalizerGetClass());
 
   iupRegisterClass(iupMenuGetClass());

@@ -754,7 +754,7 @@ static void setinfo (lua_State *L)
   lua_settable (L, -3);
 
   lua_pushliteral (L, "_VERSION");
-  lua_pushliteral (L, IUP_VERSION);
+  lua_pushstring (L, IupVersion());
   lua_settable (L, -3);
 
   lua_pushliteral (L, "_VERSION_DATE");
@@ -762,7 +762,7 @@ static void setinfo (lua_State *L)
   lua_settable (L, -3);
 
   lua_pushliteral (L, "_VERSION_NUMBER");
-  lua_pushinteger (L, IUP_VERSION_NUMBER);
+  lua_pushinteger (L, IupVersionNumber());
   lua_settable (L, -3);
 }
 

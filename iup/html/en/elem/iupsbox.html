@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -19,34 +19,88 @@
 </div>
 
 <h2>IupSbox</h2>
-<p>Creates a split panel control. Allows the provided control to be enclosed in a box that allows resizing. 
-  The IupSbox inherits from the IupCanvas, so all the canvas attributes and callbacks are valid. The IupSbox contains a 
-  IupZbox where all the children are inserted, and contains another IupCanvas to implement the split handler.</p>
+<p>Creates an user expander container. Allows the provided control to be 
+enclosed in a box that allows resizing.</p>
+
+  <p>
+  It does not have a native representation but it uses a <strong>IupCanvas</strong> to implement 
+	the bar handler.</p>
+
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupSbox(Ihandle*<strong> elem</strong>); [in C]
-iup.sbox{<strong>elem</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
-sbox(<strong>elem</strong>) [in LED]</pre>
-<p>elem:
-  This function receives as parameter the 
-  element that will be enclosed in a 
-  Sbox. </p>
-<p>This function returns the created Sboxs identifier, or NULL if an error occurs.</p>
+<pre>Ihandle* IupSbox(Ihandle*<strong> child</strong>); [in C]
+iup.sbox{<strong>child</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+sbox(<strong>child</strong>) [in LED]</pre>
+  <p><strong>child</strong>: Identifier of an interface element which will receive the frame. It can be NULL.</p>
+  <p>
+  <u>Returns:</u> the identifier of the 
+  created element, or NULL if an error occurs.</p>
+
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p><strong>DIRECTION</strong> (creation only):
-  Indicates the direction of the resize. Possible values are:</p>
-<p class="info">&quot;NORTH&quot;, &quot;SOUTH&quot;, &quot;EAST&quot;, &quot;WEST&quot;. Default: &quot;EAST&quot;.</p>
 <p><strong>COLOR</strong>: Changes the color of the
-  Sboxs thumb. The value should be given in &quot;R G B&quot; color style.</p>
+  bar handler. The value should be given in &quot;R G B&quot; color style. 
+Default: &quot;192 192 192&quot;.</p>
+
+
+<p><strong>DIRECTION</strong> (creation only): Indicates the direction of the 
+resize and the position of the bar handler. Possible values are &quot;NORTH&quot;, &quot;SOUTH&quot; 
+(vertical direction), &quot;EAST&quot; or &quot;WEST&quot; (horizontal 
+direction). Default: &quot;EAST&quot;.</p>
+<p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>):
+  It will expand automatically only in the direction oposite to the handler.&nbsp;</p>
+
+  <p><b>WID</b> (read-only): returns -1 if mapped.</p>
+
+  <blockquote>
+    <hr>
+</blockquote>
+
+  <p>
+<a href="../attrib/iup_font.html">FONT</a>,
+    <a href="../attrib/iup_size.html">SIZE</a>,
+<a href="../attrib/iup_rastersize.html">RASTERSIZE</a>,
+<a href="../attrib/iup_clientsize.html">CLIENTSIZE</a>, 
+	<a href="../attrib/iup_position.html">POSITION</a>: 
+also accepted.</p>
+
+<h3><a name="Callbacks">Callbacks</a></h3>
+
+<p> 
+<a href="../call/iup_map_cb.html">MAP_CB</a>, 
+<a href="../call/iup_unmap_cb.html">UNMAP_CB</a>:  common callbacks are 
+supported.</p>
+
 <h3>Notes</h3>
 <p>The controls that you want to be resized must have the EXPAND=YES attribute set.</p>
+<p>The <strong>IupCanvas</strong> bar handler is always the first child of the 
+sbox. It can be obtained using <strong>IupGetChild</strong> or <strong>
+IupGetNextChild</strong>.</p>
+<p><strong>IupSbox</strong> can be resized above the maximum size so some controls go to outside the dialog area 
+  at right or bottom. In fact this is part of the dynamic layout default reposition of controls inside the dialog. See 
+  the <strong>IupRefresh</strong> function. The IUP layout does not have a maximum limit only a minimum.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
-<p align="center"><img border="0" src="iupsbox.gif" width="463" height="383"><br>
-<b>Example 2 image</b></p>
-<p align="center">&nbsp;</p>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="6" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
+    <tr>
+      <td><img border="0" src="images/iupsbox1.png"><br>
+		Natural Size</td>
+      <td><img border="0" src="images/iupsbox2.png"><br>
+		After Expanding the Sbox</td>
+    </tr>
+    <tr>
+      <td><img border="0" src="images/iupsbox3.png"><br>
+		Expanding the Dialog</td>
+      <td><img border="0" src="images/iupsbox4.png"><br>
+		After Expanding the Sbox</td>
+    </tr>
+  </table>
+  </center>
+</div>
 
 </body>
 

@@ -14,15 +14,21 @@
 Parameters/Return</h3>
 <pre>char* IupVersion(void); [in C]
 iup.Version() -&gt; (<strong>version</strong>: string) [in Lua]</pre>
+<pre>int IupVersionNumber(void); [in C]
+iup.VersionNumber() -&gt; (<strong>version</strong>: number) [in Lua]</pre>
+  <p>
+  <u>Returns:</u> the version number including the bug fix. The defines only 
+	includes the major and minor numbers. For example: &quot;2.7.1&quot;.</p>
+
 
 <h3>Definitions</h3>
 <pre class="function">[in C]
 <strong>IUP_NAME</strong>            "IUP - Portable User Interface"
 <strong>IUP_COPYRIGHT</strong>       "Copyright (C) 1994-2007 Tecgraf/PUC-Rio and PETROBRAS S/A"
 <strong>IUP_DESCRIPTION</strong>     "Portable toolkit for building graphical user interfaces."
-<strong>IUP_VERSION</strong>         "2.6.0"
-<strong>IUP_VERSION_DATE</strong>    "2007/05/10"
-<strong>IUP_VERSION_NUMBER</strong>  206000
+<strong>IUP_VERSION</strong>         "2.7"
+<strong>IUP_VERSION_DATE</strong>    "2008/10/14"
+<strong>IUP_VERSION_NUMBER</strong>  207000
 
 [in Lua]
 iup._NAME

@@ -11,7 +11,7 @@ void print_version(void)
 {
   char* sysver;
   printf("IUP System Info:\n");
-  printf("  Version: %s\n", IUP_VERSION);
+  printf("  Version: %s\n", IupVersion());
   printf("  Copyright: %s\n", IUP_COPYRIGHT);
   printf("  Driver: %s\n", IupGetGlobal("DRIVER"));
   printf("  System: %s\n", IupGetGlobal("SYSTEM"));

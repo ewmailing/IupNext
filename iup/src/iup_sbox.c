@@ -34,7 +34,6 @@ struct _IcontrolData
   int start_w, start_h;
 
   int direction;     /* one of the types: ISBOX_NORTH, ISBOX_SOUTH, ISBOX_WEST, ISBOX_EAST */
-  char* oldcursor;
 };
 
 
@@ -58,13 +57,6 @@ static void iSboxSaveDimension(Ihandle* ih, int w, int h)
 {
   ih->data->w = w;
   ih->data->h = h;
-}
-
-static void iSboxGetDecorSize(Ihandle* ih, int *w, int *h)
-{
-  /* size of the area available for the controls inside the sbox */
-  *w -= iSboxGetXborder(ih);
-  *h -= iSboxGetYborder(ih);
 }
 
 static void iSboxGetDecorOffset(Ihandle* ih, int *x, int *y)
@@ -104,7 +96,7 @@ static void iSboxShakeControls(Ihandle* ih)
 
   iSboxGetFinalSize(ih, ih->data->direction, &new_w, &new_h);
 
-  if(ih->data->direction == ISBOX_WEST || ih->data->direction == ISBOX_EAST)
+  if (ih->data->direction == ISBOX_WEST || ih->data->direction == ISBOX_EAST)
   {
     if (new_w != ih->data->w)
     {
@@ -114,7 +106,7 @@ static void iSboxShakeControls(Ihandle* ih)
         iSboxSaveDimension(ih, new_w, ih->naturalwidth);
     }
   }
-  else if(ih->data->direction == ISBOX_SOUTH || ih->data->direction == ISBOX_NORTH)
+  else if (ih->data->direction == ISBOX_SOUTH || ih->data->direction == ISBOX_NORTH)
   {
     if(new_h != ih->data->h)
     {
@@ -124,52 +116,22 @@ static void iSboxShakeControls(Ihandle* ih)
         iSboxSaveDimension(ih, ih->naturalheight, new_h);
     }
   }
+
   IupRefresh(ih);
 }
+
 
 /*****************************************************************************\
 |* Callbacks of canvas bar                                                   *|
 \*****************************************************************************/
+
+
 static int iSboxMotion_CB(Ihandle* bar, int x, int y, char *r)
 {
   Ihandle* ih = bar->parent;
 
   if (ih->data->isholding)
-  {
     iSboxShakeControls(ih);
-  }
-  else if(ih->data->direction == ISBOX_EAST)
-  {
-    if (!ih->data->oldcursor)
-      ih->data->oldcursor = IupGetAttribute(bar, "CURSOR");
-    IupSetAttribute(bar, "CURSOR", "RESIZE_E");
-  }
-  else if(ih->data->direction == ISBOX_WEST)
-  {
-    if (!ih->data->oldcursor)
-      ih->data->oldcursor = IupGetAttribute(bar, "CURSOR");
-    IupSetAttribute(bar, "CURSOR", "RESIZE_W");
-  }
-  else if(ih->data->direction == ISBOX_NORTH)
-  {
-    if (!ih->data->oldcursor)
-      ih->data->oldcursor = IupGetAttribute(bar, "CURSOR");
-    IupSetAttribute(bar, "CURSOR", "RESIZE_N");
-  }
-  else if(ih->data->direction == ISBOX_SOUTH)
-  {
-    if (!ih->data->oldcursor)
-      ih->data->oldcursor = IupGetAttribute(bar, "CURSOR");
-    IupSetAttribute(bar, "CURSOR", "RESIZE_S");
-  }
-  else
-  {
-    if(ih->data->oldcursor)
-    {
-      IupSetAttribute(bar, "CURSOR", ih->data->oldcursor);
-      ih->data->oldcursor = NULL;
-    }
-  }
 
   (void)x;
   (void)y;
@@ -187,6 +149,7 @@ static int iSboxButton_CB(Ihandle* bar, int button, int pressed, int x, int y, c
   if (!ih->data->isholding && pressed)
   {
     ih->data->isholding = 1;
+
     /* Save the cursor position */
     iupStrToIntInt(IupGetGlobal("CURSORPOS"), &ih->data->start_x, &ih->data->start_y, 'x');
 
@@ -216,9 +179,26 @@ static int iSboxFocus_CB(Ihandle* bar, int focus)
   return IUP_DEFAULT;
 }
 
+
 /*****************************************************************************\
 |* Attributes                                                                *|
 \*****************************************************************************/
+
+
+static char* iSboxGetClientSizeAttrib(Ihandle* ih)
+{
+  int width, height;
+  char* str = iupStrGetMemory(20);
+  width = ih->currentwidth;
+  height = ih->currentheight;
+  width -= iSboxGetXborder(ih);
+  height -= iSboxGetYborder(ih);
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+  sprintf(str, "%dx%d", width, height);
+  return str;
+}
+
 static int iSboxSetColorAttrib(Ihandle* ih, const char* value)
 {
   IupSetAttribute(ih->firstchild, "BGCOLOR", value);
@@ -239,6 +219,11 @@ static int iSboxSetDirectionAttrib(Ihandle* ih, const char* value)
   else  /* Default = EAST */
     ih->data->direction = ISBOX_EAST;
 
+  if (ih->data->direction == ISBOX_EAST || ih->data->direction == ISBOX_WEST)
+    IupSetAttribute(ih->firstchild, "CURSOR", "RESIZE_WE");
+  else
+    IupSetAttribute(ih->firstchild, "CURSOR", "RESIZE_NS");
+
   return 0;  /* do not store value in hash table */
 }
 
@@ -252,6 +237,12 @@ static void iSboxComputeNaturalSizeMethod(Ihandle* ih)
 {
   iupBaseContainerUpdateExpand(ih);
 
+  /* only expand in the secondary direction */
+  if (ih->data->direction == ISBOX_EAST || ih->data->direction == ISBOX_WEST)
+      ih->expand &= ~IUP_EXPAND_WIDTH;
+  else 
+      ih->expand &= ~IUP_EXPAND_HEIGHT;
+
   /* always initialize the natural size using the user size */
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
@@ -264,32 +255,28 @@ static void iSboxComputeNaturalSizeMethod(Ihandle* ih)
     iupClassObjectComputeNaturalSize(child);
 
     ih->expand &= child->expand; /* compose but only expand where the box can expand */
-
     ih->naturalwidth  = iupMAX(ih->naturalwidth,  child->naturalwidth  + iSboxGetXborder(ih));
     ih->naturalheight = iupMAX(ih->naturalheight, child->naturalheight + iSboxGetYborder(ih));
+  }
 
-    ih->firstchild->naturalwidth  = ISBOX_THICK;
-    ih->firstchild->naturalheight = ISBOX_THICK;
 
-    /* update bar */
-    if (ih->data->direction == ISBOX_EAST || ih->data->direction == ISBOX_WEST)
-    {
-      ih->data->w = iupMAX(ih->naturalwidth, ih->data->w);
-      ih->data->h = ih->naturalheight;
-      ih->firstchild->naturalwidth  = ISBOX_THICK;
-      ih->firstchild->naturalheight = ih->data->h;
-    }
-    else  /* ISBOX_NORTH || ISBOX_SOUTH */
-    {
-      ih->data->w = ih->naturalwidth;
-      ih->data->h = iupMAX(ih->naturalheight, ih->data->h);
-      ih->firstchild->naturalwidth  = ih->data->w;
-      ih->firstchild->naturalheight = ISBOX_THICK;
-    }
+  /* update bar */
+  if (ih->data->direction == ISBOX_EAST || ih->data->direction == ISBOX_WEST)
+  {
+    ih->data->w = iupMAX(ih->naturalwidth, ih->data->w);
+    ih->data->h = ih->naturalheight;
+  }
+  else  /* ISBOX_NORTH || ISBOX_SOUTH */
+  {
+    ih->data->w = ih->naturalwidth;
+    ih->data->h = iupMAX(ih->naturalheight, ih->data->h);
+  }
 
+  if (ih->firstchild->brother)
+  {
+    Ihandle* child = ih->firstchild->brother;
     child->naturalwidth  = ih->data->w - iSboxGetXborder(ih);
     child->naturalheight = ih->data->h - iSboxGetYborder(ih);
-    
   }
 
   ih->naturalwidth  = ih->data->w;
@@ -298,22 +285,10 @@ static void iSboxComputeNaturalSizeMethod(Ihandle* ih)
 
 static void iSboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
 {
-  /* Overriding, I only take orders from user */
-  if (ih->data->direction == ISBOX_EAST || ih->data->direction == ISBOX_WEST)
-    w = ih->data->w; 
-  else
-    h = ih->data->h; 
-
   iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
 
-  if (ih->firstchild->brother)
-  {
-    iSboxGetDecorSize(ih, &w, &h);
-    iupClassObjectSetCurrentSize(ih->firstchild->brother, w, h, shrink);
-  }
-
-  /* update bar */
-  if((ih->data->direction == ISBOX_NORTH || ih->data->direction == ISBOX_SOUTH))
+  /* bar */
+  if ((ih->data->direction == ISBOX_NORTH || ih->data->direction == ISBOX_SOUTH))
   {
     ih->firstchild->currentwidth  = w;
     ih->firstchild->currentheight = ISBOX_THICK;
@@ -323,6 +298,17 @@ static void iSboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
     ih->firstchild->currentwidth  = ISBOX_THICK;
     ih->firstchild->currentheight = h;
   }
+
+  /* child */
+  if (ih->firstchild->brother)
+  {
+    w -= iSboxGetXborder(ih);
+    h -= iSboxGetYborder(ih);
+    if (w < 0) w = 0;
+    if (h < 0) h = 0;
+
+    iupClassObjectSetCurrentSize(ih->firstchild->brother, w, h, shrink);
+  }
 }
 
 static void iSboxSetPositionMethod(Ihandle* ih, int x, int y)
@@ -331,13 +317,15 @@ static void iSboxSetPositionMethod(Ihandle* ih, int x, int y)
 
   iupBaseSetPositionMethod(ih, x, y);
 
-  if(ih->data->direction == ISBOX_EAST)
+  /* bar */
+  if (ih->data->direction == ISBOX_EAST)
     posx = ih->data->w - ISBOX_THICK;
-  if(ih->data->direction == ISBOX_SOUTH)
+  if (ih->data->direction == ISBOX_SOUTH)
     posy = ih->data->h - ISBOX_THICK;
 
   iupClassObjectSetPosition(ih->firstchild, x+posx, y+posy);
 
+  /* child */
   if (ih->firstchild->brother)
   {  
     iSboxGetDecorOffset(ih, &x, &y);
@@ -366,7 +354,7 @@ static int iSboxCreateMethod(Ihandle* ih, void** params)
 
   IupSetAttribute(bar, "BORDER", "YES");
   IupSetAttribute(bar, "EXPAND", "NO");
-  IupSetAttribute(bar, "BGCOLOR", "200 200 200");
+  IupSetAttribute(bar, "BGCOLOR", "192 192 192");
 
   /* Setting callbacks */
   IupSetCallback(bar, "BUTTON_CB", (Icallback) iSboxButton_CB);
@@ -405,11 +393,11 @@ Iclass* iupSboxGetClass(void)
   iupBaseRegisterCommonAttrib(ic);
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetRasterSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iSboxGetClientSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
   /* IupSbox only */
-  iupClassRegisterAttribute(ic, "COLOR",     NULL, iSboxSetColorAttrib,     NULL,   IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COLOR",     NULL, iSboxSetColorAttrib,     "192 192 192",   IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DIRECTION", NULL, iSboxSetDirectionAttrib, "EAST", IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
   return ic;

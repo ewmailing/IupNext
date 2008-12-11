@@ -53,6 +53,7 @@ int main(int argc, char **argv)
   sbox3 = IupSbox(lb);
   IupSetAttribute(sbox3, "DIRECTION", "NORTH");
   dg = IupDialog(IupVbox(vbox, sbox3, NULL));
+  IupSetAttribute(dg, "TITLE", "IupSbox Example");
 
   IupShow(dg);
   IupMainLoop();

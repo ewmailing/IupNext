@@ -43,6 +43,7 @@ Iclass* iupHboxGetClass(void);
 Iclass* iupVboxGetClass(void);
 Iclass* iupZboxGetClass(void);
 Iclass* iupCboxGetClass(void);
+Iclass* iupSboxGetClass(void);
 Iclass* iupNormalizerGetClass(void);
 
 Iclass* iupTimerGetClass(void);

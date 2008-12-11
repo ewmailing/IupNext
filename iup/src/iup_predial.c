@@ -461,7 +461,7 @@ void iupVersionDlg(void)
   Ihandle* dlg;
 
   dlg = IupDialog(IupVbox(IupFrame(IupVbox(
-                      IupLabel(IUP_VERSION),
+                      IupLabel(IupVersion()),
                       IupLabel(IUP_VERSION_DATE),
                       IupLabel(IUP_COPYRIGHT),
                       NULL)), 

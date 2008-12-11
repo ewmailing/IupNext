@@ -270,7 +270,7 @@ int iupBaseGetScrollbar(Ihandle* ih)
   return sb;
 }
 
-static int iBaseSetNormalizeGroupAttrib(Ihandle* ih, const char* value)
+static int iBaseSetNormalizerGroupAttrib(Ihandle* ih, const char* value)
 {
   Ihandle* ih_normalizer = IupGetHandle(value);
   if (!ih_normalizer)
@@ -414,7 +414,7 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FLOATING", iBaseGetFloatingAttrib, iBaseSetFloatingAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iBaseGetExpandAttrib, iBaseSetExpandAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NORMALIZEGROUP", NULL, iBaseSetNormalizeGroupAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NORMALIZERGROUP", NULL, iBaseSetNormalizerGroupAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
 
   /* make sure everyone has the correct default value */
   iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_INHERIT);

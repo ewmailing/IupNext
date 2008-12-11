@@ -56,7 +56,7 @@ int IupOpen(int *argc, char ***argv)
   iupImageStockInit();
 
   IupSetLanguage("ENGLISH");
-  IupSetGlobal("VERSION", IUP_VERSION);
+  IupSetGlobal("VERSION", IupVersion());
   IupSetGlobal("COPYRIGHT",  IUP_COPYRIGHT);
 
   if (iupdrvOpen(argc, argv) == IUP_NOERROR)
@@ -75,7 +75,7 @@ int IupOpen(int *argc, char ***argv)
 
     value = getenv("IUP_QUIET");
     if (value && !iupStrBoolean(value)) /* if not defined do NOT print */
-      printf("IUP "IUP_VERSION" "IUP_COPYRIGHT"\n");
+      printf("IUP %s %s\n", IupVersion(), IUP_COPYRIGHT);
 
     value = getenv("IUP_VERSION");
     if (iupStrBoolean(value))

@@ -47,6 +47,10 @@ normalizer(<strong>ih_first</strong>, ...) [in LED]</pre>
 <p><strong>NORMALIZE</strong> (<font SIZE="3">non inheritable</font>): normalization direction. Can be HORIZONTAL, VERTICAL 
 or BOTH. These are the same values of the NORMALIZESIZE attribute. Default: 
 HORIZONTAL. </p>
+<p><strong>NORMALIZERGROUP</strong> (<font SIZE="3">non inheritable</font>)
+	<strong>(for contained controls use)</strong>: name of a normalizer to 
+automatically add the control. If a normalizer with that name does not exists 
+then one is created.</p>
 <p><b>ADDCONTROL</b> (<font SIZE="3">non inheritable</font>): Adds a control to 
 the normalizer. The value passed must be the name of an element. Use <a href="../func/iupsethandle.html">IupSetHandle</a> 
 or <a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
