@@ -274,6 +274,7 @@ iupClassNew
 iupClassCallbackGetFormat
 iupChildTreeGetNativeParentHandle
 iupChildTreeGetNativeParent
+iupChildTreeAppend
 iupCanvasGetClass
 iupCallKillFocusCb
 iupCallGetFocusCb

@@ -59,7 +59,7 @@ struct Iclass_
                    * - "g" = (Ihandle**) - array of element handle
                    * If upper case then it is optional. Default is no parameters. */
   InativeType nativetype; /**< native type. Default is IUP_TYPEVOID. */
-  IchildType childtype;   /**< children count enum: none, one, or many. Default is IUP_CHILDNONE. */
+  IchildType childtype;   /**< children count enum: none, one, or many. Default is IUP_CHILDNONE. Used only by IupAppend and IupInsert to control the number of children. */
   int is_interactive;     /**< keyboard interactive boolean, 
                             * true if the class can have the keyboard input focus. Default is false. */
   int has_attrib_id;  /**< boolean to indicate if any attribute is numbered. Default is false. */

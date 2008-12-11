@@ -18,6 +18,7 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_stdcontrols.h"
+#include "iup_childtree.h"
 
 
 static Ihandle* spin_timer = NULL;
@@ -184,15 +185,11 @@ static int iSpinboxCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(ih, "MARGIN",    "0x0");
   IupSetAttribute(ih, "ALIGNMENT", "ACENTER");
 
-  /* manually add the control as a child */
   ctrl = (Ihandle*)(params[0]);
-  ih->firstchild = ctrl;
-  ctrl->parent = ih;
+  iupChildTreeAppend(ih, ctrl);
 
-  /* manually add the spin as a child */
   spin = IupSpin();
-  ctrl->brother = spin;
-  spin->parent = ih;
+  iupChildTreeAppend(ih, spin);
 
   iupAttribSetStr(spin, "_IUPSPIN_BOX", (char*)ih);
 

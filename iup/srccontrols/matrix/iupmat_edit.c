@@ -31,6 +31,7 @@
 #include "iup_controls.h"
 #include "iup_layout.h"
 #include "iup_cdutil.h"
+#include "iup_childtree.h"
 
 #include "iupmat_def.h"
 #include "iupmat_scroll.h"
@@ -428,8 +429,7 @@ char* iupMatrixEditGetValue(Ihandle* ih)
 void iupMatrixEditCreate(Ihandle* ih)
 {
   ih->data->texth = IupText(NULL);
-  ih->firstchild = ih->data->texth;
-  ih->data->texth->parent = ih;
+  iupChildTreeAppend(ih, ih->data->texth);
 
   IupSetCallback(ih->data->texth, "ACTION",       (Icallback)iMatrixEditTextActionCb);
   IupSetCallback(ih->data->texth, "KILLFOCUS_CB", (Icallback)iMatrixEditKillFocusCb);
@@ -442,10 +442,8 @@ void iupMatrixEditCreate(Ihandle* ih)
   IupSetCallback(ih->data->texth, "K_ANY", (Icallback)iMatrixEditKeyAnyTextCb);
 #endif
 
-  /* Create the Dropdown field */
   ih->data->droph = IupList(NULL);
-  ih->firstchild->brother = ih->data->droph;
-  ih->data->droph->parent = ih;
+  iupChildTreeAppend(ih, ih->data->droph);
 
   IupSetCallback(ih->data->droph, "ACTION",       (Icallback)iMatrixEditDropCb);
   IupSetCallback(ih->data->droph, "KILLFOCUS_CB", (Icallback)iMatrixEditKillFocusCb);

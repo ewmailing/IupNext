@@ -24,6 +24,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_controls.h"
 #include "iup_dialog.h"
+#include "iup_childtree.h"
 
 #include <cd.h>
 
@@ -187,8 +188,7 @@ void iupTreeEditShow(Ihandle* ih, int text_x, int x, int y)
 void iupTreeEditCreate(Ihandle* ih)
 {
   ih->data->texth = IupText(NULL);
-  ih->firstchild = ih->data->texth;
-  ih->data->texth->parent = ih;
+  iupChildTreeAppend(ih, ih->data->texth);
 
   IupSetCallback(ih->data->texth, "ACTION",       (Icallback)iTreeEditTextActionCB);
   IupSetCallback(ih->data->texth, "KILLFOCUS_CB", (Icallback)iTreeEditTextKillFocusCB);

@@ -31,6 +31,10 @@ Ihandle* iupChildTreeGetNativeParent(Ihandle* ih);
  * \ingroup childtree */
 InativeHandle* iupChildTreeGetNativeParentHandle(Ihandle* ih);
 
+/** Adds the child directly to the parent tree.
+ * \ingroup childtree */
+void iupChildTreeAppend(Ihandle* parent, Ihandle* child);
+
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupGetDialog
