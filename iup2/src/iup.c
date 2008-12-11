@@ -2,7 +2,7 @@
  * \brief miscelaneous functions
  *
  * See Copyright Notice in iup.h
- * $Id: iup.c,v 1.2 2008-12-11 19:02:57 scuri Exp $
+ * $Id: iup.c,v 1.3 2008-12-11 19:08:05 scuri Exp $
  */
 
 /*! \mainpage IUP<br>Portable Graphical User Interface Library
@@ -60,8 +60,8 @@
 #include "iup.h"
 
 /* This appears only here to avoid changing the iup.h header fo bug fixes */
-#define IUP_VERSION_FIX ""
-#define IUP_VERSION_FIX_NUMBER 0
+#define IUP_VERSION_FIX ".1"
+#define IUP_VERSION_FIX_NUMBER 1
 
 const char iup_ident[] = 
   "$IUP: " IUP_VERSION IUP_VERSION_FIX " " IUP_COPYRIGHT " $\n"
