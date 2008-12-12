@@ -96,7 +96,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   /* In Hildon, borders have fixed dimensions, but are drawn as part
      of the client area! */
   if (border)
-    *border = iupAttribGetInt(ih, "FULLSCREEN") ? 0 : 12;
+    *border = (iupAttributeGetInt(ih, "HILDONWINDOW") && !iupAttribGetInt(ih, "FULLSCREEN")) ? 12 : 0;
   if (caption)
     *caption = 0;
   if (menu)
@@ -401,14 +401,17 @@ static int gtkDialogMapMethod(Ihandle* ih)
   GtkWidget* fixed;
 
 #ifdef HILDON
-  if (iupStrBoolean(iupAttribGetStr(ih, "DIALOGHINT"))) 
-    ih->handle = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  else 
+  if (iupAttribGetInt(ih, "HILDONWINDOW")) 
   {
     HildonProgram *program = HILDON_PROGRAM(hildon_program_get_instance());
     ih->handle = hildon_window_new();
     if (ih->handle)
-      hildon_program_add_window(program, HILDON_WINDOW(ih->handle));
+      hildon_program_add_window(program, HILDON_WINDOW(ih->handle)); 
+  } 
+  else 
+  {
+    iupAttribSetStr(ih, "DIALOGHINT", "YES");  /* otherwise not displayed correctly */ 
+    ih->handle = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   }
 #else
   ih->handle = gtk_window_new(GTK_WINDOW_TOPLEVEL);
