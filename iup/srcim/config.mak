@@ -13,7 +13,3 @@ LDIR = ../lib/$(TEC_UNAME)
 LIBS = iup
 
 SRC = iup_im.c
-
-ifneq "$(TEC_SYSNAME)" "Win32"
-  USE_MOTIF = Yes
-endif

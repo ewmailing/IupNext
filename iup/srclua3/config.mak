@@ -17,7 +17,3 @@ INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  
 LIBS = iup
 
-ifeq ($(findstring Win, $(TEC_SYSNAME)), )
-  USE_MOTIF = Yes
-endif
-

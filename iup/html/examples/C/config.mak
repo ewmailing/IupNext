@@ -74,10 +74,10 @@ USE_IUPCONTROLS = Yes
 #SRC = colorbrowser.c
 #SRC = gauge.c
 #SRC = getcolor.c
-SRC = getparam.c
+#SRC = getparam.c
 #SRC = matrix.c
 #SRC = mdi.c
-#SRC = sbox1.c
+SRC = sbox1.c
 #SRC = sbox2.c
 #SRC = tree.c
 

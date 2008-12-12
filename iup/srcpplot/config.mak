@@ -16,10 +16,6 @@ DEFINES = _IUP_PPLOT_ CD_NO_OLD_INTERFACE
 
 SRC = iupPPlot.cpp  iupPPlotInteraction.cpp  iup_pplot.cpp
 
-ifeq ($(findstring Win, $(TEC_SYSNAME)), )
-  USE_MOTIF = Yes
-endif
-
 ifneq ($(findstring owc, $(TEC_UNAME)), )
   CPPFLAGS = -xr -xst
 endif

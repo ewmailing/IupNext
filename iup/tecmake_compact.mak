@@ -5,7 +5,7 @@
 #-------------------------------------------------------------------------#
 
 # Tecmake Version
-VERSION = 3.16
+VERSION = 3.17
 
 # First target 
 .PHONY: build
@@ -123,9 +123,13 @@ OBJROOT = $(PROJDIR)/obj
 # Byte Order and Word Size
 
 ifneq ($(findstring x86, $(TEC_SYSARCH)), )
-  TEC_BYTEORDER = TEC_LITTLEENDIAN
+   TEC_BYTEORDER = TEC_LITTLEENDIAN
 else
-  TEC_BYTEORDER = TEC_BIGENDIAN
+ifeq ($(TEC_SYSARCH), arm)
+   TEC_BYTEORDER = TEC_LITTLEENDIAN
+else
+   TEC_BYTEORDER = TEC_BIGENDIAN
+endif
 endif
 
 ifeq ($(TEC_SYSARCH), x86_64)
@@ -591,19 +595,23 @@ ifdef USE_IUPLUA
 endif
 
 ifdef USE_LUA
+  LUALIB ?= $(LUA)/lib/$(TEC_UNAME)
   ifdef USE_STATIC
     ifndef NO_LUALIB
-      SLIB += $(LUA)/lib/$(TEC_UNAME)/liblualib$(LUASUFX).a
+      SLIB += $(LUALIB)/liblualib$(LUASUFX).a
     endif
-    SLIB += $(LUA)/lib/$(TEC_UNAME)/liblua$(LUASUFX).a
+    SLIB += $(LUALIB)/liblua$(LUASUFX).a
   else
     ifndef NO_LUALIB
       LIBS += lualib$(LUASUFX)
     endif
     LIBS += lua$(LUASUFX)
-    LDIR += $(LUA)/lib/$(TEC_UNAME)
+    LDIR += $(LUALIB)
   endif
-  INCLUDES += $(LUA)/include
+  
+  LUAINC   ?= $(LUA)/include
+  INCLUDES += $(LUAINC)
+  
   LUABINDIR ?= $(LUA)/bin/$(TEC_UNAME)
   BIN2C     := $(LUABINDIR)/bin2c$(LUASUFX)
   LUAC      := $(LUABINDIR)/luac$(LUASUFX)
