@@ -71,7 +71,7 @@ void* iupdrvGetDisplay(void);
 
 /** Returns the decoration size of the native window.
  * In Windows will also includes the menu if any.
- * Used in \ref iupdrvDialogGetDecoration only.
+ * Used in DialogGetDecoration.
  * \ingroup drvinfo */
 int iupdrvGetWindowDecor(void* wnd, int *border, int *caption);
 

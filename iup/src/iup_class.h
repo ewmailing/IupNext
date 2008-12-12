@@ -137,7 +137,7 @@ struct Iclass_
 
 
   /** Method that update size and position of the native control. \n
-   * Called only from \ref iupLayoutUpdate and if the element is mapped.
+   * Called only from iupLayoutUpdate and if the element is mapped.
    */
   void (*LayoutUpdate)(Ihandle* ih);
 
@@ -148,7 +148,7 @@ struct Iclass_
    * Must call the same method for each children.
    * First calculate the native size for the children, then for the element. \n
    * Also called before the element is mapped, so it must be independent of the native control.
-   * First call done at \ref iupLayoutCompute for the dialog.
+   * First call done at iupLayoutCompute for the dialog.
    */
   void (*ComputeNaturalSize)(Ihandle* ih);
 
@@ -159,7 +159,7 @@ struct Iclass_
    * First calculate the current size of the element, then for the children.\n
    * shrink is the dialog attribute passed here for optimization. \n
    * Also called before the element is mapped, so it must be independent of the native control.
-   * First call done at \ref iupLayoutCompute for the dialog.
+   * First call done at iupLayoutCompute for the dialog.
    */
   void (*SetCurrentSize)(Ihandle* ih, int w, int h, int shrink);
 
@@ -167,7 +167,7 @@ struct Iclass_
    * Must call the same method for each children.
    * First calculate the position of the element, then for the children.\n
    * Also called before the element is mapped, so it must be independent of the native control.
-   * First call done at \ref iupLayoutCompute for the dialog.
+   * First call done at iupLayoutCompute for the dialog.
    */
   void (*SetPosition)(Ihandle* ih, int x, int y);
 
@@ -176,7 +176,7 @@ struct Iclass_
   /** Method that shows a popup dialog. Called only for native pre-defined dialogs. \n
    * The element is not mapped. \n
    * Must return IUP_ERROR or IUP_NOERROR. \n
-   * Called only from \ref iupDialogPopup.
+   * Called only from iupDialogPopup.
    */
   int (*DlgPopup)(Ihandle* ih, int x, int y);   
 };

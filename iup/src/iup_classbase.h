@@ -16,7 +16,6 @@ extern "C" {
  * \par
  * See \ref iup_classbase.h
  * \ingroup iclass
- * @{
  */
 
 
@@ -65,7 +64,7 @@ void iupBaseSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink);
  * \ingroup iclassbasemethod */
 void iupBaseContainerSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink);
 
-/** The \ref Iclass::SetPositionSize method for controls that are not containers.
+/** The \ref Iclass::SetPosition method for controls that are not containers.
  * \ingroup iclassbasemethod */
 void iupBaseSetPositionMethod(Ihandle* ih, int x, int y);
 

@@ -16,7 +16,7 @@ extern "C" {
  * \par
  * Used to filter text input in IupText.
  * \par
- * See \ref mask.h
+ * See \ref iup_mask.h
  * \ingroup util */
 
 typedef struct _Imask Imask;
