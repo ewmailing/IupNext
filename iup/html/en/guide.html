@@ -143,7 +143,7 @@ UNIX is already included in the source code package. Just type &quot;make&quot; 
 command line on the main IUP folder and all libraries and executables will be 
 build. Set the TECTOOLS_HOME environment variable to the folder were the CD, IM 
 and Lua libraries are installed, by default it will assume 
-TECTOOLS_HOME=/home/tecgraf.</p>
+&quot;TECTOOLS_HOME=../..&quot;.</p>
 <p>In Windows, the easiest way to build everything is to install the Tecmake tool into your system. It is easy and helps a lot. 
   The Tecmake configuration files (*.mak) available at the &quot;src*&quot; folders are very easy to understand also. In IUP's<b> </b>main directory, and in each source directory, there are files named 
 <i>make_uname.bat</i> that build the libraries using <b>Tecmake</b>. To build for Windows using 
@@ -207,7 +207,9 @@ libraries depend on CD and IM.</p>
 <p>The Lua bindings for IUP, CD and IM (Makfiles and Pre-compiled binaries) 
 depend on the <a href="http://luabinaries.luaforge.net/">LuaBinaries</a> 
 distribution. So if you are going to build all use the <strong>LuaBinaries</strong> 
-source package also, not the <strong>Lua.org</strong> original source package.&nbsp;&nbsp; </p>
+source package also, not the <strong>Lua.org</strong> original source package. 
+If you like to use another location for the Lua files overwrite the LUAINC, 
+LUALIB and LUABINDIR definitions before using Tecmake or Tecmake Compact.</p>
 <p>In Ubuntu you will need to install the following packages:</p>
 <pre>libmotif-dev
 x11proto-print-dev
