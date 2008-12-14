@@ -1144,12 +1144,20 @@ static int winListComboListProc(Ihandle* ih, HWND cblist, UINT msg, WPARAM wp, L
   case WM_LBUTTONDOWN:
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
-    iupwinButtonDown(ih, msg, wp, lp);
+    if (iupwinButtonDown(ih, msg, wp, lp)==-1)
+    {
+      *result = 0;
+      return 1;
+    }
     break;
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
   case WM_LBUTTONUP:
-    iupwinButtonUp(ih, msg, wp, lp);
+    if (iupwinButtonUp(ih, msg, wp, lp)==-1)
+    {
+      *result = 0;
+      return 1;
+    }
     break;
   case WM_MOUSEMOVE:
     iupwinMouseMove(ih, msg, wp, lp);
@@ -1197,12 +1205,20 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     case WM_LBUTTONDOWN:
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
-      iupwinButtonDown(ih, msg, wp, lp);
+      if (iupwinButtonDown(ih, msg, wp, lp)==-1)
+      {
+        *result = 0;
+        return 1;
+      }
       break;
     case WM_MBUTTONUP:
     case WM_RBUTTONUP:
     case WM_LBUTTONUP:
-      iupwinButtonUp(ih, msg, wp, lp);
+      if (iupwinButtonUp(ih, msg, wp, lp)==-1)
+      {
+        *result = 0;
+        return 1;
+      }
       break;
     case WM_MOUSEMOVE:
       iupwinMouseMove(ih, msg, wp, lp);

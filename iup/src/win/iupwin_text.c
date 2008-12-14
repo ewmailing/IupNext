@@ -1661,7 +1661,11 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
     {
-      iupwinButtonDown(ih, msg, wp, lp);
+      if (iupwinButtonDown(ih, msg, wp, lp)==-1)
+      {
+        *result = 0;
+        return 1;
+      }
       PostMessage(ih->handle, WM_CARET, 0, 0L);
       break;
     }
@@ -1669,7 +1673,11 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   case WM_RBUTTONUP:
   case WM_LBUTTONUP:
     {
-      iupwinButtonUp(ih, msg, wp, lp);
+      if (iupwinButtonUp(ih, msg, wp, lp)==-1)
+      {
+        *result = 0;
+        return 1;
+      }
       PostMessage(ih->handle, WM_CARET, 0, 0L);
       break;
     }

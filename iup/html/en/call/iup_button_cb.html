@@ -54,7 +54,8 @@ iup_issys(status)</p>
   and 
   0 otherwise. These macros are also available in Lua.</p>
 </blockquote>
-<p><u>Return</u>: IUP_CLOSE will be processed.</p>
+<p><u>Return</u>: IUP_CLOSE will be processed. On some controls if IUP_IGNORE is 
+returned the action is ignored (this is system dependent).</p>
 <h3>Notes</h3>
 <p>This callback can be used to customize a button behavior. For a standard button 
 behavior use the 
@@ -63,6 +64,8 @@ ACTION
 <h3>Affects</h3>
 <p><a href="../elem/iupcanvas.html">IupCanvas</a>,
   <a href="../elem/iupbutton.html">IupButton</a>,
+  <a href="../elem/iuptext.html">IupText</a>, <a href="../elem/iuplist.html">
+IupList</a>,
   <a href="../ctrl/iupglcanvas.html">IupGLCanvas</a></p>
 
 </body>

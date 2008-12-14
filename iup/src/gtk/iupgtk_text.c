@@ -1335,8 +1335,7 @@ static gboolean gtkTextKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihan
 static gboolean gtkTextButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 {
   gtkTextMoveCursor(NULL, 0, 0, 0, ih);
-  iupgtkButtonEvent(widget, evt, ih);
-  return FALSE;
+  return iupgtkButtonEvent(widget, evt, ih);
 }
 
 static int gtkTextCallActionCb(Ihandle* ih, const char* insert_value, int len, int start, int end)

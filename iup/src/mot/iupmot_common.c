@@ -548,7 +548,7 @@ void iupmotButtonPressReleaseEvent(Widget w, Ihandle* ih, XEvent* evt, Boolean* 
   cb = (IFniiiis) IupGetCallback(ih,"BUTTON_CB");
   if (cb)
   {
-    int doubleclick = 0;
+    int ret, doubleclick = 0;
     int b = IUP_BUTTON1+(but_evt->button-1);
 
     /* Double/Single Click */
@@ -562,8 +562,11 @@ void iupmotButtonPressReleaseEvent(Widget w, Ihandle* ih, XEvent* evt, Boolean* 
 
     iupmotButtonKeySetStatus(but_evt->state, but_evt->button, status, doubleclick);
 
-    if (cb(ih, b, (but_evt->type==ButtonPress), but_evt->x, but_evt->y, status)==IUP_CLOSE)
+    ret = cb(ih, b, (but_evt->type==ButtonPress), but_evt->x, but_evt->y, status);
+    if (ret==IUP_CLOSE)
       IupExitLoop();
+    else if (ret==IUP_IGNORE)
+      *cont=False;
   }         
 
   (void)cont;

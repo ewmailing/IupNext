@@ -754,8 +754,7 @@ gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
   IFniiiis cb = (IFniiiis)IupGetCallback(ih,"BUTTON_CB");
   if (cb)
   {
-    int doubleclick = 0;
-    int press = 1;
+    int doubleclick = 0, ret, press = 1;
     int b = IUP_BUTTON1+(evt->button-1);
     char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
 
@@ -767,8 +766,11 @@ gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 
     iupgtkButtonKeySetStatus(evt->state, evt->button, status, doubleclick);
 
-    if (cb(ih, b, press, (int)evt->x, (int)evt->y, status)==IUP_CLOSE)
+    ret = cb(ih, b, press, (int)evt->x, (int)evt->y, status);
+    if (ret==IUP_CLOSE)
       IupExitLoop();
+    else if (ret==IUP_IGNORE)
+      return TRUE;
   }
 
   (void)widget;

@@ -717,7 +717,7 @@ void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
 {
   char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
-  int doubleclick = 0;
+  int ret, doubleclick = 0;
   int b = 0;
 
   IFniiiis cb = (IFniiiis) IupGetCallback(ih, "BUTTON_CB");
@@ -746,8 +746,11 @@ int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
       b = IUP_BUTTON5;
   }
 
-  if (cb(ih, b, 1, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp), status) == IUP_CLOSE)
+  ret = cb(ih, b, 1, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp), status);
+  if (ret == IUP_CLOSE)
     IupExitLoop();
+  else if (ret == IUP_IGNORE)
+    return -1;
 
   return 1;
 }
@@ -755,7 +758,7 @@ int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
 int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
 {
   char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
-  int b=0;
+  int ret, b=0;
   IFniiiis cb = (IFniiiis) IupGetCallback(ih, "BUTTON_CB");
   if (!cb)
     return 0;
@@ -792,8 +795,11 @@ int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
     }
   }
 
-  if (cb(ih, b, 0, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp), status) == IUP_CLOSE)
+  ret = cb(ih, b, 0, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp), status);
+  if (ret == IUP_CLOSE)
     IupExitLoop();
+  else if (ret == IUP_IGNORE)
+    return -1;
 
   return 1;
 }
