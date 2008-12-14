@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="iupluacontrols3"
 	ProjectGUID="{1EBC7A53-4677-4C3A-8DFF-49DFF4417D85}"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -93,10 +94,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srclua3\luacbox.c"
-				>
-			</File>
-			<File
 				RelativePath="..\srclua3\luacells.c"
 				>
 			</File>
@@ -130,14 +127,6 @@
 			</File>
 			<File
 				RelativePath="..\srclua3\luamatrix.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luasbox.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua3\luaspin.c"
 				>
 			</File>
 			<File
