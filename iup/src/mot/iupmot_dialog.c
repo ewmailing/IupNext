@@ -46,6 +46,12 @@ static int motDialogSetBgColorAttrib(Ihandle* ih, const char* value);
                      Utilities
 ****************************************************************/
 
+
+int iupdrvDialogIsVisible(Ihandle* ih)
+{
+  return iupdrvIsVisible(ih) || ih->data->show_state == IUP_MINIMIZE;
+}
+
 void iupdrvDialogUpdateSize(Ihandle* ih)
 {
   Dimension width, height;
@@ -80,12 +86,20 @@ void iupdrvDialogSetVisible(Ihandle* ih, int visible)
   {
     XtMapWidget(ih->handle);
     XRaiseWindow(iupmot_display, XtWindow(ih->handle));
-    while (!iupdrvIsVisible(ih)); /* waits until window get mapped */
+    while (!iupdrvDialogIsVisible(ih)); /* waits until window get mapped */
   }
   else
   {
+    /* if iupdrvIsVisible reports hidden, then it should be minimized */ 
+    if (!iupdrvIsVisible(ih))  /* can NOT hide a minimized window, so map it first. */
+    {
+      XtMapWidget(ih->handle);
+      XRaiseWindow(iupmot_display, XtWindow(ih->handle));
+      while (!iupdrvDialogIsVisible(ih)); /* waits until window get mapped */
+    }
+
     XtUnmapWidget(ih->handle);
-    while (iupdrvIsVisible(ih)); /* waits until window gets unmapped */
+    while (iupdrvDialogIsVisible(ih)); /* waits until window gets unmapped */
   }
 }
 
@@ -131,7 +145,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
 
   *menu = motDialogGetMenuSize(ih);
 
-  if (ih->handle && iupdrvIsVisible(ih))
+  if (ih->handle && iupdrvDialogIsVisible(ih))
   {
     int win_border, win_caption;
     if (iupdrvGetWindowDecor((void*)XtWindow(ih->handle), &win_border, &win_caption))
@@ -265,7 +279,7 @@ static void motDialogChangeWMState(Ihandle* ih, Atom state1, Atom state2, int op
   if (!wmstate)
     wmstate = XmInternAtom(iupmot_display, "_NET_WM_STATE", False);
 
-  if (iupdrvIsVisible(ih))
+  if (iupdrvDialogIsVisible(ih))
   {
     XEvent evt;
     evt.type = ClientMessage;
@@ -352,7 +366,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
 
   if (iupStrEqualNoCase(placement, "MINIMIZED"))
   {
-    if (iupdrvIsVisible(ih))
+    if (iupdrvDialogIsVisible(ih))
       XIconifyWindow(iupmot_display, XtWindow(ih->handle), iupmot_screen);
     else
     {
@@ -861,7 +875,7 @@ static int motDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
   {
     if (!iupAttribGetStr(ih, "_IUPMOT_FS_STYLE"))
     {
-      int visible = iupdrvIsVisible(ih);
+      int visible = iupdrvDialogIsVisible(ih);
       if (visible)
         iupAttribSetStr(ih, "_IUPMOT_FS_STYLE", "VISIBLE");
       else
@@ -949,7 +963,7 @@ static int motDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
         if (!motDialogSetFullScreen(ih, 0))
         {
           int border, caption, menu, x, y;
-          int visible = iupdrvIsVisible(ih);
+          int visible = iupdrvDialogIsVisible(ih);
           if (visible)
             XtUnmapWidget(ih->handle);
 

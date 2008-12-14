@@ -2,7 +2,7 @@
  * \brief Motif Driver Core and Initialization
  *
  * See Copyright Notice in iup.h
- * $Id: motif.c,v 1.4 2008-12-11 19:02:57 scuri Exp $
+ * $Id: motif.c,v 1.5 2008-12-14 03:18:14 scuri Exp $
  */
 
 #if defined(__STDC__) && defined(ULTRIX)
@@ -247,6 +247,20 @@ int IupShowXY(Ihandle* n, int x, int y)
   return IUP_NOERROR;
 }
 
+static void motWaitForVisibilityChange(Ihandle* n, int hide2visible)
+{
+  XWindowAttributes wa;
+  int state;
+  do
+  {
+    XGetWindowAttributes(XtDisplay((Widget)handle(n)),XtWindow((Widget)handle(n)),&wa);
+    if (hide2visible)
+      state = wa.map_state!=IsViewable;  /* waits until window get mapped */
+    else
+      state = wa.map_state==IsViewable; /* waits until window gets unmapped */
+  } while (state);
+}
+
 int IupShow (Ihandle* n)
 {
   assert(n != NULL);
@@ -282,12 +296,7 @@ void iupmotHideDialog(Ihandle *n)
   iupmot_nvisiblewin--;
   wd->data = HIDE;
 
-  { /* waits until window gets unmapped */
-    XWindowAttributes wa;
-    do
-    XGetWindowAttributes(XtDisplay((Widget)handle(n)),XtWindow((Widget)handle(n)),&wa);
-    while (wa.map_state==IsViewable);
-  }
+  motWaitForVisibilityChange(n, 0);
 }
 
 void iupmotShowDialog(Ihandle *n)
@@ -307,12 +316,7 @@ void iupmotShowDialog(Ihandle *n)
   wd->data = SHOW;
 
   XtMapWidget ((Widget)handle (n));
-  { /* waits until window get mapped */
-    XWindowAttributes wa;
-    do
-      XGetWindowAttributes(XtDisplay((Widget)handle(n)),XtWindow((Widget)handle(n)),&wa);
-    while (wa.map_state!=IsViewable);
-  }
+  motWaitForVisibilityChange(n, 1);
 }
 
 static int motPopupMenu(Ihandle *n, int x, int y)

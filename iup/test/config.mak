@@ -13,10 +13,12 @@ IUP = ..
 
 DBG = Yes
 
+SRC = teste_dialog.c
+
 #SRC = tray.c
 #SRC = dialog.c
 #SRC = predialogs.c
-SRC = timer.c
+#SRC = timer.c
 #SRC = label.c
 #SRC = canvas.c
 #SRC = frame.c

@@ -47,7 +47,7 @@ static void iDialogSetModal(Ihandle* ih_popup)
   {
     if (ih != ih_popup && 
         ih->handle &&
-        iupdrvIsVisible(ih) && 
+        iupdrvDialogIsVisible(ih) && 
         ih->data->popup_level == 0)
     {
       iupdrvSetActive(ih, 0);
@@ -213,7 +213,7 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
   iupDialogAdjustPos(ih, &x, &y);
   iupdrvDialogSetPosition(ih, x, y);
 
-  if (iupdrvIsVisible(ih)) /* already visible */
+  if (iupdrvDialogIsVisible(ih)) /* already visible */
   {
     /* only re-show to raise the window */
     iupdrvDialogSetVisible(ih, 1);
@@ -266,7 +266,7 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
 
   /* save visible state before iupdrvDialogSetPlacement */
   /* because it can also show the window when changing placement. */
-  was_visible = iupdrvIsVisible(ih); 
+  was_visible = iupdrvDialogIsVisible(ih); 
 
   /* Update the position and placement */
   if (!iupdrvDialogSetPlacement(ih, x, y))
@@ -286,7 +286,7 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
                           
   /* actually show the window */
   /* test if placement turn the dialog visible */
-  if (!iupdrvIsVisible(ih))
+  if (!iupdrvDialogIsVisible(ih))
     iupdrvDialogSetVisible(ih, 1);
 
   /* increment visible count */
@@ -300,7 +300,7 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
 void iupDialogHide(Ihandle* ih)
 {
   /* hidden at the system and marked hidden in IUP */
-  if (!iupdrvIsVisible(ih) && ih->data->show_state == IUP_HIDE) 
+  if (!iupdrvDialogIsVisible(ih) && ih->data->show_state == IUP_HIDE) 
     return;
 
   /* marked hidden in IUP */

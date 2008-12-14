@@ -84,6 +84,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y);
 void iupdrvDialogSetPosition(Ihandle *ih, int x, int y);
 void iupdrvDialogUpdateSize(Ihandle* ih);
 void iupdrvDialogGetSize(InativeHandle* handle, int *w, int *h);
+int iupdrvDialogIsVisible(Ihandle* ih);
 
 #endif
 

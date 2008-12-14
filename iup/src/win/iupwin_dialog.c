@@ -45,6 +45,11 @@ static int winDialogSetTrayAttrib(Ihandle *ih, const char *value);
                      Utilities
 ****************************************************************/
 
+int iupdrvDialogIsVisible(Ihandle* ih)
+{
+  return iupdrvIsVisible(ih);
+}
+
 void iupdrvDialogUpdateSize(Ihandle* ih)
 {
   RECT rect;

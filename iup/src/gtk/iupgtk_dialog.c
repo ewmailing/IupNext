@@ -44,6 +44,11 @@ static void gtkDialogSetMinMax(Ihandle* ih, int min_w, int min_h, int max_w, int
                      Utilities
 ****************************************************************/
 
+int iupdrvDialogIsVisible(Ihandle* ih)
+{
+  return iupdrvIsVisible(ih);
+}
+
 void iupdrvDialogUpdateSize(Ihandle* ih)
 {
   int width, height;
