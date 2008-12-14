@@ -52,9 +52,11 @@ int PASCAL WinMain (HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int ncmdsho
 #else
   {                        
     /* this seems to work for all the compilers we tested, except Watcom compilers */
-    /* These are declared in <stdlib.h> */
-    /* extern int __argc;               */
-    /* extern char** __argv;            */
+    /* These are declared in <stdlib.h>, except for Cygwin. */
+#ifdef __GNUC__
+    extern int __argc;
+    extern char** __argv;
+#endif
     return main(__argc, __argv);
   }
 #endif

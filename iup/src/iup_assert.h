@@ -49,11 +49,11 @@ void iupError(const char* format, ...);
 #define iupERROR1(_msg, _p1)  ((void)0)
 #define iupERROR2(_msg, _p1, _p2)  ((void)0)
 #else
-#ifdef _MSC_VER
+#ifdef __FUNCTION__
 #define iupASSERT(_expr) ((_expr)? (void)0: iupAssert(#_expr, __FILE__, __LINE__, __FUNCTION__))
 #else
 #define iupASSERT(_expr) ((_expr)? (void)0: iupAssert(#_expr, __FILE__, __LINE__, NULL))
-#endif  /* _MSC_VER */
+#endif  /* __FUNCTION__ */
 
 #define iupERROR(_msg) iupError(_msg)
 #define iupERROR1(_msg, _p1) iupError(_msg, _p1)

@@ -30,6 +30,10 @@
 #include "iupwin_brush.h"
 
 
+#ifndef  XBUTTON1
+#define XBUTTON1      0x0001     /* not defined in MingW3 */
+#endif
+
 int iupwinClassExist(const char* name)
 {
   WNDCLASS WndClass;

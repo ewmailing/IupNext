@@ -36,7 +36,3 @@ $(GC) : %.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<
 
 SRC = $(GC) $(EC)
-
-ifeq ($(findstring Win, $(TEC_SYSNAME)), )
-  USE_MOTIF = Yes
-endif

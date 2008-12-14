@@ -22,5 +22,9 @@ else
     INCLUDES += .
     SRC += GL/GLwMDrawA.c
   endif
+  ifneq ($(findstring SunOS510, $(TEC_UNAME)), )
+    INCLUDES += .
+    SRC += GL/GLwMDrawA.c
+  endif
   
 endif

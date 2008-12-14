@@ -12,14 +12,10 @@ DEFINES = _IUP_PPLOT_ CD_NO_OLD_INTERFACE
 
 SRC = PPlot.cpp  PPlotInteraction.cpp  iup_pplot.cpp
 
-ifeq ($(findstring Win, $(TEC_SYSNAME)), )
-  USE_MOTIF = Yes
-endif
-
 ifneq ($(findstring owc, $(TEC_UNAME)), )
   CPPFLAGS = -xr -xst
 endif
 
 ifeq "$(TEC_UNAME)" "vc6"
-  INCLUDES += C:\LNG\STLport\include
+  INCLUDES += D:\LNG\STLport\include
 endif

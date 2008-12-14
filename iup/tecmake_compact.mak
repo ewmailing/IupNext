@@ -595,27 +595,27 @@ ifdef USE_IUPLUA
 endif
 
 ifdef USE_LUA
-  LUALIB ?= $(LUA)/lib/$(TEC_UNAME)
+  LUA_LIB ?= $(LUA)/lib/$(TEC_UNAME)
   ifdef USE_STATIC
     ifndef NO_LUALIB
-      SLIB += $(LUALIB)/liblualib$(LUASUFX).a
+      SLIB += $(LUA_LIB)/liblualib$(LUASUFX).a
     endif
-    SLIB += $(LUALIB)/liblua$(LUASUFX).a
+    SLIB += $(LUA_LIB)/liblua$(LUASUFX).a
   else
     ifndef NO_LUALIB
       LIBS += lualib$(LUASUFX)
     endif
     LIBS += lua$(LUASUFX)
-    LDIR += $(LUALIB)
+    LDIR += $(LUA_LIB)
   endif
   
-  LUAINC   ?= $(LUA)/include
-  INCLUDES += $(LUAINC)
+  LUA_INC   ?= $(LUA)/include
+  INCLUDES += $(LUA_INC)
   
-  LUABINDIR ?= $(LUA)/bin/$(TEC_UNAME)
-  BIN2C     := $(LUABINDIR)/bin2c$(LUASUFX)
-  LUAC      := $(LUABINDIR)/luac$(LUASUFX)
-  LUABIN    := $(LUABINDIR)/lua$(LUASUFX)
+  LUA_BIN ?= $(LUA)/bin/$(TEC_UNAME)
+  BIN2C     := $(LUA_BIN)/bin2c$(LUASUFX)
+  LUAC      := $(LUA_BIN)/luac$(LUASUFX)
+  LUABIN    := $(LUA_BIN)/lua$(LUASUFX)
 endif
 
 ifdef USE_IUP   

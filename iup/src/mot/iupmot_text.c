@@ -37,8 +37,11 @@
 
 #ifndef XmIsSpinBox
 #define XmIsSpinBox(w)	XtIsSubclass(w, xmSpinBoxWidgetClass)
-#endif /* XmIsSpinBox */
+#endif
 
+#ifndef XmNwrap
+#define XmNwrap "Nwrap"
+#endif
 
 void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
 {

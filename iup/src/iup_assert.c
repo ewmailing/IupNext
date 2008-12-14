@@ -28,7 +28,7 @@ void iupError(const char* format, ...)
   va_start(arglist, format);
   vsprintf(msg, format, arglist);
   va_end(arglist);
-#if IUP_ASSERT == CONSOLE 
+#if IUP_ASSERT_CONSOLE 
   fprintf(stderr, msg);
 #else
   if (iupIsOpened())

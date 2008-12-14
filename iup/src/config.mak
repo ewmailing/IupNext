@@ -32,7 +32,7 @@ ifdef USE_GTK
            gtk/iupgtk_text.c gtk/iupgtk_val.c gtk/iupgtk_frame.c gtk/iupgtk_canvas.c \
            gtk/iupgtk_tabs.c gtk/iupgtk_menu.c gtk/iupgtk_list.c
            
-  ifeq "$(TEC_SYSNAME)" "Win32"
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c
   else
     SRC += mot/iupunix_help.c mot/iupunix_info.c
@@ -44,7 +44,7 @@ ifdef USE_GTK
     LIBS += hildon-1
   endif
 else
-  ifeq "$(TEC_SYSNAME)" "Win32"
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   
     SRC += win/iupwin_common.c win/iupwin_brush.c win/iupwin_focus.c win/iupwin_font.c \
            win/iupwin_globalattrib.c win/iupwin_handle.c win/iupwin_key.c \
@@ -86,6 +86,20 @@ ifneq ($(findstring dll, $(TEC_UNAME)), )
   DEFINES += IUP_DLL
   SRC += iup_dll.rc
   DEF_FILE = iup.def
+endif
+
+ifeq "$(TEC_UNAME)" "vc6"
+  # Necessary because VC6 has an old WinSDK
+  WINSDK = d:/lng/vc7/PlatformSDK
+  INCLUDES += $(WINSDK)/include
+  LDIR = $(WINSDK)/lib
+endif
+
+ifeq "$(TEC_UNAME)" "dll"
+  # Necessary because VC6 has an old WinSDK
+  WINSDK = d:/lng/vc7/PlatformSDK
+  INCLUDES += $(WINSDK)/include
+  LDIR = $(WINSDK)/lib
 endif
 
 ifeq "$(TEC_UNAME)" "owc1"
