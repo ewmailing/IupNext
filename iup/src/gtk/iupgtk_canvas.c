@@ -413,11 +413,15 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
   if (iupStrToRGB(parent_value, &r, &g, &b))
   {
     GtkWidget* sb;
+
     iupgtkBaseSetBgColor((GtkWidget*)scrolled_window, r, g, b);
+
+#if GTK_CHECK_VERSION(2, 8, 0)
     sb = gtk_scrolled_window_get_hscrollbar(scrolled_window);
     if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
     sb = gtk_scrolled_window_get_vscrollbar(scrolled_window);
     if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+#endif
   }
 
   if (!IupGetCallback(ih, "ACTION")) 
@@ -508,8 +512,10 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkCanvasButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event",G_CALLBACK(iupgtkMotionNotifyEvent), ih);
 
+#if GTK_CHECK_VERSION(2, 8, 0)
   g_signal_connect(G_OBJECT(gtk_scrolled_window_get_hscrollbar(scrolled_window)), "change-value",G_CALLBACK(gtkCanvasHChangeValue), ih);
   g_signal_connect(G_OBJECT(gtk_scrolled_window_get_vscrollbar(scrolled_window)), "change-value",G_CALLBACK(gtkCanvasVChangeValue), ih);
+#endif
 
   /* To receive mouse events on a drawing area, you will need to enable them. */
   gtk_widget_add_events(ih->handle, GDK_EXPOSURE_MASK|

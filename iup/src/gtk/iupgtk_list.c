@@ -205,11 +205,13 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
 
       iupgtkBaseSetBgColor((GtkWidget*)scrolled_window, r, g, b);
 
+#if GTK_CHECK_VERSION(2, 8, 0)
       sb = gtk_scrolled_window_get_hscrollbar(scrolled_window);
       if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
 
       sb = gtk_scrolled_window_get_vscrollbar(scrolled_window);
       if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+#endif
     }
   }
 
@@ -471,7 +473,9 @@ static int gtkListSetPaddingAttrib(Ihandle* ih, const char* value)
     border.bottom = border.top = ih->data->vert_padding;
     border.left = border.right = ih->data->horiz_padding;
     entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+#if GTK_CHECK_VERSION(2, 10, 0)
     gtk_entry_set_inner_border(entry, &border);
+#endif
   }
   return 0;
 }
@@ -1326,7 +1330,9 @@ static int gtkListMapMethod(Ihandle* ih)
     if (!ih->data->has_editbox && ih->data->is_multiple)
     {
       gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
+#if GTK_CHECK_VERSION(2, 10, 0)
       gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(ih->handle), TRUE);
+#endif
     }
     else
       gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);

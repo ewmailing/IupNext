@@ -122,6 +122,12 @@ IupNormalizer
 IupNormalizerv
 IupGetClassType
 IupGetClassName
+IupInsert
+IupMainLoopLevel
+IupGetDialogChild
+IupListConvertXYToItem
+IupTextConvertXYToChar
+IupUpdateChildren
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib
@@ -182,6 +188,7 @@ iupTableClear
 iupStrToUnix
 iupStrToStrStr
 iupStrToRGB
+iupStrToRGBA
 iupStrToMac
 iupStrToIntInt
 iupStrToInt
@@ -296,6 +303,7 @@ iupBaseGetRasterSizeAttrib
 iupBaseGetActiveAttrib
 iupBaseContainerUpdateExpand
 iupBaseContainerGetExpandAttrib
+iupBaseContainerSetCurrentSizeMethod
 iupAttribStoreStr
 iupAttribSetStrf
 iupAttribSetStr

@@ -184,7 +184,9 @@ static void gtkButtonSetPixbuf(Ihandle* ih, const char* name, int make_inactive,
   }
 
   /* if not defined */
+#if GTK_CHECK_VERSION(2, 8, 0)
   gtk_image_clear(image);
+#endif
 }
 
 static int gtkButtonSetImageAttrib(Ihandle* ih, const char* value)
@@ -334,7 +336,9 @@ static int gtkButtonMapMethod(Ihandle* ih)
       gtk_button_set_label((GtkButton*)ih->handle, value);
       ih->data->type |= IUP_BUTTON_TEXT;
       
+#if GTK_CHECK_VERSION(2, 10, 0)
       gtk_button_set_image_position((GtkButton*)ih->handle, ih->data->img_position);  /* IUP and GTK have the same Ids */
+#endif
     }
   }
   else

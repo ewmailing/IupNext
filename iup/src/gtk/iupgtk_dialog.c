@@ -542,7 +542,9 @@ static int gtkDialogMapMethod(Ihandle* ih)
 static void gtkDialogUnMapMethod(Ihandle* ih)
 {
   GtkWidget* fixed;
+#if GTK_CHECK_VERSION(2, 10, 0)
   GtkStatusIcon* status_icon;
+#endif
 
   if (ih->data->menu) 
   {
@@ -550,9 +552,11 @@ static void gtkDialogUnMapMethod(Ihandle* ih)
     IupDestroy(ih->data->menu);  
   }
 
+#if GTK_CHECK_VERSION(2, 10, 0)
   status_icon = (GtkStatusIcon*)iupAttribGetStr(ih, "_IUPDLG_STATUSICON");
   if (status_icon)
     g_object_unref(status_icon);
+#endif
 
   fixed = gtk_bin_get_child((GtkBin*)ih->handle);
   gtk_widget_unrealize(fixed);
@@ -820,6 +824,7 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+#if GTK_CHECK_VERSION(2, 10, 0)
 static int gtkDialogTaskDoubleClick(int button)
 {
   static int last_button = -1;
@@ -918,6 +923,7 @@ static int gtkDialogSetTrayImageAttrib(Ihandle *ih, const char *value)
   gtk_status_icon_set_from_pixbuf(status_icon, icon);
   return 1;
 }
+#endif  /* GTK_CHECK_VERSION(2, 10, 0) */
 
 void iupdrvDialogInitClass(Iclass* ic)
 {
@@ -960,7 +966,9 @@ void iupdrvDialogInitClass(Iclass* ic)
   /* IupDialog Windows and GTK Only */
   iupClassRegisterAttribute(ic, "TOPMOST", NULL, gtkDialogSetTopMostAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+#if GTK_CHECK_VERSION(2, 10, 0)
   iupClassRegisterAttribute(ic, "TRAY", NULL, gtkDialogSetTrayAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYIMAGE", NULL, gtkDialogSetTrayImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIP", NULL, gtkDialogSetTrayTipAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+#endif
 }

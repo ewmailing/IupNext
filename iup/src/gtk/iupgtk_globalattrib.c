@@ -28,9 +28,11 @@ int iupdrvSetGlobal(const char *name, const char *value)
   }
   if (iupStrEqual(name, "CURSORPOS"))
   {
+#if GTK_CHECK_VERSION(2, 8, 0)
     int x, y;
     if (iupStrToIntInt(value, &x, &y, 'x') == 2)
       gdk_display_warp_pointer(gdk_display_get_default(), gdk_screen_get_default(), x, y);
+#endif
     return 0;
   }
   if (iupStrEqual(name, "UTF8AUTOCONVERT"))

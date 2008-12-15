@@ -210,7 +210,11 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
 void* iupdrvImageLoad(const char* name, int type)
 {
   if (type == IUPIMAGE_CURSOR)
+#if GTK_CHECK_VERSION(2, 8, 0)
     return gdk_cursor_new_from_name(gdk_display_get_default(), name);
+#else
+    return NULL;
+#endif
   else
   {
     GtkIconTheme *icon_theme;

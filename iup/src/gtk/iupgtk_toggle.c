@@ -62,7 +62,9 @@ static void gtkToggleSetPixbuf(Ihandle* ih, const char* name, int make_inactive,
   }
 
   /* if not defined */
+#if GTK_CHECK_VERSION(2, 8, 0)
   gtk_image_clear(image);
+#endif
 }
 
 static void gtkToggleUpdateImage(Ihandle* ih, int active, int check)

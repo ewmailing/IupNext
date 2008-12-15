@@ -916,7 +916,9 @@ static int gtkTextSetPaddingAttrib(Ihandle* ih, const char* value)
       GtkBorder border;
       border.bottom = border.top = ih->data->vert_padding;
       border.left = border.right = ih->data->horiz_padding;
+#if GTK_CHECK_VERSION(2, 10, 0)
       gtk_entry_set_inner_border(GTK_ENTRY(ih->handle), &border);
+#endif
     }
   }
   return 0;
@@ -1031,11 +1033,13 @@ static int gtkTextSetBgColorAttrib(Ihandle* ih, const char* value)
 
       iupgtkBaseSetBgColor((GtkWidget*)scrolled_window, r, g, b);
 
+#if GTK_CHECK_VERSION(2, 8, 0)
       sb = gtk_scrolled_window_get_hscrollbar(scrolled_window);
       if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
 
       sb = gtk_scrolled_window_get_vscrollbar(scrolled_window);
       if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+#endif
     }
   }
 

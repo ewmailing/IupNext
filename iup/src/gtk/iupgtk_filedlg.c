@@ -230,8 +230,10 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   if (iupAttribGetInt(ih, "MULTIPLEFILES") && action == GTK_FILE_CHOOSER_ACTION_OPEN)
     gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
 
+#if GTK_CHECK_VERSION(2, 8, 0)
   if (!iupAttribGetInt(ih, "NOOVERWRITEPROMPT") && action == GTK_FILE_CHOOSER_ACTION_SAVE)
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
+#endif
 
   /* just check for the path inside FILE */
   value = iupAttribGetStr(ih, "FILE");

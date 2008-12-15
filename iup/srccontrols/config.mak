@@ -23,3 +23,18 @@ SRC = iup_cdutil.c iup_gauge.c iup_cells.c iup_colorbar.c iup_controls.c \
 LIBS = iup iupcd
 LDIR = ../lib/$(TEC_UNAME)
 USE_CD = Yes
+
+# force the definition of math functions using float
+# Some compilers do not define them
+ifneq ($(findstring ow, $(TEC_UNAME)), )
+  DEFINES += IUP_DEFMATHFLOAT
+endif         
+ifneq ($(findstring bc, $(TEC_UNAME)), )
+  DEFINES += IUP_DEFMATHFLOAT
+endif
+ifneq ($(findstring AIX, $(TEC_UNAME)), )
+  DEFINES += IUP_DEFMATHFLOAT
+endif
+ifneq ($(findstring SunOS, $(TEC_UNAME)), )
+  DEFINES += IUP_DEFMATHFLOAT
+endif
