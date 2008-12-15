@@ -6,22 +6,15 @@ LOHDIR = loh
 SRCLUA = console5.lua
 SRC = iuplua51.c
 
-
 # Disable strip
 STRIP = 
 # Optimize
 OPT = YES      
-#DBG = Yes
 
 # IM and IupPPlot uses C++
 LINKER = $(CPPC)
 
-#ifneq ($(findstring Linux, $(TEC_UNAME)), )
-#  USE_GTK=Yes
-#endif
-
-ifndef XXX
-#ifdef DBG
+ifdef DBG
   # Statically link everything only when debugging
   IUP := ..
   USE_IUPLUA = Yes
@@ -143,11 +136,3 @@ endif
 #  OPTFLAGS = -mminimal-toc -ansi -pedantic 
 #  LFLAGS = -Xlinker "-bbigtoc"
 #endif
-
-ifeq ($(TEC_UNAME), vc8)
-  ifdef DBG
-    #debug info not working for vc8 linker
-    define DBG
-    endef
-  endif
-endif         
