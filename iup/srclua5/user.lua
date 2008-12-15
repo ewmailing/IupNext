@@ -5,7 +5,7 @@
 local ctrl = {
   nick = "user",
   parent = WIDGET,
-  creation = "-",
+  creation = "",
   callback = {}
 }
 

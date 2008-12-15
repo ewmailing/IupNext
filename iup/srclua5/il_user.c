@@ -14,7 +14,7 @@
 
 static int User(lua_State *L)
 {
-  Ihandle *ih = IupUser(NULL);
+  Ihandle *ih = IupUser();
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

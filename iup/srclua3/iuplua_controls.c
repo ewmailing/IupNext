@@ -22,9 +22,5 @@ int iupcontrolslua_open(void)
   cblua_open();
   colorbarlua_open();
   cellslua_open();
-  vallua_open();
-  tabslua_open();
-  gclua_open();
-  getparamlua_open();
   return 1;
 }

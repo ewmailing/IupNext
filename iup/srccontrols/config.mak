@@ -26,6 +26,18 @@ USE_CD = Yes
 
 # force the definition of math functions using float
 # Some compilers do not define them
+ifeq ($(TEC_UNAME), dll)
+  DEFINES += IUP_DEFMATHFLOAT
+endif         
+ifeq ($(TEC_UNAME), vc6)
+  DEFINES += IUP_DEFMATHFLOAT
+endif         
+ifeq ($(TEC_UNAME), dll7)
+  DEFINES += IUP_DEFMATHFLOAT
+endif         
+ifeq ($(TEC_UNAME), vc7)
+  DEFINES += IUP_DEFMATHFLOAT
+endif         
 ifneq ($(findstring ow, $(TEC_UNAME)), )
   DEFINES += IUP_DEFMATHFLOAT
 endif         

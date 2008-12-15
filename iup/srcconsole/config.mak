@@ -141,3 +141,11 @@ endif
 #  OPTFLAGS = -mminimal-toc -ansi -pedantic 
 #  LFLAGS = -Xlinker "-bbigtoc"
 #endif
+
+ifeq ($(TEC_UNAME), vc8)
+  ifdef DBG
+    #debug info not working for vc8 linker
+    define DBG
+    endef
+  endif
+endif         

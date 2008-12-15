@@ -40,3 +40,11 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 endif
 
 INCLUDES = ../src
+
+ifeq ($(TEC_UNAME), vc8)
+  ifdef DBG
+    #debug info not working for vc8 linker
+    define DBG
+    endef
+  endif
+endif         
