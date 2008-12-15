@@ -1,4 +1,4 @@
 EXPORTS
  IupImageLibOpen
- IupImageLibLoadAll
+ iupImageLibLoadAll
  

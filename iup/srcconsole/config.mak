@@ -19,8 +19,7 @@ ifdef USE_GTK
   APPNAME = iuplua51gtk
 endif
 
-ifndef XXX
-#ifdef DBG
+ifdef DBG
   # Statically link everything only when debugging
   IUP := ..
   USE_IUPLUA = Yes
@@ -89,7 +88,7 @@ ifndef XXX
   ifdef IUPLUA_IMGLIB
     DEFINES += IUPLUA_IMGLIB
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += iupluaimglib iupimglib
+      LIBS += iupluaimglib$(LIBLUASUFX) iupimglib
     else
       IUPLIB = $(IUP)/lib/$(TEC_UNAME)
       SLIB += $(IUPLIB)/libiupluaimglib$(LIBLUASUFX).a $(IUPLIB)/libiupimglib.a
