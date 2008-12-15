@@ -13,7 +13,33 @@ USE_IUPCONTROLS = Yes
 USE_IUP = Yes
 
 ifdef USE_GTK
-  APPNAME = iupviewgtk
+  ifneq ($(findstring Linux, $(TEC_UNAME)), )
+    APPNAME = iupview
+  else  
+  ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+    APPNAME = iupview
+  else  
+  ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
+    APPNAME = iupview
+  else  
+    APPNAME = iupviewgtk
+  endif  
+  endif  
+  endif
+else  
+  ifneq ($(findstring Linux, $(TEC_UNAME)), )
+    APPNAME = iupviewmot
+  else  
+  ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+    APPNAME = iupviewmot
+  else  
+  ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
+    APPNAME = iupviewmot
+  else  
+    APPNAME = iupview
+  endif  
+  endif  
+  endif
 endif
 
 ifeq "$(TEC_UNAME)" "SunOS510x86"

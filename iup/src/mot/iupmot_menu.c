@@ -335,7 +335,7 @@ static int motItemMapMethod(Ihandle* ih)
 
   ih->serial = iupMenuGetChildId(ih); /* must be after using the string */
 
-  XtAddCallback (ih->handle, XmNhelpCallback, iupmotHelpCallback, (XtPointer)ih);
+  XtAddCallback (ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
 
   pos = IupGetChildPos(ih->parent, ih);
   XtVaSetValues(ih->handle, XmNpositionIndex, pos, NULL);   /* RowColumn Constraint */

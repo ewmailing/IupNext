@@ -41,7 +41,7 @@ typedef struct _ImaskStack
 } ImaskStack;
 
 
-#define isalphanum(x) (isalnum(x) || (x == '_'))
+#define isalphanum(_x) (isalnum((int)(_x)) || ((_x) == '_'))
 
 
 /* match functions corresponding to regular expressions */
@@ -61,23 +61,23 @@ static int match_non_blanks (const char *text, long j)
 
 static int match_alpha (const char *text, long j)
 {
-  return (isalpha (text[j])) ? IMASK_NORMAL_MATCH : IMASK_NO_MATCH;
+  return (isalpha((int)text[j])) ? IMASK_NORMAL_MATCH : IMASK_NO_MATCH;
 }
 
 static int match_non_alpha (const char *text, long j)
 {
-  return (!isalpha (text[j]) && (text[j] != '\0'))
+  return (!isalpha((int)text[j]) && (text[j] != '\0'))
     ? IMASK_NORMAL_MATCH : IMASK_NO_MATCH;
 }
 
 static int match_digit (const char *text, long j)
 {
-  return (isdigit (text[j])) ? IMASK_NORMAL_MATCH : IMASK_NO_MATCH;
+  return (isdigit((int)text[j])) ? IMASK_NORMAL_MATCH : IMASK_NO_MATCH;
 }
 
 static int match_non_digit (const char *text, long j)
 {
-  return (!isdigit (text[j]) && (text[j] != '\0'))
+  return (!isdigit((int)text[j]) && (text[j] != '\0'))
     ? IMASK_NORMAL_MATCH : IMASK_NO_MATCH;
 }
 

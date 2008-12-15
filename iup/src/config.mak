@@ -82,6 +82,7 @@ else
     ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
       LIBNAME = iupmot
     else  
+      DEFINES += IUP_MOTIF_NO_REDISPLAY
       LIBNAME = iup
     endif  
     endif  

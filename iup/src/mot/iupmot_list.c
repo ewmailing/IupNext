@@ -1249,8 +1249,8 @@ static int motListMapMethod(Ihandle* ih)
     if (ih->data->is_dropdown)
     {
       XtVaSetValues(ih->handle, XmNvisibleItemCount, 5, NULL);
-      XtAddCallback(XtParent(XtParent(cblist)), XmNpopupCallback, motListDropDownPopupCallback, (XtPointer)ih);
-      XtAddCallback(XtParent(XtParent(cblist)), XmNpopdownCallback, motListDropDownPopdownCallback, (XtPointer)ih);
+      XtAddCallback(XtParent(XtParent(cblist)), XmNpopupCallback, (XtCallbackProc)motListDropDownPopupCallback, (XtPointer)ih);
+      XtAddCallback(XtParent(XtParent(cblist)), XmNpopdownCallback, (XtCallbackProc)motListDropDownPopdownCallback, (XtPointer)ih);
     }
     else
     {

@@ -7,6 +7,8 @@
 #include <Xm/Xm.h>
 #include <Xm/Label.h>
 
+#include <stdio.h>
+
 #include "iup.h"
 
 #include "iup_attrib.h"

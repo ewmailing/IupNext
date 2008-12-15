@@ -438,7 +438,7 @@ static int iMaskParseFactor (ImaskParseVars * vars)
         break;
 
       default:
-        if (isdigit (vars->string[vars->j]))
+        if (isdigit((int)vars->string[vars->j]))
         {
           sscanf (&vars->string[vars->j], "%3d", &temp);
           if (temp > 255)
