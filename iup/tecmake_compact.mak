@@ -78,7 +78,7 @@ ifeq ($(TEC_SYSNAME), Linux)
 endif
 
 # 64-bits Linux
-ifeq ($(TEC_SYSARCH), x86_64)
+ifeq ($(TEC_SYSARCH), x64)
 	BUILD_64=Yes
 	TEC_UNAME:=$(TEC_UNAME)_64
 endif
@@ -132,7 +132,7 @@ else
 endif
 endif
 
-ifeq ($(TEC_SYSARCH), x86_64)
+ifeq ($(TEC_SYSARCH), x64)
   TEC_WORDSIZE = TEC_64
 else
 ifdef BUILD_64
@@ -159,6 +159,19 @@ STDLFLAGS  := r
 DEBUGFLAGS := -g  
 STDLDFLAGS := -shared
 DLIBEXT := so
+
+ifneq ($(findstring Linux, $(TEC_UNAME)), )
+  GTK_DEFAULT = Yes
+endif  
+ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+  GTK_DEFAULT = Yes
+endif  
+ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
+  GTK_DEFAULT = Yes
+endif  
+ifneq ($(findstring Linux24, $(TEC_UNAME)), )
+  GTK_DEFAULT :=
+endif  
 
 #---------------------------------#
 # Build Tools
@@ -337,7 +350,6 @@ MOTIFGL_LIB := GLw              #include <GL/GLwMDrawA.h>
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), ) 
   NO_DYNAMIC ?= Yes
-  X11_LIBS := Xpm $(X11_LIBS)
   ifdef BUILD_64
     X11_LIB := /usr/X11R6/lib64
   else
@@ -348,7 +360,6 @@ ifneq ($(findstring cygw, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
-  X11_LIBS := Xpm $(X11_LIBS)
   ifdef BUILD_64
     ifeq ($(TEC_SYSARCH), ia64)
       STDFLAGS += -fPIC
@@ -375,9 +386,11 @@ ifneq ($(findstring IRIX, $(TEC_UNAME)), ) # any IRIX
       STDLDFLAGS += -64
       LINKER += -64
     endif
-    X11_LIB := /usr/Motif-2.1/lib64 /usr/lib64 # 64-bit libs
+    X11_LIB := /usr/lib64
+    MOTIF_LIB := /usr/Motif-2.1/lib64
   else
-    X11_LIB := /usr/Motif-2.1/lib32 /usr/lib32 # N32 libs
+    X11_LIB := /usr/lib32
+    MOTIF_LIB := /usr/Motif-2.1/lib32
   endif
   MOTIF_INC = /usr/Motif-2.1/include
 endif
@@ -507,6 +520,14 @@ ifdef USE_LUA51
   NO_LUALIB := Yes
 endif
 
+ifdef USE_IUP3
+  override USE_IUP = Yes
+endif 
+
+ifdef USE_IUP3BETA
+  IUP := $(IUP)3
+endif 
+
 ifdef USE_IUPBETA
   IUP := $(IUP)/beta
 endif 
@@ -619,12 +640,23 @@ ifdef USE_LUA
 endif
 
 ifdef USE_IUP   
-  ifdef USE_GTK
-    override USE_X11 = Yes
-    LIB_SFX = gtk
+  IUPSUFX := 
+  ifdef USE_IUP3
+    ifdef GTK_DEFAULT
+      ifdef USE_MOTIF
+        IUPSUFX := mot
+      else
+        override USE_GTK = Yes
+      endif
+    else
+      ifdef USE_GTK
+        IUPSUFX := gtk
+      else
+        override USE_MOTIF = Yes
+      endif
+    endif
   else
     override USE_MOTIF = Yes
-    LIB_SFX =
   endif
   ifdef USE_STATIC
     ifdef USE_CD
@@ -635,7 +667,7 @@ ifdef USE_IUP
     ifdef USE_OPENGL
       SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupgl.a
     endif
-    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup$(LIB_SFX).a
+    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup$(IUPSUFX).a
   else
     ifdef USE_CD
       ifndef USE_OLDNAMES
@@ -645,7 +677,7 @@ ifdef USE_IUP
     ifdef USE_OPENGL
       LIBS += iupgl
     endif
-    LIBS += iup$(LIB_SFX)
+    LIBS += iup$(IUPSUFX)
     LDIR += $(IUP)/lib/$(TEC_UNAME)
   endif
   INCLUDES += $(IUP)/include
@@ -735,6 +767,12 @@ ifdef USE_MOTIF
   LIBS += Xm
   LDIR += $(MOTIF_LIB)
   STDINCS += $(MOTIF_INC)
+  ifneq ($(findstring Linux, $(TEC_UNAME)), )
+    X11_LIBS := Xpm $(X11_LIBS)
+  endif
+  ifneq ($(findstring cygw, $(TEC_UNAME)), ) 
+    X11_LIBS := Xpm $(X11_LIBS)
+  endif
 endif
 
 ifdef USE_GTK

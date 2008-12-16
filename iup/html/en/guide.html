@@ -90,37 +90,34 @@ Eclipse for  C++</a>.</p>
   after Xt and before X11. For instance: </p>
 <pre>-liup -lXm -lXpm -lXmu -lXt -lXext -lX11 -lm</pre>
 <p>Usually these libraries are placed in 
-  default directories, being automatically located by the linker. When the linker warns you about a missing library, add 
-  their location directories with option -L. In Tecgraf, some machines require such 
-  option: </p>
+  default directories, but you may require additional 
+  options: </p>
   <table align="center">
-    <tr>
-      <td width="145">Standard</td>
-      <td width="434">-L/usr/lib -I/usr/include</td>
-    </tr>
     <tr>
       <td width="145">Linux</td>
       <td width="434">-L/usr/X11R6/lib -I/usr/X11R6/include</td>
     </tr>
     <tr>
       <td width="145">IRIX</td>
-      <td width="434">-L/usr/lib32 -I/usr/include/X11</td>
+      <td width="434">-L/usr/lib32 (X11)<br>
+		-L/usr/Motif-2.1/lib32 -I/usr/Motif-2.1/include (Motif)</td>
     </tr>
     <tr>
-      <td width="145">Solaris</td>
-      <td width="434">-L/usr/openwin/lib -I/usr/openwin/share/include/X11</td>
+      <td width="145">SunOS</td>
+      <td width="434">-L/usr/openwin/lib -I/usr/openwin/share/include (X11)<br>
+		-L/usr/dt/lib -I/usr/dt/share/include (Motif)</td>
     </tr>
-    <tr>
-      <td width="145">AIX</td>
-      <td width="434">-I/usr/include/Motif2.1</td>
-    </tr>
-  </table>
+    </table>
 <h4>GTK+ (since 3.0)</h4>
 <p>In UNIX it will need the X-Windows libraries just like the Motif driver. And in UNIX or in Windows it will need the 
   &quot;iupgtk&quot; library and the following GTK+ libraries:</p>
 <pre><b>gtk-win32-2.0 gdk-win32-2.0</b> gdk_pixbuf-2.0 pango-1.0 <b>pangowin32-1.0</b> gobject-2.0 gmodule-2.0 glib-2.0
    or
 <b>gtk-x11-2.0 gdk-x11-2.0</b> gdk_pixbuf-2.0 pango-1.0 <b>pangox-1.0</b> gobject-2.0 gmodule-2.0 glib-2.0</pre>
+<p>In UNIX the following INCLUDES paths are necessary:</p>
+<pre>/usr/include/atk-1.0 /usr/include/gtk-2.0 /usr/include/cairo /usr/include/pango-1.0 /usr/include/glib-2.0 
+and eventually:   /usr/lib/glib-2.0/include /usr/lib/gtk-2.0/include
+             or   /usr/lib64/glib-2.0/include /usr/lib64/gtk-2.0/include</pre>
 <h4>Multithread</h4>
 <p>User interface is usually not thread safe and IUP is not thread safe. The general recommendation when you want more 
   than one thread is to build the application and the user interface in the main thread, and create secondary threads 

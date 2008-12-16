@@ -23,7 +23,7 @@ ifdef DBG
   # Statically link everything only when debugging
   IUP := ..
   USE_IUPLUA = Yes
-  USE_IUP = Yes
+  USE_IUP3 = Yes
   USE_STATIC = Yes
   USE_LUA51 = Yes
   

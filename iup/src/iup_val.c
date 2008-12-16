@@ -33,7 +33,9 @@ void iupValCropValue(Ihandle* ih)
 
 char* iupValGetShowTicksAttrib(Ihandle* ih)
 {
-  return (char*)ih->data->show_ticks;
+  char* str = iupStrGetMemory(30);
+  sprintf(str, "%d", ih->data->show_ticks);
+  return str;
 }
 
 static int iValSetShowTicksAttrib(Ihandle* ih, const char* value)

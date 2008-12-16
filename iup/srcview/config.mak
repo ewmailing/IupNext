@@ -10,35 +10,18 @@ LINKER = $(CPPC)
 
 USE_CD = Yes
 USE_IUPCONTROLS = Yes
-USE_IUP = Yes
+USE_IUP3 = Yes
 
 ifdef USE_GTK
-  ifneq ($(findstring Linux, $(TEC_UNAME)), )
-    APPNAME = iupview
-  else  
-  ifneq ($(findstring Darwin, $(TEC_UNAME)), )
-    APPNAME = iupview
-  else  
-  ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
-    APPNAME = iupview
-  else  
+  ifndef GTK_DEFAULT
+    # Build GTK version in IRIX,SunOS,AIX,Win32
     APPNAME = iupviewgtk
-  endif  
-  endif  
   endif
 else  
-  ifneq ($(findstring Linux, $(TEC_UNAME)), )
+  ifdef GTK_DEFAULT
+    # Build Motif version in Linux,Darwin,FreeBSD
+    USE_MOTIF = Yes
     APPNAME = iupviewmot
-  else  
-  ifneq ($(findstring Darwin, $(TEC_UNAME)), )
-    APPNAME = iupviewmot
-  else  
-  ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
-    APPNAME = iupviewmot
-  else  
-    APPNAME = iupview
-  endif  
-  endif  
   endif
 endif
 

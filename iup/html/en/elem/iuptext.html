@@ -325,7 +325,9 @@ supported.</p>
 control, then a beep is sound.</p>
 <p>When using UTF-8 strings in GTK be aware that all attributes are indexed by 
 characters, NOT by byte index, because some characters in UTF-8 can use more 
-than one byte.</p>
+than one byte. This also applies to Windows if FORMATTING=YES depending on the 
+Windows codepage (for example East Asian codepage where some characters take two 
+bytes). </p>
 <h4>Navigation, Selection and Clipboard Keys</h4>
 <p>Here is a list of the common keys for all drivers. Other keys are available 
 depending on the driver.</p>

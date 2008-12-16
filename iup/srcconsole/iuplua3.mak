@@ -14,13 +14,9 @@ LOHDIR = loh
 
 USE_LUA = Yes
 USE_IUPLUA = Yes
-USE_IUP = Yes
+USE_IUP3 = Yes
           
 USE_STATIC = Yes
-
-ifneq ($(findstring Linux, $(TEC_UNAME)), )
-  USE_GTK=Yes
-endif
 
 ifdef BUILD_64
   ifneq ($(findstring SunOS, $(TEC_UNAME)), )

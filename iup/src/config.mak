@@ -20,19 +20,11 @@ SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font
       iup_sbox.c iup_normalizer.c
 
 ifdef USE_GTK
-  ifneq ($(findstring Linux, $(TEC_UNAME)), )
-    LIBNAME = iup
-  else  
-  ifneq ($(findstring Darwin, $(TEC_UNAME)), )
-    LIBNAME = iup
-  else  
-  ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
-    LIBNAME = iup
-  else  
-    LIBNAME = iupgtk
-  endif  
-  endif  
-  endif  
+  ifndef GTK_DEFAULT
+    # Build GTK version in IRIX,SunOS,AIX,Win32
+    LIBNAME := iupgtk
+  endif
+
   DEFINES += GTK_DISABLE_DEPRECATED
   INCLUDES += gtk
     SRC += gtk/iupgtk_common.c gtk/iupgtk_focus.c gtk/iupgtk_font.c \
@@ -73,20 +65,13 @@ else
     INCLUDES += win
     DEFINES += _WIN32_WINNT=0x0500 _WIN32_IE=0x0500 WINVER=0x0500 NOTREEVIEW
   else
-    ifneq ($(findstring Linux, $(TEC_UNAME)), )
-      LIBNAME = iupmot
-    else  
-    ifneq ($(findstring Darwin, $(TEC_UNAME)), )
-      LIBNAME = iupmot
-    else  
-    ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
-      LIBNAME = iupmot
+    ifdef GTK_DEFAULT
+      # Build Motif version in Linux,Darwin,FreeBSD
+      LIBNAME := iupmot
     else  
       DEFINES += IUP_MOTIF_NO_REDISPLAY
-      LIBNAME = iup
     endif  
-    endif  
-    endif  
+    
     SRC += mot/iupmot_common.c mot/iupmot_color.c mot/iupmot_focus.c mot/iupmot_font.c \
            mot/iupmot_key.c mot/iupmot_loop.c mot/iupmot_open.c mot/iupmot_tips.c \
            mot/iupmot_globalattrib.c mot/iupmot_dialog.c mot/iupmot_messagedlg.c \
