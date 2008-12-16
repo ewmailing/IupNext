@@ -8,6 +8,7 @@
 
 #include <string.h>
 #include <memory.h>
+#include <stdio.h>
 
 #include "iup.h"
 

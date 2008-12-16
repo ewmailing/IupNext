@@ -136,11 +136,11 @@ ifneq ($(findstring SunOS, $(TEC_UNAME)), )
   LIBS += dl
 endif
 
-#ifneq ($(findstring AIX, $(TEC_UNAME)), )
-#  FLAGS  += -mminimal-toc
-#  OPTFLAGS = -mminimal-toc -ansi -pedantic 
-#  LFLAGS = -Xlinker "-bbigtoc"
-#endif
+ifneq ($(findstring AIX, $(TEC_UNAME)), )
+  FLAGS  += -mminimal-toc
+  OPTFLAGS = -mminimal-toc -ansi -pedantic 
+  LFLAGS = -Xlinker "-bbigtoc"
+endif
 
 ifeq ($(TEC_UNAME), vc8)
   ifdef DBG

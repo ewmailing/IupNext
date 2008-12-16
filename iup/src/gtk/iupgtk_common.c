@@ -455,13 +455,15 @@ void iupgdkColorSet(GdkColor* color, unsigned char r, unsigned char g, unsigned 
 static void gtkDragDataReceived(GtkWidget* w, GdkDragContext* context, int x, int y,
                                       GtkSelectionData* seldata, guint info, guint time, Ihandle* ih)
 {
-  gchar **uris;
+  gchar **uris = NULL;
   int i, count;
 
   IFnsiii cb = (IFnsiii)IupGetCallback(ih, "DROPFILES_CB");
   if (!cb) return; 
 
+#if GTK_CHECK_VERSION(2, 6, 0)
   uris = g_uri_list_extract_uris((char*)seldata->data);
+#endif
 
   count = 0;
   while (uris[count])
@@ -646,12 +648,14 @@ char* iupgtkStrConvertFromUTF8(const char* str)  /* From GTK to IUP */
 
 static gboolean gtkGetFilenameCharset(const gchar **filename_charset)
 {
-  const gchar **charsets;
-  gboolean is_utf8;
+  const gchar **charsets = NULL;
+  gboolean is_utf8 = FALSE;
   
+#if GTK_CHECK_VERSION(2, 6, 0)
   is_utf8 = g_get_filename_charsets (&charsets);
+#endif
 
-  if (filename_charset)
+  if (filename_charset && charsets)
     *filename_charset = charsets[0];
   
   return is_utf8;
@@ -666,7 +670,7 @@ char* iupgtkStrConvertToFilename(const char* str)   /* From IUP to Filename */
     return (char*)str;
   else
   {
-    const gchar *charset;
+    const gchar *charset = NULL;
     if (gtkGetFilenameCharset(&charset)==TRUE)  /* current locale is already UTF-8 */
     {
       if (g_utf8_validate(str, -1, NULL))
@@ -682,7 +686,7 @@ char* iupgtkStrConvertToFilename(const char* str)   /* From IUP to Filename */
     }
     else
     {
-      if (gtkStrIsAscii(str))
+      if (gtkStrIsAscii(str) || !charset)
         return (char*)str;
       else
       {

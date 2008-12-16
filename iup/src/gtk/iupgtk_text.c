@@ -30,6 +30,9 @@
 
 #include "iupgtk_drv.h"
 
+#ifndef PANGO_WEIGHT_SEMIBOLD
+#define PANGO_WEIGHT_SEMIBOLD 600
+#endif
 
 void iupdrvTextAddSpin(int *w, int h)
 {

@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <memory.h>
+#include <stdio.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -224,8 +225,10 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   if (IupGetCallback(ih, "HELP_CB"))
     gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_HELP, GTK_RESPONSE_HELP);
 
+#if GTK_CHECK_VERSION(2, 6, 0)
   if (iupAttribGetInt(ih, "SHOWHIDDEN"))
     gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
+#endif
 
   if (iupAttribGetInt(ih, "MULTIPLEFILES") && action == GTK_FILE_CHOOSER_ACTION_OPEN)
     gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);

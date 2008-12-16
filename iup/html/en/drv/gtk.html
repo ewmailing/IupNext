@@ -17,6 +17,8 @@
   version 2. It can be compiled in Windows or UNIX.</p>
 <p>Although GTK has layout elements they are not used. IUP fill, vbox, hbox and 
 zbox containers are implemented independent from the native system.</p>
+<p>Currently it is not available for IRIX, AIX and SunOS. But is it available 
+for SunOS10 and it is not available for Linux24.</p>
 <h3>Tips</h3>
 <p>The GTK driver can be compiled and used in Windows, but it is not recomended since it is slower and 
 much more memory 
@@ -29,7 +31,6 @@ applications that dynamically load IUP will always use the &quot;iup.dll&quot;, 
 example Lua using require. To use the IUP GTK dll in Windows you must rename the 
 &quot;iupgtk.dll&quot; to &quot;iup.dll&quot;, so the GTK driver will be loaded instead of the Win32 
 driver.</p>
-<p>&nbsp;</p>
 
 </body>
 

@@ -68,11 +68,13 @@ static int gtkLabelSetEllipsisAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_LABEL_TEXT)
   {
+#if GTK_CHECK_VERSION(2, 6, 0)
     GtkLabel* label = (GtkLabel*)ih->handle;
     if (iupStrBoolean(value))
       gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_END);
     else
       gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_NONE);
+#endif
     return 1;
   }
   return 0;

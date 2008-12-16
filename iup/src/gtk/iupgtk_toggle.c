@@ -30,6 +30,16 @@
 #include "iupgtk_drv.h"
 
 
+#if !GTK_CHECK_VERSION(2, 6, 0)
+static void gtk_button_set_image(GtkButton *button, GtkWidget *image)
+{
+}
+static GtkWidget* gtk_button_get_image(GtkButton *button)
+{
+  return NULL;
+}
+#endif
+
 void iupdrvToggleAddCheckBox(int *x, int *y)
 {
   (*x) += 16+4;

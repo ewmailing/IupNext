@@ -11,17 +11,28 @@
 #include "iup_str.h"
 #include "iup_image.h"
 
-#include "iup_imglib_bitmaps.h"
-#include "iup_imglib_bitmaps8.h"
-#include "iup_imglib_bitmapsgtk.h"
-#include "iup_imglib_icons8.h"
-#include "iup_imglib_logos8.h"
+/* GTK and Win32 share the same library in Windows */
+/* GTK and Motif share the same library in UNIX */
+
+#ifndef IUP_IMGLIB_DUMMY
+#ifdef WIN32
+#include "iup_imglib_bitmaps.h"   /* Used only by the Win32 driver in Windows */
+#endif
+#ifndef WIN32
+#include "iup_imglib_bitmaps8.h"  /* Used only by the Motif driver in UNIX */
+#endif
+#include "iup_imglib_bitmapsgtk.h"  /* Used only by the GTK driver in UNIX or Windows */
+#ifndef WIN32
+#include "iup_imglib_icons8.h"  /* Used only by the Motif driver in UNIX */
+#include "iup_imglib_logos8.h"  /* Used only by the Motif driver in UNIX */
+#endif
 #include "iup_imglib_icons.h"
 #include "iup_imglib_logos.h"
-
+#endif
 
 void IupImageLibOpen(void)
 {
+#ifndef IUP_IMGLIB_DUMMY
   int motif=0, win32=0, gtk=0;
   char* driver = IupGetGlobal("DRIVER");
   if (iupStrEqualNoCase(driver, "GTK"))
@@ -33,6 +44,7 @@ void IupImageLibOpen(void)
 
   /**************** Bitmaps *****************/
 
+#ifndef WIN32
   if (motif)
   {
     iupImageStockSet("IUP_ActionCancel", load_image_ActionCancel8, 0);
@@ -88,7 +100,9 @@ void IupImageLibOpen(void)
     iupImageStockSet("IUP_ZoomOut", load_image_ZoomOut8, 0);
     iupImageStockSet("IUP_ZoomSelection", load_image_ZoomSelection8, 0);
   }
+#endif
 
+#ifdef WIN32
   if (win32)
   {
     iupImageStockSet("IUP_ActionCancel", load_image_ActionCancel, 0);
@@ -144,6 +158,7 @@ void IupImageLibOpen(void)
     iupImageStockSet("IUP_ZoomOut", load_image_ZoomOut, 0);
     iupImageStockSet("IUP_ZoomSelection", load_image_ZoomSelection, 0);
   }
+#endif  
 
   if (gtk)
   {
@@ -203,6 +218,7 @@ void IupImageLibOpen(void)
 
   /***************** Icons *****************/
 
+#ifndef WIN32
   if (motif)
   {
     iupImageStockSet("IUP_Tecgraf", load_image_Tecgraf8, 0);
@@ -213,6 +229,7 @@ void IupImageLibOpen(void)
     iupImageStockSet("IUP_Petrobras", load_image_Petrobras8, 0);
   }
   else
+#endif
   {
     iupImageStockSet("IUP_Tecgraf", load_image_Tecgraf, 0);
     iupImageStockSet("IUP_PUC-Rio", load_image_PUC_Rio, 0);
@@ -224,6 +241,7 @@ void IupImageLibOpen(void)
 
   /***************** Logos *****************/
 
+#ifndef WIN32
   if (motif)
   {
     iupImageStockSet("IUP_LogoTecgraf", load_image_LogoTecgraf8, 0);
@@ -234,6 +252,7 @@ void IupImageLibOpen(void)
     iupImageStockSet("IUP_LogoPetrobras", load_image_LogoPetrobras8, 0);
   }
   else
+#endif
   {
     iupImageStockSet("IUP_LogoTecgraf", load_image_LogoTecgraf, 0);
     iupImageStockSet("IUP_LogoPUC-Rio", load_image_LogoPUC_Rio, 0);
@@ -243,6 +262,7 @@ void IupImageLibOpen(void)
     iupImageStockSet("IUP_LogoPetrobras", load_image_LogoPetrobras, 0);
   }
 
+#ifdef WIN32
   if (win32)
   {
     iupImageStockSet("IUP_DeviceCamera", load_image_DeviceCamera, 0);
@@ -264,6 +284,7 @@ void IupImageLibOpen(void)
     iupImageStockSet("IUP_LogoMessageSecurity", load_image_LogoMessageSecurity, 0);
     iupImageStockSet("IUP_LogoMessageWarning", load_image_LogoMessageWarning, 0);
   }
+#endif  
 
   if (gtk)
   {
@@ -273,10 +294,12 @@ void IupImageLibOpen(void)
     iupImageStockSet("IUP_LogoMessageSecurity", 0, "gtk-dialog-authentication");
     iupImageStockSet("IUP_LogoMessageWarning", 0, "gtk-dialog-warning");
   }
+#endif  
 }
  
 void iupImageLibLoadAll(void)
 {
+#ifndef IUP_IMGLIB_DUMMY
   /* Bitmaps */
   iupImageStockLoad("IUP_ActionCancel");
   iupImageStockLoad("IUP_ActionOk");
@@ -347,6 +370,7 @@ void iupImageLibLoadAll(void)
   iupImageStockLoad("IUP_LogoTecgrafPUC-Rio");
   iupImageStockLoad("IUP_LogoPetrobras");
 
+#ifdef WIN32
   /* Logos - Win32 Only */
   iupImageStockLoad("IUP_DeviceCamera");
   iupImageStockLoad("IUP_DeviceCD");
@@ -360,6 +384,7 @@ void iupImageLibLoadAll(void)
   iupImageStockLoad("IUP_DeviceScanner");
   iupImageStockLoad("IUP_DeviceSound");
   iupImageStockLoad("IUP_DeviceVideo");
+#endif
 
   /* Logos - GTK and Win32 Only */
   iupImageStockLoad("IUP_LogoMessageError");
@@ -367,4 +392,5 @@ void iupImageLibLoadAll(void)
   iupImageStockLoad("IUP_LogoMessageInfo");
   iupImageStockLoad("IUP_LogoMessageSecurity");
   iupImageStockLoad("IUP_LogoMessageWarning");
+#endif  
 }

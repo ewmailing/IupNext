@@ -74,11 +74,11 @@ else
   DEFINES += IUPLUA_NO_IM
 endif
 
-#ifneq ($(findstring AIX, $(TEC_UNAME)), )
-#  FLAGS  += -mminimal-toc
-#  OPTFLAGS = -mminimal-toc -ansi -pedantic 
-#  LFLAGS = -Xlinker "-bbigtoc"
-#endif
+ifneq ($(findstring AIX, $(TEC_UNAME)), )
+  FLAGS  += -mminimal-toc
+  OPTFLAGS = -mminimal-toc -ansi -pedantic 
+  LFLAGS = -Xlinker "-bbigtoc"
+endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC += iuplua3.rc

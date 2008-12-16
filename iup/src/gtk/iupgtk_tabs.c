@@ -286,8 +286,10 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     {
       tab_label = gtk_label_new(iupgtkStrConvertToUTF8(tabtitle));
 
+#if GTK_CHECK_VERSION(2, 6, 0)
       if (ih->data->orientation == ITABS_VERTICAL)
         gtk_label_set_angle((GtkLabel*)tab_label, 90);
+#endif
     }
 
     if (tabimage)

@@ -29,6 +29,16 @@
 #include "iupgtk_drv.h"
 
 
+#if !GTK_CHECK_VERSION(2, 6, 0)
+static void gtk_button_set_image(GtkButton *button, GtkWidget *image)
+{
+}
+static GtkWidget* gtk_button_get_image(GtkButton *button)
+{
+  return NULL;
+}
+#endif
+
 void iupdrvButtonAddBorders(int *x, int *y)
 {
 #ifdef WIN32
@@ -174,7 +184,7 @@ static void gtkButtonSetPixbuf(Ihandle* ih, const char* name, int make_inactive,
   GtkButton* button = (GtkButton*)ih->handle;
   GtkImage* image = (GtkImage*)gtk_button_get_image(button);
 
-  if (name)
+  if (name && image)
   {
     GdkPixbuf* pixbuf = iupImageGetImage(name, ih, make_inactive, attrib_name);
     GdkPixbuf* old_pixbuf = gtk_image_get_pixbuf(image);
