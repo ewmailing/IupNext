@@ -168,11 +168,11 @@ the makefiles and projects expect the following directory tree:</p>
         lua5.1\</pre>
 <p>IUP_ASSERT can be defined to enable some runtime checks for the main API.</p>
 <h4>Libraries Dependencies</h4>
-<pre>iup -&gt; <strong><span class="style1">gdi32</span></strong> <strong><span class="style1">user32</span></strong> <strong><span class="style1">comdlg32</span></strong> <strong><span class="style1">comctl32</span></strong> <strong><span class="style1">ole32</span></strong> (system - Windows)
-    -&gt; [<strong><span class="style1">Xpm</span></strong> <strong><span class="style1">Xmu</span></strong> <strong><span class="style1">Xext</span></strong>] <strong><span class="style1">Xt</span></strong> <strong><span class="style1">X11</span></strong> (system - UNIX)
-iupgtk -&gt; <strong><span class="style1">gtk-win32-2.0 gdk-win32-2.0 pangowin32-1.0</span></strong>(system - Windows)
-       -&gt; <strong><span class="style1">gtk-x11-2.0 gdk-x11-2.0 pangox-1.0</span></strong> (system - UNIX)
-       -&gt; <strong><span class="style1">gdk_pixbuf-2.0 pango-1.0 gobject-2.0</span></strong> gmodule-2.0 glib-2.0 (system - Windows/UNIX)
+<pre><em>iupwin*</em> -&gt; <strong><span class="style1">gdi32</span></strong> <strong><span class="style1">user32</span></strong> <strong><span class="style1">comdlg32</span></strong> <strong><span class="style1">comctl32</span></strong> <strong><span class="style1">ole32</span></strong> (system - Windows)
+<em>iupmot*</em> -&gt; [<strong><span class="style1">Xpm</span></strong> <strong><span class="style1">Xmu</span></strong> <strong><span class="style1">Xext</span></strong>] <strong><span class="style1">Xt</span></strong> <strong><span class="style1">X11</span></strong> (system - UNIX)
+<em>iupgtk*</em> -&gt; <strong><span class="style1">gtk-win32-2.0 gdk-win32-2.0 pangowin32-1.0</span></strong>(system - Windows)
+        -&gt; <strong><span class="style1">gtk-x11-2.0 gdk-x11-2.0 pangox-1.0</span></strong> (system - UNIX)
+        -&gt; <strong><span class="style1">gdk_pixbuf-2.0 pango-1.0 gobject-2.0</span></strong> <strong><span class="style1">gmodule-2.0 glib-2.0</span></strong> (system - Windows/UNIX)
 iupgl -&gt; iup
       -&gt; <strong><span class="style1">opengl32</span></strong> <strong><span class="style1">glu32</span></strong> <strong><span class="style1">glaux</span></strong> (system - Windows)
       -&gt; <strong><span class="style1">GLU</span></strong> <strong><span class="style1">GL </span></strong>(system - UNIX)
@@ -200,7 +200,12 @@ iupluaole51 -&gt; iuplua51
            -&gt; iupole
 iuplua_pplot51 -&gt; iuplua51
                -&gt; iup_pplot
-iupole -&gt; iup</pre>
+iupole -&gt; iup
+
+(*) In Windows, &quot;<strong>iupwin</strong>&quot; is called &quot;<strong>iup</strong>&quot;. 
+    In Linux, Darwin and FreeBSD &quot;<strong>iupgtk</strong>&quot; is called &quot;<strong>iup</strong>&quot;. 
+    In IRIX, AIX and SunOS &quot;<strong>iupmot</strong>&quot; is called &quot;<strong>iup</strong>&quot;.</pre>
+
 <p>As a general rule (excluding system dependencies): IUP depends on CD and IM, 
 and IUPLua depends on Lua, CDLua and IMLua. Notice that not all IUP 
 libraries depend on CD and IM.</p>
@@ -210,7 +215,8 @@ distribution. So if you are going to build all use the <strong>LuaBinaries</stro
 source package also, not the <strong>Lua.org</strong> original source package. 
 If you like to use another location for the Lua files overwrite the LUAINC, 
 LUALIB and LUABINDIR definitions before using Tecmake or Tecmake Compact.</p>
-<p>In Ubuntu you will need to install the following packages:</p>
+<p>In Ubuntu you will need to install the following packages and their 
+dependencies:</p>
 <pre>libmotif-dev
 x11proto-print-dev
 libgl1-mesa-dev
