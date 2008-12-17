@@ -2,9 +2,9 @@ PROJNAME = iup
 LIBNAME = iup
 OPT = YES
 
-ifdef DBG
+#ifdef DBG
   DEFINES += IUP_ASSERT
-endif  
+#endif  
 
 INCLUDES = ../include .
 
