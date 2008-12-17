@@ -158,11 +158,11 @@ build the
 library you want installed, see the documentation bellow.</p>
 <p>If you are going to build all the libraries, 
 the makefiles and projects expect the following directory tree:</p>
-<pre>\mylibs\
-        iup\
-        cd\
-        im\
-        lua5.1\</pre>
+<pre>/mylibs/
+        iup/
+        cd/
+        im/
+        lua5.1/</pre>
 <p>IUP_ASSERT can be defined to enable some runtime checks for the main API.</p>
 <h4>Libraries Dependencies</h4>
 <pre><em>iupwin*</em> -&gt; <strong><span class="style1">gdi32</span></strong> <strong><span class="style1">user32</span></strong> <strong><span class="style1">comdlg32</span></strong> <strong><span class="style1">comctl32</span></strong> <strong><span class="style1">ole32</span></strong> (system - Windows)
@@ -206,6 +206,23 @@ iupole -&gt; iup
 <p>As a general rule (excluding system dependencies): IUP depends on CD and IM, 
 and IUPLua depends on Lua, CDLua and IMLua. Notice that not all IUP 
 libraries depend on CD and IM.</p>
+<p>Instead of building all the libraries, try building only the libraries you 
+are going to use. The Makefile on the root folder will build all the libraries, 
+but in each source folder there are secondary Makefiles. We use the following 
+source code structure:</p>
+<pre>iup/
+    src/         - The core library. Motif, GTK and Windows code
+    srccd/       - CD_IUP canvas driver for the CD library
+    srcconsole/  - Lua interpreter executable with pre-loaded IUP, CD and IM libraries
+    srcgl/       - IupGLCanvas
+    srcim/       - IUP/IM utilities
+    srcimglib/   - Image Libraries with Icons, Logos and Bitmaps
+    srcledc/     - ledc executable
+    srclua3      - Lua3 binding, used at Tecgraf by some old applications
+    srclua5/     - Lua 5 binding
+    srcole/      - IupOleControl
+    srcpplot/    - IupPPlot
+    srcview/     - IupView executable</pre>
 <p>The Lua bindings for IUP, CD and IM (Makfiles and Pre-compiled binaries) 
 depend on the <a href="http://luabinaries.luaforge.net/">LuaBinaries</a> 
 distribution. So if you are going to build all use the <strong>LuaBinaries</strong> 
