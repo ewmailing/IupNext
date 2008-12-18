@@ -176,14 +176,14 @@ endif
 #---------------------------------#
 # Build Tools
 
-CC       := gcc
-CPPC     := g++
-FF       := g77
-RANLIB   := ranlib
-AR       := ar
-DEBUGGER := gdb
-RCC      := windres 
-LD       := gcc
+CC       := $(TEC_TOOLCHAIN)gcc
+CPPC     := $(TEC_TOOLCHAIN)g++
+FF       := $(TEC_TOOLCHAIN)g77
+RANLIB   := $(TEC_TOOLCHAIN)ranlib
+AR       := $(TEC_TOOLCHAIN)ar
+DEBUGGER := $(TEC_TOOLCHAIN)gdb
+RCC      := $(TEC_TOOLCHAIN)windres 
+LD       := $(TEC_TOOLCHAIN)gcc
 
 ifeq ($(TEC_UNAME), gcc2)
   ifdef USE_GCC_2
@@ -814,8 +814,9 @@ else
   
   ifdef USE_GTK
     LIBS += gtk-win32-2.0 gdk-win32-2.0 gdk_pixbuf-2.0 pango-1.0 pangowin32-1.0 gobject-2.0 gmodule-2.0 glib-2.0
-    LDIR += $(GTK)/lib
-    STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0 $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
+    #LDIR += $(GTK)/lib
+    GTK_INC = /usr
+    STDINCS += $(GTK_INC)/include/atk-1.0 $(GTK_INC)/include/gtk-2.0 $(GTK_INC)/include/cairo $(GTK_INC)/include/pango-1.0 $(GTK_INC)/include/glib-2.0 $(GTK_INC)/lib/glib-2.0/include $(GTK_INC)/lib/gtk-2.0/include
   endif
   
   APPTYPE ?= windows
@@ -1052,14 +1053,14 @@ depend: $(DEPEND)
 $(DEPEND): $(MAKENAME)
   ifdef SRC
 	  @echo "" > $(DEPEND)
-	  @which gcc 2> /dev/null 1>&2 ;\
+	  @which $(CPPC) 2> /dev/null 1>&2 ;\
 	  if [ $$? -eq 0 ]; then \
 	    echo "Building dependencies... (can be slow)" ;\
-	    g++ $(INCLUDES) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
+	    $(CPPC) $(INCLUDES) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
 	    sed -e '1,$$s/^\([^ ]\)/$$(OBJDIR)\/\1/' > $(DEPEND) ;\
 	  else \
 	    echo "" ;\
-	    echo "g++ not found. Dependencies can not be built." ;\
+	    echo "$(CPPC) not found. Dependencies can not be built." ;\
 	    echo "Must set USE_NODEPEND=Yes." ;\
 	    echo "" ;\
 	    exit 1 ;\
