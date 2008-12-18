@@ -7,7 +7,7 @@ ifdef USE_GTK
   APPNAME = iupsamplegtk
 endif
 
-USE_IUP = Yes
+USE_IUP3 = Yes
 USE_STATIC = Yes
 IUP = ../../..
 
@@ -49,6 +49,8 @@ DBG = Yes
 #SRC = vbox.c
 #SRC = zbox.c
 #SRC = sample.c
+#SRC = sbox1.c
+#SRC = sbox2.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
@@ -64,7 +66,7 @@ DBG = Yes
 #USE_OPENGL = Yes
 #SRC = glcanvas.c
 
-USE_IUPCONTROLS = Yes
+#USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
 #SRC = cbox.c
 #SRC = cells_checkboard.c
@@ -77,8 +79,6 @@ USE_IUPCONTROLS = Yes
 #SRC = getparam.c
 #SRC = matrix.c
 #SRC = mdi.c
-SRC = sbox1.c
-#SRC = sbox2.c
 #SRC = tree.c
 
 #USE_IUPCONTROLS = Yes
@@ -89,3 +89,7 @@ SRC = sbox1.c
 #else
 #  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_pplot.a $(CD)/lib/$(TEC_UNAME)/libcdpdflib.a
 #endif
+
+USE_LUA51=Yes
+USE_IUPLUA=Yes
+SRC = lua_init.c

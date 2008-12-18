@@ -4,10 +4,10 @@
 #include <lauxlib.h>
 
 #include <iup.h>
-#include <iupcontrols.h>
+//#include <iupcontrols.h>
 
 #include <iuplua.h>
-#include <iupluacontrols.h>
+//#include <iupluacontrols.h>
 
 
 int main(int argc, char **argv)
@@ -15,23 +15,23 @@ int main(int argc, char **argv)
   lua_State *L;
 
   IupOpen(&argc, &argv);
-  IupControlsOpen();
+//  IupControlsOpen();
 
   /* Lua 5 initialization */
   L = lua_open();   
   luaL_openlibs(L);
 
   iuplua_open(L);      /* Initialize Binding Lua */
-  iupcontrolslua_open(L); /* Initialize CPI controls binding Lua */
+//  iupcontrolslua_open(L); /* Initialize CPI controls binding Lua */
 
   /* do other things, like running a lua script */
-  lua_dofile(L, "myfile.lua");
+  luaL_dofile(L, "lua_init.lua");
 
-  IupMainLoop(); /* could be here or inside "myfile.lua" */
+//  IupMainLoop(); /* could be here or inside "myfile.lua" */
 
   lua_close(L);
 
-  IupControlsClose();
+//  IupControlsClose();
   IupClose();
 
   return 0;
