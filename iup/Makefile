@@ -3,8 +3,8 @@
 #all: iup iupcd iupcontrols iupgl iup_pplot iupim iupimglib ledc iupview iuplua3 iuplua5 iupconsole
 all: iup iupcd iupcontrols iupgl iup_pplot iupim iupimglib ledc iupview iuplua5 iupconsole
 
-iup:
-	@$(MAKE) --no-print-directory -C ./src/
+iup iupgtk:
+	@$(MAKE) --no-print-directory -C ./src/ $@
 iupcd:
 	@$(MAKE) --no-print-directory -C ./srccd/
 iupcontrols:
