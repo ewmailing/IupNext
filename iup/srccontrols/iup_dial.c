@@ -11,7 +11,6 @@
 
 #include "iup.h"
 #include "iupcbs.h"
-#include "iupdial.h"
 #include "iupkey.h"
 
 #include <cd.h>

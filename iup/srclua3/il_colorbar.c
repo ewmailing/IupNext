@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 #include "iup.h"
-#include "iupcolorbar.h"
+#include "iupcontrols.h"
 
 #include <lua.h>
 

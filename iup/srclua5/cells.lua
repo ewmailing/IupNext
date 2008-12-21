@@ -17,7 +17,7 @@ local ctrl = {
     hspan_cb = "nn",
     vspan_cb = "nn",
    },
-  include = "iupcells.h"
+  include = "iupcontrols.h",
 }
 
 function ctrl.redraw(handle)

@@ -313,8 +313,12 @@ void iupDialogHide(Ihandle* ih)
     IupExitLoop();
   }
 
+  ih->data->ignore_resize = 1;
+
   /* actually hide the window */
   iupdrvDialogSetVisible(ih, 0);
+
+  ih->data->ignore_resize = 0;
 
   /* decrement visible count */
   iupDlgListVisibleDec();

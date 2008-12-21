@@ -8,7 +8,6 @@ local ctrl = {
   callback = {
     spin_cb = "n",
   },
-  include = "iupspin.h"
 }
 
 function ctrl.createElement(class, arg)

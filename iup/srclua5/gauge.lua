@@ -6,7 +6,7 @@ local ctrl = {
   parent = WIDGET,
   creation = "",
   callback = {},
-  include = "iupgauge.h",
+  include = "iupcontrols.h",
 }
 
 function ctrl.createElement(class, arg)

@@ -11,7 +11,6 @@
 
 #include "iup.h"
 #include "iupcbs.h"
-#include "iupgauge.h"
 #include "iupkey.h"
 
 #include <cd.h>

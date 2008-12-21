@@ -817,6 +817,8 @@ static int gtkTextSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* gtkTextGetValueAttrib(Ihandle* ih)
 {
+  char* value;
+
   if (ih->data->is_multiline)
   {
     GtkTextIter start_iter;
@@ -824,10 +826,14 @@ static char* gtkTextGetValueAttrib(Ihandle* ih)
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
     gtk_text_buffer_get_start_iter(buffer, &start_iter);
     gtk_text_buffer_get_end_iter(buffer, &end_iter);
-    return iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, TRUE)));
+    value = iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, TRUE)));
   }
   else
-    return iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(gtk_entry_get_text(GTK_ENTRY(ih->handle))));
+    value = iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(gtk_entry_get_text(GTK_ENTRY(ih->handle))));
+
+  if (!value) value = "";
+
+  return value;
 }
                        
 static int gtkTextSetInsertAttrib(Ihandle* ih, const char* value)
@@ -1364,7 +1370,7 @@ static int gtkTextCallActionCb(Ihandle* ih, const char* insert_value, int len, i
   }
   else
   {
-    if (!value)
+    if (value[0]==0)
       new_value = iupStrDup(insert_value);
     else
     {

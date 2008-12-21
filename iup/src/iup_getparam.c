@@ -11,8 +11,6 @@
 #include <assert.h>
 
 #include "iup.h"
-#include "iupgetparam.h"
-#include "iupspin.h"
 
 #include "iup_attrib.h"
 #include "iup_str.h"
@@ -946,7 +944,7 @@ static int iParamCopyStrLine(char* line, const char* format)
   return i+1; 
 }
 
-char IupGetParamType(const char* format, int *line_size)
+char iupGetParamType(const char* format, int *line_size)
 {
   char* type = strchr(format, '%');
   char* line_end = strchr(format, '\n');
@@ -1048,7 +1046,7 @@ static Ihandle *IupParamf(const char* format, int *line_size)
                     Exported Functions
 *******************************************************************************************/
 
-int IupGetParamCount(const char *format, int *param_extra)
+int iupGetParamCount(const char *format, int *param_extra)
 {
   int param_count = 0, sep = 0;
   const char* s = format;
@@ -1191,7 +1189,7 @@ int IupGetParam(const char* title, Iparamcb action, void* user_data, const char*
   void* param_data[50];
   va_list arg;
 
-  param_count = IupGetParamCount(format, &param_extra);
+  param_count = iupGetParamCount(format, &param_extra);
 
   va_start(arg, format);
   for (i = 0; i < param_count; i++)

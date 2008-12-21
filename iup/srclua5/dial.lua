@@ -10,7 +10,7 @@ local ctrl = {
 --     button_press_cb = "d",    -- already registered by the val
 --     button_release_cb = "d",  -- already registered by the val
   },
-  include = "iupdial.h",
+  include = "iupcontrols.h",
 }
 
 function ctrl.createElement(class, arg)

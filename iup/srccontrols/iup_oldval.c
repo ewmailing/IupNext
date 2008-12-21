@@ -12,7 +12,7 @@
 
 #include "iup.h"
 #include "iupcbs.h"
-#include "iupval.h"
+#include "iupcontrols.h"
 #include "iupkey.h"
 
 #include <cd.h>

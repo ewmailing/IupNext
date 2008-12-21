@@ -11,8 +11,9 @@
 extern "C" {
 #endif
 
+#pragma message("Warning: Using OLD iupMask definitions, use the MASK attribute in IupText or IupMatrix.") 
 
-/* OLD definitions */
+/* OLD definitions, use the MASK attribute in IupText or IupMatrix */
 int  iupmaskSet     (Ihandle *h, const char *mask, int autofill, int casei);
 int  iupmaskSetInt  (Ihandle *h, int autofill, int   min , int   max);
 int  iupmaskSetFloat(Ihandle *h, int autofill, float min , float max);

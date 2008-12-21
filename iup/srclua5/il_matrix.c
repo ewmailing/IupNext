@@ -9,7 +9,7 @@
 
 #include "iup.h"
 #include "iuplua.h"
-#include "iupmatrix.h"
+#include "iupcontrols.h"
 #include "il.h"
 
 

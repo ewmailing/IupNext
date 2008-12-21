@@ -7,7 +7,6 @@
 #include <stdlib.h>
 
 #include "iup.h"
-#include "iupspin.h"
 
 #include <lua.h>
 

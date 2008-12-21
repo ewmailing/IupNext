@@ -12,7 +12,7 @@ local ctrl = {
     extended_cb = "n",
    },
   funcname = "Colorbar",
-  include = "iupcolorbar.h",
+  include = "iupcontrols.h",
 }
 
 PRIMARY = -1

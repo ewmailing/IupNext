@@ -8,11 +8,11 @@
 #include <stdlib.h>
 
 #include "iup.h"
+#include "iupcontrols.h"
 
 #include <lua.h>
 
 #include "iuplua.h"
-#include "iupcells.h"
 
 #include "il.h"
 #include "il_controls.h"

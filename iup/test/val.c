@@ -3,7 +3,6 @@
 
 #include "iup.h"
 #include "iupkey.h"
-//#include "iuptabs.h"
 
 
 Ihandle *lbl_h=NULL, *lbl_v=NULL;

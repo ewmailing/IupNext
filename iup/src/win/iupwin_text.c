@@ -604,7 +604,7 @@ static char* winTextGetValueAttrib(Ihandle* ih)
     return str;
   }
   else
-    return NULL;
+    return "";
 }
 
 static int winTextSetPaddingAttrib(Ihandle* ih, const char* value)
@@ -1419,7 +1419,7 @@ static int winTextCallActionCb(Ihandle* ih, const char* insert_value, int key, i
 
   value = winTextGetValueAttrib(ih);
 
-  if (!value)
+  if (value[0]==0)
     new_value = iupStrDup(insert_value);
   else if (insert_value)
     new_value = iupStrInsert(value, insert_value, start, end);

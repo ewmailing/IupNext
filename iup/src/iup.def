@@ -116,8 +116,8 @@ IupSaveClassAttributes
 IupGetColor
 IupGetParam
 IupGetParamv
-IupGetParamType
-IupGetParamCount
+iupGetParamType
+iupGetParamCount
 IupNormalizer
 IupNormalizerv
 IupGetClassType

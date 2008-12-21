@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 #include "iup.h"
-#include "iupgauge.h"
+#include "iupcontrols.h"
 
 #include <lua.h>
 

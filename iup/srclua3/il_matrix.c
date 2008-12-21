@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 #include "iup.h"
-#include "iupmatrix.h"
+#include "iupcontrols.h"
 
 #include <cd.h>
 

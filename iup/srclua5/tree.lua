@@ -17,7 +17,7 @@ local ctrl = {
     rightclick_cb = "n",
     dragdrop_cb = "nnnn",
   },
-  include = "iuptree.h",
+  include = "iupcontrols.h",
   extrafuncs = 1,
 }
 

@@ -9,8 +9,7 @@
 #include <lua.h>
 
 #include "iup.h"
-#include "iuplua.h"
-#include "iupcb.h"
+#include "iupcontrols.h"
 
 #include "iuplua.h"
 #include "il.h"

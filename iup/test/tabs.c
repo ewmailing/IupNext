@@ -2,7 +2,6 @@
 
 #include "iup.h"
 #include "iupkey.h"
-//#include "iuptabs.h"
 
 static Ihandle* load_image_LogoTecgraf(void)
 {

@@ -5,7 +5,7 @@
 #include <string.h>
 #include "iup.h"
 #include "iupkey.h"
-#include "iupmatrix.h"
+#include "iupcontrols.h"
 #include "cd.h"
 #include "cdiup.h"
 
@@ -650,11 +650,7 @@ int main(int argc, char* argv[])
 
   /* IUP initialization */
   IupOpen(&argc, &argv);
-//  IupControlsOpen();
-
-  /* initializes the matrix library; must be
-   * called only once during the program */
-//  IupMatrixOpen();  
+  IupControlsOpen();
 
   /* loads LED */
   if(error = IupLoad("matrix.led"))

@@ -9,8 +9,8 @@
 #include <string.h>
 
 #include "iup.h"
+#include "iupcontrols.h"
 #include "iupcbs.h"
-#include "iupcolorbar.h"
 #include "iupkey.h"
 
 #include <cd.h>

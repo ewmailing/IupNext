@@ -9,7 +9,6 @@
 #include <string.h>
 
 #include "iup.h"
-#include "iuptabs.h"
 
 #include <lua.h>
 #include <lauxlib.h>

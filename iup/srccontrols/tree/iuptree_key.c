@@ -11,7 +11,7 @@
 
 #include "iup.h"
 #include "iupcbs.h"
-#include "iuptree.h"
+#include "iupcontrols.h"
 #include "iupkey.h"
 
 #include "iup_object.h"

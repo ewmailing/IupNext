@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #include "iup.h"
-#include "iupspin.h"
 
 
 static int spin_cb(Ihandle* ih, int inc)

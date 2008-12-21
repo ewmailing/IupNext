@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 #include "iup.h"
-#include "iupmatrix.h"
+#include "iupcontrols.h"
 #include "iupmask.h"
 
 #include "iup_mask.h"

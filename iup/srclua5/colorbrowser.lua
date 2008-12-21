@@ -10,7 +10,7 @@ local ctrl = {
     change_cb = "ccc",
   },
   funcname = "ColorBrowser",
-  include = "iupcb.h",
+  include = "iupcontrols.h",
 }
 
 function ctrl.createElement(class, arg)

@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 #include "iup.h"
-#include "iuptree.h"
+#include "iupcontrols.h"
 
 #include <lua.h>
 #include <lauxlib.h>

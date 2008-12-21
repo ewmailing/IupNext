@@ -46,6 +46,10 @@ int  IupListDialog(int type, const char *title, int size, const char *lst[],
 int  IupGetText(const char* title, char* text);
 int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
 
+typedef int (*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
+int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format,...);
+int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
+
 
 /************************************************************************/
 /*                      Functions                                       */
@@ -165,21 +169,26 @@ Ihandle*  IupFrame      (Ihandle* child);
 Ihandle*  IupImage      (int width, int height, const unsigned char *pixmap);
 Ihandle*  IupImageRGB   (int width, int height, const unsigned char *pixmap);
 Ihandle*  IupImageRGBA  (int width, int height, const unsigned char *pixmap);
+
+Ihandle*  IupItem       (const char* title, const char* action);
+Ihandle*  IupSubmenu    (const char* title, Ihandle* child);
+Ihandle*  IupSeparator  (void);
+Ihandle*  IupMenu       (Ihandle* child,...);
+Ihandle*  IupMenuv      (Ihandle* *children);
+
 Ihandle*  IupButton     (const char* title, const char* action);
 Ihandle*  IupCanvas     (const char* action);
 Ihandle*  IupDialog     (Ihandle* child);
 Ihandle*  IupUser       (void);
-Ihandle*  IupItem       (const char* title, const char* action);
-Ihandle*  IupSubmenu    (const char* title, Ihandle* child);
-Ihandle*  IupSeparator  (void);
 Ihandle*  IupLabel      (const char* title);
 Ihandle*  IupList       (const char* action);
-Ihandle*  IupMenu       (Ihandle* child,...);
-Ihandle*  IupMenuv      (Ihandle* *children);
 Ihandle*  IupText       (const char* action);
 Ihandle*  IupMultiLine  (const char* action);
 Ihandle*  IupToggle     (const char* title, const char* action);
 Ihandle*  IupTimer      (void);
+
+Ihandle*  IupSpin       (void);
+Ihandle*  IupSpinbox    (Ihandle* child);
 
 Ihandle*  IupProgressBar(void);
 Ihandle*  IupVal        (const char *type);

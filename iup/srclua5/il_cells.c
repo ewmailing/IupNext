@@ -8,8 +8,8 @@
 #include <lauxlib.h>
 
 #include "iup.h"
+#include "iupcontrols.h"
 #include "iuplua.h"
-#include "iupcells.h"
 #include "il.h"
 
 

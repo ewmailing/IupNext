@@ -25,7 +25,7 @@ local ctrl = {
     mark_cb = "nn",
     markedit_cb = "nnn",
   },
-  include = "iupmatrix.h",
+  include = "iupcontrols.h",
   extrafuncs = 1,
 }
 

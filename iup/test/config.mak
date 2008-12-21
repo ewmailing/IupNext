@@ -7,7 +7,7 @@ ifdef USE_GTK
   APPNAME = iuptestgtk
 endif
 
-USE_IUP = Yes
+USE_IUP3 = Yes
 USE_STATIC = Yes
 IUP = ..
 

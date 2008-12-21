@@ -11,11 +11,16 @@
 #include <lauxlib.h>
 
 #include "iup.h"
-#include "iupgetparam.h"
 
 #include "iuplua.h"
 #include "il.h"
 #include "il_controls.h"
+
+
+/* Used only by the Lua binding */
+int iupGetParamCount(const char *format, int *param_extra);
+char iupGetParamType(const char* format, int *line_size);
+
 
 typedef struct _getparam_data
 {
@@ -63,11 +68,11 @@ static int GetParam(lua_State *L)
   memset(param_data, 0, sizeof(void*)*50);
   memset(param_type, 0, sizeof(char)*50);
 
-  param_count = IupGetParamCount(format, &param_extra);
+  param_count = iupGetParamCount(format, &param_extra);
 
   for (i = 0; i < param_count; i++)
   {
-    char t = IupGetParamType(f, &line_size);
+    char t = iupGetParamType(f, &line_size);
 
     if (t == 't') /* if separator */
     {
