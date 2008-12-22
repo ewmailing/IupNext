@@ -583,7 +583,7 @@ static int winTextSetValueAttrib(Ihandle* ih, const char* value)
   if (ih->data->is_multiline)
   {
     if (ih->data->has_formatting)
-      iupStrToMac(str);
+      str = iupStrToMac(str);
     else
       str = iupStrToDos(str);
   }
@@ -631,7 +631,7 @@ static int winTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
     if (ih->data->is_multiline)
     {
       if (ih->data->has_formatting)
-        iupStrToMac(str);
+        str = iupStrToMac(str);
       else
         str = iupStrToDos(str);
     }
@@ -824,7 +824,7 @@ static int winTextSetInsertAttrib(Ihandle* ih, const char* value)
     if (ih->data->is_multiline)
     {
       if (ih->data->has_formatting)
-        iupStrToMac(str);
+        str = iupStrToMac(str);
       else
         str = iupStrToDos(str);
     }
@@ -845,7 +845,7 @@ static int winTextSetAppendAttrib(Ihandle* ih, const char* value)
   if (ih->data->is_multiline)
   {
     if (ih->data->has_formatting)
-      iupStrToMac(str);
+      str = iupStrToMac(str);
     else
       str = iupStrToDos(str);
   }

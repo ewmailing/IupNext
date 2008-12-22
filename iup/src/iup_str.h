@@ -145,9 +145,10 @@ int iupStrReplace(char* str, char src, char dst);
  * \ingroup str */
 void iupStrToUnix(char* str);
 
-/** Convert line ends to MAC format in place.
+/** Convert line ends to MAC format.
+ * If returned pointer different than input it must be freed.
  * \ingroup str */
-void iupStrToMac(char* str);
+char* iupStrToMac(const char* str);
 
 /** Convert line ends to DOS/Windows format. 
  * If returned pointer different than input it must be freed.

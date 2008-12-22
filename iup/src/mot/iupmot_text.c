@@ -664,9 +664,8 @@ static int motTextSetValueAttrib(Ihandle* ih, const char* value)
   if (!value) value = "";
   /* disable callbacks */
   iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
-//  if (!motTextSetSpinValueAttrib(ih, value))
-    motTextSetSpinValueAttrib(ih, value);
-    XmTextSetString(ih->handle, (char*)value);
+  motTextSetSpinValueAttrib(ih, value);
+  XmTextSetString(ih->handle, (char*)value);
   iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   return 0;
 }

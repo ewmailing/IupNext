@@ -485,6 +485,8 @@ int iupStrReplace(char* str, char src, char dst)
 void iupStrToUnix(char* str)
 {
   char* pstr = str;
+
+  if (!str) return;
   
   while (*str)
   {
@@ -501,10 +503,19 @@ void iupStrToUnix(char* str)
   *pstr = *str;
 }
 
-void iupStrToMac(char* str)
+char* iupStrToMac(const char* str)
 {
   int at_start = 1;
-  char* pstr = str;
+  char* pstr, *new_str;
+
+  if (!str) return NULL;
+
+  if (iupStrLineCount(str) == 1)
+    return (char*)str;
+
+  new_str = iupStrDup(str);
+  str = new_str;
+  pstr = new_str;
   
   while (*str)
   {
@@ -520,6 +531,8 @@ void iupStrToMac(char* str)
   }
   
   *pstr = *str;
+
+  return new_str;
 }
 
 char* iupStrToDos(const char* str)
