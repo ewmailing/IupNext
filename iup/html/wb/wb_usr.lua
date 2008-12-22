@@ -173,6 +173,17 @@ wb_usr.tree =
           }
         },
         {
+          name= {en= "Executables"},
+          link= "executables.html",
+          folder=
+          {
+            {
+              name= {en= "LED Compiler for C"},
+              link= "ledc.html"
+            },
+          }
+        },
+        {
           name= {en= "Samples"},
           link= "samples.html",
           folder=
@@ -224,20 +235,10 @@ wb_usr.tree =
               name= {en= "IupLua Initialization"},
               link= "sys_guide.html#iupluainit"
             },
+            { link= "", name= {en= "" } },
             {
-              name= {nl= "Other"},
-              
-              folder=
-              {
-                {
-                  name= {en= "LED Compiler for C"},
-                  link= "ledc.html"
-                },
-                {
-                  name= {en= "IupLua Advanced"},
-                  link= "iuplua.html"
-                }
-              }
+              name= {en= "IupLua Advanced"},
+              link= "iuplua.html"
             }
           }
         },

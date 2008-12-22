@@ -30,4 +30,6 @@ dialog.title = "IupFrame"
 
 dialog:showxy(iup.CENTER,iup.CENTER) -- Shows dialog in the center of the screen 
 
-iup.MainLoop()
+if (iup.MainLoopLevel() == 0) then
+  iup.MainLoop()
+end

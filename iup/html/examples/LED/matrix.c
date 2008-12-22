@@ -5,7 +5,7 @@
 #include <string.h>
 #include "iup.h"
 #include "iupkey.h"
-#include "iupmatrix.h"
+#include "iupcontrols.h"
 #include "cd.h"
 #include "cdiup.h"
 
