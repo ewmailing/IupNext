@@ -336,9 +336,9 @@ attribute to ON or OFF, or set HIDEMARK=NO, before mapping the control.</li>
 	and MENUCLOSE_CB callbacks now work normally for popup menus. HIGHLIGHT_CB 
 	is called for items and submenus.</li>
 	<li> <span class="style1"><span style="color: #008000">Changed:</span><strong>
-	ATENTION</strong></span><strong>
-  -</strong> OPEN_CB and MENUCLOSE_CB are called only 
-	for menus.</li>
+	</strong></span>OPEN_CB and MENUCLOSE_CB are defined 
+	for menus, but it is checked at the parent submenu for backward 
+	compatibility with IUP 2.x.</li>
 	<li><span style="color: #008000">Changed:</span> TITLE for submenus can now be changed after the element is 
 	mapped. </li>
 	<li><span style="color: #008000">Changed:</span> Children can be added or 

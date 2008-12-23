@@ -121,6 +121,7 @@ void iupwinMenuDialogProc(Ihandle* ih_dialog, UINT msg, WPARAM wp, LPARAM lp)
       if (ih)
       {
         Icallback cb = (Icallback)IupGetCallback(ih, "OPEN_CB");
+        if (!cb && ih->parent) cb = (Icallback)IupGetCallback(ih->parent, "OPEN_CB");  /* check also in the Submenu */
         if (cb) cb(ih);
       }
       break;
@@ -132,6 +133,7 @@ void iupwinMenuDialogProc(Ihandle* ih_dialog, UINT msg, WPARAM wp, LPARAM lp)
       if (ih)
       {
         Icallback cb = (Icallback)IupGetCallback(ih, "MENUCLOSE_CB");
+        if (!cb && ih->parent) cb = (Icallback)IupGetCallback(ih->parent, "MENUCLOSE_CB");  /* check also in the Submenu */
         if (cb) cb(ih);
       }
       break;

@@ -101,8 +101,8 @@ static void gtkItemUpdateImage(Ihandle* ih, const char* value, const char* image
 static void gtkMenuMap(GtkWidget *widget, Ihandle* ih)
 {
   Icallback cb = IupGetCallback(ih, "OPEN_CB");
-  if (cb)
-    cb(ih);
+  if (!cb && ih->parent) cb = (Icallback)IupGetCallback(ih->parent, "OPEN_CB");  /* check also in the Submenu */
+  if (cb) cb(ih);
 
   (void)widget;
 }
@@ -110,8 +110,8 @@ static void gtkMenuMap(GtkWidget *widget, Ihandle* ih)
 static void gtkMenuUnMap(GtkWidget *widget, Ihandle* ih)
 {
   Icallback cb = IupGetCallback(ih, "MENUCLOSE_CB");
-  if (cb)
-    cb(ih);
+  if (!cb && ih->parent) cb = (Icallback)IupGetCallback(ih->parent, "MENUCLOSE_CB");  /* check also in the Submenu */
+  if (cb) cb(ih);
 
   (void)widget;
 }
