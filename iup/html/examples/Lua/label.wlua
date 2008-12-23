@@ -43,4 +43,6 @@ dlg = iup.dialog { iup.vbox { lbl, iup.hbox { lbl_explain, lbl_star }; margin="1
 -- Shows dialog in the center of the screen 
 dlg:showxy ( iup.CENTER, iup.CENTER )
 
-iup.MainLoop()
+if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end

@@ -80,4 +80,6 @@ dlg_val = iup.dialog
 
 dlg_val:show()
 
-iup.MainLoop()
+if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end

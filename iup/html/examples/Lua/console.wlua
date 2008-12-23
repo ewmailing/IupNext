@@ -180,7 +180,6 @@ iupluacmd.dlgAbout = iup.dialog
 iupluacmd.dlgMain:show()
 iup.SetFocus(iupluacmd.mlCode)
 
-iup.MainLoop()
-
-iupluacmd.dlgMain:destroy()
-iupluacmd.dlgAbout:destroy()
+if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end

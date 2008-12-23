@@ -69,4 +69,6 @@ function item_exit:action ()
   return iup.CLOSE
 end
 
-iup.MainLoop()
+if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end

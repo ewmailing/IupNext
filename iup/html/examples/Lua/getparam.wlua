@@ -61,4 +61,6 @@ iup.Message("IupGetParam",
             "List Index: "..plist.."\n"..
             "String: "..pstring2)
 
-iup.MainLoop()
+if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end

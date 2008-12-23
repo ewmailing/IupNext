@@ -8,4 +8,6 @@ txt.MASK = "/d*"
 dg = iup.dialog{txt;title="MASK Example"}
 dg:show()
 
-iup.MainLoop()
+if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end

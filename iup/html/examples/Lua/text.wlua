@@ -17,4 +17,7 @@ dlg = iup.dialog{text; title="IupText"}
 dlg:showxy(iup.CENTER, iup.CENTER)
 iup.SetFocus(text)
 
-iup.MainLoop()
+if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end
+

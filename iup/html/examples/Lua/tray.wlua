@@ -69,4 +69,6 @@ dg.trayclick_cb = function(self, b, press, dclick)
   return iup.DEFAULT
 end
 
-iup.MainLoop()
+if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end

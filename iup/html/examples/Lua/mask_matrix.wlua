@@ -7,4 +7,6 @@ iup.maskMatSet(mat, "/d*", 0, 1, 1, 1) ;
 dg = iup.dialog{mat}
 dg:show()
 
-iup.MainLoop()
+if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end
