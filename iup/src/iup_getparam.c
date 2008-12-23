@@ -813,7 +813,7 @@ static void iParamSetBoolNames(char* extra, Ihandle* param)
     truestr = iParamGetNextStrItem(extra, ',', &count);
   }
 
-  if (falsestr && truestr)
+  if (falsestr && truestr && falsestr[0] && truestr[0])
   {
     iupAttribStoreStr(param, "_TRUE", truestr);
     iupAttribStoreStr(param, "_FALSE", falsestr);
@@ -834,13 +834,10 @@ static void iParamSetInterval(char* extra, Ihandle* param)
     return;
 
   min = iParamGetNextStrItem(extra, ',', &count);  extra += count;
-  if (!min)
-    return;
-
   max = iParamGetNextStrItem(extra, ',', &count);  extra += count;
   step = iParamGetNextStrItem(extra, ',', &count);  
 
-  if (max && step)
+  if (max[0] && step[0])
   {
     iupAttribSetStr(param, "INTERVAL", "1");
     iupAttribStoreStr(param, "MIN", min);
@@ -884,7 +881,7 @@ static void iParamSetListItems(char* extra, Ihandle* param)
     return;
 
   item = iParamGetNextStrItem(extra, '|', &count);  extra += count;
-  while (item && *item)
+  while (*item)
   {
     sprintf(str, "%d", d);
     iupAttribStoreStr(param, str, item);
@@ -1000,7 +997,7 @@ static Ihandle *IupParamf(const char* format, int *line_size)
     iupAttribSetStr(param, "TYPE", "STRING");
     iupAttribSetStr(param, "DATA_TYPE", "0");  /* string */
     mask = iParamGetNextStrItem(line_ptr, '{', &count);  
-    if (mask && *mask) 
+    if (*mask) 
       iupAttribStoreStr(param, "MASK", mask);
     line_ptr += count-1; /* ignore the fake separator */
     line_ptr[0] = '{';   /* restore possible separator */

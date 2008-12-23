@@ -18,9 +18,13 @@
 <ul>
   <li><span style="color: #008000">Changed:</span> <span class="style1"><strong>
 	ATENTION</strong></span><strong>
-  -</strong> the following headers were removed iupcb.h, iupcells.h, 
-	iupcolorbar.h, iupdial.h, iupgauge.h, iupgetparam.h, iupmatrix.h, iupspin.h, 
-	iuptabs.h, iuptree.h, iupval.h - use iup.h and iupcontrols.h</li>
+  -</strong> the following headers were deprecated iupcb.h, iupcells.h, 
+	iupcolorbar.h, iupdial.h, iupgauge.h, iupmatrix.h, iuptree.h - use iupcontrols.h 
+	only</li>
+  <li><span style="color: #008000">Changed:</span> <span class="style1"><strong>
+	ATENTION</strong></span><strong>
+  -</strong> the following headers were deprecated iupgetparam.h, iupspin.h, 
+	iuptabs.h, iupval.h - use iup.h only</li>
 	<li><span class="style1">Fixed: </span>set VALUE attribute for IupText in 
 	Windows when formatting is used.</li>
 	<li><span class="style1">Fixed:</span> IupHide when dialog was maximized in 
@@ -28,6 +32,10 @@
 	<li><span class="style1">Fixed:</span> get VALUE attribute for IupText in 
 	all drivers after the element must return the empty string &quot;&quot; when there is 
 	no text.</li>
+	<li><span class="style1">Fixed:</span> IupGetParam when specifying partial 
+	intervals.</li>
+	<li><span class="style1">Fixed:</span> K_Esc key callback processing in 
+	Windows.</li>
 </ul>
 <h3>Version 3.0&nbsp;BETA 1 (15/Dec/2008)</h3>
 <h4>General</h4>
@@ -49,9 +57,12 @@
 	automatically destroyed in <strong>IupClose</strong>.</li>
   <li><span style="color: #008000">Changed:</span> <span class="style1"><strong>
 	ATENTION</strong></span><strong>
-  -</strong> the following headers were removed iupcbox.h, iupcompat.h, 
-	iupcpi.h, iupsbox.h, iuptabs.h, iuptree.h, iupval.h - use iup.h and 
-	iupcontrols.h</li>
+  -</strong> the following headers were deprecated iupcbox.h, iupsbox.h - use iup.h 
+	only</li>
+  <li><span style="color: #008000">Changed:</span> <span class="style1"><strong>
+	ATENTION</strong></span><strong>
+  -</strong> the headers iupcompat.h and iupcpi.h were removed. They are not 
+	supported anymore.</li>
 </ul>
 <h4>Common Attributes</h4>
 <ul>
@@ -319,9 +330,14 @@
 	<li><span style="color: #0000FF">New:</span> Submenu now supports the IMAGE attribute. </li>
 	<li><span style="color: #0000FF">New:</span> RADIO attribute for <strong>
 	IupMenu</strong>.</li>
+  <li><span style="color: #008000">Changed:</span> In GTK to have a menu item that can be marked you must set the VALUE 
+attribute to ON or OFF, or set HIDEMARK=NO, before mapping the control.</li>
 	<li><span style="color: #008000">Changed:</span> The HIGHLIGHT_CB, OPEN_CB 
 	and MENUCLOSE_CB callbacks now work normally for popup menus. HIGHLIGHT_CB 
-	is called for items and submenus. OPEN_CB and MENUCLOSE_CB are called only 
+	is called for items and submenus.</li>
+	<li> <span class="style1"><span style="color: #008000">Changed:</span><strong>
+	ATENTION</strong></span><strong>
+  -</strong> OPEN_CB and MENUCLOSE_CB are called only 
 	for menus.</li>
 	<li><span style="color: #008000">Changed:</span> TITLE for submenus can now be changed after the element is 
 	mapped. </li>
