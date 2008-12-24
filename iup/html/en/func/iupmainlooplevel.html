@@ -14,7 +14,8 @@
 <body>
 
 <h2>IupMainLoopLevel<span class="style1"> (since 3.0)</span></h2>
-<p>Returns the current cascade level of IupMainLoop. When no calls are done, 
+<p>Returns the current cascade level of <strong>IupMainLoop</strong>. When no calls 
+were done, 
 return value is 0.</p>
 <h3>
 Parameters/Return</h3>
@@ -24,8 +25,9 @@ iup.MainLoopLevel() -&gt; <strong>ret</strong>: number [in Lua]</pre>
 </div>
 <p>Returns the cascade level.</p>
 <h3>Notes</h3>
-<p>You can use this function to check if IupMainLoop was already called and 
+<p>You can use this function to check if <strong>IupMainLoop</strong> was already called and 
 avoid calling it again.</p>
+<p>A call to <strong>IupPopup</strong> will increase one level.</p>
 <h3>See Also</h3>
 <p><a href="iupopen.html">IupOpen</a>, <a href="iupclose.html">IupClose</a>,
   <a href="iuploopstep.html">IupLoopStep</a>, 

@@ -28,15 +28,16 @@ or <strong>ih</strong>:show() -&gt; (<strong>ret</strong>: number) [in IupLua]</
   returns 
   IUP_ERROR.</p>
 <h3>Notes</h3>
-<p>For dialogs it is equivalent to IupShowXY using IUP_CURRENT (or
+<p>For dialogs it is equivalent to <strong>IupShowXY</strong> using IUP_CURRENT (or
   IUP_CENTER if not mapped).</p>
-<p>Will call IupMap for the element.</p>
-<p>See the IupDialog <a href="../dlg/iupdialog.html#PLACEMENT">PLACEMENT</a> attribute for other position and show 
+<p>Will call <strong>IupMap</strong> for the element.</p>
+<p>See the <a href="../dlg/iupdialog.html#PLACEMENT">PLACEMENT</a> attribute for other position and show 
   options.</p>
 <p>This function can be executed more than once 
   for the same dialog. This will make the dialog be placed above all other dialogs in the application, 
-  changing its Z-order, and update its position and/or size on screen. IMPORTANT: Calling IupShow for a visible 
-  dialog shown with IupPopup does nothing.</p>
+  changing its Z-order, and update its position and/or size on screen. </p>
+<p>IMPORTANT: Calling <strong>IupShow</strong> for a visible 
+  dialog shown with <strong>IupPopup</strong> does nothing.</p>
 <h3>See Also</h3>
 <p><a href="iupshowxy.html">IupShowXY</a>, <a href="iuphide.html">IupHide</a>,
   <a href="iuppopup.html">IupPopup</a>, <a href="iupmap.html">IupMap</a></p>

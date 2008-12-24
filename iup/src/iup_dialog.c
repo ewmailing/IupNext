@@ -203,17 +203,26 @@ char* iupDialogGetChildIdStr(Ihandle* ih)
 
 int iupDialogPopup(Ihandle* ih, int x, int y)
 {
+  int was_visible;
+
   int ret = iupClassObjectDlgPopup(ih, x, y);
   if (ret != IUP_INVALID) /* IUP_INVALID means it is not implemented */
     return ret;
 
   ih->data->show_state = IUP_SHOW;
 
-  /* Update only the position */
-  iupDialogAdjustPos(ih, &x, &y);
-  iupdrvDialogSetPosition(ih, x, y);
+  /* save visible state before iupdrvDialogSetPlacement */
+  /* because it can also show the window when changing placement. */
+  was_visible = iupdrvDialogIsVisible(ih); 
 
-  if (iupdrvDialogIsVisible(ih)) /* already visible */
+  /* Update the position and placement */
+  if (!iupdrvDialogSetPlacement(ih, x, y))
+  {
+    iupDialogAdjustPos(ih, &x, &y);
+    iupdrvDialogSetPosition(ih, x, y);
+  }
+
+  if (was_visible) /* already visible */
   {
     /* only re-show to raise the window */
     iupdrvDialogSetVisible(ih, 1);
@@ -228,7 +237,9 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
   iDialogSetModal(ih);
 
   /* actually show the window */
-  iupdrvDialogSetVisible(ih, 1);
+  /* test if placement turn the dialog visible */
+  if (!iupdrvDialogIsVisible(ih))
+    iupdrvDialogSetVisible(ih, 1);
 
   /* increment visible count */
   iupDlgListVisibleInc();
@@ -243,7 +254,6 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
   if (iupObjectCheck(ih))
   {
     iDialogUnSetModal(ih);
-
     IupHide(ih); 
   }
 
@@ -254,6 +264,7 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
 {
   int was_visible;
 
+  /* Calling IupShow for a visible dialog shown with IupPopup does nothing. */
   if (iupAttribGetInt(ih, "MODAL")) /* already a popup */
     return IUP_NOERROR; 
 

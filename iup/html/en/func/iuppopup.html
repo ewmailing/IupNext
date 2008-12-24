@@ -84,8 +84,7 @@ or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -
   IUP_CLOSE is returned in a callback or the dialog is hidden. Althougth it 
   interrupts the processing, it does not destroy the dialog when it ends. To destroy the dialog, 
   <b>IupDestroy</b> must be called.</p>
-<p>This function can be executed more than once 
-  for the same dialog. IMPORTANT: Calling <b>IupPopup</b> for an already visible dialog will only update its position 
+<p>IMPORTANT: Calling <b>IupPopup</b> for an already visible dialog will only update its position 
   and/or size on screen, will NOT change its modal state and will NOT interrupt processing.</p>
 <p>In GTK and Motif the inactive dialogs will still be able to move, resize and change their Z-order. Although their 
   contents will be inactive, keyboard will be disabled, and they can not be closed from the close box.</p>
