@@ -2,8 +2,6 @@
 #include "iup.h"
 #include "iupkey.h"
 
-#undef USE_GTK
-
 static unsigned char matrx_img_cur_excel[15*15] = 
   {
     0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,
@@ -58,6 +56,8 @@ static unsigned char pixmap_cursor [ ] =
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 } ;
+
+#define USE_GTK
 
 /* draw a rectangle that has w=600 always, white background and a red X */
 #ifdef USE_GTK
