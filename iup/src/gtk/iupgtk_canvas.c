@@ -188,11 +188,16 @@ static void gtkCanvasExposeChild(GtkWidget *child, gpointer client_data)
   gtk_container_propagate_expose(GTK_CONTAINER(data->container), child, data->evt);
 }
 
+static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value);
+
 static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Ihandle *ih)
 {
   IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
   if (cb)
   {
+    if (!iupAttribGetStr(ih, "_IUPGTK_NO_BGCOLOR"))
+      gtkCanvasSetBgColorAttrib(ih, iupAttribGetStrDefault(ih, "BGCOLOR"));  /* reset to update window attributes */
+
     iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", evt->area.x, evt->area.y, evt->area.x+evt->area.width-1, evt->area.y+evt->area.height-1);
     cb(ih,ih->data->posx,ih->data->posy);
     iupAttribSetStr(ih, "CLIPRECT", NULL);
@@ -437,6 +442,7 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
     gtk_widget_set_double_buffered(ih->handle, FALSE);
     gtk_widget_set_double_buffered((GtkWidget*)scrolled_window, FALSE);
     gdk_window_set_back_pixmap(ih->handle->window, NULL, FALSE);
+    iupAttribSetStr(ih, "_IUPGTK_NO_BGCOLOR", "1");
     return 1;
   }
 }

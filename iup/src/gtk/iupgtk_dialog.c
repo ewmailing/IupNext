@@ -503,7 +503,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
 
   if (decorations == 0)
     gtk_window_set_decorated((GtkWindow*)ih->handle, FALSE);
-  else if (decorations != 0x7E) 
+  else
   {
     GdkWindow* window = ih->handle->window;
     if (window)

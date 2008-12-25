@@ -94,6 +94,8 @@ static void motCanvasResizeCallback(Widget w, Ihandle *ih, XtPointer call_data)
     cb(ih,width,height);
 }
 
+static int motCanvasSetBgColorAttrib(Ihandle* ih, const char* value);
+
 static void motCanvasExposeCallback(Widget w, Ihandle *ih, XtPointer call_data)
 {
   IFnff cb;
@@ -103,7 +105,12 @@ static void motCanvasExposeCallback(Widget w, Ihandle *ih, XtPointer call_data)
 
   cb = (IFnff)IupGetCallback(ih,"ACTION");
   if (cb)
+  {
+    if (!iupAttribGetStr(ih, "_IUPMOT_NO_BGCOLOR"))
+      motCanvasSetBgColorAttrib(ih, iupAttribGetStrDefault(ih, "BGCOLOR"));  /* reset to update window attributes */
+
     cb (ih, ih->data->posx, ih->data->posy);
+  }
 }
 
 static void motCanvasInputCallback(Widget w, Ihandle *ih, XtPointer call_data)
@@ -398,6 +405,7 @@ static int motCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
     XSetWindowAttributes attrs;
     attrs.background_pixmap = None;
     XChangeWindowAttributes(iupmot_display, XtWindow(ih->handle), CWBackPixmap, &attrs);
+    iupAttribSetStr(ih, "_IUPMOT_NO_BGCOLOR", "1");
   }
 
   return 1;
