@@ -1,6 +1,6 @@
-#!/bin/csh
+#!/bin/tcsh
 
-foreach plat ( Linux24 Linux24g3 Linux24g3_64 Linux26 Linux26_64 Linux26g4 Linux26g4_64 Linux26_ia64 FreeBSD54 SunOS57 SunOS58 SunOS510_x86 AIX43 IRIX65 IRIX6465 )
+foreach plat ( Linux24 Linux24g3 Linux24g3_64 Linux26 Linux26_64 Linux26g4 Linux26g4_64 Linux26_ia64 FreeBSD54 SunOS57 SunOS510 SunOS510x86 AIX43 IRIX65 IRIX6465 )
   echo $plat
   cp -f ../lib/$plat/*.so ../bin/$plat
   cp -f ../../cd/lib/$plat/*.so ../bin/$plat
