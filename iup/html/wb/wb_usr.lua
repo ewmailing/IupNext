@@ -1425,11 +1425,11 @@ wb_usr.tree =
             },
             {
               name= {nl= "IupImageLib (2.x)"},
-              link= "iupimglib.html"
+              link= "iupimglib2.html"
             },
             {
               name= {nl= "IupImageLib (3.0)"},
-              link= "iupimglib3.html"
+              link= "iupimglib.html"
             },
             {
               name= {nl= "Iup-IM"},
@@ -1471,11 +1471,11 @@ wb_usr.tree =
           {
             {
               name= {nl= "FONT (2.x)"},
-              link= "attrib/iup_font.html"
+              link= "attrib/iup_font2.html"
             },
             {
               name= {nl= "FONT (3.0)"},
-              link= "attrib/iup_font3.html"
+              link= "attrib/iup_font.html"
             },
             {
               name= {nl= "IupMapFont"},

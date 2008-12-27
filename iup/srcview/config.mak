@@ -12,18 +12,18 @@ USE_CD = Yes
 USE_IUPCONTROLS = Yes
 USE_IUP3 = Yes
 
-ifdef USE_GTK
-  ifndef GTK_DEFAULT
-    # Build GTK version in IRIX,SunOS,AIX,Win32
-    APPNAME = iupviewgtk
-  endif
-else  
-  ifdef GTK_DEFAULT
-    # Build Motif version in Linux,Darwin,FreeBSD
-    USE_MOTIF = Yes
-    APPNAME = iupviewmot
-  endif
-endif
+# ifdef USE_GTK
+#   ifndef GTK_DEFAULT
+#     # Build GTK version in IRIX,SunOS,AIX,Win32
+#     APPNAME = iupviewgtk
+#   endif
+# else  
+#   ifdef GTK_DEFAULT
+#     # Build Motif version in Linux,Darwin,FreeBSD
+#     USE_MOTIF = Yes
+#     APPNAME = iupviewmot
+#   endif
+# endif
 
 ifeq "$(TEC_UNAME)" "SunOS510x86"
   DEFINES = USE_NO_OPENGL

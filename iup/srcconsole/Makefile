@@ -1,7 +1,6 @@
 
 .PHONY: do_all iuplua5 iuplua5gtk iuplua3
-#do_all: iuplua5 iuplua5gtk iuplua3
-do_all: iuplua5 iuplua5gtk
+do_all: iuplua5
 
 iuplua5:
 	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak 

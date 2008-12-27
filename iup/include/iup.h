@@ -21,8 +21,8 @@ extern "C" {
 #define IUP_NAME "IUP - Portable User Interface"
 #define IUP_COPYRIGHT  "Copyright (C) 1994-2008 Tecgraf, PUC-Rio."
 #define IUP_DESCRIPTION	"Portable toolkit for building graphical user interfaces."
-#define IUP_VERSION "3.0beta1"
-#define IUP_VERSION_DATE "2008/12/03"
+#define IUP_VERSION "3.0beta2"
+#define IUP_VERSION_DATE "2008/12/26"
 #define IUP_VERSION_NUMBER 300000
 
 typedef struct Ihandle_ Ihandle;
