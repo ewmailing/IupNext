@@ -101,7 +101,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   /* In Hildon, borders have fixed dimensions, but are drawn as part
      of the client area! */
   if (border)
-    *border = (iupAttributeGetInt(ih, "HILDONWINDOW") && !iupAttribGetInt(ih, "FULLSCREEN")) ? 12 : 0;
+    *border = (iupAttribGetInt(ih, "HILDONWINDOW") && !iupAttribGetInt(ih, "FULLSCREEN")) ? 12 : 0;
   if (caption)
     *caption = 0;
   if (menu)
