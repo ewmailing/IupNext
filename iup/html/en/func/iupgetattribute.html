@@ -1,57 +1,71 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
-<meta http-equiv="Content-Language" content="en-us">
-<title>IupGetAttribute</title>
 
-<link rel="stylesheet" type="text/css" href="../../style.css">
+  <meta http-equiv="Content-Language" content="en-us">
+
+
+
+  <title>IupGetAttribute</title>
+  <link rel="stylesheet" type="text/css" href="../../style.css">
 </head>
+
+
 <body>
 
+
 <h2>IupGetAttribute</h2>
+
 <p>Returns the name of an interface element attribute. See also the
 <a href="../attrib_guide.html">Attributes Guide</a> section.</p>
+
 <h3>
 Parameters/Return</h3>
-<pre>char *IupGetAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>); [in C]
-iup.GetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string) -&gt; <strong>value</strong>: string [in Lua]</pre>
+
+<pre>char *IupGetAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>); [in C]<br>iup.GetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string) -&gt; <strong>value</strong>: string [in Lua]</pre>
+
 <p><b>ih</b>: Identifier of the interface element. If
   NULL will retrieve from the global environment.<br>
+
   name: name of the attribute.</p>
-<p>This function returns attribute&#8217;s value. If 
-  the attribute does not exist, NULL (nil in IupLua) is returned.</p>
-<a NAME="comentarios"></a>
+
+<p>This function returns attribute&rsquo;s value. If 
+  the attribute does not exist, NULL (nil in IupLua) is returned.<br>
+
+</p>
 <h3>Notes</h3>
-<p>This function&#8217;s return value is not 
-  necessarily the same one used by the application to define the attribute&#8217;s value. The subsequent call to the 
-  <b>IupGetAttribute</b> function may change the contents of the previously returned pointer, as this is an 
-  internal IUP buffer. The user is in charge of storing the value before calling any other IUP function. 
-</p>
-<p>The user has to understand that there is a 
-  difference between IUP attributes, such as VALUE or SIZE, and those stored for the user. The IUP attributes are often dynamically computed, stored in a 
-  temporary buffer and returned for the user to have access to the values. In the case of attributes stored for the 
-  user, the pointer returned by <b>IupGetAttribute</b> will be the same as the stored pointer, allowing the contents to be changed. 
-</p>
-<p>The pointers of internal IUP attributes 
+
+<p>See the <a href="../attrib_guide.html">Attributes Guide</a> for more details.</p>
+<p>This function return value is not 
+  necessarily the same pointer used by the application to define the attribute&rsquo;s value.&nbsp;The pointers of internal IUP attributes 
   returned by <strong>IupGetAttribute</strong> must <b>never</b> be freed or changed.</p>
+
 <h4>Inheritance</h4>
+
 <p>The attribute is first checked at the element specific implementation. If not defined then it checks in the
   attribute environment. If not defined in its
   attribute environment, the attribute will be inherited from its parent
   attribute environment and so forth, until it reaches the dialog. But if still then the attribute is not defined 
   a default value for the element is returned (the default value can also be NULL). 
 Inheritance can be blocked by the element implementation.</p>
+
 <h4>IupLua</h4>
+
 <p>In IupLua, only known internal pointer attributes are returned as user data, all other attributes are returned as 
   strings. To access attribute data always as user data use iup.GetAttributeData:</p>
+
 <pre>iup.GetAttributeData(<strong>ih</strong>: ihandle) -&gt; <strong>value</strong>: userdata [in Lua]</pre>
+
 <h3>Examples</h3>
+
 <p><a href="../../examples/">Browse for Example Files</a></p>
+
 <h3>See Also</h3>
+
 <p><a href="iupsetattribute.html">IupSetAttribute</a>, <a href="iupgetint.html">IupGetInt</a>,
   <a href="iupgetfloat.html">IupGetFloat</a>, <a href="iupsetattributes.html">IupSetAttributes</a>,
   <a href="iupgethandle.html">IupGetHandle</a>.</p>
 
-</body>
 
+</body>
 </html>

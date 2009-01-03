@@ -538,7 +538,7 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 
   iupdrvFontGetCharSize(ih, w, h);   /* one line height, and one character width */
 
-  visiblecolumns = iupAttribGetInt(ih, "VISIBLECOLUMNS");
+  visiblecolumns = iupAttribGetIntInheritDefault(ih, "VISIBLECOLUMNS");
   if (visiblecolumns)
   {
     *w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
@@ -578,7 +578,7 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
     num_lines = count;
     if (num_lines == 0) num_lines = 1;
 
-    visiblelines = iupAttribGetInt(ih, "VISIBLELINES");
+    visiblelines = iupAttribGetIntInheritDefault(ih, "VISIBLELINES");
     if (visiblelines)
       num_lines = visiblelines;   
 

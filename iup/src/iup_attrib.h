@@ -102,6 +102,12 @@ int iupAttribGetInt(Ihandle* ih, const char* name);
  * \ingroup attrib */
 int iupAttribGetIntDefault(Ihandle* ih, const char* name);
 
+/** Returns the attribute from the attribute environment as an integer, 
+ * but if not defined then checks in its parent tree, 
+ * if still not defined returns the registered default value if any.
+ * \ingroup attrib */
+int iupAttribGetIntInheritDefault(Ihandle* ih, const char* name);
+
 /** Returns the attribute from the attribute environment as a floating point. 
  * It ignores inheritance.
  * \ingroup attrib */

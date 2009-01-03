@@ -415,6 +415,23 @@ int iupAttribGetIntDefault(Ihandle* ih, const char* name)
   return i;
 }
 
+int iupAttribGetIntInheritDefault(Ihandle* ih, const char* name)
+{
+  int i = 0;
+  char *value = iupAttribGetStrInherit(ih, name);
+  if (!value)
+    value = iupClassObjectGetAttributeDefault(ih, name);
+  if (value)
+  {
+    if (!iupStrToInt(value, &i))
+    {
+      if (iupStrBoolean(value))
+        i = 1;
+    }
+  }
+  return i;
+}
+
 float iupAttribGetFloat(Ihandle* ih, const char* name)
 {
   float f = 0;

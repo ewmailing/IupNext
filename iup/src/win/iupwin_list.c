@@ -1250,9 +1250,9 @@ static void winListLayoutUpdateMethod(Ihandle *ih)
   {
     /* Must add the dropdown area, or it will not be visible */
     RECT rect;
-    int charheight, calc_h, win_h, win_w;
+    int charheight, calc_h, win_h, win_w, voptions;
 
-    int voptions = iupAttribGetIntDefault(ih, "VISIBLE_ITEMS");
+    voptions = iupAttribGetIntInheritDefault(ih, "VISIBLE_ITEMS");
     if (voptions <= 0)
       voptions = 1;
 
@@ -1404,7 +1404,7 @@ void iupdrvListInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "VALUE", winListGetValueAttrib, winListSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, winListSetShowDropdownAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOPITEM", NULL, winListSetTopItemAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLE_ITEMS", NULL, NULL, "5", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLE_ITEMS", NULL, NULL, "5", IUP_MAPPED, IUP_INHERIT);
   iupClassRegisterAttribute(ic, "DROPEXPAND", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPACING", iupListGetSpacingAttrib, winListSetSpacingAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);

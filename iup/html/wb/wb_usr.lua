@@ -79,7 +79,14 @@ wb_usr.tree =
           {
             {
               name= {en= "History 3.x"},
-              link= "history3.html"
+              link= "history3.html",
+              folder=
+              {
+                {
+                  name= {en= "Migration Guide"},
+                  link= "migration_guide.html"
+                }
+              }
             },
             {
               name= {en= "History 2.x"},

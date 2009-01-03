@@ -1317,7 +1317,7 @@ void iupdrvListInitClass(Iclass* ic)
   /* IupList only */
   iupClassRegisterAttributeId(ic, "IDVALUE", motListGetIdValueAttrib, iupListSetIdValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", motListGetValueAttrib, motListSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLE_ITEMS", NULL, motListSetVisibleItemsAttrib, "5", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLE_ITEMS", NULL, motListSetVisibleItemsAttrib, "5", IUP_MAPPED, IUP_INHERIT);
   iupClassRegisterAttribute(ic, "TOPITEM", NULL, motListSetTopItemAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, motListSetShowDropdownAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPACING", iupListGetSpacingAttrib, motListSetSpacingAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);

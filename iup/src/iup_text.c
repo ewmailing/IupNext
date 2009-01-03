@@ -320,8 +320,8 @@ static void iTextComputeNaturalSizeMethod(Ihandle* ih)
   {
     int natural_w = 0, 
         natural_h = 0,
-        visiblecolumns = iupAttribGetIntDefault(ih, "VISIBLECOLUMNS"),
-        visiblelines = iupAttribGetIntDefault(ih, "VISIBLELINES");
+        visiblecolumns = iupAttribGetIntInheritDefault(ih, "VISIBLECOLUMNS"),
+        visiblelines = iupAttribGetIntInheritDefault(ih, "VISIBLELINES");
 
     /* Since the contents can be changed by the user, the size can not be dependent on it. */
     if (ih->data->is_multiline)

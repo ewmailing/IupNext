@@ -666,7 +666,9 @@ static int iDialSetActiveAttrib(Ihandle* ih, const char* value)
 
   iupBaseSetActiveAttrib(ih, value);
 
-  if (!iupStrToRGB(iupAttribGetStrDefault(ih, "FGCOLOR"), &r, &g, &b))
+  value = iupAttribGetStrInherit(ih, "FGCOLOR");
+  if (!value) value = iupAttribGetStrDefault(ih, "FGCOLOR");
+  if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
   iDialUpdateFgColors(ih, r, g, b);
 

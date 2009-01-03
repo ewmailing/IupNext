@@ -242,7 +242,7 @@ static int motButtonMapMethod(Ihandle* ih)
 
   value = iupAttribGetStr(ih, "IMPRESS");
 
-  if (iupAttribGetInt(ih, "FLAT") && !value)
+  if (iupStrBoolean(iupAttribGetStrInherit(ih, "FLAT")) && !value)
   {
     XtVaSetValues(ih->handle, XmNshadowThickness, 0, NULL);
     XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)motButtonEnterLeaveWindowEvent, (XtPointer)ih);

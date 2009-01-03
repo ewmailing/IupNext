@@ -1,10 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-<meta http-equiv="Content-Language" content="en-us">
-<title>To Do</title>
-<link rel="stylesheet" type="text/css" href="../style.css">
-<style type="text/css">
+
+  <meta http-equiv="Content-Language" content="en-us">
+
+
+  <title>To Do</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+
+  <style type="text/css">
 .style1 {
 	color: #FF0000;
 }
@@ -14,113 +18,196 @@
 .style3 {
 	color: #3366CC;
 }
-</style>
+  </style>
 </head>
+
+
 <body>
 
+
 <h2 align="center">To Do</h2>
+
 <h3>Roadmap</h3>
+
 <h4>IUP 3.0</h4>
+
 <ul>
+
 	<li>IupTree and IupMatrix need lots of testing and 
 small fixes (not fully working yet)<br>
+
 	<span class="style3"><strong>RELEASE CANDIDATE 1/FINAL (January 2009)</strong></span></li>
+
 </ul>
+
 <h4>Next</h4>
+
 <ul>
+
 	<li>IupSplitbox (IupSbox nativo)</li>
+
 	<li>Refactoring of IupTree (native controls?)</li>
+
 	<li>Refactoring of IupMatrix</li>
+
 	<li>New Controls</li>
+
 </ul>
+
 <h3>General</h3>
+
 <ul>
+
 	<li>Build a MacOS X version using the new GTK Darwin native framework. This 
 	implicates in a CD using GDK/Cairo or using Quartz 2D.</li>
+
 	<li>A MacOS X native driver using Carbon.</li>
+
 	<li>A tutorial section in the documentation. One big Controls Demo just like 
 	GTK, wxWidgets and Qt have.</li>
+
 	<li class="style2">Drag&amp;Drop between controls or dialogs in the same application.</li>
+
 	<li class="style2">Unicode Support (UTF-8) in Windows and Motif.</li>
-	<li class="style2">Define and control keyboard navigation in &quot;Tab&quot; groups.</li>
+
+	<li class="style2">Define and control keyboard navigation in "Tab" groups.</li>
+
 	<li class="style2">Context help using a global attribute.</li>
+
 	<li class="style2">Add support for loadind and saving RTF files in <strong>IupText</strong>. 
 	Add support for images inside the text.</li>
+
 	<li class="style2">Support for text over image in <strong>IupLabel</strong>,
 	<strong>IupButton</strong> and <strong>IupToggle</strong>. Or a way to 
 	composte text on <strong>IupImage</strong>.</li>
+
 	<li class="style2">Support for changing the system menu in Windows. Support 
 	for cascading <strong>IupPopup</strong> for menus.</li>
+  <li class="style2">The actual model for control data in the internal SDK is limited and hard to use for derived classes.</li>
+
 	<li class="style1">The IupImgLib takes an very long time to compile under 
 	Visual C++. In a 2.5GHz CPU tooks about 5min!</li>
+
 </ul>
+
 <h3>Windows</h3>
+
 <ul>
+
 	<li class="style1"><strong>In Windows Vista the COMPOSITE=YES attribute of the 
 	IupDialog is not working as expected. There is still some flicker when the 
 	dialog is resized. So we changed the default to NO.</strong></li>
+
 	<li class="style1">IupTabs using native controls in Windows Vista when 
 	COMPOSITE=YES works only if MULTILINE=YES, so it is internally overwritten 
 	until the problem is solved. (since 3.0)</li>
+
 	<li class="style1">The MDI Window menu is not updated when the child mdi is 
 	closed.</li>
+
 </ul>
+
 <h3>Motif</h3>
+
 <ul>
+
   <li>Support for MDI.</li>
-  <li><font color="#FF0000">Callback SHOW_CB is not called when the dialog is hidden because of
+
+  <li><font color="#ff0000">Callback SHOW_CB is not called when the dialog is hidden because of
   PARENTDIALOG.</font></li>
+
 </ul>
+
 <h3>IupMatrix</h3>
+
 <ul>
+
   <li>Fix column resize when line is moved outside the matrix canvas.</li>
+
   <li>Lines and columns are not unmarked when clicking on the title. </li>
+
   <li>Should allows to start the selection on cell 0:0.</li>
+
 	<li>Allow to change the style of the grid lines.</li>
+
 	<li>allow to use an image as a cell content.</li>
+
 	<li class="style2">Internal code reorganization.</li>
+
   <li class="style1">When removing a line, if it has the focus an invalid call to enteritem_cb/leave_item_cb will 
   occur for the removed cell.</li>
+
 </ul>
+
 <h3>IupTree</h3>
+
 <ul>
+
   <li>Changing VALUE does not scrolls the tree to the selected node in all 
 	cases.</li>
+
 	<li>Define minimum size based on tree nodes. New callback mode. Change internal list to real tree?</li>
+
   <li>Images with variable sizes for nodes.</li>
+
 	<li>Add attribute SHOWNODEid. Add callback for mouse over nodes.</li>
+
 	<li>Allow to change the caret color and other colors, like the BGCOLOR.</li>
+
 	<li>Focus feedback.</li>
+
 	<li class="style2">Internal code reorganization.</li>
+
 </ul>
+
 <h3>New Controls</h3>
+
 <ul>
+
   <li class="style2"><strong>DropDownButton</strong> - Mix between a drop down 
 	list and a button</li>
+
 	<li class="style2"><strong>Scrollbar</strong> - just the scrollbar as a 
 	control.</li>
+
   <li class="style2"><strong>GridBox </strong>- container to distribute 
 	elements in a grid.</li>
+
 	<li class="style2"><strong>CanvasCD</strong> - a IupCanvas with a CD 
 	canvas associated.</li>
+
 	<li class="style2"><strong>UrlButton</strong> - Button that activates a URL 
 	(looks like a flat label, but gives visual feedback when mouse is hover)</li>
+
 	<li class="style2"><strong>ScrollBox</strong> -&nbsp; a box that can scroll the elements inside</li>
+
 	<li class="style2"><strong>LayoutBuilder</strong> - a dialog that shows the layout of 
 	another dialog and allows the user to reposition the elements interactively.</li>
+
 	<li class="style2"><strong>Toobar -</strong> button/toggle/list, detachable</li>
+
 	<li class="style2"><strong>ImageList</strong> - A lista that contains images</li>
+
 	<li>-----------------------------</li>
+
   <li>FontDlg for X fonts - Motif driver</li>
+
 	<li>Toggle mark in IupTree and IupMatrix</li>
+
 	<li>Expandable/Closeable Frames</li>
+
 	<li>PropertyGrid -&nbsp;a 2 column matrix with expandable/closeable items</li>
+
 	<li>LUT - Lookup Table, maps a set of values in another set using a curve.</li>
+
   <li>HTML viewer</li>
+
 	<li>Statusbar</li>
+
 	<li>Calendar </li>
+
 </ul>
 
-</body>
 
+</body>
 </html>

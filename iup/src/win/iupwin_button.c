@@ -295,7 +295,7 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
     draw_border = 0;
   else
   {
-    if (iupAttribGetInt(ih, "FLAT"))
+    if (iupStrBoolean(iupAttribGetStrInherit(ih, "FLAT")))
     {
       if (drawitem->itemState & ODS_HOTLIGHT || iupAttribGetStr(ih, "_IUPWINBUT_ENTERWIN"))
         draw_border = 1;

@@ -367,7 +367,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
 
   value = iupAttribGetStr(ih, "IMPRESS");
   impress = (ih->data->type & IUP_BUTTON_IMAGE && value)? 1: 0;
-  if (!impress && iupAttribGetInt(ih, "FLAT"))
+  if (!impress && iupStrBoolean(iupAttribGetStrInherit(ih, "FLAT")))
   {
     gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NONE);
 
