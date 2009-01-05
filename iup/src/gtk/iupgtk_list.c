@@ -47,7 +47,11 @@ void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
 
   if (ih->data->is_dropdown)
   {
+#ifdef HILDON
+    (*x) += 9; /* extra space for the dropdown button */
+#else
     (*x) += 5; /* extra space for the dropdown button */
+#endif
 
     if (ih->data->has_editbox)
       (*x) += 5; /* another extra space for the dropdown button */
@@ -1259,7 +1263,7 @@ static int gtkListMapMethod(Ihandle* ih)
       iupAttribSetStr(ih, "_IUPGTK_ENTRY", (char*)entry);
 
       gtk_widget_show((GtkWidget*)vbox);
-      gtk_box_pack_end_defaults(vbox, (GtkWidget*)scrolled_window);
+      gtk_box_pack_end(vbox, (GtkWidget*)scrolled_window, TRUE, TRUE, 0);
       iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)vbox);
       iupAttribSetStr(ih, "_IUPGTK_SCROLLED_WINDOW", (char*)scrolled_window);
 

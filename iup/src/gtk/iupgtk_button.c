@@ -44,7 +44,11 @@ void iupdrvButtonAddBorders(int *x, int *y)
 #ifdef WIN32
   int border_size = 2*5;
 #else
+#ifdef HILDON
+  int border_size = 2*7+1; /* borders are not symetric */
+#else
   int border_size = 2*5+1; /* borders are not symetric */
+#endif
 #endif
   (*x) += border_size;
   (*y) += border_size;

@@ -42,8 +42,13 @@ static GtkWidget* gtk_button_get_image(GtkButton *button)
 
 void iupdrvToggleAddCheckBox(int *x, int *y)
 {
+#ifdef HILDON
+  (*x) += 30+4;
+  if ((*y) < 30) (*y) = 30; /* minimum height */
+#else
   (*x) += 16+4;
   if ((*y) < 16) (*y) = 16; /* minimum height */
+#endif
   (*y) += 4;
 }
 
