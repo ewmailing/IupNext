@@ -274,3 +274,12 @@ function dofile(f) return protectedcall_(loadfile(f)) end
 function RGB(r, g, b)
   return string.format("%d %d %d", 255*r, 255*g, 255*b)
 end
+
+-- This will allow both names to be used in the same application
+-- also will allow static linking to work with require
+if _G.package then
+   _G.package.loaded["iuplua"] = iup
+   _G.package.loaded["iuplua51"] = iup
+   iup._M = iup
+   iup._PACKAGE = "iuplua"
+end

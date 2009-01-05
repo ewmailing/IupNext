@@ -373,16 +373,6 @@ struct Smain {
 
 /******************* IUP *********************/
 #ifdef USE_STATIC
-static int dummy_require (lua_State *L) {
-  (void)L;
-  return 0;
-}
-
-static const luaL_Reg ll_funcs[] = {
-  {"require", dummy_require},
-  {NULL, NULL}
-};
-
 #ifdef IUPLUA_IMGLIB
 int luaopen_iupluaimglib(lua_State* L);
 #endif
@@ -393,10 +383,6 @@ static void iuplua_openlibs (lua_State *L) {
   lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
 
 #ifdef USE_STATIC
-  lua_pushvalue(L, LUA_GLOBALSINDEX);
-  luaL_register(L, NULL, ll_funcs);  /* disable require if statically linking */
-  lua_pop(L, 1);
-
   /* iuplua initialization */
   iuplua_open(L);
   iupkey_open(L);
