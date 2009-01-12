@@ -11,7 +11,7 @@
 
 unsigned char image[640][400];
 
-int repaint_cb(Ihandle* self, float sx, float sy)
+int redraw_cb(Ihandle* self, float sx, float sy)
 {
   int x, y;
   sx = IupGetFloat(self, "POSX");
@@ -62,7 +62,7 @@ int motion_cb(Ihandle* self, int x, int y)
 
 int scroll_cb(Ihandle* self)
 {
-  repaint_cb(self,0.0,0.0);
+  redraw_cb(self,0.0,0.0);
 	
   return IUP_DEFAULT;	
 }
@@ -70,7 +70,7 @@ int scroll_cb(Ihandle* self)
 int enter_cb(Ihandle* self)
 {
   cdBackground(CD_WHITE);	
-  repaint_cb(self,0.0,0.0);
+  redraw_cb(self,0.0,0.0);
 	
   return IUP_DEFAULT;
 }
@@ -79,7 +79,7 @@ int leave_cb(Ihandle* self)
 {
   Ihandle *label;	
   cdBackground(CD_GRAY);	
-  repaint_cb(self,0.0,0.0);
+  redraw_cb(self,0.0,0.0);
   label = IupGetHandle("label");
   IupSetAttribute(label,"TITLE","IupCanvas");  
 	
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 
   IupSetAttributes(iupcanvas, "CURSOR=CROSS, RASTERSIZE=320x200, EXPAND=NO, SCROLLBAR=YES, DX=0.5, DY=0.5");
   
-  IupSetCallback(iupcanvas, "ACTION",(Icallback)repaint_cb);
+  IupSetCallback(iupcanvas, "ACTION",(Icallback)redraw_cb);
   IupSetCallback(iupcanvas, "BUTTON_CB",(Icallback)button_cb);
   IupSetCallback(iupcanvas, "SCROLL_CB",(Icallback)scroll_cb);
   IupSetCallback(iupcanvas, "MOTION_CB",(Icallback)motion_cb);

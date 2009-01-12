@@ -2,4 +2,4 @@
 #Creates a IUP canvas. 
 
 
-work_space = canvas[SCROLLBAR=HORIZONTAL, XMIN=0.0, XMAX=99.0, POSX=0.0, DX=10.0] (action_repaint)
+work_space = canvas[SCROLLBAR=HORIZONTAL, XMIN=0.0, XMAX=99.0, POSX=0.0, DX=10.0] (action_redraw)

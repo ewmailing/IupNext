@@ -649,7 +649,7 @@ static int iColorbarSetActiveAttrib(Ihandle* ih, const char* value)
   return 0;   /* do not store value in hash table */
 }
 
-static int iColorbarRepaint_CB(Ihandle* ih)
+static int iColorbarRedraw_CB(Ihandle* ih)
 {
   if (ih->data->cddbuffer == NULL)
     return IUP_DEFAULT;
@@ -980,7 +980,7 @@ static int iColorbarMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
-static void iColorbarDestroyMethod(Ihandle* ih)
+static void iColorbarUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
     cdKillCanvas(ih->data->cddbuffer);
@@ -1026,7 +1026,7 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "RESIZE_CB", (Icallback)iColorbarResize_CB);
-  IupSetCallback(ih, "ACTION",    (Icallback)iColorbarRepaint_CB);
+  IupSetCallback(ih, "ACTION",    (Icallback)iColorbarRedraw_CB);
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iColorbarButton_CB);
   IupSetCallback(ih, "FOCUS_CB", (Icallback)iColorbarFocus_CB);
   IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iColorbarKeyPress_CB);
@@ -1047,8 +1047,8 @@ Iclass* iupColorbarGetClass(void)
 
   /* Class functions */
   ic->Create  = iColorbarCreateMethod;
-  ic->Destroy = iColorbarDestroyMethod;
   ic->Map     = iColorbarMapMethod;
+  ic->UnMap   = iColorbarUnMapMethod;
 
   /* Do not need to set base attributes because they are inherited from IupCanvas */
 

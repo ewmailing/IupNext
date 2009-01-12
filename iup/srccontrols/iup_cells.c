@@ -528,7 +528,7 @@ static void iCellsRepaint(Ihandle* ih)
   cdCanvasFlush(ih->data->cddbuffer);
 }
 
-static int iCellsRepaint_CB(Ihandle* ih)
+static int iCellsRedraw_CB(Ihandle* ih)
 {
   if (ih->data->cddbuffer == NULL)
     return IUP_DEFAULT;
@@ -900,7 +900,7 @@ static int iCellsMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
-static void iCellsDestroyMethod(Ihandle* ih)
+static void iCellsUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
     cdKillCanvas(ih->data->cddbuffer);
@@ -927,7 +927,7 @@ static int iCellsCreateMethod(Ihandle* ih, void **params)
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "RESIZE_CB", (Icallback)iCellsResize_CB);
-  IupSetCallback(ih, "ACTION",    (Icallback)iCellsRepaint_CB);
+  IupSetCallback(ih, "ACTION",    (Icallback)iCellsRedraw_CB);
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iCellsButton_CB);
   IupSetCallback(ih, "MOTION_CB", (Icallback)iCellsMotion_CB);
   IupSetCallback(ih, "SCROLL_CB", (Icallback)iCellsScroll_CB);
@@ -948,8 +948,8 @@ Iclass* iupCellsGetClass(void)
 
   /* Class functions */
   ic->Create  = iCellsCreateMethod;
-  ic->Destroy = iCellsDestroyMethod;
   ic->Map     = iCellsMapMethod;
+  ic->UnMap   = iCellsUnMapMethod;
 
   /* Do not need to set base attributes because they are inherited from IupCanvas */
 

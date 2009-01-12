@@ -82,8 +82,8 @@ redrawn. When REPAINT attribute is set, BUFFERIZE is automatically set to &quot;
 <p><b>ORIGIN:</b> Sets the first visible line and column positions. This attribute is 
   set by a formatted string &quot;%d:%d&quot; (C syntax), where each &quot;%d&quot; represent the line and column integer 
   indexes respectely.</p>
-<p><b>REPAINT</b>(write-only) (<font SIZE="3">non inheritable</font>)<b>:</b> When set with any value, provokes the control full 
-  repaint.</p>
+<p><b>REPAINT</b>(write-only) (<font SIZE="3">non inheritable</font>)<b>:</b> When set with any value, provokes the control 
+to be redrawn.</p>
 <p> <a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): the default is not defined. You 
 must define SIZE or RASTERSIZE.</p>
   <p><a href="../attrib/iup_scrollbar.html">SCROLLBAR</a> (creation only):
@@ -104,7 +104,8 @@ POSITION</a>,
 also accepted.&nbsp;</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 
-<p><strong>DRAW_CB</strong><tt>:</tt> called when a specif cell needs to be repainted.</p>
+<p><strong>DRAW_CB</strong><tt>:</tt> called when a specif cell needs to be 
+redrawn.</p>
 <pre>int function(Ihandle* <b>ih</b>, int <b>line</b>, int <b>column</b>, int <b>xmin</b>, int <b>xmax</b>, int <b>ymin</b>, int <b>ymax</b>, cdCanvas* <strong>canvas</strong>);  [in C]<strong>
 elem</strong>:draw_cb(<b>line</b>, <b>column</b>, <b>xmin</b>, <b>xmax</b>, <b>ymin</b>, <b>ymax</b>: number, <strong>canvas</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -112,8 +113,8 @@ elem</strong>:draw_cb(<b>line</b>, <b>column</b>, <b>xmin</b>, <b>xmax</b>, <b>y
   event.<br>
     <strong>line</strong>, <strong>column</strong>:
     the grid position inside the control that is being 
-    repainted, in grid coordinates.<br>
-<strong>xmin, xmax, ymin, ymax</strong>: the raster bounding box of the repainting 
+    redrawn, in grid coordinates.<br>
+<strong>xmin, xmax, ymin, ymax</strong>: the raster bounding box of the redrawn 
     cells, where the application can use CD functions to draw anything. If the atributte IUP_CLIPPED is set (the 
     default), all CD graphical primitives is clipped to the bounding region.<br>
 <strong>canvas</strong>: internal canvas CD used to draw the cells.</p>

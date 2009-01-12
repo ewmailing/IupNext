@@ -1,3 +1,6 @@
+require"iuplua"
+require"iupluacontrols"
+
 -- IupTree Example in IupLua 
 -- Creates a tree with some branches and leaves. 
 -- Two callbacks are registered: one deletes marked nodes when the Del key 

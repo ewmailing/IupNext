@@ -12,7 +12,7 @@ static Ihandle *cnvs = NULL ;
 /* CD canvas */
 static cdCanvas *cdcanvas = NULL ;
 
-int repaint_cb( Ihandle *self)
+int redraw_cb( Ihandle *self)
 {
   if (!cdcanvas) return IUP_DEFAULT;
 
@@ -44,7 +44,7 @@ char* cell_cb(Ihandle* self, int cell)
     sprintf(str, "%d %d %d", (int)r, (int)g, (int)b);
     cdActivate( cdcanvas ) ;
     cdForeground(cdEncodeColor(r, g, b));
-    repaint_cb(cnvs);
+    redraw_cb(cnvs);
     return str;
   }
   return NULL;
@@ -65,7 +65,7 @@ int select_cb(Ihandle* self, int cell, int type)
   else
     cdBackground(cd_color);
 
-  repaint_cb(cnvs);
+  redraw_cb(cnvs);
 
   return IUP_DEFAULT;
 }
@@ -77,7 +77,7 @@ int switch_cb(Ihandle* self, int primcell, int seccell)
   fgcolor = cdForeground(CD_QUERY);
   cdForeground(cdBackground(CD_QUERY));
   cdBackground(fgcolor);
-  repaint_cb(cnvs);
+  redraw_cb(cnvs);
   return IUP_DEFAULT;
 }
 
@@ -91,9 +91,9 @@ int main(int argc, char **argv)
   IupControlsOpen() ;
 
 
-  /* Creates a canvas associated with the repaint action */
+  /* Creates a canvas associated with the redraw action */
   cnvs = IupCanvas(NULL) ;
-  IupSetCallback(cnvs, "ACTION", (Icallback)repaint_cb);
+  IupSetCallback(cnvs, "ACTION", (Icallback)redraw_cb);
   
   /* Sets size, minimum and maximum values, position and size of the thumb   */
   /* of the horizontal scrollbar of the canvas                               */

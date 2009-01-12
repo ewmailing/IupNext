@@ -155,7 +155,7 @@ static void iTreeUpdateScrollPos(Ihandle* ih)
 
 /* Callback called when the tree has its size altered
    dx, dy: Canvas size, in pixels.                    */
-static int iTreeResizeCB(Ihandle* ih, int dx, int dy)
+static int iTreeResize_CB(Ihandle* ih, int dx, int dy)
 {
   if(!ih->data->cddbuffer)
   {
@@ -183,7 +183,7 @@ static int iTreeResizeCB(Ihandle* ih, int dx, int dy)
 }
 
 /* Callback called when the tree is scrolled.  */
-static int iTreeScrollCB(Ihandle* ih)
+static int iTreeScroll_CB(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
   {
@@ -224,7 +224,7 @@ int iupTreeRepaint(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iTreeRepaintCB(Ihandle* ih)
+static int iTreeRedraw_CB(Ihandle* ih)
 {
   if(!ih->data->cddbuffer)
     return IUP_DEFAULT;
@@ -255,9 +255,9 @@ static int iTreeCreateMethod(Ihandle* ih, void **params)
   iupAttribSetStr(ih, "BORDER", "NO");
 
   /* IupCanvas callbacks */
-  IupSetCallback(ih, "ACTION",      (Icallback)iTreeRepaintCB);
-  IupSetCallback(ih, "RESIZE_CB",   (Icallback)iTreeResizeCB);
-  IupSetCallback(ih, "SCROLL_CB",   (Icallback)iTreeScrollCB);
+  IupSetCallback(ih, "ACTION",      (Icallback)iTreeRedraw_CB);
+  IupSetCallback(ih, "RESIZE_CB",   (Icallback)iTreeResize_CB);
+  IupSetCallback(ih, "SCROLL_CB",   (Icallback)iTreeScroll_CB);
   IupSetCallback(ih, "BUTTON_CB",   (Icallback)iupTreeMouseButtonCB);
   IupSetCallback(ih, "MOTION_CB",   (Icallback)iupTreeMouseMotionCB);
   IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iupTreeCallbackKeyPressCB);

@@ -590,7 +590,7 @@ static int iColorBrowserResize_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iColorBrowserRepaint_CB(Ihandle* ih)
+static int iColorBrowserRedraw_CB(Ihandle* ih)
 {
   iColorBrowserUpdateDisplay(ih);
   return IUP_DEFAULT;
@@ -777,7 +777,7 @@ static int iColorBrowserMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
-static void iColorBrowserDestroyMethod(Ihandle* ih)
+static void iColorBrowserUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
     cdKillCanvas(ih->data->cddbuffer);
@@ -803,7 +803,7 @@ static int iColorBrowserCreateMethod(Ihandle* ih, void **params)
   iColorBrowserSetRGBAttrib(ih, iupAttribGetStrDefault(ih, "RGB"));
 
   /* IupCanvas callbacks */
-  IupSetCallback(ih, "ACTION",      (Icallback)iColorBrowserRepaint_CB);
+  IupSetCallback(ih, "ACTION",      (Icallback)iColorBrowserRedraw_CB);
   IupSetCallback(ih, "RESIZE_CB",   (Icallback)iColorBrowserResize_CB);
   IupSetCallback(ih, "BUTTON_CB",   (Icallback)iColorBrowserButton_CB);
   IupSetCallback(ih, "MOTION_CB",   (Icallback)iColorBrowserMotion_CB);
@@ -826,8 +826,8 @@ Iclass* iupColorBrowserGetClass(void)
 
   /* Class functions */
   ic->Create  = iColorBrowserCreateMethod;
-  ic->Destroy = iColorBrowserDestroyMethod;
   ic->Map     = iColorBrowserMapMethod;
+  ic->UnMap   = iColorBrowserUnMapMethod;
 
   /* IupColorBrowser Callbacks */
   iupClassRegisterCallback(ic, "DRAG_CB",   "ccc");

@@ -19,22 +19,7 @@ void appUpdateRender(cdCanvas *cddbuffer)
   cdCanvasLine(cddbuffer, 0, height-1, width-1, 0);
 }
 
-void appRepaint(Ihandle *ih)
-{
-  /* to be called when a visual attribute was changed 
-     and needs to update the display */
-  cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_APP_CDDBUFFER");
-  if (!cddbuffer)
-    return;
-
-  /* update render */
-  appUpdateRender(cddbuffer);
-
-  /* update display */
-  cdCanvasFlush(cddbuffer);
-}
-
-int action(Ihandle *ih)
+int redraw_cb(Ihandle *ih)
 {
   cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_APP_CDDBUFFER");
   if (!cddbuffer)
@@ -112,7 +97,7 @@ int main(int argc, char* argv[])
   IupSetAttribute(canvas, "RASTERSIZE", "300x200"); /* initial size */
 
   IupSetCallback(canvas, "RESIZE_CB",  (Icallback)resize_cb);
-  IupSetCallback(canvas, "ACTION",  (Icallback)action);
+  IupSetCallback(canvas, "ACTION",  (Icallback)redraw_cb);
   IupSetCallback(canvas, "MAP_CB",  (Icallback)map_cb);
   IupSetCallback(canvas, "UNMAP_CB",  (Icallback)unmap_cb);
                    

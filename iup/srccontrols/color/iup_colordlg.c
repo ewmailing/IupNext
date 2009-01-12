@@ -265,7 +265,7 @@ static int iColorBrowserDlgButtonHelp_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iColorBrowserDlgColorCnvRepaint_CB(Ihandle* ih)
+static int iColorBrowserDlgColorCnvRedraw_CB(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
 
@@ -869,7 +869,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->color_cnv, "BORDER", "YES");
   IupSetAttribute(colordlg_data->color_cnv, "CANFOCUS", "NO");
   IupSetAttribute(colordlg_data->color_cnv, "EXPAND", "HORIZONTAL");
-  IupSetCallback (colordlg_data->color_cnv, "ACTION", (Icallback)iColorBrowserDlgColorCnvRepaint_CB);
+  IupSetCallback (colordlg_data->color_cnv, "ACTION", (Icallback)iColorBrowserDlgColorCnvRedraw_CB);
   IupSetCallback (colordlg_data->color_cnv, "MAP_CB", (Icallback)iColorBrowserDlgColorCnvMap_CB);
   IupSetCallback (colordlg_data->color_cnv, "UNMAP_CB", (Icallback)iColorBrowserDlgColorCnvUnMap_CB);
 

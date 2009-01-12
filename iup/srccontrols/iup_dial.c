@@ -491,7 +491,7 @@ static int iDialResize_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iDialRepaint_CB(Ihandle* ih)
+static int iDialRedraw_CB(Ihandle* ih)
 {
   if (!ih->data->cddbuffer)
     return IUP_DEFAULT;
@@ -748,7 +748,7 @@ static int iDialMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
-static void iDialDestroyMethod(Ihandle* ih)
+static void iDialUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
     cdKillCanvas(ih->data->cddbuffer);
@@ -778,7 +778,7 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
   iDialUpdateFgColors(ih, IDIAL_DEFAULT_FGCOLOR_COMP, IDIAL_DEFAULT_FGCOLOR_COMP, IDIAL_DEFAULT_FGCOLOR_COMP);
 
   /* IupCanvas callbacks */
-  IupSetCallback(ih,"ACTION",(Icallback)iDialRepaint_CB);
+  IupSetCallback(ih,"ACTION",(Icallback)iDialRedraw_CB);
   IupSetCallback(ih,"RESIZE_CB",(Icallback)iDialResize_CB);
   IupSetCallback(ih,"BUTTON_CB",(Icallback)iDialButton_CB);
   IupSetCallback(ih,"FOCUS_CB",(Icallback)iDialFocus_CB);
@@ -800,8 +800,8 @@ Iclass* iupDialGetClass(void)
 
   /* Class functions */
   ic->Create  = iDialCreateMethod;
-  ic->Destroy = iDialDestroyMethod;
-  ic->Map = iDialMapMethod;
+  ic->Map     = iDialMapMethod;
+  ic->UnMap   = iDialUnMapMethod;
 
   /* Do not need to set base attributes because they are inherited from IupCanvas */
 

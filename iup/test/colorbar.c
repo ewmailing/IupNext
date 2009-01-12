@@ -10,7 +10,7 @@
 static Ihandle  *canvas = NULL;
 static cdCanvas *cdcanvas = NULL;
 
-int repaint_cb(Ihandle* ih)
+int redraw_cb(Ihandle* ih)
 {
   if (!cdcanvas)
     return IUP_DEFAULT;
@@ -55,7 +55,7 @@ char* cell_cb(Ihandle* ih, int cell)
     sprintf(str, "%d %d %d", (int)r, (int)g, (int)b);
     cdActivate( cdcanvas ) ;
     cdForeground(cdEncodeColor(r, g, b));
-    repaint_cb(canvas);
+    redraw_cb(canvas);
     return str;
   }
 */
@@ -83,7 +83,7 @@ int select_cb(Ihandle* ih, int cell, int type)
   else
     cdBackground(cd_color);
 
-  repaint_cb(canvas);
+  redraw_cb(canvas);
 
   return IUP_DEFAULT;
 }
@@ -98,7 +98,7 @@ int switch_cb(Ihandle* ih, int primcell, int seccell)
   fgcolor = cdForeground(CD_QUERY);
   cdForeground(cdBackground(CD_QUERY));
   cdBackground(fgcolor);
-  repaint_cb(canvas);
+  redraw_cb(canvas);
   return IUP_DEFAULT;
 }
 
@@ -109,9 +109,9 @@ int main(int argc, char* argv[])
   IupOpen(&argc, &argv);
   IupControlsOpen();
 
-  /* Creates a canvas associated with the repaint action */
+  /* Creates a canvas associated with the redraw action */
   canvas = IupCanvas(NULL) ;
-  IupSetCallback(canvas, "ACTION", (Icallback)repaint_cb);
+  IupSetCallback(canvas, "ACTION", (Icallback)redraw_cb);
   IupSetAttribute(canvas, "RASTERSIZE", "200x300");
 
   cb = IupColorbar(); 

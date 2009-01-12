@@ -99,7 +99,7 @@ struct Iclass_
   int (*Map)(Ihandle* ih);
 
   /** Method that unmap (destroy) the control from the native system. \n
-   * Called only from IupDestroy if the control is mapped. \n
+   * Called only from IupUnmap if the control is mapped. \n
    * Must return IUP_NOERROR or IUP_ERROR.
    */
   void (*UnMap)(Ihandle* ih);

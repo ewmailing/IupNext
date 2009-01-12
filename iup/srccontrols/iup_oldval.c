@@ -379,7 +379,7 @@ static int iValResize_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iValRepaint_CB(Ihandle* ih)
+static int iValRedraw_CB(Ihandle* ih)
 {
   if (!ih->data->cddbuffer)
     return IUP_DEFAULT;
@@ -724,14 +724,17 @@ static int iValMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
-static void iValDestroyMethod(Ihandle* ih)
+static void iValUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
     cdKillCanvas(ih->data->cddbuffer);
 
   if (ih->data->cdcanvas)
     cdKillCanvas(ih->data->cdcanvas);
+}
 
+static void iValDestroyMethod(Ihandle* ih)
+{
   if (ih->data->himage) free(ih->data->himage);
   if (ih->data->himage_colors) free(ih->data->himage_colors);
   if (ih->data->himageinactive) free(ih->data->himageinactive);
@@ -759,7 +762,7 @@ static int iValCreateMethod(Ihandle* ih, void **params)
   ih->data->pagestep = 0.1;
 
   IupSetCallback(ih,"RESIZE_CB",(Icallback)iValResize_CB);
-  IupSetCallback(ih,"ACTION",(Icallback)iValRepaint_CB);
+  IupSetCallback(ih,"ACTION",(Icallback)iValRedraw_CB);
   IupSetCallback(ih,"BUTTON_CB",(Icallback)iValButton_CB);
   IupSetCallback(ih,"MOTION_CB",(Icallback)iValMotion_CB);
   IupSetCallback(ih,"FOCUS_CB",(Icallback)iValFocus_CB);
@@ -783,6 +786,7 @@ static Iclass* iValGetClass(void)
   ic->Create  = iValCreateMethod;
   ic->Destroy = iValDestroyMethod;
   ic->Map = iValMapMethod;
+  ic->UnMap = iValUnMapMethod;
   
   /* IupVal Callbacks */
   iupClassRegisterCallback(ic, "MOUSEMOVE_CB", "d");

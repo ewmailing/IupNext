@@ -13,7 +13,7 @@
 
 static cdCanvas *cdcanvas = NULL;
 
-int repaint_cb( Ihandle *self, float x, float y )
+int redraw_cb( Ihandle *self, float x, float y )
 {
   cdCanvasActivate(cdcanvas);
   cdCanvasBackground(cdcanvas, CD_BLACK);
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);
 
   cnvs = IupCanvas( NULL );
-  IupSetCallback(cnvs, "ACTION",( Icallback )repaint_cb );
+  IupSetCallback(cnvs, "ACTION",( Icallback )redraw_cb );
   IupSetAttribute(cnvs, "SIZE", "300x100");
   
   dlg = IupDialog( IupFrame( cnvs ) );

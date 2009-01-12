@@ -1748,7 +1748,7 @@ static int iTabsResize_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iTabsRepaint_CB(Ihandle* ih)
+static int iTabsRedraw_CB(Ihandle* ih)
 {
   char* clip_rect;
 
@@ -2505,14 +2505,17 @@ static int iTabsMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
-static void iTabsDestroyMethod(Ihandle* ih)
+static void iTabsUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
     cdKillCanvas(ih->data->cddbuffer);
 
   if (ih->data->cdcanvas)
     cdKillCanvas(ih->data->cdcanvas);
+}
 
+static void iTabsDestroyMethod(Ihandle* ih)
+{
   if (ih->data->font_inactive)
     free(ih->data->font_inactive);
 
@@ -2549,7 +2552,7 @@ static int iTabsCreateMethod(Ihandle* ih, void **params)
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "RESIZE_CB",   (Icallback)iTabsResize_CB);
-  IupSetCallback(ih, "ACTION",      (Icallback)iTabsRepaint_CB);
+  IupSetCallback(ih, "ACTION",      (Icallback)iTabsRedraw_CB);
   IupSetCallback(ih, "BUTTON_CB",   (Icallback)iTabsButton_CB);
   IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iTabsKeyPress_CB);
   IupSetCallback(ih, "FOCUS_CB",    (Icallback)iTabsFocus_CB);
@@ -2587,6 +2590,7 @@ static Iclass* iTabsGetClass(void)
   ic->Create  = iTabsCreateMethod;
   ic->Destroy = iTabsDestroyMethod;
   ic->Map     = iTabsMapMethod;
+  ic->UnMap   = iTabsUnMapMethod;
 
   ic->ComputeNaturalSize = iTabsComputeNaturalSizeMethod;
   ic->SetCurrentSize     = iTabsSetCurrentSizeMethod;

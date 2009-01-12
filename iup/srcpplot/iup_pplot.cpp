@@ -62,8 +62,8 @@ typedef int (*IFniiffi)(Ihandle*, int, int, float, float, int); /* select_cb */
 typedef int (*IFniiffff)(Ihandle*, int, int, float, float, float*, float*); /* edit_cb */
 
 
-/* callback: forward paint request to PPlot object */
-static int iPPlotPaint_CB(Ihandle* ih)
+/* callback: forward redraw request to PPlot object */
+static int iPPlotRedraw_CB(Ihandle* ih)
 {
   ih->data->plt->Draw(0);  /* full redraw only if nothing changed */
   return IUP_DEFAULT;
@@ -2817,7 +2817,7 @@ int iPPlotCreateMethod(Ihandle* ih, void **params)
   ih->data->plt = new PPainterIup(ih);
 
   /* IupCanvas callbacks */
-  IupSetCallback(ih, "ACTION",      (Icallback)iPPlotPaint_CB);
+  IupSetCallback(ih, "ACTION",      (Icallback)iPPlotRedraw_CB);
   IupSetCallback(ih, "RESIZE_CB",   (Icallback)iPPlotResize_CB);
   IupSetCallback(ih, "BUTTON_CB",   (Icallback)iPPlotMouseButton_CB);
   IupSetCallback(ih, "MOTION_CB",   (Icallback)iPPlotMouseMove_CB);

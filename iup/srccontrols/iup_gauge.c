@@ -189,7 +189,7 @@ static void iGaugeRepaint(Ihandle* ih)
   cdCanvasFlush(ih->data->cddbuffer);
 }
 
-static int iGaugeRepaint_CB(Ihandle* ih)
+static int iGaugeRedraw_CB(Ihandle* ih)
 {
   if (!ih->data->cddbuffer)
     return IUP_DEFAULT;
@@ -344,7 +344,7 @@ static char* iGaugeGetTextAttrib(Ihandle* ih)
   return ih->data->text;
 }
 
-static void iGaugeDestroyMethod(Ihandle* ih)
+static void iGaugeUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
     cdKillCanvas(ih->data->cddbuffer);
@@ -394,7 +394,7 @@ static int iGaugeCreateMethod(Ihandle* ih, void **params)
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "RESIZE_CB", (Icallback)iGaugeResize_CB);
-  IupSetCallback(ih, "ACTION",    (Icallback)iGaugeRepaint_CB);
+  IupSetCallback(ih, "ACTION",    (Icallback)iGaugeRedraw_CB);
 
   return IUP_NOERROR;
 }
@@ -411,8 +411,8 @@ Iclass* iupGaugeGetClass(void)
 
   /* Class functions */
   ic->Create  = iGaugeCreateMethod;
-  ic->Destroy = iGaugeDestroyMethod;
   ic->Map     = iGaugeMapMethod;
+  ic->UnMap   = iGaugeUnMapMethod;
 
   /* Do not need to set base attributes because they are inherited from IupCanvas */
 

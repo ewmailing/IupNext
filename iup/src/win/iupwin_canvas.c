@@ -666,7 +666,7 @@ static void winCanvasUnMapMethod(Ihandle* ih)
 {
   if (iupAttribGetInt(ih, "MDICLIENT")) 
   {
-    /* hide the MDI client window to avoid multiple repaints */
+    /* hide the MDI client window to avoid multiple re-paints */
     ShowWindow(ih->handle, SW_HIDE);
 
     /* must destroy all MDI Children */
