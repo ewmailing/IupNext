@@ -30,8 +30,9 @@ IupRefresh(dialog);</pre>
 <p>So the dialog will be resized for the new <b>User</b> size, if the new size is NULL the dialog will be resized to 
   the <b>Natural</b> size that include all the elements.</p>
 <p>Changing the size of elements without changing the dialog size may position some controls outside the dialog area at 
-  the left or bottom borders (the elements will be cropped at the dialog borders).</p>
-<p><strong>IupMap</strong> also updates the dialog layout even if it is already mapped, 
+  the left or bottom borders (the elements will be cropped at the dialog borders 
+by the native system).</p>
+<p><strong>IupMap</strong> also updates the dialog layout even if the control is already mapped, 
   so using it or using 
   <strong>IupShow</strong>, 
   <strong>IupShowXY</strong> or 
