@@ -7,6 +7,7 @@ IUP := ..
 
 DEFINES = IUPLUA_USELOH
 
+USE_IUP3 = Yes
 USE_IUPLUA = Yes
 USE_CDLUA = Yes
 LIBS = iup_pplot

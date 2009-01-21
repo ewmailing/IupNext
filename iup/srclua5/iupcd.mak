@@ -15,6 +15,6 @@ LDIR = ../lib/$(TEC_UNAME)
 IUP := ..
 
 USE_CD = YES
-USE_IUP = YES
+USE_IUP3 = YES
 USE_LUA51 = Yes
 USE_CDLUA = YES

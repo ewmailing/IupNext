@@ -9,7 +9,7 @@ IUP := ..
 
 # Can not use USE_IUPLUA because Tecmake will include "iupluagl51" in linker
 
-USE_IUP = Yes
+USE_IUP3 = Yes
 USE_OPENGL = Yes
 LIBS = iuplua51
 

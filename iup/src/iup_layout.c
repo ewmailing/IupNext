@@ -30,7 +30,8 @@ void IupRefresh(Ihandle* ih)
   if (dialog)
   {
     iupLayoutCompute(dialog);
-    iupLayoutUpdate(dialog);
+    if (dialog->handle)
+      iupLayoutUpdate(dialog);
   }
 }
 
@@ -67,15 +68,15 @@ void IupUpdateChildren(Ihandle* ih)
 
 void iupLayoutUpdate(Ihandle* ih)
 {
-  if (ih->handle)
+  Ihandle* child;
+
+  /* update size and position of the native control */
+  iupClassObjectLayoutUpdate(ih);
+
+  /* update its children */
+  for (child = ih->firstchild; child; child = child->brother)
   {
-    Ihandle* child;
-
-    /* update size and position of the native control */
-    iupClassObjectLayoutUpdate(ih);
-
-    /* update its children */
-    for (child = ih->firstchild; child; child = child->brother)
+    if (child->handle)
       iupLayoutUpdate(child);
   }
 }

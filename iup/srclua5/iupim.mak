@@ -10,6 +10,7 @@ LIBS = iupim
 
 IUP := ..
 
+USE_IUP3 = Yes
 USE_IUPLUA = Yes
 USE_IM = Yes
 USE_LUA51 = Yes

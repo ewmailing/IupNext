@@ -6,8 +6,8 @@ USE_LUA  = Yes
 USE_CDLUA = Yes
 
 LOHDIR = loh
-SRCLUA =  pplot.lua
-SRC    =  iuplua_pplot.c
+SRCLUA = pplot.lua
+SRC    = iuplua_pplot.c
 
 DEFINES = IUPLUA_USELOH
 INCLUDES = ../include

@@ -2,8 +2,6 @@ PROJNAME = iup
 LIBNAME = iupcd
 OPT = YES
 
-NO_DYNAMIC=Yes
-
 DEFINES = CD_NO_OLD_INTERFACE
 SRC = iup_cd.c
 DEF_FILE = iupcd.def
