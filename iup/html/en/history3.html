@@ -12,6 +12,10 @@
 .style1 {
 color: #FF0000;
 }
+  .style2 {
+	font-family: Tahoma;
+	text-decoration: line-through;
+}
   </style>
 </head>
 
@@ -26,7 +30,7 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 </p>
 
-<h3>CVS (05/Jan/2009)</h3>
+<h3>CVS (05/Fev/2009)</h3>
 
 <ul>
 
@@ -37,6 +41,13 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
   <li><span class="style1">Fixed: </span>Fixed button, toggle and list sizes for 
 	GTK driver when using the Hildon Framework. Thanks to Otfried Cheong.</li>
+	<li><span class="style1">Fixed:</span> some IupLua dynamic libraries in 
+	Linux where incorrectly linking with Motif (libiuplua + pplot, cd, controls, 
+	gl, im and imglib + 51.so)</li>
+	<li><span class="style1">Fixed:</span> HOMOGENEOUS attribute for IupVbox and 
+	IupHbox.</li>
+	<li><span style="color: rgb(0, 0, 255);" class="style2">New:</span><span class="style2">
+	MARKL:C attribute for IupMatrix.</span></li>
 
 </ul>
 

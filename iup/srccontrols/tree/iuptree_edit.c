@@ -34,62 +34,65 @@
 #include "iuptree_getset.h"
 
 
-static int iTreeEditTextActionCB(Ihandle* ih, int c, char *after)
-{
-  if(!IupGetInt(ih, "VISIBLE"))
-    return IUP_DEFAULT;
-
-  if(c == K_ESC)
-  {
-    IupSetAttribute(ih->data->texth, "VISIBLE", "NO");
-    IupSetAttribute(ih->data->texth, "ACTIVE",  "NO");
-    IupSetFocus(ih);
-    return IUP_DEFAULT;
-  }
-
-  if(c == K_CR)
-  {
-    int ret;
-    IupSetAttribute(ih, "_IUPTREE_CALL_RENAME", "1");
-    ret = iupTreeCallbackRenameCB(ih, after);
-    IupSetAttribute(ih, "_IUPTREE_CALL_RENAME", NULL);
-
-    if(ret == IUP_IGNORE)
-      return IUP_DEFAULT;
-
-    IupSetAttribute(ih->data->texth, "VISIBLE", "NO");
-    IupSetAttribute(ih->data->texth, "ACTIVE",  "NO");
-    IupSetFocus(ih);
-
-    return IUP_DEFAULT;
-  }
-
-  return IUP_DEFAULT;
-}
-
-#ifdef _MOTIF_
 static int iTreeEditKeyAnyTextCB(Ihandle* ih, int c)
 {
-  int ret = IUP_DEFAULT;
+  Ihandle* ih_tree = ih->parent;
 
-  /* In motif, these keys are not handled in IupText ACTION. */
-  if(c == K_ESC || c == K_CR)
-    ret = iTreeEditTextActionCB(ih, c, IupGetAttribute(ih, "VALUE"));
+  if (c == K_ESC)
+  {
+    IupSetAttribute(ih, "VISIBLE", "NO");
+    IupSetAttribute(ih, "ACTIVE",  "NO");
+    IupSetFocus(ih_tree);
+    return IUP_DEFAULT;
+  }
 
-  return ret;
+  if (c == K_CR)
+  {
+    int ret;
+    IupSetAttribute(ih_tree, "_IUPTREE_CALL_RENAME", "1");
+    ret = iupTreeCallbackRenameCB(ih_tree, IupGetAttribute(ih, "VALUE"));
+    IupSetAttribute(ih_tree, "_IUPTREE_CALL_RENAME", NULL);
+
+    if (ret == IUP_IGNORE)
+      return IUP_IGNORE;
+
+    IupSetAttribute(ih, "VISIBLE", "NO");
+    IupSetAttribute(ih, "ACTIVE",  "NO");
+    IupSetFocus(ih_tree);
+
+    return IUP_DEFAULT;
+  }
+
+  return IUP_CONTINUE;
 }
-#endif
+
+static int iTreeEditTextKillFocusCB(Ihandle* ih)
+{
+  Ihandle* ih_tree = ih->parent;
+
+  if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Motif"))
+  {
+    if (IupGetInt(ih_tree, "_IUPTREE_DOUBLE_CLICK"))
+    {
+      IupSetAttribute(ih_tree, "_IUPTREE_DOUBLE_CLICK", NULL);
+      return IUP_DEFAULT;
+    }
+  }
+
+  iupTreeEditCheckHidden(ih_tree);
+  return IUP_DEFAULT;
+}
 
 /* called whenever something happened that 
    the edit control should be closed if visible */
 void iupTreeEditCheckHidden(Ihandle* ih)
 {
-  if(IupGetInt(ih->data->texth, "VISIBLE"))
+  if (IupGetInt(ih->data->texth, "VISIBLE"))
   {
     char* value;
 
     /* if the user caused a kill focus during a RENAME_CB just ignore it. */
-    if(IupGetInt(ih, "_IUPTREE_CALL_RENAME") == 1)
+    if (IupGetInt(ih, "_IUPTREE_CALL_RENAME") == 1)
       return;
 
     value = iupStrDup(IupGetAttribute(ih->data->texth, "VALUE"));
@@ -98,20 +101,6 @@ void iupTreeEditCheckHidden(Ihandle* ih)
     IupSetAttribute(ih->data->texth, "VISIBLE", "NO");
     IupSetAttribute(ih->data->texth, "ACTIVE",  "NO");
   }
-}
-
-static int iTreeEditTextKillFocusCB(Ihandle* ih)
-{
-#ifdef _MOTIF_
-  if(IupGetInt(ih, "_IUPTREE_DOUBLE_CLICK"))
-  {
-    IupSetAttribute(ih, "_IUPTREE_DOUBLE_CLICK", NULL);
-    return IUP_DEFAULT;
-  }
-#endif
-
-  iupTreeEditCheckHidden(ih);
-  return IUP_DEFAULT;
 }
 
 void iupTreeEditShow(Ihandle* ih, int text_x, int x, int y)
@@ -168,7 +157,7 @@ void iupTreeEditShow(Ihandle* ih, int text_x, int x, int y)
     if(selection)
     {
       /* this allow the user to set the SELECTION inside the SHOWRENAME_CB */
-      iupAttribStoreStr(ih->data->texth, "SELECTION", selection);
+      IupStoreAttribute(ih->data->texth, "SELECTION", selection);
       iupAttribSetStr(ih, "SELECTION", NULL);
     }
     else
@@ -177,7 +166,7 @@ void iupTreeEditShow(Ihandle* ih, int text_x, int x, int y)
       if(caret)
       {
         /* this allow the user to set the CARET inside the SHOWRENAME_CB */
-        iupAttribStoreStr(ih->data->texth, "CARET", caret);
+        IupStoreAttribute(ih->data->texth, "CARET", caret);
         iupAttribSetStr(ih, "CARET", NULL);
       }
     }
@@ -189,18 +178,10 @@ void iupTreeEditCreate(Ihandle* ih)
   ih->data->texth = IupText(NULL);
   iupChildTreeAppend(ih, ih->data->texth);
 
-  IupSetCallback(ih->data->texth, "ACTION",       (Icallback)iTreeEditTextActionCB);
+  IupSetCallback(ih->data->texth, "K_ANY", (Icallback)iTreeEditKeyAnyTextCB);
   IupSetCallback(ih->data->texth, "KILLFOCUS_CB", (Icallback)iTreeEditTextKillFocusCB);
   IupSetAttribute(ih->data->texth, "VALUE",  "");
   IupSetAttribute(ih->data->texth, "BORDER", "YES");
   IupSetAttribute(ih->data->texth, "VISIBLE", "NO");
   IupSetAttribute(ih->data->texth, "ACTIVE",  "NO");
-
-#ifdef _MOTIF_
-  IupSetCallback(ih->data->texth, "K_ANY", (Icallback)iTreeEditKeyAnyTextCB);
-#else
-  /* avoid callback inheritance */
-  IupSetAttribute(ih->data->texth, "K_ANY", "__do_nothing__");
-
-#endif
 }

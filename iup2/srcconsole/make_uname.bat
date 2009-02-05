@@ -4,8 +4,17 @@ if "%1"==""     goto iupexe32
 if "%1"=="vc8"  goto iupexe32
 if "%1"=="vc8_64"  goto iupexe64
 if "%1"=="all"  goto iupexe
+if "%1"=="copy-dll6"     goto copy-dll6
 if "%1"=="copy-dll"     goto copy-dll
 if "%1"=="copy-dll64"     goto copy-dll64
+goto end
+
+:copy-dll6
+copy /y ..\lib\dll\*.dll ..\bin\Win32
+copy /y ..\..\cd\lib\dll\*.dll ..\bin\Win32
+copy /y ..\..\im\lib\dll\*.dll ..\bin\Win32
+copy /y ..\..\lua5.1\lib\dll\*.dll ..\bin\Win32
+del ..\bin\Win32\*3.dll
 goto end
 
 :copy-dll

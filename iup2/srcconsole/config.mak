@@ -83,7 +83,7 @@ ifdef DBG
   ifdef IUPLUA_IMGLIB
     DEFINES += IUPLUA_IMGLIB
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += iupluaimglib iupimglib
+      LIBS += iupluaimglib$(LIBLUASUFX) iupimglib
     else
       IUPLIB = $(IUP)/lib/$(TEC_UNAME)
       SLIB += $(IUPLIB)/libiupluaimglib$(LIBLUASUFX).a $(IUPLIB)/libiupimglib.a

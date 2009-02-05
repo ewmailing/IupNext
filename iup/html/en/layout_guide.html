@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -148,6 +148,12 @@ contents will stop to follow the resize and they will be clipped at right and
 bottom.</p>
 <p align="center">
 <img border="0" src="images/no_shrink.gif" width="153" height="189"></p>
+<p>
+If the expansion is in the same direction of the box, for instance 
+expand=&quot;VERTICAL&quot; in the Vbox of the previous example, then the expandable 
+elements will receive equal spaces to expand according to the remaining empty 
+space in the box. This is why elements in diferent boxes does not align 
+perfectly when EXPAND is set.</p>
 <h4>SHRINK</h4>
 <p>To reduze the size of the dialog and its contents to a size smaller than the
 <b>Natural</b> size the SHRINK attribute of the dialog can be used. If set to 
@@ -208,7 +214,6 @@ detached</b> if necessary. So explicity or implicity there will be a call to:</p
 IupDestroy &lt;- IupDetach &lt;- IupUnmap</pre>
 <p>A more simple and fast way to move an element from one position in the 
 hierarchy to another is using <a href="func/iupreparent.html">IupReparent</a>.</p>
-<hr>
 <p>The dialog is the root of the hierarchy tree. To retrieve the dialog of any 
 element you can simply call
   <a href="func/iupgetdialog.html">IupGetDialog</a>, but there are other ways to navigate in the hierarchy tree.</p>
@@ -228,10 +233,29 @@ positioning can be manually updated using
   <a href="func/iuprefresh.html">IupRefresh</a>, even if the dialog is not 
 mapped.</p>
 <p>After changing containers attributes or element sizes that affect the layout the elements are NOT immediately repositioned. Call
-  <b>IupRefresh</b> for an element inside the dialog to update the dialog layout.</p>
-
-<p>To force a redraw of an element call
+  <b>IupRefresh</b> for an element inside the dialog to update the dialog layout. To force a redraw of an element 
+without layout update call
 <a href="func/iupupdate.html">IupUpdate</a>.</p>
+<p>The Layout update is done in two phases. First the layout is computed, this 
+can be done without the dialog being mapped. Second is the native elements 
+update from the computed values.</p>
+<p>The Layout computation is done in 3 steps: <strong>Natural</strong> size 
+computation, update the <strong>Current</strong> size and update the position. </p>
+<ul>
+	<li>The <strong>Natural</strong> size computation is done from the inner elements up 
+to the dialog (first for the children then the element). <strong>User</strong> 
+	size (set by RASTERSIZE or SIZE) is used as the <strong>Natural</strong> 
+	size if defined, if not usually the contents of the element are used to 
+	calculate the <strong>Natural</strong> size.</li>
+	<li>Then the <strong>Current</strong> size is computed starting at the dialog down to 
+the inner elements on the layout hierarchy (first the element then the 
+	children). Children <strong>Current</strong> size is computed according to 
+	layout distribution and containers decoration. At the children if EXPAND is 
+	set, then the size specified by the parent is used, else the natural size is 
+	used. </li>
+	<li>Finally the position is computed starting at the dialog down to the 
+	inner elements on the layout hierarchy, after all sizes are computed.</li>
+</ul>
 
 </body>
 

@@ -257,10 +257,9 @@ static void iTreeMouseLeftPress(Ihandle* ih, int xmouse, int ymouse, int mouse_s
 
           iupTreeEditShow(ih, text_x, x, y);
 
-#ifdef _MOTIF_
-          if(atoi(IupGetGlobal("MOTIFNUMBER")) < 2203) /* since OpenMotif version 2.2.3 this is not necessary */
-            IupSetAttribute(ih, "_IUPTREE_DOUBLE_CLICK", "1");
-#endif
+          if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Motif"))
+            if(atoi(IupGetGlobal("MOTIFNUMBER")) < 2203) /* since OpenMotif version 2.2.3 this is not necessary */
+              IupSetAttribute(ih, "_IUPTREE_DOUBLE_CLICK", "1");
         }
         else
           iupTreeCallbackRenameNodeCB(ih);

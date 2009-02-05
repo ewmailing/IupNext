@@ -126,6 +126,7 @@ static void iVboxComputeNaturalSizeMethod(Ihandle* ih)
 
     ih->expand &= children_expand; /* compose but only expand where the box can expand */
 
+    /* leave room at the element for the maximum natural size of the children when homogeneous */
     if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
       children_natural_totalheight = children_natural_maxheight*children_count;
 
@@ -135,27 +136,44 @@ static void iVboxComputeNaturalSizeMethod(Ihandle* ih)
 
     ih->naturalwidth = iupMAX(ih->naturalwidth, children_naturalwidth);
     ih->naturalheight = iupMAX(ih->naturalheight, children_naturalheight);
+
+    /* Store to be used in iVboxCalcEmptyHeight */
+    ih->data->children_naturalsize = children_naturalheight;
   }
+}
+
+static int iHboxCalcHomogeneousHeight(Ihandle *ih)
+{
+  /* This is the space that the child can be expanded. */
+  Ihandle* child;
+  int homogeneous_height;
+
+  int children_count=0;
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    if (!child->floating)
+      children_count++;
+  }
+  if (children_count == 0)
+    return 0;
+
+  /* equal spaces for all elements */
+  homogeneous_height = (ih->currentheight - (children_count-1)*ih->data->gap - 2*ih->data->margin_y)/children_count;
+  if (homogeneous_height < 0) homogeneous_height = 0;
+  return homogeneous_height;
 }
 
 static int iVboxCalcEmptyHeight(Ihandle *ih, int expand)
 {
+  /* This is the space that the child can be expanded. */
   Ihandle* child;
-  int children_naturalheight, empty_height;
+  int empty_height;
 
-  int children_natural_totalheight=0;
-  int children_natural_maxheight=0;
-  int children_count=0;
   int expand_count=0;
   for (child = ih->firstchild; child; child = child->brother)
   {
     if (!child->floating)
     {
-      if (child->naturalheight > children_natural_maxheight)
-        children_natural_maxheight = child->naturalheight;
-      children_natural_totalheight += child->naturalheight;
-      children_count++;
-
       if (child->expand & expand) 
         expand_count++;
     }
@@ -163,11 +181,8 @@ static int iVboxCalcEmptyHeight(Ihandle *ih, int expand)
   if (expand_count == 0)
     return 0;
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
-    children_natural_totalheight = children_natural_maxheight*children_count;
-
-  children_naturalheight = children_natural_totalheight + (children_count-1)*ih->data->gap + 2*ih->data->margin_y;
-  empty_height = (ih->currentheight - children_naturalheight)/expand_count;
+  /* equal spaces for all expandable elements */
+  empty_height = (ih->currentheight - ih->data->children_naturalsize)/expand_count;  
   if (empty_height < 0) empty_height = 0;
   return empty_height;
 }
@@ -188,19 +203,27 @@ static void iVboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
   {
     /* update children */
     Ihandle* child;
-    int d, d0 = 0, d1 = 0, client_width, expand_children;
+    int empty_h0 = 0, empty_h1 = 0, client_width, expand_children, homogeneous_height = 0;
 
     expand_children = iVBoxGetExpandChildren(ih);
     if (expand_children)
       ih->expand |= expand_children;
 
-    /* must calculate the space left for each control to grow inside the container */
-    /* H1 means there is an EXPAND enabled inside */
-    if (ih->expand & IUP_EXPAND_H1)
-      d1 = iVboxCalcEmptyHeight(ih, IUP_EXPAND_H1);
-    /* Not H1 and H0 means that EXPAND is not enabled, but there are IupFill(s) inside */
-    else if (ih->expand & IUP_EXPAND_H0)
-      d0 = iVboxCalcEmptyHeight(ih, IUP_EXPAND_H0);
+    if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
+    {
+      homogeneous_height = iHboxCalcHomogeneousHeight(ih);
+      ih->data->homogeneous_size = homogeneous_height;
+    }
+    else
+    {
+      /* must calculate the space left for each control to grow inside the container */
+      /* H1 means there is an EXPAND enabled inside */
+      if (ih->expand & IUP_EXPAND_H1)
+        empty_h1 = iVboxCalcEmptyHeight(ih, IUP_EXPAND_H1);
+      /* Not H1 and H0 means that EXPAND is not enabled, but there are IupFill(s) inside */
+      else if (ih->expand & IUP_EXPAND_H0)
+        empty_h0 = iVboxCalcEmptyHeight(ih, IUP_EXPAND_H0);
+    }
 
     client_width = ih->currentwidth - 2*ih->data->margin_x;
     if (client_width<0) client_width=0;
@@ -212,8 +235,13 @@ static void iVboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
         if (expand_children)
           child->expand |= expand_children;
 
-        d = (child->expand & IUP_EXPAND_H1)? d1: ((child->expand & IUP_EXPAND_H0)? d0: 0);
-        iupClassObjectSetCurrentSize(child, client_width, child->naturalheight+d, shrink);
+        if (homogeneous_height)
+          iupClassObjectSetCurrentSize(child, client_width, homogeneous_height, shrink);
+        else
+        {
+          int empty = (child->expand & IUP_EXPAND_H1)? empty_h1: ((child->expand & IUP_EXPAND_H0)? empty_h0: 0);
+          iupClassObjectSetCurrentSize(child, client_width, child->naturalheight+empty, shrink);
+        }
       }
       else
       {
@@ -226,25 +254,13 @@ static void iVboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
 
 static void iVboxSetPositionMethod(Ihandle* ih, int x, int y)
 {
-  int dx, client_width, child_maxheight = 0;
+  int dx, client_width;
   Ihandle* child;
 
   iupBaseSetPositionMethod(ih, x, y);
 
   x += ih->data->margin_x;
   y += ih->data->margin_y;
-
-  if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
-  {
-    for (child = ih->firstchild; child; child = child->brother)
-    {
-      if (!child->floating)
-      {
-        if (child->currentheight > child_maxheight)
-          child_maxheight = child->currentheight;
-      }
-    }
-  }
 
   client_width = ih->currentwidth - 2*ih->data->margin_x;
   if (client_width<0) client_width=0;
@@ -264,8 +280,8 @@ static void iVboxSetPositionMethod(Ihandle* ih, int x, int y)
       iupClassObjectSetPosition(child, x+dx, y);
 
       /* calculate next */
-      if (child_maxheight)
-        y += child_maxheight + ih->data->gap;
+      if (ih->data->homogeneous_size)
+        y += ih->data->homogeneous_size + ih->data->gap;
       else
         y += child->currentheight + ih->data->gap;
     }

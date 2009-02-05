@@ -124,6 +124,7 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih)
 
     ih->expand &= children_expand; /* compose but only expand where the box can expand */
 
+    /* leave room at the element for the maximum natural size of the children when homogeneous */
     if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
       children_natural_totalwidth = children_natural_maxwidth*children_count;
 
@@ -133,27 +134,43 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih)
 
     ih->naturalwidth = iupMAX(ih->naturalwidth, children_naturalwidth);
     ih->naturalheight = iupMAX(ih->naturalheight, children_naturalheight);
+
+    /* Store to be used in iHboxCalcEmptyWidth */
+    ih->data->children_naturalsize = children_naturalwidth;
   }
+}
+
+static int iHboxCalcHomogeneousWidth(Ihandle *ih)
+{
+  Ihandle* child;
+  int homogeneous_width;
+
+  int children_count=0;
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    if (!child->floating)
+      children_count++;
+  }
+  if (children_count == 0)
+    return 0;
+
+  /* equal spaces for all elements */
+  homogeneous_width = (ih->currentwidth - (children_count-1)*ih->data->gap - 2*ih->data->margin_x)/children_count;
+  if (homogeneous_width<0) homogeneous_width = 0;
+  return homogeneous_width;
 }
 
 static int iHboxCalcEmptyWidth(Ihandle *ih, int expand)
 {
+  /* This is the space that the child can be expanded. */
   Ihandle* child;
-  int children_naturalwidth, empty_width;
+  int empty_width;
 
-  int children_natural_totalwidth=0;
-  int children_natural_maxwidth=0;
-  int children_count=0;
   int expand_count=0;
   for (child = ih->firstchild; child; child = child->brother)
   {
     if (!child->floating)
     {
-      if (child->naturalwidth > children_natural_maxwidth)
-        children_natural_maxwidth = child->naturalwidth;
-      children_natural_totalwidth += child->naturalwidth;
-      children_count++;
-
       if (child->expand & expand) 
         expand_count++;
     }
@@ -161,11 +178,8 @@ static int iHboxCalcEmptyWidth(Ihandle *ih, int expand)
   if (expand_count == 0)
     return 0;
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
-    children_natural_totalwidth = children_natural_maxwidth*children_count;
-
-  children_naturalwidth = children_natural_totalwidth + (children_count-1)*ih->data->gap + 2*ih->data->margin_x;
-  empty_width = (ih->currentwidth - children_naturalwidth)/expand_count;
+  /* equal spaces for all expandable elements */
+  empty_width = (ih->currentwidth - ih->data->children_naturalsize)/expand_count;  
   if (empty_width<0) empty_width = 0;
   return empty_width;
 }
@@ -186,19 +200,27 @@ static void iHboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
   {
     /* update children */
     Ihandle* child;
-    int d, d0 = 0, d1 = 0, client_height, expand_children;
+    int empty_w0 = 0, empty_w1 = 0, client_height, expand_children, homogeneous_width = 0;
 
     expand_children = iHBoxGetExpandChildren(ih);
     if (expand_children)
       ih->expand |= expand_children;
 
-    /* must calculate the space left for each control to grow inside the container */
-    /* W1 means there is an EXPAND enabled inside */
-    if (ih->expand & IUP_EXPAND_W1)
-      d1 = iHboxCalcEmptyWidth(ih, IUP_EXPAND_W1);
-    /* Not W1 and W0 means that EXPAND is not enabled but there are IupFill(s) inside */
-    else if (ih->expand & IUP_EXPAND_W0)
-      d0 = iHboxCalcEmptyWidth(ih, IUP_EXPAND_W0);
+    if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
+    {
+      homogeneous_width = iHboxCalcHomogeneousWidth(ih);
+      ih->data->homogeneous_size = homogeneous_width;
+    }
+    else
+    {
+      /* must calculate the space left for each control to grow inside the container */
+      /* W1 means there is an EXPAND enabled inside */
+      if (ih->expand & IUP_EXPAND_W1)
+        empty_w1 = iHboxCalcEmptyWidth(ih, IUP_EXPAND_W1);
+      /* Not W1 and W0 means that EXPAND is not enabled but there are IupFill(s) inside */
+      else if (ih->expand & IUP_EXPAND_W0)
+        empty_w0 = iHboxCalcEmptyWidth(ih, IUP_EXPAND_W0);
+    }
 
     client_height = ih->currentheight - 2*ih->data->margin_y;
     if (client_height<0) client_height=0;
@@ -210,8 +232,13 @@ static void iHboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
         if (expand_children)
           child->expand |= expand_children;
 
-        d = (child->expand & IUP_EXPAND_W1)? d1: ((child->expand & IUP_EXPAND_W0)? d0: 0);
-        iupClassObjectSetCurrentSize(child, child->naturalwidth+d, client_height, shrink);
+        if (homogeneous_width)
+          iupClassObjectSetCurrentSize(child, homogeneous_width, client_height, shrink);
+        else
+        {
+          int empty = (child->expand & IUP_EXPAND_W1)? empty_w1: ((child->expand & IUP_EXPAND_W0)? empty_w0: 0);
+          iupClassObjectSetCurrentSize(child, child->naturalwidth+empty, client_height, shrink);
+        }
       }
       else
       {
@@ -224,25 +251,13 @@ static void iHboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
 
 static void iHboxSetPositionMethod(Ihandle* ih, int x, int y)
 {
-  int dy, client_height, child_maxwidth = 0;
+  int dy, client_height;
   Ihandle* child;
 
   iupBaseSetPositionMethod(ih, x, y);
 
   x += ih->data->margin_x;
   y += ih->data->margin_y;
-
-  if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
-  {
-    for (child = ih->firstchild; child; child = child->brother)
-    {
-      if (!child->floating)
-      {
-        if (child->currentwidth > child_maxwidth)
-          child_maxwidth = child->currentwidth;
-      }
-    }
-  }
 
   client_height = ih->currentheight - 2*ih->data->margin_y;
   if (client_height<0) client_height=0;
@@ -262,8 +277,8 @@ static void iHboxSetPositionMethod(Ihandle* ih, int x, int y)
       iupClassObjectSetPosition(child, x, y+dy);
 
       /* calculate next */
-      if (child_maxwidth)
-        x += child_maxwidth + ih->data->gap;
+      if (ih->data->homogeneous_size)
+        x += ih->data->homogeneous_size + ih->data->gap;
       else
         x += child->currentwidth + ih->data->gap;
     }
