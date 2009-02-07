@@ -63,7 +63,7 @@ void iupdrvFileDlgInitClass(Iclass* ic);
 
 /* Common definition of the canvas class */
 typedef struct _iupCanvas {
-  int sb;
+  int sb;    /* scrollbar configuration, valid only after map, use iupBaseGetScrollbar before map */
   float posx, posy;
 } iupCanvas;
 

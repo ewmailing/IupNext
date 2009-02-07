@@ -28,7 +28,7 @@ struct _IcontrolData
       has_formatting,
       append_newline,
       nc,
-      sb,                           /* scrollbar configuration */
+      sb,                           /* scrollbar configuration, can be changed only before map */
       horiz_padding, vert_padding,  /* button margin */
       last_caret_pos;
   Iarray* formattags;

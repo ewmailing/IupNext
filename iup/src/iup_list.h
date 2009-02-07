@@ -34,7 +34,7 @@ void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos);
 
 struct _IcontrolData 
 {
-  int sb,
+  int sb,  /* scrollbar configuration, can be changed only before map */
       nc,
       spacing,
       horiz_padding, 

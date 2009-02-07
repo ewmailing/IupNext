@@ -56,8 +56,15 @@ int iupdrvOpen(int *argc, char ***argv)
 
   IupSetGlobal("DRIVER",  "Win32");
 
-  iupwin_hinstance = GetModuleHandle(NULL);
-  IupSetGlobal("HINSTANCE", (char*)iupwin_hinstance);
+  {
+    // TODO: Check this code
+    HWND win = GetConsoleWindow();
+    if (win)
+      iupwin_hinstance = (HINSTANCE)GetWindowLongPtr(win, GWL_HINSTANCE);
+    else
+      iupwin_hinstance = GetModuleHandle(NULL);
+    IupSetGlobal("HINSTANCE", (char*)iupwin_hinstance);
+  }
 
   CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 

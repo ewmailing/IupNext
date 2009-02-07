@@ -50,7 +50,6 @@ void iupCanvasCalcScrollRealPos(double min, double max, double *pos,
   if (*ipos > (imax - ipage)) *ipos = imax - ipage;
 
   *pos = min + ((double)(*ipos-imin))/ratio;
-
 }
 
 char* iupCanvasGetPosXAttrib(Ihandle* ih)
