@@ -389,6 +389,13 @@ void iupdrvTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, in
   }
 }
 
+static void gtkTextScrollToVisible(Ihandle* ih)
+{
+  GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+  GtkTextMark* mark = gtk_text_buffer_get_insert(buffer);
+  gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(ih->handle), mark);
+}
+
 
 /*******************************************************************************************/
 
@@ -664,7 +671,7 @@ static int gtkTextSetCaretAttrib(Ihandle* ih, const char* value)
     gtkTextMoveIterToLinCol(buffer, &iter, lin, col);
 
     gtk_text_buffer_place_cursor(buffer, &iter);
-    gtk_text_view_place_cursor_onscreen(GTK_TEXT_VIEW(ih->handle));
+    gtkTextScrollToVisible(ih);
   }
   else
   {
@@ -719,7 +726,7 @@ static int gtkTextSetCaretPosAttrib(Ihandle* ih, const char* value)
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
     gtk_text_buffer_get_iter_at_offset(buffer, &iter, pos);
     gtk_text_buffer_place_cursor(buffer, &iter);
-    gtk_text_view_place_cursor_onscreen(GTK_TEXT_VIEW(ih->handle));
+    gtkTextScrollToVisible(ih);
   }
   else
     gtk_editable_set_position(GTK_EDITABLE(ih->handle), pos);
