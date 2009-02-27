@@ -121,10 +121,11 @@ control. Default: YES. (since 3.0)</p>
 <p class="info">If the caret is not visible the text is scrolled to make it 
 visible.</p>
 
-<p class="info">In Windows, if the element does not have the focus the returned value is the position of 
-the first character of the current selection. The caret is only displayed if the 
-element has the keyboard focus, but its position can be changed even if not 
-visible. When changed it will also change the selection.</p>
+<p class="info">In Windows, if the element does not have the focus the returned 
+value is the position of the first character of the current selection. The caret 
+is only displayed if the element has the keyboard focus, but its position can be 
+changed even if not visible. When changed it will also change the selection but 
+the text will be scrolled only when it receives the focus.</p>
 
 <p class="info">See the Notes bellow if using UTF-8 strings in GTK.</p>
 
