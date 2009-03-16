@@ -77,7 +77,6 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
 int iupwinCreateWindowEx(Ihandle* ih, LPCSTR lpClassName, DWORD dwExStyle, DWORD dwStyle);
 
 int iupwinClassExist(const char* name);
-void iupwinRedrawNow(Ihandle *ih);
 int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color);
 int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr);
 void iupwinDropFiles(HDROP hDrop, Ihandle *ih);

@@ -42,19 +42,17 @@ will be used.</p>
 <h3>Notes</h3>
 <p>See the <a href="../attrib_guide.html">Attributes Guide</a> for more details.
 </p>
-<h4>Internal Attribute Environment</h4>
+<h4>Storage and Inheritance</h4>
 
-<p>When an attribute is set it is stored in the internal attribute environment if not processed by the element 
-  specific implementation.
-  If the value is NULL, the attribute will be removed from the environment&nbsp;and the default value will be used if there is one defined </p>
+<p>When an attribute is set it is first processed by the element class 
+implementation, if allowed or ignored by the class implementation then it is stored in the internal 
+hash table.
+  If it is an inheritable attribute then the attribute is propagated to the 
+element children class implementation, their hash table remains untouched.</p>
+<p>If the value is NULL, the attribute will be removed from the hash table&nbsp;and 
+the default value will be used during the element class implementation. </p>
 
-<h4>Inheritance</h4>
-
-<p>After the attribute is set on the element because of the attribute
-inheritance its children will be notifyed that an attribute has
-changed. Only the element implementation can block an attribute to be
-propagated to its children.</p>
-<p>Since IUP 3.0, if the attribute is marked non inheritable at a child then the <span style="font-weight: bold;">IupSetAttribute</span> propagation can be ignored by the child. This depends on the internal attribute's implementation of the child class. When that happens set the attribute directly at the child.</p>
+<p>Since IUP 3.0, if the attribute is marked non inheritable at a child then its propagation can be ignored by the child. This depends on the implementation of the child class. When that happen set the attribute directly at the child.</p>
 
 <h4>User Data</h4>
 

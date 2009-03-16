@@ -103,11 +103,11 @@ static void iButtonComputeNaturalSizeMethod(Ihandle* ih)
     if (!ih->handle)
     {
       /* if not mapped must initialize the internal values */
-      char* value = iupAttribGetStr(ih, "IMAGE");
+      char* value = iupAttribGet(ih, "IMAGE");
       if (value)
       {
         type = IUP_BUTTON_IMAGE;
-        if (iupAttribGetStr(ih, "TITLE"))
+        if (iupAttribGet(ih, "TITLE"))
           type |= IUP_BUTTON_TEXT;
       }
       else
@@ -116,7 +116,7 @@ static void iButtonComputeNaturalSizeMethod(Ihandle* ih)
 
     if (type & IUP_BUTTON_IMAGE)
     {
-      iupImageGetInfo(iupAttribGetStr(ih, "IMAGE"), &natural_w, &natural_h, NULL);
+      iupImageGetInfo(iupAttribGet(ih, "IMAGE"), &natural_w, &natural_h, NULL);
 
       if (type & IUP_BUTTON_TEXT)
       {
@@ -203,9 +203,10 @@ Iclass* iupButtonGetClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* IupButton only */
-  iupClassRegisterAttribute(ic, "SPACING", iButtonGetSpacingAttrib, iButtonSetSpacingAttrib, "2", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEPOSITION", iButtonGetImagePositionAttrib, iButtonSetImagePositionAttrib, "LEFT", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPACING", iButtonGetSpacingAttrib, iButtonSetSpacingAttrib, "2", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEPOSITION", iButtonGetImagePositionAttrib, iButtonSetImagePositionAttrib, "LEFT", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMPRESSBORDER", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvButtonInitClass(ic);
 

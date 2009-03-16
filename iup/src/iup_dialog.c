@@ -35,8 +35,9 @@ InativeHandle* iupDialogGetNativeParent(Ihandle* ih)
   if (parent && parent->handle)
     return parent->handle;
   else
-    return (InativeHandle*)iupAttribGetStr(ih, "NATIVEPARENT");
+    return (InativeHandle*)iupAttribGet(ih, "NATIVEPARENT");
 }
+
 static void iDialogSetModal(Ihandle* ih_popup)
 {
   Ihandle *ih;
@@ -499,7 +500,7 @@ void iupDialogAdjustPos(Ihandle *ih, int *x, int *y)
 
   if (IupGetInt(ih, "MDICHILD"))
   {
-    Ihandle* client = (Ihandle*)iupAttribGetStr(ih, "MDICLIENT_HANDLE");
+    Ihandle* client = (Ihandle*)iupAttribGet(ih, "MDICLIENT_HANDLE");
     if (client)
     {
       /* position is relative to mdi client */
@@ -678,28 +679,30 @@ Iclass* iupDialogGetClass(void)
   iupBaseRegisterCommonAttrib(ic);
 
   /* Overwrite Common */
-  iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iDialogSetSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iDialogSetRasterSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "POSITION", iupBaseNoGetAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iDialogSetSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iDialogSetRasterSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "POSITION", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY|IUPAF_NO_INHERIT); /* forbiden in dialog */
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iDialogSetVisibleAttrib, "NO", IUP_MAPPED, IUP_NO_INHERIT); /* the only case where VISIBLE default is NO */
+  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iDialogSetVisibleAttrib, "NO", NULL, IUPAF_NO_INHERIT); /* the only case where VISIBLE default is NO */
 
   /* IupDialog only */
-  iupClassRegisterAttribute(ic, "MENU", NULL, iDialogSetMenuAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, "ARROW", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HIDETASKBAR", NULL, iDialogSetHideTaskbarAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MAXBOX", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MENUBOX", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MINBOX", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RESIZE", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MENU", NULL, iDialogSetMenuAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, "ARROW", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIDETASKBAR", NULL, iDialogSetHideTaskbarAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAXBOX", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MENUBOX", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MINBOX", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RESIZE", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "NATIVEPARENT", NULL, NULL, NULL, NULL, IUPAF_NO_STRING);
 
   iupdrvDialogInitClass(ic);
 

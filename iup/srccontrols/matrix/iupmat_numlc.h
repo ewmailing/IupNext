@@ -11,16 +11,13 @@
 extern "C" {
 #endif
 
-char* iupMatrixNumLCGetNumLin(Ihandle* ih);
-char* iupMatrixNumLCGetNumCol(Ihandle* ih);
+int  iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value);
+int  iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value);
+int  iupMatrixSetAddColAttrib(Ihandle* ih, const char* value);
+int  iupMatrixSetDelColAttrib(Ihandle* ih, const char* value);
 
-void  iupMatrixNumLCAddLin(Ihandle* ih, const char* v);
-void  iupMatrixNumLCDelLin(Ihandle* ih, const char* v);
-void  iupMatrixNumLCAddCol(Ihandle* ih, const char* v);
-void  iupMatrixNumLCDelCol(Ihandle* ih, const char* v);
-
-void  iupMatrixNumLCNumLin(Ihandle* ih, const char* v);
-void  iupMatrixNumLCNumCol(Ihandle* ih, const char* v);
+int  iupMatrixSetNumLinAttrib(Ihandle* ih, const char* value);
+int  iupMatrixSetNumColAttrib(Ihandle* ih, const char* value);
 
 
 #ifdef __cplusplus

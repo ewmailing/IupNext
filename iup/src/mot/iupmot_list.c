@@ -154,14 +154,13 @@ static char* motListGetIdValueAttrib(Ihandle* ih, const char* name_id)
 
 static int motListSetBgColorAttrib(Ihandle* ih, const char* value)
 {
-  Widget sb_win = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (sb_win)
   {
     Pixel color;
 
     /* ignore given value for the scrollbars, must use only from parent */
-    char* parent_value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-    if (!parent_value) parent_value = IupGetGlobal("DLGBGCOLOR");
+    char* parent_value = iupBaseNativeParentGetBgColor(ih);
 
     color = iupmotColorGetPixelStr(parent_value);
     if (color != (Pixel)-1)
@@ -205,8 +204,7 @@ static int motListSetBgColorAttrib(Ihandle* ih, const char* value)
     }
 
     /* but reset just the background, so the combobox will look like a button */
-    parent_value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-    if (!parent_value) parent_value = IupGetGlobal("DLGBGCOLOR");
+    parent_value = iupBaseNativeParentGetBgColor(ih);
 
     color = iupmotColorGetPixelStr(parent_value);
     if (color != (Pixel)-1)
@@ -896,7 +894,7 @@ static void motListEditModifyVerifyCallback(Widget cbedit, Ihandle *ih, XmTextVe
   KeySym motcode = 0;
   IFnis cb;
 
-  if (iupAttribGetStr(ih, "_IUPMOT_DISABLE_TEXT_CB"))
+  if (iupAttribGet(ih, "_IUPMOT_DISABLE_TEXT_CB"))
     return;
 
   cb = (IFnis)IupGetCallback(ih, "EDIT_CB");
@@ -1126,7 +1124,7 @@ static int motListMapMethod(Ihandle* ih)
     iupmotSetArg(args[num_args++], XmNmarginHeight, 0);
     iupmotSetArg(args[num_args++], XmNmarginWidth, 0);
 
-    if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
       iupmotSetArg(args[num_args++], XmNtraversalOn, True)
     else
       iupmotSetArg(args[num_args++], XmNtraversalOn, False)
@@ -1185,7 +1183,7 @@ static int motListMapMethod(Ihandle* ih)
     iupmotSetArg(args[num_args++], XmNwidth, 10);  /* default width to avoid 0 */
     iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
 
-    if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
       iupmotSetArg(args[num_args++], XmNtraversalOn, True)
     else
       iupmotSetArg(args[num_args++], XmNtraversalOn, False)
@@ -1204,7 +1202,7 @@ static int motListMapMethod(Ihandle* ih)
     else
       iupmotSetArg(args[num_args++], XmNselectionPolicy, XmBROWSE_SELECT)
 
-    if (iupStrBoolean(iupAttribGetStrDefault(ih, "AUTOHIDE")))
+    if (iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
       iupmotSetArg(args[num_args++], XmNscrollBarDisplayPolicy, XmAS_NEEDED)
     else
       iupmotSetArg(args[num_args++], XmNscrollBarDisplayPolicy, XmSTATIC)
@@ -1309,30 +1307,30 @@ void iupdrvListInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motListSetBgColorAttrib, "TXTBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motListSetBgColorAttrib, "TXTBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motListSetFgColorAttrib, "TXTFGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motListSetFgColorAttrib, "TXTFGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* IupList only */
-  iupClassRegisterAttributeId(ic, "IDVALUE", motListGetIdValueAttrib, iupListSetIdValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", motListGetValueAttrib, motListSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLE_ITEMS", NULL, motListSetVisibleItemsAttrib, "5", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "TOPITEM", NULL, motListSetTopItemAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, motListSetShowDropdownAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPACING", iupListGetSpacingAttrib, motListSetSpacingAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttributeId(ic, "IDVALUE", motListGetIdValueAttrib, iupListSetIdValueAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", motListGetValueAttrib, motListSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLE_ITEMS", NULL, motListSetVisibleItemsAttrib, "5", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "TOPITEM", NULL, motListSetTopItemAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, motListSetShowDropdownAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPACING", iupListGetSpacingAttrib, motListSetSpacingAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
 
-  iupClassRegisterAttribute(ic, "PADDING", iupListGetPaddingAttrib, motListSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTEDTEXT", motListGetSelectedTextAttrib, motListSetSelectedTextAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTION", motListGetSelectionAttrib, motListSetSelectionAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTIONPOS", motListGetSelectionPosAttrib, motListSetSelectionPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARET", motListGetCaretAttrib, motListSetCaretAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARETPOS", motListGetCaretPosAttrib, motListSetCaretPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INSERT", NULL, motListSetInsertAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "APPEND", NULL, motListSetAppendAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "READONLY", motListGetReadOnlyAttrib, motListSetReadOnlyAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "NC", iupListGetNCAttrib, motListSetNCAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, motListSetClipboardAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, motListSetScrollToAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, motListSetScrollToPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupListGetPaddingAttrib, motListSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SELECTEDTEXT", motListGetSelectedTextAttrib, motListSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTION", motListGetSelectionAttrib, motListSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTIONPOS", motListGetSelectionPosAttrib, motListSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARET", motListGetCaretAttrib, motListSetCaretAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETPOS", motListGetCaretPosAttrib, motListSetCaretPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERT", NULL, motListSetInsertAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "APPEND", NULL, motListSetAppendAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "READONLY", motListGetReadOnlyAttrib, motListSetReadOnlyAttrib, NULL, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "NC", iupListGetNCAttrib, motListSetNCAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, motListSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, motListSetScrollToAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, motListSetScrollToPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }

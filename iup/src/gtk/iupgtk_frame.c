@@ -105,7 +105,7 @@ static int gtkFrameMapMethod(Ihandle* ih)
   if (!ih->parent)
     return IUP_ERROR;
 
-  title = iupAttribGetStr(ih, "TITLE");
+  title = iupAttribGet(ih, "TITLE");
 
   ih->handle = gtk_frame_new(NULL);
   if (!ih->handle)
@@ -144,12 +144,12 @@ void iupdrvFrameInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkFrameSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkFrameSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkFrameSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkFrameSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkFrameSetFgColorAttrib, "0 0 0", IUP_MAPPED, IUP_INHERIT);  /* black */
-  iupClassRegisterAttribute(ic, "TITLE", gtkFrameGetTitleAttrib, gtkFrameSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkFrameSetFgColorAttrib, "0 0 0", NULL, IUPAF_DEFAULT);  /* black */
+  iupClassRegisterAttribute(ic, "TITLE", gtkFrameGetTitleAttrib, gtkFrameSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }

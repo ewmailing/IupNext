@@ -538,14 +538,13 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
 
 static int motTextSetBgColorAttrib(Ihandle* ih, const char* value)
 {
-  Widget extraparent = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget extraparent = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (extraparent)
   {
     Pixel color;
 
     /* ignore given value for the scrollbars, must use only from parent */
-    char* parent_value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-    if (!parent_value) parent_value = IupGetGlobal("DLGBGCOLOR");
+    char* parent_value = iupBaseNativeParentGetBgColor(ih);
 
     color = iupmotColorGetPixelStr(parent_value);
     if (color != (Pixel)-1)
@@ -567,7 +566,7 @@ static int motTextSetBgColorAttrib(Ihandle* ih, const char* value)
 
 static int motTextSetSpinMinAttrib(Ihandle* ih, const char* value)
 {
-  Widget spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (spinbox && XmIsSpinBox(spinbox))
   {
     int min;
@@ -583,7 +582,7 @@ static int motTextSetSpinMinAttrib(Ihandle* ih, const char* value)
 
 static int motTextSetSpinMaxAttrib(Ihandle* ih, const char* value)
 {
-  Widget spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (spinbox && XmIsSpinBox(spinbox))
   {
     int max;
@@ -599,7 +598,7 @@ static int motTextSetSpinMaxAttrib(Ihandle* ih, const char* value)
 
 static int motTextSetSpinIncAttrib(Ihandle* ih, const char* value)
 {
-  Widget spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (spinbox && XmIsSpinBox(spinbox))
   {
     int inc;
@@ -615,7 +614,7 @@ static int motTextSetSpinIncAttrib(Ihandle* ih, const char* value)
 
 static int motTextSetSpinValueAttrib(Ihandle* ih, const char* value)
 {
-  Widget spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (spinbox && XmIsSpinBox(spinbox))
   {
     int pos;
@@ -628,7 +627,7 @@ static int motTextSetSpinValueAttrib(Ihandle* ih, const char* value)
                                 XmNmaximumValue, &max, NULL);
       if (pos < min) pos = min;
       if (pos > max) pos = max;
-      if (iupAttribGetStr(ih, "_IUPMOT_SPIN_NOAUTO"))
+      if (iupAttribGet(ih, "_IUPMOT_SPIN_NOAUTO"))
         value = XmTextGetString(ih->handle);
 
       XtVaSetValues(ih->handle, XmNposition, pos, NULL);
@@ -647,7 +646,7 @@ static int motTextSetSpinValueAttrib(Ihandle* ih, const char* value)
 
 static char* motTextGetSpinValueAttrib(Ihandle* ih)
 {
-  Widget spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (spinbox && XmIsSpinBox(spinbox))
   {
     int pos;
@@ -698,12 +697,12 @@ static void motTextModifyVerifyCallback(Widget w, Ihandle *ih, XmTextVerifyPtr t
   KeySym motcode = 0;
   IFnis cb;
 
-  if (iupAttribGetStr(ih, "_IUPMOT_DISABLE_TEXT_CB"))
+  if (iupAttribGet(ih, "_IUPMOT_DISABLE_TEXT_CB"))
     return;
 
-  if (iupAttribGetStr(ih, "_IUPMOT_SPIN_DISABLE_TEXT_CB"))
+  if (iupAttribGet(ih, "_IUPMOT_SPIN_DISABLE_TEXT_CB"))
   {
-    if (iupAttribGetStr(ih, "_IUPMOT_SPIN_NOAUTO"))
+    if (iupAttribGet(ih, "_IUPMOT_SPIN_NOAUTO"))
       text->doit = False;
 
     iupAttribSetStr(ih, "_IUPMOT_SPIN_DISABLE_TEXT_CB", NULL);
@@ -782,8 +781,8 @@ static void motTextModifyVerifyCallback(Widget w, Ihandle *ih, XmTextVerifyPtr t
   if (text->doit)
   {
     /* Spin is not automatically updated when you directly edit the text */
-    Widget spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
-    if (spinbox && XmIsSpinBox(spinbox) && !iupAttribGetStr(ih, "_IUPMOT_SPIN_NOAUTO"))
+    Widget spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
+    if (spinbox && XmIsSpinBox(spinbox) && !iupAttribGet(ih, "_IUPMOT_SPIN_NOAUTO"))
     {
       int pos;
       if (iupStrToInt(new_value, &pos))
@@ -856,7 +855,7 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
       XmTextSetSelection(ih->handle, 0, XmTextGetLastPosition(ih->handle), CurrentTime);
   }
 
-  spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (spinbox && XmIsSpinBox(spinbox))
   {
     KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
@@ -879,7 +878,7 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
 
 static void motTextLayoutUpdateMethod(Ihandle* ih)
 {
-  Widget spinbox = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (spinbox && XmIsSpinBox(spinbox))
   {
     XtVaSetValues(ih->handle,
@@ -985,7 +984,7 @@ static int motTextMapMethod(Ihandle* ih)
       child_id = "text";
       spin = 1;
 
-      if (!iupStrBoolean(iupAttribGetStrDefault(ih, "SPINAUTO")))
+      if (!iupStrBoolean(iupAttribGetStr(ih, "SPINAUTO")))
         iupAttribSetStr(ih, "_IUPMOT_SPIN_NOAUTO", "1");
     }
 
@@ -1019,7 +1018,7 @@ static int motTextMapMethod(Ihandle* ih)
   iupmotSetArg(args[num_args++], XmNmarginHeight, 0);  /* default padding */
   iupmotSetArg(args[num_args++], XmNmarginWidth, 0);
 
-  if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     iupmotSetArg(args[num_args++], XmNtraversalOn, True)
   else
     iupmotSetArg(args[num_args++], XmNtraversalOn, False)
@@ -1105,29 +1104,29 @@ void iupdrvTextInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motTextSetBgColorAttrib, "TXTBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motTextSetBgColorAttrib, "TXTBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "TXTFGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "TXTFGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* IupText only */
-  iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, motTextSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", motTextGetValueAttrib, motTextSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTEDTEXT", motTextGetSelectedTextAttrib, motTextSetSelectedTextAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTION", motTextGetSelectionAttrib, motTextSetSelectionAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTIONPOS", motTextGetSelectionPosAttrib, motTextSetSelectionPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARET", motTextGetCaretAttrib, motTextSetCaretAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARETPOS", motTextGetCaretPosAttrib, motTextSetCaretPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INSERT", NULL, motTextSetInsertAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "APPEND", NULL, motTextSetAppendAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "READONLY", motTextGetReadOnlyAttrib, motTextSetReadOnlyAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "NC", iupTextGetNCAttrib, motTextSetNCAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, motTextSetClipboardAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORMATTING", NULL, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);  /* formatting not supported in Motif */
-  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, motTextSetScrollToAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, motTextSetScrollToPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPINMIN", NULL, motTextSetSpinMinAttrib, "0", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPINMAX", NULL, motTextSetSpinMaxAttrib, "100", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPININC", NULL, motTextSetSpinIncAttrib, "1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPINVALUE", motTextGetSpinValueAttrib, motTextSetSpinValueAttrib, "0", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, motTextSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "VALUE", motTextGetValueAttrib, motTextSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTEDTEXT", motTextGetSelectedTextAttrib, motTextSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTION", motTextGetSelectionAttrib, motTextSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTIONPOS", motTextGetSelectionPosAttrib, motTextSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARET", motTextGetCaretAttrib, motTextSetCaretAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETPOS", motTextGetCaretPosAttrib, motTextSetCaretPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERT", NULL, motTextSetInsertAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "APPEND", NULL, motTextSetAppendAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "READONLY", motTextGetReadOnlyAttrib, motTextSetReadOnlyAttrib, NULL, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "NC", iupTextGetNCAttrib, motTextSetNCAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, motTextSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATTING", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  /* formatting not supported in Motif */
+  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, motTextSetScrollToAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, motTextSetScrollToPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINMIN", NULL, motTextSetSpinMinAttrib, "0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINMAX", NULL, motTextSetSpinMaxAttrib, "100", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPININC", NULL, motTextSetSpinIncAttrib, "1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINVALUE", motTextGetSpinValueAttrib, motTextSetSpinValueAttrib, "0", NULL, IUPAF_NO_INHERIT);
 }

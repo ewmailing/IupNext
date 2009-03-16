@@ -7,41 +7,19 @@
 #ifndef __IUPMAT_DEF_H 
 #define __IUPMAT_DEF_H
 
-#include "iupmat_draw.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-/***************************************************************************/
-/* Possible state transitions for a cell                                   */
-/***************************************************************************/
-#define IMAT_EDIT    1
-#define IMAT_NOEDIT  0
-
-#define IMAT_MAT_LIN   IMAT_DRAW_LIN
-#define IMAT_MAT_COL   IMAT_DRAW_COL
-
+#define IMAT_PROCESS_COL 1  /* Process the columns */
+#define IMAT_PROCESS_LIN 2  /* Process the lines */
 
 /***************************************************************************/
 /* Decoration size in pixels                                               */
 /***************************************************************************/
 #define IMAT_DECOR_X   6
-
-#ifdef WIN32
 #define IMAT_DECOR_Y   6
-#else
-#define IMAT_DECOR_Y  10
-#endif
-
-
-/***************************************************************************/
-/* Macros to help the access for line and column title attributes          */
-/***************************************************************************/
-#define IMAT_TITLE_LIN   "%d:0"
-#define IMAT_TITLE_COL   "0:%d"
-
 
 /***************************************************************************/
 /* Structures stored in each matrix                                        */
@@ -49,71 +27,79 @@ extern "C" {
 typedef struct _ImatCell
 {
   char *value;         /* Cell value                              */
-  int nba;             /* Number of bytes allocated to this value */
   unsigned char mark;  /* Is this cell marked?                    */
 } ImatCell;
 
+
 typedef struct _ImatLinColData
 {
-  int *wh;         /* Width/height of the columns/lines     */
-  int lastwh;      /* Width/height of the last column/line  */
-  int titlewh;     /* Width/height of the column/line title */
+  int* sizes;         /* Width/height of the columns/lines  (allocated after map)   */
 
-  char *marked;    /* Shows whether the columns/lines are or not marked   */
-  char *inactive;  /* Shows whether the columns/lines are or not inactive */
+  unsigned char* marks;    /* Shows whether the columns/lines are marked or not, independent from mark_mode (allocated after map) */
 
-  int num;         /* Number of columns/lines in the matrix */
-  int numaloc;     /* Number of columns/lines allocated */
+  int num;         /* Number of columns/lines in the matrix, default/minimum=1, always includes the title */
+  int num_alloc;   /* Number of columns/lines allocated, default=5 */
 
   int first;       /* First visible column/line */
   int last;        /* Last visible column/line  */
 
-  int totalwh;     /* Sum of the widths/heights of the columns/lines */
-  int pos;         /* Sum of the widths/heights of the invisible part left/ above */
-  int size;        /* Width/height of the visible window */
+  /* used to position and size the scrollbar */
+  int total_size;     /* Sum of the widths/heights of the columns/lines, not including the title */
+  int visible_pos;    /* Sum of the widths/heights of the invisible part left/above, not including the title */
+  int visible_size;   /* Width/height of the visible window, not including the title */
 
-  int active;      /* Width/height of the active cell */
+  int focus_cell;  /* index of the current cell */
 } ImatLinColData;
 
 struct _IcontrolData
 {
   iupCanvas canvas;  /* from IupCanvas (must reserve it) */
 
-  ImatCell** v;              /* Cell value */
-
-  sIFnii  valcb;       /* Callback to get a value of a cell */
-  IFniis  valeditcb;
-  IFnii   markcb;
-  IFniii  markeditcb;
+  ImatCell** cells;  /* Cell value, this will be NULL if in callback mode (allocated after map) */
 
   Ihandle* texth;     /* Text handle                    */
   Ihandle* droph;     /* Dropdown handle                */
-  Ihandle* datah;     /* Current active element edition */
-  /* may be equal to texth or droph */
+  Ihandle* datah;     /* Current active edition element, may be equal to texth or droph */
 
   cdCanvas* cddbuffer;
   cdCanvas* cdcanvas;
-  int redraw;
+
+  ImatLinColData lines;
+  ImatLinColData columns;
+
+  int has_focus;
+  int w, h;             /* canvas size */
+  int callback_mode;
+  int need_calcsize;
+
+  /* attributes */
+  int mark_continuous, mark_mode, mark_multiple;
   int checkframecolor;
 
-  ImatLinColData lin;
-  ImatLinColData col;
+  /* Mouse and Keyboard AUX */
+  int leftpressed;  /* left mouse button is pressed */
+  int homekeycount, endkeycount;  /* numbers of times that key was pressed */
 
-  short int hasiupfocus;  /* IUP focus? */
+  /* ColRes AUX */
+  int colres_dragging,   /* indicates if it is being made a column resize  */
+      colres_drag_col,   /* column being resized */
+      colres_drag_col_start_x, /* position of the start of the column being resized */
+      colres_drag_col_last_x;  /* previous position */
 
-  int MarkLinCol;         /* Is it marking lines or columns?     */
-
-  char sb_posicaox[10], sb_tamanhox[10];  /* used to store values */
-  char sb_posicaoy[10], sb_tamanhoy[10];  /* passed to the IUP    */
-
-  int YmaxC;  /* Current size canvas variables */
-  int XmaxC;  /* set when a callback is called */
+  /* Mark AUX */
+  //int MarkLin, MarkCol;  /* used to store the current cell when a block is being selected */
+  //int MarkFullLin,   /* indicate if full lines or columns is being selected */
+  //    MarkFullCol,
+  //    LastMarkFullCol,
+  //    LastMarkFullLin;
+  //int MarkedCells;  /* indicates the number of selected cells */
+  //int MarkLinCol;   /* Is it marking lines or columns?     */
 };
 
-/* Prototypes to set the scrollbar */
-void iupMatrixSetSbH(Ihandle*);
-void iupMatrixSetSbV(Ihandle*);
-void iupMatrixSetSb(Ihandle*, int);
+
+int iupMatrixIsValid(Ihandle* ih, int check_cells);
+
+#define iupMatrixInvertYAxis(_ih, _y) ((_ih)->data->h-1 - (_y))
 
 
 #ifdef __cplusplus

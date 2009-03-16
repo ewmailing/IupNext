@@ -18,6 +18,7 @@
 #include "il.h"
 
 #include "iup_attrib.h"
+#include "iup_globalattrib.h"
 
 static int Reparent(lua_State *L)
 {
@@ -71,8 +72,8 @@ static int Version(lua_State *L)
 static int GetAttributeData (lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  const char *attribute = luaL_checkstring(L,2);
-  const char *value = IupGetAttribute(ih, (char *)attribute);
+  const char *name = luaL_checkstring(L,2);
+  const char *value = IupGetAttribute(ih, name);
   if (!value)
     lua_pushnil(L);
   else
@@ -83,13 +84,13 @@ static int GetAttributeData (lua_State *L)
 static int GetAttribute (lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  const char *attribute = luaL_checkstring(L,2);
-  const char *value = IupGetAttribute(ih, (char *)attribute);
-  if (!value || iupAttribIsInternal(attribute))
+  const char *name = luaL_checkstring(L,2);
+  const char *value = IupGetAttribute(ih, name);
+  if (!value || iupAttribIsInternal(name))
     lua_pushnil(L);
   else
   {
-    if (iupAttribIsPointer(attribute))
+    if (iupAttribIsPointer(ih, name))
       lua_pushlightuserdata(L, (void*)value);
     else
       lua_pushstring(L,value);
@@ -107,12 +108,9 @@ static int GetAttributes(lua_State *L)
 
 static int GetAllDialogs(lua_State *L)
 {
-  int max_n = luaL_checkint(L,1);
+  int i, max_n = luaL_checkint(L,1);
   char **names = (char **) malloc (max_n * sizeof(char *));
-  int i,n;
-  if (!names)
-    lua_pushnil(L);
-  n = IupGetAllDialogs(names, max_n);
+  int n = IupGetAllDialogs(names, max_n);
   lua_newtable(L);
   for (i=0; i<n; i++)
   {
@@ -127,12 +125,9 @@ static int GetAllDialogs(lua_State *L)
 
 static int GetAllNames(lua_State *L)
 {
-  int max_n = luaL_checkint(L,1);
+  int i, max_n = luaL_checkint(L,1);
   char **names = (char **) malloc (max_n * sizeof(char *));
-  int i,n;
-  if (!names)
-    lua_pushnil(L);
-  n = IupGetAllNames(names,max_n);
+  int n = IupGetAllNames(names,max_n);
   lua_newtable(L);
   for (i=0; i<n; i++)
   {
@@ -143,6 +138,53 @@ static int GetAllNames(lua_State *L)
   lua_pushnumber(L,n);
   free(names);
   return 2;
+}
+
+static int GetAllAttributes(lua_State *L)
+{
+  int i, max_n = luaL_checkint(L,2);
+  char **names = (char **) malloc (max_n * sizeof(char *));
+  int n = IupGetAllAttributes(iuplua_checkihandle(L,1),names,max_n);
+  lua_newtable(L);
+  for (i=0; i<n; i++)
+  {
+    lua_pushnumber(L,i+1);
+    lua_pushstring(L,names[i]);
+    lua_settable(L,-3);
+  }
+  lua_pushnumber(L,n);
+  free(names);
+  return 2;
+}
+
+static int GetClassAttributes(lua_State *L)
+{
+  int i, max_n = luaL_checkint(L,2);
+  char **names = (char **) malloc (max_n * sizeof(char *));
+  int n = IupGetClassAttributes(luaL_checkstring(L,1),names,max_n);
+
+  if (n == -1)
+  {
+    lua_pushnil(L);
+    return 1;
+  }
+
+  lua_newtable(L);
+  for (i=0; i<n; i++)
+  {
+    lua_pushnumber(L,i+1);
+    lua_pushstring(L,names[i]);
+    lua_settable(L,-3);
+  }
+  lua_pushnumber(L,n);
+  free(names);
+  return 2;
+}
+
+static int SetClassDefaultAttribute(lua_State *L)
+{
+  IupSetClassDefaultAttribute(luaL_checkstring(L,1), luaL_checkstring(L,2), luaL_optstring(L,3,NULL));
+  return 0;
 }
 
 static int GetDialog(lua_State *L)
@@ -187,7 +229,10 @@ static int GetGlobal(lua_State *L)
 {
   const char *a = luaL_checkstring(L,1);
   const char *v = IupGetGlobal(a);
-  lua_pushstring(L,v);
+  if (iupGlobalIsPointer(a))
+    lua_pushlightuserdata(L, (void*)v);
+  else
+    lua_pushstring(L,v);
   return 1;
 }
 
@@ -317,7 +362,7 @@ static int ListDialog(lua_State *L)
                              luaL_checkint(L, 7), 
                              marcas);
 
-  if(tipo==2)
+  if (tipo==2 && ret!=-1)
   {
     for (i=0; i<tam; i++)
     {
@@ -326,8 +371,8 @@ static int ListDialog(lua_State *L)
       lua_settable(L, 8);
     }
   }
-  else
-    lua_pushnumber(L, ret);
+
+  lua_pushnumber(L, ret);
     
   for (i=0; i<tam; i++)
   {
@@ -644,6 +689,12 @@ static int UpdateChildren (lua_State *L)
   return 0;
 }
 
+static int Redraw(lua_State *L)
+{
+  IupRedraw(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2));
+  return 0;
+}
+
 static int ShowXY(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -711,6 +762,9 @@ int iupluaapi_open(lua_State * L)
     {"GetAttribute", GetAttribute},
     {"GetAttributeData", GetAttributeData},
     {"GetAttributes", GetAttributes},
+    {"GetAllAttributes", GetAllAttributes},
+    {"SetClassDefaultAttribute", SetClassDefaultAttribute},
+    {"GetClassAttributes", GetClassAttributes},
     {"GetAllDialogs", GetAllDialogs},
     {"GetAllNames", GetAllNames},
     {"GetDialog", GetDialog},
@@ -766,6 +820,7 @@ int iupluaapi_open(lua_State * L)
     {"Refresh", Refresh},
     {"Update", Update},
     {"UpdateChildren", UpdateChildren},
+    {"Redraw", Redraw},
     {"ShowXY", ShowXY},
     {"StoreAttribute", StoreAttribute},
     {"StoreGlobal", StoreGlobal},

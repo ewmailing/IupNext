@@ -45,7 +45,7 @@ static int motToggleSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_TEXT)
   {
-    char* parent_value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
+    char* parent_value = iupAttribGetInheritNativeParent(ih, "BGCOLOR");
     if (!parent_value)
     {
       /* if not defined at a native parent, 
@@ -85,7 +85,7 @@ static int motToggleSetBackgroundAttrib(Ihandle* ih, const char* value)
     Pixel color;
 
     /* ignore given value, must use only from parent */
-    value = iupAttribGetStrNativeParent(ih, "BACKGROUND");
+    value = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
 
     color = iupmotColorGetPixelStr(value);
     if (color != (Pixel)-1)
@@ -144,7 +144,7 @@ static int motToggleSetImageAttrib(Ihandle* ih, const char* value)
   {
     iupmotSetPixmap(ih, value, XmNlabelPixmap, 0, "IMAGE");
 
-    if (!iupAttribGetStr(ih, "IMINACTIVE"))
+    if (!iupAttribGet(ih, "IMINACTIVE"))
     {
       /* if not active and IMINACTIVE is not defined 
          then automaticaly create one based on IMAGE */
@@ -200,7 +200,7 @@ static int motToggleSetValueAttrib(Ihandle* ih, const char* value)
 
     XtVaGetValues(ih->handle, XmNset, &oldcheck, NULL);
 
-    last_tg = (Ihandle*)iupAttribGetStr(radio, "_IUPMOT_LASTTOGGLE");
+    last_tg = (Ihandle*)iupAttribGet(radio, "_IUPMOT_LASTTOGGLE");
     if (check)
     {
       if (iupObjectCheck(last_tg) && last_tg != ih)
@@ -275,7 +275,7 @@ static void motToggleValueChangedCallback(Widget w, Ihandle* ih, XmToggleButtonC
   {
     if (check)
     {
-      Ihandle* last_tg = (Ihandle*)iupAttribGetStr(radio, "_IUPMOT_LASTTOGGLE");
+      Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPMOT_LASTTOGGLE");
       if (iupObjectCheck(last_tg) && last_tg != ih)
       {
         cb = (IFni) IupGetCallback(last_tg, "ACTION");
@@ -325,7 +325,7 @@ static int motToggleMapMethod(Ihandle* ih)
   if (radio)
     ih->data->radio = 1;
 
-  value = iupAttribGetStr(ih, "IMAGE");
+  value = iupAttribGet(ih, "IMAGE");
   if (value)
   {
     ih->data->type = IUP_TOGGLE_IMAGE;
@@ -344,7 +344,7 @@ static int motToggleMapMethod(Ihandle* ih)
   iupmotSetArg(args[num_args++], XmNwidth, 10);  /* default width to avoid 0 */
   iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
   /* Primitive */
-  if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     iupmotSetArg(args[num_args++], XmNtraversalOn, True)
   else
     iupmotSetArg(args[num_args++], XmNtraversalOn, False)
@@ -364,7 +364,7 @@ static int motToggleMapMethod(Ihandle* ih)
     iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_BOOLEAN);
     iupmotSetArg(args[num_args++], XmNindicatorType, XmONE_OF_MANY_ROUND);
 
-    if (!iupAttribGetStr(radio, "_IUPMOT_LASTTOGGLE"))
+    if (!iupAttribGet(radio, "_IUPMOT_LASTTOGGLE"))
     {
       /* this is the first toggle in the radio, and the last toggle with VALUE=ON */
       iupAttribSetStr(ih, "VALUE","ON");
@@ -372,7 +372,7 @@ static int motToggleMapMethod(Ihandle* ih)
   }
   else
   {
-    if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetIntDefault(ih, "3STATE"))
+    if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetInt(ih, "3STATE"))
       iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_INDETERMINATE)
     else
       iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_BOOLEAN)
@@ -443,20 +443,20 @@ void iupdrvToggleInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupmotGetBgColorAttrib, motToggleSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motToggleSetBackgroundAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupmotGetBgColorAttrib, motToggleSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motToggleSetBackgroundAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "0 0 0", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, motToggleSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "0 0 0", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, motToggleSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupToggle only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, motToggleSetAlignmentAttrib, "ACENTER:ACENTER", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, motToggleSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, motToggleSetImInactiveAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMPRESS", NULL, motToggleSetImPressAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", motToggleGetValueAttrib, motToggleSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTCOLOR", motToggleGetSelectColorAttrib, motToggleSetSelectColorAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, motToggleSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, motToggleSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, motToggleSetImInactiveAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMPRESS", NULL, motToggleSetImPressAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", motToggleGetValueAttrib, motToggleSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTCOLOR", motToggleGetSelectColorAttrib, motToggleSetSelectColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "PADDING", iupToggleGetPaddingAttrib, motToggleSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupToggleGetPaddingAttrib, motToggleSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
 }

@@ -15,6 +15,8 @@ extern "C" {
 void iupGlobalAttribInit(void);
 void iupGlobalAttribFinish(void);
 
+int iupGlobalIsPointer(const char* name);
+
 /* Other functions declared in <iup.h> and implemented here. 
 IupSetGlobal
 IupStoreGlobal

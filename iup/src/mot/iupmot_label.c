@@ -43,8 +43,8 @@ static int motLabelSetTitleAttrib(Ihandle* ih, const char* value)
 static int motLabelSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   /* ignore given value, must use only from parent */
-  value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!value) value = IupGetGlobal("DLGBGCOLOR");
+  value = iupBaseNativeParentGetBgColor(ih);
+
   if (iupdrvBaseSetBgColorAttrib(ih, value))
     return 1;
   return 0; 
@@ -53,7 +53,7 @@ static int motLabelSetBgColorAttrib(Ihandle* ih, const char* value)
 static int motLabelSetBackgroundAttrib(Ihandle* ih, const char* value)
 {
   /* ignore given value, must use only from parent */
-  value = iupAttribGetStrNativeParent(ih, "BACKGROUND");
+  value = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
 
   if (iupdrvBaseSetBgColorAttrib(ih, value))
     return 1;
@@ -100,7 +100,7 @@ static int motLabelSetImageAttrib(Ihandle* ih, const char* value)
 
     if (!iupdrvIsActive(ih))
     {
-      if (!iupAttribGetStr(ih, "IMINACTIVE"))
+      if (!iupAttribGet(ih, "IMINACTIVE"))
       {
         /* if not active and IMINACTIVE is not defined 
            then automaticaly create one based on IMAGE */
@@ -129,10 +129,10 @@ static int motLabelSetActiveAttrib(Ihandle* ih, const char* value)
   /* update the inactive image if necessary */
   if (ih->data->type == IUP_LABEL_IMAGE && !iupStrBoolean(value))
   {
-    if (!iupAttribGetStr(ih, "IMINACTIVE"))
+    if (!iupAttribGet(ih, "IMINACTIVE"))
     {
       /* if not defined then automaticaly create one based on IMAGE */
-      char* name = iupAttribGetStr(ih, "IMAGE");
+      char* name = iupAttribGet(ih, "IMAGE");
       iupmotSetPixmap(ih, name, XmNlabelInsensitivePixmap, 1, "IMINACTIVE"); /* make_inactive */
     }
   }
@@ -158,7 +158,7 @@ static int motLabelMapMethod(Ihandle* ih)
   Arg args[20];
   WidgetClass widget_class;
 
-  value = iupAttribGetStr(ih, "SEPARATOR");
+  value = iupAttribGet(ih, "SEPARATOR");
   if (value)
   {
     widget_class = xmSeparatorWidgetClass;
@@ -175,7 +175,7 @@ static int motLabelMapMethod(Ihandle* ih)
   }
   else
   {
-    value = iupAttribGetStr(ih, "IMAGE");
+    value = iupAttribGet(ih, "IMAGE");
     widget_class = xmLabelWidgetClass;
     if (value)
     {
@@ -225,7 +225,7 @@ static int motLabelMapMethod(Ihandle* ih)
   XtRealizeWidget(ih->handle);
 
   /* ensure the default values, that are different from the native ones */
-  motLabelSetAlignmentAttrib(ih, iupAttribGetStrDefault(ih, "ALIGNMENT"));
+  motLabelSetAlignmentAttrib(ih, iupAttribGetStr(ih, "ALIGNMENT"));
 
   if (ih->data->type == IUP_LABEL_TEXT)
     iupmotSetString(ih->handle, XmNlabelString, "");
@@ -241,18 +241,18 @@ void iupdrvLabelInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, motLabelSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupmotGetBgColorAttrib, motLabelSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motLabelSetBackgroundAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, motLabelSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupmotGetBgColorAttrib, motLabelSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motLabelSetBackgroundAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "0 0 0", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, motLabelSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "0 0 0", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, motLabelSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupLabel only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, motLabelSetAlignmentAttrib, "ALEFT:ACENTER", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, motLabelSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, motLabelSetImInactiveAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, motLabelSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, motLabelSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, motLabelSetImInactiveAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, motLabelSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, motLabelSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
 }

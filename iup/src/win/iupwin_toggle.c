@@ -57,13 +57,13 @@ static void winToggleUpdateImage(Ihandle* ih, int active, int check)
 
   if (!active)
   {
-    name = iupAttribGetStr(ih, "IMINACTIVE");
+    name = iupAttribGet(ih, "IMINACTIVE");
     if (name)
       winToggleSetBitmap(ih, name, 0, "IMINACTIVE");
     else
     {
       /* if not defined then automaticaly create one based on IMAGE */
-      name = iupAttribGetStr(ih, "IMAGE");
+      name = iupAttribGet(ih, "IMAGE");
       winToggleSetBitmap(ih, name, 1, "IMINACTIVE"); /* make_inactive */
     }
   }
@@ -72,19 +72,19 @@ static void winToggleUpdateImage(Ihandle* ih, int active, int check)
     /* must restore the normal image */
     if (check)
     {
-      name = iupAttribGetStr(ih, "IMPRESS");
+      name = iupAttribGet(ih, "IMPRESS");
       if (name)
         winToggleSetBitmap(ih, name, 0, "IMPRESS");
       else
       {
         /* if not defined then automaticaly create one based on IMAGE */
-        name = iupAttribGetStr(ih, "IMAGE");
+        name = iupAttribGet(ih, "IMAGE");
         winToggleSetBitmap(ih, name, 0, "IMPRESS");
       }
     }
     else
     {
-      name = iupAttribGetStr(ih, "IMAGE");
+      name = iupAttribGet(ih, "IMAGE");
       if (name)
         winToggleSetBitmap(ih, name, 0, "IMAGE");
     }
@@ -125,16 +125,16 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
   if (itemState & ODS_DISABLED)
   {
     attrib_name = "IMINACTIVE";
-    name = iupAttribGetStr(ih, "IMINACTIVE");
+    name = iupAttribGet(ih, "IMINACTIVE");
     if (!name)
     {
-      name = iupAttribGetStr(ih, "IMAGE");
+      name = iupAttribGet(ih, "IMAGE");
       make_inactive = 1;
     }
   }
   else
   {
-    name = iupAttribGetStr(ih, "IMPRESS");
+    name = iupAttribGet(ih, "IMPRESS");
     if (itemState & ODS_SELECTED && name)
     {
       attrib_name = "IMPRESS";
@@ -143,7 +143,7 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
     else
     {
       attrib_name = "IMAGE";
-      name = iupAttribGetStr(ih, "IMAGE");
+      name = iupAttribGet(ih, "IMAGE");
     }
   }
 
@@ -221,11 +221,11 @@ static int winToggleSetImageAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    if (value != iupAttribGetStr(ih, "IMAGE"))
+    if (value != iupAttribGet(ih, "IMAGE"))
       iupAttribSetStr(ih, "IMAGE", (char*)value);
 
     if (iupwin_comctl32ver6)
-      iupwinRedrawNow(ih);
+      iupdrvDisplayRedraw(ih);
     else
     {
       int check = SendMessage(ih->handle, BM_GETCHECK, 0L, 0L);
@@ -241,11 +241,11 @@ static int winToggleSetImInactiveAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    if (value != iupAttribGetStr(ih, "IMINACTIVE"))
+    if (value != iupAttribGet(ih, "IMINACTIVE"))
       iupAttribSetStr(ih, "IMINACTIVE", (char*)value);
 
     if (iupwin_comctl32ver6)
-      iupwinRedrawNow(ih);
+      iupdrvDisplayRedraw(ih);
     else
     {
       int check = SendMessage(ih->handle, BM_GETCHECK, 0L, 0L);
@@ -261,11 +261,11 @@ static int winToggleSetImPressAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    if (value != iupAttribGetStr(ih, "IMPRESS"))
+    if (value != iupAttribGet(ih, "IMPRESS"))
       iupAttribSetStr(ih, "IMPRESS", (char*)value);
 
     if (iupwin_comctl32ver6)
-      iupwinRedrawNow(ih);
+      iupdrvDisplayRedraw(ih);
     else
     {
       int check = SendMessage(ih->handle, BM_GETCHECK, 0L, 0L);
@@ -296,7 +296,7 @@ static int winToggleSetValueAttrib(Ihandle* ih, const char* value)
   {
     int oldcheck = (int)SendMessage(ih->handle, BM_GETCHECK, 0, 0L);
 
-    Ihandle* last_tg = (Ihandle*)iupAttribGetStr(radio, "_IUPWIN_LASTTOGGLE");
+    Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPWIN_LASTTOGGLE");
     if (check)
     {
       if (iupObjectCheck(last_tg) && last_tg != ih)
@@ -335,7 +335,7 @@ static int winToggleSetActiveAttrib(Ihandle* ih, const char* value)
     if (iupwin_comctl32ver6)
     {
       iupBaseSetActiveAttrib(ih, value);
-      iupwinRedrawNow(ih);
+      iupdrvDisplayRedraw(ih);
       return 0;
     }
     else
@@ -357,7 +357,7 @@ static int winToggleSetActiveAttrib(Ihandle* ih, const char* value)
 static char* winToggleGetActiveAttrib(Ihandle* ih)
 {
   if (ih->data->type == IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6)
-    return iupAttribGetStr(ih, "_IUPWIN_ACTIVE");
+    return iupAttribGet(ih, "_IUPWIN_ACTIVE");
   else
     return iupBaseGetActiveAttrib(ih);
 }
@@ -378,7 +378,7 @@ static int winToggleSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
 
   if (ih->handle && iupwin_comctl32ver6 && ih->data->type == IUP_TOGGLE_IMAGE)
-    iupwinRedrawNow(ih);
+    iupdrvDisplayRedraw(ih);
 
   return 0;
 }
@@ -390,7 +390,7 @@ static int winToggleSetBgColorAttrib(Ihandle* ih, const char* value)
   {
     /* update internal image cache for controls that have the IMAGE attribute */
     iupImageUpdateParent(ih);
-    iupwinRedrawNow(ih);
+    iupdrvDisplayRedraw(ih);
   }
   return 1;
 }
@@ -539,7 +539,7 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
       {
         if (check)  /* check here will be always 1, but just in case */
         {
-          Ihandle* last_tg = (Ihandle*)iupAttribGetStr(radio, "_IUPWIN_LASTTOGGLE");
+          Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPWIN_LASTTOGGLE");
           if (iupObjectCheck(last_tg) && last_tg != ih)
           {
             cb = (IFni) IupGetCallback(last_tg, "ACTION");
@@ -588,7 +588,7 @@ static int winToggleMapMethod(Ihandle* ih)
   if (radio)
     ih->data->radio = 1;
 
-  value = iupAttribGetStr(ih, "IMAGE");
+  value = iupAttribGet(ih, "IMAGE");
   if (value)
   {
     ih->data->type = IUP_TOGGLE_IMAGE;
@@ -608,7 +608,7 @@ static int winToggleMapMethod(Ihandle* ih)
     dwStyle |= BS_AUTORADIOBUTTON;
     /* Do not set TABSTOP for toggles in a radio, the system will automaticaly set them. */
 
-    if (!iupAttribGetStr(radio, "_IUPWIN_LASTTOGGLE"))
+    if (!iupAttribGet(radio, "_IUPWIN_LASTTOGGLE"))
     {
       /* this is the first toggle in the radio, and the last toggle with VALUE=ON */
       iupAttribSetStr(ih, "VALUE","ON");
@@ -622,10 +622,10 @@ static int winToggleMapMethod(Ihandle* ih)
   }
   else
   {
-    if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
       dwStyle |= WS_TABSTOP;
 
-    if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetIntDefault(ih, "3STATE"))
+    if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetInt(ih, "3STATE"))
       dwStyle |= BS_AUTO3STATE;
     else
       dwStyle |= BS_AUTOCHECKBOX;
@@ -663,23 +663,23 @@ void iupdrvToggleInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", winToggleGetActiveAttrib, winToggleSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", winToggleGetActiveAttrib, winToggleSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winToggleGetBgColorAttrib, winToggleSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", winToggleGetBgColorAttrib, winToggleSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);  
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "DLGFGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */  
-  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, winToggleSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* usually black */  
+  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, winToggleSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupToggle only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, NULL, "ACENTER:ACENTER", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, winToggleSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, winToggleSetImInactiveAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMPRESS", NULL, winToggleSetImPressAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", winToggleGetValueAttrib, winToggleSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PADDING", iupToggleGetPaddingAttrib, winToggleSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, NULL, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, winToggleSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, winToggleSetImInactiveAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMPRESS", NULL, winToggleSetImPressAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", winToggleGetValueAttrib, winToggleSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupToggleGetPaddingAttrib, winToggleSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
 
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
-    iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+    iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }

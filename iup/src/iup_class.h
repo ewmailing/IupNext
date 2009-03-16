@@ -210,7 +210,7 @@ typedef char* (*IattribGetFunc)(Ihandle* ih);
 typedef char* (*IattribGetIdFunc)(Ihandle* ih, const char* name_id);
 
 /** SetAttribute called for a specific attribute. \n
- * If returns 0, the attribute will not be stored in the attribute environment
+ * If returns 0, the attribute will not be stored in the hash table
  * (except inheritble attributes that are always stored in the hash table). \n
  * When IupSetAttribute is called using value=NULL, the default_value is passed to this function.
  * Used by \ref iupClassRegisterAttribute.
@@ -225,43 +225,42 @@ typedef int (*IattribSetFunc)(Ihandle* ih, const char* value);
  * \ingroup iclass */
 typedef int (*IattribSetIdFunc)(Ihandle* ih, const char* name_id, const char* value);
 
-/** Attribute map state dependency.
+/** Attribute flags.
  * Used by \ref iupClassRegisterAttribute.
  * \ingroup iclass */
-typedef enum _Imap{
-  IUP_NOT_MAPPED, /**< can call the set/get functions without being mapped */
-  IUP_MAPPED      /**< will call the set/get functions only if mapped */
-} Imap;
-
-/** Attribute inheritance dependency.
- * Used by \ref iupClassRegisterAttribute.
- * \ingroup iclass */
-typedef enum _Iinherit {
-  IUP_NO_INHERIT, /**< is not inheritable */
-  IUP_INHERIT     /**< is inherited by children and from parent */
-} Iinherit;
+typedef enum _IattribFlags{
+  IUPAF_DEFAULT=0,     /**< inheritable, can has a default value, is a string, can call the set/get functions only if mapped, no ID */
+  IUPAF_NO_INHERIT=1,  /**< is not inheritable */
+  IUPAF_NO_DEFAULTVALUE=2,  /**< can not has a default value */
+  IUPAF_NO_STRING=4,   /**< is not a string */
+  IUPAF_NOT_MAPPED=8,  /**< will call the set/get functions also when not mapped */
+  IUPAF_HAS_ID=16,     /**< can has an ID at the end of the name, automatically set by \ref iupClassRegisterAttributeId */
+  IUPAF_READONLY=32,   /**< is read-only, can not be changed */
+  IUPAF_WRITEONLY=64   /**< is write-only, usually an action */
+} IattribFlags;
 
 /** Register attribute handling functions. get, set and default_value can be NULL.
- * default_value should point to a constant string. It will not be duplicated internally.
- * Notice that when an attribute is not defined then default_value=NULL and inherit=IUP_INHERIT.
+ * default_value should point to a constant string, it will not be duplicated internally. \n
+ * Notice that when an attribute is not defined then default_value=NULL, 
+ * is inheritable can has a default value and is a string. \n
  * Since there is only one attribute function table per class tree, 
- * if you register the same attribute than a parent class, then it will be replaced.
+ * if you register the same attribute in a child class, then it will replace the parent registration. \n
+ * If an attribute is not inheritable or not a string then it MUST be registered.
+ * Internal attributes (starting with "_IUP") can never be registered.
  * \ingroup iclass */
 void iupClassRegisterAttribute(Iclass* ic, const char* name, 
                                            IattribGetFunc get, 
                                            IattribSetFunc set, 
                                            const char* default_value, 
-                                           Imap mapped,
-                                           Iinherit inherit);
+                                           const char* system_default, 
+                                           int flags);
 
 /** Same as \ref iupClassRegisterAttribute for attributes with Ids.
  * \ingroup iclass */
 void iupClassRegisterAttributeId(Iclass* ic, const char* name, 
                                            IattribGetIdFunc get, 
                                            IattribSetIdFunc set, 
-                                           const char* default_value, 
-                                           Imap mapped,
-                                           Iinherit inherit);
+                                           int flags);
 
 /** Returns the attribute handling functions.
  * \ingroup iclass */
@@ -269,9 +268,8 @@ void iupClassRegisterGetAttribute(Iclass* ic, const char* name,
                                            IattribGetFunc *get, 
                                            IattribSetFunc *set, 
                                            const char* *default_value, 
-                                           Imap *mapped,
-                                           Iinherit *inherit,
-                                           int *has_id);
+                                           const char* *system_default, 
+                                           int *flags);
 
 /** Register the parameters of a callback.
  * Used by language bindings.
@@ -380,12 +378,20 @@ int iupClassObjectDlgPopup(Ihandle* ih, int x, int y);
  * Set is called from iupAttribUpdate (IupMap), IupStoreAttribute and IupSetAttribute.
  * Get is called only from IupGetAttribute.
  */
-int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char* value, int *inherit);
+int   iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char* value, int *inherit);
 char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value, int *inherit);
-char* iupClassObjectGetAttributeDefault(Ihandle* ih, const char* name);
+
+/* Used only in iupAttribGetStr */
+void  iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit);
+
+/* Used only in iupAttribIsPointer */
+int   iupClassObjectAttribIsNotString(Ihandle* ih, const char* name);
 
 /* Used only in iupAttribUpdateFromParent */
-int iupClassCurIsInherit(Iclass* ic);
+int   iupClassObjectCurAttribIsInherit(Iclass* ic);
+
+/* Used in iupObjectCreate and IupMap */
+void iupClassObjectEnsureDefaultAttributes(Ihandle* ih);
 
 
 /* Other functions declared in <iup.h> and implemented here. 

@@ -638,6 +638,7 @@ static int iDialSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
     value = iupControlBaseGetParentBgColor(ih);
+
   ih->data->bgcolor = cdIupConvertColor(value);
 
   cdIupCalcShadows(ih->data->bgcolor, &ih->data->light_shadow, &ih->data->mid_shadow, &ih->data->dark_shadow);
@@ -666,8 +667,7 @@ static int iDialSetActiveAttrib(Ihandle* ih, const char* value)
 
   iupBaseSetActiveAttrib(ih, value);
 
-  value = iupAttribGetStrInherit(ih, "FGCOLOR");
-  if (!value) value = iupAttribGetStrDefault(ih, "FGCOLOR");
+  value = iupAttribGetStr(ih, "FGCOLOR");
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
   iDialUpdateFgColors(ih, r, g, b);
@@ -811,16 +811,16 @@ Iclass* iupDialGetClass(void)
   iupClassRegisterCallback(ic, "BUTTON_RELEASE_CB", "d");
 
   /* IupDial only */
-  iupClassRegisterAttribute(ic, "VALUE", iDialGetValueAttrib, iDialSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TYPE", iDialGetTypeAttrib, iDialSetTypeAttrib, "HORIZONTAL", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", iDialGetValueAttrib, iDialSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TYPE", iDialGetTypeAttrib, iDialSetTypeAttrib, "HORIZONTAL", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "DENSITY", iDialGetDensityAttrib, iDialSetDensityAttrib, IDIAL_DEFAULT_DENSITY_STR, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iDialSetFgColorAttrib, IDIAL_DEFAULT_FGCOLOR, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "UNIT", NULL, iDialSetUnitAttrib, "RADIANS", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "DENSITY", iDialGetDensityAttrib, iDialSetDensityAttrib, IDIAL_DEFAULT_DENSITY_STR, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iDialSetFgColorAttrib, IDIAL_DEFAULT_FGCOLOR, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "UNIT", NULL, iDialSetUnitAttrib, "RADIANS", NULL, IUPAF_NOT_MAPPED);
 
   /* Overwrite IupCanvas Attributes */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iDialSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iDialSetBgColorAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iDialSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iDialSetBgColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

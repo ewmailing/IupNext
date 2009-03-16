@@ -150,7 +150,7 @@ static int gtkValMapMethod(Ihandle* ih)
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
 
-  if (!iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+  if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
   g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
@@ -185,13 +185,13 @@ void iupdrvValInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
   
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT); 
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT); 
 
   /* Special */
 
   /* IupVal only */
-  iupClassRegisterAttribute(ic, "VALUE", iupValGetValueAttrib, gtkValSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PAGESTEP", iupValGetPageStepAttrib, gtkValSetPageStepAttrib, "0.1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "STEP", iupValGetStepAttrib, gtkValSetStepAttrib, "0.01", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWTICKS", iupBaseNoGetAttrib, iupBaseNoSetAttrib, "0", IUP_MAPPED, IUP_INHERIT);  /* showticks is not supported in GTK */
+  iupClassRegisterAttribute(ic, "VALUE", iupValGetValueAttrib, gtkValSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PAGESTEP", iupValGetPageStepAttrib, gtkValSetPageStepAttrib, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STEP", iupValGetStepAttrib, gtkValSetStepAttrib, "0.01", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWTICKS", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY);  /* showticks is not supported in GTK */
 }

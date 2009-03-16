@@ -116,8 +116,10 @@ Iclass* iupProgressBarGetClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* IupProgressBar only */
-  iupClassRegisterAttribute(ic, "MIN", NULL, iProgressBarSetMinAttrib, "0", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MAX", NULL, iProgressBarSetMaxAttrib, "1", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MIN", NULL, iProgressBarSetMinAttrib, "0", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAX", NULL, iProgressBarSetMaxAttrib, "1", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, "HORIZONTAL", NULL, IUPAF_NOT_MAPPED);
 
   iupdrvProgressBarInitClass(ic);
 

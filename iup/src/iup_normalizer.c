@@ -112,7 +112,7 @@ static void iNormalizerComputeNaturalSizeMethod(Ihandle* ih)
   ih->naturalwidth = 0;
   ih->naturalheight = 0;
 
-  iNormalizerSetNormalizeAttrib(ih, iupAttribGetStrDefault(ih, "NORMALIZE"));
+  iNormalizerSetNormalizeAttrib(ih, iupAttribGetStr(ih, "NORMALIZE"));
 }
 
 static int iNormalizerCreateMethod(Ihandle* ih, void** params)
@@ -164,9 +164,9 @@ Iclass* iupNormalizerGetClass(void)
   ic->ComputeNaturalSize = iNormalizerComputeNaturalSizeMethod;
   ic->Destroy = iNormalizerDestroy;
 
-  iupClassRegisterAttribute(ic, "NORMALIZE", NULL, iNormalizerSetNormalizeAttrib, "HORIZONTAL", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ADDCONTROL_HANDLE", NULL, iNormalizerSetAddControlHandleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ADDCONTROL", NULL, iNormalizerSetAddControlAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NORMALIZE", NULL, iNormalizerSetNormalizeAttrib, "HORIZONTAL", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ADDCONTROL_HANDLE", NULL, iNormalizerSetAddControlHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ADDCONTROL", NULL, iNormalizerSetAddControlAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }

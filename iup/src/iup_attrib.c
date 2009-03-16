@@ -30,14 +30,13 @@ int IupGetAllAttributes(Ihandle* ih, char *names[], int n)
   if (!iupObjectCheck(ih))
     return 0;
 
-  iupASSERT(names!=NULL);
-  if (!names)
-    return 0;
+  if (!names || !n)
+    return iupTableCount(ih->attrib);
 
   name = iupTableFirst(ih->attrib);
   while (name)
   {
-    strcpy(names[i], name);
+    names[i] = name;
     i++;
     if (i == n)
       break;
@@ -70,7 +69,7 @@ char* IupGetAttributes(Ihandle *ih)
         strcat(buffer,",");
 
       value = iupTableGetCurr(ih->attrib);
-      if (iupAttribIsPointer(name))
+      if (iupAttribIsPointer(ih, name))
       {
         sprintf(sb, "%p", (void*) value);
         value = sb;
@@ -87,24 +86,6 @@ char* IupGetAttributes(Ihandle *ih)
   return buffer;
 }
 
-static void iAttribUpdateFromParent(Ihandle* ih, const char *name)
-{
-  /* check in the parent tree if the attribute is defined */
-  Ihandle* parent = ih->parent;
-  while (parent)
-  {
-    char* value = iupTableGet(parent->attrib, name);
-    if (value)
-    {
-      int inherit;
-      iupClassObjectSetAttribute(ih, name, value, &inherit);
-      return;
-    }
-
-    parent = parent->parent;
-  }
-}
-
 void iupAttribUpdateFromParent(Ihandle* ih)
 {
   Iclass* ic = ih->iclass;
@@ -112,14 +93,29 @@ void iupAttribUpdateFromParent(Ihandle* ih)
   while (name)
   {
     /* if inheritable and NOT defined at the element */
-    if (iupClassCurIsInherit(ic) && !iupAttribGetStr(ih, name))
-      iAttribUpdateFromParent(ih, name);
+    if (iupClassObjectCurAttribIsInherit(ic) && !iupAttribGet(ih, name))
+    {
+      /* check in the parent tree if the attribute is defined */
+      Ihandle* parent = ih->parent;
+      while (parent)
+      {
+        char* value = iupTableGet(parent->attrib, name);
+        if (value)
+        {
+          int inherit;
+          /* set on the class */
+          iupClassObjectSetAttribute(ih, name, value, &inherit);
+          break;
+        }
+        parent = parent->parent;
+      }
+    }
 
     name = iupTableNext(ic->attrib_func);
   }
 }
 
-void iupAttribNotifyChildren(Ihandle *ih, const char* name, const char *value)
+static void iAttribNotifyChildren(Ihandle *ih, const char* name, const char *value)
 {
   int inherit;
   Ihandle* child = ih->firstchild;
@@ -127,10 +123,11 @@ void iupAttribNotifyChildren(Ihandle *ih, const char* name, const char *value)
   {
     if (!iupTableGet(child->attrib, name))
     {
+      /* set on the class */
       iupClassObjectSetAttribute(child, name, value, &inherit);
 
       if (inherit)  /* inherit can be different for the child */
-        iupAttribNotifyChildren(child, name, value);
+        iAttribNotifyChildren(child, name, value);
     }
 
     child = child->brother;
@@ -162,14 +159,20 @@ void iupAttribUpdate(Ihandle* ih)
   for (i = 0; i < count; i++)
   {
     name = name_array[i];
-    value = iupTableGet(ih->attrib, name);
-    store = iupClassObjectSetAttribute(ih, name, value, &inherit);
+    if (!iupAttribIsInternal(name))
+    {
+      /* retrieve from the table */
+      value = iupTableGet(ih->attrib, name);
 
-    if (inherit && !iupAttribIsInternal(name))
-      iupAttribNotifyChildren(ih, name, value);
+      /* set on the class */
+      store = iupClassObjectSetAttribute(ih, name, value, &inherit);
 
-    if (!store)
-      iupTableRemove(ih->attrib, name); /* remove from the table acording to the class SetAttribute */
+      if (inherit)
+        iAttribNotifyChildren(ih, name, value);
+
+      if (!store)
+        iupTableRemove(ih->attrib, name); /* remove from the table acording to the class SetAttribute */
+    }
   }
 
   free(name_array);
@@ -193,11 +196,16 @@ void IupSetAttribute(Ihandle *ih, const char* name, const char *value)
   if (!iupObjectCheck(ih))
     return;
 
-  if (iupClassObjectSetAttribute(ih, name, value, &inherit))
+  if (iupAttribIsInternal(name))
     iupAttribSetStr(ih, name, value);
+  else
+  {
+    if (iupClassObjectSetAttribute(ih, name, value, &inherit))
+      iupAttribSetStr(ih, name, value);
 
-  if (inherit && !iupAttribIsInternal(name))
-    iupAttribNotifyChildren(ih, name, value);
+    if (inherit)
+      iAttribNotifyChildren(ih, name, value);
+  }
 }
 
 void IupStoreAttribute(Ihandle *ih, const char* name, const char *value)
@@ -217,11 +225,16 @@ void IupStoreAttribute(Ihandle *ih, const char* name, const char *value)
   if (!iupObjectCheck(ih))
     return;
 
-  if (iupClassObjectSetAttribute(ih, name, value, &inherit))
+  if (iupAttribIsInternal(name))
     iupAttribStoreStr(ih, name, value);
+  else
+  {
+    if (iupClassObjectSetAttribute(ih, name, value, &inherit))
+      iupAttribStoreStr(ih, name, value);
 
-  if (inherit && !iupAttribIsInternal(name))
-    iupAttribNotifyChildren(ih, name, value);
+    if (inherit)
+      iAttribNotifyChildren(ih, name, value);
+  }
 }
 
 char* IupGetAttribute(Ihandle *ih, const char* name)
@@ -242,11 +255,25 @@ char* IupGetAttribute(Ihandle *ih, const char* name)
 
   value = iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
   if (!value)
-    value = iupAttribGetStr(ih, name);
-  if (!value && inherit && !iupAttribIsInternal(name))
-    value = iupAttribGetStrInherit(ih, name);
-  if (!value)
-    value = def_value;
+    value = iupAttribGet(ih, name);
+
+  if (!value && !iupAttribIsInternal(name))
+  {
+    if (inherit)
+    {
+      while (!value)
+      {
+        ih = ih->parent;
+        if (!ih)
+          break;
+
+        value = iupAttribGet(ih, name);
+      }
+    }
+
+    if (!value)
+      value = def_value;
+  }
 
   return value;
 }
@@ -343,7 +370,7 @@ void IupSetAttributeHandle(Ihandle *ih, const char* name, Ihandle *ih_named)
 
 Ihandle* IupGetAttributeHandle(Ihandle *ih, const char* name)
 {
-  char* handle_name = iupAttribGetStrInherit(ih, name);
+  char* handle_name = iupAttribGetInherit(ih, name);
   if (handle_name)
     return IupGetHandle(handle_name);
   return NULL;
@@ -400,38 +427,6 @@ int iupAttribGetInt(Ihandle* ih, const char* name)
   return i;
 }
 
-int iupAttribGetIntDefault(Ihandle* ih, const char* name)
-{
-  int i = 0;
-  char *value = iupAttribGetStrDefault(ih, name);
-  if (value)
-  {
-    if (!iupStrToInt(value, &i))
-    {
-      if (iupStrBoolean(value))
-        i = 1;
-    }
-  }
-  return i;
-}
-
-int iupAttribGetIntInheritDefault(Ihandle* ih, const char* name)
-{
-  int i = 0;
-  char *value = iupAttribGetStrInherit(ih, name);
-  if (!value)
-    value = iupClassObjectGetAttributeDefault(ih, name);
-  if (value)
-  {
-    if (!iupStrToInt(value, &i))
-    {
-      if (iupStrBoolean(value))
-        i = 1;
-    }
-  }
-  return i;
-}
-
 float iupAttribGetFloat(Ihandle* ih, const char* name)
 {
   float f = 0;
@@ -441,52 +436,79 @@ float iupAttribGetFloat(Ihandle* ih, const char* name)
   return f;
 }
 
-float iupAttribGetFloatDefault(Ihandle* ih, const char* name)
-{
-  float f = 0;
-  char *value = iupAttribGetStrDefault(ih, name);
-  if (value)
-    iupStrToFloat(value, &f);
-  return f;
-}
-
-char* iupAttribGetStr(Ihandle* ih, const char* name)
+char* iupAttribGet(Ihandle* ih, const char* name)
 {
   if (!ih || !name)
     return NULL;
   return iupTableGet(ih->attrib, name);
 }
 
-char* iupAttribGetStrDefault(Ihandle* ih, const char* name)
+char* iupAttribGetStr(Ihandle* ih, const char* name)
 {
   char* value;
   if (!ih || !name)
     return NULL;
+
   value = iupTableGet(ih->attrib, name);
-  if (!value)
-    value = iupClassObjectGetAttributeDefault(ih, name);
+
+  if (!value && !iupAttribIsInternal(name))
+  {
+    int inherit;
+    char *def_value;
+    iupClassObjectGetAttributeInfo(ih, name, &def_value, &inherit);
+
+    if (inherit)
+    {
+      while (!value)
+      {
+        ih = ih->parent;
+        if (!ih)
+          break;
+
+        value = iupAttribGet(ih, name);
+      }
+    }
+
+    if (!value)
+      value = def_value;
+  }
+
   return value;
 }
 
-char* iupAttribGetStrInherit(Ihandle* ih, const char* name)
+char* iupAttribGetInherit(Ihandle* ih, const char* name)
 {
-  char *value = iupAttribGetStr(ih, name);
-  if (!value && ih->parent)
-    return iupAttribGetStrInherit(ih->parent, name);
-  return value;
-}
-
-char* iupAttribGetStrNativeParent(Ihandle* ih, const char* name)
-{
-  char *value;
-
-  ih = iupChildTreeGetNativeParent(ih);
-  if (!ih)
+  char* value;
+  if (!ih || !name)
     return NULL;
 
-  value = iupAttribGetStr(ih, name);
-  if (!value)
-    return iupAttribGetStrNativeParent(ih, name);
+  value = iupAttribGet(ih, name);   /* Check on the element first */
+  while (!value)
+  {
+    ih = ih->parent;   /* iheritance here independs on the attribute */
+    if (!ih)
+      return NULL;
+
+    value = iupAttribGet(ih, name);
+  }
+  return value;
+}
+
+char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name)
+{
+  char* value;
+  if (!ih || !name)
+    return NULL;
+
+  value = NULL;    /* Do NOT check on the element first */
+  while (!value)
+  {
+    ih = iupChildTreeGetNativeParent(ih);
+    if (!ih)
+      return NULL;
+
+    value = iupAttribGet(ih, name);
+  }
 
   return value;
 }
@@ -597,86 +619,7 @@ Ihandle* IupSetAttributes(Ihandle *ih, const char* str)
   return ih;
 }
 
-int iupAttribIsInheritable(const char *name)
+int iupAttribIsPointer(Ihandle* ih, const char* name)
 {
-  /* table of non-inheritable attributes */
-#define INH_TABLE_SIZE 14
-  static struct {
-    const char *name;
-  } inh_table[INH_TABLE_SIZE] = {
-    {"SIZE"},
-    {"RASTERSIZE"},
-    {"X"},
-    {"Y"},
-    {"VALUE"},
-    {"TITLE"},
-    {"ALIGNMENT"},
-    {"ZORDER"},
-    {"TIP"},
-    {"IMAGE"},
-    {"IMINACTIVE"}, 
-    {"IMPRESS"}, 
-    {"MENU"}, 
-    {"SEPARATOR"}
-  };
-
-  if (name)
-  {
-    int i;
-    for (i = 0; i < INH_TABLE_SIZE; i++)
-    {
-      if (iupStrEqualNoCase(name, inh_table[i].name))
-        return 0;
-    }
-  }
-  return 1;
-}
-
-int iupAttribIsPointer(const char* name)
-{
-  static struct {
-    const char *name;
-  } ptr_table[] = {
-    {"WID"},
-#ifdef WIN32
-    {"HFONT"},
-    {"NATIVEPARENT"},
-    {"PREVIEWDC"},
-    {"HINSTANCE"},
-#else
-    {"XMFONTLIST"},
-    {"XFONTSTRUCT"},
-    {"CONTEXT"},
-    {"VISUAL"},
-    {"COLORMAP"},
-    {"XDISPLAY"},
-    {"XWINDOW"},
-    {"XSCREEN"},
-#endif
-    {"PANGOFONTDESC"},
-    {"IUNKNOWN"}
-  };
-#define PTR_TABLE_SIZE ((sizeof ptr_table)/(sizeof ptr_table[0]))
-
-  if (name)
-  {
-    int i;
-    for (i = 0; i < PTR_TABLE_SIZE; i++)
-    {
-      if (iupStrEqualNoCase(name, ptr_table[i].name))
-        return 1;
-    }
-  }
-
-  return 0;
-}
-
-int iupAttribIsInternal(const char* name)
-{
-  if (name[0] == '_' &&
-      name[1] == 'I' &&
-      name[2] == 'U' &&
-      name[3] == 'P')
-    return 1;
-  return 0;
+  return iupClassObjectAttribIsNotString(ih, name);
 }

@@ -172,7 +172,7 @@ static int gtkLabelSetImageAttrib(Ihandle* ih, const char* value)
       gtkLabelSetPixbuf(ih, value, 0, "IMAGE");
     else
     {
-      if (!iupAttribGetStr(ih, "IMINACTIVE"))
+      if (!iupAttribGet(ih, "IMINACTIVE"))
       {
         /* if not active and IMINACTIVE is not defined 
            then automaticaly create one based on IMAGE */
@@ -196,7 +196,7 @@ static int gtkLabelSetImInactiveAttrib(Ihandle* ih, const char* value)
       else
       {
         /* if not defined then automaticaly create one based on IMAGE */
-        char* name = iupAttribGetStr(ih, "IMAGE");
+        char* name = iupAttribGet(ih, "IMAGE");
         gtkLabelSetPixbuf(ih, name, 1, "IMINACTIVE"); /* make_inactive */
       }
     }
@@ -213,20 +213,20 @@ static int gtkLabelSetActiveAttrib(Ihandle* ih, const char* value)
   {
     if (!iupStrBoolean(value))
     {
-      char* name = iupAttribGetStr(ih, "IMINACTIVE");
+      char* name = iupAttribGet(ih, "IMINACTIVE");
       if (name)
         gtkLabelSetPixbuf(ih, name, 0, "IMINACTIVE");
       else
       {
         /* if not defined then automaticaly create one based on IMAGE */
-        name = iupAttribGetStr(ih, "IMAGE");
+        name = iupAttribGet(ih, "IMAGE");
         gtkLabelSetPixbuf(ih, name, 1, "IMINACTIVE"); /* make_inactive */
       }
     }
     else
     {
       /* must restore the normal image */
-      char* name = iupAttribGetStr(ih, "IMAGE");
+      char* name = iupAttribGet(ih, "IMAGE");
       gtkLabelSetPixbuf(ih, name, 0, "IMAGE");
     }
   }
@@ -239,7 +239,7 @@ static int gtkLabelMapMethod(Ihandle* ih)
   char* value;
   GtkWidget *label;
 
-  value = iupAttribGetStr(ih, "SEPARATOR");
+  value = iupAttribGet(ih, "SEPARATOR");
   if (value)
   {
     if (iupStrEqualNoCase(value, "HORIZONTAL"))
@@ -255,7 +255,7 @@ static int gtkLabelMapMethod(Ihandle* ih)
   }
   else
   {
-    value = iupAttribGetStr(ih, "IMAGE");
+    value = iupAttribGet(ih, "IMAGE");
     if (value)
     {
       ih->data->type = IUP_LABEL_IMAGE;
@@ -279,7 +279,7 @@ static int gtkLabelMapMethod(Ihandle* ih)
   gtk_widget_realize(label);
 
   /* ensure the default values, that are different from the native ones */
-  gtkLabelSetAlignmentAttrib(ih, iupAttribGetStrDefault(ih, "ALIGNMENT"));
+  gtkLabelSetAlignmentAttrib(ih, iupAttribGetStr(ih, "ALIGNMENT"));
 
   return IUP_NOERROR;
 }
@@ -292,25 +292,25 @@ void iupdrvLabelInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Common GTK only (when text is in a secondary element) */
-  iupClassRegisterAttribute(ic, "PANGOLAYOUT", gtkLabelGetPangoLayoutAttrib, NULL, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PANGOLAYOUT", gtkLabelGetPangoLayoutAttrib, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkLabelSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkLabelSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "DLGFGCOLOR", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkLabelSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "DLGFGCOLOR", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkLabelSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupLabel only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkLabelSetAlignmentAttrib, "ALEFT:ACENTER", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkLabelSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkLabelSetImInactiveAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkLabelSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkLabelSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkLabelSetImInactiveAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, gtkLabelSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "WORDWRAP", NULL, gtkLabelSetWordWrapAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "ELLIPSIS", NULL, gtkLabelSetEllipsisAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, gtkLabelSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "WORDWRAP", NULL, gtkLabelSetWordWrapAttrib, NULL, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "ELLIPSIS", NULL, gtkLabelSetEllipsisAttrib, NULL, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);
 }

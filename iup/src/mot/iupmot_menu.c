@@ -209,7 +209,7 @@ void iupdrvMenuInitClass(Iclass* ic)
   ic->Map = motMenuMapMethod;
   ic->UnMap = motMenuUnMapMethod;
 
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 }
 
 
@@ -232,7 +232,7 @@ static int motItemSetTitleAttrib(Ihandle* ih, const char* value)
     value = str;
   }
   else
-    str = iupMenuGetTitle(ih, value);
+    str = iupMenuProcessTitle(ih, value);
 
   if (XmIsToggleButton(ih->handle))
   {
@@ -316,7 +316,7 @@ static int motItemMapMethod(Ihandle* ih)
         iupmotSetArg(args[num_args++], XmNindicatorOn, XmINDICATOR_NONE)
       else
         iupmotSetArg(args[num_args++], XmNindicatorOn, XmINDICATOR_CHECK)
-      iupmotSetArg(args[num_args++], XmNlabelType, iupAttribGetStr(ih, "TITLEIMAGE")? XmPIXMAP: XmSTRING);
+      iupmotSetArg(args[num_args++], XmNlabelType, iupAttribGet(ih, "TITLEIMAGE")? XmPIXMAP: XmSTRING);
     }
 
     ih->handle = XtCreateManagedWidget(
@@ -352,16 +352,16 @@ void iupdrvItemInitClass(Iclass* ic)
   ic->UnMap = iupdrvBaseUnMapMethod;
 
   /* Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);  /* use inheritance to retrieve standard fonts */
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);  /* use inheritance to retrieve standard fonts */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* IupItem only */
-  iupClassRegisterAttribute(ic, "VALUE", motItemGetValueAttrib, motItemSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, motItemSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLEIMAGE", NULL, motItemSetTitleImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", motItemGetValueAttrib, motItemSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, motItemSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEIMAGE", NULL, motItemSetTitleImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
 
 
@@ -403,14 +403,14 @@ void iupdrvSubmenuInitClass(Iclass* ic)
   ic->UnMap = iupdrvBaseUnMapMethod;
 
   /* Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);  /* use inheritance to retrieve standard fonts */
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);  /* use inheritance to retrieve standard fonts */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* IupSubmenu only */
-  iupClassRegisterAttribute(ic, "TITLE", NULL, motItemSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, motItemSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
 
 
@@ -447,5 +447,5 @@ void iupdrvSeparatorInitClass(Iclass* ic)
   ic->Map = motSeparatorMapMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;
 
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 }

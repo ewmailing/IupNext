@@ -37,7 +37,7 @@
 
 void iupgtkUpdateMnemonic(Ihandle* ih)
 {
-  GtkLabel* label = (GtkLabel*)iupAttribGetStr(ih, "_IUPGTK_LABELMNEMONIC");
+  GtkLabel* label = (GtkLabel*)iupAttribGet(ih, "_IUPGTK_LABELMNEMONIC");
   if (label) gtk_label_set_mnemonic_widget(label, ih->handle);
 }
 
@@ -49,7 +49,7 @@ void iupdrvActivate(Ihandle* ih)
 void iupdrvReparent(Ihandle* ih)
 {
   GtkWidget* fixed = iupChildTreeGetNativeParentHandle(ih);
-  GtkWidget* widget = (GtkWidget*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
   gtk_widget_reparent(widget, fixed);
 }
@@ -57,7 +57,7 @@ void iupdrvReparent(Ihandle* ih)
 void iupgtkBaseAddToParent(Ihandle* ih)
 {
   GtkFixed* fixed = (GtkFixed*)iupChildTreeGetNativeParentHandle(ih);
-  GtkWidget* widget = (GtkWidget*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
   gtk_fixed_put(fixed, widget, 0, 0);
@@ -66,7 +66,7 @@ void iupgtkBaseAddToParent(Ihandle* ih)
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
   GtkFixed* fixed = (GtkFixed*)iupChildTreeGetNativeParentHandle(ih);
-  GtkWidget* widget = (GtkWidget*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
   gtk_fixed_move(fixed, widget, ih->x, ih->y);
@@ -75,7 +75,7 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 
 void iupdrvBaseUnMapMethod(Ihandle* ih)
 {
-  GtkWidget* widget = (GtkWidget*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
   gtk_widget_unrealize(widget);
   gtk_widget_destroy(widget);   /* To match the call to gtk_*****_new     */
@@ -83,8 +83,16 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
 
 void iupdrvDisplayUpdate(Ihandle *ih)
 {
-  GdkWindow* window = ih->handle->window;
+  /* Post a REDRAW */
   gtk_widget_queue_draw(ih->handle);
+}
+
+void iupdrvDisplayRedraw(Ihandle *ih)
+{
+  GdkWindow* window = ih->handle->window;
+  /* Post a REDRAW */
+  gtk_widget_queue_draw(ih->handle);
+  /* Force a REDRAW */
   if (window)
     gdk_window_process_updates(window, FALSE);
 }
@@ -169,7 +177,7 @@ int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
 
 void iupdrvSetVisible(Ihandle* ih, int visible)
 {
-  GtkWidget* container = (GtkWidget*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (visible)
   {
     if (container) gtk_widget_show(container);
@@ -194,7 +202,7 @@ int iupdrvIsActive(Ihandle *ih)
 
 void iupdrvSetActive(Ihandle* ih, int enable)
 {
-  GtkWidget* container = (GtkWidget*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (container) gtk_widget_set_sensitive(container, enable);
   gtk_widget_set_sensitive(ih->handle, enable);
 }
@@ -204,7 +212,7 @@ char* iupdrvBaseGetXAttrib(Ihandle *ih)
   char* str = iupStrGetMemory(20);
   int x, y;
   GdkWindow* window = ih->handle->window;
-  GtkWidget* container = (GtkWidget*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (container) window = container->window;
 
   if (window)
@@ -221,7 +229,7 @@ char* iupdrvBaseGetYAttrib(Ihandle *ih)
   char* str = iupStrGetMemory(20);
   int x, y;
   GdkWindow* window = ih->handle->window;
-  GtkWidget* container = (GtkWidget*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (container) window = container->window;
 
   if (window)
@@ -401,7 +409,7 @@ static GdkCursor* gtkGetCursor(Ihandle* ih, const char* name)
 
   /* check the cursor cache first (per control)*/
   sprintf(str, "_IUPGTK_CURSOR_%s", name);
-  cur = (GdkCursor*)iupAttribGetStr(ih, str);
+  cur = (GdkCursor*)iupAttribGet(ih, str);
   if (cur)
     return cur;
 
@@ -535,7 +543,7 @@ void iupdrvDrawFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h)
 
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic, "PANGOFONTDESC", iupgtkGetPangoFontDescAttrib, NULL, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PANGOFONTDESC", iupgtkGetPangoFontDescAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 }
 
 static int gtkStrIsAscii(const char* str)

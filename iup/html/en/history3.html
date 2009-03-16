@@ -16,6 +16,9 @@ color: #FF0000;
 	font-family: Tahoma;
 	text-decoration: line-through;
 }
+  .style3 {
+	font-family: Tahoma;
+}
   </style>
 </head>
 
@@ -30,7 +33,7 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 </p>
 
-<h3>CVS (05/Fev/2009)</h3>
+<h3>CVS (12/Mar/2009)</h3>
 
 <ul>
 
@@ -38,18 +41,38 @@ proceed when migrating from version 2.x to version 3.x.<br>
     Added package registration code to IupLua that allows it to be statically 
 	linked and require&quot;iuplua&quot; does not abort if the iuplua_open function was 
 	called.</li>
+	<li><span style="color: rgb(0, 128, 0);">Changed:</span>
+    the <strong>IupOleControl</strong> in Lua will not automatically initialize LuaCOM anymore. 
+	The application must manually call &quot;elem:CreateLuaCOM()&quot;. The 
+	previous initialization was incorrect (thanks to Ross Berteig).</li>
+	<li><span style="color: rgb(0, 128, 0);">Changed:</span>
+    the declaration of function <strong>IupGetClassAttributes</strong> to use the class name 
+	instead of a control handle.</li>
 
   <li><span class="style1">Fixed: </span>Fixed button, toggle and list sizes for 
 	GTK driver when using the Hildon Framework. Thanks to Otfried Cheong.</li>
 	<li><span class="style1">Fixed:</span> some IupLua dynamic libraries in 
 	Linux where incorrectly linking with Motif (libiuplua + pplot, cd, controls, 
 	gl, im and imglib + 51.so)</li>
-	<li><span class="style1">Fixed:</span> HOMOGENEOUS attribute for IupVbox and 
-	IupHbox.</li>
+	<li><span class="style1">Fixed:</span> HOMOGENEOUS attribute for <strong>IupVbox</strong> and 
+	<strong>IupHbox</strong>.</li>
 	<li><span class="style1">Fixed:</span> CARET attribute in GTK driver was not 
 	correctly scrolling the multiline text when not visible.</li>
+	<li><span class="style1">Fixed:</span> the return value in Lua for 
+	<strong>IupListDialog</strong> when type=2.</li>
+	<li><span class="style1">Fixed:</span> the return value for <strong>IupGetText</strong> when 
+	the user canceled. (Thanks to Xu Wang)</li>
+	<li><span class="style1">Fixed:</span> <strong>IupGetClassAttributes</strong> and 
+	<strong>IupGetAllAttributes</strong> 
+	were not implemented in IupLua.</li>
 	<li><span style="color: rgb(0, 0, 255);" class="style2">New:</span><span class="style2">
-	MARKL:C attribute for IupMatrix.</span></li>
+	MARKL:C, READONLY, NUMLIN_VISIBLE_LAST, NUMCOL_VISIBLE_LAST, and SHOW attributes for IupMatrix. When scrolling the matrix using 
+	the scrollbar the focus is not changed anymore. The last cells at right and 
+	bottom are now drawn as incomplete cells if they do not fit in the visible 
+	area. </span><span class="style3">
+	(NOT COMMITED YET)</span></li>
+	<li><span style="color: rgb(0, 0, 255);">New:</span><strong>
+	IupRedraw</strong> and <strong>IupSetClassDefaultAttribute</strong> functions.</li>
 
 </ul>
 

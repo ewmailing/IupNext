@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
-<html>
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupOleControl</title>
@@ -45,7 +45,7 @@ lua control
   library (iupluaole).</p>
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupOleControl(const char* ProgID); [in C]
+<pre>Ihandle* IupOleControl(const char* <strong>ProgID</strong>); [in C]
 iup.olecontrol{<b>ProgID</b>: string} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 </pre>
 <b>
@@ -61,14 +61,13 @@ iup.olecontrol{<b>ProgID</b>: string} -&gt; (<strong>elem</strong>: ihandle) [in
 <p><strong>DESIGNMODE</strong><b>:</b>
   activates the design mode. Some controls behave differently when in design mode. See 
 <a target="_blank" href="http://support.microsoft.com/default.aspx?scid=kb;en-us;260744">this 
-  article</a> for more information about design mode. Default value:
+  article</a> for more information about design mode. Can be YES or NO. Default value:
   &quot;NO&quot;.</p>
-<p><strong>DESIGNMODE_DONT_NOTIFY</strong>: sets the desing mode, but do not 
-notify the control.</p>
-<p><strong>IUNKNOWN</strong> (read-only):
-  Returns the IUnknown pointer for the control. This pointer is necessary 
-  to access methods and properties of the control in C/C++ code. This is a read-only 
-  attribute. </p>
+<p><strong>DESIGNMODE_DONT_NOTIFY</strong>: sets the design mode, but do not 
+notify the native control.</p>
+<p><strong>IUNKNOWN</strong> (read-only): Returns the IUnknown pointer for the 
+control. This pointer is necessary to access methods and properties of the 
+control in C/C++ code.</p>
   <blockquote>
   <hr>
 </blockquote>
@@ -90,7 +89,8 @@ POSITION</a>,
   control's interface and the COM mechanism. When using IupLua, it's possible to call methods, 
   access properties and receive events from the OLE control using the
   <a target="_blank" href="http://luaforge.net/projects/luacom/">LuaCOM</a> library. When the LuaCOM library is loaded, 
-  for each OLE control created a LuaCOM object is also created and stored in the com 
+  call elem:CreateLuaCOM so a LuaCOM object is created and stored in the <strong>
+&quot;elem.com&quot;</strong> 
   field of the object returned by iup.olecontrol. This LuaCOM object can be used 
   to access properties, methods and events in a way very similar to VB. See the examples for more information.</p>
 <blockquote>
@@ -104,6 +104,14 @@ POSITION</a>,
   <a href="../call/iup_killfocus_cb.html">KILLFOCUS_CB</a>, 
 <a href="../call/iup_enterwindow_cb.html">ENTERWINDOW_CB</a>,
   <a href="../call/iup_leavewindow_cb.html">LEAVEWINDOW_CB</a>.</p>
+<h3>Additional Methods in Lua</h3>
+<pre><strong>elem</strong>:CreateLuaCOM()</pre>
+<p>If LuaCOM is loaded and the IUNKNOWN is valid then set:</p>
+<font SIZE="3">
+<blockquote>
+	<pre><strong>elem</strong>.com = luacom.CreateLuaCOM(luacom.ImportIUnknown(<strong>elem</strong>.iunknown))</pre>
+</blockquote>
+</font>
 <h3><a name="Notes">Notes</a></h3>
 <p>To learn more about OLE and ActiveX:</p>
 <p class="info"><a target="_blank" href="http://www.microsoft.com/com">http://www.microsoft.com/com</a><br>

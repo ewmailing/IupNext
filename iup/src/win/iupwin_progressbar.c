@@ -53,7 +53,7 @@ static int winProgressBarSetMarqueeAttrib(Ihandle* ih, const char* value)
     ih->data->marquee = 0;
   }
 
-  iupwinRedrawNow(ih);
+  iupdrvDisplayRedraw(ih);
 
   return 1;
 }
@@ -151,13 +151,13 @@ void iupdrvProgressBarInitClass(Iclass* ic)
   ic->Map = winProgressBarMapMethod;
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winProgressBarSetBgColorAttrib, NULL, IUP_MAPPED, IUP_INHERIT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winProgressBarSetBgColorAttrib, NULL, NULL, IUPAF_DEFAULT);  
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winProgressBarSetFgColorAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winProgressBarSetFgColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
 
   /* IupProgressBar only */
-  iupClassRegisterAttribute(ic, "VALUE",  iProgressBarGetValueAttrib,  winProgressBarSetValueAttrib,  NULL,  IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, "HORIZONTAL", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MARQUEE",     NULL, winProgressBarSetMarqueeAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE",  iProgressBarGetValueAttrib,  winProgressBarSetValueAttrib,  NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, "HORIZONTAL", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARQUEE",     NULL, winProgressBarSetMarqueeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }

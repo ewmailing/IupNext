@@ -111,7 +111,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   XFreeGC(iupmot_display,gc);
 
   if (bgcolor_depend || make_inactive)
-    iupAttribSetStr(ih, "BGCOLOR_DEPEND", "1");
+    iupAttribSetStr(ih, "_IUP_BGCOLOR_DEPEND", "1");
 
  return (void*)pixmap;
 }
@@ -164,21 +164,21 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
   }
 
   r = 255; g = 255; b = 255;
-  iupStrToRGB(iupAttribGetStr(ih, "1"), &r, &g, &b );
+  iupStrToRGB(iupAttribGet(ih, "1"), &r, &g, &b );
   fg.red   = iupCOLOR8TO16(r);
   fg.green = iupCOLOR8TO16(g);
   fg.blue  = iupCOLOR8TO16(b);
   fg.flags = DoRed | DoGreen | DoBlue;
 
   r = 0; g = 0; b = 0;
-  iupStrToRGB(iupAttribGetStr(ih, "2"), &r, &g, &b );
+  iupStrToRGB(iupAttribGet(ih, "2"), &r, &g, &b );
   bg.red   = iupCOLOR8TO16(r);
   bg.green = iupCOLOR8TO16(g);
   bg.blue  = iupCOLOR8TO16(b);
   bg.flags = DoRed | DoGreen | DoBlue;
 
   hx=0; hy=0;
-  iupStrToIntInt(iupAttribGetStr(ih, "HOTSPOT"), &hx, &hy, ':');
+  iupStrToIntInt(iupAttribGet(ih, "HOTSPOT"), &hx, &hy, ':');
 
   source = XCreateBitmapFromData(iupmot_display, 
              RootWindow(iupmot_display,iupmot_screen),

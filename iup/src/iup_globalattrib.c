@@ -12,6 +12,7 @@
 #include "iup_globalattrib.h"
 #include "iup_drv.h"
 #include "iup_assert.h"
+#include "iup_str.h"
 
 
 static Itable *iglobal_table = NULL;
@@ -68,4 +69,32 @@ char *IupGetGlobal(const char *name)
     value = (char*)iupTableGet(iglobal_table, name);
 
   return value;
+}
+
+int iupGlobalIsPointer(const char* name)
+{
+  static struct {
+    const char *name;
+  } ptr_table[] = {
+#ifdef WIN32
+    {"HINSTANCE"},
+#else
+    {"XDISPLAY"},
+    {"XSCREEN"},
+    {"APPSHELL"},
+#endif
+  };
+#define PTR_TABLE_SIZE ((sizeof ptr_table)/(sizeof ptr_table[0]))
+
+  if (name)
+  {
+    int i;
+    for (i = 0; i < PTR_TABLE_SIZE; i++)
+    {
+      if (iupStrEqualNoCase(name, ptr_table[i].name))
+        return 1;
+    }
+  }
+
+  return 0;
 }

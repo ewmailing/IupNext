@@ -66,13 +66,13 @@ static void motTabsUpdatePageNumber(Ihandle* ih)
   Ihandle* child;
   for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
   {
-    Widget child_manager = (Widget)iupAttribGetStr(child, "_IUPTAB_CONTAINER");
+    Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (child_manager)
     {
       old_pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaSetValues(child_manager, XmNpageNumber) */
       if (pos != old_pos)
       {
-        Widget tab_button = (Widget)iupAttribGetStr(child, "_IUPMOT_TABBUTTON");
+        Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
         XtVaSetValues(child_manager, XmNpageNumber, pos, NULL);
         XtVaSetValues(tab_button, XmNpageNumber, pos, NULL);
         iupAttribSetInt(child, "_IUPMOT_TABNUMBER", pos);
@@ -86,7 +86,7 @@ static void motTabsUpdatePageBgPixmap(Ihandle* ih, Pixmap pixmap)
   Ihandle* child;
   for (child = ih->firstchild; child; child = child->brother)
   {
-    Widget child_manager = (Widget)iupAttribGetStr(child, "_IUPTAB_CONTAINER");
+    Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (child_manager)
       XtVaSetValues(child_manager, XmNbackgroundPixmap, pixmap, NULL);
   }
@@ -97,7 +97,7 @@ static void motTabsUpdatePageBgColor(Ihandle* ih, Pixel color)
   Ihandle* child;
   for (child = ih->firstchild; child; child = child->brother)
   {
-    Widget child_manager = (Widget)iupAttribGetStr(child, "_IUPTAB_CONTAINER");
+    Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (child_manager)
       iupmotSetBgColor(child_manager, color);
   }
@@ -108,7 +108,7 @@ static void motTabsUpdateButtonsFgColor(Ihandle* ih, Pixel color)
   Ihandle* child;
   for (child = ih->firstchild; child; child = child->brother)
   {
-    Widget tab_button = (Widget)iupAttribGetStr(child, "_IUPMOT_TABBUTTON");
+    Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
     if (tab_button)
       XtVaSetValues(tab_button, XmNforeground, color, NULL);
   }
@@ -119,7 +119,7 @@ static void motTabsUpdateButtonsBgColor(Ihandle* ih, Pixel color)
   Ihandle* child;
   for (child = ih->firstchild; child; child = child->brother)
   {
-    Widget tab_button = (Widget)iupAttribGetStr(child, "_IUPMOT_TABBUTTON");
+    Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
     if (tab_button)
       iupmotSetBgColor(tab_button, color);
   }
@@ -130,7 +130,7 @@ static void motTabsUpdateButtonsPadding(Ihandle* ih)
   Ihandle* child;
   for (child = ih->firstchild; child; child = child->brother)
   {
-    Widget tab_button = (Widget)iupAttribGetStr(child, "_IUPMOT_TABBUTTON");
+    Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
     if (tab_button)
       XtVaSetValues(tab_button, XmNmarginHeight, ih->data->vert_padding,
                                 XmNmarginWidth, ih->data->horiz_padding, NULL);
@@ -144,7 +144,7 @@ static void motTabsUpdatePageFont(Ihandle* ih)
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    Widget tab_button = (Widget)iupAttribGetStr(child, "_IUPMOT_TABBUTTON");
+    Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
     if (tab_button)
       XtVaSetValues(tab_button, XmNrenderTable, fontlist, NULL);
   }
@@ -205,8 +205,7 @@ static int motTabsSetBgColorAttrib(Ihandle* ih, const char* value)
   Pixel color;
 
   /* given value is used only for child, to the Tabs must use only from parent */
-  char* parent_value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!parent_value) parent_value = IupGetGlobal("DLGBGCOLOR");
+  char* parent_value = iupBaseNativeParentGetBgColor(ih);
 
   color = iupmotColorGetPixelStr(parent_value);
   if (color != (Pixel)-1)
@@ -225,7 +224,7 @@ static int motTabsSetBgColorAttrib(Ihandle* ih, const char* value)
 static int motTabsSetBackgroundAttrib(Ihandle* ih, const char* value)
 {
   /* given value is used only for child, to the Tabs must use only from parent */
-  char* parent_value = iupAttribGetStrNativeParent(ih, "BACKGROUND");
+  char* parent_value = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
 
   Pixel color = iupmotColorGetPixelStr(parent_value);
   if (color != (Pixel)-1)
@@ -273,7 +272,7 @@ static int motTabsSetTabTitleAttrib(Ihandle* ih, const char* name_id, const char
   if (value && iupStrToInt(name_id, &pos)==1)
   {
     Ihandle* child = IupGetChild(ih, pos);
-    Widget tab_button = (Widget)iupAttribGetStr(child, "_IUPMOT_TABBUTTON");
+    Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
     if (tab_button)
       iupmotSetString(tab_button, XmNlabelString, value);
   }
@@ -286,7 +285,7 @@ static int motTabsSetTabImageAttrib(Ihandle* ih, const char* name_id, const char
   if (value && iupStrToInt(name_id, &pos)==1)
   {
     Ihandle* child = IupGetChild(ih, pos);
-    Widget tab_button = (Widget)iupAttribGetStr(child, "_IUPMOT_TABBUTTON");
+    Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
     if (tab_button)
     {
       Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0, "TABIMAGE");
@@ -382,9 +381,9 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     XtOverrideTranslations(child_manager, XtParseTranslationTable("<Configure>: iupTabsConfigure()"));
 
-    tabtitle = iupAttribGetStr(child, "TABTITLE");
+    tabtitle = iupAttribGet(child, "TABTITLE");
     if (!tabtitle) tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
-    tabimage = iupAttribGetStr(child, "TABIMAGE");
+    tabimage = iupAttribGet(child, "TABIMAGE");
     if (!tabimage) tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
     if (!tabtitle && !tabimage)
       tabtitle = "     ";
@@ -429,8 +428,7 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
       }
     }
 
-    background = iupAttribGetStrInherit(ih, "BGCOLOR");
-    if (!background) background = IupGetGlobal("DLGBGCOLOR");
+    background = iupAttribGetStr(ih, "BGCOLOR");
     color = iupmotColorGetPixelStr(background);
     if (color != -1)
       iupmotSetBgColor(tab_button, color);
@@ -451,11 +449,11 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
 {
   if (ih->handle)
   {
-    Widget child_manager = (Widget)iupAttribGetStr(child, "_IUPTAB_CONTAINER");
+    Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (child_manager)
     {
       int cur_pos, pos;
-      Widget tab_button = (Widget)iupAttribGetStr(child, "_IUPMOT_TABBUTTON");
+      Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
 
       XtVaGetValues(ih->handle, XmNcurrentPageNumber, &cur_pos, NULL);
       pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaSetValues(child_manager, XmNpageNumber) */
@@ -565,17 +563,17 @@ void iupdrvTabsInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, motTabsSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, motTabsSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motTabsSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motTabsSetFgColorAttrib, "0 0 0", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motTabsSetBackgroundAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motTabsSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motTabsSetFgColorAttrib, "0 0 0", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motTabsSetBackgroundAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
   
   /* IupTabs only */
-  iupClassRegisterAttribute(ic, "TABTYPE", iupTabsGetTabTypeAttrib, motTabsSetTabTypeAttrib, "TOP", IUP_NOT_MAPPED, IUP_NO_INHERIT);  
-  iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, iupBaseNoSetAttrib, "HORIZONTAL", IUP_NOT_MAPPED, IUP_NO_INHERIT);  /* can not be set, always HORIZONTAL */
-  iupClassRegisterAttributeId(ic, "TABTITLE", NULL, motTabsSetTabTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, motTabsSetTabImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, motTabsSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "TABTYPE", iupTabsGetTabTypeAttrib, motTabsSetTabTypeAttrib, "TOP", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  
+  iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, NULL, "HORIZONTAL", NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  /* can not be set, always HORIZONTAL in Motif */
+  iupClassRegisterAttributeId(ic, "TABTITLE", NULL, motTabsSetTabTitleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, motTabsSetTabImageAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, motTabsSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
 }

@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua_api.c,v 1.4 2008-11-21 05:46:06 scuri Exp $
+* $Id: iuplua_api.c,v 1.5 2009-03-16 21:01:28 scuri Exp $
 */
 
 #include <stdio.h>
@@ -307,7 +307,7 @@ static int ListDialog(lua_State *L)
                              luaL_checkint(L, 7), 
                              marcas);
 
-  if(tipo==2)
+  if (tipo==2 && ret!=-1)
   {
     for (i=0; i<tam; i++)
     {
@@ -316,8 +316,8 @@ static int ListDialog(lua_State *L)
       lua_settable(L, 8);
     }
   }
-  else
-    lua_pushnumber(L, ret);
+
+  lua_pushnumber(L, ret);
     
   for (i=0; i<tam; i++)
   {

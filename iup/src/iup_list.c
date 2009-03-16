@@ -55,7 +55,7 @@ static void iListCallActionCallback(Ihandle* ih, IFnsii cb, int pos, int state)
 
 void iupListSingleCallActionCallback(Ihandle* ih, IFnsii cb, int pos)
 {
-  char* old_str = iupAttribGetStr(ih, "_IUPLIST_OLDVALUE");
+  char* old_str = iupAttribGet(ih, "_IUPLIST_OLDVALUE");
   if (old_str)
   {
     int oldpos = atoi(old_str);
@@ -74,7 +74,7 @@ void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, in
 {
   int i, count = iupdrvListGetCount(ih);
 
-  char* old_str = iupAttribGetStr(ih, "_IUPLIST_OLDVALUE");
+  char* old_str = iupAttribGet(ih, "_IUPLIST_OLDVALUE");
   int old_count = old_str? strlen(old_str): 0;
 
   char* str = iupStrGetMemory(count+1);
@@ -157,7 +157,7 @@ void iupListSetInitialItems(Ihandle* ih)
   char str[20], *value;
   int i = 1;
   sprintf(str, "%d", i);
-  while ((value = iupAttribGetStr(ih, str))!=NULL)
+  while ((value = iupAttribGet(ih, str))!=NULL)
   {
     iupdrvListAppendItem(ih, value);
     iupAttribSetStr(ih, str, NULL);
@@ -290,7 +290,7 @@ static int iListGetCount(Ihandle* ih)
     char str[20];
     count = 0;
     sprintf(str, "%d", count+1);
-    while (iupAttribGetStr(ih, str))
+    while (iupAttribGet(ih, str))
     {
       count++;
       sprintf(str, "%d", count+1);
@@ -538,7 +538,7 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 
   iupdrvFontGetCharSize(ih, w, h);   /* one line height, and one character width */
 
-  visiblecolumns = iupAttribGetIntInheritDefault(ih, "VISIBLECOLUMNS");
+  visiblecolumns = iupAttribGetInt(ih, "VISIBLECOLUMNS");
   if (visiblecolumns)
   {
     *w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
@@ -578,7 +578,7 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
     num_lines = count;
     if (num_lines == 0) num_lines = 1;
 
-    visiblelines = iupAttribGetIntInheritDefault(ih, "VISIBLELINES");
+    visiblelines = iupAttribGetInt(ih, "VISIBLELINES");
     if (visiblelines)
       num_lines = visiblelines;   
 
@@ -693,21 +693,22 @@ Iclass* iupListGetClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* IupList only */
-  iupClassRegisterAttribute(ic, "SCROLLBAR", iListGetScrollbarAttrib, iListSetScrollbarAttrib, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "MULTIPLE", iListGetMultipleAttrib, iListSetMultipleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DROPDOWN", iListGetDropdownAttrib, iListSetDropdownAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "EDITBOX", iListGetEditboxAttrib, iListSetEditboxAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "COUNT", iListGetCountAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "INSERTITEM", NULL, iListSetInsertItemAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "APPENDITEM", NULL, iListSetAppendItemAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "REMOVEITEM", NULL, iListSetRemoveItemAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AUTOHIDE", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLBAR", iListGetScrollbarAttrib, iListSetScrollbarAttrib, "YES", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "MULTIPLE", iListGetMultipleAttrib, iListSetMultipleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DROPDOWN", iListGetDropdownAttrib, iListSetDropdownAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITBOX", iListGetEditboxAttrib, iListSetEditboxAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COUNT", iListGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "INSERTITEM", NULL, iListSetInsertItemAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "APPENDITEM", NULL, iListSetAppendItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REMOVEITEM", NULL, iListSetRemoveItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "MASK", NULL, iListSetMaskAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MASKINT", NULL, iListSetMaskIntAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iListSetMaskFloatAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "_IUPMASK_DATA", iListGetMaskDataAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASKCASEI", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASK", NULL, iListSetMaskAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASKINT", NULL, iListSetMaskIntAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iListSetMaskFloatAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iListGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvListInitClass(ic);
 

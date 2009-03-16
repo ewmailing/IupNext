@@ -52,7 +52,7 @@ static int winTipsSendMessage(Ihandle* ih, HWND tips_hwnd, UINT msg)
 
 int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
 {
-  HWND tips_hwnd = (HWND)iupAttribGetStr(ih, "_IUPWIN_TIPSWIN");
+  HWND tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");
   if (!tips_hwnd)
   {
     tips_hwnd = winTipsCreate(ih->handle);
@@ -70,7 +70,7 @@ int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
 
 int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
 {
-  HWND tips_hwnd = (HWND)iupAttribGetStr(ih, "_IUPWIN_TIPSWIN");
+  HWND tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");
   if (!tips_hwnd)
     return 0;
 
@@ -100,7 +100,7 @@ void iupwinTipsGetDispInfo(LPARAM lp)
   ih = iupwinHandleGet(tips_info->hdr.hwndFrom);  /* hwndFrom is the tooltip window */
   if (!ih) return;
 
-  tips_hwnd = (HWND)iupAttribGetStr(ih, "_IUPWIN_TIPSWIN");
+  tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");
   if (tips_hwnd != tips_info->hdr.hwndFrom) return;
 
   tips_info->hinst = NULL;
@@ -173,7 +173,7 @@ void iupwinTipsGetDispInfo(LPARAM lp)
     ti.uId = 0; 
     ti.hwnd = ih->handle;
 
-    value = iupAttribGetStr(ih, "TIPRECT");
+    value = iupAttribGet(ih, "TIPRECT");
     if (value)
     {
       int x1, x2, y1, y2;

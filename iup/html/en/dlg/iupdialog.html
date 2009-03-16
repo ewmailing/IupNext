@@ -55,6 +55,10 @@ the <a href="../sample_results_bgcolor_indiv.html">children BGCOLOR</a>. </u1:p>
 <p><a href="../attrib/iup_cursor.html">CURSOR</a> (<font SIZE="3">non inheritable</font>):
     Defines a cursor for the dialog.</p>
 
+<p><b>DRAGDROP</b> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drag&amp;drop of 
+files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
+then it will be automatically enabled.</p>
+
   <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>):
   The default value is &quot;YES&quot;.</p>
 <p><a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>):
@@ -173,9 +177,6 @@ IupPopup</strong>. If not defined then the first control than
 can receive the focus is selected (same effect of calling
 <a href="../func/iupnextfield.html">IupNextField</a> for the dialog).</p>
 <h4>Exclusive [Windows and GTK Only]</h4>
-<p><b>DRAGDROP</b> [Windows and GTK Only]: Enable or disable the drag&amp;drop of 
-files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
-then it will be automatically enabled.</p>
 <p><strong>HIDETASKBAR</strong> [Windows and GTK Only] (write-only): Action attribute that when set to &quot;YES&quot;, hides the dialog, 
 but does not decrement the visible dialog count, does not call SHOW_CB and does 
 not mark the dialog as hidden inside IUP. It is usually used to hide the dialog 
@@ -191,11 +192,15 @@ the tray icon.</p>
 <p><b>TRAYTIP</b> [Windows and GTK Only] :Tray icon's 
     tooltip text.</p>
       
+<h4>Exclusive [GTK Only]</h4>
+<p><strong>DIALOGHINT</strong> (creation-only): if enabled sets the window type 
+hint to a dialog hint.</p>
+      
 <h4>Exclusive [Windows Only]</h4>
-<p><strong>BRINGFRONT</strong> [Windows Only] (write-only): This attribute makes the dialog the foreground 
+<p><strong>BRINGFRONT</strong> [Windows Only] (write-only): makes the dialog the foreground 
       window. Use &quot;YES&quot; 
       to activate it. Useful for multithreaded applications.</p>
-<p><strong>COMPOSITED</strong> [Windows XP Only] (creation only): This attribute controls if the window will have 
+<p><strong>COMPOSITED</strong> [Windows XP Only] (creation only): controls if the window will have 
       an automatic double buffer for all children. Default is &quot;YES&quot;. 
 In Windows Vista the default is NO because it is not working as expected.</p>
 <p><a href="../attrib/iup_control.html">CONTROL</a> [Windows Only] (creation 
@@ -208,19 +213,18 @@ only): Embeds the dialog inside another window.</p>
       Possible values: YES,
       NO. 
       Default: NO.</p>
-<p><strong>LAYERED</strong> [Windows Only]: This attribute sets and removes the layered style 
+<p><strong>LAYERED</strong> [Windows Only]: sets and removes the layered style 
       bit. Use &quot;YES&quot; 
       to activate it. Default is &quot;NO&quot;. The 
       LAYERALPHA attribute must also be set, just after this one.</p>
-<p><strong>LAYERALPHA</strong> [Windows Only]: This attribute sets the dialog transparency alpha 
+<p><strong>LAYERALPHA</strong> [Windows Only]: sets the dialog transparency alpha 
       value. The dialog must have LAYERED=YES. 
       Valid values range from 0 (completely transparent) to 255 (opaque).</p>
-<p><strong>TOOLBOX</strong> [Windows Only] (creation only): This attribute makes the dialog look like a toolbar. 
+<p><strong>TOOLBOX</strong> [Windows Only] (creation only): makes the dialog look like a toolbar. 
     It is only valid if the PARENTDIALOG 
     or NATIVEPARENT 
     attribute is also defined. Default: NO.</p>
-<p><strong>TOPMOST</strong> [Windows Only]:
-    This attribute puts the dialog always in front of all 
+<p><strong>TOPMOST</strong> [Windows Only]:&nbsp; puts the dialog always in front of all 
     other dialogs in all applications. Default: NO.</p>
       
 <h4>Exclusive MDI [Windows Only]</h4>

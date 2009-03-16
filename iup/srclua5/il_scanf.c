@@ -27,8 +27,6 @@ int iupluaScanf(lua_State *L)
 {
   char *format;
   int i;
-  int rc = (-1);        /* return code if not error (erro <  0) */
-  int erro = (-1);        /* return code if error     (erro >= 0) */
   int fields;
   int *width = NULL;
   int *scroll = NULL;
@@ -105,7 +103,6 @@ int iupluaScanf(lua_State *L)
 
   REQUIRE(iupDataEntry(fields, width, scroll, title, prompt, text)>0);
 
-  rc = 0;
   /* va_start(va,format); */
   s = strchr(format, '\n') + 1;
   for (i = 0; i < fields; ++i) {
@@ -114,24 +111,18 @@ int iupluaScanf(lua_State *L)
     case 'd':
     case 'u':
       if (s[-3] == 'l') {
-        long l;
-        if (sscanf(text[i], "%ld", &l) != 1)
-          if (erro < 0)
-            erro = rc;
+        long l = 0;
+        sscanf(text[i], "%ld", &l);
         lua_pushnumber(L, l);
         total++;
       } else if (s[-3] == 'h') {
-        short l;
-        if (sscanf(text[i], "%hd", &l) != 1)
-          if (erro < 0)
-            erro = rc;
+        short l = 0;
+        sscanf(text[i], "%hd", &l);
         lua_pushnumber(L, l);
         total++;
       } else {
-        int l;
-        if (sscanf(text[i], "%d", &l) != 1)
-          if (erro < 0)
-            erro = rc;
+        int l = 0;
+        sscanf(text[i], "%d", &l);
         lua_pushnumber(L, l);
         total++;
       }
@@ -141,24 +132,18 @@ int iupluaScanf(lua_State *L)
     case 'x':
     case 'X':
       if (s[-3] == 'l') {
-        long l;
-        if (sscanf(text[i], "%li", &l) != 1)
-          if (erro < 0)
-            erro = rc;
+        long l = 0;
+        sscanf(text[i], "%li", &l);
         lua_pushnumber(L, l);
         total++;
       } else if (s[-3] == 'h') {
-        short l;
-        if (sscanf(text[i], "%hi", &l) != 1)
-          if (erro < 0)
-            erro = rc;
+        short l = 0;
+        sscanf(text[i], "%hi", &l);
         lua_pushnumber(L, l);
         total++;
       } else {
-        int l;
-        if (sscanf(text[i], "%i", &l) != 1)
-          if (erro < 0)
-            erro = rc;
+        int l = 0;
+        sscanf(text[i], "%i", &l);
         lua_pushnumber(L, l);
         total++;
       }
@@ -169,29 +154,22 @@ int iupluaScanf(lua_State *L)
     case 'E':
     case 'G':
       if (s[-3] == 'l') {
-        double l;
-        if (sscanf(text[i], "%lg", &l) != 1)
-          if (erro < 0)
-            erro = rc;
+        double l = 0;
+        sscanf(text[i], "%lg", &l);
         lua_pushnumber(L, l);
         total++;
       } else {
-        float l;
-        if (sscanf(text[i], "%g", &l) != 1)
-          if (erro < 0)
-            erro = rc;
+        float l = 0;
+        sscanf(text[i], "%g", &l);
         lua_pushnumber(L, l);
         total++;
       }
       break;
     case 's':
-      {
-        lua_pushstring(L, text[i]);
-        total++;
-      }
+      lua_pushstring(L, text[i]);
+      total++;
       break;
     }
-    ++rc;
   }
   /* va_end(va); */
 

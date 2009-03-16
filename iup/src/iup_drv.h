@@ -58,9 +58,13 @@ void iupdrvSetVisible(Ihandle* ih, int enable);
  * \ingroup drv */
 void iupdrvSetActive(Ihandle* ih, int enable);
 
-/** Force a redraw of a control.
+/** Post a redraw of a control.
  * \ingroup drv */
 void iupdrvDisplayUpdate(Ihandle *ih);
+
+/** Force a redraw of a control.
+ * \ingroup drv */
+void iupdrvDisplayRedraw(Ihandle *ih);
 
 /** Reparent the native control.
  * \ingroup drv */

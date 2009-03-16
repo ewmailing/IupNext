@@ -20,6 +20,23 @@ color: #FF0000;
 
 <h2 align="center">History of Changes of Version 2.x </h2>
 
+<h3>CVS (12/Mar/2009)</h3>
+
+<h4>General</h4>
+
+<ul>
+
+  <li><span style="color: rgb(0, 128, 0);">Changed:</span>
+    the IupOleControl in Lua will not automatically initialize LuaCOM anymore. 
+	The application must manually call &quot;elem:CreateLuaCOM()&quot;. The 
+	previous initialization was incorrect (thanks to Ross Berteig).</li>
+	<li><span class="style1">Fixed:</span> the return value in Lua for 
+	IupListDialog when type=2.</li>
+	<li><span class="style1">Fixed:</span> the return value for IupGetText when 
+	the user canceled.</li>
+
+</ul>
+
 <h3>Version 2.7.1&nbsp;(15/Dec/2008)</h3>
 
 <h4>General</h4>

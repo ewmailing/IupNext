@@ -88,13 +88,13 @@ static void gtkToggleUpdateImage(Ihandle* ih, int active, int check)
 
   if (!active)
   {
-    name = iupAttribGetStr(ih, "IMINACTIVE");
+    name = iupAttribGet(ih, "IMINACTIVE");
     if (name)
       gtkToggleSetPixbuf(ih, name, 0, "IMINACTIVE");
     else
     {
       /* if not defined then automaticaly create one based on IMAGE */
-      name = iupAttribGetStr(ih, "IMAGE");
+      name = iupAttribGet(ih, "IMAGE");
       gtkToggleSetPixbuf(ih, name, 1, "IMINACTIVE"); /* make_inactive */
     }
   }
@@ -103,19 +103,19 @@ static void gtkToggleUpdateImage(Ihandle* ih, int active, int check)
     /* must restore the normal image */
     if (check)
     {
-      name = iupAttribGetStr(ih, "IMPRESS");
+      name = iupAttribGet(ih, "IMPRESS");
       if (name)
         gtkToggleSetPixbuf(ih, name, 0, "IMPRESS");
       else
       {
         /* if not defined then automaticaly create one based on IMAGE */
-        name = iupAttribGetStr(ih, "IMAGE");
+        name = iupAttribGet(ih, "IMAGE");
         gtkToggleSetPixbuf(ih, name, 0, "IMPRESS");
       }
     }
     else
     {
-      name = iupAttribGetStr(ih, "IMAGE");
+      name = iupAttribGet(ih, "IMAGE");
       if (name)
         gtkToggleSetPixbuf(ih, name, 0, "IMAGE");
     }
@@ -249,7 +249,7 @@ static int gtkToggleSetImageAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    if (value != iupAttribGetStr(ih, "IMAGE"))
+    if (value != iupAttribGet(ih, "IMAGE"))
       iupAttribSetStr(ih, "IMAGE", (char*)value);
     gtkToggleUpdateImage(ih, iupdrvIsActive(ih), gtkToggleGetCheck(ih));
     return 1;
@@ -262,7 +262,7 @@ static int gtkToggleSetImInactiveAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    if (value != iupAttribGetStr(ih, "IMINACTIVE"))
+    if (value != iupAttribGet(ih, "IMINACTIVE"))
       iupAttribSetStr(ih, "IMINACTIVE", (char*)value);
     gtkToggleUpdateImage(ih, iupdrvIsActive(ih), gtkToggleGetCheck(ih));
     return 1;
@@ -275,7 +275,7 @@ static int gtkToggleSetImPressAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    if (value != iupAttribGetStr(ih, "IMPRESS"))
+    if (value != iupAttribGet(ih, "IMPRESS"))
       iupAttribSetStr(ih, "IMPRESS", (char*)value);
     gtkToggleUpdateImage(ih, iupdrvIsActive(ih), gtkToggleGetCheck(ih));
     return 1;
@@ -300,7 +300,7 @@ static void gtkToggleToggled(GtkToggleButton *widget, Ihandle* ih)
   IFni cb;
   int check;
 
-  if (iupAttribGetStr(ih, "_IUPGTK_IGNORE_TOGGLE"))
+  if (iupAttribGet(ih, "_IUPGTK_IGNORE_TOGGLE"))
     return;
 
   check = gtkToggleGetCheck(ih);
@@ -348,12 +348,12 @@ static int gtkToggleUpdate3StateCheck(Ihandle *ih, int keyb)
 
 static gboolean gtkToggleButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 {
-  if (iupAttribGetStr(ih, "_IUPGTK_IGNORE_TOGGLE"))
+  if (iupAttribGet(ih, "_IUPGTK_IGNORE_TOGGLE"))
     return FALSE;
 
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    char* name = iupAttribGetStr(ih, "IMPRESS");
+    char* name = iupAttribGet(ih, "IMPRESS");
     if (name)
     {
       if (evt->type == GDK_BUTTON_PRESS)
@@ -407,7 +407,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
   if (radio)
     ih->data->radio = 1;
 
-  value = iupAttribGetStr(ih, "IMAGE");
+  value = iupAttribGet(ih, "IMAGE");
   if (value)
     ih->data->type = IUP_TOGGLE_IMAGE;
   else
@@ -415,7 +415,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
 
   if (radio)
   {
-    GtkRadioButton* last_tg = (GtkRadioButton*)iupAttribGetStr(radio, "_IUPGTK_LASTRADIOBUTTON");
+    GtkRadioButton* last_tg = (GtkRadioButton*)iupAttribGet(radio, "_IUPGTK_LASTRADIOBUTTON");
     if (last_tg)
       ih->handle = gtk_radio_button_new_from_widget(last_tg);
     else
@@ -428,7 +428,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
     {
       ih->handle = gtk_check_button_new();
 
-      if (iupAttribGetIntDefault(ih, "3STATE"))
+      if (iupAttribGetInt(ih, "3STATE"))
         is3state = 1;
     }
     else
@@ -452,7 +452,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
 
-  if (!iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+  if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
   g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
@@ -493,25 +493,25 @@ void iupdrvToggleInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkToggleSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkToggleSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkToggleSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkToggleSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkToggleSetFgColorAttrib, "DLGFGCOLOR", IUP_MAPPED, IUP_INHERIT);  /* black */
-  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkToggleSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkToggleSetFgColorAttrib, "DLGFGCOLOR", NULL, IUPAF_DEFAULT);  /* black */
+  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkToggleSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupToggle only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkToggleSetAlignmentAttrib, "ACENTER:ACENTER", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkToggleSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkToggleSetImInactiveAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMPRESS", NULL, gtkToggleSetImPressAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", gtkToggleGetValueAttrib, gtkToggleSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkToggleSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkToggleSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkToggleSetImInactiveAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMPRESS", NULL, gtkToggleSetImPressAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", gtkToggleGetValueAttrib, gtkToggleSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "PADDING", iupToggleGetPaddingAttrib, gtkToggleSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupToggleGetPaddingAttrib, gtkToggleSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);
 }

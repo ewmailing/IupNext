@@ -93,7 +93,7 @@ void iupdrvListConvertXYToItem(Ihandle* ih, int x, int y, int *pos)
 {
   if (ih->data->has_editbox)
   {
-    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
 
     *pos = SendMessage(cbedit, EM_CHARFROMPOS, 0, MAKELPARAM(x, y));
     *pos = LOWORD(*pos);
@@ -101,7 +101,7 @@ void iupdrvListConvertXYToItem(Ihandle* ih, int x, int y, int *pos)
 
   if (ih->data->has_editbox)
   {
-    HWND cblist = (HWND)iupAttribGetStr(ih, "_IUPWIN_LISTBOX");
+    HWND cblist = (HWND)iupAttribGet(ih, "_IUPWIN_LISTBOX");
     *pos = SendMessage(cblist, LB_ITEMFROMPOINT, 0, MAKELPARAM(x, y))+1;  /* IUP Starts at 1 */
     *pos = LOWORD(*pos);
   }
@@ -129,7 +129,7 @@ static int winListGetMaxWidth(Ihandle* ih)
 
 static void winListUpdateScrollWidth(Ihandle* ih)
 {
-  if (ih->data->is_dropdown && iupAttribGetIntDefault(ih, "DROPEXPAND"))
+  if (ih->data->is_dropdown && iupAttribGetInt(ih, "DROPEXPAND"))
   {
     int w = 3+winListGetMaxWidth(ih)+iupdrvGetScrollbarSize()+3;
     SendMessage(ih->handle, CB_SETDROPPEDWIDTH, w, 0);
@@ -174,7 +174,7 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
 void iupdrvListRemoveAllItems(Ihandle* ih)
 {
   SendMessage(ih->handle, WIN_RESETCONTENT(ih), 0, 0L);
-  if (ih->data->is_dropdown && iupAttribGetIntDefault(ih, "DROPEXPAND"))
+  if (ih->data->is_dropdown && iupAttribGetInt(ih, "DROPEXPAND"))
     SendMessage(ih->handle, CB_SETDROPPEDWIDTH, 0, 0);
   else
     SendMessage(ih->handle, WIN_SETHORIZONTALEXTENT(ih), 0, 0);
@@ -378,7 +378,7 @@ static int winListSetPaddingAttrib(Ihandle* ih, const char* value)
   ih->data->vert_padding = 0;
   if (ih->handle)
   {
-    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_SETMARGINS, EC_LEFTMARGIN|EC_RIGHTMARGIN, MAKELPARAM(ih->data->horiz_padding, ih->data->horiz_padding));
   }
   return 0;
@@ -401,7 +401,7 @@ static int winListSetFilterAttrib(Ihandle *ih, const char *value)
   if (style)
   {
     HWND old_handle = ih->handle;
-    ih->handle = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    ih->handle = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     iupwinMergeStyle(ih, ES_LOWERCASE|ES_NUMBER|ES_UPPERCASE, style);
     ih->handle = old_handle;
   }
@@ -414,7 +414,7 @@ static int winListSetCueBannerAttrib(Ihandle *ih, const char *value)
   if (ih->data->has_editbox && iupwin_comctl32ver6)
   {
     WCHAR* wstr = iupwinStrChar2Wide(value);
-    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_SETCUEBANNER, (WPARAM)FALSE, (LPARAM)wstr);
     free(wstr);
     return 1;
@@ -442,7 +442,7 @@ static int winListSetClipboardAttrib(Ihandle *ih, const char *value)
 
   if (msg)
   {
-    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, msg, 0, 0);
   }
 
@@ -457,7 +457,7 @@ static int winListSetSelectedTextAttrib(Ihandle* ih, const char* value)
   if (value)
   {
     int start = 0, end = 0;
-    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
     if (start == end)
       return 0;
@@ -473,7 +473,7 @@ static char* winListGetSelectedTextAttrib(Ihandle* ih)
   if (!ih->data->has_editbox)
     return 0;
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   nc = GetWindowTextLength(cbedit);
   if (nc)
   {
@@ -505,7 +505,7 @@ static int winListSetNCAttrib(Ihandle* ih, const char* value)
 
   if (ih->handle)
   {
-    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_LIMITTEXT, ih->data->nc, 0L);
   }
   return 0;
@@ -520,14 +520,14 @@ static int winListSetSelectionAttrib(Ihandle* ih, const char* value)
 
   if (!value || iupStrEqualNoCase(value, "NONE"))
   {
-    cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_SETSEL, (WPARAM)-1, (LPARAM)0);
     return 0;
   }
 
   if (iupStrEqualNoCase(value, "ALL"))
   {
-    cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
     return 0;
   }
@@ -541,7 +541,7 @@ static int winListSetSelectionAttrib(Ihandle* ih, const char* value)
   start--; /* IUP starts at 1 */
   end--;
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   SendMessage(cbedit, EM_SETSEL, (WPARAM)start, (LPARAM)end);
 
   return 0;
@@ -555,7 +555,7 @@ static char* winListGetSelectionAttrib(Ihandle* ih)
   if (!ih->data->has_editbox)
     return NULL;
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   SendMessage(cbedit, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
   if (start == end)
     return NULL;
@@ -578,14 +578,14 @@ static int winListSetSelectionPosAttrib(Ihandle* ih, const char* value)
 
   if (!value || iupStrEqualNoCase(value, "NONE"))
   {
-    cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_SETSEL, (WPARAM)-1, (LPARAM)0);
     return 0;
   }
 
   if (iupStrEqualNoCase(value, "ALL"))
   {
-    cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
     return 0;
   }
@@ -596,7 +596,7 @@ static int winListSetSelectionPosAttrib(Ihandle* ih, const char* value)
   if(start<0 || end<0) 
     return 0;
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   SendMessage(cbedit, EM_SETSEL, (WPARAM)start, (LPARAM)end);
 
   return 0;
@@ -610,7 +610,7 @@ static char* winListGetSelectionPosAttrib(Ihandle* ih)
   if (!ih->data->has_editbox)
     return NULL;
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   SendMessage(cbedit, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
   if (start == end)
     return NULL;
@@ -624,7 +624,7 @@ static int winListSetInsertAttrib(Ihandle* ih, const char* value)
 {
   if (value && ih->data->has_editbox)
   {
-    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)value);
   }
   return 0;
@@ -639,7 +639,7 @@ static int winListSetAppendAttrib(Ihandle* ih, const char* value)
 
   if (!value) value = "";
   
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   len = GetWindowTextLength(cbedit)+1;
   SendMessage(cbedit, EM_SETSEL, (WPARAM)len, (LPARAM)len);
   SendMessage(cbedit, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)value);
@@ -653,7 +653,7 @@ static int winListSetReadOnlyAttrib(Ihandle* ih, const char* value)
   if (!ih->data->has_editbox)
     return 0;
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   SendMessage(cbedit, EM_SETREADONLY, (WPARAM)iupStrBoolean(value), 0);
   return 0;
 }
@@ -665,7 +665,7 @@ static char* winListGetReadOnlyAttrib(Ihandle* ih)
   if (!ih->data->has_editbox)
     return NULL;
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   style = GetWindowLong(cbedit, GWL_STYLE);
   if (style & ES_READONLY)
     return "YES";
@@ -687,7 +687,7 @@ static int winListSetCaretAttrib(Ihandle* ih, const char* value)
   if (pos < 1) pos = 1;
   pos--; /* IUP starts at 1 */
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   SendMessage(cbedit, EM_SETSEL, (WPARAM)pos, (LPARAM)pos);
   SendMessage(cbedit, EM_SCROLLCARET, 0L, 0L);
 
@@ -699,7 +699,7 @@ static char* winListGetCaretAttrib(Ihandle* ih)
   if (ih->data->has_editbox)
   {
     char* str = iupStrGetMemory(100);
-    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     sprintf(str, "%d", winListGetCaretPos(cbedit)+1);
     return str;
   }
@@ -720,7 +720,7 @@ static int winListSetCaretPosAttrib(Ihandle* ih, const char* value)
   sscanf(value,"%i",&pos);    /* be permissive in SetCaret, do not abort if invalid */
   if (pos < 0) pos = 0;
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   SendMessage(cbedit, EM_SETSEL, (WPARAM)pos, (LPARAM)pos);
   SendMessage(cbedit, EM_SCROLLCARET, 0L, 0L);
 
@@ -732,7 +732,7 @@ static char* winListGetCaretPosAttrib(Ihandle* ih)
   if (ih->data->has_editbox)
   {
     char* str = iupStrGetMemory(100);
-    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     sprintf(str, "%d", winListGetCaretPos(cbedit));
     return str;
   }
@@ -755,7 +755,7 @@ static int winListSetScrollToAttrib(Ihandle* ih, const char* value)
 
   pos--;  /* return to Windows referece */
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   SendMessage(cbedit, EM_LINESCROLL, (WPARAM)pos, (LPARAM)0);
 
   return 0;
@@ -774,7 +774,7 @@ static int winListSetScrollToPosAttrib(Ihandle* ih, const char* value)
   sscanf(value,"%i",&pos);
   if (pos < 0) pos = 0;
 
-  cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+  cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   SendMessage(cbedit, EM_LINESCROLL, (WPARAM)pos, (LPARAM)0);
 
   return 0;
@@ -1252,7 +1252,7 @@ static void winListLayoutUpdateMethod(Ihandle *ih)
     RECT rect;
     int charheight, calc_h, win_h, win_w, voptions;
 
-    voptions = iupAttribGetIntInheritDefault(ih, "VISIBLE_ITEMS");
+    voptions = iupAttribGetInt(ih, "VISIBLE_ITEMS");
     if (voptions <= 0)
       voptions = 1;
 
@@ -1295,7 +1295,7 @@ static int winListMapMethod(Ihandle* ih)
     {
       dwStyle |= WS_VSCROLL|WS_HSCROLL;
 
-      if (!iupStrBoolean(iupAttribGetStrDefault(ih, "AUTOHIDE")))
+      if (!iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
         dwStyle |= CBS_DISABLENOSCROLL;
     }
 
@@ -1324,12 +1324,12 @@ static int winListMapMethod(Ihandle* ih)
     {
       dwStyle |= WS_VSCROLL|WS_HSCROLL;
 
-      if (!iupStrBoolean(iupAttribGetStrDefault(ih, "AUTOHIDE")))
+      if (!iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
         dwStyle |= LBS_DISABLENOSCROLL;
     }
   }
 
-  if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     dwStyle |= WS_TABSTOP;
 
   if (!iupwinCreateWindowEx(ih, class_name, dwStyleEx, dwStyle))
@@ -1391,38 +1391,38 @@ void iupdrvListInitClass(Iclass* ic)
 
   /* Driver Dependent Attribute functions */
 
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winListSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winListSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, "TXTBGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, "TXTBGCOLOR", NULL, IUPAF_NOT_MAPPED);  
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "TXTFGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "TXTFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* usually black */    
 
   /* IupList only */
-  iupClassRegisterAttributeId(ic, "IDVALUE", winListGetIdValueAttrib, iupListSetIdValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", winListGetValueAttrib, winListSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, winListSetShowDropdownAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TOPITEM", NULL, winListSetTopItemAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLE_ITEMS", NULL, NULL, "5", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "DROPEXPAND", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPACING", iupListGetSpacingAttrib, winListSetSpacingAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttributeId(ic, "IDVALUE", winListGetIdValueAttrib, iupListSetIdValueAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", winListGetValueAttrib, winListSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, winListSetShowDropdownAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOPITEM", NULL, winListSetTopItemAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLE_ITEMS", NULL, NULL, "5", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "DROPEXPAND", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPACING", iupListGetSpacingAttrib, winListSetSpacingAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
 
-  iupClassRegisterAttribute(ic, "PADDING", iupListGetPaddingAttrib, winListSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTEDTEXT", winListGetSelectedTextAttrib, winListSetSelectedTextAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTION", winListGetSelectionAttrib, winListSetSelectionAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTIONPOS", winListGetSelectionPosAttrib, winListSetSelectionPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARET", winListGetCaretAttrib, winListSetCaretAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARETPOS", winListGetCaretPosAttrib, winListSetCaretPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INSERT", NULL, winListSetInsertAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "APPEND", NULL, winListSetAppendAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "READONLY", winListGetReadOnlyAttrib, winListSetReadOnlyAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "NC", iupListGetNCAttrib, winListSetNCAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, winListSetClipboardAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, winListSetScrollToAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, winListSetScrollToPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupListGetPaddingAttrib, winListSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SELECTEDTEXT", winListGetSelectedTextAttrib, winListSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTION", winListGetSelectionAttrib, winListSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTIONPOS", winListGetSelectionPosAttrib, winListSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARET", winListGetCaretAttrib, winListSetCaretAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETPOS", winListGetCaretPosAttrib, winListSetCaretPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERT", NULL, winListSetInsertAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "APPEND", NULL, winListSetAppendAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "READONLY", winListGetReadOnlyAttrib, winListSetReadOnlyAttrib, NULL, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "NC", iupListGetNCAttrib, winListSetNCAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, winListSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, winListSetScrollToAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, winListSetScrollToPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winListSetCueBannerAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FILTER", NULL, winListSetFilterAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winListSetCueBannerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FILTER", NULL, winListSetFilterAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }

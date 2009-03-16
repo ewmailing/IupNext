@@ -83,7 +83,7 @@ static HBITMAP winImageCreateBitmap(Ihandle *ih, int width, int height, int bpp,
     /* since colors are only passed to the CreateDIBSection here, must update BGCOLOR and inactive here */
     RGBQUAD* bitmap_colors = (RGBQUAD*)(((BYTE*)bitmap_info) + sizeof(BITMAPINFOHEADER));
     if (winImageInitDibColors(colors, bitmap_colors, colors_count, bg_r, bg_g, bg_b, make_inactive))
-      iupAttribSetStr(ih, "BGCOLOR_DEPEND", "1");
+      iupAttribSetStr(ih, "_IUP_BGCOLOR_DEPEND", "1");
   }
 
   hDC = GetDC(NULL);
@@ -173,7 +173,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   }
 
   if (make_inactive || (channels == 4 && flat_alpha))
-    iupAttribSetStr(ih, "BGCOLOR_DEPEND", "1");
+    iupAttribSetStr(ih, "_IUP_BGCOLOR_DEPEND", "1");
 
   return hBitmap;
 }
@@ -248,11 +248,11 @@ static HICON winImageCreateIcon(Ihandle *ih, int is_cursor)
     int bpp = iupAttribGetInt(ih, "BPP");
     if (bpp == 8)
     {
-      if (!iupStrEqual(iupAttribGetStr(ih, "0"), "BGCOLOR") &&
-          !iupStrEqual(iupAttribGetStr(ih, "1"), "BGCOLOR") &&
-          !iupStrEqual(iupAttribGetStr(ih, "2"), "BGCOLOR"))
+      if (!iupStrEqual(iupAttribGet(ih, "0"), "BGCOLOR") &&
+          !iupStrEqual(iupAttribGet(ih, "1"), "BGCOLOR") &&
+          !iupStrEqual(iupAttribGet(ih, "2"), "BGCOLOR"))
       {
-        color0 = iupStrDup(iupAttribGetStr(ih, "0"));
+        color0 = iupStrDup(iupAttribGet(ih, "0"));
         iupAttribSetStr(ih, "0", "BGCOLOR");
       }
     }
@@ -277,7 +277,7 @@ static HICON winImageCreateIcon(Ihandle *ih, int is_cursor)
   if (is_cursor)
   {
     int x=0,y=0;
-    iupStrToIntInt(iupAttribGetStr(ih, "HOTSPOT"), &x, &y, ':');
+    iupStrToIntInt(iupAttribGet(ih, "HOTSPOT"), &x, &y, ':');
 
     iconinfo.xHotspot = x;
     iconinfo.yHotspot = y;

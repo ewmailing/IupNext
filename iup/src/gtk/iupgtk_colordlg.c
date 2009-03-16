@@ -108,14 +108,14 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
   iupAttribSetInt(ih, "_IUPDLG_X", x);
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
-  dialog = (GtkColorSelectionDialog*)gtk_color_selection_dialog_new(iupgtkStrConvertToUTF8(iupAttribGetStr(ih, "TITLE")));
+  dialog = (GtkColorSelectionDialog*)gtk_color_selection_dialog_new(iupgtkStrConvertToUTF8(iupAttribGet(ih, "TITLE")));
   if (!dialog)
     return IUP_ERROR;
 
   if (parent)
     gtk_window_set_transient_for((GtkWindow*)dialog, (GtkWindow*)parent);
 
-  ret = iupStrToRGBA(iupAttribGetStr(ih, "VALUE"), &r, &g, &b, &a);
+  ret = iupStrToRGBA(iupAttribGet(ih, "VALUE"), &r, &g, &b, &a);
 
   colorsel = (GtkColorSelection*)dialog->colorsel;
   iupgdkColorSet(&color, r, g, b);

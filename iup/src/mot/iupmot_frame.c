@@ -43,8 +43,7 @@ static int motFrameSetBgColorAttrib(Ihandle* ih, const char* value)
   Pixel color;
 
   /* ignore given value, must use only from parent */
-  value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!value) value = IupGetGlobal("DLGBGCOLOR");
+  value = iupBaseNativeParentGetBgColor(ih);
 
   color = iupmotColorGetPixelStr(value);
   if (color != (Pixel)-1)
@@ -70,7 +69,7 @@ static int motFrameSetBackgroundAttrib(Ihandle* ih, const char* value)
   Pixel color;
 
   /* ignore given value, must use only from parent */
-  value = iupAttribGetStrNativeParent(ih, "BACKGROUND");
+  value = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
 
   color = iupmotColorGetPixelStr(value);
   if (color != (Pixel)-1)
@@ -164,7 +163,7 @@ static int motFrameMapMethod(Ihandle* ih)
   if (!ih->parent)
     return IUP_ERROR;
 
-  title = iupAttribGetStr(ih, "TITLE");
+  title = iupAttribGet(ih, "TITLE");
 
   if (title)
     iupAttribSetStr(ih, "_IUPFRAME_HAS_TITLE", "1");
@@ -246,13 +245,13 @@ void iupdrvFrameInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, motFrameSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, motFrameSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motFrameSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motFrameSetBackgroundAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motFrameSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motFrameSetBackgroundAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motFrameSetFgColorAttrib, "0 0 0", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, motFrameSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motFrameSetFgColorAttrib, "0 0 0", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, motFrameSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }

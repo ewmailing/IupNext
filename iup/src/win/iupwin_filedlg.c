@@ -53,7 +53,7 @@ static INT CALLBACK winFileDlgBrowseCallback(HWND hWnd, UINT uMsg, LPARAM lParam
     ih->handle = hWnd;
     iupDialogUpdatePosition(ih);
     ih->handle = NULL;  /* reset handle */
-    value = iupStrDup(iupAttribGetStr(ih, "DIRECTORY"));
+    value = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
     if (value)
     {
       winFileDlgStrReplacePathSlash(value);
@@ -86,7 +86,7 @@ static void winFileDlgGetFolder(Ihandle *ih)
     parent = GetActiveWindow();
 
   ZeroMemory(&browseinfo, sizeof(BROWSEINFO));
-  browseinfo.lpszTitle = iupAttribGetStr(ih, "TITLE");
+  browseinfo.lpszTitle = iupAttribGet(ih, "TITLE");
   browseinfo.pszDisplayName = buffer; 
   browseinfo.lpfn = winFileDlgBrowseCallback;
   browseinfo.lParam = (LPARAM)ih;
@@ -385,7 +385,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   iupAttribSetInt(ih, "_IUPDLG_X", x);
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
-  value = iupAttribGetStrDefault(ih, "DIALOGTYPE");
+  value = iupAttribGetStr(ih, "DIALOGTYPE");
   if (iupStrEqualNoCase(value, "SAVE"))
     dialogtype = IUP_DIALOGSAVE;
   else if (iupStrEqualNoCase(value, "DIR"))
@@ -406,13 +406,13 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   openfilename.lStructSize = sizeof(OPENFILENAME);
   openfilename.hwndOwner = parent;
 
-  value = iupAttribGetStr(ih, "EXTFILTER");
+  value = iupAttribGet(ih, "EXTFILTER");
   if (value)
   {
     int index;
     openfilename.lpstrFilter = winFileDlgStrReplaceSeparator(value);
 
-    value = iupAttribGetStr(ih, "FILTERUSED");
+    value = iupAttribGet(ih, "FILTERUSED");
     if (iupStrToInt(value, &index))
       openfilename.nFilterIndex = index;
     else
@@ -420,11 +420,11 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   }
   else 
   {
-    value = iupAttribGetStr(ih, "FILTER");
+    value = iupAttribGet(ih, "FILTER");
     if (value)
     {
       int sz1, sz2;
-      char* info = iupAttribGetStr(ih, "FILTERINFO");
+      char* info = iupAttribGet(ih, "FILTERINFO");
       if (!info)
         info = value;
 
@@ -441,7 +441,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   }
 
   openfilename.lpstrFile = (char*)malloc(MAX_FILENAME_SIZE+1);
-  value = iupAttribGetStr(ih, "FILE");
+  value = iupAttribGet(ih, "FILE");
   if (value)
   {
     strncpy(openfilename.lpstrFile, value, MAX_FILENAME_SIZE);
@@ -452,11 +452,11 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 
   openfilename.nMaxFile = MAX_FILENAME_SIZE;
 
-  openfilename.lpstrInitialDir = iupStrDup(iupAttribGetStr(ih, "DIRECTORY"));
+  openfilename.lpstrInitialDir = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
   if (openfilename.lpstrInitialDir)
     winFileDlgStrReplacePathSlash((char*)openfilename.lpstrInitialDir);
 
-  openfilename.lpstrTitle = iupAttribGetStr(ih, "TITLE");
+  openfilename.lpstrTitle = iupAttribGet(ih, "TITLE");
   openfilename.Flags = OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
 
   if (!iupAttribGetInt(ih, "NOOVERWRITEPROMPT"))
@@ -465,7 +465,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   if (iupAttribGetInt(ih, "SHOWHIDDEN"))
     openfilename.Flags |= OFN_FORCESHOWHIDDEN;
 
-  value = iupAttribGetStr(ih, "ALLOWNEW");
+  value = iupAttribGet(ih, "ALLOWNEW");
   if (!value)
   {
     if (dialogtype == IUP_DIALOGSAVE)
@@ -478,7 +478,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   else
     openfilename.Flags |= OFN_FILEMUSTEXIST;
 
-  if (iupAttribGetIntDefault(ih, "NOCHANGEDIR"))
+  if (iupAttribGetInt(ih, "NOCHANGEDIR"))
     openfilename.Flags |= OFN_NOCHANGEDIR;
 
   if (iupAttribGetInt(ih, "MULTIPLEFILES"))

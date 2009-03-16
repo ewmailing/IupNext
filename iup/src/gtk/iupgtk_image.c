@@ -142,11 +142,11 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
   int hx, hy, bpp;
 
   hx=0; hy=0;
-  iupStrToIntInt(iupAttribGetStr(ih, "HOTSPOT"), &hx, &hy, ':');
+  iupStrToIntInt(iupAttribGet(ih, "HOTSPOT"), &hx, &hy, ':');
 
   bpp = iupAttribGetInt(ih, "BPP");
 
-  if (bpp == 8 && !iupAttribGetStr(ih, "3"))
+  if (bpp == 8 && !iupAttribGet(ih, "3"))
   {
     GdkPixmap *source, *mask;
     GdkColor fg, bg;
@@ -157,11 +157,11 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
     unsigned char* imgdata = (unsigned char*)ih->handle;
 
     r = 255; g = 255; b = 255;
-    iupStrToRGB(iupAttribGetStr(ih, "1"), &r, &g, &b );
+    iupStrToRGB(iupAttribGet(ih, "1"), &r, &g, &b );
     iupgdkColorSet(&fg, r, g, b);
 
     r = 0; g = 0; b = 0;
-    iupStrToRGB(iupAttribGetStr(ih, "2"), &r, &g, &b );
+    iupStrToRGB(iupAttribGet(ih, "2"), &r, &g, &b );
     iupgdkColorSet(&bg, r, g, b);
 
     sbits = (char*)malloc(2*size_bytes);

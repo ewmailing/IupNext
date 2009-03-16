@@ -7,48 +7,16 @@
 #ifndef __IUPMAT_CD_H 
 #define __IUPMAT_CD_H
 
-#include <cd.h>
-#include <cdiup.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define INVY(y) (ih->data->YmaxC - (y))
-
-#define IsCanvasSet(ih,err)  do {                         \
-                               if(ih->data->cddbuffer)    \
-                                 err = CD_OK;             \
-                               else                       \
-                                 err = CD_ERROR;          \
-                             } while(0)
-
-#define CdLine(x1,y1,x2,y2)  cdCanvasLine(ih->data->cddbuffer,x1,INVY(y1),x2,INVY(y2))
-
-#define CdVertex(x,y)        cdCanvasVertex(ih->data->cddbuffer,x,INVY(y))
-
-#define CdBox(xmin,xmax,ymin,ymax)                               \
-  cdCanvasBox(ih->data->cddbuffer,xmin < xmax ? xmin : xmax,     \
-              xmin < xmax ? xmax : xmin,                         \
-              INVY(ymin) < INVY(ymax) ? INVY(ymin) : INVY(ymax), \
-              INVY(ymin) < INVY(ymax) ? INVY(ymax) : INVY(ymin))
-
-#define CdRect(xmin,xmax,ymin,ymax)                              \
-  cdCanvasRect(ih->data->cddbuffer,xmin < xmax ? xmin : xmax,    \
-              xmin < xmax ? xmax : xmin,                         \
-              INVY(ymin) < INVY(ymax) ? INVY(ymin) : INVY(ymax), \
-              INVY(ymin) < INVY(ymax) ? INVY(ymax) : INVY(ymin))
-
-#define CdClipArea(x1,x2,y1,y2)  cdCanvasClipArea(ih->data->cddbuffer,x1,x2,INVY(y2),INVY(y1));
-
-#define CdPutText(x,y,s,m)       do {                                              \
-                                   cdCanvasTextAlignment(ih->data->cddbuffer,m);   \
-                                   cdCanvasText(ih->data->cddbuffer,x,INVY(y),s);  \
-                                  } while(0)
-
-#define CdRestoreBgColor()        cdCanvasForeground(ih->data->cddbuffer,oldbgc);
-
-void iupMatrixCDSetCdFrameColor(Ihandle *h);
+#define IUPMAT_LINE(_ih,_x1,_y1,_x2,_y2)   cdCanvasLine((_ih)->data->cddbuffer, (_x1), iupMatrixInvertYAxis(_ih, _y1), (_x2), iupMatrixInvertYAxis(_ih, _y2))
+#define IUPMAT_VERTEX(_ih,_x,_y)           cdCanvasVertex((_ih)->data->cddbuffer, (_x), iupMatrixInvertYAxis(_ih, _y))
+#define IUPMAT_BOX(_ih,_xmin,_xmax,_ymin,_ymax)      cdCanvasBox((_ih)->data->cddbuffer, (_xmin), (_xmax), iupMatrixInvertYAxis(_ih, _ymin), iupMatrixInvertYAxis(_ih, _ymax))
+#define IUPMAT_RECT(_ih,_xmin,_xmax,_ymin,_ymax)     cdCanvasRect((_ih)->data->cddbuffer, (_xmin), (_xmax), iupMatrixInvertYAxis(_ih, _ymin), iupMatrixInvertYAxis(_ih, _ymax))
+#define IUPMAT_CLIPAREA(_ih,_xmin,_xmax,_ymin,_ymax) cdCanvasClipArea((_ih)->data->cddbuffer, (_xmin), (_xmax), iupMatrixInvertYAxis(_ih, _ymin), iupMatrixInvertYAxis(_ih, _ymax))
+#define IUPMAT_TEXT(_ih,_x,_y,_text,_align) {cdCanvasTextAlignment((_ih)->data->cddbuffer, (_align)); cdCanvasText((_ih)->data->cddbuffer, (_x), iupMatrixInvertYAxis(_ih, _y), (_text));}
 
 #ifdef __cplusplus
 }

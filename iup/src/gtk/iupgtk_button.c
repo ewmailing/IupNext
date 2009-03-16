@@ -211,7 +211,7 @@ static int gtkButtonSetImageAttrib(Ihandle* ih, const char* value)
       gtkButtonSetPixbuf(ih, value, 0, "IMAGE");
     else
     {
-      if (!iupAttribGetStr(ih, "IMINACTIVE"))
+      if (!iupAttribGet(ih, "IMINACTIVE"))
       {
         /* if not active and IMINACTIVE is not defined 
            then automaticaly create one based on IMAGE */
@@ -235,7 +235,7 @@ static int gtkButtonSetImInactiveAttrib(Ihandle* ih, const char* value)
       else
       {
         /* if not defined then automaticaly create one based on IMAGE */
-        char* name = iupAttribGetStr(ih, "IMAGE");
+        char* name = iupAttribGet(ih, "IMAGE");
         gtkButtonSetPixbuf(ih, name, 1, "IMINACTIVE"); /* make_inactive */
       }
     }
@@ -252,20 +252,20 @@ static int gtkButtonSetActiveAttrib(Ihandle* ih, const char* value)
   {
     if (!iupStrBoolean(value))
     {
-      char* name = iupAttribGetStr(ih, "IMINACTIVE");
+      char* name = iupAttribGet(ih, "IMINACTIVE");
       if (name)
         gtkButtonSetPixbuf(ih, name, 0, "IMINACTIVE");
       else
       {
         /* if not defined then automaticaly create one based on IMAGE */
-        name = iupAttribGetStr(ih, "IMAGE");
+        name = iupAttribGet(ih, "IMAGE");
         gtkButtonSetPixbuf(ih, name, 1, "IMINACTIVE"); /* make_inactive */
       }
     }
     else
     {
       /* must restore the normal image */
-      char* name = iupAttribGetStr(ih, "IMAGE");
+      char* name = iupAttribGet(ih, "IMAGE");
       gtkButtonSetPixbuf(ih, name, 0, "IMAGE");
     }
   }
@@ -299,14 +299,14 @@ static gboolean gtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *
 {
   if (ih->data->type != IUP_BUTTON_TEXT)   /* image or both */
   {
-    char* name = iupAttribGetStr(ih, "IMPRESS");
+    char* name = iupAttribGet(ih, "IMPRESS");
     if (name)
     {
       if (evt->type == GDK_BUTTON_PRESS)
         gtkButtonSetPixbuf(ih, name, 0, "IMPRESS");
       else
       {
-        name = iupAttribGetStr(ih, "IMAGE");
+        name = iupAttribGet(ih, "IMAGE");
         gtkButtonSetPixbuf(ih, name, 0, "IMAGE");
       }
     }
@@ -335,13 +335,13 @@ static int gtkButtonMapMethod(Ihandle* ih)
   if (!ih->handle)
     return IUP_ERROR;
 
-  value = iupAttribGetStr(ih, "IMAGE");
+  value = iupAttribGet(ih, "IMAGE");
   if (value)
   {
     gtk_button_set_image((GtkButton*)ih->handle, gtk_image_new());
     ih->data->type = IUP_BUTTON_IMAGE;
 
-    value = iupAttribGetStr(ih, "TITLE");
+    value = iupAttribGet(ih, "TITLE");
     if (value)
     {
       GtkSettings* settings = gtk_widget_get_settings(ih->handle);
@@ -357,7 +357,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
   }
   else
   {
-    char* title = iupAttribGetStr(ih, "TITLE");
+    char* title = iupAttribGet(ih, "TITLE");
     if (!title) title="";
     gtk_button_set_label((GtkButton*)ih->handle, title);
     ih->data->type = IUP_BUTTON_TEXT;
@@ -366,12 +366,12 @@ static int gtkButtonMapMethod(Ihandle* ih)
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
 
-  if (!iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+  if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
-  value = iupAttribGetStr(ih, "IMPRESS");
+  value = iupAttribGet(ih, "IMPRESS");
   impress = (ih->data->type & IUP_BUTTON_IMAGE && value)? 1: 0;
-  if (!impress && iupStrBoolean(iupAttribGetStrInherit(ih, "FLAT")))
+  if (!impress && iupStrBoolean(iupAttribGetStr(ih, "FLAT")))
   {
     gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NONE);
 
@@ -401,7 +401,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
   gtk_widget_realize(ih->handle);
 
   /* ensure the default values, that are different from the native ones */
-  gtkButtonSetAlignmentAttrib(ih, iupAttribGetStrDefault(ih, "ALIGNMENT"));
+  gtkButtonSetAlignmentAttrib(ih, iupAttribGetStr(ih, "ALIGNMENT"));
 
   return IUP_NOERROR;
 }
@@ -414,25 +414,25 @@ void iupdrvButtonInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkButtonSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkButtonSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkButtonSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkButtonSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkButtonSetFgColorAttrib, "DLGFGCOLOR", IUP_MAPPED, IUP_INHERIT);  /* black */
-  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkButtonSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkButtonSetFgColorAttrib, "DLGFGCOLOR", NULL, IUPAF_DEFAULT);  /* black */
+  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkButtonSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupButton only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkButtonSetAlignmentAttrib, "ACENTER:ACENTER", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkButtonSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkButtonSetImInactiveAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMPRESS", NULL, NULL, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FOCUSONCLICK", NULL, gtkButtonSetFocusOnClickAttrib, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkButtonSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkButtonSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkButtonSetImInactiveAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMPRESS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOCUSONCLICK", NULL, gtkButtonSetFocusOnClickAttrib, "YES", NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "PADDING", iupButtonGetPaddingAttrib, gtkButtonSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupButtonGetPaddingAttrib, gtkButtonSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);
 }

@@ -11,12 +11,10 @@
 extern "C" {
 #endif
 
-int  iupMatrixKeyKeyPressCB(Ihandle* ih, int c, int press);
-int  iupMatrixKey(Ihandle* ih, int c);
+int  iupMatrixKeyPress_CB(Ihandle* ih, int c, int press);
+int  iupMatrixProcessKeyPress(Ihandle* ih, int c);
 
-void iupMatrixKeyResetKeyCount  (void);
-int  iupMatrixKeyGetHomeKeyCount(void);
-int  iupMatrixKeyGetEndKeyCount (void);
+void iupMatrixKeyResetHomeEndCount(Ihandle* ih);
 
 #ifdef __cplusplus
 }

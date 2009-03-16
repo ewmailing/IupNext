@@ -5,6 +5,11 @@
 <title>IupGetFile</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -13,25 +18,22 @@
   system to select a filename. Uses the <a href="iupfiledlg.html">IupFileDlg</a> element.</p>
 <h3>Creation and Show</h3>
 <dl>
-  <dd>
   <pre>int IupGetFile(char *<strong>filename</strong>); [in C]
 iup.GetFile(<strong>filename</strong>: string) -&gt; (<strong>filename</strong>: string, <strong>status</strong>: number) [in Lua]</pre>
-  </dd>
 </dl>
 <p><strong>filename</strong>:
   This parameter is used as an input value to 
   define the default filter and directory. Example: &quot;../docs/*.txt&quot;. As an output value, it is used to contain the filename entered by the user.</p>
-<p><strong>status</strong>:
-  The function returns a code, whose values 
+<p><span class="style1">Returns:</span> a <strong>status</strong> code, whose values 
   can be:</p>
-<p>&nbsp;1:
-    The name defined by the user is that of a 
-    new file<br>
-    &nbsp;0:
-    The name defined by the user is that of an 
-    already existent file<br>
-    -1:
-    The operation was cancelled by the user</p>
+<blockquote>
+	<p>&quot;1&quot;:
+    New file.<br>
+	&quot;0&quot;:
+    Normal, existing file.<br>
+	&quot;-1&quot;:
+    Operation cancelled.</p>
+</blockquote>
 <h3>Notes</h3>
 <p>The <b>IupGetFile</b> function does not allocate memory space to store the complete filename entered by the 
   user. Therefore, the file parameter must be large enough to contain the directory and file names.</p>

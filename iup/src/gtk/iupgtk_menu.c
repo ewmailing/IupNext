@@ -153,12 +153,12 @@ static void gtkItemActivate(GtkWidget *widget, Ihandle* ih)
   {
     if (iupAttribGetInt(ih, "AUTOTOGGLE"))
     {
-      if (iupStrBoolean(iupAttribGetStr(ih, "VALUE")))
+      if (iupStrBoolean(iupAttribGet(ih, "VALUE")))
         iupAttribSetStr(ih, "VALUE", "OFF");
       else
         iupAttribSetStr(ih, "VALUE", "ON");
 
-      gtkItemUpdateImage(ih, iupAttribGetStr(ih, "VALUE"), iupAttribGetStr(ih, "IMAGE"), iupAttribGetStr(ih, "IMPRESS"));
+      gtkItemUpdateImage(ih, iupAttribGet(ih, "VALUE"), iupAttribGet(ih, "IMAGE"), iupAttribGet(ih, "IMPRESS"));
     }
   }
 
@@ -251,7 +251,7 @@ void iupdrvMenuInitClass(Iclass* ic)
   ic->Map = gtkMenuMapMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;
 
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, NULL, NULL, IUPAF_DEFAULT);
 }
 
 
@@ -272,7 +272,7 @@ static int gtkItemSetImageAttrib(Ihandle* ih, const char* value)
 {
   if (GTK_IS_IMAGE_MENU_ITEM(ih->handle))
   {
-    gtkItemUpdateImage(ih, iupAttribGetStr(ih, "VALUE"), value, iupAttribGetStr(ih, "IMPRESS"));
+    gtkItemUpdateImage(ih, iupAttribGet(ih, "VALUE"), value, iupAttribGet(ih, "IMPRESS"));
     return 1;
   }
   else
@@ -283,7 +283,7 @@ static int gtkItemSetImpressAttrib(Ihandle* ih, const char* value)
 {
   if (GTK_IS_IMAGE_MENU_ITEM(ih->handle))
   {
-    gtkItemUpdateImage(ih, iupAttribGetStr(ih, "VALUE"), iupAttribGetStr(ih, "IMAGE"), value);
+    gtkItemUpdateImage(ih, iupAttribGet(ih, "VALUE"), iupAttribGet(ih, "IMAGE"), value);
     return 1;
   }
   else
@@ -301,7 +301,7 @@ static int gtkItemSetTitleAttrib(Ihandle* ih, const char* value)
     value = str;
   }
   else
-    str = iupMenuGetTitle(ih, value);
+    str = iupMenuProcessTitle(ih, value);
 
   label = gtk_bin_get_child((GtkBin*)ih->handle);
 
@@ -325,7 +325,7 @@ static int gtkItemSetValueAttrib(Ihandle* ih, const char* value)
   }
   else if (GTK_IS_IMAGE_MENU_ITEM(ih->handle))
   {
-    gtkItemUpdateImage(ih, value, iupAttribGetStr(ih, "IMAGE"), iupAttribGetStr(ih, "IMPRESS"));
+    gtkItemUpdateImage(ih, value, iupAttribGet(ih, "IMAGE"), iupAttribGet(ih, "IMPRESS"));
     return 1;
   }
   else
@@ -358,11 +358,11 @@ static int gtkItemMapMethod(Ihandle* ih)
   else
 #endif
   {
-    if (iupAttribGetStr(ih, "IMAGE")||iupAttribGetStr(ih, "TITLEIMAGE"))
+    if (iupAttribGet(ih, "IMAGE")||iupAttribGet(ih, "TITLEIMAGE"))
       ih->handle = gtk_image_menu_item_new_with_label("");
     else if (iupAttribGetInt(ih->parent, "RADIO"))
     {
-      GtkRadioMenuItem* last_tg = (GtkRadioMenuItem*)iupAttribGetStr(ih->parent, "_IUPGTK_LASTRADIOITEM");
+      GtkRadioMenuItem* last_tg = (GtkRadioMenuItem*)iupAttribGet(ih->parent, "_IUPGTK_LASTRADIOITEM");
       if (last_tg)
         ih->handle = gtk_radio_menu_item_new_with_label_from_widget(last_tg, "");
       else
@@ -373,7 +373,7 @@ static int gtkItemMapMethod(Ihandle* ih)
     {
 #if GTK_CHECK_VERSION(2, 14, 0)
       char* hidemark = iupAttribGetStr(ih, "HIDEMARK");
-      if (!hidemark && !iupAttribGetStr(ih, "VALUE")) hidemark = "YES";
+      if (!hidemark && !iupAttribGet(ih, "VALUE")) hidemark = "YES";
       if (iupStrBoolean(hidemark))
         ih->handle = gtk_menu_item_new_with_label("");
       else
@@ -411,17 +411,17 @@ void iupdrvItemInitClass(Iclass* ic)
   ic->UnMap = iupdrvBaseUnMapMethod;
 
   /* Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);  /* use inheritance to retrieve standard fonts */
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);  /* use inheritance to retrieve standard fonts */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
 
   /* IupItem only */
-  iupClassRegisterAttribute(ic, "VALUE", gtkItemGetValueAttrib, gtkItemSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkItemSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLEIMAGE", NULL, gtkItemSetTitleImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkItemSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMPRESS", NULL, gtkItemSetImpressAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", gtkItemGetValueAttrib, gtkItemSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkItemSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEIMAGE", NULL, gtkItemSetTitleImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkItemSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMPRESS", NULL, gtkItemSetImpressAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
 
 
@@ -476,14 +476,14 @@ void iupdrvSubmenuInitClass(Iclass* ic)
   ic->UnMap = iupdrvBaseUnMapMethod;
 
   /* Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);  /* use inheritance to retrieve standard fonts */
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);  /* use inheritance to retrieve standard fonts */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
 
   /* IupSubmenu only */
-  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkItemSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkSubmenuSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkItemSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkSubmenuSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
 
 

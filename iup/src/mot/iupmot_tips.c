@@ -48,7 +48,7 @@ static void motTipsShow(void)
   XQueryPointer(iupmot_display, RootWindow(iupmot_display, iupmot_screen),
                 &root, &child, &x, &y, &cx, &cy, &keys);
 
-  value = iupAttribGetStr(mot_tips.ih, "TIPRECT");
+  value = iupAttribGet(mot_tips.ih, "TIPRECT");
   if (value)
   {
     int x1, x2, y1, y2, wx = x, wy = y;
@@ -83,7 +83,7 @@ static void motTipsHide(void)
 
 static int motTipsSet(Ihandle *ih)
 {
-  char* tipText = iupAttribGetStr(ih, "TIP");
+  char* tipText = iupAttribGet(ih, "TIP");
   if (!tipText)
     return FALSE;
 

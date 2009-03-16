@@ -67,6 +67,7 @@ void      IupExitLoop      (void);
 
 void      IupUpdate        (Ihandle* ih);
 void      IupUpdateChildren(Ihandle* ih);
+void      IupRedraw        (Ihandle* ih, int children);
 void      IupRefresh       (Ihandle* ih);
 
 char*     IupMapFont       (const char *iupfont);
@@ -141,12 +142,13 @@ Ihandle*  IupGetAttributeHandle(Ihandle* ih, const char* name);
 
 char*     IupGetClassName(Ihandle* ih);
 char*     IupGetClassType(Ihandle* ih);
-int       IupGetClassAttributes(Ihandle* ih, char *names[], int n);
+int       IupGetClassAttributes(const char* classname, char *names[], int n);
 void      IupSaveClassAttributes(Ihandle* ih);
+void      IupSetClassDefaultAttribute(const char* classname, const char *name, const char* value);
 
-Ihandle*  IupCreate (const char *name);
-Ihandle*  IupCreatev(const char *name, void* *params);
-Ihandle*  IupCreatep(const char *name, void *first, ...);
+Ihandle*  IupCreate (const char *classname);
+Ihandle*  IupCreatev(const char *classname, void* *params);
+Ihandle*  IupCreatep(const char *classname, void *first, ...);
 
 Ihandle*  IupFill       (void);
 Ihandle*  IupRadio      (Ihandle* child);

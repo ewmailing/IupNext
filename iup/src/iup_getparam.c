@@ -26,10 +26,10 @@
 
 static int iParamButtonOK_CB(Ihandle* self)
 {
-  Ihandle* dialog = IupGetDialog(self);
-  Iparamcb cb = (Iparamcb)IupGetCallback(dialog, "PARAM_CB");
-  IupSetAttribute(dialog, "STATUS", "1");
-  if (cb && !cb(dialog, -1, IupGetAttribute(dialog, "USER_DATA")))
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
+  iupAttribSetStr(dlg, "STATUS", "1");
+  if (cb && !cb(dlg, -1, (void*)iupAttribGet(dlg, "USER_DATA")))
     return IUP_DEFAULT;
   else
     return IUP_CLOSE;
@@ -37,36 +37,36 @@ static int iParamButtonOK_CB(Ihandle* self)
 
 static int iParamButtonCancel_CB(Ihandle* self)
 {
-  Ihandle* dialog = IupGetDialog(self);
-  Iparamcb cb = (Iparamcb)IupGetCallback(dialog, "PARAM_CB");
-  IupSetAttribute(dialog, "STATUS", "0");
-  if (cb) cb(dialog, -3, IupGetAttribute(dialog, "USER_DATA"));
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
+  iupAttribSetStr(dlg, "STATUS", "0");
+  if (cb) cb(dlg, -3, (void*)iupAttribGet(dlg, "USER_DATA"));
   return IUP_CLOSE;
 }
 
 static int iParamToggleAction_CB(Ihandle *self, int v)
 {
-  Ihandle* param = (Ihandle*)IupGetAttribute(self, "_PARAM");
-  Ihandle* dialog = IupGetDialog(self);
-  Iparamcb cb = (Iparamcb)IupGetCallback(dialog, "PARAM_CB");
+  Ihandle* param = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
   int old_v = iupAttribGetInt(param, "VALUE");
 
   if (v == 1)
-    IupSetAttribute(param, "VALUE", "1");
+    iupAttribSetStr(param, "VALUE", "1");
   else
-    IupSetAttribute(param, "VALUE", "0");
+    iupAttribSetStr(param, "VALUE", "0");
 
-  if (cb && !cb(dialog, iupAttribGetInt(param, "INDEX"), IupGetAttribute(dialog, "USER_DATA"))) 
+  if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
   {
     /* Undo */
     if (old_v == 1)
     {
-      IupSetAttribute(param, "VALUE", "1");
+      iupAttribSetStr(param, "VALUE", "1");
       IupSetAttribute(self, "VALUE", "1");
     }
     else
     {
-      IupSetAttribute(param, "VALUE", "0");
+      iupAttribSetStr(param, "VALUE", "0");
       IupSetAttribute(self, "VALUE", "0");
     }
 
@@ -76,24 +76,24 @@ static int iParamToggleAction_CB(Ihandle *self, int v)
 
   /* update the interface */
   if (v == 1)
-    IupStoreAttribute(self, "TITLE", iupAttribGetStr(param, "_TRUE"));
+    IupStoreAttribute(self, "TITLE", iupAttribGet(param, "_IUPGP_TRUE"));
   else
-    IupStoreAttribute(self, "TITLE", iupAttribGetStr(param, "_FALSE"));
+    IupStoreAttribute(self, "TITLE", iupAttribGet(param, "_IUPGP_FALSE"));
 
   return IUP_DEFAULT;
 }
 
 static int iParamTextAction_CB(Ihandle *self, int c, char *after)
 {
-  Ihandle* param = (Ihandle*)IupGetAttribute(self, "_PARAM");
-  Ihandle* dialog = IupGetDialog(self);
-  Iparamcb cb = (Iparamcb)IupGetCallback(dialog, "PARAM_CB");
-  Ihandle* aux = (Ihandle*)iupAttribGetStr(param, "AUXCONTROL");
+  Ihandle* param = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
+  Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
   (void)c;
  
   iupAttribStoreStr(param, "VALUE", after);
 
-  if (cb && !cb(dialog, iupAttribGetInt(param, "INDEX"), IupGetAttribute(dialog, "USER_DATA"))) 
+  if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
   {
     /* Undo */
     iupAttribStoreStr(param, "VALUE", IupGetAttribute(self, "VALUE"));
@@ -102,7 +102,7 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
 
   if (aux)
   {
-    if (iupStrEqual(iupAttribGetStr(param, "TYPE"), "COLOR"))
+    if (iupStrEqual(iupAttribGet(param, "TYPE"), "COLOR"))
       IupStoreAttribute(aux, "BGCOLOR", after);
     else
       IupStoreAttribute(aux, "VALUE", after);
@@ -111,7 +111,7 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
   if (IupGetInt(self, "SPIN") && !IupGetInt(self, "SPINAUTO"))
   {
     float min = iupAttribGetFloat(param, "MIN");
-    float step = iupAttribGetFloat(self, "_INCSTEP");
+    float step = iupAttribGetFloat(self, "_IUPGP_INCSTEP");
     float val;
     if (iupStrToFloat(after, &val))
       IupSetfAttribute(self, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
@@ -122,13 +122,13 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
 
 static int iParamValAction_CB(Ihandle *self, double val)
 {
-  Ihandle* param = (Ihandle*)IupGetAttribute(self, "_PARAM");
-  Ihandle* text = (Ihandle*)IupGetAttribute(self, "_TEXT");
-  Ihandle* dialog = IupGetDialog(self);
-  Iparamcb cb = (Iparamcb)IupGetCallback(dialog, "PARAM_CB");
+  Ihandle* param = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+  Ihandle* text = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_TEXT");
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
   float old_value = iupAttribGetFloat(param, "VALUE");
 
-  char* type = iupAttribGetStr(param, "TYPE");
+  char* type = iupAttribGet(param, "TYPE");
   if (iupStrEqual(type, "INTEGER"))
   {
     iupAttribSetStrf(param, "VALUE", "%d", (int)val);
@@ -142,10 +142,10 @@ static int iParamValAction_CB(Ihandle *self, double val)
       if (val == 0)
       {
         old_angle = iupAttribGetFloat(param, "VALUE");
-        iupAttribSetStrf(param, "_OLD_ANGLE", "%g", old_angle);
+        iupAttribSetStrf(param, "_IUPGP_OLD_ANGLE", "%g", old_angle);
       }
       else
-        old_angle = iupAttribGetFloat(param, "_OLD_ANGLE");
+        old_angle = iupAttribGetFloat(param, "_IUPGP_OLD_ANGLE");
 
       val = old_angle + val*RAD2DEG;
 
@@ -169,7 +169,7 @@ static int iParamValAction_CB(Ihandle *self, double val)
     iupAttribSetStrf(param, "VALUE", "%g", val);
   }
 
-  if (cb && !cb(dialog, iupAttribGetInt(param, "INDEX"), IupGetAttribute(dialog, "USER_DATA"))) 
+  if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
   {
     /* Undo */
     iupAttribSetStrf(param, "VALUE", "%g", old_value);
@@ -181,7 +181,7 @@ static int iParamValAction_CB(Ihandle *self, double val)
     return IUP_DEFAULT;
   }
 
-  type = iupAttribGetStr(param, "TYPE");
+  type = iupAttribGet(param, "TYPE");
   if (iupStrEqual(type, "INTEGER"))
     IupSetfAttribute(text, "VALUE", "%d", (int)val);
   else
@@ -190,26 +190,27 @@ static int iParamValAction_CB(Ihandle *self, double val)
   if (IupGetInt(text, "SPIN") && !IupGetInt(text, "SPINAUTO"))
   {
     float min = iupAttribGetFloat(param, "MIN");
-    float step = iupAttribGetFloat(text, "_INCSTEP");
+    float step = iupAttribGetFloat(text, "_IUPGP_INCSTEP");
     float val = IupGetFloat(text, "VALUE");
     IupSetfAttribute(text, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
   }
 
   return IUP_DEFAULT;
 }
+
 static int iParamListAction_CB(Ihandle *self, char *t, int i, int v)
 {
   (void)t;
   if (v == 1)
   {
-    Ihandle* param = (Ihandle*)IupGetAttribute(self, "_PARAM");
-    Ihandle* dialog = IupGetDialog(self);
-    Iparamcb cb = (Iparamcb)IupGetCallback(dialog, "PARAM_CB");
+    Ihandle* param = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+    Ihandle* dlg = IupGetDialog(self);
+    Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
     int old_i = iupAttribGetInt(param, "VALUE");
 
     iupAttribSetStrf(param, "VALUE", "%d", i-1);
 
-    if (cb && !cb(dialog, iupAttribGetInt(param, "INDEX"), IupGetAttribute(dialog, "USER_DATA"))) 
+    if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
     {
       /* Undo */
       iupAttribSetStrf(param, "VALUE", "%d", old_i);
@@ -222,29 +223,30 @@ static int iParamListAction_CB(Ihandle *self, char *t, int i, int v)
 
   return IUP_DEFAULT;
 }
+
 static int iParamFileButton_CB(Ihandle *self)
 {
-  Ihandle* param   = (Ihandle*)IupGetAttribute(self, "_PARAM");
-  Ihandle* textbox = (Ihandle*)IupGetAttribute(self, "_TEXT");
+  Ihandle* param   = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+  Ihandle* textbox = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_TEXT");
 
   Ihandle* dlg = IupFileDlg();
 
   IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(self));
-  IupSetAttribute(dlg, "TITLE", iupAttribGetStr(param, "TITLE"));
-  IupSetAttribute(dlg, "VALUE", iupAttribGetStr(param, "VALUE"));
+  IupSetAttribute(dlg, "TITLE", iupAttribGet(param, "TITLE"));
+  IupSetAttribute(dlg, "VALUE", iupAttribGet(param, "VALUE"));
 
-  IupSetAttribute(dlg, "DIALOGTYPE", iupAttribGetStr(param, "_DIALOGTYPE"));
-  IupSetAttribute(dlg, "FILTER", iupAttribGetStr(param, "_FILTER"));
-  IupSetAttribute(dlg, "DIRECTORY", iupAttribGetStr(param, "_DIRECTORY"));
-  IupSetAttribute(dlg, "NOCHANGEDIR", iupAttribGetStr(param, "_NOCHANGEDIR"));
-  IupSetAttribute(dlg, "NOOVERWRITEPROMPT", iupAttribGetStr(param, "_NOOVERWRITEPROMPT"));
+  IupSetAttribute(dlg, "DIALOGTYPE", iupAttribGet(param, "_IUPGP_DIALOGTYPE"));
+  IupSetAttribute(dlg, "FILTER", iupAttribGet(param, "_IUPGP_FILTER"));
+  IupSetAttribute(dlg, "DIRECTORY", iupAttribGet(param, "_IUPGP_DIRECTORY"));
+  IupSetAttribute(dlg, "NOCHANGEDIR", iupAttribGet(param, "_IUPGP_NOCHANGEDIR"));
+  IupSetAttribute(dlg, "NOOVERWRITEPROMPT", iupAttribGet(param, "_IUPGP_NOOVERWRITEPROMPT"));
 
   IupPopup(dlg, IUP_CENTER, IUP_CENTER);
 
   if (IupGetInt(dlg, "STATUS") != -1)
   {
-    IupSetAttribute(textbox, "VALUE", IupGetAttribute(dlg, "VALUE"));
-    iupAttribStoreStr(param, "VALUE", IupGetAttribute(dlg, "VALUE"));
+    IupSetAttribute(textbox, "VALUE", iupAttribGet(dlg, "VALUE"));
+    iupAttribStoreStr(param, "VALUE", iupAttribGet(dlg, "VALUE"));
   } 
 
   IupDestroy(dlg);
@@ -256,22 +258,22 @@ static int iParamColorButton_CB(Ihandle *self, int button, int pressed)
 {
   if (button==IUP_BUTTON1 && pressed)
   {
-    Ihandle* param   = (Ihandle*)IupGetAttribute(self, "_PARAM");
-    Ihandle* textbox = (Ihandle*)IupGetAttribute(self, "_TEXT");
+    Ihandle* param   = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+    Ihandle* textbox = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_TEXT");
 
     Ihandle* dlg = IupColorDlg();
 
     IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(self));
-    IupSetAttribute(dlg, "TITLE", iupAttribGetStr(param, "TITLE"));
-    IupSetAttribute(dlg, "VALUE", iupAttribGetStr(param, "VALUE"));
+    IupSetAttribute(dlg, "TITLE", iupAttribGet(param, "TITLE"));
+    IupSetAttribute(dlg, "VALUE", iupAttribGet(param, "VALUE"));
 
     IupPopup(dlg, IUP_CENTER, IUP_CENTER);
 
     if (IupGetInt(dlg, "STATUS") != -1)
     {
-      IupSetAttribute(textbox, "VALUE", IupGetAttribute(dlg, "VALUE"));
-      iupAttribStoreStr(param, "VALUE", IupGetAttribute(dlg, "VALUE"));
-      IupStoreAttribute(self, "BGCOLOR", IupGetAttribute(dlg, "VALUE"));
+      IupSetAttribute(textbox, "VALUE", iupAttribGet(dlg, "VALUE"));
+      iupAttribStoreStr(param, "VALUE", iupAttribGet(dlg, "VALUE"));
+      IupStoreAttribute(self, "BGCOLOR", iupAttribGet(dlg, "VALUE"));
     } 
 
     IupDestroy(dlg);
@@ -282,13 +284,13 @@ static int iParamColorButton_CB(Ihandle *self, int button, int pressed)
 
 static int iParamSpinReal_CB(Ihandle *self, int pos)
 {
-  Ihandle* param = (Ihandle*)IupGetAttribute(self, "_PARAM");
-  Ihandle* dialog = IupGetDialog(self);
-  Iparamcb cb = (Iparamcb)IupGetCallback(dialog, "PARAM_CB");
-  Ihandle* text = (Ihandle*)iupAttribGetStr(param, "CONTROL");
+  Ihandle* param = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
+  Ihandle* text = (Ihandle*)iupAttribGet(param, "CONTROL");
   float min = iupAttribGetFloat(param, "MIN");
   float max = iupAttribGetFloat(param, "MAX");
-  float val, step = iupAttribGetFloat(text, "_INCSTEP");
+  float val, step = iupAttribGetFloat(text, "_IUPGP_INCSTEP");
 
   val = (float)pos*step + min;
   if (val < min)
@@ -298,7 +300,7 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
 
   iupAttribSetStrf(param, "VALUE", "%g", (double)val);
 
-  if (cb && !cb(dialog, iupAttribGetInt(param, "INDEX"), IupGetAttribute(dialog, "USER_DATA"))) 
+  if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
   {
     return IUP_IGNORE;
   }
@@ -306,7 +308,7 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
   IupSetfAttribute(text, "VALUE", "%g", (double)val);
 
   {
-    Ihandle* aux = (Ihandle*)iupAttribGetStr(param, "AUXCONTROL");
+    Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
     if (aux)
       IupSetfAttribute(aux, "VALUE", "%g", (double)val);
   }
@@ -316,19 +318,19 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
 
 static int iParamSpinInt_CB(Ihandle *self, int pos)
 {
-  Ihandle* param = (Ihandle*)IupGetAttribute(self, "_PARAM");
-  Ihandle* dialog = IupGetDialog(self);
-  Iparamcb cb = (Iparamcb)IupGetCallback(dialog, "PARAM_CB");
+  Ihandle* param = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
 
   iupAttribSetInt(param, "VALUE", pos);
 
-  if (cb && !cb(dialog, iupAttribGetInt(param, "INDEX"), IupGetAttribute(dialog, "USER_DATA"))) 
+  if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
   {
     return IUP_IGNORE;
   }
 
   {
-    Ihandle* aux = (Ihandle*)iupAttribGetStr(param, "AUXCONTROL");
+    Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
     if (aux)
       IupSetfAttribute(aux, "VALUE", "%g", (double)pos);
   }
@@ -345,9 +347,9 @@ static Ihandle* iParamCreateBox(Ihandle* param)
   Ihandle *box, *ctrl = NULL, *label;
   char *type;
 
-  label = IupLabel(iupAttribGetStr(param, "TITLE"));
+  label = IupLabel(iupAttribGet(param, "TITLE"));
 
-  type = iupAttribGetStr(param, "TYPE");
+  type = iupAttribGet(param, "TYPE");
   if (iupStrEqual(type, "SEPARATOR"))
   {
     box = IupHbox(label, NULL);
@@ -372,18 +374,18 @@ static Ihandle* iParamCreateBox(Ihandle* param)
 
   IupSetAttribute(box,"MARGIN","0x0");
 
-  type = iupAttribGetStr(param, "TYPE");
+  type = iupAttribGet(param, "TYPE");
   if (iupStrEqual(type, "BOOLEAN"))
   {
     int value = iupAttribGetInt(param, "VALUE");
     if (value)
     {
-      ctrl = IupToggle(iupAttribGetStr(param, "_TRUE"), "paramdlgToggle");
+      ctrl = IupToggle(iupAttribGet(param, "_IUPGP_TRUE"), NULL);
       IupSetAttribute(ctrl, "VALUE", "ON");
     }
     else
     {
-      ctrl = IupToggle(iupAttribGetStr(param, "_FALSE"), "paramdlgToggle");
+      ctrl = IupToggle(iupAttribGet(param, "_IUPGP_FALSE"), NULL);
       IupSetAttribute(ctrl, "VALUE", "OFF");
     }
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamToggleAction_CB);
@@ -408,9 +410,9 @@ static Ihandle* iParamCreateBox(Ihandle* param)
     IupSetAttribute(ctrl, "DROPDOWN", "YES");
     IupSetfAttribute(ctrl, "VALUE", "%d", iupAttribGetInt(param, "VALUE")+1);
 
-    while (*iupAttribGetStr(param, str) != 0)
+    while (*iupAttribGet(param, str) != 0)
     {
-      IupStoreAttribute(ctrl, str, iupAttribGetStr(param, str));
+      IupStoreAttribute(ctrl, str, iupAttribGet(param, str));
       i++;
       sprintf(str, "%d", i);
     }
@@ -442,10 +444,10 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       IupAppend(box, ctrl);
     }
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
-    IupStoreAttribute(ctrl, "VALUE", iupAttribGetStr(param, "VALUE"));
+    IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
     {
-      char* mask = iupAttribGetStr(param, "MASK");
+      char* mask = iupAttribGet(param, "MASK");
       if (mask)
         IupStoreAttribute(ctrl, "MASK", mask);
     }
@@ -463,7 +465,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       IupAppend(box, ctrl);
 
       IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
-      IupStoreAttribute(ctrl, "VALUE", iupAttribGetStr(param, "VALUE"));
+      IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
       iupAttribSetStr(param, "DATA_TYPE", "0");
       iupAttribSetStr(param, "EXPAND", "1");
@@ -473,8 +475,8 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       IupSetAttribute(aux, "EXPAND", "NO");
 
       IupSetCallback(aux, "ACTION", (Icallback)iParamFileButton_CB);
-      iupAttribSetStr(aux, "_PARAM", (char*)param);
-      iupAttribSetStr(aux, "_TEXT", (char*)ctrl);
+      iupAttribSetStr(aux, "_IUPGP_PARAM", (char*)param);
+      iupAttribSetStr(aux, "_IUPGP_TEXT", (char*)ctrl);
       IupSetAttribute(aux, "EXPAND", "NO");
 
       IupAppend(box, aux); 
@@ -490,7 +492,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
 
       IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
       IupSetAttribute(ctrl, "MASK", "(/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)) (/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)) (/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)) (/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5))");
-      IupStoreAttribute(ctrl, "VALUE", iupAttribGetStr(param, "VALUE"));
+      IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
       iupAttribSetStr(param, "DATA_TYPE", "0");
       iupAttribSetStr(param, "EXPAND", "1");
@@ -499,12 +501,12 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       aux = IupCanvas(NULL);
       IupSetAttribute(aux, "SIZE", "20x10");
       IupSetAttribute(aux, "EXPAND", "NO");
-      IupStoreAttribute(aux, "BGCOLOR", iupAttribGetStr(param, "VALUE"));
+      IupStoreAttribute(aux, "BGCOLOR", iupAttribGet(param, "VALUE"));
 
       IupSetCallback(aux, "BUTTON_CB", (Icallback)iParamColorButton_CB);
       iupAttribSetStr(param, "AUXCONTROL", (char*)aux);
-      iupAttribSetStr(aux, "_PARAM", (char*)param);
-      iupAttribSetStr(aux, "_TEXT", (char*)ctrl);
+      iupAttribSetStr(aux, "_IUPGP_PARAM", (char*)param);
+      iupAttribSetStr(aux, "_IUPGP_TEXT", (char*)ctrl);
       IupSetAttribute(aux, "EXPAND", "NO");
 
       IupAppend(box, aux); 
@@ -513,9 +515,9 @@ static Ihandle* iParamCreateBox(Ihandle* param)
   {
     ctrl = IupText(NULL);
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
-    IupStoreAttribute(ctrl, "VALUE", iupAttribGetStr(param, "VALUE"));
+    IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
-    type = iupAttribGetStr(param, "TYPE");
+    type = iupAttribGet(param, "TYPE");
     if (iupStrEqual(type, "REAL"))
     {
       if (iupAttribGetInt(param, "INTERVAL"))
@@ -535,7 +537,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         IupSetfAttribute(ctrl, "SPINMAX", "%d", (int)((max-min)/step + 0.5));
         IupSetfAttribute(ctrl, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
 
-        iupAttribSetStrf(ctrl, "_INCSTEP", "%g", step);
+        iupAttribSetStrf(ctrl, "_IUPGP_INCSTEP", "%g", step);
       }
       else if (iupAttribGetInt(param, "PARTIAL"))
       {
@@ -569,7 +571,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         int step = iupAttribGetInt(param, "STEP");
         if (step)
         {
-          iupAttribSetStrf(ctrl, "_INCSTEP", "%d", step);
+          iupAttribSetStrf(ctrl, "_IUPGP_INCSTEP", "%d", step);
           IupSetfAttribute(ctrl, "SPININC", "%d", step);
         }
         IupSetfAttribute(ctrl, "SPINMAX", "%d", max);
@@ -613,13 +615,13 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       {
         char* step;
         aux = IupVal("HORIZONTAL");
-        IupStoreAttribute(aux, "MIN", iupAttribGetStr(param, "MIN"));
-        IupStoreAttribute(aux, "MAX", iupAttribGetStr(param, "MAX"));
-        IupStoreAttribute(aux, "VALUE", iupAttribGetStr(param, "VALUE"));
+        IupStoreAttribute(aux, "MIN", iupAttribGet(param, "MIN"));
+        IupStoreAttribute(aux, "MAX", iupAttribGet(param, "MAX"));
+        IupStoreAttribute(aux, "VALUE", iupAttribGet(param, "VALUE"));
         IupSetAttribute(aux, "EXPAND", "HORIZONTAL");
         iupAttribSetStr(param, "AUXCONTROL", (char*)aux);
         iupAttribSetStr(param, "EXPAND", "1");
-        step = iupAttribGetStr(param, "STEP");
+        step = iupAttribGet(param, "STEP");
         if (step)
           IupSetfAttribute(aux, "STEP", "%g", iupAttribGetFloat(param, "STEP")/(iupAttribGetFloat(param, "MAX")-iupAttribGetFloat(param, "MIN")));
         else if (iupStrEqual(type, "INTEGER"))
@@ -629,16 +631,16 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       if (aux)
       {
         IupSetCallback(aux, "CHANGEVALUE_CB", (Icallback)iParamValAction_CB);
-        iupAttribSetStr(aux, "_PARAM", (char*)param);
-        iupAttribSetStr(aux, "_TEXT", (char*)ctrl);
+        iupAttribSetStr(aux, "_IUPGP_PARAM", (char*)param);
+        iupAttribSetStr(aux, "_IUPGP_TEXT", (char*)ctrl);
 
         IupAppend(box, aux);
       }
     }
   }
 
-  if (ctrl) IupStoreAttribute(ctrl, "TIP", iupAttribGetStr(param, "TIP"));
-  iupAttribSetStr(box, "_PARAM", (char*)param);
+  if (ctrl) IupStoreAttribute(ctrl, "TIP", iupAttribGet(param, "TIP"));
+  iupAttribSetStr(box, "_IUPGP_PARAM", (char*)param);
   iupAttribSetStr(param, "CONTROL", (char*)ctrl);
   iupAttribSetStr(param, "LABEL", (char*)label);
   return box;
@@ -650,7 +652,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
 
 static Ihandle* IupParamDlgP(Ihandle** params)
 {
-  Ihandle *dialog, *button_ok, *button_cancel, 
+  Ihandle *dlg, *button_ok, *button_cancel, 
           *dlg_box, *button_box, *param_box;
   int i, lbl_width, p, expand;
 
@@ -690,42 +692,42 @@ static Ihandle* IupParamDlgP(Ihandle** params)
   IupSetAttribute(dlg_box, "MARGIN", "10x10");
   IupSetAttribute(dlg_box, "GAP", "5");
 
-  dialog = IupDialog(dlg_box);
+  dlg = IupDialog(dlg_box);
 
-  IupSetAttribute(dialog, "MINBOX", "NO");
-  IupSetAttribute(dialog, "MAXBOX", "NO");
+  IupSetAttribute(dlg, "MINBOX", "NO");
+  IupSetAttribute(dlg, "MAXBOX", "NO");
   if (!expand) 
   {
-    IupSetAttribute(dialog, "RESIZE", "NO");
-    IupSetAttribute(dialog, "DIALOGFRAME", "YES");
-    IupSetAttribute(dialog,"DIALOGHINT","YES");
+    IupSetAttribute(dlg, "RESIZE", "NO");
+    IupSetAttribute(dlg, "DIALOGFRAME", "YES");
+    IupSetAttribute(dlg,"DIALOGHINT","YES");
   }
-  IupSetAttributeHandle(dialog, "DEFAULTENTER", button_ok);
-  IupSetAttributeHandle(dialog, "DEFAULTESC", button_cancel);
-  IupSetAttribute(dialog, "TITLE", "ParamDlg");
-  IupSetAttribute(dialog, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttribute(dialog, "ICON", IupGetGlobal("ICON"));
-  iupAttribSetStr(dialog, "OK", (char*)button_ok);
-  iupAttribSetStr(dialog, "CANCEL", (char*)button_cancel);
+  IupSetAttributeHandle(dlg, "DEFAULTENTER", button_ok);
+  IupSetAttributeHandle(dlg, "DEFAULTESC", button_cancel);
+  IupSetAttribute(dlg, "TITLE", "ParamDlg");
+  IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+  iupAttribSetStr(dlg, "OK", (char*)button_ok);
+  iupAttribSetStr(dlg, "CANCEL", (char*)button_cancel);
 
-  IupMap(dialog);
+  IupMap(dlg);
 
   i = 0; lbl_width = 0, p = 0;
   while (params[i] != NULL)
   {
     int w;
 
-    char* type = IupGetAttribute(params[i], "TYPE");
+    char* type = iupAttribGet(params[i], "TYPE");
     if (!iupStrEqual(type, "SEPARATOR"))
     {
       char str[20];
       sprintf(str, "PARAM%d", p);
-      IupSetAttribute(dialog, str, (char*)params[i]);
+      IupSetAttribute(dlg, str, (char*)params[i]);
       iupAttribSetStrf(params[i], "INDEX", "%d", p);
       p++;
     }
 
-    w = IupGetInt((Ihandle*)IupGetAttribute(params[i], "LABEL"), "SIZE");
+    w = IupGetInt((Ihandle*)iupAttribGet(params[i], "LABEL"), "SIZE");
     if (w > lbl_width)
       lbl_width = w;
 
@@ -735,20 +737,20 @@ static Ihandle* IupParamDlgP(Ihandle** params)
   i = 0;
   while (params[i] != NULL)
   {
-    char* type = IupGetAttribute(params[i], "TYPE");
+    char* type = iupAttribGet(params[i], "TYPE");
     if (!iupStrEqual(type, "SEPARATOR"))
     {
       if (iupStrEqual(type, "LIST"))
       {
-        Ihandle* ctrl = (Ihandle*)IupGetAttribute(params[i], "CONTROL");
+        Ihandle* ctrl = (Ihandle*)iupAttribGet(params[i], "CONTROL");
         if (IupGetInt(ctrl, "SIZE") < 50)
           IupSetAttribute(ctrl, "SIZE", "50x");
       }
       else if (iupStrEqual(type, "BOOLEAN"))
       {
-        Ihandle* ctrl = (Ihandle*)IupGetAttribute(params[i], "CONTROL");
-        int lenF = strlen(IupGetAttribute(params[i], "_FALSE"));
-        int lenT = strlen(IupGetAttribute(params[i], "_TRUE"));
+        Ihandle* ctrl = (Ihandle*)iupAttribGet(params[i], "CONTROL");
+        int lenF = strlen(iupAttribGet(params[i], "_IUPGP_FALSE"));
+        int lenT = strlen(iupAttribGet(params[i], "_IUPGP_TRUE"));
         int w = IupGetInt(ctrl, "SIZE");
         int v = IupGetInt(ctrl, "VALUE");
         if (v)
@@ -765,15 +767,15 @@ static Ihandle* IupParamDlgP(Ihandle** params)
         }
       }
 
-      IupSetfAttribute((Ihandle*)IupGetAttribute(params[i], "LABEL"), "SIZE", "%dx", lbl_width);
+      IupSetfAttribute((Ihandle*)iupAttribGet(params[i], "LABEL"), "SIZE", "%dx", lbl_width);
     }
 
     i++;
   }
 
-  IupSetAttribute(dialog, "SIZE", NULL);
+  IupSetAttribute(dlg, "SIZE", NULL);
 
-  return dialog;
+  return dlg;
 }
 
 /*******************************************************************************************
@@ -815,13 +817,13 @@ static void iParamSetBoolNames(char* extra, Ihandle* param)
 
   if (falsestr && truestr && falsestr[0] && truestr[0])
   {
-    iupAttribStoreStr(param, "_TRUE", truestr);
-    iupAttribStoreStr(param, "_FALSE", falsestr);
+    iupAttribStoreStr(param, "_IUPGP_TRUE", truestr);
+    iupAttribStoreStr(param, "_IUPGP_FALSE", falsestr);
   }
   else
   {
-    iupAttribStoreStr(param, "_TRUE", iupStrMessageGet("IUP_TRUE"));
-    iupAttribStoreStr(param, "_FALSE", iupStrMessageGet("IUP_FALSE"));
+    iupAttribStoreStr(param, "_IUPGP_TRUE", iupStrMessageGet("IUP_TRUE"));
+    iupAttribStoreStr(param, "_IUPGP_FALSE", iupStrMessageGet("IUP_FALSE"));
   }
 }
 
@@ -865,11 +867,11 @@ static void iParamSetFileOptions(char* extra, Ihandle* param)
   nochangedir = iParamGetNextStrItem(extra, '|', &count);  extra += count;
   nooverwriteprompt = iParamGetNextStrItem(extra, '|', &count);  extra += count;
 
-  iupAttribStoreStr(param, "_DIALOGTYPE", type);
-  iupAttribStoreStr(param, "_FILTER", filter);
-  iupAttribStoreStr(param, "_DIRECTORY", directory);
-  iupAttribStoreStr(param, "_NOCHANGEDIR", nochangedir);
-  iupAttribStoreStr(param, "_NOOVERWRITEPROMPT", nooverwriteprompt);
+  iupAttribStoreStr(param, "_IUPGP_DIALOGTYPE", type);
+  iupAttribStoreStr(param, "_IUPGP_FILTER", filter);
+  iupAttribStoreStr(param, "_IUPGP_DIRECTORY", directory);
+  iupAttribStoreStr(param, "_IUPGP_NOCHANGEDIR", nochangedir);
+  iupAttribStoreStr(param, "_IUPGP_NOOVERWRITEPROMPT", nooverwriteprompt);
 }
 
 static void iParamSetListItems(char* extra, Ihandle* param)
@@ -1083,7 +1085,7 @@ static void iParamDestroyAll(Ihandle **params)
 
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data)
 {
-  Ihandle *param_dlg, *params[50];
+  Ihandle *dlg, *params[50];
   int i, line_size, p;
 
   assert(title && format);
@@ -1126,20 +1128,20 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   }
   params[i] = NULL;
 
-  param_dlg = IupParamDlgP(params);
-  IupSetAttribute(param_dlg, "TITLE", (char*)title);
-  IupSetCallback(param_dlg, "PARAM_CB", (Icallback)action);
-  IupSetAttribute(param_dlg, "USER_DATA", (char*)user_data);
+  dlg = IupParamDlgP(params);
+  IupSetAttribute(dlg, "TITLE", (char*)title);
+  IupSetCallback(dlg, "PARAM_CB", (Icallback)action);
+  iupAttribSetStr(dlg, "USER_DATA", (char*)user_data);
 
   if (action) 
-    action(param_dlg, -2, user_data);
+    action(dlg, -2, user_data);
 
-  IupPopup(param_dlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
 
-  if (!IupGetInt(param_dlg, "STATUS"))
+  if (!IupGetInt(dlg, "STATUS"))
   {
     iParamDestroyAll(params);
-    IupDestroy(param_dlg);
+    IupDestroy(dlg);
     return 0;
   }
   else
@@ -1151,7 +1153,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
       char str[20];
 
       sprintf(str, "PARAM%d", i);
-      param = (Ihandle*)IupGetAttribute(param_dlg, str);
+      param = (Ihandle*)iupAttribGet(dlg, str);
 
       data_type = iupAttribGetInt(param, "DATA_TYPE");
       if (data_type == 1)
@@ -1169,13 +1171,13 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
       else 
       {
         char *data_str = (char*)(param_data[i]);
-        strcpy(data_str, iupAttribGetStr(param, "VALUE"));
+        strcpy(data_str, iupAttribGet(param, "VALUE"));
         p++;
       }
     }
 
     iParamDestroyAll(params);
-    IupDestroy(param_dlg);
+    IupDestroy(dlg);
     return 1;
   }
 }

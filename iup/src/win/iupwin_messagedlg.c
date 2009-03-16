@@ -20,7 +20,7 @@ static void winMessageDlgHelpCallback(HELPINFO* HelpInfo)
   Icallback cb = (Icallback)IupGetCallback(ih, "HELP_CB");
   if (cb && cb(ih) == IUP_CLOSE)
   {
-    if (iupStrEqualNoCase(iupAttribGetStrDefault(ih, "BUTTONS"), "OK"))
+    if (iupStrEqualNoCase(iupAttribGetStr(ih, "BUTTONS"), "OK"))
       EndDialog((HWND)HelpInfo->hItemHandle, IDOK);
     else
       EndDialog((HWND)HelpInfo->hItemHandle, IDCANCEL);
@@ -72,8 +72,8 @@ static int winMessageDlgPopup(Ihandle* ih, int x, int y)
   MsgBoxParams.cbSize = sizeof(MSGBOXPARAMS);
   MsgBoxParams.hwndOwner = parent;
   MsgBoxParams.hInstance = NULL;
-  MsgBoxParams.lpszText = iupAttribGetStr(ih, "VALUE");
-  MsgBoxParams.lpszCaption = iupAttribGetStr(ih, "TITLE");
+  MsgBoxParams.lpszText = iupAttribGet(ih, "VALUE");
+  MsgBoxParams.lpszCaption = iupAttribGet(ih, "TITLE");
   MsgBoxParams.dwStyle = dwStyle;
   MsgBoxParams.lpszIcon = NULL;
   MsgBoxParams.dwContextHelpId = (DWORD_PTR)ih;

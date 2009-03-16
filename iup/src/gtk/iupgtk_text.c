@@ -53,11 +53,11 @@ static void gtkTextParseParagraphFormat(Ihandle* formattag, GtkTextTag* tag)
   int val;
   char* format;
 
-  format = iupAttribGetStr(formattag, "INDENT");
+  format = iupAttribGet(formattag, "INDENT");
   if (format && iupStrToInt(format, &val))
     g_object_set(G_OBJECT(tag), "indent", val, NULL);
 
-  format = iupAttribGetStr(formattag, "ALIGNMENT");
+  format = iupAttribGet(formattag, "ALIGNMENT");
   if (format)
   {
     if (iupStrEqualNoCase(format, "JUSTIFY"))
@@ -72,7 +72,7 @@ static void gtkTextParseParagraphFormat(Ihandle* formattag, GtkTextTag* tag)
     g_object_set(G_OBJECT(tag), "justification", val, NULL);
   }
 
-  format = iupAttribGetStr(formattag, "TABSARRAY");
+  format = iupAttribGet(formattag, "TABSARRAY");
   {
     PangoTabArray *tabs;
     int pos, i = 0;
@@ -110,15 +110,15 @@ static void gtkTextParseParagraphFormat(Ihandle* formattag, GtkTextTag* tag)
     pango_tab_array_free(tabs);
   }
 
-  format = iupAttribGetStr(formattag, "SPACEBEFORE");
+  format = iupAttribGet(formattag, "SPACEBEFORE");
   if (format && iupStrToInt(format, &val))
     g_object_set(G_OBJECT(tag), "pixels-above-lines", val, NULL);
 
-  format = iupAttribGetStr(formattag, "SPACEAFTER");
+  format = iupAttribGet(formattag, "SPACEAFTER");
   if (format && iupStrToInt(format, &val))
     g_object_set(G_OBJECT(tag), "pixels-below-lines", val, NULL);
 
-  format = iupAttribGetStr(formattag, "LINESPACING");
+  format = iupAttribGet(formattag, "LINESPACING");
   if (format && iupStrToInt(format, &val))
     g_object_set(G_OBJECT(tag), "pixels-inside-wrap", val, NULL);
 }
@@ -128,11 +128,11 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
   int val;
   char* format;
 
-  format = iupAttribGetStr(formattag, "LANGUAGE");
+  format = iupAttribGet(formattag, "LANGUAGE");
   if (format)
     g_object_set(G_OBJECT(tag), "language", format, NULL);
 
-  format = iupAttribGetStr(formattag, "STRETCH");
+  format = iupAttribGet(formattag, "STRETCH");
   if (format)
   {
     if (iupStrEqualNoCase(format, "EXTRA_CONDENSED"))
@@ -153,7 +153,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
     g_object_set(G_OBJECT(tag), "stretch", val, NULL);
   }
 
-  format = iupAttribGetStr(formattag, "RISE");
+  format = iupAttribGet(formattag, "RISE");
   if (format)
   {
     val = 0;
@@ -175,7 +175,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
     g_object_set(G_OBJECT(tag), "rise", val, NULL);
   }
 
-  format = iupAttribGetStr(formattag, "SMALLCAPS");
+  format = iupAttribGet(formattag, "SMALLCAPS");
   if (format)
   {
     if (iupStrBoolean(format))
@@ -185,7 +185,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
     g_object_set(G_OBJECT(tag), "variant", val, NULL);
   }
 
-  format = iupAttribGetStr(formattag, "ITALIC");
+  format = iupAttribGet(formattag, "ITALIC");
   if (format)
   {
     if (iupStrBoolean(format))
@@ -195,21 +195,21 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
     g_object_set(G_OBJECT(tag), "style", val, NULL);
   }
 
-  format = iupAttribGetStr(formattag, "STRIKEOUT");
+  format = iupAttribGet(formattag, "STRIKEOUT");
   if (format)
   {
     val = iupStrBoolean(format);
     g_object_set(G_OBJECT(tag), "strikethrough", val, NULL);
   }
 
-  format = iupAttribGetStr(formattag, "PROTECTED");
+  format = iupAttribGet(formattag, "PROTECTED");
   if (format)
   {
     val = iupStrBoolean(format);
     g_object_set(G_OBJECT(tag), "editable", val, NULL);
   }
 
-  format = iupAttribGetStr(formattag, "FONTSIZE");
+  format = iupAttribGet(formattag, "FONTSIZE");
   if (format && iupStrToInt(format, &val))
   {
     if (val < 0)  /* in pixels */
@@ -221,7 +221,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
       g_object_set(G_OBJECT(tag), "size-points", (double)val, NULL);
   }
 
-  format = iupAttribGetStr(formattag, "FONTSCALE");
+  format = iupAttribGet(formattag, "FONTSCALE");
   if (format)
   {
     float fval = 0;
@@ -246,11 +246,11 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
       g_object_set(G_OBJECT(tag), "scale", (double)fval, NULL);
   }
 
-  format = iupAttribGetStr(formattag, "FONTFACE");
+  format = iupAttribGet(formattag, "FONTFACE");
   if (format)
     g_object_set(G_OBJECT(tag), "family", format, NULL);
 
-  format = iupAttribGetStr(formattag, "FGCOLOR");
+  format = iupAttribGet(formattag, "FGCOLOR");
   if (format)
   {
     unsigned char r, g, b;
@@ -266,7 +266,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
     }
   }
 
-  format = iupAttribGetStr(formattag, "BGCOLOR");
+  format = iupAttribGet(formattag, "BGCOLOR");
   if (format)
   {
     unsigned char r, g, b;
@@ -282,7 +282,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
     }
   }
 
-  format = iupAttribGetStr(formattag, "UNDERLINE");
+  format = iupAttribGet(formattag, "UNDERLINE");
   if (format)
   {
     if (iupStrEqualNoCase(format, "SINGLE"))
@@ -295,7 +295,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
     g_object_set(G_OBJECT(tag), "underline", val, NULL);
   }
 
-  format = iupAttribGetStr(formattag, "WEIGHT");
+  format = iupAttribGet(formattag, "WEIGHT");
   if (format)
   {
     if (iupStrEqualNoCase(format, "EXTRALIGHT"))
@@ -776,7 +776,7 @@ static int gtkTextSetScrollToAttrib(Ihandle* ih, const char* value)
     int pos = 1;
     sscanf(value,"%i",&pos);
     if (pos < 1) pos = 1;
-    pos--;  /* return to Motif referece */
+    pos--;  /* return to GTK referece */
     gtk_editable_set_position(GTK_EDITABLE(ih->handle), pos);
   }
 
@@ -1036,12 +1036,11 @@ static int gtkTextSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->is_multiline)
   {
-    GtkScrolledWindow* scrolled_window = (GtkScrolledWindow*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+    GtkScrolledWindow* scrolled_window = (GtkScrolledWindow*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
     unsigned char r, g, b;
 
     /* ignore given value, must use only from parent for the scrollbars */
-    char* parent_value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-    if (!parent_value) parent_value = IupGetGlobal("DLGBGCOLOR");
+    char* parent_value = iupBaseNativeParentGetBgColor(ih);
 
     if (iupStrToRGB(parent_value, &r, &g, &b))
     {
@@ -1114,7 +1113,7 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
   if (!ih->data->is_multiline)
     return;
 
-  selection = iupAttribGetStr(formattag, "SELECTION");
+  selection = iupAttribGet(formattag, "SELECTION");
   if (selection)
   {
     /* simulate Windows behavior and change the current selection */
@@ -1123,7 +1122,7 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
   }
   else
   {
-    char* selectionpos = iupAttribGetStr(formattag, "SELECTIONPOS");
+    char* selectionpos = iupAttribGet(formattag, "SELECTIONPOS");
     if (selectionpos)
     {
       /* simulate Windows behavior and change the current selection */
@@ -1170,7 +1169,7 @@ static int gtkTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
 
 static gboolean gtkTextSpinOutput(GtkSpinButton *spin, Ihandle* ih)
 {
-  if (iupAttribGetStr(ih, "_IUPGTK_SPIN_NOAUTO"))
+  if (iupAttribGet(ih, "_IUPGTK_SPIN_NOAUTO"))
   {
     iupAttribSetInt(ih, "_IUPGTK_SPIN_VALUE", (int)spin->adjustment->value);
     return TRUE; /* disable output update */
@@ -1200,7 +1199,7 @@ static void gtkTextSpinValueChanged(GtkSpinButton* spin, Ihandle* ih)
   if (cb) 
   {
     int pos;
-    if (iupAttribGetStr(ih, "_IUPGTK_SPIN_NOAUTO"))
+    if (iupAttribGet(ih, "_IUPGTK_SPIN_NOAUTO"))
       pos = iupAttribGetInt(ih, "_IUPGTK_SPIN_VALUE");
     else
       pos = gtk_spin_button_get_value_as_int((GtkSpinButton*)ih->handle);
@@ -1218,7 +1217,7 @@ static int gtkTextSetSpinMinAttrib(Ihandle* ih, const char* value)
     int min;
     if (iupStrToInt(value, &min))
     {
-      int max = iupAttribGetIntDefault(ih, "SPINMAX");
+      int max = iupAttribGetInt(ih, "SPINMAX");
 
       iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", "1");
       g_signal_handlers_block_by_func(G_OBJECT(ih->handle), G_CALLBACK(gtkTextSpinValueChanged), ih);
@@ -1239,7 +1238,7 @@ static int gtkTextSetSpinMaxAttrib(Ihandle* ih, const char* value)
     int max;
     if (iupStrToInt(value, &max))
     {
-      int min = iupAttribGetIntDefault(ih, "SPINMIN");
+      int min = iupAttribGetInt(ih, "SPINMIN");
       iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", "1");
       g_signal_handlers_block_by_func(G_OBJECT(ih->handle), G_CALLBACK(gtkTextSpinValueChanged), ih);
 
@@ -1278,7 +1277,7 @@ static int gtkTextSetSpinValueAttrib(Ihandle* ih, const char* value)
       g_signal_handlers_unblock_by_func(G_OBJECT(ih->handle), G_CALLBACK(gtkTextSpinValueChanged), ih);
       iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", NULL);
 
-      if (iupAttribGetStr(ih, "_IUPGTK_SPIN_NOAUTO"))
+      if (iupAttribGet(ih, "_IUPGTK_SPIN_NOAUTO"))
         iupAttribSetInt(ih, "_IUPGTK_SPIN_VALUE", pos);
     }
   }
@@ -1292,7 +1291,7 @@ static char* gtkTextGetSpinValueAttrib(Ihandle* ih)
     int pos;
     char *str = iupStrGetMemory(50);
 
-    if (iupAttribGetStr(ih, "_IUPGTK_SPIN_NOAUTO"))
+    if (iupAttribGet(ih, "_IUPGTK_SPIN_NOAUTO"))
       pos = iupAttribGetInt(ih, "_IUPGTK_SPIN_VALUE");
     else
       pos = gtk_spin_button_get_value_as_int((GtkSpinButton*)ih->handle);
@@ -1430,7 +1429,7 @@ static int gtkTextCallActionCb(Ihandle* ih, const char* insert_value, int len, i
 
 static void gtkTextEntryDeleteText(GtkEditable *editable, int start, int end, Ihandle* ih)
 {
-  if (iupAttribGetStr(ih, "_IUPGTK_DISABLE_TEXT_CB"))
+  if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
     return;
 
   if (gtkTextCallActionCb(ih, NULL, 0, start, end)==0)
@@ -1441,7 +1440,7 @@ static void gtkTextEntryInsertText(GtkEditable *editable, char *insert_value, in
 {
   int ret;
 
-  if (iupAttribGetStr(ih, "_IUPGTK_DISABLE_TEXT_CB"))
+  if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
     return;
 
   ret = gtkTextCallActionCb(ih, iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(insert_value)), len, *pos, *pos);
@@ -1463,7 +1462,7 @@ static void gtkTextEntryInsertText(GtkEditable *editable, char *insert_value, in
 static void gtkTextBufferDeleteRange(GtkTextBuffer *textbuffer, GtkTextIter *start_iter, GtkTextIter *end_iter, Ihandle* ih)
 {
   int start, end;
-  if (iupAttribGetStr(ih, "_IUPGTK_DISABLE_TEXT_CB"))
+  if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
     return;
 
   start = gtk_text_iter_get_offset(start_iter);
@@ -1477,7 +1476,7 @@ static void gtkTextBufferInsertText(GtkTextBuffer *textbuffer, GtkTextIter *pos_
 {
   int ret, pos;
 
-  if (iupAttribGetStr(ih, "_IUPGTK_DISABLE_TEXT_CB"))
+  if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
     return;
 
   pos = gtk_text_iter_get_offset(pos_iter);
@@ -1577,7 +1576,7 @@ static int gtkTextMapMethod(Ihandle* ih)
     
     gtk_entry_set_has_frame((GtkEntry*)ih->handle, IupGetInt(ih, "BORDER"));
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "PASSWORD")))
+    if (iupStrBoolean(iupAttribGet(ih, "PASSWORD")))
       gtk_entry_set_visibility((GtkEntry*)ih->handle, FALSE);
 
     if (GTK_IS_SPIN_BUTTON(ih->handle))
@@ -1590,7 +1589,7 @@ static int gtkTextMapMethod(Ihandle* ih)
       g_signal_connect(G_OBJECT(ih->handle), "value-changed", G_CALLBACK(gtkTextSpinValueChanged), ih);
       g_signal_connect(G_OBJECT(ih->handle), "output", G_CALLBACK(gtkTextSpinOutput), ih);
 
-      if (!iupStrBoolean(iupAttribGetStrDefault(ih, "SPINAUTO")))
+      if (!iupStrBoolean(iupAttribGetStr(ih, "SPINAUTO")))
       {
         g_signal_connect(G_OBJECT(ih->handle), "input", G_CALLBACK(gtkTextSpinInput), ih);
         iupAttribSetStr(ih, "_IUPGTK_SPIN_NOAUTO", "1");
@@ -1601,7 +1600,7 @@ static int gtkTextMapMethod(Ihandle* ih)
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
 
-  if (!iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+  if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
   g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
@@ -1634,7 +1633,7 @@ static int gtkTextMapMethod(Ihandle* ih)
   gtk_widget_realize(ih->handle);
 
   /* ensure the default values, that are different from the native ones */
-  gtkTextSetTabSizeAttrib(ih, iupAttribGetStrDefault(ih, "TABSIZE"));
+  gtkTextSetTabSizeAttrib(ih, iupAttribGetStr(ih, "TABSIZE"));
 
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
@@ -1657,37 +1656,37 @@ void iupdrvTextInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Common GTK only (when text is in a secondary element) */
-  iupClassRegisterAttribute(ic, "PANGOLAYOUT", gtkTextGetPangoLayoutAttrib, NULL, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PANGOLAYOUT", gtkTextGetPangoLayoutAttrib, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkTextSetBgColorAttrib, "TXTBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkTextSetBgColorAttrib, "TXTBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "TXTFGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, "TXTFGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* IupText only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkTextSetAlignmentAttrib, "ALEFT", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, gtkTextSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", gtkTextGetValueAttrib, gtkTextSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTEDTEXT", gtkTextGetSelectedTextAttrib, gtkTextSetSelectedTextAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTION", gtkTextGetSelectionAttrib, gtkTextSetSelectionAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTIONPOS", gtkTextGetSelectionPosAttrib, gtkTextSetSelectionPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARET", gtkTextGetCaretAttrib, gtkTextSetCaretAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARETPOS", gtkTextGetCaretPosAttrib, gtkTextSetCaretPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INSERT", NULL, gtkTextSetInsertAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "APPEND", NULL, gtkTextSetAppendAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "READONLY", gtkTextGetReadOnlyAttrib, gtkTextSetReadOnlyAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "NC", iupTextGetNCAttrib, gtkTextSetNCAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, gtkTextSetClipboardAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABSIZE", NULL, gtkTextSetTabSizeAttrib, "8", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "FORMATTING", gtkTextGetFormattingAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);  /* can not set FORMATTING, it depends on MULTILINE */
-  iupClassRegisterAttribute(ic, "REMOVEFORMATTING", NULL, gtkTextSetRemoveFormattingAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OVERWRITE", gtkTextGetOverwriteAttrib, gtkTextSetOverwriteAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, gtkTextSetScrollToAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, gtkTextSetScrollToPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPINMIN", NULL, gtkTextSetSpinMinAttrib, "0", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPINMAX", NULL, gtkTextSetSpinMaxAttrib, "100", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPININC", NULL, gtkTextSetSpinIncAttrib, "1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPINVALUE", gtkTextGetSpinValueAttrib, gtkTextSetSpinValueAttrib, "0", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, gtkTextSetAlignmentAttrib, "ALEFT", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, gtkTextSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "VALUE", gtkTextGetValueAttrib, gtkTextSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTEDTEXT", gtkTextGetSelectedTextAttrib, gtkTextSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTION", gtkTextGetSelectionAttrib, gtkTextSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTIONPOS", gtkTextGetSelectionPosAttrib, gtkTextSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARET", gtkTextGetCaretAttrib, gtkTextSetCaretAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETPOS", gtkTextGetCaretPosAttrib, gtkTextSetCaretPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERT", NULL, gtkTextSetInsertAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "APPEND", NULL, gtkTextSetAppendAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "READONLY", gtkTextGetReadOnlyAttrib, gtkTextSetReadOnlyAttrib, NULL, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "NC", iupTextGetNCAttrib, gtkTextSetNCAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, gtkTextSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSIZE", NULL, gtkTextSetTabSizeAttrib, "8", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "FORMATTING", gtkTextGetFormattingAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  /* can not set FORMATTING, it depends on MULTILINE */
+  iupClassRegisterAttribute(ic, "REMOVEFORMATTING", NULL, gtkTextSetRemoveFormattingAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OVERWRITE", gtkTextGetOverwriteAttrib, gtkTextSetOverwriteAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, gtkTextSetScrollToAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, gtkTextSetScrollToPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINMIN", NULL, gtkTextSetSpinMinAttrib, "0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINMAX", NULL, gtkTextSetSpinMaxAttrib, "100", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPININC", NULL, gtkTextSetSpinIncAttrib, "1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINVALUE", gtkTextGetSpinValueAttrib, gtkTextSetSpinValueAttrib, "0", NULL, IUPAF_NO_INHERIT);
 }

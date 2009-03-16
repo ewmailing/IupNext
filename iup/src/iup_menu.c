@@ -119,12 +119,12 @@ static void iMenuAdjustPos(int *x, int *y)
   }
 }
 
-char* iupMenuGetTitle(Ihandle* ih, const char* title)
+char* iupMenuProcessTitle(Ihandle* ih, const char* title)
 {
   int keychar;
   char* str;
 
-  char* key = iupAttribGetStr(ih, "KEY");
+  char* key = iupAttribGet(ih, "KEY");
   if (!key) return (char*)title;
 
   keychar = iupKeyNameToCode(key);
@@ -214,8 +214,8 @@ Iclass* iupSeparatorGetClass(void)
   ic->is_interactive = 0;
 
   /* Common */
-  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvSeparatorInitClass(ic);
 
@@ -236,8 +236,12 @@ Iclass* iupItemGetClass(void)
   ic->Create = iItemCreateMethod;
 
   /* Common */
-  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "AUTOTOGGLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "KEY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIDEMARK", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
 
   iupdrvItemInitClass(ic);
 
@@ -258,8 +262,10 @@ Iclass* iupSubmenuGetClass(void)
   ic->Create = iSubmenuCreateMethod;
 
   /* Common */
-  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "KEY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvSubmenuInitClass(ic);
 
@@ -280,8 +286,10 @@ Iclass* iupMenuGetClass(void)
   ic->Create = iMenuCreateMethod;
 
   /* Common */
-  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "RADIO", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvMenuInitClass(ic);
 

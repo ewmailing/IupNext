@@ -2,7 +2,7 @@
  * \brief pre-defined dialogs
  *
  * See Copyright Notice in iup.h
- * $Id: ipredial.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
+ * $Id: ipredial.c,v 1.2 2009-03-16 21:01:28 scuri Exp $
  */
 
 #include <stdlib.h>
@@ -477,6 +477,8 @@ int IupGetText(const char* title, char* text)
   bt = IupGetInt(dialog, IUP_STATUS);
   if (bt==1)
     strcpy(text, IupGetAttribute(multi_text, IUP_VALUE));
+  else
+    bt = 0;  /* return 0 instead of -1 */
 
   IupDestroy(dialog);
   return bt;

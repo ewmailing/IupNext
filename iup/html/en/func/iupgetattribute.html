@@ -8,6 +8,11 @@
 
   <title>IupGetAttribute</title>
   <link rel="stylesheet" type="text/css" href="../../style.css">
+	<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 
 
@@ -27,27 +32,27 @@ Parameters/Return</h3>
 <p><b>ih</b>: Identifier of the interface element. If
   NULL will retrieve from the global environment.<br>
 
-  name: name of the attribute.</p>
+  <strong>name</strong>: name of the attribute.</p>
 
-<p>This function returns attribute&rsquo;s value. If 
-  the attribute does not exist, NULL (nil in IupLua) is returned.<br>
+<p><span class="style1">Returns:</span> the attribute value or NULL (nil in Lua) 
+if 
+  the attribute is not defined or does not exist.<br>
 
 </p>
 <h3>Notes</h3>
 
 <p>See the <a href="../attrib_guide.html">Attributes Guide</a> for more details.</p>
 <p>This function return value is not 
-  necessarily the same pointer used by the application to define the attribute&rsquo;s value.&nbsp;The pointers of internal IUP attributes 
+  necessarily the same pointer used by the application to define the attribute value.&nbsp;The pointers of internal IUP attributes 
   returned by <strong>IupGetAttribute</strong> must <b>never</b> be freed or changed.</p>
 
-<h4>Inheritance</h4>
+<h4>Storage and Inheritance</h4>
 
-<p>The attribute is first checked at the element specific implementation. If not defined then it checks in the
-  attribute environment. If not defined in its
-  attribute environment, the attribute will be inherited from its parent
-  attribute environment and so forth, until it reaches the dialog. But if still then the attribute is not defined 
+<p>When the attribute is retrieved it is first checked at the element class implementation. If not defined then it checks in the 
+hash table. If not defined, the attribute will be inherited from its parent
+  hash table and so forth, until it reaches the dialog. But if still then the attribute is not defined 
   a default value for the element is returned (the default value can also be NULL). 
-Inheritance can be blocked by the element implementation.</p>
+Inheritance can be blocked by the element class implementation.</p>
 
 <h4>IupLua</h4>
 

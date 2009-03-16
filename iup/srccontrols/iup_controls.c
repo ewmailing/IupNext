@@ -47,7 +47,7 @@ char *iupControlBaseGetParentBgColor(Ihandle* ih)
 char *iupControlBaseGetBgColorAttrib(Ihandle* ih)
 {
   /* check the hash table */
-  char *color = iupAttribGetStr(ih, "BGCOLOR");
+  char *color = iupAttribGet(ih, "BGCOLOR");
 
   /* If not defined check native definition from parent */
   if (!color)

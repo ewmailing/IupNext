@@ -98,7 +98,7 @@ static void winTextParseParagraphFormat(Ihandle* formattag, PARAFORMAT2 *parafor
   ZeroMemory(paraformat, sizeof(PARAFORMAT2));
   paraformat->cbSize = sizeof(PARAFORMAT2);
 
-  format = iupAttribGetStr(formattag, "NUMBERING");
+  format = iupAttribGet(formattag, "NUMBERING");
   if (format)
   {
     paraformat->dwMask |= PFM_NUMBERING;
@@ -118,7 +118,7 @@ static void winTextParseParagraphFormat(Ihandle* formattag, PARAFORMAT2 *parafor
     else
       paraformat->wNumbering = 0;  /* "NONE" */
 
-    format = iupAttribGetStr(formattag, "NUMBERINGSTYLE");
+    format = iupAttribGet(formattag, "NUMBERINGSTYLE");
     if (format)
     {
       paraformat->dwMask |= PFM_NUMBERINGSTYLE;
@@ -135,7 +135,7 @@ static void winTextParseParagraphFormat(Ihandle* formattag, PARAFORMAT2 *parafor
         paraformat->wNumberingStyle = PFNS_PLAIN;  /* "NONE" */
     }
    
-    format = iupAttribGetStr(formattag, "NUMBERINGTAB");
+    format = iupAttribGet(formattag, "NUMBERINGTAB");
     if (format && iupStrToInt(format, &val))
     {
       paraformat->dwMask |= PFM_NUMBERINGTAB;
@@ -143,26 +143,26 @@ static void winTextParseParagraphFormat(Ihandle* formattag, PARAFORMAT2 *parafor
     }
   }
 
-  format = iupAttribGetStr(formattag, "INDENT");
+  format = iupAttribGet(formattag, "INDENT");
   if (format && iupStrToInt(format, &val))
   {
     paraformat->dwMask |= PFM_STARTINDENT|PFM_RIGHTINDENT|PFM_OFFSET;
     paraformat->dxStartIndent = val*convert2twips;
 
-    format = iupAttribGetStr(formattag, "INDENTRIGHT");
+    format = iupAttribGet(formattag, "INDENTRIGHT");
     if (format && iupStrToInt(format, &val))
       paraformat->dxRightIndent = val*convert2twips;
     else
       paraformat->dxRightIndent = paraformat->dxStartIndent;
       
-    format = iupAttribGetStr(formattag, "INDENTOFFSET");
+    format = iupAttribGet(formattag, "INDENTOFFSET");
     if (format && iupStrToInt(format, &val))
       paraformat->dxOffset = val*convert2twips;
     else
       paraformat->dxOffset = 0;
   }
 
-  format = iupAttribGetStr(formattag, "ALIGNMENT");
+  format = iupAttribGet(formattag, "ALIGNMENT");
   if (format)
   {
     paraformat->dwMask |= PFM_ALIGNMENT;
@@ -177,7 +177,7 @@ static void winTextParseParagraphFormat(Ihandle* formattag, PARAFORMAT2 *parafor
       paraformat->wAlignment = PFA_LEFT;  /* "LEFT" */
   }
 
-  format = iupAttribGetStr(formattag, "TABSARRAY");
+  format = iupAttribGet(formattag, "TABSARRAY");
   if (format)
   {
     int pos, align, i = 0;
@@ -214,21 +214,21 @@ static void winTextParseParagraphFormat(Ihandle* formattag, PARAFORMAT2 *parafor
     paraformat->cTabCount = (SHORT)i;
   }
 
-  format = iupAttribGetStr(formattag, "SPACEBEFORE");
+  format = iupAttribGet(formattag, "SPACEBEFORE");
   if (format && iupStrToInt(format, &val))
   {
     paraformat->dwMask |= PFM_SPACEBEFORE;
     paraformat->dySpaceBefore = val*convert2twips;
   }
 
-  format = iupAttribGetStr(formattag, "SPACEAFTER");
+  format = iupAttribGet(formattag, "SPACEAFTER");
   if (format && iupStrToInt(format, &val))
   {
     paraformat->dwMask |= PFM_SPACEAFTER;
     paraformat->dySpaceAfter = val*convert2twips;
   }
 
-  format = iupAttribGetStr(formattag, "LINESPACING");
+  format = iupAttribGet(formattag, "LINESPACING");
   if (format)
   {
     paraformat->dwMask |= PFM_LINESPACING;
@@ -255,7 +255,7 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
   ZeroMemory(charformat, sizeof(CHARFORMAT2));
   charformat->cbSize = sizeof(CHARFORMAT2);
 
-  format = iupAttribGetStr(formattag, "DISABLED");
+  format = iupAttribGet(formattag, "DISABLED");
   if (format)
   {
     charformat->dwMask |= CFM_DISABLED;
@@ -263,7 +263,7 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
       charformat->dwEffects |= CFE_DISABLED;
   }
 
-  format = iupAttribGetStr(formattag, "RISE");
+  format = iupAttribGet(formattag, "RISE");
   if (format)
   {
     if (iupStrEqualNoCase(format, "SUPERSCRIPT"))
@@ -283,7 +283,7 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
     }
   }
 
-  format = iupAttribGetStr(formattag, "ITALIC");
+  format = iupAttribGet(formattag, "ITALIC");
   if (format)
   {
     charformat->dwMask |= CFM_ITALIC;
@@ -291,7 +291,7 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
       charformat->dwEffects |= CFE_ITALIC;
   }
 
-  format = iupAttribGetStr(formattag, "STRIKEOUT");
+  format = iupAttribGet(formattag, "STRIKEOUT");
   if (format)
   {
     charformat->dwMask |= CFM_STRIKEOUT;
@@ -299,7 +299,7 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
       charformat->dwEffects |= CFE_STRIKEOUT;
   }
 
-  format = iupAttribGetStr(formattag, "PROTECTED");
+  format = iupAttribGet(formattag, "PROTECTED");
   if (format)
   {
     charformat->dwMask |= CFM_PROTECTED;
@@ -307,7 +307,7 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
       charformat->dwEffects |= CFE_PROTECTED;
   }
 
-  format = iupAttribGetStr(formattag, "FONTSIZE");
+  format = iupAttribGet(formattag, "FONTSIZE");
   if (format && iupStrToInt(format, &val))
   {
     /* (1/1440 of an inch, or 1/20 of a printer's point) */
@@ -318,7 +318,7 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
       charformat->yHeight = val*20;
   }
 
-  format = iupAttribGetStr(formattag, "FONTSCALE");
+  format = iupAttribGet(formattag, "FONTSCALE");
   if (format && charformat->yHeight != 0)
   {
     float fval = 0;
@@ -346,14 +346,14 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
     }
   }
 
-  format = iupAttribGetStr(formattag, "FONTFACE");
+  format = iupAttribGet(formattag, "FONTFACE");
   if (format)
   {
     charformat->dwMask |= CFM_FACE;
     strcpy(charformat->szFaceName, format);
   }
 
-  format = iupAttribGetStr(formattag, "FGCOLOR");
+  format = iupAttribGet(formattag, "FGCOLOR");
   if (format)
   {
     unsigned char r, g, b;
@@ -364,7 +364,7 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
     }
   }
 
-  format = iupAttribGetStr(formattag, "BGCOLOR");
+  format = iupAttribGet(formattag, "BGCOLOR");
   if (format)
   {
     unsigned char r, g, b;
@@ -375,7 +375,7 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
     }
   }
 
-  format = iupAttribGetStr(formattag, "UNDERLINE");
+  format = iupAttribGet(formattag, "UNDERLINE");
   if (format)
   {
     charformat->dwMask |= CFM_UNDERLINETYPE;
@@ -396,7 +396,7 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
     }
   }
 
-  format = iupAttribGetStr(formattag, "WEIGHT");
+  format = iupAttribGet(formattag, "WEIGHT");
   if (format)
   {
     charformat->dwMask |= CFM_WEIGHT;
@@ -889,7 +889,7 @@ static int winTextSetTabSizeAttrib(Ihandle* ih, const char* value)
   iupStrToInt(value, &tabsize);
   tabsize *= 4;
   SendMessage(ih->handle, EM_SETTABSTOPS, (WPARAM)1L, (LPARAM)&tabsize);
-  iupwinRedrawNow(ih);
+  iupdrvDisplayRedraw(ih);
   return 1;
 }
 
@@ -1130,7 +1130,7 @@ static int winTextSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
   /* ignore the first call that is done in IupMap,
      it is already done before calling iupTextUpdateFormatTags. */
-  if (ih->data->has_formatting && iupAttribGetStr(ih, "_IUPWIN_IGNORE_FONT"))
+  if (ih->data->has_formatting && iupAttribGet(ih, "_IUPWIN_IGNORE_FONT"))
   {
     iupAttribSetStr(ih, "_IUPWIN_IGNORE_FONT", NULL);
     return 0;
@@ -1151,7 +1151,7 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
 
   /* default is PIXELS */
   convert2twips = pixel2twips;
-  units = iupAttribGetStr(formattag, "UNITS");
+  units = iupAttribGet(formattag, "UNITS");
   if (units)
   {
     int val;
@@ -1161,7 +1161,7 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
       convert2twips = val;
   }
 
-  selection = iupAttribGetStr(formattag, "SELECTION");
+  selection = iupAttribGet(formattag, "SELECTION");
   if (selection)
   {
     /* In Windows, the format message use the current selection */
@@ -1170,7 +1170,7 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
   }
   else
   {
-    char* selectionpos = iupAttribGetStr(formattag, "SELECTIONPOS");
+    char* selectionpos = iupAttribGet(formattag, "SELECTIONPOS");
     if (selectionpos)
     {
       /* In Windows, the format message use the current selection */
@@ -1179,7 +1179,7 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
     }
   }
 
-  if (iupAttribGetStr(formattag, "FONTSCALE") && !iupAttribGetStr(formattag, "FONTSIZE"))
+  if (iupAttribGet(formattag, "FONTSCALE") && !iupAttribGet(formattag, "FONTSIZE"))
     iupAttribSetStr(formattag, "FONTSIZE", iupGetFontSizeAttrib(ih));
 
   winTextParseParagraphFormat(formattag, &paraformat, convert2twips);
@@ -1255,7 +1255,7 @@ static int winTextSetOverwriteAttrib(Ihandle* ih, const char* value)
   if (!ih->data->has_formatting)
     return 0;
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "OVERWRITE")))
+  if (iupStrBoolean(iupAttribGet(ih, "OVERWRITE")))
   {
     if (!iupStrBoolean(value))
       SendMessage(ih->handle, WM_KEYDOWN, VK_INSERT, 0);  /* toggle from ON to OFF */
@@ -1271,7 +1271,7 @@ static int winTextSetOverwriteAttrib(Ihandle* ih, const char* value)
 
 static int winTextSetVisibleAttrib(Ihandle* ih, const char* value)
 {
-  HWND hSpin = (HWND)iupAttribGetStr(ih, "_IUPWIN_SPIN");
+  HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
   if (hSpin)
     ShowWindow(hSpin, iupStrBoolean(value)? SW_SHOWNORMAL: SW_HIDE);
 
@@ -1290,13 +1290,13 @@ static void winTextCropSpinValue(HWND hSpin, int min, int max)
 
 static int winTextSetSpinMinAttrib(Ihandle* ih, const char* value)
 {
-  HWND hSpin = (HWND)iupAttribGetStr(ih, "_IUPWIN_SPIN");
+  HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
   if (hSpin)
   {
     int min;
     if (iupStrToInt(value, &min))
     {
-      int max = iupAttribGetIntDefault(ih, "SPINMAX");
+      int max = iupAttribGetInt(ih, "SPINMAX");
       SendMessage(hSpin, UDM_SETRANGE32, min, max);
 
       winTextCropSpinValue(hSpin, min, max);
@@ -1307,13 +1307,13 @@ static int winTextSetSpinMinAttrib(Ihandle* ih, const char* value)
 
 static int winTextSetSpinMaxAttrib(Ihandle* ih, const char* value)
 {
-  HWND hSpin = (HWND)iupAttribGetStr(ih, "_IUPWIN_SPIN");
+  HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
   if (hSpin)
   {
     int max;
     if (iupStrToInt(value, &max))
     {
-      int min = iupAttribGetIntDefault(ih, "SPINMIN");
+      int min = iupAttribGetInt(ih, "SPINMIN");
       SendMessage(hSpin, UDM_SETRANGE32, min, max);
 
       winTextCropSpinValue(hSpin, min, max);
@@ -1324,7 +1324,7 @@ static int winTextSetSpinMaxAttrib(Ihandle* ih, const char* value)
 
 static int winTextSetSpinIncAttrib(Ihandle* ih, const char* value)
 {
-  HWND hSpin = (HWND)iupAttribGetStr(ih, "_IUPWIN_SPIN");
+  HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
   if (hSpin)
   {
     int inc;
@@ -1345,7 +1345,7 @@ static int winTextSetSpinIncAttrib(Ihandle* ih, const char* value)
 
 static int winTextSetSpinValueAttrib(Ihandle* ih, const char* value)
 {
-  HWND hSpin = (HWND)iupAttribGetStr(ih, "_IUPWIN_SPIN");
+  HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
   if (hSpin)
   {
     int pos;
@@ -1357,7 +1357,7 @@ static int winTextSetSpinValueAttrib(Ihandle* ih, const char* value)
 
 static char* winTextGetSpinValueAttrib(Ihandle* ih)
 {
-  HWND hSpin = (HWND)iupAttribGetStr(ih, "_IUPWIN_SPIN");
+  HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
   if (hSpin)
   {
     int pos = SendMessage(hSpin, UDM_GETPOS32, 0, 0);
@@ -1472,7 +1472,7 @@ static int winTextSpinWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   if (msg_info->code == UDN_DELTAPOS)
   {
     NMUPDOWN *updown = (NMUPDOWN*)msg_info;
-    HWND hSpin = (HWND)iupAttribGetStr(ih, "_IUPWIN_SPIN");
+    HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
     int pos = updown->iPos+updown->iDelta;
     int min, max;
     SendMessage(hSpin, UDM_GETRANGE32, (WPARAM)&min, (LPARAM)&max);
@@ -1577,7 +1577,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       }
       else if (wp == VK_INSERT && ih->data->has_formatting)
       {
-        if (iupStrBoolean(iupAttribGetStr(ih, "OVERWRITE")))
+        if (iupStrBoolean(iupAttribGet(ih, "OVERWRITE")))
           iupAttribSetStr(ih, "OVERWRITE", "OFF"); /* toggle from ON to OFF */
         else
           iupAttribSetStr(ih, "OVERWRITE", "ON");  /* toggle from OFF to ON */
@@ -1733,7 +1733,7 @@ static void winTextCreateSpin(Ihandle* ih)
   if (iupStrBoolean(iupAttribGetStr(ih, "SPINWRAP")))
     dwStyle |= UDS_WRAP;
 
-  if (iupStrBoolean(iupAttribGetStrDefault(ih, "SPINAUTO")))
+  if (iupStrBoolean(iupAttribGetStr(ih, "SPINAUTO")))
     dwStyle |= UDS_SETBUDDYINT;
 
   hSpin = CreateWindowEx(0, /* extended window style */
@@ -1767,7 +1767,7 @@ static void winTextCreateSpin(Ihandle* ih)
 
 static void winTextLayoutUpdateMethod(Ihandle* ih)
 {
-  HWND hSpin = (HWND)iupAttribGetStr(ih, "_IUPWIN_SPIN");
+  HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
   if (hSpin)
   {
     if (iupStrEqualNoCase(iupAttribGetStr(ih, "SPINALIGN"), "LEFT"))
@@ -1800,10 +1800,10 @@ static int winTextMapMethod(Ihandle* ih)
   if (!ih->parent)
     return IUP_ERROR;
 
-  if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     dwStyle |= WS_TABSTOP;
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "FORMATTING")))
+  if (iupStrBoolean(iupAttribGet(ih, "FORMATTING")))
   {
     /* enable richedit 3.0 */
     static HMODULE richedit = NULL;
@@ -1843,7 +1843,7 @@ static int winTextMapMethod(Ihandle* ih)
   {
     dwStyle |= ES_AUTOHSCROLL|ES_NOHIDESEL;
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "PASSWORD")))
+    if (iupStrBoolean(iupAttribGet(ih, "PASSWORD")))
       dwStyle |= ES_PASSWORD;
   }
 
@@ -1866,7 +1866,7 @@ static int winTextMapMethod(Ihandle* ih)
     SendMessage(ih->handle, EM_SETTABSTOPS, (WPARAM)1L, (LPARAM)&tabsize);
   }
 
-  if (!ih->data->is_multiline && iupStrBoolean(iupAttribGetStr(ih, "SPIN")))
+  if (!ih->data->is_multiline && iupStrBoolean(iupAttribGet(ih, "SPIN")))
     winTextCreateSpin(ih);
 
   /* configure for DRAG&DROP */
@@ -1896,40 +1896,41 @@ void iupdrvTextInitClass(Iclass* ic)
 
   /* Driver Dependent Attribute functions */
 
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winTextSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winTextSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winTextSetBgColorAttrib, "TXTBGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  
-  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, winTextSetVisibleAttrib, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winTextSetBgColorAttrib, "TXTBGCOLOR", NULL, IUPAF_NOT_MAPPED);  
+  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, winTextSetVisibleAttrib, "YES", NULL, IUPAF_NO_INHERIT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "TXTFGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "TXTFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* usually black */    
 
   /* IupText only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, winTextSetAlignmentAttrib, "ALEFT", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, winTextSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", winTextGetValueAttrib, winTextSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTEDTEXT", winTextGetSelectedTextAttrib, winTextSetSelectedTextAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTION", winTextGetSelectionAttrib, winTextSetSelectionAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTIONPOS", winTextGetSelectionPosAttrib, winTextSetSelectionPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARET", winTextGetCaretAttrib, winTextSetCaretAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARETPOS", winTextGetCaretPosAttrib, winTextSetCaretPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INSERT", NULL, winTextSetInsertAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "APPEND", NULL, winTextSetAppendAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABSIZE", NULL, winTextSetTabSizeAttrib, "8", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "READONLY", winTextGetReadOnlyAttrib, winTextSetReadOnlyAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "NC", iupTextGetNCAttrib, winTextSetNCAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, winTextSetClipboardAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winTextSetCueBannerAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORMATTING", winTextGetFormattingAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);  /* after mapping can not set */
-  iupClassRegisterAttribute(ic, "FILTER", NULL, winTextSetFilterAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "REMOVEFORMATTING", NULL, winTextSetRemoveFormattingAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OVERWRITE", NULL, winTextSetOverwriteAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, winTextSetScrollToAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, winTextSetScrollToPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPINMIN", NULL, winTextSetSpinMinAttrib, "0", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPINMAX", NULL, winTextSetSpinMaxAttrib, "100", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPININC", NULL, winTextSetSpinIncAttrib, "1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPINVALUE", winTextGetSpinValueAttrib, winTextSetSpinValueAttrib, "0", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, winTextSetAlignmentAttrib, "ALEFT", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, winTextSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "VALUE", winTextGetValueAttrib, winTextSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTEDTEXT", winTextGetSelectedTextAttrib, winTextSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTION", winTextGetSelectionAttrib, winTextSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTIONPOS", winTextGetSelectionPosAttrib, winTextSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARET", winTextGetCaretAttrib, winTextSetCaretAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETPOS", winTextGetCaretPosAttrib, winTextSetCaretPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERT", NULL, winTextSetInsertAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "APPEND", NULL, winTextSetAppendAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSIZE", NULL, winTextSetTabSizeAttrib, "8", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "READONLY", winTextGetReadOnlyAttrib, winTextSetReadOnlyAttrib, NULL, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "NC", iupTextGetNCAttrib, winTextSetNCAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, winTextSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winTextSetCueBannerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATTING", winTextGetFormattingAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);  /* after mapping can not set */
+  iupClassRegisterAttribute(ic, "FILTER", NULL, winTextSetFilterAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REMOVEFORMATTING", NULL, winTextSetRemoveFormattingAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OVERWRITE", NULL, winTextSetOverwriteAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, winTextSetScrollToAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, winTextSetScrollToPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINMIN", NULL, winTextSetSpinMinAttrib, "0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINMAX", NULL, winTextSetSpinMaxAttrib, "100", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPININC", NULL, winTextSetSpinIncAttrib, "1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINVALUE", winTextGetSpinValueAttrib, winTextSetSpinValueAttrib, "0", NULL, IUPAF_NO_INHERIT);
 }

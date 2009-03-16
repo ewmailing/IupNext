@@ -199,11 +199,7 @@ int iupSetFontAttrib(Ihandle* ih, const char* value)
 
 char* iupGetFontAttrib(Ihandle* ih)
 {
-  char* value = iupAttribGetStrInherit(ih, "STANDARDFONT");
-  if (value)
-    return value;
-  else
-    return IupGetGlobal("DEFAULTFONT");
+  return iupAttribGetStr(ih, "STANDARDFONT");
 }
 
 void iupUpdateStandardFontAttrib(Ihandle* ih)
@@ -565,7 +561,7 @@ int iupFontParseWin(const char *value, char *fontname, int *height, int *bold, i
 
       value += c; /* jump only the attribute */
 
-      if(value[0] == ':')  /* terminou lista de atributos */
+      if(value[0] == ':')  /* end of attribute list */
       {
         value++;
         break;

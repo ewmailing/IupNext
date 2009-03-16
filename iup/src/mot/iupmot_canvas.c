@@ -52,14 +52,14 @@ static void motDialogScrollbarCallback(Widget w, XtPointer client_data, XtPointe
 
   if (op > IUP_SBDRAGV)
   {
-    iupCanvasCalcScrollRealPos(iupAttribGetFloatDefault(ih,"XMIN"), iupAttribGetFloatDefault(ih,"XMAX"), &posx, 
+    iupCanvasCalcScrollRealPos(iupAttribGetFloat(ih,"XMIN"), iupAttribGetFloat(ih,"XMAX"), &posx, 
                                IUP_SB_MIN, IUP_SB_MAX, ipage, &ipos);
     ih->data->posx = (float)posx;
     posy = ih->data->posy;
   }
   else
   {
-    iupCanvasCalcScrollRealPos(iupAttribGetFloatDefault(ih,"YMIN"), iupAttribGetFloatDefault(ih,"YMAX"), &posy, 
+    iupCanvasCalcScrollRealPos(iupAttribGetFloat(ih,"YMIN"), iupAttribGetFloat(ih,"YMAX"), &posy, 
                                IUP_SB_MIN, IUP_SB_MAX, ipage, &ipos);
     ih->data->posy = (float)posy;
     posx = ih->data->posx;
@@ -106,8 +106,8 @@ static void motCanvasExposeCallback(Widget w, Ihandle *ih, XtPointer call_data)
   cb = (IFnff)IupGetCallback(ih,"ACTION");
   if (cb)
   {
-    if (!iupAttribGetStr(ih, "_IUPMOT_NO_BGCOLOR"))
-      motCanvasSetBgColorAttrib(ih, iupAttribGetStrDefault(ih, "BGCOLOR"));  /* reset to update window attributes */
+    if (!iupAttribGet(ih, "_IUPMOT_NO_BGCOLOR"))
+      motCanvasSetBgColorAttrib(ih, iupAttribGetStr(ih, "BGCOLOR"));  /* reset to update window attributes */
 
     cb (ih, ih->data->posx, ih->data->posy);
   }
@@ -148,7 +148,7 @@ static void motCanvasInputCallback(Widget w, Ihandle *ih, XtPointer call_data)
           float posy = ih->data->posy;
           int delta = but_evt->button==Button4? 1: -1;
           int op = but_evt->button==Button4? IUP_SBUP: IUP_SBDN;
-          posy -= delta*iupAttribGetFloatDefault(ih, "DY")/10.0f;
+          posy -= delta*iupAttribGetFloat(ih, "DY")/10.0f;
           IupSetfAttribute(ih, "POSY", "%g", posy);
           if (scb)
             scb(ih,op,ih->data->posx,ih->data->posy);
@@ -178,22 +178,21 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
     double posx, xmin, xmax, linex;
     float dx;
     int iposx, ipagex, ilinex;
-    Widget sb_horiz, sb_win = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+    Widget sb_horiz, sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
     XtVaGetValues(sb_win, XmNhorizontalScrollBar, &sb_horiz, NULL);
     if (!sb_horiz) return 1;
 
     if (!iupStrToFloat(value, &dx))
       return 1;
 
-    xmin = iupAttribGetFloatDefault(ih, "XMIN");
-    xmax = iupAttribGetFloatDefault(ih, "XMAX");
+    xmin = iupAttribGetFloat(ih, "XMIN");
+    xmax = iupAttribGetFloat(ih, "XMAX");
     posx = ih->data->posx;
-    linex = iupAttribGetFloat(ih,"LINEX");
 
     iupCanvasCalcScrollIntPos(xmin, xmax, dx, posx, 
                               IUP_SB_MIN, IUP_SB_MAX, &ipagex, &iposx);
 
-    if (linex==0)
+    if (!iupAttribGet(ih,"LINEX"))
     {
       ilinex = ipagex/10;
       if (!ilinex)
@@ -202,13 +201,14 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
     else
     {
       /* line and page convertions are the same */
+      linex = iupAttribGetFloat(ih,"LINEX");
       iupCanvasCalcScrollIntPos(xmin, xmax, linex, 0, 
                                 IUP_SB_MIN, IUP_SB_MAX, &ilinex,  NULL);
     }
 
     if (dx >= (xmax-xmin))
     {
-      if (iupStrBoolean(iupAttribGetStrDefault(ih, "XAUTOHIDE")))
+      if (iupStrBoolean(iupAttribGetStr(ih, "XAUTOHIDE")))
         XtUnmanageChild(sb_horiz);
       else
         XtSetSensitive(sb_horiz, 0);
@@ -239,16 +239,16 @@ static int motCanvasSetPosXAttrib(Ihandle* ih, const char *value)
     double xmin, xmax, dx;
     float posx;
     int iposx, ipagex;
-    Widget sb_horiz, sb_win = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+    Widget sb_horiz, sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
     XtVaGetValues(sb_win, XmNhorizontalScrollBar, &sb_horiz, NULL);
     if (!sb_horiz) return 1;
 
     if (!iupStrToFloat(value, &posx))
       return 1;
 
-    xmin = iupAttribGetFloatDefault(ih, "XMIN");
-    xmax = iupAttribGetFloatDefault(ih, "XMAX");
-    dx = iupAttribGetFloatDefault(ih, "DX");
+    xmin = iupAttribGetFloat(ih, "XMIN");
+    xmax = iupAttribGetFloat(ih, "XMAX");
+    dx = iupAttribGetFloat(ih, "DX");
 
     iupCanvasCalcScrollIntPos(xmin, xmax, dx, posx, 
                               IUP_SB_MIN, IUP_SB_MAX, &ipagex, &iposx);
@@ -265,22 +265,21 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
     double posy, ymin, ymax, liney;
     float dy;
     int iposy, ipagey, iliney;
-    Widget sb_vert, sb_win = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+    Widget sb_vert, sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
     XtVaGetValues(sb_win, XmNverticalScrollBar, &sb_vert, NULL);
     if (!sb_vert) return 1;
 
     if (!iupStrToFloat(value, &dy))
       return 1;
 
-    ymin = iupAttribGetFloatDefault(ih, "YMIN");
-    ymax = iupAttribGetFloatDefault(ih, "YMAX");
+    ymin = iupAttribGetFloat(ih, "YMIN");
+    ymax = iupAttribGetFloat(ih, "YMAX");
     posy = ih->data->posy;
-    liney = iupAttribGetFloat(ih,"LINEY");
 
     iupCanvasCalcScrollIntPos(ymin, ymax, dy, posy, 
                               IUP_SB_MIN, IUP_SB_MAX, &ipagey, &iposy);
 
-    if (liney==0)
+    if (!iupAttribGet(ih,"LINEY"))
     {
       iliney = ipagey/10;
       if (!iliney)
@@ -289,13 +288,14 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
     else
     {
       /* line and page convertions are the same */
+      liney = iupAttribGetFloat(ih,"LINEY");
       iupCanvasCalcScrollIntPos(ymin, ymax, liney, 0, 
                                 IUP_SB_MIN, IUP_SB_MAX, &iliney,  NULL);
     }
 
     if (dy >= (ymax-ymin))
     {
-      if (iupStrBoolean(iupAttribGetStrDefault(ih, "YAUTOHIDE")))
+      if (iupStrBoolean(iupAttribGetStr(ih, "YAUTOHIDE")))
         XtUnmanageChild(sb_vert);
       else
         XtSetSensitive(sb_vert, 0);
@@ -326,16 +326,16 @@ static int motCanvasSetPosYAttrib(Ihandle* ih, const char *value)
     double ymin, ymax, dy;
     float posy;
     int iposy, ipagey;
-    Widget sb_vert, sb_win = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+    Widget sb_vert, sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
     XtVaGetValues(sb_win, XmNverticalScrollBar, &sb_vert, NULL);
     if (!sb_vert) return 1;
 
     if (!iupStrToFloat(value, &posy))
       return 1;
 
-    ymin = iupAttribGetFloatDefault(ih, "YMIN");
-    ymax = iupAttribGetFloatDefault(ih, "YMAX");
-    dy = iupAttribGetFloatDefault(ih, "DY");
+    ymin = iupAttribGetFloat(ih, "YMIN");
+    ymax = iupAttribGetFloat(ih, "YMAX");
+    dy = iupAttribGetFloat(ih, "DY");
 
     iupCanvasCalcScrollIntPos(ymin, ymax, dy, posy, 
                               IUP_SB_MIN, IUP_SB_MAX, &ipagey, &iposy);
@@ -380,14 +380,13 @@ static int motCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
   Pixel color;
 
   /* ignore given value, must use only from parent for the scrollbars */
-  char* parent_value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!parent_value) parent_value = IupGetGlobal("DLGBGCOLOR");
+  char* parent_value = iupBaseNativeParentGetBgColor(ih);
 
   color = iupmotColorGetPixelStr(parent_value);
   if (color != (Pixel)-1)
   {
     Widget sb;
-    Widget sb_win = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+    Widget sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
 
     iupmotSetBgColor(sb_win, color);
 
@@ -413,7 +412,7 @@ static int motCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
 
 static void motCanvasLayoutUpdateMethod(Ihandle *ih)
 {
-  Widget sb_win = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   Dimension border;
 
   /* IMPORTANT:
@@ -486,7 +485,7 @@ static int motCanvasMapMethod(Ihandle* ih)
   {
     iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP); /* include in navigation */
 
-    if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
       iupmotSetArg(args[num_args++], XmNtraversalOn, True)
     else
       iupmotSetArg(args[num_args++], XmNtraversalOn, False)
@@ -505,7 +504,7 @@ static int motCanvasMapMethod(Ihandle* ih)
   visual = IupGetAttribute(ih, "VISUAL");   /* defined by the OpenGL Canvas or NULL */
   if (visual)
   {
-    Colormap colormap = (Colormap)iupAttribGetStr(ih, "COLORMAP");
+    Colormap colormap = (Colormap)iupAttribGet(ih, "COLORMAP");
     if (colormap)
       iupmotSetArg(args[num_args++], XmNcolormap,colormap);
 
@@ -534,7 +533,7 @@ static int motCanvasMapMethod(Ihandle* ih)
     XSetWindowAttributes attrs;
     attrs.bit_gravity = ForgetGravity; /* For the DrawingArea widget gets Expose events when you resize it to be smaller. */
 
-    if (iupStrBoolean(iupAttribGetStrDefault(ih, "BACKINGSTORE")))
+    if (iupStrBoolean(iupAttribGetStr(ih, "BACKINGSTORE")))
       attrs.backing_store = WhenMapped;
     else
       attrs.backing_store = NotUseful;
@@ -594,11 +593,11 @@ static int motCanvasMapMethod(Ihandle* ih)
   }
 
   /* ensure the default values, that are different from the native ones */
-  motCanvasSetDXAttrib(ih, iupAttribGetStrDefault(ih, "DX"));
-  motCanvasSetDYAttrib(ih, iupAttribGetStrDefault(ih, "DY"));
-  motCanvasSetPosXAttrib(ih, iupAttribGetStrDefault(ih, "POSX"));
-  motCanvasSetPosYAttrib(ih, iupAttribGetStrDefault(ih, "POSY"));
-  motCanvasSetBgColorAttrib(ih, iupAttribGetStrDefault(ih, "BGCOLOR"));
+  motCanvasSetDXAttrib(ih, iupAttribGetStr(ih, "DX"));
+  motCanvasSetDYAttrib(ih, iupAttribGetStr(ih, "DY"));
+  motCanvasSetPosXAttrib(ih, iupAttribGetStr(ih, "POSX"));
+  motCanvasSetPosYAttrib(ih, iupAttribGetStr(ih, "POSY"));
+  motCanvasSetBgColorAttrib(ih, iupAttribGetStr(ih, "BGCOLOR"));
 
   /* initialize the widget */
   XtRealizeWidget(sb_win);
@@ -615,22 +614,22 @@ void iupdrvCanvasInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motCanvasSetBgColorAttrib, "255 255 255", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motCanvasSetBgColorAttrib, "255 255 255", NULL, IUPAF_DEFAULT);
   
   /* IupCanvas only */
-  iupClassRegisterAttribute(ic, "DRAWSIZE", motCanvasGetClientSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, "ARROW", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWSIZE", motCanvasGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, "ARROW", NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "DX", NULL, motCanvasSetDXAttrib, "0.1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DY", NULL, motCanvasSetDYAttrib, "0.1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, motCanvasSetPosXAttrib, "0.0", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, motCanvasSetPosYAttrib, "0.0", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "DX", NULL, motCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DY", NULL, motCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, motCanvasSetPosXAttrib, "0.0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, motCanvasSetPosYAttrib, "0.0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
 
   /* IupCanvas X only */
-  iupClassRegisterAttribute(ic, "XWINDOW", motCanvasGetXWindowAttrib, NULL, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "XDISPLAY", motCanvasGetXDisplayAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "XSCREEN", motCanvasGetXScreenAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKINGSTORE", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "XWINDOW", motCanvasGetXWindowAttrib, NULL, NULL, NULL, IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "XDISPLAY", motCanvasGetXDisplayAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "XSCREEN", motCanvasGetXScreenAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "BACKINGSTORE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
 }

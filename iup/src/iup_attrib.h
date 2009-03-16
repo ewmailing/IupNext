@@ -13,13 +13,13 @@ extern "C" {
 
 /** \defgroup attrib Attribute Environment 
  * \par
- * The attributes that are not stored at the control, 
- * are stored in a hash table (see \ref table).
+ * When attributes are not stored at the control  
+ * they are stored in a hash table (see \ref table).
  * \par
  * As a general rule use:
- * - IupGetAttribute, IupSetAttribute, ... : when care about control implementation, inheritance, hash table and default value
- * - iupAttribGetStr, iupAttribSetStr, ... : when NOT care, ONLY access the hash table
- * - iupAttribGetStrDefault                : same as iupAttribGetStr, but checks the default value
+ * - IupGetAttribute, IupSetAttribute, ... : when care about control implementation, hash table, inheritance and default value
+ * - iupAttribGetStr,Int,Float: when care about inheritance, hash table and default value
+ * - iupAttribGet,... : ONLY access the hash table
  * These different functions have very different performances and results. So use them wiselly.
  * \par
  * See \ref iup_attrib.h 
@@ -28,96 +28,73 @@ extern "C" {
 
 /** Returns true if the attribute name if in the internal format "_IUP...".
  * \ingroup attrib */
-int iupAttribIsInternal(const char* name);
+#define iupAttribIsInternal(_name) ((_name[0] == '_' && _name[1] == 'I' && _name[2] == 'U' && _name[3] == 'P')? 1: 0)
 
 /** Returns true if the attribute name is a known pointer.
  * \ingroup attrib */
-int iupAttribIsPointer(const char *name);
+int iupAttribIsPointer(Ihandle* ih, const char *name);
 
-/** Returns true if the attribute is inheritable. 
- * valid only for a small group of common attributes.
- * Not used internally. The inheritance in handled directly by 
- * the Attribute Function registration in the \ref iclass.
- * \ingroup attrib */
-int iupAttribIsInheritable(const char *name);
-
-/** Sets the attribute only in the attribute environment as a pointer.
+/** Sets the attribute only in the hash table as a pointer.
  * It ignores children.
  * \ingroup attrib */
 void iupAttribSetStr(Ihandle* ih, const char* name, const char* value);
 
-/** Sets the attribute only in the attribute environment as a string. 
+/** Sets the attribute only in the hash table as a string. 
  * The string is internally duplicated.
  * It ignores children.
  * \ingroup attrib */
 void iupAttribStoreStr(Ihandle* ih, const char* name, const char* value);
 
-/** Sets the attribute only in the attribute environment as a string. 
+/** Sets the attribute only in the hash table as a string. 
  * The string is internally duplicated. Use same format as sprintf.
  * It ignores children.
  * \ingroup attrib */
 void iupAttribSetStrf(Ihandle *ih, const char* name, const char* format, ...);
 
-/** Sets an integer attribute only in the attribute environment.
+/** Sets an integer attribute only in the hash table.
  * It will be stored as a string.
  * It ignores children.
  * \ingroup attrib */
 void iupAttribSetInt(Ihandle *ih, const char* name, int num);
 
-/** Sets an floating point attribute only in the attribute environment.
+/** Sets an floating point attribute only in the hash table.
  * It will be stored as a string.
  * It ignores children.
  * \ingroup attrib */
 void iupAttribSetFloat(Ihandle *ih, const char* name, float num);
 
-/** Returns the attribute from the attribute environment. 
- * It ignores inheritance.
+/** Returns the attribute from the hash table only. 
+ * \ingroup attrib */
+char* iupAttribGet(Ihandle* ih, const char* name);
+
+/** Returns the attribute from the hash table only, 
+ * but if not defined then checks in its parent tree.
+ * \ingroup attrib */
+char* iupAttribGetInherit(Ihandle* ih, const char* name);
+
+/** Returns the attribute from the hash table of a native parent.
+ * Don't check for default values. Don't check at the element.
+ * Used for BGCOLOR and BACKGROUND attributes.
+ * \ingroup attrib */
+char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name);
+
+/** Returns the attribute from the hash table as a string, 
+ * but if not defined then checks in its parent tree if allowed by the control implementation, 
+ * if still not defined then returns the registered default value if any.
  * \ingroup attrib */
 char* iupAttribGetStr(Ihandle* ih, const char* name);   
 
-/** Returns the attribute from the attribute environment, 
- * but if not defined then returns the registered default value if any.
- * It ignores inheritance. 
- * \ingroup attrib */
-char* iupAttribGetStrDefault(Ihandle* ih, const char* name);
-
-/** Returns the attribute from the attribute environment, 
- * but if not defined then checks in the parent and goes recursive in the child tree.
- * \ingroup attrib */
-char* iupAttribGetStrInherit(Ihandle* ih, const char* name);
-
-/** Returns the attribute from the attribute environment, 
- * but checks in the native parents.
- * \ingroup attrib */
-char* iupAttribGetStrNativeParent(Ihandle* ih, const char* name);
-
-/** Returns the attribute from the attribute environment as an integer. 
- * It ignores inheritance.
+/** Returns the attribute from the hash table as an integer, 
+ * but if not defined then checks in its parent tree if allowed by the control implementation, 
+ * if still not defined then returns the registered default value if any.
  * \ingroup attrib */
 int iupAttribGetInt(Ihandle* ih, const char* name);
 
-/** Returns the attribute from the attribute environment as an integer, 
- * but if not defined then returns the registered default value if any.
- * It ignores inheritance.
- * \ingroup attrib */
-int iupAttribGetIntDefault(Ihandle* ih, const char* name);
-
-/** Returns the attribute from the attribute environment as an integer, 
- * but if not defined then checks in its parent tree, 
- * if still not defined returns the registered default value if any.
- * \ingroup attrib */
-int iupAttribGetIntInheritDefault(Ihandle* ih, const char* name);
-
-/** Returns the attribute from the attribute environment as a floating point. 
- * It ignores inheritance.
+/** Returns the attribute from the hash table as a floating point, 
+ * but if not defined then checks in its parent tree if allowed by the control implementation,
+ * if still not defined then returns the registered default value if any.
  * \ingroup attrib */
 float iupAttribGetFloat(Ihandle* ih, const char* name);
-
-/** Returns the attribute from the attribute environment as a floating point, 
- * but if not defined then returns the registered default value if any.
- * It ignores inheritance.
- * \ingroup attrib */
-float iupAttribGetFloatDefault(Ihandle* ih, const char* name);
 
 /** Set an internal name to a handle.
  * \ingroup attrib */
@@ -132,11 +109,6 @@ void iupAttribUpdate(Ihandle* ih);
  * call the class SetAttribute if the attribute is defined.
  * Called only after the element is mapped. */
 void iupAttribUpdateFromParent(Ihandle* ih);
-
-/* Recursive function to notify the attribute change to the children 
-   BUT does NOT change their environment. 
-   Notify ONLY if not defined in the child. */
-void iupAttribNotifyChildren(Ihandle *ih, const char* name, const char *value);
 
 
 

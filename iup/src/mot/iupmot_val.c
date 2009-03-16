@@ -155,7 +155,7 @@ static int motValSetBackgroundAttrib(Ihandle* ih, const char* value)
   Pixel color;
 
   /* ignore given value, must use only from parent */
-  value = iupAttribGetStrNativeParent(ih, "BACKGROUND");
+  value = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
 
   color = iupmotColorGetPixelStr(value);
   if (color != (Pixel)-1)
@@ -354,10 +354,10 @@ static void motValButtonPressReleaseEvent(Widget w, Ihandle* ih, XButtonEvent* e
 
 static void motValFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
 {
-  if (iupAttribGetStr(ih, "_IUPVAL_IGNOREFOCUS"))
+  if (iupAttribGet(ih, "_IUPVAL_IGNOREFOCUS"))
     return;
 
-  if (evt->type == FocusOut && iupAttribGetStr(ih, "_IUPVAL_IGNOREKILLFOCUS"))
+  if (evt->type == FocusOut && iupAttribGet(ih, "_IUPVAL_IGNOREKILLFOCUS"))
   {
     iupAttribSetStr(ih, "_IUPVAL_IGNOREKILLFOCUS", NULL);
     return;
@@ -383,7 +383,7 @@ static int motValMapMethod(Ihandle* ih)
   iupmotSetArg(args[num_args++], XmNwidth, 10);  /* default width to avoid 0 */
   iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
   /* Primitive */
-  if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     iupmotSetArg(args[num_args++], XmNtraversalOn, True)
   else
     iupmotSetArg(args[num_args++], XmNtraversalOn, False)
@@ -468,14 +468,14 @@ void iupdrvValInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motValSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motValSetBackgroundAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motValSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motValSetBackgroundAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
 
   /* IupVal only */
-  iupClassRegisterAttribute(ic, "VALUE", iupValGetValueAttrib, motValSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);  
-  iupClassRegisterAttribute(ic, "PAGESTEP", iupValGetPageStepAttrib, motValSetPageStepAttrib, "0.1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWTICKS", iupValGetShowTicksAttrib, motValSetShowTicksAttrib, "0", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "STEP", iupValGetStepAttrib, motValSetStepAttrib, "0.01", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", iupValGetValueAttrib, motValSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);  
+  iupClassRegisterAttribute(ic, "PAGESTEP", iupValGetPageStepAttrib, motValSetPageStepAttrib, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWTICKS", iupValGetShowTicksAttrib, motValSetShowTicksAttrib, "0", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "STEP", iupValGetStepAttrib, motValSetStepAttrib, "0.01", NULL, IUPAF_NO_INHERIT);
 }

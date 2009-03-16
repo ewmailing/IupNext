@@ -79,7 +79,11 @@ Ihandle *IupGetHandle(const char *name)
 Ihandle* IupSetHandle(const char *name, Ihandle *ih)
 {
   Ihandle *old_ih;
+
   iupASSERT(name!=NULL);
+  if (!name)
+    return NULL;
+
   old_ih = iupTableGet(inames_strtable, name);
   if (ih != NULL)
   {
@@ -98,9 +102,12 @@ Ihandle* IupSetHandle(const char *name, Ihandle *ih)
 int IupGetAllNames(char *names[], int n)
 {
   int i = 0;
-  char* name = iupTableFirst(inames_strtable);
-  iupASSERT(names!=NULL);
-  iupASSERT(n > 0);
+  char* name;
+
+  if (!names || !n)
+    return iupTableCount(inames_strtable);
+
+  name = iupTableFirst(inames_strtable);
   while (name)
   {
     names[i] = name;
@@ -113,12 +120,30 @@ int IupGetAllNames(char *names[], int n)
   return i;
 }
 
-int IupGetAllDialogs(char *names[], int n)
+static int iNamesCountDialogs(void)
 {
   int i = 0;
   char* name = iupTableFirst(inames_strtable);
-  iupASSERT(names!=NULL);
-  iupASSERT(n > 0);
+  while (name)
+  {
+    Ihandle* dlg = (Ihandle*)iupTableGetCurr(inames_strtable);
+    if (iupObjectCheck(dlg) && dlg->iclass->nativetype == IUP_TYPEDIALOG)
+      i++;
+
+    name = iupTableNext(inames_strtable);
+  }
+  return i;
+}
+
+int IupGetAllDialogs(char *names[], int n)
+{
+  int i = 0;
+  char* name;
+
+  if (!names || !n)
+    return iNamesCountDialogs();
+
+  name = iupTableFirst(inames_strtable);
   while (name)
   {
     Ihandle* dlg = (Ihandle*)iupTableGetCurr(inames_strtable);

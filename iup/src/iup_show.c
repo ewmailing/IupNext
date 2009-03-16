@@ -59,9 +59,7 @@ static void iShowUpdateVisible(Ihandle* ih)
   /* although default is VISIBLE=YES, 
      when mapped the element is hidden. 
      So we must manually update the visible state. */
-  char* value = iupAttribGetStrInherit(ih, "VISIBLE");
-  if (!value) value = "YES";
-
+  char* value = iupAttribGetStr(ih, "VISIBLE");
   iupClassObjectSetAttribute(ih, "VISIBLE", value, &inherit);
 }
 
@@ -91,7 +89,7 @@ int IupMap(Ihandle* ih)
     return IUP_ERROR;
   }
 
-  /* update FONT */
+  /* update FONT, must be the before several others */
   if (ih->iclass->nativetype != IUP_TYPEVOID &&
       ih->iclass->nativetype != IUP_TYPEIMAGE &&
       ih->iclass->nativetype != IUP_TYPEMENU)

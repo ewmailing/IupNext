@@ -40,7 +40,7 @@ void iupdrvFrameGetDecorOffset(Ihandle* ih, int *x, int *y)
     *y = 2;
   }
 
-  if (iupAttribGetStr(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGetStr(ih, "TITLE"))
+  if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGet(ih, "TITLE"))
   {
     (*y) += iupFrameGetTitleHeight(ih);
   }
@@ -68,7 +68,7 @@ static void winFrameDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   iupwinDrawParentBackground(ih, hDC, &drawitem->rcItem);
 
-  if (iupAttribGetStr(ih, "_IUPFRAME_HAS_TITLE"))
+  if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE"))
   {
     int x, y;
     HFONT hOldFont, hFont = (HFONT)iupwinGetHFontAttrib(ih);
@@ -99,7 +99,7 @@ static void winFrameDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
     else
     {
       unsigned char r, g, b;
-      char* color = iupAttribGetStrInherit(ih, "FGCOLOR");
+      char* color = iupAttribGetInherit(ih, "FGCOLOR");
       if (!color)
       {
         if (!iupwinDrawGetThemeFrameFgColor(ih->handle, &fgcolor))
@@ -160,11 +160,11 @@ static int winFrameMapMethod(Ihandle* ih)
      Also when in Vista COMPOSITE=YES is not working,
      to reduce flicker we implement our own frame with double buffer. */
 
-  title = iupAttribGetStr(ih, "TITLE");
+  title = iupAttribGet(ih, "TITLE");
   if (title)
     iupAttribSetStr(ih, "_IUPFRAME_HAS_TITLE", "1");
 
-  if (iupAttribGetIntDefault(IupGetDialog(ih), "COMPOSITED"))
+  if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
     dwStyleEx |= WS_EX_COMPOSITED;
   else
     dwStyle |= WS_CLIPCHILDREN;
@@ -189,9 +189,9 @@ void iupdrvFrameInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);  
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "0 0 0", IUP_NOT_MAPPED, IUP_INHERIT);  /* black */    
-  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "0 0 0", NULL, IUPAF_NOT_MAPPED);  /* black */    
+  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }

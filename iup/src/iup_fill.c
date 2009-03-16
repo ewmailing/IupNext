@@ -152,13 +152,13 @@ static char* iFillGetExpandAttrib(Ihandle* ih)
 
 static void iFillUpdateSize(Ihandle* ih)
 {
-  char* value = iupAttribGetStr(ih, "SIZE");
+  char* value = iupAttribGet(ih, "SIZE");
   if (value) 
   { 
     iFillSetSizeAttrib(ih, value);
     iupAttribSetStr(ih, "SIZE", NULL);
   }
-  value = iupAttribGetStr(ih, "RASTERSIZE");
+  value = iupAttribGet(ih, "RASTERSIZE");
   if (value) 
   { 
     iFillSetRasterSizeAttrib(ih, value);
@@ -231,11 +231,11 @@ Iclass* iupFillGetClass(void)
   iupBaseRegisterCommonAttrib(ic);
 
   /* Overwrite Common */
-  iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iFillSetSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iFillSetRasterSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iFillSetSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iFillSetRasterSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Base */
-  iupClassRegisterAttribute(ic, "EXPAND", iFillGetExpandAttrib, NULL, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPAND", iFillGetExpandAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }

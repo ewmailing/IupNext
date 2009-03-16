@@ -78,21 +78,21 @@ int iupmaskMatSet(Ihandle* ih, const char* mask_str, int autofill, int casei, in
 int iupmaskCheck(Ihandle* ih)
 {
   char *val = IupGetAttribute(ih,"VALUE");
-  Imask* mask = (Imask*)IupGetAttribute(ih,"_IUPMASK_DATA");
+  Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
   return iupMaskCheck(mask,val)==1;
 }
 
 int iupmaskMatCheck(Ihandle *ih, int lin, int col)
 {
   char *val = IupMatGetAttribute(ih,"",lin,col);
-  Imask* mask = (Imask*)IupMatGetAttribute(ih,"_IUPMASK_DATA", lin, col);
+  Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
   return iupMaskCheck(mask,val)==1;
 }
 
 int iupmaskGet(Ihandle *ih, char **sval)
 {
   char *val = IupGetAttribute(ih,"VALUE");
-  Imask* mask = (Imask*)IupGetAttribute(ih,"_IUPMASK_DATA");
+  Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
 
   if (iupMaskCheck(mask,val)==1)
   {
@@ -106,7 +106,7 @@ int iupmaskGet(Ihandle *ih, char **sval)
 int iupmaskMatGet(Ihandle *ih, char **sval, int lin, int col)
 {
   char *val = IupMatGetAttribute(ih,"",lin,col);
-  Imask* mask = (Imask*)IupMatGetAttribute(ih,"_IUPMASK_DATA", lin, col);
+  Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
 
   if (iupMaskCheck(mask,val)==1)
   {
@@ -120,7 +120,7 @@ int iupmaskMatGet(Ihandle *ih, char **sval, int lin, int col)
 int iupmaskGetDouble(Ihandle *ih, double *dval)
 {
   char *val = IupGetAttribute(ih,"VALUE");
-  Imask* mask = (Imask*)IupGetAttribute(ih,"_IUPMASK_DATA");
+  Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
 
   if(iupMaskCheck(mask,val)==1)
   {
@@ -135,7 +135,7 @@ int iupmaskGetDouble(Ihandle *ih, double *dval)
 int iupmaskMatGetDouble(Ihandle *ih, double *dval, int lin, int col)
 {
   char *val = IupMatGetAttribute(ih,"",lin,col);
-  Imask* mask = (Imask*)IupMatGetAttribute(ih,"_IUPMASK_DATA", lin, col);
+  Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
 
   if(iupMaskCheck(mask,val)==1)
   {
@@ -150,7 +150,7 @@ int iupmaskMatGetDouble(Ihandle *ih, double *dval, int lin, int col)
 int iupmaskGetFloat(Ihandle *ih, float *fval)
 {
   char *val = IupGetAttribute(ih,"VALUE");
-  Imask* mask = (Imask*)IupGetAttribute(ih,"_IUPMASK_DATA");
+  Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
 
   if(iupMaskCheck(mask,val)==1)
   {
@@ -165,7 +165,7 @@ int iupmaskGetFloat(Ihandle *ih, float *fval)
 int iupmaskMatGetFloat(Ihandle *ih, float *fval, int lin, int col)
 {
   char *val = IupMatGetAttribute(ih,"",lin,col);
-  Imask* mask = (Imask*)IupMatGetAttribute(ih,"_IUPMASK_DATA", lin, col);
+  Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
 
   if (iupMaskCheck(mask,val)==1)
   {
@@ -180,7 +180,7 @@ int iupmaskMatGetFloat(Ihandle *ih, float *fval, int lin, int col)
 int iupmaskGetInt(Ihandle *ih, int *ival)
 {
   char *val = IupGetAttribute(ih,"VALUE");
-  Imask* mask = (Imask*)IupGetAttribute(ih,"_IUPMASK_DATA");
+  Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
 
   if (iupMaskCheck(mask,val)==1)
   {
@@ -195,7 +195,7 @@ int iupmaskGetInt(Ihandle *ih, int *ival)
 int iupmaskMatGetInt(Ihandle *ih, int *ival, int lin, int col)
 {
   char *val = IupMatGetAttribute(ih,"",lin,col);
-  Imask* mask = (Imask*)IupMatGetAttribute(ih,"_IUPMASK_DATA", lin, col);
+  Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
 
   if(iupMaskCheck(mask,val)==1)
   {

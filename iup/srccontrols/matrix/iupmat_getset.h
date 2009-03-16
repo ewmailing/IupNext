@@ -12,24 +12,21 @@
 extern "C" {
 #endif
 
-void* iupMatrixGSSetCell(Ihandle* ih, int lin, int col, const char* v);
-char* iupMatrixGSGetCell(Ihandle* ih, int lin, int col);
+void  iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value);
+char* iupMatrixCellGetValue(Ihandle* ih, int lin, int col);
 
-void  iupMatrixGSSetFocusPosition (Ihandle* ih, const char* v, int call_cb);
-char* iupMatrixGSGetFocusPosition (Ihandle* ih);
+char* iupMatrixGetFgColor(Ihandle* ih, int lin, int col);
+char* iupMatrixGetBgColor(Ihandle* ih, int lin, int col);
+char* iupMatrixGetFont   (Ihandle* ih, int lin, int col);
 
-void  iupMatrixGSSetColAlign(Ihandle* ih, int col);
+void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b);
+void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b);
 
-void  iupMatrixGSSetTitleLine  (Ihandle* ih, int lin);
-void  iupMatrixGSSetTitleColumn(Ihandle* ih, int col);
+void iupMatrixCellUpdateValue(Ihandle* ih);
 
-void  iupMatrixGSSetOrigin(Ihandle* ih, const char* value);
-char* iupMatrixGSGetOrigin(Ihandle* ih);
+char* iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels);
 
-void  iupMatrixGSSetRedraw(Ihandle* ih, const char* value);
-void  iupMatrixGSSetRedrawCell (Ihandle* ih, int lin, int col);
-
-void  iupMatrixGSSetActive(Ihandle* ih, int mode, int lincol, const char* val);
+int   iupMatrixCheckCellPos(Ihandle* ih, int lin, int col);
 
 #ifdef __cplusplus
 }

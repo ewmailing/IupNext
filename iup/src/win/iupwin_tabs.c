@@ -80,7 +80,7 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* value)
   if (!bmp)
     return -1;
 
-  bmp_array = (Iarray*)iupAttribGetStr(ih, "_IUPWIN_BMPARRAY");
+  bmp_array = (Iarray*)iupAttribGet(ih, "_IUPWIN_BMPARRAY");
   if (!bmp_array)
   {
     bmp_array = iupArrayCreate(50, sizeof(HBITMAP));
@@ -162,9 +162,9 @@ static int winTabsUsingXPStyles(Ihandle* ih)
 static void winTabsDrawPageBackground(Ihandle* ih, HDC hDC, RECT* rect)
 {
   unsigned char r=0, g=0, b=0;
-  char* color = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!color) color = iupAttribGetStrNativeParent(ih, "BACKGROUND");
-  if (!color) color = iupAttribGetStr(ih, "BACKGROUND");
+  char* color = iupAttribGetInheritNativeParent(ih, "BGCOLOR");
+  if (!color) color = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
+  if (!color) color = iupAttribGet(ih, "BACKGROUND");
   if (!color) color = IupGetGlobal("DLGBGCOLOR");
   iupStrToRGB(color, &r, &g, &b);
   SetDCBrushColor(hDC, RGB(r,g,b));
@@ -209,7 +209,7 @@ static HWND winTabCreatePageWindow(Ihandle* ih)
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, 
       dwStyleEx = WS_EX_CONTROLPARENT; 
 
-  if (iupAttribGetIntDefault(IupGetDialog(ih), "COMPOSITED"))
+  if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
     dwStyleEx |= WS_EX_COMPOSITED;
   else
     dwStyle |= WS_CLIPCHILDREN;
@@ -394,7 +394,7 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     if (cb)
     {
       Ihandle* child = IupGetChild(ih, pos);
-      Ihandle* prev_child = (Ihandle*)iupAttribGetStr(ih, "_IUPTABS_PREV_CHILD");
+      Ihandle* prev_child = (Ihandle*)iupAttribGet(ih, "_IUPTABS_PREV_CHILD");
       iupAttribSetStr(ih, "_IUPTABS_PREV_CHILD", NULL);
 
       cb(ih, child, prev_child);
@@ -447,9 +447,9 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     if (pos == 0)
       ShowWindow(tab_page, SW_SHOW);
 
-    tabtitle = iupAttribGetStr(child, "TABTITLE");
+    tabtitle = iupAttribGet(child, "TABTITLE");
     if (!tabtitle) tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
-    tabimage = iupAttribGetStr(child, "TABIMAGE");
+    tabimage = iupAttribGet(child, "TABIMAGE");
     if (!tabimage) tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
     if (!tabtitle && !tabimage)
       tabtitle = "     ";
@@ -499,7 +499,7 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
         }
       }
 
-      iupwinRedrawNow(ih);
+      iupdrvDisplayRedraw(ih);
     }
   }
 }
@@ -508,7 +508,7 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
 {
   if (ih->handle)
   {
-    HWND tab_page = (HWND)iupAttribGetStr(child, "_IUPTAB_CONTAINER");
+    HWND tab_page = (HWND)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (tab_page)
     {
       int pos = winTabsGetPageWindowPos(ih, tab_page);
@@ -541,7 +541,7 @@ static int winTabsMapMethod(Ihandle* ih)
   if (ih->data->is_multiline)
     dwStyle |= TCS_MULTILINE;
 
-  if (iupAttribGetIntDefault(IupGetDialog(ih), "COMPOSITED"))
+  if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
   {
     dwStyleEx |= WS_EX_COMPOSITED;
 
@@ -576,9 +576,9 @@ static int winTabsMapMethod(Ihandle* ih)
   /* Change children background */
   if (winTabsUsingXPStyles(ih))
   {
-    char* color = iupAttribGetStrNativeParent(ih, "BGCOLOR");
+    char* color = iupAttribGetInheritNativeParent(ih, "BGCOLOR");
     if (!color) 
-      color = iupAttribGetStrNativeParent(ih, "BACKGROUND");
+      color = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
     if (!color)
     {
       COLORREF cr;
@@ -606,7 +606,7 @@ static void winTabsUnMapMethod(Ihandle* ih)
   if (image_list)
     ImageList_Destroy(image_list);
 
-  bmp_array = (Iarray*)iupAttribGetStr(ih, "_IUPWIN_BMPARRAY");
+  bmp_array = (Iarray*)iupAttribGet(ih, "_IUPWIN_BMPARRAY");
   if (bmp_array)
     iupArrayDestroy(bmp_array);
 
@@ -642,19 +642,19 @@ void iupdrvTabsInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winTabsGetBgColorAttrib, NULL, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", winTabsGetBgColorAttrib, NULL, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);  
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "0 0 0", IUP_NOT_MAPPED, IUP_INHERIT);  /* black */    
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "0 0 0", NULL, IUPAF_NOT_MAPPED);  /* black */    
 
   /* IupTabs only */
-  iupClassRegisterAttribute(ic, "TABTYPE", iupTabsGetTabTypeAttrib, winTabsSetTabTypeAttrib, "TOP", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, iupBaseNoSetAttrib, "HORIZONTAL", IUP_NOT_MAPPED, IUP_NO_INHERIT);  /* can not be set, depends on TABTYPE */
-  iupClassRegisterAttribute(ic, "MULTILINE", winTabsGetMultilineAttrib, winTabsSetMultilineAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABTITLE", NULL, winTabsSetTabTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, winTabsSetTabImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, winTabsSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "TABTYPE", iupTabsGetTabTypeAttrib, winTabsSetTabTypeAttrib, "TOP", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, NULL, "HORIZONTAL", NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  /* can not be set, depends on TABTYPE in Windows */
+  iupClassRegisterAttribute(ic, "MULTILINE", winTabsGetMultilineAttrib, winTabsSetMultilineAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABTITLE", NULL, winTabsSetTabTitleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, winTabsSetTabImageAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, winTabsSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
 
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
-    iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+    iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }

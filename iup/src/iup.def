@@ -95,6 +95,7 @@ IupSetAttributeHandle
 IupGetAttributeHandle
 IupExitLoop
 IupUpdate
+IupRedraw
 IupImageRGB
 IupImageRGBA
 IupUnmap
@@ -112,6 +113,7 @@ IupProgressBar
 IupTabs
 IupTabsv
 IupGetClassAttributes
+IupClassSetDefaultAttribute
 IupSaveClassAttributes
 IupGetColor
 IupGetParam
@@ -159,6 +161,7 @@ iupdrvFontGetMultiLineStringSize
 iupdrvFontGetCharSize
 iupdrvDrawFocusRect
 iupdrvDisplayUpdate
+iupdrvDisplayRedraw
 iupdrvBaseUnMapMethod
 iupdrvBaseSetZorderAttrib
 iupdrvBaseSetTipVisibleAttrib
@@ -249,6 +252,7 @@ iupFontParseWin
 iupFontParsePango
 iupFocusCanAccept
 iupError
+iupGlobalIsPointer
 iupDlgListVisibleInc
 iupDlgListVisibleDec
 iupDlgListVisibleCount
@@ -262,6 +266,7 @@ iupClassRelease
 iupClassRegisterCallback
 iupClassRegisterAttributeId
 iupClassRegisterAttribute
+iupClassRegisterGetAttribute
 iupClassObjectUnMap
 iupClassObjectSetPosition
 iupClassObjectSetCurrentSize
@@ -269,8 +274,9 @@ iupClassObjectSetAttribute
 iupClassObjectMap
 iupClassObjectLayoutUpdate
 iupClassObjectGetInnerContainer
-iupClassObjectGetAttributeDefault
 iupClassObjectGetAttribute
+iupClassObjectGetAttributeInfo
+iupClassObjectAttribIsNotString
 iupClassObjectDlgPopup
 iupClassObjectDestroy
 iupClassObjectCreate
@@ -293,8 +299,6 @@ iupBaseSetCurrentSizeMethod
 iupBaseSetActiveAttrib
 iupBaseRegisterVisualAttrib
 iupBaseRegisterCommonAttrib
-iupBaseNoSetAttrib
-iupBaseNoGetAttrib
 iupBaseGetWidAttrib
 iupBaseGetVisibleAttrib
 iupBaseGetSizeAttrib
@@ -311,15 +315,11 @@ iupAttribSetInt
 iupAttribSetHandleName
 iupAttribSetFloat
 iupAttribIsPointer
-iupAttribIsInternal
-iupAttribIsInheritable
-iupAttribGetStrInherit
-iupAttribGetStrDefault
+iupAttribGet
+iupAttribGetInherit
+iupAttribGetInheritNativeParent
 iupAttribGetStr
-iupAttribGetIntDefault
-iupAttribGetIntInheritDefault
 iupAttribGetInt
-iupAttribGetFloatDefault
 iupAttribGetFloat
 iupAssert
 iupArrayInc

@@ -110,7 +110,7 @@
 
 </div>
 
-<p><strong>APPENDVALUE</strong> (write-only, after map): inserts an item after the last 
+<p><strong>APPENDITEM</strong> (write-only, after map): inserts an item after the last 
 item. (since 3.0)</p>
 
   
@@ -125,9 +125,9 @@ mapping it counts the number of non NULL items before the first NULL item.
 (since 3.0)</p>
 
   
-<p><b>DRAGDROP</b>: [Windows and GTK Only] Enable or disable the drag&amp;drop of 
-  files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
-  then it will be automatically enabled. (since 3.0)</p>
+<p><b>DRAGDROP</b> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drag&amp;drop of 
+files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
+then it will be automatically enabled. (since 3.0)</p>
 
 <p><strong>DROPDOWN</strong> (creation only): Changes the appearance of the list 
 for the user: only the selected item is shown beside a button with the image of 
@@ -253,7 +253,7 @@ will act also as minimum number of visible lines. (since 3.0)</p>
 </blockquote>
 
 <p><strong>APPEND, CARET, CARETPOS</strong>, <strong>CLIPBOARD</strong>, <strong>CUEBANNER,</strong> 
-<strong>FILTER,</strong> <strong>INSERT, PADDING</strong>, <strong>NC, READONLY, SELECTEDTEXT, SELECTION, 
+<strong>FILTER,</strong> <strong>INSERT, PADDING</strong>, <strong>MASK, NC, READONLY, SELECTEDTEXT, SELECTION, 
 SELECTIONPOS</strong>, <strong>SCROLLTO</strong>, <strong>SCROLLTOPOS</strong> : 
 Same as the <a href="iuptext.html">IupText</a> attributes, but are valid only 
 when EDITBOX=YES and effective only for the edit box inside the list.</p>

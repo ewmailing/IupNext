@@ -12,10 +12,10 @@
 extern "C" {
 #endif
 
-void iupMatrixMemAloc         (Ihandle* ih);
-void iupMatrixMemRealocLines  (Ihandle* ih, int nlines, int nl);
-void iupMatrixMemRealocColumns(Ihandle* ih, int ncols, int nc);
-void iupMatrixMemAlocCell     (Ihandle* ih, int lin, int col, int numc);
+void iupMatrixMemAlloc(Ihandle* ih);
+void iupMatrixMemRelease(Ihandle* ih);
+void iupMatrixMemReAllocLines  (Ihandle* ih, int old_num, int num, int base);
+void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base);
 
 #ifdef __cplusplus
 }

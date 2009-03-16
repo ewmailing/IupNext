@@ -26,7 +26,7 @@ static UINT_PTR winColorDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
     CHOOSECOLOR* choosecolor = (CHOOSECOLOR*)lParam;
     Ihandle* ih = (Ihandle*)choosecolor->lCustData;
 
-    char* value = iupAttribGetStr(ih, "TITLE");
+    char* value = iupAttribGet(ih, "TITLE");
     if (value)
       SetWindowText(hWnd, value);
 
@@ -88,7 +88,7 @@ static int winColorDlgPopup(Ihandle* ih, int x, int y)
   if (!parent)
     parent = GetActiveWindow();
 
-  iupStrToRGB(iupAttribGetStr(ih, "VALUE"), &r, &g, &b);
+  iupStrToRGB(iupAttribGet(ih, "VALUE"), &r, &g, &b);
 
   ZeroMemory(lpCustColors, 16*sizeof(COLORREF));
 

@@ -190,14 +190,14 @@ void iupwinMenuDialogProc(Ihandle* ih_dialog, UINT msg, WPARAM wp, LPARAM lp)
   case WM_ENTERMENULOOP:
     {
       /* Simulate WM_KILLFOCUS when the menu interaction is started */
-      Ihandle* lastfocus = (Ihandle*)iupAttribGetStr(ih_dialog, "_IUPWIN_LASTFOCUS");
+      Ihandle* lastfocus = (Ihandle*)iupAttribGet(ih_dialog, "_IUPWIN_LASTFOCUS");
       if (lastfocus) iupCallKillFocusCb(lastfocus);
       break;
     }
   case WM_EXITMENULOOP:
     {
       /* Simulate WM_GETFOCUS when the menu interaction is stopped */
-      Ihandle* lastfocus = (Ihandle*)iupAttribGetStr(ih_dialog, "_IUPWIN_LASTFOCUS");
+      Ihandle* lastfocus = (Ihandle*)iupAttribGet(ih_dialog, "_IUPWIN_LASTFOCUS");
       if (lastfocus) iupCallGetFocusCb(lastfocus);
       break;
     }
@@ -369,7 +369,7 @@ static int winMenuMapMethod(Ihandle* ih)
   menuinfo.fMask = MIM_MENUDATA;
   menuinfo.dwMenuData = (ULONG_PTR)ih;
 
-  if (!iupAttribGetStrInherit(ih, "_IUPWIN_POPUP_MENU"))   /* check in the top level menu using inheritance */
+  if (!iupAttribGetInherit(ih, "_IUPWIN_POPUP_MENU"))   /* check in the top level menu using inheritance */
   {
     menuinfo.fMask |= MIM_STYLE;
     menuinfo.dwStyle = MNS_NOTIFYBYPOS;
@@ -396,7 +396,7 @@ void iupdrvMenuInitClass(Iclass* ic)
   ic->Map = winMenuMapMethod;
   ic->UnMap = winMenuUnMapMethod;
 
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winMenuSetBgColorAttrib, "MENUBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winMenuSetBgColorAttrib, "MENUBGCOLOR", NULL, IUPAF_DEFAULT);
 }
 
 
@@ -413,7 +413,7 @@ static int winItemSetImageAttrib(Ihandle* ih, const char* value)
 
   hBitmapUnchecked = iupImageGetImage(value, ih, 0, "IMAGE");
 
-  impress = iupAttribGetStr(ih, "IMPRESS");
+  impress = iupAttribGet(ih, "IMPRESS");
   if (impress)
     hBitmapChecked = iupImageGetImage(impress, ih, 0, "IMPRESS");
   else
@@ -430,7 +430,7 @@ static int winItemSetImpressAttrib(Ihandle* ih, const char* value)
 {
   HBITMAP hBitmapUnchecked, hBitmapChecked;
 
-  char *image = iupAttribGetStr(ih, "IMPRESS");
+  char *image = iupAttribGet(ih, "IMPRESS");
   hBitmapUnchecked = iupImageGetImage(image, ih, 0, "IMAGE");
 
   if (value)
@@ -459,7 +459,7 @@ static int winItemSetTitleAttrib(Ihandle* ih, const char* value)
     value = str;
   }
   else
-    str = iupMenuGetTitle(ih, value);
+    str = iupMenuProcessTitle(ih, value);
 
   menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
   menuiteminfo.fMask = MIIM_TYPE;
@@ -586,14 +586,14 @@ void iupdrvItemInitClass(Iclass* ic)
   ic->UnMap = winMenuChildUnMapMethod;
 
   /* IupItem only */
-  iupClassRegisterAttribute(ic, "VALUE", winItemGetValueAttrib, winItemSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ACTIVE", winItemGetActiveAttrib, winItemSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, winItemSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLEIMAGE", NULL, winItemSetTitleImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, winItemSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMPRESS", NULL, winItemSetImpressAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, "MENUBGCOLOR", IUP_MAPPED, IUP_INHERIT);  /* used by IupImage */
-  iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", winItemGetValueAttrib, winItemSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", winItemGetActiveAttrib, winItemSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, winItemSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEIMAGE", NULL, winItemSetTitleImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, winItemSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMPRESS", NULL, winItemSetImpressAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, "MENUBGCOLOR", NULL, IUPAF_DEFAULT);  /* used by IupImage */
+  iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
 
 
@@ -616,11 +616,11 @@ void iupdrvSubmenuInitClass(Iclass* ic)
   ic->Map = winSubmenuMapMethod;
 
   /* IupSubmenu only */
-  iupClassRegisterAttribute(ic, "ACTIVE", winItemGetActiveAttrib, winItemSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, winItemSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, winItemSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, "MENUBGCOLOR", IUP_MAPPED, IUP_INHERIT);  /* used by IupImage */
-  iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", winItemGetActiveAttrib, winItemSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, winItemSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, winItemSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, "MENUBGCOLOR", NULL, IUPAF_DEFAULT);  /* used by IupImage */
+  iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
 
 

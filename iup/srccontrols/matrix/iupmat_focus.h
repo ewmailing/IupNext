@@ -11,16 +11,8 @@
 extern "C" {
 #endif
 
-int  iupMatrixFocusFocusCB(Ihandle* ih, int focus);
-
-void iupMatrixFocusShowFocus  (Ihandle* ih);
-void iupMatrixFocusHideFocus  (Ihandle* ih);
-void iupMatrixFocusSetFocusPos(Ihandle* ih, int lin, int col);
-
-void iupMatrixFocusHideSetShowFocus(Ihandle* ih, int lin, int col);
-void iupMatrixFocusSetShowFocus    (Ihandle* ih, int lin, int col);
-
-int  iupMatrixFocusIsFocusVisible(Ihandle* ih);
+int  iupMatrixFocus_CB(Ihandle* ih, int focus);
+void iupMatrixFocusSet(Ihandle* ih, int lin, int col);
 
 #ifdef __cplusplus
 }

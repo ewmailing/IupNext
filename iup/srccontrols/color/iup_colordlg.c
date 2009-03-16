@@ -233,7 +233,6 @@ static void iColorBrowserDlgInit_Defaults(IcolorDlgData* colordlg_data)
 }
 
 
-
 /**************************************************************************************************************/
 /*                                 Internal Callbacks                                                         */
 /**************************************************************************************************************/
@@ -241,14 +240,14 @@ static void iColorBrowserDlgInit_Defaults(IcolorDlgData* colordlg_data)
 
 static int iColorBrowserDlgButtonOK_CB(Ihandle* ih)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   colordlg_data->status = 1;
   return IUP_CLOSE;
 }
 
 static int iColorBrowserDlgButtonCancel_CB(Ihandle* ih)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   colordlg_data->status = 0;
   return IUP_CLOSE;
 }
@@ -258,7 +257,7 @@ static int iColorBrowserDlgButtonHelp_CB(Ihandle* ih)
   Icallback cb = IupGetCallback(IupGetDialog(ih), "HELP_CB");
   if (cb && cb(ih) == IUP_CLOSE)
   {
-    IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+    IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
     colordlg_data->status = 0;
     return IUP_CLOSE;
   }
@@ -267,7 +266,7 @@ static int iColorBrowserDlgButtonHelp_CB(Ihandle* ih)
 
 static int iColorBrowserDlgColorCnvRedraw_CB(Ihandle* ih)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   if (!colordlg_data->color_cddbuffer)
     return IUP_DEFAULT;
@@ -281,7 +280,7 @@ static int iColorBrowserDlgColorCnvRedraw_CB(Ihandle* ih)
 
 static int iColorBrowserDlgRedAction_CB(Ihandle* ih, int c, char *value) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   int vi;
 
   if (iupStrToInt(value, &vi))
@@ -296,7 +295,7 @@ static int iColorBrowserDlgRedAction_CB(Ihandle* ih, int c, char *value)
 
 static int iColorBrowserDlgRedSpin_CB(Ihandle* ih, int vi) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->red = (unsigned char)vi;
   iColorBrowserDlgRGBChanged(colordlg_data);
@@ -306,7 +305,7 @@ static int iColorBrowserDlgRedSpin_CB(Ihandle* ih, int vi)
 
 static int iColorBrowserDlgGreenAction_CB(Ihandle* ih, int c, char *value) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   int vi;
 
   if (iupStrToInt(value, &vi))
@@ -321,7 +320,7 @@ static int iColorBrowserDlgGreenAction_CB(Ihandle* ih, int c, char *value)
 
 static int iColorBrowserDlgGreenSpin_CB(Ihandle* ih, int vi) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->green = (unsigned char)vi;
   iColorBrowserDlgRGBChanged(colordlg_data);
@@ -331,7 +330,7 @@ static int iColorBrowserDlgGreenSpin_CB(Ihandle* ih, int vi)
 
 static int iColorBrowserDlgBlueAction_CB(Ihandle* ih, int c, char *value) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   int vi;
 
   if (iupStrToInt(value, &vi))
@@ -346,7 +345,7 @@ static int iColorBrowserDlgBlueAction_CB(Ihandle* ih, int c, char *value)
 
 static int iColorBrowserDlgBlueSpin_CB(Ihandle* ih, int vi) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->blue = (unsigned char)vi;
   iColorBrowserDlgRGBChanged(colordlg_data);
@@ -356,7 +355,7 @@ static int iColorBrowserDlgBlueSpin_CB(Ihandle* ih, int vi)
 
 static int iColorBrowserDlgHueAction_CB(Ihandle* ih, int c, char *value) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   int vi;
 
   if (iupStrToInt(value, &vi))
@@ -371,7 +370,7 @@ static int iColorBrowserDlgHueAction_CB(Ihandle* ih, int c, char *value)
 
 static int iColorBrowserDlgHueSpin_CB(Ihandle* ih, int vi) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->hue = (float)vi;
   iColorBrowserDlgHSIChanged(colordlg_data);
@@ -381,7 +380,7 @@ static int iColorBrowserDlgHueSpin_CB(Ihandle* ih, int vi)
 
 static int iColorBrowserDlgSaturationAction_CB(Ihandle* ih, int c, char *value) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   int vi;
 
   if (iupStrToInt(value, &vi))
@@ -396,7 +395,7 @@ static int iColorBrowserDlgSaturationAction_CB(Ihandle* ih, int c, char *value)
 
 static int iColorBrowserDlgSaturationSpin_CB(Ihandle* ih, int vi) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->saturation = (float)vi/100.0f;
   iColorBrowserDlgHSIChanged(colordlg_data);
@@ -406,7 +405,7 @@ static int iColorBrowserDlgSaturationSpin_CB(Ihandle* ih, int vi)
 
 static int iColorBrowserDlgIntensityAction_CB(Ihandle* ih, int c, char *value) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   int vi;
 
   if (iupStrToInt(value, &vi))
@@ -421,7 +420,7 @@ static int iColorBrowserDlgIntensityAction_CB(Ihandle* ih, int c, char *value)
 
 static int iColorBrowserDlgIntensitySpin_CB(Ihandle* ih, int vi) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->intensity = (float)vi/100.0f;
   iColorBrowserDlgHSIChanged(colordlg_data);
@@ -431,7 +430,7 @@ static int iColorBrowserDlgIntensitySpin_CB(Ihandle* ih, int vi)
 
 static int iColorBrowserDlgHexAction_CB(Ihandle* ih, int c, char* value) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   if (iupStrHexToRGB(value, &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue))
   {
@@ -448,7 +447,7 @@ static int iColorBrowserDlgHexAction_CB(Ihandle* ih, int c, char* value)
 
 static int iColorBrowserDlgColorSelDrag_CB(Ihandle* ih, unsigned char r, unsigned char g, unsigned char b)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->red   = r;
   colordlg_data->green = g;
@@ -468,7 +467,7 @@ static int iColorBrowserDlgColorSelDrag_CB(Ihandle* ih, unsigned char r, unsigne
 
 static int iColorBrowserDlgAlphaVal_CB(Ihandle* ih, double val)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->alpha = (unsigned char)val;
   IupSetfAttribute(colordlg_data->alpha_txt, "VALUE", "%d", (int)colordlg_data->alpha);
@@ -481,7 +480,7 @@ static int iColorBrowserDlgAlphaVal_CB(Ihandle* ih, double val)
 
 static int iColorBrowserDlgAlphaAction_CB(Ihandle* ih, int c, char* value) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   int vi;
 
   if (iupStrToInt(value, &vi))
@@ -499,7 +498,7 @@ static int iColorBrowserDlgAlphaAction_CB(Ihandle* ih, int c, char* value)
 
 static int iColorBrowserDlgAlphaSpin_CB(Ihandle* ih, int vi) 
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->alpha = (unsigned char)vi;
   IupSetfAttribute(colordlg_data->alpha_val, "VALUE", "%d", (int)colordlg_data->alpha);
@@ -514,7 +513,7 @@ static int iColorBrowserDlgColorTableSelect_CB(Ihandle* ih, int cell, int type)
 {
   char* str = iupStrGetMemory(30);
 
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   sprintf(str, "CELL%d", cell);
   iupStrToRGB(IupGetAttribute(ih, str), &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue);
@@ -528,7 +527,7 @@ static int iColorBrowserDlgColorTableSelect_CB(Ihandle* ih, int cell, int type)
 
 static int iColorBrowserDlgColorCnvMap_CB(Ihandle* ih)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   /* Create Canvas */
   colordlg_data->color_cdcanvas = cdCreateCanvas(CD_IUP, colordlg_data->color_cnv);
@@ -543,7 +542,7 @@ static int iColorBrowserDlgColorCnvMap_CB(Ihandle* ih)
 
 static int iColorBrowserDlgColorCnvUnMap_CB(Ihandle* ih)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   if (colordlg_data->color_cddbuffer)
     cdKillCanvas(colordlg_data->color_cddbuffer);
@@ -562,7 +561,7 @@ static int iColorBrowserDlgColorCnvUnMap_CB(Ihandle* ih)
 
 static char* iColorBrowserDlgGetStatusAttrib(Ihandle* ih)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   if (colordlg_data->status) 
     return "1";
   else 
@@ -571,14 +570,14 @@ static char* iColorBrowserDlgGetStatusAttrib(Ihandle* ih)
 
 static int iColorBrowserDlgSetShowHelpAttrib(Ihandle* ih, const char* value)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   IupSetAttribute(colordlg_data->help_bt, "VISIBLE", iupStrBoolean(value)? "YES": "NO");
   return 1;
 }
 
 static int iColorBrowserDlgSetShowHexAttrib(Ihandle* ih, const char* value)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   /* valid only before map */
   if (ih->handle)
@@ -596,7 +595,7 @@ static int iColorBrowserDlgSetShowHexAttrib(Ihandle* ih, const char* value)
 
 static int iColorBrowserDlgSetShowColorTableAttrib(Ihandle* ih, const char* value)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   /* valid only before map */
   if (ih->handle)
@@ -614,7 +613,7 @@ static int iColorBrowserDlgSetShowColorTableAttrib(Ihandle* ih, const char* valu
 
 static int iColorBrowserDlgSetShowAlphaAttrib(Ihandle* ih, const char* value)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   /* valid only before map */
   if (ih->handle)
@@ -632,7 +631,7 @@ static int iColorBrowserDlgSetShowAlphaAttrib(Ihandle* ih, const char* value)
 
 static int iColorBrowserDlgSetAlphaAttrib(Ihandle* ih, const char* value)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   int alpha;
   if (iupStrToInt(value, &alpha))
   {
@@ -654,14 +653,14 @@ static int iColorBrowserDlgSetAlphaAttrib(Ihandle* ih, const char* value)
 static char* iColorBrowserDlgGetAlphaAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(100);
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   sprintf(buffer, "%d", (int)colordlg_data->alpha);
   return buffer;
 }
 
 static int iColorBrowserDlgSetValueAttrib(Ihandle* ih, const char* value)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   int ret = iupStrToRGBA(value, &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue, &colordlg_data->alpha);
   if (!ret)
     return 0;
@@ -687,7 +686,7 @@ static int iColorBrowserDlgSetValueAttrib(Ihandle* ih, const char* value)
 static char* iColorBrowserDlgGetValueAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(100);
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   if (iupStrBoolean(iupAttribGetStr(ih, "SHOWALPHA")))
     sprintf(buffer, "%d %d %d %d", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue, (int)colordlg_data->alpha);
   else
@@ -710,7 +709,7 @@ static int iupStrToHSI_Int(const char *str, int *h, int *s, int *i)
 
 static int iColorBrowserDlgSetValueHSIAttrib(Ihandle* ih, const char* value)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   int hue, saturation, intensity;
 
   if (!iupStrToHSI_Int(value, &hue, &saturation, &intensity))
@@ -731,14 +730,14 @@ static int iColorBrowserDlgSetValueHSIAttrib(Ihandle* ih, const char* value)
 static char* iColorBrowserDlgGetValueHSIAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(100);
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   sprintf(buffer, "%d %d %d", (int)colordlg_data->hue, (int)(colordlg_data->saturation*100), (int)(colordlg_data->intensity*100));
   return buffer;
 }
 
 static int iColorBrowserDlgSetValueHexAttrib(Ihandle* ih, const char* value)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   if (!iupStrHexToRGB(value, &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue))
     return 0;
@@ -757,7 +756,7 @@ static int iColorBrowserDlgSetValueHexAttrib(Ihandle* ih, const char* value)
 static char* iColorBrowserDlgGetValueHexAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(100);
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   sprintf(buffer, "#%02X%02X%02X", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue);
   return buffer;
 }
@@ -765,7 +764,7 @@ static char* iColorBrowserDlgGetValueHexAttrib(Ihandle* ih)
 static char* iColorBrowserDlgGetColorTableAttrib(Ihandle* ih)
 {
   int i, inc, off = 0;
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   char* color_str, attrib_str[30];
   char* str = iupStrGetMemory(300);
   for (i=0; i < 20; i++)
@@ -786,7 +785,7 @@ static int iColorBrowserDlgSetColorTableAttrib(Ihandle* ih, const char* value)
   int i = 0;
   unsigned char r, g, b;
   char str[30];
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   if (!ih->handle)    /* do it only before map */
     iColorBrowserDlgSetShowColorTableAttrib(ih, "YES");
@@ -816,7 +815,7 @@ static int iColorBrowserDlgMapMethod(Ihandle* ih)
 {
   if (!IupGetCallback(ih, "HELP_CB"))
   {
-    IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+    IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
     IupSetAttribute(colordlg_data->help_bt, "VISIBLE", "NO");
   }
 
@@ -825,7 +824,7 @@ static int iColorBrowserDlgMapMethod(Ihandle* ih)
 
 static void iColorBrowserDlgDestroyMethod(Ihandle* ih)
 {
-  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetStrInherit(ih, "_IUP_GC_DATA");
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   free(colordlg_data);
 }
 
@@ -1075,16 +1074,16 @@ Iclass* iupColorBrowserDlgGetClass(void)
   ic->is_interactive = 1;
   ic->childtype = IUP_CHILD_ONE;
 
-  iupClassRegisterAttribute(ic, "COLORTABLE", iColorBrowserDlgGetColorTableAttrib, iColorBrowserDlgSetColorTableAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "STATUS", iColorBrowserDlgGetStatusAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", iColorBrowserDlgGetValueAttrib, iColorBrowserDlgSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ALPHA", iColorBrowserDlgGetAlphaAttrib, iColorBrowserDlgSetAlphaAttrib, "255", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUEHSI", iColorBrowserDlgGetValueHSIAttrib, iColorBrowserDlgSetValueHSIAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUEHEX", iColorBrowserDlgGetValueHexAttrib, iColorBrowserDlgSetValueHexAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWALPHA", NULL, iColorBrowserDlgSetShowAlphaAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWCOLORTABLE", NULL, iColorBrowserDlgSetShowColorTableAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWHEX", NULL, iColorBrowserDlgSetShowHexAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWHELP", NULL, iColorBrowserDlgSetShowHelpAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COLORTABLE", iColorBrowserDlgGetColorTableAttrib, iColorBrowserDlgSetColorTableAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STATUS", iColorBrowserDlgGetStatusAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", iColorBrowserDlgGetValueAttrib, iColorBrowserDlgSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALPHA", iColorBrowserDlgGetAlphaAttrib, iColorBrowserDlgSetAlphaAttrib, "255", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUEHSI", iColorBrowserDlgGetValueHSIAttrib, iColorBrowserDlgSetValueHSIAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUEHEX", iColorBrowserDlgGetValueHexAttrib, iColorBrowserDlgSetValueHexAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWALPHA", NULL, iColorBrowserDlgSetShowAlphaAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWCOLORTABLE", NULL, iColorBrowserDlgSetShowColorTableAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWHEX", NULL, iColorBrowserDlgSetShowHexAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWHELP", NULL, iColorBrowserDlgSetShowHelpAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }

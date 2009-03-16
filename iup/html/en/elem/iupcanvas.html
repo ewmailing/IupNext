@@ -97,9 +97,9 @@ used for clipping. Format: "%d %d %d %d"="x1 y1 x2 y2".</p>
   character.</p>
 
   
-<p><b>DRAGDROP</b>: [Windows and GTK Only] Enable or disable the drag&amp;drop of 
-  files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
-  then it will be automatically enabled.</p>
+<p><b>DRAGDROP</b> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drag&amp;drop of 
+files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
+then it will be automatically enabled.</p>
 
   
 <p><b>DRAWSIZE </b>(<font size="3">non inheritable</font>): The size of the drawing area in pixels. This size is also 
@@ -120,7 +120,8 @@ driver or in the GTK driver in Windows.</p>
   
 <p><a href="../attrib/iup_scrollbar.html">SCROLLBAR</a> (creation only):
   Associates a horizontal and/or vertical 
-  scrollbar to the canvas. Default: "NO".</p>
+  scrollbar to the canvas. Default: "NO". The secondary attributes are all n<font size="3">on 
+inheritable.</font></p>
 
   
 <p class="info"><a href="../attrib/iup_dx.html">DX</a>:

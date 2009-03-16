@@ -29,7 +29,7 @@ static UINT_PTR winFontDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM 
     CHOOSEFONT* choosefont = (CHOOSEFONT*)lParam;
     Ihandle* ih = (Ihandle*)choosefont->lCustData;
 
-    char* value = iupAttribGetStr(ih, "TITLE");
+    char* value = iupAttribGet(ih, "TITLE");
     if (value)
       SetWindowText(hWnd, value);
 
@@ -66,7 +66,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   if (!parent)
     parent = GetActiveWindow();
 
-  standardfont = iupAttribGetStr(ih, "VALUE");
+  standardfont = iupAttribGet(ih, "VALUE");
   if (!standardfont)
     return IUP_ERROR;
 
@@ -89,7 +89,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   ZeroMemory(&choosefont, sizeof(CHOOSEFONT));
   choosefont.lStructSize = sizeof(CHOOSEFONT);
 
-  if (iupStrToRGB(iupAttribGetStr(ih, "COLOR"), &r, &g, &b))
+  if (iupStrToRGB(iupAttribGet(ih, "COLOR"), &r, &g, &b))
     choosefont.rgbColors = RGB(r, g, b);
   
   choosefont.hwndOwner = parent;

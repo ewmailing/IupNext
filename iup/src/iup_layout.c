@@ -66,6 +66,31 @@ void IupUpdateChildren(Ihandle* ih)
   iLayoutDisplayUpdateChildren(ih);
 }
 
+static void iLayoutDisplayRedrawChildren(Ihandle *ih)
+{
+  Ihandle* child;
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    iLayoutDisplayRedrawChildren(child);
+
+    if (child->handle && child->iclass->nativetype != IUP_TYPEVOID)
+      iupdrvDisplayRedraw(child);
+  }
+}
+
+void IupRedraw(Ihandle* ih, int children)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->handle && ih->iclass->nativetype != IUP_TYPEVOID)
+    iupdrvDisplayRedraw(ih);
+
+  if (children)
+    iLayoutDisplayRedrawChildren(ih);
+}
+
 void iupLayoutUpdate(Ihandle* ih)
 {
   Ihandle* child;

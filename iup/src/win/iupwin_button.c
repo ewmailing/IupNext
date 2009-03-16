@@ -89,16 +89,16 @@ static HBITMAP winButtonGetBitmap(Ihandle* ih, UINT itemState, int *shift)
   if (itemState & ODS_DISABLED)
   {
     attrib_name = "IMINACTIVE";
-    name = iupAttribGetStr(ih, "IMINACTIVE");
+    name = iupAttribGet(ih, "IMINACTIVE");
     if (!name)
     {
-      name = iupAttribGetStr(ih, "IMAGE");
+      name = iupAttribGet(ih, "IMAGE");
       make_inactive = 1;
     }
   }
   else
   {
-    name = iupAttribGetStr(ih, "IMPRESS");
+    name = iupAttribGet(ih, "IMPRESS");
     if (itemState & ODS_SELECTED && name)
     {
       attrib_name = "IMPRESS";
@@ -107,7 +107,7 @@ static HBITMAP winButtonGetBitmap(Ihandle* ih, UINT itemState, int *shift)
     else
     {
       attrib_name = "IMAGE";
-      name = iupAttribGetStr(ih, "IMAGE");
+      name = iupAttribGet(ih, "IMAGE");
     }
   }
 
@@ -291,13 +291,13 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   border = winButtonGetBorder();
 
-  if (ih->data->type & IUP_BUTTON_IMAGE && iupAttribGetStr(ih, "IMPRESS") && !iupAttribGetStr(ih, "IMPRESSBORDER"))
+  if (ih->data->type & IUP_BUTTON_IMAGE && iupAttribGet(ih, "IMPRESS") && !iupAttribGetStr(ih, "IMPRESSBORDER"))
     draw_border = 0;
   else
   {
-    if (iupStrBoolean(iupAttribGetStrInherit(ih, "FLAT")))
+    if (iupStrBoolean(iupAttribGetStr(ih, "FLAT")))
     {
-      if (drawitem->itemState & ODS_HOTLIGHT || iupAttribGetStr(ih, "_IUPWINBUT_ENTERWIN"))
+      if (drawitem->itemState & ODS_HOTLIGHT || iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
         draw_border = 1;
       else
         draw_border = 0;
@@ -327,7 +327,7 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
 static void winPostRedraw(Ihandle* ih)
 {
-  /* Instead of iupwinRedrawNow this will redraw after the attribute is stored. */
+  /* Instead of iupdrvDisplayRedraw this will redraw after the attribute is stored. */
   InvalidateRect(ih->handle, NULL, FALSE);  
 }
 
@@ -400,7 +400,7 @@ static int winButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
   else /* "ACENTER" */
     ih->data->vert_alignment = IUP_ALIGN_ACENTER;
 
-  iupwinRedrawNow(ih);
+  iupdrvDisplayRedraw(ih);
 
   return 1;
 }
@@ -419,7 +419,7 @@ static int winButtonSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
 
   if (ih->handle)
-    iupwinRedrawNow(ih);
+    iupdrvDisplayRedraw(ih);
 
   return 0;
 }
@@ -429,7 +429,7 @@ static int winButtonSetBgColorAttrib(Ihandle* ih, const char* value)
   (void)value;
   /* update internal image cache for controls that have the IMAGE attribute */
   iupImageUpdateParent(ih);
-  iupwinRedrawNow(ih);
+  iupdrvDisplayRedraw(ih);
   return 1;
 }
 
@@ -437,7 +437,7 @@ static char* winButtonGetBgColorAttrib(Ihandle* ih)
 {
   /* the most important use of this is to provide
      the correct background for images */
-  if (iupwin_comctl32ver6 && !iupAttribGetStr(ih, "IMPRESS"))
+  if (iupwin_comctl32ver6 && !iupAttribGet(ih, "IMPRESS"))
   {
     COLORREF cr;
     if (iupwinDrawGetThemeButtonBgColor(ih->handle, &cr))
@@ -448,7 +448,7 @@ static char* winButtonGetBgColorAttrib(Ihandle* ih)
     }
   }
 
-  if (iupAttribGetStr(ih, "IMPRESS"))
+  if (iupAttribGet(ih, "IMPRESS"))
     return iupBaseNativeParentGetBgColorAttrib(ih);
   else
     return IupGetGlobal("DLGBGCOLOR");
@@ -460,7 +460,7 @@ static int winButtonSetFgColorAttrib(Ihandle* ih, const char* value)
   if (iupStrToRGB(value, &r, &g, &b))
   {
     ih->data->fgcolor = RGB(r,g,b);
-    iupwinRedrawNow(ih);
+    iupdrvDisplayRedraw(ih);
   }
   return 1;
 }
@@ -472,8 +472,8 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
   if (ih->data->type != IUP_BUTTON_TEXT)
   {
     /* redraw IMPRESS image if any */
-    if ((msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP) && iupAttribGetStr(ih, "IMPRESS"))
-      iupwinRedrawNow(ih);
+    if ((msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP) && iupAttribGet(ih, "IMPRESS"))
+      iupdrvDisplayRedraw(ih);
   }
 
   switch (msg)
@@ -502,21 +502,21 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     if (!iupwin_comctl32ver6)
     {
       iupAttribSetStr(ih, "_IUPWINBUT_ENTERWIN", NULL);
-      iupwinRedrawNow(ih);
+      iupdrvDisplayRedraw(ih);
     }
     break;
   case WM_MOUSEMOVE:
     if (!iupwin_comctl32ver6)
     {
-      if (!iupAttribGetStr(ih, "_IUPWINBUT_ENTERWIN"))
+      if (!iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
       {
         iupAttribSetStr(ih, "_IUPWINBUT_ENTERWIN", "1");
-        iupwinRedrawNow(ih);
+        iupdrvDisplayRedraw(ih);
       }
     }
     break;
   case WM_SETFOCUS:
-    if (!iupAttribGetIntDefault(ih, "FOCUSONCLICK") && wp && iupAttribGetStr(ih, "_IUPWIN_ENTERWIN"))
+    if (!iupAttribGetInt(ih, "FOCUSONCLICK") && wp && iupAttribGet(ih, "_IUPWIN_ENTERWIN"))
     {
       Ihandle* previous = iupwinHandleGet((void*)wp);
       if (previous)
@@ -609,19 +609,19 @@ static int winButtonMapMethod(Ihandle* ih)
   else
     dwStyle |= BS_OWNERDRAW;
 
-  value = iupAttribGetStr(ih, "IMAGE");
+  value = iupAttribGet(ih, "IMAGE");
   if (value)
   {
     ih->data->type = IUP_BUTTON_IMAGE;
 
-    value = iupAttribGetStr(ih, "TITLE");
+    value = iupAttribGet(ih, "TITLE");
     if (value)
       ih->data->type |= IUP_BUTTON_TEXT;
   }
   else
     ih->data->type = IUP_BUTTON_TEXT;
 
-  if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     dwStyle |= WS_TABSTOP;
 
   if (!iupwinCreateWindowEx(ih, "BUTTON", 0, dwStyle))
@@ -639,7 +639,7 @@ static int winButtonMapMethod(Ihandle* ih)
     IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winButtonDrawItem);  /* Process WM_DRAWITEM */
 
   /* ensure the default values, that are different from the native ones */
-  winButtonSetFgColorAttrib(ih, iupAttribGetStrDefault(ih, "FGCOLOR"));
+  winButtonSetFgColorAttrib(ih, iupAttribGetStr(ih, "FGCOLOR"));
 
   return IUP_NOERROR;
 }
@@ -652,21 +652,21 @@ void iupdrvButtonInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, winButtonSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, winButtonSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winButtonGetBgColorAttrib, winButtonSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", winButtonGetBgColorAttrib, winButtonSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winButtonSetFgColorAttrib, "DLGFGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */  
-  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winButtonSetFgColorAttrib, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* usually black */  
+  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupButton only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", winButtonGetAlignmentAttrib, winButtonSetAlignmentAttrib, "ACENTER:ACENTER", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, winButtonSetImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, winButtonSetImInactiveAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMPRESS", NULL, winButtonSetImPressAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FOCUSONCLICK", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", winButtonGetAlignmentAttrib, winButtonSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, winButtonSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, winButtonSetImInactiveAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMPRESS", NULL, winButtonSetImPressAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOCUSONCLICK", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "PADDING", iupButtonGetPaddingAttrib, winButtonSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupButtonGetPaddingAttrib, winButtonSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
 }

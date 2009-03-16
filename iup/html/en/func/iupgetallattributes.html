@@ -5,20 +5,32 @@
 <title>IupGetAllAttributes</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	font-size: large;
+}
+.style2 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
-<h2>IupGetAllAttributes</h2>
-<p>Returns the names of all attributes of an element.
+<h2>IupGetAllAttributes <span class="style1">(Since 3.0)</span></h2>
+<p>Returns the names of all attributes of an element that are defined in its 
+intenal hash table only.
   The internal attributes are also returned (attributes prefixed with &quot;_IUP&quot;).</p>
 <h3>
 Parameters/Return</h3>
-<pre>int IupGetAllAttributes(char *<strong>names</strong>[], int <strong>max_n</strong>); [in C]
-iup.GetAllAttributes(<strong>max_n</strong>: number) -&gt; (<strong>names</strong>: table<strong>, n</strong>: number) [in Lua]</pre>
-<p><b>names</b>: table receiving the names<br>
+<pre>int IupGetAllAttributes(Ihandle*<strong> ih, </strong>char *<strong>names</strong>[], int <strong>max_n</strong>); [in C]
+iup.GetAllAttributes(<strong>ih</strong>: ihandle<strong>, max_n</strong>: number) -&gt; (<strong>names</strong>: table<strong>, n</strong>: number) [in Lua]</pre>
+<p>
+  <b>ih</b>: identifier of the interface element.
+<b><br>
+names</b>: table receiving the names<br>
 <b>max_n</b>: maximum number of names the table can receive.</p>
-<p>Returns the number of names loaded to the 
-  table.</p>
+<p><span class="style2">Returns:</span> the number of names loaded to the 
+  table. If names==NULL or n==0 then returns the actual number of names.</p>
 <h3>See Also</h3>
 <p><a href="iupgetattribute.html">IupGetAttribute</a>, 
 <a href="iupsetattribute.html">IupSetAttribute</a>, 

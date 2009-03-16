@@ -29,6 +29,14 @@ struct _IcontrolData
   tOleHandler* olehandler;
 };
 
+static char* iOleControlGetDesignModeAttrib(Ihandle* ih)
+{
+  if (ih->data->olehandler->m_ambientProp.getDesignMode())
+    return "YES";
+  else
+    return "NO";
+}
+
 static int iOleControlSetDesignModeAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -169,11 +177,12 @@ static Iclass* iOleControlGetClass(void)
   ic->LayoutUpdate = iOleControlLayoutUpdateMethod;
   ic->ComputeNaturalSize = iOleControlComputeNaturalSizeMethod;
 
-  iupClassRegisterAttribute(ic, "DESIGNMODE", NULL, iOleControlSetDesignModeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DESIGNMODE_DONT_NOTIFY", NULL, iOleControlSetDesignModeDontNotifyAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IUNKNOWN", iOleControlGetIUnknownAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "IUPOLECONTROL", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DESIGNMODE", iOleControlGetDesignModeAttrib, iOleControlSetDesignModeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DESIGNMODE_DONT_NOTIFY", iOleControlGetDesignModeAttrib, iOleControlSetDesignModeDontNotifyAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IUNKNOWN", iOleControlGetIUnknownAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+
+  /* Overwrite the canvas implementation */
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
 
   return ic;
 }

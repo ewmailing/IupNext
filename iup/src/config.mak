@@ -68,8 +68,6 @@ else
     ifdef GTK_DEFAULT
       # Build Motif version in Linux,Darwin,FreeBSD
       LIBNAME := iupmot
-    else  
-      DEFINES += IUP_MOTIF_NO_REDISPLAY
     endif  
     
     SRC += mot/iupmot_common.c mot/iupmot_color.c mot/iupmot_focus.c mot/iupmot_font.c \

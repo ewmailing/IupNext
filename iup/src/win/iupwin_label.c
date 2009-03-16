@@ -40,15 +40,15 @@ static void winLabelDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
   if (iupdrvIsActive(ih))
   {
     attrib_name = "IMAGE";
-    name = iupAttribGetStr(ih, "IMAGE");
+    name = iupAttribGet(ih, "IMAGE");
   }
   else
   {
     attrib_name = "IMINACTIVE";
-    name = iupAttribGetStr(ih, "IMINACTIVE");
+    name = iupAttribGet(ih, "IMINACTIVE");
     if (!name)
     {
-      name = iupAttribGetStr(ih, "IMAGE");
+      name = iupAttribGet(ih, "IMAGE");
       make_inactive = 1;
     }
   }
@@ -171,7 +171,7 @@ static int winLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
     else /* "ATOP" */
       ih->data->vert_alignment = IUP_ALIGN_ATOP;
 
-    iupwinRedrawNow(ih);
+    iupdrvDisplayRedraw(ih);
   }
   return 0;
 }
@@ -195,7 +195,7 @@ static int winLabelSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
 
   if (ih->handle && ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
-    iupwinRedrawNow(ih);
+    iupdrvDisplayRedraw(ih);
 
   return 0;
 }
@@ -209,7 +209,7 @@ static int winLabelSetWordWrapAttrib(Ihandle* ih, const char* value)
     else
       ih->data->text_style &= ~DT_WORDBREAK;
 
-    iupwinRedrawNow(ih);
+    iupdrvDisplayRedraw(ih);
   }
 
   return 1;
@@ -224,7 +224,7 @@ static int winLabelSetEllipsisAttrib(Ihandle* ih, const char* value)
     else
       ih->data->text_style &= ~DT_END_ELLIPSIS;
 
-    iupwinRedrawNow(ih);
+    iupdrvDisplayRedraw(ih);
   }
 
   return 1;
@@ -242,7 +242,7 @@ static int winLabelSetBgColorAttrib(Ihandle* ih, const char* value)
       /* update internal image cache for controls that have the IMAGE attribute */
       iupImageUpdateParent(ih);
 
-      iupwinRedrawNow(ih);
+      iupdrvDisplayRedraw(ih);
     }
   }
   return 1;
@@ -256,7 +256,7 @@ static int winLabelSetFgColorAttrib(Ihandle* ih, const char* value)
     if (iupStrToRGB(value, &r, &g, &b))
     {
       ih->data->fgcolor = RGB(r,g,b);
-      iupwinRedrawNow(ih);
+      iupdrvDisplayRedraw(ih);
     }
   }
   return 1;
@@ -271,7 +271,7 @@ static int winLabelMapMethod(Ihandle* ih)
   if (!ih->parent)
     return IUP_ERROR;
 
-  value = iupAttribGetStr(ih, "SEPARATOR");
+  value = iupAttribGet(ih, "SEPARATOR");
   if (value)
   {
     if (iupStrEqualNoCase(value, "HORIZONTAL"))
@@ -291,7 +291,7 @@ static int winLabelMapMethod(Ihandle* ih)
        but uses the Windows functions to draw text and images in native format. */
     dwStyle |= SS_OWNERDRAW;
 
-    value = iupAttribGetStr(ih, "IMAGE");
+    value = iupAttribGet(ih, "IMAGE");
     if (value)
       ih->data->type = IUP_LABEL_IMAGE;
     else
@@ -306,7 +306,7 @@ static int winLabelMapMethod(Ihandle* ih)
     IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winLabelDrawItem);
 
     /* ensure the default values, that are different from the native ones */
-    winLabelSetFgColorAttrib(ih, iupAttribGetStrDefault(ih, "FGCOLOR"));
+    winLabelSetFgColorAttrib(ih, iupAttribGetStr(ih, "FGCOLOR"));
   }
 
   return IUP_NOERROR;
@@ -321,16 +321,16 @@ void iupdrvLabelInitClass(Iclass* ic)
 
   /* Visual */
   /* the most important use of this is to provide the correct background for images */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);  
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winLabelSetFgColorAttrib, "DLGFGCOLOR", IUP_NOT_MAPPED, IUP_INHERIT);  /* usually black */    
-  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winLabelSetFgColorAttrib, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* usually black */    
+  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupLabel only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", winLabelGetAlignmentAttrib, winLabelSetAlignmentAttrib, "ALEFT:ACENTER", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", winLabelGetAlignmentAttrib, winLabelSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, winLabelSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "WORDWRAP", NULL, winLabelSetWordWrapAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "ELLIPSIS", NULL, winLabelSetEllipsisAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, winLabelSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "WORDWRAP", NULL, winLabelSetWordWrapAttrib, NULL, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "ELLIPSIS", NULL, winLabelSetEllipsisAttrib, NULL, NULL, IUPAF_DEFAULT);
 }

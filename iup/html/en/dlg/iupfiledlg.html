@@ -37,9 +37,8 @@ iup.filedlg() -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 filedlg() [in LED]</pre>
 
   
-  <p>
-  Returns the identifier of the 
-  created dialog, or NULL if an error occurs.</p>
+<p><u>Returns:</u> the identifier of the 
+  created element, or NULL if an error occurs.</p>
 
 <h3><a name="Attributes">Attributes</a></h3>
   
@@ -145,17 +144,13 @@ For example:</p>
   Indicates the status of the selection made:</p>
     
     <blockquote>
-    
-    <ul>
-      <li>&quot;1&quot;:
-    New file.</li>
-      <li>&quot;0&quot;:
-    Normal, existing file or directory.</li>
-      <li>&quot;-1&quot;:
-    Operation cancelled.</li>
-</ul>
-  
-  </blockquote>
+		<p>&quot;1&quot;:
+    New file.<br>
+		&quot;0&quot;:
+    Normal, existing file or directory.<br>
+		&quot;-1&quot;:
+    Operation cancelled.</p>
+</blockquote>
   
   <p><strong><a href="../attrib/iup_title.html">TITLE</a></strong>:
   Dialog's title.</p>
@@ -170,7 +165,7 @@ For example:</p>
   
   <p><strong>FILE_CB</strong>:  Action generated when a file is selected. 
   Not called when DIALOGTYPE=DIR. When MULTIPLEFILES=YES it is called only for 
-  one file. Can be used with SHOWPREVIEW=NO also.</p>
+  one file. Can be used with SHOWPREVIEW=NO also. (Windows only in 2.x)</p>
     
     <pre>int function(Ihandle *<strong>ih</strong>, const char* <strong>file_name</strong>, const char* <strong>status</strong>); [in C]<br>elem:file_cb(<strong>file_name</strong>, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:

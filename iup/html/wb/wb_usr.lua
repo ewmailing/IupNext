@@ -826,6 +826,10 @@ wb_usr.tree =
               name= {nl= "IupSaveClassAttributes"},
               link= "func/iupsaveclassattributes.html"
             },
+            {
+              name= {nl= "IupSetClassDefaultAttribute"},
+              link= "func/iupsetclassdefaultattribute.html"
+            },
           }
         },
         {
@@ -934,6 +938,10 @@ wb_usr.tree =
             {
               name= {nl= "IupUpdate"},
               link= "func/iupupdate.html"
+            },
+            {
+              name= {nl= "IupRedraw"},
+              link= "func/iupredraw.html"
             }
           }
         }

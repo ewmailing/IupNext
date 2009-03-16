@@ -93,7 +93,7 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
                SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
 }
 
-void iupwinRedrawNow(Ihandle *ih)
+void iupdrvDisplayRedraw(Ihandle *ih)
 {
   InvalidateRect(ih->handle, NULL, FALSE);  
   UpdateWindow(ih->handle);
@@ -101,6 +101,7 @@ void iupwinRedrawNow(Ihandle *ih)
 
 void iupdrvDisplayUpdate(Ihandle *ih)
 {
+  /* Post a REDRAW */
   RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT);
 }
 
@@ -670,7 +671,7 @@ static HCURSOR winGetCursor(Ihandle* ih, const char* name)
 
   /* check the cursor cache first (per control)*/
   sprintf(str, "_IUPWIN_CURSOR_%s", name);
-  cur = (HCURSOR)iupAttribGetStr(ih, str);
+  cur = (HCURSOR)iupAttribGet(ih, str);
   if (cur)
     return cur;
 
@@ -715,7 +716,7 @@ int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
 
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic, "HFONT", iupwinGetHFontAttrib, NULL, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HFONT", iupwinGetHFontAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 }
 
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)

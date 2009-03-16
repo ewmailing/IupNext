@@ -786,7 +786,7 @@ static void iTabsDrawTab(Ihandle* ih, int tab_index, int offset)
   cdCanvasClip(canvas, CD_CLIPAREA);
 
   {
-    char* text = iupAttribGetStr(ih->data->tabs_line.tabs_info[tab_index].ihandle, "TABTITLE");
+    char* text = iupAttribGet(ih->data->tabs_line.tabs_info[tab_index].ihandle, "TABTITLE");
     if (!text) text = "   ";
 
     if (ih->data->has_focus && (tab_index == ih->data->current_tab))
@@ -1247,7 +1247,7 @@ static void iTabsCalcTextSize(Ihandle* ih)
   {
     Ihandle* tab_child = ih->data->tabs_line.tabs_info[t].ihandle;
 
-    title = iupAttribGetStr(tab_child, "TABTITLE");
+    title = iupAttribGet(tab_child, "TABTITLE");
     if (!title) title = "   ";
 
     /* Get the size of an specific tab */   
@@ -1762,7 +1762,7 @@ static int iTabsRedraw_CB(Ihandle* ih)
   /* Draws tabs and decorations */
   iTabsDrawLineOfTabs(ih);
 
-  clip_rect = iupAttribGetStr(ih, "CLIPRECT");
+  clip_rect = iupAttribGet(ih, "CLIPRECT");
   if (clip_rect)
   {
     int x1, x2, y1, y2;
@@ -1787,7 +1787,7 @@ static int iTabsRedraw_CB(Ihandle* ih)
 /* Callback to popup menu, with the tabs list */
 static int iTabsMenu_CB(Ihandle* ih)
 {
-  char* number = iupAttribGetStr(ih, "IUPTABS_ID");
+  char* number = iupAttribGet(ih, "_IUPTABS_ID");
   int tab_number = 0;
   int result;
 
@@ -1810,19 +1810,16 @@ static Ihandle* iTabsMakeMenuFromTabs(Ihandle* ih)
   int c = 0;
   Ihandle* menu = IupMenu(NULL);
   Ihandle* item = NULL;
-  char*   label = iupStrGetMemory(10);
-  char*    title;
 
   for(c = 0; c < ih->data->number_of_tabs; c++)
   {
-    title = iupAttribGetStr(ih->data->tabs_line.tabs_info[c].ihandle, "TABTITLE");
+    char* title = iupAttribGet(ih->data->tabs_line.tabs_info[c].ihandle, "TABTITLE");
     if (!title) title = "   ";
 
     item = IupItem(title, NULL);
     IupSetCallback(item, "ACTION", (Icallback) iTabsMenu_CB);
 
-    sprintf(label, "%4d", c);
-    IupStoreAttribute(item, "IUPTABS_ID", (char*)label);
+    iupAttribSetStrf(item, "_IUPTABS_ID", "%4d", c);
 
     if (c == ih->data->current_tab)
       IupSetAttribute(item, "VALUE", "ON");
@@ -2334,11 +2331,10 @@ static int iTabsSetFgColorAttrib(Ihandle* ih, const char* value)
 
 static int iTabsSetBgColorAttrib(Ihandle* ih, const char* value)
 {
-  if (value)
-    ih->data->bgcolor = cdIupConvertColor(value);
-  else
-    ih->data->bgcolor = cdIupConvertColor(iupControlBaseGetParentBgColor(ih));
+  if (!value)
+    value = iupControlBaseGetParentBgColor(ih);
 
+  ih->data->bgcolor = cdIupConvertColor(value);
   cdIupCalcShadows(ih->data->bgcolor, &ih->data->light_shadow, &ih->data->mid_shadow, &ih->data->dark_shadow);
 
   IupUpdate(ih);
@@ -2606,27 +2602,27 @@ static Iclass* iTabsGetClass(void)
   iupClassRegisterCallback(ic, "TABCHANGE_CB", "nn");
 
   /* IupTabs only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", iTabsGetAlignmentAttrib, iTabsSetAlignmentAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABTYPE",   iTabsGetTabTypeAttrib, iTabsSetTabTypeAttrib,  "TOP", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABORIENTATION", iTabsGetTabOrientationAttrib, iTabsSetTabOrientationAttrib, "HORIZONTAL", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "REPAINT", NULL, iTabsSetRepaintAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FONT_ACTIVE", NULL, iTabsSetFontActiveAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FONT_INACTIVE", NULL, iTabsSetFontInactiveAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT); 
-  iupClassRegisterAttribute(ic, "VALUE", iTabsGetValueAttrib, iTabsSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUEPOS", iTabsGetValuePosAttrib, iTabsSetValuePosAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", iTabsGetAlignmentAttrib, iTabsSetAlignmentAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABTYPE",   iTabsGetTabTypeAttrib, iTabsSetTabTypeAttrib,  "TOP", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABORIENTATION", iTabsGetTabOrientationAttrib, iTabsSetTabOrientationAttrib, "HORIZONTAL", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REPAINT", NULL, iTabsSetRepaintAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FONT_ACTIVE", NULL, iTabsSetFontActiveAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FONT_INACTIVE", NULL, iTabsSetFontInactiveAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT); 
+  iupClassRegisterAttribute(ic, "VALUE", iTabsGetValueAttrib, iTabsSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUEPOS", iTabsGetValuePosAttrib, iTabsSetValuePosAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "TABTITLE", NULL, NULL, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABSIZE", NULL, NULL, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABTITLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iTabsSetFgColorAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iTabsSetFgColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
 
   /* Overwrite IupCanvas Attributes */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iTabsSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iTabsSetBgColorAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iTabsSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iTabsSetBgColorAttrib, NULL, NULL, IUPAF_DEFAULT);
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iTabsGetClientSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iTabsGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   
   return ic;
 }

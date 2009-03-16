@@ -39,10 +39,10 @@ Iclass* iupMessageDlgGetClass(void)
   iupdrvMessageDlgInitClass(ic);
 
   /* only the default values */
-  iupClassRegisterAttribute(ic, "DIALOGTYPE", NULL, NULL, "MESSAGE", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUTTONS", NULL, NULL, "OK", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUTTONDEFAULT", NULL, NULL, "1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUTTONRESPONSE", NULL, NULL, "1", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DIALOGTYPE", NULL, NULL, "MESSAGE", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUTTONS", NULL, NULL, "OK", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUTTONDEFAULT", NULL, NULL, "1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUTTONRESPONSE", NULL, NULL, "1", NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

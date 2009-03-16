@@ -63,7 +63,7 @@ static void iToggleComputeNaturalSizeMethod(Ihandle* ih)
     if (!ih->handle)
     {
       /* if not mapped must initialize the internal values */
-      char* value = iupAttribGetStr(ih, "IMAGE");
+      char* value = iupAttribGet(ih, "IMAGE");
       if (value)
         type = IUP_TOGGLE_IMAGE;
       else
@@ -72,7 +72,7 @@ static void iToggleComputeNaturalSizeMethod(Ihandle* ih)
 
     if (type == IUP_TOGGLE_IMAGE)
     {
-      iupImageGetInfo(iupAttribGetStr(ih, "IMAGE"), &natural_w, &natural_h, NULL);
+      iupImageGetInfo(iupAttribGet(ih, "IMAGE"), &natural_w, &natural_h, NULL);
 
       /* even when IMPRESS is set, must compute the borders space */
       iupdrvButtonAddBorders(&natural_w, &natural_h);
@@ -139,8 +139,8 @@ Iclass* iupToggleGetClass(void)
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
 
-  iupClassRegisterAttribute(ic, "RADIO", iToggleGetRadioAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RADIO", iToggleGetRadioAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
 
   iupdrvToggleInitClass(ic);
 

@@ -4,7 +4,7 @@
 local ctrl = {
   nick = "dialog",
   parent = WIDGET,
-  creation = "i",
+  creation = "I",
   callback = {
     map_cb = "",
     unmap_cb = "",

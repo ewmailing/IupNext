@@ -12,6 +12,8 @@
 <p>Action called when a file is &quot;dragged&quot; to the 
   application. When several files are dragged, the callback is called several times, once for each file. 
 </p>
+<p>If defined after the element is mapped then the attribute DRAGDROP must be 
+set to YES.</p>
 <p>[Windows and GTK Only]</p>
 <h3>Callback</h3>
 <pre>int function(Ihandle *<strong>ih</strong>, const char* <strong>filename</strong>, int <strong>num</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
@@ -36,7 +38,8 @@ the next dropped files, and processing of dropped files will be interrupted.</p>
 <p><a href="../dlg/iupdialog.html">IupDialog</a>,
   <a href="../elem/iupcanvas.html">IupCanvas</a>,
   <a href="../ctrl/iupglcanvas.html">IupGLCanvas</a>,
-<a href="../elem/iuptext.html">IupText</a></p>
+<a href="../elem/iuptext.html">IupText</a>, <a href="../elem/iuplist.html">
+IupList</a></p>
 
 </body>
 

@@ -31,11 +31,11 @@ static void motMessageDlgDeleteWindowCallback(Widget w, XtPointer client_data, X
   if (!ih) return;
   (void)call_data;
   (void)w;
-  if (iupStrEqualNoCase(iupAttribGetStrDefault(ih, "BUTTONS"), "OK"))
+  if (iupStrEqualNoCase(iupAttribGetStr(ih, "BUTTONS"), "OK"))
     iupAttribSetStr(ih, "BUTTONRESPONSE", "1");
   else
     iupAttribSetStr(ih, "BUTTONRESPONSE", "2");
-  iupAttribSetStr(ih, "WM_DELETE", "1");
+  iupAttribSetStr(ih, "_IUP_WM_DELETE", "1");
 }
 
 static void motMessageDlgCallback(Widget w, Ihandle* ih, XmAnyCallbackStruct* call_data)
@@ -53,7 +53,7 @@ static void motMessageDlgHelpCallback(Widget w, XtPointer client_data, XtPointer
   Icallback cb = (Icallback)IupGetCallback(ih, "HELP_CB");
   if (cb && cb(ih) == IUP_CLOSE)
   {
-    if (iupStrEqualNoCase(iupAttribGetStrDefault(ih, "BUTTONS"), "OK"))
+    if (iupStrEqualNoCase(iupAttribGetStr(ih, "BUTTONS"), "OK"))
       iupAttribSetStr(ih, "BUTTONRESPONSE", "1");
     else
       iupAttribSetStr(ih, "BUTTONRESPONSE", "2");
@@ -105,7 +105,7 @@ static int motMessageDlgPopup(Ihandle* ih, int x, int y)
     type = XmDIALOG_QUESTION;
 
 
-  value = iupAttribGetStr(ih, "TITLE");
+  value = iupAttribGet(ih, "TITLE");
   if (value)
     iupmotSetString(msgbox, XmNdialogTitle, value);
   else
@@ -118,7 +118,7 @@ static int motMessageDlgPopup(Ihandle* ih, int x, int y)
     }
   }
 
-  value = iupAttribGetStr(ih, "VALUE");
+  value = iupAttribGet(ih, "VALUE");
   if (value)
     iupmotSetString(msgbox, XmNmessageString, value);
 
@@ -129,7 +129,7 @@ static int motMessageDlgPopup(Ihandle* ih, int x, int y)
                 XmNnoResize, True,
                 NULL);
 
-  value = iupAttribGetStrDefault(ih, "BUTTONS");
+  value = iupAttribGetStr(ih, "BUTTONS");
   if (iupStrEqualNoCase(value, "OK"))
   {
     XtUnmanageChild(XmMessageBoxGetChild(msgbox, XmDIALOG_CANCEL_BUTTON));
@@ -168,10 +168,10 @@ static int motMessageDlgPopup(Ihandle* ih, int x, int y)
   ** The answer changes as soon as the user selects one of the
   ** buttons and the callback routine changes its value. */
   iupAttribSetStr(ih, "BUTTONRESPONSE", NULL);
-  while (iupAttribGetStr(ih, "BUTTONRESPONSE") == NULL)
+  while (iupAttribGet(ih, "BUTTONRESPONSE") == NULL)
     XtAppProcessEvent(iupmot_appcontext, XtIMAll);
 
-  if (!iupAttribGetStr(ih, "WM_DELETE"))
+  if (!iupAttribGet(ih, "_IUP_WM_DELETE"))
   {
     XtUnmanageChild(msgbox);
 

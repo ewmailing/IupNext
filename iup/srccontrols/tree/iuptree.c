@@ -686,42 +686,42 @@ Iclass* iupTreeGetClass(void)
   iupClassRegisterCallback(ic, "RIGHTCLICK_CB",     "i");
 
   /* IupTree Attributes - GENERAL */
-  iupClassRegisterAttribute(ic, "ADDEXPANDED", NULL, iTreeSetAddExpandedAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RENAMECARET", iTreeGetRenameCaretAttrib, iTreeSetRenameCaretAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RENAMESELECTION", iTreeGetRenameSelectionAttrib, iTreeSetRenameSelectionAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ADDEXPANDED", NULL, iTreeSetAddExpandedAttrib, "NO", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RENAMECARET", iTreeGetRenameCaretAttrib, iTreeSetRenameCaretAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RENAMESELECTION", iTreeGetRenameSelectionAttrib, iTreeSetRenameSelectionAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
-  iupClassRegisterAttribute(ic, "VALUE",  iTreeGetValueAttrib, iTreeSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKED", iTreeGetMarkedAttrib, iTreeSetMarkedAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CTRL",   iTreeGetCtrlAttrib, iTreeSetCtrlAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHIFT",  iTreeGetShiftAttrib, iTreeSetShiftAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "STARTING", iTreeGetStartingAttrib, iTreeSetStartingAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT); /* root node */
+  iupClassRegisterAttribute(ic, "VALUE",  iTreeGetValueAttrib, iTreeSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKED", iTreeGetMarkedAttrib, iTreeSetMarkedAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CTRL",   iTreeGetCtrlAttrib, iTreeSetCtrlAttrib, "NO", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHIFT",  iTreeGetShiftAttrib, iTreeSetShiftAttrib, "NO", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STARTING", iTreeGetStartingAttrib, iTreeSetStartingAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT); /* root node */
 
   /* IupTree Attributes - IMAGES */
-  iupClassRegisterAttributeId(ic, "IMAGE", NULL,  iTreeSetImageAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "IMAGEEXPANDED", NULL, iTreeSetImageExpandedAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGELEAF",     NULL, iTreeSetImageLeafAttrib, "IMGLEAF", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBRANCHCOLLAPSED", NULL, iTreeSetImageBranchCollapsedAttrib, "IMGCOLLAPSED", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBRANCHEXPANDED",  NULL, iTreeSetImageBranchExpandedAttrib,  "IMGEXPANDED",  IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IMAGE", NULL,  iTreeSetImageAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IMAGEEXPANDED", NULL, iTreeSetImageExpandedAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGELEAF",     NULL, iTreeSetImageLeafAttrib, "IMGLEAF", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEBRANCHCOLLAPSED", NULL, iTreeSetImageBranchCollapsedAttrib, "IMGCOLLAPSED", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEBRANCHEXPANDED",  NULL, iTreeSetImageBranchExpandedAttrib,  "IMGEXPANDED", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - NODES */
-  iupClassRegisterAttributeId(ic, "NAME",   iTreeGetNameAttrib,   iTreeSetNameAttrib,  NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STATE",  iTreeGetStateAttrib,  iTreeSetStateAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "DEPTH",  iTreeGetDepthAttrib,  iTreeSetDepthAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "COLOR",  iTreeGetColorAttrib,  iTreeSetColorAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "KIND",   iTreeGetKindAttrib,   NULL, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "PARENT", iTreeGetParentAttrib, NULL, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NAME",   iTreeGetNameAttrib,   iTreeSetNameAttrib,  IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "STATE",  iTreeGetStateAttrib,  iTreeSetStateAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "DEPTH",  iTreeGetDepthAttrib,  iTreeSetDepthAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "COLOR",  iTreeGetColorAttrib,  iTreeSetColorAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "KIND",   iTreeGetKindAttrib,   NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "PARENT", iTreeGetParentAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
-  iupClassRegisterAttributeId(ic, "ADDLEAF",   NULL, iTreeSetAddLeafAttrib,   NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "ADDBRANCH", NULL, iTreeSetAddBranchAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "DELNODE",   NULL, iTreeSetDelNodeAttrib,   NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "REDRAW",    NULL, iTreeSetRedrawAttrib,    NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RENAME",    NULL, iTreeSetRenameAttrib,    NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ADDLEAF",   NULL, iTreeSetAddLeafAttrib,   IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ADDBRANCH", NULL, iTreeSetAddBranchAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "DELNODE",   NULL, iTreeSetDelNodeAttrib,   IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REDRAW",    NULL, iTreeSetRedrawAttrib,    NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RENAME",    NULL, iTreeSetRenameAttrib,    NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "REPAINT", NULL, iTreeSetRepaintAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REPAINT", NULL, iTreeSetRepaintAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iTreeSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iTreeSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
 
   if (!IupGetHandle("IupTreeDragCursor"))
   {

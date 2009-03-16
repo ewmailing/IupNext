@@ -75,66 +75,69 @@ static int wGLCanvasMapMethod(Ihandle* ih)
       0, 0, 0                /* layer masks ignored        */
   };
 
+  /* the IupCanvas is already mapped, just initialize the OpenGL context */
+
   /* double or single buffer */
-  if (iupStrEqualNoCase(IupGetAttribute(ih,"BUFFER"), "DOUBLE"))
+  if (iupStrEqualNoCase(iupAttribGetStr(ih,"BUFFER"), "DOUBLE"))
     pfd.dwFlags |= PFD_DOUBLEBUFFER;
 
   /* stereo */
-  if (IupGetInt(ih,"STEREO"))
+  if (iupAttribGetInt(ih,"STEREO"))
     pfd.dwFlags |= PFD_STEREO;
 
   /* rgba or index */ 
-  if (iupStrEqualNoCase(IupGetAttribute(ih,"COLOR"), "INDEX"))
+  if (iupStrEqualNoCase(iupAttribGetStr(ih,"COLOR"), "INDEX"))
   {
     isIndex = 1;
     pfd.iPixelType = PFD_TYPE_COLORINDEX;
     pfd.cColorBits = 8;  /* assume 8 bits when indexed */
-    number = IupGetInt(ih,"BUFFER_SIZE");
+    number = iupAttribGetInt(ih,"BUFFER_SIZE");
     if (number > 0) pfd.cColorBits = (BYTE)number;
   }
 
   /* red, green, blue bits */
-  number = IupGetInt(ih,"RED_SIZE");
+  number = iupAttribGetInt(ih,"RED_SIZE");
   if (number > 0) pfd.cRedBits = (BYTE)number;
   pfd.cRedShift = 0;
 
-  number = IupGetInt(ih,"GREEN_SIZE");
+  number = iupAttribGetInt(ih,"GREEN_SIZE");
   if (number > 0) pfd.cGreenBits = (BYTE)number;
   pfd.cGreenShift = pfd.cRedBits;
 
-  number = IupGetInt(ih,"BLUE_SIZE");
+  number = iupAttribGetInt(ih,"BLUE_SIZE");
   if (number > 0) pfd.cBlueBits = (BYTE)number;
   pfd.cBlueShift = pfd.cRedBits + pfd.cGreenBits;
 
-  number = IupGetInt(ih,"ALPHA_SIZE");
+  number = iupAttribGetInt(ih,"ALPHA_SIZE");
   if (number > 0) pfd.cAlphaBits = (BYTE)number;
   pfd.cAlphaShift = pfd.cRedBits + pfd.cGreenBits + pfd.cBlueBits;
 
   /* depth and stencil size */
-  number = IupGetInt(ih,"DEPTH_SIZE");
+  number = iupAttribGetInt(ih,"DEPTH_SIZE");
   if (number > 0) pfd.cDepthBits = (BYTE)number;
 
   /* stencil */
-  number = IupGetInt(ih,"STENCIL_SIZE");
+  number = iupAttribGetInt(ih,"STENCIL_SIZE");
   if (number > 0) pfd.cStencilBits = (BYTE)number;
 
   /* red, green, blue accumulation bits */
-  number = IupGetInt(ih,"ACCUM_RED_SIZE");
+  number = iupAttribGetInt(ih,"ACCUM_RED_SIZE");
   if (number > 0) pfd.cAccumRedBits = (BYTE)number;
 
-  number = IupGetInt(ih,"ACCUM_GREEN_SIZE");
+  number = iupAttribGetInt(ih,"ACCUM_GREEN_SIZE");
   if (number > 0) pfd.cAccumGreenBits = (BYTE)number;
 
-  number = IupGetInt(ih,"ACCUM_BLUE_SIZE");
+  number = iupAttribGetInt(ih,"ACCUM_BLUE_SIZE");
   if (number > 0) pfd.cAccumBlueBits = (BYTE)number;
 
-  number = IupGetInt(ih,"ACCUM_ALPHA_SIZE");
+  number = iupAttribGetInt(ih,"ACCUM_ALPHA_SIZE");
   if (number > 0) pfd.cAccumAlphaBits = (BYTE)number;
 
   pfd.cAccumBits = pfd.cAccumRedBits + pfd.cAccumGreenBits + pfd.cAccumBlueBits + pfd.cAccumAlphaBits;
 
   /* get a device context */
   ih->data->device = GetDC((HWND)IupGetAttribute(ih, "HWND"));
+  iupAttribSetStr(ih, "VISUAL", (char*)ih->data->device);
 
   /* choose pixel format */
   if ((pixelFormat = ChoosePixelFormat(ih->data->device, &pfd)) == 0) 
@@ -150,6 +153,7 @@ static int wGLCanvasMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "ERROR", "Could not create a rendering context.");
     return IUP_NOERROR;
   }
+  iupAttribSetStr(ih, "CONTEXT", (char*)ih->data->context);
 
   ih_shared = IupGetAttributeHandle(ih, "SHAREDCONTEXT");
   if (ih_shared)
@@ -170,11 +174,8 @@ static int wGLCanvasMapMethod(Ihandle* ih)
     ResizePalette(ih->data->palette,1<<pfd.cColorBits);
     SelectPalette(ih->data->device,ih->data->palette,FALSE);
     RealizePalette(ih->data->device);
+    iupAttribSetStr(ih, "COLORMAP", (char*)ih->data->palette);
   }
-
-  iupAttribSetStr(ih, "COLORMAP", (char*)ih->data->palette);
-  iupAttribSetStr(ih, "VISUAL", (char*)ih->data->device);
-  iupAttribSetStr(ih, "CONTEXT", (char*)ih->data->context);
 
   return IUP_NOERROR;
 }
@@ -209,6 +210,13 @@ static Iclass* wGlCanvasGetClass(void)
   ic->Create = wGLCanvasCreateMethod;
   ic->Map = wGLCanvasMapMethod;
   ic->UnMap = wGLCanvasUnMapMethod;
+
+  iupClassRegisterAttribute(ic, "BUFFER", NULL, NULL, "SINGLE", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, "RGBA", NULL, IUPAF_DEFAULT);
+
+  iupClassRegisterAttribute(ic, "CONTEXT", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "VISUAL", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "COLORMAP", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY|IUPAF_NO_STRING);
 
   return ic;
 }

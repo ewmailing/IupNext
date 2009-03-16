@@ -262,7 +262,7 @@ XmFontList iupmotFontCreateNativeFont(const char* value)
 
 static ImotFont* motFontCreateNativeFont(Ihandle* ih, const char* value)
 {
-  ImotFont *motfont = motFindFont(iupAttribGetStr(ih, "FOUNDRY"), value);
+  ImotFont *motfont = motFindFont(iupAttribGet(ih, "FOUNDRY"), value);
   if (!motfont) 
   {
     iupERROR1("Failed to create Font: %s", value); 
@@ -276,7 +276,7 @@ static ImotFont* motFontCreateNativeFont(Ihandle* ih, const char* value)
 
 static ImotFont* motGetFont(Ihandle *ih)
 {
-  ImotFont* motfont = (ImotFont*)iupAttribGetStr(ih, "_IUPMOT_FONT");
+  ImotFont* motfont = (ImotFont*)iupAttribGet(ih, "_IUPMOT_FONT");
   if (!motfont)
     motfont = motFontCreateNativeFont(ih, iupGetFontAttrib(ih));
   return motfont;

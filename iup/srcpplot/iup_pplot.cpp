@@ -108,8 +108,8 @@ void IupPPlotBegin(Ihandle* ih, int strXdata)
       !iupStrEqual(ih->iclass->name, "pplot"))
     return;
 
-  PlotDataBase* inXData = (PlotDataBase*)iupAttribGetStr(ih, "_IUP_PPLOT_XDATA");
-  PlotDataBase* inYData = (PlotDataBase*)iupAttribGetStr(ih, "_IUP_PPLOT_YDATA");
+  PlotDataBase* inXData = (PlotDataBase*)iupAttribGet(ih, "_IUP_PPLOT_XDATA");
+  PlotDataBase* inYData = (PlotDataBase*)iupAttribGet(ih, "_IUP_PPLOT_YDATA");
 
   if (inXData) delete inXData;
   if (inYData) delete inYData;
@@ -136,8 +136,8 @@ void IupPPlotAdd(Ihandle* ih, float x, float y)
       !iupStrEqual(ih->iclass->name, "pplot"))
     return;
 
-  PlotData* inXData = (PlotData*)iupAttribGetStr(ih, "_IUP_PPLOT_XDATA");
-  PlotData* inYData = (PlotData*)iupAttribGetStr(ih, "_IUP_PPLOT_YDATA");
+  PlotData* inXData = (PlotData*)iupAttribGet(ih, "_IUP_PPLOT_XDATA");
+  PlotData* inYData = (PlotData*)iupAttribGet(ih, "_IUP_PPLOT_YDATA");
   int strXdata = iupAttribGetInt(ih, "_IUP_PPLOT_STRXDATA");
 
   if (!inYData || !inXData || strXdata)
@@ -157,8 +157,8 @@ void IupPPlotAddStr(Ihandle* ih, const char* x, float y)
       !iupStrEqual(ih->iclass->name, "pplot"))
     return;
 
-  StringData *inXData = (StringData*)iupAttribGetStr(ih, "_IUP_PPLOT_XDATA");
-  PlotData   *inYData = (PlotData*)iupAttribGetStr(ih, "_IUP_PPLOT_YDATA");
+  StringData *inXData = (StringData*)iupAttribGet(ih, "_IUP_PPLOT_XDATA");
+  PlotData   *inYData = (PlotData*)iupAttribGet(ih, "_IUP_PPLOT_YDATA");
   int strXdata = iupAttribGetInt(ih, "_IUP_PPLOT_STRXDATA");
 
   if (!inYData || !inXData || !strXdata)
@@ -220,8 +220,8 @@ int IupPPlotEnd(Ihandle* ih)
       !iupStrEqual(ih->iclass->name, "pplot"))
     return -1;
 
-  PlotDataBase* inXData = (PlotDataBase*)iupAttribGetStr(ih, "_IUP_PPLOT_XDATA");
-  PlotDataBase* inYData = (PlotDataBase*)iupAttribGetStr(ih, "_IUP_PPLOT_YDATA");
+  PlotDataBase* inXData = (PlotDataBase*)iupAttribGet(ih, "_IUP_PPLOT_XDATA");
+  PlotDataBase* inYData = (PlotDataBase*)iupAttribGet(ih, "_IUP_PPLOT_YDATA");
   if (!inYData || !inXData)
     return -1;
 
@@ -2856,89 +2856,89 @@ static Iclass* iupPPlotGetClass(void)
   iupClassRegisterCallback(ic, "EDITEND_CB", "");
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iPPlotGetBGColorAttrib, iPPlotSetBGColorAttrib, "255 255 255", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "FGCOLOR", iPPlotGetFGColorAttrib, iPPlotSetFGColorAttrib, "0 0 0", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iPPlotGetBGColorAttrib, iPPlotSetBGColorAttrib, "255 255 255", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FGCOLOR", iPPlotGetFGColorAttrib, iPPlotSetFGColorAttrib, "0 0 0", NULL, IUPAF_NOT_MAPPED);
 
   /* IupPPlot only */
 
-  iupClassRegisterAttribute(ic, "REDRAW", iupBaseNoGetAttrib, iPPlotSetRedrawAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", iPPlotGetTitleAttrib, iPPlotSetTitleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLEFONTSIZE", iPPlotGetTitleFontSizeAttrib, iPPlotSetTitleFontSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLEFONTSTYLE", NULL, iPPlotSetTitleFontStyleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LEGENDSHOW", iPPlotGetLegendShowAttrib, iPPlotSetLegendShowAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LEGENDPOS", iPPlotGetLegendPosAttrib, iPPlotSetLegendPosAttrib, "TOPRIGHT", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LEGENDFONTSIZE", NULL, iPPlotSetLegendFontSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LEGENDFONTSTYLE", NULL, iPPlotSetLegendFontStyleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MARGINLEFT", iPPlotGetMarginLeftAttrib, iPPlotSetMarginLeftAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MARGINRIGHT", iPPlotGetMarginRightAttrib, iPPlotSetMarginRightAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MARGINTOP", iPPlotGetMarginTopAttrib, iPPlotSetMarginTopAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MARGINBOTTOM", iPPlotGetMarginBottomAttrib, iPPlotSetMarginBottomAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "GRIDLINESTYLE", iPPlotGetGridLineStyleAttrib, iPPlotSetGridLineStyleAttrib, "CONTINUOUS", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "GRIDCOLOR", iPPlotGetGridColorAttrib, iPPlotSetGridColorAttrib, "200 200 200", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "GRID", iPPlotGetGridAttrib, iPPlotSetGridAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REDRAW", NULL, iPPlotSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", iPPlotGetTitleAttrib, iPPlotSetTitleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEFONTSIZE", iPPlotGetTitleFontSizeAttrib, iPPlotSetTitleFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEFONTSTYLE", NULL, iPPlotSetTitleFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LEGENDSHOW", iPPlotGetLegendShowAttrib, iPPlotSetLegendShowAttrib, "NO", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LEGENDPOS", iPPlotGetLegendPosAttrib, iPPlotSetLegendPosAttrib, "TOPRIGHT", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LEGENDFONTSIZE", NULL, iPPlotSetLegendFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LEGENDFONTSTYLE", NULL, iPPlotSetLegendFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINLEFT", iPPlotGetMarginLeftAttrib, iPPlotSetMarginLeftAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINRIGHT", iPPlotGetMarginRightAttrib, iPPlotSetMarginRightAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINTOP", iPPlotGetMarginTopAttrib, iPPlotSetMarginTopAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINBOTTOM", iPPlotGetMarginBottomAttrib, iPPlotSetMarginBottomAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GRIDLINESTYLE", iPPlotGetGridLineStyleAttrib, iPPlotSetGridLineStyleAttrib, "CONTINUOUS", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GRIDCOLOR", iPPlotGetGridColorAttrib, iPPlotSetGridColorAttrib, "200 200 200", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GRID", iPPlotGetGridAttrib, iPPlotSetGridAttrib, "NO", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "DS_LINESTYLE", iPPlotGetDSLineStyleAttrib, iPPlotSetDSLineStyleAttrib, "CONTINUOUS", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_LINEWIDTH", iPPlotGetDSLineWidthAttrib, iPPlotSetDSLineWidthAttrib, "1", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_MARKSTYLE", iPPlotGetDSMarkStyleAttrib, iPPlotSetDSMarkStyleAttrib, "X", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_MARKSIZE", iPPlotGetDSMarkSizeAttrib, iPPlotSetDSMarkSizeAttrib, "7", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_LEGEND", iPPlotGetDSLegendAttrib, iPPlotSetDSLegendAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_COLOR", iPPlotGetDSColorAttrib, iPPlotSetDSColorAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_SHOWVALUES", iPPlotGetDSShowValuesAttrib, iPPlotSetDSShowValuesAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_MODE", iPPlotGetDSModeAttrib, iPPlotSetDSModeAttrib, "LINE", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_EDIT", iPPlotGetDSEditAttrib, iPPlotSetDSEditAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_REMOVE", NULL, iPPlotSetDSRemoveAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_LINESTYLE", iPPlotGetDSLineStyleAttrib, iPPlotSetDSLineStyleAttrib, "CONTINUOUS", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_LINEWIDTH", iPPlotGetDSLineWidthAttrib, iPPlotSetDSLineWidthAttrib, "1", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_MARKSTYLE", iPPlotGetDSMarkStyleAttrib, iPPlotSetDSMarkStyleAttrib, "X", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_MARKSIZE", iPPlotGetDSMarkSizeAttrib, iPPlotSetDSMarkSizeAttrib, "7", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_LEGEND", iPPlotGetDSLegendAttrib, iPPlotSetDSLegendAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_COLOR", iPPlotGetDSColorAttrib, iPPlotSetDSColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_SHOWVALUES", iPPlotGetDSShowValuesAttrib, iPPlotSetDSShowValuesAttrib, "NO", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_MODE", iPPlotGetDSModeAttrib, iPPlotSetDSModeAttrib, "LINE", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_EDIT", iPPlotGetDSEditAttrib, iPPlotSetDSEditAttrib, "NO", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_REMOVE", NULL, iPPlotSetDSRemoveAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "AXS_XLABEL", iPPlotGetAXSXLabelAttrib, iPPlotSetAXSXLabelAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YLABEL", iPPlotGetAXSYLabelAttrib, iPPlotSetAXSYLabelAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XLABELCENTERED", iPPlotGetAXSXLabelCenteredAttrib, iPPlotSetAXSXLabelCenteredAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YLABELCENTERED", iPPlotGetAXSYLabelCenteredAttrib, iPPlotSetAXSYLabelCenteredAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XCOLOR", iPPlotGetAXSXColorAttrib, iPPlotSetAXSXColorAttrib, "0 0 0", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YCOLOR", iPPlotGetAXSYColorAttrib, iPPlotSetAXSYColorAttrib, "0 0 0", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XAUTOMIN", iPPlotGetAXSXAutoMinAttrib, iPPlotSetAXSXAutoMinAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YAUTOMIN", iPPlotGetAXSYAutoMinAttrib, iPPlotSetAXSYAutoMinAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XAUTOMAX", iPPlotGetAXSXAutoMaxAttrib, iPPlotSetAXSXAutoMaxAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YAUTOMAX", iPPlotGetAXSYAutoMaxAttrib, iPPlotSetAXSYAutoMaxAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XMIN", iPPlotGetAXSXMinAttrib, iPPlotSetAXSXMinAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YMIN", iPPlotGetAXSYMinAttrib, iPPlotSetAXSYMinAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XMAX", iPPlotGetAXSXMaxAttrib, iPPlotSetAXSXMaxAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YMAX", iPPlotGetAXSYMaxAttrib, iPPlotSetAXSYMaxAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XREVERSE", iPPlotGetAXSXReverseAttrib, iPPlotSetAXSXReverseAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YREVERSE", iPPlotGetAXSYReverseAttrib, iPPlotSetAXSYReverseAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XCROSSORIGIN", iPPlotGetAXSXCrossOriginAttrib, iPPlotSetAXSXCrossOriginAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YCROSSORIGIN", iPPlotGetAXSYCrossOriginAttrib, iPPlotSetAXSYCrossOriginAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XSCALE", iPPlotGetAXSXScaleAttrib, iPPlotSetAXSXScaleAttrib, "LIN", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YSCALE", iPPlotGetAXSYScaleAttrib, iPPlotSetAXSYScaleAttrib, "LIN", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XFONTSIZE", iPPlotGetAXSXFontSizeAttrib, iPPlotSetAXSXFontSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iPPlotGetAXSYFontSizeAttrib, iPPlotSetAXSYFontSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XFONTSTYLE", iPPlotGetAXSXFontStyleAttrib, iPPlotSetAXSXFontStyleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YFONTSTYLE", iPPlotGetAXSYFontStyleAttrib, iPPlotSetAXSYFontStyleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICK", iPPlotGetAXSXTickAttrib, iPPlotSetAXSXTickAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICK", iPPlotGetAXSYTickAttrib, iPPlotSetAXSYTickAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICKSIZE", iPPlotGetAXSXTickSizeAttrib, iPPlotSetAXSXTickSizeAttrib, "5", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKSIZE", iPPlotGetAXSYTickSizeAttrib, iPPlotSetAXSYTickSizeAttrib, "5", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICKFORMAT", iPPlotGetAXSXTickFormatAttrib, iPPlotSetAXSXTickFormatAttrib, "%.0f", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKFORMAT", iPPlotGetAXSYTickFormatAttrib, iPPlotSetAXSYTickFormatAttrib, "%.0f", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICKFONTSIZE", iPPlotGetAXSXTickFontSizeAttrib, iPPlotSetAXSXTickFontSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKFONTSIZE", iPPlotGetAXSYTickFontSizeAttrib, iPPlotSetAXSYTickFontSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICKFONTSTYLE", iPPlotGetAXSXTickFontStyleAttrib, iPPlotSetAXSXTickFontStyleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKFONTSTYLE", iPPlotGetAXSYTickFontStyleAttrib, iPPlotSetAXSYTickFontStyleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XAUTOTICK", iPPlotGetAXSXAutoTickAttrib, iPPlotSetAXSXAutoTickAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YAUTOTICK", iPPlotGetAXSYAutoTickAttrib, iPPlotSetAXSYAutoTickAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XAUTOTICKSIZE", iPPlotGetAXSXAutoTickSizeAttrib, iPPlotSetAXSXAutoTickSizeAttrib, "5", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YAUTOTICKSIZE", iPPlotGetAXSYAutoTickSizeAttrib, iPPlotSetAXSYAutoTickSizeAttrib, "5", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICKMAJORSPAN", iPPlotGetAXSXTickMajorSpanAttrib, iPPlotSetAXSXTickMajorSpanAttrib, "1", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKMAJORSPAN", iPPlotGetAXSYTickMajorSpanAttrib, iPPlotSetAXSYTickMajorSpanAttrib, "1", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICKDIVISION", iPPlotGetAXSXTickDivisionAttrib, iPPlotSetAXSXTickDivisionAttrib, "5", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKDIVISION", iPPlotGetAXSYTickDivisionAttrib, iPPlotSetAXSYTickDivisionAttrib, "5", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XAUTOTICKSIZE", iPPlotGetAXSXAutoTickSizeAttrib, iPPlotSetAXSXAutoTickSizeAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YAUTOTICKSIZE", iPPlotGetAXSYAutoTickSizeAttrib, iPPlotSetAXSYAutoTickSizeAttrib, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICKMAJORSIZE", iPPlotGetAXSXTickMajorSizeAttrib, iPPlotSetAXSXTickMajorSizeAttrib, "8", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKMAJORSIZE", iPPlotGetAXSYTickMajorSizeAttrib, iPPlotSetAXSYTickMajorSizeAttrib, "8", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XLABEL", iPPlotGetAXSXLabelAttrib, iPPlotSetAXSXLabelAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YLABEL", iPPlotGetAXSYLabelAttrib, iPPlotSetAXSYLabelAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XLABELCENTERED", iPPlotGetAXSXLabelCenteredAttrib, iPPlotSetAXSXLabelCenteredAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YLABELCENTERED", iPPlotGetAXSYLabelCenteredAttrib, iPPlotSetAXSYLabelCenteredAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XCOLOR", iPPlotGetAXSXColorAttrib, iPPlotSetAXSXColorAttrib, "0 0 0", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YCOLOR", iPPlotGetAXSYColorAttrib, iPPlotSetAXSYColorAttrib, "0 0 0", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XAUTOMIN", iPPlotGetAXSXAutoMinAttrib, iPPlotSetAXSXAutoMinAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YAUTOMIN", iPPlotGetAXSYAutoMinAttrib, iPPlotSetAXSYAutoMinAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XAUTOMAX", iPPlotGetAXSXAutoMaxAttrib, iPPlotSetAXSXAutoMaxAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YAUTOMAX", iPPlotGetAXSYAutoMaxAttrib, iPPlotSetAXSYAutoMaxAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XMIN", iPPlotGetAXSXMinAttrib, iPPlotSetAXSXMinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YMIN", iPPlotGetAXSYMinAttrib, iPPlotSetAXSYMinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XMAX", iPPlotGetAXSXMaxAttrib, iPPlotSetAXSXMaxAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YMAX", iPPlotGetAXSYMaxAttrib, iPPlotSetAXSYMaxAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XREVERSE", iPPlotGetAXSXReverseAttrib, iPPlotSetAXSXReverseAttrib, "NO", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YREVERSE", iPPlotGetAXSYReverseAttrib, iPPlotSetAXSYReverseAttrib, "NO", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XCROSSORIGIN", iPPlotGetAXSXCrossOriginAttrib, iPPlotSetAXSXCrossOriginAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YCROSSORIGIN", iPPlotGetAXSYCrossOriginAttrib, iPPlotSetAXSYCrossOriginAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XSCALE", iPPlotGetAXSXScaleAttrib, iPPlotSetAXSXScaleAttrib, "LIN", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YSCALE", iPPlotGetAXSYScaleAttrib, iPPlotSetAXSYScaleAttrib, "LIN", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XFONTSIZE", iPPlotGetAXSXFontSizeAttrib, iPPlotSetAXSXFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iPPlotGetAXSYFontSizeAttrib, iPPlotSetAXSYFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XFONTSTYLE", iPPlotGetAXSXFontStyleAttrib, iPPlotSetAXSXFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YFONTSTYLE", iPPlotGetAXSYFontStyleAttrib, iPPlotSetAXSYFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICK", iPPlotGetAXSXTickAttrib, iPPlotSetAXSXTickAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICK", iPPlotGetAXSYTickAttrib, iPPlotSetAXSYTickAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKSIZE", iPPlotGetAXSXTickSizeAttrib, iPPlotSetAXSXTickSizeAttrib, "5", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKSIZE", iPPlotGetAXSYTickSizeAttrib, iPPlotSetAXSYTickSizeAttrib, "5", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKFORMAT", iPPlotGetAXSXTickFormatAttrib, iPPlotSetAXSXTickFormatAttrib, "%.0f", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKFORMAT", iPPlotGetAXSYTickFormatAttrib, iPPlotSetAXSYTickFormatAttrib, "%.0f", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKFONTSIZE", iPPlotGetAXSXTickFontSizeAttrib, iPPlotSetAXSXTickFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKFONTSIZE", iPPlotGetAXSYTickFontSizeAttrib, iPPlotSetAXSYTickFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKFONTSTYLE", iPPlotGetAXSXTickFontStyleAttrib, iPPlotSetAXSXTickFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKFONTSTYLE", iPPlotGetAXSYTickFontStyleAttrib, iPPlotSetAXSYTickFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XAUTOTICK", iPPlotGetAXSXAutoTickAttrib, iPPlotSetAXSXAutoTickAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YAUTOTICK", iPPlotGetAXSYAutoTickAttrib, iPPlotSetAXSYAutoTickAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XAUTOTICKSIZE", iPPlotGetAXSXAutoTickSizeAttrib, iPPlotSetAXSXAutoTickSizeAttrib, "5", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YAUTOTICKSIZE", iPPlotGetAXSYAutoTickSizeAttrib, iPPlotSetAXSYAutoTickSizeAttrib, "5", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKMAJORSPAN", iPPlotGetAXSXTickMajorSpanAttrib, iPPlotSetAXSXTickMajorSpanAttrib, "1", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKMAJORSPAN", iPPlotGetAXSYTickMajorSpanAttrib, iPPlotSetAXSYTickMajorSpanAttrib, "1", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKDIVISION", iPPlotGetAXSXTickDivisionAttrib, iPPlotSetAXSXTickDivisionAttrib, "5", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKDIVISION", iPPlotGetAXSYTickDivisionAttrib, iPPlotSetAXSYTickDivisionAttrib, "5", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XAUTOTICKSIZE", iPPlotGetAXSXAutoTickSizeAttrib, iPPlotSetAXSXAutoTickSizeAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YAUTOTICKSIZE", iPPlotGetAXSYAutoTickSizeAttrib, iPPlotSetAXSYAutoTickSizeAttrib, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKMAJORSIZE", iPPlotGetAXSXTickMajorSizeAttrib, iPPlotSetAXSXTickMajorSizeAttrib, "8", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKMAJORSIZE", iPPlotGetAXSYTickMajorSizeAttrib, iPPlotSetAXSYTickMajorSizeAttrib, "8", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "REMOVE", iupBaseNoGetAttrib, iPPlotSetRemoveAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLEAR", iupBaseNoGetAttrib, iPPlotSetClearAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "COUNT", iPPlotGetCountAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CURRENT", iPPlotGetCurrentAttrib, iPPlotSetCurrentAttrib, "-1", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REMOVE", NULL, iPPlotSetRemoveAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLEAR", NULL, iPPlotSetClearAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COUNT", iPPlotGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CURRENT", iPPlotGetCurrentAttrib, iPPlotSetCurrentAttrib, "-1", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }

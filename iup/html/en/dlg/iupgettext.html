@@ -18,14 +18,12 @@
   text.</p>
 <h3>Creation and Show</h3>
 <dl>
-  <dd>
   <pre>int IupGetText(const char* <b>title</b>, char *<strong>text</strong>); [in C]
 iup.GetText(<b>title, text</b>: string) -&gt; (<strong>text</strong>: string) [in Lua]</pre>
-  </dd>
 </dl>
 <p><strong>text</strong>: It contains the initial value of the text and the returned 
   text. It must have room for the edited string.</p>
-<p>The function returns a non zero value if 
+<p><u>Returns:</u> a non zero value if 
   successfull. In Lua if an error occured returns nil.</p>
 <h3>Notes</h3>
 <p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 

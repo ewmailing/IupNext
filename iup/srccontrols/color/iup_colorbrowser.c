@@ -800,7 +800,7 @@ static int iColorBrowserCreateMethod(Ihandle* ih, void **params)
   ih->expand = IUP_EXPAND_NONE;
 
   /* ensure the default values */
-  iColorBrowserSetRGBAttrib(ih, iupAttribGetStrDefault(ih, "RGB"));
+  iColorBrowserSetRGBAttrib(ih, iupAttribGetStr(ih, "RGB"));
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION",      (Icallback)iColorBrowserRedraw_CB);
@@ -834,12 +834,12 @@ Iclass* iupColorBrowserGetClass(void)
   iupClassRegisterCallback(ic, "CHANGE_CB", "ccc");
 
   /* IupColorBrowser only */
-  iupClassRegisterAttribute(ic, "RGB", iColorBrowserGetRGBAttrib, iColorBrowserSetRGBAttrib, "255 0 0", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HSI", iColorBrowserGetHSIAttrib, iColorBrowserSetHSIAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RGB", iColorBrowserGetRGBAttrib, iColorBrowserSetRGBAttrib, "255 0 0", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HSI", iColorBrowserGetHSIAttrib, iColorBrowserSetHSIAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Overwrite IupCanvas Attributes */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iColorBrowserSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iColorBrowserSetBgColorAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iColorBrowserSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iColorBrowserSetBgColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

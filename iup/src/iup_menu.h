@@ -23,7 +23,7 @@ void iupdrvItemInitClass(Iclass* ic);
 void iupdrvMenuInitClass(Iclass* ic);
 void iupdrvSubmenuInitClass(Iclass* ic);
 
-char* iupMenuGetTitle(Ihandle* ih, const char* title);
+char* iupMenuProcessTitle(Ihandle* ih, const char* title);
 int iupMenuGetChildId(Ihandle* ih);
 char* iupMenuGetChildIdStr(Ihandle* ih);
 int iupMenuIsMenuBar(Ihandle* ih);

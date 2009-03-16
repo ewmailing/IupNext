@@ -56,23 +56,9 @@ char* iupBaseGetWidAttrib(Ihandle *ih)
   return (char*)ih->handle;
 }
 
-char* iupBaseNoGetAttrib(Ihandle *ih)
-{
-  (void)ih;
-  return NULL;
-}
-
-int iupBaseNoSetAttrib(Ihandle *ih, const char* value)
-{
-  /* does nothing and do not allow to store in the environment. */
-  (void)ih;
-  (void)value;
-  return 0;
-}
-
 void iupBaseUpdateSizeAttrib(Ihandle* ih)
 {
-  char* value = iupAttribGetStr(ih, "SIZE");
+  char* value = iupAttribGet(ih, "SIZE");
   if (!value)
     return;
 
@@ -248,8 +234,17 @@ int iupBaseSetVisibleAttrib(Ihandle* ih, const char* value)
 
 char* iupBaseNativeParentGetBgColorAttrib(Ihandle* ih)
 {
-  char* color = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!color) color = iupAttribGetStrNativeParent(ih, "BACKGROUND");
+  /* Used only by those who need a transparent background */
+  char* color = iupAttribGetInheritNativeParent(ih, "BGCOLOR");
+  if (!color) color = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
+  if (!color) color = IupGetGlobal("DLGBGCOLOR");
+  return color;
+}
+
+char* iupBaseNativeParentGetBgColor(Ihandle* ih)
+{
+  /* Used in SetBgColorAttrib */
+  char* color = iupAttribGetInheritNativeParent(ih, "BGCOLOR");
   if (!color) color = IupGetGlobal("DLGBGCOLOR");
   return color;
 }
@@ -288,7 +283,7 @@ static Ihandle* iBaseFindChild(Ihandle* ih, const char* name)
   Ihandle* child = ih->firstchild;
   while (child)
   {
-    char* child_name = iupAttribGetStr(child, "NAME");
+    char* child_name = iupAttribGet(child, "NAME");
     if (child_name && iupStrEqualNoCase(name, child_name))
       return child;
 
@@ -319,7 +314,7 @@ Ihandle* IupGetDialogChild(Ihandle* ih, const char* name)
   if (dialog) ih = dialog;
  
   strcat(attrib, name);
-  child = (Ihandle*)iupAttribGetStr(ih, attrib);
+  child = (Ihandle*)iupAttribGet(ih, attrib);
   if (child) return child;
 
   if (ih->firstchild)
@@ -383,7 +378,7 @@ static char* iBaseGetExpandAttrib(Ihandle* ih)
 
 void iupBaseContainerUpdateExpand(Ihandle* ih)
 {
-  char *expand = iupAttribGetStrInherit(ih, "EXPAND");
+  char *expand = iupAttribGetInherit(ih, "EXPAND");
   if (!expand)
     ih->expand = IUP_EXPAND_BOTH;  /* default for containers is YES */
   else
@@ -405,33 +400,33 @@ void iupBaseContainerUpdateExpand(Ihandle* ih)
    but children that are containers will get the same value. */
 char* iupBaseContainerGetExpandAttrib(Ihandle* ih)
 {
-  return iupAttribGetStrInherit(ih, "EXPAND");
+  return iupAttribGetInherit(ih, "EXPAND");
 }
 
 void iupBaseRegisterCommonAttrib(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FLOATING", iBaseGetFloatingAttrib, iBaseSetFloatingAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "EXPAND", iBaseGetExpandAttrib, iBaseSetExpandAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NORMALIZERGROUP", NULL, iBaseSetNormalizerGroupAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FLOATING", iBaseGetFloatingAttrib, iBaseSetFloatingAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPAND", iBaseGetExpandAttrib, iBaseSetExpandAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NORMALIZERGROUP", NULL, iBaseSetNormalizerGroupAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* make sure everyone has the correct default value */
-  iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "ACTIVE", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "ACTIVE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
 
-  iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iupBaseSetSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iupBaseSetRasterSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CHARSIZE", iupBaseGetCharSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iupBaseSetSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iupBaseSetRasterSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHARSIZE", iupBaseGetCharSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "POSITION", iBaseGetPositionAttrib, iBaseSetPositionAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "POSITION", iBaseGetPositionAttrib, iBaseSetPositionAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);  /* use inheritance to retrieve standard fonts */
-  iupClassRegisterAttribute(ic, "FONT", iupGetFontAttrib, iupSetFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);  /* use inheritance to retrieve standard fonts */
+  iupClassRegisterAttribute(ic, "FONT", iupGetFontAttrib, iupSetFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "FONTSTYLE", iupGetFontStyleAttrib, iupSetFontStyleAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FONTSIZE", iupGetFontSizeAttrib, iupSetFontSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FONTFACE", iupGetFontFaceAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FONTSTYLE", iupGetFontStyleAttrib, iupSetFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FONTSIZE", iupGetFontSizeAttrib, iupSetFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FONTFACE", iupGetFontFaceAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvBaseRegisterCommonAttrib(ic);
 }
@@ -439,16 +434,16 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
 void iupBaseRegisterVisualAttrib(Iclass* ic)
 {
   /* VISIBLE inheritance comes from the native system */
-  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iupBaseSetVisibleAttrib, "YES", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iupBaseSetVisibleAttrib, "YES", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
 
-  iupClassRegisterAttribute(ic, "ZORDER", NULL, iupdrvBaseSetZorderAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "X", iupdrvBaseGetXAttrib, iupBaseNoSetAttrib, "0", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "Y", iupdrvBaseGetYAttrib, iupBaseNoSetAttrib, "0", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ZORDER", NULL, iupdrvBaseSetZorderAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "X", iupdrvBaseGetXAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "Y", iupdrvBaseGetYAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "TIP", NULL, iupdrvBaseSetTipAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TIPVISIBLE", NULL, iupdrvBaseSetTipVisibleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TIPDELAY", NULL, NULL, "5000", IUP_NOT_MAPPED, IUP_INHERIT);          /* 5 seconds */
-  iupClassRegisterAttribute(ic, "TIPBGCOLOR", NULL, NULL, "255 255 225", IUP_NOT_MAPPED, IUP_INHERIT); /* Light Yellow */
-  iupClassRegisterAttribute(ic, "TIPFGCOLOR", NULL, NULL, "0 0 0", IUP_NOT_MAPPED, IUP_INHERIT);       /* black */
+  iupClassRegisterAttribute(ic, "TIP", NULL, iupdrvBaseSetTipAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TIPVISIBLE", NULL, iupdrvBaseSetTipVisibleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TIPDELAY", NULL, NULL, "5000", NULL, IUPAF_NOT_MAPPED);          /* 5 seconds */
+  iupClassRegisterAttribute(ic, "TIPBGCOLOR", NULL, NULL, "255 255 225", NULL, IUPAF_NOT_MAPPED); /* Light Yellow */
+  iupClassRegisterAttribute(ic, "TIPFGCOLOR", NULL, NULL, "0 0 0", NULL, IUPAF_NOT_MAPPED);       /* black */
 }

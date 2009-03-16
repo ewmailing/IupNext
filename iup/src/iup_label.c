@@ -97,7 +97,7 @@ static void iLabelComputeNaturalSizeMethod(Ihandle* ih)
     if (!ih->handle)
     {
       /* if not mapped must initialize the internal values */
-      char* value = iupAttribGetStr(ih, "SEPARATOR");
+      char* value = iupAttribGet(ih, "SEPARATOR");
       if (value)
       {
         if (iupStrEqualNoCase(value, "HORIZONTAL"))
@@ -107,7 +107,7 @@ static void iLabelComputeNaturalSizeMethod(Ihandle* ih)
       }
       else
       {
-        value = iupAttribGetStr(ih, "IMAGE");
+        value = iupAttribGet(ih, "IMAGE");
         if (value)
           type = IUP_LABEL_IMAGE;
         else
@@ -121,7 +121,7 @@ static void iLabelComputeNaturalSizeMethod(Ihandle* ih)
       natural_w = 2;
     else if (type == IUP_LABEL_IMAGE)
     {
-      iupImageGetInfo(iupAttribGetStr(ih, "IMAGE"), &natural_w, &natural_h, NULL);
+      iupImageGetInfo(iupAttribGet(ih, "IMAGE"), &natural_w, &natural_h, NULL);
 
       natural_w += 2*ih->data->horiz_padding;
       natural_h += 2*ih->data->vert_padding;
@@ -183,7 +183,7 @@ Iclass* iupLabelGetClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* IupLabel only */
-  iupClassRegisterAttribute(ic, "SEPARATOR", iLabelGetSeparatorAttrib, iLabelSetSeparatorAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SEPARATOR", iLabelGetSeparatorAttrib, iLabelSetSeparatorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvLabelInitClass(ic);
 

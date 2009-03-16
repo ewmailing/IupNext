@@ -133,7 +133,7 @@ int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
   for (i=0;i<16;i++)
   {
     sprintf(attr, "%d", i);
-    value = iupAttribGetStr(ih, attr);
+    value = iupAttribGet(ih, attr);
 
     if (value)
     {
@@ -159,7 +159,7 @@ int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
   for (;i<256;i++)
   {
     sprintf(attr, "%d", i);
-    value = iupAttribGetStr(ih, attr);
+    value = iupAttribGet(ih, attr);
     if (!value)
       break;
 
@@ -236,7 +236,7 @@ void* iupImageGetIcon(const char* name)
     return NULL;
   
   /* Check for an already created icon */
-  icon = iupAttribGetStr(ih, "_IUPIMAGE_ICON");
+  icon = iupAttribGet(ih, "_IUPIMAGE_ICON");
   if (icon)
     return icon;
 
@@ -268,7 +268,7 @@ void* iupImageGetCursor(const char* name)
     return NULL;
   
   /* Check for an already created cursor */
-  cursor = iupAttribGetStr(ih, "_IUPIMAGE_CURSOR");
+  cursor = iupAttribGet(ih, "_IUPIMAGE_CURSOR");
   if (cursor)
     return cursor;
 
@@ -358,30 +358,30 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, 
       return NULL;
   }
 
-  bgcolor = iupAttribGetStr(ih, "BGCOLOR");
+  bgcolor = iupAttribGet(ih, "BGCOLOR");
   if (!bgcolor && ih_parent)  
     bgcolor = IupGetAttribute(ih_parent, "BGCOLOR"); /* Use IupGetAttribute to use inheritance and native implementation */
 
   strcat(cache_name, attrib_name);
 
-  if (iupAttribGetStr(ih, "BGCOLOR_DEPEND") && bgcolor)
+  if (iupAttribGet(ih, "_IUP_BGCOLOR_DEPEND") && bgcolor)
     strcat(cache_name, bgcolor);
   
   /* Check for an already created native image */
-  image = (void*)iupAttribGetStr(ih, cache_name);
+  image = (void*)iupAttribGet(ih, cache_name);
   if (image)
     return image;
 
-  if (iupAttribGetStrDefault(ih_parent, "FLAT_ALPHA"))
+  if (iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
     iupAttribSetStr(ih, "FLAT_ALPHA", "1");
 
   /* Creates the native image */
   image = iupdrvImageCreateImage(ih, bgcolor, make_inactive);
 
-  if (iupAttribGetStrDefault(ih_parent, "FLAT_ALPHA"))
+  if (iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
     iupAttribSetStr(ih, "FLAT_ALPHA", NULL);
 
-  if (iupAttribGetStr(ih, "BGCOLOR_DEPEND") && bgcolor)
+  if (iupAttribGet(ih, "_IUP_BGCOLOR_DEPEND") && bgcolor)
     strcat(cache_name, bgcolor);
 
   /* save the native image in the cache */
@@ -397,15 +397,15 @@ void iupImageUpdateParent(Ihandle *ih)  /* ih here is the element that contains 
   /* Called when BGCOLOR is changed */
   /* it will re-create the image, if the case */
 
-  char* value = iupAttribGetStr(ih, "IMAGE");
+  char* value = iupAttribGet(ih, "IMAGE");
   if (value) 
     iupClassObjectSetAttribute(ih, "IMAGE", value, &inherit);
 
-  value = iupAttribGetStr(ih, "IMINACTIVE");
+  value = iupAttribGet(ih, "IMINACTIVE");
   if (value) 
     iupClassObjectSetAttribute(ih, "IMINACTIVE", value, &inherit);
 
-  value = iupAttribGetStr(ih, "IMPRESS");
+  value = iupAttribGet(ih, "IMPRESS");
   if (value) 
     iupClassObjectSetAttribute(ih, "IMPRESS", value, &inherit);
 }
@@ -429,14 +429,14 @@ static void iImageUnMapMethod(Ihandle* ih)
   char *name;
   void* native_data;
 
-  native_data = iupAttribGetStr(ih, "_IUPIMAGE_ICON");
+  native_data = iupAttribGet(ih, "_IUPIMAGE_ICON");
   if (native_data) 
   {
     iupdrvImageDestroy(native_data, IUPIMAGE_ICON);
     iupAttribSetStr(ih, "_IUPIMAGE_ICON", NULL);
   }
 
-  native_data = iupAttribGetStr(ih, "_IUPIMAGE_CURSOR");
+  native_data = iupAttribGet(ih, "_IUPIMAGE_CURSOR");
   if (native_data) 
   {
     iupdrvImageDestroy(native_data, IUPIMAGE_CURSOR);
@@ -576,11 +576,11 @@ static Iclass* iImageGetClassBase(char* name, int (*create_func)(Ihandle* ih, vo
   ic->UnMap = iImageUnMapMethod;
 
   /* Attribute functions */
-  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WIDTH", iImageGetWidthAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HEIGHT", iImageGetHeightAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, "DLGBGCOLOR", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "WIDTH", iImageGetWidthAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HEIGHT", iImageGetHeightAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, "DLGBGCOLOR", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }

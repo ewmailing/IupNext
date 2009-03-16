@@ -4,7 +4,16 @@ APPTYPE = CONSOLE
 INCLUDES = ../include
 
 ifdef USE_GTK
-  APPNAME = iuptestgtk
+  ifndef GTK_DEFAULT
+    # Build GTK version in IRIX,SunOS,AIX,Win32
+    APPNAME = iuptestgtk
+  endif
+else  
+  ifdef GTK_DEFAULT
+    # Build Motif version in Linux,Darwin,FreeBSD
+    USE_MOTIF = Yes
+    APPNAME = iuptestmot
+  endif
 endif
 
 USE_IUP3 = Yes
@@ -12,8 +21,6 @@ USE_STATIC = Yes
 IUP = ..
 
 DBG = Yes
-
-SRC = teste_dialog.c
 
 #SRC = tray.c
 #SRC = dialog.c
@@ -37,7 +44,7 @@ SRC = teste_dialog.c
 #SRC = spin.c
 #SRC = text_spin.c
 #SRC = list.c
-#SRC = sysinfo.c
+SRC = sysinfo.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib

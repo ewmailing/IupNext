@@ -148,7 +148,7 @@ int IupListDialog (int type, const char *title, int size, const char *list_str[]
 
 static int iAlarmButtonAction_CB(Ihandle *ih)
 {
-  iupAttribSetStr(IupGetDialog(ih), "_IUP_BUTTON_NUMBER", iupAttribGetStr(ih, "_IUP_BUTTON_NUMBER"));
+  iupAttribSetStr(IupGetDialog(ih), "_IUP_BUTTON_NUMBER", iupAttribGet(ih, "_IUP_BUTTON_NUMBER"));
   return IUP_CLOSE;
 }
 
@@ -328,16 +328,14 @@ int  iupDataEntry(int    maxlin,
 
 int IupGetFile(char* file)
 {
-  Ihandle *gf = 0;
+  Ihandle *dlg = 0;
   int i,ret,n;
-  char *value;
   char filter[4096] = "*.*";
   char dir[4096];
 
-  if (!file) return -3;
+  if (!file) return -1;
 
-  gf = IupFileDlg();
-  if (!gf) return -2;
+  dlg = IupFileDlg();
 
   n = strlen(file);
 
@@ -356,20 +354,23 @@ int IupGetFile(char* file)
     }
   }
 
-  IupSetAttribute(gf, "FILTER", filter);
-  IupSetAttribute(gf, "DIRECTORY", dir);
-  IupSetAttribute(gf, "ALLOWNEW", "YES");
-  IupSetAttribute(gf, "NOCHANGEDIR", "YES");
-  IupSetAttribute(gf, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttribute(gf, "ICON", IupGetGlobal("ICON"));
+  IupSetAttribute(dlg, "FILTER", filter);
+  IupSetAttribute(dlg, "DIRECTORY", dir);
+  IupSetAttribute(dlg, "ALLOWNEW", "YES");
+  IupSetAttribute(dlg, "NOCHANGEDIR", "YES");
+  IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
 
-  IupPopup(gf, IUP_CENTER, IUP_CENTER);
+  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
 
-  value = IupGetAttribute(gf, "VALUE");
-  if (value) strcpy(file, value);
-  ret = IupGetInt(gf, "STATUS");
+  ret = IupGetInt(dlg, "STATUS");
+  if (ret != -1)
+  {
+    char* value = IupGetAttribute(dlg, "VALUE");
+    if (value) strcpy(file, value);
+  }
 
-  IupDestroy(gf);
+  IupDestroy(dlg);
 
   return ret;
 }
@@ -430,6 +431,8 @@ int IupGetText(const char* title, char* text)
   bt = IupGetInt(dlg, "STATUS");
   if (bt==1)
     strcpy(text, IupGetAttribute(multi_text, "VALUE"));
+  else
+    bt = 0; /* return 0 instead of -1 */
 
   IupDestroy(dlg);
   return bt;

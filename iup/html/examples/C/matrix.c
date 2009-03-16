@@ -9,8 +9,8 @@ Ihandle *create_mat(void)
 {
   Ihandle *mat = IupMatrix(NULL); 
   
-  IupSetAttribute(mat,"NUMCOL","2"); 
-  IupSetAttribute(mat,"NUMLIN","3"); 
+  IupSetAttribute(mat,"NUMCOL","20"); 
+  IupSetAttribute(mat,"NUMLIN","30"); 
   
   IupSetAttribute(mat,"NUMCOL_VISIBLE","2") ;
   IupSetAttribute(mat,"NUMLIN_VISIBLE","3") ;
@@ -27,7 +27,8 @@ Ihandle *create_mat(void)
   IupSetAttribute(mat,"1:2","4.5");
   IupSetAttribute(mat,"2:2","8.1");
   IupSetAttribute(mat,"3:2","3.4");
-  IupSetAttribute(mat,"WIDTHDEF","34");
+//  IupSetAttribute(mat,"WIDTHDEF","34");
+  IupSetAttribute(mat,"RESIZEMATRIX","YES");
 
   return mat;
 }

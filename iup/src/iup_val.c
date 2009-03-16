@@ -217,12 +217,12 @@ Iclass* iupValGetClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* IupVal only */
-  iupClassRegisterAttribute(ic, "MAX", iValGetMaxAttrib, iValSetMaxAttrib, "1.0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "MIN", iValGetMinAttrib, iValSetMinAttrib, "0.0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWTICKS", iupValGetShowTicksAttrib, iValSetShowTicksAttrib, "0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "TYPE", iValGetTypeAttrib, iValSetTypeAttrib, "HORIZONTAL", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INVERTED", iValGetInvertedAttrib, iValSetInvertedAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAX", iValGetMaxAttrib, iValSetMaxAttrib, "1.0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "MIN", iValGetMinAttrib, iValSetMinAttrib, "0.0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SHOWTICKS", iupValGetShowTicksAttrib, iValSetShowTicksAttrib, "0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TYPE", iValGetTypeAttrib, iValSetTypeAttrib, "HORIZONTAL", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INVERTED", iValGetInvertedAttrib, iValSetInvertedAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
 
   iupdrvValInitClass(ic);
 

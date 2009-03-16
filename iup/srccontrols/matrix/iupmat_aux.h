@@ -13,28 +13,21 @@ extern "C" {
 #endif
 
 int   iupMatrixAuxIsCellVisible(Ihandle* ih, int lin, int col);
-int   iupMatrixAuxGetCellDim   (Ihandle* ih, int lin, int col, int* x, int* y, int* dx, int* dy);
+void  iupMatrixAuxGetVisibleCellDim   (Ihandle* ih, int lin, int col, int* x, int* y, int* w, int* h);
 
-void  iupMatrixAuxGetPos      (Ihandle* ih, int m);
-void  iupMatrixAuxGetLastWidth(Ihandle* ih, int m);
+void  iupMatrixAuxCalcSizes(Ihandle* ih);
+
+void  iupMatrixAuxUpdateVisiblePos(Ihandle* ih, int m);
+void  iupMatrixAuxUpdateLast(Ihandle* ih, int m);
 
 int   iupMatrixAuxGetColumnWidth(Ihandle* ih, int col);
 int   iupMatrixAuxGetLineHeight (Ihandle* ih, int lin);
-void  iupMatrixAuxFillWidthVec  (Ihandle* ih);
-void  iupMatrixAuxFillHeightVec (Ihandle* ih);
 
-int   iupMatrixAuxGetTitlelineSize  (Ihandle* ih);
-int   iupMatrixAuxGetTitlecolumnSize(Ihandle* ih);
-int   iupMatrixAuxGetLineCol        (Ihandle* ih, int x, int y, int* l, int* c);
-void  iupMatrixAuxUpdateCellValue   (Ihandle* ih);
-char* iupMatrixAuxGetCellValue      (Ihandle* ih, int lin, int col);
+int   iupMatrixAuxGetLinColFromXY        (Ihandle* ih, int x, int y, int* l, int* c);
 
-int   iupMatrixAuxCallLeavecellCb    (Ihandle* ih);
-void  iupMatrixAuxCallEntercellCb    (Ihandle* ih);
-int   iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int modo);
-
-int   iupMatrixAuxTextHeight(Ihandle* ih, char *text, int* totalh, int* lineh, int* spacing);
-void  iupMatrixAuxTextWidth (Ihandle* ih, char *text, int* width);
+int   iupMatrixAuxCallLeaveCellCb    (Ihandle* ih);
+void  iupMatrixAuxCallEnterCellCb    (Ihandle* ih);
+int   iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode);
 
 #ifdef __cplusplus
 }

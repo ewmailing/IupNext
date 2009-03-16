@@ -1,5 +1,5 @@
 /** \file
- * \brief Timer for the Motif Driver.
+ * \brief Timer for the GTK Driver.
  *
  * See Copyright Notice in "iup.h"
  */

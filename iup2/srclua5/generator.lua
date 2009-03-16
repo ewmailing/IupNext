@@ -16,6 +16,7 @@ iupRegisterWidget = iupluaNewClass
 c_types = {
   n = "int",
   s = "char *",
+  I = "Ihandle *",
   i = "Ihandle *",
   c = "unsigned char ",
   d = "double",
@@ -82,6 +83,7 @@ function write_creation(o, t)
       elseif p == "s" then io.write("(char *) luaL_checkstring(L, ",aux.n,")")
       elseif p == "S" then io.write("(char *) luaL_optstring(L, ",aux.n,', NULL)')
       elseif p == "i" then io.write("iuplua_checkihandle(L, ",aux.n,")")
+      elseif p == "I" then io.write("iuplua_checkihandleornil(L, ",aux.n,")")
       elseif p == "-" then io.write("NULL")
       elseif p == "a" then io.write("iuplua_checkstring_array(L, ",aux.n,")")
       elseif p == "t" then io.write("iuplua_checkint_array(L, ",aux.n,")")

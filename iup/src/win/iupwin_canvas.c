@@ -45,7 +45,7 @@ static void winCanvasSetScrollInfo(HWND hWnd, int imin, int imax, int ipos, int 
 static int winCanvasSetBgColorAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
-  /* Instead of iupwinRedrawNow this will redraw after the attribute is stored. */
+  /* Instead of iupdrvDisplayRedraw this will redraw after the attribute is stored. */
   InvalidateRect(ih->handle, NULL, TRUE);  /* erase background so BGCOLOR is used */ 
   return 1;
 }
@@ -61,8 +61,8 @@ static int winCanvasSetDXAttrib(Ihandle *ih, const char *value)
     if (!iupStrToFloat(value, &dx))
       return 1;
 
-    xmin = iupAttribGetFloatDefault(ih, "XMIN");
-    xmax = iupAttribGetFloatDefault(ih, "XMAX");
+    xmin = iupAttribGetFloat(ih, "XMIN");
+    xmax = iupAttribGetFloat(ih, "XMAX");
     posx = ih->data->posx;
 
     iupCanvasCalcScrollIntPos(xmin, xmax, dx, posx, 
@@ -70,7 +70,7 @@ static int winCanvasSetDXAttrib(Ihandle *ih, const char *value)
 
     if (dx >= (xmax-xmin))
     {
-      if (iupStrBoolean(iupAttribGetStrDefault(ih, "XAUTOHIDE")))
+      if (iupStrBoolean(iupAttribGetStr(ih, "XAUTOHIDE")))
         ShowScrollBar(ih->handle, SB_HORZ, FALSE);
       else
         EnableScrollBar(ih->handle, SB_HORZ, ESB_DISABLE_BOTH);
@@ -104,9 +104,9 @@ static int winCanvasSetPosXAttrib(Ihandle *ih, const char *value)
     if (!iupStrToFloat(value, &posx))
       return 1;
 
-    xmin = iupAttribGetFloatDefault(ih, "XMIN");
-    xmax = iupAttribGetFloatDefault(ih, "XMAX");
-    dx = iupAttribGetFloatDefault(ih, "DX");
+    xmin = iupAttribGetFloat(ih, "XMIN");
+    xmax = iupAttribGetFloat(ih, "XMAX");
+    dx = iupAttribGetFloat(ih, "DX");
 
     iupCanvasCalcScrollIntPos(xmin, xmax, dx, posx, 
                               IUP_SB_MIN, IUP_SB_MAX, &ipagex, &iposx);
@@ -127,8 +127,8 @@ static int winCanvasSetDYAttrib(Ihandle *ih, const char *value)
     if (!iupStrToFloat(value, &dy))
       return 1;
 
-    ymin = iupAttribGetFloatDefault(ih, "YMIN");
-    ymax = iupAttribGetFloatDefault(ih, "YMAX");
+    ymin = iupAttribGetFloat(ih, "YMIN");
+    ymax = iupAttribGetFloat(ih, "YMAX");
     posy = ih->data->posy;
 
     iupCanvasCalcScrollIntPos(ymin, ymax, dy, posy, 
@@ -136,7 +136,7 @@ static int winCanvasSetDYAttrib(Ihandle *ih, const char *value)
 
     if (dy >= (ymax-ymin))
     {
-      if (iupStrBoolean(iupAttribGetStrDefault(ih, "YAUTOHIDE")))
+      if (iupStrBoolean(iupAttribGetStr(ih, "YAUTOHIDE")))
         ShowScrollBar(ih->handle, SB_VERT, FALSE);
       else
         EnableScrollBar(ih->handle, SB_VERT, ESB_DISABLE_BOTH);
@@ -170,9 +170,9 @@ static int winCanvasSetPosYAttrib(Ihandle *ih, const char *value)
     if (!iupStrToFloat(value, &posy))
       return 1;
 
-    ymin = iupAttribGetFloatDefault(ih, "YMIN");
-    ymax = iupAttribGetFloatDefault(ih, "YMAX");
-    dy = iupAttribGetFloatDefault(ih, "DY");
+    ymin = iupAttribGetFloat(ih, "YMIN");
+    ymax = iupAttribGetFloat(ih, "YMAX");
+    dy = iupAttribGetFloat(ih, "DY");
 
     iupCanvasCalcScrollIntPos(ymin, ymax, dy, posy, 
                               IUP_SB_MIN, IUP_SB_MAX, &ipagey, &iposy);
@@ -210,13 +210,12 @@ static void winCanvasUpdateHorScroll(Ihandle* ih, WORD winop)
       winop == SB_ENDSCROLL)
     return;
 
-  xmax = iupAttribGetFloatDefault(ih,"XMAX");
-  xmin = iupAttribGetFloatDefault(ih,"XMIN");
-  linex = iupAttribGetFloat(ih,"LINEX");
+  xmax = iupAttribGetFloat(ih,"XMAX");
+  xmin = iupAttribGetFloat(ih,"XMIN");
 
   winCanvasGetScrollInfo(ih->handle, &iposx, &ipagex, SB_HORZ, winop==SB_THUMBTRACK? 1: 0);
 
-  if (linex==0)
+  if (!iupAttribGet(ih,"LINEX"))
   {
     ilinex = ipagex/10;
     if (!ilinex)
@@ -225,6 +224,7 @@ static void winCanvasUpdateHorScroll(Ihandle* ih, WORD winop)
   else
   {
     /* line and page convertions are the same */
+    linex = iupAttribGetFloat(ih,"LINEX");
     iupCanvasCalcScrollIntPos(xmin, xmax, linex, 0, 
                               IUP_SB_MIN, IUP_SB_MAX, &ilinex,  NULL);
   }
@@ -286,13 +286,12 @@ static void winCanvasUpdateVerScroll(Ihandle* ih, WORD winop)
       winop == SB_ENDSCROLL)
     return;
 
-  ymax = iupAttribGetFloatDefault(ih,"YMAX");
-  ymin = iupAttribGetFloatDefault(ih,"YMIN");
-  liney = iupAttribGetFloat(ih,"LINEY");
+  ymax = iupAttribGetFloat(ih,"YMAX");
+  ymin = iupAttribGetFloat(ih,"YMIN");
 
   winCanvasGetScrollInfo(ih->handle, &iposy, &ipagey, SB_VERT, winop==SB_THUMBTRACK? 1: 0);
 
-  if (liney==0)
+  if (!iupAttribGet(ih, "LINEY"))
   {
     iliney = ipagey/10;
     if (!iliney)
@@ -301,6 +300,7 @@ static void winCanvasUpdateVerScroll(Ihandle* ih, WORD winop)
   else
   {
     /* line and page convertions are the same */
+    liney = iupAttribGetFloat(ih,"LINEY");
     iupCanvasCalcScrollIntPos(ymin, ymax, liney, 0, 
                               IUP_SB_MIN, IUP_SB_MAX, &iliney,  NULL);
   }
@@ -498,14 +498,14 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     { 
       if (ih->handle == (HWND)wp && LOWORD(lp)==HTCLIENT)
       {
-        HCURSOR hCur = (HCURSOR)iupAttribGetStr(ih, "_IUPWIN_HCURSOR");
+        HCURSOR hCur = (HCURSOR)iupAttribGet(ih, "_IUPWIN_HCURSOR");
         if (hCur)
         {
           SetCursor(hCur); 
           *result = 1;
           return 1;
         }
-        else if (iupAttribGetStr(ih, "CURSOR"))
+        else if (iupAttribGet(ih, "CURSOR"))
         {
           SetCursor(NULL); 
           *result = 1;
@@ -562,7 +562,7 @@ static int winCanvasMapMethod(Ihandle* ih)
 
   if (ih->iclass->is_interactive)
   {
-    if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
       dwStyle |= WS_TABSTOP;
   }
                            
@@ -571,7 +571,7 @@ static int winCanvasMapMethod(Ihandle* ih)
     dwStyleEx |= WS_EX_CONTROLPARENT;
     dwStyle |= WS_CLIPSIBLINGS;
 
-    if (iupAttribGetIntDefault(IupGetDialog(ih), "COMPOSITED"))
+    if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
       dwStyleEx |= WS_EX_COMPOSITED;
     else
       dwStyle |= WS_CLIPCHILDREN;
@@ -639,10 +639,10 @@ static int winCanvasMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "DRAGDROP", "YES");
 
   /* ensure the default values, that are different from the native ones */
-  winCanvasSetDXAttrib(ih, iupAttribGetStrDefault(ih, "DX"));
-  winCanvasSetDYAttrib(ih, iupAttribGetStrDefault(ih, "DY"));
-  winCanvasSetPosXAttrib(ih, iupAttribGetStrDefault(ih, "POSX"));
-  winCanvasSetPosYAttrib(ih, iupAttribGetStrDefault(ih, "POSY"));
+  winCanvasSetDXAttrib(ih, iupAttribGetStr(ih, "DX"));
+  winCanvasSetDYAttrib(ih, iupAttribGetStr(ih, "DY"));
+  winCanvasSetPosXAttrib(ih, iupAttribGetStr(ih, "POSX"));
+  winCanvasSetPosYAttrib(ih, iupAttribGetStr(ih, "POSY"));
 
   return IUP_NOERROR;
 }
@@ -706,19 +706,19 @@ void iupdrvCanvasInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winCanvasSetBgColorAttrib, "255 255 255", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winCanvasSetBgColorAttrib, "255 255 255", NULL, IUPAF_DEFAULT);
 
   /* IupCanvas only */
-  iupClassRegisterAttribute(ic, "DRAWSIZE", iupdrvBaseGetClientSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWSIZE", iupdrvBaseGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "DX", NULL, winCanvasSetDXAttrib, "0.1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DY", NULL, winCanvasSetDYAttrib, "0.1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, winCanvasSetPosXAttrib, "0.0", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, winCanvasSetPosYAttrib, "0.0", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "DX", NULL, winCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DY", NULL, winCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, winCanvasSetPosXAttrib, "0.0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, winCanvasSetPosYAttrib, "0.0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
 
   /* IupCanvas Windows only */
-  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HWND", iupBaseGetWidAttrib, NULL, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HWND", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

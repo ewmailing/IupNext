@@ -11,8 +11,10 @@
 <h2>IupMessage</h2>
 <p>Shows a modal dialog containing a message. It simply creates and popup a <b>IupMessageDlg</b>.</p>
 <h3>Creation and Show</h3>
-<p>void IupMessage(const char *<strong>title</strong>, const char *<strong>message</strong>); [in C]<br>
-  iup.Message(<strong>title</strong>: string, <strong>message</strong>: string) [in Lua]</p>
+<pre>void IupMessage(const char *<strong>title</strong>, const char *<strong>message</strong>); [in C]<br>
+  iup.Message(<strong>title</strong>: string, <strong>message</strong>: string) [in Lua]</pre>
+<p><strong>title</strong>: dialog title<br>
+<strong>message</strong>: text message contents</p>
 <h3>Notes</h3>
 <p>The <b>IupMessage</b> function shows a dialog centralized on the screen, showing the message and the &#8220;OK&#8221; 
   button. The &#8216;\n&#8217; character can be added to the message to indicate line change. 

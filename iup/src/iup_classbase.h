@@ -87,9 +87,6 @@ void iupdrvBaseUnMapMethod(Ihandle* ih);
  * @{
  */
 
-int iupBaseNoSetAttrib(Ihandle* ih, const char* value);
-char* iupBaseNoGetAttrib(Ihandle* ih);
-
 /* common */
 char* iupBaseGetWidAttrib(Ihandle* ih);
 int iupBaseSetNameAttrib(Ihandle* ih, const char* value);
@@ -144,6 +141,8 @@ enum{IUP_ALIGN_ALEFT, IUP_ALIGN_ACENTER, IUP_ALIGN_ARIGHT};
 
 enum{IUP_SB_NONE, IUP_SB_HORIZ, IUP_SB_VERT};
 int iupBaseGetScrollbar(Ihandle* ih);
+
+char* iupBaseNativeParentGetBgColor(Ihandle* ih);
 
 /** @} */
 

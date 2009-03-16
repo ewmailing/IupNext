@@ -18,6 +18,8 @@
 #include "il.h"
 
 #include "iup_attrib.h"
+#include "iup_globalattrib.h"
+
 
 static void Reparent(void)
 {
@@ -169,12 +171,13 @@ static void GetAttributeData(void)
 static void GetAttribute(void)
 {
   char *name = luaL_check_string(2);
-  char *value = IupGetAttribute(iuplua_checkihandle(1), name);
+  Ihandle* ih = iuplua_checkihandle(1);
+  char *value = IupGetAttribute(ih, name);
   if (!value || iupAttribIsInternal(name))
     lua_pushnil();
   else
   {
-    if (iupAttribIsPointer(name))
+    if (iupAttribIsPointer(ih, name))
       lua_pushuserdata((void*)value);
     else
       lua_pushstring(value);
@@ -250,6 +253,11 @@ static void Update(void)
 static void UpdateChildren(void)
 {
   IupUpdateChildren(iuplua_checkihandle(1));
+}
+
+static void Redraw(void)
+{
+  IupRedraw(iuplua_checkihandle(1), luaL_check_int(2));
 }
 
 static void VersionNumber(void)
@@ -403,8 +411,8 @@ static void ListDialog(void)
   lua_Object flags = luaL_tablearg(8);
   int tipo, tam, opt, max_col, max_lin, i, ret;
   char *tit;
-  char **lista;
-  int *marcas;
+  char **list;
+  int *marks;
 
   tipo = luaL_check_int(1);
   tit = luaL_check_string(2);
@@ -412,39 +420,37 @@ static void ListDialog(void)
   opt = luaL_check_int(5);
   max_col = luaL_check_int(6);
   max_lin = luaL_check_int(7);
-  lista = malloc(sizeof(char *) * tam);
-  marcas = malloc(sizeof(int) * tam);
+  list = malloc(sizeof(char *) * tam);
+  marks = malloc(sizeof(int) * tam);
+
   for (i = 0; i < tam; i++) 
   {
     lua_beginblock();
     lua_pushobject(strings);
     lua_pushnumber(i + 1);
-    lista[i] = lua_getstring(lua_gettable());
+    list[i] = lua_getstring(lua_gettable());
     lua_pushobject(flags);
     lua_pushnumber(i + 1);
-    marcas[i] = (int) lua_getnumber(lua_gettable());
+    marks[i] = (int) lua_getnumber(lua_gettable());
     lua_endblock();
   }
 
-  ret = IupListDialog(tipo, tit, tam, lista, opt, max_col, max_lin, marcas);
+  ret = IupListDialog(tipo, tit, tam, list, opt, max_col, max_lin, marks);
 
-  if(tipo == 2)
+  if (tipo==2 && ret!=-1)
   {
     for (i = 0; i < tam; i++) 
     {
       lua_beginblock();
       lua_pushobject(flags);
       lua_pushnumber(i + 1);
-      lua_pushnumber(marcas[i]);
+      lua_pushnumber(marks[i]);
       lua_settable();
       lua_endblock();
     }
-    lua_pushobject(flags);
   }
-  else
-  {
-    lua_pushnumber(ret);
-  }
+
+  lua_pushnumber(ret);
 }
 
 static void Message(void)
@@ -460,6 +466,66 @@ static void GetText(void)
     lua_pushstring(buffer);
   else
     lua_pushnil();
+}
+
+static void GetAttributes(void)
+{
+  Ihandle *ih = iuplua_checkihandle(1);
+  char *value = IupGetAttributes(ih);
+  lua_pushstring(value);
+}
+
+static void GetAllAttributes(void)
+{
+  int max_n = luaL_check_int(2);
+  char **names = (char **) malloc(max_n * sizeof(char *));
+  int i;
+  int n = IupGetAllAttributes(iuplua_checkihandle(1), names, max_n);
+
+  lua_Object tb = lua_createtable();
+  for (i = 0; i < n; i++) 
+  {
+    lua_beginblock();
+    lua_pushobject(tb);
+    lua_pushnumber(i);
+    lua_pushstring(names[i]);
+    lua_settable();
+    lua_endblock();                /* end a section and starts another */
+  }
+
+  lua_pushobject(tb);
+  lua_pushnumber(n);
+  free(names);
+}
+
+static void GetClassAttributes(void)
+{
+  int max_n = luaL_check_int(2);
+  char **names = (char **) malloc(max_n * sizeof(char *));
+  int n = IupGetClassAttributes(luaL_check_string(1), names, max_n);
+  lua_Object tb;
+  int i;
+
+  if (n == -1)
+  {
+    lua_pushnil();
+    return;
+  }
+
+  tb = lua_createtable();
+  for (i = 0; i < n; i++) 
+  {
+    lua_beginblock();
+    lua_pushobject(tb);
+    lua_pushnumber(i);
+    lua_pushstring(names[i]);
+    lua_settable();
+    lua_endblock();                /* end a section and starts another */
+  }
+
+  lua_pushobject(tb);
+  lua_pushnumber(n);
+  free(names);
 }
 
 static void GetAllNames(void)
@@ -483,6 +549,11 @@ static void GetAllNames(void)
   lua_pushobject(tb);
   lua_pushnumber(n);
   free(names);
+}
+
+static void SetClassDefaultAttribute(void)
+{
+  IupSetClassDefaultAttribute(luaL_check_string(1), luaL_check_string(2), luaL_opt_string(3,NULL));
 }
 
 static void GetAllDialogs(void)
@@ -510,7 +581,12 @@ static void GetAllDialogs(void)
 
 static void GetGlobal(void)
 {
-  lua_pushstring(IupGetGlobal(luaL_check_string(1)));
+  const char* a = luaL_check_string(1);
+  char *v = IupGetGlobal(a);
+  if (iupGlobalIsPointer(a))
+    lua_pushuserdata((void*)v);
+  else
+    lua_pushstring(v);
 }
 
 static void SetGlobal(void)
@@ -574,6 +650,7 @@ int iupluaapi_open(void)
     { "IupRefresh", Refresh },
     { "IupUpdate", Update },
     { "IupUpdateChildren", UpdateChildren },
+    { "IupRedraw", Redraw },
     { "IupVersionNumber", VersionNumber },
     { "IupShowXY", ShowXY },
     { "IupHide", Hide },
@@ -600,6 +677,10 @@ int iupluaapi_open(void)
     { "IupListDialog", ListDialog },
     { "IupMessage", Message },
     { "IupGetText", GetText },
+    { "IupGetAttributes", GetAttributes },
+    { "IupGetAllAttributes", GetAllAttributes },
+    { "IupSetClassDefaultAttribute", SetClassDefaultAttribute},
+    { "IupGetClassAttributes", GetClassAttributes },
     { "IupGetAllNames", GetAllNames },
     { "IupGetAllDialogs", GetAllDialogs },
     { "IupGetGlobal", GetGlobal },

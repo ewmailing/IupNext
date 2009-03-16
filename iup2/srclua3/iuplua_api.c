@@ -2,7 +2,7 @@
  * \brief Iup API in Lua
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_api.c,v 1.2 2008-11-21 05:46:06 scuri Exp $
+ * $Id: iuplua_api.c,v 1.3 2009-03-16 21:01:28 scuri Exp $
  */
  
 #include <string.h>
@@ -366,7 +366,7 @@ static void ListDialog(void)
 
   ret = IupListDialog(tipo, tit, tam, lista, opt, max_col, max_lin, marcas);
 
-  if(tipo == 2)
+  if (tipo==2 && ret!=-1)
   {
     for (i = 0; i < tam; i++) 
     {
@@ -377,12 +377,9 @@ static void ListDialog(void)
       lua_settable();
       lua_endblock();
     }
-    lua_pushobject(flags);
   }
-  else
-  {
-    lua_pushnumber(ret);
-  }
+
+  lua_pushnumber(ret);
 }
 
 static void Message(void)

@@ -130,17 +130,11 @@ static void iValSetImage(const char* name, unsigned char** image_out, long int**
     char colorstr[10];
     char *value;
     sprintf(colorstr, "%d", c);
-    value = iupAttribGetStr(img, colorstr);      
+    value = iupAttribGet(img, colorstr);      
     if (iupStrEqualNoCase(value, "BGCOLOR")) 
-    {   
       (*color_out)[c] = -1;
-    }
     else
-    {
-      unsigned char r = 0, g = 0, b = 0;
-      iupStrToRGB(value,&r,&g,&b);      
-      (*color_out)[c] = cdEncodeColor((unsigned char)r,(unsigned char)g,(unsigned char)b);
-    }
+      (*color_out)[c] = cdIupConvertColor(value);
   }
 }
 
@@ -678,6 +672,7 @@ static int iValSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
     value = iupControlBaseGetParentBgColor(ih);
+
   ih->data->bgcolor = cdIupConvertColor(value);
 
   cdIupCalcShadows(ih->data->bgcolor, &ih->data->light_shadow, &ih->data->mid_shadow, &ih->data->dark_shadow);
@@ -794,20 +789,20 @@ static Iclass* iValGetClass(void)
   iupClassRegisterCallback(ic, "BUTTON_RELEASE_CB", "d");
 
   /* IupVal only */
-  iupClassRegisterAttribute(ic, "VALUE", iValGetValueAttrib, iValSetValueAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TYPE", iValGetTypeAttrib, iValSetTypeAttrib, "HORIZONTAL", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", iValGetValueAttrib, iValSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TYPE", iValGetTypeAttrib, iValSetTypeAttrib, "HORIZONTAL", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "SHOWTICKS", iValGetShowTicksAttrib, iValSetShowTicksAttrib, "0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "STEP", iValGetStepAttrib, iValSetStepAttrib, "0.01", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "PAGESTEP", iValGetPageStepAttrib, iValSetPageStepAttrib, "0.1", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "MAX", iValGetMaxAttrib, iValSetMaxAttrib, "1.0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "MIN", iValGetMinAttrib, iValSetMinAttrib, "0.0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "HANDLER_IMAGE", NULL, iValSetHandlerImageAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "HANDLER_IMAGE_INACTIVE", NULL, iValSetHandlerImageInactiveAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWTICKS", iValGetShowTicksAttrib, iValSetShowTicksAttrib, "0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "STEP", iValGetStepAttrib, iValSetStepAttrib, "0.01", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "PAGESTEP", iValGetPageStepAttrib, iValSetPageStepAttrib, "0.1", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "MAX", iValGetMaxAttrib, iValSetMaxAttrib, "1.0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "MIN", iValGetMinAttrib, iValSetMinAttrib, "0.0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "HANDLER_IMAGE", NULL, iValSetHandlerImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "HANDLER_IMAGE_INACTIVE", NULL, iValSetHandlerImageInactiveAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
 
   /* Overwrite IupCanvas Attributes */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iValSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iValSetBgColorAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iValSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iValSetBgColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

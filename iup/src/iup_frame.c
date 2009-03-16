@@ -32,7 +32,7 @@ static void iFrameGetDecorSize(Ihandle* ih, int *width, int *height)
   *width  = 5;
   *height = 5;
 
-  if (iupAttribGetStr(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGetStr(ih, "TITLE"))
+  if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGet(ih, "TITLE"))
   {
     (*height) += iupFrameGetTitleHeight(ih);
   }
@@ -165,8 +165,8 @@ Iclass* iupFrameGetClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iFrameGetClientSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, "YES", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iFrameGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvFrameInitClass(ic);
 

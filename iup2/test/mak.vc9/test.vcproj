@@ -233,18 +233,6 @@
 			Name="iupmatrix"
 			>
 			<File
-				RelativePath="..\..\html\examples\ctrl\iupmatrix\iupmatrix.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\iupmatrix\manual.c"
 				>
 				<FileConfiguration
@@ -268,6 +256,10 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\html\examples\C\matrix.c"
+				>
 			</File>
 			<File
 				RelativePath="..\iupmatrix\test_del.c"
@@ -877,6 +869,7 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
+				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"

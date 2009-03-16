@@ -29,16 +29,16 @@ static int gtkFontDlgPopup(Ihandle* ih, int x, int y)
   iupAttribSetInt(ih, "_IUPDLG_X", x);
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
-  dialog = (GtkFontSelectionDialog*)gtk_font_selection_dialog_new(iupgtkStrConvertToUTF8(iupAttribGetStr(ih, "TITLE")));
+  dialog = (GtkFontSelectionDialog*)gtk_font_selection_dialog_new(iupgtkStrConvertToUTF8(iupAttribGet(ih, "TITLE")));
   if (!dialog)
     return IUP_ERROR;
 
   if (parent)
     gtk_window_set_transient_for((GtkWindow*)dialog, (GtkWindow*)parent);
 
-  gtk_font_selection_dialog_set_font_name(dialog, iupAttribGetStr(ih, "VALUE"));
+  gtk_font_selection_dialog_set_font_name(dialog, iupAttribGet(ih, "VALUE"));
 
-  preview_text = iupAttribGetStr(ih, "PREVIEWTEXT");
+  preview_text = iupAttribGet(ih, "PREVIEWTEXT");
   if (preview_text)
     gtk_font_selection_dialog_set_preview_text(dialog, preview_text);
 

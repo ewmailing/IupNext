@@ -214,9 +214,7 @@ int iupTreeGSSetColor(Ihandle* ih, const char* id, const char* color)
 
   if(current)
   {
-    unsigned char r, g, b;
-    iupStrToRGB(color, &r, &g, &b);      
-    current->text_color = cdEncodeColor((unsigned char) r, (unsigned char) g, (unsigned char) b);
+    current->text_color = cdIupConvertColor(color);
     return 1;
   }
   return 0;
@@ -727,7 +725,6 @@ int iupTreeGSSetImage(const char* name, unsigned char* image, unsigned long int*
     {
       char* colorstr = iupStrGetMemory(10);
       char* value;
-      unsigned char r = 0, g = 0, b = 0;
       int index;
 
       index = (int)image[x + ITREE_NODE_HEIGHT * y];
@@ -738,8 +735,7 @@ int iupTreeGSSetImage(const char* name, unsigned char* image, unsigned long int*
       if(iupStrEqualNoCase(value, "BGCOLOR")) /* retrieve the background color */
         value = ITREE_TREE_BGCOLORSTRING;
 
-      iupStrToRGB(value, &r, &g, &b);    
-      color[index] = cdEncodeColor((unsigned char)r, (unsigned char)g, (unsigned char)b);
+      color[index] = cdIupConvertColor(value);
 
       if(index != 1)
       {

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -15,11 +15,11 @@ called from all constructors like IupDialog(...), IupLabel(...), and so on.</p>
 container and <b>mapped</b> to the native system so it can be visible.</p>
 <h3>
 Parameters/Return</h3>
-<pre>Ihandle* IupCreate(const char *<b>name</b>); [in C]
-Ihandle* IupCreatev(const char *<b>name</b>, void **<b>params</b>)
-Ihandle *IupCreatep(const char *<b>name</b>, void* <b>params0</b>, ...)
+<pre>Ihandle* IupCreate(const char *<b>classname</b>); [in C]
+Ihandle* IupCreatev(const char *<b>classname</b>, void **<b>params</b>)
+Ihandle *IupCreatep(const char *<b>classname</b>, void* <b>params0</b>, ...)
 [Not available in Lua]</pre>
-<p><b>name</b>: class name of the element to be created<br>
+<p><b>classname</b>: class name of the element to be created<br>
 <b>params</b>: list of parameters limited by a NULL.</p>
 <h3>See Also</h3>
 <p><a href="iupappend.html">IupAppend</a>, <a href="iupdetach.html">IupDetach</a>, 

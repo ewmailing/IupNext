@@ -13,12 +13,6 @@
 #include <Xm/ScrollBar.h>
 #include <X11/cursorfont.h>
 
-#ifndef IUP_MOTIF_NO_REDISPLAY
-#include <Xm/Print.h>
-#else
-#define XmRedisplayWidget XmUpdateDisplay
-#endif
-
 #include "iup.h"
 #include "iupkey.h"
 #include "iupcbs.h"
@@ -52,7 +46,7 @@ static int motActivateMnemonic(Ihandle *dialog, int c)
   Ihandle *ih;
   char attrib[19] = "_IUPMOT_MNEMONIC_ ";
   attrib[17] = (char)c;
-  ih = (Ihandle*)iupAttribGetStr(dialog, attrib);
+  ih = (Ihandle*)iupAttribGet(dialog, attrib);
   if (iupObjectCheck(ih))
   {
     iupdrvActivate(ih);
@@ -147,14 +141,14 @@ char* iupmotConvertString(XmString str)
 void iupdrvReparent(Ihandle* ih)
 {
   Widget native_parent = iupChildTreeGetNativeParentHandle(ih);
-  Widget widget = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
   XReparentWindow(iupmot_display, XtWindow(widget), XtWindow(native_parent), 0, 0);
 }
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
-  Widget widget = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
   XtVaSetValues(widget,
@@ -167,7 +161,7 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 
 void iupdrvBaseUnMapMethod(Ihandle* ih)
 {
-  Widget widget = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
   XtUnrealizeWidget(widget); /* To match the call to XtRealizeWidget */
@@ -176,18 +170,49 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
 
 void iupdrvDisplayUpdate(Ihandle *ih)
 {
+  XExposeEvent evt;
+  Dimension w, h;
+
+  XtVaGetValues(ih->handle, XmNwidth, &w, 
+                            XmNheight, &h, 
+                            NULL);
+
+  evt.type = Expose;
+  evt.display = iupmot_display;
+  evt.send_event = True;
+  evt.window = XtWindow(ih->handle);
+
+  evt.x = 0;
+  evt.y = 0;
+  evt.width = w;
+  evt.height = h;
+
+  evt.count = 0;
+
+  /* POST a Redraw */
+  XSendEvent(iupmot_display, XtWindow(ih->handle), False, ExposureMask, (XEvent*)&evt);
+}
+
+void iupdrvDisplayRedraw(Ihandle *ih)
+{
   Widget w;
 
-  /* XmUpdateDisplay will only flush exposure events, will not force an exposure. 
-     So we use XmRedisplayWidget, but it is not available in all Motif implementations. */
-
-  XmRedisplayWidget(ih->handle);
+  /* POST a Redraw */
+  iupdrvDisplayUpdate(ih);
 
   /* if this element has a native parent, 
      then redraw the native parent if different from the element. */
   w = (Widget)iupClassObjectGetInnerNativeContainerHandle(ih, (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE"));
   if (w)
-    XmRedisplayWidget(w);
+  {
+    Widget handle = ih->handle;
+    ih->handle = w;
+    iupdrvDisplayUpdate(ih);
+    ih->handle = handle;
+  }
+
+  /* flush exposure events. */
+  XmUpdateDisplay(ih->handle);
 }
 
 void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
@@ -246,7 +271,7 @@ int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
 
 void iupdrvSetVisible(Ihandle* ih, int visible)
 {
-  Widget widget = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
   if (visible)
@@ -269,7 +294,7 @@ int iupdrvIsActive(Ihandle* ih)
 
 void iupdrvSetActive(Ihandle* ih, int enable)
 {
-  Widget widget = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
   XtSetSensitive(widget, enable);
@@ -285,7 +310,7 @@ char* iupdrvBaseGetXAttrib(Ihandle *ih)
   int x, y;
   Window child;
   char* str = iupStrGetMemory(20);
-  Widget widget = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
   /* Translating to absolute screen coordinates */
@@ -304,7 +329,7 @@ char* iupdrvBaseGetYAttrib(Ihandle *ih)
   int x, y;
   Window child;
   char* str = iupStrGetMemory(20);
-  Widget widget = (Widget)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
   /* Translating to absolute screen coordinates */
@@ -431,7 +456,7 @@ static Cursor motGetCursor(Ihandle* ih, const char* name)
 
   /* check the cursor cache first (per control)*/
   sprintf(str, "_IUPMOT_CURSOR_%s", name);
-  cur = (Cursor)iupAttribGetStr(ih, str);
+  cur = (Cursor)iupAttribGet(ih, str);
   if (cur)
     return cur;
 
@@ -482,8 +507,8 @@ void iupdrvDrawFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h)
 
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic, "XMFONTLIST", iupmotGetFontListAttrib, NULL, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "XFONTSTRUCT", iupmotGetFontStructAttrib, NULL, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "XMFONTLIST", iupmotGetFontListAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "XFONTSTRUCT", iupmotGetFontStructAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 }
 
 static void motDoNothing(Widget w, XEvent*  evt, String* params, Cardinal* num_params)

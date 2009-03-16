@@ -12,8 +12,8 @@
 <p><strong><a name="IUP_ACTION">ACTION_CB</a></strong>:
   Action generated when a keyboard event 
   occurs.</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>c</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>active</strong>, char* <strong>after</strong>); [in C]
-<strong>elem</strong>:action_cb(<strong>c, lin, col</strong>, <strong>active, after</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>c</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>edition</strong>, char* <strong>after</strong>); [in C]
+<strong>elem</strong>:action_cb(<strong>c, lin, col</strong>, <strong>edition, after</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix where the user 
     typed something.<br>
@@ -23,7 +23,7 @@
     table for a list of possible values.<br>
     lin, <strong>col</strong>:
     Coordinates of the selected cell.<br>
-<strong>active</strong>:
+<strong>edition</strong>:
     1 if the cell is in edition mode, and 0 if it is not.<br>
 <strong>after</strong>:
     The new value of the text in case the key is 
@@ -233,7 +233,7 @@ the moment the event is generated. The same as
 <b>v</b>: Indicates if item was selected or unselected (1 or 0).</p>
 <p><strong><a name="EDITION_CB">EDITION_CB</a></strong>:
   Action generated when the current cell 
-  enters or leaves the edition mode.</p>
+  enters or leaves the edition mode. Not called if READONLY=YES.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>mode</strong>);  [in C]
 <strong>elem</strong>:edition_cb(<strong>lin, col</strong>, <strong>mode</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -270,11 +270,12 @@ and it is always accepted. </p>
     Coordinates of the cell.</p>
 <p class="info">Must return the string to be redrawn. </p>
 <p class="info"><b>IMPORTANT</b>:
-    The existance of this callback defines the callback operation mode of the matrix.</p>
+    The existance of this callback defines the callback operation mode of the matrix 
+when it is mapped.</p>
 <p><strong><a name="VALUE_EDIT_CB">VALUE_EDIT_CB</a></strong>:
   Action generated to notify the application 
   that the value of a cell was edited. Since it is a notification, it cannot refuse the value modification (which can be 
-  done by the &quot;EDITION_CB&quot; callback). This callback is usually set in callback mode, but also works in 
+  done by the &quot;EDITION_CB&quot; callback). Not called if READONLY=YES. This callback is usually set in callback mode, but also works in 
   normal mode.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>newval</strong>); [in C]
 <strong>elem</strong>:value_edit_cb(<strong>lin, col</strong>: number<strong>, newval</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -285,9 +286,11 @@ and it is always accepted. </p>
     Coordinates of the cell.<br>
 <strong>newval</strong>:
     String containing the new cell value</p>
+<p class="info"><b>IMPORTANT</b>: if VALUE_CB is defined and VALUE_EDIT_CB is 
+not defined when the matrix is mapped it will be read-only.</p>
 <p><strong><a name="MARK_CB">MARK_CB</a></strong>:
   Action generated to verify the selection 
-  state of a cell. Called only for common cells and only in callback mode.</p>
+  state of a cell. Called only for common cells, only when MARK_MODE=CELL and only in callback mode.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:mark_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -301,7 +304,7 @@ and it is always accepted. </p>
 <p><strong><a name="MARKEDIT_CB">MARKEDIT_CB</a></strong>:
   Action generated to notify the application 
   that the selection state of a cell was changed. Since it is a notification, it cannot refuse the mark modification.
-  &nbsp;Called only for common cells and only in callback mode.</p>
+  Called only for common cells, only when MARK_MODE=CELL and only in callback mode.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <b>marked</b>); [in C]
 <strong>elem</strong>:markedit_cb(<strong>lin, col, </strong><b>marked</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:

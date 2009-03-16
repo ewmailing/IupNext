@@ -17,6 +17,7 @@
 #include "iup_str.h"
 #include "iup_attrib.h"
 #include "iup_assert.h"
+#include "iup_register.h"
 
 
 typedef struct _IattribFunc
@@ -24,10 +25,9 @@ typedef struct _IattribFunc
   IattribGetFunc get;
   IattribSetFunc set;
   const char* default_value;
+  const char* system_default;
   int call_global_default;
-  Imap mapped;
-  Iinherit inherit;
-  int has_id;
+  int flags;
 } IattribFunc;
 
 
@@ -98,9 +98,13 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
                                       translate them into IDVALUE. */
       afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, partial_name);
       if (afunc)
-      {
+      {         
         *inherit = 0;       /* id numbered attributes are NON inheritable always */
-        if (afunc->set && (ih->handle || !afunc->mapped))
+
+        if (afunc->flags & IUPAF_READONLY)
+          return 0;
+
+        if (afunc->set && (ih->handle || afunc->flags&IUPAF_NOT_MAPPED))
         {
           /* id numbered attributes have default value NULL always */
           IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
@@ -118,21 +122,25 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
   *inherit = 1; /* default is inheritable */
   if (afunc)
   {
-    *inherit = afunc->inherit;
-    if (afunc->set && (ih->handle || !afunc->mapped))
+    *inherit = !(afunc->flags & IUPAF_NO_INHERIT) && !(afunc->flags & IUPAF_NO_STRING);
+
+    if (afunc->flags & IUPAF_READONLY)
+      return 0;
+
+    if (afunc->set && (ih->handle || afunc->flags&IUPAF_NOT_MAPPED))
     {
       int ret;
       if (!value)
       {
         /* inheritable attributes when reset must check the parent value */
-        if (*inherit && ih->parent && !iupAttribIsInternal(name))   
-          value = iupAttribGetStrInherit(ih->parent, name); 
+        if (*inherit && ih->parent)   
+          value = iupAttribGetInherit(ih->parent, name); 
 
         if (!value)
           value = iClassGetDefaultValue(afunc);
       }
 
-      if (afunc->has_id)
+      if (afunc->flags&IUPAF_HAS_ID)
       {
         IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
         return id_set(ih, "", value);  /* empty Id */
@@ -146,6 +154,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
         return ret;
     }
   }
+
   return 1;
 }
 
@@ -168,7 +177,11 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
       {
         *def_value = NULL;  /* id numbered attributes have default value NULL always */
         *inherit = 0;       /* id numbered attributes are NON inheritable always */
-        if (afunc->get && (ih->handle || !afunc->mapped))
+
+        if (afunc->flags & IUPAF_WRITEONLY)
+          return NULL;
+
+        if (afunc->get && (ih->handle || afunc->flags&IUPAF_NOT_MAPPED))
         {
           IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
           return id_get(ih, name_id);
@@ -187,10 +200,14 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
   if (afunc)
   {
     *def_value = iClassGetDefaultValue(afunc);
-    *inherit = afunc->inherit;
-    if (afunc->get && (ih->handle || !afunc->mapped))
+    *inherit = !(afunc->flags & IUPAF_NO_INHERIT) && !(afunc->flags & IUPAF_NO_STRING);
+
+    if (afunc->flags & IUPAF_WRITEONLY)
+      return NULL;
+
+    if (afunc->get && (ih->handle || afunc->flags&IUPAF_NOT_MAPPED))
     {
-      if (afunc->has_id)
+      if (afunc->flags&IUPAF_HAS_ID)
       {
         IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
         return id_get(ih, "");  /* empty Id */
@@ -202,17 +219,61 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
   return NULL;
 }
 
-char* iupClassObjectGetAttributeDefault(Ihandle* ih, const char* name)
+void iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit)
+{
+  IattribFunc* afunc;
+
+  if (ih->iclass->has_attrib_id)
+  {
+    const char* name_id = iClassFindId(name);
+    if (name_id)
+    {
+      IattribFunc* afunc;
+      const char* partial_name = iClassCutNameId(name, name_id);
+      if (!partial_name)
+        partial_name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
+                                      translate them into IDVALUE. */
+      afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, partial_name);
+      if (afunc)
+      {
+        *def_value = NULL;  /* id numbered attributes have default value NULL always */
+        *inherit = 0;       /* id numbered attributes are NON inheritable always */
+         return;      /* if the function exists, then must return here */
+      }
+    }
+  }
+
+  /* if not has_attrib_id, or not found an ID, or not found the partial name, check using the full name */
+
+  afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  *def_value = NULL;
+  *inherit = 1; /* default is inheritable */
+  if (afunc)
+  {
+    *def_value = iClassGetDefaultValue(afunc);
+    *inherit = !(afunc->flags & IUPAF_NO_INHERIT) && !(afunc->flags & IUPAF_NO_STRING);
+  }
+}
+
+int iupClassObjectCurAttribIsInherit(Iclass* ic)
+{
+  IattribFunc* afunc = (IattribFunc*)iupTableGetCurr(ic->attrib_func);
+  if (afunc && !(afunc->flags & IUPAF_NO_INHERIT))
+    return 1;
+  return 0;
+}
+
+int iupClassObjectAttribIsNotString(Ihandle* ih, const char* name)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
-  if (afunc)
-    return iClassGetDefaultValue(afunc);
-  return NULL;
+  if (afunc && afunc->flags & IUPAF_NO_STRING)
+    return 1;
+  return 0;
 }
 
 void iupClassRegisterAttribute(Iclass* ic, const char* name, 
                                IattribGetFunc _get, IattribSetFunc _set, 
-                               const char* _default_value, Imap _mapped, Iinherit _inherit)
+                               const char* _default_value, const char* _system_default, int _flags)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
   if (afunc)
@@ -222,9 +283,8 @@ void iupClassRegisterAttribute(Iclass* ic, const char* name,
   afunc->get = _get;
   afunc->set = _set;
   afunc->default_value = _default_value;
-  afunc->mapped = _mapped;
-  afunc->inherit = _inherit;
-  afunc->has_id = 0;
+  afunc->system_default = _system_default;
+  afunc->flags = _flags;
 
   if (iClassIsGlobalDefault(_default_value))
     afunc->call_global_default = 1;
@@ -236,7 +296,7 @@ void iupClassRegisterAttribute(Iclass* ic, const char* name,
 
 void iupClassRegisterAttributeId(Iclass* ic, const char* name, 
                                IattribGetIdFunc _get, IattribSetIdFunc _set, 
-                               const char* _default_value, Imap _mapped, Iinherit _inherit)
+                               int _flags)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
   if (afunc)
@@ -245,22 +305,17 @@ void iupClassRegisterAttributeId(Iclass* ic, const char* name,
   afunc = (IattribFunc*)malloc(sizeof(IattribFunc));
   afunc->get = (IattribGetFunc)_get;
   afunc->set = (IattribSetFunc)_set;
-  afunc->default_value = _default_value;
-  afunc->mapped = _mapped;
-  afunc->inherit = _inherit;
-  afunc->has_id = 1;
-
-  if (iClassIsGlobalDefault(_default_value))
-    afunc->call_global_default = 1;
-  else
-    afunc->call_global_default = 0;
+  afunc->default_value = NULL;
+  afunc->system_default = NULL;
+  afunc->flags = _flags|IUPAF_HAS_ID|IUPAF_NO_INHERIT|IUPAF_NO_DEFAULTVALUE;
+  afunc->call_global_default = 0;
 
   iupTableSet(ic->attrib_func, name, (void*)afunc, IUPTABLE_POINTER);
 }
 
 void iupClassRegisterGetAttribute(Iclass* ic, const char* name, 
                                   IattribGetFunc *_get, IattribSetFunc *_set, 
-                                  const char* *_default_value, Imap *_mapped, Iinherit *_inherit, int *_has_id)
+                                  const char* *_default_value, const char* *_system_default, int *_flags)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
   if (afunc)
@@ -268,9 +323,8 @@ void iupClassRegisterGetAttribute(Iclass* ic, const char* name,
     if (_get) *_get = afunc->get;
     if (_set) *_set = afunc->set;
     if (_default_value) *_default_value = afunc->default_value;
-    if (_mapped) *_mapped = afunc->mapped;
-    if (_inherit) *_inherit = afunc->inherit;
-    if (_has_id) *_has_id = afunc->has_id;
+    if (_system_default) *_system_default = afunc->system_default;
+    if (_flags) *_flags = afunc->flags;
   }
 }
 
@@ -278,7 +332,7 @@ void iupClassRegisterCallback(Iclass* ic, const char* name, const char* format)
 {
   /* Since attributes and callbacks do not conflict 
      we can use the same structure to store the callback format using the default_value. */
-  iupClassRegisterAttribute(ic, name, NULL, NULL, format, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, name, NULL, NULL, format, NULL, NULL, IUPAF_NO_INHERIT);
 }
 
 char* iupClassCallbackGetFormat(Iclass* ic, const char* name)
@@ -289,26 +343,27 @@ char* iupClassCallbackGetFormat(Iclass* ic, const char* name)
   return NULL;
 }
 
-int IupGetClassAttributes(Ihandle* ih, char *names[], int n)
+int IupGetClassAttributes(const char* classname, char *names[], int n)
 {
   Iclass* ic;
-  char *name;
   int i = 0;
+  char* name;
 
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
+  iupASSERT(classname!=NULL);
+  if (!classname)
     return 0;
 
-  iupASSERT(names!=NULL);
-  if (!names)
-    return 0;
+  ic = iupRegisterFindClass(classname);
+  if (!ic)
+    return -1;
 
-  ic = ih->iclass;
+  if (!names || !n)
+    return iupTableCount(ic->attrib_func);
 
   name = iupTableFirst(ic->attrib_func);
   while (name)
   {
-    strcpy(names[i], name);
+    names[i] = name;
     i++;
     if (i == n)
       break;
@@ -317,6 +372,30 @@ int IupGetClassAttributes(Ihandle* ih, char *names[], int n)
   }
 
   return i;
+}
+
+void IupSetClassDefaultAttribute(const char* classname, const char *name, const char* default_value)
+{
+  Iclass* ic;
+  IattribFunc* afunc;
+
+  iupASSERT(classname!=NULL);
+  if (!classname)
+    return;
+
+  iupASSERT(name!=NULL);
+  if (!name)
+    return;
+
+  ic = iupRegisterFindClass(name);
+  if (!ic)
+    return;
+
+  afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
+  if (afunc && (!(afunc->flags & IUPAF_NO_DEFAULTVALUE) || !(afunc->flags & IUPAF_NO_STRING) || !(afunc->flags & IUPAF_HAS_ID)))
+    afunc->default_value = default_value;
+  else if (default_value)
+    iupClassRegisterAttribute(ic, name, NULL, NULL, default_value, NULL, NULL, IUPAF_DEFAULT);
 }
 
 void IupSaveClassAttributes(Ihandle* ih)
@@ -333,12 +412,13 @@ void IupSaveClassAttributes(Ihandle* ih)
   name = iupTableFirst(ic->attrib_func);
   while (name)
   {
-    if (!iupAttribIsInternal(name) && !iupAttribIsPointer(name))
+    IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+    if (afunc && !(afunc->flags & IUPAF_NO_STRING))
     {
       int inherit;
       char *def_value;
       char *value = iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
-      if (value && value != iupAttribGetStr(ih, name))
+      if (value && value != iupAttribGet(ih, name))
         iupAttribStoreStr(ih, name, value);
     }
 
@@ -346,11 +426,28 @@ void IupSaveClassAttributes(Ihandle* ih)
   }
 }
 
-int iupClassCurIsInherit(Iclass* ic)
+void iupClassObjectEnsureDefaultAttributes(Ihandle* ih)
 {
-  IattribFunc* afunc = (IattribFunc*)iupTableGetCurr(ic->attrib_func);
-  if (afunc && afunc->inherit)
-    return 1;
-  return 0;
-}
+  Iclass* ic;
+  char *name;
 
+  ic = ih->iclass;
+
+  name = iupTableFirst(ic->attrib_func);
+  while (name)
+  {
+    IattribFunc* afunc = (IattribFunc*)iupTableGetCurr(ic->attrib_func);
+    if (afunc && afunc->set && afunc->default_value &&
+        (!(afunc->flags & IUPAF_NO_DEFAULTVALUE) || !(afunc->flags & IUPAF_NO_STRING) || !(afunc->flags & IUPAF_HAS_ID)))
+    {
+      if (!iupStrEqualNoCase(afunc->default_value, afunc->system_default))
+      {
+        if ((!ih->handle && (afunc->flags & IUPAF_NOT_MAPPED)) ||
+            (ih->handle && !(afunc->flags & IUPAF_NOT_MAPPED) && !iupAttribGet(ih, name)))
+          afunc->set(ih, iClassGetDefaultValue(afunc));
+      }
+    }
+
+    name = iupTableNext(ic->attrib_func);
+  }
+}

@@ -153,7 +153,7 @@ static int gtkListSetStandardFontAttrib(Ihandle* ih, const char* value)
   {
     if (ih->data->is_dropdown)
     {
-      GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGetStr(ih, "_IUPGTK_RENDERER");
+      GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
       if (renderer)
       {
         g_object_set(G_OBJECT(renderer), "font-desc", (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih), NULL);
@@ -163,7 +163,7 @@ static int gtkListSetStandardFontAttrib(Ihandle* ih, const char* value)
 
     if (ih->data->has_editbox)
     {
-      GtkEntry* entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+      GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
       gtk_widget_modify_font((GtkWidget*)entry, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
       iupgtkFontUpdatePangoLayout(ih, gtk_entry_get_layout(entry));
     }
@@ -193,19 +193,18 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
 
-  GtkScrolledWindow* scrolled_window = (GtkScrolledWindow*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkScrolledWindow* scrolled_window = (GtkScrolledWindow*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (scrolled_window && !ih->data->is_dropdown)
   {
     /* ignore given value, must use only from parent for the scrollbars */
-    char* parent_value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-    if (!parent_value) parent_value = IupGetGlobal("DLGBGCOLOR");
+    char* parent_value = iupBaseNativeParentGetBgColor(ih);
 
     if (iupStrToRGB(parent_value, &r, &g, &b))
     {
       GtkWidget* sb;
 
       if (!GTK_IS_SCROLLED_WINDOW(scrolled_window))
-        scrolled_window = (GtkScrolledWindow*)iupAttribGetStr(ih, "_IUPGTK_SCROLLED_WINDOW");
+        scrolled_window = (GtkScrolledWindow*)iupAttribGet(ih, "_IUPGTK_SCROLLED_WINDOW");
 
       iupgtkBaseSetBgColor((GtkWidget*)scrolled_window, r, g, b);
 
@@ -224,12 +223,12 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
 
   if (ih->data->has_editbox)
   {
-    GtkWidget* entry = (GtkWidget*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+    GtkWidget* entry = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_ENTRY");
     iupgtkBaseSetBgColor(entry, r, g, b);
   }
 
   {
-    GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGetStr(ih, "_IUPGTK_RENDERER");
+    GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
     GdkColor color = {0L,0,0,0};
 
     color.red = iupCOLOR8TO16(r);
@@ -253,12 +252,12 @@ static int gtkListSetFgColorAttrib(Ihandle* ih, const char* value)
 
   if (ih->data->has_editbox)
   {
-    GtkWidget* entry = (GtkWidget*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+    GtkWidget* entry = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_ENTRY");
     iupgtkBaseSetFgColor(entry, r, g, b);
   }
 
   {
-    GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGetStr(ih, "_IUPGTK_RENDERER");
+    GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
     GdkColor color = {0L,0,0,0};
 
     color.red = iupCOLOR8TO16(r);
@@ -276,7 +275,7 @@ static char* gtkListGetValueAttrib(Ihandle* ih)
 {
   if (ih->data->has_editbox)
   {
-    GtkEntry* entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+    GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
     return iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(gtk_entry_get_text(entry)));
   }
   else 
@@ -333,7 +332,7 @@ static int gtkListSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->has_editbox)
   {
-    GtkEntry* entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+    GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
     if (!value) value = "";
     iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", "1");
     gtk_entry_set_text(entry, iupgtkStrConvertToUTF8(value));
@@ -455,7 +454,7 @@ static int gtkListSetSpacingAttrib(Ihandle* ih, const char* value)
 
   if (ih->handle)
   {
-    GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGetStr(ih, "_IUPGTK_RENDERER");
+    GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
     g_object_set(G_OBJECT(renderer), "xpad", ih->data->spacing, 
                                      "ypad", ih->data->spacing, 
                                      NULL);
@@ -476,7 +475,7 @@ static int gtkListSetPaddingAttrib(Ihandle* ih, const char* value)
     GtkBorder border;
     border.bottom = border.top = ih->data->vert_padding;
     border.left = border.right = ih->data->horiz_padding;
-    entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+    entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
 #if GTK_CHECK_VERSION(2, 10, 0)
     gtk_entry_set_inner_border(entry, &border);
 #endif
@@ -493,7 +492,7 @@ static int gtkListSetSelectionAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   if (!value || iupStrEqualNoCase(value, "NONE"))
   {
     gtk_editable_select_region(GTK_EDITABLE(entry), 0, 0);
@@ -528,7 +527,7 @@ static char* gtkListGetSelectionAttrib(Ihandle* ih)
   if (!ih->data->has_editbox)
     return NULL;
 
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   if (gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), &start, &end))
   {
     start++; /* IUP starts at 1 */
@@ -550,7 +549,7 @@ static int gtkListSetSelectionPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   if (!value || iupStrEqualNoCase(value, "NONE"))
   {
     gtk_editable_select_region(GTK_EDITABLE(entry), 0, 0);
@@ -582,7 +581,7 @@ static char* gtkListGetSelectionPosAttrib(Ihandle* ih)
   if (!ih->data->has_editbox)
     return NULL;
 
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   if (gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), &start, &end))
   {
     str = iupStrGetMemory(100);
@@ -602,7 +601,7 @@ static int gtkListSetSelectedTextAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   if (gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), &start, &end))
   {
     /* disable callbacks */
@@ -622,7 +621,7 @@ static char* gtkListGetSelectedTextAttrib(Ihandle* ih)
   if (!ih->data->has_editbox)
     return NULL;
 
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   if (gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), &start, &end))
   {
     char* selectedtext = gtk_editable_get_chars(GTK_EDITABLE(entry), start, end);
@@ -647,7 +646,7 @@ static int gtkListSetCaretAttrib(Ihandle* ih, const char* value)
   pos--; /* IUP starts at 1 */
   if (pos < 0) pos = 0;
 
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   gtk_editable_set_position(GTK_EDITABLE(entry), pos);
 
   return 0;
@@ -658,7 +657,7 @@ static char* gtkListGetCaretAttrib(Ihandle* ih)
   if (ih->data->has_editbox)
   {
     char* str = iupStrGetMemory(50);
-    GtkEntry* entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+    GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
     int pos = gtk_editable_get_position(GTK_EDITABLE(entry));
     pos++; /* IUP starts at 1 */
     sprintf(str, "%d", (int)pos);
@@ -680,7 +679,7 @@ static int gtkListSetCaretPosAttrib(Ihandle* ih, const char* value)
   sscanf(value,"%i",&pos);
   if (pos < 0) pos = 0;
 
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   gtk_editable_set_position(GTK_EDITABLE(entry), pos);
 
   return 0;
@@ -691,7 +690,7 @@ static char* gtkListGetCaretPosAttrib(Ihandle* ih)
   if (ih->data->has_editbox)
   {
     char* str = iupStrGetMemory(50);
-    GtkEntry* entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+    GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
     int pos = gtk_editable_get_position(GTK_EDITABLE(entry));
     sprintf(str, "%d", (int)pos);
     return str;
@@ -711,9 +710,9 @@ static int gtkListSetScrollToAttrib(Ihandle* ih, const char* value)
 
   sscanf(value,"%i",&pos);
   if (pos < 1) pos = 1;
-  pos--;  /* return to Motif referece */
+  pos--;  /* return to GTK referece */
 
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   gtk_editable_set_position(GTK_EDITABLE(entry), pos);
 
   return 0;
@@ -731,7 +730,7 @@ static int gtkListSetScrollToPosAttrib(Ihandle* ih, const char* value)
   sscanf(value,"%i",&pos);
   if (pos < 0) pos = 0;
 
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   gtk_editable_set_position(GTK_EDITABLE(entry), pos);
 
   return 0;
@@ -747,7 +746,7 @@ static int gtkListSetInsertAttrib(Ihandle* ih, const char* value)
     return 0;
 
   iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", "1");  /* disable callbacks */
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   pos = gtk_editable_get_position(GTK_EDITABLE(entry));
   gtk_editable_insert_text(GTK_EDITABLE(entry), iupgtkStrConvertToUTF8(value), -1, &pos);
   iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", NULL);
@@ -759,7 +758,7 @@ static int gtkListSetAppendAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->has_editbox)
   {
-    GtkEntry* entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+    GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
     gint pos = strlen(gtk_entry_get_text(entry))+1;
     iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", "1"); /* disable callbacks */
     gtk_editable_insert_text(GTK_EDITABLE(entry), iupgtkStrConvertToUTF8(value), -1, &pos);
@@ -778,7 +777,7 @@ static int gtkListSetNCAttrib(Ihandle* ih, const char* value)
 
   if (ih->handle)
   {
-    GtkEntry* entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+    GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
     gtk_entry_set_max_length(entry, ih->data->nc);
   }
 
@@ -793,7 +792,7 @@ static int gtkListSetClipboardAttrib(Ihandle *ih, const char *value)
 
   /* disable callbacks */
   iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", "1");
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   if (iupStrEqualNoCase(value, "COPY"))
     gtk_editable_copy_clipboard(GTK_EDITABLE(entry));
   else if (iupStrEqualNoCase(value, "CUT"))
@@ -811,7 +810,7 @@ static int gtkListSetReadOnlyAttrib(Ihandle* ih, const char* value)
   GtkEntry* entry;
   if (!ih->data->has_editbox)
     return 0;
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   gtk_editable_set_editable(GTK_EDITABLE(entry), !iupStrBoolean(value));
   return 0;
 }
@@ -821,7 +820,7 @@ static char* gtkListGetReadOnlyAttrib(Ihandle* ih)
   GtkEntry* entry;
   if (!ih->data->has_editbox)
     return NULL;
-  entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+  entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   if (!gtk_editable_get_editable(GTK_EDITABLE(entry)))
     return "YES";
   else
@@ -1008,7 +1007,7 @@ static int gtkListCallEditCb(Ihandle* ih, GtkEditable *editable, const char* ins
 
 static void gtkListEditDeleteText(GtkEditable *editable, int start, int end, Ihandle* ih)
 {
-  if (iupAttribGetStr(ih, "_IUPGTK_DISABLE_TEXT_CB"))
+  if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
     return;
 
   if (gtkListCallEditCb(ih, editable, NULL, 0, start, end)==0)
@@ -1019,7 +1018,7 @@ static void gtkListEditInsertText(GtkEditable *editable, char *insert_value, int
 {
   int ret;
 
-  if (iupAttribGetStr(ih, "_IUPGTK_DISABLE_TEXT_CB"))
+  if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
     return;
 
   ret = gtkListCallEditCb(ih, editable, iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(insert_value)), len, *pos, *pos);
@@ -1101,7 +1100,7 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
       gtk_tree_model_get(tree_model, &iter, 0, &value, -1);
       if (value)
       {
-        GtkEntry* entry = (GtkEntry*)iupAttribGetStr(ih, "_IUPGTK_ENTRY");
+        GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
         gtk_entry_set_text(entry, value);
       }
       gtk_tree_path_free(path);
@@ -1201,7 +1200,7 @@ static int gtkListMapMethod(Ihandle* ih)
       g_signal_connect(G_OBJECT(entry), "button-press-event", G_CALLBACK(gtkListEditButtonEvent), ih);  /* if connected "after" then it is ignored */
       g_signal_connect(G_OBJECT(entry), "button-release-event",G_CALLBACK(gtkListEditButtonEvent), ih);
 
-      if (!iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+      if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
         GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
     }
     else
@@ -1222,7 +1221,7 @@ static int gtkListMapMethod(Ihandle* ih)
       g_signal_connect(G_OBJECT(ih->handle), "key-press-event", G_CALLBACK(iupgtkKeyPressEvent), ih);
       g_signal_connect(G_OBJECT(ih->handle), "show-help",       G_CALLBACK(iupgtkShowHelp), ih);
 
-      if (!iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+      if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
         GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
       else
         GTK_WIDGET_FLAGS(box) |= GTK_CAN_FOCUS;
@@ -1268,7 +1267,7 @@ static int gtkListMapMethod(Ihandle* ih)
       iupAttribSetStr(ih, "_IUPGTK_SCROLLED_WINDOW", (char*)scrolled_window);
 
       GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS; /* focus goes only to the edit box */
-      if (!iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+      if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
         GTK_WIDGET_FLAGS(entry) &= ~GTK_CAN_FOCUS;
 
       g_signal_connect(G_OBJECT(entry), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
@@ -1289,7 +1288,7 @@ static int gtkListMapMethod(Ihandle* ih)
     {
       iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
 
-      if (!iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+      if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
         GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
       g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
@@ -1320,7 +1319,7 @@ static int gtkListMapMethod(Ihandle* ih)
 
     if (ih->data->sb)
     {
-      if (iupStrBoolean(iupAttribGetStrDefault(ih, "AUTOHIDE")))
+      if (iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
         scrollbar_policy = GTK_POLICY_AUTOMATIC;
       else
         scrollbar_policy = GTK_POLICY_ALWAYS;
@@ -1372,33 +1371,33 @@ void iupdrvListInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkListSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkListSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkListSetBgColorAttrib, "TXTBGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkListSetBgColorAttrib, "TXTBGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkListSetFgColorAttrib, "TXTFGCOLOR", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkListSetFgColorAttrib, "TXTFGCOLOR", NULL, IUPAF_DEFAULT);
 
   /* IupList only */
-  iupClassRegisterAttributeId(ic, "IDVALUE", gtkListGetIdValueAttrib, iupListSetIdValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", gtkListGetValueAttrib, gtkListSetValueAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, gtkListSetShowDropdownAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TOPITEM", NULL, gtkListSetTopItemAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SPACING", iupListGetSpacingAttrib, gtkListSetSpacingAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttributeId(ic, "IDVALUE", gtkListGetIdValueAttrib, iupListSetIdValueAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", gtkListGetValueAttrib, gtkListSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, gtkListSetShowDropdownAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOPITEM", NULL, gtkListSetTopItemAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPACING", iupListGetSpacingAttrib, gtkListSetSpacingAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
 
-  iupClassRegisterAttribute(ic, "PADDING", iupListGetPaddingAttrib, gtkListSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTEDTEXT", gtkListGetSelectedTextAttrib, gtkListSetSelectedTextAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTION", gtkListGetSelectionAttrib, gtkListSetSelectionAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTIONPOS", gtkListGetSelectionPosAttrib, gtkListSetSelectionPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARET", gtkListGetCaretAttrib, gtkListSetCaretAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARETPOS", gtkListGetCaretPosAttrib, gtkListSetCaretPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INSERT", NULL, gtkListSetInsertAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "APPEND", NULL, gtkListSetAppendAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "READONLY", gtkListGetReadOnlyAttrib, gtkListSetReadOnlyAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "NC", iupListGetNCAttrib, gtkListSetNCAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, gtkListSetClipboardAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, gtkListSetScrollToAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, gtkListSetScrollToPosAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupListGetPaddingAttrib, gtkListSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SELECTEDTEXT", gtkListGetSelectedTextAttrib, gtkListSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTION", gtkListGetSelectionAttrib, gtkListSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTIONPOS", gtkListGetSelectionPosAttrib, gtkListSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARET", gtkListGetCaretAttrib, gtkListSetCaretAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETPOS", gtkListGetCaretPosAttrib, gtkListSetCaretPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERT", NULL, gtkListSetInsertAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "APPEND", NULL, gtkListSetAppendAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "READONLY", gtkListGetReadOnlyAttrib, gtkListSetReadOnlyAttrib, NULL, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "NC", iupListGetNCAttrib, gtkListSetNCAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, gtkListSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, gtkListSetScrollToAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, gtkListSetScrollToPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }

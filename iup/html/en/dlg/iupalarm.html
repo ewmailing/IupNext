@@ -5,6 +5,11 @@
 <title>IupAlarm</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -25,7 +30,8 @@ iup.Alarm(<strong>t</strong>, <strong>m</strong>, <strong>b1[</strong>, <strong>
 <strong>b3</strong>:
   Text of the third button 
   (optional)</p>
-<p>This function returns the number (1, 2, 3) of the button selected by the user, or 0 (nil in IupLua) if the dialog could not be opened.</p>
+<p><span class="style1">Returns:</span> the number of the <strong>button</strong> selected by the user (1, 2 
+or 3) , or 0 if failed. It fails only if b1 is not defined.</p>
 <h3>Notes</h3>
 <p>This function shows a dialog centralized on 
   the screen, with the message and the buttons. The &#8216;\n&#8217; character can be added to the message to indicate line change. 

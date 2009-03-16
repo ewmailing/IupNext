@@ -23,7 +23,12 @@
 
 <h3><a name="Using">Using</a></h3>
 
-<p>Attributes are strings, and there are two functions to change them:</p>
+<p>Attributes are a way to send and obtain information to and from elements. 
+They are used by the application to communicate with the user interface system, 
+on the other hand callbacks are used by the application to receive notifications 
+from the system that the user or the system itself has interacted with the user 
+interface of the application.</p>
+<p>There are two functions to change them:</p>
 
 <ul type="disc">
 
@@ -80,7 +85,8 @@ stored its inheritance can be completly ignored.</p>
 <p>Attribute <span class="style1">names</span> are always upper case, lower case names will not work. But attribute 
 <span class="style1">values</span> like "YES", "NO", 
   "TOP", are case insensitive, so "Yes", "no", "top", and other variations will work. 
-Boolean attributes accept the values "1", "YES", "ON" or "TRUE" for <b>true</b>, 
+</p>
+<p>Boolean attributes accept the values "1", "YES", "ON" or "TRUE" for <b>true</b>, 
 and NULL (not defined), "0", "NO", "OFF" or "FALSE" for <b>false</b>, even if in 
 the documentation is only one of these combinations.</p>
 
@@ -103,21 +109,25 @@ lower case.</p>
   "MARGIN" will be affected, <span class="style1">except</span> for those who the
   "MARGIN" attribute is already defined.</p>
 
-<p>Please note that not all attributes are inherited. Some examples: "TIP",
-  "ZORDER", "TITLE", "VALUE",
-  "ALIGNMENT", "X", "Y",
-  "RASTERSIZE", "SIZE", "IMAGE", "IMINACTIVE", "IMPRESS", 
-"SEPARATOR". </p>
-
-<p><font size="3">Id numbered attributes are NON inheritable 
-always, like "1" or "MARK1:1". Attributes that are handle names like "IMAGE" and 
-"MENU" are NON inheritable always. Attributes that are read-only or 
-write-only are NON inheritable.</font></p>
+<p>Please note that not all attributes are inherited. <font size="3">As general 
+rules the following attributes are <strong>NON</strong> inheritable always:</font></p>
+<ul>
+	<li><font size="3">Essencial attributes like VALUE, TITLE, SIZE, RASTERSIZE, 
+	X and Y</font></li>
+	<li><font size="3">Id numbered attributes (like &quot;1&quot; or &quot;MARK1:1&quot;)</font></li>
+	<li>H<font size="3">andle names (like &quot;CURSOR&quot;, "IMAGE" and 
+"MENU")</font></li>
+	<li>Pointers that are not strings<font size="3"> </font>(like WID)</li>
+	<li><font size="3">Read-only or 
+write-only attributes</font></li>
+	<li><font size="3">Internal attributes that starts with &quot;_IUP&quot;</font></li>
+</ul>
 
 <p><font size="3">Inheritable </font>attributes <font size="3">are stored in the hash table so the 
 IupGet/SetAttribute logic can work, even if the element implementation store it 
 internally. But w</font>hen you change an attribute to NULL, then its value is 
-removed from the hash table.</p>
+removed from the hash table and the default value if any is passed to the native 
+system. Non <font size="3">inheritable attributes never have default values.</font></p>
 
 <p>When consulted the attribute is first checked at the element
 specific implementation. If not defined then it checks in the hash

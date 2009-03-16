@@ -146,9 +146,9 @@ textual cue, or tip to prompt the user for input. Valid only for MULTILINE=NO,
 and it is not available for Windows 2000. (since 3.0)</p>
 
   
-<p><b>DRAGDROP</b>: [Windows and GTK Only] Enable or disable the drag&amp;drop of 
-  files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
-  then it will be automatically enabled. (since 3.0)</p>
+<p><b>DRAGDROP</b> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drag&amp;drop of 
+files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
+then it will be automatically enabled. (since 3.0)</p>
 
   
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: "0 0 
@@ -179,7 +179,7 @@ be set using attributes.
   The maximum value is the limit of the VALUE attribute. The "0" value is the 
 same as maximum. Default: maximum.</p>
 
-<p><b>OVERWRITE</b> [Windows and GTK Only]: turns the overwrite mode ON or OFF. 
+<p><b>OVERWRITE</b> [Windows and GTK Only] (<font size="3">non inheritable</font>): turns the overwrite mode ON or OFF. 
 Works only when FORMATTING=YES. (since 3.0)</p>
 
   
@@ -267,14 +267,14 @@ enables a spin control attached to the element. Default: NO. The spin increments
 and decrements an integer number. The editing in the element is still available. 
 (since 3.0)</p>
 
-<p class="info"><strong>SPINVALUE</strong>: the current value of the spin. The 
+<p class="info"><strong>SPINVALUE </strong>(<font size="3">non inheritable)</font>: the current value of the spin. The 
 value is limited to the minimum and maximum values.<br>
 
-<strong>SPINMAX</strong>: the maximum value. Default: 100.<br>
+<strong>SPINMAX </strong>(<font size="3">non inheritable)</font>: the maximum value. Default: 100.<br>
 
-<strong>SPINMIN</strong>: the minimum value. Default: 0.<br>
+<strong>SPINMIN </strong>(<font size="3">non inheritable)</font>: the minimum value. Default: 0.<br>
 
-<strong>SPININC</strong>: the increment value. Default: 1.<br>
+<strong>SPININC </strong>(<font size="3">non inheritable)</font>: the increment value. Default: 1.<br>
 
 <strong>SPINALIGN</strong> (creation only): the position of the spin. Can be LEFT or RIGHT. 
 Default: RIGHT. In GTK is always RIGHT.<br>

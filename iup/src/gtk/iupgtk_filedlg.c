@@ -139,7 +139,7 @@ static gboolean gtkFileDlgPreviewConfigureEvent(GtkWidget *widget, GdkEventConfi
 
 static gboolean gtkFileDlgPreviewExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Ihandle *ih)
 {
-  GtkFileChooser *file_chooser = (GtkFileChooser*)iupAttribGetStr(ih, "_IUPDLG_FILE_CHOOSER");
+  GtkFileChooser *file_chooser = (GtkFileChooser*)iupAttribGet(ih, "_IUPDLG_FILE_CHOOSER");
   char *filename = gtk_file_chooser_get_preview_filename(file_chooser);
 
   IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
@@ -183,7 +183,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   iupAttribSetInt(ih, "_IUPDLG_X", x);
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
-  value = iupAttribGetStrDefault(ih, "DIALOGTYPE");
+  value = iupAttribGetStr(ih, "DIALOGTYPE");
   if (iupStrEqualNoCase(value, "SAVE"))
     action = GTK_FILE_CHOOSER_ACTION_SAVE;
   else if (iupStrEqualNoCase(value, "DIR"))
@@ -191,7 +191,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   else
     action = GTK_FILE_CHOOSER_ACTION_OPEN;
 
-  value = iupAttribGetStr(ih, "TITLE");
+  value = iupAttribGet(ih, "TITLE");
   if (!value)
   {
     GtkStockItem item;
@@ -205,7 +205,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     value = item.label;
 
     iupAttribStoreStr(ih, "TITLE", iupgtkStrConvertFromUTF8(value));
-    value = iupAttribGetStr(ih, "TITLE");
+    value = iupAttribGet(ih, "TITLE");
     iupStrRemoveChar(value, '_');
   }
 
@@ -239,7 +239,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 #endif
 
   /* just check for the path inside FILE */
-  value = iupAttribGetStr(ih, "FILE");
+  value = iupAttribGet(ih, "FILE");
   if (value && (value[0] == '/' || value[1] == ':'))
   {
     char* dir = iupStrFileGetPath(value);
@@ -249,11 +249,11 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     iupAttribStoreStr(ih, "FILE", value+len);
   }
 
-  value = iupAttribGetStr(ih, "DIRECTORY");
+  value = iupAttribGet(ih, "DIRECTORY");
   if (value)
     gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), iupgtkStrConvertToFilename(value));
 
-  value = iupAttribGetStr(ih, "FILE");
+  value = iupAttribGet(ih, "FILE");
   if (value)
   {
     if (action == GTK_FILE_CHOOSER_ACTION_SAVE)
@@ -265,7 +265,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     }
   }
 
-  value = iupAttribGetStr(ih, "EXTFILTER");
+  value = iupAttribGet(ih, "EXTFILTER");
   if (value)
   {
     char *name, *pattern, *filters = iupStrDup(value), *p;
@@ -299,11 +299,11 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   }
   else 
   {
-    value = iupAttribGetStr(ih, "FILTER");
+    value = iupAttribGet(ih, "FILTER");
     if (value)
     {
       GtkFileFilter *filter = gtk_file_filter_new();
-      char* info = iupAttribGetStr(ih, "FILTERINFO");
+      char* info = iupAttribGet(ih, "FILTERINFO");
       if (!info)
         info = value;
 
@@ -384,7 +384,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
         if (!file_exist)  /* if do not exist check ALLOWNEW */
         {
-          value = iupAttribGetStr(ih, "ALLOWNEW");
+          value = iupAttribGet(ih, "ALLOWNEW");
           if (!value)
           {
             if (action == GTK_FILE_CHOOSER_ACTION_SAVE)
@@ -420,7 +420,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   if (file_cb)
   {
     if (iupAttribGetInt(ih, "SHOWPREVIEW"))
-      iupgtkReleaseNativeGraphicsContext(preview_canvas, iupAttribGetStr(ih, "PREVIEWDC"));
+      iupgtkReleaseNativeGraphicsContext(preview_canvas, (void*)iupAttribGet(ih, "PREVIEWDC"));
 
     file_cb(ih, NULL, "FINISH");
   }
@@ -438,7 +438,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       for (i=0; i<filter_count; i++)
       {
         sprintf(atrib, "_IUPDLG_FILTER%d", i+1);
-        if (filter == (GtkFileFilter*)iupAttribGetStr(ih, atrib))
+        if (filter == (GtkFileFilter*)iupAttribGet(ih, atrib))
           iupAttribSetInt(ih, "FILTERUSED", i+1);
       }
     }
@@ -488,7 +488,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       }
     }
 
-    if (action != GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER && !iupAttribGetIntDefault(ih, "NOCHANGEDIR"))  /* do change the current directory */
+    if (action != GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER && !iupAttribGetInt(ih, "NOCHANGEDIR"))  /* do change the current directory */
     {
       /* GtkFileChooser does not change the current directory */
       char* dir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));

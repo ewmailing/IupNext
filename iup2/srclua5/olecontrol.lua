@@ -36,18 +36,18 @@ int luaopen_iupluaole51(lua_State* L)
 }
 
 function ctrl.createElement(class, arg)
-  local ctl = OleControl(arg[1])
-   
+  return OleControl(arg[1])
+end
+
+function ctrl.CreateLuaCOM(handle)
   -- if luacom is loaded, use it to access methods and properties
   -- of the control
   if luacom then
-    local punk = ctl.iunknown
+    local punk = handle.iunknown
     if punk then
-      ctl.com = luacom.MakeLuaCOM(luacom.MakeIUnknown(punk))
+      handle.com = luacom.CreateLuaCOM(luacom.ImportIUnknown(punk))
     end     
   end
-   
-  return ctl
 end
 
 iupRegisterWidget(ctrl)

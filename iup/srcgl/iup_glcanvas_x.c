@@ -38,9 +38,6 @@ struct _IcontrolData
 
 static int xGLCanvasDefaultResize(Ihandle *ih, int width, int height)
 {
-  if (ih->data->window == None)
-    ih->data->window = (XID)IupGetAttribute(ih, "XWINDOW");
-
   IupGLMakeCurrent(ih);
   glViewport(0,0,width,height);
   return IUP_DEFAULT;
@@ -57,13 +54,6 @@ static int xGLCanvasCreateMethod(Ihandle* ih, void** params)
 
 static int xGLCanvasMapMethod(Ihandle* ih)
 {
-  /* the IupCanvas is already mapped, just keep a copy of these attributes */
-  ih->data->window = (XID)IupGetAttribute(ih, "XWINDOW");  /* works for Motif and GTK */
-  return IUP_NOERROR;
-}
-
-static char* xglCanvasGetVisualAttrib(Ihandle* ih)
-{
   int erb, evb, number;
   int isIndex = 0;
   int n = 0;
@@ -71,29 +61,29 @@ static char* xglCanvasGetVisualAttrib(Ihandle* ih)
   GLXContext shared_context = NULL;
   Ihandle* ih_shared;
 
-  if (ih->data->vinfo)
-    return (char*)ih->data->vinfo->visual;
+  /* the IupCanvas is already mapped, just initialize the OpenGL context */
 
+  ih->data->window = (XID)IupGetAttribute(ih, "XWINDOW");  /* works for Motif and GTK */
   ih->data->display = (Display*)IupGetAttribute(ih, "XDISPLAY");  /* works for Motif and GTK */
 
   /* double or single buffer */
-  if (iupStrEqualNoCase(IupGetAttribute(ih,"BUFFER"), "DOUBLE"))
+  if (iupStrEqualNoCase(iupAttribGetStr(ih,"BUFFER"), "DOUBLE"))
   {
     alist[n++] = GLX_DOUBLEBUFFER;
   }
 
   /* stereo */
-  if (IupGetInt(ih,"STEREO"))
+  if (iupAttribGetInt(ih,"STEREO"))
   {
     alist[n++] = GLX_STEREO;
   }
 
   /* rgba or index */ 
-  if (iupStrEqualNoCase(IupGetAttribute(ih,"COLOR"), "INDEX"))
+  if (iupStrEqualNoCase(iupAttribGetStr(ih,"COLOR"), "INDEX"))
   {
     isIndex = 1;
     /* buffer size (for index mode) */
-    number = IupGetInt(ih,"BUFFER_SIZE");
+    number = iupAttribGetInt(ih,"BUFFER_SIZE");
     if (number > 0)
     {
       alist[n++] = GLX_BUFFER_SIZE;
@@ -106,28 +96,28 @@ static char* xglCanvasGetVisualAttrib(Ihandle* ih)
   }
 
   /* red, green, blue bits */
-  number = IupGetInt(ih,"RED_SIZE");
+  number = iupAttribGetInt(ih,"RED_SIZE");
   if (number > 0) 
   {
     alist[n++] = GLX_RED_SIZE;
     alist[n++] = number;
   }
 
-  number = IupGetInt(ih,"GREEN_SIZE");
+  number = iupAttribGetInt(ih,"GREEN_SIZE");
   if (number > 0) 
   {
     alist[n++] = GLX_GREEN_SIZE;
     alist[n++] = number;
   }
 
-  number = IupGetInt(ih,"BLUE_SIZE");
+  number = iupAttribGetInt(ih,"BLUE_SIZE");
   if (number > 0) 
   {
     alist[n++] = GLX_BLUE_SIZE;
     alist[n++] = number;
   }
 
-  number = IupGetInt(ih,"ALPHA_SIZE");
+  number = iupAttribGetInt(ih,"ALPHA_SIZE");
   if (number > 0) 
   {
     alist[n++] = GLX_ALPHA_SIZE;
@@ -135,14 +125,14 @@ static char* xglCanvasGetVisualAttrib(Ihandle* ih)
   }
 
   /* depth and stencil size */
-  number = IupGetInt(ih,"DEPTH_SIZE");
+  number = iupAttribGetInt(ih,"DEPTH_SIZE");
   if (number > 0) 
   {
     alist[n++] = GLX_DEPTH_SIZE;
     alist[n++] = number;
   }
 
-  number = IupGetInt(ih,"STENCIL_SIZE");
+  number = iupAttribGetInt(ih,"STENCIL_SIZE");
   if (number > 0) 
   {
     alist[n++] = GLX_STENCIL_SIZE;
@@ -150,28 +140,28 @@ static char* xglCanvasGetVisualAttrib(Ihandle* ih)
   }
 
   /* red, green, blue accumulation bits */
-  number = IupGetInt(ih,"ACCUM_RED_SIZE");
+  number = iupAttribGetInt(ih,"ACCUM_RED_SIZE");
   if (number > 0) 
   {
     alist[n++] = GLX_ACCUM_RED_SIZE;
     alist[n++] = number;
   }
 
-  number = IupGetInt(ih,"ACCUM_GREEN_SIZE");
+  number = iupAttribGetInt(ih,"ACCUM_GREEN_SIZE");
   if (number > 0) 
   {
     alist[n++] = GLX_ACCUM_GREEN_SIZE;
     alist[n++] = number;
   }
 
-  number = IupGetInt(ih,"ACCUM_BLUE_SIZE");
+  number = iupAttribGetInt(ih,"ACCUM_BLUE_SIZE");
   if (number > 0) 
   {
     alist[n++] = GLX_ACCUM_BLUE_SIZE;
     alist[n++] = number;
   }
 
-  number = IupGetInt(ih,"ACCUM_ALPHA_SIZE");
+  number = iupAttribGetInt(ih,"ACCUM_ALPHA_SIZE");
   if (number > 0) 
   {
     alist[n++] = GLX_ACCUM_ALPHA_SIZE;
@@ -183,15 +173,16 @@ static char* xglCanvasGetVisualAttrib(Ihandle* ih)
   if (!glXQueryExtension(ih->data->display, &erb, &evb))
   {
     IupSetAttribute(ih, "ERROR", "X server has no OpenGL GLX extension");
-    return NULL;
+    return IUP_NOERROR;
   }
 
   /* choose visual */
   if ((ih->data->vinfo = glXChooseVisual(ih->data->display, DefaultScreen(ih->data->display), alist)) == NULL)
   {
     IupSetAttribute(ih, "ERROR", "No appropriate visual");
-    return NULL;
+    return IUP_NOERROR;
   } 
+  iupAttribSetStr(ih, "VISUAL", (char*)ih->data->vinfo->visual);
 
   ih_shared = IupGetAttributeHandle(ih, "SHAREDCONTEXT");
   if (ih_shared)
@@ -201,7 +192,7 @@ static char* xglCanvasGetVisualAttrib(Ihandle* ih)
   if ((ih->data->context = glXCreateContext(ih->data->display, ih->data->vinfo, shared_context, GL_TRUE)) == NULL)
   {
     IupSetAttribute(ih, "ERROR", "Could not create a rendering context");
-    return NULL;
+    return IUP_NOERROR;
   }
   iupAttribSetStr(ih, "CONTEXT", (char*)ih->data->context);
 
@@ -218,7 +209,7 @@ static char* xglCanvasGetVisualAttrib(Ihandle* ih)
     IupGLPalette(ih,0,1,1,1);
   }
 
-  return (char*)ih->data->vinfo->visual;
+  return IUP_NOERROR;
 }
 
 static void xGLCanvasUnMapMethod(Ihandle* ih)
@@ -252,7 +243,12 @@ static Iclass* xGlCanvasGetClass(void)
   ic->Map = xGLCanvasMapMethod;
   ic->UnMap = xGLCanvasUnMapMethod;
 
-  iupClassRegisterAttribute(ic, "VISUAL", xglCanvasGetVisualAttrib, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUFFER", NULL, NULL, "SINGLE", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, "RGBA", NULL, IUPAF_DEFAULT);
+
+  iupClassRegisterAttribute(ic, "CONTEXT", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "VISUAL", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "COLORMAP", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY|IUPAF_NO_STRING);
 
   return ic;
 }

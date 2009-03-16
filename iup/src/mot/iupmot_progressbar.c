@@ -148,12 +148,12 @@ void iupdrvProgressBarInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motProgressBarSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motProgressBarSetFgColorAttrib, NULL, IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motProgressBarSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
 
-  /* XmScale does not uses FGCOLOR */
+  /* Special */
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motProgressBarSetFgColorAttrib, NULL, NULL, IUPAF_DEFAULT);
 
   /* IupProgressBar only */
-  iupClassRegisterAttribute(ic, "VALUE",  iProgressBarGetValueAttrib,  motProgressBarSetValueAttrib,  NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, "HORIZONTAL", IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE",  iProgressBarGetValueAttrib,  motProgressBarSetValueAttrib,  NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, "HORIZONTAL", NULL, IUPAF_NO_INHERIT);
 }

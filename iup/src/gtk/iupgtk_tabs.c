@@ -61,7 +61,7 @@ static void gtkTabsUpdatePageFont(Ihandle* ih)
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    GtkWidget* tab_label = (GtkWidget*)iupAttribGetStr(child, "_IUPGTK_TABLABEL");
+    GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
     if (tab_label)
     {
       gtk_widget_modify_font(tab_label, fontdesc);
@@ -76,10 +76,10 @@ static void gtkTabsUpdatePageBgColor(Ihandle* ih, unsigned char r, unsigned char
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    GtkWidget* tab_page = (GtkWidget*)iupAttribGetStr(child, "_IUPTAB_CONTAINER");
+    GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (tab_page)
     {
-      GtkWidget* tab_label = (GtkWidget*)iupAttribGetStr(child, "_IUPGTK_TABLABEL");
+      GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
       if (tab_label)
         iupgtkBaseSetBgColor(tab_label, r, g, b);
       iupgtkBaseSetBgColor(tab_page, r, g, b);
@@ -93,7 +93,7 @@ static void gtkTabsUpdatePageFgColor(Ihandle* ih, unsigned char r, unsigned char
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    GtkWidget* tab_label = (GtkWidget*)iupAttribGetStr(child, "_IUPGTK_TABLABEL");
+    GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
     if (tab_label)
       iupgtkBaseSetFgColor(tab_label, r, g, b);
   }
@@ -105,7 +105,7 @@ static void gtkTabsUpdatePagePadding(Ihandle* ih)
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    GtkWidget* tab_label = (GtkWidget*)iupAttribGetStr(child, "_IUPGTK_TABLABEL");
+    GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
     if (tab_label)
       gtk_misc_set_padding((GtkMisc*)tab_label, ih->data->horiz_padding, ih->data->vert_padding);
   }
@@ -168,10 +168,10 @@ static int gtkTabsSetTabTitleAttrib(Ihandle* ih, const char* name_id, const char
   if (value && iupStrToInt(name_id, &pos)==1)
   {
     Ihandle* child = IupGetChild(ih, pos);
-    GtkWidget* tab_label = (GtkWidget*)iupAttribGetStr(child, "_IUPGTK_TABLABEL");
+    GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
     if (tab_label)
     {
-      GtkWidget* tab_page = (GtkWidget*)iupAttribGetStr(child, "_IUPTAB_CONTAINER");
+      GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
       gtk_label_set_text((GtkLabel*)tab_label, iupgtkStrConvertToUTF8(value));
       gtk_notebook_set_menu_label_text((GtkNotebook*)ih->handle, tab_page, gtk_label_get_text((GtkLabel*)tab_label));
     }
@@ -185,7 +185,7 @@ static int gtkTabsSetTabImageAttrib(Ihandle* ih, const char* name_id, const char
   if (value && iupStrToInt(name_id, &pos)==1)
   {
     Ihandle* child = IupGetChild(ih, pos);
-    GtkWidget* tab_image = (GtkWidget*)iupAttribGetStr(child, "_IUPGTK_TABIMAGE");
+    GtkWidget* tab_image = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABIMAGE");
     if (tab_image)
     {
       GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0, "TABIMAGE");
@@ -237,7 +237,7 @@ void gtkTabSwitchPage(GtkNotebook* notebook, GtkNotebookPage *page, int pos, Iha
 {
   IFnnn cb;
 
-  if (iupAttribGetStr(ih, "_IUPGTK_IGNORE_CHANGE"))
+  if (iupAttribGet(ih, "_IUPGTK_IGNORE_CHANGE"))
     return;
 
   cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
@@ -275,9 +275,9 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     tab_page = gtk_fixed_new();
     gtk_widget_show(tab_page);
 
-    tabtitle = iupAttribGetStr(child, "TABTITLE");
+    tabtitle = iupAttribGet(child, "TABTITLE");
     if (!tabtitle) tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
-    tabimage = iupAttribGetStr(child, "TABIMAGE");
+    tabimage = iupAttribGet(child, "TABIMAGE");
     if (!tabimage) tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
     if (!tabtitle && !tabimage)
       tabtitle = "     ";
@@ -361,7 +361,7 @@ static void gtkTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
 {
   if (ih->handle)
   {
-    GtkWidget* tab_page = (GtkWidget*)iupAttribGetStr(child, "_IUPTAB_CONTAINER");
+    GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (tab_page)
     {
       int pos = gtk_notebook_page_num((GtkNotebook*)ih->handle, tab_page);
@@ -425,16 +425,16 @@ void iupdrvTabsInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkTabsSetStandardFontAttrib, "DEFAULTFONT", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkTabsSetStandardFontAttrib, "DEFAULTFONT", NULL, IUPAF_NOT_MAPPED);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkTabsSetBgColorAttrib, "DLGBGCOLOR", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkTabsSetFgColorAttrib, "0 0 0", IUP_MAPPED, IUP_INHERIT);  /* black */
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkTabsSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkTabsSetFgColorAttrib, "0 0 0", NULL, IUPAF_DEFAULT);  /* black */
 
   /* IupTabs only */
-  iupClassRegisterAttribute(ic, "TABTYPE", iupTabsGetTabTypeAttrib, gtkTabsSetTabTypeAttrib, "TOP", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, gtkTabsSetTabOrientationAttrib, "HORIZONTAL", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABTITLE", NULL, gtkTabsSetTabTitleAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, gtkTabsSetTabImageAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, gtkTabsSetPaddingAttrib, "0x0", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "TABTYPE", iupTabsGetTabTypeAttrib, gtkTabsSetTabTypeAttrib, "TOP", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, gtkTabsSetTabOrientationAttrib, "HORIZONTAL", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABTITLE", NULL, gtkTabsSetTabTitleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, gtkTabsSetTabImageAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, gtkTabsSetPaddingAttrib, "0x0", NULL, IUPAF_NOT_MAPPED);
 }

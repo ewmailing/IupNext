@@ -28,7 +28,7 @@ static int iSpinCallCB(Ihandle* ih, int dub, int ten, int sign)
   IFni cb;
 
   /* get the callback on the spin or on the spinbox */
-  Ihandle* spinbox = (Ihandle*)iupAttribGetStr(ih->parent, "_IUPSPIN_BOX");
+  Ihandle* spinbox = (Ihandle*)iupAttribGet(ih->parent, "_IUPSPIN_BOX");
   if (spinbox) 
     ih = spinbox;
   else
@@ -47,8 +47,8 @@ static int iSpinCallCB(Ihandle* ih, int dub, int ten, int sign)
 
 static int iSpinTimerCB(Ihandle* ih)
 {
-  Ihandle* spin_button = (Ihandle*)iupAttribGetStr(ih, "_IUPSPIN_BUTTON");
-  char* status   = iupAttribGetStr(ih, "_IUPSPIN_STATUS");
+  Ihandle* spin_button = (Ihandle*)iupAttribGet(ih, "_IUPSPIN_BUTTON");
+  char* status   = iupAttribGet(ih, "_IUPSPIN_STATUS");
   int spin_dir   = iupAttribGetInt(ih, "_IUPSPIN_DIR");
   int count      = iupAttribGetInt(ih, "_IUPSPIN_COUNT");
   char* reconfig = NULL;
@@ -117,7 +117,7 @@ static int iSpinButtonCB(Ihandle* ih, int but, int pressed, int x, int y, char* 
   {
     int dir = iupAttribGetInt(ih, "_IUPSPIN_DIR");
     
-    iSpinPrepareTimer(ih, status, iupAttribGetStr(ih, "_IUPSPIN_DIR"));
+    iSpinPrepareTimer(ih, status, iupAttribGet(ih, "_IUPSPIN_DIR"));
     
     return iSpinCallCB(ih, iup_isshift(status), iup_iscontrol(status), dir);
   }

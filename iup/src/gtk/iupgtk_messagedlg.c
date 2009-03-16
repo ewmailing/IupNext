@@ -46,11 +46,11 @@ static int gtkMessageDlgPopup(Ihandle* ih, int x, int y)
                                   0,
                                   type,
                                   GTK_BUTTONS_NONE,
-                                  iupgtkStrConvertToUTF8(iupAttribGetStr(ih, "VALUE")));
+                                  iupgtkStrConvertToUTF8(iupAttribGet(ih, "VALUE")));
   if (!dialog)
     return IUP_ERROR;
 
-  title = iupAttribGetStr(ih, "TITLE");
+  title = iupAttribGet(ih, "TITLE");
   if (title)
     gtk_window_set_title(GTK_WINDOW(dialog), iupgtkStrConvertToUTF8(title));
 

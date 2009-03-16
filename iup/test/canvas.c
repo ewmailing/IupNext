@@ -156,7 +156,7 @@ int scroll_cb(Ihandle *ih, int op, float posx, float posy)
   char* op2str[12] = {"SBUP", "SBDN", "SBPGUP", "SBPGDN", "SBPOSV", "SBDRAGV",
                       "SBLEFT", "SBRIGHT", "SBPGLEFT", "SBPGRIGHT", "SBPOSH", "SBDRAGH"};
   printf("SCROLL_CB(%s, posx=%.2f, posy=%.2f)\n", op2str[op], posx, posy);
-  IupUpdate(ih);
+  IupRedraw(ih);
   return IUP_DEFAULT;
 }
 

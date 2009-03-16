@@ -76,9 +76,9 @@ static gboolean gtkCanvasHChangeValue(GtkRange *range, GtkScrollType scroll, dou
   double posx, posy;
   IFniff cb;
 
-  double xmin = iupAttribGetFloatDefault(ih, "XMIN");
-  double xmax = iupAttribGetFloatDefault(ih, "XMAX");
-  double dx = iupAttribGetFloatDefault(ih, "DX");
+  double xmin = iupAttribGetFloat(ih, "XMIN");
+  double xmax = iupAttribGetFloat(ih, "XMAX");
+  double dx = iupAttribGetFloat(ih, "DX");
   if (value < xmin) value = xmin;
   if (value > xmax-dx) value = xmax-dx;
 
@@ -111,9 +111,9 @@ static gboolean gtkCanvasVChangeValue(GtkRange *range, GtkScrollType scroll, dou
   double posx, posy;
   IFniff cb;
 
-  double ymin = iupAttribGetFloatDefault(ih, "YMIN");
-  double ymax = iupAttribGetFloatDefault(ih, "YMAX");
-  double dy = iupAttribGetFloatDefault(ih, "DY");
+  double ymin = iupAttribGetFloat(ih, "YMIN");
+  double ymax = iupAttribGetFloat(ih, "YMAX");
+  double dy = iupAttribGetFloat(ih, "DY");
   if (value < ymin) value = ymin;
   if (value > ymax-dy) value = ymax-dy;
 
@@ -168,7 +168,7 @@ static gboolean gtkCanvasButtonEvent(GtkWidget *widget, GdkEventButton *evt, Iha
       float posy = ih->data->posy;
       int delta = evt->button==4? 1: -1;
       int op = evt->button==4? IUP_SBUP: IUP_SBDN;
-      posy -= delta*iupAttribGetFloatDefault(ih, "DY")/10.0f;
+      posy -= delta*iupAttribGetFloat(ih, "DY")/10.0f;
       IupSetfAttribute(ih, "POSY", "%g", posy);
       if (scb)
         scb(ih,op,ih->data->posx,ih->data->posy);
@@ -195,8 +195,8 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
   IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
   if (cb)
   {
-    if (!iupAttribGetStr(ih, "_IUPGTK_NO_BGCOLOR"))
-      gtkCanvasSetBgColorAttrib(ih, iupAttribGetStrDefault(ih, "BGCOLOR"));  /* reset to update window attributes */
+    if (!iupAttribGet(ih, "_IUPGTK_NO_BGCOLOR"))
+      gtkCanvasSetBgColorAttrib(ih, iupAttribGetStr(ih, "BGCOLOR"));  /* reset to update window attributes */
 
     iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", evt->area.x, evt->area.y, evt->area.x+evt->area.width-1, evt->area.y+evt->area.height-1);
     cb(ih,ih->data->posx,ih->data->posy);
@@ -231,7 +231,7 @@ static gboolean gtkCanvasConfigureEvent(GtkWidget *widget, GdkEventConfigure *ev
 
 static GtkScrolledWindow* gtkCanvasGetScrolledWindow(Ihandle* ih)
 {
-  return (GtkScrolledWindow*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  return (GtkScrolledWindow*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
 }
 
 static int gtkCanvasSetXAutoHideAttrib(Ihandle* ih, const char *value)
@@ -307,16 +307,17 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
     if (!iupStrToFloat(value, &dx))
       return 1;
 
-    xmin = iupAttribGetFloatDefault(ih, "XMIN");
-    xmax = iupAttribGetFloatDefault(ih, "XMAX");
-    linex = iupAttribGetFloat(ih,"LINEX");
+    xmin = iupAttribGetFloat(ih, "XMIN");
+    xmax = iupAttribGetFloat(ih, "XMAX");
 
-    if (linex==0)
+    if (!iupAttribGet(ih,"LINEX"))
     {
       linex = dx/10;
       if (linex==0)
         linex = 1;
     }
+    else
+      linex = iupAttribGetFloat(ih,"LINEX");
 
     sb_horiz->lower = xmin;
     sb_horiz->upper = xmax;
@@ -347,16 +348,17 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
     if (!iupStrToFloat(value, &dy))
       return 1;
 
-    ymin = iupAttribGetFloatDefault(ih, "YMIN");
-    ymax = iupAttribGetFloatDefault(ih, "YMAX");
-    liney = iupAttribGetFloat(ih,"LINEY");
+    ymin = iupAttribGetFloat(ih, "YMIN");
+    ymax = iupAttribGetFloat(ih, "YMAX");
 
-    if (liney==0)
+    if (!iupAttribGet(ih,"LINEY"))
     {
       liney = dy/10;
       if (liney==0)
         liney = 1;
     }
+    else
+      liney = iupAttribGetFloat(ih,"LINEY");
 
     sb_vert->lower = ymin;
     sb_vert->upper = ymax;
@@ -412,8 +414,7 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
   unsigned char r, g, b;
 
   /* ignore given value, must use only from parent for the scrollbars */
-  char* parent_value = iupAttribGetStrNativeParent(ih, "BGCOLOR");
-  if (!parent_value) parent_value = IupGetGlobal("DLGBGCOLOR");
+  char* parent_value = iupBaseNativeParentGetBgColor(ih);
 
   if (iupStrToRGB(parent_value, &r, &g, &b))
   {
@@ -473,7 +474,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   visual = IupGetAttribute(ih, "VISUAL");   /* defined by the OpenGL Canvas in X11 or NULL */
   if (visual)
   {
-    GdkColormap* colormap = (GdkColormap*)iupgtkGetColormapFromVisual(visual, iupAttribGetStr(ih, "COLORMAP"));
+    GdkColormap* colormap = (GdkColormap*)iupgtkGetColormapFromVisual(visual, (void*)iupAttribGet(ih, "COLORMAP"));
     default_colormap = gtk_widget_get_default_colormap();
     gtk_widget_set_default_colormap(colormap);
   }
@@ -534,7 +535,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   /* To receive keyboard events, you will need to set the GTK_CAN_FOCUS flag on the drawing area. */
   if (ih->iclass->is_interactive)
   {
-    if (iupStrBoolean(iupAttribGetStrDefault(ih, "CANFOCUS")))
+    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
       GTK_WIDGET_FLAGS(ih->handle) |= GTK_CAN_FOCUS;
   }
 
@@ -554,13 +555,13 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   }
 
   /* ensure the default values, that are different from the native ones */
-  gtkCanvasSetXAutoHideAttrib(ih, iupAttribGetStrDefault(ih, "XAUTOHIDE"));
-  gtkCanvasSetYAutoHideAttrib(ih, iupAttribGetStrDefault(ih, "YAUTOHIDE"));
-  gtkCanvasSetDXAttrib(ih, iupAttribGetStrDefault(ih, "DX"));
-  gtkCanvasSetDYAttrib(ih, iupAttribGetStrDefault(ih, "DY"));
-  gtkCanvasSetPosXAttrib(ih, iupAttribGetStrDefault(ih, "POSX"));
-  gtkCanvasSetPosYAttrib(ih, iupAttribGetStrDefault(ih, "POSY"));
-  gtkCanvasSetBgColorAttrib(ih, iupAttribGetStrDefault(ih, "BGCOLOR"));
+  gtkCanvasSetXAutoHideAttrib(ih, iupAttribGetStr(ih, "XAUTOHIDE"));
+  gtkCanvasSetYAutoHideAttrib(ih, iupAttribGetStr(ih, "YAUTOHIDE"));
+  gtkCanvasSetDXAttrib(ih, iupAttribGetStr(ih, "DX"));
+  gtkCanvasSetDYAttrib(ih, iupAttribGetStr(ih, "DY"));
+  gtkCanvasSetPosXAttrib(ih, iupAttribGetStr(ih, "POSX"));
+  gtkCanvasSetPosYAttrib(ih, iupAttribGetStr(ih, "POSY"));
+  gtkCanvasSetBgColorAttrib(ih, iupAttribGetStr(ih, "BGCOLOR"));
 
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
@@ -581,25 +582,25 @@ void iupdrvCanvasInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkCanvasSetBgColorAttrib, "255 255 255", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkCanvasSetBgColorAttrib, "255 255 255", NULL, IUPAF_DEFAULT);
 
   /* IupCanvas only */
-  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, "ARROW", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAWSIZE", iupdrvBaseGetClientSizeAttrib, iupBaseNoSetAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, "ARROW", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWSIZE", iupdrvBaseGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "DX", NULL, gtkCanvasSetDXAttrib, "0.1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DY", NULL, gtkCanvasSetDYAttrib, "0.1", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, gtkCanvasSetPosXAttrib, "0.0", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, gtkCanvasSetPosYAttrib, "0.0", IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, gtkCanvasSetXAutoHideAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, gtkCanvasSetYAutoHideAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "DX", NULL, gtkCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DY", NULL, gtkCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, gtkCanvasSetPosXAttrib, "0.0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, gtkCanvasSetPosYAttrib, "0.0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, gtkCanvasSetXAutoHideAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, gtkCanvasSetYAutoHideAttrib, "YES", NULL, IUPAF_DEFAULT);
 
   /* IupCanvas Windows or X only */
 #ifdef WIN32                                 
-  iupClassRegisterAttribute(ic, "HWND", iupgtkGetNativeWindowHandle, NULL, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HWND", iupgtkGetNativeWindowHandle, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 #else
-  iupClassRegisterAttribute(ic, "XWINDOW", iupgtkGetNativeWindowHandle, NULL, NULL, IUP_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "XDISPLAY", (IattribGetFunc)iupdrvGetDisplay, iupBaseNoSetAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "XWINDOW", iupgtkGetNativeWindowHandle, NULL, NULL, NULL, IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "XDISPLAY", (IattribGetFunc)iupdrvGetDisplay, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 #endif
 }

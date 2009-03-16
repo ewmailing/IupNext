@@ -25,7 +25,7 @@ static GtkTooltips* gtk_tips = NULL;    /* old TIPS */
 #if GTK_CHECK_VERSION(2, 12, 0)
 static gboolean gtkQueryTooltip(GtkWidget *widget, gint x, gint y, gboolean keyboard_mode, GtkTooltip *tooltip, Ihandle* ih)
 {
-  char* value = iupAttribGetStr(ih, "TIPRECT");
+  char* value = iupAttribGet(ih, "TIPRECT");
   if (value && !keyboard_mode)
   {
     GdkRectangle rect;
@@ -40,7 +40,7 @@ static gboolean gtkQueryTooltip(GtkWidget *widget, gint x, gint y, gboolean keyb
   else
     gtk_tooltip_set_tip_area(tooltip, NULL);
 
-  value = iupAttribGetStr(ih, "TIPICON");
+  value = iupAttribGet(ih, "TIPICON");
   if (!value)
     gtk_tooltip_set_icon(tooltip, NULL);
   else
@@ -57,7 +57,7 @@ static gboolean gtkQueryTooltip(GtkWidget *widget, gint x, gint y, gboolean keyb
 
 int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
 {
-  GtkWidget* widget = (GtkWidget*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget)
     widget = ih->handle;
 
@@ -80,7 +80,7 @@ int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
 
 int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
 {
-  GtkWidget* widget = (GtkWidget*)iupAttribGetStr(ih, "_IUP_EXTRAPARENT");
+  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget)
     widget = ih->handle;
   (void)value;

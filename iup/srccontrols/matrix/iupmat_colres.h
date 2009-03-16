@@ -11,14 +11,11 @@
 extern "C" {
 #endif
 
-int   iupMatrixColResTry         (Ihandle* ih, int x, int y);
+int   iupMatrixColResStart       (Ihandle* ih, int x, int y);
 void  iupMatrixColResFinish      (Ihandle* ih, int x);
 void  iupMatrixColResMove        (Ihandle* ih, int x);
-void  iupMatrixColResChangeCursor(Ihandle* ih, int x, int y);
-int   iupMatrixColResResizing    (void);
-
-void  iupMatrixColResSet(Ihandle* ih, const char* value, int col, int m, int pixels);
-char* iupMatrixColResGet(Ihandle* ih, int col, int m, int pixels);
+void  iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y);
+int   iupMatrixColResIsResizing  (Ihandle* ih);
 
 #ifdef __cplusplus
 }

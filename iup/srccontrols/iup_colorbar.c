@@ -627,6 +627,7 @@ static int iColorbarSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
     value = iupControlBaseGetParentBgColor(ih);
+
   ih->data->bgcolor = cdIupConvertColor(value);
 
   cdIupCalcShadows(ih->data->bgcolor, &ih->data->light_shadow, &ih->data->mid_shadow, &ih->data->dark_shadow);
@@ -1059,24 +1060,24 @@ Iclass* iupColorbarGetClass(void)
   iupClassRegisterCallback(ic, "EXTENDED_CB", "i");
 
   /* IupColorbar only */
-  iupClassRegisterAttributeId(ic, "CELL", iColorbarGetCellAttrib, iColorbarSetCellAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUM_CELLS", iColorbarGetNumCellsAttrib, iColorbarSetNumCellsAttrib, "16", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUM_PARTS", iColorbarGetNumPartsAttrib, iColorbarSetNumPartsAttrib, "1", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PREVIEW_SIZE", iColorbarGetPreviewSizeAttrib, iColorbarSetPreviewSizeAttrib, NULL, IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRIMARY_CELL", iColorbarGetPrimaryCellAttrib, iColorbarSetPrimaryCellAttrib, "0", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SECONDARY_CELL", iColorbarGetSecondaryCellAttrib, iColorbarSetSecondaryCellAttrib, "15", IUP_NOT_MAPPED, IUP_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUFFERIZE", iColorbarGetBufferizeAttrib, iColorbarSetBufferizeAttrib, "NO", IUP_NOT_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "CELL", iColorbarGetCellAttrib, iColorbarSetCellAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUM_CELLS", iColorbarGetNumCellsAttrib, iColorbarSetNumCellsAttrib, "16", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUM_PARTS", iColorbarGetNumPartsAttrib, iColorbarSetNumPartsAttrib, "1", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PREVIEW_SIZE", iColorbarGetPreviewSizeAttrib, iColorbarSetPreviewSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRIMARY_CELL", iColorbarGetPrimaryCellAttrib, iColorbarSetPrimaryCellAttrib, "0", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SECONDARY_CELL", iColorbarGetSecondaryCellAttrib, iColorbarSetSecondaryCellAttrib, "15", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUFFERIZE", iColorbarGetBufferizeAttrib, iColorbarSetBufferizeAttrib, "NO", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "ORIENTATION", iColorbarGetOrientationAttrib, iColorbarSetOrientationAttrib, "VERTICAL", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "TRANSPARENCY", iColorbarGetTransparencyAttrib, iColorbarSetTransparencyAttrib, NULL, IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOW_PREVIEW", NULL, iColorbarSetShowPreviewAttrib, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOW_SECONDARY", iColorbarGetShowSecondaryAttrib, iColorbarSetShowSecondaryAttrib, "NO", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "SQUARED", iColorbarGetSquaredAttrib, iColorbarSetSquaredAttrib, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "SHADOWED", iColorbarGetShadowedAttrib, iColorbarSetShadowedAttrib, "YES", IUP_NOT_MAPPED, IUP_INHERIT);
+  iupClassRegisterAttribute(ic, "ORIENTATION", iColorbarGetOrientationAttrib, iColorbarSetOrientationAttrib, "VERTICAL", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TRANSPARENCY", iColorbarGetTransparencyAttrib, iColorbarSetTransparencyAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SHOW_PREVIEW", NULL, iColorbarSetShowPreviewAttrib, "YES", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SHOW_SECONDARY", iColorbarGetShowSecondaryAttrib, iColorbarSetShowSecondaryAttrib, "NO", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SQUARED", iColorbarGetSquaredAttrib, iColorbarSetSquaredAttrib, "YES", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SHADOWED", iColorbarGetShadowedAttrib, iColorbarSetShadowedAttrib, "YES", NULL, IUPAF_NOT_MAPPED);
 
   /* Overwrite IupCanvas Attributes */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iColorbarSetActiveAttrib, "YES", IUP_MAPPED, IUP_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iColorbarSetBgColorAttrib, NULL, IUP_MAPPED, IUP_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iColorbarSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iColorbarSetBgColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }
