@@ -171,18 +171,17 @@ static void iValComputeNaturalSizeMethod(Ihandle* ih)
 
 static int iValCreateMethod(Ihandle* ih, void **params)
 {
-  char* type = "HORIZONTAL";
-  if (params && params[0])
-    type = params[0];
-
   ih->data = iupALLOCCTRLDATA();
 
-  /* default values */
-  iValSetTypeAttrib(ih, type);
+  if (params && params[0])
+  {
+    iupAttribStoreStr(ih, "TYPE", params[0]);
 
-  if (ih->data->type == IVAL_VERTICAL)
-    ih->data->inverted = 1;  /* default is YES when vertical */
+    if (iupStrEqualNoCase(params[0], "VERTICAL"))
+      ih->data->inverted = 1;  /* default is YES when vertical */
+  }
 
+  ih->data->type = IVAL_HORIZONTAL;
   ih->data->vmax = 1.00;
   ih->data->step = 0.01;
   ih->data->pagestep = 0.10;
@@ -217,12 +216,12 @@ Iclass* iupValGetClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* IupVal only */
-  iupClassRegisterAttribute(ic, "MAX", iValGetMaxAttrib, iValSetMaxAttrib, "1.0", NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "MIN", iValGetMinAttrib, iValSetMinAttrib, "0.0", NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "SHOWTICKS", iupValGetShowTicksAttrib, iValSetShowTicksAttrib, "0", NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TYPE", iValGetTypeAttrib, iValSetTypeAttrib, "HORIZONTAL", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAX", iValGetMaxAttrib, iValSetMaxAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "MIN", iValGetMinAttrib, iValSetMinAttrib, IUPAF_SAMEASSYSTEM, "0.0", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SHOWTICKS", iupValGetShowTicksAttrib, iValSetShowTicksAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TYPE", iValGetTypeAttrib, iValSetTypeAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "INVERTED", iValGetInvertedAttrib, iValSetInvertedAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   iupdrvValInitClass(ic);
 

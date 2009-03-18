@@ -887,9 +887,6 @@ static int iCellsSetFullVisibleAttrib(Ihandle* ih, const char* value)
 
 static int iCellsMapMethod(Ihandle* ih)
 {
-  /* ensure the default values, that are different from the native ones */
-  iCellsSetBgColorAttrib(ih, NULL);
-
   ih->data->cdcanvas = cdCreateCanvas(CD_IUP, ih);
   if (!ih->data->cdcanvas)
     return IUP_ERROR;
@@ -966,25 +963,25 @@ Iclass* iupCellsGetClass(void)
   iupClassRegisterCallback(ic, "WIDTH_CB", "i");
 
   /* IupCells only */
-  iupClassRegisterAttribute(ic, "BOXED", iCellsGetBoxedAttrib, iCellsSetBoxedAttrib, "YES", NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "CLIPPED", iCellsGetClippedAttrib, iCellsSetClippedAttrib, "YES", NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "NON_SCROLLABLE_LINES", iCellsGetNonScrollableLinesAttrib, iCellsSetNonScrollableLinesAttrib, "0", NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "NON_SCROLLABLE_COLS", iCellsGetNonScrollableColsAttrib, iCellsSetNonScrollableColsAttrib, "0", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "BOXED", iCellsGetBoxedAttrib, iCellsSetBoxedAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CLIPPED", iCellsGetClippedAttrib, iCellsSetClippedAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "NON_SCROLLABLE_LINES", iCellsGetNonScrollableLinesAttrib, iCellsSetNonScrollableLinesAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "NON_SCROLLABLE_COLS", iCellsGetNonScrollableColsAttrib, iCellsSetNonScrollableColsAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "NO_COLOR", iupControlBaseGetBgColorAttrib, iCellsSetBgColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "BUFFERIZE", iCellsGetBufferizeAttrib, iCellsSetBufferizeAttrib, "NO", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BUFFERIZE", iCellsGetBufferizeAttrib, iCellsSetBufferizeAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "ORIGIN", NULL, iCellsSetOriginAttrib, NULL, NULL, IUPAF_DEFAULT);
 
   iupClassRegisterAttribute(ic, "FULL_VISIBLE", NULL, iCellsSetFullVisibleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "REPAINT", NULL, iCellsSetRepaintAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REPAINT", NULL, iCellsSetRepaintAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "LIMITS", iCellsGetLimitsAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIRST_COL", iCellsGetFirstColAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIRST_LINE", iCellsGetFirstLineAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE_CANVAS", iCellsGetImageCanvasAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CANVAS", iCellsGetCanvasAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE_CANVAS", iCellsGetImageCanvasAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANVAS", iCellsGetCanvasAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Overwrite IupCanvas Attributes */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iCellsSetBgColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iCellsSetBgColorAttrib, NULL, "255 255 255", IUPAF_NO_INHERIT);    /* overwrite canvas default */
 
   return ic;
 }

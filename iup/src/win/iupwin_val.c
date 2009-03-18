@@ -281,11 +281,9 @@ static int winValMapMethod(Ihandle* ih)
   /* Process background color */
   IupSetCallback(ih, "_IUPWIN_CTLCOLOR_CB", (Icallback)winValCtlColor);
 
-  /* ensure the default values, that are different from the native ones */
+  /* configure the native range */
   SendMessage(ih->handle, TBM_SETRANGEMIN, FALSE, 0);
   SendMessage(ih->handle, TBM_SETRANGEMAX, FALSE, SHRT_MAX);
-  winValSetPageStepAttrib(ih, iupAttribGetStr(ih, "PAGESTEP"));
-  winValSetStepAttrib(ih, iupAttribGetStr(ih, "STEP"));
 
   if (ih->data->inverted)
     SendMessage(ih->handle, TBM_SETPOS, FALSE, SHRT_MAX);  /* default initial position is at MIN */
@@ -299,10 +297,10 @@ void iupdrvValInitClass(Iclass* ic)
   ic->Map = winValMapMethod;
 
   /* IupVal only */
-  iupClassRegisterAttribute(ic, "VALUE", iupValGetValueAttrib, winValSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);  
-  iupClassRegisterAttribute(ic, "SHOWTICKS", iupValGetShowTicksAttrib, winValSetShowTicksAttrib, "0", NULL, IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "PAGESTEP", iupValGetPageStepAttrib, winValSetPageStepAttrib, "0.1", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "STEP", iupValGetStepAttrib, winValSetStepAttrib, "0.01", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", iupValGetValueAttrib, winValSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);  
+  iupClassRegisterAttribute(ic, "SHOWTICKS", iupValGetShowTicksAttrib, winValSetShowTicksAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "PAGESTEP", iupValGetPageStepAttrib, winValSetPageStepAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "STEP", iupValGetStepAttrib, winValSetStepAttrib, "0.01", NULL, IUPAF_NO_INHERIT);   /* force new default value */
 
   iupClassRegisterAttribute(ic, "TICKSPOS", NULL, NULL, "NORMAL", NULL, IUPAF_NOT_MAPPED);
 }

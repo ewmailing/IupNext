@@ -95,14 +95,16 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 
 void iupdrvDisplayRedraw(Ihandle *ih)
 {
-  InvalidateRect(ih->handle, NULL, FALSE);  
-  UpdateWindow(ih->handle);
+//  InvalidateRect(ih->handle, NULL, FALSE);  
+//  UpdateWindow(ih->handle);
+  /* REDRAW New */
+  RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_NOCHILDREN|RDW_UPDATENOW);
 }
 
 void iupdrvDisplayUpdate(Ihandle *ih)
 {
   /* Post a REDRAW */
-  RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT);
+  RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_NOCHILDREN);
 }
 
 void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)

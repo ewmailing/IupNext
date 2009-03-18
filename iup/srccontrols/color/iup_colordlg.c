@@ -525,6 +525,35 @@ static int iColorBrowserDlgColorTableSelect_CB(Ihandle* ih, int cell, int type)
   return IUP_DEFAULT;
 }
 
+static int iColorBrowserDlgColorCnvButton_CB(Ihandle* ih, int b, int press, int x, int y)
+{
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
+  int width;
+  (void)y;
+
+  if (b != IUP_BUTTON1 || !press || !colordlg_data->color_cddbuffer)
+    return IUP_DEFAULT;
+
+  cdCanvasGetSize(colordlg_data->color_cddbuffer, &width, NULL, NULL, NULL);
+
+  if (x < width/2)
+  {
+    /* reset color to previous */
+    colordlg_data->red = cdRed(colordlg_data->previous_color);
+    colordlg_data->green = cdGreen(colordlg_data->previous_color);
+    colordlg_data->blue = cdBlue(colordlg_data->previous_color);
+    colordlg_data->alpha = cdAlpha(colordlg_data->previous_color);
+
+    IupSetfAttribute(colordlg_data->alpha_txt, "VALUE", "%d", (int)colordlg_data->alpha);
+    IupSetfAttribute(colordlg_data->alpha_val, "VALUE", "%d", (int)colordlg_data->alpha);
+
+    iColorBrowserDlgRGB_TXT_Update(colordlg_data);
+    iColorBrowserDlgRGBChanged(colordlg_data);
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int iColorBrowserDlgColorCnvMap_CB(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
@@ -871,6 +900,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback (colordlg_data->color_cnv, "ACTION", (Icallback)iColorBrowserDlgColorCnvRedraw_CB);
   IupSetCallback (colordlg_data->color_cnv, "MAP_CB", (Icallback)iColorBrowserDlgColorCnvMap_CB);
   IupSetCallback (colordlg_data->color_cnv, "UNMAP_CB", (Icallback)iColorBrowserDlgColorCnvUnMap_CB);
+  IupSetCallback (colordlg_data->color_cnv, "BUTTON_CB", (Icallback)iColorBrowserDlgColorCnvButton_CB);
 
   colordlg_data->colorhex_txt = IupText(NULL);      /* Hex of the color */
   IupSetAttribute(colordlg_data->colorhex_txt, "VISIBLECOLUMNS", "7");
@@ -1077,7 +1107,7 @@ Iclass* iupColorBrowserDlgGetClass(void)
   iupClassRegisterAttribute(ic, "COLORTABLE", iColorBrowserDlgGetColorTableAttrib, iColorBrowserDlgSetColorTableAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATUS", iColorBrowserDlgGetStatusAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", iColorBrowserDlgGetValueAttrib, iColorBrowserDlgSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ALPHA", iColorBrowserDlgGetAlphaAttrib, iColorBrowserDlgSetAlphaAttrib, "255", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALPHA", iColorBrowserDlgGetAlphaAttrib, iColorBrowserDlgSetAlphaAttrib, IUPAF_SAMEASSYSTEM, "255", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUEHSI", iColorBrowserDlgGetValueHSIAttrib, iColorBrowserDlgSetValueHSIAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUEHEX", iColorBrowserDlgGetValueHexAttrib, iColorBrowserDlgSetValueHexAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWALPHA", NULL, iColorBrowserDlgSetShowAlphaAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

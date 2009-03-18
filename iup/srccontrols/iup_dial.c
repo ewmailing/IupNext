@@ -735,9 +735,6 @@ static char* iDialGetTypeAttrib(Ihandle* ih)
 
 static int iDialMapMethod(Ihandle* ih)
 {
-  /* ensure the default values, that are different from the native ones */
-  iDialSetBgColorAttrib(ih, NULL);
-
   ih->data->cdcanvas = cdCreateCanvas(CD_IUP, ih);
   if (!ih->data->cdcanvas)
     return IUP_ERROR;
@@ -811,16 +808,16 @@ Iclass* iupDialGetClass(void)
   iupClassRegisterCallback(ic, "BUTTON_RELEASE_CB", "d");
 
   /* IupDial only */
-  iupClassRegisterAttribute(ic, "VALUE", iDialGetValueAttrib, iDialSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TYPE", iDialGetTypeAttrib, iDialSetTypeAttrib, "HORIZONTAL", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", iDialGetValueAttrib, iDialSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TYPE", iDialGetTypeAttrib, iDialSetTypeAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DENSITY", iDialGetDensityAttrib, iDialSetDensityAttrib, IDIAL_DEFAULT_DENSITY_STR, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iDialSetFgColorAttrib, IDIAL_DEFAULT_FGCOLOR, NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "UNIT", NULL, iDialSetUnitAttrib, "RADIANS", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "UNIT", NULL, iDialSetUnitAttrib, IUPAF_SAMEASSYSTEM, "RADIANS", IUPAF_NOT_MAPPED);
 
   /* Overwrite IupCanvas Attributes */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iDialSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iDialSetBgColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iDialSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iDialSetBgColorAttrib, NULL, "255 255 255", IUPAF_NO_INHERIT);    /* overwrite canvas default */
 
   return ic;
 }

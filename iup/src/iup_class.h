@@ -239,6 +239,9 @@ typedef enum _IattribFlags{
   IUPAF_WRITEONLY=64   /**< is write-only, usually an action */
 } IattribFlags;
 
+#define IUPAF_SAMEASSYSTEM ((char*)-1)  /**< means that the default value is the same as the system default value, used only in \ref iupClassRegisterAttribute */
+
+
 /** Register attribute handling functions. get, set and default_value can be NULL.
  * default_value should point to a constant string, it will not be duplicated internally. \n
  * Notice that when an attribute is not defined then default_value=NULL, 

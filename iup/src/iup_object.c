@@ -70,6 +70,9 @@ Ihandle* iupObjectCreate(Iclass* iclass, void** params)
     return NULL;
   }
 
+  /* ensure attributes default values, at this time only the ones that can be set before map */
+  iupClassObjectEnsureDefaultAttributes(ih);
+
   return ih;
 }
 

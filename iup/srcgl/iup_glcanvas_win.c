@@ -211,8 +211,8 @@ static Iclass* wGlCanvasGetClass(void)
   ic->Map = wGLCanvasMapMethod;
   ic->UnMap = wGLCanvasUnMapMethod;
 
-  iupClassRegisterAttribute(ic, "BUFFER", NULL, NULL, "SINGLE", NULL, IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, "RGBA", NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BUFFER", NULL, NULL, IUPAF_SAMEASSYSTEM, "SINGLE", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "RGBA", IUPAF_DEFAULT);
 
   iupClassRegisterAttribute(ic, "CONTEXT", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "VISUAL", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY|IUPAF_NO_STRING);

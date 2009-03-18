@@ -761,9 +761,6 @@ static int iColorBrowserSetActiveAttrib(Ihandle* ih, const char* value)
 
 static int iColorBrowserMapMethod(Ihandle* ih)
 {
-  /* ensure the default values, that are different from the native ones */
-  iColorBrowserSetBgColorAttrib(ih, NULL);
-
   ih->data->cdcanvas = cdCreateCanvas(CD_IUP, ih);
   if (!ih->data->cdcanvas)
     return IUP_ERROR;
@@ -799,9 +796,6 @@ static int iColorBrowserCreateMethod(Ihandle* ih, void **params)
   iupAttribSetStr(ih, "BORDER", "NO");
   ih->expand = IUP_EXPAND_NONE;
 
-  /* ensure the default values */
-  iColorBrowserSetRGBAttrib(ih, iupAttribGetStr(ih, "RGB"));
-
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION",      (Icallback)iColorBrowserRedraw_CB);
   IupSetCallback(ih, "RESIZE_CB",   (Icallback)iColorBrowserResize_CB);
@@ -834,12 +828,12 @@ Iclass* iupColorBrowserGetClass(void)
   iupClassRegisterCallback(ic, "CHANGE_CB", "ccc");
 
   /* IupColorBrowser only */
-  iupClassRegisterAttribute(ic, "RGB", iColorBrowserGetRGBAttrib, iColorBrowserSetRGBAttrib, "255 0 0", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RGB", iColorBrowserGetRGBAttrib, iColorBrowserSetRGBAttrib, "255 0 0", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);    /* force new default value */
   iupClassRegisterAttribute(ic, "HSI", iColorBrowserGetHSIAttrib, iColorBrowserSetHSIAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Overwrite IupCanvas Attributes */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iColorBrowserSetActiveAttrib, "YES", NULL, IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iColorBrowserSetBgColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iColorBrowserSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iColorBrowserSetBgColorAttrib, NULL, "255 255 255", IUPAF_NO_INHERIT);    /* overwrite canvas default */
 
   return ic;
 }

@@ -547,7 +547,7 @@ int iupMatrixLineIsMarked (Ihandle* ih, int lin)
 //  if(*lin == -1)
 //  {
 //    *lin   = ih->data->lines.first;
-//    *duplo = 0; /* Guarantee that it will be set as a double-click */
+//    *duplo = 0;  /* Make sure that will not be interpreted as a double-click */
 //    if(ih->data->mark_mode != IMAT_MARK_NO && ((ih->data->mark_mode == IMAT_MARK_CELL && mult) || 
 //                                         ih->data->mark_mode == IMAT_MARK_COL || 
 //                                         ih->data->mark_mode == IMAT_MARK_LINCOL))
@@ -557,7 +557,7 @@ int iupMatrixLineIsMarked (Ihandle* ih, int lin)
 //  else if(*col == -1)
 //  {
 //    *col   = ih->data->columns.first;
-//    *duplo = 0;  /* Ensures that will not interpret as a double-click */
+//    *duplo = 0;  /* Make sure that will not be interpreted as a double-click */
 //    if(ih->data->mark_mode != IMAT_MARK_NO && ((ih->data->mark_mode == IMAT_MARK_CELL && mult) || 
 //                                         ih->data->mark_mode == IMAT_MARK_LIN || 
 //                                         ih->data->mark_mode == IMAT_MARK_LINCOL))

@@ -282,11 +282,14 @@ void iupClassRegisterAttribute(Iclass* ic, const char* name,
   afunc = (IattribFunc*)malloc(sizeof(IattribFunc));
   afunc->get = _get;
   afunc->set = _set;
-  afunc->default_value = _default_value;
+  if (_default_value == IUPAF_SAMEASSYSTEM)
+    afunc->default_value = _system_default;
+  else
+    afunc->default_value = _default_value;
   afunc->system_default = _system_default;
   afunc->flags = _flags;
 
-  if (iClassIsGlobalDefault(_default_value))
+  if (iClassIsGlobalDefault(afunc->default_value))
     afunc->call_global_default = 1;
   else
     afunc->call_global_default = 0;
@@ -332,7 +335,7 @@ void iupClassRegisterCallback(Iclass* ic, const char* name, const char* format)
 {
   /* Since attributes and callbacks do not conflict 
      we can use the same structure to store the callback format using the default_value. */
-  iupClassRegisterAttribute(ic, name, NULL, NULL, format, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, name, NULL, NULL, format, NULL, IUPAF_NO_INHERIT);
 }
 
 char* iupClassCallbackGetFormat(Iclass* ic, const char* name)
@@ -393,9 +396,14 @@ void IupSetClassDefaultAttribute(const char* classname, const char *name, const 
 
   afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
   if (afunc && (!(afunc->flags & IUPAF_NO_DEFAULTVALUE) || !(afunc->flags & IUPAF_NO_STRING) || !(afunc->flags & IUPAF_HAS_ID)))
-    afunc->default_value = default_value;
+  {
+    if (default_value == IUPAF_SAMEASSYSTEM)
+      afunc->default_value = afunc->system_default;
+    else
+      afunc->default_value = default_value;
+  }
   else if (default_value)
-    iupClassRegisterAttribute(ic, name, NULL, NULL, default_value, NULL, NULL, IUPAF_DEFAULT);
+    iupClassRegisterAttribute(ic, name, NULL, NULL, default_value, NULL, IUPAF_DEFAULT);
 }
 
 void IupSaveClassAttributes(Ihandle* ih)
@@ -437,7 +445,7 @@ void iupClassObjectEnsureDefaultAttributes(Ihandle* ih)
   while (name)
   {
     IattribFunc* afunc = (IattribFunc*)iupTableGetCurr(ic->attrib_func);
-    if (afunc && afunc->set && afunc->default_value &&
+    if (afunc && afunc->set && (afunc->default_value || afunc->system_default) &&
         (!(afunc->flags & IUPAF_NO_DEFAULTVALUE) || !(afunc->flags & IUPAF_NO_STRING) || !(afunc->flags & IUPAF_HAS_ID)))
     {
       if (!iupStrEqualNoCase(afunc->default_value, afunc->system_default))

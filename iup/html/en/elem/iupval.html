@@ -76,7 +76,7 @@ control. Default: YES. (since 3.0)</p>
 <p><strong>INVERTED</strong>: Invert the minimum and maximum positions on 
 screen. When INVERTED=YES maximum is at top and left (minimum is bottom and 
 right), when INVERTED=NO maximum is at bottom and right (minimum is top and 
-left). Its default value depends on TYPE, if TYPE=VERTICAL default is YES, if 
+left). The initial value depends on TYPE passed as parameter on creation, if TYPE=VERTICAL default is YES, if 
 TYPE=HORIZONTAL default is NO. (since 3.0)</p>
 
 <p><strong>MAX</strong>:
@@ -123,7 +123,8 @@ position is always normal. (since 3.0)</p>
 
 <p><strong>TYPE </strong>(<font size="3">non inheritable</font>):&nbsp; Informs whether the valuator is "VERTICAL" 
   or "HORIZONTAL". 
-  Vertical valuators are bottom to up, and horizontal valuators are left to right variations of min to max. 
+  Vertical valuators are bottom to up, and horizontal valuators are left to right variations of min to max 
+(but can be inverted using INVERTED). 
 Default: "HORIZONTAL".</p>
 
 <p><strong>VALUE </strong>(<font size="3">non inheritable</font>):

@@ -43,8 +43,8 @@ Iclass* iupFileDlgGetClass(void)
   iupdrvFileDlgInitClass(ic);
 
   /* only the default value */
-  iupClassRegisterAttribute(ic, "NOCHANGEDIR", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DIALOGTYPE", NULL, NULL, "OPEN", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NOCHANGEDIR", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DIALOGTYPE", NULL, NULL, IUPAF_SAMEASSYSTEM, "OPEN", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "PREVIEWDC", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT|IUPAF_READONLY|IUPAF_NO_STRING);
 

@@ -71,9 +71,8 @@ char* iupLabelGetPaddingAttrib(Ihandle* ih)
 static int iLabelCreateMethod(Ihandle* ih, void** params)
 {
   if (params && params[0])
-  {
     iupAttribStoreStr(ih, "TITLE", (char*)(params[0]));
-  }
+  
   ih->data = iupALLOCCTRLDATA();
 
   /* used only by the Windows driver */
