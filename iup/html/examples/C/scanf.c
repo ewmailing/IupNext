@@ -4,6 +4,7 @@
    the last receives an integer number.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -33,5 +34,6 @@ int main(int argc, char **argv)
 
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

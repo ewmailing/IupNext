@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <iup.h>
 
-int main(int argc, char* argv[])
+void VboxTest(void)
 {
   /* IUP identifiers */
   Ihandle *dlg;
@@ -11,11 +11,6 @@ int main(int argc, char* argv[])
   Ihandle *btn_21, *btn_22, *btn_23;
   Ihandle *btn_31, *btn_32, *btn_33;
   Ihandle *vbox_1, *vbox_2, *vbox_3;
-
-  /* Initializes IUP */
-  IupOpen(&argc, &argv);
-
-  /* Program begin */
 
   /* Creates frame 1 */
   fr1 = IupFrame
@@ -109,15 +104,19 @@ int main(int argc, char* argv[])
 
   /* Shows dlg in the center of the screen */
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+}
 
-  /* Initializes IUP main loop */
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  VboxTest();
+
   IupMainLoop();
 
-  IupDestroy(dlg);
+  IupClose();
 
-  /* Finishes IUP */
-  IupClose ();  
-
-  /* Program finished sucessfully */
   return EXIT_SUCCESS;
 }
+#endif

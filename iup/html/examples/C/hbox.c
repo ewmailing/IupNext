@@ -4,6 +4,7 @@
    to obtain the given effect.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -33,10 +34,10 @@ int main(int argc, char **argv)
     )
   );
   IupSetAttribute(fr1, "TITLE", "ALIGNMENT=ATOP, GAP=10, SIZE=200");
-  IupSetAttribute(b11, "SIZE", "30x30") ;
-  IupSetAttribute(b12, "SIZE", "30x40") ;
-  IupSetAttribute(b13, "SIZE", "30x50") ;
-  IupSetAttributes(h1, "ALIGNMENT=ATOP, GAP=10, SIZE=200") ; /* Sets hbox's alignment, gap and size */
+  IupSetAttribute(b11, "SIZE", "30x30");
+  IupSetAttribute(b12, "SIZE", "30x40");
+  IupSetAttribute(b13, "SIZE", "30x50");
+  IupSetAttributes(h1, "ALIGNMENT=ATOP, GAP=10, SIZE=200"); /* Sets hbox's alignment, gap and size */
 
   /* Creates frame with three buttons */
   fr2 = IupFrame
@@ -50,12 +51,12 @@ int main(int argc, char **argv)
       IupFill(),
       NULL
     )
-  ) ;
-  IupSetAttribute(fr2, "TITLE", "ALIGNMENT=ACENTER, GAP=20") ;
-  IupSetAttribute(b21, "SIZE", "30x30") ;
-  IupSetAttribute(b22, "SIZE", "30x40") ;
-  IupSetAttribute(b23, "SIZE", "30x50") ;
-  IupSetAttributes(h2, "ALIGNMENT=ACENTER, GAP=20") ; /* Sets hbox's alignment and gap */
+  );
+  IupSetAttribute(fr2, "TITLE", "ALIGNMENT=ACENTER, GAP=20");
+  IupSetAttribute(b21, "SIZE", "30x30");
+  IupSetAttribute(b22, "SIZE", "30x40");
+  IupSetAttribute(b23, "SIZE", "30x50");
+  IupSetAttributes(h2, "ALIGNMENT=ACENTER, GAP=20"); /* Sets hbox's alignment and gap */
 
   /* Creates frame with three bottom aligned buttons */
   fr3 = IupFrame
@@ -69,12 +70,12 @@ int main(int argc, char **argv)
       IupFill(),
       NULL
     )
-  ) ;
-  IupSetAttribute(fr3, "TITLE", "ALIGNMENT = ABOTTOM, SIZE = 150") ;
-  IupSetAttribute(b31, "SIZE", "30x30") ;
-  IupSetAttribute(b32, "SIZE", "30x40") ;
-  IupSetAttribute(b33, "SIZE", "30x50") ;
-  IupSetAttributes(h3, "ALIGNMENT = ABOTTOM, SIZE = 150") ; /* Sets hbox's alignment and size */
+  );
+  IupSetAttribute(fr3, "TITLE", "ALIGNMENT = ABOTTOM, SIZE = 150");
+  IupSetAttribute(b31, "SIZE", "30x30");
+  IupSetAttribute(b32, "SIZE", "30x40");
+  IupSetAttribute(b33, "SIZE", "30x50");
+  IupSetAttributes(h3, "ALIGNMENT = ABOTTOM, SIZE = 150"); /* Sets hbox's alignment and size */
 
   /* Creates dialog with the three frames */
   dialog = IupDialog
@@ -86,14 +87,14 @@ int main(int argc, char **argv)
       fr3,
       NULL
     )
-  ) ;
+  );
 
-  IupSetAttribute(dialog, "TITLE", "IupHbox") ; /* Sets dialog's title */
+  IupSetAttribute(dialog, "TITLE", "IupHbox"); /* Sets dialog's title */
 
-  IupShowXY( dialog, IUP_CENTER, IUP_CENTER ) ; /* Shows dialog in the center of the screen */
-  IupMainLoop() ;                               /* Initializes IUP main loop */
-  IupDestroy(dialog);
-  IupClose() ;                                  /* Finishes IUP */
+  IupShowXY( dialog, IUP_CENTER, IUP_CENTER ); /* Shows dialog in the center of the screen */
+  IupMainLoop();                               /* Initializes IUP main loop */
+  IupClose();                                  /* Finishes IUP */
 
-  return 0 ;
+  return EXIT_SUCCESS;
+
 }

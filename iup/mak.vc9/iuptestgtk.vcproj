@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\include;&quot;d:\lng\gtk\include\atk-1.0&quot;;d:\lng\gtk\include\cairo;&quot;d:\lng\gtk\include\glib-2.0&quot;;&quot;d:\lng\gtk\include\gtk-2.0&quot;;&quot;d:\lng\gtk\include\pango-1.0&quot;;&quot;d:\lng\gtk\lib\gtk-2.0\include&quot;;&quot;d:\lng\gtk\lib\glib-2.0\include&quot;;..\..\cd\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WIN32_WINNT=0x0400;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WIN32_WINNT=0x0400;_CRT_SECURE_NO_DEPRECATE;BIG_TEST"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -105,12 +105,23 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="Resources"
+			>
+			<File
+				RelativePath="..\test\dial.led"
+				>
+			</File>
+		</Filter>
+		<File
+			RelativePath="..\test\bigtest.c"
+			>
+		</File>
 		<File
 			RelativePath="..\test\button.c"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -122,7 +133,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -134,7 +144,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -146,7 +155,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -158,7 +166,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -170,7 +177,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -182,7 +188,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -194,7 +199,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -206,7 +210,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -218,7 +221,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -226,15 +228,10 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="..\test\dial.led"
-			>
-		</File>
-		<File
 			RelativePath="..\test\dialog.c"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -246,7 +243,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -258,7 +254,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -270,7 +265,17 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="..\test\getparam.c"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -282,7 +287,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -294,7 +298,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -306,7 +309,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -318,7 +320,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -330,7 +331,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -342,7 +342,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -354,7 +353,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -362,23 +360,14 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="..\test\matrix_led.c"
+			RelativePath="..\test\mdi.c"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="..\test\menu.c"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -390,7 +379,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -402,7 +390,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -414,7 +401,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -426,7 +412,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -438,7 +423,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -450,7 +434,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -462,7 +445,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -485,7 +467,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -497,7 +478,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -509,7 +489,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -521,7 +500,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -533,7 +511,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -545,7 +522,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -557,7 +533,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"

@@ -138,7 +138,7 @@ static unsigned char img_bits2[] =
 ,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 };
 
-void init_dialog (void)
+void SampleTest(void)
 {
   Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, 
     *_frm_1, *_frm_2, *_frm_3, *_frm_4, *_frm_5, *pbar, *val, *tabs,
@@ -296,18 +296,21 @@ void init_dialog (void)
 
 //  IupSetAttribute(dlg, "FONT", "Helvetica, 24");
 //  IupSetAttribute(box, "FGCOLOR", "255 0 0");
+
+  IupShow(dlg);
 }
 
+#ifndef BIG_TEST
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
-  init_dialog();
-  IupShow(IupGetHandle("dlg"));
-  IupMainLoop();
-  IupClose();  
-  return 0;
-}
 
-//IupSetAttribute(ih, "TIPVISIBLE", "YES");
-// get/killfocus enter/leave k_any/help
-//active/tip
+  SampleTest();
+
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+#endif

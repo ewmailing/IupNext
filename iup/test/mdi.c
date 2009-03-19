@@ -123,19 +123,28 @@ static Ihandle* createFrame(void)
   return dlg;
 }
 
-int main(int argc, char* argv[])
+void MdiTest(void)
 {
   Ihandle* dlg;
-
-  IupOpen(&argc, &argv);      
 
   createMenu();
 
   dlg = createFrame();
 //  IupSetAttribute(dlg, "PLACEMENT", "MAXIMIZED");
   IupShow(dlg);
-  IupMainLoop();
-  IupDestroy(dlg);
-  IupClose();  
-  return 0;
 }
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  MdiTest();
+
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+#endif

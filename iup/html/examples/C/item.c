@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -36,7 +37,7 @@ int main(int argc, char **argv)
   Ihandle *dlg;
   Ihandle *text;
   Ihandle *menu, *menu_file;
-  Ihandle *submenu_file ;
+  Ihandle *submenu_file;
   Ihandle *item_save, *item_autosave, *item_exit;
 
   IupOpen(&argc, &argv);
@@ -77,8 +78,8 @@ int main(int argc, char **argv)
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
   IupMainLoop();
-  IupDestroy(dlg);
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

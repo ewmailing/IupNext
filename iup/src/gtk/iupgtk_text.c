@@ -1077,14 +1077,6 @@ static int gtkTextSetTabSizeAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static char* gtkTextGetFormattingAttrib(Ihandle* ih)
-{
-  if (ih->data->has_formatting)
-    return "YES";
-  else
-    return "NO";
-}
-
 static int gtkTextSetOverwriteAttrib(Ihandle* ih, const char* value)
 {
   if (!ih->data->is_multiline)
@@ -1574,6 +1566,9 @@ static int gtkTextMapMethod(Ihandle* ih)
     if (!ih->handle)
       return IUP_ERROR;
     
+    /* formatting is never supported when MULTILINE=NO */
+    ih->data->has_formatting = 0;
+
     gtk_entry_set_has_frame((GtkEntry*)ih->handle, IupGetInt(ih, "BORDER"));
 
     if (iupStrBoolean(iupAttribGet(ih, "PASSWORD")))
@@ -1676,7 +1671,7 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "NC", iupTextGetNCAttrib, gtkTextSetNCAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, gtkTextSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSIZE", NULL, gtkTextSetTabSizeAttrib, "8", NULL, IUPAF_DEFAULT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "FORMATTING", gtkTextGetFormattingAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  /* can not set FORMATTING, it depends on MULTILINE */
+  iupClassRegisterAttribute(ic, "FORMATTING", iupTextGetFormattingAttrib, iupTextSetFormattingAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REMOVEFORMATTING", NULL, gtkTextSetRemoveFormattingAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OVERWRITE", gtkTextGetOverwriteAttrib, gtkTextSetOverwriteAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);

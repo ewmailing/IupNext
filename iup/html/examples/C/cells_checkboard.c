@@ -61,15 +61,14 @@ int main(int argc, char **argv)
    IupControlsOpen();
 
    cells = create();
-   dlg = IupDialog(cells) ;
+   dlg = IupDialog(cells);
 
    IupSetAttribute(dlg,"RASTERSIZE","440x480");
    IupSetAttribute(dlg,"TITLE","IupCells");
 
-   IupShowXY(dlg,IUP_CENTER,IUP_CENTER) ;
-   IupMainLoop() ;
-   IupDestroy(dlg);
-   IupControlsClose();
-   IupClose() ;
-   return 0 ;
+   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
+   IupMainLoop();
+   IupClose();
+   return EXIT_SUCCESS;
+
 }

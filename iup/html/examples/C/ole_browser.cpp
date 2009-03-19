@@ -2,6 +2,9 @@
  * IupOleControl sample using C++
  */
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #include <windows.h>
 #include <exdisp.h>
 
@@ -76,10 +79,8 @@ int main(int argc, char **argv)
   // Releases the control interface
   pweb->Release();
 
-  // Destroy the dialog and all the controls
-  IupDestroy(dlg);
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

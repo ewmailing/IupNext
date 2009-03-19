@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 #include "cd.h"
@@ -94,5 +95,6 @@ int main(int argc, char **argv)
 
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

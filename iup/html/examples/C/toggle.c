@@ -9,6 +9,7 @@ the eight has its font changed;
 the ninth has its size changed.. */
 
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"          
                            
@@ -76,8 +77,8 @@ int toggle1cb(Ihandle *self, int v)
 
 int main(int argc, char **argv)
 {
-  Ihandle *toggles, *dlg, *caixa ;
-  Ihandle *toggle1, *toggle2, *toggle3, *toggle4, *toggle5, *toggle6, *toggle7, *toggle8, *toggle9 ;
+  Ihandle *toggles, *dlg, *caixa;
+  Ihandle *toggle1, *toggle2, *toggle3, *toggle4, *toggle5, *toggle6, *toggle7, *toggle8, *toggle9;
   IupOpen(&argc, &argv);
   createimgs();
 
@@ -129,10 +130,8 @@ int main(int argc, char **argv)
   /* Associates a menu to the dialog */
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER); 
   IupMainLoop();
-  IupDestroy(dlg);
-  IupDestroy(IupGetHandle ("img1")); 
-  IupDestroy(IupGetHandle ("img2")); 
   IupClose();
 
-  return 0 ;
+  return EXIT_SUCCESS;
+
 }

@@ -3,10 +3,11 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "iup.h"
 #include "iupcontrols.h"
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   Ihandle *text, *dg;
 
@@ -23,6 +24,6 @@ void main(int argc, char **argv)
 
   IupShow(dg);
   IupMainLoop();
-  IupDestroy(dg);
   IupClose();
+  return EXIT_SUCCESS;
 }

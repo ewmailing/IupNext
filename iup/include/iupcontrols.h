@@ -23,7 +23,7 @@ Ihandle* IupCells(void);
 Ihandle *IupColorBrowser(void);
 Ihandle *IupColorBrowser(void);
 Ihandle *IupGauge(void);
-Ihandle *IupDial(const char *);
+Ihandle *IupDial(const char* type);
 Ihandle* IupMatrix(const char *action);
 Ihandle* IupTree(void);
 

@@ -2,6 +2,7 @@
     Shows a typical file-selection dialog.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -17,11 +18,11 @@ int main(int argc, char **argv)
   {
     case 1: 
       IupMessage("New file",file);	    
-    break ;	    
+    break;	    
     
     case 0 : 
       IupMessage("File already exists",file);
-    break ;	    
+    break;	    
     
     case -1 : 
       IupMessage("IupFileDlg","Operation canceled");
@@ -34,10 +35,11 @@ int main(int argc, char **argv)
     case -3 : 
       IupMessage("IupFileDlg","Invalid parameter");
       return 1;
-    break ;	    
+    break;	    
   }
 
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

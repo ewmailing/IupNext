@@ -2,6 +2,7 @@
    Shows a color-selection dialog.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "iup.h"
@@ -9,7 +10,7 @@
 int main(int argc, char **argv)
 {
   int error; 	
-  int size = 8 ;
+  int size = 8;
   int marks[8] = { 0,0,0,0,1,1,0,0 };
   char *options[] = {
     "Blue"   ,
@@ -19,7 +20,7 @@ int main(int argc, char **argv)
     "Black"  ,
     "White"  ,
     "Gray"   ,
-    "Brown"  } ;
+    "Brown"  };
 	  
   IupOpen(&argc, &argv);
   IupSetLanguage("ENGLISH");
@@ -35,7 +36,7 @@ int main(int argc, char **argv)
     int i;
     char selection[80] = "";
 	  
-    for(i = 0 ; i < size ; i++)
+    for(i = 0; i < size; i++)
     {
       if(marks[i])
       {
@@ -53,5 +54,6 @@ int main(int argc, char **argv)
   
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

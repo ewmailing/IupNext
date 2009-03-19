@@ -81,8 +81,8 @@ static Ihandle *create_mat(void)
  
   IupSetAttribute(mat, "NUMCOL", "1"); 
   IupSetAttribute(mat, "NUMLIN", "3"); 
-  IupSetAttribute(mat, "NUMCOL_VISIBLE", "1") ;
-  IupSetAttribute(mat, "NUMLIN_VISIBLE", "3") ;
+  IupSetAttribute(mat, "NUMCOL_VISIBLE", "1");
+  IupSetAttribute(mat, "NUMLIN_VISIBLE", "3");
   IupSetAttribute(mat, "EXPAND", "NO");
   IupSetAttribute(mat, "SCROLLBAR", "NO");
 
@@ -269,9 +269,7 @@ int main(int argc, char **argv)
   func_1();
   IupShowXY(IupGetHandle("dlg"),IUP_CENTER,IUP_CENTER);
   IupMainLoop();
-  IupDestroy(IupGetHandle("img1"));
-  IupDestroy(IupGetHandle("img2"));
-  IupDestroy(IupGetHandle("dlg"));
   IupClose();  
-  return 0;
+  return EXIT_SUCCESS;
+
 }

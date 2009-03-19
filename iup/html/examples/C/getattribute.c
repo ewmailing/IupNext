@@ -6,8 +6,10 @@
   a floating point and a text.
 */
 
-#include <string.h>  /* strchr */
-#include <ctype.h>  /* iscntrl */
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
 #include "iup.h"
 #include "iupkey.h"
@@ -31,7 +33,7 @@ int number_action (Ihandle *self, int c)
   return IUP_IGNORE;
 }
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   Ihandle *field;    /* TEXT interface element */
   Ihandle *message; /* LABEL interface element */
@@ -57,6 +59,6 @@ void main(int argc, char **argv)
   printf ("Real number...: %g\n", IupGetFloat (field, "VALUE"));       /* prints the real number entered by the user */
   printf ("Text entered..: %s\n", IupGetAttribute(field, "VALUE"));  /* prints the text entered by the user */
 
-  IupDestroy(dlg);
   IupClose ();  /* ends IUP */  
+  return EXIT_SUCCESS;
 }

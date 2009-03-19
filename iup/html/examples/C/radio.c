@@ -1,9 +1,8 @@
 /*IupRadio Example in C 
-Creates a dialog for the user to select his/her gender. In this case, the radio element is essential to prevent the user from selecting both options. */
+Creates a dialog for the user to select his/her gender. 
+In this case, the radio element is essential to prevent the user from selecting both options. */
 
-/*
-	Program to exemplify the IupRadio element.
-*/
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -51,8 +50,8 @@ int main(int argc, char **argv)
 
   IupShow(dialog);
   IupMainLoop();
-  IupDestroy(dialog);
   IupClose();
 
-  return 0; 
+  return EXIT_SUCCESS;
+ 
 }

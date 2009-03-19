@@ -12,8 +12,8 @@
 #include "iupcontrols.h"
 
 /* Global IUP handles */
-Ihandle *text_red, *text_green, *text_blue ;
-Ihandle *lbl_state ;
+Ihandle *text_red, *text_green, *text_blue;
+Ihandle *lbl_state;
 
 /******************************************************************************
  * Function:                                                                  *
@@ -75,30 +75,30 @@ static int clrbrwsr_change_cb(Ihandle *self, unsigned char r, unsigned char g, u
 int main(int argc, char **argv)
 {
   /* IUP handles */
-  Ihandle *dlg ;
-  Ihandle *hbox_final ;
-  Ihandle *vbox ;
-  Ihandle *clrbrwsr ;
+  Ihandle *dlg;
+  Ihandle *hbox_final;
+  Ihandle *vbox;
+  Ihandle *clrbrwsr;
   
   /* Initializes IUP */
   IupOpen(&argc, &argv);
   
   /* Initializes IUP controls */
-  IupControlsOpen () ;
+  IupControlsOpen ();
   
   /* Program begin */
 
   /* Creates three texts */
-  text_red = IupText (NULL) ;
-  text_green = IupText (NULL) ;
-  text_blue = IupText (NULL) ;
+  text_red = IupText (NULL);
+  text_green = IupText (NULL);
+  text_blue = IupText (NULL);
 
   /* Creates a color browser */
-  clrbrwsr = IupColorBrowser () ;
+  clrbrwsr = IupColorBrowser ();
   
   /* Registers color browser callbacks */
-  IupSetCallback(clrbrwsr, "CHANGE_CB", (Icallback) clrbrwsr_change_cb) ;
-  IupSetCallback(clrbrwsr, "DRAG_CB", (Icallback) clrbrwsr_drag_cb) ;
+  IupSetCallback(clrbrwsr, "CHANGE_CB", (Icallback) clrbrwsr_change_cb);
+  IupSetCallback(clrbrwsr, "DRAG_CB", (Icallback) clrbrwsr_drag_cb);
 
   /* Creates a vbox */
   vbox = IupVbox
@@ -111,29 +111,27 @@ int main(int argc, char **argv)
            text_blue,
            IupFill(),
            NULL
-         ) ;
+         );
 
   /* Creates an hbox */
-  hbox_final = IupHbox (clrbrwsr, IupFill(), vbox, NULL) ;
+  hbox_final = IupHbox (clrbrwsr, IupFill(), vbox, NULL);
 
   /* Creates a dialog */
-  dlg = IupDialog (hbox_final) ;
+  dlg = IupDialog (hbox_final);
   
   /* Sets title of the dialog */
-  IupSetAttribute (dlg, "TITLE", "IupColorBrowser") ;
+  IupSetAttribute (dlg, "TITLE", "IupColorBrowser");
   
   /* Shows dialog in the center of the screen */
-  IupShowXY (dlg, IUP_CENTER, IUP_CENTER) ;
+  IupShowXY (dlg, IUP_CENTER, IUP_CENTER);
   
   /* Initializes IUP main loop */
-  IupMainLoop () ;
-
-  IupDestroy(dlg);
+  IupMainLoop ();
 
   /* Finishes IUP */
-  IupControlsClose() ;
-  IupClose () ;  
+  IupClose ();  
 
   /* Program finished successfully */
-  return 0 ;
+  return EXIT_SUCCESS;
+
 }

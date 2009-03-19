@@ -4,10 +4,11 @@
 #include <vld.h>
 #endif
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
-void print_version(void)
+void SysInfoTest(void)
 {
   char* sysver;
   printf("IUP System Info:\n");
@@ -41,13 +42,16 @@ void print_version(void)
   printf("  Default Font: %s\n", IupGetGlobal("DEFAULTFONT"));
 }
 
+
+#ifndef BIG_TEST
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
 
-  print_version();
+  SysInfoTest();
 
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

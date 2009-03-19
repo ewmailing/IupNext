@@ -1,4 +1,7 @@
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
@@ -31,8 +34,8 @@ int main(int argc, char **argv)
 
   lua_close(L);
 
-//  IupControlsClose();
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

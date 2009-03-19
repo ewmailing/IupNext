@@ -1,8 +1,9 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <iup.h>
 #include <iupkey.h>
 
-int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
+static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
   int pos;
   IupListConvertXYToItem(ih, x, y, &pos);
@@ -10,7 +11,7 @@ int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
   return IUP_DEFAULT;
 }
 
-int motion_cb(Ihandle *ih,int x,int y,char* status)
+static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
   int pos;
   IupListConvertXYToItem(ih, x, y, &pos);
@@ -18,55 +19,55 @@ int motion_cb(Ihandle *ih,int x,int y,char* status)
   return IUP_DEFAULT;
 }
 
-int multilist_cb (Ihandle *ih, char *s)
+static int multilist_cb (Ihandle *ih, char *s)
 {
   printf("MULTISELECT_CB(%s)\n", s);
   return IUP_DEFAULT;
 }
 
-int list_cb (Ihandle *ih, char *t, int i, int v)
+static int list_cb (Ihandle *ih, char *t, int i, int v)
 {
   printf("ACTION(%s - %d %d)\n", t, i, v);
   return IUP_DEFAULT;
 }
 
-int dropdown_cb(Ihandle *ih, int state)
+static int dropdown_cb(Ihandle *ih, int state)
 {
   printf("DROPDOWN_CB(%d)\n", state);
   return IUP_DEFAULT;
 }
 
-int dblclick_cb(Ihandle *ih, int pos, char *text)
+static int dblclick_cb(Ihandle *ih, int pos, char *text)
 {
   printf("DBLCLICK_CB(%d - %s)\n", pos, text);
   return IUP_DEFAULT;
 }
 
-int edit_cb (Ihandle *ih, int c, char *after)
+static int edit_cb (Ihandle *ih, int c, char *after)
 {
   printf("EDIT_CB(%d - %s)\n", c, after);
   return IUP_DEFAULT;
 }
 
-int caret_cb(Ihandle *ih, int lin, int col)
+static int caret_cb(Ihandle *ih, int lin, int col)
 {
   printf("CARET_CB(%d, %d)\n", lin, col);
   return IUP_DEFAULT;
 }
 
-int btok_cb(Ihandle *ih)
+static int btok_cb(Ihandle *ih)
 {
   printf("Default Enter\n");
   return IUP_DEFAULT;
 }
 
-int btcancel_cb(Ihandle *ih)
+static int btcancel_cb(Ihandle *ih)
 {
   printf("Default Esc\n");
   return IUP_DEFAULT;
 }
 
-int selectedtext_cb(Ihandle *ih)
+static int selectedtext_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -74,7 +75,7 @@ int selectedtext_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int selection_cb(Ihandle *ih)
+static int selection_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -82,7 +83,7 @@ int selection_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int getcaret_cb(Ihandle *ih)
+static int getcaret_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -90,7 +91,7 @@ int getcaret_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int getvalue_cb(Ihandle *ih)
+static int getvalue_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -98,14 +99,14 @@ int getvalue_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int getcount_cb(Ihandle *ih)
+static int getcount_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   printf("COUNT=%s\n", IupGetAttribute(list, "COUNT"));
   return IUP_DEFAULT;
 }
 
-int append_cb(Ihandle *ih)
+static int append_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -113,7 +114,7 @@ int append_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int readonly_cb(Ihandle *ih)
+static int readonly_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -121,7 +122,7 @@ int readonly_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int setvalue_cb(Ihandle *ih)
+static int setvalue_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -129,7 +130,7 @@ int setvalue_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int insertitem_cb(Ihandle *ih)
+static int insertitem_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -137,7 +138,7 @@ int insertitem_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int appenditem_cb(Ihandle *ih)
+static int appenditem_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -145,7 +146,7 @@ int appenditem_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int removeitem_cb(Ihandle *ih)
+static int removeitem_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -153,7 +154,7 @@ int removeitem_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
                    
-int topitem_cb(Ihandle *ih)
+static int topitem_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
@@ -161,41 +162,50 @@ int topitem_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int showdropdown_cb(Ihandle *ih)
+static int showdropdown_cb(Ihandle *ih)
 {
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   IupSetAttribute(list, "SHOWDROPDOWN", "YES");
   return IUP_DEFAULT;
 }
 
+void setactivelist(Ihandle* ih)
+{
+  Ihandle* dialog = IupGetDialog(ih);
+  Ihandle* label = (Ihandle*)IupGetAttribute(dialog, "_LABEL");
+  IupSetAttribute(dialog, "_ACTIVE_LIST", (char*)ih);
+  IupSetAttribute(label, "TITLE", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"));
+}
+
 int getfocus_cb(Ihandle *ih)
 {
-  IupSetAttribute(IupGetDialog(ih), "_ACTIVE_LIST", (char*)ih);
+  setactivelist(ih);
   printf("GETFOCUS_CB(%s)\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"));
   return IUP_DEFAULT;
 }
 
-int killfocus_cb(Ihandle *ih)
+static int killfocus_cb(Ihandle *ih)
 {
   printf("KILLFOCUS_CB(%s)\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"));
   return IUP_DEFAULT;
 }
 
-int leavewindow_cb(Ihandle *ih)
+static int leavewindow_cb(Ihandle *ih)
 {
   printf("LEAVEWINDOW_CB(%s)\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"));
   return IUP_DEFAULT;
 }
 
-int enterwindow_cb(Ihandle *ih)
+static int enterwindow_cb(Ihandle *ih)
 {
+  setactivelist(ih);
   printf("ENTERWINDOW_CB(%s)\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"));
   return IUP_DEFAULT;
 }
 
 char *iupKeyCodeToName(int code);
 
-int k_any(Ihandle *ih, int c)
+static int k_any(Ihandle *ih, int c)
 {
   if (iup_isprint(c))
     printf("K_ANY(%s, %d = %s \'%c\')\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"), c, iupKeyCodeToName(c), (char)c);
@@ -204,13 +214,13 @@ int k_any(Ihandle *ih, int c)
   return IUP_DEFAULT;
 }
 
-int help_cb(Ihandle* ih)
+static int help_cb(Ihandle* ih)
 {
   printf("HELP_CB(%s)\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"));
   return IUP_DEFAULT;
 }
 
-void set_callbacks(Ihandle* list)
+static void set_callbacks(Ihandle* list)
 {
   IupSetCallback(list, "ACTION", (Icallback)list_cb);
   IupSetCallback(list, "DBLCLICK_CB", (Icallback)dblclick_cb);
@@ -223,7 +233,7 @@ void set_callbacks(Ihandle* list)
   //IupSetCallback(list, "GETFOCUS_CB", getfocus_cb);
   //IupSetCallback(list, "KILLFOCUS_CB", killfocus_cb);
 
-  //IupSetCallback(list, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+  IupSetCallback(list, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
   //IupSetCallback(list, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   //IupSetCallback(list, "K_ANY", (Icallback)k_any);
@@ -238,12 +248,10 @@ void set_callbacks(Ihandle* list)
   IupSetAttribute(list, "VISIBLELINES", "4");
 }
 
-void main(int argc, char* argv[])
+void ListTest(void)
 {
   Ihandle *dlg, *list1, *list2, *list3, *list4, *text, *btok, *btcancel,
-          *box, *lists, *buttons1, *buttons2, *buttons3;
-
-  IupOpen(&argc, &argv);
+          *box, *lists, *buttons1, *buttons2, *buttons3, *label;
 
   list1 = IupList(NULL);
   list2 = IupList(NULL);
@@ -320,16 +328,18 @@ void main(int argc, char* argv[])
     IupSetCallbacks(IupButton("Get(SELECTION)", NULL), "ACTION", selection_cb, NULL),
     NULL);
 
-  box = IupVbox(lists, text, buttons1, buttons2, buttons3, NULL);
+  box = IupVbox(lists, IupHbox(IupLabel("Attrib. Value:  "), text, NULL), buttons1, buttons2, buttons3, IupHbox(IupLabel("Current List:  "), label = IupLabel(NULL), NULL), NULL);
   IupSetAttributes(buttons1,"MARGIN=5x5, GAP=5");
   IupSetAttributes(buttons2,"MARGIN=5x5, GAP=5");
   IupSetAttributes(buttons3,"MARGIN=5x5, GAP=5");
   IupSetAttributes(lists,"MARGIN=10x10, GAP=10");
+  IupSetAttribute(label,"EXPAND", "HORIZONTAL");
 
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupList Test");
   IupSetAttributeHandle(dlg, "DEFAULTENTER", btok);
   IupSetAttributeHandle(dlg, "DEFAULTESC", btcancel);
+  IupSetAttribute(dlg, "_LABEL", (char*)label);
 
 //  IupSetAttribute(box, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
@@ -340,8 +350,19 @@ void main(int argc, char* argv[])
 //  IupSetAttribute(box, "FGCOLOR", "255 0 0");
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  ListTest();
 
   IupMainLoop();
-  IupDestroy(dlg);
+
   IupClose();
+
+  return EXIT_SUCCESS;
 }
+#endif

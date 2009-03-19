@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 
 #include "iup.h"
@@ -27,20 +28,20 @@ static Ihandle* load_image_LogoTecgraf(void)
   return image;
 }
 
-int cbChildButton(Ihandle* ih)
+static int cbChildButton(Ihandle* ih)
 {
   printf("button(%s)\n", IupGetAttribute(ih, "TITLE"));
   return IUP_DEFAULT;
 }
 
-int cbValuePos(Ihandle* ih)
+static int cbValuePos(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
   IupSetAttribute(tabs, "VALUEPOS", "0");
   return IUP_DEFAULT;
 }
 
-int cbType(Ihandle* ih, int v)
+static int cbType(Ihandle* ih, int v)
 {
   if (v)
   {
@@ -69,7 +70,7 @@ int cbType(Ihandle* ih, int v)
   return IUP_DEFAULT;
 }
 
-int cbOrientation(Ihandle* ih, int v)
+static int cbOrientation(Ihandle* ih, int v)
 {
   if (v)
   {
@@ -92,7 +93,7 @@ int cbOrientation(Ihandle* ih, int v)
   return IUP_DEFAULT;
 }
 
-int cbAddTab(Ihandle* ih)
+static int cbAddTab(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
   Ihandle *vbox;
@@ -110,7 +111,7 @@ int cbAddTab(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int cbInsertTab(Ihandle* ih)
+static int cbInsertTab(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
   Ihandle* ref_vbox = IupGetHandle(IupGetAttribute(tabs, "VALUE"));
@@ -129,7 +130,7 @@ int cbInsertTab(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int cbRemoveTab(Ihandle* ih)
+static int cbRemoveTab(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
   Ihandle* vbox = IupGetHandle(IupGetAttribute(tabs, "VALUE"));
@@ -142,13 +143,13 @@ int cbRemoveTab(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int cbTabChange(Ihandle* ih, Ihandle* new_tab, Ihandle* old_tab)
+static int cbTabChange(Ihandle* ih, Ihandle* new_tab, Ihandle* old_tab)
 {
   printf("new Tab: %s, old Tab: %s\n", IupGetAttribute(new_tab, "TABTITLE"), IupGetAttribute(old_tab, "TABTITLE"));
   return IUP_DEFAULT;
 }
 
-int cbInactive(Ihandle *ih, int state)
+static int cbInactive(Ihandle *ih, int state)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
   IupSetAttribute(tabs, "ACTIVE", state? "NO": "YES");
@@ -158,7 +159,7 @@ int cbInactive(Ihandle *ih, int state)
 
 char *iupKeyCodeToName(int code);
 
-int k_any(Ihandle *ih, int c)
+static int k_any(Ihandle *ih, int c)
 {
   if (iup_isprint(c))
     printf("K_ANY(%d = %s \'%c\')\n", c, iupKeyCodeToName(c), (char)c);
@@ -168,31 +169,31 @@ int k_any(Ihandle *ih, int c)
   return IUP_DEFAULT;
 }
 
-int getfocus_cb(Ihandle *ih)
+static int getfocus_cb(Ihandle *ih)
 {
   printf("GETFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
-int help_cb(Ihandle* ih)
+static int help_cb(Ihandle* ih)
 {
   printf("HELP_CB()\n");
   return IUP_DEFAULT;
 }
      
-int killfocus_cb(Ihandle *ih)
+static int killfocus_cb(Ihandle *ih)
 {
   printf("KILLFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
-int leavewindow_cb(Ihandle *ih)
+static int leavewindow_cb(Ihandle *ih)
 {
   printf("LEAVEWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
-int enterwindow_cb(Ihandle *ih)
+static int enterwindow_cb(Ihandle *ih)
 {
   printf("ENTERWINDOW_CB()\n");
   return IUP_DEFAULT;
@@ -200,7 +201,7 @@ int enterwindow_cb(Ihandle *ih)
 
 //#define IupFrame(_x) (_x)
 
-Ihandle* CreateTabs(int tab)
+static Ihandle* CreateTabs(int tab)
 {
   Ihandle *vboxA, *vboxB, *vboxG,
           *vboxC, *vboxD,*vboxE, *vboxF, *vboxH, *vboxI,
@@ -246,7 +247,8 @@ Ihandle* CreateTabs(int tab)
 
   IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_LogoTecgraf());
 
-//  IupSetAttribute(tabs, "TABTYPE", "LEFT");
+  // In Windows, must be set before map
+  IupSetAttribute(tabs, "TABTYPE", "LEFT");
 //  IupSetAttribute(tabs, "TABTYPE", "RIGHT");
 //  IupSetAttribute(tabs, "TABTYPE", "BOTTOM");
 //  IupSetAttribute(tabs, "TABORIENTATION", "VERTICAL");
@@ -289,15 +291,15 @@ Ihandle* CreateTabs(int tab)
   return tabs;
 }
 
-void ShowTabs(void)
+void TabsTest(void)
 {
   Ihandle *box, *frm1, *frm2, *dlg, *tabs;
 
   tabs = CreateTabs(1);
   
   box = IupHbox(tabs, 
-                frm1 = IupFrame(IupRadio(IupVbox(IupButton("TOP", "cbType"), 
-                                                 IupLabel("LEFT"), //"cbType"), 
+                frm1 = IupFrame(IupRadio(IupVbox(IupToggle("TOP", "cbType"), 
+                                                 IupToggle("LEFT", "cbType"), 
                                                  IupToggle("BOTTOM", "cbType"), 
                                                  IupToggle("RIGHT", "cbType"), 
                                                  NULL))), 
@@ -347,15 +349,17 @@ void ShowTabs(void)
   IupSetFunction("cbValuePos", (Icallback)cbValuePos);
 }
 
+#ifndef BIG_TEST
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
-//  IupOldTabsOpen();
 
-  ShowTabs();
+  TabsTest();
 
   IupMainLoop();
-  IupClose();  
 
-  return 0 ;
+  IupClose();
+
+  return EXIT_SUCCESS;
 }
+#endif

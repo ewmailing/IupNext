@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <stdio.h>
+
 #include <windows.h>
 #include <exdisp.h>
 
@@ -5,7 +8,8 @@
 #include <iupole.h>
 
 
-Ihandle *IupOleCreateBrowser(void)
+#ifndef BIG_TEST
+static Ihandle *IupOleCreateBrowser(void)
 {
   Ihandle *browser=IupOleControl("Shell.Explorer.2");
   IupSetAttribute(browser,"DESIGNMODE", "NO");
@@ -37,7 +41,7 @@ static IWebBrowser2 *IupOleGetWebBrowserInterface(Ihandle *browser)
   return pweb;
 }
 
-void IupOleNavigate(Ihandle *browser,char *fname)
+static void IupOleNavigate(Ihandle *browser,char *fname)
 {
   IWebBrowser2 *pweb = IupOleGetWebBrowserInterface(browser);
   WCHAR* url = Char2Wide(fname);
@@ -45,7 +49,7 @@ void IupOleNavigate(Ihandle *browser,char *fname)
   free(url);
 }
 
-void IupOleClose(Ihandle* browser)
+static void IupOleClose(Ihandle* browser)
 {
   IWebBrowser2 *pweb = IupOleGetWebBrowserInterface(browser);
   pweb->Release();
@@ -66,7 +70,7 @@ static int close_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static Ihandle *  createdialog(void)
+void OleTest(void)
 {
   Ihandle* txt, *bt;
   Ihandle * browser = IupOleCreateBrowser();
@@ -86,24 +90,19 @@ static Ihandle *  createdialog(void)
 
   // Shows dlg
   IupShow(dlg);
-
-  return dlg;
 }
 
 int main(int argc, char* argv[])
 {
-  Ihandle* dlg;
-
   IupOpen(&argc, &argv);
   IupOleControlOpen();
 
-  dlg = createdialog();
+  OleTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

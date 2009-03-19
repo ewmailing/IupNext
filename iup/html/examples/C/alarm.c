@@ -2,6 +2,9 @@
    Shows a dialog similar to the one shown when you exit a program without saving.
 */
 
+#include <stdlib.h>
+#include <stdio.h>
+
 /* IUP libraries include */
 #include "iup.h"
 
@@ -17,21 +20,21 @@ int main(int argc, char **argv)
   {
     /* Shows a message for each selected button */
     case 1:
-      IupMessage ("Save file", "File saved successfully - leaving program") ;
-    break ;
+      IupMessage ("Save file", "File saved successfully - leaving program");
+    break;
 
     case 2:
-      IupMessage ("Save file", "File not saved - leaving program anyway") ;
-    break ;
+      IupMessage ("Save file", "File not saved - leaving program anyway");
+    break;
 
     case 3:
-      IupMessage ("Save file", "Operation canceled") ;
-    break ;
+      IupMessage ("Save file", "Operation canceled");
+    break;
   }
   
   /* Finishes IUP */
-  IupClose () ;
+  IupClose();
 
   /* Program finished successfully */
-  return 0 ;
+  return EXIT_SUCCESS;
 }

@@ -57,19 +57,20 @@ static int button_release(Ihandle* ih, double a)
   return IUP_DEFAULT;
 } 
 
-void main(int argc, char* argv[])
+void DialTest(void)
 {
   char *error = NULL;
   Ihandle *dlg, *dial_h, *dial_v, *dial_c;
 
-  IupOpen(&argc, &argv);
-  IupControlsOpen();
-
   error = IupLoad("dial.led");
   if (error)
   {
-    IupMessage("%s\n", error);
-    return;
+    error = IupLoad("../test/dial.led");
+    if (error)
+    {
+      IupMessage("%s\n", error);
+      return;
+    }
   }
 
   dlg = IupGetHandle("dlg");
@@ -91,10 +92,20 @@ void main(int argc, char* argv[])
 //  IupSetAttribute(dlg, "DIALOGFRAME", "YES");
 
   IupShow(dlg);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+  IupControlsOpen();
+
+  DialTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
+  IupClose();
 
-  IupClose();  
+  return EXIT_SUCCESS;
 }
+#endif

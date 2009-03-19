@@ -124,16 +124,15 @@ int main(int argc, char **argv)
   box = IupVbox(cells, NULL);
   IupSetAttribute(box,"MARGIN","10x10");
 
-  dlg = IupDialog(box) ;
+  dlg = IupDialog(box);
 
   IupSetAttribute(dlg,"TITLE","IupCells");
   IupSetAttribute(dlg, "RASTERSIZE","350x250");
-  IupShowXY(dlg,IUP_CENTER,IUP_CENTER) ;
-  IupMainLoop() ;
-  IupDestroy(dlg);
-  IupControlsClose();
-  IupClose() ;  
-  return 0 ;
+  IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
+  IupMainLoop();
+  IupClose();  
+  return EXIT_SUCCESS;
+
 }
 
 

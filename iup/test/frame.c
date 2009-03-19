@@ -1,11 +1,10 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
-void main(int argc, char* argv[])
+void FrameTest(void)
 {
   Ihandle *dlg, *frame1, *frame2;
-
-  IupOpen(&argc, &argv);
 
   frame1 = IupFrame
           (
@@ -51,7 +50,19 @@ void main(int argc, char* argv[])
   printf("CLIENTSIZE(%s)\n", IupGetAttribute(frame1, "CLIENTSIZE"));
   printf("RASTERSIZE(%s)\n", IupGetAttribute(frame2, "RASTERSIZE"));
   printf("CLIENTSIZE(%s)\n", IupGetAttribute(frame2, "CLIENTSIZE"));
-  IupMainLoop();
-  IupDestroy(dlg);
-  IupClose();
 }
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  FrameTest();
+
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+#endif

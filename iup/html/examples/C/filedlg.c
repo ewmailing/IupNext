@@ -1,5 +1,6 @@
 /*IupFileDlg Example in C 
 Shows a typical file-saving dialog. */
+#include <stdlib.h>
 #include <stdio.h>
 #include <iup.h>
 
@@ -34,5 +35,6 @@ int main(int argc, char **argv)
 
   IupDestroy(filedlg);
   IupClose(); 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

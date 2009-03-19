@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 #include "iupkey.h"
@@ -57,12 +58,12 @@ static unsigned char pixmap_cursor [ ] =
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 } ;
 
-#define USE_GTK
+//#define USE_GTK
 
 /* draw a rectangle that has w=600 always, white background and a red X */
 #ifdef USE_GTK
 #include <gtk/gtk.h>
-void drawTest(Ihandle *ih, int posx)
+static void drawTest(Ihandle *ih, int posx)
 {
   GtkWidget* widget = (GtkWidget*)IupGetAttribute(ih, "WID");
   gdk_draw_arc (widget->window,
@@ -76,7 +77,7 @@ void drawTest(Ihandle *ih, int posx)
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0500
 #include <windows.h>
-void drawTest(Ihandle *ih, int posx)
+static void drawTest(Ihandle *ih, int posx)
 {
   RECT rect;
   int w, h;
@@ -115,7 +116,7 @@ static unsigned long xGetPixel(Display* dpy, unsigned char cr, unsigned char cg,
   return xc.pixel;
 }
 
-void drawTest(Ihandle *ih, int posx)
+static void drawTest(Ihandle *ih, int posx)
 {
   int w, h;
   Display* dpy = (Display*)IupGetAttribute(ih, "XDISPLAY");   /* works for Motif and GTK */
@@ -138,35 +139,35 @@ void drawTest(Ihandle *ih, int posx)
 #endif
 #endif
 
-int map_cb(Ihandle *ih)
+static int map_cb(Ihandle *ih)
 {
   printf("MAP_CB()\n");
   return IUP_DEFAULT;
 }
 
-int action(Ihandle *ih, float posx, float posy)
+static int action(Ihandle *ih, float posx, float posy)
 {
   printf("ACTION(posx=%.2f, posy=%.2f)\n", posx, posy);
   drawTest(ih, (int)posx);
   return IUP_DEFAULT;
 }
 
-int scroll_cb(Ihandle *ih, int op, float posx, float posy)
+static int scroll_cb(Ihandle *ih, int op, float posx, float posy)
 {
   char* op2str[12] = {"SBUP", "SBDN", "SBPGUP", "SBPGDN", "SBPOSV", "SBDRAGV",
                       "SBLEFT", "SBRIGHT", "SBPGLEFT", "SBPGRIGHT", "SBPOSH", "SBDRAGH"};
   printf("SCROLL_CB(%s, posx=%.2f, posy=%.2f)\n", op2str[op], posx, posy);
-  IupRedraw(ih);
+  IupRedraw(ih, 0);
   return IUP_DEFAULT;
 }
 
-int dropfiles_cb(Ihandle *ih, const char* filename, int num, int x, int y)
+static int dropfiles_cb(Ihandle *ih, const char* filename, int num, int x, int y)
 {
   printf("DROPFILES_CB(%s, %d, x=%d, y=%d)\n", filename, num, x, y);
   return IUP_DEFAULT;
 }
 
-int resize_cb(Ihandle *ih, int w, int h)
+static int resize_cb(Ihandle *ih, int w, int h)
 {
   printf("RESIZE_CB(%d, %d) RASTERSIZE=%s CLIENTSIZE=%s\n", w, h, IupGetAttribute(ih, "RASTERSIZE"), IupGetAttribute(ih, "CLIENTSIZE"));
 
@@ -176,43 +177,43 @@ int resize_cb(Ihandle *ih, int w, int h)
   return IUP_DEFAULT;
 }
 
-int getfocus_cb(Ihandle *ih)
+static int getfocus_cb(Ihandle *ih)
 {
   printf("GETFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
-int help_cb(Ihandle* ih)
+static int help_cb(Ihandle* ih)
 {
   printf("HELP_CB()\n");
   return IUP_DEFAULT;
 }
      
-int killfocus_cb(Ihandle *ih)
+static int killfocus_cb(Ihandle *ih)
 {
   printf("KILLFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
-int focus_cb(Ihandle *ih, int focus)
+static int focus_cb(Ihandle *ih, int focus)
 {
   printf("FOCUS_CB(%d)\n", focus);
   return IUP_DEFAULT;
 }
 
-int leavewindow_cb(Ihandle *ih)
+static int leavewindow_cb(Ihandle *ih)
 {
   printf("LEAVEWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
-int enterwindow_cb(Ihandle *ih)
+static int enterwindow_cb(Ihandle *ih)
 {
   printf("ENTERWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
-int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
+static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
   if (but==IUP_BUTTON1 && pressed)
     IupSetAttribute(ih, "CURSOR", "CROSS");
@@ -222,13 +223,13 @@ int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
   return IUP_DEFAULT;
 }
 
-int wheel_cb(Ihandle *ih,float delta,int x,int y,char* status)
+static int wheel_cb(Ihandle *ih,float delta,int x,int y,char* status)
 {
   printf("WHEEL_CB(delta=%.2f, x=%d, y=%d [%s])\n",delta,x,y, status);
   return IUP_DEFAULT;
 }
 
-int motion_cb(Ihandle *ih,int x,int y,char* status)
+static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
   printf("MOTION_CB(x=%d, y=%d [%s])\n",x,y, status);
   return IUP_DEFAULT;
@@ -236,7 +237,7 @@ int motion_cb(Ihandle *ih,int x,int y,char* status)
 
 char *iupKeyCodeToName(int code);
 
-int k_any(Ihandle *ih, int c)
+static int k_any(Ihandle *ih, int c)
 {
   if (c == K_a)
     IupSetAttribute(ih, "POSX", "100");
@@ -249,7 +250,7 @@ int k_any(Ihandle *ih, int c)
   return IUP_DEFAULT;
 }
 
-int keypress_cb(Ihandle *ih, int c, int pressed)
+static int keypress_cb(Ihandle *ih, int c, int pressed)
 {
   if (iup_isprint(c))
     printf("KEYPRESS_CB(%d = %s \'%c\' (%d))\n", c, iupKeyCodeToName(c), (char)c, pressed);
@@ -258,11 +259,9 @@ int keypress_cb(Ihandle *ih, int c, int pressed)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void CanvasTest(void)
 {
   Ihandle *dlg, *canvas, *box, *image;
-
-  IupOpen(&argc, &argv);
 
   //image = IupImage(32, 32, pixmap_cursor);
   //IupSetAttribute(image, "1", "255 0 0"); 
@@ -329,13 +328,19 @@ int main(int argc, char* argv[])
 
   IupShow(dlg);
   IupSetAttribute(canvas, "RASTERSIZE", NULL);  /* release the minimum limitation */
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  CanvasTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
-  IupDestroy(image);
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

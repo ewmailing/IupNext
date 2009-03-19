@@ -4,6 +4,7 @@
 #include <vld.h>
 #endif
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -16,7 +17,7 @@
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0500
 #include <windows.h>
-void drawTest(Ihandle* ih)
+static void drawTest(Ihandle* ih)
 {
   RECT rect;
   HDC hDC = (HDC)IupGetAttribute(ih, "PREVIEWDC");
@@ -50,7 +51,7 @@ static unsigned long xGetPixel(Display* dpy, unsigned char cr, unsigned char cg,
   return xc.pixel;
 }
 
-void drawTest(Ihandle* ih)
+static void drawTest(Ihandle* ih)
 {
   GC gc = (GC)IupGetAttribute(ih, "PREVIEWDC");
   Display* dpy = (Display*)IupGetAttribute(ih, "XDISPLAY");
@@ -68,21 +69,21 @@ void drawTest(Ihandle* ih)
 }
 #endif
 
-int close_cb(Ihandle *ih)
+static int close_cb(Ihandle *ih)
 {
   printf("CLOSE_CB\n");
   IupDestroy(ih);
   return IUP_IGNORE;
 }
 
-int help_cb(Ihandle* ih)
+static int help_cb(Ihandle* ih)
 {
   (void)ih;
   printf("HELP_CB\n");
   return IUP_DEFAULT; 
 }
 
-int file_cb(Ihandle* ih, const char* filename, const char* status)
+static int file_cb(Ihandle* ih, const char* filename, const char* status)
 {
   (void)ih;
   printf("FILE_CB(%s - %s)\n", status, filename);
@@ -95,7 +96,7 @@ int file_cb(Ihandle* ih, const char* filename, const char* status)
   return IUP_DEFAULT; 
 }
 
-void new_message(char* type, char* buttons)
+static void new_message(char* type, char* buttons)
 {
   Ihandle* dlg = IupMessageDlg();
 
@@ -117,7 +118,7 @@ void new_message(char* type, char* buttons)
   IupDestroy(dlg);
 }
 
-void new_color(void)
+static void new_color(void)
 {
   Ihandle* dlg = IupColorDlg();
 
@@ -145,7 +146,7 @@ void new_color(void)
   IupDestroy(dlg);
 }
 
-void new_font(void)
+static void new_font(void)
 {
   Ihandle* dlg = IupFontDlg();
 
@@ -169,7 +170,7 @@ void new_font(void)
   IupDestroy(dlg);
 }
 
-void new_file(char* dialogtype, int preview)
+static void new_file(char* dialogtype, int preview)
 {
   Ihandle *dlg = IupFileDlg(); 
 
@@ -218,13 +219,13 @@ void new_file(char* dialogtype, int preview)
   IupDestroy(dlg);
 }
 
-void new_alarm(void)
+static void new_alarm(void)
 {
   int ret = IupAlarm ("IupAlarm Test", "Message Text\nSecond Line", "But 1", "Button 2", "B3");
   printf("Button(%d)\n", ret);
 }
 
-void new_gettext(void)
+static void new_gettext(void)
 {
   char text[1024] = "text first line\nsecond line";
   int ret = IupGetText("IupGetText Text", text);
@@ -237,7 +238,7 @@ void new_gettext(void)
     printf("CANCEL\n");
 }
 
-void new_list(void)
+static void new_list(void)
 {
   int ret;   
   int size = 8 ;
@@ -278,7 +279,7 @@ void new_list(void)
   }
 }
 
-int k_any(Ihandle *ih, int c)
+static int k_any(Ihandle *ih, int c)
 {
   switch(c)
   {
@@ -331,14 +332,31 @@ int k_any(Ihandle *ih, int c)
   return IUP_DEFAULT;
 }
 
-void main_dialog(void)
+void PreDialogsTest(void)
 {
-  Ihandle *dlg = IupDialog(NULL);
+  char* msg = "Press a key for a pre-defined dialog:\n"
+              "m = IupMessage\n"
+              "e = IupMessageDlg(ERROR)\n"
+              "i = IupMessageDlg(INFORMATION)\n"
+              "e = IupMessageDlg(WARNING)\n"
+              "e = IupMessageDlg(QUESTION)\n"
+              "c = IupColorDlg\n"
+              "f = IupFontDlg\n"
+              "o = IupFileDlg(OPEN)\n"
+              "O = IupFileDlg(OPEN+PREVIEW)\n"
+              "s = IupFileDlg(SAVE)\n"
+              "d = IupFileDlg(DIR)\n"
+              "a = IupAlarm\n"
+              "t = IupGetText\n"
+              "l = IupListDialog\n"
+              "Esc = quit";
+  Ihandle *dlg = IupDialog(IupVbox(IupLabel(msg), NULL));
 
   IupSetHandle("_MAIN_DIALOG_TEST_", dlg);
 
   IupSetAttribute(dlg, "TITLE", "Pre-defined Dialogs Test");
   IupSetAttribute(dlg, "RASTERSIZE", "500x500");
+  IupSetAttribute(dlg, "MARGIN", "10x10");
 
   IupSetCallback(dlg, "K_ANY",    (Icallback)k_any);
   IupSetCallback(dlg, "CLOSE_CB", (Icallback)close_cb);
@@ -346,16 +364,19 @@ void main_dialog(void)
   IupShow(dlg);
 }
 
+
+#ifndef BIG_TEST
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
   IupControlsOpen();
 
-  main_dialog();
+  PreDialogsTest();
 
   IupMainLoop();
 
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

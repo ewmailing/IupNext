@@ -2,6 +2,7 @@
    Shows a multiline that ignores the treatment of the DEL key, canceling its effect.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 #include "iupkey.h"
@@ -14,7 +15,7 @@ int mlaction(Ihandle *self, int c, char* after)
     return IUP_DEFAULT;
 }
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   Ihandle *dlg, *ml;
 
@@ -32,6 +33,6 @@ void main(int argc, char **argv)
 
   IupShow(dlg);
   IupMainLoop();
-  IupDestroy(dlg);
   IupClose();
+  return EXIT_SUCCESS;
 }

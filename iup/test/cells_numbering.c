@@ -69,12 +69,11 @@ static Ihandle* create(void)
   return cells;
 }
 
-int main(int argc, char* argv[])
+void CellsNumberingTest(void)
 {
   Ihandle* dlg = NULL;
   Ihandle* cells  = NULL;
 
-  IupOpen(&argc, &argv);
   IupControlsOpen();
 
   cells  = create();
@@ -85,12 +84,19 @@ int main(int argc, char* argv[])
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER) ;
   IupSetAttribute(cells, "RASTERSIZE", NULL);
+}
 
-  IupMainLoop() ;
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
 
-  IupDestroy(dlg);
+  CellsNumberingTest();
+
+  IupMainLoop();
 
   IupClose();
 
-  return 0 ;
+  return EXIT_SUCCESS;
 }
+#endif

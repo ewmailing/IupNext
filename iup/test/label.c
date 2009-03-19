@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -76,7 +77,7 @@ static unsigned char image_data_32 [TEST_IMAGE_SIZE*TEST_IMAGE_SIZE*4] =
   000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,
 };
 
-int enter_cb(Ihandle *ih)
+static int enter_cb(Ihandle *ih)
 {
   Ihandle *box = IupGetChild(ih, 0);
   if (IupGetInt(box, "ACTIVE"))
@@ -86,12 +87,10 @@ int enter_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void LabelTest(void)
 {
   Ihandle *dlg, *label, *image1, *image2, *image3, 
           *box1, *box2, *fill;
-
-  IupOpen(&argc, &argv);
 
   box1 = IupVbox(NULL);
   IupSetAttribute(box1, "MARGIN", "5x5");
@@ -196,15 +195,19 @@ int main(int argc, char* argv[])
   IupSetCallback(dlg, "ENTERWINDOW_CB", enter_cb);
 
   IupShow(dlg);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  LabelTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
-  IupDestroy(image1);
-  IupDestroy(image2);
-  IupDestroy(image3);
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

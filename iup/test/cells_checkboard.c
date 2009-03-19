@@ -51,13 +51,10 @@ static Ihandle* create(void)
    return cells;
 }
 
-void main(int argc, char* argv[])
+void CellsCheckboarTest(void)
 {
   Ihandle* dlg = NULL;
   Ihandle* cells  = NULL;
-
-  IupOpen(&argc, &argv);
-  IupControlsOpen();
 
   cells  = create();
   dlg = IupDialog(cells);
@@ -67,12 +64,20 @@ void main(int argc, char* argv[])
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER) ;
   IupSetAttribute(dlg, "RASTERSIZE", NULL);
+}
 
-  IupMainLoop() ;
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+  IupControlsOpen();
 
-  IupDestroy(dlg);
+  CellsCheckboarTest();
+
+  IupMainLoop();
 
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

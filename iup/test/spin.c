@@ -7,15 +7,14 @@
 static int spin_cb(Ihandle* ih, int inc)
 {
   (void)ih;
+  /* does nothing, just print the call */
   printf("SPIN_CB(%d)\n", inc);
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void SpinTest(void)
 {
   Ihandle *dlg, *spinbox;
-
-  IupOpen(&argc, &argv);
 
   spinbox = IupSpinbox(IupSetAttributes(IupText(NULL), "SIZE=50x"));
 
@@ -26,11 +25,19 @@ int main(int argc, char* argv[])
 
   IupSetAttribute(dlg, "TITLE", "IupSpin Test");
   IupShow(dlg);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  SpinTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
+  IupClose();
 
-  IupClose();  
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

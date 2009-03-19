@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 #include "iupkey.h"
@@ -148,48 +149,48 @@ static unsigned char image_data_32 [TEST_IMAGE_SIZE*TEST_IMAGE_SIZE*4] =
   000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,
 };
 
-char* get_name(Ihandle* ih)
+static char* get_name(Ihandle* ih)
 {
   return IupGetAttribute(ih, "NAME");
 }
 
-int action_cb(Ihandle *ih)
+static int action_cb(Ihandle *ih)
 {
   printf("ACTION(%s)\n", get_name(ih));
   return IUP_DEFAULT;
 }
 
-int getfocus_cb(Ihandle *ih)
+static int getfocus_cb(Ihandle *ih)
 {
   printf("GETFOCUS_CB(%s)\n", get_name(ih));
   return IUP_DEFAULT;
 }
 
-int help_cb(Ihandle* ih)
+static int help_cb(Ihandle* ih)
 {
   printf("HELP_CB(%s)\n", get_name(ih));
   return IUP_DEFAULT;
 }
      
-int killfocus_cb(Ihandle *ih)
+static int killfocus_cb(Ihandle *ih)
 {
   printf("KILLFOCUS_CB(%s)\n", get_name(ih));
   return IUP_DEFAULT;
 }
 
-int leavewindow_cb(Ihandle *ih)
+static int leavewindow_cb(Ihandle *ih)
 {
   printf("LEAVEWINDOW_CB(%s)\n", get_name(ih));
   return IUP_DEFAULT;
 }
 
-int enterwindow_cb(Ihandle *ih)
+static int enterwindow_cb(Ihandle *ih)
 {
   printf("ENTERWINDOW_CB(%s)\n", get_name(ih));
   return IUP_DEFAULT;
 }
 
-int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
+static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
   printf("BUTTON_CB(%s, but=%c (%d), x=%d, y=%d [%s])\n", get_name(ih),(char)but,pressed,x,y, status);
   return IUP_DEFAULT;
@@ -197,7 +198,7 @@ int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 
 char *iupKeyCodeToName(int code);
 
-int k_any(Ihandle *ih, int c)
+static int k_any(Ihandle *ih, int c)
 {
   if (iup_isprint(c))
     printf("K_ANY(%s, %d = %s \'%c\')\n", get_name(ih), c, iupKeyCodeToName(c), (char)c);
@@ -207,7 +208,7 @@ int k_any(Ihandle *ih, int c)
   return IUP_DEFAULT;
 }
 
-int active_cb(Ihandle *ih)
+static int active_cb(Ihandle *ih)
 {
   static int active = 1;
   Ihandle* dlg = IupGetDialog(ih);
@@ -221,7 +222,7 @@ int active_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-void set_callbacks(Ihandle* button)
+static void set_callbacks(Ihandle* button)
 {
   IupSetCallback(button, "ACTION",       action_cb);
   IupSetCallback(button, "BUTTON_CB",    (Icallback)button_cb);
@@ -235,12 +236,11 @@ void set_callbacks(Ihandle* button)
   IupSetCallback(button, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 }
 
-int main(int argc, char* argv[])
+void ButtonTest(void)
 {
   Ihandle *dlg, *button, *label, *image1, *image1i, *image1p, *image2, *image3, 
           *box1, *box2;
 
-  IupOpen(&argc, &argv);
 //  IupImageLibOpen();
 
   box1 = IupVbox(NULL);
@@ -373,17 +373,19 @@ int main(int argc, char* argv[])
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 
   IupShow(dlg);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  ButtonTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
-  IupDestroy(image1);
-  IupDestroy(image1i);
-  IupDestroy(image1p);
-  IupDestroy(image2);
-  IupDestroy(image3);
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

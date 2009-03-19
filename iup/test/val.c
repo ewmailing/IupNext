@@ -5,7 +5,7 @@
 #include "iupkey.h"
 
 
-Ihandle *lbl_h=NULL, *lbl_v=NULL;
+static Ihandle *lbl_h=NULL, *lbl_v=NULL;
 
 static void print_value(Ihandle *ih, double a)
 {
@@ -75,7 +75,7 @@ static int button_release(Ihandle *ih, double a)
 
 char *iupKeyCodeToName(int code);
 
-int k_any(Ihandle *ih, int c)
+static int k_any(Ihandle *ih, int c)
 {
   if (iup_isprint(c))
     printf("K_ANY(%d = %s \'%c\')\n", c, iupKeyCodeToName(c), (char)c);
@@ -84,42 +84,40 @@ int k_any(Ihandle *ih, int c)
   return IUP_CONTINUE;
 }
 
-int getfocus_cb(Ihandle *ih)
+static int getfocus_cb(Ihandle *ih)
 {
   printf("GETFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
-int help_cb(Ihandle* ih)
+static int help_cb(Ihandle* ih)
 {
   printf("HELP_CB()\n");
   return IUP_DEFAULT;
 }
      
-int killfocus_cb(Ihandle *ih)
+static int killfocus_cb(Ihandle *ih)
 {
   printf("KILLFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
-int leavewindow_cb(Ihandle *ih)
+static int leavewindow_cb(Ihandle *ih)
 {
   printf("LEAVEWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
-int enterwindow_cb(Ihandle *ih)
+static int enterwindow_cb(Ihandle *ih)
 {
   printf("ENTERWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
-
-void main(int argc, char* argv[])
+void ValTest(void)
 {
   Ihandle *dlg, *val_h, *val_v;
 
-  IupOpen(&argc, &argv);
 //  IupOldValOpen();
 
   lbl_v = IupLabel("VALUE=");
@@ -183,8 +181,19 @@ void main(int argc, char* argv[])
 //  IupSetAttribute(IupGetChild(dlg, 0), "ACTIVE", "NO");
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  ValTest();
 
   IupMainLoop();
-  IupDestroy(dlg);
+
   IupClose();
+
+  return EXIT_SUCCESS;
 }
+#endif

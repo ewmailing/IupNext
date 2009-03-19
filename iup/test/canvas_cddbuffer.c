@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 #include "cd.h"
@@ -5,8 +6,7 @@
 #include "cddbuf.h"
 
 
-
-void appUpdateRender(cdCanvas *cddbuffer)
+static void appUpdateRender(cdCanvas *cddbuffer)
 {
   int width, height;
 
@@ -19,7 +19,7 @@ void appUpdateRender(cdCanvas *cddbuffer)
   cdCanvasLine(cddbuffer, 0, height-1, width-1, 0);
 }
 
-int redraw_cb(Ihandle *ih)
+static int redraw_cb(Ihandle *ih)
 {
   cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_APP_CDDBUFFER");
   if (!cddbuffer)
@@ -30,7 +30,7 @@ int redraw_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int resize_cb(Ihandle *ih)
+static int resize_cb(Ihandle *ih)
 {
   cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_APP_CDDBUFFER");
   if (!cddbuffer)
@@ -56,7 +56,7 @@ int resize_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int map_cb(Ihandle *ih)
+static int map_cb(Ihandle *ih)
 {
   cdCanvas *cddbuffer, *cdcanvas;
 
@@ -73,7 +73,7 @@ int map_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int unmap_cb(Ihandle *ih)
+static int unmap_cb(Ihandle *ih)
 {
   cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_APP_CDDBUFFER");
   cdCanvas *cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_APP_CDCANVAS");
@@ -87,11 +87,9 @@ int unmap_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void CanvasCDDBufferTest(void)
 {
   Ihandle *dlg, *canvas;
-
-  IupOpen(&argc, &argv);
 
   canvas = IupCanvas(NULL);
   IupSetAttribute(canvas, "RASTERSIZE", "300x200"); /* initial size */
@@ -108,12 +106,19 @@ int main(int argc, char* argv[])
   IupSetAttribute(canvas, "RASTERSIZE", NULL);  /* release the minimum limitation */
  
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  CanvasCDDBufferTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

@@ -4,6 +4,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -18,13 +19,13 @@ typedef struct _color3D
   double b;
 } color3D;
 
-void add_color_vertex(const color3D* c)
+static void add_color_vertex(const color3D* c)
 {
   glColor3d(c->r, c->g, c->b);
   glVertex3d(c->r, c->g, c->b);
 }
 
-void draw_cube_face(const color3D* c1, const color3D* c2, const color3D* c3, const color3D* c4)
+static void draw_cube_face(const color3D* c1, const color3D* c2, const color3D* c3, const color3D* c4)
 {
   color3D cm;
   cm.r = (c1->r + c2->r + c3->r + c4->r)/4;
@@ -57,7 +58,7 @@ const color3D c3D_magenta = {1.0, 0.0, 1.0};
 const color3D c3D_yellow = {1.0, 1.0, 0.0};
 const color3D c3D_white = {1.0, 1.0, 1.0};
 
-void draw_cube(void)
+static void draw_cube(void)
 {
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -73,7 +74,7 @@ void draw_cube(void)
   glEnd();
 }
 
-void init(void)
+static void init(void)
 {
   glClearColor(0.5,0.5,0.5,0.0);
 
@@ -89,7 +90,7 @@ void init(void)
   glClearDepth (1.0);
 }
 
-void unproject (double x2, double y2, double *x3, double *y3, double *z3)
+static void unproject (double x2, double y2, double *x3, double *y3, double *z3)
 {
   double mv[16];
   double pm[16];
@@ -106,7 +107,7 @@ void unproject (double x2, double y2, double *x3, double *y3, double *z3)
 static int pos_x, pos_y;
 static int move = 0;
 
-int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
+static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
   (void)ih;
   (void)status;
@@ -129,7 +130,7 @@ int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 
 #define INVERT_Y(_y) (height-y)
 
-int motion_cb(Ihandle *ih,int x,int y,char* status)
+static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
   (void)status;
 
@@ -169,7 +170,7 @@ int motion_cb(Ihandle *ih,int x,int y,char* status)
   return IUP_DEFAULT;
 }
 
-int action(Ihandle *ih)
+static int action(Ihandle *ih)
 {
   IupGLMakeCurrent(ih);
 
@@ -182,11 +183,10 @@ int action(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void GLCanvasCubeTest(void)
 {
   Ihandle *dlg, *canvas, *box;
 
-  IupOpen(&argc, &argv);
   IupGLCanvasOpen();
 
   box = IupVbox(NULL);
@@ -214,12 +214,19 @@ int main(int argc, char* argv[])
   IupSetAttribute(canvas, "RASTERSIZE", NULL);
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  GLCanvasCubeTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

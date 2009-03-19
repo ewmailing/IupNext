@@ -1,13 +1,14 @@
+#include <stdlib.h>
 #include <stdio.h>
 
 #include "iup.h"
 #include "iupcontrols.h"
 
-float increment = 0.01f;
-Ihandle *progressbar1;
-Ihandle *progressbar2;
-Ihandle *btn_pause;
-Ihandle *timer;
+static float increment = 0.01f;
+static Ihandle *progressbar1;
+static Ihandle *progressbar2;
+static Ihandle *btn_pause;
+static Ihandle *timer;
 
 static unsigned char pixmap_play[] = 
 { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
@@ -129,7 +130,7 @@ static unsigned char pixmap_pause[] =
  ,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
  ,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 };
 
-void createimg_s (void)
+static void createimg_s (void)
 { 
   Ihandle *img_restart, *img_play, *img_forward, *img_rewind, *img_pause;
   
@@ -157,7 +158,7 @@ void createimg_s (void)
   IupSetAttribute (img_pause, "2", "BGCOLOR");
 }
 
-int time_cb(void)
+static int time_cb(void)
 {
   float value = IupGetFloat(progressbar1, "VALUE");
   value += increment;
@@ -171,7 +172,7 @@ int time_cb(void)
   return IUP_DEFAULT;
 }
 
-int btn_pause_cb(void)
+static int btn_pause_cb(void)
 {
   if (!IupGetInt(timer, "RUN"))
   {
@@ -187,26 +188,26 @@ int btn_pause_cb(void)
   return IUP_DEFAULT;
 }
 
-int btn_restart_cb(void)
+static int btn_restart_cb(void)
 {
   IupSetAttribute(progressbar1, "VALUE", "0");
   IupSetAttribute(progressbar2, "VALUE", "0");
   return IUP_DEFAULT;
 }
 
-int btn_accelerate_cb(void)
+static int btn_accelerate_cb(void)
 {
   increment *= 2;
   return IUP_DEFAULT;
 }
 
-int btn_decelerate_cb(void)
+static int btn_decelerate_cb(void)
 {
   increment /= 2;
   return IUP_DEFAULT;
 }
 
-int btn_show1_cb(void)
+static int btn_show1_cb(void)
 {
   if (!IupGetInt(progressbar1, "DASHED"))
     IupSetAttribute(progressbar1, "DASHED", "YES");
@@ -216,7 +217,7 @@ int btn_show1_cb(void)
   return IUP_DEFAULT;
 }
 
-int btn_show2_cb(void)
+static int btn_show2_cb(void)
 {
   if (!IupGetInt(progressbar1, "MARQUEE"))
     IupSetAttribute(progressbar1, "MARQUEE", "YES");
@@ -226,12 +227,10 @@ int btn_show2_cb(void)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void ProgressbarTest(void)
 {
   Ihandle *dlg, *vbox, *hbox;
   Ihandle *btn_restart, *btn_accelerate, *btn_decelerate, *btn_show1, *btn_show2;
-  
-  IupOpen(&argc, &argv);                  /* IUP initialization */
 
   timer = IupTimer();
   IupSetCallback(timer, "ACTION_CB", (Icallback)time_cb);
@@ -241,7 +240,8 @@ int main(int argc, char* argv[])
   progressbar2 = IupProgressBar();
  
   IupSetAttribute(progressbar1, "EXPAND", "YES");
-  IupSetAttribute(progressbar1, "DASHED", "YES");
+  //IupSetAttribute(progressbar1, "DASHED", "YES");
+  IupSetAttribute(progressbar1, "MARQUEE", "YES");
 
   IupSetAttribute(progressbar2, "ORIENTATION", "VERTICAL");
   IupSetAttribute(progressbar2, "BGCOLOR", "255 0 128");
@@ -301,17 +301,19 @@ int main(int argc, char* argv[])
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
   IupSetAttribute(timer, "RUN", "YES");
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  ProgressbarTest();
 
   IupMainLoop();
-  
-  IupDestroy(dlg);
-  IupDestroy(IupGetHandle ("img_restart")); 
-  IupDestroy(IupGetHandle ("img_play"));
-  IupDestroy(IupGetHandle ("img_forward")); 
-  IupDestroy(IupGetHandle ("img_rewind"));
-  IupDestroy(IupGetHandle ("img_pause"));
 
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

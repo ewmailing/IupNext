@@ -2,6 +2,7 @@
    Creates a dialog showing an icon, the "DEFAULTESC" attribute and a simple menu
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -85,9 +86,8 @@ int main(int argc, char **argv)
 
   IupShowXY(dialog, IUP_CENTER, IUP_CENTER);
   IupMainLoop();
-  IupDestroy(dialog);
-  IupDestroy(icon);
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

@@ -10,7 +10,7 @@
 static Ihandle  *canvas = NULL;
 static cdCanvas *cdcanvas = NULL;
 
-int redraw_cb(Ihandle* ih)
+static int redraw_cb(Ihandle* ih)
 {
   if (!cdcanvas)
     return IUP_DEFAULT;
@@ -30,13 +30,13 @@ int redraw_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int extended_cb(Ihandle* ih, int cell)
+static int extended_cb(Ihandle* ih, int cell)
 {
   printf("extended_cb(%d)\n", cell);
   return IUP_DEFAULT;
 }
 
-char* cell_cb(Ihandle* ih, int cell)
+static char* cell_cb(Ihandle* ih, int cell)
 {
   int ri, gi, bi;
   static char str[30];
@@ -62,7 +62,7 @@ char* cell_cb(Ihandle* ih, int cell)
   return NULL;
 }
 
-int select_cb(Ihandle* ih, int cell, int type)
+static int select_cb(Ihandle* ih, int cell, int type)
 {
   long cd_color;
   char str[30];
@@ -88,7 +88,7 @@ int select_cb(Ihandle* ih, int cell, int type)
   return IUP_DEFAULT;
 }
 
-int switch_cb(Ihandle* ih, int primcell, int seccell)
+static int switch_cb(Ihandle* ih, int primcell, int seccell)
 {
   long fgcolor;
   if (!cdcanvas)
@@ -102,11 +102,10 @@ int switch_cb(Ihandle* ih, int primcell, int seccell)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void ColorbarTest(void)
 {
   Ihandle *dlg, *cb;
   
-  IupOpen(&argc, &argv);
   IupControlsOpen();
 
   /* Creates a canvas associated with the redraw action */
@@ -148,3 +147,18 @@ int main(int argc, char* argv[])
 
   return 0 ;
 }
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  ColorbarTest();
+
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+#endif

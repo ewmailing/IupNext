@@ -3,13 +3,14 @@
 #endif
 #include <GL/gl.h>
 
+#include <stdlib.h>
 #include <stdio.h>
 
 #include "iup.h"          
 #include "iupgl.h"
 
 
-int action(Ihandle *ih)
+static int action(Ihandle *ih)
 {
   IupGLMakeCurrent(ih);
 
@@ -29,11 +30,10 @@ int action(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void GLCanvasTest(void)
 {
   Ihandle *dlg, *canvas, *box;
 
-  IupOpen(&argc, &argv);
   IupGLCanvasOpen();
 
   box = IupVbox(NULL);
@@ -57,12 +57,20 @@ int main(int argc, char* argv[])
   IupSetAttribute(canvas, "RASTERSIZE", NULL);
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+  IupGLCanvasOpen();
+
+  GLCanvasTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

@@ -4,12 +4,13 @@
    The second list has a callback associated.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <iup.h>
 
 int list_multiple_cb (Ihandle *self, char *t, int i, int v)
 {
-  char message [40] ;
+  char message [40];
 
   sprintf (message, "Item %d - %s - %s", i, t, v == 0 ? "deselected" : "selected" );
 
@@ -56,7 +57,7 @@ int main(int argc, char **argv)
   IupShowXY (dlg, IUP_CENTER, IUP_CENTER);
 
   IupMainLoop ();
-  IupDestroy(dlg);
   IupClose ();
-  return 0;
+  return EXIT_SUCCESS;
+
 }

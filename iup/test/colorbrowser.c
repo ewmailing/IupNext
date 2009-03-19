@@ -4,7 +4,7 @@
 #include "iup.h"
 #include "iupcontrols.h"
 
-Ihandle *label_red, *label_green, *label_blue, *label_color;
+static Ihandle *label_red, *label_green, *label_blue, *label_color;
 
 static void clrbrwsr_update_text(unsigned char r, unsigned char g, unsigned char b, char* hsi)
 {
@@ -32,12 +32,9 @@ static int clrbrwsr_change_cb(Ihandle* ih, unsigned char r, unsigned char g, uns
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void ColorBrowserTest(void)
 {
   Ihandle *dlg, *hbox_final, *vbox, *clrbrwsr;
-  
-  IupOpen(&argc, &argv);
-  IupControlsOpen();
   
   label_red   = IupLabel(NULL);
   IupSetAttribute(label_red, "SIZE", "100x10");
@@ -75,10 +72,20 @@ int main(int argc, char* argv[])
   dlg = IupDialog (hbox_final);
   IupSetAttribute(dlg, "TITLE", "IupColorBrowser Test");
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+  IupControlsOpen();
+
+  ColorBrowserTest();
 
   IupMainLoop();
-  IupDestroy(dlg);
-  IupClose();  
 
-  return 0;
+  IupClose();
+
+  return EXIT_SUCCESS;
 }
+#endif

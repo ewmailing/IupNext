@@ -4,6 +4,7 @@
 
 /* ANSI C libraries include */
 #include <stdlib.h>
+#include <stdio.h>
 
 /* IUP libraries include */
 #include <iup.h>
@@ -20,7 +21,7 @@
  ******************************************************************************/
 void show_message (void)
 {
-  IupMessage ("Warning", "This item performs no operation\nIt is here only to compose") ;
+  IupMessage ("Warning", "This item performs no operation\nIt is here only to compose");
 }
 
 /******************************************************************************
@@ -35,9 +36,9 @@ void show_message (void)
  ******************************************************************************/
 int item_new_cb (void)
 {
-  show_message () ;
+  show_message ();
   
-  return IUP_DEFAULT ;
+  return IUP_DEFAULT;
 }
 
 /******************************************************************************
@@ -52,9 +53,9 @@ int item_new_cb (void)
  ******************************************************************************/
 int item_open_cb (void)
 {
-  show_message () ;
+  show_message ();
   
-  return IUP_DEFAULT ;
+  return IUP_DEFAULT;
 }
 
 /******************************************************************************
@@ -69,9 +70,9 @@ int item_open_cb (void)
  ******************************************************************************/
 int item_close_cb (void)
 {
-  show_message () ;
+  show_message ();
   
-  return IUP_DEFAULT ;
+  return IUP_DEFAULT;
 }
 
 /******************************************************************************
@@ -86,9 +87,9 @@ int item_close_cb (void)
  ******************************************************************************/
 int item_pagesetup_cb (void)
 {
-  show_message () ;
+  show_message ();
   
-  return IUP_DEFAULT ;
+  return IUP_DEFAULT;
 }
 
 /******************************************************************************
@@ -103,9 +104,9 @@ int item_pagesetup_cb (void)
  ******************************************************************************/
 int item_print_cb (void)
 {
-  show_message () ;
+  show_message ();
   
-  return IUP_DEFAULT ;
+  return IUP_DEFAULT;
 }
 
 /******************************************************************************
@@ -120,18 +121,18 @@ int item_print_cb (void)
  ******************************************************************************/
 int item_exit_cb (void)
 {
-  return IUP_CLOSE ;
+  return IUP_CLOSE;
 }
 
 /* Main program */
 int main(int argc, char **argv)
 {
   /* IUP identifiers */
-  Ihandle *dlg ;
-  Ihandle *text ;
-  Ihandle *menu, *menu_file ; 
-  Ihandle *submenu_file ;
-  Ihandle *item_new, *item_open, *item_close, *item_pagesetup, *item_print, *item_exit ;
+  Ihandle *dlg;
+  Ihandle *text;
+  Ihandle *menu, *menu_file; 
+  Ihandle *submenu_file;
+  Ihandle *item_new, *item_open, *item_close, *item_pagesetup, *item_print, *item_exit;
 
   /* Initializes IUP */
   IupOpen(&argc, &argv);
@@ -139,10 +140,10 @@ int main(int argc, char **argv)
   /* Program begin */
 
   /* Creates a text */
-  text = IupText (NULL) ;
+  text = IupText (NULL);
   
   /* Sets value of the text and turns on expand */ 
-  IupSetAttributes (text, "VALUE = \"This text is here only to compose\", EXPAND = YES") ;
+  IupSetAttributes (text, "VALUE = \"This text is here only to compose\", EXPAND = YES");
  
   /* Creates six items */
   item_new = IupItem ("New", NULL);
@@ -153,42 +154,41 @@ int main(int argc, char **argv)
   item_exit = IupItem ("Exit", NULL);
 
   /* Registers callbacks */
-  IupSetCallback (item_new, "ACTION", (Icallback) item_new_cb) ;
-  IupSetCallback (item_open, "ACTION", (Icallback) item_open_cb) ;
-  IupSetCallback (item_close, "ACTION", (Icallback) item_close_cb) ;
-  IupSetCallback (item_pagesetup, "ACTION", (Icallback) item_pagesetup_cb) ;
-  IupSetCallback (item_print, "ACTION", (Icallback) item_print_cb) ;
-  IupSetCallback (item_exit, "ACTION", (Icallback) item_exit_cb) ;
+  IupSetCallback (item_new, "ACTION", (Icallback) item_new_cb);
+  IupSetCallback (item_open, "ACTION", (Icallback) item_open_cb);
+  IupSetCallback (item_close, "ACTION", (Icallback) item_close_cb);
+  IupSetCallback (item_pagesetup, "ACTION", (Icallback) item_pagesetup_cb);
+  IupSetCallback (item_print, "ACTION", (Icallback) item_print_cb);
+  IupSetCallback (item_exit, "ACTION", (Icallback) item_exit_cb);
 
   /* Creates file menu */
-  menu_file = IupMenu (item_new, item_open, item_close, IupSeparator(), item_pagesetup, item_print, IupSeparator(), item_exit, NULL) ;
+  menu_file = IupMenu (item_new, item_open, item_close, IupSeparator(), item_pagesetup, item_print, IupSeparator(), item_exit, NULL);
 
   /* Creates file submenu */
-  submenu_file = IupSubmenu ("File", menu_file) ;
+  submenu_file = IupSubmenu ("File", menu_file);
   
   /* Creates main menu with file menu */
-  menu = IupMenu (submenu_file, NULL) ;
+  menu = IupMenu (submenu_file, NULL);
  
   /* Associates handle "menu" with menu */
-  IupSetHandle ("menu", menu) ;
+  IupSetHandle ("menu", menu);
                                 
   /* Creates dialog with a text */
-  dlg = IupDialog (text) ;
+  dlg = IupDialog (text);
 
   /* Sets title and size of the dialog and associates a menu to it */
-  IupSetAttributes (dlg, "TITLE=\"IupSeparator Example\", SIZE = QUARTERxEIGHTH, MENU = menu") ;
+  IupSetAttributes (dlg, "TITLE=\"IupSeparator Example\", SIZE = QUARTERxEIGHTH, MENU = menu");
 
   /* Shows dialog in the center of the screen */
-  IupShowXY (dlg, IUP_CENTER, IUP_CENTER) ;
+  IupShowXY (dlg, IUP_CENTER, IUP_CENTER);
 
   /* Initializes IUP main loop */
-  IupMainLoop () ;
-
-  IupDestroy(dlg);
+  IupMainLoop ();
 
   /* Finishes IUP */
-  IupClose () ;  
+  IupClose ();  
 
   /* Program finished successfully */
-  return 0 ;
+  return EXIT_SUCCESS;
+
 }

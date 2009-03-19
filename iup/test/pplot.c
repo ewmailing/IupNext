@@ -23,35 +23,35 @@
 #include <cdgdiplus.h>
 
 
-#define MAXPLOT 6  // room for examples
+#define MAXPLOT 6  /* room for examples */
 
 
-Ihandle *plot[MAXPLOT] = {NULL}; /* PPlot controls */
-Ihandle *dial1, *dial2,          /* dials for zooming */
+static Ihandle *plot[MAXPLOT] = {NULL}; /* PPlot controls */
+static Ihandle *dial1, *dial2,          /* dials for zooming */
         *tgg1, *tgg2,            /* autoscale on|off toggles */
         *tgg3, *tgg4,            /* grid show|hide toggles */
         *tgg5,                   /* legend show|hide toggle */
         *tabs;                   /* tabbed control */
 
-int delete_cb(Ihandle* ih, int index, int sample_index, float x, float y)
+static int delete_cb(Ihandle* ih, int index, int sample_index, float x, float y)
 {
   printf("DELETE_CB(%d, %d, %g, %g)\n", index, sample_index, x, y);
   return IUP_DEFAULT;
 }
 
-int select_cb(Ihandle* ih, int index, int sample_index, float x, float y, int select)
+static int select_cb(Ihandle* ih, int index, int sample_index, float x, float y, int select)
 {
   printf("SELECT_CB(%d, %d, %g, %g, %d)\n", index, sample_index, x, y, select);
   return IUP_DEFAULT;
 }
 
-int edit_cb(Ihandle* ih, int index, int sample_index, float x, float y, float *new_x, float *new_y)
+static int edit_cb(Ihandle* ih, int index, int sample_index, float x, float y, float *new_x, float *new_y)
 {
   printf("EDIT_CB(%d, %d, %g, %g, %g, %g)\n", index, sample_index, x, y, *new_x, *new_y);
   return IUP_DEFAULT;
 }
 
-int postdraw_cb(Ihandle* ih, cdCanvas* cnv)
+static int postdraw_cb(Ihandle* ih, cdCanvas* cnv)
 {
   int ix, iy;
 
@@ -64,18 +64,18 @@ int postdraw_cb(Ihandle* ih, cdCanvas* cnv)
   return IUP_DEFAULT;
 }
 
-int predraw_cb(Ihandle* ih, cdCanvas* cnv)
+static int predraw_cb(Ihandle* ih, cdCanvas* cnv)
 {
   printf("PREDRAW_CB()\n");
   return IUP_DEFAULT;
 }
 
-void InitPlots(void)
+static void InitPlots(void)
 {
   int theI;
   float x, y, theFac;
 
-  // PLOT 0 - MakeExamplePlot1
+  /* PLOT 0 - MakeExamplePlot1 */
   IupSetAttribute(plot[0], "TITLE", "AutoScale");
   IupSetAttribute(plot[0], "MARGINTOP", "40");
   IupSetAttribute(plot[0], "MARGINLEFT", "40");
@@ -128,7 +128,7 @@ void InitPlots(void)
   IupSetAttribute(plot[0], "DS_LEGEND", "Curve 2");
 
 
-  // PLOT 1 - MakeExamplePlot2
+  /* PLOT 1 - MakeExamplePlot2 */
   IupSetAttribute(plot[1], "TITLE", "No Autoscale+No CrossOrigin");
   IupSetAttribute(plot[1], "TITLEFONTSIZE", "16");
   IupSetAttribute(plot[1], "MARGINTOP", "40");
@@ -175,7 +175,7 @@ void InitPlots(void)
   }
   IupPPlotEnd(plot[1]);
 
-  // PLOT 2 - MakeExamplePlot4
+  /* PLOT 2 - MakeExamplePlot4 */
   IupSetAttribute(plot[2], "TITLE", "Log Scale");
   IupSetAttribute(plot[2], "TITLEFONTSIZE", "16");
   IupSetAttribute(plot[2], "MARGINTOP", "40");
@@ -200,7 +200,7 @@ void InitPlots(void)
   IupPPlotEnd(plot[2]);
   IupSetAttribute(plot[2], "DS_COLOR", "100 100 200");
 
-  //PLOT 3 - MakeExamplePlot5
+  /* PLOT 3 - MakeExamplePlot5 */
   IupSetAttribute(plot[3], "TITLE", "Bar Mode");
   IupSetAttribute(plot[3], "TITLEFONTSIZE", "16");
   IupSetAttribute(plot[3], "MARGINTOP", "40");
@@ -218,7 +218,7 @@ void InitPlots(void)
   IupSetAttribute(plot[3], "DS_COLOR", "100 100 200");
   IupSetAttribute(plot[3], "DS_MODE", "BAR");
 
-  //PLOT 4 - MakeExamplePlot6
+  /* PLOT 4 - MakeExamplePlot6 */
   IupSetAttribute(plot[4], "TITLE", "Marks Mode");
   IupSetAttribute(plot[4], "TITLEFONTSIZE", "16");
   IupSetAttribute(plot[4], "MARGINTOP", "40");
@@ -261,7 +261,7 @@ void InitPlots(void)
   IupSetAttribute(plot[4], "DS_MODE", "MARK");
   IupSetAttribute(plot[4], "DS_MARKSTYLE", "HOLLOW_CIRCLE");
   
-  //PLOT 5 - MakeExamplePlot8
+  /* PLOT 5 - MakeExamplePlot8 */
   IupSetAttribute(plot[5], "TITLE", "Data Selection and Editing");
   IupSetAttribute(plot[5], "TITLEFONTSIZE", "16");
   IupSetAttribute(plot[5], "MARGINTOP", "40");
@@ -285,26 +285,25 @@ void InitPlots(void)
 
 }
 
-int tabs_get_index(void)
+static int tabs_get_index(void)
 {
   Ihandle *curr_tab = IupGetHandle(IupGetAttribute(tabs, "VALUE"));
   char *ss = IupGetAttribute(curr_tab, "TABTITLE");
-  ss += 5; // Skip "Plot "
+  ss += 5; /* Skip "Plot " */
   return atoi(ss);
 }
 
-// Some processing required by current tab change: the controls at left
-// will be updated according to current plot props
-int tabs_tabchange_cb(Ihandle* self, Ihandle* new_tab)
+/* Some processing required by current tab change: the controls at left
+   will be updated according to current plot props */
+static int tabs_tabchange_cb(Ihandle* self, Ihandle* new_tab)
 {
   int ii=0;
 
   char *ss = IupGetAttribute(new_tab, "TABTITLE");
-  ss += 5; // Skip "Plot "
+  ss += 5; /* Skip "Plot " */
   ii = atoi(ss);
 
-  // autoscaling
-  // X axis
+  /* autoscaling X axis */
   if (IupGetInt(plot[ii], "AXS_XAUTOMIN") && IupGetInt(plot[ii], "AXS_XAUTOMAX")) {
     IupSetAttribute(tgg2, "VALUE", "ON");
     IupSetAttribute(dial2, "ACTIVE", "NO");
@@ -313,7 +312,7 @@ int tabs_tabchange_cb(Ihandle* self, Ihandle* new_tab)
     IupSetAttribute(tgg2, "VALUE", "OFF");
     IupSetAttribute(dial2, "ACTIVE", "YES");
   }
-  // Y axis
+  /* autoscaling Y axis */
   if (IupGetInt(plot[ii], "AXS_YAUTOMIN") && IupGetInt(plot[ii], "AXS_YAUTOMAX")) {
     IupSetAttribute(tgg1, "VALUE", "ON");
     IupSetAttribute(dial1, "ACTIVE", "NO");
@@ -323,7 +322,7 @@ int tabs_tabchange_cb(Ihandle* self, Ihandle* new_tab)
     IupSetAttribute(dial1, "ACTIVE", "YES");
   }
 
-  // grid
+  /* grid */
   if (IupGetInt(plot[ii], "GRID"))
   {
     IupSetAttribute(tgg3, "VALUE", "ON");
@@ -331,19 +330,19 @@ int tabs_tabchange_cb(Ihandle* self, Ihandle* new_tab)
   }
   else
   {
-    // X axis
+    /* X axis */
     if (*IupGetAttribute(plot[ii], "GRID") == 'V')
       IupSetAttribute(tgg3, "VALUE", "ON");
     else
       IupSetAttribute(tgg3, "VALUE", "OFF");
-    // Y axis
+    /* Y axis */
     if (*IupGetAttribute(plot[ii], "GRID") == 'H')
       IupSetAttribute(tgg4, "VALUE", "ON");
     else
       IupSetAttribute(tgg4, "VALUE", "OFF");
   }
 
-  // legend
+  /* legend */
   if (IupGetInt(plot[ii], "LEGENDSHOW"))
     IupSetAttribute(tgg5, "VALUE", "ON");
   else
@@ -352,8 +351,8 @@ int tabs_tabchange_cb(Ihandle* self, Ihandle* new_tab)
   return IUP_DEFAULT;
 }
 
-// show/hide V grid
-int tgg3_cb(Ihandle *self, int v)
+/* show/hide V grid */
+static int tgg3_cb(Ihandle *self, int v)
 {
   int ii = tabs_get_index();
 
@@ -378,8 +377,8 @@ int tgg3_cb(Ihandle *self, int v)
 }
 
 
-// show/hide H grid
-int tgg4_cb(Ihandle *self, int v)
+/* show/hide H grid */
+static int tgg4_cb(Ihandle *self, int v)
 {
   int ii = tabs_get_index();
 
@@ -404,8 +403,8 @@ int tgg4_cb(Ihandle *self, int v)
 }
 
 
-// show/hide legend
-int tgg5_cb(Ihandle *self, int v)
+/* show/hide legend */
+static int tgg5_cb(Ihandle *self, int v)
 {
   int ii = tabs_get_index();
 
@@ -420,8 +419,8 @@ int tgg5_cb(Ihandle *self, int v)
 }
 
 
-// autoscale Y
-int tgg1_cb(Ihandle *self, int v)
+/* autoscale Y */
+static int tgg1_cb(Ihandle *self, int v)
 {
   int ii = tabs_get_index();
 
@@ -442,8 +441,8 @@ int tgg1_cb(Ihandle *self, int v)
 }
 
 
-// autoscale X
-int tgg2_cb(Ihandle *self, int v)
+/* autoscale X */
+static int tgg2_cb(Ihandle *self, int v)
 {
   int ii = tabs_get_index();
 
@@ -464,8 +463,8 @@ int tgg2_cb(Ihandle *self, int v)
 }
 
 
-// Y zoom
-int dial1_btndown_cb(Ihandle *self, double angle)
+/* Y zoom */
+static int dial1_btndown_cb(Ihandle *self, double angle)
 {
   int ii = tabs_get_index();
 
@@ -475,7 +474,7 @@ int dial1_btndown_cb(Ihandle *self, double angle)
   return IUP_DEFAULT;
 }
 
-int dial1_btnup_cb(Ihandle *self, double angle)
+static int dial1_btnup_cb(Ihandle *self, double angle)
 {
   int ii = tabs_get_index();
   double x1, x2, xm;
@@ -486,19 +485,19 @@ int dial1_btnup_cb(Ihandle *self, double angle)
 
   ss = IupGetAttribute(plot[ii], "AXS_YMODE");
   if ( ss && ss[3]=='2' ) {
-    // LOG2:  one circle will zoom 2 times
+    /* LOG2:  one circle will zoom 2 times */
     xm = 4.0 * fabs(angle) / 3.141592;
     if (angle>0.0) { x2 /= xm; x1 *= xm; }
     else { x2 *= xm; x1 /= xm; }
   }
   if ( ss && ss[3]=='1' ) {
-    // LOG10:  one circle will zoom 10 times
+    /* LOG10:  one circle will zoom 10 times */
     xm = 10.0 * fabs(angle) / 3.141592;
     if (angle>0.0) { x2 /= xm; x1 *= xm; }
     else { x2 *= xm; x1 /= xm; }
   }
   else {
-    // LIN: one circle will zoom 2 times
+    /* LIN: one circle will zoom 2 times */
     xm = (x1 + x2) / 2.0;
     x1 = xm - (xm - x1)*(1.0-angle*1.0/3.141592);
     x2 = xm + (x2 - xm)*(1.0-angle*1.0/3.141592);
@@ -516,8 +515,8 @@ int dial1_btnup_cb(Ihandle *self, double angle)
 }
 
 
-// X zoom
-int dial2_btndown_cb(Ihandle *self, double angle)
+/* X zoom */
+static int dial2_btndown_cb(Ihandle *self, double angle)
 {
   int ii = tabs_get_index();
 
@@ -527,7 +526,7 @@ int dial2_btndown_cb(Ihandle *self, double angle)
   return IUP_DEFAULT;
 }
 
-int dial2_btnup_cb(Ihandle *self, double angle)
+static int dial2_btnup_cb(Ihandle *self, double angle)
 {
   int ii = tabs_get_index();
   double x1, x2, xm;
@@ -537,7 +536,7 @@ int dial2_btnup_cb(Ihandle *self, double angle)
 
   xm = (x1 + x2) / 2.0;
 
-  x1 = xm - (xm - x1)*(1.0-angle*1.0/3.141592); // one circle will zoom 2 times
+  x1 = xm - (xm - x1)*(1.0-angle*1.0/3.141592); /* one circle will zoom 2 times */
   x2 = xm + (x2 - xm)*(1.0-angle*1.0/3.141592);
 
   IupSetfAttribute(plot[ii], "AXS_XMIN", "%f", x1);
@@ -548,37 +547,32 @@ int dial2_btnup_cb(Ihandle *self, double angle)
   return IUP_DEFAULT;
 }
 
-int bt1_cb(Ihandle *self)
+static int bt1_cb(Ihandle *self)
 {
-  int ii = tabs_get_index();
-  cdCanvas* cnv = cdCreateCanvas(CD_PDF, "pplot.pdf -o");
-  IupPPlotPaintTo(plot[ii], cnv);
-  cdKillCanvas(cnv);
+//  int ii = tabs_get_index();
+//  cdCanvas* cnv = cdCreateCanvas(CD_PDF, "pplot.pdf -o");
+//  IupPPlotPaintTo(plot[ii], cnv);
+//  cdKillCanvas(cnv);
   return IUP_DEFAULT;
 }
 
-/*
-   main
-*/
-int main(int argc, char **argv)
+void PPlotTest(void)
 {
   Ihandle *vboxr[MAXPLOT+1];       /* tabs containing the plots */
   Ihandle *dlg, *vboxl, *hbox, *lbl1, *lbl2, *lbl3, *bt1,
           *boxinfo, *boxdial1, *boxdial2, *f1, *f2;
   int ii;
 
-  IupOpen(&argc, &argv);          // init IUP
-  IupControlsOpen();  // init the addicional controls library (we use IupTabs)
-  IupPPlotOpen();     // init IupPPlot library
+  IupPPlotOpen();     /* init IupPPlot library */
 
 //  cdInitGdiPlus();
 
-  // create plots
+  /* create plots */
   for (ii=0; ii<MAXPLOT; ii++)
     plot[ii] = IupPPlot();
 
-  // left panel: plot control
-  // Y zooming
+  /* left panel: plot control
+     Y zooming               */
   dial1 = IupDial("VERTICAL");
   lbl1 = IupLabel("+");
   lbl2 = IupLabel("-");
@@ -601,13 +595,13 @@ int main(int argc, char **argv)
   IupSetCallback(dial1, "BUTTON_RELEASE_CB", (Icallback)dial1_btnup_cb);
 
   tgg1 = IupToggle("Y Autoscale", NULL);
-//  IupSetCallback(tgg1, "ACTION", (Icallback)tgg1_cb);
+  IupSetCallback(tgg1, "ACTION", (Icallback)tgg1_cb);
   IupSetAttribute(tgg1, "VALUE", "ON");
 
   f1 = IupFrame( IupVbox(boxdial1, tgg1, NULL) );
   IupSetAttribute(f1, "TITLE", "Y Zoom");
 
-  // X zooming
+  /* X zooming */
   dial2 = IupDial("HORIZONTAL");
   lbl1 = IupLabel("-");
   lbl2 = IupLabel("+");
@@ -631,7 +625,7 @@ int main(int argc, char **argv)
   IupSetCallback(dial2, "BUTTON_RELEASE_CB", (Icallback)dial2_btnup_cb);
 
   tgg2 = IupToggle("X Autoscale", NULL);
-//  IupSetCallback(tgg2, "ACTION", (Icallback)tgg2_cb);
+  IupSetCallback(tgg2, "ACTION", (Icallback)tgg2_cb);
 
   f2 = IupFrame( IupVbox(boxdial2, tgg2, NULL) );
   IupSetAttribute(f2, "TITLE", "X Zoom");
@@ -640,15 +634,15 @@ int main(int argc, char **argv)
   IupSetAttribute(lbl1, "SEPARATOR", "HORIZONTAL");
 
   tgg3 = IupToggle("Vertical Grid", NULL);
-//  IupSetCallback(tgg3, "ACTION", (Icallback)tgg3_cb);
+  IupSetCallback(tgg3, "ACTION", (Icallback)tgg3_cb);
   tgg4 = IupToggle("Hirozontal Grid", NULL);
-//  IupSetCallback(tgg4, "ACTION", (Icallback)tgg4_cb);
+  IupSetCallback(tgg4, "ACTION", (Icallback)tgg4_cb);
 
   lbl2 = IupLabel("");
   IupSetAttribute(lbl2, "SEPARATOR", "HORIZONTAL");
 
   tgg5 = IupToggle("Legend", NULL);
-//  IupSetCallback(tgg5, "ACTION", (Icallback)tgg5_cb);
+  IupSetCallback(tgg5, "ACTION", (Icallback)tgg5_cb);
 
   lbl3 = IupLabel("");
   IupSetAttribute(lbl3, "SEPARATOR", "HORIZONTAL");
@@ -660,20 +654,19 @@ int main(int argc, char **argv)
   IupSetAttribute(vboxl, "GAP", "4");
   IupSetAttribute(vboxl, "EXPAND", "NO");
 
-  // right panel: tabs with plots
+  /* right panel: tabs with plots */
   for (ii=0; ii<MAXPLOT; ii++) {
-    vboxr[ii] = IupVbox(plot[ii], NULL); // each plot a tab
-    IupSetfAttribute(vboxr[ii], "TABTITLE", "Plot %d", ii); // name each tab
+    vboxr[ii] = IupVbox(plot[ii], NULL); /* each plot a tab */
+    IupSetfAttribute(vboxr[ii], "TABTITLE", "Plot %d", ii); /* name each tab */
     IupSetHandle(IupGetAttribute(vboxr[ii], "TABTITLE"), vboxr[ii]);
   }
-  vboxr[MAXPLOT] = NULL; // mark end of vector
+  vboxr[MAXPLOT] = NULL; /* mark end of vector */
 
-  tabs = IupZboxv(vboxr);
-  IupSetAttribute(tabs, "VALUE", "Plot 3");
-//  tabs = IupTabsv(vboxr); // create tabs
-//  IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)tabs_tabchange_cb);
+//  tabs = IupZboxv(vboxr);
+//  IupSetAttribute(tabs, "VALUE", "Plot 3");
+  tabs = IupTabsv(vboxr);
+  IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)tabs_tabchange_cb);
 
-  // dlg
   hbox = IupHbox(vboxl, tabs, NULL);
   IupSetAttribute(hbox, "MARGIN", "4x4");
   IupSetAttribute(hbox, "GAP", "10");
@@ -682,16 +675,25 @@ int main(int argc, char **argv)
   IupSetAttribute(dlg, "RASTERSIZE", "600x400");
   IupSetAttribute(dlg, "TITLE", "IupPPlot Example");
 
-  InitPlots(); // It must be able to be done independent of dlg Mapping
+  InitPlots(); /* It must be able to be done independent of dlg Mapping */
 
-//  tabs_tabchange_cb(tabs, vboxr[0]);
+  tabs_tabchange_cb(tabs, vboxr[0]);
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
   IupSetAttribute(dlg, "RASTERSIZE", NULL);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  PPlotTest();
+
   IupMainLoop();
-  IupDestroy(dlg);
 
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

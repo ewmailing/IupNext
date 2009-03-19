@@ -674,7 +674,7 @@ int main(int argc, char **argv)
   IupSetAttribute(hbox, "GAP", "10");
   
   dlg = IupDialog(hbox);
-  IupSetAttributes(dlg, "SIZE=600x240" ) ;
+  IupSetAttributes(dlg, "SIZE=600x240" );
   IupSetAttribute(dlg, "TITLE", "IupPPlot Example");
 
   InitPlots(); // It must be able to be done independent of dialog Mapping
@@ -683,10 +683,8 @@ int main(int argc, char **argv)
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
   IupMainLoop();
-  IupDestroy(dlg);
-
-  IupControlsClose();
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

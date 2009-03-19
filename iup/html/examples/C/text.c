@@ -1,6 +1,7 @@
 /*IupText Example in C 
 Creates a IupText that shows asterisks instead of characters (password-like).*/
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "iup.h"
@@ -76,7 +77,7 @@ int main(int argc, char **argv)
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
   IupMainLoop();
-  IupDestroy(dlg);
   IupClose();
-  return 0;
+  return EXIT_SUCCESS;
+
 }

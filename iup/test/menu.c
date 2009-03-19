@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 
 #include <iup.h>
@@ -130,7 +131,7 @@ static Ihandle* load_image_Test_pressed(void)
   return image;
 }
 
-int item_add_cb(Ihandle* ih)
+static int item_add_cb(Ihandle* ih)
 {
   Ihandle* item = IupItem("New Appended Item", "item_cb");
   printf("ACTION(%s)\n", IupGetAttribute(ih, "TITLE"));
@@ -139,7 +140,7 @@ int item_add_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_insert_cb(Ihandle* ih)
+static int item_insert_cb(Ihandle* ih)
 {
   Ihandle* ref_item = IupGetChild(IupGetParent(ih), 4);   /* before the first appended item, just after the separator */
   printf("ACTION(%s)\n", IupGetAttribute(ih, "TITLE"));
@@ -152,7 +153,7 @@ int item_insert_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_remove_cb(Ihandle* ih)
+static int item_remove_cb(Ihandle* ih)
 {
   Ihandle* item = IupGetNextChild(IupGetParent(ih), IupGetNextChild(IupGetParent(ih), ih));   /* the next after the separator */
   printf("ACTION(%s)\n", IupGetAttribute(ih, "TITLE"));
@@ -161,7 +162,7 @@ int item_remove_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_image_cb(Ihandle* ih)
+static int item_image_cb(Ihandle* ih)
 {
   printf("ACTION(%s)\n", IupGetAttribute(ih, "TITLE"));
   ih = IupGetNextChild(IupGetParent(ih), ih);
@@ -172,7 +173,7 @@ int item_image_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_active_cb(Ihandle* ih)
+static int item_active_cb(Ihandle* ih)
 {
   printf("ACTION(%s)\n", IupGetAttribute(ih, "TITLE"));
   ih = IupGetNextChild(IupGetParent(ih), ih);
@@ -183,7 +184,7 @@ int item_active_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_rename_cb(Ihandle* ih)
+static int item_rename_cb(Ihandle* ih)
 {
   printf("ACTION(%s)\n", IupGetAttribute(ih, "TITLE"));
   ih = IupGetNextChild(IupGetParent(ih), ih);
@@ -191,7 +192,7 @@ int item_rename_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_toggle_cb(Ihandle* ih)
+static int item_toggle_cb(Ihandle* ih)
 {
   printf("ACTION(%s)\n", IupGetAttribute(ih, "TITLE"));
   if (IupGetInt(ih, "VALUE"))
@@ -201,50 +202,50 @@ int item_toggle_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_cb (Ihandle* ih)
+static int item_cb (Ihandle* ih)
 {
   printf("ACTION(%s)\n", IupGetAttribute(ih, "TITLE"));
   return IUP_DEFAULT;
 }
 
-int item_close_cb (Ihandle* ih)
+static int item_close_cb (Ihandle* ih)
 {
   printf("ACTION(%s)\n", IupGetAttribute(ih, "TITLE"));
   return IUP_CLOSE;
 }
 
-int item_help_cb (Ihandle* ih)
+static int item_help_cb (Ihandle* ih)
 {
   printf("HELP_CB(%s)\n", IupGetAttribute(ih, "TITLE"));
   return IUP_DEFAULT;
 }
 
-int item_destroy_cb (Ihandle* ih)
+static int item_destroy_cb (Ihandle* ih)
 {
   printf("ACTION(%s)\n", IupGetAttribute(ih, "TITLE"));
   IupDestroy(IupGetDialog(ih));
   return IUP_DEFAULT;
 }
 
-int highlight_cb(Ihandle* ih)
+static int highlight_cb(Ihandle* ih)
 {
   printf("HIGHLIGHT_CB(%s)\n", IupGetAttribute(ih, "TITLE"));
   return IUP_DEFAULT;
 }
 
-int open_cb(Ihandle* ih)
+static int open_cb(Ihandle* ih)
 {
   printf("OPEN_CB(Menu of %s)\n", IupGetAttribute(IupGetParent(ih), "TITLE"));
   return IUP_DEFAULT;
 }
 
-int menuclose_cb(Ihandle* ih)
+static int menuclose_cb(Ihandle* ih)
 {
   printf("MENUCLOSE_CB(Menu of %s)\n", IupGetAttribute(IupGetParent(ih), "TITLE"));
   return IUP_DEFAULT;
 }
 
-void show_popup(void)
+static void show_popup(void)
 {
   Ihandle* menu_file = IupMenu(
     IupSetAttributes(IupItem("Item with Image", "item_cb"), "IMAGE=image_tec"),
@@ -265,14 +266,14 @@ void show_popup(void)
   IupDestroy(menu);
 }
 
-int k_m(Ihandle *ih)
+static int k_m(Ihandle *ih)
 {
   (void)ih;
   show_popup();
   return IUP_DEFAULT;
 }
 
-int button(Ihandle *ih,int but,int pressed,int x,int y,char* status)
+static int button(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
   (void)x;
   (void)y;
@@ -299,14 +300,11 @@ static int getfocus(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void MenuTest(void)
 {
   Ihandle *dlg, *canvas, *menu,
           *menu_file, *menu_edit, *menu_help, 
           *menu_create; 
-  
-  /* Initializes IUP */
-  IupOpen(&argc, &argv);
 
   IupSetHandle("image_tec", load_image_LogoTecgraf());
   IupSetHandle("image_test", load_image_Test());
@@ -379,13 +377,19 @@ int main(int argc, char* argv[])
 
   /* Shows dlg in the center of the screen */
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+}
 
-  /* Initializes IUP main loop */
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  MenuTest();
+
   IupMainLoop();
 
-  /* Finishes IUP */
-  IupClose ();  
+  IupClose();
 
-  /* Program finished sucessfully */
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

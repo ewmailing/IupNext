@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include <iup.h>
 
 int quit_cb(void)
@@ -36,5 +38,6 @@ int main(int argc, char **argv)
   IupDestroy(dialog);
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

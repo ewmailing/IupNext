@@ -1090,14 +1090,6 @@ static int winTextSetBgColorAttrib(Ihandle *ih, const char *value)
   return 1;
 }
 
-static char* winTextGetFormattingAttrib(Ihandle* ih)
-{
-  if (ih->data->has_formatting)
-    return "YES";
-  else
-    return "NO";
-}
-
 static int winTextSetCueBannerAttrib(Ihandle *ih, const char *value)
 {
   if (!ih->data->is_multiline && iupwin_comctl32ver6)
@@ -1803,7 +1795,7 @@ static int winTextMapMethod(Ihandle* ih)
   if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     dwStyle |= WS_TABSTOP;
 
-  if (iupStrBoolean(iupAttribGet(ih, "FORMATTING")))
+  if (ih->data->has_formatting)
   {
     /* enable richedit 3.0 */
     static HMODULE richedit = NULL;
@@ -1812,7 +1804,6 @@ static int winTextMapMethod(Ihandle* ih)
     if (!richedit)
       return IUP_ERROR;
 
-    ih->data->has_formatting = 1;
     winclass = RICHEDIT_CLASS;
   }
 
@@ -1921,7 +1912,7 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "NC", iupTextGetNCAttrib, winTextSetNCAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, winTextSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winTextSetCueBannerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORMATTING", winTextGetFormattingAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);  /* after mapping can not set */
+  iupClassRegisterAttribute(ic, "FORMATTING", iupTextGetFormattingAttrib, iupTextSetFormattingAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTER", NULL, winTextSetFilterAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REMOVEFORMATTING", NULL, winTextSetRemoveFormattingAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OVERWRITE", NULL, winTextSetOverwriteAttrib, NULL, NULL, IUPAF_NO_INHERIT);

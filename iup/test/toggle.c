@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"          
 
@@ -93,7 +94,7 @@ static unsigned char image_data_8_inactive [TEST_IMAGE_SIZE*TEST_IMAGE_SIZE] =
   5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
 };
 
-void createimgs(void)
+static void createimgs(void)
 { 
   Ihandle *image; 
 
@@ -128,14 +129,14 @@ void createimgs(void)
   IupSetHandle ("image1p", image);
 }
 
-int togglecb(Ihandle *self, int v)
+static int togglecb(Ihandle *self, int v)
 {
   if (v == 1) printf("Toggle %s - ON\n", IupGetAttribute(self, "NAME")); 
   else printf("Toggle %s - OFF\n", IupGetAttribute(self, "NAME")); 
   return IUP_DEFAULT;
 }
 
-int toggle9cb(Ihandle *self, int v)
+static int toggle9cb(Ihandle *self, int v)
 {
   Ihandle* ih = IupGetHandle("radio test");
   if (v == 1) printf("Toggle 9 - ON\n"); 
@@ -150,7 +151,7 @@ int toggle9cb(Ihandle *self, int v)
   return IUP_DEFAULT;
 }
 
-int toggle7cb(Ihandle *ih, int v)
+static int toggle7cb(Ihandle *ih, int v)
 {
   Ihandle* dlg = IupGetDialog(ih);
   Ihandle* box = IupGetChild(dlg, 0);
@@ -162,48 +163,47 @@ int toggle7cb(Ihandle *ih, int v)
   return IUP_DEFAULT;
 }
 
-int k_any(Ihandle *ih, int c)
+static int k_any(Ihandle *ih, int c)
 {
   printf("K_ANY(%d)\n", c);
   return IUP_DEFAULT;
 }
 
-int getfocus_cb(Ihandle *ih)
+static int getfocus_cb(Ihandle *ih)
 {
   printf("GETFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
-int help_cb(Ihandle* ih)
+static int help_cb(Ihandle* ih)
 {
   printf("HELP_CB()\n");
   return IUP_DEFAULT;
 }
      
-int killfocus_cb(Ihandle *ih)
+static int killfocus_cb(Ihandle *ih)
 {
   printf("KILLFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
-int leavewindow_cb(Ihandle *ih)
+static int leavewindow_cb(Ihandle *ih)
 {
   printf("LEAVEWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
-int enterwindow_cb(Ihandle *ih)
+static int enterwindow_cb(Ihandle *ih)
 {
   printf("ENTERWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
-void main(int argc, char* argv[])
+void ToggleTest(void)
 {
   Ihandle *dlg, *box;
   Ihandle *toggle1, *toggle2, *toggle3, *toggle4, *toggle5, *toggle6, *toggle7, *toggle8, *toggle9;
 
-  IupOpen(&argc, &argv);
   createimgs();
 
   toggle1 = IupToggle(NULL, NULL);
@@ -288,11 +288,19 @@ void main(int argc, char* argv[])
 
   /* Associates a menu to the dlg */
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER); 
-  IupMainLoop();
-  IupDestroy(dlg);
-  IupDestroy(IupGetHandle ("image1")); 
-  IupDestroy(IupGetHandle ("image1p")); 
-  IupDestroy(IupGetHandle ("image1i")); 
-  IupDestroy(IupGetHandle ("image2")); 
-  IupClose();
 }
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  ToggleTest();
+
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+#endif

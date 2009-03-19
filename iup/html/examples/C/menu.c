@@ -2,6 +2,7 @@
    Creates a dialog with a menu with two submenus.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -10,7 +11,7 @@ int exit_cb(void)
   return IUP_CLOSE;
 }
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   Ihandle *dlg, *menu, *item_save, *item_open, *item_undo, *item_exit, *file_menu;
   Ihandle *sub1_menu;
@@ -48,6 +49,6 @@ void main(int argc, char **argv)
 
   IupShow(dlg);
   IupMainLoop();
-  IupDestroy(dlg);
   IupClose();
+  return EXIT_SUCCESS;
 }

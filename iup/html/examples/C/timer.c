@@ -1,5 +1,6 @@
 /* IupTimer Example in C */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -46,9 +47,13 @@ int main(int argc, char **argv)
   IupSetCallback(timer2, "ACTION_CB", (Icallback)timer_cb);
 
   IupMainLoop();
+
+  /* Timers are NOT automatically destroyed, must be manually done */
   IupDestroy(timer1);
   IupDestroy(timer2);
+
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

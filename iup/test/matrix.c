@@ -5,7 +5,7 @@
 #include "iup.h"
 #include "iupcontrols.h"
 
-Ihandle* create_matrix(void)
+static Ihandle* create_matrix(void)
 {
   Ihandle* mat = IupMatrix(NULL); 
   
@@ -49,12 +49,9 @@ Ihandle* create_matrix(void)
   return mat;
 }
 
-int main(int argc, char* argv[])
+void MatrixTest(void)
 {
   Ihandle* dlg, *box;
-
-  IupOpen(&argc, &argv);
-  IupControlsOpen();
 
   box = IupVbox(create_matrix(), NULL);
   IupSetAttribute(box, "MARGIN", "10x10");
@@ -62,10 +59,20 @@ int main(int argc, char* argv[])
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupMatrix Simple Test");
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+  IupControlsOpen();
+
+  MatrixTest();
 
   IupMainLoop();
-  IupDestroy(dlg);
-  IupClose();  
 
-  return 0;
+  IupClose();
+
+  return EXIT_SUCCESS;
 }
+#endif

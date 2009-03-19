@@ -2,16 +2,17 @@
    Uses the Fill element to horizontally centralize a button and to justify it to the left and right.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
 int main(int argc, char **argv)
 {
   /* IUP handles */
-  Ihandle *frame_left ;
-  Ihandle *frame_right ;
-  Ihandle *frame_center ;
-  Ihandle *dialog ; 
+  Ihandle *frame_left;
+  Ihandle *frame_right;
+  Ihandle *frame_center;
+  Ihandle *dialog; 
 
   /* Initializes IUP */
   IupOpen(&argc, &argv);
@@ -25,10 +26,10 @@ int main(int argc, char **argv)
       IupFill(),
       NULL
     )
-  ) ;
+  );
 
   /* Sets frame's title */
-  IupSetAttribute( frame_left, "TITLE", "Left aligned" ) ;
+  IupSetAttribute( frame_left, "TITLE", "Left aligned" );
 
   /* Creates frame with centered button */
   frame_center = IupFrame
@@ -40,10 +41,10 @@ int main(int argc, char **argv)
       IupFill (),
       NULL
     )
-  ) ;
+  );
 
   /* Sets frame's title */
-  IupSetAttribute( frame_center, "TITLE", "Centered" ) ;
+  IupSetAttribute( frame_center, "TITLE", "Centered" );
 
   /* Creates frame with right aligned button */
   frame_right = IupFrame
@@ -54,10 +55,10 @@ int main(int argc, char **argv)
       IupButton ( "Ok", "" ),
       NULL
     )
-  ) ;
+  );
 
   /* Sets frame's title */
-  IupSetAttribute( frame_right, "TITLE", "Right aligned" ) ;
+  IupSetAttribute( frame_right, "TITLE", "Right aligned" );
 
   /* Creates dialog with these three frames */
   dialog = IupDialog
@@ -69,15 +70,15 @@ int main(int argc, char **argv)
       frame_right,
       NULL
     )
-  ) ;
+  );
 
   /* Sets dialog's size and title */
-  IupSetAttributes( dialog, "SIZE=120, TITLE=IupFill") ;
+  IupSetAttributes( dialog, "SIZE=120, TITLE=IupFill");
 
-  IupShow( dialog ) ;  /* Shows dialog in the center of the screen */
-  IupMainLoop() ;      /* Initializes IUP main loop */
-  IupDestroy(dialog);
-  IupClose() ;         /* Finishes IUP */
+  IupShow( dialog );  /* Shows dialog in the center of the screen */
+  IupMainLoop();      /* Initializes IUP main loop */
+  IupClose();         /* Finishes IUP */
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

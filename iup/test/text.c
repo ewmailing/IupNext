@@ -3,39 +3,39 @@
 #include <iup.h>
 #include <iupkey.h>
 
-void text2multiline (Ihandle* ih, char* attribute)
+static void text2multiline (Ihandle* ih, char* attribute)
 {
   Ihandle *mltline = IupGetDialogChild(ih, "mltline");
   Ihandle *text = IupGetDialogChild(ih, "text");
   IupSetAttribute (mltline, attribute, IupGetAttribute (text, "VALUE"));
 }
 
-void multiline2text (Ihandle* ih, char* attribute)
+static void multiline2text (Ihandle* ih, char* attribute)
 {
   Ihandle *mltline = IupGetDialogChild(ih, "mltline");
   Ihandle *text = IupGetDialogChild(ih, "text");
   IupSetAttribute (text, "VALUE", IupGetAttribute(mltline, attribute));
 }
 
-int btn_append_cb (Ihandle* ih)
+static int btn_append_cb (Ihandle* ih)
 {
   text2multiline(ih, "APPEND"); 
   return IUP_DEFAULT;
 }
 
-int btn_insert_cb (Ihandle* ih)
+static int btn_insert_cb (Ihandle* ih)
 {
   text2multiline(ih, "INSERT"); 
   return IUP_DEFAULT;
 }
 
-int btn_clip_cb (Ihandle* ih)
+static int btn_clip_cb (Ihandle* ih)
 {
   text2multiline(ih, "CLIPBOARD"); 
   return IUP_DEFAULT;
 }
 
-int btn_caret_cb (Ihandle* ih)
+static int btn_caret_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle("text2multi");
   if (IupGetInt(opt, "VALUE")) 
@@ -45,7 +45,7 @@ int btn_caret_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int btn_readonly_cb (Ihandle* ih)
+static int btn_readonly_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle("text2multi");
   if (IupGetInt(opt, "VALUE")) 
@@ -55,7 +55,7 @@ int btn_readonly_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int btn_selection_cb (Ihandle* ih)
+static int btn_selection_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle ("text2multi");
   if (IupGetInt (opt, "VALUE")) 
@@ -65,7 +65,7 @@ int btn_selection_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int btn_selectedtext_cb (Ihandle* ih)
+static int btn_selectedtext_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle ("text2multi");
   if (IupGetInt (opt, "VALUE")) 
@@ -75,7 +75,7 @@ int btn_selectedtext_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int btn_overwrite_cb (Ihandle* ih)
+static int btn_overwrite_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle ("text2multi");
   if (IupGetInt (opt, "VALUE")) 
@@ -85,7 +85,7 @@ int btn_overwrite_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int btn_active_cb(Ihandle *ih)
+static int btn_active_cb(Ihandle *ih)
 {
   Ihandle *opt = IupGetHandle ("text2multi");
   if (IupGetInt (opt, "VALUE")) 
@@ -95,13 +95,13 @@ int btn_active_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int btn_remformat_cb(Ihandle *ih)
+static int btn_remformat_cb(Ihandle *ih)
 {
   text2multiline (ih, "REMOVEFORMATTING"); 
   return IUP_DEFAULT;
 }
 
-int btn_nc_cb (Ihandle* ih)
+static int btn_nc_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle ("text2multi");
   if (IupGetInt (opt, "VALUE")) 
@@ -111,7 +111,7 @@ int btn_nc_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int btn_value_cb (Ihandle* ih)
+static int btn_value_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle ("text2multi");
   if (IupGetInt (opt, "VALUE")) 
@@ -121,7 +121,7 @@ int btn_value_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int btn_tabsize_cb (Ihandle* ih)
+static int btn_tabsize_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle ("text2multi");
   if (IupGetInt (opt, "VALUE")) 
@@ -131,13 +131,13 @@ int btn_tabsize_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int k_f2(void)
+static int k_f2(void)
 {
   printf("K_F2\n");
   return IUP_DEFAULT;
 }
 
-int file_open(void)
+static int file_open(void)
 {
   char filename[100] = "";
   IupGetFile(filename);  // test key after dlg in multiline
@@ -147,7 +147,7 @@ int file_open(void)
 
 char *iupKeyCodeToName(int code);
 
-int k_any(Ihandle *ih, int c)
+static int k_any(Ihandle *ih, int c)
 {
   if (iup_isprint(c))
     printf("K_ANY(%d = %s \'%c\')\n", c, iupKeyCodeToName(c), (char)c);
@@ -163,7 +163,7 @@ int k_any(Ihandle *ih, int c)
   return IUP_CONTINUE;
 }
 
-int action(Ihandle *ih, int c, char* after)
+static int action(Ihandle *ih, int c, char* after)
 {
   if (iup_isprint(c))
     printf("ACTION(%d = %s \'%c\', %s)\n", c, iupKeyCodeToName(c), (char)c, after);
@@ -178,61 +178,61 @@ int action(Ihandle *ih, int c, char* after)
   return IUP_DEFAULT;
 }
 
-int caret_cb(Ihandle *ih, int lin, int col)
+static int caret_cb(Ihandle *ih, int lin, int col)
 {
   printf("CARET_CB(%d, %d)\n", lin, col);
   return IUP_DEFAULT;
 }
 
-int getfocus_cb(void)
+static int getfocus_cb(void)
 {
   printf("GETFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
-int help_cb(void)
+static int help_cb(void)
 {
   printf("HELP_CB()\n");
   return IUP_DEFAULT;
 }
      
-int killfocus_cb(void)
+static int killfocus_cb(void)
 {
   printf("KILLFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
-int leavewindow_cb(void)
+static int leavewindow_cb(void)
 {
   printf("LEAVEWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
-int enterwindow_cb(void)
+static int enterwindow_cb(void)
 {
   printf("ENTERWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
-int btn_def_esc_cb(void)
+static int btn_def_esc_cb(void)
 {
   printf("DEFAULTESC\n");
   return IUP_DEFAULT;
 }
 
-int btn_def_enter_cb(void)
+static int btn_def_enter_cb(void)
 {
   printf("DEFAULTENTER\n");
   return IUP_DEFAULT;
 }
 
-int dropfiles_cb(Ihandle *ih, const char* filename, int num, int x, int y)
+static int dropfiles_cb(Ihandle *ih, const char* filename, int num, int x, int y)
 {
   printf("DROPFILES_CB(%s, %d, x=%d, y=%d)\n", filename, num, x, y);
   return IUP_DEFAULT;
 }
 
-int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
+static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
   int lin, col, pos;
   printf("BUTTON_CB(but=%c (%d), x=%d, y=%d [%s])\n",(char)but,pressed,x,y, status);
@@ -241,7 +241,7 @@ int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
   return IUP_DEFAULT;
 }
 
-int motion_cb(Ihandle *ih,int x,int y,char* status)
+static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
   int lin, col, pos;
   printf("MOTION_CB(x=%d, y=%d [%s])\n",x,y, status);
@@ -250,15 +250,12 @@ int motion_cb(Ihandle *ih,int x,int y,char* status)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void TextTest(void)
 {
   int formatting = 0;
   Ihandle *dlg, *mltline, *text, *opt, *btn_def_enter, *btn_def_esc, *btn_active, *btn_overwrite,
           *btn_append, *btn_insert, *btn_caret, *btn_clip, *btn_readonly, *btn_tabsize,
           *btn_selection, *btn_selectedtext, *btn_nc, *btn_value, *lbl, *formattag, *btn_remformat;
-
-  /* Initializes IUP */
-  IupOpen(&argc, &argv);
 
 //  IupSetGlobal("UTF8AUTOCONVERT", "NO");
 
@@ -304,10 +301,10 @@ int main(int argc, char* argv[])
   IupSetAttribute(text, "CUEBANNER", "Enter Attribute Value Here");
 
   formatting = 1;
-  IupSetAttribute(mltline, "FORMATTING", "YES");
-
   if (formatting)          /* just to make easier to comment this section */
   {
+    IupSetAttribute(mltline, "FORMATTING", "YES");
+
     /* formatting before Map */
 
     formattag = IupUser();
@@ -402,15 +399,19 @@ int main(int argc, char* argv[])
 
   /* Shows dlg in the center of the screen */
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
-
-  /* Initializes IUP main loop */
-  IupMainLoop ();
-
-  IupDestroy(dlg);
-
-  /* Finishes IUP */
-  IupClose ();
-
-  /* Program finished sucessfully */
-  return 0;
 }
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  TextTest();
+
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+#endif

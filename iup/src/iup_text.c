@@ -24,6 +24,24 @@
 #include "iup_assert.h"
 
 
+char* iupTextGetFormattingAttrib(Ihandle* ih)
+{
+  if (ih->data->has_formatting)
+    return "YES";
+  else
+    return "NO";
+}
+
+int iupTextSetFormattingAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->handle)  /* only before map */
+    return 0;
+
+  ih->data->has_formatting = iupStrBoolean(value);
+
+  return 0;
+}
+
 static void iTextDestroyFormatTags(Ihandle* ih)
 {
   /* called if the element was destroyed before it was mapped */

@@ -171,17 +171,16 @@ static void iValComputeNaturalSizeMethod(Ihandle* ih)
 
 static int iValCreateMethod(Ihandle* ih, void **params)
 {
+  char* type = "HORIZONTAL";
+  if (params && params[0])
+    type = params[0];
+
   ih->data = iupALLOCCTRLDATA();
 
-  if (params && params[0])
-  {
-    iupAttribStoreStr(ih, "TYPE", params[0]);
+  iValSetTypeAttrib(ih, type);
+  if (ih->data->type == IVAL_VERTICAL)
+    ih->data->inverted = 1;  /* default is YES when vertical */
 
-    if (iupStrEqualNoCase(params[0], "VERTICAL"))
-      ih->data->inverted = 1;  /* default is YES when vertical */
-  }
-
-  ih->data->type = IVAL_HORIZONTAL;
   ih->data->vmax = 1.00;
   ih->data->step = 0.01;
   ih->data->pagestep = 0.10;

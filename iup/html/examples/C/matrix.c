@@ -12,8 +12,8 @@ Ihandle *create_mat(void)
   IupSetAttribute(mat,"NUMCOL","20"); 
   IupSetAttribute(mat,"NUMLIN","30"); 
   
-  IupSetAttribute(mat,"NUMCOL_VISIBLE","2") ;
-  IupSetAttribute(mat,"NUMLIN_VISIBLE","3") ;
+  IupSetAttribute(mat,"NUMCOL_VISIBLE","2");
+  IupSetAttribute(mat,"NUMLIN_VISIBLE","3");
   
   IupSetAttribute(mat,"0:0","Inflation");
   IupSetAttribute(mat,"1:0","Medicine");
@@ -38,14 +38,13 @@ int main(int argc, char **argv)
 {
   Ihandle *dlg;
   IupOpen(&argc, &argv);       
-  IupControlsOpen () ;
+  IupControlsOpen ();
 
   dlg = IupDialog(create_mat());
   IupSetAttribute(dlg, "TITLE", "IupMatrix");
   IupShowXY (dlg,IUP_CENTER,IUP_CENTER);
-  IupMainLoop () ;
-  IupDestroy(dlg);
-  IupControlsClose() ;
-  IupClose () ;  
-  return 0 ;
+  IupMainLoop ();
+  IupClose ();  
+  return EXIT_SUCCESS;
+
 }

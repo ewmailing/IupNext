@@ -7,17 +7,17 @@
 #include "iupcontrols.h"
 
 /* IUP handles */
-static Ihandle *cnvs = NULL ;
+static Ihandle *cnvs = NULL;
 
 /* CD canvas */
-static cdCanvas *cdcanvas = NULL ;
+static cdCanvas *cdcanvas = NULL;
 
 int redraw_cb( Ihandle *self)
 {
   if (!cdcanvas) return IUP_DEFAULT;
 
   /* Activates canvas cdcanvas */
-  cdActivate( cdcanvas ) ;
+  cdActivate( cdcanvas );
   cdClear();
   
   /* Draws a rectangle on the canvas */
@@ -42,7 +42,7 @@ char* cell_cb(Ihandle* self, int cell)
   if (IupGetColor(IUP_MOUSEPOS, IUP_MOUSEPOS, &r, &g, &b))
   {
     sprintf(str, "%d %d %d", (int)r, (int)g, (int)b);
-    cdActivate( cdcanvas ) ;
+    cdActivate( cdcanvas );
     cdForeground(cdEncodeColor(r, g, b));
     redraw_cb(cnvs);
     return str;
@@ -59,7 +59,7 @@ int select_cb(Ihandle* self, int cell, int type)
   sscanf(IupGetAttribute(self, str), "%d %d %d", &ri, &gi, &bi);
   cd_color = cdEncodeColor((unsigned char)ri,(unsigned char)gi,(unsigned char)bi);
    
-  cdActivate( cdcanvas ) ;
+  cdActivate( cdcanvas );
   if (type == IUP_PRIMARY)
     cdForeground(cd_color);
   else
@@ -73,7 +73,7 @@ int select_cb(Ihandle* self, int cell, int type)
 int switch_cb(Ihandle* self, int primcell, int seccell)
 {
   long fgcolor;
-  cdActivate(cdcanvas) ;
+  cdActivate(cdcanvas);
   fgcolor = cdForeground(CD_QUERY);
   cdForeground(cdBackground(CD_QUERY));
   cdBackground(fgcolor);
@@ -88,11 +88,11 @@ int main(int argc, char **argv)
   
   /* Initializes IUP */
   IupOpen(&argc, &argv);
-  IupControlsOpen() ;
+  IupControlsOpen();
 
 
   /* Creates a canvas associated with the redraw action */
-  cnvs = IupCanvas(NULL) ;
+  cnvs = IupCanvas(NULL);
   IupSetCallback(cnvs, "ACTION", (Icallback)redraw_cb);
   
   /* Sets size, minimum and maximum values, position and size of the thumb   */
@@ -128,12 +128,10 @@ int main(int argc, char **argv)
   /* Initializes IUP main loop */
   IupMainLoop();
 
-  IupDestroy(dlg);
-
   /* Finishes IUP */
-  IupControlsClose();  
   IupClose();  
 
   /* Program finished successfully */
-  return 0 ;
+  return EXIT_SUCCESS;
+
 }

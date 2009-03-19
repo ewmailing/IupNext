@@ -271,9 +271,10 @@ static int iParamColorButton_CB(Ihandle *self, int button, int pressed)
 
     if (IupGetInt(dlg, "STATUS") != -1)
     {
-      IupSetAttribute(textbox, "VALUE", iupAttribGet(dlg, "VALUE"));
-      iupAttribStoreStr(param, "VALUE", iupAttribGet(dlg, "VALUE"));
-      IupStoreAttribute(self, "BGCOLOR", iupAttribGet(dlg, "VALUE"));
+      char* value = IupGetAttribute(dlg, "VALUE");
+      IupSetAttribute(textbox, "VALUE", value);
+      iupAttribStoreStr(param, "VALUE", value);
+      IupStoreAttribute(self, "BGCOLOR", value);
     } 
 
     IupDestroy(dlg);

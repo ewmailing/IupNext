@@ -4,12 +4,15 @@
 *      Remark : IUP must be linked to the CD library                      
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 #include "cd.h"
 #include "cdiup.h"
 
 unsigned char image[640][400];
+
+/* This sample uses the OLD CD API */
 
 int redraw_cb(Ihandle* self, float sx, float sy)
 {
@@ -38,7 +41,7 @@ int button_cb(Ihandle* self, int botao, int estado, int x, int y)
   if(botao == IUP_BUTTON1 && estado)
   {
     cdMark(x,y);
-    image[(int)(320.0*sx)+x][(int)(200.0*sy)+y] = 1 ;
+    image[(int)(320.0*sx)+x][(int)(200.0*sy)+y] = 1;
   }
 	
   return IUP_DEFAULT;	
@@ -52,7 +55,7 @@ int motion_cb(Ihandle* self, int x, int y)
 
   float sy = -IupGetFloat(self, "POSY");
 
-  sprintf(buffer,"(%d, %d)",(int)(320.0*sx)+x,(int)(200.0*sy)+y) ;
+  sprintf(buffer,"(%d, %d)",(int)(320.0*sx)+x,(int)(200.0*sy)+y);
 
   label = IupGetHandle("label");
   IupStoreAttribute(label,"TITLE",buffer);  
@@ -123,7 +126,7 @@ int main(int argc, char **argv)
     IupMessage("IupCanvas","Error creating canvas");
     IupDestroy(dlg);
     IupClose();
-    return 0 ;
+    return EXIT_FAILURE;
   }
   
   if(cdActivate(cdcanvas) == CD_ERROR)
@@ -131,12 +134,11 @@ int main(int argc, char **argv)
     IupMessage("IupCanvas","Error creating canvas");
     IupDestroy(dlg);
     IupClose();
-    return 0 ;
+    return EXIT_FAILURE;
   }
   
   cdClear();
   IupMainLoop();
-  IupDestroy(dlg);
   IupClose();
-  return 0;
-}
+  return EXIT_SUCCESS;
+ }

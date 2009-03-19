@@ -7,6 +7,7 @@
  
 /* Includes ANSI C libraries */
 #include <stdlib.h> 
+#include <stdio.h>
 
 /* Includes IUP libraries */
 #include <iup.h>
@@ -308,14 +309,10 @@ int main(int argc, char **argv)
   /* Initializes IUP main loop */
   IupMainLoop();
 
-  IupDestroy(dlg);
-  IupDestroy(img_release);
-  IupDestroy(img_inactive);
-  IupDestroy(img_press);
-
   /* Finishes IUP */
   IupClose();  
 
   /* Program finished successfully */
-  return 0;
+  return EXIT_SUCCESS;
+
 }

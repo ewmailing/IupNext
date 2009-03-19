@@ -208,5 +208,5 @@ int main(int argc, char **argv)
   IupShow(IupGetHandle("dlg"));
   IupMainLoop();
   IupClose();  
-  return 0;
+  return EXIT_SUCCESS;
 }

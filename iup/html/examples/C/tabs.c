@@ -2,6 +2,7 @@
    Creates a IupTabs control.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -37,9 +38,9 @@ int main(int argc, char **argv)
   IupSetAttribute(dlg, "SIZE", "200x80");
 
   IupShowXY (dlg, IUP_CENTER, IUP_CENTER);
-  IupMainLoop () ;
-  IupDestroy(dlg);
-  IupClose () ;
+  IupMainLoop ();
+  IupClose ();
 
-  return 0 ;
+  return EXIT_SUCCESS;
+
 }

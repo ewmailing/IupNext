@@ -4,10 +4,13 @@
  *** by  Mark Stroetzel Glasberg, March 2001 ***
 ********************************************************************/
 
+#include <stdlib.h>
 #include <stdio.h>
+
 #include "iup.h"          
 #include "iupgl.h"
 #include "iupkey.h"
+
 #ifdef WIN32
   #include <windows.h>
 #endif
@@ -68,8 +71,7 @@ int main(int argc, char **argv)
 
   IupShow(dg);
   IupMainLoop();
-  IupDestroy(dg);
   IupClose();
 
-  return 1;
+  return EXIT_SUCCESS;
 }

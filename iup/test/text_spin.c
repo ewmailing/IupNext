@@ -26,11 +26,9 @@ static int setspinvalue(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void TextSpinTest(void)
 {
   Ihandle *dlg, *text;
-
-  IupOpen(&argc, &argv);
 
   text = IupText(NULL);
   IupSetAttribute(text, "SIZE", "60x");
@@ -58,11 +56,19 @@ int main(int argc, char* argv[])
 
   IupSetAttribute(dlg, "TITLE", "Text Spin Test");
   IupShow(dlg);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  TextSpinTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
+  IupClose();
 
-  IupClose();  
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

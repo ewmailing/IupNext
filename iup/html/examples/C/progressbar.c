@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 
 #include "iup.h"
@@ -303,15 +304,9 @@ int main(int argc, char* argv[])
   IupSetAttribute(timer, "RUN", "YES");
 
   IupMainLoop();
-  
-  IupDestroy(dlg);
-  IupDestroy(IupGetHandle ("img_restart")); 
-  IupDestroy(IupGetHandle ("img_play"));
-  IupDestroy(IupGetHandle ("img_forward")); 
-  IupDestroy(IupGetHandle ("img_rewind"));
-  IupDestroy(IupGetHandle ("img_pause"));
 
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

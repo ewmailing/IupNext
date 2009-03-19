@@ -21,6 +21,8 @@ void iupdrvTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, in
 void iupTextUpdateFormatTags(Ihandle* ih);
 char* iupTextGetPaddingAttrib(Ihandle* ih);
 char* iupTextGetNCAttrib(Ihandle* ih);
+int iupTextSetFormattingAttrib(Ihandle* ih, const char* value);
+char* iupTextGetFormattingAttrib(Ihandle* ih);
 
 struct _IcontrolData 
 {

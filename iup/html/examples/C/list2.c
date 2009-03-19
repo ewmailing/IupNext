@@ -4,6 +4,7 @@
    The second list has a callback associated.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <iup.h>
 #include <iupkey.h>
@@ -142,7 +143,7 @@ int main(int argc, char **argv)
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
   IupMainLoop();
-  IupDestroy(dlg);
   IupClose();
-  return 0;
+  return EXIT_SUCCESS;
+
 }

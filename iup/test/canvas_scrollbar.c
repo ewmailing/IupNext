@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 #include "cd.h"
@@ -13,14 +14,13 @@
    will define the convertion between canvas space and virtual space.
 */
 
-cdCanvas *cdcanvas;
-int virtual_width = 600;
-int virtual_height = 400;
-
-int action(Ihandle *ih, float posx, float posy)
+static int action(Ihandle *ih, float posx, float posy)
 {
+  cdCanvas *cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
   int iposx = (int)posx;
   int iposy = (int)posy;
+  int virtual_width = 600;
+  int virtual_height = 400;
   
   /* invert scroll reference (YMAX-DY - POSY) */
   iposy = virtual_height-1 - IupGetInt(ih, "DY") - iposy;      /* can use IupGetInt since we set as integers */
@@ -37,8 +37,10 @@ int action(Ihandle *ih, float posx, float posy)
   return IUP_DEFAULT;
 }
 
-int resize_cb(Ihandle *ih, int w, int h)
+static int resize_cb(Ihandle *ih, int w, int h)
 {
+  cdCanvas *cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
+
   /* update CD canvas size */
   cdCanvasActivate(cdcanvas);
  
@@ -52,17 +54,22 @@ int resize_cb(Ihandle *ih, int w, int h)
   return IUP_DEFAULT;
 }
 
-int map_cb(Ihandle *ih)
+static int map_cb(Ihandle *ih)
 {
-  cdcanvas = cdCreateCanvas(CD_IUP, ih);
+  cdCreateCanvas(CD_IUP, ih);
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+static int unmap_cb(Ihandle *ih)
+{
+  cdCanvas *cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
+  cdKillCanvas(cdcanvas);
+  return IUP_DEFAULT;
+}
+
+void CanvasScrollbarTest(void)
 {
   Ihandle *dlg, *canvas;
-
-  IupOpen(&argc, &argv);
 
   canvas = IupCanvas(NULL);
   IupSetAttribute(canvas, "RASTERSIZE", "300x200"); /* initial size */
@@ -82,13 +89,19 @@ int main(int argc, char* argv[])
   IupSetAttribute(canvas, "RASTERSIZE", NULL);  /* release the minimum limitation */
  
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  CanvasScrollbarTest();
 
   IupMainLoop();
 
-  cdKillCanvas(cdcanvas);
-  IupDestroy(dlg);
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

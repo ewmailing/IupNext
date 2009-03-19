@@ -423,10 +423,7 @@ int main(int argc, char **argv)
   IupSetAttribute(dlg,"MENU","mnu");
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
   IupMainLoop();
-  IupDestroy(IupGetHandle("img1"));
-  IupDestroy(IupGetHandle("img2"));
-  IupDestroy(dlg);
-//  IupControlsClose();      
   IupClose();  
-  return 0;
+  return EXIT_SUCCESS;
+
 }

@@ -2,14 +2,15 @@
 Draws a frame around a button. Note that "FGCOLOR" is added to the frame but it is inherited by the button. */
 
 /* IupFrame example */
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
 int main(int argc, char **argv)
 {
   /* IUP identifiers */
-  Ihandle *frame ;
-  Ihandle *dialog ;
+  Ihandle *frame;
+  Ihandle *dialog;
 
   /* Initializes IUP */  
   IupOpen(&argc, &argv);
@@ -24,7 +25,7 @@ int main(int argc, char **argv)
               IupFill(),
               NULL
             )
-          ) ;
+          );
 
   /* Sets frame's attributes */
   IupSetAttributes(frame, "FGCOLOR=\"255 0 0\", SIZE=EIGHTHxEIGHTH, TITLE=\"This is the frame\", MARGIN=10x10");
@@ -35,10 +36,10 @@ int main(int argc, char **argv)
   /* Sets dialog's title */
   IupSetAttribute(dialog, "TITLE", "IupFrame");
 
-  IupShow( dialog ) ;  /* Shows dialog in the center of the screen */
-  IupMainLoop() ;      /* Initializes IUP main loop */
-  IupDestroy(dialog);
-  IupClose() ;         /* Finishes IUP */
+  IupShow( dialog );  /* Shows dialog in the center of the screen */
+  IupMainLoop();      /* Initializes IUP main loop */
+  IupClose();         /* Finishes IUP */
 
-  return 0 ;
+  return EXIT_SUCCESS;
+
 }

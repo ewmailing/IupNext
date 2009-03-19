@@ -13,7 +13,7 @@ and the other, called when the right mouse button is pressed, opens a menu with 
 
 
 /* Callback called when a leaf is added by the menu. */
-int addleaf(void)
+static int addleaf(void)
 {
   static char attr[10];
   Ihandle* tree = IupGetHandle("tree");
@@ -25,7 +25,7 @@ int addleaf(void)
 }
 
 /* Callback called when a branch is added by the menu. */
-int addbranch(void)
+static int addbranch(void)
 {
   static char attr[10];
   Ihandle* tree = IupGetHandle("tree");
@@ -36,7 +36,7 @@ int addbranch(void)
   return IUP_DEFAULT;
 }
 
-int text_cb(Ihandle* self, int c, char *after)
+static int text_cb(Ihandle* self, int c, char *after)
 {
   if (c == K_ESC)
     return IUP_CLOSE;
@@ -53,7 +53,7 @@ int text_cb(Ihandle* self, int c, char *after)
 }
 
 /* Callback called when a node is removed by the menu. */
-int removenode(void)
+static int removenode(void)
 {
   Ihandle* tree = IupGetHandle("tree");
   IupSetAttribute(tree, "DELNODE", "MARKED");
@@ -62,24 +62,24 @@ int removenode(void)
 }
 
 /* from the menu */
-int renamenode(void)
+static int renamenode(void)
 {
   return IUP_DEFAULT;
 }
 
-int executeleaf_cb(Ihandle* h, int id)
+static int executeleaf_cb(Ihandle* h, int id)
 {
   printf("executeleaf_cb (%d)\n", id);
   return IUP_DEFAULT;
 }
 
-int renamenode_cb(Ihandle* h, int id, char* name)
+static int renamenode_cb(Ihandle* h, int id, char* name)
 {
   printf("renamenode_cb (%d=%s)\n", id, name);
   return IUP_DEFAULT;
 }
 
-int rename_cb(Ihandle* h, int id, char* name)
+static int rename_cb(Ihandle* h, int id, char* name)
 {
   printf("rename_cb (%d=%s)\n", id, name);
   if (strcmp(name, "fool") == 0)
@@ -87,26 +87,26 @@ int rename_cb(Ihandle* h, int id, char* name)
   return IUP_DEFAULT;
 }
 
-int branchopen_cb(Ihandle* h, int id)
+static int branchopen_cb(Ihandle* h, int id)
 {
   printf("branchopen_cb (%d)\n", id);
   return IUP_DEFAULT;
 }
 
-int branchclose_cb(Ihandle* h, int id)
+static int branchclose_cb(Ihandle* h, int id)
 {
   printf("branchclose_cb (%d)\n", id);
   return IUP_DEFAULT;
 }
 
-int dragdrop_cb(Ihandle* h, int drag_id, int drop_id, int isshift, int iscontrol)
+static int dragdrop_cb(Ihandle* h, int drag_id, int drop_id, int shift, int control)
 {
   printf("dragdrop_cb (%d)->(%d)\n", drag_id, drop_id);
   return IUP_DEFAULT;
 }
 
 /* Callback called when a key is hit */
-int k_any_cb(Ihandle* h, int c)
+static int k_any_cb(Ihandle* h, int c)
 {
   if (c == K_DEL) 
   {
@@ -117,7 +117,7 @@ int k_any_cb(Ihandle* h, int c)
   return IUP_DEFAULT;
 }
 
-int selectnode(Ihandle* h)
+static int selectnode(Ihandle* h)
 {
   Ihandle* tree = IupGetHandle("tree");
   IupSetAttribute(tree, "VALUE",  IupGetAttribute(h, "TITLE"));
@@ -126,7 +126,7 @@ int selectnode(Ihandle* h)
 }
 
 /* Callback called when the right mouse button is pressed */
-int rightclick_cb(Ihandle* h, int id)
+static int rightclick_cb(Ihandle* h, int id)
 {
   Ihandle *popup_menu;
 
@@ -169,7 +169,7 @@ int rightclick_cb(Ihandle* h, int id)
 }
 
 /* Initializes IupTree and registers callbacks */
-void init_tree(void)
+static void init_tree(void)
 {
   Ihandle* tree = IupTree(); 
 
@@ -186,7 +186,7 @@ void init_tree(void)
 }
 
 /* Initializes the dlg */
-void init_dlg(void)
+static void init_dlg(void)
 {
   Ihandle* tree = IupGetHandle("tree");
   Ihandle* box = IupVbox(IupHbox(tree, NULL), NULL);
@@ -199,7 +199,7 @@ void init_dlg(void)
 }
 
 /* Initializes the IupTree’s attributes */
-void init_tree_atributes(void)
+static void init_tree_atributes(void)
 {
   Ihandle* tree = IupGetHandle("tree");
 
@@ -225,23 +225,29 @@ void init_tree_atributes(void)
   IupSetAttribute(tree, "REDRAW", "YES");
 }
 
-/* Main program */
-int main(int argc, char* argv[])
+void TreeTest(void)
 {
-  Ihandle* dlg ;
+  Ihandle* dlg;
   
-  IupOpen(&argc, &argv);                  /* IUP initialization */
-  IupControlsOpen();                      /* Initializes the controls library */
-
   init_tree();                            /* Initializes IupTree */
   init_dlg();                             /* Initializes the dlg */
   dlg = IupGetHandle("dlg");              /* Retrieves the dlg handle */
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER); /* Displays the dlg */
   init_tree_atributes();                  /* Initializes attributes, can be done here or anywhere */
-
-  IupMainLoop();                          /* Main loop */
-  IupDestroy(dlg);
-  IupClose();                             /* Ends IUP */
-
-  return 0;
 }
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+  IupControlsOpen();
+
+  TreeTest();
+
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+#endif

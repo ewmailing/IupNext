@@ -41,19 +41,9 @@ static int winProgressBarSetMarqueeAttrib(Ihandle* ih, const char* value)
     return 0;
 
   if (iupStrBoolean(value))
-  {
-    ih->data->marquee = 1;
-    iupwinSetStyle(ih, PBS_MARQUEE, 1);
     SendMessage(ih->handle, PBM_SETMARQUEE, TRUE, 100);
-  }
   else
-  {
     SendMessage(ih->handle, PBM_SETMARQUEE, FALSE, 0);
-    iupwinSetStyle(ih, PBS_MARQUEE, 0);
-    ih->data->marquee = 0;
-  }
-
-  iupdrvDisplayRedraw(ih);
 
   return 1;
 }
@@ -135,6 +125,12 @@ static int winProgressBarMapMethod(Ihandle* ih)
 
   if (!iupwin_comctl32ver6 && !iupStrBoolean(iupAttribGetStr(ih, "DASHED")))
     dwStyle |= PBS_SMOOTH;
+
+  if (iupwin_comctl32ver6 && iupStrBoolean(iupAttribGetStr(ih, "MARQUEE")))
+  {
+    dwStyle |= PBS_MARQUEE;
+    ih->data->marquee = 1;
+  }
 
   if (!iupwinCreateWindowEx(ih, PROGRESS_CLASS, 0, dwStyle))
     return IUP_ERROR;

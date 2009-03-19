@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include "iup.h"
@@ -33,7 +34,6 @@ int main(int argc, char **argv)
   IupShow(dlg);
 
   IupMainLoop();
-  IupDestroy(dlg);
   IupClose();
-  return 1;
+  return EXIT_SUCCESS;
 }

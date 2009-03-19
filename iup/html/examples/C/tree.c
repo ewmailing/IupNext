@@ -174,7 +174,7 @@ void init_dlg(void)
 {
   Ihandle* tree = IupGetHandle("tree");
   Ihandle* box = IupVbox(IupHbox(tree, IupButton("test", NULL), NULL), NULL);
-  Ihandle* dlg = IupDialog(box) ;
+  Ihandle* dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupTree");
   IupSetAttribute(tree, "SIZE","QUARTERxTHIRD");
   IupSetAttribute(box, "MARGIN", "20x20");
@@ -212,7 +212,7 @@ void init_tree_atributes(void)
 /* Main program */
 int main(int argc, char **argv)
 {
-  Ihandle* dlg ;
+  Ihandle* dlg;
   
   IupOpen(&argc, &argv);                            /* IUP initialization */
   IupControlsOpen();                    /* Initializes the controls library */
@@ -224,9 +224,8 @@ int main(int argc, char **argv)
   init_tree_atributes();                /* Initializes attributes, can be done here or anywhere */
 
   IupMainLoop();                         /* Main loop */
-  IupDestroy(dlg);
-  IupControlsClose();                    /* Ends the controls library */
   IupClose();                            /* Ends IUP */
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }

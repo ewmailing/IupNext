@@ -4,6 +4,7 @@
 #include <vld.h>
 #endif
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 #include "iupkey.h"
@@ -59,20 +60,20 @@ static unsigned char pixmap_cursor [ ] =
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 } ;
 
-int close_cb(Ihandle *ih)
+static int close_cb(Ihandle *ih)
 {
   printf("CLOSE_CB(%s) with IupDestroy\n", IupGetAttribute(ih, "TESTTITLE"));
   IupDestroy(ih);
   return IUP_IGNORE;
 }
 
-int close_cb2(Ihandle *ih)
+static int close_cb2(Ihandle *ih)
 {
   printf("CLOSE_CB(%s) with IUP_IGNORE\n", IupGetAttribute(ih, "TESTTITLE"));
   return IUP_IGNORE;
 }
 
-int show_cb(Ihandle *ih, int state)
+static int show_cb(Ihandle *ih, int state)
 {
   char* state_str[5] ={
     "SHOW",
@@ -85,58 +86,59 @@ int show_cb(Ihandle *ih, int state)
   return IUP_DEFAULT;
 }
 
-int map_cb(Ihandle *ih)
+static int map_cb(Ihandle *ih)
 {
   printf("MAP_CB(%s)\n", IupGetAttribute(ih, "TESTTITLE"));
   return IUP_DEFAULT;
 }
 
-int dropfiles_cb(Ihandle *ih, const char* filename, int num, int x, int y)
+static int dropfiles_cb(Ihandle *ih, const char* filename, int num, int x, int y)
 {
   printf("DROPFILES_CB(%s, %s, %d, %d, %d)\n", IupGetAttribute(ih, "TESTTITLE"), filename, num, x, y);
   return IUP_DEFAULT;
 }
 
-int resize_cb(Ihandle *ih, int w, int h)
+static int resize_cb(Ihandle *ih, int w, int h)
 {
   printf("RESIZE_CB(%s, %d, %d) RASTERSIZE=%s\n", IupGetAttribute(ih, "TESTTITLE"), w, h, IupGetAttribute(ih, "RASTERSIZE"));
   return IUP_DEFAULT;
 }
 
-int getfocus_cb(Ihandle *ih)
+static int getfocus_cb(Ihandle *ih)
 {
   printf("GETFOCUS_CB(%s)\n", IupGetAttribute(ih, "TESTTITLE"));
   return IUP_DEFAULT;
 }
 
-int help_cb(Ihandle* ih)
+static int help_cb(Ihandle* ih)
 {
   printf("HELP_CB(%s)\n", IupGetAttribute(ih, "TESTTITLE"));
   return IUP_DEFAULT;
 }
      
-int killfocus_cb(Ihandle *ih)
+static int killfocus_cb(Ihandle *ih)
 {
   printf("KILLFOCUS_CB(%s)\n", IupGetAttribute(ih, "TESTTITLE"));
   return IUP_DEFAULT;
 }
 
-int leavewindow_cb(Ihandle *ih)
+static int leavewindow_cb(Ihandle *ih)
 {
   printf("LEAVEWINDOW_CB(%s)\n", IupGetAttribute(ih, "TESTTITLE"));
   return IUP_DEFAULT;
 }
 
-int enterwindow_cb(Ihandle *ih)
+static int enterwindow_cb(Ihandle *ih)
 {
   printf("ENTERWINDOW_CB(%s)\n", IupGetAttribute(ih, "TESTTITLE"));
   return IUP_DEFAULT;
 }
 
 char *iupKeyCodeToName(int code);
-void new_dialog(int test, char* tip);
 
-int k_any(Ihandle *ih, int c)
+static void new_dialog(int test, char* tip);
+
+static int k_any(Ihandle *ih, int c)
 {
   if (iup_isprint(c))
     printf("K_ANY(%s, %d = %s \'%c\')", IupGetAttribute(ih, "TESTTITLE"), c, iupKeyCodeToName(c), (char)c);
@@ -193,7 +195,7 @@ int k_any(Ihandle *ih, int c)
     }
     break;
   case K_s:
-    IupShow( IupGetHandle("_MAIN_DIALOG_TEST_"));
+    IupShow(IupGetHandle("_MAIN_DIALOG_TEST_"));
     break;
   case K_f:
     if (IupGetInt(ih, "FULLSCREEN"))
@@ -213,14 +215,35 @@ int k_any(Ihandle *ih, int c)
   return IUP_DEFAULT;
 }
 
-void new_dialog(int test, char* tip)
+static void new_dialog(int test, char* tip)
 {
   Ihandle *dlg = IupDialog(NULL);
   IupSetAttribute(dlg, "TIP", tip);
   IupSetfAttribute(dlg, "_TEST_", "%d", test);
 
   if (test == 0)
+  {
+    char* msg = "Press a key for a dialog test:\n"
+                "1 = new with SIZE=FULLxFULL\n"
+                "2 = new with dialog decorations\n"
+                "3 = new with NO decorations\n"
+                "4 = new changing PLACEMENT\n"
+                "5 = new using IupPopup\n"
+                "6 = new with FULLSCREEN=YES\n"
+                "p = PLACEMENT=MAXIMIZED\n"
+                "pp = PLACEMENT=MINIMIZED\n"
+                "ppp = PLACEMENT=NORMAL\n"
+                "pppp = PLACEMENT=FULL\n"
+                "s = IupShow(main)\n"
+                "f = toggle FULLSCREEN state\n"
+                "c = return IUP_CLOSE;\n"
+                "h = IupHide\n"
+                "r = RASTERSIZE+IupRefresh\n"
+                "Esc = quit";
+    IupAppend(dlg, IupVbox(IupLabel(msg), NULL));
+
     IupSetHandle("_MAIN_DIALOG_TEST_", dlg);
+  }
   else
   {
     IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
@@ -352,7 +375,7 @@ void new_dialog(int test, char* tip)
   }
 }
 
-void create_images(void)
+static void create_images(void)
 {
   Ihandle *image; 
 
@@ -371,30 +394,29 @@ void create_images(void)
   IupSetHandle("DLG_CURSOR", image);
 }
 
-void destroy_images(void)
+void DialogTest(void)
 {
-  IupDestroy(IupGetHandle("DLG_ICON"));
-  IupDestroy(IupGetHandle("DLG_CURSOR"));
-}
-
-int main(int argc, char* argv[])
-{
-//  IupOpen(&argc, &argv);
-IupOpen(NULL, NULL);
   create_images();
 
   new_dialog(0, "IupDialog as a main window,\n"
                 "all decorations.\n"
                 "rastersize+centered.");
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  DialogTest();
 
   IupMainLoop();
 
-  destroy_images();
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif
 
 /*****************************************
 --------------TESTS-------------------

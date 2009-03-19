@@ -7,7 +7,7 @@
 #include <iup.h>
 #include <iupcontrols.h>
 
-int param_action(Ihandle* dialog, int param_index, void* user_data)
+static int param_action(Ihandle* dialog, int param_index, void* user_data)
 {                
   switch(param_index)
   {
@@ -33,7 +33,7 @@ int param_action(Ihandle* dialog, int param_index, void* user_data)
   return 1;
 }
                             
-int main(int argc, char **argv)
+void GetParamTest(void)
 {
   int pboolean = 1;
   int pinteger = 3456;
@@ -42,14 +42,11 @@ int main(int argc, char **argv)
   float preal2 = 0.5f;
   float pangle = 90;
   char pstring[100] = "string text";
+  char pcolor[100] = "255 0 128";
   int plist = 2;
   char pstring2[200] = "second text\nsecond line";
   char file_name[500] = "test.jpg";
   
-  IupOpen(&argc, &argv);
-  IupControlsOpen();
-  IupSetLanguage(IUP_ENGLISH);
-
   if (!IupGetParam("Title", param_action, 0,
                    "Boolean: %b[No,Yes]\n"
                    "Integer: %i\n"
@@ -62,10 +59,11 @@ int main(int argc, char **argv)
                    "String: %s\n"
                    "List: %l|item1|item2|item3|\n" 
                    "File: %f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]\n"
+                   "Color: %c{Color Tip}\n"
                    "Sep3 %t\n"
                    "Multiline: %m\n",
-                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &plist, file_name, pstring2, NULL))
-    return IUP_DEFAULT;
+                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &plist, file_name, pcolor, pstring2, NULL))
+    return;
   
   IupMessagef("IupGetParam",
               "Boolean Value: %d\n"
@@ -77,11 +75,22 @@ int main(int argc, char **argv)
               "String: %s\n"
               "List Index: %d\n" 
               "FileName: %s\n"
+              "Color: %s\n"
               "Multiline: %s",
-              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, plist, file_name, pstring2);
+              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, plist, file_name, pcolor, pstring2);
+}
 
-  IupControlsClose();
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  GetParamTest();
+
+  IupMainLoop();
+
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
+#endif

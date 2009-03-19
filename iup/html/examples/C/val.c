@@ -73,7 +73,7 @@ static int button_release(Ihandle *c,double a)
 }
 
 
-void main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
   Ihandle *dlg_val, *val_h, *val_v;
 
@@ -120,8 +120,6 @@ void main(int argc, char* argv[])
   IupShowXY(dlg_val,IUP_CENTER,IUP_CENTER);
 
   IupMainLoop();
-  IupDestroy(dlg_val);
   IupClose();
+  return EXIT_SUCCESS;
 }
-
-

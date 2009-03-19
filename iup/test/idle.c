@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -22,11 +23,9 @@ static int motion_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-void main(int argc, char* argv[])
+void IdleTest(void)
 {
   Ihandle* dlg, *canvas;
-
-  IupOpen(&argc, &argv);
 
   canvas = IupCanvas(NULL);
   IupSetCallback(canvas, "MOTION_CB", motion_cb);
@@ -38,8 +37,19 @@ void main(int argc, char* argv[])
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
   IupSetFunction ("IDLE_ACTION", (Icallback)idle);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  IdleTest();
 
   IupMainLoop();
-  IupDestroy(dlg);
+
   IupClose();
+
+  return EXIT_SUCCESS;
 }
+#endif

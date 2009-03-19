@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "iup.h"
 
-int main(int argc, char* argv[])
+void HboxTest(void)
 {
   /* IUP identifiers */
   Ihandle *fr1, *fr2, *fr3, *dlg;
@@ -10,9 +10,6 @@ int main(int argc, char* argv[])
   Ihandle *b21, *b22, *b23;
   Ihandle *b31, *b32, *b33;
   Ihandle *h1,  *h2,  *h3;
-
-  /* Initializes IUP */
-  IupOpen(&argc, &argv);
 
   /* Creates frame with three top aligned buttons */
   fr1 = IupFrame
@@ -99,9 +96,19 @@ int main(int argc, char* argv[])
   IupSetAttribute(fr3, "GAP", "0");
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER); /* Shows dlg in the center of the screen */
-  IupMainLoop();                               /* Initializes IUP main loop */
-  IupDestroy(dlg);
-  IupClose();                                  /* Finishes IUP */
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  HboxTest();
+
+  IupMainLoop();
+
+  IupClose();
 
   return EXIT_SUCCESS;
 }
+#endif

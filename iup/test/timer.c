@@ -1,9 +1,10 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
-Ihandle *timer1, *timer2, *timer3;
+static Ihandle *timer1, *timer2, *timer3;
 
-int timer_cb(Ihandle *ih)
+static int timer_cb(Ihandle *ih)
 {
   if (ih == timer1)
     printf("timer 1 called\n");
@@ -23,11 +24,9 @@ int timer_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void TimerTest(void)
 {
   Ihandle *dlg;
-
-  IupOpen(&argc, &argv);
 
   dlg = IupDialog(NULL);
   IupSetAttribute(dlg, "TITLE", "IupTimer Test");
@@ -50,17 +49,19 @@ int main(int argc, char* argv[])
   IupSetAttribute(timer3, "TIME",  "5000");
   IupSetAttribute(timer3, "RUN",   "YES");
   IupSetCallback(timer3, "ACTION_CB", (Icallback)timer_cb);
+}
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  TimerTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
-  IupDestroy(timer1);
-  IupDestroy(timer2);
-  IupDestroy(timer3);
-
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
-
-
+#endif

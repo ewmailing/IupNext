@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -21,12 +22,12 @@ static unsigned char pixmap [ ] =
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 };
 
-int close(void)
+static int close(void)
 {
   return IUP_CLOSE;
 }
 
-int showmenu(void)
+static int showmenu(void)
 {
   Ihandle* menu = IupMenu(IupItem("Exit", "close"), NULL);
   IupSetFunction("close", (Icallback) close);
@@ -35,13 +36,13 @@ int showmenu(void)
   return IUP_DEFAULT;
 }
 
-int hidedialog(Ihandle* ih)
+static int hidedialog(Ihandle* ih)
 {
   IupSetAttribute(IupGetDialog(ih), "HIDETASKBAR", "YES");  
   return IUP_IGNORE;
 }
 
-int trayclick(Ihandle *ih, int button, int pressed, int dclick)
+static int trayclick(Ihandle *ih, int button, int pressed, int dclick)
 {
 printf("trayclick_cb(button=%d, pressed=%d, dclick=%d)\n", button, pressed, dclick);
   if (button == 1 && pressed)
@@ -51,11 +52,9 @@ printf("trayclick_cb(button=%d, pressed=%d, dclick=%d)\n", button, pressed, dcli
   return IUP_DEFAULT;
 }
 
-int main(int argc, char* argv[])
+void TrayTest(void)
 {
   Ihandle *dlg, *img;
-
-  IupOpen(&argc, &argv);
 
   img = IupImage(16, 16, pixmap);
   IupSetAttribute(img, "0", "BGCOLOR");
@@ -79,13 +78,20 @@ int main(int argc, char* argv[])
 
   /* start only the task bar icon */
   IupSetAttribute(dlg, "HIDETASKBAR", "YES");  
+}
+
+
+#ifndef BIG_TEST
+int main(int argc, char* argv[])
+{
+  IupOpen(&argc, &argv);
+
+  TrayTest();
 
   IupMainLoop();
 
-  IupDestroy(dlg);
-  IupDestroy(img);
-
   IupClose();
-  return 0 ;
-}
 
+  return EXIT_SUCCESS;
+}
+#endif

@@ -1,5 +1,8 @@
 /* IupMessage Example */
 
+#include <stdlib.h>
+#include <stdio.h>
+
 /* IUP libraries include */
 #include "iup.h"
 
@@ -10,11 +13,12 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);
   
   /* Executes IupMessage */
-  IupMessage("IupMessage Example", "Press the button") ;
+  IupMessage("IupMessage Example", "Press the button");
 
   /* Finishes IUP */
-  IupClose () ;
+  IupClose ();
 
   /* Program finished successfully */
-  return 0 ;
+  return EXIT_SUCCESS;
+
 }

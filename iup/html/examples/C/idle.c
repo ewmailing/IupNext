@@ -2,6 +2,7 @@
    Creating a program that computes a number’s factorial using the idle function.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
 
@@ -65,7 +66,7 @@ int close(void)
 /************************************************************************************ 
 * main program
 ************************************************************************************/
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   Ihandle *text, *bt, *dlg;
   IupOpen(&argc, &argv);
@@ -85,6 +86,6 @@ void main(int argc, char **argv)
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
   IupMainLoop();
-  IupDestroy(dlg);
   IupClose();
+  return EXIT_SUCCESS;
 }

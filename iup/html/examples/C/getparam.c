@@ -86,5 +86,6 @@ int main(int argc, char **argv)
 
   IupClose();
 
-  return 0;
+  return EXIT_SUCCESS;
+
 }
