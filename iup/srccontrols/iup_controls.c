@@ -15,13 +15,10 @@
 #include "iup_attrib.h"
 
 
-static int icontrols_opened = 0;
-
 int IupControlsOpen(void)
 {
-  if (icontrols_opened)
+  if (IupGetGlobal("_IUP_CONTROLS_OPEN"))
     return IUP_OPENED;
-  icontrols_opened = 1;
 
   iupRegisterClass(iupDialGetClass());
   iupRegisterClass(iupCellsGetClass());
@@ -31,6 +28,8 @@ int IupControlsOpen(void)
   iupRegisterClass(iupTreeGetClass());
   iupRegisterClass(iupGaugeGetClass());
   iupRegisterClass(iupColorBrowserDlgGetClass());
+
+  IupSetGlobal("_IUP_CONTROLS_OPEN", "1");
 
   return IUP_NOERROR;
 }

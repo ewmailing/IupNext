@@ -258,7 +258,11 @@ static Iclass* xGlCanvasGetClass(void)
 
 void IupGLCanvasOpen(void)
 {
-  iupRegisterClass(xGlCanvasGetClass());
+  if (!IupGetGlobal("_IUP_GLCANVAS_OPEN"))
+  {
+    iupRegisterClass(xGlCanvasGetClass());
+    IupSetGlobal("_IUP_GLCANVAS_OPEN", "1");
+  }
 }
 
 Ihandle* IupGLCanvas(const char *action)

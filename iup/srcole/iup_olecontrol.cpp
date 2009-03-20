@@ -150,13 +150,10 @@ static void iOleControlDestroyMethod(Ihandle* ih)
   delete ih->data->olehandler;
 }
 
-static int iolecontrol_opened = 0;
-
 static void iOleControlRelease(Iclass* ic)
 {
   (void)ic;
   OleUninitialize();
-  iolecontrol_opened = 0;
 }
 
 static Iclass* iOleControlGetClass(void)
@@ -197,15 +194,15 @@ Ihandle *IupOleControl(const char *ProgID)
 
 int IupOleControlOpen(void)
 {
-  if (iolecontrol_opened)
+  if (IupGetGlobal("_IUP_OLECONTROL_OPEN"))
     return IUP_OPENED;
 
   HRESULT retval = OleInitialize(NULL);
   if (retval != S_OK && retval != S_FALSE)
     return IUP_ERROR;
 
-  iolecontrol_opened = 1;
   iupRegisterClass(iOleControlGetClass());
 
+  IupSetGlobal("_IUP_OLECONTROL_OPEN", "1");
   return IUP_NOERROR;
 }

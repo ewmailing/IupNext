@@ -47,8 +47,8 @@ static int trayclick(Ihandle *ih, int button, int pressed, int dclick)
 printf("trayclick_cb(button=%d, pressed=%d, dclick=%d)\n", button, pressed, dclick);
   if (button == 1 && pressed)
     IupSetAttribute(ih, "HIDETASKBAR", "NO");  
-//  else if (button == 3 && pressed)
-//    showmenu();
+  else if (button == 3 && pressed)
+    showmenu();
   return IUP_DEFAULT;
 }
 

@@ -2951,5 +2951,9 @@ Ihandle* IupPPlot(void)
 
 void IupPPlotOpen(void)
 {
-  iupRegisterClass(iupPPlotGetClass());
+  if (!IupGetGlobal("_IUP_PPLOT_OPEN"))
+  {
+    iupRegisterClass(iupPPlotGetClass());
+    IupSetGlobal("_IUP_PPLOT_OPEN", "1");
+  }
 }
