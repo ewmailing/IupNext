@@ -23,6 +23,7 @@ IUP = ..
 DBG = Yes
 
 # Must uncomment all SRC lines
+DEFINES = BIG_TEST
 SRC += bigtest.c  
 
 SRC += tray.c
@@ -34,7 +35,6 @@ SRC += canvas.c
 SRC += frame.c
 SRC += idle.c
 SRC += button.c
-SRC += gauge.c
 SRC += toggle.c
 SRC += vbox.c
 SRC += hbox.c
@@ -48,6 +48,9 @@ SRC += spin.c
 SRC += text_spin.c
 SRC += list.c
 SRC += sysinfo.c
+SRC += mdi.c
+SRC += getparam.c
+SRC += getcolor.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
@@ -57,15 +60,13 @@ SRC += sysinfo.c
 
 USE_CD = Yes
 SRC += canvas_scrollbar.c
-SRC += canvas_dbuffer.c
+SRC += canvas_cddbuffer.c
 
 USE_OPENGL = Yes
 SRC += glcanvas.c
 SRC += glcanvas_cube.c
 
 USE_IUPCONTROLS = Yes
-SRC += tabs.c
-SRC += val.c
 SRC += colorbrowser.c
 SRC += dial.c
 SRC += colorbar.c
