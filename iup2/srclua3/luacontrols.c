@@ -2,7 +2,7 @@
  * \brief Bindig of iupcontrols to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: luacontrols.c,v 1.2 2008-11-21 05:46:06 scuri Exp $
+ * $Id: luacontrols.c,v 1.3 2009-03-23 15:00:01 scuri Exp $
  */
  
 #include <lua.h>
@@ -17,9 +17,7 @@ int iupcontrolslua_open(void)
 {
   gaugelua_open();
   treelua_open();
-  matrixlua_open();
   masklua_open();
-  diallua_open();
   cblua_open();
   colorbarlua_open();
   cellslua_open();
@@ -29,5 +27,7 @@ int iupcontrolslua_open(void)
   gclua_open();
   getparamlua_open();
 #endif
+  matrixlua_open();  /* Must be after Val, depends on val callbacks initialization */
+  diallua_open();  /* Must be after Val, uses val callbacks */
   return 1;
 }

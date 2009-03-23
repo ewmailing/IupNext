@@ -10,9 +10,9 @@
 
   <style type="text/css">
 .style1 {
-color: #FF0000;
+	color: #FF0000;
 }
-  </style>
+</style>
 </head>
 
 
@@ -104,7 +104,10 @@ those parameters.</p>
 <p>The BGCOLOR attribute is now ignored in <strong>IupLabel</strong>,
 <strong>IupFrame</strong>, <strong>IupToggle</strong>
 (for the text background) and <strong>IupVal</strong>.
-They will use the background color of the native parent. </p>
+They will use the background color of the native parent.</p>
+<p><span class="style1">The <strong>IupItem</strong> in GTK must have its VALUE 
+attribute defined (ON or OFF) before mapping</span> - so it can have the check 
+mark, or define HIDEMARK=NO. If not done the item will not be checkable.</p>
 
 </body>
 </html>
