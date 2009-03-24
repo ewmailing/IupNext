@@ -250,7 +250,7 @@ static void show_popup(void)
   Ihandle* menu_file = IupMenu(
     IupSetAttributes(IupItem("Item with Image", "item_cb"), "IMAGE=image_tec"),
     IupSetCallbacks(IupSetAttributes(IupItem("Toggle using VALUE", NULL), "VALUE=ON, KEY=K_V"), "ACTION", item_toggle_cb, "HIGHLIGHT_CB", highlight_cb, NULL), 
-    IupSetAttributes(IupItem("Auto &Toggle", "item_cb"), "AUTOTOGGLE=YES, IMAGE=image_test, IMPRESS=image_test_pressed"), 
+    IupSetAttributes(IupItem("Auto &Toggle", "item_cb"), "AUTOTOGGLE=YES, VALUE=OFF, IMAGE=image_test, IMPRESS=image_test_pressed"), 
     IupSeparator(), 
     IupSetCallbacks(IupItem("E&xit (Close)", NULL), "ACTION", item_close_cb, NULL), 
     NULL);
@@ -327,8 +327,8 @@ void MenuTest(void)
   menu_file = IupMenu(
     IupSetAttributes(IupItem("Item with Image \tCtrl+M", "item_cb"), "IMAGE=image_tec"),
     IupSetCallbacks(IupSetAttributes(IupItem("Toggle using &VALUE", NULL), "VALUE=ON, KEY=KcV"), "ACTION", item_toggle_cb, NULL), 
-    IupSetAttributes(IupItem("Auto &Toggle Text", "item_cb"), "AUTOTOGGLE=YES"), 
-    IupSetAttributes(IupItem("Auto &Toggle Image", "item_cb"), "AUTOTOGGLE=YES, IMAGE=image_test, IMPRESS=image_test_pressed"), 
+    IupSetAttributes(IupItem("Auto &Toggle Text", "item_cb"), "AUTOTOGGLE=YES, VALUE=OFF"), 
+    IupSetAttributes(IupItem("Auto &Toggle Image", "item_cb"), "AUTOTOGGLE=YES, VALUE=OFF, IMAGE=image_test, IMPRESS=image_test_pressed"), 
     IupItem("Big Image", "item_cb"),
     IupSeparator(), 
     IupSetCallbacks(IupItem("Exit (Destroy)", NULL), "ACTION", item_destroy_cb, NULL), 

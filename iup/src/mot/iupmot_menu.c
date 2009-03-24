@@ -209,6 +209,9 @@ void iupdrvMenuInitClass(Iclass* ic)
   ic->Map = motMenuMapMethod;
   ic->UnMap = motMenuUnMapMethod;
 
+  /* Used by iupdrvMenuGetMenuBarSize */
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, NULL, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_DEFAULT);  /* use inheritance to retrieve standard fonts */
+
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 }
 

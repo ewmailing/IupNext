@@ -58,7 +58,8 @@ struct _IcontrolData
   int preview_size;       /* preview size (pixels) 0=disabled, -1=automatic         */
   int fgcolor_idx;        /* current primary index selected                         */
   int bgcolor_idx;        /* current secondary index selected                       */
-  int focus_cell;         /* cell with focus if the control has the focus, else -1  */
+  int focus_cell;         /* cell with focus                                        */
+  int has_focus;          /* 1 if the control has the focus, else 0                 */
 };
 
 /* Default colors used for a widget */
@@ -326,7 +327,7 @@ static void iColorbarRepaint(Ihandle* ih)
 
   /* update display */
   cdCanvasFlush(ih->data->cddbuffer);
-  if (ih->data->focus_cell != -1)
+  if (ih->data->has_focus)
     iColorbarDrawFocusCell(ih);
 }
 
@@ -657,7 +658,7 @@ static int iColorbarRedraw_CB(Ihandle* ih)
 
   /* update display */
   cdCanvasFlush(ih->data->cddbuffer);
-  if (ih->data->focus_cell != -1)
+  if (ih->data->has_focus)
     iColorbarDrawFocusCell(ih);
 
   return IUP_DEFAULT;
@@ -693,7 +694,6 @@ static int iColorbarResize_CB(Ihandle* ih)
 static void iColorbarRenderPartsRepaint(Ihandle* ih, int preview, int idx)
 {
   /* update render */
-
   if (preview)
     iColorbarRenderPreview(ih);
   
@@ -707,21 +707,18 @@ static void iColorbarRenderPartsRepaint(Ihandle* ih, int preview, int idx)
 
   /* update display */
   cdCanvasFlush(ih->data->cddbuffer);
-  if (ih->data->focus_cell != -1)
+  if (ih->data->has_focus)
     iColorbarDrawFocusCell(ih);
 }
 
 static int iColorbarFocus_CB(Ihandle* ih, int focus)
 {
-  if (focus)
-    ih->data->focus_cell = 0;
-  else
-    ih->data->focus_cell = -1;
+  ih->data->has_focus = focus;
 
   if (ih->data->cddbuffer)
   {
     cdCanvasFlush(ih->data->cddbuffer);
-    if (ih->data->focus_cell != -1)
+    if (ih->data->has_focus)
       iColorbarDrawFocusCell(ih);
   }
 
@@ -789,7 +786,7 @@ static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
       c != K_SP && c != K_sCR && c != K_sSP && c != K_cSP)
     return IUP_DEFAULT;
 
-  if (!press || ih->data->focus_cell==-1)
+  if (!press || !ih->data->has_focus)
     return IUP_DEFAULT;
 
   switch(c)
@@ -869,7 +866,7 @@ static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
   if (ih->data->cddbuffer)
   {
     cdCanvasFlush(ih->data->cddbuffer);
-    if (ih->data->focus_cell != -1)
+    if (ih->data->has_focus)
       iColorbarDrawFocusCell(ih);
   }
 
@@ -1005,7 +1002,7 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   ih->data->vertical  = 1;
   ih->data->squared   = 1;
   ih->data->shadowed  = 1;
-  ih->data->focus_cell = -1;
+  ih->data->focus_cell = 0;
   ih->data->preview_size = -1;  /* automatic */
   ih->data->fgcolor_idx  = 0;   /* black */
   ih->data->bgcolor_idx  = 15;  /* white */
@@ -1074,7 +1071,7 @@ Iclass* iupColorbarGetClass(void)
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iColorbarSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iColorbarSetBgColorAttrib, NULL, "255 255 255", IUPAF_NO_INHERIT);    /* overwrite canvas default */
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iColorbarSetBgColorAttrib, NULL, "255 255 255", IUPAF_NO_INHERIT);    /* overwrite canvas implementation, set a system default to force a new default */
 
   return ic;
 }

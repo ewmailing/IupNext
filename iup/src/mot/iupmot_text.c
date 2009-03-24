@@ -661,9 +661,9 @@ static char* motTextGetSpinValueAttrib(Ihandle* ih)
 static int motTextSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (!value) value = "";
+  motTextSetSpinValueAttrib(ih, value);
   /* disable callbacks */
   iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
-  motTextSetSpinValueAttrib(ih, value);
   XmTextSetString(ih->handle, (char*)value);
   iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   return 0;

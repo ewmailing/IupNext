@@ -123,12 +123,12 @@ static void drawTest(Ihandle *ih, int posx)
   Drawable wnd = (Drawable)IupGetAttribute(ih, "XWINDOW");
   GC gc = XCreateGC(dpy, wnd, 0, NULL);
 
+  IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+
   XSetForeground(dpy, gc, xGetPixel(dpy, 255, 255, 255));
   XFillRectangle(dpy, wnd, gc, 0, 0, w, h);
 
   XSetForeground(dpy, gc, xGetPixel(dpy, 255, 0, 0));
-
-  IupGetIntInt(ih, "DRAWSIZE", &w, &h);
 
   w = 600; /* virtual size */
   XDrawLine(dpy, wnd, gc, -posx, 0, w-posx, h);

@@ -694,27 +694,24 @@ static int iDialSetTypeAttrib(Ihandle* ih, const char* value)
 
   if (iupStrEqualNoCase(value, "VERTICAL"))
   {
-    IupSetCallback(ih, "MOTION_CB", (Icallback)iDialMotionVertical_CB);
-    IupSetAttribute(ih, "SIZE", "16x80");
-    
     ih->data->Draw = iDialDrawVertical;
     ih->data->type = IDIAL_VERTICAL;
+    IupSetCallback(ih, "MOTION_CB", (Icallback)iDialMotionVertical_CB);
+    IupSetAttribute(ih, "SIZE", "16x80");
   }
   else if (iupStrEqualNoCase(value, "CIRCULAR"))
   {
-    IupSetCallback(ih, "MOTION_CB", (Icallback)iDialMotionCircular_CB);
-    IupSetAttribute(ih, "SIZE", "40x36");
-     
     ih->data->Draw = iDialDrawCircular;
     ih->data->type = IDIAL_CIRCULAR;
+    IupSetCallback(ih, "MOTION_CB", (Icallback)iDialMotionCircular_CB);
+    IupSetAttribute(ih, "SIZE", "40x36");
   }
   else /* "HORIZONTAL" */
   {
-    IupSetCallback(ih, "MOTION_CB", (Icallback)iDialMotionHorizontal_CB);
-    IupSetAttribute(ih, "SIZE", "80x16");
-     
     ih->data->Draw = iDialDrawHorizontal;
     ih->data->type = IDIAL_HORIZONTAL;
+    IupSetCallback(ih, "MOTION_CB", (Icallback)iDialMotionHorizontal_CB);
+    IupSetAttribute(ih, "SIZE", "80x16");
   }
   return 0; /* do not store value in hash table */
 }
@@ -817,7 +814,7 @@ Iclass* iupDialGetClass(void)
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iDialSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iDialSetBgColorAttrib, NULL, "255 255 255", IUPAF_NO_INHERIT);    /* overwrite canvas default */
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iDialSetBgColorAttrib, NULL, "255 255 255", IUPAF_NO_INHERIT);    /* overwrite canvas implementation, set a system default to force a new default */
 
   return ic;
 }

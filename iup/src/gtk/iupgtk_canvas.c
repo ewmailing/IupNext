@@ -573,6 +573,9 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   }
   else
     gtk_scrolled_window_set_policy(scrolled_window, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+
+  /* force the update of BGCOLOR here, to let derived classes ignore it if ACTION is defined */
+  gtkCanvasSetBgColorAttrib(ih, iupAttribGetStr(ih, "BGCOLOR"));
     
   return IUP_NOERROR;
 }

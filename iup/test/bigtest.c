@@ -57,7 +57,7 @@ typedef struct _TestItems{
   void (*func)(void);
 }TestItems;
 
-TestItems test_list[] = {
+static TestItems test_list[] = {
   {"Button", ButtonTest},
   {"Canvas", CanvasTest},
   {"CanvasCDDBuffer", CanvasCDDBufferTest},
@@ -99,7 +99,7 @@ TestItems test_list[] = {
   {"Vbox", VboxTest},
 };
 
-int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
+static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
   (void)pressed;
   if (but==IUP_BUTTON1 && iup_isdouble(status))
@@ -111,6 +111,11 @@ int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
   return IUP_DEFAULT;
 }
 
+static int close_cb(Ihandle *ih)
+{
+  return IUP_CLOSE;
+}
+
 int main(int argc, char* argv[])
 {
   int i, count = sizeof(test_list)/sizeof(TestItems);
@@ -119,10 +124,13 @@ int main(int argc, char* argv[])
 
   IupOpen(&argc, &argv);
   IupControlsOpen();
+//  IupOldValOpen();
+//  IupOldTabsOpen();
 
   dlg = IupDialog(IupVbox(list = IupList(NULL), NULL));
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "TITLE", "IupTests");
+  IupSetCallback(dlg, "CLOSE_CB", close_cb);
 
   IupSetCallback(list, "BUTTON_CB", (Icallback)button_cb);
   IupSetAttribute(list, "VISIBLELINES", "15");

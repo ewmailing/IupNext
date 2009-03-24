@@ -62,7 +62,7 @@ static int map_cb(Ihandle *ih)
 
   cdcanvas = cdCreateCanvas(CD_IUP, ih);
   if (!cdcanvas)
-    return IUP_ERROR;
+    return IUP_DEFAULT;
 
   /* this can fail if canvas size is zero */
   cddbuffer = cdCreateCanvas(CD_DBUFFER, cdcanvas);

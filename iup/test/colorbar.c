@@ -16,7 +16,7 @@ static int redraw_cb(Ihandle* ih)
     return IUP_DEFAULT;
 
   /* Activates canvas cdcanvas */
-  cdActivate( cdcanvas ) ;
+  cdActivate(cdcanvas);
   cdClear();
   
   /* Draws a rectangle on the canvas */

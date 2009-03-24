@@ -193,7 +193,7 @@ int IupShowXY(Ihandle *ih, int x, int y)
 
   if (ih->iclass->nativetype != IUP_TYPEDIALOG)
   {
-    iupERROR("Must be a dialog in IupPopup.");
+    iupERROR("Must be a dialog in IupShowXY.");
     return IUP_INVALID;
   }
 

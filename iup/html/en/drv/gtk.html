@@ -36,6 +36,11 @@ example Lua using require. To use the IUP GTK dll in Windows you must rename the
 driver.</p>
 <p>GTK is in fact composed of several libraries. The GTK package contains the 
 GDK library and depends on the ATK, Cairo, Glib and Pango libraries.</p>
+<h4>gtk_scrolled_window_add Warning</h4>
+<p>When creating a IupCanvas GTK will print the warning:</p>
+<pre>Gtk-WARNING **: gtk_scrolled_window_add(): cannot add non scrollable widget use gtk_scrolled_window_add_with_viewport() instead</pre>
+
+<p>Simply ignore it. It is a useless warning.</p>
 
 </body>
 

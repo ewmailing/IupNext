@@ -248,7 +248,7 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_LogoTecgraf());
 
   // In Windows, must be set before map
-  IupSetAttribute(tabs, "TABTYPE", "LEFT");
+//  IupSetAttribute(tabs, "TABTYPE", "LEFT");
 //  IupSetAttribute(tabs, "TABTYPE", "RIGHT");
 //  IupSetAttribute(tabs, "TABTYPE", "BOTTOM");
 //  IupSetAttribute(tabs, "TABORIENTATION", "VERTICAL");

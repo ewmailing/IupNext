@@ -22,23 +22,46 @@ static unsigned char pixmap [ ] =
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 };
 
-static int close(void)
+static int close(Ihandle* ih)
 {
-  return IUP_CLOSE;
+  IupDestroy((Ihandle*)IupGetAttribute(ih, "_DIALOG"));
+  return IUP_DEFAULT;
+//  return IUP_CLOSE;
 }
 
-static int showmenu(void)
+static int hide(Ihandle* ih)
 {
-  Ihandle* menu = IupMenu(IupItem("Exit", "close"), NULL);
+  IupSetAttribute((Ihandle*)IupGetAttribute(ih, "_DIALOG"), "HIDETASKBAR", "YES");  
+  return IUP_DEFAULT;
+}
+
+static int show(Ihandle* ih)
+{
+  IupSetAttribute((Ihandle*)IupGetAttribute(ih, "_DIALOG"), "HIDETASKBAR", "NO");  
+  return IUP_DEFAULT;
+}
+
+static int showmenu(Ihandle* ih)
+{
+  Ihandle* menu = IupMenu(IupItem("Show", "show"), IupItem("Hide", "hide"), IupItem("Exit", "close"), NULL);
+  IupSetAttribute(menu, "_DIALOG", (char*)ih);
+  IupSetFunction("show", (Icallback) show);
+  IupSetFunction("hide", (Icallback) hide);
   IupSetFunction("close", (Icallback) close);
   IupPopup(menu, IUP_MOUSEPOS, IUP_MOUSEPOS);
   IupDestroy(menu);
   return IUP_DEFAULT;
 }
 
-static int hidedialog(Ihandle* ih)
+static int k_esc(Ihandle* ih)
 {
-  IupSetAttribute(IupGetDialog(ih), "HIDETASKBAR", "YES");  
+  IupDestroy(ih);
+  return IUP_DEFAULT;
+}
+
+static int close_cb(Ihandle* ih)
+{
+  IupSetAttribute(ih, "HIDETASKBAR", "YES");  
   return IUP_IGNORE;
 }
 
@@ -48,7 +71,7 @@ printf("trayclick_cb(button=%d, pressed=%d, dclick=%d)\n", button, pressed, dcli
   if (button == 1 && pressed)
     IupSetAttribute(ih, "HIDETASKBAR", "NO");  
   else if (button == 3 && pressed)
-    showmenu();
+    showmenu(ih);
   return IUP_DEFAULT;
 }
 
@@ -71,8 +94,8 @@ void TrayTest(void)
   IupSetAttribute(dlg, "TRAYIMAGE", "img");
   IupSetAttribute(dlg, "SIZE", "100x100");
   IupSetCallback(dlg, "TRAYCLICK_CB", (Icallback)trayclick);
-  IupSetCallback(dlg, "CLOSE_CB", (Icallback)hidedialog);
-  IupSetCallback(dlg, "K_ESC", (Icallback)close);
+  IupSetCallback(dlg, "CLOSE_CB", (Icallback)close_cb);
+  IupSetCallback(dlg, "K_ESC", (Icallback)k_esc);
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
