@@ -137,6 +137,13 @@
 		<File
 			RelativePath="..\test\canvas_scrollbar.c"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="..\test\cells_checkboard.c"
