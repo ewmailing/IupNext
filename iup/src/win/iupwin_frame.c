@@ -140,6 +140,11 @@ static int winFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *re
       *result = 1;
       return 1;
     }
+  case WM_NCHITTEST:
+    {
+      *result = HTTRANSPARENT;
+      return 1;
+    }
   }
 
   return iupwinBaseContainerProc(ih, msg, wp, lp, result);
