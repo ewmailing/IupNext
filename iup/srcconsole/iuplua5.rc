@@ -43,9 +43,17 @@ END
 
 /* The following line enable Windows XP Visual Styles */
 #ifdef MSVC8
-1 24 "iuplua_dll8.manifest"
+#ifdef TEC_64
+1 24 "wlua_dll8_x64.manifest"
+#else
+1 24 "wlua_dll8_x86.manifest"
+#endif
 #elif MSVC9
-1 24 "iuplua_dll9.manifest"
+#ifdef TEC_64
+1 24 "wlua_dll9_x64.manifest"
+#else
+1 24 "wlua_dll9_x86.manifest"
+#endif
 #else
 1 24 "..\\etc\\iup.manifest"
 #endif
