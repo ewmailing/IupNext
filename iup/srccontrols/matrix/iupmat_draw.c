@@ -312,14 +312,15 @@ static void iMatrixDrawBackground(Ihandle* ih, int x1, int x2, int y1, int y2, i
   x2--;
   y2--;
 
-  if (color_type == IMAT_TITLE_COLOR)
+  if (lin==0 || col==0 || (col==1 && ih->data->columns.sizes[0] == 0) || (lin==1 && ih->data->lines.sizes[0] == 0))
   {
     /* avoid drawing over the frame of the cell */
     x1++; 
     y1++; 
-
-    iMatrixDrawSetBgColor(ih, lin, col, 0);
   }
+
+  if (color_type == IMAT_TITLE_COLOR)
+    iMatrixDrawSetBgColor(ih, lin, col, 0);
   else if(color_type == IMAT_ELEM_COLOR)
     iMatrixDrawSetBgColor(ih, lin, col, 0);
   else
@@ -687,6 +688,8 @@ static void iMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2
 
 static void iMatrixDrawMatrix(Ihandle* ih)
 {
+  iupMatrixStoreGlobalAttrib(ih);
+
   /* fill the background because there will be empty cells */
   if ((ih->data->lines.num == 1) || (ih->data->columns.num == 1))
   {
@@ -730,9 +733,11 @@ static void iMatrixDrawFocus(Ihandle* ih)
   cdIupDrawFocusRect(ih, ih->data->cdcanvas, x1, iupMatrixInvertYAxis(ih, y1), x2, iupMatrixInvertYAxis(ih, y2));
 }
 
+
 /**************************************************************************/
 /* Exported functions                                                     */
 /**************************************************************************/
+
 
 void iupMatrixDrawCell(Ihandle* ih, int lin, int col)
 {
@@ -778,6 +783,8 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
 
     if(iupStrToIntInt(value, &min, &max, ':') != 2)
       max = min;
+
+    iupMatrixStoreGlobalAttrib(ih);
 
     if (ih->data->need_calcsize)
       iupMatrixAuxCalcSizes(ih);

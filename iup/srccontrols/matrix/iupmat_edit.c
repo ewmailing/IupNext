@@ -197,9 +197,11 @@ int iupMatrixEditShow(Ihandle* ih)
     iupMatrixScrollToVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 
   /* set attributes */
+  iupMatrixStoreGlobalAttrib(ih);
   IupStoreAttribute(ih->data->datah, "BGCOLOR", iupMatrixGetBgColor(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell));
   IupStoreAttribute(ih->data->datah, "FGCOLOR", iupMatrixGetFgColor(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell));
   IupSetAttribute(ih->data->datah, "FONT", iupMatrixGetFont(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell));
+
   mask = IupMatGetAttribute(ih,"MASK", ih->data->lines.focus_cell, ih->data->columns.focus_cell);
   if (mask)
   {

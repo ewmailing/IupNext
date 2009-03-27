@@ -446,6 +446,18 @@
 //  }
 //}
 
+static void iMatrixMarkAllLinCol(ImatLinColData *p, int mark)
+{
+  int i;
+  for(i = 1; i < p->num; i++)
+  {
+    if (mark)
+      p->flags[i] |= IUPMAT_MARK;
+    else
+      p->flags[i] &= ~IUPMAT_MARK;
+  }
+}
+
 void iupMatrixMarkCellSet2(Ihandle* ih, int lin, int col, int mark, IFniii markedit_cb, char* str)
 {
   if (ih->data->callback_mode)
@@ -462,7 +474,12 @@ void iupMatrixMarkCellSet2(Ihandle* ih, int lin, int col, int mark, IFniii marke
     }
   }
   else
-    ih->data->cells[lin][col].mark = (unsigned char)mark;
+  {
+    if (mark)
+      ih->data->cells[lin][col].flags |= IUPMAT_MARK;
+    else
+      ih->data->cells[lin][col].flags &= ~IUPMAT_MARK;
+  }
 }
 
 int iupMatrixMarkCellGet(Ihandle* ih, int lin, int col, IFnii mark_cb, char* str)
@@ -482,7 +499,7 @@ int iupMatrixMarkCellGet(Ihandle* ih, int lin, int col, IFnii mark_cb, char* str
     }
   }
   else
-    return ih->data->cells[lin][col].mark;
+    return ih->data->cells[lin][col].flags & IUPMAT_MARK;
 }
 
 void iupMatrixMarkClearAll(Ihandle* ih, int check)
@@ -506,8 +523,8 @@ void iupMatrixMarkClearAll(Ihandle* ih, int check)
   if (ih->data->mark_mode != IMAT_MARK_NO || !check)
   {
     /* clear lines and columns marks */
-    memset(ih->data->columns.marks, 0, ih->data->columns.num);
-    memset(ih->data->lines.marks, 0, ih->data->lines.num);
+    iMatrixMarkAllLinCol(&(ih->data->columns), 0);
+    iMatrixMarkAllLinCol(&(ih->data->lines), 0);
   }
 }
 
@@ -526,7 +543,7 @@ int iupMatrixColumnIsMarked(Ihandle* ih, int col)
       ih->data->mark_mode == IMAT_MARK_NO)
     return 0;
 
-  return ih->data->columns.marks[col];
+  return ih->data->columns.flags[col] & IUPMAT_MARK;
 }
 
 int iupMatrixLineIsMarked (Ihandle* ih, int lin)
@@ -535,7 +552,7 @@ int iupMatrixLineIsMarked (Ihandle* ih, int lin)
       ih->data->mark_mode == IMAT_MARK_NO)
     return 0;
 
-  return ih->data->lines.marks[lin];
+  return ih->data->lines.flags[lin] & IUPMAT_MARK;
 }
 
 //void iupMatrixMarkMouseAdjust(Ihandle* ih, int* lin, int* col, int* shift, int* ctrl, int* duplo)
@@ -685,10 +702,13 @@ int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
           iupMatrixMarkCellSet2(ih, lin, col, mark, markedit_cb, str);
       }
 
-      ih->data->columns.marks[col] = (unsigned char)mark;
+      if (mark)
+        ih->data->columns.flags[col] |= IUPMAT_MARK;
+      else
+        ih->data->columns.flags[col] &= ~IUPMAT_MARK;
     }
 
-    memset(ih->data->lines.marks, all_lines, ih->data->lines.num);
+    iMatrixMarkAllLinCol(&(ih->data->lines), all_lines);
   }
   else if (*value == 'L' || *value == 'l')  /* lines */
   {
@@ -716,17 +736,20 @@ int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
           iupMatrixMarkCellSet2(ih, lin, col, mark, markedit_cb, str);
       }
 
-      ih->data->lines.marks[lin] = (unsigned char)mark;
+      if (mark)
+        ih->data->lines.flags[lin] |= IUPMAT_MARK;
+      else
+        ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
     }
 
-    memset(ih->data->columns.marks, all_columns, ih->data->columns.num);
+    iMatrixMarkAllLinCol(&(ih->data->columns), all_columns);
   }
   else if (ih->data->mark_mode == IMAT_MARK_CELL)  /* cells */
   {
     markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
 
     /* mark all columns to unmark during cell processing */
-    memset(ih->data->columns.marks, 1, ih->data->columns.num);
+    iMatrixMarkAllLinCol(&(ih->data->columns), 1);
 
     for(lin = 1; lin < ih->data->lines.num; lin++)
     {
@@ -740,13 +763,16 @@ int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
         {
           mark = 0;
           mark_line = 0;     /* if one cell at the line is unmarked, then the line is unmarked */
-          ih->data->columns.marks[col] = 0;  /* if one cell at the column is unmarked, then the column is unmarked */
+          ih->data->columns.flags[col] &= ~IUPMAT_MARK;  /* if one cell at the column is unmarked, then the column is unmarked */
         }
 
         iupMatrixMarkCellSet2(ih, lin, col, mark, markedit_cb, str);
       }
 
-      ih->data->lines.marks[lin] = (unsigned char)mark_line;
+      if (mark_line)
+        ih->data->lines.flags[lin] |= IUPMAT_MARK;
+      else
+        ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
     }
   }
 
@@ -799,7 +825,7 @@ char* iupMatrixGetMarkedAttrib(Ihandle* ih)
       /* look for a marked column */
       for(col = 1; col < ih->data->columns.num; col++)
       {
-        if (ih->data->columns.marks[col])
+        if (ih->data->columns.flags[col] & IUPMAT_MARK)
         {
           marked_cols = 1; /* at least one column is marked */
           break;
@@ -824,7 +850,7 @@ char* iupMatrixGetMarkedAttrib(Ihandle* ih)
 
       for(lin = 1; lin < ih->data->lines.num; lin++)
       {
-        if (ih->data->lines.marks[lin])
+        if (ih->data->lines.flags[lin] & IUPMAT_MARK)
         {
           exist_mark = 1;
           *p++ = '1';
@@ -844,7 +870,7 @@ char* iupMatrixGetMarkedAttrib(Ihandle* ih)
 
       for(col = 1; col < ih->data->columns.num; col++)
       {
-        if (ih->data->columns.marks[col])
+        if (ih->data->columns.flags[col] & IUPMAT_MARK)
         {
           exist_mark = 1;
           *p++ = '1';
@@ -887,16 +913,25 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
         return 1;  /* store the attribute */
     }
     else
-      ih->data->cells[lin][col].mark = (unsigned char)mark;
+    {
+      if (mark)
+        ih->data->cells[lin][col].flags |= IUPMAT_MARK;
+      else
+        ih->data->cells[lin][col].flags &= ~IUPMAT_MARK;
+    }
 
     if (!mark)
     {
-      ih->data->lines.marks[lin] = 0;
-      ih->data->columns.marks[col] = 0;
+      ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
+      ih->data->columns.flags[col] &= ~IUPMAT_MARK;
     }
 
     if (ih->handle)
+    {
+      /* This assumes that the matrix has been draw completely previously */
+      iupMatrixStoreGlobalAttrib(ih);
       iupMatrixDrawCell(ih, lin, col);
+    }
   }
 
   return 0;
@@ -934,7 +969,7 @@ char* iupMatrixGetMarkAttrib(Ihandle* ih, const char* name_id)
       }
       else
       {
-        if (ih->data->cells[lin][col].mark)
+        if (ih->data->cells[lin][col].flags & IUPMAT_MARK)
           return "1";
         else
           return "0";
@@ -942,7 +977,7 @@ char* iupMatrixGetMarkAttrib(Ihandle* ih, const char* name_id)
     }
     else
     {
-      if (ih->data->lines.marks[lin] || ih->data->columns.marks[col])
+      if (ih->data->lines.flags[lin] & IUPMAT_MARK || ih->data->columns.flags[col] & IUPMAT_MARK)
         return "1";
       else
         return "0";

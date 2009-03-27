@@ -54,6 +54,8 @@ static const char* iClassFindId(const char* name)
   {
     if (*name >= '0' && *name <= '9')
       return name;
+    if (*name == '*')
+      return name;
 
     name++;
   }

@@ -137,13 +137,6 @@
 		<File
 			RelativePath="..\test\canvas_scrollbar.c"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="..\test\cells_checkboard.c"
@@ -215,6 +208,14 @@
 		</File>
 		<File
 			RelativePath="..\test\matrix.c"
+			>
+		</File>
+		<File
+			RelativePath="..\test\matrix_cbmode.c"
+			>
+		</File>
+		<File
+			RelativePath="..\test\matrix_cbs.c"
 			>
 		</File>
 		<File

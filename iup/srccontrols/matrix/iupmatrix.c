@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdarg.h>
+#include <string.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -21,7 +22,9 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_drv.h"
+#include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
+#include "iup_controls.h"
 #include "iup_register.h"
 
 #include "iupmat_def.h"
@@ -398,7 +401,7 @@ static char* iMatrixGetRasterHeightAttrib(Ihandle* ih, const char* name_id)
   return NULL;
 }
 
-static int iMatrixSetMatrixCellAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int iMatrixSetIdValueAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   int lin = 0, col = 0;
   if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
@@ -409,13 +412,114 @@ static int iMatrixSetMatrixCellAttrib(Ihandle* ih, const char* name_id, const ch
   return 0;
 }
 
-static char* iMatrixGetMatrixCellAttrib(Ihandle* ih, const char* name_id)
+static char* iMatrixGetIdValueAttrib(Ihandle* ih, const char* name_id)
 {
   int lin, col;
   if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
   {
     if (iupMatrixCheckCellPos(ih, lin, col))
       return iupMatrixCellGetValue(ih, lin, col);
+  }
+  return NULL;
+}
+
+static int iMatrixSetBgColorAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  if (name_id[0]==0)
+    return 1;
+  if (name_id[0]=='*' && name_id[1]==':')
+  {
+    int col;
+    name_id += 2; /* skip '*' and ':' */
+    if (iupStrToInt(name_id, &col))
+      iupMatrixCellSetFlag(ih, -1, col, IUPMAT_BGCOLOR, value!=NULL);
+  }
+  else if (name_id[strlen(name_id)-1]=='*')
+  {
+    int lin;
+    if (iupStrToInt(name_id, &lin))
+      iupMatrixCellSetFlag(ih, lin, -1, IUPMAT_BGCOLOR, value!=NULL);
+  }
+  else 
+  {
+    int lin, col;
+    if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
+      iupMatrixCellSetFlag(ih, lin, col, IUPMAT_BGCOLOR, value!=NULL);
+  }
+  return 1;
+}
+
+static int iMatrixSetFgColorAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  if (name_id[0]==0)
+    return 1;
+  if (name_id[0]=='*' && name_id[1]==':')
+  {
+    int col;
+    name_id += 2; /* skip '*' and ':' */
+    if (iupStrToInt(name_id, &col))
+      iupMatrixCellSetFlag(ih, -1, col, IUPMAT_FGCOLOR, value!=NULL);
+  }
+  else if (name_id[strlen(name_id)-1]=='*')
+  {
+    int lin;
+    if (iupStrToInt(name_id, &lin))
+      iupMatrixCellSetFlag(ih, lin, -1, IUPMAT_FGCOLOR, value!=NULL);
+  }
+  else 
+  {
+    int lin, col;
+    if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
+      iupMatrixCellSetFlag(ih, lin, col, IUPMAT_FGCOLOR, value!=NULL);
+  }
+  return 1;
+}
+
+static int iMatrixSetFontAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  if (name_id[0]==0)
+    return 1;
+  if (name_id[0]=='*' && name_id[1]==':')
+  {
+    int col;
+    name_id += 2; /* skip '*' and ':' */
+    if (iupStrToInt(name_id, &col))
+      iupMatrixCellSetFlag(ih, -1, col, IUPMAT_FONT, value!=NULL);
+  }
+  else if (name_id[strlen(name_id)-1]=='*')
+  {
+    int lin;
+    if (iupStrToInt(name_id, &lin))
+      iupMatrixCellSetFlag(ih, lin, -1, IUPMAT_FONT, value!=NULL);
+  }
+  else 
+  {
+    int lin, col;
+    if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
+      iupMatrixCellSetFlag(ih, lin, col, IUPMAT_FONT, value!=NULL);
+  }
+  return 1;
+}
+
+static char* iMatrixGetFontAttrib(Ihandle* ih, const char* name_id)
+{
+  if (name_id[0]==0)
+    return iupGetFontAttrib(ih);
+  return NULL;
+}
+
+static char* iMatrixGetBgColorAttrib(Ihandle* ih, const char* name_id)
+{
+  if (name_id[0]==0)
+  {
+    /* check the hash table */
+    char *color = iupAttribGet(ih, "BGCOLOR");
+
+    /* If not defined return the default for normal cells */
+    if (!color)
+      color = "255 255 255";
+
+    return color;
   }
   return NULL;
 }
@@ -684,12 +788,12 @@ Iclass* iupMatrixGetClass(void)
   ic->name = "matrix";
   ic->format = "A"; /* one optional callback name */
   ic->nativetype = IUP_TYPECANVAS;
-  ic->childtype = IUP_CHILDNONE;
+  ic->childtype = IUP_CHILD_ONE; /* just to identify it as a container */
   ic->is_interactive = 1;
   ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 
   /* Class functions */
-  ic->Create    = iMatrixCreateMethod;
+  ic->Create  = iMatrixCreateMethod;
   ic->Map     = iMatrixMapMethod;
   ic->UnMap   = iMatrixUnMapMethod;
   ic->ComputeNaturalSize = iMatrixComputeNaturalSizeMethod;
@@ -721,9 +825,11 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterCallback(ic, "MARKEDIT_CB", "iii");
 
   /* IupMatrix Attributes - CELL */
-  iupClassRegisterAttributeId(ic, "IDVALUE", iMatrixGetMatrixCellAttrib, iMatrixSetMatrixCellAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IDVALUE", iMatrixGetIdValueAttrib, iMatrixSetIdValueAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FOCUS_CELL", iMatrixGetFocusCellAttrib, iMatrixSetFocusCellAttrib, IUPAF_SAMEASSYSTEM, "1:1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT); /* can be NOT mapped */
   iupClassRegisterAttribute(ic, "VALUE", iMatrixGetValueAttrib, iMatrixSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FGCOLOR", NULL, iMatrixSetFgColorAttrib, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttributeId(ic, "FONT", iMatrixGetFontAttrib, iMatrixSetFontAttrib, IUPAF_NOT_MAPPED);
 
   /* IupMatrix Attributes - SIZE */
   iupClassRegisterAttribute(ic, "NUMLIN", iMatrixGetNumLinAttrib, iupMatrixSetNumLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -769,6 +875,7 @@ Iclass* iupMatrixGetClass(void)
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iMatrixSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  iupClassRegisterAttributeId(ic, "BGCOLOR", iMatrixGetBgColorAttrib, iMatrixSetBgColorAttrib, IUPAF_NOT_MAPPED);
 
   /* IupMatrix Attributes - MASK */
   iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iMatrixGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

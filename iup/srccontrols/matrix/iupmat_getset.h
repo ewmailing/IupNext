@@ -15,10 +15,11 @@ extern "C" {
 void  iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value);
 char* iupMatrixCellGetValue(Ihandle* ih, int lin, int col);
 
+void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int set);
+void  iupMatrixStoreGlobalAttrib(Ihandle* ih);
 char* iupMatrixGetFgColor(Ihandle* ih, int lin, int col);
 char* iupMatrixGetBgColor(Ihandle* ih, int lin, int col);
 char* iupMatrixGetFont   (Ihandle* ih, int lin, int col);
-
 void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b);
 void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b);
 

@@ -107,37 +107,39 @@ change the Applications Font to affect the default font.</p>
 <p>Since font face names are not a standard between Windows, Motif and GTK, a 
 few names are specially handled to improve application portability. If you want 
 to use names that work for all systems we recommend using: Courier, Times and 
-Helvetica. Those names always have a native system name equivalent, see the 
+Helvetica (same as Motif). Those names always have a native system name equivalent. 
+If you use those names IUP will automatically map to the native system 
+equivalent. See the 
 table bellow:</p>
 <table align="center">
 	<tr>
-		<th>Windows</th>
 		<th>Motif</th>
+		<th>Windows</th>
 		<th>GTK</th>
 		<th>Description</th>
 	</tr>
 	<tr>
+		<td><strong>Helvetica</strong></td>
 		<td>Arial</td>
-		<td>Helvetica</td>
 		<td>Sans</td>
 		<td class="style11">without serif, variable spacing</td>
 	</tr>
 	<tr>
+		<td><strong>Courier</strong></td>
 		<td>Courier New</td>
-		<td>Courier</td>
 		<td>Monospace</td>
 		<td class="style12">with serif, fixed spacing</td>
 	</tr>
 	<tr>
+		<td><strong>Times</strong></td>
 		<td>Times New Roman</td>
-		<td>Times</td>
 		<td>Serif</td>
 		<td class="style13">with serif, variable spacing</td>
 	</tr>
 </table>
 
 <h3>Auxiliary Attributes</h3>
-<p>They will change the FONT attribute, and can not be retrieved. They are used 
+<p>They will change the FONT attribute, and depends on it. They are used 
 only to set partial FONT parameters of style and size. To do that the FONT 
 attribute is parsed, changed and updated to the new value in the common format 
 definition. This means that if the attribute was set in X-Windows format or in 

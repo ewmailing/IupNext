@@ -27,11 +27,22 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "1:2", "4.5");
   IupSetAttribute(mat, "2:2", "8.1");
   IupSetAttribute(mat, "3:2", "3.4");
+  IupSetAttribute(mat, "3:3", "Font Test");
   IupSetAttribute(mat, "WIDTH2", "90");
   IupSetAttribute(mat, "HEIGHT2", "30");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
 //  IupSetAttribute(mat,"RESIZEMATRIX", "YES");
   //IupSetAttribute(mat,"SCROLLBAR", "NO");
+  IupSetAttribute(mat, "BGCOLOR1:2", "255 92 255");
+  //IupSetAttribute(mat, "BGCOLOR2:*", "92 92 255");
+  //IupSetAttribute(mat, "BGCOLOR*:3", "255 92 92");
+  //IupSetAttribute(mat, "FGCOLOR1:2", "255 0 0");
+  //IupSetAttribute(mat, "FGCOLOR2:*", "0 128 0");
+  IupSetAttribute(mat, "FGCOLOR*:3", "0 0 255");
+  //IupSetAttribute(mat, "FONT1:2", "Helvetica, 24");
+  //IupSetAttribute(mat, "FONT2:*", "Courier, 14");
+  IupSetAttribute(mat, "FONT*:3", "Times, Bold 14");
+  IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");
 
   //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");
   //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");

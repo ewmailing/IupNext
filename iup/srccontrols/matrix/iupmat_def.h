@@ -21,21 +21,26 @@ extern "C" {
 #define IMAT_DECOR_X   6
 #define IMAT_DECOR_Y   6
 
+/* Cell flags */
+#define IUPMAT_FONT    1   /* Has FONTL:C attribute */
+#define IUPMAT_FGCOLOR 2   /* Has FGCOLORL:C attribute */
+#define IUPMAT_BGCOLOR 4   /* Has BGCOLORL:C attribute */
+#define IUPMAT_MARK    8   /* Is marked */
+
 /***************************************************************************/
 /* Structures stored in each matrix                                        */
 /***************************************************************************/
 typedef struct _ImatCell
 {
-  char *value;         /* Cell value                              */
-  unsigned char mark;  /* Is this cell marked?                    */
+  char *value;           /* Cell value                              */
+  unsigned char flags;  
 } ImatCell;
 
 
 typedef struct _ImatLinColData
 {
   int* sizes;         /* Width/height of the columns/lines  (allocated after map)   */
-
-  unsigned char* marks;    /* Shows whether the columns/lines are marked or not, independent from mark_mode (allocated after map) */
+  unsigned char* flags;    /* Attribute flags for the columns/lines (allocated after map) */
 
   int num;         /* Number of columns/lines in the matrix, default/minimum=1, always includes the title */
   int num_alloc;   /* Number of columns/lines allocated, default=5 */

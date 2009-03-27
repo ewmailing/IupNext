@@ -146,6 +146,8 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
         char str[100];
         IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
 
+        iupMatrixStoreGlobalAttrib(ih);
+
         for(lin = 1; lin < ih->data->lines.num; lin++)
         {
           for(col = 1; col < ih->data->columns.num; col++)

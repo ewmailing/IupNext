@@ -1,14 +1,15 @@
 require( "iuplua" )
-require( "iupluacontrols" )
+--require( "iupluacontrols" )
 
 matrix = iup.matrix
 {
     numlin=3,
     numcol=3,
     numcol_visible=3,
-    height0=10,
-    widthdef=30,
-    scrollbar="VERTICAL",
+    numlin_visible=3,
+--    height0=10,
+--    widthdef=30,
+    scrollbar="NO",
 }
 
 data = {
@@ -19,7 +20,7 @@ data = {
 
 function matrix:value_cb(l, c) 
   if l == 0 or c == 0 then
-    return "title"
+    return nil--"title"
   end
   return data[l][c]
 end

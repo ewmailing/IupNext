@@ -28,6 +28,8 @@ void IdleTest(void);
 void LabelTest(void);
 void ListTest(void);
 void MatrixTest(void);
+void MatrixCbModeTest(void);
+void MatrixCbsTest(void);
 void MdiTest(void);
 void VboxTest(void);
 void MenuTest(void);
@@ -80,6 +82,8 @@ static TestItems test_list[] = {
   {"Label", LabelTest},
   {"List", ListTest},
   {"Matrix", MatrixTest},
+  {"MatrixCbMode", MatrixCbModeTest},
+  {"MatrixCbs", MatrixCbsTest},
   {"Mdi", MdiTest},
   {"Menu", MenuTest},
   {"PPlot", PPlotTest},
@@ -113,6 +117,7 @@ static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 
 static int close_cb(Ihandle *ih)
 {
+  (void)ih;
   return IUP_CLOSE;
 }
 

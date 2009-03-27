@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -157,6 +157,18 @@ the moment the event is generated. The same as
     foreground color will be used. If returns
     IUP_DEFAULT the returned values will be used as the
     foreground color.</p>
+<p><strong><a name="FONT_CB">FONT_CB</a></strong>:
+  Action generated to verify the font of a 
+  cell. Called both for common cells and for line and column titles. (since 3.0)</p>
+<pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<strong>elem</strong>:value_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+    Identifier of the matrix interacting with 
+    the user.<br>
+    <strong>lin</strong>, <strong>col</strong>:
+    Coordinates of the cell.</p>
+<p class="info">Must return a font or NULL to use the the attribute defined 
+font. </p>
 <p><strong><a name="DRAW_CB">DRAW_CB</a></strong>:
   Action generated before a cell is drawn. 
   Allows to draw a custom cell contents. You must use the 
@@ -266,7 +278,7 @@ and it is always accepted. </p>
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
-    lin, <strong>col</strong>:
+    <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
 <p class="info">Must return the string to be redrawn. </p>
 <p class="info"><b>IMPORTANT</b>:
