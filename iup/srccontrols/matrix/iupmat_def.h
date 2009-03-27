@@ -43,9 +43,8 @@ typedef struct _ImatLinColData
   int first;       /* First visible column/line */
   int last;        /* Last visible column/line  */
 
-  /* used to position and size the scrollbar */
+  /* used to configure the scrollbar */
   int total_size;     /* Sum of the widths/heights of the columns/lines, not including the title */
-  int visible_pos;    /* Sum of the widths/heights of the invisible part left/above, not including the title */
   int visible_size;   /* Width/height of the visible window, not including the title */
 
   int focus_cell;  /* index of the current cell */

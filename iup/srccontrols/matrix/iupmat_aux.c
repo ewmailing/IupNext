@@ -24,6 +24,43 @@
 #include "iupmat_getset.h"
 
 
+static int iMatrixAuxIsFullVisibleLast(Ihandle* ih, int m)
+{
+  int i, sum = 0;
+  ImatLinColData *p;
+
+  if (m == IMAT_PROCESS_LIN)
+    p = &(ih->data->lines);
+  else
+    p = &(ih->data->columns);
+
+  for(i = p->first; i <= p->last; i++)
+    sum  += p->sizes[i];
+
+  if (sum > p->visible_size)
+    return 0;
+  else
+    return 1;
+}
+
+int iupMatrixAuxIsCellFullVisible(Ihandle* ih, int lin, int col)
+{
+  if(((lin >= ih->data->lines.first) &&
+      (lin <= ih->data->lines.last) &&
+      (col >= ih->data->columns.first) &&
+      (col <= ih->data->columns.last)))
+  {
+    if (col == ih->data->columns.last && !iMatrixAuxIsFullVisibleLast(ih, IMAT_PROCESS_COL))
+      return 0;
+    if (lin == ih->data->lines.last && !iMatrixAuxIsFullVisibleLast(ih, IMAT_PROCESS_LIN))
+      return 0;
+
+    return 1;
+  }
+
+  return 0;
+}
+
 int iupMatrixAuxIsCellVisible(Ihandle* ih, int lin, int col)
 {
   if(((lin >= ih->data->lines.first) &&
@@ -67,7 +104,7 @@ void iupMatrixAuxGetVisibleCellDim(Ihandle* ih, int lin, int col, int* x, int* y
 void iupMatrixAuxUpdateVisiblePos(Ihandle* ih, int m)
 {
   char* POS;
-  int i, sb;
+  int i, sb, visible_pos;
   ImatLinColData *p;
 
   if (m == IMAT_PROCESS_LIN)
@@ -83,9 +120,9 @@ void iupMatrixAuxUpdateVisiblePos(Ihandle* ih, int m)
     POS = "POSX";
   }
 
-  p->visible_pos = 0;
+  visible_pos = 0;
   for(i = 1; i < p->first; i++)
-    p->visible_pos += p->sizes[i];
+    visible_pos += p->sizes[i];
 
   if (ih->data->canvas.sb & sb)
   {
@@ -93,38 +130,30 @@ void iupMatrixAuxUpdateVisiblePos(Ihandle* ih, int m)
 
     if (p->total_size)
     {
-      while ((p->visible_pos + p->visible_size > p->total_size) && p->first>1)
+      while ((visible_pos + p->visible_size > p->total_size) && p->first>1)
       {
         /* invalid position, must recalculate first */
         p->first--;
-        p->visible_pos -= p->sizes[p->first];
+        visible_pos -= p->sizes[p->first];
       }
 
-      pos = (float)p->visible_pos/(float)p->total_size;
+      pos = (float)visible_pos/(float)p->total_size;
     }
     else
       pos = 0;
 
-    iupMatrixAuxUpdateLast(ih, m);
+    iupMatrixAuxUpdateLast(p);
     IupSetfAttribute(ih, POS, "%.5f", (double)pos);
   }
   else
-    iupMatrixAuxUpdateLast(ih, m);
+    iupMatrixAuxUpdateLast(p);
 }
 
-/* Calculate which is the last visible column/line of the matrix and
-   also its width/height. It can affect the first visible line/column so also the position of the visible area.
-   Depends on the first visible column/line.
-   -> m : choose will operate on lines or columns [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]  */
-void iupMatrixAuxUpdateLast(Ihandle* ih, int m)
+/* Calculate which is the last visible column/line of the matrix. 
+   Depends on the first visible column/line.  */
+void iupMatrixAuxUpdateLast(ImatLinColData *p)
 {
-  int i, sum = 0, prev_sum = 0;
-  ImatLinColData *p;
-
-  if (m == IMAT_PROCESS_LIN)
-    p = &(ih->data->lines);
-  else
-    p = &(ih->data->columns);
+  int i, sum = 0;
 
   if (p->visible_size > 0)
   {
@@ -133,7 +162,6 @@ void iupMatrixAuxUpdateLast(Ihandle* ih, int m)
        up to the visible size   */
     for(i = p->first; i < p->num; i++)
     {
-      prev_sum = sum;
       sum  += p->sizes[i];
       if(sum >= p->visible_size)
         break;

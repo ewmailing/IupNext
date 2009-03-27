@@ -233,7 +233,16 @@ width of a column C first checks the WIDTH<em>C</em> attribute, then checks
 RASTERWIDTH<em>C</em>, then the width of the title text for the column or if C=0 
 it searches for the widest line title, if still could not define a width then if 
 C!=0 it will use WIDTHDEF, if C=0 then height will be 0.</p>
-<p>Scroll</p>
+<p>When the scrollbars are enabled if the matrix area is greatter than the 
+visible area then scroolbars will be displayed so the cells can be scrolled to 
+be visible area. But the scrooling position is not free, the first cell at the 
+top right corner is always aligned at the begining of the cell. So the scroll 
+increment is a cell and it can not be broken. One problem that raises from this 
+policy is that depending on the visible size the last cell may never be 
+completely visible. So solve the matrix size must be ajusted so all the last 
+cells are visible within the visible area, or the natural size can be computed 
+using the last cells instead of the first cells using the attributes 
+NUMCOL_VISIBLE_LAST and NUMLIN_VISIBLE_LAST.</p>
 <p>Any cell can have more than one text line, just use the \n control character. 
 Multiple text lines will be considered when calculating the title cell size 
 based on its contents. The contents of ordinary cells (not a title) do not 
@@ -266,7 +275,7 @@ L:C again.</p>
 <p>If VALUE_CB is defined and VALUE_EDIT_CB is not defined when the matrix is 
 mapped then READONLY will be set to YES.</p>
 <h4>Keyboard Navigation</h4>
-<p>Keyboard navigating through the matrix cells outside the edition 
+<p>Keyboard navigation through the matrix cells outside the edition 
   mode is done by using the following keys:</p>
 <ul>
   <li><strong>Arrows</strong>: Moves the focus to the next cell, according to 
@@ -314,6 +323,9 @@ mapped then READONLY will be set to YES.</p>
   to confirm the value the focus goes to the cell bellow the current cell, if at the last line then the focus goes to 
   the cell on the left. The value confirmation depends on the
   EDITION_CB callback return code.</p>
+<p>When using the keyboard to change the focus cell if the limit of the visible 
+area is reached then the cells are automatically scrolled. Also if a cell 
+partially visible is edited then first it is scrolled to the visible area.</p>
 <h4>Marks</h4>
 <p>When a mark mode is set the cells can be marked using mouse, if the keyboard is used all marks are cleared.</p>
 <p>A marked cell will have its background attenuated to indicate that it is marked.</p>

@@ -106,7 +106,7 @@ static int iMatrixSetShowAttrib(Ihandle* ih, const char* value)
   if((lin < 1) || (col < 1))
     return 0;
 
-  if (!iupMatrixAuxIsCellVisible(ih, lin, col))
+  if (!iupMatrixAuxIsCellFullVisible(ih, lin, col))
     iupMatrixScrollToVisible(ih, lin, col);
 
   return 0;

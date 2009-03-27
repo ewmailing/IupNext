@@ -305,7 +305,7 @@ void CanvasTest(void)
   IupSetCallback(canvas, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   IupSetCallback(canvas, "BUTTON_CB",    (Icallback)button_cb);
-  IupSetCallback(canvas, "MOTION_CB",    (Icallback)motion_cb);
+//  IupSetCallback(canvas, "MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(canvas, "SCROLL_CB",  (Icallback)scroll_cb);
 //  IupSetCallback(canvas, "WHEEL_CB",    (Icallback)wheel_cb);
 

@@ -212,42 +212,39 @@ tree() [in LED]</pre>
   if the node's id changes later on, the userid will still be associated with the given node. In IupLua, instead of a 
   pointer the same functions are defined for table and userdata.</p>
 <pre>int IupTreeSetUserId(Ihandle *<strong>ih</strong>, int <strong>id</strong>, void *<strong>userid</strong>); [in C]
-iup.TreeSetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number, <strong>userid: </strong>userdata) [in Lua]
-iup.TreeSetTableId(<strong>ih: </strong>ihandle, <strong>id: </strong>number, <strong>table: </strong>table) [in Lua]</pre>
+iup.TreeSetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number, <strong>userid: </strong>userdata/table) [in Lua]</pre>
 <p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user. <br>
 <strong>id</strong>:
       Node identifier. <br>
 <strong>userid</strong>:
-      User pointer associated to the node. 
-      Use NULL (nil) value to remove the association.<br>
-<strong>table</strong>:
-      Table that should be associated to the node or leaf. Use nil 
-      value to remove the association.</p>
+      User pointer or Lua table to be associated with the node. 
+      Use NULL (nil) value to remove the association.</p>
+<p>Associates an userid with a given id. If the id of the node is changed, the 
+userid remains the same.</p>
 <p>Associations to Lua objects in Lua 5 are referenced in the Lua REGISTRY. So they can be retrieved later. This 
-      means also that the associated object will not be garbage collected until its reference is removed.</p>
-<p>Also, the user should not use the same table to reference different nodes (neither in the same nor across 
+      means also that the associated object will not be garbage collected until its reference is removed. Also, the user should not use the same table to reference different nodes (neither in the same nor across 
       different trees.)</p>
 <pre>void* IupTreeGetUserId(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
-iup.TreeGetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number) -&gt; (<b>ret:</b> userdata) [in Lua]
-iup.TreeGetTable(<strong>ih: </strong>ihandle, <strong>id: </strong>number) -&gt; (<b>ret:</b> table) [in Lua]</pre>
+iup.TreeGetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number) -&gt; (<b>ret:</b> userdata/table) [in Lua]
+</pre>
 <p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user. <br>
 <strong>id</strong>:
       Node identifier.</p>
-<p>Returns the pointer or table associated to 
-      the node. </p>
+<p>Returns the pointer or Lua table associated to 
+      the node or NULL if none was associated. <strong>SetUserId</strong> must 
+have been called with the same id.</p>
 <pre>int IupTreeGetId(Ihandle *<strong>ih</strong>, void *<strong>userid</strong>); [in C] 
-iup.TreeGetId(<strong>ih: </strong>ihandle, <strong>userid: </strong>userdata) -&gt; (<b>ret:</b> number) [in Lua]
-iup.TreeGetTableId(<strong>ih: </strong>ihandle, <strong>table: </strong>table) -&gt; (<b>ret:</b> number) [in Lua]</pre>
+iup.TreeGetId(<strong>ih: </strong>ihandle, <strong>userid: </strong>userdata/table) -&gt; (<b>ret:</b> number) [in Lua]
+</pre>
 <p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user. <br>
 <strong>userid</strong>:
-      Pointer associated to the node. <br>
-<strong>table</strong>:
-      Table that should be associated to the node or leaf.</p>
-<p>Returns the id of the node on success and -1 
-      (nil) on failure. </p>
+      Pointer or Lua table associated to the node.</p>
+<p>Returns the id of the node that has the userid on success or -1 
+      (nil) if not found. <strong>SetUserId</strong> must have been called with 
+the same userid.</p>
 <pre>iup.TreeSetValue(<strong>ih: </strong>ihandle, <strong>tree: </strong>table) [in Lua]</pre>
 <p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user.<br>

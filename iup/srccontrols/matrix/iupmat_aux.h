@@ -12,13 +12,14 @@
 extern "C" {
 #endif
 
+int   iupMatrixAuxIsCellFullVisible(Ihandle* ih, int lin, int col);
 int   iupMatrixAuxIsCellVisible(Ihandle* ih, int lin, int col);
 void  iupMatrixAuxGetVisibleCellDim   (Ihandle* ih, int lin, int col, int* x, int* y, int* w, int* h);
 
 void  iupMatrixAuxCalcSizes(Ihandle* ih);
 
 void  iupMatrixAuxUpdateVisiblePos(Ihandle* ih, int m);
-void  iupMatrixAuxUpdateLast(Ihandle* ih, int m);
+void  iupMatrixAuxUpdateLast(ImatLinColData *p);
 
 int   iupMatrixAuxGetColumnWidth(Ihandle* ih, int col);
 int   iupMatrixAuxGetLineHeight (Ihandle* ih, int lin);

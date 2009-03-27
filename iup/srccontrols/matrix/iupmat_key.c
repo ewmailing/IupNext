@@ -44,11 +44,8 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     iupMatrixMarkClearAll(ih, 1);
 
   /* If the focus is not visible, a scroll is done for that the focus to be visible */
-  if (!iupMatrixAuxIsCellVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
-  {
-    /* If called in edition mode, it will be ended */
+  if (!iupMatrixAuxIsCellFullVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
     iupMatrixScrollToVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
-  }
 
   switch (c)
   {

@@ -33,8 +33,8 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat,"RESIZEMATRIX", "YES");
   //IupSetAttribute(mat,"SCROLLBAR", "NO");
 
-  //IupSetAttribute(mat, "NUMCOL_VISIBLE_END", "YES");
-  //IupSetAttribute(mat, "NUMLIN_VISIBLE_END", "YES");
+  //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");
+  //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");
   IupSetAttribute(mat, "WIDTHDEF", "15");
   IupSetAttribute(mat, "20:15", "The End");
   IupSetAttribute(mat, "10:0", "Middle Line");

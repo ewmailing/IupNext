@@ -32,7 +32,21 @@
 /* Private functions                                                      */
 /**************************************************************************/
 
-/* Scroll columns/lines in the left/top side of the matriz until the last column/line is fully visible.
+
+static int iMatrixScrollIsFullVisibleLast(ImatLinColData *p)
+{
+  int i, sum = 0;
+
+  for(i = p->first; i <= p->last; i++)
+    sum  += p->sizes[i];
+
+  if (sum > p->visible_size)
+    return 0;
+  else
+    return 1;
+}
+
+/* Scroll columns/lines in the left/top side of the matriz until the last column/line is FULLY visible.
    -> m : Define the mode of operation: lines or columns [IMAT_PROCESS_LIN|IMAT_PROCESS_COL] */
 static void iMatrixScrollToVisible(Ihandle* ih, int m, int index)
 {
@@ -44,21 +58,33 @@ static void iMatrixScrollToVisible(Ihandle* ih, int m, int index)
     p = &(ih->data->columns);
 
   if (index < p->first)
+  {
     p->first = index;
+    return;
+  }
   else if (index > p->last)
   {
     /* Increment the first column/line until the index is visible */
-    do
+    while(index > p->last && p->last != (p->num - 1))
     {
       p->first++;
-      iupMatrixAuxUpdateLast(ih, m);
-    } while(index > p->last && p->last != (p->num - 1)); /* It is not the last column/line */
+      iupMatrixAuxUpdateLast(p);
+    } 
+  }
+
+  if (index == p->last)
+  {
+    /* must increment util the last is fully visible */
+    while(index == p->last && p->last != (p->num - 1) && !iMatrixScrollIsFullVisibleLast(p))
+    {
+      p->first++;
+      iupMatrixAuxUpdateLast(p);
+    } 
   }
 }
 
 /* Callback to report to the user which visualization area of
-   the matrix changed.
-*/
+   the matrix changed. */
 static void iMatrixScrollCallScrollTopCb(Ihandle* ih)
 {
   IFnii cb = (IFnii)IupGetCallback(ih, "SCROLLTOP_CB");
@@ -394,7 +420,7 @@ void iupMatrixScrollCr(Ihandle* ih, int unused_mode, float unused_pos, int unuse
 */
 void iupMatrixScrollPos(Ihandle* ih, int mode, float pos, int m)
 {
-  int visible_pos, index, vp;
+  int scroll_pos, index, vp;
   float d;
   ImatLinColData* p;
   (void)mode;
@@ -410,13 +436,13 @@ void iupMatrixScrollPos(Ihandle* ih, int mode, float pos, int m)
     d = IupGetFloat(ih, "DX");
   }
 
-  visible_pos = (int)(pos * p->total_size + 0.5);
+  scroll_pos = (int)(pos * p->total_size + 0.5);
 
   vp = 0;
   for(index = 1; index < p->num; index++)
   {
     vp += p->sizes[index];
-    if (vp > visible_pos)
+    if (vp > scroll_pos)
      break;
   }
 
