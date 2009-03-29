@@ -80,12 +80,12 @@ Default FGCOLOR is black (0 0 0).</p>
     cells. The cell size is always calculated from the base FONT attribute.</p>
 <p><strong><a name="FRAMECOLOR">FRAMECOLOR</a></strong>:
   Sets the color to be used in the frame lines. (inheritable)<br>
-<strong>FRAMEVERTCOLOR<em>L:C</em></strong>: Color of the vertical right frame of the 
-cell. Used only if CHECKFRAMECOLOR=YES. When not defined the 
-FRAMECOLOR is used.<br>
+<strong>FRAMEVERTCOLOR<em>L:C</em></strong>: Color of the vertical right frame 
+of the cell. When not defined the FRAMECOLOR is used. For a title cell defines 
+right and left frames.<br>
 <strong>FRAMEHORIZCOLOR<em>L:C</em></strong>: Color of the horizontal bottom frame of the 
-cell. Used only if CHECKFRAMECOLOR=YES. When not defined the 
-FRAMECOLOR is used.</p>
+cell. When not defined the 
+FRAMECOLOR is used. For a title cell defines bottom and top frames.</p>
 <p><strong><a name="VALUE">VALUE</a></strong>:
   Allows setting or verifying the value of the 
   current cell. Is the same as obtaining the current cell from 
@@ -270,8 +270,6 @@ adding the line and column at the end of the attribute name.</p>
   Default cursor used by the matrix. The 
   default cursor is a symbol that looks like a cross. If you need to refer to this default cursor, use the name 
 &quot;IupMatrixCrossCursor&quot;.</p>
-<p><strong>CHECKFRAMECOLOR</strong>: Enable the FRAMEVERTCOLORL:C 
-and FRAMEHORIZCOLORL:C attributes. Default: NO.</p>
 <p><strong><a name="FOCUS_CELL">FOCUS_CELL</a></strong>:
   Defines the current cell. Two numbers in the &quot;<strong><em>L</em></strong>:<strong><em>C</em></strong>&quot; format, 
     &nbsp;(<strong><em>L</em></strong>&gt;0 and <strong><em>C</em></strong>&gt;0, a title cell can NOT be the current cell). Default: &quot;1:1&quot;.</p>
