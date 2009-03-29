@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 
@@ -11,16 +11,6 @@
   <style type="text/css">
 .style1 {
 color: #FF0000;
-}
-  .style2 {
-	font-family: Tahoma;
-	text-decoration: line-through;
-}
-  .style3 {
-	font-family: Tahoma;
-}
-  .style4 {
-	text-decoration: line-through;
 }
   </style>
 </head>
@@ -36,7 +26,7 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 </p>
 
-<h3>CVS (12/Mar/2009)</h3>
+<h3>CVS (29/Mar/2009)</h3>
 
 <ul>
 
@@ -71,14 +61,14 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="style1">Fixed:</span> The 32 bits version of the IupLua 
 	console in Windows XP64 was not working.</li>
 
-	<li><span style="color: rgb(0, 0, 255);" class="style2">New:</span><span class="style2">
+	<li><span style="color: rgb(0, 0, 255);">New:</span>
 	MARKL:C, READONLY, NUMLIN_VISIBLE_LAST, NUMCOL_VISIBLE_LAST, and SHOW attributes for IupMatrix. When scrolling the matrix using 
 	the scrollbar the focus is not changed anymore. The last cells at right and 
 	bottom are now drawn as incomplete cells if they do not fit in the visible 
-	area. </span><span class="style3">
-	<span class="style4">New FONT_CB callback. CHECKFRAMECOLOR is not necessary 
-	anymore, just set FRAMEVERTCOLOR or FRAMEHORIZCOLOR.</span>
-	(NOT COMMITED YET)</span></li>
+	area. New FONT_CB callback. CHECKFRAMECOLOR is not necessary 
+	anymore, just set FRAMEVERTCOLOR or FRAMEHORIZCOLOR. Internal code 
+	reorganization of the IupMatrix.
+	</li>
 	<li><span style="color: rgb(0, 0, 255);">New:</span><strong>
 	IupRedraw</strong> and <strong>IupSetClassDefaultAttribute</strong> functions.</li>
 

@@ -31,7 +31,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "WIDTH2", "90");
   IupSetAttribute(mat, "HEIGHT2", "30");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
-//  IupSetAttribute(mat,"RESIZEMATRIX", "YES");
+  IupSetAttribute(mat,"RESIZEMATRIX", "YES");
   //IupSetAttribute(mat,"SCROLLBAR", "NO");
   IupSetAttribute(mat, "BGCOLOR1:2", "255 92 255");
   //IupSetAttribute(mat, "BGCOLOR2:*", "92 92 255");
@@ -43,6 +43,7 @@ static Ihandle* create_matrix(void)
   //IupSetAttribute(mat, "FONT2:*", "Courier, 14");
   IupSetAttribute(mat, "FONT*:3", "Times, Bold 14");
   IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");
+  IupSetAttribute(mat, "ACTIVE", "NO");
 
   //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");
   //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");

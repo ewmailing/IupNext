@@ -26,6 +26,8 @@ extern "C" {
 #define IUPMAT_FGCOLOR 2   /* Has FGCOLORL:C attribute */
 #define IUPMAT_BGCOLOR 4   /* Has BGCOLORL:C attribute */
 #define IUPMAT_MARK    8   /* Is marked */
+#define IUPMAT_FRAMEHCOLOR 16   /* Has FRAMEHORIZCOLORL:C */
+#define IUPMAT_FRAMEVCOLOR 32   /* Has FRAMEVERTCOLORL:C */
 
 /***************************************************************************/
 /* Structures stored in each matrix                                        */

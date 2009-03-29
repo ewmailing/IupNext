@@ -1,5 +1,5 @@
 require( "iuplua" )
---require( "iupluacontrols" )
+require( "iupluacontrols" )
 
 matrix = iup.matrix
 {
@@ -7,8 +7,8 @@ matrix = iup.matrix
     numcol=3,
     numcol_visible=3,
     numlin_visible=3,
---    height0=10,
---    widthdef=30,
+    height0=10,
+    widthdef=30,
     scrollbar="NO",
 }
 

@@ -188,11 +188,10 @@ static Ihandle *create_mat(void)
   IupSetAttribute(mat,"2:2","8.1");
   IupSetAttribute(mat,"3:2","3.4 (RO)");
 
-  IupSetAttribute(mat,"BGCOLOR","255 255 255");
-  IupSetAttribute(mat,"BGCOLOR1:*","255 128 0");
+//  IupSetAttribute(mat,"BGCOLOR1:*","255 128 0");
   IupSetAttribute(mat,"BGCOLOR2:1","255 128 0");
   IupSetAttribute(mat,"FGCOLOR2:0","255 0 128");
-  IupSetAttribute(mat,"BGCOLOR0:*","255 0 128");
+//  IupSetAttribute(mat,"BGCOLOR0:*","255 0 128");
   IupSetAttribute(mat,"FGCOLOR1:1","255 0 128");
   IupSetAttribute(mat,"BGCOLOR3:*","255 128 0");
   IupSetAttribute(mat,"BGCOLOR*:4","255 128 0");
@@ -200,8 +199,7 @@ static Ihandle *create_mat(void)
   //IupSetAttribute(mat,"FONT*:2", "Courier::12");
   IupSetAttribute(mat,"SORTSIGN1","UP");
 //  IupSetAttribute(mat,"SORTSIGN2","DOWN");
-//  IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 255");
-//  IupSetAttribute(mat,"CHECKFRAMECOLOR","YES");
+  IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 255");
 
   IupSetCallback(mat,"LEAVEITEM_CB",(Icallback)leave);
   IupSetCallback(mat,"ENTERITEM_CB",(Icallback)enter);
@@ -225,25 +223,25 @@ static Ihandle *create_mat(void)
 
 static int redraw(Ihandle *self) 
 {
-  //IupSetAttribute(IupGetHandle("mat1"),"REDRAW","ALL"); 
-  //IupSetAttribute(IupGetHandle("mat2"),"REDRAW","ALL"); 
+  IupSetAttribute(IupGetHandle("mat1"),"REDRAW","ALL"); 
+  IupSetAttribute(IupGetHandle("mat2"),"REDRAW","ALL"); 
   //IupSetAttribute(IupGetHandle("mat3"),"REDRAW","ALL"); 
   //IupSetAttribute(IupGetHandle("mat4"),"REDRAW","ALL"); 
   //IupSetAttribute(IupGetHandle("mat5"),"REDRAW","ALL"); 
   //IupSetAttribute(IupGetHandle("mat6"),"REDRAW","ALL"); 
 
-  Ihandle* mat = IupGetHandle("mat1");
-  if (IupGetInt(mat, "VISIBLE"))
-  {
-    IupSetAttribute(mat,"VISIBLE","NO"); 
-    IupStoreAttribute(mat, "OLD_SIZE", IupGetAttribute(mat, "RASTERSIZE"));
-    IupSetAttribute(mat, "RASTERSIZE", "1x1");
-  }
-  else
-  {
-    IupStoreAttribute(mat, "RASTERSIZE", IupGetAttribute(mat, "OLD_SIZE"));
-    IupSetAttribute(mat,"VISIBLE","YES"); 
-  }
+  //Ihandle* mat = IupGetHandle("mat1");
+  //if (IupGetInt(mat, "VISIBLE"))
+  //{
+  //  IupSetAttribute(mat,"VISIBLE","NO"); 
+  //  IupStoreAttribute(mat, "OLD_SIZE", IupGetAttribute(mat, "RASTERSIZE"));
+  //  IupSetAttribute(mat, "RASTERSIZE", "1x1");
+  //}
+  //else
+  //{
+  //  IupStoreAttribute(mat, "RASTERSIZE", IupGetAttribute(mat, "OLD_SIZE"));
+  //  IupSetAttribute(mat,"VISIBLE","YES"); 
+  //}
 
   return IUP_DEFAULT;
 }

@@ -190,23 +190,6 @@ static char* iMatrixGetSelectionAttrib(Ihandle* ih)
   return IupGetAttribute(ih->data->texth, "SELECTION");
 }
 
-static int iMatrixSetCheckFrameColorAttrib(Ihandle* ih, const char* value)
-{
-  if (iupStrBoolean(value))
-    ih->data->checkframecolor = 1;
-  else
-    ih->data->checkframecolor = 0;
-  return 0;
-}
-
-static char* iMatrixGetCheckFrameColorAttrib(Ihandle* ih)
-{
-  if (ih->data->checkframecolor)
-    return "YES";
-  else
-    return "NO";
-}
-
 static char* iMatrixGetNumLinAttrib(Ihandle* ih)
 {
   char* num = iupStrGetMemory(100);
@@ -423,7 +406,7 @@ static char* iMatrixGetIdValueAttrib(Ihandle* ih, const char* name_id)
   return NULL;
 }
 
-static int iMatrixSetBgColorAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int iMatrixSetFlagsAttrib(Ihandle* ih, const char* name_id, const char* value, unsigned char attr)
 {
   if (name_id[0]==0)
     return 1;
@@ -432,73 +415,48 @@ static int iMatrixSetBgColorAttrib(Ihandle* ih, const char* name_id, const char*
     int col;
     name_id += 2; /* skip '*' and ':' */
     if (iupStrToInt(name_id, &col))
-      iupMatrixCellSetFlag(ih, -1, col, IUPMAT_BGCOLOR, value!=NULL);
+      iupMatrixCellSetFlag(ih, -1, col, attr, value!=NULL);
   }
   else if (name_id[strlen(name_id)-1]=='*')
   {
     int lin;
     if (iupStrToInt(name_id, &lin))
-      iupMatrixCellSetFlag(ih, lin, -1, IUPMAT_BGCOLOR, value!=NULL);
+      iupMatrixCellSetFlag(ih, lin, -1, attr, value!=NULL);
   }
   else 
   {
     int lin, col;
     if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
-      iupMatrixCellSetFlag(ih, lin, col, IUPMAT_BGCOLOR, value!=NULL);
+      iupMatrixCellSetFlag(ih, lin, col, attr, value!=NULL);
   }
   return 1;
+}
+
+static int iMatrixSetBgColorAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  return iMatrixSetFlagsAttrib(ih, name_id, value, IUPMAT_BGCOLOR);
 }
 
 static int iMatrixSetFgColorAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if (name_id[0]==0)
-    return 1;
-  if (name_id[0]=='*' && name_id[1]==':')
-  {
-    int col;
-    name_id += 2; /* skip '*' and ':' */
-    if (iupStrToInt(name_id, &col))
-      iupMatrixCellSetFlag(ih, -1, col, IUPMAT_FGCOLOR, value!=NULL);
-  }
-  else if (name_id[strlen(name_id)-1]=='*')
-  {
-    int lin;
-    if (iupStrToInt(name_id, &lin))
-      iupMatrixCellSetFlag(ih, lin, -1, IUPMAT_FGCOLOR, value!=NULL);
-  }
-  else 
-  {
-    int lin, col;
-    if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
-      iupMatrixCellSetFlag(ih, lin, col, IUPMAT_FGCOLOR, value!=NULL);
-  }
-  return 1;
+  return iMatrixSetFlagsAttrib(ih, name_id, value, IUPMAT_FGCOLOR);
 }
 
 static int iMatrixSetFontAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if (name_id[0]==0)
-    return 1;
-  if (name_id[0]=='*' && name_id[1]==':')
-  {
-    int col;
-    name_id += 2; /* skip '*' and ':' */
-    if (iupStrToInt(name_id, &col))
-      iupMatrixCellSetFlag(ih, -1, col, IUPMAT_FONT, value!=NULL);
-  }
-  else if (name_id[strlen(name_id)-1]=='*')
-  {
-    int lin;
-    if (iupStrToInt(name_id, &lin))
-      iupMatrixCellSetFlag(ih, lin, -1, IUPMAT_FONT, value!=NULL);
-  }
-  else 
-  {
-    int lin, col;
-    if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
-      iupMatrixCellSetFlag(ih, lin, col, IUPMAT_FONT, value!=NULL);
-  }
-  return 1;
+  return iMatrixSetFlagsAttrib(ih, name_id, value, IUPMAT_FONT);
+}
+
+static int iMatrixSetFrameHorizColorAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  ih->data->checkframecolor = value!=NULL;
+  return iMatrixSetFlagsAttrib(ih, name_id, value, IUPMAT_FRAMEHCOLOR);
+}
+
+static int iMatrixSetFrameVertColorAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  ih->data->checkframecolor = value!=NULL;
+  return iMatrixSetFlagsAttrib(ih, name_id, value, IUPMAT_FRAMEVCOLOR);
 }
 
 static char* iMatrixGetFontAttrib(Ihandle* ih, const char* name_id)
@@ -830,6 +788,8 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttribute(ic, "VALUE", iMatrixGetValueAttrib, iMatrixSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FGCOLOR", NULL, iMatrixSetFgColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId(ic, "FONT", iMatrixGetFontAttrib, iMatrixSetFontAttrib, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttributeId(ic, "FRAMEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttributeId(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
 
   /* IupMatrix Attributes - SIZE */
   iupClassRegisterAttribute(ic, "NUMLIN", iMatrixGetNumLinAttrib, iupMatrixSetNumLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -867,7 +827,6 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttribute(ic, "SELECTION", iMatrixGetSelectionAttrib, iMatrixSetSelectionAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
-  iupClassRegisterAttribute(ic, "CHECKFRAMECOLOR", iMatrixGetCheckFrameColorAttrib, iMatrixSetCheckFrameColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "READONLY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESIZEMATRIX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

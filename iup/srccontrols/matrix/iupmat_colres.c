@@ -35,34 +35,33 @@ int iupMatrixColResStart(Ihandle* ih, int x, int y)
 {
   if (ih->data->lines.sizes[0] && y < ih->data->lines.sizes[0] && iupAttribGetInt(ih, "RESIZEMATRIX"))
   {
-    int found = 0, size, col;
+    int size, col;
    
     /* Check if is the column of titles */
     size = ih->data->columns.sizes[0];
     if (abs(size-x) < IMAT_COLRES_TOL)
     {
-      col = 0;
-      found = 1;
       ih->data->colres_drag_col_start_x = 0;
+      ih->data->colres_dragging =  1;
+      ih->data->colres_drag_col_last_x = -1;
+      ih->data->colres_drag_col = 0;
+      return 1;
     }
     else
     {
       /* find the column */
-      for(col = ih->data->columns.first; col <= ih->data->columns.last && !found; col++)
+      for(col = ih->data->columns.first; col <= ih->data->columns.last; col++)
       {
         ih->data->colres_drag_col_start_x = size;
         size += ih->data->columns.sizes[col];
         if (abs(size-x) < IMAT_COLRES_TOL)
-          found = 1;
+        {
+          ih->data->colres_dragging =  1;
+          ih->data->colres_drag_col_last_x = -1;
+          ih->data->colres_drag_col = col;
+          return 1;
+        }
       }
-    }
-
-    if (found)
-    {
-      ih->data->colres_dragging =  1;
-      ih->data->colres_drag_col_last_x = -1;
-      ih->data->colres_drag_col = col;
-      return 1;
     }
   }
   return 0;
@@ -164,7 +163,8 @@ void iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y)
 
     if (found)
     {
-      iupAttribSetStr(ih, "_IUPMAT_CURSOR", iupAttribGet(ih, "CURSOR"));
+      if (!iupAttribGet(ih, "_IUPMAT_CURSOR"))
+        iupAttribSetStr(ih, "_IUPMAT_CURSOR", IupGetAttribute(ih, "CURSOR"));
       IupSetAttribute(ih, "CURSOR", "RESIZE_W");
     }
     else /* It is in the empty area after the last column */

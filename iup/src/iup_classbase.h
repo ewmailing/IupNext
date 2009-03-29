@@ -135,6 +135,8 @@ int iupdrvBaseSetTitleAttrib(Ihandle* ih, const char* value);
 #define iupCOLOR8TO16(_x) ((unsigned short)(_x*257))  /* 65535/255 = 257 */
 #define iupCOLOR16TO8(_x) ((unsigned char)(_x/257))
 
+#define iupBYTECROP(_x)   ((unsigned char)((_x)<0?0:((_x)>255)?255:(_x)))
+
 enum{IUP_ALIGN_ALEFT, IUP_ALIGN_ACENTER, IUP_ALIGN_ARIGHT};
 #define IUP_ALIGN_ABOTTOM IUP_ALIGN_ARIGHT
 #define IUP_ALIGN_ATOP IUP_ALIGN_ALEFT

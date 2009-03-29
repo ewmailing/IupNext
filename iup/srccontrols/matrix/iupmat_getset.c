@@ -209,9 +209,9 @@ static int iMatrixCallColorCB(Ihandle* ih, const char* cb_name, int lin, int col
   {
     int ir, ig, ib, ret;
     ret = cb(ih, lin, col, &ir, &ig, &ib);
-    *r = (unsigned char)(ir<0?0:(ir>255)?255:ir);
-    *g = (unsigned char)(ig<0?0:(ig>255)?255:ig);
-    *b = (unsigned char)(ib<0?0:(ib>255)?255:ib);
+    *r = iupBYTECROP(ir);
+    *g = iupBYTECROP(ig);
+    *b = iupBYTECROP(ib);
     return ret;
   }
   else
@@ -272,6 +272,13 @@ void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
     if (lin == 0 || col == 0)
       native_parent = 1;
     iupStrToRGB(iMatrixGetCellAttrib(ih, IUPMAT_BGCOLOR, lin, col, native_parent), r, g, b);
+    if (native_parent)
+    {
+      int ir = *r-12, ig=*g-12, ib=*b-12; /* use a darker version of the background 5% of 255 */
+      *r = iupBYTECROP(ir);
+      *g = iupBYTECROP(ig);
+      *b = iupBYTECROP(ib);
+    }
   }
 }
 

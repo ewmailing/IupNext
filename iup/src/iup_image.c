@@ -205,10 +205,9 @@ void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char
     ig = LIGHTER(ig);
     ib = LIGHTER(ib);
 
-#define BYTEMAXCROP(_c) (unsigned char)(_c>255? 255: _c)
-    *r = BYTEMAXCROP(ir);
-    *g = BYTEMAXCROP(ig);
-    *b = BYTEMAXCROP(ib);
+    *r = iupBYTECROP(ir);
+    *g = iupBYTECROP(ig);
+    *b = iupBYTECROP(ib);
   }
 }
 
