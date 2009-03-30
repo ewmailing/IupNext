@@ -25,6 +25,8 @@ void cdDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2);
 
 #define cdIupInvertYAxis(_y, _h) ((_h) - (_y) - 1);
 
+#define cdIupLIGTHER(_x)    ((unsigned char)(((_x)+ 192)/2))
+
 
 #ifdef __cplusplus
 }

@@ -198,9 +198,9 @@ static void iColorBrowserRenderImageHue(Ihandle* ih)
 
         if (!active)
         {
-          *r = (unsigned char)((*r + 192)/2);
-          *g = (unsigned char)((*g + 192)/2);
-          *b = (unsigned char)((*b + 192)/2);
+          *r = cdIupLIGTHER(*r);
+          *g = cdIupLIGTHER(*g);
+          *b = cdIupLIGTHER(*b);
         }
       }
     }
@@ -299,9 +299,9 @@ static void iColorBrowserRenderImageSI(Ihandle* ih)
 
         if (!active)
         {
-          *r = (unsigned char)((*r + 192)/2);
-          *g = (unsigned char)((*g + 192)/2);
-          *b = (unsigned char)((*b + 192)/2);
+          *r = cdIupLIGTHER(*r);
+          *g = cdIupLIGTHER(*g);
+          *b = cdIupLIGTHER(*b);
         }
       }
     }

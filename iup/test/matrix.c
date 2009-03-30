@@ -28,9 +28,11 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "2:2", "8.1");
   IupSetAttribute(mat, "3:2", "3.4");
   IupSetAttribute(mat, "3:3", "Font Test");
+  IupSetAttribute(mat, "HEIGHT1", "20");
   IupSetAttribute(mat, "WIDTH2", "90");
   IupSetAttribute(mat, "HEIGHT2", "30");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
+  IupSetAttribute(mat,"MULTILINE", "YES");
   IupSetAttribute(mat,"RESIZEMATRIX", "YES");
   //IupSetAttribute(mat,"SCROLLBAR", "NO");
   IupSetAttribute(mat, "BGCOLOR1:2", "255 92 255");
@@ -47,6 +49,7 @@ static Ihandle* create_matrix(void)
 
   IupSetAttribute(mat,"MARK_MODE","CELL");
   IupSetAttribute(mat,"MARK2:2","YES");
+  IupSetAttribute(mat,"MARK2:3","YES");
   IupSetAttribute(mat,"MARK3:3","YES");
 //  IupSetAttribute(mat,"MARKMODE","LINCOL");
 

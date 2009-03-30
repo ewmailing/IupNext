@@ -190,6 +190,19 @@ static char* iMatrixGetSelectionAttrib(Ihandle* ih)
   return IupGetAttribute(ih->data->texth, "SELECTION");
 }
 
+static int iMatrixSetMultilineAttrib(Ihandle* ih, const char* value)
+{
+  IupStoreAttribute(ih->data->texth, "MULTILINE", value);
+  if (iupStrBoolean(value))
+    IupSetAttribute(ih->data->texth, "SCROLLBAR", "NO");
+  return 1;
+}
+
+static char* iMatrixGetMultilineAttrib(Ihandle* ih)
+{
+  return IupGetAttribute(ih->data->texth, "MULTILINE");
+}
+
 static char* iMatrixGetNumLinAttrib(Ihandle* ih)
 {
   char* num = iupStrGetMemory(100);
@@ -279,7 +292,7 @@ static char* iMatrixGetMarkMultipleAttrib(Ihandle* ih)
 
 static int iMatrixSetEditModeAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     iupMatrixEditShow(ih);
   else
   {
@@ -827,6 +840,7 @@ Iclass* iupMatrixGetClass(void)
   /* IupMatrix Attributes - EDITION */
   iupClassRegisterAttribute(ic, "CARET", iMatrixGetCaretAttrib, iMatrixSetCaretAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", iMatrixGetSelectionAttrib, iMatrixSetSelectionAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MULTILINE", iMatrixGetMultilineAttrib, iMatrixSetMultilineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

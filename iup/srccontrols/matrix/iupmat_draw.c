@@ -24,6 +24,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_controls.h"
 #include "iup_cdutil.h"
+#include "iup_image.h"
 
 #include "iupmat_def.h"
 #include "iupmat_cd.h"
@@ -151,9 +152,9 @@ static unsigned long iMatrixDrawSetBgColor(Ihandle* ih, int lin, int col, int ma
 
   if (!active)
   {
-    r = (unsigned char)((r + 192)/2);
-    g = (unsigned char)((g + 192)/2);
-    b = (unsigned char)((b + 192)/2);
+    r = cdIupLIGTHER(r);
+    g = cdIupLIGTHER(g);
+    b = cdIupLIGTHER(b);
   }
 
   return cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor(r, g, b));

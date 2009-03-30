@@ -272,8 +272,6 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
 
   switch (c)
   {
-    case K_UP:
-    case K_DOWN:
     case K_cUP:
     case K_cDOWN:
     case K_cLEFT:
@@ -282,6 +280,28 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
       {
         iupMatrixProcessKeyPress(ih_matrix, c);  
         return IUP_IGNORE;
+      }
+      break;
+    case K_UP:
+      if (IupGetInt(ih, "CARET") == 1)
+      {
+        /* if at first line */
+        if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
+          iupMatrixProcessKeyPress(ih_matrix,c);
+      }
+      break;
+    case K_DOWN:
+      { 
+        char* value = IupGetAttribute(ih, "VALUE");
+        if (value)
+        {
+          /* if at last line */
+          if (iupStrLineCount(value) == IupGetInt(ih, "CARET"))
+          {
+            if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
+              iupMatrixProcessKeyPress(ih_matrix, c);
+          }
+        }
       }
       break;
     case K_LEFT:

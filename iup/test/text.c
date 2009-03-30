@@ -153,6 +153,7 @@ static int k_any(Ihandle *ih, int c)
     printf("K_ANY(%d = %s \'%c\')\n", c, iupKeyCodeToName(c), (char)c);
   else
     printf("K_ANY(%d = %s)\n", c, iupKeyCodeToName(c));
+  printf("  CARET(%s)\n", IupGetAttribute(ih, "CARET"));
   if (c == K_cA)
     return IUP_IGNORE;   // Sound a beep in Windows
   if (c == K_cP)
@@ -181,6 +182,7 @@ static int action(Ihandle *ih, int c, char* after)
 static int caret_cb(Ihandle *ih, int lin, int col)
 {
   printf("CARET_CB(%d, %d)\n", lin, col);
+  printf("  CARET(%s)\n", IupGetAttribute(ih, "CARET"));
   return IUP_DEFAULT;
 }
 
@@ -267,14 +269,14 @@ void TextTest(void)
 
   IupSetCallback(mltline, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(mltline, "BUTTON_CB",    (Icallback)button_cb);
-  IupSetCallback(mltline, "MOTION_CB",    (Icallback)motion_cb);
+//  IupSetCallback(mltline, "MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(mltline, "HELP_CB",      (Icallback)help_cb);
   IupSetCallback(mltline, "GETFOCUS_CB",  (Icallback)getfocus_cb); 
   IupSetCallback(mltline, "KILLFOCUS_CB", (Icallback)killfocus_cb);
   IupSetCallback(mltline, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
   IupSetCallback(mltline, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
   IupSetCallback(mltline, "ACTION", (Icallback)action);
-//  IupSetCallback(mltline, "K_ANY", (Icallback)k_any);
+  IupSetCallback(mltline, "K_ANY", (Icallback)k_any);
   IupSetCallback(mltline, "K_F2", (Icallback)k_f2);
   IupSetCallback(mltline, "CARET_CB", (Icallback)caret_cb);
 //  IupSetAttribute(mltline, "MULTILINE", "YES");
@@ -300,7 +302,7 @@ void TextTest(void)
 //  IupSetAttribute(text, "VALUE", "Single Line Text");
   IupSetAttribute(text, "CUEBANNER", "Enter Attribute Value Here");
 
-  formatting = 1;
+  formatting = 0;
   if (formatting)          /* just to make easier to comment this section */
   {
     IupSetAttribute(mltline, "FORMATTING", "YES");

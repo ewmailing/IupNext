@@ -4,6 +4,12 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupMatrix</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	color: #0000FF;
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 <div id="navigation">
@@ -54,15 +60,15 @@ matrix(<strong>action_cb</strong>) [in LED]</pre>
 </dl>
 <h4>Column Attributes</h4>
 <dl>
-  <dd><a href="iupmatrix_attrib.html#RASTERWIDTHn">RASTERWIDTHn</a><br>
-	<a href="iupmatrix_attrib.html#SORTSIGNn">SORTSIGNn</a><br>
-	<a href="iupmatrix_attrib.html#WIDTHn">WIDTHn</a></dd>
-	<dd><a href="iupmatrix_attrib.html#WIDTHDEF">WIDTHDEF</a></dd>
+  <dd><a href="iupmatrix_attrib.html#RASTERWIDTHn">RASTERWIDTHn</a></dd>
+  <dd><a href="iupmatrix_attrib.html#SORTSIGNn">SORTSIGNn</a></dd>
+  <dd><a href="iupmatrix_attrib.html#WIDTHn">WIDTHn</a></dd>
+  <dd><a href="iupmatrix_attrib.html#WIDTHDEF">WIDTHDEF</a></dd>
 </dl>
 <h4>Line Attributes</h4>
 <dl>
-  <dd><a href="iupmatrix_attrib.html#HEIGHTn">HEIGHTn</a><br>
-	<a href="iupmatrix_attrib.html#HEIGHTDEF">HEIGHTDEF</a></dd>
+  <dd><a href="iupmatrix_attrib.html#HEIGHTn">HEIGHTn</a></dd>
+  <dd><a href="iupmatrix_attrib.html#HEIGHTDEF">HEIGHTDEF</a></dd>
   <dd><a href="iupmatrix_attrib.html#RASTERHEIGHTn">RASTERHEIGHTn</a></dd>
 </dl>
 <h4>Size Attributes</h4>
@@ -94,21 +100,22 @@ matrix(<strong>action_cb</strong>) [in LED]</pre>
 <h4>Text Edition Attributes</h4>
 <dl>
   <dd><a href="iupmatrix_attrib.html#CARET">CARET</a></dd>
-  <dd><a href="iupmatrix_attrib.html#MASKL:C">MASKL:C</a></dd>
+  <dd><a href="iupmatrix_attrib.html#MASKL:C">MASKL:C</a><br>
+  <dd><a href="iupmatrix_attrib.html#MULTILINE">MULTILINE</a><br>
   <dd><a href="iupmatrix_attrib.html#SELECTION">SELECTION</a></dd>
 </dl>
 <h4>Canvas Attributes</h4>
 <dl>
-  <dd><a href="iupmatrix_attrib.html#SCROLLBAR">BORDER</a><br>
-	<a href="iupmatrix_attrib.html#SCROLLBAR">SCROLLBAR</a></dd>
+  <dd><a href="iupmatrix_attrib.html#BORDER">BORDER</a></dd>
+  <dd><a href="iupmatrix_attrib.html#SCROLLBAR">SCROLLBAR</a></dd>
 </dl>
 <h4>General Attributes</h4>
 <dl>
-  <dd><a href="iupmatrix_attrib.html#CURSOR">CURSOR</a><br>
-	<a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a></dd>
+  <dd><a href="iupmatrix_attrib.html#CURSOR">CURSOR</a></dd>
+  <dd><a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a></dd>
   <dd><a href="iupmatrix_attrib.html#HIDEFOCUS">HIDEFOCUS</a></dd>
-	<dd><a href="iupmatrix_attrib.html#READONLY">READONLY</a></dd>
-	<dd><a href="iupmatrix_attrib.html#RESIZEMATRIX">RESIZEMATRIX</a></dd>
+  <dd><a href="iupmatrix_attrib.html#READONLY">READONLY</a></dd>
+  <dd><a href="iupmatrix_attrib.html#RESIZEMATRIX">RESIZEMATRIX</a></dd>
 </dl>
 <h3><a name="Callbacks">Callbacks</a></h3>
 
@@ -302,13 +309,9 @@ mapped then READONLY will be set to YES.</p>
   following keys are used 
   for a text field:</p>
 <ul>
-  <li><strong>Up and down arrows</strong>:
-    Leave the edition mode and moves the focus 
-    accordingly.</li>
-  <li><strong>Left and right arrows</strong>:
-    If the caret is at the extremes of the text 
+  <li><strong>Left, Right, Up and Down arrows</strong>: If the caret is at the extremes of the text 
     being edited then leave the edition mode and moves the focus accordingly.</li>
-  <li><strong>Ctrl + Arrows</strong>:
+  <li><strong>Ctrl + arrows</strong>:
     Leave the edition mode and moves the focus 
     accordingly.</li>
 </ul>
