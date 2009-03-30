@@ -32,12 +32,12 @@ static int enter(Ihandle *self, int lin, int col)
   printf("enteritem_cb(%d, %d)\n", lin, col);
   if(lin == 2 && col == 2)
   {
-    IupSetAttribute(IupGetHandle("mat1"), IUP_REDRAW, "ALL");
-    IupSetAttribute(IupGetHandle("mat2"), IUP_REDRAW, "ALL");
-    IupSetAttribute(IupGetHandle("mat3"), IUP_REDRAW, "ALL");
-    IupSetAttribute(IupGetHandle("mat4"), IUP_REDRAW, "ALL");
-    IupSetAttribute(IupGetHandle("mat5"), IUP_REDRAW, "ALL");
-    IupSetAttribute(IupGetHandle("mat6"), IUP_REDRAW, "ALL");
+    IupSetAttribute(IupGetHandle("mat1"), "REDRAW", "ALL");
+    IupSetAttribute(IupGetHandle("mat2"), "REDRAW", "ALL");
+    IupSetAttribute(IupGetHandle("mat3"), "REDRAW", "ALL");
+    IupSetAttribute(IupGetHandle("mat4"), "REDRAW", "ALL");
+    IupSetAttribute(IupGetHandle("mat5"), "REDRAW", "ALL");
+    IupSetAttribute(IupGetHandle("mat6"), "REDRAW", "ALL");
   }
   return IUP_DEFAULT;
 }
@@ -93,7 +93,7 @@ static int edition(Ihandle *self, int lin, int col, int mode)
   printf("edition_cb(lin=%d, col=%d, mode=%d)\n", lin, col, mode);
   if (mode==1)
   {
-    IupSetAttribute(self, IUP_CARET, "3");
+    IupSetAttribute(self, "CARET", "3");
 
     if(lin == 3 && col == 2)
       return IUP_IGNORE;
@@ -159,21 +159,21 @@ static Ihandle *create_mat(void)
 
   IupSetHandle(name, mat);
   
-  IupSetAttribute(mat,IUP_NUMCOL,"15"); 
-  IupSetAttribute(mat,IUP_NUMLIN,"18"); 
+  IupSetAttribute(mat,"NUMCOL","15"); 
+  IupSetAttribute(mat,"NUMLIN","18"); 
   
-  IupSetAttribute(mat,IUP_NUMCOL_VISIBLE,"5") ;
-  IupSetAttribute(mat,IUP_NUMLIN_VISIBLE,"8") ;
+  IupSetAttribute(mat,"NUMCOL_VISIBLE","5") ;
+  IupSetAttribute(mat,"NUMLIN_VISIBLE","8") ;
 
-//  IupSetAttribute(mat,IUP_EXPAND, "NO");
-//  IupSetAttribute(mat,IUP_SCROLLBAR, "NO");
+//  IupSetAttribute(mat,"EXPAND", "NO");
+//  IupSetAttribute(mat,"SCROLLBAR", "NO");
   IupSetAttribute(mat,"RESIZEMATRIX", "YES");
 
-  IupSetAttribute(mat,IUP_MARK_MODE, "CELL");
-//  IupSetAttribute(mat,IUP_MARK_MODE, "LINCOL");
-  IupSetAttribute(mat,IUP_MULTIPLE, "YES");
-//  IupSetAttribute(mat,"AREA", "NOT_CONTINUOUS");
- IupSetAttribute(mat, "AREA", "CONTINUOUS");
+  IupSetAttribute(mat,"MARK_MODE", "CELL");
+//  IupSetAttribute(mat,"MARK_MODE", "LINCOL");
+  IupSetAttribute(mat,"MARKMULTIPLE", "YES");
+//  IupSetAttribute(mat,"MARKAREA", "NOT_CONTINUOUS");
+ IupSetAttribute(mat, "MARKAREA", "CONTINUOUS");
 
   IupSetAttribute(mat,"0:0","Inflation");
   IupSetAttribute(mat,"1:0","Medicine ");
@@ -200,6 +200,9 @@ static Ihandle *create_mat(void)
   IupSetAttribute(mat,"SORTSIGN1","UP");
 //  IupSetAttribute(mat,"SORTSIGN2","DOWN");
   IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 255");
+
+//  IupSetAttribute(mat,"MARKAREA","NOT_CONTINUOUS");
+//  IupSetAttribute(mat,"MARKMULTIPLE","YES");
 
   IupSetCallback(mat,"LEAVEITEM_CB",(Icallback)leave);
   IupSetCallback(mat,"ENTERITEM_CB",(Icallback)enter);

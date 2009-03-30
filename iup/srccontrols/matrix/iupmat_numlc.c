@@ -267,6 +267,8 @@ static int iMatrixGetStartEnd(const char* value, int *base, int *count, int max,
     if (*base + *count - 1 >= max)
       *count = max-1 - *base + 1;
   }
+  else
+    (*base)++; /* add after the given index, so increment to position the base */
 
   return 1;
 }

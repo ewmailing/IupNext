@@ -166,7 +166,7 @@ includes the title line. The remaining lines will be accessible only by using
 the scrollbar. When 
   retrieved returns the current number of visible lines. Default: &quot;3&quot;.</p>
 <h3>Mark Attributes</h3>
-<p><strong><a name="AREA">AREA</a></strong>:
+<p><strong><a name="MARKAREA">MARKAREA</a></strong>:
   Defines if the area to be <strong>interactively</strong> 
   marked by the user will be continuous or not. Possible values: &quot;CONTINUOUS&quot; or &quot;NOT_CONTINUOUS&quot;. Default: &quot;CONTINUOUS&quot;.</p>
 <p><strong><a name="MARK_MODE">MARK_MODE</a></strong>:
@@ -174,7 +174,7 @@ the scrollbar. When
   lines, columns, lines or columns, and cells. Possible values: &quot;NO&quot;, &quot;LIN&quot;, &quot;COL&quot;, 
     &quot;LINCOL&quot; or &quot;CELL&quot;. Default: &quot;NO&quot; 
     (no mark).</p>
-<p><strong>MARK<em>L:C</em></strong>: marks a cell when 
+<p><strong><a name="MARK">MARK</a><em>L:C</em></strong>: marks a cell when 
 MARK_MODE=CELL, and returns cell mark independent from MARK_MODE. Can be &quot;1&quot; or 
 &quot;0&quot;. (since 3.0)</p>
 <p><strong><a name="MARKED">MARKED</a></strong>:
@@ -189,10 +189,12 @@ NUMCOL positions, each one corresponding to a
   column in the matrix. If its value is LINCOL, the first letter, which can be either 
 &#39;L&#39; or &#39;C&#39;, will indicate which of the above formats is being used. If you 
 change the other mark attributes the marked cells are cleared. When setting the 
-attribute the LIN and COL notation can be used even if MARK_MODE=CELL.</p>
-<p><strong><a name="MULTIPLE">MULTIPLE</a></strong>:
+attribute the LIN and COL notation can be used even if MARK_MODE=CELL. 
+MARKMULTIPLE and MARKAREA are NOT considered when setting MARKED or MARKL:C.</p>
+<p><strong><a name="MARKMULTIPLE">MARKMULTIPLE</a></strong>:
   Defines if more than one entity defined by
-  MARK_MODE can be marked. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
+  MARK_MODE can be <strong>interactively</strong> 
+  marked. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
     &quot;NO&quot;.</p>
 <h3>Action Attributes (after map)</h3>
 <p><strong><a name="ADDCOL">ADDCOL</a></strong> (write-only):
@@ -275,7 +277,7 @@ adding the line and column at the end of the attribute name.</p>
     &nbsp;(<strong><em>L</em></strong>&gt;0 and <strong><em>C</em></strong>&gt;0, a title cell can NOT be the current cell). Default: &quot;1:1&quot;.</p>
 <p><strong><a name="HIDEFOCUS">HIDEFOCUS</a></strong>: do not show the focus mark when 
   drawing the matrix. Default is NO.</p>
-<p><strong>READONLY</strong>: disables the editing of all cells. EDITION_CB and 
+<p><strong><a name="READONLY">READONLY</a></strong>: disables the editing of all cells. EDITION_CB and 
 VALUE_EDIT_CB will not be called anymore. The L:C attribute will still be able 
 to change the cell value. (since 3.0)</p>
 

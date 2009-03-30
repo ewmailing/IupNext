@@ -231,7 +231,7 @@ static char* iMatrixGetMarkModeAttrib(Ihandle* ih)
   return mark2str[ih->data->mark_mode];
 }
 
-static int iMatrixSetAreaAttrib(Ihandle* ih, const char* value)
+static int iMatrixSetMarkAreaAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "NOT_CONTINUOUS"))
     ih->data->mark_continuous = 0;
@@ -246,7 +246,7 @@ static int iMatrixSetAreaAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static char* iMatrixGetAreaAttrib(Ihandle* ih)
+static char* iMatrixGetMarkAreaAttrib(Ihandle* ih)
 {
   if (ih->data->mark_continuous)
     return "CONTINUOUS";
@@ -254,7 +254,7 @@ static char* iMatrixGetAreaAttrib(Ihandle* ih)
     return "NOT_CONTINUOUS";
 }
 
-static int iMatrixSetMultipleAttrib(Ihandle* ih, const char* value)
+static int iMatrixSetMarkMultipleAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
     ih->data->mark_multiple = 1;
@@ -269,7 +269,7 @@ static int iMatrixSetMultipleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static char* iMatrixGetMultipleAttrib(Ihandle* ih)
+static char* iMatrixGetMarkMultipleAttrib(Ihandle* ih)
 {
   if (ih->data->mark_multiple)
     return "YES";
@@ -809,8 +809,10 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttribute(ic, "MARKED", iupMatrixGetMarkedAttrib, iupMatrixSetMarkedAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* noticed that MARKED must be mapped */
   iupClassRegisterAttributeId(ic, "MARK", iupMatrixGetMarkAttrib, iupMatrixSetMarkAttrib, IUPAF_NO_INHERIT);  /* noticed that MARK must be mapped */
   iupClassRegisterAttribute(ic, "MARK_MODE", iMatrixGetMarkModeAttrib, iMatrixSetMarkModeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AREA", iMatrixGetAreaAttrib, iMatrixSetAreaAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MULTIPLE", iMatrixGetMultipleAttrib, iMatrixSetMultipleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AREA", iMatrixGetMarkAreaAttrib, iMatrixSetMarkAreaAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARKAREA", iMatrixGetMarkAreaAttrib, iMatrixSetMarkAreaAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MULTIPLE", iMatrixGetMarkMultipleAttrib, iMatrixSetMarkMultipleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARKMULTIPLE", iMatrixGetMarkMultipleAttrib, iMatrixSetMarkMultipleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - ACTION (only mapped) */
   iupClassRegisterAttribute(ic, "ADDLIN", NULL, iupMatrixSetAddLinAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

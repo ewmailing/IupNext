@@ -43,7 +43,12 @@ static Ihandle* create_matrix(void)
   //IupSetAttribute(mat, "FONT2:*", "Courier, 14");
   IupSetAttribute(mat, "FONT*:3", "Times, Bold 14");
   IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");
-  IupSetAttribute(mat, "ACTIVE", "NO");
+//  IupSetAttribute(mat, "ACTIVE", "NO");
+
+  IupSetAttribute(mat,"MARK_MODE","CELL");
+  IupSetAttribute(mat,"MARK2:2","YES");
+  IupSetAttribute(mat,"MARK3:3","YES");
+//  IupSetAttribute(mat,"MARKMODE","LINCOL");
 
   //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");
   //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");

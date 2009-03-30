@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\include;..\..\cd\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WIN32_WINNT=0x0500;_WIN32_IE=0x0500;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WIN32_WINNT=0x0500;_WIN32_IE=0x0500;_CRT_SECURE_NO_DEPRECATE;__IUPDEF_H"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -352,13 +352,6 @@
 			<File
 				RelativePath="..\html\examples\C\getparam.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\html\examples\C\glcanvas.c"

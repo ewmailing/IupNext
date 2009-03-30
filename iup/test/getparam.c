@@ -26,7 +26,7 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
       char param_str[50];
       sprintf(param_str, "PARAM%d", param_index);
       param = (Ihandle*)IupGetAttribute(dialog, param_str);
-      printf("%s = %s\n", param_str, IupGetAttribute(param, IUP_VALUE));
+      printf("%s = %s\n", param_str, IupGetAttribute(param, "VALUE"));
       break;
     }
   }

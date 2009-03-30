@@ -15,9 +15,6 @@
 .style2 {
 	color: #008000;
 }
-.style3 {
-	color: #3366CC;
-}
   </style>
 </head>
 
@@ -33,10 +30,7 @@
 
 <ul>
 
-	<li>IupTree and IupMatrix need lots of testing and 
-small fixes (not fully working yet)<br>
-
-	<span class="style3"><strong>RELEASE CANDIDATE 1/FINAL (January 2009)</strong></span></li>
+	<li>Refactoring of IupTree (maybe using native controls)</li>
 
 </ul>
 
@@ -45,10 +39,6 @@ small fixes (not fully working yet)<br>
 <ul>
 
 	<li>IupSplitbox (IupSbox nativo)</li>
-
-	<li>Refactoring of IupTree (native controls?)</li>
-
-	<li>Refactoring of IupMatrix</li>
 
 	<li>New Controls</li>
 
@@ -83,7 +73,7 @@ small fixes (not fully working yet)<br>
 
 	<li class="style2">Support for changing the system menu in Windows. Support 
 	for cascading <strong>IupPopup</strong> for menus.</li>
-  <li class="style2">The actual model for control data in the internal SDK is limited and hard to use for derived classes.</li>
+  <li class="style2">The actual model for control data structure in the internal SDK is limited and hard to use for derived classes.</li>
 
 	<li class="style1">The IupImgLib takes an very long time to compile under 
 	Visual C++. In a 2.5GHz CPU tooks about 5min!</li>
@@ -96,13 +86,13 @@ small fixes (not fully working yet)<br>
 
 	<li class="style1"><strong>In Windows Vista the COMPOSITE=YES attribute of the 
 	IupDialog is not working as expected. There is still some flicker when the 
-	dialog is resized. So we changed the default to NO.</strong></li>
+	dialog is resized. So we changed the default to NO in Vista.</strong></li>
 
 	<li class="style1">IupTabs using native controls in Windows Vista when 
 	COMPOSITE=YES works only if MULTILINE=YES, so it is internally overwritten 
 	until the problem is solved. (since 3.0)</li>
 
-	<li class="style1">The MDI Window menu is not updated when the child mdi is 
+	<li class="style1">The MDI Window menu is not properly updated when the child mdi is 
 	closed.</li>
 
 </ul>
@@ -133,10 +123,9 @@ small fixes (not fully working yet)<br>
 	<li>Allow to use an image as a cell content.</li>
 	<li>Allow to mark using the keyboard.</li>
 	<li>Allow to scroll with position free.</li>
+	<li>Allow to merge cells.</li>
+	<li>Toggle mark for cells with boolean values.</li>
 	<li>New PADDINGL:C, TIPL:C and ENABLEDL:C attributes.</li>
-
-  <li class="style1">When removing a line, if it has the focus an invalid call to enteritem_cb/leave_item_cb will 
-  occur for the removed cell.</li>
 
 </ul>
 
@@ -156,6 +145,7 @@ small fixes (not fully working yet)<br>
 	<li>Allow to change the caret color and other colors, like the BGCOLOR.</li>
 
 	<li>Focus feedback.</li>
+	<li>Toggle mark option.</li>
 
 	<li class="style2">Internal code reorganization.</li>
 
@@ -187,13 +177,11 @@ small fixes (not fully working yet)<br>
 
 	<li class="style2"><strong>Toobar -</strong> button/toggle/list, detachable</li>
 
-	<li class="style2"><strong>ImageList</strong> - A lista that contains images</li>
+	<li class="style2"><strong>ImageList</strong> - A list that contains images</li>
 
 	<li>-----------------------------</li>
 
   <li>FontDlg for X fonts - Motif driver</li>
-
-	<li>Toggle mark in IupTree and IupMatrix</li>
 
 	<li>Expandable/Closeable Frames</li>
 

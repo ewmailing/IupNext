@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
-//#include <string.h>
+#include <string.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -682,8 +682,11 @@ int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
     if (ih->data->mark_mode == IMAT_MARK_LIN)
       return 0;
 
-    markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
     value++; /* skip C mark */
+    if ((int)strlen(value) != ih->data->columns.num-1)
+      return 0;
+
+    markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
 
     for(col = 1; col < ih->data->columns.num; col++)
     {
@@ -716,8 +719,11 @@ int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
     if (ih->data->mark_mode == IMAT_MARK_COL)
       return 0;
 
-    markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
     value++; /* skip L mark */
+    if ((int)strlen(value) != ih->data->lines.num-1)
+      return 0;
+
+    markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
 
     for(lin = 1; lin < ih->data->lines.num; lin++)
     {
@@ -746,6 +752,9 @@ int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
   }
   else if (ih->data->mark_mode == IMAT_MARK_CELL)  /* cells */
   {
+    if ((int)strlen(value) != (ih->data->lines.num-1)*(ih->data->columns.num-1))
+      return 0;
+
     markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
 
     /* mark all columns to unmark during cell processing */
@@ -899,7 +908,7 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
     if (!iupMatrixCheckCellPos(ih, lin, col))
       return 0;
 
-    if (lin == 0 || col == 0) /* title can NOT have the focus */
+    if (lin == 0 || col == 0) /* title can NOT have a mark */
       return 0;
 
     mark = iupStrBoolean(value);

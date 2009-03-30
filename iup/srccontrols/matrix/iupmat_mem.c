@@ -134,12 +134,13 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
   if (num > ih->data->lines.num_alloc)  /* this also implicates that num>old_num */
   {
     int old_alloc = ih->data->lines.num_alloc;
-
     ih->data->lines.num_alloc = num;
 
     if (!ih->data->callback_mode)
     {
       ih->data->cells = (ImatCell**)realloc(ih->data->cells, ih->data->lines.num_alloc*sizeof(ImatCell*));
+
+      /* new space are allocated at the end, later we need to move the old data and clear the available space */
       for(lin = old_alloc; lin < num; lin++)
         ih->data->cells[lin] = (ImatCell*)calloc(ih->data->columns.num_alloc, sizeof(ImatCell));
     }
@@ -153,59 +154,60 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
 
   if (num>old_num) /* ADD */
   {
-    /* shift the old data, opening space for new data, from base to old_num */
-    /*   do it in reverse order to avoid overlapping */
-    /* then clear the new space starting at base */
-
     diff_num = num-old_num;      /* size of the openned space */
     shift_num = old_num-base;    /* size of the data to be moved */
     end = base+diff_num;
 
-    for (lin = old_num-1; lin >= base; lin--)
-      memmove(ih->data->cells[lin+diff_num], ih->data->cells[lin], ih->data->columns.num_alloc*sizeof(ImatCell));
+    /* shift the old data, opening space for new data, from base to end */
+    /*   do it in reverse order to avoid overlapping */
+    if (!ih->data->callback_mode)
+      for (lin = shift_num-1; lin >= 0; lin--)   /* all columns, shift_num lines */
+        memmove(ih->data->cells[lin+end], ih->data->cells[lin+base], ih->data->columns.num_alloc*sizeof(ImatCell));
+    memmove(ih->data->lines.sizes+end, ih->data->lines.sizes+base, shift_num*sizeof(int));
+    memmove(ih->data->lines.flags+end, ih->data->lines.flags+base, shift_num*sizeof(unsigned char));
 
-    for (lin = base; lin < end; lin++)
-      memset(ih->data->cells[lin], 0, ih->data->columns.num_alloc*sizeof(ImatCell));
-
-    memmove(ih->data->lines.sizes+old_num, ih->data->lines.sizes+base, shift_num*sizeof(int));
-    memmove(ih->data->lines.flags+old_num, ih->data->lines.flags+base, shift_num*sizeof(unsigned char));
-
+    /* then clear the new space starting at base */
+    if (!ih->data->callback_mode)
+      for (lin = 0; lin < diff_num; lin++)        /* all columns, diff_num lines */
+        memset(ih->data->cells[lin+base], 0, ih->data->columns.num_alloc*sizeof(ImatCell));
     memset(ih->data->lines.sizes+base, 0, diff_num*sizeof(int));
     memset(ih->data->lines.flags+base, 0, diff_num*sizeof(unsigned char));
   }
   else /* DEL */
   {
-    /* release memory from the opened space */
-    /* move the old data to opened space from end to base */
-    /* then clear the remaining space starting at num */
-
     diff_num = old_num-num;  /* size of the openned space */
     shift_num = num-base;    /* size of the data to be moved */
     end = base+diff_num;
 
-    for(lin = base; lin < end; lin++)
+    /* release memory from the opened space */
+    if (!ih->data->callback_mode)
     {
-      for (col = 0; col < ih->data->columns.num_alloc; col++)
+      for(lin = base; lin < end; lin++)   /* all columns, base-end lines */
       {
-        ImatCell* cell = &(ih->data->cells[lin][col]);
-        if (cell->value)
+        for (col = 0; col < ih->data->columns.num_alloc; col++)
         {
-          free(cell->value);
-          cell->value = NULL;
+          ImatCell* cell = &(ih->data->cells[lin][col]);
+          if (cell->value)
+          {
+            free(cell->value);
+            cell->value = NULL;
+          }
+          cell->flags = 0;
         }
-        cell->flags = 0;
       }
     }
 
-    for (lin = end; lin < old_num; lin++)
-      memmove(ih->data->cells[lin-diff_num], ih->data->cells[lin], ih->data->columns.num_alloc*sizeof(ImatCell));
-
-    for (lin = num; lin < old_num; lin++)
-      memset(ih->data->cells[lin], 0, ih->data->columns.num_alloc*sizeof(ImatCell));
-
+    /* move the old data to opened space from end to base */
+    if (!ih->data->callback_mode)
+      for (lin = 0; lin < shift_num; lin++) /* all columns, shift_num lines */
+        memmove(ih->data->cells[lin+base], ih->data->cells[lin+end], ih->data->columns.num_alloc*sizeof(ImatCell));
     memmove(ih->data->lines.sizes+base, ih->data->lines.sizes+end, shift_num*sizeof(int));
     memmove(ih->data->lines.flags+base, ih->data->lines.flags+end, shift_num*sizeof(unsigned char));
 
+    /* then clear the remaining space starting at num */
+    if (!ih->data->callback_mode)
+      for (lin = 0; lin < diff_num; lin++)   /* all columns, diff_num lines */
+        memset(ih->data->cells[lin+num], 0, ih->data->columns.num_alloc*sizeof(ImatCell));
     memset(ih->data->lines.sizes+num, 0, diff_num*sizeof(int));
     memset(ih->data->lines.flags+num, 0, diff_num*sizeof(unsigned char));
   }
@@ -220,12 +222,12 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
   {
     ih->data->columns.num_alloc = num;
 
+    /* new space are allocated at the end, later we need to move the old data and clear the available space */
+
     if (!ih->data->callback_mode)
     {
       for(lin = 0; lin < ih->data->lines.num_alloc; lin++)
-      {
         ih->data->cells[lin] = (ImatCell*)realloc(ih->data->cells[lin], ih->data->columns.num_alloc*sizeof(ImatCell));
-      }
     }
 
     ih->data->columns.sizes = (int*)realloc(ih->data->columns.sizes, ih->data->columns.num_alloc*sizeof(int));
@@ -237,59 +239,63 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
 
   if (num>old_num) /* ADD */
   {
-    /* shift the old data, opening space for new data, from base to old_num */
     /*   even if (old_num-base)>(num-old_num) memmove will correctly copy the memory */
     /* then clear the openned space starting at base */
 
     diff_num = num-old_num;     /* size of the openned space */
     shift_num = old_num-base;   /* size of the data to be moved */
+    end = base+diff_num;
 
-    for (lin = 0; lin < ih->data->lines.num_alloc; lin++)
-    {
-      memmove(ih->data->cells[lin]+old_num, ih->data->cells[lin]+base, shift_num*sizeof(ImatCell));
-      memset(ih->data->cells[lin]+base, 0, diff_num*sizeof(ImatCell));
-    }
+    /* shift the old data, opening space for new data, from base to end */
+    if (!ih->data->callback_mode)
+      for (lin = 0; lin < ih->data->lines.num_alloc; lin++)  /* all lines, shift_num columns */
+        memmove(ih->data->cells[lin]+end, ih->data->cells[lin]+base, shift_num*sizeof(ImatCell));
+    memmove(ih->data->columns.sizes+end, ih->data->columns.sizes+base, shift_num*sizeof(int));
+    memmove(ih->data->columns.flags+end, ih->data->columns.flags+base, shift_num*sizeof(unsigned char));
 
-    memmove(ih->data->columns.sizes+old_num, ih->data->columns.sizes+base, shift_num*sizeof(int));
-    memmove(ih->data->columns.flags+old_num, ih->data->columns.flags+base, shift_num*sizeof(unsigned char));
-
+    /* then clear the openned space starting at base */
+    if (!ih->data->callback_mode)
+      for (lin = 0; lin < ih->data->lines.num_alloc; lin++)   /* all lines, diff_num columns */
+        memset(ih->data->cells[lin]+base, 0, diff_num*sizeof(ImatCell));
     memset(ih->data->columns.sizes+base, 0, diff_num*sizeof(int));
     memset(ih->data->columns.flags+base, 0, diff_num*sizeof(unsigned char));
   }
   else /* DEL */
   {
-    /* release memory from the opened space */
-    /* move the old data to opened space from end to base */
-    /*   even if (num-base)>(old_num-num) memmove will correctly copy the memory */
-    /* then clear the remaining space starting at num */
-
     diff_num = old_num-num;    /* size of the openned space */
     shift_num = num-base;      /* size of the data to be moved */
     end = base+diff_num;
 
-    for (lin = 0; lin < ih->data->lines.num_alloc; lin++)
+    /* release memory from the opened space */
+    if (!ih->data->callback_mode)
     {
-      for(col = base; col < end; col++)
+      for (lin = 0; lin < ih->data->lines.num_alloc; lin++)  /* all lines, base-end columns */
       {
-        ImatCell* cell = &(ih->data->cells[lin][col]);
-        if (cell->value)
+        for(col = base; col < end; col++)
         {
-          free(cell->value);
-          cell->value = NULL;
+          ImatCell* cell = &(ih->data->cells[lin][col]);
+          if (cell->value)
+          {
+            free(cell->value);
+            cell->value = NULL;
+          }
+          cell->flags = 0;
         }
-        cell->flags = 0;
       }
     }
 
-    for (lin = 0; lin < ih->data->lines.num_alloc; lin++)
-    {
-      memmove(ih->data->cells[lin]+base, ih->data->cells[lin]+end, shift_num*sizeof(ImatCell));
-      memset(ih->data->cells[lin]+num, 0, diff_num*sizeof(ImatCell));
-    }
-
+    /* move the old data to opened space from end to base */
+    /*   even if (num-base)>(old_num-num) memmove will correctly copy the memory */
+    if (!ih->data->callback_mode)
+      for (lin = 0; lin < ih->data->lines.num_alloc; lin++)  /* all lines, shift_num columns */
+        memmove(ih->data->cells[lin]+base, ih->data->cells[lin]+end, shift_num*sizeof(ImatCell));
     memmove(ih->data->columns.sizes+base, ih->data->columns.sizes+end, shift_num*sizeof(int));
     memmove(ih->data->columns.flags+base, ih->data->columns.flags+end, shift_num*sizeof(unsigned char));
 
+    /* then clear the remaining space starting at num */
+    if (!ih->data->callback_mode)
+      for (lin = 0; lin < ih->data->lines.num_alloc; lin++)   /* all lines, diff_num columns */
+        memset(ih->data->cells[lin]+num, 0, diff_num*sizeof(ImatCell));
     memset(ih->data->columns.sizes+num, 0, diff_num*sizeof(int));
     memset(ih->data->columns.flags+num, 0, diff_num*sizeof(unsigned char));
   }
