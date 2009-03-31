@@ -75,6 +75,8 @@ SRC += cells_degrade.c
 SRC += cells_checkboard.c
 SRC += gauge.c
 SRC += matrix.c
+SRC += matrix_cbs.c
+SRC += matrix_cbmode.c
 SRC += tree.c
 
 LINKER = g++

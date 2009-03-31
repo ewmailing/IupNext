@@ -541,19 +541,6 @@ static int motCanvasMapMethod(Ihandle* ih)
     XChangeWindowAttributes(iupmot_display, XtWindow(ih->handle), CWBitGravity|CWBackingStore, &attrs);
   }
 
-  XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
-  XtAddCallback(ih->handle, XmNexposeCallback, (XtCallbackProc)motCanvasExposeCallback, (XtPointer)ih);
-  XtAddCallback(ih->handle, XmNresizeCallback, (XtCallbackProc)motCanvasResizeCallback,  (XtPointer)ih);
-  XtAddCallback(ih->handle, XmNinputCallback,  (XtCallbackProc)motCanvasInputCallback,   (XtPointer)ih);
-
-  XtAddEventHandler(ih->handle, EnterWindowMask, False,(XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
-  XtAddEventHandler(ih->handle, LeaveWindowMask, False,(XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
-
-  XtAddEventHandler(ih->handle, FocusChangeMask, False,(XtEventHandler)iupmotFocusChangeEvent,        (XtPointer)ih);
-  XtAddEventHandler(ih->handle, KeyPressMask,    False, (XtEventHandler)iupmotKeyPressEvent,    (XtPointer)ih);
-  XtAddEventHandler(ih->handle, KeyReleaseMask,  False, (XtEventHandler)iupmotCanvasKeyReleaseEvent,  (XtPointer)ih);
-  XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotPointerMotionEvent, (XtPointer)ih);
-
   if (ih->data->sb & IUP_SB_HORIZ)
   {
     Widget sb_horiz = XtVaCreateManagedWidget("sb_horiz",
@@ -591,6 +578,19 @@ static int motCanvasMapMethod(Ihandle* ih)
 
     XtVaSetValues(sb_win, XmNverticalScrollBar, sb_vert, NULL);
   }
+
+  XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
+  XtAddCallback(ih->handle, XmNexposeCallback, (XtCallbackProc)motCanvasExposeCallback, (XtPointer)ih);
+  XtAddCallback(ih->handle, XmNresizeCallback, (XtCallbackProc)motCanvasResizeCallback,  (XtPointer)ih);
+  XtAddCallback(ih->handle, XmNinputCallback,  (XtCallbackProc)motCanvasInputCallback,   (XtPointer)ih);
+
+  XtAddEventHandler(ih->handle, EnterWindowMask, False,(XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+  XtAddEventHandler(ih->handle, LeaveWindowMask, False,(XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+
+  XtAddEventHandler(ih->handle, FocusChangeMask, False,(XtEventHandler)iupmotFocusChangeEvent,        (XtPointer)ih);
+  XtAddEventHandler(ih->handle, KeyPressMask,    False, (XtEventHandler)iupmotKeyPressEvent,    (XtPointer)ih);
+  XtAddEventHandler(ih->handle, KeyReleaseMask,  False, (XtEventHandler)iupmotCanvasKeyReleaseEvent,  (XtPointer)ih);
+  XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotPointerMotionEvent, (XtPointer)ih);
 
   /* initialize the widget */
   XtRealizeWidget(sb_win);
