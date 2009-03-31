@@ -179,10 +179,10 @@ static int action(Ihandle *ih, int c, char* after)
   return IUP_DEFAULT;
 }
 
-static int caret_cb(Ihandle *ih, int lin, int col)
+static int caret_cb(Ihandle *ih, int lin, int col, int pos)
 {
-  printf("CARET_CB(%d, %d)\n", lin, col);
-  printf("  CARET(%s)\n", IupGetAttribute(ih, "CARET"));
+  printf("CARET_CB(%d, %d - %d)\n", lin, col, pos);
+  printf("  CARET(%s - %s)\n", IupGetAttribute(ih, "CARET"), IupGetAttribute(ih, "CARETPOS"));
   return IUP_DEFAULT;
 }
 

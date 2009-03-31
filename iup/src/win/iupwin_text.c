@@ -446,6 +446,7 @@ static int winTextSetLinColToPosition(Ihandle *ih, int lin, int col)
 
 static void winTextGetLinColFromPosition(Ihandle* ih, int pos, int* lin, int* col)
 {
+  /* here "pos" must contains the extra chars if the case */
   int lineindex;
 
   if (ih->data->has_formatting)
@@ -501,16 +502,19 @@ static int winTextGetCaretPos(Ihandle* ih)
   else
   {
     if (ih->data->has_formatting)
-      pos = (int)SendMessage(ih->handle, EM_CHARFROMPOS, 0, (LPARAM)&point);
+      pos = SendMessage(ih->handle, EM_CHARFROMPOS, 0, (LPARAM)&point);
     else
     {
-      pos = SendMessage(ih->handle, EM_CHARFROMPOS, 0, MAKELPARAM(point.x, point.y));
-      pos = LOWORD(pos);
+      LRESULT ret;
+
+      /* Workaround for weird behavior because of the return value in GetCaretPos */
+      if (ih->data->is_multiline && point.y < 5)
+        point.y += 5;
+
+      ret = SendMessage(ih->handle, EM_CHARFROMPOS, 0, MAKELPARAM(point.x, point.y));
+      pos = LOWORD(ret);
     }
   }
-
-  if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-    pos = winTextRemoveExtraChars(ih, pos);
 
   return pos;
 }
@@ -520,7 +524,12 @@ static int winTextGetCaret(Ihandle* ih, int *lin, int *col)
   int pos = winTextGetCaretPos(ih);
 
   if (ih->data->is_multiline)
+  {
     winTextGetLinColFromPosition(ih, pos, lin, col);
+
+    if (!ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
+      pos = winTextRemoveExtraChars(ih, pos);
+  }
   else
   {
     *col = pos;
@@ -547,23 +556,26 @@ static void winTextGetSelection(Ihandle* ih, int *start, int *end)
 
 void iupdrvTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos)
 {
-  POINT point;
-  point.x = x;
-  point.y = y;
-
   if (ih->data->has_formatting)
+  {
+    POINT point;
+    point.x = x;
+    point.y = y;
     *pos = (int)SendMessage(ih->handle, EM_CHARFROMPOS, 0, (LPARAM)&point);
+  }
   else
   {
-    *pos = SendMessage(ih->handle, EM_CHARFROMPOS, 0, MAKELPARAM(point.x, point.y));
-    *pos = LOWORD(*pos);
+    LRESULT ret = SendMessage(ih->handle, EM_CHARFROMPOS, 0, MAKELPARAM(x, y));
+    *pos = LOWORD(ret);
   }
 
-  if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-    *pos = winTextRemoveExtraChars(ih, *pos);
-
   if (ih->data->is_multiline)
+  {
     winTextGetLinColFromPosition(ih, *pos, lin, col);
+
+    if (!ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
+      *pos = winTextRemoveExtraChars(ih, *pos);
+  }
   else
   {
     *col = (*pos) + 1;  /* IUP starts at 1 */
@@ -962,6 +974,8 @@ static char* winTextGetCaretPosAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(100);
   int pos = winTextGetCaretPos(ih);
+  if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
+    pos = winTextRemoveExtraChars(ih, pos);
   sprintf(str, "%d", pos);
   return str;
 }

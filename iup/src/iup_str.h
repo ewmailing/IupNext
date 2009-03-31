@@ -141,16 +141,16 @@ char* iupStrFileMakeFileName(const char* path, const char* title);
  * \ingroup str */
 int iupStrReplace(char* str, char src, char dst);
 
-/** Convert line ends to UNIX format in place.
+/** Convert line ends to UNIX format in place (one \n per line).
  * \ingroup str */
 void iupStrToUnix(char* str);
 
-/** Convert line ends to MAC format.
+/** Convert line ends to MAC format (one \r per line).
  * If returned pointer different than input it must be freed.
  * \ingroup str */
 char* iupStrToMac(const char* str);
 
-/** Convert line ends to DOS/Windows format. 
+/** Convert line ends to DOS/Windows format (the sequence \r\n per line).
  * If returned pointer different than input it must be freed.
  * \ingroup str */
 char* iupStrToDos(const char* str);
