@@ -18,8 +18,10 @@ extern "C" {
 /***************************************************************************/
 /* Decoration size in pixels                                               */
 /***************************************************************************/
-#define IMAT_DECOR_X   6
-#define IMAT_DECOR_Y   6
+#define IMAT_PADDING_W   6
+#define IMAT_PADDING_H   6
+#define IMAT_FRAME_W   2
+#define IMAT_FRAME_H   2
 
 /* Cell flags */
 #define IUPMAT_FONT    1   /* Has FONTL:C attribute */
@@ -93,11 +95,11 @@ struct _IcontrolData
       colres_drag_col_last_x;  /* previous position */
 
   /* Mark AUX */
-  //int MarkLin, MarkCol;  /* used to store the current cell when a block is being selected */
-  //int MarkFullLin,   /* indicate if full lines or columns is being selected */
-  //    MarkFullCol,
-  //    LastMarkFullCol,
-  //    LastMarkFullLin;
+  int mark_start_lin, mark_start_col;  /* used to store the start cell when a block is being marked */
+  int MarkFullLin,   /* indicate if full lines or columns is being selected */
+      MarkFullCol,
+      LastMarkFullCol,
+      LastMarkFullLin;
   //int MarkedCells;  /* indicates the number of selected cells */
   //int MarkLinCol;   /* Is it marking lines or columns?     */
 };

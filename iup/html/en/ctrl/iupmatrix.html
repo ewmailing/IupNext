@@ -332,17 +332,21 @@ partially visible is edited then first it is scrolled to the visible area.</p>
 <p>When a mark mode is set the cells can be marked using mouse, if the keyboard is used all marks are cleared.</p>
 <p>A marked cell will have its background attenuated to indicate that it is marked. 
 A title cell appears marked only when MARK_MODE=LIN, COL or LINCOL.</p>
-<p>Cells can be selected individually or the marks can be restricted to lines and/or columns. Also multiple cells can 
+<p>Cells can be selected individually or can be restricted to lines or columns. Also multiple cells can 
   be marked simultaneously in continuous or in segmented areas. Lines and columns are marked only when the user clicks 
-  in their respective titles. Continuous areas are marked holding and dragging the mouse or holding the 
+  in their respective titles, if MARK_MODE=CELL then all the cells of the line 
+or column will be marked. Continuous areas are marked holding and dragging the mouse or holding the 
 <b>Shift</b> 
-  key. Segmented areas are marked holding the <b>Ctrl</b> key.</p>
+  key when clicking at the end of the area. Segmented areas are marked or 
+unmarked holding the <b>Ctrl</b> key, the mark state is inverted. Clicking on 
+the cell 0:0 will select all the items depending on MARK_MODE, except for 
+LINCOL.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
-<p>Creates a simple matrix with the values and 
-  layout shown in the image below. There is also a menu that allows making some changes to the matrix.</p>
 <p align="center">
-<img src="iupmatrix.gif" alt="iupmatrx.gif (125Kb)" width="299" height="142"></p>
+<img src="images/iupmatrix1.png"></p>
+<p align="center">
+<img src="images/iupmatrix2.png"></p>
 <h3><a name="SeeAlso">See Also</a></h3>
 
 <p><a href="../elem/iupcanvas.html">IupCanvas</a></p>

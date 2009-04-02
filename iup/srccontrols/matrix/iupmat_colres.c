@@ -90,7 +90,7 @@ void iupMatrixColResFinish(Ihandle* ih, int x)
   ih->data->colres_dragging = 0;
 
   sprintf(str, "RASTERWIDTH%d", ih->data->colres_drag_col);
-  iupAttribSetInt(ih, str, width-IMAT_DECOR_X);
+  iupAttribSetInt(ih, str, width-IMAT_PADDING_W-IMAT_FRAME_W);
   sprintf(str, "WIDTH%d", ih->data->colres_drag_col);
   iupAttribSetStr(ih, str, NULL);
 

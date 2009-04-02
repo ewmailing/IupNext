@@ -162,9 +162,9 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
 
                 value_edit_cb = (IFniis)IupGetCallback(ih, "VALUE_EDIT_CB");
                 if (value_edit_cb)
-                  value_edit_cb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, NULL);
+                  value_edit_cb(ih, lin, col, NULL);
 
-                iupMatrixDrawCell(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+                iupMatrixDrawCells(ih, lin, col, lin, col);
               }
             }
           }

@@ -190,9 +190,9 @@ static void iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, i
 
 static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int x2, int y1, int y2, long framecolor, char* str)
 {
-  /* avoid drawing over the frame of the next title */
-  x2--;
-  y2--;
+  /* avoid drawing over the frame of the next cell */
+  x2 -= IMAT_FRAME_W/2;
+  y2 -= IMAT_FRAME_H/2;
 
   iMatrixDrawFrameVertLineCell(ih, lin, col, x2, y1, y2, framecolor, str);  /* right vertical line */
   if (col==0)
@@ -221,8 +221,8 @@ static void iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, in
   if (!sort || iupStrEqualNoCase(sort, "NO"))
     return;
 
-  /* Create an space between text and cell margin */
-  x2 -= IMAT_DECOR_X/2;
+  /* Remove the space between text and cell frame */
+  x2 -= IMAT_PADDING_W/2 + IMAT_FRAME_W/2;
 
   /* Set the color used to draw the text */
   if (active)
@@ -234,7 +234,7 @@ static void iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, in
 
   cdCanvasBegin(ih->data->cddbuffer, CD_FILL);
 
-  if (iupStrEqualNoCase(sort, "UP"))
+  if (iupStrEqualNoCase(sort, "DOWN"))
   {
     IUPMAT_VERTEX(ih, x2 - 5, yc + 2);
     IUPMAT_VERTEX(ih, x2 - 1, yc - 2);
@@ -259,10 +259,10 @@ static void iMatrixDrawComboFeedback(Ihandle* ih, int x2, int y1, int y2, int li
   IUPMAT_BOX(ih, x2 - IMAT_COMBOBOX_W, x2, y1, y2); 
 
   /* feedback area */
-  x2 -= 3;
+  x2 -= IMAT_PADDING_W/2 + IMAT_FRAME_W/2;
   x1  = x2 - IMAT_COMBOBOX_W; 
-  y1 += 2;
-  y2 -= 3;
+  y1 += IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
+  y2 -= IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
 
   /* feedback background */
   iMatrixDrawSetBgColor(ih, 0, 0, 0, active);
@@ -285,28 +285,28 @@ static void iMatrixDrawComboFeedback(Ihandle* ih, int x2, int y1, int y2, int li
 
 static void iMatrixDrawBackground(Ihandle* ih, int x1, int x2, int y1, int y2, int marked, int active, int lin, int col)
 {
-  /* avoid drawing over the frame of the next title */
-  x2--;
-  y2--;
+  /* avoid drawing over the frame of the next cell */
+  x2 -= IMAT_FRAME_W/2;
+  y2 -= IMAT_FRAME_H/2;
 
   /* avoid drawing over the frame of the cell */
-  x2--;
-  y2--;
+  x2 -= IMAT_FRAME_W/2;
+  y2 -= IMAT_FRAME_H/2;
 
   if (lin==0 || col==0)
   {
     /* avoid drawing over the frame of the cell */
-    x1++;
-    y1++;
+    x1 += IMAT_FRAME_W/2;
+    y1 += IMAT_FRAME_H/2;
 
-    if (col==0) x1++;
-    if (lin==0) y1++;
+    if (col==0) x1 += IMAT_FRAME_W/2;
+    if (lin==0) y1 += IMAT_FRAME_H/2;
   }
   else if ((col==1 && ih->data->columns.sizes[0] == 0) || (lin==1 && ih->data->lines.sizes[0] == 0))
   {
     /* avoid drawing over the frame of the cell */
-    x1++;
-    y1++;
+    x1 += IMAT_FRAME_W/2;
+    y1 += IMAT_FRAME_H/2;
   }
 
   iMatrixDrawSetBgColor(ih, lin, col, marked, active);
@@ -324,28 +324,28 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
 {
   char *text;
 
-  /* avoid drawing over the frame of the next title */
-  x2--;
-  y2--;
+  /* avoid drawing over the frame of the next cell */
+  x2 -= IMAT_FRAME_W/2;
+  y2 -= IMAT_FRAME_H/2;
 
   /* avoid drawing over the frame of the cell */
-  x2--;
-  y2--;
+  x2 -= IMAT_FRAME_W/2;
+  y2 -= IMAT_FRAME_H/2;
 
   if (lin==0 || col==0)
   {
     /* avoid drawing over the frame of the cell */
-    x1++;
-    y1++;
+    x1 += IMAT_FRAME_W/2;
+    y1 += IMAT_FRAME_H/2;
 
-    if (col==0) x1++;
-    if (lin==0) y1++;
+    if (col==0) x1 += IMAT_FRAME_W/2;
+    if (lin==0) y1 += IMAT_FRAME_H/2;
   }
   else if ((col==1 && ih->data->columns.sizes[0] == 0) || (lin==1 && ih->data->lines.sizes[0] == 0))
   {
     /* avoid drawing over the frame of the cell */
-    x1++;
-    y1++;
+    x1 += IMAT_FRAME_W/2;
+    y1 += IMAT_FRAME_H/2;
   }
 
   if (!iMatrixDrawCallDrawCB(ih, lin, col, x1, x2, y1, y2))
@@ -363,13 +363,13 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
     iupdrvFontGetCharSize(ih, NULL, &charheight);
 
     line_height  = charheight;
-    total_height = (line_height + IMAT_DECOR_Y/2) * num_line - IMAT_DECOR_Y/2;
+    total_height = (line_height + IMAT_PADDING_H/2) * num_line - IMAT_PADDING_H/2 - IMAT_FRAME_H/2;
 
     if (lin==0)
     {
       int text_w;
       iupdrvFontGetMultiLineStringSize(ih, text, &text_w, NULL);
-      if (text_w > x2 - x1 + 1 - IMAT_DECOR_X)
+      if (text_w > x2 - x1 + 1 - IMAT_PADDING_W - IMAT_FRAME_W)
         alignment = IMAT_T_LEFT;
     }
 
@@ -385,9 +385,9 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
 
     cdCanvasNativeFont(ih->data->cddbuffer, iupMatrixGetFont(ih, lin, col));
 
-    /* Create an space between text and cell margin */
-    x1 += IMAT_DECOR_X/2;       x2 -= IMAT_DECOR_X/2;
-    y1 += IMAT_DECOR_Y/2;       y2 -= IMAT_DECOR_Y/2;
+    /* Create an space between text and cell frame */
+    x1 += IMAT_PADDING_W/2;       x2 -= IMAT_PADDING_W/2;
+    y1 += IMAT_PADDING_H/2;       y2 -= IMAT_PADDING_H/2;
 
     if (num_line == 1)
     {
@@ -429,7 +429,7 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
         p = q + 1;
 
         /* Advance a line */
-        ypos += line_height + IMAT_DECOR_Y/2;
+        ypos += line_height + IMAT_PADDING_H/2;
       }
 
       free(newtext);
@@ -452,23 +452,86 @@ static void iMatrixDrawTitleCorner(Ihandle* ih)
   iMatrixDrawCellValue(ih, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], IMAT_T_CENTER, 0, active, 0, 0);
 }
 
+static void iMatrixDrawMatrix(Ihandle* ih)
+{
+  iupMatrixStoreGlobalAttrib(ih);
+
+  /* fill the background because there will be empty cells */
+  if ((ih->data->lines.num == 1) || (ih->data->columns.num == 1))
+  {
+    cdCanvasForeground(ih->data->cddbuffer, cdIupConvertColor(iupAttribGet(ih, "_IUPMAT_BGCOLOR_PARENT")));
+    cdCanvasClear(ih->data->cddbuffer);
+  }
+
+  /* Draw the corner between line and column titles, if necessary */
+  if (ih->data->lines.sizes[0] && ih->data->columns.sizes[0])
+    iMatrixDrawTitleCorner(ih);
+
+  /* If there are columns, then draw their titles */
+  iupMatrixDrawColumnTitle(ih, ih->data->columns.first, ih->data->columns.last);
+
+  /* If there are lines, then draw their titles */
+  iupMatrixDrawLineTitle(ih, ih->data->lines.first, ih->data->lines.last);
+
+  /* If there are cells in the matrix, then draw them */
+  if ((ih->data->lines.num > 1) && (ih->data->columns.num > 1))
+    iupMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first, 
+                           ih->data->lines.last, ih->data->columns.last);
+}
+
+static void iMatrixDrawFocus(Ihandle* ih)
+{
+  int x1, y1, x2, y2, dx, dy;
+
+  if (iupAttribGetInt(ih, "HIDEFOCUS"))
+    return;
+
+  if (!iupMatrixAuxIsCellVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
+    return;
+
+  iupMatrixAuxGetVisibleCellDim(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, &x1, &y1, &dx, &dy);
+
+  x2 = x1 + dx - 1;
+  y2 = y1 + dy - 1;
+
+  cdIupDrawFocusRect(ih, ih->data->cdcanvas, x1, iupMatrixInvertYAxis(ih, y1), x2, iupMatrixInvertYAxis(ih, y2));
+}
+
+
+/**************************************************************************/
+/* Exported functions                                                     */
+/**************************************************************************/
+
+
 /* Draw the line titles, visible, between lin and lastlin, include it. 
    Line titles marked will be draw with the appropriate feedback.
-   -> start_lin - First line to have its title drawn
-   -> end_lin - Last line to have its title drawn */
-static void iMatrixDrawLineTitle(Ihandle* ih, int start_lin, int end_lin)
+   -> lin1 - First line to have its title drawn
+   -> lin2 - Last line to have its title drawn */
+void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
 {
   int x1, y1, x2, y2;
   int lin, alignment, active;
   char str[100];
   long framecolor;
 
+  if (!ih->data->columns.sizes[0])
+    return;
+
+  if (lin1 > ih->data->lines.last ||
+      lin2 < ih->data->lines.first)
+    return;
+
+  if (lin1 < ih->data->lines.first)
+    lin1 = ih->data->lines.first;
+  if (lin2 > ih->data->lines.last)
+    lin2 = ih->data->lines.last;
+
   /* Start the position of the line title */
   x1 = 0;
   x2 = ih->data->columns.sizes[0];
 
   y1 = ih->data->lines.sizes[0];
-  for(lin = ih->data->lines.first; lin < start_lin; lin++)
+  for(lin = ih->data->lines.first; lin < lin1; lin++)
     y1 += ih->data->lines.sizes[lin];
 
   framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
@@ -477,7 +540,7 @@ static void iMatrixDrawLineTitle(Ihandle* ih, int start_lin, int end_lin)
   alignment = iMatrixDrawGetColAlignment(ih, 0, str);
 
   /* Draw the titles */
-  for(lin = start_lin; lin <= end_lin; lin++)
+  for(lin = lin1; lin <= lin2; lin++)
   {
     /* If it is a hidden line (size = 0), don't draw the title */
     if(ih->data->lines.sizes[lin] == 0)
@@ -503,28 +566,40 @@ static void iMatrixDrawLineTitle(Ihandle* ih, int start_lin, int end_lin)
 
 /* Draw the column titles, visible, between col and lastcol, include it. 
    Column titles marked will be draw with the appropriate feedback.
-   -> start_col - First column to have its title drawn
-   -> end_col - Last column to have its title drawn */
-static void iMatrixDrawColumnTitle(Ihandle* ih, int start_col, int end_col)
+   -> col1 - First column to have its title drawn
+   -> col2 - Last column to have its title drawn */
+void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
 {
   int x1, y1, x2, y2;
   int col, active;
   char str[100];
   long framecolor;
 
+  if (!ih->data->lines.sizes[0])
+    return;
+
+  if (col1 > ih->data->columns.last ||
+      col2 < ih->data->columns.first)
+    return;
+
+  if (col1 < ih->data->columns.first)
+    col1 = ih->data->columns.first;
+  if (col2 > ih->data->columns.last)
+    col2 = ih->data->columns.last;
+
   /* Start the position of the first column title */
   y1 = 0;
   y2 = ih->data->lines.sizes[0];
 
   x1 = ih->data->columns.sizes[0];
-  for(col = ih->data->columns.first; col < start_col; col++)
+  for(col = ih->data->columns.first; col < col1; col++)
     x1 += ih->data->columns.sizes[col];
 
   framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
   active = iupdrvIsActive(ih);
 
   /* Draw the titles */
-  for(col = start_col; col <= end_col; col++)
+  for(col = col1; col <= col2; col++)
   {
     /* If it is an hide column (size = 0), no draw the title */
     if(ih->data->columns.sizes[col] == 0)
@@ -554,7 +629,7 @@ static void iMatrixDrawColumnTitle(Ihandle* ih, int start_col, int end_col)
    automatically the background color of them.
    - lin1, col1 : cell coordinates that mark the left top corner of the area to be redrawn
    - lin2, col2 : cell coordinates that mark the right bottom corner of the area to be redrawn */
-static void iMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
+void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 {
   int x1, y1, x2, y2, old_x2, old_y1, old_y2;
   int alignment, lin, col, active;
@@ -571,6 +646,21 @@ static void iMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2
   old_x2 = x2;
   old_y1 = y1;
   old_y2 = y2;
+
+  if (col1 > ih->data->columns.last ||
+      col2 < ih->data->columns.first ||
+      lin1 > ih->data->lines.last ||
+      lin2 < ih->data->lines.first)
+    return;
+
+  if (col1 < ih->data->columns.first)
+    col1 = ih->data->columns.first;
+  if (col2 > ih->data->columns.last)
+    col2 = ih->data->columns.last;
+  if (lin1 < ih->data->lines.first)
+    lin1 = ih->data->lines.first;
+  if (lin2 > ih->data->lines.last)
+    lin2 = ih->data->lines.last;
 
   /* Find the initial position of the first column */
   x1 += ih->data->columns.sizes[0];
@@ -682,64 +772,6 @@ static void iMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2
   }
 }
 
-static void iMatrixDrawMatrix(Ihandle* ih)
-{
-  iupMatrixStoreGlobalAttrib(ih);
-
-  /* fill the background because there will be empty cells */
-  if ((ih->data->lines.num == 1) || (ih->data->columns.num == 1))
-  {
-    cdCanvasForeground(ih->data->cddbuffer, cdIupConvertColor(iupAttribGet(ih, "_IUPMAT_BGCOLOR_PARENT")));
-    cdCanvasClear(ih->data->cddbuffer);
-  }
-
-  /* Draw the corner between line and column titles, if necessary */
-  if (ih->data->lines.sizes[0] && ih->data->columns.sizes[0])
-    iMatrixDrawTitleCorner(ih);
-
-  /* If there are columns, then draw their titles */
-  if (ih->data->lines.sizes[0])
-    iMatrixDrawColumnTitle(ih, ih->data->columns.first, ih->data->columns.last);
-
-  /* If there are lines, then draw their titles */
-  if (ih->data->columns.sizes[0])
-    iMatrixDrawLineTitle(ih, ih->data->lines.first, ih->data->lines.last);
-
-  /* If there are cells in the matrix, then draw them */
-  if ((ih->data->lines.num > 1) && (ih->data->columns.num > 1))
-    iMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first, 
-                         ih->data->lines.last, ih->data->columns.last);
-}
-
-static void iMatrixDrawFocus(Ihandle* ih)
-{
-  int x1, y1, x2, y2, dx, dy;
-
-  if (iupAttribGetInt(ih, "HIDEFOCUS"))
-    return;
-
-  if (!iupMatrixAuxIsCellVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
-    return;
-
-  iupMatrixAuxGetVisibleCellDim(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, &x1, &y1, &dx, &dy);
-
-  x2 = x1 + dx - 1;
-  y2 = y1 + dy - 1;
-
-  cdIupDrawFocusRect(ih, ih->data->cdcanvas, x1, iupMatrixInvertYAxis(ih, y1), x2, iupMatrixInvertYAxis(ih, y2));
-}
-
-
-/**************************************************************************/
-/* Exported functions                                                     */
-/**************************************************************************/
-
-
-void iupMatrixDrawCell(Ihandle* ih, int lin, int col)
-{
-  iMatrixDrawCells(ih, lin, col, lin, col);
-}
-
 void iupMatrixDraw(Ihandle* ih, int update)
 {
   if (ih->data->need_calcsize)
@@ -780,6 +812,9 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
     if(iupStrToIntInt(value, &min, &max, ':') != 2)
       max = min;
 
+    if (min > max)
+      return 0;
+
     iupMatrixStoreGlobalAttrib(ih);
 
     if (ih->data->need_calcsize)
@@ -790,33 +825,13 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
 
     if (type == IMAT_PROCESS_LIN)
     {
-      if(min < ih->data->lines.first)
-        min = ih->data->lines.first;
-      if(max > ih->data->lines.last)
-        max = ih->data->lines.last;
-
-    if (min > max)
-      return 0;
-
-      if (ih->data->columns.sizes[0])
-        iMatrixDrawLineTitle(ih, min, max);
-
-      iMatrixDrawCells(ih, min, ih->data->columns.first, max, ih->data->columns.last);
+      iupMatrixDrawLineTitle(ih, min, max);
+      iupMatrixDrawCells(ih, min, ih->data->columns.first, max, ih->data->columns.last);
     }
     else
     {
-      if(min < ih->data->columns.first)
-        min = ih->data->columns.first;
-      if(max > ih->data->columns.last)
-        max = ih->data->columns.last;
-
-      if(min > max)
-        return 0;
-
-      if (ih->data->lines.sizes[0])
-        iMatrixDrawColumnTitle(ih, min, max);
-
-      iMatrixDrawCells(ih, ih->data->lines.first, min, ih->data->lines.last, max);
+      iupMatrixDrawColumnTitle(ih, min, max);
+      iupMatrixDrawCells(ih, ih->data->lines.first, min, ih->data->lines.last, max);
     }
   }
   else

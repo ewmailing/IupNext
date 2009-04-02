@@ -5,18 +5,24 @@
 #include "iup.h"
 #include "iupcontrols.h"
 
+static int dropcheck_cb(Ihandle *self, int lin, int col)
+{
+  if (lin == 3 && col == 1)
+    return IUP_DEFAULT;
+  return IUP_IGNORE;
+}
+
 static Ihandle* create_matrix(void)
 {
   Ihandle* mat = IupMatrix(NULL); 
   
   IupSetAttribute(mat, "NUMCOL", "15"); 
   IupSetAttribute(mat, "NUMLIN", "20"); 
-  
-//  IupSetAttribute(mat, "NUMCOL_VISIBLE", "2"); /* default is 4 */
-//  IupSetAttribute(mat, "NUMLIN_VISIBLE", "3"); /* default is 3 */
+//  IupSetAttribute(mat, "NUMCOL", "2"); 
+//  IupSetAttribute(mat, "NUMLIN", "3"); 
   
   IupSetAttribute(mat, "0:0", "Inflation");
-  IupSetAttribute(mat, "1:0", "Medicine\nFarma");
+  IupSetAttribute(mat, "1:0", "Medicine\nPharma");
   IupSetAttribute(mat, "2:0", "Food"); 
   IupSetAttribute(mat, "3:0", "Energy"); 
   IupSetAttribute(mat, "0:1", "January 2000"); 
@@ -28,29 +34,35 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "2:2", "8.1");
   IupSetAttribute(mat, "3:2", "3.4");
   IupSetAttribute(mat, "3:3", "Font Test");
-  IupSetAttribute(mat, "HEIGHT1", "20");
-  IupSetAttribute(mat, "WIDTH2", "90");
-  IupSetAttribute(mat, "HEIGHT2", "30");
+//  IupSetAttribute(mat, "HEIGHT1", "20");
+//  IupSetAttribute(mat, "WIDTH2", "90");
+//  IupSetAttribute(mat, "HEIGHT2", "30");
+  IupSetAttribute(mat,"SORTSIGN2","DOWN");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
   IupSetAttribute(mat,"MULTILINE", "YES");
   IupSetAttribute(mat,"RESIZEMATRIX", "YES");
   //IupSetAttribute(mat,"SCROLLBAR", "NO");
-  IupSetAttribute(mat, "BGCOLOR1:2", "255 92 255");
+  //IupSetAttribute(mat, "BGCOLOR1:2", "255 92 255");
   //IupSetAttribute(mat, "BGCOLOR2:*", "92 92 255");
   //IupSetAttribute(mat, "BGCOLOR*:3", "255 92 92");
   //IupSetAttribute(mat, "FGCOLOR1:2", "255 0 0");
   //IupSetAttribute(mat, "FGCOLOR2:*", "0 128 0");
-  IupSetAttribute(mat, "FGCOLOR*:3", "0 0 255");
+  //IupSetAttribute(mat, "FGCOLOR*:3", "0 0 255");
   //IupSetAttribute(mat, "FONT1:2", "Helvetica, 24");
   //IupSetAttribute(mat, "FONT2:*", "Courier, 14");
-  IupSetAttribute(mat, "FONT*:3", "Times, Bold 14");
-  IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");
+  //IupSetAttribute(mat, "FONT*:3", "Times, Bold 14");
+  //IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");
 //  IupSetAttribute(mat, "ACTIVE", "NO");
 
-  IupSetAttribute(mat,"MARK_MODE","CELL");
+//  IupSetAttribute(mat,"MARK_MODE","CELL");
+  IupSetAttribute(mat,"MARK_MODE","COL");
+  IupSetAttribute(mat,"MARKMULTIPLE","YES");
+  IupSetAttribute(mat,"MARKAREA","NOT_CONTINUOUS");
   IupSetAttribute(mat,"MARK2:2","YES");
   IupSetAttribute(mat,"MARK2:3","YES");
   IupSetAttribute(mat,"MARK3:3","YES");
+
+
 //  IupSetAttribute(mat,"MARKMODE","LINCOL");
 
   //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");
@@ -65,6 +77,8 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "0:15", "Column Title Test");
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "6");
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "8");
+
+  IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
 
   return mat;
 }

@@ -16,7 +16,6 @@
 
 #include "iup.h"
 #include "iupcbs.h"
-//#include "iupkey.h"
 
 #include <cd.h>
 
@@ -38,30 +37,8 @@
 #include "iupmat_draw.h"
 
 
-//
 //#define IMAT_MINMAX(a, b, min, max)  ((a > b) ? (min = b, max = a) : (min = a, max = b))
-//
-/* Mark (select) a full column. Redraw it.
-//   -> col : column to be mark.
-//   -> redraw: define the redraw or not
-*/
-//static void iMatrixMarkColumn(Ihandle* ih, int col, int redraw)
-//{
-//  int lin;
-//
-//  for(lin = 0; lin < ih->data->lines.num; lin++, ih->data->MarkedCells++)
-//    iupMatrixMarkCellSet(ih, lin, col, 1);
-//
-//  ih->data->columns.marks[col]++;
-//
-//  if(redraw)
-//  {
-//    if(ih->data->columns.marks[col] == 1)
-//      iupMatrixDrawColumnTitle(ih, col, col);
-//    iupMatrixDrawCells(ih, ih->data->lines.first, col, ih->data->lines.last, col);
-//  }
-//}
-//
+
 /* Unchecked (unselected) a full column. Redraw it.
 //   -> col : column to be Unchecked.
 //   -> redraw: define the redraw or not
@@ -82,33 +59,11 @@
 //    iupMatrixDrawCells(ih, ih->data->lines.first, col, ih->data->lines.last, col);
 //  }
 //}
-//
-/* Mark (select) a full line. Redraw it.
-//   -> lin : line to be mark.
-//   -> redraw: define the redraw or not
-*/
-//static void iMatrixMarkLine(Ihandle* ih, int lin, int redraw)
-//{
-//  int lin;
-//
-//  for(lin = 0; lin < ih->data->columns.num; lin++, ih->data->MarkedCells++)
-//    iupMatrixMarkCellSet(ih, lin, lin, 1);
-//
-//  ih->data->lines.marks[lin]++;
-//
-//  if(redraw)
-//  {
-//    if(ih->data->lines.marks[lin] == 1)
-//      iupMatrixDrawLineTitle(ih, lin, lin);
-//    iupMatrixDrawCells(ih, lin, ih->data->columns.first, lin, ih->data->columns.last);
-//  }
-//}
-//
+
 /* Unchecked (unselected) a full line. Redraw it.
 //   -> lin : line to be Unchecked.
 //   -> redraw: define the redraw or not
 */
-//
 //static void iMatrixMarkUncheckedLine(Ihandle* ih, int lin, int redraw)
 //{
 //  int lin;
@@ -124,7 +79,7 @@
 //    iupMatrixDrawCells(ih, lin, ih->data->columns.first, lin, ih->data->columns.last);
 //  }
 //}
-//
+
 /* Mark (or not) a region of lines using drag.
 //   -> lin: final line of selection.
 */
@@ -142,7 +97,7 @@
 //  ih->data->MarkLin = lin;
 //  ih->data->MarkCol = ih->data->columns.num - 1;
 //}
-//
+
 /* Mark (or not) a region of columns (using drag).
 //   -> col: final column of selection.
 */
@@ -160,7 +115,7 @@
 //  ih->data->MarkCol = col;
 //  ih->data->MarkLin = ih->data->lines.num - 1;
 //}
-//
+
 /* Mark (or not) a region of the matrix (using drag).
 //   The block to be selected is defined by the cell passed as parameter,
 //   and ih->data->MarkLin and ih->data->MarkCol.
@@ -249,8 +204,8 @@
 //    iupMatrixDrawCells(ih, linstart, RedrawCol, linend, RedrawCol);
 //}
 
-//void iupMatrixMarkMouseDrag(Ihandle* ih, int x, int y)
-//{
+void iupMatrixMarkMouseDrag(Ihandle* ih, int x, int y)
+{
 //  int lin, col, lin, col, incl, incc;
 //
 //  if(ih->data->mark_mode == IMAT_MARK_NO)
@@ -340,7 +295,7 @@
 //  }
 //
 //  iupMatrixDrawUpdate(ih);
-//}
+}
 
 /* Unchecked (unselected) the last block marked. The block limits are defined
    by the cell that contains the focus and by the cell stored in ih->data->MarkLin
@@ -398,9 +353,22 @@
    DO NOT redraw the matrix.
    -> lin, col : cell coordinates that define the block to be marked.
 */
-//void iupMatrixMarkMouseBlock(Ihandle* ih, int lin, int col)
-//{
+void iupMatrixMarkMouseBlock(Ihandle* ih, int lin, int col)
+{
+  /* used only when "shift" is pressed and MARKMULTIPLE=YES */
+
+  /* Verify if an line or column title was clicked (selection of full lines or columns)
+     and that full lines and columns were not marked */
+  //if (shift)
+  //{
+  //  if (ih->data->MarkFullLin && !ih->data->LastMarkFullLin)
+  //    ih->data->MarkFullLin = 0;
+  //  if (ih->data->MarkFullCol && !ih->data->LastMarkFullCol)
+  //    ih->data->MarkFullCol = 0;
+  //}
 //  int lin, col, inc;
+//
+//  iupMatrixMarkMouseUncheckedBlock(ih);
 //
 //  if(ih->data->MarkFullLin)
 //  {
@@ -444,7 +412,183 @@
 //    ih->data->MarkLin = lin;
 //    ih->data->MarkCol = col;
 //  }
-//}
+}
+
+void iupMatrixMarkMouseReset(Ihandle* ih)
+{
+//  ih->data->LastMarkFullLin = ih->data->MarkFullLin;
+//  ih->data->LastMarkFullCol = ih->data->MarkFullCol;
+//
+//  ih->data->MarkFullLin = 0;
+//  ih->data->MarkFullCol = 0;
+}
+
+void iupMatrixMarkMouseItem(Ihandle* ih, int ctrl, int lin, int col)
+{
+  int mark = 1, MarkFull;
+  if (!ih->data->mark_multiple || ih->data->mark_continuous || !ctrl)
+  {
+    iupMatrixMarkClearAll(ih, 1);
+    iupMatrixDraw(ih, 0);
+  }
+  else
+    mark = -1; /* toggle mark state */
+
+  ih->data->MarkFullCol = 0;
+  ih->data->MarkFullLin = 0;
+  MarkFull = 0;
+
+  if (lin == 0 && col == 0)
+  {
+    if (ih->data->mark_mode == IMAT_MARK_CELL && ih->data->mark_multiple ||
+        ih->data->mark_mode == IMAT_MARK_COL ||
+        ih->data->mark_mode == IMAT_MARK_LIN)
+      MarkFull = 1;
+  }
+  /* If it was pointing for a column title... */
+  else if (lin == 0)
+  {
+    if ((ih->data->mark_mode == IMAT_MARK_CELL && ih->data->mark_multiple) || 
+         ih->data->mark_mode & IMAT_MARK_COL)
+      ih->data->MarkFullCol = 1;
+  }
+  /* If it was pointing for a line title... */
+  else if (col == 0)
+  {
+    if ((ih->data->mark_mode == IMAT_MARK_CELL && ih->data->mark_multiple) || 
+         ih->data->mark_mode & IMAT_MARK_LIN)
+      ih->data->MarkFullLin = 1;
+  }
+
+  if (MarkFull)
+  {
+    if (ih->data->mark_mode == IMAT_MARK_CELL)
+    {
+      IFniii markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
+      IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
+      char str[100];
+      for (col = 1; col < ih->data->columns.num; col++)
+      {
+        for(lin = 1; lin < ih->data->lines.num; lin++)
+        {
+          int m = mark;
+          if (mark==-1)
+            m = !iupMatrixMarkCellGet(ih, lin, col, mark_cb, str);
+          iupMatrixMarkCellSet(ih, lin, col, m, markedit_cb, str);
+        }
+      }
+    }
+    else if (ih->data->mark_mode == IMAT_MARK_LIN)
+    {
+      for(lin = 1; lin < ih->data->lines.num; lin++)
+      {
+        int m = mark;
+        if (mark==-1)
+          m = !(ih->data->lines.flags[lin] & IUPMAT_MARK);
+
+        if (m)
+          ih->data->lines.flags[lin] |= IUPMAT_MARK;
+        else
+          ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
+      }
+
+      iupMatrixDrawLineTitle(ih, 1, ih->data->lines.num-1);
+    }
+    else if (ih->data->mark_mode == IMAT_MARK_COL)
+    {
+      for (col = 1; col < ih->data->columns.num; col++)
+      {
+        int m = mark;
+        if (m==-1)
+          m = !(ih->data->columns.flags[col] & IUPMAT_MARK);
+
+        if (m)
+          ih->data->columns.flags[col] |= IUPMAT_MARK;
+        else
+          ih->data->columns.flags[col] &= ~IUPMAT_MARK;
+      }
+
+      iupMatrixDrawColumnTitle(ih, 1, ih->data->columns.num-1);
+    }
+
+    iupMatrixDrawCells(ih, 1, 1, ih->data->lines.num-1, ih->data->columns.num-1);
+  }
+  else if (ih->data->MarkFullLin)
+  {
+    if (ih->data->mark_mode == IMAT_MARK_CELL)
+    {
+      IFniii markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
+      IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
+      char str[100];
+      for (col = 1; col < ih->data->columns.num; col++)
+      {
+        int m = mark;
+        if (mark==-1)
+          m = !iupMatrixMarkCellGet(ih, lin, col, mark_cb, str);
+        iupMatrixMarkCellSet(ih, lin, col, m, markedit_cb, str);
+      }
+    }
+    else
+    {
+      if (mark==-1)
+        mark = !(ih->data->lines.flags[lin] & IUPMAT_MARK);
+
+      if (mark)
+        ih->data->lines.flags[lin] |= IUPMAT_MARK;
+      else
+        ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
+
+      iupMatrixDrawLineTitle(ih, lin, lin);
+    }
+
+    iupMatrixDrawCells(ih, lin, 1, lin, ih->data->columns.num-1);
+  }
+  else if (ih->data->MarkFullCol)
+  {
+    if (ih->data->mark_mode == IMAT_MARK_CELL)
+    {
+      IFniii markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
+      IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
+      char str[100];
+      for(lin = 1; lin < ih->data->lines.num; lin++)
+      {
+        int m = mark;
+        if (mark==-1)
+          m = !iupMatrixMarkCellGet(ih, lin, col, mark_cb, str);
+        iupMatrixMarkCellSet(ih, lin, col, m, markedit_cb, str);
+      }
+    }
+    else
+    {
+      if (mark==-1)
+        mark = !(ih->data->columns.flags[col] & IUPMAT_MARK);
+
+      if (mark)
+        ih->data->columns.flags[col] |= IUPMAT_MARK;
+      else
+        ih->data->columns.flags[col] &= ~IUPMAT_MARK;
+
+      iupMatrixDrawColumnTitle(ih, col, col);
+    }
+
+    iupMatrixDrawCells(ih, 1, col, ih->data->lines.num-1, col);
+  }
+  else if (ih->data->mark_mode == IMAT_MARK_CELL)
+  {
+    IFniii markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
+    char str[100];
+    if (mark==-1)
+    {
+      IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
+      mark = !iupMatrixMarkCellGet(ih, lin, col, mark_cb, str);
+    }
+    iupMatrixMarkCellSet(ih, lin, col, mark, markedit_cb, str);
+    iupMatrixDrawCells(ih, lin, col, lin, col);
+  }
+
+  ih->data->mark_start_lin = lin;
+  ih->data->mark_start_col = col;
+}
 
 static void iMatrixMarkAllLinCol(ImatLinColData *p, int mark)
 {
@@ -458,8 +602,10 @@ static void iMatrixMarkAllLinCol(ImatLinColData *p, int mark)
   }
 }
 
-void iupMatrixMarkCellSet2(Ihandle* ih, int lin, int col, int mark, IFniii markedit_cb, char* str)
+void iupMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark, IFniii markedit_cb, char* str)
 {
+  /* called only when MARK_MODE=CELL */
+
   if (ih->data->callback_mode)
   {
     if (markedit_cb)
@@ -484,26 +630,43 @@ void iupMatrixMarkCellSet2(Ihandle* ih, int lin, int col, int mark, IFniii marke
 
 int iupMatrixMarkCellGet(Ihandle* ih, int lin, int col, IFnii mark_cb, char* str)
 {
-  if (ih->data->callback_mode)
+  /* called independent from MARK_MODE */
+
+  if (ih->data->mark_mode == IMAT_MARK_NO)
+    return 0;
+
+  if (ih->data->mark_mode == IMAT_MARK_CELL)
   {
-    if (mark_cb)
-      return mark_cb(ih, lin, col);
-    else
+    if (ih->data->callback_mode)
     {
-      int mark = 0;
-      char* value;
-      sprintf(str, "MARK%d:%d", lin, col);
-      value = iupAttribGet(ih, str);
-      iupStrToInt(value, &mark);
-      return mark;
+      if (mark_cb)
+        return mark_cb(ih, lin, col);
+      else
+      {
+        int mark = 0;
+        char* value;
+        sprintf(str, "MARK%d:%d", lin, col);
+        value = iupAttribGet(ih, str);
+        iupStrToInt(value, &mark);
+        return mark;
+      }
     }
+    else
+      return ih->data->cells[lin][col].flags & IUPMAT_MARK;
   }
   else
-    return ih->data->cells[lin][col].flags & IUPMAT_MARK;
+  {
+    if (ih->data->lines.flags[lin] & IUPMAT_MARK || ih->data->columns.flags[col] & IUPMAT_MARK)
+      return 1;
+    else
+      return 0;
+  }
 }
 
 void iupMatrixMarkClearAll(Ihandle* ih, int check)
 {
+  /* "!check" is used to clear all marks independent from MARK_MODE */
+
   if (ih->data->mark_mode == IMAT_MARK_CELL || !check)
   {
     int lin, col;
@@ -516,154 +679,34 @@ void iupMatrixMarkClearAll(Ihandle* ih, int check)
     for(lin = 1; lin < ih->data->lines.num; lin++)
     {
       for(col = 1; col < ih->data->columns.num; col++)
-        iupMatrixMarkCellSet2(ih, lin, col, 0, markedit_cb, str);
+        iupMatrixMarkCellSet(ih, lin, col, 0, markedit_cb, str);
     }
   }
 
-  if (ih->data->mark_mode != IMAT_MARK_NO || !check)
-  {
-    /* clear lines and columns marks */
-    iMatrixMarkAllLinCol(&(ih->data->columns), 0);
+  if (ih->data->mark_mode & IMAT_MARK_LIN || !check)
     iMatrixMarkAllLinCol(&(ih->data->lines), 0);
-  }
-}
 
-//void iupMatrixMarkMouseReset(void)
-//{
-//  ih->data->LastMarkFullLin = ih->data->MarkFullLin;
-//  ih->data->LastMarkFullCol = ih->data->MarkFullCol;
-//
-//  ih->data->MarkFullLin = 0;
-//  ih->data->MarkFullCol = 0;
-//}
+  if (ih->data->mark_mode & IMAT_MARK_COL || !check)
+    iMatrixMarkAllLinCol(&(ih->data->columns), 0);
+}
 
 int iupMatrixColumnIsMarked(Ihandle* ih, int col)
 {
   if (col == 0 ||  /* Line titles are never marked... */
-      ih->data->mark_mode == IMAT_MARK_NO)
+      !(ih->data->mark_mode & IMAT_MARK_COL))
     return 0;
 
   return ih->data->columns.flags[col] & IUPMAT_MARK;
 }
 
-int iupMatrixLineIsMarked (Ihandle* ih, int lin)
+int iupMatrixLineIsMarked(Ihandle* ih, int lin)
 {
   if (lin == 0 || /* Column titles are never marked... */
-      ih->data->mark_mode == IMAT_MARK_NO)
+      !(ih->data->mark_mode & IMAT_MARK_LIN))
     return 0;
 
   return ih->data->lines.flags[lin] & IUPMAT_MARK;
 }
-
-//void iupMatrixMarkMouseAdjust(Ihandle* ih, int* lin, int* col, int* shift, int* ctrl, int* duplo)
-//{
-//  int  mult = !iupAttribGetInt(ih, "MULTIPLE") ? 0 : 1;
-//  int  cont = (iupStrEqualNoCase(IupGetAttribute(ih, "AREA"), "CONTINUOUS")) ? 1 : 0;
-//
-//  /* If it was pointing for a column title... */
-//  if(*lin == -1)
-//  {
-//    *lin   = ih->data->lines.first;
-//    *duplo = 0;  /* Make sure that will not be interpreted as a double-click */
-//    if(ih->data->mark_mode != IMAT_MARK_NO && ((ih->data->mark_mode == IMAT_MARK_CELL && mult) || 
-//                                         ih->data->mark_mode == IMAT_MARK_COL || 
-//                                         ih->data->mark_mode == IMAT_MARK_LINCOL))
-//      ih->data->MarkFullCol = 1;
-//  }
-//  /* If it was pointing for a line title... */
-//  else if(*col == -1)
-//  {
-//    *col   = ih->data->columns.first;
-//    *duplo = 0;  /* Make sure that will not be interpreted as a double-click */
-//    if(ih->data->mark_mode != IMAT_MARK_NO && ((ih->data->mark_mode == IMAT_MARK_CELL && mult) || 
-//                                         ih->data->mark_mode == IMAT_MARK_LIN || 
-//                                         ih->data->mark_mode == IMAT_MARK_LINCOL))
-//      ih->data->MarkFullLin = 1;
-//  }
-//
-//  /* Verify if an line or column title was clicked (selection of full lines or columns)
-//     and that full lines and columns were not marked
-//  */
-//  if(*shift)
-//  {
-//    if(ih->data->MarkFullLin && !ih->data->LastMarkFullLin)
-//      ih->data->MarkFullLin = 0;
-//    if(ih->data->MarkFullCol && !ih->data->LastMarkFullCol)
-//      ih->data->MarkFullCol = 0;
-//  }
-//
-//  /* Consistency tests between the type of mark requested and
-//     the type of mark mode that is being performed
-//  */
-//  if(ih->data->mark_mode == IMAT_MARK_LIN && !ih->data->MarkFullLin)
-//    ih->data->mark_mode = IMAT_MARK_NO;
-//  else if(ih->data->mark_mode == IMAT_MARK_COL && !ih->data->MarkFullCol)
-//    ih->data->mark_mode = IMAT_MARK_NO;
-//  else if(ih->data->mark_mode == IMAT_MARK_LINCOL && !(ih->data->MarkFullCol || ih->data->MarkFullLin))
-//    ih->data->mark_mode = IMAT_MARK_NO;
-//
-//  if(ih->data->mark_mode == IMAT_MARK_LINCOL)
-//  {
-//    if((ih->data->MarkFullCol && (ih->data->ih->data->MarkLinCol == IMAT_MARK_LIN)) ||
-//       (ih->data->MarkFullLin && (ih->data->ih->data->MarkLinCol == IMAT_MARK_COL)))
-//    {
-//      *ctrl = 0;
-//      *shift = 0;
-//    }
-//    ih->data->ih->data->MarkLinCol = (ih->data->MarkFullCol) ? IMAT_MARK_COL : IMAT_MARK_LIN;
-//  }
-//
-//  /* Consistency tests in reference to multiple attribute */
-//  if(!mult || (ih->data->mark_mode == IMAT_MARK_NO))
-//  {
-//     *ctrl = 0;
-//     *shift = 0;
-//  }
-//
-//  /* Consistency tests in reference to continuous attribute */
-//  if(cont)
-//    *ctrl = 0;
-//}
-
-//void iupMatrixMarkMouseShow(Ihandle* ih, int ctrl, int lin, int col, int oldlin, int oldcol)
-//{
-//  if(ih->data->MarkFullLin)
-//  {
-//    iMatrixMarkLine(ih, lin, 1);
-//    col = ih->data->columns.num - 1;
-//  }
-//  else if(ih->data->MarkFullCol)
-//  {
-//    iMatrixMarkColumn(ih, col, 1);
-//    lin = ih->data->lines.num - 1;
-//  }
-//  else
-//  {
-//    if(iupMatrixMarkCellGet(ih, lin, col))
-//    {
-//      iupMatrixMarkCellSet(ih, lin, col, 0);
-//      ih->data->MarkedCells--;
-//    }
-//    else
-//    {
-//      iupMatrixMarkCellSet(ih, lin, col, 1);
-//      ih->data->MarkedCells++;
-//    }
-//  }
-//
-//  /* Redraw the previous cell if the CTRL is being pressed
-//    (so, change the feedback of the previous cell)...
-//  */
-//  if(ctrl)
-//    iupMatrixDrawCells(ih, oldlin, oldcol, oldlin, oldcol);
-//
-//  /* Redraw the focused cell with the current marked value */
-//  if(lin >= 0 && col >= 0)
-//    iupMatrixDrawCells(ih, lin, col, lin, col);
-//
-//  ih->data->MarkLin = lin;
-//  ih->data->MarkCol = col;
-//}
 
 int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
 {
@@ -678,7 +721,6 @@ int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
     iupMatrixMarkClearAll(ih, 1);
   else if (*value == 'C' || *value == 'c')  /* columns */
   {
-    int all_lines = 1;
     if (ih->data->mark_mode == IMAT_MARK_LIN)
       return 0;
 
@@ -693,29 +735,28 @@ int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
       if (*value++ == '1')
         mark = 1;
       else
-      {
         mark = 0;
-        all_lines = 0; /* if one column is unmarked, then all lines are unmarked */
-      }
 
       /* mark all the cells for that column */
       if (ih->data->mark_mode == IMAT_MARK_CELL)
       {
         for(lin = 1; lin < ih->data->lines.num; lin++)
-          iupMatrixMarkCellSet2(ih, lin, col, mark, markedit_cb, str);
+          iupMatrixMarkCellSet(ih, lin, col, mark, markedit_cb, str);
       }
-
-      if (mark)
-        ih->data->columns.flags[col] |= IUPMAT_MARK;
       else
-        ih->data->columns.flags[col] &= ~IUPMAT_MARK;
+      {
+        if (mark)
+          ih->data->columns.flags[col] |= IUPMAT_MARK;
+        else
+          ih->data->columns.flags[col] &= ~IUPMAT_MARK;
+      }
     }
 
-    iMatrixMarkAllLinCol(&(ih->data->lines), all_lines);
+    if (ih->data->mark_mode & IMAT_MARK_LIN)
+      iMatrixMarkAllLinCol(&(ih->data->lines), 0);
   }
   else if (*value == 'L' || *value == 'l')  /* lines */
   {
-    int all_columns = 1;
     if (ih->data->mark_mode == IMAT_MARK_COL)
       return 0;
 
@@ -730,25 +771,25 @@ int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
       if (*value++ == '1')
         mark = 1;
       else
-      {
         mark = 0;
-        all_columns = 0;  /* if one line is unmarked, then all columns are unmarked */
-      }
 
       /* Mark all the cells for that line */
       if (ih->data->mark_mode == IMAT_MARK_CELL)
       {
         for(col = 1; col < ih->data->columns.num; col++)
-          iupMatrixMarkCellSet2(ih, lin, col, mark, markedit_cb, str);
+          iupMatrixMarkCellSet(ih, lin, col, mark, markedit_cb, str);
       }
-
-      if (mark)
-        ih->data->lines.flags[lin] |= IUPMAT_MARK;
       else
-        ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
+      {
+        if (mark)
+          ih->data->lines.flags[lin] |= IUPMAT_MARK;
+        else
+          ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
+      }
     }
 
-    iMatrixMarkAllLinCol(&(ih->data->columns), all_columns);
+    if (ih->data->mark_mode & IMAT_MARK_COL)
+      iMatrixMarkAllLinCol(&(ih->data->columns), 0);
   }
   else if (ih->data->mark_mode == IMAT_MARK_CELL)  /* cells */
   {
@@ -757,31 +798,17 @@ int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
 
     markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
 
-    /* mark all columns to unmark during cell processing */
-    iMatrixMarkAllLinCol(&(ih->data->columns), 1);
-
     for(lin = 1; lin < ih->data->lines.num; lin++)
     {
-      int mark_line = 1;
-
       for(col = 1; col < ih->data->columns.num; col++)
       {
         if (*value++ == '1')
           mark = 1;
         else
-        {
           mark = 0;
-          mark_line = 0;     /* if one cell at the line is unmarked, then the line is unmarked */
-          ih->data->columns.flags[col] &= ~IUPMAT_MARK;  /* if one cell at the column is unmarked, then the column is unmarked */
-        }
 
-        iupMatrixMarkCellSet2(ih, lin, col, mark, markedit_cb, str);
+        iupMatrixMarkCellSet(ih, lin, col, mark, markedit_cb, str);
       }
-
-      if (mark_line)
-        ih->data->lines.flags[lin] |= IUPMAT_MARK;
-      else
-        ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
     }
   }
 
@@ -929,17 +956,11 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
         ih->data->cells[lin][col].flags &= ~IUPMAT_MARK;
     }
 
-    if (!mark)
-    {
-      ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
-      ih->data->columns.flags[col] &= ~IUPMAT_MARK;
-    }
-
     if (ih->handle)
     {
       /* This assumes that the matrix has been draw completely previously */
       iupMatrixStoreGlobalAttrib(ih);
-      iupMatrixDrawCell(ih, lin, col);
+      iupMatrixDrawCells(ih, lin, col, lin, col);
     }
   }
 

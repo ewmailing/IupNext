@@ -123,7 +123,7 @@ void iupMatrixCellUpdateValue(Ihandle* ih)
     value_edit_cb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value);
 
   iupMatrixStoreGlobalAttrib(ih);
-  iupMatrixDrawCell(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+  iupMatrixDrawCells(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 }
 
 void iupMatrixStoreGlobalAttrib(Ihandle* ih)
@@ -313,10 +313,11 @@ char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels)
 
   if (size)
   {
+    /* remove the decoration added in iupMatrixAuxGet */
     if (m == IMAT_PROCESS_COL)
-      size -= IMAT_DECOR_X;
+      size -= IMAT_PADDING_W + IMAT_FRAME_W;
     else
-      size -= IMAT_DECOR_Y;
+      size -= IMAT_PADDING_H + IMAT_FRAME_H;
 
     if (!pixels)
     {

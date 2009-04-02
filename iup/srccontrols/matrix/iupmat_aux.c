@@ -220,7 +220,7 @@ int iupMatrixAuxGetColumnWidth(Ihandle* ih, int col)
         iupdrvFontGetMultiLineStringSize(ih, title_value, &width, NULL);
     }
     if (width)
-      return width + IMAT_DECOR_X;
+      return width + IMAT_PADDING_W + IMAT_FRAME_W;
 
     if (col!=0)
       value = iupAttribGetStr(ih, "WIDTHDEF");
@@ -233,12 +233,12 @@ int iupMatrixAuxGetColumnWidth(Ihandle* ih, int col)
     else
     {
       if (pixels)
-        return width + IMAT_DECOR_X;
+        return width + IMAT_PADDING_W + IMAT_FRAME_W;
       else
       {
         int charwidth;
         iupdrvFontGetCharSize(ih, &charwidth, NULL);
-        return iupWIDTH2RASTER(width, charwidth) + IMAT_DECOR_X;
+        return iupWIDTH2RASTER(width, charwidth) + IMAT_PADDING_W + IMAT_FRAME_W;
       }
     }
   }
@@ -286,7 +286,7 @@ int iupMatrixAuxGetLineHeight(Ihandle* ih, int lin)
         iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
     }
     if (height)
-      return height + IMAT_DECOR_Y;
+      return height + IMAT_PADDING_H + IMAT_FRAME_H;
 
     if (lin != 0)
       value = iupAttribGetStr(ih, "HEIGHTDEF");
@@ -299,12 +299,12 @@ int iupMatrixAuxGetLineHeight(Ihandle* ih, int lin)
     else
     {
       if (pixels)
-        return height + IMAT_DECOR_Y;
+        return height + IMAT_PADDING_H + IMAT_FRAME_H;
       else
       {
         int charheight;
         iupdrvFontGetCharSize(ih, NULL, &charheight);
-        return iupHEIGHT2RASTER(height, charheight) + IMAT_DECOR_Y;
+        return iupHEIGHT2RASTER(height, charheight) + IMAT_PADDING_H + IMAT_FRAME_H;
       }
     }
   }
@@ -421,7 +421,7 @@ int iupMatrixAuxGetLinColFromXY(Ihandle* ih, int x, int y, int* l, int* c)
       lin = -1;
   }
 
-  if (col == -1 && lin == -1)
+  if (col == -1 || lin == -1)
     return 0;
 
   *l = lin;
