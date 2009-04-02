@@ -29,6 +29,8 @@ Ihandle *create_mat(void)
   IupSetAttribute(mat,"3:2","3.4");
 //  IupSetAttribute(mat,"WIDTHDEF","34");
   IupSetAttribute(mat,"RESIZEMATRIX","YES");
+  IupSetAttribute(mat,"MARK_MODE","CELL");
+  IupSetAttribute(mat,"MULTIPLE","YES");
 
   return mat;
 }

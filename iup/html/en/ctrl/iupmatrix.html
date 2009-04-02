@@ -4,12 +4,6 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupMatrix</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
-<style type="text/css">
-.style1 {
-	color: #0000FF;
-	text-decoration: underline;
-}
-</style>
 </head>
 <body>
 <div id="navigation">
@@ -336,7 +330,8 @@ area is reached then the cells are automatically scrolled. Also if a cell
 partially visible is edited then first it is scrolled to the visible area.</p>
 <h4>Marks</h4>
 <p>When a mark mode is set the cells can be marked using mouse, if the keyboard is used all marks are cleared.</p>
-<p>A marked cell will have its background attenuated to indicate that it is marked.</p>
+<p>A marked cell will have its background attenuated to indicate that it is marked. 
+A title cell appears marked only when MARK_MODE=LIN, COL or LINCOL.</p>
 <p>Cells can be selected individually or the marks can be restricted to lines and/or columns. Also multiple cells can 
   be marked simultaneously in continuous or in segmented areas. Lines and columns are marked only when the user clicks 
   in their respective titles. Continuous areas are marked holding and dragging the mouse or holding the 
