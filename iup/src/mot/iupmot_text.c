@@ -945,7 +945,7 @@ static int motTextMapMethod(Ihandle* ih)
     num_args = 0;
     iupmotSetArg(args[num_args++], XmNeditMode, XmMULTI_LINE_EDIT);
     if (wordwrap)
-      iupmotSetArg(args[num_args++], XmNwordWrap, True)
+      iupmotSetArg(args[num_args++], XmNwordWrap, True);
   }
   else
   {
@@ -965,9 +965,9 @@ static int motTextMapMethod(Ihandle* ih)
       iupmotSetArg(args[num_args++], XmNarrowSize, 8);
 
       if (iupStrEqualNoCase(iupAttribGetStr(ih, "SPINALIGN"), "LEFT"))
-        iupmotSetArg(args[num_args++], XmNarrowLayout, XmARROWS_BEGINNING)
+        iupmotSetArg(args[num_args++], XmNarrowLayout, XmARROWS_BEGINNING);
       else
-        iupmotSetArg(args[num_args++], XmNarrowLayout, XmARROWS_END)
+        iupmotSetArg(args[num_args++], XmNarrowLayout, XmARROWS_END);
 
       spinbox = XtCreateManagedWidget(
         child_id,  /* child identifier */
@@ -1000,9 +1000,9 @@ static int motTextMapMethod(Ihandle* ih)
       iupmotSetArg(args[num_args++], XmNposition, 0);
 
       if (iupStrBoolean(iupAttribGetStr(ih, "SPINWRAP")))
-        iupmotSetArg(args[num_args++], XmNwrap, TRUE)
+        iupmotSetArg(args[num_args++], XmNwrap, TRUE);
       else
-        iupmotSetArg(args[num_args++], XmNwrap, FALSE)
+        iupmotSetArg(args[num_args++], XmNwrap, FALSE);
     }
     else
     {
@@ -1019,9 +1019,9 @@ static int motTextMapMethod(Ihandle* ih)
   iupmotSetArg(args[num_args++], XmNmarginWidth, 0);
 
   if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
-    iupmotSetArg(args[num_args++], XmNtraversalOn, True)
+    iupmotSetArg(args[num_args++], XmNtraversalOn, True);
   else
-    iupmotSetArg(args[num_args++], XmNtraversalOn, False)
+    iupmotSetArg(args[num_args++], XmNtraversalOn, False);
 
   iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP);
   iupmotSetArg(args[num_args++], XmNhighlightThickness, 2);
@@ -1029,21 +1029,21 @@ static int motTextMapMethod(Ihandle* ih)
   iupmotSetArg(args[num_args++], XmNspacing, 0);
 
   if (IupGetInt(ih, "BORDER"))              /* Use IupGetInt for inheritance */
-    iupmotSetArg(args[num_args++], XmNshadowThickness, 2)
+    iupmotSetArg(args[num_args++], XmNshadowThickness, 2);
   else
-    iupmotSetArg(args[num_args++], XmNshadowThickness, 0)
+    iupmotSetArg(args[num_args++], XmNshadowThickness, 0);
 
   if (ih->data->is_multiline)
   {
     if (ih->data->sb & IUP_SB_HORIZ)
-      iupmotSetArg(args[num_args++], XmNscrollHorizontal, True)
+      iupmotSetArg(args[num_args++], XmNscrollHorizontal, True);
     else
-      iupmotSetArg(args[num_args++], XmNscrollHorizontal, False)
+      iupmotSetArg(args[num_args++], XmNscrollHorizontal, False);
 
     if (ih->data->sb & IUP_SB_VERT)
-      iupmotSetArg(args[num_args++], XmNscrollVertical, True)
+      iupmotSetArg(args[num_args++], XmNscrollVertical, True);
     else
-      iupmotSetArg(args[num_args++], XmNscrollVertical, False)
+      iupmotSetArg(args[num_args++], XmNscrollVertical, False);
   }
 
   ih->handle = XtCreateManagedWidget(

@@ -189,12 +189,12 @@ static int motButtonMapMethod(Ihandle* ih)
   if (value)
   {
     ih->data->type = IUP_BUTTON_IMAGE;
-    iupmotSetArg(args[num_args++], XmNlabelType, XmPIXMAP) 
+    iupmotSetArg(args[num_args++], XmNlabelType, XmPIXMAP);
   }
   else
   {
     ih->data->type = IUP_BUTTON_TEXT;
-    iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING) 
+    iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING);
   }
 
   /* Core */
@@ -218,12 +218,12 @@ static int motButtonMapMethod(Ihandle* ih)
   if (iupAttribGetInt(ih, "FOCUSONCLICK"))
   {
     if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
-      iupmotSetArg(args[num_args++], XmNtraversalOn, True)
+      iupmotSetArg(args[num_args++], XmNtraversalOn, True);
     else
-      iupmotSetArg(args[num_args++], XmNtraversalOn, False)
+      iupmotSetArg(args[num_args++], XmNtraversalOn, False);
   }
   else
-    iupmotSetArg(args[num_args++], XmNtraversalOn, False)
+    iupmotSetArg(args[num_args++], XmNtraversalOn, False);
   iupmotSetArg(args[num_args++], XmNhighlightThickness, 2);
   iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP);
   

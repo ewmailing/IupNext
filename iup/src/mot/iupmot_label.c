@@ -165,12 +165,12 @@ static int motLabelMapMethod(Ihandle* ih)
     if (iupStrEqualNoCase(value, "HORIZONTAL"))
     {
       ih->data->type = IUP_LABEL_SEP_HORIZ;
-      iupmotSetArg(args[num_args++], XmNorientation, XmHORIZONTAL)
+      iupmotSetArg(args[num_args++], XmNorientation, XmHORIZONTAL);
     }
     else /* "VERTICAL" */
     {
       ih->data->type = IUP_LABEL_SEP_VERT;
-      iupmotSetArg(args[num_args++], XmNorientation, XmVERTICAL)
+      iupmotSetArg(args[num_args++], XmNorientation, XmVERTICAL);
     }
   }
   else
@@ -180,12 +180,12 @@ static int motLabelMapMethod(Ihandle* ih)
     if (value)
     {
       ih->data->type = IUP_LABEL_IMAGE;
-      iupmotSetArg(args[num_args++], XmNlabelType, XmPIXMAP) 
+      iupmotSetArg(args[num_args++], XmNlabelType, XmPIXMAP); 
     }
     else
     {
       ih->data->type = IUP_LABEL_TEXT;
-      iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING) 
+      iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING); 
     }
   }
 

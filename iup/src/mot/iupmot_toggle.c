@@ -329,12 +329,12 @@ static int motToggleMapMethod(Ihandle* ih)
   if (value)
   {
     ih->data->type = IUP_TOGGLE_IMAGE;
-    iupmotSetArg(args[num_args++], XmNlabelType, XmPIXMAP) 
+    iupmotSetArg(args[num_args++], XmNlabelType, XmPIXMAP); 
   }
   else
   {
     ih->data->type = IUP_TOGGLE_TEXT;
-    iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING) 
+    iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING); 
   }
 
   /* Core */
@@ -345,9 +345,9 @@ static int motToggleMapMethod(Ihandle* ih)
   iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
   /* Primitive */
   if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
-    iupmotSetArg(args[num_args++], XmNtraversalOn, True)
+    iupmotSetArg(args[num_args++], XmNtraversalOn, True);
   else
-    iupmotSetArg(args[num_args++], XmNtraversalOn, False)
+    iupmotSetArg(args[num_args++], XmNtraversalOn, False);
   iupmotSetArg(args[num_args++], XmNhighlightThickness, 2);
   iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP);
   /* Label */
@@ -373,9 +373,9 @@ static int motToggleMapMethod(Ihandle* ih)
   else
   {
     if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetInt(ih, "3STATE"))
-      iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_INDETERMINATE)
+      iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_INDETERMINATE);
     else
-      iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_BOOLEAN)
+      iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_BOOLEAN);
     iupmotSetArg(args[num_args++], XmNindicatorType, XmN_OF_MANY);
   }
 
@@ -396,7 +396,7 @@ static int motToggleMapMethod(Ihandle* ih)
       iupmotSetArg(args[num_args++], XmNselectColor, iupmotColorGetPixel(0, 0, 0));
     }
     else
-      iupmotSetArg(args[num_args++], XmNindicatorSize, 15)
+      iupmotSetArg(args[num_args++], XmNindicatorSize, 15);
 
     iupmotSetArg(args[num_args++], XmNshadowThickness, 0);
     iupmotSetArg(args[num_args++], XmNdetailShadowThickness, 2);

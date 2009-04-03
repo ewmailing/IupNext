@@ -171,9 +171,9 @@ static int motFrameMapMethod(Ihandle* ih)
   {
     char* value = iupAttribGetStr(ih, "SUNKEN");
     if (iupStrBoolean(value))
-      iupmotSetArg(args[num_args++], XmNshadowType, XmSHADOW_IN) 
+      iupmotSetArg(args[num_args++], XmNshadowType, XmSHADOW_IN); 
     else
-      iupmotSetArg(args[num_args++], XmNshadowType, XmSHADOW_ETCHED_IN) 
+      iupmotSetArg(args[num_args++], XmNshadowType, XmSHADOW_ETCHED_IN); 
   }
 
   /* Core */
@@ -204,7 +204,7 @@ static int motFrameMapMethod(Ihandle* ih)
     Widget title_label;
     num_args = 0;
     /* Label */
-    iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING) 
+    iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING); 
     iupmotSetArg(args[num_args++], XmNmarginHeight, 0);  /* default padding */
     iupmotSetArg(args[num_args++], XmNmarginWidth, 0);
     /* Frame Constraint */

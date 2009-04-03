@@ -95,13 +95,10 @@ struct _IcontrolData
       colres_drag_col_last_x;  /* previous position */
 
   /* Mark AUX */
-  int mark_start_lin, mark_start_col;  /* used to store the start cell when a block is being marked */
-  int MarkFullLin,   /* indicate if full lines or columns is being selected */
-      MarkFullCol,
-      LastMarkFullCol,
-      LastMarkFullLin;
-  //int MarkedCells;  /* indicates the number of selected cells */
-  //int MarkLinCol;   /* Is it marking lines or columns?     */
+  int mark_lin1, mark_col1,  /* used to store the start cell when a block is being marked */
+      mark_lin2, mark_col2,  /* used to store the end cell when a block was marked */
+      mark_full1,            /* indicate if full lines or columns is being selected */
+      mark_full2;
 };
 
 

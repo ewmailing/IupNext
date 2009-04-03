@@ -34,9 +34,8 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "2:2", "8.1");
   IupSetAttribute(mat, "3:2", "3.4");
   IupSetAttribute(mat, "3:3", "Font Test");
-//  IupSetAttribute(mat, "HEIGHT1", "20");
-//  IupSetAttribute(mat, "WIDTH2", "90");
-//  IupSetAttribute(mat, "HEIGHT2", "30");
+  IupSetAttribute(mat, "WIDTH2", "90");
+  IupSetAttribute(mat, "HEIGHT2", "30");
   IupSetAttribute(mat,"SORTSIGN2","DOWN");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
   IupSetAttribute(mat,"MULTILINE", "YES");
@@ -55,7 +54,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "ACTIVE", "NO");
 
 //  IupSetAttribute(mat,"MARK_MODE","CELL");
-  IupSetAttribute(mat,"MARK_MODE","COL");
+  IupSetAttribute(mat,"MARK_MODE","CELL");
   IupSetAttribute(mat,"MARKMULTIPLE","YES");
   IupSetAttribute(mat,"MARKAREA","NOT_CONTINUOUS");
   IupSetAttribute(mat,"MARK2:2","YES");

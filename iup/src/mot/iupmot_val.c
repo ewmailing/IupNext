@@ -384,9 +384,9 @@ static int motValMapMethod(Ihandle* ih)
   iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
   /* Primitive */
   if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
-    iupmotSetArg(args[num_args++], XmNtraversalOn, True)
+    iupmotSetArg(args[num_args++], XmNtraversalOn, True);
   else
-    iupmotSetArg(args[num_args++], XmNtraversalOn, False)
+    iupmotSetArg(args[num_args++], XmNtraversalOn, False);
   iupmotSetArg(args[num_args++], XmNhighlightThickness, 2);
   iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP);
   /* Scale */
@@ -401,17 +401,17 @@ static int motValMapMethod(Ihandle* ih)
   {
     iupmotSetArg(args[num_args++], XmNorientation, XmHORIZONTAL);
     if (ih->data->inverted)
-      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_LEFT)
+      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_LEFT);
     else
-      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_RIGHT)
+      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_RIGHT);
   }
   else
   {
     iupmotSetArg(args[num_args++], XmNorientation, XmVERTICAL);
     if (ih->data->inverted)
-      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_TOP)
+      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_TOP);
     else
-      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_BOTTOM)
+      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_BOTTOM);
   }
 
   ih->handle = XtCreateManagedWidget(

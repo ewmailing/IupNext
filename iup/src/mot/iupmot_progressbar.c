@@ -120,7 +120,7 @@ static int motProgressBarMapMethod(Ihandle* ih)
     }
   }
   else
-    iupmotSetArg(args[num_args++], XmNorientation, XmHORIZONTAL)
+    iupmotSetArg(args[num_args++], XmNorientation, XmHORIZONTAL);
   
   ih->handle = XtCreateManagedWidget(
     iupDialogGetChildIdStr(ih),  /* child identifier */

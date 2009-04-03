@@ -486,9 +486,9 @@ static int motCanvasMapMethod(Ihandle* ih)
     iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP); /* include in navigation */
 
     if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
-      iupmotSetArg(args[num_args++], XmNtraversalOn, True)
+      iupmotSetArg(args[num_args++], XmNtraversalOn, True);
     else
-      iupmotSetArg(args[num_args++], XmNtraversalOn, False)
+      iupmotSetArg(args[num_args++], XmNtraversalOn, False);
   }
   else
   {

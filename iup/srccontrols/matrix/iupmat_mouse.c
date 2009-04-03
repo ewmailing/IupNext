@@ -143,12 +143,12 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r
     }
     else
     {
-      iupMatrixMarkMouseReset(ih);
-
       if (iupMatrixColResIsResizing(ih))  /* If it was made a column resize, finish it */
         iupMatrixColResFinish(ih, x);
     }
   }
+  else
+    iupMatrixMarkMouseReset(ih);
 
   if (lin!=-1 && col!=-1)
   {
@@ -168,7 +168,14 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y)
     return IUP_DEFAULT;
 
   if (ih->data->leftpressed && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
-    iupMatrixMarkMouseDrag(ih, x, y);
+  {
+    if (iupMatrixAuxGetLinColFromXY(ih, x, y, &lin, &col))
+    {
+      iupMatrixMarkMouseDrag(ih, lin, col);
+      iMatrixMouseCallMoveCb(ih, lin, col);
+    }
+    return IUP_DEFAULT;
+  }
   else if(iupMatrixColResIsResizing(ih)) /* Make a resize in a column size */
     iupMatrixColResMove(ih, x);
   else /* Change cursor when it is passed on a join involving column titles */

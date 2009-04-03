@@ -601,7 +601,12 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   ih->data->need_calcsize = 1;
   ih->data->lines.first = 1;
   ih->data->columns.first = 1;
-  iupMatrixFocusSet(ih, 1, 1);
+  ih->data->lines.focus_cell = 1;
+  ih->data->columns.focus_cell = 1;
+  ih->data->mark_lin1 = -1;
+  ih->data->mark_col1 = -1;
+  ih->data->mark_lin2 = -1;
+  ih->data->mark_col2 = -1;
 
   return IUP_NOERROR;
 }

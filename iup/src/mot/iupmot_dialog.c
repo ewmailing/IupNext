@@ -602,13 +602,13 @@ static int motDialogMapMethod(Ihandle* ih)
   iupmotSetArg(args[num_args++], XmNvisual, iupmot_visual);
   
   if (iupmotColorMap()) 
-    iupmotSetArg(args[num_args++], XmNcolormap, iupmotColorMap())
+    iupmotSetArg(args[num_args++], XmNcolormap, iupmotColorMap());
 
   if (mwm_decor != 0x7E) 
-    iupmotSetArg(args[num_args++], XmNmwmDecorations, mwm_decor)
+    iupmotSetArg(args[num_args++], XmNmwmDecorations, mwm_decor);
 
   if (iupAttribGetInt(ih, "SAVEUNDER"))
-    iupmotSetArg(args[num_args++], XmNsaveUnder, True)
+    iupmotSetArg(args[num_args++], XmNsaveUnder, True);
 
   parent = iupDialogGetNativeParent(ih);
   if (parent)

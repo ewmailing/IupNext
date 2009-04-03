@@ -26,14 +26,13 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value);
 void iupMatrixMarkClearAll(Ihandle* ih, int check);
 
 int iupMatrixMarkCellGet(Ihandle* ih, int lin, int col, IFnii mark_cb, char* str);
-void iupMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark, IFniii markedit_cb, char* str);
 
 int iupMatrixColumnIsMarked(Ihandle* ih, int col);
 int iupMatrixLineIsMarked  (Ihandle* ih, int lin);
 
-void iupMatrixMarkMouseDrag(Ihandle* ih, int x, int y);
-void iupMatrixMarkMouseBlock(Ihandle* ih, int lin, int col);
-void iupMatrixMarkMouseItem(Ihandle* ih, int ctrl, int lin, int col);
+void iupMatrixMarkMouseDrag(Ihandle* ih, int lin2, int col2);
+void iupMatrixMarkMouseBlock(Ihandle* ih, int lin2, int col2);
+void iupMatrixMarkMouseItem(Ihandle* ih, int ctrl, int lin1, int col1);
 void iupMatrixMarkMouseReset(Ihandle* ih);
 
 
