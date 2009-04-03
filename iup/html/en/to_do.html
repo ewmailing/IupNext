@@ -15,6 +15,9 @@
 .style2 {
 	color: #008000;
 }
+  .style3 {
+	color: #000000;
+}
   </style>
 </head>
 
@@ -30,7 +33,7 @@
 
 <ul>
 
-	<li>Refactoring of IupTree (maybe using native controls)</li>
+	<li>Refactoring of <strong>IupTree</strong> (maybe using native controls)</li>
 
 </ul>
 
@@ -38,9 +41,12 @@
 
 <ul>
 
-	<li>IupSplitbox (IupSbox nativo)</li>
+	<li><strong>IupSplitbox</strong> (IupSbox nativo)</li>
 
-	<li>New Controls</li>
+	<li>Other New Controls: <strong>DropDownButton, GridBox, ScrollBox</strong> 
+	and <strong>LayoutBuilder</strong>.</li>
+	<li>MacOSX using GTK</li>
+	<li>[Sugestions?]</li>
 
 </ul>
 
@@ -48,32 +54,32 @@
 
 <ul>
 
-	<li>Build a MacOS X version using the new GTK Darwin native framework. This 
-	implicates in a CD using GDK/Cairo or using Quartz 2D.</li>
+	<li class="style2"><strong>Build a MacOS X version using the new GTK Darwin native framework. This 
+	implicates in a CD using GDK/Cairo or using Quartz 2D.</strong></li>
+
+  <li class="style2">The actual model for control data structure in the internal SDK is limited and hard to use for derived classes.</li>
+
+	<li class="style2">Drag&amp;Drop between controls or dialogs in the same application.</li>
 
 	<li>A MacOS X native driver using Carbon.</li>
 
 	<li>A tutorial section in the documentation. One big Controls Demo just like 
 	GTK, wxWidgets and Qt have.</li>
 
-	<li class="style2">Drag&amp;Drop between controls or dialogs in the same application.</li>
+	<li>Unicode Support (UTF-8) in Windows and Motif.</li>
 
-	<li class="style2">Unicode Support (UTF-8) in Windows and Motif.</li>
+	<li>Define and control keyboard navigation in "Tab" groups.</li>
 
-	<li class="style2">Define and control keyboard navigation in "Tab" groups.</li>
-
-	<li class="style2">Context help using a global attribute.</li>
-
-	<li class="style2">Add support for loadind and saving RTF files in <strong>IupText</strong>. 
+	<li><span class="style3">Add support for loadind and saving RTF files in 
+	</span> <strong>IupText</strong>. 
 	Add support for images inside the text.</li>
 
-	<li class="style2">Support for text over image in <strong>IupLabel</strong>,
+	<li><span class="style3">Support for text over image in </span> <strong>IupLabel</strong>,
 	<strong>IupButton</strong> and <strong>IupToggle</strong>. Or a way to 
 	composte text on <strong>IupImage</strong>.</li>
 
-	<li class="style2">Support for changing the system menu in Windows. Support 
-	for cascading <strong>IupPopup</strong> for menus.</li>
-  <li class="style2">The actual model for control data structure in the internal SDK is limited and hard to use for derived classes.</li>
+	<li><span class="style3">Support for changing the system menu in Windows. Support 
+	for cascading </span> <strong>IupPopup</strong> for menus.</li>
 
 	<li class="style1">The IupImgLib takes an very long time to compile under 
 	Visual C++. In a 2.5GHz CPU tooks about 5min!</li>
@@ -88,7 +94,7 @@
 	IupDialog is not working as expected. There is still some flicker when the 
 	dialog is resized. So we changed the default to NO in Vista.</strong></li>
 
-	<li class="style1">IupTabs using native controls in Windows Vista when 
+	<li>IupTabs using native controls in Windows Vista when 
 	COMPOSITE=YES works only if MULTILINE=YES, so it is internally overwritten 
 	until the problem is solved. (since 3.0)</li>
 
@@ -103,35 +109,29 @@
 
   <li>Support for MDI.</li>
 
-  <li><font color="#ff0000">Callback SHOW_CB is not called when the dialog is hidden because of
-  PARENTDIALOG.</font></li>
-
 </ul>
 
 <h3>IupMatrix</h3>
 
 <ul>
 
-  <li>Fix column resize when line is moved outside the matrix canvas.</li>
-
-  <li>Lines and columns are not unmarked when clicking on the title. </li>
-
-  <li>Allow to start the selection on cell 0:0.</li>
-
-	<li>Allow to change the style of the grid lines.</li>
+  <li>Allow to change the style of the grid lines.</li>
 
 	<li>Allow to use an image as a cell content.</li>
 	<li>Allow to mark using the keyboard.</li>
 	<li>Allow to scroll with position free.</li>
 	<li>Allow to merge cells.</li>
 	<li>Toggle mark for cells with boolean values.</li>
-	<li>New PADDINGL:C, TIPL:C and ENABLEDL:C attributes.</li>
+	<li>New PADDINGL:C, TIPL:C and ACTIVEL:C attributes.</li>
 
 </ul>
 
 <h3>IupTree</h3>
 
 <ul>
+
+	<li class="style2"><strong>Internal code reorganization. Use native 
+	controls?</strong></li>
 
   <li>Changing VALUE does not scrolls the tree to the selected node in all 
 	cases.</li>
@@ -147,8 +147,6 @@
 	<li>Focus feedback.</li>
 	<li>Toggle mark option.</li>
 
-	<li class="style2">Internal code reorganization.</li>
-
 </ul>
 
 <h3>New Controls</h3>
@@ -158,26 +156,25 @@
   <li class="style2"><strong>DropDownButton</strong> - Mix between a drop down 
 	list and a button</li>
 
-	<li class="style2"><strong>Scrollbar</strong> - just the scrollbar as a 
-	control.</li>
+	<li class="style2"><strong>ScrollBox</strong> -&nbsp; a box that can scroll the elements inside</li>
 
   <li class="style2"><strong>GridBox </strong>- container to distribute 
 	elements in a grid.</li>
-
-	<li class="style2"><strong>CanvasCD</strong> - a IupCanvas with a CD 
-	canvas associated.</li>
-
-	<li class="style2"><strong>UrlButton</strong> - Button that activates a URL 
-	(looks like a flat label, but gives visual feedback when mouse is hover)</li>
-
-	<li class="style2"><strong>ScrollBox</strong> -&nbsp; a box that can scroll the elements inside</li>
-
 	<li class="style2"><strong>LayoutBuilder</strong> - a dialog that shows the layout of 
 	another dialog and allows the user to reposition the elements interactively.</li>
+	<li class="style3">-----------------------------</li>
+	<li class="style3"><strong>Scrollbar</strong> - just the scrollbar as a 
+	control.</li>
 
-	<li class="style2"><strong>Toobar -</strong> button/toggle/list, detachable</li>
+	<li class="style3"><strong>CanvasCD</strong> - a IupCanvas with a CD 
+	canvas associated.</li>
 
-	<li class="style2"><strong>ImageList</strong> - A list that contains images</li>
+	<li class="style3"><strong>UrlButton</strong> - Button that activates a URL 
+	(looks like a flat label, but gives visual feedback when mouse is hover)</li>
+
+	<li class="style3"><strong>Toobar -</strong> button/toggle/list, detachable</li>
+
+	<li class="style3"><strong>ImageList</strong> - A list that contains images</li>
 
 	<li>-----------------------------</li>
 

@@ -30,7 +30,10 @@
 #include "iupmat_mark.h"
 #include "iupmat_edit.h"
 #include "iupmat_draw.h"
+#include "iupmat_scroll.h"
 
+
+#define IMAT_DRAG_SCROLL_DELTA 5
 
 static void iMatrixMouseCallMoveCb(Ihandle* ih, int lin, int col)
 {
@@ -169,9 +172,21 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y)
 
   if (ih->data->leftpressed && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
   {
+    if ((x < ih->data->columns.sizes[0] || x < IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.first > 1))
+      iupMatrixScrollLeft(ih);
+    else if ((x > ih->data->w - IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.last < ih->data->columns.num-1))
+      iupMatrixScrollRight(ih);
+
+    if ((y < ih->data->lines.sizes[0] || y < IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.first > 1))
+      iupMatrixScrollUp(ih);
+    else if ((y > ih->data->h - IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.last < ih->data->lines.num-1))
+      iupMatrixScrollDown(ih);
+
     if (iupMatrixAuxGetLinColFromXY(ih, x, y, &lin, &col))
     {
-      iupMatrixMarkMouseDrag(ih, lin, col);
+      iupMatrixMarkMouseBlock(ih, lin, col);
+      iupMatrixDrawUpdate(ih);
+
       iMatrixMouseCallMoveCb(ih, lin, col);
     }
     return IUP_DEFAULT;

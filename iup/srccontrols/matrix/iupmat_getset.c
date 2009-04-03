@@ -133,6 +133,9 @@ void iupMatrixStoreGlobalAttrib(Ihandle* ih)
   iupAttribStoreStr(ih, "_IUPMAT_BGCOLOR", IupGetAttribute(ih, "BGCOLOR"));
   iupAttribStoreStr(ih, "_IUPMAT_FGCOLOR", IupGetAttribute(ih, "FGCOLOR"));
   iupAttribStoreStr(ih, "_IUPMAT_FONT", IupGetAttribute(ih, "FONT"));
+//  sIFnii font_cb = (sIFnii)IupGetCallback(ih, "FONT_CB");
+//  IFniiIII fgcolor_cb = (IFniiIII)IupGetCallback(ih, "FGCOLOR_CB");
+//  IFniiIII bgcolor_cb = (IFniiIII)IupGetCallback(ih, "BGCOLOR_CB");
 }
 
 static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int col, int native_parent)

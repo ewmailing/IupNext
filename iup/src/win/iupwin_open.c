@@ -57,7 +57,7 @@ int iupdrvOpen(int *argc, char ***argv)
   IupSetGlobal("DRIVER",  "Win32");
 
   {
-    // TODO: Check this code
+    /* TODO: Check this code */
     HWND win = GetConsoleWindow();
     if (win)
       iupwin_hinstance = (HINSTANCE)GetWindowLongPtr(win, GWL_HINSTANCE);

@@ -95,9 +95,7 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 
 void iupdrvDisplayRedraw(Ihandle *ih)
 {
-//  InvalidateRect(ih->handle, NULL, FALSE);  
-//  UpdateWindow(ih->handle);
-  /* REDRAW New */
+  /* REDRAW Now */
   RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_NOCHILDREN|RDW_UPDATENOW);
 }
 

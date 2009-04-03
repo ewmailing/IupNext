@@ -70,34 +70,30 @@ static int iMatrixDrawGetColAlignment(Ihandle* ih, int col, char* str)
     return IMAT_T_LEFT;
 }
 
-static int iMatrixDrawCallDrawCB(Ihandle* ih, int lin, int col, int x1, int x2, int y1, int y2)
+static int iMatrixDrawCallDrawCB(Ihandle* ih, int lin, int col, int x1, int x2, int y1, int y2, IFniiiiiiC draw_cb)
 {
-  IFniiiiiiC cb = (IFniiiiiiC)IupGetCallback(ih, "DRAW_CB");
-  if(cb)
+  int ret;
+  cdCanvas* old_cnv;
+
+  IUPMAT_CLIPAREA(ih, x1, x2, y1, y2);
+  cdCanvasClip(ih->data->cddbuffer, CD_CLIPAREA);
+
+  old_cnv = cdActiveCanvas();
+  if (old_cnv != ih->data->cddbuffer) /* backward compatibility code */
+    cdActivate(ih->data->cddbuffer);
+
+  ret = draw_cb(ih, lin, col, x1, x2, iupMatrixInvertYAxis(ih, y1), iupMatrixInvertYAxis(ih, y2), ih->data->cddbuffer);
+
+  cdCanvasClip(ih->data->cddbuffer, CD_CLIPOFF);
+
+  if (old_cnv && old_cnv != ih->data->cddbuffer) /* backward compatibility code */
   {
-    int ret;
-    cdCanvas* old_cnv;
-
-    IUPMAT_CLIPAREA(ih, x1, x2, y1, y2);
-    cdCanvasClip(ih->data->cddbuffer, CD_CLIPAREA);
-
-    old_cnv = cdActiveCanvas();
-    if (old_cnv != ih->data->cddbuffer) /* backward compatibility code */
-      cdActivate(ih->data->cddbuffer);
-
-    ret = cb(ih, lin, col, x1, x2, iupMatrixInvertYAxis(ih, y1), iupMatrixInvertYAxis(ih, y2), ih->data->cddbuffer);
-
-    cdCanvasClip(ih->data->cddbuffer, CD_CLIPOFF);
-
-    if (old_cnv && old_cnv != ih->data->cddbuffer) /* backward compatibility code */
-    {
-      cdActivate(old_cnv);
-      cdCanvasActivate(ih->data->cddbuffer);
-    }
-
-    if (ret == IUP_DEFAULT)
-      return 0;
+    cdActivate(old_cnv);
+    cdCanvasActivate(ih->data->cddbuffer);
   }
+
+  if (ret == IUP_DEFAULT)
+    return 0;
 
   return 1;
 }
@@ -320,7 +316,7 @@ static void iMatrixDrawBackground(Ihandle* ih, int x1, int x2, int y1, int y2, i
                   [IMAT_T_CENTER,IMAT_T_LEFT,IMAT_T_RIGHT]
    -> marked : mark state
    -> lin, col - cell coordinates */
-static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, int alignment, int marked, int active, int lin, int col)
+static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, int alignment, int marked, int active, int lin, int col, IFniiiiiiC draw_cb)
 {
   char *text;
 
@@ -348,7 +344,7 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
     y1 += IMAT_FRAME_H/2;
   }
 
-  if (!iMatrixDrawCallDrawCB(ih, lin, col, x1, x2, y1, y2))
+  if (draw_cb && !iMatrixDrawCallDrawCB(ih, lin, col, x1, x2, y1, y2, draw_cb))
     return;
 
   text = iupMatrixCellGetValue(ih, lin, col);
@@ -444,12 +440,13 @@ static void iMatrixDrawTitleCorner(Ihandle* ih)
   char str[100];
   long framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
   int active = iupdrvIsActive(ih);
+  IFniiiiiiC draw_cb = (IFniiiiiiC)IupGetCallback(ih, "DRAW_CB");
 
   iMatrixDrawFrameRectTitle(ih, 0, 0, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], framecolor, str);
 
   iMatrixDrawBackground(ih, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], 0, active, 0, 0);
 
-  iMatrixDrawCellValue(ih, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], IMAT_T_CENTER, 0, active, 0, 0);
+  iMatrixDrawCellValue(ih, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], IMAT_T_CENTER, 0, active, 0, 0, draw_cb);
 }
 
 static void iMatrixDrawMatrix(Ihandle* ih)
@@ -513,6 +510,7 @@ void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
   int lin, alignment, active;
   char str[100];
   long framecolor;
+  IFniiiiiiC draw_cb;
 
   if (!ih->data->columns.sizes[0])
     return;
@@ -536,6 +534,7 @@ void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
 
   framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
   active = iupdrvIsActive(ih);
+  draw_cb = (IFniiiiiiC)IupGetCallback(ih, "DRAW_CB");
 
   alignment = iMatrixDrawGetColAlignment(ih, 0, str);
 
@@ -557,7 +556,7 @@ void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
 
       iMatrixDrawBackground(ih, x1, x2, y1, y2, marked, active, lin, 0);
 
-      iMatrixDrawCellValue(ih, x1, x2, y1, y2, alignment, marked, active, lin, 0);
+      iMatrixDrawCellValue(ih, x1, x2, y1, y2, alignment, marked, active, lin, 0, draw_cb);
     }
 
     y1 = y2;
@@ -574,6 +573,7 @@ void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
   int col, active;
   char str[100];
   long framecolor;
+  IFniiiiiiC draw_cb;
 
   if (!ih->data->lines.sizes[0])
     return;
@@ -597,6 +597,7 @@ void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
 
   framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
   active = iupdrvIsActive(ih);
+  draw_cb = (IFniiiiiiC)IupGetCallback(ih, "DRAW_CB");
 
   /* Draw the titles */
   for(col = col1; col <= col2; col++)
@@ -616,7 +617,7 @@ void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
 
       iMatrixDrawBackground(ih, x1, x2, y1, y2, marked, active, 0, col);
 
-      iMatrixDrawCellValue(ih, x1, x2, y1, y2, IMAT_T_CENTER, marked, active, 0, col);
+      iMatrixDrawCellValue(ih, x1, x2, y1, y2, IMAT_T_CENTER, marked, active, 0, col, draw_cb);
 
       iMatrixDrawSortSign(ih, x2, y1, y2, col, active, str);
     }
@@ -637,6 +638,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   char str[100];
   IFnii mark_cb;
   IFnii dropcheck_cb;
+  IFniiiiiiC draw_cb;
 
   x1 = 0;
   x2 = ih->data->w-1;
@@ -710,6 +712,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 
   mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
   dropcheck_cb = (IFnii)IupGetCallback(ih, "DROPCHECK_CB");
+  draw_cb = (IFniiiiiiC)IupGetCallback(ih, "DRAW_CB");
 
   for(col = col1; col <= col2; col++)  /* For all the columns in the region */
   {
@@ -752,7 +755,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 
         iMatrixDrawBackground(ih, x1, x2, y1, y2, marked, active, lin, col);
         
-        iMatrixDrawCellValue(ih, x1, x2-drop, y1, y2, alignment, marked, active, lin, col);
+        iMatrixDrawCellValue(ih, x1, x2-drop, y1, y2, alignment, marked, active, lin, col, draw_cb);
 
         if (drop)
           iMatrixDrawComboFeedback(ih, x2, y1, y2, lin, col, marked, active, framecolor);

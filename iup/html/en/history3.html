@@ -26,9 +26,22 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 </p>
 
-<h3>CVS (29/Mar/2009)</h3>
+<h3>CVS (03/Apr/2009)</h3>
 
 <ul>
+
+	<li><span style="color: rgb(0, 0, 255);">New:</span>
+	MARKL:C, READONLY, NUMLIN_VISIBLE_LAST, NUMCOL_VISIBLE_LAST, and SHOW attributes for IupMatrix. When scrolling the matrix using 
+	the scrollbar the focus is not changed anymore. The last cells at right and 
+	bottom are now drawn as incomplete cells if they do not fit in the visible 
+	area. New FONT_CB callback. CHECKFRAMECOLOR is not necessary 
+	anymore, just set FRAMEVERTCOLOR or FRAMEHORIZCOLOR. Internal code 
+	reorganization of the IupMatrix.
+	AREA and MULTIPLE renamed to MARKAREA and MARKMULTIPLE, old names as still 
+	supported. New MULTILINE attribute to edit text in multiple lines, valid 
+	only before mapped.</li>
+	<li><span style="color: rgb(0, 0, 255);">New:</span><strong>
+	IupRedraw</strong> and <strong>IupSetClassDefaultAttribute</strong> functions.</li>
 
   <li><span style="color: rgb(0, 128, 0);">Changed:</span>
     Added package registration code to IupLua that allows it to be statically 
@@ -63,19 +76,6 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="style1">Fixed:</span> CARET_CB and <strong>
 	IupTextConvertXYToChar</strong> in <strong>IupText</strong> when 
 	MULTILINE=YES and FORMATTING=NO.</li>
-
-	<li><span style="color: rgb(0, 0, 255);">New:</span>
-	MARKL:C, READONLY, NUMLIN_VISIBLE_LAST, NUMCOL_VISIBLE_LAST, and SHOW attributes for IupMatrix. When scrolling the matrix using 
-	the scrollbar the focus is not changed anymore. The last cells at right and 
-	bottom are now drawn as incomplete cells if they do not fit in the visible 
-	area. New FONT_CB callback. CHECKFRAMECOLOR is not necessary 
-	anymore, just set FRAMEVERTCOLOR or FRAMEHORIZCOLOR. Internal code 
-	reorganization of the IupMatrix.
-	AREA and MULTIPLE renamed to MARKAREA and MARKMULTIPLE, old names as still 
-	supported. New MULTILINE attribute to edit text in multiple lines, valid 
-	only before mapped.</li>
-	<li><span style="color: rgb(0, 0, 255);">New:</span><strong>
-	IupRedraw</strong> and <strong>IupSetClassDefaultAttribute</strong> functions.</li>
 
 </ul>
 
