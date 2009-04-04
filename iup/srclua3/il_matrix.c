@@ -233,6 +233,14 @@ static int MATRIX_value_edit (Ihandle *handle, int lin, int col, char* val)
   return iuplua_call();
 }
 
+static char* MATRIX_font_cb (Ihandle *handle, int lin, int col)
+{
+  iuplua_call_start(handle, "font_cb");
+  lua_pushnumber(lin);
+  lua_pushnumber(col);
+  return iuplua_call_rs();
+}
+
 static void CreateMatrix(void)
 {
   int tag = (int)lua_getnumber(lua_getglobal("iuplua_tag"));
@@ -259,6 +267,7 @@ int matrixlua_open(void)
     {"iup_mat_bgcolor_cb", (lua_CFunction)MATRIX_bgcolor},
     {"iup_mat_draw_cb", (lua_CFunction)MATRIX_draw},
     {"iup_mat_dropcheck_cb", (lua_CFunction)MATRIX_dropcheck},
+    {"iup_mat_font_cb", (lua_CFunction)MATRIX_font_cb},
     {"iup_mat_value_cb", (lua_CFunction)MATRIX_value},
     {"iup_mat_value_edit_cb", (lua_CFunction)MATRIX_value_edit},
     {"iup_mat_mark_cb", (lua_CFunction)MATRIX_mark_cb},

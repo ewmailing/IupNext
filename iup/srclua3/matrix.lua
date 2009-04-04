@@ -37,6 +37,7 @@ iup_callbacks.value_edit  = {"VALUE_EDIT_CB", iup_mat_value_edit_cb}
 iup_callbacks.markedit_cb = {"MARKEDIT_CB", iup_mat_markedit_cb}
 iup_callbacks.mark_cb     = {"MARK_CB", iup_mat_mark_cb}
 iup_callbacks.mouse_cb    = {"MOUSE_CB", iup_mat_mouse_cb}
+iup_callbacks.font_cb     = {"FONT_CB", iup_mat_font_cb}
 
 iup_callbacks.edition_cb    = iup_callbacks.edition    
 iup_callbacks.drop_cb       = iup_callbacks.drop       
