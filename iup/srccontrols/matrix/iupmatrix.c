@@ -788,6 +788,7 @@ Iclass* iupMatrixGetClass(void)
   /* --- Drawing --- */
   iupClassRegisterCallback(ic, "BGCOLOR_CB", "iiIII");
   iupClassRegisterCallback(ic, "FGCOLOR_CB", "iiIII");
+  iupClassRegisterCallback(ic, "FONT_CB", "ii=s");
   iupClassRegisterCallback(ic, "DRAW_CB", "iiiiii");
   iupClassRegisterCallback(ic, "DROPCHECK_CB", "ii");
   /* --- Editing --- */

@@ -192,6 +192,8 @@ void iupMatrixMarkMouseBlock(Ihandle* ih, int lin2, int col2)
   IFnii mark_cb = NULL;
   char str[100];
 
+  iupMatrixPrepareDrawData(ih);
+
   ih->data->mark_full2 = 0;
 
   if (lin2 == 0 && col2 == 0)
@@ -252,6 +254,7 @@ void iupMatrixMarkMouseItem(Ihandle* ih, int ctrl, int lin1, int col1)
   char str[100];
 
   iupMatrixMarkMouseReset(ih);
+  iupMatrixPrepareDrawData(ih);
 
   if (!ih->data->mark_multiple || ih->data->mark_continuous || !ctrl)
   {
@@ -625,7 +628,7 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
     if (ih->handle)
     {
       /* This assumes that the matrix has been draw completely previously */
-      iupMatrixStoreGlobalAttrib(ih);
+      iupMatrixPrepareDrawData(ih);
       iupMatrixDrawCells(ih, lin, col, lin, col);
     }
   }

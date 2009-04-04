@@ -122,20 +122,26 @@ void iupMatrixCellUpdateValue(Ihandle* ih)
   if (value_edit_cb)
     value_edit_cb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value);
 
-  iupMatrixStoreGlobalAttrib(ih);
+  iupMatrixPrepareDrawData(ih);
   iupMatrixDrawCells(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 }
 
-void iupMatrixStoreGlobalAttrib(Ihandle* ih)
+void iupMatrixPrepareDrawData(Ihandle* ih)
 {
   /* FGCOLOR, BGCOLOR and FONT */
   iupAttribStoreStr(ih, "_IUPMAT_BGCOLOR_PARENT", iupControlBaseGetParentBgColor(ih));
   iupAttribStoreStr(ih, "_IUPMAT_BGCOLOR", IupGetAttribute(ih, "BGCOLOR"));
   iupAttribStoreStr(ih, "_IUPMAT_FGCOLOR", IupGetAttribute(ih, "FGCOLOR"));
   iupAttribStoreStr(ih, "_IUPMAT_FONT", IupGetAttribute(ih, "FONT"));
-//  sIFnii font_cb = (sIFnii)IupGetCallback(ih, "FONT_CB");
-//  IFniiIII fgcolor_cb = (IFniiIII)IupGetCallback(ih, "FGCOLOR_CB");
-//  IFniiIII bgcolor_cb = (IFniiIII)IupGetCallback(ih, "BGCOLOR_CB");
+
+  ih->data->bgcolor_parent = iupAttribGet(ih, "_IUPMAT_BGCOLOR_PARENT");
+  ih->data->bgcolor = iupAttribGet(ih, "_IUPMAT_BGCOLOR");
+  ih->data->fgcolor = iupAttribGet(ih, "_IUPMAT_FGCOLOR");
+  ih->data->font = iupAttribGet(ih, "_IUPMAT_FONT");
+
+  ih->data->font_cb = (sIFnii)IupGetCallback(ih, "FONT_CB");
+  ih->data->fgcolor_cb = (IFniiIII)IupGetCallback(ih, "FGCOLOR_CB");
+  ih->data->bgcolor_cb = (IFniiIII)IupGetCallback(ih, "BGCOLOR_CB");
 }
 
 static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int col, int native_parent)
@@ -143,22 +149,22 @@ static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int 
   char* value = NULL;
   char attrib_id[100];
   const char* attrib = NULL;
-  const char* attrib_global = NULL; 
+  char* attrib_global = NULL; 
 
   if (attr == IUPMAT_FONT)
   {
     attrib = "FONT";
-    attrib_global = "_IUPMAT_FONT";
+    attrib_global = ih->data->font;
   }
   else if (attr == IUPMAT_BGCOLOR)
   {
     attrib = "BGCOLOR";
-    attrib_global = "_IUPMAT_BGCOLOR";
+    attrib_global = ih->data->bgcolor;
   }
   else if (attr == IUPMAT_FGCOLOR)
   {
     attrib = "FGCOLOR";
-    attrib_global = "_IUPMAT_FGCOLOR";
+    attrib_global = ih->data->fgcolor;
   }
 
   /* 1 -  check for this cell */
@@ -195,9 +201,9 @@ static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int 
       {
         /* 4 - check for the matrix or native parent */
         if (native_parent)
-          value = iupAttribGet(ih, "_IUPMAT_BGCOLOR_PARENT");
+          value = ih->data->bgcolor_parent;
         else
-          value = iupAttribGet(ih, attrib_global);
+          value = attrib_global;
       }
     }
   }
@@ -205,35 +211,21 @@ static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int 
   return value;
 }
 
-static int iMatrixCallColorCB(Ihandle* ih, const char* cb_name, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b)
+static int iMatrixCallColorCB(Ihandle* ih, IFniiIII cb, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b)
 {
-  IFniiIII cb = (IFniiIII)IupGetCallback(ih, cb_name);
-  if(cb)
-  {
-    int ir, ig, ib, ret;
-    ret = cb(ih, lin, col, &ir, &ig, &ib);
-    *r = iupBYTECROP(ir);
-    *g = iupBYTECROP(ig);
-    *b = iupBYTECROP(ib);
-    return ret;
-  }
-  else
-    return IUP_IGNORE;
-}
-
-static char* iMatrixCallFontCB(Ihandle* ih, int lin, int col)
-{
-  sIFnii cb = (sIFnii)IupGetCallback(ih, "FONT_CB");
-  if (cb)
-    return cb(ih, lin, col);
-  else
-    return NULL;
+  int ir, ig, ib, ret;
+  ret = cb(ih, lin, col, &ir, &ig, &ib);
+  *r = iupBYTECROP(ir);
+  *g = iupBYTECROP(ig);
+  *b = iupBYTECROP(ib);
+  return ret;
 }
 
 char* iupMatrixGetFgColor(Ihandle* ih, int lin, int col)
 {
   unsigned char r = 0, g = 0, b = 0;
-  if (iMatrixCallColorCB(ih, "FGCOLOR_CB", lin, col, &r, &g, &b) == IUP_IGNORE)
+  /* called from Edit only */
+  if (!ih->data->fgcolor_cb || (iMatrixCallColorCB(ih, ih->data->fgcolor_cb, lin, col, &r, &g, &b) == IUP_IGNORE))
     return iMatrixGetCellAttrib(ih, IUPMAT_FGCOLOR, lin, col, 0);
   else
   {
@@ -245,14 +237,16 @@ char* iupMatrixGetFgColor(Ihandle* ih, int lin, int col)
 
 void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b)
 {
-  if (iMatrixCallColorCB(ih, "FGCOLOR_CB", lin, col, r, g, b) == IUP_IGNORE)
+  /* called from Draw only */
+  if (!ih->data->fgcolor_cb || (iMatrixCallColorCB(ih, ih->data->fgcolor_cb, lin, col, r, g, b) == IUP_IGNORE))
     iupStrToRGB(iMatrixGetCellAttrib(ih, IUPMAT_FGCOLOR, lin, col, 0), r, g, b);
 }
 
 char* iupMatrixGetBgColor(Ihandle* ih, int lin, int col)
 {
   unsigned char r = 0, g = 0, b = 0;
-  if (iMatrixCallColorCB(ih, "BGCOLOR_CB", lin, col, &r, &g, &b) == IUP_IGNORE)
+  /* called from Edit only */
+  if (!ih->data->bgcolor_cb || (iMatrixCallColorCB(ih, ih->data->bgcolor_cb, lin, col, &r, &g, &b) == IUP_IGNORE))
   {
     int native_parent = 0;
     if (lin == 0 || col == 0)
@@ -269,7 +263,8 @@ char* iupMatrixGetBgColor(Ihandle* ih, int lin, int col)
 
 void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b)
 {
-  if (iMatrixCallColorCB(ih, "BGCOLOR_CB", lin, col, r, g, b) == IUP_IGNORE)
+  /* called from Draw only */
+  if (!ih->data->bgcolor_cb || (iMatrixCallColorCB(ih, ih->data->bgcolor_cb, lin, col, r, g, b) == IUP_IGNORE))
   {
     int native_parent = 0;
     if (lin == 0 || col == 0)
@@ -287,7 +282,10 @@ void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
 
 char* iupMatrixGetFont(Ihandle* ih, int lin, int col)
 {
-  char* font = iMatrixCallFontCB(ih, lin, col);
+  char* font = NULL;
+  /* called from Draw and Edit only */
+  if (ih->data->font_cb)
+    font = ih->data->font_cb(ih, lin, col);
   if (!font)
     font = iMatrixGetCellAttrib(ih, IUPMAT_FONT, lin, col, 0);
   return font;

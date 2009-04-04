@@ -16,7 +16,8 @@ void  iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value);
 char* iupMatrixCellGetValue(Ihandle* ih, int lin, int col);
 
 void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int set);
-void  iupMatrixStoreGlobalAttrib(Ihandle* ih);
+
+void  iupMatrixPrepareDrawData(Ihandle* ih);
 char* iupMatrixGetFgColor(Ihandle* ih, int lin, int col);
 char* iupMatrixGetBgColor(Ihandle* ih, int lin, int col);
 char* iupMatrixGetFont   (Ihandle* ih, int lin, int col);

@@ -451,12 +451,12 @@ static void iMatrixDrawTitleCorner(Ihandle* ih)
 
 static void iMatrixDrawMatrix(Ihandle* ih)
 {
-  iupMatrixStoreGlobalAttrib(ih);
+  iupMatrixPrepareDrawData(ih);
 
   /* fill the background because there will be empty cells */
   if ((ih->data->lines.num == 1) || (ih->data->columns.num == 1))
   {
-    cdCanvasForeground(ih->data->cddbuffer, cdIupConvertColor(iupAttribGet(ih, "_IUPMAT_BGCOLOR_PARENT")));
+    cdCanvasForeground(ih->data->cddbuffer, cdIupConvertColor(ih->data->bgcolor_parent));
     cdCanvasClear(ih->data->cddbuffer);
   }
 
@@ -686,7 +686,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 
   if ((col2 == ih->data->columns.num-1) && (old_x2 > x2))
   {
-    emptyarea_color = cdIupConvertColor(iupAttribGet(ih, "_IUPMAT_BGCOLOR_PARENT"));
+    emptyarea_color = cdIupConvertColor(ih->data->bgcolor_parent);
     cdCanvasForeground(ih->data->cddbuffer, emptyarea_color);
 
     /* If it was drawn until the last column and remains space in the right of it,
@@ -697,7 +697,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   if ((lin2 == ih->data->lines.num-1) && (old_y2 > y2))
   {
     if (emptyarea_color == -1)
-      emptyarea_color = cdIupConvertColor(iupAttribGet(ih, "_IUPMAT_BGCOLOR_PARENT"));
+      emptyarea_color = cdIupConvertColor(ih->data->bgcolor_parent);
     cdCanvasForeground(ih->data->cddbuffer, emptyarea_color);
 
     /* If it was drawn until the last line visible and remains space below it,
@@ -818,7 +818,7 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
     if (min > max)
       return 0;
 
-    iupMatrixStoreGlobalAttrib(ih);
+    iupMatrixPrepareDrawData(ih);
 
     if (ih->data->need_calcsize)
       iupMatrixAuxCalcSizes(ih);
