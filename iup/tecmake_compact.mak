@@ -5,7 +5,7 @@
 #-------------------------------------------------------------------------#
 
 # Tecmake Version
-VERSION = 3.17
+VERSION = 3.18
 
 # First target 
 .PHONY: build
@@ -776,9 +776,43 @@ ifdef USE_MOTIF
 endif
 
 ifdef USE_GTK
+#  ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+#    STDINCS += /Library/Frameworks/Gtk.framework/Headers
+#    STDINCS += /Library/Frameworks/GLib.framework/Headers
+#    STDINCS += /Library/Frameworks/Cairo.framework/Headers
+#    LFLAGS += -framework Gtk
+#  else
+    ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+      GTK_BASE := /sw
+      LDIR += /sw/lib
+      LIBS += freetype
+    else
+      GTK_BASE := /usr
+    endif
+    override USE_X11 = Yes
+    LIBS += gtk-x11-2.0 gdk-x11-2.0 gdk_pixbuf-2.0 pango-1.0 pangox-1.0 gobject-2.0 gmodule-2.0 glib-2.0
+    STDINCS += $(GTK_BASE)/include/atk-1.0 $(GTK_BASE)/include/gtk-2.0 $(GTK_BASE)/include/cairo $(GTK_BASE)/include/pango-1.0 $(GTK_BASE)/include/glib-2.0
+    ifeq ($(TEC_SYSARCH), x64)
+      STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
+    else
+    ifeq ($(TEC_SYSARCH), ia64)
+      STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
+    else
+      STDINCS += $(GTK_BASE)/lib/glib-2.0/include $(GTK_BASE)/lib/gtk-2.0/include
+    endif
+    endif
+    ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
+      STDINCS += /lib/X11R6/include/gtk-2.0  
+    endif
+#  endif
+endif
+
+ifdef USE_QT
   override USE_X11 = Yes
-  LIBS += gtk-x11-2.0 gdk-x11-2.0 gdk_pixbuf-2.0 pango-1.0 pangox-1.0 gobject-2.0 gmodule-2.0 glib-2.0
-  STDINCS += /usr/include/atk-1.0 /usr/include/gtk-2.0 /usr/include/cairo /usr/include/pango-1.0 /usr/include/glib-2.0 /usr/lib/glib-2.0/include /usr/lib/gtk-2.0/include
+  LIBS += QtGui QtCore
+  QT_BASE_INC := /usr/include/qt4
+  STDINCS += $(QT_BASE_INC) $(QT_BASE_INC)/QtCore $(QT_BASE_INC)/QtGui
+  STDDEFS += -DQT_DLL -DQT_QT3SUPPORT_LIB -DQT3_SUPPORT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT
 endif
 
 ifdef USE_X11

@@ -60,7 +60,7 @@ int iupdrvOpen(int *argc, char ***argv)
     /* TODO: Check this code */
     HWND win = GetConsoleWindow();
     if (win)
-      iupwin_hinstance = (HINSTANCE)GetWindowLongPtr(win, GWL_HINSTANCE);
+      iupwin_hinstance = (HINSTANCE)GetWindowLongPtr(win, GWLP_HINSTANCE);
     else
       iupwin_hinstance = GetModuleHandle(NULL);
     IupSetGlobal("HINSTANCE", (char*)iupwin_hinstance);

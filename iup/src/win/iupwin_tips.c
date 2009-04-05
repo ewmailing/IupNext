@@ -137,7 +137,7 @@ void iupwinTipsGetDispInfo(LPARAM lp)
 
   {
     int ballon = IupGetInt(ih, "TIPBALLON");  /* must use IupGetInt to use inheritance */
-    DWORD style = (DWORD)GetWindowLongPtr(tips_hwnd, GWL_STYLE);
+    DWORD style = GetWindowLong(tips_hwnd, GWL_STYLE);
     int tip_ballon = style & TTS_BALLOON? 1: 0; 
     if (tip_ballon != ballon)
     {
@@ -145,7 +145,7 @@ void iupwinTipsGetDispInfo(LPARAM lp)
         style |= TTS_BALLOON;
       else
         style &= ~TTS_BALLOON;
-      SetWindowLongPtr(tips_hwnd, GWL_STYLE, (LONG_PTR)style);
+      SetWindowLong(tips_hwnd, GWL_STYLE, style);
     }
 
     if (ballon)

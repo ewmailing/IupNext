@@ -13,13 +13,12 @@
 #include "il.h"
 
 
-static int matrix_release_cb(Ihandle *self, int p0, int p1, char * p2)
+static char * matrix_font_cb(Ihandle *self, int p0, int p1)
 {
-  lua_State *L = iuplua_call_start(self, "release_cb");
+  lua_State *L = iuplua_call_start(self, "font_cb");
   lua_pushnumber(L, p0);
   lua_pushnumber(L, p1);
-  lua_pushstring(L, p2);
-  return iuplua_call(L, 3);
+  return iuplua_call_rs(L, 2);
 }
 
 static int matrix_draw_cb(Ihandle *self, int p0, int p1, int p2, int p3, int p4, int p5, int p6)
@@ -98,17 +97,9 @@ static int matrix_drop_cb(Ihandle *self, Ihandle * p0, int p1, int p2)
   return iuplua_call(L, 3);
 }
 
-static int matrix_fgcolor_cb(Ihandle *self, int p0, int p1)
+static int matrix_dropcheck_cb(Ihandle *self, int p0, int p1)
 {
-  lua_State *L = iuplua_call_start(self, "fgcolor_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  return iuplua_call(L, 2);
-}
-
-static int matrix_enteritem_cb(Ihandle *self, int p0, int p1)
-{
-  lua_State *L = iuplua_call_start(self, "enteritem_cb");
+  lua_State *L = iuplua_call_start(self, "dropcheck_cb");
   lua_pushnumber(L, p0);
   lua_pushnumber(L, p1);
   return iuplua_call(L, 2);
@@ -125,17 +116,9 @@ static int matrix_action_cb(Ihandle *self, int p0, int p1, int p2, int p3, char 
   return iuplua_call(L, 5);
 }
 
-static int matrix_scrolltop_cb(Ihandle *self, int p0, int p1)
+static int matrix_enteritem_cb(Ihandle *self, int p0, int p1)
 {
-  lua_State *L = iuplua_call_start(self, "scrolltop_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  return iuplua_call(L, 2);
-}
-
-static int matrix_dropcheck_cb(Ihandle *self, int p0, int p1)
-{
-  lua_State *L = iuplua_call_start(self, "dropcheck_cb");
+  lua_State *L = iuplua_call_start(self, "enteritem_cb");
   lua_pushnumber(L, p0);
   lua_pushnumber(L, p1);
   return iuplua_call(L, 2);
@@ -147,6 +130,31 @@ static int matrix_leaveitem_cb(Ihandle *self, int p0, int p1)
   lua_pushnumber(L, p0);
   lua_pushnumber(L, p1);
   return iuplua_call(L, 2);
+}
+
+static int matrix_scrolltop_cb(Ihandle *self, int p0, int p1)
+{
+  lua_State *L = iuplua_call_start(self, "scrolltop_cb");
+  lua_pushnumber(L, p0);
+  lua_pushnumber(L, p1);
+  return iuplua_call(L, 2);
+}
+
+static int matrix_fgcolor_cb(Ihandle *self, int p0, int p1)
+{
+  lua_State *L = iuplua_call_start(self, "fgcolor_cb");
+  lua_pushnumber(L, p0);
+  lua_pushnumber(L, p1);
+  return iuplua_call(L, 2);
+}
+
+static int matrix_release_cb(Ihandle *self, int p0, int p1, char * p2)
+{
+  lua_State *L = iuplua_call_start(self, "release_cb");
+  lua_pushnumber(L, p0);
+  lua_pushnumber(L, p1);
+  lua_pushstring(L, p2);
+  return iuplua_call(L, 3);
 }
 
 static int matrix_mousemove_cb(Ihandle *self, int p0, int p1)
@@ -189,7 +197,7 @@ int iupmatrixlua_open(lua_State * L)
 {
   iuplua_register(L, Matrix, "Matrix");
 
-  iuplua_register_cb(L, "RELEASE_CB", (lua_CFunction)matrix_release_cb, NULL);
+  iuplua_register_cb(L, "FONT_CB", (lua_CFunction)matrix_font_cb, NULL);
   iuplua_register_cb(L, "DRAW_CB", (lua_CFunction)matrix_draw_cb, NULL);
   iuplua_register_cb(L, "EDITION_CB", (lua_CFunction)matrix_edition_cb, NULL);
   iuplua_register_cb(L, "MARK_CB", (lua_CFunction)matrix_mark_cb, NULL);
@@ -198,12 +206,13 @@ int iupmatrixlua_open(lua_State * L)
   iuplua_register_cb(L, "VALUE_CB", (lua_CFunction)matrix_value_cb, NULL);
   iuplua_register_cb(L, "DROPSELECT_CB", (lua_CFunction)matrix_dropselect_cb, NULL);
   iuplua_register_cb(L, "DROP_CB", (lua_CFunction)matrix_drop_cb, NULL);
-  iuplua_register_cb(L, "FGCOLOR_CB", (lua_CFunction)matrix_fgcolor_cb, NULL);
-  iuplua_register_cb(L, "ENTERITEM_CB", (lua_CFunction)matrix_enteritem_cb, NULL);
-  iuplua_register_cb(L, "ACTION_CB", (lua_CFunction)matrix_action_cb, "matrix");
-  iuplua_register_cb(L, "SCROLLTOP_CB", (lua_CFunction)matrix_scrolltop_cb, NULL);
   iuplua_register_cb(L, "DROPCHECK_CB", (lua_CFunction)matrix_dropcheck_cb, NULL);
+  iuplua_register_cb(L, "ACTION_CB", (lua_CFunction)matrix_action_cb, "matrix");
+  iuplua_register_cb(L, "ENTERITEM_CB", (lua_CFunction)matrix_enteritem_cb, NULL);
   iuplua_register_cb(L, "LEAVEITEM_CB", (lua_CFunction)matrix_leaveitem_cb, NULL);
+  iuplua_register_cb(L, "SCROLLTOP_CB", (lua_CFunction)matrix_scrolltop_cb, NULL);
+  iuplua_register_cb(L, "FGCOLOR_CB", (lua_CFunction)matrix_fgcolor_cb, NULL);
+  iuplua_register_cb(L, "RELEASE_CB", (lua_CFunction)matrix_release_cb, NULL);
   iuplua_register_cb(L, "MOUSEMOVE_CB", (lua_CFunction)matrix_mousemove_cb, "matrix");
   iuplua_register_cb(L, "VALUE_EDIT_CB", (lua_CFunction)matrix_value_edit_cb, NULL);
   iuplua_register_cb(L, "CLICK_CB", (lua_CFunction)matrix_click_cb, NULL);

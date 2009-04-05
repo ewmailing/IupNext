@@ -159,20 +159,20 @@ static void winCallEnterLeaveWindow(Ihandle *ih, int enter)
 
 void iupwinMergeStyle(Ihandle* ih, DWORD old_mask, DWORD value)
 {
-  DWORD dwStyle = GetWindowLongPtr(ih->handle, GWL_STYLE);
+  DWORD dwStyle = GetWindowLong(ih->handle, GWL_STYLE);
   dwStyle &= ~(old_mask); /* clear old bits */
   dwStyle |= value;
-  SetWindowLongPtr(ih->handle, GWL_STYLE, dwStyle);
+  SetWindowLong(ih->handle, GWL_STYLE, dwStyle);
 }
 
 void iupwinSetStyle(Ihandle* ih, DWORD value, int set)
 {
-  DWORD dwStyle = GetWindowLongPtr(ih->handle, GWL_STYLE);
+  DWORD dwStyle = GetWindowLong(ih->handle, GWL_STYLE);
   if (set)
     dwStyle |= value;
   else
     dwStyle &= ~(value);
-  SetWindowLongPtr(ih->handle, GWL_STYLE, dwStyle);
+  SetWindowLong(ih->handle, GWL_STYLE, dwStyle);
 }
 
 int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
