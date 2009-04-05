@@ -193,6 +193,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\srclua5\il_normalizer.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_progressbar.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\il_radio.c"
 					>
 				</File>
@@ -234,6 +242,10 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\il_toggle.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\il_user.c"
 					>
 				</File>
 				<File
@@ -349,6 +361,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\srclua5\normalizer.lua"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\progressbar.lua"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\radio.lua"
 					>
 				</File>
@@ -386,6 +406,10 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\toggle.lua"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\user.lua"
 					>
 				</File>
 				<File
