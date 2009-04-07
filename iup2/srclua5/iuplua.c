@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua.c,v 1.6 2008-12-11 19:02:57 scuri Exp $
+* $Id: iuplua.c,v 1.7 2009-04-07 18:41:22 scuri Exp $
 */
 
 #include <stdio.h>
@@ -710,7 +710,7 @@ static int il_open(lua_State * L)
     for(i=1; i<=argc; i++)
     {
       lua_pushnumber(L,i);
-      lua_gettable(L,-1);
+      lua_gettable(L,-2);
       argv[i-1] = (char*)lua_tostring(L, -1);
       lua_pop(L,1);
     }

@@ -709,7 +709,7 @@ static int il_open(lua_State * L)
     for(i=1; i<=argc; i++)
     {
       lua_pushnumber(L,i);
-      lua_gettable(L,-1);
+      lua_gettable(L,-2);
       argv[i-1] = (char*)lua_tostring(L, -1);
       lua_pop(L,1);
     }
