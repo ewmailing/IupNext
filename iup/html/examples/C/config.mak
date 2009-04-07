@@ -4,7 +4,16 @@ APPTYPE = CONSOLE
 INCLUDES = ../include
 
 ifdef USE_GTK
-  APPNAME = iupsamplegtk
+  ifndef GTK_DEFAULT
+    # Build GTK version in IRIX,SunOS,AIX,Win32
+    APPNAME = iuptestgtk
+  endif
+else  
+  ifdef GTK_DEFAULT
+    # Build Motif version in Linux,Darwin,FreeBSD
+    USE_MOTIF = Yes
+    APPNAME = iuptestmot
+  endif
 endif
 
 USE_IUP3 = Yes
@@ -48,7 +57,7 @@ DBG = Yes
 #SRC = val.c
 #SRC = vbox.c
 #SRC = zbox.c
-#SRC = sample.c
+SRC = sample.c
 #SRC = sbox1.c
 #SRC = sbox2.c
 
@@ -90,6 +99,6 @@ DBG = Yes
 #  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_pplot.a $(CD)/lib/$(TEC_UNAME)/libcdpdflib.a
 #endif
 
-USE_LUA51=Yes
-USE_IUPLUA=Yes
-SRC = lua_init.c
+#USE_LUA51=Yes
+#USE_IUPLUA=Yes
+#SRC = lua_init.c
