@@ -161,8 +161,8 @@ static int motMenuMapMethod(Ihandle* ih)
 
       if (iupAttribGetInt(ih, "RADIO"))
       {
-        iupmotSetArg(args[num_args++], XmNpacking, XmPACK_COLUMN);
-        iupmotSetArg(args[num_args++], XmNradioBehavior, TRUE);
+        iupmotSetArg(args, num_args, XmNpacking, XmPACK_COLUMN);
+        iupmotSetArg(args, num_args, XmNradioBehavior, TRUE);
       }
 
       ih->handle = XmCreatePulldownMenu(
@@ -183,7 +183,7 @@ static int motMenuMapMethod(Ihandle* ih)
     {
       /* top level menu used for IupPopup */
 
-      iupmotSetArg(args[num_args++], XmNpopupEnabled, XmPOPUP_AUTOMATIC);
+      iupmotSetArg(args, num_args, XmNpopupEnabled, XmPOPUP_AUTOMATIC);
 
       ih->handle = XmCreatePopupMenu(
                      iupmot_appshell, 
@@ -307,19 +307,19 @@ static int motItemMapMethod(Ihandle* ih)
 
     if (iupAttribGetInt(ih->parent, "RADIO"))
     {
-      iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_BOOLEAN);
-      iupmotSetArg(args[num_args++], XmNindicatorType, XmONE_OF_MANY_ROUND);
-      iupmotSetArg(args[num_args++], XmNindicatorOn, XmINDICATOR_CHECK_BOX);
-      iupmotSetArg(args[num_args++], XmNindicatorSize, 13);
-      iupmotSetArg(args[num_args++], XmNselectColor, iupmotColorGetPixel(0, 0, 0));
+      iupmotSetArg(args, num_args, XmNtoggleMode, XmTOGGLE_BOOLEAN);
+      iupmotSetArg(args, num_args, XmNindicatorType, XmONE_OF_MANY_ROUND);
+      iupmotSetArg(args, num_args, XmNindicatorOn, XmINDICATOR_CHECK_BOX);
+      iupmotSetArg(args, num_args, XmNindicatorSize, 13);
+      iupmotSetArg(args, num_args, XmNselectColor, iupmotColorGetPixel(0, 0, 0));
     }
     else
     {
       if (iupAttribGetInt(ih, "HIDEMARK"))
-        iupmotSetArg(args[num_args++], XmNindicatorOn, XmINDICATOR_NONE);
+        iupmotSetArg(args, num_args, XmNindicatorOn, XmINDICATOR_NONE);
       else
-        iupmotSetArg(args[num_args++], XmNindicatorOn, XmINDICATOR_CHECK);
-      iupmotSetArg(args[num_args++], XmNlabelType, iupAttribGet(ih, "TITLEIMAGE")? XmPIXMAP: XmSTRING);
+        iupmotSetArg(args, num_args, XmNindicatorOn, XmINDICATOR_CHECK);
+      iupmotSetArg(args, num_args, XmNlabelType, iupAttribGet(ih, "TITLEIMAGE")? XmPIXMAP: XmSTRING);
     }
 
     ih->handle = XtCreateManagedWidget(

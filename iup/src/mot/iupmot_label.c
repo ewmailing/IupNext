@@ -165,12 +165,12 @@ static int motLabelMapMethod(Ihandle* ih)
     if (iupStrEqualNoCase(value, "HORIZONTAL"))
     {
       ih->data->type = IUP_LABEL_SEP_HORIZ;
-      iupmotSetArg(args[num_args++], XmNorientation, XmHORIZONTAL);
+      iupmotSetArg(args, num_args, XmNorientation, XmHORIZONTAL);
     }
     else /* "VERTICAL" */
     {
       ih->data->type = IUP_LABEL_SEP_VERT;
-      iupmotSetArg(args[num_args++], XmNorientation, XmVERTICAL);
+      iupmotSetArg(args, num_args, XmNorientation, XmVERTICAL);
     }
   }
   else
@@ -180,32 +180,32 @@ static int motLabelMapMethod(Ihandle* ih)
     if (value)
     {
       ih->data->type = IUP_LABEL_IMAGE;
-      iupmotSetArg(args[num_args++], XmNlabelType, XmPIXMAP); 
+      iupmotSetArg(args, num_args, XmNlabelType, XmPIXMAP); 
     }
     else
     {
       ih->data->type = IUP_LABEL_TEXT;
-      iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING); 
+      iupmotSetArg(args, num_args, XmNlabelType, XmSTRING); 
     }
   }
 
   /* Core */
-  iupmotSetArg(args[num_args++], XmNmappedWhenManaged, False);  /* not visible when managed */
-  iupmotSetArg(args[num_args++], XmNx, 0);  /* x-position */
-  iupmotSetArg(args[num_args++], XmNy, 0);  /* y-position */
-  iupmotSetArg(args[num_args++], XmNwidth, 10);  /* default width to avoid 0 */
-  iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
+  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
+  iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
+  iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
+  iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+  iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
   /* Primitive */
-  iupmotSetArg(args[num_args++], XmNtraversalOn, False);
-  iupmotSetArg(args[num_args++], XmNhighlightThickness, 0);
+  iupmotSetArg(args, num_args, XmNtraversalOn, False);
+  iupmotSetArg(args, num_args, XmNhighlightThickness, 0);
   /* Label */
-  iupmotSetArg(args[num_args++], XmNrecomputeSize, False);  /* no automatic resize from text */
-  iupmotSetArg(args[num_args++], XmNmarginHeight, 0);  /* default padding */
-  iupmotSetArg(args[num_args++], XmNmarginWidth, 0);
-  iupmotSetArg(args[num_args++], XmNmarginTop, 0);     /* no extra margins */
-  iupmotSetArg(args[num_args++], XmNmarginLeft, 0);
-  iupmotSetArg(args[num_args++], XmNmarginBottom, 0);
-  iupmotSetArg(args[num_args++], XmNmarginRight, 0);
+  iupmotSetArg(args, num_args, XmNrecomputeSize, False);  /* no automatic resize from text */
+  iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* default padding */
+  iupmotSetArg(args, num_args, XmNmarginWidth, 0);
+  iupmotSetArg(args, num_args, XmNmarginTop, 0);     /* no extra margins */
+  iupmotSetArg(args, num_args, XmNmarginLeft, 0);
+  iupmotSetArg(args, num_args, XmNmarginBottom, 0);
+  iupmotSetArg(args, num_args, XmNmarginRight, 0);
   
   ih->handle = XtCreateManagedWidget(
     iupDialogGetChildIdStr(ih),  /* child identifier */

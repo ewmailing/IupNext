@@ -135,19 +135,19 @@ static XmFontList motFontCreateRenderTable(XFontStruct* fontstruct, int is_under
   Arg args[10];
   int num_args = 0;
 
-  iupmotSetArg(args[num_args++], XmNfontType, XmFONT_IS_FONT);
-  iupmotSetArg(args[num_args++], XmNfont, (XtPointer)fontstruct);
-  iupmotSetArg(args[num_args++], XmNloadModel, XmLOAD_IMMEDIATE);
+  iupmotSetArg(args, num_args, XmNfontType, XmFONT_IS_FONT);
+  iupmotSetArg(args, num_args, XmNfont, (XtPointer)fontstruct);
+  iupmotSetArg(args, num_args, XmNloadModel, XmLOAD_IMMEDIATE);
 
   if (is_underline)
-    iupmotSetArg(args[num_args++], XmNunderlineType, XmSINGLE_LINE);
+    iupmotSetArg(args, num_args, XmNunderlineType, XmSINGLE_LINE);
   else
-    iupmotSetArg(args[num_args++], XmNunderlineType, XmNO_LINE);
+    iupmotSetArg(args, num_args, XmNunderlineType, XmNO_LINE);
 
   if (is_strikeout)
-    iupmotSetArg(args[num_args++], XmNstrikethruType, XmSINGLE_LINE);
+    iupmotSetArg(args, num_args, XmNstrikethruType, XmSINGLE_LINE);
   else
-    iupmotSetArg(args[num_args++], XmNstrikethruType, XmNO_LINE);
+    iupmotSetArg(args, num_args, XmNstrikethruType, XmNO_LINE);
 
   rendition = XmRenditionCreate(NULL, "", args, num_args);
 

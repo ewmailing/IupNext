@@ -1116,32 +1116,32 @@ static int motListMapMethod(Ihandle* ih)
   if (ih->data->is_dropdown || ih->data->has_editbox)
   {
     /* could not set XmNmappedWhenManaged to False because the list and the edit box where not displayed */
-    /* iupmotSetArg(args[num_args++], XmNmappedWhenManaged, False); */   /* not visible when managed */
-    iupmotSetArg(args[num_args++], XmNx, 0);  /* x-position */
-    iupmotSetArg(args[num_args++], XmNy, 0);  /* y-position */
-    iupmotSetArg(args[num_args++], XmNwidth, 10);  /* default width to avoid 0 */
-    iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
-    iupmotSetArg(args[num_args++], XmNmarginHeight, 0);
-    iupmotSetArg(args[num_args++], XmNmarginWidth, 0);
+    /* iupmotSetArg(args, num_args, XmNmappedWhenManaged, False); */   /* not visible when managed */
+    iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
+    iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
+    iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+    iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
+    iupmotSetArg(args, num_args, XmNmarginHeight, 0);
+    iupmotSetArg(args, num_args, XmNmarginWidth, 0);
 
     if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
-      iupmotSetArg(args[num_args++], XmNtraversalOn, True);
+      iupmotSetArg(args, num_args, XmNtraversalOn, True);
     else
-      iupmotSetArg(args[num_args++], XmNtraversalOn, False);
+      iupmotSetArg(args, num_args, XmNtraversalOn, False);
 
-    iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP);
-    iupmotSetArg(args[num_args++], XmNhighlightThickness, 2);
-    iupmotSetArg(args[num_args++], XmNshadowThickness, 2);
+    iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
+    iupmotSetArg(args, num_args, XmNhighlightThickness, 2);
+    iupmotSetArg(args, num_args, XmNshadowThickness, 2);
 
     if (ih->data->has_editbox)
     {
       if (ih->data->is_dropdown)
-        iupmotSetArg(args[num_args++], XmNcomboBoxType, XmDROP_DOWN_COMBO_BOX);  /* hidden-list+edit */
+        iupmotSetArg(args, num_args, XmNcomboBoxType, XmDROP_DOWN_COMBO_BOX);  /* hidden-list+edit */
       else
-        iupmotSetArg(args[num_args++], XmNcomboBoxType, XmCOMBO_BOX);  /* visible-list+edit */
+        iupmotSetArg(args, num_args, XmNcomboBoxType, XmCOMBO_BOX);  /* visible-list+edit */
     }
     else
-      iupmotSetArg(args[num_args++], XmNcomboBoxType, XmDROP_DOWN_LIST);   /* hidden-list */
+      iupmotSetArg(args, num_args, XmNcomboBoxType, XmDROP_DOWN_LIST);   /* hidden-list */
 
     ih->handle = XtCreateManagedWidget(
       child_id,  /* child identifier */
@@ -1155,13 +1155,13 @@ static int motListMapMethod(Ihandle* ih)
 
     /* Create the scrolled window */
 
-    iupmotSetArg(args[num_args++], XmNmappedWhenManaged, False);  /* not visible when managed */
-    iupmotSetArg(args[num_args++], XmNscrollingPolicy, XmAPPLICATION_DEFINED);
-    iupmotSetArg(args[num_args++], XmNvisualPolicy, XmVARIABLE);
-    iupmotSetArg(args[num_args++], XmNscrollBarDisplayPolicy, XmSTATIC);   /* can NOT be XmAS_NEEDED because XmAPPLICATION_DEFINED */
-    iupmotSetArg(args[num_args++], XmNspacing, 0); /* no space between scrollbars and text */
-    iupmotSetArg(args[num_args++], XmNborderWidth, 0);
-    iupmotSetArg(args[num_args++], XmNshadowThickness, 0);
+    iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
+    iupmotSetArg(args, num_args, XmNscrollingPolicy, XmAPPLICATION_DEFINED);
+    iupmotSetArg(args, num_args, XmNvisualPolicy, XmVARIABLE);
+    iupmotSetArg(args, num_args, XmNscrollBarDisplayPolicy, XmSTATIC);   /* can NOT be XmAS_NEEDED because XmAPPLICATION_DEFINED */
+    iupmotSetArg(args, num_args, XmNspacing, 0); /* no space between scrollbars and text */
+    iupmotSetArg(args, num_args, XmNborderWidth, 0);
+    iupmotSetArg(args, num_args, XmNshadowThickness, 0);
     
     sb_win = XtCreateManagedWidget(
       child_id,  /* child identifier */
@@ -1178,34 +1178,34 @@ static int motListMapMethod(Ihandle* ih)
     /* Create the list */
 
     num_args = 0;
-    iupmotSetArg(args[num_args++], XmNx, 0);  /* x-position */
-    iupmotSetArg(args[num_args++], XmNy, 0);  /* y-position */
-    iupmotSetArg(args[num_args++], XmNwidth, 10);  /* default width to avoid 0 */
-    iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
+    iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
+    iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
+    iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+    iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
 
     if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
-      iupmotSetArg(args[num_args++], XmNtraversalOn, True);
+      iupmotSetArg(args, num_args, XmNtraversalOn, True);
     else
-      iupmotSetArg(args[num_args++], XmNtraversalOn, False);
+      iupmotSetArg(args, num_args, XmNtraversalOn, False);
 
-    iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP);
-    iupmotSetArg(args[num_args++], XmNhighlightThickness, 2);
-    iupmotSetArg(args[num_args++], XmNshadowThickness, 2);
+    iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
+    iupmotSetArg(args, num_args, XmNhighlightThickness, 2);
+    iupmotSetArg(args, num_args, XmNshadowThickness, 2);
 
-    iupmotSetArg(args[num_args++], XmNlistMarginHeight, 0);  /* default padding */
-    iupmotSetArg(args[num_args++], XmNlistMarginWidth, 0);
-    iupmotSetArg(args[num_args++], XmNlistSpacing, 0);
-    iupmotSetArg(args[num_args++], XmNlistSizePolicy, XmCONSTANT);  /* don't grow to fit, add scrollbar */
+    iupmotSetArg(args, num_args, XmNlistMarginHeight, 0);  /* default padding */
+    iupmotSetArg(args, num_args, XmNlistMarginWidth, 0);
+    iupmotSetArg(args, num_args, XmNlistSpacing, 0);
+    iupmotSetArg(args, num_args, XmNlistSizePolicy, XmCONSTANT);  /* don't grow to fit, add scrollbar */
 
     if (ih->data->is_multiple)
-      iupmotSetArg(args[num_args++], XmNselectionPolicy, XmEXTENDED_SELECT);
+      iupmotSetArg(args, num_args, XmNselectionPolicy, XmEXTENDED_SELECT);
     else
-      iupmotSetArg(args[num_args++], XmNselectionPolicy, XmBROWSE_SELECT);
+      iupmotSetArg(args, num_args, XmNselectionPolicy, XmBROWSE_SELECT);
 
     if (iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
-      iupmotSetArg(args[num_args++], XmNscrollBarDisplayPolicy, XmAS_NEEDED);
+      iupmotSetArg(args, num_args, XmNscrollBarDisplayPolicy, XmAS_NEEDED);
     else
-      iupmotSetArg(args[num_args++], XmNscrollBarDisplayPolicy, XmSTATIC);
+      iupmotSetArg(args, num_args, XmNscrollBarDisplayPolicy, XmSTATIC);
 
     ih->handle = XtCreateManagedWidget(
       child_id,          /* child identifier */

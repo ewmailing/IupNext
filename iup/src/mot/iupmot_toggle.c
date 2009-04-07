@@ -329,40 +329,40 @@ static int motToggleMapMethod(Ihandle* ih)
   if (value)
   {
     ih->data->type = IUP_TOGGLE_IMAGE;
-    iupmotSetArg(args[num_args++], XmNlabelType, XmPIXMAP); 
+    iupmotSetArg(args, num_args, XmNlabelType, XmPIXMAP); 
   }
   else
   {
     ih->data->type = IUP_TOGGLE_TEXT;
-    iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING); 
+    iupmotSetArg(args, num_args, XmNlabelType, XmSTRING); 
   }
 
   /* Core */
-  iupmotSetArg(args[num_args++], XmNmappedWhenManaged, False);  /* not visible when managed */
-  iupmotSetArg(args[num_args++], XmNx, 0);  /* x-position */
-  iupmotSetArg(args[num_args++], XmNy, 0);  /* y-position */
-  iupmotSetArg(args[num_args++], XmNwidth, 10);  /* default width to avoid 0 */
-  iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
+  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
+  iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
+  iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
+  iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+  iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
   /* Primitive */
   if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
-    iupmotSetArg(args[num_args++], XmNtraversalOn, True);
+    iupmotSetArg(args, num_args, XmNtraversalOn, True);
   else
-    iupmotSetArg(args[num_args++], XmNtraversalOn, False);
-  iupmotSetArg(args[num_args++], XmNhighlightThickness, 2);
-  iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP);
+    iupmotSetArg(args, num_args, XmNtraversalOn, False);
+  iupmotSetArg(args, num_args, XmNhighlightThickness, 2);
+  iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
   /* Label */
-  iupmotSetArg(args[num_args++], XmNrecomputeSize, False);  /* no automatic resize from text */
-  iupmotSetArg(args[num_args++], XmNmarginHeight, 0);  /* default padding */
-  iupmotSetArg(args[num_args++], XmNmarginWidth, 0);
-  iupmotSetArg(args[num_args++], XmNmarginTop, 0);     /* no extra margins */
-  iupmotSetArg(args[num_args++], XmNmarginLeft, 0);
-  iupmotSetArg(args[num_args++], XmNmarginBottom, 0);
-  iupmotSetArg(args[num_args++], XmNmarginRight, 0);
+  iupmotSetArg(args, num_args, XmNrecomputeSize, False);  /* no automatic resize from text */
+  iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* default padding */
+  iupmotSetArg(args, num_args, XmNmarginWidth, 0);
+  iupmotSetArg(args, num_args, XmNmarginTop, 0);     /* no extra margins */
+  iupmotSetArg(args, num_args, XmNmarginLeft, 0);
+  iupmotSetArg(args, num_args, XmNmarginBottom, 0);
+  iupmotSetArg(args, num_args, XmNmarginRight, 0);
 
   if (radio)
   {
-    iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_BOOLEAN);
-    iupmotSetArg(args[num_args++], XmNindicatorType, XmONE_OF_MANY_ROUND);
+    iupmotSetArg(args, num_args, XmNtoggleMode, XmTOGGLE_BOOLEAN);
+    iupmotSetArg(args, num_args, XmNindicatorType, XmONE_OF_MANY_ROUND);
 
     if (!iupAttribGet(radio, "_IUPMOT_LASTTOGGLE"))
     {
@@ -373,33 +373,33 @@ static int motToggleMapMethod(Ihandle* ih)
   else
   {
     if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetInt(ih, "3STATE"))
-      iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_INDETERMINATE);
+      iupmotSetArg(args, num_args, XmNtoggleMode, XmTOGGLE_INDETERMINATE);
     else
-      iupmotSetArg(args[num_args++], XmNtoggleMode, XmTOGGLE_BOOLEAN);
-    iupmotSetArg(args[num_args++], XmNindicatorType, XmN_OF_MANY);
+      iupmotSetArg(args, num_args, XmNtoggleMode, XmTOGGLE_BOOLEAN);
+    iupmotSetArg(args, num_args, XmNindicatorType, XmN_OF_MANY);
   }
 
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    iupmotSetArg(args[num_args++], XmNindicatorOn, XmINDICATOR_NONE);
-    iupmotSetArg(args[num_args++], XmNalignment, XmALIGNMENT_CENTER);
-    iupmotSetArg(args[num_args++], XmNshadowThickness, 2);
+    iupmotSetArg(args, num_args, XmNindicatorOn, XmINDICATOR_NONE);
+    iupmotSetArg(args, num_args, XmNalignment, XmALIGNMENT_CENTER);
+    iupmotSetArg(args, num_args, XmNshadowThickness, 2);
   }
   else
   {
-    iupmotSetArg(args[num_args++], XmNspacing, 3);
-    iupmotSetArg(args[num_args++], XmNindicatorOn, XmINDICATOR_CHECK_BOX);
-    iupmotSetArg(args[num_args++], XmNalignment, XmALIGNMENT_BEGINNING);
+    iupmotSetArg(args, num_args, XmNspacing, 3);
+    iupmotSetArg(args, num_args, XmNindicatorOn, XmINDICATOR_CHECK_BOX);
+    iupmotSetArg(args, num_args, XmNalignment, XmALIGNMENT_BEGINNING);
     if (radio)
     {
-      iupmotSetArg(args[num_args++], XmNindicatorSize, 13);
-      iupmotSetArg(args[num_args++], XmNselectColor, iupmotColorGetPixel(0, 0, 0));
+      iupmotSetArg(args, num_args, XmNindicatorSize, 13);
+      iupmotSetArg(args, num_args, XmNselectColor, iupmotColorGetPixel(0, 0, 0));
     }
     else
-      iupmotSetArg(args[num_args++], XmNindicatorSize, 15);
+      iupmotSetArg(args, num_args, XmNindicatorSize, 15);
 
-    iupmotSetArg(args[num_args++], XmNshadowThickness, 0);
-    iupmotSetArg(args[num_args++], XmNdetailShadowThickness, 2);
+    iupmotSetArg(args, num_args, XmNshadowThickness, 0);
+    iupmotSetArg(args, num_args, XmNdetailShadowThickness, 2);
   }
 
   ih->handle = XtCreateManagedWidget(

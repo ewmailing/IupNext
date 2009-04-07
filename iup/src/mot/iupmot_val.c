@@ -377,41 +377,41 @@ static int motValMapMethod(Ihandle* ih)
   int show_ticks;
 
   /* Core */
-  iupmotSetArg(args[num_args++], XmNmappedWhenManaged, False);  /* not visible when managed */
-  iupmotSetArg(args[num_args++], XmNx, 0);  /* x-position */
-  iupmotSetArg(args[num_args++], XmNy, 0);  /* y-position */
-  iupmotSetArg(args[num_args++], XmNwidth, 10);  /* default width to avoid 0 */
-  iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
+  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
+  iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
+  iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
+  iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+  iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
   /* Primitive */
   if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
-    iupmotSetArg(args[num_args++], XmNtraversalOn, True);
+    iupmotSetArg(args, num_args, XmNtraversalOn, True);
   else
-    iupmotSetArg(args[num_args++], XmNtraversalOn, False);
-  iupmotSetArg(args[num_args++], XmNhighlightThickness, 2);
-  iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP);
+    iupmotSetArg(args, num_args, XmNtraversalOn, False);
+  iupmotSetArg(args, num_args, XmNhighlightThickness, 2);
+  iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
   /* Scale */
-  iupmotSetArg(args[num_args++], XmNminimum, 0);
-  iupmotSetArg(args[num_args++], XmNmaximum, SHRT_MAX);
-  iupmotSetArg(args[num_args++], XmNslidingMode, XmSLIDER);
-  iupmotSetArg(args[num_args++], XmNsliderMark, XmETCHED_LINE);
-  iupmotSetArg(args[num_args++], XmNsliderSize, 16);
-  iupmotSetArg(args[num_args++], XmNshowValue, XmNONE);
+  iupmotSetArg(args, num_args, XmNminimum, 0);
+  iupmotSetArg(args, num_args, XmNmaximum, SHRT_MAX);
+  iupmotSetArg(args, num_args, XmNslidingMode, XmSLIDER);
+  iupmotSetArg(args, num_args, XmNsliderMark, XmETCHED_LINE);
+  iupmotSetArg(args, num_args, XmNsliderSize, 16);
+  iupmotSetArg(args, num_args, XmNshowValue, XmNONE);
 
   if (ih->data->type == IVAL_HORIZONTAL)
   {
-    iupmotSetArg(args[num_args++], XmNorientation, XmHORIZONTAL);
+    iupmotSetArg(args, num_args, XmNorientation, XmHORIZONTAL);
     if (ih->data->inverted)
-      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_LEFT);
+      iupmotSetArg(args, num_args, XmNprocessingDirection, XmMAX_ON_LEFT);
     else
-      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_RIGHT);
+      iupmotSetArg(args, num_args, XmNprocessingDirection, XmMAX_ON_RIGHT);
   }
   else
   {
-    iupmotSetArg(args[num_args++], XmNorientation, XmVERTICAL);
+    iupmotSetArg(args, num_args, XmNorientation, XmVERTICAL);
     if (ih->data->inverted)
-      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_TOP);
+      iupmotSetArg(args, num_args, XmNprocessingDirection, XmMAX_ON_TOP);
     else
-      iupmotSetArg(args[num_args++], XmNprocessingDirection, XmMAX_ON_BOTTOM);
+      iupmotSetArg(args, num_args, XmNprocessingDirection, XmMAX_ON_BOTTOM);
   }
 
   ih->handle = XtCreateManagedWidget(

@@ -189,43 +189,43 @@ static int motButtonMapMethod(Ihandle* ih)
   if (value)
   {
     ih->data->type = IUP_BUTTON_IMAGE;
-    iupmotSetArg(args[num_args++], XmNlabelType, XmPIXMAP);
+    iupmotSetArg(args, num_args, XmNlabelType, XmPIXMAP);
   }
   else
   {
     ih->data->type = IUP_BUTTON_TEXT;
-    iupmotSetArg(args[num_args++], XmNlabelType, XmSTRING);
+    iupmotSetArg(args, num_args, XmNlabelType, XmSTRING);
   }
 
   /* Core */
-  iupmotSetArg(args[num_args++], XmNmappedWhenManaged, False);  /* not visible when managed */
-  iupmotSetArg(args[num_args++], XmNx, 0);  /* x-position */
-  iupmotSetArg(args[num_args++], XmNy, 0);  /* y-position */
-  iupmotSetArg(args[num_args++], XmNwidth, 10);  /* default width to avoid 0 */
-  iupmotSetArg(args[num_args++], XmNheight, 10); /* default height to avoid 0 */
+  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
+  iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
+  iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
+  iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+  iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
   /* Label */
-  iupmotSetArg(args[num_args++], XmNrecomputeSize, False);  /* no automatic resize from text */
-  iupmotSetArg(args[num_args++], XmNmarginHeight, 0);  /* default padding */
-  iupmotSetArg(args[num_args++], XmNmarginWidth, 0);
-  iupmotSetArg(args[num_args++], XmNmarginTop, 0);     /* no extra margins */
-  iupmotSetArg(args[num_args++], XmNmarginLeft, 0);
-  iupmotSetArg(args[num_args++], XmNmarginBottom, 0);
-  iupmotSetArg(args[num_args++], XmNmarginRight, 0);
+  iupmotSetArg(args, num_args, XmNrecomputeSize, False);  /* no automatic resize from text */
+  iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* default padding */
+  iupmotSetArg(args, num_args, XmNmarginWidth, 0);
+  iupmotSetArg(args, num_args, XmNmarginTop, 0);     /* no extra margins */
+  iupmotSetArg(args, num_args, XmNmarginLeft, 0);
+  iupmotSetArg(args, num_args, XmNmarginBottom, 0);
+  iupmotSetArg(args, num_args, XmNmarginRight, 0);
   /* PushButton */
-  iupmotSetArg(args[num_args++], XmNfillOnArm, False);
+  iupmotSetArg(args, num_args, XmNfillOnArm, False);
 
   /* Primitive */
   if (iupAttribGetInt(ih, "FOCUSONCLICK"))
   {
     if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
-      iupmotSetArg(args[num_args++], XmNtraversalOn, True);
+      iupmotSetArg(args, num_args, XmNtraversalOn, True);
     else
-      iupmotSetArg(args[num_args++], XmNtraversalOn, False);
+      iupmotSetArg(args, num_args, XmNtraversalOn, False);
   }
   else
-    iupmotSetArg(args[num_args++], XmNtraversalOn, False);
-  iupmotSetArg(args[num_args++], XmNhighlightThickness, 2);
-  iupmotSetArg(args[num_args++], XmNnavigationType, XmTAB_GROUP);
+    iupmotSetArg(args, num_args, XmNtraversalOn, False);
+  iupmotSetArg(args, num_args, XmNhighlightThickness, 2);
+  iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
   
   ih->handle = XtCreateManagedWidget(
     iupDialogGetChildIdStr(ih),  /* child identifier */
