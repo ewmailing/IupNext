@@ -107,6 +107,20 @@ static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
 #include <gdk/gdkx.h>
 #endif
 
+static void gtkFileDlgUpdatePreviewGLCanvas(Ihandle* ih)
+{
+  Ihandle* glcanvas = IupGetAttributeHandle(ih, "PREVIEWGLCANVAS");
+  if (glcanvas)
+  {
+#ifdef WIN32                                 
+    iupAttribSetStr(glcanvas, "HWND", iupAttribGet(ih, "HWND"));
+#else
+    iupAttribSetStr(glcanvas, "XWINDOW", iupAttribGet(ih, "XWINDOW"));
+#endif
+    glcanvas->iclass->Map(glcanvas);
+  }
+}
+
 static void gtkFileDlgPreviewRealize(GtkWidget *widget, Ihandle *ih)
 {
   iupAttribSetStr(ih, "PREVIEWDC", iupgtkGetNativeGraphicsContext(widget));
@@ -118,6 +132,7 @@ static void gtkFileDlgPreviewRealize(GtkWidget *widget, Ihandle *ih)
   iupAttribSetStr(ih, "XWINDOW", (char*)GDK_WINDOW_XID(widget->window));
   iupAttribSetStr(ih, "XDISPLAY", (char*)iupdrvGetDisplay());
 #endif
+  gtkFileDlgUpdatePreviewGLCanvas(ih);
 }
 
 static void gtkFileDlgRealize(GtkWidget *widget, Ihandle *ih)
@@ -345,7 +360,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   
   ih->handle = GTK_WIDGET(dialog);
   iupDialogUpdatePosition(ih);
-  ih->handle = NULL;
+  ih->handle = NULL;  /* reset handle */
 
   do 
   {

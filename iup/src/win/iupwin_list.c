@@ -1278,7 +1278,7 @@ static int winListMapMethod(Ihandle* ih)
 {
   char* class_name;
   DWORD dwStyle = WS_CHILD,
-      dwStyleEx = WS_EX_CLIENTEDGE;
+      dwExStyle = WS_EX_CLIENTEDGE;
 
   if (!ih->parent)
     return IUP_ERROR;
@@ -1332,7 +1332,7 @@ static int winListMapMethod(Ihandle* ih)
   if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
     dwStyle |= WS_TABSTOP;
 
-  if (!iupwinCreateWindowEx(ih, class_name, dwStyleEx, dwStyle))
+  if (!iupwinCreateWindowEx(ih, class_name, dwExStyle, dwStyle))
     return IUP_ERROR;
 
   /* Custom Procedure */

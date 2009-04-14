@@ -123,22 +123,34 @@ For example:</p>
   Makes the dialog be treated as a child of the specified 
   dialog.</p>
   
-  <p><strong>PREVIEWDC</strong>, <strong>PREVIEWWIDTH</strong> and <strong>PREVIEWHEIGHT</strong>: Read only attributes that are valid inside the FILE_CB callback 
-  when status=&quot;PAINT&quot;. Return the Device 
-    Context (HDC in Windows and GC in UNIX), the width and the height of the client rectangle for the preview area. 
-  Also the attributes WID, HWND, XWINDOW and XDISPLAY are valid and are relative 
-  to the preview area. (in Motif since 3.0)</p>
-    
   <p><b>SHOWHIDDEN</b>: Show hidden files. Default: NO. (since 3.0)</p>
     
   <p><strong>SHOWPREVIEW</strong>:  A preview area is shown inside the File Dialog.
-    Can have values &quot;YES&quot; or &quot;NO&quot;. Default: &quot;NO&quot;. When this attribute is set you must 
-  set the &quot;FILE_CB&quot; 
-    callback to retreive the file name and the necessary attributes to paint the preview area. 
-  In Windows, you must link with the 
+    Can have values &quot;YES&quot; or &quot;NO&quot;. Default: &quot;NO&quot;. In Windows, you must link with the 
     &quot;iup.rc&quot; resource file so the preview area can be enabled (not 
-    necessary if using &quot;iup.dll&quot;). Also the FILE_CB callback must be 
-  defined.</p>
+    necessary if using &quot;iup.dll&quot;). Valid only if the FILE_CB callback 
+	is 
+  defined, use it to retreive the file name and the necessary attributes to 
+	paint the preview area. (in Motif since 3.0)</p>
+    
+  <blockquote>
+  
+  <p>Read only attributes that are valid inside the FILE_CB callback 
+  when status=&quot;PAINT&quot;:<br>
+	<strong>&nbsp;&nbsp;&nbsp; PREVIEWDC</strong>: Return the Device 
+    Context (HDC in Windows and GC in UNIX)<br>
+	<strong>&nbsp;&nbsp;&nbsp; PREVIEWWIDTH </strong>and <strong>PREVIEWHEIGHT</strong>: 
+	Return the width and the height of the client rectangle for the preview area.<br>
+	<strong>&nbsp;&nbsp;&nbsp; </strong>Also the attributes WID, HWND, XWINDOW and XDISPLAY are valid and are 
+	relative to the preview area.</p>
+	<p>If the attribute PREVIEWGLCANVAS is defined then it is used as the name 
+	of an existant IupGLCanvas control to be mapped internally to the preview 
+	canvas. Notice that this is not a fully implemented IupGLCanvas that 
+	inherits from IupCanvas. This does the minimum necessary so you can use 
+	IupGLCanvas auxiliary functions for the preview canvas and call OpenGL 
+	functions. No IupCanvas attributes or callbacks are available. (since 3.0)</p>
+    
+  </blockquote>
     
   <p><strong>STATUS</strong> (out):
   Indicates the status of the selection made:</p>

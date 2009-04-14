@@ -27,6 +27,7 @@
 struct _IcontrolData 
 {
   iupCanvas canvas;  /* from IupCanvas (must reserve it) */
+  HWND window;
   HDC device;
   HGLRC context;
   HPALETTE palette;
@@ -136,11 +137,18 @@ static int wGLCanvasMapMethod(Ihandle* ih)
   pfd.cAccumBits = pfd.cAccumRedBits + pfd.cAccumGreenBits + pfd.cAccumBlueBits + pfd.cAccumAlphaBits;
 
   /* get a device context */
-  ih->data->device = GetDC((HWND)IupGetAttribute(ih, "HWND"));
+  ih->data->window = (HWND)iupAttribGet(ih, "HWND"); /* check first in the hash table, can be defined by the IupFileDlg */
+  if (!ih->data->window)
+    ih->data->window = (HWND)IupGetAttribute(ih, "HWND");  /* works for Win32 and GTK, only after mapping the IupCanvas */
+  if (!ih->data->window)
+    return IUP_NOERROR;
+
+  ih->data->device = GetDC(ih->data->window);
   iupAttribSetStr(ih, "VISUAL", (char*)ih->data->device);
 
   /* choose pixel format */
-  if ((pixelFormat = ChoosePixelFormat(ih->data->device, &pfd)) == 0) 
+  pixelFormat = ChoosePixelFormat(ih->data->device, &pfd);
+  if (pixelFormat == 0)
   {
     iupAttribSetStr(ih, "ERROR", "No appropriate pixel format.");
     return IUP_NOERROR;
@@ -148,7 +156,8 @@ static int wGLCanvasMapMethod(Ihandle* ih)
   SetPixelFormat(ih->data->device,pixelFormat,&pfd);
 
   /* create rendering context */
-  if ((ih->data->context = wglCreateContext(ih->data->device)) == NULL)
+  ih->data->context = wglCreateContext(ih->data->device);
+  if (!ih->data->context)
   {
     iupAttribSetStr(ih, "ERROR", "Could not create a rendering context.");
     return IUP_NOERROR;
@@ -156,7 +165,7 @@ static int wGLCanvasMapMethod(Ihandle* ih)
   iupAttribSetStr(ih, "CONTEXT", (char*)ih->data->context);
 
   ih_shared = IupGetAttributeHandle(ih, "SHAREDCONTEXT");
-  if (ih_shared)
+  if (ih_shared && iupStrEqual(ih_shared->iclass->name, "glcanvas"))  /* must be an IupGLCanvas */
     wglShareLists(ih_shared->data->context, ih->data->context);
 
   DescribePixelFormat(ih->data->device, pixelFormat, sizeof(PIXELFORMATDESCRIPTOR), &test_pfd);
@@ -194,7 +203,7 @@ static void wGLCanvasUnMapMethod(Ihandle* ih)
     DeleteObject((HGDIOBJ)ih->data->palette);
 
   if (ih->data->device)
-    ReleaseDC((HWND)IupGetAttribute(ih, "HWND"), ih->data->device);  /* can not use ih->handle, because it should work with GTK also */
+    ReleaseDC(ih->data->window, ih->data->device);
 }
 
 static Iclass* wGlCanvasGetClass(void)
@@ -246,12 +255,12 @@ int IupGLIsCurrent(Ihandle* ih)
   if (!iupObjectCheck(ih))
     return 0;
 
-  /* must be a IupGLCanvas */
+  /* must be an IupGLCanvas */
   if (!iupStrEqual(ih->iclass->name, "glcanvas"))
     return 0;
 
   /* must be mapped */
-  if (!ih->handle)
+  if (!ih->data->window)
     return 0;
 
   if (ih->data->context == wglGetCurrentContext())
@@ -266,12 +275,12 @@ void IupGLMakeCurrent(Ihandle* ih)
   if (!iupObjectCheck(ih))
     return;
 
-  /* must be a IupGLCanvas */
+  /* must be an IupGLCanvas */
   if (!iupStrEqual(ih->iclass->name, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->handle)
+  if (!ih->data->window)
     return;
 
   wglMakeCurrent(ih->data->device, ih->data->context);
@@ -283,12 +292,12 @@ void IupGLSwapBuffers(Ihandle* ih)
   if (!iupObjectCheck(ih))
     return;
 
-  /* must be a IupGLCanvas */
+  /* must be an IupGLCanvas */
   if (!iupStrEqual(ih->iclass->name, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->handle)
+  if (!ih->data->window)
     return;
 
   SwapBuffers(ih->data->device);
@@ -300,12 +309,12 @@ void IupGLPalette(Ihandle* ih, int index, float r, float g, float b)
   if (!iupObjectCheck(ih))
     return;
 
-  /* must be a IupGLCanvas */
+  /* must be an IupGLCanvas */
   if (!iupStrEqual(ih->iclass->name, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->handle)
+  if (!ih->data->window)
     return;
 
   /* must have a palette */

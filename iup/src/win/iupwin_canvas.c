@@ -554,7 +554,7 @@ static int winCanvasMapMethod(Ihandle* ih)
   CLIENTCREATESTRUCT clientstruct;
   void *clientdata = NULL;
   char *classname;
-  DWORD dwStyle = WS_CHILD, dwStyleEx = 0;
+  DWORD dwStyle = WS_CHILD, dwExStyle = 0;
 
   if (!ih->parent)
     return IUP_ERROR;
@@ -567,11 +567,11 @@ static int winCanvasMapMethod(Ihandle* ih)
                            
   if (ih->iclass->childtype != IUP_CHILDNONE) /* canvas can be a container */
   {
-    dwStyleEx |= WS_EX_CONTROLPARENT;
+    dwExStyle |= WS_EX_CONTROLPARENT;
     dwStyle |= WS_CLIPSIBLINGS;
 
     if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
-      dwStyleEx |= WS_EX_COMPOSITED;
+      dwExStyle |= WS_EX_COMPOSITED;
     else
       dwStyle |= WS_CLIPCHILDREN;
   }
@@ -611,7 +611,7 @@ static int winCanvasMapMethod(Ihandle* ih)
 
   ih->serial = iupDialogGetChildId(ih);
 
-  ih->handle = CreateWindowEx(dwStyleEx,/* extended style */
+  ih->handle = CreateWindowEx(dwExStyle,/* extended style */
           classname,                    /* window class */
           NULL,                         /* title */
           dwStyle,                      /* window style */

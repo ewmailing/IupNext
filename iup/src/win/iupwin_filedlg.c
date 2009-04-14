@@ -217,6 +217,16 @@ static void winFileDlgSetPreviewCanvasPos(HWND hWnd, HWND hWndPreview)
   SetWindowPos(hWndPreview, HWND_TOP, xpos, ypos, width, height, SWP_NOZORDER);
 }
 
+static void winFileDlgUpdatePreviewGLCanvas(Ihandle* ih)
+{
+  Ihandle* glcanvas = IupGetAttributeHandle(ih, "PREVIEWGLCANVAS");
+  if (glcanvas)
+  {
+    iupAttribSetStr(glcanvas, "HWND", iupAttribGet(ih, "HWND"));
+    glcanvas->iclass->Map(glcanvas);
+  }
+}
+
 static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
   /* hWnd here is a handle to the child window that contains the template,
@@ -247,6 +257,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
       SetWindowLongPtr(hWnd, DWLP_USER, (LONG_PTR)ih);
       iupAttribSetStr(ih, "WID", (char*)hWndPreview);
       iupAttribSetStr(ih, "HWND", (char*)hWndPreview);
+      winFileDlgUpdatePreviewGLCanvas(ih);
       break;
     }
   case WM_DRAWITEM:
@@ -491,7 +502,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   if (iupAttribGetInt(ih, "SHOWPREVIEW") && IupGetCallback(ih, "FILE_CB"))
   {
     openfilename.Flags |= OFN_ENABLETEMPLATE;
-    openfilename.hInstance = iupwin_hinstance;
+    openfilename.hInstance = iupwin_dll_hinstance? iupwin_dll_hinstance: iupwin_hinstance;
     openfilename.lpTemplateName = "iupPreviewDlg";
     openfilename.lpfnHook = winFileDlgPreviewHook;
   }
@@ -561,3 +572,5 @@ void iupdrvFileDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = winFileDlgPopup;
 }
+
+// WM_CTLCOLORDLG

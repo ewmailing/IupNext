@@ -42,6 +42,8 @@ int PASCAL WinMain (HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int ncmdsho
   (void)hprev;
   (void)cmdline;
   (void)ncmdshow;
+
+  /* WinMain is NOT called for Console applications */
   
 #ifdef __WATCOMC__
   {

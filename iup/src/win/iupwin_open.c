@@ -57,11 +57,13 @@ int iupdrvOpen(int *argc, char ***argv)
   IupSetGlobal("DRIVER",  "Win32");
 
   {
-    /* TODO: Check this code */
+#ifdef __MINGW32__
+    /* MingW fails to create windows if using a console and HINSTANCE is not from the console */
     HWND win = GetConsoleWindow();
     if (win)
       iupwin_hinstance = (HINSTANCE)GetWindowLongPtr(win, GWLP_HINSTANCE);
     else
+#endif
       iupwin_hinstance = GetModuleHandle(NULL);
     IupSetGlobal("HINSTANCE", (char*)iupwin_hinstance);
   }

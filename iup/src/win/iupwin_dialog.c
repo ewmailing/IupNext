@@ -695,7 +695,7 @@ static int winDialogMapMethod(Ihandle* ih)
 {
   InativeHandle* native_parent;
   DWORD dwStyle = WS_CLIPSIBLINGS, 
-        dwStyleEx = 0;
+        dwExStyle = 0;
   int has_titlebar = 0,
       has_border = 0;
   char* classname = "IupDialog";
@@ -800,7 +800,7 @@ static int winDialogMapMethod(Ihandle* ih)
         else
           dwStyle |= WS_POPUP;
 
-        dwStyleEx |= WS_EX_NOACTIVATE; /* this will hide it from the taskbar */ 
+        dwExStyle |= WS_EX_NOACTIVATE; /* this will hide it from the taskbar */ 
       }
     }
 
@@ -809,24 +809,24 @@ static int winDialogMapMethod(Ihandle* ih)
   }
 
   if (iupAttribGetInt(ih, "TOOLBOX") && native_parent)
-    dwStyleEx |= WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE;
+    dwExStyle |= WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE;
 
   if (iupAttribGetInt(ih, "DIALOGFRAME") && native_parent)
-    dwStyleEx |= WS_EX_DLGMODALFRAME;  /* this will hide the MENUBOX but not the close button */
+    dwExStyle |= WS_EX_DLGMODALFRAME;  /* this will hide the MENUBOX but not the close button */
 
   if (iupAttribGetInt(ih, "COMPOSITED"))
-    dwStyleEx |= WS_EX_COMPOSITED;
+    dwExStyle |= WS_EX_COMPOSITED;
   else
     dwStyle |= WS_CLIPCHILDREN;
 
   if (iupAttribGetInt(ih, "HELPBUTTON"))
-    dwStyleEx |= WS_EX_CONTEXTHELP;
+    dwExStyle |= WS_EX_CONTEXTHELP;
 
   if (iupAttribGetInt(ih, "CONTROL") && native_parent) 
   {
     /* TODO: this were used by LuaCom to create embeded controls, 
        don't know if it is still working */
-    dwStyleEx |= WS_EX_CONTROLPARENT;
+    dwExStyle |= WS_EX_CONTROLPARENT;
     dwStyle = WS_CHILD | WS_TABSTOP | WS_CLIPCHILDREN;
     classname = "IupDialogControl";
   }
@@ -850,7 +850,7 @@ static int winDialogMapMethod(Ihandle* ih)
                                 iupwin_hinstance,   /* instance of app. */
                                 0);                 /* no creation parameters */
   else
-    ih->handle = CreateWindowEx(dwStyleEx,          /* extended styles */
+    ih->handle = CreateWindowEx(dwExStyle,          /* extended styles */
                               classname,          /* class */
                               title,              /* title */
                               dwStyle,            /* style */

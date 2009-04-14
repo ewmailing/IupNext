@@ -19,6 +19,8 @@
 
 #include "iup_attrib.h"
 #include "iup_globalattrib.h"
+#include "iup_object.h"
+
 
 static int Reparent(lua_State *L)
 {
@@ -91,7 +93,12 @@ static int GetAttribute (lua_State *L)
   else
   {
     if (iupAttribIsPointer(ih, name))
-      lua_pushlightuserdata(L, (void*)value);
+    {
+      if (iupObjectCheck((Ihandle*)value))
+        iuplua_pushihandle(L, (Ihandle*)value);
+      else
+        lua_pushlightuserdata(L, (void*)value);
+    }
     else
       lua_pushstring(L,value);
   }

@@ -1800,7 +1800,7 @@ static void winTextLayoutUpdateMethod(Ihandle* ih)
 static int winTextMapMethod(Ihandle* ih)
 {
   DWORD dwStyle = WS_CHILD, 
-      dwStyleEx = 0;
+      dwExStyle = 0;
   char* winclass = "EDIT";
 
   if (!ih->parent)
@@ -1853,9 +1853,9 @@ static int winTextMapMethod(Ihandle* ih)
   }
 
   if (IupGetInt(ih, "BORDER"))              /* Use IupGetInt for inheritance */
-    dwStyleEx |= WS_EX_CLIENTEDGE;
+    dwExStyle |= WS_EX_CLIENTEDGE;
 
-  if (!iupwinCreateWindowEx(ih, winclass, dwStyleEx, dwStyle))
+  if (!iupwinCreateWindowEx(ih, winclass, dwExStyle, dwStyle))
     return IUP_ERROR;
 
   /* Process ACTION_CB and CARET_CB */

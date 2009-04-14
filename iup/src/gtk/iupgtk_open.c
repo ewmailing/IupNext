@@ -54,6 +54,10 @@ void* iupgtkGetColormapFromVisual(void* visual, void* colormap)
   return NULL;
 }
 
+static void gtkSetDrvGlobalAttrib(void)
+{
+}
+
 #else          /******************************** X11 ************************************/
 #include <gdk/gdkx.h>
 
@@ -96,6 +100,16 @@ void* iupgtkGetColormapFromVisual(void* visual, void* colormap)
   return gdk_colormap;
 }
 
+static void gtkSetDrvGlobalAttrib(void)
+{
+  GdkDisplay* display = gdk_display_get_default();
+  Display* xdisplay = GDK_DISPLAY_XDISPLAY(display);
+  IupSetGlobal("XDISPLAY", (char*)xdisplay);
+  IupSetGlobal("XSCREEN", (char*)XDefaultScreen(xdisplay));
+  IupSetGlobal("XSERVERVENDOR", ServerVendor(xdisplay));
+  IupSetfAttribute(NULL, "XVENDORRELEASE", "%d", VendorRelease(xdisplay));
+}
+
 #endif
 
 static void gtkSetGlobalColorAttrib(const char* name, GdkColor *color)
@@ -135,6 +149,8 @@ int iupdrvOpen(int *argc, char ***argv)
   IupSetfAttribute(NULL, "GTKVERSION", "%d.%d.%d", gtk_major_version, 
                                                    gtk_minor_version, 
                                                    gtk_micro_version);
+
+  gtkSetDrvGlobalAttrib();
 
   style = gtk_style_new();
   iupgtkUpdateGlobalColors(style);

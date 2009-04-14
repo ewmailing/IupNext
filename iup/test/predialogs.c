@@ -69,6 +69,41 @@ static void drawTest(Ihandle* ih)
 }
 #endif
 
+#define TEST_OPENGL
+#ifdef TEST_OPENGL
+#include <GL/gl.h>
+#include "iupgl.h"
+
+static void drawTestGL(Ihandle* ih)
+{
+  Ihandle* glcanvas = IupGetAttributeHandle(ih, "PREVIEWGLCANVAS");
+  if (glcanvas)
+  {
+    int w = IupGetInt(ih, "PREVIEWWIDTH");
+    int h = IupGetInt(ih, "PREVIEWHEIGHT");
+
+    IupGLMakeCurrent(glcanvas);
+    glViewport(0,0,w,h);
+
+    glClearColor(1.0, 0.0, 1.0, 1.f);  /* pink */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glColor3f(1.0,0.0,0.0);  /* red */
+    glBegin(GL_QUADS); 
+    glVertex2f(0.9f,0.9f); 
+    glVertex2f(0.9f,-0.9f); 
+    glVertex2f(-0.9f,-0.9f); 
+    glVertex2f(-0.9f,0.9f); 
+    glEnd();
+
+    IupGLSwapBuffers(glcanvas);
+  }
+  else
+    drawTest(ih);
+}
+
+#endif
+
 static int close_cb(Ihandle *ih)
 {
   printf("CLOSE_CB\n");
@@ -91,7 +126,11 @@ static int file_cb(Ihandle* ih, const char* filename, const char* status)
   if (strcmp(status, "PAINT")==0)
   {
     printf("  SIZE(%s x %s)\n", IupGetAttribute(ih, "PREVIEWWIDTH"), IupGetAttribute(ih, "PREVIEWHEIGHT"));
+#ifdef TEST_OPENGL
+    drawTestGL(ih);
+#else
     drawTest(ih);
+#endif
   }
   return IUP_DEFAULT; 
 }
@@ -197,6 +236,15 @@ static void new_file(char* dialogtype, int preview)
   {
     IupSetAttribute(dlg, "SHOWPREVIEW", "YES");
     IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
+
+#ifdef TEST_OPENGL
+    if (preview==2)
+    {
+      Ihandle* glcanvas = IupGLCanvas(NULL);
+      IupSetAttribute(glcanvas, "BUFFER", "DOUBLE");
+      IupSetAttributeHandle(dlg, "PREVIEWGLCANVAS", glcanvas);
+    }
+#endif
   }
   
   IupPopup(dlg, IUP_CURRENT, IUP_CURRENT); 
@@ -310,6 +358,9 @@ static int k_any(Ihandle *ih, int c)
   case K_O:
     new_file("OPEN", 1);
     break;
+  case K_G:
+    new_file("OPEN", 2);
+    break;
   case K_s:
     new_file("SAVE", 0);
     break;
@@ -344,6 +395,7 @@ void PreDialogsTest(void)
               "f = IupFontDlg\n"
               "o = IupFileDlg(OPEN)\n"
               "O = IupFileDlg(OPEN+PREVIEW)\n"
+              "G = IupFileDlg(OPEN+PREVIEW+OPENGL)\n"
               "s = IupFileDlg(SAVE)\n"
               "d = IupFileDlg(DIR)\n"
               "a = IupAlarm\n"
@@ -351,6 +403,10 @@ void PreDialogsTest(void)
               "l = IupListDialog\n"
               "Esc = quit";
   Ihandle *dlg = IupDialog(IupVbox(IupLabel(msg), NULL));
+
+#ifdef TEST_OPENGL
+  IupGLCanvasOpen();
+#endif
 
   IupSetHandle("_MAIN_DIALOG_TEST_", dlg);
 
@@ -370,6 +426,10 @@ int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
   IupControlsOpen();
+
+#ifdef TEST_OPENGL
+  IupGLCanvasOpen();
+#endif
 
   PreDialogsTest();
 

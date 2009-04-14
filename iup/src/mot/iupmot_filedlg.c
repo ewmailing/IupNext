@@ -287,6 +287,16 @@ static void motFileDlgPreviewCanvasResizeCallback(Widget w, Ihandle *ih, XtPoint
   (void)call_data;
 }
 
+static void motFileDlgUpdatePreviewGLCanvas(Ihandle* ih)
+{
+  Ihandle* glcanvas = IupGetAttributeHandle(ih, "PREVIEWGLCANVAS");
+  if (glcanvas)
+  {
+    iupAttribSetStr(glcanvas, "XWINDOW", iupAttribGet(ih, "XWINDOW"));
+    glcanvas->iclass->Map(glcanvas);
+  }
+}
+
 static void motFileDlgPreviewCanvasInit(Ihandle *ih, Widget w)
 {
   XSetWindowAttributes attrs;
@@ -296,6 +306,7 @@ static void motFileDlgPreviewCanvasInit(Ihandle *ih, Widget w)
 
   iupAttribSetStr(ih, "XWINDOW", (char*)XtWindow(w));
   iupAttribSetStr(ih, "XDISPLAY", (char*)iupmot_display);
+  motFileDlgUpdatePreviewGLCanvas(ih);
 
   attrs.bit_gravity = ForgetGravity; /* For the DrawingArea widget gets Expose events when you resize it to be smaller. */
   attrs.background_pixmap = None;

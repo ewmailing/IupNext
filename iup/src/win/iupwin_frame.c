@@ -155,7 +155,7 @@ static int winFrameMapMethod(Ihandle* ih)
   char *title;
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS|
                   BS_OWNERDRAW|BS_NOTIFY,   /* NOTIFY is necessary because of the base messages */ 
-      dwStyleEx = WS_EX_CONTROLPARENT; 
+      dwExStyle = WS_EX_CONTROLPARENT; 
 
   if (!ih->parent)
     return IUP_ERROR;
@@ -170,11 +170,11 @@ static int winFrameMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "_IUPFRAME_HAS_TITLE", "1");
 
   if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
-    dwStyleEx |= WS_EX_COMPOSITED;
+    dwExStyle |= WS_EX_COMPOSITED;
   else
     dwStyle |= WS_CLIPCHILDREN;
 
-  if (!iupwinCreateWindowEx(ih, "BUTTON", dwStyleEx, dwStyle))
+  if (!iupwinCreateWindowEx(ih, "BUTTON", dwExStyle, dwStyle))
     return IUP_ERROR;
 
   /* replace the WinProc to handle base callbacks */

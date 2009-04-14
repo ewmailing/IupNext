@@ -56,7 +56,8 @@ Inheritance can be blocked by the element class implementation.</p>
 
 <h4>IupLua</h4>
 
-<p>In IupLua, only known internal pointer attributes are returned as user data, all other attributes are returned as 
+<p>In IupLua, only known internal pointer attributes are returned as user data 
+or as an ihandle, all other attributes are returned as 
   strings. To access attribute data always as user data use iup.GetAttributeData:</p>
 
 <pre>iup.GetAttributeData(<strong>ih</strong>: ihandle) -&gt; <strong>value</strong>: userdata [in Lua]</pre>

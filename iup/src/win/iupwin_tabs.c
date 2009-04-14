@@ -207,14 +207,14 @@ static HWND winTabCreatePageWindow(Ihandle* ih)
 { 
   HWND hWnd;
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, 
-      dwStyleEx = WS_EX_CONTROLPARENT; 
+      dwExStyle = WS_EX_CONTROLPARENT; 
 
   if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
-    dwStyleEx |= WS_EX_COMPOSITED;
+    dwExStyle |= WS_EX_COMPOSITED;
   else
     dwStyle |= WS_CLIPCHILDREN;
 
-  hWnd = CreateWindowEx(dwStyleEx, "IupTabsPage", NULL, dwStyle, 
+  hWnd = CreateWindowEx(dwExStyle, "IupTabsPage", NULL, dwStyle, 
                         0, 0, CW_USEDEFAULT, CW_USEDEFAULT, 
                         ih->handle, NULL, iupwin_hinstance, NULL); 
 
@@ -526,7 +526,7 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
 static int winTabsMapMethod(Ihandle* ih)
 {
   DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS | TCS_HOTTRACK,
-      dwStyleEx = WS_EX_CONTROLPARENT; 
+      dwExStyle = WS_EX_CONTROLPARENT; 
 
   if (!ih->parent)
     return IUP_ERROR;
@@ -543,7 +543,7 @@ static int winTabsMapMethod(Ihandle* ih)
 
   if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
   {
-    dwStyleEx |= WS_EX_COMPOSITED;
+    dwExStyle |= WS_EX_COMPOSITED;
 
     if (!ih->data->is_multiline && iupwinIsVista())
     {
@@ -555,7 +555,7 @@ static int winTabsMapMethod(Ihandle* ih)
   else
     dwStyle |= WS_CLIPCHILDREN;
 
-  if (!iupwinCreateWindowEx(ih, WC_TABCONTROL, dwStyleEx, dwStyle))
+  if (!iupwinCreateWindowEx(ih, WC_TABCONTROL, dwExStyle, dwStyle))
     return IUP_ERROR;
 
   /* replace the WinProc to handle base callbacks */
