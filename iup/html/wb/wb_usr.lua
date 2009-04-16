@@ -1278,11 +1278,11 @@ wb_usr.tree =
               link= "ctrl/iupdial.html"
             },
             {
-              name= {nl= "IupGauge"},
+              name= {nl= "IupGauge (OLD)"},
               link= "ctrl/iupgauge.html"
             },
             {
-              name= {nl= "IupTabs"},
+              name= {nl= "IupTabs (OLD)"},
               link= "ctrl/iuptabs.html"
             },
             {
@@ -1318,7 +1318,7 @@ wb_usr.tree =
               }
             },
             {
-              name= {nl= "IupVal"},
+              name= {nl= "IupVal (OLD)"},
               link= "ctrl/iupval.html"
             },
             { link= "", name= {en= "" } },

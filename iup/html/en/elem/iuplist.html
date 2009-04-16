@@ -472,13 +472,15 @@ the 0 value if not over an item. (since 3.0)</p>
 
 <p>Text is always left aligned.</p>
 
-<p> <a href="../call/iup_getfocus_cb.html">GETFOCUS_CB</a> and
+<p> The <a href="../call/iup_getfocus_cb.html">GETFOCUS_CB</a> and
   <a href="../call/iup_killfocus_cb.html">KILLFOCUS_CB</a> callbacks behave 
 differently depending on the list configuration and on the native system:</p>
 
+<blockquote>
+
 <ul>
 
-	<li>&nbsp;If 
+	<li>If 
 DROPDOWN=NO and EDITBOX=YES, then the list never gets the focus, the callbacks 
 are called only when the edit box is clicked.</li>
 
@@ -495,6 +497,8 @@ DROPDOWN=YES and EDITBOX=YES then when the dropdown button is clicked the list
 looses its focus and it gets it back only if the edit box is clicked.</li>
 
 </ul>
+
+</blockquote>
 
 <p> In Windows, if EDITBOX=YES then the tooltips are shown only when the cursor 
 is near the control border. Also the selection and caret attributes are not 
