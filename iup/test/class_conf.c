@@ -19,7 +19,11 @@ char* callback_str[] = {"idle", "", "Ii", "ccc", "d",
 int compare(const void *a, const void *b)
 {
   /* Compare all of both strings: */
+#ifdef WIN32
   return _stricmp( * ( char** ) a, * ( char** ) b );
+#else
+  return strcasecmp( * ( char** ) a, * ( char** ) b );
+#endif
 }
 
 /* Update callback labels */
