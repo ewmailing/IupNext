@@ -719,6 +719,7 @@ static int StoreAttribute(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *a = luaL_checkstring(L,2);
+
   if (lua_isnil(L,3)) 
     IupSetAttribute(ih,a,NULL);
   else 

@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua.c,v 1.7 2009-04-07 18:41:22 scuri Exp $
+* $Id: iuplua.c,v 1.8 2009-04-27 20:05:09 scuri Exp $
 */
 
 #include <stdio.h>
@@ -254,8 +254,7 @@ char ** iuplua_checkstring_array(lua_State *L, int pos)
   {
     lua_pushnumber(L,i);
     lua_gettable(L,pos);
-    v[i-1] = (char *) malloc (lua_strlen(L,-1)+1);
-    strcpy(v[i-1], lua_tostring(L, -1));
+    v[i-1] = (char*)lua_tostring(L, -1);
     lua_pop(L,1);
   }
   return v;

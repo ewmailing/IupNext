@@ -9,7 +9,7 @@
 /* World: (0-600)x(0-400)
    The canvas will be a window into that space.
    If canvas is smaller than the virtual space, scrollbars are active.
-   The drawing is a red cross from the corners of the world.
+   The drawing is a red X connecting the corners of the world.
 */
 #define WORLD_W 600
 #define WORLD_H 400
@@ -18,7 +18,8 @@ static int scale = 1;
 static void update_scrollbar(Ihandle* ih, int canvas_w, int canvas_h)
 {
   /* update page size, it is always the client size of the canvas,
-     but must convert it to world coordinates */
+     but must convert it to world coordinates.
+     If you change canvas size or scale must call this function. */
   double ww, wh;
   if (scale > 0)
   {
@@ -38,8 +39,11 @@ static void update_viewport(Ihandle* ih, cdCanvas *canvas, float posx, float pos
 {
   int view_x, view_y, view_w, view_h;
 
-  /* posy is top-down, CD is bottom-top.
-     invert scroll reference (YMAX-DY - POSY) */
+  /* The CD viewport is the same area represented by the virtual space of the scrollbar,
+     but not using the same coordinates. */
+
+  /* posy is top-bottom, CD is bottom-top.
+     invert posy reference (YMAX-DY - POSY) */
   posy = WORLD_H-IupGetFloat(ih, "DY") - posy;
   if (posy < 0) posy = 0;
 

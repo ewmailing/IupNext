@@ -260,6 +260,14 @@
 			<File
 				RelativePath="..\..\html\examples\C\matrix.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\iupmatrix\test_del.c"
@@ -574,17 +582,8 @@
 			Name="iuptree"
 			>
 			<File
-				RelativePath="..\iuptree\manual.c"
+				RelativePath="..\tree.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)7.obj"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter

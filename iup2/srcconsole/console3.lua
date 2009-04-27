@@ -75,7 +75,7 @@ function butSaveFile:action()
 end
 
 function butSaveasFile:action()
-  local filedlg = iupfiledlg{dialogtype = "SAVE", title = "Save File", filter = "*.lua", filterinfo = "Lua files",allownew=yes}
+  local filedlg = iupfiledlg{dialogtype = "SAVE", title = "Save File", filter = "*.wlua", filterinfo = "Lua files",allownew=yes}
   IupPopup(filedlg,IUP_LEFT, IUP_LEFT)
   local status = filedlg.status
   lastfile = filedlg.value
@@ -96,7 +96,7 @@ function butSaveasFile:action()
 end
 
 function butLoadFile:action()
-  local filedlg = iupfiledlg{dialogtype="OPEN", title="Load File", filter="*.lua", filterinfo="Lua Files", allownew="NO"}
+  local filedlg = iupfiledlg{dialogtype="OPEN", title="Load File", filter="*.wlua", filterinfo="Lua Files", allownew="NO"}
   filedlg:popup(IUP_CENTER, IUP_CENTER)
   local status = filedlg.status
   local newfile = filedlg.value

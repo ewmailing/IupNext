@@ -26,7 +26,7 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 </p>
 
-<h3>CVS (08/Apr/2009)</h3>
+<h3>CVS (27/Apr/2009)</h3>
 
 <h4>General</h4>
 
@@ -37,10 +37,15 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span style="color: rgb(0, 128, 0);">Changed:</span>
     In IupLua attributes that are pointers to Ihandle are now returned as 
 	ihandle instead of userdata.</li>
+	<li><span style="color: rgb(0, 128, 0);">Changed:</span>
+    replaced &quot;[]&quot; in function declarations by a simple &quot;*&quot;. None of those 
+	functions needed it.</li>
 	<li><span class="style1">Fixed:</span> IupLua initialization when retrieving 
 	the argc/argv arguments for <strong>IupOpen</strong> (Thanks to Ross Berteig).</li>
 	<li><span class="style1">Fixed:</span> Arg initialization for all controls 
 	in Motif driver.</li>
+	<li><span class="style1">Fixed:</span> update of the POSX and POSY 
+	attributes for the <strong>IupCanvas</strong>.</li>
 
 </ul>
 
@@ -83,7 +88,7 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<strong>IupHbox</strong>.</li>
 	<li><span class="style1">Fixed:</span> CARET attribute in GTK driver was not 
 	correctly scrolling the multiline text when not visible.</li>
-	<li><span class="style1">Fixed:</span> the return value in Lua for 
+	<li><span class="style1">Fixed:</span> parameter checking and the return value in Lua for 
 	<strong>IupListDialog</strong> when type=2.</li>
 	<li><span class="style1">Fixed:</span> the return value for <strong>IupGetText</strong> when 
 	the user canceled. (Thanks to Xu Wang)</li>

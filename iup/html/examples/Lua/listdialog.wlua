@@ -8,7 +8,7 @@ size = 8
 marks = { 0,0,0,0,1,1,0,0 }
 options = {"Blue", "Red", "Green", "Yellow", "Black", "White", "Gray", "Brown"} 
 	  
-error = iup.ListDialog(2,"Color selection",size,options,0,16,5,marks);
+error = iup.ListDialog(2,"Color selection",size,options,0,16,5,marks)
 
 if error == -1 then 
   iup.Message("IupListDialog", "Operation canceled")

@@ -380,12 +380,20 @@ static int gtkCanvasSetPosXAttrib(Ihandle* ih, const char *value)
 {
   if (ih->data->sb & IUP_SB_HORIZ)
   {
-    float posx;
+    float posx, xmin, xmax, dx;
     GtkAdjustment* sb_horiz = gtk_scrolled_window_get_hadjustment(gtkCanvasGetScrolledWindow(ih));
     if (!sb_horiz) return 1;
 
     if (!iupStrToFloat(value, &posx))
       return 1;
+
+    xmin = iupAttribGetFloat(ih, "XMIN");
+    xmax = iupAttribGetFloat(ih, "XMAX");
+    dx = iupAttribGetFloat(ih, "DX");
+
+    if (posx < xmin) posx = xmin;
+    if (posx > (xmax - dx)) posx = xmax - dx;
+    ih->data->posx = posx;
 
     gtk_adjustment_set_value(sb_horiz, posx);
   }
@@ -396,12 +404,20 @@ static int gtkCanvasSetPosYAttrib(Ihandle* ih, const char *value)
 {
   if (ih->data->sb & IUP_SB_VERT)
   {
-    float posy;
+    float posy, ymin, ymax, dy;
     GtkAdjustment* sb_vert = gtk_scrolled_window_get_vadjustment(gtkCanvasGetScrolledWindow(ih));
     if (!sb_vert) return 1;
 
     if (!iupStrToFloat(value, &posy))
       return 1;
+
+    ymin = iupAttribGetFloat(ih, "YMIN");
+    ymax = iupAttribGetFloat(ih, "YMAX");
+    dy = iupAttribGetFloat(ih, "DY");
+
+    if (posy < ymin) posy = ymin;
+    if (posy > (ymax - dy)) posy = ymax - dy;
+    ih->data->posy = posy;
 
     gtk_adjustment_set_value(sb_vert, posy);
   }

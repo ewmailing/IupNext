@@ -2,7 +2,7 @@
  * \brief Iup API in Lua
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_api.c,v 1.3 2009-03-16 21:01:28 scuri Exp $
+ * $Id: iuplua_api.c,v 1.4 2009-04-27 20:05:09 scuri Exp $
  */
  
 #include <string.h>
@@ -337,49 +337,68 @@ static void SetLanguage(void)
 
 static void ListDialog(void)
 {
-  lua_Object strings = luaL_tablearg(4);
-  lua_Object flags = luaL_tablearg(8);
-  int tipo, tam, opt, max_col, max_lin, i, ret;
-  char *tit;
-  char **lista;
-  int *marcas;
+  lua_Object list_tbl = luaL_tablearg(4);
+  lua_Object marks_tbl;
+  int i, ret;
+  char **list;
+  int *marks = NULL;
 
-  tipo = luaL_check_int(1);
-  tit = luaL_check_string(2);
-  tam = luaL_check_int(3);
-  opt = luaL_check_int(5);
-  max_col = luaL_check_int(6);
-  max_lin = luaL_check_int(7);
-  lista = malloc(sizeof(char *) * tam);
-  marcas = malloc(sizeof(int) * tam);
-  for (i = 0; i < tam; i++) 
+  int type = luaL_check_int(1);
+  char* title = luaL_check_string(2);
+  int size = luaL_check_int(3);
+  int opt = luaL_check_int(5);
+  int max_col = luaL_check_int(6);
+  int max_lin = luaL_check_int(7);
+
+  marks_tbl = lua_getparam(8);
+  if (!lua_isnil(marks_tbl))
+  {
+    luaL_arg_check(lua_istable(marks_tbl), 8, "table expected");
+    marks = malloc(sizeof(int) * size);
+  }
+
+  if (!marks && type==2)
+    lua_error("invalid marks, must not be nil");
+
+  list = malloc(sizeof(char *) * size);
+
+  for (i = 0; i < size; i++) 
   {
     lua_beginblock();
-    lua_pushobject(strings);
+
+    lua_pushobject(list_tbl);
     lua_pushnumber(i + 1);
-    lista[i] = lua_getstring(lua_gettable());
-    lua_pushobject(flags);
-    lua_pushnumber(i + 1);
-    marcas[i] = (int) lua_getnumber(lua_gettable());
+    list[i] = lua_getstring(lua_gettable());
+
+    if (marks)
+    {
+      lua_pushobject(marks_tbl);
+      lua_pushnumber(i + 1);
+      marks[i] = (int) lua_getnumber(lua_gettable());
+    }
+
     lua_endblock();
   }
 
-  ret = IupListDialog(tipo, tit, tam, lista, opt, max_col, max_lin, marcas);
+  ret = IupListDialog(type, title, size, list, opt, max_col, max_lin, marks);
 
-  if (tipo==2 && ret!=-1)
+  if (marks && type==2 && ret!=-1)
   {
-    for (i = 0; i < tam; i++) 
+    for (i = 0; i < size; i++) 
     {
       lua_beginblock();
-      lua_pushobject(flags);
+      lua_pushobject(marks_tbl);
       lua_pushnumber(i + 1);
-      lua_pushnumber(marcas[i]);
+      lua_pushnumber(marks[i]);
       lua_settable();
       lua_endblock();
     }
   }
 
   lua_pushnumber(ret);
+
+  if (marks) free(marks);
+  free(list);
 }
 
 static void Message(void)

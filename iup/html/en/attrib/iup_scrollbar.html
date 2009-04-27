@@ -9,6 +9,12 @@
 .style1 {
 	font-size: large;
 }
+.style2 {
+	color: #FF0000;
+}
+.style3 {
+	color: #008000;
+}
 </style>
 </head>
 <body>
@@ -22,19 +28,21 @@
 <h3>Notes</h3>
 <p>The 
   scrollbar allows you to create a virtual space associated to the element. In 
-  the image below, such space is marked in <u>red</u>, 
-  as well as the attributes that affect the composition of this space. In <u>green</u> you can see how these attributes are 
+  the image below, such space is marked in <span class="style2"><strong>red</strong></span>, 
+  as well as the attributes that affect the composition of this space. In 
+<span class="style3"><strong>green</strong></span> you can see how these attributes are 
   reflected on the scrollbar.</p>
-<p>Hence you can clearly deduce that POSX is limited to XMIN and
-  XMAX-DX, or&nbsp; XMIN&lt;=POSX&lt;=XMAX-DX.</p>
-<p>When the virtual space has the same size as the canvas, DX equals XMAX-XMIN, 
- 
-the scrollbar can be automatically hidden. See the attribute XAUTOHIDE.</p>
 <p align="center">
 <img src="images/scrollbar.gif" alt="images/scrollbar.gif (2113 bytes)" border="2" hspace="2" vspace="2"></p>
+<p>Hence you can clearly deduce that POSX is limited to XMIN and
+  XMAX-DX, or&nbsp; <strong>XMIN&lt;=POSX&lt;=XMAX-DX</strong>. When the virtual space has the same size as the canvas, DX equals XMAX-XMIN, 
+ 
+the scrollbar can be automatically hidden. See the attribute XAUTOHIDE.</p>
 <p>
 The same is valid for YMIN, YMAX, DY and POSY. But remember that the Y axis is 
-oriented from top to bottom in the canvas.</p>
+oriented from top to bottom in IUP. So if you want to consider YMIN and YMAX as 
+bottom-up oriented, then the actual YPOS must be obtained using <strong>
+YMAX-DY-POSY</strong>.</p>
 <p>
 If you have to change the properties of the scrollbar (XMIN, XMAX and DX) but 
 you want to keep the thumb still (if possible) in the same relative position, 

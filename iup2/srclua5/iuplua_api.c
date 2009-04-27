@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua_api.c,v 1.5 2009-03-16 21:01:28 scuri Exp $
+* $Id: iuplua_api.c,v 1.6 2009-04-27 20:05:09 scuri Exp $
 */
 
 #include <stdio.h>
@@ -294,38 +294,41 @@ static int Alarm(lua_State *L)
 
 static int ListDialog(lua_State *L)
 {
-  int tipo = luaL_checkint(L,1);
-  int tam = luaL_checkint(L,3);
-  char** lista = iuplua_checkstring_array(L, 4);
-  int * marcas = iuplua_checkint_array(L,8);
-  int i, ret = IupListDialog(tipo, 
-                             luaL_checkstring(L, 2), 
-                             tam, 
-                             lista, 
-                             luaL_checkint(L, 5), 
-                             luaL_checkint(L, 6), 
-                             luaL_checkint(L, 7), 
-                             marcas);
+  int type = luaL_checkint(L,1);
+  int size = luaL_checkint(L,3);
+  char** list = iuplua_checkstring_array(L, 4);
+  int* marks = lua_isnoneornil(L, 8)? NULL: iuplua_checkint_array(L,8);
+  int i, ret;
 
-  if (tipo==2 && ret!=-1)
+  if (size != luaL_getn(L, 4))
+    luaL_error(L, "invalid number of elements in the list.");
+  if (!marks && type==2)
+    luaL_error(L, "invalid marks, must not be nil.");
+  if (marks && type==2 && size != luaL_getn(L, 8))
+    luaL_error(L, "invalid number of elements in the marks.");
+
+  ret = IupListDialog(type, luaL_checkstring(L, 2), 
+                            size, 
+                            list, 
+                            luaL_checkint(L, 5), 
+                            luaL_checkint(L, 6), 
+                            luaL_checkint(L, 7), 
+                            marks);
+
+  if (marks && type==2 && ret!=-1)
   {
-    for (i=0; i<tam; i++)
+    for (i=0; i<size; i++)
     {
       lua_pushnumber(L, i+1);
-      lua_pushnumber(L, marcas[i]);
+      lua_pushnumber(L, marks[i]);
       lua_settable(L, 8);
     }
   }
 
   lua_pushnumber(L, ret);
     
-  for (i=0; i<tam; i++)
-  {
-    free(lista[i]);
-  }
-
-  free(marcas);
-  free(lista);
+  if (marks) free(marks);
+  free(list);
 
   return 1;
 }

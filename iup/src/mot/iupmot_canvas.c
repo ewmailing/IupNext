@@ -250,6 +250,10 @@ static int motCanvasSetPosXAttrib(Ihandle* ih, const char *value)
     xmax = iupAttribGetFloat(ih, "XMAX");
     dx = iupAttribGetFloat(ih, "DX");
 
+    if (posx < xmin) posx = (float)xmin;
+    if (posx > (xmax - dx)) posx = (float)(xmax - dx);
+    ih->data->posx = posx;
+
     iupCanvasCalcScrollIntPos(xmin, xmax, dx, posx, 
                               IUP_SB_MIN, IUP_SB_MAX, &ipagex, &iposx);
 
@@ -336,6 +340,10 @@ static int motCanvasSetPosYAttrib(Ihandle* ih, const char *value)
     ymin = iupAttribGetFloat(ih, "YMIN");
     ymax = iupAttribGetFloat(ih, "YMAX");
     dy = iupAttribGetFloat(ih, "DY");
+
+    if (posy < ymin) posy = (float)ymin;
+    if (posy > (ymax - dy)) posy = (float)(ymax - dy);
+    ih->data->posy = posy;
 
     iupCanvasCalcScrollIntPos(ymin, ymax, dy, posy, 
                               IUP_SB_MIN, IUP_SB_MAX, &ipagey, &iposy);

@@ -12,9 +12,6 @@
 <p><strong>SCROLLBAR</strong>:
   Associates a horizontal and/or vertical 
   scrollbar to the canvas. Default: &quot;YES&quot;. </p>
-<p><a href="../attrib/iup_font.html">FONT</a>:
-  Character font of the text displayed on the 
-  element.</p>
 <p><strong>ADDEXPANDED</strong>:
   Defines if branches will be expanded when 
   created. The root node is always 
@@ -36,6 +33,9 @@
   <strong>RENAME_NODE_CB</strong> to notify the user that it should rename a node. 
   Default:
   &quot;NO&quot;.</p>
+<p> 
+<a href="../attrib/iup_rastersize.html">RASTERSIZE</a> (<font size="3">non inheritable</font>): 
+If not defined the tree will use the default &quot;400x200&quot;.</p>
 <p><b>RENAMECARET</b>:
   Allows specifying and verifying the caret&#8217;s 
   position of the text box when in-place renaming.</p>
@@ -43,6 +43,47 @@
   Allows specifying and verifying selection 
   interval 
   of the text box when in-place renaming.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<p><strong>SPACING</strong>: internal padding for each item. Notice that 
+vertically the distance between each item will be actually 2x the spacing. It 
+also affects the horizontal margin of the item. In Windows, the text is aligned 
+at the top left of the item always. Valid only when DROPDOWN=NO. (since 3.0)</p>
+
+  
+<p><strong>TOPITEM</strong> (write-only): position the given item at the top of 
+the list or make it visible. Valid only when DROPDOWN=NO. (since 3.0)</p>
+
+<p><strong>CANFOCUS</strong> (creation only) (<font size="3">non inheritable</font>): enables the focus traversal of the 
+control. Default: YES. (since 3.0)</p>
+
+<p><strong>VISIBLECOLUMNS</strong>: Defines the number of visible columns for 
+the <strong>Natural</strong> <strong>Size</strong>, this means that will act 
+also as minimum number of visible columns. It uses a wider character size then the one used for the SIZE 
+attribute so strings will fit better without the need of extra columns. (since 3.0)</p>
+
+<p><strong>VISIBLELINES</strong>: When DROPDOWN=NO defines the number of visible 
+lines for the <strong>Natural</strong> <strong>Size</strong>, this means that 
+will act also as minimum number of visible lines. (since 3.0)</p>
+
+  
+  
+<blockquote>
+  <hr>
+</blockquote>
+<p>
+<a href="../attrib/iup_active.html">ACTIVE</a>,
+<a href="../attrib/iup_bgcolor.html">BGCOLOR</a>,
+    <a href="../attrib/iup_expand.html">EXPAND</a>, 
+<a href="../attrib/iup_font.html">FONT</a>, <a href="../attrib/iup_x.html">X</a>, 
+<a href="../attrib/iup_y.html">Y</a>, <a href="../attrib/iup_position.html">
+POSITION</a>,
+    <a href="../attrib/iup_wid.html">WID</a>, <a href="../attrib/iup_tip.html">TIP</a>, 
+<a href="../attrib/iup_size.html">SIZE</a>,
+<a href="../attrib/iup_rastersize.html">RASTERSIZE</a>,
+    <a href="../attrib/iup_zorder.html">ZORDER</a>, <a href="../attrib/iup_visible.html">VISIBLE</a>: 
+also accepted.&nbsp;</p>
 <h3><a name="marks">Marks</a></h3>
 <p><strong>VALUE</strong>:
   The selected node. When changed also marks the node, but only 
@@ -175,7 +216,6 @@ stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
   Changes or retrieves the name of the 
   selected node. Using the &quot;<b>NAMEid</b>&quot; form, where id is the node identifier, it is possible to 
   change the name of any node. </p>
-<p class="info">The value must be a node name.</p>
 <p><strong>STATE</strong>:
   Changes or retrieves the state of the 
   selected branch. Using the &quot;<b>STATEid</b>&quot; form, where id is the node identifier, it is possible to
@@ -183,7 +223,8 @@ stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
   happen. Possible values: </p>
     <ul>
       <li>&quot;EXPANDED&quot;:
-    Expanded branch state (shows its children)&quot;COLLAPSED&quot;:
+    Expanded branch state (shows its children)</li>
+		<li>&quot;COLLAPSED&quot;:
     Collapsed branch state (hides its children)
     </li>
 </ul>
@@ -191,7 +232,6 @@ stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
   If set, it defines the node's depth. Does 
   not verify is the resulting tree is valid. If retrieved, it returns the node's depth. Using the &quot;<b>DEPTHid</b>&quot; form, where id is the node identifier, it is possible to 
   refer to any node. </p>
-<p class="info">The value must be the node's depth.</p>
 <p><strong>KIND</strong>:
   Returns the kind of the selected node. Using 
   the &quot;<b>KINDid</b>&quot; form, where id is the node identifier, it is possible to 
@@ -199,7 +239,8 @@ stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
 </p>
     <ul>
       <li>&quot;LEAF&quot;:
-    The node is a leaf&quot;BRANCH&quot;:
+    The node is a leaf</li>
+		<li>&quot;BRANCH&quot;:
     The node is a branch</li>
 </ul>
 <p><strong>PARENT</strong>:
@@ -218,8 +259,6 @@ after the selected node. The id of the new leaf will be the id of the selected n
   insert a leaf after any node. In this case, the id of the inserted node will be 
 id + 1. If the specified node does not exist, 
   nothing happens. This attribute can only be set.</p>
-<p class="info">The value must be a leaf name. 
-  </p>
 <p><strong>ADDBRANCH</strong>:
   Adds a new branch 
 after the selected node. The id of the new branch will be the id of the selected node + 
@@ -228,7 +267,6 @@ after the selected node. The id of the new branch will be the id of the selected
 id + 1. By default, all branches created are 
   expanded. If the specified node does not exist, nothing happens. This attribute can only be set. 
 </p>
-<p class="info">The value must be a branch name.</p>
 <p><strong>DELNODE</strong>:
   Removes the marked node (or its children). Using the &quot;<b>DELNODEid</b>&quot; form, where id is the node identifier, it is possible to 
   remove any node. The root cannot be removed. If the specified node does not exist, nothing happens. This attribute can 
@@ -246,8 +284,6 @@ id + 1. By default, all branches created are
 </ul>
 <p class="info">Returns the identifier of the marked node's 
     parent.</p>
-<p><b>REDRAW</b>:<b> </b>Forces an immediate redraw. It is necessary to force a redraw 
-  whenever the user adds or removes a node or a branch. The value is ignored.</p>
 <p><b>RENAME</b>:<b> </b>Forces a rename action to take place. If SHOWRENAME=YES then 
   does in-place rename, else just calls the RENAMENODE_CB. The value is ignored.</p>
 
