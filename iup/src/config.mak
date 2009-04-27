@@ -17,7 +17,7 @@ SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font
       iup_user.c iup_button.c iup_radio.c iup_toggle.c iup_progressbar.c iup_text.c iup_val.c \
       iup_box.c iup_hbox.c iup_vbox.c iup_cbox.c iup_class.c iup_classbase.c iup_maskmatch.c \
       iup_mask.c iup_maskparse.c iup_tabs.c iup_spin.c iup_list.c iup_getparam.c \
-      iup_sbox.c iup_normalizer.c
+      iup_sbox.c iup_normalizer.c iup_tree.c
 
 ifdef USE_GTK
   ifndef GTK_DEFAULT
@@ -34,7 +34,7 @@ ifdef USE_GTK
            gtk/iupgtk_colordlg.c gtk/iupgtk_fontdlg.c gtk/iupgtk_filedlg.c  \
            gtk/iupgtk_button.c gtk/iupgtk_toggle.c gtk/iupgtk_progressbar.c \
            gtk/iupgtk_text.c gtk/iupgtk_val.c gtk/iupgtk_frame.c gtk/iupgtk_canvas.c \
-           gtk/iupgtk_tabs.c gtk/iupgtk_menu.c gtk/iupgtk_list.c
+           gtk/iupgtk_tabs.c gtk/iupgtk_menu.c gtk/iupgtk_list.c gtk/iupgtk_tree.c
            
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c
@@ -58,7 +58,7 @@ else
            win/iupwin_colordlg.c win/iupwin_fontdlg.c win/iupwin_filedlg.c \
            win/iupwin_button.c win/iupwin_draw.c win/iupwin_toggle.c \
            win/iupwin_progressbar.c win/iupwin_text.c win/iupwin_val.c \
-           win/iupwin_tabs.c win/iupwin_menu.c win/iupwin_list.c
+           win/iupwin_tabs.c win/iupwin_menu.c win/iupwin_list.c win/iupwin_tree.c
            
     SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c
   
@@ -77,7 +77,7 @@ else
            mot/iupmot_colordlg.c mot/iupmot_fontdlg.c mot/iupmot_filedlg.c mot/iupmot_frame.c \
            mot/iupmot_button.c mot/iupmot_toggle.c mot/iupmot_progressbar.c \
            mot/iupmot_text.c mot/iupmot_val.c mot/iupmot_tabs.c mot/iupmot_menu.c \
-           mot/iupmot_list.c
+           mot/iupmot_list.c mot/iupmot_tree.c
            
     SRC += mot/iupunix_help.c mot/iupunix_info.c
   

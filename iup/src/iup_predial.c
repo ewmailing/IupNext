@@ -51,12 +51,12 @@ static int CB_lista (Ihandle *h, char *n, int o, int v)
   return IUP_DEFAULT;
 }
 
-int IupListDialog (int type, const char *title, int size, const char *list_str[],
-                   int op, int max_col, int max_lin, int marks[])
+int IupListDialog (int type, const char *title, int size, const char** list_str,
+                   int op, int max_col, int max_lin, int* marks)
 {
   Ihandle *lst, *ok, *dlg, *cancel, *dlg_box, *button_box;
   int i, bt;
-  char attrib_str[10];
+  char attrib_str[20];
   char *m=NULL;
 
   if (size > 999)
@@ -243,11 +243,11 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
 }
 
 int  iupDataEntry(int    maxlin,
-                  int    maxcol[],
-                  int    maxscr[],
-                  char  *title,
-                  char  *text[],
-                  char  *data[])
+                  int*   maxcol,
+                  int*   maxscr,
+                  char*  title,
+                  char** text,
+                  char** data)
 {
   int i, bt;
   Ihandle *ok, *cancel, *dlg, *vb, *hb, **txt, **lbl, *button_box, *dlg_box;

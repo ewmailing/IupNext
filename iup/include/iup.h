@@ -41,8 +41,8 @@ void IupMessage(const char *title, const char *msg);
 void IupMessagef(const char *title, const char *format, ...);
 int  IupAlarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3);
 int  IupScanf(const char *format, ...);
-int  IupListDialog(int type, const char *title, int size, const char *lst[],
-                   int op, int col, int line, int marks[]);
+int  IupListDialog(int type, const char *title, int size, const char** list,
+                   int op, int max_col, int max_lin, int* marks);
 int  IupGetText(const char* title, char* text);
 int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
 
@@ -112,7 +112,7 @@ int       IupGetInt2       (Ihandle* ih, const char* name);
 int       IupGetIntInt     (Ihandle *ih, const char* name, int *i1, int *i2);
 float     IupGetFloat      (Ihandle* ih, const char* name);
 void      IupSetfAttribute (Ihandle* ih, const char* name, const char* format, ...);
-int       IupGetAllAttributes(Ihandle* ih, char *names[], int n);
+int       IupGetAllAttributes(Ihandle* ih, char** names, int n);
 
 void      IupSetGlobal     (const char* name, const char* value);
 void      IupStoreGlobal   (const char* name, const char* value);
@@ -133,8 +133,8 @@ const char* IupGetActionName (void);
 
 Ihandle*  IupGetHandle     (const char *name);
 Ihandle*  IupSetHandle     (const char *name, Ihandle* ih);
-int       IupGetAllNames   (char *names[], int n);
-int       IupGetAllDialogs (char *names[], int n);
+int       IupGetAllNames   (char** names, int n);
+int       IupGetAllDialogs (char** names, int n);
 char*     IupGetName       (Ihandle* ih);
 
 void      IupSetAttributeHandle(Ihandle* ih, const char* name, Ihandle* ih_named);
@@ -142,7 +142,7 @@ Ihandle*  IupGetAttributeHandle(Ihandle* ih, const char* name);
 
 char*     IupGetClassName(Ihandle* ih);
 char*     IupGetClassType(Ihandle* ih);
-int       IupGetClassAttributes(const char* classname, char *names[], int n);
+int       IupGetClassAttributes(const char* classname, char** names, int n);
 void      IupSaveClassAttributes(Ihandle* ih);
 void      IupSetClassDefaultAttribute(const char* classname, const char *name, const char* value);
 

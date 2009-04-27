@@ -61,9 +61,35 @@ static int removenode(void)
   return IUP_DEFAULT;
 }
 
-/* from the menu */
-static int renamenode(void)
+int renamenode(void)
 {
+  Ihandle* tree = IupGetHandle("tree");
+  IupSetAttribute(tree, "RENAME", "YES");
+  return IUP_DEFAULT;
+}
+
+int showrename_cb(Ihandle* ih, int id)
+{
+  (void)ih;
+  printf("showrename_cb (%d)\n", id);
+  return IUP_DEFAULT;
+}
+
+int selection_cb(Ihandle *ih, int id, int status)
+{
+  (void)ih;
+  printf("selection_cb (%d - %d)\n", id, status);
+  return IUP_DEFAULT;
+}
+
+int multiselection_cb(Ihandle *ih, int* ids, int n)
+{
+  int i;
+  (void)ih;
+  printf("multiselection_cb (");
+  for (i = 0; i < n; i++)
+    printf("%d ", ids[i]);
+  printf(")\n");
   return IUP_DEFAULT;
 }
 
@@ -182,6 +208,10 @@ static void init_tree(void)
   IupSetCallback(tree, "RIGHTCLICK_CB",  (Icallback) rightclick_cb);
   IupSetCallback(tree, "K_ANY",          (Icallback) k_any_cb);
 
+  IupSetCallback(tree, "SHOWRENAME_CB", (Icallback) showrename_cb);
+  IupSetCallback(tree, "SELECTION_CB", (Icallback) selection_cb);
+  IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
+
   IupSetHandle("tree", tree);
 }
 
@@ -192,9 +222,9 @@ static void init_dlg(void)
   Ihandle* box = IupVbox(IupHbox(tree, NULL), NULL);
   Ihandle* dlg = IupDialog(box) ;
   IupSetAttribute(dlg,  "TITLE",   "IupTree");
-  IupSetAttribute(tree, "SIZE",    "QUARTERxTHIRD");
-  IupSetAttribute(box,  "MARGIN",  "20x20");
-  IupSetAttribute(dlg,  "BGCOLOR", "192 192 192");
+//  IupSetAttribute(tree, "SIZE",    "QUARTERxTHIRD");
+  IupSetAttribute(box,  "MARGIN",  "10x10");
+//  IupSetAttribute(dlg,  "BGCOLOR", "192 192 192");
   IupSetHandle("dlg", dlg);
 }
 
@@ -203,19 +233,25 @@ static void init_tree_atributes(void)
 {
   Ihandle* tree = IupGetHandle("tree");
 
-  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_10");
-  IupSetAttribute(tree, "NAME",         "Figures");
-  IupSetAttribute(tree, "ADDBRANCH",    "3D");
-  IupSetAttribute(tree, "ADDBRANCH",    "2D");
-  IupSetAttribute(tree, "ADDLEAF",      "test");
-  IupSetAttribute(tree, "ADDBRANCH1",   "parallelogram");
+//  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_10");
+
+  /* Notice that the tree is create from bottom to top */
+  /* the current node is the ROOT */
+  IupSetAttribute(tree, "NAME",         "Figures");  /* name of the root, id=0 */
+  IupSetAttribute(tree, "ADDBRANCH",    "3D");    /* 3D=1 */
+  IupSetAttribute(tree, "ADDBRANCH",    "2D");    /* add to the root, so it will be before "3D", now 2D=1, 3D=2 */
+  IupSetAttribute(tree, "ADDLEAF",      "test");  /* add to the root, also before "2D", now test=1, 2D=2, 3D=3 */
+
+  IupSetAttribute(tree, "ADDBRANCH1",   "parallelogram");  /* add after "test", now test=1, parallelogram=2, 2D=3, 3D=4  */
   IupSetAttribute(tree, "ADDLEAF2",     "diamond");
   IupSetAttribute(tree, "ADDLEAF2",     "square");
-  IupSetAttribute(tree, "ADDBRANCH1",   "triangle");
+  IupSetAttribute(tree, "ADDBRANCH1",   "triangle");       /* add after "test" */
   IupSetAttribute(tree, "ADDLEAF2",     "scalenus");
   IupSetAttribute(tree, "ADDLEAF2",     "isoceles");
   IupSetAttribute(tree, "ADDLEAF2",     "equilateral");
+
   IupSetAttribute(tree, "VALUE",        "6");
+
   IupSetAttribute(tree, "CTRL",         "YES");
   IupSetAttribute(tree, "SHIFT",        "YES");
   IupSetAttribute(tree, "ADDEXPANDED",  "NO");

@@ -219,6 +219,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\mot\iupmot_tree.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\mot\iupmot_val.c"
 				>
 			</File>

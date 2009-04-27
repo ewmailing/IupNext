@@ -488,6 +488,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\iup_tree.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\iup_user.c"
 				>
 			</File>
@@ -565,6 +569,10 @@
 			</File>
 			<File
 				RelativePath="..\src\iup_toggle.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\iup_tree.h"
 				>
 			</File>
 			<File

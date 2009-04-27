@@ -538,8 +538,8 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
 
 static int motTextSetBgColorAttrib(Ihandle* ih, const char* value)
 {
-  Widget extraparent = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-  if (extraparent)
+  Widget sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
+  if (sb_win)
   {
     Pixel color;
 
@@ -551,12 +551,12 @@ static int motTextSetBgColorAttrib(Ihandle* ih, const char* value)
     {
       Widget sb = NULL;
 
-      iupmotSetBgColor(extraparent, color);
+      iupmotSetBgColor(sb_win, color);
 
-      XtVaGetValues(extraparent, XmNverticalScrollBar, &sb, NULL);
+      XtVaGetValues(sb_win, XmNverticalScrollBar, &sb, NULL);
       if (sb) iupmotSetBgColor(sb, color);
 
-      XtVaGetValues(extraparent, XmNhorizontalScrollBar, &sb, NULL);
+      XtVaGetValues(sb_win, XmNhorizontalScrollBar, &sb, NULL);
       if (sb) iupmotSetBgColor(sb, color);
     }
   }

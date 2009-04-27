@@ -348,7 +348,7 @@ char* iupClassCallbackGetFormat(Iclass* ic, const char* name)
   return NULL;
 }
 
-int IupGetClassAttributes(const char* classname, char *names[], int n)
+int IupGetClassAttributes(const char* classname, char** names, int n)
 {
   Iclass* ic;
   int i = 0;

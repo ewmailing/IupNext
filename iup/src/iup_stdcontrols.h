@@ -32,6 +32,7 @@ Iclass* iupTabsGetClass(void);
 Iclass* iupSpinGetClass(void);
 Iclass* iupSpinboxGetClass(void);
 Iclass* iupListGetClass(void);
+Iclass* iupTreeGetClass(void);
 
 Iclass* iupMenuGetClass(void);
 Iclass* iupItemGetClass(void);

@@ -93,4 +93,5 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupTabsGetClass());
   iupRegisterClass(iupSpinGetClass());
   iupRegisterClass(iupSpinboxGetClass());
+  iupRegisterClass(iupTreeGetClass());
 }

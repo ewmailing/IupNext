@@ -25,7 +25,7 @@ int IupControlsOpen(void)
   iupRegisterClass(iupColorbarGetClass());
   iupRegisterClass(iupColorBrowserGetClass());
   iupRegisterClass(iupMatrixGetClass());
-  iupRegisterClass(iupTreeGetClass());
+//  iupRegisterClass(iupTreeGetClass());
   iupRegisterClass(iupGaugeGetClass());
   iupRegisterClass(iupColorBrowserDlgGetClass());
 

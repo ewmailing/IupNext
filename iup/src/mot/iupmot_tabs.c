@@ -316,7 +316,7 @@ void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct 
   (void)w; 
 }
 
-static void motTabsConfigureNotify(Widget w, XEvent *evt, String s [], Cardinal *card)
+static void motTabsConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal *card)
 {
   /* Motif does not process the changed of position and/or size of children outside the parent's client area. 
      Since Notebook pages are not resized until they are moved into the visible area,

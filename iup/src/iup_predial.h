@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 /* Used by the IupScanf implementation */
-int iupDataEntry(int maxlin, int maxcol[], int maxscr[], char *title, char *text[], char *data[]);
+int iupDataEntry(int maxlin, int* maxcol, int* maxscr, char* title, char** text, char** data);
 
 /* Popups a dialog with IUP Version, used in IupOpen */
 void iupVersionDlg(void);

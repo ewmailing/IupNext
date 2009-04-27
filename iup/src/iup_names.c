@@ -99,7 +99,7 @@ Ihandle* IupSetHandle(const char *name, Ihandle *ih)
   return old_ih;
 }
 
-int IupGetAllNames(char *names[], int n)
+int IupGetAllNames(char** names, int n)
 {
   int i = 0;
   char* name;
@@ -135,7 +135,7 @@ static int iNamesCountDialogs(void)
   return i;
 }
 
-int IupGetAllDialogs(char *names[], int n)
+int IupGetAllDialogs(char** names, int n)
 {
   int i = 0;
   char* name;

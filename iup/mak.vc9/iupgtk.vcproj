@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\gtk\iupgtk_tree.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\gtk\iupgtk_val.c"
 				>
 			</File>

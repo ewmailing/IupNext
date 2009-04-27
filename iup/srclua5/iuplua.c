@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include "iup.h"
+#include "iup_str.h"
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -253,8 +254,7 @@ char ** iuplua_checkstring_array(lua_State *L, int pos)
   {
     lua_pushnumber(L,i);
     lua_gettable(L,pos);
-    v[i-1] = (char *) malloc (lua_strlen(L,-1)+1);
-    strcpy(v[i-1], lua_tostring(L, -1));
+    v[i-1] = (char*)lua_tostring(L, -1);
     lua_pop(L,1);
   }
   return v;

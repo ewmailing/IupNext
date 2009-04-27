@@ -21,7 +21,7 @@
 #include "iup_assert.h"
 
 
-int IupGetAllAttributes(Ihandle* ih, char *names[], int n)
+int IupGetAllAttributes(Ihandle* ih, char** names, int n)
 {
   char *name;
   int i = 0;

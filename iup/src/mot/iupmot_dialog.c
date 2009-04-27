@@ -452,7 +452,7 @@ static void motDialogCBclose(Widget w, XtPointer client_data, XtPointer call_dat
   IupHide(ih); /* default: close the window */
 }
 
-static void motDialogConfigureNotify(Widget w, XEvent *evt, String s [], Cardinal *card)
+static void motDialogConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal *card)
 {
   IFnii cb;
   int border, caption, menu;

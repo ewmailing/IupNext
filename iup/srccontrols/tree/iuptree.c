@@ -236,7 +236,7 @@ static int iTreeRedraw_CB(Ihandle* ih)
 /***************************************************************************/
 /***************************************************************************/
 
-Ihandle* IupTree(void)
+Ihandle* IupTreeOld(void)
 {
   return IupCreate("tree");
 }
@@ -655,7 +655,7 @@ static void iTreeCreateCursor(void)
   IupSetHandle("IupTreeDragCursor", imgcursor); 
 }
 
-Iclass* iupTreeGetClass(void)
+Iclass* iupTreeOldGetClass(void)
 {
   Iclass* ic = iupClassNew(iupCanvasGetClass());
 

@@ -64,6 +64,11 @@ int iupStrCountChar(const char *str, int c);
  * \ingroup str */
 char *iupStrCopyUntil(char **str, int c);
 
+/** Copy the string to the buffer, but limited to the max_size of the buffer.
+ * buffer is always porperly ended.
+ * \ingroup str */
+void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str);
+
 /** Returns a buffer with the specified size+1. \n
  * The buffer is resused after 50 calls. It must NOT be freed.
  * Use size=-1 to free all the internal buffers.

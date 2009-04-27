@@ -398,7 +398,7 @@ static int motCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
   }
 
   if (!IupGetCallback(ih, "ACTION")) 
-    iupdrvBaseSetBgColorAttrib(ih, value);
+    iupdrvBaseSetBgColorAttrib(ih, value);  /* Use the given value only here */
   else
   {
     XSetWindowAttributes attrs;
