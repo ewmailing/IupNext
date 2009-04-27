@@ -396,6 +396,9 @@ int   iupClassObjectCurAttribIsInherit(Iclass* ic);
 /* Used in iupObjectCreate and IupMap */
 void iupClassObjectEnsureDefaultAttributes(Ihandle* ih);
 
+/* Used in documentation tests. */
+char* iupClassGetDefaultAttribute(const char* classname, const char *attrib_name);
+
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupGetClassType

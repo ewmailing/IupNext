@@ -461,3 +461,27 @@ void iupClassObjectEnsureDefaultAttributes(Ihandle* ih)
     name = iupTableNext(ic->attrib_func);
   }
 }
+
+char* iupClassGetDefaultAttribute(const char* classname, const char *attrib_name)
+{
+  Iclass* ic;
+  IattribFunc* afunc;
+
+  iupASSERT(classname!=NULL);
+  if (!classname)
+    return;
+
+  iupASSERT(attrib_name!=NULL);
+  if (!attrib_name)
+    return;
+
+  ic = iupRegisterFindClass(classname);
+  if (!ic)
+    return;
+
+  afunc = (IattribFunc*)iupTableGet(ic->attrib_func, attrib_name);
+  if (afunc)
+    return afunc->default_value;
+  else
+    return NULL;
+}

@@ -38,6 +38,27 @@ void iupRegisterFinish(void)
   iregister_table = NULL;
 }
 
+int iupRegisterGetClasses(char *list[], int n)
+{
+  int i = 0;
+  char* name = iupTableFirst(iregister_table);
+
+  if (!list || !n)
+    return iupTableCount(iregister_table);
+
+  while (name)
+  {
+    list[i] = name;
+    i++;
+    if (i == n)
+      break;
+
+    name = iupTableNext(iregister_table);
+  }
+
+  return i;
+}
+
 Iclass* iupRegisterFindClass(const char* name)
 {
   return (Iclass*)iupTableGet(iregister_table, name);

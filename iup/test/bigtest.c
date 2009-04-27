@@ -53,6 +53,7 @@ void ProgressbarTest(void);
 void PreDialogsTest(void);
 void PPlotTest(void);
 void GetParamTest(void);
+void ConfTest(void);
 
 typedef struct _TestItems{
   char* title;
@@ -67,6 +68,7 @@ static TestItems test_list[] = {
   {"CellsCheckboar", CellsCheckboarTest},
   {"CellsDegrade", CellsDegradeTest},
   {"CellsNumbering", CellsNumberingTest},
+  {"Class Conference", ConfTest},
   {"ColorBrowser", ColorBrowserTest},
   {"Colorbar", ColorbarTest},
   {"Dial", DialTest},
