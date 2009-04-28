@@ -15,6 +15,7 @@ char* callback_str[] = {"idle", "", "Ii", "ccc", "d",
                         "iiiis", "iinsii", "iis", "is", "nii",
                         "nn", "s", "sii", "siii", "ss"};
 
+char currentClassName[256];
 
 int compare(const void *a, const void *b)
 {
@@ -36,7 +37,7 @@ static int callbacksList_ActionCB (Ihandle *ih, char *callName, int pos, int sta
   if(!callName)
     return 0;
   
-  temp = iupClassGetDefaultAttribute(IupGetAttribute(IupGetHandle("labelClass"), "TITLE"), callName);
+  temp = iupClassGetDefaultAttribute(currentClassName, callName);
 
   copy[1] = '\0';
   sprintf(params, "%s", "Ihandle*");
@@ -85,7 +86,7 @@ static int attributesList_ActionCB (Ihandle *ih, char *attribName, int pos, int 
   if(!attribName)
     return 0;
 
-  temp = iupClassGetDefaultAttribute(IupGetAttribute(IupGetHandle("labelClass"), "TITLE"), attribName);
+  temp = iupClassGetDefaultAttribute(currentClassName, attribName);
 
   IupSetAttribute(IupGetHandle("labelAttribute"), "TITLE", attribName);
 
@@ -148,11 +149,14 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
   }
 
   /* Update labels (values) */
-  IupSetAttribute(IupGetHandle("labelClass"),     "TITLE", className);
+  IupSetAttribute(IupGetHandle("labelClass"), "TITLE", className);
+  strcpy(currentClassName, className);
+
   IupSetAttribute(IupGetHandle("labelAttribute"), "TITLE", NULL);
   IupSetAttribute(IupGetHandle("labelDefault"),   "TITLE", NULL);
   IupSetAttribute(IupGetHandle("labelCallback"),  "TITLE", NULL);
   IupSetAttribute(IupGetHandle("labelParams"),    "TITLE", NULL);
+
 
   (void)ih;
   (void)pos;
