@@ -149,6 +149,10 @@ wb_usr.tree =
           link= "guide.html#cpp"
         },
         {
+          name= {nl= "Contributions"},
+          link= "guide.html#contrib"
+        },
+        {
           name= {en= "IDEs"}, 
           
           folder=
