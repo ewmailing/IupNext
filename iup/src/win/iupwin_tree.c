@@ -562,17 +562,16 @@ static int winTreeGetImageIndex(Ihandle* ih, const char* value)
 
 static void winTreeCreateImageList(Ihandle* ih) 
 { 
+  int width, height;
   HIMAGELIST image_list;  /* handle to image list  */
   HBITMAP bmpLeaf = iupImageGetImage("IMGLEAF", ih, 0, "TREEIMAGELEAF");
   HBITMAP bmpCollapsed = iupImageGetImage("IMGCOLLAPSED", ih, 0, "TREEIMAGECOLLAPSED");
   HBITMAP bmpExpanded = iupImageGetImage("IMGEXPANDED", ih, 0, "TREEIMAGEEXPANDED");
 
   /* must use this info, since image can be a driver image loaded from resources */
-  //int width, height;
-  //iupdrvImageGetInfo(bmp, &width, &height, NULL);
-  // TODO: Fixed size?
+  iupdrvImageGetInfo(bmpLeaf, &width, &height, NULL);
 
-  image_list = ImageList_Create(ITREE_NODE_WIDTH, ITREE_NODE_HEIGHT, ILC_COLOR32, 0, 50);
+  image_list = ImageList_Create(width, height, ILC_COLOR32, 0, 50);
 
   ih->data->image_leaf = ImageList_Add(image_list, bmpLeaf, (HBITMAP)NULL); 
   ih->data->image_collapsed = ImageList_Add(image_list, bmpCollapsed, (HBITMAP)NULL); 

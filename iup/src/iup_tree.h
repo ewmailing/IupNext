@@ -15,9 +15,6 @@ extern "C" {
 #define ITREE_BRANCH        0
 #define ITREE_LEAF          1
 
-#define ITREE_NODE_WIDTH   16
-#define ITREE_NODE_HEIGHT  16
-
 void iupdrvTreeInitClass(Iclass* ic);
 
 int iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind);

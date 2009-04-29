@@ -20,16 +20,19 @@
 #include "iup_layout.h"
 #include "iup_tree.h"
 
+
 #define ITREE_TREE_HEIGHT  200  /* Tree height */
 #define ITREE_TREE_WIDTH   400  /* Tree width  */
 
+#define ITREE_IMG_WIDTH   16
+#define ITREE_IMG_HEIGHT  16
 
 static void iTreeInitializeImages(void)
 {
   Ihandle *image_leaf, *image_blank, *image_paper;  
   Ihandle *image_collapsed, *image_expanded;  
 
-  unsigned char img_leaf[ITREE_NODE_WIDTH*ITREE_NODE_HEIGHT] = 
+  unsigned char img_leaf[ITREE_IMG_WIDTH*ITREE_IMG_HEIGHT] = 
   {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -49,7 +52,7 @@ static void iTreeInitializeImages(void)
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
 
-  unsigned char img_collapsed[ITREE_NODE_WIDTH*ITREE_NODE_HEIGHT] =
+  unsigned char img_collapsed[ITREE_IMG_WIDTH*ITREE_IMG_HEIGHT] =
   {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     0, 0, 2, 2, 2, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0,  
@@ -69,7 +72,7 @@ static void iTreeInitializeImages(void)
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  
   };
 
-  unsigned char img_expanded[ITREE_NODE_WIDTH*ITREE_NODE_HEIGHT] =
+  unsigned char img_expanded[ITREE_IMG_WIDTH*ITREE_IMG_HEIGHT] =
   {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -89,7 +92,7 @@ static void iTreeInitializeImages(void)
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 
   };
 
-  unsigned char img_blank[ITREE_NODE_WIDTH*ITREE_NODE_HEIGHT] =
+  unsigned char img_blank[ITREE_IMG_WIDTH*ITREE_IMG_HEIGHT] =
   {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 4, 3, 4, 3, 4, 3, 4, 3, 4, 3, 0, 0, 0, 0,
@@ -109,7 +112,7 @@ static void iTreeInitializeImages(void)
     0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0
   };
 
-  unsigned char img_paper[ITREE_NODE_WIDTH*ITREE_NODE_HEIGHT] =
+  unsigned char img_paper[ITREE_IMG_WIDTH*ITREE_IMG_HEIGHT] =
   {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 4, 3, 4, 3, 4, 3, 4, 3, 4, 3, 0, 0, 0, 0,
@@ -129,11 +132,11 @@ static void iTreeInitializeImages(void)
     0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0
   };
 
-  image_leaf      = IupImage(ITREE_NODE_WIDTH, ITREE_NODE_HEIGHT, img_leaf);
-  image_collapsed = IupImage(ITREE_NODE_WIDTH, ITREE_NODE_HEIGHT, img_collapsed);
-  image_expanded  = IupImage(ITREE_NODE_WIDTH, ITREE_NODE_HEIGHT, img_expanded);
-  image_blank     = IupImage(ITREE_NODE_WIDTH, ITREE_NODE_HEIGHT, img_blank);
-  image_paper     = IupImage(ITREE_NODE_WIDTH, ITREE_NODE_HEIGHT, img_paper);
+  image_leaf      = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_leaf);
+  image_collapsed = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_collapsed);
+  image_expanded  = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_expanded);
+  image_blank     = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_blank);
+  image_paper     = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_paper);
 
   IupSetAttribute(image_leaf, "0", "BGCOLOR");
   IupSetAttribute(image_leaf, "1", "192 192 192");

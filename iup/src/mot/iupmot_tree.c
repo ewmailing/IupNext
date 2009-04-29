@@ -311,6 +311,26 @@ static Widget motTreeFindNewVisibleNode(Ihandle* ih, WidgetList itemList, int nu
   return itemList[hasItem];
 }
 
+static void motTreeUpdateBgColor(Ihandle* ih, WidgetList itemList, int numItems, Pixel bgcolor)
+{
+  WidgetList itemChildList;
+  int hasItem = 0;
+  int numChild;
+
+  while(hasItem != numItems)
+  {
+    XtVaSetValues(itemList[hasItem], XmNbackground, bgcolor, NULL);
+
+    /* Check whether we have child items */
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
+    if(numChild)
+      motTreeUpdateBgColor(ih, itemChildList, numChild, bgcolor);
+
+    /* Go to next sibling item */
+    hasItem++;
+  }
+}
+
 static void motTreeUpdateImages(Ihandle* ih, WidgetList itemList, int numItems, Pixmap image, int mode)
 {
   WidgetList itemChildList;
@@ -321,9 +341,9 @@ static void motTreeUpdateImages(Ihandle* ih, WidgetList itemList, int numItems, 
 
   while(hasItem != numItems)
   {
-     /* Get the kind of item */
-     XtVaGetValues(itemList[hasItem], XmNdetail, &itemDetails, NULL);
-     iupStrToInt(iupmotConvertString(itemDetails[IUPMOT_TREE_KIND]), &kind);
+    /* Get the kind of item */
+    XtVaGetValues(itemList[hasItem], XmNdetail, &itemDetails, NULL);
+    iupStrToInt(iupmotConvertString(itemDetails[IUPMOT_TREE_KIND]), &kind);
 	  
     /* Check whether we have child items */
     numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
@@ -1441,10 +1461,17 @@ static int motTreeSetBgColorAttrib(Ihandle* ih, const char* value)
   color = iupmotColorGetPixelStr(value);
   if (color != (Pixel)-1)
   {
+    WidgetList wRoot;
     Widget clipwin = NULL;
 
     XtVaGetValues(sb_win, XmNclipWindow, &clipwin, NULL);
     if (clipwin) iupmotSetBgColor(clipwin, color);
+
+    /* get the root item */
+    XmContainerGetItemChildren(ih->handle, NULL, &wRoot);
+    
+    /* Update all children, starting at root node */
+    motTreeUpdateBgColor(ih, wRoot, 1, color);
   }
 
 
