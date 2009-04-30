@@ -85,7 +85,7 @@ filedlg() [in LED]</pre>
   Name of the file initially shown in the 
   &quot;File Name&quot; field in the dialog. If contains a path, then it is used 
   as the initial directory and <strong style="font-weight: 400">DIRECTORY</strong> is ignored.</p>
-  <p><strong>FILEEXIST</strong> (out):
+  <p><strong>FILEEXIST</strong> (write-only):
   Indicates if the file defined by the FILE attribute exists or not.
   It is only valid if the user has pressed OK in the dialog. Not set when 
   DIALOGTYPE=DIR or <strong style="font-weight: 400">MULTIPLEFILES=YES</strong>.</p>
@@ -96,7 +96,7 @@ filedlg() [in LED]</pre>
   (Windows  and GTK Only) Filter's description. If not defined the filter itself will be used as its 
   description.</p>
   
-  <p><strong>FILTERUSED</strong> (in/out): (Windows  and GTK Only) the index of the filter in 
+  <p><strong>FILTERUSED</strong>: (Windows  and GTK Only) the index of the filter in 
     EXTFILTER to use starting at 1. It returns the selection made by the user. 
   Set only if EXTFILTER is defined.</p>
     
@@ -152,7 +152,7 @@ For example:</p>
     
   </blockquote>
     
-  <p><strong>STATUS</strong> (out):
+  <p><strong>STATUS</strong> (write-only):
   Indicates the status of the selection made:</p>
     
     <blockquote>
@@ -167,7 +167,7 @@ For example:</p>
   <p><strong><a href="../attrib/iup_title.html">TITLE</a></strong>:
   Dialog's title.</p>
   
-  <p><strong>VALUE</strong> (out):
+  <p><strong>VALUE</strong> (write-only):
   Name of the selected file(s), or NULL if no file was selected. If FILE is not 
   defined this is used as the initial value. In Windows there is a limit of 32Kb 
   for this string. </p>
