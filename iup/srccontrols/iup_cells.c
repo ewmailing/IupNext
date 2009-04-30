@@ -910,7 +910,7 @@ static int iCellsCreateMethod(Ihandle* ih, void **params)
 {
   (void)params;
 
-  /* free the data alocated by IupCanvas */
+  /* free the data allocated by IupCanvas */
   if (ih->data) free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
@@ -982,6 +982,7 @@ Iclass* iupCellsGetClass(void)
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iCellsSetBgColorAttrib, NULL, "255 255 255", IUPAF_NO_INHERIT);    /* overwrite canvas implementation, set a system default to force a new default */
+  iupClassRegisterAttribute(ic, "SCROLLBAR", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

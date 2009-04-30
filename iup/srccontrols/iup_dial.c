@@ -757,7 +757,7 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
   if (params && params[0])
     type = params[0];
 
-  /* free the data alocated by IupCanvas */
+  /* free the data allocated by IupCanvas */
   if (ih->data) free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
@@ -772,12 +772,12 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
   iDialUpdateFgColors(ih, IDIAL_DEFAULT_FGCOLOR_COMP, IDIAL_DEFAULT_FGCOLOR_COMP, IDIAL_DEFAULT_FGCOLOR_COMP);
 
   /* IupCanvas callbacks */
-  IupSetCallback(ih,"ACTION",(Icallback)iDialRedraw_CB);
-  IupSetCallback(ih,"RESIZE_CB",(Icallback)iDialResize_CB);
-  IupSetCallback(ih,"BUTTON_CB",(Icallback)iDialButton_CB);
-  IupSetCallback(ih,"FOCUS_CB",(Icallback)iDialFocus_CB);
-  IupSetCallback(ih,"KEYPRESS_CB",(Icallback)iDialKeyPress_CB);
-  IupSetCallback(ih,"WHEEL_CB",(Icallback)iDialWheel_CB);
+  IupSetCallback(ih, "ACTION", (Icallback)iDialRedraw_CB);
+  IupSetCallback(ih, "RESIZE_CB", (Icallback)iDialResize_CB);
+  IupSetCallback(ih, "BUTTON_CB", (Icallback)iDialButton_CB);
+  IupSetCallback(ih, "FOCUS_CB", (Icallback)iDialFocus_CB);
+  IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iDialKeyPress_CB);
+  IupSetCallback(ih, "WHEEL_CB", (Icallback)iDialWheel_CB);
 
   return IUP_NOERROR;
 }

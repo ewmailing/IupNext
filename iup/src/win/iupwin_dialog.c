@@ -1376,6 +1376,12 @@ void iupdrvDialogInitClass(Iclass* ic)
   ic->LayoutUpdate = winDialogLayoutUpdateMethod;
   ic->Release = winDialogReleaseMethod;
 
+  /* Callback Windows Only*/
+  iupClassRegisterCallback(ic, "MDIACTIVATE_CB", "");
+
+  /* Callback Windows and GTK Only */
+  iupClassRegisterCallback(ic, "TRAYCLICK_CB", "iii");
+
   /* Driver Dependent Attribute functions */
 
   /* Visual */
@@ -1409,6 +1415,14 @@ void iupdrvDialogInitClass(Iclass* ic)
     iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, "NO", NULL, IUPAF_NOT_MAPPED);
   else
     iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
+
+  iupClassRegisterAttribute(ic, "CONTROL", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HELPBUTTON", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOOLBOX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MDIFRAME", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MDICLIENT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MDIMENU", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MDICHILD", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupDialog Windows and GTK Only */
   iupClassRegisterAttribute(ic, "TOPMOST", NULL, winDialogSetTopMostAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

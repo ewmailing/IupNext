@@ -85,4 +85,7 @@ static int gtkFontDlgPopup(Ihandle* ih, int x, int y)
 void iupdrvFontDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = gtkFontDlgPopup;
+
+  /* IupFontDialog GTK Only */
+  iupClassRegisterAttribute(ic, "PREVIEWTEXT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

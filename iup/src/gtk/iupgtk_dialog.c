@@ -933,6 +933,9 @@ void iupdrvDialogInitClass(Iclass* ic)
   ic->GetInnerNativeContainerHandle = gtkDialogGetInnerNativeContainerMethod;
   ic->SetPosition = gtkDialogSetPositionMethod;
 
+  /* Callback Windows and GTK Only */
+  iupClassRegisterCallback(ic, "TRAYCLICK_CB", "iii");
+
   /* Driver Dependent Attribute functions */
 
 #ifdef WIN32                                 
@@ -965,6 +968,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   /* IupDialog Windows and GTK Only */
   iupClassRegisterAttribute(ic, "TOPMOST", NULL, gtkDialogSetTopMostAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DIALOGHINT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 #if GTK_CHECK_VERSION(2, 10, 0)
   iupClassRegisterAttribute(ic, "TRAY", NULL, gtkDialogSetTrayAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYIMAGE", NULL, gtkDialogSetTrayImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);

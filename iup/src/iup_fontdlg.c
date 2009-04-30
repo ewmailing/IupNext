@@ -38,6 +38,10 @@ Iclass* iupFontDlgGetClass(void)
   ic->parent->Map = NULL;
   ic->parent->UnMap = NULL;
 
+  /* IupFontDialog only */
+  iupClassRegisterAttribute(ic, "STATUS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT|IUPAF_READONLY);
+  iupClassRegisterAttribute(ic, "VALUE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
   iupdrvFontDlgInitClass(ic);
 
   return ic;

@@ -51,6 +51,7 @@ SRC += sysinfo.c
 SRC += mdi.c
 SRC += getparam.c
 SRC += getcolor.c
+SRC += class_conf.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib

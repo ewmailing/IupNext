@@ -13,7 +13,8 @@ char* callback_str[] = {"idle", "", "Ii", "ccc", "d",
                         "ff", "fiis", "i", "iff", "ii",
                         "iiIII", "iii", "iiii", "iiiiii", "iiiiiis",
                         "iiiis", "iinsii", "iis", "is", "nii",
-                        "nn", "s", "sii", "siii", "ss"};
+                        "nn", "s", "sii", "siii", "ss", "i=s", "ii=s",
+                        "iiiiiiv"};
 
 char currentClassName[256];
 
@@ -33,6 +34,7 @@ static int callbacksList_ActionCB (Ihandle *ih, char *callName, int pos, int sta
   char* temp;
   char params[256], copy[2];
   int i = 0;
+  int returns = 0;
 
   if(!callName)
     return 0;
@@ -62,9 +64,21 @@ static int callbacksList_ActionCB (Ihandle *ih, char *callName, int pos, int sta
       sprintf(params, "%s, %s", params, "int*");
     else if(!strcmp(copy, "n"))
       sprintf(params, "%s, %s", params, "Ihandle*");
+    else if(!strcmp(copy, "v"))
+      sprintf(params, "%s, %s", params, "cdCanvas*");
+    else if(!strcmp(copy, "="))
+    {
+      returns = 1;
+      break;
+    }
 
     i++;
   }
+
+  if(returns)
+    sprintf(params, "%s (= char*)", params);
+  else
+    sprintf(params, "%s (= int)", params);
 
   if(!strcmp(temp, "idle"))
     IupSetAttribute(IupGetHandle("labelParams"), "TITLE", "void");

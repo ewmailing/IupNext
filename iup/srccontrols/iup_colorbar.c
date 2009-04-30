@@ -989,7 +989,7 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   int i;
   (void)params;
 
-  /* free the data alocated by IupCanvas */
+  /* free the data allocated by IupCanvas */
   if (ih->data) free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 

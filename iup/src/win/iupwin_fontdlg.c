@@ -154,4 +154,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
 void iupdrvFontDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = winFontDlgPopup;
+
+  /* IupFontDialog Windows Only */
+  iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }
