@@ -36,17 +36,17 @@ fontdlg() [in LED]</pre>
 <h3><a name="Attributes">Attributes</a></h3>
 <p><b>PREVIEWTEXT</b> (GTK only): the text shown in the preview area. If not 
 defined GTK will provide a default text.</p>
-<p><b>COLOR</b> (Windows Only) (in/out): The initial color value and the returned 
+<p><b>COLOR</b> (Windows Only): The initial color value and the returned 
 selected value if the user pressed the Ok button. In Windows the Choose Font 
 dialog allows hte user to select a color from a pre-defined list of colors.</p>
 <p><a href="../attrib/iup_parentdialog.html">PARENTDIALOG</a>:
   (Creation Only) Name of a dialog to be used as parent. This dialog will 
   be always in front of the parent dialog. </p>
-<p><b>STATUS</b> (out): defined to &quot;1&quot; if the user pressed the Ok button, NULL if 
+<p><b>STATUS</b> (read-only): defined to &quot;1&quot; if the user pressed the Ok button, NULL if 
 pressed the Cancel button.</p>
 <p><a href="../attrib/iup_title.html">TITLE</a>:
   Dialog title.</p>
-<p><strong>VALUE</strong> (in/out): The initial font value and the returned selected 
+<p><strong>VALUE</strong>: The initial font value and the returned selected 
 value if the user pressed the Ok button. Has the same format of the
 <a href="../attrib/iup_font.html">FONT</a> attribute.</p>
 <h3><a name="Callbacks">Callbacks</a></h3>

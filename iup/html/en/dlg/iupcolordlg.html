@@ -50,10 +50,10 @@ colordlg() [in LED]</pre>
   created element, or NULL if an error occurs.</p>
 
 <h3><a name="Attributes">Attributes</a></h3>
-<p><b>ALPHA</b> (ColorBrowser and GTK only) (in/out): if defined it will enable an alpha selection addicional 
+<p><b>ALPHA</b> (ColorBrowser and GTK only): if defined it will enable an alpha selection addicional 
 controls with its initial value. If the user pressed the Ok button contains the 
 returned value. Default: no defined, or 255 if SHOWALPHA=YES.</p>
-<p><b>COLORTABLE</b> (in/out): list of colors separated by &quot;;&quot;. In GTK 
+<p><b>COLORTABLE</b>: list of colors separated by &quot;;&quot;. In GTK 
 and in the ColorBrowser based accepts 20 values 
 and if not present the palette will not be visible. In Windows accepts 16 values 
 and will be always visible, even if the colors are not defined (in this case are 
@@ -74,20 +74,20 @@ Hexadecimal notation of the color.</p>
 <p><strong>SHOWHELP</strong> (ColorBrowser only): if enabled will display the 
 Help button. In GTK and Windows, the Help button is shown only if the HELP_CB 
 callback is defined.</p>
-<p><b>STATUS</b> (out): defined to &quot;1&quot; if the user pressed the Ok button, NULL if 
+<p><b>STATUS</b> (read-only): defined to &quot;1&quot; if the user pressed the Ok button, NULL if 
 pressed the Cancel button.</p>
 <p><a href="../attrib/iup_title.html">TITLE</a>:
   Dialog title.</p>
-<p><strong>VALUE</strong> (in/out): The color value in RGB coordinates and 
+<p><strong>VALUE</strong>: The color value in RGB coordinates and 
 optionally alpha. It is 
 used as the initial value and contains the selected 
 value if the user pressed the Ok button. Format: &quot;R G B&quot; or &quot;R G B A&quot;. Each 
 component range from 0 to 255.</p>
-<p><strong>VALUEHSI</strong> (ColorBrowser only) (in/out): The color value in 
+<p><strong>VALUEHSI</strong> (ColorBrowser only): The color value in 
 HSI coordinates. It is used as the initial value and contains the selected 
 value if the user pressed the Ok button. Format: &quot;H S I&quot;. Each 
 component range from 0-359, 0-100 and 0-100 respectively.</p>
-<p><strong>VALUEHEX</strong> (ColorBrowser only) (in/out): The color value in 
+<p><strong>VALUEHEX</strong> (ColorBrowser only): The color value in 
 RGB Hexadecimal notation. It is used as the initial value and contains the selected 
 value if the user pressed the Ok button. Format: &quot;#RRGGBB&quot;. Each 
 component range from 0-255, but in hexadecimal notation.</p>
