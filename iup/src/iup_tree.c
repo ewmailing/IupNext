@@ -21,9 +21,6 @@
 #include "iup_tree.h"
 
 
-#define ITREE_TREE_HEIGHT  200  /* Tree height */
-#define ITREE_TREE_WIDTH   400  /* Tree width  */
-
 #define ITREE_IMG_WIDTH   16
 #define ITREE_IMG_HEIGHT  16
 
@@ -225,7 +222,7 @@ static char* iTreeGetCtrlAttrib(Ihandle* ih)
 /* Turns on and off the ctrl key function (value: "YES" or "NO") */
 static int iTreeSetCtrlAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     ih->data->tree_ctrl = 1;    
   else 
     ih->data->tree_ctrl = 0;
@@ -244,7 +241,7 @@ static char* iTreeGetShiftAttrib(Ihandle* ih)
 /* Turns on and off the shift key function (value: "YES" or "NO") */
 static int iTreeSetShiftAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     ih->data->tree_shift = 1;    
   else 
     ih->data->tree_shift = 0;
@@ -253,29 +250,41 @@ static int iTreeSetShiftAttrib(Ihandle* ih, const char* value)
 
 static char* iTreeGetRenameCaretAttrib(Ihandle* ih)
 {
-  return ih->data->rename_caret;
+  if (ih->data->rename_caret)
+    return "YES";
+  else
+    return "NO";
 }
 
 static int iTreeSetRenameCaretAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->rename_caret = (char*)value;
-  return 1;
+  if (iupStrBoolean(value))
+    ih->data->rename_caret = 1;    
+  else 
+    ih->data->rename_caret = 0;
+  return 0;
 }
 
 static char* iTreeGetRenameSelectionAttrib(Ihandle* ih)
 {
-  return ih->data->rename_selection;
+  if (ih->data->rename_selection)
+    return "YES";
+  else
+    return "NO";
 }
 
 static int iTreeSetRenameSelectionAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->rename_selection = (char*)value;
-  return 1;
+  if (iupStrBoolean(value))
+    ih->data->rename_selection = 1;    
+  else 
+    ih->data->rename_selection = 0;
+  return 0;
 }
 
 static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  char* next = iupStrGetMemory(10);
+  char next[10];
   int id = 0;
 
   if (name_id[0])
@@ -285,15 +294,14 @@ static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* v
 
   sprintf(next, "%d", id);
 
-  if (iupdrvTreeAddNode(ih, name_id, ITREE_LEAF))
-    iupdrvTreeSetNameAttrib(ih, next, value);
+  iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value);
 
-  return 1;
+  return 0;
 }
 
 static int iTreeSetAddBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  char* next = iupStrGetMemory(10);
+  char next[10];
   int id = 0;
 
   if (name_id[0])
@@ -303,10 +311,9 @@ static int iTreeSetAddBranchAttrib(Ihandle* ih, const char* name_id, const char*
 
   sprintf(next, "%d", id);
 
-  if(iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH))
-    iupdrvTreeSetNameAttrib(ih, next, value);
+  iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value);
 
-  return 1;
+  return 0;
 }
 
 static char* iTreeGetShowRenameAttrib(Ihandle* ih)
@@ -339,37 +346,18 @@ static int iTreeCreateMethod(Ihandle* ih, void **params)
 
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
 
+  IupSetAttribute(ih, "RASTERSIZE", "400x200");
+
   return IUP_NOERROR;
 }
 
 static void iTreeComputeNaturalSizeMethod(Ihandle* ih)
 {
-  iupBaseContainerUpdateExpand(ih);
-
   /* always initialize the natural size using the user size */
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
-  {
-    int natural_w = ITREE_TREE_WIDTH;
-    int natural_h = ITREE_TREE_HEIGHT;
-
-    /* add scrollbar */
-    if (ih->data->sb)
-    {
-      int sb_size = iupdrvGetScrollbarSize();
-
-      if (ih->data->sb & IUP_SB_HORIZ)
-        natural_w += sb_size;
-      if (ih->data->sb & IUP_SB_VERT)
-        natural_h += sb_size;
-    }
-
-    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
-    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
-  }
+  /* There is no natural size computation */
 }
 
 Ihandle* IupTree(void)
@@ -427,9 +415,6 @@ Iclass* iupTreeGetClass(void)
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttribute(ic, "CTRL",  iTreeGetCtrlAttrib,  iTreeSetCtrlAttrib,  NULL, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHIFT", iTreeGetShiftAttrib, iTreeSetShiftAttrib, NULL, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-
-  /* IupTree Attributes - NODES */
-  iupClassRegisterAttributeId(ic, "NAME", iupdrvTreeGetNameAttrib, iupdrvTreeSetNameAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "ADDLEAF",   NULL, iTreeSetAddLeafAttrib,   IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

@@ -46,8 +46,9 @@ dial(<strong>type</strong>) [in LED] </pre>
 
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: foreground color. The default value is &quot;64 64 64&quot;. 
 Not used for the circular dial.</p>
-<p> <a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): the default is &quot;16x80&quot;, &quot;80x16&quot; or &quot;40x35&quot; according to the dial type. 
-But it can be freely changed.</p>
+<p> <a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): 
+the initial size is &quot;16x80&quot;, &quot;80x16&quot; or &quot;40x35&quot; according to the dial type. Set 
+to NULL to allow the automatic layout use smaller values.</p>
 <p><strong>TYPE</strong> (creation only) (<font SIZE="3">non inheritable</font>):&nbsp; dial layout configuration &quot;VERTICAL&quot;, 
   &quot;HORIZONTAL&quot; or &quot;CIRCULAR&quot;. Default: &quot;HORIZONTAL&quot;.</p>
 <p><strong>UNIT</strong>: unit of the angle. Can be &quot;DEGREES&quot; 

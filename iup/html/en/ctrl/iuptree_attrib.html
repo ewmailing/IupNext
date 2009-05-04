@@ -24,7 +24,7 @@
       </li>
 </ul>
 <p class="info">Default:
-    &quot;NO&quot;.</p>
+    &quot;YES&quot;.</p>
 <p><strong>SHOWDRAGDROP</strong>: Shows a drag cursor if the user drags a node or 
   branch and enables the <strong>DRAGDROP_CB</strong> callback. Default:
   &quot;NO&quot;.</p>
@@ -35,7 +35,8 @@
   &quot;NO&quot;.</p>
 <p> 
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a> (<font size="3">non inheritable</font>): 
-If not defined the tree will use the default &quot;400x200&quot;.</p>
+the initial size is &quot;400x200&quot;. Set to NULL to allow the automatic 
+layout use smaller values.</p>
 <p><b>RENAMECARET</b>:
   Allows specifying and verifying the caret&#8217;s 
   position of the text box when in-place renaming.</p>
@@ -43,7 +44,6 @@ If not defined the tree will use the default &quot;400x200&quot;.</p>
   Allows specifying and verifying selection 
   interval 
   of the text box when in-place renaming.</p>
-<p>&nbsp;</p>
 <p>&nbsp;</p>
 
 <p><strong>SPACING</strong>: internal padding for each item. Notice that 
@@ -282,10 +282,10 @@ id + 1. By default, all branches created are
     Deletes only the children of the 
   selected node</li>
 </ul>
-<p class="info">Returns the identifier of the marked node's 
-    parent.</p>
 <p><b>RENAME</b>:<b> </b>Forces a rename action to take place. If SHOWRENAME=YES then 
   does in-place rename, else just calls the RENAMENODE_CB. The value is ignored.</p>
+
+<p>EXPANDALL</p>
 
 </body>
 

@@ -17,10 +17,7 @@ extern "C" {
 
 void iupdrvTreeInitClass(Iclass* ic);
 
-int iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind);
-
-int iupdrvTreeSetNameAttrib(Ihandle* ih, const char* name_id, const char* value);
-char* iupdrvTreeGetNameAttrib(Ihandle* ih, const char* name_id);
+void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* name);
 
 /* Structure of the tree */
 struct _IcontrolData
@@ -33,8 +30,10 @@ struct _IcontrolData
   int image_collapsed;  /* Default image collapsed */
   int image_expanded;   /* Default image expanded */
 
-  char* rename_caret;      /* caret position */
-  char* rename_selection;  /* selection position */
+  int rename_caret;      
+  int rename_selection;
+
+  int id_control;  /* id control to find and replace items inside the tree */
 
   int sb;  /* scrollbar mode */
 };

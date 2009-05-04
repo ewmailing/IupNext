@@ -95,10 +95,10 @@ It is not the size of the increment. The increment size is "pagestep*(max-min)",
 so it must be 0&lt;pagestep&lt;1. Default is "0.1".</p>
 
 <p><a href="../attrib/iup_rastersize.html">RASTERSIZE</a><strong> </strong>(<font size="3">non inheritable</font>): 
-The natural size is 100 pixels along the major axis, and the handler normal size 
+The initial size is 100 pixels along the major axis, and the handler normal size 
 on the minor axis. If there are ticks then they are added to the natural size on 
-the minor axis. The handler can be smaller than the normal sizes, so the size 
-can be set to smaller than the natural size.</p>
+the minor axis. The handler can be smaller than the normal size. Set to NULL to 
+allow the automatic layout use smaller values.</p>
 
 <p><strong>SHOWTICKS</strong> [Windows and Motif Only]: Display tick 
   mark along the valuator trail. The attribute controls the number of 

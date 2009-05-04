@@ -95,14 +95,26 @@ static char* iValGetMinAttrib(Ihandle* ih)
 
 static int iValSetTypeAttrib(Ihandle* ih, const char *value)
 {
+  int min_w, min_h;
+
   /* valid only before map */
   if (ih->handle)
     return 0;
 
+  iupdrvValGetMinSize(ih, &min_w, &min_h);
+
   if (iupStrEqualNoCase(value, "VERTICAL"))
+  {
+    /* val natural vertical size is MinWx100 */
+    IupSetfAttribute(ih, "RASTERSIZE", "%dx%d", min_w, 100);
     ih->data->type = IVAL_VERTICAL;
+  }
   else /* "HORIZONTAL" */
+  {
+    /* val natural horizontal size is 100xMinH */
+    IupSetfAttribute(ih, "RASTERSIZE", "%dx%d", 100, min_h);
     ih->data->type = IVAL_HORIZONTAL;
+  }
 
   return 0; /* do not store value in hash table */
 }
@@ -143,30 +155,7 @@ static void iValComputeNaturalSizeMethod(Ihandle* ih)
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
-  {
-    int min_w, min_h;
-    /* val natural horizontal size is 100xMinH */
-    /* val natural vertical size is MinWx100 */
-
-    iupdrvValGetMinSize(ih, &min_w, &min_h);
-
-    if (ih->data->type == IVAL_HORIZONTAL)
-    {
-      if (ih->naturalwidth <= 0)
-        ih->naturalwidth = 100;
-      if (ih->naturalheight <= 0)
-        ih->naturalheight = min_h;
-    }
-    else
-    {
-      if (ih->naturalwidth <= 0)
-        ih->naturalwidth = min_w;
-      if (ih->naturalheight <= 0)
-        ih->naturalheight = 100;
-    }
-  }
+  /* There is no natural size computation */
 }
 
 static int iValCreateMethod(Ihandle* ih, void **params)

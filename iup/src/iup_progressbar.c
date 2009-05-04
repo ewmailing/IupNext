@@ -65,15 +65,7 @@ static void iProgressBarComputeNaturalSizeMethod(Ihandle* ih)
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
-  {
-    /* progress bar natural size is 200x30 */
-
-    /* only update the natural size if user size is not defined. */
-    if (ih->naturalwidth <= 0) ih->naturalwidth = 200;
-    if (ih->naturalheight <= 0) ih->naturalheight = 30;
-  }
+  /* There is no natural size computation */
 }
 
 static int iProgressBarCreateMethod(Ihandle* ih, void **params)
@@ -85,6 +77,9 @@ static int iProgressBarCreateMethod(Ihandle* ih, void **params)
   /* default values */
   ih->data->vmax      = 1;
   ih->data->dashed    = 0;
+
+  /* progress bar natural size is 200x30 */
+  IupSetAttribute(ih, "RASTERSIZE", "200x30");
 
   return IUP_NOERROR;
 }
