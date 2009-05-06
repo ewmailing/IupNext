@@ -329,4 +329,13 @@ iupArrayDestroy
 iupArrayCreate
 iupArrayCount
 iupArrayAdd
-
+IupTreeSetAttribute  
+IupTreeStoreAttribute
+IupTreeGetAttribute  
+IupTreeGetInt        
+IupTreeGetFloat      
+IupTreeSetfAttribute
+IupTree
+IupTreeGetId
+IupTreeGetUserId
+IupTreeSetUserId

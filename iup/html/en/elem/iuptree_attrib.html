@@ -4,35 +4,33 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupTree Attributes</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	color: #FF0000;
+}
+</style>
 </head>
 <body>
 
 <h2>IupTree Attributes</h2>
 <h3><a name="global">General</a></h3>
-<p><strong>SCROLLBAR</strong>:
-  Associates a horizontal and/or vertical 
-  scrollbar to the canvas. Default: &quot;YES&quot;. </p>
 <p><strong>ADDEXPANDED</strong>:
   Defines if branches will be expanded when 
   created. The root node is always 
-  expanded when created. Possible values:</p>
-    <ul>
-      <li>&quot;YES&quot;:
-    The branches will be created expanded</li>
-      <li>&quot;NO&quot;:
-    The branches will be created collapsed<br>
-      </li>
-</ul>
-<p class="info">Default:
+  expanded when created. Possible values: &quot;YES&quot; =
+    The branches will be created expanded; &quot;NO&quot; =
+    The branches will be created collapsed. Default:
     &quot;YES&quot;.</p>
-<p><strong>SHOWDRAGDROP</strong>: Shows a drag cursor if the user drags a node or 
-  branch and enables the <strong>DRAGDROP_CB</strong> callback. Default:
-  &quot;NO&quot;.</p>
-<p><strong>SHOWRENAME</strong>: Allows the in place rename of a node. The 
-<strong>RENAME_CB</strong> is called after the user entered a new name, instead of calling
-  <strong>RENAME_NODE_CB</strong> to notify the user that it should rename a node. 
-  Default:
-  &quot;NO&quot;.</p>
+
+<p><strong>CANFOCUS</strong> (creation only) (<font size="3">non inheritable</font>): enables the focus traversal of the 
+control. Default: YES. (since 3.0)</p>
+
+  
+<p><a href="../attrib/iup_expand.html">EXPAND</a> (<font size="3">non inheritable</font>):
+  The default value is "YES". The natural size is the size of 1 
+  character.</p>
+
+  
 <p> 
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a> (<font size="3">non inheritable</font>): 
 the initial size is &quot;400x200&quot;. Set to NULL to allow the automatic 
@@ -44,6 +42,17 @@ layout use smaller values.</p>
   Allows specifying and verifying selection 
   interval 
   of the text box when in-place renaming.</p>
+<p><strong>SCROLLBAR</strong>:
+  Associates a horizontal and/or vertical 
+  scrollbar to the canvas. Default: &quot;YES&quot;. </p>
+<p><strong>SHOWDRAGDROP</strong>: Shows a drag cursor if the user drags a node or 
+  branch and enables the <strong>DRAGDROP_CB</strong> callback. Default:
+  &quot;NO&quot;.</p>
+<p><strong>SHOWRENAME</strong>: Allows the in place rename of a node. The 
+<strong>RENAME_CB</strong> is called after the user entered a new name, instead of calling
+  <strong>RENAME_NODE_CB</strong> to notify the user that it should rename a node. 
+  Default:
+  &quot;NO&quot;.</p>
 <p>&nbsp;</p>
 
 <p><strong>SPACING</strong>: internal padding for each item. Notice that 
@@ -54,9 +63,6 @@ at the top left of the item always. Valid only when DROPDOWN=NO. (since 3.0)</p>
   
 <p><strong>TOPITEM</strong> (write-only): position the given item at the top of 
 the list or make it visible. Valid only when DROPDOWN=NO. (since 3.0)</p>
-
-<p><strong>CANFOCUS</strong> (creation only) (<font size="3">non inheritable</font>): enables the focus traversal of the 
-control. Default: YES. (since 3.0)</p>
 
 <p><strong>VISIBLECOLUMNS</strong>: Defines the number of visible columns for 
 the <strong>Natural</strong> <strong>Size</strong>, this means that will act 
@@ -132,95 +138,71 @@ independent from the state of the Control and Shift keys, and from the CTRL and 
 <p class="info">The selected node is scrolled so it becames visible.</p>
 <p><strong>MARKED</strong>: The marking state of the selected node. Using 
   the MARKEDid form, where id is the node identifier, it is possible to 
-  retrieve or change the marking state of any node. Possible values: </p>
-  <p class="info">&quot;YES&quot;:
-    The node is marked&quot;NO&quot;:
-    The node is not marked</p>
-<p class="info">Returns NULL
-    if the node's id is invalid.</p>
+  retrieve or change the marking state of any node. Possible values: &quot;YES&quot; 
+=
+    The node is marked; &quot;NO&quot; =
+    The node is not marked.</p>
 <p><strong>CTRL</strong>:
   Activates or deactivates the Control key 
-  function. Possible values:</p>
-  <p class="info">&quot;YES&quot;:
-    Control key activated; allows marking 
-    individual nodes&quot;NO&quot;:
-    Control key deactivated; does not allow 
-    marking individual nodes<br>
-<br>
+  function. Possible values: &quot;YES&quot; =
+    Control key activated, allows marking 
+    individual nodes; &quot;NO&quot; =
+    Control key deactivated, does not allow 
+    marking individual nodes.
     Default:
     &quot;NO&quot;.</p>
 <p><strong>SHIFT</strong>:
   Activates or deactivates the Shift key 
-  function. Possible values:</p>
-  <p class="info">&quot;YES&quot;:
-    Shift key activated; allows marking adjacent 
-    nodes&quot;NO&quot;:
-    Shift key deactivated; does not allow 
-    marking adjacent nodes<br>
-<br>
+  function. Possible values: &quot;YES&quot; =
+    Shift key activated, allows marking adjacent 
+    nodes; &quot;NO&quot; =
+    Shift key deactivated, does not allow 
+    marking adjacent nodes.
     Default:
     &quot;NO&quot;.</p>
 <p><strong>STARTING</strong>:
   Defines the initial node for the block 
-  marking.</p>
-<p class="info">The value must be the node identifier.<br>
-<br>
+  marking. The value must be the node identifier.
     Default:
     root node.</p>
 <h3><a name="images">Images</a></h3>
 <p><strong>IMAGEid</strong>:
-  Defines the image that will be shown on a 
+  the image that will be shown on a 
   specific node. Valid for leaves and for collapsed branches. This attribute must always be used with the id number.
   This attribute can only be set (write-only - id dependent attributes are not 
 stored). Ex. &quot;IMAGE2&quot;.</p>
-<p class="info">Name of an IupImage<br>
-<br>
-    Default: NULL.</p>
 <p class="info">An image is internally duplicated at the moment is set. So the 
 application does not need to keep the image after setting the attribute. This is 
 valid for all IMAGE* attributes of the IupTree.</p>
 <p><strong>IMAGEEXPANDEDid</strong>:
-  Defines the image that will be shown on a 
+  the image that will be shown on a 
   specific node. It has no effect over leaves and is valid only for expanded branches. This attribute must always be used 
   with the id number. 
   This attribute can only be set (write-only - id dependent attributes are not 
 stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
-<p class="info">Name of an IupImage<br>
-<br>
-    Default: NULL.</p>
 <p><strong>IMAGELEAF</strong>:
-  Defines the image that will be shown for all 
-  leaves. Must be a 16x16 image.&nbsp;&nbsp;</p>
-<p class="info">Name of an IupImage<br>
-<br>
-    Default:
-    &quot;IMGLEAF&quot;.</p>
-<p class="info">Internal values &quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are 
+  the image that will be shown for all 
+  leaves. Internal values &quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are 
     also available.</p>
 <p><strong>IMAGEBRANCHCOLLAPSED</strong>:
-  Defines the image that will be shown for all 
-  collapsed branches. Must be a 16x16 image.</p>
-<p class="info">Name of an IupImage<br>
-<br>
+  the image that will be shown for all collapsed branches.
     Default:
     &quot;IMGCOLLAPSED&quot;.</p>
 <p><strong>IMAGEBRANCHEXPANDED</strong>:
-  Defines the image that will be shown for all 
-  expanded branches. Must be a 16x16 image.</p>
-<p class="info">Name of an IupImage<br>
-<br>
+  the image that will be shown for all expanded branches.
     Default:
     &quot;IMGEXPANDED&quot;.</p>
 <h3><a name="nodes">Nodes</a></h3>
 <p><strong>NAME</strong>:
-  Changes or retrieves the name of the 
+  the text label of the 
   selected node. Using the &quot;<b>NAMEid</b>&quot; form, where id is the node identifier, it is possible to 
   change the name of any node. </p>
 <p><strong>STATE</strong>:
-  Changes or retrieves the state of the 
+  the state of the 
   selected branch. Using the &quot;<b>STATEid</b>&quot; form, where id is the node identifier, it is possible to
-  change the state of any branch. This attribute only works on branches. If it is used on a leaf, nothing will 
+  change the state of any branch. This attribute only works on branches. If used on a leaf, nothing will 
   happen. Possible values: </p>
+    <blockquote>
     <ul>
       <li>&quot;EXPANDED&quot;:
     Expanded branch state (shows its children)</li>
@@ -228,49 +210,58 @@ stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
     Collapsed branch state (hides its children)
     </li>
 </ul>
+    </blockquote>
     <p><strong>DEPTH</strong>:
   If set, it defines the node's depth. Does 
   not verify is the resulting tree is valid. If retrieved, it returns the node's depth. Using the &quot;<b>DEPTHid</b>&quot; form, where id is the node identifier, it is possible to 
   refer to any node. </p>
-<p><strong>KIND</strong>:
+<p><strong>KIND </strong>(read only):
   Returns the kind of the selected node. Using 
   the &quot;<b>KINDid</b>&quot; form, where id is the node identifier, it is possible to 
-  retrieve the kind of any node. This attribute can only be retrieved. Possible values: 
+  retrieve the kind of any node. Possible values: 
 </p>
+    <blockquote>
     <ul>
       <li>&quot;LEAF&quot;:
     The node is a leaf</li>
 		<li>&quot;BRANCH&quot;:
     The node is a branch</li>
 </ul>
-<p><strong>PARENT</strong>:
+</blockquote>
+<p><strong>PARENT </strong>(read only):
   Returns the identifier of the selected 
-  node's parent. Using the &quot;<b>PARENTid</b>&quot; form, where id is the node identifier, it is possible to 
-  retrieve the identifier of any node. This attribute can only be retrieved.</p>
+  node's parent. Using the &quot;<b>PARENTid</b>&quot; form, where id is the node 
+identifier, it is possible to retrieve the identifier of any node.</p>
 <p><strong>COLOR</strong>:
   Color of the provided node. Using the form &quot;<b>COLORid</b>&quot;, where id is the node identifier, it is possible to 
   set or retrieve the color of any node. The value should be a string in the format &quot;R G B&quot; where R, G, B are numbers 
   from 0 to 255.</p>
 <h3><a name="action">Action</a></h3>
-<p><strong>ADDLEAF</strong>:
+<p><strong>ADDLEAF</strong><b>id</b><strong> </strong>(write only):
   Adds a new leaf 
-after the selected node. The id of the new leaf will be the id of the selected node + 1. 
-  The selected node is marked and all others unmaked. The selected node position remains the same. Using the &quot;<b>ADDLEAFid</b>&quot; form, where id is the node identifier, it is possible to 
-  insert a leaf after any node. In this case, the id of the inserted node will be 
-id + 1. If the specified node does not exist, 
-  nothing happens. This attribute can only be set.</p>
-<p><strong>ADDBRANCH</strong>:
-  Adds a new branch 
-after the selected node. The id of the new branch will be the id of the selected node + 
-  1. The selected node is marked and all others unmarked. The selected node position remains the same. Using the &quot;<b>ADDBRANCHid</b>&quot; form, where id is the node identifier, it is possible to 
-  insert a branch after any node. In this case, the id of the inserted node will be 
-id + 1. By default, all branches created are 
-  expanded. If the specified node does not exist, nothing happens. This attribute can only be set. 
+after the reference node, where id is the reference node identifier. If id is 
+empty, then the selected node is used as referece node. The value is used as the 
+text label of the new node. The id of the new node will be the id of the 
+reference node + 1. 
+  The reference node is marked and all others unmaked. The reference node 
+position remains the same. If the reference node does not exist, nothing 
+happens. If the reference node is a branch then the depth of the new node is one 
+depth increment from the depth of the reference node, if the reference node is a 
+leaf then the new node has the same depth. <span class="style1">If you need to 
+add a node after a specified node but at a different depth use <strong>
+INSERTLEAF</strong></span>.</p>
+<p><strong>ADDBRANCHid </strong>(write only):
+  Same as <strong>ADDLEAF</strong> for branches. Branches can be created 
+expanded or collapsed depending on <strong>ADDEXPANDED</strong>.</p>
+<p class="style1"><strong>INSERTLEAFid</strong>, <strong>INSERTBRANCHid </strong>
+(write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
+then the depth of the new node is always the same of the reference node. 
 </p>
-<p><strong>DELNODE</strong>:
-  Removes the marked node (or its children). Using the &quot;<b>DELNODEid</b>&quot; form, where id is the node identifier, it is possible to 
-  remove any node. The root cannot be removed. If the specified node does not exist, nothing happens. This attribute can 
-  only be set. Possible values:</p>
+<p><strong>DELNODEid </strong>(write only):
+  Removes the specified node, where id is the node identifier.
+<span class="style1">If id is empty, then the selected node is removed. (or its 
+children)</span>. The root cannot be removed. If the specified node does not exist, nothing happens. Possible values:</p>
+<blockquote>
 <ul>
   <li>&quot;MARKED&quot;:
     Deletes all marked nodes (and all their 
@@ -282,10 +273,11 @@ id + 1. By default, all branches created are
     Deletes only the children of the 
   selected node</li>
 </ul>
-<p><b>RENAME</b>:<b> </b>Forces a rename action to take place. If SHOWRENAME=YES then 
+</blockquote>
+<p><b>RENAME</b><strong> </strong>(write only):<b> </b>Forces a rename action to take place. If SHOWRENAME=YES then 
   does in-place rename, else just calls the RENAMENODE_CB. The value is ignored.</p>
 
-<p>EXPANDALL</p>
+<p><strong>EXPANDALL </strong>(write only): </p>
 
 </body>
 

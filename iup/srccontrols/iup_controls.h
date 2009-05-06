@@ -18,7 +18,6 @@ Iclass* iupCellsGetClass(void);
 Iclass* iupColorbarGetClass(void);
 Iclass* iupColorBrowserGetClass(void);
 Iclass* iupMatrixGetClass(void);
-Iclass* iupTreeGetClass(void);
 Iclass* iupGaugeGetClass(void);
 Iclass* iupTabsGetClass(void);
 Iclass* iupColorBrowserDlgGetClass(void);

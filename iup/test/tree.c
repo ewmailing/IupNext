@@ -93,19 +93,19 @@ int multiselection_cb(Ihandle *ih, int* ids, int n)
   return IUP_DEFAULT;
 }
 
-static int executeleaf_cb(Ihandle* h, int id)
+static int executeleaf_cb(Ihandle* ih, int id)
 {
   printf("executeleaf_cb (%d)\n", id);
   return IUP_DEFAULT;
 }
 
-static int renamenode_cb(Ihandle* h, int id, char* name)
+static int renamenode_cb(Ihandle* ih, int id, char* name)
 {
   printf("renamenode_cb (%d=%s)\n", id, name);
   return IUP_DEFAULT;
 }
 
-static int rename_cb(Ihandle* h, int id, char* name)
+static int rename_cb(Ihandle* ih, int id, char* name)
 {
   printf("rename_cb (%d=%s)\n", id, name);
   if (strcmp(name, "fool") == 0)
@@ -113,46 +113,46 @@ static int rename_cb(Ihandle* h, int id, char* name)
   return IUP_DEFAULT;
 }
 
-static int branchopen_cb(Ihandle* h, int id)
+static int branchopen_cb(Ihandle* ih, int id)
 {
   printf("branchopen_cb (%d)\n", id);
   return IUP_DEFAULT;
 }
 
-static int branchclose_cb(Ihandle* h, int id)
+static int branchclose_cb(Ihandle* ih, int id)
 {
   printf("branchclose_cb (%d)\n", id);
   return IUP_DEFAULT;
 }
 
-static int dragdrop_cb(Ihandle* h, int drag_id, int drop_id, int shift, int control)
+static int dragdrop_cb(Ihandle* ih, int drag_id, int drop_id, int shift, int control)
 {
   printf("dragdrop_cb (%d)->(%d)\n", drag_id, drop_id);
   return IUP_DEFAULT;
 }
 
 /* Callback called when a key is hit */
-static int k_any_cb(Ihandle* h, int c)
+static int k_any_cb(Ihandle* ih, int c)
 {
   if (c == K_DEL) 
   {
-    IupSetAttribute(h, "DELNODE", "MARKED");
-    IupSetAttribute(h, "REDRAW",  "YES");
+    IupSetAttribute(ih, "DELNODE", "MARKED");
+    IupSetAttribute(ih, "REDRAW",  "YES");
   }
 
   return IUP_DEFAULT;
 }
 
-static int selectnode(Ihandle* h)
+static int selectnode(Ihandle* ih)
 {
   Ihandle* tree = IupGetHandle("tree");
-  IupSetAttribute(tree, "VALUE",  IupGetAttribute(h, "TITLE"));
+  IupSetAttribute(tree, "VALUE",  IupGetAttribute(ih, "TITLE"));
   IupSetAttribute(tree, "REDRAW", "YES");
   return IUP_DEFAULT;
 }
 
 /* Callback called when the right mouse button is pressed */
-static int rightclick_cb(Ihandle* h, int id)
+static int rightclick_cb(Ihandle* ih, int id)
 {
   Ihandle *popup_menu;
 
@@ -186,7 +186,7 @@ static int rightclick_cb(Ihandle* h, int id)
   IupSetFunction("renamenode", (Icallback) renamenode);
 
   sprintf(id_string, "%d", id);
-  IupSetAttribute(h, "VALUE", id_string);
+  IupSetAttribute(ih, "VALUE", id_string);
   IupPopup(popup_menu, IUP_MOUSEPOS, IUP_MOUSEPOS);
 
   IupDestroy(popup_menu);
@@ -207,10 +207,17 @@ static void init_tree(void)
   IupSetCallback(tree, "DRAGDROP_CB",    (Icallback) dragdrop_cb);
   IupSetCallback(tree, "RIGHTCLICK_CB",  (Icallback) rightclick_cb);
   IupSetCallback(tree, "K_ANY",          (Icallback) k_any_cb);
-
   IupSetCallback(tree, "SHOWRENAME_CB", (Icallback) showrename_cb);
   IupSetCallback(tree, "SELECTION_CB", (Icallback) selection_cb);
   IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
+
+//  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_10");
+
+  IupSetAttribute(tree, "CTRL",         "YES");
+  IupSetAttribute(tree, "SHIFT",        "YES");
+  IupSetAttribute(tree, "ADDEXPANDED",  "NO");
+  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
+  IupSetAttribute(tree, "SHOWRENAME",   "YES");
 
   IupSetHandle("tree", tree);
 }
@@ -228,12 +235,9 @@ static void init_dlg(void)
   IupSetHandle("dlg", dlg);
 }
 
-/* Initializes the IupTree’s attributes */
-static void init_tree_atributes(void)
+static void init_tree_nodes1(void)
 {
   Ihandle* tree = IupGetHandle("tree");
-
-//  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_10");
 
   /* Notice that the tree is create from bottom to top */
   /* the current node is the ROOT */
@@ -241,7 +245,6 @@ static void init_tree_atributes(void)
   IupSetAttribute(tree, "ADDBRANCH",    "3D");    /* 3D=1 */
   IupSetAttribute(tree, "ADDBRANCH",    "2D");    /* add to the root, so it will be before "3D", now 2D=1, 3D=2 */
   IupSetAttribute(tree, "ADDLEAF",      "test");  /* add to the root, also before "2D", now test=1, 2D=2, 3D=3 */
-
   IupSetAttribute(tree, "ADDBRANCH1",   "parallelogram");  /* add after "test", now test=1, parallelogram=2, 2D=3, 3D=4  */
   IupSetAttribute(tree, "ADDLEAF2",     "diamond");
   IupSetAttribute(tree, "ADDLEAF2",     "square");
@@ -250,15 +253,32 @@ static void init_tree_atributes(void)
   IupSetAttribute(tree, "ADDLEAF2",     "isoceles");
   IupSetAttribute(tree, "ADDLEAF2",     "equilateral");
 
+
   IupSetAttribute(tree, "VALUE",        "6");
 
-  IupSetAttribute(tree, "CTRL",         "YES");
-  IupSetAttribute(tree, "SHIFT",        "YES");
-  IupSetAttribute(tree, "ADDEXPANDED",  "NO");
-  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+//  IupSetAttribute(tree, "REDRAW", "YES");
+}
 
-  IupSetAttribute(tree, "REDRAW", "YES");
+static void init_tree_nodes(void)
+{
+  Ihandle* tree = IupGetHandle("tree");
+
+  IupSetAttribute(tree, "NAME",         "Figures");  
+  IupSetAttribute(tree, "ADDLEAF0",      "test");     /* new id=1 */
+  IupSetAttribute(tree, "ADDBRANCH1",   "triangle");  /* new id=2 */     
+  IupSetAttribute(tree, "ADDLEAF2",     "equilateral");  /* ... */
+  IupSetAttribute(tree, "ADDLEAF3",     "isoceles");
+  IupSetAttribute(tree, "ADDLEAF4",     "scalenus");
+  IupSetAttribute(tree, "INSERTBRANCH2","parallelogram");  /* same depth as id=2, new id=5 */
+  IupSetAttribute(tree, "ADDLEAF6",     "square");
+  IupSetAttribute(tree, "ADDLEAF7",     "diamond");
+  IupSetAttribute(tree, "INSERTBRANCH5","2D");  /* new id=8 */
+  IupSetAttribute(tree, "INSERTBRANCH9","3D");
+
+
+  IupSetAttribute(tree, "VALUE",        "6");
+
+//  IupSetAttribute(tree, "REDRAW", "YES");
 }
 
 void TreeTest(void)
@@ -269,7 +289,7 @@ void TreeTest(void)
   init_dlg();                             /* Initializes the dlg */
   dlg = IupGetHandle("dlg");              /* Retrieves the dlg handle */
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER); /* Displays the dlg */
-  init_tree_atributes();                  /* Initializes attributes, can be done here or anywhere */
+  init_tree_nodes();                  /* Initializes attributes, can be done here or anywhere */
 }
 
 #ifndef BIG_TEST

@@ -8,16 +8,16 @@ wb_usr = {
    start_size = "180",
    file_title = "iup",
    start_open = "1"
-} 
+}
 
 wb_usr.messages = {
   en = {
      title = "IUP - Portable User Interface",
      bar_title = "IUP - Version 3.0"
   }
-} 
+}
 
-wb_usr.tree = 
+wb_usr.tree =
 {
   name= {nl= "IUP"},
   link= "home.html",
@@ -153,8 +153,8 @@ wb_usr.tree =
           link= "guide.html#contrib"
         },
         {
-          name= {en= "IDEs"}, 
-          
+          name= {en= "IDEs"},
+
           folder=
           {
             {
@@ -368,7 +368,7 @@ wb_usr.tree =
             {
               name= {nl= "IupGetAttribute"},
               link= "func/iupgetattribute.html"
-            },                         
+            },
             {
               name= {nl= "IupGetAllAttributes"},
               link= "func/iupgetallattributes.html"
@@ -569,7 +569,7 @@ wb_usr.tree =
             },
             {
               name= {en= "Win32"},
-              
+
               folder=
               {
                 {
@@ -580,7 +580,7 @@ wb_usr.tree =
             },
             {
               name= {en= "GTK"},
-              
+
               folder=
               {
                 {
@@ -595,7 +595,7 @@ wb_usr.tree =
             },
             {
               name= {en= "Motif"},
-              
+
               folder=
               {
                 {
@@ -718,11 +718,11 @@ wb_usr.tree =
             {
               name= {nl= "DEFAULT_ACTION"},
               link= "call/iup_default_action.html"
-            },        
+            },
             {
               name= {nl= "IDLE_ACTION"},
               link= "call/iup_idle_action.html"
-            },        
+            },
             { link= "", name= {en= "" } },
             {
               name= {nl= "MAP_CB"},
@@ -963,13 +963,13 @@ wb_usr.tree =
             {
               name= {nl= "IupDialog"},
               link= "dlg/iupdialog.html",
-              
+
               folder=
               {
                 {
                   name= {nl= "Attributes"},
                   link= "dlg/iupdialog.html#Attributes",
-                  
+
                   folder=
                   {
                     {
@@ -997,7 +997,7 @@ wb_usr.tree =
                 {
                   name= {nl= "Callbacks"},
                   link= "dlg/iupdialog.html#Callbacks",
-                  
+
                   folder=
                   {
                     {
@@ -1018,7 +1018,7 @@ wb_usr.tree =
                     }
                   }
                 }
-              }      
+              }
             },
             { link= "", name= {en= "" } },
             {
@@ -1103,7 +1103,7 @@ wb_usr.tree =
       {
         {
           name= {en= "Standard"},
-          
+
           folder=
           {
             {
@@ -1113,7 +1113,7 @@ wb_usr.tree =
             {
               name= {nl= "IupCanvas"},
               link= "elem/iupcanvas.html",
-              
+
               folder=
               {
                 {
@@ -1167,7 +1167,7 @@ wb_usr.tree =
                 {
                   name= {nl= "Callbacks"},
                   link= "elem/iupcanvas.html#Callbacks",
-                      
+
                   folder=
                   {
                     {
@@ -1254,6 +1254,22 @@ wb_usr.tree =
               link= "elem/iuptoggle.html"
             },
             {
+              name= {nl= "IupTree"},
+              link= "elem/iuptree.html",
+
+              folder=
+              {
+                {
+                  name= {nl= "Attributes"},
+                  link= "elem/iuptree_attrib.html"
+                },
+                {
+                  name= {nl= "Callbacks"},
+                  link= "elem/iuptree_cb.html"
+                }
+              }
+            },
+            {
               name= {nl= "IupVal"},
               link= "elem/iupval.html"
             }
@@ -1262,7 +1278,7 @@ wb_usr.tree =
         {
           name= {en= "Additional"},
           link= "iupcontrols.html",
-          
+
           folder=
           {
             {
@@ -1292,7 +1308,7 @@ wb_usr.tree =
             {
               name= {nl= "IupMatrix"},
               link= "ctrl/iupmatrix.html",
-              
+
               folder=
               {
                 {
@@ -1302,22 +1318,6 @@ wb_usr.tree =
                 {
                   name= {nl= "Callbacks"},
                   link= "ctrl/iupmatrix_cb.html"
-                }
-              }
-            },
-            {
-              name= {nl= "IupTree"},
-              link= "ctrl/iuptree.html",
-              
-              folder=
-              {
-                {
-                  name= {nl= "Attributes"},
-                  link= "ctrl/iuptree_attrib.html"
-                },
-                {
-                  name= {nl= "Callbacks"},
-                  link= "ctrl/iuptree_cb.html"
                 }
               }
             },
@@ -1382,7 +1382,7 @@ wb_usr.tree =
       {
         {
           name= {en= "Menus"},
-          
+
           folder=
           {
             {
@@ -1403,7 +1403,7 @@ wb_usr.tree =
             },
             {
               name= {en= "Attributes"},
-                  
+
               folder=
               {
                 {
@@ -1414,7 +1414,7 @@ wb_usr.tree =
             },
             {
               name= {en= "Callbacks"},
-                  
+
               folder=
               {
                 {
@@ -1435,7 +1435,7 @@ wb_usr.tree =
         },
         {
           name= {en= "Images"},
-          
+
           folder=
           {
             {
@@ -1458,7 +1458,7 @@ wb_usr.tree =
         },
         {
           name= {en= "Names"},
-          
+
           folder=
           {
             {
@@ -1485,7 +1485,7 @@ wb_usr.tree =
         },
         {
           name= {en= "Fonts"},
-          
+
           folder=
           {
             {
@@ -1533,7 +1533,7 @@ wb_usr.tree =
       {
         {
           name= {en= "Control SDK"},
-          
+
           link= "../doxygen/group__cpi.html",
           folder=
           {
@@ -1597,7 +1597,7 @@ wb_usr.tree =
         },
         {
           name= {en= "Driver Interface"},
-          
+
           link= "../doxygen/group__drv.html",
           folder=
           {
@@ -1614,7 +1614,7 @@ wb_usr.tree =
         {
           name= {en= "Utilities"},
           link= "../doxygen/group__util.html",
-          
+
           folder=
           {
             {
@@ -1641,10 +1641,10 @@ wb_usr.tree =
         },
         {
           name= {en= "Globals"},
-          
+
           link= "../doxygen/globals.html"
         }
       }
     }
   }
-} 
+}

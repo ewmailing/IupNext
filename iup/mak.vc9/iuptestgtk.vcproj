@@ -146,6 +146,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\test\class_conf.c"
+			>
+		</File>
+		<File
 			RelativePath="..\test\colorbar.c"
 			>
 		</File>

@@ -375,6 +375,12 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     /* always return non zero value */
     *result = 1;
     return 1; 
+  //case WM_NCHITTEST:
+  //  {
+  //    /* to avoid a repaint during mouse move */
+  //    *result = HTTRANSPARENT;
+  //    return 1;
+  //  }
   case WM_PAINT:
     {
       IFnff cb = (IFnff)IupGetCallback(ih, "ACTION");

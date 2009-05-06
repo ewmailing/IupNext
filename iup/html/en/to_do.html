@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 
@@ -11,12 +11,17 @@
   <style type="text/css">
 .style1 {
 	color: #FF0000;
+	font-weight: bold;
 }
 .style2 {
 	color: #008000;
+	font-weight: bold;
 }
-  .style3 {
-	color: #000000;
+.style3 {
+	font-weight: bold;
+}
+  .style4 {
+	color: #FF0000;
 }
   </style>
 </head>
@@ -33,7 +38,7 @@
 
 <ul>
 
-	<li>Refactoring of <strong>IupTree</strong> (maybe using native controls)</li>
+	<li>Refactoring of <strong>IupTree</strong></li>
 
 </ul>
 
@@ -54,15 +59,15 @@
 
 <ul>
 
-	<li class="style2"><strong>Build a MacOS X version using the new GTK Darwin native framework. This 
-	implicates in a CD using GDK/Cairo or using Quartz 2D.</strong></li>
+	<li><span class="style2">Priority: </span>Build a MacOS X version using the new GTK Darwin native framework. This 
+	implicates in a CD using GDK/Cairo or using Quartz 2D.</li>
 
-  <li class="style2">The actual model for control data structure in the internal SDK is limited and hard to use for derived classes.</li>
-	<li class="style2">Move the SDK headers to the &quot;include/sdk&quot; folder.</li>
-	<li class="style2">Simplify IupLua implementation. More similar to a regular 
+  <li><span class="style2">Priority: </span>The actual model for control data structure in the internal SDK is limited and hard to use for derived classes.</li>
+	<li><span class="style2">Priority: </span>Move the SDK headers to the &quot;include/sdk&quot; folder.</li>
+	<li><span class="style2">Priority: </span>Simplify IupLua implementation. More similar to a regular 
 	binding implementation like CDLua and IMLua.</li>
 
-	<li class="style2">Drag&amp;Drop between controls or dialogs in the same application.</li>
+	<li><span class="style2">Priority: </span>Drag&amp;Drop between controls or dialogs in the same application.</li>
 
 	<li>A MacOS X native driver using Carbon.</li>
 
@@ -73,36 +78,31 @@
 
 	<li>Define and control keyboard navigation in "Tab" groups.</li>
 
-	<li><span class="style3">Add support for loadind and saving RTF files in 
-	</span> <strong>IupText</strong>. 
+	<li>Add support for loadind and saving RTF files in 
+	<strong>IupText</strong>. 
 	Add support for images inside the text.</li>
 
-	<li><span class="style3">Support for text over image in </span> <strong>IupLabel</strong>,
+	<li>Support for text over image in <strong>IupLabel</strong>,
 	<strong>IupButton</strong> and <strong>IupToggle</strong>. Or a way to 
 	composte text on <strong>IupImage</strong>.</li>
 
-	<li><span class="style3">Support for changing the system menu in Windows. Support 
-	for cascading </span> <strong>IupPopup</strong> for menus.</li>
-
-	<li class="style1">The IupImgLib takes an very long time to compile under 
-	Visual C++. In a 2.5GHz CPU tooks about 5min!</li>
-
-</ul>
+	<li>Support for changing the system menu in Windows. Support 
+	for cascading <strong>IupPopup</strong> for menus.</li>
+	<li><span class="style1">Known Issue:</span> The IupImgLib takes an very long time to compile under Visual 
+	C++. In a 2.5GHz CPU tooks about 5min! (since 3.0)</li>
+	</ul>
 
 <h3>Windows</h3>
 
 <ul>
 
-	<li class="style1"><strong>In Windows Vista the COMPOSITE=YES attribute of the 
-	IupDialog is not working as expected. There is still some flicker when the 
-	dialog is resized. So we changed the default to NO in Vista.</strong></li>
+	<li><span class="style1">Known Issue:</span> In Windows Vista the COMPOSITE=YES attribute of the 
+	IupDialog is not working as expected. There is still flicker when the 
+	dialog is resized. IupTabs in Windows Vista when 
+	COMPOSITE=YES works only if MULTILINE=YES. (since 3.0)</li>
 
-	<li>IupTabs using native controls in Windows Vista when 
-	COMPOSITE=YES works only if MULTILINE=YES, so it is internally overwritten 
-	until the problem is solved. (since 3.0)</li>
-
-	<li class="style1">The MDI Window menu is not properly updated when the child mdi is 
-	closed.</li>
+	<li><span class="style1">Known Issue:</span> The MDI Window menu is not properly updated when the child mdi is 
+	closed. (since 3.0)</li>
 
 </ul>
 
@@ -135,23 +135,19 @@
 
 <ul>
 
-	<li class="style2"><strong>Internal code reorganization. Use native 
-	controls?</strong></li>
+  <li>Define minimum size based on tree nodes.</li>
 
-  <li>Changing VALUE does not scrolls the tree to the selected node in all 
+	<li>Toggle mark option.</li>
+
+  <li class="style4">Changing VALUE does not scrolls the tree to the selected node in all 
 	cases.</li>
 
-	<li>Define minimum size based on tree nodes. New callback mode. Change internal list to real tree?</li>
+	<li class="style4">Add attribute SHOWNODEid. Add callback for mouse over nodes.</li>
 
-  <li>Images with variable sizes for nodes.</li>
+	<li class="style4">Allow to change the select color.</li>
 
-	<li>Add attribute SHOWNODEid. Add callback for mouse over nodes.</li>
-
-	<li>Allow to change the caret color and other colors, like the BGCOLOR.</li>
-
-	<li>Focus feedback.</li>
-	<li>Toggle mark option.</li>
-	<li>Optimize internal node find.</li>
+	<li class="style4">Focus feedback.</li>
+	<li class="style4">Optimize internal node find.</li>
 
 </ul>
 
@@ -159,29 +155,27 @@
 
 <ul>
 
-  <li class="style2"><strong>DropDownButton</strong> - Mix between a drop down 
+  <li><strong><span class="style2">Priority: </span>DropDownButton</strong> - Mix between a drop down 
 	list and a button</li>
 
-	<li class="style2"><strong>ScrollBox</strong> -&nbsp; a box that can scroll the elements inside</li>
+	<li><strong><span class="style2">Priority: </span>ScrollBox</strong> -&nbsp; a box that can scroll the elements inside</li>
 
-  <li class="style2"><strong>GridBox </strong>- container to distribute 
+  <li><strong><span class="style2">Priority: </span>GridBox </strong>- container to distribute 
 	elements in a grid.</li>
-	<li class="style2"><strong>LayoutBuilder</strong> - a dialog that shows the layout of 
+	<li><strong><span class="style2">Priority: </span>LayoutBuilder</strong> - a dialog that shows the layout of 
 	another dialog and allows the user to reposition the elements interactively.</li>
 	<li class="style3">-----------------------------</li>
-	<li class="style3"><strong>Scrollbar</strong> - just the scrollbar as a 
-	control.</li>
-
-	<li class="style3"><strong>CanvasCD</strong> - a IupCanvas with a CD 
+	<strong>Scrollbar</strong> - just the scrollbar as a 
+	control.<li><strong>CanvasCD</strong> - a IupCanvas with a CD 
 	canvas associated.</li>
 
-	<li class="style3"><strong>UrlButton</strong> - Button that activates a URL 
+	<li><strong>UrlButton</strong> - Button that activates a URL 
 	(looks like a flat label, but gives visual feedback when mouse is hover)</li>
 
-	<li class="style3"><strong>Toobar -</strong> button/toggle/list, detachable</li>
+	<li><strong>Toobar -</strong> button/toggle/list, detachable</li>
 
-	<li class="style3"><strong>ImageList</strong> - A list that contains images</li>
-	<li class="style3"><strong>Table</strong> - similar to IupMatrix but using 
+	<li><strong>ImageList</strong> - A list that contains images</li>
+	<li><strong>Table</strong> - similar to IupMatrix but using 
 	native controls</li>
 
 	<li>-----------------------------</li>

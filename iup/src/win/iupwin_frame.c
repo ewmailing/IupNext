@@ -142,6 +142,7 @@ static int winFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *re
     }
   case WM_NCHITTEST:
     {
+      /* to avoid a repaint during mouse move */
       *result = HTTRANSPARENT;
       return 1;
     }

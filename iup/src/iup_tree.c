@@ -347,6 +347,7 @@ static int iTreeCreateMethod(Ihandle* ih, void **params)
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
 
   IupSetAttribute(ih, "RASTERSIZE", "400x200");
+  IupSetAttribute(ih, "EXPAND", "YES");
 
   return IUP_NOERROR;
 }
@@ -428,3 +429,53 @@ Iclass* iupTreeGetClass(void)
   return ic;
 }
 
+
+/********************************************************************************************/
+
+
+void IupTreeSetAttribute(Ihandle* ih, const char* a, int id, char* v)
+{
+  char* attr = iupStrGetMemory(50);
+  sprintf(attr, "%s%d", a, id);
+  IupSetAttribute(ih, attr, v);
+}
+
+void IupTreeStoreAttribute(Ihandle* ih, const char* a, int id, char* v)
+{
+  char* attr = iupStrGetMemory(50);
+  sprintf(attr, "%s%d", a, id);
+  IupStoreAttribute(ih, attr, v);
+}
+
+char* IupTreeGetAttribute(Ihandle* ih, const char* a, int id)
+{
+  char* attr = iupStrGetMemory(50);
+  sprintf(attr, "%s%d", a, id);
+  return IupGetAttribute(ih, attr);
+}
+
+int IupTreeGetInt(Ihandle* ih, const char* a, int id)
+{
+  char* attr = iupStrGetMemory(50);
+  sprintf(attr, "%s%d", a, id);
+  return IupGetInt(ih, attr);
+}
+
+float IupTreeGetFloat(Ihandle* ih, const char* a, int id)
+{
+  char* attr = iupStrGetMemory(50);
+  sprintf(attr, "%s%d", a, id);
+  return IupGetFloat(ih, attr);
+}
+
+void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, char* f, ...)
+{
+  static char v[SHRT_MAX];
+  char* attr = iupStrGetMemory(50);
+  va_list arglist;
+  sprintf(attr, "%s%d", a, id);
+  va_start(arglist, f);
+  vsprintf(v, f, arglist);
+  va_end(arglist);
+  IupStoreAttribute(ih, attr, v);
+}

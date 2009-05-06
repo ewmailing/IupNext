@@ -121,6 +121,13 @@
 		<File
 			RelativePath="..\test\bigtest.c"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="..\test\button.c"
@@ -148,6 +155,10 @@
 		</File>
 		<File
 			RelativePath="..\test\cells_numbering.c"
+			>
+		</File>
+		<File
+			RelativePath="..\test\class_conf.c"
 			>
 		</File>
 		<File

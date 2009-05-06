@@ -1957,4 +1957,5 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "RENAME",  NULL, gtkTreeSetRenameAttrib,  IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 }
 
-// gtk_tree_view_set_enable_tree_lines (GtkTreeView *tree_view, gboolean enabled);
+//gtk_tree_view_set_enable_tree_lines(GtkTreeView *tree_view, gboolean enabled);
+//gboolean gtk_tree_store_iter_is_valid(GtkTreeStore *tree_store, GtkTreeIter *iter);

@@ -4,16 +4,6 @@ IupColorBrowser
 IupDial
 IupGauge
 IupCells 
-IupTreeSetAttribute  
-IupTreeStoreAttribute
-IupTreeGetAttribute  
-IupTreeGetInt        
-IupTreeGetFloat      
-IupTreeSetfAttribute
-IupTree
-IupTreeGetId
-IupTreeGetUserId
-IupTreeSetUserId
 IupMatrix
 IupMatSetAttribute  
 IupMatStoreAttribute

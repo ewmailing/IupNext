@@ -260,8 +260,7 @@ static void winDialogResize(Ihandle* ih, int width, int height)
 
   IupRefresh(ih);
 
-  if (iupwinIsVista())
-    RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_FRAME|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_ALLCHILDREN);
+  RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_FRAME|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_ALLCHILDREN);
 
   ih->data->ignore_resize = 0;
 }
@@ -1411,10 +1410,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "LAYERED", NULL, winDialogSetLayeredAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LAYERALPHA", NULL, winDialogSetLayerAlphaAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BRINGFRONT", NULL, winDialogSetBringFrontAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  if (iupwinIsVista())
-    iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, "NO", NULL, IUPAF_NOT_MAPPED);
-  else
-    iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
 
   iupClassRegisterAttribute(ic, "CONTROL", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HELPBUTTON", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
