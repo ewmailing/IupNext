@@ -398,7 +398,7 @@ static void gtkTreeUpdateImages(GtkTreeModel* modelTree, GtkTreeIter iterItem, G
 /*****************************************************************************/
 /* ADDING ITEMS                                                              */
 /*****************************************************************************/
-void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* name)
+void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* name, int add)
 {
   GtkTreeStore* store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
   GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_TEXT");
@@ -414,13 +414,13 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char*
   gtk_tree_model_get(GTK_TREE_MODEL(store), &iterPrev, IUPGTK_TREE_KIND, &kindPrev, -1);
   g_object_get(G_OBJECT(renderer), "foreground-gdk", &fgColor, NULL);
 
-  if (kindPrev == ITREE_BRANCH)
+  if (kindPrev == ITREE_BRANCH && add)
     gtk_tree_store_insert(store, &iterNewItem, &iterPrev, 0);  /* iterPrev is parent of the new item (firstchild of it) */
   else
     gtk_tree_store_insert_after(store, &iterNewItem, NULL, &iterPrev);  /* iterPrev is sibling of the new item */
 
   /* set the default image and kind of new node */
-  if(kind == ITREE_LEAF)
+  if (kind == ITREE_LEAF)
   {
     gtk_tree_store_set(store, &iterNewItem, IUPGTK_TREE_IMAGE_LEAF, iupImageGetImage("IMGLEAF", ih, 0, "TREEIMAGELEAF"),
                                                   IUPGTK_TREE_KIND, ITREE_LEAF,
@@ -1209,7 +1209,7 @@ static int gtkTreeSetMarkedAttrib(Ihandle* ih, const char* name_id, const char* 
 
 static int gtkTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if(iupStrEqualNoCase(value, "SELECTED"))
+  if(iupStrEqualNoCase(value, "SELECTED"))  /* selectec here means the specified one */
   {
     GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
     GtkTreeIter   iterItem = gtkTreeFindNodeFromString(ih, name_id);
@@ -1235,11 +1235,10 @@ static int gtkTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
     if (!equal)
       return 0;
 
-    /* deleting the selected node (and it's children) */
-    if(gtk_tree_selection_iter_is_selected(selected, &iterItem))
-      gtk_tree_store_remove(GTK_TREE_STORE(model), &iterItem);
+    /* deleting the specified node (and it's children) */
+    gtk_tree_store_remove(GTK_TREE_STORE(model), &iterItem);
   }
-  else if(iupStrEqualNoCase(value, "CHILDREN"))
+  else if(iupStrEqualNoCase(value, "CHILDREN"))  /* children of the specified one */
   {
     GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
     GtkTreeIter   iterItem = gtkTreeFindNodeFromString(ih, name_id);
@@ -1958,4 +1957,3 @@ void iupdrvTreeInitClass(Iclass* ic)
 }
 
 //gtk_tree_view_set_enable_tree_lines(GtkTreeView *tree_view, gboolean enabled);
-//gboolean gtk_tree_store_iter_is_valid(GtkTreeStore *tree_store, GtkTreeIter *iter);

@@ -176,11 +176,12 @@ static HTREEITEM winTreeFindNodePointed(Ihandle* ih)
 /*****************************************************************************/
 /* ADDING ITEMS                                                              */
 /*****************************************************************************/
-void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* name)
+void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* name, int add)
 {
   TVITEM item, tviPrevItem;
   TVINSERTSTRUCT tvins;
   HTREEITEM hNewItem, hPrevItem = winTreeFindNodeFromString(ih, id_string);
+  int kindPrev;
 
   if (!hPrevItem)
     return;
@@ -208,26 +209,27 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char*
   tviPrevItem.hItem = hPrevItem;
   tviPrevItem.mask = TVIF_PARAM|TVIF_CHILDREN; 
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&tviPrevItem);
+  kindPrev = tviPrevItem.lParam;
 
   /* Define the parent and the position to the new node inside
      the list, using the KIND attribute of node selected */
-  if (tviPrevItem.lParam == ITREE_LEAF)
-  {
-    tvins.hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hPrevItem);
-    tvins.hInsertAfter = hPrevItem;   /* insert the new node after item selected */
-  }
-  else /* the node selected is a branch */
+  if (kindPrev == ITREE_BRANCH && add)
   {
     tvins.hParent = hPrevItem;
     tvins.hInsertAfter = TVI_FIRST;   /* insert the new node after item selected, as first child */
+  }
+  else
+  {
+    tvins.hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hPrevItem);
+    tvins.hInsertAfter = hPrevItem;   /* insert the new node after item selected */
   }
 
   /* Add the node to the tree-view control */
   hNewItem = (HTREEITEM)SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
 
-  if (tviPrevItem.cChildren==0)
+  if (kindPrev == ITREE_BRANCH && tviPrevItem.cChildren==0)
   {
-    /* this is the first child */
+    /* this is the first child, redraw to update the '+'/'-' buttons */
     iupdrvDisplayRedraw(ih);
   }
 }
@@ -1169,7 +1171,7 @@ static char* winTreeGetParentAttrib(Ihandle* ih, const char* name_id)
 
 static int winTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if(iupStrEqualNoCase(value, "SELECTED"))
+  if(iupStrEqualNoCase(value, "SELECTED")) /* selectec here means the specified one */
   {
     HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
     HTREEITEM hItemRoot  = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
@@ -1178,13 +1180,12 @@ static int winTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
     if(!hItem || hItem == hItemRoot)
       return 0;
 
-    /* deleting the selected node (and it's children) */
-    if((SendMessage(ih->handle, TVM_GETITEMSTATE, (WPARAM)hItem, TVIS_SELECTED)) & TVIS_SELECTED)
-      SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItem);
+    /* deleting the specified node (and it's children) */
+    SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItem);
     
     return 0;
   }
-  else if(iupStrEqualNoCase(value, "CHILDREN"))
+  else if(iupStrEqualNoCase(value, "CHILDREN"))  /* children of the specified one */
   {
     HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
     HTREEITEM hItemRoot  = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
@@ -1212,19 +1213,14 @@ static int winTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 
     /* Delete the array of marked nodes */
     markedArray = (Iarray*)iupAttribGet(ih, "_IUPWINTREE_MARKEDITEMARRAY");
-
     if(!markedArray)
-    {
-      /* Delete a current selected node */
-      winTreeSetDelNodeAttrib(ih, "", "SELECTED");
       return 0;
-    }
 
     hItemArrayData = (HTREEITEM*)iupArrayGetData(markedArray);
 
     for(i = 0; i < iupArrayCount(markedArray); i++)
     {
-      if(hItemArrayData[i] != hItemRoot)  /* the root node can't be deleted */
+      if (hItemArrayData[i] != hItemRoot)  /* the root node can't be deleted */
         SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItemArrayData[i]);
     }
 
@@ -2097,6 +2093,5 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "RENAME",  NULL, winTreeSetRenameAttrib,  IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 }
 
-//  TVS_CHECKBOXES 
-//  TVS_INFOTIP
+// TVS_INFOTIP
 // TVM_SETINDENT

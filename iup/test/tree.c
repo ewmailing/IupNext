@@ -269,14 +269,15 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "ADDLEAF2",     "equilateral");  /* ... */
   IupSetAttribute(tree, "ADDLEAF3",     "isoceles");
   IupSetAttribute(tree, "ADDLEAF4",     "scalenus");
-  IupSetAttribute(tree, "INSERTBRANCH2","parallelogram");  /* same depth as id=2, new id=5 */
+  IupSetAttribute(tree, "INSERTBRANCH2","parallelogram");  /* same depth as id=2, new id=6 */
   IupSetAttribute(tree, "ADDLEAF6",     "square");
   IupSetAttribute(tree, "ADDLEAF7",     "diamond");
-  IupSetAttribute(tree, "INSERTBRANCH5","2D");  /* new id=8 */
+  IupSetAttribute(tree, "INSERTBRANCH6","2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
 
 
   IupSetAttribute(tree, "VALUE",        "6");
+  IupSetAttribute(tree, "RASTERSIZE", NULL);
 
 //  IupSetAttribute(tree, "REDRAW", "YES");
 }

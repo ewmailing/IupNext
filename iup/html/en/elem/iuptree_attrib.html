@@ -4,11 +4,6 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupTree Attributes</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
-<style type="text/css">
-.style1 {
-	color: #FF0000;
-}
-</style>
 </head>
 <body>
 
@@ -42,9 +37,6 @@ layout use smaller values.</p>
   Allows specifying and verifying selection 
   interval 
   of the text box when in-place renaming.</p>
-<p><strong>SCROLLBAR</strong>:
-  Associates a horizontal and/or vertical 
-  scrollbar to the canvas. Default: &quot;YES&quot;. </p>
 <p><strong>SHOWDRAGDROP</strong>: Shows a drag cursor if the user drags a node or 
   branch and enables the <strong>DRAGDROP_CB</strong> callback. Default:
   &quot;NO&quot;.</p>
@@ -247,31 +239,28 @@ reference node + 1.
 position remains the same. If the reference node does not exist, nothing 
 happens. If the reference node is a branch then the depth of the new node is one 
 depth increment from the depth of the reference node, if the reference node is a 
-leaf then the new node has the same depth. <span class="style1">If you need to 
+leaf then the new node has the same depth. If you need to 
 add a node after a specified node but at a different depth use <strong>
-INSERTLEAF</strong></span>.</p>
+INSERTLEAF</strong>.</p>
 <p><strong>ADDBRANCHid </strong>(write only):
   Same as <strong>ADDLEAF</strong> for branches. Branches can be created 
 expanded or collapsed depending on <strong>ADDEXPANDED</strong>.</p>
-<p class="style1"><strong>INSERTLEAFid</strong>, <strong>INSERTBRANCHid </strong>
+<p><strong>INSERTLEAFid</strong>, <strong>INSERTBRANCHid </strong>
 (write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
-then the depth of the new node is always the same of the reference node. 
+the depth of the new node is always the same of the reference node. 
 </p>
 <p><strong>DELNODEid </strong>(write only):
-  Removes the specified node, where id is the node identifier.
-<span class="style1">If id is empty, then the selected node is removed. (or its 
-children)</span>. The root cannot be removed. If the specified node does not exist, nothing happens. Possible values:</p>
+  Removes a node and or its children. The root cannot be removed. Possible values:</p>
 <blockquote>
 <ul>
-  <li>&quot;MARKED&quot;:
-    Deletes all marked nodes (and all their 
-    children)</li>
   <li>&quot;SELECTED&quot;:
-    Deletes only the selected node (and its 
-    children)</li>
+    deletes the specified node and its children</li>
   <li>&quot;CHILDREN&quot;:
-    Deletes only the children of the 
-  selected node</li>
+    deletes the children of the 
+  specified node</li>
+  <li>&quot;MARKED&quot;:
+    deletes all marked nodes (and all their 
+    children), id is always ignored</li>
 </ul>
 </blockquote>
 <p><b>RENAME</b><strong> </strong>(write only):<b> </b>Forces a rename action to take place. If SHOWRENAME=YES then 

@@ -609,7 +609,7 @@ static Widget motTreeFindNodeFromString(Ihandle* ih, const char* id_string)
   return wListOfItems[0];
 }
 
-void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* name)
+void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* name, int add)
 {
   Widget wItemPrev = motTreeFindNodeFromString(ih, id_string);
   Widget wNewItem;
@@ -635,7 +635,7 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char*
   XtVaGetValues(wItemPrev, XmNdetail, &itemDetails, NULL);
   iupStrToInt(iupmotConvertString(itemDetails[IUPMOT_TREE_KIND]), &kindPrev);
 
-  if(kindPrev == ITREE_BRANCH)
+  if (kindPrev == ITREE_BRANCH && add)
   {
     /* wItemPrev is parent of the new item (firstchild of it) */
     iupmotSetArg(args, num_args,   XmNentryParent, wItemPrev);
@@ -1352,11 +1352,10 @@ static int motTreeSetRenameAttrib(Ihandle* ih, const char* name_id, const char* 
 
 static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if(iupStrEqualNoCase(value, "SELECTED"))
+  if(iupStrEqualNoCase(value, "SELECTED"))  /* selectec here means the specified one */
   {
     Widget wItem = motTreeFindNodeFromString(ih, name_id);
     WidgetList wItemList;
-    unsigned char selState;
 
     /* get the root item */
     XmContainerGetItemChildren(ih->handle, NULL, &wItemList);
@@ -1365,17 +1364,14 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
     if(!wItem || wItem == wItemList[0])  /* root is the unique child */
       return 0;
 
-    /* deleting the selected node (and it's children) */
-    XtVaGetValues(wItem, XmNvisualEmphasis, &selState, NULL);
-    if(selState == XmSELECTED)
+    /* deleting the specified node (and it's children) */
     {
       int numChild = XmContainerGetItemChildren(ih->handle, wItem, &wItemList);
-
       motTreeRemoveChildren(ih, wItemList, numChild);
       XtDestroyWidget(wItem);    
     }
   }
-  else if(iupStrEqualNoCase(value, "CHILDREN"))
+  else if(iupStrEqualNoCase(value, "CHILDREN"))  /* children of the specified one */
   {
     Widget wItem = motTreeFindNodeFromString(ih, name_id);
     WidgetList wItemList;
@@ -2165,7 +2161,7 @@ static int motTreeMapMethod(Ihandle* ih)
   iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
   iupmotSetArg(args, num_args, XmNscrollingPolicy, XmAUTOMATIC);
   iupmotSetArg(args, num_args, XmNvisualPolicy, XmVARIABLE); 
-  iupmotSetArg(args, num_args, XmNscrollBarDisplayPolicy, XmSTATIC);
+  iupmotSetArg(args, num_args, XmNscrollBarDisplayPolicy, XmAS_NEEDED);
   iupmotSetArg(args, num_args, XmNspacing, 0); /* no space between scrollbars and text */
   iupmotSetArg(args, num_args, XmNborderWidth, 0);
   iupmotSetArg(args, num_args, XmNshadowThickness, 2);

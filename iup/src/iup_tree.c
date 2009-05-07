@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -181,35 +182,6 @@ static void iTreeInitializeImages(void)
   IupSetHandle("IMGPAPER",     image_paper);
 }
 
-static int iTreeSetScrollbarAttrib(Ihandle* ih, const char* value)
-{
-  /* valid only before map */
-  if (ih->handle)
-    return 0;
-
-  if (iupStrEqualNoCase(value, "YES"))
-    ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
-  else if (iupStrEqualNoCase(value, "HORIZONTAL"))
-    ih->data->sb = IUP_SB_HORIZ;
-  else if (iupStrEqualNoCase(value, "VERTICAL"))
-    ih->data->sb = IUP_SB_VERT;
-  else
-    ih->data->sb = IUP_SB_NONE;
-
-  return 0;
-}
-
-static char* iTreeGetScrollbarAttrib(Ihandle* ih)
-{
-  if (ih->data->sb == (IUP_SB_HORIZ | IUP_SB_VERT))
-    return "YES";
-  if (ih->data->sb &= IUP_SB_HORIZ)
-    return "HORIZONTAL";
-  if (ih->data->sb == IUP_SB_VERT)
-    return "VERTICAL";
-  return "NO";   /* IUP_SB_NONE */
-}
-
 /* Retrieves the tree_ctrl iTreeKey state */
 static char* iTreeGetCtrlAttrib(Ihandle* ih)
 {
@@ -294,7 +266,7 @@ static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* v
 
   sprintf(next, "%d", id);
 
-  iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value);
+  iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value, 1);
 
   return 0;
 }
@@ -311,7 +283,41 @@ static int iTreeSetAddBranchAttrib(Ihandle* ih, const char* name_id, const char*
 
   sprintf(next, "%d", id);
 
-  iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value);
+  iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 1);
+
+  return 0;
+}
+
+static int iTreeSetInsertLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  char next[10];
+  int id = 0;
+
+  if (name_id[0])
+    id = atoi(name_id) + 1;
+  else
+    id = atoi(IupGetAttribute(ih, "VALUE")) + 1;
+
+  sprintf(next, "%d", id);
+
+  iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value, 0);
+
+  return 0;
+}
+
+static int iTreeSetInsertBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  char next[10];
+  int id = 0;
+
+  if (name_id[0])
+    id = atoi(name_id) + 1;
+  else
+    id = atoi(IupGetAttribute(ih, "VALUE")) + 1;
+
+  sprintf(next, "%d", id);
+
+  iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 0);
 
   return 0;
 }
@@ -343,8 +349,6 @@ static int iTreeCreateMethod(Ihandle* ih, void **params)
   (void)params;
 
   ih->data = iupALLOCCTRLDATA();
-
-  ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
 
   IupSetAttribute(ih, "RASTERSIZE", "400x200");
   IupSetAttribute(ih, "EXPAND", "YES");
@@ -405,9 +409,6 @@ Iclass* iupTreeGetClass(void)
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
 
-  /* IupTree only */
-  iupClassRegisterAttribute(ic, "SCROLLBAR", iTreeGetScrollbarAttrib, iTreeSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
-
   /* IupTree Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "RENAMECARET",     iTreeGetRenameCaretAttrib,     iTreeSetRenameCaretAttrib,     NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAMESELECTION", iTreeGetRenameSelectionAttrib, iTreeSetRenameSelectionAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -420,6 +421,8 @@ Iclass* iupTreeGetClass(void)
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "ADDLEAF",   NULL, iTreeSetAddLeafAttrib,   IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "ADDBRANCH", NULL, iTreeSetAddBranchAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "INSERTLEAF",   NULL, iTreeSetInsertLeafAttrib,   IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "INSERTBRANCH", NULL, iTreeSetInsertBranchAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   
   /* Default node images */
   iTreeInitializeImages();

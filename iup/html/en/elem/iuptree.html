@@ -4,6 +4,11 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupTree</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	font-size: large;
+}
+</style>
 </head>
 <body>
 <div id="navigation">
@@ -17,7 +22,7 @@
   </ul>
 </div>
 
-<h2>IupTree</h2>
+<h2>IupTree <span class="style1">(since 3.0)</span></h2>
 <p>Creates a tree containing nodes of branches or leaves. Both branches and 
 leaves can have an associated text and image.</p>
 <p>The branches can be expanded or collapsed. When a branch is expanded, its immediate children are visible, and when it 
@@ -27,6 +32,7 @@ a &quot;renamed&quot; action.
 </p>
 <p>The selected node is the node with the focus rectangle, marked nodes have their background inverted. 
 </p>
+<p>The old IupTree implementation based on IupCanvas is not available in IUP 3.</p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupTree(<strong>void</strong>); [in C] 
@@ -39,8 +45,7 @@ tree() [in LED]</pre>
 
 
 <h4><a href="iuptree_attrib.html#global">General</a></h4>
-<p class="info"><strong>SCROLLBAR</strong><br>
-<strong>FONT</strong><br>
+<p class="info"><strong>FONT</strong><br>
 <strong>ADDEXPANDED<br>
     SHOWDRAGDROP<br>
     SHOWRENAME<br>
@@ -107,6 +112,8 @@ tree() [in LED]</pre>
 <p>Branches can contain other branches or leaves. The tree always has at least one branch, 
   the <b>root</b>, which will be the parent of all the first level branches and leaves. 
 </p>
+<p>Scrollbars are automatically displayed if the tree is greatter than its 
+display area.</p>
 <h4>Structure</h4>
 <p>The IupTree is stored as a list, so that each node or branch has an associated identification number 
   (id), starting by the root, with id=0. However, this number does not always correspond to the same 
