@@ -99,16 +99,16 @@ static int executeleaf_cb(Ihandle* ih, int id)
   return IUP_DEFAULT;
 }
 
-static int renamenode_cb(Ihandle* ih, int id, char* name)
+static int renamenode_cb(Ihandle* ih, int id, char* title)
 {
-  printf("renamenode_cb (%d=%s)\n", id, name);
+  printf("renamenode_cb (%d=%s)\n", id, title);
   return IUP_DEFAULT;
 }
 
-static int rename_cb(Ihandle* ih, int id, char* name)
+static int rename_cb(Ihandle* ih, int id, char* title)
 {
-  printf("rename_cb (%d=%s)\n", id, name);
-  if (strcmp(name, "fool") == 0)
+  printf("rename_cb (%d=%s)\n", id, title);
+  if (strcmp(title, "fool") == 0)
     return IUP_IGNORE;
   return IUP_DEFAULT;
 }
@@ -215,9 +215,13 @@ static void init_tree(void)
 
   IupSetAttribute(tree, "CTRL",         "YES");
   IupSetAttribute(tree, "SHIFT",        "YES");
-  IupSetAttribute(tree, "ADDEXPANDED",  "NO");
-  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+//  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
+//  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+
+//  IupSetAttribute(tree, "ADDEXPANDED",  "NO");
+//  IupSetAttribute(tree, "HIDELINES",    "YES");
+//  IupSetAttribute(tree, "HIDEBUTTONS",    "YES");
+//  IupSetAttribute(tree, "INDENTATION",   "40");
 
   IupSetHandle("tree", tree);
 }
@@ -226,22 +230,20 @@ static void init_tree(void)
 static void init_dlg(void)
 {
   Ihandle* tree = IupGetHandle("tree");
-  Ihandle* box = IupVbox(IupHbox(tree, NULL), NULL);
+  Ihandle* box = IupVbox(IupHbox(tree, IupButton("Test", NULL), NULL), NULL);
   Ihandle* dlg = IupDialog(box) ;
   IupSetAttribute(dlg,  "TITLE",   "IupTree");
-//  IupSetAttribute(tree, "SIZE",    "QUARTERxTHIRD");
   IupSetAttribute(box,  "MARGIN",  "10x10");
 //  IupSetAttribute(dlg,  "BGCOLOR", "192 192 192");
   IupSetHandle("dlg", dlg);
 }
 
-static void init_tree_nodes1(void)
+static void init_tree_nodes1(void)  /* create from bottom to top */
 {
   Ihandle* tree = IupGetHandle("tree");
 
-  /* Notice that the tree is create from bottom to top */
   /* the current node is the ROOT */
-  IupSetAttribute(tree, "NAME",         "Figures");  /* name of the root, id=0 */
+  IupSetAttribute(tree, "TITLE",         "Figures");  /* title of the root, id=0 */
   IupSetAttribute(tree, "ADDBRANCH",    "3D");    /* 3D=1 */
   IupSetAttribute(tree, "ADDBRANCH",    "2D");    /* add to the root, so it will be before "3D", now 2D=1, 3D=2 */
   IupSetAttribute(tree, "ADDLEAF",      "test");  /* add to the root, also before "2D", now test=1, 2D=2, 3D=3 */
@@ -255,15 +257,13 @@ static void init_tree_nodes1(void)
 
 
   IupSetAttribute(tree, "VALUE",        "6");
-
-//  IupSetAttribute(tree, "REDRAW", "YES");
 }
 
-static void init_tree_nodes(void)
+static void init_tree_nodes(void)  /* create from top to bottom */
 {
   Ihandle* tree = IupGetHandle("tree");
 
-  IupSetAttribute(tree, "NAME",         "Figures");  
+  IupSetAttribute(tree, "TITLE0",         "Figures");  
   IupSetAttribute(tree, "ADDLEAF0",      "test");     /* new id=1 */
   IupSetAttribute(tree, "ADDBRANCH1",   "triangle");  /* new id=2 */     
   IupSetAttribute(tree, "ADDLEAF2",     "equilateral");  /* ... */
@@ -275,11 +275,8 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "INSERTBRANCH6","2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
 
-
   IupSetAttribute(tree, "VALUE",        "6");
   IupSetAttribute(tree, "RASTERSIZE", NULL);
-
-//  IupSetAttribute(tree, "REDRAW", "YES");
 }
 
 void TreeTest(void)

@@ -106,14 +106,17 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
         if (afunc->flags & IUPAF_READONLY)
           return 0;
 
-        if (afunc->set && (ih->handle || afunc->flags&IUPAF_NOT_MAPPED))
+        if (afunc->set && (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
         {
           /* id numbered attributes have default value NULL always */
           IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
           return id_set(ih, name_id, value);
         }
-        else
-          return 1; /* if the function exists, then must return here */
+
+        if (afunc->flags & IUPAF_NO_STRING)
+          return 0;
+
+        return 1; /* if the function exists, then must return here */
       }
     }
   }
@@ -129,7 +132,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
     if (afunc->flags & IUPAF_READONLY)
       return 0;
 
-    if (afunc->set && (ih->handle || afunc->flags&IUPAF_NOT_MAPPED))
+    if (afunc->set && (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
     {
       int ret;
       if (!value)
@@ -142,13 +145,16 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
           value = iClassGetDefaultValue(afunc);
       }
 
-      if (afunc->flags&IUPAF_HAS_ID)
+      if (afunc->flags & IUPAF_HAS_ID)
       {
         IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
         return id_set(ih, "", value);  /* empty Id */
       }
       else
         ret = afunc->set(ih, value);
+
+      if (afunc->flags & IUPAF_NO_STRING)
+        return 0;
 
       if (*inherit)
         return 1;   /* inheritable attributes are always stored in the hash table, */
@@ -183,7 +189,7 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
         if (afunc->flags & IUPAF_WRITEONLY)
           return NULL;
 
-        if (afunc->get && (ih->handle || afunc->flags&IUPAF_NOT_MAPPED))
+        if (afunc->get && (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
         {
           IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
           return id_get(ih, name_id);
@@ -207,9 +213,9 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
     if (afunc->flags & IUPAF_WRITEONLY)
       return NULL;
 
-    if (afunc->get && (ih->handle || afunc->flags&IUPAF_NOT_MAPPED))
+    if (afunc->get && (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
     {
-      if (afunc->flags&IUPAF_HAS_ID)
+      if (afunc->flags & IUPAF_HAS_ID)
       {
         IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
         return id_get(ih, "");  /* empty Id */
@@ -469,19 +475,19 @@ char* iupClassGetDefaultAttribute(const char* classname, const char *attrib_name
 
   iupASSERT(classname!=NULL);
   if (!classname)
-    return;
+    return NULL;
 
   iupASSERT(attrib_name!=NULL);
   if (!attrib_name)
-    return;
+    return NULL;
 
   ic = iupRegisterFindClass(classname);
   if (!ic)
-    return;
+    return NULL;
 
   afunc = (IattribFunc*)iupTableGet(ic->attrib_func, attrib_name);
   if (afunc)
-    return afunc->default_value;
+    return (char*)afunc->default_value;
   else
     return NULL;
 }

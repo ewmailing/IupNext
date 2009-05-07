@@ -50,8 +50,11 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<strong>IupTree</strong> now uses native controls. The old implementation is 
 	not available. Images for nodes are not limited to 16x16 anymore. BGCOLOR 
 	now follows the same default as <strong>IupText</strong> and <strong>IupList</strong>, 
-	and can be changed. New <strong>INSERTLEAFid</strong> and <strong>INSERTBRANCHid</strong>
-	attributes. Attributes SCROLLBAR and REDRAW are not supported anymore. <span class="style4"><strong>[NOT finished YET]</strong></span></li>
+	and can be changed. New <strong>EXPANDALL, INDENTATION, HIDEBUTTONS, 
+	HIDELINES</strong>, <strong>INSERTLEAFid</strong> and <strong>INSERTBRANCHid</strong>
+	attributes. Attributes SCROLLBAR and REDRAW are not supported anymore. 
+	NAMEid attribute renamed to TITLE, old attribute still works but will be 
+	removed in future versions. <span class="style4"><strong>[NOT finished YET]</strong></span></li>
 	<li><span class="style2">Changed:</span>
     In IupLua attributes that are pointers to Ihandle are now returned as 
 	ihandle instead of userdata.</li>

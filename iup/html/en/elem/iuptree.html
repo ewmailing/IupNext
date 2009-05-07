@@ -45,12 +45,17 @@ tree() [in LED]</pre>
 
 
 <h4><a href="iuptree_attrib.html#global">General</a></h4>
-<p class="info"><strong>FONT</strong><br>
-<strong>ADDEXPANDED<br>
-    SHOWDRAGDROP<br>
-    SHOWRENAME<br>
+<p class="info"><strong>ADDEXPANDED<br>
+CANFOCUS<br>
+EXPAND<br>
+HIDELINES</strong> <strong><br>
+HIDEBUTTONS</strong> <strong><br>
+INDENTATION</strong> <strong><br>
+RASTERSIZE<br>
     RENAMECARET<br>
-    RENAMESELECTION</strong></p>
+    RENAMESELECTION<br>
+    SHOWDRAGDROP<br>
+    SHOWRENAME</strong></p>
 <h4><a href="iuptree_attrib.html#marks">Marks</a></h4>
 <p class="info"><strong>CTRL<br>
     SHIFT<br>
@@ -64,7 +69,7 @@ tree() [in LED]</pre>
     IMAGEid<br>
     IMAGEEXPANDEDid</strong></p>
 <h4><a href="iuptree_attrib.html#nodes">Nodes</a></h4>
-<p class="info"><strong>NAME<br>
+<p class="info"><strong>TITLE<br>
     STATE<br>
     DEPTH<br>
     KIND<br>
@@ -73,9 +78,12 @@ tree() [in LED]</pre>
 <h4><a href="iuptree_attrib.html#action">Action</a></h4>
 <p class="info"><strong>ADDLEAF<br>
     ADDBRANCH<br>
-    DELNODE</strong><br>
-<b>REDRAW<br>
-    RENAMENODE</b></p>
+</strong>
+<b>EXPANDALL<br>
+    </b><strong>DELNODE</strong><br>
+<strong>INSERTLEAF<br>
+    INSERTBRANCH<br>
+    </strong><b>RENAMENODE</b></p>
 <h3><a href="iuptree_cb.html">Callbacks</a></h3>
 <p><strong>SELECTION_CB</strong>:
   Action generated when an node is selected or 

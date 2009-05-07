@@ -344,6 +344,28 @@ static int iTreeSetShowRenameAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iTreeGetAddExpandedAttrib(Ihandle* ih)
+{
+  if (ih->data->add_expanded)
+    return "YES";
+  else
+    return "NO";
+}
+
+static int iTreeSetAddExpandedAttrib(Ihandle* ih, const char* value)
+{
+  /* valid only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+    ih->data->add_expanded = 1;
+  else
+    ih->data->add_expanded = 0;
+
+  return 0;
+}
+
 static int iTreeCreateMethod(Ihandle* ih, void **params)
 {
   (void)params;
@@ -352,6 +374,8 @@ static int iTreeCreateMethod(Ihandle* ih, void **params)
 
   IupSetAttribute(ih, "RASTERSIZE", "400x200");
   IupSetAttribute(ih, "EXPAND", "YES");
+
+  ih->data->add_expanded = 1;
 
   return IUP_NOERROR;
 }
@@ -412,11 +436,13 @@ Iclass* iupTreeGetClass(void)
   /* IupTree Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "RENAMECARET",     iTreeGetRenameCaretAttrib,     iTreeSetRenameCaretAttrib,     NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAMESELECTION", iTreeGetRenameSelectionAttrib, iTreeSetRenameSelectionAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWRENAME",      iTreeGetShowRenameAttrib,      iTreeSetShowRenameAttrib,      NULL, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWRENAME",      iTreeGetShowRenameAttrib,      iTreeSetShowRenameAttrib,      NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ADDEXPANDED",     iTreeGetAddExpandedAttrib,     iTreeSetAddExpandedAttrib,     IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
-  iupClassRegisterAttribute(ic, "CTRL",  iTreeGetCtrlAttrib,  iTreeSetCtrlAttrib,  NULL, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHIFT", iTreeGetShiftAttrib, iTreeSetShiftAttrib, NULL, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CTRL",  iTreeGetCtrlAttrib,  iTreeSetCtrlAttrib,  NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHIFT", iTreeGetShiftAttrib, iTreeSetShiftAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "ADDLEAF",   NULL, iTreeSetAddLeafAttrib,   IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

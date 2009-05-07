@@ -4,6 +4,11 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupTree Attributes</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	color: #FF0000;
+}
+</style>
 </head>
 <body>
 
@@ -24,6 +29,17 @@ control. Default: YES. (since 3.0)</p>
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font size="3">non inheritable</font>):
   The default value is "YES". The natural size is the size of 1 
   character.</p>
+<p><strong>HIDEBUTTONS</strong> (creation only): hide the expand and collapse 
+buttons. In GTK, branches will be only expanded programatically. In Motif it did 
+not work and crash the test. (since 3.0)</p>
+
+  
+<p><strong>HIDELINES</strong> (creation only): hide the lines that connect the 
+nodes in the hierarchy. (since 3.0)</p>
+<p><strong>INDENTATION</strong>: sets the identation level in pixels. The visual 
+effect of changing the indentation is highly system dependent. In GTK it acts as 
+an addtional ident value, and lines does not follow the extra indent. In Windows 
+is limited to a minimum of 5 pixels. (since 3.0)</p>
 
   
 <p> 
@@ -47,23 +63,14 @@ layout use smaller values.</p>
   &quot;NO&quot;.</p>
 <p>&nbsp;</p>
 
-<p><strong>SPACING</strong>: internal padding for each item. Notice that 
+<p class="style1"><strong>SPACING</strong>: internal padding for each item. Notice that 
 vertically the distance between each item will be actually 2x the spacing. It 
 also affects the horizontal margin of the item. In Windows, the text is aligned 
 at the top left of the item always. Valid only when DROPDOWN=NO. (since 3.0)</p>
 
   
-<p><strong>TOPITEM</strong> (write-only): position the given item at the top of 
+<p class="style1"><strong>TOPITEM</strong> (write-only): position the given item at the top of 
 the list or make it visible. Valid only when DROPDOWN=NO. (since 3.0)</p>
-
-<p><strong>VISIBLECOLUMNS</strong>: Defines the number of visible columns for 
-the <strong>Natural</strong> <strong>Size</strong>, this means that will act 
-also as minimum number of visible columns. It uses a wider character size then the one used for the SIZE 
-attribute so strings will fit better without the need of extra columns. (since 3.0)</p>
-
-<p><strong>VISIBLELINES</strong>: When DROPDOWN=NO defines the number of visible 
-lines for the <strong>Natural</strong> <strong>Size</strong>, this means that 
-will act also as minimum number of visible lines. (since 3.0)</p>
 
   
   
@@ -185,9 +192,9 @@ stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
     Default:
     &quot;IMGEXPANDED&quot;.</p>
 <h3><a name="nodes">Nodes</a></h3>
-<p><strong>NAME</strong>:
+<p><strong>TITLE</strong>:
   the text label of the 
-  selected node. Using the &quot;<b>NAMEid</b>&quot; form, where id is the node identifier, it is possible to 
+  selected node. Using the &quot;<strong>TITLE</strong><b>id</b>&quot; form, where id is the node identifier, it is possible to 
   change the name of any node. </p>
 <p><strong>STATE</strong>:
   the state of the 
@@ -245,10 +252,11 @@ INSERTLEAF</strong>.</p>
 <p><strong>ADDBRANCHid </strong>(write only):
   Same as <strong>ADDLEAF</strong> for branches. Branches can be created 
 expanded or collapsed depending on <strong>ADDEXPANDED</strong>.</p>
-<p><strong>INSERTLEAFid</strong>, <strong>INSERTBRANCHid </strong>
-(write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
-the depth of the new node is always the same of the reference node. 
-</p>
+
+<p><strong>EXPANDALL </strong>(write only): expand or contracts all nodes. Can 
+be YES (expand all), or NO (contract all). The root node always remains 
+expanded. (since 3.0)</p>
+
 <p><strong>DELNODEid </strong>(write only):
   Removes a node and or its children. The root cannot be removed. Possible values:</p>
 <blockquote>
@@ -263,10 +271,12 @@ the depth of the new node is always the same of the reference node.
     children), id is always ignored</li>
 </ul>
 </blockquote>
+<p><strong>INSERTLEAFid</strong>, <strong>INSERTBRANCHid </strong>
+(write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
+the depth of the new node is always the same of the reference node. 
+(since 3.0)</p>
 <p><b>RENAME</b><strong> </strong>(write only):<b> </b>Forces a rename action to take place. If SHOWRENAME=YES then 
   does in-place rename, else just calls the RENAMENODE_CB. The value is ignored.</p>
-
-<p><strong>EXPANDALL </strong>(write only): </p>
 
 </body>
 

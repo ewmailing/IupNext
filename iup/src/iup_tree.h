@@ -17,7 +17,7 @@ extern "C" {
 
 void iupdrvTreeInitClass(Iclass* ic);
 
-void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* name, int add);
+void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* title, int add);
 
 /* Structure of the tree */
 struct _IcontrolData
@@ -32,6 +32,8 @@ struct _IcontrolData
 
   int rename_caret;      
   int rename_selection;
+
+  int add_expanded;
 
   int id_control;  /* id control to find and replace items inside the tree */
 };
