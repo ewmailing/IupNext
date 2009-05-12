@@ -930,7 +930,7 @@ static char* motTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
   return depth;
 }
 
-static int motTreeSetDepthAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   Widget wItemParent;
   WidgetList wRoot;
@@ -2293,7 +2293,7 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   /* IupTree Attributes - NODES */
   iupClassRegisterAttributeId(ic, "STATE",  motTreeGetStateAttrib,  motTreeSetStateAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "DEPTH",  motTreeGetDepthAttrib,  motTreeSetDepthAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "DEPTH",  motTreeGetDepthAttrib,  NULL, IUPAF_READONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "KIND",   motTreeGetKindAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "PARENT", motTreeGetParentAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COLOR",  motTreeGetColorAttrib,  motTreeSetColorAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

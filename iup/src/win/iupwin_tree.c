@@ -1026,7 +1026,7 @@ static char* winTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
   return depth;
 }
 
-static int winTreeSetDepthAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int winTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   int curDepth, newDepth;
   HTREEITEM hBrotherItem, hParent;
@@ -2123,7 +2123,7 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   /* IupTree Attributes - NODES */
   iupClassRegisterAttributeId(ic, "STATE",  winTreeGetStateAttrib,  winTreeSetStateAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "DEPTH",  winTreeGetDepthAttrib,  winTreeSetDepthAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "DEPTH",  winTreeGetDepthAttrib,  NULL, IUPAF_READONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "KIND",   winTreeGetKindAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "PARENT", winTreeGetParentAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NAME",   winTreeGetTitleAttrib,   winTreeSetTitleAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

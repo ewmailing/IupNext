@@ -12,27 +12,43 @@ and the other, called when the right mouse button is pressed, opens a menu with 
 #include "iupkey.h"
 
 
-/* Callback called when a leaf is added by the menu. */
 static int addleaf(void)
 {
-  static char attr[10];
+  char attr[50];
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
   sprintf(attr, "ADDLEAF%d", id);
   IupSetAttribute(tree, attr, "");
-  IupSetAttribute(tree, "REDRAW", "YES");
   return IUP_DEFAULT;
 }
 
-/* Callback called when a branch is added by the menu. */
+static int insertleaf(void)
+{
+  char attr[50];
+  Ihandle* tree = IupGetHandle("tree");
+  int id = IupGetInt(tree, "VALUE");
+  sprintf(attr, "INSERTLEAF%d", id);
+  IupSetAttribute(tree, attr, "");
+  return IUP_DEFAULT;
+}
+
 static int addbranch(void)
 {
-  static char attr[10];
+  char attr[50];
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
   sprintf(attr, "ADDBRANCH%d", id);
   IupSetAttribute(tree, attr, "");
-  IupSetAttribute(tree, "REDRAW", "YES");
+  return IUP_DEFAULT;
+}
+
+static int insertbranch(void)
+{
+  char attr[50];
+  Ihandle* tree = IupGetHandle("tree");
+  int id = IupGetInt(tree, "VALUE");
+  sprintf(attr, "INSERTBRANCH%d", id);
+  IupSetAttribute(tree, attr, "");
   return IUP_DEFAULT;
 }
 
@@ -45,19 +61,23 @@ static int text_cb(Ihandle* self, int c, char *after)
   {
     Ihandle *tree = IupGetHandle("tree");
     IupSetAttribute(tree, "NAME",   after);
-    IupSetAttribute(tree, "REDRAW", "YES");
     return IUP_CLOSE;
   }
   
   return IUP_DEFAULT;
 }
 
-/* Callback called when a node is removed by the menu. */
 static int removenode(void)
 {
   Ihandle* tree = IupGetHandle("tree");
   IupSetAttribute(tree, "DELNODE", "MARKED");
-  IupSetAttribute(tree, "REDRAW",  "YES");
+  return IUP_DEFAULT;
+}
+
+static int removechild(void)
+{
+  Ihandle* tree = IupGetHandle("tree");
+  IupSetAttribute(tree, "DELNODE", "CHILDREN");
   return IUP_DEFAULT;
 }
 
@@ -131,14 +151,10 @@ static int dragdrop_cb(Ihandle* ih, int drag_id, int drop_id, int shift, int con
   return IUP_DEFAULT;
 }
 
-/* Callback called when a key is hit */
 static int k_any_cb(Ihandle* ih, int c)
 {
   if (c == K_DEL) 
-  {
-    IupSetAttribute(ih, "DELNODE", "MARKED");
-    IupSetAttribute(ih, "REDRAW",  "YES");
-  }
+    IupSetAttribute(ih, "DELNODE", "SELECTED");
 
   return IUP_DEFAULT;
 }
@@ -147,22 +163,58 @@ static int selectnode(Ihandle* ih)
 {
   Ihandle* tree = IupGetHandle("tree");
   IupSetAttribute(tree, "VALUE",  IupGetAttribute(ih, "TITLE"));
-  IupSetAttribute(tree, "REDRAW", "YES");
   return IUP_DEFAULT;
 }
 
-/* Callback called when the right mouse button is pressed */
+static int nodeinfo(Ihandle* ih)
+{
+  char attr[50], *kind;
+  Ihandle* tree = IupGetHandle("tree");
+  int branch = 0, id = IupGetInt(tree, "VALUE");
+  printf("\nNode Info:\n");
+  printf("  ID=%d\n", id);
+  sprintf(attr, "TITLE%d", id);
+  printf("  TITLE=%s\n", IupGetAttribute(tree, attr));
+  sprintf(attr, "DEPTH%d", id);
+  printf("  DEPTH=%s\n", IupGetAttribute(tree, attr));
+  sprintf(attr, "KIND%d", id);
+  kind = IupGetAttribute(tree, attr);
+  printf("  KIND=%s\n", kind);
+  if (strcmp(kind, "BRANCH")==0) branch = 1;
+  if (branch)
+  {
+    sprintf(attr, "STATE%d", id);
+    printf("  STATE=%s\n", IupGetAttribute(tree, attr));
+  }
+  sprintf(attr, "IMAGE%d", id);
+  printf("  IMAGE=%s\n", IupGetAttribute(tree, attr));
+  if (branch)
+  {
+    sprintf(attr, "IMAGEEXPANDED%d", id);
+    printf("  IMAGEEXPANDED=%s\n", IupGetAttribute(tree, attr));
+  }
+  sprintf(attr, "MARKED%d", id);
+  printf("  MARKED=%s\n", IupGetAttribute(tree, attr));
+  sprintf(attr, "COLOR%d", id);
+  printf("  COLOR=%s\n", IupGetAttribute(tree, attr));
+  return IUP_DEFAULT;
+}
+
 static int rightclick_cb(Ihandle* ih, int id)
 {
   Ihandle *popup_menu;
-
-  static char id_string[10];
+  char attr[50];
 
   popup_menu = IupMenu(
+    IupItem ("Node Info","nodeinfo"),
+    IupItem ("Rename Node","renamenode"),
+    IupSeparator(),
     IupItem ("Add Leaf","addleaf"),
     IupItem ("Add Branch","addbranch"),
-    IupItem ("Rename Node","renamenode"),
+    IupItem ("Insert Leaf","insertleaf"),
+    IupItem ("Insert Branch","insertbranch"),
     IupItem ("Remove Node","removenode"),
+    IupItem ("Remove Children","removechild"),
     IupSubmenu("Selection", IupMenu(
       IupItem ("ROOT", "selectnode"),
       IupItem ("LAST", "selectnode"),
@@ -179,14 +231,18 @@ static int rightclick_cb(Ihandle* ih, int id)
       NULL)),
     NULL);
     
+  IupSetFunction("nodeinfo", (Icallback) nodeinfo);
   IupSetFunction("selectnode", (Icallback) selectnode);
   IupSetFunction("addleaf",    (Icallback) addleaf);
   IupSetFunction("addbranch",  (Icallback) addbranch);
+  IupSetFunction("insertleaf",    (Icallback) insertleaf);
+  IupSetFunction("insertbranch",  (Icallback) insertbranch);
   IupSetFunction("removenode", (Icallback) removenode);
+  IupSetFunction("removechild", (Icallback) removechild);
   IupSetFunction("renamenode", (Icallback) renamenode);
 
-  sprintf(id_string, "%d", id);
-  IupSetAttribute(ih, "VALUE", id_string);
+  sprintf(attr, "%d", id);
+  IupSetAttribute(ih, "VALUE", attr);
   IupPopup(popup_menu, IUP_MOUSEPOS, IUP_MOUSEPOS);
 
   IupDestroy(popup_menu);
@@ -213,8 +269,8 @@ static void init_tree(void)
 
 //  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_10");
 
-  IupSetAttribute(tree, "CTRL",         "YES");
-  IupSetAttribute(tree, "SHIFT",        "YES");
+//  IupSetAttribute(tree, "CTRL",         "YES");
+//  IupSetAttribute(tree, "SHIFT",        "YES");
 //  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
 //  IupSetAttribute(tree, "SHOWRENAME",   "YES");
 
@@ -243,20 +299,21 @@ static void init_tree_nodes1(void)  /* create from bottom to top */
   Ihandle* tree = IupGetHandle("tree");
 
   /* the current node is the ROOT */
+  //IupSetAttribute(tree, "VALUE", "0");
   IupSetAttribute(tree, "TITLE",         "Figures");  /* title of the root, id=0 */
   IupSetAttribute(tree, "ADDBRANCH",    "3D");    /* 3D=1 */
   IupSetAttribute(tree, "ADDBRANCH",    "2D");    /* add to the root, so it will be before "3D", now 2D=1, 3D=2 */
-  IupSetAttribute(tree, "ADDLEAF",      "test");  /* add to the root, also before "2D", now test=1, 2D=2, 3D=3 */
-  IupSetAttribute(tree, "ADDBRANCH1",   "parallelogram");  /* add after "test", now test=1, parallelogram=2, 2D=3, 3D=4  */
-  IupSetAttribute(tree, "ADDLEAF2",     "diamond");
-  IupSetAttribute(tree, "ADDLEAF2",     "square");
-  IupSetAttribute(tree, "ADDBRANCH1",   "triangle");       /* add after "test" */
-  IupSetAttribute(tree, "ADDLEAF2",     "scalenus");
-  IupSetAttribute(tree, "ADDLEAF2",     "isoceles");
-  IupSetAttribute(tree, "ADDLEAF2",     "equilateral");
-
+  IupSetAttribute(tree, "ADDBRANCH",   "parallelogram"); /* id=1 */ 
+  IupSetAttribute(tree, "ADDLEAF1",     "diamond");
+  IupSetAttribute(tree, "ADDLEAF1",     "square");
+  IupSetAttribute(tree, "ADDBRANCH",   "triangle");       
+  IupSetAttribute(tree, "ADDLEAF1",     "scalenus");
+  IupSetAttribute(tree, "ADDLEAF1",     "isoceles");
+  IupSetAttribute(tree, "ADDLEAF1",     "equilateral");
+  IupSetAttribute(tree, "ADDLEAF",      "Other");
 
   IupSetAttribute(tree, "VALUE",        "6");
+  IupSetAttribute(tree, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
 }
 
 static void init_tree_nodes(void)  /* create from top to bottom */
@@ -264,7 +321,7 @@ static void init_tree_nodes(void)  /* create from top to bottom */
   Ihandle* tree = IupGetHandle("tree");
 
   IupSetAttribute(tree, "TITLE0",         "Figures");  
-  IupSetAttribute(tree, "ADDLEAF0",      "test");     /* new id=1 */
+  IupSetAttribute(tree, "ADDLEAF0",      "Other");     /* new id=1 */
   IupSetAttribute(tree, "ADDBRANCH1",   "triangle");  /* new id=2 */     
   IupSetAttribute(tree, "ADDLEAF2",     "equilateral");  /* ... */
   IupSetAttribute(tree, "ADDLEAF3",     "isoceles");
@@ -276,7 +333,7 @@ static void init_tree_nodes(void)  /* create from top to bottom */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
 
   IupSetAttribute(tree, "VALUE",        "6");
-  IupSetAttribute(tree, "RASTERSIZE", NULL);
+  IupSetAttribute(tree, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
 }
 
 void TreeTest(void)

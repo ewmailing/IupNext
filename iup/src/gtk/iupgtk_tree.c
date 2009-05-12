@@ -749,7 +749,7 @@ static char* gtkTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
   return depth;
 }
 
-static int gtkTreeSetDepthAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int gtkTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
   int curDepth, newDepth;
@@ -1971,7 +1971,7 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   /* IupTree Attributes - NODES */
   iupClassRegisterAttributeId(ic, "STATE",  gtkTreeGetStateAttrib,  gtkTreeSetStateAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "DEPTH",  gtkTreeGetDepthAttrib,  gtkTreeSetDepthAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "DEPTH",  gtkTreeGetDepthAttrib,  NULL, IUPAF_READONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "KIND",   gtkTreeGetKindAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "PARENT", gtkTreeGetParentAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COLOR",  gtkTreeGetColorAttrib,  gtkTreeSetColorAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

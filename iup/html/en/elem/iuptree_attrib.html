@@ -26,9 +26,8 @@
 control. Default: YES. (since 3.0)</p>
 
   
-<p><a href="../attrib/iup_expand.html">EXPAND</a> (<font size="3">non inheritable</font>):
-  The default value is "YES". The natural size is the size of 1 
-  character.</p>
+<p><a href="../attrib/iup_expand.html">EXPAND</a> (<font size="3">non inheritable</font>): 
+The default value is &quot;YES&quot;.</p>
 <p><strong>HIDEBUTTONS</strong> (creation only): hide the expand and collapse 
 buttons. In GTK, branches will be only expanded programatically. In Motif it did 
 not work and crash the test. (since 3.0)</p>
@@ -210,12 +209,11 @@ stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
     </li>
 </ul>
     </blockquote>
-    <p><strong>DEPTH</strong>:
-  If set, it defines the node's depth. Does 
-  not verify is the resulting tree is valid. If retrieved, it returns the node's depth. Using the &quot;<b>DEPTHid</b>&quot; form, where id is the node identifier, it is possible to 
+    <p><strong>DEPTH </strong>(read only):
+  returns the selected node's depth. Using the &quot;<b>DEPTHid</b>&quot; form, where id is the node identifier, it is possible to 
   refer to any node. </p>
 <p><strong>KIND </strong>(read only):
-  Returns the kind of the selected node. Using 
+  returns the kind of the selected node. Using 
   the &quot;<b>KINDid</b>&quot; form, where id is the node identifier, it is possible to 
   retrieve the kind of any node. Possible values: 
 </p>
@@ -228,7 +226,7 @@ stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
 </ul>
 </blockquote>
 <p><strong>PARENT </strong>(read only):
-  Returns the identifier of the selected 
+  returns the identifier of the selected 
   node's parent. Using the &quot;<b>PARENTid</b>&quot; form, where id is the node 
 identifier, it is possible to retrieve the identifier of any node.</p>
 <p><strong>COLOR</strong>:
@@ -264,7 +262,7 @@ expanded. (since 3.0)</p>
   <li>&quot;SELECTED&quot;:
     deletes the specified node and its children</li>
   <li>&quot;CHILDREN&quot;:
-    deletes the children of the 
+    deletes only the children of the 
   specified node</li>
   <li>&quot;MARKED&quot;:
     deletes all marked nodes (and all their 

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -7,6 +7,9 @@
 <style type="text/css">
 .style1 {
 	font-size: large;
+}
+.style2 {
+	text-align: center;
 }
 </style>
 </head>
@@ -115,23 +118,65 @@ RASTERSIZE<br>
   Action generated when the right mouse button 
   is pressed over a node.</p>
 <h3><a name="Notes">Notes</a></h3>
-<p>Branches may be added in IupLua using a Lua Table (see Example 2).&nbsp; </p>
 <h4>Hierarchy</h4>
 <p>Branches can contain other branches or leaves. The tree always has at least one branch, 
   the <b>root</b>, which will be the parent of all the first level branches and leaves. 
-</p>
-<p>Scrollbars are automatically displayed if the tree is greatter than its 
-display area.</p>
-<h4>Structure</h4>
-<p>The IupTree is stored as a list, so that each node or branch has an associated identification number 
-  (id), starting by the root, with id=0. However, this number does not always correspond to the same 
-  node as the tree is modified. For example, a node with id 2 will always refer to the third node in the tree. For that 
-  reason, there is also userid, which allows identifying a specific node. The userid always refers to the same node (just as the associated text). The userid may contain a user-created structure allowing the identification of a node. 
-</p>
+The root node has id=0 and depth=0. The tree nodes have a sequencial identification number 
+  (id), starting by the root, with id=0, and increases for each node independent 
+from the node depth. The following picture ilustrates the numbering of the nodes 
+in a tree.</p>
+<p class="style2">
+<img src="../../../../iup/html/en/elem/images/iuptree.png" width="165" height="279"><br>
+<strong>Tree nodes and Ids</strong></p>
+<p>Since you have to add each node the creation of this tree can be done in 
+several ways because the action attributes ADD* and INSERT* use an existent node 
+to position the new node. The following pseudo code initializes the tree from top to 
+bottom sequencially:</p>
+<pre>
+TITLE0 = "Figures"
+  ADDLEAF0 = "Other"    // Use the previous node as reference
+  ADDBRANCH1 = "triangle"
+    ADDLEAF2 = "equilateral"
+    ADDLEAF3 = "isoceles"
+    ADDLEAF4 = "scalenus"
+  INSERTBRANCH2 = "parallelogram"  // Use the previous node at the same depth as reference
+    ADDLEAF6 = "square"
+    ADDLEAF7 = "diamond"
+  INSERTBRANCH6 = "2D"
+  INSERTBRANCH9 = "3D"
+</pre>
+<p>The following pseudo code initializes the tree from bottom to top 
+sequencially (except for branches), and also uses the current selected node:</p>
+<pre>
+VALUE = 0  // Selects the root (default for a new element)
+TITLE = "Figures"
+ADDBRANCH = "3D"
+ADDBRANCH = "2D"
+ADDBRANCH = "parallelogram"
+ADDLEAF1 = "diamond"
+ADDLEAF1 = "square"
+ADDBRANCH = "triangle"
+ADDLEAF1 = "scalenus"
+ADDLEAF1 = "isoceles"
+ADDLEAF1 = "equilateral"
+ADDLEAF = "Other"
+</pre>
+<p>Notice that in both cases the initialization of the tree is highly dependent 
+on the order of the operations. Currently we can NOT garantie the order before 
+mapping to the native system, so the initialization must be performed after the 
+tree is mapped.</p>
 <p>Each node also contains its depth level, starting by the root, which has depth 0. To allow inserting nodes in any position, 
   sometimes the depth of a node must be explicitly changed. For instance, if you create a leaf in a child branch of the 
   root, it will be created with depth 2. To make it become a child of the root, its 
   depth must be set to 1.</p>
+<p>Scrollbars are automatically displayed if the tree is greatter than its 
+display area.</p>
+<p>Branches may be added in IupLua using a Lua Table (see Example 2).&nbsp; </p>
+<h4>User Id</h4>
+<p>The node Id does not always correspond to the same 
+  node as the tree is modified. For example, a node with id 2 will always refer to the third node in the tree. For that 
+  reason, there is also the <strong>UserId</strong>, which allows identifying a specific node. The 
+<strong>UserId </strong>always refers to the same node. The <strong>UserId</strong> may contain a user-created structure allowing the identification of a node.</p>
 <h4>Images</h4>
 <p>IupTree has three types of images: one associated to the leaf, one to the collapsed branch and 
   the other to the expanded branch. Each image can be changed, both globally and individually.</p>
@@ -142,10 +187,6 @@ display area.</p>
 &quot;IMAGEBRANCHCOLLAPSED&quot; uses &quot;IMGCOLLAPSED&quot;
 &quot;IMAGEBRANCHEXPANDED&quot; uses &quot;IMGEXPANDED&quot;</pre>
 <pre>&quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are designed for use as &quot;IMAGELEAF&quot;</pre>
-<h4>Scrollbar</h4>
-<p>IupTree&#8217;s scrollbar is activated by default and works automatically. When a node leaves the 
-  visible area, the scrollbar automatically scrolls so as to make it visible. We recommend not changing the SCROLLBAR 
-  attribute. </p>
 <h4>Fonts</h4>
 <p>The fonts used by IupTree are like the ones defined by IUP (see attribute FONT). We recommend using only IUP-defined fonts. 
 </p>
@@ -293,8 +334,6 @@ IupTreeSetAttribute(n, &quot;ADDLEAF&quot; , 10, v) = IupSetAttribute(n, &quot;A
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <p>Creates a IupTree with the values shown on the images below, and allows the user to change them 
   dynamically.</p>
-<p align="center">
-<img src="iuptree.gif" alt="iuptree.gif (8Kb)" width="236" height="313"></p>
 <h3><a name="SeeAlso">See Also</a></h3>
 
 <p>&nbsp;</p>
