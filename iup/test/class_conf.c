@@ -7,10 +7,10 @@
 #include "../src/iup_class.h"
 #include "../src/iup_register.h"
 
-#define MAX_ITEMS 100
+#define MAX_ITEMS 200
 
-char* callback_str[] = {"idle", "", "Ii", "ccc", "d",
-                        "ff", "fiis", "i", "iff", "ii",
+char* callback_str[] = {"idle", "", "Ii", "ccc", "d", "iiiic",
+                        "ff", "fiis", "i", "iff", "ii", "iic", 
                         "iiIII", "iii", "iiii", "iiiiii", "iiiiiis",
                         "iiiis", "iinsii", "iis", "is", "nii",
                         "nn", "s", "sii", "siii", "ss", "i=s", "ii=s",

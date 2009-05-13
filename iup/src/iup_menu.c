@@ -235,13 +235,16 @@ Iclass* iupItemGetClass(void)
   /* Class functions */
   ic->Create = iItemCreateMethod;
 
+  /* Callbacks */
+  iupClassRegisterCallback(ic, "HIGHLIGHT_CB", "");
+  iupClassRegisterCallback(ic, "ACTION", "");
+
   /* Common */
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "AUTOTOGGLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "KEY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HIDEMARK", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
 
   iupdrvItemInitClass(ic);
 
@@ -260,6 +263,9 @@ Iclass* iupSubmenuGetClass(void)
 
   /* Class functions */
   ic->Create = iSubmenuCreateMethod;
+
+  /* Callbacks */
+  iupClassRegisterCallback(ic, "HIGHLIGHT_CB", "");
 
   /* Common */
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
@@ -284,6 +290,10 @@ Iclass* iupMenuGetClass(void)
 
   /* Class functions */
   ic->Create = iMenuCreateMethod;
+
+  /* Callbacks */
+  iupClassRegisterCallback(ic, "OPEN_CB", "");
+  iupClassRegisterCallback(ic, "MENUCLOSE_CB", "");
 
   /* Common */
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);

@@ -778,9 +778,9 @@ Iclass* iupMatrixGetClass(void)
 
   /* IupMatrix Callbacks */
   /* --- Interaction --- */
-  iupClassRegisterCallback(ic, "ACTION_CB",  "iiiic");
-  iupClassRegisterCallback(ic, "CLICK_CB",   "iic");
-  iupClassRegisterCallback(ic, "RELEASE_CB", "iic");
+  iupClassRegisterCallback(ic, "ACTION_CB",  "iiiis");
+  iupClassRegisterCallback(ic, "CLICK_CB",   "iis");
+  iupClassRegisterCallback(ic, "RELEASE_CB", "iis");
   iupClassRegisterCallback(ic, "MOUSEMOVE_CB", "ii");
   iupClassRegisterCallback(ic, "ENTERITEM_CB", "ii");
   iupClassRegisterCallback(ic, "LEAVEITEM_CB", "ii");
@@ -797,7 +797,7 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterCallback(ic, "EDITION_CB", "iii");
   /* --- Callback Mode --- */
   iupClassRegisterCallback(ic, "VALUE_CB", "ii=s");
-  iupClassRegisterCallback(ic, "VALUE_EDIT_CB", "iic");
+  iupClassRegisterCallback(ic, "VALUE_EDIT_CB", "iis");
   iupClassRegisterCallback(ic, "MARK_CB", "ii");
   iupClassRegisterCallback(ic, "MARKEDIT_CB", "iii");
 
@@ -809,6 +809,10 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttributeId(ic, "FONT", iMatrixGetFontAttrib, iMatrixSetFontAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId(ic, "FRAMEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
+
+  /* IupMatrix Attributes - COLUMN */
+  iupClassRegisterAttributeId(ic, "ALIGNMENT", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "SORTSIGN", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - SIZE */
   iupClassRegisterAttribute(ic, "NUMLIN", iMatrixGetNumLinAttrib, iupMatrixSetNumLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -847,6 +851,7 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttribute(ic, "CARET", iMatrixGetCaretAttrib, iMatrixSetCaretAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", iMatrixGetSelectionAttrib, iMatrixSetSelectionAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MULTILINE", iMatrixGetMultilineAttrib, iMatrixSetMultilineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MASK", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

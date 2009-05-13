@@ -90,7 +90,7 @@ void iupTextUpdateFormatTags(Ihandle* ih)
   ih->data->formattags = NULL;
 }
 
-static int iTextSetAddFormatTagHandleAttrib(Ihandle* ih, const char* value)
+int iupTextSetAddFormatTagHandleAttrib(Ihandle* ih, const char* value)
 {
   Ihandle* formattag = (Ihandle*)value;
   if (!iupObjectCheck(formattag))
@@ -119,9 +119,9 @@ static int iTextSetAddFormatTagHandleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iTextSetAddFormatTagAttrib(Ihandle* ih, const char* value)
+int iupTextSetAddFormatTagAttrib(Ihandle* ih, const char* value)
 {
-  return iTextSetAddFormatTagHandleAttrib(ih, (char*)IupGetHandle(value));
+  return iupTextSetAddFormatTagHandleAttrib(ih, (char*)IupGetHandle(value));
 }
 
 static char* iTextGetMaskDataAttrib(Ihandle* ih)
@@ -465,11 +465,9 @@ Iclass* iupTextGetClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* IupText only */
-  iupClassRegisterAttribute(ic, "SCROLLBAR", iTextGetScrollbarAttrib, iTextSetScrollbarAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SCROLLBAR", iTextGetScrollbarAttrib, iTextSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MULTILINE", iTextGetMultilineAttrib, iTextSetMultilineAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "APPENDNEWLINE", iTextGetAppendNewlineAttrib, iTextSetAppendNewlineAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ADDFORMATTAG", NULL, iTextSetAddFormatTagAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ADDFORMATTAG_HANDLE", NULL, iTextSetAddFormatTagHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "MASKCASEI", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASK", iTextGetMaskAttrib, iTextSetMaskAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -479,9 +477,13 @@ Iclass* iupTextGetClass(void)
 
   iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPIN", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINALIGN", NULL, NULL, IUPAF_SAMEASSYSTEM, "RIGHT", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPINAUTO", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPINWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WORDWRAP", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);
 
   iupdrvTextInitClass(ic);
 

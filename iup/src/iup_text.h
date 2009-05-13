@@ -23,6 +23,8 @@ char* iupTextGetPaddingAttrib(Ihandle* ih);
 char* iupTextGetNCAttrib(Ihandle* ih);
 int iupTextSetFormattingAttrib(Ihandle* ih, const char* value);
 char* iupTextGetFormattingAttrib(Ihandle* ih);
+int iupTextSetAddFormatTagAttrib(Ihandle* ih, const char* value);
+int iupTextSetAddFormatTagHandleAttrib(Ihandle* ih, const char* value);
 
 struct _IcontrolData 
 {
