@@ -22,7 +22,8 @@
   several application-specific drawing, such as: chess tables, tiles editors, degrade scales, drawable spreadsheets and 
   so forth. </p>
 <p>This element is mostly based on application callbacks 
-  functions that determine the number of cells (rows and coluns), their appearence and interation. This mechanism offers 
+  functions that determine the number of cells (rows and coluns), their 
+appearence and interation. This mechanism offers 
   full flexibility to applications, but requires programmers attention to avoid infinite loops inside this functions. 
   Using callbacks, cells can be also grouped to form 
   major or hierarchical elements, such as headers,&nbsp; footers etc. This callback approach was intentionally chosen to allow all cells
@@ -74,14 +75,14 @@ redrawn. When REPAINT attribute is set, BUFFERIZE is automatically set to &quot;
   or &quot;%d:%d&quot; in C. Output format is &quot;xmin:xmax:ymin:ymax&quot; or 
 &quot;%d:%d:%d:%d&quot; in C.</p>
 <p><b>NON_SCROLLABLE_LINES:</b> Determines the number of non-scrollable lines 
-  (vertical headers) that should allways be visible despite the vertical scrollbar position. It can&nbsp; be any 
+  (vertical headers) that should always be visible despite the vertical scrollbar position. It can&nbsp; be any 
   non-negative integer value. Default: &quot;0&quot;</p>
 <p><b>NON_SCROLLABLE_COLS:</b> Determines the number of non-scrollable columns 
-  (horizontal headers) that should allways be visible despite the horizontal scrollbar position. It can be any 
+  (horizontal headers) that should always be visible despite the horizontal scrollbar position. It can be any 
   non-negative integer value. Default: &quot;0&quot;</p>
 <p><b>ORIGIN:</b> Sets the first visible line and column positions. This attribute is 
   set by a formatted string &quot;%d:%d&quot; (C syntax), where each &quot;%d&quot; represent the line and column integer 
-  indexes respectely.</p>
+  indexes respectively.</p>
 <p><b>REPAINT</b>(write-only) (<font SIZE="3">non inheritable</font>)<b>:</b> When set with any value, provokes the control 
 to be redrawn.</p>
 <p> <a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): there 
@@ -105,7 +106,7 @@ POSITION</a>,
 also accepted.&nbsp;</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 
-<p><strong>DRAW_CB</strong><tt>:</tt> called when a specif cell needs to be 
+<p><strong>DRAW_CB</strong><tt>:</tt> called when a specific cell needs to be 
 redrawn.</p>
 <pre>int function(Ihandle* <b>ih</b>, int <b>line</b>, int <b>column</b>, int <b>xmin</b>, int <b>xmax</b>, int <b>ymin</b>, int <b>ymax</b>, cdCanvas* <strong>canvas</strong>);  [in C]<strong>
 elem</strong>:draw_cb(<b>line</b>, <b>column</b>, <b>xmin</b>, <b>xmax</b>, <b>ymin</b>, <b>ymax</b>: number, <strong>canvas</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -116,19 +117,20 @@ elem</strong>:draw_cb(<b>line</b>, <b>column</b>, <b>xmin</b>, <b>xmax</b>, <b>y
     the grid position inside the control that is being 
     redrawn, in grid coordinates.<br>
 <strong>xmin, xmax, ymin, ymax</strong>: the raster bounding box of the redrawn 
-    cells, where the application can use CD functions to draw anything. If the atributte IUP_CLIPPED is set (the 
+    cells, where the application can use CD functions to draw anything. If the 
+attribute IUP_CLIPPED is set (the 
     default), all CD graphical primitives is clipped to the bounding region.<br>
 <strong>canvas</strong>: internal canvas CD used to draw the cells.</p>
 
 <p><strong>HEIGHT_CB</strong><tt>:</tt> called when the controls needs to know a (eventually new) line 
-  heigth.</p>
+  height.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <b>line</b>);  [in C]
 <strong>elem</strong>:height_cb(<strong>line</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
     <b>line:</b> the line index</p>
-<p class="info"><u>Return</u>: an integer that specifies the desired heigth (in 
+<p class="info"><u>Return</u>: an integer that specifies the desired height (in 
 pixels). Default is 30 pixels.</p>
 <p><strong>HSPAN_CB</strong><tt>:</tt> called when the control needs to know if a cell should be 
   horizontally spanned.</p>
@@ -137,12 +139,12 @@ pixels). Default is 30 pixels.</p>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
-    <strong>line, column</strong><b>:</b> the line and colun indexes (in grid coordinates)</p>
+    <strong>line, column</strong><b>:</b> the line and column indexes (in grid coordinates)</p>
 <p class="info"><u>Return</u>: an integer that specifies the desired span. 
 Default is 1 (no span).</p>
 
 <p><strong>MOUSECLICK_CB</strong><tt>:</tt> called when a color is selected. The primary color is
-  selected with the left mouse button, and if existant the secondary is
+  selected with the left mouse button, and if existent the secondary is
   selected with the right mouse button.</p>
 <pre>int function(Ihandle* <b>ih</b>, int <b>button</b>, int <b>pressed</b>, int <b>line</b>, int <b>column</b>, int <b>x</b>, int <b>y</b>, char* <b>status</b>);  [in C]<strong>
 elem</strong>:mouseclick_cb(<strong>button, pressed, line, column, x, y</strong>: number, <b>string: </b>status) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -185,7 +187,7 @@ activated.</p>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
-    <strong>line, column</strong><b>:</b> the first visible line and colunm indexes (in grid coordinates)</p>
+    <strong>line, column</strong><b>:</b> the first visible line and column indexes (in grid coordinates)</p>
 <p class="info"><u>Return</u>: If IUP_IGNORE the cell is not redrawn. By default 
 the cell is always redrawn.</p>
   <p><strong>VSPAN_CB</strong><tt>:</tt> called when the control needs to know if a cell should be 
@@ -195,11 +197,11 @@ the cell is always redrawn.</p>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
-    <strong>line, column</strong><b>:</b> the line and colun indexes (in grid coordinates)</p>
+    <strong>line, column</strong><b>:</b> the line and column indexes (in grid coordinates)</p>
 <p class="info"><u>Return</u>: an integer that specifies the desired span. 
 Default is 1 (no span).</p>
 <p><strong>WIDTH_CB</strong><tt>:</tt> called when the controls needs to know 
-the colunm 
+the column 
   width</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <b>column</b>);  [in C]
 <strong>elem</strong>:width_cb(<strong>column</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>

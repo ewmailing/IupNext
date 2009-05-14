@@ -113,6 +113,7 @@
 <p><strong>APPENDITEM</strong> (write-only, after map): inserts an item after the last 
 item. (since 3.0)</p>
 
+<p><strong>AUTOHIDE</strong>: scrollbars are shown only if they are necessary. Default: "YES".</p>
   
 <p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: Background color of the 
 text.</p>
@@ -158,7 +159,6 @@ button, which displays all items in the list. Can be "YES" or "NO". Default
 	simultaneously (multiple list). Default: "NO". Only valid when EDITBOX=NO 
 	and DROPDOWN=NO.</p>
 
-  
 <p><strong>REMOVEITEM</strong> (write-only, after map): removes the given value. 
 	value starts at 1. If value is NULL removes all the items. (since 3.0)</p>
 
@@ -169,7 +169,7 @@ button, which displays all items in the list. Can be "YES" or "NO". Default
 	or "NO" 
 	(none). Default: "YES". For all systems, when SCROLLBAR=YES 
 	the natural size will always include its size even if the native system 
-	hides the scrollbars. If AUTOHIDE=YES scrollbars are shown only if they are 
+	hides the scrollbars. If <strong>AUTOHIDE</strong>=YES scrollbars are shown only if they are 
 	necessary, by default AUTOHIDE=YES. In Motif, SCROLLBAR=NO is not supported 
 	and if EDITBOX=YES the horizontal scrollbar is never shown.</p>
 
@@ -502,8 +502,8 @@ looses its focus and it gets it back only if the edit box is clicked.</li>
 
 <p> In Windows, if EDITBOX=YES then the tooltips are shown only when the cursor 
 is near the control border. Also the selection and caret attributes are not 
-preserved if the list loses its focus, or in other words these atributes are 
-only usefull in Windows if the list has the focus.</p>
+preserved if the list loses its focus, or in other words these attributes are 
+only useful in Windows if the list has the focus.</p>
 
 
 <h3><a name="Examples">Examples</a></h3>

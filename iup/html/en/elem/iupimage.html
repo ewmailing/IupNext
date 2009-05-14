@@ -53,7 +53,7 @@ imagergba(<strong>width</strong>, <strong>height</strong>, <strong>pixel0</stron
 	pixel_b_0, pixel_r_1, ...).<br>
   <b>line0</b>, <b>line1</b>: unnamed tables, one for each line containing 
   pixels values. See Notes bellow.<br>
-  <b>colors</b>: table named colors containg the colors indices. See Notes 
+  <b>colors</b>: table named colors containing the colors indices. See Notes 
   bellow.</p>
   <p>
   <u>Returns:</u> the identifier of the 
@@ -218,7 +218,7 @@ buttons and labels.</p>
 }</pre>
 <p>But after the image is created in Lua, the line tables are not accessible 
 anymore, since &quot;img[1]&quot; will return the attribute &quot;1&quot; value which is the color 
-&quot;0 1 0&quot;. To acess the original table values you must use &quot;raawget&quot;, for example:</p>
+&quot;0 1 0&quot;. To access the original table values you must use &quot;raawget&quot;, for example:</p>
 <pre>lin1 = rawget(img, 1)</pre>
 <p>will return the first line of the original table. But if the image was 
 created in C then there is no way to access its values.</p>

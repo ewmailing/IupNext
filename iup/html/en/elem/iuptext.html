@@ -132,7 +132,7 @@ the text will be scrolled only when it receives the focus.</p>
   
 <p><strong>CARETPOS</strong> (<font size="3">non inheritable</font>):
   Also the position of the insertion point, but using a zero based character 
-	unique index "pos". Usefull for indexing the VALUE string. See the 
+	unique index "pos". Useful for indexing the VALUE string. See the 
 	Notes bellow if using UTF-8 strings in GTK. (since 
 	3.0)</p>
 
@@ -188,6 +188,9 @@ Works only when FORMATTING=YES. (since 3.0)</p>
   inheritance problems. Default value: "0x0". 
 	In Windows, only the horizontal value is used. (since 3.0)</p>
 
+<p><b>PANGOLAYOUT</b> [GTK Only] (<font SIZE="3">non inheritable</font>): 
+Retrieves the PangoLayout used to display the text. It is used when the text is in a secondary element.</p>
+  
 <p><b>PASSWORD </b>(creation only) [Windows and GTK Only] (<font size="3">non inheritable</font>): Hide the typed character using an "*". 
 	Default: "NO".</p>
 
@@ -250,7 +253,7 @@ MULTILINE (since 3.0).</p>
   
 <p><strong>SELECTIONPOS</strong> (<font size="3">non inheritable</font>):
   Also the selection interval, but using a zero based character 
-	index "<strong>pos1</strong>:<strong>pos2</strong>". Usefull for indexing the VALUE string. 
+	index "<strong>pos1</strong>:<strong>pos2</strong>". Useful for indexing the VALUE string. 
 	The values ALL and NONE are also accepted. See the Notes bellow if using 
 	UTF-8 strings in GTK. (since 3.0)</p>
 
@@ -280,7 +283,7 @@ value is limited to the minimum and maximum values.<br>
 Default: RIGHT. In GTK is always RIGHT.<br>
 
 <strong>SPINWRAP</strong> (creation only): if the position reach a limit it continues from the 
-oposite limit. Default: NO.<br>
+opposite limit. Default: NO.<br>
 
 <strong>SPINAUTO</strong> (creation only): enables the automatic updated of the text contents. 
 Default: YES. Use SPINAUTO=NO and the VALUE attribute during SPIN_CB to control 

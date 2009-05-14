@@ -90,7 +90,7 @@ filedlg() [in LED]</pre>
   It is only valid if the user has pressed OK in the dialog. Not set when 
   DIALOGTYPE=DIR or <strong style="font-weight: 400">MULTIPLEFILES=YES</strong>.</p>
   <p><strong>FILTER</strong>:
-  String containing a list of file filters separated by ';' without spaces. Example: &quot;*.C;*.LED;teste.*&quot;. 
+  String containing a list of file filters separated by ';' without spaces. Example: &quot;*.C;*.LED;test.*&quot;. 
   In Motif only the first filter is used. </p>
   <p><strong>FILTERINFO</strong>:
   (Windows  and GTK Only) Filter's description. If not defined the filter itself will be used as its 
@@ -115,7 +115,7 @@ For example:</p>
   <p><strong>NOCHANGEDIR</strong>:&nbsp;
   Indicates if the current working directory 
   must be restored after the user navigation. Default: &quot;YES&quot;.</p>
-  <p><strong>NOOVERWRITEPROMPT</strong>: do not prompt to overwrite an existant file when 
+  <p><strong>NOOVERWRITEPROMPT</strong>: do not prompt to overwrite an existent file when 
   in
   &quot;SAVE&quot; dialog. Default is
   &quot;NO&quot;, i.e. prompt before overwrite.</p>
@@ -130,7 +130,7 @@ For example:</p>
     &quot;iup.rc&quot; resource file so the preview area can be enabled (not 
     necessary if using &quot;iup.dll&quot;). Valid only if the FILE_CB callback 
 	is 
-  defined, use it to retreive the file name and the necessary attributes to 
+  defined, use it to retrieve the file name and the necessary attributes to 
 	paint the preview area. (in Motif since 3.0)</p>
     
   <blockquote>
@@ -144,7 +144,7 @@ For example:</p>
 	<strong>&nbsp;&nbsp;&nbsp; </strong>Also the attributes WID, HWND, XWINDOW and XDISPLAY are valid and are 
 	relative to the preview area.</p>
 	<p>If the attribute PREVIEWGLCANVAS is defined then it is used as the name 
-	of an existant IupGLCanvas control to be mapped internally to the preview 
+	of an existent IupGLCanvas control to be mapped internally to the preview 
 	canvas. Notice that this is not a fully implemented IupGLCanvas that 
 	inherits from IupCanvas. This does the minimum necessary so you can use 
 	IupGLCanvas auxiliary functions for the preview canvas and call OpenGL 

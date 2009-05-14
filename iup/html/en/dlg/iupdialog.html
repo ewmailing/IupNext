@@ -50,7 +50,7 @@ the <a href="../sample_results_bgcolor_indiv.html">children BGCOLOR</a>. </u1:p>
 (since 3.0)</p>
 <p><a href="../attrib/iup_bgcolor.html">BORDER</a> (<font SIZE="3">non inheritable</font>) 
 (creation only): Shows a resize border around the 
-    dialog. Default: &quot;YES&quot;. BORDER=NO is usefull only when RESIZE=NO, MAXBOX=NO, 
+    dialog. Default: &quot;YES&quot;. BORDER=NO is useful only when RESIZE=NO, MAXBOX=NO, 
     MINBOX=NO, MENUBOX=NO and TITLE=NULL, if any of these are defined there will be always some border.</p>
 <p><a href="../attrib/iup_cursor.html">CURSOR</a> (<font SIZE="3">non inheritable</font>):
     Defines a cursor for the dialog.</p>
@@ -127,8 +127,14 @@ associate a button to a name.</p>
       dialog details, such as title bar, borders, maximize button, etc, are removed. Possible values: YES, NO. In Motif 
       you may have to click in the dialog to set its focus.<br>
       In Motif if set to YES when the dialog is hidden, then it can not be changed after it is visible.</p>
+
+<p><strong>HWND</strong> [Windows Only](<font size="3">non inheritable, 
+read-only</font>): Returns the Windows Window handle. Available in the Windows 
+driver or in the GTK driver in Windows.</p>
+
 <p><strong>MAXBOX</strong> (creation only): Requires a maximize button from the window manager. If 
-    RESIZE=NO then MAXBOX will be set to NO. Default: YES. In Motif the decorations are controled by the Window Manager and may 
+    RESIZE=NO then MAXBOX will be set to NO. Default: YES. In Motif the decorations are 
+controlled by the Window Manager and may 
   not be possible to be changed from IUP. In Windows MAXBOX 
     is hidden only if MINBOX is hidden as well, or else it will be just disabled.</p>
 <p><strong>MAXSIZE</strong>: Maximum size for the dialog in raster units (pixels). 
@@ -144,7 +150,7 @@ associate a menu to a name. See also <a href="../elem/iupmenu.html">IupMenu</a>.
   not be possible to be changed from IUP. In Windows if hidden will 
     hide also MAXBOX and MINBOX.</p>
 <p><strong>MINBOX</strong> (creation only): Requires a minimize button from the window manager. 
-    Default: YES. In Motif the decorations are controled by the Window Manager and may 
+    Default: YES. In Motif the decorations are controlled by the Window Manager and may 
   not be possible to be changed from IUP. In Windows MINBOX is hidden only if MAXBOX is hidden as 
     well, or else it will be just disabled.</p>
 <p><strong>MINSIZE</strong>: Minimum size for the dialog in raster units (pixels). 
@@ -160,7 +166,7 @@ Name of a dialog to be used as parent. </p>
       covers the screen area, menu and decorations will be there but out of the screen. Not used in IupPopup. In UNIX 
       there is a chance that the placement won't work correctly, that depends on the Window Manager.</p>
 <p><strong>RESIZE</strong> (creation only): Allows interactively changing the 
-dialog’s size. Default: YES. In Motif the decorations are controled by the Window Manager and may 
+dialog’s size. Default: YES. In Motif the decorations are controlled by the Window Manager and may 
   not be possible to be changed from IUP. </p>
 <p><strong>SAVEUNDER</strong> [Windows and Motif Only] (creation only): When this attribute is true (YES), 
       the dialog stores the original image of the desktop region it occupies (if the system has enough memory to store 
@@ -176,6 +182,10 @@ dialog’s size. Default: YES. In Motif the decorations are controled by the Win
 IupPopup</strong>. If not defined then the first control than 
 can receive the focus is selected (same effect of calling
 <a href="../func/iupnextfield.html">IupNextField</a> for the dialog).</p>
+<p><strong>XWINDOW</strong> [UNIX Only](<font size="3">non inheritable, 
+read-only</font>): Returns the X-Windows Window (Drawable). Available in the 
+Motif driver or in the GTK driver in UNIX.</p>
+
 <h4>Exclusive [Windows and GTK Only]</h4>
 <p><strong>HIDETASKBAR</strong> [Windows and GTK Only] (write-only): Action attribute that when set to &quot;YES&quot;, hides the dialog, 
 but does not decrement the visible dialog count, does not call SHOW_CB and does 
@@ -184,6 +194,10 @@ and keep the tray icon working without closing the main loop. It has the same
 effect as setting LOCKLOOP=Yes and normally hiding the dialog. IMPORTANT:
 <font SIZE="3">when you hide using HIDETASKBAR, you must show using HIDETASKBAR 
 also. </font>Possible values: YES, NO. </p>
+
+<p><strong>TOPMOST</strong> [Windows and GTK Only]:&nbsp; puts the dialog always in front of all 
+    other dialogs in all applications. Default: NO.</p>
+
 <p><b>TRAY</b> [Windows and GTK Only]: When set to
     &quot;YES&quot;, 
     displays an icon on the system tray.</p>
@@ -224,8 +238,6 @@ only): Embeds the dialog inside another window.</p>
     It is only valid if the PARENTDIALOG 
     or NATIVEPARENT 
     attribute is also defined. Default: NO.</p>
-<p><strong>TOPMOST</strong> [Windows Only]:&nbsp; puts the dialog always in front of all 
-    other dialogs in all applications. Default: NO.</p>
       
 <h4>Exclusive MDI [Windows Only]</h4>
 <p><strong><em>--- For the MDI Frame ---</em></strong></p>
@@ -248,7 +260,7 @@ The application can override this
       
 <p><strong>MDINEXT</strong> [Windows Only] (read-only): Returns the name of the next available 
     MDI child. Use IupGetAttributeHandle to directly retrieve the child handle. Must use MDIACTIVE to retrieve the first child. If the application is 
-    going to destroy the child retreive the next child before destroying the current.</p>
+    going to destroy the child retrieve the next child before destroying the current.</p>
 <p><strong><em>--- For the MDI Client&nbsp; </em></strong>(a IupCanvas)<strong><em> 
 ---</em></strong></p>
   <p><strong>MDICLIENT</strong> (creation only) [Windows Only] (<font SIZE="3">non inheritable</font>): Configure the canvas as a MDI client. 
@@ -298,7 +310,7 @@ dialog to be a MDI child. Can be YES or NO.
   event.<br>
 <strong>but</strong>: identifies the activated mouse button. 
     Can be: 1, 2 or 3. Note that this is different from the BUTTON_CB canvas callback definition. 
-GTK does not get button=2 mesages.<br>
+GTK does not get button=2 messages.<br>
 <strong>pressed</strong>:
     indicates the state of the button. Always 1 in GTK.<br>
 <strong>dclick</strong>: 
@@ -331,7 +343,7 @@ X-Windows
 when the dialog is shown for the first time.</p>
 <h4>Windows MDI</h4>
 <p>The MDI support is composed of 3 components: the MDI frame window (IupDialog), the MDI client window (IupCanvas) 
-  and the MDI children (IupDialog). Altough the MDI client is a IupCanvas it is not used directly by the application, 
+  and the MDI children (IupDialog). Although the MDI client is a IupCanvas it is not used directly by the application, 
   but it must be created and included in the dialog that will be the MDI frame, other controls can also be available in 
   the same dialog, like buttons and other canvases composing toolbars and status area. The following picture illustrates 
   the e components:</p>

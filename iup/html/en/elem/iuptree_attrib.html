@@ -29,15 +29,15 @@ control. Default: YES. (since 3.0)</p>
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font size="3">non inheritable</font>): 
 The default value is &quot;YES&quot;.</p>
 <p><strong>HIDEBUTTONS</strong> (creation only): hide the expand and collapse 
-buttons. In GTK, branches will be only expanded programatically. In Motif it did 
+buttons. In GTK, branches will be only expanded programmatically. In Motif it did 
 not work and crash the test. (since 3.0)</p>
 
   
 <p><strong>HIDELINES</strong> (creation only): hide the lines that connect the 
 nodes in the hierarchy. (since 3.0)</p>
-<p><strong>INDENTATION</strong>: sets the identation level in pixels. The visual 
+<p><strong>INDENTATION</strong>: sets the indentation level in pixels. The visual 
 effect of changing the indentation is highly system dependent. In GTK it acts as 
-an addtional ident value, and lines does not follow the extra indent. In Windows 
+an additional indent value, and lines does not follow the extra indent. In Windows 
 is limited to a minimum of 5 pixels. (since 3.0)</p>
 
   
@@ -127,13 +127,13 @@ independent from the state of the Control and Shift keys, and from the CTRL and 
       Marks all nodes between the selected node 
       and the initial block-marking node (see Navigation / Multiple Marking)<br>
 &quot;CLEARALL&quot;:
-      Unmarks all nodes<br>
+      Unmark all nodes<br>
 &quot;MARKALL&quot;:
       Marks all nodes<br>
 &quot;INVERTALL&quot;:
       Inverts the marking of all nodes</p>
 </blockquote>
-<p class="info">The selected node is scrolled so it becames visible.</p>
+<p class="info">The selected node is scrolled so it becomes visible.</p>
 <p><strong>MARKED</strong>: The marking state of the selected node. Using 
   the MARKEDid form, where id is the node identifier, it is possible to 
   retrieve or change the marking state of any node. Possible values: &quot;YES&quot; 
@@ -237,10 +237,10 @@ identifier, it is possible to retrieve the identifier of any node.</p>
 <p><strong>ADDLEAF</strong><b>id</b><strong> </strong>(write only):
   Adds a new leaf 
 after the reference node, where id is the reference node identifier. If id is 
-empty, then the selected node is used as referece node. The value is used as the 
+empty, then the selected node is used as reference node. The value is used as the 
 text label of the new node. The id of the new node will be the id of the 
 reference node + 1. 
-  The reference node is marked and all others unmaked. The reference node 
+  The reference node is marked and all others unmarked. The reference node 
 position remains the same. If the reference node does not exist, nothing 
 happens. If the reference node is a branch then the depth of the new node is one 
 depth increment from the depth of the reference node, if the reference node is a 

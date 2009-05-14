@@ -93,7 +93,7 @@ FRAMECOLOR is used. For a title cell defines bottom and top frames.</p>
   Allows setting or verifying the value of the 
   current cell. Is the same as obtaining the current cell from 
 FOCUS_CELL value and using it as the attribute name for &quot;L:C&quot;. 
-But when updated or retreived during cell editing, the edit control will be 
+But when updated or retrieved during cell editing, the edit control will be 
 updated or consulted instead of the matrix cell. When retrieved inside the 
 EDITION_CB callback when mode is 0, then the return value is the new value 
   that will be updated in the cell. </p>
@@ -103,7 +103,7 @@ EDITION_CB callback when mode is 0, then the return value is the new value
   C (C &gt;= 0). 
   Possible values: &quot;ALEFT&quot;, &quot;ACENTER&quot; or &quot;ARIGHT&quot;. Default: 
     &quot;ALEFT&quot; for n=0 and &quot;ACENTER&quot; for n&gt;0. Not used for 
-the colum title. The 0:0 corner is always ACENTER, and the other colunm titles 
+the column title. The 0:0 corner is always ACENTER, and the other column titles 
 are also centered but if they do not fit in the cell then the alignment is 
 changed to ALEFT.</p>
 <p><a name="SORTSIGNn"><strong>SORTSIGNn</strong></a>: Shows a sort sign (up or 
@@ -118,7 +118,7 @@ Has lower priority than WIDTHn.</p>
 <p><strong><a name="WIDTHn">WIDTHn</a></strong>:
   Width of column n, where n is the number of the column (n&gt;=0). If the 
 width value is 0, the column will not be shown on the screen. It does not 
-includes the decoration size ocupied by the frame lines. If WIDTHn and 
+includes the decoration size occupied by the frame lines. If WIDTHn and 
 RASTERWIDTHn are not defined then before using the default value it will try to 
 use the width of the title of the column if any, or if n=0 it will search for 
 the maximum width of the titles of the column. Default: width 
@@ -153,7 +153,7 @@ or discard cells at the end.</p>
   visible columns to be counted when calculating the <strong>Natural</strong> 
 size. Not used elsewhere. 
   It will always use the first columns of the matrix, except if 
-NUMCOL_VISIBLE_LAST=YES, it independs on the first 
+<strong>NUMCOL_VISIBLE_LAST</strong>=YES, it no depends on the first 
 visible column. It does not includes the title column. The remaining columns will be accessible 
   only by using the scrollbar. When retrieved returns the current number of 
 visible lines. Default: &quot;4&quot;.</p>
@@ -164,7 +164,8 @@ or discard cells at the end.</p>
 <p><strong><a name="NUMLIN_VISIBLE">NUMLIN_VISIBLE</a></strong>:
   When set defines the number of visible lines to be counted when calculating 
 the <strong>Natural</strong> size. Not used elsewhere. It will always use the 
-first lines of the matrix, except if NUMLIN_VISIBLE_LAST=YES, it independs on the first visible line. It does not 
+first lines of the matrix, except if <strong>NUMLIN_VISIBLE_LAST</strong>=YES, it 
+no depends on the first visible line. It does not 
 includes the title line. The remaining lines will be accessible only by using 
 the scrollbar. When 
   retrieved returns the current number of visible lines. Default: &quot;3&quot;.</p>
