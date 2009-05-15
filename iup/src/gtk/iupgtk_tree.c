@@ -38,6 +38,7 @@ enum
   IUPGTK_TREE_TITLE,
   IUPGTK_TREE_KIND,
   IUPGTK_TREE_COLOR,
+  IUPGTK_TREE_FONT,
   IUPGTK_TREE_USERDATA
 };
 
@@ -51,6 +52,7 @@ static GtkTreeIter gtkTreeCopyItem(Ihandle* ih, GtkTreeIter hItem, GtkTreeIter h
   GtkTreeIter  iterNewItem;
   int kind;
   char* title;
+  PangoFontDescription* font;
   void* userdata;
   GdkColor color = {0L,0,0,0};
   GdkPixbuf* image_leaf, *image_collapsed, *image_expanded;
@@ -61,6 +63,7 @@ static GtkTreeIter gtkTreeCopyItem(Ihandle* ih, GtkTreeIter hItem, GtkTreeIter h
                                                     IUPGTK_TREE_TITLE,  &title,
                                                     IUPGTK_TREE_KIND,  &kind,
                                                     IUPGTK_TREE_COLOR, &color, 
+                                                    IUPGTK_TREE_FONT, &font, 
                                                     IUPGTK_TREE_USERDATA, &userdata,
                                                     -1);
 
@@ -72,6 +75,7 @@ static GtkTreeIter gtkTreeCopyItem(Ihandle* ih, GtkTreeIter hItem, GtkTreeIter h
                                           IUPGTK_TREE_TITLE,  title,
                                           IUPGTK_TREE_KIND,  kind,
                                           IUPGTK_TREE_COLOR, &color, 
+                                          IUPGTK_TREE_FONT, font,
                                           IUPGTK_TREE_USERDATA, userdata,
                                           -1);
 
@@ -1007,6 +1011,30 @@ static int gtkTreeSetTitleAttrib(Ihandle* ih, const char* name_id, const char* v
     return 0;
   gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_TITLE, value, -1);
   return 0;
+}
+
+static int gtkTreeSetTitleFontAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  PangoFontDescription* fontdesc = NULL;
+  GtkTreeStore* store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
+  GtkTreeIter iterItem = gtkTreeFindNodeFromString(ih, name_id);
+  if (!iterItem.stamp)
+    return 0;
+  if (value)
+    fontdesc = iupgtkGetPangoFontDesc(value);
+  gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_FONT, fontdesc, -1);
+  return 0;
+}
+
+static char* gtkTreeGetTitleFontAttrib(Ihandle* ih, const char* name_id)
+{
+  PangoFontDescription* fontdesc;
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  GtkTreeIter iterItem = gtkTreeFindNodeFromString(ih, name_id);
+  if (!iterItem.stamp)
+    return NULL;
+  gtk_tree_model_get(model, &iterItem, IUPGTK_TREE_TITLE, &fontdesc, -1);
+  return iupgtkFindPangoFontDesc(fontdesc);
 }
 
 static char* gtkTreeGetUserDataAttrib(Ihandle* ih, const char* name_id)
@@ -1951,7 +1979,7 @@ static int gtkTreeMapMethod(Ihandle* ih)
   GtkTreeViewColumn *column;
 
   store = gtk_tree_store_new(7, GDK_TYPE_PIXBUF, GDK_TYPE_PIXBUF, GDK_TYPE_PIXBUF,
-                                G_TYPE_STRING, G_TYPE_INT, GDK_TYPE_COLOR, G_TYPE_POINTER);
+                                G_TYPE_STRING, G_TYPE_INT, GDK_TYPE_COLOR, PANGO_TYPE_FONT_DESCRIPTION, G_TYPE_POINTER);
 
   ih->handle = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 
@@ -1978,6 +2006,7 @@ static int gtkTreeMapMethod(Ihandle* ih)
   gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(column), renderer_txt, TRUE);
   gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(column), renderer_txt, "text", IUPGTK_TREE_TITLE,
                                                                      "is-expander", IUPGTK_TREE_KIND,
+                                                                     "font-desc", IUPGTK_TREE_FONT,
                                                                   "foreground-gdk", IUPGTK_TREE_COLOR, NULL);
   iupAttribSetStr(ih, "_IUPGTK_RENDERER_TEXT", (char*)renderer_txt);
 
@@ -2075,6 +2104,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "TITLE",   gtkTreeGetTitleAttrib,   gtkTreeSetTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "USERDATA",   gtkTreeGetUserDataAttrib,   gtkTreeSetUserDataAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "CHILDCOUNT",   gtkTreeGetChildCountAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TITLEFONT", gtkTreeGetTitleFontAttrib, gtkTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttributeId(ic, "MARKED",   gtkTreeGetMarkedAttrib,   gtkTreeSetMarkedAttrib,   IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

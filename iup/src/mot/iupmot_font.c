@@ -248,9 +248,24 @@ char* iupdrvGetSystemFont(void)
   return systemfont;
 }
 
-XmFontList iupmotFontCreateNativeFont(const char* value)
+char* iupmotFindFontList(XmFontList fontlist)
 {
-  ImotFont *motfont = motFindFont(NULL, value);
+  int i, count = iupArrayCount(mot_fonts);
+  ImotFont* fonts = (ImotFont*)iupArrayGetData(mot_fonts);
+
+  /* Check if the standardfont already exists in cache */
+  for (i = 0; i < count; i++)
+  {
+    if (fontlist == fonts[i].fontlist)
+      return fonts[i].standardfont;
+  }
+
+  return NULL;
+}
+
+XmFontList iupmotGetFontList(const char* foundry, const char* value)
+{
+  ImotFont *motfont = motFindFont(foundry, value);
   if (!motfont) 
   {
     iupERROR1("Failed to create Font: %s", value); 

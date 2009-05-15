@@ -35,8 +35,9 @@ void iupmotButtonKeySetStatus(unsigned int state, unsigned int but, char* status
 
 /* font */
 char* iupmotGetFontListAttrib(Ihandle *ih);
+XmFontList iupmotGetFontList(const char* foundry, const char* value);
+char* iupmotFindFontList(XmFontList fontlist);
 char* iupmotGetFontStructAttrib(Ihandle *ih);
-XmFontList iupmotFontCreateNativeFont(const char* value);
 
 /* tips */
 /* called from Enter/Leave events to check if a TIP is present. */

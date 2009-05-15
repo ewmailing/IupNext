@@ -27,7 +27,7 @@
 typedef struct IwinFont_
 {
   char standardfont[200];
-  HFONT hfont;
+  HFONT hFont;
   int charwidth, charheight;
 } IwinFont;
 
@@ -35,7 +35,7 @@ static Iarray* win_fonts = NULL;
 
 static IwinFont* winFindFont(const char *standardfont)
 {
-  HFONT hfont;
+  HFONT hFont;
   int height_pixels;
   char typeface[50] = "";
   int height = 8;
@@ -75,7 +75,7 @@ static IwinFont* winFindFont(const char *standardfont)
   if (height_pixels == 0)
     return NULL;
 
-  hfont = CreateFont(height_pixels,
+  hFont = CreateFont(height_pixels,
                         0,0,0,
                         (is_bold) ? FW_BOLD : FW_NORMAL,
                         is_italic,
@@ -85,19 +85,19 @@ static IwinFont* winFindFont(const char *standardfont)
                         CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,
                         FF_DONTCARE|DEFAULT_PITCH,
                         typeface);
-  if (!hfont)
+  if (!hFont)
     return NULL;
 
   /* create room in the array */
   fonts = (IwinFont*)iupArrayInc(win_fonts);
 
   strcpy(fonts[i].standardfont, standardfont);
-  fonts[i].hfont = hfont;
+  fonts[i].hFont = hFont;
 
   {
     TEXTMETRIC tm;
     HDC hdc = GetDC(NULL);
-    HFONT oldfont = SelectObject(hdc, hfont);
+    HFONT oldfont = SelectObject(hdc, hFont);
 
     GetTextMetrics(hdc, &tm);
 
@@ -141,13 +141,28 @@ char* iupdrvGetSystemFont(void)
   return systemfont;
 }
 
-HFONT iupwinFontGetNativeFont(const char* value)
+char* iupwinFindHFont(HFONT hFont)
+{
+  int i, count = iupArrayCount(win_fonts);
+
+  /* Check if the standardfont already exists in cache */
+  IwinFont* fonts = (IwinFont*)iupArrayGetData(win_fonts);
+  for (i = 0; i < count; i++)
+  {
+    if (hFont == fonts[i].hFont)
+      return fonts[i].standardfont;
+  }
+
+  return NULL;
+}
+
+HFONT iupwinGetHFont(const char* value)
 {
   IwinFont* winfont = winFindFont(value);
   if (!winfont)
     return NULL;
   else
-    return winfont->hfont;
+    return winfont->hFont;
 }
 
 static IwinFont* winFontCreateNativeFont(Ihandle *ih, const char* value)
@@ -177,7 +192,7 @@ char* iupwinGetHFontAttrib(Ihandle *ih)
   if (!winfont)
     return NULL;
   else
-    return (char*)winfont->hfont;
+    return (char*)winfont->hFont;
 }
 
 int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
@@ -192,7 +207,7 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
   /* FONT attribute must be able to be set before mapping, 
       so the font is enable for size calculation. */
   if (ih->handle && (ih->iclass->nativetype != IUP_TYPEVOID))
-    SendMessage(ih->handle, WM_SETFONT, (WPARAM)winfont->hfont, MAKELPARAM(TRUE,0));
+    SendMessage(ih->handle, WM_SETFONT, (WPARAM)winfont->hFont, MAKELPARAM(TRUE,0));
 
   return 1;
 }
@@ -242,7 +257,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
     const char *curstr = str;
 
     HDC hdc = winFontGetDC(ih);
-    HFONT oldhfont = SelectObject(hdc, winfont->hfont);
+    HFONT oldhfont = SelectObject(hdc, winfont->hFont);
 
     do
     {
@@ -266,7 +281,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 {
   HDC hdc;
-  HFONT oldhfont, hfont;
+  HFONT oldhfont, hFont;
   SIZE size;
   int len;
   char* line_end;
@@ -274,12 +289,12 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
   if (!str || str[0]==0)
     return 0;
 
-  hfont = (HFONT)iupwinGetHFontAttrib(ih);
-  if (!hfont)
+  hFont = (HFONT)iupwinGetHFontAttrib(ih);
+  if (!hFont)
     return 0;
 
   hdc = winFontGetDC(ih);
-  oldhfont = SelectObject(hdc, hfont);
+  oldhfont = SelectObject(hdc, hFont);
 
   line_end = strchr(str, '\n');
   if (line_end)
@@ -320,8 +335,8 @@ void iupdrvFontFinish(void)
   IwinFont* fonts = (IwinFont*)iupArrayGetData(win_fonts);
   for (i = 0; i < count; i++)
   {
-    DeleteObject(fonts[i].hfont);
-    fonts[i].hfont = NULL;
+    DeleteObject(fonts[i].hFont);
+    fonts[i].hFont = NULL;
   }
   iupArrayDestroy(win_fonts);
 }

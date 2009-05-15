@@ -37,7 +37,8 @@ void iupwinTipsGetDispInfo(LPARAM lp);
 
 /* font */
 char* iupwinGetHFontAttrib(Ihandle *ih);
-HFONT iupwinFontGetNativeFont(const char* value);
+HFONT iupwinGetHFont(const char* value);
+char* iupwinFindHFont(HFONT hFont);
 
 /* menu */
 void iupwinMenuDialogProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);

@@ -48,6 +48,8 @@ void iupgtkButtonKeySetStatus(guint state, unsigned int but, char* status, int d
 
 /* font */
 char* iupgtkGetPangoFontDescAttrib(Ihandle *ih);
+PangoFontDescription* iupgtkGetPangoFontDesc(const char* value);
+char* iupgtkFindPangoFontDesc(PangoFontDescription* fontdesc);
 void iupgtkFontUpdatePangoLayout(Ihandle* ih, PangoLayout* layout);
 void iupgtkFontUpdateObjectPangoLayout(Ihandle* ih, gpointer object);
 

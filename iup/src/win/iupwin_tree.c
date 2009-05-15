@@ -36,6 +36,7 @@ typedef struct _winTreeItemData
   COLORREF color;
   unsigned char kind;
   void* userdata;
+  HFONT hFont;
 } winTreeItemData;
 
 /*****************************************************************************/
@@ -1017,6 +1018,45 @@ static int winTreeSetUserDataAttrib(Ihandle* ih, const char* name_id, const char
   itemData = (winTreeItemData*)item.lParam;
 
   itemData->userdata = (void*)value;
+
+  return 0;
+}
+
+static char* winTreeGetTitleFontAttrib(Ihandle* ih, const char* name_id)
+{
+  TVITEM item;
+  winTreeItemData* itemData;
+  HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
+  if (!hItem)
+    return NULL;
+
+  item.hItem = hItem;
+  item.mask = TVIF_HANDLE | TVIF_PARAM;
+  SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+  itemData = (winTreeItemData*)item.lParam;
+
+  return iupwinFindHFont(itemData->hFont);
+}
+
+static int winTreeSetTitleFontAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  TVITEM item; 
+  winTreeItemData* itemData;
+  HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
+  if (!hItem)
+    return 0;
+
+  item.hItem = hItem;
+  item.mask = TVIF_HANDLE | TVIF_PARAM;
+  SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+  itemData = (winTreeItemData*)item.lParam;
+
+  if (value)
+    itemData->hFont = iupwinGetHFont(value);
+  else
+    itemData->hFont = NULL;
+
+  iupdrvDisplayUpdate(ih);
 
   return 0;
 }
@@ -2067,10 +2107,15 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 
       customdraw->clrText = itemData->color;
       *result = CDRF_NOTIFYSUBITEMDRAW;
+
+      if (itemData->hFont)
+      {
+        SelectObject(customdraw->nmcd.hdc, itemData->hFont);
+        *result |= CDRF_NEWFONT;
+      }
+
       return 1;
 
-     // SelectObject(pNMTVCD->nmcd.hdc, pItemData->m_itemData.fontData.hFont);
-     //| CDRF_NEWFONT
     }
   }
 
@@ -2176,6 +2221,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "CHILDCOUNT",   winTreeGetChildCountAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "USERDATA",   winTreeGetUserDataAttrib,   winTreeSetUserDataAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COLOR",  winTreeGetColorAttrib,  winTreeSetColorAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TITLEFONT", winTreeGetTitleFontAttrib, winTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttributeId(ic, "MARKED",   winTreeGetMarkedAttrib,   winTreeSetMarkedAttrib,   IUPAF_NO_INHERIT);
@@ -2190,3 +2236,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
+
+//TVS_INFOTIP
+//TVN_GETINFOTIP 
+// rever imagelist

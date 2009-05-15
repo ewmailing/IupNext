@@ -112,7 +112,7 @@ static int motTipsSet(Ihandle *ih)
       if (iupStrEqualNoCase(value, "SYSTEM"))
         fontlist = NULL;
       else
-        fontlist = iupmotFontCreateNativeFont(value);
+        fontlist = iupmotGetFontList(iupAttribGet(ih, "TIPFOUNDRY"), value);
     }
 
     if (fontlist)

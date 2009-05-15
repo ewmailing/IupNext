@@ -114,7 +114,7 @@ void iupwinTipsGetDispInfo(LPARAM lp)
       if (iupStrEqualNoCase(value, "SYSTEM"))
         hfont = NULL;
       else
-        hfont = iupwinFontGetNativeFont(value);
+        hfont = iupwinGetHFont(value);
     }
 
     if (hfont)

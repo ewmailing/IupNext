@@ -1381,6 +1381,35 @@ static int motTreeSetTitleAttrib(Ihandle* ih, const char* name_id, const char* v
   return 0;
 }
 
+static int motTreeSetTitleFontAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  XmFontList fontlist = NULL;
+  Widget wItem = motTreeFindNodeFromString(ih, name_id);
+  if (!wItem)  
+    return 0;
+
+  if (value)
+  {
+    char attr[20];
+    sprintf(attr, "TITLEFOUNDRY%s", name_id);
+    fontlist = iupmotGetFontList(iupAttribGet(ih, attr), value);
+  }
+  XtVaSetValues(wItem, XmNrenderTable, fontlist, NULL);
+
+  return 0;
+}
+
+static char* motTreeGetTitleFontAttrib(Ihandle* ih, const char* name_id)
+{
+  XmFontList fontlist;
+  Widget wItem = motTreeFindNodeFromString(ih, name_id);
+  if (!wItem)  
+    return NULL;
+
+  XtVaGetValues(wItem, XmNrenderTable, &fontlist, NULL);
+  return iupmotFindFontList(fontlist);
+}
+
 static char* motTreeGetUserDataAttrib(Ihandle* ih, const char* name_id)
 {
   char *userdata;
@@ -2377,6 +2406,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "TITLE",   motTreeGetTitleAttrib,   motTreeSetTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "USERDATA",   motTreeGetUserDataAttrib,   motTreeSetUserDataAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "CHILDCOUNT",   motTreeGetChildCountAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TITLEFONT", motTreeGetTitleFontAttrib, motTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttributeId(ic, "MARKED",   motTreeGetMarkedAttrib,   motTreeSetMarkedAttrib,   IUPAF_NO_INHERIT);

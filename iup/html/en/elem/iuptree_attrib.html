@@ -201,21 +201,18 @@ updated.</p>
     &quot;IMGEXPANDED&quot;. If BGCOLOR is set the image is automatically 
 updated.</p>
 <h3><a name="nodes">Nodes</a>&nbsp; (<font size="3">non inheritable</font>)</h3>
-    <p><strong>CHILDCOUNTid</strong> (read only): returns the immediate children 
-	count of the specified branch, where id is the specified branch identifier. 
-	If id is empty, then the selected node is used as the specified node. It 
+    <p>For these attributes &quot;id&quot; is the specified branch identifier. If id is 
+	empty, then the selected node is used as the specified node. </p>
+<p><strong>CHILDCOUNTid</strong> (read only): returns the immediate children 
+	count of the specified branch. It 
 	does not count children of child that are branches. (since 3.0)</p>
-<p><strong>COLORid</strong>: text foreground color of the specified node, where 
-id is the specified node identifier. If id is empty, then the selected node is 
-used as the specified node. The value should be a string in the format &quot;R G B&quot; where R, G, B are numbers 
+<p><strong>COLORid</strong>: text foreground color of the specified node. The value should be a string in the format &quot;R G B&quot; where R, G, B are numbers 
   from 0 to 255.</p>
 <p><strong>DEPTHid </strong>(read only): returns the depth of the specified 
-node, where id is the specified node identifier. If id is empty, then the 
-selected node is used as the specified node. The root node has depth=0, its 
+node. The root node has depth=0, its 
 imediate children has depth=1, their children has depth=2 and so on.</p>
 <p><strong>KINDid </strong>(read only):
-  returns the kind of the specified node, where id is the specified node 
-identifier. If id is empty, then the selected node is used as the specified node. Possible values: 
+  returns the kind of the specified node. Possible values: 
 </p>
     <blockquote>
     <ul>
@@ -226,11 +223,8 @@ identifier. If id is empty, then the selected node is used as the specified node
 </ul>
 </blockquote>
 <p><strong>PARENTid </strong>(read only): returns the identifier of the 
-specified node, where id is the specified node identifier. If id is empty, then 
-the selected node is used as the specified node.</p>
-<p><strong>STATEid</strong>: the state of the specified branch, where id is the 
-specified branch identifier. If id is empty, then the selected node is used as 
-the specified node. Possible values: </p>
+specified node.</p>
+<p><strong>STATEid</strong>: the state of the specified branch. Possible values: </p>
     <blockquote>
     <ul>
       <li>&quot;EXPANDED&quot;:
@@ -240,12 +234,11 @@ the specified node. Possible values: </p>
     </li>
 </ul>
     </blockquote>
-<p><strong>TITLEid</strong>: the text label of the specified node, where id is 
-the specified node identifier. If id is empty, then the selected node is used as 
-the specified node.</p>
-<p><strong>USERDATAid</strong>: the userdata associated with the specified node, 
-where id is the specified node identifier. If id is empty, then the selected 
-node is used as the specified node. (since 3.0)</p>
+<p><strong>TITLEid</strong>: the text label of the specified node.</p>
+<p><strong>TITLEFONTid</strong>: the text font of the specified node. The format 
+is the same as the <a href="../attrib/iup_font.html">FONT</a> attribute. (since 
+3.0)</p>
+<p><strong>USERDATAid</strong>: the userdata associated with the specified node. (since 3.0)</p>
 <h3><a name="action">Action</a>&nbsp; (<font size="3">write-only, non inheritable</font>)</h3>
 <p><strong>ADDLEAF</strong><b>id</b><strong> </strong>(write only):
   Adds a new leaf 

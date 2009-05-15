@@ -258,6 +258,32 @@ char* iupdrvGetSystemFont(void)
   return systemfont;
 }
 
+char* iupgtkFindPangoFontDesc(PangoFontDescription* fontdesc)
+{
+  int i, count = iupArrayCount(gtk_fonts);
+  IgtkFont* fonts = (IgtkFont*)iupArrayGetData(gtk_fonts);
+
+  /* Check if the standardfont already exists in cache */
+  for (i = 0; i < count; i++)
+  {
+    if (pango_font_description_equal(fontdesc, fonts[i].fontdesc))
+      return fonts[i].standardfont;
+  }
+
+  return NULL;
+}
+
+PangoFontDescription* iupgtkGetPangoFontDesc(const char* value)
+{
+  IgtkFont *gtkfont = gtkFindFont(value);
+  if (!gtkfont)
+  {
+    iupERROR1("Failed to create Font: %s", value); 
+    return NULL;
+  }
+  return gtkfont->fontdesc;
+}
+
 char* iupgtkGetPangoFontDescAttrib(Ihandle *ih)
 {
   IgtkFont* gtkfont = gtkFontGet(ih);
