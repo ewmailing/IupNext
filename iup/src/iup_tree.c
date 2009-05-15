@@ -182,6 +182,23 @@ static void iTreeInitializeImages(void)
   IupSetHandle("IMGPAPER",     image_paper);
 }
 
+void iupTreeUpdateImages(Ihandle *ih)
+{
+  int inherit;
+
+  char* value = iupAttribGet(ih, "IMAGELEAF");
+  if (!value) value = "IMGLEAF";
+  iupClassObjectSetAttribute(ih, "IMAGELEAF", value, &inherit);
+
+  value = iupAttribGet(ih, "IMAGEBRANCHCOLLAPSED");
+  if (!value) value = "IMGCOLLAPSED";
+  iupClassObjectSetAttribute(ih, "IMAGEBRANCHCOLLAPSED", value, &inherit);
+
+  value = iupAttribGet(ih, "IMAGEBRANCHEXPANDED");
+  if (!value) value = "IMGEXPANDED";
+  iupClassObjectSetAttribute(ih, "IMAGEBRANCHEXPANDED", value, &inherit);
+}
+
 /* Retrieves the tree_ctrl iTreeKey state */
 static char* iTreeGetCtrlAttrib(Ihandle* ih)
 {
@@ -256,69 +273,25 @@ static int iTreeSetRenameSelectionAttrib(Ihandle* ih, const char* value)
 
 static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  char next[10];
-  int id = 0;
-
-  if (name_id[0])
-    id = atoi(name_id) + 1;
-  else
-    id = atoi(IupGetAttribute(ih, "VALUE")) + 1;
-
-  sprintf(next, "%d", id);
-
   iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value, 1);
-
   return 0;
 }
 
 static int iTreeSetAddBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  char next[10];
-  int id = 0;
-
-  if (name_id[0])
-    id = atoi(name_id) + 1;
-  else
-    id = atoi(IupGetAttribute(ih, "VALUE")) + 1;
-
-  sprintf(next, "%d", id);
-
   iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 1);
-
   return 0;
 }
 
 static int iTreeSetInsertLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  char next[10];
-  int id = 0;
-
-  if (name_id[0])
-    id = atoi(name_id) + 1;
-  else
-    id = atoi(IupGetAttribute(ih, "VALUE")) + 1;
-
-  sprintf(next, "%d", id);
-
   iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value, 0);
-
   return 0;
 }
 
 static int iTreeSetInsertBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  char next[10];
-  int id = 0;
-
-  if (name_id[0])
-    id = atoi(name_id) + 1;
-  else
-    id = atoi(IupGetAttribute(ih, "VALUE")) + 1;
-
-  sprintf(next, "%d", id);
-
   iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 0);
-
   return 0;
 }
 
@@ -437,13 +410,13 @@ Iclass* iupTreeGetClass(void)
   iupClassRegisterAttribute(ic, "RENAMECARET",     iTreeGetRenameCaretAttrib,     iTreeSetRenameCaretAttrib,     NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAMESELECTION", iTreeGetRenameSelectionAttrib, iTreeSetRenameSelectionAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWRENAME",      iTreeGetShowRenameAttrib,      iTreeSetShowRenameAttrib,      NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ADDEXPANDED",     iTreeGetAddExpandedAttrib,     iTreeSetAddExpandedAttrib,     NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ADDEXPANDED",     iTreeGetAddExpandedAttrib,     iTreeSetAddExpandedAttrib,     IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLBAR", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
-  iupClassRegisterAttribute(ic, "CTRL",  iTreeGetCtrlAttrib,  iTreeSetCtrlAttrib,  NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHIFT", iTreeGetShiftAttrib, iTreeSetShiftAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CTRL",  iTreeGetCtrlAttrib,  iTreeSetCtrlAttrib,  NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SHIFT", iTreeGetShiftAttrib, iTreeSetShiftAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "ADDLEAF",   NULL, iTreeSetAddLeafAttrib,   IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -508,4 +481,41 @@ void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, char* f, ...)
   vsprintf(v, f, arglist);
   va_end(arglist);
   IupStoreAttribute(ih, attr, v);
+}
+
+
+/************************************************************************************/
+
+
+int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
+{
+  int count = IupGetInt(ih, "COUNT");
+  if (id>=0 && id<count)
+  {
+    char attr[10];
+    sprintf(attr,"USERDATA%d",id);
+    IupSetAttribute(ih, attr, userdata);
+    return 1;
+  }
+  return 0;
+}
+
+int IupTreeGetId(Ihandle* ih, void *userdata)
+{
+  int id = -1;
+  char* value;
+  char attr[10];
+  sprintf(attr,"FINDUSERDATA%p",userdata);
+  value = IupGetAttribute(ih, attr);
+  if (!value) return -1;
+
+  iupStrToInt(value, &id);
+  return id;
+}
+
+void* IupTreeGetUserId(Ihandle* ih, int id)
+{
+  char attr[10];
+  sprintf(attr,"USERDATA%d",id);
+  return IupGetAttribute(ih, attr);
 }
