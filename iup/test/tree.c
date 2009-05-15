@@ -171,32 +171,25 @@ static int nodeinfo(Ihandle* ih)
   char attr[50], *kind;
   Ihandle* tree = IupGetHandle("tree");
   int branch = 0, id = IupGetInt(tree, "VALUE");
-  printf("\nNode Info:\n");
+  printf("\nTree Info:\n");
+  printf("  TOTALCOUNT=%s\n", IupGetAttribute(tree, "COUNT"));
+  printf("Node Info:\n");
   printf("  ID=%d\n", id);
-  sprintf(attr, "TITLE%d", id);
-  printf("  TITLE=%s\n", IupGetAttribute(tree, attr));
-  sprintf(attr, "DEPTH%d", id);
-  printf("  DEPTH=%s\n", IupGetAttribute(tree, attr));
+  printf("  TITLE=%s\n", IupGetAttribute(tree, "TITLE"));
+  printf("  DEPTH=%s\n", IupGetAttribute(tree, "DEPTH"));
   sprintf(attr, "KIND%d", id);
-  kind = IupGetAttribute(tree, attr);
+  kind = IupGetAttribute(tree, "KIND");
   printf("  KIND=%s\n", kind);
   if (strcmp(kind, "BRANCH")==0) branch = 1;
   if (branch)
-  {
-    sprintf(attr, "STATE%d", id);
-    printf("  STATE=%s\n", IupGetAttribute(tree, attr));
-  }
-  sprintf(attr, "IMAGE%d", id);
-  printf("  IMAGE=%s\n", IupGetAttribute(tree, attr));
+    printf("  STATE=%s\n", IupGetAttribute(tree, "STATE"));
+  printf("  IMAGE=%s\n", IupGetAttribute(tree, "IMAGE"));
   if (branch)
-  {
-    sprintf(attr, "IMAGEEXPANDED%d", id);
-    printf("  IMAGEEXPANDED=%s\n", IupGetAttribute(tree, attr));
-  }
-  sprintf(attr, "MARKED%d", id);
-  printf("  MARKED=%s\n", IupGetAttribute(tree, attr));
-  sprintf(attr, "COLOR%d", id);
-  printf("  COLOR=%s\n", IupGetAttribute(tree, attr));
+    printf("  IMAGEEXPANDED=%s\n", IupGetAttribute(tree, "IMAGEEXPANDED"));
+  printf("  MARKED=%s\n", IupGetAttribute(tree, "MARKED"));
+  printf("  COLOR=%s\n", IupGetAttribute(tree, "COLOR"));
+  printf("  PARENT=%s\n", IupGetAttribute(tree, "PARENT"));
+  printf("  COUNT=%s\n", IupGetAttribute(tree, "CHILDCOUNT"));
   return IUP_DEFAULT;
 }
 
@@ -267,7 +260,8 @@ static void init_tree(void)
   IupSetCallback(tree, "SELECTION_CB", (Icallback) selection_cb);
   IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
 
-//  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_10");
+//  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_14");
+//  IupSetAttribute(tree, "FGCOLOR", "255 0 0");
 
 //  IupSetAttribute(tree, "CTRL",         "YES");
 //  IupSetAttribute(tree, "SHIFT",        "YES");
@@ -290,14 +284,20 @@ static void init_dlg(void)
   Ihandle* dlg = IupDialog(box) ;
   IupSetAttribute(dlg,  "TITLE",   "IupTree");
   IupSetAttribute(box,  "MARGIN",  "10x10");
-//  IupSetAttribute(dlg,  "BGCOLOR", "192 192 192");
+  IupSetAttribute(box,  "GAP",  "10");
+//  IupSetAttribute(box, "BGCOLOR", "92 92 255");
+//  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
+//  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
+//  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
   IupSetHandle("dlg", dlg);
 }
 
-static void init_tree_nodes1(void)  /* create from bottom to top */
+static void init_tree_nodes(void)  
 {
   Ihandle* tree = IupGetHandle("tree");
 
+#if 1
+  /* create from bottom to top */
   /* the current node is the ROOT */
   //IupSetAttribute(tree, "VALUE", "0");
   IupSetAttribute(tree, "TITLE",         "Figures");  /* title of the root, id=0 */
@@ -311,15 +311,8 @@ static void init_tree_nodes1(void)  /* create from bottom to top */
   IupSetAttribute(tree, "ADDLEAF1",     "isoceles");
   IupSetAttribute(tree, "ADDLEAF1",     "equilateral");
   IupSetAttribute(tree, "ADDLEAF",      "Other");
-
-  IupSetAttribute(tree, "VALUE",        "6");
-  IupSetAttribute(tree, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
-}
-
-static void init_tree_nodes(void)  /* create from top to bottom */
-{
-  Ihandle* tree = IupGetHandle("tree");
-
+#else
+  /* create from top to bottom */
   IupSetAttribute(tree, "TITLE0",         "Figures");  
   IupSetAttribute(tree, "ADDLEAF0",      "Other");     /* new id=1 */
   IupSetAttribute(tree, "ADDBRANCH1",   "triangle");  /* new id=2 */     
@@ -331,9 +324,11 @@ static void init_tree_nodes(void)  /* create from top to bottom */
   IupSetAttribute(tree, "ADDLEAF7",     "diamond");
   IupSetAttribute(tree, "INSERTBRANCH6","2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
+#endif
 
   IupSetAttribute(tree, "VALUE",        "6");
   IupSetAttribute(tree, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
+  IupSetAttribute(tree, "COLOR8", "92 92 255");
 }
 
 void TreeTest(void)

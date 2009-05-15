@@ -80,9 +80,11 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* value)
   if (!bmp)
     return -1;
 
+  /* the array is used to avoi adding the same bitmap twice */
   bmp_array = (Iarray*)iupAttribGet(ih, "_IUPWIN_BMPARRAY");
   if (!bmp_array)
   {
+    /* create the array if does not exist */
     bmp_array = iupArrayCreate(50, sizeof(HBITMAP));
     iupAttribSetStr(ih, "_IUPWIN_BMPARRAY", (char*)bmp_array);
   }
@@ -95,10 +97,13 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* value)
   image_list = (HIMAGELIST)SendMessage(ih->handle, TCM_GETIMAGELIST, 0, 0);
   if (!image_list)
   {
+    /* create the image list if does not exist */
     image_list = ImageList_Create(width, height, ILC_COLOR32, 0, 50);
     SendMessage(ih->handle, TCM_SETIMAGELIST, 0, (LPARAM)image_list);
   }
 
+  /* check if that bitmap is already added to the list,
+     but we can not compare with the actual bitmap at the list since it is a copy */
   count = ImageList_GetImageCount(image_list);
   for (i=0; i<count; i++)
   {
@@ -108,7 +113,7 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* value)
 
   bmp_array_data = iupArrayInc(bmp_array);
   bmp_array_data[i] = bmp;
-  return ImageList_Add(image_list, bmp, NULL);
+  return ImageList_Add(image_list, bmp, NULL);  /* the bmp is duplicated at the list */
 }
 
 static int winTabsGetPageWindowPos(Ihandle* ih, HWND tab_page)

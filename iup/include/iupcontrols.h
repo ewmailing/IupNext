@@ -31,6 +31,7 @@ Ihandle* IupTree(void);
 int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);
 void* IupTreeGetUserId(Ihandle* ih, int id);
 int   IupTreeGetId(Ihandle* ih, void *userid);
+
 void  IupTreeSetAttribute  (Ihandle* ih, const char* a, int id, char* v);
 void  IupTreeStoreAttribute(Ihandle* ih, const char* a, int id, char* v);
 char* IupTreeGetAttribute  (Ihandle* ih, const char* a, int id);

@@ -287,11 +287,9 @@ static GdkColor gtkLighterColor(GdkColor *color)
 void iupgtkBaseSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
 {
   GtkRcStyle *rc_style;  
-  GdkColor color = {0L,0,0,0};
+  GdkColor color;
 
-  color.red = iupCOLOR8TO16(r);
-  color.green = iupCOLOR8TO16(g);
-  color.blue = iupCOLOR8TO16(b);
+  iupgdkColorSet(&color, r, g, b);
 
   rc_style = gtk_widget_get_modifier_style(handle);
   rc_style->base[GTK_STATE_NORMAL] = rc_style->bg[GTK_STATE_NORMAL]   = rc_style->bg[GTK_STATE_INSENSITIVE] = color;
@@ -322,11 +320,9 @@ int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
 void iupgtkBaseSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
 {
   GtkRcStyle *rc_style;  
-  GdkColor color = {0L,0,0,0};
+  GdkColor color;
 
-  color.red = iupCOLOR8TO16(r);
-  color.green = iupCOLOR8TO16(g);
-  color.blue = iupCOLOR8TO16(b);
+  iupgdkColorSet(&color, r, g, b);
 
   rc_style = gtk_widget_get_modifier_style(handle);  
   rc_style->fg[GTK_STATE_ACTIVE] = rc_style->fg[GTK_STATE_NORMAL] = rc_style->fg[GTK_STATE_PRELIGHT] = color;

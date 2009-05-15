@@ -22,12 +22,26 @@
     The branches will be created collapsed. Default:
     &quot;YES&quot;.</p>
 
+<p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: Background color of the 
+tree. Default: &quot;255 255 255&quot; (but it is system dependent).</p>
+
+  
 <p><strong>CANFOCUS</strong> (creation only) (<font size="3">non inheritable</font>): enables the focus traversal of the 
 control. Default: YES. (since 3.0)</p>
 
   
+<p><strong>COUNT</strong> (read only) (<font size="3">non inheritable</font>): returns the total number of items in the 
+tree. (since 3.0)</p>
+
+  
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font size="3">non inheritable</font>): 
 The default value is &quot;YES&quot;.</p>
+
+<p><strong>FGCOLOR</strong>: default text foreground color. Once each node is 
+created it will not chage its color when FGCOLOR is changed. Default: &quot;0 0 0&quot; 
+(but it is system dependent). (since 3.0)</p>
+
+  
 <p><strong>HIDEBUTTONS</strong> (creation only): hide the expand and collapse 
 buttons. In GTK, branches will be only expanded programmatically. In Motif it did 
 not work and crash the test. (since 3.0)</p>
@@ -78,8 +92,7 @@ the list or make it visible. Valid only when DROPDOWN=NO. (since 3.0)</p>
 </blockquote>
 <p>
 <a href="../attrib/iup_active.html">ACTIVE</a>,
-<a href="../attrib/iup_bgcolor.html">BGCOLOR</a>,
-    <a href="../attrib/iup_expand.html">EXPAND</a>, 
+<a href="../attrib/iup_expand.html">EXPAND</a>, 
 <a href="../attrib/iup_font.html">FONT</a>, <a href="../attrib/iup_x.html">X</a>, 
 <a href="../attrib/iup_y.html">Y</a>, <a href="../attrib/iup_position.html">
 POSITION</a>,
@@ -89,7 +102,7 @@ POSITION</a>,
     <a href="../attrib/iup_zorder.html">ZORDER</a>, <a href="../attrib/iup_visible.html">VISIBLE</a>: 
 also accepted.&nbsp;</p>
 <h3><a name="marks">Marks</a></h3>
-<p><strong>VALUE</strong>:
+<p><strong>VALUE</strong> (<font size="3">non inheritable</font>):
   The selected node. When changed also marks the node, but only 
   if the Control and Shift keys are not used. Possible values:</p>
 <blockquote>
@@ -133,8 +146,8 @@ independent from the state of the Control and Shift keys, and from the CTRL and 
 &quot;INVERTALL&quot;:
       Inverts the marking of all nodes</p>
 </blockquote>
-<p class="info">The selected node is scrolled so it becomes visible.</p>
-<p><strong>MARKED</strong>: The marking state of the selected node. Using 
+<p class="info">The selected node is scrolled so it becames visible.</p>
+<p><strong>MARKED</strong> (non inheritable): The marking state of the selected node. Using 
   the MARKEDid form, where id is the node identifier, it is possible to 
   retrieve or change the marking state of any node. Possible values: &quot;YES&quot; 
 =
@@ -158,64 +171,51 @@ independent from the state of the Control and Shift keys, and from the CTRL and 
     marking adjacent nodes.
     Default:
     &quot;NO&quot;.</p>
-<p><strong>STARTING</strong>:
+<p><strong>STARTING</strong> (<font size="3">non inheritable</font>):
   Defines the initial node for the block 
   marking. The value must be the node identifier.
     Default:
     root node.</p>
-<h3><a name="images">Images</a></h3>
+<h3><a name="images">Images</a> (<font size="3">non inheritable</font>)</h3>
 <p><strong>IMAGEid</strong>:
-  the image that will be shown on a 
-  specific node. Valid for leaves and for collapsed branches. This attribute must always be used with the id number.
-  This attribute can only be set (write-only - id dependent attributes are not 
-stored). Ex. &quot;IMAGE2&quot;.</p>
-<p class="info">An image is internally duplicated at the moment is set. So the 
-application does not need to keep the image after setting the attribute. This is 
-valid for all IMAGE* attributes of the IupTree.</p>
+  image name to be used in the specified node, where id is the specified node 
+identifier. If id is empty, then the selected node is used as the specified 
+node. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
+In Windows and Motif set the BGCOLOR attribute before setting the image. </p>
 <p><strong>IMAGEEXPANDEDid</strong>:
-  the image that will be shown on a 
-  specific node. It has no effect over leaves and is valid only for expanded branches. This attribute must always be used 
-  with the id number. 
-  This attribute can only be set (write-only - id dependent attributes are not 
-stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
+  same as the IMAGE attribute but used for expanded branches.</p>
 <p><strong>IMAGELEAF</strong>:
-  the image that will be shown for all 
-  leaves. Internal values &quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are 
-    also available.</p>
+  the image name that will be shown for all 
+  leaves. Default: &quot;IMGLEAF&quot;. Internal values &quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are 
+    also available. If BGCOLOR is set the image is automatically updated.</p>
 <p><strong>IMAGEBRANCHCOLLAPSED</strong>:
-  the image that will be shown for all collapsed branches.
+  the image name that will be shown for all collapsed branches.
     Default:
-    &quot;IMGCOLLAPSED&quot;.</p>
+    &quot;IMGCOLLAPSED&quot;. If BGCOLOR is set the image is automatically 
+updated.</p>
 <p><strong>IMAGEBRANCHEXPANDED</strong>:
-  the image that will be shown for all expanded branches.
+  the image name that will be shown for all expanded branches.
     Default:
-    &quot;IMGEXPANDED&quot;.</p>
-<h3><a name="nodes">Nodes</a></h3>
-<p><strong>TITLE</strong>:
-  the text label of the 
-  selected node. Using the &quot;<strong>TITLE</strong><b>id</b>&quot; form, where id is the node identifier, it is possible to 
-  change the name of any node. </p>
-<p><strong>STATE</strong>:
-  the state of the 
-  selected branch. Using the &quot;<b>STATEid</b>&quot; form, where id is the node identifier, it is possible to
-  change the state of any branch. This attribute only works on branches. If used on a leaf, nothing will 
-  happen. Possible values: </p>
-    <blockquote>
-    <ul>
-      <li>&quot;EXPANDED&quot;:
-    Expanded branch state (shows its children)</li>
-		<li>&quot;COLLAPSED&quot;:
-    Collapsed branch state (hides its children)
-    </li>
-</ul>
-    </blockquote>
-    <p><strong>DEPTH </strong>(read only):
-  returns the selected node's depth. Using the &quot;<b>DEPTHid</b>&quot; form, where id is the node identifier, it is possible to 
-  refer to any node. </p>
-<p><strong>KIND </strong>(read only):
-  returns the kind of the selected node. Using 
-  the &quot;<b>KINDid</b>&quot; form, where id is the node identifier, it is possible to 
-  retrieve the kind of any node. Possible values: 
+    &quot;IMGEXPANDED&quot;. If BGCOLOR is set the image is automatically 
+updated.</p>
+<h3><a name="nodes">Nodes</a>&nbsp; (<font size="3">non inheritable</font>)</h3>
+    <p><strong>CHILDCOUNTid</strong> (read only): returns the immediate children 
+	count of the specified branch, where id is the specified branch identifier. 
+	If id is empty, then the selected node is used as the specified node. It 
+	does not count children of child that are branches. (since 3.0)</p>
+<p><strong>COLORid</strong>: text foreground color of the specified node, where 
+id is the specified node identifier. If id is empty, then the selected node is 
+used as the specified node. The value should be a string in the format &quot;R G B&quot; where R, G, B are numbers 
+  from 0 to 255.</p>
+<p><strong>DEPTHid </strong>(read only): returns the depth of the specified 
+node, where id is the specified node identifier. If id is empty, then the 
+selected node is used as the specified node. The root node has depth=0, its 
+imediate children has depth=1, their children has depth=2 and so on.</p>
+<p><strong>KINDid </strong>(read only):
+  returns the kind of the specified node, where id is the specified node 
+identifier. If id is empty, then the selected node is used as the specified node. Possible values: 
 </p>
     <blockquote>
     <ul>
@@ -225,15 +225,28 @@ stored). Ex. &quot;IMAGEEXPANDED3&quot;.</p>
     The node is a branch</li>
 </ul>
 </blockquote>
-<p><strong>PARENT </strong>(read only):
-  returns the identifier of the selected 
-  node's parent. Using the &quot;<b>PARENTid</b>&quot; form, where id is the node 
-identifier, it is possible to retrieve the identifier of any node.</p>
-<p><strong>COLOR</strong>:
-  Color of the provided node. Using the form &quot;<b>COLORid</b>&quot;, where id is the node identifier, it is possible to 
-  set or retrieve the color of any node. The value should be a string in the format &quot;R G B&quot; where R, G, B are numbers 
-  from 0 to 255.</p>
-<h3><a name="action">Action</a></h3>
+<p><strong>PARENTid </strong>(read only): returns the identifier of the 
+specified node, where id is the specified node identifier. If id is empty, then 
+the selected node is used as the specified node.</p>
+<p><strong>STATEid</strong>: the state of the specified branch, where id is the 
+specified branch identifier. If id is empty, then the selected node is used as 
+the specified node. Possible values: </p>
+    <blockquote>
+    <ul>
+      <li>&quot;EXPANDED&quot;:
+    Expanded branch state (shows its children)</li>
+		<li>&quot;COLLAPSED&quot;:
+    Collapsed branch state (hides its children)
+    </li>
+</ul>
+    </blockquote>
+<p><strong>TITLEid</strong>: the text label of the specified node, where id is 
+the specified node identifier. If id is empty, then the selected node is used as 
+the specified node.</p>
+<p><strong>USERDATAid</strong>: the userdata associated with the specified node, 
+where id is the specified node identifier. If id is empty, then the selected 
+node is used as the specified node. (since 3.0)</p>
+<h3><a name="action">Action</a>&nbsp; (<font size="3">write-only, non inheritable</font>)</h3>
 <p><strong>ADDLEAF</strong><b>id</b><strong> </strong>(write only):
   Adds a new leaf 
 after the reference node, where id is the reference node identifier. If id is 
@@ -251,12 +264,9 @@ INSERTLEAF</strong>.</p>
   Same as <strong>ADDLEAF</strong> for branches. Branches can be created 
 expanded or collapsed depending on <strong>ADDEXPANDED</strong>.</p>
 
-<p><strong>EXPANDALL </strong>(write only): expand or contracts all nodes. Can 
-be YES (expand all), or NO (contract all). The root node always remains 
-expanded. (since 3.0)</p>
-
 <p><strong>DELNODEid </strong>(write only):
-  Removes a node and or its children. The root cannot be removed. Possible values:</p>
+  Removes a node and or its children, where id is the specified node identifier. 
+If id is empty, then the selected node is used as the specified node. The root cannot be removed. Possible values:</p>
 <blockquote>
 <ul>
   <li>&quot;SELECTED&quot;:
@@ -269,6 +279,15 @@ expanded. (since 3.0)</p>
     children), id is always ignored</li>
 </ul>
 </blockquote>
+
+<p><strong>EXPANDALL </strong>(write only): expand or contracts all nodes. Can 
+be YES (expand all), or NO (contract all). The root node always remains 
+expanded. (since 3.0)</p>
+<p><strong>FINDUSERDATAp
+</strong>(read only): finds the id of the given userdata. &quot;p&quot; must be the 
+address of a pointer formatted 
+in the string as &quot;%p&quot;. (since 3.0)</p>
+
 <p><strong>INSERTLEAFid</strong>, <strong>INSERTBRANCHid </strong>
 (write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
 the depth of the new node is always the same of the reference node. 

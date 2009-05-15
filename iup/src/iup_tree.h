@@ -16,7 +16,7 @@ extern "C" {
 #define ITREE_LEAF          1
 
 void iupdrvTreeInitClass(Iclass* ic);
-
+void iupTreeUpdateImages(Ihandle *ih);
 void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* title, int add);
 
 /* Structure of the tree */

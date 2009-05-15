@@ -229,14 +229,12 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
 
   {
     GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
-    GdkColor color = {0L,0,0,0};
-
-    color.red = iupCOLOR8TO16(r);
-    color.green = iupCOLOR8TO16(g);
-    color.blue = iupCOLOR8TO16(b);
-
     if (renderer)
+    {
+      GdkColor color;
+      iupgdkColorSet(&color, r, g, b);
       g_object_set(G_OBJECT(renderer), "cell-background-gdk", &color, NULL);
+    }
   }
 
   return iupdrvBaseSetBgColorAttrib(ih, value);
@@ -258,14 +256,12 @@ static int gtkListSetFgColorAttrib(Ihandle* ih, const char* value)
 
   {
     GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
-    GdkColor color = {0L,0,0,0};
-
-    color.red = iupCOLOR8TO16(r);
-    color.green = iupCOLOR8TO16(g);
-    color.blue = iupCOLOR8TO16(b);
-
     if (renderer)
+    {
+      GdkColor color;
+      iupgdkColorSet(&color, r, g, b);
       g_object_set(G_OBJECT(renderer), "foreground-gdk", &color, NULL);
+    }
   }
 
   return 1;
