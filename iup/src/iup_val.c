@@ -38,12 +38,6 @@ char* iupValGetShowTicksAttrib(Ihandle* ih)
   return str;
 }
 
-static int iValSetShowTicksAttrib(Ihandle* ih, const char* value)
-{
-  ih->data->show_ticks = atoi(value);
-  return 0;
-}
-
 char* iupValGetValueAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(30);
@@ -209,7 +203,6 @@ Iclass* iupValGetClass(void)
   /* IupVal only */
   iupClassRegisterAttribute(ic, "MAX", iValGetMaxAttrib, iValSetMaxAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "MIN", iValGetMinAttrib, iValSetMinAttrib, IUPAF_SAMEASSYSTEM, "0.0", IUPAF_NOT_MAPPED);
-//  iupClassRegisterAttribute(ic, "SHOWTICKS", iupValGetShowTicksAttrib, iValSetShowTicksAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TYPE", iValGetTypeAttrib, iValSetTypeAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "INVERTED", iValGetInvertedAttrib, iValSetInvertedAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);

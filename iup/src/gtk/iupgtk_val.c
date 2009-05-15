@@ -193,5 +193,5 @@ void iupdrvValInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "VALUE", iupValGetValueAttrib, gtkValSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PAGESTEP", iupValGetPageStepAttrib, gtkValSetPageStepAttrib, IUPAF_SAMEASSYSTEM, "0.1", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STEP", iupValGetStepAttrib, gtkValSetStepAttrib, IUPAF_SAMEASSYSTEM, "0.01", IUPAF_NO_INHERIT);
-//  iupClassRegisterAttribute(ic, "SHOWTICKS", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY);  /* showticks is not supported in GTK */
+  iupClassRegisterAttribute(ic, "SHOWTICKS", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY);  /* showticks is not supported in GTK */
 }
