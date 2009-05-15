@@ -49,8 +49,11 @@ tree() [in LED]</pre>
 
 <h4><a href="iuptree_attrib.html#global">General</a></h4>
 <p class="info"><strong>ADDEXPANDED<br>
+BGCOLOR<br>
 CANFOCUS<br>
+COUNT</strong> <strong><br>
 EXPAND<br>
+FGCOLOR<br>
 HIDELINES</strong> <strong><br>
 HIDEBUTTONS</strong> <strong><br>
 INDENTATION</strong> <strong><br>
@@ -72,18 +75,21 @@ RASTERSIZE<br>
     IMAGEid<br>
     IMAGEEXPANDEDid</strong></p>
 <h4><a href="iuptree_attrib.html#nodes">Nodes</a></h4>
-<p class="info"><strong>TITLE<br>
-    STATE<br>
+<p class="info"><strong>CHILDCOUNT<br>
+    FGCOLOR<br>
     DEPTH<br>
     KIND<br>
     PARENT<br>
-    COLOR</strong></p>
+    STATE<br>
+    TITLE<br>
+USERDATA</strong></p>
 <h4><a href="iuptree_attrib.html#action">Action</a></h4>
 <p class="info"><strong>ADDLEAF<br>
     ADDBRANCH<br>
+DELNODE<br>
 </strong>
 <b>EXPANDALL<br>
-    </b><strong>DELNODE</strong><br>
+    </b><strong>FINDUSERDATA</strong><br>
 <strong>INSERTLEAF<br>
     INSERTBRANCH<br>
     </strong><b>RENAMENODE</b></p>
@@ -165,18 +171,26 @@ ADDLEAF = "Other"
 on the order of the operations. Currently we can NOT garantie the order before 
 mapping to the native system, so the initialization must be performed after the 
 tree is mapped.</p>
-<p>Each node also contains its depth level, starting by the root, which has depth 0. To allow inserting nodes in any position, 
-  sometimes the depth of a node must be explicitly changed. For instance, if you create a leaf in a child branch of the 
-  root, it will be created with depth 2. To make it become a child of the root, its 
-  depth must be set to 1.</p>
 <p>Scrollbars are automatically displayed if the tree is greatter than its 
 display area.</p>
-<p>Branches may be added in IupLua using a Lua Table (see Example 2).&nbsp; </p>
-<h4>User Id</h4>
+<p>Branches may be added in IupLua using a Lua Table, see 
+<a href="#TreeSetValue">TreeSetValue</a>.&nbsp; </p>
+<h4>Manipulation</h4>
+<p>Node insertion or removal is done by means 
+  of attributes. It is allowed to remove nodes and branches inside callbacks associated to opening or closing branches.
+  </p>
+<p>This means that the user may insert nodes 
+  and branches only when necessary when the parent brach is opened, allowing the use of a larger 
+  IupTree without too much overhead. Then when the parent branch is closed the subtree can be removed. A side-effect of this 
+  use is that the expanded or collapsed state of the children branches must be managed by the user. 
+</p>
+<h4>User Data</h4>
 <p>The node Id does not always correspond to the same 
-  node as the tree is modified. For example, a node with id 2 will always refer to the third node in the tree. For that 
-  reason, there is also the <strong>UserId</strong>, which allows identifying a specific node. The 
-<strong>UserId </strong>always refers to the same node. The <strong>UserId</strong> may contain a user-created structure allowing the identification of a node.</p>
+  node as the tree is modified. For example, a id=2 will always refer to the third node in the tree. For that 
+  reason, there is also the <strong>USERDATAid</strong>, which allows identifying a specific node. The 
+<strong>USERDATAid </strong>always refers to the same node. The <strong>
+USERDATAid</strong> may contain a user-created structure with other informations 
+for the node.</p>
 <h4>Images</h4>
 <p>IupTree has three types of images: one associated to the leaf, one to the collapsed branch and 
   the other to the expanded branch. Each image can be changed, both globally and individually.</p>
@@ -187,23 +201,6 @@ display area.</p>
 &quot;IMAGEBRANCHCOLLAPSED&quot; uses &quot;IMGCOLLAPSED&quot;
 &quot;IMAGEBRANCHEXPANDED&quot; uses &quot;IMGEXPANDED&quot;</pre>
 <pre>&quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are designed for use as &quot;IMAGELEAF&quot;</pre>
-<h4>Fonts</h4>
-<p>The fonts used by IupTree are like the ones defined by IUP (see attribute FONT). We recommend using only IUP-defined fonts. 
-</p>
-<h4>Colors</h4>
-<p>The IupTree colors are fixed by definition. The tree background color is &quot;255 255 255&quot; in Windows and &quot;156 156 165&quot; 
-  in Motif. The tree selected node color is &quot;8 33 107&quot; in Windows and &quot;0 0 156&quot; in Motif.</p>
-<h4>Manipulation</h4>
-<p>Node insertion or removal is done by means 
-  of attributes. It is allowed to remove nodes and branches inside callbacks associated to opening or closing branches.
-  </p>
-<p>This means that the user may insert nodes 
-  and branches only when necessary when the parent brach is opened, allowing the use of a larger 
-  IupTree without too much overhead. Then when the parent branch is closed the subtree can be removed. A side-effect of this 
-  use is that the expanded or collapsed state of the children branches must be managed by the user. 
-</p>
-<p>When a node is added, removed or renamed the tree is not automatically 
-  redrawn. You must set REDRAW=YES when you finish changing the tree.</p>
 <h4>Simple Marking</h4>
 <p>Is the IupTree&#8217;s default operation mode. In this mode only one node is marked, and it matches the 
   selected node.</p>
@@ -216,25 +213,13 @@ display area.</p>
 <p>When the user keeps the Shift key pressed, 
   the block marking mode is used. This way, all nodes between the selected node and the initial node are marked, and all 
   others are unmarked. The initial node is changed every time a node is marked without the Shift key being pressed. This 
-  happens when any movement is done without Shift or Control being pressed, or when the space bar is pressed together 
+  happens when any movement is done without Shift or Control keys being pressed, or when the space bar is pressed together 
   with Control.</p>
-<h4>Removing a Node with &quot;Del&quot;</h4>
-<p>You can simply implement a K_ANY callback:</p>
-<pre>int k_any(Ihandle* ih, int c)
-{
-  if (c == K_DEL) 
-  {
-    IupSetAttribute(ih,&quot;DELNODE&quot;,&quot;MARKED&quot;);
-    IupSetAttribute(ih,&quot;REDRAW&quot;,&quot;&quot;);
-  }
-  return IUP_DEFAULT;
-}</pre>
 <h4><a name="navigation">Navigation</a></h4>
 <p>Using the keyboard: </p>
 <ul>
-  <li><b>Arrow Up/Down</b>: Shifts the selected node to the neighbor 
+  <li><b>Arrow Up/Down</b>: Moves the selection to the neighbor 
     node, according to the arrow direction.</li>
-  <li><b>Arrow Left/Right</b>: Makes the branch collapse/expand</li>
   <li><b>Home/End</b>: Selects the root/last node.</li>
   <li><b>Page Up/Page Down</b>: Selects the node one page above/below the 
     selected node.</li>
@@ -258,6 +243,15 @@ display area.</p>
   <li><b>Double-clicking a node text</b>: Calls the rename callback 
     or invoke the inplace rename.</li>
 </ul>
+<h4>Removing a Node with &quot;Del&quot;</h4>
+<p>You can simply implement a K_ANY callback:</p>
+<pre>int k_any(Ihandle* ih, int c)
+{
+  if (c == K_DEL) 
+   IupSetAttribute(ih,&quot;DELNODE&quot;,&quot;MARKED&quot;);
+  return IUP_CONTINUE;
+}</pre>
+<p>By default the Del key is not processed.</p>
 <h3>Extra Functions</h3>
 <p>IupTree has functions that allow associating a pointer (or a user defined id) to 
   a node. In order to do that, you provide the id of the node and the pointer (userid); even 
@@ -277,6 +271,7 @@ userid remains the same.</p>
 <p>Associations to Lua objects in Lua 5 are referenced in the Lua REGISTRY. So they can be retrieved later. This 
       means also that the associated object will not be garbage collected until its reference is removed. Also, the user should not use the same table to reference different nodes (neither in the same nor across 
       different trees.)</p>
+<p>It is equivalent of setting the <strong>USERDATAid</strong> attribute.</p>
 <pre>void* IupTreeGetUserId(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
 iup.TreeGetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number) -&gt; (<b>ret:</b> userdata/table) [in Lua]
 </pre>
@@ -286,7 +281,8 @@ iup.TreeGetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number) -&g
       Node identifier.</p>
 <p>Returns the pointer or Lua table associated to 
       the node or NULL if none was associated. <strong>SetUserId</strong> must 
-have been called with the same id.</p>
+have been called for the node with the given id.</p>
+<p>It is equivalent of retrieving the <strong>USERDATAid</strong> attribute.</p>
 <pre>int IupTreeGetId(Ihandle *<strong>ih</strong>, void *<strong>userid</strong>); [in C] 
 iup.TreeGetId(<strong>ih: </strong>ihandle, <strong>userid: </strong>userdata/table) -&gt; (<b>ret:</b> number) [in Lua]
 </pre>
@@ -297,7 +293,9 @@ iup.TreeGetId(<strong>ih: </strong>ihandle, <strong>userid: </strong>userdata/ta
 <p>Returns the id of the node that has the userid on success or -1 
       (nil) if not found. <strong>SetUserId</strong> must have been called with 
 the same userid.</p>
-<pre>iup.TreeSetValue(<strong>ih: </strong>ihandle, <strong>tree: </strong>table) [in Lua]</pre>
+<p>It is equivalent of retrieving the <strong>FINDUSERDATAp</strong> 
+attribute.</p>
+<pre>iup.<a name="TreeSetValue">TreeSetValue</a>(<strong>ih: </strong>ihandle, <strong>tree: </strong>table) [in Lua]</pre>
 <p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user.<br>
 <strong>tree</strong>: table of nodes.</p>
@@ -328,15 +326,12 @@ void  IupTreeSetfAttribute (Ihandle *n, char* a, int id, char* f, ...);</pre>
   the L and C values. For ex:</p>
 <pre>IupTreeSetAttribute(n, &quot;KIND&quot; , 30, v) = IupSetAttribute(n, &quot;KIND30&quot;, v)
 IupTreeSetAttribute(n, &quot;ADDLEAF&quot; , 10, v) = IupSetAttribute(n, &quot;ADDLEAF10&quot;, v)</pre>
-<p>See also the <a href="../../download/IupTreeUtil.tar.gz">IupTreeUtil</a> by Sergio Maffra and Frederico Abraham. It 
+<p>See also the <a href="../../download/IupTreeUtil.tar.gz">IupTreeUtil</a> 
+contributed by Sergio Maffra and Frederico Abraham. It 
   is an utility wrapper in C++ for the IupTree.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
-<p>Creates a IupTree with the values shown on the images below, and allows the user to change them 
-  dynamically.</p>
-<h3><a name="SeeAlso">See Also</a></h3>
-
-<p>&nbsp;</p>
+<p>XXXX</p>
 
 </body>
 
