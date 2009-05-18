@@ -668,23 +668,23 @@ static int winTreeBranchLeaf_CB(Ihandle* ih)
   SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
 
   /* Get Children: branch or leaf */
-  item.mask = TVIF_HANDLE|TVIF_PARAM; 
+  item.mask = TVIF_HANDLE|TVIF_PARAM|TVIF_STATE; 
   item.hItem = selected;
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
   itemData = (winTreeItemData*)item.lParam;
 
-  if(itemData->kind == ITREE_BRANCH)
+  if (itemData->kind == ITREE_BRANCH)
   {
-    IFni cbBranchOpen  = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
-    IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
-    if(cbBranchOpen && iupStrEqualNoCase(IupGetAttribute(ih, "STATE"), "COLLAPSED"))
+    if (item.state & TVIS_EXPANDED)
     {
-      cbBranchOpen(ih, IupGetInt(ih, "VALUE"));
+      IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
+      cbBranchClose(ih, IupGetInt(ih, "VALUE"));
       return IUP_DEFAULT;
     }
-    else if(cbBranchClose && iupStrEqualNoCase(IupGetAttribute(ih, "STATE"), "EXPANDED"))
+    else
     {
-      cbBranchClose(ih, IupGetInt(ih, "VALUE"));
+      IFni cbBranchOpen  = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
+      cbBranchOpen(ih, IupGetInt(ih, "VALUE"));
       return IUP_DEFAULT;
     }
   }
@@ -1762,25 +1762,6 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   {
     case WM_GETDLGCODE:
     {
-      MSG* pMsg = (MSG*)lp;
-
-      if (pMsg && (pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
-      {
-        if (pMsg->wParam == VK_RETURN)
-        {
-          HTREEITEM selected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
-          
-          winTreeBranchLeaf_CB(ih);
-
-          if(iupStrEqualNoCase(winTreeGetStateAttrib(ih, ""), "COLLAPSED"))
-            SendMessage(ih->handle, TVM_EXPAND, TVE_EXPAND, (LPARAM)selected);
-          else
-            SendMessage(ih->handle, TVM_EXPAND, TVE_COLLAPSE, (LPARAM)selected);
-
-          return 1;
-        }      
-      }
-
       *result = DLGC_WANTALLKEYS;
       return 1;
     }
@@ -1788,7 +1769,24 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     case WM_KEYDOWN:
     case WM_SYSKEYDOWN:
     {
-      if(GetKeyState(VK_F2))
+      if (wp == VK_RETURN)
+      {
+        HTREEITEM selected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
+        TVITEM item;
+        item.hItem = selected;
+        item.mask = TVIF_HANDLE | TVIF_STATE;
+        SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+        
+        winTreeBranchLeaf_CB(ih);
+
+        if (item.state & TVIS_EXPANDED)
+          SendMessage(ih->handle, TVM_EXPAND, TVE_COLLAPSE, (LPARAM)selected);
+        else
+          SendMessage(ih->handle, TVM_EXPAND, TVE_EXPAND, (LPARAM)selected);
+
+        return 1;
+      }      
+      else if (wp == VK_F2)
       {
         if(IupGetInt(ih, "SHOWRENAME"))
         {
@@ -1969,6 +1967,28 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       }
     }
   }
+  else if(msg_info->code == NM_DBLCLK)
+  {
+    HTREEITEM selected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
+    TVITEM item;
+    winTreeItemData* itemData;
+
+    /* Get Children: branch or leaf */
+    item.mask = TVIF_HANDLE|TVIF_PARAM; 
+    item.hItem = selected;
+    SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+    itemData = (winTreeItemData*)item.lParam;
+
+    if (itemData->kind == ITREE_LEAF)
+    {
+      IFni cbExecuteLeaf = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
+      if(cbExecuteLeaf)
+      {
+        cbExecuteLeaf(ih, IupGetInt(ih, "VALUE"));
+        return IUP_DEFAULT;
+      }
+    }
+  }
   else if(msg_info->code == NM_CLICK)
   {
     if((GetKeyState(VK_CONTROL) & 0x8000) && ih->data->tree_ctrl)
@@ -2051,6 +2071,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     }
     else
     {
+      // TODO: this is leaving no selection
       winTreeClearSelection(ih);
       iupAttribSetStr(ih, "_IUPWINTREE_FIRSTSELITEM", NULL);
       /* continue to process the new single selection ... */
@@ -2120,7 +2141,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   }
 
   (void)result;
-  return 0;
+  return 0;  /* allow the default processsing */
 }
 
 static void winTreeUnMapMethod(Ihandle* ih)
@@ -2239,4 +2260,4 @@ void iupdrvTreeInitClass(Iclass* ic)
 
 //TVS_INFOTIP
 //TVN_GETINFOTIP 
-// rever imagelist
+// review imagelist

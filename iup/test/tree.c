@@ -175,6 +175,24 @@ static int dragdrop_cb(Ihandle* ih, int drag_id, int drop_id, int shift, int con
   return IUP_DEFAULT;
 }
 
+static int getfocus_cb(Ihandle* ih)
+{
+  printf("getfocus_cb()\n");
+  return IUP_DEFAULT;
+}
+
+static int killfocus_cb(Ihandle* ih)
+{
+  printf("killfocus_cb()\n");
+  return IUP_DEFAULT;
+}
+
+static int enterwindow_cb(Ihandle* ih)
+{
+  printf("enterwindow_cb()\n");
+  return IUP_DEFAULT;
+}
+
 static int k_any_cb(Ihandle* ih, int c)
 {
   if (c == K_DEL) 
@@ -283,6 +301,10 @@ static void init_tree(void)
   IupSetCallback(tree, "SHOWRENAME_CB", (Icallback) showrename_cb);
   IupSetCallback(tree, "SELECTION_CB", (Icallback) selection_cb);
   IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
+  IupSetCallback(tree, "GETFOCUS_CB", (Icallback) getfocus_cb);
+  IupSetCallback(tree, "KILLFOCUS_CB", (Icallback) killfocus_cb);
+  IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
+ 
 
 //  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_14");
 //  IupSetAttribute(tree, "FGCOLOR", "255 0 0");

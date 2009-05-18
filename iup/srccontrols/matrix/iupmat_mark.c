@@ -32,7 +32,7 @@
 
 static void iMatrixMarkLinSet(Ihandle* ih, int lin, int mark)
 {
-  /* called when MARK_MODE=LIN */
+  /* called when MARKMODE=LIN */
   if (mark==-1)
     mark = !(ih->data->lines.flags[lin] & IUPMAT_MARK);
 
@@ -44,7 +44,7 @@ static void iMatrixMarkLinSet(Ihandle* ih, int lin, int mark)
 
 static void iMatrixMarkColSet(Ihandle* ih, int col, int mark)
 {
-  /* called when MARK_MODE=COL */
+  /* called when MARKMODE=COL */
   if (mark==-1)
     mark = !(ih->data->columns.flags[col] & IUPMAT_MARK);
 
@@ -56,7 +56,7 @@ static void iMatrixMarkColSet(Ihandle* ih, int col, int mark)
 
 static void iMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark, IFniii markedit_cb, IFnii mark_cb, char* str)
 {
-  /* called only when MARK_MODE=CELL */
+  /* called only when MARKMODE=CELL */
   if (mark == -1)
     mark = !iupMatrixMarkCellGet(ih, lin, col, mark_cb, str);
 
@@ -84,7 +84,7 @@ static void iMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark, IFniii m
 
 int iupMatrixMarkCellGet(Ihandle* ih, int lin, int col, IFnii mark_cb, char* str)
 {
-  /* called independent from MARK_MODE */
+  /* called independent from MARKMODE */
 
   if (ih->data->mark_mode == IMAT_MARK_NO)
     return 0;
@@ -344,7 +344,7 @@ static void iMatrixMarkAllLinCol(ImatLinColData *p, int mark)
 
 void iupMatrixMarkClearAll(Ihandle* ih, int check)
 {
-  /* "!check" is used to clear all marks independent from MARK_MODE */
+  /* "!check" is used to clear all marks independent from MARKMODE */
 
   if (ih->data->mark_mode == IMAT_MARK_CELL || !check)
   {

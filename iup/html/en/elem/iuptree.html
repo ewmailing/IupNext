@@ -11,6 +11,13 @@
 .style2 {
 	text-align: center;
 }
+.style3 {
+	color: #FF0000;
+}
+.style4 {
+	color: #FF0000;
+	font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -62,18 +69,6 @@ RASTERSIZE<br>
     RENAMESELECTION<br>
     SHOWDRAGDROP<br>
     SHOWRENAME</strong></p>
-<h4><a href="iuptree_attrib.html#marks">Marks</a></h4>
-<p class="info"><strong>CTRL<br>
-    SHIFT<br>
-    STARTING<br>
-    VALUE<br>
-    MARKED</strong></p>
-<h4><a href="iuptree_attrib.html#images">Images</a></h4>
-<p class="info"><strong>IMAGELEAF<br>
-    IMAGEBRANCHCOLLAPSED<br>
-    IMAGEBRANCHEXPANDED<br>
-    IMAGEid<br>
-    IMAGEEXPANDEDid</strong></p>
 <h4><a href="iuptree_attrib.html#nodes">Nodes</a></h4>
 <p class="info"><strong>CHILDCOUNT<br>
     FGCOLOR<br>
@@ -84,6 +79,18 @@ RASTERSIZE<br>
     TITLE<br>
 TITLEFONT<br>
 USERDATA</strong></p>
+<h4><a href="iuptree_attrib.html#images">Images</a></h4>
+<p class="info"><strong>IMAGELEAF<br>
+    IMAGEBRANCHCOLLAPSED<br>
+    IMAGEBRANCHEXPANDED<br>
+    IMAGEid<br>
+    IMAGEEXPANDEDid</strong></p>
+<h4><a href="iuptree_attrib.html#marks">Marks</a></h4>
+<p class="info"><strong>CTRL<br>
+    SHIFT<br>
+    STARTING<br>
+    VALUE<br>
+    MARKED</strong></p>
 <h4><a href="iuptree_attrib.html#action">Action</a></h4>
 <p class="info"><strong>ADDLEAF<br>
     ADDBRANCH<br>
@@ -226,33 +233,37 @@ for the node.</p>
     selected node.</li>
   <li><b>Enter</b>: If the selected node is an expanded branch, it is collapsed; if it is a collapsed
     branch, it is expanded; if it is a leaf, it is executed.</li>
-  <li><b>Ctrl+Space</b>:&nbsp;
-    Marks or unmarks a node.</li>
-  <li><b>F2</b>:
-    Calls the rename callback or invoke the inplace rename.</li>
+  <li><span class="style4">Ctrl+Space</span><span class="style3">:&nbsp;
+    Marks or unmarks a node.</span></li>
+  <li><span class="style4">F2</span><span class="style3">:
+    Calls the rename callback or invoke the inplace rename.</span></li>
 </ul>
+<p>In Motif when pressing Tab the focus goes to the next visible node, if there 
+are no next visible node then the next control in the dialog receives the focus. 
+In Windows and Gtk the focus simply goes directly to the next control.</p>
 <p>Using the mouse: </p>
 <ul>
   <li><b>Clicking a node</b>: Selects the clicked node.</li>
   <li><b>Clicking a (-/+) box</b>: Makes the branch to the right of the (-/+) 
     box collapse/expand.</li>
-  <li><b>Clicking an empty region</b>: Unmarks all nodes (including the selected 
+  <li class="style3"><b>Clicking an empty region</b>: Unmarks all nodes (including the selected 
     one).</li>
-  <li><b>Double-clicking a node image</b>: If the selected node is an expanded 
+  <li><span class="style4">Double-clicking a node image</span><span class="style3">: If the selected node is an expanded 
     branch, it is collapsed; if it is a collapsed branch, it is expanded; if it is a leaf, it is executed. 
+  </span> 
   </li>
-  <li><b>Double-clicking a node text</b>: Calls the rename callback 
-    or invoke the inplace rename.</li>
+  <li><span class="style4">Double-clicking a node text</span><span class="style3">: Calls the rename callback 
+    or invoke the inplace rename.</span></li>
 </ul>
 <h4>Removing a Node with &quot;Del&quot;</h4>
-<p>You can simply implement a K_ANY callback:</p>
+<p>By default the Del key is not processed, but you can implement it using a 
+simple K_ANY callback:</p>
 <pre>int k_any(Ihandle* ih, int c)
 {
   if (c == K_DEL) 
    IupSetAttribute(ih,&quot;DELNODE&quot;,&quot;MARKED&quot;);
   return IUP_CONTINUE;
 }</pre>
-<p>By default the Del key is not processed.</p>
 <h3>Extra Functions</h3>
 <p>IupTree has functions that allow associating a pointer (or a user defined id) to 
   a node. In order to do that, you provide the id of the node and the pointer (userid); even 
@@ -324,7 +335,7 @@ int   IupTreeGetInt (Ihandle *n, char* a, int id);
 float IupTreeGetFloat (Ihandle *n, char* a, int id);
 void  IupTreeSetfAttribute (Ihandle *n, char* a, int id, char* f, ...);</pre>
 <p>They work just like the respective tradicional set and get functions. But the attribute string is complemented with 
-  the L and C values. For ex:</p>
+  the id value. For ex:</p>
 <pre>IupTreeSetAttribute(n, &quot;KIND&quot; , 30, v) = IupSetAttribute(n, &quot;KIND30&quot;, v)
 IupTreeSetAttribute(n, &quot;ADDLEAF&quot; , 10, v) = IupSetAttribute(n, &quot;ADDLEAF10&quot;, v)</pre>
 <p>See also the <a href="../../download/IupTreeUtil.tar.gz">IupTreeUtil</a> 

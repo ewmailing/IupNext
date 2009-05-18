@@ -8,6 +8,10 @@
 .style1 {
 	color: #FF0000;
 }
+.style2 {
+	color: #FF0000;
+	font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -59,22 +63,22 @@ is limited to a minimum of 5 pixels. (since 3.0)</p>
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a> (<font size="3">non inheritable</font>): 
 the initial size is &quot;400x200&quot;. Set to NULL to allow the automatic 
 layout use smaller values.</p>
-<p><b>RENAMECARET</b>:
+<p><span class="style2">RENAMECARET</span><span class="style1">:
   Allows specifying and verifying the caret&#8217;s 
-  position of the text box when in-place renaming.</p>
-<p><b>RENAMESELECTION</b>:
+  position of the text box when in-place renaming.</span></p>
+<p><span class="style2">RENAMESELECTION</span><span class="style1">:
   Allows specifying and verifying selection 
   interval 
-  of the text box when in-place renaming.</p>
-<p><strong>SHOWDRAGDROP</strong>: Shows a drag cursor if the user drags a node or 
+  of the text box when in-place renaming.</span></p>
+<p class="style1"><strong>SHOWDRAGDROP</strong>: Shows a drag cursor if the user drags a node or 
   branch and enables the <strong>DRAGDROP_CB</strong> callback. Default:
   &quot;NO&quot;.</p>
-<p><strong>SHOWRENAME</strong>: Allows the in place rename of a node. The 
+<p class="style1"><strong>SHOWRENAME</strong>: Allows the in place rename of a node. The 
 <strong>RENAME_CB</strong> is called after the user entered a new name, instead of calling
   <strong>RENAME_NODE_CB</strong> to notify the user that it should rename a node. 
   Default:
   &quot;NO&quot;.</p>
-<p>&nbsp;</p>
+<p>XXXXXX</p>
 
 <p class="style1"><strong>SPACING</strong>: internal padding for each item. Notice that 
 vertically the distance between each item will be actually 2x the spacing. It 
@@ -101,105 +105,6 @@ POSITION</a>,
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a>,
     <a href="../attrib/iup_zorder.html">ZORDER</a>, <a href="../attrib/iup_visible.html">VISIBLE</a>: 
 also accepted.&nbsp;</p>
-<h3><a name="marks">Marks</a></h3>
-<p><strong>VALUE</strong> (<font size="3">non inheritable</font>):
-  The selected node. When changed also marks the node, but only 
-  if the Control and Shift keys are not used. Possible values:</p>
-<blockquote>
-<p class="info">
-The node identifier to be selected.</p>
-</blockquote>
-<p class="info">When changed also accepts the values:</p>
-<blockquote>
-<p class="info">&quot;ROOT&quot;:
-      the root node<br>
-&quot;LAST&quot;:
-      the last node<br>
-&quot;PGUP&quot;:
-      the node one page below<br>
-&quot;PGDN&quot;:
-      the node one page above<br>
-&quot;NEXT&quot;:
-      the node 
-following the selected node. If the selected node is the last one, the 
-      last one will be used instead <br>
-&quot;PREVIOUS&quot;:
-      the previous node of 
-the selected node. If the selected node is the root, 
-the root will be used instead</p>
-</blockquote>
-<p class="info">
-The following values are also accepted but they are 
-independent from the state of the Control and Shift keys, and from the CTRL and SHIFT attributes. And the selected node is <u>not</u> changed. These values are kept here for 
-    backward compatibility, but they would fit better in the MARKED attribute.</p>
-<blockquote>
-<p class="info">&quot;INVERT&quot;:
-      Inverts the node's marking. Using the &quot;INVERTid&quot; form, where id is the node identifier, it is possible to 
-      invert the marking of any node.<br>
-&quot;BLOCK&quot;:
-      Marks all nodes between the selected node 
-      and the initial block-marking node (see Navigation / Multiple Marking)<br>
-&quot;CLEARALL&quot;:
-      Unmark all nodes<br>
-&quot;MARKALL&quot;:
-      Marks all nodes<br>
-&quot;INVERTALL&quot;:
-      Inverts the marking of all nodes</p>
-</blockquote>
-<p class="info">The selected node is scrolled so it becames visible.</p>
-<p><strong>MARKED</strong> (non inheritable): The marking state of the selected node. Using 
-  the MARKEDid form, where id is the node identifier, it is possible to 
-  retrieve or change the marking state of any node. Possible values: &quot;YES&quot; 
-=
-    The node is marked; &quot;NO&quot; =
-    The node is not marked.</p>
-<p><strong>CTRL</strong>:
-  Activates or deactivates the Control key 
-  function. Possible values: &quot;YES&quot; =
-    Control key activated, allows marking 
-    individual nodes; &quot;NO&quot; =
-    Control key deactivated, does not allow 
-    marking individual nodes.
-    Default:
-    &quot;NO&quot;.</p>
-<p><strong>SHIFT</strong>:
-  Activates or deactivates the Shift key 
-  function. Possible values: &quot;YES&quot; =
-    Shift key activated, allows marking adjacent 
-    nodes; &quot;NO&quot; =
-    Shift key deactivated, does not allow 
-    marking adjacent nodes.
-    Default:
-    &quot;NO&quot;.</p>
-<p><strong>STARTING</strong> (<font size="3">non inheritable</font>):
-  Defines the initial node for the block 
-  marking. The value must be the node identifier.
-    Default:
-    root node.</p>
-<h3><a name="images">Images</a> (<font size="3">non inheritable</font>)</h3>
-<p><strong>IMAGEid</strong>:
-  image name to be used in the specified node, where id is the specified node 
-identifier. If id is empty, then the selected node is used as the specified 
-node. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
-	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
-	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
-In Windows and Motif set the BGCOLOR attribute before setting the image. </p>
-<p><strong>IMAGEEXPANDEDid</strong>:
-  same as the IMAGE attribute but used for expanded branches.</p>
-<p><strong>IMAGELEAF</strong>:
-  the image name that will be shown for all 
-  leaves. Default: &quot;IMGLEAF&quot;. Internal values &quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are 
-    also available. If BGCOLOR is set the image is automatically updated.</p>
-<p><strong>IMAGEBRANCHCOLLAPSED</strong>:
-  the image name that will be shown for all collapsed branches.
-    Default:
-    &quot;IMGCOLLAPSED&quot;. If BGCOLOR is set the image is automatically 
-updated.</p>
-<p><strong>IMAGEBRANCHEXPANDED</strong>:
-  the image name that will be shown for all expanded branches.
-    Default:
-    &quot;IMGEXPANDED&quot;. If BGCOLOR is set the image is automatically 
-updated.</p>
 <h3><a name="nodes">Nodes</a>&nbsp; (<font size="3">non inheritable</font>)</h3>
     <p>For these attributes &quot;id&quot; is the specified branch identifier. If id is 
 	empty, then the selected node is used as the specified node. </p>
@@ -239,6 +144,103 @@ specified node.</p>
 is the same as the <a href="../attrib/iup_font.html">FONT</a> attribute. (since 
 3.0)</p>
 <p><strong>USERDATAid</strong>: the userdata associated with the specified node. (since 3.0)</p>
+<h3><a name="images">Images</a> (<font size="3">non inheritable</font>)</h3>
+<p><strong>IMAGEid</strong>:
+  image name to be used in the specified node, where id is the specified node 
+identifier. If id is empty, then the selected node is used as the specified 
+node. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
+In Windows and Motif set the BGCOLOR attribute before setting the image. </p>
+<p><strong>IMAGEEXPANDEDid</strong>:
+  same as the IMAGE attribute but used for expanded branches.</p>
+<p><strong>IMAGELEAF</strong>:
+  the image name that will be shown for all 
+  leaves. Default: &quot;IMGLEAF&quot;. Internal values &quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are 
+    also available. If BGCOLOR is set the image is automatically updated.</p>
+<p><strong>IMAGEBRANCHCOLLAPSED</strong>:
+  the image name that will be shown for all collapsed branches.
+    Default:
+    &quot;IMGCOLLAPSED&quot;. If BGCOLOR is set the image is automatically 
+updated.</p>
+<p><strong>IMAGEBRANCHEXPANDED</strong>:
+  the image name that will be shown for all expanded branches.
+    Default:
+    &quot;IMGEXPANDED&quot;. If BGCOLOR is set the image is automatically 
+updated.</p>
+<h3><a name="marks">Marks</a></h3>
+<p class="style1"><strong>VALUE</strong> (<font size="3">non inheritable</font>):
+  The selected node identifier. It is the node with the focus rectangle. When changed also marks the node, but only 
+  if the Control and Shift keys are not used. </p>
+<p class="info" style="color: #FF0000">When changed also accepts the values:</p>
+<blockquote>
+<p class="info" style="color: #FF0000">&quot;ROOT&quot;:
+      the root node<br>
+&quot;LAST&quot;:
+      the last node<br>
+&quot;PGUP&quot;:
+      the node one page below<br>
+&quot;PGDN&quot;:
+      the node one page above<br>
+&quot;NEXT&quot;:
+      the node 
+following the selected node. If the selected node is the last one, the 
+      last one will be used instead <br>
+&quot;PREVIOUS&quot;:
+      the previous node of 
+the selected node. If the selected node is the root, 
+the root will be used instead</p>
+</blockquote>
+<p class="info" style="color: #FF0000">
+The following values are also accepted but they are 
+independent from the state of the Control and Shift keys, and from the CTRL and SHIFT attributes. And the selected node is <u>not</u> 
+changed.</p>
+<blockquote>
+<p class="info" style="color: #FF0000">&quot;INVERT&quot;:
+      Inverts the node's marking. Using the &quot;INVERTid&quot; form, where id is the node identifier, it is possible to 
+      invert the marking of any node.<br>
+&quot;BLOCK&quot;:
+      Marks all nodes between the selected node 
+      and the initial block-marking node (see Navigation / Multiple Marking)<br>
+&quot;CLEARALL&quot;:
+      Unmark all nodes<br>
+&quot;MARKALL&quot;:
+      Marks all nodes<br>
+&quot;INVERTALL&quot;:
+      Inverts the marking of all nodes</p>
+</blockquote>
+<p class="info" style="color: #FF0000">The selected node is scrolled so it becames visible.</p>
+<p><strong>MARKEDid</strong> (non inheritable): The marking state of the 
+specified node, where id is the specified node identifier. If id is empty, then 
+the selected node is used as reference node. Possible values: &quot;YES&quot; 
+=
+    The node is marked; &quot;NO&quot; =
+    The node is not marked.</p>
+<p class="style1"><strong>MARKMODE</strong>: defines how the nodes can be marked. Can be: 
+SINGLE or MULTIPLE. Default: SINGLE.</p>
+<p class="style1"><strong>CTRL</strong>:
+  Activates or deactivates the Control key 
+  function. Possible values: &quot;YES&quot; =
+    Control key activated, allows marking 
+    individual nodes; &quot;NO&quot; =
+    Control key deactivated, does not allow 
+    marking individual nodes.
+    Default:
+    &quot;NO&quot;.</p>
+<p class="style1"><strong>SHIFT</strong>:
+  Activates or deactivates the Shift key 
+  function. Possible values: &quot;YES&quot; =
+    Shift key activated, allows marking adjacent 
+    nodes; &quot;NO&quot; =
+    Shift key deactivated, does not allow 
+    marking adjacent nodes.
+    Default:
+    &quot;NO&quot;.</p>
+<p class="style1"><strong>STARTING</strong> (<font size="3">non inheritable</font>):
+  Defines the initial node for the block 
+  marking. The value must be the node identifier.
+    Default:
+    root node.</p>
 <h3><a name="action">Action</a>&nbsp; (<font size="3">write-only, non inheritable</font>)</h3>
 <p><strong>ADDLEAF</strong><b>id</b><strong> </strong>(write only):
   Adds a new leaf 
@@ -285,8 +287,9 @@ in the string as &quot;%p&quot;. (since 3.0)</p>
 (write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
 the depth of the new node is always the same of the reference node. 
 (since 3.0)</p>
-<p><b>RENAME</b><strong> </strong>(write only):<b> </b>Forces a rename action to take place. If SHOWRENAME=YES then 
-  does in-place rename, else just calls the RENAMENODE_CB. The value is ignored.</p>
+<p><span class="style2">RENAME</span><span class="style1"><strong> </strong>(write only):</span><span class="style2">
+</span><span class="style1">Forces a rename action to take place. If SHOWRENAME=YES then 
+  does in-place rename, else just calls the RENAMENODE_CB. The value is ignored.</span></p>
 
 </body>
 

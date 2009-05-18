@@ -53,8 +53,8 @@ static Ihandle* create_matrix(void)
   //IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");
 //  IupSetAttribute(mat, "ACTIVE", "NO");
 
-//  IupSetAttribute(mat,"MARK_MODE","CELL");
-  IupSetAttribute(mat,"MARK_MODE","CELL");
+//  IupSetAttribute(mat,"MARKMODE","CELL");
+  IupSetAttribute(mat,"MARKMODE","CELL");
   IupSetAttribute(mat,"MARKMULTIPLE","YES");
   IupSetAttribute(mat,"MARKAREA","NOT_CONTINUOUS");
   IupSetAttribute(mat,"MARK2:2","YES");

@@ -169,8 +169,8 @@ static Ihandle *create_mat(void)
 //  IupSetAttribute(mat,"SCROLLBAR", "NO");
   IupSetAttribute(mat,"RESIZEMATRIX", "YES");
 
-  IupSetAttribute(mat,"MARK_MODE", "CELL");
-//  IupSetAttribute(mat,"MARK_MODE", "LINCOL");
+  IupSetAttribute(mat,"MARKMODE", "CELL");
+//  IupSetAttribute(mat,"MARKMODE", "LINCOL");
   IupSetAttribute(mat,"MARKMULTIPLE", "YES");
 //  IupSetAttribute(mat,"MARKAREA", "NOT_CONTINUOUS");
  IupSetAttribute(mat, "MARKAREA", "CONTINUOUS");

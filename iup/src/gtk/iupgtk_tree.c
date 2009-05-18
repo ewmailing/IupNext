@@ -1628,7 +1628,7 @@ static void gtkTreeCellTextEditingStarted(GtkCellRenderer *cell, GtkCellEditable
   (void)path;
 }
 
-void gtkTreeCellTextEdited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, Ihandle* ih)
+static void gtkTreeCellTextEdited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, Ihandle* ih)
 {
   gtkTreeRename_CB(ih, path_string, new_text);
   (void)cell;
@@ -1870,11 +1870,17 @@ static gboolean gtkTreeButtonPressEvent(GtkWidget *treeview, GdkEventButton *eve
 
     if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(treeview), (gint) event->x, (gint) event->y, &path, &column, NULL, NULL))
     {
+      if (gtk_tree_view_row_expanded(GTK_TREE_VIEW(treeview), path))
+        gtk_tree_view_collapse_row(GTK_TREE_VIEW(treeview), path);
+      else
+        gtk_tree_view_expand_row(GTK_TREE_VIEW(treeview), path, FALSE);
+
       if(IupGetInt(ih, "SHOWRENAME"))
         gtkTreeShowRename_CB(ih);
       else
         gtkTreeRenameNode_CB(ih);
 
+      gtk_tree_path_free(path);
       return TRUE;
     }
   }
@@ -2053,9 +2059,9 @@ static int gtkTreeMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle),    "key-press-event", G_CALLBACK(gtkTreeKeyPressEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle),  "key-release-event", G_CALLBACK(gtkTreeKeyReleaseEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkTreeButtonPressEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle),         "drag-begin", G_CALLBACK(gtkTreeDragBegin), ih);
-  g_signal_connect(G_OBJECT(ih->handle),          "drag-drop", G_CALLBACK(gtkTreeDragDrop), ih);
-  g_signal_connect(G_OBJECT(ih->handle),           "drag-end", G_CALLBACK(gtkTreeDragEnd), ih);
+  //g_signal_connect(G_OBJECT(ih->handle),         "drag-begin", G_CALLBACK(gtkTreeDragBegin), ih);
+  //g_signal_connect(G_OBJECT(ih->handle),          "drag-drop", G_CALLBACK(gtkTreeDragDrop), ih);
+  //g_signal_connect(G_OBJECT(ih->handle),           "drag-end", G_CALLBACK(gtkTreeDragEnd), ih);
 
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
@@ -2117,4 +2123,5 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "RENAME",  NULL, gtkTreeSetRenameAttrib,  IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 }
 
-// rever gtkTreeFindParentNode
+// review gtk_tree_selection_set_mode
+// review gtkTreeFindParentNode
