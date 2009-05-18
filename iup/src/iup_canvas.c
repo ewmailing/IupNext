@@ -146,6 +146,9 @@ Iclass* iupCanvasGetClass(void)
   iupClassRegisterCallback(ic, "SCROLL_CB", "iff");
   iupClassRegisterCallback(ic, "WHEEL_CB", "fiis");
 
+  /* Common Callbacks */
+  iupBaseRegisterCommonCallbacks(ic);
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 

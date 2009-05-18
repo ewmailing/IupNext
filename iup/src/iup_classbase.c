@@ -446,3 +446,15 @@ void iupBaseRegisterVisualAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "TIPBGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "255 255 225", IUPAF_NOT_MAPPED); /* Light Yellow */
   iupClassRegisterAttribute(ic, "TIPFGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NOT_MAPPED);       /* black */
 }
+
+void iupBaseRegisterCommonCallbacks(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic, "MAP_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "UNMAP_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GETFOCUS_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "KILLFOCUS_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ENTERWINDOW_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LEAVEWINDOW_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HELP_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "K_ANY", NULL, NULL, "i", NULL, IUPAF_NO_INHERIT);
+}

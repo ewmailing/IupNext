@@ -685,6 +685,8 @@ Iclass* iupListGetClass(void)
   iupClassRegisterCallback(ic, "EDIT_CB", "is");
   iupClassRegisterCallback(ic, "CARET_CB", "iii");
 
+  /* Common Callbacks */
+  iupBaseRegisterCommonCallbacks(ic);
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

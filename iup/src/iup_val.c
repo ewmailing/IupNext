@@ -194,6 +194,9 @@ Iclass* iupValGetClass(void)
   /* Callbacks */
   iupClassRegisterCallback(ic, "CHANGEVALUE_CB", "d");
 
+  /* Common Callbacks */
+  iupBaseRegisterCommonCallbacks(ic);
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 

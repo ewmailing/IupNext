@@ -77,6 +77,8 @@ static int callbacksList_ActionCB (Ihandle *ih, char *callName, int pos, int sta
 
   if(returns)
     sprintf(params, "%s (= char*)", params);
+  else if(!strcmp(callName, "HELP_CB"))
+    sprintf(params, "%s (= void)", params);
   else
     sprintf(params, "%s (= int)", params);
 

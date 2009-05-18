@@ -673,6 +673,9 @@ Iclass* iupDialogGetClass(void)
   iupClassRegisterCallback(ic, "RESIZE_CB", "ii");
   iupClassRegisterCallback(ic, "CLOSE_CB", "");
 
+  /* Common Callbacks */
+  iupBaseRegisterCommonCallbacks(ic);
+
   /* Attribute functions */
 
   /* Common */

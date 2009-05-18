@@ -104,6 +104,10 @@ Iclass* iupProgressBarGetClass(void)
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;
 
+  /* Common Callbacks */
+  iupClassRegisterCallback(ic, "MAP_CB", "");
+  iupClassRegisterCallback(ic, "UNMAP_CB", "");
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 

@@ -196,6 +196,9 @@ Iclass* iupButtonGetClass(void)
   iupClassRegisterCallback(ic, "BUTTON_CB", "iiiis");
   iupClassRegisterCallback(ic, "ACTION", "");
 
+  /* Common Callbacks */
+  iupBaseRegisterCommonCallbacks(ic);
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 

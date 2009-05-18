@@ -239,6 +239,11 @@ Iclass* iupItemGetClass(void)
   iupClassRegisterCallback(ic, "HIGHLIGHT_CB", "");
   iupClassRegisterCallback(ic, "ACTION", "");
 
+  /* Common Callbacks */
+  iupClassRegisterCallback(ic, "MAP_CB", "");
+  iupClassRegisterCallback(ic, "UNMAP_CB", "");
+  iupClassRegisterCallback(ic, "HELP_CB", "");
+
   /* Common */
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -267,6 +272,10 @@ Iclass* iupSubmenuGetClass(void)
   /* Callbacks */
   iupClassRegisterCallback(ic, "HIGHLIGHT_CB", "");
 
+  /* Common Callbacks */
+  iupClassRegisterCallback(ic, "MAP_CB", "");
+  iupClassRegisterCallback(ic, "UNMAP_CB", "");
+
   /* Common */
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -294,6 +303,10 @@ Iclass* iupMenuGetClass(void)
   /* Callbacks */
   iupClassRegisterCallback(ic, "OPEN_CB", "");
   iupClassRegisterCallback(ic, "MENUCLOSE_CB", "");
+
+  /* Common Callbacks */
+  iupClassRegisterCallback(ic, "MAP_CB", "");
+  iupClassRegisterCallback(ic, "UNMAP_CB", "");
 
   /* Common */
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);

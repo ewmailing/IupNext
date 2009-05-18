@@ -35,12 +35,17 @@ void iupBaseRegisterCommonAttrib(Iclass* ic);
  * \ingroup iclassbase */
 void iupBaseRegisterVisualAttrib(Iclass* ic);
 
+/** Register all common callbacks: \n
+* MAP_CB, UNMAP_CB, GETFOCUS_CB, KILLFOCUS_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB, K_ANY, HELP_CB.
+* \ingroup iclassbase */
+void iupBaseRegisterCommonCallbacks(Iclass* ic);
+
 /* Register driver dependent common attributes. 
    Used only from iupBaseRegisterCommonAttrib */
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic);
 
 /** Updates the expand member of the IUP object from the EXPAND attribute.
- * Should be called in the begining of the ComputeNaturalSize of each container.
+ * Should be called in the beginning of the ComputeNaturalSize of each container.
  * \ingroup iclassbase */
 void iupBaseContainerUpdateExpand(Ihandle* ih);
 
