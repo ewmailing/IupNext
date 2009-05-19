@@ -17,6 +17,26 @@
 
 <h2>IupMatrix Attributes<span class="style1"> (all non inheritable with 
 exceptions)</span></h2>
+<h3>General Attributes</h3>
+<p><strong><a name="CURSOR">CURSOR</a></strong>:
+  Default cursor used by the matrix. The 
+  default cursor is a symbol that looks like a cross. If you need to refer to this default cursor, use the name 
+&quot;IupMatrixCrossCursor&quot;.</p>
+<p><strong><a name="FOCUS_CELL">FOCUS_CELL</a></strong>:
+  Defines the current cell. Two numbers in the &quot;<strong><em>L</em></strong>:<strong><em>C</em></strong>&quot; format, 
+    &nbsp;(<strong><em>L</em></strong>&gt;0 and <strong><em>C</em></strong>&gt;0, a title cell can NOT be the current cell). Default: &quot;1:1&quot;.</p>
+<p><strong><a name="HIDEFOCUS">HIDEFOCUS</a></strong>: do not show the focus mark when 
+  drawing the matrix. Default is NO.</p>
+<p><strong><a name="READONLY">READONLY</a></strong>: disables the editing of all cells. EDITION_CB and 
+VALUE_EDIT_CB will not be called anymore. The L:C attribute will still be able 
+to change the cell value. (since 3.0)</p>
+
+<p><strong><a name="RESIZEMATRIX">RESIZEMATRIX</a></strong>:
+  Defines if the width of a column can be 
+  interactively changed. When this is possible, the user can change the size of a column by dragging the column title 
+  right border. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
+    &quot;NO&quot; (does not allow interactive width change).</p>
+
 <h3>Cell Attributes (no redraw)</h3>
 <p>(These attributes are only updated in the display when you set the
 <a href="#REDRAW">REDRAW</a> attribute.)</p>
@@ -172,8 +192,8 @@ the scrollbar. When
 <h3>Mark Attributes</h3>
 <p><strong><a name="MARKAREA">AREA</a></strong>:
   Defines if the area to be <strong>interactively</strong> 
-  marked by the user must be continuous or not, valid only if MULTIPLE=YES. Possible values: &quot;CONTINUOUS&quot; or &quot;NOT_CONTINUOUS&quot;. Default: &quot;CONTINUOUS&quot;.</p>
-<p><strong><a name="MARK_MODE">MARK_MODE</a></strong>:
+  marked by the user must be continuous or not, valid only if MARKMULTIPLE=YES. Possible values: &quot;CONTINUOUS&quot; or &quot;NOT_CONTINUOUS&quot;. Default: &quot;CONTINUOUS&quot;.</p>
+<p><strong><a name="MARKMODE">MARKMODE</a></strong>:
   Defines the entity that can be marked: none, 
   lines, columns, (lines <span class="style2">or</span> columns), and cells. Possible values: &quot;NO&quot;, &quot;LIN&quot;, &quot;COL&quot;, 
     &quot;LINCOL&quot; or &quot;CELL&quot;. Default: &quot;NO&quot; 
@@ -273,25 +293,6 @@ multiple lines.&nbsp; </p>
 <p><b><a name="BORDER">BORDER</a></b>: Changed to NO.</p>
 <p><b><a name="SCROLLBAR">SCROLLBAR</a></b>:
   Changed to YES.</p>
-<h3>General Attributes</h3>
-<p><strong><a name="CURSOR">CURSOR</a></strong>:
-  Default cursor used by the matrix. The 
-  default cursor is a symbol that looks like a cross. If you need to refer to this default cursor, use the name 
-&quot;IupMatrixCrossCursor&quot;.</p>
-<p><strong><a name="FOCUS_CELL">FOCUS_CELL</a></strong>:
-  Defines the current cell. Two numbers in the &quot;<strong><em>L</em></strong>:<strong><em>C</em></strong>&quot; format, 
-    &nbsp;(<strong><em>L</em></strong>&gt;0 and <strong><em>C</em></strong>&gt;0, a title cell can NOT be the current cell). Default: &quot;1:1&quot;.</p>
-<p><strong><a name="HIDEFOCUS">HIDEFOCUS</a></strong>: do not show the focus mark when 
-  drawing the matrix. Default is NO.</p>
-<p><strong><a name="READONLY">READONLY</a></strong>: disables the editing of all cells. EDITION_CB and 
-VALUE_EDIT_CB will not be called anymore. The L:C attribute will still be able 
-to change the cell value. (since 3.0)</p>
-
-<p><strong><a name="RESIZEMATRIX">RESIZEMATRIX</a></strong>:
-  Defines if the width of a column can be 
-  interactively changed. When this is possible, the user can change the size of a column by dragging the column title 
-  right border. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
-    &quot;NO&quot; (does not allow interactive width change).</p>
 
 </body>
 
