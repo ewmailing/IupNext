@@ -5,6 +5,11 @@
 <title>IupTree Callbacks</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -20,7 +25,7 @@
 <strong>id</strong>:
     Node identifier.<br>
     status: 1 - node was selected, 0 - node was unselected. </p>
-<p class="info">This function must return 
+<p class="info"><span class="style1">Returns:</span> 
     IUP_IGNORE for the selected node not to be changed, or IUP_DEFAULT to change it.</p>
 <p><strong>MULTISELECTION_CB</strong>:
   Action generated 
@@ -32,8 +37,7 @@
 <strong>ids</strong>:
     Array of node identifiers.<br>
 <b>n</b>: Number of nodes in the array.</p>
-<p class="info">This function must return 
-    IUP_IGNORE for the selected nodes not to be changed, or IUP_DEFAULT to change it.</p>
+<p class="info"><span class="style1">Returns:</span> IUP_IGNORE for the selected nodes not to be changed, or IUP_DEFAULT to change it.</p>
 <hr>
 <p><strong>BRANCHOPEN_CB</strong>:
   Action generated when a branch is expanded. 
@@ -45,7 +49,7 @@
     Identifier of the IupTree interacting with the user. <br>
 <strong>id</strong>:
     Node identifier. </p>
-<p class="info">This function must return IUP_IGNORE for the branch not to be opened, or IUP_DEFAULT for the branch to be opened.</p>
+<p class="info"><span class="style1">Returns:</span> IUP_IGNORE for the branch not to be opened, or IUP_DEFAULT for the branch to be opened.</p>
 <p><strong>BRANCHCLOSE_CB</strong>:
   Action generated when a branch is collapsed. 
   This action occurs when the user clicks the &quot;-&quot; 
@@ -59,7 +63,7 @@
     Identifier of the IupTree interacting with the user. <br>
 <strong>id</strong>:
     Identifier of the clicked node. </p>
-<p class="info">This function must return IUP_IGNORE for the branch not to be closed, or IUP_DEFAULT for the branch to be closed.</p>
+<p class="info"><span class="style1">Returns:</span> IUP_IGNORE for the branch not to be closed, or IUP_DEFAULT for the branch to be closed.</p>
 <p><strong>EXECUTELEAF_CB</strong>:
   Action generated when a leaf is to be 
   executed. This action occurs when the user double clicks the 
@@ -112,7 +116,7 @@ elem</strong>:rename_cb(<strong>id:</strong> number, <strong>name</strong>:<stro
     Identifier of the clicked node. <br>
 <strong>name</strong>:
     New name of the clicked node. </p>
-<p class="info">The new name is accepted only if the callback returns IUP_DEFAULT. If the callback does not exists the new name 
+<p class="info"><span class="style1">Returns:</span> The new name is accepted only if the callback returns IUP_DEFAULT. If the callback does not exists the new name 
     is always accepted. If the user pressed <b>Enter</b> and the callback returns IUP_IGNORE the editing continues. If 
     the text box looses its focus the editing stops always.<br>
 </p>

@@ -112,7 +112,7 @@ POSITION</a>,
 also accepted.&nbsp;</p>
 <h3><a name="nodes">Nodes</a>&nbsp; (<font size="3">non inheritable</font>)</h3>
     <p>For these attributes &quot;id&quot; is the specified branch identifier. If id is 
-	empty, then the selected node is used as the specified node. </p>
+	empty, then the focus node is used as the specified node. </p>
 <p><strong>CHILDCOUNTid</strong> (read only): returns the immediate children 
 	count of the specified branch. It 
 	does not count children of child that are branches. (since 3.0)</p>
@@ -152,7 +152,7 @@ is the same as the <a href="../attrib/iup_font.html">FONT</a> attribute. (since
 <h3><a name="images">Images</a> (<font size="3">non inheritable</font>)</h3>
 <p><strong>IMAGEid</strong>:
   image name to be used in the specified node, where id is the specified node 
-identifier. If id is empty, then the selected node is used as the specified 
+identifier. If id is empty, then the focus node is used as the specified 
 node. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
@@ -173,11 +173,10 @@ updated.</p>
     Default:
     &quot;IMGEXPANDED&quot;. If BGCOLOR is set the image is automatically 
 updated.</p>
-<h3><a name="marks">Marks</a></h3>
+<h3><a name="focus">Focus Node</a></h3>
 <p class="style1"><strong>VALUE</strong> (<font size="3">non inheritable</font>):
-  The selected node identifier. It is the node with the focus rectangle. When changed also marks the node, but only 
-  if the Control and Shift keys are not used. </p>
-<p class="info" style="color: #FF0000">When changed also accepts the values:</p>
+  The focus node identifier. When changed the tree is scrolled so it becames visible. 
+Also accepts the values:</p>
 <blockquote>
 <p class="info" style="color: #FF0000">&quot;ROOT&quot;:
       the root node<br>
@@ -189,24 +188,18 @@ updated.</p>
       the node one page above<br>
 &quot;NEXT&quot;:
       the node 
-following the selected node. If the selected node is the last one, the 
-      last one will be used instead <br>
-&quot;PREVIOUS&quot;:
-      the previous node of 
-the selected node. If the selected node is the root, 
-the root will be used instead</p>
+following the focus node. If at the last does nothing <br>
+&quot;PREVIOUS&quot;: the previous node of the focus node. If at the root does nothing</p>
 </blockquote>
-<p class="info" style="color: #FF0000">
-The following values are also accepted but they are 
-independent from the state of the Control and Shift keys, and from the CTRL and SHIFT attributes. And the selected node is <u>not</u> 
-changed.</p>
+<h3><a name="marks0">Marks</a></h3>
+<p class="style1">MARK (<font size="3">non inheritable</font>): Selects a range 
+of nodes in the format &quot;star,end&quot; (%d-%d). Also accepts the values:</p>
 <blockquote>
-<p class="info" style="color: #FF0000">&quot;INVERT&quot;:
-      Inverts the node's marking. Using the &quot;INVERTid&quot; form, where id is the node identifier, it is possible to 
-      invert the marking of any node.<br>
-&quot;BLOCK&quot;:
-      Marks all nodes between the selected node 
-      and the initial block-marking node (see Navigation / Multiple Marking)<br>
+<p class="info" style="color: #FF0000">&quot;INVERTid&quot;:
+      Inverts the specified node mark state, where id is the specified node 
+identifier. If id is empty, then the focus node is used as reference node. <br>
+&quot;BLOCK&quot;: Marks all nodes between the focus node and the initial block-marking 
+node defined by STARTING<br>
 &quot;CLEARALL&quot;:
       Unmark all nodes<br>
 &quot;MARKALL&quot;:
@@ -214,14 +207,11 @@ changed.</p>
 &quot;INVERTALL&quot;:
       Inverts the marking of all nodes</p>
 </blockquote>
-<p class="info" style="color: #FF0000">The selected node is scrolled so it becames visible.</p>
 <p><strong>MARKEDid</strong> (non inheritable): The marking state of the 
 specified node, where id is the specified node identifier. If id is empty, then 
-the selected node is used as reference node. Possible values: &quot;YES&quot; 
-=
-    The node is marked; &quot;NO&quot; =
-    The node is not marked.</p>
-<p class="style1"><strong>MARKMODE</strong>: defines how the nodes can be marked. Can be: 
+the focus node is used as reference node. Can be: YES or NO. Default: NO</p>
+<p class="style1"><strong>MARKMODE</strong>: defines how the nodes can be 
+selected. Can be: 
 SINGLE or MULTIPLE. Default: SINGLE.</p>
 <p class="style1"><strong>CTRL</strong>:
   Activates or deactivates the Control key 
@@ -245,12 +235,12 @@ SINGLE or MULTIPLE. Default: SINGLE.</p>
   Defines the initial node for the block 
   marking. The value must be the node identifier.
     Default:
-    root node.</p>
+    0 (root node).</p>
 <h3><a name="action">Action</a>&nbsp; (<font size="3">write-only, non inheritable</font>)</h3>
 <p><strong>ADDLEAF</strong><b>id</b><strong> </strong>(write only):
   Adds a new leaf 
 after the reference node, where id is the reference node identifier. If id is 
-empty, then the selected node is used as reference node. The value is used as the 
+empty, then the focus node is used as reference node. The value is used as the 
 text label of the new node. The id of the new node will be the id of the 
 reference node + 1. 
   The reference node is marked and all others unmarked. The reference node 
@@ -266,7 +256,7 @@ expanded or collapsed depending on <strong>ADDEXPANDED</strong>.</p>
 
 <p><strong>DELNODEid </strong>(write only):
   Removes a node and or its children, where id is the specified node identifier. 
-If id is empty, then the selected node is used as the specified node. The root cannot be removed. Possible values:</p>
+If id is empty, then the focus node is used as the specified node. The root cannot be removed. Possible values:</p>
 <blockquote>
 <ul>
   <li>&quot;SELECTED&quot;:
@@ -275,8 +265,8 @@ If id is empty, then the selected node is used as the specified node. The root c
     deletes only the children of the 
   specified node</li>
   <li>&quot;MARKED&quot;:
-    deletes all marked nodes (and all their 
-    children), id is always ignored</li>
+    deletes all the selected nodes (and all their 
+    children), id is ignored</li>
 </ul>
 </blockquote>
 

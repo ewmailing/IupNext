@@ -40,9 +40,8 @@ leaves can have an associated text and image.</p>
 <p>The leaves can generate an &quot;executed&quot; or &quot;renamed&quot; actions, branches can only generate 
 a &quot;renamed&quot; action. 
 </p>
-<p>The selected node is the node with the focus rectangle, marked nodes have their background inverted. 
+<p>The focus node is the node with the focus rectangle, marked nodes have their background inverted. 
 </p>
-<p>The old IupTree implementation based on IupCanvas is not available in IUP 3.</p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupTree(<strong>void</strong>); [in C] 
@@ -90,12 +89,15 @@ USERDATA</strong></p>
     IMAGEBRANCHEXPANDED<br>
     IMAGEid<br>
     IMAGEEXPANDEDid</strong></p>
+<h4><a href="iuptree_attrib.html#focus">Focus Node</a></h4>
+<p class="info"><strong>VALUE</strong></p>
 <h4><a href="iuptree_attrib.html#marks">Marks</a></h4>
-<p class="info"><strong>CTRL<br>
+<p class="info"><strong>MARK<br>
+MARKED<br>
+    MARKEDMODE<br>
+CTRL<br>
     SHIFT<br>
-    STARTING<br>
-    VALUE<br>
-    MARKED</strong></p>
+    STARTING</strong></p>
 <h4><a href="iuptree_attrib.html#action">Action</a></h4>
 <p class="info"><strong>ADDLEAF<br>
     ADDBRANCH<br>
@@ -165,9 +167,9 @@ TITLE0 = "Figures"
   INSERTBRANCH9 = "3D"
 </pre>
 <p>The following pseudo code initializes the tree from bottom to top 
-sequencially (except for branches), and also uses the current selected node:</p>
+sequencially (except for branches), and also uses the focus node:</p>
 <pre>
-VALUE = 0  // Selects the root (default for a new element)
+VALUE = 0  // Set the focus node at the root (default for a new element)
 TITLE = "Figures"
 ADDBRANCH = "3D"
 ADDBRANCH = "2D"
@@ -215,28 +217,28 @@ for the node.</p>
 &quot;IMAGEBRANCHEXPANDED&quot; uses &quot;IMGEXPANDED&quot;</pre>
 <pre>&quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are designed for use as &quot;IMAGELEAF&quot;</pre>
 <h4>Simple Marking</h4>
-<p>Is the IupTree&#8217;s default operation mode. In this mode only one node is marked, and it matches the 
-  selected node.</p>
+<p>Is the IupTree&#8217;s default operation mode. In this mode only one node can 
+be selected.</p>
 <h4>Multiple Marking</h4>
 <p>IupTree allows marking several nodes simultaneously using the Shift and Control keys. To use 
   multiple marking, the user must use attributes SHIFT and CTRL.</p>
 <p>When a user keeps the Control key pressed, 
-  the individual marking mode is used. This way, the selected node can be modified without changing the marked node. To 
+  the individual marking mode is used. This way, the focus node can be modified without changing the marked node. To 
   reverse a node marking, the user simply has to press the space bar.</p>
 <p>When the user keeps the Shift key pressed, 
-  the block marking mode is used. This way, all nodes between the selected node and the initial node are marked, and all 
+  the block marking mode is used. This way, all nodes between the focus node and the initial node are marked, and all 
   others are unmarked. The initial node is changed every time a node is marked without the Shift key being pressed. This 
   happens when any movement is done without Shift or Control keys being pressed, or when the space bar is pressed together 
   with Control.</p>
 <h4><a name="navigation">Navigation</a></h4>
 <p>Using the keyboard: </p>
 <ul>
-  <li><b>Arrow Up/Down</b>: Moves the selection to the neighbor 
+  <li><b>Arrow Up/Down</b>: Moves the focus node to the neighbor 
     node, according to the arrow direction.</li>
-  <li><b>Home/End</b>: Selects the root/last node.</li>
-  <li><b>Page Up/Page Down</b>: Selects the node one page above/below the 
-    selected node.</li>
-  <li><b>Enter</b>: If the selected node is an expanded branch, it is collapsed; if it is a collapsed
+  <li><b>Home/End</b>: Moves the focus node to the root/last node.</li>
+  <li><b>Page Up/Page Down</b>: Moves the focus node to the node one page above/below the 
+    focus node.</li>
+  <li><b>Enter</b>: If the focus node is an expanded branch, it is collapsed; if it is a collapsed
     branch, it is expanded; if it is a leaf, it is executed.</li>
   <li><span class="style4">Ctrl+Space</span><span class="style3">:&nbsp;
     Marks or unmarks a node.</span></li>
@@ -248,12 +250,12 @@ are no next visible node then the next control in the dialog receives the focus.
 In Windows and Gtk the focus simply goes directly to the next control.</p>
 <p>Using the mouse: </p>
 <ul>
-  <li><b>Clicking a node</b>: Selects the clicked node.</li>
+  <li><b>Clicking a node</b>: Moves the focus node to the clicked node.</li>
   <li><b>Clicking a (-/+) box</b>: Makes the branch to the right of the (-/+) 
     box collapse/expand.</li>
-  <li class="style3"><b>Clicking an empty region</b>: Unmarks all nodes (including the selected 
-    one).</li>
-  <li><span class="style4">Double-clicking a node image</span><span class="style3">: If the selected node is an expanded 
+  <li class="style3"><b>Clicking an empty region</b>: Unmarks all nodes.</li>
+  <li><span class="style4">Double-clicking a node image</span><span class="style3">: 
+	Moves the focus node to the clicked node. If the node is an expanded 
     branch, it is collapsed; if it is a collapsed branch, it is expanded; if it is a leaf, it is executed. 
   </span> 
   </li>
