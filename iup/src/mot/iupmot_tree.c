@@ -2196,7 +2196,10 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
 
   if (motcode == XK_Tab || motcode == XK_KP_Tab)
   {
-    IupNextField(ih);
+    if (evt->state & ShiftMask)
+      IupPreviousField(ih);
+    else
+      IupNextField(ih);
     *cont = False;
     return;
   }
@@ -2271,6 +2274,19 @@ static void motTreeButtonPressEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Bo
       }
     }
   }
+}
+
+static int motTreeConvertXYToPos(Ihandle* ih, int x, int y)
+{
+  Widget wItem = XmObjectAtPoint(ih->handle, (Position)x, (Position)y);
+  if (wItem)
+  {
+    Widget wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
+    ih->data->id_control = -1;
+    motTreeFindNodeFromID(ih, &wRoot, 1, wItem);
+    return ih->data->id_control;
+  }
+  return -1;
 }
 
 static int motTreeMapMethod(Ihandle* ih)
@@ -2361,8 +2377,10 @@ static int motTreeMapMethod(Ihandle* ih)
   XtAddEventHandler(ih->handle, KeyPressMask,    False, (XtEventHandler)motTreeKeyPressEvent,    (XtPointer)ih);
   XtAddEventHandler(ih->handle, KeyReleaseMask,  False, (XtEventHandler)motTreeKeyReleaseEvent,  (XtPointer)ih);
   XtAddEventHandler(ih->handle, ButtonPressMask, False, (XtEventHandler)motTreeButtonPressEvent, (XtPointer)ih);
+  XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotPointerMotionEvent, (XtPointer)ih);
 
   /* Callbacks */
+  XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
   XtAddCallback(ih->handle, XmNoutlineChangedCallback, (XtCallbackProc)motTreeOutlineChangedCallback, (XtPointer)ih);
   XtAddCallback(ih->handle, XmNdefaultActionCallback,  (XtCallbackProc)motTreeDefaultActionCallback,  (XtPointer)ih);
   XtAddCallback(ih->handle, XmNselectionCallback,      (XtCallbackProc)motTreeSelectionCallback,      (XtPointer)ih);
@@ -2372,6 +2390,8 @@ static int motTreeMapMethod(Ihandle* ih)
   XtRealizeWidget(parent);
 
   motTreeAddRootNode(ih);
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)motTreeConvertXYToPos);
 
   return IUP_NOERROR;
 }

@@ -8,6 +8,9 @@
 .style1 {
 	font-size: large;
 }
+.style2 {
+	text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -25,7 +28,7 @@ iup.Append(<strong>ih, ref_child, new_child</strong>: ihandle) -&gt; (<strong>pa
 Can be NULL to insert as the first element.<br>
 <strong>new_child</strong>: Identifier of the element to be inserted before the 
 reference.</p>
-<p>This function returns 
+<p><span class="style2">Returns:</span> 
   the actual <b>parent</b> if the interface element was successfully inserted. Otherwise returns NULL (nil in Lua). 
 Notice that the desired parent can contains a set of elements and containers 
 where the child will be actually attached so the function returns the actual 

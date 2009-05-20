@@ -16,7 +16,8 @@ void iupdrvTextInitClass(Iclass* ic);
 void iupdrvTextAddBorders(int *w, int *h);
 void iupdrvTextAddSpin(int *w, int h);
 void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag);
-void iupdrvTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos);
+void iupdrvTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
+void iupdrvTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
 
 void iupTextUpdateFormatTags(Ihandle* ih);
 char* iupTextGetPaddingAttrib(Ihandle* ih);

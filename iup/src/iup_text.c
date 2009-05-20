@@ -393,7 +393,7 @@ static void iTextDestroyMethod(Ihandle* ih)
 /******************************************************************************/
 
 
-void IupTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos)
+void IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -405,11 +405,32 @@ void IupTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *
   if (iupStrEqual(ih->iclass->name, "text") ||
       iupStrEqual(ih->iclass->name, "multiline"))
   {
-    int txt_lin, txt_col, txt_pos;
-    iupdrvTextConvertXYToChar(ih, x, y, &txt_lin, &txt_col, &txt_pos);
-    if (lin) *lin = txt_lin;
-    if (col) *col = txt_col;
-    if (pos) *pos = txt_pos;
+    if (ih->data->is_multiline)
+      iupdrvTextConvertLinColToPos(ih, lin, col, pos);
+    else
+      *pos = col - 1; /* IUP starts at 1 */
+  }
+}
+
+void IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (!ih->handle)
+    return;
+    
+  if (iupStrEqual(ih->iclass->name, "text") ||
+      iupStrEqual(ih->iclass->name, "multiline"))
+  {
+    if (ih->data->is_multiline)
+      iupdrvTextConvertPosToLinCol(ih, pos, lin, col);
+    else
+    {
+      *col = pos + 1; /* IUP starts at 1 */
+      *lin = 1;
+    }
   }
 }
 

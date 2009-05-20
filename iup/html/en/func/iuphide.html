@@ -5,6 +5,11 @@
 <title>IupHide</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -17,7 +22,7 @@ Parameters/Return</h3>
 iup.Hide(<strong>ih</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]
 or <strong>ih</strong>:hide() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><b>ih</b>: Identifier of the interface element.</p>
-<p>This function returns IUP_NOERROR always.</p>
+<p><span class="style1">Returns:</span> IUP_NOERROR always.</p>
 <h3>Notes</h3>
 <p>Once a dialog is hidden, either by means of
   <b>IupHide</b> or by changing the VISIBLE attribute or by means of a click in the window close button, the elements inside this dialog 

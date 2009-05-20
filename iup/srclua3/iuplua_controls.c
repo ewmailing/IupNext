@@ -15,7 +15,6 @@
 int iupcontrolslua_open(void)
 {
   gaugelua_open();
-  treelua_open();
   matrixlua_open();
   masklua_open();
   diallua_open();

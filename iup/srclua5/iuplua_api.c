@@ -612,22 +612,27 @@ static int GetDialogChild(lua_State *L)
   return 1;
 }
 
-static int ListConvertXYToItem(lua_State *L)
+static int ConvertXYToPos(lua_State *L)
+{
+  lua_pushinteger(L, IupConvertXYToPos(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3)));
+  return 1;
+}
+
+static int TextConvertLinColToPos(lua_State *L)
 {
   int pos;
-  IupListConvertXYToItem(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &pos);
+  IupTextConvertLinColToPos(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &pos);
   lua_pushinteger(L, pos);
   return 1;
 }
 
-static int TextConvertXYToChar(lua_State *L)
+static int TextConvertPosToLinCol(lua_State *L)
 {
-  int lin, col, pos;
-  IupTextConvertXYToChar(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &lin, &col, &pos);
+  int lin, col;
+  IupTextConvertPosToLinCol(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), &lin, &col);
   lua_pushinteger(L, lin);
   lua_pushinteger(L, col);
-  lua_pushinteger(L, pos);
-  return 3;
+  return 2;
 }
 
 static int SetAttributes(lua_State *L)
@@ -846,8 +851,9 @@ int iupluaapi_open(lua_State * L)
     {"isCtrlXkey", cf_isCtrlXkey},
     {"isAltXkey", cf_isAltXkey},
     {"isSysXkey", cf_isSysXkey},
-    {"TextConvertXYToChar", TextConvertXYToChar},
-    {"ListConvertXYToItem", ListConvertXYToItem},
+    {"TextConvertLinColToPos", TextConvertLinColToPos},
+    {"TextConvertPosToLinCol", TextConvertPosToLinCol},
+    {"ConvertXYToPos", ConvertXYToPos},
     {NULL, NULL},
   };
 

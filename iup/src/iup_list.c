@@ -719,18 +719,3 @@ Iclass* iupListGetClass(void)
 
   return ic;
 }
-
-void IupListConvertXYToItem(Ihandle* ih, int x, int y, int *pos)
-{
-  *pos = 0;
-
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return;
-
-  if (!ih->handle)
-    return;
-    
-  if (iupStrEqual(ih->iclass->name, "list"))
-    iupdrvListConvertXYToItem(ih, x, y, pos);
-}

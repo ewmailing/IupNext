@@ -5,6 +5,11 @@
 <title>IupSetCallbacks</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -18,7 +23,7 @@ Parameters/Return</h3>
 </strong><b>name</b>: 
   attribute name of the callback.<br>
 <b>func</b>: address of a C function. If NULL removes the association.</p>
-<p>Returns <strong>ih</strong>.</p>
+<p><span class="style1">Returns:</span> the same <strong>ih</strong> handle.</p>
 <h3>Notes</h3>
 <p>It is useful for setting many callbacks at once while in the creation of an 
 hierarchy of elements, just like <strong>IupSetAttributes</strong>.</p>

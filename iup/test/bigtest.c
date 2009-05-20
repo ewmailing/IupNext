@@ -110,8 +110,7 @@ static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
   (void)pressed;
   if (but==IUP_BUTTON1 && iup_isdouble(status))
   {
-    int pos;
-    IupListConvertXYToItem(ih, x, y, &pos);
+    int pos = IupConvertXYToPos(ih, x, y);
     test_list[pos-1].func();
   }
   return IUP_DEFAULT;

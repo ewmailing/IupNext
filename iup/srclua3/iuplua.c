@@ -469,6 +469,7 @@ int iuplua_open(void)
   tabslua_open();
   gclua_open();
   getparamlua_open();
+  treelua_open();
 
   return 1;
 }

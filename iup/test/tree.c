@@ -8,7 +8,6 @@ and the other, called when the right mouse button is pressed, opens a menu with 
 #include <string.h>
 
 #include "iup.h"
-#include "iupcontrols.h"
 #include "iupkey.h"
 
 
@@ -76,7 +75,7 @@ static int insertbranch(void)
   return IUP_DEFAULT;
 }
 
-static int text_cb(Ihandle* self, int c, char *after)
+static int text_cb(Ihandle* ih, int c, char *after)
 {
   if (c == K_ESC)
     return IUP_CLOSE;
@@ -112,46 +111,58 @@ int renamenode(void)
   return IUP_DEFAULT;
 }
 
-int showrename_cb(Ihandle* ih, int id)
+static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
-  (void)ih;
-  printf("showrename_cb (%d)\n", id);
+  printf("BUTTON_CB(but=%c (%d), x=%d, y=%d [%s]) - [id=%d]\n",(char)but,pressed,x,y, status, IupConvertXYToPos(ih, x, y));
   return IUP_DEFAULT;
 }
 
-int selection_cb(Ihandle *ih, int id, int status)
+static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
-  (void)ih;
-  printf("selection_cb (%d - %d)\n", id, status);
+  printf("MOTION_CB(x=%d, y=%d [%s]) - [id=%d]\n",x,y, status,IupConvertXYToPos(ih, x, y));
   return IUP_DEFAULT;
 }
 
-int multiselection_cb(Ihandle *ih, int* ids, int n)
+static int showrename_cb(Ihandle* ih, int id)
+{
+  (void)ih;
+  printf("SHOWRENAME_CB(%d)\n", id);
+  return IUP_DEFAULT;
+}
+
+static int selection_cb(Ihandle *ih, int id, int status)
+{
+  (void)ih;
+  printf("SELECTION_CB(%d, %d)\n", id, status);
+  return IUP_DEFAULT;
+}
+
+static int multiselection_cb(Ihandle *ih, int* ids, int n)
 {
   int i;
   (void)ih;
-  printf("multiselection_cb (");
+  printf("MULTISELECTION_CB(");
   for (i = 0; i < n; i++)
-    printf("%d ", ids[i]);
-  printf(")\n");
+    printf("%d, ", ids[i]);
+  printf("n=%d)\n", n);
   return IUP_DEFAULT;
 }
 
 static int executeleaf_cb(Ihandle* ih, int id)
 {
-  printf("executeleaf_cb (%d)\n", id);
+  printf("EXECUTELEAF_CB (%d)\n", id);
   return IUP_DEFAULT;
 }
 
 static int renamenode_cb(Ihandle* ih, int id, char* title)
 {
-  printf("renamenode_cb (%d=%s)\n", id, title);
+  printf("RENAMENODE_CB (%d=%s)\n", id, title);
   return IUP_DEFAULT;
 }
 
 static int rename_cb(Ihandle* ih, int id, char* title)
 {
-  printf("rename_cb (%d=%s)\n", id, title);
+  printf("RENAME_CB (%d=%s)\n", id, title);
   if (strcmp(title, "fool") == 0)
     return IUP_IGNORE;
   return IUP_DEFAULT;
@@ -159,37 +170,43 @@ static int rename_cb(Ihandle* ih, int id, char* title)
 
 static int branchopen_cb(Ihandle* ih, int id)
 {
-  printf("branchopen_cb (%d)\n", id);
+  printf("BRANCHOPEN_CB (%d)\n", id);
   return IUP_DEFAULT;
 }
 
 static int branchclose_cb(Ihandle* ih, int id)
 {
-  printf("branchclose_cb (%d)\n", id);
+  printf("BRANCHCLOSE_CB (%d)\n", id);
   return IUP_DEFAULT;
 }
 
 static int dragdrop_cb(Ihandle* ih, int drag_id, int drop_id, int shift, int control)
 {
-  printf("dragdrop_cb (%d)->(%d)\n", drag_id, drop_id);
+  printf("DRAGDROP_CB (%d)->(%d)\n", drag_id, drop_id);
   return IUP_DEFAULT;
 }
 
 static int getfocus_cb(Ihandle* ih)
 {
-  printf("getfocus_cb()\n");
+  printf("GETFOCUS_CB()\n");
   return IUP_DEFAULT;
 }
 
 static int killfocus_cb(Ihandle* ih)
 {
-  printf("killfocus_cb()\n");
+  printf("KILLFOCUS_CB()\n");
+  return IUP_DEFAULT;
+}
+
+static int leavewindow_cb(Ihandle *ih)
+{
+  printf("LEAVEWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
 static int enterwindow_cb(Ihandle* ih)
 {
-  printf("enterwindow_cb()\n");
+  printf("ENTERWINDOW_CB()\n");
   return IUP_DEFAULT;
 }
 
@@ -197,7 +214,16 @@ static int k_any_cb(Ihandle* ih, int c)
 {
   if (c == K_DEL) 
     IupSetAttribute(ih, "DELNODE", "SELECTED");
+  if (iup_isprint(c))
+    printf("K_ANY(%s, %d = %s \'%c\')\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"), c, iupKeyCodeToName(c), (char)c);
+  else
+    printf("K_ANY(%s, %d = %s)\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"), c, iupKeyCodeToName(c));
+  return IUP_CONTINUE;
+}
 
+static int help_cb(Ihandle* ih)
+{
+  printf("HELP_CB()\n");
   return IUP_DEFAULT;
 }
 
@@ -304,7 +330,11 @@ static void init_tree(void)
   IupSetCallback(tree, "GETFOCUS_CB", (Icallback) getfocus_cb);
   IupSetCallback(tree, "KILLFOCUS_CB", (Icallback) killfocus_cb);
   IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
- 
+  //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+  IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
+  IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
+
+  IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
 
 //  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_14");
 //  IupSetAttribute(tree, "FGCOLOR", "255 0 0");

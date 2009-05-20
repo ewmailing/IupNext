@@ -112,20 +112,23 @@ static int motTextSetLinColToPosition(const char *str, int lin, int col)
   return pos;
 }
 
-void iupdrvTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos)
+void iupdrvTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
-  *pos = XmTextXYToPos(ih->handle, x, y);
-  if (ih->data->is_multiline)
-  {
-    char *value = XmTextGetString(ih->handle);
-    motTextGetLinColFromPosition(value, *pos, lin, col);
-    XtFree(value);
-  }
-  else
-  {
-    *col = (*pos) + 1; /* IUP starts at 1 */
-    *lin = 1;
-  }
+  char* str = XmTextGetString(ih->handle);
+  *pos = motTextSetLinColToPosition(str, lin, col);
+  XtFree(str);
+}
+
+void iupdrvTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
+{
+  char *str = XmTextGetString(ih->handle);
+  motTextGetLinColFromPosition(str, pos, lin, col);
+  XtFree(str);
+}
+
+static int motTextConvertXYToPos(Ihandle* ih, int x, int y)
+{
+  return XmTextXYToPos(ih->handle, x, y);
 }
 
 
@@ -1091,6 +1094,8 @@ static int motTextMapMethod(Ihandle* ih)
     iupmotSetGlobalColorAttrib(ih->handle, XmNforeground, "TXTFGCOLOR");
     IupSetGlobal("_IUP_SET_TXTCOLORS", NULL);
   }
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)motTextConvertXYToPos);
 
   return IUP_NOERROR;
 }

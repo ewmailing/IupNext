@@ -9,7 +9,7 @@
 <body>
 
 <h2>IupGetName</h2>
-<p>Returns the name of an interface element if 
+<p>Returns the name of an interface element, if 
   the element has an associated name 
   using IupSetHandle or using LED. .</p>
 <h3>
@@ -17,7 +17,6 @@ Parameters/Return</h3>
 <pre>char* IupGetName(Ihandle* <b>ih</b>); [in C]
 iup.GetName(<strong>ih</strong>: ihandle) -&gt; (<strong>name</strong>: string) [in Lua]</pre>
 <p><b>ih</b>: Identifier of the interface element.</p>
-<p>Returns the name of an interface element.</p>
 <h3>Notes&nbsp;</h3>
 <p>This name is not associated with the Lua 
   variable name; this was inherited from LED and is needed for some functions.</p>

@@ -118,6 +118,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\srclua3\il_tree.c"
+				>
+			</File>
+			<File
 				RelativePath="..\srclua3\il_val.c"
 				>
 			</File>
@@ -159,6 +163,10 @@
 			</File>
 			<File
 				RelativePath="..\srclua3\tabs.lua"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\tree.lua"
 				>
 			</File>
 			<File

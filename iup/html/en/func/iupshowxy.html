@@ -5,6 +5,11 @@
 <title>IupShowXY</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -57,7 +62,7 @@ or <strong>ih</strong>:showxy(<strong>[x</strong>, <strong>y</strong>: number]) 
   IUP_CENTERPARENT if PARENTDIALOG is defined or simply by IUP_CENTER). This is 
   the default value in Lua if the parameter is not defined or nil.(Since 3.0)</li>
 </ul>
-<p>This function returns IUP_NOERROR if 
+<p><span class="style1">Returns:</span> IUP_NOERROR if 
   sucessful. Returns IUP_INVALID if not a dialog.&nbsp; If there was an error returns IUP_ERROR.</p>
 <h3>Notes</h3>
 <p>Will call <b>IupMap</b> for the element.</p>

@@ -623,3 +623,23 @@ int iupAttribIsPointer(Ihandle* ih, const char* name)
 {
   return iupClassObjectAttribIsNotString(ih, name);
 }
+
+typedef int (*Iconvertxytopos)(Ihandle* ih, int x, int y);
+
+int IupConvertXYToPos(Ihandle* ih, int x, int y)
+{
+  Iconvertxytopos drvConvertXYToPos;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return -1;
+
+  if (!ih->handle)
+    return -1;
+
+  drvConvertXYToPos = (Iconvertxytopos)IupGetCallback(ih, "_IUP_XY2POS_CB");
+  if (drvConvertXYToPos)
+    return drvConvertXYToPos(ih, x, y);
+
+  return -1;
+}

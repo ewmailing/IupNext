@@ -356,28 +356,42 @@ static int gtkTextGetCharSize(Ihandle* ih)
   return charwidth;
 }
 
-void iupdrvTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos)
+void iupdrvTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
+{
+  GtkTextIter iter;
+  GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+  gtkTextMoveIterToLinCol(buffer, &iter, lin, col);
+  *pos = gtk_text_iter_get_offset(&iter);
+}
+
+void iupdrvTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
+{
+  GtkTextIter iter;
+  GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+  gtk_text_buffer_get_iter_at_offset(buffer, &iter, pos);
+  gtkTextGetLinColFromPosition(&iter, lin, col);
+}
+
+static int gtkTextConvertXYToPos(Ihandle* ih, int x, int y)
 {
   if (ih->data->is_multiline)
   {
     GtkTextIter iter;
     gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(ih->handle), GTK_TEXT_WINDOW_WIDGET, x, y, &x, &y);
     gtk_text_view_get_iter_at_location(GTK_TEXT_VIEW(ih->handle), &iter, x, y);
-    gtkTextGetLinColFromPosition(&iter, lin, col);
-    *pos = gtk_text_iter_get_offset(&iter);
+    return gtk_text_iter_get_offset(&iter);
   }
   else
   {
-    int trailing, off_x, off_y;
+    int trailing, off_x, off_y, pos;
 
     /* transform to Layout coordinates */
     gtk_entry_get_layout_offsets(GTK_ENTRY(ih->handle), &off_x, &off_y);
     x = IUPGTK_PIXELS2PANGOUNITS(x - off_x); 
     y = IUPGTK_PIXELS2PANGOUNITS(y - off_y);
 
-    pango_layout_xy_to_index(gtk_entry_get_layout(GTK_ENTRY(ih->handle)), x, y, pos, &trailing);
-    *col = (*pos) + 1; /* IUP starts at 1 */
-    *lin = 1;
+    pango_layout_xy_to_index(gtk_entry_get_layout(GTK_ENTRY(ih->handle)), x, y, &pos, &trailing);
+    return pos;
   }
 }
 
@@ -1628,6 +1642,8 @@ static int gtkTextMapMethod(Ihandle* ih)
 
   if (ih->data->formattags)
     iupTextUpdateFormatTags(ih);
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)gtkTextConvertXYToPos);
 
   return IUP_NOERROR;
 }

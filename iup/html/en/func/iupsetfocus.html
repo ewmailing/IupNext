@@ -5,6 +5,11 @@
 <title>IupSetFocus</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -17,7 +22,7 @@ Parameters/Return</h3>
 iup.SetFocus(<strong>ih</strong>: ihandle) -&gt; <strong>ih</strong>: ihandle [in Lua]</pre>
 <p><b>ih</b>: identifier of the interface element that will receive the keyboard focus. Only 
   elements that can have the keyboard focus, are mapped, active and visible can be used, other elements are ignored.</p>
-<p>Returns the identifier of the interface 
+<p><span class="style1">Returns:</span> the identifier of the interface 
   element that previously had the keyboard focus.</p>
 <h3>See Also</h3>
 <p><a href="iupgetfocus.html">IupGetFocus</a>.</p>

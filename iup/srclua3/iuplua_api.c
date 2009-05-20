@@ -303,20 +303,24 @@ static void GetNextChild(void)
     iuplua_pushihandle(IupGetNextChild(iuplua_checkihandle(1), iuplua_checkihandle(2)));
 }
 
-static void ListConvertXYToItem(void)
+static void ConvertXYToPos(void)
+{
+  lua_pushnumber(IupConvertXYToPos(iuplua_checkihandle(1), luaL_check_int(2), luaL_check_int(3)));
+}
+
+static void TextConvertLinColToPos(void)
 {
   int pos;
-  IupListConvertXYToItem(iuplua_checkihandle(1), luaL_check_int(2), luaL_check_int(3), &pos);
+  IupTextConvertLinColToPos(iuplua_checkihandle(1), luaL_check_int(2), luaL_check_int(3), &pos);
   lua_pushnumber(pos);
 }
 
-static void TextConvertXYToChar(void)
+static void TextConvertPosToLinCol(void)
 {
-  int lin, col, pos;
-  IupTextConvertXYToChar(iuplua_checkihandle(1), luaL_check_int(2), luaL_check_int(3), &lin, &col, &pos);
+  int lin, col;
+  IupTextConvertPosToLinCol(iuplua_checkihandle(1), luaL_check_int(2), &lin, &col);
   lua_pushnumber(lin);
   lua_pushnumber(col);
-  lua_pushnumber(pos);
 }
 
 static void GetChildPos(void)
@@ -713,8 +717,9 @@ int iupluaapi_open(void)
     { "IupVersion", Version },
     { "IupHelp", Help },
     { "IupScanf", iupluaScanf },
-    { "IupTextConvertXYToChar", TextConvertXYToChar},
-    { "IupListConvertXYToItem", ListConvertXYToItem},
+    { "IupTextConvertLinColToPos", TextConvertLinColToPos},
+    { "IupTextConvertPosToLinCol", TextConvertPosToLinCol},
+    { "IupConvertXYToPos", ConvertXYToPos},
     { "IupPreviousField", PreviousField },
     { "IupNextField", NextField }
   };

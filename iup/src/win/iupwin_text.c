@@ -554,33 +554,46 @@ static void winTextGetSelection(Ihandle* ih, int *start, int *end)
   }
 }
 
-void iupdrvTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos)
+void iupdrvTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
+  *pos = winTextSetLinColToPosition(ih, lin, col);
+
+  if (!ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
+    *pos = winTextRemoveExtraChars(ih, *pos);
+}
+
+void iupdrvTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
+{
+  if (!ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
+    pos = winTextAddExtraChars(ih, pos);
+
+  winTextGetLinColFromPosition(ih, pos, lin, col);
+}
+
+static int winTextConvertXYToPos(Ihandle* ih, int x, int y)
+{
+  int pos;
+
   if (ih->data->has_formatting)
   {
     POINT point;
     point.x = x;
     point.y = y;
-    *pos = (int)SendMessage(ih->handle, EM_CHARFROMPOS, 0, (LPARAM)&point);
+    pos = (int)SendMessage(ih->handle, EM_CHARFROMPOS, 0, (LPARAM)&point);
   }
   else
   {
     LRESULT ret = SendMessage(ih->handle, EM_CHARFROMPOS, 0, MAKELPARAM(x, y));
-    *pos = LOWORD(ret);
+    pos = LOWORD(ret);
   }
 
   if (ih->data->is_multiline)
   {
-    winTextGetLinColFromPosition(ih, *pos, lin, col);
-
     if (!ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-      *pos = winTextRemoveExtraChars(ih, *pos);
+      pos = winTextRemoveExtraChars(ih, pos);
   }
-  else
-  {
-    *col = (*pos) + 1;  /* IUP starts at 1 */
-    *lin = 1;
-  }
+
+  return pos;
 }
 
 
@@ -1889,6 +1902,8 @@ static int winTextMapMethod(Ihandle* ih)
 
     iupTextUpdateFormatTags(ih);
   }
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)winTextConvertXYToPos);
 
   return IUP_NOERROR;
 }

@@ -911,7 +911,17 @@ static int gtkDialogSetTrayAttrib(Ihandle *ih, const char *value)
 static int gtkDialogSetTrayTipAttrib(Ihandle *ih, const char *value)
 {
   GtkStatusIcon* status_icon = gtkDialogGetStatusIcon(ih);
+#if GTK_CHECK_VERSION(2, 16, 0)
+  if (value)
+  {
+    gtk_status_icon_set_has_tooltip(status_icon, TRUE);
+    gtk_status_icon_set_tooltip_text(status_icon, value);
+  }
+  else
+    gtk_status_icon_set_has_tooltip(status_icon, FALSE);
+#else
   gtk_status_icon_set_tooltip(status_icon, value);
+#endif
   return 1;
 }
 

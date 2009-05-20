@@ -5,6 +5,11 @@
 <title>IupPopup</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -72,7 +77,7 @@ or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -
   the default value in Lua if the parameter is not defined or nil. Not valid for 
 	menus. (Since 3.0)</li>
 </ul>
-<p>This function returns IUP_NOERROR if 
+<p><span class="style1">Returns:</span> IUP_NOERROR if 
   sucessful. Returns
   IUP_INVALID if not a dialog or menu.&nbsp; If there was an error returns
   IUP_ERROR..</p>

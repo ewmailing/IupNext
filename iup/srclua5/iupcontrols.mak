@@ -15,11 +15,11 @@ LIBS = iupcontrols
 USE_LUA51 = Yes
 
 LOHDIR = loh
-SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua tree.lua cells.lua
+SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua cells.lua
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix il_, $(GC))
 
 $(GC) : il_%.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC := iuplua_controls.c il_mask.c il_tree_aux.c il_matrix_aux.c $(GC)
+SRC := iuplua_controls.c il_mask.c il_matrix_aux.c $(GC)

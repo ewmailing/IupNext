@@ -39,6 +39,7 @@ typedef struct _winTreeItemData
   HFONT hFont;
 } winTreeItemData;
 
+
 /*****************************************************************************/
 /* FINDING ITEMS                                                             */
 /*****************************************************************************/
@@ -1756,18 +1757,99 @@ static LRESULT CALLBACK winTreeEditWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARA
     return CallWindowProc(oldProc, hwnd, msg, wp, lp);
 }
 
+static void winTreeDragStart(Ihandle* ih, LPARAM lp)
+{
+  HTREEITEM	hItemDrop;
+  HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPWINTREE_DRAGIMAGELIST");
+
+  if (dragImageList)
+  {
+    POINT pnt;
+    
+    pnt.x = LOWORD(lp);
+    pnt.y = HIWORD(lp);
+
+    GetCursorPos(&pnt);
+    ClientToScreen(GetDesktopWindow(), &pnt) ;
+    ImageList_DragMove(pnt.x, pnt.y);
+  }
+
+  if ((hItemDrop = winTreeFindNodePointed(ih)) != NULL)
+  {
+    HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
+
+    if(dragImageList)
+      ImageList_DragShowNolock(FALSE);
+
+    SendMessage(ih->handle, TVM_SELECTITEM, TVGN_DROPHILITE, (LPARAM)hItemDrop);
+
+    /* store the drop item to be executed */
+    iupAttribSetStr(ih, "_IUPTREE_DROPITEM", (char*)hItemDrop);
+
+    if(dragImageList)
+      ImageList_DragShowNolock(TRUE);
+
+    ih->data->id_control = -1;
+    winTreeFindNodeFromID(ih, hItemRoot, hItemDrop);
+    iupAttribSetInt(ih, "_IUPTREE_DROPID", ih->data->id_control);
+  }
+}
+
+static void winTreeDropEnd(Ihandle* ih)
+{
+  HTREEITEM  hItemParent;
+  HTREEITEM  hItemNew;
+  HTREEITEM	 hItemDrag     =  (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
+  HTREEITEM	 hItemDrop     =  (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DROPITEM");
+  HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPWINTREE_DRAGIMAGELIST");
+
+  if(dragImageList)
+  {
+    ImageList_DragLeave(ih->handle);
+    ImageList_EndDrag();
+    ReleaseCapture();
+    ShowCursor(TRUE);
+    ImageList_Destroy(dragImageList);
+  }
+
+  /* Remove drop target highlighting */
+  SendMessage(ih->handle, TVM_SELECTITEM, TVGN_DROPHILITE, (LPARAM)NULL);
+
+  iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", NULL);
+
+  if (hItemDrag == hItemDrop)
+    return;
+
+  /* DragDrop Callback */
+  winTreeDragDrop_CB(ih);
+
+  /* If Drag item is an ancestor of Drop item then return */
+  hItemParent = hItemDrop;
+
+  while((hItemParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hItemParent)) != NULL)
+  {
+    if( hItemParent == hItemDrag )
+      return;
+  }
+
+  SendMessage(ih->handle, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItemDrop);
+
+  hItemNew = winTreeCopyBranch(ih, hItemDrag, hItemDrop);
+  SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItemDrag);
+  SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNew);
+}  
+
 static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   switch (msg)
   {
-    case WM_GETDLGCODE:
+  case WM_GETDLGCODE:
     {
       *result = DLGC_WANTALLKEYS;
       return 1;
     }
- 
-    case WM_KEYDOWN:
-    case WM_SYSKEYDOWN:
+  case WM_KEYDOWN:
+  case WM_SYSKEYDOWN:
     {
       if (wp == VK_RETURN)
       {
@@ -1799,98 +1881,45 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
           return 0;
         }
       }
-    }
-     
-    case WM_MOUSEMOVE:
-    {
-      if(IupGetInt(ih, "SHOWDRAGDROP") && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
+      else if (wp == VK_TAB)
       {
-        HTREEITEM	hItemDrop;
-        HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPWINTREE_DRAGIMAGELIST");
- 
-        if(dragImageList)
-        {
-          POINT pnt;
-          
-          pnt.x = LOWORD(lp);
-          pnt.y = HIWORD(lp);
- 
-          GetCursorPos(&pnt);
-          ClientToScreen(GetDesktopWindow(), &pnt) ;
-          ImageList_DragMove(pnt.x, pnt.y);
-        }
-
-        if ((hItemDrop = winTreeFindNodePointed(ih)) != NULL)
-        {
-          HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
- 
-          if(dragImageList)
-            ImageList_DragShowNolock(FALSE);
- 
-          SendMessage(ih->handle, TVM_SELECTITEM, TVGN_DROPHILITE, (LPARAM)hItemDrop);
- 
-          /* store the drop item to be executed */
-          iupAttribSetStr(ih, "_IUPTREE_DROPITEM", (char*)hItemDrop);
- 
-          if(dragImageList)
-            ImageList_DragShowNolock(TRUE);
- 
-          ih->data->id_control = -1;
-          winTreeFindNodeFromID(ih, hItemRoot, hItemDrop);
-          iupAttribSetInt(ih, "_IUPTREE_DROPID", ih->data->id_control);
-        }
+        if (GetKeyState(VK_SHIFT) & 0x8000)
+          IupPreviousField(ih);
+        else
+          IupNextField(ih);
         return 0;
       }
+      break;
     }
- 
-    case WM_LBUTTONUP:
+  case WM_LBUTTONDBLCLK:
+  case WM_MBUTTONDBLCLK:
+  case WM_RBUTTONDBLCLK:
+  case WM_LBUTTONDOWN:
+  case WM_MBUTTONDOWN:
+  case WM_RBUTTONDOWN:
+    if (iupwinButtonDown(ih, msg, wp, lp)==-1)
     {
-      if(IupGetInt(ih, "SHOWDRAGDROP") && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
-      {
-        HTREEITEM  hItemParent;
-        HTREEITEM  hItemNew;
-        HTREEITEM	 hItemDrag     =  (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
-        HTREEITEM	 hItemDrop     =  (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DROPITEM");
-        HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPWINTREE_DRAGIMAGELIST");
- 
-        if(dragImageList)
-        {
-          ImageList_DragLeave(ih->handle);
-          ImageList_EndDrag();
-          ReleaseCapture();
-          ShowCursor(TRUE);
-          ImageList_Destroy(dragImageList);
-        }
- 
-        /* Remove drop target highlighting */
-        SendMessage(ih->handle, TVM_SELECTITEM, TVGN_DROPHILITE, (LPARAM)NULL);
- 
-        iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", NULL);
- 
-        if(hItemDrag == hItemDrop)
-          return 0;
- 
-        /* DragDrop Callback */
-        winTreeDragDrop_CB(ih);
- 
-        /* If Drag item is an ancestor of Drop item then return */
-        hItemParent = hItemDrop;
- 
-        while((hItemParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hItemParent)) != NULL)
-        {
-          if( hItemParent == hItemDrag )
-            return 0;
-        }
- 
-        SendMessage(ih->handle, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItemDrop);
- 
-        hItemNew = winTreeCopyBranch(ih, hItemDrag, hItemDrop);
-        SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItemDrag);
-        SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNew);
-
-        return 0;
-      }  
+      *result = 0;
+      return 1;
     }
+    break;
+  case WM_MBUTTONUP:
+  case WM_RBUTTONUP:
+  case WM_LBUTTONUP:
+    if (IupGetInt(ih, "SHOWDRAGDROP") && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
+      winTreeDropEnd(ih);
+    else if (iupwinButtonUp(ih, msg, wp, lp)==-1)
+    {
+      *result = 0;
+      return 1;
+    }
+    break;
+  case WM_MOUSEMOVE:
+    if (IupGetInt(ih, "SHOWDRAGDROP") && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
+      winTreeDragStart(ih, lp);
+    else
+      iupwinMouseMove(ih, msg, wp, lp);
+    break;
   }
 
   return iupwinBaseProc(ih, msg, wp, lp, result);
@@ -2144,6 +2173,26 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   return 0;  /* allow the default processsing */
 }
 
+static int winTreeConvertXYToPos(Ihandle* ih, int x, int y)
+{
+  TVHITTESTINFO info;
+  HTREEITEM hItem;
+  info.pt.x = x;
+  info.pt.y = y;
+  hItem = (HTREEITEM)SendMessage(ih->handle, TVM_HITTEST, 0, (LPARAM)&info);
+  if (hItem)
+  {
+    HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
+    ih->data->id_control = -1;
+    winTreeFindNodeFromID(ih, hItemRoot, hItem);
+    return ih->data->id_control;
+  }
+  return -1;
+}
+
+
+/*******************************************************************************************/
+
 static void winTreeUnMapMethod(Ihandle* ih)
 {
   Iarray* bmp_array;
@@ -2205,6 +2254,12 @@ static int winTreeMapMethod(Ihandle* ih)
   /* Add the Root Node */
   winTreeAddRootNode(ih);
 
+  /* configure for DRAG&DROP of files */
+  if (IupGetCallback(ih, "DROPFILES_CB"))
+    iupAttribSetStr(ih, "DRAGDROP", "YES");
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)winTreeConvertXYToPos);
+
   return IUP_NOERROR;
 }
 
@@ -2223,6 +2278,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SHOWDRAGDROP", NULL, NULL, NULL, "NO", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "INDENTATION", winTreeGetIndentationAttrib, winTreeSetIndentationAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COUNT", winTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - IMAGES */
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, winTreeSetImageAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

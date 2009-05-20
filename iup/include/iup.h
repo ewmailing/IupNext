@@ -188,17 +188,34 @@ Ihandle*  IupText       (const char* action);
 Ihandle*  IupMultiLine  (const char* action);
 Ihandle*  IupToggle     (const char* title, const char* action);
 Ihandle*  IupTimer      (void);
-
-Ihandle*  IupSpin       (void);
-Ihandle*  IupSpinbox    (Ihandle* child);
-
 Ihandle*  IupProgressBar(void);
 Ihandle*  IupVal        (const char *type);
 Ihandle*  IupTabs       (Ihandle* child, ...);
 Ihandle*  IupTabsv      (Ihandle* *children);
+Ihandle*  IupTree       (void);
 
-void      IupTextConvertXYToChar(Ihandle* ih, int x, int y, int *lin, int *col, int *pos);
-void      IupListConvertXYToItem(Ihandle* ih, int x, int y, int *pos);
+Ihandle*  IupSpin       (void);
+Ihandle*  IupSpinbox    (Ihandle* child);
+
+
+/* IupText utilities */
+void  IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
+void  IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
+
+int   IupConvertXYToPos(Ihandle* ih, int x, int y);  /* works also for list and tree */
+
+
+/* IupTree utilities */
+int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);
+void* IupTreeGetUserId(Ihandle* ih, int id);
+int   IupTreeGetId(Ihandle* ih, void *userid);
+
+void  IupTreeSetAttribute  (Ihandle* ih, const char* name, int id, char* value);
+void  IupTreeStoreAttribute(Ihandle* ih, const char* name, int id, char* value);
+char* IupTreeGetAttribute  (Ihandle* ih, const char* name, int id);
+int   IupTreeGetInt        (Ihandle* ih, const char* name, int id);
+float IupTreeGetFloat      (Ihandle* ih, const char* name, int id);
+void  IupTreeSetfAttribute (Ihandle* ih, const char* name, int id, char* format, ...);
 
 
 #ifdef __cplusplus

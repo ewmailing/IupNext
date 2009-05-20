@@ -9,9 +9,9 @@ USE_CDLUA = Yes
 
 LOHDIR = loh
 SRCLUA =  dial.lua gauge.lua colorbar.lua \
-          matrix.lua tree.lua colorbrowser.lua cells.lua
+          matrix.lua colorbrowser.lua cells.lua
 SRC    =  il_dial.c il_gauge.c il_colorbrowser.c il_colorbar.c il_cells.c \
-          il_mask.c il_matrix.c il_tree.c iuplua_controls.c
+          il_mask.c il_matrix.c iuplua_controls.c
 
 DEFINES = IUPLUA_USELOH
 INCLUDES = ../include

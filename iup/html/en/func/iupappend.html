@@ -5,6 +5,11 @@
 <title>IupAppend</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -18,7 +23,7 @@ Parameters/Return</h3>
 iup.Append(<strong>ih</strong>, <strong>new_child</strong>: ihandle) -&gt; (<strong>parent</strong>: ihandle) [in Lua]</pre>
 <p><strong>ih</strong>: Identifier of a container like hbox, vbox, zbox and menu.<br>
 <strong>new_child</strong>: Identifier of the element to be inserted.</p>
-<p>This function returns 
+<p><span class="style1">Returns:</span> 
   the actual <b>parent</b> if the interface element was successfully inserted. Otherwise returns NULL (nil in Lua). 
 Notice that the desired parent can contains a set of elements and containers 
 where the child will be actually attached so the function returns the actual 

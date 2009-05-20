@@ -199,13 +199,13 @@ the scrollbar. When
     &quot;LINCOL&quot; or &quot;CELL&quot;. Default: &quot;NO&quot; 
     (no mark).</p>
 <p><strong><a name="MARK">MARK</a><em>L:C</em></strong>: marks a cell when 
-MARK_MODE=CELL, and returns cell mark independent from MARK_MODE. Can be &quot;1&quot; or 
+MARKMODE=CELL, and returns cell mark independent from MARKMODE. Can be &quot;1&quot; or 
 &quot;0&quot;. (since 3.0)</p>
 <p><strong><a name="MARKED">MARKED</a></strong>:
   String of &#39;0&#39; or &#39;1&#39; characters, informing which cells are 
   marked (indicated by value &#39;1&#39;). Use NULL to clear all marks, returns 
 NULL if no marks. 
-  The format of this character vector depends on the value of the MARK_MODE attribute: if its value is CELL, the vector will have NUMLIN x NUMCOL positions, corresponding to all the cells in the matrix 
+  The format of this character vector depends on the value of the MARKMODE attribute: if its value is CELL, the vector will have NUMLIN x NUMCOL positions, corresponding to all the cells in the matrix 
 starting with all the cells of the first line, then the second line and so on. If its value is LIN, the vector will begin with letter 
 &#39;L&#39; and will have further NUMLIN positions, each one corresponding to a line 
   in the matrix. If its value is COL, the vector will begin with letter &#39;C&#39; and will have further 
@@ -213,11 +213,11 @@ NUMCOL positions, each one corresponding to a
   column in the matrix. If its value is LINCOL, the first letter, which can be either 
 &#39;L&#39; or &#39;C&#39;, will indicate which of the above formats is being used. If you 
 change the other mark attributes the marked cells are cleared. When setting the 
-attribute the LIN and COL notation can be used even if MARK_MODE=CELL. 
+attribute the LIN and COL notation can be used even if MARKMODE=CELL. 
 MULTIPLE and AREA are NOT considered when setting MARKED or MARKL:C.</p>
 <p><strong><a name="MARKMULTIPLE">MULTIPLE</a></strong>:
   Defines if more than one entity defined by
-  MARK_MODE can be <strong>interactively</strong> 
+  MARKMODE can be <strong>interactively</strong> 
   marked. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
     &quot;NO&quot;.</p>
 <h3>Action Attributes (after map)</h3>

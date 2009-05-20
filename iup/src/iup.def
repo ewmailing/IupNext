@@ -127,9 +127,20 @@ IupGetClassName
 IupInsert
 IupMainLoopLevel
 IupGetDialogChild
-IupListConvertXYToItem
-IupTextConvertXYToChar
+IupConvertXYToPos
+IupTextConvertLinColToPos
+IupTextConvertPosToLinCol
 IupUpdateChildren
+IupTreeSetAttribute  
+IupTreeStoreAttribute
+IupTreeGetAttribute  
+IupTreeGetInt        
+IupTreeGetFloat      
+IupTreeSetfAttribute
+IupTree
+IupTreeGetId
+IupTreeGetUserId
+IupTreeSetUserId
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib
@@ -329,13 +340,3 @@ iupArrayDestroy
 iupArrayCreate
 iupArrayCount
 iupArrayAdd
-IupTreeSetAttribute  
-IupTreeStoreAttribute
-IupTreeGetAttribute  
-IupTreeGetInt        
-IupTreeGetFloat      
-IupTreeSetfAttribute
-IupTree
-IupTreeGetId
-IupTreeGetUserId
-IupTreeSetUserId

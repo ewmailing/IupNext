@@ -15,7 +15,6 @@ int diallua_open (void);
 int gaugelua_open (void);
 int masklua_open (void);
 int matrixlua_open (void);
-int treelua_open (void);
 int cblua_open (void);
 int colorbarlua_open (void);
 int cellslua_open(void);

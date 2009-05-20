@@ -42,6 +42,7 @@ enum
   IUPGTK_TREE_USERDATA
 };
 
+
 /*****************************************************************************/
 /* COPYING ITEMS (Branches and its children)                                 */
 /*****************************************************************************/
@@ -593,8 +594,9 @@ static int gtkTreeMultiSelection_CB(Ihandle* ih)
         gtkTreeFindNodeFromID(ih, model, iterRoot, iterItem);
         id_rowItem[i] = ih->data->id_control;
         i++;
+
+        gtk_tree_path_free(path);
       }
-      gtk_tree_path_free(path);
     }
 
     g_list_foreach(rr_list, (GFunc) gtk_tree_row_reference_free, NULL);
@@ -1974,6 +1976,25 @@ static gboolean gtkTreeKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandl
   return iupgtkKeyPressEvent(widget, evt, ih);
 }
 
+static int gtkTreeConvertXYToPos(Ihandle* ih, int x, int y)
+{
+  GtkTreePath* path;
+  if (gtk_tree_view_get_dest_row_at_pos((GtkTreeView*)ih->handle, x, y, &path, NULL))
+  {
+    GtkTreeIter iterItem, iterRoot;
+    GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+    gtk_tree_model_get_iter_first(model, &iterRoot);
+    gtk_tree_model_get_iter(model, &iterItem, path);
+
+    ih->data->id_control = -1;
+    gtkTreeFindNodeFromID(ih, model, iterRoot, iterItem);
+
+    gtk_tree_path_free (path);
+    return ih->data->id_control;
+  }
+  return -1;
+}
+
 /*****************************************************************************/
 
 static int gtkTreeMapMethod(Ihandle* ih)
@@ -2053,6 +2074,13 @@ static int gtkTreeMapMethod(Ihandle* ih)
   g_signal_connect(renderer_txt, "editing-started", G_CALLBACK(gtkTreeCellTextEditingStarted), ih);
   g_signal_connect(renderer_txt,          "edited", G_CALLBACK(gtkTreeCellTextEdited), ih);
 
+  g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "show-help",          G_CALLBACK(iupgtkShowHelp), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event",G_CALLBACK(iupgtkMotionNotifyEvent), ih);
+
   g_signal_connect(G_OBJECT(ih->handle),       "row-expanded", G_CALLBACK(gtkTreeRowExpanded), ih);
   g_signal_connect(G_OBJECT(ih->handle),      "row-collapsed", G_CALLBACK(gtkTreeRowCollapsed), ih);
   g_signal_connect(G_OBJECT(ih->handle),      "row-activated", G_CALLBACK(gtkTreeRowActived), ih);
@@ -2074,6 +2102,12 @@ static int gtkTreeMapMethod(Ihandle* ih)
 
   gtkTreeAddRootNode(ih);
 
+  /* configure for DRAG&DROP of files */
+  if (IupGetCallback(ih, "DROPFILES_CB"))
+    iupAttribSetStr(ih, "DRAGDROP", "YES");
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)gtkTreeConvertXYToPos);
+
   return IUP_NOERROR;
 }
 
@@ -2091,6 +2125,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SHOWDRAGDROP", NULL, gtkTreeSetShowDragDropAttrib, NULL, "NO", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "INDENTATION",  gtkTreeGetIndentationAttrib, gtkTreeSetIndentationAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COUNT", gtkTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - IMAGES */
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, gtkTreeSetImageAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

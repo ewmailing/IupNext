@@ -312,7 +312,7 @@ state=0 value.</p>
   Action generated when any mouse button is 
   pressed or released inside the list. Called only when DROPDOWN=NO. If the list 
 	has an editbox the message is called when cursor is at the listbox only 
-	(ignored at the editbox). Use <strong>IupListConvertXYToItem</strong> to convert 
+	(ignored at the editbox). Use <a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> to convert 
 	(x,y) coordinates in item position. (since 3.0)</p>
 
   
@@ -375,8 +375,8 @@ Called only when DROPDOWN=YES. (since 3.0)</p>
 
   
     
-<p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a> [Windows Only]: Action generated when one or 
-  more files are dropped in the dialog. (since 3.0)</p>
+<p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a> [Windows and GTK Only]: Action generated when one or 
+  more files are dropped in the element. (since 3.0)</p>
 
   
 
@@ -419,7 +419,8 @@ Called only when DROPDOWN=YES. (since 3.0)</p>
 <p><a href="../call/iup_motion_cb.html">MOTION_CB</a>:
   Action generated when the mouse is moved over the list. Called only when 
 	DROPDOWN=NO. If the list has an editbox the message is called when cursor is 
-	at the listbox only (ignored at the editbox). Use <strong>IupListConvertXYToItem</strong> 
+	at the listbox only (ignored at the editbox). Use 
+<a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> 
 	to convert (x,y) coordinates in item position. (since 3.0)</p>
 
   
@@ -459,15 +460,6 @@ ensure proper 'x' values.</p>
 <a href="../call/iup_k_any.html">K_ANY</a>,
   <a href="../call/iup_help_cb.html">HELP_CB</a>: All common callbacks are 
 supported.</p>
-
-
-
-<h3>Auxiliary Functions</h3>
-
-<pre>void <strong>IupListConvertXYToItem</strong>(Ihandle* <strong>ih</strong>, int <strong>x</strong>, int <strong>y</strong>, int *<strong>pos</strong>); [in C]<br><b>iup.ListConvertXYToItem</b>(<b>ih</b>: ihandle, <strong>x</strong>, <strong>y</strong>: number) -&gt; <strong>pos</strong>: number [in Lua]</pre>
-
-<p>Converts a (x,y) coordinates in an item position. <strong>pos</strong> gets 
-the 0 value if not over an item. (since 3.0)</p>
 
 
 

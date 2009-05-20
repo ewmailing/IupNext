@@ -5,6 +5,11 @@
 <title>IupLoad</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -15,7 +20,7 @@ Parameters/Return</h3>
 <pre>char *IupLoad(const char *<strong>name_file</strong>); [in C]
 iup.Load(<strong>name_file</strong>: string) -&gt; <strong>error</strong>: string [in Lua]</pre>
 <p><b>name_file</b>: name of the file containing the LED specification.</p>
-<p>This function returns NULL (nil in Lua) if the file was successfully 
+<p><span class="style1">Returns:</span> NULL (nil in Lua) if the file was successfully 
   compiled; otherwise it returns a pointer to a string containing the error message.</p>
 <h3>Notes</h3>
 <p>Each time the function loads a LED file, the 

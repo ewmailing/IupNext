@@ -238,7 +238,8 @@ static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
   int lin, col, pos;
   printf("BUTTON_CB(but=%c (%d), x=%d, y=%d [%s])\n",(char)but,pressed,x,y, status);
-  IupTextConvertXYToChar(ih, x, y, &lin, &col, &pos);
+  pos = IupConvertXYToPos(ih, x, y);
+  IupTextConvertPosToLinCol(ih, pos, &lin, &col);
   printf("         (lin=%d, col=%d, pos=%d)\n", lin, col, pos);
   return IUP_DEFAULT;
 }
@@ -247,7 +248,8 @@ static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
   int lin, col, pos;
   printf("MOTION_CB(x=%d, y=%d [%s])\n",x,y, status);
-  IupTextConvertXYToChar(ih, x, y, &lin, &col, &pos);
+  pos = IupConvertXYToPos(ih, x, y);
+  IupTextConvertPosToLinCol(ih, pos, &lin, &col);
   printf("         (lin=%d, col=%d, pos=%d)\n", lin, col, pos);
   return IUP_DEFAULT;
 }

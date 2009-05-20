@@ -23,7 +23,6 @@ int iupcontrolslua_open(lua_State * L)
   iuplua_changeEnv(L);
 
   iupgaugelua_open(L);
-  iuptreelua_open(L);
   iupmatrixlua_open(L);
   iupmasklua_open(L);
   iupdiallua_open(L);

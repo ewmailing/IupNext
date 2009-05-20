@@ -5,6 +5,11 @@
 <title>IupNextField</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -19,7 +24,7 @@ Parameters/Return</h3>
 <pre>Ihandle* IupNextField(Ihandle* <strong>ih</strong>); [in C]
 iup.NextField(<strong>ih</strong>: ihandle) -&gt; (<strong>next</strong>: ihandle) [in Lua]</pre>
 <p><b>ih</b>: identifier of the interface element. </p>
-<p>Returns the element that received the focus 
+<p><span class="style1">Returns:</span> the element that received the focus 
   or NULL if failed.</p>
 <h3>See Also</h3>
 <p><a href="iuppreviousfield.html">IupPreviousField</a>.</p>

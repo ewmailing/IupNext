@@ -5,17 +5,13 @@
 
 static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
-  int pos;
-  IupListConvertXYToItem(ih, x, y, &pos);
-  printf("BUTTON_CB(but=%c (%d), x=%d, y=%d [%s]) - [pos=%d]\n",(char)but,pressed,x,y, status, pos);
+  printf("BUTTON_CB(but=%c (%d), x=%d, y=%d [%s]) - [pos=%d]\n",(char)but,pressed,x,y, status, IupConvertXYToPos(ih, x, y));
   return IUP_DEFAULT;
 }
 
 static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
-  int pos;
-  IupListConvertXYToItem(ih, x, y, &pos);
-  printf("MOTION_CB(x=%d, y=%d [%s]) - [pos=%d]\n",x,y, status,pos);
+  printf("MOTION_CB(x=%d, y=%d [%s]) - [pos=%d]\n",x,y, status,IupConvertXYToPos(ih, x, y));
   return IUP_DEFAULT;
 }
 
@@ -169,7 +165,7 @@ static int showdropdown_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-void setactivelist(Ihandle* ih)
+static void setactivelist(Ihandle* ih)
 {
   Ihandle* dialog = IupGetDialog(ih);
   Ihandle* label = (Ihandle*)IupGetAttribute(dialog, "_LABEL");
@@ -177,7 +173,7 @@ void setactivelist(Ihandle* ih)
   IupSetAttribute(label, "TITLE", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"));
 }
 
-int getfocus_cb(Ihandle *ih)
+static int getfocus_cb(Ihandle *ih)
 {
   setactivelist(ih);
   printf("GETFOCUS_CB(%s)\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"));
@@ -211,7 +207,7 @@ static int k_any(Ihandle *ih, int c)
     printf("K_ANY(%s, %d = %s \'%c\')\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"), c, iupKeyCodeToName(c), (char)c);
   else
     printf("K_ANY(%s, %d = %s)\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"), c, iupKeyCodeToName(c));
-  return IUP_DEFAULT;
+  return IUP_CONTINUE;
 }
 
 static int help_cb(Ihandle* ih)

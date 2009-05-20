@@ -20,6 +20,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_tree.h"
+#include "iup_assert.h"
 
 
 #define ITREE_IMG_WIDTH   16

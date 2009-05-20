@@ -20,7 +20,6 @@ void iupdrvListAppendItem(Ihandle* ih, const char* value);
 void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value);
 void iupdrvListRemoveItem(Ihandle* ih, int pos);
 void iupdrvListRemoveAllItems(Ihandle* ih);
-void iupdrvListConvertXYToItem(Ihandle* ih, int x, int y, int *pos);
 
 int iupListGetPos(Ihandle* ih, const char* name_id);
 int iupListSetIdValueAttrib(Ihandle* ih, const char* name_id, const char* value);

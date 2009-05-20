@@ -302,7 +302,7 @@ when it is mapped.</p>
 not defined when the matrix is mapped it will be read-only.</p>
 <p><strong><a name="MARK_CB">MARK_CB</a></strong>:
   Action generated to verify the selection 
-  state of a cell. Called only for common cells, only when MARK_MODE=CELL and only in callback mode.</p>
+  state of a cell. Called only for common cells, only when MARKMODE=CELL and only in callback mode.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:mark_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -316,7 +316,7 @@ not defined when the matrix is mapped it will be read-only.</p>
 <p><strong><a name="MARKEDIT_CB">MARKEDIT_CB</a></strong>:
   Action generated to notify the application 
   that the selection state of a cell was changed. Since it is a notification, it cannot refuse the mark modification.
-  Called only for common cells, only when MARK_MODE=CELL and only in callback mode.</p>
+  Called only for common cells, only when MARKMODE=CELL and only in callback mode.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <b>marked</b>); [in C]
 <strong>elem</strong>:markedit_cb(<strong>lin, col, </strong><b>marked</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:

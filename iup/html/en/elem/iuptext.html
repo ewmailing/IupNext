@@ -188,9 +188,6 @@ Works only when FORMATTING=YES. (since 3.0)</p>
   inheritance problems. Default value: "0x0". 
 	In Windows, only the horizontal value is used. (since 3.0)</p>
 
-<p><b>PANGOLAYOUT</b> [GTK Only] (<font SIZE="3">non inheritable</font>): 
-Retrieves the PangoLayout used to display the text. It is used when the text is in a secondary element.</p>
-  
 <p><b>PASSWORD </b>(creation only) [Windows and GTK Only] (<font size="3">non inheritable</font>): Hide the typed character using an "*". 
 	Default: "NO".</p>
 
@@ -252,7 +249,7 @@ MULTILINE (since 3.0).</p>
 
   
 <p><strong>SELECTIONPOS</strong> (<font size="3">non inheritable</font>):
-  Also the selection interval, but using a zero based character 
+  Same as SELECTION but using a zero based character 
 	index "<strong>pos1</strong>:<strong>pos2</strong>". Useful for indexing the VALUE string. 
 	The values ALL and NONE are also accepted. See the Notes bellow if using 
 	UTF-8 strings in GTK. (since 3.0)</p>
@@ -370,8 +367,8 @@ the clipboard.</p>
   
 <p><a href="../call/iup_button_cb.html">BUTTON_CB</a>:
   Action generated when any mouse button is 
-  pressed or released. Use <strong>IupTextConvertXYToChar</strong> to convert 
-	(x,y) coordinates in (lin, col, pos) character positioning. (since 3.0)</p>
+  pressed or released. Use <a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> to convert 
+	(x,y) coordinates in character positioning. (since 3.0)</p>
 
   
   
@@ -395,15 +392,16 @@ the clipboard.</p>
 <p class="info">For single line controls <strong>lin</strong> is always 1, and
 <strong>pos</strong> is always "<strong>col</strong>-1".</p>
 
-<p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a> [Windows Only]: Action generated when one or 
-  more files are dropped in the dialog. (since 3.0)</p>
+<p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a> [Windows and GTK Only]: Action generated when one or 
+  more files are dropped in the element. (since 3.0)</p>
 
   
 
   
 <p><a href="../call/iup_motion_cb.html">MOTION_CB</a>:
-  Action generated when the mouse is moved. Use <strong>IupTextConvertXYToChar</strong> 
-	to convert (x,y) coordinates in (lin, col, pos) character positioning. (since 3.0)</p>
+  Action generated when the mouse is moved. Use 
+<a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> 
+	to convert (x,y) coordinates in character positioning. (since 3.0)</p>
 
   
   
@@ -442,10 +440,15 @@ supported.</p>
 
 <h3>Auxiliary Functions</h3>
 
-<pre>void <strong>IupTextConvertXYToChar</strong>(Ihandle* <strong>ih</strong>, int <strong>x</strong>, int <strong>y</strong>, int *<strong>lin</strong>, int *<strong>col</strong>, int *<strong>pos</strong>); [in C]<br><b>iup.TextConvertXYToChar</b>(<b>ih</b>: ihandle, <strong>x</strong>, <strong>y</strong>: number) -&gt; <strong>lin</strong>, <strong>col</strong>, <strong>pos</strong>: number [in Lua]</pre>
+<pre>void <strong>IupTextConvertLinColToPos</strong>(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int *<strong>pos</strong>); [in C]<br><b>iup.</b><strong>TextConvertLinColToPos</strong>(<b>ih</b>: ihandle, <strong>lin</strong>, <strong>col</strong>: number) -&gt; <strong>pos</strong>: number [in Lua]</pre>
 
-<p>Converts a (x,y) coordinates in a (lin, col, pos) character positioning. For single line controls <strong>lin</strong> is always 1, and
+<p>Converts a (lin, col) character positioning into an absolute position. For single line controls
 <strong>pos</strong> is always "<strong>col</strong>-1". (since 3.0)</p>
+
+<pre>void <strong>IupTextConvertPosToLinCol</strong>(Ihandle* <strong>ih</strong>, int <strong>pos</strong>, int *<strong>lin</strong>, int *<strong>col</strong>); [in C]<br><b>iup.</b><strong>TextConvertPosToLinCol</strong>(<b>ih</b>: ihandle, <strong>pos</strong>: number) -&gt; <strong>lin</strong>, <strong>col</strong>: number [in Lua]</pre>
+
+<p>Converts an absolute position into a (lin, col) character positioning. For single line controls <strong>lin</strong> is always 1, and
+<strong>col</strong> is always "<strong>pos</strong>+1". (since 3.0)</p>
 
 
 

@@ -5,6 +5,11 @@
 <title>IupGetGlobal</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -16,7 +21,7 @@ Parameters/Return</h3>
 <pre>char *IupGetGlobal(const char *<strong>name</strong>); [in C]
 iup.GetGlobal(<strong>name</strong>: string) -&gt; <strong>value</strong>: string [in Lua]</pre>
 <p><strong>name</strong>: name of the attribute.</p>
-<p>This function returns the attribute&#8217;s value. 
+<p><span class="style1">Returns:</span> the attribute value. 
   If the attribute does not exist, NULL (nil in Lua) is returned.</p>
 <h3>Notes</h3>
 <p>This function&#8217;s return value is not 

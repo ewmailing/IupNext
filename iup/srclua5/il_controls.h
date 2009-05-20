@@ -17,7 +17,6 @@ int iupdiallua_open (lua_State * L);
 int iupcolorbrowserlua_open (lua_State * L);
 int iupcolorbarlua_open (lua_State * L);
 int iupcellslua_open (lua_State * L);
-int iuptreelua_open (lua_State * L);
 int iupmatrixlua_open (lua_State * L);
 
 #ifdef __cplusplus

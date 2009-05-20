@@ -5,6 +5,11 @@
 <title>IupMap</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -18,9 +23,7 @@ Parameters/Return</h3>
 <pre>int IupMap(Ihandle* <strong>ih</strong>); [in C]
 iup.Map(<strong>ih</strong>: iuplua-tag) -&gt; <strong>ret</strong>: number [in Lua]</pre>
 <p><b>ih</b>: Identifier of an interface element.</p>
-<p>If the element was already mapped returns IUP_NOERROR.</p>
-<p>If the native creation failed returns IUP_ERROR.</p>
-<p>Return IUP_NOERROR if successful.</p>
+<p><span class="style1">Returns:</span> IUP_NOERROR if successful. If the element was already mapped returns IUP_NOERROR. If the native creation failed returns IUP_ERROR.</p>
 <h3>Notes</h3>
 <p>If the element is a dialog then the abstract layout will be updated even if the element is already mapped. If the 
   dialog is visible the elements will be immediately repositioned. Calling

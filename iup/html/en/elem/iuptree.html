@@ -49,8 +49,13 @@ a &quot;renamed&quot; action.
 iup.tree{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 tree() [in LED]</pre>
 </div>
-<p>This function returns the identifier of the 
-  created IupTree, or NULL if an error occurs.</p>
+
+  
+<p>
+  <u>Returns:</u> the identifier of the 
+  created element, or NULL if an error occurs.</p>
+
+
 <h3><a name="Attributes">Attributes</a></h3>
 
 
@@ -307,6 +312,10 @@ iup.TreeGetId(<strong>ih: </strong>ihandle, <strong>userid: </strong>userdata/ta
 the same userid.</p>
 <p>It is equivalent of retrieving the <strong>FINDUSERDATAp</strong> 
 attribute.</p>
+<hr>
+
+
+
 <pre>iup.<a name="TreeSetValue">TreeSetValue</a>(<strong>ih: </strong>ihandle, <strong>tree: </strong>table) [in Lua]</pre>
 <p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user.<br>
@@ -326,6 +335,7 @@ attribute.</p>
   branchname = &quot;Animals&quot;
 }
 iup.TreeSetValue(handle, tree)</pre>
+<p>&nbsp;</p>
 <h3>Utility Functions </h3>
 <p>These functions can be used to help set and get attributes from the tree:</p>
 <pre>void  IupTreeSetAttribute (Ihandle *n, char* a, int id, char* v);
@@ -343,7 +353,7 @@ contributed by Sergio Maffra and Frederico Abraham. It
   is an utility wrapper in C++ for the IupTree.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
-<p>XXXX</p>
+<p class="style3"><strong>TODO: screenshots win/gtk/mot</strong></p>
 
 </body>
 

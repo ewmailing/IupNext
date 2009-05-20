@@ -8,6 +8,9 @@
 .style1 {
 	font-size: large;
 }
+.style2 {
+	text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -19,7 +22,7 @@
 Parameters/Return</h3>
 <pre>char* IupUnMapFont(const char *<strong>driverfont</strong>); [in C]
 iup.UnMapFont(<strong>driverfont</strong> :string) -&gt; (<strong>iupfont</strong> : string) [in Lua]</pre>
-<p>This function returns the name of the IUP 
+<p><span class="style2">Returns:</span> the name of the IUP 
   font, given the native font. If such font does not exist, the function will return NULL.</p>
 <h3>See Also</h3>
 <p><a href="iupmapfont.html">IupMapFont</a></p>

@@ -38,7 +38,7 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 </p>
 
-<h3>CVS (12/May/2009)</h3>
+<h3>CVS (19/May/2009)</h3>
 
 <h4>General</h4>
 
@@ -47,12 +47,17 @@ proceed when migrating from version 2.x to version 3.x.<br>
   <li><span class="style3">New:</span>
 	PREVIEWGLCANVAS attribute for <strong>IupFileDlg</strong>.</li>
 	<li><span class="style3">New:</span>
-	<strong>IupTree</strong> now uses native controls. The old implementation is 
+	auxiliary functions <strong>IupTextConvertLinColToPos</strong> and <strong>
+	IupTextConvertPosToLinCol</strong> for <strong>IupText</strong>.</li>
+	<li><span class="style3">New:</span>
+	<strong>IupTree</strong> now uses native controls and was moved to the 
+	standard controls. The old implementation is 
 	not available. Images for nodes are not limited to 16x16 anymore. BGCOLOR 
 	now follows the same default as <strong>IupText</strong> and <strong>IupList</strong>, 
-	and can be changed. New <strong>TITLEFONT, FGCOLOR, USERDATA, FINDUSERID, COUNT, CHILDCOUNT, EXPANDALL, INDENTATION, HIDEBUTTONS, 
-	HIDELINES</strong>, <strong>INSERTLEAF</strong> and <strong>INSERTBRANCH</strong>
-	attributes. Attributes SCROLLBAR and REDRAW are not supported anymore. 
+	and can be changed. New TITLEFONT, FGCOLOR, USERDATA, FINDUSERID, COUNT, 
+	CHILDCOUNT, EXPANDALL, INDENTATION, HIDEBUTTONS, HIDELINES, INSERTLEAF and 
+	INSERTBRANCH attributes. New BUTTON_CB, MOTION_CB and DROPFILES_CB 
+	callbacks. Attributes SCROLLBAR and REDRAW are not supported anymore. 
 	<span class="style1"><strong> ATTENTION</strong></span><strong>
 	- </strong> DEPTH is now a read-only attribute, use the INSERT* attributes 
 	to properly add nodes. NAMEid attribute renamed to TITLE, old attribute still works but will be 
@@ -66,6 +71,10 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="style2">Changed: </span>the
 default value of the Windows attribute COMPOSITED is back to NO to improve 
 	backward compatibility and to avoid side effects of the attribute.</li>
+	<li><span class="style2">Changed:</span> the auxiliary functions <strong>
+	IupTextConvertXYToChar</strong> and <strong>IupListConvertXYToItem</strong> 
+	where replaced by <strong>IupConvertXYToPos</strong>, that also works for
+	<strong>IupTree</strong>.</li>
 	<li><span class="style1">Fixed:</span> IupLua initialization when retrieving 
 	the argc/argv arguments for <strong>IupOpen</strong> (Thanks to Ross Berteig).</li>
 	<li><span class="style1">Fixed:</span> Arg initialization for all controls 

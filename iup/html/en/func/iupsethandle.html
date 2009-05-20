@@ -5,6 +5,11 @@
 <title>IupSetHandle</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -16,7 +21,7 @@ Parameters/Return</h3>
 iup.SetHandle(<strong>name</strong>: string, <strong>ih</strong>: ihandle) -&gt; <strong>old_ih</strong>: ihandle [in Lua]</pre>
 <p><b>name</b>: name of the interface element.<br>
 <b>ih</b>: identifier of the interface element. Use NULL to remove the association.</p>
-<p>Returns the identifier of the interface 
+<p><span class="style1">Returns:</span> the identifier of the interface 
   element previously associated to the parameter <b>name</b>.</p>
 <h3>See Also</h3>
 <p><a href="iupgethandle.html">IupGetHandle</a></p>

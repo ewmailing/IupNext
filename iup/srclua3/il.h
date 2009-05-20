@@ -17,10 +17,10 @@ int iupluawidgets_open(int tag);
 int sboxlua_open(void);
 int spinlua_open(void);
 int cboxlua_open(void);
-
 int gclua_open (void);
 int vallua_open (void);
 int tabslua_open (void);
+int treelua_open (void);
 
 void iupluaScanf(void);
 void getparamlua_open (void);

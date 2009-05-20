@@ -131,7 +131,7 @@ elems[] =
   { "Submenu",      code_string_elem,  check_string_elem, 0  },
   { "Text",         code_string,       check_cb,          0  },
   { "Val",          code_string,       check_string,      0  },
-  { "Tree",         code_empty,        check_empty,       IUPCONTROLS_H  },
+  { "Tree",         code_empty,        check_empty,       0  },
   { "Tabs",         code_elemlist,     check_elemlist,    0  },
   { "Toggle",       code_string_cb,    check_string_cb,   0  },
   { "Vbox",         code_elemlist,     check_elemlist,    0  },

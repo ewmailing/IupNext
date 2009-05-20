@@ -89,27 +89,31 @@ int iupdrvListGetCount(Ihandle* ih)
   return SendMessage(ih->handle, WIN_GETCOUNT(ih), 0, 0);
 }
 
-void iupdrvListConvertXYToItem(Ihandle* ih, int x, int y, int *pos)
+static int winListConvertXYToPos(Ihandle* ih, int x, int y)
 {
+  int pos;
+
   if (ih->data->has_editbox)
   {
     HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
 
-    *pos = SendMessage(cbedit, EM_CHARFROMPOS, 0, MAKELPARAM(x, y));
-    *pos = LOWORD(*pos);
+    pos = SendMessage(cbedit, EM_CHARFROMPOS, 0, MAKELPARAM(x, y));
+    pos = LOWORD(pos);
   }
 
   if (ih->data->has_editbox)
   {
     HWND cblist = (HWND)iupAttribGet(ih, "_IUPWIN_LISTBOX");
-    *pos = SendMessage(cblist, LB_ITEMFROMPOINT, 0, MAKELPARAM(x, y))+1;  /* IUP Starts at 1 */
-    *pos = LOWORD(*pos);
+    pos = SendMessage(cblist, LB_ITEMFROMPOINT, 0, MAKELPARAM(x, y))+1;  /* IUP Starts at 1 */
+    pos = LOWORD(pos);
   }
   else
   {
-    *pos = SendMessage(ih->handle, LB_ITEMFROMPOINT, 0, MAKELPARAM(x, y))+1;
-    *pos = LOWORD(*pos);
+    pos = SendMessage(ih->handle, LB_ITEMFROMPOINT, 0, MAKELPARAM(x, y))+1;
+    pos = LOWORD(pos);
   }
+
+  return pos;
 }
 
 static int winListGetMaxWidth(Ihandle* ih)
@@ -1377,6 +1381,8 @@ static int winListMapMethod(Ihandle* ih)
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DRAGDROP", "YES");
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)winListConvertXYToPos);
 
   iupListSetInitialItems(ih);
 

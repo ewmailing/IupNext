@@ -72,17 +72,17 @@ void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
   }
 }
 
-void iupdrvListConvertXYToItem(Ihandle* ih, int x, int y, int *pos)
+static int motListConvertXYToPos(Ihandle* ih, int x, int y)
 {
   (void)x;
   if (ih->data->has_editbox)
   {
     Widget cblist;
     XtVaGetValues(ih->handle, XmNlist, &cblist, NULL);
-    *pos = XmListYToPos(cblist, (Position)y);   /* XmListYToPos returns start at 1 */
+    return XmListYToPos(cblist, (Position)y);   /* XmListYToPos returns start at 1 */
   }
   else
-    *pos = XmListYToPos(ih->handle, (Position)y);
+    return XmListYToPos(ih->handle, (Position)y);
 }
 
 int iupdrvListGetCount(Ihandle* ih)
@@ -1293,6 +1293,8 @@ static int motListMapMethod(Ihandle* ih)
     iupmotSetGlobalColorAttrib(ih->handle, XmNforeground, "TXTFGCOLOR");
     IupSetGlobal("_IUP_SET_TXTCOLORS", NULL);
   }
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)motListConvertXYToPos);
 
   iupListSetInitialItems(ih);
 

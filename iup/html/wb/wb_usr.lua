@@ -946,6 +946,11 @@ wb_usr.tree =
             {
               name= {nl= "IupRedraw"},
               link= "func/iupredraw.html"
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "IupConvertXYToPos"},
+              link= "func/iupconvertxytopos.html"
             }
           }
         }

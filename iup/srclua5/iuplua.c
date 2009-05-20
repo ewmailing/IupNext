@@ -895,6 +895,7 @@ int iuplua_open(lua_State * L)
   iupprogressbarlua_open(L);
   iupnormalizerlua_open(L);
   iupuserlua_open(L);
+  iuptreelua_open(L);
 
   iuplua_returnEnv(L);
 

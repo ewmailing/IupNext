@@ -68,7 +68,7 @@ void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
   }
 }
 
-void iupdrvListConvertXYToItem(Ihandle* ih, int x, int y, int *pos)
+static int gtkListConvertXYToPos(Ihandle* ih, int x, int y)
 {
   if (!ih->data->is_dropdown)
   {
@@ -76,10 +76,12 @@ void iupdrvListConvertXYToItem(Ihandle* ih, int x, int y, int *pos)
     if (gtk_tree_view_get_dest_row_at_pos((GtkTreeView*)ih->handle, x, y, &path, NULL))
     {
       int* indices = gtk_tree_path_get_indices(path);
-      *pos = indices[0]+1;  /* IUP starts at 1 */
       gtk_tree_path_free (path);
+      return indices[0]+1;  /* IUP starts at 1 */
     }
   }
+
+  return -1;
 }
 
 static GtkTreeModel* gtkListGetModel(Ihandle* ih)
@@ -1353,6 +1355,8 @@ static int gtkListMapMethod(Ihandle* ih)
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DRAGDROP", "YES");
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)gtkListConvertXYToPos);
 
   iupListSetInitialItems(ih);
 
