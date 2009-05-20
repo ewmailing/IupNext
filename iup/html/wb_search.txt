@@ -208,7 +208,7 @@ en/func/iupgetnextchild.html
 en/func/iuprefresh.html
 en/func/iupgetdialog.html
 en/func/iupgetint.html
-en/ctrl/iupmatrix_cb.html
+en/executables.html
 en/elem/iuptimer.html
 en/func/iupmapfont.html
 en/func/iupsetattribute.html
@@ -236,12 +236,12 @@ en/sample_results_bgcolor_indiv.html
 en/samples.html
 en/func/iupreparent.html
 en/func/iupgetglobal.html
-en/layout.html
+en/ctrl/iupgauge.html
 en/dlg/iupdialog.html
 en/func/iupversion.html
 en/sample_results_background.html
-en/executables.html
-en/ctrl/iupgauge.html
+en/ctrl/iupmatrix_cb.html
+en/layout.html
 en/iuplua.html
 en/attrib/iup_value.html
 en/ctrl/iupcolorbar.html

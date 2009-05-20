@@ -488,84 +488,111 @@ wb_usr.tree =
           folder=
           {
             {
-              name= {nl= "LANGUAGE"},
-              link= "attrib/iup_globals.html#LANGUAGE"
-            },
-            {
-              name= {nl= "SYSTEMLANGUAGE"},
-              link= "attrib/iup_globals.html#SYSTEMLANGUAGE"
-            },
-            {
-              name= {nl= "VERSION"},
-              link= "attrib/iup_globals.html#version"
-            },
-            {
-              name= {nl= "COPYRIGHT"},
-              link= "attrib/iup_globals.html#copyright"
-            },
-            {
-              name= {nl= "DRIVER"},
-              link= "attrib/iup_globals.html#driver"
-            },
-            {
-              name= {nl= "SYSTEM"},
-              link= "attrib/iup_globals.html#system"
-            },
-            {
-              name= {nl= "SYSTEMVERSION"},
-              link= "attrib/iup_globals.html#systemversion"
-            },
-            {
-              name= {nl= "FULLSIZE"},
-              link= "attrib/iup_globals.html#fullsize"
-            },
-            {
-              name= {nl= "SCREENSIZE"},
-              link= "attrib/iup_globals.html#screensize"
-            },
-            {
-              name= {nl= "SCREENDEPTH"},
-              link= "attrib/iup_globals.html#screendepth"
-            },
-            {
-              name= {nl= "LOCKLOOP"},
-              link= "attrib/iup_globals.html#lockloop"
-            },
-            {
-              name= {nl= "CURSORPOS"},
-              link= "attrib/iup_globals.html#cursorpos"
-            },
-            {
-              name= {nl= "COMPUTERNAME"},
-              link= "attrib/iup_globals.html#computername"
-            },
-            {
-              name= {nl= "USERNAME"},
-              link= "attrib/iup_globals.html#username"
-            },
-            {
-              name= {nl= "DLGBGCOLOR"},
-              link= "attrib/iup_globals.html#DLGBGCOLOR"
-            },
-            {
-              name= {nl= "DEFAULTFONT"},
-              link= "attrib/iup_globals.html#DEFAULTFONT"
-            },
-            {
-              name= {nl= "SHIFTKEY"},
-              link= "attrib/iup_globals.html#SHIFTKEY"
-            },
-            {
-              name= {nl= "CONTROLKEY"},
-              link= "attrib/iup_globals.html#CONTROLKEY"
-            },
-            {
-              name= {nl= "MODKEYSTATE"},
-              link= "attrib/iup_globals.html#MODKEYSTATE"
-            },
-            {
-              name= {nl= "TRUECOLORCANVAS"},
-              link= "attrib/iup_globals.html#TRUECOLORCANVAS"
+              name= {en= "Common"},
+
+              folder=
+              {
+                {
+                  name= {nl= "LANGUAGE"},
+                  link= "attrib/iup_globals.html#LANGUAGE"
+                },
+                {
+                  name= {nl= "SYSTEMLANGUAGE"},
+                  link= "attrib/iup_globals.html#SYSTEMLANGUAGE"
+                },
+                {
+                  name= {nl= "VERSION"},
+                  link= "attrib/iup_globals.html#version"
+                },
+                {
+                  name= {nl= "COPYRIGHT"},
+                  link= "attrib/iup_globals.html#copyright"
+                },
+                {
+                  name= {nl= "DRIVER"},
+                  link= "attrib/iup_globals.html#driver"
+                },
+                {
+                  name= {nl= "SYSTEM"},
+                  link= "attrib/iup_globals.html#system"
+                },
+                {
+                  name= {nl= "SYSTEMVERSION"},
+                  link= "attrib/iup_globals.html#systemversion"
+                },
+                {
+                  name= {nl= "FULLSIZE"},
+                  link= "attrib/iup_globals.html#fullsize"
+                },
+                {
+                  name= {nl= "SCREENSIZE"},
+                  link= "attrib/iup_globals.html#screensize"
+                },
+                {
+                  name= {nl= "SCREENDEPTH"},
+                  link= "attrib/iup_globals.html#screendepth"
+                },
+                {
+                  name= {nl= "LOCKLOOP"},
+                  link= "attrib/iup_globals.html#lockloop"
+                },
+                {
+                  name= {nl= "CURSORPOS"},
+                  link= "attrib/iup_globals.html#cursorpos"
+                },
+                {
+                  name= {nl= "COMPUTERNAME"},
+                  link= "attrib/iup_globals.html#computername"
+                },
+                {
+                  name= {nl= "USERNAME"},
+                  link= "attrib/iup_globals.html#username"
+                },
+                {
+                  name= {nl= "DLGBGCOLOR"},
+                  link= "attrib/iup_globals.html#DLGBGCOLOR"
+                },
+                {
+                  name= {nl= "DLGFGCOLOR"},
+                  link= "attrib/iup_globals.html#DLGFGCOLOR"
+                },
+                {
+                  name= {nl= "MENUBGCOLOR"},
+                  link= "attrib/iup_globals.html#MENUBGCOLOR"
+                },
+                {
+                  name= {nl= "MENUFGCOLOR"},
+                  link= "attrib/iup_globals.html#MENUFGCOLOR"
+                },
+                {
+                  name= {nl= "TXTBGCOLOR"},
+                  link= "attrib/iup_globals.html#TXTBGCOLOR"
+                },
+                {
+                  name= {nl= "TXTFGCOLOR"},
+                  link= "attrib/iup_globals.html#TXTFGCOLOR"
+                },
+                {
+                  name= {nl= "DEFAULTFONT"},
+                  link= "attrib/iup_globals.html#DEFAULTFONT"
+                },
+                {
+                  name= {nl= "SHIFTKEY"},
+                  link= "attrib/iup_globals.html#SHIFTKEY"
+                },
+                {
+                  name= {nl= "CONTROLKEY"},
+                  link= "attrib/iup_globals.html#CONTROLKEY"
+                },
+                {
+                  name= {nl= "MODKEYSTATE"},
+                  link= "attrib/iup_globals.html#MODKEYSTATE"
+                },
+                {
+                  name= {nl= "TRUECOLORCANVAS"},
+                  link= "attrib/iup_globals.html#TRUECOLORCANVAS"
+                }
+              }
             },
             {
               name= {en= "Win32"},
@@ -575,6 +602,14 @@ wb_usr.tree =
                 {
                   name= {nl= "HINSTANCE"},
                   link= "attrib/iup_globals.html#HINSTANCE"
+                },
+                {
+                  name= {nl= "VIRTUALSCREEN"},
+                  link= "attrib/iup_globals.html#VIRTUALSCREEN"
+                },
+                {
+                  name= {nl= "MONITORSINFO"},
+                  link= "attrib/iup_globals.html#MONITORSINFO"
                 }
               }
             },
@@ -614,6 +649,13 @@ wb_usr.tree =
                   name= {nl= "MOTIFNUMBER"},
                   link= "attrib/iup_globals.html#MOTIFNUMBER"
                 },
+              }
+            },
+            {
+              name= {en= "X-Windows"},
+
+              folder=
+              {
                 {
                   name= {nl= "XDISPLAY"},
                   link= "attrib/iup_globals.html#XDISPLAY"
@@ -1303,14 +1345,6 @@ wb_usr.tree =
               link= "ctrl/iupdial.html"
             },
             {
-              name= {nl= "IupGauge (OLD)"},
-              link= "ctrl/iupgauge.html"
-            },
-            {
-              name= {nl= "IupTabs (OLD)"},
-              link= "ctrl/iuptabs.html"
-            },
-            {
               name= {nl= "IupMatrix"},
               link= "ctrl/iupmatrix.html",
 
@@ -1325,6 +1359,15 @@ wb_usr.tree =
                   link= "ctrl/iupmatrix_cb.html"
                 }
               }
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "IupGauge (OLD)"},
+              link= "ctrl/iupgauge.html"
+            },
+            {
+              name= {nl= "IupTabs (OLD)"},
+              link= "ctrl/iuptabs.html"
             },
             {
               name= {nl= "IupVal (OLD)"},
