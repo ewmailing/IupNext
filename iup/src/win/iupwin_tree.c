@@ -37,6 +37,8 @@ typedef struct _winTreeItemData
   unsigned char kind;
   void* userdata;
   HFONT hFont;
+  short image;
+  short image_expanded;
 } winTreeItemData;
 
 
@@ -211,6 +213,9 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char*
     return;
 
   itemData = calloc(1, sizeof(winTreeItemData));
+  itemData->image = -1;
+  itemData->image_expanded = -1;
+  itemData->kind = (unsigned char)kind;
 
   item.mask = TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT; 
   item.pszText = (char*)title;
@@ -220,21 +225,17 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char*
 
   if (kind == ITREE_BRANCH)
   {
-    itemData->kind = ITREE_BRANCH;
-    item.iSelectedImage = item.iImage = ih->data->image_collapsed;
+    item.iSelectedImage = item.iImage = (int)ih->data->def_image_collapsed;
 
     if (ih->data->add_expanded)
     {
       item.mask |= TVIF_STATE;
       item.state = item.stateMask = TVIS_EXPANDED;
-      item.iSelectedImage = item.iImage = ih->data->image_expanded;
+      item.iSelectedImage = item.iImage = (int)ih->data->def_image_expanded;
     }
   }
   else
-  {
-    itemData->kind = ITREE_LEAF;
-    item.iSelectedImage = item.iImage = ih->data->image_leaf;
-  }
+    item.iSelectedImage = item.iImage = (int)ih->data->def_image_leaf;
 
   /* Save the heading level in the node's application-defined data area */
   tvins.item = item;
@@ -276,11 +277,13 @@ static void winTreeAddRootNode(Ihandle* ih)
   winTreeItemData* itemData;
 
   itemData = calloc(1, sizeof(winTreeItemData));
+  itemData->image = -1;
+  itemData->image_expanded = -1;
+  itemData->kind = ITREE_BRANCH;
 
   item.mask = TVIF_PARAM | TVIF_STATE | TVIF_IMAGE | TVIF_SELECTEDIMAGE; 
   item.state = item.stateMask = TVIS_EXPANDED;
-  itemData->kind = ITREE_BRANCH;
-  item.iSelectedImage = item.iImage = ih->data->image_expanded;
+  item.iSelectedImage = item.iImage = (int)ih->data->def_image_expanded;
   item.lParam = (LPARAM)itemData;
 
   iupwinGetColor(iupAttribGetStr(ih, "FGCOLOR"), &itemData->color);
@@ -471,6 +474,8 @@ static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM htiNewP
   HTREEITEM hNewItem;
   char* title = iupStrGetMemory(255);
 
+  // TODO: o que fazer com o winTreeItemData?
+
   item.hItem = hItem;
   item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT | TVIF_STATE | TVIF_PARAM;
   item.pszText = title;
@@ -508,57 +513,77 @@ static HTREEITEM winTreeCopyBranch(Ihandle* ih, HTREEITEM htiBranch, HTREEITEM h
 /*****************************************************************************/
 /* MANIPULATING IMAGES                                                       */
 /*****************************************************************************/
-static void winTreeUpdateImages(Ihandle* ih, HTREEITEM hItem)
+static void winTreeUpdateImages(Ihandle* ih, HTREEITEM hItem, int mode)
 {
+  HTREEITEM hItemChild;
   TVITEM item;
   winTreeItemData* itemData;
 
+  /* called when one of the default images is changed */
+
   while(hItem != NULL)
   {
-    /* Get hItem attributes */
+    /* Get node attributes */
     item.hItem = hItem;
     item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_STATE;
     SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
     itemData = (winTreeItemData*)item.lParam;
 
-    /* Check whether we have child items */
     if (itemData->kind == ITREE_BRANCH)
     {
-      /* Recursively traverse child items */
-      HTREEITEM hItemChild = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItem);
-
       if (item.state & TVIS_EXPANDED)
-        item.iSelectedImage = item.iImage = ih->data->image_expanded;
+      {
+        if (mode == ITREE_UPDATEIMAGE_EXPANDED)
+        {
+          item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+          item.iSelectedImage = item.iImage = (itemData->image_expanded!=-1)? itemData->image_expanded: (int)ih->data->def_image_expanded;
+          SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
+        }
+      }
       else
-        item.iSelectedImage = item.iImage = ih->data->image_collapsed;
+      {
+        if (mode == ITREE_UPDATEIMAGE_COLLAPSED)
+        {
+          item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+          item.iSelectedImage = item.iImage = (itemData->image!=-1)? itemData->image: (int)ih->data->def_image_collapsed;
+          SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
+        }
+      }
 
-      item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-      SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
-
-      winTreeUpdateImages(ih, hItemChild);
+      /* Recursively traverse child items */
+      hItemChild = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItem);
+      winTreeUpdateImages(ih, hItemChild, mode);
     }
     else
-      item.iSelectedImage = item.iImage = ih->data->image_leaf;
+    {
+      if (mode == ITREE_UPDATEIMAGE_LEAF)
+      {
+        item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+        item.iSelectedImage = item.iImage = (itemData->image!=-1)? itemData->image: (int)ih->data->def_image_leaf;
+        SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
+      }
+    }
 
-    /* Go to next sibling item */
+    /* Go to next sibling node */
     hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hItem);
   }
 }
 
-static int winTreeGetImageIndex(Ihandle* ih, const char* value)
+static int winTreeGetImageIndex(Ihandle* ih, const char* value, const char* attrib_name)
 {
   HIMAGELIST image_list;
   int count, i;
   Iarray* bmpArray;
   HBITMAP *bmpArrayData;
-  HBITMAP bmp = iupImageGetImage(value, ih, 0, "TREEIMAGE");
-
+  HBITMAP bmp = iupImageGetImage(value, ih, 0, attrib_name);
   if (!bmp)
     return -1;
 
+  /* the array is used to avoi adding the same bitmap twice */
   bmpArray = (Iarray*)iupAttribGet(ih, "_IUPWIN_BMPARRAY");
   if (!bmpArray)
   {
+    /* create the array if does not exist */
     bmpArray = iupArrayCreate(50, sizeof(HBITMAP));
     iupAttribSetStr(ih, "_IUPWIN_BMPARRAY", (char*)bmpArray);
   }
@@ -566,9 +591,22 @@ static int winTreeGetImageIndex(Ihandle* ih, const char* value)
   bmpArrayData = iupArrayGetData(bmpArray);
 
   image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_NORMAL, 0);
+  if (!image_list)
+  {
+    int width, height;
 
+    /* must use this info, since image can be a driver image loaded from resources */
+    iupdrvImageGetInfo(bmp, &width, &height, NULL);
+
+    /* create the image list if does not exist */
+    image_list = ImageList_Create(width, height, ILC_COLOR32, 0, 50);
+    SendMessage(ih->handle, TVM_SETIMAGELIST, 0, (LPARAM)image_list);
+  }
+
+  /* check if that bitmap is already added to the list,
+     but we can not compare with the actual bitmap at the list since it is a copy */
   count = ImageList_GetImageCount(image_list);
-  for (i = 3; i < count; i++)  /* starting in 3, because the index 0, 1 and 2 are reserved to the default images */
+  for (i = 0; i < count; i++)
   {
     if (bmpArrayData[i] == bmp)
       return i;
@@ -576,37 +614,14 @@ static int winTreeGetImageIndex(Ihandle* ih, const char* value)
 
   bmpArrayData = iupArrayInc(bmpArray);
   bmpArrayData[i] = bmp;
-  return ImageList_Add(image_list, bmp, NULL);
+  return ImageList_Add(image_list, bmp, NULL);  /* the bmp is duplicated at the list */
 }
 
-static void winTreeCreateImageList(Ihandle* ih) 
-{ 
-  int width, height;
-  HIMAGELIST image_list;  /* handle to image list  */
-  HBITMAP bmpLeaf = iupImageGetImage("IMGLEAF", ih, 0, "TREEIMAGELEAF");
-  HBITMAP bmpCollapsed = iupImageGetImage("IMGCOLLAPSED", ih, 0, "TREEIMAGECOLLAPSED");
-  HBITMAP bmpExpanded = iupImageGetImage("IMGEXPANDED", ih, 0, "TREEIMAGEEXPANDED");
-
-  /* must use this info, since image can be a driver image loaded from resources */
-  iupdrvImageGetInfo(bmpLeaf, &width, &height, NULL);
-
-  image_list = ImageList_Create(width, height, ILC_COLOR32, 0, 50);
-
-  ih->data->image_leaf = ImageList_Add(image_list, bmpLeaf, (HBITMAP)NULL); 
-  ih->data->image_collapsed = ImageList_Add(image_list, bmpCollapsed, (HBITMAP)NULL); 
-  ih->data->image_expanded = ImageList_Add(image_list, bmpExpanded, (HBITMAP)NULL); 
-
-  /* Fail if not all of the images were added */
-  if (ImageList_GetImageCount(image_list) < 3) 
-    return; 
-
-  /* Associate the image list with the tree-view control */
-  SendMessage(ih->handle, TVM_SETIMAGELIST, TVSIL_NORMAL, (LPARAM)image_list);
-} 
 
 /*****************************************************************************/
 /* CALLBACKS                                                                 */
 /*****************************************************************************/
+
 static int winTreeShowRename_CB(Ihandle* ih)
 {
   IFni cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
@@ -792,50 +807,38 @@ static int winTreeRightClick_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
+
 /*****************************************************************************/
 /* GET AND SET ATTRIBUTES                                                    */
 /*****************************************************************************/
+
+
 static int winTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 {
-  HIMAGELIST image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_NORMAL, 0);
-  HBITMAP bmpExpanded = iupImageGetImage(value, ih, 0, "TREEIMAGEEXPANDED");
-
-  ImageList_Replace(image_list, ih->data->image_expanded, bmpExpanded, (HBITMAP)NULL);
-  
-  SendMessage(ih->handle, TVM_SETIMAGELIST, TVSIL_NORMAL, (LPARAM)image_list);
+  ih->data->def_image_expanded = (void*)winTreeGetImageIndex(ih, value, "IMAGEBRANCHEXPANDED");
 
   /* Update all images, starting at root node */
-  winTreeUpdateImages(ih, (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0));
+  winTreeUpdateImages(ih, (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0), ITREE_UPDATEIMAGE_EXPANDED);
 
   return 1;
 }
 
 static int winTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 {
-  HIMAGELIST image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_NORMAL, 0);
-  HBITMAP bmpCollapsed = iupImageGetImage(value, ih, 0, "TREEIMAGECOLLAPSED");
-
-  ImageList_Replace(image_list, ih->data->image_collapsed, bmpCollapsed, (HBITMAP)NULL);
-
-  SendMessage(ih->handle, TVM_SETIMAGELIST, TVSIL_NORMAL, (LPARAM)image_list);
+  ih->data->def_image_collapsed = (void*)winTreeGetImageIndex(ih, value, "IMAGEBRANCHCOLLAPSED");
 
   /* Update all images, starting at root node */
-  winTreeUpdateImages(ih, (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0));
+  winTreeUpdateImages(ih, (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0), ITREE_UPDATEIMAGE_COLLAPSED);
 
   return 1;
 }
 
 static int winTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
 {
-  HIMAGELIST image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_NORMAL, 0);
-  HBITMAP bmpLeaf = iupImageGetImage(value, ih, 0, "TREEIMAGELEAF");
-
-  ImageList_Replace(image_list, ih->data->image_leaf, bmpLeaf, (HBITMAP)NULL);
-
-  SendMessage(ih->handle, TVM_SETIMAGELIST, TVSIL_NORMAL, (LPARAM)image_list);
+  ih->data->def_image_leaf = (void*)winTreeGetImageIndex(ih, value, "IMAGELEAF");
 
   /* Update all images, starting at root node */
-  winTreeUpdateImages(ih, (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0));
+  winTreeUpdateImages(ih, (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0), ITREE_UPDATEIMAGE_LEAF);
 
   return 1;
 }
@@ -852,10 +855,14 @@ static int winTreeSetImageExpandedAttrib(Ihandle* ih, const char* name_id, const
   item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_STATE;
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
   itemData = (winTreeItemData*)item.lParam;
+  itemData->image_expanded = (short)winTreeGetImageIndex(ih, value, "IMAGEBRANCHEXPANDED");
 
   if (itemData->kind == ITREE_BRANCH && item.state & TVIS_EXPANDED)
   {
-    item.iSelectedImage = item.iImage = winTreeGetImageIndex(ih, value);
+    if (itemData->image_expanded == -1)
+      item.iSelectedImage = item.iImage = (int)ih->data->def_image_expanded;
+    else
+      item.iSelectedImage = item.iImage = itemData->image_expanded;
     item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
     SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
   }
@@ -875,17 +882,31 @@ static int winTreeSetImageAttrib(Ihandle* ih, const char* name_id, const char* v
   item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_STATE;
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
   itemData = (winTreeItemData*)item.lParam;
+  itemData->image = (short)winTreeGetImageIndex(ih, value, "IMAGE");
 
   if (itemData->kind == ITREE_BRANCH)
   {
     if (!(item.state & TVIS_EXPANDED))
-      item.iSelectedImage = item.iImage = winTreeGetImageIndex(ih, value);
+    {
+      if (itemData->image == -1)
+        item.iSelectedImage = item.iImage = (int)ih->data->def_image_collapsed;
+      else
+        item.iSelectedImage = item.iImage = itemData->image;
+
+      item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+      SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
+    }
   }
   else
-    item.iSelectedImage = item.iImage = winTreeGetImageIndex(ih, value);
+  {
+    if (itemData->image == -1)
+      item.iSelectedImage = item.iImage = (int)ih->data->def_image_leaf;
+    else
+      item.iSelectedImage = item.iImage = itemData->image;
 
-  item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-  SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
+    item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+    SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
+  }
 
   return 1;
 }
@@ -2110,16 +2131,21 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   {
     /* mouse click by user: click on the "+" sign or double click on the selected node */
     TVITEM item;
+    winTreeItemData* itemData;
     NMTREEVIEW* tree_info = (NMTREEVIEW*)msg_info;
     HTREEITEM hItem = winTreeFindNodePointed(ih);
     SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
 
-    if (tree_info->action == TVE_EXPAND)
-      item.iSelectedImage = item.iImage = ih->data->image_expanded;
-    else
-      item.iSelectedImage = item.iImage = ih->data->image_collapsed;
-
     item.hItem = hItem;
+    item.mask = TVIF_HANDLE | TVIF_PARAM;
+    SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+    itemData = (winTreeItemData*)item.lParam;
+
+    if (tree_info->action == TVE_EXPAND)
+      item.iSelectedImage = item.iImage = (itemData->image_expanded!=-1)? itemData->image_expanded: (int)ih->data->def_image_expanded;
+    else
+      item.iSelectedImage = item.iImage = (itemData->image!=-1)? itemData->image: (int)ih->data->def_image_collapsed;
+
     item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
     SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
 
@@ -2248,8 +2274,10 @@ static int winTreeMapMethod(Ihandle* ih)
     }
   }
 
-  /* Create the Tree View Image List */
-  winTreeCreateImageList(ih);
+  /* Initialize the default images */
+  ih->data->def_image_leaf = (void*)winTreeGetImageIndex(ih, "IMGLEAF", "IMAGELEAF");
+  ih->data->def_image_collapsed = (void*)winTreeGetImageIndex(ih, "IMGCOLLAPSED", "IMAGEBRANCHCOLLAPSED");
+  ih->data->def_image_expanded = (void*)winTreeGetImageIndex(ih, "IMGEXPANDED", "IMAGEBRANCHEXPANDED");
 
   /* Add the Root Node */
   winTreeAddRootNode(ih);
@@ -2282,7 +2310,7 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   /* IupTree Attributes - IMAGES */
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, winTreeSetImageAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "IMAGEEXPANDED", NULL, winTreeSetImageExpandedAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IMAGEBRANCHEXPANDED", NULL, winTreeSetImageExpandedAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   
   iupClassRegisterAttribute(ic, "IMAGELEAF",            NULL, winTreeSetImageLeafAttrib, IUPAF_SAMEASSYSTEM, "IMGLEAF", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEBRANCHCOLLAPSED", NULL, winTreeSetImageBranchCollapsedAttrib, IUPAF_SAMEASSYSTEM, "IMGCOLLAPSED", IUPAF_NO_INHERIT);
@@ -2316,4 +2344,3 @@ void iupdrvTreeInitClass(Iclass* ic)
 
 //TVS_INFOTIP
 //TVN_GETINFOTIP 
-// review imagelist

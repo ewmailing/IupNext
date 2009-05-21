@@ -32,9 +32,10 @@
 
 enum
 {
-  IUPGTK_TREE_IMAGE_LEAF,
-  IUPGTK_TREE_IMAGE_COLLAPSED,
+  IUPGTK_TREE_IMAGE,
+  IUPGTK_TREE_HAS_IMAGE,
   IUPGTK_TREE_IMAGE_EXPANDED,
+  IUPGTK_TREE_HAS_IMAGE_EXPANDED,
   IUPGTK_TREE_TITLE,
   IUPGTK_TREE_KIND,
   IUPGTK_TREE_COLOR,
@@ -53,14 +54,16 @@ static GtkTreeIter gtkTreeCopyItem(Ihandle* ih, GtkTreeIter hItem, GtkTreeIter h
   GtkTreeIter  iterNewItem;
   int kind;
   char* title;
+  gboolean has_image, has_image_expanded;
   PangoFontDescription* font;
   void* userdata;
   GdkColor color = {0L,0,0,0};
-  GdkPixbuf* image_leaf, *image_collapsed, *image_expanded;
+  GdkPixbuf* image, *image_expanded;
 
-  gtk_tree_model_get(GTK_TREE_MODEL(store), &hItem, IUPGTK_TREE_IMAGE_LEAF,      &image_leaf,
-                                                    IUPGTK_TREE_IMAGE_COLLAPSED, &image_collapsed,
+  gtk_tree_model_get(GTK_TREE_MODEL(store), &hItem, IUPGTK_TREE_IMAGE,      &image,
+                                                    IUPGTK_TREE_HAS_IMAGE,      &has_image,
                                                     IUPGTK_TREE_IMAGE_EXPANDED,  &image_expanded,
+                                                    IUPGTK_TREE_HAS_IMAGE_EXPANDED,  &has_image_expanded,
                                                     IUPGTK_TREE_TITLE,  &title,
                                                     IUPGTK_TREE_KIND,  &kind,
                                                     IUPGTK_TREE_COLOR, &color, 
@@ -70,9 +73,10 @@ static GtkTreeIter gtkTreeCopyItem(Ihandle* ih, GtkTreeIter hItem, GtkTreeIter h
 
   gtk_tree_store_append(store, &iterNewItem, &htiNewParent);
 
-  gtk_tree_store_set(store, &iterNewItem, IUPGTK_TREE_IMAGE_LEAF,      image_leaf,
-                                          IUPGTK_TREE_IMAGE_COLLAPSED, image_collapsed,
+  gtk_tree_store_set(store, &iterNewItem, IUPGTK_TREE_IMAGE,      image,
+                                          IUPGTK_TREE_HAS_IMAGE,  has_image,
                                           IUPGTK_TREE_IMAGE_EXPANDED,  image_expanded,
+                                          IUPGTK_TREE_HAS_IMAGE_EXPANDED, has_image_expanded,
                                           IUPGTK_TREE_TITLE,  title,
                                           IUPGTK_TREE_KIND,  kind,
                                           IUPGTK_TREE_COLOR, &color, 
@@ -105,32 +109,6 @@ static GtkTreeIter gtkTreeCopyBranch(Ihandle* ih, GtkTreeIter iterBranch, GtkTre
 /*****************************************************************************/
 /* FINDING ITEMS                                                             */
 /*****************************************************************************/
-static void gtkTreeFindParentNode(GtkTreeModel* modelTree, GtkTreeIter iterItem, GtkTreeIter iterCandidate, GtkTreeIter *iterFoundParent)
-{
-  GtkTreePath* pathItem = gtk_tree_model_get_path(modelTree, &iterItem);
-  GtkTreePath* pathCandidate;
-  GtkTreeIter iterChild;
-  int hasItem = TRUE;
-
-  while(hasItem)
-  {
-    pathCandidate = gtk_tree_model_get_path(modelTree, &iterCandidate);
-
-    if (gtk_tree_path_is_descendant(pathItem, pathCandidate))
-    {
-      *iterFoundParent = iterCandidate;
-      gtk_tree_model_iter_children(modelTree, &iterChild, &iterCandidate);  /* get the firstchild */
-      gtkTreeFindParentNode(modelTree, iterItem, iterChild, iterFoundParent); /* iterChild is the new candidate */
-    }
-
-    gtk_tree_path_free(pathCandidate);
-
-    /* Go to next sibling item */
-    hasItem = gtk_tree_model_iter_next(modelTree, &iterCandidate);
-  }
-
-  gtk_tree_path_free(pathItem);
-}
 
 /* Recursively, find a new brother for the item
 that will have its depth changed. Returns the new brother. */
@@ -357,7 +335,7 @@ static GtkTreeIter gtkTreeFindNodeFromString(Ihandle* ih, const char* id_string)
 /*****************************************************************************/
 /* MANIPULATING IMAGES                                                       */
 /*****************************************************************************/
-static void gtkTreeUpdateImages(GtkTreeModel* modelTree, GtkTreeIter iterItem, GdkPixbuf* pixImage, int mode)
+static void gtkTreeUpdateImages(Ihandle* ih, GtkTreeModel* modelTree, GtkTreeIter iterItem, int mode)
 {
   GtkTreeIter iterChild;
   int hasItem = TRUE;
@@ -367,31 +345,40 @@ static void gtkTreeUpdateImages(GtkTreeModel* modelTree, GtkTreeIter iterItem, G
   {
     gtk_tree_model_get(modelTree, &iterItem, IUPGTK_TREE_KIND, &kind, -1);
 
-    /* Check whether we have child items */
-    if(gtk_tree_model_iter_has_child(modelTree, &iterItem))
+    if (kind == ITREE_BRANCH)
     {
-      if(mode == IUPGTK_TREE_IMAGE_COLLAPSED)
-        gtk_tree_store_set(GTK_TREE_STORE(modelTree), &iterItem, IUPGTK_TREE_IMAGE_COLLAPSED, pixImage, -1);
-      else if(mode == IUPGTK_TREE_IMAGE_EXPANDED)
-        gtk_tree_store_set(GTK_TREE_STORE(modelTree), &iterItem, IUPGTK_TREE_IMAGE_EXPANDED, pixImage, -1);
-
-      gtk_tree_model_iter_children(modelTree, &iterChild, &iterItem);  /* get the firstchild */
-
-      gtkTreeUpdateImages(modelTree, iterChild, pixImage, mode);
-    }
-    else if(mode == IUPGTK_TREE_IMAGE_LEAF && kind == ITREE_LEAF)
-    {
-      gtk_tree_store_set(GTK_TREE_STORE(modelTree), &iterItem, IUPGTK_TREE_IMAGE_LEAF, pixImage, -1);
-    }
-    else if(kind == ITREE_BRANCH) /* branches has no children */
-    {
-      if(mode == IUPGTK_TREE_IMAGE_COLLAPSED)
+      if (mode == ITREE_UPDATEIMAGE_EXPANDED)
       {
-        gtk_tree_store_set(GTK_TREE_STORE(modelTree), &iterItem, IUPGTK_TREE_IMAGE_COLLAPSED, pixImage, -1);
-        gtk_tree_store_set(GTK_TREE_STORE(modelTree), &iterItem,      IUPGTK_TREE_IMAGE_LEAF, pixImage, -1);
+        gboolean has_image_expanded = FALSE;
+        gtk_tree_model_get(modelTree, &iterItem, IUPGTK_TREE_HAS_IMAGE_EXPANDED, &has_image_expanded, -1);
+        if (!has_image_expanded)
+          gtk_tree_store_set(GTK_TREE_STORE(modelTree), &iterItem, IUPGTK_TREE_IMAGE_EXPANDED, ih->data->def_image_expanded, -1);
       }
-      else
-        gtk_tree_store_set(GTK_TREE_STORE(modelTree), &iterItem, IUPGTK_TREE_IMAGE_EXPANDED, pixImage, -1);
+      else if(mode == ITREE_UPDATEIMAGE_COLLAPSED)
+      {
+        gboolean has_image = FALSE;
+        gtk_tree_model_get(modelTree, &iterItem, IUPGTK_TREE_HAS_IMAGE, &has_image, -1);
+        if (!has_image)
+          gtk_tree_store_set(GTK_TREE_STORE(modelTree), &iterItem, IUPGTK_TREE_IMAGE, ih->data->def_image_collapsed, -1);
+      }
+
+      if (gtk_tree_model_iter_has_child(modelTree, &iterItem))
+      {
+
+        /* Recursively traverse child items */
+        gtk_tree_model_iter_children(modelTree, &iterChild, &iterItem);
+        gtkTreeUpdateImages(ih, modelTree, iterChild, mode);
+      }
+    }
+    else 
+    {
+      if (mode == ITREE_UPDATEIMAGE_LEAF)
+      {
+        gboolean has_image = FALSE;
+        gtk_tree_model_get(modelTree, &iterItem, IUPGTK_TREE_HAS_IMAGE, &has_image, -1);
+        if (!has_image)
+          gtk_tree_store_set(GTK_TREE_STORE(modelTree), &iterItem, IUPGTK_TREE_IMAGE, ih->data->def_image_leaf, -1);
+      }
     }
 
     /* Go to next sibling item */
@@ -435,18 +422,17 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char*
   iupgtkGetColor(iupAttribGetStr(ih, "FGCOLOR"), &color);
 
   /* set the attributes of the new node */
+  gtk_tree_store_set(store, &iterNewItem, IUPGTK_TREE_HAS_IMAGE, FALSE,
+                                          IUPGTK_TREE_HAS_IMAGE_EXPANDED, FALSE,
+                                          IUPGTK_TREE_TITLE, title,
+                                          IUPGTK_TREE_KIND, kind,
+                                          IUPGTK_TREE_COLOR, &color, -1);
+
   if (kind == ITREE_LEAF)
-    gtk_tree_store_set(store, &iterNewItem, IUPGTK_TREE_IMAGE_LEAF, iupImageGetImage("IMGLEAF", ih, 0, "TREEIMAGELEAF"),
-                                                  IUPGTK_TREE_KIND, ITREE_LEAF,
-                                                  IUPGTK_TREE_TITLE, title,
-                                                 IUPGTK_TREE_COLOR, &color, -1);
+    gtk_tree_store_set(store, &iterNewItem, IUPGTK_TREE_IMAGE, ih->data->def_image_leaf, -1);
   else
-    gtk_tree_store_set(store, &iterNewItem, IUPGTK_TREE_IMAGE_COLLAPSED, iupImageGetImage("IMGCOLLAPSED", ih, 0, "TREEIMAGECOLLAPSED"),
-                                                 IUPGTK_TREE_IMAGE_LEAF, iupImageGetImage("IMGCOLLAPSED", ih, 0, "TREEIMAGECOLLAPSED"),
-                                             IUPGTK_TREE_IMAGE_EXPANDED, iupImageGetImage("IMGEXPANDED",  ih, 0, "TREEIMAGEEXPANDED"),
-                                                       IUPGTK_TREE_KIND, ITREE_BRANCH,
-                                                       IUPGTK_TREE_TITLE, title,
-                                                      IUPGTK_TREE_COLOR, &color, -1);
+    gtk_tree_store_set(store, &iterNewItem, IUPGTK_TREE_IMAGE, ih->data->def_image_collapsed,
+                                            IUPGTK_TREE_IMAGE_EXPANDED, ih->data->def_image_expanded, -1);
 
   if (kindPrev == ITREE_BRANCH && add)
     iterParent = iterPrev;
@@ -477,11 +463,12 @@ static void gtkTreeAddRootNode(Ihandle* ih)
   iupgtkGetColor(iupAttribGetStr(ih, "FGCOLOR"), &color);
 
   gtk_tree_store_append(store, &iterRoot, NULL);  /* root node */
-  gtk_tree_store_set(store, &iterRoot, IUPGTK_TREE_IMAGE_COLLAPSED, iupImageGetImage("IMGCOLLAPSED", ih, 0, "TREEIMAGECOLLAPSED"),
-                                            IUPGTK_TREE_IMAGE_LEAF, iupImageGetImage("IMGCOLLAPSED", ih, 0, "TREEIMAGECOLLAPSED"),
-                                        IUPGTK_TREE_IMAGE_EXPANDED, iupImageGetImage("IMGEXPANDED",  ih, 0, "TREEIMAGEEXPANDED"),
-                                                  IUPGTK_TREE_KIND, ITREE_BRANCH,
-                                                 IUPGTK_TREE_COLOR, &color, -1);
+  gtk_tree_store_set(store, &iterRoot, IUPGTK_TREE_IMAGE, ih->data->def_image_collapsed,
+                                       IUPGTK_TREE_HAS_IMAGE, FALSE,
+                                       IUPGTK_TREE_IMAGE_EXPANDED, ih->data->def_image_expanded,
+                                       IUPGTK_TREE_HAS_IMAGE_EXPANDED, FALSE,
+                                       IUPGTK_TREE_KIND, ITREE_BRANCH,
+                                       IUPGTK_TREE_COLOR, &color, -1);
 
   path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iterRoot);
   /* Starting node */
@@ -775,7 +762,7 @@ static int gtkTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
   int curDepth, newDepth;
   GtkTreeIter iterBrotherItem, iterRoot;
   GtkTreeIter iterItem = gtkTreeFindNodeFromString(ih, name_id);
-  GtkTreeIter iterFoundParent;
+  GtkTreeIter iterParent;
 
   if (!iterItem.stamp)
     return 0;
@@ -798,21 +785,23 @@ static int gtkTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
     gtk_tree_model_iter_next(model, &iterBrotherItem);
     iterBrotherItem = gtkTreeFindNewBrother(ih, model, iterBrotherItem);
 
-    /* Setting the new parent (iterFoundParent) */
-    gtkTreeFindParentNode(model, iterBrotherItem, iterRoot, &iterFoundParent);
+    if (!gtk_tree_model_iter_parent(model, &iterParent, &iterBrotherItem))
+      return 0;
   }
   else if (curDepth > newDepth)  /* Bottom -> Up */
   {
+    GtkTreeIter iterNextParent;
     /* When the new depth is less than the current depth, 
     simply define a new parent to the node */
     ih->data->id_control = curDepth - newDepth + 1;  /* add 1 (one) to reach the level of its new parent */
 
     /* Starting the search by the parent of the current node */
-    iterFoundParent = iterItem;
+    iterParent = iterItem;
     while(ih->data->id_control != 0)
     {
       /* Setting the new parent */
-      gtkTreeFindParentNode(model, iterFoundParent, iterRoot, &iterFoundParent);
+      gtk_tree_model_iter_parent(model, &iterNextParent, &iterParent);
+      iterParent = iterNextParent;
       ih->data->id_control--;
     }
   }
@@ -820,11 +809,11 @@ static int gtkTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
     return 0;
 
   /* without parent, nothing to do */
-  if(iterFoundParent.user_data == NULL)
+  if(iterParent.user_data == NULL)
     return 0;
 
   /* Copying the node and its children to the new position */
-  gtkTreeCopyBranch(ih, iterItem, iterFoundParent);
+  gtkTreeCopyBranch(ih, iterItem, iterParent);
 
   /* Deleting the node of its old position */
   gtk_tree_store_remove(GTK_TREE_STORE(model), &iterItem);
@@ -1145,6 +1134,8 @@ static int gtkTreeSetValueAttrib(Ihandle* ih, const char* value)
     gtkTreeFindCurrentVisibleNode(ih, model, iterRoot, iterNext);
 
     ih->data->id_control += 10;  /* Down 10 lines */
+//    if (ih->data->id_control > count)
+//      ih->data->id_control = count-1;
 
     iterNext = gtkTreeFindNewVisibleNode(ih, model, iterRoot);
     pathNext = gtk_tree_model_get_path(model, &iterNext);
@@ -1444,72 +1435,94 @@ static int gtkTreeSetRenameAttrib(Ihandle* ih, const char* name_id, const char* 
 
 static int gtkTreeSetImageExpandedAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
+  int kind;
   GtkTreeStore*  store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
-  GdkPixbuf* pixExpand = iupImageGetImage(value, ih, 0, "TREEIMAGE");
+  GdkPixbuf* pixExpand = iupImageGetImage(value, ih, 0, "IMAGE");
   GtkTreeIter iterItem = gtkTreeFindNodeFromString(ih, name_id);
   if (!iterItem.stamp)
     return 0;
 
-  gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_IMAGE_EXPANDED, pixExpand, -1);
+  gtk_tree_model_get(GTK_TREE_MODEL(store), &iterItem, IUPGTK_TREE_KIND, &kind, -1);
+
+  if (kind == ITREE_BRANCH)
+  {
+    if (pixExpand)
+      gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_IMAGE_EXPANDED, pixExpand, 
+                                           IUPGTK_TREE_HAS_IMAGE_EXPANDED, TRUE, -1);
+    else
+      gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_IMAGE_EXPANDED, ih->data->def_image_expanded, 
+                                           IUPGTK_TREE_HAS_IMAGE_EXPANDED, FALSE, -1);
+  }
 
   return 1;
 }
 
 static int gtkTreeSetImageAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  GtkTreeStore*  store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
-  GdkPixbuf*  pixImage = iupImageGetImage(value, ih, 0, "TREEIMAGE");
+  GtkTreeStore* store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
+  GdkPixbuf* pixImage = iupImageGetImage(value, ih, 0, "IMAGE");
   GtkTreeIter iterItem = gtkTreeFindNodeFromString(ih, name_id);
   if (!iterItem.stamp)
     return 0;
 
-  gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_IMAGE_COLLAPSED, pixImage, -1);
-  gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_IMAGE_LEAF, pixImage, -1);
+  if (pixImage)
+  {
+    gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_IMAGE, pixImage, 
+                                         IUPGTK_TREE_HAS_IMAGE, TRUE, -1);
+  }
+  else
+  {
+    int kind;
+    gtk_tree_model_get(GTK_TREE_MODEL(store), &iterItem, IUPGTK_TREE_KIND, &kind, -1);
+    if (kind == ITREE_BRANCH)
+      gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_IMAGE, ih->data->def_image_collapsed, 
+                                           IUPGTK_TREE_HAS_IMAGE, FALSE, -1);
+    else
+      gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_IMAGE, ih->data->def_image_leaf, 
+                                           IUPGTK_TREE_HAS_IMAGE, FALSE, -1);
+  }
 
   return 1;
 }
 
 static int gtkTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 {
-  GtkTreeModel*  model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-  GdkPixbuf* pixExpand = iupImageGetImage(value, ih, 0, "TREEIMAGEEXPANDED");
   GtkTreeIter iterRoot;
-  int mode = IUPGTK_TREE_IMAGE_EXPANDED;
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  ih->data->def_image_expanded = iupImageGetImage(value, ih, 0, "IMAGEBRANCHEXPANDED");
 
   gtk_tree_model_get_iter_first(model, &iterRoot);
 
   /* Update all images, starting at root node */
-  gtkTreeUpdateImages(model, iterRoot, pixExpand, mode);
+  gtkTreeUpdateImages(ih, model, iterRoot, ITREE_UPDATEIMAGE_EXPANDED);
 
   return 1;
 }
 
 static int gtkTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 {
-  GtkTreeModel*  model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-  GdkPixbuf* pixCollap = iupImageGetImage(value, ih, 0, "TREEIMAGECOLLAPSED");
   GtkTreeIter iterRoot;
-  int mode = IUPGTK_TREE_IMAGE_COLLAPSED;
+  GtkTreeModel*  model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  ih->data->def_image_collapsed = iupImageGetImage(value, ih, 0, "IMAGEBRANCHCOLLAPSED");
 
   gtk_tree_model_get_iter_first(model, &iterRoot);
 
   /* Update all images, starting at root node */
-  gtkTreeUpdateImages(model, iterRoot, pixCollap, mode);
+  gtkTreeUpdateImages(ih, model, iterRoot, ITREE_UPDATEIMAGE_COLLAPSED);
 
   return 1;
 }
 
 static int gtkTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
 {
-  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-  GdkPixbuf*  pixLeaf = iupImageGetImage(value, ih, 0, "TREEIMAGELEAF");
   GtkTreeIter iterRoot;
-  int mode = IUPGTK_TREE_IMAGE_LEAF;
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  ih->data->def_image_leaf = iupImageGetImage(value, ih, 0, "IMAGELEAF");
 
   gtk_tree_model_get_iter_first(model, &iterRoot);
 
   /* Update all images, starting at root node */
-  gtkTreeUpdateImages(model, iterRoot, pixLeaf, mode);
+  gtkTreeUpdateImages(ih, model, iterRoot, ITREE_UPDATEIMAGE_LEAF);
 
   return 1;
 }
@@ -2005,7 +2018,7 @@ static int gtkTreeMapMethod(Ihandle* ih)
   GtkTreeSelection* selection;
   GtkTreeViewColumn *column;
 
-  store = gtk_tree_store_new(7, GDK_TYPE_PIXBUF, GDK_TYPE_PIXBUF, GDK_TYPE_PIXBUF,
+  store = gtk_tree_store_new(9, GDK_TYPE_PIXBUF, G_TYPE_BOOLEAN, GDK_TYPE_PIXBUF, G_TYPE_BOOLEAN,
                                 G_TYPE_STRING, G_TYPE_INT, GDK_TYPE_COLOR, PANGO_TYPE_FONT_DESCRIPTION, G_TYPE_POINTER);
 
   ih->handle = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
@@ -2024,9 +2037,9 @@ static int gtkTreeMapMethod(Ihandle* ih)
 
   renderer_img = gtk_cell_renderer_pixbuf_new();
   gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(column), renderer_img, FALSE);
-  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(column), renderer_img, "pixbuf", IUPGTK_TREE_IMAGE_LEAF,
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(column), renderer_img, "pixbuf", IUPGTK_TREE_IMAGE,
                                                               "pixbuf-expander-open", IUPGTK_TREE_IMAGE_EXPANDED,
-                                                            "pixbuf-expander-closed", IUPGTK_TREE_IMAGE_COLLAPSED, NULL);
+                                                            "pixbuf-expander-closed", IUPGTK_TREE_IMAGE, NULL);
   iupAttribSetStr(ih, "_IUPGTK_RENDERER_IMG", (char*)renderer_img);
 
   renderer_txt = gtk_cell_renderer_text_new();
@@ -2100,6 +2113,11 @@ static int gtkTreeMapMethod(Ihandle* ih)
   gtk_widget_realize((GtkWidget*)scrolled_window);
   gtk_widget_realize(ih->handle);
 
+  /* Initialize the default images */
+  ih->data->def_image_leaf = iupImageGetImage("IMGLEAF", ih, 0, "IMAGELEAF");
+  ih->data->def_image_collapsed = iupImageGetImage("IMGCOLLAPSED", ih, 0, "IMAGEBRANCHCOLLAPSED");
+  ih->data->def_image_expanded = iupImageGetImage("IMGEXPANDED", ih, 0, "IMAGEBRANCHEXPANDED");
+
   gtkTreeAddRootNode(ih);
 
   /* configure for DRAG&DROP of files */
@@ -2129,7 +2147,7 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   /* IupTree Attributes - IMAGES */
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, gtkTreeSetImageAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "IMAGEEXPANDED", NULL, gtkTreeSetImageExpandedAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IMAGEBRANCHEXPANDED", NULL, gtkTreeSetImageExpandedAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "IMAGELEAF",            NULL, gtkTreeSetImageLeafAttrib, IUPAF_SAMEASSYSTEM, "IMGLEAF", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEBRANCHCOLLAPSED", NULL, gtkTreeSetImageBranchCollapsedAttrib, IUPAF_SAMEASSYSTEM, "IMGCOLLAPSED", IUPAF_NO_INHERIT);
@@ -2159,4 +2177,4 @@ void iupdrvTreeInitClass(Iclass* ic)
 }
 
 // review gtk_tree_selection_set_mode
-// review gtkTreeFindParentNode
+// gtk_tree_view_get_cursor(GtkTreeView *tree_view, GtkTreePath **path, GtkTreeViewColumn **focus_column);

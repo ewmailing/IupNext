@@ -15,6 +15,10 @@ extern "C" {
 #define ITREE_BRANCH        0
 #define ITREE_LEAF          1
 
+#define ITREE_UPDATEIMAGE_LEAF      1
+#define ITREE_UPDATEIMAGE_COLLAPSED 2
+#define ITREE_UPDATEIMAGE_EXPANDED  3
+
 void iupdrvTreeInitClass(Iclass* ic);
 void iupTreeUpdateImages(Ihandle *ih);
 void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* title, int add);
@@ -24,11 +28,11 @@ struct _IcontrolData
 {
   int tree_ctrl;    /* Defines   tree_ctrl: active or not */
   int tree_shift;   /* Defines  tree_shift: active or not */
-  int show_rename;  /* Defines show_rename: active or not (only MOTIF) */
+  int show_rename;  /* Defines show_rename: active or not */
 
-  int image_leaf;       /* Default image leaf */
-  int image_collapsed;  /* Default image collapsed */
-  int image_expanded;   /* Default image expanded */
+  void* def_image_leaf;       /* Default image leaf */
+  void* def_image_collapsed;  /* Default image collapsed */
+  void* def_image_expanded;   /* Default image expanded */
 
   int rename_caret;      
   int rename_selection;

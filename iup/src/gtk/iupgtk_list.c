@@ -76,8 +76,9 @@ static int gtkListConvertXYToPos(Ihandle* ih, int x, int y)
     if (gtk_tree_view_get_dest_row_at_pos((GtkTreeView*)ih->handle, x, y, &path, NULL))
     {
       int* indices = gtk_tree_path_get_indices(path);
+      int pos = indices[0]+1;  /* IUP starts at 1 */
       gtk_tree_path_free (path);
-      return indices[0]+1;  /* IUP starts at 1 */
+      return pos;
     }
   }
 

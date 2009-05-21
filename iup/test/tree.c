@@ -253,7 +253,7 @@ static int nodeinfo(Ihandle* ih)
     printf("  STATE=%s\n", IupGetAttribute(tree, "STATE"));
   printf("  IMAGE=%s\n", IupGetAttribute(tree, "IMAGE"));
   if (branch)
-    printf("  IMAGEEXPANDED=%s\n", IupGetAttribute(tree, "IMAGEEXPANDED"));
+    printf("  IMAGEBRANCHEXPANDED=%s\n", IupGetAttribute(tree, "IMAGEBRANCHEXPANDED"));
   printf("  MARKED=%s\n", IupGetAttribute(tree, "MARKED"));
   printf("  COLOR=%s\n", IupGetAttribute(tree, "COLOR"));
   printf("  PARENT=%s\n", IupGetAttribute(tree, "PARENT"));
@@ -276,14 +276,15 @@ static int rightclick_cb(Ihandle* ih, int id)
     IupItem ("Insert Branch","insertbranch"),
     IupItem ("Remove Node","removenode"),
     IupItem ("Remove Children","removechild"),
-    IupSubmenu("Selection", IupMenu(
+    IupSubmenu("Focus", IupMenu(
       IupItem ("ROOT", "selectnode"),
       IupItem ("LAST", "selectnode"),
       IupItem ("PGUP", "selectnode"),
       IupItem ("PGDN", "selectnode"),
       IupItem ("NEXT", "selectnode"),
       IupItem ("PREVIOUS", "selectnode"),
-      IupSeparator(),
+      NULL)),
+    IupSubmenu("Mark", IupMenu(
       IupItem ("INVERT", "selectnode"),
       IupItem ("BLOCK", "selectnode"),
       IupItem ("CLEARALL", "selectnode"),
@@ -311,6 +312,17 @@ static int rightclick_cb(Ihandle* ih, int id)
   return IUP_DEFAULT;
 }
 
+static int active_cb(Ihandle *ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  Ihandle* tree = IupGetChild(IupGetChild(dlg, 0), 0);
+  if (IupGetInt(tree, "ACTIVE"))
+    IupSetAttribute(tree, "ACTIVE", "NO");
+  else
+    IupSetAttribute(tree, "ACTIVE", "YES");
+  return IUP_DEFAULT;
+}
+
 /* Initializes IupTree and registers callbacks */
 static void init_tree(void)
 {
@@ -331,8 +343,8 @@ static void init_tree(void)
   IupSetCallback(tree, "KILLFOCUS_CB", (Icallback) killfocus_cb);
   IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
   //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
-  IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
-  IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
+  //IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
+  //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
 
   IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
 
@@ -355,8 +367,9 @@ static void init_tree(void)
 /* Initializes the dlg */
 static void init_dlg(void)
 {
+  Ihandle* but;
   Ihandle* tree = IupGetHandle("tree");
-  Ihandle* box = IupVbox(IupHbox(tree, IupButton("Test", NULL), NULL), NULL);
+  Ihandle* box = IupHbox(tree, but = IupButton("Active", NULL), NULL);
   Ihandle* dlg = IupDialog(box) ;
   IupSetAttribute(dlg,  "TITLE",   "IupTree");
   IupSetAttribute(box,  "MARGIN",  "10x10");
@@ -365,6 +378,7 @@ static void init_dlg(void)
 //  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
+  IupSetCallback(but, "ACTION", active_cb);
   IupSetHandle("dlg", dlg);
 }
 
@@ -407,6 +421,7 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "COLOR8", "92 92 255");
   IupSetAttribute(tree, "TITLEFONT8", "Courier, 14");
   IupSetAttributeHandle(tree, "IMAGE8", load_image_LogoTecgraf());
+  IupSetAttribute(tree, "IMAGE6", IupGetAttribute(tree, "IMAGE8"));
 }
 
 void TreeTest(void)
