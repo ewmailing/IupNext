@@ -312,14 +312,27 @@ static int rightclick_cb(Ihandle* ih, int id)
   return IUP_DEFAULT;
 }
 
-static int active_cb(Ihandle *ih)
+static int active(Ihandle *ih)
 {
-  Ihandle* dlg = IupGetDialog(ih);
-  Ihandle* tree = IupGetChild(IupGetChild(dlg, 0), 0);
+  Ihandle* tree = IupGetHandle("tree");
   if (IupGetInt(tree, "ACTIVE"))
     IupSetAttribute(tree, "ACTIVE", "NO");
   else
     IupSetAttribute(tree, "ACTIVE", "YES");
+  return IUP_DEFAULT;
+}
+
+static int next(Ihandle *ih)
+{
+  Ihandle* tree = IupGetHandle("tree");
+  IupSetAttribute(tree, "VALUE",  "NEXT");
+  return IUP_DEFAULT;
+}
+
+static int prev(Ihandle *ih)
+{
+  Ihandle* tree = IupGetHandle("tree");
+  IupSetAttribute(tree, "VALUE",  "PREVIOUS");
   return IUP_DEFAULT;
 }
 
@@ -367,9 +380,12 @@ static void init_tree(void)
 /* Initializes the dlg */
 static void init_dlg(void)
 {
-  Ihandle* but;
+  Ihandle* butactv, *butnext, *butprev;
   Ihandle* tree = IupGetHandle("tree");
-  Ihandle* box = IupHbox(tree, but = IupButton("Active", NULL), NULL);
+  Ihandle* box = IupHbox(tree, IupVbox(butactv = IupButton("Active", NULL), 
+                                       butnext = IupButton("Next", NULL), 
+                                       butprev = IupButton("Prev", NULL), 
+                                       NULL), NULL);
   Ihandle* dlg = IupDialog(box) ;
   IupSetAttribute(dlg,  "TITLE",   "IupTree");
   IupSetAttribute(box,  "MARGIN",  "10x10");
@@ -378,7 +394,9 @@ static void init_dlg(void)
 //  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
-  IupSetCallback(but, "ACTION", active_cb);
+  IupSetCallback(butactv, "ACTION", active);
+  IupSetCallback(butnext, "ACTION", next);
+  IupSetCallback(butprev, "ACTION", prev);
   IupSetHandle("dlg", dlg);
 }
 

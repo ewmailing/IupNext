@@ -182,7 +182,7 @@ static Widget motTreeGetNextNode(Ihandle* ih, Widget wItem)
   numBrothers = XmContainerGetItemChildren(ih->handle, wItemParent, &wBrothersTree);
   wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
 
-  while(wBrothersTree[i] != wItem)
+  while(i < numBrothers && wBrothersTree[i] != wItem)
     i++;
 
   if(i >= numBrothers-1)
@@ -617,22 +617,25 @@ static Widget motTreeFindNode(Ihandle* ih, WidgetList itemList, int numItems)
   return itemList[hasItem];
 }
 
+static Widget motTreeGetFocusNode(Ihandle* ih)
+{
+  Widget wItem = XmGetFocusWidget(ih->handle);
+  if (wItem && XtParent(wItem) == ih->handle) /* is a node */
+    return wItem;
+
+  return (Widget)iupAttribGet(ih, "_IUPTREE_LAST_FOCUS");
+}
+
 static Widget motTreeFindNodeFromString(Ihandle* ih, const char* id_string)
 {
   if (id_string[0])
   {
-    Widget wListOfItems[1]; 
-    wListOfItems[0] = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
+    Widget wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
     iupStrToInt(id_string, &ih->data->id_control);
-    return motTreeFindNode(ih, wListOfItems, 1);
+    return motTreeFindNode(ih, &wRoot, 1);
   }
   else
-  {
-    /* Get the first selected object */
-    WidgetList wListOfItems = NULL;
-    XtVaGetValues(ih->handle, XmNselectedObjects, &wListOfItems, NULL);
-    return wListOfItems[0];
-  }
+    return motTreeGetFocusNode(ih);
 }
 
 static void motTreeFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
@@ -640,6 +643,10 @@ static void motTreeFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean 
   unsigned char selpol;
   Widget wItem = XmGetFocusWidget(w);
   Widget wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
+
+  if (XtParent(wItem) == w) /* is a node */
+    iupAttribSetStr(ih, "_IUPTREE_LAST_FOCUS", (char*)wItem);
+
   if (wItem == NULL || wItem == wRoot)
   {
     iupmotFocusChangeEvent(w, ih, evt, cont);
@@ -650,7 +657,7 @@ static void motTreeFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean 
   if (selpol != XmSINGLE_SELECT)
     return;
 
-  if (evt->type == FocusIn)
+  if (evt->type == FocusIn && !iupStrBoolean(IupGetGlobal("CONTROLKEY")))
   {
     XtVaSetValues(w, XmNselectedObjects,  NULL, NULL);
     XtVaSetValues(w, XmNselectedObjectCount, 0, NULL);
@@ -1123,143 +1130,176 @@ static char* motTreeGetKindAttrib(Ihandle* ih, const char* name_id)
 
 static char* motTreeGetValueAttrib(Ihandle* ih)
 {
-  Widget wRoot;
-  WidgetList wListOfItems = NULL;
-  char* id = iupStrGetMemory(10);
-  int countItems;
+  Widget wRoot, wItem;
+  char* id;
   
-  /* get the selected objects */
-  XtVaGetValues(ih->handle, XmNselectedObjects, &wListOfItems,
-                        XmNselectedObjectCount,   &countItems, NULL);
-  if(!countItems)
+  wItem = motTreeGetFocusNode(ih);
+  if(!wItem)
     return 0;
 
   wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
 
   ih->data->id_control = -1;
-  motTreeFindNodeFromID(ih, &wRoot, 1, wListOfItems[0]);  /* use only the first element (base) of the selected objects array */
+  motTreeFindNodeFromID(ih, &wRoot, 1, wItem);  /* use only the first element (base) of the selected objects array */
+  id = iupStrGetMemory(10);
   sprintf(id, "%d", ih->data->id_control);
-
   return id;
 }
 
-/* Changes the selected node, starting from current branch
-- value: "ROOT", "LAST", "NEXT", "PREVIOUS", "INVERT",
-"BLOCK", "CLEARALL", "MARKALL", "INVERTALL"
-or id of the node that will be the current  */
+static int motTreeSetMarkAttrib(Ihandle* ih, const char* value)
+{
+  if(iupStrEqualNoCase(value, "CLEARALL"))
+    motTreeContainerDeselectAll(ih);
+  else if(iupStrEqualNoCase(value, "MARKALL"))
+    motTreeContainerSelectAll(ih);
+  else if(iupStrEqualNoCase(value, "INVERTALL")) /* INVERTALL *MUST* appear before INVERT, or else INVERTALL will never be called. */
+  {
+    Widget wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
+    motTreeInvertAllNodeMarking(ih, &wRoot, 1);
+  }
+  else if(iupStrEqualPartial(value, "INVERT"))
+  {
+    unsigned char isSelected;
+    Widget wItem = motTreeFindNodeFromString(ih, &value[strlen("INVERT")]);
+    if (!wItem)  
+      return 0;
+
+    XtVaGetValues(wItem, XmNvisualEmphasis, &isSelected, NULL);
+
+    if(isSelected == XmSELECTED)
+      XtVaSetValues(wItem, XmNvisualEmphasis, XmNOT_SELECTED, NULL);
+    else
+      XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
+  }
+  else if(iupStrEqualNoCase(value, "BLOCK"))
+  {
+    Widget wItem = (Widget)iupAttribGet(ih, "_IUPTREE_STARTINGITEM");
+    Widget wFocusItem = motTreeGetFocusNode(ih);
+    if(!wFocusItem || !wItem)
+      return 0;
+    //motTreeSelectBlock(ih, wFocusItem, wItem);
+  }
+  else
+  {
+    Widget wItem1, wItem2;
+    char str1[50], str2[50];
+    if (iupStrToStrStr(value, str1, str2, '-')!=2)
+      return 0;
+
+    wItem1 = motTreeFindNodeFromString(ih, str1);
+    if (!wItem1)  
+      return 0;
+    wItem2 = motTreeFindNodeFromString(ih, str2);
+    if (!wItem2)  
+      return 0;
+
+    //motTreeSelectBlock(ih, wItem1, wItem2);
+  }
+
+  return 1;
+} 
+
+static void motTreeSelectNode(Ihandle* ih, Widget wItem)
+{
+  XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
+  XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
+
+  XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
+}
+
 static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
 {
-  Widget wRoot, wSelectedItem = NULL;
-  WidgetList wListOfItems = NULL;
-  int countItems;
+  Widget wRoot, wSelectedItem;
 
-  /* get the selected objects */
-  XtVaGetValues(ih->handle, XmNselectedObjects, &wListOfItems,
-                        XmNselectedObjectCount,   &countItems, NULL);
+  if (motTreeSetMarkAttrib(ih, value))
+    return 0;
 
   wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
 
-  if(countItems)
-    wSelectedItem = wListOfItems[0];
-
-  if(iupStrEqualNoCase(value, "ROOT"))
-  {
-    XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
-    XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
-
-    XtVaSetValues(wRoot, XmNvisualEmphasis, XmSELECTED, NULL);
+  if (iupStrEqualNoCase(value, "ROOT"))
     wSelectedItem = wRoot;
-  }
   else if(iupStrEqualNoCase(value, "LAST"))
-  {
-    Widget wLast = motTreeGetLastPrevNode(ih, wRoot);
-
-    XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
-    XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
-
-    XtVaSetValues(wLast, XmNvisualEmphasis, XmSELECTED, NULL);
-    wSelectedItem = wLast;
-  }
+    wSelectedItem = motTreeGetLastPrevNode(ih, wRoot);
   else if(iupStrEqualNoCase(value, "PGUP"))
   {
-    Widget wPrev;
-    ih->data->id_control = -1;
+    Widget wItem = motTreeGetFocusNode(ih);
+    if(!wItem)
+      return 0;
 
-    wPrev = motTreeFindCurrentVisibleNode(ih, &wRoot, 1, wSelectedItem);
+    ih->data->id_control = -1;
+    motTreeFindCurrentVisibleNode(ih, &wRoot, 1, wItem);
     ih->data->id_control -= 10;  /* Up 10 lines */
 
     if(ih->data->id_control < 0)
       ih->data->id_control = 0;  /* Begin of tree = Root id */
 
-    wPrev = motTreeFindNewVisibleNode(ih, &wRoot, 1);
-
-    XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
-    XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
-
-    XtVaSetValues(wPrev, XmNvisualEmphasis, XmSELECTED, NULL);
-    wSelectedItem = wPrev;
+    wSelectedItem = motTreeFindNewVisibleNode(ih, &wRoot, 1);
   }
   else if(iupStrEqualNoCase(value, "PGDN"))
   {
-    Widget wNext;
-    ih->data->id_control = -1;
+    Widget wNext, wItem;
 
-    wNext = motTreeFindCurrentVisibleNode(ih, &wRoot, 1, wSelectedItem);
+    wItem = motTreeGetFocusNode(ih);
+    if(!wItem)
+      return 0;
+
+    ih->data->id_control = -1;
+    motTreeFindCurrentVisibleNode(ih, &wRoot, 1, wItem);
     ih->data->id_control += 10;  /* Down 10 lines */
 
     wNext = motTreeFindNewVisibleNode(ih, &wRoot, 1);
 
-    if(ih->data->id_control >= 0)
+    if (ih->data->id_control >= 0)
       wNext = motTreeGetLastPrevNode(ih, wRoot);   /* End of tree = last node */
  
-    XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
-    XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
-
-    XtVaSetValues(wNext, XmNvisualEmphasis, XmSELECTED, NULL);
     wSelectedItem = wNext;
   }
   else if(iupStrEqualNoCase(value, "NEXT"))
   {
-    Widget wNext;
+    Widget wNext, wItem;
     WidgetList wChildrenTree = NULL;
     int numChildren;
     unsigned char itemState;
 
-    XtVaGetValues(wSelectedItem, XmNoutlineState, &itemState, NULL);
+    wItem = motTreeGetFocusNode(ih);
+    if (!wItem)
+      return 0;
 
-    numChildren = XmContainerGetItemChildren(ih->handle, wSelectedItem, &wChildrenTree);
+    XtVaGetValues(wItem, XmNoutlineState, &itemState, NULL);
 
-    if(itemState == XmEXPANDED && numChildren)
+    numChildren = XmContainerGetItemChildren(ih->handle, wItem, &wChildrenTree);
+
+    if (itemState == XmEXPANDED && numChildren)
       wNext = wChildrenTree[0];  /* firstchild of item selected */
     else
-      wNext = motTreeGetNextNode(ih, wSelectedItem);
-
-    XtVaSetValues(ih->handle, XmNselectedObjects, wNext, NULL);
-    XtVaSetValues(ih->handle, XmNselectedObjectCount, 1, NULL);
+      wNext = motTreeGetNextNode(ih, wItem);
     
-    XtVaSetValues(wNext, XmNvisualEmphasis, XmSELECTED, NULL);
     wSelectedItem = wNext;
     if (wChildrenTree) XtFree((char*)wChildrenTree);
   }
   else if(iupStrEqualNoCase(value, "PREVIOUS"))
   {
-    Widget wPrev, wItemParent;
+    Widget wPrev = NULL, wItemParent, wItem;
     WidgetList wBrothersTree = NULL;
     int numBrothers, i=0;
 
-    if(wSelectedItem != (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM"))
+    wItem = motTreeGetFocusNode(ih);
+    if(!wItem)
+      return 0;
+
+    if (wItem != wRoot)
     {
-      XtVaGetValues(wSelectedItem, XmNentryParent, &wItemParent, NULL);
+      XtVaGetValues(wItem, XmNentryParent, &wItemParent, NULL);
       numBrothers = XmContainerGetItemChildren(ih->handle, wItemParent, &wBrothersTree);
 
-      if(numBrothers && wBrothersTree[0] == wSelectedItem)
+      if(numBrothers && wBrothersTree[0] == wItem)
       {
         /* First child is selected. So, its parent will be the new selected */
         wPrev = wItemParent;
       }
-      else
+      else if (numBrothers)
       {
-        while(wBrothersTree[i] != wSelectedItem)
+        while(wBrothersTree[i] != wItem)
           i++;
 
         wPrev = motTreeGetLastPrevNode(ih, wBrothersTree[i-1]);
@@ -1268,58 +1308,20 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
       if (wBrothersTree) XtFree((char*)wBrothersTree);
     }
     else
-    {
-      wPrev = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
-    }
+      wPrev = wRoot;
 
-    XtVaSetValues(ih->handle, XmNselectedObjects, wPrev, NULL);
-    XtVaSetValues(ih->handle, XmNselectedObjectCount, 1, NULL);
-
-    XtVaSetValues(wPrev, XmNvisualEmphasis, XmSELECTED, NULL);
     wSelectedItem = wPrev;
   }
-  else if(iupStrEqualNoCase(value, "CLEARALL"))
-  {
-    motTreeContainerDeselectAll(ih);
-  }
-  else if(iupStrEqualNoCase(value, "MARKALL"))
-  {
-    motTreeContainerSelectAll(ih);
-  }
-  else if(iupStrEqualNoCase(value, "INVERTALL"))
-  {
-    /* INVERTALL *MUST* appear before INVERT, or else INVERTALL will never be called. */
-    motTreeInvertAllNodeMarking(ih, &wRoot, 1);
-  }
-  else if(iupStrEqualPartial(value, "INVERT"))
-  {
-    /* iupStrEqualPartial allows the use of "INVERTid" form */
-    unsigned char isSelected;
-    Widget wNewSelItem = motTreeFindNodeFromString(ih, &value[strlen("INVERT")]);
-    if (!wNewSelItem)  
-      return 0;
-
-    XtVaGetValues(wNewSelItem, XmNvisualEmphasis, &isSelected, NULL);
-
-    if(isSelected == XmSELECTED)
-      XtVaSetValues(wNewSelItem, XmNvisualEmphasis, XmNOT_SELECTED, NULL);
-    else
-      XtVaSetValues(wNewSelItem, XmNvisualEmphasis, XmSELECTED, NULL);
-  }
   else
-  {
-    Widget wNewSelItem = motTreeFindNodeFromString(ih, value);
-    if (!wNewSelItem)  
-      return 0;
+    wSelectedItem = motTreeFindNodeFromString(ih, value);
 
-    XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
-    XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
+  if (!wSelectedItem)  
+    return 0;
 
-    XtVaSetValues(wNewSelItem, XmNvisualEmphasis, XmSELECTED, NULL);
-    wSelectedItem = wNewSelItem;
-  }
+  //if (selection==single)
+    motTreeSelectNode(ih, wSelectedItem);
 
-  /* traverse to the current selected item */
+  /* set the focus to the item */
   XmProcessTraversal(wSelectedItem, XmTRAVERSE_CURRENT);
 
   iupAttribSetInt(ih, "_IUPTREE_OLDVALUE", IupGetInt(ih, "VALUE"));
@@ -1327,37 +1329,15 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
   return 0;
 } 
 
-static char* motTreeGetStartingAttrib(Ihandle* ih)
-{
-  Widget wItem = (Widget)iupAttribGet(ih, "_IUPTREE_STARTINGITEM");
-  Widget wRoot;
-  char* id = iupStrGetMemory(10);
-
-  wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
-
-  ih->data->id_control = -1;
-  motTreeFindNodeFromID(ih, &wRoot, 1, wItem);
-
-  sprintf(id, "%d", ih->data->id_control);
-
-  return id;
-}
-
 static int motTreeSetStartingAttrib(Ihandle* ih, const char* name_id)
 {
   Widget wItem = motTreeFindNodeFromString(ih, name_id);
   if (!wItem)  
     return 0;
 
-  /* unselect the old value */
-  XtVaSetValues((Widget)iupAttribGet(ih, "_IUPTREE_STARTINGITEM"), XmNvisualEmphasis, XmNOT_SELECTED, NULL);
-
-  /* set and select the new value */
   iupAttribSetStr(ih, "_IUPTREE_STARTINGITEM", (char*)wItem);
-  XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
-  XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
 
-  return 0;
+  return 1;
 }
 
 static char* motTreeGetMarkedAttrib(Ihandle* ih, const char* name_id)
@@ -2274,15 +2254,14 @@ static void motTreeButtonPressEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Bo
 
     if ((int)elapsed <= XtGetMultiClickTime(iupmot_display)) /* Double Click */
     {
-      WidgetList wListOfItems = NULL;
+      Widget wItem;
       Position xIcon;
-      int countItems;
 
-      XtVaGetValues(ih->handle, XmNselectedObjects, &wListOfItems, XmNselectedObjectCount, &countItems, NULL);
-      if(!countItems)
+      wItem = motTreeGetFocusNode(ih);
+      if(!wItem)
         return;
 
-      XtVaGetValues(wListOfItems[0], XmNx, &xIcon, NULL);
+      XtVaGetValues(wItem, XmNx, &xIcon, NULL);
 
       /* Double click over the Icon Gadget label text area */
       if(evt->x > xIcon+21)
@@ -2473,9 +2452,10 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttributeId(ic, "MARKED",   motTreeGetMarkedAttrib,   motTreeSetMarkedAttrib,   IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "MARK",    NULL,    motTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute  (ic, "VALUE",    motTreeGetValueAttrib,    motTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute  (ic, "STARTING", motTreeGetStartingAttrib, motTreeSetStartingAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "STARTING", NULL, motTreeSetStartingAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "DELNODE", NULL, motTreeSetDelNodeAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

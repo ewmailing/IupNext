@@ -12,6 +12,9 @@
 	color: #FF0000;
 	font-weight: bold;
 }
+.style3 {
+	color: #000000;
+}
 </style>
 </head>
 <body>
@@ -175,12 +178,13 @@ updated.</p>
     &quot;IMGEXPANDED&quot;. If BGCOLOR is set the image is automatically 
 updated.</p>
 <h3><a name="focus">Focus Node</a></h3>
-<p class="style1"><strong>VALUE</strong> (<font size="3">non inheritable</font>):
-  The focus node identifier. When changed the tree is scrolled so it becames visible. 
+<p><strong>VALUE</strong> (<font size="3">non inheritable</font>):
+  The focus node identifier. When changed the tree receives the focus, and it is scrolled so 
+the node becames visible. 
 Also accepts the values:</p>
 <blockquote>
-<p class="info" style="color: #FF0000">&quot;ROOT&quot;:
-      the root node<br>
+<p class="info"><span class="style3">&quot;ROOT&quot;:
+      the root node</span><br>
 &quot;LAST&quot;:
       the last node<br>
 &quot;PGUP&quot;:
@@ -193,12 +197,13 @@ following the focus node. If at the last does nothing <br>
 &quot;PREVIOUS&quot;: the previous node of the focus node. If at the root does nothing</p>
 </blockquote>
 <h3><a name="marks0">Marks</a></h3>
-<p class="style1">MARK (<font size="3">non inheritable</font>): Selects a range 
+<p><strong>MARK</strong> (write only) (<font size="3">non inheritable</font>): Selects a range 
 of nodes in the format &quot;star,end&quot; (%d-%d). Also accepts the values:</p>
 <blockquote>
-<p class="info" style="color: #FF0000">&quot;INVERTid&quot;:
+<p class="info"><span class="style3">&quot;INVERTid&quot;:
       Inverts the specified node mark state, where id is the specified node 
-identifier. If id is empty, then the focus node is used as reference node. <br>
+identifier. If id is empty, then the focus node is used as reference node. 
+</span> <br>
 &quot;BLOCK&quot;: Marks all nodes between the focus node and the initial block-marking 
 node defined by STARTING<br>
 &quot;CLEARALL&quot;:
@@ -232,9 +237,9 @@ SINGLE or MULTIPLE. Default: SINGLE.</p>
     marking adjacent nodes.
     Default:
     &quot;NO&quot;.</p>
-<p class="style1"><strong>STARTING</strong> (<font size="3">non inheritable</font>):
+<p><strong>STARTING</strong> (<font size="3">non inheritable</font>):
   Defines the initial node for the block 
-  marking. The value must be the node identifier.
+  marking, used when MARK=BLOCK. The value must be the node identifier.
     Default:
     0 (root node).</p>
 <h3><a name="action">Action</a>&nbsp; (<font size="3">write-only, non inheritable</font>)</h3>

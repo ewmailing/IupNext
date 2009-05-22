@@ -124,21 +124,14 @@ static HTREEITEM winTreeFindNode(Ihandle* ih, HTREEITEM hItem)
 
 static HTREEITEM winTreeFindNodeFromString(Ihandle* ih, const char* id_string)
 {
-  HTREEITEM item;
-
   if (id_string[0])
   {
+    HTREEITEM hRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
     iupStrToInt(id_string, &ih->data->id_control);
-
-    item = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
-
-    return winTreeFindNode(ih, item);
+    return winTreeFindNode(ih, hRoot);
   }
   else
-  {
-    item = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
-    return item;
-  }
+    return (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
 }
 
 /* Recursively, find a new brother for the item
@@ -1513,18 +1506,6 @@ static int winTreeSetMarkedAttrib(Ihandle* ih, const char* name_id, const char* 
   return 0;
 }
 
-static char* winTreeGetStartingAttrib(Ihandle* ih)
-{
-  HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
-  char* id = iupStrGetMemory(10);
-  
-  ih->data->id_control = -1;
-  winTreeFindNodeFromID(ih, hItemRoot, (HTREEITEM)iupAttribGet(ih, "_IUPTREE_STARTINGITEM"));
-  sprintf(id, "%d", ih->data->id_control);
-  
-  return id;
-}
-
 static int winTreeSetStartingAttrib(Ihandle* ih, const char* name_id)
 {
   HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
@@ -1532,9 +1513,8 @@ static int winTreeSetStartingAttrib(Ihandle* ih, const char* name_id)
     return 0;
 
   iupAttribSetStr(ih, "_IUPTREE_STARTINGITEM", (char*)hItem);
-  SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)winTreeFindNodeFromString(ih, name_id));
 
-  return 0;
+  return 1;
 }
 
 static char* winTreeGetValueAttrib(Ihandle* ih)
@@ -1553,105 +1533,17 @@ static char* winTreeGetValueAttrib(Ihandle* ih)
   return id;
 }
 
-/* Changes the selected node, starting from current branch
-   - value: "ROOT", "LAST", "NEXT", "PREVIOUS", "INVERT",
-            "BLOCK", "CLEARALL", "MARKALL", "INVERTALL"
-            or id of the node that will be the current  */
-static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
+static int winTreeSetMarkAttrib(Ihandle* ih, const char* value)
 {
-  HTREEITEM hItemSelected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
-
-  if(iupStrEqualNoCase(value, "ROOT"))
+  if(iupStrEqualNoCase(value, "BLOCK"))
   {
-    HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
-    
-    SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemRoot);
-    
-    return 0;
-  }
-  else if(iupStrEqualNoCase(value, "LAST"))
-  {
-    HTREEITEM hItemLast = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_LASTVISIBLE, 0);
-    
-    SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemLast);
-    
-    return 0;
-  }
-  else if(iupStrEqualNoCase(value, "PGUP"))
-  {
-    int i;
-    HTREEITEM hItemPrev = hItemSelected;
-    HTREEITEM hItemNext = hItemSelected;
-    for(i = 0; i < 10; i++)
-    {
-      hItemNext = hItemPrev;
-      hItemPrev = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PREVIOUSVISIBLE, (LPARAM)hItemPrev);
-      if(hItemPrev == NULL)
-      {
-        hItemPrev = hItemNext;
-        break;
-      }
-    }
-    
-    SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemPrev);
-    
-    return 0;
-  }
-  else if(iupStrEqualNoCase(value, "PGDN"))
-  {
-    int i;
-    HTREEITEM hItemPrev = hItemSelected;
-    HTREEITEM hItemNext = hItemSelected;
-    
-    for(i = 0; i < 10; i++)
-    {
-      hItemPrev = hItemNext;
-      hItemNext = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXTVISIBLE, (LPARAM)hItemNext);
-      if(hItemNext == NULL)
-      {
-        hItemNext = hItemPrev;
-        break;
-      }
-    }
-    
-    SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNext);
-    
-    return 0;
-  }
-  else if(iupStrEqualNoCase(value, "NEXT"))
-  {
-    HTREEITEM hItemNext = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXTVISIBLE, (LPARAM)hItemSelected);
-    
-    SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNext);
-    
-    return 0;
-  }
-  else if(iupStrEqualNoCase(value, "PREVIOUS"))
-  {
-    HTREEITEM hItemPrev = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PREVIOUSVISIBLE, (LPARAM)hItemSelected);
-    
-    SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemPrev);
-   
-    return 0;
-  }
-  else if(iupStrEqualNoCase(value, "BLOCK"))
-  {
+    HTREEITEM hItemSelected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
     winTreeSelectItems(ih, (HTREEITEM)iupAttribGet(ih, "_IUPTREE_STARTINGITEM"), hItemSelected);
-
-    return 0;
   }
   else if(iupStrEqualNoCase(value, "CLEARALL"))
-  {
     winTreeClearSelection(ih);
-
-    return 0;
-  }
   else if(iupStrEqualNoCase(value, "MARKALL"))
-  {
     winTreeAllSelection(ih);
-
-    return 0;
-  }
   else if(iupStrEqualNoCase(value, "INVERTALL"))
   {
     /* INVERTALL *MUST* appear before INVERT, or else INVERTALL will never be called. */
@@ -1683,8 +1575,6 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
 
       hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXTVISIBLE, (LPARAM)hItem);
     }
-
-    return 0;
   }
   else if(iupStrEqualPartial(value, "INVERT"))
   {
@@ -1714,17 +1604,90 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
 
       winTreeMarkedItemArray(ih, hItem);
     }
-
-    return 0;
   }
   else
   {
-    HTREEITEM hItemNewSelected = winTreeFindNodeFromString(ih, value);
-    if (hItemNewSelected)
-      SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNewSelected);
+    HTREEITEM hItem1, hItem2;
 
-    return 0;
+    char str1[50], str2[50];
+    if (iupStrToStrStr(value, str1, str2, '-')!=2)
+      return 0;
+
+    hItem1 = winTreeFindNodeFromString(ih, str1);
+    if (!hItem1)  
+      return 0;
+    hItem2 = winTreeFindNodeFromString(ih, str2);
+    if (!hItem2)  
+      return 0;
+
+    winTreeSelectItems(ih, hItem1, hItem2);
   }
+
+  return 1;
+} 
+
+static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
+{
+  HTREEITEM hItemNewSelected = NULL;
+  HTREEITEM hItemSelected;
+
+  if (winTreeSetMarkAttrib(ih, value))
+    return 0;
+
+  hItemSelected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
+
+  if(iupStrEqualNoCase(value, "ROOT"))
+    hItemNewSelected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
+  else if(iupStrEqualNoCase(value, "LAST"))
+    hItemNewSelected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_LASTVISIBLE, 0);
+  else if(iupStrEqualNoCase(value, "PGUP"))
+  {
+    int i;
+    HTREEITEM hItemPrev = hItemSelected;
+    HTREEITEM hItemNext = hItemSelected;
+    for(i = 0; i < 10; i++)
+    {
+      hItemNext = hItemPrev;
+      hItemPrev = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PREVIOUSVISIBLE, (LPARAM)hItemPrev);
+      if(hItemPrev == NULL)
+      {
+        hItemPrev = hItemNext;
+        break;
+      }
+    }
+    
+    hItemNewSelected = hItemPrev;
+  }
+  else if(iupStrEqualNoCase(value, "PGDN"))
+  {
+    int i;
+    HTREEITEM hItemPrev = hItemSelected;
+    HTREEITEM hItemNext = hItemSelected;
+    
+    for(i = 0; i < 10; i++)
+    {
+      hItemPrev = hItemNext;
+      hItemNext = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXTVISIBLE, (LPARAM)hItemNext);
+      if(hItemNext == NULL)
+      {
+        hItemNext = hItemPrev;
+        break;
+      }
+    }
+    
+    hItemNewSelected = hItemNext;
+  }
+  else if(iupStrEqualNoCase(value, "NEXT"))
+    hItemNewSelected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXTVISIBLE, (LPARAM)hItemSelected);
+  else if(iupStrEqualNoCase(value, "PREVIOUS"))
+    hItemNewSelected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PREVIOUSVISIBLE, (LPARAM)hItemSelected);
+  else
+    hItemNewSelected = winTreeFindNodeFromString(ih, value);
+
+  if (hItemNewSelected)
+    SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNewSelected);
+
+  return 0;
 } 
 
 
@@ -2240,7 +2203,7 @@ static void winTreeUnMapMethod(Ihandle* ih)
 
 static int winTreeMapMethod(Ihandle* ih)
 {
-  DWORD dwStyle = WS_CHILD | WS_BORDER;
+  DWORD dwStyle = WS_CHILD | WS_BORDER | TVS_SHOWSELALWAYS;
 
   /* TVS_EDITLABELS can be set only on the Tree View creation */
   if (ih->data->show_rename)
@@ -2330,9 +2293,10 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttributeId(ic, "MARKED",   winTreeGetMarkedAttrib,   winTreeSetMarkedAttrib,   IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "MARK",    NULL,    winTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   
   iupClassRegisterAttribute  (ic, "VALUE",    winTreeGetValueAttrib,    winTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute  (ic, "STARTING", winTreeGetStartingAttrib, winTreeSetStartingAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "STARTING", NULL, winTreeSetStartingAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "DELNODE", NULL, winTreeSetDelNodeAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -2341,6 +2305,3 @@ void iupdrvTreeInitClass(Iclass* ic)
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
-
-//TVS_INFOTIP
-//TVN_GETINFOTIP 
