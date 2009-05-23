@@ -95,9 +95,7 @@ USERDATA</strong></p>
 <p class="info"><strong>MARK<br>
 MARKED<br>
     MARKEDMODE<br>
-CTRL<br>
-    SHIFT<br>
-    STARTING</strong></p>
+MARKSTART</strong></p>
 <h4><a href="iuptree_attrib.html#action">Action</a></h4>
 <p class="info"><strong>ADDLEAF<br>
     ADDBRANCH<br>
@@ -217,11 +215,11 @@ for the node.</p>
 &quot;IMAGEBRANCHEXPANDED&quot; uses &quot;IMGEXPANDED&quot;</pre>
 <pre>&quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are designed for use as &quot;IMAGELEAF&quot;</pre>
 <h4>Simple Marking</h4>
-<p>Is the IupTree&#8217;s default operation mode. In this mode only one node can 
+<p>Is the IupTree&#8217;s default operation mode (MARKMODE=SINGLE). In this mode only one node can 
 be selected.</p>
 <h4>Multiple Marking</h4>
 <p>IupTree allows marking several nodes simultaneously using the Shift and Control keys. To use 
-  multiple marking, the user must use attributes SHIFT and CTRL.</p>
+  multiple marking set MARKMODE=MULTIPLE.</p>
 <p>When a user keeps the Control key pressed, 
   the individual marking mode is used. This way, the focus node can be modified without changing the marked node. To 
   reverse a node marking, the user simply has to press the space bar.</p>

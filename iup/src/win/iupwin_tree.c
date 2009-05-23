@@ -289,8 +289,8 @@ static void winTreeAddRootNode(Ihandle* ih)
   /* Add the node to the tree-view control */
   hNewItem = (HTREEITEM)SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
 
-  /* Starting node */
-  iupAttribSetStr(ih, "_IUPTREE_STARTINGITEM", (char*)hNewItem);
+  /* MarkStart node */
+  iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)hNewItem);
 }
 
 /*****************************************************************************/
@@ -1188,7 +1188,7 @@ static int winTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
     
     ih->data->id_control = curDepth - newDepth + 1;  /* add 1 (one) to reach the level of its new parent */
     
-    /* Starting the search by the parent of the current node */
+    /* MarkStart the search by the parent of the current node */
     hParent = hItem;
     while(ih->data->id_control != 0)
     {
@@ -1506,13 +1506,13 @@ static int winTreeSetMarkedAttrib(Ihandle* ih, const char* name_id, const char* 
   return 0;
 }
 
-static int winTreeSetStartingAttrib(Ihandle* ih, const char* name_id)
+static int winTreeSetMarkStartAttrib(Ihandle* ih, const char* name_id)
 {
   HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
   if (!hItem)
     return 0;
 
-  iupAttribSetStr(ih, "_IUPTREE_STARTINGITEM", (char*)hItem);
+  iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)hItem);
 
   return 1;
 }
@@ -1535,10 +1535,13 @@ static char* winTreeGetValueAttrib(Ihandle* ih)
 
 static int winTreeSetMarkAttrib(Ihandle* ih, const char* value)
 {
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE)
+    return 0;
+
   if(iupStrEqualNoCase(value, "BLOCK"))
   {
     HTREEITEM hItemSelected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
-    winTreeSelectItems(ih, (HTREEITEM)iupAttribGet(ih, "_IUPTREE_STARTINGITEM"), hItemSelected);
+    winTreeSelectItems(ih, (HTREEITEM)iupAttribGet(ih, "_IUPTREE_MARKSTART_NODE"), hItemSelected);
   }
   else if(iupStrEqualNoCase(value, "CLEARALL"))
     winTreeClearSelection(ih);
@@ -1690,6 +1693,11 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
   return 0;
 } 
 
+void iupdrvTreeUpdateMarkMode(Ihandle *ih)
+{
+  /* does nothing, must handle single and multiple selection manually in Windows */
+  (void)ih;
+}
 
 /*********************************************************************************************************/
 
@@ -2004,7 +2012,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   }
   else if(msg_info->code == NM_CLICK)
   {
-    if((GetKeyState(VK_CONTROL) & 0x8000) && ih->data->tree_ctrl)
+    if((GetKeyState(VK_CONTROL) & 0x8000) && ih->data->mark_mode==ITREE_MARK_MULTIPLE)
     {
       /* Control key is down */
       HTREEITEM hItem = winTreeFindNodePointed(ih);
@@ -2058,7 +2066,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
         return 1;
       }
     }
-    else if((GetKeyState(VK_SHIFT) & 0x8000) && ih->data->tree_shift)
+    else if((GetKeyState(VK_SHIFT) & 0x8000) && ih->data->mark_mode==ITREE_MARK_MULTIPLE)
     {
       /* Shift key is down */
       HTREEITEM hItem = winTreeFindNodePointed(ih);
@@ -2294,9 +2302,10 @@ void iupdrvTreeInitClass(Iclass* ic)
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttributeId(ic, "MARKED",   winTreeGetMarkedAttrib,   winTreeSetMarkedAttrib,   IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARK",    NULL,    winTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  
+  iupClassRegisterAttribute  (ic, "STARTING", NULL, winTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "MARKSTART", NULL, winTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute  (ic, "VALUE",    winTreeGetValueAttrib,    winTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute  (ic, "STARTING", NULL, winTreeSetStartingAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "DELNODE", NULL, winTreeSetDelNodeAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -2305,3 +2314,5 @@ void iupdrvTreeInitClass(Iclass* ic)
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
+
+// rever _IUPWINTREE_MARKEDITEMARRAY

@@ -200,40 +200,43 @@ void iupTreeUpdateImages(Ihandle *ih)
   iupClassObjectSetAttribute(ih, "IMAGEBRANCHEXPANDED", value, &inherit);
 }
 
-//static char* iTreeGetCtrlAttrib(Ihandle* ih)
-//{
-//  if (ih->data->tree_ctrl)
-//    return "YES";
-//  else
-//    return "NO";
-//}
-//
-//static int iTreeSetCtrlAttrib(Ihandle* ih, const char* value)
-//{
-//  if (iupStrBoolean(value))
-//    ih->data->tree_ctrl = 1;    
-//  else 
-//    ih->data->tree_ctrl = 0;
-//  return 0;
-//}
-//
-//static char* iTreeGetShiftAttrib(Ihandle* ih)
-//{
-//  if (ih->data->tree_shift)
-//    return "YES";
-//  else
-//    return "NO";
-//}
-//
-//static int iTreeSetShiftAttrib(Ihandle* ih, const char* value)
-//{
-//  if (iupStrBoolean(value))
-//    ih->data->tree_shift = 1;    
-//  else 
-//    ih->data->tree_shift = 0;
-//  return 0;
-//}
-//
+static char* iTreeGetMarkModeAttrib(Ihandle* ih)
+{
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE)
+    return "SINGLE";
+  else
+    return "MULTIPLE";
+}
+
+static int iTreeSetMarkModeAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "MULTIPLE"))
+    ih->data->mark_mode = ITREE_MARK_MULTIPLE;    
+  else 
+    ih->data->mark_mode = ITREE_MARK_SINGLE;
+  if (ih->handle)
+    iupdrvTreeUpdateMarkMode(ih);
+  return 0;
+}
+
+static int iTreeSetShiftAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value) && iupStrBoolean(iupAttribGet(ih, "CTRL")))
+    iTreeSetMarkModeAttrib(ih, "MULTIPLE");
+  else
+    iTreeSetMarkModeAttrib(ih, "SINGLE");
+  return 1;
+}
+
+static int iTreeSetCtrlAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value) && iupStrBoolean(iupAttribGet(ih, "SHIFT")))
+    iTreeSetMarkModeAttrib(ih, "MULTIPLE");
+  else
+    iTreeSetMarkModeAttrib(ih, "SINGLE");
+  return 1;
+}
+
 //static char* iTreeGetRenameCaretAttrib(Ihandle* ih)
 //{
 //  if (ih->data->rename_caret)
@@ -267,6 +270,28 @@ void iupTreeUpdateImages(Ihandle *ih)
 //    ih->data->rename_selection = 0;
 //  return 0;
 //}
+//
+//static char* iTreeGetShowRenameAttrib(Ihandle* ih)
+//{
+//  if (ih->data->show_rename)
+//    return "YES";
+//  else
+//    return "NO";
+//}
+//
+//static int iTreeSetShowRenameAttrib(Ihandle* ih, const char* value)
+//{
+//  /* valid only before map */
+//  if (ih->handle)
+//    return 0;
+//
+//  if (iupStrBoolean(value))
+//    ih->data->show_rename = 1;
+//  else
+//    ih->data->show_rename = 0;
+//
+//  return 0;
+//}
 
 static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
@@ -291,28 +316,6 @@ static int iTreeSetInsertBranchAttrib(Ihandle* ih, const char* name_id, const ch
   iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 0);
   return 0;
 }
-
-//static char* iTreeGetShowRenameAttrib(Ihandle* ih)
-//{
-//  if (ih->data->show_rename)
-//    return "YES";
-//  else
-//    return "NO";
-//}
-//
-//static int iTreeSetShowRenameAttrib(Ihandle* ih, const char* value)
-//{
-//  /* valid only before map */
-//  if (ih->handle)
-//    return 0;
-//
-//  if (iupStrBoolean(value))
-//    ih->data->show_rename = 1;
-//  else
-//    ih->data->show_rename = 0;
-//
-//  return 0;
-//}
 
 static char* iTreeGetAddExpandedAttrib(Ihandle* ih)
 {
@@ -411,8 +414,9 @@ Iclass* iupTreeGetClass(void)
   iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
-  //iupClassRegisterAttribute(ic, "CTRL",  iTreeGetCtrlAttrib,  iTreeSetCtrlAttrib,  NULL, NULL, IUPAF_NOT_MAPPED);
-  //iupClassRegisterAttribute(ic, "SHIFT", iTreeGetShiftAttrib, iTreeSetShiftAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CTRL",  NULL, iTreeSetCtrlAttrib,  NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SHIFT", NULL, iTreeSetShiftAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "MARKMODE",  iTreeGetMarkModeAttrib, iTreeSetMarkModeAttrib,  NULL, NULL, IUPAF_NOT_MAPPED);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "ADDLEAF",   NULL, iTreeSetAddLeafAttrib,   IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

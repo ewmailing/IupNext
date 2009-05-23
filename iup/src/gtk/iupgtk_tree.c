@@ -471,8 +471,8 @@ static void gtkTreeAddRootNode(Ihandle* ih)
                                        IUPGTK_TREE_COLOR, &color, -1);
 
   path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iterRoot);
-  /* Starting node */
-  iupAttribSetStr(ih, "_IUPTREE_STARTINGITEM", (char*)path);   // TODO - gtk_tree_path_free(path);
+  /* MarkStart node */
+  iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)path);   // TODO - gtk_tree_path_free(path);
 
   gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE);
 }
@@ -795,7 +795,7 @@ static int gtkTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
     simply define a new parent to the node */
     ih->data->id_control = curDepth - newDepth + 1;  /* add 1 (one) to reach the level of its new parent */
 
-    /* Starting the search by the parent of the current node */
+    /* MarkStart the search by the parent of the current node */
     iterParent = iterItem;
     while(ih->data->id_control != 0)
     {
@@ -1078,33 +1078,24 @@ static int gtkTreeSetMarkAttrib(Ihandle* ih, const char* value)
   GtkTreeSelection* selected = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
   GtkTreeIter iterRoot;
 
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE)
+    return 0;
+
   gtk_tree_model_get_iter_first(model, &iterRoot);
 
   if(iupStrEqualNoCase(value, "BLOCK"))
   {
     GtkTreePath* pathFocus;
     gtk_tree_view_get_cursor(GTK_TREE_VIEW(ih->handle), &pathFocus, NULL);
-    gtk_tree_selection_select_range(selected, (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_STARTINGITEM"), pathFocus);
+    gtk_tree_selection_select_range(selected, (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_MARKSTART_NODE"), pathFocus);
     gtk_tree_path_free(pathFocus);
   }
   else if(iupStrEqualNoCase(value, "CLEARALL"))
-  {
     gtk_tree_selection_unselect_all(selected);
-  }
   else if(iupStrEqualNoCase(value, "MARKALL"))
-  {
-    GtkTreeIter iterLast;
-
-    gtk_tree_model_iter_children(model, &iterLast, &iterRoot);
-    iterLast = gtkTreeFindNodeFromID(ih, model, iterLast, iterRoot);
-
     gtk_tree_selection_select_all(selected);
-  }
-  else if(iupStrEqualNoCase(value, "INVERTALL"))
-  {
-    /* INVERTALL *MUST* appear before INVERT, or else INVERTALL will never be called. */
+  else if(iupStrEqualNoCase(value, "INVERTALL")) /* INVERTALL *MUST* appear before INVERT, or else INVERTALL will never be called. */
     gtkTreeInvertAllNodeMarking(ih, selected, iterRoot);
-  }
   else if(iupStrEqualPartial(value, "INVERT"))
   {
     /* iupStrEqualPartial allows the use of "INVERTid" form */
@@ -1256,21 +1247,21 @@ static int gtkTreeSetValueAttrib(Ihandle* ih, const char* value)
   return 0;
 } 
 
-static int gtkTreeSetStartingAttrib(Ihandle* ih, const char* name_id)
+static int gtkTreeSetMarkStartAttrib(Ihandle* ih, const char* name_id)
 {
-  GtkTreePath *pathStarting, *pathStartingPrev;
+  GtkTreePath *pathMarkStart, *pathMarkStartPrev;
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-  GtkTreeIter iterStarting = gtkTreeFindNodeFromString(ih, name_id);
-  if (!iterStarting.stamp)
+  GtkTreeIter iterMarkStart = gtkTreeFindNodeFromString(ih, name_id);
+  if (!iterMarkStart.stamp)
     return 0;
 
-  pathStarting = gtk_tree_model_get_path(model, &iterStarting);
+  pathMarkStart = gtk_tree_model_get_path(model, &iterMarkStart);
 
-  pathStartingPrev = (GtkTreePath*)iupAttribGetStr(ih, "_IUPTREE_STARTINGITEM");
-  if (pathStartingPrev)
-    gtk_tree_path_free(pathStartingPrev);
+  pathMarkStartPrev = (GtkTreePath*)iupAttribGetStr(ih, "_IUPTREE_MARKSTART_NODE");
+  if (pathMarkStartPrev)
+    gtk_tree_path_free(pathMarkStartPrev);
 
-  iupAttribSetStr(ih, "_IUPTREE_STARTINGITEM", (char*)pathStarting);
+  iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)pathMarkStart);
 
   return 1;
 }
@@ -1567,6 +1558,12 @@ static int gtkTreeSetFgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+void iupdrvTreeUpdateMarkMode(Ihandle *ih)
+{
+  GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
+  gtk_tree_selection_set_mode(selection, (ih->data->mark_mode==ITREE_MARK_SINGLE)? GTK_SELECTION_SINGLE: GTK_SELECTION_MULTIPLE);
+}
+
 
 /***********************************************************************************************/
 
@@ -1626,8 +1623,8 @@ static int gtkTreeDragDrop_CB(Ihandle* ih)
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
   int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
   int drop_str = iupAttribGetInt(ih, "_IUPTREE_DROPID");
-  int   isshift_str = iupAttribGetInt(ih, "_IUPGTKTREE_ISSHIFT");
-  int iscontrol_str = iupAttribGetInt(ih, "_IUPGTKTREE_ISCONTROL");
+  int   isshift_str = iupAttribGetInt(ih, "_IUPTREE_ISSHIFT");   //TODO: change this
+  int iscontrol_str = iupAttribGetInt(ih, "_IUPTREE_ISCONTROL");
 
   if(cbDragDrop)
   {
@@ -1871,39 +1868,16 @@ static gboolean gtkTreeButtonPressEvent(GtkWidget *treeview, GdkEventButton *eve
       return TRUE;
     }
   }
-  else if (event->type == GDK_BUTTON_PRESS && !iupAttribGet(ih, "_IUPGTKTREE_ISSHIFT")
-                                           && !iupAttribGet(ih, "_IUPGTKTREE_ISCONTROL"))
-  {
-    /* used when multiple selection mode was set, but not used - change to single selection mode  */
-    //GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
-    //gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
-  }
   
   return iupgtkButtonEvent(treeview, event, ih);
 }
 
 static gboolean gtkTreeKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
-  if((evt->keyval == GDK_Shift_L || evt->keyval == GDK_Shift_R) && ih->data->tree_shift)
+  if((evt->keyval == GDK_Shift_L || evt->keyval == GDK_Shift_R) && ih->data->mark_mode==ITREE_MARK_MULTIPLE)
   {
-    GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
-
-    if(gtk_tree_selection_get_mode(selection) == GTK_SELECTION_MULTIPLE &&
-       gtk_tree_selection_count_selected_rows(selection) < 2)
-    {
-      //gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
-    }
-    else
-    {
-      /* Multi Selection Callback */
-      gtkTreeMultiSelection_CB(ih);
-    }
-
-    iupAttribSetInt(ih, "_IUPGTKTREE_ISSHIFT", 0);
-  }
-  else if((evt->keyval == GDK_Control_L || evt->keyval == GDK_Control_R) && ih->data->tree_ctrl)
-  {
-    iupAttribSetInt(ih, "_IUPGTKTREE_ISCONTROL", 0);
+    /* Multi Selection Callback */
+    gtkTreeMultiSelection_CB(ih);
   }
 
   /* In editing-started mode, check if the user set RENAMECARET and RENAMESELECTION attributes */
@@ -1937,24 +1911,6 @@ static gboolean gtkTreeKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandl
   else if (evt->keyval == GDK_Return || evt->keyval == GDK_KP_Enter)
   {
     gtkTreeOpenCloseEvent(ih);
-    return TRUE;
-  }
-  else if((evt->keyval == GDK_Shift_L || evt->keyval == GDK_Shift_R) /*&& (evt->state & GDK_SHIFT_MASK)*/ && ih->data->tree_shift)
-  {
-    //GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
-    
-    //gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
-    iupAttribSetInt(ih, "_IUPGTKTREE_ISSHIFT", 1);
-    
-    return TRUE;
-  }
-  else if((evt->keyval == GDK_Control_L || evt->keyval == GDK_Control_R) /*&& (evt->state & GDK_CONTROL_MASK)*/ && ih->data->tree_ctrl)
-  {
-    //GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
-    
-    //gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
-    iupAttribSetInt(ih, "_IUPGTKTREE_ISCONTROL", 1);
-    
     return TRUE;
   }
 
@@ -2140,11 +2096,14 @@ void iupdrvTreeInitClass(Iclass* ic)
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttributeId(ic, "MARKED",   gtkTreeGetMarkedAttrib,   gtkTreeSetMarkedAttrib,   IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARK",    NULL,    gtkTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "STARTING", NULL, gtkTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "MARKSTART", NULL, gtkTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute  (ic, "VALUE",    gtkTreeGetValueAttrib,    gtkTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute  (ic, "STARTING", NULL, gtkTreeSetStartingAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "DELNODE", NULL, gtkTreeSetDelNodeAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "RENAME",  NULL, gtkTreeSetRenameAttrib,  IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 }
+
+// rever gtk_tree_selection_get_selected (so´ para SINGLE)

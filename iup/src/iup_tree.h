@@ -15,6 +15,9 @@ extern "C" {
 #define ITREE_BRANCH        0
 #define ITREE_LEAF          1
 
+#define ITREE_MARK_SINGLE 0
+#define ITREE_MARK_MULTIPLE 1
+
 #define ITREE_UPDATEIMAGE_LEAF      1
 #define ITREE_UPDATEIMAGE_COLLAPSED 2
 #define ITREE_UPDATEIMAGE_EXPANDED  3
@@ -22,13 +25,14 @@ extern "C" {
 void iupdrvTreeInitClass(Iclass* ic);
 void iupTreeUpdateImages(Ihandle *ih);
 void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* title, int add);
+void iupdrvTreeUpdateMarkMode(Ihandle *ih);
 
 /* Structure of the tree */
 struct _IcontrolData
 {
-  int tree_ctrl;    /* Defines   tree_ctrl: active or not */
-  int tree_shift;   /* Defines  tree_shift: active or not */
-  int show_rename;  /* Defines show_rename: active or not */
+  int mark_mode;
+  int add_expanded;
+  int show_rename;
 
   void* def_image_leaf;       /* Default image leaf */
   void* def_image_collapsed;  /* Default image collapsed */
@@ -36,8 +40,6 @@ struct _IcontrolData
 
   int rename_caret;      
   int rename_selection;
-
-  int add_expanded;
 
   int id_control;  /* id control to find and replace items inside the tree */
 };

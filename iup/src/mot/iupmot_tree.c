@@ -791,8 +791,8 @@ static void motTreeAddRootNode(Ihandle* ih)
   /* Save the root node for later use */
   iupAttribSetStr(ih, "_IUPMOTTREE_ROOTITEM", (char*)wRootItem);
 
-  /* Starting node */
-  iupAttribSetStr(ih, "_IUPTREE_STARTINGITEM", (char*)wRootItem);
+  /* MarkStart node */
+  iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)wRootItem);
 }
 
 /*****************************************************************************/
@@ -1024,7 +1024,7 @@ static int motTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
     simply define a new parent to the node */
     ih->data->id_control = curDepth - newDepth + 1;  /* add 1 (one) to reach the level of its new parent */
 
-    /* Starting the search by the parent of the current node */
+    /* MarkStart the search by the parent of the current node */
     wItemParent = wItem;
     while(ih->data->id_control != 0)
     {
@@ -1148,6 +1148,9 @@ static char* motTreeGetValueAttrib(Ihandle* ih)
 
 static int motTreeSetMarkAttrib(Ihandle* ih, const char* value)
 {
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE)
+    return 0;
+
   if(iupStrEqualNoCase(value, "CLEARALL"))
     motTreeContainerDeselectAll(ih);
   else if(iupStrEqualNoCase(value, "MARKALL"))
@@ -1173,7 +1176,7 @@ static int motTreeSetMarkAttrib(Ihandle* ih, const char* value)
   }
   else if(iupStrEqualNoCase(value, "BLOCK"))
   {
-    Widget wItem = (Widget)iupAttribGet(ih, "_IUPTREE_STARTINGITEM");
+    Widget wItem = (Widget)iupAttribGet(ih, "_IUPTREE_MARKSTART_NODE");
     Widget wFocusItem = motTreeGetFocusNode(ih);
     if(!wFocusItem || !wItem)
       return 0;
@@ -1329,13 +1332,13 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
   return 0;
 } 
 
-static int motTreeSetStartingAttrib(Ihandle* ih, const char* name_id)
+static int motTreeSetMarkStartAttrib(Ihandle* ih, const char* name_id)
 {
   Widget wItem = motTreeFindNodeFromString(ih, name_id);
   if (!wItem)  
     return 0;
 
-  iupAttribSetStr(ih, "_IUPTREE_STARTINGITEM", (char*)wItem);
+  iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)wItem);
 
   return 1;
 }
@@ -1631,6 +1634,10 @@ static int motTreeSetFgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+void iupdrvTreeUpdateMarkMode(Ihandle *ih)
+{
+  XtVaSetValues(ih->handle, XmNselectionPolicy, (ih->data->mark_mode==ITREE_MARK_SINGLE)? XmSINGLE_SELECT: XmEXTENDED_SELECT, NULL);
+}
 
 /************************************************************************************************/
 
@@ -1820,8 +1827,8 @@ static int motTreeDragDrop_CB(Ihandle* ih)
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
   int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
   int drop_str = iupAttribGetInt(ih, "_IUPTREE_DROPID");
-  int   isshift_str = iupAttribGetInt(ih, "_IUPGTKTREE_ISSHIFT");
-  int iscontrol_str = iupAttribGetInt(ih, "_IUPGTKTREE_ISCONTROL");
+  int   isshift_str = iupAttribGetInt(ih, "_IUPTREE_ISSHIFT");    //TODO: change this
+  int iscontrol_str = iupAttribGetInt(ih, "_IUPTREE_ISCONTROL");
 
   if(cbDragDrop)
   {
@@ -2180,15 +2187,10 @@ static void motTreeKeyReleaseEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolea
   (void)w;
   (void)cont;
 
-  if((motcode == XK_Shift_L || motcode == XK_Shift_R) && ih->data->tree_shift)
+  if((motcode == XK_Shift_L || motcode == XK_Shift_R) && ih->data->mark_mode==ITREE_MARK_MULTIPLE)
   {
     /* Multi Selection Callback */
     motTreeMultiSelection_CB(ih);
-    iupAttribSetInt(ih, "_IUPMOTTREE_ISSHIFT", 0);
-  }
-  else if((motcode == XK_Control_L || motcode == XK_Control_R) && ih->data->tree_ctrl)
-  {
-    iupAttribSetInt(ih, "_IUPMOTTREE_ISCONTROL", 0);
   }
 }
 
@@ -2221,14 +2223,6 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
     }
 
     return;
-  }
-  else if((motcode == XK_Shift_L || motcode == XK_Shift_R) && ih->data->tree_shift)
-  {
-    iupAttribSetInt(ih, "_IUPMOTTREE_ISSHIFT", 1);
-  }
-  else if((motcode == XK_Control_L || motcode == XK_Control_R) && ih->data->tree_ctrl)
-  {
-    iupAttribSetInt(ih, "_IUPMOTTREE_ISCONTROL", 1);
   }
 
   iupmotKeyPressEvent(w, ih, (XEvent*)evt, cont);
@@ -2347,9 +2341,7 @@ static int motTreeMapMethod(Ihandle* ih)
 
   iupmotSetArg(args, num_args, XmNlayoutType, XmOUTLINE);
   iupmotSetArg(args, num_args, XmNentryViewType, XmSMALL_ICON);
-//  iupmotSetArg(args, num_args, XmNselectionPolicy, XmEXTENDED_SELECT);
   iupmotSetArg(args, num_args, XmNselectionPolicy, XmSINGLE_SELECT);
-  iupmotSetArg(args, num_args, XmNprimaryOwnership, XmOWN_NEVER);//POSSIBLE_MULTIPLE);
   iupmotSetArg(args, num_args, XmNoutlineIndentation, 20);
 
   if (iupAttribGetInt(ih, "HIDELINES"))
@@ -2453,9 +2445,10 @@ void iupdrvTreeInitClass(Iclass* ic)
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttributeId(ic, "MARKED",   motTreeGetMarkedAttrib,   motTreeSetMarkedAttrib,   IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARK",    NULL,    motTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "STARTING", NULL, motTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "MARKSTART", NULL, motTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute  (ic, "VALUE",    motTreeGetValueAttrib,    motTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute  (ic, "STARTING", NULL, motTreeSetStartingAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "DELNODE", NULL, motTreeSetDelNodeAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

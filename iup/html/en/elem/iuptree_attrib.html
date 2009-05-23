@@ -198,14 +198,15 @@ following the focus node. If at the last does nothing <br>
 </blockquote>
 <h3><a name="marks0">Marks</a></h3>
 <p><strong>MARK</strong> (write only) (<font size="3">non inheritable</font>): Selects a range 
-of nodes in the format &quot;star,end&quot; (%d-%d). Also accepts the values:</p>
+of nodes in the format &quot;star,end&quot; (%d-%d). Allowed only when 
+MARKMODE=MULTIPLE. Also accepts the values:</p>
 <blockquote>
 <p class="info"><span class="style3">&quot;INVERTid&quot;:
       Inverts the specified node mark state, where id is the specified node 
 identifier. If id is empty, then the focus node is used as reference node. 
 </span> <br>
 &quot;BLOCK&quot;: Marks all nodes between the focus node and the initial block-marking 
-node defined by STARTING<br>
+node defined by MARKSTART<br>
 &quot;CLEARALL&quot;:
       Unmark all nodes<br>
 &quot;MARKALL&quot;:
@@ -216,28 +217,10 @@ node defined by STARTING<br>
 <p><strong>MARKEDid</strong> (non inheritable): The marking state of the 
 specified node, where id is the specified node identifier. If id is empty, then 
 the focus node is used as reference node. Can be: YES or NO. Default: NO</p>
-<p class="style1"><strong>MARKMODE</strong>: defines how the nodes can be 
+<p><strong>MARKMODE</strong>: defines how the nodes can be 
 selected. Can be: 
 SINGLE or MULTIPLE. Default: SINGLE.</p>
-<p class="style1"><strong>CTRL</strong>:
-  Activates or deactivates the Control key 
-  function. Possible values: &quot;YES&quot; =
-    Control key activated, allows marking 
-    individual nodes; &quot;NO&quot; =
-    Control key deactivated, does not allow 
-    marking individual nodes.
-    Default:
-    &quot;NO&quot;.</p>
-<p class="style1"><strong>SHIFT</strong>:
-  Activates or deactivates the Shift key 
-  function. Possible values: &quot;YES&quot; =
-    Shift key activated, allows marking adjacent 
-    nodes; &quot;NO&quot; =
-    Shift key deactivated, does not allow 
-    marking adjacent nodes.
-    Default:
-    &quot;NO&quot;.</p>
-<p><strong>STARTING</strong> (<font size="3">non inheritable</font>):
+<p><strong>MARKSTART</strong> (<font size="3">non inheritable</font>):
   Defines the initial node for the block 
   marking, used when MARK=BLOCK. The value must be the node identifier.
     Default:
