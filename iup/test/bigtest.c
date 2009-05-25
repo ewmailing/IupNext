@@ -16,6 +16,7 @@ void ButtonTest(void);
 void CanvasScrollbarTest(void);
 void CanvasTest(void);
 void CanvasCDDBufferTest(void);
+void CanvasCDSimpleTest(void);
 void DialogTest(void);
 void FrameTest(void);
 void TabsTest(void);
@@ -63,6 +64,7 @@ typedef struct _TestItems{
 static TestItems test_list[] = {
   {"Button", ButtonTest},
   {"Canvas", CanvasTest},
+  {"CanvasCDSimpleTest", CanvasCDSimpleTest},
   {"CanvasCDDBuffer", CanvasCDDBufferTest},
   {"CanvasScrollbar", CanvasScrollbarTest},
   {"CellsCheckboar", CellsCheckboarTest},

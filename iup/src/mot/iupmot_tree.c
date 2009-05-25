@@ -99,16 +99,16 @@ static Widget motTreeCopyBranch(Ihandle* ih, Widget wBranch, Widget wNewParent)
 {
   Widget wNewItem = motTreeCopyItem(ih, wBranch, wNewParent);
   WidgetList wItemChildList = NULL;
-  int hasItem = 0;
+  int i = 0;
   int numChild = XmContainerGetItemChildren(ih->handle, wBranch, &wItemChildList);
 
-  while(hasItem != numChild)
+  while(i != numChild)
   {
     /* Recursively transfer all the items */
-    motTreeCopyBranch(ih, wItemChildList[hasItem], wNewItem);  
+    motTreeCopyBranch(ih, wItemChildList[i], wNewItem);  
 
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
 
   if (wItemChildList) XtFree((char*)wItemChildList);
@@ -172,49 +172,18 @@ static void motTreeContainerSelectAll(Ihandle *ih)
   XtCallActionProc(ih->handle, "ContainerSelectAll", (XEvent*)&ev, 0, 0);
 }
 
-static Widget motTreeGetNextNode(Ihandle* ih, Widget wItem)
-{
-  Widget wItemParent, wRoot;
-  WidgetList wBrothersTree = NULL;
-  int numBrothers, i = 0;
-
-  XtVaGetValues(wItem, XmNentryParent, &wItemParent, NULL);
-  numBrothers = XmContainerGetItemChildren(ih->handle, wItemParent, &wBrothersTree);
-  wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
-
-  while(i < numBrothers && wBrothersTree[i] != wItem)
-    i++;
-
-  if(i >= numBrothers-1)
-  {
-    if (wItemParent == wRoot)
-      wItem = wItemParent;
-    else
-      wItem = motTreeGetNextNode(ih, wItemParent);
-  }
-  else
-  {
-    /* item selected is not the last child */
-    wItem = wBrothersTree[i+1];
-  }
-
-  if (wBrothersTree) XtFree((char*)wBrothersTree);
-  return wItem;
-}
-
-static Widget motTreeGetLastPrevNode(Ihandle* ih, Widget wItem)
+static Widget motTreeGetLastVisibleNode(Ihandle* ih, Widget wItem)
 {
   unsigned char itemState;
 
-  ih->data->id_control++;
   XtVaGetValues(wItem, XmNoutlineState, &itemState, NULL);
 
-  if(itemState == XmEXPANDED)
+  if (itemState == XmEXPANDED)
   {
     WidgetList wChildrenTree = NULL;
     int numChildren = XmContainerGetItemChildren(ih->handle, wItem, &wChildrenTree);
     if(numChildren)
-      wItem = motTreeGetLastPrevNode(ih, wChildrenTree[numChildren - 1]);
+      wItem = motTreeGetLastVisibleNode(ih, wChildrenTree[numChildren - 1]);
     if (wChildrenTree) XtFree((char*)wChildrenTree);
   }
 
@@ -225,25 +194,25 @@ static Widget motTreeFindCurrentVisibleNode(Ihandle* ih, WidgetList itemList, in
 {
   Widget itemChild;
   WidgetList itemChildList;
-  int hasItem = 0;
+  int i = 0;
   int numChild;
   unsigned char itemState;
 
-  while(hasItem != numItems)
+  while(i != numItems)
   {
     /* ID control to traverse items */
-    ih->data->id_control++;
+    ih->data->id_control++;   /* not the real id since it counts only the visible ones */
 
     /* StateID founded! */
-    if(itemList[hasItem] == itemNode)
-      return itemList[hasItem];
+    if(itemList[i] == itemNode)
+      return itemList[i];
 
     /* Check whether we have child items */
     itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
-    XtVaGetValues(itemList[hasItem], XmNoutlineState,  &itemState, NULL);
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
+    XtVaGetValues(itemList[i], XmNoutlineState,  &itemState, NULL);
 
-    /* The itemWidget has child and it is expanded */
+    /* The itemWidget has child and it is expanded (visible) */
     if (numChild && itemState == XmEXPANDED)
     {
       /* pass the list of children of this item */
@@ -252,42 +221,42 @@ static Widget motTreeFindCurrentVisibleNode(Ihandle* ih, WidgetList itemList, in
       /* StateID founded! */
       if(itemChild == itemNode)
       {
-        if (itemChildList) XtFree((char*)itemChildList);
+        XtFree((char*)itemChildList);
         return itemChild;
       }
     }
 
     if (itemChildList) XtFree((char*)itemChildList);
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
 
-  return itemList[hasItem];
+  return NULL;
 }
 
 static Widget motTreeFindNewVisibleNode(Ihandle* ih, WidgetList itemList, int numItems)
 {
   Widget itemChild;
   WidgetList itemChildList;
-  int hasItem = 0;
+  int i = 0;
   int numChild;
   unsigned char itemState;
 
-  while(hasItem != numItems)
+  while(i != numItems)
   {
     /* ID control to traverse items */
-    ih->data->id_control--;
+    ih->data->id_control--;    /* not the real id since it counts only the visible ones */
 
     /* StateID founded! */
     if(ih->data->id_control < 0)
-      return itemList[hasItem];
+      return itemList[i];
 
     /* Check whether we have child items */
     itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
-    XtVaGetValues(itemList[hasItem], XmNoutlineState,  &itemState, NULL);
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
+    XtVaGetValues(itemList[i], XmNoutlineState,  &itemState, NULL);
 
-    /* The itemWidget has child and it is expanded */
+    /* The itemWidget has child and it is expanded (visible) */
     if(numChild && itemState == XmEXPANDED)
     {
       /* pass the list of children of this item */
@@ -303,31 +272,31 @@ static Widget motTreeFindNewVisibleNode(Ihandle* ih, WidgetList itemList, int nu
 
     if (itemChildList) XtFree((char*)itemChildList);
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
 
-  return itemList[hasItem];
+  return NULL;
 }
 
 static void motTreeUpdateBgColor(Ihandle* ih, WidgetList itemList, int numItems, Pixel bgcolor)
 {
   WidgetList itemChildList;
-  int hasItem = 0;
+  int i = 0;
   int numChild;
 
-  while(hasItem != numItems)
+  while(i != numItems)
   {
-    XtVaSetValues(itemList[hasItem], XmNbackground, bgcolor, NULL);
+    XtVaSetValues(itemList[i], XmNbackground, bgcolor, NULL);
 
     /* Check whether we have child items */
     itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
     if(numChild)
       motTreeUpdateBgColor(ih, itemChildList, numChild, bgcolor);
     if (itemChildList) XtFree((char*)itemChildList);
 
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
 }
 
@@ -386,32 +355,32 @@ void motTreeGetDropWidget(Ihandle* ih, WidgetList itemList, int numItems, int x,
   int numChild;
   Position xItem, yItem;
   Dimension height, width;
-  int hasItem = 0;
+  int i = 0;
 
-  while(hasItem != numItems && !iupAttribGet(ih, "_IUPTREE_DROPITEM"))
+  while(i != numItems && !iupAttribGet(ih, "_IUPTREE_DROPITEM"))
   {
-    XtVaGetValues(itemList[hasItem], XmNheight, &height, NULL);
-    XtVaGetValues(itemList[hasItem], XmNwidth, &width, NULL);
-    XtVaGetValues(itemList[hasItem], XmNx, &xItem, NULL);
-    XtVaGetValues(itemList[hasItem], XmNy, &yItem, NULL);
+    XtVaGetValues(itemList[i], XmNheight, &height, NULL);
+    XtVaGetValues(itemList[i], XmNwidth, &width, NULL);
+    XtVaGetValues(itemList[i], XmNx, &xItem, NULL);
+    XtVaGetValues(itemList[i], XmNy, &yItem, NULL);
     
     if(x >= xItem && x <= (xItem + width) &&
        y >= yItem && y <= (yItem + height))
     {
-      iupAttribSetStr(ih, "_IUPTREE_DROPITEM", (char*)itemList[hasItem]);
+      iupAttribSetStr(ih, "_IUPTREE_DROPITEM", (char*)itemList[i]);
       return;
     }
 
     /* Check whether we have child items */
     itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
 
     if(numChild)
       motTreeGetDropWidget(ih, itemChildList, numChild, x, y);
 
     if (itemChildList) XtFree((char*)itemChildList);
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
 }
 
@@ -419,102 +388,150 @@ static void motTreeInvertAllNodeMarking(Ihandle* ih, WidgetList itemList, int nu
 {
   WidgetList itemChildList;
   int numChild;
-  int hasItem = 0;
+  int i = 0;
   unsigned char isSelected;
 
-  while(hasItem != numItems)
+  while(i != numItems)
   {
-    XtVaGetValues(itemList[hasItem], XmNvisualEmphasis, &isSelected, NULL);
+    XtVaGetValues(itemList[i], XmNvisualEmphasis, &isSelected, NULL);
 
     if(isSelected == XmSELECTED)
-      XtVaSetValues(itemList[hasItem], XmNvisualEmphasis, XmNOT_SELECTED, NULL);
+      XtVaSetValues(itemList[i], XmNvisualEmphasis, XmNOT_SELECTED, NULL);
     else
-      XtVaSetValues(itemList[hasItem], XmNvisualEmphasis, XmSELECTED, NULL);
+      XtVaSetValues(itemList[i], XmNvisualEmphasis, XmSELECTED, NULL);
 
     /* Check whether we have child items */
     itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
 
     if(numChild)
       motTreeInvertAllNodeMarking(ih, itemChildList, numChild);
 
     if (itemChildList) XtFree((char*)itemChildList);
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
+}
+
+static int motTreeSelectBlock(Ihandle* ih, WidgetList itemList, int numItems, Widget wItem1, Widget wItem2, int started)
+{
+  WidgetList itemChildList;
+  int numChild;
+  int i = 0;
+
+  while(i != numItems)
+  {
+    if (started == 0)
+    {
+      if (wItem1 == itemList[i]) started=1;
+      else if (wItem2 == itemList[i]) started=1;
+    }
+    else
+    {
+      if (wItem1 == itemList[i]) started=-1;
+      else if (wItem2 == itemList[i]) started=-1;
+    }
+
+    if (started==-1)
+      return started;
+
+    if (started==1)
+      XtVaSetValues(itemList[i], XmNvisualEmphasis, XmSELECTED, NULL);
+
+    /* Check whether we have child items */
+    itemChildList = NULL;
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
+
+    if(numChild)
+      started = motTreeSelectBlock(ih, itemChildList, numChild, wItem1, wItem2, started);
+
+    if (itemChildList) XtFree((char*)itemChildList);
+
+    if (started==-1)
+      return started;
+
+    /* Go to next sibling item */
+    i++;
+  }
+
+  return started;
 }
 
 void motTreeExpandCollapseAllNodes(Ihandle* ih, WidgetList itemList, int numItems, unsigned char itemState)
 {
   WidgetList itemChildList;
   int numChild;
-  int hasItem = 0;
+  int i = 0;
 
-  while(hasItem != numItems)
+  while(i != numItems)
   {
     /* Check whether we have child items */
     itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
 
     if(numChild)
     {
-      XtVaSetValues(itemList[hasItem], XmNoutlineState, itemState, NULL);
+      XtVaSetValues(itemList[i], XmNoutlineState, itemState, NULL);
       motTreeExpandCollapseAllNodes(ih, itemChildList, numChild, itemState);
     }
 
     if (itemChildList) XtFree((char*)itemChildList);
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
 }
 
 static void motTreeDestroyItemData(Widget wItem)
 {
-  motTreeItemData *itemData;
+  motTreeItemData *itemData = NULL;
   XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
-  free(itemData);
+  if (itemData)
+  {
+    free(itemData);
+    XtVaSetValues(wItem, XmNuserData, NULL, NULL);
+  }
 }
 
 static void motTreeRemoveChildren(Ihandle* ih, WidgetList itemList, int numItems)
 {
   WidgetList itemChildList;
   int numChild;
-  int hasItem = 0;
+  int i = 0;
 
-  while(hasItem != numItems)
+  while(i != numItems)
   {	  
     /* Check whether we have child items */
     itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
 
     if(numChild)
       motTreeRemoveChildren(ih, itemChildList, numChild);
 
-    motTreeDestroyItemData(itemList[hasItem]);
-    XtDestroyWidget(itemList[hasItem]);
+    motTreeDestroyItemData(itemList[i]);
+    XtDestroyWidget(itemList[i]);
 
     if (itemChildList) XtFree((char*)itemChildList);
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
 }
 
 /* Recursively, find a new brother for the item
 that will have its depth changed. Returns the new brother. */
-static Widget motTreeFindNewBrother(Ihandle* ih, WidgetList itemList, int numItems, int hasItem)
+static Widget motTreeFindNewBrother(Ihandle* ih, WidgetList itemList, int numItems, int i)
 {
   Widget itemChild;
   WidgetList itemChildList;
   int numChild;
 
-  while(hasItem != numItems)
+  while(i != numItems)
   {
     if(ih->data->id_control < 0)
-      return itemList[hasItem];
+      return itemList[i];
 
     /* Check whether we have child items */
     itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
     if(numChild)
     {
       ih->data->id_control--;
@@ -531,31 +548,31 @@ static Widget motTreeFindNewBrother(Ihandle* ih, WidgetList itemList, int numIte
 
     if (itemChildList) XtFree((char*)itemChildList);
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
 
-  return itemList[hasItem];
+  return NULL;
 }
 
 static Widget motTreeFindNodeFromID(Ihandle* ih, WidgetList itemList, int numItems, Widget itemNode)
 {
   Widget itemChild;
   WidgetList itemChildList;
-  int hasItem = 0;
+  int i = 0;
   int numChild;
 
-  while(hasItem != numItems)
+  while(i != numItems)
   {
     /* ID control to traverse items */
     ih->data->id_control++;
 
     /* StateID founded! */
-    if(itemList[hasItem] == itemNode)
-      return itemList[hasItem];
+    if(itemList[i] == itemNode)
+      return itemList[i];
 
     /* Check whether we have child items */
     itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
     if(numChild)
     {
       /* pass the list of children of this item */
@@ -571,31 +588,31 @@ static Widget motTreeFindNodeFromID(Ihandle* ih, WidgetList itemList, int numIte
 
     if (itemChildList) XtFree((char*)itemChildList);
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
 
-  return itemList[hasItem];
+  return NULL;
 }
 
 static Widget motTreeFindNode(Ihandle* ih, WidgetList itemList, int numItems)
 {
   Widget itemChild;
   WidgetList itemChildList;
-  int hasItem = 0;
+  int i = 0;
   int numChild;
 
-  while(hasItem != numItems)
+  while(i != numItems)
   {
     /* ID control to traverse items */
     ih->data->id_control--;
 
     /* StateID founded! */
     if(ih->data->id_control < 0)
-      return itemList[hasItem];
+      return itemList[i];
 
     /* Check whether we have child items */
     itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[hasItem], &itemChildList);
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
     if(numChild)
     {
       /* pass the list of children of this item */
@@ -611,10 +628,10 @@ static Widget motTreeFindNode(Ihandle* ih, WidgetList itemList, int numItems)
 
     if (itemChildList) XtFree((char*)itemChildList);
     /* Go to next sibling item */
-    hasItem++;
+    i++;
   }
 
-  return itemList[hasItem];
+  return NULL;
 }
 
 static Widget motTreeGetFocusNode(Ihandle* ih)
@@ -1176,14 +1193,16 @@ static int motTreeSetMarkAttrib(Ihandle* ih, const char* value)
   }
   else if(iupStrEqualNoCase(value, "BLOCK"))
   {
+    Widget wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
     Widget wItem = (Widget)iupAttribGet(ih, "_IUPTREE_MARKSTART_NODE");
     Widget wFocusItem = motTreeGetFocusNode(ih);
     if(!wFocusItem || !wItem)
       return 0;
-    //motTreeSelectBlock(ih, wFocusItem, wItem);
+    motTreeSelectBlock(ih, &wRoot, 1, wFocusItem, wItem, 0);
   }
   else
   {
+    Widget wRoot = (Widget)iupAttribGet(ih, "_IUPMOTTREE_ROOTITEM");
     Widget wItem1, wItem2;
     char str1[50], str2[50];
     if (iupStrToStrStr(value, str1, str2, '-')!=2)
@@ -1196,7 +1215,7 @@ static int motTreeSetMarkAttrib(Ihandle* ih, const char* value)
     if (!wItem2)  
       return 0;
 
-    //motTreeSelectBlock(ih, wItem1, wItem2);
+    motTreeSelectBlock(ih, &wRoot, 1, wItem1, wItem2, 0);
   }
 
   return 1;
@@ -1222,7 +1241,7 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
   if (iupStrEqualNoCase(value, "ROOT"))
     wSelectedItem = wRoot;
   else if(iupStrEqualNoCase(value, "LAST"))
-    wSelectedItem = motTreeGetLastPrevNode(ih, wRoot);
+    wSelectedItem = motTreeGetLastVisibleNode(ih, wRoot);
   else if(iupStrEqualNoCase(value, "PGUP"))
   {
     Widget wItem = motTreeGetFocusNode(ih);
@@ -1231,7 +1250,7 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
 
     ih->data->id_control = -1;
     motTreeFindCurrentVisibleNode(ih, &wRoot, 1, wItem);
-    ih->data->id_control -= 10;  /* Up 10 lines */
+    ih->data->id_control -= 10;  /* less 10 visible nodes */
 
     if(ih->data->id_control < 0)
       ih->data->id_control = 0;  /* Begin of tree = Root id */
@@ -1248,72 +1267,48 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
 
     ih->data->id_control = -1;
     motTreeFindCurrentVisibleNode(ih, &wRoot, 1, wItem);
-    ih->data->id_control += 10;  /* Down 10 lines */
+    ih->data->id_control += 10;  /* more 10 visible nodes */
 
     wNext = motTreeFindNewVisibleNode(ih, &wRoot, 1);
 
     if (ih->data->id_control >= 0)
-      wNext = motTreeGetLastPrevNode(ih, wRoot);   /* End of tree = last node */
+      wNext = motTreeGetLastVisibleNode(ih, wRoot);
  
     wSelectedItem = wNext;
   }
   else if(iupStrEqualNoCase(value, "NEXT"))
   {
     Widget wNext, wItem;
-    WidgetList wChildrenTree = NULL;
-    int numChildren;
-    unsigned char itemState;
 
     wItem = motTreeGetFocusNode(ih);
     if (!wItem)
       return 0;
 
-    XtVaGetValues(wItem, XmNoutlineState, &itemState, NULL);
+    ih->data->id_control = -1;
+    motTreeFindCurrentVisibleNode(ih, &wRoot, 1, wItem);
+    ih->data->id_control++;   /* more 1 visible node */
 
-    numChildren = XmContainerGetItemChildren(ih->handle, wItem, &wChildrenTree);
+    wNext = motTreeFindNewVisibleNode(ih, &wRoot, 1);
 
-    if (itemState == XmEXPANDED && numChildren)
-      wNext = wChildrenTree[0];  /* firstchild of item selected */
-    else
-      wNext = motTreeGetNextNode(ih, wItem);
-    
+    if (ih->data->id_control >= 0)
+      wNext = motTreeGetLastVisibleNode(ih, wRoot);
+ 
     wSelectedItem = wNext;
-    if (wChildrenTree) XtFree((char*)wChildrenTree);
   }
   else if(iupStrEqualNoCase(value, "PREVIOUS"))
   {
-    Widget wPrev = NULL, wItemParent, wItem;
-    WidgetList wBrothersTree = NULL;
-    int numBrothers, i=0;
-
-    wItem = motTreeGetFocusNode(ih);
+    Widget wItem = motTreeGetFocusNode(ih);
     if(!wItem)
       return 0;
 
-    if (wItem != wRoot)
-    {
-      XtVaGetValues(wItem, XmNentryParent, &wItemParent, NULL);
-      numBrothers = XmContainerGetItemChildren(ih->handle, wItemParent, &wBrothersTree);
+    ih->data->id_control = -1;
+    motTreeFindCurrentVisibleNode(ih, &wRoot, 1, wItem);
+    ih->data->id_control--;    /* less 1 visible node */
 
-      if(numBrothers && wBrothersTree[0] == wItem)
-      {
-        /* First child is selected. So, its parent will be the new selected */
-        wPrev = wItemParent;
-      }
-      else if (numBrothers)
-      {
-        while(wBrothersTree[i] != wItem)
-          i++;
+    if (ih->data->id_control < 0)
+      ih->data->id_control = 0;  /* Begin of tree = Root id */
 
-        wPrev = motTreeGetLastPrevNode(ih, wBrothersTree[i-1]);
-      }
-
-      if (wBrothersTree) XtFree((char*)wBrothersTree);
-    }
-    else
-      wPrev = wRoot;
-
-    wSelectedItem = wPrev;
+    wSelectedItem = motTreeFindNewVisibleNode(ih, &wRoot, 1);
   }
   else
     wSelectedItem = motTreeFindNodeFromString(ih, value);
@@ -1321,10 +1316,10 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
   if (!wSelectedItem)  
     return 0;
 
-  //if (selection==single)
-    motTreeSelectNode(ih, wSelectedItem);
+  /* select */
+  motTreeSelectNode(ih, wSelectedItem);
 
-  /* set the focus to the item */
+  /* set focus (will scroll to visible) */
   XmProcessTraversal(wSelectedItem, XmTRAVERSE_CURRENT);
 
   iupAttribSetInt(ih, "_IUPTREE_OLDVALUE", IupGetInt(ih, "VALUE"));
@@ -1521,7 +1516,7 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 
     for(i = 0; i < countItems; i++)
     {
-      if(wListOfItems[i] != wRoot)  /* the root node can't be deleted */
+      if (wListOfItems[i] != wRoot && XmIsIconGadget(wListOfItems[i]))  /* the root node can't be deleted */
       {
         wItemList = NULL;
         numChild = XmContainerGetItemChildren(ih->handle, wListOfItems[i], &wItemList);
@@ -1967,7 +1962,6 @@ static void motTreeDefaultActionCallback(Widget w, Ihandle* ih, XmContainerSelec
   }
   else
   {
-    /* Call EXECUTELEAF_CB callback */
     motTreeExecuteLeaf_CB(ih, IupGetInt(ih, "VALUE"));
   }
   if (wChildren) XtFree((char*)wChildren);
@@ -2248,30 +2242,19 @@ static void motTreeButtonPressEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Bo
 
     if ((int)elapsed <= XtGetMultiClickTime(iupmot_display)) /* Double Click */
     {
-      Widget wItem;
-      Position xIcon;
-
-      wItem = motTreeGetFocusNode(ih);
+      motTreeItemData *itemData;
+      Widget wItem = motTreeGetFocusNode(ih);
       if(!wItem)
         return;
 
-      XtVaGetValues(wItem, XmNx, &xIcon, NULL);
+      XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
 
-      /* Double click over the Icon Gadget label text area */
-      if(evt->x > xIcon+21)
-      {
-        if(IupGetInt(ih, "SHOWRENAME"))
-        {
-          motTreeCreateEditField(ih);
-          motTreeShowRename_CB(ih);
-        }
-        else
-        {
-          motTreeRenameNode_CB(ih);
-        }
-      }
+      if (itemData->kind == ITREE_LEAF)
+        motTreeExecuteLeaf_CB(ih, IupGetInt(ih, "VALUE"));
     }
   }
+
+  iupmotButtonPressReleaseEvent(w, ih, (XEvent*)evt, cont);
 }
 
 static int motTreeConvertXYToPos(Ihandle* ih, int x, int y)

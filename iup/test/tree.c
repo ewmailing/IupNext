@@ -93,7 +93,7 @@ static int text_cb(Ihandle* ih, int c, char *after)
 static int removenode(void)
 {
   Ihandle* tree = IupGetHandle("tree");
-  IupSetAttribute(tree, "DELNODE", "MARKED");
+  IupSetAttribute(tree, "DELNODE", "SELECTED");
   return IUP_DEFAULT;
 }
 
@@ -213,7 +213,7 @@ static int enterwindow_cb(Ihandle* ih)
 static int k_any_cb(Ihandle* ih, int c)
 {
   if (c == K_DEL) 
-    IupSetAttribute(ih, "DELNODE", "SELECTED");
+    IupSetAttribute(ih, "DELNODE", "MARKED");
   if (iup_isprint(c))
     printf("K_ANY(%s, %d = %s \'%c\')\n", IupGetAttribute(IupGetParent(IupGetParent(ih)), "TITLE"), c, iupKeyCodeToName(c), (char)c);
   else
@@ -303,8 +303,8 @@ static int rightclick_cb(Ihandle* ih, int id)
   IupSetFunction("removechild", (Icallback) removechild);
   IupSetFunction("renamenode", (Icallback) renamenode);
 
-  sprintf(attr, "%d", id);
-  IupSetAttribute(ih, "VALUE", attr);
+//  sprintf(attr, "%d", id);
+//  IupSetAttribute(ih, "VALUE", attr);
   IupPopup(popup_menu, IUP_MOUSEPOS, IUP_MOUSEPOS);
 
   IupDestroy(popup_menu);
@@ -379,11 +379,12 @@ static void init_tree(void)
 /* Initializes the dlg */
 static void init_dlg(void)
 {
-  Ihandle* butactv, *butnext, *butprev;
+  Ihandle* butactv, *butnext, *butprev, *butmenu;
   Ihandle* tree = IupGetHandle("tree");
   Ihandle* box = IupHbox(tree, IupVbox(butactv = IupButton("Active", NULL), 
                                        butnext = IupButton("Next", NULL), 
                                        butprev = IupButton("Prev", NULL), 
+                                       butmenu = IupButton("Menu", NULL), 
                                        NULL), NULL);
   Ihandle* dlg = IupDialog(box) ;
   IupSetAttribute(dlg,  "TITLE",   "IupTree");
@@ -396,6 +397,8 @@ static void init_dlg(void)
   IupSetCallback(butactv, "ACTION", active);
   IupSetCallback(butnext, "ACTION", next);
   IupSetCallback(butprev, "ACTION", prev);
+  IupSetCallback(butmenu, "ACTION", (Icallback)rightclick_cb);
+
   IupSetHandle("dlg", dlg);
 }
 

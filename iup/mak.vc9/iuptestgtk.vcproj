@@ -130,6 +130,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\test\canvas_cdsimple.c"
+			>
+		</File>
+		<File
 			RelativePath="..\test\canvas_scrollbar.c"
 			>
 		</File>

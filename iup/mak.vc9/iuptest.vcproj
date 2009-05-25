@@ -121,13 +121,6 @@
 		<File
 			RelativePath="..\test\bigtest.c"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="..\test\button.c"
@@ -139,6 +132,10 @@
 		</File>
 		<File
 			RelativePath="..\test\canvas_cddbuffer.c"
+			>
+		</File>
+		<File
+			RelativePath="..\test\canvas_cdsimple.c"
 			>
 		</File>
 		<File

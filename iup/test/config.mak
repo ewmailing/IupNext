@@ -62,6 +62,7 @@ SRC += class_conf.c
 USE_CD = Yes
 SRC += canvas_scrollbar.c
 SRC += canvas_cddbuffer.c
+SRC += canvas_cdsimple.c
 
 USE_OPENGL = Yes
 SRC += glcanvas.c
