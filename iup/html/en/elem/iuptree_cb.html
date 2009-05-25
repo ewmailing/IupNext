@@ -9,6 +9,9 @@
 .style1 {
 	text-decoration: underline;
 }
+.style2 {
+	color: #FF0000;
+}
 </style>
 </head>
 <body>
@@ -66,8 +69,8 @@
 <p class="info"><span class="style1">Returns:</span> IUP_IGNORE for the branch not to be closed, or IUP_DEFAULT for the branch to be closed.</p>
 <p><strong>EXECUTELEAF_CB</strong>:
   Action generated when a leaf is to be 
-  executed. This action occurs when the user double clicks the 
-  leaf <b>image</b>, or hits Enter on a leaf.
+  executed. This action occurs when the user double clicks a 
+  leaf, or hits Enter on a leaf.
   </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
 <strong>elem</strong>:executeleaf_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -80,7 +83,7 @@
 <hr>
 <p><strong>RENAMENODE_CB</strong>:
   Action generated when a node is to be 
-  renamed. It occurs only when the user double clicks the <b>text</b> associated to a node (leaf or branch) or press 
+  renamed. It occurs only when the user <span class="style2"><strong>double clicks</strong></span> the <b>text</b> associated to a node (leaf or branch) or press 
 <b>F2</b>, 
   and <strong>SHOWRENAME</strong>=NO.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>, char *<strong>name</strong>); [in C]<strong>

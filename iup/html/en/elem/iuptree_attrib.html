@@ -71,20 +71,8 @@ is limited to a minimum of 5 pixels. (since 3.0)</p>
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a> (<font size="3">non inheritable</font>): 
 the initial size is &quot;400x200&quot;. Set to NULL to allow the automatic 
 layout use smaller values.</p>
-<p><span class="style2">RENAMECARET</span><span class="style1">:
-  Allows specifying and verifying the caret&#8217;s 
-  position of the text box when in-place renaming.</span></p>
-<p><span class="style2">RENAMESELECTION</span><span class="style1">:
-  Allows specifying and verifying selection 
-  interval 
-  of the text box when in-place renaming.</span></p>
 <p class="style1"><strong>SHOWDRAGDROP</strong>: Shows a drag cursor if the user drags a node or 
   branch and enables the <strong>DRAGDROP_CB</strong> callback. Default:
-  &quot;NO&quot;.</p>
-<p class="style1"><strong>SHOWRENAME</strong>: Allows the in place rename of a node. The 
-<strong>RENAME_CB</strong> is called after the user entered a new name, instead of calling
-  <strong>RENAME_NODE_CB</strong> to notify the user that it should rename a node. 
-  Default:
   &quot;NO&quot;.</p>
 <p>XXXXXX</p>
 
@@ -179,22 +167,20 @@ updated.</p>
 updated.</p>
 <h3><a name="focus">Focus Node</a></h3>
 <p><strong>VALUE</strong> (<font size="3">non inheritable</font>):
-  The focus node identifier. When changed the tree receives the focus, and it is scrolled so 
-the node becames visible. 
-Also accepts the values:</p>
+  The focus node identifier. When changed the node is also selected and the tree is scrolled so 
+the node becomes visible. In Motif the tree will receive the focus. Also accepts the values:</p>
 <blockquote>
 <p class="info"><span class="style3">&quot;ROOT&quot;:
       the root node</span><br>
 &quot;LAST&quot;:
-      the last node<br>
-&quot;PGUP&quot;:
-      the node one page below<br>
-&quot;PGDN&quot;:
-      the node one page above<br>
+      the last visible node<br>
 &quot;NEXT&quot;:
-      the node 
-following the focus node. If at the last does nothing <br>
-&quot;PREVIOUS&quot;: the previous node of the focus node. If at the root does nothing</p>
+      the next visible node, one node after the focus node. If at the last does nothing<br>
+&quot;PREVIOUS&quot;: the previous visible node, one node before the focus node. If at the root does nothing<br>
+&quot;PGDN&quot;: the next visible node, ten nodes node after the focus node. If 
+at the last does nothing <br>
+&quot;PGUP&quot;: the previous visible node, ten nodes before the focus node. If 
+at the root does nothing</p>
 </blockquote>
 <h3><a name="marks0">Marks</a></h3>
 <p><strong>MARK</strong> (write only) (<font size="3">non inheritable</font>): Selects a range 
@@ -225,7 +211,7 @@ SINGLE or MULTIPLE. Default: SINGLE.</p>
   marking, used when MARK=BLOCK. The value must be the node identifier.
     Default:
     0 (root node).</p>
-<h3><a name="action">Action</a>&nbsp; (<font size="3">write-only, non inheritable</font>)</h3>
+<h3><a name="tree">Hierarchy</a>&nbsp; (<font size="3">write-only, non inheritable</font>)</h3>
 <p><strong>ADDLEAF</strong><b>id</b><strong> </strong>(write only):
   Adds a new leaf 
 after the reference node, where id is the reference node identifier. If id is 
@@ -271,9 +257,23 @@ in the string as &quot;%p&quot;. (since 3.0)</p>
 (write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
 the depth of the new node is always the same of the reference node. 
 (since 3.0)</p>
+<h3><a name="edit">Editing</a>&nbsp; (<font size="3">write-only, non inheritable</font>)</h3>
 <p><span class="style2">RENAME</span><span class="style1"><strong> </strong>(write only):</span><span class="style2">
 </span><span class="style1">Forces a rename action to take place. If SHOWRENAME=YES then 
   does in-place rename, else just calls the RENAMENODE_CB. The value is ignored.</span></p>
+
+<p><span class="style2">RENAMECARET</span><span class="style1">:
+  Allows specifying and verifying the caret&#8217;s 
+  position of the text box when in-place renaming.</span></p>
+<p><span class="style2">RENAMESELECTION</span><span class="style1">:
+  Allows specifying and verifying selection 
+  interval 
+  of the text box when in-place renaming.</span></p>
+<p class="style1"><strong>SHOWRENAME</strong>: Allows the in place rename of a node. The 
+<strong>RENAME_CB</strong> is called after the user entered a new name, instead of calling
+  <strong>RENAME_NODE_CB</strong> to notify the user that it should rename a node. 
+  Default:
+  &quot;NO&quot;.</p>
 
 </body>
 

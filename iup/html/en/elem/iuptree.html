@@ -69,10 +69,7 @@ HIDELINES</strong> <strong><br>
 HIDEBUTTONS</strong> <strong><br>
 INDENTATION</strong> <strong><br>
 RASTERSIZE<br>
-    RENAMECARET<br>
-    RENAMESELECTION<br>
-    SHOWDRAGDROP<br>
-    SHOWRENAME</strong></p>
+    SHOWDRAGDROP</strong></p>
 <h4><a href="iuptree_attrib.html#nodes">Nodes</a></h4>
 <p class="info"><strong>CHILDCOUNT<br>
     FGCOLOR<br>
@@ -96,7 +93,7 @@ USERDATA</strong></p>
 MARKED<br>
     MARKEDMODE<br>
 MARKSTART</strong></p>
-<h4><a href="iuptree_attrib.html#action">Action</a></h4>
+<h4><a href="iuptree_attrib.html#tree">Hierarchy</a></h4>
 <p class="info"><strong>ADDLEAF<br>
     ADDBRANCH<br>
 DELNODE<br>
@@ -104,8 +101,12 @@ DELNODE<br>
 <b>EXPANDALL<br>
     </b><strong>FINDUSERDATA</strong><br>
 <strong>INSERTLEAF<br>
-    INSERTBRANCH<br>
-    </strong><b>RENAMENODE</b></p>
+    INSERTBRANCH</strong></p>
+<h4><a href="iuptree_attrib.html#edit">Editing</a></h4>
+<p class="info"><b>RENAMENODE<br>
+</b> <strong>RENAMECARET<br>
+    RENAMESELECTION<br>
+    SHOWRENAME</strong></p>
 <h3><a href="iuptree_cb.html">Callbacks</a></h3>
 <p><strong>SELECTION_CB</strong>:
   Action generated when an node is selected or 
@@ -242,8 +243,8 @@ be selected.</p>
 	focus node.</li>
   <li><span class="style4">Ctrl+Space</span><span class="style3">:&nbsp;
     Marks or unmarks a node.</span></li>
-  <li><span class="style4">F2</span><span class="style3">:
-    Calls the rename callback or invoke the inplace rename.</span></li>
+	<li><strong>F2</strong>: Calls the rename callback or invoke the inplace 
+	rename.</li>
 </ul>
 <p>In Motif when pressing Tab the focus goes to the next visible node, if there 
 are no next visible node then the next control in the dialog receives the focus. 
@@ -253,11 +254,9 @@ In Windows and Gtk the focus simply goes directly to the next control.</p>
   <li><b>Clicking a node</b>: Moves the focus node to the clicked node.</li>
   <li><b>Clicking a (-/+) box</b>: Makes the branch to the right of the (-/+) 
     box collapse/expand.</li>
-  <li class="style3"><b>Clicking an empty region</b>: Unmarks all nodes.</li>
-  <li><span class="style4">Double-clicking a node image</span><span class="style3">: 
+  <li><b>Double-clicking a node</b>: 
 	Moves the focus node to the clicked node. If the node is an expanded 
     branch, it is collapsed; if it is a collapsed branch, it is expanded; if it is a leaf, it is executed. 
-  </span> 
   </li>
   <li><span class="style4">Double-clicking a node text</span><span class="style3">: Calls the rename callback 
     or invoke the inplace rename.</span></li>
