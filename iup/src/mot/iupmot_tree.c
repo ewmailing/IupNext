@@ -48,7 +48,7 @@ typedef struct _motTreeItemData
 } motTreeItemData;
 
 
-static int motTreeRenameNode_CB(Ihandle* ih);
+static int motTreeCallRenameNodeCb(Ihandle* ih);
 
 /*****************************************************************************/
 /* COPYING ITEMS (Branches and its children)                                 */
@@ -417,7 +417,7 @@ static int motTreeSelectBlock(Ihandle* ih, WidgetList itemList, int numItems, Wi
 {
   WidgetList itemChildList;
   int numChild;
-  int i = 0;
+  int i = 0, end_found = 0;
 
   while(i != numItems)
   {
@@ -426,17 +426,17 @@ static int motTreeSelectBlock(Ihandle* ih, WidgetList itemList, int numItems, Wi
       if (wItem1 == itemList[i]) started=1;
       else if (wItem2 == itemList[i]) started=1;
     }
-    else
+    else if (started == 1)
     {
-      if (wItem1 == itemList[i]) started=-1;
-      else if (wItem2 == itemList[i]) started=-1;
+      if (wItem1 == itemList[i]) end_found=1;
+      else if (wItem2 == itemList[i]) end_found=1;
     }
-
-    if (started==-1)
-      return started;
 
     if (started==1)
       XtVaSetValues(itemList[i], XmNvisualEmphasis, XmSELECTED, NULL);
+
+    if (end_found)
+      return -1;
 
     /* Check whether we have child items */
     itemChildList = NULL;
@@ -448,7 +448,7 @@ static int motTreeSelectBlock(Ihandle* ih, WidgetList itemList, int numItems, Wi
     if (itemChildList) XtFree((char*)itemChildList);
 
     if (started==-1)
-      return started;
+      return -1;
 
     /* Go to next sibling item */
     i++;
@@ -1455,7 +1455,7 @@ static int motTreeSetRenameAttrib(Ihandle* ih, const char* name_id, const char* 
   if(IupGetInt(ih, "SHOWRENAME"))
     ;//iupdrvTreeSetTitleAttrib(ih, name_id, value);
   else
-    motTreeRenameNode_CB(ih);
+    motTreeCallRenameNodeCb(ih);
 
   return 1;
 }
@@ -1516,7 +1516,7 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 
     for(i = 0; i < countItems; i++)
     {
-      if (wListOfItems[i] != wRoot && XmIsIconGadget(wListOfItems[i]))  /* the root node can't be deleted */
+      if ((wListOfItems[i] != wRoot) && (XmIsIconGadget(wListOfItems[i])))  /* the root node can't be deleted */
       {
         wItemList = NULL;
         numChild = XmContainerGetItemChildren(ih->handle, wListOfItems[i], &wItemList);
@@ -1672,7 +1672,7 @@ static int motTreeSetRenameSelectionPos(Ihandle* ih)
 
 /*****************************************************************************/
 
-static int motTreeBranchClose_CB(Ihandle* ih, int value)
+static int motTreeCallBranchCloseCb(Ihandle* ih, int value)
 {
   IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
 
@@ -1685,7 +1685,7 @@ static int motTreeBranchClose_CB(Ihandle* ih, int value)
   return IUP_IGNORE;
 }
 
-static int motTreeBranchOpen_CB(Ihandle* ih, int value)
+static int motTreeCallBranchOpenCb(Ihandle* ih, int value)
 {
   IFni cbBranchOpen = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
 
@@ -1698,7 +1698,7 @@ static int motTreeBranchOpen_CB(Ihandle* ih, int value)
   return IUP_IGNORE;
 }
 
-static int motTreeExecuteLeaf_CB(Ihandle* ih, int value)
+static int motTreeCallExecuteLeafCb(Ihandle* ih, int value)
 {
   IFni cbExecuteLeaf = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
 
@@ -1711,7 +1711,7 @@ static int motTreeExecuteLeaf_CB(Ihandle* ih, int value)
   return IUP_IGNORE;
 }
 
-static int motTreeMultiSelection_CB(Ihandle* ih)
+static int motTreeCallMultiSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
   WidgetList wListOfItems = NULL;
@@ -1744,7 +1744,7 @@ static int motTreeMultiSelection_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int motTreeRightClick_CB(Ihandle* ih)
+static int motTreeCallRightClickCb(Ihandle* ih)
 {
   IFni cbRightClick  = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
 
@@ -1757,7 +1757,7 @@ static int motTreeRightClick_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int motTreeShowRename_CB(Ihandle* ih)
+static int motTreeCallShowRenameCb(Ihandle* ih)
 {
   IFni cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
 
@@ -1770,7 +1770,7 @@ static int motTreeShowRename_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int motTreeRenameNode_CB(Ihandle* ih)
+static int motTreeCallRenameNodeCb(Ihandle* ih)
 {
   IFnis cbRenameNode = (IFnis)IupGetCallback(ih, "RENAMENODE_CB");
 
@@ -1784,7 +1784,7 @@ static int motTreeRenameNode_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int motTreeRename_CB(Ihandle* ih)
+static int motTreeCallRenameCb(Ihandle* ih)
 {
   IFnis cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
   Widget wRoot;
@@ -1817,7 +1817,7 @@ static int motTreeRename_CB(Ihandle* ih)
   return IUP_DEFAULT;    
 }
 
-static int motTreeDragDrop_CB(Ihandle* ih)
+static int motTreeCallDragDropCb(Ihandle* ih)
 {
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
   int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
@@ -1837,7 +1837,7 @@ static int motTreeDragDrop_CB(Ihandle* ih)
 static void motTreeEditFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
 {
   if (evt->type == FocusOut)
-    motTreeRename_CB(ih);
+    motTreeCallRenameCb(ih);
 
   iupmotFocusChangeEvent(w, ih, (XEvent*)evt, cont);
 }
@@ -1847,7 +1847,7 @@ static void motTreeEditKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Bool
   KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
 
   if(motcode == XK_Return)
-    motTreeRename_CB(ih);
+    motTreeCallRenameCb(ih);
 
   (void)cont;
   (void)w;
@@ -1958,11 +1958,11 @@ static void motTreeDefaultActionCallback(Widget w, Ihandle* ih, XmContainerSelec
     else if(itemState == XmCOLLAPSED && numChild)
       XtVaSetValues(wItem, XmNoutlineState,  XmEXPANDED, NULL);
     else
-      motTreeBranchClose_CB(ih, IupGetInt(ih, "VALUE"));
+      motTreeCallBranchCloseCb(ih, IupGetInt(ih, "VALUE"));
   }
   else
   {
-    motTreeExecuteLeaf_CB(ih, IupGetInt(ih, "VALUE"));
+    motTreeCallExecuteLeafCb(ih, IupGetInt(ih, "VALUE"));
   }
   if (wChildren) XtFree((char*)wChildren);
 }
@@ -1983,13 +1983,13 @@ static void motTreeOutlineChangedCallback(Widget w, Ihandle* ih, XmContainerOutl
   {
     XtVaSetValues(nptr->item, XmNsmallIconPixmap, (itemData->image_expanded!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded: (Pixmap)ih->data->def_image_expanded, NULL);
 
-    motTreeBranchOpen_CB(ih, ih->data->id_control);
+    motTreeCallBranchOpenCb(ih, ih->data->id_control);
   }
   else if (nptr->reason == XmCR_COLLAPSED)
   {
     XtVaSetValues(nptr->item, XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_collapsed, NULL);
 
-    motTreeBranchClose_CB(ih, ih->data->id_control);
+    motTreeCallBranchCloseCb(ih, ih->data->id_control);
   }
   
   (void)w;
@@ -2125,7 +2125,7 @@ static void motTreeTransferCallback(Widget w, XtPointer client_data, XtPointer c
         XtDestroyWidget(wItemDrag);   
 
         /* DragDrop Callback */
-        motTreeDragDrop_CB(ih);
+        motTreeCallDragDropCb(ih);
 
         /* expand the new parent and set the item dropped as the new item selected */
         XtVaSetValues(wItemDrop, XmNoutlineState, XmEXPANDED, NULL);
@@ -2184,7 +2184,7 @@ static void motTreeKeyReleaseEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolea
   if((motcode == XK_Shift_L || motcode == XK_Shift_R) && ih->data->mark_mode==ITREE_MARK_MULTIPLE)
   {
     /* Multi Selection Callback */
-    motTreeMultiSelection_CB(ih);
+    motTreeCallMultiSelectionCb(ih);
   }
 }
 
@@ -2209,11 +2209,11 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
     if(IupGetInt(ih, "SHOWRENAME"))
     {
       motTreeCreateEditField(ih);
-      motTreeShowRename_CB(ih);
+      motTreeCallShowRenameCb(ih);
     }
     else
     {
-      motTreeRenameNode_CB(ih);
+      motTreeCallRenameNodeCb(ih);
     }
 
     return;
@@ -2230,7 +2230,7 @@ static void motTreeButtonPressEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Bo
   if (evt->type==ButtonPress && evt->button==Button3)
   {   
     /* select the pointed item */
-    motTreeRightClick_CB(ih);
+    motTreeCallRightClickCb(ih);
   }
   else if (evt->type==ButtonPress)
   {
@@ -2250,7 +2250,7 @@ static void motTreeButtonPressEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Bo
       XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
 
       if (itemData->kind == ITREE_LEAF)
-        motTreeExecuteLeaf_CB(ih, IupGetInt(ih, "VALUE"));
+        motTreeCallExecuteLeafCb(ih, IupGetInt(ih, "VALUE"));
     }
   }
 

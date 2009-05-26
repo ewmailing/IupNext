@@ -586,7 +586,7 @@ static gboolean gtkTreeSelected_Iter_Func(GtkTreeModel *model, GtkTreePath *path
 /*****************************************************************************/
 /* CALLBACKS                                                                 */
 /*****************************************************************************/
-static int gtkTreeMultiSelection_CB(Ihandle* ih)
+static int gtkTreeCallMultiSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
 
@@ -635,7 +635,7 @@ static int gtkTreeMultiSelection_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int gtkTreeShowRename_CB(Ihandle* ih)
+static int gtkTreeCallShowRenameCb(Ihandle* ih)
 {
   IFni cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
 
@@ -662,7 +662,7 @@ static int gtkTreeShowRename_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int gtkTreeRenameNode_CB(Ihandle* ih)
+static int gtkTreeCallRenameNodeCb(Ihandle* ih)
 {
   IFnis cbRenameNode = (IFnis)IupGetCallback(ih, "RENAMENODE_CB");
 
@@ -689,7 +689,7 @@ static int gtkTreeRenameNode_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int gtkTreeRename_CB(Ihandle* ih, gchar *path_string, gchar* new_text)
+static int gtkTreeCallRenameCb(Ihandle* ih, gchar *path_string, gchar* new_text)
 {
   IFnis cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
 
@@ -1384,7 +1384,7 @@ static int gtkTreeSetRenameAttrib(Ihandle* ih, const char* name_id, const char* 
   if(IupGetInt(ih, "SHOWRENAME"))
     ;//iupdrvTreeSetTitleAttrib(ih, name_id, value);
   else
-    gtkTreeRenameNode_CB(ih);
+    gtkTreeCallRenameNodeCb(ih);
 
   return 1;
 }
@@ -1607,11 +1607,11 @@ static void gtkTreeCellTextEditingStarted(GtkCellRenderer *cell, GtkCellEditable
 
 static void gtkTreeCellTextEdited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, Ihandle* ih)
 {
-  gtkTreeRename_CB(ih, path_string, new_text);
+  gtkTreeCallRenameCb(ih, path_string, new_text);
   (void)cell;
 }
 
-static int gtkTreeDragDrop_CB(Ihandle* ih)
+static int gtkTreeCallDragDropCb(Ihandle* ih)
 {
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
   int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
@@ -1654,7 +1654,7 @@ static void gtkTreeDragEnd(GtkWidget *widget, GdkDragContext *drag_context, Ihan
       gtk_tree_store_remove(GTK_TREE_STORE(model), &iterDrag);
 
       /* DragDrop Callback */
-      gtkTreeDragDrop_CB(ih);
+      gtkTreeCallDragDropCb(ih);
 
       /* expand the new parent and set the item dropped as the new item selected */
       gtk_tree_view_expand_row(GTK_TREE_VIEW(ih->handle), (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_DROPITEM"), FALSE);
@@ -1845,7 +1845,7 @@ static gboolean gtkTreeKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihan
   if((evt->keyval == GDK_Shift_L || evt->keyval == GDK_Shift_R) && ih->data->mark_mode==ITREE_MARK_MULTIPLE)
   {
     /* Multi Selection Callback */
-    gtkTreeMultiSelection_CB(ih);
+    gtkTreeCallMultiSelectionCb(ih);
   }
 
   /* In editing-started mode, check if the user set RENAMECARET and RENAMESELECTION attributes */
@@ -1870,9 +1870,9 @@ static gboolean gtkTreeKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandl
   if (evt->keyval == GDK_F2)
   {
     if(IupGetInt(ih, "SHOWRENAME"))
-      gtkTreeShowRename_CB(ih);
+      gtkTreeCallShowRenameCb(ih);
     else
-      gtkTreeRenameNode_CB(ih);
+      gtkTreeCallRenameNodeCb(ih);
 
     return TRUE;
   }

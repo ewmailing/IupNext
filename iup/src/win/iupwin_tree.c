@@ -423,9 +423,9 @@ static int winTreeInvertSelectFunc(Ihandle* ih, HTREEITEM hItem, void* userdata)
   item.stateMask = TVIS_SELECTED;
 
   if ((SendMessage(ih->handle, TVM_GETITEMSTATE, (WPARAM)hItem, TVIS_SELECTED)) & TVIS_SELECTED)
-    item.state = TVIS_SELECTED;
-  else 
     item.state = 0;
+  else 
+    item.state = TVIS_SELECTED;
 
   SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
 
@@ -648,7 +648,7 @@ static int winTreeGetImageIndex(Ihandle* ih, const char* value, const char* attr
 /* CALLBACKS                                                                 */
 /*****************************************************************************/
 
-static int winTreeShowRename_CB(Ihandle* ih)
+static int winTreeCallShowRenameCb(Ihandle* ih)
 {
   IFni cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
 
@@ -664,7 +664,7 @@ static int winTreeShowRename_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int winTreeRenameNode_CB(Ihandle* ih)
+static int winTreeCallRenameNodeCb(Ihandle* ih)
 {
   IFnis cbRenameNode = (IFnis)IupGetCallback(ih, "RENAMENODE_CB");
 
@@ -681,7 +681,7 @@ static int winTreeRenameNode_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int winTreeRename_CB(Ihandle* ih, NMTVDISPINFO* pTreeItem)
+static int winTreeCallRenameCb(Ihandle* ih, NMTVDISPINFO* pTreeItem)
 {
   IFnis cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
 
@@ -696,7 +696,7 @@ static int winTreeRename_CB(Ihandle* ih, NMTVDISPINFO* pTreeItem)
   return IUP_DEFAULT;
 }
 
-static int winTreeBranchLeaf_CB(Ihandle* ih)
+static int winTreeCallBranchLeafCb(Ihandle* ih)
 {
   HTREEITEM selected = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
   TVITEM item;
@@ -743,7 +743,7 @@ static int winTreeBranchLeaf_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int winTreeMultiSelection_CB(Ihandle* ih)
+static int winTreeCallMultiSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
   if(cbMulti)
@@ -761,7 +761,7 @@ static int winTreeMultiSelection_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int winTreeSelection_CB(Ihandle* ih, int status)
+static int winTreeCallSelectionCb(Ihandle* ih, int status)
 {
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
 
@@ -774,7 +774,7 @@ static int winTreeSelection_CB(Ihandle* ih, int status)
   return IUP_IGNORE;
 }
 
-static int winTreeDragDrop_CB(Ihandle* ih)
+static int winTreeCallDragDropCb(Ihandle* ih)
 {
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
   int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
@@ -799,7 +799,7 @@ static int winTreeDragDrop_CB(Ihandle* ih)
   return IUP_IGNORE;
 }
 
-static int winTreeRightClick_CB(Ihandle* ih)
+static int winTreeCallRightClickCb(Ihandle* ih)
 {
   IFni cbRightClick  = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
 
@@ -1479,7 +1479,7 @@ static int winTreeSetRenameAttrib(Ihandle* ih, const char* name_id, const char* 
   if(IupGetInt(ih, "SHOWRENAME"))
     ;//iupdrvTreeSetTitleAttrib(ih, name_id, value);
   else
-    winTreeRenameNode_CB(ih);
+    winTreeCallRenameNodeCb(ih);
   
   return 0;
 }
@@ -1799,7 +1799,7 @@ static void winTreeDropEnd(Ihandle* ih)
     return;
 
   /* DragDrop Callback */
-  winTreeDragDrop_CB(ih);
+  winTreeCallDragDropCb(ih);
 
   /* If Drag item is an ancestor of Drop item then return */
   hItemParent = hItemDrop;
@@ -1834,7 +1834,6 @@ static int winTreeMultiSelect(Ihandle* ih, int x, int y)
     {
       TVITEM item;
       UINT  uNewSelState;
-      HTREEITEM hItemOld;
 
       /* Toggle selection state */
       if((SendMessage(ih->handle, TVM_GETITEMSTATE, (WPARAM)hItem, TVIS_SELECTED)) & TVIS_SELECTED)
@@ -1847,9 +1846,6 @@ static int winTreeMultiSelect(Ihandle* ih, int x, int y)
         uNewSelState = TVIS_SELECTED;
         iupAttribSetStr(ih, "_IUPWINTREE_FIRSTSELITEM", (char*)hItem);
       }
-
-      /* Get old selected (focus) item and state */
-      hItemOld = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);     
 
       /* Set proper selection (highlight) state for new item */
       item.mask = TVIF_HANDLE|TVIF_STATE;
@@ -1866,7 +1862,7 @@ static int winTreeMultiSelect(Ihandle* ih, int x, int y)
       if (hItemFirstSel)
       {
         winTreeSelectItems(ih, hItemFirstSel, hItem, 1);
-        winTreeMultiSelection_CB(ih);
+        winTreeCallMultiSelectionCb(ih);
         return 1;
       }
     }
@@ -1903,7 +1899,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
         item.mask = TVIF_HANDLE | TVIF_STATE;
         SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
         
-        winTreeBranchLeaf_CB(ih);
+        winTreeCallBranchLeafCb(ih);
 
         if (item.state & TVIS_EXPANDED)
           SendMessage(ih->handle, TVM_EXPAND, TVE_COLLAPSE, (LPARAM)selected);
@@ -1916,12 +1912,12 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       {
         if(IupGetInt(ih, "SHOWRENAME"))
         {
-          winTreeShowRename_CB(ih);
+          winTreeCallShowRenameCb(ih);
           return 0;
         }
         else
         {
-          winTreeRenameNode_CB(ih);
+          winTreeCallRenameNodeCb(ih);
           return 0;
         }
       }
@@ -1982,9 +1978,9 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
 static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 {
   if (msg_info->code == TVN_SELCHANGING)
-    winTreeSelection_CB(ih, 0);  /* node was unselected */
+    winTreeCallSelectionCb(ih, 0);  /* node was unselected */
   else if (msg_info->code == TVN_SELCHANGED)
-    winTreeSelection_CB(ih, 1);  /* node was unselected */
+    winTreeCallSelectionCb(ih, 1);  /* node was unselected */
   else if(msg_info->code == TVN_BEGINLABELEDIT)
   {
     HWND editLabel = (HWND)SendMessage(ih->handle, TVM_GETEDITCONTROL, 0, 0);
@@ -2006,7 +2002,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   {
     HWND editLabel = (HWND)iupAttribGet(ih, "_IUPTREE_EDITNAME");
 
-    winTreeRename_CB(ih, (NMTVDISPINFO*)msg_info);
+    winTreeCallRenameCb(ih, (NMTVDISPINFO*)msg_info);
 
     if(editLabel)
       DestroyWindow((HWND)iupAttribGet(ih, "_IUPTREE_EDITNAME"));
@@ -2083,14 +2079,14 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
     SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
 
-    winTreeBranchLeaf_CB(ih);
+    winTreeCallBranchLeafCb(ih);
   }
   else if(msg_info->code == NM_RCLICK)
   {
     HTREEITEM hItem = winTreeFindNodePointed(ih);
     SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
 
-    winTreeRightClick_CB(ih);
+    winTreeCallRightClickCb(ih);
   }
   else if (msg_info->code == NM_CUSTOMDRAW)
   {
