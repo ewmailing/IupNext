@@ -757,38 +757,62 @@ static int winTreeCallMultiSelectionCb(Ihandle* ih)
 
     return IUP_DEFAULT;
   }
-
-  return IUP_IGNORE;
-}
-
-static int winTreeCallSelectionCb(Ihandle* ih, int status)
-{
-  IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
-
-  if(cbSelec)
+  else
   {
-    cbSelec(ih, IupGetInt(ih, "VALUE"), status);
-    return IUP_DEFAULT;
+    IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
+    if (cbSelec)
+    {
+      Iarray* markedArray = winTreeGetSelectedArrayId(ih);
+      int* id_hitem = (int*)iupArrayGetData(markedArray);
+      int i, count = iupArrayCount(markedArray);
+
+      for (i=0; i<count; i++)
+        cbSelec(ih, id_hitem[i], 1);
+
+      iupArrayDestroy(markedArray);
+
+      return IUP_DEFAULT;
+    }
   }
 
   return IUP_IGNORE;
 }
 
+static void winTreeCallSelectionCb(Ihandle* ih, int status)
+{
+  IFnii cbSelec;
+
+  if (ih->data->mark_mode == ITREE_MARK_MULTIPLE && IupGetCallback(ih,"MULTISELECTION_CB"))
+  {
+    if ((GetKeyState(VK_SHIFT) & 0x8000))
+      return;
+  }
+
+  if (iupAttribGet(ih, "_IUP_IGNORE_SELECTION"))
+  {
+    if (status==1) iupAttribSetStr(ih, "_IUP_IGNORE_SELECTION", NULL);
+    return;
+  }
+  
+  cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
+  if (cbSelec)
+    cbSelec(ih, IupGetInt(ih, "VALUE"), status);
+}
+
 static int winTreeCallDragDropCb(Ihandle* ih)
 {
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
-  int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
-  int drop_str = iupAttribGetInt(ih, "_IUPTREE_DROPID");
-
-  if(cbDragDrop)
+  if (cbDragDrop)
   {
+    int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
+    int drop_str = iupAttribGetInt(ih, "_IUPTREE_DROPID");
     int isshift = 0;
     int iscontrol = 0;
 
-    if((GetKeyState(VK_SHIFT) & 0x8000))
+    if ((GetKeyState(VK_SHIFT) & 0x8000))
       isshift = 1;
 
-    if((GetKeyState(VK_CONTROL) & 0x8000))
+    if ((GetKeyState(VK_CONTROL) & 0x8000))
       iscontrol = 1;
 
     cbDragDrop(ih, drag_str, drop_str, isshift, iscontrol);
@@ -1674,7 +1698,10 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
     hItemNewSelected = winTreeFindNodeFromString(ih, value);
 
   if (hItemNewSelected)
+  {
+    iupAttribSetStr(ih, "_IUP_IGNORE_SELECTION", "1");
     SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNewSelected);  /* selects, scroll to visible and set focus */
+  }
 
   return 0;
 } 
@@ -1854,6 +1881,8 @@ static int winTreeMultiSelect(Ihandle* ih, int x, int y)
       item.state = uNewSelState;
       SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
 
+      winTreeCallSelectionCb(ih, (uNewSelState==TVIS_SELECTED)?1:0);
+
       return 1;
     }
     else if (GetKeyState(VK_SHIFT) & 0x8000) /* Shift key is down */
@@ -1978,9 +2007,9 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
 static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 {
   if (msg_info->code == TVN_SELCHANGING)
-    winTreeCallSelectionCb(ih, 0);  /* node was unselected */
+    winTreeCallSelectionCb(ih, 0);  /* node unselected */
   else if (msg_info->code == TVN_SELCHANGED)
-    winTreeCallSelectionCb(ih, 1);  /* node was unselected */
+    winTreeCallSelectionCb(ih, 1);  /* node selected */
   else if(msg_info->code == TVN_BEGINLABELEDIT)
   {
     HWND editLabel = (HWND)SendMessage(ih->handle, TVM_GETEDITCONTROL, 0, 0);
@@ -2270,3 +2299,103 @@ void iupdrvTreeInitClass(Iclass* ic)
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
+
+
+#if 0
+static bool SelectItem(HWND hwndTV, HTREEITEM hItem, bool select = true)
+{
+    TV_ITEM tvi;
+    tvi.mask = TVIF_STATE | TVIF_HANDLE;
+    tvi.stateMask = TVIS_SELECTED;
+    tvi.state = select ? TVIS_SELECTED : 0;
+    tvi.hItem = hItem;
+
+    if ( TreeView_SetItem(hwndTV, &tvi) == -1 )
+    {
+        wxLogLastError(wxT("TreeView_SetItem"));
+        return false;
+    }
+
+    return true;
+}
+
+// helper function which tricks the standard control into changing the focused
+// item without changing anything else (if someone knows why Microsoft doesn't
+// allow to do it by just setting TVIS_FOCUSED flag, please tell me!)
+static void SetFocus(HWND hwndTV, HTREEITEM htItem)
+{
+    // the current focus
+    HTREEITEM htFocus = (HTREEITEM)TreeView_GetSelection(hwndTV);
+
+    if ( htItem )
+    {
+        // set the focus
+        if ( htItem != htFocus )
+        {
+            // remember the selection state of the item
+            bool wasSelected = IsItemSelected(hwndTV, htItem);
+
+            if ( htFocus && IsItemSelected(hwndTV, htFocus) )
+            {
+                // prevent the tree from unselecting the old focus which it
+                // would do by default (TreeView_SelectItem unselects the
+                // focused item)
+                TreeView_SelectItem(hwndTV, 0);
+                SelectItem(hwndTV, htFocus);
+            }
+
+            TreeView_SelectItem(hwndTV, htItem);
+
+            if ( !wasSelected )
+            {
+                // need to clear the selection which TreeView_SelectItem() gave
+                // us
+                UnselectItem(hwndTV, htItem);
+            }
+            //else: was selected, still selected - ok
+        }
+        //else: nothing to do, focus already there
+    }
+    else
+    {
+        if ( htFocus )
+        {
+            bool wasFocusSelected = IsItemSelected(hwndTV, htFocus);
+
+            // just clear the focus
+            TreeView_SelectItem(hwndTV, 0);
+
+            if ( wasFocusSelected )
+            {
+                // restore the selection state
+                SelectItem(hwndTV, htFocus);
+            }
+        }
+        //else: nothing to do, no focus already
+    }
+}
+
+    // when setting the text of the item being edited, the text control should
+    // be updated to reflect the new text as well, otherwise calling
+
+
+    else if ( (nMsg == WM_SETFOCUS || nMsg == WM_KILLFOCUS) && isMultiple )
+    {
+        // the tree control greys out the selected item when it loses focus and
+        // paints it as selected again when it regains it, but it won't do it
+        // for the other items itself - help it
+        wxArrayTreeItemIds selections;
+        size_t count = GetSelections(selections);
+        RECT rect;
+        for ( size_t n = 0; n < count; n++ )
+        {
+            // TreeView_GetItemRect() will return false if item is not visible,
+            // which may happen perfectly well
+            if ( TreeView_GetItemRect(GetHwnd(), HITEM_PTR(selections[n]),
+                                      &rect, TRUE) )
+            {
+                ::InvalidateRect(GetHwnd(), &rect, FALSE);
+            }
+        }
+    }
+#endif

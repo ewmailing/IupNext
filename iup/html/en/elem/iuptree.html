@@ -193,11 +193,11 @@ display area.</p>
 <p>Node insertion or removal is done by means 
   of attributes. It is allowed to remove nodes and branches inside callbacks associated to opening or closing branches.
   </p>
-<p>This means that the user may insert nodes 
-  and branches only when necessary when the parent brach is opened, allowing the use of a larger 
-  IupTree without too much overhead. Then when the parent branch is closed the subtree can be removed. A side-effect of this 
-  use is that the expanded or collapsed state of the children branches must be managed by the user. 
-</p>
+<p>This means that the user may insert nodes and branches only when necessary 
+when the parent brach is opened, allowing the use of a larger IupTree without 
+too much overhead. Then when the parent branch is closed the subtree can be 
+removed. But the subtree mst have at least 1 item so the branch can be oppened 
+and closed, empty branches can NOT be oppend.</p>
 <h4>User Data</h4>
 <p>The node Id does not always correspond to the same 
   node as the tree is modified. For example, a id=2 will always refer to the third node in the tree. For that 

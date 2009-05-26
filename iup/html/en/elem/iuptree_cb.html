@@ -32,7 +32,10 @@
     IUP_IGNORE for the selected node not to be changed, or IUP_DEFAULT to change it.</p>
 <p><strong>MULTISELECTION_CB</strong>:
   Action generated 
-  when multiple nodes are selected with the mouse and the shift key pressed. </p>
+  when multiple nodes are selected using the mouse and the shift key pressed. If 
+not defined the SELECTION_CB will be called for each selected node. The block of 
+nodes is always completely included, independent if some node were already 
+marked.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int* <strong>ids, int </strong>n) [in C]
 <strong>elem</strong>:multiselection_cb(<strong>ids: </strong>table<strong>, n:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -44,8 +47,7 @@
 <hr>
 <p><strong>BRANCHOPEN_CB</strong>:
   Action generated when a branch is expanded. 
-  This action occurs when the user clicks the &quot;+&quot; sign on the left of the branch, or when double clicks the branch 
-  image, or hits Enter on a collapsed branch.</p>
+  This action occurs when the user clicks the &quot;+&quot; sign on the left of the branch, or when double clicks the branch, or hits Enter on a collapsed branch.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>) [in C] 
 <strong>elem</strong>:branchopen_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -58,7 +60,7 @@
   This action occurs when the user clicks the &quot;-&quot; 
   sign on the left of the branch, or when double 
   clicks 
-  the branch <b>image</b>, or hits Enter on an expanded branch.
+  the branch, or hits Enter on an expanded branch.
   </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C]
 <strong>elem</strong>:branchclose_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -193,7 +195,8 @@ supported.</p>
 
 <p>In Motif the tree always resets the focus to the root node when receive the 
 focus. The KILLFOCUS_CB callback is called only when the focus is at the root 
-node.</p>
+node. Also in Motif some LEAVEWINDOW_CB events are delayed to when the user 
+enter again, firing a leave and enter events at enter time.</p>
 
 </body>
 

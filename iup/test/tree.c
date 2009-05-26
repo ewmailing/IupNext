@@ -351,11 +351,11 @@ static void init_tree(void)
   IupSetCallback(tree, "K_ANY",          (Icallback) k_any_cb);
   IupSetCallback(tree, "SHOWRENAME_CB", (Icallback) showrename_cb);
   IupSetCallback(tree, "SELECTION_CB", (Icallback) selection_cb);
-  IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
+  //IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
   IupSetCallback(tree, "GETFOCUS_CB", (Icallback) getfocus_cb);
   IupSetCallback(tree, "KILLFOCUS_CB", (Icallback) killfocus_cb);
   IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
-  //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+  IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
   //IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
   //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
 
@@ -368,7 +368,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
 //  IupSetAttribute(tree, "SHOWRENAME",   "YES");
 
-//  IupSetAttribute(tree, "ADDEXPANDED",  "NO");
+  //IupSetAttribute(tree, "ADDEXPANDED",  "NO");
 //  IupSetAttribute(tree, "HIDELINES",    "YES");
 //  IupSetAttribute(tree, "HIDEBUTTONS",    "YES");
 //  IupSetAttribute(tree, "INDENTATION",   "40");

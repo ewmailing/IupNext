@@ -28,6 +28,7 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_drv.h"
+#include "iup_drvinfo.h"
 #include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
 #include "iup_key.h"
@@ -655,6 +656,29 @@ static Widget motTreeFindNodeFromString(Ihandle* ih, const char* id_string)
     return motTreeGetFocusNode(ih);
 }
 
+static void motTreeEnterLeaveWindowEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
+{
+  /* usually when one Gadget is selected different than the previous one,
+     a leave/enter events are generated.
+     But we could not find the exact condition, 
+     so this is a workaround. Some leave events will be lost. */
+  if (evt->type == EnterNotify)
+  {
+    if (iupAttribGet(ih, "_IUPTREE_IGNORE_ENTERLEAVE"))
+    {
+      iupAttribSetStr(ih, "_IUPTREE_IGNORE_ENTERLEAVE", NULL);
+      return;
+    }
+  }
+  else  if (evt->type == LeaveNotify)
+  {
+    if (iupAttribGet(ih, "_IUPTREE_IGNORE_ENTERLEAVE"))
+      return;
+  }
+
+  iupmotEnterLeaveWindowEvent(w, ih, evt, cont);
+}
+
 static void motTreeFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
 {
   unsigned char selpol;
@@ -756,7 +780,10 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char*
   if (kind == ITREE_BRANCH)
   {
     if (ih->data->add_expanded)
+    {
+      iupAttribSetStr(ih, "_IUP_IGNORE_BRANCHOPEN", "1");
       XtVaSetValues(wNewItem, XmNoutlineState, XmEXPANDED, NULL);
+    }
     else
       XtVaSetValues(wNewItem, XmNoutlineState, XmCOLLAPSED, NULL);
   }
@@ -1516,7 +1543,8 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 
     for(i = 0; i < countItems; i++)
     {
-      if ((wListOfItems[i] != wRoot) && (XmIsIconGadget(wListOfItems[i])))  /* the root node can't be deleted */
+      int ok = XmIsIconGadget(wListOfItems[i]);
+      if ((wListOfItems[i] != wRoot) && ok)  /* the root node can't be deleted */
       {
         wItemList = NULL;
         numChild = XmContainerGetItemChildren(ih->handle, wListOfItems[i], &wItemList);
@@ -1687,9 +1715,16 @@ static int motTreeCallBranchCloseCb(Ihandle* ih, int value)
 
 static int motTreeCallBranchOpenCb(Ihandle* ih, int value)
 {
-  IFni cbBranchOpen = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
+  IFni cbBranchOpen;
+  
+  if (iupAttribGet(ih, "_IUP_IGNORE_BRANCHOPEN"))
+  {
+    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCHOPEN", NULL);
+    return IUP_DEFAULT;
+  }
 
-  if(cbBranchOpen)
+  cbBranchOpen = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
+  if (cbBranchOpen)
   {
     cbBranchOpen(ih, value);
     return IUP_DEFAULT;
@@ -1714,6 +1749,7 @@ static int motTreeCallExecuteLeafCb(Ihandle* ih, int value)
 static int motTreeCallMultiSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
+  IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
   WidgetList wListOfItems = NULL;
   Widget wRoot;
   int countItems;
@@ -1722,8 +1758,10 @@ static int motTreeCallMultiSelectionCb(Ihandle* ih)
 
   XtVaGetValues(ih->handle, XmNselectedObjects, &wListOfItems,
                         XmNselectedObjectCount, &countItems, NULL);
+  if (countItems == 0)
+    return IUP_DEFAULT;
 
-  if(cbMulti && countItems > 1)
+  if (cbMulti || cbSelec)
   {
     int* id_rowItem = malloc(sizeof(int) * countItems);
     int i = 0;
@@ -1735,7 +1773,14 @@ static int motTreeCallMultiSelectionCb(Ihandle* ih)
       id_rowItem[i] = ih->data->id_control;
     }
 
-    cbMulti(ih, id_rowItem, countItems);
+    if (cbMulti)
+      cbMulti(ih, id_rowItem, countItems);
+    else
+    {
+      for (i=0; i<countItems; i++)
+        cbSelec(ih, id_rowItem[i], 1);
+    }
+
     free(id_rowItem);
 
     return IUP_DEFAULT;
@@ -1820,13 +1865,19 @@ static int motTreeCallRenameCb(Ihandle* ih)
 static int motTreeCallDragDropCb(Ihandle* ih)
 {
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
-  int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
-  int drop_str = iupAttribGetInt(ih, "_IUPTREE_DROPID");
-  int   isshift_str = iupAttribGetInt(ih, "_IUPTREE_ISSHIFT");    //TODO: change this
-  int iscontrol_str = iupAttribGetInt(ih, "_IUPTREE_ISCONTROL");
-
-  if(cbDragDrop)
+  if (cbDragDrop)
   {
+    int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
+    int drop_str = iupAttribGetInt(ih, "_IUPTREE_DROPID");
+    int   isshift_str = 0;
+    int iscontrol_str = 0;
+    char key[5];
+    iupdrvGetKeyState(key);
+    if (key[0] == 'S')
+      isshift_str = 1;
+    if (key[1] == 'C')
+      iscontrol_str = 1;
+
     cbDragDrop(ih, drag_str, drop_str, isshift_str, iscontrol_str);
     return IUP_DEFAULT;
   }
@@ -1910,14 +1961,23 @@ static void motTreeCreateEditField(Ihandle* ih)
 
 static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCallbackStruct *nptr)
 {
-  IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
-  int oldpos = iupAttribGetInt(ih, "_IUPTREE_OLDVALUE");
-  int curpos = IupGetInt(ih, "VALUE");
+  IFnii cbSelec;
   (void)w;
   (void)nptr;
 
+  if (ih->data->mark_mode == ITREE_MARK_MULTIPLE)
+  {
+    char key[5];
+    iupdrvGetKeyState(key);
+    if (key[0] == 'S')
+      return;
+  }
+
+  cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
   if (cbSelec)
   {
+    int oldpos = iupAttribGetInt(ih, "_IUPTREE_OLDVALUE");
+    int curpos = IupGetInt(ih, "VALUE");
     if (oldpos != curpos)
     {
       cbSelec(ih, oldpos, 0);  /* unselected */
@@ -1943,7 +2003,7 @@ static void motTreeDefaultActionCallback(Widget w, Ihandle* ih, XmContainerSelec
   if (!countItems || (Widget)iupAttribGet(ih, "_IUPTREE_EDITFIELD"))
     return;
 
-  // TODO: check this for multiple selection
+  /* this works also when using multiple selection */
   wItem = wListOfItems[0];
 
   XtVaGetValues(wItem, XmNoutlineState, &itemState,
@@ -1961,9 +2021,8 @@ static void motTreeDefaultActionCallback(Widget w, Ihandle* ih, XmContainerSelec
       motTreeCallBranchCloseCb(ih, IupGetInt(ih, "VALUE"));
   }
   else
-  {
     motTreeCallExecuteLeafCb(ih, IupGetInt(ih, "VALUE"));
-  }
+
   if (wChildren) XtFree((char*)wChildren);
 }
 
@@ -2175,19 +2234,6 @@ static void motTreeDestinationCallback(Widget w, Ihandle* ih, XtPointer call_dat
   XmTransferValue (dptr->transfer_id, TARGETS, motTreeTransferCallback, NULL, XtLastTimestampProcessed (iupmot_display));
 }
 
-static void motTreeKeyReleaseEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *cont)
-{
-  KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
-  (void)w;
-  (void)cont;
-
-  if((motcode == XK_Shift_L || motcode == XK_Shift_R) && ih->data->mark_mode==ITREE_MARK_MULTIPLE)
-  {
-    /* Multi Selection Callback */
-    motTreeCallMultiSelectionCb(ih);
-  }
-}
-
 static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *cont)
 {
   KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
@@ -2222,35 +2268,27 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
   iupmotKeyPressEvent(w, ih, (XEvent*)evt, cont);
 }
 
-static void motTreeButtonPressEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean* cont)
+static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean* cont)
 {
   (void)w;
   (void)cont;
+
+  if (evt->type==ButtonPress)
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_ENTERLEAVE", "1");
 
   if (evt->type==ButtonPress && evt->button==Button3)
   {   
     /* select the pointed item */
     motTreeCallRightClickCb(ih);
   }
-  else if (evt->type==ButtonPress)
-  {
-    unsigned long elapsed;
-    static Time last = 0;
-
-    elapsed = evt->time - last;
-    last = evt->time;
-
-    if ((int)elapsed <= XtGetMultiClickTime(iupmot_display)) /* Double Click */
+  else if (evt->type==ButtonRelease && evt->button==Button1)
+  {   
+    if (ih->data->mark_mode==ITREE_MARK_MULTIPLE)
     {
-      motTreeItemData *itemData;
-      Widget wItem = motTreeGetFocusNode(ih);
-      if(!wItem)
-        return;
-
-      XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
-
-      if (itemData->kind == ITREE_LEAF)
-        motTreeCallExecuteLeafCb(ih, IupGetInt(ih, "VALUE"));
+      char key[5];
+      iupdrvGetKeyState(key);
+      if (key[0] == 'S')
+        motTreeCallMultiSelectionCb(ih);
     }
   }
 
@@ -2350,12 +2388,11 @@ static int motTreeMapMethod(Ihandle* ih)
 
   iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)parent);
 
-  XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
-  XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+  XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)motTreeEnterLeaveWindowEvent, (XtPointer)ih);
+  XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)motTreeEnterLeaveWindowEvent, (XtPointer)ih);
   XtAddEventHandler(ih->handle, FocusChangeMask, False, (XtEventHandler)motTreeFocusChangeEvent,  (XtPointer)ih);
   XtAddEventHandler(ih->handle, KeyPressMask,    False, (XtEventHandler)motTreeKeyPressEvent,    (XtPointer)ih);
-  XtAddEventHandler(ih->handle, KeyReleaseMask,  False, (XtEventHandler)motTreeKeyReleaseEvent,  (XtPointer)ih);
-  XtAddEventHandler(ih->handle, ButtonPressMask, False, (XtEventHandler)motTreeButtonPressEvent, (XtPointer)ih);
+  XtAddEventHandler(ih->handle, ButtonPressMask|ButtonReleaseMask, False, (XtEventHandler)motTreeButtonEvent, (XtPointer)ih);
   XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotPointerMotionEvent, (XtPointer)ih);
 
   /* Callbacks */

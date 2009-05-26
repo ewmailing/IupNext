@@ -28,6 +28,7 @@
 #include "iup_array.h"
 #include "iup_tree.h"
 
+#include "iup_drvinfo.h"
 #include "iupgtk_drv.h"
 
 enum
@@ -470,7 +471,10 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char*
     path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iterParent);
     depth = gtk_tree_path_get_depth(path)-1;
     if (ih->data->add_expanded || depth==0)  /* if this is the first child of the root, expand always */
+    {
+      iupAttribSetStr(ih, "_IUP_IGNORE_BRANCHOPEN", "1");
       gtk_tree_view_expand_row(GTK_TREE_VIEW(ih->handle), path, FALSE);
+    }
     else
       gtk_tree_view_collapse_row(GTK_TREE_VIEW(ih->handle), path);
     gtk_tree_path_free(path);
@@ -519,13 +523,13 @@ static void gtkTreeOpenCloseEvent(Ihandle* ih)
   {
     gtk_tree_model_get(model, &iter, IUPGTK_TREE_KIND, &kind, -1);
 
-    if(!gtk_tree_model_iter_has_child(model, &iter) && kind == ITREE_LEAF)  /* leafs */
+    if (kind == ITREE_LEAF)  /* leafs */
     {
       gtk_tree_view_row_activated(GTK_TREE_VIEW(ih->handle), path, (GtkTreeViewColumn*)iupAttribGet(ih, "_IUPGTK_COLUMN"));     
     }
-    else  /* branches -> has and has no child */
+    else  /* branches */
     {
-      if(gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path))
+      if (gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path))
         gtk_tree_view_collapse_row(GTK_TREE_VIEW(ih->handle), path);
       else
         gtk_tree_view_expand_row(GTK_TREE_VIEW(ih->handle), path, FALSE);
@@ -589,8 +593,8 @@ static gboolean gtkTreeSelected_Iter_Func(GtkTreeModel *model, GtkTreePath *path
 static int gtkTreeCallMultiSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
-
-  if(cbMulti)
+  IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
+  if (cbMulti || cbSelec)
   {
     GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
     GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
@@ -626,7 +630,14 @@ static int gtkTreeCallMultiSelectionCb(Ihandle* ih)
     g_list_foreach(rr_list, (GFunc) gtk_tree_row_reference_free, NULL);
     g_list_free(rr_list);
 
-    cbMulti(ih, id_rowItem, count_selected_rows);
+    if (cbMulti)
+      cbMulti(ih, id_rowItem, count_selected_rows);
+    else
+    {
+      for (i=0; i<count_selected_rows; i++)
+        cbSelec(ih, id_rowItem[i], 1);
+    }
+
     free(id_rowItem);
 
     return IUP_DEFAULT;
@@ -1257,6 +1268,7 @@ static int gtkTreeSetValueAttrib(Ihandle* ih, const char* value)
     return 0;
 
   /* select */
+  iupAttribSetStr(ih, "_IUP_IGNORE_SELECTION", "1");
   gtk_tree_selection_select_iter(selection, &iterNewSel);
 
   path = gtk_tree_model_get_path(model, &iterNewSel);
@@ -1307,6 +1319,8 @@ static int gtkTreeSetMarkedAttrib(Ihandle* ih, const char* name_id, const char* 
   GtkTreeIter iterItem = gtkTreeFindNodeFromString(ih, name_id);
   if (!iterItem.user_data)
     return 0;
+
+  iupAttribSetStr(ih, "_IUP_IGNORE_SELECTION", "1");
 
   if (iupStrBoolean(value))
     gtk_tree_selection_select_iter(selection, &iterItem);
@@ -1614,13 +1628,19 @@ static void gtkTreeCellTextEdited(GtkCellRendererText *cell, gchar *path_string,
 static int gtkTreeCallDragDropCb(Ihandle* ih)
 {
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
-  int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
-  int drop_str = iupAttribGetInt(ih, "_IUPTREE_DROPID");
-  int   isshift_str = iupAttribGetInt(ih, "_IUPTREE_ISSHIFT");   //TODO: change this
-  int iscontrol_str = iupAttribGetInt(ih, "_IUPTREE_ISCONTROL");
-
-  if(cbDragDrop)
+  if (cbDragDrop)
   {
+    int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
+    int drop_str = iupAttribGetInt(ih, "_IUPTREE_DROPID");
+    int   isshift_str = 0;
+    int iscontrol_str = 0;
+    char key[5];
+    iupdrvGetKeyState(key);
+    if (key[0] == 'S')
+      isshift_str = 1;
+    if (key[1] == 'C')
+      iscontrol_str = 1;
+
     cbDragDrop(ih, drag_str, drop_str, isshift_str, iscontrol_str);
     return IUP_DEFAULT;
   }
@@ -1747,15 +1767,30 @@ static void gtkTreeDragBegin(GtkWidget *widget, GdkDragContext *drag_context, Ih
 
 static void gtkTreeSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
 {
-  IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
-  int oldpos = iupAttribGetInt(ih, "_IUPTREE_OLDVALUE");
-  int curpos = IupGetInt(ih, "VALUE");
+  IFnii cbSelec;
   (void)selection;
 
-  if(cbSelec)
+  if (ih->data->mark_mode == ITREE_MARK_MULTIPLE)
   {
+    char key[5];
+    iupdrvGetKeyState(key);
+    if (key[0] == 'S')
+      return;
+  }
+
+  cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
+  if (cbSelec)
+  {
+    int oldpos = iupAttribGetInt(ih, "_IUPTREE_OLDVALUE");
+    int curpos = IupGetInt(ih, "VALUE");
     if(oldpos != curpos)
     {
+      if (iupAttribGet(ih, "_IUP_IGNORE_SELECTION"))
+      {
+        iupAttribSetStr(ih, "_IUP_IGNORE_SELECTION", NULL);
+        return;
+      }
+
       cbSelec(ih, oldpos, 0);  /* unselected */
       cbSelec(ih, curpos, 1);  /*   selected */
 
@@ -1766,9 +1801,17 @@ static void gtkTreeSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
 
 static void gtkTreeRowExpanded(GtkTreeView* tree_view, GtkTreeIter *iter, GtkTreePath *path, Ihandle* ih)
 {
-  /* BRANCHOPEN_CB callback */
-  IFni cbBranchOpen  = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
-  cbBranchOpen(ih, IupGetInt(ih, "VALUE"));
+  IFni cbBranchOpen;
+  
+  if (iupAttribGet(ih, "_IUP_IGNORE_BRANCHOPEN"))
+  {
+    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCHOPEN", NULL);
+    return;
+  }
+
+  cbBranchOpen = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
+  if (cbBranchOpen)
+    cbBranchOpen(ih, IupGetInt(ih, "VALUE"));
 
   (void)path;
   (void)iter;
@@ -1777,9 +1820,9 @@ static void gtkTreeRowExpanded(GtkTreeView* tree_view, GtkTreeIter *iter, GtkTre
 
 static void gtkTreeRowCollapsed(GtkTreeView* tree_view, GtkTreeIter *iter, GtkTreePath *path, Ihandle* ih)
 {
-  /* BRANCHCLOSE_CB callback */
-  IFni cbBranchClose  = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
-  cbBranchClose(ih, IupGetInt(ih, "VALUE"));
+  IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
+  if (cbBranchClose)
+    cbBranchClose(ih, IupGetInt(ih, "VALUE"));
 
   (void)path;
   (void)iter;
@@ -1804,7 +1847,7 @@ static void gtkTreeRowActived(GtkTreeView* tree_view, GtkTreePath *path, GtkTree
   (void)tree_view;
 }
 
-static gboolean gtkTreeButtonPressEvent(GtkWidget *treeview, GdkEventButton *evt, Ihandle* ih)
+static gboolean gtkTreeButtonEvent(GtkWidget *treeview, GdkEventButton *evt, Ihandle* ih)
 {
   if (evt->type == GDK_BUTTON_PRESS && evt->button == 3)  /* right single click */
   {
@@ -1821,7 +1864,6 @@ static gboolean gtkTreeButtonPressEvent(GtkWidget *treeview, GdkEventButton *evt
 
     if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(treeview), (gint) evt->x, (gint) evt->y, &path, NULL, NULL, NULL))
     {
-      IFni cbExecuteLeaf  = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
       GtkTreeIter iter;
       GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
       int kind;  /* used for nodes defined as branches, but do not have children */
@@ -1829,11 +1871,25 @@ static gboolean gtkTreeButtonPressEvent(GtkWidget *treeview, GdkEventButton *evt
       gtk_tree_model_get_iter(model, &iter, path);
       gtk_tree_model_get(model, &iter, IUPGTK_TREE_KIND, &kind, -1);
 
-      /* just to leaf nodes */
-      if (kind == ITREE_LEAF)
-        cbExecuteLeaf(ih, IupGetInt(ih, "VALUE"));
+      if (kind == ITREE_BRANCH)
+      {
+        if (gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path))
+          gtk_tree_view_collapse_row(GTK_TREE_VIEW(ih->handle), path);
+        else
+          gtk_tree_view_expand_row(GTK_TREE_VIEW(ih->handle), path, FALSE);
+      }
 
       gtk_tree_path_free(path);
+    }
+  }
+  else if (evt->type == GDK_BUTTON_RELEASE && evt->button == 1)  /* left single release */
+  {
+    if (ih->data->mark_mode==ITREE_MARK_MULTIPLE)
+    {
+      char key[5];
+      iupdrvGetKeyState(key);
+      if (key[0] == 'S')
+        gtkTreeCallMultiSelectionCb(ih); /* Multi Selection Callback */
     }
   }
   
@@ -1842,12 +1898,6 @@ static gboolean gtkTreeButtonPressEvent(GtkWidget *treeview, GdkEventButton *evt
 
 static gboolean gtkTreeKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
-  if((evt->keyval == GDK_Shift_L || evt->keyval == GDK_Shift_R) && ih->data->mark_mode==ITREE_MARK_MULTIPLE)
-  {
-    /* Multi Selection Callback */
-    gtkTreeCallMultiSelectionCb(ih);
-  }
-
   /* In editing-started mode, check if the user set RENAMECARET and RENAMESELECTION attributes */
   if(iupAttribGet(ih, "_IUPTREE_EDITNAME") != NULL)
   {
@@ -1861,6 +1911,7 @@ static gboolean gtkTreeKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihan
   }
 
   (void)widget;
+  (void)evt;
  
   return TRUE;
 }
@@ -1995,7 +2046,8 @@ static int gtkTreeMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle),      "row-activated", G_CALLBACK(gtkTreeRowActived), ih);
   g_signal_connect(G_OBJECT(ih->handle),    "key-press-event", G_CALLBACK(gtkTreeKeyPressEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle),  "key-release-event", G_CALLBACK(gtkTreeKeyReleaseEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkTreeButtonPressEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkTreeButtonEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkTreeButtonEvent), ih);
   //g_signal_connect(G_OBJECT(ih->handle),         "drag-begin", G_CALLBACK(gtkTreeDragBegin), ih);
   //g_signal_connect(G_OBJECT(ih->handle),          "drag-drop", G_CALLBACK(gtkTreeDragDrop), ih);
   //g_signal_connect(G_OBJECT(ih->handle),           "drag-end", G_CALLBACK(gtkTreeDragEnd), ih);
