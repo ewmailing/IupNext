@@ -1268,8 +1268,11 @@ static int gtkTreeSetValueAttrib(Ihandle* ih, const char* value)
     return 0;
 
   /* select */
-  iupAttribSetStr(ih, "_IUP_IGNORE_SELECTION", "1");
-  gtk_tree_selection_select_iter(selection, &iterNewSel);
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE)
+  {
+    iupAttribSetStr(ih, "_IUP_IGNORE_SELECTION", "1");
+    gtk_tree_selection_select_iter(selection, &iterNewSel);
+  }
 
   path = gtk_tree_model_get_path(model, &iterNewSel);
   gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE, 0, 0); /* scroll to visible */

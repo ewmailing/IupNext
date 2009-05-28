@@ -52,6 +52,7 @@ SRC += mdi.c
 SRC += getparam.c
 SRC += getcolor.c
 SRC += class_conf.c
+SRC += tree.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
@@ -79,7 +80,6 @@ SRC += gauge.c
 SRC += matrix.c
 SRC += matrix_cbs.c
 SRC += matrix_cbmode.c
-SRC += tree.c
 
 LINKER = g++
 SRC += pplot.c
