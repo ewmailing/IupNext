@@ -258,10 +258,10 @@ in the string as &quot;%p&quot;. (since 3.0)</p>
 (write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
 the depth of the new node is always the same of the reference node. 
 (since 3.0)</p>
-<h3><a name="edit">Editing</a>&nbsp; (<font size="3">write-only, non inheritable</font>)</h3>
-<p><span class="style2">RENAME</span><span class="style1"><strong> </strong>(write only):</span><span class="style2">
-</span><span class="style1">Forces a rename action to take place. If SHOWRENAME=YES then 
-  does in-place rename, else just calls the RENAMENODE_CB. The value is ignored.</span></p>
+<h3><a name="edit">Editing</a></h3>
+<p><b>RENAME </b>(write only): Forces a rename action to take place, same result as 
+pressing F2. If SHOWRENAME=YES then 
+  does in-place rename, else just calls the RENAMENODE_CB. The value is ignored.</p>
 
 <p><span class="style2">RENAMECARET</span><span class="style1">:
   Allows specifying and verifying the caret&#8217;s 
@@ -270,10 +270,8 @@ the depth of the new node is always the same of the reference node.
   Allows specifying and verifying selection 
   interval 
   of the text box when in-place renaming.</span></p>
-<p class="style1"><strong>SHOWRENAME</strong>: Allows the in place rename of a node. The 
-<strong>RENAME_CB</strong> is called after the user entered a new name, instead of calling
-  <strong>RENAME_NODE_CB</strong> to notify the user that it should rename a node. 
-  Default:
+<p><strong>SHOWRENAME</strong> (creation only): Allows the in place rename of a 
+node. Default:
   &quot;NO&quot;.</p>
 
 </body>

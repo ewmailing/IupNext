@@ -171,12 +171,16 @@ static int rename_cb(Ihandle* ih, int id, char* title)
 static int branchopen_cb(Ihandle* ih, int id)
 {
   printf("BRANCHOPEN_CB (%d)\n", id);
+  if (id == 6)
+    return IUP_IGNORE;
   return IUP_DEFAULT;
 }
 
 static int branchclose_cb(Ihandle* ih, int id)
 {
   printf("BRANCHCLOSE_CB (%d)\n", id);
+  if (id == 6)
+    return IUP_IGNORE;
   return IUP_DEFAULT;
 }
 

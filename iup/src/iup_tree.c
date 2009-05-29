@@ -270,28 +270,28 @@ static int iTreeSetCtrlAttrib(Ihandle* ih, const char* value)
 //    ih->data->rename_selection = 0;
 //  return 0;
 //}
-//
-//static char* iTreeGetShowRenameAttrib(Ihandle* ih)
-//{
-//  if (ih->data->show_rename)
-//    return "YES";
-//  else
-//    return "NO";
-//}
-//
-//static int iTreeSetShowRenameAttrib(Ihandle* ih, const char* value)
-//{
-//  /* valid only before map */
-//  if (ih->handle)
-//    return 0;
-//
-//  if (iupStrBoolean(value))
-//    ih->data->show_rename = 1;
-//  else
-//    ih->data->show_rename = 0;
-//
-//  return 0;
-//}
+
+static char* iTreeGetShowRenameAttrib(Ihandle* ih)
+{
+  if (ih->data->show_rename)
+    return "YES";
+  else
+    return "NO";
+}
+
+static int iTreeSetShowRenameAttrib(Ihandle* ih, const char* value)
+{
+  /* valid only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+    ih->data->show_rename = 1;
+  else
+    ih->data->show_rename = 0;
+
+  return 0;
+}
 
 static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
@@ -409,7 +409,7 @@ Iclass* iupTreeGetClass(void)
   /* IupTree Attributes - GENERAL */
   //iupClassRegisterAttribute(ic, "RENAMECARET",     iTreeGetRenameCaretAttrib,     iTreeSetRenameCaretAttrib,     NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   //iupClassRegisterAttribute(ic, "RENAMESELECTION", iTreeGetRenameSelectionAttrib, iTreeSetRenameSelectionAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "SHOWRENAME",      iTreeGetShowRenameAttrib,      iTreeSetShowRenameAttrib,      NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWRENAME",      iTreeGetShowRenameAttrib,      iTreeSetShowRenameAttrib,      NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ADDEXPANDED",     iTreeGetAddExpandedAttrib,     iTreeSetAddExpandedAttrib,     IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
@@ -489,8 +489,8 @@ void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, char* f, ...)
 
 int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
 {
-  int count = IupGetInt(ih, "COUNT");
-  if (id>=0 && id<count)
+  //int count = IupGetInt(ih, "COUNT"); too slow
+  if (id>=0)// && id<count)
   {
     char attr[10];
     sprintf(attr,"USERDATA%d",id);

@@ -188,7 +188,7 @@ tree is mapped.</p>
 <p>Scrollbars are automatically displayed if the tree is greatter than its 
 display area.</p>
 <p>Branches may be added in IupLua using a Lua Table, see 
-<a href="#TreeSetValue">TreeSetValue</a>.&nbsp; </p>
+<a href="#TreeSetValue">iup.TreeSetValue</a>.&nbsp; </p>
 <h4>Manipulation</h4>
 <p>Node insertion or removal is done by means 
   of attributes. It is allowed to remove nodes and branches inside callbacks associated to opening or closing branches.
@@ -235,14 +235,13 @@ be selected.</p>
   <li><b>Arrow Up/Down</b>: Moves the focus node to the neighbor 
     node, according to the arrow direction.</li>
   <li><b>Home/End</b>: Moves the focus node to the root/last node.</li>
-  <li><b>Page Up/Page Down</b>: Moves the focus node to the node one page above/below the 
+  <li><b>Page Up/Page Down</b>: Moves the focus node to the node one visible page above/below the 
     focus node.</li>
   <li><b>Enter</b>: If the focus node is an expanded branch, it is collapsed; if it is a collapsed
     branch, it is expanded; if it is a leaf, it is executed.</li>
-	<li><b>Ctrl+Arrow Up/Down</b>: When selection mode is single moves only the 
+	<li><b>Ctrl+Arrow Up/Down</b>: Moves only the 
 	focus node.</li>
-  <li><span class="style4">Ctrl+Space</span><span class="style3">:&nbsp;
-    Marks or unmarks a node.</span></li>
+  <li><b>Ctrl+Space</b>:&nbsp;Marks or unmarks the node at focus.</li>
 	<li><strong>F2</strong>: Calls the rename callback or invoke the inplace 
 	rename.</li>
 </ul>

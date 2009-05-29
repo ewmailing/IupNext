@@ -85,9 +85,9 @@ marked.</p>
 <hr>
 <p><strong>RENAMENODE_CB</strong>:
   Action generated when a node is to be 
-  renamed. It occurs only when the user <span class="style2"><strong>double clicks</strong></span> the <b>text</b> associated to a node (leaf or branch) or press 
-<b>F2</b>, 
-  and <strong>SHOWRENAME</strong>=NO.</p>
+  renamed 
+  and <strong>SHOWRENAME</strong>=<strong>NO</strong>. It occurs only when the user <span class="style2"><strong>double clicks</strong></span> the <b>text</b> associated to a node (leaf or branch) or press 
+<b>F2</b>.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>, char *<strong>name</strong>); [in C]<strong>
 elem</strong>:renamenode_cb(<strong>id:</strong> number, <strong>name</strong>:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -99,9 +99,8 @@ elem</strong>:renamenode_cb(<strong>id:</strong> number, <strong>name</strong>:<
 <p><strong>SHOWRENAME_CB</strong>:
   Action generated when a node is to be 
   renamed in place and <strong>SHOWRENAME</strong>=<strong>YES</strong>. 
-  It occurs only when the user double clicks the <b>text</b> associated to a node (leaf or branch) or press 
-<b>F2</b>, 
-  and <strong>SHOWRENAME</strong>=<strong>YES</strong>.</p>
+  It occurs only when the user <span class="style2"><strong>double clicks</strong></span> the <b>text</b> associated to a node (leaf or branch) or press 
+<b>F2</b>.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C]<strong>
 elem</strong>:showrename_cb(<strong>id:</strong> number:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:

@@ -38,10 +38,10 @@ struct _IcontrolData
   void* def_image_collapsed;  /* Default image collapsed */
   void* def_image_expanded;   /* Default image expanded */
 
-  int rename_caret;      
-  int rename_selection;
+  //int rename_caret;      
+  //int rename_selection;
 
-  int id_control;  /* id control to find and replace items inside the tree */
+  int id_control;  /* auxiliary variable for computing or finding the id of a node */
 };
 
 

@@ -310,8 +310,9 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 /************************************************************************/
 /*              Replacement for the WinMain in Windows,                 */
 /*        this allows the application to start from "main".             */
+/*        Used only for Watcom.                                         */
 /************************************************************************/
-#if defined (__WATCOMC__) || defined (__MWERKS__)
+#if defined (__WATCOMC__)
 #ifdef __cplusplus
 extern "C" {
 int IupMain (int argc, char** argv); /* In C++ we have to declare the prototype */
