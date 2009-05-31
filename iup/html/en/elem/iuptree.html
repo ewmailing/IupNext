@@ -257,8 +257,8 @@ In Windows and Gtk the focus simply goes directly to the next control.</p>
 	Moves the focus node to the clicked node. If the node is an expanded 
     branch, it is collapsed; if it is a collapsed branch, it is expanded; if it is a leaf, it is executed. 
   </li>
-  <li><span class="style4">Double-clicking a node text</span><span class="style3">: Calls the rename callback 
-    or invoke the inplace rename.</span></li>
+  <li><b>Clicking twice a node</b>: Calls the rename callback 
+    or invoke the inplace rename.</li>
 </ul>
 <h4>Removing a Node with &quot;Del&quot;</h4>
 <p>By default the Del key is not processed, but you can implement it using a 
@@ -321,20 +321,30 @@ attribute.</p>
       Identifier of the IupTree interacting with the user.<br>
 <strong>tree</strong>: table of nodes.</p>
 <p>Initializes the tree using the given Lua table as values for the tree nodes. For example:</p>
-<pre>tree = {
+<pre>tree = iup.tree{}
+tree_init = 
+{
+  branchname = &quot;Figures&quot;,
+  &quot;Other",
   {
-    &quot;Horse&quot;,
-    &quot;Whale&quot;;
-    branchname = &quot;Mammals&quot;
+    branchname = &quot;triangle&quot;,
+    &quot;equilateral&quot;,
+    &quot;isoceles&quot;,
+    "scalenus",
   },
   {
-    &quot;Shrimp&quot;,
-    &quot;Lobster&quot;;
-    branchname = &quot;Crustaceans&quot;
-  };
-  branchname = &quot;Animals&quot;
+    branchname = &quot;parallelogram&quot;,
+    &quot;square&quot;,
+    &quot;diamond&quot;,
+  },
+  {
+    branchname = &quot;2D&quot;
+  },
+  {
+    branchname = &quot;3D&quot;
+  },
 }
-iup.TreeSetValue(handle, tree)</pre>
+iup.TreeSetValue(tree, tree_init)</pre>
 <p>&nbsp;</p>
 <h3>Utility Functions </h3>
 <p>These functions can be used to help set and get attributes from the tree:</p>

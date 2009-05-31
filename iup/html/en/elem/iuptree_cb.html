@@ -9,9 +9,6 @@
 .style1 {
 	text-decoration: underline;
 }
-.style2 {
-	color: #FF0000;
-}
 </style>
 </head>
 <body>
@@ -28,8 +25,6 @@
 <strong>id</strong>:
     Node identifier.<br>
     status: 1 - node was selected, 0 - node was unselected. </p>
-<p class="info"><span class="style1">Returns:</span> 
-    IUP_IGNORE for the selected node not to be changed, or IUP_DEFAULT to change it.</p>
 <p><strong>MULTISELECTION_CB</strong>:
   Action generated 
   when multiple nodes are selected using the mouse and the shift key pressed. If 
@@ -43,7 +38,6 @@ marked.</p>
 <strong>ids</strong>:
     Array of node identifiers.<br>
 <b>n</b>: Number of nodes in the array.</p>
-<p class="info"><span class="style1">Returns:</span> IUP_IGNORE for the selected nodes not to be changed, or IUP_DEFAULT to change it.</p>
 <hr>
 <p><strong>BRANCHOPEN_CB</strong>:
   Action generated when a branch is expanded. 
@@ -86,7 +80,8 @@ marked.</p>
 <p><strong>RENAMENODE_CB</strong>:
   Action generated when a node is to be 
   renamed 
-  and <strong>SHOWRENAME</strong>=<strong>NO</strong>. It occurs only when the user <span class="style2"><strong>double clicks</strong></span> the <b>text</b> associated to a node (leaf or branch) or press 
+  and <strong>SHOWRENAME</strong>=<strong>NO</strong>. It occurs only when the user clicks 
+twice the node or press 
 <b>F2</b>.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>, char *<strong>name</strong>); [in C]<strong>
 elem</strong>:renamenode_cb(<strong>id:</strong> number, <strong>name</strong>:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -99,7 +94,7 @@ elem</strong>:renamenode_cb(<strong>id:</strong> number, <strong>name</strong>:<
 <p><strong>SHOWRENAME_CB</strong>:
   Action generated when a node is to be 
   renamed in place and <strong>SHOWRENAME</strong>=<strong>YES</strong>. 
-  It occurs only when the user <span class="style2"><strong>double clicks</strong></span> the <b>text</b> associated to a node (leaf or branch) or press 
+  It occurs only when the user clicks twice the node or press 
 <b>F2</b>.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C]<strong>
 elem</strong>:showrename_cb(<strong>id:</strong> number:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>

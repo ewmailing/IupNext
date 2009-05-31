@@ -358,8 +358,8 @@ static void init_tree(void)
   //IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
   IupSetCallback(tree, "GETFOCUS_CB", (Icallback) getfocus_cb);
   IupSetCallback(tree, "KILLFOCUS_CB", (Icallback) killfocus_cb);
-  IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
-  IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+  //IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
+  //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
   //IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
   //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
 
@@ -368,9 +368,9 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_14");
 //  IupSetAttribute(tree, "FGCOLOR", "255 0 0");
 
-  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
+//  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
 //  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-//  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+  IupSetAttribute(tree, "SHOWRENAME",   "YES");
 
   //IupSetAttribute(tree, "ADDEXPANDED",  "NO");
 //  IupSetAttribute(tree, "HIDELINES",    "YES");

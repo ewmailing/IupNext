@@ -49,7 +49,7 @@ typedef struct _motTreeItemData
 } motTreeItemData;
 
 
-static void motTreeShowEditField(Ihandle* ih);
+static void motTreeShowEditField(Ihandle* ih, Widget wItem);
 
 typedef int (*motTreeNodeFunc)(Ihandle* ih, Widget wItem, void* userdata);
 
@@ -286,7 +286,7 @@ static Widget motTreeFindNewVisibleNode(Ihandle* ih, WidgetList itemList, int nu
     XtVaGetValues(itemList[i], XmNoutlineState,  &itemState, NULL);
 
     /* The itemWidget has child and it is expanded (visible) */
-    if(numChild && itemState == XmEXPANDED)
+    if (numChild && itemState == XmEXPANDED)
     {
       /* pass the list of children of this item */
       itemChild = motTreeFindNewVisibleNode(ih, itemChildList, numChild);
@@ -448,7 +448,7 @@ static int motTreeSelectFunc(Ihandle* ih, Widget wItem, int *select)
   {
     unsigned char isSelected;
     XtVaGetValues(wItem, XmNvisualEmphasis, &isSelected, NULL);
-    do_select = (isSelected == XmSELECTED)? 0: 1;
+    do_select = (isSelected == XmSELECTED)? 0: 1; /* toggle */
   }
 
   if (do_select)
@@ -716,9 +716,11 @@ static Widget motTreeFindNodeFromString(Ihandle* ih, const char* name_id)
 
 static void motTreeEnterLeaveWindowEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
 {
+  if (iupAttribGet(ih, "_IUPTREE_EDITFIELD"))
+    return;
+
   /* usually when one Gadget is selected different than the previous one,
-     a leave/enter events are generated.
-     But we could not find the exact condition, 
+     leave/enter events are generated. But we could not find the exact condition, 
      so this is a workaround. Some leave events will be lost. */
   if (evt->type == EnterNotify)
   {
@@ -1001,7 +1003,7 @@ static char* motTreeGetStateAttrib(Ihandle* ih, const char* name_id)
   XtVaGetValues(wItem, XmNnumChildren, &hasChildren, NULL);
   XtVaGetValues(wItem, XmNoutlineState, &itemState, NULL);
   
-  if(hasChildren)
+  if (hasChildren)
   {
     if(itemState == XmEXPANDED)
       return "EXPANDED";
@@ -1018,10 +1020,10 @@ static int motTreeSetStateAttrib(Ihandle* ih, const char* name_id, const char* v
   if (!wItem)  
     return 0;
 
-  if(iupStrEqualNoCase(value, "COLLAPSED"))
-    XtVaSetValues(wItem, XmNoutlineState, XmCOLLAPSED, NULL);
-  else if(iupStrEqualNoCase(value, "EXPANDED"))
+  if (iupStrEqualNoCase(value, "EXPANDED"))
     XtVaSetValues(wItem, XmNoutlineState, XmEXPANDED, NULL);
+  else 
+    XtVaSetValues(wItem, XmNoutlineState, XmCOLLAPSED, NULL);
 
   return 0;
 }
@@ -1288,14 +1290,6 @@ static int motTreeSetMarkAttrib(Ihandle* ih, const char* value)
   return 1;
 } 
 
-static void motTreeSelectNode(Ihandle* ih, Widget wItem)
-{
-  XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
-  XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
-
-  XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
-}
-
 static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
 {
   Widget wRoot, wItem;
@@ -1367,7 +1361,13 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
 
   /* select */
   if (ih->data->mark_mode==ITREE_MARK_SINGLE)
-    motTreeSelectNode(ih, wItem);
+  {
+    /* clear previous selection */
+    XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
+    XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
+
+    XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
+  }
 
   /* set focus (will scroll to visible) */
   XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
@@ -1437,14 +1437,11 @@ static char* motTreeGetTitleAttrib(Ihandle* ih, const char* name_id)
 
 static int motTreeSetTitleAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  XmString itemTitle;
   Widget wItem = motTreeFindNodeFromString(ih, name_id);
   if (!wItem)  
     return 0;
 
-  itemTitle = XmStringCreateLocalized((String)value);
-  XtVaSetValues(wItem, XmNlabelString, itemTitle, NULL);
-  XmStringFree(itemTitle);
+  iupmotSetString(wItem, XmNlabelString, value);
 
   return 0;
 }
@@ -1508,12 +1505,10 @@ static int motTreeSetRenameAttrib(Ihandle* ih, const char* value)
   if (ih->data->show_rename)
   {
     IFni cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
+    Widget wItemFocus = motTreeGetFocusNode(ih);
     if (cbShowRename)
-    {
-      Widget wItemFocus = motTreeGetFocusNode(ih);
       cbShowRename(ih, motTreeGetNodeId(ih, wItemFocus));
-    }
-    motTreeShowEditField(ih);
+    motTreeShowEditField(ih, wItemFocus);
   }
   else
   {
@@ -1707,37 +1702,33 @@ void iupdrvTreeUpdateMarkMode(Ihandle *ih)
 /************************************************************************************************/
 
 
-static int motTreeSetRenameCaretPos(Ihandle* ih)
+static void motTreeSetRenameCaretPos(Widget cbEdit, const char* value)
 {
-  Widget cbEdit = (Widget)iupAttribGet(ih, "_IUPTREE_EDITFIELD");
   int pos = 1;
 
-  sscanf(IupGetAttribute(ih, "RENAMECARET"), "%i", &pos);
-  if (pos < 1) pos = 1;
-  pos--; /* IUP starts at 1 */
+  if (iupStrToInt(value, &pos))
+  {
+    if (pos < 1) pos = 1;
+    pos--; /* IUP starts at 1 */
 
-  XtVaSetValues(cbEdit, XmNcursorPosition, pos, NULL);
-
-  return 1;
+    XtVaSetValues(cbEdit, XmNcursorPosition, pos, NULL);
+  }
 }
 
-static int motTreeSetRenameSelectionPos(Ihandle* ih)
+static void motTreeSetRenameSelectionPos(Widget cbEdit, const char* value)
 {
-  Widget cbEdit = (Widget)iupAttribGet(ih, "_IUPTREE_EDITFIELD");
   int start = 1, end = 1;
 
-  if (iupStrToIntInt(IupGetAttribute(ih, "RENAMESELECTION"), &start, &end, ':') != 2) 
-    return 0;
+  if (iupStrToIntInt(value, &start, &end, ':') != 2) 
+    return;
 
   if(start < 1 || end < 1) 
-    return 0;
+    return;
 
   start--; /* IUP starts at 1 */
   end--;
 
   XmTextSetSelection(cbEdit, start, end, CurrentTime);
-
-  return 1;
 }
 
 /*****************************************************************************/
@@ -1769,7 +1760,7 @@ static int motTreeCallBranchOpenCb(Ihandle* ih, Widget wItem)
   return IUP_DEFAULT;
 }
 
-static int motTreeCallMultiSelectionCb(Ihandle* ih)
+static void motTreeCallMultiSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
@@ -1782,7 +1773,7 @@ static int motTreeCallMultiSelectionCb(Ihandle* ih)
   XtVaGetValues(ih->handle, XmNselectedObjects, &wSelectedItemList,
                         XmNselectedObjectCount, &countItems, NULL);
   if (countItems == 0)
-    return IUP_DEFAULT;
+    return;
 
   if (cbMulti || cbSelec)
   {
@@ -1801,11 +1792,7 @@ static int motTreeCallMultiSelectionCb(Ihandle* ih)
     }
 
     free(id_rowItem);
-
-    return IUP_DEFAULT;
   }
-
-  return IUP_IGNORE;
 }
 
 static int motTreeConvertXYToPos(Ihandle* ih, int x, int y)
@@ -1830,32 +1817,32 @@ static void motTreeCallRightClickCb(Ihandle* ih, int x, int y)
 static void motTreeCallRenameCb(Ihandle* ih)
 {
   IFnis cbRename;
-  Widget wRoot, wItem, wEdit;
-  String title;
+  Widget wItem, wEdit;
+  int ignore = 0;
+  String title = NULL;
 
   /* When the focus out occurs because the user selects another item,
      it is necessary to get the correct ID of the item in the editing mode */
-  wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
   wItem = (Widget)iupAttribGet(ih, "_IUPTREE_SELECTED");
   wEdit = (Widget)iupAttribGet(ih, "_IUPTREE_EDITFIELD");
 
   XtVaGetValues((Widget)iupAttribGet(ih, "_IUPTREE_EDITFIELD"), XmNvalue, &title, NULL);
 
-  /* No value, editing continues */
-  if (title[0]==0)
-    return;
+  cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
+  if (cbRename)
+  {
+    if (cbRename(ih, motTreeGetNodeId(ih, wItem), title) == IUP_IGNORE)
+      ignore = 1;
+  }
 
-  /* Update the item */
-  XtVaSetValues(wItem,  XmNlabelString, XmStringCreateLocalized((String)title), NULL);
+  if (!ignore)
+    iupmotSetString(wItem, XmNlabelString, title);
+
   XtDestroyWidget(wEdit);
   XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
 
   iupAttribSetStr(ih, "_IUPTREE_EDITFIELD", NULL);
   iupAttribSetStr(ih, "_IUPTREE_SELECTED",  NULL);
-
-  cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
-  if (cbRename)
-    cbRename(ih, motTreeGetNodeId(ih, wItem), title);  
 }
 
 static void motTreeCallDragDropCb(Ihandle* ih)
@@ -1897,23 +1884,23 @@ static void motTreeEditKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Bool
   (void)w;
 }
 
-static void motTreeShowEditField(Ihandle* ih)
+static void motTreeShowEditField(Ihandle* ih, Widget wItem)
 {
-  int countItems, num_args = 0;
+  int num_args = 0;
   Arg args[30];
-  WidgetList wSelectedItemList = NULL;
   Position xIcon, yIcon;
   Dimension wIcon, hIcon;
   char* child_id = iupDialogGetChildIdStr(ih);
   Widget cbEdit;
   XmString title;
+  char* value;
 
-  XtVaGetValues(ih->handle, XmNselectedObjects, &wSelectedItemList, XmNselectedObjectCount, &countItems, NULL);
-
-  if(!countItems)
-    return;
-
-  XtVaGetValues(wSelectedItemList[0], XmNx, &xIcon, XmNy, &yIcon, XmNwidth, &wIcon, XmNheight, &hIcon, XmNlabelString, &title, NULL);
+  XtVaGetValues(wItem, XmNx, &xIcon, 
+                       XmNy, &yIcon, 
+                       XmNwidth, &wIcon, 
+                       XmNheight, &hIcon, 
+                       XmNlabelString, &title, 
+                       NULL);
 
   iupmotSetArg(args, num_args, XmNx, xIcon+21);      /* x-position */
   iupmotSetArg(args, num_args, XmNy, yIcon);         /* y-position */
@@ -1938,18 +1925,23 @@ static void motTreeShowEditField(Ihandle* ih)
   XtAddEventHandler(cbEdit, FocusChangeMask, False, (XtEventHandler)motTreeEditFocusChangeEvent, (XtPointer)ih);
   XtAddEventHandler(cbEdit, KeyPressMask,    False, (XtEventHandler)motTreeEditKeyPressEvent, (XtPointer)ih);
 
-  iupAttribSetStr(ih, "_IUPTREE_SELECTED",  (char*)wSelectedItemList[0]);
+  iupAttribSetStr(ih, "_IUPTREE_SELECTED",  (char*)wItem);
   iupAttribSetStr(ih, "_IUPTREE_EDITFIELD", (char*)cbEdit);
 
   XmProcessTraversal(cbEdit, XmTRAVERSE_CURRENT);
 
   XmTextSetSelection(cbEdit, (XmTextPosition)0, (XmTextPosition)XmTextGetLastPosition(cbEdit), CurrentTime);
 
-  if(IupGetAttribute(ih, "RENAMECARET"))
-    motTreeSetRenameCaretPos(ih);
+  value = iupAttribGetStr(ih, "RENAMECARET");
+  if (value)
+    motTreeSetRenameCaretPos(cbEdit, value);
 
-  if(IupGetAttribute(ih, "RENAMESELECTION"))
-    motTreeSetRenameSelectionPos(ih);
+  value = iupAttribGetStr(ih, "RENAMESELECTION");
+  if (value)
+    motTreeSetRenameSelectionPos(cbEdit, value);
+
+  /* the parents callbacks can be called while editing 
+     so we must avoid their processing if _IUPTREE_EDITFIELD is defined. */
 }
 
 static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCallbackStruct *nptr)
@@ -1997,8 +1989,8 @@ static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCal
 static void motTreeDefaultActionCallback(Widget w, Ihandle* ih, XmContainerSelectCallbackStruct *nptr)
 {
   unsigned char itemState;
-  WidgetList wSelectedItemList = NULL, wChildren = NULL;
-  int countItems, numChild;
+  WidgetList wSelectedItemList = NULL;
+  int countItems;
   motTreeItemData *itemData;
   Widget wItem;
   (void)w;
@@ -2015,13 +2007,11 @@ static void motTreeDefaultActionCallback(Widget w, Ihandle* ih, XmContainerSelec
   XtVaGetValues(wItem, XmNoutlineState, &itemState,
                        XmNuserData, &itemData, NULL);
 
-  numChild = XmContainerGetItemChildren(ih->handle, wItem, &wChildren);
-
   if (itemData->kind == ITREE_BRANCH)
   {
-    if(itemState == XmEXPANDED)
+    if (itemState == XmEXPANDED)
       XtVaSetValues(wItem, XmNoutlineState,  XmCOLLAPSED, NULL);
-    else if(itemState == XmCOLLAPSED && numChild)
+    else
       XtVaSetValues(wItem, XmNoutlineState,  XmEXPANDED, NULL);
   }
   else
@@ -2030,8 +2020,6 @@ static void motTreeDefaultActionCallback(Widget w, Ihandle* ih, XmContainerSelec
     if (cbExecuteLeaf)
       cbExecuteLeaf(ih, motTreeGetNodeId(ih, wItem));
   }
-
-  if (wChildren) XtFree((char*)wChildren);
 }
 
 static void motTreeOutlineChangedCallback(Widget w, Ihandle* ih, XmContainerOutlineCallbackStruct *nptr)
@@ -2236,7 +2224,12 @@ static void motTreeDestinationCallback(Widget w, Ihandle* ih, XtPointer call_dat
 
 static void motTreeKeyReleaseEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *cont)
 {
-  KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
+  KeySym motcode;
+
+  if (iupAttribGet(ih, "_IUPTREE_EDITFIELD"))
+    return;
+
+  motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
   if (motcode == XK_Down || motcode == XK_U || motcode == XK_Home || motcode == XK_End)
   {
     if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && (evt->state & ShiftMask))
@@ -2249,11 +2242,12 @@ static void motTreeKeyReleaseEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolea
 
 static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *cont)
 {
-  KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
+  KeySym motcode;
 
-  if(iupAttribGet(ih, "_IUPTREE_EDITFIELD"))
+  if (iupAttribGet(ih, "_IUPTREE_EDITFIELD"))
     return;
 
+  motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
   if (motcode == XK_Tab || motcode == XK_KP_Tab)
   {
     if (evt->state & ShiftMask)
@@ -2308,7 +2302,13 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
         motTreeSelectRange(ih, wItemFocus, wItem, 1);
       }
       else
-        motTreeSelectNode(ih, wItem);
+      {
+        /* clear previous selection */
+        XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
+        XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
+
+        XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
+      }
     }
 
     XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
@@ -2337,13 +2337,33 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
   (void)w;
   (void)cont;
 
+  if (iupAttribGet(ih, "_IUPTREE_EDITFIELD"))
+    return;
+
   if (evt->type==ButtonPress)
     iupAttribSetStr(ih, "_IUPTREE_IGNORE_ENTERLEAVE", "1");
 
-  if (evt->type==ButtonPress && evt->button==Button3)
+  if (evt->type==ButtonPress)
   {   
-    /* select the pointed item */
-    motTreeCallRightClickCb(ih, evt->x, evt->y);
+    if (evt->button==Button1)
+    {
+      static Time last = 0;
+      int clicktwice = 0, doubleclicktime = XtGetMultiClickTime(iupmot_display);
+      int elapsed = (int)(evt->time - last);
+      last = evt->time;
+
+      /* stay away from double click and leave some room for clicks */
+      if (elapsed > (3*doubleclicktime)/2 && elapsed <= 3*doubleclicktime)
+        clicktwice = 1;
+    
+      if (clicktwice)
+      {
+        motTreeSetRenameAttrib(ih, NULL);
+        *cont = False;
+      }
+    }
+    else if (evt->button==Button3)
+      motTreeCallRightClickCb(ih, evt->x, evt->y);
   }
   else if (evt->type==ButtonRelease && evt->button==Button1)
   {   

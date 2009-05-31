@@ -352,10 +352,10 @@ static GtkTreeIter gtkTreeFindNodeFromString(Ihandle* ih, const char* name_id)
 
   if (name_id[0])
   {
-      GtkTreeIter iterRoot;
-     iupStrToInt(name_id, &ih->data->id_control);
-     gtk_tree_model_get_iter_first(model, &iterRoot);
-     return gtkTreeFindNode(ih, model, iterRoot);
+    GtkTreeIter iterRoot;
+    iupStrToInt(name_id, &ih->data->id_control);
+    gtk_tree_model_get_iter_first(model, &iterRoot);
+    return gtkTreeFindNode(ih, model, iterRoot);
   }
   else
   {
@@ -420,6 +420,17 @@ static void gtkTreeUpdateImages(Ihandle* ih, GtkTreeModel* modelTree, GtkTreeIte
     /* Go to next sibling item */
     hasItem = gtk_tree_model_iter_next(modelTree, &iterItem);
   }
+}
+
+static void gtkTreeExpandItem(Ihandle* ih, GtkTreePath* path, int expand)
+{
+  if (expand == -1)
+    expand = !gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path); /* toggle */
+
+  if (expand)
+    gtk_tree_view_expand_row(GTK_TREE_VIEW(ih->handle), path, FALSE);
+  else
+    gtk_tree_view_collapse_row(GTK_TREE_VIEW(ih->handle), path);
 }
 
 int iupgtkGetColor(const char* value, GdkColor *color)
@@ -535,16 +546,9 @@ static void gtkTreeOpenCloseEvent(Ihandle* ih)
     gtk_tree_model_get(model, &iter, IUPGTK_TREE_KIND, &kind, -1);
 
     if (kind == ITREE_LEAF)  /* leafs */
-    {
       gtk_tree_view_row_activated(GTK_TREE_VIEW(ih->handle), path, (GtkTreeViewColumn*)iupAttribGet(ih, "_IUPGTK_COLUMN"));     
-    }
     else  /* branches */
-    {
-      if (gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path))
-        gtk_tree_view_collapse_row(GTK_TREE_VIEW(ih->handle), path);
-      else
-        gtk_tree_view_expand_row(GTK_TREE_VIEW(ih->handle), path, FALSE);
-    }
+      gtkTreeExpandItem(ih, path, -1); /* toggle */
 
     gtk_tree_path_free(path);
   }
@@ -601,7 +605,7 @@ static gboolean gtkTreeSelected_Iter_Func(GtkTreeModel *model, GtkTreePath *path
 /*****************************************************************************/
 /* CALLBACKS                                                                 */
 /*****************************************************************************/
-static int gtkTreeCallMultiSelectionCb(Ihandle* ih)
+static void gtkTreeCallMultiSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
@@ -648,34 +652,7 @@ static int gtkTreeCallMultiSelectionCb(Ihandle* ih)
     }
 
     free(id_rowItem);
-
-    return IUP_DEFAULT;
   }
-
-  return IUP_IGNORE;
-}
-
-static int gtkTreeCallRenameCb(Ihandle* ih, gchar *path_string, gchar* new_text)
-{
-  IFnis cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
-  if (new_text)
-  {
-    GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-    GtkTreeIter iterItem;
-
-    gtk_tree_model_get_iter_from_string(model, &iterItem, path_string);
-    if (!iterItem.user_data)
-      return IUP_IGNORE;
-
-    if (cbRename)
-      cbRename(ih, gtkTreeGetNodeId(ih, iterItem), new_text);
-
-    gtk_tree_store_set(GTK_TREE_STORE(model), &iterItem, IUPGTK_TREE_TITLE, new_text, -1);
-
-    return IUP_DEFAULT;
-  }
-
-  return IUP_IGNORE;
 }
 
 
@@ -956,11 +933,7 @@ static int gtkTreeSetStateAttrib(Ihandle* ih, const char* name_id, const char* v
     return 0;
 
   path = gtk_tree_model_get_path(model, &iterItem);
-  if(iupStrEqualNoCase(value, "COLLAPSED"))
-    gtk_tree_view_collapse_row(GTK_TREE_VIEW(ih->handle), path);
-  else if(iupStrEqualNoCase(value, "EXPANDED"))
-    gtk_tree_view_expand_row(GTK_TREE_VIEW(ih->handle), path, FALSE);
-
+  gtkTreeExpandItem(ih, path, iupStrEqualNoCase(value, "EXPANDED"));
   gtk_tree_path_free(path);
 
   return 0;
@@ -1375,8 +1348,8 @@ static int gtkTreeSetRenameAttrib(Ihandle* ih, const char* value)
       GtkTreeIter iterItem;
       GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
       gtk_tree_view_get_cursor(GTK_TREE_VIEW(ih->handle), &path, NULL);
-      gtk_tree_path_free(path);
       gtk_tree_model_get_iter(model, &iterItem, path);
+      gtk_tree_path_free(path);
       cbRenameNode(ih, gtkTreeGetNodeId(ih, iterItem), gtkTreeGetTitle(model, iterItem));  
     }
   }
@@ -1557,45 +1530,50 @@ void iupdrvTreeUpdateMarkMode(Ihandle *ih)
 /***********************************************************************************************/
 
 
-static int gtkTreeSetRenameCaretPos(Ihandle* ih)
+static void gtkTreeSetRenameCaretPos(GtkCellEditable *editable, const char* value)
 {
-  GtkCellEditable* editable = (GtkCellEditable*)iupAttribGet(ih, "_IUPTREE_EDITNAME");
   int pos = 1;
 
-  sscanf(IupGetAttribute(ih, "RENAMECARET"), "%i", &pos);
-  if (pos < 1) pos = 1;
-  pos--; /* IUP starts at 1 */
+  if (iupStrToInt(value, &pos))
+  {
+    if (pos < 1) pos = 1;
+    pos--; /* IUP starts at 1 */
 
-  gtk_editable_set_position(GTK_EDITABLE(editable), pos);
-
-  return 1;
+    gtk_editable_set_position(GTK_EDITABLE(editable), pos);
+  }
 }
 
-static int gtkTreeSetRenameSelectionPos(Ihandle* ih)
+static void gtkTreeSetRenameSelectionPos(GtkCellEditable *editable, const char* value)
 {
-  GtkCellEditable* editable = (GtkCellEditable*)iupAttribGet(ih, "_IUPTREE_EDITNAME");
   int start = 1, end = 1;
 
-  if (iupStrToIntInt(IupGetAttribute(ih, "RENAMESELECTION"), &start, &end, ':') != 2) 
-    return 0;
+  if (iupStrToIntInt(value, &start, &end, ':') != 2) 
+    return;
 
   if(start < 1 || end < 1) 
-    return 0;
+    return;
 
   start--; /* IUP starts at 1 */
   end--;
 
   gtk_editable_select_region(GTK_EDITABLE(editable), start, end);
-
-  return 1;
 }
 
 /*****************************************************************************/
 /* SIGNALS                                                                   */
 /*****************************************************************************/
+
 static void gtkTreeCellTextEditingStarted(GtkCellRenderer *cell, GtkCellEditable *editable, const gchar *path, Ihandle *ih)
 {
-  iupAttribSetStr(ih, "_IUPTREE_EDITNAME", (char*)editable);
+  char* value;
+
+  value = iupAttribGetStr(ih, "RENAMECARET");
+  if (value)
+    gtkTreeSetRenameCaretPos(editable, value);
+
+  value = iupAttribGetStr(ih, "RENAMESELECTION");
+  if (value)
+    gtkTreeSetRenameSelectionPos(editable, value);
   
   (void)cell;
   (void)path;
@@ -1603,7 +1581,28 @@ static void gtkTreeCellTextEditingStarted(GtkCellRenderer *cell, GtkCellEditable
 
 static void gtkTreeCellTextEdited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, Ihandle* ih)
 {
-  gtkTreeCallRenameCb(ih, path_string, new_text);
+  GtkTreeModel* model;
+  GtkTreeIter iterItem;
+  IFnis cbRename;
+
+  if (!new_text)
+    return;
+
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  gtk_tree_model_get_iter_from_string(model, &iterItem, path_string);
+  if (!iterItem.user_data)
+    return;
+
+  cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
+  if (cbRename)
+  {
+    if (cbRename(ih, gtkTreeGetNodeId(ih, iterItem), new_text) == IUP_IGNORE)
+      return;
+  }
+
+  /* It is the responsibility of the application to update the model and store new_text at the position indicated by path. */
+  gtk_tree_store_set(GTK_TREE_STORE(model), &iterItem, IUPGTK_TREE_TITLE, new_text, -1);
+
   (void)cell;
 }
 
@@ -1884,12 +1883,7 @@ static gboolean gtkTreeButtonEvent(GtkWidget *treeview, GdkEventButton *evt, Iha
       gtk_tree_model_get(model, &iter, IUPGTK_TREE_KIND, &kind, -1);
 
       if (kind == ITREE_BRANCH)
-      {
-        if (gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path))
-          gtk_tree_view_collapse_row(GTK_TREE_VIEW(ih->handle), path);
-        else
-          gtk_tree_view_expand_row(GTK_TREE_VIEW(ih->handle), path, FALSE);
-      }
+        gtkTreeExpandItem(ih, path, -1); /* toggle */
 
       gtk_tree_path_free(path);
     }
@@ -1905,18 +1899,6 @@ static gboolean gtkTreeButtonEvent(GtkWidget *treeview, GdkEventButton *evt, Iha
 
 static gboolean gtkTreeKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
-  /* In editing-started mode, check if the user set RENAMECARET and RENAMESELECTION attributes */
-  if(iupAttribGet(ih, "_IUPTREE_EDITNAME") != NULL)
-  {
-    if(IupGetAttribute(ih, "RENAMECARET"))
-      gtkTreeSetRenameCaretPos(ih);
-
-    if(IupGetAttribute(ih, "RENAMESELECTION"))
-      gtkTreeSetRenameSelectionPos(ih);
-
-    iupAttribSetStr(ih, "_IUPTREE_EDITNAME", NULL);
-  }
-
   if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && (evt->state & GDK_SHIFT_MASK))
   {
     if (evt->keyval == GDK_Up || evt->keyval == GDK_Down || evt->keyval == GDK_Home || evt->keyval == GDK_End)
