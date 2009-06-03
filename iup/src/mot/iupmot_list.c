@@ -1096,6 +1096,14 @@ static void motListExtendedSelectionCallback(Widget w, Ihandle* ih, XmListCallba
   {
     int* pos = call_data->selected_item_positions;
     int sel_count = call_data->selected_item_count;
+    int i;
+
+    /* In Motif, the position of item is "plus one".
+       "iupListMultipleCallActionCallback" works with the list of selected items from the zero position.
+       So, "minus one" here. */
+    for (i = 0; i < sel_count; i++)
+      pos[i] -= 1;
+
     iupListMultipleCallActionCallback(ih, cb, multi_cb, pos, sel_count);
   }
 

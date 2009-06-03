@@ -6,13 +6,13 @@ INCLUDES = ../include
 ifdef USE_GTK
   ifndef GTK_DEFAULT
     # Build GTK version in IRIX,SunOS,AIX,Win32
-    APPNAME = iuptestgtk
+    APPNAME = iupsample
   endif
 else  
   ifdef GTK_DEFAULT
     # Build Motif version in Linux,Darwin,FreeBSD
     USE_MOTIF = Yes
-    APPNAME = iuptestmot
+    APPNAME = iupsamplemot
   endif
 endif
 
@@ -47,19 +47,19 @@ DBG = Yes
 #SRC = multiline2.c
 #SRC = progressbar.c
 #SRC = radio.c
-#SRC = scanf.c
-#SRC = separator.c
-#SRC = submenu.c
-#SRC = text.c
-#SRC = timer.c
-#SRC = toggle.c
-#SRC = tabs.c
-#SRC = val.c
-#SRC = vbox.c
-#SRC = zbox.c
 SRC = sample.c
 #SRC = sbox1.c
 #SRC = sbox2.c
+#SRC = scanf.c
+#SRC = separator.c
+#SRC = submenu.c
+#SRC = tabs.c
+#SRC = text.c
+#SRC = timer.c
+#SRC = toggle.c
+#SRC = val.c
+#SRC = vbox.c
+#SRC = zbox.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
@@ -70,6 +70,7 @@ SRC = sample.c
 #USE_CD = Yes
 #SRC = canvas1.c
 #SRC = canvas2.c
+#SRC = canvas3.c
 #SRC = scrollbar.c
 
 #USE_OPENGL = Yes

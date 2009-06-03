@@ -1,5 +1,5 @@
 /** \file
- * \brief Frame Control
+ * \brief Progress bar Control
  *
  * See Copyright Notice in "iup.h"
  */

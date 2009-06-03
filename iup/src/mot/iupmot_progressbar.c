@@ -1,3 +1,9 @@
+/** \file
+* \brief Progress bar Control
+*
+* See Copyright Notice in "iup.h"
+*/
+
 #include <Xm/Xm.h>
 #include <Xm/Scale.h>
 

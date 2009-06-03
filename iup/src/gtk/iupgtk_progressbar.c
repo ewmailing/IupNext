@@ -1,3 +1,9 @@
+/** \file
+* \brief Progress bar Control
+*
+* See Copyright Notice in "iup.h"
+*/
+
 #undef GTK_DISABLE_DEPRECATED
 #include <gtk/gtk.h>
 
