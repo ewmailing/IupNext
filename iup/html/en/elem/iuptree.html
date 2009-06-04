@@ -14,10 +14,6 @@
 .style3 {
 	color: #FF0000;
 }
-.style4 {
-	color: #FF0000;
-	font-weight: bold;
-}
 </style>
 </head>
 <body>
@@ -244,6 +240,7 @@ be selected.</p>
   <li><b>Ctrl+Space</b>:&nbsp;Marks or unmarks the node at focus.</li>
 	<li><strong>F2</strong>: Calls the rename callback or invoke the inplace 
 	rename.</li>
+	<li><strong>Esc</strong>: cancels inplace rename.</li>
 </ul>
 <p>In Motif when pressing Tab the focus goes to the next visible node, if there 
 are no next visible node then the next control in the dialog receives the focus. 
@@ -259,6 +256,11 @@ In Windows and Gtk the focus simply goes directly to the next control.</p>
   </li>
   <li><b>Clicking twice a node</b>: Calls the rename callback 
     or invoke the inplace rename.</li>
+	<li><strong>Clicking and dragging a node</strong>: if SHOWDRAGDROP=Yes 
+	starts a drag. When mouse is released, the DRAGDROP_CB callback is called. 
+	If the cllbac does not exist ot returns IUP_CONTINUE then the node is moved 
+	to the new position. In Motif drag is performed with the middle mouse 
+	button.</li>
 </ul>
 <h4>Removing a Node with &quot;Del&quot;</h4>
 <p>By default the Del key is not processed, but you can implement it using a 
@@ -363,7 +365,57 @@ contributed by Sergio Maffra and Frederico Abraham. It
   is an utility wrapper in C++ for the IupTree.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
-<p class="style3"><strong>TODO: screenshots win/gtk/mot</strong></p>
+<div align="center">
+  
+<center>
+  
+<table style="border-collapse: collapse;" id="AutoNumber1" border="0" bordercolor="#111111" cellpadding="5" cellspacing="0">
+
+    <tbody>
+    <tr>
+
+      <th>Windows</th>
+
+    </tr>
+
+    <tr>
+
+      <td class="bg_winxp"><img src="images/iuptree_win.png" border="0"></td>
+
+    </tr>
+
+    <tr>
+
+      <th>Motif</th>
+
+    </tr>
+
+    <tr>
+
+      <td class="bg_mot"><img src="images/iuptree_mot.png" border="0"></td>
+
+    </tr>
+
+    <tr>
+
+      <th>GTK</th>
+
+    </tr>
+
+    <tr>
+
+      <td class="bg_gtk"><img src="images/iuptree_gtk.png" border="0"></td>
+
+    </tr>
+
+  
+  </tbody>
+</table>
+
+  </center>
+
+</div>
+
 
 </body>
 

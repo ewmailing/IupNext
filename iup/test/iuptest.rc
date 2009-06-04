@@ -1,4 +1,5 @@
 TECGRAF_ICON ICON "../etc/tecgraf.ico"
+TECGRAF_BITMAP BITMAP "../test/tecgraf.bmp"
 
 CURSOR_PEN CURSOR "../etc/pen.cur"
 

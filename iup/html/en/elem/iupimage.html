@@ -125,26 +125,49 @@ imagergba(<strong>width</strong>, <strong>height</strong>, <strong>pixel0</stron
 
 <h3><a name="Notes">Notes</a></h3>
 
-  <p>Images are used in elements such as buttons and labels in attributes that 
-	points to names registered with <strong>IupSetHandle</strong>. You can also 
-	use <strong>IupSetAttributeHandle</strong> to shortcut the set of an image 
-	as an attribute. In Windows, names of resources in RC files linked with the 
-	applications are also accepted. In GTK, names of Stock Items are also 
-	accepted.</p>
 <p>Application icons are usually 32x32. Toolbar bitmaps are 24x24 or smaller. Menu bitmaps and small icons are 
   16x16 
   or smaller.</p>
 
-<p>An image created with all <b>IupImage</b>* can be reused for different 
+<p>Images created with the <b>IupImage</b>* constructors can be reused for different 
 buttons and labels.</p>
   <p>
-  The images must be destroyed when they are 
+  The images should be destroyed when they are 
   no longer necessary, by means of the 
-  <b>IupDestroy</b> function. To destroy an image, it cannot be in use. Please observe the rules for 
+  <b>IupDestroy</b> function. To destroy an image, it cannot be in use, i.e the 
+	controls where it is used should be destroyed first. Images that were 
+	associated with controls by names are automatically destroyed in IupClose.</p>
+<p>
+  Please observe the rules for 
   creating cursor images: <a href="../attrib/iup_cursor.html">
   CURSOR</a>.</p>
   <h4>
-  Colors</h4>
+  Usage</h4>
+
+  <p>Images are used in elements such as buttons and labels by attributes that 
+	points to names registered with <a href="../func/iupsethandle.html">IupSetHandle</a>. You can also 
+	use <strong>IupSetAttributeHandle</strong> to shortcut the set of an image 
+	as an attribute. For example:</p>
+<pre>Ihandle* image = IupImage(width, height, pixels);
+
+IupSetHandle(&quot;MY_IMAGE_NAME&quot;, image);
+IupSetAttribute(label, &quot;IMAGE&quot;, &quot;MY_IMAGE_NAME&quot;);
+or
+IupSetAttributeHandle(label, &quot;IMAGE&quot;, image); // an automatic name will be created internally</pre>
+<p>In Windows, names of resources in RC files linked with the 
+	application are also accepted. In GTK, names of GTK Stock Items are also 
+	accepted. In Motif, names of bitmaps installed on the system are also 
+	accepted. For example:</p>
+<pre>IupSetAttribute(label, &quot;IMAGE&quot;, &quot;TECGRAF_BITMAP&quot;);  // available in the &quot;etc/iup.rc&quot; file
+or
+IupSetAttribute(label, &quot;IMAGE&quot;, &quot;gtk-open&quot;);  // available in the GTK Stock Items</pre>
+<p>In all drivers, a path to a file name can also be used as the attribute value 
+(since 3.0). But the available file formats supported are system dependent. The 
+Windows driver supports BMP, ICO and CUR. The GTK driver supports the formats 
+supported by the GDK-PixBuf library, such as BMP, GIF, JPEG, PCX, PNG, TIFF and 
+many others. For example:</p>
+<pre>IupSetAttribute(label, &quot;IMAGE&quot;, &quot;../etc/tecgraf.bmp&quot;);</pre>
+<h4>Colors</h4>
   <p>
   In Windows and Motif, the alpha channel in RGBA images is composed with the 
   BGCOLOR when the image is used in a control. The images are mapped to 24bpp. 

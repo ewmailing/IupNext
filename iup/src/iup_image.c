@@ -182,6 +182,33 @@ int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
   return has_alpha;
 }
 
+void iupImageInitNonBgColors(Ihandle* ih, unsigned char *colors)
+{
+  char attr[6], *value;
+  int i;
+
+  memset(colors, 0, 256);
+
+  for (i=0;i<16;i++)
+  {
+    sprintf(attr, "%d", i);
+    value = iupAttribGet(ih, attr);
+    if (!iupStrEqual(value, "BGCOLOR"))
+      colors[i] = 1;
+  }
+
+  for (;i<256;i++)
+  {
+    sprintf(attr, "%d", i);
+    value = iupAttribGet(ih, attr);
+    if (!value)
+      break;
+
+    if (!iupStrEqual(value, "BGCOLOR"))
+      colors[i] = 1;
+  }
+}
+
 void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char *b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b)
 {
   if (*r==bg_r && *g==bg_g && *b==bg_b)  /* preserve colors identical to the background color */
@@ -215,6 +242,33 @@ void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char
 /**************************************************************************************************/
 /**************************************************************************************************/
 
+
+void* iupImageGetMask(const char* name)
+{
+  void* mask;
+  Ihandle *ih;
+
+  if (!name)
+    return NULL;
+
+  /* get handle from name */
+  ih = IupGetHandle(name);
+  if (!ih)
+    return NULL;
+  
+  /* Check for an already created icon */
+  mask = iupAttribGet(ih, "_IUPIMAGE_MASK");
+  if (mask)
+    return mask;
+
+  /* Not created, tries to create the mask */
+  mask = iupdrvImageCreateMask(ih);
+
+  /* save the pixbuf */
+  iupAttribSetStr(ih, "_IUPIMAGE_MASK", (char*)mask);
+
+  return mask;
+}
 
 void* iupImageGetIcon(const char* name)
 {
@@ -325,10 +379,11 @@ void iupImageGetInfo(const char* name, int *w, int *h, int *bpp)
 
 void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, const char* attrib_name)
 {
-  char cache_name[100] = "_IUPIMAGE_";
+  char cache_name[100] = "_IUPIMAGE_IMAGE";
   char* bgcolor;
   void* image;
   Ihandle *ih;
+  int bg_concat = 0;
 
   if (!name)
     return NULL;
@@ -361,10 +416,18 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, 
   if (!bgcolor && ih_parent)  
     bgcolor = IupGetAttribute(ih_parent, "BGCOLOR"); /* Use IupGetAttribute to use inheritance and native implementation */
 
-  strcat(cache_name, attrib_name);
+  if (make_inactive)
+    strcat(cache_name, "_INACTIVE");
+
+//  strcat(cache_name, attrib_name);
 
   if (iupAttribGet(ih, "_IUP_BGCOLOR_DEPEND") && bgcolor)
+  {
+    strcat(cache_name, "(");
     strcat(cache_name, bgcolor);
+    strcat(cache_name, ")");
+    bg_concat = 1;
+  }
   
   /* Check for an already created native image */
   image = (void*)iupAttribGet(ih, cache_name);
@@ -380,8 +443,12 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, 
   if (iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
     iupAttribSetStr(ih, "FLAT_ALPHA", NULL);
 
-  if (iupAttribGet(ih, "_IUP_BGCOLOR_DEPEND") && bgcolor)
+  if (iupAttribGet(ih, "_IUP_BGCOLOR_DEPEND") && bgcolor && !bg_concat)  /* _IUP_BGCOLOR_DEPEND could be set during creation */
+  {
+    strcat(cache_name, "(");
     strcat(cache_name, bgcolor);
+    strcat(cache_name, ")");
+  }
 
   /* save the native image in the cache */
   iupAttribSetStr(ih, cache_name, (char*)image);
@@ -442,6 +509,7 @@ static void iImageUnMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "_IUPIMAGE_CURSOR", NULL);
   }
 
+  /* the remaining images are all IUPIMAGE_IMAGE */
   name = iupTableFirst(ih->attrib);
   while (name)
   {

@@ -310,12 +310,19 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
   return winImageCreateIcon(ih, 1);
 }
 
+void* iupdrvImageCreateMask(Ihandle *ih)
+{
+  return (void*)winImageCreateBitmask(ih);
+}
+
 void* iupdrvImageLoad(const char* name, int type)
 {
-  int iup2win[3] = {IMAGE_BITMAP|LR_CREATEDIBSECTION, IMAGE_ICON, IMAGE_CURSOR};
-  HANDLE hImage = LoadImage(iupwin_hinstance, (LPCTSTR)name, iup2win[type], 0, 0, 0);
+  int iup2win[3] = {IMAGE_BITMAP, IMAGE_ICON, IMAGE_CURSOR};
+  HANDLE hImage = LoadImage(iupwin_hinstance, (LPCTSTR)name, iup2win[type], 0, 0, type==0?LR_CREATEDIBSECTION:0);
   if (!hImage && iupwin_dll_hinstance)
-    hImage = LoadImage(iupwin_dll_hinstance, (LPCTSTR)name, iup2win[type], 0, 0, 0);
+    hImage = LoadImage(iupwin_dll_hinstance, (LPCTSTR)name, iup2win[type], 0, 0, type==0?LR_CREATEDIBSECTION:0);
+  if (!hImage)
+    hImage = LoadImage(NULL, (LPCTSTR)name, iup2win[type], 0, 0, LR_LOADFROMFILE|(type==0?LR_CREATEDIBSECTION:0));
   return hImage;
 }
 

@@ -30,16 +30,18 @@ void iupdrvTreeUpdateMarkMode(Ihandle *ih);
 /* Structure of the tree */
 struct _IcontrolData
 {
-  int mark_mode;
-  int add_expanded;
-  int show_rename;
+  int mark_mode,
+      add_expanded,
+      show_dragdrop,
+      show_rename;
 
   void* def_image_leaf;       /* Default image leaf */
   void* def_image_collapsed;  /* Default image collapsed */
   void* def_image_expanded;   /* Default image expanded */
 
-  //int rename_caret;      
-  //int rename_selection;
+  void* def_image_leaf_mask;       /* Motif Only */
+  void* def_image_collapsed_mask;  
+  void* def_image_expanded_mask;   
 
   int id_control;  /* auxiliary variable for computing or finding the id of a node */
 };

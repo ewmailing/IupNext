@@ -237,40 +237,6 @@ static int iTreeSetCtrlAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-//static char* iTreeGetRenameCaretAttrib(Ihandle* ih)
-//{
-//  if (ih->data->rename_caret)
-//    return "YES";
-//  else
-//    return "NO";
-//}
-//
-//static int iTreeSetRenameCaretAttrib(Ihandle* ih, const char* value)
-//{
-//  if (iupStrBoolean(value))
-//    ih->data->rename_caret = 1;    
-//  else 
-//    ih->data->rename_caret = 0;
-//  return 0;
-//}
-//
-//static char* iTreeGetRenameSelectionAttrib(Ihandle* ih)
-//{
-//  if (ih->data->rename_selection)
-//    return "YES";
-//  else
-//    return "NO";
-//}
-//
-//static int iTreeSetRenameSelectionAttrib(Ihandle* ih, const char* value)
-//{
-//  if (iupStrBoolean(value))
-//    ih->data->rename_selection = 1;    
-//  else 
-//    ih->data->rename_selection = 0;
-//  return 0;
-//}
-
 static char* iTreeGetShowRenameAttrib(Ihandle* ih)
 {
   if (ih->data->show_rename)
@@ -289,6 +255,28 @@ static int iTreeSetShowRenameAttrib(Ihandle* ih, const char* value)
     ih->data->show_rename = 1;
   else
     ih->data->show_rename = 0;
+
+  return 0;
+}
+
+static char* iTreeGetShowDragDropAttrib(Ihandle* ih)
+{
+  if (ih->data->show_dragdrop)
+    return "YES";
+  else
+    return "NO";
+}
+
+static int iTreeSetShowDragDropAttrib(Ihandle* ih, const char* value)
+{
+  /* valid only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+    ih->data->show_dragdrop = 1;
+  else
+    ih->data->show_dragdrop = 0;
 
   return 0;
 }
@@ -407,10 +395,9 @@ Iclass* iupTreeGetClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* IupTree Attributes - GENERAL */
-  //iupClassRegisterAttribute(ic, "RENAMECARET",     iTreeGetRenameCaretAttrib,     iTreeSetRenameCaretAttrib,     NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "RENAMESELECTION", iTreeGetRenameSelectionAttrib, iTreeSetRenameSelectionAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWRENAME",      iTreeGetShowRenameAttrib,      iTreeSetShowRenameAttrib,      NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ADDEXPANDED",     iTreeGetAddExpandedAttrib,     iTreeSetAddExpandedAttrib,     IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDRAGDROP",    iTreeGetShowDragDropAttrib,    iTreeSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWRENAME",      iTreeGetShowRenameAttrib,      iTreeSetShowRenameAttrib,   NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ADDEXPANDED",     iTreeGetAddExpandedAttrib,     iTreeSetAddExpandedAttrib,  IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */

@@ -187,7 +187,8 @@ static int branchclose_cb(Ihandle* ih, int id)
 static int dragdrop_cb(Ihandle* ih, int drag_id, int drop_id, int shift, int control)
 {
   printf("DRAGDROP_CB (%d)->(%d)\n", drag_id, drop_id);
-  return IUP_DEFAULT;
+  return IUP_CONTINUE;
+//  return IUP_DEFAULT;
 }
 
 static int getfocus_cb(Ihandle* ih)
@@ -369,7 +370,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "FGCOLOR", "255 0 0");
 
 //  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
-//  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
+  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
 
   //IupSetAttribute(tree, "ADDEXPANDED",  "NO");

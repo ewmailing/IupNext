@@ -177,10 +177,11 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
       {
         int byte = x/8;
         int bit = x%8;
-        int cor = (int)imgdata[y*ih->currentwidth+x];
-        if (cor == 1)
+        int index = (int)imgdata[y*ih->currentwidth+x];
+        /* index==0 is transparent */
+        if (index == 1)
           sb[byte] = (char)(sb[byte] | (1<<bit));
-        if (cor != 0)
+        if (index != 0)
           mb[byte] = (char)(mb[byte] | (1<<bit));
       }
 
@@ -207,6 +208,48 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
   return cursor;
 }
 
+void* iupdrvImageCreateMask(Ihandle *ih)
+{
+  int bpp;
+  GdkPixmap *mask;
+  char *bits, *sb;
+  int y, x, line_size = (ih->currentwidth+7)/8;
+  int size_bytes = line_size*ih->currentheight;
+  unsigned char* imgdata = (unsigned char*)ih->handle;
+  unsigned char colors[256];
+
+  bpp = iupAttribGetInt(ih, "BPP");
+  if (bpp > 8)
+    return NULL;
+
+  bits = (char*)malloc(size_bytes);
+  if (!bits) return NULL;
+  memset(bits, 0, size_bytes);
+
+  iupImageInitNonBgColors(ih, colors);
+
+  sb = bits;
+  for (y=0; y<ih->currentheight; y++)
+  {
+    for (x=0; x<ih->currentwidth; x++)
+    {
+      int byte = x/8;
+      int bit = x%8;
+      int index = (int)imgdata[y*ih->currentwidth+x];
+      if (colors[index])
+        sb[byte] = (char)(sb[byte] | (1<<bit));
+    }
+
+    sb += line_size;
+  }
+
+  mask = gdk_bitmap_create_from_data(NULL, bits, ih->currentwidth, ih->currentheight);
+
+  free(bits);
+
+  return mask;
+}
+
 void* iupdrvImageLoad(const char* name, int type)
 {
   if (type == IUPIMAGE_CURSOR)
@@ -228,7 +271,15 @@ void* iupdrvImageLoad(const char* name, int type)
                                         24, /* size */
                                         0,  /* flags */
                                         &error);
-      if (!pixbuf)
+      if (error)
+        g_error_free(error);
+    }
+
+    if (!pixbuf)
+    {
+      GError *error = NULL;
+      pixbuf = gdk_pixbuf_new_from_file(name, &error);    
+      if (error)
         g_error_free(error);
     }
 

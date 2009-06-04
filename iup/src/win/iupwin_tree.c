@@ -86,7 +86,7 @@ static int winTreeForEach(Ihandle* ih, HTREEITEM hItem, winTreeNodeFunc func, vo
 /*****************************************************************************/
 /* FINDING ITEMS                                                             */
 /*****************************************************************************/
-static HTREEITEM winTreeFindNodeFromID(Ihandle* ih, HTREEITEM hItem, HTREEITEM hNode)
+static HTREEITEM winTreeFindNodeID(Ihandle* ih, HTREEITEM hItem, HTREEITEM hNode)
 {
   TVITEM item;
   winTreeItemData* itemData;
@@ -111,7 +111,7 @@ static HTREEITEM winTreeFindNodeFromID(Ihandle* ih, HTREEITEM hItem, HTREEITEM h
     {
       /* Recursively traverse child items */
       HTREEITEM hItemChild = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItem);
-      hItemChild = winTreeFindNodeFromID(ih, hItemChild, hNode);
+      hItemChild = winTreeFindNodeID(ih, hItemChild, hNode);
 
       /* StateID founded! */
       if(hItemChild == hNode)
@@ -128,11 +128,11 @@ static int winTreeGetNodeId(Ihandle* ih, HTREEITEM hItem)
 {
   HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
   ih->data->id_control = -1;
-  winTreeFindNodeFromID(ih, hItemRoot, hItem);
+  winTreeFindNodeID(ih, hItemRoot, hItem);
   return ih->data->id_control;
 }
 
-static HTREEITEM winTreeFindNode(Ihandle* ih, HTREEITEM hItem)
+static HTREEITEM winTreeFindNodeFromID(Ihandle* ih, HTREEITEM hItem)
 {
   TVITEM item;
   winTreeItemData* itemData;
@@ -157,7 +157,7 @@ static HTREEITEM winTreeFindNode(Ihandle* ih, HTREEITEM hItem)
     {
       /* Recursively traverse child items */
       HTREEITEM hItemChild = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItem);
-      hItemChild = winTreeFindNode(ih, hItemChild);
+      hItemChild = winTreeFindNodeFromID(ih, hItemChild);
 
       /* StateID founded! */
       if(ih->data->id_control < 0)
@@ -177,7 +177,7 @@ static HTREEITEM winTreeFindNodeFromString(Ihandle* ih, const char* name_id)
   {
     HTREEITEM hRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
     iupStrToInt(name_id, &ih->data->id_control);
-    return winTreeFindNode(ih, hRoot);
+    return winTreeFindNodeFromID(ih, hRoot);
   }
   else
     return (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
@@ -570,14 +570,11 @@ static Iarray* winTreeGetSelectedArrayId(Ihandle* ih)
 /* COPYING ITEMS (Branches and its children)                                 */
 /*****************************************************************************/
 /* Insert the copied item in a new location. Returns the new item. */
-static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM htiNewParent)
+static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent, HTREEITEM hPosition)
 {
   TVITEM item; 
   TVINSERTSTRUCT tvins;
-  HTREEITEM hNewItem;
   char* title = iupStrGetMemory(255);
-
-  // TODO: o que fazer com o winTreeItemData?
 
   item.hItem = hItem;
   item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT | TVIF_STATE | TVIF_PARAM;
@@ -585,31 +582,54 @@ static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM htiNewP
   item.cchTextMax = 255;
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
 
-  /* Save the heading level in the node's application-defined data area */
+  /* Copy everything including user data reference */
   tvins.item = item; 
-  tvins.hInsertAfter = TVI_LAST;
-  tvins.hParent = htiNewParent;
+  tvins.hInsertAfter = hPosition;
+  tvins.hParent = hParent;
 
   /* Add the node to the tree-view control */
-  hNewItem = (HTREEITEM)SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+  return (HTREEITEM)SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+}
 
-  return hNewItem;
+static void winTreeCopyChildren(Ihandle* ih, HTREEITEM hItemSrc, HTREEITEM hItemDst)
+{
+  HTREEITEM hChildSrc = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItemSrc);
+  HTREEITEM hNewItem = TVI_FIRST;
+  while (hChildSrc != NULL)
+  {
+    hNewItem = winTreeCopyItem(ih, hChildSrc, hItemDst, hNewItem); /* Use the same order they where enumerated */
+
+    /* Recursively transfer all the items */
+    winTreeCopyChildren(ih, hChildSrc, hNewItem);  
+
+    /* Go to next sibling item */
+    hChildSrc = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hChildSrc);
+  }
 }
 
 /* Copies all items in a branch to a new location. Returns the new branch node. */
-static HTREEITEM winTreeCopyBranch(Ihandle* ih, HTREEITEM htiBranch, HTREEITEM htiNewParent)
+static HTREEITEM winTreeCopyNode(Ihandle* ih, HTREEITEM hItemSrc, HTREEITEM hItemDst)
 {
-  HTREEITEM hNewItem = winTreeCopyItem(ih, htiBranch, htiNewParent);
-  HTREEITEM hChild = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)htiBranch);
+  HTREEITEM hNewItem;
+  TVITEM item;
+  winTreeItemData* itemDataDst;
 
-  while(hChild != NULL)
-  {
-    /* Recursively transfer all the items */
-    winTreeCopyBranch(ih, hChild, hNewItem);  
+  /* Get DST node attributes */
+  item.hItem = hItemDst;
+  item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_STATE;
+  SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+  itemDataDst = (winTreeItemData*)item.lParam;
 
-    /* Go to next sibling item */
-    hChild = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hChild);
+  if (itemDataDst->kind == ITREE_BRANCH && (item.state & TVIS_EXPANDED))
+    hNewItem = winTreeCopyItem(ih, hItemSrc, hItemDst, TVI_FIRST);  /* copy as first child of expanded branch */
+  else
+  {                                                    
+    HTREEITEM hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hItemDst);
+    hNewItem = winTreeCopyItem(ih, hItemSrc, hParent, hItemDst); /* copy as next brother of item or collapsed branch */
   }
+
+  winTreeCopyChildren(ih, hItemSrc, hNewItem);
+
   return hNewItem;
 }
 
@@ -808,13 +828,13 @@ static void winTreeCallSelectionCb(Ihandle* ih, int status, HTREEITEM hItem)
   }
 }
 
-static int winTreeCallDragDropCb(Ihandle* ih)
+static int winTreeCallDragDropCb(Ihandle* ih, HTREEITEM	hItemDrag, HTREEITEM hItemDrop)
 {
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
   if (cbDragDrop)
   {
-    int drag_str = iupAttribGetInt(ih, "_IUPTREE_DRAGID");
-    int drop_str = iupAttribGetInt(ih, "_IUPTREE_DROPID");
+    int drag_id = winTreeGetNodeId(ih, hItemDrag);
+    int drop_id = winTreeGetNodeId(ih, hItemDrop);
     int isshift = 0;
     int iscontrol = 0;
 
@@ -824,12 +844,10 @@ static int winTreeCallDragDropCb(Ihandle* ih)
     if ((GetKeyState(VK_CONTROL) & 0x8000))
       iscontrol = 1;
 
-    cbDragDrop(ih, drag_str, drop_str, isshift, iscontrol);
-
-    return IUP_DEFAULT;
+    return cbDragDrop(ih, drag_id, drop_id, isshift, iscontrol);
   }
 
-  return IUP_IGNORE;
+  return IUP_CONTINUE; /* allow to move by default if callback not defined */
 }
 
 
@@ -880,7 +898,7 @@ static int winTreeSetImageExpandedAttrib(Ihandle* ih, const char* name_id, const
   item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_STATE;
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
   itemData = (winTreeItemData*)item.lParam;
-  itemData->image_expanded = (short)winTreeGetImageIndex(ih, value, "IMAGEBRANCHEXPANDED");
+  itemData->image_expanded = (short)winTreeGetImageIndex(ih, value, "IMAGEEXPANDED");
 
   if (itemData->kind == ITREE_BRANCH && item.state & TVIS_EXPANDED)
   {
@@ -1180,57 +1198,28 @@ static char* winTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
 
 static int winTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  int curDepth, newDepth;
-  HTREEITEM hBrotherItem, hParent;
-  HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
-  if (!hItem)
+  HTREEITEM hItemDst, hParent;
+  HTREEITEM hItemSrc = winTreeFindNodeFromString(ih, name_id);
+  if (!hItemSrc)
+    return 0;
+  hItemDst = winTreeFindNodeFromString(ih, value);
+  if (!hItemDst)
     return 0;
 
-  iupStrToInt(winTreeGetDepthAttrib(ih, name_id), &curDepth);
-  iupStrToInt(value, &newDepth);
-
-  /* just the root node has depth = 0 */
-  if(newDepth <= 0)
-    return 0;
-
-  if(curDepth < newDepth)  /* Top -> Down */
+  /* If Drag item is an ancestor of Drop item then return */
+  hParent = hItemDst;
+  while(hParent)
   {
-    ih->data->id_control = newDepth - curDepth - 1;  /* subtract 1 (one) to reach the level of its new parent */
-
-    /* Firstly, the node will be child of your brother - this avoids circular reference */
-    hBrotherItem = winTreeFindNewBrother(ih, (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hItem));
-
-    /* Setting the new parent */
-    hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hBrotherItem);
+    hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hParent);
+    if (hParent == hItemSrc)
+      return 0;
   }
-  else if (curDepth > newDepth)  /* Bottom -> Up */
-  {
-    /* When the new depth is less than the current depth, 
-       simply define a new parent to the node */
-    
-    ih->data->id_control = curDepth - newDepth + 1;  /* add 1 (one) to reach the level of its new parent */
-    
-    /* MarkStart the search by the parent of the current node */
-    hParent = hItem;
-    while(ih->data->id_control != 0)
-    {
-      /* Setting the new parent */
-      hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hParent);
-      ih->data->id_control--;
-    }
-  }
-  else /* same depth, nothing to do */
-    return 0;
-
-  /* without parent, nothing to do */
-  if(hParent == NULL)
-    return 0;
 
   /* Copying the node and its children to the new position */
-  winTreeCopyBranch(ih, hItem, hParent);
+  winTreeCopyNode(ih, hItemSrc, hItemDst);
 
-  /* Deleting the node of its old position */
-  SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItem);
+  /* do not delete the user data, we copy the references in CopyBranch */
+  SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItemSrc);
 
   return 0;
 }
@@ -1695,18 +1684,16 @@ static LRESULT CALLBACK winTreeEditWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARA
     return CallWindowProc(oldProc, hwnd, msg, wp, lp);
 }
 
-static void winTreeDragStart(Ihandle* ih, LPARAM lp)
+static void winTreeDrag(Ihandle* ih, LPARAM lp)
 {
   HTREEITEM	hItemDrop;
-  HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPTREE_DRAGIMAGELIST");
 
+  HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPTREE_DRAGIMAGELIST");
   if (dragImageList)
   {
     POINT pnt;
-    
     pnt.x = LOWORD(lp);
     pnt.y = HIWORD(lp);
-
     GetCursorPos(&pnt);
     ClientToScreen(GetDesktopWindow(), &pnt) ;
     ImageList_DragMove(pnt.x, pnt.y);
@@ -1724,53 +1711,53 @@ static void winTreeDragStart(Ihandle* ih, LPARAM lp)
 
     if(dragImageList)
       ImageList_DragShowNolock(TRUE);
-
-    iupAttribSetInt(ih, "_IUPTREE_DROPID", winTreeGetNodeId(ih, hItemDrop));
   }
 }
 
-static void winTreeDropEnd(Ihandle* ih)
+static void winTreeDrop(Ihandle* ih)
 {
-  HTREEITEM  hItemParent;
-  HTREEITEM  hItemNew;
   HTREEITEM	 hItemDrag     =  (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
   HTREEITEM	 hItemDrop     =  (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DROPITEM");
   HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPTREE_DRAGIMAGELIST");
+  HTREEITEM  hParent;
 
-  if(dragImageList)
+  if (dragImageList)
   {
     ImageList_DragLeave(ih->handle);
     ImageList_EndDrag();
-    ReleaseCapture();
-    ShowCursor(TRUE);
     ImageList_Destroy(dragImageList);
+    iupAttribSetStr(ih, "_IUPTREE_DRAGIMAGELIST", NULL);
   }
+
+  ReleaseCapture();
+  ShowCursor(TRUE);
 
   /* Remove drop target highlighting */
   SendMessage(ih->handle, TVM_SELECTITEM, TVGN_DROPHILITE, (LPARAM)NULL);
 
   iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", NULL);
+  iupAttribSetStr(ih, "_IUPTREE_DROPITEM", NULL);
 
-  if (hItemDrag == hItemDrop)
+  if (!hItemDrop || hItemDrag == hItemDrop)
     return;
 
-  /* DragDrop Callback */
-  winTreeCallDragDropCb(ih);
-
   /* If Drag item is an ancestor of Drop item then return */
-  hItemParent = hItemDrop;
-
-  while((hItemParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hItemParent)) != NULL)
+  hParent = hItemDrop;
+  while(hParent)
   {
-    if( hItemParent == hItemDrag )
+    hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hParent);
+    if (hParent == hItemDrag)
       return;
   }
 
-  winTreeExpandItem(ih, hItemDrop, 1);
+  if (winTreeCallDragDropCb(ih, hItemDrag, hItemDrop) == IUP_CONTINUE)
+  {
+    HTREEITEM  hItemNew = winTreeCopyNode(ih, hItemDrag, hItemDrop);
+    /* do not delete the user data, we copy the references in CopyBranch */
+    SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItemDrag);
 
-  hItemNew = winTreeCopyBranch(ih, hItemDrag, hItemDrop);
-  SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItemDrag);
-  SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNew); /* set focus and selection */
+    SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNew); /* set focus and selection */
+  }
 }  
 
 static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
@@ -1831,6 +1818,26 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
 {
   switch (msg)
   {
+  case WM_CTLCOLOREDIT:
+    {
+      HWND hEdit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
+      if (hEdit)
+      {
+        winTreeItemData* itemData = (winTreeItemData*)iupAttribGet(ih, "_IUPWIN_EDIT_DATA");
+        HDC hDC = (HDC)wp;
+        COLORREF cr;
+
+        SetTextColor(hDC, itemData->color);
+
+        cr = (COLORREF)SendMessage(ih->handle, TVM_GETBKCOLOR, 0, 0);
+        SetBkColor(hDC, cr);
+        SetDCBrushColor(hDC, cr);
+        *result = (LRESULT)GetStockObject(DC_BRUSH);
+        return 1;
+      }
+
+      break;
+    }
   case WM_SETFOCUS:
   case WM_KILLFOCUS:
     {
@@ -1968,8 +1975,9 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   case WM_LBUTTONUP:
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
-    if (IupGetInt(ih, "SHOWDRAGDROP") && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
-      winTreeDropEnd(ih);
+    if (ih->data->show_dragdrop && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
+      winTreeDrop(ih);
+
     if (iupwinButtonUp(ih, msg, wp, lp)==-1)
     {
       *result = 0;
@@ -1977,8 +1985,9 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     }
     break;
   case WM_MOUSEMOVE:
-    if (IupGetInt(ih, "SHOWDRAGDROP") && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
-      winTreeDragStart(ih, lp);
+    if (ih->data->show_dragdrop && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
+      winTreeDrag(ih, lp);
+
     iupwinMouseMove(ih, msg, wp, lp);
     break;
   }
@@ -2015,9 +2024,13 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   {
     char* value;
     HWND hEdit = (HWND)SendMessage(ih->handle, TVM_GETEDITCONTROL, 0, 0);
+    NMTVDISPINFO* info = (NMTVDISPINFO*)msg_info;
 
     /* subclass the edit box. */
     iupwinHandleAdd(ih, hEdit);
+    iupAttribSetStr(ih, "_IUPWIN_EDITBOX", (char*)hEdit);
+
+    /* subclass the edit box. */
     IupSetCallback(ih, "_IUPWIN_EDITOLDPROC_CB", (Icallback)GetWindowLongPtr(hEdit, GWLP_WNDPROC));
     SetWindowLongPtr(hEdit, GWLP_WNDPROC, (LONG_PTR)winTreeEditWinProc);
 
@@ -2028,10 +2041,26 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     value = iupAttribGetStr(ih, "RENAMESELECTION");
     if (value)
       winTreeSetRenameSelectionPos(hEdit, value);
+
+    {
+      winTreeItemData* itemData;
+      TVITEM item; 
+      item.hItem = info->item.hItem;
+      item.mask = TVIF_HANDLE | TVIF_PARAM;
+      SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+      itemData = (winTreeItemData*)item.lParam;
+      iupAttribSetStr(ih, "_IUPWIN_EDIT_DATA", (char*)itemData);
+
+      if (itemData->hFont)
+        SendMessage(hEdit, WM_SETFONT, (WPARAM)itemData->hFont, MAKELPARAM(TRUE,0));
+    }
   }
   else if(msg_info->code == TVN_ENDLABELEDIT)
   {
     NMTVDISPINFO* info = (NMTVDISPINFO*)msg_info;
+
+    iupAttribSetStr(ih, "_IUPWIN_EDITBOX", NULL);
+
     if (info->item.pszText)
     {
       IFnis cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
@@ -2050,31 +2079,30 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   }
   else if(msg_info->code == TVN_BEGINDRAG)
   {
-    if(IupGetInt(ih, "SHOWDRAGDROP"))
+    if (ih->data->show_dragdrop)
     {
       NMTREEVIEW* pNMTreeView = (NMTREEVIEW*)msg_info;
       HTREEITEM   hItemDrag   = pNMTreeView->itemNew.hItem;
       HIMAGELIST  dragImageList;
 
-      /* store the drag-and-drop items */
+      /* store the drag-and-drop item */
       iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", (char*)hItemDrag);
-      iupAttribSetStr(ih, "_IUPTREE_DROPITEM", NULL);
-
-      iupAttribSetInt(ih, "_IUPTREE_DRAGID", winTreeGetNodeId(ih, hItemDrag));
 
       /* get the image list for dragging */
       dragImageList = (HIMAGELIST)SendMessage(ih->handle, TVM_CREATEDRAGIMAGE, 0, (LPARAM)hItemDrag);
-
       if (dragImageList)
       {
         POINT pt = pNMTreeView->ptDrag;
-        iupAttribSetStr(ih, "_IUPTREE_DRAGIMAGELIST", (char*)dragImageList);
         ImageList_BeginDrag(dragImageList, 0, 0, 0);
-        ShowCursor(FALSE);
-        SetCapture(GetDesktopWindow());
+
         ClientToScreen(ih->handle, &pt);
         ImageList_DragEnter(NULL, pt.x, pt.y);
+
+        iupAttribSetStr(ih, "_IUPTREE_DRAGIMAGELIST", (char*)dragImageList);
       }
+
+      ShowCursor(FALSE);
+      SetCapture(ih->handle);  /* drag only inside the tree */
     }
   }
   else if(msg_info->code == NM_DBLCLK)
@@ -2222,6 +2250,10 @@ static int winTreeMapMethod(Ihandle* ih)
   DWORD dwStyle = WS_CHILD | WS_BORDER | TVS_SHOWSELALWAYS;
 
   /* can be set only on the Tree View creation */
+
+  if (!ih->data->show_dragdrop)
+    dwStyle |= TVS_DISABLEDRAGDROP;
+
   if (ih->data->show_rename)
     dwStyle |= TVS_EDITLABELS;
 
@@ -2281,15 +2313,14 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winTreeSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_DEFAULT);
 
   /* IupTree Attributes - GENERAL */
-  iupClassRegisterAttribute(ic, "EXPANDALL",  NULL, winTreeSetExpandAllAttrib, NULL, "NO", IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWDRAGDROP", NULL, NULL, NULL, "NO", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "EXPANDALL",  NULL, winTreeSetExpandAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "INDENTATION", winTreeGetIndentationAttrib, winTreeSetIndentationAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COUNT", winTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - IMAGES */
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, winTreeSetImageAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "IMAGEBRANCHEXPANDED", NULL, winTreeSetImageExpandedAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IMAGEEXPANDED", NULL, winTreeSetImageExpandedAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   
   iupClassRegisterAttribute(ic, "IMAGELEAF",            NULL, winTreeSetImageLeafAttrib, IUPAF_SAMEASSYSTEM, "IMGLEAF", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEBRANCHCOLLAPSED", NULL, winTreeSetImageBranchCollapsedAttrib, IUPAF_SAMEASSYSTEM, "IMGCOLLAPSED", IUPAF_NO_INHERIT);
@@ -2318,6 +2349,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "DELNODE", NULL, winTreeSetDelNodeAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAME",  NULL, winTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, winTreeSetMoveNodeAttrib,  IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

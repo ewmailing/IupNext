@@ -1016,8 +1016,11 @@ static int motDialogSetIconAttrib(Ihandle* ih, const char *value)
   else
   {
     Pixmap icon = (Pixmap)iupImageGetIcon(value);
+    Pixmap icon_mask = (Pixmap)iupImageGetMask(value);
     if (icon)
       XtVaSetValues(ih->handle, XmNiconPixmap, icon, NULL);
+    if (icon_mask)
+      XtVaSetValues(ih->handle, XmNiconMask, icon, NULL);
   }
   return 1;
 }

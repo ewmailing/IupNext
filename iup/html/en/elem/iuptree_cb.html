@@ -134,7 +134,13 @@ elem</strong>:rename_cb(<strong>id:</strong> number, <strong>name</strong>:<stro
     Identifier of the clicked node where the 
     drop were executed.<br>
 <strong>isshift</strong>: Boolean flag indicatinf the shift key state. <br>
-<strong>iscontrol</strong>: Boolean flag indicatinf the control key state.<br>
+<strong>iscontrol</strong>: Boolean flag indicatinf the control key state.</p>
+<p class="info"><span class="style1">Returns:</span> if returns IUP_CONTINUE or 
+the callback is not defined and <strong>SHOWDRAGDROP=YES</strong> then the node 
+is moved to the new position. If the drop node is a branch and it is expanded, 
+then the drag node is inserted as the first child of the node. If the branch is 
+not expanded or the drop node is a leaf, then it is inserted as the next brother 
+of the leaf.<br>
 </p>
 <p><strong>RIGHTCLICK_CB</strong>:
   Action generated when the right mouse button 

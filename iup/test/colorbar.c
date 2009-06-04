@@ -144,8 +144,6 @@ void ColorbarTest(void)
 
   IupDestroy(dlg);
   IupClose();  
-
-  return 0 ;
 }
 
 #ifndef BIG_TEST

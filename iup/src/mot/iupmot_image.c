@@ -140,7 +140,7 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
     return NULL;
 
   sbits = (char*)malloc(2*size_bytes);
-  if (!sbits) return (Cursor)NULL;
+  if (!sbits) return NULL;
   memset(sbits, 0, 2*size_bytes);
   mbits = sbits + size_bytes;
 
@@ -152,10 +152,11 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
     {
       int byte = x/8;
       int bit = x%8;
-      int cor = (int)imgdata[y*width+x];
-      if (cor == 1)
+      int index = (int)imgdata[y*width+x];
+      /* index==0 is transparent */
+      if (index == 1)
         sb[byte] = (char)(sb[byte] | (1<<bit));
-      if (cor != 0)
+      if (index != 0)
         mb[byte] = (char)(mb[byte] | (1<<bit));
     }
 
@@ -193,6 +194,51 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
   return (void*)cursor;
 }
 
+void* iupdrvImageCreateMask(Ihandle *ih)
+{
+  int bpp,y,x,
+      width = ih->currentwidth,
+      height = ih->currentheight,
+      line_size = (width+7)/8,
+      size_bytes = line_size*height;
+  unsigned char *imgdata = (unsigned char*)ih->handle;
+  char *bits, *sb;
+  Pixmap mask;
+  unsigned char colors[256];
+
+  bpp = iupAttribGetInt(ih, "BPP");
+  if (bpp > 8)
+    return NULL;
+
+  bits = (char*)malloc(size_bytes);
+  if (!bits) return NULL;
+  memset(bits, 0, size_bytes);
+
+  iupImageInitNonBgColors(ih, colors);
+
+  sb = bits;
+  for (y=0; y<height; y++)
+  {
+    for (x=0; x<width; x++)
+    {
+      int byte = x/8;
+      int bit = x%8;
+      int index = (int)imgdata[y*width+x];
+      if (colors[index])
+        sb[byte] = (char)(sb[byte] | (1<<bit));
+    }
+
+    sb += line_size;
+  }
+
+  mask = XCreateBitmapFromData(iupmot_display, 
+                               RootWindow(iupmot_display,iupmot_screen),
+                               bits, width, height);
+
+  free(bits);
+  return (void*)mask;
+}
+
 void* iupdrvImageLoad(const char* name, int type)
 {
   if (type == IUPIMAGE_CURSOR)
@@ -203,8 +249,19 @@ void* iupdrvImageLoad(const char* name, int type)
       cursor = XCreateFontCursor(iupmot_display, id);
     return (void*)cursor;
   }
-  else
-    return NULL;
+  else /* IUPIMAGE_IMAGE or IUPIMAGE_ICON */
+  {
+    Screen* screen = ScreenOfDisplay(iupmot_display, iupmot_screen);
+  	Pixmap pixmap = XmGetPixmap(screen, (char*)name, BlackPixelOfScreen(screen), WhitePixelOfScreen(screen));
+    if (pixmap == XmUNSPECIFIED_PIXMAP)
+    {
+	    unsigned int width, height;
+	    int hotx, hoty;
+      pixmap = 0;
+    	XReadBitmapFile(iupmot_display, RootWindow(iupmot_display,iupmot_screen), name, &width, &height, &pixmap, &hotx, &hoty);
+    }
+  	return (void*)pixmap;
+  }
 }
 
 void iupdrvImageGetInfo(void* image, int *w, int *h, int *bpp)
@@ -224,5 +281,9 @@ void iupdrvImageDestroy(void* image, int type)
   if (type == IUPIMAGE_CURSOR)
     XFreeCursor(iupmot_display, (Cursor)image);
   else
-    XFreePixmap(iupmot_display, (Pixmap)image);
+  {
+    Screen* screen = ScreenOfDisplay(iupmot_display, iupmot_screen);
+    if (!XmDestroyPixmap(screen, (Pixmap)image))
+      XFreePixmap(iupmot_display, (Pixmap)image);
+  }
 }

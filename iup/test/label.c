@@ -151,6 +151,10 @@ void LabelTest(void)
 
   label = IupLabel(NULL);
   IupSetAttributeHandle(label, "IMAGE", image1);
+  //IupSetAttribute(label, "IMAGE", "TECGRAF_BITMAP");
+  //IupSetAttribute(label, "IMAGE", "../test/tecgraf.bmp");
+  //IupSetAttribute(label, "IMAGE", "../test/file_large.xbm");
+  //IupSetAttribute(label, "IMAGE", "gtk-open");
   IupSetAttribute(label, "BGCOLOR", IupGetGlobal("DLGBGCOLOR"));
   IupSetAttribute(label, "PADDING", "0x0");
   IupSetAttribute(label, "TIP", "Image Label");
