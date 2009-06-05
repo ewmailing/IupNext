@@ -47,7 +47,7 @@ DBG = Yes
 #SRC = multiline2.c
 #SRC = progressbar.c
 #SRC = radio.c
-SRC = sample.c
+#SRC = sample.c
 #SRC = sbox1.c
 #SRC = sbox2.c
 #SRC = scanf.c
@@ -76,7 +76,7 @@ SRC = sample.c
 #USE_OPENGL = Yes
 #SRC = glcanvas.c
 
-#USE_IUPCONTROLS = Yes
+USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
 #SRC = cbox.c
 #SRC = cells_checkboard.c
@@ -87,7 +87,7 @@ SRC = sample.c
 #SRC = gauge.c
 #SRC = getcolor.c
 #SRC = getparam.c
-#SRC = matrix.c
+SRC = matrix.c
 #SRC = mdi.c
 #SRC = tree.c
 

@@ -472,7 +472,12 @@ static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
   {
     IFnii cb = (IFnii)IupGetCallback(ih,"RESIZE_CB");
     if (cb)
-      cb(ih,ih->currentwidth, ih->currentheight);
+    {
+      /* force the resize so it can occour before calling the callback */
+      gdk_window_resize(gtk_widget_get_window(ih->handle), ih->currentwidth, ih->currentheight);
+
+      cb(ih, ih->currentwidth, ih->currentheight);
+    }
   }
 }
 
