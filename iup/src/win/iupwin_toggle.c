@@ -39,11 +39,11 @@ static int winToggleIsActive(Ihandle* ih)
   return iupAttribGetInt(ih, "_IUPWIN_ACTIVE");
 }
 
-static void winToggleSetBitmap(Ihandle* ih, const char* name, int make_inactive, const char* attrib_name)
+static void winToggleSetBitmap(Ihandle* ih, const char* name, int make_inactive)
 {
   if (name)
   {
-    HBITMAP bitmap = iupImageGetImage(name, ih, make_inactive, attrib_name);
+    HBITMAP bitmap = iupImageGetImage(name, ih, make_inactive);
     SendMessage(ih->handle, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)bitmap);
   }
   else
@@ -59,12 +59,12 @@ static void winToggleUpdateImage(Ihandle* ih, int active, int check)
   {
     name = iupAttribGet(ih, "IMINACTIVE");
     if (name)
-      winToggleSetBitmap(ih, name, 0, "IMINACTIVE");
+      winToggleSetBitmap(ih, name, 0);
     else
     {
       /* if not defined then automaticaly create one based on IMAGE */
       name = iupAttribGet(ih, "IMAGE");
-      winToggleSetBitmap(ih, name, 1, "IMINACTIVE"); /* make_inactive */
+      winToggleSetBitmap(ih, name, 1); /* make_inactive */
     }
   }
   else
@@ -74,19 +74,19 @@ static void winToggleUpdateImage(Ihandle* ih, int active, int check)
     {
       name = iupAttribGet(ih, "IMPRESS");
       if (name)
-        winToggleSetBitmap(ih, name, 0, "IMPRESS");
+        winToggleSetBitmap(ih, name, 0);
       else
       {
         /* if not defined then automaticaly create one based on IMAGE */
         name = iupAttribGet(ih, "IMAGE");
-        winToggleSetBitmap(ih, name, 0, "IMPRESS");
+        winToggleSetBitmap(ih, name, 0);
       }
     }
     else
     {
       name = iupAttribGet(ih, "IMAGE");
       if (name)
-        winToggleSetBitmap(ih, name, 0, "IMAGE");
+        winToggleSetBitmap(ih, name, 0);
     }
   }
 }
@@ -119,12 +119,11 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
   int horiz_alignment, vert_alignment;
   int x, y, width, height, bpp, shift = 1;
   HBITMAP hBitmap;
-  char *name, *attrib_name;
+  char *name;
   int make_inactive = 0;
 
   if (itemState & ODS_DISABLED)
   {
-    attrib_name = "IMINACTIVE";
     name = iupAttribGet(ih, "IMINACTIVE");
     if (!name)
     {
@@ -136,18 +135,12 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
   {
     name = iupAttribGet(ih, "IMPRESS");
     if (itemState & ODS_SELECTED && name)
-    {
-      attrib_name = "IMPRESS";
       shift = 0;
-    }
     else
-    {
-      attrib_name = "IMAGE";
       name = iupAttribGet(ih, "IMAGE");
-    }
   }
 
-  hBitmap = iupImageGetImage(name, ih, make_inactive, attrib_name);
+  hBitmap = iupImageGetImage(name, ih, make_inactive);
   if (!hBitmap)
     return;
 

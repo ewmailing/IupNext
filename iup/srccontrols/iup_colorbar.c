@@ -653,7 +653,7 @@ static int iColorbarSetActiveAttrib(Ihandle* ih, const char* value)
 
 static int iColorbarRedraw_CB(Ihandle* ih)
 {
-  if (ih->data->cddbuffer == NULL)
+  if (!ih->data->cddbuffer)
     return IUP_DEFAULT;
 
   /* update display */

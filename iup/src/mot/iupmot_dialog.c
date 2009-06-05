@@ -858,7 +858,7 @@ static int motDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     return 1;
   else                                     
   {
-    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0, "BACKGROUND");
+    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
     if (pixmap)
     {
       Widget dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");

@@ -967,7 +967,7 @@ static int winDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     return 1;
   else
   {
-    HBITMAP hBitmap = iupImageGetImage(value, ih, 0, "BACKGROUND");
+    HBITMAP hBitmap = iupImageGetImage(value, ih, 0);
     if (hBitmap)
     {
       iupAttribSetStr(ih, "_IUPWIN_BACKGROUND_COLOR", NULL);

@@ -411,11 +411,11 @@ static int winItemSetImageAttrib(Ihandle* ih, const char* value)
   if (ih->handle == (InativeHandle*)-1) /* check if submenu is actually created */
     return 1;
 
-  hBitmapUnchecked = iupImageGetImage(value, ih, 0, "IMAGE");
+  hBitmapUnchecked = iupImageGetImage(value, ih, 0);
 
   impress = iupAttribGet(ih, "IMPRESS");
   if (impress)
-    hBitmapChecked = iupImageGetImage(impress, ih, 0, "IMPRESS");
+    hBitmapChecked = iupImageGetImage(impress, ih, 0);
   else
     hBitmapChecked = hBitmapUnchecked;
 
@@ -431,10 +431,10 @@ static int winItemSetImpressAttrib(Ihandle* ih, const char* value)
   HBITMAP hBitmapUnchecked, hBitmapChecked;
 
   char *image = iupAttribGet(ih, "IMPRESS");
-  hBitmapUnchecked = iupImageGetImage(image, ih, 0, "IMAGE");
+  hBitmapUnchecked = iupImageGetImage(image, ih, 0);
 
   if (value)
-    hBitmapChecked = iupImageGetImage(value, ih, 0, "IMPRESS");
+    hBitmapChecked = iupImageGetImage(value, ih, 0);
   else
     hBitmapChecked = hBitmapUnchecked;
 
@@ -484,7 +484,7 @@ static int winItemSetTitleImageAttrib(Ihandle* ih, const char* value)
   if (ih->handle == (InativeHandle*)-1) /* check if submenu is actually created */
     return 1;
 
-  hBitmap = iupImageGetImage(value, ih, 0, "TITLEIMAGE");
+  hBitmap = iupImageGetImage(value, ih, 0);
 
   menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
   menuiteminfo.fMask = MIIM_BITMAP; 

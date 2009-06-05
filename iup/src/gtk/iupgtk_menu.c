@@ -74,9 +74,9 @@ static void gtkItemUpdateImage(Ihandle* ih, const char* value, const char* image
   GdkPixbuf* pixbuf;
 
   if (!impress || !iupStrBoolean(value))
-    pixbuf = iupImageGetImage(image, ih, 0, "IMAGE");
+    pixbuf = iupImageGetImage(image, ih, 0);
   else
-    pixbuf = iupImageGetImage(impress, ih, 0, "IMPRESS");
+    pixbuf = iupImageGetImage(impress, ih, 0);
 
   if (pixbuf)
   {

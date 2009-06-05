@@ -62,14 +62,14 @@ static int gtkToggleGetCheck(Ihandle* ih)
     return 0;
 }
 
-static void gtkToggleSetPixbuf(Ihandle* ih, const char* name, int make_inactive, const char* attrib_name)
+static void gtkToggleSetPixbuf(Ihandle* ih, const char* name, int make_inactive)
 {
   GtkButton* button = (GtkButton*)ih->handle;
   GtkImage* image = (GtkImage*)gtk_button_get_image(button);
 
   if (name)
   {
-    GdkPixbuf* pixbuf = iupImageGetImage(name, ih, make_inactive, attrib_name);
+    GdkPixbuf* pixbuf = iupImageGetImage(name, ih, make_inactive);
     GdkPixbuf* old_pixbuf = gtk_image_get_pixbuf(image);
     if (pixbuf != old_pixbuf)
       gtk_image_set_from_pixbuf(image, pixbuf);
@@ -90,12 +90,12 @@ static void gtkToggleUpdateImage(Ihandle* ih, int active, int check)
   {
     name = iupAttribGet(ih, "IMINACTIVE");
     if (name)
-      gtkToggleSetPixbuf(ih, name, 0, "IMINACTIVE");
+      gtkToggleSetPixbuf(ih, name, 0);
     else
     {
       /* if not defined then automaticaly create one based on IMAGE */
       name = iupAttribGet(ih, "IMAGE");
-      gtkToggleSetPixbuf(ih, name, 1, "IMINACTIVE"); /* make_inactive */
+      gtkToggleSetPixbuf(ih, name, 1); /* make_inactive */
     }
   }
   else
@@ -105,19 +105,19 @@ static void gtkToggleUpdateImage(Ihandle* ih, int active, int check)
     {
       name = iupAttribGet(ih, "IMPRESS");
       if (name)
-        gtkToggleSetPixbuf(ih, name, 0, "IMPRESS");
+        gtkToggleSetPixbuf(ih, name, 0);
       else
       {
         /* if not defined then automaticaly create one based on IMAGE */
         name = iupAttribGet(ih, "IMAGE");
-        gtkToggleSetPixbuf(ih, name, 0, "IMPRESS");
+        gtkToggleSetPixbuf(ih, name, 0);
       }
     }
     else
     {
       name = iupAttribGet(ih, "IMAGE");
       if (name)
-        gtkToggleSetPixbuf(ih, name, 0, "IMAGE");
+        gtkToggleSetPixbuf(ih, name, 0);
     }
   }
 }

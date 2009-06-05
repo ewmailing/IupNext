@@ -692,13 +692,13 @@ static void winTreeUpdateImages(Ihandle* ih, HTREEITEM hItem, int mode)
   }
 }
 
-static int winTreeGetImageIndex(Ihandle* ih, const char* value, const char* attrib_name)
+static int winTreeGetImageIndex(Ihandle* ih, const char* value)
 {
   HIMAGELIST image_list;
   int count, i;
   Iarray* bmpArray;
   HBITMAP *bmpArrayData;
-  HBITMAP bmp = iupImageGetImage(value, ih, 0, attrib_name);
+  HBITMAP bmp = iupImageGetImage(value, ih, 0);
   if (!bmp)
     return -1;
 
@@ -858,7 +858,7 @@ static int winTreeCallDragDropCb(Ihandle* ih, HTREEITEM	hItemDrag, HTREEITEM hIt
 
 static int winTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->def_image_expanded = (void*)winTreeGetImageIndex(ih, value, "IMAGEBRANCHEXPANDED");
+  ih->data->def_image_expanded = (void*)winTreeGetImageIndex(ih, value);
 
   /* Update all images, starting at root node */
   winTreeUpdateImages(ih, (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0), ITREE_UPDATEIMAGE_EXPANDED);
@@ -868,7 +868,7 @@ static int winTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 
 static int winTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->def_image_collapsed = (void*)winTreeGetImageIndex(ih, value, "IMAGEBRANCHCOLLAPSED");
+  ih->data->def_image_collapsed = (void*)winTreeGetImageIndex(ih, value);
 
   /* Update all images, starting at root node */
   winTreeUpdateImages(ih, (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0), ITREE_UPDATEIMAGE_COLLAPSED);
@@ -878,7 +878,7 @@ static int winTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 
 static int winTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->def_image_leaf = (void*)winTreeGetImageIndex(ih, value, "IMAGELEAF");
+  ih->data->def_image_leaf = (void*)winTreeGetImageIndex(ih, value);
 
   /* Update all images, starting at root node */
   winTreeUpdateImages(ih, (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0), ITREE_UPDATEIMAGE_LEAF);
@@ -898,7 +898,7 @@ static int winTreeSetImageExpandedAttrib(Ihandle* ih, const char* name_id, const
   item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_STATE;
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
   itemData = (winTreeItemData*)item.lParam;
-  itemData->image_expanded = (short)winTreeGetImageIndex(ih, value, "IMAGEEXPANDED");
+  itemData->image_expanded = (short)winTreeGetImageIndex(ih, value);
 
   if (itemData->kind == ITREE_BRANCH && item.state & TVIS_EXPANDED)
   {
@@ -925,7 +925,7 @@ static int winTreeSetImageAttrib(Ihandle* ih, const char* name_id, const char* v
   item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_STATE;
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
   itemData = (winTreeItemData*)item.lParam;
-  itemData->image = (short)winTreeGetImageIndex(ih, value, "IMAGE");
+  itemData->image = (short)winTreeGetImageIndex(ih, value);
 
   if (itemData->kind == ITREE_BRANCH)
   {
@@ -1760,7 +1760,7 @@ static void winTreeDrop(Ihandle* ih)
   }
 }  
 
-static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
+static void winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
 {
   HTREEITEM hItemFocus;
   TVHITTESTINFO info;
@@ -1770,7 +1770,7 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
   hItem = (HTREEITEM)SendMessage(ih->handle, TVM_HITTEST, 0, (LPARAM)&info);
 
   if (!(info.flags & TVHT_ONITEM) || !hItem)
-    return 0;
+    return;
 
   if (GetKeyState(VK_CONTROL) & 0x8000) /* Control key is down */
   {
@@ -1781,7 +1781,7 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
     winTreeCallSelectionCb(ih, winTreeIsItemSelected(ih, hItem), hItem);
     winTreeSetFocus(ih, hItem);
 
-    return 1;
+    return;
   }
   else if (GetKeyState(VK_SHIFT) & 0x8000) /* Shift key is down */
   {
@@ -1794,7 +1794,7 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
 
       winTreeCallMultiSelectionCb(ih);
       winTreeSetFocus(ih, hItem);
-      return 1;
+      return;
     }
   }
 
@@ -1811,7 +1811,6 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
     winTreeCallSelectionCb(ih, 0, hItemFocus);
 
   winTreeCallSelectionCb(ih, 1, hItem);
-  return 1;
 }
 
 static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
@@ -1953,12 +1952,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     {
       /* mut set focus on left button down or the tree won't show its focus */
       SetFocus(ih->handle);
-
-      if (winTreeMouseMultiSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp)))
-      {
-        *result = 0;
-        return 1; /* abort default processing */
-      }
+      winTreeMouseMultiSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
     }
     /* no break here */
   case WM_MBUTTONDOWN:
@@ -2286,9 +2280,9 @@ static int winTreeMapMethod(Ihandle* ih)
   }
 
   /* Initialize the default images */
-  ih->data->def_image_leaf = (void*)winTreeGetImageIndex(ih, "IMGLEAF", "IMAGELEAF");
-  ih->data->def_image_collapsed = (void*)winTreeGetImageIndex(ih, "IMGCOLLAPSED", "IMAGEBRANCHCOLLAPSED");
-  ih->data->def_image_expanded = (void*)winTreeGetImageIndex(ih, "IMGEXPANDED", "IMAGEBRANCHEXPANDED");
+  ih->data->def_image_leaf = (void*)winTreeGetImageIndex(ih, "IMGLEAF");
+  ih->data->def_image_collapsed = (void*)winTreeGetImageIndex(ih, "IMGCOLLAPSED");
+  ih->data->def_image_expanded = (void*)winTreeGetImageIndex(ih, "IMGEXPANDED");
 
   /* Add the Root Node */
   winTreeAddRootNode(ih);

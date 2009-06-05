@@ -50,6 +50,8 @@ static gboolean gtkQueryTooltip(GtkWidget *widget, gint x, gint y, gboolean keyb
       gtk_tooltip_set_icon(tooltip, icon);
   }
 
+  (void)y;
+  (void)x;
   (void)widget;
   return FALSE;
 }

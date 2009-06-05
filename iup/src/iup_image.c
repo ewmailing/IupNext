@@ -377,7 +377,7 @@ void iupImageGetInfo(const char* name, int *w, int *h, int *bpp)
   if (bpp) *bpp = IupGetInt(ih, "BPP");
 }
 
-void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, const char* attrib_name)
+void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
 {
   char cache_name[100] = "_IUPIMAGE_IMAGE";
   char* bgcolor;

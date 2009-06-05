@@ -183,14 +183,14 @@ static int gtkButtonSetStandardFontAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static void gtkButtonSetPixbuf(Ihandle* ih, const char* name, int make_inactive, const char* attrib_name)
+static void gtkButtonSetPixbuf(Ihandle* ih, const char* name, int make_inactive)
 {
   GtkButton* button = (GtkButton*)ih->handle;
   GtkImage* image = (GtkImage*)gtk_button_get_image(button);
 
   if (name && image)
   {
-    GdkPixbuf* pixbuf = iupImageGetImage(name, ih, make_inactive, attrib_name);
+    GdkPixbuf* pixbuf = iupImageGetImage(name, ih, make_inactive);
     GdkPixbuf* old_pixbuf = gtk_image_get_pixbuf(image);
     if (pixbuf != old_pixbuf)
       gtk_image_set_from_pixbuf(image, pixbuf);
@@ -208,14 +208,14 @@ static int gtkButtonSetImageAttrib(Ihandle* ih, const char* value)
   if (ih->data->type != IUP_BUTTON_TEXT)   /* image or both */
   {
     if (iupdrvIsActive(ih))
-      gtkButtonSetPixbuf(ih, value, 0, "IMAGE");
+      gtkButtonSetPixbuf(ih, value, 0);
     else
     {
       if (!iupAttribGet(ih, "IMINACTIVE"))
       {
         /* if not active and IMINACTIVE is not defined 
            then automaticaly create one based on IMAGE */
-        gtkButtonSetPixbuf(ih, value, 1, "IMINACTIVE"); /* make_inactive */
+        gtkButtonSetPixbuf(ih, value, 1); /* make_inactive */
       }
     }
     return 1;
@@ -231,12 +231,12 @@ static int gtkButtonSetImInactiveAttrib(Ihandle* ih, const char* value)
     if (!iupdrvIsActive(ih))
     {
       if (value)
-        gtkButtonSetPixbuf(ih, value, 0, "IMINACTIVE");
+        gtkButtonSetPixbuf(ih, value, 0);
       else
       {
         /* if not defined then automaticaly create one based on IMAGE */
         char* name = iupAttribGet(ih, "IMAGE");
-        gtkButtonSetPixbuf(ih, name, 1, "IMINACTIVE"); /* make_inactive */
+        gtkButtonSetPixbuf(ih, name, 1); /* make_inactive */
       }
     }
     return 1;
@@ -254,19 +254,19 @@ static int gtkButtonSetActiveAttrib(Ihandle* ih, const char* value)
     {
       char* name = iupAttribGet(ih, "IMINACTIVE");
       if (name)
-        gtkButtonSetPixbuf(ih, name, 0, "IMINACTIVE");
+        gtkButtonSetPixbuf(ih, name, 0);
       else
       {
         /* if not defined then automaticaly create one based on IMAGE */
         name = iupAttribGet(ih, "IMAGE");
-        gtkButtonSetPixbuf(ih, name, 1, "IMINACTIVE"); /* make_inactive */
+        gtkButtonSetPixbuf(ih, name, 1); /* make_inactive */
       }
     }
     else
     {
       /* must restore the normal image */
       char* name = iupAttribGet(ih, "IMAGE");
-      gtkButtonSetPixbuf(ih, name, 0, "IMAGE");
+      gtkButtonSetPixbuf(ih, name, 0);
     }
   }
 
@@ -303,11 +303,11 @@ static gboolean gtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *
     if (name)
     {
       if (evt->type == GDK_BUTTON_PRESS)
-        gtkButtonSetPixbuf(ih, name, 0, "IMPRESS");
+        gtkButtonSetPixbuf(ih, name, 0);
       else
       {
         name = iupAttribGet(ih, "IMAGE");
-        gtkButtonSetPixbuf(ih, name, 0, "IMAGE");
+        gtkButtonSetPixbuf(ih, name, 0);
       }
     }
   }

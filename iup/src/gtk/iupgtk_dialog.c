@@ -804,7 +804,7 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0, "BACKGROUND");
+    GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0);
     if (pixbuf)
     {
       GdkPixmap* pixmap;

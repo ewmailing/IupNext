@@ -537,12 +537,12 @@ int iupdrvGetScrollbarSize(void)
   return 15;
 }
 
-void iupmotSetPixmap(Ihandle* ih, const char* name, const char* prop, int make_inactive, const char* attrib_name)
+void iupmotSetPixmap(Ihandle* ih, const char* name, const char* prop, int make_inactive)
 {
   if (name)
   {
     Pixmap old_pixmap;
-    Pixmap pixmap = (Pixmap)iupImageGetImage(name, ih, make_inactive, attrib_name);
+    Pixmap pixmap = (Pixmap)iupImageGetImage(name, ih, make_inactive);
     if (!pixmap) 
       pixmap = XmUNSPECIFIED_PIXMAP;
     XtVaGetValues(ih->handle, prop, &old_pixmap, NULL);

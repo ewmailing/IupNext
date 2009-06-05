@@ -165,7 +165,7 @@ static int motValSetBackgroundAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0, "BACKGROUND");
+    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
     if (pixmap)
     {
       XtVaSetValues(ih->handle, XmNbackgroundPixmap, pixmap, NULL);

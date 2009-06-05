@@ -95,7 +95,7 @@ static int motToggleSetBackgroundAttrib(Ihandle* ih, const char* value)
     }
     else
     {
-      Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0, "BACKGROUND");
+      Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
       if (pixmap)
       {
         XtVaSetValues(ih->handle, XmNbackgroundPixmap, pixmap, NULL);
@@ -142,13 +142,13 @@ static int motToggleSetImageAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    iupmotSetPixmap(ih, value, XmNlabelPixmap, 0, "IMAGE");
+    iupmotSetPixmap(ih, value, XmNlabelPixmap, 0);
 
     if (!iupAttribGet(ih, "IMINACTIVE"))
     {
       /* if not active and IMINACTIVE is not defined 
          then automaticaly create one based on IMAGE */
-      iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 1, "IMINACTIVE"); /* make_inactive */
+      iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 1); /* make_inactive */
     }
     return 1;
   }
@@ -160,7 +160,7 @@ static int motToggleSetImInactiveAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 0, "IMINACTIVE");
+    iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 0);
     return 1;
   }
   else
@@ -171,7 +171,7 @@ static int motToggleSetImPressAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
-    iupmotSetPixmap(ih, value, XmNselectPixmap, 0, "IMPRESS");
+    iupmotSetPixmap(ih, value, XmNselectPixmap, 0);
     return 1;
   }
   else

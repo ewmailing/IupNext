@@ -60,7 +60,7 @@ static int iTabsGetMaxWidth(Ihandle* ih)
 
     if (tabimage)
     {
-      void* img = iupImageGetImage(tabimage, ih, 0, "TABIMAGE");
+      void* img = iupImageGetImage(tabimage, ih, 0);
       if (img)
       {
         int w;
@@ -88,7 +88,7 @@ static int iTabsGetMaxHeight(Ihandle* ih)
 
     if (tabimage)
     {
-      void* img = iupImageGetImage(tabimage, ih, 0, "TABIMAGE");
+      void* img = iupImageGetImage(tabimage, ih, 0);
       if (img)
       {
         iupdrvImageGetInfo(img, NULL, &h, NULL);

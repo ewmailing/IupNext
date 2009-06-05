@@ -83,12 +83,11 @@ static int winButtonCalcAlignPosY(int vert_alignment, int rect_height, int heigh
 
 static HBITMAP winButtonGetBitmap(Ihandle* ih, UINT itemState, int *shift)
 {
-  char *name, *attrib_name;
+  char *name;
   int make_inactive = 0;
 
   if (itemState & ODS_DISABLED)
   {
-    attrib_name = "IMINACTIVE";
     name = iupAttribGet(ih, "IMINACTIVE");
     if (!name)
     {
@@ -101,17 +100,14 @@ static HBITMAP winButtonGetBitmap(Ihandle* ih, UINT itemState, int *shift)
     name = iupAttribGet(ih, "IMPRESS");
     if (itemState & ODS_SELECTED && name)
     {
-      attrib_name = "IMPRESS";
-      if (shift && !iupAttribGetStr(ih, "IMPRESSBORDER")) *shift = 0;
+      if (shift && !iupAttribGetStr(ih, "IMPRESSBORDER")) 
+        *shift = 0;
     }
     else
-    {
-      attrib_name = "IMAGE";
       name = iupAttribGet(ih, "IMAGE");
-    }
   }
 
-  return iupImageGetImage(name, ih, make_inactive, attrib_name);
+  return iupImageGetImage(name, ih, make_inactive);
 }
 
 static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rect_height, int border, UINT itemState)

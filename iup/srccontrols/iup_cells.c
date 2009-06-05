@@ -35,8 +35,8 @@ struct _IcontrolData
 
   cdCanvas* cdcanvas;        /* cd canvas for drawing                 */
   cdCanvas* cddbuffer;       /* image canvas for double buffering     */
-  int width;                 /* control width (pixels)                */
-  int height;                /* control height (pixels)               */
+  int w;                     /* control width (pixels)                */
+  int h;                     /* control height (pixels)               */
   int clipped;               /* cells bounding box clipping activated */
   int boxed;                 /* draw cells bounding box activated     */
   int bufferize;             /* bufferize on                          */
@@ -84,8 +84,8 @@ static int iCellsGetLimits(Ihandle* ih, int i, int j, int* xmin, int* xmax, int*
   int result = 1;
   int xmin_sum = 0;
   int ymin_sum = 0;
-  int w = ih->data->width;
-  int h = ih->data->height;
+  int w = ih->data->w;
+  int h = ih->data->h;
   int _xmin, _xmax, _ymin, _ymax;
 
   /* Adjusting the inital position according to the cell's type. If it
@@ -280,14 +280,14 @@ static void iCellsSetFullVisible(Ihandle* ih, int i, int j)
   
   /* Getting the frontiers positions for the visible cell */
   int min_x = iCellsGetRangedWidth(ih, 1, ih->data->non_scrollable_cols);
-  int max_y = ih->data->height - iCellsGetRangedHeight(ih, 1, ih->data->non_scrollable_lins); 
+  int max_y = ih->data->h - iCellsGetRangedHeight(ih, 1, ih->data->non_scrollable_lins); 
 
   /* Getting the cell's area limit */
   iCellsGetLimits(ih, i, j, &xmin, &xmax, &ymin, &ymax);
 
   /* Adjusting the diference of the scrollbars' position (horizontal) */
-  if (xmax > ih->data->width)
-    dx = xmax - ih->data->width;
+  if (xmax > ih->data->w)
+    dx = xmax - ih->data->w;
 
   /* Giving priority to xmin position. This can be seen by the usage
    * of dx at the left part of the expression (using the last dx).
@@ -355,23 +355,23 @@ static void iCellsAdjustScrolls(Ihandle* ih)
 
   /* All cells can be drawn inside the object. So, the virtual size
    * is equal to the object size */
-  if (virtual_height < ih->data->height)
-    virtual_height = ih->data->height;
-  if (virtual_width < ih->data->width)
-    virtual_width = ih->data->width;
+  if (virtual_height < ih->data->h)
+    virtual_height = ih->data->h;
+  if (virtual_width < ih->data->w)
+    virtual_width = ih->data->w;
 
   IupSetfAttribute(ih, "YMAX", "%d", virtual_height-1);
   IupSetfAttribute(ih, "XMAX", "%d", virtual_width-1);
 
   /* Adjusting the scrollbar position to the new object size */
-  if (posx + ih->data->width > virtual_width-1)
-    posx = virtual_width-1 - ih->data->width;
-  if (posy + ih->data->height > virtual_height-1)
-    posy = virtual_height-1 - ih->data->height;
+  if (posx + ih->data->w > virtual_width-1)
+    posx = virtual_width-1 - ih->data->w;
+  if (posy + ih->data->h > virtual_height-1)
+    posy = virtual_height-1 - ih->data->h;
 
   /* Setting the object scrollbar position */
-  IupSetfAttribute(ih, "DY",   "%d", ih->data->height);
-  IupSetfAttribute(ih, "DX",   "%d", ih->data->width);
+  IupSetfAttribute(ih, "DY",   "%d", ih->data->h);
+  IupSetfAttribute(ih, "DX",   "%d", ih->data->w);
   IupSetfAttribute(ih, "POSY", "%d", posy);
   IupSetfAttribute(ih, "POSX", "%d", posx);
 }
@@ -381,8 +381,8 @@ static void iCellsCallDrawCb(Ihandle* ih, int xmin, int xmax, int ymin, int ymax
 {
   int cxmin, cxmax, cymin, cymax;
   int oldxmin, oldxmax, oldymin, oldymax, oldclip;
-  int w = ih->data->width;
-  int h = ih->data->height;
+  int w = ih->data->w;
+  int h = ih->data->h;
   IFniiiiii draw_cb;
   cdCanvas* old_cnv = cdActiveCanvas();
 
@@ -423,8 +423,8 @@ static void iCellsCallDrawCb(Ihandle* ih, int xmin, int xmax, int ymin, int ymax
 static void iCellsRenderCellIn(Ihandle* ih, int i, int j, int xmin, int xmax, int ymin, int ymax)
 {
   int k;
-  int w = ih->data->width;
-  int h = ih->data->height;
+  int w = ih->data->w;
+  int h = ih->data->h;
   int hspan = 1;
   int vspan = 1;
 
@@ -546,7 +546,7 @@ static int iCellsGetRangedCoord(Ihandle* ih, int x, int y, int* lin, int* col, i
   int rxmax, rymin;
   int xmin, xmax, ymin, ymax;
   int refxmin, refxmax;
-  int w = ih->data->width;
+  int w = ih->data->w;
  
   /* Getting the first cell's  limit -- based on the range */
   iCellsGetLimits(ih, linfrom, colfrom, &xmin, &xmax, &ymin, &ymax);
@@ -686,7 +686,7 @@ static int iCellsResize_CB(Ihandle* ih)
 
   /* update canvas size */
   cdCanvasActivate(ih->data->cddbuffer);
-  cdCanvasGetSize(ih->data->cddbuffer, &ih->data->width, &ih->data->height, NULL, NULL);
+  cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
 
   /* recalculate scrollbars positions and size */
   iCellsAdjustScrolls(ih);  
@@ -702,7 +702,7 @@ static int iCellsButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
   int i, j;
   IFniiiiiis cb;
 
-  y = cdIupInvertYAxis(y, ih->data->height);
+  y = cdIupInvertYAxis(y, ih->data->h);
 
   /* Treating the button event. The application will receive
    * a button press callback. */

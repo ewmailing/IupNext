@@ -10,12 +10,7 @@
 
 int list_multiple_cb (Ihandle *self, char *t, int i, int v)
 {
-  char message [40];
-
-  sprintf (message, "Item %d - %s - %s", i, t, v == 0 ? "deselected" : "selected" );
-
-  IupMessage ("Competed in", message);
-
+  printf ("Item %d - %s - %s\n", i, t, v == 0 ? "deselected" : "selected" );
   return IUP_DEFAULT;
 }
 

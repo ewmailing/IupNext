@@ -1292,7 +1292,7 @@ static int gtkTreeSetImageExpandedAttrib(Ihandle* ih, const char* name_id, const
 {
   int kind;
   GtkTreeStore*  store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
-  GdkPixbuf* pixExpand = iupImageGetImage(value, ih, 0, "IMAGEEXPANDED");
+  GdkPixbuf* pixExpand = iupImageGetImage(value, ih, 0);
   GtkTreeIter iterItem;
   if (!gtkTreeFindNodeFromString(ih, GTK_TREE_MODEL(store), name_id, &iterItem))
     return 0;
@@ -1315,7 +1315,7 @@ static int gtkTreeSetImageExpandedAttrib(Ihandle* ih, const char* name_id, const
 static int gtkTreeSetImageAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   GtkTreeStore* store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
-  GdkPixbuf* pixImage = iupImageGetImage(value, ih, 0, "IMAGE");
+  GdkPixbuf* pixImage = iupImageGetImage(value, ih, 0);
   GtkTreeIter iterItem;
   if (!gtkTreeFindNodeFromString(ih, GTK_TREE_MODEL(store), name_id, &iterItem))
     return 0;
@@ -1344,7 +1344,7 @@ static int gtkTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 {
   GtkTreeIter iterRoot;
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-  ih->data->def_image_expanded = iupImageGetImage(value, ih, 0, "IMAGEBRANCHEXPANDED");
+  ih->data->def_image_expanded = iupImageGetImage(value, ih, 0);
 
   gtk_tree_model_get_iter_first(model, &iterRoot);
 
@@ -1358,7 +1358,7 @@ static int gtkTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 {
   GtkTreeIter iterRoot;
   GtkTreeModel*  model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-  ih->data->def_image_collapsed = iupImageGetImage(value, ih, 0, "IMAGEBRANCHCOLLAPSED");
+  ih->data->def_image_collapsed = iupImageGetImage(value, ih, 0);
 
   gtk_tree_model_get_iter_first(model, &iterRoot);
 
@@ -1372,7 +1372,7 @@ static int gtkTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
 {
   GtkTreeIter iterRoot;
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-  ih->data->def_image_leaf = iupImageGetImage(value, ih, 0, "IMAGELEAF");
+  ih->data->def_image_leaf = iupImageGetImage(value, ih, 0);
 
   gtk_tree_model_get_iter_first(model, &iterRoot);
 
@@ -1454,6 +1454,13 @@ void iupdrvTreeUpdateMarkMode(Ihandle *ih)
 {
   GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
   gtk_tree_selection_set_mode(selection, (ih->data->mark_mode==ITREE_MARK_SINGLE)? GTK_SELECTION_SINGLE: GTK_SELECTION_MULTIPLE);
+
+  if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && !ih->data->show_dragdrop)
+  {
+#if GTK_CHECK_VERSION(2, 10, 0)
+      gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(ih->handle), TRUE);
+#endif
+  }
 }
 
 
@@ -2051,9 +2058,9 @@ static int gtkTreeMapMethod(Ihandle* ih)
   gtk_widget_realize(ih->handle);
 
   /* Initialize the default images */
-  ih->data->def_image_leaf = iupImageGetImage("IMGLEAF", ih, 0, "IMAGELEAF");
-  ih->data->def_image_collapsed = iupImageGetImage("IMGCOLLAPSED", ih, 0, "IMAGEBRANCHCOLLAPSED");
-  ih->data->def_image_expanded = iupImageGetImage("IMGEXPANDED", ih, 0, "IMAGEBRANCHEXPANDED");
+  ih->data->def_image_leaf = iupImageGetImage("IMGLEAF", ih, 0);
+  ih->data->def_image_collapsed = iupImageGetImage("IMGCOLLAPSED", ih, 0);
+  ih->data->def_image_expanded = iupImageGetImage("IMGEXPANDED", ih, 0);
 
   gtkTreeAddRootNode(ih);
 
@@ -2116,6 +2123,4 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   iupClassRegisterAttribute  (ic, "AUTODRAGDROP",    NULL,    NULL,    NULL, NULL, IUPAF_DEFAULT);
 }
-
-// void gtk_tree_view_set_rubber_banding    (GtkTreeView *tree_view, gboolean enable);
 

@@ -383,7 +383,6 @@ void iupMatrixEditCreate(Ihandle* ih)
   IupSetCallback(ih->data->texth, "K_ANY",        (Icallback)iMatrixEditTextKeyAny_CB);
   IupSetCallback(ih->data->texth, "KILLFOCUS_CB", (Icallback)iMatrixEditKillFocus_CB);
   IupSetAttribute(ih->data->texth, "VALUE",  "");
-  IupSetAttribute(ih->data->texth, "BORDER", "YES");
   IupSetAttribute(ih->data->texth, "VISIBLE", "NO");
   IupSetAttribute(ih->data->texth, "ACTIVE",  "NO");
 

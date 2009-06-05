@@ -76,7 +76,7 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* value)
   int count, i;
   Iarray* bmp_array;
   HBITMAP *bmp_array_data;
-  HBITMAP bmp = iupImageGetImage(value, ih, 0, "TABIMAGE");
+  HBITMAP bmp = iupImageGetImage(value, ih, 0);
   if (!bmp)
     return -1;
 

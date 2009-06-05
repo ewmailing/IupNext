@@ -221,7 +221,7 @@ void iupdrvMenuInitClass(Iclass* ic)
 
 static int motItemSetTitleImageAttrib(Ihandle* ih, const char* value)
 {
-  iupmotSetPixmap(ih, value, XmNlabelPixmap, 0, "TITLEIMAGE");
+  iupmotSetPixmap(ih, value, XmNlabelPixmap, 0);
   return 1;
 }
 

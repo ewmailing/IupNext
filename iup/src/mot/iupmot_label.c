@@ -59,7 +59,7 @@ static int motLabelSetBackgroundAttrib(Ihandle* ih, const char* value)
     return 1;
   else
   {
-    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0, "BACKGROUND");
+    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
     if (pixmap)
     {
       XtVaSetValues(ih->handle, XmNbackgroundPixmap, pixmap, NULL);
@@ -96,7 +96,7 @@ static int motLabelSetImageAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_LABEL_IMAGE)
   {
-    iupmotSetPixmap(ih, value, XmNlabelPixmap, 0, "IMAGE");
+    iupmotSetPixmap(ih, value, XmNlabelPixmap, 0);
 
     if (!iupdrvIsActive(ih))
     {
@@ -104,7 +104,7 @@ static int motLabelSetImageAttrib(Ihandle* ih, const char* value)
       {
         /* if not active and IMINACTIVE is not defined 
            then automaticaly create one based on IMAGE */
-        iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 1, "IMINACTIVE"); /* make_inactive */
+        iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 1); /* make_inactive */
       }
     }
     return 1;
@@ -117,7 +117,7 @@ static int motLabelSetImInactiveAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_LABEL_IMAGE)
   {
-    iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 0, "IMINACTIVE");
+    iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 0);
     return 1;
   }
   else
@@ -133,7 +133,7 @@ static int motLabelSetActiveAttrib(Ihandle* ih, const char* value)
     {
       /* if not defined then automaticaly create one based on IMAGE */
       char* name = iupAttribGet(ih, "IMAGE");
-      iupmotSetPixmap(ih, name, XmNlabelInsensitivePixmap, 1, "IMINACTIVE"); /* make_inactive */
+      iupmotSetPixmap(ih, name, XmNlabelInsensitivePixmap, 1); /* make_inactive */
     }
   }
 

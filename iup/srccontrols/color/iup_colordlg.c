@@ -894,7 +894,6 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
 
   colordlg_data->color_cnv = IupCanvas(NULL);  /* Canvas of the color */
   IupSetAttribute(colordlg_data->color_cnv, "SIZE", "x12");
-  IupSetAttribute(colordlg_data->color_cnv, "BORDER", "YES");
   IupSetAttribute(colordlg_data->color_cnv, "CANFOCUS", "NO");
   IupSetAttribute(colordlg_data->color_cnv, "EXPAND", "HORIZONTAL");
   IupSetCallback (colordlg_data->color_cnv, "ACTION", (Icallback)iColorBrowserDlgColorCnvRedraw_CB);

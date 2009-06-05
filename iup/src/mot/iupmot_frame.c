@@ -89,7 +89,7 @@ static int motFrameSetBackgroundAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0, "BACKGROUND");
+    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
     if (pixmap)
     {
       Widget child_manager = XtNameToWidget(ih->handle, "*child_manager");

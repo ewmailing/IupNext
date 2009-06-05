@@ -896,7 +896,7 @@ static int motTreeSetImageExpandedAttrib(Ihandle* ih, const char* name_id, const
 
   XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
   XtVaGetValues(wItem, XmNoutlineState, &itemState, NULL);
-  itemData->image_expanded = (Pixmap)iupImageGetImage(value, ih, 0, "IMAGEEXPANDED");
+  itemData->image_expanded = (Pixmap)iupImageGetImage(value, ih, 0);
   if (!itemData->image_expanded)
   {
     itemData->image_expanded = XmUNSPECIFIED_PIXMAP;
@@ -931,7 +931,7 @@ static int motTreeSetImageAttrib(Ihandle* ih, const char* name_id, const char* v
     return 0;
 
   XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
-  itemData->image = (Pixmap)iupImageGetImage(value, ih, 0, "IMAGE");
+  itemData->image = (Pixmap)iupImageGetImage(value, ih, 0);
   if (!itemData->image) 
   {
     itemData->image = XmUNSPECIFIED_PIXMAP;
@@ -977,7 +977,7 @@ static int motTreeSetImageAttrib(Ihandle* ih, const char* name_id, const char* v
 static int motTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 {
   Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
-  ih->data->def_image_expanded = iupImageGetImage(value, ih, 0, "IMAGEBRANCHEXPANDED");
+  ih->data->def_image_expanded = iupImageGetImage(value, ih, 0);
   if (!ih->data->def_image_expanded) 
   {
     ih->data->def_image_expanded = (void*)XmUNSPECIFIED_PIXMAP;
@@ -998,7 +998,7 @@ static int motTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 static int motTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 {
   Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
-  ih->data->def_image_collapsed = iupImageGetImage(value, ih, 0, "IMAGEBRANCHCOLLAPSED");
+  ih->data->def_image_collapsed = iupImageGetImage(value, ih, 0);
   if (!ih->data->def_image_collapsed) 
   {
     ih->data->def_image_collapsed = (void*)XmUNSPECIFIED_PIXMAP;
@@ -1019,7 +1019,7 @@ static int motTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 static int motTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
 {
   Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
-  ih->data->def_image_leaf = iupImageGetImage(value, ih, 0, "IMAGELEAF");
+  ih->data->def_image_leaf = iupImageGetImage(value, ih, 0);
   if (!ih->data->def_image_leaf) 
   {
     ih->data->def_image_leaf = (void*)XmUNSPECIFIED_PIXMAP;
@@ -2536,7 +2536,7 @@ static int motTreeMapMethod(Ihandle* ih)
   }
 
   /* Initialize the default images */
-  ih->data->def_image_leaf = iupImageGetImage("IMGLEAF", ih, 0, "IMAGELEAF");
+  ih->data->def_image_leaf = iupImageGetImage("IMGLEAF", ih, 0);
   if (!ih->data->def_image_leaf) 
   {
     ih->data->def_image_leaf = (void*)XmUNSPECIFIED_PIXMAP;
@@ -2548,7 +2548,7 @@ static int motTreeMapMethod(Ihandle* ih)
     if (!ih->data->def_image_leaf_mask) ih->data->def_image_leaf_mask = (void*)XmUNSPECIFIED_PIXMAP;
   }
 
-  ih->data->def_image_collapsed = iupImageGetImage("IMGCOLLAPSED", ih, 0, "IMAGEBRANCHCOLLAPSED");
+  ih->data->def_image_collapsed = iupImageGetImage("IMGCOLLAPSED", ih, 0);
   if (!ih->data->def_image_collapsed) 
   {
     ih->data->def_image_collapsed = (void*)XmUNSPECIFIED_PIXMAP;
@@ -2560,7 +2560,7 @@ static int motTreeMapMethod(Ihandle* ih)
     if (!ih->data->def_image_collapsed_mask) ih->data->def_image_collapsed_mask = (void*)XmUNSPECIFIED_PIXMAP;
   }
 
-  ih->data->def_image_expanded = iupImageGetImage("IMGEXPANDED", ih, 0, "IMAGEBRANCHEXPANDED");
+  ih->data->def_image_expanded = iupImageGetImage("IMGEXPANDED", ih, 0);
   if (!ih->data->def_image_expanded) 
   {
     ih->data->def_image_expanded = (void*)XmUNSPECIFIED_PIXMAP;

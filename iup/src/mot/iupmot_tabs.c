@@ -234,7 +234,7 @@ static int motTabsSetBackgroundAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    Pixmap pixmap = (Pixmap)iupImageGetImage(parent_value, ih, 0, "BACKGROUND");
+    Pixmap pixmap = (Pixmap)iupImageGetImage(parent_value, ih, 0);
     if (pixmap)
     {
       XtVaSetValues(ih->handle, XmNbackgroundPixmap, pixmap, NULL);
@@ -288,7 +288,7 @@ static int motTabsSetTabImageAttrib(Ihandle* ih, const char* name_id, const char
     Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
     if (tab_button)
     {
-      Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0, "TABIMAGE");
+      Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
       if (pixmap)
         XtVaSetValues(tab_button, XmNlabelPixmap, pixmap, NULL);
     }
@@ -410,7 +410,7 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
       iupmotSetString(tab_button, XmNlabelString, tabtitle);
     else
     {
-      Pixmap pixmap = (Pixmap)iupImageGetImage(tabimage, ih, 0, "TABIMAGE");
+      Pixmap pixmap = (Pixmap)iupImageGetImage(tabimage, ih, 0);
       if (pixmap)
         XtVaSetValues(tab_button, XmNlabelPixmap, pixmap, NULL);
     }
@@ -421,7 +421,7 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
       iupmotSetBgColor(child_manager, color);
     else
     {
-      Pixmap pixmap = (Pixmap)iupImageGetImage(background, ih, 0, "BACKGROUND");
+      Pixmap pixmap = (Pixmap)iupImageGetImage(background, ih, 0);
       if (pixmap)
       {
         XtVaSetValues(child_manager, XmNbackgroundPixmap, pixmap, NULL);

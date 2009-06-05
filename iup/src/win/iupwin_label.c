@@ -34,17 +34,13 @@ static void winLabelDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
       ypad = ih->data->vert_padding;
   int x, y, width, height, bpp;
   HBITMAP hBitmap;
-  char *name, *attrib_name;
+  char *name;
   int make_inactive = 0;
 
   if (iupdrvIsActive(ih))
-  {
-    attrib_name = "IMAGE";
     name = iupAttribGet(ih, "IMAGE");
-  }
   else
   {
-    attrib_name = "IMINACTIVE";
     name = iupAttribGet(ih, "IMINACTIVE");
     if (!name)
     {
@@ -53,7 +49,7 @@ static void winLabelDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
     }
   }
 
-  hBitmap = iupImageGetImage(name, ih, make_inactive, attrib_name);
+  hBitmap = iupImageGetImage(name, ih, make_inactive);
   if (!hBitmap)
     return;
 
