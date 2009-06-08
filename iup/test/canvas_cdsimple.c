@@ -67,7 +67,7 @@ void CanvasCDSimpleTest(void)
   IupSetCallback(canvas, "UNMAP_CB",  (Icallback)unmap_cb);
                    
   dlg = IupDialog(canvas);
-  IupSetAttribute(dlg, "TITLE", "CD Double Buffer Test");
+  IupSetAttribute(dlg, "TITLE", "CD Simple Buffer Test");
 
   IupMap(dlg);
   IupSetAttribute(canvas, "RASTERSIZE", NULL);  /* release the minimum limitation */

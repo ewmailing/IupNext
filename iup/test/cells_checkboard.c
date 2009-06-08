@@ -51,7 +51,7 @@ static Ihandle* create(void)
    return cells;
 }
 
-void CellsCheckboarTest(void)
+void CellsCheckboardTest(void)
 {
   Ihandle* dlg = NULL;
   Ihandle* cells  = NULL;
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
   IupOpen(&argc, &argv);
   IupControlsOpen();
 
-  CellsCheckboarTest();
+  CellsCheckboardTest();
 
   IupMainLoop();
 

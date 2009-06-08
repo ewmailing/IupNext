@@ -40,7 +40,7 @@ void CellsNumberingTest(void);
 void DialTest(void);
 void GaugeTest(void);
 void CellsDegradeTest(void);
-void CellsCheckboarTest(void);
+void CellsCheckboardTest(void);
 void ValTest(void);
 void TreeTest(void);
 void TrayTest(void);
@@ -67,7 +67,7 @@ static TestItems test_list[] = {
   {"CanvasCDSimpleTest", CanvasCDSimpleTest},
   {"CanvasCDDBuffer", CanvasCDDBufferTest},
   {"CanvasScrollbar", CanvasScrollbarTest},
-  {"CellsCheckboar", CellsCheckboarTest},
+  {"CellsCheckboard", CellsCheckboardTest},
   {"CellsDegrade", CellsDegradeTest},
   {"CellsNumbering", CellsNumberingTest},
   {"Class Conference", ConfTest},
