@@ -635,7 +635,7 @@ void PPlotTest(void)
 
   tgg3 = IupToggle("Vertical Grid", NULL);
   IupSetCallback(tgg3, "ACTION", (Icallback)tgg3_cb);
-  tgg4 = IupToggle("Hirozontal Grid", NULL);
+  tgg4 = IupToggle("Horizontal Grid", NULL);
   IupSetCallback(tgg4, "ACTION", (Icallback)tgg4_cb);
 
   lbl2 = IupLabel("");

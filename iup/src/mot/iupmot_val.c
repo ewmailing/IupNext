@@ -241,7 +241,7 @@ static void motValKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *
   if (*cont == False)
     return;
 
-  if (evt->state == 0)   /* No combination */
+  if (evt->state)   /* No combination */
   {
     KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
 

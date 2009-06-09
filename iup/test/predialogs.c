@@ -220,7 +220,7 @@ static void new_file(char* dialogtype, int preview)
   if (strcmp(dialogtype, "DIR")!=0)
   {
     IupSetAttributes(dlg, "FILTER = \"*.bmp\", FILTERINFO = \"Bitmap Files\"");
-    IupSetAttribute(dlg, "EXTFILTER", "Text files|*.txt;*.doc|Image files|*.gif;*.jpg;*.bmp|");
+    IupSetAttribute(dlg, "EXTFILTER", "Text files|*.txt;*.doc|Image files|*.jpg;*.bmp;*.gif|");
 //    IupSetAttribute(dlg, "FILE", "/tecgraf/im/test.bmp");
     IupSetAttribute(dlg, "FILE", "test.bmp");
   }
