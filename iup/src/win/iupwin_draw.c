@@ -30,6 +30,14 @@
 #define TABP_AEROWIZARDBODY  11  /* manually added definition */
 #endif
 
+#ifndef TMT_FILLCOLORHINT
+#define TMT_FILLCOLORHINT 3821
+#endif
+#ifndef TMT_TEXTCOLOR
+#define TMT_TEXTCOLOR 3823
+#endif
+
+
 typedef HTHEME  (STDAPICALLTYPE *_winThemeOpenData)(HWND hwnd, LPCWSTR pszClassList);
 typedef HRESULT (STDAPICALLTYPE *_winThemeCloseData)(HTHEME hTheme);
 typedef HRESULT (STDAPICALLTYPE *_winThemeDrawBackground)(HTHEME hTheme, HDC hDC, int iPartId, int iStateId, const RECT *pRect, const RECT *pClipRect);
@@ -120,21 +128,6 @@ void iupwinDrawInit(void)
       winThemeGetColor = (_winThemeGetColor)GetProcAddress(hinstDll, "GetThemeColor");
     }
   }
-}
-
-static void winDrawFillBorder(HDC hDC, RECT* rect, int border, COLORREF bgcolor)
-{
-  HRGN cliprgn = CreateRectRgn(rect->left, rect->top, rect->right, rect->bottom);
-  HBRUSH hBrush = CreateSolidBrush(bgcolor);
-
-  SelectClipRgn(hDC, cliprgn);
-  ExcludeClipRect(hDC, rect->left+border, rect->top+border, rect->right-border, rect->bottom-border);
-  FillRect(hDC, rect, hBrush);
-
-  DeleteObject(hBrush);
-
-  SelectClipRgn(hDC, NULL);
-  DeleteObject(cliprgn);
 }
 
 static int winDrawGetThemeStateId(int itemState)

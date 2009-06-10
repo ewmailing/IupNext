@@ -226,24 +226,6 @@ static int winLabelSetEllipsisAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static int winLabelSetBgColorAttrib(Ihandle* ih, const char* value)
-{
-  if (ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
-  {
-    unsigned char r, g, b;
-    if (iupStrToRGB(value, &r, &g, &b))
-    {
-      ih->data->bgcolor = RGB(r,g,b);
-
-      /* update internal image cache for controls that have the IMAGE attribute */
-      iupImageUpdateParent(ih);
-
-      iupdrvDisplayRedraw(ih);
-    }
-  }
-  return 1;
-}
-
 static int winLabelSetFgColorAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)

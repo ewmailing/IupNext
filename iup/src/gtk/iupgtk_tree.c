@@ -1683,13 +1683,14 @@ static gboolean gtkTreeDragMotion(GtkWidget *widget, GdkDragContext *context, gi
 {
   GtkTreePath* path;
   GtkTreeViewDropPosition pos;
-  if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
+  GtkTreePath* pathDrag = (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
+  if (pathDrag && gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
   {
     if ((pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER) && 
-        (gtk_tree_path_compare(path, (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_DRAGITEM")) != 0))
+        (gtk_tree_path_compare(path, pathDrag) != 0))
     {
       gtk_tree_view_set_drag_dest_row(GTK_TREE_VIEW(widget), path, pos);
-      gdk_drag_status(context, GDK_ACTION_MOVE, time);
+      gdk_drag_status(context, context->actions, time);
       return TRUE;
     }
 
@@ -1705,14 +1706,19 @@ static void gtkTreeDragBegin(GtkWidget *widget, GdkDragContext *context, Ihandle
   int x = iupAttribGetInt(ih, "_IUPTREE_DRAG_X");
   int y = iupAttribGetInt(ih, "_IUPTREE_DRAG_Y");
   GtkTreePath* path;
-  if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, NULL))
+  GtkTreeViewDropPosition pos;
+  if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
   {
-    GdkPixmap* pixmap;
-    iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", (char*)path);
+    if ((pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER))
+    {
+      GdkPixmap* pixmap;
+      iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", (char*)path);
 
-    pixmap = gtk_tree_view_create_row_drag_icon(GTK_TREE_VIEW(ih->handle), path);
-    gtk_drag_source_set_icon(widget, gtk_widget_get_colormap(widget), pixmap, NULL);
-    g_object_unref(pixmap);
+      pixmap = gtk_tree_view_create_row_drag_icon(GTK_TREE_VIEW(ih->handle), path);
+      gtk_drag_source_set_icon(widget, gtk_widget_get_colormap(widget), pixmap, NULL);
+      g_object_unref(pixmap);
+      return;
+    }
   }
 
   (void)context;
@@ -1733,7 +1739,7 @@ static void gtkTreeSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
     else if (key[1] == 'C')
       is_ctrl = 1;
   }
-
+printf("SelectionChanged\n");
   cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
   if (cbSelec)
   {
@@ -1930,16 +1936,16 @@ static void gtkTreeEnableDragDrop(Ihandle* ih)
 			        GDK_BUTTON1_MASK,
 			        row_targets,
 			        G_N_ELEMENTS(row_targets),
-			        GDK_ACTION_MOVE);
+			        GDK_ACTION_MOVE|GDK_ACTION_COPY);
     gtk_tree_view_enable_model_drag_dest (GTK_TREE_VIEW(ih->handle),
 			      row_targets,
 			      G_N_ELEMENTS(row_targets),
-			      GDK_ACTION_MOVE);
+			      GDK_ACTION_MOVE|GDK_ACTION_COPY);
   }
   else
   {
-    gtk_drag_source_set(ih->handle, GDK_BUTTON1_MASK, row_targets, G_N_ELEMENTS(row_targets), GDK_ACTION_MOVE);
-    gtk_drag_dest_set(ih->handle, GDK_BUTTON1_MASK, row_targets, G_N_ELEMENTS(row_targets), GDK_ACTION_MOVE);
+    gtk_drag_source_set(ih->handle, GDK_BUTTON1_MASK, row_targets, G_N_ELEMENTS(row_targets), GDK_ACTION_MOVE|GDK_ACTION_COPY);
+    gtk_drag_dest_set(ih->handle, GDK_BUTTON1_MASK, row_targets, G_N_ELEMENTS(row_targets), GDK_ACTION_MOVE|GDK_ACTION_COPY);
 
     g_signal_connect(G_OBJECT(ih->handle),  "drag-begin", G_CALLBACK(gtkTreeDragBegin), ih);
     g_signal_connect(G_OBJECT(ih->handle), "drag-motion", G_CALLBACK(gtkTreeDragMotion), ih);

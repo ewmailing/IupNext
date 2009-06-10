@@ -1863,30 +1863,31 @@ static void motTreeEditKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Bool
 
 static void motTreeShowEditField(Ihandle* ih, Widget wItem)
 {
-  int num_args = 0;
+  int num_args = 0, w_img = 21;
   Arg args[30];
-  Position xIcon, yIcon;
-  Dimension wIcon, hIcon;
+  Position x, y;
+  Dimension w, h;
   char* child_id = iupDialogGetChildIdStr(ih);
   Widget cbEdit;
   XmString title;
   char* value;
   Pixel color;
   XmFontList fontlist;
+  Widget sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
 
-  XtVaGetValues(wItem, XmNx, &xIcon, 
-                       XmNy, &yIcon, 
-                       XmNwidth, &wIcon, 
-                       XmNheight, &hIcon, 
+  XtVaGetValues(wItem, XmNx, &x, 
+                       XmNy, &y,
+                       XmNwidth, &w, 
+                       XmNheight, &h, 
                        XmNlabelString, &title,
                        XmNforeground, &color,
                        XmNrenderTable, &fontlist,
                        NULL);
 
-  iupmotSetArg(args, num_args, XmNx, xIcon+21);      /* x-position */
-  iupmotSetArg(args, num_args, XmNy, yIcon);         /* y-position */
-  iupmotSetArg(args, num_args, XmNwidth, wIcon-21);  /* default width to avoid 0 */
-  iupmotSetArg(args, num_args, XmNheight, hIcon);    /* default height to avoid 0 */
+  iupmotSetArg(args, num_args, XmNx, x+w_img);      /* x-position */
+  iupmotSetArg(args, num_args, XmNy, y);         /* y-position */
+  iupmotSetArg(args, num_args, XmNwidth, w-w_img);  /* default width to avoid 0 */
+  iupmotSetArg(args, num_args, XmNheight, h);    /* default height to avoid 0 */
   iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* default padding */
   iupmotSetArg(args, num_args, XmNmarginWidth, 0);
   iupmotSetArg(args, num_args, XmNforeground, color);
@@ -1897,7 +1898,7 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
   cbEdit = XtCreateManagedWidget(
     child_id,       /* child identifier */
     xmTextWidgetClass,   /* widget class */
-    (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT"), /* widget parent */
+    sb_win,
     args, num_args);
 
   /* Disable Drag Source */
@@ -1942,6 +1943,21 @@ static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCal
       return;
     else if (key[1] == 'C')
       is_ctrl = 1;
+
+    if (nptr->selected_item_count>1 && !is_ctrl)
+    {
+      if (IupGetCallback(ih, "MULTISELECTION_CB"))
+      {
+        if (nptr->auto_selection_type==XmAUTO_NO_CHANGE)
+          motTreeCallMultiSelectionCb(ih);
+      }
+      else
+      {
+        if (nptr->auto_selection_type==XmAUTO_MOTION)
+          motTreeCallMultiSelectionCb(ih);
+      }
+      return;
+    }
   }
 
   cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");

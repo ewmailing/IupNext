@@ -92,6 +92,12 @@
 
 	<li><span class="style1">Known Issue:</span> The MDI Window menu is not properly updated when the child mdi is 
 	closed. (since 3.0)</li>
+	<li><span class="style1">Known Issue:</span> When building with Watcom some 
+	additional controls crash when you click on it. When you add debug 
+	information to the main library the problem solves. We tried to track down 
+	this error but it does not occurs with debug information and our attempts 
+	without debug does not gives any results. With other compilers seems NOT to 
+	occur. (since 3.0) </li>
 
 </ul>
 
@@ -113,7 +119,7 @@
 	<li>Mark using the keyboard.</li>
 	<li>Scroll with position free (not fixed to cell boundaries).</li>
 	<li>Merge cells.</li>
-	<li>Toggle mark for cells with boolean values.</li>
+	<li>Check mark for cells.</li>
 	<li>Other columns/lines fixed at start like column 0 and line 0.</li>
 	<li>Copy&amp;paste from clipboard</li>
 	<li>New PADDINGL:C, TIPL:C and ACTIVEL:C attributes.</li>
@@ -126,8 +132,9 @@
 
   <li>Define minimum size based on tree nodes.</li>
 
-	<li>Toggle mark option.</li>
+	<li>Check mark for nodes.</li>
 	<li>TIP attribute for nodes</li>
+	<li>drag&amp;drop of multiple selecteded nodes.</li>
 	<li>Old NAMEid attribute conflicts with the common attribute NAME. NAMEid 
 	will be removed in future versions. (since 3.0)</li>
 
@@ -157,7 +164,7 @@
 	<li><strong><span class="style2">Priority: </span>LayoutBuilder</strong> - a dialog that shows the layout of 
 	another dialog and allows the user to reposition the elements interactively.</li>
 	<li class="style3">-----------------------------</li>
-	<strong>Scrollbar</strong> - just the scrollbar as a 
+	<li class="style3"><strong>Scrollbar</strong> - just the scrollbar as a 
 	control.<li><strong>CanvasCD</strong> - a IupCanvas with a CD 
 	canvas associated.</li>
 

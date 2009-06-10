@@ -26,7 +26,7 @@ struct _IcontrolData
   /* used only by the Windows driver */
   int horiz_alignment, vert_alignment, 
       text_style;  
-  unsigned long fgcolor, bgcolor;
+  unsigned long fgcolor;
 };
 
 

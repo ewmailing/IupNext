@@ -6,7 +6,7 @@
  */
 
 /**************************************************************************/
-/*  Functions to cell selection (mark)
+/*  Functions to cell selection (mark)                                    */
 /**************************************************************************/
 
 #include <stdio.h>
@@ -269,7 +269,7 @@ void iupMatrixMarkMouseItem(Ihandle* ih, int ctrl, int lin1, int col1)
 
   if (lin1 == 0 && col1 == 0)
   {
-    if (ih->data->mark_mode == IMAT_MARK_CELL && ih->data->mark_multiple ||
+    if ((ih->data->mark_mode == IMAT_MARK_CELL && ih->data->mark_multiple) ||
         ih->data->mark_mode == IMAT_MARK_COL ||
         ih->data->mark_mode == IMAT_MARK_LIN)
       mark_full_all = 1;

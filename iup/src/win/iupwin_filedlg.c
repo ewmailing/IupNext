@@ -578,5 +578,3 @@ void iupdrvFileDlgInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "FILTERUSED", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MULTIPLEFILES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }
-
-// WM_CTLCOLORDLG

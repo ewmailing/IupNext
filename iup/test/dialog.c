@@ -464,8 +464,4 @@ take screen shots, measure dlg sizes if necessary
 6- FULLSCREEN
    (press 'f' to change fullscreen any time)
 
-TODO - Build tests for:
-  Append/Detach/Insert, Reparent - (all after map)
-  ZORDER
-  FLOATING/POSITION
 */

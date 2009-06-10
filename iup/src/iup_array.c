@@ -24,7 +24,7 @@ struct _Iarray
 
 Iarray* iupArrayCreate(int start_count, int elem_size)
 {
-  Iarray* iarray = malloc(sizeof(Iarray));
+  Iarray* iarray = (Iarray*)malloc(sizeof(Iarray));
   iarray->count = 0;
   iarray->elem_size = elem_size;
   iarray->max_count = start_count;

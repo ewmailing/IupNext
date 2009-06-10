@@ -113,12 +113,13 @@ int IupMainLoop(void)
     else
     {
       ret = GetMessage(&msg, NULL, 0, 0);
-      if (ret == -1)
+      if (ret == -1) /* error */
       {
         win_main_loop--;
         return IUP_ERROR;
       }
-      if (ret == 0 || winLoopProcessMessage(&msg) == IUP_CLOSE)
+      if (ret == 0 || /* WM_QUIT */
+          winLoopProcessMessage(&msg) == IUP_CLOSE)  /* ret != 0 */
       {
         win_main_loop--;
         return IUP_NOERROR;

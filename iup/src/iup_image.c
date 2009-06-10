@@ -419,8 +419,6 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
   if (make_inactive)
     strcat(cache_name, "_INACTIVE");
 
-//  strcat(cache_name, attrib_name);
-
   if (iupAttribGet(ih, "_IUP_BGCOLOR_DEPEND") && bgcolor)
   {
     strcat(cache_name, "(");

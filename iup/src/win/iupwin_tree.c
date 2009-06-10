@@ -219,14 +219,14 @@ static HTREEITEM winTreeFindNewBrother(Ihandle* ih, HTREEITEM hBrotherItem)
 
 static HTREEITEM winTreeFindNodePointed(Ihandle* ih)
 {
-  TVHITTESTINFO tvHitPoint = {0};
+  TVHITTESTINFO info;
+  DWORD pos = GetMessagePos();
+  info.pt.x = LOWORD(pos);
+  info.pt.y = HIWORD(pos);
 
-  tvHitPoint.pt.x = (short)LOWORD(GetMessagePos());
-  tvHitPoint.pt.y = (short)HIWORD(GetMessagePos());
-
-  ScreenToClient(ih->handle, &tvHitPoint.pt);
+  ScreenToClient(ih->handle, &info.pt);
   
-  return (HTREEITEM)SendMessage(ih->handle, TVM_HITTEST, 0, (LPARAM)(LPTVHITTESTINFO)&tvHitPoint);
+  return (HTREEITEM)SendMessage(ih->handle, TVM_HITTEST, 0, (LPARAM)(LPTVHITTESTINFO)&info);
 }
 
 int iupwinGetColor(const char* value, COLORREF *color)
@@ -1684,7 +1684,7 @@ static LRESULT CALLBACK winTreeEditWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARA
     return CallWindowProc(oldProc, hwnd, msg, wp, lp);
 }
 
-static void winTreeDrag(Ihandle* ih, LPARAM lp)
+static void winTreeDrag(Ihandle* ih, int x, int y)
 {
   HTREEITEM	hItemDrop;
 
@@ -1692,8 +1692,8 @@ static void winTreeDrag(Ihandle* ih, LPARAM lp)
   if (dragImageList)
   {
     POINT pnt;
-    pnt.x = LOWORD(lp);
-    pnt.y = HIWORD(lp);
+    pnt.x = x;
+    pnt.y = y;
     GetCursorPos(&pnt);
     ClientToScreen(GetDesktopWindow(), &pnt) ;
     ImageList_DragMove(pnt.x, pnt.y);
@@ -1760,6 +1760,30 @@ static void winTreeDrop(Ihandle* ih)
   }
 }  
 
+static void winTreeExtendSelect(Ihandle* ih, int x, int y)
+{
+  HTREEITEM hItemFirstSel;
+  TVHITTESTINFO info;
+  HTREEITEM hItem;
+  info.pt.x = x;
+  info.pt.y = y;
+  hItem = (HTREEITEM)SendMessage(ih->handle, TVM_HITTEST, 0, (LPARAM)&info);
+
+  if (!(info.flags & TVHT_ONITEM) || !hItem)
+    return;
+
+  hItemFirstSel = (HTREEITEM)iupAttribGet(ih, "_IUPTREE_FIRSTSELITEM");
+  if (hItemFirstSel)
+  {
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
+    winTreeSelectRange(ih, hItemFirstSel, hItem, 1);
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
+
+    winTreeCallMultiSelectionCb(ih);
+    winTreeSetFocus(ih, hItem);
+  }
+}
+
 static void winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
 {
   HTREEITEM hItemFocus;
@@ -1803,6 +1827,7 @@ static void winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
   /* simple click */
   winTreeClearSelection(ih, hItem);
   iupAttribSetStr(ih, "_IUPTREE_FIRSTSELITEM", (char*)hItem);
+  iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", "1");
 
   winTreeSelectItem(ih, hItem, 1);
   winTreeSetFocus(ih, hItem);
@@ -1950,9 +1975,11 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   case WM_LBUTTONDOWN:
     if (ih->data->mark_mode==ITREE_MARK_MULTIPLE)
     {
-      /* mut set focus on left button down or the tree won't show its focus */
+      /* must set focus on left button down or the tree won't show its focus */
       SetFocus(ih->handle);
       winTreeMouseMultiSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+      *result = 0; /* abort the normal processing if we process multipe selection */
+      return 1;
     }
     /* no break here */
   case WM_MBUTTONDOWN:
@@ -1966,9 +1993,22 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       return 1;
     }
     break;
+  case WM_MOUSEMOVE:
+    if (ih->data->show_dragdrop && iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
+      ;//SendMessage(ih->handle, WM_NOTIFY, 
+    if (ih->data->show_dragdrop && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
+      winTreeDrag(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+    else if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
+      winTreeExtendSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+
+    iupwinMouseMove(ih, msg, wp, lp);
+    break;
   case WM_LBUTTONUP:
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
+    if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
+      iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", NULL);
+
     if (ih->data->show_dragdrop && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
       winTreeDrop(ih);
 
@@ -1977,12 +2017,6 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       *result = 0;
       return 1;
     }
-    break;
-  case WM_MOUSEMOVE:
-    if (ih->data->show_dragdrop && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
-      winTreeDrag(ih, lp);
-
-    iupwinMouseMove(ih, msg, wp, lp);
     break;
   }
 
@@ -2017,8 +2051,16 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   else if(msg_info->code == TVN_BEGINLABELEDIT)
   {
     char* value;
-    HWND hEdit = (HWND)SendMessage(ih->handle, TVM_GETEDITCONTROL, 0, 0);
+    HWND hEdit;
     NMTVDISPINFO* info = (NMTVDISPINFO*)msg_info;
+           
+    if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
+    {
+      *result = TRUE;  /* prevent the change */
+      return 1;
+    }
+
+    hEdit = (HWND)SendMessage(ih->handle, TVM_GETEDITCONTROL, 0, 0);
 
     /* subclass the edit box. */
     iupwinHandleAdd(ih, hEdit);
