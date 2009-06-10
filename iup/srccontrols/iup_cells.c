@@ -91,8 +91,8 @@ static int iCellsGetLimits(Ihandle* ih, int i, int j, int* xmin, int* xmax, int*
   /* Adjusting the inital position according to the cell's type. If it
    * is non-scrollable, the origin is always zero, otherwise the origin 
    * is the scrollbar position */
-  int posx = j <= ih->data->non_scrollable_cols ? 0 : IupGetInt(ih, "POSX");
-  int posy = i <= ih->data->non_scrollable_lins ? 0 : IupGetInt(ih, "POSY");
+  int posx = (j <= ih->data->non_scrollable_cols)? 0: IupGetInt(ih, "POSX");
+  int posy = (i <= ih->data->non_scrollable_lins)? 0: IupGetInt(ih, "POSY");
   int idx;
 
   /* Adding to the origin, the cells' width and height */
@@ -346,34 +346,16 @@ static void iCellsAdjustOrigin(Ihandle* ih, int lin, int col)
 static void iCellsAdjustScrolls(Ihandle* ih)
 { 
   int virtual_height, virtual_width;
-  /* Getting the current scrollbars' position */
-  int posx = IupGetInt(ih, "POSX");
-  int posy = IupGetInt(ih, "POSY");
 
   /* Getting the virtual size */
   iCellsGetVirtualSize(ih, &virtual_width, &virtual_height); 
 
-  /* All cells can be drawn inside the object. So, the virtual size
-   * is equal to the object size */
-  if (virtual_height < ih->data->h)
-    virtual_height = ih->data->h;
-  if (virtual_width < ih->data->w)
-    virtual_width = ih->data->w;
-
   IupSetfAttribute(ih, "YMAX", "%d", virtual_height-1);
   IupSetfAttribute(ih, "XMAX", "%d", virtual_width-1);
-
-  /* Adjusting the scrollbar position to the new object size */
-  if (posx + ih->data->w > virtual_width-1)
-    posx = virtual_width-1 - ih->data->w;
-  if (posy + ih->data->h > virtual_height-1)
-    posy = virtual_height-1 - ih->data->h;
 
   /* Setting the object scrollbar position */
   IupSetfAttribute(ih, "DY",   "%d", ih->data->h);
   IupSetfAttribute(ih, "DX",   "%d", ih->data->w);
-  IupSetfAttribute(ih, "POSY", "%d", posy);
-  IupSetfAttribute(ih, "POSX", "%d", posx);
 }
 
 /* Function used to call the client; is used when a cell must be repainted. */
