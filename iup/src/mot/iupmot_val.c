@@ -236,84 +236,81 @@ static void motValIncLineValue(Ihandle *ih, int dir)
 
 static void motValKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *cont)
 {
+  KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
+
   *cont = True;
   iupmotKeyPressEvent(w, ih, (XEvent*)evt, cont);
   if (*cont == False)
     return;
 
-  if (evt->state)   /* No combination */
+  /* add missing support for numeric keyboard */
+  /* add missing support for left/right in vertical
+    and up/down in horizontal */
+  if (motcode == XK_Left || motcode == XK_KP_Left || 
+      motcode == XK_Up || motcode == XK_KP_Up)
   {
-    KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
+    motValIncLineValue(ih, -1);
+    *cont = False;
+    return;
+  }
+  if (motcode == XK_Right || motcode == XK_KP_Right || 
+      motcode == XK_Down || motcode == XK_KP_Down)
+  {
+    motValIncLineValue(ih, 1);
+    *cont = False;
+    return;
+  }
+  if (motcode == XK_Prior || motcode == XK_KP_Page_Up)
+  {
+    motValIncPageValue(ih, -1);
+    *cont = False;
+    return;
+  }
+  if (motcode == XK_Next || motcode == XK_KP_Page_Down)
+  {
+    motValIncPageValue(ih, 1);
+    *cont = False;
+    return;
+  }
 
+  /* change Home and End default behaviour */
+  if (ih->data->inverted)
+  {
+    if (motcode==XK_Home || motcode==XK_KP_Home)
+    {
+      int ival = SHRT_MAX;  /* set to maximum */
+      XtVaSetValues(ih->handle, XmNvalue, ival, NULL);
+      motValCallAction(ih, ival, 1);
+      *cont = False;
+      return;
+    }
+    if (motcode==XK_End || motcode==XK_KP_End)
+    {
+      int ival = 0; /* set to minimum */
+      XtVaSetValues(ih->handle, XmNvalue, ival, NULL);
+      motValCallAction(ih, ival, 1);
+      *cont = False;
+      return;
+    }
+  }
+  else
+  {
     /* add missing support for numeric keyboard */
-    /* add missing support for left/right in vertical
-      and up/down in horizontal */
-    if (motcode == XK_Left || motcode == XK_KP_Left || 
-        motcode == XK_Up || motcode == XK_KP_Up)
+    if (motcode==XK_KP_Home)
     {
-      motValIncLineValue(ih, -1);
+      int ival = 0; /* set to minimum */
+      XtVaSetValues(ih->handle, XmNvalue, ival, NULL);
+      motValCallAction(ih, ival, 1);
       *cont = False;
       return;
     }
-    if (motcode == XK_Right || motcode == XK_KP_Right || 
-        motcode == XK_Down || motcode == XK_KP_Down)
+    if (motcode==XK_KP_End)
     {
-      motValIncLineValue(ih, 1);
+      int ival = SHRT_MAX;  /* set to maximum */
+      XtVaSetValues(ih->handle, XmNvalue, ival, NULL);
+      motValCallAction(ih, ival, 1);
       *cont = False;
       return;
-    }
-    if (motcode == XK_Prior || motcode == XK_KP_Page_Up)
-    {
-      motValIncPageValue(ih, -1);
-      *cont = False;
-      return;
-    }
-    if (motcode == XK_Next || motcode == XK_KP_Page_Down)
-    {
-      motValIncPageValue(ih, 1);
-      *cont = False;
-      return;
-    }
-
-    /* change Home and End default behaviour */
-    if (ih->data->inverted)
-    {
-      if (motcode==XK_Home || motcode==XK_KP_Home)
-      {
-        int ival = SHRT_MAX;  /* set to maximum */
-        XtVaSetValues(ih->handle, XmNvalue, ival, NULL);
-        motValCallAction(ih, ival, 1);
-        *cont = False;
-        return;
-      }
-      if (motcode==XK_End || motcode==XK_KP_End)
-      {
-        int ival = 0; /* set to minimum */
-        XtVaSetValues(ih->handle, XmNvalue, ival, NULL);
-        motValCallAction(ih, ival, 1);
-        *cont = False;
-        return;
-      }
-    }
-    else
-    {
-      /* add missing support for numeric keyboard */
-      if (motcode==XK_KP_Home)
-      {
-        int ival = 0; /* set to minimum */
-        XtVaSetValues(ih->handle, XmNvalue, ival, NULL);
-        motValCallAction(ih, ival, 1);
-        *cont = False;
-        return;
-      }
-      if (motcode==XK_KP_End)
-      {
-        int ival = SHRT_MAX;  /* set to maximum */
-        XtVaSetValues(ih->handle, XmNvalue, ival, NULL);
-        motValCallAction(ih, ival, 1);
-        *cont = False;
-        return;
-      }
     }
   }
 }
