@@ -4,7 +4,7 @@ OPT = YES
 
 INCLUDES = ../include ../src .
 
-SRCCOLOR = iup_colorbrowser.c iup_colorhsi.c iup_colordlg.c
+SRCCOLOR = iup_colorbrowser.c iup_colorhsi.c iup_colorbrowserdlg.c
 SRCCOLOR := $(addprefix color/, $(SRCCOLOR))
 
 SRCMATRIX = iupmat_key.c iupmat_mark.c iupmat_aux.c iupmat_mem.c iupmat_mouse.c iupmat_numlc.c \

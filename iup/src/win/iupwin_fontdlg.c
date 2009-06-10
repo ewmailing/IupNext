@@ -131,7 +131,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   is_strikeout = logfont.lfStrikeOut;
   height_pixels = logfont.lfHeight;
 
-  if (height < 0) /* not an error, use old value as reference of units */
+  if (height < 0) /* not an error, use old value as a reference for the units */
     height = height_pixels;   /* return in pixels */
   else
     height = IUPWIN_PIXEL2PT(-height_pixels, res);   /* return in points */

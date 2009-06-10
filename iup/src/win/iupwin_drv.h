@@ -96,8 +96,8 @@ char* iupwinGetClipboardText(Ihandle* ih);
 int iupwinGetScreenRes(void);
 /* 1 point = 1/72 inch */
 /* pixel = (point/72)*(pixel/inch) */
-#define IUPWIN_PT2PIXEL(_pt, _res)    (((_pt)*(_res))/72)
-#define IUPWIN_PIXEL2PT(_pixel, _res) (((_pixel)*72)/(_res))
+#define IUPWIN_PT2PIXEL(_pt, _res)    MulDiv(_pt, _res, 72)     /* (((_pt)*(_res))/72)    */
+#define IUPWIN_PIXEL2PT(_pixel, _res) MulDiv(_pixel, 72, _res)  /* (((_pixel)*72)/(_res)) */
 
 
 /* child window identifier of the first MDI child window created,

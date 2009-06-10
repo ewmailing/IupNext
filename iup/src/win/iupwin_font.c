@@ -66,9 +66,9 @@ static IwinFont* winFindFont(const char *standardfont)
   if (mapped_name)
     strcpy(typeface, mapped_name);
 
-  /* get size in pixels */
-  if (height < 0)
-    height_pixels = height;  /* already in pixels */
+  /* get in pixels */
+  if (height < 0)  
+    height_pixels = height;    /* already in pixels */
   else
     height_pixels = -IUPWIN_PT2PIXEL(height, res);
 
@@ -117,9 +117,9 @@ static void winFontFromLogFont(LOGFONT* logfont, char * font)
   int is_italic = logfont->lfItalic;
   int is_underline = logfont->lfUnderline;
   int is_strikeout = logfont->lfStrikeOut;
-  int height_pixels = logfont->lfHeight;
+  int height_pixels = logfont->lfHeight;  /* negative value */
   int res = iupwinGetScreenRes();
-  int height = IUPWIN_PIXEL2PT(-height_pixels, res);
+  int height = IUPWIN_PIXEL2PT(-height_pixels, res);  /* return in points */
 
   sprintf(font, "%s, %s%s%s%s %d", logfont->lfFaceName, 
                                    is_bold?"Bold ":"", 

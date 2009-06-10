@@ -152,7 +152,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\color\iup_colordlg.c"
+				RelativePath="..\srccontrols\color\iup_colorbrowserdlg.c"
 				>
 			</File>
 			<File
