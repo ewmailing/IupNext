@@ -185,6 +185,8 @@ int iupMatrixAuxGetColumnWidth(Ihandle* ih, int col)
   char* str = iupStrGetMemory(100);
   char* value;
 
+  /* can only be called for valid columns */
+
   sprintf(str, "WIDTH%d", col);
   value = iupAttribGet(ih, str);
   if (!value)
@@ -250,6 +252,8 @@ int iupMatrixAuxGetLineHeight(Ihandle* ih, int lin)
   int height = 0, pixels = 0;
   char* str = iupStrGetMemory(100);
   char* value;
+
+  /* can only be called for valid lines */
 
   sprintf(str, "HEIGHT%d", lin);
   value = iupAttribGet(ih, str);

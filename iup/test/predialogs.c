@@ -69,8 +69,7 @@ static void drawTest(Ihandle* ih)
 }
 #endif
 
-#define TEST_OPENGL
-#ifdef TEST_OPENGL
+#ifdef USE_OPENGL
 #include <GL/gl.h>
 #include "iupgl.h"
 
@@ -126,7 +125,7 @@ static int file_cb(Ihandle* ih, const char* filename, const char* status)
   if (strcmp(status, "PAINT")==0)
   {
     printf("  SIZE(%s x %s)\n", IupGetAttribute(ih, "PREVIEWWIDTH"), IupGetAttribute(ih, "PREVIEWHEIGHT"));
-#ifdef TEST_OPENGL
+#ifdef USE_OPENGL
     drawTestGL(ih);
 #else
     drawTest(ih);
@@ -237,7 +236,7 @@ static void new_file(char* dialogtype, int preview)
     IupSetAttribute(dlg, "SHOWPREVIEW", "YES");
     IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
 
-#ifdef TEST_OPENGL
+#ifdef USE_OPENGL
     if (preview==2)
     {
       Ihandle* glcanvas = IupGLCanvas(NULL);
@@ -404,7 +403,7 @@ void PreDialogsTest(void)
               "Esc = quit";
   Ihandle *dlg = IupDialog(IupVbox(IupLabel(msg), NULL));
 
-#ifdef TEST_OPENGL
+#ifdef USE_OPENGL
   IupGLCanvasOpen();
 #endif
 
@@ -427,7 +426,7 @@ int main(int argc, char* argv[])
   IupOpen(&argc, &argv);
   IupControlsOpen();
 
-#ifdef TEST_OPENGL
+#ifdef USE_OPENGL
   IupGLCanvasOpen();
 #endif
 

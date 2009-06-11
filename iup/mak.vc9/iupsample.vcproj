@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="iupsample"
 	ProjectGUID="{9462FDEA-3E53-4250-8710-DD50AF48607C}"
 	TargetFrameworkVersion="131072"
@@ -352,6 +352,14 @@
 			<File
 				RelativePath="..\html\examples\C\getparam.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\html\examples\C\glcanvas.c"
@@ -1164,6 +1172,10 @@
 		</Filter>
 		<File
 			RelativePath="..\test\iuptest.rc"
+			>
+		</File>
+		<File
+			RelativePath="..\test\jeremy.c"
 			>
 		</File>
 	</Files>

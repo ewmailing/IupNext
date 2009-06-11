@@ -66,6 +66,7 @@ SRC += canvas_cddbuffer.c
 SRC += canvas_cdsimple.c
 
 USE_OPENGL = Yes
+DEFINES += USE_OPENGL
 SRC += glcanvas.c
 SRC += glcanvas_cube.c
 
@@ -82,10 +83,12 @@ SRC += matrix_cbs.c
 SRC += matrix_cbmode.c
 
 LINKER = g++
+DEFINES += PPLOT_TEST
 SRC += pplot.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iup_pplot
 #  LIBS += cdpdflib
+#  LDIR += $(IUP)/lib/$(TEC_UNAME)
 else
   SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_pplot.a
 #  SLIB += $(CD)/lib/$(TEC_UNAME)/libcdpdflib.a

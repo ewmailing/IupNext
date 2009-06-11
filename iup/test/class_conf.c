@@ -20,12 +20,7 @@ char currentClassName[256];
 
 int compare(const void *a, const void *b)
 {
-  /* Compare all of both strings: */
-#ifdef WIN32
-  return _stricmp( * ( char** ) a, * ( char** ) b );
-#else
-  return strcasecmp( * ( char** ) a, * ( char** ) b );
-#endif
+  return strcmp( * ( char** ) a, * ( char** ) b );
 }
 
 /* Update callback labels */

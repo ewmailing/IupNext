@@ -666,6 +666,8 @@ static int iMatrixGetNaturalWidth(Ihandle* ih)
   }
   else
   {
+    if (num > ih->data->columns.num)
+      num = ih->data->columns.num;
     for(col = 0; col < num; col++)
       width += iupMatrixAuxGetColumnWidth(ih, col);
   }
@@ -689,6 +691,8 @@ static int iMatrixGetNaturalHeight(Ihandle* ih)
   }
   else
   {
+    if (num > ih->data->lines.num)
+      num = ih->data->lines.num;
     for(lin = 0; lin < num; lin++)
       height += iupMatrixAuxGetLineHeight(ih, lin);
   }

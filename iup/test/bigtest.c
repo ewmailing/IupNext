@@ -22,8 +22,10 @@ void FrameTest(void);
 void TabsTest(void);
 void SysInfoTest(void);
 void GetColorTest(void);
+#ifdef USE_OPENGL
 void GLCanvasTest(void);
 void GLCanvasCubeTest(void);
+#endif
 void HboxTest(void);
 void IdleTest(void);
 void LabelTest(void);
@@ -52,7 +54,9 @@ void SpinTest(void);
 void SampleTest(void);
 void ProgressbarTest(void);
 void PreDialogsTest(void);
+#ifdef PPLOT_TEST
 void PPlotTest(void);
+#endif
 void GetParamTest(void);
 void ConfTest(void);
 
@@ -76,8 +80,10 @@ static TestItems test_list[] = {
   {"Dial", DialTest},
   {"Dialog", DialogTest},
   {"Frame", FrameTest},
+#ifdef USE_OPENGL
   {"GLCanvas", GLCanvasTest},
   {"GLCanvasCube", GLCanvasCubeTest},
+#endif
   {"Gauge", GaugeTest},
   {"GetColor", GetColorTest},
   {"GetParam", GetParamTest},
@@ -90,7 +96,9 @@ static TestItems test_list[] = {
   {"MatrixCbs", MatrixCbsTest},
   {"Mdi", MdiTest},
   {"Menu", MenuTest},
+#ifdef PPLOT_TEST
   {"PPlot", PPlotTest},
+#endif
   {"PreDialogs", PreDialogsTest},
   {"Progressbar", ProgressbarTest},
   {"Sample", SampleTest},
