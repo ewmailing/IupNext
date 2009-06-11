@@ -20,7 +20,8 @@ USE_IUP3 = Yes
 USE_STATIC = Yes
 IUP = ..
 
-DBG = Yes
+#TEC_UNAME_DIR = Win32.$(TEC_UNAME)
+#DBG = Yes
 
 # Must uncomment all SRC lines
 DEFINES = BIG_TEST
