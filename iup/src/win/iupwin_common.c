@@ -474,8 +474,7 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
   /* remove the association before destroying */
   iupwinHandleRemove(ih);
 
-  /* remove from parent and destroys window */
-  SetParent(ih->handle, NULL);
+  /* destroys window (it will remove from parent) */
   DestroyWindow(ih->handle);
 }
 
