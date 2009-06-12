@@ -78,9 +78,9 @@ is limited to a minimum of 5 pixels. (since 3.0)</p>
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a> (<font size="3">non inheritable</font>): 
 the initial size is &quot;400x200&quot;. Set to NULL to allow the automatic 
 layout use smaller values.</p>
-<p><strong>SHOWDRAGDROP</strong> (creation only): Shows a drag cursor if the user drags a node or 
-  branch and enables the <strong>DRAGDROP_CB</strong> callback. Default:
-  &quot;NO&quot;.</p>
+<p><strong>SHOWDRAGDROP</strong> (creation only): Enables the drag and drop of 
+nodes, and enables the <strong>DRAGDROP_CB</strong> callback. Default:
+  &quot;NO&quot;. Works only if MARKMODE=SINGLE.</p>
 <p>XXXXXX</p>
 
 <p class="style1"><strong>SPACING</strong>: internal padding for each item. Notice that 
@@ -237,6 +237,15 @@ INSERTLEAF</strong>.</p>
   Same as <strong>ADDLEAF</strong> for branches. Branches can be created 
 expanded or collapsed depending on <strong>ADDEXPANDED</strong>.</p>
 
+<p><strong>COPYNODEid </strong>(write only): Copies a node and its children, 
+where id is the specified node identifier. If id is empty, then the focus node 
+is used as the specified node. The value is the destination node identifier. If 
+the destination node is a branch and it is expanded, then the specified node is 
+inserted as the first child of the destination node. If the branch is not 
+expanded or the destination node is a leaf, then it is inserted as the next 
+brother of the leaf. The specified node is not changed. All node attributes are 
+copied, except user data. (since 3.0)</p>
+
 <p><strong>DELNODEid </strong>(write only):
   Removes a node and/or its children, where id is the specified node identifier. 
 If id is empty, then the focus node is used as the specified node. The root cannot be removed. Possible values:</p>
@@ -272,7 +281,8 @@ is used as the specified node. The value is the destination node identifier. If
 the destination node is a branch and it is expanded, then the specified node is 
 inserted as the first child of the destination node. If the branch is not 
 expanded or the destination node is a leaf, then it is inserted as the next 
-brother of the leaf. (since 3.0)</p>
+brother of the leaf. The specified node is removed. User data and all node 
+attributes are preserved. (since 3.0)</p>
 <h3><a name="edit">Editing</a></h3>
 <p><b>RENAME </b>(write only): Forces a rename action to take place, same result as 
 pressing F2. If SHOWRENAME=YES then 

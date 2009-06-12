@@ -89,12 +89,14 @@ MARKSTART</strong></p>
 <h4><a href="iuptree_attrib.html#tree">Hierarchy</a></h4>
 <p class="info"><strong>ADDLEAF<br>
     ADDBRANCH<br>
+COPYNODE<br>
 DELNODE<br>
 </strong>
 <b>EXPANDALL<br>
     </b><strong>FINDUSERDATA</strong><br>
 <strong>INSERTLEAF<br>
-    INSERTBRANCH</strong></p>
+    INSERTBRANCH<br>
+MOVENODE</strong></p>
 <h4><a href="iuptree_attrib.html#edit">Editing</a></h4>
 <p class="info"><b>RENAMENODE<br>
 </b> <strong>RENAMECARET<br>
@@ -243,7 +245,7 @@ also be selected using a rubber band if SHOW_DRAGDROP=NO.</p>
 <p>In Motif when pressing Tab the focus goes to the next visible node, if there 
 are no next visible node then the next control in the dialog receives the focus. 
 In Windows and Gtk the focus simply goes directly to the next control.</p>
-<p>Using the mouse: </p>
+<p>Using the left mouse button: </p>
 <ul>
   <li><b>Clicking a node</b>: Moves the focus node to the clicked node.</li>
   <li><b>Clicking a (-/+) box</b>: Makes the branch to the right of the (-/+) 
@@ -256,8 +258,9 @@ In Windows and Gtk the focus simply goes directly to the next control.</p>
     or invoke the inplace rename.</li>
 	<li><strong>Clicking and dragging a node</strong>: if SHOWDRAGDROP=Yes 
 	starts a drag. When mouse is released, the DRAGDROP_CB callback is called. 
-	If the cllbac does not exist ot returns IUP_CONTINUE then the node is moved 
-	to the new position. In Motif drag is performed with the middle mouse 
+	If the callback does not exist or if it returns IUP_CONTINUE then the node is moved 
+	to the new position. If Ctrl is pressed then the node is copied instead of 
+	moved. In Motif drag is performed with the middle mouse 
 	button.</li>
 </ul>
 <h4>Removing a Node with &quot;Del&quot;</h4>

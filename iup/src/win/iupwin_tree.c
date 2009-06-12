@@ -570,7 +570,7 @@ static Iarray* winTreeGetSelectedArrayId(Ihandle* ih)
 /* COPYING ITEMS (Branches and its children)                                 */
 /*****************************************************************************/
 /* Insert the copied item in a new location. Returns the new item. */
-static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent, HTREEITEM hPosition)
+static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent, HTREEITEM hPosition, int full_copy)
 {
   TVITEM item; 
   TVINSERTSTRUCT tvins;
@@ -582,6 +582,15 @@ static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent
   item.cchTextMax = 255;
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
 
+  if (full_copy) /* during a full copy the userdata reference is not copied */
+  {
+    /* create a new one */
+    winTreeItemData* itemDataNew = malloc(sizeof(winTreeItemData));
+    memcpy(itemDataNew, (void*)item.lParam, sizeof(winTreeItemData));
+    itemDataNew->userdata = NULL;
+    item.lParam = (LPARAM)itemDataNew;
+  }
+
   /* Copy everything including user data reference */
   tvins.item = item; 
   tvins.hInsertAfter = hPosition;
@@ -591,16 +600,16 @@ static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent
   return (HTREEITEM)SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
 }
 
-static void winTreeCopyChildren(Ihandle* ih, HTREEITEM hItemSrc, HTREEITEM hItemDst)
+static void winTreeCopyChildren(Ihandle* ih, HTREEITEM hItemSrc, HTREEITEM hItemDst, int full_copy)
 {
   HTREEITEM hChildSrc = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItemSrc);
   HTREEITEM hNewItem = TVI_FIRST;
   while (hChildSrc != NULL)
   {
-    hNewItem = winTreeCopyItem(ih, hChildSrc, hItemDst, hNewItem); /* Use the same order they where enumerated */
+    hNewItem = winTreeCopyItem(ih, hChildSrc, hItemDst, hNewItem, full_copy); /* Use the same order they where enumerated */
 
     /* Recursively transfer all the items */
-    winTreeCopyChildren(ih, hChildSrc, hNewItem);  
+    winTreeCopyChildren(ih, hChildSrc, hNewItem, full_copy);  
 
     /* Go to next sibling item */
     hChildSrc = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hChildSrc);
@@ -608,9 +617,9 @@ static void winTreeCopyChildren(Ihandle* ih, HTREEITEM hItemSrc, HTREEITEM hItem
 }
 
 /* Copies all items in a branch to a new location. Returns the new branch node. */
-static HTREEITEM winTreeCopyNode(Ihandle* ih, HTREEITEM hItemSrc, HTREEITEM hItemDst)
+static HTREEITEM winTreeCopyNode(Ihandle* ih, HTREEITEM hItemSrc, HTREEITEM hItemDst, int full_copy)
 {
-  HTREEITEM hNewItem;
+  HTREEITEM hNewItem, hParent;
   TVITEM item;
   winTreeItemData* itemDataDst;
 
@@ -621,14 +630,20 @@ static HTREEITEM winTreeCopyNode(Ihandle* ih, HTREEITEM hItemSrc, HTREEITEM hIte
   itemDataDst = (winTreeItemData*)item.lParam;
 
   if (itemDataDst->kind == ITREE_BRANCH && (item.state & TVIS_EXPANDED))
-    hNewItem = winTreeCopyItem(ih, hItemSrc, hItemDst, TVI_FIRST);  /* copy as first child of expanded branch */
+  {
+    /* copy as first child of expanded branch */
+    hParent = hItemDst;
+    hItemDst = TVI_FIRST;
+  }
   else
   {                                                    
-    HTREEITEM hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hItemDst);
-    hNewItem = winTreeCopyItem(ih, hItemSrc, hParent, hItemDst); /* copy as next brother of item or collapsed branch */
+    /* copy as next brother of item or collapsed branch */
+    hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hItemDst);
   }
 
-  winTreeCopyChildren(ih, hItemSrc, hNewItem);
+  hNewItem = winTreeCopyItem(ih, hItemSrc, hParent, hItemDst, full_copy);
+
+  winTreeCopyChildren(ih, hItemSrc, hNewItem, full_copy);
 
   return hNewItem;
 }
@@ -828,23 +843,22 @@ static void winTreeCallSelectionCb(Ihandle* ih, int status, HTREEITEM hItem)
   }
 }
 
-static int winTreeCallDragDropCb(Ihandle* ih, HTREEITEM	hItemDrag, HTREEITEM hItemDrop)
+static int winTreeCallDragDropCb(Ihandle* ih, HTREEITEM	hItemDrag, HTREEITEM hItemDrop, int *is_ctrl)
 {
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
+  int is_shift = 0;
+  if ((GetKeyState(VK_SHIFT) & 0x8000))
+    is_shift = 1;
+  if ((GetKeyState(VK_CONTROL) & 0x8000))
+    *is_ctrl = 1;
+  else
+    *is_ctrl = 0;
+
   if (cbDragDrop)
   {
     int drag_id = winTreeGetNodeId(ih, hItemDrag);
     int drop_id = winTreeGetNodeId(ih, hItemDrop);
-    int isshift = 0;
-    int iscontrol = 0;
-
-    if ((GetKeyState(VK_SHIFT) & 0x8000))
-      isshift = 1;
-
-    if ((GetKeyState(VK_CONTROL) & 0x8000))
-      iscontrol = 1;
-
-    return cbDragDrop(ih, drag_id, drop_id, isshift, iscontrol);
+    return cbDragDrop(ih, drag_id, drop_id, is_shift, *is_ctrl);
   }
 
   return IUP_CONTINUE; /* allow to move by default if callback not defined */
@@ -1216,10 +1230,35 @@ static int winTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
   }
 
   /* Copying the node and its children to the new position */
-  winTreeCopyNode(ih, hItemSrc, hItemDst);
+  winTreeCopyNode(ih, hItemSrc, hItemDst, 0);  /* not a full copy, preserve user data */
 
-  /* do not delete the user data, we copy the references in CopyBranch */
+  /* do not delete the user data, we copy the references in CopyNode */
   SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItemSrc);
+
+  return 0;
+}
+
+static int winTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
+{
+  HTREEITEM hItemDst, hParent;
+  HTREEITEM hItemSrc = winTreeFindNodeFromString(ih, name_id);
+  if (!hItemSrc)
+    return 0;
+  hItemDst = winTreeFindNodeFromString(ih, value);
+  if (!hItemDst)
+    return 0;
+
+  /* If Drag item is an ancestor of Drop item then return */
+  hParent = hItemDst;
+  while(hParent)
+  {
+    hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hParent);
+    if (hParent == hItemSrc)
+      return 0;
+  }
+
+  /* Copying the node and its children to the new position */
+  winTreeCopyNode(ih, hItemSrc, hItemDst, 1);
 
   return 0;
 }
@@ -1720,6 +1759,7 @@ static void winTreeDrop(Ihandle* ih)
   HTREEITEM	 hItemDrop     =  (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DROPITEM");
   HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPTREE_DRAGIMAGELIST");
   HTREEITEM  hParent;
+  int is_ctrl;
 
   if (dragImageList)
   {
@@ -1750,11 +1790,16 @@ static void winTreeDrop(Ihandle* ih)
       return;
   }
 
-  if (winTreeCallDragDropCb(ih, hItemDrag, hItemDrop) == IUP_CONTINUE)
+  if (winTreeCallDragDropCb(ih, hItemDrag, hItemDrop, &is_ctrl) == IUP_CONTINUE)
   {
-    HTREEITEM  hItemNew = winTreeCopyNode(ih, hItemDrag, hItemDrop);
-    /* do not delete the user data, we copy the references in CopyBranch */
-    SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItemDrag);
+    /* Copy the dragged item to the new position. */
+    HTREEITEM  hItemNew = winTreeCopyNode(ih, hItemDrag, hItemDrop, is_ctrl);
+
+    if (!is_ctrl)
+    {
+      /* do not delete the user data, we copy the references in CopyNode */
+      SendMessage(ih->handle, TVM_DELETEITEM, 0, (LPARAM)hItemDrag);
+    }
 
     SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNew); /* set focus and selection */
   }
@@ -2386,6 +2431,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "DELNODE", NULL, winTreeSetDelNodeAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAME",  NULL, winTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, winTreeSetMoveNodeAttrib,  IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, winTreeSetCopyNodeAttrib,  IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
