@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 
@@ -147,6 +147,22 @@ example, the IMAGE attribute of a Label is not inheritable, so when checked at
 the Label it will return NULL if not defined, the Label parent tree will not be 
 consulted. But if you change the IMAGE attribute at a Vbox that contains several 
 Labels, the Vbox will not be affected but all child Labels will.</p>
+
+<h3><a name="avail">Availability</a></h3>
+
+<p>Although attributes can be changed and retrieved at any time there are 
+exceptions and some rules that must be followed according to the documentation 
+of the attribute:</p>
+<ul>
+	<li><strong>read only</strong>: the attribute can not be changed. Ignored 
+	when set.</li>
+	<li><strong>write only</strong>: the attribute can not be retrieved. 
+	Normally used for action attributes. Returns NULL or some value set before 
+	the element was mapped.</li>
+	<li><strong>creation only</strong>: it will be used only when the element is 
+	mapped on the native system. So set it before the element is mapped. Ignored 
+	when set after the element is mapped.</li>
+</ul>
 
 <h3><a name="IupLua">IupLua</a></h3>
 

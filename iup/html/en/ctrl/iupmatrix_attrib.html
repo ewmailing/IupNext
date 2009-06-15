@@ -220,30 +220,32 @@ MULTIPLE and AREA are NOT considered when setting MARKED or MARKL:C.</p>
   MARKMODE can be <strong>interactively</strong> 
   marked. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
     &quot;NO&quot;.</p>
-<h3>Action Attributes (after map)</h3>
+<h3>Action Attributes</h3>
 <p><strong><a name="ADDCOL">ADDCOL</a></strong> (write-only):
   Adds a new column to the matrix after the 
   specified column. To insert a column at the top of the spreadsheet, value 0 
 must be used. To add more than one column, use format &quot;<strong><em>C-C</em></strong>&quot;, where the first number corresponds to the base column and the second number corresponds to 
   the number of columns to be added. It is valid only in normal operation mode. 
-Can NOT add a title column.</p>
+Can NOT add a title column. Ignored if set before map. </p>
 <p><strong><a name="ADDLIN">ADDLIN</a></strong> (write-only):
   Adds a new line to the matrix after the 
   specified line. To insert a line at the top of the spreadsheet, value 0 must be used. To add more than one line, use format &quot;<strong><em>L-L</em></strong>&quot;, 
 where the first number corresponds to the base line and the second number 
 corresponds to the number of lines to be added. It is valid only in normal 
-operation mode. Can NOT add a title line.</p>
+operation mode. Can NOT add a title line. Ignored if set before map. </p>
 <p><strong><a name="DELCOL">DELCOL</a></strong> (write-only):
   Removes the given column from the matrix. To 
   remove more than one column, use format &quot;<strong><em>C-C</em></strong>&quot;, where the 
 first number corresponds to the base column and the second number corresponds to 
 the number of columns to be removed. It is valid only in normal operation mode. 
-Can NOT remove a title column, <strong><em>C</em></strong>&gt;0.</p>
+Can NOT remove a title column, <strong><em>C</em></strong>&gt;0. Ignored if set 
+before map. </p>
 <p><strong><a name="DELLIN">DELLIN</a></strong> (write-only):
   Removes the given line from the matrix. To 
   remove more than one line, use format &quot;<strong><em>L-L</em></strong>&quot;, where the first number corresponds to the base line and the second number corresponds to the 
   number of lines to be removed. It is valid only in normal operation mode. Can 
-NOT remove a title line, <strong><em>L</em></strong>&gt;0.</p>
+NOT remove a title line, <strong><em>L</em></strong>&gt;0. Ignored if set before 
+map. </p>
 <p><strong><a name="EDIT_MODE">EDIT_MODE</a></strong>:
   When set to YES, programmatically puts the 
   current cell in edition mode, allowing the user to modify its value. When consulted informs if the the current cell is 
@@ -256,7 +258,8 @@ column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*
 make the 
 given cell visible. To scroll to a line or a 
 column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*:<strong><em>C</em></strong>&quot; (where
-<em><strong>L</strong></em>&gt;0 and <strong><em>C</em></strong>&gt;0).</p>
+<em><strong>L</strong></em>&gt;0 and <strong><em>C</em></strong>&gt;0). (since 
+3.0)</p>
 <p><strong><a name="REDRAW">REDRAW</a></strong> (write-only):
   The user can inform the matrix that the data 
   has changed, and it must be redrawn. Values:</p>

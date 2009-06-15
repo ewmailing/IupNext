@@ -85,7 +85,8 @@
 <p><strong>APPEND</strong> (write-only):
   Inserts a text at the end of the current 
   text. In the Multiline, if APPENDNEWLINE=YES, a "\n" character will be 
-automatically inserted before the appended text (APPENDNEWLINE default is YES).</p>
+automatically inserted before the appended text (APPENDNEWLINE default is YES). 
+Ignored if set before map.</p>
 
 <p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: Background color of the 
 text. Default: &quot;255 255 255&quot; (but it is system dependent).</p>
@@ -164,7 +165,8 @@ enabled, but only when MULTILINE=YES. Default: NO. (since 3.0)</p>
 
   
 <p><strong>INSERT</strong> (write-only): Inserts a text 
-	in the caret's position, also replaces the current selection if any.</p>
+	in the caret's position, also replaces the current selection if any. Ignored 
+if set before map.</p>
 
 <p><a href="../attrib/iup_mask.html">MASK</a> (<font size="3">non inheritable</font>): Defines a mask that will filter 
 interactive text input.</p>

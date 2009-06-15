@@ -110,8 +110,8 @@
 
 </div>
 
-<p><strong>APPENDITEM</strong> (write-only, after map): inserts an item after the last 
-item. (since 3.0)</p>
+<p><strong>APPENDITEM</strong> (write-only): inserts an item after the last 
+item. Ignored if set before map. (since 3.0)</p>
 
 <p><strong>AUTOHIDE</strong>: scrollbars are shown only if they are necessary. Default: "YES".</p>
   
@@ -155,16 +155,18 @@ button, which displays all items in the list. Can be "YES" or "NO". Default
 	0" (but it is system dependent).</p>
 
   
-<p><strong>INSERTITEMn</strong> (write-only, after map): inserts an item before the 
-	given n position. n starts at 1. Ignored if out of bounds. (since 3.0)</p>
+<p><strong>INSERTITEMn</strong> (write-only): inserts an item before the 
+	given n position. n starts at 1. Ignored if out of bounds. Ignored if set 
+before map. (since 3.0)</p>
 
   
 <p><b>MULTIPLE</b> (creation only): Allows selecting several items 
 	simultaneously (multiple list). Default: "NO". Only valid when EDITBOX=NO 
 	and DROPDOWN=NO.</p>
 
-<p><strong>REMOVEITEM</strong> (write-only, after map): removes the given value. 
-	value starts at 1. If value is NULL removes all the items. (since 3.0)</p>
+<p><strong>REMOVEITEM</strong> (write-only): removes the given value. 
+	value starts at 1. If value is NULL removes all the items. Ignored if set 
+before map. (since 3.0)</p>
 
   
   
@@ -186,10 +188,10 @@ horizontal scrollbar is never shown.</p>
 
   
 <p><b>
-  SHOWDROPDOWN</b> (write-only, after map): opens or closes the dropdown list. Can be
+  SHOWDROPDOWN</b> (write-only): opens or closes the dropdown list. Can be
   "YES" or
   "NO". Valid only when
-  DROPDOWN=YES. </p>
+  DROPDOWN=YES. Ignored if set before map. </p>
 
   
 <p><a href="../attrib/iup_size.html">SIZE</a>:
