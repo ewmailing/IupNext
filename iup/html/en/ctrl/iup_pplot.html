@@ -101,22 +101,6 @@ clicking with the left mouse button near the sample in the dataset.</p>
 samples. Also use the arrow keys to move the Y coordinate of the selected 
 samples. Press the <b>Ctrl</b> key to increase the step size when moving the Y 
 coordinate.</p>
-<h3>To Do's</h3>
-<ul>
-  <li>Add support of legend text near each dataset plot.</li>
-  <li>Adjust AutoScale to start and end at major axis 
-  ticks.</li>
-  <li>Improve the display of values near each sample.</li>
-  <li>PPlot force the definitions of the margins. It should have a way to
-  automatic calculate the margins when doing automatic scaling.</li>
-  <li>PPlot has callback mode feature that is not available in IupPPlot.</li>
-  <li>PPlot force the Grid to be automatically spaced following the major ticks.</li>
-  <li><font SIZE="3">PPlot generates lots of warnings on all compilers.</font></li>
-  <li><font SIZE="3">PPlot uses C++ and the STL library. So it may have 
-  portability issues. So far it does not compiles under pure Visual C++ 6 (must 
-	use STL Port). Use of STL 
-  is simple and can be removed.</font></li>
-</ul>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupPPlot(void); [in C]
@@ -163,14 +147,14 @@ and POSTDRAW_CB callbacks only. Output variables can be NULL if not used.</p>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p><b>REDRAW</b> [write-only](non inheritable): redraw the plot and update the display. Value is 
+<p><b>REDRAW</b> (write-only) (non inheritable): redraw the plot and update the display. Value is 
 ignored. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
 attributes without visual output.</p>
 <font SIZE="3">
 <p><b>USE_IMAGERGB </b>(non inheritable): defines if the double buffer will use standard driver 
 image (NO - faster) or an RGB image (YES - slower). Default: NO. The IMAGERGB 
 driver has anti-aliasing which can improve the line drawing.</p>
-<p><b>USE_GDI</b>+ [Windows Only](non inheritable): defines if the double buffer will use GDI+ 
+<p><b>USE_GDI</b>+ [Windows Only] (non inheritable): defines if the double buffer will use GDI+ 
 (YES) for drawing or standard GDI (NO). Default: NO. The GDI+ driver has 
 anti-aliasing which can improve the line drawing.</p>
 </font>
@@ -199,8 +183,8 @@ NO.</p>
 <p><b>GRID</b>: shows or hides the grid in both or a 
 specific axis. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>
 <h4>Dataset Management (non inheritable)</h4>
-<p><b>REMOVE</b> [write-only]: removes a dataset given its index.</p>
-<p><b>CLEAR</b> [write-only]: removes all datasets. Value is ignored.</p>
+<p><b>REMOVE</b> (write-only): removes a dataset given its index.</p>
+<p><b>CLEAR</b> (write-only): removes all datasets. Value is ignored.</p>
 <p><b>COUNT</b> [read-only]: <font SIZE="3">total number of datasets.</font></p>
 <p><b>CURRENT</b>: <font SIZE="3">current  dataset index. Default is 
 -1. When a dataset is added it becames the current dataset. The index starts at 
@@ -223,7 +207,7 @@ be set before other &quot;DS_*&quot; attributes.</p>
 <p><b>DS_MARKSIZE</b>: mark size of the current dataset. Default: 7.</p>
 <p><b>DS_SHOWVALUES</b>: enable or disable the display of the values near each 
 sample. Can be YES or NO. Default: NO.</p>
-<p><b>DS_REMOVE</b> [write-only]: removes a sample from the current dataset given its index.</p>
+<p><b>DS_REMOVE</b> (write-only): removes a sample from the current dataset given its index.</p>
 <p><b>DS_EDIT</b>: enable or disable the current dataset selection and editing. Can be 
 YES or NO. Default: NO.</p>
 <h4>Axis Configuration (non inheritable) </h4>

@@ -75,7 +75,7 @@ filedlg() [in LED]</pre>
 	directory of the current user. Otherwise, the initial directory is the 
 	Desktop folder.</p>
   </blockquote>
-  <p><strong>EXTFILTER</strong>: (Windows  and GTK Only) Defines several file filters. It has 
+  <p><strong>EXTFILTER</strong> [Windows  and GTK Only]: Defines several file filters. It has 
   priority over FILTERINFO and FILTER. Must be a text with the format &quot;FilterInfo1|Filter1|FilterInfo2|Filter2|...&quot;. 
   The list ends with character '|'.
   Example: &quot;Text files|*.txt;*.doc|Image files|*.gif;*.jpg;*.bmp|&quot;. In 
@@ -92,23 +92,22 @@ filedlg() [in LED]</pre>
   <p><strong>FILTER</strong>:
   String containing a list of file filters separated by ';' without spaces. Example: &quot;*.C;*.LED;test.*&quot;. 
   In Motif only the first filter is used. </p>
-  <p><strong>FILTERINFO</strong>:
-  (Windows  and GTK Only) Filter's description. If not defined the filter itself will be used as its 
+  <p><strong>FILTERINFO</strong> [Windows  and GTK Only]: Filter's description. If not defined the filter itself will be used as its 
   description.</p>
   
-  <p><strong>FILTERUSED</strong>: (Windows  and GTK Only) the index of the filter in 
+  <p><strong>FILTERUSED</strong> [Windows  and GTK Only]: the index of the filter in 
     EXTFILTER to use starting at 1. It returns the selection made by the user. 
   Set only if EXTFILTER is defined.</p>
     
-  <p><strong>MULTIPLEFILES</strong>: (Windows and GTK Only) When &quot;YES&quot;, this attribute allows the user of
+  <p><strong>MULTIPLEFILES</strong> [Windows and GTK Only]: When &quot;YES&quot;, this attribute allows the user of
     IupFileDlg in fileopen mode to select multiple 
     files.&nbsp; The value returned by VALUE is to be changed the following way: the directory and 
     the files are passed separately, in this order. The character used for separating the directory and the files is '|'. 
     The file list ends with character '|'. When the user selects just one file, the directory and the file are not separated by '|'. 
 For example:</p>
     
-<p class="info">&quot;/tecgraf/iup/test|a.txt|b.txt|c.txt|&quot; or<br>
-    &quot;/tecgraf/iup/test/a.txt&quot; (only one file is selected)</p>
+<pre>&quot;/tecgraf/iup/test|a.txt|b.txt|c.txt|&quot; or
+&quot;/tecgraf/iup/test/a.txt&quot; (only one file is selected)</pre>
 <p class="info">In Windows the maximum size allowed  for file name returned is 
 65Kb. </p>
   
