@@ -136,7 +136,7 @@ static void iMatrixColResResetMatrixCursor(Ihandle* ih)
   char *cursor = iupAttribGet(ih, "_IUPMAT_CURSOR");
   if (cursor)
   {
-    IupSetAttribute(ih, "CURSOR", cursor);
+    IupStoreAttribute(ih, "CURSOR", cursor);
     iupAttribSetStr(ih, "_IUPMAT_CURSOR", NULL);
   }
 }
@@ -165,7 +165,7 @@ void iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y)
     if (found)
     {
       if (!iupAttribGet(ih, "_IUPMAT_CURSOR"))
-        iupAttribSetStr(ih, "_IUPMAT_CURSOR", IupGetAttribute(ih, "CURSOR"));
+        iupAttribStoreStr(ih, "_IUPMAT_CURSOR", IupGetAttribute(ih, "CURSOR"));
       IupSetAttribute(ih, "CURSOR", "RESIZE_W");
     }
     else /* It is in the empty area after the last column */
