@@ -131,6 +131,8 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
 {
   int lin, col, end, diff_num, shift_num;
 
+  /* base is the first line where the change started */
+
   /* If it doesn't have enough lines allocated, then allocate more space */
   if (num > ih->data->lines.num_alloc)  /* this also implicates that num>old_num */
   {
@@ -161,11 +163,14 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
 
     /* shift the old data, opening space for new data, from base to end */
     /*   do it in reverse order to avoid overlapping */
-    if (!ih->data->callback_mode)
-      for (lin = shift_num-1; lin >= 0; lin--)   /* all columns, shift_num lines */
-        memmove(ih->data->cells[lin+end], ih->data->cells[lin+base], ih->data->columns.num_alloc*sizeof(ImatCell));
-    memmove(ih->data->lines.sizes+end, ih->data->lines.sizes+base, shift_num*sizeof(int));
-    memmove(ih->data->lines.flags+end, ih->data->lines.flags+base, shift_num*sizeof(unsigned char));
+    if (shift_num)
+    {
+      if (!ih->data->callback_mode)
+        for (lin = shift_num-1; lin >= 0; lin--)   /* all columns, shift_num lines */
+          memmove(ih->data->cells[lin+end], ih->data->cells[lin+base], ih->data->columns.num_alloc*sizeof(ImatCell));
+      memmove(ih->data->lines.sizes+end, ih->data->lines.sizes+base, shift_num*sizeof(int));
+      memmove(ih->data->lines.flags+end, ih->data->lines.flags+base, shift_num*sizeof(unsigned char));
+    }
 
     /* then clear the new space starting at base */
     if (!ih->data->callback_mode)
@@ -199,11 +204,14 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
     }
 
     /* move the old data to opened space from end to base */
-    if (!ih->data->callback_mode)
-      for (lin = 0; lin < shift_num; lin++) /* all columns, shift_num lines */
-        memmove(ih->data->cells[lin+base], ih->data->cells[lin+end], ih->data->columns.num_alloc*sizeof(ImatCell));
-    memmove(ih->data->lines.sizes+base, ih->data->lines.sizes+end, shift_num*sizeof(int));
-    memmove(ih->data->lines.flags+base, ih->data->lines.flags+end, shift_num*sizeof(unsigned char));
+    if (shift_num)
+    {
+      if (!ih->data->callback_mode)
+        for (lin = 0; lin < shift_num; lin++) /* all columns, shift_num lines */
+          memmove(ih->data->cells[lin+base], ih->data->cells[lin+end], ih->data->columns.num_alloc*sizeof(ImatCell));
+      memmove(ih->data->lines.sizes+base, ih->data->lines.sizes+end, shift_num*sizeof(int));
+      memmove(ih->data->lines.flags+base, ih->data->lines.flags+end, shift_num*sizeof(unsigned char));
+    }
 
     /* then clear the remaining space starting at num */
     if (!ih->data->callback_mode)
@@ -217,6 +225,8 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
 void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
 {
   int lin, col, end, diff_num, shift_num;
+
+  /* base is the first column where the change started */
 
   /* If it doesn't have enough columns allocated, then allocate more space */
   if (num > ih->data->columns.num_alloc)  /* this also implicates that also num>old_num */
@@ -248,11 +258,14 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
     end = base+diff_num;
 
     /* shift the old data, opening space for new data, from base to end */
-    if (!ih->data->callback_mode)
-      for (lin = 0; lin < ih->data->lines.num_alloc; lin++)  /* all lines, shift_num columns */
-        memmove(ih->data->cells[lin]+end, ih->data->cells[lin]+base, shift_num*sizeof(ImatCell));
-    memmove(ih->data->columns.sizes+end, ih->data->columns.sizes+base, shift_num*sizeof(int));
-    memmove(ih->data->columns.flags+end, ih->data->columns.flags+base, shift_num*sizeof(unsigned char));
+    if (shift_num)
+    {
+      if (!ih->data->callback_mode)
+        for (lin = 0; lin < ih->data->lines.num_alloc; lin++)  /* all lines, shift_num columns */
+          memmove(ih->data->cells[lin]+end, ih->data->cells[lin]+base, shift_num*sizeof(ImatCell));
+      memmove(ih->data->columns.sizes+end, ih->data->columns.sizes+base, shift_num*sizeof(int));
+      memmove(ih->data->columns.flags+end, ih->data->columns.flags+base, shift_num*sizeof(unsigned char));
+    }
 
     /* then clear the openned space starting at base */
     if (!ih->data->callback_mode)
@@ -287,11 +300,14 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
 
     /* move the old data to opened space from end to base */
     /*   even if (num-base)>(old_num-num) memmove will correctly copy the memory */
-    if (!ih->data->callback_mode)
-      for (lin = 0; lin < ih->data->lines.num_alloc; lin++)  /* all lines, shift_num columns */
-        memmove(ih->data->cells[lin]+base, ih->data->cells[lin]+end, shift_num*sizeof(ImatCell));
-    memmove(ih->data->columns.sizes+base, ih->data->columns.sizes+end, shift_num*sizeof(int));
-    memmove(ih->data->columns.flags+base, ih->data->columns.flags+end, shift_num*sizeof(unsigned char));
+    if (shift_num)
+    {
+      if (!ih->data->callback_mode)
+        for (lin = 0; lin < ih->data->lines.num_alloc; lin++)  /* all lines, shift_num columns */
+          memmove(ih->data->cells[lin]+base, ih->data->cells[lin]+end, shift_num*sizeof(ImatCell));
+      memmove(ih->data->columns.sizes+base, ih->data->columns.sizes+end, shift_num*sizeof(int));
+      memmove(ih->data->columns.flags+base, ih->data->columns.flags+end, shift_num*sizeof(unsigned char));
+    }
 
     /* then clear the remaining space starting at num */
     if (!ih->data->callback_mode)

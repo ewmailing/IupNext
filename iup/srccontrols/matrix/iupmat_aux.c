@@ -381,9 +381,19 @@ void iupMatrixAuxCalcSizes(Ihandle* ih)
 
   /* when removing lines the first can be positioned after the last line */
   if (ih->data->lines.first > ih->data->lines.num-1) 
-    ih->data->lines.first = ih->data->lines.num-1;
+  {
+    if (ih->data->lines.num==1)
+      ih->data->lines.first = 1;
+    else
+      ih->data->lines.first = ih->data->lines.num-1;
+  }
   if (ih->data->columns.first > ih->data->columns.num-1) 
-    ih->data->columns.first = ih->data->columns.num-1;
+  {
+    if (ih->data->columns.num == 1)
+      ih->data->columns.first = 1;
+    else
+      ih->data->columns.first = ih->data->columns.num-1;
+  }
 
   iupMatrixAuxUpdateVisiblePos(ih, IMAT_PROCESS_COL);
   iupMatrixAuxUpdateVisiblePos(ih, IMAT_PROCESS_LIN);

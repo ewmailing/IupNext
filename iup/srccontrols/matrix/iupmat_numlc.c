@@ -236,7 +236,7 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
   }
 }
 
-static int iMatrixGetStartEnd(const char* value, int *base, int *count, int max, int fit_count)
+static int iMatrixGetStartEnd(const char* value, int *base, int *count, int max, int del)
 {
   int ret;
 
@@ -252,24 +252,35 @@ static int iMatrixGetStartEnd(const char* value, int *base, int *count, int max,
   if (ret == 1)
     *count = 1;
 
-  if (*base < 0 || *base > max || *count <= 0)
+  if (*count <= 0)
     return 0;
 
-  if (fit_count)  /* always when DEL */
+  if (del)
   {
-    if (*base == max-1)
-      return 0;
-
-    /* base can NOT be 0 */
-    if (*base == 0)
+    if (*base <= 0)  /* the first valid element is always 1 */
       *base = 1;
 
-    /* count must be inside the existant range */
-    if (*base + *count - 1 >= max)
-      *count = max-1 - *base + 1;
+    /* when del, base can be at the last element */
+    if (*base > max-1)
+      *base = max-1;
+
+    /* when del, count must be inside the existant range */
+    if (*base + *count > max)
+      *count = max - *base;
   }
   else
+  {
     (*base)++; /* add after the given index, so increment to position the base */
+
+    if (*base <= 0)  /* the first valid element is always 1 */
+      *base = 1;
+
+    /* when add, base can be just after the last element but not more */
+    if (*base > max)
+      *base = max;
+
+    /* when add, count can be any positive value */
+  }
 
   return 1;
 }
@@ -335,10 +346,10 @@ int iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value)
 
   if (ih->data->lines.focus_cell >= ih->data->lines.num)
     ih->data->lines.focus_cell = ih->data->lines.num-1;
-  if (ih->data->lines.focus_cell == 0)
+  if (ih->data->lines.focus_cell <= 0)
     ih->data->lines.focus_cell = 1;
 
-  if (base < lines_num)  /* If before the last line. */
+  if (base < lines_num)  /* If before the last line. (always true when deleting) */
     iMatrixUpdateLineAttributes(ih, base, count, 0);
 
   iupMatrixDraw(ih, 1);
@@ -401,10 +412,10 @@ int iupMatrixSetDelColAttrib(Ihandle* ih, const char* value)
 
   if (ih->data->columns.focus_cell >= ih->data->columns.num)
     ih->data->columns.focus_cell = ih->data->columns.num-1;
-  if (ih->data->columns.focus_cell == 0)
+  if (ih->data->columns.focus_cell <= 0)
     ih->data->columns.focus_cell = 1;
 
-  if (base < columns_num)  /* If before the last column. */
+  if (base < columns_num)  /* If before the last column. (always true when deleting) */
     iMatrixUpdateColumnAttributes(ih, base, count, 0);
 
   iupMatrixDraw(ih, 1);

@@ -105,7 +105,12 @@ static int iMatrixScrollGetNextNonEmpty(Ihandle* ih, int m, int index)
     index++;
 
   if (index > p->num-1)
-    return p->num-1;
+  {
+    if (p->num == 1)
+      return 1;
+    else
+      return p->num-1;
+  }
   else
     return index;
 }
@@ -436,6 +441,12 @@ void iupMatrixScrollPos(Ihandle* ih, int mode, float pos, int m)
     d = IupGetFloat(ih, "DX");
   }
 
+  if (p->num == 1)
+  {
+    p->first = 1;
+    return;
+  }
+
   scroll_pos = (int)(pos * p->total_size + 0.5);
 
   vp = 0;
@@ -447,7 +458,12 @@ void iupMatrixScrollPos(Ihandle* ih, int mode, float pos, int m)
   }
 
   if (index == p->num)
-    index--;
+  {
+    if (p->num == 1)
+      index = 1;
+    else
+      index = p->num-1;
+  }
 
   p->first = index;
 }
