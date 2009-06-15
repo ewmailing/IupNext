@@ -332,6 +332,10 @@ wb_usr.tree =
               link= "attrib_guide.html#Inheritance"
             },
             {
+              name= {nl= "Availability"},
+              link= "attrib_guide.html#avail"
+            },
+            {
               name= {nl= "IupLua"},
               link= "attrib_guide.html#IupLua"
             }
