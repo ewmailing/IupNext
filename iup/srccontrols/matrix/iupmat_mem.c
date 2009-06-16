@@ -158,7 +158,7 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
   if (num>old_num) /* ADD */
   {
     diff_num = num-old_num;      /* size of the openned space */
-    shift_num = old_num-base;    /* size of the data to be moved */
+    shift_num = old_num-base;    /* size of the data to be moved (base maximum is old_num) */
     end = base+diff_num;
 
     /* shift the old data, opening space for new data, from base to end */
@@ -254,7 +254,7 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
     /* then clear the openned space starting at base */
 
     diff_num = num-old_num;     /* size of the openned space */
-    shift_num = old_num-base;   /* size of the data to be moved */
+    shift_num = old_num-base;   /* size of the data to be moved (base maximum is old_num) */
     end = base+diff_num;
 
     /* shift the old data, opening space for new data, from base to end */

@@ -684,10 +684,14 @@ static char* gtkTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
 
 static int gtkTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  GtkTreeModel* model;
   GtkTreeIter iterItemSrc, iterItemDst, iterNewItem;
   GtkTreeIter iterParent, iterNextParent;
 
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
+
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
   if (!gtkTreeFindNodeFromString(ih, model, name_id, &iterItemSrc))
     return 0;
 
@@ -715,10 +719,14 @@ static int gtkTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
 
 static int gtkTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  GtkTreeModel* model;
   GtkTreeIter iterItemSrc, iterItemDst, iterNewItem;
   GtkTreeIter iterParent, iterNextParent;
 
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
+
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
   if (!gtkTreeFindNodeFromString(ih, model, name_id, &iterItemSrc))
     return 0;
 
@@ -1218,6 +1226,8 @@ static int gtkTreeSetMarkedAttrib(Ihandle* ih, const char* name_id, const char* 
 
 static int gtkTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
   if (iupStrEqualNoCase(value, "SELECTED"))  /* selectec here means the specified one */
   {
     GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
@@ -2158,10 +2168,10 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute  (ic, "VALUE",    gtkTreeGetValueAttrib,    gtkTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
-  iupClassRegisterAttributeId(ic, "DELNODE", NULL, gtkTreeSetDelNodeAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "DELNODE", NULL, gtkTreeSetDelNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAME",  NULL, gtkTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, gtkTreeSetMoveNodeAttrib,  IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, gtkTreeSetCopyNodeAttrib,  IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, gtkTreeSetMoveNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, gtkTreeSetCopyNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute  (ic, "AUTODRAGDROP",    NULL,    NULL,    NULL, NULL, IUPAF_DEFAULT);
 }

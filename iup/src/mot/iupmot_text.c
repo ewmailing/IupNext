@@ -164,6 +164,8 @@ static char* motTextGetReadOnlyAttrib(Ihandle* ih)
 
 static int motTextSetInsertAttrib(Ihandle* ih, const char* value)
 {
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
   if (!value)
     return 0;
 
@@ -204,7 +206,10 @@ static char* motTextGetSelectedTextAttrib(Ihandle* ih)
 
 static int motTextSetAppendAttrib(Ihandle* ih, const char* value)
 {
-  XmTextPosition pos = XmTextGetLastPosition(ih->handle);
+  XmTextPosition pos;
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
+  pos = XmTextGetLastPosition(ih->handle);
   /* disable callbacks */
   iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
   if (ih->data->is_multiline && ih->data->append_newline)
@@ -1122,8 +1127,8 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SELECTIONPOS", motTextGetSelectionPosAttrib, motTextSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CARET", motTextGetCaretAttrib, motTextSetCaretAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CARETPOS", motTextGetCaretPosAttrib, motTextSetCaretPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INSERT", NULL, motTextSetInsertAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "APPEND", NULL, motTextSetAppendAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERT", NULL, motTextSetInsertAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "APPEND", NULL, motTextSetAppendAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "READONLY", motTextGetReadOnlyAttrib, motTextSetReadOnlyAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "NC", iupTextGetNCAttrib, motTextSetNCAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, motTextSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);

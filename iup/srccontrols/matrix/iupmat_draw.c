@@ -451,12 +451,14 @@ static void iMatrixDrawTitleCorner(Ihandle* ih)
 
 static void iMatrixDrawMatrix(Ihandle* ih)
 {
+  ImatLinColData* p1 = &ih->data->lines;
+  ImatLinColData* p2 = &ih->data->columns;
   iupMatrixPrepareDrawData(ih);
 
   /* fill the background because there will be empty cells */
   if ((ih->data->lines.num == 1) || (ih->data->columns.num == 1))
   {
-    cdCanvasForeground(ih->data->cddbuffer, cdIupConvertColor(ih->data->bgcolor_parent));
+    cdCanvasBackground(ih->data->cddbuffer, cdIupConvertColor(ih->data->bgcolor_parent));
     cdCanvasClear(ih->data->cddbuffer);
   }
 

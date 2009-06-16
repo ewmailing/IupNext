@@ -1137,8 +1137,11 @@ static char* motTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
 
 static int motTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  Widget wItemDst, wParent;
-  Widget wItemSrc = motTreeFindNodeFromString(ih, name_id);
+  Widget wItemDst, wParent, wItemSrc;
+
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
+  wItemSrc = motTreeFindNodeFromString(ih, name_id);
   if (!wItemSrc)
     return 0;
   wItemDst = motTreeFindNodeFromString(ih, value);
@@ -1165,8 +1168,11 @@ static int motTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
 
 static int motTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  Widget wItemDst, wParent;
-  Widget wItemSrc = motTreeFindNodeFromString(ih, name_id);
+  Widget wItemDst, wParent, wItemSrc;
+
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
+  wItemSrc = motTreeFindNodeFromString(ih, name_id);
   if (!wItemSrc)
     return 0;
   wItemDst = motTreeFindNodeFromString(ih, value);
@@ -1555,6 +1561,8 @@ static int motTreeSetRenameAttrib(Ihandle* ih, const char* value)
 
 static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
   if(iupStrEqualNoCase(value, "SELECTED"))  /* selectec here means the specified one */
   {
     Widget wItem = motTreeFindNodeFromString(ih, name_id);
@@ -2679,8 +2687,8 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute  (ic, "VALUE",    motTreeGetValueAttrib,    motTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
-  iupClassRegisterAttributeId(ic, "DELNODE", NULL, motTreeSetDelNodeAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "DELNODE", NULL, motTreeSetDelNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAME",  NULL, motTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, motTreeSetMoveNodeAttrib,  IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, motTreeSetCopyNodeAttrib,  IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, motTreeSetMoveNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, motTreeSetCopyNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 }

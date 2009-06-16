@@ -22,8 +22,8 @@
 int IupScanf (const char *format, ...)
 {
   int i;
-  int fields_out_count=(-1);    /* return code if not error (erro <  0) */
-  int erro=(-1);    /* return code if error     (erro >= 0) */
+  int fields_out_count=(-1);    /* return code if not error (error <  0) */
+  int error=(-1);    /* return code if error     (error >= 0) */
   int fields_in_count;
   int *width=NULL;
   int *scroll=NULL;
@@ -117,17 +117,17 @@ int IupScanf (const char *format, ...)
       if (s[-3]=='l')
       {
         if (sscanf(text[i],"%ld",((long *)va_arg(va,long *)))!=1)
-          if (erro < 0) erro = fields_out_count;
+          if (error < 0) error = fields_out_count;
       }
       else if (s[-3]=='h')
       {
         if (sscanf(text[i],"%hd",((short *)va_arg(va,short *)))!=1)
-          if (erro < 0) erro = fields_out_count;
+          if (error < 0) error = fields_out_count;
       }
       else
       {
         if (sscanf(text[i],"%d",((int *)va_arg(va,int *)))!=1)
-          if (erro < 0) erro = fields_out_count;
+          if (error < 0) error = fields_out_count;
       }
       break;
     case 'i':
@@ -137,17 +137,17 @@ int IupScanf (const char *format, ...)
       if (s[-3]=='l')
       {
         if (sscanf(text[i],"%li",((long *)va_arg(va,long *)))!=1)
-          if (erro < 0) erro = fields_out_count;
+          if (error < 0) error = fields_out_count;
       }
       else if (s[-3]=='h')
       {
         if (sscanf(text[i],"%hi",((short *)va_arg(va,short *)))!=1)
-          if (erro < 0) erro = fields_out_count;
+          if (error < 0) error = fields_out_count;
       }
       else
       {
         if (sscanf(text[i],"%i",((int *)va_arg(va,int *)))!=1)
-          if (erro < 0) erro = fields_out_count;
+          if (error < 0) error = fields_out_count;
       }
       break;
     case 'e':
@@ -158,12 +158,12 @@ int IupScanf (const char *format, ...)
       if (s[-3]=='l')
       {
         if (sscanf(text[i],"%lg",((double *)va_arg(va,double *)))!=1)
-          if (erro < 0) erro = fields_out_count;
+          if (error < 0) error = fields_out_count;
       }
       else
       {
         if (sscanf(text[i], "%g", ((float *)va_arg(va,float *)))!=1)
-          if (erro < 0) erro = fields_out_count;
+          if (error < 0) error = fields_out_count;
       }
       break;
     case 's':
@@ -196,5 +196,5 @@ cleanup:
     free(text);
   }
 
-  return (erro < 0) ? fields_out_count : erro;
+  return (error < 0) ? fields_out_count : error;
 }

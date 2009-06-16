@@ -283,24 +283,32 @@ static int iTreeSetShowDragDropAttrib(Ihandle* ih, const char* value)
 
 static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
   iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value, 1);
   return 0;
 }
 
 static int iTreeSetAddBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
   iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 1);
   return 0;
 }
 
 static int iTreeSetInsertLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
   iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value, 0);
   return 0;
 }
 
 static int iTreeSetInsertBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
   iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 0);
   return 0;
 }
@@ -406,10 +414,10 @@ Iclass* iupTreeGetClass(void)
   iupClassRegisterAttribute(ic, "MARKMODE",  iTreeGetMarkModeAttrib, iTreeSetMarkModeAttrib,  IUPAF_SAMEASSYSTEM, "SINGLE", IUPAF_NOT_MAPPED);
 
   /* IupTree Attributes - ACTION */
-  iupClassRegisterAttributeId(ic, "ADDLEAF",   NULL, iTreeSetAddLeafAttrib,   IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "ADDBRANCH", NULL, iTreeSetAddBranchAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "INSERTLEAF",   NULL, iTreeSetInsertLeafAttrib,   IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "INSERTBRANCH", NULL, iTreeSetInsertBranchAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ADDLEAF",   NULL, iTreeSetAddLeafAttrib,   IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ADDBRANCH", NULL, iTreeSetAddBranchAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "INSERTLEAF",   NULL, iTreeSetInsertLeafAttrib,   IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "INSERTBRANCH", NULL, iTreeSetInsertBranchAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   
   /* Default node images */
   iTreeInitializeImages();

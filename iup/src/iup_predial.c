@@ -138,8 +138,18 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
   }
 
   bt = IupGetInt(dlg, "STATUS");
-  if (bt != -1 && type == 1)
-    bt = iupAttribGetInt(dlg, "_IUP_LIST_NUMBER");
+  if (type == 1)
+  {
+    if (bt == 1)
+      bt = iupAttribGetInt(dlg, "_IUP_LIST_NUMBER");
+    else
+      bt = -1;
+  }
+  else
+  {
+    if (bt != 1)
+      bt = -1;
+  }
 
   IupDestroy(dlg);
 

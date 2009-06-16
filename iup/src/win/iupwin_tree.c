@@ -1212,8 +1212,11 @@ static char* winTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
 
 static int winTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  HTREEITEM hItemDst, hParent;
-  HTREEITEM hItemSrc = winTreeFindNodeFromString(ih, name_id);
+  HTREEITEM hItemDst, hParent, hItemSrc;
+
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
+  hItemSrc = winTreeFindNodeFromString(ih, name_id);
   if (!hItemSrc)
     return 0;
   hItemDst = winTreeFindNodeFromString(ih, value);
@@ -1240,8 +1243,11 @@ static int winTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
 
 static int winTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  HTREEITEM hItemDst, hParent;
-  HTREEITEM hItemSrc = winTreeFindNodeFromString(ih, name_id);
+  HTREEITEM hItemDst, hParent, hItemSrc;
+
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
+  hItemSrc = winTreeFindNodeFromString(ih, name_id);
   if (!hItemSrc)
     return 0;
   hItemDst = winTreeFindNodeFromString(ih, value);
@@ -1418,6 +1424,8 @@ static void winTreeDelNodeData(Ihandle* ih, HTREEITEM hItem)
 
 static int winTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
+  if (!ih->handle)  /* do not store the action before map */
+    return 0;
   if(iupStrEqualNoCase(value, "SELECTED")) /* selectec here means the specified one */
   {
     HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
@@ -2428,10 +2436,10 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute  (ic, "VALUE",    winTreeGetValueAttrib,    winTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
-  iupClassRegisterAttributeId(ic, "DELNODE", NULL, winTreeSetDelNodeAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "DELNODE", NULL, winTreeSetDelNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAME",  NULL, winTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, winTreeSetMoveNodeAttrib,  IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, winTreeSetCopyNodeAttrib,  IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, winTreeSetMoveNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, winTreeSetCopyNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
