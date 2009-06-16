@@ -297,6 +297,9 @@ static gboolean gtkButtonEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *ev
 
 static gboolean gtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 {
+  if (iupgtkButtonEvent(widget, evt, ih)==TRUE)
+    return TRUE;
+
   if (ih->data->type != IUP_BUTTON_TEXT)   /* image or both */
   {
     char* name = iupAttribGet(ih, "IMPRESS");
@@ -311,8 +314,8 @@ static gboolean gtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *
       }
     }
   }
-    
-  return iupgtkButtonEvent(widget, evt, ih);
+   
+  return FALSE;
 }
 
 static void gtkButtonClicked(GtkButton *widget, Ihandle* ih)

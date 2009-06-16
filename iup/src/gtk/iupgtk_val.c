@@ -105,6 +105,9 @@ static gboolean gtkValChangeValue(GtkRange *range, GtkScrollType scroll, double 
 
 static gboolean gtkValKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
+  if (iupgtkKeyPressEvent(widget, evt, ih) == TRUE)
+    return TRUE;
+
   /* change Home and End default behaviour */
   if (ih->data->inverted)
   {
@@ -123,7 +126,8 @@ static gboolean gtkValKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle
       return TRUE;
     }
   }
-  return iupgtkKeyPressEvent(widget, evt, ih);
+
+  return FALSE;
 }
 
 /*********************************************************************************************/

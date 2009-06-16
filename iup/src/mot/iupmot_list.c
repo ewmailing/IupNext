@@ -990,6 +990,11 @@ static void motListEditMotionVerifyCallback(Widget w, Ihandle* ih, XmTextVerifyC
 
 static void motListEditKeyPressEvent(Widget cbedit, Ihandle *ih, XKeyEvent *evt, Boolean *cont)
 {
+  *cont = True;
+  iupmotKeyPressEvent(cbedit, ih, (XEvent*)evt, cont);
+  if (*cont == False)
+    return;
+
   if (evt->state & ControlMask)   /* Ctrl */
   {
     KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
@@ -1018,8 +1023,6 @@ static void motListEditKeyPressEvent(Widget cbedit, Ihandle *ih, XKeyEvent *evt,
       return;
     }
   }
-
-  iupmotKeyPressEvent(cbedit, ih, (XEvent*)evt, cont);
 }
 
 static void motListDropDownPopupCallback(Widget w, Ihandle* ih, XtPointer call_data)

@@ -850,6 +850,11 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
 {
   Widget spinbox;
 
+  *cont = True;
+  iupmotKeyPressEvent(w, ih, (XEvent*)evt, cont);
+  if (*cont == False)
+    return;
+
   if (evt->state & ControlMask)   /* Ctrl */
   {
     KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
@@ -876,8 +881,6 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
       *cont = False; 
     }
   }
-
-  iupmotKeyPressEvent(w, ih, (XEvent*)evt, cont);
 }
 
 

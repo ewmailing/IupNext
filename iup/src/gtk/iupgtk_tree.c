@@ -1783,8 +1783,15 @@ static void gtkTreeSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
       return;
     else if (key[1] == 'C')
       is_ctrl = 1;
+
+    if (iupAttribGetInt(ih, "_IUPTREE_EXTENDSELECT")==2 && !is_ctrl)
+    {
+      iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", NULL);
+      gtkTreeCallMultiSelectionCb(ih);
+      return;
+    }
   }
-printf("SelectionChanged\n");
+
   cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
   if (cbSelec)
   {
@@ -1897,6 +1904,9 @@ static int gtkTreeConvertXYToPos(Ihandle* ih, int x, int y)
 
 static gboolean gtkTreeButtonEvent(GtkWidget *treeview, GdkEventButton *evt, Ihandle* ih)
 {
+  if (iupgtkButtonEvent(treeview, evt, ih) == TRUE)
+    return TRUE;
+
   if (evt->type == GDK_BUTTON_PRESS && evt->button == 3)  /* right single click */
   {
     IFni cbRightClick  = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
@@ -1931,14 +1941,25 @@ static gboolean gtkTreeButtonEvent(GtkWidget *treeview, GdkEventButton *evt, Iha
   {
     if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && (evt->state & GDK_SHIFT_MASK))
       gtkTreeCallMultiSelectionCb(ih); /* Multi Selection Callback */
+
+    if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && 
+        !(evt->state & GDK_SHIFT_MASK) && !(evt->state & GDK_CONTROL_MASK))
+    {
+      if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
+        iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", "2");
+    }
   }
   else if (evt->type == GDK_BUTTON_PRESS && evt->button == 1)  /* left single press */
   {
     iupAttribSetInt(ih, "_IUPTREE_DRAG_X", (int)evt->x);
     iupAttribSetInt(ih, "_IUPTREE_DRAG_Y", (int)evt->y);
+
+    if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && 
+        !(evt->state & GDK_SHIFT_MASK) && !(evt->state & GDK_CONTROL_MASK))
+      iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", "1");
   }
   
-  return iupgtkButtonEvent(treeview, evt, ih);
+  return FALSE;
 }
 
 static gboolean gtkTreeKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
@@ -1955,6 +1976,9 @@ static gboolean gtkTreeKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihan
 
 static gboolean gtkTreeKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
+  if (iupgtkKeyPressEvent(widget, evt, ih) == TRUE)
+    return TRUE;
+
   if (evt->keyval == GDK_F2)
   {
     gtkTreeSetRenameAttrib(ih, NULL);
@@ -1966,7 +1990,7 @@ static gboolean gtkTreeKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandl
     return TRUE;
   }
 
-  return iupgtkKeyPressEvent(widget, evt, ih);
+  return FALSE;
 }
 
 static void gtkTreeEnableDragDrop(Ihandle* ih)

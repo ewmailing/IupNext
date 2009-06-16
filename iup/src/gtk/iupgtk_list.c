@@ -853,6 +853,9 @@ static void gtkListEditMoveCursor(GtkWidget* entry, GtkMovementStep step, gint c
 
 static gboolean gtkListEditKeyPressEvent(GtkWidget* entry, GdkEventKey *evt, Ihandle *ih)
 {
+  if (iupgtkKeyPressEvent(entry, evt, ih) == TRUE)
+    return TRUE;
+
   if ((evt->keyval == GDK_Up || evt->keyval == GDK_KP_Up) ||
       (evt->keyval == GDK_Prior || evt->keyval == GDK_KP_Page_Up) ||
       (evt->keyval == GDK_Down || evt->keyval == GDK_KP_Down) ||
@@ -917,7 +920,7 @@ static gboolean gtkListEditKeyPressEvent(GtkWidget* entry, GdkEventKey *evt, Iha
     }
   }
 
-  return iupgtkKeyPressEvent(entry, evt, ih);
+  return FALSE;
 }
 
 static gboolean gtkListEditKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
@@ -1062,15 +1065,12 @@ static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih)
 
 static gboolean gtkListSimpleKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
-  (void)ih;
-  (void)widget;
-  if (evt->keyval == GDK_Return || evt->keyval == GDK_KP_Enter)
-  {
-    /* used to avoid the call to DBLCLICK_CB in the default processing */
-    iupgtkKeyPressEvent(widget, evt, ih);
+  if (iupgtkKeyPressEvent(widget, evt, ih) == TRUE)
     return TRUE;
-  }
-  return iupgtkKeyPressEvent(widget, evt, ih);
+
+  if (evt->keyval == GDK_Return || evt->keyval == GDK_KP_Enter)
+    return TRUE; /* used to avoid the call to DBLCLICK_CB in the default processing */
+  return FALSE;
 }
 
 static void gtkListRowActivated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, Ihandle* ih)

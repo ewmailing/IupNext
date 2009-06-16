@@ -1832,12 +1832,12 @@ static void winTreeExtendSelect(Ihandle* ih, int x, int y)
     winTreeSelectRange(ih, hItemFirstSel, hItem, 1);
     iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
 
-    winTreeCallMultiSelectionCb(ih);
+    iupAttribSetStr(ih, "_IUPTREE_LASTSELITEM", (char*)hItem);
     winTreeSetFocus(ih, hItem);
   }
 }
 
-static void winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
+static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
 {
   HTREEITEM hItemFocus;
   TVHITTESTINFO info;
@@ -1847,7 +1847,7 @@ static void winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
   hItem = (HTREEITEM)SendMessage(ih->handle, TVM_HITTEST, 0, (LPARAM)&info);
 
   if (!(info.flags & TVHT_ONITEM) || !hItem)
-    return;
+    return 0;
 
   if (GetKeyState(VK_CONTROL) & 0x8000) /* Control key is down */
   {
@@ -1858,7 +1858,7 @@ static void winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
     winTreeCallSelectionCb(ih, winTreeIsItemSelected(ih, hItem), hItem);
     winTreeSetFocus(ih, hItem);
 
-    return;
+    return 1;
   }
   else if (GetKeyState(VK_SHIFT) & 0x8000) /* Shift key is down */
   {
@@ -1871,7 +1871,7 @@ static void winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
 
       winTreeCallMultiSelectionCb(ih);
       winTreeSetFocus(ih, hItem);
-      return;
+      return 1;
     }
   }
 
@@ -1882,13 +1882,7 @@ static void winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
   iupAttribSetStr(ih, "_IUPTREE_FIRSTSELITEM", (char*)hItem);
   iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", "1");
 
-  winTreeSelectItem(ih, hItem, 1);
-  winTreeSetFocus(ih, hItem);
-
-  if (hItemFocus != hItem)
-    winTreeCallSelectionCb(ih, 0, hItemFocus);
-
-  winTreeCallSelectionCb(ih, 1, hItem);
+  return 0;
 }
 
 static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
@@ -1947,6 +1941,9 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   case WM_KEYDOWN:
   case WM_SYSKEYDOWN:
     {
+      if (iupwinBaseProc(ih, msg, wp, lp, result)==1)
+        return 1;
+
       if (wp == VK_RETURN)
       {
         HTREEITEM hItemFocus = winTreeGetFocus(ih);
@@ -2023,18 +2020,27 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
           /* normal processing will select the focus item */
         }
       }
-      break;
+
+      return 0;
     }
   case WM_LBUTTONDOWN:
+    if (iupwinButtonDown(ih, msg, wp, lp)==-1)
+    {
+      *result = 0;
+      return 1;
+    }
+
     if (ih->data->mark_mode==ITREE_MARK_MULTIPLE)
     {
       /* must set focus on left button down or the tree won't show its focus */
       SetFocus(ih->handle);
-      winTreeMouseMultiSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
-      *result = 0; /* abort the normal processing if we process multipe selection */
-      return 1;
+      if (winTreeMouseMultiSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp)))
+      {
+        *result = 0; /* abort the normal processing if we process multiple selection */
+        return 1;
+      }
     }
-    /* no break here */
+    break;
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
   case WM_LBUTTONDBLCLK:
@@ -2047,8 +2053,6 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     }
     break;
   case WM_MOUSEMOVE:
-    if (ih->data->show_dragdrop && iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
-      ;//SendMessage(ih->handle, WM_NOTIFY, 
     if (ih->data->show_dragdrop && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
       winTreeDrag(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
     else if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
@@ -2059,17 +2063,25 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   case WM_LBUTTONUP:
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
-    if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
-      iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", NULL);
-
-    if (ih->data->show_dragdrop && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
-      winTreeDrop(ih);
-
     if (iupwinButtonUp(ih, msg, wp, lp)==-1)
     {
       *result = 0;
       return 1;
     }
+
+    if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
+    {
+      iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", NULL);
+      if (iupAttribGet(ih, "_IUPTREE_LASTSELITEM"))
+      {
+        winTreeCallMultiSelectionCb(ih);
+        iupAttribSetStr(ih, "_IUPTREE_LASTSELITEM", NULL);
+      }
+    }
+
+    if (ih->data->show_dragdrop && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
+      winTreeDrop(ih);
+
     break;
   }
 
@@ -2091,14 +2103,10 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       }
     }
   }
-  else if (msg_info->code == TVN_SELCHANGING)
-  {
-    NMTREEVIEW* info = (NMTREEVIEW*)msg_info;
-    winTreeCallSelectionCb(ih, 0, info->itemOld.hItem);  /* node unselected */
-  }
   else if (msg_info->code == TVN_SELCHANGED)
   {
     NMTREEVIEW* info = (NMTREEVIEW*)msg_info;
+    winTreeCallSelectionCb(ih, 0, info->itemOld.hItem);  /* node unselected */
     winTreeCallSelectionCb(ih, 1, info->itemNew.hItem);  /* node selected */
   }
   else if(msg_info->code == TVN_BEGINLABELEDIT)
@@ -2444,8 +2452,4 @@ void iupdrvTreeInitClass(Iclass* ic)
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
-
-// TODO:
-// when setting the text of the item being edited, the text control should
-// be updated to reflect the new text as well
 

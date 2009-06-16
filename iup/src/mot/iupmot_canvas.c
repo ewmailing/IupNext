@@ -128,8 +128,10 @@ static void motCanvasInputCallback(Widget w, Ihandle *ih, XtPointer call_data)
   case ButtonRelease:
     {
       XButtonEvent *but_evt = (XButtonEvent*)evt;
-
-      iupmotButtonPressReleaseEvent(w, ih, evt, NULL);
+      Boolean cont = True;
+      iupmotButtonPressReleaseEvent(w, ih, evt, &cont);
+      if (cont == False)
+        return;
 
       if ((evt->type==ButtonPress) && (but_evt->button==Button4 || but_evt->button==Button5))
       {                                             

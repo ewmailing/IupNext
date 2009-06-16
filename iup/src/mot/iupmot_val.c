@@ -236,12 +236,14 @@ static void motValIncLineValue(Ihandle *ih, int dir)
 
 static void motValKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *cont)
 {
-  KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
+  KeySym motcode;
 
   *cont = True;
   iupmotKeyPressEvent(w, ih, (XEvent*)evt, cont);
   if (*cont == False)
     return;
+
+  motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
 
   /* add missing support for numeric keyboard */
   /* add missing support for left/right in vertical

@@ -484,15 +484,10 @@ void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, char* f, ...)
 
 int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
 {
-  //int count = IupGetInt(ih, "COUNT"); too slow
-  if (id>=0)// && id<count)
-  {
-    char attr[10];
-    sprintf(attr,"USERDATA%d",id);
-    IupSetAttribute(ih, attr, userdata);
-    return 1;
-  }
-  return 0;
+  char attr[10];
+  sprintf(attr,"USERDATA%d",id);
+  IupSetAttribute(ih, attr, userdata);
+  return IupGetAttribute(ih, attr)? 1: 0;
 }
 
 int IupTreeGetId(Ihandle* ih, void *userdata)

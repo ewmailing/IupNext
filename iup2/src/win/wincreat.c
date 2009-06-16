@@ -2,7 +2,7 @@
  * \brief Windows Driver Controls creation
  *
  * See Copyright Notice in iup.h
- * $Id: wincreat.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
+ * $Id: wincreat.c,v 1.2 2009-06-16 21:15:27 scuri Exp $
  */
 
 #include <stdio.h>    /* sprintf */
@@ -890,7 +890,6 @@ static void CreateList (Ihandle *n, int x, int y)
       (iupEnvCheck(n,IUP_VISIBLE) ? WS_VISIBLE : 0) |  CBS_NOINTEGRALHEIGHT |
       (haseditbox? CBS_AUTOHSCROLL: 0) |
       (haseditbox? (isdropdown? CBS_DROPDOWN: CBS_SIMPLE): CBS_DROPDOWNLIST) | 
-//      (iupCheck(n,"SORT")==YES? CBS_SORT : 0) |
       WS_TABSTOP | WS_CHILD | sbstyle,    /* window style */
       x,                   /* x-position */
       y,                   /* y-position */
@@ -909,7 +908,6 @@ static void CreateList (Ihandle *n, int x, int y)
       "iuplistbox",            /* window name */
       (iupCheck(n,IUP_VISIBLE) ? WS_VISIBLE : 0) | LBS_NOINTEGRALHEIGHT |
       (iupCheck(n, IUP_MULTIPLE)==YES ? LBS_EXTENDEDSEL : 0) |
-//      (iupCheck(n,"SORT")==YES? LBS_SORT : 0) |
       LBS_NOTIFY |
       WS_TABSTOP | WS_CHILD | sbstyle,  /* window style */
       x,                   /* x-position */

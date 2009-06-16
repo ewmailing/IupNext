@@ -594,7 +594,6 @@ void iupmotButtonPressReleaseEvent(Widget w, Ihandle* ih, XEvent* evt, Boolean* 
       *cont=False;
   }         
 
-  (void)cont;
   (void)w;
 }
 

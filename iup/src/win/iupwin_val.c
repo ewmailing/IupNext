@@ -204,6 +204,9 @@ static int winValProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
   case WM_KEYDOWN:
   case WM_SYSKEYDOWN:
     {
+      if (iupwinBaseProc(ih, msg, wp, lp, result)==1)
+        return 1;
+
       if (GetKeyState(VK_CONTROL) & 0x8000)  /* handle Ctrl+Arrows */
       {
         if (wp == VK_UP || wp == VK_LEFT)
@@ -219,6 +222,7 @@ static int winValProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
           return 1;
         }
       }
+      return 0;
     }
   }
 

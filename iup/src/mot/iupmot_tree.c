@@ -1905,9 +1905,28 @@ static void motTreeEditKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Bool
   (void)w;
 }
 
+static void motTreeScrollbarOffset(Widget sb_win, Position *x, Position *y)
+{
+  Widget sb_horiz, sb_vert;
+  XtVaGetValues(sb_win, XmNhorizontalScrollBar, &sb_horiz, NULL);
+  if (sb_horiz) 
+  {
+    int pos;
+    XtVaGetValues(sb_horiz, XmNvalue, &pos, NULL);
+    *x -= (Position)pos;
+  }
+  XtVaGetValues(sb_win, XmNverticalScrollBar, &sb_vert, NULL);
+  if (sb_vert) 
+  {
+    int pos;
+    XtVaGetValues(sb_vert, XmNvalue, &pos, NULL);
+    *y -= (Position)pos;
+  }
+}
+
 static void motTreeShowEditField(Ihandle* ih, Widget wItem)
 {
-  int num_args = 0, w_img = 21;
+  int num_args = 0, w_img = 0;
   Arg args[30];
   Position x, y;
   Dimension w, h;
@@ -1916,6 +1935,7 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
   XmString title;
   char* value;
   Pixel color;
+  Pixmap image = XmUNSPECIFIED_PIXMAP;
   XmFontList fontlist;
   Widget sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
 
@@ -1924,9 +1944,14 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
                        XmNwidth, &w, 
                        XmNheight, &h, 
                        XmNlabelString, &title,
+                       XmNsmallIconPixmap, &image, 
                        XmNforeground, &color,
                        XmNrenderTable, &fontlist,
                        NULL);
+
+  motTreeScrollbarOffset(sb_win, &x, &y);
+  iupdrvImageGetInfo((void*)image, &w_img, NULL, NULL);
+  w_img += 3; /* add some room for borders */
 
   iupmotSetArg(args, num_args, XmNx, x+w_img);      /* x-position */
   iupmotSetArg(args, num_args, XmNy, y);         /* y-position */
@@ -1978,6 +2003,8 @@ static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCal
   int is_ctrl = 0;
   (void)w;
   (void)nptr;
+
+printf("SelectionCallback(%d)\n", nptr->selected_item_count);
 
   if (ih->data->mark_mode == ITREE_MARK_MULTIPLE)
   {
@@ -2126,6 +2153,11 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
   if (iupAttribGet(ih, "_IUPTREE_EDITFIELD"))
     return;
 
+  *cont = True;
+  iupmotKeyPressEvent(w, ih, (XEvent*)evt, cont);
+  if (*cont == False)
+    return;
+
   motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
   if (motcode == XK_Tab || motcode == XK_KP_Tab)
   {
@@ -2207,8 +2239,6 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
         XtVaSetValues(wItemFocus, XmNvisualEmphasis, XmSELECTED, NULL);
     }
   }
-
-  iupmotKeyPressEvent(w, ih, (XEvent*)evt, cont);
 }
 
 static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean* cont)
@@ -2217,6 +2247,11 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
   (void)cont;
 
   if (iupAttribGet(ih, "_IUPTREE_EDITFIELD"))
+    return;
+
+  *cont = True;
+  iupmotButtonPressReleaseEvent(w, ih, (XEvent*)evt, cont);
+  if (*cont == False)
     return;
 
   if (evt->type==ButtonPress)
@@ -2254,8 +2289,6 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
         motTreeCallMultiSelectionCb(ih);
     }
   }
-
-  iupmotButtonPressReleaseEvent(w, ih, (XEvent*)evt, cont);
 }
 
 static void motTreeTransferProc(Widget drop_context, XtPointer client_data, Atom *seltype, Atom *type, XtPointer value, unsigned long *length, int format)

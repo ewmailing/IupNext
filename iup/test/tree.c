@@ -369,8 +369,8 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_14");
 //  IupSetAttribute(tree, "FGCOLOR", "255 0 0");
 
-  //IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
-  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
+  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
+  //IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   //IupSetAttribute(tree, "AUTODRAGDROP",   "YES");  /* Gtk Only */
 

@@ -149,7 +149,8 @@ static gboolean gtkCanvasButtonEvent(GtkWidget *widget, GdkEventButton *evt, Iha
     gtk_widget_grab_focus(ih->handle);
   }
 
-  iupgtkButtonEvent(widget, evt, ih);
+  if (iupgtkButtonEvent(widget, evt, ih) == TRUE)
+    return TRUE;
 
   if ((evt->type == GDK_BUTTON_PRESS) && (evt->button==4 || evt->button==5))
   {                                             
