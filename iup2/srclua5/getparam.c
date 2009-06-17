@@ -2,7 +2,7 @@
  * \brief IupGetParam bindig to Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: getparam.c,v 1.1 2008-10-17 06:21:23 scuri Exp $
+ * $Id: getparam.c,v 1.2 2009-06-17 20:04:13 scuri Exp $
  */
  
 #include <stdlib.h>
@@ -27,21 +27,23 @@ typedef struct _getparam_data
 
 static int param_action(Ihandle* dialog, int param_index, void* user_data)
 {
-  int ret = 1;
   getparam_data* gp = (getparam_data*)user_data;
   if (gp->has_func)
   {
+    int ret;
     lua_State *L = gp->L;
     lua_getref(L, gp->func_ref);
     iuplua_pushihandle(L, dialog);
     lua_pushnumber(L, param_index);
-    if (iuplua_call_raw(L, 2, 1) != 0)    /* 2 args, 1 return */
-    {
-      ret = (int)lua_tonumber(L,-1);
-      lua_pop(L, 1);
-    }
+    ret = iuplua_call_raw(L, 2, 1);    /* 2 args, 1 return */
+    if (ret || lua_isnil(L, -1))
+      return 1; /* accept the change by default */
+
+    ret = (int)lua_tonumber(L,-1);
+    lua_pop(L, 1);
+    return ret;
   }
-  return ret;
+  return 1; /* accept the change by default */
 }
 
 static int GetParam(lua_State *L)

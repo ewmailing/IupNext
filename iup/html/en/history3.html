@@ -38,7 +38,7 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 </p>
 
-<h3>CVS (16/Jun/2009)</h3>
+<h3>CVS (17/Jun/2009)</h3>
 
 <h4>General</h4>
 
@@ -85,7 +85,7 @@ default value of the Windows attribute COMPOSITED is back to NO to improve
 	where replaced by <strong>IupConvertXYToPos</strong>, that also works for
 	<strong>IupTree</strong>.</li>
 	<li><span class="style2">Changed:</span> added support for WHEEL_CB in GTK 
-	for IupCanvas.</li>
+	for <strong>IupCanvas</strong>.</li>
 	<li><span class="style1">Fixed:</span> IupLua initialization when retrieving 
 	the argc/argv arguments for <strong>IupOpen</strong>. (Thanks to Ross 
 	Berteig)</li>
@@ -101,6 +101,8 @@ default value of the Windows attribute COMPOSITED is back to NO to improve
 	less than NUMCOL_VISIBLE/NUMLIN_VISIBLE. Also fixed when NUMCOL/NUMLIN were 
 	0 and changed to 1, and when removed 1. CURSOR attribute when RESIZEMATRIX=Yes. (Thanks to 
 	Jeremy Cowgar)</li>
+	<li><span class="style1">Fixed:</span> action callback return value in Lua 
+	for the <strong>IupGetParam</strong> dialog. (Thanks to Zhiwei)</li>
 
 </ul>
 
