@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<h2>WHEEL_CB [Windows and Motif only]</h2>
+<h2>WHEEL_CB</h2>
 <p>Action generated when the mouse wheel is 
   rotated. If this callback is not defined the wheel will automatically scroll the canvas in the vertical 
   direction by some lines, the SCROLL_CB callback if defined will be called with the IUP_SBDRAGV operation.</p>
@@ -35,9 +35,8 @@ iup_isbutton5(status)<br>
 </p>
 </blockquote>
 <h3>Notes</h3>
-<p>In Motif delta is always 1or -1. In Windows is some situations delta can reach the value of two. In the future with 
+<p>In Motif and GTK delta is always 1 or -1. In Windows is some situations delta can reach the value of two. In the future with 
   more precise wheels this increment can be changed.</p>
-<p>In GTK the wheel events are always translated into scrollbars events.</p>
 <p>The wheel will only work if the focus is at the canvas.</p>
 <h3>Affects</h3>
 <p><a href="../elem/iupcanvas.html">IupCanvas</a>,

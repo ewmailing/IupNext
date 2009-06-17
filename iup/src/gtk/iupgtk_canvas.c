@@ -141,6 +141,47 @@ static gboolean gtkCanvasVChangeValue(GtkRange *range, GtkScrollType scroll, dou
   return FALSE;
 }
 
+static gboolean gtkCanvasScrollEvent(GtkWidget *widget, GdkEventScroll *evt, Ihandle *ih)
+{    
+  IFnfiis wcb = (IFnfiis)IupGetCallback(ih, "WHEEL_CB");
+  if (wcb)
+  {
+    int delta = evt->direction==GDK_SCROLL_UP||evt->direction==GDK_SCROLL_LEFT? 1: -1;
+    char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+    int button = evt->direction==GDK_SCROLL_UP||evt->direction==GDK_SCROLL_LEFT? 4: 5;
+    iupgtkButtonKeySetStatus(evt->state, button, status, 0);
+
+    wcb(ih, (float)delta, (int)evt->x, (int)evt->y, status);
+  }
+  else
+  {
+    IFniff scb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
+    int delta = evt->direction==GDK_SCROLL_UP||evt->direction==GDK_SCROLL_LEFT? 1: -1;
+
+    if (evt->direction==GDK_SCROLL_UP||GDK_SCROLL_DOWN)
+    {
+      float posy = ih->data->posy;
+      posy -= delta*iupAttribGetFloat(ih, "DY")/10.0f;
+      IupSetfAttribute(ih, "POSY", "%g", posy);
+    }
+    else
+    {
+      float posx = ih->data->posx;
+      posx -= delta*iupAttribGetFloat(ih, "DX")/10.0f;
+      IupSetfAttribute(ih, "POSX", "%g", posx);
+    }
+
+    if (scb)
+    {
+      int scroll_gtk2iup[4] = {IUP_SBUP, IUP_SBDN, IUP_SBLEFT, IUP_SBRIGHT};
+      int op = scroll_gtk2iup[evt->direction];
+      scb(ih,op,ih->data->posx,ih->data->posy);
+    }
+  }
+  (void)widget;
+  return TRUE;
+}
+
 static gboolean gtkCanvasButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 {
   if (evt->type == GDK_BUTTON_PRESS)
@@ -149,34 +190,7 @@ static gboolean gtkCanvasButtonEvent(GtkWidget *widget, GdkEventButton *evt, Iha
     gtk_widget_grab_focus(ih->handle);
   }
 
-  if (iupgtkButtonEvent(widget, evt, ih) == TRUE)
-    return TRUE;
-
-  if ((evt->type == GDK_BUTTON_PRESS) && (evt->button==4 || evt->button==5))
-  {                                             
-    IFnfiis wcb = (IFnfiis)IupGetCallback(ih, "WHEEL_CB");
-    if (wcb)
-    {
-      int delta = evt->button==4? 1: -1;
-      char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
-      iupgtkButtonKeySetStatus(evt->state, evt->button, status, 0);
-
-      wcb(ih, (float)delta, (int)evt->x, (int)evt->y, status);
-    }
-    else
-    {
-      IFniff scb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
-      float posy = ih->data->posy;
-      int delta = evt->button==4? 1: -1;
-      int op = evt->button==4? IUP_SBUP: IUP_SBDN;
-      posy -= delta*iupAttribGetFloat(ih, "DY")/10.0f;
-      IupSetfAttribute(ih, "POSY", "%g", posy);
-      if (scb)
-        scb(ih,op,ih->data->posx,ih->data->posy);
-    }
-  }
-
-  return FALSE;
+  return iupgtkButtonEvent(widget, evt, ih);
 }
 
 static void gtkCanvasExposeChild(GtkWidget *child, gpointer client_data)
@@ -540,6 +554,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkCanvasButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkCanvasButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event",G_CALLBACK(iupgtkMotionNotifyEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "scroll-event",G_CALLBACK(gtkCanvasScrollEvent), ih);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
   g_signal_connect(G_OBJECT(gtk_scrolled_window_get_hscrollbar(scrolled_window)), "change-value",G_CALLBACK(gtkCanvasHChangeValue), ih);
