@@ -5,7 +5,7 @@
 #-------------------------------------------------------------------------#
 
 # Tecmake Version
-VERSION = 3.17
+VERSION = 3.19
 
 # First target 
 .PHONY: build
@@ -48,6 +48,9 @@ ifeq ($(TEC_SYSARCH), i686)
 endif
 ifeq ($(TEC_SYSARCH), i386)
 	TEC_SYSARCH:=x86
+endif
+ifeq ($(TEC_SYSARCH), x86_64)
+	TEC_SYSARCH:=x64
 endif
 
 # Compose
@@ -176,14 +179,14 @@ endif
 #---------------------------------#
 # Build Tools
 
-CC       := gcc
-CPPC     := g++
-FF       := g77
-RANLIB   := ranlib
-AR       := ar
-DEBUGGER := gdb
-RCC      := windres 
-LD       := gcc
+CC       := $(TEC_TOOLCHAIN)gcc
+CPPC     := $(TEC_TOOLCHAIN)g++
+FF       := $(TEC_TOOLCHAIN)g77
+RANLIB   := $(TEC_TOOLCHAIN)ranlib
+AR       := $(TEC_TOOLCHAIN)ar
+DEBUGGER := $(TEC_TOOLCHAIN)gdb
+RCC      := $(TEC_TOOLCHAIN)windres 
+LD       := $(TEC_TOOLCHAIN)gcc
 
 ifeq ($(TEC_UNAME), gcc2)
   ifdef USE_GCC_2
@@ -287,7 +290,13 @@ ifdef BUILD_64
   endif
 endif
 
-TEC_UNAME_DIR := $(TEC_UNAME)
+ifneq ($(findstring gcc, $(TEC_UNAME)), )
+  ifeq ($(MAKETYPE), APP)
+    TEC_UNAME_DIR ?= $(TEC_SYSNAME)
+  endif
+endif
+
+TEC_UNAME_DIR ?= $(TEC_UNAME)
 ifdef DBG
   ifdef DBG_DIR
     TEC_UNAME_DIR := $(TEC_UNAME_DIR)d
@@ -776,9 +785,43 @@ ifdef USE_MOTIF
 endif
 
 ifdef USE_GTK
+#  ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+#    STDINCS += /Library/Frameworks/Gtk.framework/Headers
+#    STDINCS += /Library/Frameworks/GLib.framework/Headers
+#    STDINCS += /Library/Frameworks/Cairo.framework/Headers
+#    LFLAGS += -framework Gtk
+#  else
+    ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+      GTK_BASE := /sw
+      LDIR += /sw/lib
+      LIBS += freetype
+    else
+      GTK_BASE := /usr
+    endif
+    override USE_X11 = Yes
+    LIBS += gtk-x11-2.0 gdk-x11-2.0 gdk_pixbuf-2.0 pango-1.0 pangox-1.0 gobject-2.0 gmodule-2.0 glib-2.0
+    STDINCS += $(GTK_BASE)/include/atk-1.0 $(GTK_BASE)/include/gtk-2.0 $(GTK_BASE)/include/cairo $(GTK_BASE)/include/pango-1.0 $(GTK_BASE)/include/glib-2.0
+    ifeq ($(TEC_SYSARCH), x64)
+      STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
+    else
+    ifeq ($(TEC_SYSARCH), ia64)
+      STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
+    else
+      STDINCS += $(GTK_BASE)/lib/glib-2.0/include $(GTK_BASE)/lib/gtk-2.0/include
+    endif
+    endif
+    ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
+      STDINCS += /lib/X11R6/include/gtk-2.0  
+    endif
+#  endif
+endif
+
+ifdef USE_QT
   override USE_X11 = Yes
-  LIBS += gtk-x11-2.0 gdk-x11-2.0 gdk_pixbuf-2.0 pango-1.0 pangox-1.0 gobject-2.0 gmodule-2.0 glib-2.0
-  STDINCS += /usr/include/atk-1.0 /usr/include/gtk-2.0 /usr/include/cairo /usr/include/pango-1.0 /usr/include/glib-2.0 /usr/lib/glib-2.0/include /usr/lib/gtk-2.0/include
+  LIBS += QtGui QtCore
+  QT_BASE_INC := /usr/include/qt4
+  STDINCS += $(QT_BASE_INC) $(QT_BASE_INC)/QtCore $(QT_BASE_INC)/QtGui
+  STDDEFS += -DQT_DLL -DQT_QT3SUPPORT_LIB -DQT3_SUPPORT -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT
 endif
 
 ifdef USE_X11
@@ -798,10 +841,6 @@ else
     STDFLAGS += -mno-cygwin
   endif
   
-  ifeq ($(MAKETYPE), APP)
-    TARGETDIR := $(TARGETROOT)/$(TEC_SYSNAME)
-  endif
-
   ifdef USE_GLUT
     LIBS += glut32
   endif 
@@ -814,8 +853,9 @@ else
   
   ifdef USE_GTK
     LIBS += gtk-win32-2.0 gdk-win32-2.0 gdk_pixbuf-2.0 pango-1.0 pangowin32-1.0 gobject-2.0 gmodule-2.0 glib-2.0
-    LDIR += $(GTK)/lib
-    STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0 $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
+    #LDIR += $(GTK)/lib
+    GTK_INC = /usr
+    STDINCS += $(GTK_INC)/include/atk-1.0 $(GTK_INC)/include/gtk-2.0 $(GTK_INC)/include/cairo $(GTK_INC)/include/pango-1.0 $(GTK_INC)/include/glib-2.0 $(GTK_INC)/lib/glib-2.0/include $(GTK_INC)/lib/gtk-2.0/include
   endif
   
   APPTYPE ?= windows
@@ -1052,14 +1092,14 @@ depend: $(DEPEND)
 $(DEPEND): $(MAKENAME)
   ifdef SRC
 	  @echo "" > $(DEPEND)
-	  @which gcc 2> /dev/null 1>&2 ;\
+	  @which $(CPPC) 2> /dev/null 1>&2 ;\
 	  if [ $$? -eq 0 ]; then \
 	    echo "Building dependencies... (can be slow)" ;\
-	    g++ $(INCLUDES) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
+	    $(CPPC) $(INCLUDES) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
 	    sed -e '1,$$s/^\([^ ]\)/$$(OBJDIR)\/\1/' > $(DEPEND) ;\
 	  else \
 	    echo "" ;\
-	    echo "g++ not found. Dependencies can not be built." ;\
+	    echo "$(CPPC) not found. Dependencies can not be built." ;\
 	    echo "Must set USE_NODEPEND=Yes." ;\
 	    echo "" ;\
 	    exit 1 ;\

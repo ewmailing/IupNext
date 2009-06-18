@@ -20,7 +20,7 @@ function ctrl.append(handle, elem)
 end
 
 function ctrl.createElement(class, arg)
-  local n = table.getn(arg)
+  local n = #arg
   for i=1,n do
     if type(arg[i]) == "table" then 
       itemarg = {}

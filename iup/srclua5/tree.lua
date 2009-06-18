@@ -17,22 +17,41 @@ local ctrl = {
     rightclick_cb = "n",
     dragdrop_cb = "nnnn",
   },
-  include = "iupcontrols.h",
   extrafuncs = 1,
 }
 
+local function TreeSetAttributeHandle(handle, name, value)
+   if iupGetClass(value) == "iup handle" then value = ihandle_setname(value) end
+   SetAttribute(handle, name, value)
+end
+
+function TreeSetNodeAttrib(handle, node, id)
+  if node.color then SetAttribute(handle, "COLOR"..id, node.color) end
+  if node.state then SetAttribute(handle, "STATE"..id, node.state) end
+  if node.titlefont then SetAttribute(handle, "TITLEFONT"..id, node.titlefont) end
+  if node.marked then SetAttribute(handle, "MARKED"..id, node.marked) end
+  if node.image then TreeSetAttributeHandle(handle, "IMAGE"..id, node.image) end
+  if node.imageexpanded then TreeSetAttributeHandle(handle, "IMAGEEXPANDED"..id, node.imageexpanded) end
+  if node.userid then TreeSetUserId(handle, id, node.userid) end
+end
+
 function TreeSetValueRec(handle, t, id)
   if t == nil then return end
-  local cont = table.getn(t)
+  local cont = #t
   while cont >= 0 do
-    if type (t[cont]) == "table" then
-      if t[cont].branchname ~= nil then
-        SetAttribute(handle, "ADDBRANCH"..id, t[cont].branchname)
-        TreeSetValueRec(handle, t[cont], id+1)
+    local node = t[cont]
+    if type(node) == "table" then
+      if node.branchname then
+        SetAttribute(handle, "ADDBRANCH"..id, node.branchname)
+        TreeSetNodeAttrib(handle, node, id+1)
+        TreeSetValueRec(handle, node, id+1)
+      elseif node.leafname then
+        SetAttribute(handle, "ADDLEAF"..id, node.leafname)
+        TreeSetNodeAttrib(handle, node, id+1)
       end
     else
-      if t[cont] then
-        SetAttribute(handle, "ADDLEAF"..id, t[cont])
+      if node then
+        SetAttribute(handle, "ADDLEAF"..id, node)
       end
     end
     cont = cont - 1
@@ -40,7 +59,7 @@ function TreeSetValueRec(handle, t, id)
 end
 
 function TreeSetValue(handle, t)
-  if t.branchname ~= nil then
+  if t.branchname then
     SetAttribute(handle, "NAME", t.branchname)
   end
   TreeSetValueRec(handle, t, 0)

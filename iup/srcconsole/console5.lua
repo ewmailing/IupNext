@@ -7,7 +7,7 @@ iup.console = {}
 function iup.console.printtable(t)
   local n,v = next(t, nil)
   print("--printtable Start--")
-  while n ~= nil do
+  while n do
     print(tostring(n).."="..tostring(v))
     n,v = next(t, n)
   end
@@ -60,7 +60,7 @@ function iup.console.butSaveFile:action()
     iup.console.butSaveasFile:action()
   else
     newfile = io.open(iup.console.lastfilename, "w+")
-    if (newfile ~= nil) then
+    if (newfile) then
       newfile:write(iup.console.mlCode.value)
       newfile:close()
     else
@@ -82,7 +82,7 @@ function iup.console.butSaveasFile:action()
       error ("Cannot Save file "..filename)
     end
     local newfile=io.open(iup.console.lastfilename, "w+")
-    if (newfile ~= nil) then
+    if (newfile) then
       newfile:write(iup.console.mlCode.value)
       newfile:close(newfile)
     else

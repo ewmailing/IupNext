@@ -5,7 +5,7 @@
 #-------------------------------------------------------------------------#
 
 # Tecmake Version
-VERSION = 3.18
+VERSION = 3.19
 
 # First target 
 .PHONY: build
@@ -48,6 +48,9 @@ ifeq ($(TEC_SYSARCH), i686)
 endif
 ifeq ($(TEC_SYSARCH), i386)
 	TEC_SYSARCH:=x86
+endif
+ifeq ($(TEC_SYSARCH), x86_64)
+	TEC_SYSARCH:=x64
 endif
 
 # Compose
@@ -287,7 +290,13 @@ ifdef BUILD_64
   endif
 endif
 
-TEC_UNAME_DIR := $(TEC_UNAME)
+ifneq ($(findstring gcc, $(TEC_UNAME)), )
+  ifeq ($(MAKETYPE), APP)
+    TEC_UNAME_DIR ?= $(TEC_SYSNAME)
+  endif
+endif
+
+TEC_UNAME_DIR ?= $(TEC_UNAME)
 ifdef DBG
   ifdef DBG_DIR
     TEC_UNAME_DIR := $(TEC_UNAME_DIR)d
@@ -832,10 +841,6 @@ else
     STDFLAGS += -mno-cygwin
   endif
   
-  ifeq ($(MAKETYPE), APP)
-    TARGETDIR := $(TARGETROOT)/$(TEC_SYSNAME)
-  endif
-
   ifdef USE_GLUT
     LIBS += glut32
   endif 

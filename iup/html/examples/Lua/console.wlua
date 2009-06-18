@@ -6,7 +6,7 @@ iupluacmd = {}
 function iupluacmd.printtable(t)
   local n,v = next(t, nil)
   print("--printtable Start--")
-  while n ~= nil do
+  while n do
     print(tostring(n).."="..tostring(v))
     n,v = next(t, n)
   end
@@ -54,7 +54,7 @@ iupluacmd.butSaveFile.action = function()
       iupluacmd.butSaveasFile:action() 
    else
       newfile = io.open(iupluacmd.lastfilename, "w+")
-      if (newfile ~= nil) then
+      if (newfile) then
          newfile:write(iupluacmd.mlCode.value)
          newfile:close() 
       else
@@ -76,7 +76,7 @@ iupluacmd.butSaveasFile.action = function()
          error ("Cannot Save file "..filename)
       end
       local newfile=io.open(iupluacmd.lastfilename, "w+")
-      if (newfile ~= nil) then
+      if (newfile) then
          newfile:write(iupluacmd.mlCode.value)
          newfile:close(newfile)
       else

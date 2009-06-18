@@ -95,10 +95,10 @@ local ihandle_settable = function(handle, index, value)
       object[index] = value -- store also in Lua
     elseif iupGetClass(value) == "iup handle" then -- if a iup handle
       local name = ihandle_setname(value)
-      StoreAttribute(handle, INDEX, name)
+      SetAttribute(handle, INDEX, name)
       object[index] = nil -- if there was something in Lua remove it
     elseif tv == "string" or tv == "number" or tv == "nil" then -- if a common value
-      StoreAttribute(handle, INDEX, value)
+      SetAttribute(handle, INDEX, value)
       object[index] = nil -- if there was something in Lua remove it
     else
       object[index] = value -- store also in Lua
@@ -217,7 +217,7 @@ BOX = {
 
 function BOX.setAttributes(object, arg)
   local handle = rawget(object, "handle")
-  local n = table.getn(arg)
+  local n = #arg
   for i = 1, n do
     if iupGetClass(arg[i]) == "iup handle" then 
       Append(handle, arg[i]) 

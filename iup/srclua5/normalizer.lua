@@ -11,7 +11,7 @@ local ctrl = {
 
 function ctrl.setAttributes(object, arg)
   local handle = rawget(object, "handle")
-  local n = table.getn(arg)
+  local n = #arg
   for i = 1, n do
     if iupGetClass(arg[i]) == "iup handle" then 
       object.addcontrol = arg[i]

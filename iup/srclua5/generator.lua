@@ -107,7 +107,7 @@ function write_callbacks(o, c)
       local max = string.len(s)
       aux.n = 0
       io.write("static ")
-      if v.ret ~= nil then
+      if v.ret then
          if v.ret == "s" then
             io.write("char * ")
          end
@@ -136,7 +136,7 @@ function write_callbacks(o, c)
          end
          aux.n = aux.n + 1
       end)
-      if v.ret ~= nil and v.ret == "s" then
+      if v.ret and v.ret == "s" then
         io.write("\n  return iuplua_call_rs(L, " .. max .. ");")
       else   
         io.write("\n  return iuplua_call(L, " .. max .. ");")
