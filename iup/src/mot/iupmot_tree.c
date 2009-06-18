@@ -894,7 +894,7 @@ static void motTreeAddRootNode(Ihandle* ih)
   iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)wRootItem);
 
   /* Set the default VALUE */
-  XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
+  XmProcessTraversal(wRootItem, XmTRAVERSE_CURRENT);
 }
 
 /*****************************************************************************/
