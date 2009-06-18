@@ -54,7 +54,7 @@ wb_usr.tree =
         },
         { link= "", name= {en= "" } },
         {
-          name= {nl= "Copyright/License"},
+          name= {en= "Copyright/License"},
           link= "copyright.html"
         },
         {
@@ -103,7 +103,7 @@ wb_usr.tree =
           link= "to_do.html"
         },
         {
-          name= {nl= "Comparing"},
+          name= {en= "Comparing"},
           link= "toolkits.html"
         },
         {
@@ -122,7 +122,7 @@ wb_usr.tree =
           }
         },
         {
-          name= {nl= "Screenshots"},
+          name= {en= "Screenshots"},
           link= "screenshots.html"
         }
       }
@@ -141,15 +141,15 @@ wb_usr.tree =
           link= "guide.html#apl"
         },
         {
-          name= {nl= "Building The Library"},
+          name= {en= "Building The Library"},
           link= "guide.html#buildlib"
         },
         {
-          name= {nl= "Using IUP in C++"},
+          name= {en= "Using IUP in C++"},
           link= "guide.html#cpp"
         },
         {
-          name= {nl= "Contributions"},
+          name= {en= "Contributions"},
           link= "guide.html#contrib"
         },
         {
@@ -200,7 +200,7 @@ wb_usr.tree =
           folder=
           {
             {
-              name= {nl= "Results"},
+              name= {en= "Results"},
               link= "sample_results.html"
             },
             {
@@ -214,6 +214,52 @@ wb_usr.tree =
             {
               name= {nl= "Children BGCOLOR"},
               link= "sample_results_bgcolor_indiv.html"
+            },
+          }
+        },
+        {
+          name= {en= "Basic IupLua"},
+          link= "basic/index.html",
+          folder=
+          {
+            {
+              name= {en= "Simple Output"},
+              link= "basic/index.html#Simple_Output"
+            },
+            {
+              name= {en= "Simple Input"},
+              link= "basic/index.html#Simple_Input"
+            },
+            {
+              name= {en= "Dialogs"},
+              link= "basic/index.html#Dialogs",
+              folder=
+              {
+                {
+                  name= {en= "Layouts"},
+                  link= "basic/index.html#Dialogs"
+                },
+                {
+                  name= {en= "Timers and Idle"},
+                  link= "basic/index.html#Timers"
+                },
+                {
+                  name= {en= "Lists"},
+                  link= "basic/index.html#Lists"
+                },
+                {
+                  name= {en= "Trees"},
+                  link= "basic/index.html#Trees"
+                },
+                {
+                  name= {en= "Menus"},
+                  link= "basic/index.html#Menus"
+                },
+                {
+                  name= {en= "Plotting Data"},
+                  link= "basic/index.html#Plott"
+                },
+              }
             },
           }
         }
