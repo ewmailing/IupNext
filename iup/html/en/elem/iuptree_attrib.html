@@ -5,9 +5,6 @@
 <title>IupTree Attributes</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
 <style type="text/css">
-.style1 {
-	color: #FF0000;
-}
 .style3 {
 	color: #000000;
 }
@@ -43,7 +40,8 @@ tree. Default: &quot;255 255 255&quot; (but it is system dependent).</p>
 control. Default: YES. (since 3.0)</p>
 
   
-<p><strong>COUNT</strong> (read only) (<font size="3">non inheritable</font>): returns the total number of items in the 
+<p><strong>COUNT</strong> (read only) (<font size="3">non inheritable</font>): returns the total number of 
+nodes in the 
 tree. (since 3.0)</p>
 
   
@@ -81,16 +79,14 @@ layout use smaller values.</p>
 <p><strong>SHOWDRAGDROP</strong> (creation only): Enables the drag and drop of 
 nodes, and enables the <strong>DRAGDROP_CB</strong> callback. Default:
   &quot;NO&quot;. Works only if MARKMODE=SINGLE.</p>
-<p>XXXXXX</p>
 
-<p class="style1"><strong>SPACING</strong>: internal padding for each item. Notice that 
-vertically the distance between each item will be actually 2x the spacing. It 
-also affects the horizontal margin of the item. In Windows, the text is aligned 
-at the top left of the item always. Valid only when DROPDOWN=NO. (since 3.0)</p>
+<p><strong>SPACING</strong>: vertical internal padding for each node. Notice that the distance between each 
+node will be actually 2x the spacing. (since 3.0)</p>
 
   
-<p class="style1"><strong>TOPITEM</strong> (write-only): position the given item at the top of 
-the list or make it visible. Valid only when DROPDOWN=NO. (since 3.0)</p>
+<p><strong>TOPITEM</strong> (write-only): position the given node identifier at the top of 
+the tree or near to make it visible. If any parent node is collapsed then they 
+are automatically expanded. (since 3.0)</p>
 
   
   

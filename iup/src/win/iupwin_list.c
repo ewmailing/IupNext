@@ -368,9 +368,10 @@ static int winListSetSpacingAttrib(Ihandle* ih, const char* value)
     iupdrvFontGetCharSize(ih, NULL, &height);
     height += 2*ih->data->spacing;
     SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), 0, height);
+    return 0;
   }
-
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int winListSetPaddingAttrib(Ihandle* ih, const char* value)
@@ -384,8 +385,10 @@ static int winListSetPaddingAttrib(Ihandle* ih, const char* value)
   {
     HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_SETMARGINS, EC_LEFTMARGIN|EC_RIGHTMARGIN, MAKELPARAM(ih->data->horiz_padding, ih->data->horiz_padding));
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int winListSetFilterAttrib(Ihandle *ih, const char *value)

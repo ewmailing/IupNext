@@ -96,7 +96,7 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
   unsigned char state;
 
   iupmotSetArg(args, num_args,  XmNentryParent, wParent);
-  iupmotSetArg(args, num_args, XmNmarginHeight, 0);
+  iupmotSetArg(args, num_args, XmNmarginHeight, ih->data->spacing);
   iupmotSetArg(args, num_args,  XmNmarginWidth, 0);
   iupmotSetArg(args, num_args,     XmNviewType, XmSMALL_ICON);
   iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
@@ -799,7 +799,7 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
   iupmotSetArg(args, num_args,       XmNuserData, itemData);
   iupmotSetArg(args, num_args,   XmNforeground, fgcolor);
   iupmotSetArg(args, num_args,   XmNbackground, bgcolor);
-  iupmotSetArg(args, num_args, XmNmarginHeight, 0);
+  iupmotSetArg(args, num_args, XmNmarginHeight, ih->data->spacing);
   iupmotSetArg(args, num_args,  XmNmarginWidth, 0);
   iupmotSetArg(args, num_args,     XmNviewType, XmSMALL_ICON);
   iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
@@ -871,7 +871,7 @@ static void motTreeAddRootNode(Ihandle* ih)
   iupmotSetArg(args, num_args,   XmNforeground, fgcolor);
   iupmotSetArg(args, num_args,   XmNbackground, bgcolor);
   iupmotSetArg(args, num_args, XmNoutlineState, XmEXPANDED);
-  iupmotSetArg(args, num_args, XmNmarginHeight, 0);
+  iupmotSetArg(args, num_args, XmNmarginHeight, ih->data->spacing);
   iupmotSetArg(args, num_args,  XmNmarginWidth, 0);
   iupmotSetArg(args, num_args,     XmNviewType, XmSMALL_ICON);
   iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
@@ -1632,6 +1632,53 @@ static int motTreeSetIndentationAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int motTreeSetTopItemAttrib(Ihandle* ih, const char* value)
+{
+  Widget wItem = motTreeFindNodeFromString(ih, value);
+  Widget sb_win;
+  Widget wItemParent;
+
+  if (!wItem)
+    return 0;
+
+  /* expand all parents */
+  XtVaGetValues(wItem, XmNentryParent, &wItemParent, NULL);
+  while(wItemParent)
+  {
+    XtVaSetValues(wItemParent, XmNoutlineState, XmEXPANDED, NULL);
+    XtVaGetValues(wItemParent, XmNentryParent, &wItemParent, NULL);
+  }
+
+  sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
+  XmScrollVisible(sb_win, wItem, 0, 0);
+
+  return 0;
+}
+
+static int motTreeSpacingFunc(Ihandle* ih, Widget wItem, void *data)
+{
+  XtVaSetValues(wItem, XmNmarginHeight, ih->data->spacing, NULL);
+  (void)data;
+  return 1;
+}
+
+static int motTreeSetSpacingAttrib(Ihandle* ih, const char* value)
+{
+  if (!iupStrToInt(value, &ih->data->spacing))
+    ih->data->spacing = 1;
+
+  if (ih->data->spacing < 1)
+    ih->data->spacing = 1;
+
+  if (ih->handle)
+  {
+    motTreeForEach(ih, NULL, (motTreeNodeFunc)motTreeSpacingFunc, 0);
+    return 0;
+  }
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
+}
+
 static int motTreeSetExpandAllAttrib(Ihandle* ih, const char* value)
 {
   Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
@@ -1957,7 +2004,7 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
   iupmotSetArg(args, num_args, XmNy, y);         /* y-position */
   iupmotSetArg(args, num_args, XmNwidth, w-w_img);  /* default width to avoid 0 */
   iupmotSetArg(args, num_args, XmNheight, h);    /* default height to avoid 0 */
-  iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* default padding */
+  iupmotSetArg(args, num_args, XmNmarginHeight, ih->data->spacing);  /* default padding */
   iupmotSetArg(args, num_args, XmNmarginWidth, 0);
   iupmotSetArg(args, num_args, XmNforeground, color);
   iupmotSetArg(args, num_args, XmNrenderTable, fontlist);
@@ -2690,6 +2737,8 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "EXPANDALL",  NULL, motTreeSetExpandAllAttrib,  NULL, NULL, IUPAF_WRITEONLY||IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "INDENTATION",  motTreeGetIndentationAttrib, motTreeSetIndentationAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COUNT", motTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPACING", iupTreeGetSpacingAttrib, motTreeSetSpacingAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TOPITEM", NULL, motTreeSetTopItemAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - IMAGES */
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, motTreeSetImageAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

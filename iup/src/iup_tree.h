@@ -27,13 +27,16 @@ void iupTreeUpdateImages(Ihandle *ih);
 void iupdrvTreeAddNode(Ihandle* ih, const char* id_string, int kind, const char* title, int add);
 void iupdrvTreeUpdateMarkMode(Ihandle *ih);
 
+char* iupTreeGetSpacingAttrib(Ihandle* ih);
+
 /* Structure of the tree */
 struct _IcontrolData
 {
   int mark_mode,
       add_expanded,
       show_dragdrop,
-      show_rename;
+      show_rename,
+      spacing;
 
   void* def_image_leaf;       /* Default image leaf */
   void* def_image_collapsed;  /* Default image collapsed */

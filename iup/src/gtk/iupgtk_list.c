@@ -457,9 +457,10 @@ static int gtkListSetSpacingAttrib(Ihandle* ih, const char* value)
     g_object_set(G_OBJECT(renderer), "xpad", ih->data->spacing, 
                                      "ypad", ih->data->spacing, 
                                      NULL);
+    return 0;
   }
-
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int gtkListSetPaddingAttrib(Ihandle* ih, const char* value)
@@ -478,8 +479,10 @@ static int gtkListSetPaddingAttrib(Ihandle* ih, const char* value)
 #if GTK_CHECK_VERSION(2, 10, 0)
     gtk_entry_set_inner_border(entry, &border);
 #endif
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int gtkListSetSelectionAttrib(Ihandle* ih, const char* value)

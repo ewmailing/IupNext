@@ -200,6 +200,13 @@ void iupTreeUpdateImages(Ihandle *ih)
   iupClassObjectSetAttribute(ih, "IMAGEBRANCHEXPANDED", value, &inherit);
 }
 
+char* iupTreeGetSpacingAttrib(Ihandle* ih)
+{
+  char *str = iupStrGetMemory(50);
+  sprintf(str, "%d", ih->data->spacing);
+  return str;
+}
+
 static char* iTreeGetMarkModeAttrib(Ihandle* ih)
 {
   if (ih->data->mark_mode==ITREE_MARK_SINGLE)

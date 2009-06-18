@@ -62,7 +62,9 @@ HIDELINES</strong> <strong><br>
 HIDEBUTTONS</strong> <strong><br>
 INDENTATION</strong> <strong><br>
 RASTERSIZE<br>
-    SHOWDRAGDROP</strong></p>
+    SHOWDRAGDROP<br>
+SPACING<br>
+TOPITEM</strong></p>
 <h4><a href="iuptree_attrib.html#nodes">Nodes</a></h4>
 <p class="info"><strong>CHILDCOUNT<br>
     FGCOLOR<br>
@@ -189,10 +191,10 @@ display area.</p>
   of attributes. It is allowed to remove nodes and branches inside callbacks associated to opening or closing branches.
   </p>
 <p>This means that the user may insert nodes and branches only when necessary 
-when the parent brach is opened, allowing the use of a larger IupTree without 
+when the parent branch is opened, allowing the use of a larger IupTree without 
 too much overhead. Then when the parent branch is closed the subtree can be 
-removed. But the subtree mst have at least 1 item so the branch can be oppened 
-and closed, empty branches can NOT be oppend.</p>
+removed. But the subtree must have at least 1 node so the branch can be opened 
+and closed, empty branches can NOT be opened.</p>
 <h4>User Data</h4>
 <p>The node Id does not always correspond to the same 
   node as the tree is modified. For example, a id=2 will always refer to the third node in the tree. For that 
@@ -215,7 +217,7 @@ for the node.</p>
 be selected.</p>
 <h4>Multiple Marking</h4>
 <p>IupTree allows marking several nodes simultaneously using the Shift and Control keys. To use 
-  multiple marking set MARKMODE=MULTIPLE. In GTK and Motif multiple items can 
+  multiple marking set MARKMODE=MULTIPLE. In GTK and Motif multiple nodes can 
 also be selected using a rubber band if SHOW_DRAGDROP=NO.</p>
 <p>When a user keeps the Control key pressed, 
   the individual marking mode is used. This way, the focus node can be modified without changing the marked node. To 

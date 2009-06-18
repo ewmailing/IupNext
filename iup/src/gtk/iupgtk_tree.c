@@ -647,6 +647,47 @@ static int gtkTreeSetIndentationAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int gtkTreeSetTopItemAttrib(Ihandle* ih, const char* value)
+{
+  GtkTreeStore* store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
+  GtkTreeIter iterItem;
+  GtkTreePath* path;
+
+  if (!gtkTreeFindNodeFromString(ih, GTK_TREE_MODEL(store), value, &iterItem))
+    return 0;
+
+  path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iterItem);
+
+  if (!gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path))
+    gtk_tree_view_expand_to_path(GTK_TREE_VIEW(ih->handle), path);
+
+  gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE, 0, 0);  /* scroll to visible */
+
+  gtk_tree_path_free(path);
+ 
+  return 0;
+}
+
+static int gtkTreeSetSpacingAttrib(Ihandle* ih, const char* value)
+{
+  if(!iupStrToInt(value, &ih->data->spacing))
+    ih->data->spacing = 1;
+
+  if(ih->data->spacing < 1)
+    ih->data->spacing = 1;
+
+  if (ih->handle)
+  {
+    GtkCellRenderer *renderer_img = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_IMG");
+    GtkCellRenderer *renderer_txt = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_TEXT");
+    g_object_set(G_OBJECT(renderer_img), "ypad", ih->data->spacing, NULL);
+    g_object_set(G_OBJECT(renderer_txt), "ypad", ih->data->spacing, NULL);
+    return 0;
+  }
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
+}
+
 static int gtkTreeSetExpandAllAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -2162,6 +2203,8 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "INDENTATION",  gtkTreeGetIndentationAttrib, gtkTreeSetIndentationAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COUNT", gtkTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPACING", iupTreeGetSpacingAttrib, gtkTreeSetSpacingAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TOPITEM", NULL, gtkTreeSetTopItemAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - IMAGES */
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, gtkTreeSetImageAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -2199,4 +2242,3 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   iupClassRegisterAttribute  (ic, "AUTODRAGDROP",    NULL,    NULL,    NULL, NULL, IUPAF_DEFAULT);
 }
-

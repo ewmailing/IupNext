@@ -453,9 +453,10 @@ static int motListSetSpacingAttrib(Ihandle* ih, const char* value)
                                 XmNlistMarginWidth, ih->data->spacing, 
                                 XmNlistMarginHeight, ih->data->spacing, 
                                 NULL);
+    return 0;
   }
-
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int motListSetPaddingAttrib(Ihandle* ih, const char* value)
@@ -470,8 +471,10 @@ static int motListSetPaddingAttrib(Ihandle* ih, const char* value)
     XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
     XtVaSetValues(cbedit, XmNmarginHeight, ih->data->vert_padding,
                           XmNmarginWidth, ih->data->horiz_padding, NULL);
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int motListSetReadOnlyAttrib(Ihandle* ih, const char* value)

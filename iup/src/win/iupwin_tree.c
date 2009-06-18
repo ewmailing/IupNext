@@ -968,6 +968,36 @@ static int winTreeSetImageAttrib(Ihandle* ih, const char* name_id, const char* v
   return 1;
 }
 
+static int winTreeSetTopItemAttrib(Ihandle* ih, const char* value)
+{
+  HTREEITEM hItem = winTreeFindNodeFromString(ih, value);
+  if (hItem)
+    SendMessage(ih->handle, TVM_ENSUREVISIBLE, 0, (LPARAM)hItem);
+  return 0;
+}
+
+static int winTreeSetSpacingAttrib(Ihandle* ih, const char* value)
+{
+  if (!iupStrToInt(value, &ih->data->spacing))
+    ih->data->spacing = 1;
+
+  if(ih->data->spacing < 1)
+    ih->data->spacing = 1;
+
+  if (ih->handle)
+  {
+    int old_spacing = iupAttribGetInt(ih, "_IUPWIN_OLDSPACING");
+    int height = SendMessage(ih->handle, TVM_GETITEMHEIGHT, 0, 0);
+    height -= 2*old_spacing;
+    height += 2*ih->data->spacing;
+    SendMessage(ih->handle, TVM_SETITEMHEIGHT, height, 0);
+    iupAttribSetInt(ih, "_IUPWIN_OLDSPACING", ih->data->spacing);
+    return 0;
+  }
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
+}
+
 static int winTreeSetExpandAllAttrib(Ihandle* ih, const char* value)
 {
   HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
@@ -2414,6 +2444,8 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "INDENTATION", winTreeGetIndentationAttrib, winTreeSetIndentationAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COUNT", winTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SPACING", iupTreeGetSpacingAttrib, winTreeSetSpacingAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TOPITEM", NULL, winTreeSetTopItemAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - IMAGES */
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, winTreeSetImageAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
