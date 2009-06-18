@@ -56,22 +56,24 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	now follows the same default as <strong>IupText</strong> and <strong>IupList</strong>, 
 	and can be changed. New TITLEFONT, FGCOLOR, USERDATA, FINDUSERID, COUNT, 
 	CHILDCOUNT, EXPANDALL, INDENTATION, HIDEBUTTONS, HIDELINES, COPYNODE, MOVENODE,<strong> </strong>
-	SPACING, TOPITEM, INSERTLEAF and 
-	INSERTBRANCH attributes. New BUTTON_CB, MOTION_CB and DROPFILES_CB 
-	callbacks. Attributes SCROLLBAR and REDRAW are not supported anymore. VALUE 
-	attribute split in VALUE and MARK attributes, set MARK using VALUE is 
-	still possible fro backward compatibility. STARTING renamed to MARKSTART, 
-	and CTRL/SHIFT attributes replaced by MARKMODE (old names kept working for 
-	compatibility). Now if DRAGDROP_CB returns IUP_CONTINUE or if it is not 
-	defined but SHOWDRAGDROP=Yes then the node will be automatically moved to 
-	the new position. 
-	<span class="style1"><strong> ATTENTION</strong></span><strong>
+	SPACING, TOPITEM, INSERTLEAF and INSERTBRANCH attributes. New BUTTON_CB, 
+	MOTION_CB and DROPFILES_CB callbacks. Attributes SCROLLBAR and REDRAW are 
+	not supported anymore. VALUE attribute split in VALUE and MARK attributes, 
+	set MARK using VALUE is still possible fro backward compatibility. STARTING 
+	renamed to MARKSTART, and CTRL/SHIFT attributes replaced by MARKMODE (old 
+	names kept working for compatibility). Now if DRAGDROP_CB returns 
+	IUP_CONTINUE or if it is not defined but SHOWDRAGDROP=Yes then the node will 
+	be automatically moved to the new position. <span class="style1"><strong> ATTENTION</strong></span><strong>
 	- </strong> DEPTH is now a read-only attribute, use the INSERT* attributes 
 	to properly add nodes. NAMEid attribute renamed to TITLE, old attribute still works but will be 
 	removed in future versions since it conflicts with the common NAME attribute. 
 	The SELECTION_CB and MULTISELECTION_CB callbacks now ignore their return 
 	value. The rename action is now activated by two clicks instead of a double 
 	click. <span class="style4"><strong>[NOT finished YET]</strong></span></li>
+	<li><span class="style2">Changed:</span>
+    In IupLua the Lua function <strong>iup.TreeSetValue</strong> now also 
+	accepts node decoration in the initialization table and can add a subtree to 
+	any node. (Thanks to Tomas Gorham)</li>
 	<li><span class="style2">Changed:</span>
     In IupLua attributes that are pointers to Ihandle are now returned as 
 	ihandle instead of userdata.</li>

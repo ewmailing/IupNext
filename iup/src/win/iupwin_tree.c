@@ -54,6 +54,7 @@ typedef struct tagNMTVITEMCHANGE {
 #define TVN_ITEMCHANGINGW        (TVN_FIRST-17)    
 #endif
 
+static void winTreeSetFocus(Ihandle* ih, HTREEITEM hItem);
 typedef int (*winTreeNodeFunc)(Ihandle* ih, HTREEITEM hItem, void* userdata);
 
 static int winTreeForEach(Ihandle* ih, HTREEITEM hItem, winTreeNodeFunc func, void* userdata)
@@ -340,6 +341,9 @@ static void winTreeAddRootNode(Ihandle* ih)
 
   /* MarkStart node */
   iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)hNewItem);
+
+  /* Set the default VALUE */
+  winTreeSetFocus(ih, hNewItem);
 }
 
 static int winTreeIsItemExpanded(Ihandle* ih, HTREEITEM hItem)

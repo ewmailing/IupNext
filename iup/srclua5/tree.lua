@@ -38,19 +38,23 @@ end
 function TreeSetValueRec(handle, t, id)
   if t == nil then return end
   local cont = #t
+print("TreeSetValueRec("..cont..")")
   while cont >= 0 do
     local node = t[cont]
     if type(node) == "table" then
       if node.branchname then
+      print("branch")
         SetAttribute(handle, "ADDBRANCH"..id, node.branchname)
         TreeSetNodeAttrib(handle, node, id+1)
         TreeSetValueRec(handle, node, id+1)
       elseif node.leafname then
+      print("leaf1")
         SetAttribute(handle, "ADDLEAF"..id, node.leafname)
         TreeSetNodeAttrib(handle, node, id+1)
       end
     else
       if node then
+        print("leaf2")
         SetAttribute(handle, "ADDLEAF"..id, node)
       end
     end
@@ -58,11 +62,13 @@ function TreeSetValueRec(handle, t, id)
    end
 end
 
-function TreeSetValue(handle, t)
-  if t.branchname then
-    SetAttribute(handle, "NAME", t.branchname)
+function TreeSetValue(handle, t, id)
+  if (not id) then
+    id = 0  -- default is the root
+    if t.branchname then SetAttribute(handle, "TITLE0", t.branchname) end
+    TreeSetNodeAttrib(handle, t, 0)
   end
-  TreeSetValueRec(handle, t, 0)
+  TreeSetValueRec(handle, t, id)
 end
 
 function ctrl.createElement(class, arg)

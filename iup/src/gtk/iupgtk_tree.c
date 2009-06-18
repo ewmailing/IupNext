@@ -518,6 +518,7 @@ static void gtkTreeAddRootNode(Ihandle* ih)
   /* MarkStart node */
   iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)path);
 
+  /* Set the default VALUE */
   gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE);
 }
 

@@ -321,11 +321,13 @@ attribute.</p>
 
 
 
-<pre>iup.<a name="TreeSetValue">TreeSetValue</a>(<strong>ih: </strong>ihandle, <strong>tree: </strong>table) [in Lua]</pre>
+<pre>iup.<a name="TreeSetValue">TreeSetValue</a>(<strong>ih: </strong>ihandle, <strong>tree: </strong>table, [<strong>id</strong>: number]) [in Lua]</pre>
 <p><strong>ih</strong>:
       Identifier of the IupTree interacting with the user.<br>
-<strong>tree</strong>: table of nodes.</p>
-<p>Initializes the tree using the given Lua table as values for the tree nodes. For example:</p>
+<strong>tree</strong>: table of nodes.<br>
+<strong>id</strong>: optional existing node. The default is the root (0).</p>
+<p>Initializes the tree using the given Lua table as values for the tree nodes 
+using ADDBRANCH and ADDLEAF. For example:</p>
 <pre>tree = iup.tree{}
 tree_init = 
 {
@@ -333,6 +335,7 @@ tree_init =
   &quot;Other",
   {
     branchname = &quot;triangle&quot;,
+    state = &quot;COLLAPSED&quot;,
     &quot;equilateral&quot;,
     &quot;isoceles&quot;,
     "scalenus",
@@ -340,7 +343,7 @@ tree_init =
   {
     branchname = &quot;parallelogram&quot;,
     &quot;square&quot;,
-    &quot;diamond&quot;,
+    { leafname = &quot;diamond&quot;, color = &quot;92 92 255&quot;, titlefont = &quot;Courier, 14&quot; },
   },
   {
     branchname = &quot;2D&quot;
@@ -349,8 +352,20 @@ tree_init =
     branchname = &quot;3D&quot;
   },
 }
-iup.TreeSetValue(tree, tree_init)</pre>
-<p>&nbsp;</p>
+
+dlg = iup.dialog{tree}
+dlg:map()
+
+iup.TreeSetValue(tree, tree_init)
+
+dlg:show()</pre>
+<p>Inside a table <strong>branchname</strong> defines a branch and its title,
+<strong>leafname</strong> defines a leaf and its title. When a node inside a 
+branch is not a table then it is a leaf and only defines the leaf title. When
+<strong>leafname</strong> or <strong>branchname</strong> are used you can also 
+define other node attributes: <strong>color</strong>, <strong>state</strong>,
+<strong>titlefont</strong>, <strong>marked</strong>, <strong>image</strong> and
+<strong>imageexpanded</strong>; without specifying the node id. (since 3.0)</p>
 <h3>Utility Functions </h3>
 <p>These functions can be used to help set and get attributes from the tree:</p>
 <pre>void  IupTreeSetAttribute (Ihandle *n, char* a, int id, char* v);
