@@ -385,17 +385,24 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
     x1 += IMAT_PADDING_W/2;       x2 -= IMAT_PADDING_W/2;
     y1 += IMAT_PADDING_H/2;       y2 -= IMAT_PADDING_H/2;
 
+    if (alignment == IMAT_T_CENTER)
+      cdCanvasTextAlignment(ih->data->cddbuffer, CD_CENTER);
+    else if(alignment == IMAT_T_LEFT)
+      cdCanvasTextAlignment(ih->data->cddbuffer, CD_WEST);
+    else
+      cdCanvasTextAlignment(ih->data->cddbuffer, CD_EAST);
+
     if (num_line == 1)
     {
       ypos = (int)((y1 + y2) / 2.0 - 0.5);
 
       /* Put the text */
       if (alignment == IMAT_T_CENTER)
-        IUPMAT_TEXT(ih, (x1 + x2) / 2, ypos, text, CD_CENTER)
+        IUPMAT_TEXT(ih, (x1 + x2) / 2, ypos, text);
       else if(alignment == IMAT_T_LEFT)
-        IUPMAT_TEXT(ih, x1, ypos, text, CD_WEST)
+        IUPMAT_TEXT(ih, x1, ypos, text);
       else
-        IUPMAT_TEXT(ih, x2, ypos, text, CD_EAST)
+        IUPMAT_TEXT(ih, x2, ypos, text);
     }
     else
     {
@@ -413,16 +420,16 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
         q = strchr(p, '\n');
         if (q) *q = 0;  /* Cut the string to contain only one line */
 
-        /* Put the text */
+        /* Draw the text */
         if(alignment == IMAT_T_CENTER)
-          IUPMAT_TEXT(ih, (x1 + x2) / 2, ypos, p, CD_CENTER)
+          IUPMAT_TEXT(ih, (x1 + x2) / 2, ypos, p);
         else if(alignment == IMAT_T_LEFT)
-          IUPMAT_TEXT(ih, x1, ypos, p, CD_WEST)
+          IUPMAT_TEXT(ih, x1, ypos, p);
         else
-          IUPMAT_TEXT(ih, x2, ypos, p, CD_EAST)
+          IUPMAT_TEXT(ih, x2, ypos, p);
 
         /* Advance the string */
-        p = q + 1;
+        if (q) p = q + 1;
 
         /* Advance a line */
         ypos += line_height + IMAT_PADDING_H/2;
@@ -451,8 +458,6 @@ static void iMatrixDrawTitleCorner(Ihandle* ih)
 
 static void iMatrixDrawMatrix(Ihandle* ih)
 {
-  ImatLinColData* p1 = &ih->data->lines;
-  ImatLinColData* p2 = &ih->data->columns;
   iupMatrixPrepareDrawData(ih);
 
   /* fill the background because there will be empty cells */
