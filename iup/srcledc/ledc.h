@@ -2,7 +2,7 @@
  * \brief LEDC definitions.
  *
  * See Copyright Notice in iup.h
- * $Id: ledc.h,v 1.1 2008-11-21 03:00:11 scuri Exp $
+ * $Id: ledc.h,v 1.2 2009-06-22 15:47:16 scuri Exp $
  */
  
 #ifndef __LEDC_H 
@@ -11,8 +11,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define VERSION "2.6"
 
 typedef struct _elemlist {
   struct _elemlist *next;
