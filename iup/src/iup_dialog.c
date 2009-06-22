@@ -87,6 +87,9 @@ static int iDialogCreateMethod(Ihandle* ih, void** params)
 {
   ih->data = iupALLOCCTRLDATA();
 
+  ih->data->child_id = 100; /* initial number */
+  ih->data->show_state = IUP_HIDE;
+
   if (params)
   {
     Ihandle** iparams = (Ihandle**)params;
@@ -189,7 +192,6 @@ int iupDialogGetChildId(Ihandle* ih)
   ih = IupGetDialog(ih);
   if (!ih) return -1;
   id = ih->data->child_id;
-  if (id == 0) id = 100; /* initial number */
   ih->data->child_id = id+1;
   return id;
 }
