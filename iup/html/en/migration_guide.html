@@ -117,7 +117,9 @@ then adjust the matrix size manually or let the natural size adjust it for you
 using NUMCOL_VISIBLE_LAST=YES and NUMLIN_VISIBLE_LAST=YES.</p>
 
 <p><span class="style1">In <strong>IupTree</strong> DEPTH is now a read-only attribute, 
-use the INSERT* attributes to properly add nodes.</span> NAMEid attribute renamed to TITLE, old attribute still works but will be 
+use the INSERT* attributes to properly add nodes.</span> <span class="style1">
+The SELECTION_CB and MULTISELECTION_CB callbacks now ignore their return value.
+</span>NAMEid attribute renamed to TITLE, old attribute still works but will be 
 	removed in future versions. </p>
 
 <h3>Deprecated Controls <span class="style2">(will be removed in a future 
@@ -138,7 +140,7 @@ IupProgressBar</strong>.</p>
 <p>The <strong>IupTabs</strong> was moved to the main library under the same 
 name because the new one almost have all the features of the old one.
 <span class="style1">The most impacting feature is the TABORIENTATION attribute 
-that has limited support in the new control.</span></p>
+that has limited support in the native controls.</span></p>
 
 <p>The <strong>IupVal</strong> follows the same idea. The only feature that it 
 is not available is the use of a custom handler image.</p>

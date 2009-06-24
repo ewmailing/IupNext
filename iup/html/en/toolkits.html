@@ -27,7 +27,7 @@
   <li><b>Native Look &amp; Feel</b>. Many toolkits draw their own controls. This gives an uniformity among systems, but 
     also a disparity among the available applications in the same system. Native controls are also faster because they 
     are drawn by the system. But the problem is what's &quot;native&quot; in UNIX? Some commercial applications in UNIX start 
-    using Motif as the &quot;native&quot; option. It is the official standard but because of license restrictions, before the 
+    using Motif as the &quot;native&quot; option. It was the official standard but because of license restrictions, before the 
     OpenMotif event, the system became old and some good alternatives were developed, including GTK and Qt.</li>
 </ul>
 <h3>Toolkits</h3>
@@ -48,8 +48,8 @@
     <td>
     <p align="center" style="text-align:center"><a href="http://www.fox-toolkit.org/">FOX</a></td>
     <td>LGPL</td>
-    <td>1997-2008/07</td>
-    <td>1.6.34</td>
+    <td>1997-2009/03</td>
+    <td>1.6.36</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X</td>
@@ -76,8 +76,8 @@
     <td>
     <p align="center" style="text-align:center"><a href="http://www.gtk.org/">GTK+</a></td>
     <td>LGPL*</td>
-    <td>1997-2008/09</td>
-    <td>2.14.3</td>
+    <td>1997-2009/06</td>
+    <td>2.16.2</td>
     <td>
     <o:p>C</o:p></td>
     <td>Win, X, Mac</td>
@@ -90,8 +90,8 @@
     <td>
     <p align="center" style="text-align:center"><a href="http://www.trolltech.com">Qt</a></td>
     <td>GPL</td>
-    <td>1994-2008/09</td>
-    <td>4.4.3</td>
+    <td>1994-2009/03</td>
+    <td>4.5.1</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
@@ -103,8 +103,8 @@
     <td>
     <p align="center" style="text-align:center"><a href="http://www.wxwidgets.org/">wxWidgets</a></td>
     <td>LGPL*</td>
-    <td>1992-2008/09</td>
-    <td>2.8.9</td>
+    <td>1992-2009/03</td>
+    <td>2.8.10</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
@@ -116,8 +116,8 @@
     <td>
     <p align="center"><a href="http://www.tecgraf.puc-rio.br/iup/">IUP</a></td>
     <td>MIT</td>
-    <td>1994-2008/10</td>
-    <td>2.5.1</td>
+    <td>1994-2008/12</td>
+    <td>2.7.1</td>
     <td>C</td>
     <td>Win, X, Mac</td>
     <td>native</td>
@@ -126,28 +126,28 @@
     <o:p>X can use Motif or GTK, Mac using X</o:p></td>
   </tr>
 </table>
-<p>Table Last Update: October 2008</p>
+<p>Table Last Update: June 2009</p>
 <p>More toolkits can be found here:
   <a href="http://www.geocities.com/SiliconValley/Vista/7184/guitool.html" ADD_DATE="851377089" LAST_VISIT="857454078" LAST_MODIFIED="851377011">The GUI Toolkit, Framework Page</a>.<br>
   An interesting article can be found here: 
 <a href="http://freshmeat.net/articles/view/928/">GUI Toolkits for The X 
   Window System</a>.</p>
-<h3>Conclusions</h3>
-<p>From the selected toolkits using the defined approach we can eliminate some toolkits:</p>
-<p>The gray ones are not updated anymore or the development is very slow or needs a better organization.</p>
+<h3>Discussion</h3>
 <p>FOX has a great look but the license can be restrictive in some cases. </p>
 <p>FLTK promises a new version with a better look and new features, but there 
 are no concrete release dates. The FLTK 
   documentation also does not help.</p>
-<p>GTK+ can be used as a replacement for Motif, but not as a fully &quot;portable&quot; toolkit since is was target for 
+<p>GTK+ can be used as a replacement for Motif, but not as a fully &quot;portable&quot; toolkit since 
+it is was originally target for 
   X-Windows. Nowadays GTK+ 2 is a great free C toolkit. But some predefined dialogs could be the native ones, like the 
-  File Selection, specially in Windows. The Windows port works did not have the 
-Windows native look and feel, now it seems that the Windows port is incorporated 
-and its is becaming fully featured. A MacOS X port without using X-Windows is on 
-the way, so the future is promessing.</p>
-<p>Qt has several license limitations, although is a very stable and powerful toolkit. Qt can be also used as a 
-  replacement for Motif.</p>
-<p>wxWidgets is an excelent choice because of the native controls and its 
+  File Selection, specially in Windows. The Windows port has a look and feel 
+very similar to the 
+Windows native look and feel, but it is different from a native application. A MacOS X port without using X-Windows is on 
+the way, so the future is promising.</p>
+<p>Qt had several license limitations, but since mid 2009 a new license model 
+take place and it became more attractive. It is a very stable and powerful 
+toolkit. </p>
+<p>wxWidgets is an excellent choice because of the native controls and its 
 portability.</p>
 <p>It is hard to compare IUP with wxWidgets and Qt since they are much more than an 
 User Interface Toolkit. They are 
@@ -156,7 +156,7 @@ User Interface Toolkit. They are
 <h3>Developing IUP</h3>
 <p>IUP has a C API, only has functions for Graphical User Interface, and uses &quot;Native Controls&quot; in Windows, Motif and 
   GTK+. These are the major differences between IUP and other toolkits. Because of that IUP is small, fast and very 
-  powerfull.</p>
+  powerful.</p>
 <p>We have a small but very active team and we have many Tecgraf and foreign applications that today use IUP, 
   collaborating for its evolution. Our objective is to surpass the Tecgraf needs, keeping backward compatibility and 
   improving the internal code.</p>
