@@ -1034,7 +1034,7 @@ static char* gtkTreeGetValueAttrib(Ihandle* ih)
     return str;
   }
 
-  return NULL;
+  return "0"; /* default VALUE is root */
 }
 
 static int gtkTreeSetMarkAttrib(Ihandle* ih, const char* value)

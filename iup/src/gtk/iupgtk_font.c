@@ -252,7 +252,11 @@ char* iupdrvGetSystemFont(void)
   if (!style || !style->font_desc)
     strcpy(systemfont, "Sans, 10");
   else
-    strcpy(systemfont, pango_font_description_to_string(style->font_desc));
+  {
+    char* desc = pango_font_description_to_string(style->font_desc);
+    strcpy(systemfont, desc);
+    g_free(desc);
+  }
   gtk_widget_unrealize(widget);
   gtk_widget_destroy(widget);
   return systemfont;

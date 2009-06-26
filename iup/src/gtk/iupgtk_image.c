@@ -44,7 +44,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   pixdata = gdk_pixbuf_get_pixels(pixbuf);
   rowstride = gdk_pixbuf_get_rowstride(pixbuf);
   channels = gdk_pixbuf_get_n_channels(pixbuf);
-  imgdata = (unsigned char*)ih->handle;
+  imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
 
   if (make_inactive)  
     iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
@@ -154,7 +154,7 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
     char *sbits, *mbits, *sb, *mb;
     int y, x, line_size = (ih->currentwidth+7)/8;
     int size_bytes = line_size*ih->currentheight;
-    unsigned char* imgdata = (unsigned char*)ih->handle;
+    unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
 
     r = 255; g = 255; b = 255;
     iupStrToRGB(iupAttribGet(ih, "1"), &r, &g, &b );
@@ -215,7 +215,7 @@ void* iupdrvImageCreateMask(Ihandle *ih)
   char *bits, *sb;
   int y, x, line_size = (ih->currentwidth+7)/8;
   int size_bytes = line_size*ih->currentheight;
-  unsigned char* imgdata = (unsigned char*)ih->handle;
+  unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   unsigned char colors[256];
 
   bpp = iupAttribGetInt(ih, "BPP");

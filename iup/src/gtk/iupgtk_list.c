@@ -186,7 +186,11 @@ static char* gtkListGetIdValueAttrib(Ihandle* ih, const char* name_id)
       gchar *text = NULL;
       gtk_tree_model_get(model, &iter, 0, &text, -1);
       if (text)
-        return iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(text));
+      {
+        char* ret_str = iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(text));
+        g_free(text);
+        return ret_str;
+      }
     }
   }
   return NULL;
@@ -917,7 +921,10 @@ static gboolean gtkListEditKeyPressEvent(GtkWidget* entry, GdkEventKey *evt, Iha
         gchar *text = NULL;
         gtk_tree_model_get(model, &iter, 0, &text, -1);
         if (text)
+        {
           gtk_entry_set_text((GtkEntry*)entry, text);
+          g_free(text);
+        }
       }
 
     }
@@ -1104,6 +1111,7 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
       {
         GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
         gtk_entry_set_text(entry, value);
+        g_free(value);
       }
       gtk_tree_path_free(path);
     }

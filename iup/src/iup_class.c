@@ -266,13 +266,25 @@ Iclass* iupClassNew(Iclass* parent)
 
 void iupClassRelease(Iclass* ic)
 {
-  /* must release only the child class */
+  Iclass* parent;
+
+  /* must release only the actual class */
   if (ic->Release)
     ic->Release(ic);
 
-  /* attributes functions table is released only on root classes */
-  if (!ic->parent)
-    iClassReleaseAttribFuncTable(ic);
+  /* must free all classes, since a new instance is created when we inherit */
+  parent = ic->parent;
+  while (parent)
+  {
+    Iclass* tmp = parent;
+    parent = parent->parent;
+    free(tmp);
+  }
+
+  /* attributes functions table is released only once */
+  iClassReleaseAttribFuncTable(ic);
+
+  free(ic);
 }
 
 

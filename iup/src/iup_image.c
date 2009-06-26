@@ -488,6 +488,12 @@ static char* iImageGetHeightAttrib(Ihandle *ih)
   return str;
 }
 
+static int iImageMapMethod(Ihandle* ih)
+{
+  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
+  return IUP_NOERROR;
+}
+
 static void iImageUnMapMethod(Ihandle* ih)
 {
   char *name;
@@ -553,7 +559,7 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
 
   if (((int)(params[2])==-1) || ((int)(params[3])==-1)) /* compacted in one pointer */
   {
-    if (imgdata && (int)(params[2])!=-1)
+    if ((int)(params[2])!=-1)
       memcpy(imgdata, params[2], count);
   }
   else /* one param for each element */
@@ -565,8 +571,7 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
     }
   }
 
-  ih->handle = (InativeHandle*)imgdata;  /* IupImage is always mapped */
-
+  iupAttribSetStr(ih, "WID", (char*)imgdata);
   iupAttribSetInt(ih, "BPP", bpp);
   iupAttribSetInt(ih, "CHANNELS", channels);
 
@@ -590,7 +595,12 @@ static int iImageRGBACreateMethod(Ihandle* ih, void** params)
 
 static void iImageDestroyMethod(Ihandle* ih)
 {
-  free(ih->handle);
+  unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
+  if (imgdata)
+  {
+    iupAttribSetStr(ih, "WID", NULL);
+    free(imgdata);
+  }
 }
 
 /******************************************************************************/
@@ -638,10 +648,10 @@ static Iclass* iImageGetClassBase(char* name, int (*create_func)(Ihandle* ih, vo
   /* Class functions */
   ic->Create = create_func;
   ic->Destroy = iImageDestroyMethod;
+  ic->Map = iImageMapMethod;
   ic->UnMap = iImageUnMapMethod;
 
   /* Attribute functions */
-  iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "WIDTH", iImageGetWidthAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HEIGHT", iImageGetHeightAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -651,8 +661,6 @@ static Iclass* iImageGetClassBase(char* name, int (*create_func)(Ihandle* ih, vo
   iupClassRegisterAttribute(ic, "CHANNELS", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "HOTSPOT", NULL, NULL, "0:0", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-
-  iupClassRegisterAttributeId(ic, "IDVALUE", NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

@@ -61,11 +61,10 @@ control to the normalizer. The value passed must be a
 handle of an element.</p>
 <h3>Notes</h3>
 <p>It is NOT necessary to add the normalizer to a dialog hierarchy. Every time 
-the NORMALIZE attribute is set a normalization occurs, but only then if not in a 
-dialog hierarchy. If the normalizer is added to a dialog hierarchy, then 
+the NORMALIZE attribute is set a normalization occurs. If the normalizer is added to a dialog hierarchy, then 
 whenever the <strong>Natural</strong> size is calculated a normalization occurs, 
-so add it before the elements you want to normalize or its normalization will be 
-invalid.</p>
+so add it to the hierarchy before the elements you want to normalize or its normalization will be 
+not used.</p>
 <p>The elements do NOT need to be children of the same parent, do NOT need to be 
 mapped, and do NOT need to be in a complete hierarchy of a dialog.</p>
 <p>The elements are NOT children of the normalizer. To 
