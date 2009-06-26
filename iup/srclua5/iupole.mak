@@ -10,6 +10,7 @@ DEFINES = IUPLUA_USELOH
 USE_IUPLUA = Yes
 LIBS = iupole
 USE_LUA51 = Yes
+NO_LUALINK = Yes
 
 LOHDIR = loh
 SRCLUA = olecontrol.lua

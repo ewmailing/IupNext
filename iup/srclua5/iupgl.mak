@@ -14,6 +14,7 @@ USE_OPENGL = Yes
 LIBS = iuplua51
 
 USE_LUA51 = Yes
+NO_LUALINK = Yes
 
 LOHDIR = loh
 SRCLUA = glcanvas.lua

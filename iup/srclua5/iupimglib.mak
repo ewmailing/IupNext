@@ -14,3 +14,4 @@ IUP := ..
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
 USE_LUA51 = Yes
+NO_LUALINK = Yes

@@ -13,6 +13,7 @@ USE_CDLUA = Yes
 LIBS = iup_pplot
 
 USE_LUA51 = Yes
+NO_LUALINK = Yes
 
 LOHDIR = loh
 SRCLUA = pplot.lua

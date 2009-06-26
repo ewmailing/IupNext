@@ -6,6 +6,7 @@ DEF_FILE = iuplua5.def
 DEFINES = IUPLUA_USELOH
 
 USE_LUA51 = Yes
+NO_LUALINK = Yes
 
 INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  

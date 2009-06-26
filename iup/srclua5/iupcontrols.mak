@@ -13,6 +13,7 @@ USE_CDLUA = Yes
 LIBS = iupcontrols
 
 USE_LUA51 = Yes
+NO_LUALINK = Yes
 
 LOHDIR = loh
 SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua cells.lua
