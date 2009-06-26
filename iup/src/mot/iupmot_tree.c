@@ -674,9 +674,15 @@ static int motTreeGetNodeId(Ihandle* ih, Widget wItem)
   return ih->data->id_control;
 }
 
+static void motTreeSetFocusNode(Ihandle* ih, Widget wItem)
+{
+  iupAttribSetStr(ih, "_IUPTREE_LAST_FOCUS", (char*)wItem);
+  XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
+}
+
 static Widget motTreeGetFocusNode(Ihandle* ih)
 {
-  Widget wItem = XmGetFocusWidget(ih->handle);
+  Widget wItem = XmGetFocusWidget(ih->handle);  /* returns the focus in the dialog */
   if (wItem && XtParent(wItem) == ih->handle) /* is a node */
     return wItem;
 
@@ -723,7 +729,7 @@ static void motTreeEnterLeaveWindowEvent(Widget w, Ihandle *ih, XEvent *evt, Boo
 static void motTreeFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
 {
   unsigned char selpol;
-  Widget wItem = XmGetFocusWidget(w);
+  Widget wItem = XmGetFocusWidget(w);  /* returns the focus in the dialog */
   Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
 
   if (XtParent(wItem) == w) /* is a node */
@@ -894,7 +900,8 @@ static void motTreeAddRootNode(Ihandle* ih)
   iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)wRootItem);
 
   /* Set the default VALUE */
-  XmProcessTraversal(wRootItem, XmTRAVERSE_CURRENT);
+  /* In Motif this will set also the current focus */
+  motTreeSetFocusNode(ih, wRootItem);
 }
 
 /*****************************************************************************/
@@ -1268,8 +1275,8 @@ static char* motTreeGetValueAttrib(Ihandle* ih)
 {
   char* str;
   Widget wItem = motTreeGetFocusNode(ih);
-  if(!wItem)
-    return NULL;
+  if (!wItem)
+    return "0"; /* default VALUE is root */
 
   str = iupStrGetMemory(10);
   sprintf(str, "%d", motTreeGetNodeId(ih, wItem));
@@ -1408,7 +1415,7 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
   }
 
   /* set focus (will scroll to visible) */
-  XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
+  motTreeSetFocusNode(ih, wItem);
 
   iupAttribSetInt(ih, "_IUPTREE_OLDVALUE", motTreeGetNodeId(ih, wItem));
 
@@ -1896,7 +1903,6 @@ static void motTreeCallRenameCb(Ihandle* ih)
     iupmotSetString(wItem, XmNlabelString, title);
 
   XtDestroyWidget(wEdit);
-  XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
 
   iupAttribSetStr(ih, "_IUPTREE_EDITFIELD", NULL);
   iupAttribSetStr(ih, "_IUPTREE_SELECTED",  NULL);
@@ -1938,14 +1944,18 @@ static void motTreeEditKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Bool
 {
   KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
   if (motcode == XK_Return)
+  {
+    Widget wItem = (Widget)iupAttribGet(ih, "_IUPTREE_SELECTED");
     motTreeCallRenameCb(ih);
+    motTreeSetFocusNode(ih, wItem);
+  }
   else if (motcode == XK_Escape)
   {
     Widget wEdit = (Widget)iupAttribGet(ih, "_IUPTREE_EDITFIELD");
     Widget wItem = (Widget)iupAttribGet(ih, "_IUPTREE_SELECTED");
 
     XtDestroyWidget(wEdit);
-    XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
+    motTreeSetFocusNode(ih, wItem);
 
     iupAttribSetStr(ih, "_IUPTREE_EDITFIELD", NULL);
     iupAttribSetStr(ih, "_IUPTREE_SELECTED",  NULL);
@@ -2235,7 +2245,7 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
     else
       wItem = motTreeGetPreviousVisibleNode(ih, wRoot, wItemFocus);
 
-    XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
+    motTreeSetFocusNode(ih, wItem);
     *cont = False;
     return;
   }
@@ -2272,7 +2282,7 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
       }
     }
 
-    XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
+    motTreeSetFocusNode(ih, wItem);
     *cont = False;
     return;
   }
@@ -2382,7 +2392,7 @@ static void motTreeTransferProc(Widget drop_context, XtPointer client_data, Atom
       XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
       XtVaSetValues(wNewItem, XmNvisualEmphasis, XmSELECTED, NULL);
 
-      XmProcessTraversal(wNewItem, XmTRAVERSE_CURRENT);
+      motTreeSetFocusNode(ih, wNewItem);
     }
   }
 

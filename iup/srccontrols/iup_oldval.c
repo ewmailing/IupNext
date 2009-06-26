@@ -106,7 +106,7 @@ static void iValSetImage(const char* name, unsigned char** image_out, long int**
 
   *w_out = width = img->currentwidth;
   *h_out = height = img->currentheight;
-  image_data = (unsigned char*)img->handle;
+  image_data = (unsigned char*)IupGetAttribute(img, "WID");
 
   *image_out = (unsigned char*) realloc(*image_out, width*height*sizeof(unsigned char));
   *color_out = (long int*) realloc(*color_out, 256*sizeof(long int));

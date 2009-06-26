@@ -8,7 +8,7 @@ static float increment = 0.01f;
 static Ihandle *progressbar1;
 static Ihandle *progressbar2;
 static Ihandle *btn_pause;
-static Ihandle *timer;
+static Ihandle *timer = NULL;
 
 static unsigned char pixmap_play[] = 
 { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
@@ -188,6 +188,14 @@ static int btn_pause_cb(void)
   return IUP_DEFAULT;
 }
 
+
+static int unmap_cb(Ihandle* ih)
+{
+  IupDestroy(timer);
+  timer = NULL;
+  return IUP_DEFAULT;
+}
+
 static int btn_restart_cb(void)
 {
   IupSetAttribute(progressbar1, "VALUE", "0");
@@ -232,6 +240,8 @@ void ProgressbarTest(void)
   Ihandle *dlg, *vbox, *hbox;
   Ihandle *btn_restart, *btn_accelerate, *btn_decelerate, *btn_show1, *btn_show2;
 
+  if (timer)
+    IupDestroy(timer);
   timer = IupTimer();
   IupSetCallback(timer, "ACTION_CB", (Icallback)time_cb);
   IupSetAttribute(timer, "TIME", "100");
@@ -290,6 +300,7 @@ void ProgressbarTest(void)
   dlg = IupDialog(vbox);
   
   IupSetAttribute(dlg, "TITLE", "IupProgressBar Test");
+  IupSetCallback(dlg, "UNMAP_CB", (Icallback) unmap_cb);
 
   IupSetCallback(btn_pause, "ACTION", (Icallback) btn_pause_cb);
   IupSetCallback(btn_restart, "ACTION", (Icallback) btn_restart_cb);

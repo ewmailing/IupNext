@@ -109,7 +109,7 @@ char* iupmotConvertString(XmString str)
   if (!XmStringInitContext (&context, str))
     return NULL;
 
-  buf = iupStrGetMemory(1024);
+  buf = iupStrGetMemory(XmStringLength(str));  /* always greatter than strlen */
 
   /* p keeps a running pointer through buf as text is read */
   p = buf;
@@ -118,9 +118,9 @@ char* iupmotConvertString(XmString str)
     switch (type) 
     {
     case XmSTRING_COMPONENT_TEXT:
-      memcpy(p, text, length+1);
+      memcpy(p, text, length);
       p += length;
-      XtFree(text);
+      *p = 0;
       break;
     case XmSTRING_COMPONENT_TAB:
       *p++ = '\t';
@@ -131,6 +131,7 @@ char* iupmotConvertString(XmString str)
       *p = 0;
       break;
     }
+    XtFree(text);
   }
 
   XmStringFreeContext(context);

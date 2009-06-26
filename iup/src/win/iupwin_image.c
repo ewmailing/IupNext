@@ -103,7 +103,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
       channels = iupAttribGetInt(ih, "CHANNELS"),
       flat_alpha = iupAttribGetInt(ih, "FLAT_ALPHA"),
       bpp = iupAttribGetInt(ih, "BPP");
-  unsigned char *imgdata = (unsigned char*)ih->handle;
+  unsigned char *imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   HBITMAP hBitmap;
   BYTE* bitmap;   /* DIB bitmap bits, created in CreateDIBSection and filled here */
 
@@ -185,7 +185,7 @@ static HBITMAP winImageCreateBitmask(Ihandle *ih)
       height = ih->currentheight,
       channels = iupAttribGetInt(ih, "CHANNELS"),
       bpp = iupAttribGetInt(ih, "BPP");
-  unsigned char *imgdata = (unsigned char*)ih->handle;
+  unsigned char *imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   HBITMAP hBitmap;
   BYTE* bitmask, *bitmask_ptr;
   iupColor colors[256];

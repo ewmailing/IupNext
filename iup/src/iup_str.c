@@ -287,11 +287,16 @@ int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
   {
     char* p_str = iupStrCopyUntil((char**)&str, sep);
     
-    if (!p_str ||   /* no separator means no second value */
-        *str==0)    /* second value empty also means no second value */
+    if (!p_str)   /* no separator means no second value */
     {        
-      if (!p_str) p_str = (char*)str;
-      if (sscanf(p_str, "%d", i1) != 1) return 0;
+      if (sscanf(str, "%d", i1) != 1) return 0;
+      return 1;
+    }
+    else if (*str==0)  /* separator exists, but second value empty, also means no second value */
+    {        
+      int ret = sscanf(p_str, "%d", i1);
+      free(p_str);
+      if (ret != 1) return 0;
       return 1;
     }
     else
@@ -326,18 +331,25 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
   {
     char* p_str = iupStrCopyUntil((char**)&str, sep);
     
-    if (!p_str ||   /* no separator means no second value */
-        *str==0)    /* second value empty also means no second value */
+    if (!p_str)   /* no separator means no second value */
     {        
-      if (!p_str) p_str = (char*)str;
-      if (sscanf(p_str, "%f", f1) != 1) return 0;
+      if (sscanf(str, "%f", f1) != 1) return 0;
+      return 1;
+    }
+    else if (*str==0)    /* separator exists, but second value empty, also means no second value */
+    {        
+      int ret = sscanf(p_str, "%f", f1);
+      free(p_str);
+      if (ret != 1) return 0;
       return 1;
     }
     else
     {
-      if (sscanf(p_str, "%f", f1) != 1) return 0;
-      if (sscanf(str, "%f", f2) != 1) return 1;
-      return 2;
+      int ret = 0;
+      if (sscanf(p_str, "%f", f1) != 1) ret++;
+      if (sscanf(str, "%f", f2) != 1) ret++;
+      free(p_str);
+      return ret;
     }
   }
 }
@@ -356,11 +368,15 @@ int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
   {
     char* p_str = iupStrCopyUntil((char**)&str, sep);
     
-    if (!p_str ||   /* no separator means no second value */
-        *str==0)    /* second value empty also means no second value */
+    if (!p_str)   /* no separator means no second value */
     {        
-      if (!p_str) p_str = (char*)str;
+      strcpy(str1, str);
+      return 1;
+    }
+    else if (*str==0)    /* separator exists, but second value empty, also means no second value */
+    {        
       strcpy(str1, p_str);
+      free(p_str);
       return 1;
     }
     else

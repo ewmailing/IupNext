@@ -343,7 +343,7 @@ void *iupTableGet(Itable *it, const char *key)
 
 Ifunc iupTableGetFunc(Itable *it, const char *key, void **value)
 {
-  Itable_Types itemType;
+  Itable_Types itemType = IUPTABLE_POINTER;
   *value = iupTableGetTyped(it, key, &itemType);
   if (itemType == IUPTABLE_FUNCPOINTER)
     return (Ifunc)(*value); /* type cast from void* to function pointer */

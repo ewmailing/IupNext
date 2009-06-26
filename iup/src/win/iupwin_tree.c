@@ -414,7 +414,7 @@ static void winTreeSelectItem(Ihandle* ih, HTREEITEM hItem, int select)
   SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)&item);
 }
 
-static HTREEITEM winTreeGetFocus(Ihandle* ih)
+static HTREEITEM winTreeGetFocusNode(Ihandle* ih)
 {
   return (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CARET, 0);
 }
@@ -424,7 +424,7 @@ static HTREEITEM winTreeGetFocus(Ihandle* ih)
    item without changing anything else. */
 static void winTreeSetFocus(Ihandle* ih, HTREEITEM hItem)
 {
-  HTREEITEM hItemFocus = winTreeGetFocus(ih);
+  HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
   if (hItem != hItemFocus)
   {
     /* remember the selection state of the item */
@@ -1526,7 +1526,7 @@ static int winTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 
 static int winTreeSetRenameAttrib(Ihandle* ih, const char* value)
 {  
-  HTREEITEM hItemFocus = winTreeGetFocus(ih);
+  HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
   if (ih->data->show_rename)
   {
     IFni cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
@@ -1583,9 +1583,9 @@ static int winTreeSetMarkStartAttrib(Ihandle* ih, const char* name_id)
 static char* winTreeGetValueAttrib(Ihandle* ih)
 {
   char* str;
-  HTREEITEM hItemFocus = winTreeGetFocus(ih);
+  HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
   if (!hItemFocus)
-    return NULL;
+    return "0"; /* default VALUE is root */
 
   str = iupStrGetMemory(16);
   sprintf(str, "%d", winTreeGetNodeId(ih, hItemFocus));
@@ -1599,7 +1599,7 @@ static int winTreeSetMarkAttrib(Ihandle* ih, const char* value)
 
   if(iupStrEqualNoCase(value, "BLOCK"))
   {
-    HTREEITEM hItemFocus = winTreeGetFocus(ih);
+    HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
     winTreeSelectRange(ih, (HTREEITEM)iupAttribGet(ih, "_IUPTREE_MARKSTART_NODE"), hItemFocus, 0);
   }
   else if(iupStrEqualNoCase(value, "CLEARALL"))
@@ -1645,7 +1645,7 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
   if (winTreeSetMarkAttrib(ih, value))
     return 0;
 
-  hItemFocus = winTreeGetFocus(ih);
+  hItemFocus = winTreeGetFocusNode(ih);
 
   if(iupStrEqualNoCase(value, "ROOT"))
     hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
@@ -1909,7 +1909,7 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
     }
   }
 
-  hItemFocus = winTreeGetFocus(ih);
+  hItemFocus = winTreeGetFocusNode(ih);
 
   /* simple click */
   winTreeClearSelection(ih, hItem);
@@ -1980,7 +1980,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
 
       if (wp == VK_RETURN)
       {
-        HTREEITEM hItemFocus = winTreeGetFocus(ih);
+        HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
         if (winTreeCallBranchLeafCb(ih, hItemFocus) != IUP_IGNORE)
           winTreeExpandItem(ih, hItemFocus, -1);
 
@@ -2007,14 +2007,14 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       {
         if (GetKeyState(VK_CONTROL) & 0x8000)
         {
-          HTREEITEM hItemFocus = winTreeGetFocus(ih);
+          HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
           /* Toggle selection state */
           winTreeSelectItem(ih, hItemFocus, -1);
         }
       }
       else if (wp == VK_UP || wp == VK_DOWN)
       {
-        HTREEITEM hItemFocus = winTreeGetFocus(ih);
+        HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
         if (wp == VK_UP)
           hItemFocus = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PREVIOUSVISIBLE, (LPARAM)hItemFocus);
         else
@@ -2238,7 +2238,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   }
   else if(msg_info->code == NM_DBLCLK)
   {
-    HTREEITEM hItemFocus = winTreeGetFocus(ih);
+    HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
     TVITEM item;
     winTreeItemData* itemData;
 
@@ -2326,7 +2326,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       /* Workaround: the focus feedback is not always drawn for the item. 
          Had to ignore CDIS_FOCUS to make it work. */
       HTREEITEM hItem = (HTREEITEM)customdraw->nmcd.dwItemSpec;
-      if (hItem == winTreeGetFocus(ih))
+      if (hItem == winTreeGetFocusNode(ih))
       {
         RECT rect;
         *(HTREEITEM*)&rect = hItem;

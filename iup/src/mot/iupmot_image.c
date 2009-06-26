@@ -28,7 +28,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   int y, x, bpp, bgcolor_depend = 0,
       width = ih->currentwidth,
       height = ih->currentheight;
-  unsigned char *imgdata = (unsigned char*)ih->handle;
+  unsigned char *imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   Pixmap pixmap;
   unsigned char bg_r=0, bg_g=0, bg_b=0;
   GC gc;
@@ -128,7 +128,7 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
       height = ih->currentheight,
       line_size = (width+7)/8,
       size_bytes = line_size*height;
-  unsigned char *imgdata = (unsigned char*)ih->handle;
+  unsigned char *imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   char *sbits, *mbits, *sb, *mb;
   Pixmap source, mask;
   XColor fg, bg;
@@ -201,7 +201,7 @@ void* iupdrvImageCreateMask(Ihandle *ih)
       height = ih->currentheight,
       line_size = (width+7)/8,
       size_bytes = line_size*height;
-  unsigned char *imgdata = (unsigned char*)ih->handle;
+  unsigned char *imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   char *bits, *sb;
   Pixmap mask;
   unsigned char colors[256];

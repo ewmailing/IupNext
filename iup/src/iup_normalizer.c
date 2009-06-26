@@ -43,7 +43,7 @@ void iupNormalizeSizeBoxChild(Ihandle *ih, int children_natural_maxwidth, int ch
   if (!normalize)
     return;
 
-  /* It is called at Vbox and Hbox ComputeNaturalSizeMethod after the natural size is calculated */
+  /* It is called from Vbox and Hbox ComputeNaturalSizeMethod after the natural size is calculated */
 
   /* reset the natural width and/or height */
   for (child = ih->firstchild; child; child = child->brother)

@@ -18,6 +18,9 @@ static int timer_cb(Ihandle *ih)
   if (ih == timer3)
   {
     printf("timer 3 called and CLOSE returned.\n");
+    IupDestroy(timer1);
+    IupDestroy(timer2);
+    IupDestroy(timer3);
     return IUP_CLOSE;
   }
 

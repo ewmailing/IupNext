@@ -1,9 +1,3 @@
-#if 0
-/* To check for memory leaks */
-#define VLD_MAX_DATA_DUMP 80
-#include <vld.h>
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

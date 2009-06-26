@@ -66,6 +66,10 @@ Iclass* iupRegisterFindClass(const char* name)
 
 void iupRegisterClass(Iclass* ic)
 {
+  Iclass* old_ic = (Iclass*)iupTableGet(iregister_table, ic->name);
+  if (old_ic)
+    iupClassRelease(old_ic);
+
   iupTableSet(iregister_table, ic->name, (void*)ic, IUPTABLE_POINTER);
 }
 

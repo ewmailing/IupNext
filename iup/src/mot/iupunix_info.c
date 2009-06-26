@@ -153,6 +153,21 @@ void iupdrvGetFullSize(int *width, int *height)
   *height = wa.height;
 }
 
+static int xCheckVisualInfo(Display* drv_display, int bpp)
+{
+  int nitems;
+  XVisualInfo info, *ret_info;
+
+  info.depth = bpp;
+  ret_info = XGetVisualInfo(drv_display, VisualDepthMask, &info, &nitems);
+  if (ret_info != NULL)
+  {
+    XFree(ret_info);
+    return 1;
+  }
+  return 0;
+}
+
 int iupdrvGetScreenDepth(void)
 {
   static int first = 1;
@@ -160,33 +175,27 @@ int iupdrvGetScreenDepth(void)
 
   if (first)
   {
-    int nitems;
-    XVisualInfo info;
     Display* drv_display = (Display*)iupdrvGetDisplay();
 
-    info.depth = 24;
-    if (XGetVisualInfo(drv_display, VisualDepthMask, &info, &nitems) != NULL)
+    if (xCheckVisualInfo(drv_display, 24))
     {
       bpp = 24;
       return bpp;
     }
 
-    info.depth = 16;
-    if (XGetVisualInfo(drv_display, VisualDepthMask, &info, &nitems) != NULL)
+    if (xCheckVisualInfo(drv_display, 16))
     {
       bpp = 16;
       return bpp;
     }
 
-    info.depth = 8;
-    if (XGetVisualInfo(drv_display, VisualDepthMask, &info, &nitems) != NULL)
+    if (xCheckVisualInfo(drv_display, 8))
     {
       bpp = 8;
       return bpp;
     }
 
-    info.depth = 4;
-    if (XGetVisualInfo(drv_display, VisualDepthMask, &info, &nitems) != NULL)
+    if (xCheckVisualInfo(drv_display, 4))
     {
       bpp = 4;
       return bpp;

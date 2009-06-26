@@ -11,7 +11,6 @@
 #include "iup.h"
 #include "iupcbs.h"
 #include "iupkey.h"
-#include "iupmask.h"
 #include "iupcontrols.h"
 
 #include <cd.h>
@@ -1051,17 +1050,17 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(clr_vb, "GAP", "5");
   IupSetAttribute(clr_vb, "EXPAND", "YES");
 
-  IupSetAttribute(IupNormalizer(IupGetChild(IupGetChild(hsi_vb, 0), 0),  /* Hue Label */
-                                IupGetChild(IupGetChild(hsi_vb, 1), 0),  /* Saturation Label */
-                                IupGetChild(IupGetChild(hsi_vb, 2), 0),  /* Intensity Label */
-                                IupGetChild(IupGetChild(clr_vb, 0), 0),  /* Opacity Label */
-                                IupGetChild(IupGetChild(clr_vb, 1), 0),  /* Hexa Label */
-                                NULL), "NORMALIZE", "HORIZONTAL");
+  IupDestroy(IupSetAttributes(IupNormalizer(IupGetChild(IupGetChild(hsi_vb, 0), 0),  /* Hue Label */
+                                            IupGetChild(IupGetChild(hsi_vb, 1), 0),  /* Saturation Label */
+                                            IupGetChild(IupGetChild(hsi_vb, 2), 0),  /* Intensity Label */
+                                            IupGetChild(IupGetChild(clr_vb, 0), 0),  /* Opacity Label */
+                                            IupGetChild(IupGetChild(clr_vb, 1), 0),  /* Hexa Label */
+                                            NULL), "NORMALIZE=HORIZONTAL"));
 
-  IupSetAttribute(IupNormalizer(IupGetChild(IupGetChild(rgb_vb, 0), 0),  /* Red Label */
-                                IupGetChild(IupGetChild(rgb_vb, 1), 0),  /* Green Label */
-                                IupGetChild(IupGetChild(rgb_vb, 2), 0),  /* Blue Label */
-                                NULL), "NORMALIZE", "HORIZONTAL");
+  IupDestroy(IupSetAttributes(IupNormalizer(IupGetChild(IupGetChild(rgb_vb, 0), 0),  /* Red Label */
+                                            IupGetChild(IupGetChild(rgb_vb, 1), 0),  /* Green Label */
+                                            IupGetChild(IupGetChild(rgb_vb, 2), 0),  /* Blue Label */
+                                            NULL), "NORMALIZE=HORIZONTAL"));
 
   col2 = IupVbox(IupSetAttributes(IupHbox(hsi_vb, IupFill(), rgb_vb, NULL), "EXPAND=YES"), 
                  IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"), 
