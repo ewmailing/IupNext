@@ -162,8 +162,16 @@ wb_usr.tree =
               link= "ide_guide/cppbx.html"
             },
             {
+              name= {nl= "Code Blocks"},
+              link= "ide_guide/codeblocks.html"
+            },
+            {
               name= {nl= "Dev-C++"},
               link= "ide_guide/dev-cpp.html"
+            },
+            {
+              name= {nl= "Eclipse for C++"},
+              link= "ide_guide/eclipse.html"
             },
             {
               name= {nl= "Open Watcom C++"},
@@ -176,10 +184,6 @@ wb_usr.tree =
             {
               name= {nl= "Visual C++ 8"},
               link= "ide_guide/msvc8.html"
-            },
-            {
-              name= {nl= "Eclipse for C++"},
-              link= "ide_guide/eclipse.html"
             },
           }
         },
