@@ -635,8 +635,10 @@ ifdef USE_LUA
     ifndef NO_LUALIB
       LIBS += lualib$(LUASUFX)
     endif
-    LIBS += lua$(LUASUFX)
-    LDIR += $(LUA_LIB)
+    ifndef NO_LUALINK
+      LIBS += lua$(LUASUFX)
+      LDIR += $(LUA_LIB)
+    endif
   endif
   
   LUA_INC   ?= $(LUA)/include
