@@ -252,12 +252,13 @@ focus.</p>
   
 <p><a href="../call/iup_resize_cb.html">RESIZE_CB</a>:
   Action generated when the canvas size is 
-  changed.</p>
+  changed. For older than GTK 2.14, the resize size will be the previous size.</p>
 
   
 <p><a href="../call/iup_scroll_cb.html">SCROLL_CB</a>:
   Called when the scrollbar is manipulated.
-  </p>
+  (GTK 2.8) Also the POSX and POSY values will not be correctly updated for 
+older GTK versions.</p>
 
   
 <p><a href="../call/iup_wheel_cb.html">WHEEL_CB</a>: Action generated when the mouse wheel is 

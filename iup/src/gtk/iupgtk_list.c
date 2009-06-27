@@ -458,9 +458,10 @@ static int gtkListSetSpacingAttrib(Ihandle* ih, const char* value)
   if (ih->handle)
   {
     GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
-    g_object_set(G_OBJECT(renderer), "xpad", ih->data->spacing, 
-                                     "ypad", ih->data->spacing, 
-                                     NULL);
+    if (renderer)
+      g_object_set(G_OBJECT(renderer), "xpad", ih->data->spacing, 
+                                       "ypad", ih->data->spacing, 
+                                       NULL);
     return 0;
   }
   else
@@ -475,12 +476,12 @@ static int gtkListSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle)
   {
+#if GTK_CHECK_VERSION(2, 10, 0)
     GtkEntry* entry;
     GtkBorder border;
     border.bottom = border.top = ih->data->vert_padding;
     border.left = border.right = ih->data->horiz_padding;
     entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
-#if GTK_CHECK_VERSION(2, 10, 0)
     gtk_entry_set_inner_border(entry, &border);
 #endif
     return 0;

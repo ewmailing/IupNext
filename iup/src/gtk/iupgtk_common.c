@@ -473,6 +473,9 @@ static void gtkDragDataReceived(GtkWidget* w, GdkDragContext* context, int x, in
   uris = g_uri_list_extract_uris((char*)seldata->data);
 #endif
 
+  if (!uris)
+    return;
+
   count = 0;
   while (uris[count])
     count++;

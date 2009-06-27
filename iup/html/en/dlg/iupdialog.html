@@ -202,11 +202,11 @@ also. </font>Possible values: YES, NO. </p>
 
 <p><b>TRAY</b> [Windows and GTK Only]: When set to
     &quot;YES&quot;, 
-    displays an icon on the system tray.</p>
+    displays an icon on the system tray. (GTK 2.10)</p>
 <p><b>TRAYIMAGE</b> [Windows and GTK Only]: Name of a IUP image to be used as 
-the tray icon.</p>
+the tray icon. (GTK 2.10)</p>
 <p><b>TRAYTIP</b> [Windows and GTK Only] :Tray icon's 
-    tooltip text.</p>
+    tooltip text. (GTK 2.10)</p>
       
 <h4>Exclusive [GTK Only]</h4>
 <p><strong>DIALOGHINT</strong> (creation-only): if enabled sets the window type 
@@ -305,7 +305,8 @@ dialog to be a MDI child. Can be YES or NO.
   Called right after the dialog is opened, minimized or 
   restored from a minimization.</p>
 <p><strong>TRAYCLICK_CB</strong>
-  [Windows and GTK Only]: Called right after the mouse button is pressed or released over the tray icon.</p>
+  [Windows and GTK Only]: Called right after the mouse button is pressed or released over the tray icon. 
+(GTK 2.10)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>but</strong>, int <strong>pressed</strong>, int <strong>dclick</strong>); <em>[in C]</em><br><b>elem</b>:trayclick_cb(<strong>but</strong>, <strong>pressed</strong>, <strong>dclick</strong>: number) -&gt; (<strong>ret</strong>: number) <em>[in Lua]</em></pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 

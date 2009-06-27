@@ -635,16 +635,22 @@ static void gtkTreeCallMultiSelectionCb(Ihandle* ih)
 static char* gtkTreeGetIndentationAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(255);
+#if GTK_CHECK_VERSION(2, 12, 0)
   int indent = gtk_tree_view_get_level_indentation(GTK_TREE_VIEW(ih->handle));
+#else
+  int indent = 0;
+#endif
   sprintf(str, "%d", indent);
   return str;
 }
 
 static int gtkTreeSetIndentationAttrib(Ihandle* ih, const char* value)
 {
+#if GTK_CHECK_VERSION(2, 12, 0)
   int indent;
   if (iupStrToInt(value, &indent))
     gtk_tree_view_set_level_indentation(GTK_TREE_VIEW(ih->handle), indent);
+#endif
   return 0;
 }
 
@@ -2120,15 +2126,19 @@ static int gtkTreeMapMethod(Ihandle* ih)
   gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(ih->handle), FALSE);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(ih->handle), FALSE);
 
+#if GTK_CHECK_VERSION(2, 10, 0)
   if (iupAttribGetInt(ih, "HIDELINES"))
     gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(ih->handle), FALSE);
   else
     gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(ih->handle), TRUE);
+#endif
 
+#if GTK_CHECK_VERSION(2, 12, 0)
   if (iupAttribGetInt(ih, "HIDEBUTTONS"))
     gtk_tree_view_set_show_expanders(GTK_TREE_VIEW(ih->handle), FALSE);
   else
     gtk_tree_view_set_show_expanders(GTK_TREE_VIEW(ih->handle), TRUE);
+#endif
 
   if (ih->data->show_dragdrop)
     gtkTreeEnableDragDrop(ih);

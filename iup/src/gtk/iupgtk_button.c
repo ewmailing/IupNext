@@ -199,7 +199,8 @@ static void gtkButtonSetPixbuf(Ihandle* ih, const char* name, int make_inactive)
 
   /* if not defined */
 #if GTK_CHECK_VERSION(2, 8, 0)
-  gtk_image_clear(image);
+  if (image)
+    gtk_image_clear(image);
 #endif
 }
 
