@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
     switch (op[1])
     {
       case 'v':
-        printf("LED Compiler version "VERSION"\n");
+        printf("Iup 3.0 LED Compiler to C\n");
         return 0;
         break;
       case 'o':

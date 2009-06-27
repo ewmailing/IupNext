@@ -37,6 +37,7 @@ ifdef USE_GTK
            gtk/iupgtk_tabs.c gtk/iupgtk_menu.c gtk/iupgtk_list.c gtk/iupgtk_tree.c
            
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    DEFINES += _WIN32_WINNT=0x0500 _WIN32_IE=0x0500 WINVER=0x0500 NOTREEVIEW
     SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c
   else
     SRC += mot/iupunix_help.c mot/iupunix_info.c

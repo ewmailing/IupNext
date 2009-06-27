@@ -1873,7 +1873,6 @@ static void winTreeExtendSelect(Ihandle* ih, int x, int y)
 
 static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
 {
-  HTREEITEM hItemFocus;
   TVHITTESTINFO info;
   HTREEITEM hItem;
   info.pt.x = x;
@@ -1908,8 +1907,6 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
       return 1;
     }
   }
-
-  hItemFocus = winTreeGetFocusNode(ih);
 
   /* simple click */
   winTreeClearSelection(ih, hItem);
