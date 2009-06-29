@@ -5,6 +5,5 @@ foreach plat ( Linux24 Linux24g3 Linux24g3_64 Linux26 Linux26_64 Linux26g4 Linux
   cp -f ../lib/$plat/*.so ../bin/$plat
   cp -f ../../cd/lib/$plat/*.so ../bin/$plat
   cp -f ../../im/lib/$plat/*.so ../bin/$plat
-  cp -f ../../lua5.1/lib/$plat/*.so ../bin/$plat
   rm -f ../bin/$plat/*3.so
 end

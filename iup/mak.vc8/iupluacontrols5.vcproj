@@ -122,14 +122,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srclua5\il_tree.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua5\il_tree_aux.c"
-				>
-			</File>
-			<File
 				RelativePath="..\srclua5\iuplua_controls.c"
 				>
 			</File>
@@ -159,10 +151,6 @@
 			</File>
 			<File
 				RelativePath="..\srclua5\matrix.lua"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua5\tree.lua"
 				>
 			</File>
 		</Filter>

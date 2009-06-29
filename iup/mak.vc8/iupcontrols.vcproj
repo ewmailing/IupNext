@@ -152,7 +152,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\color\iup_colordlg.c"
+				RelativePath="..\srccontrols\color\iup_colorbrowserdlg.c"
 				>
 			</File>
 			<File
@@ -276,94 +276,6 @@
 				</File>
 				<File
 					RelativePath="..\srccontrols\matrix\iupmat_scroll.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="tree"
-			>
-			<File
-				RelativePath="..\srccontrols\tree\iuptree.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\iuptree_callback.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\iuptree_draw.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\iuptree_edit.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\iuptree_find.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\iuptree_getset.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\iuptree_image.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\iuptree_key.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\iuptree_mouse.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srccontrols\tree\iuptree_scroll.c"
-				>
-			</File>
-			<Filter
-				Name="inc"
-				>
-				<File
-					RelativePath="..\srccontrols\tree\iuptree_callback.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\iuptree_def.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\iuptree_draw.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\iuptree_edit.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\iuptree_find.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\iuptree_getset.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\iuptree_image.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\iuptree_key.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\iuptree_mouse.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\tree\iuptree_scroll.h"
 					>
 				</File>
 			</Filter>

@@ -231,6 +231,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\win\iupwin_tree.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\win\iupwin_val.c"
 				>
 			</File>
