@@ -111,6 +111,10 @@ They will use the background color of the native parent.</p>
 <p><span class="style1">The <strong>IupItem</strong> in GTK must have its VALUE 
 attribute defined (ON or OFF) before mapping</span> - so it can have the check 
 mark, or define HIDEMARK=NO. If not done the item will not be checkable.</p>
+    <p>
+        The new IupTabs does not supports the inactive tab feedback. So the tabs will be
+        always active, although its children will be sucessfully disabled. The return value
+        of the TABCHANGE_CB callback is not processed anymore.</p>
 
 <p>In <strong>IupMatrix</strong> if the last column is not completely visible, 
 then adjust the matrix size manually or let the natural size adjust it for you 

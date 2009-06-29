@@ -195,6 +195,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
   button_box = IupHbox(NULL);
   IupSetAttribute(button_box, "NORMALIZESIZE", "HORIZONTAL");
   IupSetAttribute(button_box,"MARGIN","0x0");
+  IupAppend(button_box, IupFill()); /* to center the buttons */
 
   button = IupButton(b1, NULL);
   iupAttribSetStrf(button, "_IUP_BUTTON_NUMBER", "1");
@@ -223,6 +224,8 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
     IupSetCallback (button, "ACTION", (Icallback)iAlarmButtonAction_CB);
     default_esc = button;
   }
+
+  IupAppend(button_box, IupFill()); /* to center the buttons */
 
   dlg_box = IupVbox(
     IupLabel(msg),

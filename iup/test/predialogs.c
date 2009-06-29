@@ -263,6 +263,7 @@ static void new_file(char* dialogtype, int preview)
 static void new_alarm(void)
 {
   int ret = IupAlarm ("IupAlarm Test", "Message Text\nSecond Line", "But 1", "Button 2", "B3");
+  //int ret = IupAlarm ("IupAlarm Test", "Message Text\nSecond Line\nVery long long long long long long long long long long long long text", "But 1", "Button 2", "B3");
   printf("Button(%d)\n", ret);
 }
 
