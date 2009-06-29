@@ -397,6 +397,27 @@ static char* iMatrixGetRasterHeightAttrib(Ihandle* ih, const char* name_id)
   return NULL;
 }
 
+static char* iMatrixGetAlignmentAttrib(Ihandle* ih, const char* name_id)
+{
+  char* align;
+  char str[50];
+  sprintf(str, "ALIGNMENT%s", name_id);
+  align = iupAttribGet(ih, str);
+  if (!align)
+  {
+    int col;
+    if (iupStrToInt(name_id, &col))
+    {
+      if (col == 0)
+        return "ALEFT";
+      else
+        return "ACENTER";
+    }
+  }
+    
+  return NULL;
+}
+
 static int iMatrixSetIdValueAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   int lin = 0, col = 0;
@@ -815,7 +836,7 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttributeId(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
 
   /* IupMatrix Attributes - COLUMN */
-  iupClassRegisterAttributeId(ic, "ALIGNMENT", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ALIGNMENT", iMatrixGetAlignmentAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "SORTSIGN", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - SIZE */

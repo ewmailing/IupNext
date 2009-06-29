@@ -61,7 +61,12 @@ static int iMatrixDrawGetColAlignment(Ihandle* ih, int col, char* str)
   sprintf(str, "ALIGNMENT%d", col);
   align = iupAttribGet(ih, str);
   if (!align)
-    return IMAT_T_LEFT;
+  {
+    if (col == 0)
+      return IMAT_T_LEFT;
+    else
+      return IMAT_T_CENTER;
+  }
   else if (iupStrEqualNoCase(align, "ARIGHT"))
     return IMAT_T_RIGHT;
   else if(iupStrEqualNoCase(align, "ACENTER"))

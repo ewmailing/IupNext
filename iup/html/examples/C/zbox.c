@@ -10,10 +10,11 @@ is presented, and according to the selected option the dialog below the list is 
 
 int list_cb (Ihandle *h, char *t, int o, int selected)
 {
-  Ihandle* zbox = IupGetHandle ("zbox");
-  
   if (selected == 1)
+  {
+    Ihandle* zbox = IupGetHandle ("zbox");
     IupSetAttribute (zbox, "VALUE", t);
+  }
   
   return IUP_DEFAULT;
 }
@@ -27,11 +28,11 @@ int main(int argc, char **argv)
   Ihandle *list;
   Ihandle *lbl;
   Ihandle *btn;
-  Ihandle *fill;
+  Ihandle *frame;
 
   IupOpen(&argc, &argv);
 
-  fill = IupFill();
+  frame = IupFrame(IupSetAttributes(IupList(NULL), "DROPDOWN=YES, 1=Test, 2=XXX, VALUE=1"));
 
   text = IupText("");
 
@@ -44,28 +45,27 @@ int main(int argc, char **argv)
   btn = IupButton ("This button does nothing", "");
 
   /* Creates handles for manipulating the zbox VALUE */
-  IupSetHandle ("fill", fill);
+  IupSetHandle ("frame", frame);
   IupSetHandle ("text", text);
   IupSetHandle ("lbl", lbl);
   IupSetHandle ("btn", btn);
 	
   /* Creates zbox with four elements */
-  zbox = IupZbox (fill, text, lbl, btn, NULL);
+  zbox = IupZbox (frame, text, lbl, btn, NULL);
 
   /* Associates handle "zbox" with zbox */
   IupSetHandle ("zbox", zbox);
 
   /* Sets zbox alignment */
   IupSetAttribute (zbox, "ALIGNMENT", "ACENTER");
+  IupSetAttribute (zbox, "VALUE", "text");
 
   /* Creates frame */
   frm = IupFrame
   (
     IupHbox
     (
-      IupFill(),
       list = IupList(NULL),
-      IupFill(),
       NULL
     )
   ),
@@ -81,9 +81,9 @@ int main(int argc, char **argv)
     )
   );
 
-  IupSetAttributes (list, "1 = fill, 2 = text, 3 = lbl, 4 = btn");
+  IupSetAttributes (list, "1 = frame, 2 = text, 3 = lbl, 4 = btn, VALUE=2");
   IupSetAttribute (frm, "TITLE", "Select an element");
-  IupSetAttributes (dlg, "SIZE = QUARTER, TITLE = \"IupZbox Example\"");
+  IupSetAttributes (dlg, "MARGIN=10x10, GAP=10, TITLE = \"IupZbox Example\"");
   IupSetCallback (list, "ACTION", (Icallback) list_cb);
 
   IupShowXY (dlg, IUP_CENTER, IUP_CENTER );

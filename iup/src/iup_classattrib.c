@@ -114,7 +114,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
         }
 
         if (afunc->flags & IUPAF_NO_STRING)
-          return 0;
+          return -1; /* value is NOT a string, can NOT call iupAttribStoreStr */
 
         return 1; /* if the function exists, then must return here */
       }
@@ -153,8 +153,8 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
       else
         ret = afunc->set(ih, value);
 
-      if (afunc->flags & IUPAF_NO_STRING)
-        return 0;
+      if (ret == 1 && afunc->flags & IUPAF_NO_STRING)
+        return -1;  /* value is NOT a string, can NOT call iupAttribStoreStr */
 
       if (*inherit)
         return 1;   /* inheritable attributes are always stored in the hash table, */

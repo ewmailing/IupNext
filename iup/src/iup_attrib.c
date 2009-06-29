@@ -170,7 +170,7 @@ void iupAttribUpdate(Ihandle* ih)
       if (inherit)
         iAttribNotifyChildren(ih, name, value);
 
-      if (!store)
+      if (store == 0)
         iupTableRemove(ih->attrib, name); /* remove from the table acording to the class SetAttribute */
     }
   }
@@ -200,7 +200,7 @@ void IupSetAttribute(Ihandle *ih, const char* name, const char *value)
     iupAttribSetStr(ih, name, value);
   else
   {
-    if (iupClassObjectSetAttribute(ih, name, value, &inherit))
+    if (iupClassObjectSetAttribute(ih, name, value, &inherit)!=0) /* store strings and pointers */
       iupAttribSetStr(ih, name, value);
 
     if (inherit)
@@ -229,7 +229,7 @@ void IupStoreAttribute(Ihandle *ih, const char* name, const char *value)
     iupAttribStoreStr(ih, name, value);
   else
   {
-    if (iupClassObjectSetAttribute(ih, name, value, &inherit))
+    if (iupClassObjectSetAttribute(ih, name, value, &inherit)==1) /* store only strings */
       iupAttribStoreStr(ih, name, value);
 
     if (inherit)

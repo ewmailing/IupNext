@@ -261,6 +261,8 @@ char* iupMatrixGetBgColor(Ihandle* ih, int lin, int col)
   }
 }
 
+#define IMAT_DARKER(_x)    (((_x)*9)/10)
+
 void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b)
 {
   /* called from Draw only */
@@ -272,7 +274,7 @@ void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
     iupStrToRGB(iMatrixGetCellAttrib(ih, IUPMAT_BGCOLOR, lin, col, native_parent), r, g, b);
     if (native_parent)
     {
-      int ir = *r-12, ig=*g-12, ib=*b-12; /* use a darker version of the background 5% of 255 */
+      int ir = IMAT_DARKER(*r), ig=IMAT_DARKER(*g), ib=IMAT_DARKER(*b); /* use a darker version of the background by 10% */
       *r = iupBYTECROP(ir);
       *g = iupBYTECROP(ig);
       *b = iupBYTECROP(ib);
