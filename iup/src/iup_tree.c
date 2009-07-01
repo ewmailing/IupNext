@@ -501,8 +501,8 @@ int IupTreeGetId(Ihandle* ih, void *userdata)
 {
   int id = -1;
   char* value;
-  char attr[10];
-  sprintf(attr,"FINDUSERDATA%p",userdata);
+  char attr[30];
+  sprintf(attr,"FINDUSERDATA:%p",userdata);
   value = IupGetAttribute(ih, attr);
   if (!value) return -1;
 

@@ -263,6 +263,7 @@ static int nodeinfo(Ihandle* ih)
   printf("  COLOR=%s\n", IupGetAttribute(tree, "COLOR"));
   printf("  PARENT=%s\n", IupGetAttribute(tree, "PARENT"));
   printf("  COUNT=%s\n", IupGetAttribute(tree, "CHILDCOUNT"));
+  printf("  USERDATA=%p\n", IupGetAttribute(tree, "USERDATA"));
   return IUP_DEFAULT;
 }
 

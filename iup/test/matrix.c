@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
+#undef __IUPDEF_H
 #include "iup.h"
 #include "iupcontrols.h"
 
@@ -12,7 +14,53 @@ static int dropcheck_cb(Ihandle *self, int lin, int col)
   return IUP_IGNORE;
 }
 
+static Ihandle* Att( char* name, Ihandle* elem, char* first, ...)
+{
+  char *attr, *val;
+  va_list arg;
+  va_start (arg, first);
+  attr = first;
+  while (attr)
+  {
+    val = va_arg(arg,char*);
+    IupSetAttribute( elem, attr, val );
+    attr = va_arg(arg,char*);
+  }
+  va_end (arg);
+  if(name) IupSetHandle( name, elem );
+  return elem;
+}
+
 static Ihandle* create_matrix(void)
+{
+  Ihandle* gui_top = Att(NULL,
+    IupHbox(
+      IupFill(),
+      Att("mt_flt_label", IupMatrix(NULL),
+        IUP_NUMCOL, "1",
+        IUP_NUMLIN, "1",
+        IUP_NUMCOL_VISIBLE, "1",
+        IUP_NUMLIN_VISIBLE, "1",
+        IUP_FGCOLOR, "0 0 0",
+        IUP_BGCOLOR, "255 255 255",
+        IUP_CURSOR, "ARROW",
+        "WIDTH0", "40",
+        "WIDTH1", "80",
+        "HEIGHT1", "12",
+        "ALIGNMENT0", IUP_ACENTER,
+        IUP_SCROLLBAR, IUP_NO,
+        IUP_EXPAND, IUP_NO,
+        "1:0", "Label", 
+        "1:1", "Test", 
+        NULL),
+      IupFill(),
+      NULL),
+    NULL);
+
+  return gui_top;
+}
+
+static Ihandle* create_matrix2(void)
 {
   Ihandle* mat = IupMatrix(NULL); 
   

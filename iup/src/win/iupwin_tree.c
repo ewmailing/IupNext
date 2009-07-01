@@ -115,22 +115,73 @@ static HTREEITEM winTreeFindNodeID(Ihandle* ih, HTREEITEM hItem, HTREEITEM hNode
       hItemChild = winTreeFindNodeID(ih, hItemChild, hNode);
 
       /* StateID founded! */
-      if(hItemChild == hNode)
+      if(hItemChild)
         return hItemChild;
     }
     /* Go to next sibling item */
     hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hItem);
   }
 
-  return hItem;
+  return NULL;
 }
 
 static int winTreeGetNodeId(Ihandle* ih, HTREEITEM hItem)
 {
   HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
   ih->data->id_control = -1;
-  winTreeFindNodeID(ih, hItemRoot, hItem);
-  return ih->data->id_control;
+  if (winTreeFindNodeID(ih, hItemRoot, hItem))
+    return ih->data->id_control;
+  else
+    return -1;
+}
+
+static HTREEITEM winTreeFindUserDataID(Ihandle* ih, HTREEITEM hItem, void* userdata)
+{
+  TVITEM item;
+  winTreeItemData* itemData;
+
+  while(hItem != NULL)
+  {
+    /* ID control to traverse items */
+    ih->data->id_control++;
+
+    /* Get hItem attributes */
+    item.hItem = hItem;
+    item.mask = TVIF_HANDLE|TVIF_PARAM;
+    SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+    itemData = (winTreeItemData*)item.lParam;
+
+    /* userdata founded! */
+    if(itemData->userdata == userdata)
+      return hItem;
+
+    /* Check whether we have child items */
+    if (itemData->kind == ITREE_BRANCH)
+    {
+      /* Recursively traverse child items */
+      HTREEITEM hItemChild = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItem);
+      hItemChild = winTreeFindUserDataID(ih, hItemChild, userdata);
+
+      /* userdata founded! */
+      if (hItemChild)
+        return hItemChild;
+    }
+
+    /* Go to next sibling item */
+    hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hItem);
+  }
+
+  return NULL;
+}
+
+static int winTreeGetUserDataId(Ihandle* ih, void* userdata)
+{
+  HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
+  ih->data->id_control = -1;
+  if (winTreeFindUserDataID(ih, hItemRoot, userdata))
+    return ih->data->id_control;
+  else
+    return -1;
 }
 
 static HTREEITEM winTreeFindNodeFromID(Ihandle* ih, HTREEITEM hItem)
@@ -1098,6 +1149,21 @@ static int winTreeSetTitleAttrib(Ihandle* ih, const char* name_id, const char* v
   item.pszText = (char*)value;
   SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
   return 0;
+}
+
+static char* winTreeGetFindUserDataAttrib(Ihandle* ih, const char* name_id)
+{
+  int id;
+  char* str = (char*)(name_id+1); /* skip ':' */
+  void* userdata = NULL;
+  if (sscanf(str, "%p", &userdata)!=1)
+    return NULL;
+  id = winTreeGetUserDataId(ih, userdata);
+  if (id == -1)
+    return NULL;
+  str = iupStrGetMemory(16);
+  sprintf(str, "%d", id);
+  return str;
 }
 
 static char* winTreeGetUserDataAttrib(Ihandle* ih, const char* name_id)
@@ -2464,7 +2530,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "NAME",   winTreeGetTitleAttrib,   winTreeSetTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLE",   winTreeGetTitleAttrib,   winTreeSetTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "CHILDCOUNT",   winTreeGetChildCountAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "USERDATA",   winTreeGetUserDataAttrib,   winTreeSetUserDataAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "USERDATA",   winTreeGetUserDataAttrib,   winTreeSetUserDataAttrib, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COLOR",  winTreeGetColorAttrib,  winTreeSetColorAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLEFONT", winTreeGetTitleFontAttrib, winTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 
@@ -2481,6 +2547,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "RENAME",  NULL, winTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, winTreeSetMoveNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, winTreeSetCopyNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FINDUSERDATA", winTreeGetFindUserDataAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

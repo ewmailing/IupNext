@@ -279,7 +279,7 @@ static Widget motTreeFindVisibleNodeId(Ihandle* ih, WidgetList itemList, int num
       itemChild = motTreeFindVisibleNodeId(ih, itemChildList, numChild, itemNode);
 
       /* StateID founded! */
-      if(itemChild == itemNode)
+      if(itemChild)
       {
         XtFree((char*)itemChildList);
         return itemChild;
@@ -611,7 +611,7 @@ static Widget motTreeFindNodeID(Ihandle* ih, WidgetList itemList, int numItems, 
       itemChild = motTreeFindNodeID(ih, itemChildList, numChild, itemNode);
 
       /* StateID founded! */
-      if(itemChild == itemNode)
+      if(itemChild)
       {
         if (itemChildList) XtFree((char*)itemChildList);
         return itemChild;
@@ -670,8 +670,63 @@ static int motTreeGetNodeId(Ihandle* ih, Widget wItem)
 {
   Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
   ih->data->id_control = -1;
-  motTreeFindNodeID(ih, &wRoot, 1, wItem);  /* use only the first element (base) of the selected objects array */
-  return ih->data->id_control;
+  if (motTreeFindNodeID(ih, &wRoot, 1, wItem))
+    return ih->data->id_control;
+  else
+    return -1;
+}
+
+static Widget motTreeFindUserDataID(Ihandle* ih, WidgetList itemList, int numItems, void* userdata)
+{
+  Widget itemChild;
+  WidgetList itemChildList;
+  motTreeItemData *itemData;
+  int i = 0;
+  int numChild;
+
+  while(i != numItems)
+  {
+    /* ID control to traverse items */
+    ih->data->id_control++;
+
+    XtVaGetValues(itemList[i], XmNuserData, &itemData, NULL);
+
+    /* StateID founded! */
+    if(itemData->userdata == userdata)
+      return itemList[i];
+
+    /* Check whether we have child items */
+    itemChildList = NULL;
+    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
+    if(numChild)
+    {
+      /* pass the list of children of this item */
+      itemChild = motTreeFindUserDataID(ih, itemChildList, numChild, userdata);
+
+      /* StateID founded! */
+      if (itemChild)
+      {
+        if (itemChildList) XtFree((char*)itemChildList);
+        return itemChild;
+      }
+    }
+
+    if (itemChildList) XtFree((char*)itemChildList);
+    /* Go to next sibling item */
+    i++;
+  }
+
+  return NULL;
+}
+
+static int motTreeGetUserDataId(Ihandle* ih, void* userdata)
+{
+  Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
+  ih->data->id_control = -1;
+  if (motTreeFindUserDataID(ih, &wRoot, 1, userdata))
+    return ih->data->id_control;
+  else
+    return -1;
 }
 
 static void motTreeSetFocusNode(Ihandle* ih, Widget wItem)
@@ -1520,6 +1575,21 @@ static char* motTreeGetTitleFontAttrib(Ihandle* ih, const char* name_id)
   return iupmotFindFontList(fontlist);
 }
 
+static char* motTreeGetFindUserDataAttrib(Ihandle* ih, const char* name_id)
+{
+  int id;
+  char* str = (char*)(name_id+1); /* skip ':' */
+  void* userdata = NULL;
+  if (sscanf(str, "%p", &userdata)!=1)
+    return NULL;
+  id = motTreeGetUserDataId(ih, userdata);
+  if (id == -1)
+    return NULL;
+  str = iupStrGetMemory(16);
+  sprintf(str, "%d", id);
+  return str;
+}
+
 static char* motTreeGetUserDataAttrib(Ihandle* ih, const char* name_id)
 {
   motTreeItemData *itemData;
@@ -1973,14 +2043,14 @@ static void motTreeScrollbarOffset(Widget sb_win, Position *x, Position *y)
   {
     int pos;
     XtVaGetValues(sb_horiz, XmNvalue, &pos, NULL);
-    *x -= (Position)pos;
+    *x = *x - (Position)pos;
   }
   XtVaGetValues(sb_win, XmNverticalScrollBar, &sb_vert, NULL);
   if (sb_vert) 
   {
     int pos;
     XtVaGetValues(sb_vert, XmNvalue, &pos, NULL);
-    *y -= (Position)pos;
+    *y = *y - (Position)pos;
   }
 }
 
@@ -2769,7 +2839,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "COLOR",  motTreeGetColorAttrib,  motTreeSetColorAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NAME",   motTreeGetTitleAttrib,   motTreeSetTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLE",   motTreeGetTitleAttrib,   motTreeSetTitleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "USERDATA",   motTreeGetUserDataAttrib,   motTreeSetUserDataAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "USERDATA",   motTreeGetUserDataAttrib,   motTreeSetUserDataAttrib, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "CHILDCOUNT",   motTreeGetChildCountAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLEFONT", motTreeGetTitleFontAttrib, motTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 
@@ -2786,4 +2856,5 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "RENAME",  NULL, motTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, motTreeSetMoveNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, motTreeSetCopyNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FINDUSERDATA", motTreeGetFindUserDataAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 }
