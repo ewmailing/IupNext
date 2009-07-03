@@ -126,7 +126,12 @@ information is terminated by a &quot;\n&quot; character.</p>
 <hr>
 <h2 style="text-align: center">GTK Global Attributes&nbsp;</h2>
 <h3><strong><a name="GTKVERSION">GTKVERSION</a></strong> (read-only)</h3>
-<p>Returns the version of the run time GTK. </p>
+<p>Returns the run time version of the GTK toolkit. This is the version being used at the time of the IupOpen function was called by the application.</p>
+<h3><strong><a name="GTKDEVVERSION">GTKDEVVERSION</a></strong> (read-only)</h3>
+<p>Returns the development version of the GTK toolkit. This is the version at the time
+    the IUP library was compiled. </p>
+    <p>
+        GTKDEVVERSION</p>
 <h3><strong><a name="UTF8AUTOCONVERT">UTF8AUTOCONVERT</a></strong></h3>
 <p>GTK uses UTF-8 as its charset for all displayed text, so IUP will 
 automatically convert all strings to (SetAttribute) and from (GetAttribute) 

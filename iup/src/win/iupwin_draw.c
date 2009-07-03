@@ -187,6 +187,7 @@ void iupwinDrawThemeFrameBorder(HWND hWnd, HDC hDC, RECT *rect, UINT itemState)
 int iupwinDrawGetThemeTabsBgColor(HWND hWnd, COLORREF *color)
 {
   HTHEME hTheme;
+  HRESULT ret;
 
   if (!winDrawThemeEnabled()) 
     return 0; 
@@ -196,17 +197,18 @@ int iupwinDrawGetThemeTabsBgColor(HWND hWnd, COLORREF *color)
     return 0;
 
   if (iupwinIsVista())
-    winThemeGetColor(hTheme, TABP_AEROWIZARDBODY, TIS_NORMAL, TMT_FILLCOLORHINT, color);
+    ret = winThemeGetColor(hTheme, TABP_AEROWIZARDBODY, TIS_NORMAL, TMT_FILLCOLORHINT, color);
   else
-    winThemeGetColor(hTheme, TABP_BODY, TIS_NORMAL, TMT_FILLCOLORHINT, color);
+    ret = winThemeGetColor(hTheme, TABP_BODY, TIS_NORMAL, TMT_FILLCOLORHINT, color);
 
   winThemeCloseData(hTheme);
-  return 1;
+  return (ret == S_OK)? 1: 0;
 }
 
 int iupwinDrawGetThemeButtonBgColor(HWND hWnd, COLORREF *color)
 {
   HTHEME hTheme;
+  HRESULT ret;
 
   if (!winDrawThemeEnabled()) 
     return 0; 
@@ -215,15 +217,16 @@ int iupwinDrawGetThemeButtonBgColor(HWND hWnd, COLORREF *color)
   if (!hTheme) 
     return 0;
 
-  winThemeGetColor(hTheme, BP_PUSHBUTTON, PBS_NORMAL, TMT_FILLCOLORHINT, color);
+  ret = winThemeGetColor(hTheme, BP_PUSHBUTTON, PBS_NORMAL, TMT_FILLCOLORHINT, color);
 
   winThemeCloseData(hTheme);
-  return 1;
+  return (ret == S_OK)? 1: 0;
 }
 
 int iupwinDrawGetThemeFrameFgColor(HWND hWnd, COLORREF *color)
 {
   HTHEME hTheme;
+  HRESULT ret;
 
   if (!winDrawThemeEnabled()) 
     return 0; 
@@ -232,10 +235,10 @@ int iupwinDrawGetThemeFrameFgColor(HWND hWnd, COLORREF *color)
   if (!hTheme) 
     return 0;
 
-  winThemeGetColor(hTheme, BP_GROUPBOX, GBS_NORMAL, TMT_TEXTCOLOR, color);
+  ret = winThemeGetColor(hTheme, BP_GROUPBOX, GBS_NORMAL, TMT_TEXTCOLOR, color);
 
   winThemeCloseData(hTheme);
-  return 1;
+  return (ret == S_OK)? 1: 0;
 }
 
 static int winDrawGetStateId(int itemState)

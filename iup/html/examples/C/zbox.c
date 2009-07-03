@@ -33,6 +33,7 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);
 
   frame = IupFrame(IupSetAttributes(IupList(NULL), "DROPDOWN=YES, 1=Test, 2=XXX, VALUE=1"));
+  IupSetAttribute (frame, "TITLE", "List");
 
   text = IupText("");
 

@@ -84,7 +84,7 @@ const char* iupFontGetXName(const char* name)
 
 char *IupUnMapFont(const char *standardfont)
 {
-  int size;
+  int size = 0;
   int is_bold = 0,
     is_italic = 0, 
     is_underline = 0,
@@ -210,7 +210,7 @@ void iupUpdateStandardFontAttrib(Ihandle* ih)
 
 char* iupGetFontFaceAttrib(Ihandle* ih)
 {
-  int size;
+  int size = 0;
   int is_bold = 0,
     is_italic = 0, 
     is_underline = 0,
@@ -238,7 +238,7 @@ char* iupGetFontFaceAttrib(Ihandle* ih)
 
 char* iupGetFontSizeAttrib(Ihandle* ih)
 {
-  int size;
+  int size = 0;
   int is_bold = 0,
     is_italic = 0, 
     is_underline = 0,
@@ -266,7 +266,7 @@ char* iupGetFontSizeAttrib(Ihandle* ih)
 
 int iupSetFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  int size;
+  int size = 0;
   int is_bold = 0,
     is_italic = 0, 
     is_underline = 0,
@@ -298,7 +298,7 @@ int iupSetFontSizeAttrib(Ihandle* ih, const char* value)
 
 char* iupGetFontStyleAttrib(Ihandle* ih)
 {
-  int size;
+  int size = 0;
   int is_bold = 0,
     is_italic = 0, 
     is_underline = 0,
@@ -326,7 +326,7 @@ char* iupGetFontStyleAttrib(Ihandle* ih)
 
 int iupSetFontStyleAttrib(Ihandle* ih, const char* value)
 {
-  int size;
+  int size = 0;
   int is_bold = 0,
     is_italic = 0, 
     is_underline = 0,
@@ -437,6 +437,9 @@ int iupFontParsePango(const char *standardfont, char *typeface, int *size, int *
   const char *p, *last;
   int len, wordlen, style = 0;
 
+  if (standardfont[0] == '-')  /* X font, abort */
+    return 0;
+
   len = (int)strlen(standardfont);
   last = standardfont + len;
   p = iFontGetWord(standardfont, last, &wordlen);
@@ -515,6 +518,9 @@ int iupFontParsePango(const char *standardfont, char *typeface, int *size, int *
 int iupFontParseWin(const char *value, char *fontname, int *height, int *bold, int *italic, int *underline, int *strikeout)
 {
   int c;
+
+  if (value[0] == '-')  /* X font, abort */
+    return 0;
 
   if (strstr(value, ":") == NULL)
     return 0;

@@ -200,7 +200,7 @@ static ImotFont* motFindFont(const char* foundry, const char *standardfont)
   }
   else
   {
-    int size,
+    int size = 0,
         is_bold = 0,
         is_italic = 0;
     char typeface[1024];

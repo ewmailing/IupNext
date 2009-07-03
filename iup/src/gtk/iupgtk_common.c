@@ -209,36 +209,40 @@ void iupdrvSetActive(Ihandle* ih, int enable)
 
 char* iupdrvBaseGetXAttrib(Ihandle *ih)
 {
-  char* str = iupStrGetMemory(20);
-  int x, y;
   GdkWindow* window = ih->handle->window;
   GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (container) window = container->window;
 
   if (window)
-    gdk_window_get_root_origin(window, &x, &y);
+  {
+    char* str = iupStrGetMemory(20);
+    int x, y;
+    gdk_window_get_origin(window, &x, &y);
+    x += ih->handle->allocation.x;
+    sprintf(str, "%d", x);
+    return str;
+  }
   else
     return NULL;
-
-  sprintf(str, "%d", x);
-  return str;
 }
 
 char* iupdrvBaseGetYAttrib(Ihandle *ih)
 {
-  char* str = iupStrGetMemory(20);
-  int x, y;
   GdkWindow* window = ih->handle->window;
   GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (container) window = container->window;
 
   if (window)
-    gdk_window_get_root_origin(window, &x, &y);
+  {
+    char* str = iupStrGetMemory(20);
+    int x, y;
+    gdk_window_get_origin(window, &x, &y);
+    y += ih->handle->allocation.y;
+    sprintf(str, "%d", y);
+    return str;
+  }
   else
     return NULL;
-
-  sprintf(str, "%d", y);
-  return str;
 }
 
 char* iupdrvBaseGetClientSizeAttrib(Ihandle *ih)
@@ -586,7 +590,7 @@ char* iupgtkStrConvertToUTF8(const char* str)  /* From IUP to GTK */
 
   if (iupgtk_utf8autoconvert)  /* this means str is in current locale */
   {
-    const char *charset;
+    const char *charset = NULL;
     if (g_get_charset(&charset)==TRUE)  /* current locale is already UTF-8 */
     {
       if (g_utf8_validate(str, -1, NULL))
@@ -602,9 +606,9 @@ char* iupgtkStrConvertToUTF8(const char* str)  /* From IUP to GTK */
     }
     else
     {
-      if (gtkStrIsAscii(str))
+      if (gtkStrIsAscii(str) || !charset)
         return (char*)str;
-      else
+      else if (charset)
       {
         if (gktLastConvertUTF8)
           g_free(gktLastConvertUTF8);
@@ -614,8 +618,7 @@ char* iupgtkStrConvertToUTF8(const char* str)  /* From IUP to GTK */
       }
     }
   }
-  else
-    return (char*)str;
+  return (char*)str;
 }
 
 char* iupgtkStrConvertFromUTF8(const char* str)  /* From GTK to IUP */
@@ -625,7 +628,7 @@ char* iupgtkStrConvertFromUTF8(const char* str)  /* From GTK to IUP */
 
   if (iupgtk_utf8autoconvert)  /* this means str is in current locale */
   {
-    const gchar *charset;
+    const gchar *charset = NULL;
     if (g_get_charset(&charset)==TRUE)  /* current locale is already UTF-8 */
     {
       if (g_utf8_validate(str, -1, NULL))
@@ -641,9 +644,9 @@ char* iupgtkStrConvertFromUTF8(const char* str)  /* From GTK to IUP */
     }
     else
     {
-      if (gtkStrIsAscii(str))
+      if (gtkStrIsAscii(str) || !charset)
         return (char*)str;
-      else
+      else if (charset)
       {
         if (gktLastConvertUTF8)
           g_free(gktLastConvertUTF8);
@@ -653,8 +656,7 @@ char* iupgtkStrConvertFromUTF8(const char* str)  /* From GTK to IUP */
       }
     }
   }
-  else
-    return (char*)str;
+  return (char*)str;
 }
 
 static gboolean gtkGetFilenameCharset(const gchar **filename_charset)
@@ -699,7 +701,7 @@ char* iupgtkStrConvertToFilename(const char* str)   /* From IUP to Filename */
     {
       if (gtkStrIsAscii(str) || !charset)
         return (char*)str;
-      else
+      else if (charset)
       {
         if (gktLastConvertUTF8)
           g_free(gktLastConvertUTF8);
@@ -709,6 +711,7 @@ char* iupgtkStrConvertToFilename(const char* str)   /* From IUP to Filename */
       }
     }
   }
+  return (char*)str;
 }
 
 char* iupgtkStrConvertFromFilename(const char* str)   /* From Filename to IUP */
@@ -720,7 +723,7 @@ char* iupgtkStrConvertFromFilename(const char* str)   /* From Filename to IUP */
     return (char*)str;
   else
   {
-    const char *charset;
+    const char *charset = NULL;
     if (gtkGetFilenameCharset(&charset)==TRUE)  /* current locale is already UTF-8 */
     {
       if (g_utf8_validate(str, -1, NULL))
@@ -736,9 +739,9 @@ char* iupgtkStrConvertFromFilename(const char* str)   /* From Filename to IUP */
     }
     else
     {
-      if (gtkStrIsAscii(str))
+      if (gtkStrIsAscii(str) || !charset)
         return (char*)str;
-      else
+      else if (charset)
       {
         if (gktLastConvertUTF8)
           g_free(gktLastConvertUTF8);
@@ -748,6 +751,7 @@ char* iupgtkStrConvertFromFilename(const char* str)   /* From Filename to IUP */
       }
     }
   }
+  return (char*)str;
 }
 
 gboolean iupgtkMotionNotifyEvent(GtkWidget *widget, GdkEventMotion *evt, Ihandle *ih)

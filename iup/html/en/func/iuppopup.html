@@ -34,7 +34,8 @@ Parameters/Return</h3>
 iup.Popup(<strong>ih</strong>: ihandle[, <strong>x</strong>, <strong>y</strong>: number]) -&gt; (<strong>ret</strong>: number) [in Lua]
 or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><b>ih</b>: Identifier of a dialog or a menu.<br>
-<b>x</b>: X coordinate of the left corner of the interface element. The following macros are 
+<b>x</b>: horizontal position of the dialog or menu relative to the origin of the screen.
+    The following macros are 
   valid:</p>
 <ul>
   <li>IUP_LEFT:
@@ -55,7 +56,8 @@ or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -
 	defined). This is the default value 
   in Lua if the parameter is not defined or nil. Not valid for menus. (Since 3.0)</li>
 </ul>
-<p><b>y</b>: Y coordinate of the upper part of the interface element. The following macros are valid:</p>
+<p><b>y</b>: vertical position of the dialog or menu relative to the origin of the
+    screen. The following macros are valid:</p>
 <ul>
   <li>IUP_TOP:
     Positions the element on the top of the 

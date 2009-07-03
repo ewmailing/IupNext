@@ -489,9 +489,7 @@ static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
     if (cb)
     {
       /* force the resize so it can occour before calling the callback */
-#if GTK_CHECK_VERSION(2, 14, 0)
-      gdk_window_resize(gtk_widget_get_window(ih->handle), ih->currentwidth, ih->currentheight);
-#endif
+      gdk_window_resize(ih->handle->window, ih->currentwidth, ih->currentheight);
       cb(ih, ih->currentwidth, ih->currentheight);
     }
   }

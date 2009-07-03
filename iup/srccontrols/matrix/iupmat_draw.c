@@ -197,17 +197,33 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
 
   iMatrixDrawFrameVertLineCell(ih, lin, col, x2, y1, y2, framecolor, str);  /* right vertical line */
   if (col==0)
+  {
     IUPMAT_LINE(ih, x1, y1, x1, y2);    /* left vertical line, reuse Foreground from previous call */
+    x1++;
+  }
+  else if (col==1 && ih->data->columns.sizes[0] == 0)
+  {
+    /* If does not have line titles then draw the left line of the cell frame */
+    IUPMAT_LINE(ih, x1, y1, x1, y2-1);
+    x1++;
+  }
 
-  if (col==0) x1++;
   cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);
   IUPMAT_LINE(ih, x1, y1+1, x1, y2-1);
 
   iMatrixDrawFrameHorizLineCell(ih, lin, col, x1, x2, y2, framecolor, str);  /* bottom horizontal line */
   if (lin==0)
+  {
     IUPMAT_LINE(ih, x1, y1, x2, y1);    /* top horizontal line, reuse Foreground from previous call */
+    y1++;
+  }
+  else if (lin==1 && ih->data->lines.sizes[0] == 0)
+  {
+    /* If does not have column titles then draw the top line of the cell frame */
+    IUPMAT_LINE(ih, x1, y1, x2-1, y1);
+    y1++;
+  }
 
-  if (lin==0) y1++;
   cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);
   IUPMAT_LINE(ih, x1, y1, x2-1, y1);
 }
@@ -744,13 +760,13 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 
       if (col==1 && ih->data->columns.sizes[0] == 0)
       {
-        /* If does not have titles then draw the left line of the cell frame */
+        /* If does not have line titles then draw the left line of the cell frame */
         iMatrixDrawFrameVertLineCell(ih, lin, col, x1, y1, y2-1-1, framecolor, str);
       }
 
       if (lin==1 && ih->data->lines.sizes[0] == 0)
       {
-        /* If does not have titles then draw the top line of the cell frame */
+        /* If does not have column titles then draw the top line of the cell frame */
         iMatrixDrawFrameHorizLineCell(ih, lin, col, x1, x2-1-1, y1, framecolor, str);
       }
 

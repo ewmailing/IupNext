@@ -22,7 +22,7 @@ Parameters/Return</h3>
 iup.ShowXY(<strong>ih</strong>: ihandle[, <strong>x</strong>, <strong>y</strong>: number]) -&gt; (<strong>ret</strong>: number) [in Lua]
 or <strong>ih</strong>:showxy(<strong>[x</strong>, <strong>y</strong>: number]) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><b>ih</b>: identifier of the dialog.<br>
-<b>x</b>: x coordinate of the dialog&#8217;s left corner. The following macros are valid:</p>
+<b>x</b>: horizontal position of the dialog relative to the origin of the screen. The following macros are valid:</p>
 <ul>
   <li>IUP_LEFT:
     Positions the dialog on the left corner of 
@@ -42,7 +42,8 @@ or <strong>ih</strong>:showxy(<strong>[x</strong>, <strong>y</strong>: number]) 
   if PARENTDIALOG is defined or simply by IUP_CENTER). This is the default value 
   in Lua if the parameter is not defined or nil. (Since 3.0)</li>
 </ul>
-<p><b>y</b>: y coordinate of the dialog&#8217;s upper part. The following macros are valid:</p>
+<p><b>y</b>: vertical position of the dialog relative to the origin of the screen.
+    The following macros are valid:</p>
 <ul>
   <li>IUP_TOP:
     Positions the dialog on the top of the 

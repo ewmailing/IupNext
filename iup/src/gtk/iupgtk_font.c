@@ -57,6 +57,21 @@ static void gtkFontUpdate(IgtkFont* gtkfont)
   }
 }
 
+static char* gtkRemoveSubStr(char* new_standardfont, const char* standardfont, const char* str)
+{
+  char* substr = strstr(standardfont, str);
+  if (substr)
+  {
+    int len = strlen(standardfont);
+    int len_str = strlen(str);
+    int pos_sub = (size_t)(substr-standardfont);
+    memcpy(new_standardfont, standardfont, pos_sub);
+    memcpy(new_standardfont+pos_sub, substr+len_str+1, len-pos_sub-len_str+1);
+    return new_standardfont;
+  }
+  return (char*)standardfont;
+}
+
 static IgtkFont* gtkFindFont(const char *standardfont)
 {
   PangoFontMetrics* metrics;
@@ -77,15 +92,22 @@ static IgtkFont* gtkFindFont(const char *standardfont)
 
   /* not found, create a new one */
   {
-    int size;
+    int size = 0;
     int is_bold = 0,
       is_italic = 0;
     char typeface[1024];
     char *new_standardfont = NULL;
     const char* mapped_name;
 
-    if (!iupFontParsePango(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-      return NULL;
+    /* parse the old Windows format first */
+    if (!iupFontParseWin(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    {
+      if (!iupFontParseX(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+      {
+        if (!iupFontParsePango(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+          return NULL;
+      }
+    }
 
     mapped_name = iupFontGetPangoName(typeface);
     if (mapped_name)
@@ -95,43 +117,27 @@ static IgtkFont* gtkFindFont(const char *standardfont)
       new_standardfont = iupStrDup(standardfont);
 
     if (is_underline)
-    {
-      char* under = strstr(standardfont, "Underline");
-      int len = strlen(standardfont);
-      int len1 = (size_t)(under-standardfont);
-      memcpy(new_standardfont, standardfont, len1);
-      memcpy(new_standardfont+len1, under+9+1, len-len1-9+1); /* strlen("Underline") */
-      standardfont = new_standardfont;
-    }
+      standardfont = gtkRemoveSubStr(new_standardfont, standardfont, "Underline");
 
     if (is_strikeout)
-    {
-      char* strike = strstr(standardfont, "Strikeout");
-      int len = strlen(standardfont);
-      int len1 = (size_t)(strike-standardfont);
-      memcpy(new_standardfont, standardfont, len1);
-      memcpy(new_standardfont+len1, strike+9+1, len-len1-9+1); /* strlen("Strikeout") */
-      standardfont = new_standardfont;
-    }
+      standardfont = gtkRemoveSubStr(new_standardfont, standardfont, "Strikeout");
 
     if (size<0)
     {
-      double res;
-      int len1, len2;
-      char *sz, size_str[10];
+      char size_str[10];
       sprintf(size_str, "%d", size);
-      sz = strstr(standardfont, size_str);
-      len1 = (size_t)(sz-standardfont);
+      standardfont = gtkRemoveSubStr(new_standardfont, standardfont, size_str);
+      if (standardfont == new_standardfont)
+      {
+        double res = ((double)gdk_screen_get_width(gdk_screen_get_default()) / (double)gdk_screen_get_width_mm(gdk_screen_get_default())); /* pixels/mm */
+        /* 1 point = 1/72 inch     1 inch = 25.4 mm */
+        /* pixel = ((point/72)*25.4)*pixel/mm */
+        size = (int)((-size/res)*2.83464567 + 0.5); /* from pixels to points */
 
-      res = ((double)gdk_screen_get_width(gdk_screen_get_default()) / (double)gdk_screen_get_width_mm(gdk_screen_get_default())); /* pixels/mm */
-      /* 1 point = 1/72 inch     1 inch = 25.4 mm */
-      /* pixel = ((point/72)*25.4)*pixel/mm */
-      size = (int)((-size/res)*2.83464567 + 0.5); /* from pixels to points */
+        sprintf(size_str, "%d", size);
 
-      len2 = sprintf(size_str, "%d", size);
-
-      memcpy(new_standardfont, standardfont, len1);
-      memcpy(new_standardfont+len1, size_str, len2+1);
+        strcat(new_standardfont, size_str);
+      }
     }
 
     fontdesc = pango_font_description_from_string(standardfont);

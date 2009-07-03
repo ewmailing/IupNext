@@ -149,6 +149,9 @@ int iupdrvOpen(int *argc, char ***argv)
   IupSetfAttribute(NULL, "GTKVERSION", "%d.%d.%d", gtk_major_version, 
                                                    gtk_minor_version, 
                                                    gtk_micro_version);
+  IupSetfAttribute(NULL, "GTKDEVVERSION", "%d.%d.%d", GTK_MAJOR_VERSION, 
+                                                      GTK_MINOR_VERSION, 
+                                                      GTK_MICRO_VERSION);
 
   gtkSetDrvGlobalAttrib();
 

@@ -166,6 +166,36 @@ char *iupStrCopyUntil(char **str, int c)
   return new_str;
 }
 
+char *iupStrCopyUntilNoCase(char **str, int c)
+{
+  char *p_str,*new_str;
+  if (!str || *str==NULL)
+    return NULL;
+
+  p_str=strchr(*str,c); /* usually the lower case is enough */
+  if (!p_str && isalpha(c)) 
+  {
+    p_str=strchr(*str, toupper(c));  /* but check also for upper case */
+    if (!p_str) return NULL;
+  }
+
+  {
+    int i;
+    int sl=(int)(p_str - (*str));
+
+    new_str = (char *) malloc (sl + 1);
+    if (!new_str) return NULL;
+
+    for (i = 0; i < sl; ++i)
+      new_str[i] = (*str)[i];
+
+    new_str[sl] = 0;
+  }
+
+  *str = p_str+1;
+  return new_str;
+}
+
 char *iupStrGetMemory(int size)
 {
 #define MAX_BUFFERS 50
@@ -277,7 +307,7 @@ int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
 {
   if (!str) return 0;
 
-  if (*str == sep) /* no first value */
+  if (*str == sep || (isalpha(sep) && *str == toupper(sep))) /* no first value */
   {
     str++; /* skip separator */
     if (sscanf(str, "%d", i2) != 1) return 0;
@@ -285,7 +315,7 @@ int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
   }
   else 
   {
-    char* p_str = iupStrCopyUntil((char**)&str, sep);
+    char* p_str = iupStrCopyUntilNoCase((char**)&str, sep);
     
     if (!p_str)   /* no separator means no second value */
     {        
@@ -321,7 +351,7 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
 {
   if (!str) return 0;
 
-  if (*str == sep) /* no first value */
+  if (*str == sep || (isalpha(sep) && *str == toupper(sep))) /* no first value */
   {
     str++; /* skip separator */
     if (sscanf(str, "%f", f2) != 1) return 0;
@@ -329,7 +359,7 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
   }
   else 
   {
-    char* p_str = iupStrCopyUntil((char**)&str, sep);
+    char* p_str = iupStrCopyUntilNoCase((char**)&str, sep);
     
     if (!p_str)   /* no separator means no second value */
     {        
@@ -358,7 +388,7 @@ int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
 {
   if (!str) return 0;
 
-  if (*str == sep) /* no first value */
+  if (*str == sep || (isalpha(sep) && *str == toupper(sep))) /* no first value */
   {
     str++; /* skip separator */
     strcpy(str2, str);
@@ -366,7 +396,7 @@ int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
   }
   else 
   {
-    char* p_str = iupStrCopyUntil((char**)&str, sep);
+    char* p_str = iupStrCopyUntilNoCase((char**)&str, sep);
     
     if (!p_str)   /* no separator means no second value */
     {        

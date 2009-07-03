@@ -124,9 +124,11 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   if (ih->handle && iupdrvIsVisible(ih))
   {
     int win_border, win_caption;
-    /* TODO: maybe we can use gdk_window_get_frame_extents to get a better decoration size 
+    /* TODO: maybe we can use other functions to get a better decoration size 
     GdkRectangle rect;
-    gdk_window_get_frame_extents(gtk_widget_get_window(ih->handle), &rect);  */
+    gdk_window_get_frame_extents(gtk_widget_get_window(ih->handle), &rect);  
+    or
+    gdk_window_get_root_origin */
 
     if (iupdrvGetWindowDecor(iupgtkGetNativeWindowHandle(ih), &win_border, &win_caption))
     {
