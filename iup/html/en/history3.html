@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 
@@ -50,6 +50,8 @@ proceed when migrating from version 2.x to version 3.x.<br>
         child visible management.</li>
     <li><strong><span style="color: #ff0000">Fixed:</span></strong> X and Y attributes for
         GTK.</li>
+    <li><strong><span style="color: #ff0000">Fixed:</span></strong> IupTree TITLE with non UTF-8 characters.</li>
+    <li><strong><span style="color: #ff0000">Fixed:</span></strong> IupClose in loop when removing names.</li>
 
 </ul>
 
@@ -59,8 +61,8 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 <ul>
 
-  <li><span class="style3">New: </span>checked for 
-	memory leaks using <a href="http://dmoulding.googlepages.com/vld">VLD</a> in Windows and 
+  <li><span class="style3">New: </span>checked for
+	memory leaks using <a href="http://dmoulding.googlepages.com/vld">VLD</a> in Windows and
 	<a href="http://valgrind.org/">Valgrind</a> in Linux.</li>
 	<li><span class="style3">New:</span>
 	PREVIEWGLCANVAS attribute for <strong>IupFileDlg</strong>.</li>
@@ -70,63 +72,63 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="style3">New:</span>
 	basic tutorial for IupLua. (Thanks to Steve Donovan)</li>
 	<li><span class="style3">New:</span>
-	<strong>IupTree</strong> now uses native controls and was moved to the 
-	standard controls. The old implementation is 
-	not available. Images for nodes are not limited to 16x16 anymore. BGCOLOR 
-	now follows the same default as <strong>IupText</strong> and <strong>IupList</strong>, 
-	and can be changed. New TITLEFONT, FGCOLOR, USERDATA, FINDUSERID, COUNT, 
+	<strong>IupTree</strong> now uses native controls and was moved to the
+	standard controls. The old implementation is
+	not available. Images for nodes are not limited to 16x16 anymore. BGCOLOR
+	now follows the same default as <strong>IupText</strong> and <strong>IupList</strong>,
+	and can be changed. New TITLEFONT, FGCOLOR, USERDATA, FINDUSERID, COUNT,
 	CHILDCOUNT, EXPANDALL, INDENTATION, HIDEBUTTONS, HIDELINES, COPYNODE, MOVENODE,<strong> </strong>
-	SPACING, TOPITEM, INSERTLEAF and INSERTBRANCH attributes. New BUTTON_CB, 
-	MOTION_CB and DROPFILES_CB callbacks. Attributes SCROLLBAR and REDRAW are 
-	not supported anymore. VALUE attribute split in VALUE and MARK attributes, 
-	set MARK using VALUE is still possible fro backward compatibility. STARTING 
-	renamed to MARKSTART, and CTRL/SHIFT attributes replaced by MARKMODE (old 
-	names kept working for compatibility). Now if DRAGDROP_CB returns 
-	IUP_CONTINUE or if it is not defined but SHOWDRAGDROP=Yes then the node will 
+	SPACING, TOPITEM, INSERTLEAF and INSERTBRANCH attributes. New BUTTON_CB,
+	MOTION_CB and DROPFILES_CB callbacks. Attributes SCROLLBAR and REDRAW are
+	not supported anymore. VALUE attribute split in VALUE and MARK attributes,
+	set MARK using VALUE is still possible fro backward compatibility. STARTING
+	renamed to MARKSTART, and CTRL/SHIFT attributes replaced by MARKMODE (old
+	names kept working for compatibility). Now if DRAGDROP_CB returns
+	IUP_CONTINUE or if it is not defined but SHOWDRAGDROP=Yes then the node will
 	be automatically moved to the new position. <span class="style1"><strong> ATTENTION</strong></span><strong>
-	- </strong> DEPTH is now a read-only attribute, use the INSERT* attributes 
-	to properly add nodes. NAMEid attribute renamed to TITLE, old attribute still works but will be 
-	removed in future versions since it conflicts with the common NAME attribute. 
-	The SELECTION_CB and MULTISELECTION_CB callbacks now ignore their return 
-	value. The rename action is now activated by two clicks instead of a double 
+	- </strong> DEPTH is now a read-only attribute, use the INSERT* attributes
+	to properly add nodes. NAMEid attribute renamed to TITLE, old attribute still works but will be
+	removed in future versions since it conflicts with the common NAME attribute.
+	The SELECTION_CB and MULTISELECTION_CB callbacks now ignore their return
+	value. The rename action is now activated by two clicks instead of a double
 	click.</li>
-	<li><span style="color: #008000"><strong>Changed</strong>:</span> 
+	<li><span style="color: #008000"><strong>Changed</strong>:</span>
   	removed &quot;lua5.1.so&quot; dependency in UNIX.</li>
 	<li><span class="style2">Changed:</span>
-    In IupLua the Lua function <strong>iup.TreeSetValue</strong> now also 
-	accepts node decoration in the initialization table and can add a subtree to 
+    In IupLua the Lua function <strong>iup.TreeSetValue</strong> now also
+	accepts node decoration in the initialization table and can add a subtree to
 	any node. (Thanks to Tomas Gorham)</li>
 	<li><span class="style2">Changed:</span>
-    In IupLua attributes that are pointers to Ihandle are now returned as 
+    In IupLua attributes that are pointers to Ihandle are now returned as
 	ihandle instead of userdata.</li>
 	<li><span class="style2">Changed:</span>
-    replaced &quot;[]&quot; in function declarations by a simple &quot;*&quot;. None of those 
+    replaced &quot;[]&quot; in function declarations by a simple &quot;*&quot;. None of those
 	functions needed it.</li>
 	<li><span class="style2">Changed: </span>the
-default value of the Windows attribute COMPOSITED is back to NO to improve 
+default value of the Windows attribute COMPOSITED is back to NO to improve
 	backward compatibility and to avoid side effects of the attribute.</li>
 	<li><span class="style2">Changed:</span> the auxiliary functions <strong>
-	IupTextConvertXYToChar</strong> and <strong>IupListConvertXYToItem</strong> 
+	IupTextConvertXYToChar</strong> and <strong>IupListConvertXYToItem</strong>
 	where replaced by <strong>IupConvertXYToPos</strong>, that also works for
 	<strong>IupTree</strong>.</li>
-	<li><span class="style2">Changed:</span> added support for WHEEL_CB in GTK 
+	<li><span class="style2">Changed:</span> added support for WHEEL_CB in GTK
 	for <strong>IupCanvas</strong>.</li>
-	<li><span class="style1">Fixed:</span> IupLua initialization when retrieving 
-	the argc/argv arguments for <strong>IupOpen</strong>. (Thanks to Ross 
+	<li><span class="style1">Fixed:</span> IupLua initialization when retrieving
+	the argc/argv arguments for <strong>IupOpen</strong>. (Thanks to Ross
 	Berteig)</li>
-	<li><span class="style1">Fixed:</span> Arg initialization for all controls 
+	<li><span class="style1">Fixed:</span> Arg initialization for all controls
 	in Motif driver.</li>
-	<li><span class="style1">Fixed:</span> update of the POSX and POSY 
+	<li><span class="style1">Fixed:</span> update of the POSX and POSY
 	attributes for the <strong>IupCanvas</strong>.</li>
-	<li><span class="style1">Fixed:</span> FONT size round when converting from 
+	<li><span class="style1">Fixed:</span> FONT size round when converting from
 	pixels to points in Windows. (Thanks to Devin Smith)</li>
-	<li><span class="style1">Fixed:</span> button disappearing after mouse over 
+	<li><span class="style1">Fixed:</span> button disappearing after mouse over
 	in Windows XP.</li>
-	<li><span class="style1">Fixed:</span> <strong>IupMatrix</strong> when NUMCOL/NUMLIN were 
-	less than NUMCOL_VISIBLE/NUMLIN_VISIBLE. Also fixed when NUMCOL/NUMLIN were 
-	0 and changed to 1, and when removed 1. CURSOR attribute when RESIZEMATRIX=Yes. (Thanks to 
+	<li><span class="style1">Fixed:</span> <strong>IupMatrix</strong> when NUMCOL/NUMLIN were
+	less than NUMCOL_VISIBLE/NUMLIN_VISIBLE. Also fixed when NUMCOL/NUMLIN were
+	0 and changed to 1, and when removed 1. CURSOR attribute when RESIZEMATRIX=Yes. (Thanks to
 	Jeremy Cowgar)</li>
-	<li><span class="style1">Fixed:</span> action callback return value in Lua 
+	<li><span class="style1">Fixed:</span> action callback return value in Lua
 	for the <strong>IupGetParam</strong> dialog. (Thanks to Zhiwei)</li>
 	<li><span class="style1">Fixed:</span> EXPAND attribute for <strong>
 	IupCanvas</strong>.</li>
@@ -138,51 +140,51 @@ default value of the Windows attribute COMPOSITED is back to NO to improve
 <ul>
 
 	<li><span class="style3">New:</span>
-	MARKL:C, READONLY, NUMLIN_VISIBLE_LAST, NUMCOL_VISIBLE_LAST, and SHOW attributes for 
-	<strong>IupMatrix</strong>. When scrolling the matrix using 
-	the scrollbar the focus is not changed anymore. The last cells at right and 
-	bottom are now drawn as incomplete cells if they do not fit in the visible 
-	area. New FONT_CB callback. CHECKFRAMECOLOR is not necessary 
-	anymore, just set FRAMEVERTCOLOR or FRAMEHORIZCOLOR. Internal code 
+	MARKL:C, READONLY, NUMLIN_VISIBLE_LAST, NUMCOL_VISIBLE_LAST, and SHOW attributes for
+	<strong>IupMatrix</strong>. When scrolling the matrix using
+	the scrollbar the focus is not changed anymore. The last cells at right and
+	bottom are now drawn as incomplete cells if they do not fit in the visible
+	area. New FONT_CB callback. CHECKFRAMECOLOR is not necessary
+	anymore, just set FRAMEVERTCOLOR or FRAMEHORIZCOLOR. Internal code
 	reorganization.
-	AREA and MULTIPLE renamed to MARKAREA and MARKMULTIPLE, old names as still 
-	supported. New MULTILINE attribute to edit text in multiple lines, valid 
+	AREA and MULTIPLE renamed to MARKAREA and MARKMULTIPLE, old names as still
+	supported. New MULTILINE attribute to edit text in multiple lines, valid
 	only before mapped.</li>
 	<li><span class="style3">New:</span><strong>
 	IupRedraw</strong> and <strong>IupSetClassDefaultAttribute</strong> functions.</li>
 
   <li><span class="style2">Changed:</span>
-    Added package registration code to IupLua that allows it to be statically 
-	linked and require&quot;iuplua&quot; does not abort if the iuplua_open function was 
+    Added package registration code to IupLua that allows it to be statically
+	linked and require&quot;iuplua&quot; does not abort if the iuplua_open function was
 	called.</li>
 	<li><span class="style2">Changed:</span>
-    the <strong>IupOleControl</strong> in Lua will not automatically initialize LuaCOM anymore. 
-	The application must manually call &quot;elem:CreateLuaCOM()&quot;. The 
+    the <strong>IupOleControl</strong> in Lua will not automatically initialize LuaCOM anymore.
+	The application must manually call &quot;elem:CreateLuaCOM()&quot;. The
 	previous initialization was incorrect (thanks to Ross Berteig).</li>
 	<li><span class="style2">Changed:</span>
-    the declaration of function <strong>IupGetClassAttributes</strong> to use the class name 
+    the declaration of function <strong>IupGetClassAttributes</strong> to use the class name
 	instead of a control handle.</li>
 
-  <li><span class="style1">Fixed: </span>Fixed button, toggle and list sizes for 
+  <li><span class="style1">Fixed: </span>Fixed button, toggle and list sizes for
 	GTK driver when using the Hildon Framework. Thanks to Otfried Cheong.</li>
-	<li><span class="style1">Fixed:</span> some IupLua dynamic libraries in 
-	Linux where incorrectly linking with Motif (libiuplua + pplot, cd, controls, 
+	<li><span class="style1">Fixed:</span> some IupLua dynamic libraries in
+	Linux where incorrectly linking with Motif (libiuplua + pplot, cd, controls,
 	gl, im and imglib + 51.so)</li>
-	<li><span class="style1">Fixed:</span> HOMOGENEOUS attribute for <strong>IupVbox</strong> and 
+	<li><span class="style1">Fixed:</span> HOMOGENEOUS attribute for <strong>IupVbox</strong> and
 	<strong>IupHbox</strong>.</li>
-	<li><span class="style1">Fixed:</span> CARET attribute in GTK driver was not 
+	<li><span class="style1">Fixed:</span> CARET attribute in GTK driver was not
 	correctly scrolling the multiline text when not visible.</li>
-	<li><span class="style1">Fixed:</span> parameter checking and the return value in Lua for 
+	<li><span class="style1">Fixed:</span> parameter checking and the return value in Lua for
 	<strong>IupListDialog</strong> when type=2.</li>
-	<li><span class="style1">Fixed:</span> the return value for <strong>IupGetText</strong> when 
+	<li><span class="style1">Fixed:</span> the return value for <strong>IupGetText</strong> when
 	the user canceled. (Thanks to Xu Wang)</li>
-	<li><span class="style1">Fixed:</span> <strong>IupGetClassAttributes</strong> and 
-	<strong>IupGetAllAttributes</strong> 
+	<li><span class="style1">Fixed:</span> <strong>IupGetClassAttributes</strong> and
+	<strong>IupGetAllAttributes</strong>
 	were not implemented in IupLua.</li>
-	<li><span class="style1">Fixed:</span> The 32 bits version of the IupLua 
+	<li><span class="style1">Fixed:</span> The 32 bits version of the IupLua
 	console in Windows XP64 was not working.</li>
 	<li><span class="style1">Fixed:</span> CARET_CB and <strong>
-	IupTextConvertXYToChar</strong> in <strong>IupText</strong> when 
+	IupTextConvertXYToChar</strong> in <strong>IupText</strong> when
 	MULTILINE=YES and FORMATTING=NO.</li>
 
 </ul>

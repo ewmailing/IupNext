@@ -14,6 +14,7 @@
 #include "iup_object.h"
 #include "iup_assert.h"
 #include "iup_register.h"
+#include "iup_names.h"
 
 
 static Ihandle* iHandleCreate(void)
@@ -171,12 +172,8 @@ void IupDestroy(Ihandle *ih)
   if (ih->data)
     free(ih->data);
 
-  { 
-    /* removes all the names associated with the element */
-    char *name;
-    while ((name=IupGetName(ih)) != NULL)
-      IupSetHandle(name, NULL);
-  }
+  /* removes all the names associated with the element */
+  iupRemoveAllNames(ih);
 
   /* destroy the base handle structure */
   iHandleDestroy(ih);

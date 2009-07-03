@@ -429,7 +429,7 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "ADDLEAF1",     "scalenus");
   IupSetAttribute(tree, "ADDLEAF1",     "isoceles");
   IupSetAttribute(tree, "ADDLEAF1",     "equilateral");
-  IupSetAttribute(tree, "ADDLEAF",      "Other");
+  IupSetAttribute(tree, "ADDLEAF",      "Other (чущ)");
 #else
   /* create from top to bottom */
   IupSetAttribute(tree, "TITLE0",         "Figures");  

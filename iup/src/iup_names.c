@@ -14,6 +14,7 @@
 #include "iup_object.h"
 #include "iup_class.h"
 #include "iup_assert.h"
+#include "iup_str.h"
 
 
 static Itable *inames_strtable = NULL;   /* table indexed by name containing Ihandle* address */
@@ -69,6 +70,24 @@ void iupNamesFinish(void)
   inames_ihtable = NULL;
 }
 
+void iupRemoveAllNames(Ihandle* ih)
+{
+  char *name;
+  Ihandle *cur_ih;
+
+  name = iupTableFirst(inames_strtable);
+  while (name)
+  {
+    cur_ih = (Ihandle*)iupTableGetCurr(inames_strtable);
+    if (iupObjectCheck(cur_ih) && cur_ih == ih)
+      iupTableRemoveCurr(inames_strtable);
+
+    name = iupTableNext(inames_strtable);
+  }
+
+  iupTableRemove(inames_ihtable, (char*)ih);
+}
+
 Ihandle *IupGetHandle(const char *name)
 {
   if (!name) /* no iupASSERT needed here */
@@ -88,13 +107,18 @@ Ihandle* IupSetHandle(const char *name, Ihandle *ih)
   if (ih != NULL)
   {
     iupTableSet(inames_strtable, name, ih, IUPTABLE_POINTER);
-    iupTableSet(inames_ihtable, (char*)ih, (char*)name, IUPTABLE_STRING);
+    iupTableSet(inames_ihtable, (char*)ih, (char*)name, IUPTABLE_STRING);  /* keep only the last name set */
   }
   else
   {
     ih = iupTableGet(inames_strtable, name);
-    iupTableRemove(inames_strtable,name);
-    if (ih) iupTableRemove(inames_ihtable, (char*)ih);
+    iupTableRemove(inames_strtable, name);
+    if (ih) 
+    {
+      char* cur_name = iupTableGet(inames_ihtable, (char*)ih);
+      if (iupStrEqualNoCase(cur_name, name))
+        iupTableRemove(inames_ihtable, (char*)ih);
+    }
   }
   return old_ih;
 }
