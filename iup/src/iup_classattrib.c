@@ -104,7 +104,11 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
         *inherit = 0;       /* id numbered attributes are NON inheritable always */
 
         if (afunc->flags & IUPAF_READONLY)
+        {
+          if (afunc->flags & IUPAF_NO_STRING)
+            return -1;  /* value is NOT a string, can NOT call iupAttribStoreStr */
           return 0;
+        }
 
         if (afunc->set && (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
         {
@@ -130,7 +134,11 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
     *inherit = !(afunc->flags & IUPAF_NO_INHERIT) && !(afunc->flags & IUPAF_NO_STRING);
 
     if (afunc->flags & IUPAF_READONLY)
+    {
+      if (afunc->flags & IUPAF_NO_STRING)
+        return -1;  /* value is NOT a string, can NOT call iupAttribStoreStr */
       return 0;
+    }
 
     if (afunc->set && (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
     {

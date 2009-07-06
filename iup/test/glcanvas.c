@@ -55,7 +55,6 @@ void GLCanvasTest(void)
   printf("Vendor: %s\n", glGetString(GL_VENDOR));
   printf("Renderer: %s\n", glGetString(GL_RENDERER));
   printf("Version: %s\n", glGetString(GL_VERSION));
-  IupSetAttribute(canvas, "RASTERSIZE", NULL);
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 }
