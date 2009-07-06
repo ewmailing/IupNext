@@ -21,9 +21,9 @@ extern "C" {
 #define IUP_NAME "IUP - Portable User Interface"
 #define IUP_COPYRIGHT  "Copyright (C) 1994-2009 Tecgraf, PUC-Rio."
 #define IUP_DESCRIPTION	"Portable toolkit for building graphical user interfaces."
-#define IUP_VERSION "3.0rc1"
-#define IUP_VERSION_DATE "2009/06/26"
+#define IUP_VERSION "3.0rc1"   /* bug fixes are reported only by IupVersion functions */
 #define IUP_VERSION_NUMBER 300000
+#define IUP_VERSION_DATE "2009/06/26"
 
 typedef struct Ihandle_ Ihandle;
 typedef int (*Icallback)(Ihandle*);
