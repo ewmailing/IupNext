@@ -158,7 +158,7 @@ static gboolean gtkCanvasScrollEvent(GtkWidget *widget, GdkEventScroll *evt, Iha
     IFniff scb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
     int delta = evt->direction==GDK_SCROLL_UP||evt->direction==GDK_SCROLL_LEFT? 1: -1;
 
-    if (evt->direction==GDK_SCROLL_UP||GDK_SCROLL_DOWN)
+    if (evt->direction==GDK_SCROLL_UP || evt->direction==GDK_SCROLL_DOWN)
     {
       float posy = ih->data->posy;
       posy -= delta*iupAttribGetFloat(ih, "DY")/10.0f;
@@ -479,6 +479,11 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
   }
 }
 
+static char* gtkCanvasGetDrawableAttrib(Ihandle* ih)
+{
+  return (char*)ih->handle->window;
+}
+
 static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
 {
   iupdrvBaseLayoutUpdateMethod(ih);
@@ -639,6 +644,9 @@ void iupdrvCanvasInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, gtkCanvasSetXAutoHideAttrib, "YES", NULL, IUPAF_DEFAULT);  /* force new default value */
   iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, gtkCanvasSetYAutoHideAttrib, "YES", NULL, IUPAF_DEFAULT);  /* force new default value */
 
+  iupClassRegisterAttribute(ic, "DRAWABLE", gtkCanvasGetDrawableAttrib, NULL, NULL, NULL, IUPAF_NO_STRING);
+  //iupClassRegisterAttribute(ic, "CD_GDK", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
+
   /* IupCanvas Windows or X only */
 #ifdef WIN32                                 
   iupClassRegisterAttribute(ic, "HWND", iupgtkGetNativeWindowHandle, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
@@ -647,3 +655,4 @@ void iupdrvCanvasInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "XDISPLAY", (IattribGetFunc)iupdrvGetDisplay, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 #endif
 }
+

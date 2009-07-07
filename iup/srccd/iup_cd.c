@@ -17,31 +17,40 @@
 
 static void (*cdcreatecanvasNATIVE)(cdCanvas* canvas, void* data) = NULL;
 
-static void cdcreatecanvasIUP(cdCanvas* canvas, Ihandle *iupcanvas)
+static void cdcreatecanvasIUP(cdCanvas* canvas, Ihandle *ih_canvas)
 {
+  char str[50];
+  char* data;
+
+  if (IupGetInt(ih_canvas, "CD_GDK"))
+    data = IupGetAttribute(ih_canvas, "DRAWABLE");  /* new IUP 3 attribute, works for GTK only */
+  else
+  {
+    str[0] = 0;
 #ifdef WIN32
-  char* data = IupGetAttribute(iupcanvas, "HWND");  /* new IUP 3 attribute, works for Windows and GTK */
-  if (!data)
-    data = IupGetAttribute(iupcanvas, "WID"); /* OLD IUP 2 attribute */
-  if (!data)
-    return;
+    data = IupGetAttribute(ih_canvas, "HWND");  /* new IUP 3 attribute, works for Windows and GTK */
+    if (!data)
+      data = IupGetAttribute(ih_canvas, "WID"); /* OLD IUP 2 attribute */
+    if (!data)
+      return;
 #else
-  char data[50];
-  void *dpy = IupGetAttribute(iupcanvas, "XDISPLAY");   /* works for Motif and GTK */
-  unsigned long wnd = (unsigned long)IupGetAttribute(iupcanvas, "XWINDOW");
-  if (!wnd || !dpy)
-    return;
+    void *dpy = IupGetAttribute(ih_canvas, "XDISPLAY");   /* works for Motif and GTK */
+    unsigned long wnd = (unsigned long)IupGetAttribute(ih_canvas, "XWINDOW");
+    if (!wnd || !dpy)
+      return;
+    data = str;
 #ifdef SunOS_OLD
-  sprintf(data, "%d %lu", (int)dpy, wnd); 
+    sprintf(str, "%d %lu", (int)dpy, wnd); 
 #else
-  sprintf(data, "%p %lu", dpy, wnd); 
+    sprintf(str, "%p %lu", dpy, wnd); 
 #endif
 #endif
+  }
   
   /* Inicializa driver NativeWindow */
   cdcreatecanvasNATIVE(canvas, data);
 
-  IupSetAttribute(iupcanvas, "_CD_CANVAS", (char*)canvas);
+  IupSetAttribute(ih_canvas, "_CD_CANVAS", (char*)canvas);
 }
 
 static cdContext cdIupContext;
