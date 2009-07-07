@@ -345,12 +345,8 @@ tree_init =
     &quot;square&quot;,
     { leafname = &quot;diamond&quot;, color = &quot;92 92 255&quot;, titlefont = &quot;Courier, 14&quot; },
   },
-  {
-    branchname = &quot;2D&quot;
-  },
-  {
-    branchname = &quot;3D&quot;
-  },
+  { branchname = &quot;2D&quot; },
+  { branchname = &quot;3D&quot; },
 }
 
 dlg = iup.dialog{tree}
@@ -365,7 +361,9 @@ branch is not a table then it is a leaf and only defines the leaf title. When
 <strong>leafname</strong> or <strong>branchname</strong> are used you can also 
 define other node attributes: <strong>color</strong>, <strong>state</strong>,
 <strong>titlefont</strong>, <strong>marked</strong>, <strong>image</strong> and
-<strong>imageexpanded</strong>; without specifying the node id. (since 3.0)</p>
+<strong>imageexpanded</strong>; without specifying the node id. You can also use
+<strong>userid</strong> to associate an userdata or table just like in <strong>
+iup.TreeSetUserId</strong>. (since 3.0)</p>
 <h3>Utility Functions </h3>
 <p>These functions can be used to help set and get attributes from the tree:</p>
 <pre>void  IupTreeSetAttribute (Ihandle *n, char* a, int id, char* v);
