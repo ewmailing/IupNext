@@ -38,6 +38,7 @@ static int cbValuePos(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
   IupSetAttribute(tabs, "VALUEPOS", "0");
+//  printf("VALUE=%s\n", IupGetAttribute(tabs, "VALUE"));
   return IUP_DEFAULT;
 }
 

@@ -36,7 +36,7 @@
 void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
 {
   int ticks_size = 0;
-  if (ih->data->show_ticks)
+  if (iupAttribGetInt(ih, "SHOWTICKS"))
     ticks_size = 8;
 
   if (ih->data->type == IVAL_HORIZONTAL)
@@ -87,16 +87,13 @@ static int motValSetShowTicksAttrib(Ihandle* ih, const char* value)
     return 0;
 
   show_ticks = atoi(value);
-  if (!show_ticks)
-    return 0;
-
+  if (show_ticks<2) show_ticks=2;
   ih->data->show_ticks = show_ticks;
-  if (ih->data->show_ticks<2) ih->data->show_ticks=2;
 
   motValRemoveOldTicks(ih->handle);
 
   /* Defines the interval frequency for tick marks */
-  tick_freq = SHRT_MAX/(ih->data->show_ticks-1);
+  tick_freq = SHRT_MAX/(show_ticks-1);
   XmScaleSetTicks(ih->handle, tick_freq, 0, 0, 8, 0, 0);
   return 0;
 }

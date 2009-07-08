@@ -35,7 +35,7 @@
 void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
 {
   int ticks_size = 0;
-  if (ih->data->show_ticks)
+  if (iupAttribGetInt(ih, "SHOWTICKS"))
   {
     char* tickspos = iupAttribGetStr(ih, "TICKSPOS");
     if(iupStrEqualNoCase(tickspos, "BOTH"))
@@ -82,14 +82,11 @@ static int winValSetShowTicksAttrib(Ihandle* ih, const char* value)
     return 0;
 
   show_ticks = atoi(value);
-  if (!show_ticks)
-    return 0;
-
+  if (show_ticks<2) show_ticks=2;
   ih->data->show_ticks = show_ticks;
-  if (ih->data->show_ticks<2) ih->data->show_ticks=2;
 
   /* Defines the interval frequency for tick marks */
-  tick_freq = SHRT_MAX/(ih->data->show_ticks-1);
+  tick_freq = SHRT_MAX/(show_ticks-1);
   SendMessage(ih->handle, TBM_SETTICFREQ, tick_freq, 0);
   return 0;
 }
@@ -251,7 +248,7 @@ static int winValMapMethod(Ihandle* ih)
     dwStyle |= WS_TABSTOP;
 
   /* Track bar Ticks */
-  show_ticks = IupGetInt(ih, "SHOWTICKS");
+  show_ticks = iupAttribGetInt(ih, "SHOWTICKS");
   if (!show_ticks)
   {
     dwStyle |= TBS_NOTICKS;    /* No show_ticks */
