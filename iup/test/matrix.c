@@ -41,8 +41,6 @@ static Ihandle* create_matrix(void)
         IUP_NUMLIN, "1",
         IUP_NUMCOL_VISIBLE, "1",
         IUP_NUMLIN_VISIBLE, "1",
-        IUP_FGCOLOR, "0 0 0",
-        IUP_BGCOLOR, "255 255 255",
         IUP_CURSOR, "ARROW",
         "WIDTH0", "40",
         "WIDTH1", "80",

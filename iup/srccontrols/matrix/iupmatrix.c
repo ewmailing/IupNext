@@ -509,7 +509,7 @@ static char* iMatrixGetBgColorAttrib(Ihandle* ih, const char* name_id)
 
     /* If not defined return the default for normal cells */
     if (!color)
-      color = "255 255 255";
+      color = IupGetGlobal("TXTBGCOLOR");
 
     return color;
   }

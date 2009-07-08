@@ -89,14 +89,14 @@ int IupMap(Ihandle* ih)
     return IUP_ERROR;
   }
 
-  /* ensure attributes default values, at this time only the ones that need to be set after map */
-  iupClassObjectEnsureDefaultAttributes(ih);
-
   /* update FONT, must be the before several others */
   if (ih->iclass->nativetype != IUP_TYPEVOID &&
       ih->iclass->nativetype != IUP_TYPEIMAGE &&
       ih->iclass->nativetype != IUP_TYPEMENU)
     iupUpdateStandardFontAttrib(ih);
+
+  /* ensure attributes default values, at this time only the ones that need to be set after map */
+  iupClassObjectEnsureDefaultAttributes(ih);
 
   /* check visible state if not a dialog */
   if (ih->iclass->nativetype == IUP_TYPECANVAS || 

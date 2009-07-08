@@ -219,13 +219,16 @@ void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char
   }
   else
   {
-    int ir, ig, ib, 
+    int ir = 0, ig = 0, ib = 0, 
       i = (*r+*g+*b)/3,
       bg_i = (bg_r+bg_g+bg_b)/3;
 
-    ir = (bg_r*i)/bg_i; 
-    ig = (bg_g*i)/bg_i; 
-    ib = (bg_b*i)/bg_i; 
+    if (bg_i)
+    {
+      ir = (bg_r*i)/bg_i; 
+      ig = (bg_g*i)/bg_i; 
+      ib = (bg_b*i)/bg_i; 
+    }
 
 #define LIGHTER(_c) ((255 + _c)/2)
     ir = LIGHTER(ir);

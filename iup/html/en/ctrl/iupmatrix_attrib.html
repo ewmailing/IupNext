@@ -70,7 +70,7 @@ to change the cell value. (since 3.0)</p>
     selected following this priority: BGCOLORL:C, BGCOLORL:*, BGCOLOR*:C, and 
     last BGCOLOR.
     (L or C &gt;= 0) <br>
-    Default BGCOLOR is white (255 255 255) for cells and the parent's BGCOLOR for titles.<br>
+    Default BGCOLOR is the global attribute TXTBGCOLOR for cells and the parent's BGCOLOR for titles.<br>
     Since the matrix control can be larger than the matrix itself, the empty area will always be filled with the 
     parent's BGCOLOR.</p>
 <p><b><a name="FGCOLOR">FGCOLOR</a></b>:
@@ -88,7 +88,8 @@ FGCOLOR<i>L</i>:*</strong>:
     following this priority: FGCOLORL:C, FGCOLORL:*, FGCOLOR*:C, and last
     FGCOLOR. 
     (L or C &gt;= 0)<br>
-Default FGCOLOR is black (0 0 0).</p>
+Default FGCOLOR is the global attribute TXTFGCOLOR for cells or the global 
+attribute DLGFGCOLOR for titles.</p>
 <p><b><a href="../attrib/iup_font.html" name="FONT">FONT</a></b>:
   Character font of the text. (inheritable)<br>
 <strong>FONT<i>L</i>:*</strong>:

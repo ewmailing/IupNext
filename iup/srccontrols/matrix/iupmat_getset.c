@@ -226,7 +226,17 @@ char* iupMatrixGetFgColor(Ihandle* ih, int lin, int col)
   unsigned char r = 0, g = 0, b = 0;
   /* called from Edit only */
   if (!ih->data->fgcolor_cb || (iMatrixCallColorCB(ih, ih->data->fgcolor_cb, lin, col, &r, &g, &b) == IUP_IGNORE))
-    return iMatrixGetCellAttrib(ih, IUPMAT_FGCOLOR, lin, col, 0);
+  {
+    char* fgcolor = iMatrixGetCellAttrib(ih, IUPMAT_FGCOLOR, lin, col, 0);
+    if (!fgcolor) 
+    {
+      if (lin ==0 || col == 0)
+        fgcolor = IupGetGlobal("DLGFGCOLOR");
+      else
+        fgcolor = IupGetGlobal("TXTFGCOLOR");
+    }
+    return fgcolor;
+  }
   else
   {
     char* buffer = iupStrGetMemory(30);
@@ -239,7 +249,17 @@ void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
 {
   /* called from Draw only */
   if (!ih->data->fgcolor_cb || (iMatrixCallColorCB(ih, ih->data->fgcolor_cb, lin, col, r, g, b) == IUP_IGNORE))
-    iupStrToRGB(iMatrixGetCellAttrib(ih, IUPMAT_FGCOLOR, lin, col, 0), r, g, b);
+  {
+    char* fgcolor = iMatrixGetCellAttrib(ih, IUPMAT_FGCOLOR, lin, col, 0);
+    if (!fgcolor) 
+    {
+      if (lin ==0 || col == 0)
+        fgcolor = IupGetGlobal("DLGFGCOLOR");
+      else
+        fgcolor = IupGetGlobal("TXTFGCOLOR");
+    }
+    iupStrToRGB(fgcolor, r, g, b);
+  }
 }
 
 char* iupMatrixGetBgColor(Ihandle* ih, int lin, int col)

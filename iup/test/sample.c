@@ -295,7 +295,7 @@ void SampleTest(void)
 //  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
 
 //  IupSetAttribute(dlg, "FONT", "Helvetica, 24");
-  IupSetAttribute(dlg, "FONT", "-*-helvetica-*-r-*-*-8-*-*-*-*-*-*-*");
+//  IupSetAttribute(dlg, "FONT", "-*-helvetica-*-r-*-*-18-*-*-*-*-*-*-*");
   
 //  IupSetAttribute(box, "FGCOLOR", "255 0 0");
 

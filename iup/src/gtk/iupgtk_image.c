@@ -290,6 +290,13 @@ void* iupdrvImageLoad(const char* name, int type)
 void iupdrvImageGetInfo(void* image, int *w, int *h, int *bpp)
 {
   GdkPixbuf* pixbuf = (GdkPixbuf*)image;
+  if (!GDK_IS_PIXBUF(pixbuf)) 
+  {
+    if (w) *w = 0;
+    if (h) *h = 0;
+    if (bpp) *bpp = 0;
+    return;
+  }
   if (w) *w = gdk_pixbuf_get_width(pixbuf);
   if (h) *h = gdk_pixbuf_get_height(pixbuf);
   if (bpp) *bpp = gdk_pixbuf_get_bits_per_sample(pixbuf)*gdk_pixbuf_get_n_channels(pixbuf);

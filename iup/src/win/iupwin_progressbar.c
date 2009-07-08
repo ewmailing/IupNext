@@ -147,10 +147,14 @@ void iupdrvProgressBarInitClass(Iclass* ic)
   ic->Map = winProgressBarMapMethod;
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winProgressBarSetBgColorAttrib, NULL, NULL, IUPAF_DEFAULT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winProgressBarSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);  
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winProgressBarSetFgColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  /* Only works when using Classic style */
+  if (iupwin_comctl32ver6)
+    iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winProgressBarSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);
+  else
+    iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
 
   /* IupProgressBar only */
   iupClassRegisterAttribute(ic, "VALUE",  iProgressBarGetValueAttrib,  winProgressBarSetValueAttrib,  NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

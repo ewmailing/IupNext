@@ -89,10 +89,13 @@ affect the default font and many others visual appearance features in Motif.</p>
 <h4>GTK</h4>
 <p>Default: &quot;Sans, 10&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 (if not defined by GNOME, see bellow)</p>
+<p>The X-Windows Logical Font Description format (XLFD) is also supported.</p>
 <p>The native handle can be obtained using the &quot;<strong>PANGOFONTDESC</strong>&quot; attribute.</p>
 <p>Style can also be a combination of:  Small-Caps, 
 [Ultra-Light|Light|Medium|Semi-Bold|Bold|Ultra-Bold|Heavy], 
-[Ultra-Condensed|Extra-Condensed|Condensed|Semi-Condensed|Semi-Expanded|Expanded|Extra-Expanded|Ultra-Expanded]. </p>
+[Ultra-Condensed|Extra-Condensed|Condensed|Semi-Condensed|Semi-Expanded|Expanded|Extra-Expanded|Ultra-Expanded]. 
+Those values can be used only when the string is a full Pango compliant font, 
+i.e. no underline, no strikeout and size&gt;0.</p>
 <p>In GNOME, go to the &quot;Appearance Preferences&quot; tool, then in the Fonts tab 
 change the Applications Font to affect the default font.</p>
 <h4>Examples: </h4>
