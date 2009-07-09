@@ -330,10 +330,6 @@ static char* iTreeGetAddExpandedAttrib(Ihandle* ih)
 
 static int iTreeSetAddExpandedAttrib(Ihandle* ih, const char* value)
 {
-  /* valid only before map */
-  if (ih->handle)
-    return 0;
-
   if (iupStrBoolean(value))
     ih->data->add_expanded = 1;
   else

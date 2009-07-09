@@ -15,10 +15,12 @@
 
 <h2>IupHelp</h2>
 <p>Opens the given URL. In UNIX executes 
-  Netscape or Firefox (in Linux) passing the desired URL as a parameter. In Windows calls the default application 
-  that handle URLs.</p>
+  Netscape, Safari (MacOS) or Firefox (in Linux) passing the desired URL as a parameter. In Windows 
+executes the shell &quot;open&quot; operation on the given URL.</p>
 <p>In UNIX you can change the used browser setting the environment variable IUP_HELPAPP or using the global attribute 
   &quot;HELPAPP&quot;.</p>
+<p>It is a non synchronous operation, i.e. the function will return just after 
+execute the command and it will not wait for its result.</p>
 <h3>
 Parameters/Return</h3>
 <pre>int IupHelp(const char* <strong>url</strong>); [in C]

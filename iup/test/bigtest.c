@@ -60,6 +60,12 @@ void PPlotTest(void);
 void GetParamTest(void);
 void ConfTest(void);
 
+void HelpTest(void)
+{
+  IupHelp("http://www.tecgraf.puc-rio.br/iup");
+  //IupHelp("..\\html\\index.html");
+}
+
 typedef struct _TestItems{
   char* title;
   void (*func)(void);
@@ -87,6 +93,7 @@ static TestItems test_list[] = {
   {"Gauge", GaugeTest},
   {"GetColor", GetColorTest},
   {"GetParam", GetParamTest},
+  {"Help", HelpTest},
   {"Hbox", HboxTest},
   {"Idle", IdleTest},
   {"Label", LabelTest},

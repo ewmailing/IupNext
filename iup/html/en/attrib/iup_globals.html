@@ -117,14 +117,6 @@ Usually is &quot;0 0 0&quot;.</p>
 <h2 align="center">Win32 Global Attributes&nbsp;</h2>
 <h3><a name="HINSTANCE"><strong>HINSTANCE</strong></a> (read-only)</h3>
 <p>This attribute returns a handle (HINSTANCE) that identifies the application in the native system.</p>
-<h3><strong><a name="VIRTUALSCREEN">VIRTUALSCREEN</a></strong> (read-only) (since 3.0)</h3>
-<p>Returns the virtual screen position and size in pixels. It is the virtual 
-space defined by all monitors in the system.</p>
-<p>String in the &quot;<i>x y width height</i>&quot; format.</p>
-<h3><a name="MONITORSINFO">MONITORSINFO</a> (read-only) (since 3.0)</h3>
-<p>Returns the position and size in pixels of all monitors. Each monitor 
-information is terminated by a &quot;\n&quot; character.</p>
-<p>String in the &quot;<i>x y width height</i>\n<i>x y width height</i>\n...&quot; format.</p>
 <hr>
 <h2 style="text-align: center">GTK Global Attributes&nbsp;</h2>
 <h3><strong><a name="GTKVERSION">GTKVERSION</a></strong> (read-only)</h3>
@@ -140,6 +132,16 @@ automatically convert all strings to (SetAttribute) and from (GetAttribute)
 UTF-8. Default: YES. If the default locale is already UTF-8, but the given 
 string is not UTF-8 then it will be assumed that the string uses the ISO8859-1 
 charset.</p>
+<hr>
+<h2 align="center">Win32 and GTK Global Attributes&nbsp;</h2>
+<h3><strong><a name="VIRTUALSCREEN">VIRTUALSCREEN</a></strong> (read-only) (since 3.0)</h3>
+<p>Returns the virtual screen position and size in pixels. It is the virtual 
+space defined by all monitors in the system.</p>
+<p>String in the &quot;<i>x y width height</i>&quot; format.</p>
+<h3><a name="MONITORSINFO">MONITORSINFO</a> (read-only) (since 3.0)</h3>
+<p>Returns the position and size in pixels of all monitors. Each monitor 
+information is terminated by a &quot;\n&quot; character.</p>
+<p>String in the &quot;<i>x y width height</i>\n<i>x y width height</i>\n...&quot; format.</p>
 <hr>
 <h2 style="text-align: center">Motif Global Attributes&nbsp;</h2>
 <h3><strong><a name="AUTOREPEAT">AUTOREPEAT</a></strong></h3>

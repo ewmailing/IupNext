@@ -38,23 +38,19 @@ end
 function TreeSetValueRec(handle, t, id)
   if t == nil then return end
   local cont = #t
-print("TreeSetValueRec("..cont..")")
   while cont >= 0 do
     local node = t[cont]
     if type(node) == "table" then
       if node.branchname then
-      print("branch")
         SetAttribute(handle, "ADDBRANCH"..id, node.branchname)
         TreeSetNodeAttrib(handle, node, id+1)
         TreeSetValueRec(handle, node, id+1)
       elseif node.leafname then
-      print("leaf1")
         SetAttribute(handle, "ADDLEAF"..id, node.leafname)
         TreeSetNodeAttrib(handle, node, id+1)
       end
     else
       if node then
-        print("leaf2")
         SetAttribute(handle, "ADDLEAF"..id, node)
       end
     end

@@ -5,6 +5,8 @@
 void SysInfoTest(void)
 {
   char* sysver;
+  int motif = 0;
+
   printf("IUP System Info:\n");
   printf("  Version: %s\n", IupVersion());
   printf("  Copyright: %s\n", IUP_COPYRIGHT);
@@ -20,6 +22,7 @@ void SysInfoTest(void)
     printf("  Motif Number: %s\n", IupGetGlobal("MOTIFNUMBER"));
     printf("  X Server Vendor: %s\n", IupGetGlobal("XSERVERVENDOR"));
     printf("  X Vendor Release: %s\n\n", IupGetGlobal("XVENDORRELEASE"));
+    motif = 1;
   }
 
   sysver = IupGetGlobal("GTKVERSION");
@@ -30,6 +33,12 @@ void SysInfoTest(void)
   printf("  Screen Size: %s\n", IupGetGlobal("SCREENSIZE"));
   printf("  Full Screen Size: %s\n", IupGetGlobal("FULLSIZE"));
   printf("  True Color Canvas: %s\n\n", IupGetGlobal("TRUECOLORCANVAS"));
+
+  if (!motif)
+  {
+    printf("  Virtual Screen: %s\n", IupGetGlobal("VIRTUALSCREEN"));
+    printf("  Monitors Info: %s\n", IupGetGlobal("MONITORSINFO"));
+  }
 
   printf("  Computer Name: %s\n", IupGetGlobal("COMPUTERNAME"));
   printf("  User Name: %s\n", IupGetGlobal("USERNAME"));

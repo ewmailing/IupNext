@@ -103,6 +103,36 @@ char *iupdrvGetGlobal(const char *name)
     sprintf(str, "%d", bpp);
     return str;
   }
+  if (iupStrEqual(name, "VIRTUALSCREEN"))
+  {
+    char *str = iupStrGetMemory(50);
+    GdkScreen *screen = gdk_screen_get_default();
+    GdkWindow *root = gdk_screen_get_root_window(gdk_screen_get_default());
+    int x = 0;
+    int y = 0;
+    int w = gdk_screen_get_width(screen); 
+    int h = gdk_screen_get_height(screen);
+    gdk_window_get_root_origin(root, &x, &y);
+    sprintf(str, "%d %d %d %d", x, y, w, h);
+    return str;
+  }
+  if (iupStrEqual(name, "MONITORSINFO"))
+  {
+    int i;
+    GdkScreen *screen = gdk_screen_get_default();
+    int monitors_count = gdk_screen_get_n_monitors(screen);
+    char *str = iupStrGetMemory(monitors_count*50);
+    char* pstr = str;
+    GdkRectangle rect;
+
+    for (i=0; i < monitors_count; i++)
+    {
+      gdk_screen_get_monitor_geometry(screen, i, &rect);
+      pstr += sprintf(pstr, "%d %d %d %d\n", rect.x, rect.y, rect.width, rect.height);
+    }
+
+    return str;
+  }
   if (iupStrEqual(name, "TRUECOLORCANVAS"))
   {
     if (gdk_visual_get_best_depth() > 8)

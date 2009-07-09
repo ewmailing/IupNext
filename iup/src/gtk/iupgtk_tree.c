@@ -1987,11 +1987,14 @@ static gboolean gtkTreeTestCollapseRow(GtkTreeView* tree_view, GtkTreeIter *iter
 
 static void gtkTreeRowActived(GtkTreeView* tree_view, GtkTreePath *path, GtkTreeViewColumn *column, Ihandle* ih)
 {
-  IFni cbExecuteLeaf  = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
   GtkTreeIter iterItem;
-  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  GtkTreeModel* model;
   int kind;  /* used for nodes defined as branches, but do not have children */
+  IFni cbExecuteLeaf  = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
+  if (!cbExecuteLeaf)
+    return;
 
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
   gtk_tree_model_get_iter(model, &iterItem, path);
   gtk_tree_model_get(model, &iterItem, IUPGTK_TREE_KIND, &kind, -1);
 

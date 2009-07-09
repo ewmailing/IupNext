@@ -40,7 +40,7 @@ ifdef USE_GTK
     DEFINES += _WIN32_WINNT=0x0500 _WIN32_IE=0x0500 WINVER=0x0500 NOTREEVIEW
     SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c
   else
-    SRC += mot/iupunix_help.c mot/iupunix_info.c
+    SRC += gtk/iupgtk_help.c mot/iupunix_info.c
   endif
   
   ifdef USE_HILDON
