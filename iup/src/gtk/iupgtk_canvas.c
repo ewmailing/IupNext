@@ -500,6 +500,15 @@ static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
   }
 }
 
+static void gtkCanvasDummyLogFunc(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
+{
+  /* does nothing */
+  (void)log_domain;
+  (void)log_level;
+  (void)message;
+  (void)user_data;
+}
+
 static int gtkCanvasMapMethod(Ihandle* ih)
 {
   GtkScrolledWindow* scrolled_window;
@@ -538,7 +547,13 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   if (!scrolled_window)
     return IUP_ERROR;
 
-  gtk_container_add((GtkContainer*)scrolled_window, ih->handle);
+  {
+    /* to avoid the "cannot add non scrollable widget" warning */
+    GLogFunc def_func = g_log_set_default_handler(gtkCanvasDummyLogFunc, NULL);
+    gtk_container_add((GtkContainer*)scrolled_window, ih->handle);
+    g_log_set_default_handler(def_func, NULL);
+  }
+
   gtk_widget_show((GtkWidget*)scrolled_window);
 
   iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
