@@ -91,7 +91,7 @@ static int gtkFrameSetStandardFontAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static void* gtkFrameGetInnerNativeContainerMethod(Ihandle* ih, Ihandle* child)
+static void* gtkFrameGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
 {
   (void)child;
   return (void*)gtk_bin_get_child((GtkBin*)ih->handle);
@@ -139,7 +139,7 @@ void iupdrvFrameInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
   ic->Map = gtkFrameMapMethod;
-  ic->GetInnerNativeContainerHandle = gtkFrameGetInnerNativeContainerMethod;
+  ic->GetInnerNativeContainerHandle = gtkFrameGetInnerNativeContainerHandleMethod;
 
   /* Driver Dependent Attribute functions */
 

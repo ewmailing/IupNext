@@ -121,7 +121,7 @@ struct Iclass_
     * Called from \ref iupChildTreeGetNativeParentHandle. \n
     * This allows native elements to have an internal container
     * that will be the actual native parent, or in other words allows native elements to be a combination of 
-    * other native elements in a single IUP element. The actual native parent may depend on the child tree.
+    * other native elements in a single IUP element. The actual native parent may depend on the child tree (IupTabs).
    */
   void* (*GetInnerNativeContainerHandle)(Ihandle* ih, Ihandle* child);
 
@@ -333,7 +333,7 @@ void iupClassObjectDestroy(Ihandle* ih);
  */
 Ihandle* iupClassObjectGetInnerContainer(Ihandle* ih);
 
-/** Calls \ref Iclass::GetInnerNativeContainerHandle method. 
+/** Calls \ref Iclass::GetInnerNativeContainerHandle method. Returns ih->handle if there is no inner parent.
  * The parent class is ignored. If necessary the child class must handle the parent class internally.
  * \ingroup iclassobject
  */

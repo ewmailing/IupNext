@@ -772,6 +772,14 @@ static int showelem_cb(Ihandle* self)
   return IUP_DEFAULT;
 }
 
+static int list_dbclick_cb(Ihandle* self, int i, char *t)
+{
+  (void)i;
+  (void)t;
+  showelem_cb(self);
+  return IUP_DEFAULT;
+}
+
 static int list_cb(Ihandle* self, char *t, int i, int v)
 {
   if (v == 1)
@@ -781,21 +789,6 @@ static int list_cb(Ihandle* self, char *t, int i, int v)
     Ihandle* label = (Ihandle*)IupGetAttribute(self, "mainLabel");
     sprintf(str_elem, "FileTitle: %s - Type: %s", IupGetAttribute(elem, "_FILE_TITLE"), IupGetClassName(elem));
     IupStoreAttribute(label, "TITLE", str_elem);
-
-    /* double click simulation */
-    if (i != -1)
-    {
-      static clock_t start_time = 0;
-      static int list_item = 0;
-      clock_t cur_time;
-                           
-      cur_time = clock();
-      if ((((int)cur_time-(int)start_time) < 600) && (list_item == i))
-        showelem_cb(self);
-
-      start_time = cur_time;
-      list_item = i;
-    }
   }
   return IUP_DEFAULT;
 }
@@ -1077,6 +1070,7 @@ static Ihandle* mainDialog(void)
     NULL);
   IupSetAttribute(box, "MARGIN", "10x10");
   IupSetCallback(list, "ACTION", (Icallback)list_cb);
+  IupSetCallback(list, "DBLCLICK_CB", (Icallback)list_dbclick_cb);
 
   IupSetAttribute(list, "SIZE", "150x80");
   IupSetAttribute(list, "EXPAND", "YES");

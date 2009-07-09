@@ -201,10 +201,10 @@ void iupdrvDisplayRedraw(Ihandle *ih)
   /* POST a Redraw */
   iupdrvDisplayUpdate(ih);
 
-  /* if this element has a native parent, 
-     then redraw the native parent if different from the element. */
+  /* if this element has an inner native parent (like IupTabs), 
+     then redraw that native parent if different from the element. */
   w = (Widget)iupClassObjectGetInnerNativeContainerHandle(ih, (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE"));
-  if (w)
+  if (w && w != ih->handle)
   {
     Widget handle = ih->handle;
     ih->handle = w;

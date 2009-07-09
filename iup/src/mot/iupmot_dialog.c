@@ -557,7 +557,7 @@ static void motDialogSetPositionMethod(Ihandle* ih, int x, int y)
   }
 }
 
-static void* motDialogGetInnerNativeContainerMethod(Ihandle* ih, Ihandle* child)
+static void* motDialogGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
 {
   (void)child;
   return XtNameToWidget(ih->handle, "*dialog_manager");
@@ -1032,7 +1032,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   ic->UnMap = motDialogUnMapMethod;
   ic->LayoutUpdate = motDialogLayoutUpdateMethod;
   ic->SetPosition = motDialogSetPositionMethod;
-  ic->GetInnerNativeContainerHandle = motDialogGetInnerNativeContainerMethod;
+  ic->GetInnerNativeContainerHandle = motDialogGetInnerNativeContainerHandleMethod;
 
   if (!iupmot_wm_deletewindow)
   {

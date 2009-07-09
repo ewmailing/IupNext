@@ -398,7 +398,7 @@ static void gtkDialogSetPositionMethod(Ihandle* ih, int x, int y)
   }
 }
 
-static void* gtkDialogGetInnerNativeContainerMethod(Ihandle* ih, Ihandle* child)
+static void* gtkDialogGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
 {
   (void)child;
   return (void*)gtk_bin_get_child((GtkBin*)ih->handle);
@@ -942,7 +942,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   ic->Map = gtkDialogMapMethod;
   ic->UnMap = gtkDialogUnMapMethod;
   ic->LayoutUpdate = gtkDialogLayoutUpdateMethod;
-  ic->GetInnerNativeContainerHandle = gtkDialogGetInnerNativeContainerMethod;
+  ic->GetInnerNativeContainerHandle = gtkDialogGetInnerNativeContainerHandleMethod;
   ic->SetPosition = gtkDialogSetPositionMethod;
 
   /* Callback Windows and GTK Only */

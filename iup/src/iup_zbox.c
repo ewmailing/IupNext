@@ -26,6 +26,7 @@ enum{IZBOX_ALIGN_NORTH, IZBOX_ALIGN_SOUTH, IZBOX_ALIGN_WEST, IZBOX_ALIGN_EAST,
 struct _IcontrolData 
 {
   int alignment;
+  Ihandle* value_handle;
 };
 
 static int iZboxCreateMethod(Ihandle* ih, void** params)
@@ -49,10 +50,10 @@ static int iZboxCreateMethod(Ihandle* ih, void** params)
 
 static void iZboxChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
-  if (!iupAttribGet(ih, "VALUE_HANDLE"))
+  if (!ih->data->value_handle)
   {
     IupSetAttribute(child, "VISIBLE", "YES");
-    iupAttribSetStr(ih, "VALUE_HANDLE", (char*)child);
+    ih->data->value_handle = child;
   }
   else
     IupSetAttribute(child, "VISIBLE", "NO");
@@ -60,11 +61,12 @@ static void iZboxChildAddedMethod(Ihandle* ih, Ihandle* child)
 
 static void iZboxChildRemovedMethod(Ihandle* ih, Ihandle* child)
 {
-  if (child == (Ihandle*)iupAttribGet(ih, "VALUE_HANDLE"))
+  if (child == ih->data->value_handle)
   {
     /* reset to the first child, even if it is NULL */
-    IupSetAttribute(ih->firstchild, "VISIBLE", "YES");
-    iupAttribSetStr(ih, "VALUE_HANDLE", (char*)ih->firstchild);
+    if (ih->firstchild)
+      IupSetAttribute(ih->firstchild, "VISIBLE", "YES");
+    ih->data->value_handle = ih->firstchild;
   }
 }
 
@@ -113,9 +115,12 @@ static int iZboxSetValueHandleAttrib(Ihandle* ih, const char* value)
   if (!iupObjectCheck(new_handle))
     return 0;
 
-  old_handle = (Ihandle*)iupAttribGet(ih, "VALUE_HANDLE");
+  old_handle = ih->data->value_handle;
   if (!iupObjectCheck(old_handle))
     old_handle = NULL;
+
+  if (old_handle == new_handle)
+    return 0;
 
   for (child = ih->firstchild; child; child = child->brother)
   {
@@ -125,7 +130,8 @@ static int iZboxSetValueHandleAttrib(Ihandle* ih, const char* value)
         IupSetAttribute(old_handle, "VISIBLE", "NO");
 
       IupSetAttribute(new_handle, "VISIBLE", "YES");
-      return 1;
+      ih->data->value_handle = new_handle;
+      return 0;
     }
   }
  
@@ -144,8 +150,7 @@ static int iZboxSetValuePosAttrib(Ihandle* ih, const char* value)
   {
     if (i == pos) /* found child */
     {
-      if (iZboxSetValueHandleAttrib(ih, (char*)child))
-        iupAttribSetStr(ih, "VALUE_HANDLE", (char*)child);
+      iZboxSetValueHandleAttrib(ih, (char*)child);
       return 0;
     }
   }
@@ -158,13 +163,12 @@ static char* iZboxGetValuePosAttrib(Ihandle* ih)
   Ihandle* child;
   int pos;
 
-  Ihandle* curr_handle = (Ihandle*)iupAttribGet(ih, "VALUE_HANDLE");
-  if (!iupObjectCheck(curr_handle))
+  if (!iupObjectCheck(ih->data->value_handle))
     return NULL;
 
   for (pos=0, child = ih->firstchild; child; child = child->brother, pos++)
   {
-    if (child == curr_handle) /* found child */
+    if (child == ih->data->value_handle) /* found child */
     {
       char *str = iupStrGetMemory(50);
       sprintf(str, "%d", pos);
@@ -186,8 +190,7 @@ static int iZboxSetValueAttrib(Ihandle* ih, const char* value)
   if (!new_handle)
     return 0;
 
-  if (iZboxSetValueHandleAttrib(ih, (char*)new_handle))
-    iupAttribSetStr(ih, "VALUE_HANDLE", (char*)new_handle);
+  iZboxSetValueHandleAttrib(ih, (char*)new_handle);
 
   return 0;
 }
@@ -197,14 +200,13 @@ static char* iZboxGetValueAttrib(Ihandle* ih)
   Ihandle* child;
   int pos;
 
-  Ihandle* curr_handle = (Ihandle*)iupAttribGet(ih, "VALUE_HANDLE");
-  if (!iupObjectCheck(curr_handle))
+  if (!iupObjectCheck(ih->data->value_handle))
     return NULL;
 
   for (pos=0, child = ih->firstchild; child; child = child->brother, pos++)
   {
-    if (child == curr_handle) /* found child, just cheking */
-      return IupGetName(curr_handle);
+    if (child == ih->data->value_handle) /* found child, just cheking */
+      return IupGetName(ih->data->value_handle);
   }
 
   return NULL;
@@ -212,9 +214,8 @@ static char* iZboxGetValueAttrib(Ihandle* ih)
 
 static int iZboxSetVisibleAttrib(Ihandle* ih, const char* value)
 {
-  Ihandle* child = (Ihandle*)iupAttribGet(ih, "VALUE_HANDLE");
-  if (child)
-    IupSetAttribute(child, "VISIBLE", (char*)value);
+  if (iupObjectCheck(ih->data->value_handle))
+    IupSetAttribute(ih->data->value_handle, "VISIBLE", (char*)value);
   return 0;
 }
 
@@ -389,7 +390,7 @@ Iclass* iupZboxGetClass(void)
   iupClassRegisterAttribute(ic, "VALUE_HANDLE", NULL, iZboxSetValueHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 
   /* Intercept VISIBLE since ZBOX works showing and hidding its children */
-  iupClassRegisterAttribute(ic, "VISIBLE", NULL, iZboxSetVisibleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLE", NULL, iZboxSetVisibleAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }

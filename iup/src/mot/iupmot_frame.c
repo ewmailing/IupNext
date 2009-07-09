@@ -147,7 +147,7 @@ static int motFrameSetTitleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static void* motFrameGetInnerNativeContainerMethod(Ihandle* ih, Ihandle* child)
+static void* motFrameGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
 {
   (void)child;
   return XtNameToWidget(ih->handle, "*child_manager");
@@ -240,7 +240,7 @@ void iupdrvFrameInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
   ic->Map = motFrameMapMethod;
-  ic->GetInnerNativeContainerHandle = motFrameGetInnerNativeContainerMethod;
+  ic->GetInnerNativeContainerHandle = motFrameGetInnerNativeContainerHandleMethod;
 
   /* Driver Dependent Attribute functions */
 

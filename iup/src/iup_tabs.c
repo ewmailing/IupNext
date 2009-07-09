@@ -391,11 +391,14 @@ static void iTabsSetPositionMethod(Ihandle* ih, int x, int y)
   }
 }
 
-static void* iTabsGetInnerNativeContainerMethod(Ihandle* ih, Ihandle* child)
+static void* iTabsGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
 {
   while (child && child->parent != ih)
     child = child->parent;
-  return iupAttribGet(child, "_IUPTAB_CONTAINER");
+  if (child)
+    return iupAttribGet(child, "_IUPTAB_CONTAINER");
+  else
+    return NULL;
 }
 
 static int iTabsCreateMethod(Ihandle* ih, void **params)
@@ -428,7 +431,7 @@ Iclass* iupTabsGetClass(void)
 
   /* Class functions */
   ic->Create  = iTabsCreateMethod;
-  ic->GetInnerNativeContainerHandle = iTabsGetInnerNativeContainerMethod;
+  ic->GetInnerNativeContainerHandle = iTabsGetInnerNativeContainerHandleMethod;
 
   ic->ComputeNaturalSize = iTabsComputeNaturalSizeMethod;
   ic->SetCurrentSize     = iTabsSetCurrentSizeMethod;
