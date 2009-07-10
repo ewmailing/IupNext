@@ -13,7 +13,7 @@ BEGIN
             VALUE "CompanyName", "Tecgraf/PUC-Rio\0"
             VALUE "FileDescription", "Lua Windows Standalone Interpreter with IUP\0"
             VALUE "FileVersion", "3.0.0\0"
-            VALUE "LegalCopyright", "Copyright © 1994-2008 Tecgraf, PUC-Rio.\0"
+            VALUE "LegalCopyright", "Copyright © 1994-2009 Tecgraf, PUC-Rio.\0"
             VALUE "OriginalFilename", "iuplua51.exe\0"
             VALUE "ProductName", "IUP for Windows\0"
             VALUE "ProductVersion", "3.0.0\0"
