@@ -190,7 +190,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
   if (len > 7)
     padding = "12x2";
   else
-    padding = "20x5";
+    padding = "18x5";
 
   button_box = IupHbox(NULL);
   IupSetAttribute(button_box, "NORMALIZESIZE", "HORIZONTAL");
