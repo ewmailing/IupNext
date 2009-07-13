@@ -85,7 +85,7 @@ static void iDialogUnSetModal(Ihandle* ih_popup)
 
 static int iDialogCreateMethod(Ihandle* ih, void** params)
 {
-  ih->data = iupALLOCCTRLDATA();
+ ih->data = iupALLOCCTRLDATA();
 
   ih->data->child_id = 100; /* initial number */
   ih->data->show_state = IUP_HIDE;
@@ -115,10 +115,10 @@ static void iDialogComputeNaturalSizeMethod(Ihandle* ih)
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
 
-  /* the dialog has only one child      */
+  /* the dialog has only one child */
   if (ih->firstchild)
   {
-    int decorwidth, decorheight;
+    int decorwidth, decorheight, natural_w, natural_h;
     Ihandle* child = ih->firstchild;
 
     iupDialogGetDecorSize(ih, &decorwidth, &decorheight);
@@ -127,8 +127,15 @@ static void iDialogComputeNaturalSizeMethod(Ihandle* ih)
     iupClassObjectComputeNaturalSize(child);
 
     ih->expand |= child->expand;
-    ih->naturalwidth = iupMAX(ih->naturalwidth, child->naturalwidth + decorwidth);
-    ih->naturalheight = iupMAX(ih->naturalheight, child->naturalheight + decorheight);
+    natural_w = child->naturalwidth + decorwidth;
+    natural_h = child->naturalheight + decorheight;
+
+    /* only update the natural size if user size is not defined. */
+    /* IupDialog is the only container where this must be done */ 
+    /* if the natural size is bigger than the actual dialog size then
+       the dialog will be resized, if smaller then the dialog remains with the same size. */
+    if (ih->naturalwidth <= 0) ih->naturalwidth = iupMAX(ih->currentwidth, natural_w);
+    if (ih->naturalheight <= 0) ih->naturalheight = iupMAX(ih->currentheight, natural_h);
   }
 }
 

@@ -10,7 +10,7 @@
 
 <h2>IupRefresh</h2>
 <p>Updates the size and layout of controls after changing size attributes. Can be used for any element inside a 
-  dialog, but the dialog layout will be updated. It can change the layout of all the controls inside the dialog because 
+  dialog, the layout of the dialog will be updated. It can change the layout of all the controls inside the dialog because 
   of the dynamic layout positioning. </p>
 <h3>
 Parameters/Return</h3>
@@ -21,7 +21,7 @@ iup.Refresh(<strong>ih</strong>: ihandle) [in Lua]</pre>
 <p>Can be used for any control, but it will always affect the whole dialog. Can 
 be called even if the dialog is not mapped.</p>
 <p>The elements are immediately repositioned, if the dialog is visible then the 
-change will be reflected on the display.</p>
+change will be immediately reflected on the display.</p>
 <p>This function will NOT change the size of 
   the dialog, except when the SIZE or RASTERSIZE attributes of the dialog where changed before the call.</p>
 <p>If you also want to change the size of the dialog use:</p>
