@@ -49,6 +49,7 @@ matrix(<strong>action_cb</strong>) [in LED]</pre>
   <dd><a href="iupmatrix_attrib.html#HIDEFOCUS">HIDEFOCUS</a></dd>
   <dd><a href="iupmatrix_attrib.html#READONLY">READONLY</a></dd>
   <dd><a href="iupmatrix_attrib.html#RESIZEMATRIX">RESIZEMATRIX</a></dd>
+  <dd><a href="iupmatrix_attrib.html#USETITLESIZE">USETITLESIZE</a></dd>
 </dl>
 
 
@@ -233,12 +234,13 @@ column NUMCOL-NUMCOL_VISIBLE to NUMCOL if NUMCOL_VISIBLE_LAST is defined. Notice
 and NUMLIN_VISIBLE do not include the titles then NUMCOL_VISIBLE+1 columns and 
 NUMLIN_VISIBLE+1 lines are included in the sum.</p>
 <p>The height of a line L depends on several attributes, first it checks the 
-HEIGHT<em>L</em> attribute, then checks RASTERHEIGHT<em>L</em>, then the height 
+HEIGHT<em>L</em> attribute, then checks RASTERHEIGHT<em>L</em>, then when 
+USETITLESIZE=YES or not in callback mode the height 
 of the title text for the line or if L=0 it searches for the heighest column 
 title, if still could not define a height then if L!=0 it will use HEIGHTDEF, if 
 L=0 then height will be 0. A similar approach is valid for the column width. The 
 width of a column C first checks the WIDTH<em>C</em> attribute, then checks 
-RASTERWIDTH<em>C</em>, then the width of the title text for the column or if C=0 
+RASTERWIDTH<em>C</em>, then when USETITLESIZE=YES or not in callback mode the width of the title text for the column or if C=0 
 it searches for the widest line title, if still could not define a width then if 
 C!=0 it will use WIDTHDEF, if C=0 then height will be 0.</p>
 <p>When the scrollbars are enabled if the matrix area is greatter than the 

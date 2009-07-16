@@ -151,6 +151,28 @@ static char* iMatrixGetFocusCellAttrib(Ihandle* ih)
   return str;
 }
 
+static int iMatrixSetUseTitleSizeAttrib(Ihandle* ih, const char* value)
+{
+  /* can be set only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+    ih->data->use_title_size = 1;
+  else 
+    ih->data->use_title_size = 0;
+
+  return 0;
+}
+
+static char* iMatrixGetUseTitleSizeAttrib(Ihandle* ih)
+{
+  if (ih->data->use_title_size)
+    return "YES";
+  else
+    return "NO";
+}
+
 static int iMatrixSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (IupGetInt(ih->data->datah, "VISIBLE"))
@@ -628,6 +650,7 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   ih->data->mark_col1 = -1;
   ih->data->mark_lin2 = -1;
   ih->data->mark_col2 = -1;
+  ih->data->use_title_size = 0;
 
   return IUP_NOERROR;
 }
@@ -880,7 +903,8 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttributeId(ic, "MASK", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
-  iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "READONLY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESIZEMATRIX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDEFOCUS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

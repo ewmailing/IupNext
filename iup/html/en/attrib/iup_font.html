@@ -46,7 +46,8 @@
 Although it is an inheritable attribute, it is defined only on elements that 
 have a native representation.</p>
 <h3>Value</h3>
-<p>Font description containing typeface, style and size. </p>
+<p>Font description containing typeface, style and size. Default: the global 
+attribute DEFAULTFONT.</p>
 <p>The common format definition is similar to the the <a href="http://www.pango.org/">
 Pango</a> library Font Description, used by GTK+2. It is defined as having 3 parts: 
 &quot;&lt;font 
@@ -66,15 +67,16 @@ Windows driver.</p>
 for the old font names that will be converted to the new common format 
 definition.</p>
 <h4>Windows</h4>
-<p>Default: &quot;Tahoma, 10&quot;&nbsp;&nbsp;&nbsp;&nbsp; (only if fail to retreive 
-it from the System Settings, see bellow)</p>
+<p>The DEFAULTFONT is retrieved from the System Settings (see bellow), if this 
+failed then &quot;Tahoma, 10&quot; is assumed.</p>
 <p>The native handle can be obtained using the &quot;<strong>HFONT</strong>&quot; attribute.</p>
-<p>In Control Panel, open the Display Properties then click on Advanced and 
-select &quot;Message Box&quot; and change its Font to affect the default font for 
-applications.</p>
+<p>In &quot;Control Panel&quot;, open the &quot;Display Properties&quot; then click on &quot;Advanced&quot; 
+and select &quot;Message Box&quot; and change its Font to affect the default font for 
+applications. In Vista go to &quot;Window Color and Appearance&quot;, then &quot;Open Classic 
+Appearance&quot;, then Advanced.</p>
 <h4>Motif</h4>
-<p>Default: &quot;Fixed, 11&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (only if not 
-defined in a user resource file, see bellow)</p>
+<p>The DEFAULTFONT is retrieved from the user resource file (see bellow), if 
+failed then &quot;Fixed, 11&quot; is assumed.</p>
 <p>The X-Windows Logical Font Description format (XLFD) is also supported.</p>
 <p>The native handle can be obtained using the &quot;<strong>XMFONTLIST</strong>&quot; and &quot;<strong>XFONTSTRUCT</strong>&quot; attributes. 
 The selected X Logical Font Description string can be obtained from the 
@@ -87,8 +89,8 @@ value in points by 10).</p>
 <p>Be aware that the resource files &quot;.Xdefaults&quot; and &quot;Iup&quot; in the user home folder can 
 affect the default font and many others visual appearance features in Motif.</p>
 <h4>GTK</h4>
-<p>Default: &quot;Sans, 10&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-(only if not defined by GNOME, see bellow)</p>
+<p>The DEFAULTFONT is retrieved from the style defined by GNOME (see bellow), if 
+failed &quot;Sans, 10&quot; is assumed.</p>
 <p>The X-Windows Logical Font Description format (XLFD) is also supported.</p>
 <p>The native handle can be obtained using the &quot;<strong>PANGOFONTDESC</strong>&quot; attribute.</p>
 <p>Style can also be a combination of:  Small-Caps, 
@@ -103,7 +105,8 @@ change the Applications Font to affect the default font.</p>
 &quot;Arial,Helvetica, 24&quot; (list of fonts for GTK)
 &quot;Courier New, Italic Underline -30&quot; (size in pixels)</pre>
 <h3>Affects</h3>
-<p>All elements, since the SIZE attribute depends on the FONT attribute.</p>
+<p>All elements, since the SIZE attribute depends on the FONT attribute, except 
+for menus.</p>
 <h3>Notes</h3>
 <p>When FONT is changed and <a href="iup_size.html">SIZE</a> is set, then
 <a href="iup_rastersize.html">RASTERSIZE</a> is also updated.</p>

@@ -542,192 +542,29 @@ wb_usr.tree =
           folder=
           {
             {
-              name= {en= "Common"},
-
-              folder=
-              {
-                {
-                  name= {nl= "LANGUAGE"},
-                  link= "attrib/iup_globals.html#LANGUAGE"
-                },
-                {
-                  name= {nl= "SYSTEMLANGUAGE"},
-                  link= "attrib/iup_globals.html#SYSTEMLANGUAGE"
-                },
-                {
-                  name= {nl= "VERSION"},
-                  link= "attrib/iup_globals.html#version"
-                },
-                {
-                  name= {nl= "COPYRIGHT"},
-                  link= "attrib/iup_globals.html#copyright"
-                },
-                {
-                  name= {nl= "DRIVER"},
-                  link= "attrib/iup_globals.html#driver"
-                },
-                {
-                  name= {nl= "SYSTEM"},
-                  link= "attrib/iup_globals.html#system"
-                },
-                {
-                  name= {nl= "SYSTEMVERSION"},
-                  link= "attrib/iup_globals.html#systemversion"
-                },
-                {
-                  name= {nl= "FULLSIZE"},
-                  link= "attrib/iup_globals.html#fullsize"
-                },
-                {
-                  name= {nl= "SCREENSIZE"},
-                  link= "attrib/iup_globals.html#screensize"
-                },
-                {
-                  name= {nl= "SCREENDEPTH"},
-                  link= "attrib/iup_globals.html#screendepth"
-                },
-                {
-                  name= {nl= "LOCKLOOP"},
-                  link= "attrib/iup_globals.html#lockloop"
-                },
-                {
-                  name= {nl= "CURSORPOS"},
-                  link= "attrib/iup_globals.html#cursorpos"
-                },
-                {
-                  name= {nl= "COMPUTERNAME"},
-                  link= "attrib/iup_globals.html#computername"
-                },
-                {
-                  name= {nl= "USERNAME"},
-                  link= "attrib/iup_globals.html#username"
-                },
-                {
-                  name= {nl= "DLGBGCOLOR"},
-                  link= "attrib/iup_globals.html#DLGBGCOLOR"
-                },
-                {
-                  name= {nl= "DLGFGCOLOR"},
-                  link= "attrib/iup_globals.html#DLGFGCOLOR"
-                },
-                {
-                  name= {nl= "MENUBGCOLOR"},
-                  link= "attrib/iup_globals.html#MENUBGCOLOR"
-                },
-                {
-                  name= {nl= "MENUFGCOLOR"},
-                  link= "attrib/iup_globals.html#MENUFGCOLOR"
-                },
-                {
-                  name= {nl= "TXTBGCOLOR"},
-                  link= "attrib/iup_globals.html#TXTBGCOLOR"
-                },
-                {
-                  name= {nl= "TXTFGCOLOR"},
-                  link= "attrib/iup_globals.html#TXTFGCOLOR"
-                },
-                {
-                  name= {nl= "DEFAULTFONT"},
-                  link= "attrib/iup_globals.html#DEFAULTFONT"
-                },
-                {
-                  name= {nl= "SHIFTKEY"},
-                  link= "attrib/iup_globals.html#SHIFTKEY"
-                },
-                {
-                  name= {nl= "CONTROLKEY"},
-                  link= "attrib/iup_globals.html#CONTROLKEY"
-                },
-                {
-                  name= {nl= "MODKEYSTATE"},
-                  link= "attrib/iup_globals.html#MODKEYSTATE"
-                },
-                {
-                  name= {nl= "TRUECOLORCANVAS"},
-                  link= "attrib/iup_globals.html#TRUECOLORCANVAS"
-                }
-              }
+              name= {nl= "General"},
+              link= "attrib/iup_globals.html#General"
             },
             {
-              name= {en= "Win32"},
-
-              folder=
-              {
-                {
-                  name= {nl= "HINSTANCE"},
-                  link= "attrib/iup_globals.html#HINSTANCE"
-                },
-                {
-                  name= {nl= "VIRTUALSCREEN"},
-                  link= "attrib/iup_globals.html#VIRTUALSCREEN"
-                },
-                {
-                  name= {nl= "MONITORSINFO"},
-                  link= "attrib/iup_globals.html#MONITORSINFO"
-                }
-              }
+              name= {nl= "System Control"},
+              link= "attrib/iup_globals.html#Control"
             },
             {
-              name= {en= "GTK"},
-
-              folder=
-              {
-                {
-                  name= {nl= "GTKVERSION"},
-                  link= "attrib/iup_globals.html#GTKVERSION"
-                },
-                {
-                  name= {nl= "UTF8AUTOCONVERT"},
-                  link= "attrib/iup_globals.html#UTF8AUTOCONVERT"
-                }
-              }
+              name= {nl= "System Information"},
+              link= "attrib/iup_globals.html#Information"
             },
             {
-              name= {en= "Motif"},
-
-              folder=
-              {
-                {
-                  name= {nl= "AUTOREPEAT"},
-                  link= "attrib/iup_globals.html#AUTOREPEAT"
-                },
-                {
-                  name= {nl= "APPSHELL"},
-                  link= "attrib/iup_globals.html#APPSHELL"
-                },
-                {
-                  name= {nl= "MOTIFVERSION"},
-                  link= "attrib/iup_globals.html#MOTIFVERSION"
-                },
-                {
-                  name= {nl= "MOTIFNUMBER"},
-                  link= "attrib/iup_globals.html#MOTIFNUMBER"
-                },
-              }
+              name= {nl= "Screen Information"},
+              link= "attrib/iup_globals.html#Screen"
             },
             {
-              name= {en= "X-Windows"},
-
-              folder=
-              {
-                {
-                  name= {nl= "XDISPLAY"},
-                  link= "attrib/iup_globals.html#XDISPLAY"
-                },
-                {
-                  name= {nl= "XSCREEN"},
-                  link= "attrib/iup_globals.html#XSCREEN"
-                },
-                {
-                  name= {nl= "XSERVERVENDOR"},
-                  link= "attrib/iup_globals.html#XSERVERVENDOR"
-                },
-                {
-                  name= {nl= "XVENDORRELEASE"},
-                  link= "attrib/iup_globals.html#XVENDORRELEASE"
-                }
-              }
-            }
+              name= {nl= "System Data"},
+              link= "attrib/iup_globals.html#Data"
+            },
+            {
+              name= {nl= "Default Attributes"},
+              link= "attrib/iup_globals.html#Default"
+            },
           }
         }
       }

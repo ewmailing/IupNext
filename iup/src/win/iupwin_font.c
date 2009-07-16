@@ -134,7 +134,7 @@ char* iupdrvGetSystemFont(void)
   static char systemfont[200] = "";
   NONCLIENTMETRICS ncm;
   ncm.cbSize = sizeof(NONCLIENTMETRICS);
-  if (SystemParametersInfo (SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, FALSE))
+  if (SystemParametersInfo(SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, FALSE))
     winFontFromLogFont(&ncm.lfMessageFont, systemfont);
   else
     strcpy(systemfont, "Tahoma, 10");

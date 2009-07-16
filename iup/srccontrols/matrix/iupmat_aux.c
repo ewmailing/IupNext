@@ -199,30 +199,33 @@ int iupMatrixAuxGetColumnWidth(Ihandle* ih, int col)
 
   if (!value)
   {
-    if (col == 0)
+    if (ih->data->use_title_size || !ih->data->callback_mode)
     {
-      /* find the largest title */
-      int lin, max_width = 0;
-      for(lin = 0; lin < ih->data->lines.num; lin++)
+      if (col == 0)
       {
-        char* title_value = iupMatrixCellGetValue(ih, lin, 0);
-        if (title_value)
+        /* find the largest title */
+        int lin, max_width = 0;
+        for(lin = 0; lin < ih->data->lines.num; lin++)
         {
-          iupdrvFontGetMultiLineStringSize(ih, title_value, &width, NULL);
-          if (width > max_width)
-            max_width = width;
+          char* title_value = iupMatrixCellGetValue(ih, lin, 0);
+          if (title_value)
+          {
+            iupdrvFontGetMultiLineStringSize(ih, title_value, &width, NULL);
+            if (width > max_width)
+              max_width = width;
+          }
         }
+        width = max_width;
       }
-      width = max_width;
+      else
+      {
+        char* title_value = iupMatrixCellGetValue(ih, 0, col);
+        if (title_value)
+          iupdrvFontGetMultiLineStringSize(ih, title_value, &width, NULL);
+      }
+      if (width)
+        return width + IMAT_PADDING_W + IMAT_FRAME_W;
     }
-    else
-    {
-      char* title_value = iupMatrixCellGetValue(ih, 0, col);
-      if (title_value)
-        iupdrvFontGetMultiLineStringSize(ih, title_value, &width, NULL);
-    }
-    if (width)
-      return width + IMAT_PADDING_W + IMAT_FRAME_W;
 
     if (col!=0)
       value = iupAttribGetStr(ih, "WIDTHDEF");
@@ -267,30 +270,33 @@ int iupMatrixAuxGetLineHeight(Ihandle* ih, int lin)
 
   if (!value)
   {
-    if (lin == 0)
+    if (ih->data->use_title_size || !ih->data->callback_mode)
     {
-      /* find the highest title */
-      int col, max_height = 0;
-      for(col = 0; col < ih->data->columns.num; col++)
+      if (lin == 0)
       {
-        char* title_value = iupMatrixCellGetValue(ih, 0, col);
-        if (title_value && title_value[0])
+        /* find the highest title */
+        int col, max_height = 0;
+        for(col = 0; col < ih->data->columns.num; col++)
         {
-          iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
-          if (height > max_height)
-            max_height = height;
+          char* title_value = iupMatrixCellGetValue(ih, 0, col);
+          if (title_value && title_value[0])
+          {
+            iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
+            if (height > max_height)
+              max_height = height;
+          }
         }
+        height = max_height;
       }
-      height = max_height;
+      else
+      {
+        char* title_value = iupMatrixCellGetValue(ih, lin, 0);
+        if (title_value && title_value[0])
+          iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
+      }
+      if (height)
+        return height + IMAT_PADDING_H + IMAT_FRAME_H;
     }
-    else
-    {
-      char* title_value = iupMatrixCellGetValue(ih, lin, 0);
-      if (title_value && title_value[0])
-        iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
-    }
-    if (height)
-      return height + IMAT_PADDING_H + IMAT_FRAME_H;
 
     if (lin != 0)
       value = iupAttribGetStr(ih, "HEIGHTDEF");

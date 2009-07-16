@@ -36,6 +36,9 @@ to change the cell value. (since 3.0)</p>
   interactively changed. When this is possible, the user can change the size of a column by dragging the column title 
   right border. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
     &quot;NO&quot; (does not allow interactive width change).</p>
+<p><strong><a name="USETITLESIZE">USETITLESIZE</a>:</strong> Use the title size 
+to define the cell size if necessary. See WIDTHn and HEIGHTn. Default: NO. 
+(since 3.0)</p>
 
 <h3>Cell Attributes (no redraw)</h3>
 <p>(These attributes are only updated in the display when you set the
@@ -139,7 +142,8 @@ Has lower priority than WIDTHn.</p>
 <p><strong><a name="WIDTHn">WIDTHn</a></strong>:
   Width of column n, where n is the number of the column (n&gt;=0). If the 
 width value is 0, the column will not be shown on the screen. It does not 
-includes the decoration size occupied by the frame lines. If WIDTHn and 
+includes the decoration size occupied by the frame lines. When USETITLESIZE=YES 
+or not in callback mode, if WIDTHn and 
 RASTERWIDTHn are not defined then before using the default value it will try to 
 use the width of the title of the column if any, or if n=0 it will search for 
 the maximum width of the titles of the column. Default: width 
@@ -152,7 +156,8 @@ the maximum width of the titles of the column. Default: width
 <p><strong><a name="HEIGHTn">HEIGHTn</a></strong>:
   Height of line n, where n is the number of the line 
   (n&gt;=0). If the height value is 0, the line will not be shown on the screen. 
-It does not includes the decoration size occupied by the frame lines. If HEIGHTn 
+It does not includes the decoration size occupied by the frame lines. When 
+USETITLESIZE=YES or not in callback mode, if HEIGHTn 
 and RASTERHEIGHTn are not defined then before using the default value it will 
 try to use the height of the title of the line if any, or if n=0 it will search 
 for the maximum height of the titles of the line. Default: 

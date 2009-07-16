@@ -78,6 +78,7 @@ struct _IcontrolData
   int has_focus;
   int w, h;             /* canvas size */
   int callback_mode;
+  int use_title_size;   /* use title contents when calculating cell size */
   int need_calcsize;
 
   /* attributes */

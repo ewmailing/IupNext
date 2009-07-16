@@ -11,6 +11,7 @@
 #include "iup_table.h"
 #include "iup_globalattrib.h"
 #include "iup_drv.h"
+#include "iup_drvfont.h"
 #include "iup_assert.h"
 #include "iup_str.h"
 
@@ -33,6 +34,12 @@ void IupSetGlobal(const char *name, const char *value)
   iupASSERT(name!=NULL);
   if (!name) return;
 
+  if (iupStrEqual(name, "DEFAULTFONTSIZE"))
+  {
+    iupSetDefaultFontSizeGlobalAttrib(value);
+    return;
+  }
+
   if (iupdrvSetGlobal(name, value))
   {
     if (!value)
@@ -46,6 +53,12 @@ void IupStoreGlobal(const char *name, const char *value)
 {
   iupASSERT(name!=NULL);
   if (!name) return;
+
+  if (iupStrEqual(name, "DEFAULTFONTSIZE"))
+  {
+    iupSetDefaultFontSizeGlobalAttrib(value);
+    return;
+  }
 
   if (iupdrvSetGlobal(name, value))
   {
@@ -64,8 +77,12 @@ char *IupGetGlobal(const char *name)
   if (!name) 
     return NULL;
 
+  if (iupStrEqual(name, "DEFAULTFONTSIZE"))
+    return iupGetDefaultFontSizeGlobalAttrib();
+
   value = iupdrvGetGlobal(name);
-  if (!value) 
+
+  if (!value)
     value = (char*)iupTableGet(iglobal_table, name);
 
   return value;
