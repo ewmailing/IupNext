@@ -53,13 +53,32 @@ void IupUnmap(Ihandle *ih)
   ih->handle = NULL;
 }
 
+static char* iShowGetVisible(Ihandle* ih)
+{
+  char* value = iupAttribGet(ih, "VISIBLE");   /* Check on the element first */
+  while (!value)
+  {
+    ih = ih->parent;   /* iheritance here independs on the attribute */
+    if (!ih)
+      return NULL;
+
+    value = iupAttribGet(ih, "VISIBLE");
+
+    /* only recursive up to the native parent */ 
+    if (ih->iclass->nativetype != IUP_TYPEVOID)
+      return value; /* can be NULL */
+  }
+
+  return value;
+}
+
 static void iShowUpdateVisible(Ihandle* ih)
 {
   int inherit;
   /* although default is VISIBLE=YES, 
      when mapped the element is hidden. 
      So we must manually update the visible state. */
-  char* value = iupAttribGetInherit(ih, "VISIBLE");
+  char* value = iShowGetVisible(ih);
   iupClassObjectSetAttribute(ih, "VISIBLE", value, &inherit);
 }
 

@@ -24,7 +24,7 @@
 static int gtkMessageDlgPopup(Ihandle* ih, int x, int y)
 {
   InativeHandle* parent = iupDialogGetNativeParent(ih);
-  GtkMessageType type = GTK_MESSAGE_INFO;
+  GtkMessageType type = GTK_MESSAGE_OTHER;
   GtkWidget* dialog;
   char *icon, *buttons, *title;
   int response, num_but = 2;

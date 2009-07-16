@@ -97,6 +97,32 @@ void IupDetach(Ihandle *child)
   }
 }
 
+static int iChildFindRec(Ihandle* parent, Ihandle* child)
+{
+  Ihandle *c;
+
+  /* Finds the reference child entry inside the parent's child list */
+  for (c = parent->firstchild; c; c = c->brother)
+  {
+    if (c == child) /* Found the right child */
+      return 1;
+
+    if (iChildFindRec(c, child))
+      return 1;
+  }
+
+  return 0;
+}
+
+static int iChildTreeCheckInside(Ihandle* parent, Ihandle* child)
+{
+  /* top parent */
+  while (parent->parent)
+    parent = parent->parent;
+
+  return iChildFindRec(parent, child);
+}
+
 static int iChildFind(Ihandle* parent, Ihandle* child)
 {
   Ihandle *c;
@@ -151,6 +177,14 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
   iupASSERT(iupObjectCheck(child));
   if (!iupObjectCheck(child))
     return NULL;
+
+#ifdef IUP_ASSERT
+  if (iChildTreeCheckInside(parent, child))
+  {
+    iupError("Duplicate Child Found!\n(type(%s) - name(%s))", child->iclass->name, IupGetName(child));
+    return NULL;
+  }
+#endif
 
 
   /* this will return the actual parent */
@@ -212,6 +246,14 @@ Ihandle* IupAppend(Ihandle* parent, Ihandle* child)
   iupASSERT(iupObjectCheck(child));
   if (!iupObjectCheck(child))
     return NULL;
+
+#ifdef IUP_ASSERT
+  if (iChildTreeCheckInside(parent, child))
+  {
+    iupError("Duplicate Child Found!\n(type(%s) - name(%s))", child->iclass->name, IupGetName(child));
+    return NULL;
+  }
+#endif
 
 
   /* this will return the actual parent */

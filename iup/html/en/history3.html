@@ -35,7 +35,7 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 </p>
 
-<h3>CVS (09/Jul/2009)</h3>
+<h3>CVS (15/Jul/2009)</h3>
 
 <h4>General</h4>
 
@@ -46,6 +46,8 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="style2">Changed:</span>
     the default alignment for IupButton (Text and Image) and IupToggle (Image) 
 	to &quot;ACENTER:ACENTER&quot;.</li>
+	<li><span class="style2">Changed:</span>
+    improved decoration size computation for <strong>IupDialog</strong> in GTK.</li>
 	<li><span class="style1">Fixed:</span> <strong>IupItem</strong> in GTK when compiled
         in versions older than 2.14, but run in newer versions.</li>
     <li><strong><span style="color: #ff0000">Fixed:</span></strong> alignment of buttons
@@ -53,7 +55,8 @@ proceed when migrating from version 2.x to version 3.x.<br>
     <li><strong><span style="color: #ff0000">Fixed:</span></strong> default cell alignment
         in <strong>IupMatrix</strong>.</li>
     <li><strong><span style="color: #ff0000">Fixed:</span></strong> <strong>IupZbox</strong>
-        child visible management.</li>
+        visible
+        child management and VISILBE attribute update after mapping an element.</li>
     <li><strong><span style="color: #ff0000">Fixed:</span></strong> X and Y attributes for
         GTK.</li>
     <li><strong><span style="color: #ff0000">Fixed:</span></strong> <strong>IupTree</strong> TITLE with non UTF-8 characters.</li>
@@ -72,8 +75,11 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	IupCanvas</strong> in GTK.</li>
 	<li><strong><span style="color: #ff0000">Fixed:</span></strong> ADDEXPANDED 
 	in <strong>IupTree</strong>.</li>
-	<li><strong><span style="color: #ff0000">Fixed:</span></strong> SIZE for
+	<li><strong><span style="color: #ff0000">Fixed:</span></strong> SIZE 
+	consideration in layout computation for
 	<strong>IupDialog</strong>.</li>
+	<li><strong><span style="color: #ff0000">Fixed:</span></strong> 
+	DIALOGTYPE=MESSAGE for <strong>IupMessageDlg</strong> in GTK.</li>
 
 </ul>
 

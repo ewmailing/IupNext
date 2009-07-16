@@ -547,7 +547,7 @@ int iupFontParseWin(const char *value, char *fontname, int *height, int *bold, i
   {
     do /* extract style (bold/italic etc) */
     {
-      char style[10];
+      char style[30];
 
       c = (int)strcspn(value, ":,");
       if (c == 0)
@@ -589,7 +589,7 @@ int iupFontParseWin(const char *value, char *fontname, int *height, int *bold, i
 
 int iupFontParseX(const char *standardfont, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout)
 {
-  char style1[10], style2[10];
+  char style1[30], style2[30];
   char* token;
   char font[1024];
 

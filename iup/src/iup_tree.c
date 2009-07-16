@@ -487,7 +487,7 @@ void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, char* f, ...)
 
 int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
 {
-  char attr[10];
+  char attr[30];
   sprintf(attr,"USERDATA%d",id);
   IupSetAttribute(ih, attr, userdata);
   return IupGetAttribute(ih, attr)? 1: 0;
@@ -508,7 +508,7 @@ int IupTreeGetId(Ihandle* ih, void *userdata)
 
 void* IupTreeGetUserId(Ihandle* ih, int id)
 {
-  char attr[10];
+  char attr[30];
   sprintf(attr,"USERDATA%d",id);
   return IupGetAttribute(ih, attr);
 }

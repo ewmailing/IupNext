@@ -95,6 +95,16 @@ static int gtkDialogGetMenuSize(Ihandle* ih)
 #endif
 }
 
+static int gtkDialogGetWindowDecor(Ihandle* ih, int *win_border, int *win_caption)
+{
+  int x, y, frame_x, frame_y;
+  gdk_window_get_origin(ih->handle->window, &x, &y);
+  gdk_window_get_root_origin(ih->handle->window, &frame_x, &frame_y);
+  *win_border = x-frame_x;
+  *win_caption = y-frame_y-*win_border;
+  return 1;  /* just for compatibility with iupdrvGetWindowDecor */
+}
+
 void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu)
 {
 #ifdef HILDON
@@ -124,13 +134,8 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   if (ih->handle && iupdrvIsVisible(ih))
   {
     int win_border, win_caption;
-    /* TODO: maybe we can use other functions to get a better decoration size 
-    GdkRectangle rect;
-    gdk_window_get_frame_extents(gtk_widget_get_window(ih->handle), &rect);  
-    or
-    gdk_window_get_root_origin */
 
-    if (iupdrvGetWindowDecor(iupgtkGetNativeWindowHandle(ih), &win_border, &win_caption))
+    if (gtkDialogGetWindowDecor(ih, &win_border, &win_caption))
     {
 #ifdef WIN32
       if (*menu)

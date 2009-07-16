@@ -127,7 +127,7 @@ static void iValSetImage(const char* name, unsigned char** image_out, long int**
 
   for(c = 0 ; c < max_color; c++) 
   {
-    char colorstr[10];
+    char colorstr[30];
     char *value;
     sprintf(colorstr, "%d", c);
     value = iupAttribGet(img, colorstr);      

@@ -300,7 +300,8 @@ void MatrixCbsTest(void)
             IupSetAttributes(
               IupVbox(IupFrame(create_mat()), IupText(""), IupLabel("Label Text"), IupVal("HORIZONTAL"), 
 //                NULL), "BGCOLOR=\"0 255 255\", MARGIN=10x10, GAP=10, TABTITLE=Test2,FONT=HELVETICA_ITALIC_14"), 
-                NULL), "FONT=HELVETICA_NORMAL_12, BGCOLOR=\"0 255 255\", MARGIN=10x10, GAP=10, TABTITLE=Test2"), 
+//                NULL), "FONT=HELVETICA_NORMAL_12, BGCOLOR=\"0 255 255\", MARGIN=10x10, GAP=10, TABTITLE=Test2"), 
+                NULL), "BGCOLOR=\"0 255 255\", MARGIN=10x10, GAP=10, TABTITLE=Test2"), 
             NULL)); 
   IupSetAttribute(dlg,"TITLE", "IupMatrix");
   IupSetAttribute(dlg,"MENU", "mymenu");

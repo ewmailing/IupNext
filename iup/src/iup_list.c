@@ -26,7 +26,7 @@
 void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos)
 {
   char *text;
-  char str[10];
+  char str[30];
 
   if (pos<=0)
     return;
@@ -41,7 +41,7 @@ void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos)
 static void iListCallActionCallback(Ihandle* ih, IFnsii cb, int pos, int state)
 {
   char *text;
-  char str[10];
+  char str[30];
 
   if (pos<=0)
     return;

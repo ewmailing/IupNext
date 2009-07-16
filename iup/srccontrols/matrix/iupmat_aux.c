@@ -274,7 +274,7 @@ int iupMatrixAuxGetLineHeight(Ihandle* ih, int lin)
       for(col = 0; col < ih->data->columns.num; col++)
       {
         char* title_value = iupMatrixCellGetValue(ih, 0, col);
-        if (title_value)
+        if (title_value && title_value[0])
         {
           iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
           if (height > max_height)
@@ -286,7 +286,7 @@ int iupMatrixAuxGetLineHeight(Ihandle* ih, int lin)
     else
     {
       char* title_value = iupMatrixCellGetValue(ih, lin, 0);
-      if (title_value)
+      if (title_value && title_value[0])
         iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
     }
     if (height)

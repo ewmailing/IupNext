@@ -66,14 +66,14 @@ Windows driver.</p>
 for the old font names that will be converted to the new common format 
 definition.</p>
 <h4>Windows</h4>
-<p>Default: &quot;Tahoma, 10&quot;&nbsp;&nbsp;&nbsp;&nbsp; (if fail to retreive 
-it from the Control Panel, see bellow)</p>
+<p>Default: &quot;Tahoma, 10&quot;&nbsp;&nbsp;&nbsp;&nbsp; (only if fail to retreive 
+it from the System Settings, see bellow)</p>
 <p>The native handle can be obtained using the &quot;<strong>HFONT</strong>&quot; attribute.</p>
 <p>In Control Panel, open the Display Properties then click on Advanced and 
 select &quot;Message Box&quot; and change its Font to affect the default font for 
 applications.</p>
 <h4>Motif</h4>
-<p>Default: &quot;Fixed, 11&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (if not 
+<p>Default: &quot;Fixed, 11&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (only if not 
 defined in a user resource file, see bellow)</p>
 <p>The X-Windows Logical Font Description format (XLFD) is also supported.</p>
 <p>The native handle can be obtained using the &quot;<strong>XMFONTLIST</strong>&quot; and &quot;<strong>XFONTSTRUCT</strong>&quot; attributes. 
@@ -88,7 +88,7 @@ value in points by 10).</p>
 affect the default font and many others visual appearance features in Motif.</p>
 <h4>GTK</h4>
 <p>Default: &quot;Sans, 10&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-(if not defined by GNOME, see bellow)</p>
+(only if not defined by GNOME, see bellow)</p>
 <p>The X-Windows Logical Font Description format (XLFD) is also supported.</p>
 <p>The native handle can be obtained using the &quot;<strong>PANGOFONTDESC</strong>&quot; attribute.</p>
 <p>Style can also be a combination of:  Small-Caps, 

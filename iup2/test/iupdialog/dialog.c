@@ -80,6 +80,7 @@ int main(int argc, char **argv)
   list = IupCreate("list");
   IupSetAttribute(list, "1", "A");
   IupSetAttribute(list, "2", "B");
+  IupSetAttribute(list, "SIZE", "200x100");
 
   /* Creating main dialog */  
   dialog = IupCreatep("dialog", IupVbox(quit_bt, list, NULL), NULL);
@@ -90,6 +91,7 @@ int main(int argc, char **argv)
   IupSetAttribute(dialog, IUP_DEFAULTESC, "quit");
   IupSetAttribute(dialog, IUP_K_ANY, "kany");
   IupSetFunction("kany", (Icallback) kany);
+  //IupSetAttribute(dialog, "SIZE", "400x200");
 
   IupShowXY(dialog, IUP_CENTER, IUP_CENTER);
   
