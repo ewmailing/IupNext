@@ -82,6 +82,7 @@ static void iImageStockGet(const char* name, Ihandle* *ih, const char* *native_n
 
 void iupImageStockLoad(const char *name)
 {
+  /* Used only in iupImageLibLoadAll */
   const char* native_name = NULL;
   Ihandle* ih = NULL;
   iImageStockGet(name, &ih, &native_name);

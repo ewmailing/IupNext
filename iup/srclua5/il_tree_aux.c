@@ -87,8 +87,8 @@ static int TreeGetUserId(lua_State *L)
    int ref;
    Ihandle *h = iuplua_checkihandle(L,1);
    int id = (int)luaL_checknumber(L,2);
-   ref = (int) IupTreeGetUserId(h, id);
-   lua_getref(L, ref-1);
+   ref = (int) IupTreeGetUserId(h, id) - 1;
+   lua_getref(L, ref);
    return 1;
 }
 
@@ -96,23 +96,27 @@ static int TreeSetUserId(lua_State *L)
 {  
    Ihandle *h = iuplua_checkihandle(L,1);
    int id = (int)luaL_checknumber(L,2);
-   if(lua_isnil(L, 3))
+   int ref = (int)IupTreeGetUserId(h, id) - 1;
+   if (ref != LUA_NOREF)
    {
-     int ref = (int) IupTreeGetUserId(h, id);
-     lua_getref(L, ref-1);
+     /* always remove old references */
+     lua_getref(L, ref);
      settableref(L, 4, 0);
-     lua_unref(L, ref-1);
-     IupTreeSetUserId(h, id, NULL);
+     lua_unref(L, ref);
      lua_pop(L, 1);
    }
+
+   if (lua_isnil(L, 3))
+     IupTreeSetUserId(h, id, NULL);
    else
    {
-     int ref;
+     /* add a new reference */
      lua_pushvalue(L, 3);
-     ref = lua_ref(L, 1);
-     IupTreeSetUserId(h, id, (char*) ref+1);
-     settableref(L, 3, ref+1);
+     ref = lua_ref(L, 1) + 1;
+     settableref(L, 3, ref);
+     IupTreeSetUserId(h, id, (char*)ref);
    }
+
    return 0;
 }
 

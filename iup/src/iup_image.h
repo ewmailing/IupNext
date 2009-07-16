@@ -44,7 +44,7 @@ void iupImageStockInit(void);
 void iupImageStockFinish(void);
 typedef Ihandle* (*iupImageStockCreateFunc)(void);
 void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char* native_name);
-void iupImageStockLoad(const char *name);
+void iupImageStockLoad(const char *name);  /* Used only in iupImageLibLoadAll */
 
 
 #ifdef __cplusplus
