@@ -85,7 +85,8 @@
 <p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>:
   Background color. In Windows, when using the Windows driver or the GTK 
 driver, the 
-BGCOLOR attribute is ignored if the button has a border. Default: the global 
+BGCOLOR attribute is ignored. BGCOLOR is ignored always when FLAT=YES because it 
+will inherit from the native parent. Default: the global 
 attribute DLGBGCOLOR.</p>
 
 <p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the 
@@ -93,7 +94,7 @@ control. Default: YES. (since 3.0)</p>
 
   
 <p><b>FLAT</b> (creation only): Hides the button borders until the mouse enter the 
-  button area.</p>
+  button area. Can be YES or NO.</p>
 
 <p><strong>FOCUSONCLICK </strong>(creation only): if NO the button will not 
 receive the focus when clicked. Default: YES. Useful for toolbar buttons.</p>

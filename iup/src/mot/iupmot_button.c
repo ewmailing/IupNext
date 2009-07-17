@@ -118,7 +118,7 @@ static int motButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 
 static int motButtonSetBgColorAttrib(Ihandle* ih, const char* value)
 {
-  if (iupAttribGet(ih, "IMPRESS"))
+  if (iupAttribGet(ih, "IMPRESS") || iupStrBoolean(iupAttribGetStr(ih, "FLAT")))
   {
     /* ignore given value, must use only from parent */
     value = iupBaseNativeParentGetBgColor(ih);
@@ -132,7 +132,7 @@ static int motButtonSetBgColorAttrib(Ihandle* ih, const char* value)
 
 static int motButtonSetBackgroundAttrib(Ihandle* ih, const char* value)
 {
-  if (iupAttribGet(ih, "IMPRESS"))
+  if (iupAttribGet(ih, "IMPRESS") || iupStrBoolean(iupAttribGetStr(ih, "FLAT")))
   {
     /* ignore given value, must use only from parent */
     value = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
@@ -241,7 +241,6 @@ static int motButtonMapMethod(Ihandle* ih)
   XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
 
   value = iupAttribGet(ih, "IMPRESS");
-
   if (iupStrBoolean(iupAttribGetStr(ih, "FLAT")) && !value)
   {
     XtVaSetValues(ih->handle, XmNshadowThickness, 0, NULL);

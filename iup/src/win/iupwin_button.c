@@ -407,10 +407,8 @@ static char* winButtonGetAlignmentAttrib(Ihandle *ih)
 static int winButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 {
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
-
   if (ih->handle)
     iupdrvDisplayRedraw(ih);
-
   return 0;
 }
 
