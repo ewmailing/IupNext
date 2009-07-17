@@ -489,9 +489,9 @@ static void code_start( Telem* elem )
   if ( codename( elem ) )
     fprintf( outfile, " = " );
   if (elem->name)
-    fprintf( outfile, "decl( \"%s\", ", elem->name );
+    fprintf( outfile, "IupSetAtt( \"%s\", ", elem->name );
   else
-    fprintf( outfile, "decl( NULL, " );
+    fprintf( outfile, "IupSetAtt( NULL, " );
   codeelemname( elem );
 }
 
@@ -860,23 +860,6 @@ void init(void)
   vetsizepos = ftell( outfile );
   fprintf( outfile, 
     "       ];\n"
-    "\n"
-    "static Ihandle* decl( char* name, Ihandle* elem, char* first, ...)\n"
-    "{\n"
-    "  char *attr, *val;\n"
-    "  va_list arg;\n"
-    "  va_start (arg, first);\n"
-    "  attr = first;\n"
-    "  while (attr)\n"
-    "  {\n"
-    "    val = va_arg(arg,char*);\n"
-    "    IupSetAttribute( elem, attr, val );\n"
-    "    attr = va_arg(arg,char*);\n"
-    "  }\n"
-    "  va_end (arg);\n"
-    "  if(name) IupSetHandle( name, elem );\n"
-    "  return elem;\n"
-    "}\n"
     "\n" );
 }
 

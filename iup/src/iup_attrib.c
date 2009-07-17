@@ -376,6 +376,23 @@ Ihandle* IupGetAttributeHandle(Ihandle *ih, const char* name)
   return NULL;
 }
 
+Ihandle* IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...)
+{
+  const char *attr, *val;
+  va_list arg;
+  va_start (arg, name);
+  attr = name;
+  while (attr)
+  {
+    val = va_arg(arg, const char*);
+    IupSetAttribute(ih, attr, val);
+    attr = va_arg(arg, const char*);
+  }
+  va_end(arg);
+  if (handle_name) IupSetHandle(handle_name, ih);
+  return ih;
+}
+
 void iupAttribSetStr(Ihandle* ih, const char* name, const char* value)
 {
   if (!value)

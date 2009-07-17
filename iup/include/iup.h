@@ -113,6 +113,7 @@ int       IupGetIntInt     (Ihandle *ih, const char* name, int *i1, int *i2);
 float     IupGetFloat      (Ihandle* ih, const char* name);
 void      IupSetfAttribute (Ihandle* ih, const char* name, const char* format, ...);
 int       IupGetAllAttributes(Ihandle* ih, char** names, int n);
+Ihandle*  IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...);
 
 void      IupSetGlobal     (const char* name, const char* value);
 void      IupStoreGlobal   (const char* name, const char* value);
