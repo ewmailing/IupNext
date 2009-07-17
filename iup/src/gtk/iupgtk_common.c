@@ -28,12 +28,16 @@
 #include "iupgtk_drv.h"
 
 
-/* 
-  GTK only has abssolute positioning using a GtkFixed container,
-  so all elements returned by iupChildTreeGetNativeParentHandle will be a GtkFixed.
-*/
-
-
+/* GTK only has abssolute positioning using a GtkFixed container,
+   so all elements returned by iupChildTreeGetNativeParentHandle should be a GtkFixed. 
+   If not looks in the native parent. */
+static GtkFixed* gtkGetFixedParent(Ihandle* ih)
+{
+  GtkWidget* widget = iupChildTreeGetNativeParentHandle(ih);
+  while (widget && !GTK_IS_FIXED(widget))
+    widget = gtk_widget_get_parent(widget);
+  return (GtkFixed*)widget;
+}
 
 void iupgtkUpdateMnemonic(Ihandle* ih)
 {
@@ -48,15 +52,15 @@ void iupdrvActivate(Ihandle* ih)
 
 void iupdrvReparent(Ihandle* ih)
 {
-  GtkWidget* fixed = iupChildTreeGetNativeParentHandle(ih);
+  GtkFixed* fixed = gtkGetFixedParent(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
-  gtk_widget_reparent(widget, fixed);
+  gtk_widget_reparent(widget, (GtkWidget*)fixed);
 }
 
 void iupgtkBaseAddToParent(Ihandle* ih)
 {
-  GtkFixed* fixed = (GtkFixed*)iupChildTreeGetNativeParentHandle(ih);
+  GtkFixed* fixed = gtkGetFixedParent(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
@@ -65,7 +69,7 @@ void iupgtkBaseAddToParent(Ihandle* ih)
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
-  GtkFixed* fixed = (GtkFixed*)iupChildTreeGetNativeParentHandle(ih);
+  GtkFixed* fixed = gtkGetFixedParent(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 

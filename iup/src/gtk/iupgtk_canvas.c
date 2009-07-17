@@ -218,19 +218,6 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
     iupAttribSetStr(ih, "CLIPRECT", NULL);
   }
 
-  if (ih->iclass->childtype != IUP_CHILDNONE) /* canvas can be a container */
-  {
-    struct {
-      GtkWidget *container;
-      GdkEventExpose *evt;
-    } data;
-    data.container = widget;
-    data.evt = evt;
-
-    gtk_container_foreach(GTK_CONTAINER (widget), gtkCanvasExposeChild, &data);
-    return FALSE;
-  }
-
   return TRUE;  /* stop other handlers */
 }
 
@@ -484,22 +471,6 @@ static char* gtkCanvasGetDrawableAttrib(Ihandle* ih)
   return (char*)ih->handle->window;
 }
 
-static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
-{
-  iupdrvBaseLayoutUpdateMethod(ih);
-
-  if (ih->iclass->childtype != IUP_CHILDNONE)
-  {
-    IFnii cb = (IFnii)IupGetCallback(ih,"RESIZE_CB");
-    if (cb)
-    {
-      /* force the resize so it can occour before calling the callback */
-      gdk_window_resize(ih->handle->window, ih->currentwidth, ih->currentheight);
-      cb(ih, ih->currentwidth, ih->currentheight);
-    }
-  }
-}
-
 static void gtkCanvasDummyLogFunc(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
   /* does nothing */
@@ -528,14 +499,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
     gtk_widget_set_default_colormap(colormap);
   }
 
-  if (ih->iclass->childtype != IUP_CHILDNONE) /* canvas can be a container */
-  {
-    ih->handle = gtk_fixed_new();
-    gtk_fixed_set_has_window((GtkFixed*)ih->handle, TRUE);
-    gtk_widget_set_app_paintable(ih->handle, TRUE);
-  }
-  else
-    ih->handle = gtk_drawing_area_new();
+  ih->handle = gtk_drawing_area_new();
 
   if (visual)
     gtk_widget_set_default_colormap(default_colormap);
@@ -603,12 +567,9 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   gtk_widget_realize((GtkWidget*)scrolled_window);
   gtk_widget_realize(ih->handle);
 
-  if (ih->iclass->childtype == IUP_CHILDNONE)
-  {
-    /* must be connected after realize or a RESIZE_CB will happen before MAP_CB
-      works only for the GtkDrawingArea. */
-    g_signal_connect(G_OBJECT(ih->handle), "configure-event", G_CALLBACK(gtkCanvasConfigureEvent), ih);
-  }
+  /* must be connected after realize or a RESIZE_CB will happen before MAP_CB
+    works only for the GtkDrawingArea. */
+  g_signal_connect(G_OBJECT(ih->handle), "configure-event", G_CALLBACK(gtkCanvasConfigureEvent), ih);
 
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
@@ -640,7 +601,6 @@ void iupdrvCanvasInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
   ic->Map = gtkCanvasMapMethod;
-  ic->LayoutUpdate = gtkCanvasLayoutUpdateMethod;
 
   /* Driver Dependent Attribute functions */
 

@@ -27,8 +27,10 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 #include "iup_register.h"
+#include "iup_register.h"
 #include "iup_image.h"
 #include "iup_colorhsi.h"
+#include "iup_childtree.h"
 
        
 const char* default_colortable_cells[20] = 
@@ -1081,7 +1083,8 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(lin2, "MARGIN", "0x0");
   IupSetAttribute(lin2, "NORMALIZESIZE", "HORIZONTAL");
 
-  IupAppend(ih, IupSetAttributes(IupVbox(lin1, IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"), lin2, NULL), "MARGIN=10x10, GAP=10"));
+  /* Do not use IupAppend because we set childtype=IUP_CHILDNONE */
+  iupChildTreeAppend(ih, IupSetAttributes(IupVbox(lin1, IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"), lin2, NULL), "MARGIN=10x10, GAP=10"));
 
   iColorBrowserDlgInit_Defaults(colordlg_data);
 
@@ -1100,7 +1103,7 @@ Iclass* iupColorBrowserDlgGetClass(void)
   ic->name = "colordlg";   /* this will hide the GTK and Windows implementations */
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
-  ic->childtype = IUP_CHILD_ONE;
+  ic->childtype = IUP_CHILDNONE;
 
   iupClassRegisterAttribute(ic, "COLORTABLE", iColorBrowserDlgGetColorTableAttrib, iColorBrowserDlgSetColorTableAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATUS", iColorBrowserDlgGetStatusAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

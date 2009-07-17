@@ -812,7 +812,7 @@ Iclass* iupMatrixGetClass(void)
   ic->name = "matrix";
   ic->format = "A"; /* one optional callback name */
   ic->nativetype = IUP_TYPECANVAS;
-  ic->childtype = IUP_CHILD_ONE; /* just to identify it as a container */
+  ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
   ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 

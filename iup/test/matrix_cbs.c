@@ -156,8 +156,8 @@ static Ihandle *create_mat(void)
   IupSetAttribute(mat,"NUMCOL","15"); 
   IupSetAttribute(mat,"NUMLIN","18"); 
   
-  IupSetAttribute(mat,"NUMCOL_VISIBLE","5") ;
-  IupSetAttribute(mat,"NUMLIN_VISIBLE","8") ;
+  IupSetAttribute(mat,"NUMCOL_VISIBLE","5");
+  IupSetAttribute(mat,"NUMLIN_VISIBLE","8");
 
 //  IupSetAttribute(mat,"EXPAND", "NO");
 //  IupSetAttribute(mat,"SCROLLBAR", "NO");

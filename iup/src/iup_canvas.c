@@ -152,10 +152,8 @@ Iclass* iupCanvasGetClass(void)
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 
-  /* Although IupCanvas can be a container in derived controls, it behaves like a normal control.
-     The derived control must define the EXPAND attribute if necessary. 
-     The only difference is that the default here is YES. */
   {
+    /* Change the default to YES */
     IattribGetFunc _get;
     IattribSetFunc _set;
     iupClassRegisterGetAttribute(ic, "EXPAND", &_get, &_set, NULL, NULL, NULL);

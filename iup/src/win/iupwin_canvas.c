@@ -535,8 +535,8 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     return 1;
   }
 
-  /* IupCanvas can be a container */
-  if (ih->iclass->childtype != IUP_CHILDNONE)
+  /* can be a container */
+  if (ih->firstchild)
     return iupwinBaseContainerProc(ih, msg, wp, lp, result);
   else
     return iupwinBaseProc(ih, msg, wp, lp, result);
@@ -573,7 +573,7 @@ static int winCanvasMapMethod(Ihandle* ih)
       dwStyle |= WS_TABSTOP;
   }
                            
-  if (ih->iclass->childtype != IUP_CHILDNONE) /* canvas can be a container */
+  if (ih->firstchild) /* can be a container */
   {
     dwExStyle |= WS_EX_CONTROLPARENT;
     dwStyle |= WS_CLIPSIBLINGS;
@@ -583,7 +583,7 @@ static int winCanvasMapMethod(Ihandle* ih)
     else
       dwStyle |= WS_CLIPCHILDREN;
   }
-
+                           
   if (iupAttribGetInt(ih, "MDICLIENT"))  
   {
     /* creating a MDI Client that will be inside the MDI Frame, 

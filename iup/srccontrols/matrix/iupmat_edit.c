@@ -226,6 +226,13 @@ int iupMatrixEditShow(Ihandle* ih)
 
   ih->data->datah->x = x;
   ih->data->datah->y = y;
+  if (IupGetGlobal("GTKVERSION"))
+  {
+    /* In GTK, IupCanvas is not the actual container of the IupText/IupList */
+    ih->data->datah->x += ih->x;
+    ih->data->datah->y += ih->y;
+  }
+
   ih->data->datah->currentwidth  = w;
   ih->data->datah->currentheight = h;
   iupClassObjectLayoutUpdate(ih->data->datah);
@@ -376,6 +383,7 @@ char* iupMatrixEditGetValue(Ihandle* ih)
 
 void iupMatrixEditCreate(Ihandle* ih)
 {
+  /******** EDIT *************/
   ih->data->texth = IupText(NULL);
   iupChildTreeAppend(ih, ih->data->texth);
 

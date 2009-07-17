@@ -346,8 +346,10 @@ static int gtkListSetValueAttrib(Ihandle* ih, const char* value)
     if (ih->data->is_dropdown)
     {
       int pos;
+      GtkTreeModel *model = gtkListGetModel(ih);
       g_signal_handlers_block_by_func(G_OBJECT(ih->handle), G_CALLBACK(gtkListComboBoxChanged), ih);
-      if (iupStrToInt(value, &pos)==1)
+      if (iupStrToInt(value, &pos)==1 && 
+          (pos>0 && pos<gtk_tree_model_iter_n_children(model, NULL)))
       {
         gtk_combo_box_set_active((GtkComboBox*)ih->handle, pos-1);    /* IUP starts at 1 */
         iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos);
