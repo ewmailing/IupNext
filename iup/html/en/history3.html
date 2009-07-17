@@ -9,15 +9,15 @@
   <link rel="stylesheet" type="text/css" href="../style.css">
 
   <style type="text/css">
-.style1 {
+.hist_fixed {
 	color: #FF0000;
 	font-weight: bold;
 }
-.style2 {
+.hist_changed {
 	color: #008000;
 	font-weight: bold;
 }
-.style3 {
+.hist_new {
 	color: #0000FF;
 	font-weight: bold;
 }
@@ -35,54 +35,57 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 </p>
 
-<h3>CVS (15/Jul/2009)</h3>
+<h3>CVS (16/Jul/2009)</h3>
 
 <h4>General</h4>
 
 <ul>
-	<li><span class="style3">New: </span>
+	<li><span class="hist_new">New: </span>
 	MONITORSINFO and VIRTUALSCREEN global attributes now 
 	also in GTK.</li>
-	<li><span class="style3">New: </span>
+	<li><span class="hist_new">New: </span>
 	USETITLESIZE to improve compatibility with IUP 2.x in <strong>IupMatrix</strong>.</li>
-	<li><span class="style3">New: </span> DEFAULTFONTSIZE global attribute.</li>
-	<li><span class="style2">Changed:</span>
+	<li><span class="hist_new">New: </span> DEFAULTFONTSIZE global attribute.</li>
+	<li><span class="hist_new">New: </span><strong>IupSetAtt</strong> auxiliar function.</li>
+	<li><span class="hist_changed">Changed:</span>
     the default alignment for IupButton (Text and Image) and IupToggle (Image) 
 	to &quot;ACENTER:ACENTER&quot;.</li>
-	<li><span class="style2">Changed:</span>
+	<li><span class="hist_changed">Changed:</span>
     improved decoration size computation for <strong>IupDialog</strong> in GTK.</li>
-	<li><span class="style1">Fixed:</span> <strong>IupItem</strong> in GTK when compiled
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupItem</strong> in GTK when compiled
         in versions older than 2.14, but run in newer versions.</li>
-    <li><strong><span style="color: #ff0000">Fixed:</span></strong> alignment of buttons
+    <li><strong><span class="hist_fixed">Fixed:</span></strong> alignment of buttons
         in <strong>IupAlarm</strong>.</li>
-    <li><strong><span style="color: #ff0000">Fixed:</span></strong> default cell alignment
+    <li><strong><span class="hist_fixed">Fixed:</span></strong> default cell alignment
         in <strong>IupMatrix</strong>.</li>
-    <li><strong><span style="color: #ff0000">Fixed:</span></strong> <strong>IupZbox</strong>
+    <li><strong><span class="hist_fixed">Fixed:</span></strong> <strong>IupZbox</strong>
         visible
         child management and VISILBE attribute update after mapping an element.</li>
-    <li><strong><span style="color: #ff0000">Fixed:</span></strong> X and Y attributes for
+    <li><strong><span class="hist_fixed">Fixed:</span></strong> X and Y attributes for
         GTK.</li>
-    <li><strong><span style="color: #ff0000">Fixed:</span></strong> <strong>IupTree</strong> TITLE with non UTF-8 characters.</li>
-    <li><strong><span style="color: #ff0000">Fixed:</span></strong> <strong>IupClose</strong> in loop when removing names.</li>
-	<li><strong><span style="color: #ff0000">Fixed:</span></strong> CONTEXT and 
+    <li><strong><span class="hist_fixed">Fixed:</span></strong> <strong>IupTree</strong> TITLE with non UTF-8 characters.</li>
+    <li><strong><span class="hist_fixed">Fixed:</span></strong> <strong>IupClose</strong> in loop when removing names.</li>
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> CONTEXT and 
 	VISUAL in <strong>IupGLCanvas</strong>.</li>
-	<li><strong><span style="color: #ff0000">Fixed:</span></strong> SHOWTICKS in
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> SHOWTICKS in
 	<strong>IupVal</strong>.</li>
-	<li><strong><span style="color: #ff0000">Fixed:</span></strong> BGCOLOR and 
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> BGCOLOR and 
 	FGCOLOR for <strong>IupMatrix</strong> to use the global default colors 
 	instead of &quot;255 255 255&quot; and &quot;0 0 0&quot;.</li>
-	<li><strong><span style="color: #ff0000">Fixed:</span></strong> VALUE 
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> VALUE 
 	management in <strong>IupZbox</strong>.</li>
-	<li><strong><span style="color: #ff0000">Fixed:</span></strong> removed 
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> removed 
 	&quot;cannot add non scrollable widget&quot; warning message when creating a <strong>
 	IupCanvas</strong> in GTK.</li>
-	<li><strong><span style="color: #ff0000">Fixed:</span></strong> ADDEXPANDED 
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> ADDEXPANDED 
 	in <strong>IupTree</strong>.</li>
-	<li><strong><span style="color: #ff0000">Fixed:</span></strong> SIZE 
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> SIZE 
 	consideration in layout computation for
 	<strong>IupDialog</strong>.</li>
-	<li><strong><span style="color: #ff0000">Fixed:</span></strong> 
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> 
 	DIALOGTYPE=MESSAGE for <strong>IupMessageDlg</strong> in GTK.</li>
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> 
+	drawing details in <strong>IupMatrix</strong>.</li>
 
 </ul>
 
@@ -92,17 +95,17 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 <ul>
 
-  <li><span class="style3">New: </span>checked for
+  <li><span class="hist_new">New: </span>checked for
 	memory leaks using <a href="http://dmoulding.googlepages.com/vld">VLD</a> in Windows and
 	<a href="http://valgrind.org/">Valgrind</a> in Linux.</li>
-	<li><span class="style3">New:</span>
+	<li><span class="hist_new">New:</span>
 	PREVIEWGLCANVAS attribute for <strong>IupFileDlg</strong>.</li>
-	<li><span class="style3">New:</span>
+	<li><span class="hist_new">New:</span>
 	auxiliary functions <strong>IupTextConvertLinColToPos</strong> and <strong>
 	IupTextConvertPosToLinCol</strong> for <strong>IupText</strong>.</li>
-	<li><span class="style3">New:</span>
+	<li><span class="hist_new">New:</span>
 	basic tutorial for IupLua. (Thanks to Steve Donovan)</li>
-	<li><span class="style3">New:</span>
+	<li><span class="hist_new">New:</span>
 	<strong>IupTree</strong> now uses native controls and was moved to the
 	standard controls. The old implementation is
 	not available. Images for nodes are not limited to 16x16 anymore. BGCOLOR
@@ -116,52 +119,52 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	renamed to MARKSTART, and CTRL/SHIFT attributes replaced by MARKMODE (old
 	names kept working for compatibility). Now if DRAGDROP_CB returns
 	IUP_CONTINUE or if it is not defined but SHOWDRAGDROP=Yes then the node will
-	be automatically moved to the new position. <span class="style1"><strong> ATTENTION</strong></span><strong>
+	be automatically moved to the new position. <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
 	- </strong> DEPTH is now a read-only attribute, use the INSERT* attributes
 	to properly add nodes. NAMEid attribute renamed to TITLE, old attribute still works but will be
 	removed in future versions since it conflicts with the common NAME attribute.
 	The SELECTION_CB and MULTISELECTION_CB callbacks now ignore their return
 	value. The rename action is now activated by two clicks instead of a double
 	click.</li>
-	<li><span style="color: #008000"><strong>Changed</strong>:</span>
+	<li><span class="hist_changed"><strong>Changed</strong>:</span>
   	removed &quot;lua5.1.so&quot; dependency in UNIX.</li>
-	<li><span class="style2">Changed:</span>
+	<li><span class="hist_changed">Changed:</span>
     In IupLua the Lua function <strong>iup.TreeSetValue</strong> now also
 	accepts node decoration in the initialization table and can add a subtree to
 	any node. (Thanks to Tomas Gorham)</li>
-	<li><span class="style2">Changed:</span>
+	<li><span class="hist_changed">Changed:</span>
     In IupLua attributes that are pointers to Ihandle are now returned as
 	ihandle instead of userdata.</li>
-	<li><span class="style2">Changed:</span>
+	<li><span class="hist_changed">Changed:</span>
     replaced &quot;[]&quot; in function declarations by a simple &quot;*&quot;. None of those
 	functions needed it.</li>
-	<li><span class="style2">Changed: </span>the
+	<li><span class="hist_changed">Changed: </span>the
 default value of the Windows attribute COMPOSITED is back to NO to improve
 	backward compatibility and to avoid side effects of the attribute.</li>
-	<li><span class="style2">Changed:</span> the auxiliary functions <strong>
+	<li><span class="hist_changed">Changed:</span> the auxiliary functions <strong>
 	IupTextConvertXYToChar</strong> and <strong>IupListConvertXYToItem</strong>
 	where replaced by <strong>IupConvertXYToPos</strong>, that also works for
 	<strong>IupTree</strong>.</li>
-	<li><span class="style2">Changed:</span> added support for WHEEL_CB in GTK
+	<li><span class="hist_changed">Changed:</span> added support for WHEEL_CB in GTK
 	for <strong>IupCanvas</strong>.</li>
-	<li><span class="style1">Fixed:</span> IupLua initialization when retrieving
+	<li><span class="hist_fixed">Fixed:</span> IupLua initialization when retrieving
 	the argc/argv arguments for <strong>IupOpen</strong>. (Thanks to Ross
 	Berteig)</li>
-	<li><span class="style1">Fixed:</span> Arg initialization for all controls
+	<li><span class="hist_fixed">Fixed:</span> Arg initialization for all controls
 	in Motif driver.</li>
-	<li><span class="style1">Fixed:</span> update of the POSX and POSY
+	<li><span class="hist_fixed">Fixed:</span> update of the POSX and POSY
 	attributes for the <strong>IupCanvas</strong>.</li>
-	<li><span class="style1">Fixed:</span> FONT size round when converting from
+	<li><span class="hist_fixed">Fixed:</span> FONT size round when converting from
 	pixels to points in Windows. (Thanks to Devin Smith)</li>
-	<li><span class="style1">Fixed:</span> button disappearing after mouse over
+	<li><span class="hist_fixed">Fixed:</span> button disappearing after mouse over
 	in Windows XP.</li>
-	<li><span class="style1">Fixed:</span> <strong>IupMatrix</strong> when NUMCOL/NUMLIN were
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupMatrix</strong> when NUMCOL/NUMLIN were
 	less than NUMCOL_VISIBLE/NUMLIN_VISIBLE. Also fixed when NUMCOL/NUMLIN were
 	0 and changed to 1, and when removed 1. CURSOR attribute when RESIZEMATRIX=Yes. (Thanks to
 	Jeremy Cowgar)</li>
-	<li><span class="style1">Fixed:</span> action callback return value in Lua
+	<li><span class="hist_fixed">Fixed:</span> action callback return value in Lua
 	for the <strong>IupGetParam</strong> dialog. (Thanks to Zhiwei)</li>
-	<li><span class="style1">Fixed:</span> EXPAND attribute for <strong>
+	<li><span class="hist_fixed">Fixed:</span> EXPAND attribute for <strong>
 	IupCanvas</strong>.</li>
 
 </ul>
@@ -170,7 +173,7 @@ default value of the Windows attribute COMPOSITED is back to NO to improve
 
 <ul>
 
-	<li><span class="style3">New:</span>
+	<li><span class="hist_new">New:</span>
 	MARKL:C, READONLY, NUMLIN_VISIBLE_LAST, NUMCOL_VISIBLE_LAST, and SHOW attributes for
 	<strong>IupMatrix</strong>. When scrolling the matrix using
 	the scrollbar the focus is not changed anymore. The last cells at right and
@@ -181,40 +184,40 @@ default value of the Windows attribute COMPOSITED is back to NO to improve
 	AREA and MULTIPLE renamed to MARKAREA and MARKMULTIPLE, old names as still
 	supported. New MULTILINE attribute to edit text in multiple lines, valid
 	only before mapped.</li>
-	<li><span class="style3">New:</span><strong>
+	<li><span class="hist_new">New:</span><strong>
 	IupRedraw</strong> and <strong>IupSetClassDefaultAttribute</strong> functions.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     Added package registration code to IupLua that allows it to be statically
 	linked and require&quot;iuplua&quot; does not abort if the iuplua_open function was
 	called.</li>
-	<li><span class="style2">Changed:</span>
+	<li><span class="hist_changed">Changed:</span>
     the <strong>IupOleControl</strong> in Lua will not automatically initialize LuaCOM anymore.
 	The application must manually call &quot;elem:CreateLuaCOM()&quot;. The
 	previous initialization was incorrect (thanks to Ross Berteig).</li>
-	<li><span class="style2">Changed:</span>
+	<li><span class="hist_changed">Changed:</span>
     the declaration of function <strong>IupGetClassAttributes</strong> to use the class name
 	instead of a control handle.</li>
 
-  <li><span class="style1">Fixed: </span>Fixed button, toggle and list sizes for
+  <li><span class="hist_fixed">Fixed: </span>Fixed button, toggle and list sizes for
 	GTK driver when using the Hildon Framework. Thanks to Otfried Cheong.</li>
-	<li><span class="style1">Fixed:</span> some IupLua dynamic libraries in
+	<li><span class="hist_fixed">Fixed:</span> some IupLua dynamic libraries in
 	Linux where incorrectly linking with Motif (libiuplua + pplot, cd, controls,
 	gl, im and imglib + 51.so)</li>
-	<li><span class="style1">Fixed:</span> HOMOGENEOUS attribute for <strong>IupVbox</strong> and
+	<li><span class="hist_fixed">Fixed:</span> HOMOGENEOUS attribute for <strong>IupVbox</strong> and
 	<strong>IupHbox</strong>.</li>
-	<li><span class="style1">Fixed:</span> CARET attribute in GTK driver was not
+	<li><span class="hist_fixed">Fixed:</span> CARET attribute in GTK driver was not
 	correctly scrolling the multiline text when not visible.</li>
-	<li><span class="style1">Fixed:</span> parameter checking and the return value in Lua for
+	<li><span class="hist_fixed">Fixed:</span> parameter checking and the return value in Lua for
 	<strong>IupListDialog</strong> when type=2.</li>
-	<li><span class="style1">Fixed:</span> the return value for <strong>IupGetText</strong> when
+	<li><span class="hist_fixed">Fixed:</span> the return value for <strong>IupGetText</strong> when
 	the user canceled. (Thanks to Xu Wang)</li>
-	<li><span class="style1">Fixed:</span> <strong>IupGetClassAttributes</strong> and
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupGetClassAttributes</strong> and
 	<strong>IupGetAllAttributes</strong>
 	were not implemented in IupLua.</li>
-	<li><span class="style1">Fixed:</span> The 32 bits version of the IupLua
+	<li><span class="hist_fixed">Fixed:</span> The 32 bits version of the IupLua
 	console in Windows XP64 was not working.</li>
-	<li><span class="style1">Fixed:</span> CARET_CB and <strong>
+	<li><span class="hist_fixed">Fixed:</span> CARET_CB and <strong>
 	IupTextConvertXYToChar</strong> in <strong>IupText</strong> when
 	MULTILINE=YES and FORMATTING=NO.</li>
 
@@ -224,34 +227,34 @@ default value of the Windows attribute COMPOSITED is back to NO to improve
 
 <ul>
 
-  <li><span class="style2">Changed:</span>
-    <span class="style1"><strong> ATTENTION</strong></span><strong>
+  <li><span class="hist_changed">Changed:</span>
+    <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
 -</strong> the following headers were deprecated iupcb.h,
 iupcells.h, iupcolorbar.h, iupdial.h, iupgauge.h, iupmatrix.h,
 iuptree.h - use iupcontrols.h only</li>
 
-  <li><span class="style2">Changed:</span>
-    <span class="style1"><strong> ATTENTION</strong></span><strong>
+  <li><span class="hist_changed">Changed:</span>
+    <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
 -</strong> the following headers were deprecated iupgetparam.h,
 iupspin.h, iuptabs.h, iupval.h - use iup.h only</li>
 
-  <li><span class="style1">Fixed: </span>set
+  <li><span class="hist_fixed">Fixed: </span>set
 VALUE attribute for IupText in Windows when formatting is used.</li>
 
-  <li><span class="style1">Fixed:</span>
+  <li><span class="hist_fixed">Fixed:</span>
 IupHide when dialog was maximized in Windows.</li>
 
-  <li><span class="style1">Fixed:</span> get
+  <li><span class="hist_fixed">Fixed:</span> get
 VALUE attribute for IupText in all drivers, after the element is mapped it must
 return the empty string "" when there is no text.</li>
 
-  <li><span class="style1">Fixed:</span>
+  <li><span class="hist_fixed">Fixed:</span>
 IupGetParam when specifying partial intervals.</li>
 
-  <li><span class="style1">Fixed:</span> K_Esc
+  <li><span class="hist_fixed">Fixed:</span> K_Esc
 key callback processing in Windows.</li>
 
-  <li><span class="style1">Fixed:</span>
+  <li><span class="hist_fixed">Fixed:</span>
 PLACEMENT and FULLSCREEN for IupPopup.</li>
 
 </ul>
@@ -262,38 +265,38 @@ PLACEMENT and FULLSCREEN for IupPopup.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 GTK driver, available in UNIX and Windows.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 internal code reorganization. More clear and simple to create controls
 and drivers. All comments are now in English.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 internal documentation and Guide to create new controls. Now all the
 controls use the same architecture using the same base class.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 IUP_ASSERT compile flag.</li>
 
-  <li><span class="style3">New:</span><strong>
+  <li><span class="hist_new">New:</span><strong>
 IupMainLoopLevel</strong> function.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 support for the HILDON framework that runs on top of GTK on the <a target="_blank" href="http://www.maemo.org">Maemo</a>
 platform used by the Nokia Internet Tablets. Thanks to Otfried Cheong.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 all dialogs, and all elements that have names, are now automatically
 destroyed in <strong>IupClose</strong>.</li>
 
-  <li><span class="style2">Changed:</span>
-    <span class="style1"><strong> ATTENTION</strong></span><strong>
+  <li><span class="hist_changed">Changed:</span>
+    <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
 -</strong> the following headers were deprecated iupcbox.h,
 iupsbox.h - use iup.h only</li>
 
-  <li><span class="style2">Changed:</span>
-    <span class="style1"><strong> ATTENTION</strong></span><strong>
+  <li><span class="hist_changed">Changed:</span>
+    <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
 -</strong> the headers iupcompat.h and iupcpi.h were removed.
 They are not supported anymore.</li>
 
@@ -303,50 +306,50 @@ They are not supported anymore.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 CHARSIZE convertion factor used by the SIZE attribute.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 NAME used by <b> <strong> IupGetDialogChild.</strong></b></li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 font face name mappings for Courier, Times and Helvetica.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 functions <strong>IupGetClassAttributes,</strong> <b>IupGetIntInt</b>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 CLIENTSIZE returns the size of containers excluding their decoration.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 TIP additional attributes (Motif and Windows): TIPFONT, TIPDELAY,
 TIPBGCOLOR, TIPFGCOLOR, TIPBALLON (Windows Only), TIPBALLONTITLE
 (Windows Only), TIPBALLONTITLEICON (Windows Only), TIPVISIBLE. Not
 available in GTK.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 TIPRECT auxiliary attribute for the TIP common attribute.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 attribute FONT now uses a common a more flexible definition for all
 drivers, old format is still supported. The default FONT in Motif is
 now "Fixed, 10".</li>
 
-  <li><span class="style2">Changed:</span>
-    <span class="style1"><strong> ATTENTION</strong></span><strong>
+  <li><span class="hist_changed">Changed:</span>
+    <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
 -</strong> Now attributes are stored in the internal hash table
 only if not processed or allowed by the element class implementation.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <b>IupGetAttribute</b>, <b>IupSetAttribute</b>
 and <b>IupStoreAttribute</b> can also be used to access
 global attributes using NULL as element.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 TIP and ZORDER attributes are now non inheritable.</li>
 
-  <li><span class="style2">Changed:</span>
-    <span class="style1"><strong> ATTENTION</strong></span><strong>
+  <li><span class="hist_changed">Changed:</span>
+    <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
 -</strong> the BGCOLOR is now ignored in <strong>IupLabel</strong>,
     <strong>IupFrame</strong>, <strong>IupToggle</strong>
 (for the text) and <strong>IupVal</strong>. They will use
@@ -358,16 +361,16 @@ the background color of the native parent.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 APPSHELL, XDISPLAY, XSCREEN, XSERVERVENDOR, XVENDORRELEASE in Motif.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 VIRTUALSCREEN and MONITORSINFO in Windows.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 LANGUAGE default from PORTUGUESE to ENGLISH.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 TRUECOLORCANVAS and SYSTEMLANGUAGE are now available in all drivers.</li>
 
 </ul>
@@ -376,14 +379,14 @@ TRUECOLORCANVAS and SYSTEMLANGUAGE are now available in all drivers.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 IUP_IGNORE return code accepted for <strong>IDLE_ACTION</strong>
 callback to automatically remove the callback.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 UNMAP_CB for all controls</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 MAP_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB for all controls.</li>
 
 </ul>
@@ -392,57 +395,57 @@ MAP_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB for all controls.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 functions <b> <strong>IupGetDialogChild,</strong>
 IupUnmap,</b> <b>IupReparent,</b> <strong>IupInsert,</strong>
     <strong>IupUpdateChildren</strong>, <b>IupGetClassType,
     <strong>IupGetChildPos</strong></b> and <b>
     <strong>IupGetChildCount</strong>.</b>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 FLOATING attribute to control the inclusion of the element in layout
 processing for <strong>IupHbox</strong>, <strong>IupVbox</strong>
 and <strong>IupZbox</strong>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 HOMOGENEOUS attribute to control the spacing in layout processing for <strong>IupHbox</strong>
 and <strong>IupVbox</strong>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 EXPANDCHILDREN attribute to control the expansion in layout processing
 for <strong>IupHbox</strong> and <strong>IupVbox</strong>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 NORMALIZESIZE attribute to control the natural size in layout
 processing for <strong>IupHbox</strong> and <strong>IupVbox</strong>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 element <strong> IupNormalize</strong>r.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 CGAP and CMARGIN for <strong> IupVbox</strong> and <strong>IupHbox</strong>
 that use SIZE units.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 VALUEPOS and VALUE_HANDLE attributes for <strong>IupZbox</strong>.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 default value for ALIGNMENT in <strong>IupZbox</strong> is
 now "NW".</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <b>IupAppend</b> and <b>IupDetach</b> can
 now be used for dynamic creation of menus or containers, even after the
 element is mapped.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <b>IupDetach</b> will now automatically unmap the
 element.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <b>IupAppend</b> will now return the actual parent.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <strong>IupUpdate</strong> now only mark the control to
 be redraw instead of redrawing at the function call.</li>
 
@@ -452,53 +455,53 @@ be redraw instead of redrawing at the function call.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 MINSIZE and MAXSIZE attributes. In Windows MINSIZE is ignored for
 systems with multiple monitors. The Windowing system may impose a
 minimum default limit for the dialog that includes the title bar with
 all it buttons.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 DROPFILES_CB and RESIZE_CB callbacks.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 IUP_CURRENT and IUP_CENTERPARENT positions for <b>IupShowXY</b>
 and <b>IupPopup</b>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 IUP_HIDE and IUP_MAXIMIZE flags for SHOW_CB callback.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 MODAL attribute to check if the dialog was shown with <strong>IupShow</strong>
 or <strong>IupPopup</strong>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
     <b>IupColorDlg,</b> <b>IupFontDlg </b>and
     <b>IupMessageDlg</b> native pre-defined dialog as
 elements.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 SHOWHIDDEN attribute for <b>IupFileDLg</b>. Preview canvas
 support for the Motif driver.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 tip string for each param in <strong>IupGetParam</strong>.
 And a new "c" param to show a RGB color string with extra controls to
 show the color and open the color selection dialog.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 SAVEUNDER dialog attribute now is also available in Motif.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 DROPFILES_CB callback is now available for all controls. It is only
 activated using DRAGDROP attribute. It is active by default only for <b>IupCanvas</b>
 and <b>IupDialog</b>.</li>
 
-  <li><span class="style2">Changed: </span>the
+  <li><span class="hist_changed">Changed: </span>the
 default value of the Windows attribute COMPOSITED is now YES, except in
 Windows Vista.</li>
 
-  <li><span class="style2">Changed:</span><b>
+  <li><span class="hist_changed">Changed:</span><b>
 IupDestroy</b> is now automatically called for child dialogs when
 the parent is destroyed.</li>
 
@@ -508,22 +511,22 @@ the parent is destroyed.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 LINEX, LINEY, XAUTOHIDE and YAUTOHIDE attributes for the scrollbar.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 CLIPRECT attribute, a rectangle that has its region invalidated for
 paiting.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 if ACTION is defined nothing is painted in the canvas, now also in
 Motif. </li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 BORDER is now also supported in Motif.</li>
 
-  <li><span class="style2">Changed:</span>
-    <span class="style1"><strong> ATTENTION</strong></span><strong>
+  <li><span class="hist_changed">Changed:</span>
+    <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
 -</strong> now scrollbar parameters min, max, page size and line
 size are updated when DX/DY are updated. POSX and POSY will only update
 the position of the scrollbar. Automatic hide of the scrollbar now
@@ -535,27 +538,27 @@ works also in Motif.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 attributes PADDING, ELLIPSIS, WORDWRAP and MARKUP for <b>IupLabel</b>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 IMPRESSBORDER, PADDING, MARKUP, FOCUSONCLICK and ALIGNMENT attributes
 for <strong>IupButton</strong>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 support for image and text simultaneous in <strong>IupButton</strong>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 support for mnemonics in <strong>IupLabel</strong>, <strong>IupButton</strong>
 and <strong>IupToggle</strong>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 RADIO attribute for <strong>IupToggle</strong>.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 ALIGNMENT attribute now includes vertical alignment values.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <strong>IupButton</strong> now supports text with more
 than one line.</li>
 
@@ -565,62 +568,62 @@ than one line.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 APPENDNEWLINE and PADDING attributes. CUEBANNER and FILTER attributes
 in Windows.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 MASK attribute for <strong>IupText</strong>, <strong>IupMultiline</strong>,
     <strong>IupList</strong> and <strong>IupMatrix</strong>.
 The iupmask functions are now obsolete, autofill option and MATCH_CB
 callback are not supported anymore.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 text formatting using FORMATTING and ADDFORMATTAG attributes in Windows
 and GTK. New attribute OVERWRITE when using text formatting.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 ALL and NONE values for SELECTION attribute. </li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 SCROLLTO attribute. New attributes SCROLLTOPOS, CARETPOS and
 SELECTIONPOS using 0 based character position. New function <strong>IupTextConvertXYToChar</strong>
 to convert (x,y) coordinates in (lin, col, pos) character positioning. </li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 SPIN, SPINVALUE, SPINMIN, SPINMAX, SPININC, SPINALIGN and SPINWRAP
 attributes. New SPIN_CB callback. The <strong>IupSpin</strong>
 control is now obsolete.</li>
 
-  <li><span class="style3">New:</span><strong>
+  <li><span class="hist_new">New:</span><strong>
     </strong> VISIBLECOLUMNS, VISIBLELINES attributes gives much
 better control over size than the SIZE attribute.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <strong>IupMultiline</strong> is now implemented as <strong>IupText</strong>
 with MULTILINE=YES.</li>
 
-  <li><span class="style2">Changed:</span>
-    <span class="style1"><strong> ATTENTION</strong></span><strong>
-- <span class="style1">VERY IMPORTANT</span> -</strong>
+  <li><span class="hist_changed">Changed:</span>
+    <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
+- <span class="hist_fixed">VERY IMPORTANT</span> -</strong>
 the ACTION callback in <strong>IupText</strong> now does
 NOT process extended keys anymore. It is called only if the text is
 edited, and key=0 if it is not a valid character. The callback now is
 called before the text is updated on screen.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 the SELECTION and CARET attribute in Windows do NOT change the focus
 anymore. The NC attribute now only restricts keyboard input.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 added support for BUTTON_CB and MOTION_CB callbacks. BUTON_CB can
 return IUP_IGNORE so the default processing will be ignored.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 CARET_CB now includes 0 based character position.</li>
 
-  <li><span class="style2">Changed:</span>
-    <span class="style1"><strong> ATTENTION</strong></span><strong>
+  <li><span class="hist_changed">Changed:</span>
+    <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
 - </strong> the Natural Size does not uses the text contents
 anymore. To control the Natural Size use the SIZE/RASTERSIZE
 attributes, or VISIBLECOLUMNS/VISIBLELINES attributes, or EXPAND.</li>
@@ -631,15 +634,15 @@ attributes, or VISIBLECOLUMNS/VISIBLELINES attributes, or EXPAND.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span><strong>
+  <li><span class="hist_new">New:</span><strong>
     </strong>APPENDVALUE, CANFOCUS, COUNT, DRAGDROP, INSERTITEMn,
 REMOVEITEM, TOPITEM, SPACING, VISIBLECOLUMNS, VISIBLELINES attributes.</li>
 
-  <li><span class="style3">New:</span><strong>
+  <li><span class="hist_new">New:</span><strong>
     </strong>BUTTON_CB, DBLCLICK_CB, DROPDOWN_CB, DROPFILES_CB,
 MOTION_CB callbacks.</li>
 
-  <li><span class="style3">New:</span><strong>
+  <li><span class="hist_new">New:</span><strong>
 IupListConvertXYToItem</strong> function.</li>
 
 </ul>
@@ -648,30 +651,30 @@ IupListConvertXYToItem</strong> function.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 INVERTED and TICKSPOS attributes for <strong>IupVal</strong>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 PADDING, VALUE_HANDLE, VALUEPOS, MULTILINE and TABIMAGE attributes for <strong>IupTabs</strong>.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 control <strong>IupProgressBar</strong>, similar to <strong>IupGauge</strong>
 but with the text.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <strong>IupFrames</strong> now are native parents of
 their children.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <strong>IupVal</strong> implemented as a native
 control. Attributes HANDLER_IMAGE and HANDLER_IMAGE_INACTIVE are not
 supported anymore.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <strong>IupCbox</strong> is not based on <strong>IupCanvas
     </strong>anymore.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <strong>IupTabs</strong> implemented as a native
 control. Attributes ALIGNMENT, FONT_ACTIVE, FONT_INACTIVE, TABSIZE and
 REPAINT are not supported anymore.</li>
@@ -682,35 +685,35 @@ REPAINT are not supported anymore.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span><strong>
+  <li><span class="hist_new">New:</span><strong>
     </strong>focus feedback and keyboard control for <strong>IupColorbar</strong>.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <strong> IupControlsClose</strong> is now deprecated.
 Declaration still remains for compatibility, actual function does
 nothing.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 the NO_COLOR attribute is deprecated, now it simply sets the BGCOLOR
 attribute in <strong>IupCells</strong>.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 in <strong>IupColorBrowser</strong> moved from HLS to HSI,
 added support for resize, anti-aliasing, support for BGCOLOR attribute,
 feedback for ACTIVE attribute, and feedback for focus. New HSI
 attribute. New support for mouse wheel to change Hue. New support for
 PgDn and PgUp keys to change Hue.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <strong>IupTabs</strong> and <strong>IupVal</strong>
 are NOT part of the additional controls anymore. They are now standard
 controls using native elements.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 renamed MARGIN attribute to PADDING in <strong>IupGauge</strong>.
     <strong>IupGauge</strong> is deprecated in favor of <strong>IupProgressBar</strong>.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 An <strong>IupGLCanvas</strong> when inside an <strong>IupFrame</strong>
 in Win32 will now work normally. But the dialog COMPOSITE attribute
 must be NO for hardware acceleration in Windows.</li>
@@ -721,40 +724,40 @@ must be NO for hardware acceleration in Windows.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 HIDEMARK, AUTOTOGGLE and TITLEIMAGE attributes for <strong>IupItem</strong>.
   </li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 BGCOLOR support for <strong>IupMenu</strong>. </li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 Submenu now supports the IMAGE attribute. </li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 RADIO attribute for <strong> IupMenu</strong>.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 In GTK to have a menu item that can be marked you must set the VALUE
 attribute to ON or OFF, or set HIDEMARK=NO, before mapping the control.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 The HIGHLIGHT_CB, OPEN_CB and MENUCLOSE_CB callbacks now work normally
 for popup menus. HIGHLIGHT_CB is called for items and submenus.</li>
 
-  <li> <span class="style1"><span class="style2">Changed:</span><strong>
+  <li> <span class="hist_fixed"><span class="hist_changed">Changed:</span><strong>
     </strong></span>OPEN_CB and MENUCLOSE_CB are defined
 for menus, but it is checked at the parent submenu for backward
 compatibility with IUP 2.x.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 TITLE for submenus can now be changed after the element is mapped. </li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 Children can be added or removed from menus even after the menu is
 mapped.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 menus can now be dynamically changed even after mapped.</li>
 
 </ul>
@@ -763,21 +766,21 @@ menus can now be dynamically changed even after mapped.</li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 support for 24 and 32 bpp images using <b>IupImageRGB</b>
 and <b>IupImageRGBA</b> constructors.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 "UPARROW" cursor in Motif. New cursors "RESIZE_NS"&nbsp; and
 "RESIZE_WE". Updated cursor documentation with pictures of all
 pre-defined cursors. </li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 the automatic generation of inactive images for a more smooth one,
 still using a modified version of the background color to create the
 disabled effect.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
     <b>IupImageLibOpen</b> will now only register names,
 but will not load the images. New 32bpp images for Windows. GTK aliases
 are also available. Many new images. <b>IupImageLib</b><strong>Close</strong>
@@ -789,25 +792,25 @@ removed, loaded images will now be automatically unloaded. </li>
 
 <ul>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 MODKEYSTATE global attribute in all drivers.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 key definitions: K_acute, K_ccedilla, K_Print, K_Menu.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 key definitions for the system key modifier K_y*. In Windows this is
 the Windows key and in Mac this is the Apple key.</li>
 
-  <li><span class="style3">New:</span>
+  <li><span class="hist_new">New:</span>
 CANFOCUS attribute for <strong> IupButton</strong>, <strong>IupTogle</strong>,
     <strong>IupText</strong>, <strong>IupCanvas</strong>
 and <strong>IupVal</strong>.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 SHIFTKEY and CONTROLKEY are now available in all drivers.</li>
 
-  <li><span class="style2">Changed:</span>
+  <li><span class="hist_changed">Changed:</span>
 Removed the conflicts: K_BS=K_cH, K_TAB=K_cI and K_CR=K_cM. New key
 code macros <strong>iup_isShiftXkey</strong>, <strong>iup_isCtrlXkey</strong>,
     <strong>iup_isAltXkey</strong> and <strong>iup_isSysXkey</strong>.</li>
