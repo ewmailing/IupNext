@@ -125,7 +125,7 @@ static int gtkButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
 
   gtk_button_set_alignment(button, xalign, yalign);
 
-  if (ih->data->type == IUP_BUTTON_TEXT)   /* text only */
+  if (ih->data->type == IUP_BUTTON_TEXT && !GTK_IS_COLOR_BUTTON(ih->handle))   /* text only */
   {
     PangoLayout* layout = gtk_label_get_layout(gtkButtonGetLabel(ih));
     if (layout) pango_layout_set_alignment(layout, alignment);
@@ -154,6 +154,25 @@ static int gtkButtonSetPaddingAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+#ifdef WIN32
+static int gtkButtonSetBgColorAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->type == IUP_BUTTON_TEXT && GTK_IS_COLOR_BUTTON(ih->handle))
+  {
+    GdkColor color;
+    unsigned char r, g, b;
+    if (!iupStrToRGB(value, &r, &g, &b))
+      return 0;
+
+    iupgdkColorSet(&color, r, g, b);
+    gtk_color_button_set_color((GtkColorButton*)ih->handle, &color);
+    return 1;
+  }
+
+  return iupdrvBaseSetBgColorAttrib(ih, value);
+}
+#endif
+
 static int gtkButtonSetFgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
@@ -178,7 +197,8 @@ static int gtkButtonSetStandardFontAttrib(Ihandle* ih, const char* value)
     if (!label) return 1;
 
     gtk_widget_modify_font((GtkWidget*)label, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
-    iupgtkFontUpdatePangoLayout(ih, gtk_label_get_layout(label));
+    if (ih->data->type == IUP_BUTTON_TEXT && !GTK_IS_COLOR_BUTTON(ih->handle))   /* text only */
+      iupgtkFontUpdatePangoLayout(ih, gtk_label_get_layout(label));
   }
   return 1;
 }
@@ -362,8 +382,22 @@ static int gtkButtonMapMethod(Ihandle* ih)
   else
   {
     char* title = iupAttribGet(ih, "TITLE");
-    if (!title) title="";
-    gtk_button_set_label((GtkButton*)ih->handle, title);
+    if (!title) 
+    {
+#ifdef WIN32
+      if (iupAttribGet(ih, "BGCOLOR"))
+      {
+        gtk_widget_destroy(ih->handle);
+        ih->handle = gtk_color_button_new();
+      }
+      else
+        gtk_button_set_label((GtkButton*)ih->handle, "");
+#else
+      gtk_button_set_label((GtkButton*)ih->handle, "");
+#endif
+    }
+    else
+      gtk_button_set_label((GtkButton*)ih->handle, title);
     ih->data->type = IUP_BUTTON_TEXT;
   }
 
@@ -421,7 +455,11 @@ void iupdrvButtonInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkButtonSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* Visual */
+#ifdef WIN32
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkButtonSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
+#else
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
+#endif
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkButtonSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);

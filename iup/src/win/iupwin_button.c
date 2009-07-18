@@ -249,26 +249,46 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
   int xpad = ih->data->horiz_padding + border, 
       ypad = ih->data->vert_padding + border;
   int x, y, width, height, shift = 0;
-  HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
   COLORREF fgcolor;
 
   char* title = iupdrvBaseGetTitleAttrib(ih);
-  char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
-  iupdrvFontGetMultiLineStringSize(ih, str, &width, &height);
-  if (str && str!=title) free(str);
+  if (title)
+  {
+    HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
+    char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
+    iupdrvFontGetMultiLineStringSize(ih, str, &width, &height);
+    if (str && str!=title) free(str);
 
-  if (itemState & ODS_DISABLED)
-    fgcolor = GetSysColor(COLOR_GRAYTEXT);
+    if (itemState & ODS_DISABLED)
+      fgcolor = GetSysColor(COLOR_GRAYTEXT);
+    else
+      fgcolor = ih->data->fgcolor;
+
+    if (itemState & ODS_SELECTED && !iupwin_comctl32ver6)
+      shift = 1;
+
+    x = winButtonCalcAlignPosX(ih->data->horiz_alignment, rect_width, width, xpad, shift);
+    y = winButtonCalcAlignPosY(ih->data->vert_alignment, rect_height, height, ypad, shift);
+
+    iupwinDrawText(hDC, title, x, y, width, height, hFont, fgcolor, 0);
+  }
   else
-    fgcolor = ih->data->fgcolor;
-
-  if (itemState & ODS_SELECTED && !iupwin_comctl32ver6)
-    shift = 1;
-
-  x = winButtonCalcAlignPosX(ih->data->horiz_alignment, rect_width, width, xpad, shift);
-  y = winButtonCalcAlignPosY(ih->data->vert_alignment, rect_height, height, ypad, shift);
-
-  iupwinDrawText(hDC, title, x, y, width, height, hFont, fgcolor, 0);
+  {
+    /* fill with the background color if defined at the element */
+    char* bgcolor = iupAttribGet(ih, "BGCOLOR");
+    if (bgcolor)
+    {
+      RECT rect;
+      unsigned char r=0, g=0, b=0;
+      iupStrToRGB(bgcolor, &r, &g, &b);
+      SetDCBrushColor(hDC, RGB(r,g,b));
+      rect.left = xpad;
+      rect.top = ypad;
+      rect.right = rect_width - xpad;
+      rect.bottom = rect_height - ypad;
+      FillRect(hDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+    }
+  }
 }
 
 static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
@@ -414,11 +434,13 @@ static int winButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 
 static int winButtonSetBgColorAttrib(Ihandle* ih, const char* value)
 {
-  (void)value;
   /* update internal image cache for controls that have the IMAGE attribute */
-  iupAttribSetStr(ih, "BGCOLOR", value);
-  iupImageUpdateParent(ih);
-  iupdrvDisplayRedraw(ih);
+  if (ih->data->type != IUP_BUTTON_TEXT)
+  {
+    iupAttribSetStr(ih, "BGCOLOR", value);
+    iupImageUpdateParent(ih);
+    iupdrvDisplayRedraw(ih);
+  }
   return 1;
 }
 
@@ -440,7 +462,8 @@ static char* winButtonGetBgColorAttrib(Ihandle* ih)
   if (iupAttribGet(ih, "IMPRESS"))
     return iupBaseNativeParentGetBgColorAttrib(ih);
   else
-    return IupGetGlobal("DLGBGCOLOR");
+    return NULL;
+//    return IupGetGlobal("DLGBGCOLOR");
 }
 
 static int winButtonSetFgColorAttrib(Ihandle* ih, const char* value)

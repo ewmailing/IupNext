@@ -83,10 +83,12 @@
   vertical alignment is restricted to "ACENTER". (since 3.0)</p>
 
 <p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>:
-  Background color. In Windows, when using the Windows driver or the GTK 
+  Background color. BGCOLOR is ignored always when FLAT=YES because it will 
+inherit from the native parent. If text and image are not defined, the BGCOLOR 
+is used to show a color not necessary as a background color of the button, in 
+this case set the button size because the natural size will be very small. In Windows, when using the Windows driver or the GTK 
 driver, the 
-BGCOLOR attribute is ignored. BGCOLOR is ignored always when FLAT=YES because it 
-will inherit from the native parent. Default: the global 
+BGCOLOR attribute is ignored if text or image is defined. Default: the global 
 attribute DLGBGCOLOR.</p>
 
 <p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the 
