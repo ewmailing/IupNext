@@ -21,6 +21,10 @@
 #define IUP_RESPONSE_2 -200
 #define IUP_RESPONSE_HELP -300
 
+#ifndef GTK_MESSAGE_OTHER
+#define GTK_MESSAGE_OTHER GTK_MESSAGE_INFO
+#endif
+
 static int gtkMessageDlgPopup(Ihandle* ih, int x, int y)
 {
   InativeHandle* parent = iupDialogGetNativeParent(ih);

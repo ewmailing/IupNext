@@ -513,9 +513,13 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 
   {
     /* to avoid the "cannot add non scrollable widget" warning */
+#if GTK_CHECK_VERSION(2, 6, 0)
     GLogFunc def_func = g_log_set_default_handler(gtkCanvasDummyLogFunc, NULL);
+#endif
     gtk_container_add((GtkContainer*)scrolled_window, ih->handle);
+#if GTK_CHECK_VERSION(2, 6, 0)
     g_log_set_default_handler(def_func, NULL);
+#endif
   }
 
   gtk_widget_show((GtkWidget*)scrolled_window);

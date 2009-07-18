@@ -19,14 +19,13 @@ static void (*cdcreatecanvasNATIVE)(cdCanvas* canvas, void* data) = NULL;
 
 static void cdcreatecanvasIUP(cdCanvas* canvas, Ihandle *ih_canvas)
 {
-  char str[50];
+  char str[50] = "";
   char* data;
 
   if (IupGetInt(ih_canvas, "CD_GDK"))
     data = IupGetAttribute(ih_canvas, "DRAWABLE");  /* new IUP 3 attribute, works for GTK only */
   else
   {
-    str[0] = 0;
 #ifdef WIN32
     data = IupGetAttribute(ih_canvas, "HWND");  /* new IUP 3 attribute, works for Windows and GTK */
     if (!data)
