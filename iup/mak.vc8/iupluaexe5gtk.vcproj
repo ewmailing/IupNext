@@ -67,7 +67,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="iup.lib iupgtk.lib comctl32.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib pango-1.0.lib pangowin32-1.0.lib gobject-2.0.lib gmodule-2.0.lib glib-2.0.lib iupcontrols.lib iupimglib.lib iup_pplot.lib iupgl.lib cd.lib iupcd.lib freetype6.lib cdgdiplus.lib lua5.1.lib iuplua51.lib iupluaim51.lib iupluaimglib51.lib iupluagl51.lib iupluacontrols51.lib iuplua_pplot51.lib iupim.lib opengl32.lib glu32.lib gdiplus.lib im.lib cdlua51.lib iupluacd51.lib imlua51.lib imlua_process51.lib cdluaim51.lib im_process.lib"
+				AdditionalDependencies="iup.lib iupgtk.lib comctl32.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib pango-1.0.lib pangowin32-1.0.lib gobject-2.0.lib gmodule-2.0.lib glib-2.0.lib iupcontrols.lib iupimglib.lib iup_pplot.lib iupgl.lib cd.lib iupcd.lib freetype6.lib cdcontextplus.lib lua5.1.lib iuplua51.lib iupluaim51.lib iupluaimglib51.lib iupluagl51.lib iupluacontrols51.lib iuplua_pplot51.lib iupim.lib opengl32.lib glu32.lib gdiplus.lib im.lib cdlua51.lib iupluacd51.lib imlua51.lib imlua_process51.lib cdluaim51.lib im_process.lib"
 				OutputFile="$(OutDir)/iuplua51gtk.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
