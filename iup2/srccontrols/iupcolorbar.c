@@ -3,7 +3,7 @@
 * @author André Luiz Clinio.
 *
 * See Copyright Notice in iup.h
-* $Id: iupcolorbar.c,v 1.1 2008-10-17 06:19:56 scuri Exp $
+* $Id: iupcolorbar.c,v 1.2 2009-07-18 20:23:16 scuri Exp $
 */
 
 #include <stdio.h>
@@ -561,7 +561,7 @@ static char* colorbar_getattr(Ihandle *h, char *attr) {
 static Ihandle *colorbar_create(Iclass *ic, void **params) {
   int i;
   /* Creating the widget struct */
-  Tcolorbar* obj = (Tcolorbar*) malloc(sizeof(Tcolorbar));
+  Tcolorbar* obj = (Tcolorbar*) calloc(sizeof(Tcolorbar), 1);
 
   /* Creating the IUP canvas for the widget */
   Ihandle*  self = IupCanvas(NULL);
@@ -581,8 +581,6 @@ static Ihandle *colorbar_create(Iclass *ic, void **params) {
   obj->vertical = 1;
   obj->squared = 1;
   obj->shadowed = 1;
-  obj->bufferize = 0;
-  obj->show_secondary = 0;
   obj->preview_size = -9;
   obj->fgcolor_idx = 0;  /* black */
   obj->bgcolor_idx = 15; /* white */

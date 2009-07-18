@@ -2,7 +2,7 @@
  * \brief Windows Driver Controls creation
  *
  * See Copyright Notice in iup.h
- * $Id: wincreat.c,v 1.2 2009-06-16 21:15:27 scuri Exp $
+ * $Id: wincreat.c,v 1.3 2009-07-18 20:23:16 scuri Exp $
  */
 
 #include <stdio.h>    /* sprintf */
@@ -1407,7 +1407,7 @@ void iupdrvCreateNativeObject (Ihandle *n)
     iupwin_parent_hwnd = (HWND) handle(n);
     iupwin_parent  = n;
 
-    iupdrvCreateObjects (child(n));
+    if (child(n)) iupdrvCreateObjects (child(n));
 
     iupwin_parent_hwnd = NULL;
     iupwin_parent  = NULL;

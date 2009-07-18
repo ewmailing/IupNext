@@ -65,7 +65,7 @@ void DialTest(void)
   error = IupLoad("dial.led");
   if (error)
   {
-    error = IupLoad("../test/dial.led");
+    error = IupLoad("../test3/dial.led");
     if (error)
     {
       IupMessage("%s\n", error);

@@ -2,7 +2,7 @@
 * \brief creates controls. but no map to the native control yet
 *
 * See Copyright Notice in iup.h
-* $Id: icreate.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
+* $Id: icreate.c,v 1.2 2009-07-18 20:23:13 scuri Exp $
 */
 
 #include <stdarg.h>
@@ -47,7 +47,7 @@ Ihandle* IupImage (int width, int height, const unsigned char *pixmap)
   IupSetAttribute(n,"BPP","8");
   IupSetAttribute(n,"CHANNELS","1");
   image_data(n) = (char *) malloc (width*height);
-  if (image_data(n))
+  if (image_data(n) && pixmap)
     memcpy (image_data(n),pixmap,width*height);
   return n;
 }
@@ -74,7 +74,7 @@ Ihandle* IupDialog (Ihandle* exp)
   Ihandle *n = iupTreeCreateNode(NULL);
   type(n) = DIALOG_;
   child(n) = exp;
-  parent(exp)=n;
+  if (exp) parent(exp)=n;
   iupDlgListAdd(n);
   return n;
 }
@@ -91,7 +91,7 @@ Ihandle* IupFrame (Ihandle* exp)
   Ihandle *n = iupTreeCreateNode(NULL);
   type(n) = FRAME_;
   child(n) = exp;
-  parent(exp)=n;
+  if (exp) parent(exp)=n;
   return n;
 }
 
@@ -155,7 +155,7 @@ Ihandle* IupSubmenu (const char* label, Ihandle* exp)
   Ihandle *n = iupTreeCreateNode(NULL);
   type(n) = SUBMENU_;
   child(n) = exp;
-  parent(exp)=n;
+  if (exp) parent(exp)=n;
   IupStoreAttribute (n,IUP_TITLE,label);
   return n;
 }
@@ -221,7 +221,7 @@ Ihandle* IupRadio (Ihandle* exp)
   Ihandle *n = iupTreeCreateNode(NULL);
   type(n) = RADIO_;
   child(n) = exp;
-  parent(exp)=n;
+  if (exp) parent(exp)=n;
   return n;
 }
 

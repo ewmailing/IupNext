@@ -8,8 +8,8 @@ static Ihandle *label_red, *label_green, *label_blue, *label_color;
 
 static void clrbrwsr_update_text(unsigned char r, unsigned char g, unsigned char b, char* hsi)
 {
-  float h, s, i;
-  sscanf(hsi, "%f %f %f", &h, &s, &i);
+  float h = 0, s = 0, i = 0;
+  if (hsi) sscanf(hsi, "%f %f %f", &h, &s, &i);
   IupSetfAttribute(label_red, "TITLE", "R:%3d  H:%3.0f", (int)r, (double)h);
   IupSetfAttribute(label_green, "TITLE", "G:%3d  S:%1.2f", (int)g, (double)s);
   IupSetfAttribute(label_blue, "TITLE", "B:%3d  I:%1.2f", (int)b, (double)i);
