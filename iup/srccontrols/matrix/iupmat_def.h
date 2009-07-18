@@ -80,6 +80,7 @@ struct _IcontrolData
   int callback_mode;
   int use_title_size;   /* use title contents when calculating cell size */
   int need_calcsize;
+  int first_redraw;
 
   /* attributes */
   int mark_continuous, mark_mode, mark_multiple;

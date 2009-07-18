@@ -42,9 +42,9 @@ proceed when migrating from version 2.x to version 3.x.<br>
 <ul>
 	<li><span class="hist_new">New: </span>
 	MONITORSINFO and VIRTUALSCREEN global attributes now 
-	also in GTK.</li>
+	also available in GTK.</li>
 	<li><span class="hist_new">New: </span>
-	USETITLESIZE to improve compatibility with IUP 2.x in <strong>IupMatrix</strong>.</li>
+	USETITLESIZE attribute for <strong>IupMatrix</strong>.</li>
 	<li><span class="hist_new">New: </span> DEFAULTFONTSIZE global attribute.</li>
 	<li><span class="hist_new">New: </span><strong>IupSetAtt</strong> auxiliar function.</li>
 	<li><span class="hist_changed">Changed:</span>
@@ -56,8 +56,6 @@ proceed when migrating from version 2.x to version 3.x.<br>
         in versions older than 2.14, but run in newer versions.</li>
     <li><strong><span class="hist_fixed">Fixed:</span></strong> alignment of buttons
         in <strong>IupAlarm</strong>.</li>
-    <li><strong><span class="hist_fixed">Fixed:</span></strong> default cell alignment
-        in <strong>IupMatrix</strong>.</li>
     <li><strong><span class="hist_fixed">Fixed:</span></strong> <strong>IupZbox</strong>
         visible
         child management and VISILBE attribute update after mapping an element.</li>
@@ -69,9 +67,11 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	VISUAL in <strong>IupGLCanvas</strong>.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> SHOWTICKS in
 	<strong>IupVal</strong>.</li>
-	<li><strong><span class="hist_fixed">Fixed:</span></strong> BGCOLOR and 
-	FGCOLOR for <strong>IupMatrix</strong> to use the global default colors 
-	instead of &quot;255 255 255&quot; and &quot;0 0 0&quot;.</li>
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> in <strong>IupMatrix. </strong>
+	default cell alignment. BGCOLOR and FGCOLOR to use the global default colors 
+	instead of &quot;255 255 255&quot; and &quot;0 0 0&quot;. drawing details. 
+	misbehavior of the scrollbar in GTK. improved IUP 2 compatibility when 
+	calling VALUE_CB and when consulting titles to compute cell size.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> VALUE 
 	management in <strong>IupZbox</strong>.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> removed 
@@ -84,10 +84,6 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<strong>IupDialog</strong>.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> 
 	DIALOGTYPE=MESSAGE for <strong>IupMessageDlg</strong> in GTK.</li>
-	<li><strong><span class="hist_fixed">Fixed:</span></strong> 
-	drawing details in <strong>IupMatrix</strong>.</li>
-	<li><strong><span class="hist_fixed">Fixed:</span></strong> 
-	misbehavior of the scrollbar for <strong>IupMatrix</strong> in GTK.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> 
 	<strong>IupButton</strong> with no text and no image, but with BGCOLOR 
 	defined will properly show the color.</li>

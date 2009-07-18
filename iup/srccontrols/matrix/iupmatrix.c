@@ -598,6 +598,12 @@ static int iMatrixRedraw_CB(Ihandle* ih)
   if (!ih->data->cddbuffer)
     return IUP_DEFAULT;
 
+  if (!ih->data->first_redraw)
+  {
+    ih->data->first_redraw = 1;
+    iupMatrixDraw(ih, 0);
+  }
+
   iupMatrixDrawUpdate(ih);
 
   return IUP_DEFAULT;

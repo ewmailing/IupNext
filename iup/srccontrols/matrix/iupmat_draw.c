@@ -787,6 +787,9 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 
 void iupMatrixDraw(Ihandle* ih, int update)
 {
+  if (!ih->data->first_redraw)
+    return;
+
   if (ih->data->need_calcsize)
     iupMatrixAuxCalcSizes(ih);
 
