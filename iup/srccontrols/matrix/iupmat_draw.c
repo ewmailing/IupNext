@@ -517,6 +517,11 @@ static void iMatrixDrawFocus(Ihandle* ih)
   x2 = x1 + dx - 1;
   y2 = y1 + dy - 1;
 
+  if (ih->data->columns.focus_cell == 1 && ih->data->columns.sizes[0] == 0)
+    x1++;
+  if (ih->data->lines.focus_cell == 1 && ih->data->lines.sizes[0] == 0)
+    y1++;
+
   cdIupDrawFocusRect(ih, ih->data->cdcanvas, x1, iupMatrixInvertYAxis(ih, y1), x2, iupMatrixInvertYAxis(ih, y2));
 }
 
