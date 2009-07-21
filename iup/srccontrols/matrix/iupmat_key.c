@@ -132,6 +132,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
       iupMatrixAuxCallEnterCellCb(ih);
       break;
 
+    case K_F2:
     case K_SP:
     case K_CR:
     case K_sCR:

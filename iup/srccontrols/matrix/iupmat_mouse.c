@@ -63,6 +63,9 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
   {
     iupMatrixMarkMouseReset(ih);
 
+    if (lin==0 || col==0)
+      return;
+
     /* if a double click NOT in the current cell */
     if (lin != ih->data->lines.focus_cell || col != ih->data->columns.focus_cell)
     {
@@ -70,8 +73,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
       if (ih->data->has_focus && iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
         return;
 
-      if (lin>0 && col>0)
-        iupMatrixFocusSet(ih, lin, col);
+      iupMatrixFocusSet(ih, lin, col);
 
       iupMatrixAuxCallEnterCellCb(ih);
     }
