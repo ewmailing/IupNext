@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="iuplua3"
 	ProjectGUID="{1EBC7A53-4677-4C3A-8DFF-49D301F17D85}"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -98,6 +99,22 @@
 			</File>
 			<File
 				RelativePath="..\srclua3\iuplua_widgets.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\luacbox.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\luasbox.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\luaspin.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\scanf.c"
 				>
 			</File>
 		</Filter>

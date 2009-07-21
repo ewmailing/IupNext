@@ -446,11 +446,11 @@ int iupMatrixSetNumLinAttrib(Ihandle* ih, const char* value)
     /* can be set before map */
     if (ih->handle)
     {
-      int base;
+      int base;  /* base is after the end */
       if (num >= ih->data->lines.num) /* add or alloc */
-        base = ih->data->lines.num;   /* base is after the end */
+        base = ih->data->lines.num;   
       else
-        base = ih->data->lines.num-1; /* base is at the end */
+        base = num;
       iupMatrixMemReAllocLines(ih, ih->data->lines.num, num, base);  
     }
 
@@ -476,11 +476,11 @@ int iupMatrixSetNumColAttrib(Ihandle* ih, const char* value)
     /* can be set before map */
     if (ih->handle)
     {
-      int base;
+      int base;  /* base is after the end */
       if (num >= ih->data->columns.num) /* add or alloc */
-        base = ih->data->columns.num;   /* base is after the end */
+        base = ih->data->columns.num;
       else
-        base = ih->data->columns.num-1; /* base is at the end */
+        base = num;
       iupMatrixMemReAllocColumns(ih, ih->data->columns.num, num, base);
     }
 

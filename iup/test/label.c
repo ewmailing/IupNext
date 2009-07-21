@@ -99,7 +99,7 @@ void LabelTest(void)
   IupSetAttribute(box1, "PADDING", "5x5");
 
   label = IupLabel(NULL);
-  IupSetAttribute(label, "TITLE", "Text Labels");
+  IupSetAttribute(label, "TITLE", "Text Labels (згн)");
   IupSetAttribute(label, "BGCOLOR", IupGetGlobal("DLGBGCOLOR"));
   IupSetAttribute(label, "PADDING", "0x0");
   IupSetAttribute(label, "TIP", "Text Label");

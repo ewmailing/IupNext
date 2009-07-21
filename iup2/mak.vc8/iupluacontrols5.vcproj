@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="iupluacontrols5"
 	ProjectGUID="{1EBC7A53-4677-75D7-8D4A-49D301F17D85}"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -89,10 +90,6 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
-				RelativePath="..\srclua5\cbox.c"
-				>
-			</File>
-			<File
 				RelativePath="..\srclua5\cells.c"
 				>
 			</File>
@@ -134,18 +131,6 @@
 			</File>
 			<File
 				RelativePath="..\srclua5\matrixfuncs.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua5\sbox.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua5\spin.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua5\spinbox.c"
 				>
 			</File>
 			<File
