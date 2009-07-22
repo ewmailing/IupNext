@@ -1317,6 +1317,9 @@ static int winListMapMethod(Ihandle* ih)
     }
     else
       dwStyle |= CBS_DROPDOWNLIST;  /* hidden-list */
+
+    if (iupAttribGetInt(ih, "SORT"))
+      dwStyle |= CBS_SORT;
   }
   else
   {
@@ -1334,6 +1337,9 @@ static int winListMapMethod(Ihandle* ih)
       if (!iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
         dwStyle |= LBS_DISABLENOSCROLL;
     }
+
+    if (iupAttribGetInt(ih, "SORT"))
+      dwStyle |= LBS_SORT;
   }
 
   if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))

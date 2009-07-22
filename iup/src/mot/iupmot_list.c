@@ -92,18 +92,7 @@ int iupdrvListGetCount(Ihandle* ih)
   return count;
 }
 
-void iupdrvListAppendItem(Ihandle* ih, const char* value)
-{
-  XmString str = XmStringCreateLocalized((String)value);
-  /* The utility functions use 0=last 1=first */
-  if (ih->data->is_dropdown || ih->data->has_editbox)
-    XmComboBoxAddItem(ih->handle, str, 0, False);
-  else
-    XmListAddItem(ih->handle, str, 0);
-  XmStringFree(str);
-}
-
-void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
+static void motListAddItem(Ihandle* ih, int pos, const char* value)
 {
   XmString str = XmStringCreateLocalized((String)value);
   /* The utility functions use 0=last 1=first */
@@ -112,6 +101,48 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
   else
     XmListAddItem(ih->handle, str, pos+1);
   XmStringFree(str);
+}
+
+static void motListAddSortedItem(Ihandle* ih, const char *value)
+{
+  char *text;
+  XmString *strlist;
+  int u_bound, l_bound = 0;
+
+  XtVaGetValues(ih->handle, XmNitemCount, &u_bound, XmNitems, &strlist, NULL);
+
+  u_bound--;
+  /* perform binary search */
+  while (u_bound >= l_bound) 
+  {
+    int i = l_bound + (u_bound - l_bound)/2;
+    text = (char*)XmStringUnparse(strlist[i], NULL, XmCHARSET_TEXT, XmCHARSET_TEXT, NULL, 0, XmOUTPUT_ALL);
+    if (!text)
+      break;
+    if (strcmp (text, value) > 0)
+      u_bound = i-1; /* newtext comes before item */
+    else
+      l_bound = i+1; /* newtext comes after item */
+    XtFree(text);
+  }
+
+  motListAddItem(ih, l_bound, value);
+}
+
+void iupdrvListAppendItem(Ihandle* ih, const char* value)
+{
+  if (iupAttribGetInt(ih, "SORT"))
+    motListAddSortedItem(ih, value);
+  else
+    motListAddItem(ih, -1, value);
+}
+
+void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
+{
+  if (iupAttribGetInt(ih, "SORT"))
+    motListAddSortedItem(ih, value);
+  else
+    motListAddItem(ih, pos, value);
 }
 
 void iupdrvListRemoveItem(Ihandle* ih, int pos)

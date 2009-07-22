@@ -101,6 +101,15 @@ void iupmotSetString(Widget w, const char *resource, const char* value)
 
 char* iupmotConvertString(XmString str)
 {
+  char* text = (char*)XmStringUnparse(str, NULL, XmCHARSET_TEXT, XmCHARSET_TEXT, NULL, 0, XmOUTPUT_ALL);
+  char* buf = iupStrGetMemoryCopy(text);
+  XtFree(text);
+  return buf;
+}
+
+#ifdef OLD_CONVERT
+char* iupmotConvertString(XmString str)
+{
   XmStringContext context;
   char *text, *p, *buf;
   unsigned int length;
@@ -138,6 +147,7 @@ char* iupmotConvertString(XmString str)
 
   return buf;
 }
+#endif
 
 void iupdrvReparent(Ihandle* ih)
 {

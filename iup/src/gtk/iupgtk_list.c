@@ -1360,6 +1360,9 @@ static int gtkListMapMethod(Ihandle* ih)
     g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(iupgtkButtonEvent), ih);
   }
 
+  if (iupAttribGetInt(ih, "SORT"))
+    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), 0, GTK_SORT_ASCENDING);
+
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
 

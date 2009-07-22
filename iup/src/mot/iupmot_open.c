@@ -117,7 +117,7 @@ int iupdrvOpen(int *argc, char ***argv)
     IupSetfAttribute(NULL, "TXTBGCOLOR", "%3d %3d %3d", 255, 255, 255);
     IupSetfAttribute(NULL, "TXTFGCOLOR", "%3d %3d %3d", 0, 0, 0);
 
-    IupSetGlobal("_IUP_SET_DLGFGCOLOR", "YES");
+    IupSetGlobal("_IUP_SET_DLGCOLORS", "YES");
     IupSetGlobal("_IUP_SET_TXTCOLORS", "YES");
   }
 

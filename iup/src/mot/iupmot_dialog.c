@@ -653,9 +653,6 @@ static int motDialogMapMethod(Ihandle* ih)
   XtAddCallback(dialog_manager, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
   XtAddEventHandler(dialog_manager, KeyPressMask, False,(XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
 
-  /* force the BGCOLOR to match the DLGBGCOLOR */
-  motDialogSetBgColorAttrib(ih, IupGetGlobal("DLGBGCOLOR"));
-
   /* initialize the widget */
   XtRealizeWidget(ih->handle);
 
@@ -669,10 +666,11 @@ static int motDialogMapMethod(Ihandle* ih)
   /* Ignore VISIBLE before mapping */
   iupAttribSetStr(ih, "VISIBLE", NULL);
 
-  if (IupGetGlobal("_IUP_SET_DLGFGCOLOR"))
+  if (IupGetGlobal("_IUP_SET_DLGCOLORS"))
   {
+    iupmotSetGlobalColorAttrib(dialog_manager, XmNbackground, "DLGBGCOLOR");
     iupmotSetGlobalColorAttrib(dialog_manager, XmNforeground, "DLGFGCOLOR");
-    IupSetGlobal("_IUP_SET_DLGFGCOLOR", NULL);
+    IupSetGlobal("_IUP_SET_DLGCOLORS", NULL);
   }
 
   return IUP_NOERROR;
