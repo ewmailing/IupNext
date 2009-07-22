@@ -237,6 +237,7 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
     /* only re-show to raise the window */
     iupdrvDialogSetVisible(ih, 1);
     
+    /* process SHOW_CB and STARTFOCUS */
     iDialogCallShowCb(ih);
     return IUP_NOERROR; 
   }
@@ -254,6 +255,10 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
   /* increment visible count */
   iupDlgListVisibleInc();
     
+  /* process all pending message */
+  IupFlush();
+    
+  /* process SHOW_CB and STARTFOCUS */
   iDialogCallShowCb(ih);
 
   /* interrupt processing here */
@@ -301,6 +306,7 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
     /* only re-show to raise the window */
     iupdrvDialogSetVisible(ih, 1);
     
+    /* process SHOW_CB and STARTFOCUS */
     iDialogCallShowCb(ih);
     return IUP_NOERROR; 
   }
@@ -313,6 +319,10 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
   /* increment visible count */
   iupDlgListVisibleInc();
     
+  /* process all pending message */
+  IupFlush();
+
+  /* process SHOW_CB and STARTFOCUS */
   iDialogCallShowCb(ih);
 
   return IUP_NOERROR;
@@ -351,7 +361,11 @@ void iupDialogHide(Ihandle* ih)
     if (!iupStrBoolean(IupGetGlobal("LOCKLOOP")))
       IupExitLoop();
   }
+    
+  /* process all pending message */
+  IupFlush();
 
+  /* process SHOW_CB and STARTFOCUS */
   iDialogCallShowCb(ih);
 }
 

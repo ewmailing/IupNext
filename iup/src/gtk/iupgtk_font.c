@@ -320,6 +320,8 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
   {
     int dummy_h;
 
+    pango_layout_set_attributes(gtkfont->layout, NULL);
+
     if (iupStrBoolean(iupAttribGetStr(ih, "MARKUP")))
       pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToUTF8(str), -1);
     else

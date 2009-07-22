@@ -197,8 +197,6 @@ int IupPopup(Ihandle *ih, int x, int y)
     return ret;
   }
 
-  IupFlush();
-
   return IUP_NOERROR;
 }
 
@@ -239,8 +237,6 @@ int IupShowXY(Ihandle *ih, int x, int y)
     return ret;
   }
 
-  IupFlush();
-
   return IUP_NOERROR;
 }
 
@@ -277,8 +273,6 @@ int IupShow(Ihandle* ih)
     }
   }
 
-  IupFlush();
-
   return IUP_NOERROR;
 }
 
@@ -293,7 +287,5 @@ int IupHide(Ihandle* ih)
   else if (ih->handle)
     iupDialogHide(ih);
 
-  IupFlush();
   return IUP_NOERROR;
 }
-

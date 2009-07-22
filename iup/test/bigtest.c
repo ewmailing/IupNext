@@ -122,6 +122,14 @@ static TestItems test_list[] = {
   {"Vbox", VboxTest},
 };
 
+static int k_enter_cb(Ihandle*ih)
+{
+  int pos = IupGetInt(ih, "VALUE");
+  if (pos > 0)
+    test_list[pos-1].func();
+  return IUP_DEFAULT;
+}
+
 static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
   (void)pressed;
@@ -129,6 +137,7 @@ static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
   {
     int pos = IupConvertXYToPos(ih, x, y);
     test_list[pos-1].func();
+    return IUP_IGNORE;
   }
   return IUP_DEFAULT;
 }
@@ -155,9 +164,10 @@ int main(int argc, char* argv[])
   IupSetAttribute(dlg, "TITLE", "IupTests");
   IupSetCallback(dlg, "CLOSE_CB", close_cb);
 
-  IupSetCallback(list, "BUTTON_CB", (Icallback)button_cb);
   IupSetAttribute(list, "VISIBLELINES", "15");
   IupSetAttribute(list, "EXPAND", "YES");
+  IupSetCallback(list, "BUTTON_CB", (Icallback)button_cb);
+  IupSetCallback(list, "K_CR", k_enter_cb);
 
   for (i=0; i<count; i++)
   {

@@ -356,6 +356,7 @@ static int motDialogSetFullScreen(Ihandle* ih, int fullscreen)
 int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
 {
   char* placement;
+  ih->data->show_state = IUP_SHOW;
 
   if (iupAttribGetInt(ih, "FULLSCREEN"))
     return 1;

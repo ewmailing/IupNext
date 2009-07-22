@@ -232,8 +232,21 @@ static void set_callbacks(Ihandle* button)
 
   IupSetCallback(button, "GETFOCUS_CB",  (Icallback)getfocus_cb); 
   IupSetCallback(button, "KILLFOCUS_CB", (Icallback)killfocus_cb);
-  IupSetCallback(button, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
-  IupSetCallback(button, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+//  IupSetCallback(button, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+//  IupSetCallback(button, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+}
+
+static int show_cb(Ihandle *ih, int state)
+{
+  char* state_str[5] ={
+    "SHOW",
+    "RESTORE", 
+    "MINIMIZE",
+    "MAXIMIZE",
+    "HIDE"
+  };
+  printf("SHOW_CB(%s, %s)\n", IupGetAttribute(ih, "TESTTITLE"), state_str[state]);
+  return IUP_DEFAULT;
 }
 
 void ButtonTest(void)
@@ -256,6 +269,7 @@ void ButtonTest(void)
 
   button = IupButton(NULL, NULL);
   IupSetAttribute(button, "TITLE", "Text (згн)");
+//  IupSetAttribute(button, "TITLE", "Text");
   //IupSetAttribute(button, "TITLE", "Text &Button\nSecond Line");
   IupSetAttribute(button, "TIP", "Button Tip");
   //IupSetAttribute(button, "PADDING", "15x15");
@@ -374,6 +388,7 @@ void ButtonTest(void)
 //  IupSetAttribute(dlg, "BGCOLOR", "0 128 0");
 //  IupSetAttribute(dlg, "BACKGROUND", "0 0 128");
 //  IupSetAttributeHandle(dlg, "BACKGROUND", image2);
+
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 
   IupShow(dlg);
