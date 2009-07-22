@@ -356,6 +356,43 @@ static int gtkTreeGetUserDataId(Ihandle* ih, GtkTreeModel* model, void* userdata
     return -1;
 }
 
+static void gtkTreeCallNodeRemovedRec(Ihandle* ih, GtkTreeModel* model, GtkTreeIter iterItem, IFnis cb)
+{
+  GtkTreeIter iterChild;
+  int hasItem = TRUE;
+  void* node_userdata;
+
+  while(hasItem)
+  {
+    /* ID control to traverse items */
+    ih->data->id_control++;
+
+    gtk_tree_model_get(model, &iterItem, IUPGTK_TREE_USERDATA, &node_userdata, -1);
+
+    cb(ih, ih->data->id_control, (char*)node_userdata);
+
+    /* Check whether we have child items */
+    if (gtk_tree_model_iter_has_child(model, &iterItem))
+    {
+      gtk_tree_model_iter_children(model, &iterChild, &iterItem);  /* get the firstchild */
+      gtkTreeCallNodeRemovedRec(ih, model, iterChild, cb);
+    }
+
+    /* Go to next sibling item */
+    hasItem = gtk_tree_model_iter_next(model, &iterItem);
+  }
+}
+
+static void gtkTreeCallNodeRemoved(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *iterItem)
+{
+  IFnis cb = (IFnis)IupGetCallback(ih, "NODEREMOVED_CB");
+  if (cb) 
+  {
+    ih->data->id_control = gtkTreeGetNodeId(ih, *iterItem)-1;
+    gtkTreeCallNodeRemovedRec(ih, model, *iterItem, cb);
+  }
+}
+
 static gboolean gtkTreeFindNodeFromID(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *iterItem, int *id)
 {
   GtkTreeIter iterChild;
@@ -1355,6 +1392,8 @@ static int gtkTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
     if (!gtk_tree_model_iter_parent(model, &iterParent, &iterItem)) /* the root node can't be deleted */
       return 0;
 
+    gtkTreeCallNodeRemoved(ih, model, &iterItem);
+
     /* deleting the specified node (and it's children) */
     gtk_tree_store_remove(GTK_TREE_STORE(model), &iterItem);
   }
@@ -1374,7 +1413,10 @@ static int gtkTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 
     /* deleting the selected node's children */
     while(hasChildren)
+    {
+      gtkTreeCallNodeRemoved(ih, model, &iterChild);
       hasChildren = gtk_tree_store_remove(GTK_TREE_STORE(model), &iterChild);
+    }
   }
   else if(iupStrEqualNoCase(value, "MARKED"))  /* Delete the array of marked nodes */
   {
@@ -1390,9 +1432,12 @@ static int gtkTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
       GtkTreePath* path = gtk_tree_row_reference_get_path(node->data);
       if (path)
       {
-        GtkTreeIter iter;
-        if (gtk_tree_model_get_iter(model, &iter, path))
-          gtk_tree_store_remove(GTK_TREE_STORE(model), &iter);
+        GtkTreeIter iterItem;
+        if (gtk_tree_model_get_iter(model, &iterItem, path))
+        {
+          gtkTreeCallNodeRemoved(ih, model, &iterItem);
+          gtk_tree_store_remove(GTK_TREE_STORE(model), &iterItem);
+        }
         gtk_tree_path_free(path);
       }
       gtk_tree_row_reference_free(node->data);

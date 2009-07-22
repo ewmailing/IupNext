@@ -51,6 +51,7 @@ typedef struct _motTreeItemData
 
 
 static void motTreeShowEditField(Ihandle* ih, Widget wItem);
+static int motTreeGetNodeId(Ihandle* ih, Widget wItem);
 
 typedef int (*motTreeNodeFunc)(Ihandle* ih, Widget wItem, void* userdata);
 
@@ -537,12 +538,14 @@ void motTreeExpandCollapseAllNodes(Ihandle* ih, WidgetList itemList, int numItem
   }
 }
 
-static void motTreeDestroyItemData(Widget wItem)
+static void motTreeDestroyItemData(Ihandle* ih, Widget wItem)
 {
   motTreeItemData *itemData = NULL;
   XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
   if (itemData)
   {
+    IFnis cb = (IFnis)IupGetCallback(ih, "NODEREMOVED_CB");
+    if (cb) cb(ih, motTreeGetNodeId(ih, wItem), (char*)itemData->userdata);
     free(itemData);
     XtVaSetValues(wItem, XmNuserData, NULL, NULL);
   }
@@ -559,12 +562,11 @@ static void motTreeRemoveChildren(Ihandle* ih, WidgetList itemList, int numItems
     /* Check whether we have child items */
     itemChildList = NULL;
     numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
-
     if (numChild)
       motTreeRemoveChildren(ih, itemChildList, numChild, del_userdata);
 
     if (del_userdata)
-      motTreeDestroyItemData(itemList[i]);
+      motTreeDestroyItemData(ih, itemList[i]);
 
     XtDestroyWidget(itemList[i]);
 
@@ -581,7 +583,7 @@ static void motTreeRemoveNode(Ihandle* ih, Widget wItem, int del_userdata)
   if (numChild)
     motTreeRemoveChildren(ih, wChildList, numChild, del_userdata);
   if (del_userdata)
-    motTreeDestroyItemData(wItem);
+    motTreeDestroyItemData(ih, wItem);
   XtDestroyWidget(wItem);
   if (wChildList) XtFree((char*)wChildList);
 }

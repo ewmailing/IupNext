@@ -131,6 +131,8 @@ MOVENODE</strong></p>
 <strong>DRAGDROP_CB</strong>:
   Action generated when a drag &amp; drop is 
   executed. <br>
+<strong>NODEREMOVED_CB</strong>:
+  Action generated when a node is about to be removed.<br>
 <strong>RIGHTCLICK_CB</strong>:
   Action generated when the right mouse button 
   is pressed over a node.</p>
@@ -293,7 +295,8 @@ userid remains the same.</p>
 <p>Associations to Lua objects in Lua 5 are referenced in the Lua REGISTRY. So they can be retrieved later. This 
       means also that the associated object will not be garbage collected until its reference is removed. Also, the user should not use the same table to reference different nodes (neither in the same nor across 
       different trees.)</p>
-<p>It is equivalent of setting the <strong>USERDATAid</strong> attribute.</p>
+<p>It is similar of setting the <strong>USERDATAid</strong> attribute, but with 
+the additional feature of storing the Lua object in the registry.</p>
 <pre>void* IupTreeGetUserId(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
 iup.TreeGetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number) -&gt; (<b>ret:</b> userdata/table) [in Lua]
 </pre>
@@ -304,7 +307,8 @@ iup.TreeGetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number) -&g
 <p>Returns the pointer or Lua table associated to 
       the node or NULL if none was associated. <strong>SetUserId</strong> must 
 have been called for the node with the given id.</p>
-<p>It is equivalent of retrieving the <strong>USERDATAid</strong> attribute.</p>
+<p>It is similar of retrieving the <strong>USERDATAid</strong> attribute, but 
+the Lua object is retrieved from the REGISTRY.</p>
 <pre>int IupTreeGetId(Ihandle *<strong>ih</strong>, void *<strong>userid</strong>); [in C] 
 iup.TreeGetId(<strong>ih: </strong>ihandle, <strong>userid: </strong>userdata/table) -&gt; (<b>ret:</b> number) [in Lua]
 </pre>

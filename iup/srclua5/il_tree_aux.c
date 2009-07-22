@@ -84,40 +84,40 @@ static int TreeGetId(lua_State *L)
 
 static int TreeGetUserId(lua_State *L)
 {  
-   int ref;
-   Ihandle *h = iuplua_checkihandle(L,1);
-   int id = (int)luaL_checknumber(L,2);
-   ref = (int) IupTreeGetUserId(h, id) - 1;
-   lua_getref(L, ref);
-   return 1;
+  int ref;
+  Ihandle *h = iuplua_checkihandle(L,1);
+  int id = (int)luaL_checknumber(L,2);
+  ref = (int) IupTreeGetUserId(h, id) - 1;
+  lua_getref(L, ref);
+  return 1;
 }
 
 static int TreeSetUserId(lua_State *L)
 {  
-   Ihandle *h = iuplua_checkihandle(L,1);
-   int id = (int)luaL_checknumber(L,2);
-   int ref = (int)IupTreeGetUserId(h, id) - 1;
-   if (ref != LUA_NOREF)
-   {
-     /* always remove old references */
-     lua_getref(L, ref);
-     settableref(L, 4, 0);
-     lua_unref(L, ref);
-     lua_pop(L, 1);
-   }
+  Ihandle *h = iuplua_checkihandle(L,1);
+  int id = (int)luaL_checknumber(L,2);
+  int ref = (int)IupTreeGetUserId(h, id) - 1;
+  if (ref != LUA_NOREF)
+  {
+    /* always remove old references */
+    lua_getref(L, ref);
+    settableref(L, 4, 0);
+    lua_unref(L, ref);
+    lua_pop(L, 1);
+  }
 
-   if (lua_isnil(L, 3))
-     IupTreeSetUserId(h, id, NULL);
-   else
-   {
-     /* add a new reference */
-     lua_pushvalue(L, 3);
-     ref = lua_ref(L, 1) + 1;
-     settableref(L, 3, ref);
-     IupTreeSetUserId(h, id, (char*)ref);
-   }
+  if (lua_isnil(L, 3))
+    IupTreeSetUserId(h, id, NULL);
+  else
+  {
+    /* add a new reference */
+    lua_pushvalue(L, 3);
+    ref = lua_ref(L, 1) + 1;
+    settableref(L, 3, ref);
+    IupTreeSetUserId(h, id, (char*)ref);
+  }
 
-   return 0;
+  return 0;
 }
 
 static int tree_multiselection_cb(Ihandle *self, int* ids, int p1)
@@ -135,11 +135,22 @@ static int tree_multiselection_cb(Ihandle *self, int* ids, int p1)
   return iuplua_call(L, 2);
 }
 
+static int tree_noderemoved_cb(Ihandle *self, int id, char * p1)
+{
+  int ref;
+  lua_State *L = iuplua_call_start(self, "noderemoved_cb");
+  lua_pushnumber(L, id);
+  ref = ((int)p1) - 1;
+  lua_getref(L, ref);
+  return iuplua_call(L, 2);
+}
+
 void iuplua_treefuncs_open (lua_State *L)
 {
   iuplua_dostring(L, "IUPTREEREFTABLE={}", "");
 
   iuplua_register_cb(L, "MULTISELECTION_CB", (lua_CFunction)tree_multiselection_cb, NULL);
+  iuplua_register_cb(L, "NODEREMOVED_CB", (lua_CFunction)tree_noderemoved_cb, NULL);
 
 /* In Lua 5:
   TreeSetTableId = TreeSetUserId

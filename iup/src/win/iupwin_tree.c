@@ -1508,6 +1508,8 @@ static void winTreeDelNodeData(Ihandle* ih, HTREEITEM hItem)
     winTreeItemData* itemData = (winTreeItemData*)item.lParam;
     if (itemData)
     {
+      IFnis cb = (IFnis)IupGetCallback(ih, "NODEREMOVED_CB");
+      if (cb) cb(ih, winTreeGetNodeId(ih, hItem), (char*)itemData->userdata);
       free(itemData);
       item.lParam = (LPARAM)NULL;
       SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
