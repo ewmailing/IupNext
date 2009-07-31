@@ -255,18 +255,22 @@ font. </p>
     Coordinates of the current cell.<br>
 <strong>mode</strong>:
     1 if the cell has entered the edition mode, or 0 if the cell has left the edition mode.</p>
-<p class="info">The new value is accepted only if the callback returns
-    IUP_DEFAULT. So to make the cell read-only return IUP_IGNORE when mode=1. If 
-the callback returns IUP_CONTINUE when mode=0, the edit mode is ended but the 
-value is not updated, so the application can update a different value (usefull 
-to format the new value). If the callback returns IUP_IGNORE when mode=0, the 
-editing continues.</p>
+<p class="info">When mode=1 editing is allowed if the callback returns 
+IUP_DEFAULT, so to make the cell read-only return IUP_IGNORE.</p>
+<p class="info">When mode=0 the new value is accepted only if the callback returns
+    IUP_DEFAULT. The VALUE attribute returns the new value that will be updated 
+in the cell. If 
+the callback returns IUP_CONTINUE the edit mode is ended and the 
+new value will not be updated, so the application can set a different value 
+during the callback (usefull 
+to format the new value). If the callback returns IUP_IGNORE the 
+editing is not ended. </p>
 <p class="info">If the callback does not exists the value can always be edited 
-and it is always accepted. </p>
+and it is always accepted.</p>
 <p class="info">If the control loses its focus the edition mode will be 
     ended always even if the callback return
     IUP_IGNORE.</p>
-<p class="info">This callback is also called if the user cancel the editing with <b>Esc</b> and when the user press 
+<p class="info">This callback is also called if the user cancel the editing with <b>Esc,</b> and when the user press 
 <b>Del</b> to 
     validate the operation for each cell been cleared (in this case is called only with mode=1).</p>
 <h3>Callback Mode</h3>
