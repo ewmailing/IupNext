@@ -295,6 +295,7 @@ void TextTest(void)
 //  IupSetAttribute(mltline, "MASK", IUP_MASK_FLOAT);
 //  IupSetAttribute(mltline, "FILTER", "UPPERCASE");
   IupSetAttribute (opt, "VALUE", "ON");
+//  IupSetAttribute(mltline, "ALIGNMENT", "ACENTER");
 
   /* Turns on multiline expand and text horizontal expand */
   IupSetAttribute(mltline, "SIZE", "80x40");

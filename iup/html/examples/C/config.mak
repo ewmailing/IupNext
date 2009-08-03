@@ -23,7 +23,7 @@ IUP = ../../..
 DBG = Yes
 
 #SRC = alarm.c
-#SRC = button.c
+SRC = button.c
 #SRC = dialog1.c
 #SRC = dialog2.c
 #SRC = filedlg.c
@@ -76,7 +76,7 @@ DBG = Yes
 #USE_OPENGL = Yes
 #SRC = glcanvas.c
 
-USE_IUPCONTROLS = Yes
+#USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
 #SRC = cbox.c
 #SRC = cells_checkboard.c
@@ -87,7 +87,7 @@ USE_IUPCONTROLS = Yes
 #SRC = gauge.c
 #SRC = getcolor.c
 #SRC = getparam.c
-SRC = matrix.c
+#SRC = matrix.c
 #SRC = mdi.c
 #SRC = tree.c
 
