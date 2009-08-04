@@ -1818,7 +1818,7 @@ static int winTextMapMethod(Ihandle* ih)
 {
   DWORD dwStyle = WS_CHILD, 
       dwExStyle = 0;
-  char* winclass = "EDIT";
+  char* winclass = "EDIT", *value;
 
   if (!ih->parent)
     return IUP_ERROR;
@@ -1867,6 +1867,17 @@ static int winTextMapMethod(Ihandle* ih)
 
     if (iupStrBoolean(iupAttribGet(ih, "PASSWORD")))
       dwStyle |= ES_PASSWORD;
+  }
+
+  value = iupAttribGet(ih, "ALIGNMENT");
+  if (value)
+  {
+    if (iupStrEqualNoCase(value, "ARIGHT"))
+      dwStyle |= ES_RIGHT;
+    else if (iupStrEqualNoCase(value, "ACENTER"))
+      dwStyle |= ES_CENTER;
+    else /* default "ALEFT" */
+      dwStyle |= ES_LEFT;
   }
 
   if (IupGetInt(ih, "BORDER"))              /* Use IupGetInt for inheritance */

@@ -529,10 +529,10 @@ static int gtkDialogMapMethod(Ihandle* ih)
        if it is the first time a dialog is created. 
        The value returned by gtk_style_new is not accurate. */
     GtkStyle* style = gtk_widget_get_style(ih->handle);
-    if (style && IupGetGlobal("_IUP_RESET_DLGBGCOLOR"))
+    if (style && IupGetGlobal("_IUP_RESET_GLOBALCOLORS"))
     {
       iupgtkUpdateGlobalColors(style);
-      IupSetGlobal("_IUP_RESET_DLGBGCOLOR", NULL);
+      IupSetGlobal("_IUP_RESET_GLOBALCOLORS", NULL);
     }
   }
 

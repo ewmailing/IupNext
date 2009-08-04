@@ -5,6 +5,8 @@
  */
 
 #include <stdlib.h>      
+#include <stdio.h>      
+#include <string.h>      
 
 #include "iup.h" 
 
@@ -29,6 +31,40 @@ void iupGlobalAttribFinish(void)
   iglobal_table = NULL;
 }
 
+static int iGlobalChangingDefaultColor(const char *name)
+{
+  if (iupStrEqual(name, "DLGBGCOLOR") ||
+      iupStrEqual(name, "DLGFGCOLOR") ||
+      iupStrEqual(name, "MENUBGCOLOR") ||
+      iupStrEqual(name, "MENUFGCOLOR") ||
+      iupStrEqual(name, "TXTBGCOLOR") ||
+      iupStrEqual(name, "TXTFGCOLOR"))
+  {
+    char str[50] = "_IUP_USER_DEFAULT_";
+    strcat(str, name);
+    iupTableSet(iglobal_table, str, (void*)"1", IUPTABLE_POINTER);  /* mark as changed by the User */
+    return 1;
+  }
+  return 0;
+}
+
+int iupGlobalDefaultColorChanged(const char *name)
+{
+  char str[50] = "_IUP_USER_DEFAULT_";
+  strcat(str, name);
+  return iupTableGet(iglobal_table, str) != NULL;
+}
+
+void iupGlobalSetDefaultColorAttrib(const char* name, int r, int g, int b)
+{
+  if (!iupGlobalDefaultColorChanged(name))
+  {
+    char value[50];
+    sprintf(value, "%3d %3d %3d", r, g, b);
+    iupTableSet(iglobal_table, name, (void*)value, IUPTABLE_STRING);
+  }
+}
+
 void IupSetGlobal(const char *name, const char *value)
 {
   iupASSERT(name!=NULL);
@@ -40,7 +76,7 @@ void IupSetGlobal(const char *name, const char *value)
     return;
   }
 
-  if (iupdrvSetGlobal(name, value))
+  if (iGlobalChangingDefaultColor(name) || iupdrvSetGlobal(name, value))
   {
     if (!value)
       iupTableRemove(iglobal_table, name);
@@ -60,7 +96,7 @@ void IupStoreGlobal(const char *name, const char *value)
     return;
   }
 
-  if (iupdrvSetGlobal(name, value))
+  if (iGlobalChangingDefaultColor(name) || iupdrvSetGlobal(name, value))
   {
     if (!value)
       iupTableRemove(iglobal_table, name);

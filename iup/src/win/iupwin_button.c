@@ -463,7 +463,6 @@ static char* winButtonGetBgColorAttrib(Ihandle* ih)
     return iupBaseNativeParentGetBgColorAttrib(ih);
   else
     return NULL;
-//    return IupGetGlobal("DLGBGCOLOR");
 }
 
 static int winButtonSetFgColorAttrib(Ihandle* ih, const char* value)

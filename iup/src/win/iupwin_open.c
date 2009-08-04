@@ -17,6 +17,7 @@
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
+#include "iup_globalattrib.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_info.h"
@@ -44,6 +45,14 @@ void iupwinShowLastError(void)
     MessageBox(NULL, (LPCTSTR)lpMsgBuf, "GetLastError:", MB_OK|MB_ICONERROR);
     LocalFree(lpMsgBuf);
   }
+}
+
+static void winSetGlobalColor(int index, const char* name)
+{
+  COLORREF color = GetSysColor(index);
+  iupGlobalSetDefaultColorAttrib(name, (int)GetRValue(color), 
+                                       (int)GetGValue(color), 
+                                       (int)GetBValue(color));
 }
 
 int iupdrvOpen(int *argc, char ***argv)
@@ -83,35 +92,13 @@ int iupdrvOpen(int *argc, char ***argv)
 
   IupSetGlobal("SYSTEMLANGUAGE", iupwinGetSystemLanguage());
 
-  /* dialog background color */
-  {
-    COLORREF color;
-
-    color = GetSysColor(COLOR_BTNFACE);
-    IupSetfAttribute(NULL, "DLGBGCOLOR", "%3d %3d %3d", (int)GetRValue(color), 
-                                                        (int)GetGValue(color), 
-                                                        (int)GetBValue(color));
-    color = GetSysColor(COLOR_BTNTEXT);
-    IupSetfAttribute(NULL, "DLGFGCOLOR", "%3d %3d %3d", (int)GetRValue(color), 
-                                                        (int)GetGValue(color), 
-                                                        (int)GetBValue(color));
-    color = GetSysColor(COLOR_WINDOW);
-    IupSetfAttribute(NULL, "TXTBGCOLOR", "%3d %3d %3d", (int)GetRValue(color), 
-                                                        (int)GetGValue(color), 
-                                                        (int)GetBValue(color));
-    color = GetSysColor(COLOR_WINDOWTEXT);
-    IupSetfAttribute(NULL, "TXTFGCOLOR", "%3d %3d %3d", (int)GetRValue(color), 
-                                                        (int)GetGValue(color), 
-                                                        (int)GetBValue(color));
-    color = GetSysColor(COLOR_MENU);
-    IupSetfAttribute(NULL, "MENUBGCOLOR", "%3d %3d %3d", (int)GetRValue(color), 
-                                                         (int)GetGValue(color), 
-                                                         (int)GetBValue(color));
-    color = GetSysColor(COLOR_MENUTEXT);
-    IupSetfAttribute(NULL, "MENUFGCOLOR", "%3d %3d %3d", (int)GetRValue(color), 
-                                                         (int)GetGValue(color), 
-                                                         (int)GetBValue(color));
-  }
+  /* default colors */
+  winSetGlobalColor(COLOR_BTNFACE, "DLGBGCOLOR");
+  winSetGlobalColor(COLOR_BTNTEXT, "DLGFGCOLOR");
+  winSetGlobalColor(COLOR_WINDOW,     "TXTBGCOLOR");
+  winSetGlobalColor(COLOR_WINDOWTEXT, "TXTFGCOLOR");
+  winSetGlobalColor(COLOR_MENU,     "MENUBGCOLOR");
+  winSetGlobalColor(COLOR_MENUTEXT, "MENUFGCOLOR");
 
   iupwinHandleInit();
   iupwinBrushInit();

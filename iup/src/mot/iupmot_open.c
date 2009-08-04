@@ -16,6 +16,7 @@
 #include "iup_object.h"
 #include "iup_str.h"
 #include "iup_drv.h"
+#include "iup_globalattrib.h"
 
 #include "iupmot_drv.h"
 #include "iupmot_color.h"
@@ -41,7 +42,7 @@ void iupmotSetGlobalColorAttrib(Widget w, const char* xmname, const char* name)
   XtVaGetValues(w, xmname, &color, NULL);
   iupmotColorGetRGB(color, &r, &g, &b);
 
-  IupSetfAttribute(NULL, name, "%3d %3d %3d", (int)r, (int)g, (int)b);
+  iupGlobalSetDefaultColorAttrib(name, r, g, b);
 }
 
 int iupdrvOpen(int *argc, char ***argv)
@@ -113,12 +114,12 @@ int iupdrvOpen(int *argc, char ***argv)
   /* dialog background color */
   {
     iupmotSetGlobalColorAttrib(iupmot_appshell, XmNbackground, "DLGBGCOLOR");
-    IupSetfAttribute(NULL, "DLGFGCOLOR", "%3d %3d %3d", 0, 0, 0);
-    IupSetfAttribute(NULL, "TXTBGCOLOR", "%3d %3d %3d", 255, 255, 255);
-    IupSetfAttribute(NULL, "TXTFGCOLOR", "%3d %3d %3d", 0, 0, 0);
+    iupGlobalSetDefaultColorAttrib("DLGFGCOLOR", 0, 0, 0);
+    IupSetGlobal("_IUP_RESET_DLGBGCOLOR", "YES");  /* will update the DLGFGCOLOR when the first dialog is mapped */
 
-    IupSetGlobal("_IUP_SET_DLGCOLORS", "YES");
-    IupSetGlobal("_IUP_SET_TXTCOLORS", "YES");
+    iupGlobalSetDefaultColorAttrib("TXTBGCOLOR", 255, 255, 255);
+    iupGlobalSetDefaultColorAttrib("TXTFGCOLOR", 0, 0, 0);
+    IupSetGlobal("_IUP_RESET_TXTCOLORS", "YES");   /* will update the TXTCOLORS when the first text or list is mapped */
   }
 
   if (getenv("IUP_DEBUG"))

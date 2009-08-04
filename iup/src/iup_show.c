@@ -76,7 +76,7 @@ static void iShowUpdateVisible(Ihandle* ih)
 {
   int inherit;
   /* although default is VISIBLE=YES, 
-     when mapped the element is hidden. 
+     when mapped the element is still hidden. 
      So we must manually update the visible state. */
   char* value = iShowGetVisible(ih);
   iupClassObjectSetAttribute(ih, "VISIBLE", value, &inherit);

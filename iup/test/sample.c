@@ -142,7 +142,7 @@ void SampleTest(void)
 {
   Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, 
     *_frm_1, *_frm_2, *_frm_3, *_frm_4, *_frm_5, *pbar, *val, *tabs,
-    *_list_1, *_list_2, *_list_3, *_text_1, *_ml_1;
+    *_list_1, *_list_2, *_list_3, *_text_1, *_ml_1, *tree;
 
   //img = IupImage(32,32, img_bits1);
   //IupSetHandle ("img1", img); 
@@ -203,11 +203,13 @@ void SampleTest(void)
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");
   IupSetAttribute(_text_1,"SIZE","80x");
+  IupSetAttribute(_text_1,"ALIGNMENT","ACENTER");
 
   _ml_1 = IupMultiLine( NULL);
   IupSetAttribute(_ml_1,"VALUE","Multiline Text\nSecond Line\nThird Line");
   IupSetAttribute(_ml_1,"EXPAND","YES");
   IupSetAttribute(_ml_1,"SIZE","80x40");
+  IupSetAttribute(_ml_1,"ALIGNMENT","ACENTER");
 
   _frm_4 = IupFrame(IupVbox(
     _text_1,
@@ -266,9 +268,13 @@ void SampleTest(void)
   IupSetAttribute(tabs,"RASTERSIZE","300x50");
 //  IupSetAttribute(tabs,"PADDING","5x5");
 
+  tree = IupTree();
+  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+  IupSetAttribute(tree,"RASTERSIZE","100x150");
+
   _cnv_1 = IupCanvas(NULL);
   IupSetAttribute(_cnv_1,"BGCOLOR","128 255 0");
-  IupSetAttribute(_cnv_1,"SCROLLBAR","HORIZONTAL");
+  IupSetAttribute(_cnv_1,"SCROLLBAR","YES");
   IupSetAttribute(_cnv_1,"EXPAND","HORIZONTAL");
   IupSetAttribute(_cnv_1,"RASTERSIZE","x100");
 
@@ -278,7 +284,9 @@ void SampleTest(void)
             IupSetAttributes(IupFrame(IupHbox(pbar, NULL)), "TITLE=IupProgressBar"),
             IupSetAttributes(IupFrame(IupHbox(tabs, NULL)), "TITLE=IupTabs"),
             NULL),
-    IupSetAttributes(IupFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
+    IupHbox(IupSetAttributes(IupFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
+            IupSetAttributes(IupFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
+            NULL),
     NULL);
   IupSetAttribute(_vbox_1,"MARGIN","5x5");
   IupSetAttribute(_vbox_1,"GAP","5");
@@ -294,10 +302,23 @@ void SampleTest(void)
 //  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
 
+  //IupSetGlobal("DLGBGCOLOR", "92 92 255");
+  //IupSetGlobal("TXTFGCOLOR", "255 92 92");
+  //IupSetGlobal("TXTBGCOLOR", "92 92 255");
+
 //  IupSetAttribute(dlg, "FONT", "Helvetica, 24");
 //  IupSetAttribute(dlg, "FONT", "-*-helvetica-*-r-*-*-18-*-*-*-*-*-*-*");
   
 //  IupSetAttribute(box, "FGCOLOR", "255 0 0");
+
+  IupMap(dlg);
+
+  IupSetAttribute(tree, "TITLE0",         "Figures");  
+  IupSetAttribute(tree, "ADDLEAF0",      "Other");     /* new id=1 */
+  IupSetAttribute(tree, "ADDBRANCH1",   "triangle");  /* new id=2 */     
+  IupSetAttribute(tree, "ADDLEAF2",     "equilateral");  /* ... */
+  IupSetAttribute(tree, "ADDLEAF3",     "isoceles");
+  IupSetAttribute(tree, "ADDLEAF4",     "scalenus");
 
   IupShow(dlg);
 }

@@ -1096,11 +1096,11 @@ static int motTextMapMethod(Ihandle* ih)
   else
     XtRealizeWidget(ih->handle);
 
-  if (IupGetGlobal("_IUP_SET_TXTCOLORS"))
+  if (IupGetGlobal("_IUP_RESET_TXTCOLORS"))
   {
     iupmotSetGlobalColorAttrib(ih->handle, XmNbackground, "TXTBGCOLOR");
     iupmotSetGlobalColorAttrib(ih->handle, XmNforeground, "TXTFGCOLOR");
-    IupSetGlobal("_IUP_SET_TXTCOLORS", NULL);
+    IupSetGlobal("_IUP_RESET_TXTCOLORS", NULL);
   }
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)motTextConvertXYToPos);

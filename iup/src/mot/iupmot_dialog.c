@@ -666,11 +666,11 @@ static int motDialogMapMethod(Ihandle* ih)
   /* Ignore VISIBLE before mapping */
   iupAttribSetStr(ih, "VISIBLE", NULL);
 
-  if (IupGetGlobal("_IUP_SET_DLGCOLORS"))
+  if (IupGetGlobal("_IUP_RESET_DLGBGCOLOR"))
   {
     iupmotSetGlobalColorAttrib(dialog_manager, XmNbackground, "DLGBGCOLOR");
     iupmotSetGlobalColorAttrib(dialog_manager, XmNforeground, "DLGFGCOLOR");
-    IupSetGlobal("_IUP_SET_DLGCOLORS", NULL);
+    IupSetGlobal("_IUP_RESET_DLGBGCOLOR", NULL);
   }
 
   return IUP_NOERROR;

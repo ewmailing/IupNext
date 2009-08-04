@@ -415,7 +415,7 @@ static void init_tree_nodes(void)
 {
   Ihandle* tree = IupGetHandle("tree");
 
-#if 1
+#if 0
   /* create from bottom to top */
   /* the current node is the ROOT */
   //IupSetAttribute(tree, "VALUE", "0");

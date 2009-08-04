@@ -16,6 +16,7 @@
 #include "iup_drv.h"
 #include "iup_drvinfo.h"
 #include "iup_object.h"
+#include "iup_globalattrib.h"
 
 #include "iupgtk_drv.h"
 
@@ -114,9 +115,9 @@ static void gtkSetDrvGlobalAttrib(void)
 
 static void gtkSetGlobalColorAttrib(const char* name, GdkColor *color)
 {
-  IupSetfAttribute(NULL, name, "%3d %3d %3d", (int)iupCOLOR16TO8(color->red), 
-                                              (int)iupCOLOR16TO8(color->green), 
-                                              (int)iupCOLOR16TO8(color->blue));
+  iupGlobalSetDefaultColorAttrib(name, (int)iupCOLOR16TO8(color->red), 
+                                       (int)iupCOLOR16TO8(color->green), 
+                                       (int)iupCOLOR16TO8(color->blue));
 }
 
 void iupgtkUpdateGlobalColors(GtkStyle* style)
@@ -157,7 +158,7 @@ int iupdrvOpen(int *argc, char ***argv)
 
   style = gtk_style_new();
   iupgtkUpdateGlobalColors(style);
-  IupSetGlobal("_IUP_RESET_DLGBGCOLOR", "YES");
+  IupSetGlobal("_IUP_RESET_GLOBALCOLORS", "YES");  /* will update the global colors when the first dialog is mapped */
   g_object_unref(style);
 
   return IUP_NOERROR;

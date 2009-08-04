@@ -18,6 +18,7 @@
 #include "iup_attrib.h"
 #include "iup_assert.h"
 #include "iup_register.h"
+#include "iup_globalattrib.h"
 
 
 typedef struct _IattribFunc
@@ -417,6 +418,11 @@ void IupSetClassDefaultAttribute(const char* classname, const char *name, const 
       afunc->default_value = afunc->system_default;
     else
       afunc->default_value = default_value;
+
+    if (iClassIsGlobalDefault(afunc->default_value))
+      afunc->call_global_default = 1;
+    else
+      afunc->call_global_default = 0;
   }
   else if (default_value)
     iupClassRegisterAttribute(ic, name, NULL, NULL, default_value, NULL, IUPAF_DEFAULT);
@@ -464,7 +470,8 @@ void iupClassObjectEnsureDefaultAttributes(Ihandle* ih)
     if (afunc && afunc->set && (afunc->default_value || afunc->system_default) &&
         (!(afunc->flags & IUPAF_NO_DEFAULTVALUE) || !(afunc->flags & IUPAF_NO_STRING) || !(afunc->flags & IUPAF_HAS_ID)))
     {
-      if (!iupStrEqualNoCase(afunc->default_value, afunc->system_default))
+      if ((!iupStrEqualNoCase(afunc->default_value, afunc->system_default)) || 
+          (afunc->call_global_default && iupGlobalDefaultColorChanged(afunc->default_value)))
       {
         if ((!ih->handle && (afunc->flags & IUPAF_NOT_MAPPED)) ||
             (ih->handle && !(afunc->flags & IUPAF_NOT_MAPPED) && !iupAttribGet(ih, name)))
