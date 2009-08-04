@@ -203,13 +203,13 @@ void SampleTest(void)
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");
   IupSetAttribute(_text_1,"SIZE","80x");
-  IupSetAttribute(_text_1,"ALIGNMENT","ACENTER");
+//  IupSetAttribute(_text_1,"ALIGNMENT","ACENTER");
 
   _ml_1 = IupMultiLine( NULL);
   IupSetAttribute(_ml_1,"VALUE","Multiline Text\nSecond Line\nThird Line");
   IupSetAttribute(_ml_1,"EXPAND","YES");
   IupSetAttribute(_ml_1,"SIZE","80x40");
-  IupSetAttribute(_ml_1,"ALIGNMENT","ACENTER");
+//  IupSetAttribute(_ml_1,"ALIGNMENT","ACENTER");
 
   _frm_4 = IupFrame(IupVbox(
     _text_1,
