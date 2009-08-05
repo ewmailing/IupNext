@@ -19,7 +19,7 @@ static int SaveImage(lua_State *L)
   Ihandle *image = iuplua_checkihandle(L,1);
   const char *filename = luaL_checkstring(L, 2);
   const char *format = luaL_checkstring(L, 3);
-  lua_pushnumber(L, IupSaveImage(image, filename, format));
+  lua_pushboolean(L, IupSaveImage(image, filename, format));
   return 1;
 }
 

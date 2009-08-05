@@ -21,7 +21,7 @@
 
 static int GLIsCurrent(lua_State *L)
 {  
-   lua_pushnumber(L, IupGLIsCurrent(iuplua_checkihandle(L,1)));
+   lua_pushboolean(L, IupGLIsCurrent(iuplua_checkihandle(L,1)));
    return 1;
 }
 

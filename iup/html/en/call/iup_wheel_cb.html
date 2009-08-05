@@ -21,19 +21,9 @@
 <strong>x</strong>, <strong>y</strong>:
   position in the canvas where the event has 
   occurred, in pixels.<br>
-<strong>status</strong>:
-  status of mouse buttons and certain keyboard 
-  keys at the moment the event was generated. The following macros must be used for verification:</p>
-<blockquote>
-<p>iup_isshift(status) <br>
-    iup_iscontrol(status) <br>
-    iup_isbutton1(status) <br>
-    iup_isbutton2(status) <br>
-    iup_isbutton3(status)<br>
-iup_isbutton4(status)<br>
-iup_isbutton5(status)<br>
-</p>
-</blockquote>
+<strong>status</strong>: status of mouse buttons and certain keyboard keys at 
+the moment the event was generated. The same macros used for
+<a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status.</p>
 <h3>Notes</h3>
 <p>In Motif and GTK delta is always 1 or -1. In Windows is some situations delta can reach the value of two. In the future with 
   more precise wheels this increment can be changed.</p>

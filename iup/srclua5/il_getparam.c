@@ -119,7 +119,7 @@ static int GetParam(lua_State *L)
 
   ret = IupGetParamv(title, param_action, user_data, format, param_count, param_extra, param_data);
 
-  lua_pushnumber(L, ret);
+  lua_pushboolean(L, ret);
 
   if (ret)
   {

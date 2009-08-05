@@ -31,7 +31,7 @@
 <dl>
   <dl>
 	<pre>int IupGetParam(const char* <b>title</b>, Iparamcb <b>action</b>, void* <b>user_data</b>, const char* <b>format</b>,...); [in C]
-iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: string,...) -&gt; (<strong>status</strong>: number, ...) [in Lua]</pre>
+iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: string,...) -&gt; (<strong>status</strong>: boolean, ...) [in Lua]</pre>
 	<b>
 	<p>title</b>: dialog title.<br>
 	<b>action:</b> user callback to be called whenever a parameter value was changed, 
@@ -39,7 +39,8 @@ iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: strin
 	<b>user_data</b>: user pointer repassed to the user callback.<br>
 	<b>format</b>: string describing the parameter<br>
     ...: list of variables address with initial values for the parameters. </p>
-	<p><span class="style1">Returns:</span> a <strong>status</strong> code 1 if the OK button is pressed, 0 if the user canceled or if an error occurred. The function 
+	<p><span class="style1">Returns:</span> a <strong>status</strong> code 1 if the OK button is pressed, 0 if the user canceled or if an error occurred.</p>
+	<p>The function 
     will abort if there are errors in the format string as in the number of the expected parameters. 
 	In Lua, the values are returned by the function in the same order they were 
 	passed.</p>

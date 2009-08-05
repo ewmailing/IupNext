@@ -19,6 +19,10 @@ ifdef USE_GTK
   APPNAME = iuplua51gtk
 endif
 
+ifdef USE_MOTIF
+  APPNAME = iuplua51mot
+endif
+
 ifdef DBG
   # Statically link everything only when debugging
   IUP := ..

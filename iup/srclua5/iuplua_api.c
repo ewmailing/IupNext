@@ -452,115 +452,105 @@ static int cf_xCODE(lua_State *L)
 static int cf_isxkey(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
-  lua_pushnumber(L, iup_isXkey(value));
+  lua_pushboolean(L, iup_isXkey(value));
   return 1;
 }
 
 static int cf_isShiftXkey(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
-  lua_pushnumber(L, iup_isShiftXkey(value));
+  lua_pushboolean(L, iup_isShiftXkey(value));
   return 1;
 }
 
 static int cf_isCtrlXkey(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
-  lua_pushnumber(L, iup_isCtrlXkey(value));
+  lua_pushboolean(L, iup_isCtrlXkey(value));
   return 1;
 }
 
 static int cf_isAltXkey(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
-  lua_pushnumber(L, iup_isAltXkey(value));
+  lua_pushboolean(L, iup_isAltXkey(value));
   return 1;
 }
 
 static int cf_isSysXkey(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
-  lua_pushnumber(L, iup_isSysXkey(value));
+  lua_pushboolean(L, iup_isSysXkey(value));
   return 1;
 }
 
 static int cf_isbutton1(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iup_isbutton1(value)) lua_pushnumber(L, 1);
-  else lua_pushnil(L);
+  lua_pushboolean(L, iup_isbutton1(value));
   return 1;
 }
 
 static int cf_isbutton2(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iup_isbutton2(value)) lua_pushnumber(L, 1);
-  else lua_pushnil(L);
+  lua_pushboolean(L, iup_isbutton2(value));
   return 1;
 }
 
 static int cf_isbutton3(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iup_isbutton3(value)) lua_pushnumber(L, 1);
-  else lua_pushnil(L);
+  lua_pushboolean(L, iup_isbutton3(value));
   return 1;
 }
 
 static int cf_isshift(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iup_isshift(value)) lua_pushnumber(L, 1);
-  else lua_pushnil(L);
+  lua_pushboolean(L, iup_isshift(value));
   return 1;
 }
 
 static int cf_iscontrol(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iup_iscontrol(value)) lua_pushnumber(L, 1);
-  else lua_pushnil(L);
+  lua_pushboolean(L, iup_iscontrol(value));
   return 1;
 }
 
 static int cf_isdouble(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iup_isdouble(value)) lua_pushnumber(L, 1);
-  else lua_pushnil(L);
+  lua_pushboolean(L, iup_isdouble(value));
   return 1;
 }
 
 static int cf_isalt(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iup_isalt(value)) lua_pushnumber(L, 1);
-  else lua_pushnil(L);
+  lua_pushboolean(L, iup_isalt(value));
   return 1;
 }
 
 static int cf_issys(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iup_issys(value)) lua_pushnumber(L, 1);
-  else lua_pushnil(L);
+  lua_pushboolean(L, iup_issys(value));
   return 1;
 }
 
 static int cf_isbutton4(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iup_isbutton4(value)) lua_pushnumber(L, 1);
-  else lua_pushnil(L);
+  lua_pushboolean(L, iup_isbutton4(value));
   return 1;
 }
 
 static int cf_isbutton5(lua_State *L)
 {
   const char *value = luaL_checkstring(L, 1);
-  if (iup_isbutton5(value)) lua_pushnumber(L, 1);
-  else lua_pushnil(L);
+  lua_pushboolean(L, iup_isbutton5(value));
   return 1;
 }
 

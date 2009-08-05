@@ -1235,6 +1235,13 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
 
   switch (msg)
   {
+  case WM_CHAR:
+    if (GetKeyState(VK_CONTROL))
+    {
+      /* avoid item search when Ctrl is pressed */
+      *result = 0;
+      return 1;
+    }
   case WM_SETFOCUS:
   case WM_KILLFOCUS:
   case WM_MOUSELEAVE:

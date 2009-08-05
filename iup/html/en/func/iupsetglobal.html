@@ -15,8 +15,8 @@
 Parameters/Return</h3>
 <pre>void IupSetGlobal(const char *<strong>name</strong>, const char *<strong>value</strong>); [in C]
 iup.SetGlobal(<strong>name</strong>: string, <strong>value</strong>: string) [in Lua] </pre>
-<p>name: name of the attribute.<br>
-  value: value of the attribute. If it equals NULL (nil in IupLua), the attribute will be removed.</p>
+<p><strong>name</strong>: name of the attribute.<br>
+  <strong>value</strong>: value of the attribute. If it equals NULL (nil in IupLua), the attribute will be removed.</p>
 <h3>Notes</h3>
 <p>The value stored in the attribute is not 
   duplicated. Therefore, you can store your private attributes, such as a structure of data to be used in a callback.</p>

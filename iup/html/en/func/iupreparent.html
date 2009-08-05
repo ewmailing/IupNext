@@ -9,6 +9,9 @@
 .style1 {
 	font-size: large;
 }
+.style2 {
+	text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -23,7 +26,7 @@ Parameters/Return</h3>
 iup.Reparent(<strong>child, parent</strong>: ihandle) [in Lua]</pre>
 <p><b>child</b>: Identifier of the element to be moved.<br>
 <b>parent</b>: Identifier of the new parent.</p>
-<p>Returns IUP_NOERROR if successfully, IUP_ERROR if failed.</p>
+<p><span class="style2">Returns:</span> IUP_NOERROR if successfully, IUP_ERROR if failed.</p>
 <h3>Notes</h3>
 <p>This function is faster and easier than doing the sequence <b>unmap</b>, <b>
 detach</b>, <b>attach</b> and <b>map</b>.</p>

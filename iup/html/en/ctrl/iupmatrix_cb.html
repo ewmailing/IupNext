@@ -47,8 +47,8 @@ cell does not have a value and the key pressed is not a character.</p>
     button was pressed. They can be -1 if the user click outside the matrix but inside the canvas that contains 
     it.<br>
 <strong>status</strong>: Status of the mouse buttons and some keyboard keys at 
-the moment the event is generated. The same as
-<a href="../call/iup_button_cb.html">BUTTON_CB</a>.</p>
+the moment the event is generated. The same macros used for
+<a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status.</p>
 <p class="info">To avoid the display update return IUP_IGNORE.</p>
 <p><strong><a name="RELEASE_CB">RELEASE_CB</a></strong>:
   Action generated when any mouse button is 
@@ -62,11 +62,9 @@ the moment the event is generated. The same as
     Coordinates of the cell where the mouse 
     button was pressed. They can be -1 if the user click outside the matrix but inside the canvas that contains 
     it.<br>
-<strong>status</strong>:
-    Status of the mouse buttons and some 
-    keyboard keys at the moment the event is generated. The following macros must be used for verification:
-    isshift(r), iscontrol(r), isbutton1(r), isbutton2(r), isbutton3(r), isdouble(r).
-    They return 1 if the respective key or button is pressed, or 0 otherwise.</p>
+<strong>status</strong>: Status of the mouse buttons and some keyboard keys at 
+the moment the event is generated. The same macros used for
+<a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status. </p>
 <p class="info">To avoid the display update return IUP_IGNORE.</p>
 <p><strong><a name="MOUSEMOVE_CB">MOUSEMOVE_CB</a></strong>:
   Action generated to notify the application 

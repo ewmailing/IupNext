@@ -18,20 +18,25 @@
   occurs.</p>
 <h3>Callback</h3>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>c</strong>); [in C]
-<strong>elem</strong>:k_any() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>elem</strong>:k_any(<strong>c</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><strong>ih</strong>:
   identifier of the element that activated the event.<br>
 <strong>c</strong>:
   identifier of typed key. Please refer to the
   <a href="../attrib/key.html">Keyboard Codes</a>
   table for a list of possible values.</p>
-<p><u>Returns</u>: If IUP_IGNORE is returned the key is ignored by the system. IUP_CLOSE will be processed. If returns IUP_CONTINUE, the event will be propagated to the parent of the element receiving it 
-(<span class="style1">IMPORTANT</span>: Dialog 
-  &quot;K_*&quot; callbacks depend on this return value on child control &quot;K_*&quot; callbacks). If returns
-  IUP_DEFAULT the key is processed but it is not propagated.</p>
+<p><u>Returns</u>: If IUP_IGNORE is returned the key is ignored and not 
+processed by the control. If returns IUP_CONTINUE, the key will be processed and the event will be 
+propagated to the parent of the element receiving it, this is the default 
+behavior. If returns
+  IUP_DEFAULT the key is processed but it is not propagated. IUP_CLOSE will be 
+processed. </p>
 <h3>Notes</h3>
 <p>Keyboard callbacks depend on the keyboard usage of the control with the focus. 
-</p>
+So if you return IUP_IGNORE the control will not process the key.</p>
+<p><span class="style1">IMPORTANT</span>: The callbacks &quot;K_*&quot; of the dialog or 
+native containers depend on the IUP_CONTINUE return value to work while the 
+control is in focus.</p>
 <p>If the callback does not exists it is automatically propagated to the parent of the element.</p>
 <h4>K_* callbacks</h4>
 <p>All defined keys are also callbacks of any 

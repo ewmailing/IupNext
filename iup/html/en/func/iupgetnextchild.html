@@ -5,6 +5,11 @@
 <title>IupGetNextChild</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -21,7 +26,8 @@ iup.GetNextChild(<strong>ih, child</strong>: ihandle) -&gt; <strong>next_child</
     Can be NULL if child not NULL.<br>
     <strong>child</strong>: Identifier of the child brother to be used as 
 	reference. 
-	To get the first child use NULL.</div>
+	To get the first child use NULL.<p><span class="style1">Returns:</span> the 
+	handle of the child or NULL.</div>
 <h3>Notes</h3>
 <p>This function will return the children of the control in the exact same order in which they were assigned. 
 If child in not NULL then it returns exactly the same result as

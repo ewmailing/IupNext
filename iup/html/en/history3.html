@@ -41,6 +41,12 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="hist_new">New: </span>
 	NODEREMOVED_CB callback for <strong>IupTree</strong>.</li>
 	<li><span class="hist_new">New: </span>SORT attribute for <strong>IupList</strong>. </li>
+	<li><span class="hist_changed">Changed:</span>
+    return value to boolean of <strong>iup.GLIsCurrent, iup.GetParam, 
+	iup.SaveImage, iup.isshift, iup.iscontrol, iup.isbutton1, iup.isbutton2, 
+	iup.isbutton3, iup.isbutton4, iup.isbutton5, iup.isdouble, iup.issys, 
+	iup.isalt, iup.isSysXkey, iup.isAltXkey, iup.isCtrlXkey, iup.isShiftXkey</strong> 
+	and <strong>iup.isXkey</strong> in Lua.</li>
 	<li><span class="hist_fixed">Fixed:</span> NUMCOL and NUMLIN when set to 0 
 	in <strong>IupMatrix</strong>. Double click in a title cell was entering in edit mode at the 
 	focus cell.</li>
@@ -61,7 +67,7 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="hist_new">New: </span> DEFAULTFONTSIZE global attribute.</li>
 	<li><span class="hist_new">New: </span><strong>IupSetAtt</strong> auxiliar function.</li>
 	<li><span class="hist_changed">Changed:</span>
-    the default alignment for IupButton (Text and Image) and IupToggle (Image) 
+    the default alignment for <strong>IupButton</strong> (Text and Image) and IupToggle (Image) 
 	to &quot;ACENTER:ACENTER&quot;.</li>
 	<li><span class="hist_changed">Changed:</span>
     improved decoration size computation for <strong>IupDialog</strong> in GTK.</li>
