@@ -193,7 +193,6 @@ static int winValProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
       HDC hDC = (HDC)wp;
       GetClientRect(ih->handle, &rect); 
       iupwinDrawParentBackground(ih, hDC, &rect);
-
       /* return non zero value */
       *result = 1;
       return 1;

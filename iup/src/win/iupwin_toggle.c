@@ -609,9 +609,8 @@ static int winToggleMapMethod(Ihandle* ih)
 
       dwStyle |= WS_TABSTOP;
       dwStyle |= WS_GROUP; /* this is specified only for the first toggle in the radio. But necessary. */
-                           /* this affects keyboard navigation in the dialog for the arrow keys */
+                           /* it affects keyboard navigation in the dialog for the arrow keys */
                            /* it will form a group up to the next WS_GROUP. */
-                           /* this can be ignored only if the toggles are inside a frame using BS_GROUPBOX */
     }
   }
   else
@@ -625,8 +624,7 @@ static int winToggleMapMethod(Ihandle* ih)
       dwStyle |= BS_AUTOCHECKBOX;
   }
 
-  /* used WS_EX_TRANSPARENT because RADIO in GROUPBOX showed a black background */
-  if (!iupwinCreateWindowEx(ih, "BUTTON", WS_EX_TRANSPARENT, dwStyle))
+  if (!iupwinCreateWindowEx(ih, "BUTTON", 0, dwStyle))
     return IUP_ERROR;
 
   /* Process WM_COMMAND */

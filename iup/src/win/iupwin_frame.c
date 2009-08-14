@@ -25,6 +25,7 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
+#include "iupwin_info.h"
 
 
 void iupdrvFrameGetDecorOffset(Ihandle* ih, int *x, int *y)
@@ -134,16 +135,20 @@ static int winFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *re
 {
   switch (msg)
   {
-  case WM_ERASEBKGND:
+  case WM_GETDLGCODE:
     {
-      /* just to ignore the internal processing */
-      *result = 1;
+      *result = DLGC_STATIC;  /* same return as GROUPBOX */
       return 1;
     }
   case WM_NCHITTEST:
     {
-      /* to avoid a repaint during mouse move */
-      *result = HTTRANSPARENT;
+      *result = HTTRANSPARENT;  /* same return as GROUPBOX */
+      return 1;
+    }
+  case WM_ERASEBKGND:
+    {
+      /* just to ignore the internal processing */
+      *result = 1;
       return 1;
     }
   }
@@ -155,16 +160,11 @@ static int winFrameMapMethod(Ihandle* ih)
 {
   char *title;
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS|
-                  BS_OWNERDRAW|BS_NOTIFY,   /* NOTIFY is necessary because of the base messages */ 
-      dwExStyle = WS_EX_CONTROLPARENT; 
+                  BS_OWNERDRAW, /* owner draw necessary because BS_GROUPBOX does not work ok */
+      dwExStyle = WS_EX_CONTROLPARENT;  /* enable Tab key navigation for children */
 
   if (!ih->parent)
     return IUP_ERROR;
-
-  /* When using Visual Styles, if a frame is inside another
-     then the title font of the inner frame was wrong.
-     Also when in Vista COMPOSITE=YES is not working,
-     to reduce flicker we implement our own frame with double buffer. */
 
   title = iupAttribGet(ih, "TITLE");
   if (title)

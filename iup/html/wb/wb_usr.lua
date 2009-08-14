@@ -1138,7 +1138,7 @@ wb_usr.tree =
                     },
                     {
                       name= {nl= "WHEEL_CB"},
-                      link= "call/iup_scroll_cb.html"
+                      link= "call/iup_wheel_cb.html"
                     },
                     {
                       name= {nl= "WOM_CB"},
