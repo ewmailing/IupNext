@@ -371,6 +371,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_14");
 //  IupSetAttribute(tree, "FGCOLOR", "255 0 0");
 //  IupSetAttribute(tree, "SPACING",   "10");
+//  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
 
   IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   //IupSetAttribute(tree, "SHOWDRAGDROP", "YES");

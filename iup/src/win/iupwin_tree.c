@@ -2479,6 +2479,8 @@ static int winTreeMapMethod(Ihandle* ih)
       winTreeSetBgColorAttrib(ih, value);
       iupAttribSetStr(ih, "BGCOLOR", NULL);
     }
+    else if (iupwinGetSystemMajorVersion()<6) /* force background in XP because of the editbox background */
+      winTreeSetBgColorAttrib(ih, IupGetGlobal("TXTBGCOLOR"));
   }
 
   /* Initialize the default images */
