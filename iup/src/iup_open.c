@@ -99,21 +99,21 @@ void IupClose(void)
     return;
   iup_opened = 0;
 
-  iupdrvSetIdleFunction(NULL);
+  iupdrvSetIdleFunction(NULL);  /* stop any idle */
 
-  iupDlgListDestroyAll();
-  iupNamesDestroyHandles();
+  iupDlgListDestroyAll();    /* destroy all dialogs */
+  iupNamesDestroyHandles();  /* destroy everything else that have names */
+  iupImageStockFinish();     /* release stock images hash table and the images */
 
-  iupRegisterFinish();  /* must be before everything else, because will release native classes */
+  iupRegisterFinish();  /* release native classes */
 
-  iupdrvFontFinish();
-  iupdrvClose();
+  iupdrvFontFinish();   /* release font cache */
+  iupdrvClose();        /* release native handles and allocated memory */
 
-  iupImageStockFinish();
-  iupGlobalAttribFinish();
-  iupStrMessageFinish();
-  iupFuncFinish();
-  iupNamesFinish();
+  iupGlobalAttribFinish();  /* release global hash table */
+  iupStrMessageFinish();    /* release messages hash table */
+  iupFuncFinish();          /* release callbacks hash table */
+  iupNamesFinish();         /* release names hash table */
 
   iupStrGetMemory(-1); /* Frees internal buffer */
 }
