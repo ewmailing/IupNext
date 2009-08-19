@@ -683,9 +683,8 @@ void iupKeyForEach(void (*func)(char *name, int code, void* user_data), void* us
 
 int iupkey_open(lua_State *L)
 {
-  iuplua_changeEnv(L);
-  iupKeyForEach(register_key, (void*)L);
-  iuplua_returnEnv(L);
+  (void)L;
+  /* does nothing, kept for backward compatibility */
   return 0;
 }
 
@@ -856,6 +855,9 @@ int iuplua_open(lua_State * L)
   iuplua_register_cb(L, "GETFOCUS_CB", (lua_CFunction)getfocus_cb, NULL);
   iuplua_register_cb(L, "K_ANY", (lua_CFunction)k_any, NULL);
   iuplua_register_cb(L, "KILLFOCUS_CB", (lua_CFunction)killfocus_cb, NULL);
+
+  /* Register Keys */
+  iupKeyForEach(register_key, (void*)L);
 
   /* Iup Modules initialization */
   iupbuttonlua_open(L);

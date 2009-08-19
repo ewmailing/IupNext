@@ -6,8 +6,6 @@ require("iuplua")
 require("iupluagl")
 require("luagl")
 
-iup.key_open()
-
 cnv = iup.glcanvas{buffer="DOUBLE", rastersize = "300x300"}
 
 function cnv:action(x, y)

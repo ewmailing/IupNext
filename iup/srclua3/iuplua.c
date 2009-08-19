@@ -393,6 +393,22 @@ int iuplua_dofile(char *filename)
 /***********************************************************************************
 ***********************************************************************************/
 
+static void register_key(char *name, int code, void* user_data)
+{
+  (void)user_data;
+  lua_pushnumber(code); lua_setglobal(name);
+  iuplua_setnamespace(name, name);     /* K_xxx */
+}
+
+int iupkey_open(void)
+{
+  /* does nothing, kept for backward compatibility */
+  return 1;
+}
+
+/***********************************************************************************
+***********************************************************************************/
+
 static void setinfo(void) 
 {
   iuplua_regstring_mask(IUP_COPYRIGHT, "IUP_COPYRIGHT");
@@ -429,6 +445,8 @@ int iuplua_open(void)
   lua_register("iup_settable", iuplua_settable);
   lua_register("iup_index", iuplua_index);
   lua_register("iupSetCallback", iuplua_set_callback);
+
+  iupKeyForEach(register_key, NULL);
 
   iupluaapi_open();
 
@@ -474,18 +492,3 @@ int iuplua_open(void)
   return 1;
 }
 
-/***********************************************************************************
-***********************************************************************************/
-
-static void register_key(char *name, int code, void* user_data)
-{
-  (void)user_data;
-  lua_pushnumber(code); lua_setglobal(name);
-  iuplua_setnamespace(name, name);     /* K_xxx */
-}
-
-int iupkey_open(void)
-{
-  iupKeyForEach(register_key, NULL);
-  return 1;
-}

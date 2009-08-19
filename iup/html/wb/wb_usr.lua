@@ -320,10 +320,6 @@ wb_usr.tree =
               link= "func/iuplua_open.html"
             },
             {
-              name= {nl= "iupkey_open"},
-              link= "func/iupkey_open.html"
-            },
-            {
               name= {nl= "IupVersion"},
               link= "func/iupversion.html"
             },
