@@ -24,14 +24,14 @@
 */
 
 /* iup.IUPTREEREFTABLE[object at pos] = ref */
-static void settableref(lua_State *L, int pos, int ref)
+static void tree_settableref(lua_State *L, int pos, int ref)
 {
   lua_getglobal(L, "iup");
   lua_pushstring(L, "IUPTREEREFTABLE");
   lua_gettable(L, -2);
   lua_remove(L, -2);
   lua_pushvalue(L, pos);
-  if(ref == 0)
+  if(ref == LUA_NOREF)
     lua_pushnil(L);
   else
     lua_pushnumber(L, ref);
@@ -40,23 +40,37 @@ static void settableref(lua_State *L, int pos, int ref)
 }
 
 /* ref = iup.IUPTREEREFTABLE[object at pos] */
-static int gettableref(lua_State *L, int pos)
+static int tree_gettableref(lua_State *L, int pos)
 {
-  int ref = 0;
   lua_getglobal(L, "iup");
   lua_pushstring(L, "IUPTREEREFTABLE");
   lua_gettable(L, -2);
   lua_remove(L, -2);
   lua_pushvalue(L, pos);
   lua_gettable(L, -2);
-  if(lua_isnil(L, -1))
+  if (lua_isnil(L, -1))
   {
     lua_pop(L, 1);
-    return 0;
+    return LUA_NOREF;
   }
-  ref = (int) lua_tonumber(L, -1);
-  lua_pop(L, 1);
-  return ref;
+  else
+  {
+    int ref = (int) lua_tonumber(L, -1);
+    lua_pop(L, 1);
+    return ref;
+  }
+}
+
+static void tree_push_userid(lua_State *L, void* userid)
+{
+  int ref = (int)userid;
+  if (ref == 0) /* userid is actually NULL */
+    lua_pushnil(L);
+  else 
+  {
+    if (ref > 0) ref--; /* only positive references are shifted */
+    lua_getref(L, ref);
+  }
 }
 
 /*****************************************************************************
@@ -65,65 +79,67 @@ static int gettableref(lua_State *L, int pos)
 
 static int TreeGetId(lua_State *L)
 {
-  Ihandle *h = iuplua_checkihandle(L,1);
-  int ref = gettableref(L, 2);
-  if(ref == 0)
-  {
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  int ref = tree_gettableref(L, 2);
+  if (ref == LUA_NOREF)
     lua_pushnil(L);
-  }
   else
   {
-    int id = IupTreeGetId(h, (char*) ref);
-    if(id < 0)
+    int id;
+    if (ref >= 0) ref++;  /* only positive references are shifted */
+    id = IupTreeGetId(ih, (void*)ref);
+    if (id == -1)
       lua_pushnil(L);
     else
-      lua_pushnumber(L,id);
+      lua_pushnumber(L, id);
   }
   return 1;        
 }
 
 static int TreeGetUserId(lua_State *L)
 {  
-  int ref;
-  Ihandle *h = iuplua_checkihandle(L,1);
+  Ihandle *ih = iuplua_checkihandle(L,1);
   int id = (int)luaL_checknumber(L,2);
-  ref = (int) IupTreeGetUserId(h, id) - 1;
-  lua_getref(L, ref);
+  tree_push_userid(L, IupTreeGetUserId(ih, id));
   return 1;
 }
 
 static int TreeSetUserId(lua_State *L)
 {  
-  Ihandle *h = iuplua_checkihandle(L,1);
+  Ihandle *ih = iuplua_checkihandle(L,1);
   int id = (int)luaL_checknumber(L,2);
-  int ref = (int)IupTreeGetUserId(h, id) - 1;
-  if (ref != LUA_NOREF)
+  int ref = (int)IupTreeGetUserId(ih, id);
+  if (ref != 0) /* userid is not NULL */
   {
-    /* always remove old references */
+    if (ref > 0) ref--; /* only positive references are shifted */
+
+    /* release the previous object referenced there */
     lua_getref(L, ref);
-    settableref(L, 4, 0);
+    tree_settableref(L, 4, LUA_NOREF);
     lua_unref(L, ref);
     lua_pop(L, 1);
   }
 
   if (lua_isnil(L, 3))
-    IupTreeSetUserId(h, id, NULL);
+    IupTreeSetUserId(ih, id, NULL);
   else
   {
     /* add a new reference */
     lua_pushvalue(L, 3);
-    ref = lua_ref(L, 1) + 1;
-    settableref(L, 3, ref);
-    IupTreeSetUserId(h, id, (char*)ref);
+    ref = lua_ref(L, 1);
+    tree_settableref(L, 3, ref);
+
+    if (ref >= 0) ref++;  /* only positive references are shifted */
+    IupTreeSetUserId(ih, id, (char*)ref);
   }
 
   return 0;
 }
 
-static int tree_multiselection_cb(Ihandle *self, int* ids, int p1)
+static int tree_multiselection_cb(Ihandle *ih, int* ids, int p1)
 {
   int i;
-  lua_State *L = iuplua_call_start(self, "multiselection_cb");
+  lua_State *L = iuplua_call_start(ih, "multiselection_cb");
   lua_newtable(L);
   for (i = 0; i < p1; i++)
   {
@@ -135,13 +151,11 @@ static int tree_multiselection_cb(Ihandle *self, int* ids, int p1)
   return iuplua_call(L, 2);
 }
 
-static int tree_noderemoved_cb(Ihandle *self, int id, char * p1)
+static int tree_noderemoved_cb(Ihandle *ih, int id, void* p1)
 {
-  int ref;
-  lua_State *L = iuplua_call_start(self, "noderemoved_cb");
+  lua_State *L = iuplua_call_start(ih, "noderemoved_cb");
   lua_pushnumber(L, id);
-  ref = ((int)p1) - 1;
-  lua_getref(L, ref);
+  tree_push_userid(L, p1);
   return iuplua_call(L, 2);
 }
 
