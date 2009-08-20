@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iup", "iup.vcproj", "{2C7E83B9-7FE8-432A-97BA-FCF4D0728408}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupcore", "iupcore.vcproj", "{2C7E83B9-7FE8-432A-97BA-FCF4D0728408}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupgtk", "iupgtk.vcproj", "{2C7E83B9-7FE8-5555-97BA-FCF4D0728408}"
 	ProjectSection(ProjectDependencies) = postProject
