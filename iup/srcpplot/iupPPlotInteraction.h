@@ -12,23 +12,6 @@
 
 #include "iupPPlot.h"
 
-#pragma warning (disable: 4786)
-
-#ifdef __WATCOMC__  /* M.T. - 2006-09-26 - hacked to compile wiht OW ver. 1.5 */
-#include <vector>
-#include <string>
-#include <stack>
-using namespace std;
-#pragma off (unreferenced);
-#else /* not __WATCOMC__ */
-#include <vector>
-using std::vector;
-#include <string>
-using std::string;
-#include <stack>
-using std::stack;
-#endif
-
 class PModifierKeys {
 public:
   enum {

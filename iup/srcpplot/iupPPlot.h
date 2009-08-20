@@ -13,19 +13,15 @@
 
 #pragma warning (disable: 4786)
 
-#ifdef __WATCOMC__  /* M.T. - 2006-09-26 - hacked to compile with OW ver. 1.5 */
+#include <algorithm>
 #include <vector>
 #include <string>
 #include <map>
+#include <stack>
 using namespace std;
+
+#ifdef __WATCOMC__  /* M.T. - 2006-09-26 - hacked to compile with OW ver. 1.5 */
 #pragma off (unreferenced);
-#else /* not __WATCOMC__ */
-#include <vector>
-using std::vector;
-#include <string>
-using std::string;
-#include <map>
-using std::map;
 #endif
 
 /* M.T. - these are text alignment values usable here */
@@ -50,7 +46,8 @@ enum {                          /* text alignment */
 enum PLegendPos {PPLOT_TOPLEFT, PPLOT_TOPRIGHT, PPLOT_BOTTOMLEFT, PPLOT_BOTTOMRIGHT};
 #endif
 
-typedef vector<float> RealPlotData;
+typedef vector<float> RealData;
+typedef vector<string> StringData;
 
 class PStyle {
  public:
@@ -83,7 +80,7 @@ class PlotDataBase {
  public:
    PlotDataBase(): mIsString(false) {};
    virtual ~PlotDataBase ();
-   virtual const RealPlotData * GetRealPlotData () const = 0;
+   virtual const RealData * GetRealPlotData () const = 0;
    virtual const CalculatedDataBase * GetCalculatedData () const {return 0;}
    bool IsString () const {return mIsString;}
    long GetSize () const;
@@ -98,16 +95,16 @@ typedef vector<PlotDataBase *> PlotDataList;
 class PlotDataPointer: public PlotDataBase {
  public:
    PlotDataPointer (const PlotDataBase *inPlotData):mPlotData (inPlotData){};// does not own them
-   virtual const RealPlotData * GetRealPlotData () const {return mPlotData->GetRealPlotData ();};
+   virtual const RealData * GetRealPlotData () const {return mPlotData->GetRealPlotData ();};
    virtual const CalculatedDataBase * GetCalculatedData () const {return mPlotData->GetCalculatedData ();}
  private:
    const PlotDataBase *mPlotData;
 };
 
 // default data class
-class PlotData: public RealPlotData, public PlotDataBase {
+class PlotData: public RealData, public PlotDataBase {
  public:
-   virtual const RealPlotData * GetRealPlotData () const {return this;};
+   virtual const RealData * GetRealPlotData () const {return this;};
 };
 
 class CalculatedData: public CalculatedDataBase {
@@ -127,30 +124,30 @@ class CalculatedPlotData: public PlotDataBase {
    CalculatedPlotData (CalculatedDataBase* inCalculatedData):
                mCalculatedData (inCalculatedData) {}
    ~CalculatedPlotData () {delete mCalculatedData;}
-   virtual const RealPlotData * GetRealPlotData () const {return 0;}
+   virtual const RealData * GetRealPlotData () const {return 0;}
    virtual const CalculatedDataBase * GetCalculatedData () const {return mCalculatedData;}
 
    CalculatedDataBase* mCalculatedData;
 };
 
-class DummyData: public PlotDataBase {
+class DummyPlotData: public PlotDataBase {
  public:
-   DummyData (long inSize=0);
-   virtual const RealPlotData * GetRealPlotData () const {return &mRealPlotData;};
+   DummyPlotData (long inSize=0);
+   virtual const RealData * GetRealPlotData () const {return &mRealPlotData;};
  private:
-   RealPlotData mRealPlotData;
+   RealData mRealPlotData;
 };
 
-class StringData: public PlotDataBase {
+class StringPlotData: public PlotDataBase {
  public:
-   StringData() {mIsString = true;}
+   StringPlotData() {mIsString = true;}
    void AddItem (const char *inString);
    void InsertItem (int inIndex, const char *inString);
-   const vector<string> * GetStringData () const {return &mStringData;};
-   virtual const RealPlotData * GetRealPlotData () const {return &mRealPlotData;};
+   const StringData * GetStringData () const {return &mStringPlotData;};
+   virtual const RealData * GetRealPlotData () const {return &mRealPlotData;};
 // private:
-   RealPlotData mRealPlotData;
-   vector<string> mStringData;
+   RealData mRealPlotData;
+   StringData mStringPlotData;
 };
 
 
@@ -498,13 +495,13 @@ class LogTickIterator: public TickIterator {
 class NamedTickIterator: public LinTickIterator {
  public:
    NamedTickIterator (){}
-   void SetStringList (const vector<string> &inStringList) {mStringList = inStringList;};
+   void SetStringList (const StringData &inStringList) {mStringList = inStringList;};
 
    //  virtual bool Init ();
    virtual bool GetNextTick (float &outTick, bool &outIsMajorTick, string &outFormatString);
    bool InitFromRanges (float inParRange, float inOrthoScreenRange, float inDivGuess, TickInfo &outTickInfo) const;
  protected:
-   vector<string> mStringList;
+   StringData mStringList;
 };
 
 class PlotBackground {

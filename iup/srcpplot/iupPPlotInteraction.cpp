@@ -7,12 +7,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "iupPPlotInteraction.h"
-
 #include <stdio.h>
 #include <math.h>
 
-using namespace std;
+#include "iupPPlotInteraction.h"
 
 const float kHitDistance = (float)10.0;//pixels
 
@@ -386,8 +384,8 @@ void PSelectionInteraction::HandlePointwiseInteraction (int inIndex, PlotDataBas
 
 float PSelectionInteraction::CalculateDistanceToPlot (const PlotDataBase *inXData, const PlotDataBase *inYData, long &outNearestPointIndex) {
 
-//  const RealPlotData *theXData = inXData->GetRealPlotData ();
-//  const RealPlotData *theYData = inYData->GetRealPlotData ();
+//  const RealData *theXData = inXData->GetRealPlotData ();
+//  const RealData *theYData = inYData->GetRealPlotData ();
   outNearestPointIndex = -1;
   float theDist = -1;
   for (int theI=0;theI<inXData->GetSize ();theI++) {
@@ -605,9 +603,6 @@ bool PDeleteInteraction::Impl_Calculate (Painter &inPainter, PPlot& inPPlot) {
   return true;
 }
 
-#include <algorithm>
-using namespace std;
-
 #ifdef __WATCOMC__
 // M.T. - can't get it, otherwise... (anybody any clue ???)
 typedef vector<int> vectorOfInt;
@@ -690,10 +685,10 @@ void PDeleteInteraction::HandleDeleteKey (PlotDataBase *inXData, PlotDataBase *i
 
   if (inXData->IsString())
   {
-    StringData *theXData = (StringData*)(inXData);
+    StringPlotData *theXData = (StringPlotData*)(inXData);
     PlotData *theYData = (PlotData*)(inYData);
     Erase (theDeleteList, theXData->mRealPlotData);
-    Erase (theDeleteList, theXData->mStringData);
+    Erase (theDeleteList, theXData->mStringPlotData);
     Erase (theDeleteList, *theYData);
     Erase (theDeleteList, *inPlotDataSelection);
   }

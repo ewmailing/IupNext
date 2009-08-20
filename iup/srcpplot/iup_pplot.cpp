@@ -115,7 +115,7 @@ void IupPPlotBegin(Ihandle* ih, int strXdata)
   if (inYData) delete inYData;
 
   if (strXdata)
-    inXData = (PlotDataBase*)(new StringData());
+    inXData = (PlotDataBase*)(new StringPlotData());
   else
     inXData = (PlotDataBase*)(new PlotData());
 
@@ -157,7 +157,7 @@ void IupPPlotAddStr(Ihandle* ih, const char* x, float y)
       !iupStrEqual(ih->iclass->name, "pplot"))
     return;
 
-  StringData *inXData = (StringData*)iupAttribGet(ih, "_IUP_PPLOT_XDATA");
+  StringPlotData *inXData = (StringPlotData*)iupAttribGet(ih, "_IUP_PPLOT_XDATA");
   PlotData   *inYData = (PlotData*)iupAttribGet(ih, "_IUP_PPLOT_YDATA");
   int strXdata = iupAttribGetInt(ih, "_IUP_PPLOT_STRXDATA");
 
@@ -180,7 +180,7 @@ void IupPPlotInsertStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* 
 
   PlotDataBase* theXDataBase = ih->data->plt->_plot.mPlotDataContainer.GetXData(inIndex);
   PlotDataBase* theYDataBase = ih->data->plt->_plot.mPlotDataContainer.GetYData(inIndex);
-  StringData *theXData = (StringData*)theXDataBase;
+  StringPlotData *theXData = (StringPlotData*)theXDataBase;
   PlotData   *theYData = (PlotData*)theYDataBase;
   if (!theYData || !theXData)
     return;
@@ -455,7 +455,7 @@ void PEditInteractionIup::HandleCursorKey (const PlotDataSelection *inPlotDataSe
 
       if (inXData->IsString())
       {
-        StringData *theXData = (StringData*)(inXData);
+        StringPlotData *theXData = (StringPlotData*)(inXData);
         PlotData* theYData = (PlotData*)(inYData);
         theXData->mRealPlotData[theI] = newX;
         (*theYData)[theI] = newY;
@@ -577,10 +577,10 @@ static void RemoveSample(PPlot& inPPlot, int inIndex, int inSampleIndex)
 
   if (theXDataBase->IsString())
   {
-    StringData *theXData = (StringData *)theXDataBase;
+    StringPlotData *theXData = (StringPlotData *)theXDataBase;
     PlotData* theYData = (PlotData*)theYDataBase;
     theXData->mRealPlotData.erase(theXData->mRealPlotData.begin()+inSampleIndex);
-    theXData->mStringData.erase(theXData->mStringData.begin()+inSampleIndex);
+    theXData->mStringPlotData.erase(theXData->mStringPlotData.begin()+inSampleIndex);
     theYData->erase(theYData->begin()+inSampleIndex);
   }
   else

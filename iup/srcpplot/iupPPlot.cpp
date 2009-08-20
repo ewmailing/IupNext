@@ -12,13 +12,11 @@
 #pragma warning(disable: 4512)
 #endif
 
-#include "iupPPlot.h"
-
-#include <algorithm>
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
-using namespace std;
+
+#include "iupPPlot.h"
 
 const float kFloatSmall = 1e-20f;
 const float kLogMin = 1e-10f;// min argument for log10 function
@@ -39,9 +37,6 @@ const PMargins kDefaultMargins = PMargins (40,20,5,42);
 
 const float PPlot::kRangeVerySmall = (float)1.0e-3;         // also in ZoomInteraction
 
-template <class T> const T & PMin (const T &a, const T &b) {
-  return b< a ? b: a;
-}
 template <class T> const T & PMax (const T &a, const T &b) {
   return b> a ? b: a;
 }
@@ -81,10 +76,10 @@ float PlotDataBase::GetValue (long inIndex) const {
 }
 
 bool PlotDataBase::CalculateRange (float &outXMin, float &outXMax) {
-  const RealPlotData *theData = GetRealPlotData ();
+  const RealData *theData = GetRealPlotData ();
   if (theData && theData->size () >0) {
-    std::vector<float>::const_iterator imin = std::min_element (theData->begin (), theData->end ());
-    std::vector<float>::const_iterator imax = std::max_element (theData->begin (), theData->end ());
+    vector<float>::const_iterator imin = min_element (theData->begin (), theData->end ());
+    vector<float>::const_iterator imax = max_element (theData->begin (), theData->end ());
     outXMin = *imin;
     outXMax = *imax;
     return true;
@@ -101,21 +96,22 @@ bool PlotDataBase::CalculateRange (float &outXMin, float &outXMax) {
   return false;
 }
 
-DummyData::DummyData (long inSize) {
+DummyPlotData::DummyPlotData (long inSize) {
   for (int theI=0;theI<inSize;theI++) {
     mRealPlotData.push_back (theI);// simple ascending data
   }
 }
 
-void StringData::AddItem (const char *inString) {
-  mStringData.push_back (inString);
-  mRealPlotData.push_back (mStringData.size ()-1);
+void StringPlotData::AddItem (const char *inString) {
+  mStringPlotData.push_back (inString);
+  mRealPlotData.push_back (mStringPlotData.size ()-1);
 }
 
-void StringData::InsertItem (int inIndex, const char *inString) {
-  mStringData.insert(mStringData.begin()+inIndex, inString);
+void StringPlotData::InsertItem (int inIndex, const char *inString) {
+  mStringPlotData.insert(mStringPlotData.begin()+inIndex, inString);
   mRealPlotData.insert(mRealPlotData.begin()+inIndex, (float)inIndex);
 }
+
 
 void LegendData::SetDefaultColor (int inPlotIndex) {
   mColor = GetDefaultColor (inPlotIndex);
@@ -127,7 +123,6 @@ void LegendData::SetDefaultValues (int inPlotIndex) {
   sprintf (theBuf, "plot %d", inPlotIndex);
   mName = theBuf;
 }
-
 
 
 bool PlotDataSelection::IsSelected (long inIndex) const {
@@ -427,7 +422,7 @@ int PlotDataContainer::AddXYPlot (PlotDataBase *inXData, PlotDataBase *inYData, 
   }
   PlotDataBase *theXData = inXData;
   if (!theXData) {
-    theXData = new DummyData (inYData->GetSize ());
+    theXData = new DummyPlotData (inYData->GetSize ());
   }
   mXDataList.push_back (theXData);
   mYDataList.push_back (inYData);
@@ -470,7 +465,7 @@ void PlotDataContainer::SetXYPlot (int inIndex, PlotDataBase *inXData, PlotDataB
     PlotDataBase *theXData = inXData;
 
     if (!theXData) {
-        theXData = new DummyData (inYData->GetRealPlotData ()->size ());
+        theXData = new DummyPlotData (inYData->GetRealPlotData ()->size ());
     }
     LegendData *theLegendData = inLegendData;
     DataDrawerBase *theDataDrawer = inDataDrawer;
@@ -1689,9 +1684,9 @@ static void DrawValue(int theTraX, int theTraY, float theX, float theY, const Pl
   string FormatString;
   if (inXData.IsString())
   {
-    const StringData *theStringXData = (const StringData *)(&inXData);
+    const StringPlotData *theStringXData = (const StringPlotData *)(&inXData);
     FormatString = "(%s, " + inXAxisSetup.mTickInfo.mFormatString + ")";
-    const vector<string>* stdata = theStringXData->GetStringData();
+    const StringData* stdata = theStringXData->GetStringData();
     sprintf (theBuf, FormatString.c_str(), (*stdata)[(int)theX].c_str(), theY);
   }
   else
@@ -1915,7 +1910,7 @@ bool PPlot::ConfigureSelf () {
   else {
     const PlotDataBase *theGlue = mPlotDataContainer.GetConstXData (0);
     if (theGlue->IsString()) {
-      const StringData *theStringXData = (const StringData *)(theGlue);
+      const StringPlotData *theStringXData = (const StringPlotData *)(theGlue);
       mXTickIterator = &mXNamedTickIterator;
       mXNamedTickIterator.SetStringList (*(theStringXData->GetStringData ()));
     }
@@ -1954,10 +1949,10 @@ bool PPlot::ValidateData () {
 
   /* check x data ascending
   for (int theI=0; theI<mPlotDataContainer.GetPlotCount ();theI++) {
-    const RealPlotData *theX = dynamic_cast <const RealPlotData *> (mPlotDataContainer.GetConstXData (theI));
+    const RealData *theX = dynamic_cast <const RealData *> (mPlotDataContainer.GetConstXData (theI));
     if (theX && theX->size ()>0) {
       float thePrev = (*theX)[0];
-      for (RealPlotData::const_iterator theJ=theX->begin ();theJ!=theX->end ();theJ++) {
+      for (RealData::const_iterator theJ=theX->begin ();theJ!=theX->end ();theJ++) {
         float theNext = *theJ;
         if (theNext<thePrev) {
           return false;
@@ -2332,7 +2327,7 @@ void MakeExamplePlot5 (PPlot &ioPPlot) {
   const char * kLables[12] = {"jan","feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
   const float kData[12] = {1,2,3,4,5,6,7,8,9,0,1,2};
 
-  StringData *theX1 = new StringData ();
+  StringPlotData *theX1 = new StringPlotData ();
   PlotData *theY1 = new PlotData ();
   for (int theI=0;theI<12;theI++) {
     theX1->AddItem (kLables[theI]);
