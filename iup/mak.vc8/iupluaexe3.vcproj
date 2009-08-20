@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="iup.lib iupwin.lib comctl32.lib iupcontrols.lib iup_pplot.lib iuplua_pplot3.lib iupgl.lib cd.lib freetype6.lib iupcd.lib iupluagl3.lib iupim.lib iupluaim3.lib iupluacontrols3.lib lua.lib lualib.lib iuplua3.lib opengl32.lib glu32.lib im.lib cdlua3.lib iupluacd3.lib imlua3.lib"
+				AdditionalDependencies="iup.lib comctl32.lib iupcontrols.lib iup_pplot.lib iuplua_pplot3.lib iupgl.lib cd.lib freetype6.lib iupcd.lib iupluagl3.lib iupim.lib iupluaim3.lib iupluacontrols3.lib lua.lib lualib.lib iuplua3.lib opengl32.lib glu32.lib im.lib cdlua3.lib iupluacd3.lib imlua3.lib"
 				OutputFile="$(OutDir)/iuplua3.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

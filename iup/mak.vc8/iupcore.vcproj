@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
-	Name="iup"
+	Version="8,00"
+	Name="iupcore"
 	ProjectGUID="{2C7E83B9-7FE8-432A-97BA-FCF4D0728408}"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\iupcore.lib"
+				OutputFile="$(OutDir)\$(ProjectName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
