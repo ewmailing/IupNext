@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\lib\iupcd.lib"
+				OutputFile="$(OutDir)/$(ProjectName).lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool

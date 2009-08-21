@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/iupluacontrols3.lib"
+				OutputFile="$(OutDir)/$(ProjectName).lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool

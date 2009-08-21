@@ -74,7 +74,7 @@
 				AdditionalLibraryDirectories="..\lib;..\..\cd\lib;d:\lng\SpeechSDK\Lib\i386;D:\LNG\vld\lib"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\bin\$(ProjectName).pdb"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"

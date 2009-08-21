@@ -17,7 +17,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\lib"
-			IntermediateDirectory="..\obj\iupluacd3"
+			IntermediateDirectory="..\obj\Debug\$(ProjectName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -43,11 +43,13 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\include;..\..\lua\include;..\..\cd\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,CD_NO_OLD_INTERFACE,_CRT_SECURE_NO_DEPRECATE"
+				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				PrecompiledHeaderFile=""
-				AssemblerListingLocation="..\obj\iupluacd3/"
-				ObjectFile="..\obj\iupluacd3/"
-				ProgramDataBaseFileName="..\obj\iupluacd3/"
+				AssemblerListingLocation=""
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\vc90.pdb"
+				BrowseInformation="0"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="1"
@@ -64,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\lib\iupluacd3.lib"
+				OutputFile="$(OutDir)/$(ProjectName).lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool

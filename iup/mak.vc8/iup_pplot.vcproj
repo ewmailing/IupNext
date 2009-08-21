@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\lib"
-			IntermediateDirectory="..\obj\$(ProjectName)"
+			IntermediateDirectory="..\obj\Debug\$(ProjectName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\include;..\src;..\srcpplot;..\..\cd\include"
-				PreprocessorDefinitions="WIN32;_CRT_SECURE_NO_DEPRECATE;_IUP_PPLOT_;CD_NO_OLD_INTERFACE;NDEBUG;IUP_ASSERT"
+				PreprocessorDefinitions="WIN32;_CRT_SECURE_NO_DEPRECATE;_IUP_PPLOT_;CD_NO_OLD_INTERFACE;_DEBUG;IUP_ASSERT"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"

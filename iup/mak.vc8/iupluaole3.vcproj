@@ -17,7 +17,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\lib"
-			IntermediateDirectory="..\obj\$(ProjectName)"
+			IntermediateDirectory="..\obj\Debug\$(ProjectName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -43,8 +43,10 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\src;..\include;..\..\lua\include;..\..\cd\include;..\srclua3"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CRT_SECURE_NO_DEPRECATE"
+				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
+				BrowseInformation="0"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="1"
@@ -62,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/iupluaole3.lib"
+				OutputFile="$(OutDir)/$(ProjectName).lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
