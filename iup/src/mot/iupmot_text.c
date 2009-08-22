@@ -692,7 +692,15 @@ static char* motTextGetValueAttrib(Ihandle* ih)
 static void motTextSpinModifyVerifyCallback(Widget w, Ihandle* ih, XmSpinBoxCallbackStruct *cbs)
 {
   IFni cb = (IFni) IupGetCallback(ih, "SPIN_CB");
-  if (cb) cb(ih, cbs->position);
+  if (cb)
+  {
+    int ret = cb(ih, cbs->position);
+    if (ret == IUP_IGNORE)
+    {
+      cbs->doit = 1;
+      return;
+    }
+  }
   (void)w;
 
   iupAttribSetStr(ih, "_IUPMOT_SPIN_DISABLE_TEXT_CB", "1");

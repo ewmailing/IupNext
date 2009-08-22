@@ -1178,6 +1178,7 @@ static gboolean gtkTextSpinOutput(GtkSpinButton *spin, Ihandle* ih)
   }
   else
   {
+    iupAttribSetStr(ih, "_IUPGTK_SPIN_OLDVALUE", gtk_entry_get_text(GTK_ENTRY(ih->handle)));
     iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", "1");
     return FALSE;
   }
@@ -1200,13 +1201,17 @@ static void gtkTextSpinValueChanged(GtkSpinButton* spin, Ihandle* ih)
   cb = (IFni)IupGetCallback(ih, "SPIN_CB");
   if (cb) 
   {
-    int pos;
+    int pos, ret;
     if (iupAttribGet(ih, "_IUPGTK_SPIN_NOAUTO"))
       pos = iupAttribGetInt(ih, "_IUPGTK_SPIN_VALUE");
     else
       pos = gtk_spin_button_get_value_as_int((GtkSpinButton*)ih->handle);
 
-    cb(ih, pos);
+    ret = cb(ih, pos);
+    if (ret == IUP_IGNORE)
+    {
+      /* this is not working: g_signal_stop_emission_by_name(spin, "value_changed"); */
+    }
   }
 
   (void)spin;

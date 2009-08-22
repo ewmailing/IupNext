@@ -1502,7 +1502,15 @@ static int winTextSpinWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     if (pos>=min && pos<=max)
     {
       IFni cb = (IFni) IupGetCallback(ih, "SPIN_CB");
-      if (cb) cb(ih, pos);
+      if (cb) 
+      {
+        int ret = cb(ih, pos);
+        if (ret == IUP_IGNORE)
+        {
+          *result = 1;
+          return 1;
+        }
+      }
     }
   }
   

@@ -20,6 +20,8 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
   case -3:
     printf("IupGetParam - Cancel\n");
     break;
+//  case 1:
+//    return 0;
   default:
     {
       Ihandle* param;

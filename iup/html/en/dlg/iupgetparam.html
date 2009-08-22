@@ -58,9 +58,8 @@ iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: strin
   <p><span class="style1">Returns:</span> You can reject the change or the OK action by returning 0 in the callback, otherwise you must return 1.</p>
   <p>You should not programmatically change the current parameter value during the callback. On the other hand you can 
     freely change the value of other parameters.</p>
-  <p>Use the dialog attribute &quot;PARAMn&quot; to get the parameter &quot;Ihandle*&quot;, but not that this is not the 
-    actual control. Where &quot;n&quot; is the parameter index in the order they are specified starting at 0, but separators are 
-    not counted. Use the parameter attribute &quot;CONTROL&quot; to get the actual control. For example:</p>
+  <p>Use the dialog attribute &quot;PARAMn&quot; to get the parameter &quot;Ihandle*&quot;, where &quot;n&quot; is the parameter index in the order they are specified starting at 0, but separators are 
+    not counted. Notice that this is not the actual control, use the parameter attribute &quot;CONTROL&quot; to get the actual control. For example:</p>
   <pre>Ihandle* param2 = (Ihandle*)IupGetAttribute(dialog, &quot;PARAM2&quot;);
 int value2 = IupGetInt(param2, IUP_VALUE);
 
@@ -95,10 +94,10 @@ if (value2 == 0)
     be used.<br>
     &quot;VALUE&quot; - returns the parameter value as a string, but 
 <strong>IupGetFloat</strong> and <strong>IupGetInt</strong> 
-    can also be used.</p>
+    can also be used. It usually contains the new value of the control while the 
+VALUE attribute of the control still has the old value.</p>
 <p>In Lua, to retreive a parameter you must use the following function:</p>
-<pre>IupGetParamParam(<strong>dialog: </strong>ihandle, <b>param_index</b><strong>: </strong>number)-&gt; (<b>param</b>: ihandle) [in IupLua3]
-iup.GetParamParam(<strong>dialog: </strong>ihandle, <b>param_index</b><strong>: </strong>number)-&gt; (<b>param</b>: ihandle) [in Lua]</pre>
+<pre>iup.GetParamParam(<strong>dialog: </strong>ihandle, <b>param_index</b><strong>: </strong>number)-&gt; (<b>param</b>: ihandle) [in Lua]</pre>
 <p><strong>dialog</strong>:
     Identifier of the 
     dialog. <br>

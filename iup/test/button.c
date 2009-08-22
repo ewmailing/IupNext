@@ -254,7 +254,7 @@ void ButtonTest(void)
   Ihandle *dlg, *button, *label, *image1, *image1i, *image1p, *image2, *image3, 
           *box1, *box2;
 
-  IupImageLibOpen();
+  /* IupImageLibOpen(); */
 
   box1 = IupVbox(NULL);
   IupSetAttribute(box1, "MARGIN", "5x5");

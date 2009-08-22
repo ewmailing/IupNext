@@ -410,7 +410,8 @@ the clipboard.</p>
   
 <p><b>SPIN_CB</b>:
   Action generated when a spin button is pressed. Valid only when SPIN=YES. 
-	(since 3.0)</p>
+	When this callback is called the ACTION callback is not called. 
+The VALUE attribute can be changed during this callback only if SPINAUTO=NO. (since 3.0)</p>
 
   
     
@@ -423,8 +424,9 @@ the clipboard.</p>
 
 	<strong>pos</strong>: the value of the spin (after it was incremented).</p>
 
-<p class="info">When this callback is called the ACTION callback is not called. 
-The VALUE attribute can be changed during this callback if SPINAUTO=NO.</p>
+<p class="info">
+    <u>Returns</u>: IUP_IGNORE is processed in Windows and Motif. It is ignored 
+in GTK.</p>
 
     
 <hr class="style1">
