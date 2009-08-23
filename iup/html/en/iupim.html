@@ -31,7 +31,7 @@ lua functions
 <h3>Load</h3>
 <div>
   <pre>Ihandle* IupLoadImage(const char* <strong>file_name</strong>); [in C]
-iup.LoadImage{<strong>file_name</strong>: string} -&gt; (<strong>elem</strong>: ihandle) [in Lua]</pre>
+iup.LoadImage(<strong>file_name</strong>: string) -&gt; (<strong>elem</strong>: ihandle) [in Lua]</pre>
 </div>
 <p><strong>file_name</strong>:
   Name of the file to be loaded.</p>
@@ -40,7 +40,7 @@ iup.LoadImage{<strong>file_name</strong>: string} -&gt; (<strong>elem</strong>: 
 <h3>Save</h3>
 <div>
   <pre>int IupSaveImage(Ihandle* <b>ih</b>, const char* <strong>file_name, </strong>const char* <strong>format</strong>); [in C]
-iup.SaveImage{<strong>ih</strong>: ihandle<strong>, file_name, format</strong>: string} -&gt; (<b>ret</b>: boolean) [in Lua]</pre>
+iup.SaveImage(<strong>ih</strong>: ihandle<strong>, file_name, format</strong>: string) -&gt; (<b>ret</b>: boolean) [in Lua]</pre>
 </div>
 <p><strong>ih:</strong> handle of the IupImage.<br>
   <strong>file_name</strong>:
