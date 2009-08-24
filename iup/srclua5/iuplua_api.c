@@ -23,6 +23,16 @@
 #include "iup_str.h"
 
 
+static int SaveImageAsText(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  const char *file_name = luaL_checkstring(L, 2);
+  const char *format = luaL_checkstring(L, 3);
+  const char *name = luaL_optstring(L, 4, NULL);
+  lua_pushboolean(L, IupSaveImageAsText(ih, file_name, format, name));
+  return 1;
+}
+
 static int Reparent(lua_State *L)
 {
   lua_pushnumber(L, IupReparent(iuplua_checkihandle(L,1),
@@ -827,6 +837,7 @@ int iupluaapi_open(lua_State * L)
     {"Refresh", Refresh},
     {"Update", Update},
     {"UpdateChildren", UpdateChildren},
+    {"SaveImageAsText", SaveImageAsText},
     {"Redraw", Redraw},
     {"ShowXY", ShowXY},
     {"StoreAttribute", StoreAttribute},

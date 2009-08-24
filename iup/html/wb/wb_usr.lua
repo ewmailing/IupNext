@@ -1392,6 +1392,10 @@ wb_usr.tree =
             {
               name= {nl= "Iup-IM"},
               link= "iupim.html"
+            },
+            {
+              name= {nl= "IupSaveImageAsText"},
+              link= "func/iupsaveimageastext.html"
             }
           }
         },

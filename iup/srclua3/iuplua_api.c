@@ -21,6 +21,15 @@
 #include "iup_globalattrib.h"
 
 
+static void SaveImageAsText(void)
+{
+  Ihandle *ih = iuplua_checkihandle(1);
+  const char *file_name = luaL_check_string(2);
+  const char *format = luaL_check_string(3);
+  const char *name = luaL_opt_string(4, NULL);
+  lua_pushnumber(IupSaveImageAsText(ih, file_name, format, name));
+}
+
 static void Reparent(void)
 {
   lua_pushnumber(IupReparent(iuplua_checkihandle(1),
@@ -680,6 +689,7 @@ int iupluaapi_open(void)
     { "IupAppend", Append },
     { "IupInsert", Insert },
     { "IupReparent", Reparent },
+    { "IupSaveImageAsText", SaveImageAsText },
     { "IupGetNextChild", GetNextChild },
     { "IupGetChildPos", GetChildPos },
     { "IupGetBrother", GetBrother },

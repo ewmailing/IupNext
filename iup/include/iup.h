@@ -199,12 +199,15 @@ Ihandle*  IupSpin       (void);
 Ihandle*  IupSpinbox    (Ihandle* child);
 
 
+/* IupImage utility */
+int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name);
+
 /* IupText utilities */
 void  IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
 void  IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
 
-int   IupConvertXYToPos(Ihandle* ih, int x, int y);  /* works also for list and tree */
-
+/* IupText, IupList and IupTree utility */
+int   IupConvertXYToPos(Ihandle* ih, int x, int y);
 
 /* IupTree utilities */
 int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);

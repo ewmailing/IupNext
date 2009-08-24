@@ -15,7 +15,7 @@
 #include "iupim.h"
 #endif
 
-/* IupImgLin internal function, used only here */
+/* IupImageLib internal function, used only here */
 void iupImageLibLoadAll(void);
 
 static void SaveImageC(const char* file_name, Ihandle* elem, const char* name, FILE *packfile)
@@ -317,11 +317,7 @@ static int showallimages_cb(void)
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
-#if (IUP_VERSION_NUMBER < 300000)
-    char* type = IupGetClassName(elem);
-#else
     char* type = IupGetClassType(elem);
-#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -466,11 +462,7 @@ static int saveallimages_cb(void)
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
-#if (IUP_VERSION_NUMBER < 300000)
-    char* type = IupGetClassName(elem);
-#else
     char* type = IupGetClassType(elem);
-#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -607,11 +599,7 @@ static int saveallimagesone_cb(void)
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
-#if (IUP_VERSION_NUMBER < 300000)
-    char* type = IupGetClassName(elem);
-#else
     char* type = IupGetClassType(elem);
-#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -675,11 +663,7 @@ static int saveimage_cb(Ihandle* self)
   if (name) /* the list may be empty */
   {
     Ihandle* elem = IupGetHandle(name);
-#if (IUP_VERSION_NUMBER < 300000)
-    char* type = IupGetClassName(elem);
-#else
     char* type = IupGetClassType(elem);
-#endif
 
     if (strcmp(type, "image") == 0)
     {
@@ -871,11 +855,7 @@ static int loadimagelib_cb(Ihandle* self)
 {
   mainUpdateInternals();
 
-#if (IUP_VERSION_NUMBER < 300000)
-  IupImageLibOpen();
-#else
   iupImageLibLoadAll();
-#endif  
 
   mainUpdateList(self, "ImageLib");
 
@@ -1099,9 +1079,7 @@ int main (int argc, char **argv)
   IupGLCanvasOpen();
 #endif  
   IupControlsOpen();
-#if (IUP_VERSION_NUMBER >= 300000)
   IupImageLibOpen();
-#endif  
 
   mainUpdateInternals();
 

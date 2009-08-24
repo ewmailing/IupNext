@@ -684,3 +684,277 @@ Iclass* iupImageRGBAGetClass(void)
 {
   return iImageGetClassBase("imagergba", iImageRGBACreateMethod);
 }
+
+static int SaveImageC(const char* file_name, Ihandle* ih, const char* name)
+{
+  int y, x, width, height, channels, linesize;
+  unsigned char* data;
+
+  FILE* file = fopen(file_name, "wb");
+  if (!file)
+    return 0;
+
+  width = IupGetInt(ih, "WIDTH");
+  height = IupGetInt(ih, "HEIGHT");
+  channels = IupGetInt(ih, "CHANNELS");
+  linesize = width*channels;
+
+  data = (unsigned char*)IupGetAttribute(ih, "WID");
+
+  if (fprintf(file, "static Ihandle* load_image_%s(void)\n", name)<0)
+  {
+    fclose(file);
+    return 0;
+  }
+
+  fprintf(file, "{\n");
+  fprintf(file, "  unsigned char imgdata[] = {\n");
+
+  for (y = 0; y < height; y++)
+  {
+    fprintf(file, "    ");
+
+    for (x = 0; x < linesize; x++)
+    {
+      if (x != 0)
+        fprintf(file, ", ");
+
+      fprintf(file, "%d", (int)data[y*linesize+x]);
+    }
+
+    if (y == height-1)
+      fprintf(file, "};\n\n");
+    else
+      fprintf(file, ",\n");
+  }
+
+  if (channels == 1)
+  {
+    int c;
+
+    fprintf(file, "  Ihandle* image = IupImage(%d, %d, imgdata);\n\n", width, height);
+
+    for (c = 0; c < 256; c++)
+    {
+      char str[20];
+      char* color;
+
+      sprintf(str, "%d", c);
+      color = IupGetAttribute(ih, str);
+      if (!color)
+        break;
+
+      fprintf(file, "  IupSetAttribute(image, \"%d\", \"%s\");\n", c, color);
+    }
+
+    fprintf(file, "\n");
+  }
+  else if (channels == 3)
+    fprintf(file, "  Ihandle* image = IupImageRGB(%d, %d, imgdata);\n", width, height);
+  else /* channels == 4 */
+    fprintf(file, "  Ihandle* image = IupImageRGBA(%d, %d, imgdata);\n", width, height);
+
+  fprintf(file, "  return image;\n");
+  fprintf(file, "}\n\n");
+
+  fclose(file);
+  return 1;
+}
+
+static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name)
+{
+  int y, x, width, height, channels, linesize;
+  unsigned char* data;
+
+  FILE* file = fopen(file_name, "wb");
+  if (!file)
+    return 0;
+  
+  width = IupGetInt(ih, "WIDTH");
+  height = IupGetInt(ih, "HEIGHT");
+  channels = IupGetInt(ih, "CHANNELS");
+  linesize = width*channels;
+
+  data = (unsigned char*)IupGetAttribute(ih, "WID");
+
+  if (fprintf(file, "function load_image_%s()\n", name)<0)
+  {
+    fclose(file);
+    return 0;
+  }
+
+  if (channels == 1)
+    fprintf(file, "  %s = iup.image\n", name);
+  else if (channels == 3)
+    fprintf(file, "  %s = iup.imagergb\n", name);
+  else /* channels == 4 */
+    fprintf(file, "  %s = iup.imagergba\n", name);
+
+  fprintf(file, "  {\n");
+
+  for (y = 0; y < height; y++)
+  {
+    fprintf(file, "    {");
+
+    for (x = 0; x < linesize; x++)
+    {
+      fprintf(file, "%d", (int)data[y*linesize+x]);
+
+      if (x != linesize-1)
+        fprintf(file, ", ");
+    }
+
+    if (y == height-1)
+      fprintf(file, "};\n");
+    else
+      fprintf(file, "},\n");
+  }
+
+  if (channels == 1)
+  {
+    int c;
+
+    fprintf(file, "    colors = \n  {\n");
+
+    for(c = 0; c < 256; c++)
+    {
+      unsigned int r, g, b;
+      char str[20];
+      char* color;
+
+      sprintf(str, "%d", c);
+      color = IupGetAttribute(ih, str);
+      if (!color)
+        break;
+
+      if (strcmp(color, "BGCOLOR") == 0)
+        fprintf(file, "    \"BGCOLOR\",\n");
+      else
+      {
+        sscanf(color, "%d %d %d", &r, &g, &b);
+        fprintf(file, "    \"%d %d %d\",\n", r, g, b);
+      }
+    }
+
+    fprintf(file, "    }\n");
+  }
+
+  fprintf(file, "  }\n");
+  fprintf(file, "  return %s\n", name);
+  fprintf(file, "end\n\n");
+
+  fclose(file);
+  return 1;
+}
+
+static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name)
+{
+  int y, x, width, height, channels, linesize;
+  unsigned char* data;
+
+  FILE* file = fopen(file_name, "wb");
+  if (!file)
+    return 0;
+
+  width = IupGetInt(ih, "WIDTH");
+  height = IupGetInt(ih, "HEIGHT");
+  channels = IupGetInt(ih, "CHANNELS");
+  linesize = width*channels;
+
+  data = (unsigned char*)IupGetAttribute(ih, "WID");
+
+  if (channels == 1)
+  {
+    int c;
+
+    if (fprintf(file, "%s = IMAGE\n", name)<0)
+    {
+      fclose(file);
+      return 0;
+    }
+
+    fprintf(file, "[\n");
+    for(c = 0; c < 256; c++)
+    {
+      unsigned int r, g, b;
+      char str[20];
+      char* color;
+
+      sprintf(str, "%d", c);
+      color = IupGetAttribute(ih, str);
+      if (!color)
+      {
+        if (c < 16)
+          continue;
+        else
+          break;
+      }
+
+      if (c != 0)
+        fprintf(file, ",\n");
+
+      if (strcmp(color, "BGCOLOR") == 0)
+        fprintf(file, "  %d = \"BGCOLOR\"", c);
+      else
+      {
+        sscanf(color, "%d %d %d", &r, &g, &b);
+        fprintf(file, "  %d = \"%d %d %d\"", c, r, g, b);
+      }
+    }
+    fprintf(file, "\n]\n");
+  }
+  else if (channels == 3)
+  {
+    if (fprintf(file, "%s = IMAGERGB\n", name)<0)
+    {
+      fclose(file);
+      return 0;
+    }
+  }
+  else /* channels == 4 */
+  {
+    if (fprintf(file, "%s = IMAGERGBA\n", name)<0)
+    {
+      fclose(file);
+      return 0;
+    }
+  }
+
+  fprintf(file, "(%d, %d,\n", width, height);
+
+  for (y = 0; y < height; y++)
+  {
+    fprintf(file, "  ");
+    for (x = 0; x < linesize; x++)
+    {
+      if (y == height-1 && x==linesize-1)
+        fprintf(file, "%d", (int)data[y*linesize+x]);
+      else
+        fprintf(file, "%d, ", (int)data[y*linesize+x]);
+    }
+    fprintf(file, "\n");
+  }
+
+  fprintf(file, ")\n\n");
+
+  fclose(file);
+  return 1;
+}
+
+int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name)
+{
+  int ret = 0;
+  if (!name)
+  {
+    name = IupGetName(ih);
+    if (!name)
+      name = "image";
+  }
+  if (iupStrEqualNoCase(format, "LED") == 0)
+    ret = SaveImageLED(file_name, ih, name);
+  else if (iupStrEqualNoCase(format, "LUA") == 0)
+    ret = SaveImageLua(file_name, ih, name);
+  else if ((iupStrEqualNoCase(format, "C") == 0))
+    ret = SaveImageC(file_name, ih, name);
+  return ret;
+}

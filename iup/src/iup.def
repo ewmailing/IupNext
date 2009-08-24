@@ -142,6 +142,7 @@ IupTree
 IupTreeGetId
 IupTreeGetUserId
 IupTreeSetUserId
+IupSaveImageAsText
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib
