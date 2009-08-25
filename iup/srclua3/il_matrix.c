@@ -45,12 +45,13 @@ static int MATRIX_action (Ihandle *handle, int c, int lin, int col, int active, 
   return iuplua_call();
 }
 
-static int MATRIX_edition (Ihandle *handle, int lin, int col, int modo)
+static int MATRIX_edition (Ihandle *handle, int lin, int col, int modo, int update)
 {
   iuplua_call_start(handle, "edition");
   lua_pushnumber(lin);
   lua_pushnumber(col);
   lua_pushnumber(modo);
+  lua_pushnumber(update);
   return iuplua_call();
 }
 

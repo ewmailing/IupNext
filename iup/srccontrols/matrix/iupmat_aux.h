@@ -28,7 +28,7 @@ int   iupMatrixAuxGetLinColFromXY        (Ihandle* ih, int x, int y, int* l, int
 
 int   iupMatrixAuxCallLeaveCellCb    (Ihandle* ih);
 void  iupMatrixAuxCallEnterCellCb    (Ihandle* ih);
-int   iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode);
+int   iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode, int update);
 
 #ifdef __cplusplus
 }

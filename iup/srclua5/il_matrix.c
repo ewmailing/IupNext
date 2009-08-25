@@ -34,13 +34,14 @@ static int matrix_draw_cb(Ihandle *self, int p0, int p1, int p2, int p3, int p4,
   return iuplua_call(L, 7);
 }
 
-static int matrix_edition_cb(Ihandle *self, int p0, int p1, int p2)
+static int matrix_edition_cb(Ihandle *self, int p0, int p1, int p2, int p3)
 {
   lua_State *L = iuplua_call_start(self, "edition_cb");
   lua_pushnumber(L, p0);
   lua_pushnumber(L, p1);
   lua_pushnumber(L, p2);
-  return iuplua_call(L, 3);
+  lua_pushnumber(L, p3);
+  return iuplua_call(L, 4);
 }
 
 static int matrix_mark_cb(Ihandle *self, int p0, int p1)

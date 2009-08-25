@@ -95,7 +95,7 @@ static void iMatrixEditChooseElement(Ihandle* ih, int lin, int col)
 
 static int iMatrixEditCallEditionCb(Ihandle* ih, int mode, int update)
 {
-  int ret = iupMatrixAuxCallEditionCbLinCol(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, mode);
+  int ret = iupMatrixAuxCallEditionCbLinCol(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, mode, update);
 
   if (update && ret == IUP_DEFAULT && mode == 0)  /* leaving edition mode */
     iupMatrixCellUpdateValue(ih);

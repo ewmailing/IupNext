@@ -464,15 +464,15 @@ void iupMatrixAuxCallEnterCellCb(Ihandle* ih)
     cb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 }
 
-int iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode)
+int iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode, int update)
 {
-  IFniii cb;
+  IFniiii cb;
 
   if (iupAttribGetInt(ih, "READONLY"))
     return IUP_IGNORE;
 
-  cb = (IFniii)IupGetCallback(ih, "EDITION_CB");
+  cb = (IFniiii)IupGetCallback(ih, "EDITION_CB");
   if(cb)
-    return cb(ih, lin, col, mode);
+    return cb(ih, lin, col, mode, update);
   return IUP_DEFAULT;
 }
