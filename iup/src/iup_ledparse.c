@@ -36,7 +36,34 @@ char* IupLoad(const char *filename)
   if (!filename)
     return "invalid file name";
 
-  iparse_error = iupLexStart(filename);
+  iparse_error = iupLexStart(filename, 1);
+  if (iparse_error)
+  {
+    iupLexClose();
+    return iupLexGetError();
+  }
+
+  while (iupLexLookAhead() != IUPLEX_TK_END)
+  {
+    iParseExp();
+    if (iparse_error)
+    {
+      iupLexClose();
+      return iupLexGetError();
+    }
+  }
+
+  iupLexClose();
+  return NULL;
+}
+
+char* IupLoadBuffer(const char *buffer)
+{
+  iupASSERT(buffer!=NULL);
+  if (!buffer)
+    return "invalid buffer";
+
+  iparse_error = iupLexStart(buffer, 0);
   if (iparse_error)
   {
     iupLexClose();

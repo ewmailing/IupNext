@@ -762,13 +762,13 @@ static void winTreeUpdateImages(Ihandle* ih, HTREEITEM hItem, int mode)
   }
 }
 
-static int winTreeGetImageIndex(Ihandle* ih, const char* value)
+static int winTreeGetImageIndex(Ihandle* ih, const char* name)
 {
   HIMAGELIST image_list;
   int count, i;
   Iarray* bmpArray;
   HBITMAP *bmpArrayData;
-  HBITMAP bmp = iupImageGetImage(value, ih, 0);
+  HBITMAP bmp = iupImageGetImage(name, ih, 0);
   if (!bmp)
     return -1;
 
@@ -2552,8 +2552,4 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, winTreeSetMoveNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, winTreeSetCopyNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FINDUSERDATA", winTreeGetFindUserDataAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-
-  if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
-    iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
-

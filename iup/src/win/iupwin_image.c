@@ -178,7 +178,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   return hBitmap;
 }
 
-static HBITMAP winImageCreateBitmask(Ihandle *ih)
+static HBITMAP winImageCreateBitmask(Ihandle *ih, int invert)
 {
   int y, x, mask_line_size,data_line_size, colors_count, set,
       width = ih->currentwidth,
@@ -193,7 +193,7 @@ static HBITMAP winImageCreateBitmask(Ihandle *ih)
   if (bpp == 8)
     iupImageInitColorTable(ih, colors, &colors_count);
 
-  mask_line_size = ((width * 1 + 15) / 16) * 2;      /* WORD aligned, 2 bytes boundary in a 1 bpp image */
+  mask_line_size = ((width + 15) / 16) * 2;      /* WORD aligned, 2 bytes boundary in a 1 bpp image */
   data_line_size = width*channels;
 
   bitmask = malloc(height * mask_line_size);
@@ -229,6 +229,13 @@ static HBITMAP winImageCreateBitmask(Ihandle *ih)
     imgdata += data_line_size;
   }
 
+  if (invert)
+  {
+    int k, size = height * mask_line_size;
+    for (k = 0; k < size; k++)
+      bitmask[k] = ~bitmask[k];
+  }
+  
   hBitmap = CreateBitmap(width, height, 1, 1, bitmask);
   free(bitmask);
   return hBitmap;
@@ -260,13 +267,17 @@ static HICON winImageCreateIcon(Ihandle *ih, int is_cursor)
    
   hBitmap = iupdrvImageCreateImage(ih, NULL, 0);
   if (!hBitmap) 
+  {
+    if (color0) free(color0);
     return NULL;
+  }
 
   /* Transparency mask */
-  hBitmapMask = winImageCreateBitmask(ih);
+  hBitmapMask = winImageCreateBitmask(ih, 0);
   if (!hBitmapMask)
   {
     DeleteObject(hBitmap);
+    if (color0) free(color0);
     return NULL;
   }
  
@@ -312,7 +323,10 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
 
 void* iupdrvImageCreateMask(Ihandle *ih)
 {
-  return (void*)winImageCreateBitmask(ih);
+  int invert = 1;
+  if (!ih) return NULL;
+  if (iupAttribGet(ih, "_IUPIMG_NO_INVERT")) invert = 0;
+  return (void*)winImageCreateBitmask(ih, invert);
 }
 
 void* iupdrvImageLoad(const char* name, int type)

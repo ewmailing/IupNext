@@ -132,8 +132,8 @@ imagergba(<strong>width</strong>, <strong>height</strong>, <strong>pixel0</stron
   16x16 
   or smaller.</p>
 
-<p>Images created with the <b>IupImage</b>* constructors can be reused for different 
-buttons and labels.</p>
+<p>Images created with the <b>IupImage</b>* constructors can be reused in different 
+elements.</p>
   <p>
   The images should be destroyed when they are 
   no longer necessary, by means of the 
@@ -168,13 +168,18 @@ IupSetAttribute(label, &quot;IMAGE&quot;, &quot;gtk-open&quot;);  // available i
 (since 3.0). But the available file formats supported are system dependent. The 
 Windows driver supports BMP, ICO and CUR. The GTK driver supports the formats 
 supported by the GDK-PixBuf library, such as BMP, GIF, JPEG, PCX, PNG, TIFF and 
-many others. For example:</p>
+many others. The Motif driver supports the X-Windows bitmap. For example:</p>
 <pre>IupSetAttribute(label, &quot;IMAGE&quot;, &quot;../etc/tecgraf.bmp&quot;);</pre>
 <h4>Colors</h4>
   <p>
-  In Windows and Motif, the alpha channel in RGBA images is composed with the 
-  BGCOLOR when the image is used in a control. The images are mapped to 24bpp. 
-  In GTK the alpha channel is composited internally by GDK.</p>
+  In Motif, the alpha channel in RGBA images is composed with the 
+  control BGCOLOR by IUP prior to setting the image at the control. In Windows 
+	and in GTK, the alpha channel is composed internally by the system. But in 
+	Windows for some controls the alpha must be composed prior also, it 
+	includes: <strong>IupItem</strong> and <strong>IupSubmenu</strong> always; 
+	and <strong>IupToggle</strong> when NOT using Visual Styles. This implies 
+	that if the control background is not uniform then probably there will be a 
+	visible difference where it should be transparent.</p>
   <p>For <b>IupImage</b>, if a color is not set, then it is used a default color for the 
   16 first colors. The default color table is the same for 
   Windows, GTK and Motif:</p>
@@ -197,10 +202,10 @@ many others. For example:</p>
 15 = 255,255,255 (white)
 </pre>
   
-  <p>For images with more than 16 colors, and up to 256 colors, all the color indices must be defined up to the maximum number of colors. For 
-  example, if the biggest image index is 100, then all the colors from i=16 up to i=100 must be defined even if some 
-  indices are not used. Note that to use more than 128 colors you must use an &quot;unsigned char*&quot; pointer and simply cast 
-  it to &quot;char*&quot; when calling the IupImage function.</p>
+  <p>For images with more than 16 colors, and up to 256 colors, all the color 
+	indices must be defined up to the maximum number of colors. For example, if 
+	the biggest image index is 100, then all the colors from i=16 up to i=100 
+	must be defined even if some indices are not used.</p>
   
   <h4>Samples</h4>
   <p>You can obtain several images from the <a href="../iupimglib.html">

@@ -42,6 +42,9 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	NODEREMOVED_CB callback for <strong>IupTree</strong>.</li>
 	<li><span class="hist_new">New: </span>SORT attribute for <strong>IupList</strong>.</li>
 	<li><span class="hist_new">New: </span>function  <strong>IupSaveImageAsText</strong>.</li>
+	<li><span class="hist_new">New: </span>function  <strong>IupLoadBuffer</strong>.</li>
+	<li><span class="hist_new">New: </span>parameter in the EDITION_CB callback 
+	of <strong>IupMatrix</strong> to indicate if the value will be updated. </li>
 	<li><span class="hist_changed">Changed:</span>
     now the <strong>iup.image</strong> constructor also accepts parameters in 
 	the same format as <strong>iup.imagergb</strong> and <strong>iup.imagergba</strong>.</li>
@@ -54,6 +57,8 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="hist_changed">Changed:</span>
     the function <strong>iup.key_open</strong> is now obsolete and not necessary 
 	anymore. </li>
+	<li><span class="hist_changed">Changed:</span>
+    improved transparency for 8bpp images in Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> NUMCOL and NUMLIN when set to 0 
 	in <strong>IupMatrix</strong>. Double click in a title cell was entering in edit mode at the 
 	focus cell.</li>

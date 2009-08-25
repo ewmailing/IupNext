@@ -244,18 +244,20 @@ font. </p>
 <p><strong><a name="EDITION_CB">EDITION_CB</a></strong>:
   Action generated when the current cell 
   enters or leaves the edition mode. Not called if READONLY=YES.</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>mode</strong>);  [in C]
-<strong>elem</strong>:edition_cb(<strong>lin, col</strong>, <strong>mode</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>mode, </strong>int <strong>update</strong>);  [in C]
+<strong>elem</strong>:edition_cb(<strong>lin, col</strong>, <strong>mode, update</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
     lin, <strong>col</strong>:
     Coordinates of the current cell.<br>
 <strong>mode</strong>:
-    1 if the cell has entered the edition mode, or 0 if the cell has left the edition mode.</p>
-<p class="info">When mode=1 editing is allowed if the callback returns 
+    1 if the cell has entered the edition mode, or 0 if the cell has left the edition mode.<br>
+<strong>update</strong>: used when mode=0 to identify if the value will be 
+updated whe the callback returns with IUP_DEFAULT.</p>
+<p class="info">When <strong>mode</strong>=1 editing is allowed if the callback returns 
 IUP_DEFAULT, so to make the cell read-only return IUP_IGNORE.</p>
-<p class="info">When mode=0 the new value is accepted only if the callback returns
+<p class="info">When <strong>mode</strong>=0 the new value is accepted only if the callback returns
     IUP_DEFAULT. The VALUE attribute returns the new value that will be updated 
 in the cell. If 
 the callback returns IUP_CONTINUE the edit mode is ended and the 
@@ -267,8 +269,9 @@ editing is not ended. </p>
 and it is always accepted.</p>
 <p class="info">If the control loses its focus the edition mode will be 
     ended always even if the callback return
-    IUP_IGNORE.</p>
-<p class="info">This callback is also called if the user cancel the editing with <b>Esc,</b> and when the user press 
+    IUP_IGNORE. In this case <strong>update</strong> is 0.</p>
+<p class="info">This callback is also called if the user cancel the editing with <b>Esc</b> 
+(in this case <strong>update</strong> is 0)<b>,</b> and when the user press 
 <b>Del</b> to 
     validate the operation for each cell been cleared (in this case is called only with mode=1).</p>
 <h3>Callback Mode</h3>

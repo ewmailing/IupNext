@@ -338,6 +338,7 @@ void ButtonTest(void)
   image3 = IupImageRGBA(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_32);
 
   button = IupButton(NULL, NULL);
+  IupSetAttribute(button, "TITLE", "Images");
   IupSetAttributeHandle(button, "IMAGE", load_image_FileSave());
   IupAppend(box2, button);
 
@@ -346,12 +347,12 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
 //  IupSetAttribute(button, "IMAGEPOSITION", "BOTTOM");
   IupSetAttribute(button, "PADDING", "5x5");
-  IupSetAttribute(button, "TITLE", "Text1");
+//  IupSetAttribute(button, "TITLE", "Text1");
   IupSetAttribute(button, "FONT", "Helvetica, 14");
 //  IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
   IupSetAttributeHandle(button, "IMAGE", image1);
-  IupSetAttributeHandle(button, "IMINACTIVE", image1i);
-  IupSetAttributeHandle(button, "XXX__IMPRESS", image1p);
+//  IupSetAttributeHandle(button, "IMINACTIVE", image1i);
+//  IupSetAttributeHandle(button, "XXX__IMPRESS", image1p);
   IupSetAttribute(button, "TIP", "Image Label");
   IupSetAttribute(button, "NAME", "button4");
   set_callbacks(button);

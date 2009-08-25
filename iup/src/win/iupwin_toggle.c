@@ -118,7 +118,7 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
       ypad = ih->data->vert_padding + border;
   int horiz_alignment, vert_alignment;
   int x, y, width, height, bpp, shift = 1;
-  HBITMAP hBitmap;
+  HBITMAP hBitmap, hMask = NULL;
   char *name;
   int make_inactive = 0;
 
@@ -171,7 +171,13 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
     y++;
   }
 
-  iupwinDrawBitmap(hDC, hBitmap, x, y, width, height, bpp);
+  if (bpp == 8)
+    hMask = iupdrvImageCreateMask(IupGetHandle(name));
+
+  iupwinDrawBitmap(hDC, hBitmap, hMask, x, y, width, height, bpp);
+
+  if (hMask)
+    DeleteObject(hMask);
 }
 
 static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
@@ -675,6 +681,7 @@ void iupdrvToggleInitClass(Iclass* ic)
   /* IupToggle Windows only */
   iupClassRegisterAttribute(ic, "RIGHTBUTTON", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
+  /* necessary because it uses an old HBITMAP solution when NOT using styles */
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }

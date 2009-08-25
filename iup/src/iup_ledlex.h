@@ -31,7 +31,7 @@ extern "C" {
 #define IUPLEX_PARSEERROR      4
 
 char*   iupLexGetError   (void);
-int     iupLexStart      (const char *filename);
+int     iupLexStart      (const char *filename, int is_file);
 void    iupLexClose      (void);
 int     iupLexLookAhead  (void);
 int     iupLexAdvance    (void);

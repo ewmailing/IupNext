@@ -74,6 +74,7 @@ char*     IupMapFont       (const char *iupfont);
 char*     IupUnMapFont     (const char *driverfont);
 int       IupHelp          (const char* url);
 char*     IupLoad          (const char *filename);
+char*     IupLoadBuffer    (const char *buffer);
 
 char*     IupVersion       (void);
 char*     IupVersionDate   (void);

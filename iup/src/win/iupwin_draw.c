@@ -83,7 +83,7 @@ void iupwinDrawText(HDC hDC, const char* text, int x, int y, int width, int heig
   SetBkMode(hDC, OPAQUE);
 }
 
-void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, int x, int y, int width, int height, int bpp)
+void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, HBITMAP hMask, int x, int y, int width, int height, int bpp)
 {
   HDC hMemDC = CreateCompatibleDC(hDC);
   SelectObject(hMemDC, hBitmap);
@@ -96,14 +96,19 @@ void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, int x, int y, int width, int hei
     blendfunc.SourceConstantAlpha = 0xFF;
     blendfunc.AlphaFormat = AC_SRC_ALPHA;
 
-    winAlphaBlend(hDC,
-                     x, y, width, height, 
-                     hMemDC,
-                     0, 0, width, height, 
-                     blendfunc);
+    winAlphaBlend(hDC, x, y, width, height, 
+                  hMemDC, 0, 0, width, height, 
+                  blendfunc);
   }
+  else if (bpp == 8 && hMask)
+    MaskBlt(hDC, x, y, width, height, 
+            hMemDC, 0, 0, 
+            hMask, 0, 0, MAKEROP4(SRCCOPY, 0xAA0000));
   else
-    BitBlt(hDC, x, y, width, height, hMemDC, 0, 0, SRCCOPY);
+    BitBlt(hDC, x, y, width, height, 
+           hMemDC, 0, 0, 
+           SRCCOPY);
+
 
   DeleteDC(hMemDC);
 }

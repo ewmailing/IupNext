@@ -299,6 +299,14 @@ static int Load(lua_State *L)
   return 1;
 }
 
+static int LoadBuffer(lua_State *L)
+{
+  const char *s = luaL_checkstring(L,1);
+  const char *r = IupLoadBuffer(s);
+  lua_pushstring(L,r);
+  return 1;
+}
+
 static int LoopStep(lua_State *L)
 {
   lua_pushnumber(L,IupLoopStep());
@@ -796,6 +804,7 @@ int iupluaapi_open(lua_State * L)
     {"Help", Help},
     {"Hide", Hide},
     {"Load", Load},
+    {"LoadBuffer", LoadBuffer},
     {"LoopStep", LoopStep},
     {"ExitLoop", ExitLoop},
     {"MainLoop", MainLoop},

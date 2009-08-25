@@ -13,13 +13,17 @@
 </head>
 <body>
 
-<h2>IupLoad</h2>
+<h2>IupLoad and IupLoadBuffer</h2>
 <p>Compiles a LED specification.</p>
 <h3>
 Parameters/Return</h3>
-<pre>char *IupLoad(const char *<strong>name_file</strong>); [in C]
-iup.Load(<strong>name_file</strong>: string) -&gt; <strong>error</strong>: string [in Lua]</pre>
-<p><b>name_file</b>: name of the file containing the LED specification.</p>
+<pre>char *IupLoad(const char *<strong>filename</strong>); [in C]
+iup.Load(<strong>filename</strong>: string) -&gt; <strong>error</strong>: string [in Lua]
+
+char *IupLoadBuffer(const char *<strong>buffer</strong>); [in C] (since 3.0)
+iup.LoadBuffer(<strong>buffer</strong>: string) -&gt; <strong>error</strong>: string [in Lua]</pre>
+<p><strong>filename</strong>: name of the file containing the LED specification.<br>
+<strong>buffer:</strong> string with the LED specification.</p>
 <p><span class="style1">Returns:</span> NULL (nil in Lua) if the file was successfully 
   compiled; otherwise it returns a pointer to a string containing the error message.</p>
 <h3>Notes</h3>

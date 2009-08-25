@@ -35,6 +35,41 @@ static Ihandle* load_image_LogoTecgraf(void)
   return image;
 }
 
+#define TEST_IMAGE_SIZE 16
+
+static Ihandle* load_image_TestImage(void)
+{
+  unsigned char image_data_8 [TEST_IMAGE_SIZE*TEST_IMAGE_SIZE] = 
+  {
+    5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+    5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+    5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+    5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+    5,0,0,0,1,1,1,1,2,2,2,2,0,0,0,5, 
+    5,0,0,0,1,1,1,1,2,2,2,2,0,0,0,5, 
+    5,0,0,0,1,1,1,1,2,2,2,2,0,0,0,5, 
+    5,0,0,0,1,1,1,1,2,2,2,2,0,0,0,5, 
+    5,0,0,0,3,3,3,3,4,4,4,4,0,0,0,5, 
+    5,0,0,0,3,3,3,3,4,4,4,4,0,0,0,5, 
+    5,0,0,0,3,3,3,3,4,4,4,4,0,0,0,5, 
+    5,0,0,0,3,3,3,3,4,4,4,4,0,0,0,5,
+    5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+    5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+    5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+    5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+  };
+
+  Ihandle* image = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8);
+  IupSetAttribute(image, "0", "BGCOLOR");
+  IupSetAttribute(image, "1", "255 0 0"); 
+  IupSetAttribute(image, "2", "0 255 0");
+  IupSetAttribute(image, "3", "0 0 255"); 
+  IupSetAttribute(image, "4", "255 255 255"); 
+  IupSetAttribute(image, "5", "0 0 0"); 
+
+  return image;
+}
+
 static int addleaf(void)
 {
   char attr[50];
@@ -451,6 +486,7 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "COLOR8", "92 92 255");
   IupSetAttribute(tree, "TITLEFONT8", "Courier, 14");
   IupSetAttributeHandle(tree, "IMAGE8", load_image_LogoTecgraf());
+  IupSetAttributeHandle(tree, "IMAGE7", load_image_TestImage());
   IupSetAttribute(tree, "IMAGE6", IupGetAttribute(tree, "IMAGE8"));
 }
 

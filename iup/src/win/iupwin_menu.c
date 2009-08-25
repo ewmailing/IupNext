@@ -596,7 +596,8 @@ void iupdrvItemInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "IMAGE", NULL, winItemSetImageAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMPRESS", NULL, winItemSetImpressAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
-  /* IupItem Windows only */
+  /* Used by iupdrvImageCreateImage */
+  /* necessary because it uses an old HBITMAP solution */
   iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
 
@@ -624,6 +625,9 @@ void iupdrvSubmenuInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TITLE", NULL, winItemSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGE", NULL, winItemSetImageAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "MENUBGCOLOR", IUPAF_DEFAULT);  /* used by IupImage */
+
+  /* Used by iupdrvImageCreateImage */
+  /* necessary because it uses an old HBITMAP solution */
   iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
 

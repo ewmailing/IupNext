@@ -70,13 +70,13 @@ int iupdrvTabsGetCurrentTab(Ihandle* ih)
   return (int)SendMessage(ih->handle, TCM_GETCURSEL, 0, 0);
 }
 
-static int winTabsGetImageIndex(Ihandle* ih, const char* value)
+static int winTabsGetImageIndex(Ihandle* ih, const char* name)
 {
   HIMAGELIST image_list;
-  int count, i;
+  int count, i, bpp, ret;
   Iarray* bmp_array;
-  HBITMAP *bmp_array_data;
-  HBITMAP bmp = iupImageGetImage(value, ih, 0);
+  HBITMAP *bmp_array_data, hMask=NULL;
+  HBITMAP bmp = iupImageGetImage(name, ih, 0);
   if (!bmp)
     return -1;
 
@@ -95,14 +95,20 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* value)
   if (!image_list)
   {
     int width, height;
+    UINT flags = ILC_COLOR32;
 
     /* must use this info, since image can be a driver image loaded from resources */
-    iupdrvImageGetInfo(bmp, &width, &height, NULL);
+    iupdrvImageGetInfo(bmp, &width, &height, &bpp);
+
+    //if (bpp == 8 && IupGetHandle(name))
+      flags |= ILC_MASK;
 
     /* create the image list if does not exist */
-    image_list = ImageList_Create(width, height, ILC_COLOR32, 0, 50);
+    image_list = ImageList_Create(width, height, flags, 0, 50);
     SendMessage(ih->handle, TCM_SETIMAGELIST, 0, (LPARAM)image_list);
   }
+  else
+    iupdrvImageGetInfo(bmp, NULL, NULL, &bpp);
 
   /* check if that bitmap is already added to the list,
      but we can not compare with the actual bitmap at the list since it is a copy */
@@ -113,9 +119,22 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* value)
       return i;
   }
 
+  if (bpp == 8)
+  {
+    Ihandle* image = IupGetHandle(name);
+    if (image)
+    {
+      iupAttribSetStr(image, "_IUPIMG_NO_INVERT", "1");
+      hMask = iupdrvImageCreateMask(image);
+      iupAttribSetStr(image, "_IUPIMG_NO_INVERT", NULL);
+    }
+  }
+
   bmp_array_data = iupArrayInc(bmp_array);
   bmp_array_data[i] = bmp;
-  return ImageList_Add(image_list, bmp, NULL);  /* the bmp is duplicated at the list */
+  ret = ImageList_Add(image_list, bmp, hMask);  /* the bmp is duplicated at the list */
+  DeleteObject(hMask);
+  return ret;
 }
 
 static int winTabsGetPageWindowPos(Ihandle* ih, HWND tab_page)
@@ -661,7 +680,4 @@ void iupdrvTabsInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "TABTITLE", NULL, winTabsSetTabTitleAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, winTabsSetTabImageAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, winTabsSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
-
-  if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
-    iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }

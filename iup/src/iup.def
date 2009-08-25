@@ -38,6 +38,7 @@ IupLabel
 IupList
 IupListDialog
 IupLoad
+IupLoadBuffer
 IupLoopStep
 IupMainLoop
 IupMap

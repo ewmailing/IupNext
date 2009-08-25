@@ -23,13 +23,14 @@
 static struct          /* lexical variables */
 {
   const char* filename;   /* file name */
+  const char* f;
   FILE* file;             /* file handle */
   int token;              /* lookahead iLexToken */
   char name[40960];       /* lexical identifier value */
   float number;           /* lexical number value */
   int line;               /* line number */
   Iclass *ic;             /* control class when func is CONTROL_ */
-} ilex = {NULL, NULL, 0, "", (float) 0.0, 0, NULL};
+} ilex = {NULL, NULL, NULL, 0, "", (float) 0.0, 0, NULL};
 
 static int iLexGetChar (void);
 static int iLexToken(int *erro);
@@ -37,13 +38,21 @@ static int iLexCapture (char* dlm);
 static int iLexSkip (char* dlm);
 static int iLexCaptureAttr (void);
 
-int iupLexStart(const char* filename)      /* initialize lexical analysis */
+int iupLexStart(const char* filename, int is_file)      /* initialize lexical analysis */
 {
   ilex.filename = filename;
-  ilex.file = fopen (ilex.filename,"r");
+  if (is_file)
+  {
+    ilex.file = fopen (ilex.filename,"r");
+    if (!ilex.file)
+      return iupLexError (IUPLEX_FILENOTOPENED, filename);
+  }
+  else
+  {
+    ilex.f = ilex.filename;
+    ilex.file = NULL;
+  }
   ilex.line = 0;
-  if (!ilex.file)
-    return iupLexError (IUPLEX_FILENOTOPENED, filename);
   ilex.line = 1;
   return iupLexAdvance();
 }
@@ -54,6 +63,31 @@ void iupLexClose(void)
     return;
   fclose (ilex.file);
   ilex.file = NULL;
+}
+
+static void iLexUngetc(int c)
+{
+  if (ilex.file)
+    ungetc(c, ilex.file);
+  else
+  {
+    if (*ilex.f != 0)
+      *(char*)ilex.f = (char)c;  /* write back to the string ???? */
+  }
+}
+
+static int iLexGetc(void)
+{
+  if (ilex.file)
+    return getc(ilex.file);
+  else
+  {
+    if (*ilex.f != 0)
+      ilex.f++;
+    if (*ilex.f == 0)
+      return EOF;
+    return *ilex.f;
+  }
 }
 
 int iupLexLookAhead(void)
@@ -197,8 +231,8 @@ static int iLexToken(int *erro)
       if (c > 32)          /* identifier */
       {
         char class_name[50];
-        ungetc (c,ilex.file);
-        ungetc (iLexCapture ("=[](), \t\n\r\f\v"), ilex.file);
+        iLexUngetc(c);
+        iLexUngetc(iLexCapture ("=[](), \t\n\r\f\v"));
         iupStrLower(class_name, iupLexName());
         ilex.ic = iupRegisterFindClass(class_name);
         if (ilex.ic)
@@ -254,10 +288,10 @@ static int iLexSkip (char* dlm)
 
 static int iLexGetChar (void)
 {
-  int c = getc (ilex.file); if (c == '\n') ++ilex.line;
+  int c = iLexGetc(); if (c == '\n') ++ilex.line;
   if (c == '\\')
   {
-    c = getc(ilex.file);
+    c = iLexGetc();
     if (c == 'n')
       return '\n';
     else if (c == '\\')
