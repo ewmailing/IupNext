@@ -19,7 +19,9 @@ static void (*cdcreatecanvasNATIVE)(cdCanvas* canvas, void* data) = NULL;
 
 static void cdcreatecanvasIUP(cdCanvas* canvas, Ihandle *ih_canvas)
 {
+#ifndef WIN32
   char str[50] = "";
+#endif
   char* data;
 
   if (IupGetInt(ih_canvas, "CD_GDK"))

@@ -31,6 +31,7 @@ Ihandle* IupImageRGB(int <strong>width</strong>, int <strong>height</strong>, co
 Ihandle* IupImageRGBA(int <strong>width</strong>, int <strong>height</strong>, const unsigned char *<strong>pixels</strong>); [in C]
 
 iup.image{<b>line0</b>: table, <b>line1</b>: table, ...; colors = <b>colors</b>: table} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.image{width = <strong>width</strong>: number, height = <strong>height</strong>: number, pixels = <strong>pixels</strong>: table, colors = <b>colors</b>: table} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 iup.imagergb {width = <strong>width</strong>: number, height = <strong>height</strong>: number, pixels = <strong>pixels</strong>: table} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 iup.imagergba{width = <strong>width</strong>: number, height = <strong>height</strong>: number, pixels = <strong>pixels</strong>: table} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 
@@ -47,10 +48,10 @@ imagergba(<strong>width</strong>, <strong>height</strong>, <strong>pixel0</stron
   values per pixel. Each value is always 8 bit. Origin is at the top-left corner 
   and data is oriented top to bottom, and left to right. The pixels array is duplicated internally so you can discart it after 
   the call.<br>
-  <strong>pixel0</strong>, <strong>pixel1</strong>, ...:
+  <strong>pixel0</strong>, <strong>pixel1</strong>, <strong>pixel2</strong>, ...:
   Value of the pixels. But for <b>IupImageRGB</b> and <b>IupImageRGBA</b> in 
   fact will be one value for each color channel (pixel_r_0, pixel_g_0, 
-	pixel_b_0, pixel_r_1, ...).<br>
+	pixel_b_0, pixel_r_1, pixel_g_1, pixel_b_1, pixel_r_2, pixel_g_2, pixel_b_2, ...).<br>
   <b>line0</b>, <b>line1</b>: unnamed tables, one for each line containing 
   pixels values. See Notes bellow.<br>
   <b>colors</b>: table named colors containing the colors indices. See Notes 
@@ -65,7 +66,9 @@ imagergba(<strong>width</strong>, <strong>height</strong>, <strong>pixel0</stron
 <p><strong>&quot;0&quot;</strong>
   Color in index 0. <br>
   <strong>&quot;1&quot;</strong>
-  Color in index 1. <br>
+  Color in index 1.<br>
+  <strong>&quot;2&quot;</strong>
+  Color in index 2.<br>
   <b>...</b> <br>
   <strong>&quot;i&quot;</strong>
   Color in index i. </p>
@@ -201,7 +204,7 @@ many others. For example:</p>
   
   <h4>Samples</h4>
   <p>You can obtain several images from the <a href="../iupimglib.html">
-	IupImgLib</a>, a library of pre-defined images. To view the images you can 
+	IupImageLib</a>, a library of pre-defined images. To view the images you can 
 	use the <b>IupView</b> in the applications included in the 
   distribution,
   <u1:p>available at the <a href="../download.html">Download</a>.</u1:p> <b>IupView</b> 
@@ -215,7 +218,7 @@ many others. For example:</p>
   They allow operations such as importing GIF images and exporting them as IUP images. <b>EdPatt</b> allows you 
   to manually edit the images, and also have support for images in IupLua.</p>
   <h4>
-  IupLua</h4>
+  IupLua Old Constructor</h4>
 
   <p>In Lua, the 8bpp image can also be created using an unnamed table, using a 
   series of tables for each line. Width and height will be guessed from the 
@@ -234,19 +237,59 @@ many others. For example:</p>
   { 2,1,2,3,3,3,3,3,2,1,2 }, 
   { 1,2,3,3,3,3,3,3,3,2,1 };
   colors = { 
-    &quot;0 1 0&quot;, 
-    &quot;255 0 0&quot;, 
-    &quot;255 255 0&quot; 
+    &quot;0 1 0&quot;,      -- index 1
+    &quot;255 0 0&quot;,    -- index 2 
+    &quot;255 255 0&quot;   -- index 3 
   }
 }</pre>
-<p>But after the image is created in Lua, the line tables are not accessible 
+<p>Using this constructor the image data can NOT has 0 indices. Notice that the indexing of the 
+unamed tables is different 
+than the <strong>colors</strong> table. The first value in the <strong>colors</strong> 
+table is relative to the color index 1, but the first value of the unamed tables is relative to the pixel 0.</p>
+<p>After the image is created in Lua, the unnamed tables are not accessible 
 anymore, since &quot;img[1]&quot; will return the attribute &quot;1&quot; value which is the color 
-&quot;0 1 0&quot;. To access the original table values you must use &quot;raawget&quot;, for example:</p>
-<pre>lin1 = rawget(img, 1)</pre>
-<p>will return the first line of the original table. But if the image was 
-created in C then there is no way to access its values.</p>
-<p>For RGB and RGBA images the creation is different, and must contains explicit 
-values for width and height. For example:</p>
+&quot;0 1 0&quot;. To access the original table values you must use &quot;raawget&quot; 
+function, for example:</p>
+<pre>lin0 = rawget(img, 1)  -- line index 0
+lin1 = rawget(img, 2)  -- line index 1
+lin2 = rawget(img, 3)  -- line index 2
+...
+pixel0 = lin0[1]       -- column index 0
+pixel1 = lin0[2]       -- column index 1
+pixel3 = lin0[3]       -- column index 3
+...</pre>
+  <h4>
+  IupLua New Constructors</h4>
+
+<p>The new constructors since IUP 3 are different and must contains explicit 
+values for <strong>width</strong>, <strong>height</strong> and <strong>pixels</strong>. 
+Also the indexing of the <strong>colors</strong> table is the same of the
+<strong>pixels</strong> table, the first value is the color index 0. For example:</p>
+
+<pre>img = iup.image{
+  width = 11,
+  height = 11,
+  pixels = {
+   1,2,0,0,0,0,0,0,0,2,1, 
+   2,1,2,0,0,0,0,0,2,1,2, 
+   0,2,1,2,0,0,0,2,1,2,0, 
+   0,0,2,1,2,0,2,1,2,0,0, 
+   0,0,0,2,1,2,1,2,0,0,0, 
+   0,0,0,0,2,1,2,0,0,0,0, 
+   0,0,0,2,1,2,1,2,0,0,0, 
+   0,0,2,1,2,0,2,1,2,0,0, 
+   0,2,1,2,0,0,0,2,1,2,0, 
+   2,1,2,0,0,0,0,0,2,1,2, 
+   1,2,0,0,0,0,0,0,0,2,1},
+  colors = { 
+    &quot;255 255 0&quot;   -- index 0 
+    &quot;0 1 0&quot;,      -- index 1
+    &quot;255 0 0&quot;,    -- index 2 
+  }
+}</pre>
+<p>Although in Lua they are still referenced as index 1, so img.<strong>colors</strong>[1] 
+returns the color of the index 0 in the image.</p>
+<p>Here is the same image but using 24bpp:</p>
 <pre>img = iup.imagergb{
   width = 11,
   height = 11,
@@ -263,7 +306,14 @@ values for width and height. For example:</p>
   255,  0,0,    0,255,0,  255,  0,0,  255,255,0,  255,255,0,  255,255,0,  255,255,0,  255,255,0,  255,  0,0,    0,255,0,  255,  0,0,
     0,255,0,  255,  0,0,  255,255,0,  255,255,0,  255,255,0,  255,255,0,  255,255,0,  255,255,0,  255,255,0,  255,  0,0,    0,255,0}
 }</pre>
-<p>This produces visually the same result as the previous example using &quot;iup.image&quot;.</p>
+<p>Then at the <strong>pixels</strong> table we have:</p>
+<pre>r0 = img.pixels[1]   g0 = img.pixels[2]   b0 = img.pixels[3]
+r1 = img.pixels[4]   g1 = img.pixels[5]   b1 = img.pixels[6]
+r3 = img.pixels[7]   g3 = img.pixels[8]   b3 = img.pixels[9]
+...</pre>
+<p>If the image was 
+created in C then there is no way to access its pixels values in Lua, except as 
+an userdata using the WID attribute.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <h3><a name="SeeAlso">See Also</a></h3>

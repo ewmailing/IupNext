@@ -18,13 +18,14 @@
 
 #include "iup_object.h"
 #include "iup_assert.h"
+#include "iup_str.h"
 
 
 static void PrintError(int error)
 {
   char* lang = IupGetLanguage();
   char* msg;
-  if (strcmp(lang, "ENGLISH")==0)
+  if (iupStrEqualNoCase(lang, "ENGLISH"))
   {
     switch (error)
     {
@@ -93,7 +94,7 @@ Ihandle* IupLoadImage(const char* file_name)
 
   iupASSERT(file_name);
   if (!file_name)
-    return 0;
+    return NULL;
 
   old_callback = imCounterSetCallback(NULL, NULL);
 
@@ -238,6 +239,6 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
   if (error)
     PrintError(error);
 
-  return error != IM_ERR_NONE? 1: 0;
+  return error == IM_ERR_NONE? 1: 0;
 }
 

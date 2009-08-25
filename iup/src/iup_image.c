@@ -685,12 +685,17 @@ Iclass* iupImageRGBAGetClass(void)
   return iImageGetClassBase("imagergba", iImageRGBACreateMethod);
 }
 
-static int SaveImageC(const char* file_name, Ihandle* ih, const char* name)
+static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE* packfile)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
+  FILE* file;
 
-  FILE* file = fopen(file_name, "wb");
+  if (packfile)
+    file = packfile;
+  else
+    file = fopen(file_name, "wb");
+
   if (!file)
     return 0;
 
@@ -703,7 +708,8 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name)
 
   if (fprintf(file, "static Ihandle* load_image_%s(void)\n", name)<0)
   {
-    fclose(file);
+    if (!packfile)
+      fclose(file);
     return 0;
   }
 
@@ -731,14 +737,13 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name)
   if (channels == 1)
   {
     int c;
+    char str[20];
+    char* color;
 
     fprintf(file, "  Ihandle* image = IupImage(%d, %d, imgdata);\n\n", width, height);
 
     for (c = 0; c < 256; c++)
     {
-      char str[20];
-      char* color;
-
       sprintf(str, "%d", c);
       color = IupGetAttribute(ih, str);
       if (!color)
@@ -757,16 +762,23 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name)
   fprintf(file, "  return image;\n");
   fprintf(file, "}\n\n");
 
-  fclose(file);
+  if (!packfile)
+    fclose(file);
+
   return 1;
 }
 
-static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name)
+static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FILE* packfile)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
+  FILE* file;
 
-  FILE* file = fopen(file_name, "wb");
+  if (packfile)
+    file = packfile;
+  else
+    file = fopen(file_name, "wb");
+
   if (!file)
     return 0;
   
@@ -779,60 +791,58 @@ static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name)
 
   if (fprintf(file, "function load_image_%s()\n", name)<0)
   {
-    fclose(file);
+    if (!packfile)
+      fclose(file);
     return 0;
   }
 
   if (channels == 1)
-    fprintf(file, "  %s = iup.image\n", name);
+    fprintf(file, "  local %s = iup.image\n", name);
   else if (channels == 3)
-    fprintf(file, "  %s = iup.imagergb\n", name);
+    fprintf(file, "  local %s = iup.imagergb\n", name);
   else /* channels == 4 */
-    fprintf(file, "  %s = iup.imagergba\n", name);
+    fprintf(file, "  local %s = iup.imagergba\n", name);
 
   fprintf(file, "  {\n");
 
+  fprintf(file, "    width = %d,\n", width);
+  fprintf(file, "    height = %d,\n", height);
+  fprintf(file, "    pixels = {\n");
+
   for (y = 0; y < height; y++)
   {
-    fprintf(file, "    {");
-
+    fprintf(file, "      ");
     for (x = 0; x < linesize; x++)
     {
-      fprintf(file, "%d", (int)data[y*linesize+x]);
-
-      if (x != linesize-1)
-        fprintf(file, ", ");
+      fprintf(file, "%d, ", (int)data[y*linesize+x]);
     }
-
-    if (y == height-1)
-      fprintf(file, "};\n");
-    else
-      fprintf(file, "},\n");
+    fprintf(file, "\n");
   }
+
+  fprintf(file, "    },\n");
 
   if (channels == 1)
   {
     int c;
+    char* color;
+    unsigned int r, g, b;
+    char str[20];
 
-    fprintf(file, "    colors = \n  {\n");
+    fprintf(file, "    colors = {\n");
 
     for(c = 0; c < 256; c++)
     {
-      unsigned int r, g, b;
-      char str[20];
-      char* color;
-
       sprintf(str, "%d", c);
       color = IupGetAttribute(ih, str);
       if (!color)
         break;
 
-      if (strcmp(color, "BGCOLOR") == 0)
-        fprintf(file, "    \"BGCOLOR\",\n");
+      if (iupStrEqualNoCase(color, "BGCOLOR"))
+        fprintf(file, "      \"BGCOLOR\",\n");
       else
       {
         sscanf(color, "%d %d %d", &r, &g, &b);
-        fprintf(file, "    \"%d %d %d\",\n", r, g, b);
+        fprintf(file, "      \"%d %d %d\",\n", r, g, b);
       }
     }
 
@@ -840,19 +850,27 @@ static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name)
   }
 
   fprintf(file, "  }\n");
+
   fprintf(file, "  return %s\n", name);
   fprintf(file, "end\n\n");
 
-  fclose(file);
+  if (!packfile)
+    fclose(file);
+
   return 1;
 }
 
-static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name)
+static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FILE* packfile)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
+  FILE* file;
 
-  FILE* file = fopen(file_name, "wb");
+  if (packfile)
+    file = packfile;
+  else
+    file = fopen(file_name, "wb");
+
   if (!file)
     return 0;
 
@@ -866,20 +884,20 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name)
   if (channels == 1)
   {
     int c;
+    unsigned int r, g, b;
+    char str[20];
+    char* color;
 
     if (fprintf(file, "%s = IMAGE\n", name)<0)
     {
-      fclose(file);
+      if (!packfile)
+        fclose(file);
       return 0;
     }
 
     fprintf(file, "[\n");
     for(c = 0; c < 256; c++)
     {
-      unsigned int r, g, b;
-      char str[20];
-      char* color;
-
       sprintf(str, "%d", c);
       color = IupGetAttribute(ih, str);
       if (!color)
@@ -893,7 +911,7 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name)
       if (c != 0)
         fprintf(file, ",\n");
 
-      if (strcmp(color, "BGCOLOR") == 0)
+      if (iupStrEqualNoCase(color, "BGCOLOR"))
         fprintf(file, "  %d = \"BGCOLOR\"", c);
       else
       {
@@ -907,7 +925,8 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name)
   {
     if (fprintf(file, "%s = IMAGERGB\n", name)<0)
     {
-      fclose(file);
+      if (!packfile)
+        fclose(file);
       return 0;
     }
   }
@@ -915,7 +934,8 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name)
   {
     if (fprintf(file, "%s = IMAGERGBA\n", name)<0)
     {
-      fclose(file);
+      if (!packfile)
+        fclose(file);
       return 0;
     }
   }
@@ -937,8 +957,22 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name)
 
   fprintf(file, ")\n\n");
 
-  fclose(file);
+  if (!packfile)
+    fclose(file);
+
   return 1;
+}
+
+int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const char* name)
+{
+  int ret = 0;
+  if (iupStrEqualNoCase(format, "LED"))
+    ret = SaveImageLED(NULL, ih, name, packfile);
+  else if (iupStrEqualNoCase(format, "LUA"))
+    ret = SaveImageLua(NULL, ih, name, packfile);
+  else if (iupStrEqualNoCase(format, "C") || iupStrEqualNoCase(format, "H"))
+    ret = SaveImageC(NULL, ih, name, packfile);
+  return ret;
 }
 
 int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name)
@@ -950,11 +984,11 @@ int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, c
     if (!name)
       name = "image";
   }
-  if (iupStrEqualNoCase(format, "LED") == 0)
-    ret = SaveImageLED(file_name, ih, name);
-  else if (iupStrEqualNoCase(format, "LUA") == 0)
-    ret = SaveImageLua(file_name, ih, name);
-  else if ((iupStrEqualNoCase(format, "C") == 0))
-    ret = SaveImageC(file_name, ih, name);
+  if (iupStrEqualNoCase(format, "LED"))
+    ret = SaveImageLED(file_name, ih, name, NULL);
+  else if (iupStrEqualNoCase(format, "LUA"))
+    ret = SaveImageLua(file_name, ih, name, NULL);
+  else if (iupStrEqualNoCase(format, "C") || iupStrEqualNoCase(format, "H"))
+    ret = SaveImageC(file_name, ih, name, NULL);
   return ret;
 }

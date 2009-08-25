@@ -7,6 +7,7 @@
 #include "iup.h"
 #include "iupcontrols.h"
 #include "iupgl.h"
+#include "iup_str.h"
 
 
 #define MAX_NAMES 500
@@ -15,262 +16,11 @@
 #include "iupim.h"
 #endif
 
+/* IupImage internal function, used only here */
+int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const char* name);
+
 /* IupImageLib internal function, used only here */
 void iupImageLibLoadAll(void);
-
-static void SaveImageC(const char* file_name, Ihandle* elem, const char* name, FILE *packfile)
-{
-  int y, x, width, height, channels, linesize;
-  unsigned char* data;
-  FILE* file;
-
-  if (packfile)
-    file = packfile;
-  else
-    file = fopen(file_name, "wb");
-
-  if (!file)
-  {
-    IupMessage("Error!", "Failed to open file for writing.");
-    return;
-  }
-
-  width = IupGetInt(elem, "WIDTH");
-  height = IupGetInt(elem, "HEIGHT");
-  channels = IupGetInt(elem, "CHANNELS");
-  linesize = width*channels;
-
-  data = (unsigned char*)IupGetAttribute(elem, "WID");
-
-  fprintf(file, "static Ihandle* load_image_%s(void)\n", name);
-  fprintf(file, "{\n");
-  fprintf(file, "  unsigned char imgdata[] = {\n");
-
-  for (y = 0; y < height; y++)
-  {
-    fprintf(file, "    ");
-
-    for (x = 0; x < linesize; x++)
-    {
-      if (x != 0)
-        fprintf(file, ", ");
-
-      fprintf(file, "%d", (int)data[y*linesize+x]);
-    }
-
-    if (y == height-1)
-      fprintf(file, "};\n\n");
-    else
-      fprintf(file, ",\n");
-  }
-
-  if (channels == 1)
-  {
-    int c;
-
-    fprintf(file, "  Ihandle* image = IupImage(%d, %d, imgdata);\n\n", width, height);
-
-    for (c = 0; c < 256; c++)
-    {
-      char str[20];
-      char* color;
-
-      sprintf(str, "%d", c);
-      color = IupGetAttribute(elem, str);
-      if (!color)
-        break;
-
-      fprintf(file, "  IupSetAttribute(image, \"%d\", \"%s\");\n", c, color);
-    }
-
-    fprintf(file, "\n");
-  }
-  else if (channels == 3)
-    fprintf(file, "  Ihandle* image = IupImageRGB(%d, %d, imgdata);\n", width, height);
-  else /* channels == 4 */
-    fprintf(file, "  Ihandle* image = IupImageRGBA(%d, %d, imgdata);\n", width, height);
-
-  fprintf(file, "  return image;\n");
-  fprintf(file, "}\n\n");
-
-  if (!packfile)
-    fclose(file);
-}
-
-static void SaveImageLua(const char* file_name, Ihandle* elem, const char* name, FILE *packfile)
-{
-  int y, x, width, height, channels, linesize;
-  unsigned char* data;
-  FILE* file;
-
-  if (packfile)
-    file = packfile;
-  else
-    file = fopen(file_name, "wb");
-
-  if (!file)
-  {
-    IupMessage("Error!", "Failed to open file for writing.");
-    return;
-  }
-  width = IupGetInt(elem, "WIDTH");
-  height = IupGetInt(elem, "HEIGHT");
-  channels = IupGetInt(elem, "CHANNELS");
-  linesize = width*channels;
-
-  data = (unsigned char*)IupGetAttribute(elem, "WID");
-
-  fprintf(file, "function load_image_%s()\n", name);
-
-  if (channels == 1)
-    fprintf(file, "  %s = iup.image\n", name);
-  else if (channels == 3)
-    fprintf(file, "  %s = iup.imagergb\n", name);
-  else /* channels == 4 */
-    fprintf(file, "  %s = iup.imagergba\n", name);
-
-  fprintf(file, "  {\n");
-
-  for (y = 0; y < height; y++)
-  {
-    fprintf(file, "    {");
-
-    for (x = 0; x < linesize; x++)
-    {
-      fprintf(file, "%d", (int)data[y*linesize+x]);
-
-      if (x != linesize-1)
-        fprintf(file, ", ");
-    }
-
-    if (y == height-1)
-      fprintf(file, "};\n");
-    else
-      fprintf(file, "},\n");
-  }
-
-  if (channels == 1)
-  {
-    int c;
-
-    fprintf(file, "    colors = \n  {\n");
-
-    for(c = 0; c < 256; c++)
-    {
-      unsigned int r, g, b;
-      char str[20];
-      char* color;
-
-      sprintf(str, "%d", c);
-      color = IupGetAttribute(elem, str);
-      if (!color)
-        break;
-
-      if (strcmp(color, "BGCOLOR") == 0)
-        fprintf(file, "    \"BGCOLOR\",\n");
-      else
-      {
-        sscanf(color, "%d %d %d", &r, &g, &b);
-        fprintf(file, "    \"%d %d %d\",\n", r, g, b);
-      }
-    }
-
-    fprintf(file, "    }\n");
-  }
-
-  fprintf(file, "  }\n");
-  fprintf(file, "  return %s\n", name);
-  fprintf(file, "end\n\n");
-
-  if (!packfile)
-    fclose(file);
-}
-
-static void SaveImageLED(const char* file_name, Ihandle* elem, const char* name, FILE *packfile)
-{
-  int y, x, width, height, channels, linesize;
-  unsigned char* data;
-  FILE* file;
-
-  if (packfile)
-    file = packfile;
-  else
-    file = fopen(file_name, "wb");
-
-  if (!file)
-  {
-    IupMessage("Error!", "Failed to open file for writing.");
-    return;
-  }
-
-  width = IupGetInt(elem, "WIDTH");
-  height = IupGetInt(elem, "HEIGHT");
-  channels = IupGetInt(elem, "CHANNELS");
-  linesize = width*channels;
-
-  data = (unsigned char*)IupGetAttribute(elem, "WID");
-
-  if (channels == 1)
-  {
-    int c;
-
-    fprintf(file, "%s = IMAGE\n", name);
-
-    fprintf(file, "[\n");
-    for(c = 0; c < 256; c++)
-    {
-      unsigned int r, g, b;
-      char str[20];
-      char* color;
-
-      sprintf(str, "%d", c);
-      color = IupGetAttribute(elem, str);
-      if (!color)
-      {
-        if (c < 16)
-          continue;
-        else
-          break;
-      }
-
-      if (c != 0)
-        fprintf(file, ",\n");
-
-      if (strcmp(color, "BGCOLOR") == 0)
-        fprintf(file, "  %d = \"BGCOLOR\"", c);
-      else
-      {
-        sscanf(color, "%d %d %d", &r, &g, &b);
-        fprintf(file, "  %d = \"%d %d %d\"", c, r, g, b);
-      }
-    }
-    fprintf(file, "\n]\n");
-  }
-  else if (channels == 3)
-    fprintf(file, "%s = IMAGERGB\n", name);
-  else /* channels == 4 */
-    fprintf(file, "%s = IMAGERGBA\n", name);
-
-  fprintf(file, "(%d, %d,\n", width, height);
-
-  for (y = 0; y < height; y++)
-  {
-    fprintf(file, "  ");
-    for (x = 0; x < linesize; x++)
-    {
-      if (y == height-1 && x==linesize-1)
-        fprintf(file, "%d", (int)data[y*linesize+x]);
-      else
-        fprintf(file, "%d, ", (int)data[y*linesize+x]);
-    }
-    fprintf(file, "\n");
-  }
-
-  fprintf(file, ")\n\n");
-
-  if (!packfile)
-    fclose(file);
-}
 
 static int close_cb(void)
 {
@@ -319,7 +69,7 @@ static int showallimages_cb(void)
     Ihandle* elem = IupGetHandle(names[i]);
     char* type = IupGetClassType(elem);
 
-    if (strcmp(type, "image") == 0)
+    if (iupStrEqual(type, "image"))
     {
       Ihandle *tbox, *lbox, *button;
 
@@ -464,7 +214,7 @@ static int saveallimages_cb(void)
     Ihandle* elem = IupGetHandle(names[i]);
     char* type = IupGetClassType(elem);
 
-    if (strcmp(type, "image") == 0)
+    if (iupStrEqual(type, "image"))
     {
       char file_name[1024] = "";
 
@@ -481,16 +231,17 @@ static int saveallimages_cb(void)
       strcat(file_name, ".");
       strcat(file_name, imgtype);
 
-      if (strcmp(imgtype, "led") == 0)
-        SaveImageLED(file_name, elem, names[i], NULL);
-      else if (strcmp(imgtype, "lua") == 0)
-        SaveImageLua(file_name, elem, names[i], NULL);
-      else if ((strcmp(imgtype, "c") == 0) || (strcmp(imgtype, "h") == 0))
-        SaveImageC(file_name, elem, names[i], NULL);
+      if (!IupSaveImageAsText(elem, file_name, imgtype, names[i]))
+      {
 #ifdef USE_IM
-      else 
-        IupSaveImage(elem, file_name, StrUpper(imgtype));
+        if (!IupSaveImage(elem, file_name, StrUpper(imgtype)))  /* already displayed an error message */
+          return IUP_DEFAULT;
+#else
+        IupMessage("Error", "Failed to save the image.");
+        return IUP_DEFAULT;
 #endif
+      }
+
       n++;
     }
   }
@@ -601,7 +352,7 @@ static int saveallimagesone_cb(void)
     Ihandle* elem = IupGetHandle(names[i]);
     char* type = IupGetClassType(elem);
 
-    if (strcmp(type, "image") == 0)
+    if (iupStrEqual(type, "image"))
     {
       /* save only loaded images */
       char* file_title = IupGetAttribute(elem, "_FILE_TITLE");
@@ -614,12 +365,18 @@ static int saveallimagesone_cb(void)
       if (!packfile)
         packfile = fopen(file_name, "wb");
 
-      if (strcmp(imgtype, "led") == 0)
-        SaveImageLED(NULL, elem, names[i], packfile);
-      else if (strcmp(imgtype, "lua") == 0)
-        SaveImageLua(NULL, elem, names[i], packfile);
-      else if ((strcmp(imgtype, "c") == 0) || (strcmp(imgtype, "h") == 0))
-        SaveImageC(NULL, elem, names[i], packfile);
+      if (!packfile)
+      {
+        IupMessage("Error", "Failed to open the file.");
+        return IUP_DEFAULT;
+      }
+
+      if (!iupSaveImageAsText(elem, packfile, imgtype, names[i]))
+      {
+        fclose(packfile);
+        IupMessage("Error", "Failed to write to the file.");
+        return IUP_DEFAULT;
+      }
 
       n++;
     }
@@ -629,7 +386,7 @@ static int saveallimagesone_cb(void)
 
   if (packfile)
   {
-    if (strcmp(imgtype, "c") == 0)
+    if (iupStrEqualNoCase(imgtype, "c"))  /* only for C files */
     {
       char* title = mainGetFileTitle(file_name);
       fprintf(packfile, "void load_all_images_%s(void)\n{\n", title);
@@ -665,7 +422,7 @@ static int saveimage_cb(Ihandle* self)
     Ihandle* elem = IupGetHandle(name);
     char* type = IupGetClassType(elem);
 
-    if (strcmp(type, "image") == 0)
+    if (iupStrEqual(type, "image"))
     {
       char file_name[1024];
 
@@ -676,15 +433,11 @@ static int saveimage_cb(Ihandle* self)
       sprintf(file_name, "%s.%s", name, imgtype);
       if (GetSaveAsFile(file_name, imgtype) != -1)
       {
-        if (strcmp(imgtype, "led") == 0)
-          SaveImageLED(file_name, elem, name, NULL);
-        else if (strcmp(imgtype, "lua") == 0)
-          SaveImageLua(file_name, elem, name, NULL);
-        else if ((strcmp(imgtype, "c") == 0) || (strcmp(imgtype, "h") == 0))
-          SaveImageC(file_name, elem, name, NULL);
+        if (!IupSaveImageAsText(elem, file_name, imgtype, name))
 #ifdef USE_IM
-        else 
-          IupSaveImage(elem, file_name, StrUpper(imgtype));
+          IupSaveImage(elem, file_name, StrUpper(imgtype));  /* already displayed an error message */
+#else
+          IupMessage("Error", "Failed to save the image.");
 #endif
       }
     }
@@ -707,7 +460,7 @@ static int hideelem_cb(Ihandle* self)
     Ihandle* elem = IupGetHandle(name);
     char* type = IupGetClassName(elem);
 
-    if (strcmp(type, "dialog") == 0)
+    if (iupStrEqual(type, "dialog"))
       IupHide(elem);
     else
     {
@@ -734,7 +487,7 @@ static int showelem_cb(Ihandle* self)
     Ihandle* elem = IupGetHandle(name);
     char* type = IupGetClassName(elem);
 
-    if (strcmp(type, "dialog") == 0)
+    if (iupStrEqual(type, "dialog"))
       IupShow(elem);
     else
     {
@@ -743,7 +496,7 @@ static int showelem_cb(Ihandle* self)
         IupShow(dialog);
       else
       {
-        if (strcmp(type, "menu") == 0)
+        if (iupStrEqual(type, "menu"))
           IupPopup(elem, IUP_MOUSEPOS, IUP_MOUSEPOS);
         else
           IupMessage("Error", "Will only show dialogs and independent menus.");
@@ -774,6 +527,7 @@ static int list_cb(Ihandle* self, char *t, int i, int v)
     sprintf(str_elem, "FileTitle: %s - Type: %s", IupGetAttribute(elem, "_FILE_TITLE"), IupGetClassName(elem));
     IupStoreAttribute(label, "TITLE", str_elem);
   }
+  (void)i;
   return IUP_DEFAULT;
 }
 
@@ -803,7 +557,7 @@ static int destroyall_cb(Ihandle* self)
     {
       char* type = IupGetClassName(elem);
 
-      if (strcmp(type, "dialog") == 0)
+      if (iupStrEqual(type, "dialog"))
         IupDestroy(elem);
       else
       {

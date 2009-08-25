@@ -59,18 +59,18 @@ img_cursor = iup.image{
   ; colors = { "255 0 0", "128 0 0" }, hotspot = "21:10" 
 }
 
--- Creates a button entitled "Dummy" and associates image img_x to it
-btn = iup.button{ title = "", image = img_x }
+-- Creates a button and associates image img_x to it
+btn = iup.button{ image = img_x }
 
--- Creates a label entitled "Dummy" and associates image img_x to it
-lbl = iup.label{ title = "", image = img_x }
+-- Creates a label and associates image img_x to it
+lbl = iup.label{ image = img_x }
 
--- Creates toggle entitled "Dummy" and associates image img_x to it
-tgl = iup.toggle{ title = "", image = img_x }
+-- Creates toggle and associates image img_x to it
+tgl = iup.toggle{ image = img_x }
 
--- Creates two toggles entitled "Dummy" and associates image img_x to them
-tgl_radio_1 = iup.toggle{ title = "", image = img_x }
-tgl_radio_2 = iup.toggle{ title = "", image = img_x }
+-- Creates two toggles and associates image img_x to them
+tgl_radio_1 = iup.toggle{ image = img_x }
+tgl_radio_2 = iup.toggle{ image = img_x }
 
 -- Creates label showing image size
 lbl_size = iup.label{ title = '"X" image width = '..img_x.width..'; "X" image height = '..img_x.height } 

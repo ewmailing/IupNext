@@ -507,6 +507,15 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
   case WM_RBUTTONUP:
     {
       iupwinButtonUp(ih, msg, wp, lp);
+
+      /* BN_CLICKED will NOT be notified */
+      if (msg==WM_LBUTTONUP && !iupAttribGetInt(ih, "FOCUSONCLICK"))
+      {
+        Icallback cb = IupGetCallback(ih, "ACTION");
+        if (cb && cb(ih) == IUP_CLOSE)
+          IupExitLoop();
+      }
+
       break;
     }
   case WM_MOUSELEAVE:
@@ -527,12 +536,11 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     }
     break;
   case WM_SETFOCUS:
-    if (!iupAttribGetInt(ih, "FOCUSONCLICK") && wp && iupAttribGet(ih, "_IUPWIN_ENTERWIN"))
     {
-      Ihandle* previous = iupwinHandleGet((void*)wp);
-      if (previous)
+      HWND previous = (HWND)wp;
+      if (!iupAttribGetInt(ih, "FOCUSONCLICK") && wp && iupAttribGet(ih, "_IUPWIN_ENTERWIN"))
       {
-        SetFocus(previous->handle);
+        SetFocus(previous);
         *result = 0;
         return 1;
       }
@@ -581,9 +589,8 @@ static int winButtonWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 
 static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
 {
-  (void)lp;
-
-  switch (HIWORD(wp))
+  int cmd = HIWORD(wp);
+  switch (cmd)
   {
   case BN_DOUBLECLICKED:
   case BN_CLICKED:
@@ -594,6 +601,7 @@ static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
     }
   }
 
+  (void)lp;
   return 0; /* not used */
 }
 

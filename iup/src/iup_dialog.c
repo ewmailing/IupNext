@@ -177,19 +177,37 @@ static void iDialogSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
   }
 }
 
-static void iDialogCallShowCb(Ihandle* ih)
+static void iDialogAfterShow(Ihandle* ih)
 {
-  IFni show_cb = (IFni)IupGetCallback(ih, "SHOW_CB");
+  Ihandle* old_focus;
+  IFni show_cb;
+
+  /* process all pending messages */
+  IupFlush();
+
+  old_focus = IupGetFocus();
+
+  show_cb = (IFni)IupGetCallback(ih, "SHOW_CB");
   if (show_cb && show_cb(ih, ih->data->show_state) == IUP_CLOSE)
+  {
     IupExitLoop();
+    return;
+  }
 
   if (ih->data->show_state == IUP_SHOW)
   {
-    Ihandle *startfocus = IupGetAttributeHandle(ih, "STARTFOCUS");
-    if (startfocus)
-      IupSetFocus(startfocus);
-    else
-      IupNextField(ih);
+    if (show_cb)
+      IupFlush();  /* again to update focus */
+
+    /* do it only if show_cb did NOT changed the current focus */
+    if (old_focus == IupGetFocus())
+    {
+      Ihandle *startfocus = IupGetAttributeHandle(ih, "STARTFOCUS");
+      if (startfocus)
+        IupSetFocus(startfocus);
+      else
+        IupNextField(ih);
+    }
   }
 }
 
@@ -237,8 +255,8 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
     /* only re-show to raise the window */
     iupdrvDialogSetVisible(ih, 1);
     
-    /* process SHOW_CB and STARTFOCUS */
-    iDialogCallShowCb(ih);
+    /* flush, then process show_cb and startfocus */
+    iDialogAfterShow(ih);
     return IUP_NOERROR; 
   }
 
@@ -255,11 +273,8 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
   /* increment visible count */
   iupDlgListVisibleInc();
     
-  /* process all pending message */
-  IupFlush();
-    
-  /* process SHOW_CB and STARTFOCUS */
-  iDialogCallShowCb(ih);
+  /* flush, then process show_cb and startfocus */
+  iDialogAfterShow(ih);
 
   /* interrupt processing here */
   IupMainLoop();
@@ -306,8 +321,8 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
     /* only re-show to raise the window */
     iupdrvDialogSetVisible(ih, 1);
     
-    /* process SHOW_CB and STARTFOCUS */
-    iDialogCallShowCb(ih);
+    /* flush, then process show_cb and startfocus */
+    iDialogAfterShow(ih);
     return IUP_NOERROR; 
   }
                           
@@ -318,12 +333,9 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
 
   /* increment visible count */
   iupDlgListVisibleInc();
-    
-  /* process all pending message */
-  IupFlush();
 
-  /* process SHOW_CB and STARTFOCUS */
-  iDialogCallShowCb(ih);
+  /* flush, then process show_cb and startfocus */
+  iDialogAfterShow(ih);
 
   return IUP_NOERROR;
 }
@@ -362,11 +374,8 @@ void iupDialogHide(Ihandle* ih)
       IupExitLoop();
   }
     
-  /* process all pending message */
-  IupFlush();
-
-  /* process SHOW_CB and STARTFOCUS */
-  iDialogCallShowCb(ih);
+  /* flush, then process show_cb and startfocus */
+  iDialogAfterShow(ih);
 }
 
 

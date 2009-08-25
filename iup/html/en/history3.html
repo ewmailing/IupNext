@@ -35,13 +35,16 @@ proceed when migrating from version 2.x to version 3.x.<br>
 
 </p>
 
-<h3>CVS (04/Aug/2009)</h3>
+<h3>CVS (25/Aug/2009)</h3>
 
 <ul>
 	<li><span class="hist_new">New: </span>
 	NODEREMOVED_CB callback for <strong>IupTree</strong>.</li>
 	<li><span class="hist_new">New: </span>SORT attribute for <strong>IupList</strong>.</li>
 	<li><span class="hist_new">New: </span>function  <strong>IupSaveImageAsText</strong>.</li>
+	<li><span class="hist_changed">Changed:</span>
+    now the <strong>iup.image</strong> constructor also accepts parameters in 
+	the same format as <strong>iup.imagergb</strong> and <strong>iup.imagergba</strong>.</li>
 	<li><span class="hist_changed">Changed:</span>
     return value to boolean of <strong>iup.GLIsCurrent, iup.GetParam, 
 	iup.SaveImage, iup.isshift, iup.iscontrol, iup.isbutton1, iup.isbutton2, 
@@ -55,7 +58,8 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	in <strong>IupMatrix</strong>. Double click in a title cell was entering in edit mode at the 
 	focus cell.</li>
 	<li><span class="hist_fixed">Fixed:</span> STARTFOCUS in Motif and Win32 for
-	<strong>IupDialog</strong> where not working.</li>
+	<strong>IupDialog</strong> where not working. Now STARTFOCUS is set only if 
+	SHOW_CB did not changed the current focus.</li>
 	<li><span class="hist_fixed">Fixed:</span> DLGBGCOLOR in Motif where 
 	incorrectly set.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupToggle</strong> redraw inside an
@@ -67,6 +71,12 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<strong>IupClose</strong> caused the application to crash.</li>
 	<li><span class="hist_fixed">Fixed:</span> auxiliar function <strong>
 	iup.TreeSetUserId</strong> in Lua when releasing the previous reference.</li>
+	<li><span class="hist_fixed">Fixed:</span> ACTION callback of <strong>
+	IupButton</strong> in Windows when FOCUSONCLICK=NO was not being called.</li>
+	<li><span class="hist_fixed">Fixed:</span> return value of <strong>
+	IupSaveImage</strong> was inverted.</li>
+	<li><span class="hist_fixed">Fixed:</span> export of image in Lua at the
+	<strong>IupView</strong> application.</li>
 
 </ul>
 

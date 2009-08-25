@@ -12,53 +12,77 @@
 #include "il.h"
 
 
- 
-#include<stdlib.h>
 static int Image (lua_State * L)
 {
-  int w, h, i, j;
-  unsigned char *img;
-  Ihandle *image;
-  
-  h = luaL_getn(L, 1);
-  lua_pushnumber(L, 1);
-  lua_gettable(L, 1);
-  w = luaL_getn(L, -1);
-  lua_pop(L, 1);
-  
-  img = (unsigned char *) malloc (h*w);
+  int w, h, c, num_colors;
+  unsigned char *pixels;
+  Ihandle* ih;
+  char str[20];
 
-  for (i=1; i<=h; i++)
+  if (lua_istable(L, 1))
   {
-    lua_pushnumber(L, i);
+    int i, j;
+
+    /* get the number of lines */
+    h = luaL_getn(L, 1);  
+
+    /* get the number of columns of the first line */
+    lua_pushnumber(L, 1);
     lua_gettable(L, 1);
-    for (j=1; j<=w; j++)
+    w = luaL_getn(L, -1);  
+    lua_pop(L, 1);
+    
+    pixels = (unsigned char *) malloc (h*w);
+
+    for (i=1; i<=h; i++)
     {
-      int idx = (i-1)*w+(j-1);
-      lua_pushnumber(L, j);
-      lua_gettable(L, -2);
-      img[idx] = (unsigned char)lua_tonumber(L, -1);
+      lua_pushnumber(L, i);
+      lua_gettable(L, 1);
+      for (j=1; j<=w; j++)
+      {
+        int idx = (i-1)*w+(j-1);
+        lua_pushnumber(L, j);
+        lua_gettable(L, -2);
+        pixels[idx] = (unsigned char)lua_tonumber(L, -1);
+        lua_pop(L, 1);
+      }
       lua_pop(L, 1);
     }
-    lua_pop(L, 1);
+    
+    ih = IupImage(w,h,pixels);  
+    free(pixels);
+
+    num_colors = luaL_getn(L, 2);
+    num_colors = num_colors>255? 255: num_colors;
+    for(c=1; c<=num_colors; c++)
+    {
+      lua_rawgeti(L, 2, c);
+      sprintf(str, "%d", c);
+      IupStoreAttribute(ih, str, lua_tostring(L,-1));
+      lua_pop(L, 1);
+    }
   }
-  
-  image = IupImage(w,h,img);  
-  free(img);
-
-  w = luaL_getn(L, 2);
-
-  for(i=1; i<=w; i++)
+  else
   {
-    lua_pushnumber(L,i);
-    lua_pushnumber(L,i);
-    lua_gettable(L, 2);
-    IupStoreAttribute(image, (char *) lua_tostring(L,-2), (char *) lua_tostring(L,-1));
-    lua_pop(L, 2);
+    w = luaL_checkint(L, 1);
+    h = luaL_checkint(L, 2);
+    pixels = iuplua_checkuchar_array(L, 3, w*h);
+    ih = IupImage(w, h, pixels);
+    free(pixels);
+
+    num_colors = luaL_getn(L, 4);
+    num_colors = num_colors>256? 256: num_colors;
+    for(c=1; c<=num_colors; c++)
+    {
+      lua_rawgeti(L, 4, c);
+      sprintf(str, "%d", c-1);
+      IupStoreAttribute(ih, str, lua_tostring(L,-1));
+      lua_pop(L, 1);
+    }
   }
-  
-  iuplua_plugstate(L, image);
-  iuplua_pushihandle_raw(L, image);
+
+  iuplua_plugstate(L, ih);
+  iuplua_pushihandle_raw(L, ih);
   return 1;
 } 
  

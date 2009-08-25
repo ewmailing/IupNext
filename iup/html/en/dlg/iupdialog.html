@@ -184,7 +184,9 @@ dialog’s size. Default: YES. In Motif the decorations are controlled by the Wi
     right after the dialog is shown using <strong>IupShow</strong> or <strong>
 IupPopup</strong>. If not defined then the first control than 
 can receive the focus is selected (same effect of calling
-<a href="../func/iupnextfield.html">IupNextField</a> for the dialog).</p>
+<a href="../func/iupnextfield.html">IupNextField</a> for the dialog). Updated 
+after SHOW_CB is called and only if the focus was not changed during the 
+callback.</p>
 <p><strong>XWINDOW</strong> [UNIX Only] (<font size="3">non inheritable, 
 read-only</font>): Returns the X-Windows Window (Drawable). Available in the 
 Motif driver or in the GTK driver in UNIX.</p>

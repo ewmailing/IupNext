@@ -342,3 +342,4 @@ iupArrayDestroy
 iupArrayCreate
 iupArrayCount
 iupArrayAdd
+iupSaveImageAsText

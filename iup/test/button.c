@@ -225,13 +225,13 @@ static int active_cb(Ihandle *ih)
 static void set_callbacks(Ihandle* button)
 {
   IupSetCallback(button, "ACTION",       action_cb);
-  IupSetCallback(button, "BUTTON_CB",    (Icallback)button_cb);
+//  IupSetCallback(button, "BUTTON_CB",    (Icallback)button_cb);
 
   IupSetCallback(button, "K_ANY",        (Icallback)k_any);
   IupSetCallback(button, "HELP_CB",      (Icallback)help_cb);
 
-  IupSetCallback(button, "GETFOCUS_CB",  (Icallback)getfocus_cb); 
-  IupSetCallback(button, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+//  IupSetCallback(button, "GETFOCUS_CB",  (Icallback)getfocus_cb); 
+//  IupSetCallback(button, "KILLFOCUS_CB", (Icallback)killfocus_cb);
 //  IupSetCallback(button, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
 //  IupSetCallback(button, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 }
@@ -346,7 +346,7 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
 //  IupSetAttribute(button, "IMAGEPOSITION", "BOTTOM");
   IupSetAttribute(button, "PADDING", "5x5");
-  IupSetAttribute(button, "TITLE", "Text");
+  IupSetAttribute(button, "TITLE", "Text1");
   IupSetAttribute(button, "FONT", "Helvetica, 14");
 //  IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
   IupSetAttributeHandle(button, "IMAGE", image1);
@@ -359,7 +359,7 @@ void ButtonTest(void)
 
   button = IupButton(NULL, NULL);
   IupSetAttributeHandle(button, "IMAGE", image2);
-  IupSetAttribute(button, "TITLE", "Text");
+  IupSetAttribute(button, "TITLE", "Text2");
 //  IupSetAttribute(button, "IMAGEPOSITION", "TOP");
 //  IupSetAttribute(button, "SPACING", "30");
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT");
@@ -372,7 +372,7 @@ void ButtonTest(void)
 
   button = IupButton(NULL, NULL);
   IupSetAttributeHandle(button, "IMAGE", image3);
-  IupSetAttribute(button, "TITLE", "Text");
+  IupSetAttribute(button, "TITLE", "Text3");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
 //  IupSetAttribute(button, "ALIGNMENT", "ARIGHT");
   IupSetAttribute(button, "NAME", "button6");

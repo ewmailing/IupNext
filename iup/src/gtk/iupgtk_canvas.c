@@ -218,6 +218,7 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
     iupAttribSetStr(ih, "CLIPRECT", NULL);
   }
 
+  (void)widget;
   return TRUE;  /* stop other handlers */
 }
 
