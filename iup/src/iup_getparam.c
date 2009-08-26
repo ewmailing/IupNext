@@ -15,6 +15,7 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_strmessage.h"
+#include "iup_drvfont.h"
 
 
 #define RAD2DEG  57.296   /* radians to degrees */
@@ -713,6 +714,7 @@ static Ihandle* IupParamDlgP(Ihandle** params)
 
   IupMap(dlg);
 
+  /* get the largest label size and set INDEX */
   i = 0; lbl_width = 0, p = 0;
   while (params[i] != NULL)
   {
@@ -743,26 +745,30 @@ static Ihandle* IupParamDlgP(Ihandle** params)
     {
       if (iupStrEqual(type, "LIST"))
       {
+        /* set a minimum size for lists */
         Ihandle* ctrl = (Ihandle*)iupAttribGet(params[i], "CONTROL");
         if (IupGetInt(ctrl, "SIZE") < 50)
           IupSetAttribute(ctrl, "SIZE", "50x");
       }
       else if (iupStrEqual(type, "BOOLEAN"))
       {
+        /* reserve enough space for boolean strings */
         Ihandle* ctrl = (Ihandle*)iupAttribGet(params[i], "CONTROL");
-        int lenF = strlen(iupAttribGet(params[i], "_IUPGP_FALSE"));
-        int lenT = strlen(iupAttribGet(params[i], "_IUPGP_TRUE"));
+        int wf = iupdrvFontGetStringWidth(ctrl, iupAttribGet(params[i], "_IUPGP_FALSE"));
+        int wt = iupdrvFontGetStringWidth(ctrl, iupAttribGet(params[i], "_IUPGP_TRUE"));
         int w = IupGetInt(ctrl, "SIZE");
         int v = IupGetInt(ctrl, "VALUE");
-        if (v)
+        if (v) /* True */
         {
-          int wf = (lenF*w)/lenT;
+          int box = w - wt;
+          wf += box;
           if (wf > w)
             IupSetfAttribute(ctrl, "SIZE", "%dx", wf+8);
         }
         else
         {
-          int wt = (lenT*w)/lenF;
+          int box = w - wf;
+          wt += box;
           if (wt > w)
             IupSetfAttribute(ctrl, "SIZE", "%dx", wt+8);
         }
@@ -816,15 +822,17 @@ static void iParamSetBoolNames(char* extra, Ihandle* param)
     truestr = iParamGetNextStrItem(extra, ',', &count);
   }
 
-  if (falsestr && truestr && falsestr[0] && truestr[0])
+  if (falsestr && truestr)
   {
     iupAttribStoreStr(param, "_IUPGP_TRUE", truestr);
     iupAttribStoreStr(param, "_IUPGP_FALSE", falsestr);
   }
   else
   {
-    iupAttribStoreStr(param, "_IUPGP_TRUE", iupStrMessageGet("IUP_TRUE"));
-    iupAttribStoreStr(param, "_IUPGP_FALSE", iupStrMessageGet("IUP_FALSE"));
+/*    iupAttribStoreStr(param, "_IUPGP_TRUE", iupStrMessageGet("IUP_TRUE"));     */
+/*    iupAttribStoreStr(param, "_IUPGP_FALSE", iupStrMessageGet("IUP_FALSE"));   */
+    iupAttribStoreStr(param, "_IUPGP_TRUE", "");
+    iupAttribStoreStr(param, "_IUPGP_FALSE", "");
   }
 }
 
