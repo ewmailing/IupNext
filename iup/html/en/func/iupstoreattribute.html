@@ -9,8 +9,8 @@
 <body>
 
 <h2>IupStoreAttribute</h2>
-<p>Defines an attribute for an interface 
-  element.</p>
+<p>Defines an attribute for an interface element but the string is internally 
+duplicated.</p>
 <h3>
 Parameters/Return</h3>
 <pre>void IupStoreAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, const char *<strong>value</strong>); [in C]
@@ -20,9 +20,9 @@ iup.StoreAttribute(<strong>ih</strong>: iulua_tag, <strong>name</strong>: string
 <b>name</b>: name of the attribute.<br>
 <b>value</b>: value of the attribute. If NULL (nil in IupLua), the attribute will be removed from the element.</p>
 <h3>Notes</h3>
-<p>The value stored is duplicated if not 
-  processed by the element specific implementation. Usually you will not use this function to 
-  store private attributes of the application.</p>
+<p>The value is duplicated before it is stored in the hash table, if that 
+happen. Otherwise behaves just like <strong>IupSetAttribute</strong>.</p>
+<p>You can NOT use this functions for pointers that are not strings.</p>
 <h3>See Also</h3>
 <p><a href="iupgetattribute.html">IupGetAttribute</a>, 
 <a href="iupsetattribute.html">IupSetAttribute</a></p>

@@ -9,8 +9,8 @@
 <body>
 
 <h2>IupStoreGlobal</h2>
-<p>Defines an attribute for the global 
-  environment. If the driver process the attribute then it will not be stored internally.</p>
+<p>Defines an attribute for the global environment but the string is internally 
+duplicated. </p>
 <h3>
 Parameters/Return</h3>
 <pre>void IupStoreGlobal(const char *<strong>name</strong>, const char *<strong>value</strong>); [in C]
@@ -19,16 +19,17 @@ iup.StoreGlobal(<strong>name</strong>: string, <strong>value</strong>: string) [
   <strong>value</strong>: value of the attribute. If it equals NULL (nil in Lua), the attribute will be removed.</p>
 <h3>Notes</h3>
 <p>The difference betwwen 
-  IupSetGlobal and 
-  IupStoreGlobal is the same of 
-  IupSetAttribute and 
-  IupStoreAttribute. In the 
-  Store functions the value is duplicated 
-  internally. In the <b>IupStoreGlobal</b> is duplicated only if not processed by the driver.</p>
+  <strong>IupSetGlobal</strong> and 
+  <strong>IupStoreGlobal</strong> is the same of 
+  <strong>IupSetAttribute</strong> and 
+  <strong>IupStoreAttribute</strong>. In the Store functions the string value is 
+duplicated internally.</p>
 <p>The application can also store any private attribute in the global environment.</p>
-<p>IupStoreAttribute can also be used to set global attributes, just set the element to NULL.</p>
+<p><strong>IupStoreAttribute</strong> can also be used to set global attributes, just set the element 
+handle to NULL.</p>
 <h3>See Also</h3>
-<p><a href="iupsetattribute.html">IupSetAttribute</a>, 
+<p><a href="iupstoreattribute.html">IupStoreAttribute</a>, 
+<a href="iupsetattribute.html">IupSetAttribute</a>, 
 <a href="iupgetglobal.html">IupGetGlobal</a>, <a href="iupsetglobal.html">IupSetGlobal</a></p>
 
 </body>
