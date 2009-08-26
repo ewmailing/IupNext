@@ -339,33 +339,44 @@ int  iupDataEntry(int    maxlin,
   return bt;
 }
 
-int IupGetFile(char* file)
+static void iupStrSplitFileName(const char* filename, char *dir, char *filter)
 {
-  Ihandle *dlg = 0;
-  int i,ret,n;
-  char filter[4096] = "*.*";
-  char dir[4096];
-
-  if (!file) return -1;
-
-  dlg = IupFileDlg();
-
-  n = strlen(file);
+  int i, n = strlen(filename);
 
   /* Look for last folder separator and split filter from directory */
   for (i=n-1;i>=0; i--)
   {
-    if (file[i] == '\\' || file[i] == '/') 
+    if (filename[i] == '\\' || filename[i] == '/') 
     {
-      strncpy(dir, file, i+1);
-      dir[i+1] = 0;   
+      if (dir)
+      {
+        strncpy(dir, filename, i+1);
+        dir[i+1] = 0;
+      }
 
-      strcpy(filter, file+i+1);
-      filter[n-i] = 0;
+      if (filter)
+      {
+        strcpy(filter, filename+i+1);
+        filter[n-i] = 0;
+      }
 
-      break;
+      return;
     }
   }
+}
+
+int IupGetFile(char* filename)
+{
+  Ihandle *dlg = 0;
+  int ret;
+  char filter[4096] = "*.*";
+  static char dir[4096] = "";  /* static will make the dir persist from one call to another if not defined */
+
+  if (!filename) return -1;
+
+  dlg = IupFileDlg();
+
+  iupStrSplitFileName(filename, dir, filter);
 
   IupSetAttribute(dlg, "FILTER", filter);
   IupSetAttribute(dlg, "DIRECTORY", dir);
@@ -380,7 +391,11 @@ int IupGetFile(char* file)
   if (ret != -1)
   {
     char* value = IupGetAttribute(dlg, "VALUE");
-    if (value) strcpy(file, value);
+    if (value) 
+    {
+      strcpy(filename, value);
+      iupStrSplitFileName(filename, dir, NULL);
+    }
   }
 
   IupDestroy(dlg);

@@ -15,7 +15,7 @@
 
 <h2>IupGetFile</h2>
 <p>Shows a modal dialog of the native interface 
-  system to select a filename. Uses the <a href="iupfiledlg.html">IupFileDlg</a> element.</p>
+  system to select a filename. Uses the <strong>IupFileDlg</strong> element.</p>
 <h3>Creation and Show</h3>
 <dl>
   <pre>int IupGetFile(char *<strong>filename</strong>); [in C]
@@ -37,12 +37,14 @@ iup.GetFile(<strong>filename</strong>: string) -&gt; (<strong>filename</strong>:
 <h3>Notes</h3>
 <p>The <b>IupGetFile</b> function does not allocate memory space to store the complete filename entered by the 
   user. Therefore, the file parameter must be large enough to contain the directory and file names.</p>
+<p>The function will reuse the directory from one call to another, so in the 
+next call will open in the directory of the last selected file.</p>
 <p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 
   global attribute called &quot;ICON&quot; as the dialog icon if it is defined.</p>
 <h3>Examples</h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <h3>See Also</h3>
-<p><a href="iupmessage.html">IupMessage</a>, <a href="iupscanf.html">IupScanf</a>,
+<p> <a href="iupfiledlg.html">IupFileDlg</a>, <a href="iupmessage.html">IupMessage</a>, <a href="iupscanf.html">IupScanf</a>,
   <a href="iuplistdialog.html">IupListDialog</a>, <a href="iupalarm.html">IupAlarm</a>,
   <a href="../func/iupsetlanguage.html">IupSetLanguage</a>.</p>
 

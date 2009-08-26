@@ -280,6 +280,22 @@ static void new_gettext(void)
     printf("CANCEL\n");
 }
 
+static void new_getfile(void)
+{
+  char filename[1024] = "*.*";
+  int ret = IupGetFile(filename);
+  if (ret!=-1)
+  {
+    printf("OK\n");
+    if (ret == 0)
+      printf("File(%s)\n", filename);
+    else
+      printf("New File(%s)\n", filename);
+  }
+  else
+    printf("CANCEL\n");
+}
+
 static void new_list(void)
 {
   int ret;   
@@ -364,6 +380,9 @@ static int k_any(Ihandle *ih, int c)
   case K_a:
     new_alarm();
     break;
+  case K_g:
+    new_getfile();
+    break;
   case K_t:
     new_gettext();
     break;
@@ -394,6 +413,7 @@ void PreDialogsTest(void)
               "d = IupFileDlg(DIR)\n"
               "a = IupAlarm\n"
               "t = IupGetText\n"
+              "g = IupGetFile\n"
               "l = IupListDialog\n"
               "Esc = quit";
   Ihandle *dlg = IupDialog(IupVbox(IupLabel(msg), NULL));
