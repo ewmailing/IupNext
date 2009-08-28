@@ -848,12 +848,13 @@ static void iParamSetInterval(char* extra, Ihandle* param)
   max = iParamGetNextStrItem(extra, ',', &count);  extra += count;
   step = iParamGetNextStrItem(extra, ',', &count);  
 
-  if (max[0] && step[0])
+  if (max[0])
   {
     iupAttribSetStr(param, "INTERVAL", "1");
     iupAttribStoreStr(param, "MIN", min);
     iupAttribStoreStr(param, "MAX", max);
-    iupAttribStoreStr(param, "STEP", step);
+    if (step[0])
+      iupAttribStoreStr(param, "STEP", step);
   }
   else
   {
@@ -914,7 +915,7 @@ static char* iParamGetStrExtra(char* line, char start, char end, int *count)
     *count = 0;
     return NULL;
   }
-  line++;
+  line++; /* skip start */
 
   while (line[i] != '\n' && line[i] != 0)
   {
