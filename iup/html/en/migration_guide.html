@@ -124,7 +124,9 @@ mark, or define HIDEMARK=NO. If not done the item will not be checkable.</p>
 
 <p>In <strong>IupMatrix</strong> if the last column is not completely visible, 
 then adjust the matrix size manually or let the natural size adjust it for you 
-using NUMCOL_VISIBLE_LAST=YES and NUMLIN_VISIBLE_LAST=YES.</p>
+using NUMCOL_VISIBLE_LAST=YES and NUMLIN_VISIBLE_LAST=YES. Since the selection 
+is made only using the mouse pressing a key will NOT clear the selection 
+anymore. You can still do that setting MARKED=NULL in the K_ANY callback.</p>
 
 <p><span class="style1">In <strong>IupTree</strong> DEPTH is now a read-only attribute, 
 use the INSERT* attributes to properly add nodes.</span> <span class="style1">

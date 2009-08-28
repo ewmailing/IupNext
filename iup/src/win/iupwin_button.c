@@ -518,7 +518,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     {
       iupwinButtonUp(ih, msg, wp, lp);
 
-      /* BN_CLICKED will NOT be notified */
+      /* BN_CLICKED will NOT be notified when not receiving the focus */
       if (msg==WM_LBUTTONUP && !iupAttribGetInt(ih, "FOCUSONCLICK"))
       {
         Icallback cb = IupGetCallback(ih, "ACTION");
@@ -528,6 +528,17 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
 
       break;
     }
+  case WM_KEYDOWN:
+  case WM_SYSKEYDOWN:
+    if (wp==VK_RETURN)
+    {
+      /* enter activates the button */
+      iupdrvActivate(ih);
+
+      *result = 0;
+      return 1;   /* abort default processing */
+    }
+    break;
   case WM_MOUSELEAVE:
     if (!iupwin_comctl32ver6)
     {

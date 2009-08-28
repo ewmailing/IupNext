@@ -254,6 +254,8 @@ int iupwinKeyEvent(Ihandle* ih, int wincode, int press)
           return 0;
       }
     }
+
+    iupKeyCallDefaultButtons(ih, code);
   }
   else
   {

@@ -198,7 +198,6 @@ int iupKeyCallKeyPressCb(Ihandle *ih, int code, int press)
   return IUP_DEFAULT;
 }
 
-/* Called by Motif and GTK only */
 void iupKeyCallDefaultButtons(Ihandle* ih, int key)
 {
   if (key!=K_CR && key!=K_ESC) 

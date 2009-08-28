@@ -323,9 +323,13 @@ static Ihandle* winContainerWmCommandGetIhandle(Ihandle *ih, WPARAM wp, LPARAM l
   else 
   {
     if (lp==0)
-      child = ih;                              /* dialog */
+      child = ih;                              /* native parent */
     else
+    {
       child = iupwinHandleGet((void*)lp);       /* control */
+      if (!child)
+        child = iupwinHandleGet((void*)GetParent((HWND)lp));       /* control */
+    }
   }
 
   return child;
@@ -341,36 +345,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_COMMAND:
     {
       Ihandle* child = winContainerWmCommandGetIhandle(ih, wp, lp);
-
-      if (child == ih) /* dialog */
-      {
-        if (HIWORD(wp) == 0)
-        {
-          char key[5];
-          Ihandle* bt;
-          char* default_but = LOWORD(wp) == IDOK? "DEFAULTENTER": LOWORD(wp) == IDCANCEL? "DEFAULTESC": NULL;
-
-          if (LOWORD(wp) == IDOK)  /* the current button is activated */
-          {
-            Ihandle* focus = IupGetFocus();
-            if (iupObjectCheck(focus) && iupStrEqual(focus->iclass->name, "button"))
-            {
-              iupdrvActivate(focus);
-              break;
-            }
-          }
-
-          iupdrvGetKeyState(key);
-          if (iupStrEqual(key, "    "))
-          {
-            /* try the default buttons */
-            bt = IupGetAttributeHandle(ih, default_but);
-            if (iupObjectCheck(bt) && iupStrEqual(bt->iclass->name, "button"))
-              iupdrvActivate(bt);
-          }
-        }
-      }
-      else if (child)
+      if (child)
       {
         IFnii cb = (IFnii)IupGetCallback(child, "_IUPWIN_COMMAND_CB");
         if (cb)
