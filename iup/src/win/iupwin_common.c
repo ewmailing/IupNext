@@ -235,7 +235,10 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
     {
       int ret;
       if (wp == VK_SNAPSHOT || wp == VK_RETURN || wp == VK_ESCAPE) /* called only on key up */
+      {
         ret = iupwinKeyEvent(ih, (int)wp, 1);
+        ret = iupwinKeyEvent(ih, (int)wp, 0);
+      }
       else
         ret = iupwinKeyEvent(ih, (int)wp, 0);
 

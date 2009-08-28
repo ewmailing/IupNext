@@ -1628,6 +1628,26 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       }
 
       PostMessage(ih->handle, WM_CARET, 0, 0L);
+
+      if (ret)       /* if abort processing, then the result is 0 */
+      {
+        *result = 0;
+        return 1;
+      }
+      else
+        return 0;  /* already processed at the begining of this function */
+    }
+  case WM_KEYUP:
+    {
+      PostMessage(ih->handle, WM_CARET, 0, 0L);
+
+      if (ih->data->is_multiline && wp == VK_RETURN)
+      {
+        /* avoid duplicate callback call because of iupwinBaseProc processing */
+        ret = iupwinKeyEvent(ih, (int)wp, 0);
+        if (!ret)
+          return 0;
+      }
       break;
     }
   case WM_CLEAR:
@@ -1677,11 +1697,6 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
         ret = 1;
       }
 
-      PostMessage(ih->handle, WM_CARET, 0, 0L);
-      break;
-    }
-  case WM_KEYUP:
-    {
       PostMessage(ih->handle, WM_CARET, 0, 0L);
       break;
     }
@@ -1742,12 +1757,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     return 1;
   }
   else
-  {
-    if (msg==WM_KEYDOWN)
-      return 0;
-    else
-      return iupwinBaseProc(ih, msg, wp, lp, result);
-  }
+    return iupwinBaseProc(ih, msg, wp, lp, result);
 }
 
 static void winTextCreateSpin(Ihandle* ih)
