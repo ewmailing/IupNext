@@ -105,11 +105,18 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
 
         iupMatrixFocusSet(ih, lin, col);
 
+        /* process mark before EnterCell */
+        if (ih->data->mark_mode != IMAT_MARK_NO)
+          iupMatrixMarkMouseItem(ih, ctrl, lin, col);
+
         iupMatrixAuxCallEnterCellCb(ih);
       }
-
-      if (ih->data->mark_mode != IMAT_MARK_NO)
-        iupMatrixMarkMouseItem(ih, ctrl, lin, col);
+      else
+      {
+        /* only process marks if at titles */
+        if (ih->data->mark_mode != IMAT_MARK_NO)
+          iupMatrixMarkMouseItem(ih, ctrl, lin, col);
+      }
     }
   }
 }

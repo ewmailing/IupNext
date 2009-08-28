@@ -292,9 +292,12 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
     case K_UP:
       if (IupGetInt(ih, "CARET") == 1)
       {
-        /* if at first line */
+        /* if at the first line of the text */
         if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
-          iupMatrixProcessKeyPress(ih_matrix,c);
+        {
+          iupMatrixProcessKeyPress(ih_matrix, c);  
+          return IUP_IGNORE;
+        }
       }
       break;
     case K_DOWN:
@@ -302,11 +305,14 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
         char* value = IupGetAttribute(ih, "VALUE");
         if (value)
         {
-          /* if at last line */
+          /* if at the last line of the text */
           if (iupStrLineCount(value) == IupGetInt(ih, "CARET"))
           {
             if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
-              iupMatrixProcessKeyPress(ih_matrix, c);
+            {
+              iupMatrixProcessKeyPress(ih_matrix, c);  
+              return IUP_IGNORE;
+            }
           }
         }
       }
@@ -314,9 +320,12 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
     case K_LEFT:
       if (IupGetInt(ih, "CARETPOS") == 0)
       {
-        /* if at first character */
+        /* if at the first character */
         if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
-          iupMatrixProcessKeyPress(ih_matrix,c);
+        {
+          iupMatrixProcessKeyPress(ih_matrix, c);  
+          return IUP_IGNORE;
+        }
       }
       break;
     case K_RIGHT:
@@ -324,21 +333,32 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
         char* value = IupGetAttribute(ih, "VALUE");
         if (value)
         {
-          /* if at last character */
+          /* if at the last character */
           if ((int)strlen(value) == IupGetInt(ih, "CARETPOS"))
           {
             if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
-              iupMatrixProcessKeyPress(ih_matrix, c);
+            {
+              iupMatrixProcessKeyPress(ih_matrix, c);  
+              return IUP_IGNORE;
+            }
           }
         }
       }
       break;
     case K_ESC:
       iMatrixEditCancel(ih_matrix, 1, 0, 0); /* set focus + NO update + NO ignore */
-      break;
+      return IUP_IGNORE;
     case K_CR:
       if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
-        iupMatrixProcessKeyPress(ih_matrix, K_CR+2000);  
+      {
+        if (iupMatrixAuxCallLeaveCellCb(ih_matrix) != IUP_IGNORE)
+        {
+          iupMatrixScrollKeyCr(ih_matrix);
+          iupMatrixAuxCallEnterCellCb(ih_matrix);
+        }
+        iupMatrixDrawUpdate(ih_matrix);
+        return IUP_IGNORE;
+      }
       break;
   }
 
@@ -362,12 +382,20 @@ static int iMatrixEditDropDownKeyAny_CB(Ihandle* ih, int c)
   switch (c)
   {
     case K_CR:
-      if(iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
-        iupMatrixProcessKeyPress(ih_matrix, K_CR+2000);  
+      if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
+      {
+        if (iupMatrixAuxCallLeaveCellCb(ih_matrix) != IUP_IGNORE)
+        {
+          iupMatrixScrollKeyCr(ih_matrix);
+          iupMatrixAuxCallEnterCellCb(ih_matrix);
+        }
+        iupMatrixDrawUpdate(ih_matrix);
+        return IUP_IGNORE;
+      }
       break;
     case K_ESC:
       iMatrixEditCancel(ih_matrix, 1, 0, 0); /* set focus + NO update + NO ignore */
-      break;
+      return IUP_IGNORE;
   }
 
   return IUP_CONTINUE;

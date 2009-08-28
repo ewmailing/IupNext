@@ -34,14 +34,7 @@
 
 int iupMatrixProcessKeyPress(Ihandle* ih, int c)
 {
-  /* This function is also called from inside the keyboard callbacks 
-     of the Text and Dropdown list when in edition mode */
-
   int ret = IUP_IGNORE; /* default for processed keys */
-
-  /* Hide (off) the marked cells if the key is not tab/del */
-  if (c != K_TAB && c != K_sTAB && c != K_DEL && c != K_sDEL)
-    iupMatrixMarkClearAll(ih, 1);
 
   /* If the focus is not visible, a scroll is done for that the focus to be visible */
   if (!iupMatrixAuxIsCellFullVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
@@ -49,13 +42,6 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
 
   switch (c)
   {
-    case K_CR+2000:   /* used by the iMatrixEditTextKeyAny_CB and iMatrixEditDropDownKeyAny_CB */
-      if (iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
-        break;
-      iupMatrixScrollKeyCr(ih);
-      iupMatrixAuxCallEnterCellCb(ih);
-      break;
-
     case K_cHOME:
     case K_sHOME:
     case K_HOME:

@@ -267,6 +267,12 @@ static int addcol(Ihandle *self)
   return IUP_DEFAULT;
 }
 
+static int bt_cb(Ihandle *self) 
+{
+  printf("DEFAULTENTER\n"); 
+  return IUP_DEFAULT;
+}
+
 static void createmenu(void)
 {
   Ihandle* menu = IupMenu(
@@ -282,7 +288,7 @@ static void createmenu(void)
 
 void MatrixCbsTest(void)
 {
-  Ihandle *dlg;
+  Ihandle *dlg, *bt;
  
   IupSetFunction("removeline", (Icallback)removeline);
   IupSetFunction("addline", (Icallback)addline);
@@ -291,11 +297,15 @@ void MatrixCbsTest(void)
   IupSetFunction("redraw", (Icallback)redraw);
 
   createmenu();
+
+  bt = IupButton("Button", NULL);
+  IupSetCallback(bt, "ACTION", bt_cb);
   
   dlg = IupDialog(
+//          IupZbox(
           IupTabs(
             IupSetAttributes(
-              IupVbox((create_mat()), IupText(""), IupLabel("Label Text"), IupVal("HORIZONTAL"), 
+              IupVbox((create_mat()), bt, IupText(""), IupLabel("Label Text"), IupVal("HORIZONTAL"), 
                 NULL), "MARGIN=10x10, GAP=10, TABTITLE=Test1"),
             IupSetAttributes(
               IupVbox(IupFrame(create_mat()), IupText(""), IupLabel("Label Text"), IupVal("HORIZONTAL"), 
@@ -305,6 +315,7 @@ void MatrixCbsTest(void)
             NULL)); 
   IupSetAttribute(dlg,"TITLE", "IupMatrix");
   IupSetAttribute(dlg,"MENU", "mymenu");
+  IupSetAttributeHandle(dlg,"DEFAULTENTER", bt);
 //  IupSetAttribute(dlg,"BGCOLOR", "255 0 255");
 
   //IupSetAttribute(dlg,"COMPOSITED", "YES");

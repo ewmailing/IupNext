@@ -16,7 +16,7 @@ static char data[3][3][50] =
 static char* value_cb(Ihandle *self, int lin, int col)
 {
   if (lin == 0 || col == 0)
-    return NULL;
+    return "Title";
   return data[lin-1][col-1];
 }
 
@@ -36,8 +36,6 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "3");
   
-//  IupSetAttribute(mat, "HEIGHT0", "10");
-
 //  IupSetAttribute(mat, "WIDTH2", "90");
 //  IupSetAttribute(mat, "HEIGHT2", "30");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
@@ -46,6 +44,10 @@ static Ihandle* create_matrix(void)
   IupSetCallback(mat,"VALUE_CB",(Icallback)value_cb);
   IupSetCallback(mat,"VALUE_EDIT_CB",(Icallback)value_edit_cb);
 
+//  IupSetAttribute(mat, "HEIGHT0", "10");
+//  IupSetAttribute(mat, "WIDTH0", "90");
+//  IupSetAttribute(mat,"MARKMODE","LIN");
+//  IupSetAttribute(mat,"MARKMULTIPLE","NO");
 
   //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");
   //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");
