@@ -204,9 +204,12 @@ the scrollbar. When
   lines, columns, (lines <span class="style2">or</span> columns), and cells. Possible values: &quot;NO&quot;, &quot;LIN&quot;, &quot;COL&quot;, 
     &quot;LINCOL&quot; or &quot;CELL&quot;. Default: &quot;NO&quot; 
     (no mark).</p>
-<p><strong><a name="MARK">MARK</a><em>L:C</em></strong>: marks a cell when 
-MARKMODE=CELL, and returns cell mark independent from MARKMODE. Can be &quot;1&quot; or 
-&quot;0&quot;. (since 3.0)</p>
+<p><strong><a name="MARK">MARK</a><em>L:C</em></strong>: marks a cell, a line or 
+a column depending on 
+MARKMODE, and returns cell, line or column mark state according to MARKMODE. Can be &quot;1&quot; or 
+&quot;0&quot;. If MARKMODE=LIN,COL,LINCOL use 0 to mark only the other element 
+(ex: &quot;0:3&quot; set/get for column 3). Even when MARKMODE=LIN,COL,LINCOL you can 
+specify a single cell address. (since 3.0)</p>
 <p><strong><a name="MARKED">MARKED</a></strong>:
   String of &#39;0&#39; or &#39;1&#39; characters, informing which cells are 
   marked (indicated by value &#39;1&#39;). Use NULL to clear all marks, returns 
@@ -293,7 +296,7 @@ ALIGNMENTn, BGCOLOR*, FGCOLOR*, FONT*, VALUE, FRAME*COLOR. Global and size attri
 <a href="../attrib/iup_mask.html">MASK</a> auxiliary attributes are also available 
 adding the line and column at the end of the attribute name.</p>
 <p><strong><a name="MULTILINE">MULTILINE</a></strong>: allows the edition of 
-multiple lines.&nbsp; </p>
+multiple lines.&nbsp;Use Shift+Enter to add lines. Enter will end the editing.</p>
 <p><b><a name="SELECTION">SELECTION</a></b>:
   Allows specifying and verifying selection 
   interval 

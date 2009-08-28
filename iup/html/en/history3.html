@@ -62,11 +62,13 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="hist_changed">Changed:</span>
     in <strong>IupMatrix</strong> since the selection is made only using the 
 	mouse, by pressing a key will NOT clear the selection anymore. You can still 
-	do that setting MARKED=NULL in the K_ANY callback.</li>
+	do that setting MARKED=NULL in the K_ANY callback. Improved MARKL:C to be 
+	more flexible for other MARKMODE options.</li>
 	<li><span class="hist_fixed">Fixed:</span> NUMCOL and NUMLIN when set to 0 
 	in <strong>IupMatrix</strong>. Double click in a title cell was entering in edit mode at the 
 	focus cell. Marks were processed after ENTERCELL_CB when the user single 
-	click a cell. </li>
+	click a cell. Enter key processed also for the next cell when MULTIPLE=YES 
+	after editing ended.</li>
 	<li><span class="hist_fixed">Fixed:</span> STARTFOCUS in Motif and Win32 for
 	<strong>IupDialog</strong> where not working. Now STARTFOCUS is set only if 
 	SHOW_CB did not changed the current focus.</li>
@@ -94,6 +96,9 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	DEFAULTENTER and DEFAULTESC in Windows when focus is inside an <strong>
 	IupTabs</strong>. Also in Windows they were processed before K_ANY, so K_ANY 
 	could not abort them by returning IUP_IGNORE.</li>
+	<li><span class="hist_fixed">Fixed:</span>
+	K_ANY called twice for K_CR when <strong>IupText</strong> has multiple lines 
+	in Windows.</li>
 
 </ul>
 

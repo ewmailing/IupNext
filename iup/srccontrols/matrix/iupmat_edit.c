@@ -176,6 +176,13 @@ int iupMatrixEditShow(Ihandle* ih)
   char* mask;
   int w, h, x, y;
 
+  /* work around for Windows when using Multiline */
+  if (iupAttribGet(ih, "_IUPMAT_IGNORE_SHOW"))
+  {
+    iupAttribSetStr(ih, "_IUPMAT_IGNORE_SHOW", NULL);
+    return 0;
+  }
+
   /* not active */
   if(!IupGetInt(ih, "ACTIVE"))
     return 0;
@@ -351,6 +358,12 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
     case K_CR:
       if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
       {
+        if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Win32") && IupGetInt(ih, "MULTILINE"))
+        {
+          /* work around for Windows when using Multiline */
+          iupAttribSetStr(ih_matrix, "_IUPMAT_IGNORE_SHOW", "1");
+        }
+
         if (iupMatrixAuxCallLeaveCellCb(ih_matrix) != IUP_IGNORE)
         {
           iupMatrixScrollKeyCr(ih_matrix);

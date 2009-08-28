@@ -263,11 +263,21 @@ void TextTest(void)
 
 //  IupSetGlobal("UTF8AUTOCONVERT", "NO");
 
+  text = IupText (NULL);
+  IupSetAttribute(text, "EXPAND", "HORIZONTAL");
+//  IupSetAttribute(text, "VALUE", "Single Line Text");
+  IupSetAttribute(text, "CUEBANNER", "Enter Attribute Value Here");
+  IupSetAttribute(text, "NAME", "text");
+  IupSetAttribute(text, "TIP", "Attribute Value");
+
+  opt = IupToggle("Set/Get", NULL);
+  IupSetAttribute (opt, "VALUE", "ON");
+  IupSetHandle ("text2multi", opt);
+
   mltline = IupMultiLine(NULL);  
 //  mltline = IupText(NULL);  
-  text = IupText (NULL);
-  opt = IupToggle("Set/Get", NULL);
-  
+//  IupSetAttribute(mltline, "MULTILINE", "YES");
+  IupSetAttribute(mltline, "NAME", "mltline");
 
   IupSetCallback(mltline, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(mltline, "BUTTON_CB",    (Icallback)button_cb);
@@ -277,11 +287,10 @@ void TextTest(void)
   IupSetCallback(mltline, "KILLFOCUS_CB", (Icallback)killfocus_cb);
   IupSetCallback(mltline, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
   IupSetCallback(mltline, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
-  IupSetCallback(mltline, "ACTION", (Icallback)action);
+  //IupSetCallback(mltline, "ACTION", (Icallback)action);
   IupSetCallback(mltline, "K_ANY", (Icallback)k_any);
   IupSetCallback(mltline, "K_F2", (Icallback)k_f2);
   IupSetCallback(mltline, "CARET_CB", (Icallback)caret_cb);
-//  IupSetAttribute(mltline, "MULTILINE", "YES");
 //  IupSetAttribute(mltline, "WORDWRAP", "YES");
 //  IupSetAttribute(mltline, "BORDER", "NO");
 //  IupSetAttribute(mltline, "AUTOHIDE", "YES");
@@ -294,23 +303,17 @@ void TextTest(void)
 //  IupSetAttribute(mltline, "FONT", "Helvetica, 14");
 //  IupSetAttribute(mltline, "MASK", IUP_MASK_FLOAT);
 //  IupSetAttribute(mltline, "FILTER", "UPPERCASE");
-  IupSetAttribute (opt, "VALUE", "ON");
 //  IupSetAttribute(mltline, "ALIGNMENT", "ACENTER");
 
   /* Turns on multiline expand and text horizontal expand */
   IupSetAttribute(mltline, "SIZE", "80x40");
   IupSetAttribute(mltline, "EXPAND", "YES");
-  IupSetAttribute(text, "EXPAND", "HORIZONTAL");
-
-//  IupSetAttribute(text, "VALUE", "Single Line Text");
-  IupSetAttribute(text, "CUEBANNER", "Enter Attribute Value Here");
 
   formatting = 0;
   if (formatting)          /* just to make easier to comment this section */
   {
-    IupSetAttribute(mltline, "FORMATTING", "YES");
-
     /* formatting before Map */
+    IupSetAttribute(mltline, "FORMATTING", "YES");
 
     formattag = IupUser();
     IupSetAttribute(formattag, "ALIGNMENT", "CENTER");
@@ -326,12 +329,6 @@ void TextTest(void)
     IupSetAttribute(formattag, "SELECTION", "3,7:3,11");
     IupSetAttribute(mltline, "ADDFORMATTAG_HANDLE", (char*)formattag);
   }
-
-  /* Associates handles to multiline, text and opt */
-  IupSetHandle ("text2multi", opt);
-  IupSetAttribute(mltline, "NAME", "mltline");
-  IupSetAttribute(text, "NAME", "text");
-  IupSetAttribute(text, "TIP", "Attribute Value");
 
   /* Creates buttons */
 //  btn_append = IupButton ("APPEND ηγυασι", NULL);   // Windows-1252

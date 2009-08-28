@@ -594,42 +594,72 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   int lin = 0, col = 0;
 
-  if (ih->data->mark_mode != IMAT_MARK_CELL)
+  if (ih->data->mark_mode == IMAT_MARK_NO)
     return 0;
 
   if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
   {
-    int mark;
-
     if (!iupMatrixCheckCellPos(ih, lin, col))
       return 0;
 
-    if (lin == 0 || col == 0) /* title can NOT have a mark */
-      return 0;
-
-    mark = iupStrBoolean(value);
-
-    if (ih->data->callback_mode)
+    if (ih->data->mark_mode == IMAT_MARK_CELL)
     {
-      IFniii markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
-      if (markedit_cb)
-        markedit_cb(ih, lin, col, mark);
-      else if (mark)
-        return 1;  /* store the attribute */
+      int mark;
+
+      if (lin == 0 || col == 0) /* title can NOT have a mark */
+        return 0;
+
+      mark = iupStrBoolean(value);
+
+      if (ih->data->callback_mode)
+      {
+        IFniii markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
+        if (markedit_cb)
+          markedit_cb(ih, lin, col, mark);
+        else if (mark)
+          return 1;  /* store the attribute */
+      }
+      else
+      {
+        if (mark)
+          ih->data->cells[lin][col].flags |= IUPMAT_MARK;
+        else
+          ih->data->cells[lin][col].flags &= ~IUPMAT_MARK;
+      }
+
+      if (ih->handle)
+      {
+        /* This assumes that the matrix has been draw completely previously */
+        iupMatrixPrepareDrawData(ih);
+        iupMatrixDrawCells(ih, lin, col, lin, col);
+      }
     }
     else
     {
-      if (mark)
-        ih->data->cells[lin][col].flags |= IUPMAT_MARK;
-      else
-        ih->data->cells[lin][col].flags &= ~IUPMAT_MARK;
-    }
+      int mark = iupStrBoolean(value);
 
-    if (ih->handle)
-    {
-      /* This assumes that the matrix has been draw completely previously */
-      iupMatrixPrepareDrawData(ih);
-      iupMatrixDrawCells(ih, lin, col, lin, col);
+      if (ih->data->mark_mode & IMAT_MARK_LIN && lin!=0)
+      {
+        if (mark)
+          ih->data->lines.flags[lin] |= IUPMAT_MARK;
+        else
+          ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
+      }
+
+      if (ih->data->mark_mode & IMAT_MARK_COL && col!=0)
+      {
+        if (mark)
+          ih->data->columns.flags[col] |= IUPMAT_MARK;
+        else
+          ih->data->columns.flags[col] &= ~IUPMAT_MARK;
+      }
+
+      if (ih->handle)
+      {
+        /* This assumes that the matrix has been draw completely previously */
+        iupMatrixPrepareDrawData(ih);
+        iupMatrixDrawCells(ih, lin, col, lin, col);
+      }
     }
   }
 
@@ -648,11 +678,11 @@ char* iupMatrixGetMarkAttrib(Ihandle* ih, const char* name_id)
     if (!iupMatrixCheckCellPos(ih, lin, col))
       return NULL;
 
-    if (lin == 0 || col == 0) /* title can NOT have the focus */
-      return NULL;
-
     if (ih->data->mark_mode == IMAT_MARK_CELL)
     {
+      if (lin == 0 || col == 0) /* title can NOT have a mark */
+        return NULL;
+
       if (ih->data->callback_mode)
       {
         IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
@@ -676,10 +706,13 @@ char* iupMatrixGetMarkAttrib(Ihandle* ih, const char* name_id)
     }
     else
     {
-      if (ih->data->lines.flags[lin] & IUPMAT_MARK || ih->data->columns.flags[col] & IUPMAT_MARK)
+      if (ih->data->mark_mode & IMAT_MARK_LIN && lin!=0 && ih->data->lines.flags[lin] & IUPMAT_MARK)
         return "1";
-      else
-        return "0";
+
+      if (ih->data->mark_mode & IMAT_MARK_COL && col!=0 && ih->data->columns.flags[col] & IUPMAT_MARK)
+        return "1";
+
+      return "0";
     }
   }
 

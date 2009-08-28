@@ -302,36 +302,40 @@ mapped then READONLY will be set to YES.</p>
     visible page.</li>
   <li><strong>End</strong> <strong>End</strong> <strong>End</strong>: Moves the focus to the lower right corner of the 
     last page in the matrix.</li>
+	<li> <b>F2, Enter</b> or 
+<b>Space</b>: enters editing mode.</li>
+	<li><strong>Del</strong>: remove the selected cells contents.</li>
 </ul>
+<p>When the matrix is outside the edition mode, pressing any character key makes the current key to enter in the edition 
+  mode, the old text is replaced by the new one being typed. If <b>F2, Enter</b> or 
+<b>Space</b> is pressed, the current cell enters the edition mode with the 
+current text of the cell. Double-clicking a cell also 
+  enters the edition mode (in Motif the 
+  user must click again to the edit control get the focus).</p>
+<p>When using the keyboard to change the focus cell if the limit of the visible 
+area is reached then the cells are automatically scrolled. Also if a cell 
+partially visible is edited then first it is scrolled to the visible area.</p>
 <p>Inside the <b>edition mode</b>, the 
   following keys are used 
   for a text field:</p>
 <ul>
-  <li><strong>Left, Right, Up and Down arrows</strong>: If the caret is at the extremes of the text 
-    being edited then leave the edition mode and moves the focus accordingly.</li>
+  <li><strong>Left, Right, Up and Down arrows</strong>: if the caret is at the extremes of the text 
+    being edited then leave the edition mode and moves the focus accordingly. 
+	The value is confirmed.</li>
   <li><strong>Ctrl + arrows</strong>:
-    Leave the edition mode and moves the focus 
-    accordingly.</li>
+    leave the edition mode and moves the focus 
+    accordingly independent of caret position. The value is confirmed.</li>
+	<li><strong>Enter</strong>: leave the edition mode. The value is confirmed. 
+	Moves the focus to the cell bellow.</li>
+	<li><strong>Esc</strong>: leave the edition mode. The new value is ignored 
+	and the old value remains.</li>
 </ul>
-<p>When the matrix is outside the edition mode, pressing any character key makes the current key to enter in the edition 
-  mode, the old text is replaced by the new one being typed. If <b>F2, Enter</b> or 
-<b>Space</b> is pressed, the current 
-  cell enters the edition mode with the current text of the cell. If <b>Del</b> is pressed, the whole contents of the 
-  cell will be 
-  deleted. Double-clicking a cell also 
-  enters the edition mode. In Motif, when start editing using a double click, the 
-  user must click again to the edit control get the focus.</p>
-<p>When the matrix is in the edition mode, to confirm the entered value, press 
-<b>Enter</b>. 
-  By pressing <b>Esc</b>, the previous value is restored. The cell will also leave the edition mode if the user clicked 
+<p>The cell will also leave the edition mode if the user clicked 
   in another cell or in another control, then the value will be confirmed. When pressing 
 <b>Enter</b> 
   to confirm the value the focus goes to the cell bellow the current cell, if at the last line then the focus goes to 
   the cell on the left. The value confirmation depends on the
   EDITION_CB callback return code.</p>
-<p>When using the keyboard to change the focus cell if the limit of the visible 
-area is reached then the cells are automatically scrolled. Also if a cell 
-partially visible is edited then first it is scrolled to the visible area.</p>
 <h4>Marks</h4>
 <p>When a mark mode is set the cells can be marked using mouse.</p>
 <p>A marked cell will have its background attenuated to indicate that it is marked. 
