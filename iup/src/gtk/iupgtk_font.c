@@ -276,6 +276,18 @@ char* iupgtkGetPangoFontDescAttrib(Ihandle *ih)
     return (char*)gtkfont->fontdesc;
 }
 
+char* iupgtkGetFontIdAttrib(Ihandle *ih)
+{
+  IgtkFont* gtkfont = gtkFontGet(ih);
+  if (!gtkfont)
+    return NULL;
+  else
+  {
+    GdkFont* gdk_font = gdk_font_from_description(gtkfont->fontdesc);
+    return (char*)gdk_font_id(gdk_font);  /* In UNIX will return an X Font ID, in Win32 will return an HFONT */
+  }
+}
+
 int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
   IgtkFont* gtkfont = gtkFontCreateNativeFont(ih, value);

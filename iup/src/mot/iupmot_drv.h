@@ -38,6 +38,7 @@ char* iupmotGetFontListAttrib(Ihandle *ih);
 XmFontList iupmotGetFontList(const char* foundry, const char* value);
 char* iupmotFindFontList(XmFontList fontlist);
 char* iupmotGetFontStructAttrib(Ihandle *ih);
+char* iupmotGetFontIdAttrib(Ihandle *ih);
 
 /* tips */
 /* called from Enter/Leave events to check if a TIP is present. */

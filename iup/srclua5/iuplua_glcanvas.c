@@ -55,10 +55,28 @@ static int GLPalette(lua_State *L)
    return 0;
 }
 
+static int GLUseFont(lua_State *L)
+{
+   Ihandle *self = iuplua_checkihandle(L,1);
+   int first = luaL_checkint(L,2);
+   int count = luaL_checkint(L,3);
+   int list_base = luaL_checkint(L,4);
+   IupGLUseFont(self, first, count, list_base);
+   return 0;
+}
+
+static int GLWait(lua_State *L)
+{
+   IupGLWait(luaL_checkint(L,1));
+   return 0;
+}
+
 void iuplua_glcanvasfuncs_open (lua_State *L)
 {
   iuplua_register(L, GLSwapBuffers, "GLSwapBuffers");
   iuplua_register(L, GLIsCurrent, "GLIsCurrent");
   iuplua_register(L, GLMakeCurrent, "GLMakeCurrent");
   iuplua_register(L, GLPalette, "GLPalette");
+  iuplua_register(L, GLUseFont, "GLUseFont");
+  iuplua_register(L, GLWait, "GLWait");
 }

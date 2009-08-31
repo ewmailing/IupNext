@@ -49,6 +49,7 @@ void iupgtkButtonKeySetStatus(guint state, unsigned int but, char* status, int d
 
 /* font */
 char* iupgtkGetPangoFontDescAttrib(Ihandle *ih);
+char* iupgtkGetFontIdAttrib(Ihandle *ih);
 PangoFontDescription* iupgtkGetPangoFontDesc(const char* value);
 char* iupgtkFindPangoFontDesc(PangoFontDescription* fontdesc);
 void iupgtkFontUpdatePangoLayout(Ihandle* ih, PangoLayout* layout);
@@ -63,7 +64,7 @@ void iupgtkFontUpdateObjectPangoLayout(Ihandle* ih, gpointer object);
 
 /* open */
 char* iupgtkGetNativeWindowHandle(Ihandle* ih);
-void* iupgtkGetColormapFromVisual(void* visual, void* colormap);
+void iupgtkPushVisualAndColormap(void* visual, void* colormap);
 void* iupgtkGetNativeGraphicsContext(GtkWidget* widget);
 void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc);
 void iupgtkUpdateGlobalColors(GtkStyle* style);

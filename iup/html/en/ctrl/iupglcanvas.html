@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -38,7 +38,7 @@ lua control
   library (iupluagl).</p>
 <p>To link with the OpenGL libraries in Windows add:
   opengl32.lib. 
-  In Motif add before the Motif libraries: -LGL.</p>
+  In UNIX add before the X-Windows libraries: -LGL.</p>
 <p>The Lua binding does not include OpenGL functions. But you can use any OpenGL 
 binding available.</p>
 <h3><a name="Creation">Creation</a></h3>
@@ -68,53 +68,63 @@ on the native system. After the mapping, specifying these special
 <blockquote>
   <hr>
 </blockquote>
+<p><strong>ACCUM_RED_SIZE</strong>,<strong> ACCUM_GREEN_SIZE</strong>,<strong> 
+  ACCUM_BLUE_SIZE</strong> and<strong> ACCUM_ALPHA_SIZE</strong>:
+  Indicate the number of bits for representing 
+  the color components in the accumulation buffer. Value 0 means the accumulation buffer is not necessary. Default is 0.</p>
+<p><strong>ALPHA_SIZE</strong>:
+  Indicates the number of bits for 
+  representing each colors alpha component (valid only for RGBA and for hardware that store the alpha component). Default is &quot;0&quot;.</p>
 <p><strong>BUFFER</strong>:
   Indicates if the buffer will be single
   &quot;SINGLE&quot; or double 
   &quot;DOUBLE&quot;. Default is 
   &quot;SINGLE&quot;.</p>
-<p><strong>COLOR</strong>:
-  Indicates the color model to be adopted: &quot;INDEX&quot; or &quot;RGBA&quot;. Default is &quot;RGBA&quot;.</p>
 <p><strong>BUFFER_SIZE</strong>:
   Indicates the number of bits for 
   representing the color indices (valid only for INDEX). The system default is 8 (256-color palette).</p>
+<p><strong>COLOR</strong>:
+  Indicates the color model to be adopted: &quot;INDEX&quot; or &quot;RGBA&quot;. Default is &quot;RGBA&quot;.</p>
+<p><strong>COLORMAP</strong> (read-only)<strong>:</strong> Returns &quot;Colormap&quot; 
+in UNIX and &quot;HPALETTE&quot; in Win32, if COLOR=INDEX.</p>
+<p><strong>CONTEXT</strong> (read-only)<strong>:</strong> Returns &quot;GLXContext&quot; in UNIX 
+and &quot;HGLRC&quot; in Win32.</p>
+<p><strong>DEPTH_SIZE</strong>:
+  Indicates the number of bits for 
+  representing the <i>z</i> coordinate in the z-buffer. Value 0 means the z-buffer is not necessary.&nbsp;</p>
+<p><b>ERROR</b> (read-only): If an error is found, returns a string containing a description of 
+  the error in English.</p>
 <p><strong>RED_SIZE</strong>,<strong> GREEN_SIZE</strong> and<strong> 
   BLUE_SIZE</strong>:
   Indicate the number of bits for representing 
   each color component (valid only for RGBA). The system default is usually 8 for each component (True Color support).</p>
-<p><strong>ALPHA_SIZE</strong>:
-  Indicates the number of bits for 
-  representing each colors alpha component (valid only for RGBA and for hardware that store the alpha component). Default is &quot;0&quot;.</p>
-<p><strong>DEPTH_SIZE</strong>:
-  Indicates the number of bits for 
-  representing the <i>z</i> coordinate in the z-buffer. Value 0 means the z-buffer is not necessary.&nbsp;</p>
+<p><strong>REFRESHCONTEXT</strong> (write-only) [Windows Only]: action attribute 
+to refresh the internal device context when it is not owned by the window class. 
+The IupCanvas of the Win32 driver will always create a window with an owned DC, 
+but GTK in Windows will not. (since 3.0)</p>
 <p><strong>STENCIL_SIZE</strong>:
   Indicates the number of bits in the stencil 
   buffer. Value 0 means the stencil buffer is not necessary. 
   Default is 0.</p>
-<p><strong>ACCUM_RED_SIZE</strong>,<strong> ACCUM_GREEN_SIZE</strong>,<strong> 
-  ACCUM_BLUE_SIZE</strong> and<strong> ACCUM_ALPHA_SIZE</strong>:
-  Indicate the number of bits for representing 
-  the color components in the accumulation buffer. Value 0 means the accumulation buffer is not necessary. Default is 0.</p>
 <p><b>STEREO</b>: Creates a stereo GL canvas (special glasses are required to 
   visualize it correctly). Possible values: &quot;YES&quot; or &quot;NO&quot;. 
   Default: &quot;NO&quot;.</p>
 <p><strong>SHAREDCONTEXT</strong>: name of another IupGLCanvas that will share its 
   display lists and textures. That canvas must be mapped before this canvas.</p>
-<p><b>ERROR</b> (read-only): If an error is found, returns a string containing a description of 
-  the error in English.</p>
-<p><strong>CONTEXT, VISUAL</strong> and <strong>COLORMAP</strong> (read-only)<strong>:</strong> Returns &quot;GLXContext&quot;, &quot;XVisualInfo*&quot; and &quot;Colormap&quot; 
-respectively, in UNIX. And &quot;HGLRC&quot;, &quot;HDC&quot; and &quot;HPALETTE&quot; respectively, in Win32.</p>
+<p><strong>VISUAL</strong> (read-only)<strong>:</strong> Returns &quot;XVisualInfo*&quot; in UNIX 
+and &quot;HDC&quot; in Win32.</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 
 <p>The 
-  IupGLCanvas element understands all callbacks defined for a conventional canvas, 
+  <strong>IupGLCanvas</strong> element understands all callbacks defined for a conventional canvas, 
   see <a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
 <p>Addicionally:</p>
 <p><a href="../call/iup_resize_cb.html">RESIZE_CB</a>: 
   By default the resize callback sets:</p>
 <pre>glViewport(0,0,width,height);</pre>
 <h3>Auxiliary Functions</h3>
+<p>These are auxiliary functions based on the WGL and XGL extensions. Check the 
+respective documentations for more information.</p>
 <pre>void <b>IupGLMakeCurrent</b>(Ihandle* <b>ih</b>); [in C]
 <b>iup.GLMakeCurrent</b>(<b>ih</b>: ihandle) [in Lua]</pre>
 <p>Activates the given canvas as the current OpenGL context. All subsequent OpenGL commands are directed to 
@@ -126,9 +136,16 @@ respectively, in UNIX. And &quot;HGLRC&quot;, &quot;HDC&quot; and &quot;HPALETTE
 <b>iup.GLSwapBuffers</b>(<b>ih</b>: ihandle) [in Lua]</pre>
 <p>Makes the BACK buffer visible. This function is necessary when a double buffer is used.</p>
 <pre>void <b>IupGLPalette</b>(Ihandle* <b>ih</b>, int <b>index</b>, float <b>r</b>, float <b>g</b>, float <b>b</b>); [in C]
-<b>iup.GLPalette</b>(<b>ih</b>: ihandle, <b>index</b>, <b>r</b>, <b>g</b>, <b>b</b>: number); [in Lua]</pre>
+<b>iup.GLPalette</b>(<b>ih</b>: ihandle, <b>index</b>, <b>r</b>, <b>g</b>, <b>b</b>: number) [in Lua]</pre>
 <p>Defines a color in the color palette. This 
     function is necessary when INDEX color is used.</p>
+<pre>void <strong>IupGLUseFont</strong>(Ihandle* <strong>ih</strong>, int <strong>first</strong>, int <strong>count</strong>, int <strong>list_base</strong>); [in C]
+iup.<strong>GLUseFont</strong>(<strong>ih</strong>:ihandle, <strong>first</strong>, <strong>count</strong>, <strong>list_base</strong>: number) [in Lua]</pre>
+<p>Creates a bitmap display list from the current FONT attribute. (since 3.0)</p>
+<pre>void <strong>IupGLWait</strong>(int <strong>gl</strong>) [in C]
+iup.<strong>GLWait</strong>(<strong>gl</strong>: number) [in Lua]</pre>
+<p>If gl is non zero it will call glFinish or glXWaitGL, else will call GdiFlush 
+or glXWaitX. (since 3.0)</p>
 <h3><a name="Notes">Notes</a></h3>
 <p>In Windows, if the COMPOSITE attribute is enabled then the hardware 
 acceleration will be disabled.</p>

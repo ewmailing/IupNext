@@ -56,6 +56,18 @@ static void palette(void)
                (float)luaL_check_number(5));
 }
 
+static void usefont(void)
+{
+  IupGLUseFont(iuplua_checkihandle(1),
+               luaL_check_int(2),
+               luaL_check_int(3),
+               luaL_check_int(4));
+}
+
+static void glwait(void)
+{
+  IupGLWait(luaL_check_int(1));
+}
 
 int iupgllua_open (void)
 {
@@ -64,6 +76,8 @@ int iupgllua_open (void)
   iuplua_register("IupGLIsCurrent",iscurrent);
   iuplua_register("IupGLSwapBuffers",swapbuffers);
   iuplua_register("IupGLPalette",palette);
+  iuplua_register("IupGLUseFont",usefont);
+  iuplua_register("IupGLWait",glwait);
 
   iuplua_regstring("BUFFER", "IUP_BUFFER");
   iuplua_regstring("STEREO", "IUP_STEREO");

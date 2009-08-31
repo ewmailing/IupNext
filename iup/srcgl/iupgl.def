@@ -5,3 +5,5 @@ IupGLMakeCurrent
 IupGLSwapBuffers
 IupGLPalette
 IupGLIsCurrent
+IupGLUseFont
+IupGLWait

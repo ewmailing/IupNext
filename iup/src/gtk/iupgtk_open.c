@@ -48,11 +48,10 @@ void* iupdrvGetDisplay(void)
   return NULL;
 }
 
-void* iupgtkGetColormapFromVisual(void* visual, void* colormap)
+void iupgtkPushVisualAndColormap(void* visual, void* colormap)
 {
   (void)visual;
   (void)colormap;
-  return NULL;
 }
 
 static void gtkSetDrvGlobalAttrib(void)
@@ -90,7 +89,7 @@ void* iupdrvGetDisplay(void)
   return GDK_DISPLAY_XDISPLAY(display);
 }
 
-void* iupgtkGetColormapFromVisual(void* visual, void* colormap)
+void iupgtkPushVisualAndColormap(void* visual, void* colormap)
 {
   GdkColormap* gdk_colormap;
   GdkVisual *gdk_visual = gdkx_visual_get(XVisualIDFromVisual((Visual*)visual));
@@ -98,7 +97,10 @@ void* iupgtkGetColormapFromVisual(void* visual, void* colormap)
     gdk_colormap = gdk_x11_colormap_foreign_new(gdk_visual, (Colormap)colormap);
   else
     gdk_colormap = gdk_colormap_new(gdk_visual, FALSE);
-  return gdk_colormap;
+
+  gtk_widget_push_colormap(gdk_colormap);
+
+  /* gtk_widget_push_visual is now deprecated */
 }
 
 static void gtkSetDrvGlobalAttrib(void)

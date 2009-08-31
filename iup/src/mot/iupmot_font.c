@@ -315,6 +315,15 @@ char* iupmotGetFontStructAttrib(Ihandle *ih)
     return (char*)motfont->fontstruct;
 }
 
+char* iupmotGetFontIdAttrib(Ihandle *ih)
+{
+  ImotFont* motfont = motGetFont(ih);
+  if (!motfont)
+    return NULL;
+  else
+    return (char*)motfont->fontstruct->fid;
+}
+
 int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
   ImotFont *motfont = motFontCreateNativeFont(ih, value);

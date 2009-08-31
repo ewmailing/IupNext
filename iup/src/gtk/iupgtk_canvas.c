@@ -484,26 +484,21 @@ static void gtkCanvasDummyLogFunc(const gchar *log_domain, GLogLevelFlags log_le
 static int gtkCanvasMapMethod(Ihandle* ih)
 {
   GtkScrolledWindow* scrolled_window;
-  char *visual;
-  GdkColormap* default_colormap = NULL;
+  void* visual;
 
   if (!ih->parent)
     return IUP_ERROR;
 
   ih->data->sb = iupBaseGetScrollbar(ih);
 
-  visual = IupGetAttribute(ih, "VISUAL");   /* defined by the OpenGL Canvas in X11 or NULL */
+  visual = (void*)IupGetAttribute(ih, "VISUAL");   /* defined by the OpenGL Canvas in X11 or NULL */
   if (visual)
-  {
-    GdkColormap* colormap = (GdkColormap*)iupgtkGetColormapFromVisual(visual, (void*)iupAttribGet(ih, "COLORMAP"));
-    default_colormap = gtk_widget_get_default_colormap();
-    gtk_widget_set_default_colormap(colormap);
-  }
+    iupgtkPushVisualAndColormap(visual, (void*)iupAttribGet(ih, "COLORMAP"));
 
   ih->handle = gtk_drawing_area_new();
 
   if (visual)
-    gtk_widget_set_default_colormap(default_colormap);
+    gtk_widget_pop_colormap();
 
   if (!ih->handle)
       return IUP_ERROR;

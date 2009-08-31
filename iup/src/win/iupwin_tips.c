@@ -107,7 +107,7 @@ void iupwinTipsGetDispInfo(LPARAM lp)
   tips_info->lpszText = IupGetAttribute(ih, "TIP");  /* must use IupGetAttribute to use inheritance */
 
   {
-    HFONT hfont = (HFONT)iupwinGetHFontAttrib(ih);
+    HFONT hfont;
     value = iupAttribGetStr(ih, "TIPFONT");
     if (value)
     {
@@ -116,6 +116,8 @@ void iupwinTipsGetDispInfo(LPARAM lp)
       else
         hfont = iupwinGetHFont(value);
     }
+    else
+      hfont = (HFONT)iupwinGetHFontAttrib(ih);
 
     if (hfont)
     {

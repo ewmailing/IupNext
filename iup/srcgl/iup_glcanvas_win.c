@@ -31,6 +31,7 @@ struct _IcontrolData
   HDC device;
   HGLRC context;
   HPALETTE palette;
+  int is_owned_dc;
 };
 
 static int wGLCanvasDefaultResize_CB(Ihandle *ih, int width, int height)
@@ -49,7 +50,7 @@ static int wGLCanvasCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static int wGLCanvasMapMethod(Ihandle* ih)
+static int wGLCreateContext(Ihandle* ih)
 {
   Ihandle* ih_shared;
   int number;
@@ -137,11 +138,10 @@ static int wGLCanvasMapMethod(Ihandle* ih)
   pfd.cAccumBits = pfd.cAccumRedBits + pfd.cAccumGreenBits + pfd.cAccumBlueBits + pfd.cAccumAlphaBits;
 
   /* get a device context */
-  ih->data->window = (HWND)iupAttribGet(ih, "HWND"); /* check first in the hash table, can be defined by the IupFileDlg */
-  if (!ih->data->window)
-    ih->data->window = (HWND)IupGetAttribute(ih, "HWND");  /* works for Win32 and GTK, only after mapping the IupCanvas */
-  if (!ih->data->window)
-    return IUP_NOERROR;
+  {
+    LONG style = GetClassLong(ih->data->window, GCL_STYLE);
+    ih->data->is_owned_dc = (int) ((style & CS_OWNDC) || (style & CS_CLASSDC));
+  }
 
   ih->data->device = GetDC(ih->data->window);
   iupAttribSetStr(ih, "VISUAL", (char*)ih->data->device);
@@ -178,15 +178,36 @@ static int wGLCanvasMapMethod(Ihandle* ih)
   /* create colormap for index mode */
   if (isIndex)
   {
-    LOGPALETTE lp = {0x300,1,{255,255,255,PC_NOCOLLAPSE}};
-    ih->data->palette = CreatePalette(&lp);
-    ResizePalette(ih->data->palette,1<<pfd.cColorBits);
+    if (!ih->data->palette)
+    {
+      LOGPALETTE lp = {0x300,1,{255,255,255,PC_NOCOLLAPSE}};  /* set first color as white */
+      ih->data->palette = CreatePalette(&lp);
+      ResizePalette(ih->data->palette,1<<pfd.cColorBits);
+      iupAttribSetStr(ih, "COLORMAP", (char*)ih->data->palette);
+    }
+
     SelectPalette(ih->data->device,ih->data->palette,FALSE);
     RealizePalette(ih->data->device);
-    iupAttribSetStr(ih, "COLORMAP", (char*)ih->data->palette);
   }
 
   return IUP_NOERROR;
+}
+
+static int wGLCanvasMapMethod(Ihandle* ih)
+{
+  /* get a device context */
+  ih->data->window = (HWND)iupAttribGet(ih, "HWND"); /* check first in the hash table, can be defined by the IupFileDlg */
+  if (!ih->data->window)
+    ih->data->window = (HWND)IupGetAttribute(ih, "HWND");  /* works for Win32 and GTK, only after mapping the IupCanvas */
+  if (!ih->data->window)
+    return IUP_NOERROR;
+
+  {
+    LONG style = GetClassLong(ih->data->window, GCL_STYLE);
+    ih->data->is_owned_dc = (int) ((style & CS_OWNDC) || (style & CS_CLASSDC));
+  }
+
+  return wGLCreateContext(ih);
 }
 
 static void wGLCanvasUnMapMethod(Ihandle* ih)
@@ -204,6 +225,28 @@ static void wGLCanvasUnMapMethod(Ihandle* ih)
 
   if (ih->data->device)
     ReleaseDC(ih->data->window, ih->data->device);
+}
+
+static int wGLCanvasSetRefreshContextAttrib(Ihandle* ih, const char* value)
+{
+  if (!ih->data->is_owned_dc)
+  {
+    if (ih->data->context)
+    {
+      if (ih->data->context == wglGetCurrentContext())
+        wglMakeCurrent(NULL, NULL);
+
+      wglDeleteContext(ih->data->context);
+    }
+
+    if (ih->data->device)
+      ReleaseDC(ih->data->window, ih->data->device);
+
+    wGLCreateContext(ih);
+  }
+
+  (void)value;
+  return 0;
 }
 
 static Iclass* wGlCanvasGetClass(void)
@@ -226,6 +269,8 @@ static Iclass* wGlCanvasGetClass(void)
   iupClassRegisterAttribute(ic, "CONTEXT", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "VISUAL", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "COLORMAP", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
+
+  iupClassRegisterAttribute(ic, "REFRESHCONTEXT", NULL, wGLCanvasSetRefreshContextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   return ic;
 }
@@ -332,3 +377,35 @@ void IupGLPalette(Ihandle* ih, int index, float r, float g, float b)
   }
 }
 
+void IupGLUseFont(Ihandle* ih, int first, int count, int list_base)
+{
+  HFONT old_font, font;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  /* must be an IupGLCanvas */
+  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+    return;
+
+  /* must be mapped */
+  if (!ih->data->window)
+    return;
+
+  font = (HFONT)IupGetAttribute(ih, "HFONT");
+  if (font)
+  {
+    old_font = SelectObject(ih->data->device, font);
+    wglUseFontBitmaps(ih->data->device, first, count, list_base);
+    SelectObject(ih->data->device, old_font);
+  }
+}
+
+void IupGLWait(int gl)
+{
+  if (gl)
+    glFinish();
+  else
+    GdiFlush();
+}

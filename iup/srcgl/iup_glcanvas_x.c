@@ -222,14 +222,15 @@ static int xGLCanvasMapMethod(Ihandle* ih)
   iupAttribSetStr(ih, "CONTEXT", (char*)ih->data->context);
 
   /* create colormap for index mode */
-  if (iupStrEqualNoCase(iupAttribGetStr(ih,"COLOR"), "INDEX") && ih->data->vinfo->class != StaticColor && ih->data->vinfo->class != StaticGray)
+  if (iupStrEqualNoCase(iupAttribGetStr(ih,"COLOR"), "INDEX") && 
+      ih->data->vinfo->class != StaticColor && ih->data->vinfo->class != StaticGray)
   {
     ih->data->colormap = XCreateColormap(ih->data->display, RootWindow(ih->data->display, DefaultScreen(ih->data->display)), ih->data->vinfo->visual, AllocAll);
     iupAttribSetStr(ih, "COLORMAP", (char*)ih->data->colormap);
   }
 
   if (ih->data->colormap != None)
-    IupGLPalette(ih,0,1,1,1);  /* set default background as white */
+    IupGLPalette(ih,0,1,1,1);  /* set first color as white */
 
   return IUP_NOERROR;
 }
@@ -415,4 +416,33 @@ void IupGLPalette(Ihandle* ih, int index, float r, float g, float b)
 
   XSync(ih->data->display, 0);
   XSetErrorHandler(old_handler);
+}
+
+void IupGLUseFont(Ihandle* ih, int first, int count, int list_base)
+{
+  Font font;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  /* must be an IupGLCanvas */
+  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+    return;
+
+  /* must be mapped */
+  if (!ih->data->window)
+    return;
+
+  font = (Font)IupGetAttribute(ih, "XFONTID");
+  if (font)
+    glXUseXFont(font, first, count, list_base);
+}
+
+void IupGLWait(int gl)
+{
+  if (gl)
+    glXWaitGL();
+  else
+    glXWaitX();
 }

@@ -78,21 +78,16 @@ extern "C" {
 #define IUP_NO    "NO"
 #endif
 
-/* Initialize OpenGL widget class */
 void IupGLCanvasOpen(void);
 
-/* Create an OpenGL widget instance, providing the action name */
 Ihandle *IupGLCanvas(const char *action);
 
-/* Make associated rendering context current */
 void IupGLMakeCurrent(Ihandle* ih);
 int IupGLIsCurrent(Ihandle* ih);
-
-/* Swap associated buffers (for use with double buffer) */
 void IupGLSwapBuffers(Ihandle* ih);
-
-/* Set color palette for index color mode */
 void IupGLPalette(Ihandle* ih, int index, float r, float g, float b);
+void IupGLUseFont(Ihandle* ih, int first, int count, int list_base);
+void IupGLWait(int gl);
 
 #ifdef __cplusplus
 }
