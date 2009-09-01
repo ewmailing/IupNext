@@ -123,10 +123,10 @@ static int winProgressBarMapMethod(Ihandle* ih)
     }
   }
 
-  if (!iupwin_comctl32ver6 && !iupStrBoolean(iupAttribGetStr(ih, "DASHED")))
+  if (!iupwin_comctl32ver6 && !iupAttribGetBoolean(ih, "DASHED"))
     dwStyle |= PBS_SMOOTH;
 
-  if (iupwin_comctl32ver6 && iupStrBoolean(iupAttribGetStr(ih, "MARQUEE")))
+  if (iupwin_comctl32ver6 && iupAttribGetBoolean(ih, "MARQUEE"))
   {
     dwStyle |= PBS_MARQUEE;
     ih->data->marquee = 1;

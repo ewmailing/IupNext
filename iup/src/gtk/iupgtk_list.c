@@ -1213,7 +1213,7 @@ static int gtkListMapMethod(Ihandle* ih)
       g_signal_connect(G_OBJECT(entry), "button-press-event", G_CALLBACK(gtkListEditButtonEvent), ih);  /* if connected "after" then it is ignored */
       g_signal_connect(G_OBJECT(entry), "button-release-event",G_CALLBACK(gtkListEditButtonEvent), ih);
 
-      if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+      if (!iupAttribGetBoolean(ih, "CANFOCUS"))
         GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
     }
     else
@@ -1234,7 +1234,7 @@ static int gtkListMapMethod(Ihandle* ih)
       g_signal_connect(G_OBJECT(ih->handle), "key-press-event", G_CALLBACK(iupgtkKeyPressEvent), ih);
       g_signal_connect(G_OBJECT(ih->handle), "show-help",       G_CALLBACK(iupgtkShowHelp), ih);
 
-      if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+      if (!iupAttribGetBoolean(ih, "CANFOCUS"))
         GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
       else
         GTK_WIDGET_FLAGS(box) |= GTK_CAN_FOCUS;
@@ -1280,7 +1280,7 @@ static int gtkListMapMethod(Ihandle* ih)
       iupAttribSetStr(ih, "_IUPGTK_SCROLLED_WINDOW", (char*)scrolled_window);
 
       GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS; /* focus goes only to the edit box */
-      if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+      if (!iupAttribGetBoolean(ih, "CANFOCUS"))
         GTK_WIDGET_FLAGS(entry) &= ~GTK_CAN_FOCUS;
 
       g_signal_connect(G_OBJECT(entry), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
@@ -1301,7 +1301,7 @@ static int gtkListMapMethod(Ihandle* ih)
     {
       iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
 
-      if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+      if (!iupAttribGetBoolean(ih, "CANFOCUS"))
         GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
       g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
@@ -1332,7 +1332,7 @@ static int gtkListMapMethod(Ihandle* ih)
 
     if (ih->data->sb)
     {
-      if (iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
+      if (iupAttribGetBoolean(ih, "AUTOHIDE"))
         scrollbar_policy = GTK_POLICY_AUTOMATIC;
       else
         scrollbar_policy = GTK_POLICY_ALWAYS;
@@ -1360,7 +1360,7 @@ static int gtkListMapMethod(Ihandle* ih)
     g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(iupgtkButtonEvent), ih);
   }
 
-  if (iupAttribGetInt(ih, "SORT"))
+  if (iupAttribGetBoolean(ih, "SORT"))
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), 0, GTK_SORT_ASCENDING);
 
   /* add to the parent, all GTK controls must call this. */

@@ -125,7 +125,7 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih)
     ih->expand &= children_expand; /* compose but only expand where the box can expand */
 
     /* leave room at the element for the maximum natural size of the children when homogeneous */
-    if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
+    if (iupAttribGetBoolean(ih, "HOMOGENEOUS"))
       children_natural_totalwidth = children_natural_maxwidth*children_count;
 
     /* compute the Hbox contents natural size */
@@ -186,7 +186,7 @@ static int iHboxCalcEmptyWidth(Ihandle *ih, int expand)
 
 static int iHBoxGetExpandChildren(Ihandle* ih)
 {
-  if (iupStrBoolean(iupAttribGetStr(ih, "EXPANDCHILDREN")))
+  if (iupAttribGetBoolean(ih, "EXPANDCHILDREN"))
     return IUP_EXPAND_HEIGHT;   /* in horiz. box, expand vertically */
   else
     return 0;
@@ -206,7 +206,7 @@ static void iHboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
     if (expand_children)
       ih->expand |= expand_children;
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
+    if (iupAttribGetBoolean(ih, "HOMOGENEOUS"))
     {
       homogeneous_width = iHboxCalcHomogeneousWidth(ih);
       ih->data->homogeneous_size = homogeneous_width;

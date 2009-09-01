@@ -555,11 +555,11 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   /* To receive keyboard events, you will need to set the GTK_CAN_FOCUS flag on the drawing area. */
   if (ih->iclass->is_interactive)
   {
-    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+    if (iupAttribGetBoolean(ih, "CANFOCUS"))
       GTK_WIDGET_FLAGS(ih->handle) |= GTK_CAN_FOCUS;
   }
 
-  if (IupGetInt(ih, "BORDER"))              /* Use IupGetInt for inheritance */
+  if (iupAttribGetBoolean(ih, "BORDER"))
     gtk_scrolled_window_set_shadow_type(scrolled_window, GTK_SHADOW_IN); 
   else
     gtk_scrolled_window_set_shadow_type(scrolled_window, GTK_SHADOW_NONE);

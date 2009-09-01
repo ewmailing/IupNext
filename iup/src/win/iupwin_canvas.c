@@ -69,7 +69,7 @@ static int winCanvasSetDXAttrib(Ihandle *ih, const char *value)
 
     if (dx >= (xmax-xmin))
     {
-      if (iupStrBoolean(iupAttribGetStr(ih, "XAUTOHIDE")))
+      if (iupAttribGetBoolean(ih, "XAUTOHIDE"))
         ShowScrollBar(ih->handle, SB_HORZ, FALSE);
       else
         EnableScrollBar(ih->handle, SB_HORZ, ESB_DISABLE_BOTH);
@@ -139,7 +139,7 @@ static int winCanvasSetDYAttrib(Ihandle *ih, const char *value)
 
     if (dy >= (ymax-ymin))
     {
-      if (iupStrBoolean(iupAttribGetStr(ih, "YAUTOHIDE")))
+      if (iupAttribGetBoolean(ih, "YAUTOHIDE"))
         ShowScrollBar(ih->handle, SB_VERT, FALSE);
       else
         EnableScrollBar(ih->handle, SB_VERT, ESB_DISABLE_BOTH);
@@ -569,7 +569,7 @@ static int winCanvasMapMethod(Ihandle* ih)
 
   if (ih->iclass->is_interactive)
   {
-    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+    if (iupAttribGetBoolean(ih, "CANFOCUS"))
       dwStyle |= WS_TABSTOP;
   }
                            
@@ -578,13 +578,13 @@ static int winCanvasMapMethod(Ihandle* ih)
     dwExStyle |= WS_EX_CONTROLPARENT;
     dwStyle |= WS_CLIPSIBLINGS;
 
-    if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
+    if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
       dwExStyle |= WS_EX_COMPOSITED;
     else
       dwStyle |= WS_CLIPCHILDREN;
   }
                            
-  if (iupAttribGetInt(ih, "MDICLIENT"))  
+  if (iupAttribGetBoolean(ih, "MDICLIENT"))  
   {
     /* creating a MDI Client that will be inside the MDI Frame, 
        it will work as parent of all MDI children */
@@ -608,7 +608,7 @@ static int winCanvasMapMethod(Ihandle* ih)
   else 
     classname = "IupCanvas";
 
-  if (IupGetInt(ih, "BORDER"))              /* Use IupGetInt for inheritance */
+  if (iupAttribGetBoolean(ih, "BORDER"))
     dwStyle |= WS_BORDER;
 
   ih->data->sb = iupBaseGetScrollbar(ih);
@@ -656,7 +656,7 @@ static void winCanvasMDICloseChildren(Ihandle* client)
   while (hWndChild)
   {
     Ihandle* child = iupwinHandleGet(hWndChild); 
-    if (iupObjectCheck(child) && iupAttribGetInt(child, "MDICHILD"))
+    if (iupObjectCheck(child) && iupAttribGetBoolean(child, "MDICHILD"))
       IupDestroy(child);
 
     hWndChild = (HWND)SendMessage(client->handle, WM_MDIGETACTIVE, 0, 0);
@@ -665,7 +665,7 @@ static void winCanvasMDICloseChildren(Ihandle* client)
 
 static void winCanvasUnMapMethod(Ihandle* ih)
 {
-  if (iupAttribGetInt(ih, "MDICLIENT")) 
+  if (iupAttribGetBoolean(ih, "MDICLIENT")) 
   {
     /* hide the MDI client window to avoid multiple re-paints */
     ShowWindow(ih->handle, SW_HIDE);

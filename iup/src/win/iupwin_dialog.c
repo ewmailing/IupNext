@@ -101,22 +101,22 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   }
   else
   {
-    int has_titlebar = iupAttribGetInt(ih, "MAXBOX")  ||
-                      iupAttribGetInt(ih, "MINBOX")  ||
-                      iupAttribGetInt(ih, "MENUBOX") || 
+    int has_titlebar = iupAttribGetBoolean(ih, "MAXBOX")  ||
+                      iupAttribGetBoolean(ih, "MINBOX")  ||
+                      iupAttribGetBoolean(ih, "MENUBOX") || 
                       IupGetAttribute(ih, "TITLE");  /* must use IupGetAttribute to check from the native implementation */
 
     *caption = 0;
     if (has_titlebar)
     {
-      if (iupAttribGetInt(ih, "TOOLBOX") && iupAttribGet(ih, "PARENTDIALOG"))
+      if (iupAttribGetBoolean(ih, "TOOLBOX") && iupAttribGet(ih, "PARENTDIALOG"))
         *caption = GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
       else
         *caption = GetSystemMetrics(SM_CYCAPTION);   /* normal window */
     }
 
     *border = 0;
-    if (iupAttribGetInt(ih, "RESIZE"))
+    if (iupAttribGetBoolean(ih, "RESIZE"))
     {
       *border = GetSystemMetrics(SM_CXFRAME);     /* Thickness of the sizing border around the perimeter of a window  */
     }                                             /* that can be resized, in pixels.                                  */
@@ -124,7 +124,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
     {
       *border = GetSystemMetrics(SM_CXFIXEDFRAME);  /* Thickness of the frame around the perimeter of a window        */
     }                                               /* that has a caption but is not sizable, in pixels.              */
-    else if (iupAttribGetInt(ih, "BORDER"))
+    else if (iupAttribGetBoolean(ih, "BORDER"))
     {
       *border = GetSystemMetrics(SM_CXBORDER);
     }
@@ -138,7 +138,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
   ih->data->cmd_show = SW_SHOWNORMAL;
   ih->data->show_state = IUP_SHOW;
 
-  if (iupAttribGetInt(ih, "FULLSCREEN"))
+  if (iupAttribGetBoolean(ih, "FULLSCREEN"))
     return 1;
   
   placement = iupAttribGet(ih, "PLACEMENT");
@@ -199,7 +199,7 @@ static int winDialogMDICloseChildren(Ihandle* ih)
     while (hWndChild)
     {
       Ihandle* child = iupwinHandleGet(hWndChild); 
-      if (iupObjectCheck(child) && iupAttribGetInt(child, "MDICHILD"))
+      if (iupObjectCheck(child) && iupAttribGetBoolean(child, "MDICHILD"))
       {
         Icallback cb = IupGetCallback(child, "CLOSE_CB");
         if (cb)
@@ -402,7 +402,7 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
       }
 
       /* child mdi is automatically destroyed */
-      if (iupAttribGetInt(ih, "MDICHILD"))
+      if (iupAttribGetBoolean(ih, "MDICHILD"))
         IupDestroy(ih);
       else
       {
@@ -703,39 +703,39 @@ static int winDialogMapMethod(Ihandle* ih)
   if (title)
     has_titlebar = 1;
 
-  if (iupAttribGetInt(ih, "DIALOGFRAME")) 
+  if (iupAttribGetBoolean(ih, "DIALOGFRAME")) 
   {
     iupAttribSetStr(ih, "RESIZE", "NO");
     iupAttribSetStr(ih, "MINBOX", "NO");
   }
 
-  if (iupAttribGetInt(ih, "RESIZE"))
+  if (iupAttribGetBoolean(ih, "RESIZE"))
     dwStyle |= WS_THICKFRAME;
   else
     iupAttribSetStr(ih, "MAXBOX", "NO");  /* Must also remove this to RESIZE=NO work */
 
-  if (iupAttribGetInt(ih, "MAXBOX"))
+  if (iupAttribGetBoolean(ih, "MAXBOX"))
   {
     dwStyle |= WS_MAXIMIZEBOX;
     has_titlebar = 1;
   }
 
-  if (iupAttribGetInt(ih, "MINBOX"))
+  if (iupAttribGetBoolean(ih, "MINBOX"))
   {
     dwStyle |= WS_MINIMIZEBOX;
     has_titlebar = 1;
   }
 
-  if (iupAttribGetInt(ih, "MENUBOX"))
+  if (iupAttribGetBoolean(ih, "MENUBOX"))
   {
     dwStyle |= WS_SYSMENU;
     has_titlebar = 1;
   }
 
-  if (iupAttribGetInt(ih, "BORDER") || has_titlebar)
+  if (iupAttribGetBoolean(ih, "BORDER") || has_titlebar)
     has_border = 1;
 
-  if (iupAttribGetInt(ih, "MDICHILD"))
+  if (iupAttribGetBoolean(ih, "MDICHILD"))
   {
     static int mdi_child_id = 0;
     Ihandle *client;
@@ -807,21 +807,21 @@ static int winDialogMapMethod(Ihandle* ih)
       classname = "IupDialogMDIFrame";
   }
 
-  if (iupAttribGetInt(ih, "TOOLBOX") && native_parent)
+  if (iupAttribGetBoolean(ih, "TOOLBOX") && native_parent)
     dwExStyle |= WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE;
 
-  if (iupAttribGetInt(ih, "DIALOGFRAME") && native_parent)
+  if (iupAttribGetBoolean(ih, "DIALOGFRAME") && native_parent)
     dwExStyle |= WS_EX_DLGMODALFRAME;  /* this will hide the MENUBOX but not the close button */
 
-  if (iupAttribGetInt(ih, "COMPOSITED"))
+  if (iupAttribGetBoolean(ih, "COMPOSITED"))
     dwExStyle |= WS_EX_COMPOSITED;
   else
     dwStyle |= WS_CLIPCHILDREN;
 
-  if (iupAttribGetInt(ih, "HELPBUTTON"))
+  if (iupAttribGetBoolean(ih, "HELPBUTTON"))
     dwExStyle |= WS_EX_CONTEXTHELP;
 
-  if (iupAttribGetInt(ih, "CONTROL") && native_parent) 
+  if (iupAttribGetBoolean(ih, "CONTROL") && native_parent) 
   {
     /* TODO: this were used by LuaCom to create embeded controls, 
        don't know if it is still working */
@@ -837,7 +837,7 @@ static int winDialogMapMethod(Ihandle* ih)
   /* size will be updated in IupRefresh -> winDialogLayoutUpdate */
   /* position will be updated in iupDialogShowXY              */
 
-  if (iupAttribGetInt(ih, "MDICHILD"))
+  if (iupAttribGetBoolean(ih, "MDICHILD"))
     ih->handle = CreateMDIWindow(classname, 
                                 title,              /* title */
                                 dwStyle,            /* style */
@@ -903,7 +903,7 @@ static void winDialogUnMapMethod(Ihandle* ih)
   iupwinHandleRemove(ih);
 
   /* Destroys the window, so we can destroy the class */
-  if (iupAttribGetInt(ih, "MDICHILD")) 
+  if (iupAttribGetBoolean(ih, "MDICHILD")) 
   {
     /* for MDICHILDs must send WM_MDIDESTROY, instead of calling DestroyWindow */
     Ihandle* client = (Ihandle*)iupAttribGet(ih, "MDICLIENT_HANDLE");
@@ -1060,7 +1060,7 @@ static int winDialogSetLayeredAttrib(Ihandle *ih, const char *value)
 
 static int winDialogSetLayerAlphaAttrib(Ihandle *ih, const char *value)
 {
-  if (value && iupAttribGetInt(ih, "LAYERED"))
+  if (value && iupAttribGetBoolean(ih, "LAYERED"))
   {
     static winSetLayeredWindowAttributes mySetLayeredWindowAttributes = NULL;
 
@@ -1174,7 +1174,7 @@ static int winDialogCheckTray(Ihandle *ih)
   if (iupAttribGet(ih, "_IUPDLG_HASTRAY"))
     return 1;
 
-  if (iupAttribGetInt(ih, "TRAY"))
+  if (iupAttribGetBoolean(ih, "TRAY"))
   {
     winDialogTrayMessage(ih->handle, NIM_ADD, NULL, NULL);
     iupAttribSetStr(ih, "_IUPDLG_HASTRAY", "YES");

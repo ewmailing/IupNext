@@ -429,6 +429,17 @@ void iupAttribSetFloat(Ihandle *ih, const char* name, float num)
   iupAttribSetStrf(ih, name, "%f", (double)num);
 }
 
+int iupAttribGetBoolean(Ihandle* ih, const char* name)
+{
+  char *value = iupAttribGetStr(ih, name);
+  if (value)
+  {
+    if (iupStrBoolean(value))
+      return 1;
+  }
+  return 0;
+}
+
 int iupAttribGetInt(Ihandle* ih, const char* name)
 {
   int i = 0;

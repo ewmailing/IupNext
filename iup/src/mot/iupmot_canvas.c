@@ -210,7 +210,7 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
 
     if (dx >= (xmax-xmin))
     {
-      if (iupStrBoolean(iupAttribGetStr(ih, "XAUTOHIDE")))
+      if (iupAttribGetBoolean(ih, "XAUTOHIDE"))
         XtUnmanageChild(sb_horiz);
       else
         XtSetSensitive(sb_horiz, 0);
@@ -301,7 +301,7 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
 
     if (dy >= (ymax-ymin))
     {
-      if (iupStrBoolean(iupAttribGetStr(ih, "YAUTOHIDE")))
+      if (iupAttribGetBoolean(ih, "YAUTOHIDE"))
         XtUnmanageChild(sb_vert);
       else
         XtSetSensitive(sb_vert, 0);
@@ -463,7 +463,7 @@ static int motCanvasMapMethod(Ihandle* ih)
   iupmotSetArg(args, num_args, XmNspacing, 0); /* no space between scrollbars and draw area */
   iupmotSetArg(args, num_args, XmNshadowThickness, 0);
 
-  if (IupGetInt(ih, "BORDER"))              /* Use IupGetInt for inheritance */
+  if (iupAttribGetBoolean(ih, "BORDER"))
   {
     iupmotSetArg(args, num_args, XmNborderWidth, 1);
     iupmotSetArg(args, num_args, XmNborderColor, iupmotColorGetPixelStr("0 0 0"));
@@ -495,7 +495,7 @@ static int motCanvasMapMethod(Ihandle* ih)
   {
     iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP); /* include in navigation */
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+    if (iupAttribGetBoolean(ih, "CANFOCUS"))
       iupmotSetArg(args, num_args, XmNtraversalOn, True);
     else
       iupmotSetArg(args, num_args, XmNtraversalOn, False);
@@ -543,7 +543,7 @@ static int motCanvasMapMethod(Ihandle* ih)
     XSetWindowAttributes attrs;
     attrs.bit_gravity = ForgetGravity; /* For the DrawingArea widget gets Expose events when you resize it to be smaller. */
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "BACKINGSTORE")))
+    if (iupAttribGetBoolean(ih, "BACKINGSTORE"))
       attrs.backing_store = WhenMapped;
     else
       attrs.backing_store = NotUseful;

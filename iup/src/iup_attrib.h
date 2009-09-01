@@ -84,15 +84,17 @@ char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name);
  * \ingroup attrib */
 char* iupAttribGetStr(Ihandle* ih, const char* name);   
 
-/** Returns the attribute from the hash table as an integer, 
- * but if not defined then checks in its parent tree if allowed by the control implementation, 
- * if still not defined then returns the registered default value if any.
+/** Same as \ref iupAttribGetStr but returns an integer number.
+ * Checks also for boolean values.
  * \ingroup attrib */
 int iupAttribGetInt(Ihandle* ih, const char* name);
 
-/** Returns the attribute from the hash table as a floating point, 
- * but if not defined then checks in its parent tree if allowed by the control implementation,
- * if still not defined then returns the registered default value if any.
+/** Same as \ref iupAttribGetStr but checks for boolean values.
+ * Use \ref iupStrBoolean.
+ * \ingroup attrib */
+int iupAttribGetBoolean(Ihandle* ih, const char* name);
+
+/** Same as \ref iupAttribGetStr but returns an floating point number.
  * \ingroup attrib */
 float iupAttribGetFloat(Ihandle* ih, const char* name);
 

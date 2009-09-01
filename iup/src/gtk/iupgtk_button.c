@@ -404,12 +404,12 @@ static int gtkButtonMapMethod(Ihandle* ih)
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
 
-  if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
   value = iupAttribGet(ih, "IMPRESS");
   impress = (ih->data->type & IUP_BUTTON_IMAGE && value)? 1: 0;
-  if (!impress && iupStrBoolean(iupAttribGetStr(ih, "FLAT")))
+  if (!impress && iupAttribGetBoolean(ih, "FLAT"))
   {
     gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NONE);
 

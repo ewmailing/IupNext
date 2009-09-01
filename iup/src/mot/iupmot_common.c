@@ -74,10 +74,14 @@ void iupmotSetMnemonicTitle(Ihandle *ih, const char* value)
       Ihandle* dialog = IupGetDialog(ih);
       char attrib[22] = "_IUPMOT_MNEMONIC_ \0CB";
       attrib[17] = (char)toupper(c);
+
+      /* used by motActivateMnemonic */
       if (iupStrEqual(ih->iclass->name, "label"))
         iupAttribSetStr(dialog, attrib, (char*)iupFocusNextInteractive(ih));
       else
         iupAttribSetStr(dialog, attrib, (char*)ih);
+
+      /* used by iupmotKeyPressEvent */
       attrib[18] = '_';
       IupSetCallback(dialog, attrib, (Icallback)motActivateMnemonic);
     }

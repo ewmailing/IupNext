@@ -172,7 +172,7 @@ static int winKeyMap2Iup(Iwin2iupkey* table, int i)
     code = table[i].m_iupcode;
   else if ((GetKeyState(VK_LWIN) & 0x8000) || (GetKeyState(VK_RWIN) & 0x8000))
     code = table[i].y_iupcode;
-  else if (GetKeyState(VK_CAPITAL) & 0x01)
+  else if (GetKeyState(VK_CAPITAL) & 0x01)  /* if it's on */
   {
     if ((GetKeyState(VK_SHIFT) & 0x8000) || !iupKeyCanCaps(table[i].iupcode))
       return table[i].iupcode;

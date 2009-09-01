@@ -506,7 +506,7 @@ static void iMatrixDrawFocus(Ihandle* ih)
 {
   int x1, y1, x2, y2, dx, dy;
 
-  if (iupAttribGetInt(ih, "HIDEFOCUS"))
+  if (iupAttribGetBoolean(ih, "HIDEFOCUS"))
     return;
 
   if (!iupMatrixAuxIsCellVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))

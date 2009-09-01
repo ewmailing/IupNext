@@ -470,10 +470,10 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   openfilename.lpstrTitle = iupAttribGet(ih, "TITLE");
   openfilename.Flags = OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
 
-  if (!iupAttribGetInt(ih, "NOOVERWRITEPROMPT"))
+  if (!iupAttribGetBoolean(ih, "NOOVERWRITEPROMPT"))
     openfilename.Flags |= OFN_OVERWRITEPROMPT;
 
-  if (iupAttribGetInt(ih, "SHOWHIDDEN"))
+  if (iupAttribGetBoolean(ih, "SHOWHIDDEN"))
     openfilename.Flags |= OFN_FORCESHOWHIDDEN;
 
   value = iupAttribGet(ih, "ALLOWNEW");
@@ -489,17 +489,17 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   else
     openfilename.Flags |= OFN_FILEMUSTEXIST;
 
-  if (iupAttribGetInt(ih, "NOCHANGEDIR"))
+  if (iupAttribGetBoolean(ih, "NOCHANGEDIR"))
     openfilename.Flags |= OFN_NOCHANGEDIR;
 
-  if (iupAttribGetInt(ih, "MULTIPLEFILES"))
+  if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
      openfilename.Flags |= OFN_ALLOWMULTISELECT;
 
   openfilename.lpfnHook = winFileDlgSimpleHook;
   openfilename.Flags |= OFN_ENABLEHOOK | OFN_EXPLORER | OFN_ENABLESIZING;
   openfilename.lCustData = (LPARAM)ih;
 
-  if (iupAttribGetInt(ih, "SHOWPREVIEW") && IupGetCallback(ih, "FILE_CB"))
+  if (iupAttribGetBoolean(ih, "SHOWPREVIEW") && IupGetCallback(ih, "FILE_CB"))
   {
     openfilename.Flags |= OFN_ENABLETEMPLATE;
     openfilename.hInstance = iupwin_dll_hinstance? iupwin_dll_hinstance: iupwin_hinstance;
@@ -517,7 +517,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 
   if (result)
   {
-    if (iupAttribGetInt(ih, "MULTIPLEFILES"))
+    if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
     {
       int i = 0;
       

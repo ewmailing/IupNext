@@ -68,7 +68,7 @@ static void motItemActivateCallback(Widget w, Ihandle* ih, XtPointer call_data)
 {
   Icallback cb;
 
-  if (XmIsToggleButton(ih->handle) && !iupAttribGetInt(ih, "AUTOTOGGLE") && !iupAttribGetInt(ih->parent, "RADIO"))
+  if (XmIsToggleButton(ih->handle) && !iupAttribGetBoolean(ih, "AUTOTOGGLE") && !iupAttribGetBoolean(ih->parent, "RADIO"))
   {
     /* Motif by default will do autotoggle */
     XmToggleButtonSetState(ih->handle, !XmToggleButtonGetState(ih->handle),0);
@@ -159,7 +159,7 @@ static int motMenuMapMethod(Ihandle* ih)
     {
       /* parent is a submenu */
 
-      if (iupAttribGetInt(ih, "RADIO"))
+      if (iupAttribGetBoolean(ih, "RADIO"))
       {
         iupmotSetArg(args, num_args, XmNpacking, XmPACK_COLUMN);
         iupmotSetArg(args, num_args, XmNradioBehavior, TRUE);
@@ -265,7 +265,7 @@ static int motItemSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (XmIsToggleButton(ih->handle))
   {
-    if (iupAttribGetInt(ih->parent, "RADIO"))
+    if (iupAttribGetBoolean(ih->parent, "RADIO"))
       value = "ON";
 
     XmToggleButtonSetState(ih->handle, iupStrBoolean(value),0);
@@ -305,7 +305,7 @@ static int motItemMapMethod(Ihandle* ih)
     int num_args = 0;
     Arg args[10];
 
-    if (iupAttribGetInt(ih->parent, "RADIO"))
+    if (iupAttribGetBoolean(ih->parent, "RADIO"))
     {
       iupmotSetArg(args, num_args, XmNtoggleMode, XmTOGGLE_BOOLEAN);
       iupmotSetArg(args, num_args, XmNindicatorType, XmONE_OF_MANY_ROUND);
@@ -315,7 +315,7 @@ static int motItemMapMethod(Ihandle* ih)
     }
     else
     {
-      if (iupAttribGetInt(ih, "HIDEMARK"))
+      if (iupAttribGetBoolean(ih, "HIDEMARK"))
         iupmotSetArg(args, num_args, XmNindicatorOn, XmINDICATOR_NONE);
       else
         iupmotSetArg(args, num_args, XmNindicatorOn, XmINDICATOR_CHECK);

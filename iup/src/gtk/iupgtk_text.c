@@ -1533,20 +1533,20 @@ static int gtkTextMapMethod(Ihandle* ih)
     /* formatting is always supported when MULTILINE=YES */
     ih->data->has_formatting = 1;
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "WORDWRAP")))
+    if (iupAttribGetBoolean(ih, "WORDWRAP"))
     {
       wordwrap = 1;
       ih->data->sb &= ~IUP_SB_HORIZ;  /* must remove the horizontal scroolbar */
     }
 
-    if (IupGetInt(ih, "BORDER"))              /* Use IupGetInt for inheritance */
+    if (iupAttribGetBoolean(ih, "BORDER"))
       gtk_scrolled_window_set_shadow_type(scrolled_window, GTK_SHADOW_IN); 
     else
       gtk_scrolled_window_set_shadow_type(scrolled_window, GTK_SHADOW_NONE);
 
     if (ih->data->sb & IUP_SB_HORIZ)
     {
-      if (iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
+      if (iupAttribGetBoolean(ih, "AUTOHIDE"))
         hscrollbar_policy = GTK_POLICY_AUTOMATIC;
       else
         hscrollbar_policy = GTK_POLICY_ALWAYS;
@@ -1556,7 +1556,7 @@ static int gtkTextMapMethod(Ihandle* ih)
 
     if (ih->data->sb & IUP_SB_VERT)
     {
-      if (iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
+      if (iupAttribGetBoolean(ih, "AUTOHIDE"))
         vscrollbar_policy = GTK_POLICY_AUTOMATIC;
       else
         vscrollbar_policy = GTK_POLICY_ALWAYS;
@@ -1573,7 +1573,7 @@ static int gtkTextMapMethod(Ihandle* ih)
   }
   else
   {
-    if (iupAttribGetInt(ih, "SPIN"))
+    if (iupAttribGetBoolean(ih, "SPIN"))
       ih->handle = gtk_spin_button_new_with_range(0, 100, 1);
     else
       ih->handle = gtk_entry_new();
@@ -1586,7 +1586,7 @@ static int gtkTextMapMethod(Ihandle* ih)
 
     gtk_entry_set_has_frame((GtkEntry*)ih->handle, IupGetInt(ih, "BORDER"));
 
-    if (iupStrBoolean(iupAttribGet(ih, "PASSWORD")))
+    if (iupAttribGetBoolean(ih, "PASSWORD"))
       gtk_entry_set_visibility((GtkEntry*)ih->handle, FALSE);
 
     if (GTK_IS_SPIN_BUTTON(ih->handle))
@@ -1594,12 +1594,12 @@ static int gtkTextMapMethod(Ihandle* ih)
       gtk_spin_button_set_numeric((GtkSpinButton*)ih->handle, FALSE);
       gtk_spin_button_set_digits((GtkSpinButton*)ih->handle, 0);
 
-      gtk_spin_button_set_wrap((GtkSpinButton*)ih->handle, iupStrBoolean(iupAttribGetStr(ih, "SPINWRAP")));
+      gtk_spin_button_set_wrap((GtkSpinButton*)ih->handle, iupAttribGetBoolean(ih, "SPINWRAP"));
 
       g_signal_connect(G_OBJECT(ih->handle), "value-changed", G_CALLBACK(gtkTextSpinValueChanged), ih);
       g_signal_connect(G_OBJECT(ih->handle), "output", G_CALLBACK(gtkTextSpinOutput), ih);
 
-      if (!iupStrBoolean(iupAttribGetStr(ih, "SPINAUTO")))
+      if (!iupAttribGetBoolean(ih, "SPINAUTO"))
       {
         g_signal_connect(G_OBJECT(ih->handle), "input", G_CALLBACK(gtkTextSpinInput), ih);
         iupAttribSetStr(ih, "_IUPGTK_SPIN_NOAUTO", "1");
@@ -1610,7 +1610,7 @@ static int gtkTextMapMethod(Ihandle* ih)
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
 
-  if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
   g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
@@ -1702,4 +1702,5 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "OVERWRITE", gtkTextGetOverwriteAttrib, gtkTextSetOverwriteAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REMOVEFORMATTING", NULL, gtkTextSetRemoveFormattingAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSIZE", NULL, gtkTextSetTabSizeAttrib, "8", NULL, IUPAF_DEFAULT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "PASSWORD", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

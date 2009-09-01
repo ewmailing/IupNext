@@ -2391,7 +2391,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       /* Workaround: the focus feedback is not always drawn for the item. 
          Had to ignore CDIS_FOCUS to make it work. */
       HTREEITEM hItem = (HTREEITEM)customdraw->nmcd.dwItemSpec;
-      if (hItem == winTreeGetFocusNode(ih))
+      if (GetFocus() == ih->handle && hItem == winTreeGetFocusNode(ih))
       {
         RECT rect;
         *(HTREEITEM*)&rect = hItem;
@@ -2453,13 +2453,13 @@ static int winTreeMapMethod(Ihandle* ih)
   if (ih->data->show_rename)
     dwStyle |= TVS_EDITLABELS;
 
-  if (!iupAttribGetInt(ih, "HIDELINES"))
+  if (!iupAttribGetBoolean(ih, "HIDELINES"))
     dwStyle |= TVS_HASLINES;
 
-  if (!iupAttribGetInt(ih, "HIDEBUTTONS"))
+  if (!iupAttribGetBoolean(ih, "HIDEBUTTONS"))
     dwStyle |= TVS_HASBUTTONS;
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (iupAttribGetBoolean(ih, "CANFOCUS"))
     dwStyle |= WS_TABSTOP;
 
   if (!ih->parent)

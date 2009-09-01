@@ -64,7 +64,7 @@ int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
     widget = ih->handle;
 
 #if GTK_CHECK_VERSION(2, 12, 0)
-  if (iupStrBoolean(iupAttribGetStr(ih, "TIPMARKUP")))
+  if (iupAttribGetBoolean(ih, "TIPMARKUP"))
     gtk_widget_set_tooltip_markup(widget, iupgtkStrConvertToUTF8(value));
   else
     gtk_widget_set_tooltip_text(widget, iupgtkStrConvertToUTF8(value));

@@ -13,58 +13,21 @@
 #include "iup_focus.h"
 #include "iup_class.h"
 #include "iup_assert.h"
+#include "iup_attrib.h"
 #include "iup_drv.h"
 
 
-static Ihandle* iFocusGetChildInteractive(Ihandle *ih)
+Ihandle* iupFocusNextInteractive(Ihandle *ih)
 {
   Ihandle *c;
-  Ihandle *nf;
 
   if (!ih)
     return NULL;
 
-  for (c = ih->firstchild; c; c = c->brother)
+  for (c = ih->brother; c; c = c->brother)
   {
     if (c->iclass->is_interactive)
       return c;
-
-    nf = iFocusGetChildInteractive(c);
-    if (nf)
-      return nf;
-  }
-
-  return NULL;
-}
-
-Ihandle* iupFocusNextInteractive(Ihandle *ih)
-{
-  Ihandle *nf, *p;
-
-  if (!ih)
-    return NULL;
-
-  /* look down in the child tree */
-  nf = iFocusGetChildInteractive(ih);
-  if (nf)
-    return nf;
-
-  /* look up in the tree */
-  for (p = ih->parent; p; p = p->parent)
-  {
-    Ihandle *c;
-    for (c = p->firstchild; c; c = c->brother)
-    {
-      if (c != ih) /* do not check again the current child tree */
-      {
-        if (c->iclass->is_interactive)
-          return c;
-
-        nf = iFocusGetChildInteractive(c);
-        if (nf)
-          return nf;
-      }
-    }
   }
 
   return NULL;
@@ -73,28 +36,28 @@ Ihandle* iupFocusNextInteractive(Ihandle *ih)
 int iupFocusCanAccept(Ihandle *ih)
 {
   if (ih->iclass->is_interactive &&  /* interactive */
-      ih->handle &&               /* mapped  */
-      IupGetInt(ih, "ACTIVE") &&  /* active  */
-      IupGetInt(ih, "VISIBLE"))   /* visible */
+      iupAttribGetBoolean(ih, "CANFOCUS") &&   /* can receive focus */
+      ih->handle &&                  /* mapped  */
+      IupGetInt(ih, "ACTIVE") &&     /* active  */
+      IupGetInt(ih, "VISIBLE"))      /* visible */
     return 1;
   else
     return 0;
 }
 
-static Ihandle* iFocusGetChild(Ihandle *ih)
+static Ihandle* iFocusFindAtBrothers(Ihandle *start)
 {
   Ihandle *c;
   Ihandle *nf;
 
-  if (!ih)
-    return NULL;
-
-  for (c = ih->firstchild; c; c = c->brother)
+  for (c = start; c; c = c->brother)
   {
+    /* check itself */
     if (iupFocusCanAccept(c))
       return c;
 
-    nf = iFocusGetChild(c);
+    /* then check its children */
+    nf = iFocusFindAtBrothers(c->firstchild);
     if (nf)
       return nf;
   }
@@ -110,54 +73,33 @@ Ihandle* iupGetNextFocus(Ihandle *ih)
     return NULL;
 
   /* look down in the child tree */
-  nf = iFocusGetChild(ih);
-  if (nf)
-    return nf;
-
-  /* look up in the tree */
-  for (p = ih->parent; p; p = p->parent)
+  if (ih->firstchild)
   {
-    Ihandle *c;
-    for (c = p->firstchild; c; c = c->brother)
-    {
-      if (c != ih) /* do not check again the current child tree */
-      {
-        if (iupFocusCanAccept(c))
-          return c;
+    nf = iFocusFindAtBrothers(ih->firstchild);
+    if (nf) return nf;
+  }
 
-        nf = iFocusGetChild(c);
-        if (nf)
-          return nf;
+  /* look in the same level */
+  if (ih->brother)
+  {
+    nf = iFocusFindAtBrothers(ih->brother);
+    if (nf) return nf;
+  }
+
+  /* look up in the brothers of the parent level */
+  if (ih->parent)
+  {
+    for (p = ih->parent; p; p = p->parent)
+    {
+      if (p->brother)
+      {
+        nf = iFocusFindAtBrothers(p->brother);
+        if (nf) return nf;
       }
     }
   }
 
   return NULL;
-}
-
-Ihandle* IupPreviousField(Ihandle *ih)
-{
-  Ihandle *ih_previous = NULL;
-  Ihandle *ih_next;
-
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return NULL;
-
-  ih_next = IupGetDialog(ih);
-
-  for (;;)
-  {
-    ih_next = iupGetNextFocus(ih_next);
-
-    if (((ih_next == NULL) || (ih_next == ih)) && ih_previous)
-    {
-      IupSetFocus(ih_previous);
-      return ih_previous;
-    }
-
-    ih_previous = ih_next;
-  }
 }
 
 Ihandle* IupNextField(Ihandle *ih)
@@ -169,6 +111,15 @@ Ihandle* IupNextField(Ihandle *ih)
     return NULL;
 
   ih_next = iupGetNextFocus(ih);
+  if (!ih_next)
+  {
+    /* not found after the element, then start over from the begining,
+       at the dialog. */
+    ih_next = iupGetNextFocus(IupGetDialog(ih));
+    if (ih_next == ih)
+      return NULL;
+  }
+
   if (ih_next)
   {
     IupSetFocus(ih_next);
@@ -178,9 +129,60 @@ Ihandle* IupNextField(Ihandle *ih)
   return NULL;
 }
 
+static int iupFindPreviousFocus(Ihandle *parent, Ihandle **previous, Ihandle *ih)
+{
+  Ihandle *c;
+
+  if (!parent)
+    return 0;
+
+  for (c = parent->firstchild; c; c = c->brother)
+  {
+    if (c == ih)
+    {
+      /* if found child, returns the current previous.
+         but if previous is NULL, then keep searching until the last element. */
+      if (*previous)
+        return 1;
+    }
+    else
+    {
+      /* save the possible previous */
+      if (iupFocusCanAccept(c))
+        *previous = c;
+    }
+
+    /* then check its children */
+    if (iupFindPreviousFocus(c, previous, ih))
+      return 1;
+  }
+
+  return 0;
+}
+
+Ihandle* IupPreviousField(Ihandle *ih)
+{
+  Ihandle *previous = NULL;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return NULL;
+
+  /* search from the dialog down to the element */
+  iupFindPreviousFocus(IupGetDialog(ih), &previous, ih);
+  
+  if (previous)
+  {
+    IupSetFocus(previous);
+    return previous;
+  }
+
+  return NULL;
+}
+
+
 /* local variables */
 static Ihandle* iup_current_focus = NULL;
-
 
 Ihandle *IupSetFocus(Ihandle *ih)
 {
@@ -189,6 +191,9 @@ Ihandle *IupSetFocus(Ihandle *ih)
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return old_focus;
+
+  /* iup_current_focus is NOT set here, 
+     only in the iupCallGetFocusCb */
 
   if (iupFocusCanAccept(ih))  
     iupdrvSetFocus(ih);

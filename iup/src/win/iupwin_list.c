@@ -133,7 +133,7 @@ static int winListGetMaxWidth(Ihandle* ih)
 
 static void winListUpdateScrollWidth(Ihandle* ih)
 {
-  if (ih->data->is_dropdown && iupAttribGetInt(ih, "DROPEXPAND"))
+  if (ih->data->is_dropdown && iupAttribGetBoolean(ih, "DROPEXPAND"))
   {
     int w = 3+winListGetMaxWidth(ih)+iupdrvGetScrollbarSize()+3;
     SendMessage(ih->handle, CB_SETDROPPEDWIDTH, w, 0);
@@ -178,7 +178,7 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
 void iupdrvListRemoveAllItems(Ihandle* ih)
 {
   SendMessage(ih->handle, WIN_RESETCONTENT(ih), 0, 0L);
-  if (ih->data->is_dropdown && iupAttribGetInt(ih, "DROPEXPAND"))
+  if (ih->data->is_dropdown && iupAttribGetBoolean(ih, "DROPEXPAND"))
     SendMessage(ih->handle, CB_SETDROPPEDWIDTH, 0, 0);
   else
     SendMessage(ih->handle, WIN_SETHORIZONTALEXTENT(ih), 0, 0);
@@ -1236,7 +1236,7 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   switch (msg)
   {
   case WM_CHAR:
-    if (GetKeyState(VK_CONTROL))
+    if (GetKeyState(VK_CONTROL) & 0x8000)
     {
       /* avoid item search when Ctrl is pressed */
       *result = 0;
@@ -1309,7 +1309,7 @@ static int winListMapMethod(Ihandle* ih)
     {
       dwStyle |= WS_VSCROLL|WS_HSCROLL;
 
-      if (!iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
+      if (!iupAttribGetBoolean(ih, "AUTOHIDE"))
         dwStyle |= CBS_DISABLENOSCROLL;
     }
 
@@ -1325,7 +1325,7 @@ static int winListMapMethod(Ihandle* ih)
     else
       dwStyle |= CBS_DROPDOWNLIST;  /* hidden-list */
 
-    if (iupAttribGetInt(ih, "SORT"))
+    if (iupAttribGetBoolean(ih, "SORT"))
       dwStyle |= CBS_SORT;
   }
   else
@@ -1341,15 +1341,15 @@ static int winListMapMethod(Ihandle* ih)
     {
       dwStyle |= WS_VSCROLL|WS_HSCROLL;
 
-      if (!iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
+      if (!iupAttribGetBoolean(ih, "AUTOHIDE"))
         dwStyle |= LBS_DISABLENOSCROLL;
     }
 
-    if (iupAttribGetInt(ih, "SORT"))
+    if (iupAttribGetBoolean(ih, "SORT"))
       dwStyle |= LBS_SORT;
   }
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (iupAttribGetBoolean(ih, "CANFOCUS"))
     dwStyle |= WS_TABSTOP;
 
   if (!iupwinCreateWindowEx(ih, class_name, dwExStyle, dwStyle))

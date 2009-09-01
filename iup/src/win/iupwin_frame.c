@@ -170,7 +170,7 @@ static int winFrameMapMethod(Ihandle* ih)
   if (title)
     iupAttribSetStr(ih, "_IUPFRAME_HAS_TITLE", "1");
 
-  if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
+  if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
     dwExStyle |= WS_EX_COMPOSITED;
   else
     dwStyle |= WS_CLIPCHILDREN;

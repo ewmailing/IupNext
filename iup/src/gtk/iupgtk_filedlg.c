@@ -241,15 +241,15 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_HELP, GTK_RESPONSE_HELP);
 
 #if GTK_CHECK_VERSION(2, 6, 0)
-  if (iupAttribGetInt(ih, "SHOWHIDDEN"))
+  if (iupAttribGetBoolean(ih, "SHOWHIDDEN"))
     gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(dialog), TRUE);
 #endif
 
-  if (iupAttribGetInt(ih, "MULTIPLEFILES") && action == GTK_FILE_CHOOSER_ACTION_OPEN)
+  if (iupAttribGetBoolean(ih, "MULTIPLEFILES") && action == GTK_FILE_CHOOSER_ACTION_OPEN)
     gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
-  if (!iupAttribGetInt(ih, "NOOVERWRITEPROMPT") && action == GTK_FILE_CHOOSER_ACTION_SAVE)
+  if (!iupAttribGetBoolean(ih, "NOOVERWRITEPROMPT") && action == GTK_FILE_CHOOSER_ACTION_SAVE)
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 #endif
 
@@ -334,7 +334,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     g_signal_connect(GTK_FILE_CHOOSER(dialog), "update-preview", G_CALLBACK(gtkFileDlgUpdatePreview), ih);
     g_signal_connect(dialog, "realize", G_CALLBACK(gtkFileDlgRealize), ih);
 
-    if (iupAttribGetInt(ih, "SHOWPREVIEW"))
+    if (iupAttribGetBoolean(ih, "SHOWPREVIEW"))
     {
       GtkWidget* frame = gtk_frame_new(NULL);
       gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_ETCHED_IN);
@@ -388,7 +388,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
           continue;
         }
       }
-      else if (!iupAttribGetInt(ih, "MULTIPLEFILES"))
+      else if (!iupAttribGetBoolean(ih, "MULTIPLEFILES"))
       {
         if (dir_exist)
         {
@@ -434,7 +434,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
   if (file_cb)
   {
-    if (iupAttribGetInt(ih, "SHOWPREVIEW"))
+    if (iupAttribGetBoolean(ih, "SHOWPREVIEW"))
       iupgtkReleaseNativeGraphicsContext(preview_canvas, (void*)iupAttribGet(ih, "PREVIEWDC"));
 
     file_cb(ih, NULL, "FINISH");
@@ -458,7 +458,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       }
     }
 
-    if (iupAttribGetInt(ih, "MULTIPLEFILES"))
+    if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
     {
       GSList* file_list = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
 
@@ -503,7 +503,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       }
     }
 
-    if (action != GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER && !iupAttribGetInt(ih, "NOCHANGEDIR"))  /* do change the current directory */
+    if (action != GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER && !iupAttribGetBoolean(ih, "NOCHANGEDIR"))  /* do change the current directory */
     {
       /* GtkFileChooser does not change the current directory */
       char* dir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));

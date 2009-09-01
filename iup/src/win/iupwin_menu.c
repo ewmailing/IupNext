@@ -83,7 +83,7 @@ static void winMenuGetLastPos(Ihandle* ih, int *last_pos, int *pos)
 
 static void winItemCheckToggle(Ihandle* ih)
 {
-  if (iupAttribGetInt(ih->parent, "RADIO"))
+  if (iupAttribGetBoolean(ih->parent, "RADIO"))
   {
     int last_pos, pos;
     winMenuGetLastPos(ih, &last_pos, &pos);
@@ -91,7 +91,7 @@ static void winItemCheckToggle(Ihandle* ih)
 
     winMenuUpdateBar(ih);
   }
-  else if (iupAttribGetInt(ih, "AUTOTOGGLE"))
+  else if (iupAttribGetBoolean(ih, "AUTOTOGGLE"))
   {
     if (GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) == MF_CHECKED)
       CheckMenuItem((HMENU)ih->handle, (UINT)ih->serial, MF_UNCHECKED|MF_BYCOMMAND);
@@ -221,7 +221,7 @@ int iupdrvMenuPopup(Ihandle* ih, int x, int y)
         hWndActive = dlg->handle;  /* found a valid handle */
 
         /* if not a "TRAY" dialog, keep searching, because TRAY is a special case */
-        if (iupAttribGetInt(dlg, "TRAY")) 
+        if (iupAttribGetBoolean(dlg, "TRAY")) 
           break;
       }
       dlg = iupDlgListNext();
@@ -232,7 +232,7 @@ int iupdrvMenuPopup(Ihandle* ih, int x, int y)
   if (hWndActive)
   {
     Ihandle* dlg = iupwinHandleGet(hWndActive);
-    if (dlg && iupAttribGetInt(dlg, "TRAY"))
+    if (dlg && iupAttribGetBoolean(dlg, "TRAY"))
     {
       /* To display a context menu for a notification icon, 
          the current window must be the foreground window. */
@@ -525,7 +525,7 @@ static char* winItemGetActiveAttrib(Ihandle* ih)
 
 static int winItemSetValueAttrib(Ihandle* ih, const char* value)
 {
-  if (iupAttribGetInt(ih->parent, "RADIO"))
+  if (iupAttribGetBoolean(ih->parent, "RADIO"))
   {
     int last_pos, pos;
     winMenuGetLastPos(ih, &last_pos, &pos);

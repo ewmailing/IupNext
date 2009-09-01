@@ -243,7 +243,7 @@ static int winValMapMethod(Ihandle* ih)
   else
     dwStyle |= TBS_VERT;
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (iupAttribGetBoolean(ih, "CANFOCUS"))
     dwStyle |= WS_TABSTOP;
 
   /* Track bar Ticks */

@@ -169,7 +169,7 @@ static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallback
       }
     }
 
-    if (!iupAttribGetInt(ih, "NOCHANGEDIR"))  /* do change the current directory */
+    if (!iupAttribGetBoolean(ih, "NOCHANGEDIR"))  /* do change the current directory */
     {
       /* XmFileSelection does not change the current directory */
       XmString xm_dir;
@@ -393,7 +393,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
   if (!filebox)
     return IUP_NOERROR;
 
-  if (!iupAttribGetInt(ih, "SHOWHIDDEN"))
+  if (!iupAttribGetBoolean(ih, "SHOWHIDDEN"))
     XtVaSetValues(filebox, XmNfileFilterStyle, XmFILTER_HIDDEN_FILES, NULL);
 
   value = iupAttribGet(ih, "TITLE");
@@ -504,7 +504,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
       Widget file_list = XmFileSelectionBoxGetChild(filebox, XmDIALOG_LIST);
       XtAddCallback(file_list, XmNbrowseSelectionCallback, (XtCallbackProc)motFileDlgBrowseSelectionCallback, (XtPointer)ih);
 
-      if (iupAttribGetInt(ih, "SHOWPREVIEW"))
+      if (iupAttribGetBoolean(ih, "SHOWPREVIEW"))
       {
         Widget frame = XtVaCreateManagedWidget("preview_canvas", xmFrameWidgetClass, filebox, 
                                                         XmNshadowType, XmSHADOW_ETCHED_IN,

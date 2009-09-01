@@ -62,7 +62,7 @@ static void iDialogSetModal(Ihandle* ih_popup)
 static void iDialogUnSetModal(Ihandle* ih_popup)
 {
   Ihandle *ih;
-  if (!iupAttribGetInt(ih_popup, "MODAL"))
+  if (!iupAttribGetBoolean(ih_popup, "MODAL"))
     return;
 
   iupAttribSetStr(ih_popup, "MODAL", NULL);
@@ -260,7 +260,7 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
     return IUP_NOERROR; 
   }
 
-  if (iupAttribGetInt(ih, "MODAL")) /* already a popup */
+  if (iupAttribGetBoolean(ih, "MODAL")) /* already a popup */
     return IUP_NOERROR; 
 
   iDialogSetModal(ih);
@@ -295,7 +295,7 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
   int was_visible;
 
   /* Calling IupShow for a visible dialog shown with IupPopup does nothing. */
-  if (iupAttribGetInt(ih, "MODAL")) /* already a popup */
+  if (iupAttribGetBoolean(ih, "MODAL")) /* already a popup */
     return IUP_NOERROR; 
 
   if (ih->data->popup_level != 0)
@@ -350,7 +350,7 @@ void iupDialogHide(Ihandle* ih)
   ih->data->show_state = IUP_HIDE;
 
   /* if called IupHide for a Popup window */
-  if (iupAttribGetInt(ih, "MODAL"))
+  if (iupAttribGetBoolean(ih, "MODAL"))
   {
     iDialogUnSetModal(ih);
     IupExitLoop();
@@ -530,7 +530,7 @@ void iupDialogAdjustPos(Ihandle *ih, int *x, int *y)
   if (*x == IUP_MOUSEPOS || *y == IUP_MOUSEPOS)
     iupdrvGetCursorPos(&cursor_x, &cursor_y);
 
-  if (IupGetInt(ih, "MDICHILD"))
+  if (iupAttribGetBoolean(ih, "MDICHILD"))
   {
     Ihandle* client = (Ihandle*)iupAttribGet(ih, "MDICLIENT_HANDLE");
     if (client)

@@ -101,7 +101,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
       width = ih->currentwidth,
       height = ih->currentheight,
       channels = iupAttribGetInt(ih, "CHANNELS"),
-      flat_alpha = iupAttribGetInt(ih, "FLAT_ALPHA"),
+      flat_alpha = iupAttribGetBoolean(ih, "FLAT_ALPHA"),
       bpp = iupAttribGetInt(ih, "BPP");
   unsigned char *imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   HBITMAP hBitmap;

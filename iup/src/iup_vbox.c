@@ -127,7 +127,7 @@ static void iVboxComputeNaturalSizeMethod(Ihandle* ih)
     ih->expand &= children_expand; /* compose but only expand where the box can expand */
 
     /* leave room at the element for the maximum natural size of the children when homogeneous */
-    if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
+    if (iupAttribGetBoolean(ih, "HOMOGENEOUS"))
       children_natural_totalheight = children_natural_maxheight*children_count;
 
     /* compute the Vbox contents natural size */
@@ -189,7 +189,7 @@ static int iVboxCalcEmptyHeight(Ihandle *ih, int expand)
 
 static int iVBoxGetExpandChildren(Ihandle* ih)
 {
-  if (iupStrBoolean(iupAttribGetStr(ih, "EXPANDCHILDREN")))
+  if (iupAttribGetBoolean(ih, "EXPANDCHILDREN"))
     return IUP_EXPAND_WIDTH;    /* in vert. box, expand horizontally */
   else
     return 0;
@@ -209,7 +209,7 @@ static void iVboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
     if (expand_children)
       ih->expand |= expand_children;
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "HOMOGENEOUS")))
+    if (iupAttribGetBoolean(ih, "HOMOGENEOUS"))
     {
       homogeneous_height = iHboxCalcHomogeneousHeight(ih);
       ih->data->homogeneous_size = homogeneous_height;

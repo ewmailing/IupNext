@@ -131,7 +131,7 @@ static void motListAddSortedItem(Ihandle* ih, const char *value)
 
 void iupdrvListAppendItem(Ihandle* ih, const char* value)
 {
-  if (iupAttribGetInt(ih, "SORT"))
+  if (iupAttribGetBoolean(ih, "SORT"))
     motListAddSortedItem(ih, value);
   else
     motListAddItem(ih, -1, value);
@@ -139,7 +139,7 @@ void iupdrvListAppendItem(Ihandle* ih, const char* value)
 
 void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
 {
-  if (iupAttribGetInt(ih, "SORT"))
+  if (iupAttribGetBoolean(ih, "SORT"))
     motListAddSortedItem(ih, value);
   else
     motListAddItem(ih, pos, value);
@@ -1169,7 +1169,7 @@ static int motListMapMethod(Ihandle* ih)
     iupmotSetArg(args, num_args, XmNmarginHeight, 0);
     iupmotSetArg(args, num_args, XmNmarginWidth, 0);
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+    if (iupAttribGetBoolean(ih, "CANFOCUS"))
       iupmotSetArg(args, num_args, XmNtraversalOn, True);
     else
       iupmotSetArg(args, num_args, XmNtraversalOn, False);
@@ -1228,7 +1228,7 @@ static int motListMapMethod(Ihandle* ih)
     iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
     iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+    if (iupAttribGetBoolean(ih, "CANFOCUS"))
       iupmotSetArg(args, num_args, XmNtraversalOn, True);
     else
       iupmotSetArg(args, num_args, XmNtraversalOn, False);
@@ -1247,7 +1247,7 @@ static int motListMapMethod(Ihandle* ih)
     else
       iupmotSetArg(args, num_args, XmNselectionPolicy, XmBROWSE_SELECT);
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
+    if (iupAttribGetBoolean(ih, "AUTOHIDE"))
       iupmotSetArg(args, num_args, XmNscrollBarDisplayPolicy, XmAS_NEEDED);
     else
       iupmotSetArg(args, num_args, XmNscrollBarDisplayPolicy, XmSTATIC);

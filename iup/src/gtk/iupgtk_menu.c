@@ -141,7 +141,7 @@ static void gtkItemActivate(GtkWidget *widget, Ihandle* ih)
 {
   Icallback cb;
 
-  if (GTK_IS_CHECK_MENU_ITEM(ih->handle) && !iupAttribGetInt(ih, "AUTOTOGGLE") && !iupAttribGetInt(ih->parent, "RADIO"))
+  if (GTK_IS_CHECK_MENU_ITEM(ih->handle) && !iupAttribGetBoolean(ih, "AUTOTOGGLE") && !iupAttribGetBoolean(ih->parent, "RADIO"))
   {
     /* GTK by default will do autotoggle */
     g_signal_handlers_block_by_func(G_OBJECT(ih->handle), G_CALLBACK(gtkItemActivate), ih);
@@ -151,9 +151,9 @@ static void gtkItemActivate(GtkWidget *widget, Ihandle* ih)
 
   if (GTK_IS_IMAGE_MENU_ITEM(ih->handle))
   {
-    if (iupAttribGetInt(ih, "AUTOTOGGLE"))
+    if (iupAttribGetBoolean(ih, "AUTOTOGGLE"))
     {
-      if (iupStrBoolean(iupAttribGet(ih, "VALUE")))
+      if (iupAttribGetBoolean(ih, "VALUE"))
         iupAttribSetStr(ih, "VALUE", "OFF");
       else
         iupAttribSetStr(ih, "VALUE", "ON");
@@ -318,7 +318,7 @@ static int gtkItemSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (GTK_IS_CHECK_MENU_ITEM(ih->handle))
   {
-    if (iupAttribGetInt(ih->parent, "RADIO"))
+    if (iupAttribGetBoolean(ih->parent, "RADIO"))
       value = "ON";
 
     g_signal_handlers_block_by_func(G_OBJECT(ih->handle), G_CALLBACK(gtkItemActivate), ih);
@@ -363,7 +363,7 @@ static int gtkItemMapMethod(Ihandle* ih)
   {
     if (iupAttribGet(ih, "IMAGE")||iupAttribGet(ih, "TITLEIMAGE"))
       ih->handle = gtk_image_menu_item_new_with_label("");
-    else if (iupAttribGetInt(ih->parent, "RADIO"))
+    else if (iupAttribGetBoolean(ih->parent, "RADIO"))
     {
       GtkRadioMenuItem* last_tg = (GtkRadioMenuItem*)iupAttribGet(ih->parent, "_IUPGTK_LASTRADIOITEM");
       if (last_tg)

@@ -108,7 +108,7 @@ void iupLayoutUpdate(Ihandle* ih)
 
 void iupLayoutCompute(Ihandle* ih)
 {
-  int shrink = iupAttribGetInt(ih, "SHRINK");
+  int shrink = iupAttribGetBoolean(ih, "SHRINK");
 
   /* Compute the natural size for all elements in the dialog,   
      using the minimum visible size and the defined user size.

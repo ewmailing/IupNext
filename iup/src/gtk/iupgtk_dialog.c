@@ -111,7 +111,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   /* In Hildon, borders have fixed dimensions, but are drawn as part
      of the client area! */
   if (border)
-    *border = (iupAttribGetInt(ih, "HILDONWINDOW") && !iupAttribGetInt(ih, "FULLSCREEN")) ? 12 : 0;
+    *border = (iupAttribGetBoolean(ih, "HILDONWINDOW") && !iupAttribGetBoolean(ih, "FULLSCREEN")) ? 12 : 0;
   if (caption)
     *caption = 0;
   if (menu)
@@ -120,14 +120,14 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   static int native_border = 0;
   static int native_caption = 0;
 
-  int has_caption = iupAttribGetInt(ih, "MAXBOX")  ||
-                    iupAttribGetInt(ih, "MINBOX")  ||
-                    iupAttribGetInt(ih, "MENUBOX") || 
+  int has_caption = iupAttribGetBoolean(ih, "MAXBOX")  ||
+                    iupAttribGetBoolean(ih, "MINBOX")  ||
+                    iupAttribGetBoolean(ih, "MENUBOX") || 
                     IupGetAttribute(ih, "TITLE"); /* must use IupGetAttribute to check from the native implementation */
 
   int has_border = has_caption ||
-                   iupAttribGetInt(ih, "RESIZE") ||
-                   iupAttribGetInt(ih, "BORDER");
+                   iupAttribGetBoolean(ih, "RESIZE") ||
+                   iupAttribGetBoolean(ih, "BORDER");
 
   *menu = gtkDialogGetMenuSize(ih);
 
@@ -187,7 +187,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
   int old_state = ih->data->show_state;
   ih->data->show_state = IUP_SHOW;
 
-  if (iupAttribGetInt(ih, "FULLSCREEN"))
+  if (iupAttribGetBoolean(ih, "FULLSCREEN"))
   {
     gtk_window_fullscreen((GtkWindow*)ih->handle);
     return 1;
@@ -417,7 +417,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
   GtkWidget* fixed;
 
 #ifdef HILDON
-  if (iupAttribGetInt(ih, "HILDONWINDOW")) 
+  if (iupAttribGetBoolean(ih, "HILDONWINDOW")) 
   {
     HildonProgram *program = HILDON_PROGRAM(hildon_program_get_instance());
     ih->handle = hildon_window_new();
@@ -460,7 +460,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
                                     
   gtk_window_set_default_size((GtkWindow*)ih->handle, 100, 100); /* set this to avoid size calculation problems  */
 
-  if (iupStrBoolean(iupAttribGet(ih, "DIALOGHINT"))) 
+  if (iupAttribGetBoolean(ih, "DIALOGHINT")) 
     gtk_window_set_type_hint(GTK_WINDOW(ih->handle), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   /* the container that will receive the child element. */
@@ -471,11 +471,11 @@ static int gtkDialogMapMethod(Ihandle* ih)
   /* initialize the widget */
   gtk_widget_realize(ih->handle);
 
-  if (iupAttribGetInt(ih, "DIALOGFRAME")) {
+  if (iupAttribGetBoolean(ih, "DIALOGFRAME")) {
     iupAttribSetStr(ih, "RESIZE", "NO");
   }
 
-  if (!iupAttribGetInt(ih, "RESIZE")) {
+  if (!iupAttribGetBoolean(ih, "RESIZE")) {
     iupAttribSetStr(ih, "MAXBOX", "NO");  /* Must also remove these, so RESIZE=NO can work */
     iupAttribSetStr(ih, "MINBOX", "NO");
   }
@@ -485,27 +485,27 @@ static int gtkDialogMapMethod(Ihandle* ih)
     decorations |= GDK_DECOR_TITLE;
   }
 
-  if (iupAttribGetInt(ih, "MENUBOX")) {
+  if (iupAttribGetBoolean(ih, "MENUBOX")) {
     functions   |= GDK_FUNC_CLOSE;
     decorations |= GDK_DECOR_MENU;
   }
 
-  if (iupAttribGetInt(ih, "MINBOX")) {
+  if (iupAttribGetBoolean(ih, "MINBOX")) {
     functions   |= GDK_FUNC_MINIMIZE;
     decorations |= GDK_DECOR_MINIMIZE;
   }
 
-  if (iupAttribGetInt(ih, "MAXBOX")) {
+  if (iupAttribGetBoolean(ih, "MAXBOX")) {
     functions   |= GDK_FUNC_MAXIMIZE;
     decorations |= GDK_DECOR_MAXIMIZE;
   }
 
-  if (iupAttribGetInt(ih, "RESIZE")) {
+  if (iupAttribGetBoolean(ih, "RESIZE")) {
     functions   |= GDK_FUNC_RESIZE;
     decorations |= GDK_DECOR_RESIZEH;
   }
 
-  if (iupAttribGetInt(ih, "BORDER"))
+  if (iupAttribGetBoolean(ih, "BORDER"))
     decorations |= GDK_DECOR_BORDER;
 
   if (decorations == 0)
@@ -591,7 +591,7 @@ static void gtkDialogLayoutUpdateMethod(Ihandle *ih)
   height = ih->currentheight - 2*border - caption;   /* menu is inside the client area. */
   gtk_window_resize((GtkWindow*)ih->handle, width, height);
 
-  if (!iupAttribGetInt(ih, "RESIZE"))
+  if (!iupAttribGetBoolean(ih, "RESIZE"))
   {
     GdkGeometry geometry;
     geometry.min_width = width;

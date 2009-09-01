@@ -34,7 +34,7 @@
    if so the resize is started */
 int iupMatrixColResStart(Ihandle* ih, int x, int y)
 {
-  if (ih->data->lines.sizes[0] && y < ih->data->lines.sizes[0] && iupAttribGetInt(ih, "RESIZEMATRIX"))
+  if (ih->data->lines.sizes[0] && y < ih->data->lines.sizes[0] && iupAttribGetBoolean(ih, "RESIZEMATRIX"))
   {
     int size, col;
    
@@ -144,7 +144,7 @@ static void iMatrixColResResetMatrixCursor(Ihandle* ih)
 /* Change the cursor when it passes over a group of the column titles. */
 void iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y)
 {
-  if(ih->data->lines.sizes[0] && y < ih->data->lines.sizes[0] && iupAttribGetInt(ih, "RESIZEMATRIX"))
+  if(ih->data->lines.sizes[0] && y < ih->data->lines.sizes[0] && iupAttribGetBoolean(ih, "RESIZEMATRIX"))
   {
     /* It is in the column titles area and the resize mode is on */
     int found = 0, size, col;

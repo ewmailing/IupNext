@@ -277,6 +277,7 @@ void SampleTest(void)
   IupSetAttribute(_cnv_1,"SCROLLBAR","YES");
   IupSetAttribute(_cnv_1,"EXPAND","HORIZONTAL");
   IupSetAttribute(_cnv_1,"RASTERSIZE","x100");
+  IupSetAttribute(_cnv_1,"CANFOCUS","NO");
 
   _vbox_1 = IupVbox(
     _hbox_1,

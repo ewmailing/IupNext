@@ -67,6 +67,9 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	mouse, by pressing a key will NOT clear the selection anymore. You can still 
 	do that setting MARKED=NULL in the K_ANY callback. Improved MARKL:C to be 
 	more flexible for other MARKMODE options.</li>
+	<li><span class="hist_fixed">Fixed:</span> the functions <strong>
+	IupPreviousField</strong> and <strong>IupNextField</strong> to respect the 
+	dialog hierarchy order. </li>
 	<li><span class="hist_fixed">Fixed:</span> NUMCOL and NUMLIN when set to 0 
 	in <strong>IupMatrix</strong>. Double click in a title cell was entering in edit mode at the 
 	focus cell. Marks were processed after ENTERCELL_CB when the user single 
@@ -101,6 +104,9 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	could not abort them by returning IUP_IGNORE.</li>
 	<li><span class="hist_fixed">Fixed:</span>
 	K_ANY called twice for K_CR when <strong>IupText</strong> has multiple lines 
+	in Windows.</li>
+	<li><span class="hist_fixed">Fixed:</span>
+	focus feedback where displayed when not in focus at <strong>IupTree</strong> 
 	in Windows.</li>
 
 </ul>

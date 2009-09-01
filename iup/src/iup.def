@@ -335,6 +335,7 @@ iupAttribGetInherit
 iupAttribGetInheritNativeParent
 iupAttribGetStr
 iupAttribGetInt
+iupAttribGetBoolean
 iupAttribGetFloat
 iupAssert
 iupArrayInc

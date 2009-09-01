@@ -84,7 +84,7 @@ static int wGLCreateContext(Ihandle* ih)
     pfd.dwFlags |= PFD_DOUBLEBUFFER;
 
   /* stereo */
-  if (iupAttribGetInt(ih,"STEREO"))
+  if (iupAttribGetBoolean(ih,"STEREO"))
     pfd.dwFlags |= PFD_STEREO;
 
   /* rgba or index */ 

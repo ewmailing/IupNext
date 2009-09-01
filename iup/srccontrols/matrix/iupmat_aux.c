@@ -468,7 +468,7 @@ int iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode, int
 {
   IFniiii cb;
 
-  if (iupAttribGetInt(ih, "READONLY"))
+  if (iupAttribGetBoolean(ih, "READONLY"))
     return IUP_IGNORE;
 
   cb = (IFniiii)IupGetCallback(ih, "EDITION_CB");

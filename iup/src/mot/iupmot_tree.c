@@ -2694,7 +2694,7 @@ static int motTreeMapMethod(Ihandle* ih)
   iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* default padding */
   iupmotSetArg(args, num_args, XmNmarginWidth, 0);
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (iupAttribGetBoolean(ih, "CANFOCUS"))
     iupmotSetArg(args, num_args, XmNtraversalOn, True);
   else
     iupmotSetArg(args, num_args, XmNtraversalOn, False);
@@ -2708,12 +2708,12 @@ static int motTreeMapMethod(Ihandle* ih)
   iupmotSetArg(args, num_args, XmNselectionPolicy, XmSINGLE_SELECT);
   iupmotSetArg(args, num_args, XmNoutlineIndentation, 20);
 
-  if (iupAttribGetInt(ih, "HIDELINES"))
+  if (iupAttribGetBoolean(ih, "HIDELINES"))
     iupmotSetArg(args, num_args, XmNoutlineLineStyle,  XmNO_LINE);
   else
     iupmotSetArg(args, num_args, XmNoutlineLineStyle, XmSINGLE);
 
-  if (iupAttribGetInt(ih, "HIDEBUTTONS"))
+  if (iupAttribGetBoolean(ih, "HIDEBUTTONS"))
     iupmotSetArg(args, num_args, XmNoutlineButtonPolicy,  XmOUTLINE_BUTTON_ABSENT);
   else
     iupmotSetArg(args, num_args, XmNoutlineButtonPolicy, XmOUTLINE_BUTTON_PRESENT);

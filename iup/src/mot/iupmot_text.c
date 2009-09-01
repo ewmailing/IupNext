@@ -931,7 +931,7 @@ static int motTextMapMethod(Ihandle* ih)
     Widget sb_win;
     int wordwrap = 0;
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "WORDWRAP")))
+    if (iupAttribGetBoolean(ih, "WORDWRAP"))
     {
       wordwrap = 1;
       ih->data->sb &= ~IUP_SB_HORIZ;  /* must remove the horizontal scroolbar */
@@ -970,7 +970,7 @@ static int motTextMapMethod(Ihandle* ih)
   {
     widget_class = xmTextFieldWidgetClass;
 
-    if (iupAttribGetInt(ih, "SPIN"))
+    if (iupAttribGetBoolean(ih, "SPIN"))
     {
       Widget spinbox;
 
@@ -1003,7 +1003,7 @@ static int motTextMapMethod(Ihandle* ih)
       child_id = "text";
       spin = 1;
 
-      if (!iupStrBoolean(iupAttribGetStr(ih, "SPINAUTO")))
+      if (!iupAttribGetBoolean(ih, "SPINAUTO"))
         iupAttribSetStr(ih, "_IUPMOT_SPIN_NOAUTO", "1");
     }
 
@@ -1018,7 +1018,7 @@ static int motTextMapMethod(Ihandle* ih)
       iupmotSetArg(args, num_args, XmNmaximumValue, 100);
       iupmotSetArg(args, num_args, XmNposition, 0);
 
-      if (iupStrBoolean(iupAttribGetStr(ih, "SPINWRAP")))
+      if (iupAttribGetBoolean(ih, "SPINWRAP"))
         iupmotSetArg(args, num_args, XmNwrap, TRUE);
       else
         iupmotSetArg(args, num_args, XmNwrap, FALSE);
@@ -1037,7 +1037,7 @@ static int motTextMapMethod(Ihandle* ih)
   iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* default padding */
   iupmotSetArg(args, num_args, XmNmarginWidth, 0);
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (iupAttribGetBoolean(ih, "CANFOCUS"))
     iupmotSetArg(args, num_args, XmNtraversalOn, True);
   else
     iupmotSetArg(args, num_args, XmNtraversalOn, False);
@@ -1047,7 +1047,7 @@ static int motTextMapMethod(Ihandle* ih)
   iupmotSetArg(args, num_args, XmNverifyBell, False);
   iupmotSetArg(args, num_args, XmNspacing, 0);
 
-  if (IupGetInt(ih, "BORDER"))              /* Use IupGetInt for inheritance */
+  if (iupAttribGetBoolean(ih, "BORDER"))
     iupmotSetArg(args, num_args, XmNshadowThickness, 2);
   else
     iupmotSetArg(args, num_args, XmNshadowThickness, 0);

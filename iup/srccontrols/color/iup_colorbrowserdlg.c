@@ -717,7 +717,7 @@ static char* iColorBrowserDlgGetValueAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(100);
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
-  if (iupStrBoolean(iupAttribGetStr(ih, "SHOWALPHA")))
+  if (iupAttribGetBoolean(ih, "SHOWALPHA"))
     sprintf(buffer, "%d %d %d %d", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue, (int)colordlg_data->alpha);
   else
     sprintf(buffer, "%d %d %d", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue);

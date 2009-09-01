@@ -70,7 +70,7 @@ static void xGLCanvasGetVisual(Ihandle* ih)
   }
 
   /* stereo */
-  if (iupAttribGetInt(ih,"STEREO"))
+  if (iupAttribGetBoolean(ih,"STEREO"))
   {
     alist[n++] = GLX_STEREO;
   }

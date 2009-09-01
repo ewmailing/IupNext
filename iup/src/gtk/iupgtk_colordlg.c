@@ -133,7 +133,7 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
       gtk_color_selection_set_current_alpha(colorsel, iupCOLOR8TO16(alpha));
     }
   }
-  else if (iupStrBoolean(iupAttribGetStr(ih, "SHOWALPHA")) || ret == 4)
+  else if (iupAttribGetBoolean(ih, "SHOWALPHA") || ret == 4)
   {
     gtk_color_selection_set_has_opacity_control(colorsel, TRUE);
     gtk_color_selection_set_current_alpha(colorsel, iupCOLOR8TO16(a));
@@ -147,7 +147,7 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
     gtk_color_selection_set_has_palette (colorsel, TRUE);
     gtkColorDlgSetPalette(colorsel, value);
   }
-  else if (iupStrBoolean(iupAttribGetStr(ih, "SHOWCOLORTABLE")))
+  else if (iupAttribGetBoolean(ih, "SHOWCOLORTABLE"))
     gtk_color_selection_set_has_palette (colorsel, TRUE);
   else
     gtk_color_selection_set_has_palette (colorsel, FALSE);

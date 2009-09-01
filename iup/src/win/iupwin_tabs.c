@@ -235,7 +235,7 @@ static HWND winTabCreatePageWindow(Ihandle* ih)
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, 
       dwExStyle = WS_EX_CONTROLPARENT; 
 
-  if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
+  if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
     dwExStyle |= WS_EX_COMPOSITED;
   else
     dwStyle |= WS_CLIPCHILDREN;
@@ -551,7 +551,7 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
 
 static int winTabsMapMethod(Ihandle* ih)
 {
-  DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS | TCS_HOTTRACK,
+  DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS | TCS_HOTTRACK | WS_TABSTOP,
       dwExStyle = WS_EX_CONTROLPARENT; 
 
   if (!ih->parent)
@@ -567,7 +567,7 @@ static int winTabsMapMethod(Ihandle* ih)
   if (ih->data->is_multiline)
     dwStyle |= TCS_MULTILINE;
 
-  if (iupAttribGetInt(IupGetDialog(ih), "COMPOSITED"))
+  if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
   {
     dwExStyle |= WS_EX_COMPOSITED;
 

@@ -428,7 +428,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
     {
       ih->handle = gtk_check_button_new();
 
-      if (iupAttribGetInt(ih, "3STATE"))
+      if (iupAttribGetBoolean(ih, "3STATE"))
         is3state = 1;
     }
     else
@@ -452,7 +452,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
 
-  if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
   g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);

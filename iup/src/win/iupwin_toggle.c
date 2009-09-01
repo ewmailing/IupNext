@@ -599,7 +599,7 @@ static int winToggleMapMethod(Ihandle* ih)
     ih->data->type = IUP_TOGGLE_TEXT;
     dwStyle |= BS_TEXT|BS_MULTILINE;
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "RIGHTBUTTON")))
+    if (iupAttribGetBoolean(ih, "RIGHTBUTTON"))
       dwStyle |= BS_RIGHTBUTTON;
   }
 
@@ -621,10 +621,10 @@ static int winToggleMapMethod(Ihandle* ih)
   }
   else
   {
-    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+    if (iupAttribGetBoolean(ih, "CANFOCUS"))
       dwStyle |= WS_TABSTOP;
 
-    if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetInt(ih, "3STATE"))
+    if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetBoolean(ih, "3STATE"))
       dwStyle |= BS_AUTO3STATE;
     else
       dwStyle |= BS_AUTOCHECKBOX;

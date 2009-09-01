@@ -19,7 +19,7 @@ extern "C" {
 
 
 /** Utility to check if a control can have the keyboard input focus.
- * Checks the control class, active state and visible.
+ * To receive the focus must be interactive, has CANFOCUS=YES, is mapped, is visible and is active.
  * \ingroup focus */
 int iupFocusCanAccept(Ihandle *ih);
 
@@ -31,11 +31,12 @@ void iupCallGetFocusCb(Ihandle *ih);
  * \ingroup focus */
 void iupCallKillFocusCb(Ihandle *ih);
 
-/** Returns the next element that should receive the focus.
+/** Returns the next element that can receive the focus.
+ * Uses \ref iupFocusCanAccept.
  * \ingroup focus */
 Ihandle* iupGetNextFocus(Ihandle *ih);
 
-/** Returns the next element that could receive the focus.
+/** Returns the next interactive brother. Independs if it can receive the focus.
  * \ingroup focus */
 Ihandle* iupFocusNextInteractive(Ihandle *ih);
 

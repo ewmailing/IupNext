@@ -157,7 +157,7 @@ int iupgtkSetMnemonicTitle(Ihandle* ih, GtkLabel* label, const char* value)
   }
   else
   {
-    if (iupStrBoolean(iupAttribGetStr(ih, "MARKUP")))
+    if (iupAttribGetBoolean(ih, "MARKUP"))
       gtk_label_set_markup(label, iupgtkStrConvertToUTF8(str));
     else
       gtk_label_set_text(label, iupgtkStrConvertToUTF8(str));

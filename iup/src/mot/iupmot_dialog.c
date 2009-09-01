@@ -134,14 +134,14 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   static int native_border = 0;
   static int native_caption = 0;
 
-  int has_caption = iupAttribGetInt(ih, "MAXBOX")  ||
-                    iupAttribGetInt(ih, "MINBOX")  ||
-                    iupAttribGetInt(ih, "MENUBOX") || 
+  int has_caption = iupAttribGetBoolean(ih, "MAXBOX")  ||
+                    iupAttribGetBoolean(ih, "MINBOX")  ||
+                    iupAttribGetBoolean(ih, "MENUBOX") || 
                     IupGetAttribute(ih, "TITLE");  /* must use IupGetAttribute to check from the native implementation */
 
   int has_border = has_caption ||
-                   iupAttribGetInt(ih, "RESIZE") ||
-                   iupAttribGetInt(ih, "BORDER");
+                   iupAttribGetBoolean(ih, "RESIZE") ||
+                   iupAttribGetBoolean(ih, "BORDER");
 
   *menu = motDialogGetMenuSize(ih);
 
@@ -243,27 +243,27 @@ static void motDialogSetWindowManagerStyle(Ihandle* ih)
     hints.decorations |= MWM_DECOR_TITLE;
   }
 
-  if (iupAttribGetInt(ih, "MENUBOX")) {
+  if (iupAttribGetBoolean(ih, "MENUBOX")) {
     hints.functions   |= MWM_FUNC_CLOSE;
     hints.decorations |= MWM_DECOR_MENU;
   }
 
-  if (iupAttribGetInt(ih, "MINBOX")) {
+  if (iupAttribGetBoolean(ih, "MINBOX")) {
     hints.functions   |= MWM_FUNC_MINIMIZE;
     hints.decorations |= MWM_DECOR_MINIMIZE;
   }
 
-  if (iupAttribGetInt(ih, "MAXBOX")) {
+  if (iupAttribGetBoolean(ih, "MAXBOX")) {
     hints.functions   |= MWM_FUNC_MAXIMIZE;
     hints.decorations |= MWM_DECOR_MAXIMIZE;
   }
 
-  if (iupAttribGetInt(ih, "RESIZE")) {
+  if (iupAttribGetBoolean(ih, "RESIZE")) {
     hints.functions   |= MWM_FUNC_RESIZE;
     hints.decorations |= MWM_DECOR_RESIZEH;
   }
 
-  if (iupAttribGetInt(ih, "BORDER"))
+  if (iupAttribGetBoolean(ih, "BORDER"))
     hints.decorations |= MWM_DECOR_BORDER;
 
   XChangeProperty(iupmot_display, XtWindow(ih->handle),
@@ -358,7 +358,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
   char* placement;
   ih->data->show_state = IUP_SHOW;
 
-  if (iupAttribGetInt(ih, "FULLSCREEN"))
+  if (iupAttribGetBoolean(ih, "FULLSCREEN"))
     return 1;
   
   placement = iupAttribGet(ih, "PLACEMENT");
@@ -572,7 +572,7 @@ static int motDialogMapMethod(Ihandle* ih)
   int num_args = 0;
   Arg args[20];
 
-  if (iupAttribGetInt(ih, "DIALOGFRAME")) 
+  if (iupAttribGetBoolean(ih, "DIALOGFRAME")) 
   {
     iupAttribSetStr(ih, "RESIZE", "NO");
     iupAttribSetStr(ih, "MAXBOX", "NO");
@@ -585,15 +585,15 @@ static int motDialogMapMethod(Ihandle* ih)
 
   if (iupAttribGet(ih, "TITLE"))
       mwm_decor |= MWM_DECOR_TITLE;
-  if (iupAttribGetInt(ih, "MENUBOX"))
+  if (iupAttribGetBoolean(ih, "MENUBOX"))
       mwm_decor |= MWM_DECOR_MENU;
-  if (iupAttribGetInt(ih, "MINBOX"))
+  if (iupAttribGetBoolean(ih, "MINBOX"))
       mwm_decor |= MWM_DECOR_MINIMIZE;
-  if (iupAttribGetInt(ih, "MAXBOX"))
+  if (iupAttribGetBoolean(ih, "MAXBOX"))
       mwm_decor |= MWM_DECOR_MAXIMIZE;
-  if (iupAttribGetInt(ih, "RESIZE"))
+  if (iupAttribGetBoolean(ih, "RESIZE"))
       mwm_decor |= MWM_DECOR_RESIZEH;
-  if (iupAttribGetInt(ih, "BORDER"))
+  if (iupAttribGetBoolean(ih, "BORDER"))
       mwm_decor |= MWM_DECOR_BORDER;
 
   iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* so XtRealizeWidget will not show the dialog */
@@ -608,7 +608,7 @@ static int motDialogMapMethod(Ihandle* ih)
   if (mwm_decor != 0x7E) 
     iupmotSetArg(args, num_args, XmNmwmDecorations, mwm_decor);
 
-  if (iupAttribGetInt(ih, "SAVEUNDER"))
+  if (iupAttribGetBoolean(ih, "SAVEUNDER"))
     iupmotSetArg(args, num_args, XmNsaveUnder, True);
 
   parent = iupDialogGetNativeParent(ih);
@@ -643,7 +643,7 @@ static int motDialogMapMethod(Ihandle* ih)
               XmNheight, 100,
               XmNborderWidth, 0,
               XmNshadowThickness, 0,
-              XmNnoResize, iupAttribGetInt(ih, "RESIZE")? False: True,
+              XmNnoResize, iupAttribGetBoolean(ih, "RESIZE")? False: True,
               XmNresizePolicy, XmRESIZE_NONE, /* no automatic resize of children */
               XmNuserData, ih, /* used only in motDialogConfigureNotify                   */
               XmNnavigationType, XmTAB_GROUP,
@@ -712,7 +712,7 @@ static void motDialogLayoutUpdateMethod(Ihandle *ih)
 
   iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
 
-  if (!iupAttribGetInt(ih, "RESIZE"))
+  if (!iupAttribGetBoolean(ih, "RESIZE"))
   {
     int width = ih->currentwidth - 2*border;
     int height = ih->currentheight - 2*border - caption;

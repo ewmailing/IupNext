@@ -2162,7 +2162,7 @@ static void gtkTreeEnableDragDrop(Ihandle* ih)
     { "GTK_TREE_MODEL_ROW", GTK_TARGET_SAME_WIDGET, 0 }
   };
 
-  if (iupAttribGetInt(ih, "AUTODRAGDROP"))
+  if (iupAttribGetBoolean(ih, "AUTODRAGDROP"))
   {
     gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW(ih->handle),
 			        GDK_BUTTON1_MASK,
@@ -2242,14 +2242,14 @@ static int gtkTreeMapMethod(Ihandle* ih)
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(ih->handle), FALSE);
 
 #if GTK_CHECK_VERSION(2, 10, 0)
-  if (iupAttribGetInt(ih, "HIDELINES"))
+  if (iupAttribGetBoolean(ih, "HIDELINES"))
     gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(ih->handle), FALSE);
   else
     gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(ih->handle), TRUE);
 #endif
 
 #if GTK_CHECK_VERSION(2, 12, 0)
-  if (iupAttribGetInt(ih, "HIDEBUTTONS"))
+  if (iupAttribGetBoolean(ih, "HIDEBUTTONS"))
     gtk_tree_view_set_show_expanders(GTK_TREE_VIEW(ih->handle), FALSE);
   else
     gtk_tree_view_set_show_expanders(GTK_TREE_VIEW(ih->handle), TRUE);
@@ -2293,7 +2293,7 @@ static int gtkTreeMapMethod(Ihandle* ih)
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
 
-  if (!iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
   gtk_widget_realize((GtkWidget*)scrolled_window);

@@ -118,7 +118,7 @@ static int motButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 
 static int motButtonSetBgColorAttrib(Ihandle* ih, const char* value)
 {
-  if (iupAttribGet(ih, "IMPRESS") || iupStrBoolean(iupAttribGetStr(ih, "FLAT")))
+  if (iupAttribGet(ih, "IMPRESS") || iupAttribGetBoolean(ih, "FLAT"))
   {
     /* ignore given value, must use only from parent */
     value = iupBaseNativeParentGetBgColor(ih);
@@ -132,7 +132,7 @@ static int motButtonSetBgColorAttrib(Ihandle* ih, const char* value)
 
 static int motButtonSetBackgroundAttrib(Ihandle* ih, const char* value)
 {
-  if (iupAttribGet(ih, "IMPRESS") || iupStrBoolean(iupAttribGetStr(ih, "FLAT")))
+  if (iupAttribGet(ih, "IMPRESS") || iupAttribGetBoolean(ih, "FLAT"))
   {
     /* ignore given value, must use only from parent */
     value = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
@@ -215,9 +215,9 @@ static int motButtonMapMethod(Ihandle* ih)
   iupmotSetArg(args, num_args, XmNfillOnArm, False);
 
   /* Primitive */
-  if (iupAttribGetInt(ih, "FOCUSONCLICK"))
+  if (iupAttribGetBoolean(ih, "FOCUSONCLICK"))
   {
-    if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+    if (iupAttribGetBoolean(ih, "CANFOCUS"))
       iupmotSetArg(args, num_args, XmNtraversalOn, True);
     else
       iupmotSetArg(args, num_args, XmNtraversalOn, False);
@@ -241,7 +241,7 @@ static int motButtonMapMethod(Ihandle* ih)
   XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
 
   value = iupAttribGet(ih, "IMPRESS");
-  if (iupStrBoolean(iupAttribGetStr(ih, "FLAT")) && !value)
+  if (iupAttribGetBoolean(ih, "FLAT") && !value)
   {
     XtVaSetValues(ih->handle, XmNshadowThickness, 0, NULL);
     XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)motButtonEnterLeaveWindowEvent, (XtPointer)ih);

@@ -252,7 +252,7 @@ char* iupBaseNativeParentGetBgColor(Ihandle* ih)
 int iupBaseGetScrollbar(Ihandle* ih)
 {
   int sb = IUP_SB_NONE;  /* NO scrollbar by default */
-  char* value = IupGetAttribute(ih, "SCROLLBAR"); /* Use IupGetAttribute for inheritance */
+  char* value = IupGetAttribute(ih, "SCROLLBAR");
   if (value)
   {
     if (iupStrEqualNoCase(value, "YES"))
@@ -414,6 +414,10 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
   /* make sure everyone has the correct default value */
   iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "ACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  if (ic->is_interactive)
+    iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
+  else
+    iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iupBaseSetSizeAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iupBaseSetRasterSizeAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

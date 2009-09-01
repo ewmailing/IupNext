@@ -321,7 +321,7 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
     draw_border = 0;
   else
   {
-    if (iupStrBoolean(iupAttribGetStr(ih, "FLAT")))
+    if (iupAttribGetBoolean(ih, "FLAT"))
     {
       if (drawitem->itemState & ODS_HOTLIGHT || iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
         draw_border = 1;
@@ -519,7 +519,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       iupwinButtonUp(ih, msg, wp, lp);
 
       /* BN_CLICKED will NOT be notified when not receiving the focus */
-      if (msg==WM_LBUTTONUP && !iupAttribGetInt(ih, "FOCUSONCLICK"))
+      if (msg==WM_LBUTTONUP && !iupAttribGetBoolean(ih, "FOCUSONCLICK"))
       {
         Icallback cb = IupGetCallback(ih, "ACTION");
         if (cb && cb(ih) == IUP_CLOSE)
@@ -559,7 +559,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
   case WM_SETFOCUS:
     {
       HWND previous = (HWND)wp;
-      if (!iupAttribGetInt(ih, "FOCUSONCLICK") && wp && iupAttribGet(ih, "_IUPWIN_ENTERWIN"))
+      if (!iupAttribGetBoolean(ih, "FOCUSONCLICK") && wp && iupAttribGet(ih, "_IUPWIN_ENTERWIN"))
       {
         SetFocus(previous);
         *result = 0;
@@ -661,7 +661,7 @@ static int winButtonMapMethod(Ihandle* ih)
   else
     ih->data->type = IUP_BUTTON_TEXT;
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (iupAttribGetBoolean(ih, "CANFOCUS"))
     dwStyle |= WS_TABSTOP;
 
   if (!iupwinCreateWindowEx(ih, "BUTTON", 0, dwStyle))

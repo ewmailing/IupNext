@@ -228,7 +228,7 @@ static int iTreeSetMarkModeAttrib(Ihandle* ih, const char* value)
 
 static int iTreeSetShiftAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrBoolean(value) && iupStrBoolean(iupAttribGet(ih, "CTRL")))
+  if (iupStrBoolean(value) && iupAttribGetBoolean(ih, "CTRL"))
     iTreeSetMarkModeAttrib(ih, "MULTIPLE");
   else
     iTreeSetMarkModeAttrib(ih, "SINGLE");
@@ -237,7 +237,7 @@ static int iTreeSetShiftAttrib(Ihandle* ih, const char* value)
 
 static int iTreeSetCtrlAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrBoolean(value) && iupStrBoolean(iupAttribGet(ih, "SHIFT")))
+  if (iupStrBoolean(value) && iupAttribGetBoolean(ih, "SHIFT"))
     iTreeSetMarkModeAttrib(ih, "MULTIPLE");
   else
     iTreeSetMarkModeAttrib(ih, "SINGLE");
@@ -409,7 +409,6 @@ Iclass* iupTreeGetClass(void)
   iupClassRegisterAttribute(ic, "SHOWDRAGDROP",    iTreeGetShowDragDropAttrib,    iTreeSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWRENAME",      iTreeGetShowRenameAttrib,      iTreeSetShowRenameAttrib,   NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ADDEXPANDED",     iTreeGetAddExpandedAttrib,     iTreeSetAddExpandedAttrib,  IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttribute(ic, "CTRL",  NULL, iTreeSetCtrlAttrib,  NULL, NULL, IUPAF_NOT_MAPPED);

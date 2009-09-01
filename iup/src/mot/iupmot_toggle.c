@@ -344,7 +344,7 @@ static int motToggleMapMethod(Ihandle* ih)
   iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
   iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
   /* Primitive */
-  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (iupAttribGetBoolean(ih, "CANFOCUS"))
     iupmotSetArg(args, num_args, XmNtraversalOn, True);
   else
     iupmotSetArg(args, num_args, XmNtraversalOn, False);
@@ -372,7 +372,7 @@ static int motToggleMapMethod(Ihandle* ih)
   }
   else
   {
-    if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetInt(ih, "3STATE"))
+    if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetBoolean(ih, "3STATE"))
       iupmotSetArg(args, num_args, XmNtoggleMode, XmTOGGLE_INDETERMINATE);
     else
       iupmotSetArg(args, num_args, XmNtoggleMode, XmTOGGLE_BOOLEAN);

@@ -1278,7 +1278,7 @@ static int winTextSetOverwriteAttrib(Ihandle* ih, const char* value)
   if (!ih->data->has_formatting)
     return 0;
 
-  if (iupStrBoolean(iupAttribGet(ih, "OVERWRITE")))
+  if (iupAttribGetBoolean(ih, "OVERWRITE"))
   {
     if (!iupStrBoolean(value))
       SendMessage(ih->handle, WM_KEYDOWN, VK_INSERT, 0);  /* toggle from ON to OFF */
@@ -1548,9 +1548,12 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
            so use the Control+Tab to change focus */
         if (msg->message == WM_KEYDOWN && 
             msg->wParam == VK_TAB && 
-            HIWORD(GetKeyState(VK_CONTROL)))
+            GetKeyState(VK_CONTROL) & 0x8000)
         {
-          IupNextField(ih);
+          if (GetKeyState(VK_SHIFT) & 0x8000)
+            IupPreviousField(ih);
+          else
+            IupNextField(ih);
           *result = 0;
           return 1;
         }
@@ -1608,7 +1611,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       }
       else if (wp == VK_INSERT && ih->data->has_formatting)
       {
-        if (iupStrBoolean(iupAttribGet(ih, "OVERWRITE")))
+        if (iupAttribGetBoolean(ih, "OVERWRITE"))
           iupAttribSetStr(ih, "OVERWRITE", "OFF"); /* toggle from ON to OFF */
         else
           iupAttribSetStr(ih, "OVERWRITE", "ON");  /* toggle from OFF to ON */
@@ -1771,10 +1774,10 @@ static void winTextCreateSpin(Ihandle* ih)
   else
     dwStyle |= UDS_ALIGNRIGHT;
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "SPINWRAP")))
+  if (iupAttribGetBoolean(ih, "SPINWRAP"))
     dwStyle |= UDS_WRAP;
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "SPINAUTO")))
+  if (iupAttribGetBoolean(ih, "SPINAUTO"))
     dwStyle |= UDS_SETBUDDYINT;
 
   hSpin = CreateWindowEx(0, /* extended window style */
@@ -1841,7 +1844,7 @@ static int winTextMapMethod(Ihandle* ih)
   if (!ih->parent)
     return IUP_ERROR;
 
-  if (iupStrBoolean(iupAttribGetStr(ih, "CANFOCUS")))
+  if (iupAttribGetBoolean(ih, "CANFOCUS"))
     dwStyle |= WS_TABSTOP;
 
   if (ih->data->has_formatting)
@@ -1860,7 +1863,7 @@ static int winTextMapMethod(Ihandle* ih)
   {
     dwStyle |= ES_AUTOVSCROLL|ES_MULTILINE|ES_WANTRETURN;
 
-    if (iupStrBoolean(iupAttribGetStr(ih, "WORDWRAP")))
+    if (iupAttribGetBoolean(ih, "WORDWRAP"))
     {
       ih->data->sb &= ~IUP_SB_HORIZ;  /* must remove the horizontal scroolbar */
                                       /* and do not specify ES_AUTOHSCROLL, the control automatically wraps words */
@@ -1875,7 +1878,7 @@ static int winTextMapMethod(Ihandle* ih)
 
     if (ih->data->has_formatting && ih->data->sb != IUP_SB_NONE)
     {
-      if (!iupStrBoolean(iupAttribGetStr(ih, "AUTOHIDE")))
+      if (!iupAttribGetBoolean(ih, "AUTOHIDE"))
         dwStyle |= ES_DISABLENOSCROLL;
     }
   }
@@ -1883,7 +1886,7 @@ static int winTextMapMethod(Ihandle* ih)
   {
     dwStyle |= ES_AUTOHSCROLL|ES_NOHIDESEL;
 
-    if (iupStrBoolean(iupAttribGet(ih, "PASSWORD")))
+    if (iupAttribGetBoolean(ih, "PASSWORD"))
       dwStyle |= ES_PASSWORD;
   }
 
@@ -1898,7 +1901,7 @@ static int winTextMapMethod(Ihandle* ih)
       dwStyle |= ES_LEFT;
   }
 
-  if (IupGetInt(ih, "BORDER"))              /* Use IupGetInt for inheritance */
+  if (iupAttribGetBoolean(ih, "BORDER"))
     dwExStyle |= WS_EX_CLIENTEDGE;
 
   if (!iupwinCreateWindowEx(ih, winclass, dwExStyle, dwStyle))
@@ -1917,7 +1920,7 @@ static int winTextMapMethod(Ihandle* ih)
     SendMessage(ih->handle, EM_SETTABSTOPS, (WPARAM)1L, (LPARAM)&tabsize);
   }
 
-  if (!ih->data->is_multiline && iupStrBoolean(iupAttribGet(ih, "SPIN")))
+  if (!ih->data->is_multiline && iupAttribGetBoolean(ih, "SPIN"))
     winTextCreateSpin(ih);
 
   /* configure for DRAG&DROP */
@@ -1987,6 +1990,7 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "OVERWRITE", NULL, winTextSetOverwriteAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REMOVEFORMATTING", NULL, winTextSetRemoveFormattingAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSIZE", NULL, winTextSetTabSizeAttrib, IUPAF_SAMEASSYSTEM, "8", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "PASSWORD", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupText Windows only */
   iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winTextSetCueBannerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
