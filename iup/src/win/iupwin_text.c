@@ -1536,8 +1536,8 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       MSG* msg = (MSG*)lp;
       if (msg && (msg->message == WM_KEYDOWN || msg->message == WM_SYSKEYDOWN))
       {
-        /* the Escape key is not used in multiline, 
-           so ignore it and let the dialog handle DEFAULTESC */
+        /* the Escape key will be processed twice because of iupwinBaseProc, 
+           so ignore it here and let the iupwinBaseProc handle it */
         if (msg->wParam == VK_ESCAPE)
         {
           *result = 0;
@@ -1554,7 +1554,8 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
             IupPreviousField(ih);
           else
             IupNextField(ih);
-          *result = 0;
+
+          *result = 0;  /* this will avoid the key to be processed by the control */
           return 1;
         }
       }

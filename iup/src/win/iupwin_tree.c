@@ -1798,6 +1798,7 @@ static int winTreeEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       {
         if (pMsg->wParam == VK_ESCAPE || pMsg->wParam == VK_RETURN)
         {
+          /* these keys are not processed if the return code is not this */
           *result = DLGC_WANTALLKEYS;
           return 1;
         }
@@ -2222,7 +2223,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 
     hEdit = (HWND)SendMessage(ih->handle, TVM_GETEDITCONTROL, 0, 0);
 
-    /* subclass the edit box. */
+    /* save the edit box. */
     iupwinHandleAdd(ih, hEdit);
     iupAttribSetStr(ih, "_IUPWIN_EDITBOX", (char*)hEdit);
 
