@@ -128,7 +128,7 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
   IupSetAttribute(dlg,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 
-  IupPopup(dlg,IUP_CENTER,IUP_CENTER);
+  IupPopup(dlg,IUP_CENTERPARENT,IUP_CENTERPARENT);
 
   if ((type == 2) && (marks != NULL))
   {
@@ -246,7 +246,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
   IupSetAttribute(dlg,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 
-  IupPopup(dlg,IUP_CENTER,IUP_CENTER);
+  IupPopup(dlg,IUP_CENTERPARENT,IUP_CENTERPARENT);
 
   bt = iupAttribGetInt(dlg, "_IUP_BUTTON_NUMBER");
 
@@ -325,7 +325,7 @@ int  iupDataEntry(int    maxlin,
   IupSetfAttribute(dlg,"MAXSIZE", "65535x%d", IupGetInt2(dlg, "RASTERSIZE"));
   IupSetAttribute(dlg,"MINSIZE", IupGetAttribute(dlg, "RASTERSIZE"));
 
-  IupPopup(dlg,IUP_CENTER,IUP_CENTER);
+  IupPopup(dlg,IUP_CENTERPARENT,IUP_CENTERPARENT);
 
   for (i=0; i<maxlin; i++)
   {
@@ -385,7 +385,7 @@ int IupGetFile(char* filename)
   IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
 
-  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   ret = IupGetInt(dlg, "STATUS");
   if (ret != -1)
@@ -454,7 +454,7 @@ int IupGetText(const char* title, char* text)
   IupSetAttribute(multi_text, "VISIBLELINES", NULL);
   IupSetAttribute(multi_text, "VISIBLECOLUMNS", NULL);
 
-  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   bt = IupGetInt(dlg, "STATUS");
   if (bt==1)
@@ -505,6 +505,6 @@ void iupVersionDlg(void)
   IupSetAttribute(dlg,"GAP","10");
   IupSetAttribute(dlg,"MARGIN","10x10");
 
-  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   IupDestroy(dlg);
 }

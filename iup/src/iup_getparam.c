@@ -1146,7 +1146,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   if (action) 
     action(dlg, -2, user_data);
 
-  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (!IupGetInt(dlg, "STATUS"))
   {

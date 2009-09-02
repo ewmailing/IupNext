@@ -143,7 +143,7 @@ static void new_message(char* type, char* buttons)
   if (strcmp(type, "INFORMATION")!=0)
     IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
 
-  IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   printf("BUTTONRESPONSE(%s)\n", IupGetAttribute(dlg, "BUTTONRESPONSE"));
 
@@ -164,7 +164,7 @@ static void new_color(void)
   IupSetAttribute(dlg, "TITLE", "IupColorDlg Test");
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
 
-  IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(dlg, "STATUS"))
   {
@@ -188,7 +188,7 @@ static void new_font(void)
   IupSetAttribute(dlg, "TITLE", "IupFontDlg Test");
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
 
-  IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(dlg, "STATUS"))
   {
@@ -240,7 +240,7 @@ static void new_file(char* dialogtype, int preview)
 #endif
   }
   
-  IupPopup(dlg, IUP_CURRENT, IUP_CURRENT); 
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT); 
 
   switch(IupGetInt(dlg, "STATUS"))
   {
@@ -262,15 +262,21 @@ static void new_file(char* dialogtype, int preview)
 
 static void new_alarm(void)
 {
-  int ret = IupAlarm ("IupAlarm Test", "Message Text\nSecond Line", "But 1", "Button 2", "B3");
+  int ret;
+  IupSetGlobal("PARENTDIALOG", "_MAIN_DIALOG_TEST_");
+  ret = IupAlarm ("IupAlarm Test", "Message Text\nSecond Line", "But 1", "Button 2", "B3");
+  IupSetGlobal("PARENTDIALOG", NULL);
   //int ret = IupAlarm ("IupAlarm Test", "Message Text\nSecond Line\nVery long long long long long long long long long long long long text", "But 1", "Button 2", "B3");
   printf("Button(%d)\n", ret);
 }
 
 static void new_gettext(void)
 {
+  int ret;
   char text[1024] = "text first line\nsecond line";
-  int ret = IupGetText("IupGetText Text", text);
+  IupSetGlobal("PARENTDIALOG", "_MAIN_DIALOG_TEST_");
+  ret = IupGetText("IupGetText Text", text);
+  IupSetGlobal("PARENTDIALOG", NULL);
   if (ret)
   {
     printf("OK\n");
@@ -282,8 +288,11 @@ static void new_gettext(void)
 
 static void new_getfile(void)
 {
+  int ret;
   char filename[1024] = "*.*";
-  int ret = IupGetFile(filename);
+  IupSetGlobal("PARENTDIALOG", "_MAIN_DIALOG_TEST_");
+  ret = IupGetFile(filename);
+  IupSetGlobal("PARENTDIALOG", NULL);
   if (ret!=-1)
   {
     printf("OK\n");
@@ -311,7 +320,9 @@ static void new_list(void)
     "Gray"   ,
     "Brown"  } ;
     
+  IupSetGlobal("PARENTDIALOG", "_MAIN_DIALOG_TEST_");
   ret = IupListDialog(2,"IupListDialog Test",size,options,0,8,5,marks);
+  IupSetGlobal("PARENTDIALOG", NULL);
 
   if (ret == -1)
   {
@@ -342,7 +353,9 @@ static int k_any(Ihandle *ih, int c)
   switch(c)
   {
   case K_m:
+    IupSetGlobal("PARENTDIALOG", "_MAIN_DIALOG_TEST_");
     IupMessage("IupMessage Test", "Message Text\nSecond Line.");
+    IupSetGlobal("PARENTDIALOG", NULL);
     break;
   case K_e:
     new_message("ERROR", NULL);
@@ -399,23 +412,27 @@ static int k_any(Ihandle *ih, int c)
 void PreDialogsTest(void)
 {
   char* msg = "Press a key for a pre-defined dialog:\n"
-              "m = IupMessage\n"
               "e = IupMessageDlg(ERROR)\n"
               "i = IupMessageDlg(INFORMATION)\n"
               "w = IupMessageDlg(WARNING)\n"
               "q = IupMessageDlg(QUESTION)\n"
-              "c = IupColorDlg\n"
-              "f = IupFontDlg\n"
+              "--------------------\n"
               "o = IupFileDlg(OPEN)\n"
               "O = IupFileDlg(OPEN+PREVIEW)\n"
               "G = IupFileDlg(OPEN+PREVIEW+OPENGL)\n"
               "s = IupFileDlg(SAVE)\n"
               "d = IupFileDlg(DIR)\n"
+              "--------------------\n"
+              "c = IupColorDlg\n"
+              "f = IupFontDlg\n"
+              "--------------------\n"
+              "m = IupMessage\n"
               "a = IupAlarm\n"
               "t = IupGetText\n"
               "g = IupGetFile\n"
               "l = IupListDialog\n"
-              "Esc = quit";
+              "--------------------\n"
+              "Esc = quit\n";
   Ihandle *dlg = IupDialog(IupVbox(IupLabel(msg), NULL));
 
 #ifdef USE_OPENGL

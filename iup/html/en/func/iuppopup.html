@@ -51,10 +51,8 @@ or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -
   <li>IUP_CENTERPARENT: Horizontally centralizes the dialog relative to its 
   parent. Not valid for menus. (Since 3.0)</li>
   <li>IUP_CURRENT: use the current position 
-    of the dialog (if used at the first time the dialog is shown, then it is replaced by IUP_CENTERPARENT 
-  if PARENTDIALOG is defined or replaced by IUP_CENTER if PARENTDIALOG is NOT 
-	defined). This is the default value 
-  in Lua if the parameter is not defined or nil. Not valid for menus. (Since 3.0)</li>
+    of the dialog. This is the default value 
+  in Lua if the parameter is not defined. Not valid for menus. (Since 3.0)</li>
 </ul>
 <p><b>y</b>: vertical position of the dialog or menu relative to the origin of the
     screen. The following macros are valid:</p>
@@ -73,10 +71,8 @@ or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -
 	Not valid for menus. 
 	(Since 3.0)</li>
   <li>IUP_CURRENT: use the current position 
-    of the dialog (if used at the first time the dialog is shown, then it is replaced by 
-  IUP_CENTERPARENT if PARENTDIALOG is defined or replaced by IUP_CENTER if 
-	PARENTDIALOG is NOT defined). This is 
-  the default value in Lua if the parameter is not defined or nil. Not valid for 
+    of the dialog. This is 
+  the default value in Lua if the parameter is not defined. Not valid for 
 	menus. (Since 3.0)</li>
 </ul>
 <p><span class="style1">Returns:</span> IUP_NOERROR if 
@@ -87,6 +83,10 @@ or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -
 <p>Will call <b>IupMap</b> for the element.</p>
 <p>See the <a href="../dlg/iupdialog.html#PLACEMENT">PLACEMENT</a> attribute for other position and show 
   options.</p>
+<p>When IUP_CENTERPARENT is used but PARENTDIALOG is not defined then it is 
+replaced by IUP_CENTER.</p>
+<p>When IUP_CURRENT is used at the first time the dialog is shown then it will 
+be replaced by IUP_CENTERPARENT.</p>
 <p><b>IupPopup</b> works just like <b>IupShow</b> and <b>IupShowXY</b>, but it inhibits interaction with other dialogs and interrupts the processing until 
   IUP_CLOSE is returned in a callback or the dialog is hidden. Althougth it 
   interrupts the processing, it does not destroy the dialog when it ends. To destroy the dialog, 

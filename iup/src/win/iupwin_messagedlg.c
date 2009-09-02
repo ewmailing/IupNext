@@ -20,7 +20,7 @@ static void winMessageDlgHelpCallback(HELPINFO* HelpInfo)
   Icallback cb = (Icallback)IupGetCallback(ih, "HELP_CB");
   if (cb && cb(ih) == IUP_CLOSE)
   {
-    if (iupStrEqualNoCase(iupAttribGetStr(ih, "BUTTONS"), "OK"))
+    if (iupStrEqualNoCase(iupAttribGetStr(ih, "BUTTONS"), "OK")) /* only one button */
       EndDialog((HWND)HelpInfo->hItemHandle, IDOK);
     else
       EndDialog((HWND)HelpInfo->hItemHandle, IDCANCEL);

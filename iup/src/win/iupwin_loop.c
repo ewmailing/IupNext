@@ -27,7 +27,7 @@ static int win_main_loop = 0;
 
 static int winLoopIsDialogMessage(MSG* msg)
 {
-  /* Why to call IsDialogMessage:
+  /* ========= Why to call IsDialogMessage: =============
 
   Although the IsDialogMessage function is intended for modeless dialog boxes, 
   you can use it with any window that contains controls, enabling the windows to provide 
