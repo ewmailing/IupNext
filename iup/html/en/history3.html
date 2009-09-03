@@ -21,6 +21,10 @@
 	color: #0000FF;
 	font-weight: bold;
 }
+  .style1 {
+	color: #FF0000;
+	font-weight: bold;
+}
   </style>
 </head>
 
@@ -108,6 +112,17 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="hist_fixed">Fixed:</span>
 	focus feedback where displayed when not in focus at <strong>IupTree</strong> 
 	in Windows.</li>
+	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> In 
+	Windows when a pre-defined system 
+	dialog was closed with Enter or Esc, the key was propagated to the dialog 
+	that open it.</li>
+	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
+	keyboard navigation in the dialog now respects the order of <strong>IupNextField</strong> 
+	and <strong>IupPreviousField</strong> in all drivers. Those functions were 
+	also improved.</li>
+	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
+	in GTK the VISIBLE attribute returned invalid result when child is hidden by 
+	its parent.</li>
 
 </ul>
 

@@ -31,14 +31,13 @@ void iupCallGetFocusCb(Ihandle *ih);
  * \ingroup focus */
 void iupCallKillFocusCb(Ihandle *ih);
 
-/** Returns the next element that can receive the focus.
- * Uses \ref iupFocusCanAccept.
- * \ingroup focus */
-Ihandle* iupGetNextFocus(Ihandle *ih);
-
 /** Returns the next interactive brother. Independs if it can receive the focus.
  * \ingroup focus */
 Ihandle* iupFocusNextInteractive(Ihandle *ih);
+
+/* Used only in iupKeyProcessNavigation */
+void iupFocusNext(Ihandle *ih);
+void iupFocusPrevious(Ihandle *ih);
 
 
 /* Other functions declared in <iup.h> and implemented here. 

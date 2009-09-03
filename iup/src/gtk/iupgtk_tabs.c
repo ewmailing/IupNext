@@ -236,18 +236,17 @@ static int gtkTabsSetBgColorAttrib(Ihandle* ih, const char* value)
 void gtkTabSwitchPage(GtkNotebook* notebook, GtkNotebookPage *page, int pos, Ihandle* ih)
 {
   IFnnn cb;
+  Ihandle* child = IupGetChild(ih, pos);
+  Ihandle* prev_child = IupGetChild(ih, iupdrvTabsGetCurrentTab(ih));
+  IupSetAttribute(child, "VISIBLE", "YES");
+  IupSetAttribute(prev_child, "VISIBLE", "NO");
 
   if (iupAttribGet(ih, "_IUPGTK_IGNORE_CHANGE"))
     return;
 
   cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
   if (cb)
-  {
-    Ihandle* child = IupGetChild(ih, pos);
-    int prev_pos = gtk_notebook_get_current_page((GtkNotebook*)ih->handle);
-    Ihandle* prev_child = IupGetChild(ih, prev_pos);
     cb(ih, child, prev_child);
-  }
 
   (void)notebook;
   (void)page;
@@ -354,6 +353,11 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     }
 
     iupAttribSetStr(ih, "_IUPGTK_IGNORE_CHANGE", NULL);
+
+    if (pos == iupdrvTabsGetCurrentTab(ih))
+      IupSetAttribute(child, "VISIBLE", "YES");
+    else
+      IupSetAttribute(child, "VISIBLE", "NO");
   }
 }
 

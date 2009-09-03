@@ -40,9 +40,9 @@ int iupKeyCallKeyCb(Ihandle *ih, int c);
  * \ingroup key */
 int iupKeyCallKeyPressCb(Ihandle *ih, int code, int press);
 
-/** Process DEFAULTENTER and DEFAULTESC in key press events.
+/** Process Tab, DEFAULTENTER and DEFAULTESC in key press events.
  * \ingroup key */
-void iupKeyCallDefaultButtons(Ihandle* ih, int key);
+int iupKeyProcessNavigation(Ihandle* ih, int key, int shift);
                              
                              
 /* Called only from IupOpen. */

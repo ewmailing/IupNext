@@ -14,6 +14,7 @@
 #include "iup_class.h"
 #include "iup_assert.h"
 #include "iup_attrib.h"
+#include "iup_str.h"
 #include "iup_drv.h"
 
 
@@ -45,7 +46,17 @@ int iupFocusCanAccept(Ihandle *ih)
     return 0;
 }
 
-static Ihandle* iFocusFindAtBrothers(Ihandle *start)
+static int iFocusCheckActiveRadio(Ihandle *ih)
+{
+  if (iupStrEqual(ih->iclass->name, "toggle") && 
+      IupGetInt(ih, "RADIO") &&
+      !IupGetInt(ih, "VALUE"))
+    return 0;
+  else
+    return 1;
+}
+
+static Ihandle* iFocusFindAtBrothers(Ihandle *start, int checkradio)
 {
   Ihandle *c;
   Ihandle *nf;
@@ -53,11 +64,11 @@ static Ihandle* iFocusFindAtBrothers(Ihandle *start)
   for (c = start; c; c = c->brother)
   {
     /* check itself */
-    if (iupFocusCanAccept(c))
+    if (iupFocusCanAccept(c) && (!checkradio || iFocusCheckActiveRadio(c)))
       return c;
 
     /* then check its children */
-    nf = iFocusFindAtBrothers(c->firstchild);
+    nf = iFocusFindAtBrothers(c->firstchild, checkradio);
     if (nf)
       return nf;
   }
@@ -65,7 +76,7 @@ static Ihandle* iFocusFindAtBrothers(Ihandle *start)
   return NULL;
 }
 
-Ihandle* iupGetNextFocus(Ihandle *ih)
+static Ihandle* iFocusFindNext(Ihandle *ih, int checkradio)
 {
   Ihandle *nf, *p;
 
@@ -75,14 +86,14 @@ Ihandle* iupGetNextFocus(Ihandle *ih)
   /* look down in the child tree */
   if (ih->firstchild)
   {
-    nf = iFocusFindAtBrothers(ih->firstchild);
+    nf = iFocusFindAtBrothers(ih->firstchild, checkradio);
     if (nf) return nf;
   }
 
   /* look in the same level */
   if (ih->brother)
   {
-    nf = iFocusFindAtBrothers(ih->brother);
+    nf = iFocusFindAtBrothers(ih->brother, checkradio);
     if (nf) return nf;
   }
 
@@ -93,7 +104,7 @@ Ihandle* iupGetNextFocus(Ihandle *ih)
     {
       if (p->brother)
       {
-        nf = iFocusFindAtBrothers(p->brother);
+        nf = iFocusFindAtBrothers(p->brother, checkradio);
         if (nf) return nf;
       }
     }
@@ -110,26 +121,41 @@ Ihandle* IupNextField(Ihandle *ih)
   if (!iupObjectCheck(ih))
     return NULL;
 
-  ih_next = iupGetNextFocus(ih);
+  ih_next = iFocusFindNext(ih, 1);
   if (!ih_next)
   {
     /* not found after the element, then start over from the begining,
        at the dialog. */
-    ih_next = iupGetNextFocus(IupGetDialog(ih));
+    ih_next = iFocusFindNext(IupGetDialog(ih), 1);
     if (ih_next == ih)
       return NULL;
   }
 
   if (ih_next)
   {
-    IupSetFocus(ih_next);
+    iupdrvSetFocus(ih_next);
     return ih_next;
   }
 
   return NULL;
 }
 
-static int iupFindPreviousFocus(Ihandle *parent, Ihandle **previous, Ihandle *ih)
+void iupFocusNext(Ihandle *ih)
+{
+  Ihandle *ih_next = iFocusFindNext(ih, 0);
+  if (!ih_next)
+  {
+    /* not found after the element, then start over from the begining,
+       at the dialog. */
+    ih_next = iFocusFindNext(IupGetDialog(ih), 0);
+    if (ih_next == ih)
+      return;
+  }
+  if (ih_next)
+    iupdrvSetFocus(ih_next);
+}
+
+static int iFocusFindPrevious(Ihandle *parent, Ihandle **previous, Ihandle *ih, int checkradio)
 {
   Ihandle *c;
 
@@ -148,12 +174,12 @@ static int iupFindPreviousFocus(Ihandle *parent, Ihandle **previous, Ihandle *ih
     else
     {
       /* save the possible previous */
-      if (iupFocusCanAccept(c))
+      if (iupFocusCanAccept(c) && (!checkradio || iFocusCheckActiveRadio(c)))
         *previous = c;
     }
 
     /* then check its children */
-    if (iupFindPreviousFocus(c, previous, ih))
+    if (iFocusFindPrevious(c, previous, ih, checkradio))
       return 1;
   }
 
@@ -169,17 +195,27 @@ Ihandle* IupPreviousField(Ihandle *ih)
     return NULL;
 
   /* search from the dialog down to the element */
-  iupFindPreviousFocus(IupGetDialog(ih), &previous, ih);
+  iFocusFindPrevious(IupGetDialog(ih), &previous, ih, 1);
   
   if (previous)
   {
-    IupSetFocus(previous);
+    iupdrvSetFocus(previous);
     return previous;
   }
 
   return NULL;
 }
 
+void iupFocusPrevious(Ihandle *ih)
+{
+  Ihandle *previous = NULL;
+
+  /* search from the dialog down to the element */
+  iFocusFindPrevious(IupGetDialog(ih), &previous, ih, 0);
+  
+  if (previous)
+    iupdrvSetFocus(previous);
+}
 
 /* local variables */
 static Ihandle* iup_current_focus = NULL;

@@ -161,7 +161,7 @@ static int winFrameMapMethod(Ihandle* ih)
   char *title;
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS|
                   BS_OWNERDRAW, /* owner draw necessary because BS_GROUPBOX does not work ok */
-      dwExStyle = WS_EX_CONTROLPARENT;  /* enable Tab key navigation for children */
+      dwExStyle = 0;
 
   if (!ih->parent)
     return IUP_ERROR;

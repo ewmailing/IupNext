@@ -1525,49 +1525,15 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   if (msg==WM_KEYDOWN) /* process K_ANY before text callbacks */
   {
     ret = iupwinBaseProc(ih, msg, wp, lp, result);
-    if (ret) return 1;
+    if (ret) 
+    {
+      *result = 0;
+      return 1;
+    }
   }
 
   switch (msg)
   {
-  case WM_GETDLGCODE:
-    if (ih->data->is_multiline)
-    {
-      MSG* msg = (MSG*)lp;
-      if (msg && (msg->message == WM_KEYDOWN || msg->message == WM_SYSKEYDOWN))
-      {
-        /* the Escape key will be processed twice because of iupwinBaseProc, 
-           so ignore it here and let the iupwinBaseProc handle it */
-        if (msg->wParam == VK_ESCAPE)
-        {
-          *result = 0;
-          return 1;
-        }
-
-        /* The Tab key is processed by the multiline, 
-           so use the Control+Tab to change focus */
-        if (msg->message == WM_KEYDOWN && 
-            msg->wParam == VK_TAB && 
-            GetKeyState(VK_CONTROL) & 0x8000)
-        {
-          if (GetKeyState(VK_SHIFT) & 0x8000)
-            IupPreviousField(ih);
-          else
-            IupNextField(ih);
-
-          *result = 0;  /* this will avoid the key to be processed by the control */
-          return 1;
-        }
-      }
-
-      *result = DLGC_WANTALLKEYS;
-      return 1;
-    }
-    else
-    {
-      *result = DLGC_WANTCHARS|DLGC_WANTARROWS;
-      return 1;
-    }
   case WM_CHAR:
     {
       if ((char)wp == '\b')
@@ -1577,7 +1543,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       }
       else if ((char)wp == '\n' || (char)wp == '\r')
       {
-        if (!ih->data->has_formatting)
+        if (!ih->data->has_formatting && !(GetKeyState(VK_CONTROL) & 0x8000)) /* when formatting is processed in WM_KEYDOWN */
         {
           char insert_value[2];
           insert_value[0] = '\n';
@@ -1601,6 +1567,15 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       }
 
       PostMessage(ih->handle, WM_CARET, 0, 0L);
+
+      if (!ih->data->is_multiline && 
+          (wp==VK_RETURN || wp==VK_ESCAPE || wp==VK_TAB))  /* the keys have the same definitions as the chars */
+        ret = 1;  /* abort default processing to avoid beep */
+
+      if (ih->data->is_multiline && 
+          (wp=='\n' && (GetKeyState(VK_CONTROL) & 0x8000)))
+        ret = 1;  /* abort default processing to avoid inserting a new line */
+
       break;
     }
   case WM_KEYDOWN:
@@ -1621,7 +1596,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       {
         SendMessage(ih->handle, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
       }
-      else if (wp == VK_RETURN && ih->data->has_formatting)
+      else if (wp == VK_RETURN && ih->data->has_formatting && !(GetKeyState(VK_CONTROL) & 0x8000))
       {
         char insert_value[2];
         insert_value[0] = '\n';
@@ -1644,14 +1619,6 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   case WM_KEYUP:
     {
       PostMessage(ih->handle, WM_CARET, 0, 0L);
-
-      if (ih->data->is_multiline && wp == VK_RETURN)
-      {
-        /* avoid duplicate callback call because of iupwinBaseProc processing */
-        ret = iupwinKeyEvent(ih, (int)wp, 0);
-        if (!ret)
-          return 0;
-      }
       break;
     }
   case WM_CLEAR:

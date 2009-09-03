@@ -255,7 +255,8 @@ int iupwinKeyEvent(Ihandle* ih, int wincode, int press)
       }
     }
 
-    iupKeyCallDefaultButtons(ih, code);
+    if (!iupKeyProcessNavigation(ih, code, (GetKeyState(VK_SHIFT) & 0x8000)))
+      return 0;
   }
   else
   {

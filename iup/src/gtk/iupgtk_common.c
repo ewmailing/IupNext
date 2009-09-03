@@ -24,9 +24,15 @@
 #include "iup_focus.h"
 #include "iup_key.h"
 #include "iup_image.h"
+#include "iup_drv.h"
 
 #include "iupgtk_drv.h"
 
+
+/* WARNING: in GTK there are many controls that are not native windows, 
+   so "->window" will NOT return a native window exclusive of that control,
+   in fact it can return a base native window shared by many controls.
+   IupCanvas is a special case that uses an exclusive native window. */
 
 /* GTK only has abssolute positioning using a GtkFixed container,
    so all elements returned by iupChildTreeGetNativeParentHandle should be a GtkFixed. 
@@ -167,7 +173,7 @@ int iupgtkSetMnemonicTitle(Ihandle* ih, GtkLabel* label, const char* value)
 
 int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
 {
-  if (GTK_WIDGET_VISIBLE(ih->handle))
+  if (iupdrvIsVisible(ih))
   {
     GdkWindow* window = ih->handle->window;
     if (iupStrEqualNoCase(value, "TOP"))
@@ -196,7 +202,25 @@ void iupdrvSetVisible(Ihandle* ih, int visible)
 
 int iupdrvIsVisible(Ihandle* ih)
 {
-  return GTK_WIDGET_VISIBLE(ih->handle);
+  if (GTK_WIDGET_VISIBLE(ih->handle))
+  {
+    /* if marked as visible, since we use gtk_widget_hide and NOT gtk_widget_hide_all
+       must check its parents. */
+    Ihandle* parent = ih->parent;
+    while (parent)
+    {
+      if (parent->iclass->nativetype != IUP_TYPEVOID)
+      {
+        if (!GTK_WIDGET_VISIBLE(parent->handle))
+          return 0;
+      }
+
+      parent = parent->parent;
+    }
+    return 1;
+  }
+  else
+    return 0;
 }
 
 int iupdrvIsActive(Ihandle *ih)

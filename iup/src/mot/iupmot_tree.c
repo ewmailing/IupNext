@@ -2291,16 +2291,7 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
     return;
 
   motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
-  if (motcode == XK_Tab || motcode == XK_KP_Tab)
-  {
-    if (evt->state & ShiftMask)
-      IupPreviousField(ih);
-    else
-      IupNextField(ih);
-    *cont = False;
-    return;
-  }
-  else if (motcode == XK_F2)
+  if (motcode == XK_F2)
   {
     motTreeSetRenameAttrib(ih, NULL);
     return;

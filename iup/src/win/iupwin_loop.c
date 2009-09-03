@@ -25,29 +25,6 @@ static IFidle win_idle_cb = NULL;
 static int win_main_loop = 0;
 
 
-static int winLoopIsDialogMessage(MSG* msg)
-{
-  /* ========= Why to call IsDialogMessage: =============
-
-  Although the IsDialogMessage function is intended for modeless dialog boxes, 
-  you can use it with any window that contains controls, enabling the windows to provide 
-  the same keyboard selection as is used in a dialog box.
-
-  IupDialog is a standard window, but should behave as modeless dialog boxes. 
-  IupFrame and IupTabs also are windows that contain controls, 
-  if they use the WS_EX_CONTROLPARENT extended style they will behave the same.
-
-  Because the IsDialogMessage function performs all necessary translating and dispatching of messages, 
-  a message processed by IsDialogMessage must not be passed to the TranslateMessage or DispatchMessage functions. 
-  */
-  HWND hWnd = GetAncestor(msg->hwnd, GA_ROOT);
-  if (!hWnd) hWnd = msg->hwnd;
-  if (IsDialogMessage(hWnd, msg)) 
-    return 1;
-
-  return 0;
-}
-
 void iupdrvSetIdleFunction(Icallback f)
 {
   win_idle_cb = (IFidle)f;
@@ -62,14 +39,12 @@ static int winLoopProcessMessage(MSG* msg)
 {
   if (msg->message == WM_QUIT)  /* IUP_CLOSE returned in a callback or IupHide in a popup dialog or all dialogs closed */
     return IUP_CLOSE;
-  else if (!winLoopIsDialogMessage(msg))
+  else
   {
     TranslateMessage(msg);
     DispatchMessage(msg);
     return IUP_DEFAULT;
   }
-  else
-    return IUP_DEFAULT;
 }
 
 int IupMainLoopLevel(void)

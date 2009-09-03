@@ -24,6 +24,7 @@
 #include "iup_image.h"
 #include "iup_dialog.h"
 #include "iup_drvinfo.h"
+#include "iup_drv.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
@@ -181,6 +182,11 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 
   switch (msg)
   {
+  case WM_GETDLGCODE:
+    {
+      *result = DLGC_WANTALLKEYS;
+      return 1;
+    }
   case WM_NOTIFY: /* usually sent only to parent, 
                      but TIPs are configured to be handled here */
     {
@@ -234,7 +240,7 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
   case WM_KEYUP:
     {
       int ret;
-      if (wp == VK_SNAPSHOT || wp == VK_RETURN || wp == VK_ESCAPE) /* called only on key up */
+      if (wp == VK_SNAPSHOT) /* called only on key up */
       {
         ret = iupwinKeyEvent(ih, (int)wp, 1);
         if (ret && iupObjectCheck(ih))

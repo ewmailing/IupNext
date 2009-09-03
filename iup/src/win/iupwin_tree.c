@@ -1601,7 +1601,7 @@ static int winTreeSetRenameAttrib(Ihandle* ih, const char* value)
     if (cbShowRename)
       cbShowRename(ih, winTreeGetNodeId(ih, hItemFocus));
 
-    SetFocus(ih->handle); /* the tree must have focus to active the edit */
+    SetFocus(ih->handle); /* the tree must have focus to activate the edit */
     SendMessage(ih->handle, TVM_EDITLABEL, 0, (LPARAM)hItemFocus);
   }
   else
@@ -2033,11 +2033,6 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       }
       break;
     }
-  case WM_GETDLGCODE:
-    {
-      *result = DLGC_WANTALLKEYS;
-      return 1;
-    }
   case WM_KEYDOWN:
   case WM_SYSKEYDOWN:
     {
@@ -2056,16 +2051,6 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       else if (wp == VK_F2)
       {
         winTreeSetRenameAttrib(ih, NULL);
-        *result = 0;
-        return 1;
-      }
-      else if (wp == VK_TAB)
-      {
-        if (GetKeyState(VK_SHIFT) & 0x8000)
-          IupPreviousField(ih);
-        else
-          IupNextField(ih);
-
         *result = 0;
         return 1;
       }
@@ -2183,6 +2168,15 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       winTreeDrop(ih);
 
     break;
+  case WM_CHAR:
+    {
+      if (wp==VK_TAB)  /* the keys have the same definitions as the chars */
+      {
+        *result = 0;
+        return 1;   /* abort default processing to avoid beep */
+      }
+      break;
+    }
   }
 
   return iupwinBaseProc(ih, msg, wp, lp, result);

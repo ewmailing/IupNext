@@ -298,7 +298,8 @@ gboolean iupgtkKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
         return TRUE;
     }
 
-    iupKeyCallDefaultButtons(ih, code);
+    if (!iupKeyProcessNavigation(ih, code, evt->state & GDK_SHIFT_MASK))
+      return TRUE;
 
     /* compensate the show-help limitation. 
      * It is not called on F1, only on Shift+F1 and Ctrl+F1. */

@@ -15,7 +15,8 @@
 
 <h2>IupSetFocus</h2>
 <p>Defines the interface element that will 
-  receive the keyboard focus, i.e., the element that will receive keyboard events.</p>
+  receive the keyboard focus, i.e., the element that will receive keyboard events. 
+But this will be processed only after the con</p>
 <h3>
 Parameters/Return</h3>
 <pre>Ihandle *IupSetFocus(Ihandle *<strong>ih</strong>); [in C]
@@ -24,6 +25,12 @@ iup.SetFocus(<strong>ih</strong>: ihandle) -&gt; <strong>ih</strong>: ihandle [i
   elements that can have the keyboard focus, are mapped, active and visible can be used, other elements are ignored.</p>
 <p><span class="style1">Returns:</span> the identifier of the interface 
   element that previously had the keyboard focus.</p>
+<h3>Notes</h3>
+<p>The value returned by <strong>IupGetFocus</strong> will be updated only after 
+the main loop regain the control and the control actually receive the focus. So 
+if you call <strong>IupGetFocus</strong> right after <strong>IupSetFocus</strong> 
+the return value will be different. You could call <strong>IupFlush</strong> 
+between the two functions to obtain the same value.</p>
 <h3>See Also</h3>
 <p><a href="iupgetfocus.html">IupGetFocus</a>.</p>
 <p>&nbsp;</p>

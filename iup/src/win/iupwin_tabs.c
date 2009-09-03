@@ -95,13 +95,10 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
   if (!image_list)
   {
     int width, height;
-    UINT flags = ILC_COLOR32;
+    UINT flags = ILC_COLOR32|ILC_MASK;
 
     /* must use this info, since image can be a driver image loaded from resources */
     iupdrvImageGetInfo(bmp, &width, &height, &bpp);
-
-    //if (bpp == 8 && IupGetHandle(name))
-      flags |= ILC_MASK;
 
     /* create the image list if does not exist */
     image_list = ImageList_Create(width, height, flags, 0, 50);
@@ -233,7 +230,7 @@ static HWND winTabCreatePageWindow(Ihandle* ih)
 { 
   HWND hWnd;
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, 
-      dwExStyle = WS_EX_CONTROLPARENT; 
+      dwExStyle = 0;
 
   if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
     dwExStyle |= WS_EX_COMPOSITED;
@@ -552,7 +549,7 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
 static int winTabsMapMethod(Ihandle* ih)
 {
   DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS | TCS_HOTTRACK | WS_TABSTOP,
-      dwExStyle = WS_EX_CONTROLPARENT; 
+      dwExStyle = 0;
 
   if (!ih->parent)
     return IUP_ERROR;

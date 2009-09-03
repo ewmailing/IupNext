@@ -274,9 +274,6 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
 
   switch (msg)
   {
-  case WM_GETDLGCODE:
-    *result = DLGC_WANTALLKEYS;
-    return 1;
   case WM_GETMINMAXINFO:
     {
       if (winDialogCheckMinMaxInfo(ih, (MINMAXINFO*)lp))
@@ -825,7 +822,6 @@ static int winDialogMapMethod(Ihandle* ih)
   {
     /* TODO: this were used by LuaCom to create embeded controls, 
        don't know if it is still working */
-    dwExStyle |= WS_EX_CONTROLPARENT;
     dwStyle = WS_CHILD | WS_TABSTOP | WS_CLIPCHILDREN;
     classname = "IupDialogControl";
   }

@@ -530,33 +530,34 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
           return 0;
       }
 
-      /* This is necessary because Windows does not send a message
-         when a toggle is unchecked in a Radio. 
-         Also if the toggle is already checked in a radio, 
-         a click will call the callback again. */
       radio = iupRadioFindToggleParent(ih);
       if (radio)
       {
-        if (check)  /* check here will be always 1, but just in case */
+        /* This is necessary because Windows does not send a message
+           when a toggle is unchecked in a Radio. 
+           Also if the toggle is already checked in a radio, 
+           a click will call the callback again. */
+
+        Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPWIN_LASTTOGGLE");
+        if (iupObjectCheck(last_tg) && last_tg != ih)
         {
-          Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPWIN_LASTTOGGLE");
-          if (iupObjectCheck(last_tg) && last_tg != ih)
-          {
-            cb = (IFni) IupGetCallback(last_tg, "ACTION");
-            if (cb && cb(last_tg, 0) == IUP_CLOSE)
-                IupExitLoop();
+          cb = (IFni) IupGetCallback(last_tg, "ACTION");
+          if (cb && cb(last_tg, 0) == IUP_CLOSE)
+              IupExitLoop();
 
-            /* not necessary, but does no harm, just to make sure */
-            SendMessage(last_tg->handle, BM_SETCHECK, BST_UNCHECKED, 0L);
-          }
-          iupAttribSetStr(radio, "_IUPWIN_LASTTOGGLE", (char*)ih);
+          /* uncheck last toggle */
+          SendMessage(last_tg->handle, BM_SETCHECK, BST_UNCHECKED, 0L);
+        }
+        iupAttribSetStr(radio, "_IUPWIN_LASTTOGGLE", (char*)ih);
 
-          if (last_tg != ih)
-          {
-            cb = (IFni)IupGetCallback(ih, "ACTION");
-            if (cb && cb (ih, 1) == IUP_CLOSE)
-                IupExitLoop();
-          }
+        if (last_tg != ih)
+        {
+          /* check new toggle */
+          SendMessage(ih->handle, BM_SETCHECK, BST_CHECKED, 0L);
+
+          cb = (IFni)IupGetCallback(ih, "ACTION");
+          if (cb && cb (ih, 1) == IUP_CLOSE)
+              IupExitLoop();
         }
       }
       else
@@ -603,27 +604,21 @@ static int winToggleMapMethod(Ihandle* ih)
       dwStyle |= BS_RIGHTBUTTON;
   }
 
+  if (iupAttribGetBoolean(ih, "CANFOCUS"))
+    dwStyle |= WS_TABSTOP;
+
   if (radio)
   {
-    dwStyle |= BS_AUTORADIOBUTTON;
-    /* Do not set TABSTOP for toggles in a radio, the system will automaticaly set them. */
+    dwStyle |= BS_RADIOBUTTON;
 
     if (!iupAttribGet(radio, "_IUPWIN_LASTTOGGLE"))
     {
       /* this is the first toggle in the radio, and the last toggle with VALUE=ON */
       iupAttribSetStr(ih, "VALUE","ON");
-
-      dwStyle |= WS_TABSTOP;
-      dwStyle |= WS_GROUP; /* this is specified only for the first toggle in the radio. But necessary. */
-                           /* it affects keyboard navigation in the dialog for the arrow keys */
-                           /* it will form a group up to the next WS_GROUP. */
     }
   }
   else
   {
-    if (iupAttribGetBoolean(ih, "CANFOCUS"))
-      dwStyle |= WS_TABSTOP;
-
     if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetBoolean(ih, "3STATE"))
       dwStyle |= BS_AUTO3STATE;
     else

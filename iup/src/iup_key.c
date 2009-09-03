@@ -15,6 +15,7 @@
 #include "iup_str.h"
 #include "iup_object.h"
 #include "iup_drv.h"
+#include "iup_focus.h"
 
 
 static struct
@@ -198,21 +199,71 @@ int iupKeyCallKeyPressCb(Ihandle *ih, int code, int press)
   return IUP_DEFAULT;
 }
 
-void iupKeyCallDefaultButtons(Ihandle* ih, int key)
+int iupKeyProcessNavigation(Ihandle* ih, int key, int shift)
 {
-  if (key!=K_CR && key!=K_ESC) 
-    return;
+  /* this is called after K_ANY is processed, 
+     so the user may change its behavior */
 
-  if (key==K_CR && (iupStrEqual(ih->iclass->name, "multiline") || 
-                    (iupStrEqual(ih->iclass->name, "text") && IupGetInt(ih, "MULTILINE"))))
-    return;
-
+  if (key == K_cTAB)
   {
-    const char* default_but = (key==K_CR)? "DEFAULTENTER": "DEFAULTESC";
-    Ihandle *dialog = IupGetDialog(ih);
-    Ihandle* bt = IupGetAttributeHandle(dialog, default_but);
+    int is_multiline = (iupStrEqual(ih->iclass->name, "multiline") || 
+                        (iupStrEqual(ih->iclass->name, "text") && IupGetInt(ih, "MULTILINE")));
+    if (is_multiline)
+    {
+      if (shift)
+        IupPreviousField(ih);
+      else
+        IupNextField(ih);
+      return 0;   /* abort default processing */
+    }
+  }
+  else if (key == K_TAB || key == K_sTAB)
+  {
+    int is_multiline = (iupStrEqual(ih->iclass->name, "multiline") || 
+                        (iupStrEqual(ih->iclass->name, "text") && IupGetInt(ih, "MULTILINE")));
+    if (!is_multiline)
+    {
+      if (key == K_sTAB)
+        IupPreviousField(ih);
+      else
+        IupNextField(ih);
+      return 0;   /* abort default processing */
+    }
+  }
+  else if (key == K_UP || key == K_DOWN)
+  {
+    int is_button = (iupStrEqual(ih->iclass->name, "button") || 
+                     iupStrEqual(ih->iclass->name, "toggle"));
+    if (is_button)
+    {
+      if (key == K_UP)
+        iupFocusPrevious(ih);
+      else
+        iupFocusNext(ih);
+      return 0;   /* abort default processing */
+    }
+  }
+  else if (key==K_ESC)
+  {
+    Ihandle* bt = IupGetAttributeHandle(IupGetDialog(ih), "DEFAULTESC");
     if (iupObjectCheck(bt) && iupStrEqual(bt->iclass->name, "button"))
       iupdrvActivate(bt);
+    return 0;   /* abort default processing */
   }
+  else if (key==K_CR || key==K_cCR)
+  {
+    int is_multiline = (iupStrEqual(ih->iclass->name, "multiline") || 
+                        (iupStrEqual(ih->iclass->name, "text") && IupGetInt(ih, "MULTILINE")));
+
+    if ((key==K_CR && !is_multiline) || (key==K_cCR && is_multiline))
+    {
+      Ihandle* bt = IupGetAttributeHandle(IupGetDialog(ih), "DEFAULTENTER");
+      if (iupObjectCheck(bt) && iupStrEqual(bt->iclass->name, "button"))
+        iupdrvActivate(bt);
+      return 0;   /* abort default processing */
+    }
+  }
+
+  return 1;
 }
 

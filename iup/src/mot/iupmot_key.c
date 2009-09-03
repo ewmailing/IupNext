@@ -343,7 +343,11 @@ void iupmotKeyPressEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
       }
     }
 
-    iupKeyCallDefaultButtons(ih, code);
+    if (!iupKeyProcessNavigation(ih, code, ((XKeyEvent*)evt)->state & ShiftMask))
+    {
+      *cont = False;
+      return;
+    }
   }
 
   (void)w;

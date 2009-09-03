@@ -991,9 +991,6 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
 
   switch (msg)
   {
-  case WM_GETDLGCODE:
-    *result = DLGC_WANTCHARS|DLGC_WANTARROWS;
-    return 1;
   case WM_CHAR:
     {
       if ((char)wp == '\b')
@@ -1019,6 +1016,10 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       }
 
       PostMessage(cbedit, WM_CARET, 0, 0L);
+
+      if (wp==VK_TAB)  /* the keys have the same definitions as the chars */
+        ret = 1;  /* abort default processing to avoid beep */
+
       break;
     }
   case WM_KEYDOWN:

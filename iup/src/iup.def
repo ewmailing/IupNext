@@ -253,11 +253,10 @@ iupKeyCodeToName
 iupKeyCanCaps
 iupKeyCallKeyPressCb
 iupKeyCallKeyCb
-iupKeyCallDefaultButtons
+iupKeyProcessNavigation
 iupImageStockSet
 iupImageStockLoad
 iupImageColorMakeInactive
-iupGetNextFocus
 iupGetFontStyleAttrib
 iupGetFontSizeAttrib
 iupGetFontFaceAttrib

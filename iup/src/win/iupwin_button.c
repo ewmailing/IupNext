@@ -536,7 +536,8 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       iupdrvActivate(ih);
 
       *result = 0;
-      return 1;   /* abort default processing */
+      return 1;   /* abort default processing, or the default button will be activated, 
+                     in this case even if there is a default button, this button must be activated instead. */
     }
     break;
   case WM_MOUSELEAVE:

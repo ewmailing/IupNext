@@ -27,6 +27,7 @@
 #include "iup_key.h"
 #include "iup_drv.h"
 #include "iup_image.h"
+#include "iup_drv.h"
 
 #include "iupmot_color.h"
 #include "iupmot_drv.h"

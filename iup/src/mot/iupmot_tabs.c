@@ -50,6 +50,11 @@ int iupdrvTabsGetLineCountAttrib(Ihandle* ih)
 
 void iupdrvTabsSetCurrentTab(Ihandle* ih, int pos)
 {
+  Ihandle* child = IupGetChild(ih, pos);
+  Ihandle* prev_child = IupGetChild(ih, iupdrvTabsGetCurrentTab(ih));
+  IupSetAttribute(child, "VISIBLE", "YES");
+  IupSetAttribute(prev_child, "VISIBLE", "NO");
+
   XtVaSetValues(ih->handle, XmNcurrentPageNumber, pos, NULL);
 }
 
@@ -69,7 +74,7 @@ static void motTabsUpdatePageNumber(Ihandle* ih)
     Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (child_manager)
     {
-      old_pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaSetValues(child_manager, XmNpageNumber) */
+      old_pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaGetValues(child_manager, XmNpageNumber) */
       if (pos != old_pos)
       {
         Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
@@ -305,13 +310,15 @@ void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct 
 {
   if (nptr->reason == XmCR_MAJOR_TAB)
   {
-    IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
+    IFnnn cb;
+    Ihandle* child = IupGetChild(ih, nptr->page_number);
+    Ihandle* prev_child = IupGetChild(ih, nptr->prev_page_number);
+    IupSetAttribute(child, "VISIBLE", "YES");
+    IupSetAttribute(prev_child, "VISIBLE", "NO");
+
+    cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
     if (cb)
-    {
-      Ihandle* child = IupGetChild(ih, nptr->page_number);
-      Ihandle* prev_child = IupGetChild(ih, nptr->prev_page_number);
       cb(ih, child, prev_child);
-    }
   }
   (void)w; 
 }
@@ -442,6 +449,11 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     iupAttribSetStr(child, "_IUPTAB_CONTAINER", (char*)child_manager);
     iupAttribSetStr(child, "_IUPMOT_TABBUTTON", (char*)tab_button);
     iupAttribSetInt(child, "_IUPMOT_TABNUMBER", pos);
+
+    if (pos == iupdrvTabsGetCurrentTab(ih))
+      IupSetAttribute(child, "VISIBLE", "YES");
+    else
+      IupSetAttribute(child, "VISIBLE", "NO");
   }
 }
 
@@ -455,15 +467,16 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       int cur_pos, pos;
       Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
 
-      XtVaGetValues(ih->handle, XmNcurrentPageNumber, &cur_pos, NULL);
-      pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaSetValues(child_manager, XmNpageNumber) */
+      cur_pos = iupdrvTabsGetCurrentTab(ih);
+      pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaGetValues(child_manager, XmNpageNumber) */
       if (cur_pos == pos)
       {
         if (cur_pos == 0)
           cur_pos = 1;
         else
           cur_pos--;
-        XtVaSetValues(ih->handle, XmNcurrentPageNumber, cur_pos, NULL);
+
+        iupdrvTabsSetCurrentTab(ih, cur_pos);
       }
 
       XtDestroyWidget(tab_button);

@@ -575,9 +575,6 @@ static int winCanvasMapMethod(Ihandle* ih)
                            
   if (ih->firstchild) /* can be a container */
   {
-    if (!ih->iclass->is_interactive)
-      dwExStyle |= WS_EX_CONTROLPARENT;
-
     dwStyle |= WS_CLIPSIBLINGS;
 
     if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
