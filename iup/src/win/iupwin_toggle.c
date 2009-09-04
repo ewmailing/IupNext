@@ -28,6 +28,11 @@
 #include "iupwin_draw.h"
 
 
+#ifndef CDIS_SHOWKEYBOARDCUES
+#define CDIS_SHOWKEYBOARDCUES   0x0200    /* it is defined only when _WIN32_WINNT >= 0x0501 */
+#endif
+
+
 void iupdrvToggleAddCheckBox(int *x, int *y)
 {
   (*x) += 16+6;
@@ -459,7 +464,7 @@ static int winToggleWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       else if (customdraw->uItemState & CDIS_DEFAULT)
         drawitem.itemState |= ODS_DEFAULT;
 
-      if (customdraw->uItemState & CDIS_FOCUS)
+      if (customdraw->uItemState & CDIS_FOCUS && (customdraw->uItemState & CDIS_SHOWKEYBOARDCUES))
         drawitem.itemState |= ODS_FOCUS;
 
       drawitem.hDC = customdraw->hdc;
