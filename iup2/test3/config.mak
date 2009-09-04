@@ -16,7 +16,7 @@ else
   endif
 endif
 
-USE_IUP3 = Yes
+USE_IUP = Yes
 USE_STATIC = Yes
 IUP = ..
 
@@ -39,7 +39,6 @@ SRC += button.c
 SRC += toggle.c
 SRC += vbox.c
 SRC += hbox.c
-SRC += progressbar.c
 SRC += text.c
 SRC += val.c
 SRC += tabs.c
@@ -52,8 +51,6 @@ SRC += sysinfo.c
 SRC += mdi.c
 SRC += getparam.c
 SRC += getcolor.c
-SRC += class_conf.c
-SRC += tree.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
@@ -82,6 +79,7 @@ SRC += gauge.c
 SRC += matrix.c
 SRC += matrix_cbs.c
 SRC += matrix_cbmode.c
+SRC += tree.c
 
 LINKER = g++
 DEFINES += PPLOT_TEST

@@ -124,7 +124,8 @@ static void drawTest(Ihandle *ih, int posx)
   Drawable wnd = (Drawable)IupGetAttribute(ih, "XWINDOW");
   GC gc = XCreateGC(dpy, wnd, 0, NULL);
 
-  IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+  w = IupGetInt(ih, "DRAWSIZE");
+  h = IupGetInt2(ih, "DRAWSIZE");
 
   XSetForeground(dpy, gc, xGetPixel(dpy, 255, 255, 255));
   XFillRectangle(dpy, wnd, gc, 0, 0, w, h);
@@ -307,7 +308,7 @@ void CanvasTest(void)
 
   IupSetCallback(canvas, "BUTTON_CB",    (Icallback)button_cb);
 //  IupSetCallback(canvas, "MOTION_CB",    (Icallback)motion_cb);
-  IupSetCallback(canvas, "SCROLL_CB",  (Icallback)scroll_cb);
+//  IupSetCallback(canvas, "SCROLL_CB",  (Icallback)scroll_cb);
 //  IupSetCallback(canvas, "WHEEL_CB",    (Icallback)wheel_cb);
 
   IupSetCallback(canvas, "RESIZE_CB",    (Icallback)resize_cb);

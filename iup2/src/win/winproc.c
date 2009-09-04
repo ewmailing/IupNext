@@ -2,7 +2,7 @@
  * \brief Windows Driver windows procedures
  *
  * See Copyright Notice in iup.h
- * $Id: winproc.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
+ * $Id: winproc.c,v 1.2 2009-09-04 13:32:43 scuri Exp $
  */
 
 #include <stdio.h>
@@ -486,7 +486,7 @@ static long iupwinDlgMsgCommand( HWND hwnd, WPARAM wp, LPARAM lp )
     if (cb)
     {
       if (cb(n, 
-        GetMenuState ((HMENU)handle(n), number(n), MF_BYCOMMAND) == MF_CHECKED) == IUP_CLOSE)
+        GetMenuState ((HMENU)handle(n), number(n), MF_BYCOMMAND) & MF_CHECKED) == IUP_CLOSE)
           IupExitLoop();
     }
   }

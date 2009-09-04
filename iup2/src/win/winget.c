@@ -2,7 +2,7 @@
  * \brief Windows Driver get for attributes
  *
  * See Copyright Notice in iup.h
- * $Id: winget.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
+ * $Id: winget.c,v 1.2 2009-09-04 13:32:43 scuri Exp $
  */
 
 #include <stdio.h>
@@ -286,7 +286,7 @@ static char* getValue (Ihandle* n)
   }
   else if(type(n) == ITEM_)
   {
-    if (GetMenuState((HMENU)handle(n), number(n), MF_BYCOMMAND) == MF_CHECKED)
+    if (GetMenuState((HMENU)handle(n), number(n), MF_BYCOMMAND) & MF_CHECKED)
       return IUP_ON;
     else
       return IUP_OFF;

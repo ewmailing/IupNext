@@ -2,7 +2,7 @@
  * \brief Windows Driver Core
  *
  * See Copyright Notice in iup.h
- * $Id: win.c,v 1.2 2008-12-11 19:02:57 scuri Exp $
+ * $Id: win.c,v 1.3 2009-09-04 13:32:43 scuri Exp $
  */
 
 #include <stdio.h>              /* NULL */
@@ -708,7 +708,7 @@ static int winPopupMenu( Ihandle* h, int x, int y )
     assert(number(n)>0);
     if (cb)
     {
-      int ret = cb(n, GetMenuState ((HMENU)handle(n), number(n), MF_BYCOMMAND) == MF_CHECKED);
+      int ret = cb(n, GetMenuState ((HMENU)handle(n), number(n), MF_BYCOMMAND) & MF_CHECKED);
       if (ret == IUP_CLOSE)
         IupExitLoop();
     }
