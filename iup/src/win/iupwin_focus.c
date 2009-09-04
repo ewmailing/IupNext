@@ -19,10 +19,20 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 
+/* Since Windows XP, the focus feedback only appears after the user press a key.
+   Except for the IupText where the feedback is the caret.
+   Before that if you click in a control the focus feedback will be hidden.
 
+   We manually send WM_CHANGEUISTATE because we do not use IsDialogMessage anymore,
+   and the focus feedback was not shown even after the used press a key.
+
+   TODO: I would like a form to always show the feedback, but could not understand how WM_CHANGEUISTATE works.
+         Neither SystemParametersInfo(SPI_SETKEYBOARDCUES, TRUE) or SystemParametersInfo(SPI_SETKEYBOARDPREF, TRUE) worked.
+*/
 void iupdrvSetFocus(Ihandle *ih)
 {
   SetFocus(ih->handle);
+  SendMessage(ih->handle, WM_CHANGEUISTATE, UIS_CLEAR|UISF_HIDEFOCUS, 0);
 }
 
 void iupwinWmSetFocus(Ihandle *ih)

@@ -2182,6 +2182,11 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   return iupwinBaseProc(ih, msg, wp, lp, result);
 }
 
+static COLORREF winTreeInvertColor(COLORREF color)
+{
+  return RGB(~GetRValue(color), ~GetGValue(color), ~GetBValue(color));
+}
+
 static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 {
   if (msg_info->code == TVN_ITEMCHANGINGA || msg_info->code == TVN_ITEMCHANGINGW) /* Vista Only */
@@ -2369,7 +2374,11 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
       itemData = (winTreeItemData*)item.lParam;
 
-      customdraw->clrText = itemData->color;
+      if (winTreeIsItemSelected(ih, hItem))
+        customdraw->clrText = winTreeInvertColor(itemData->color);
+      else
+        customdraw->clrText = itemData->color;
+
       *result = CDRF_NOTIFYSUBITEMDRAW|CDRF_NOTIFYPOSTPAINT;
 
       if (itemData->hFont)
@@ -2379,23 +2388,6 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       }
 
       return 1;
-    }
-
-    if (customdraw->nmcd.dwDrawStage == CDDS_ITEMPOSTPAINT)
-    {
-      /* Workaround: the focus feedback is not always drawn for the item. 
-         Had to ignore CDIS_FOCUS to make it work. */
-      HTREEITEM hItem = (HTREEITEM)customdraw->nmcd.dwItemSpec;
-      if (GetFocus() == ih->handle && hItem == winTreeGetFocusNode(ih))
-      {
-        RECT rect;
-        *(HTREEITEM*)&rect = hItem;
-        if (SendMessage(ih->handle, TVM_GETITEMRECT, TRUE, (LPARAM)&rect))
-          DrawFocusRect(customdraw->nmcd.hdc, &rect);
-
-        *result = CDRF_DODEFAULT;
-        return 1;
-      }
     }
   }
 
