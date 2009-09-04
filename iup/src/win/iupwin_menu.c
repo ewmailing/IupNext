@@ -93,7 +93,7 @@ static void winItemCheckToggle(Ihandle* ih)
   }
   else if (iupAttribGetBoolean(ih, "AUTOTOGGLE"))
   {
-    if (GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) == MF_CHECKED)
+    if (GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) & MF_CHECKED)
       CheckMenuItem((HMENU)ih->handle, (UINT)ih->serial, MF_UNCHECKED|MF_BYCOMMAND);
     else
       CheckMenuItem((HMENU)ih->handle, (UINT)ih->serial, MF_CHECKED|MF_BYCOMMAND);
@@ -517,7 +517,7 @@ static char* winItemGetActiveAttrib(Ihandle* ih)
   if (ih->handle == (InativeHandle*)-1) /* check if submenu is actually created */
     return NULL;
 
-  if (GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) == MF_GRAYED)
+  if (GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) & MF_GRAYED)
     return "NO";
   else
     return "YES";
@@ -546,7 +546,7 @@ static int winItemSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* winItemGetValueAttrib(Ihandle* ih)
 {
-  if (GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) == MF_CHECKED)
+  if (GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) & MF_CHECKED)
     return "ON";
   else
     return "OFF";

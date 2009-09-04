@@ -199,6 +199,7 @@ static int item_toggle_cb(Ihandle* ih)
     IupSetAttribute(ih, "VALUE", "OFF");
   else
     IupSetAttribute(ih, "VALUE", "ON");
+
   return IUP_DEFAULT;
 }
 
