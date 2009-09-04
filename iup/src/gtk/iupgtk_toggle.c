@@ -312,6 +312,12 @@ static void gtkToggleToggled(GtkToggleButton *widget, Ihandle* ih)
   if (cb && cb(ih, check) == IUP_CLOSE)
     IupExitLoop();
 
+  {
+    IFn vc_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
+    if (vc_cb)
+      vc_cb(ih);
+  }
+
   (void)widget;
 }
 

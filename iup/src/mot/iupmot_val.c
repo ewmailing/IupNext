@@ -178,23 +178,27 @@ static int motValSetBackgroundAttrib(Ihandle* ih, const char* value)
 
 static void motValCallAction(Ihandle* ih, int ival, int cb_state)
 {
-  IFnd cb = NULL;
+  IFn cb;
 
   ih->data->val = (((double)ival/(double)SHRT_MAX)*(ih->data->vmax - ih->data->vmin)) + ih->data->vmin;
   iupValCropValue(ih);
 
-  if (cb_state == 0)
-    cb = (IFnd) IupGetCallback(ih, "MOUSEMOVE_CB");
-  else if (cb_state == -1)
-    cb = (IFnd) IupGetCallback(ih, "BUTTON_RELEASE_CB");
-  else 
-    cb = (IFnd) IupGetCallback(ih, "BUTTON_PRESS_CB");
-
-  if (!cb)
-    cb = (IFnd)IupGetCallback(ih, "CHANGEVALUE_CB");
-
+  cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
   if (cb)
-    cb(ih, ih->data->val);  
+    cb(ih);
+  else
+  {
+    IFnd cb_old;
+    if (cb_state == 0)
+      cb_old = (IFnd) IupGetCallback(ih, "MOUSEMOVE_CB");
+    else if (cb_state == -1)
+      cb_old = (IFnd) IupGetCallback(ih, "BUTTON_RELEASE_CB");
+    else 
+      cb_old = (IFnd) IupGetCallback(ih, "BUTTON_PRESS_CB");
+
+    if (cb_old)
+      cb_old(ih, ih->data->val);
+  }
 }
 
 static void motValIncPageValue(Ihandle *ih, int dir)

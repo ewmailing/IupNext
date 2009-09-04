@@ -100,6 +100,20 @@ also accepted.&nbsp;</p>
   identifier of the element that activated the 
   event.<br>
     <strong>r, g, b</strong>: color value.</p>
+
+
+<p><strong>VALUECHANGED_CB</strong>:
+  Called after the value was interactively changed by the user. It is called 
+whenever a <b>CHANGE_CB </b>or a<strong> </strong><b>DRAG_CB </b>would also be called, 
+it is just&nbsp; called after them.</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
 <blockquote>
   <hr>
 </blockquote>

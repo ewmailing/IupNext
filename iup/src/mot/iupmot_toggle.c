@@ -312,6 +312,12 @@ static void motToggleValueChangedCallback(Widget w, Ihandle* ih, XmToggleButtonC
     }
   }
 
+  {
+    IFn vc_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
+    if (vc_cb)
+      vc_cb(ih);
+  }
+
   (void)w;
 }
 

@@ -52,9 +52,10 @@ to NULL to allow the automatic layout use smaller values.</p>
 <p><strong>TYPE</strong> (creation only) (<font SIZE="3">non inheritable</font>):&nbsp; dial layout configuration &quot;VERTICAL&quot;, 
   &quot;HORIZONTAL&quot; or &quot;CIRCULAR&quot;. Default: &quot;HORIZONTAL&quot;.</p>
 <p><strong>UNIT</strong>: unit of the angle. Can be &quot;DEGREES&quot; 
-  or &quot;RADIANS&quot;. Default is &quot;RADIANS&quot;.</p>
+  or &quot;RADIANS&quot;. Default is &quot;RADIANS&quot;. Used only in the 
+callbacks.</p>
 <p><strong>VALUE </strong>(<font SIZE="3">non inheritable</font>):
-  The dial angular value. 
+  The dial angular value in radians. 
   The value is reset to zero when the interaction is started, except for 
 TYPE=CIRCULAR. When type is vertical or horizontal, the dial measures relative 
 angles. When type is circular the dial measure absolute angles, where the origin 
@@ -74,6 +75,7 @@ POSITION</a>,
 also accepted.&nbsp;</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 
+
 <p><strong>BUTTON_PRESS_CB</strong>:
   Called when the user presses the left mouse 
   button over the dial. The angle here is always zero, except for the circular dial.</p>
@@ -84,8 +86,7 @@ also accepted.&nbsp;</p>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
-    <strong>angle</strong>:
-    the dial value.</p>
+    <strong>angle</strong>: the dial value converted according to UNIT.</p>
 <p><strong>BUTTON_RELEASE_CB</strong>:
   Called when the user releases the left mouse 
   button after pressing it over the dial.</p>
@@ -98,7 +99,7 @@ also accepted.&nbsp;</p>
   identifier of the element that activated the 
   event.<br>
     <strong>angle</strong>:
-    the dial value.</p>
+    the dial value converted according to UNIT.</p>
 </div>
 
 <p><strong>MOUSEMOVE_CB</strong>: 
@@ -114,7 +115,22 @@ also accepted.&nbsp;</p>
   identifier of the element that activated the 
   event.<br>
     <strong>angle</strong>:
-    the dial value.</p>
+    the dial value converted according to UNIT.</p>
+
+
+<p><strong>VALUECHANGED_CB</strong>:
+  Called after the value was interactively changed by the user. It is called 
+whenever a <strong>BUTTON_PRESS_CB</strong>, a <strong>BUTTON_RELEASE_CB</strong> 
+or a<strong> MOUSEMOVE_CB</strong> would also be called, but if defined those 
+callbacks will not be called.</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
   <blockquote>
   <hr>
 </blockquote>

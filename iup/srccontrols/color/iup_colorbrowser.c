@@ -427,6 +427,12 @@ static void iColorBrowserCallChangeCb(Ihandle* ih)
   IFnccc change_cb = (IFnccc) IupGetCallback(ih, "CHANGE_CB");
   if (change_cb)
     change_cb(ih, ih->data->red, ih->data->green, ih->data->blue);
+  
+  {
+    IFn vc_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
+    if (vc_cb)
+      vc_cb(ih);
+  }
 }
   
 static void iColorBrowserCallDragCb(Ihandle* ih)
@@ -434,6 +440,12 @@ static void iColorBrowserCallDragCb(Ihandle* ih)
   IFnccc drag_cb = (IFnccc) IupGetCallback(ih, "DRAG_CB");
   if (drag_cb)
     drag_cb(ih, ih->data->red, ih->data->green, ih->data->blue);
+
+  {
+    IFn vc_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
+    if (vc_cb)
+      vc_cb(ih);
+  }
 }
 
 static int iColorBrowserHmouse(Ihandle* ih, int x, int y, int drag)
@@ -826,6 +838,7 @@ Iclass* iupColorBrowserGetClass(void)
   /* IupColorBrowser Callbacks */
   iupClassRegisterCallback(ic, "DRAG_CB",   "ccc");
   iupClassRegisterCallback(ic, "CHANGE_CB", "ccc");
+  iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
 
   /* IupColorBrowser only */
   iupClassRegisterAttribute(ic, "RGB", iColorBrowserGetRGBAttrib, iColorBrowserSetRGBAttrib, "255 0 0", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);    /* force new default value */

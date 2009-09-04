@@ -18,7 +18,7 @@
 #include "iup_drvfont.h"
 
 
-#define RAD2DEG  57.296   /* radians to degrees */
+#define RAD2DEG  57.296f   /* radians to degrees */
 
 
 /*******************************************************************************************
@@ -121,13 +121,14 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
   return IUP_DEFAULT;
 }
 
-static int iParamValAction_CB(Ihandle *self, double val)
+static int iParamValAction_CB(Ihandle *self)
 {
   Ihandle* param = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
   Ihandle* text = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_TEXT");
   Ihandle* dlg = IupGetDialog(self);
   Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
   float old_value = iupAttribGetFloat(param, "VALUE");
+  float val = IupGetFloat(self, "VALUE");
 
   char* type = iupAttribGet(param, "TYPE");
   if (iupStrEqual(type, "INTEGER"))
@@ -632,7 +633,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
 
       if (aux)
       {
-        IupSetCallback(aux, "CHANGEVALUE_CB", (Icallback)iParamValAction_CB);
+        IupSetCallback(aux, "VALUECHANGED_CB", (Icallback)iParamValAction_CB);
         iupAttribSetStr(aux, "_IUPGP_PARAM", (char*)param);
         iupAttribSetStr(aux, "_IUPGP_TEXT", (char*)ctrl);
 

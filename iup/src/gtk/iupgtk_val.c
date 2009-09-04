@@ -71,15 +71,7 @@ static int gtkValSetValueAttrib(Ihandle* ih, const char* value)
 
 static gboolean gtkValChangeValue(GtkRange *range, GtkScrollType scroll, double fval, Ihandle *ih)
 {
-  char* cb_name;
-  IFnd cb;
-
-  if(scroll == GTK_SCROLL_JUMP) /* scroll == 1 */
-    cb_name = "MOUSEMOVE_CB";
-  else if((scroll >= GTK_SCROLL_STEP_BACKWARD) && (scroll <= GTK_SCROLL_END))
-    cb_name = "BUTTON_PRESS_CB";
-  else
-    cb_name = "BUTTON_RELEASE_CB";
+  IFn cb;
 
   if (fval < 0.0)
     gtk_range_set_value(GTK_RANGE(ih->handle), 0.0);
@@ -89,12 +81,21 @@ static gboolean gtkValChangeValue(GtkRange *range, GtkScrollType scroll, double 
   ih->data->val = fval*(ih->data->vmax - ih->data->vmin) + ih->data->vmin;
   iupValCropValue(ih);
     
-  cb = (IFnd) IupGetCallback(ih, cb_name);
-  if (!cb)
-    cb = (IFnd)IupGetCallback(ih, "CHANGEVALUE_CB");
-
+  cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
   if (cb)
-    cb(ih, ih->data->val);
+    cb(ih);
+  else
+  {
+    IFnd cb_old;
+    if (scroll == GTK_SCROLL_JUMP) /* scroll == 1 */
+      cb_old = (IFnd)IupGetCallback(ih, "MOUSEMOVE_CB");
+    else if((scroll >= GTK_SCROLL_STEP_BACKWARD) && (scroll <= GTK_SCROLL_END))
+      cb_old = (IFnd)IupGetCallback(ih, "BUTTON_PRESS_CB");
+    else
+      cb_old = (IFnd)IupGetCallback(ih, "BUTTON_RELEASE_CB");
+    if (cb_old)
+      cb_old(ih, ih->data->val);
+  }
 
   if (fval < 0.0 || fval > 1.0)
     return TRUE;

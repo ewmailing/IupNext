@@ -192,7 +192,7 @@ Iclass* iupValGetClass(void)
   ic->UnMap = iupdrvBaseUnMapMethod;
 
   /* Callbacks */
-  iupClassRegisterCallback(ic, "CHANGEVALUE_CB", "d");
+  iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);

@@ -132,6 +132,7 @@ Iclass* iupToggleGetClass(void)
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "ACTION", "i");
+  iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);

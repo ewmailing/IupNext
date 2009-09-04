@@ -190,7 +190,7 @@ also accepted.</p>
 
 <p><a href="../call/iup_action.html">ACTION</a>:
   Action generated when the toggle's state 
-  (on/off) changes. The callback also receives the toggle's state.</p>
+  (on/off) was changed. The callback also receives the toggle's state.</p>
 
   
     
@@ -205,6 +205,18 @@ also accepted.</p>
     1 if the toggle's state was shifted to on; 0 if it was shifted to off.</p>
 
 <p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
+
+
+<p><strong>VALUECHANGED_CB</strong>: Called after the value was interactively 
+changed by the user. Called after the ACTION callback, but under the same 
+context.</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
 
     
 <hr class="style1">

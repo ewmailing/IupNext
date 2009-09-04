@@ -125,34 +125,7 @@ static int winValCtlColor(Ihandle* ih, HDC hdc, LRESULT *result)
 static int winValCustomScroll(Ihandle* ih, int msg)
 {
   int ival;
-  IFnd cb = NULL;
-
-  switch (msg)
-  {
-    case TB_BOTTOM:
-    case TB_TOP:
-    case TB_LINEDOWN:
-    case TB_LINEUP:
-    case TB_PAGEDOWN:
-    case TB_PAGEUP:
-    {
-      cb = (IFnd) IupGetCallback(ih, "BUTTON_PRESS_CB");
-      break;
-    }
-    case TB_THUMBPOSITION:
-    {
-      cb = (IFnd) IupGetCallback(ih, "BUTTON_RELEASE_CB");
-      break;
-    }
-    case TB_THUMBTRACK:
-    {
-      cb = (IFnd) IupGetCallback(ih, "MOUSEMOVE_CB");
-      break;
-    }
-  }
-
-  if (!cb)
-    cb = (IFnd)IupGetCallback(ih, "CHANGEVALUE_CB");
+  IFn cb;
 
   ival = (int)SendMessage(ih->handle, TBM_GETPOS, 0, 0);
   if (ih->data->inverted)
@@ -161,8 +134,38 @@ static int winValCustomScroll(Ihandle* ih, int msg)
   ih->data->val = (((double)ival/(double)SHRT_MAX)*(ih->data->vmax - ih->data->vmin)) + ih->data->vmin;
   iupValCropValue(ih);
 
+  cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
   if (cb)
-    cb(ih, ih->data->val);
+    cb(ih);
+  else
+  {
+    IFnd cb_old = NULL;
+    switch (msg)
+    {
+      case TB_BOTTOM:
+      case TB_TOP:
+      case TB_LINEDOWN:
+      case TB_LINEUP:
+      case TB_PAGEDOWN:
+      case TB_PAGEUP:
+      {
+        cb_old = (IFnd) IupGetCallback(ih, "BUTTON_PRESS_CB");
+        break;
+      }
+      case TB_THUMBPOSITION:
+      {
+        cb_old = (IFnd) IupGetCallback(ih, "BUTTON_RELEASE_CB");
+        break;
+      }
+      case TB_THUMBTRACK:
+      {
+        cb_old = (IFnd) IupGetCallback(ih, "MOUSEMOVE_CB");
+        break;
+      }
+    }
+    if (cb_old)
+      cb_old(ih, ih->data->val);
+  }
 
   return 0; /* not used */
 }

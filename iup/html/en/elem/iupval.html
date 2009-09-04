@@ -148,18 +148,15 @@ also accepted.&nbsp;</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 
 
-<p><strong>CHANGEVALUE_CB</strong>:
-  Called when the value is interactively changed by the user.</p>
+<p><strong>VALUECHANGED_CB</strong>:
+  Called after the value was interactively changed by the user.</p>
 
-<pre>int function(Ihandle *<strong>ih</strong>, double <strong>val</strong>); [in C]<br><strong>elem</strong>:changevalue_cb(<strong>val</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br>
-
-    <strong>val</strong>:
-    the valuator value.</p>
+  event.</p>
 
 <blockquote>
   
@@ -180,7 +177,8 @@ supported.</p>
 <h3><a name="Notes">Notes</a></h3>
 
 <p>This control replaces the old <a href="../ctrl/iupval.html">IupVal</a> 
-implemented in the additional controls. The old callbacks are still supported. 
+implemented in the additional controls. The old callbacks are still supported 
+but called only if the VALUECHANGED_CB callback is not defined. 
 The MOUSEMOVE_CB callback is only called when the user moves the handler using 
 the mouse. The BUTTON_PRESS_CB callback is called only when the user press a key 
 that changes the position of the handler. The BUTTON_RELEASE_CB callback is 
