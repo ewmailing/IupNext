@@ -428,6 +428,17 @@ The VALUE attribute can be changed during this callback only if SPINAUTO=NO. (si
     <u>Returns</u>: IUP_IGNORE is processed in Windows and Motif. It is ignored 
 in GTK.</p>
 
+
+<p><strong>VALUECHANGED_CB</strong>:
+  Called after the value was interactively changed by the user.</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
     
 <hr class="style1">
 

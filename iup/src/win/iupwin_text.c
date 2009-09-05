@@ -1777,6 +1777,23 @@ static void winTextCreateSpin(Ihandle* ih)
   SendMessage(hSpin, UDM_SETPOS32, 0, 0);
 }
 
+static int winTextWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
+{
+  int cmd = HIWORD(wp);
+  switch (cmd)
+  {
+  case EN_CHANGE:
+    {
+      Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+      if (vc_cb) vc_cb(ih);
+      break;
+    }
+  }
+
+  (void)lp;
+  return 0; /* not used */
+}
+
 static void winTextLayoutUpdateMethod(Ihandle* ih)
 {
   HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
@@ -1881,6 +1898,9 @@ static int winTextMapMethod(Ihandle* ih)
   /* Process background color */
   IupSetCallback(ih, "_IUPWIN_CTLCOLOR_CB", (Icallback)winTextCtlColor);
 
+  /* Process WM_COMMAND */
+  IupSetCallback(ih, "_IUPWIN_COMMAND_CB", (Icallback)winTextWmCommand);
+
   /* set defaults */
   SendMessage(ih->handle, EM_LIMITTEXT, 0, 0L);
   {
@@ -1896,7 +1916,10 @@ static int winTextMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "DRAGDROP", "YES");
 
   if (ih->data->has_formatting)
+  {
     SendMessage(ih->handle, EM_SETTEXTMODE, (WPARAM)(TM_RICHTEXT|TM_MULTILEVELUNDO|TM_SINGLECODEPAGE), 0);
+    SendMessage(ih->handle, EM_SETEVENTMASK, 0, ENM_CHANGE);
+  }
 
   if (ih->data->formattags)
   {

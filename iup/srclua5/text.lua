@@ -8,6 +8,7 @@ local ctrl = {
   callback = {
     action = "ns",
     caret_cb = "nnn", 
+    valuechanged_cb = "",  -- used by many other controls
   }
 }
 

@@ -854,6 +854,14 @@ static void motTextMotionVerifyCallback(Widget w, Ihandle* ih, XmTextVerifyCallb
   (void)w;
 }
 
+static void motTextValueChangedCallback(Widget w, Ihandle* ih, XmAnyCallbackStruct* valuechanged)
+{
+  Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+  if (vc_cb) vc_cb(ih);
+  (void)valuechanged;
+  (void)w;
+}
+
 static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *cont)
 {
   Widget spinbox;
@@ -1094,6 +1102,7 @@ static int motTextMapMethod(Ihandle* ih)
 
   XtAddCallback(ih->handle, XmNmodifyVerifyCallback, (XtCallbackProc)motTextModifyVerifyCallback, (XtPointer)ih);
   XtAddCallback(ih->handle, XmNmotionVerifyCallback, (XtCallbackProc)motTextMotionVerifyCallback, (XtPointer)ih);
+  XtAddCallback(ih->handle, XmNvalueChangedCallback, (XtCallbackProc)motTextValueChangedCallback, (XtPointer)ih);
 
   /* Disable Drag Source */
   iupmotDisableDragSource(ih->handle);

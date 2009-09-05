@@ -19,6 +19,12 @@
 
 static int iuplua_tag = 0;
 
+static int valuechanged_cb(Ihandle* handle)
+{
+  iuplua_call_start(handle, "valuechanged_cb");
+  return iuplua_call();
+}
+
 static int file_cb(Ihandle* handle, char* file_name, char* status)
 {
   iuplua_call_start(handle, "file_cb");
@@ -602,7 +608,8 @@ int iupluawidgets_open(int tag)
     { "iup_menuclose_cb", (lua_CFunction)menu_close},
     { "iup_file_cb", (lua_CFunction)file_cb},
     { "iup_dropdown_cb", (lua_CFunction)list_dropdown_cb},
-    { "iup_dblclick_cb", (lua_CFunction)list_dblclick_cb}
+    { "iup_dblclick_cb", (lua_CFunction)list_dblclick_cb},
+    { "iup_valuechanged_cb", (lua_CFunction)valuechanged_cb}
   };
 
   int SizeFuncList = (sizeof(FuncList)/sizeof(struct FuncList));

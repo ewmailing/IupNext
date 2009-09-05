@@ -923,3 +923,5 @@ iup_callbacks.mdiactivate_cb = iup_callbacks.mdiactivatecb
 iup_callbacks.file_cb        = iup_callbacks.filecb 
 iup_callbacks.dropdown_cb    = iup_callbacks.dropdowncb 
 iup_callbacks.dblclick_cb    = iup_callbacks.dblclickcb 
+iup_callbacks.valuechanged_cb = iup_callbacks.valuechangedcb 
+                     

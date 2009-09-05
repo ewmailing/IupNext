@@ -1504,6 +1504,12 @@ static void gtkTextBufferInsertText(GtkTextBuffer *textbuffer, GtkTextIter *pos_
   }
 }
 
+static void gtkTextChanged(void* dummy, Ihandle* ih)
+{
+  Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+  if (vc_cb) vc_cb(ih);
+  (void)dummy;
+}
 
 /**********************************************************************************************************/
 
@@ -1631,11 +1637,13 @@ static int gtkTextMapMethod(Ihandle* ih)
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
     g_signal_connect(G_OBJECT(buffer), "delete-range", G_CALLBACK(gtkTextBufferDeleteRange), ih);
     g_signal_connect(G_OBJECT(buffer), "insert-text", G_CALLBACK(gtkTextBufferInsertText), ih);
+    g_signal_connect(G_OBJECT(buffer), "changed", G_CALLBACK(gtkTextChanged), ih);
   }
   else
   {
     g_signal_connect(G_OBJECT(ih->handle), "delete-text", G_CALLBACK(gtkTextEntryDeleteText), ih);
     g_signal_connect(G_OBJECT(ih->handle), "insert-text", G_CALLBACK(gtkTextEntryInsertText), ih);
+    g_signal_connect(G_OBJECT(ih->handle), "changed", G_CALLBACK(gtkTextChanged), ih);
   }
 
   if (scrolled_window)
