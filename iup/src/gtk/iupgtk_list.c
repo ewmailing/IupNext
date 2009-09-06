@@ -1052,6 +1052,13 @@ static void gtkListEditInsertText(GtkEditable *editable, char *insert_value, int
   }
 }
 
+static void gtkListEditChanged(void* dummy, Ihandle* ih)
+{
+  Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+  if (vc_cb) vc_cb(ih);
+  (void)dummy;
+}
+
 static void gtkListComboBoxPopupShownChanged(GtkComboBox* widget, GParamSpec *pspec, Ihandle* ih)
 {
   IFni cb = (IFni)IupGetCallback(ih, "DROPDOWN_CB");
@@ -1073,6 +1080,12 @@ static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih)
     pos++;  /* IUP starts at 1 */
     iupListSingleCallActionCallback(ih, cb, pos);
   }
+
+  {
+    Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+    if (vc_cb) vc_cb(ih);
+  }
+
   (void)widget;
 }
 
@@ -1159,6 +1172,11 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
       free(pos);
     }
   }
+
+  {
+    Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+    if (vc_cb) vc_cb(ih);
+  }
 }
 
 
@@ -1208,6 +1226,7 @@ static int gtkListMapMethod(Ihandle* ih)
 
       g_signal_connect(G_OBJECT(entry), "delete-text", G_CALLBACK(gtkListEditDeleteText), ih);
       g_signal_connect(G_OBJECT(entry), "insert-text", G_CALLBACK(gtkListEditInsertText), ih);
+      /* g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(gtkListEditChanged), ih); */
       g_signal_connect_after(G_OBJECT(entry), "move-cursor", G_CALLBACK(gtkListEditMoveCursor), ih);  /* only report some caret movements */
       g_signal_connect_after(G_OBJECT(entry), "key-release-event", G_CALLBACK(gtkListEditKeyReleaseEvent), ih);
       g_signal_connect(G_OBJECT(entry), "button-press-event", G_CALLBACK(gtkListEditButtonEvent), ih);  /* if connected "after" then it is ignored */
@@ -1291,6 +1310,7 @@ static int gtkListMapMethod(Ihandle* ih)
 
       g_signal_connect(G_OBJECT(entry), "delete-text", G_CALLBACK(gtkListEditDeleteText), ih);
       g_signal_connect(G_OBJECT(entry), "insert-text", G_CALLBACK(gtkListEditInsertText), ih);
+      g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(gtkListEditChanged), ih);
       g_signal_connect_after(G_OBJECT(entry), "move-cursor", G_CALLBACK(gtkListEditMoveCursor), ih);  /* only report some caret movements */
       g_signal_connect(G_OBJECT(entry), "key-press-event",    G_CALLBACK(gtkListEditKeyPressEvent), ih);
       g_signal_connect_after(G_OBJECT(entry), "key-release-event", G_CALLBACK(gtkListEditKeyReleaseEvent), ih);

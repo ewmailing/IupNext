@@ -388,7 +388,7 @@ Called only when DROPDOWN=YES. (since 3.0)</p>
   
 <p><strong>EDIT_CB</strong>:
   Action generated when the text in the text 
-  box is manually changed by the user. Valid only when
+  box is manually changed by the user, but before its value is actually updated. Valid only when
   EDITBOX=YES.</p>
 
   
@@ -452,7 +452,19 @@ by IUP in all systems. If you add or remove items to/from the list and you count
 on the 'x' values, then after adding/removing items set the VALUE attribute to 
 ensure proper 'x' values.</p>
 
-  
+
+<p><strong>VALUECHANGED_CB</strong>:
+  Called after the value was interactively changed by the user. Called when the 
+selection is changed or when the text is edited. (since 3.0)</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
+    
     
 <hr class="style1">
 

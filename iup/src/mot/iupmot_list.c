@@ -1059,6 +1059,14 @@ static void motListEditKeyPressEvent(Widget cbedit, Ihandle *ih, XKeyEvent *evt,
   }
 }
 
+static void motListEditValueChangedCallback(Widget w, Ihandle* ih, XmAnyCallbackStruct* valuechanged)
+{
+  Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+  if (vc_cb) vc_cb(ih);
+  (void)valuechanged;
+  (void)w;
+}
+
 static void motListDropDownPopupCallback(Widget w, Ihandle* ih, XtPointer call_data)
 {
   IFni cb = (IFni)IupGetCallback(ih, "DROPDOWN_CB");
@@ -1110,6 +1118,11 @@ static void motListComboBoxSelectionCallback(Widget w, Ihandle* ih, XmComboBoxCa
     iupListSingleCallActionCallback(ih, cb, pos);
   }
 
+  {
+    Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+    if (vc_cb) vc_cb(ih);
+  }
+
   (void)w;
 }
 
@@ -1120,6 +1133,11 @@ static void motListBrowseSelectionCallback(Widget w, Ihandle* ih, XmListCallback
   {
     int pos = call_data->item_position;  /* Here Motif already starts at 1 */
     iupListSingleCallActionCallback(ih, cb, pos);
+  }
+
+  {
+    Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+    if (vc_cb) vc_cb(ih);
   }
 
   (void)w;
@@ -1144,6 +1162,11 @@ static void motListExtendedSelectionCallback(Widget w, Ihandle* ih, XmListCallba
     iupListMultipleCallActionCallback(ih, cb, multi_cb, pos, sel_count);
   }
 
+  {
+    Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+    if (vc_cb) vc_cb(ih);
+  }
+
   (void)w;
 }
 
@@ -1161,7 +1184,7 @@ static int motListMapMethod(Ihandle* ih)
   if (ih->data->is_dropdown || ih->data->has_editbox)
   {
     /* could not set XmNmappedWhenManaged to False because the list and the edit box where not displayed */
-    /* iupmotSetArg(args, num_args, XmNmappedWhenManaged, False); */   /* not visible when managed */
+    /* iupmotSetArg(args, num_args, XmNmappedWhenManaged, False); */
     iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
     iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
     iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
@@ -1282,6 +1305,7 @@ static int motListMapMethod(Ihandle* ih)
       XtAddEventHandler(cbedit, KeyPressMask, False, (XtEventHandler)motListEditKeyPressEvent, (XtPointer)ih);
       XtAddCallback(cbedit, XmNmodifyVerifyCallback, (XtCallbackProc)motListEditModifyVerifyCallback, (XtPointer)ih);
       XtAddCallback(cbedit, XmNmotionVerifyCallback, (XtCallbackProc)motListEditMotionVerifyCallback, (XtPointer)ih);
+      XtAddCallback(cbedit, XmNvalueChangedCallback, (XtCallbackProc)motListEditValueChangedCallback, (XtPointer)ih);
 
       /* Disable Drag Source */
       iupmotDisableDragSource(cbedit);

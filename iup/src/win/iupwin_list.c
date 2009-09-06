@@ -816,6 +816,12 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
   {
     switch (HIWORD(wp))
     {
+    case CBN_EDITCHANGE:
+      {
+        Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+        if (vc_cb) vc_cb(ih);
+        break;
+      }
     case CBN_SETFOCUS:
       iupwinWmSetFocus(ih);
       break;
@@ -849,6 +855,11 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
           int pos = SendMessage(ih->handle, CB_GETCURSEL, 0, 0);
           pos++;  /* IUP starts at 1 */
           iupListSingleCallActionCallback(ih, cb, pos);
+        }
+
+        {
+          Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+          if (vc_cb) vc_cb(ih);
         }
         break;
       }
@@ -893,6 +904,11 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
             iupListMultipleCallActionCallback(ih, cb, multi_cb, pos, sel_count);
             free(pos);
           }
+        }
+
+        {
+          Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
+          if (vc_cb) vc_cb(ih);
         }
         break;
       }
