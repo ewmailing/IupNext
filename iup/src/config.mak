@@ -100,19 +100,19 @@ endif
 
 ifeq "$(TEC_UNAME)" "vc6"
   # Necessary because VC6 has an old WinSDK
-  WINSDK = d:/lng/vc7/PlatformSDK
-  INCLUDES += $(WINSDK)/include
-  LDIR = $(WINSDK)/lib
+  #WINSDK = d:/lng/vc7/PlatformSDK
+  #INCLUDES += $(WINSDK)/include
+  #LDIR = $(WINSDK)/lib
 endif
 
 ifeq "$(TEC_UNAME)" "dll"
   # Necessary because VC6 has an old WinSDK
-  WINSDK = d:/lng/vc7/PlatformSDK
-  INCLUDES += $(WINSDK)/include
-  LDIR = $(WINSDK)/lib
+  #WINSDK = d:/lng/vc7/PlatformSDK
+  #INCLUDES += $(WINSDK)/include
+  #LDIR = $(WINSDK)/lib
 endif
 
 ifeq "$(TEC_UNAME)" "owc1"
-  # Necessary or IUP will not work in Open Watcom (needs to be retested)
-  #FLAGS = -d2
+  # Necessary or IUP will not work in Open Watcom
+  DBG=Yes
 endif
