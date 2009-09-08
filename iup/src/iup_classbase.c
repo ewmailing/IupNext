@@ -10,6 +10,7 @@
 #include <memory.h>
 
 #include "iup.h"
+#include "iupcbs.h"
 
 #include "iup_object.h"
 #include "iup_drv.h"
@@ -18,6 +19,13 @@
 #include "iup_attrib.h"
 #include "iup_assert.h"
 
+
+void iupBaseCallValueChangedCb(Ihandle* ih)
+{
+  IFn vc_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
+  if (vc_cb)
+    vc_cb(ih);
+}
 
 void iupBaseContainerSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
 {

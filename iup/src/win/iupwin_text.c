@@ -612,7 +612,9 @@ static int winTextSetValueAttrib(Ihandle* ih, const char* value)
     else
       str = iupStrToDos(str);
   }
+  iupAttribSetStr(ih, "IUPWIN_IGNORECHANGE", "1");
   SetWindowText(ih->handle, str);
+  iupAttribSetStr(ih, "IUPWIN_IGNORECHANGE", NULL);
   if (str != value) free(str);
   return 0;
 }
@@ -1784,8 +1786,10 @@ static int winTextWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
   {
   case EN_CHANGE:
     {
-      Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-      if (vc_cb) vc_cb(ih);
+      if (iupAttribGetStr(ih, "IUPWIN_IGNORECHANGE"))
+        return 0;
+
+      iupBaseCallValueChangedCb(ih);
       break;
     }
   }

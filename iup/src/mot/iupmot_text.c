@@ -856,8 +856,11 @@ static void motTextMotionVerifyCallback(Widget w, Ihandle* ih, XmTextVerifyCallb
 
 static void motTextValueChangedCallback(Widget w, Ihandle* ih, XmAnyCallbackStruct* valuechanged)
 {
-  Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-  if (vc_cb) vc_cb(ih);
+  if (iupAttribGet(ih, "_IUPMOT_DISABLE_TEXT_CB"))
+    return;
+
+  iupBaseCallValueChangedCb(ih);
+
   (void)valuechanged;
   (void)w;
 }

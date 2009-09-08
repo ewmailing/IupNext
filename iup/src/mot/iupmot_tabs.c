@@ -538,6 +538,7 @@ static int motTabsMapMethod(Ihandle* ih)
 
   /* Callbacks */
   XtAddCallback(ih->handle, XmNpageChangedCallback, (XtCallbackProc)motTabsPageChangedCallback, (XtPointer)ih);
+  XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
 
   /* update Tab position */
   motTabsUpdateTabType(ih);

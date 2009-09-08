@@ -71,6 +71,7 @@ static int gtkValSetValueAttrib(Ihandle* ih, const char* value)
 
 static gboolean gtkValChangeValue(GtkRange *range, GtkScrollType scroll, double fval, Ihandle *ih)
 {
+  double old_val = ih->data->val;
   IFn cb;
 
   if (fval < 0.0)
@@ -80,10 +81,15 @@ static gboolean gtkValChangeValue(GtkRange *range, GtkScrollType scroll, double 
 
   ih->data->val = fval*(ih->data->vmax - ih->data->vmin) + ih->data->vmin;
   iupValCropValue(ih);
-    
+
   cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
   if (cb)
+  {
+    if (ih->data->val == old_val)
+      return FALSE;
+      
     cb(ih);
+  }
   else
   {
     IFnd cb_old;

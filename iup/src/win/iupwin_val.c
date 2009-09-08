@@ -124,6 +124,7 @@ static int winValCtlColor(Ihandle* ih, HDC hdc, LRESULT *result)
 
 static int winValCustomScroll(Ihandle* ih, int msg)
 {
+  double old_val = ih->data->val;
   int ival;
   IFn cb;
 
@@ -136,7 +137,12 @@ static int winValCustomScroll(Ihandle* ih, int msg)
 
   cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
   if (cb)
+  {
+    if (ih->data->val == old_val)
+      return 0;
+
     cb(ih);
+  }
   else
   {
     IFnd cb_old = NULL;

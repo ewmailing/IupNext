@@ -2292,10 +2292,9 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
 
   motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
   if (motcode == XK_F2)
-  {
     motTreeSetRenameAttrib(ih, NULL);
-    return;
-  }
+  else if (motcode == XK_F1)
+    iupmotHelpCallback(w, ih, NULL);
   else if ((motcode == XK_Down || motcode == XK_Up) && (evt->state & ControlMask))
   {
     Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
@@ -2310,7 +2309,6 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
 
     motTreeSetFocusNode(ih, wItem);
     *cont = False;
-    return;
   }
   else if(motcode == XK_Home || motcode == XK_End)
   {
@@ -2347,7 +2345,6 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
 
     motTreeSetFocusNode(ih, wItem);
     *cont = False;
-    return;
   }
   else if(motcode == XK_space && (evt->state & ControlMask))
   {
@@ -2731,7 +2728,7 @@ static int motTreeMapMethod(Ihandle* ih)
   XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotPointerMotionEvent, (XtPointer)ih);
 
   /* Callbacks */
-  XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
+  /* XtAddCallback(ih->handle, XmNhelpCallback,           (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);  NOT WORKING */
   XtAddCallback(ih->handle, XmNoutlineChangedCallback, (XtCallbackProc)motTreeOutlineChangedCallback, (XtPointer)ih);
   XtAddCallback(ih->handle, XmNdefaultActionCallback,  (XtCallbackProc)motTreeDefaultActionCallback,  (XtPointer)ih);
   XtAddCallback(ih->handle, XmNselectionCallback,      (XtCallbackProc)motTreeSelectionCallback,      (XtPointer)ih);

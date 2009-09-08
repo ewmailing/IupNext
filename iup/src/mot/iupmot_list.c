@@ -1061,8 +1061,11 @@ static void motListEditKeyPressEvent(Widget cbedit, Ihandle *ih, XKeyEvent *evt,
 
 static void motListEditValueChangedCallback(Widget w, Ihandle* ih, XmAnyCallbackStruct* valuechanged)
 {
-  Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-  if (vc_cb) vc_cb(ih);
+  if (iupAttribGet(ih, "_IUPMOT_DISABLE_TEXT_CB"))
+    return;
+
+  iupBaseCallValueChangedCb(ih);
+
   (void)valuechanged;
   (void)w;
 }
@@ -1118,10 +1121,7 @@ static void motListComboBoxSelectionCallback(Widget w, Ihandle* ih, XmComboBoxCa
     iupListSingleCallActionCallback(ih, cb, pos);
   }
 
-  {
-    Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-    if (vc_cb) vc_cb(ih);
-  }
+  iupBaseCallValueChangedCb(ih);
 
   (void)w;
 }
@@ -1135,10 +1135,7 @@ static void motListBrowseSelectionCallback(Widget w, Ihandle* ih, XmListCallback
     iupListSingleCallActionCallback(ih, cb, pos);
   }
 
-  {
-    Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-    if (vc_cb) vc_cb(ih);
-  }
+  iupBaseCallValueChangedCb(ih);
 
   (void)w;
 }
@@ -1162,10 +1159,7 @@ static void motListExtendedSelectionCallback(Widget w, Ihandle* ih, XmListCallba
     iupListMultipleCallActionCallback(ih, cb, multi_cb, pos, sel_count);
   }
 
-  {
-    Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-    if (vc_cb) vc_cb(ih);
-  }
+  iupBaseCallValueChangedCb(ih);
 
   (void)w;
 }

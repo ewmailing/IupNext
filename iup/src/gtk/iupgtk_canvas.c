@@ -187,20 +187,11 @@ static gboolean gtkCanvasButtonEvent(GtkWidget *widget, GdkEventButton *evt, Iha
   if (evt->type == GDK_BUTTON_PRESS)
   {
     /* Force focus on canvas click */
-    gtk_widget_grab_focus(ih->handle);
+    if (iupAttribGetBoolean(ih, "CANFOCUS"))
+      gtk_widget_grab_focus(ih->handle);
   }
 
   return iupgtkButtonEvent(widget, evt, ih);
-}
-
-static void gtkCanvasExposeChild(GtkWidget *child, gpointer client_data)
-{
-  struct {
-    GtkWidget *container;
-    GdkEventExpose *evt;
-  } *data = client_data;
-  
-  gtk_container_propagate_expose(GTK_CONTAINER(data->container), child, data->evt);
 }
 
 static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value);

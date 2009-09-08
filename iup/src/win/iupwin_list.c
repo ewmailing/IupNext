@@ -818,8 +818,7 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
     {
     case CBN_EDITCHANGE:
       {
-        Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-        if (vc_cb) vc_cb(ih);
+        iupBaseCallValueChangedCb(ih);
         break;
       }
     case CBN_SETFOCUS:
@@ -857,10 +856,7 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
           iupListSingleCallActionCallback(ih, cb, pos);
         }
 
-        {
-          Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-          if (vc_cb) vc_cb(ih);
-        }
+        iupBaseCallValueChangedCb(ih);
         break;
       }
     }
@@ -906,10 +902,7 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
           }
         }
 
-        {
-          Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-          if (vc_cb) vc_cb(ih);
-        }
+        iupBaseCallValueChangedCb(ih);
         break;
       }
     }

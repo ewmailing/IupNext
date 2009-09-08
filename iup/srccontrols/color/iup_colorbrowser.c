@@ -428,11 +428,7 @@ static void iColorBrowserCallChangeCb(Ihandle* ih)
   if (change_cb)
     change_cb(ih, ih->data->red, ih->data->green, ih->data->blue);
   
-  {
-    IFn vc_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
-    if (vc_cb)
-      vc_cb(ih);
-  }
+  iupBaseCallValueChangedCb(ih);
 }
   
 static void iColorBrowserCallDragCb(Ihandle* ih)
@@ -441,11 +437,7 @@ static void iColorBrowserCallDragCb(Ihandle* ih)
   if (drag_cb)
     drag_cb(ih, ih->data->red, ih->data->green, ih->data->blue);
 
-  {
-    IFn vc_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
-    if (vc_cb)
-      vc_cb(ih);
-  }
+  iupBaseCallValueChangedCb(ih);
 }
 
 static int iColorBrowserHmouse(Ihandle* ih, int x, int y, int drag)

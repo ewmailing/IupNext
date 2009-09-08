@@ -178,6 +178,7 @@ static int motValSetBackgroundAttrib(Ihandle* ih, const char* value)
 
 static void motValCallAction(Ihandle* ih, int ival, int cb_state)
 {
+  double old_val = ih->data->val;
   IFn cb;
 
   ih->data->val = (((double)ival/(double)SHRT_MAX)*(ih->data->vmax - ih->data->vmin)) + ih->data->vmin;
@@ -185,7 +186,12 @@ static void motValCallAction(Ihandle* ih, int ival, int cb_state)
 
   cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
   if (cb)
+  {
+    if (ih->data->val == old_val)
+      return;
+
     cb(ih);
+  }
   else
   {
     IFnd cb_old;
@@ -318,7 +324,7 @@ static void motValKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *
   }
 }
 
-static void motValvalueChangedCallback(Widget w, Ihandle* ih, XmScaleCallbackStruct *cbs)
+static void motValValueChangedCallback(Widget w, Ihandle* ih, XmScaleCallbackStruct *cbs)
 {
   int cb_state = 1;
 
@@ -431,8 +437,9 @@ static int motValMapMethod(Ihandle* ih)
   /* XtAddEventHandler(ih->handle, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent, (XtPointer)ih); */
   /* XtAddEventHandler(ih->handle, KeyPressMask,    False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);    */
 
-  XtAddCallback(ih->handle, XmNdragCallback, (XtCallbackProc)motValvalueChangedCallback, (XtPointer)ih);
-  XtAddCallback(ih->handle, XmNvalueChangedCallback, (XtCallbackProc)motValvalueChangedCallback, (XtPointer)ih);
+  XtAddCallback(ih->handle, XmNdragCallback, (XtCallbackProc)motValValueChangedCallback, (XtPointer)ih);
+  XtAddCallback(ih->handle, XmNvalueChangedCallback, (XtCallbackProc)motValValueChangedCallback, (XtPointer)ih);
+  XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
 
   {
     Widget sb = XtNameToWidget(ih->handle, "Scrollbar");  /* TODO: Test this in other Motifs */

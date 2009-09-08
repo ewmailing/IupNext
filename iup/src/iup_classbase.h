@@ -150,6 +150,7 @@ enum{IUP_SB_NONE, IUP_SB_HORIZ, IUP_SB_VERT};
 int iupBaseGetScrollbar(Ihandle* ih);
 
 char* iupBaseNativeParentGetBgColor(Ihandle* ih);
+void iupBaseCallValueChangedCb(Ihandle* ih);
 
 /** @} */
 

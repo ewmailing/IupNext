@@ -546,12 +546,14 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
         Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPWIN_LASTTOGGLE");
         if (iupObjectCheck(last_tg) && last_tg != ih)
         {
+          /* uncheck last toggle */
+          SendMessage(last_tg->handle, BM_SETCHECK, BST_UNCHECKED, 0L);
+
           cb = (IFni) IupGetCallback(last_tg, "ACTION");
           if (cb && cb(last_tg, 0) == IUP_CLOSE)
               IupExitLoop();
 
-          /* uncheck last toggle */
-          SendMessage(last_tg->handle, BM_SETCHECK, BST_UNCHECKED, 0L);
+          iupBaseCallValueChangedCb(last_tg);
         }
         iupAttribSetStr(radio, "_IUPWIN_LASTTOGGLE", (char*)ih);
 
@@ -563,6 +565,8 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
           cb = (IFni)IupGetCallback(ih, "ACTION");
           if (cb && cb (ih, 1) == IUP_CLOSE)
               IupExitLoop();
+
+          iupBaseCallValueChangedCb(ih);
         }
       }
       else
@@ -573,12 +577,8 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
         cb = (IFni)IupGetCallback(ih, "ACTION");
         if (cb && cb (ih, check) == IUP_CLOSE)
             IupExitLoop();
-      }
 
-      {
-        IFn vc_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
-        if (vc_cb)
-          vc_cb(ih);
+        iupBaseCallValueChangedCb(ih);
       }
     }
   }

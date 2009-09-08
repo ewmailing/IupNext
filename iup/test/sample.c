@@ -138,6 +138,69 @@ static unsigned char img_bits2[] =
 ,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 };
 
+static int valuechanged_cb(Ihandle *ih)
+{
+  printf("VALUECHANGED_CB(%s)=%s\n", IupGetClassName(ih), IupGetAttribute(ih, "VALUE"));
+  return IUP_DEFAULT;
+}
+
+static int getfocus_cb(Ihandle *ih)
+{
+  printf("GETFOCUS_CB(%s)\n", IupGetClassName(ih));
+  return IUP_DEFAULT;
+}
+
+static int killfocus_cb(Ihandle *ih)
+{
+  printf("KILLFOCUS_CB(%s)\n", IupGetClassName(ih));
+  return IUP_DEFAULT;
+}
+
+static int leavewindow_cb(Ihandle *ih)
+{
+  printf("LEAVEWINDOW_CB(%s)\n", IupGetClassName(ih));
+  return IUP_DEFAULT;
+}
+
+static int enterwindow_cb(Ihandle *ih)
+{
+  printf("ENTERWINDOW_CB(%s)\n", IupGetClassName(ih));
+  return IUP_DEFAULT;
+}
+
+char *iupKeyCodeToName(int code);
+
+static int k_any(Ihandle *ih, int c)
+{
+  if (iup_isprint(c))
+    printf("K_ANY(%s, %d = %s \'%c\')\n", IupGetClassName(ih), c, iupKeyCodeToName(c), (char)c);
+  else
+    printf("K_ANY(%s, %d = %s)\n", IupGetClassName(ih), c, iupKeyCodeToName(c));
+  return IUP_CONTINUE;
+}
+
+static int help_cb(Ihandle* ih)
+{
+  printf("HELP_CB(%s)\n", IupGetClassName(ih));
+  return IUP_DEFAULT;
+}
+
+static Ihandle* set_callbacks(Ihandle* ih)
+{
+  IupSetCallback(ih, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
+
+//  IupSetCallback(ih, "GETFOCUS_CB", (Icallback)getfocus_cb);
+//  IupSetCallback(ih, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+
+//  IupSetCallback(ih, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+//  IupSetCallback(ih, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+
+//  IupSetCallback(ih, "K_ANY", (Icallback)k_any);
+//  IupSetCallback(ih, "HELP_CB", (Icallback)help_cb);
+
+  return ih;
+}
+
 void SampleTest(void)
 {
   Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, 
@@ -173,10 +236,10 @@ void SampleTest(void)
 
   _frm_1 = IupFrame(
     IupVbox(
-      IupSetAttributes(IupButton("Button Text", NULL), "PADDING=5x5"), 
-      IupSetAttributes(IupButton("Text", NULL), "IMAGE=img1, PADDING=5x5"),
-      IupSetAttributes(IupButton(NULL, NULL), "IMAGE=img1"),
-      IupSetAttributes(IupButton("", NULL), "IMAGE=img1,IMPRESS=img2"),
+      set_callbacks(IupSetAttributes(IupButton("Button Text", NULL), "PADDING=5x5")), 
+      set_callbacks(IupSetAttributes(IupButton("Text", NULL), "IMAGE=img1, PADDING=5x5")),
+      set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=img1")),
+      set_callbacks(IupSetAttributes(IupButton("", NULL), "IMAGE=img1,IMPRESS=img2")),
       NULL));
   IupSetAttribute(_frm_1,"TITLE","IupButton");
 
@@ -190,12 +253,12 @@ void SampleTest(void)
 
   _frm_3 = IupFrame(
     IupVbox(
-      IupSetAttributes(IupToggle("Toggle Text", NULL), "VALUE=ON"),
-//      IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1,IMPRESS=img2"),
-      IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1"),
+      set_callbacks(IupSetAttributes(IupToggle("Toggle Text", NULL), "VALUE=ON")),
+      set_callbacks(IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1,IMPRESS=img2")),
+      set_callbacks(IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1")),
       IupSetAttributes(IupFrame(IupRadio(IupVbox(
-        IupToggle("Toggle Text", NULL), 
-        IupToggle("Toggle Text", NULL), 
+        set_callbacks(IupToggle("Toggle Text", NULL)), 
+        set_callbacks(IupToggle("Toggle Text", NULL)), 
         NULL))), "TITLE=IupRadio"),
       NULL));
   IupSetAttribute(_frm_3,"TITLE","IupToggle");
@@ -203,17 +266,15 @@ void SampleTest(void)
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");
   IupSetAttribute(_text_1,"SIZE","80x");
-//  IupSetAttribute(_text_1,"ALIGNMENT","ACENTER");
 
   _ml_1 = IupMultiLine( NULL);
   IupSetAttribute(_ml_1,"VALUE","Multiline Text\nSecond Line\nThird Line");
   IupSetAttribute(_ml_1,"EXPAND","YES");
   IupSetAttribute(_ml_1,"SIZE","80x40");
-//  IupSetAttribute(_ml_1,"ALIGNMENT","ACENTER");
 
   _frm_4 = IupFrame(IupVbox(
-    _text_1,
-    _ml_1,
+    set_callbacks(_text_1),
+    set_callbacks(_ml_1),
     NULL));
   IupSetAttribute(_frm_4,"TITLE","IupText");
 
@@ -241,9 +302,9 @@ void SampleTest(void)
   IupSetAttribute(_list_3,"3","Item 3 Text");
 
   _frm_5 =  IupFrame(IupVbox(
-      _list_1,
-      _list_2,
-      _list_3,
+      set_callbacks(_list_1),
+      set_callbacks(_list_2),
+      set_callbacks(_list_3),
       NULL));
   IupSetAttribute(_frm_5,"TITLE","IupList");
 
@@ -256,9 +317,11 @@ void SampleTest(void)
     NULL);
 
   val = IupVal(NULL);
+  set_callbacks(val);
   
   pbar = IupProgressBar();
   IupSetAttribute(pbar, "VALUE", "0.5");
+  set_callbacks(pbar);
 
   tabs = IupTabs(IupVbox(NULL), IupVbox(NULL), IupVbox(NULL), NULL);
   IupSetAttribute(tabs,"TABTITLE0","Tab Title 0");
@@ -267,17 +330,20 @@ void SampleTest(void)
   IupSetAttribute(tabs,"TABTITLE2","Tab Title 2");
   IupSetAttribute(tabs,"RASTERSIZE","300x50");
 //  IupSetAttribute(tabs,"PADDING","5x5");
+  set_callbacks(tabs);
 
   tree = IupTree();
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree,"RASTERSIZE","100x150");
+  set_callbacks(tree);
 
   _cnv_1 = IupCanvas(NULL);
   IupSetAttribute(_cnv_1,"BGCOLOR","128 255 0");
   IupSetAttribute(_cnv_1,"SCROLLBAR","YES");
   IupSetAttribute(_cnv_1,"EXPAND","HORIZONTAL");
   IupSetAttribute(_cnv_1,"RASTERSIZE","x100");
-  IupSetAttribute(_cnv_1,"CANFOCUS","NO");
+//  IupSetAttribute(_cnv_1,"CANFOCUS","NO");
+  set_callbacks(_cnv_1);
 
   _vbox_1 = IupVbox(
     _hbox_1,

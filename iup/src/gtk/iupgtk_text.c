@@ -1506,8 +1506,10 @@ static void gtkTextBufferInsertText(GtkTextBuffer *textbuffer, GtkTextIter *pos_
 
 static void gtkTextChanged(void* dummy, Ihandle* ih)
 {
-  Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-  if (vc_cb) vc_cb(ih);
+  if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
+    return;
+
+  iupBaseCallValueChangedCb(ih);
   (void)dummy;
 }
 

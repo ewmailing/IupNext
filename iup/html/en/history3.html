@@ -25,6 +25,9 @@
 	color: #FF0000;
 	font-weight: bold;
 }
+  .style2 {
+	color: #0000FF;
+}
   </style>
 </head>
 
@@ -52,6 +55,9 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="hist_new">New: </span>auxiliary functions <strong>
 	IupGLUseFont</strong> and <strong>IupGLWait</strong> for the <strong>
 	IupGLCanvas</strong>. attribute REFRESHCONTEXT in Windows.</li>
+	<li><strong><span class="style2">New:</span></strong> VALUECHANGED_CB callback for <strong>IupVal</strong>, <strong>IupDial</strong>,
+	<strong>IupColorBrowser</strong>, <strong>IupToggle</strong>, <strong>
+	IupText</strong> and <strong>IupList</strong>. </li>
 	<li><span class="hist_changed">Changed:</span>
     now the <strong>iup.image</strong> constructor also accepts parameters in 
 	the same format as <strong>iup.imagergb</strong> and <strong>iup.imagergba</strong>.</li>
@@ -74,9 +80,6 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="hist_changed">Changed:</span>
     updated the <strong>IupTreeUtil</strong> contributed utility.</li>
 	<li><span class="hist_changed">Changed:</span>
-    New VALUECHANGED_CB callback for <strong>IupVal</strong>, <strong>IupDial</strong>,
-	<strong>IupColorBrowser</strong>, <strong>IupToggle</strong>, <strong>
-	IupText</strong> and <strong>IupList</strong>.
     CHANGEVALUE_CB callback renamed to VALUECHANGED_CB in <strong>IupVal</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> the functions <strong>
 	IupPreviousField</strong> and <strong>IupNextField</strong> to respect the 
@@ -132,6 +135,12 @@ proceed when migrating from version 2.x to version 3.x.<br>
 	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
 	in Windows the VALUE attribute of a inactive <strong>IupItem</strong> was 
 	always OFF.</li>
+	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
+	ENTERWINDOW_CB and LEAVEWINDOW_CB for <strong>IupCanvas</strong> in Windows 
+	were not being called.</li>
+	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
+	HELP_CB was not working for <strong>IupVal</strong>, <strong>IupTabs</strong> 
+	and <strong>IupTree</strong> in Motif.</li>
 
 </ul>
 

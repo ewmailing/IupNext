@@ -123,7 +123,8 @@ static void motCanvasInputCallback(Widget w, Ihandle *ih, XtPointer call_data)
   {
   case ButtonPress:
     /* Force focus on canvas click */
-    XmProcessTraversal(w, XmTRAVERSE_CURRENT);
+    if (iupAttribGetBoolean(ih, "CANFOCUS"))
+      XmProcessTraversal(w, XmTRAVERSE_CURRENT);
     /* break missing on purpose... */
   case ButtonRelease:
     {

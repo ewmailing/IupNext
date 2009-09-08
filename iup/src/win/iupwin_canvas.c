@@ -450,7 +450,8 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
   case WM_RBUTTONDOWN:
     {
       /* Force focus on canvas click */
-      SetFocus(ih->handle);
+      if (iupAttribGetBoolean(ih, "CANFOCUS"))
+        SetFocus(ih->handle);
 
       SetCapture(ih->handle);
 
@@ -474,8 +475,7 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
         SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(1,WM_MOUSEMOVE));
       }
 
-      *result = 0;
-      return 1;
+      break; /* let iupwinBaseProc process enter/leavewin */
     }
   case WM_XBUTTONUP:
   case WM_LBUTTONUP:

@@ -278,11 +278,14 @@ static void motToggleValueChangedCallback(Widget w, Ihandle* ih, XmToggleButtonC
       Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPMOT_LASTTOGGLE");
       if (iupObjectCheck(last_tg) && last_tg != ih)
       {
+        /* uncheck last toggle */
+        XtVaSetValues(last_tg->handle, XmNset, XmUNSET, NULL);
+
         cb = (IFni) IupGetCallback(last_tg, "ACTION");
         if (cb && cb(last_tg, 0) == IUP_CLOSE)
             IupExitLoop();
 
-        XtVaSetValues(last_tg->handle, XmNset, XmUNSET, NULL);
+        iupBaseCallValueChangedCb(last_tg);
       }
       iupAttribSetStr(radio, "_IUPMOT_LASTTOGGLE", (char*)ih);
 
@@ -291,6 +294,8 @@ static void motToggleValueChangedCallback(Widget w, Ihandle* ih, XmToggleButtonC
         cb = (IFni)IupGetCallback(ih, "ACTION");
         if (cb && cb (ih, 1) == IUP_CLOSE)
             IupExitLoop();
+
+        iupBaseCallValueChangedCb(ih);
       }
     }
     else
@@ -310,12 +315,8 @@ static void motToggleValueChangedCallback(Widget w, Ihandle* ih, XmToggleButtonC
       if (cb(ih, check) == IUP_CLOSE) 
         IupExitLoop();
     }
-  }
 
-  {
-    IFn vc_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
-    if (vc_cb)
-      vc_cb(ih);
+    iupBaseCallValueChangedCb(ih);
   }
 
   (void)w;

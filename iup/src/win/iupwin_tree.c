@@ -54,7 +54,7 @@ typedef struct tagNMTVITEMCHANGE {
 #define TVN_ITEMCHANGINGW        (TVN_FIRST-17)    
 #endif
 
-static void winTreeSetFocus(Ihandle* ih, HTREEITEM hItem);
+static void winTreeSetFocusNode(Ihandle* ih, HTREEITEM hItem);
 typedef int (*winTreeNodeFunc)(Ihandle* ih, HTREEITEM hItem, void* userdata);
 
 static int winTreeForEach(Ihandle* ih, HTREEITEM hItem, winTreeNodeFunc func, void* userdata)
@@ -394,7 +394,7 @@ static void winTreeAddRootNode(Ihandle* ih)
   iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)hNewItem);
 
   /* Set the default VALUE */
-  winTreeSetFocus(ih, hNewItem);
+  winTreeSetFocusNode(ih, hNewItem);
 }
 
 static int winTreeIsItemExpanded(Ihandle* ih, HTREEITEM hItem)
@@ -473,7 +473,7 @@ static HTREEITEM winTreeGetFocusNode(Ihandle* ih)
 /* ------------Comment from wxWidgets--------------------
    Helper function which tricks the standard control into changing the focused
    item without changing anything else. */
-static void winTreeSetFocus(Ihandle* ih, HTREEITEM hItem)
+static void winTreeSetFocusNode(Ihandle* ih, HTREEITEM hItem)
 {
   HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
   if (hItem != hItemFocus)
@@ -1771,7 +1771,7 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
       winTreeSelectItem(ih, hItem, 1);
       iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
     }
-    winTreeSetFocus(ih, hItem);
+    winTreeSetFocusNode(ih, hItem);
   }
 
   return 0;
@@ -1936,7 +1936,7 @@ static void winTreeExtendSelect(Ihandle* ih, int x, int y)
     iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
 
     iupAttribSetStr(ih, "_IUPTREE_LASTSELITEM", (char*)hItem);
-    winTreeSetFocus(ih, hItem);
+    winTreeSetFocusNode(ih, hItem);
   }
 }
 
@@ -1958,7 +1958,7 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
     iupAttribSetStr(ih, "_IUPTREE_FIRSTSELITEM", (char*)hItem);
 
     winTreeCallSelectionCb(ih, winTreeIsItemSelected(ih, hItem), hItem);
-    winTreeSetFocus(ih, hItem);
+    winTreeSetFocusNode(ih, hItem);
 
     return 1;
   }
@@ -1972,7 +1972,7 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
       iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
 
       winTreeCallMultiSelectionCb(ih);
-      winTreeSetFocus(ih, hItem);
+      winTreeSetFocusNode(ih, hItem);
       return 1;
     }
   }
@@ -2076,7 +2076,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
         if (GetKeyState(VK_CONTROL) & 0x8000)
         {
           /* Only move focus */
-          winTreeSetFocus(ih, hItemFocus);
+          winTreeSetFocusNode(ih, hItemFocus);
 
           *result = 0;
           return 1;
@@ -2091,7 +2091,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
             iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
 
             winTreeCallMultiSelectionCb(ih);
-            winTreeSetFocus(ih, hItemFocus);
+            winTreeSetFocusNode(ih, hItemFocus);
 
             *result = 0;
             return 1;
@@ -2118,7 +2118,9 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     if (ih->data->mark_mode==ITREE_MARK_MULTIPLE)
     {
       /* must set focus on left button down or the tree won't show its focus */
-      SetFocus(ih->handle);
+      if (iupAttribGetBoolean(ih, "CANFOCUS"))
+        SetFocus(ih->handle);
+
       if (winTreeMouseMultiSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp)))
       {
         *result = 0; /* abort the normal processing if we process multiple selection */

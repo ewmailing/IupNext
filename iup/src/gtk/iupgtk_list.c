@@ -1054,8 +1054,10 @@ static void gtkListEditInsertText(GtkEditable *editable, char *insert_value, int
 
 static void gtkListEditChanged(void* dummy, Ihandle* ih)
 {
-  Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-  if (vc_cb) vc_cb(ih);
+  if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
+    return;
+
+  iupBaseCallValueChangedCb(ih);
   (void)dummy;
 }
 
@@ -1081,10 +1083,7 @@ static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih)
     iupListSingleCallActionCallback(ih, cb, pos);
   }
 
-  {
-    Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-    if (vc_cb) vc_cb(ih);
-  }
+  iupBaseCallValueChangedCb(ih);
 
   (void)widget;
 }
@@ -1173,10 +1172,7 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
     }
   }
 
-  {
-    Icallback vc_cb = IupGetCallback(ih, "VALUECHANGED_CB");
-    if (vc_cb) vc_cb(ih);
-  }
+  iupBaseCallValueChangedCb(ih);
 }
 
 
