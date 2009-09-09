@@ -1083,7 +1083,8 @@ static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih)
     iupListSingleCallActionCallback(ih, cb, pos);
   }
 
-  iupBaseCallValueChangedCb(ih);
+  if (!ih->data->has_editbox)
+    iupBaseCallValueChangedCb(ih);
 
   (void)widget;
 }
@@ -1172,7 +1173,8 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
     }
   }
 
-  iupBaseCallValueChangedCb(ih);
+  if (!ih->data->has_editbox)
+    iupBaseCallValueChangedCb(ih);
 }
 
 

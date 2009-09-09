@@ -1121,7 +1121,8 @@ static void motListComboBoxSelectionCallback(Widget w, Ihandle* ih, XmComboBoxCa
     iupListSingleCallActionCallback(ih, cb, pos);
   }
 
-  iupBaseCallValueChangedCb(ih);
+  if (!ih->data->has_editbox)
+    iupBaseCallValueChangedCb(ih);
 
   (void)w;
 }
@@ -1135,7 +1136,8 @@ static void motListBrowseSelectionCallback(Widget w, Ihandle* ih, XmListCallback
     iupListSingleCallActionCallback(ih, cb, pos);
   }
 
-  iupBaseCallValueChangedCb(ih);
+  if (!ih->data->has_editbox)
+    iupBaseCallValueChangedCb(ih);
 
   (void)w;
 }
@@ -1159,7 +1161,8 @@ static void motListExtendedSelectionCallback(Widget w, Ihandle* ih, XmListCallba
     iupListMultipleCallActionCallback(ih, cb, multi_cb, pos, sel_count);
   }
 
-  iupBaseCallValueChangedCb(ih);
+  if (!ih->data->has_editbox)
+    iupBaseCallValueChangedCb(ih);
 
   (void)w;
 }
