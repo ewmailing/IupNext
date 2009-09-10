@@ -18,8 +18,8 @@ struct _IcontrolData
       margin_x,
       margin_y,
       gap;
-  int children_naturalsize,   /* calculated in ComputeNaturalSize, used in SetCurrentSize */
-      homogeneous_size;       /* calculated in SetCurrentSize, used in SetPosition */
+  int children_naturalsize,   /* calculated in ComputeNaturalSize, used in SetChildrenCurrentSize */
+      homogeneous_size;       /* calculated in SetChildrenCurrentSize, used in SetChildrenPosition */
 };
 
 Iclass* iupBoxClassBase(void);

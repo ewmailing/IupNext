@@ -34,7 +34,7 @@ Iclass* iupColorDlgGetClass(void)
 
   /* reset not used native dialog methods */
   ic->parent->LayoutUpdate = NULL;
-  ic->parent->SetPosition = NULL;
+  ic->parent->SetChildrenPosition = NULL;
   ic->parent->Map = NULL;
   ic->parent->UnMap = NULL;
 

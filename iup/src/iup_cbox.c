@@ -34,70 +34,50 @@ static int iCboxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static int iCboxMapMethod(Ihandle* ih)
-{
-  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
-  return IUP_NOERROR;
-}
-
-static void iCboxComputeNaturalSizeMethod(Ihandle* ih)
-{
-  iupBaseContainerUpdateExpand(ih);
-
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
-
-  if (ih->firstchild)
-  {
-    Ihandle* child;
-    int children_expand, 
-        children_naturalwidth, children_naturalheight;
-    int cx, cy;
-
-    /* calculate total children natural size (even for hidden children) */
-    children_expand = 0;
-    children_naturalwidth = 0;
-    children_naturalheight = 0;
-    for (child = ih->firstchild; child; child = child->brother)
-    {
-      /* update child natural size first */
-      iupClassObjectComputeNaturalSize(child);
-
-      cx = iupAttribGetInt(child, "CX");
-      cy = iupAttribGetInt(child, "CY");
-
-      children_expand |= child->expand;
-      children_naturalwidth = iupMAX(children_naturalwidth, cx+child->naturalwidth);
-      children_naturalheight = iupMAX(children_naturalheight, cy+child->naturalheight);
-    }
-
-    ih->expand &= children_expand; /* compose but only expand where the box can expand */
-
-    ih->naturalwidth = iupMAX(ih->naturalwidth, children_naturalwidth);
-    ih->naturalheight = iupMAX(ih->naturalheight, children_naturalheight);
-  }
-}
-
-static void iCboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+static void iCboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
   Ihandle* child;
+  int children_expand, 
+      children_naturalwidth, children_naturalheight;
+  int cx, cy;
 
-  iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
+  /* calculate total children natural size (even for hidden children) */
+  children_expand = 0;
+  children_naturalwidth = 0;
+  children_naturalheight = 0;
 
   for (child = ih->firstchild; child; child = child->brother)
   {
+    /* update child natural size first */
+    iupBaseComputeNaturalSize(child);
+
+    cx = iupAttribGetInt(child, "CX");
+    cy = iupAttribGetInt(child, "CY");
+
+    children_expand |= child->expand;
+    children_naturalwidth = iupMAX(children_naturalwidth, cx+child->naturalwidth);
+    children_naturalheight = iupMAX(children_naturalheight, cy+child->naturalheight);
+  }
+
+  *expand = children_expand;
+  *w = children_naturalwidth;
+  *h = children_naturalheight;
+}
+
+static void iCboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
+{
+  Ihandle* child;
+  for (child = ih->firstchild; child; child = child->brother)
+  {
     /* update children to their own natural size */
-    iupClassObjectSetCurrentSize(child, child->naturalwidth, child->naturalheight, shrink);
+    iupBaseSetCurrentSize(child, child->naturalwidth, child->naturalheight, shrink);
   }
 }
 
-static void iCboxSetPositionMethod(Ihandle* ih, int x, int y)
+static void iCboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   int cx, cy;
   Ihandle* child;
-
-  iupBaseSetPositionMethod(ih, x, y);
 
   for (child = ih->firstchild; child; child = child->brother)
   {
@@ -105,7 +85,7 @@ static void iCboxSetPositionMethod(Ihandle* ih, int x, int y)
     cy = iupAttribGetInt(child, "CY");
 
     /* update child */
-    iupClassObjectSetPosition(child, x+cx, y+cy);
+    iupBaseSetPosition(child, x+cx, y+cy);
   }
 }
 
@@ -146,11 +126,11 @@ Iclass* iupCboxGetClass(void)
 
   /* Class functions */
   ic->Create = iCboxCreateMethod;
-  ic->Map = iCboxMapMethod;
+  ic->Map = iupBaseTypeVoidMapMethod;
 
   ic->ComputeNaturalSize = iCboxComputeNaturalSizeMethod;
-  ic->SetCurrentSize = iCboxSetCurrentSizeMethod;
-  ic->SetPosition = iCboxSetPositionMethod;
+  ic->SetChildrenCurrentSize = iCboxSetChildrenCurrentSizeMethod;
+  ic->SetChildrenPosition = iCboxSetChildrenPositionMethod;
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

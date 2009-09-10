@@ -59,7 +59,7 @@ static void iSboxSaveDimension(Ihandle* ih, int w, int h)
   ih->data->h = h;
 }
 
-static void iSboxGetDecorOffset(Ihandle* ih, int *x, int *y)
+static void iSboxAddDecorOffset(Ihandle* ih, int *x, int *y)
 {
   /* skip north thumb if there is one */
   if (ih->data->direction == ISBOX_NORTH)
@@ -117,7 +117,7 @@ static void iSboxShakeControls(Ihandle* ih)
     }
   }
 
-  IupRefresh(ih);
+  IupRefresh(ih);  /* may affect all the elements in the dialog */
 }
 
 
@@ -233,45 +233,50 @@ static int iSboxSetDirectionAttrib(Ihandle* ih, const char* value)
 \*****************************************************************************/
 
 
-static void iSboxComputeNaturalSizeMethod(Ihandle* ih)
+static void iSboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  iupBaseContainerUpdateExpand(ih);
+  int natural_w = ih->naturalwidth, 
+      natural_h = ih->naturalheight;
 
-  /* only expand in the secondary direction */
+  /* only allow expand in the oposite direction, complement iupBaseContainerUpdateExpand */
   if (ih->data->direction == ISBOX_EAST || ih->data->direction == ISBOX_WEST)
       ih->expand &= ~IUP_EXPAND_WIDTH;
   else 
       ih->expand &= ~IUP_EXPAND_HEIGHT;
 
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  /* always has at least one child, the bar */
+
+  /* This is an unusual element, the iupBaseComputeNaturalSize logic is done twice, one here and one back there. */
 
   if (ih->firstchild->brother)
   {
     Ihandle* child = ih->firstchild->brother;
 
     /* update child natural size first */
-    iupClassObjectComputeNaturalSize(child);
+    iupBaseComputeNaturalSize(child);
 
-    ih->expand &= child->expand; /* compose but only expand where the box can expand */
-    ih->naturalwidth  = iupMAX(ih->naturalwidth,  child->naturalwidth  + iSboxGetXborder(ih));
-    ih->naturalheight = iupMAX(ih->naturalheight, child->naturalheight + iSboxGetYborder(ih));
+    *expand = child->expand;
+
+    /* calculate as in iupBaseComputeNaturalSize */
+    natural_w = iupMAX(natural_w, child->naturalwidth  + iSboxGetXborder(ih));
+    natural_h = iupMAX(natural_h, child->naturalheight + iSboxGetYborder(ih));
   }
 
+  /* update control to fit its children according to direction */
 
-  /* update bar */
+  /* bar */
   if (ih->data->direction == ISBOX_EAST || ih->data->direction == ISBOX_WEST)
   {
-    ih->data->w = iupMAX(ih->naturalwidth, ih->data->w);
-    ih->data->h = ih->naturalheight;
+    ih->data->w = iupMAX(natural_w, ih->data->w);
+    ih->data->h = natural_h;
   }
   else  /* ISBOX_NORTH || ISBOX_SOUTH */
   {
-    ih->data->w = ih->naturalwidth;
-    ih->data->h = iupMAX(ih->naturalheight, ih->data->h);
+    ih->data->w = natural_w;
+    ih->data->h = iupMAX(natural_h, ih->data->h);
   }
 
+  /* child */
   if (ih->firstchild->brother)
   {
     Ihandle* child = ih->firstchild->brother;
@@ -279,64 +284,60 @@ static void iSboxComputeNaturalSizeMethod(Ihandle* ih)
     child->naturalheight = ih->data->h - iSboxGetYborder(ih);
   }
 
-  ih->naturalwidth  = ih->data->w;
-  ih->naturalheight = ih->data->h;
+  *w = ih->data->w;
+  *h = ih->data->h;
 }
 
-static void iSboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+static void iSboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
-
   /* bar */
   if ((ih->data->direction == ISBOX_NORTH || ih->data->direction == ISBOX_SOUTH))
   {
-    ih->firstchild->currentwidth  = w;
+    ih->firstchild->currentwidth  = ih->currentwidth;
     ih->firstchild->currentheight = ISBOX_THICK;
   }
   else
   {
     ih->firstchild->currentwidth  = ISBOX_THICK;
-    ih->firstchild->currentheight = h;
+    ih->firstchild->currentheight = ih->currentheight;
   }
 
   /* child */
   if (ih->firstchild->brother)
   {
-    w -= iSboxGetXborder(ih);
-    h -= iSboxGetYborder(ih);
-    if (w < 0) w = 0;
-    if (h < 0) h = 0;
+    int width = ih->currentwidth-iSboxGetXborder(ih);
+    int height = ih->currentheight-iSboxGetYborder(ih);
+    if (width < 0) width = 0;
+    if (height < 0) height = 0;
 
-    iupClassObjectSetCurrentSize(ih->firstchild->brother, w, h, shrink);
+    iupBaseSetCurrentSize(ih->firstchild->brother, width, height, shrink);
   }
 }
 
-static void iSboxSetPositionMethod(Ihandle* ih, int x, int y)
+static void iSboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   int posx = 0, posy = 0;
 
-  iupBaseSetPositionMethod(ih, x, y);
-
   /* bar */
   if (ih->data->direction == ISBOX_EAST)
+  {
     posx = ih->data->w - ISBOX_THICK;
+    if (posx<0) posx = 0;
+  }
   if (ih->data->direction == ISBOX_SOUTH)
+  {
     posy = ih->data->h - ISBOX_THICK;
+    if (posy<0) posy = 0;
+  }
 
-  iupClassObjectSetPosition(ih->firstchild, x+posx, y+posy);
+  iupBaseSetPosition(ih->firstchild, x+posx, y+posy);
 
   /* child */
   if (ih->firstchild->brother)
   {  
-    iSboxGetDecorOffset(ih, &x, &y);
-    iupClassObjectSetPosition(ih->firstchild->brother, x, y);
+    iSboxAddDecorOffset(ih, &x, &y);
+    iupBaseSetPosition(ih->firstchild->brother, x, y);
   } 
-}
-
-static int iSboxMapMethod(Ihandle* ih)
-{
-  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
-  return IUP_NOERROR;
 }
 
 static int iSboxCreateMethod(Ihandle* ih, void** params)
@@ -378,16 +379,16 @@ Iclass* iupSboxGetClass(void)
   ic->name   = "sbox";
   ic->format = "H";   /* one optional ihandle */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype  = IUP_CHILDMANY;  /* should be IUP_CHILDONE but has the IupCanvas */
+  ic->childtype  = IUP_CHILDMANY;  /* should be IUP_CHILDONE but has the bar (a IupCanvas) as firstchild */
   ic->is_interactive = 0;
 
   /* Class functions */
   ic->Create  = iSboxCreateMethod;
-  ic->Map     = iSboxMapMethod;
+  ic->Map     = iupBaseTypeVoidMapMethod;
 
   ic->ComputeNaturalSize = iSboxComputeNaturalSizeMethod;
-  ic->SetCurrentSize     = iSboxSetCurrentSizeMethod;
-  ic->SetPosition        = iSboxSetPositionMethod;
+  ic->SetChildrenCurrentSize     = iSboxSetChildrenCurrentSizeMethod;
+  ic->SetChildrenPosition        = iSboxSetChildrenPositionMethod;
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

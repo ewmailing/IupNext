@@ -589,50 +589,43 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
   }
 }
 
-static void iListComputeNaturalSizeMethod(Ihandle* ih)
+static void iListComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  int natural_w, natural_h;
+  int sb_size = iupdrvGetScrollbarSize();
+  (void)expand; /* unset if not a container */
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
+  iListGetNaturalItemsSize(ih, &natural_w, &natural_h);
+
+  /* compute the borders space */
+  iupdrvListAddBorders(ih, &natural_w, &natural_h);
+
+  if (ih->data->is_dropdown)
   {
-    int natural_w, natural_h;
-    int sb_size = iupdrvGetScrollbarSize();
+    /* add room for dropdown box */
+    natural_w += sb_size;
 
-    iListGetNaturalItemsSize(ih, &natural_w, &natural_h);
-
-    /* compute the borders space */
-    iupdrvListAddBorders(ih, &natural_w, &natural_h);
-
-    if (ih->data->is_dropdown)
-    {
-      /* add room for dropdown box */
-      natural_w += sb_size;
-
-      if (natural_h < sb_size)
-        natural_h = sb_size;
-    }
-    else
-    {
-      /* add room for scrollbar */
-      if (ih->data->sb)
-      {
-        natural_h += sb_size;
-        natural_w += sb_size;
-      }
-    }
-
-    if (ih->data->has_editbox)
-    {
-      natural_w += 2*ih->data->horiz_padding;
-      natural_h += 2*ih->data->vert_padding;
-    }
-
-    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
-    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
+    if (natural_h < sb_size)
+      natural_h = sb_size;
   }
+  else
+  {
+    /* add room for scrollbar */
+    if (ih->data->sb)
+    {
+      natural_h += sb_size;
+      natural_w += sb_size;
+    }
+  }
+
+  if (ih->data->has_editbox)
+  {
+    natural_w += 2*ih->data->horiz_padding;
+    natural_h += 2*ih->data->vert_padding;
+  }
+
+  *w = natural_w;
+  *h = natural_h;
 }
 
 static void iListDestroyMethod(Ihandle* ih)
@@ -668,9 +661,6 @@ Iclass* iupListGetClass(void)
   ic->Create = iListCreateMethod;
   ic->Destroy = iListDestroyMethod;
   ic->ComputeNaturalSize = iListComputeNaturalSizeMethod;
-
-  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
-  ic->SetPosition = iupBaseSetPositionMethod;
 
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;

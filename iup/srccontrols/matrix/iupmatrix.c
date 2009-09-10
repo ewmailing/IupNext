@@ -750,34 +750,26 @@ static int iMatrixGetNaturalHeight(Ihandle* ih)
   return height;
 }
 
-static void iMatrixComputeNaturalSizeMethod(Ihandle* ih)
+static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  int natural_w = 0, natural_h = 0;
+  (void)expand; /* unset if not a container */
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
+  if (!ih->handle)
+    ih->data->canvas.sb = iupBaseGetScrollbar(ih);
+
+  /* add scrollbar */
+  if (ih->data->canvas.sb)
   {
-    int natural_w = 0, natural_h = 0;
-
-    if (!ih->handle)
-      ih->data->canvas.sb = iupBaseGetScrollbar(ih);
-
-    /* add scrollbar */
-    if (ih->data->canvas.sb)
-    {
-      int sb_size = iupdrvGetScrollbarSize();
-      if (ih->data->canvas.sb & IUP_SB_HORIZ)
-        natural_w += sb_size;
-      if (ih->data->canvas.sb & IUP_SB_VERT)
-        natural_h += sb_size;
-    }
-
-    /* only update the natural size if user size is not defined. */
-    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w + iMatrixGetNaturalWidth(ih);
-    if (ih->naturalheight <= 0) ih->naturalheight = natural_h + iMatrixGetNaturalHeight(ih);
+    int sb_size = iupdrvGetScrollbarSize();
+    if (ih->data->canvas.sb & IUP_SB_HORIZ)
+      natural_w += sb_size;
+    if (ih->data->canvas.sb & IUP_SB_VERT)
+      natural_h += sb_size;
   }
+
+  *w = natural_w + iMatrixGetNaturalWidth(ih);
+  *h = natural_h + iMatrixGetNaturalHeight(ih);
 }
 
 static void iMatrixCreateCursor(void)

@@ -143,15 +143,6 @@ static char* iValGetInvertedAttrib(Ihandle* ih)
     return "NO";
 }
 
-static void iValComputeNaturalSizeMethod(Ihandle* ih)
-{
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
-
-  /* There is no natural size computation */
-}
-
 static int iValCreateMethod(Ihandle* ih, void **params)
 {
   char* type = "HORIZONTAL";
@@ -183,11 +174,6 @@ Iclass* iupValGetClass(void)
 
   /* Class functions */
   ic->Create  = iValCreateMethod;
-  ic->ComputeNaturalSize = iValComputeNaturalSizeMethod;
-
-  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
-  ic->SetPosition = iupBaseSetPositionMethod;
-
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;
 

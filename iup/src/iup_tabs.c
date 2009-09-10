@@ -312,82 +312,65 @@ static char* iTabsGetClientSizeAttrib(Ihandle* ih)
 /* TABS - Methods                                                            */
 /* ------------------------------------------------------------------------- */
 
-static void iTabsComputeNaturalSizeMethod(Ihandle* ih)
+static void iTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  iupBaseContainerUpdateExpand(ih);
+  Ihandle* child;
+  int children_expand, 
+      children_naturalwidth, children_naturalheight;
+  int decorwidth, decorheight;
 
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth  = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  /* calculate total children natural size (even for hidden children) */
+  children_expand = 0;
+  children_naturalwidth = 0;
+  children_naturalheight = 0;
 
-  if (ih->firstchild)
+  for (child = ih->firstchild; child; child = child->brother)
   {
-    Ihandle* child;
-    int children_expand, 
-        children_naturalwidth, children_naturalheight;
-    int decorwidth, decorheight;
+    /* update child natural size first */
+    iupBaseComputeNaturalSize(child);
 
-    /* calculate total children natural size (even for hidden children) */
-    children_expand = 0;
-    children_naturalwidth = 0;
-    children_naturalheight = 0;
-    for (child = ih->firstchild; child; child = child->brother)
-    {
-      /* update child natural size first */
-      iupClassObjectComputeNaturalSize(child);
+    children_expand |= child->expand;
+    children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
+    children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
+  }
 
-      children_expand |= child->expand;
-      children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
-      children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
-    }
+  iTabsGetDecorSize(ih, &decorwidth, &decorheight);
 
-    iTabsGetDecorSize(ih, &decorwidth, &decorheight);
+  *expand = children_expand;
+  *w = children_naturalwidth + decorwidth;
+  *h = children_naturalheight + decorheight;
+}
 
-    ih->expand &= children_expand; /* compose but only expand where the box can expand */
-    ih->naturalwidth = iupMAX(ih->naturalwidth, children_naturalwidth + decorwidth);
-    ih->naturalheight = iupMAX(ih->naturalheight, children_naturalheight + decorheight);
+static void iTabsSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
+{
+  Ihandle* child;
+  int width, height, decorwidth, decorheight;
+
+  iTabsGetDecorSize(ih, &decorwidth, &decorheight);
+
+  width = ih->currentwidth-decorwidth;
+  height = ih->currentheight-decorheight;
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    iupBaseSetCurrentSize(child, width, height, shrink);
   }
 }
 
-static void iTabsSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+static void iTabsSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
-
-  if (ih->firstchild)
+  /* IupTabs is the native parent of its children,
+     so the position is restarted at (0,0).
+     In all systems, each tab is a native window covering the client area.
+     Child coordinates are relative to client left-top corner of the tab page. */
+  Ihandle* child;
+  (void)x;
+  (void)y;
+  for (child = ih->firstchild; child; child = child->brother)
   {
-    Ihandle* child;
-    int width, height, decorwidth, decorheight;
-
-    iTabsGetDecorSize(ih, &decorwidth, &decorheight);
-
-    width = ih->currentwidth-decorwidth;
-    height = ih->currentheight-decorheight;
-    if (width < 0) width = 0;
-    if (height < 0) height = 0;
-
-    for (child = ih->firstchild; child; child = child->brother)
-    {
-      iupClassObjectSetCurrentSize(child, width, height, shrink);
-    }
-  }
-}
-
-static void iTabsSetPositionMethod(Ihandle* ih, int x, int y)
-{
-  iupBaseSetPositionMethod(ih, x, y);
-
-  if (ih->firstchild)
-  {
-    Ihandle* child;
-
-    /* IupTabs is the native parent of its children,
-       so the position is restarted at (0,0).
-       In all systems, each tab is a native window covering the client area.
-       Child coordinates are relative to client left-top corner of the tab page. */
-    for (child = ih->firstchild; child; child = child->brother)
-    {
-      iupClassObjectSetPosition(child, 0, 0);
-    }
+    iupBaseSetPosition(child, 0, 0);
   }
 }
 
@@ -434,8 +417,8 @@ Iclass* iupTabsGetClass(void)
   ic->GetInnerNativeContainerHandle = iTabsGetInnerNativeContainerHandleMethod;
 
   ic->ComputeNaturalSize = iTabsComputeNaturalSizeMethod;
-  ic->SetCurrentSize     = iTabsSetCurrentSizeMethod;
-  ic->SetPosition        = iTabsSetPositionMethod;
+  ic->SetChildrenCurrentSize     = iTabsSetChildrenCurrentSizeMethod;
+  ic->SetChildrenPosition        = iTabsSetChildrenPositionMethod;
 
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;

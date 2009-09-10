@@ -118,9 +118,9 @@ void iupLayoutCompute(Ihandle* ih)
      for standard controls will replace the minimum visible size.
      So the native size will be the maximum value between 
      minimum visible size and defined user size.
-     Also calculates the expand configuration for each element, but expand is used only in SetCurrentSize.
+     Also calculates the expand configuration for each element, but expand is used only in SetChildrenCurrentSize.
      SEQUENCE: will first calculate the native size for the children, then for the element. */
-  iupClassObjectComputeNaturalSize(ih);
+  iupBaseComputeNaturalSize(ih);
 
   /* Set the current size (not reflected in the native element yet) based on
      the natural size and the expand configuration. 
@@ -128,10 +128,10 @@ void iupLayoutCompute(Ihandle* ih)
      the result will depend on the EXPAND attribute.
      If shrink is 1 the containers can be resized to sizes smaller than the natural size.
      SEQUENCE: will first calculate the current size of the element, then for the children. */
-  iupClassObjectSetCurrentSize(ih, 0, 0, shrink);
+  iupBaseSetCurrentSize(ih, 0, 0, shrink);
 
   /* Now that the current size is known, set the position of the elements 
      relative to the parent.
      SEQUENCE: will first set the position of the element, then for the children. */
-  iupClassObjectSetPosition(ih, 0, 0);
+  iupBaseSetPosition(ih, 0, 0);
 }

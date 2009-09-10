@@ -327,58 +327,51 @@ static int iMultilineCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iTextComputeNaturalSizeMethod(Ihandle* ih)
+static void iTextComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  int natural_w = 0, 
+      natural_h = 0,
+      visiblecolumns = iupAttribGetInt(ih, "VISIBLECOLUMNS"),
+      visiblelines = iupAttribGetInt(ih, "VISIBLELINES");
+  (void)expand; /* unset if not a container */
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
+  /* Since the contents can be changed by the user, the size can not be dependent on it. */
+  if (ih->data->is_multiline)
   {
-    int natural_w = 0, 
-        natural_h = 0,
-        visiblecolumns = iupAttribGetInt(ih, "VISIBLECOLUMNS"),
-        visiblelines = iupAttribGetInt(ih, "VISIBLELINES");
-
-    /* Since the contents can be changed by the user, the size can not be dependent on it. */
-    if (ih->data->is_multiline)
-    {
-      iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
-      natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
-      natural_w = (visiblecolumns*natural_w)/10;
-      natural_h = visiblelines*natural_h;
-    }
-    else
-    {
-      iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
-      natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
-      natural_w = (visiblecolumns*natural_w)/10;
-    }
-
-    /* compute the borders space */
-    if (iupAttribGetBoolean(ih, "BORDER"))
-      iupdrvTextAddBorders(&natural_w, &natural_h);
-
-    if (iupAttribGetBoolean(ih, "SPIN"))
-      iupdrvTextAddSpin(&natural_w, natural_h);
-
-    natural_w += 2*ih->data->horiz_padding;
-    natural_h += 2*ih->data->vert_padding;
-
-    /* add scrollbar */
-    if (ih->data->is_multiline && ih->data->sb)
-    {
-      int sb_size = iupdrvGetScrollbarSize();
-      if (ih->data->sb & IUP_SB_HORIZ)
-        natural_w += sb_size;
-      if (ih->data->sb & IUP_SB_VERT)
-        natural_h += sb_size;
-    }
-
-    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
-    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
+    iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
+    natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
+    natural_w = (visiblecolumns*natural_w)/10;
+    natural_h = visiblelines*natural_h;
   }
+  else
+  {
+    iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
+    natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
+    natural_w = (visiblecolumns*natural_w)/10;
+  }
+
+  /* compute the borders space */
+  if (iupAttribGetBoolean(ih, "BORDER"))
+    iupdrvTextAddBorders(&natural_w, &natural_h);
+
+  if (iupAttribGetBoolean(ih, "SPIN"))
+    iupdrvTextAddSpin(&natural_w, natural_h);
+
+  natural_w += 2*ih->data->horiz_padding;
+  natural_h += 2*ih->data->vert_padding;
+
+  /* add scrollbar */
+  if (ih->data->is_multiline && ih->data->sb)
+  {
+    int sb_size = iupdrvGetScrollbarSize();
+    if (ih->data->sb & IUP_SB_HORIZ)
+      natural_w += sb_size;
+    if (ih->data->sb & IUP_SB_VERT)
+      natural_h += sb_size;
+  }
+
+  *w = natural_w;
+  *h = natural_h;
 }
 
 static void iTextDestroyMethod(Ihandle* ih)
@@ -464,10 +457,6 @@ Iclass* iupTextGetClass(void)
   ic->Create = iTextCreateMethod;
   ic->Destroy = iTextDestroyMethod;
   ic->ComputeNaturalSize = iTextComputeNaturalSizeMethod;
-
-  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
-  ic->SetPosition = iupBaseSetPositionMethod;
-
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;
 

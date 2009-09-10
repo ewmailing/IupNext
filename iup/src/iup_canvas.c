@@ -82,24 +82,16 @@ static int iCanvasCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iCanvasComputeNaturalSizeMethod(Ihandle* ih)
+static void iCanvasComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  int natural_w = 0, natural_h = 0;
+  (void)expand; /* unset if not a container */
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
-  {
-    int natural_w = 0, natural_h = 0;
+  /* canvas natural size is 1 character */
+  iupdrvFontGetCharSize(ih, &natural_w, &natural_h);
 
-    /* canvas natural size is 1 character */
-    iupdrvFontGetCharSize(ih, &natural_w, &natural_h);
-
-    /* only update the natural size if user size is not defined. */
-    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
-    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
-  }
+  *w = natural_w;
+  *h = natural_h;
 }
 
 
@@ -127,9 +119,6 @@ Iclass* iupCanvasGetClass(void)
   /* Class functions */
   ic->Create = iCanvasCreateMethod;
   ic->ComputeNaturalSize = iCanvasComputeNaturalSizeMethod;
-
-  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
-  ic->SetPosition = iupBaseSetPositionMethod;
 
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;

@@ -70,12 +70,6 @@ static void iZboxChildRemovedMethod(Ihandle* ih, Ihandle* child)
   }
 }
 
-static int iZboxMapMethod(Ihandle* ih)
-{
-  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
-  return IUP_NOERROR;
-}
-
 static int iZboxSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "NORTH") || iupStrEqualNoCase(value, "ATOP"))
@@ -219,67 +213,49 @@ static int iZboxSetVisibleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static void iZboxComputeNaturalSizeMethod(Ihandle* ih)
-{
-  iupBaseContainerUpdateExpand(ih);
-
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
-
-  if (ih->firstchild)
-  {
-    Ihandle* child;
-    int children_expand, 
-        children_naturalwidth, children_naturalheight;
-
-    /* calculate total children natural size (even for hidden children) */
-    children_expand = 0;
-    children_naturalwidth = 0;
-    children_naturalheight = 0;
-    for (child = ih->firstchild; child; child = child->brother)
-    {
-      /* update child natural size first */
-      iupClassObjectComputeNaturalSize(child);
-
-      if (!child->floating)
-      {
-        children_expand |= child->expand;
-        children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
-        children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
-      }
-    }
-
-    ih->expand &= children_expand; /* compose but only expand where the box can expand */
-    ih->naturalwidth = iupMAX(ih->naturalwidth, children_naturalwidth);
-    ih->naturalheight = iupMAX(ih->naturalheight, children_naturalheight);
-  }
-}
-
-static void iZboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+static void iZboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
   Ihandle* child;
+  int children_expand, 
+      children_naturalwidth, children_naturalheight;
 
-  iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
-
-  if (!ih->firstchild)
-    return;
-
-  /* update children */
+  /* calculate total children natural size (even for hidden children) */
+  children_expand = 0;
+  children_naturalwidth = 0;
+  children_naturalheight = 0;
 
   for (child = ih->firstchild; child; child = child->brother)
   {
+    /* update child natural size first */
+    iupBaseComputeNaturalSize(child);
+
     if (!child->floating)
-      iupClassObjectSetCurrentSize(child, ih->currentwidth, ih->currentheight, shrink);
+    {
+      children_expand |= child->expand;
+      children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
+      children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
+    }
+  }
+
+  *expand = children_expand;
+  *w = children_naturalwidth;
+  *h = children_naturalheight;
+}
+
+static void iZboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
+{
+  Ihandle* child;
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    if (!child->floating)
+      iupBaseSetCurrentSize(child, ih->currentwidth, ih->currentheight, shrink);
   }
 }
 
-static void iZboxSetPositionMethod(Ihandle* ih, int x, int y)
+static void iZboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   int dx = 0, dy = 0;
   Ihandle* child;
-
-  iupBaseSetPositionMethod(ih, x, y);
 
   for (child = ih->firstchild; child; child = child->brother)
   {
@@ -315,18 +291,21 @@ static void iZboxSetPositionMethod(Ihandle* ih, int x, int y)
         dx=ih->currentwidth-child->currentwidth;
         dy=ih->currentheight-child->currentheight;
         break;
-      case IZBOX_ALIGN_NW:
-        dx=0;
-        dy=0;
-        break;
       case IZBOX_ALIGN_SW:
         dx=0;
         dy=ih->currentheight-child->currentheight;
         break;
+      case IZBOX_ALIGN_NW:
+      default:
+        dx=0;
+        dy=0;
+        break;
       }
+      if (dx<0) dx = 0;
+      if (dy<0) dy = 0;
                      
       /* update child */
-      iupClassObjectSetPosition(child, x+dx, y+dy);
+      iupBaseSetPosition(child, x+dx, y+dy);
     }
   }
 }
@@ -368,13 +347,13 @@ Iclass* iupZboxGetClass(void)
 
   /* Class functions */
   ic->Create = iZboxCreateMethod;
-  ic->Map = iZboxMapMethod;
+  ic->Map = iupBaseTypeVoidMapMethod;
   ic->ChildAdded = iZboxChildAddedMethod;
   ic->ChildRemoved = iZboxChildRemovedMethod;
 
   ic->ComputeNaturalSize = iZboxComputeNaturalSizeMethod;
-  ic->SetCurrentSize = iZboxSetCurrentSizeMethod;
-  ic->SetPosition = iZboxSetPositionMethod;
+  ic->SetChildrenCurrentSize = iZboxSetChildrenCurrentSizeMethod;
+  ic->SetChildrenPosition = iZboxSetChildrenPositionMethod;
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

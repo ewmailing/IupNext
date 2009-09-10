@@ -59,15 +59,6 @@ static int iProgressBarSetMaxAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static void iProgressBarComputeNaturalSizeMethod(Ihandle* ih)
-{
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
-
-  /* There is no natural size computation */
-}
-
 static int iProgressBarCreateMethod(Ihandle* ih, void **params)
 {
   (void)params;
@@ -96,10 +87,6 @@ Iclass* iupProgressBarGetClass(void)
 
   /* Class functions */
   ic->Create = iProgressBarCreateMethod;
-  ic->ComputeNaturalSize = iProgressBarComputeNaturalSizeMethod;
-
-  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
-  ic->SetPosition = iupBaseSetPositionMethod;
 
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;

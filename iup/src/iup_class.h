@@ -144,32 +144,31 @@ struct Iclass_
 
 
   /** Method that computes the natural size based on the user size and the actual natural size. \n
-   * Should update expand, but does NOT depends on expand to compute the natural size. \n
-   * Must call the same method for each children.
+   * Should update expand if a container, but does NOT depends on expand to compute the natural size. \n
+   * Must call the \ref iupBaseComputeNaturalSize for each children.
    * First calculate the native size for the children, then for the element. \n
    * Also called before the element is mapped, so it must be independent of the native control.
    * First call done at iupLayoutCompute for the dialog.
    */
-  void (*ComputeNaturalSize)(Ihandle* ih);
+  void (*ComputeNaturalSize)(Ihandle* ih, int *w, int *h, int *expand);
 
-  /** Method that calculates and updates the current size based on the given size,
+  /** Method that calculates and updates the current size of children based on the available size,
    * the natural size and the expand configuration. \n
-   * The given size is the space available in the parent for the element. \n
-   * Must call the same method for each children. 
-   * First calculate the current size of the element, then for the children.\n
+   * Called only if there is any children.\n
+   * Must call \ref iupBaseSetCurrentSize for each children. 
    * shrink is the dialog attribute passed here for optimization. \n
    * Also called before the element is mapped, so it must be independent of the native control.
    * First call done at iupLayoutCompute for the dialog.
    */
-  void (*SetCurrentSize)(Ihandle* ih, int w, int h, int shrink);
+  void (*SetChildrenCurrentSize)(Ihandle* ih, int shrink);
 
   /** Method that calculates and updates the position relative to the parent. \n
-   * Must call the same method for each children.
-   * First calculate the position of the element, then for the children.\n
+   * Called only if there is any children.\n
+   * Must call \ref iupBaseSetPosition for each children.
    * Also called before the element is mapped, so it must be independent of the native control.
    * First call done at iupLayoutCompute for the dialog.
    */
-  void (*SetPosition)(Ihandle* ih, int x, int y);
+  void (*SetChildrenPosition)(Ihandle* ih, int x, int y);
 
 
 
@@ -357,17 +356,17 @@ void iupClassObjectLayoutUpdate(Ihandle* ih);
 /** Calls \ref Iclass::ComputeNaturalSize method. 
  * \ingroup iclassobject
  */
-void iupClassObjectComputeNaturalSize(Ihandle* ih);
+void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *expand);
 
-/** Calls \ref Iclass::SetCurrentSize method. 
+/** Calls \ref Iclass::SetChildrenCurrentSize method. 
  * \ingroup iclassobject
  */
-void iupClassObjectSetCurrentSize(Ihandle* ih, int w, int h, int shrink);
+void iupClassObjectSetChildrenCurrentSize(Ihandle* ih, int shrink);
 
-/** Calls \ref Iclass::SetPosition method. 
+/** Calls \ref Iclass::SetChildrenPosition method. 
  * \ingroup iclassobject
  */
-void iupClassObjectSetPosition(Ihandle* ih, int x, int y);
+void iupClassObjectSetChildrenPosition(Ihandle* ih, int x, int y);
 
 /** Calls \ref Iclass::DlgPopup method. 
  * \ingroup iclassobject

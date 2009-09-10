@@ -37,12 +37,6 @@ static int iBoxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static int iBoxMapMethod(Ihandle* ih)
-{
-  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
-  return IUP_NOERROR;
-}
-
 static char* iBoxGetClientSizeAttrib(Ihandle* ih)
 {
   char* str;
@@ -171,7 +165,7 @@ Iclass* iupBoxClassBase(void)
 
   /* Class functions */
   ic->Create = iBoxCreateMethod;
-  ic->Map = iBoxMapMethod;
+  ic->Map = iupBaseTypeVoidMapMethod;
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

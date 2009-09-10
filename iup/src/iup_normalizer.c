@@ -74,7 +74,7 @@ static int iNormalizerSetNormalizeAttrib(Ihandle* ih, const char* value)
   for (i = 0; i < count; i++)
   {
     ih_control = ih_list[i];
-    iupClassObjectComputeNaturalSize(ih_control);
+    iupBaseComputeNaturalSize(ih_control);
     natural_maxwidth = iupMAX(natural_maxwidth, ih_control->naturalwidth);
     natural_maxheight = iupMAX(natural_maxheight, ih_control->naturalheight);
   }
@@ -107,11 +107,11 @@ static int iNormalizerSetAddControlAttrib(Ihandle* ih, const char* value)
   return iNormalizerSetAddControlHandleAttrib(ih, (char*)IupGetHandle(value));
 }
 
-static void iNormalizerComputeNaturalSizeMethod(Ihandle* ih)
+static void iNormalizerComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  ih->naturalwidth = 0;
-  ih->naturalheight = 0;
-
+  (void)w;
+  (void)h;
+  (void)expand;
   iNormalizerSetNormalizeAttrib(ih, iupAttribGetStr(ih, "NORMALIZE"));
 }
 
@@ -142,12 +142,6 @@ static void iNormalizerDestroy(Ihandle* ih)
   iupArrayDestroy(ih->data->ih_array);
 }
 
-static int iNormalizerMapMethod(Ihandle* ih)
-{
-  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
-  return IUP_NOERROR;
-}
-
 Iclass* iupNormalizerGetClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
@@ -160,7 +154,7 @@ Iclass* iupNormalizerGetClass(void)
 
   /* Class functions */
   ic->Create = iNormalizerCreateMethod;
-  ic->Map = iNormalizerMapMethod;
+  ic->Map = iupBaseTypeVoidMapMethod;
   ic->ComputeNaturalSize = iNormalizerComputeNaturalSizeMethod;
   ic->Destroy = iNormalizerDestroy;
 

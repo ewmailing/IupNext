@@ -116,12 +116,6 @@ char* iRadioGetValueAttrib(Ihandle* ih)
 /******************************************************************************/
 
 
-static int iRadioMapMethod(Ihandle* ih)
-{
-  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
-  return IUP_NOERROR;
-}
-
 static int iRadioCreateMethod(Ihandle* ih, void** params)
 {
   if (params)
@@ -133,42 +127,28 @@ static int iRadioCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iRadioComputeNaturalSizeMethod(Ihandle* ih)
+static void iRadioComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  iupBaseContainerUpdateExpand(ih);
-
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
-
-  if (ih->firstchild)
+  Ihandle* child = ih->firstchild;
+  if (child)
   {
-    Ihandle* child = ih->firstchild;
-
     /* update child natural size first */
-    iupClassObjectComputeNaturalSize(child);
+    iupBaseComputeNaturalSize(child);
 
-    ih->expand &= child->expand; /* compose but only expand where the box can expand */
-
-    ih->naturalwidth = iupMAX(ih->naturalwidth, child->naturalwidth);
-    ih->naturalheight = iupMAX(ih->naturalheight, child->naturalheight);
+    *expand = child->expand;
+    *w = child->naturalwidth;
+    *h = child->naturalheight;
   }
 }
 
-static void iRadioSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+static void iRadioSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
-
-  if (ih->firstchild)
-    iupClassObjectSetCurrentSize(ih->firstchild, ih->currentwidth, ih->currentheight, shrink);
+  iupBaseSetCurrentSize(ih->firstchild, ih->currentwidth, ih->currentheight, shrink);
 }
 
-static void iRadioSetPositionMethod(Ihandle* ih, int x, int y)
+static void iRadioSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  iupBaseSetPositionMethod(ih, x, y);
-
-  if (ih->firstchild)
-    iupClassObjectSetPosition(ih->firstchild, x, y);
+  iupBaseSetPosition(ih->firstchild, x, y);
 }
 
 
@@ -195,10 +175,10 @@ Iclass* iupRadioGetClass(void)
 
   /* Class functions */
   ic->Create = iRadioCreateMethod;
-  ic->Map = iRadioMapMethod;
+  ic->Map = iupBaseTypeVoidMapMethod;
   ic->ComputeNaturalSize = iRadioComputeNaturalSizeMethod;
-  ic->SetCurrentSize = iRadioSetCurrentSizeMethod;
-  ic->SetPosition = iRadioSetPositionMethod;
+  ic->SetChildrenCurrentSize = iRadioSetChildrenCurrentSizeMethod;
+  ic->SetChildrenPosition = iRadioSetChildrenPositionMethod;
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

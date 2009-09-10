@@ -386,21 +386,16 @@ static gboolean gtkDialogChildDestroyEvent(GtkWidget *widget, Ihandle *ih)
 ****************************************************************/
 
 
-/* replace the common dialog SetPosition method because of 
+/* replace the common dialog SetChildrenPosition method because of 
    the menu that it is inside the dialog. */
-static void gtkDialogSetPositionMethod(Ihandle* ih, int x, int y)
+static void gtkDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  /* x and y are always 0 for the dialog. */
-  ih->x = x;
-  ih->y = y;
+  int menu_h = gtkDialogGetMenuSize(ih);
+  (void)x;
+  (void)y;
 
-  if (ih->firstchild)
-  {
-    int menu = gtkDialogGetMenuSize(ih);
-
-    /* Child coordinates are relative to client left-top corner. */
-    iupClassObjectSetPosition(ih->firstchild, 0, menu);
-  }
+  /* Child coordinates are relative to client left-top corner. */
+  iupBaseSetPosition(ih->firstchild, 0, menu_h);
 }
 
 static void* gtkDialogGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
@@ -948,7 +943,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   ic->UnMap = gtkDialogUnMapMethod;
   ic->LayoutUpdate = gtkDialogLayoutUpdateMethod;
   ic->GetInnerNativeContainerHandle = gtkDialogGetInnerNativeContainerHandleMethod;
-  ic->SetPosition = gtkDialogSetPositionMethod;
+  ic->SetChildrenPosition = gtkDialogSetChildrenPositionMethod;
 
   /* Callback Windows and GTK Only */
   iupClassRegisterCallback(ic, "TRAYCLICK_CB", "iii");

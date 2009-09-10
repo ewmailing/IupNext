@@ -82,64 +82,55 @@ static char* iVboxGetAlignmentAttrib(Ihandle* ih)
   return str;
 }
 
-static void iVboxComputeNaturalSizeMethod(Ihandle* ih)
+static void iVboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  iupBaseContainerUpdateExpand(ih);
+  Ihandle* child;
+  int children_naturalwidth, children_naturalheight;
 
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  /* calculate total children natural size */
+  int children_expand = 0;
+  int children_count = 0;
+  int children_natural_maxwidth = 0;
+  int children_natural_maxheight = 0;
+  int children_natural_totalheight = 0;
 
-  if (ih->firstchild)
+  for (child = ih->firstchild; child; child = child->brother)
   {
-    Ihandle* child;
-    int children_naturalwidth, children_naturalheight;
+    /* update child natural size first */
+    iupBaseComputeNaturalSize(child);
 
-    /* calculate total children natural size */
-    int children_expand = 0;
-    int children_count = 0;
-    int children_natural_maxwidth = 0;
-    int children_natural_maxheight = 0;
-    int children_natural_totalheight = 0;
-    for (child = ih->firstchild; child; child = child->brother)
+    if (!child->floating)
     {
-      /* update child natural size first */
-      iupClassObjectComputeNaturalSize(child);
-
-      if (!child->floating)
-      {
-        children_expand |= child->expand;
-        children_natural_maxwidth = iupMAX(children_natural_maxwidth, child->naturalwidth);
-        children_natural_maxheight = iupMAX(children_natural_maxheight, child->naturalheight);
-        children_count++;
-      }
+      children_expand |= child->expand;
+      children_natural_maxwidth = iupMAX(children_natural_maxwidth, child->naturalwidth);
+      children_natural_maxheight = iupMAX(children_natural_maxheight, child->naturalheight);
+      children_count++;
     }
-
-    /* reset to max natural width and/or height if NORMALIZESIZE is defined */
-    iupNormalizeSizeBoxChild(ih, children_natural_maxwidth, children_natural_maxheight);
-
-    for (child = ih->firstchild; child; child = child->brother)
-    {
-      if (!child->floating)
-        children_natural_totalheight += child->naturalheight;
-    }
-
-    ih->expand &= children_expand; /* compose but only expand where the box can expand */
-
-    /* leave room at the element for the maximum natural size of the children when homogeneous */
-    if (iupAttribGetBoolean(ih, "HOMOGENEOUS"))
-      children_natural_totalheight = children_natural_maxheight*children_count;
-
-    /* compute the Vbox contents natural size */
-    children_naturalwidth  = children_natural_maxwidth + 2*ih->data->margin_x;
-    children_naturalheight = children_natural_totalheight + (children_count-1)*ih->data->gap + 2*ih->data->margin_y;
-
-    ih->naturalwidth = iupMAX(ih->naturalwidth, children_naturalwidth);
-    ih->naturalheight = iupMAX(ih->naturalheight, children_naturalheight);
-
-    /* Store to be used in iVboxCalcEmptyHeight */
-    ih->data->children_naturalsize = children_naturalheight;
   }
+
+  /* reset to max natural width and/or height if NORMALIZESIZE is defined */
+  iupNormalizeSizeBoxChild(ih, children_natural_maxwidth, children_natural_maxheight);
+
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    if (!child->floating)
+      children_natural_totalheight += child->naturalheight;
+  }
+
+  /* leave room at the element for the maximum natural size of the children when homogeneous */
+  if (iupAttribGetBoolean(ih, "HOMOGENEOUS"))
+    children_natural_totalheight = children_natural_maxheight*children_count;
+
+  /* compute the Vbox contents natural size */
+  children_naturalwidth  = children_natural_maxwidth + 2*ih->data->margin_x;
+  children_naturalheight = children_natural_totalheight + (children_count-1)*ih->data->gap + 2*ih->data->margin_y;
+
+  /* Store to be used in iVboxCalcEmptyHeight */
+  ih->data->children_naturalsize = children_naturalheight;
+
+  *expand = children_expand;
+  *w = children_naturalwidth;
+  *h = children_naturalheight;
 }
 
 static int iHboxCalcHomogeneousHeight(Ihandle *ih)
@@ -195,69 +186,61 @@ static int iVBoxGetExpandChildren(Ihandle* ih)
     return 0;
 }
 
-static void iVboxSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+static void iVboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
+  Ihandle* child;
+  int empty_h0 = 0, empty_h1 = 0, client_width, expand_children, homogeneous_height = 0;
 
-  if (ih->firstchild)
+  expand_children = iVBoxGetExpandChildren(ih);
+  if (expand_children)
+    ih->expand |= expand_children;
+
+  if (iupAttribGetBoolean(ih, "HOMOGENEOUS"))
   {
-    /* update children */
-    Ihandle* child;
-    int empty_h0 = 0, empty_h1 = 0, client_width, expand_children, homogeneous_height = 0;
+    homogeneous_height = iHboxCalcHomogeneousHeight(ih);
+    ih->data->homogeneous_size = homogeneous_height;
+  }
+  else
+  {
+    /* must calculate the space left for each control to grow inside the container */
+    /* H1 means there is an EXPAND enabled inside */
+    if (ih->expand & IUP_EXPAND_H1)
+      empty_h1 = iVboxCalcEmptyHeight(ih, IUP_EXPAND_H1);
+    /* Not H1 and H0 means that EXPAND is not enabled, but there are IupFill(s) inside */
+    else if (ih->expand & IUP_EXPAND_H0)
+      empty_h0 = iVboxCalcEmptyHeight(ih, IUP_EXPAND_H0);
+  }
 
-    expand_children = iVBoxGetExpandChildren(ih);
-    if (expand_children)
-      ih->expand |= expand_children;
+  client_width = ih->currentwidth - 2*ih->data->margin_x;
+  if (client_width<0) client_width=0;
 
-    if (iupAttribGetBoolean(ih, "HOMOGENEOUS"))
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    if (!child->floating)
     {
-      homogeneous_height = iHboxCalcHomogeneousHeight(ih);
-      ih->data->homogeneous_size = homogeneous_height;
+      if (expand_children)
+        child->expand |= expand_children;
+
+      if (homogeneous_height)
+        iupBaseSetCurrentSize(child, client_width, homogeneous_height, shrink);
+      else
+      {
+        int empty = (child->expand & IUP_EXPAND_H1)? empty_h1: ((child->expand & IUP_EXPAND_H0)? empty_h0: 0);
+        iupBaseSetCurrentSize(child, client_width, child->naturalheight+empty, shrink);
+      }
     }
     else
     {
-      /* must calculate the space left for each control to grow inside the container */
-      /* H1 means there is an EXPAND enabled inside */
-      if (ih->expand & IUP_EXPAND_H1)
-        empty_h1 = iVboxCalcEmptyHeight(ih, IUP_EXPAND_H1);
-      /* Not H1 and H0 means that EXPAND is not enabled, but there are IupFill(s) inside */
-      else if (ih->expand & IUP_EXPAND_H0)
-        empty_h0 = iVboxCalcEmptyHeight(ih, IUP_EXPAND_H0);
-    }
-
-    client_width = ih->currentwidth - 2*ih->data->margin_x;
-    if (client_width<0) client_width=0;
-
-    for (child = ih->firstchild; child; child = child->brother)
-    {
-      if (!child->floating)
-      {
-        if (expand_children)
-          child->expand |= expand_children;
-
-        if (homogeneous_height)
-          iupClassObjectSetCurrentSize(child, client_width, homogeneous_height, shrink);
-        else
-        {
-          int empty = (child->expand & IUP_EXPAND_H1)? empty_h1: ((child->expand & IUP_EXPAND_H0)? empty_h0: 0);
-          iupClassObjectSetCurrentSize(child, client_width, child->naturalheight+empty, shrink);
-        }
-      }
-      else
-      {
-        /* update children to their own natural size */
-        iupClassObjectSetCurrentSize(child, child->naturalwidth, child->naturalheight, shrink);
-      }
+      /* update children to their own natural size */
+      iupBaseSetCurrentSize(child, child->naturalwidth, child->naturalheight, shrink);
     }
   }
 }
 
-static void iVboxSetPositionMethod(Ihandle* ih, int x, int y)
+static void iVboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   int dx, client_width;
   Ihandle* child;
-
-  iupBaseSetPositionMethod(ih, x, y);
 
   x += ih->data->margin_x;
   y += ih->data->margin_y;
@@ -275,9 +258,10 @@ static void iVboxSetPositionMethod(Ihandle* ih, int x, int y)
         dx = client_width - child->currentwidth;
       else  /* IUP_ALIGN_ALEFT */
         dx = 0;
+      if (dx<0) dx = 0;
                       
       /* update child */
-      iupClassObjectSetPosition(child, x+dx, y);
+      iupBaseSetPosition(child, x+dx, y);
 
       /* calculate next */
       if (ih->data->homogeneous_size)
@@ -321,8 +305,8 @@ Iclass* iupVboxGetClass(void)
 
   /* Class functions */
   ic->ComputeNaturalSize = iVboxComputeNaturalSizeMethod;
-  ic->SetCurrentSize = iVboxSetCurrentSizeMethod;
-  ic->SetPosition = iVboxSetPositionMethod;
+  ic->SetChildrenCurrentSize = iVboxSetChildrenCurrentSizeMethod;
+  ic->SetChildrenPosition = iVboxSetChildrenPositionMethod;
 
   /* Overwrite Common */
   iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iVboxSetSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

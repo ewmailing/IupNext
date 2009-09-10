@@ -352,15 +352,6 @@ static int iTreeCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
-static void iTreeComputeNaturalSizeMethod(Ihandle* ih)
-{
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
-
-  /* There is no natural size computation */
-}
-
 Ihandle* IupTree(void)
 {
   return IupCreate("tree");
@@ -379,11 +370,6 @@ Iclass* iupTreeGetClass(void)
 
   /* Class functions */
   ic->Create = iTreeCreateMethod;
-  ic->ComputeNaturalSize = iTreeComputeNaturalSizeMethod;
-
-  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
-  ic->SetPosition = iupBaseSetPositionMethod;
-
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;
 

@@ -80,67 +80,59 @@ static int iLabelCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iLabelComputeNaturalSizeMethod(Ihandle* ih)
+static void iLabelComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  int natural_w = 0, 
+      natural_h = 0, 
+      type = ih->data->type;
+  (void)expand; /* unset if not a container */
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
+  if (!ih->handle)
   {
-    int natural_w = 0, 
-        natural_h = 0, 
-        type = ih->data->type;
-
-    if (!ih->handle)
+    /* if not mapped must initialize the internal values */
+    char* value = iupAttribGet(ih, "SEPARATOR");
+    if (value)
     {
-      /* if not mapped must initialize the internal values */
-      char* value = iupAttribGet(ih, "SEPARATOR");
+      if (iupStrEqualNoCase(value, "HORIZONTAL"))
+        type = IUP_LABEL_SEP_HORIZ;
+      else /* "VERTICAL" */
+        type = IUP_LABEL_SEP_VERT;
+    }
+    else
+    {
+      value = iupAttribGet(ih, "IMAGE");
       if (value)
-      {
-        if (iupStrEqualNoCase(value, "HORIZONTAL"))
-          type = IUP_LABEL_SEP_HORIZ;
-        else /* "VERTICAL" */
-          type = IUP_LABEL_SEP_VERT;
-      }
+        type = IUP_LABEL_IMAGE;
       else
-      {
-        value = iupAttribGet(ih, "IMAGE");
-        if (value)
-          type = IUP_LABEL_IMAGE;
-        else
-          type = IUP_LABEL_TEXT;
-      }
+        type = IUP_LABEL_TEXT;
     }
-
-    if (type == IUP_LABEL_SEP_HORIZ)
-      natural_h = 2;
-    else if (type == IUP_LABEL_SEP_VERT)
-      natural_w = 2;
-    else if (type == IUP_LABEL_IMAGE)
-    {
-      iupImageGetInfo(iupAttribGet(ih, "IMAGE"), &natural_w, &natural_h, NULL);
-
-      natural_w += 2*ih->data->horiz_padding;
-      natural_h += 2*ih->data->vert_padding;
-    }
-    else /* IUP_LABEL_TEXT */
-    {
-      /* must use IupGetAttribute to check from the native implementation */
-      char* title = IupGetAttribute(ih, "TITLE");
-      char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
-      iupdrvFontGetMultiLineStringSize(ih, str, &natural_w, &natural_h);
-      if (str && str!=title) free(str);
-
-      natural_w += 2*ih->data->horiz_padding;
-      natural_h += 2*ih->data->vert_padding;
-    }
-
-    /* only update the natural size if user size is not defined. */
-    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
-    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
   }
+
+  if (type == IUP_LABEL_SEP_HORIZ)
+    natural_h = 2;
+  else if (type == IUP_LABEL_SEP_VERT)
+    natural_w = 2;
+  else if (type == IUP_LABEL_IMAGE)
+  {
+    iupImageGetInfo(iupAttribGet(ih, "IMAGE"), &natural_w, &natural_h, NULL);
+
+    natural_w += 2*ih->data->horiz_padding;
+    natural_h += 2*ih->data->vert_padding;
+  }
+  else /* IUP_LABEL_TEXT */
+  {
+    /* must use IupGetAttribute to check from the native implementation */
+    char* title = IupGetAttribute(ih, "TITLE");
+    char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
+    iupdrvFontGetMultiLineStringSize(ih, str, &natural_w, &natural_h);
+    if (str && str!=title) free(str);
+
+    natural_w += 2*ih->data->horiz_padding;
+    natural_h += 2*ih->data->vert_padding;
+  }
+
+  *w = natural_w;
+  *h = natural_h;
 }
 
 
@@ -168,9 +160,6 @@ Iclass* iupLabelGetClass(void)
   /* Class functions */
   ic->Create = iLabelCreateMethod;
   ic->ComputeNaturalSize = iLabelComputeNaturalSizeMethod;
-
-  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
-  ic->SetPosition = iupBaseSetPositionMethod;
 
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;

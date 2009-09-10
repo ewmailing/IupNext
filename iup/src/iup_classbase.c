@@ -27,36 +27,112 @@ void iupBaseCallValueChangedCb(Ihandle* ih)
     vc_cb(ih);
 }
 
-void iupBaseContainerSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+int iupBaseTypeVoidMapMethod(Ihandle* ih)
 {
-  if (shrink)
+  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
+  return IUP_NOERROR;
+}
+
+void iupBaseComputeNaturalSize(Ihandle* ih)
+{
+  /* always initialize the natural size using the user size */
+  ih->naturalwidth = ih->userwidth;
+  ih->naturalheight = ih->userheight;
+
+  if (ih->iclass->childtype!=IUP_CHILDNONE || ih->iclass->nativetype == IUP_TYPEDIALOG)
   {
-    /* if expand use the given size, else use the natural size */
-    ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)  ? w : ih->naturalwidth;
-    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT) ? h : ih->naturalheight;
+    int w=0, h=0, expand;
+
+    /* if a container then update the "expand" member from the EXPAND attribute */
+    iupBaseContainerUpdateExpand(ih);
+    expand = ih->expand; /* use it as default value */
+
+    iupClassObjectComputeNaturalSize(ih, &w, &h, &expand);
+
+    if (ih->iclass->nativetype == IUP_TYPEDIALOG)
+    {
+      /* only update the natural size if user size is not defined. */
+      /* IupDialog is the only container where this must be done */ 
+      /* if the natural size is bigger than the actual dialog size then
+         the dialog will be resized, if smaller then the dialog remains with the same size. */
+      ih->expand |= expand;
+      if (ih->naturalwidth <= 0) ih->naturalwidth = iupMAX(ih->currentwidth, w);
+      if (ih->naturalheight <= 0) ih->naturalheight = iupMAX(ih->currentheight, h);
+    }
+    else
+    {
+      ih->expand &= expand; /* compose but only expand where the element can expand */
+      ih->naturalwidth = iupMAX(ih->naturalwidth, w);
+      ih->naturalheight = iupMAX(ih->naturalheight, h);
+    }
+  }
+  else 
+  {
+    /* for non-container only compute if user size is not defined */
+    if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
+    {
+      int w=0, h=0;
+      iupClassObjectComputeNaturalSize(ih, &w, &h, NULL);
+
+      if (ih->naturalwidth <= 0) ih->naturalwidth = w;
+      if (ih->naturalheight <= 0) ih->naturalheight = h;
+    }
+  }
+}
+
+void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
+{
+  if (ih->iclass->nativetype == IUP_TYPEDIALOG)
+  {
+    /* w and h parameters here are ignored, because they are always 0 for the dialog. */
+
+    /* current size is zero before map and when reset by the application */
+    /* after that the current size must follow the actual size of the dialog */
+    if (!ih->currentwidth)  ih->currentwidth  = ih->naturalwidth;
+    if (!ih->currentheight) ih->currentheight = ih->naturalheight;
+
+    if (ih->firstchild)
+      iupClassObjectSetChildrenCurrentSize(ih, shrink);
   }
   else
   {
-    /* if expand use the given size (if greater than natural size), else use the natural size */
-    ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)  ? iupMAX(ih->naturalwidth, w)  : ih->naturalwidth;
-    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT) ? iupMAX(ih->naturalheight, h) : ih->naturalheight;
+    if (ih->iclass->childtype!=IUP_CHILDNONE)
+    {
+      if (shrink)
+      {
+        /* if expand then use the given size, else use the natural size */
+        ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)?  w: ih->naturalwidth;
+        ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? h: ih->naturalheight;
+      }
+      else
+      {
+        /* if expand then use the given size (if greater than natural size), else use the natural size */
+        ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)?  iupMAX(ih->naturalwidth, w):  ih->naturalwidth;
+        ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? iupMAX(ih->naturalheight, h): ih->naturalheight;
+      }
+
+      if (ih->firstchild)
+        iupClassObjectSetChildrenCurrentSize(ih, shrink);
+    }
+    else
+    {
+      /* shrink is only used by containers, usually is 0 */
+      /* for non containers is always 1, so they always can be smaller than the natural size */
+
+      /* if expand use the given size, else use the natural size */
+      ih->currentwidth = (ih->expand & IUP_EXPAND_WIDTH)? w: ih->naturalwidth;
+      ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? h: ih->naturalheight;
+    }
   }
 }
 
-void iupBaseSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
-{
-  (void)shrink; /* shrink is only used by containers, usually is 0 */
-                /* for non containers is always 1, so they always can be smaller than the natural size */
-
-  /* if expand use the given size, else use the natural size */
-  ih->currentwidth = (ih->expand & IUP_EXPAND_WIDTH)? w: ih->naturalwidth;
-  ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? h: ih->naturalheight;
-}
-
-void iupBaseSetPositionMethod(Ihandle* ih, int x, int y)
+void iupBaseSetPosition(Ihandle* ih, int x, int y)
 {
   ih->x = x;
   ih->y = y;
+
+  if (ih->firstchild)
+    iupClassObjectSetChildrenPosition(ih, x, y);
 }
 
 char* iupBaseGetWidAttrib(Ihandle *ih)
@@ -64,7 +140,7 @@ char* iupBaseGetWidAttrib(Ihandle *ih)
   return (char*)ih->handle;
 }
 
-void iupBaseUpdateSizeAttrib(Ihandle* ih)
+void iupBaseUpdateSizeFromFont(Ihandle* ih)
 {
   char* value = iupAttribGet(ih, "SIZE");
   if (!value)

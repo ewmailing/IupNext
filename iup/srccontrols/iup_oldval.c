@@ -72,7 +72,7 @@ struct _IcontrolData
 
   /* Internal methods */
   void (*Draw)(Ihandle* ih);
-  void (*SetPosition)(Ihandle*,int,int);
+  void (*CalcPosition)(Ihandle*,int,int);
 };
 
 #define IVAL_HANDLER_LONG  22  /* handler long side */
@@ -311,7 +311,7 @@ static int iValMotion_CB(Ihandle *ih,int x,int y,char *r)
   if (!iup_isbutton1(r)) return IUP_DEFAULT;
   if (!ih->data->moving) return IUP_DEFAULT;
 
-  ih->data->SetPosition(ih,x,y);
+  ih->data->CalcPosition(ih,x,y);
 
   cb = (IFnd) IupGetCallback(ih, "MOUSEMOVE_CB");
   if (cb) cb(ih,ih->data->val);
@@ -327,7 +327,7 @@ static int iValButton_CB(Ihandle *ih,int b,int m,int x,int y)
 
   if (m) 
   {
-    ih->data->SetPosition(ih, x, y);
+    ih->data->CalcPosition(ih, x, y);
     ih->data->moving = 1;
     cb_name = "BUTTON_PRESS_CB";
   }
@@ -507,7 +507,7 @@ static int iValSetTypeAttrib(Ihandle* ih, const char *value)
     IupSetAttribute(ih, "RASTERSIZE", "28x124");
     
     ih->data->Draw = iValDrawVertical;
-    ih->data->SetPosition = iValSetVerticalPosition;
+    ih->data->CalcPosition = iValSetVerticalPosition;
     ih->data->type = IVAL_VERTICAL;
   }
   else /* "HORIZONTAL" */
@@ -515,7 +515,7 @@ static int iValSetTypeAttrib(Ihandle* ih, const char *value)
     IupSetAttribute(ih, "RASTERSIZE", "124x28");
      
     ih->data->Draw = iValDrawHorizontal;
-    ih->data->SetPosition = iValSetHorizontalPosition;
+    ih->data->CalcPosition = iValSetHorizontalPosition;
     ih->data->type = IVAL_HORIZONTAL;
   }
 

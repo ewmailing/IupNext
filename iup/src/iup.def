@@ -282,8 +282,8 @@ iupClassRegisterAttributeId
 iupClassRegisterAttribute
 iupClassRegisterGetAttribute
 iupClassObjectUnMap
-iupClassObjectSetPosition
-iupClassObjectSetCurrentSize
+iupClassObjectSetChildrenPosition
+iupClassObjectSetChildrenCurrentSize
 iupClassObjectSetAttribute
 iupClassObjectMap
 iupClassObjectLayoutUpdate
@@ -308,8 +308,6 @@ iupCallGetFocusCb
 iupBaseSetVisibleAttrib
 iupBaseSetSizeAttrib
 iupBaseSetRasterSizeAttrib
-iupBaseSetPositionMethod
-iupBaseSetCurrentSizeMethod
 iupBaseSetActiveAttrib
 iupBaseRegisterVisualAttrib
 iupBaseRegisterCommonAttrib
@@ -321,7 +319,10 @@ iupBaseGetRasterSizeAttrib
 iupBaseGetActiveAttrib
 iupBaseContainerUpdateExpand
 iupBaseContainerGetExpandAttrib
-iupBaseContainerSetCurrentSizeMethod
+iupBaseTypeVoidMapMethod
+iupBaseSetPosition
+iupBaseComputeNaturalSize
+iupBaseSetCurrentSize
 iupAttribStoreStr
 iupAttribSetStrf
 iupAttribSetStr

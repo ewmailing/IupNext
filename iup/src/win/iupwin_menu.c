@@ -610,9 +610,7 @@ static int winSubmenuMapMethod(Ihandle* ih)
   if (!ih->parent || !IsMenu((HMENU)ih->parent->handle))
     return IUP_ERROR;
 
-  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
-
-  return IUP_NOERROR;
+  return iupBaseTypeVoidMapMethod(ih);
 }
 
 void iupdrvSubmenuInitClass(Iclass* ic)

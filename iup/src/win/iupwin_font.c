@@ -202,7 +202,7 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
     return 1;
 
   /* If FONT is changed, must update the SIZE attribute */
-  iupBaseUpdateSizeAttrib(ih);
+  iupBaseUpdateSizeFromFont(ih);
 
   /* FONT attribute must be able to be set before mapping, 
       so the font is enable for size calculation. */

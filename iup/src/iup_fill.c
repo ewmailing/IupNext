@@ -48,9 +48,8 @@ static int iFillGetDir(Ihandle* ih)
 
 static int iFillMapMethod(Ihandle* ih)
 {
-  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
   iFillGetDir(ih);
-  return IUP_NOERROR;
+  return iupBaseTypeVoidMapMethod(ih);
 }
 
 static void iFillUnMapMethod(Ihandle* ih)
@@ -166,22 +165,24 @@ static void iFillUpdateSize(Ihandle* ih)
   }
 }
 
-static void iFillComputeNaturalSizeMethod(Ihandle* ih)
+static void iFillComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  iFillUpdateSize(ih);
+  (void)expand;  /* unset if not a container */
 
-  /* EXPAND is ignored for FILL */
+  /* EXPAND is initialized as none for FILL */
   ih->expand = IUP_EXPAND_NONE;
 
-  /* always initialize the natural size using the user size */
+  iFillUpdateSize(ih);
+
+  /* always initialize the natural size using the user size,
+     must do this again because of iFillUpdateSize */
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
 
   if (iFillGetDir(ih) == IUP_FILL_NONE) /* if Fill is not a child of a Vbox or Hbox */
     return;
 
-  /* if size is not defined, then expansion on that direction is permited */
-
+  /* if size is NOT defined, then expansion on that direction is permited */
   if (iFillGetDir(ih) == IUP_FILL_HORIZ)
   {
     if (ih->naturalwidth <= 0)
@@ -192,6 +193,9 @@ static void iFillComputeNaturalSizeMethod(Ihandle* ih)
     if (ih->naturalheight <= 0)
       ih->expand = IUP_EXPAND_H0;
   }
+
+  *w = ih->naturalwidth;
+  *h = ih->naturalheight;
 }
 
 static int iFillCreateMethod(Ihandle* ih, void** params)
@@ -223,9 +227,6 @@ Iclass* iupFillGetClass(void)
   ic->Map = iFillMapMethod;
   ic->UnMap = iFillUnMapMethod;
   ic->ComputeNaturalSize = iFillComputeNaturalSizeMethod;
-
-  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
-  ic->SetPosition = iupBaseSetPositionMethod;
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

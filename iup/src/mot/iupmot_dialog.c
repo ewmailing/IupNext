@@ -541,21 +541,14 @@ static void motDialogDestroyCallback(Widget w, Ihandle *ih, XtPointer call_data)
                      Idialog
 ****************************************************************/
 
-/* replace the common dialog SetPosition method because of 
+/* replace the common dialog SetChildrenPosition method because of 
    the menu that it is inside the dialog. */
-static void motDialogSetPositionMethod(Ihandle* ih, int x, int y)
+static void motDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  /* x and y are always 0 for the dialog. */
-  ih->x = x;
-  ih->y = y;
+  int menu_h = motDialogGetMenuSize(ih);
 
-  if (ih->firstchild)
-  {
-    int menu = motDialogGetMenuSize(ih);
-
-    /* Child coordinates are relative to client left-top corner. */
-    iupClassObjectSetPosition(ih->firstchild, 0, menu);
-  }
+  /* Child coordinates are relative to client left-top corner. */
+  iupBaseSetPosition(ih->firstchild, 0, menu_h);
 }
 
 static void* motDialogGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
@@ -1030,7 +1023,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   ic->Map = motDialogMapMethod;
   ic->UnMap = motDialogUnMapMethod;
   ic->LayoutUpdate = motDialogLayoutUpdateMethod;
-  ic->SetPosition = motDialogSetPositionMethod;
+  ic->SetChildrenPosition = motDialogSetChildrenPositionMethod;
   ic->GetInnerNativeContainerHandle = motDialogGetInnerNativeContainerHandleMethod;
 
   if (!iupmot_wm_deletewindow)

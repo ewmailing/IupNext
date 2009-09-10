@@ -87,76 +87,68 @@ static int iButtonCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iButtonComputeNaturalSizeMethod(Ihandle* ih)
+static void iButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  int natural_w = 0, 
+      natural_h = 0, 
+      type = ih->data->type;
+  (void)expand; /* unset if not a container */
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
+  if (!ih->handle)
   {
-    int natural_w = 0, 
-        natural_h = 0, 
-        type = ih->data->type;
-
-    if (!ih->handle)
+    /* if not mapped must initialize the internal values */
+    char* value = iupAttribGet(ih, "IMAGE");
+    if (value)
     {
-      /* if not mapped must initialize the internal values */
-      char* value = iupAttribGet(ih, "IMAGE");
-      if (value)
-      {
-        type = IUP_BUTTON_IMAGE;
-        if (iupAttribGet(ih, "TITLE"))
-          type |= IUP_BUTTON_TEXT;
-      }
-      else
-        type = IUP_BUTTON_TEXT;
+      type = IUP_BUTTON_IMAGE;
+      if (iupAttribGet(ih, "TITLE"))
+        type |= IUP_BUTTON_TEXT;
     }
+    else
+      type = IUP_BUTTON_TEXT;
+  }
 
-    if (type & IUP_BUTTON_IMAGE)
+  if (type & IUP_BUTTON_IMAGE)
+  {
+    iupImageGetInfo(iupAttribGet(ih, "IMAGE"), &natural_w, &natural_h, NULL);
+
+    if (type & IUP_BUTTON_TEXT)
     {
-      iupImageGetInfo(iupAttribGet(ih, "IMAGE"), &natural_w, &natural_h, NULL);
-
-      if (type & IUP_BUTTON_TEXT)
-      {
-        int text_w, text_h;
-        /* must use IupGetAttribute to check from the native implementation */
-        char* title = IupGetAttribute(ih, "TITLE");
-        iupdrvFontGetMultiLineStringSize(ih, title, &text_w, &text_h);
-
-        if (ih->data->img_position == IUP_IMGPOS_RIGHT ||
-            ih->data->img_position == IUP_IMGPOS_LEFT)
-        {
-          natural_w += text_w + ih->data->spacing;
-          natural_h = iupMAX(natural_h, text_h);
-        }
-        else
-        {
-          natural_w = iupMAX(natural_w, text_w);
-          natural_h += text_h + ih->data->spacing;
-        }
-      }
-    }
-    else /* IUP_BUTTON_TEXT only */
-    {
+      int text_w, text_h;
       /* must use IupGetAttribute to check from the native implementation */
       char* title = IupGetAttribute(ih, "TITLE");
-      char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
-      iupdrvFontGetMultiLineStringSize(ih, str, &natural_w, &natural_h);
-      if (str && str!=title) free(str);
+      iupdrvFontGetMultiLineStringSize(ih, title, &text_w, &text_h);
+
+      if (ih->data->img_position == IUP_IMGPOS_RIGHT ||
+          ih->data->img_position == IUP_IMGPOS_LEFT)
+      {
+        natural_w += text_w + ih->data->spacing;
+        natural_h = iupMAX(natural_h, text_h);
+      }
+      else
+      {
+        natural_w = iupMAX(natural_w, text_w);
+        natural_h += text_h + ih->data->spacing;
+      }
     }
-
-    /* even when IMPRESS is set, must compute the borders space */
-    iupdrvButtonAddBorders(&natural_w, &natural_h);
-
-    natural_w += 2*ih->data->horiz_padding;
-    natural_h += 2*ih->data->vert_padding;
-
-    /* only update the natural size if user size is not defined. */
-    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
-    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
   }
+  else /* IUP_BUTTON_TEXT only */
+  {
+    /* must use IupGetAttribute to check from the native implementation */
+    char* title = IupGetAttribute(ih, "TITLE");
+    char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
+    iupdrvFontGetMultiLineStringSize(ih, str, &natural_w, &natural_h);
+    if (str && str!=title) free(str);
+  }
+
+  /* even when IMPRESS is set, must compute the borders space */
+  iupdrvButtonAddBorders(&natural_w, &natural_h);
+
+  natural_w += 2*ih->data->horiz_padding;
+  natural_h += 2*ih->data->vert_padding;
+
+  *w = natural_w;
+  *h = natural_h;
 }
 
 
@@ -185,9 +177,6 @@ Iclass* iupButtonGetClass(void)
   /* Class functions */
   ic->Create = iButtonCreateMethod;
   ic->ComputeNaturalSize = iButtonComputeNaturalSizeMethod;
-
-  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
-  ic->SetPosition = iupBaseSetPositionMethod;
 
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;

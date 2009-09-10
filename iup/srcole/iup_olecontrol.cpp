@@ -72,23 +72,15 @@ static int iOleControlResize_CB(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-static void iOleControlComputeNaturalSizeMethod(Ihandle* ih)
+static void iOleControlComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  long natural_w = 0, natural_h = 0;
+  (void)expand; /* unset if not a container */
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
-  {
-    long natural_w = 0, natural_h = 0;
+  ih->data->olehandler->GetNaturalSize(&natural_w, &natural_h);
 
-    ih->data->olehandler->GetNaturalSize(&natural_w, &natural_h);
-
-    /* only update the natural size if user size is not defined. */
-    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
-    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
-  }
+  *w = natural_w;
+  *h = natural_h;
 }
 
 static void iOleControlLayoutUpdateMethod(Ihandle* ih)

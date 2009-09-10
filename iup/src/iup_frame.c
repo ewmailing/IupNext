@@ -65,65 +65,49 @@ static int iFrameCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iFrameComputeNaturalSizeMethod(Ihandle* ih)
+static void iFrameComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  iupBaseContainerUpdateExpand(ih);
+  int decorwidth, decorheight;
+  Ihandle* child = ih->firstchild;
 
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  iFrameGetDecorSize(ih, &decorwidth, &decorheight);
+  *w = decorwidth;
+  *h = decorheight;
 
-  /* Frame has only one child */
-  if (ih->firstchild)
+  if (child)
   {
-    int decorwidth, decorheight;
-    Ihandle* child = ih->firstchild;
-
     /* update child natural size first */
-    iupClassObjectComputeNaturalSize(child);
+    iupBaseComputeNaturalSize(child);
 
-    iFrameGetDecorSize(ih, &decorwidth, &decorheight);
-
-    ih->expand &= child->expand; /* compose but only expand where the box can expand */
-    ih->naturalwidth = iupMAX(ih->naturalwidth, child->naturalwidth + decorwidth);
-    ih->naturalheight = iupMAX(ih->naturalheight, child->naturalheight + decorheight);
+    *expand = child->expand;
+    *w += child->naturalwidth;
+    *h += child->naturalheight;
   }
 }
 
-static void iFrameSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+static void iFrameSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
+  int width, height, decorwidth, decorheight;
 
-  /* update child */
-  if (ih->firstchild)
-  {
-    int width, height, decorwidth, decorheight;
+  iFrameGetDecorSize(ih, &decorwidth, &decorheight);
 
-    iFrameGetDecorSize(ih, &decorwidth, &decorheight);
+  width = ih->currentwidth-decorwidth;
+  height = ih->currentheight-decorheight;
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
 
-    width = ih->currentwidth-decorwidth;
-    height = ih->currentheight-decorheight;
-    if (width < 0) width = 0;
-    if (height < 0) height = 0;
-
-    iupClassObjectSetCurrentSize(ih->firstchild, width, height, shrink);
-  }
+  iupBaseSetCurrentSize(ih->firstchild, width, height, shrink);
 }
 
-static void iFrameSetPositionMethod(Ihandle* ih, int x, int y)
+static void iFrameSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  iupBaseSetPositionMethod(ih, x, y);
+  /* IupFrame is the native parent of its children,
+     so the position is restarted at (0,0) */
 
-  if (ih->firstchild)
-  {
-    /* IupFrame is the native parent of its children,
-       so the position is restarted at (0,0) */
+  iupdrvFrameGetDecorOffset(ih, &x, &y);
 
-    iupdrvFrameGetDecorOffset(ih, &x, &y);
-
-    /* Child coordinates are relative to client left-top corner. */
-    iupClassObjectSetPosition(ih->firstchild, x, y);
-  }
+  /* Child coordinates are relative to client left-top corner. */
+  iupBaseSetPosition(ih->firstchild, x, y);
 }
 
 
@@ -152,8 +136,8 @@ Iclass* iupFrameGetClass(void)
   ic->Create = iFrameCreateMethod;
 
   ic->ComputeNaturalSize = iFrameComputeNaturalSizeMethod;
-  ic->SetCurrentSize = iFrameSetCurrentSizeMethod;
-  ic->SetPosition = iFrameSetPositionMethod;
+  ic->SetChildrenCurrentSize = iFrameSetChildrenCurrentSizeMethod;
+  ic->SetChildrenPosition = iFrameSetChildrenPositionMethod;
 
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;

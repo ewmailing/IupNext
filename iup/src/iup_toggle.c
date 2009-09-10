@@ -47,54 +47,46 @@ static int iToggleCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iToggleComputeNaturalSizeMethod(Ihandle* ih)
+static void iToggleComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  int natural_w = 0, 
+      natural_h = 0,
+      type = ih->data->type;
+  (void)expand; /* unset if not a container */
 
-  /* if user size is not defined, then calculate the natural size */
-  if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
+  if (!ih->handle)
   {
-    int natural_w = 0, 
-        natural_h = 0,
-        type = ih->data->type;
-
-    if (!ih->handle)
-    {
-      /* if not mapped must initialize the internal values */
-      char* value = iupAttribGet(ih, "IMAGE");
-      if (value)
-        type = IUP_TOGGLE_IMAGE;
-      else
-        type = IUP_TOGGLE_TEXT;
-    }
-
-    if (type == IUP_TOGGLE_IMAGE)
-    {
-      iupImageGetInfo(iupAttribGet(ih, "IMAGE"), &natural_w, &natural_h, NULL);
-
-      /* even when IMPRESS is set, must compute the borders space */
-      iupdrvButtonAddBorders(&natural_w, &natural_h);
-
-      natural_w += 2*ih->data->horiz_padding;
-      natural_h += 2*ih->data->vert_padding;
-    }
-    else /* IUP_TOGGLE_TEXT */
-    {
-      /* must use IupGetAttribute to check from the native implementation */
-      char* title = IupGetAttribute(ih, "TITLE");
-      char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
-      iupdrvFontGetMultiLineStringSize(ih, str, &natural_w, &natural_h);
-      if (str && str!=title) free(str);
-
-      iupdrvToggleAddCheckBox(&natural_w, &natural_h);
-    }
-
-    /* only update the natural size if user size is not defined. */
-    if (ih->naturalwidth <= 0) ih->naturalwidth = natural_w;
-    if (ih->naturalheight <= 0) ih->naturalheight = natural_h;
+    /* if not mapped must initialize the internal values */
+    char* value = iupAttribGet(ih, "IMAGE");
+    if (value)
+      type = IUP_TOGGLE_IMAGE;
+    else
+      type = IUP_TOGGLE_TEXT;
   }
+
+  if (type == IUP_TOGGLE_IMAGE)
+  {
+    iupImageGetInfo(iupAttribGet(ih, "IMAGE"), &natural_w, &natural_h, NULL);
+
+    /* even when IMPRESS is set, must compute the borders space */
+    iupdrvButtonAddBorders(&natural_w, &natural_h);
+
+    natural_w += 2*ih->data->horiz_padding;
+    natural_h += 2*ih->data->vert_padding;
+  }
+  else /* IUP_TOGGLE_TEXT */
+  {
+    /* must use IupGetAttribute to check from the native implementation */
+    char* title = IupGetAttribute(ih, "TITLE");
+    char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
+    iupdrvFontGetMultiLineStringSize(ih, str, &natural_w, &natural_h);
+    if (str && str!=title) free(str);
+
+    iupdrvToggleAddCheckBox(&natural_w, &natural_h);
+  }
+
+  *w = natural_w;
+  *h = natural_h;
 }
 
 
@@ -123,10 +115,6 @@ Iclass* iupToggleGetClass(void)
   /* Class functions */
   ic->Create = iToggleCreateMethod;
   ic->ComputeNaturalSize = iToggleComputeNaturalSizeMethod;
-
-  ic->SetCurrentSize = iupBaseSetCurrentSizeMethod;
-  ic->SetPosition = iupBaseSetPositionMethod;
-
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;
 

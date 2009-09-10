@@ -68,22 +68,31 @@ static void iClassDestroy(Iclass* ic, Ihandle* ih)
     iClassDestroy(ic->parent, ih);
 }
 
-static void iClassComputeNaturalSize(Iclass* ic, Ihandle* ih)
+static void iClassComputeNaturalSize(Iclass* ic, Ihandle* ih, int *w, int *h, int *expand)
 {
   if (ic->parent)
-    iClassComputeNaturalSize(ic->parent, ih);
+    iClassComputeNaturalSize(ic->parent, ih, w, h, expand);
 
   if (ic->ComputeNaturalSize)
-    ic->ComputeNaturalSize(ih);
+    ic->ComputeNaturalSize(ih, w, h, expand);
 }
 
-static void iClassSetCurrentSize(Iclass* ic, Ihandle* ih, int w, int h, int shrink)
+static void iClassSetChildrenCurrentSize(Iclass* ic, Ihandle* ih, int shrink)
 {
   if (ic->parent)
-    iClassSetCurrentSize(ic->parent, ih, w, h, shrink);
+    iClassSetChildrenCurrentSize(ic->parent, ih, shrink);
 
-  if (ic->SetCurrentSize)
-    ic->SetCurrentSize(ih, w, h, shrink);
+  if (ic->SetChildrenCurrentSize)
+    ic->SetChildrenCurrentSize(ih, shrink);
+}
+
+static void iClassSetChildrenPosition(Iclass* ic, Ihandle* ih, int x, int y)
+{
+  if (ic->parent)
+    iClassSetChildrenPosition(ic->parent, ih, x, y);
+
+  if (ic->SetChildrenPosition)
+    ic->SetChildrenPosition(ih, x, y);
 }
 
 static Ihandle* iClassGetInnerContainer(Iclass* ic, Ihandle* ih)
@@ -134,15 +143,6 @@ static void iClassObjectChildRemoved(Iclass* ic, Ihandle* ih, Ihandle* child)
     ic->ChildRemoved(ih, child);
 }
 
-static void iClassSetPosition(Iclass* ic, Ihandle* ih, int x, int y)
-{
-  if (ic->parent)
-    iClassSetPosition(ic->parent, ih, x, y);
-
-  if (ic->SetPosition)
-    ic->SetPosition(ih, x, y);
-}
-
 static void iClassLayoutUpdate(Iclass* ic, Ihandle *ih)
 {
   if (ic->parent)
@@ -184,14 +184,19 @@ void iupClassObjectDestroy(Ihandle* ih)
   iClassDestroy(ih->iclass, ih);
 }
 
-void iupClassObjectComputeNaturalSize(Ihandle* ih)
+void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *expand)
 {
-  iClassComputeNaturalSize(ih->iclass, ih);
+  iClassComputeNaturalSize(ih->iclass, ih, w, h, expand);
 }
 
-void iupClassObjectSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
+void iupClassObjectSetChildrenCurrentSize(Ihandle* ih, int shrink)
 {
-  iClassSetCurrentSize(ih->iclass, ih, w, h, shrink);
+  iClassSetChildrenCurrentSize(ih->iclass, ih, shrink);
+}
+
+void iupClassObjectSetChildrenPosition(Ihandle* ih, int x, int y)
+{
+  iClassSetChildrenPosition(ih->iclass, ih, x, y);
 }
 
 Ihandle* iupClassObjectGetInnerContainer(Ihandle* ih)
@@ -212,11 +217,6 @@ void iupClassObjectChildAdded(Ihandle* ih, Ihandle* child)
 void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child)
 {
   iClassObjectChildRemoved(ih->iclass, ih, child);
-}
-
-void iupClassObjectSetPosition(Ihandle* ih, int x, int y)
-{
-  iClassSetPosition(ih->iclass, ih, x, y);
 }
 
 void iupClassObjectLayoutUpdate(Ihandle *ih)

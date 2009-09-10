@@ -1663,6 +1663,7 @@ static void iTabsGetDecorOffset(Ihandle* ih, int *x, int *y)
 
     case ITABS_RIGHT:
     case ITABS_BOTTOM:
+    default:
       *x = ITABS_MARGIN;
       *y = ITABS_MARGIN;
       break;
@@ -2419,59 +2420,44 @@ static Ihandle* iTabsGetInnerContainerMethod(Ihandle* ih)
   return ih->data->zbox;
 }
 
-static void iTabsComputeNaturalSizeMethod(Ihandle* ih)
+static void iTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  iupBaseContainerUpdateExpand(ih);
+  int decorwidth, decorheight;
+  Ihandle* child = ih->data->zbox;  /* zbox is always non NULL */
 
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth  = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  iTabsCalcTabSize(ih);  /* make sure that decoration is updated, even if UPDATE has not been set after other changes */
+  iTabsGetDecorSize(ih, &decorwidth, &decorheight);
 
-  /* always has a zbox child */
-  {
-    int decorwidth, decorheight;
+  /* update child natural size first */
+  iupBaseComputeNaturalSize(child);
 
-    iTabsCalcTabSize(ih);  /* make sure that decoration is updated, even if UPDATE has not been set after other changes */
-    iTabsGetDecorSize(ih, &decorwidth, &decorheight);
-
-    /* update child natural size first */
-    iupClassObjectComputeNaturalSize(ih->data->zbox);
-
-    ih->expand &= ih->data->zbox->expand; /* compose but only expand where the box can expand */
-    ih->naturalwidth = iupMAX(ih->naturalwidth, ih->data->zbox->naturalwidth + decorwidth);
-    ih->naturalheight = iupMAX(ih->naturalheight, ih->data->zbox->naturalheight + decorheight);
-  }
+  *expand = child->expand;
+  *w = child->naturalwidth + decorwidth;
+  *h = child->naturalheight + decorheight;
 }
 
-static void iTabsSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+static void iTabsSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  iupBaseContainerSetCurrentSizeMethod(ih, w, h, shrink);
+  int width, height, decorwidth, decorheight;
 
-  /* always has a zbox child */
-  {
-    int width, height, decorwidth, decorheight;
+  iTabsGetDecorSize(ih, &decorwidth, &decorheight);
 
-    iTabsGetDecorSize(ih, &decorwidth, &decorheight);
+  width = ih->currentwidth-decorwidth;
+  height = ih->currentheight-decorheight;
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
 
-    width = ih->currentwidth-decorwidth;
-    height = ih->currentheight-decorheight;
-    if (width < 0) width = 0;
-    if (height < 0) height = 0;
-
-    iupClassObjectSetCurrentSize(ih->data->zbox, width, height, shrink);
-  }
+  iupBaseSetCurrentSize(ih->data->zbox, width, height, shrink);
 }
 
-static void iTabsSetPositionMethod(Ihandle* ih, int x, int y)
+static void iTabsSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  iupBaseSetPositionMethod(ih, x, y);
-
   /* IupTabs is the native parent of its children,
   so the position is restarted at (0,0) */
   iTabsGetDecorOffset(ih, &x, &y);
 
   /* Child coordinates are relative to client left-top corner. */
-  iupClassObjectSetPosition(ih->data->zbox, x, y);
+  iupBaseSetPosition(ih->data->zbox, x, y);
 }
 
 static void iTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
@@ -2586,8 +2572,8 @@ static Iclass* iTabsGetClass(void)
   ic->UnMap   = iTabsUnMapMethod;
 
   ic->ComputeNaturalSize = iTabsComputeNaturalSizeMethod;
-  ic->SetCurrentSize     = iTabsSetCurrentSizeMethod;
-  ic->SetPosition        = iTabsSetPositionMethod;
+  ic->SetChildrenCurrentSize     = iTabsSetChildrenCurrentSizeMethod;
+  ic->SetChildrenPosition        = iTabsSetChildrenPositionMethod;
 
   ic->GetInnerContainer = iTabsGetInnerContainerMethod;
   ic->ChildAdded     = iTabsChildAddedMethod;

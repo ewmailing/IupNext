@@ -107,74 +107,58 @@ static void iDialogDestroyMethod(Ihandle* ih)
   iupDlgListRemove(ih);
 }
 
-static void iDialogComputeNaturalSizeMethod(Ihandle* ih)
+static void iDialogComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  iupBaseContainerUpdateExpand(ih);
+  int decorwidth, decorheight;
+  Ihandle* child = ih->firstchild;
 
-  /* always initialize the natural size using the user size */
-  ih->naturalwidth = ih->userwidth;
-  ih->naturalheight = ih->userheight;
+  iupDialogGetDecorSize(ih, &decorwidth, &decorheight);
+  *w = decorwidth;
+  *h = decorheight;
 
-  /* the dialog has only one child */
-  if (ih->firstchild)
+  if (child)
   {
-    int decorwidth, decorheight, natural_w, natural_h;
-    Ihandle* child = ih->firstchild;
-
-    iupDialogGetDecorSize(ih, &decorwidth, &decorheight);
-
     /* update child natural size first */
-    iupClassObjectComputeNaturalSize(child);
+    iupBaseComputeNaturalSize(child);
 
-    ih->expand |= child->expand;
-    natural_w = child->naturalwidth + decorwidth;
-    natural_h = child->naturalheight + decorheight;
-
-    /* only update the natural size if user size is not defined. */
-    /* IupDialog is the only container where this must be done */ 
-    /* if the natural size is bigger than the actual dialog size then
-       the dialog will be resized, if smaller then the dialog remains with the same size. */
-    if (ih->naturalwidth <= 0) ih->naturalwidth = iupMAX(ih->currentwidth, natural_w);
-    if (ih->naturalheight <= 0) ih->naturalheight = iupMAX(ih->currentheight, natural_h);
+    *expand = child->expand;
+    *w += child->naturalwidth;
+    *h += child->naturalheight;
   }
 }
 
-static void iDialogSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink)
+static void iDialogSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  /* width and height parameters here are ignored, because they are always 0 for the dialog. */
-  (void)w;
-  (void)h;
+  int decorwidth, decorheight, client_width, client_height;
 
-  /* current size is zero before map and when reset by the application */
-  /* after that the current size must follow the actual size of the dialog */
-
-  if (!ih->currentwidth)
-    ih->currentwidth = ih->naturalwidth;
-
-  if (!ih->currentheight)
-    ih->currentheight = ih->naturalheight;
-
-  if (ih->firstchild)
+  if (shrink)
   {
-    int decorwidth, decorheight, client_width, client_height;
-
-    if (shrink)
-    {
-      client_width = ih->currentwidth;
-      client_height = ih->currentheight;
-    }
-    else
-    {
-      client_width = iupMAX(ih->naturalwidth, ih->currentwidth);
-      client_height = iupMAX(ih->naturalheight, ih->currentheight);
-    }
-
-    iupDialogGetDecorSize(ih, &decorwidth, &decorheight);
-    client_width -= decorwidth;
-    client_height -= decorheight;
-
-    iupClassObjectSetCurrentSize(ih->firstchild, client_width, client_height, shrink);
+    client_width = ih->currentwidth;
+    client_height = ih->currentheight;
   }
+  else
+  {
+    client_width = iupMAX(ih->naturalwidth, ih->currentwidth);
+    client_height = iupMAX(ih->naturalheight, ih->currentheight);
+  }
+
+  iupDialogGetDecorSize(ih, &decorwidth, &decorheight);
+
+  client_width  -= decorwidth;
+  client_height -= decorheight;
+  if (client_width < 0) client_width = 0;
+  if (client_height < 0) client_height = 0;
+
+  iupBaseSetCurrentSize(ih->firstchild, client_width, client_height, shrink);
+}
+
+static void iDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
+{
+  (void)x;
+  (void)y;
+
+  /* Child coordinates are relative to client left-top corner. */
+  iupBaseSetPosition(ih->firstchild, 0, 0);
 }
 
 static void iDialogAfterShow(Ihandle* ih)
@@ -602,19 +586,6 @@ void iupDialogGetDecorSize(Ihandle* ih, int *decorwidth, int *decorheight)
   *decorheight = 2*border + caption + menu;
 }
 
-static void iDialogSetPositionMethod(Ihandle* ih, int x, int y)
-{
-  /* x and y are always 0 for the dialog. */
-  ih->x = x;
-  ih->y = y;
-
-  if (ih->firstchild)
-  {
-    /* Child coordinates are relative to client left-top corner. */
-    iupClassObjectSetPosition(ih->firstchild, 0, 0);
-  }
-}
-
 static int iDialogSetHideTaskbarAttrib(Ihandle *ih, const char *value)
 {
   iupdrvDialogSetVisible(ih, !iupStrBoolean(value));
@@ -696,8 +667,8 @@ Iclass* iupDialogGetClass(void)
   ic->Create = iDialogCreateMethod;
   ic->Destroy = iDialogDestroyMethod;
   ic->ComputeNaturalSize = iDialogComputeNaturalSizeMethod;
-  ic->SetCurrentSize = iDialogSetCurrentSizeMethod;
-  ic->SetPosition = iDialogSetPositionMethod;
+  ic->SetChildrenCurrentSize = iDialogSetChildrenCurrentSizeMethod;
+  ic->SetChildrenPosition = iDialogSetChildrenPositionMethod;
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "SHOW_CB", "i");

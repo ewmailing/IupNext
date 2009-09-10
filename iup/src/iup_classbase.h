@@ -45,13 +45,36 @@ void iupBaseRegisterCommonCallbacks(Iclass* ic);
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic);
 
 /** Updates the expand member of the IUP object from the EXPAND attribute.
- * Should be called in the beginning of the ComputeNaturalSize of each container.
+ * Should be called in the beginning of the ComputeNaturalSize for a container.
  * \ingroup iclassbase */
 void iupBaseContainerUpdateExpand(Ihandle* ih);
 
+/** Initializes the natural size using the user size, then
+ * if a container then update the "expand" member from the EXPAND attribute, then
+ * call \ref iupClassObjectComputeNaturalSize for containers if they have children or
+ * call \ref iupClassObjectComputeNaturalSize for non-containers if user size is not defined.
+ * Must be called for each children in the container. \n
+ * First call is in iupLayoutCompute.
+ * \ingroup iclassbase */
+void iupBaseComputeNaturalSize(Ihandle* ih);
+
+/** Update the current size from the available size, the natural size, expand and shrink.
+ * Call \ref iupClassObjectSetChildrenCurrentSize for containers if they have children.
+ * Must be called for each children in the container. \n
+ * First call is in iupLayoutCompute.
+ * \ingroup iclassbase */
+void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink);
+
+/** Set the current position and update children position for containers.
+ * Call \ref iupClassObjectSetChildrenPosition for containers if they have children.
+ * Must be called for each children in the container. \n
+ * First call is in iupLayoutCompute.
+ * \ingroup iclassbase */
+void iupBaseSetPosition(Ihandle* ih, int x, int y);
+
 /* Updates the SIZE attribute if defined. 
    Called only from iupdrvSetStandardFontAttrib. */
-void iupBaseUpdateSizeAttrib(Ihandle* ih);
+void iupBaseUpdateSizeFromFont(Ihandle* ih);
 
 
 /** \defgroup iclassbasemethod Base Class Methods
@@ -59,19 +82,6 @@ void iupBaseUpdateSizeAttrib(Ihandle* ih);
  * See \ref iup_classbase.h
  * \ingroup iclassbase
  */
-
-/** The \ref Iclass::SetCurrentSize method for controls that are not containers.
- * \ingroup iclassbasemethod */
-void iupBaseSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink);
-
-/** Partial \ref Iclass::SetCurrentSize method for containers, 
- * it must be complemented with a loop for the children removing the element decoration or margins.
- * \ingroup iclassbasemethod */
-void iupBaseContainerSetCurrentSizeMethod(Ihandle* ih, int w, int h, int shrink);
-
-/** The \ref Iclass::SetPosition method for controls that are not containers.
- * \ingroup iclassbasemethod */
-void iupBaseSetPositionMethod(Ihandle* ih, int x, int y);
 
 /** Driver dependent \ref Iclass::LayoutUpdate method.
  * \ingroup iclassbasemethod */
@@ -81,6 +91,9 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih);
  * \ingroup iclassbasemethod */
 void iupdrvBaseUnMapMethod(Ihandle* ih);
 
+/** Native type void \ref Iclass::Map method.
+ * \ingroup iclassbasemethod */
+int iupBaseTypeVoidMapMethod(Ihandle* ih);
 
 
 /** \defgroup iclassbaseattribfunc Base Class Attribute Functions
