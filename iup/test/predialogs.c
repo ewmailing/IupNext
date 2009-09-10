@@ -432,7 +432,7 @@ void PreDialogsTest(void)
               "g = IupGetFile\n"
               "l = IupListDialog\n"
               "--------------------\n"
-              "Esc = quit\n";
+              "Esc = quit";
   Ihandle *dlg = IupDialog(IupVbox(IupLabel(msg), NULL));
 
 #ifdef USE_OPENGL
@@ -442,7 +442,6 @@ void PreDialogsTest(void)
   IupSetHandle("_MAIN_DIALOG_TEST_", dlg);
 
   IupSetAttribute(dlg, "TITLE", "Pre-defined Dialogs Test");
-  IupSetAttribute(dlg, "RASTERSIZE", "500x500");
   IupSetAttribute(dlg, "MARGIN", "10x10");
 
   IupSetCallback(dlg, "K_ANY",    (Icallback)k_any);

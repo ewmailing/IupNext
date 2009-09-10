@@ -59,6 +59,9 @@ void PPlotTest(void);
 #endif
 void GetParamTest(void);
 void ConfTest(void);
+void ZboxTest(void);
+void ScanfTest(void);
+void SboxTest(void);
 
 void HelpTest(void)
 {
@@ -109,6 +112,8 @@ static TestItems test_list[] = {
   {"PreDialogs", PreDialogsTest},
   {"Progressbar", ProgressbarTest},
   {"Sample", SampleTest},
+  {"Sbox", SboxTest},
+  {"Scanf", ScanfTest},
   {"Spin", SpinTest},
   {"SysInfo", SysInfoTest},
   {"Tabs", TabsTest},
@@ -120,6 +125,7 @@ static TestItems test_list[] = {
   {"Tree", TreeTest},
   {"Val", ValTest},
   {"Vbox", VboxTest},
+  {"Zbox", ZboxTest},
 };
 
 static int k_enter_cb(Ihandle*ih)

@@ -672,7 +672,7 @@ void PPlotTest(void)
   IupSetAttribute(hbox, "GAP", "10");
   
   dlg = IupDialog(hbox);
-  IupSetAttribute(dlg, "RASTERSIZE", "600x400");
+  IupSetAttribute(dlg, "SIZE", "170x");
   IupSetAttribute(dlg, "TITLE", "IupPPlot Example");
 
   InitPlots(); /* It must be able to be done independent of dlg Mapping */
@@ -680,7 +680,7 @@ void PPlotTest(void)
   tabs_tabchange_cb(tabs, vboxr[0]);
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
-  IupSetAttribute(dlg, "RASTERSIZE", NULL);
+  IupSetAttribute(dlg, "SIZE", NULL);
 }
 
 #ifndef BIG_TEST
