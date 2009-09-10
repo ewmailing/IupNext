@@ -142,6 +142,9 @@ static int gtkToggleSetValueAttrib(Ihandle* ih, const char* value)
     else
       gtk_toggle_button_set_active((GtkToggleButton*)ih->handle, FALSE);
 
+    if (ih->data->type == IUP_TOGGLE_IMAGE)
+      gtkToggleUpdateImage(ih, iupdrvIsActive(ih), gtkToggleGetCheck(ih));
+
     iupAttribSetStr(ih, "_IUPGTK_IGNORE_TOGGLE", NULL);
   }
 
