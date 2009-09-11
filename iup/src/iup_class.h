@@ -150,7 +150,7 @@ struct Iclass_
    * Also called before the element is mapped, so it must be independent of the native control.
    * First call done at iupLayoutCompute for the dialog.
    */
-  void (*ComputeNaturalSize)(Ihandle* ih, int *w, int *h, int *expand);
+  void (*ComputeNaturalSize)(Ihandle* ih, int *w, int *h, int *children_expand);
 
   /** Method that calculates and updates the current size of children based on the available size,
    * the natural size and the expand configuration. \n
@@ -356,7 +356,7 @@ void iupClassObjectLayoutUpdate(Ihandle* ih);
 /** Calls \ref Iclass::ComputeNaturalSize method. 
  * \ingroup iclassobject
  */
-void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *expand);
+void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *children_expand);
 
 /** Calls \ref Iclass::SetChildrenCurrentSize method. 
  * \ingroup iclassobject

@@ -195,7 +195,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   char* value;
   int response, filter_count = 0;
 
-  iupAttribSetInt(ih, "_IUPDLG_X", x);
+  iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
   value = iupAttribGetStr(ih, "DIALOGTYPE");

@@ -54,15 +54,10 @@ void iupDialogUpdatePosition(Ihandle* ih);
 /* retrieve the decorations size that offsets the window size of the client size. */
 void iupDialogGetDecorSize(Ihandle* ih, int *decorwidth, int *decorheight);
 
-/* Calculates the real position of the dialog from 
- * IUP_CURRENT, IUP_CENTER, IUP_LEFT, IUP_RIGHT and IUP_MOUSEPOS.
- * Used in IupShow, IupShowXY and IupPopup. */
-void iupDialogAdjustPos(Ihandle* ih, int* x, int* y);
-
-
 struct _IcontrolData 
 {
   int show_state,     /* save the state to be used used in SHOW_CB */
+      first_show,     /* boolean flag to indicate that the dialog was shown for the first time */
       ignore_resize,  /* flag to ignore the next resize */
       popup_level,    /* popup level of the dialog if IupPopup used */
       child_id,       /* serial number used by child controls */
@@ -80,7 +75,7 @@ void iupdrvDialogInitClass(Iclass* iclass);
 int iupdrvDialogShow(Ihandle* ih, int x, int y);
 void iupdrvDialogGetPosition(InativeHandle* handle, int *x, int *y);
 void iupdrvDialogSetVisible(Ihandle* ih, int visible);
-int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y);
+int iupdrvDialogSetPlacement(Ihandle* ih);
 void iupdrvDialogSetPosition(Ihandle *ih, int x, int y);
 void iupdrvDialogUpdateSize(Ihandle* ih);
 void iupdrvDialogGetSize(InativeHandle* handle, int *w, int *h);

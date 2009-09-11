@@ -115,6 +115,56 @@ static char* iBoxGetGapAttrib(Ihandle* ih)
   return str;
 }
 
+static int iBoxSetHomogeneousAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->is_homogeneous = 1;
+  else
+    ih->data->is_homogeneous = 0;
+  return 0;
+}
+
+static char* iBoxGetHomogeneousAttrib(Ihandle* ih)
+{
+  if (ih->data->is_homogeneous)
+    return "YES";
+  else
+    return "NO";
+}
+
+static int iBoxSetExpandChildrenAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+  {
+    if (iupStrEqual(ih->iclass->name, "vbox"))
+      ih->data->expand_children = IUP_EXPAND_WIDTH;    /* in vert. box, expand horizontally */
+    else
+      ih->data->expand_children = IUP_EXPAND_HEIGHT;   /* in horiz. box, expand vertically */
+  }
+  else
+    ih->data->expand_children = 0;
+  return 0;
+}
+
+static char* iBoxGetExpandChildrenAttrib(Ihandle* ih)
+{
+  if (ih->data->expand_children)
+    return "YES";
+  else
+    return "NO";
+}
+
+static int iBoxSetNormalizeSizeAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->normalize_size = iupNormalizeGetNormalizeSize(value);
+  return 0;
+}
+
+static char* iBoxGetNormalizeSizeAttrib(Ihandle* ih)
+{
+  return iupNormalizeGetNormalizeSizeStr(ih->data->normalize_size);
+}
+
 static int iBoxSetCMarginAttrib(Ihandle* ih, const char* value)
 {
   int cmargin_x=-1, cmargin_y=-1;
@@ -180,9 +230,9 @@ Iclass* iupBoxClassBase(void)
   iupClassRegisterAttribute(ic, "MARGIN", iBoxGetMarginAttrib, iBoxSetMarginAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CMARGIN", iBoxGetCMarginAttrib, iBoxSetCMarginAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 
-  iupClassRegisterAttribute(ic, "EXPANDCHILDREN", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HOMOGENEOUS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NORMALIZESIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPANDCHILDREN", iBoxGetExpandChildrenAttrib, iBoxSetExpandChildrenAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HOMOGENEOUS", iBoxGetHomogeneousAttrib, iBoxSetHomogeneousAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NORMALIZESIZE", iBoxGetNormalizeSizeAttrib, iBoxSetNormalizeSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }

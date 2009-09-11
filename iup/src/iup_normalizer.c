@@ -23,7 +23,7 @@ struct _IcontrolData
   Iarray* ih_array;
 };
 
-static int iNormalizeGetNormalizeSize(const char* value)
+int iupNormalizeGetNormalizeSize(const char* value)
 {
   if (!value)
     return NORMALIZE_NONE;
@@ -36,19 +36,20 @@ static int iNormalizeGetNormalizeSize(const char* value)
   return NORMALIZE_NONE;
 }
 
-void iupNormalizeSizeBoxChild(Ihandle *ih, int children_natural_maxwidth, int children_natural_maxheight)
+char* iupNormalizeGetNormalizeSizeStr(int normalize)
 {
-  Ihandle* child;
-  int normalize = iNormalizeGetNormalizeSize(iupAttribGetStr(ih, "NORMALIZESIZE"));
-  if (!normalize)
-    return;
+  char* int2str[] = {"NONE", "HORIZONTAL", "VERTICAL", "BOTH"};
+  return int2str[normalize];
+}
 
+void iupNormalizeSizeBoxChild(Ihandle *ih, int normalize, int children_natural_maxwidth, int children_natural_maxheight)
+{
   /* It is called from Vbox and Hbox ComputeNaturalSizeMethod after the natural size is calculated */
-
   /* reset the natural width and/or height */
+  Ihandle* child;
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (!child->floating && (child->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(child->iclass->name, "fill")))
+    if (!child->is_floating && (child->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(child->iclass->name, "fill")))
     {
       if (normalize & NORMALIZE_WIDTH) 
         child->naturalwidth = children_natural_maxwidth;
@@ -64,7 +65,7 @@ static int iNormalizerSetNormalizeAttrib(Ihandle* ih, const char* value)
   Ihandle** ih_list;
   Ihandle* ih_control;
   int natural_maxwidth = 0, natural_maxheight = 0;
-  int normalize = iNormalizeGetNormalizeSize(value);
+  int normalize = iupNormalizeGetNormalizeSize(value);
   if (!normalize)
     return 1;
 
@@ -82,7 +83,7 @@ static int iNormalizerSetNormalizeAttrib(Ihandle* ih, const char* value)
   for (i = 0; i < count; i++)
   {
     ih_control = ih_list[i];
-    if (!ih_control->floating && (ih_control->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(ih_control->iclass->name, "fill")))
+    if (!ih_control->is_floating && (ih_control->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(ih_control->iclass->name, "fill")))
     {
       if (normalize & NORMALIZE_WIDTH)
         ih_control->userwidth = natural_maxwidth;

@@ -181,7 +181,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
 #endif
 }
 
-int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
+int iupdrvDialogSetPlacement(Ihandle* ih)
 {
   char* placement;
   int old_state = ih->data->show_state;
@@ -216,7 +216,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
   }
   else if (iupStrEqualNoCase(placement, "FULL"))
   {
-    int width, height;
+    int width, height, x, y;
     int border, caption, menu;
     iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
 
@@ -300,6 +300,7 @@ static gboolean gtkDialogConfigureEvent(GtkWidget *widget, GdkEventConfigure *ev
 
     iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
 
+  /* update dialog size */
 #ifdef HILDON
     /* In Hildon, the configure event contains the window size, not the client area size */
     ih->currentwidth = evt->width;
@@ -310,11 +311,12 @@ static gboolean gtkDialogConfigureEvent(GtkWidget *widget, GdkEventConfigure *ev
 #endif
 
     cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
-    if (cb) cb(ih, evt->width, evt->height - menu);  /* notify to the application size the client area size */
-
-    ih->data->ignore_resize = 1; 
-    IupRefresh(ih);
-    ih->data->ignore_resize = 0;
+    if (!cb || cb(ih, evt->width, evt->height - menu)!=IUP_IGNORE)  /* width and height here are for the client area */
+    {
+      ih->data->ignore_resize = 1;
+      IupRefresh(ih);
+      ih->data->ignore_resize = 0;
+    }
   }
 
   return FALSE;

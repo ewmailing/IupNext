@@ -170,18 +170,6 @@ int IupPopup(Ihandle *ih, int x, int y)
     return IUP_INVALID;
   }
 
-  /* if first time, there is no current position */
-  if (!ih->handle)
-  {
-    int center = IUP_CENTER;
-    InativeHandle* parent = iupDialogGetNativeParent(ih);
-    if (parent)
-      center = IUP_CENTERPARENT;
-
-    if (x == IUP_CURRENT) x = center;
-    if (y == IUP_CURRENT) y = center;
-  }
-
   ret = IupMap(ih);
   if (ret == IUP_ERROR) 
     return ret;
@@ -214,18 +202,6 @@ int IupShowXY(Ihandle *ih, int x, int y)
     return IUP_INVALID;
   }
 
-  /* if first time, there is no current position */
-  if (!ih->handle)
-  {
-    int center = IUP_CENTER;
-    InativeHandle* parent = iupDialogGetNativeParent(ih);
-    if (parent)
-      center = IUP_CENTERPARENT;
-
-    if (x == IUP_CURRENT) x = center;
-    if (y == IUP_CURRENT) y = center;
-  }
-
   ret = IupMap(ih);
   if (ret == IUP_ERROR) 
     return ret;
@@ -250,22 +226,11 @@ int IupShow(Ihandle* ih)
     IupSetAttribute(ih, "VISIBLE", "YES");
   else   
   {
-    int ret;
-    int pos = IUP_CURRENT;
-    if (!ih->handle)
-    {
-      InativeHandle* parent = iupDialogGetNativeParent(ih);
-      if (parent)
-        pos = IUP_CENTERPARENT;
-      else
-        pos = IUP_CENTER;
-    }
-
-    ret = IupMap(ih);
+    int ret = IupMap(ih);
     if (ret == IUP_ERROR) 
       return ret;
       
-    ret = iupDialogShowXY(ih, pos, pos);
+    ret = iupDialogShowXY(ih, IUP_CURRENT, IUP_CURRENT);
     if (ret != IUP_NOERROR) 
     {
       iupERROR("Error during IupShow.");

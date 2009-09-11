@@ -105,7 +105,7 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
   unsigned char r = 0, g = 0, b = 0, a = 255;
   int response, ret;
 
-  iupAttribSetInt(ih, "_IUPDLG_X", x);
+  iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
   dialog = (GtkColorSelectionDialog*)gtk_color_selection_dialog_new(iupgtkStrConvertToUTF8(iupAttribGet(ih, "TITLE")));

@@ -164,7 +164,7 @@ static char* iBaseGetPositionAttrib(Ihandle* ih)
 
 static int iBaseSetPositionAttrib(Ihandle* ih, const char* value)
 {
-  if (ih->floating)
+  if (ih->is_floating)
     iupStrToIntInt(value, &ih->x, &ih->y, ',');
   return 0;
 }
@@ -321,16 +321,34 @@ int iupBaseSetNameAttrib(Ihandle* ih, const char* value)
 
 static int iBaseSetFloatingAttrib(Ihandle* ih, const char* value)
 {
-  ih->floating = iupStrBoolean(value);
+  ih->is_floating = iupStrBoolean(value);
   return 0;
 }
 
 static char* iBaseGetFloatingAttrib(Ihandle* ih)
 {
-  if (ih->floating)
+  if (ih->is_floating)
     return "YES";
   else
     return "NO";
+}
+
+static int iBaseSetMaxSizeAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+    ih->has_maxsize = 1;
+  else
+    ih->has_maxsize = 0;
+  return 1;
+}
+
+static int iBaseSetMinSizeAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+    ih->has_minsize = 1;
+  else
+    ih->has_minsize = 0;
+  return 1;
 }
 
 static int iBaseSetExpandAttrib(Ihandle* ih, const char* value)
@@ -406,6 +424,8 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "CHARSIZE", iupBaseGetCharSizeAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "POSITION", iBaseGetPositionAttrib, iBaseSetPositionAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAXSIZE", NULL, iBaseSetMaxSizeAttrib, IUPAF_SAMEASSYSTEM, "65535x65535", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MINSIZE", NULL, iBaseSetMinSizeAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED);  /* use inheritance to retrieve standard fonts */
   iupClassRegisterAttribute(ic, "FONT", iupGetFontAttrib, iupSetFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

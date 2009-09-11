@@ -136,6 +136,27 @@ void iupLayoutCompute(Ihandle* ih)
   iupBaseSetPosition(ih, 0, 0);
 }
 
+static void iLayoutSetMinMaxSize(Ihandle* ih, int *w, int *h)
+{
+  if (ih->has_minsize)
+  {
+    char* value = iupAttribGet(ih, "MINSIZE");
+    int min_w = 0, min_h = 0;          /* MINSIZE default value */
+    iupStrToIntInt(value, &min_w, &min_h, 'x');
+    if (*w < min_w) *w = min_w;
+    if (*h < min_h) *h = min_h;
+  }
+
+  if (ih->has_maxsize)
+  {
+    char* value = iupAttribGet(ih, "MAXSIZE");
+    int max_w = 65535, max_h = 65535;  /* MAXSIZE default value */
+    iupStrToIntInt(value, &max_w, &max_h, 'x');
+    if (*w > max_w) *w = max_w;
+    if (*h > max_h) *h = max_h;
+  }
+}
+
 void iupBaseComputeNaturalSize(Ihandle* ih)
 {
   /* always initialize the natural size using the user size */
@@ -144,13 +165,13 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
 
   if (ih->iclass->childtype!=IUP_CHILDNONE || ih->iclass->nativetype == IUP_TYPEDIALOG)
   {
-    int w=0, h=0, expand;
+    int w=0, h=0, children_expand;
 
     /* if a container then update the "expand" member from the EXPAND attribute */
     iupBaseContainerUpdateExpand(ih);
-    expand = ih->expand; /* use it as default value */
+    children_expand = ih->expand; /* use it as default value */
 
-    iupClassObjectComputeNaturalSize(ih, &w, &h, &expand);
+    iupClassObjectComputeNaturalSize(ih, &w, &h, &children_expand);
 
     if (ih->iclass->nativetype == IUP_TYPEDIALOG)
     {
@@ -158,15 +179,18 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
       /* IupDialog is the only container where this must be done */ 
       /* if the natural size is bigger than the actual dialog size then
          the dialog will be resized, if smaller then the dialog remains with the same size. */
-      ih->expand |= expand;
+      ih->expand |= children_expand;
       if (ih->naturalwidth <= 0) ih->naturalwidth = iupMAX(ih->currentwidth, w);
       if (ih->naturalheight <= 0) ih->naturalheight = iupMAX(ih->currentheight, h);
     }
     else
     {
-      ih->expand &= expand; /* compose but only expand where the element can expand */
+      ih->expand &= children_expand; /* combine but only expand where the element can expand */
       ih->naturalwidth = iupMAX(ih->naturalwidth, w);
       ih->naturalheight = iupMAX(ih->naturalheight, h);
+
+      /* crop the natural size */
+      iLayoutSetMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
     }
   }
   else 
@@ -180,6 +204,9 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
       if (ih->naturalwidth <= 0) ih->naturalwidth = w;
       if (ih->naturalheight <= 0) ih->naturalheight = h;
     }
+
+    /* crop the natural size */
+    iLayoutSetMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
   }
 }
 
@@ -204,12 +231,14 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
       if (shrink)
       {
         /* if expand then use the given size, else use the natural size */
+        /* this expand is a combination of the expand defined for the element and its children */
         ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)?  w: ih->naturalwidth;
         ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? h: ih->naturalheight;
       }
       else
       {
         /* if expand then use the given size (if greater than natural size), else use the natural size */
+        /* this expand is a combination of the expand defined for the element and its children */
         ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)?  iupMAX(ih->naturalwidth, w):  ih->naturalwidth;
         ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? iupMAX(ih->naturalheight, h): ih->naturalheight;
       }
@@ -223,9 +252,14 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
       /* for non containers is always 1, so they always can be smaller than the natural size */
 
       /* if expand use the given size, else use the natural size */
+      /* this expand is the defined for the element */
       ih->currentwidth = (ih->expand & IUP_EXPAND_WIDTH)? w: ih->naturalwidth;
       ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? h: ih->naturalheight;
     }
+
+    /* crop the current size if expanded */
+    if (ih->expand & IUP_EXPAND_WIDTH || ih->expand & IUP_EXPAND_HEIGHT)
+      iLayoutSetMinMaxSize(ih, &(ih->currentwidth), &(ih->currentheight));
   }
 }
 

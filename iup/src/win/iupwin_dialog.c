@@ -131,7 +131,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   }
 }
 
-int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
+int iupdrvDialogSetPlacement(Ihandle* ih)
 {
   char* placement;
 
@@ -161,7 +161,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
   }
   else if (iupStrEqualNoCase(placement, "FULL"))
   {
-    int width, height;
+    int width, height, x, y;
     int caption, border, menu;
     iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
 
@@ -254,15 +254,12 @@ static void winDialogResize(Ihandle* ih, int width, int height)
   iupdrvDialogUpdateSize(ih);
 
   cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
-  if (cb) cb(ih, width, height);  /* width and height here are for the client area */
-
-  ih->data->ignore_resize = 1;
-
-  IupRefresh(ih);
-
-  RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_FRAME|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_ALLCHILDREN);
-
-  ih->data->ignore_resize = 0;
+  if (!cb || cb(ih, width, height)!=IUP_IGNORE)  /* width and height here are for the client area */
+  {
+    ih->data->ignore_resize = 1;
+    IupRefresh(ih);
+    ih->data->ignore_resize = 0;
+  }
 }
 
 static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)

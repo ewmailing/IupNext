@@ -393,7 +393,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   int result, dialogtype;
   char *value;
 
-  iupAttribSetInt(ih, "_IUPDLG_X", x);
+  iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
   value = iupAttribGetStr(ih, "DIALOGTYPE");

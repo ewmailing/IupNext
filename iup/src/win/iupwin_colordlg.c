@@ -82,7 +82,7 @@ static int winColorDlgPopup(Ihandle* ih, int x, int y)
   COLORREF lpCustColors[16];
   char* value;
 
-  iupAttribSetInt(ih, "_IUPDLG_X", x);
+  iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
   if (!parent)

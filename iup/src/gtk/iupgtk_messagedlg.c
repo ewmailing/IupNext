@@ -33,7 +33,7 @@ static int gtkMessageDlgPopup(Ihandle* ih, int x, int y)
   char *icon, *buttons, *title;
   int response, num_but = 2;
 
-  iupAttribSetInt(ih, "_IUPDLG_X", x);
+  iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
   icon = iupAttribGetStr(ih, "DIALOGTYPE");

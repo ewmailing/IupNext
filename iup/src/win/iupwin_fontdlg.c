@@ -60,7 +60,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
     is_strikeout = 0;
   int res = iupwinGetScreenRes();
 
-  iupAttribSetInt(ih, "_IUPDLG_X", x);
+  iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
   if (!parent)

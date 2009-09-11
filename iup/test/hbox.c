@@ -14,7 +14,7 @@ void HboxTest(void)
   /* Creates frame with three top aligned buttons */
   fr1 = IupFrame
   (
-    h1=IupHbox
+    h1 = IupHbox
     (
 //      IupFill(),
       b11=IupButton("1", NULL),

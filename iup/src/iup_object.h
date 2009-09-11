@@ -83,21 +83,22 @@ typedef struct _IcontrolData IcontrolData;
  * \ingroup object */
 struct Ihandle_
 {
-  char sig[4];         /**< IUP Signature, initialized with "IUP", cleared on destroy */
-  Iclass* iclass;      /**< Ihandle Class */
-  Itable* attrib;      /**< attributes table */
-  int serial;          /**< serial number used for controls that need a numeric id, initialized with -1 */
+  char sig[4];           /**< IUP Signature, initialized with "IUP", cleared on destroy */
+  Iclass* iclass;        /**< Ihandle Class */
+  Itable* attrib;        /**< attributes table */
+  int serial;            /**< serial number used for controls that need a numeric id, initialized with -1 */
   InativeHandle* handle; /**< native handle. initialized when mapped. InativeHandle definition is system dependent. */
-  int expand;          /**< expand configuration, a combination of \ref Iexpand */
-  int floating;        /**< floating attribute */
-  int x, y;            /**< upper-left corner relative to the native parent. always 0 for the dialog. */
+  int expand;            /**< expand configuration, a combination of \ref Iexpand, for containers is a combination of the children expand's */
+  int is_floating;       /**< floating attribute */
+  int x, y;              /**< upper-left corner relative to the native parent. always 0 for the dialog. */
   int    userwidth,    userheight; /**< user defined size for the control using SIZE or RASTERSIZE */
   int naturalwidth, naturalheight; /**< the calculated size based in the control contents and the user size */
   int currentwidth, currentheight; /**< actual size of the control in pixels (window size, including decorations and margins). */
-  Ihandle* parent;     /**< previous control in the hierarchy tree */
-  Ihandle* firstchild; /**< first child control in the hierarchy tree */
-  Ihandle* brother;    /**< next control inside parent */
-  IcontrolData* data;  /**< private control data. automatically freed if not NULL in destroy */
+  int has_maxsize, has_minsize;    /**< indicates that the control has the attributes MAXSIZE and/or MINSIZE */
+  Ihandle* parent;       /**< previous control in the hierarchy tree */
+  Ihandle* firstchild;   /**< first child control in the hierarchy tree */
+  Ihandle* brother;      /**< next control inside parent */
+  IcontrolData* data;    /**< private control data. automatically freed if not NULL in destroy */
 };
 
 

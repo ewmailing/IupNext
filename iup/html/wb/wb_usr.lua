@@ -492,6 +492,14 @@ wb_usr.tree =
               link= "attrib/iup_floating.html"
             },
             {
+              name= {nl= "MAXSIZE"},
+              link= "attrib/iup_maxsize.html"
+            },
+            {
+              name= {nl= "MINSIZE"},
+              link= "attrib/iup_minsize.html"
+            },
+            {
               name= {nl= "NAME"},
               link= "attrib/iup_name.html"
             },

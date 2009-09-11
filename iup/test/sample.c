@@ -246,7 +246,7 @@ void SampleTest(void)
   _frm_2 = IupFrame(
     IupVbox(
       IupLabel("Label Text"), 
-      IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"),
+      IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL, MAXSIZE=150, NAME=SAMP_SEP"),
       IupSetAttributes(IupLabel(NULL), "IMAGE=img1"),
       NULL));
   IupSetAttribute(_frm_2,"TITLE","IupLabel");

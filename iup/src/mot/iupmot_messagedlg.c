@@ -72,7 +72,7 @@ static int motMessageDlgPopup(Ihandle* ih, int x, int y)
   int num_but = 2;
   char *value;
 
-  iupAttribSetInt(ih, "_IUPDLG_X", x);
+  iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
   if (parent)

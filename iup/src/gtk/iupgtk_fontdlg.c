@@ -26,7 +26,7 @@ static int gtkFontDlgPopup(Ihandle* ih, int x, int y)
   int response;
   char* preview_text;
 
-  iupAttribSetInt(ih, "_IUPDLG_X", x);
+  iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
   dialog = (GtkFontSelectionDialog*)gtk_font_selection_dialog_new(iupgtkStrConvertToUTF8(iupAttribGet(ih, "TITLE")));

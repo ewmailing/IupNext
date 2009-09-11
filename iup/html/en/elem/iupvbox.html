@@ -51,9 +51,9 @@ vbox(<strong>child</strong>, ...) [in LED]</pre>
   The default value is &quot;YES&quot;. See the documentation of the attribute 
 	for EXPAND inheritance.</p>
 <p><strong>EXPANDCHILDREN</strong> (<font SIZE="3">non inheritable</font>): 
-forces all children to expand horizontally. Default: &quot;NO&quot;. This will compose and 
-overwrite with the child EXPAND attribute (the vertical expansion will be 
-preserved). (since 3.0)</p>
+forces all children to expand horizontally. Default: &quot;NO&quot;. This has 
+the same effect as setting EXPAND=HORIZONTAL on each child, but their vertical expansion will be 
+preserved. (since 3.0)</p>
 
   <p><a href="../attrib/iup_floating.html">FLOATING</a> (<font SIZE="3">non inheritable</font>)
 	<strong>(at children only)</strong>: If a child has FLOATING=YES then its size 
@@ -97,7 +97,10 @@ the standard SIZE/RASTERSIZE attributes. </p>
   <p>
 <a href="../attrib/iup_font.html">FONT</a>,
     <a href="../attrib/iup_clientsize.html">CLIENTSIZE</a>, 
-	<a href="../attrib/iup_position.html">POSITION</a>: 
+	<a href="../attrib/iup_position.html">POSITION</a>, 
+<a href="../attrib/iup_minsize.html">
+MINSIZE</a>, <a href="../attrib/iup_maxsize.html">
+MAXSIZE</a>: 
 also accepted.</p>
 
 <h3><a name="Notes">Notes</a></h3>

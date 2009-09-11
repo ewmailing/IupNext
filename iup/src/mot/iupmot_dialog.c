@@ -353,7 +353,7 @@ static int motDialogSetFullScreen(Ihandle* ih, int fullscreen)
   return 0;
 }
 
-int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
+int iupdrvDialogSetPlacement(Ihandle* ih)
 {
   char* placement;
   ih->data->show_state = IUP_SHOW;
@@ -394,7 +394,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih, int x, int y)
   }
   else if (iupStrEqualNoCase(placement, "FULL"))
   {
-    int width, height;
+    int width, height, x, y;
     int border, caption, menu;
     iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
 
@@ -476,15 +476,17 @@ static void motDialogConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal 
 
   iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
 
+  /* update dialog size */
   ih->currentwidth = cevent->width + 2*border;
   ih->currentheight = cevent->height + 2*border + caption; /* menu is inside the dialog_manager */
 
   cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
-  if (cb) cb(ih, cevent->width, cevent->height - menu);  /* notify to the application size the client area size */
-
-  ih->data->ignore_resize = 1;
-  IupRefresh(ih);
-  ih->data->ignore_resize = 0;
+  if (!cb || cb(ih, cevent->width, cevent->height - menu)!=IUP_IGNORE)  /* width and height here are for the client area */
+  {
+    ih->data->ignore_resize = 1;
+    IupRefresh(ih);
+    ih->data->ignore_resize = 0;
+  }
 }
 
 static void motDialogCBStructureNotifyEvent(Widget w, XtPointer data, XEvent *evt, Boolean *cont)
@@ -546,6 +548,8 @@ static void motDialogDestroyCallback(Widget w, Ihandle *ih, XtPointer call_data)
 static void motDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   int menu_h = motDialogGetMenuSize(ih);
+  (void)x;
+  (void)y;
 
   /* Child coordinates are relative to client left-top corner. */
   iupBaseSetPosition(ih->firstchild, 0, menu_h);

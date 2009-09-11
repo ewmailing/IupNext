@@ -15,6 +15,9 @@ extern "C" {
 struct _IcontrolData 
 {
   int alignment,
+      expand_children,
+      is_homogeneous,
+      normalize_size,
       margin_x,
       margin_y,
       gap;
@@ -25,7 +28,9 @@ struct _IcontrolData
 Iclass* iupBoxClassBase(void);
 
 /* Implemented in iup_normalizer.c */
-void iupNormalizeSizeBoxChild(Ihandle *ih, int children_natural_maxwidth, int children_natural_maxheight);
+void iupNormalizeSizeBoxChild(Ihandle *ih, int normalize, int children_natural_maxwidth, int children_natural_maxheight);
+int iupNormalizeGetNormalizeSize(const char* value);
+char* iupNormalizeGetNormalizeSizeStr(int normalize);
 
 
 #ifdef __cplusplus
