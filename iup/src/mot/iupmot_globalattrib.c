@@ -18,6 +18,36 @@
 #include "iupmot_drv.h"
 
 
+static void motGlobalSendKey(int key, int press)
+{
+  Window focus;
+	int revert_to;
+  XKeyEvent evt;
+  memset(&evt, 0, sizeof(XKeyEvent));
+  evt.display = iupmot_display;
+  evt.send_event = True;
+  evt.root = DefaultRootWindow(iupmot_display);
+
+	XGetInputFocus(iupmot_display, &focus, &revert_to);
+  evt.window = focus;
+
+  iupmotKeyEncode(key, &evt.keycode, &evt.state);
+  if (!evt.keycode)
+    return;
+
+  if (press & 0x01)
+  {
+    evt.type = KeyPress;
+    XSendEvent(iupmot_display, (Window)InputFocus, False, KeyPressMask, (XEvent*)&evt);
+  }
+
+  if (press & 0x02)
+  {
+    evt.type = KeyRelease;
+    XSendEvent(iupmot_display, (Window)InputFocus, False, KeyReleaseMask, (XEvent*)&evt);
+  }
+}
+
 int iupdrvSetGlobal(const char *name, const char *value)
 {
   if (iupStrEqual(name, "LANGUAGE"))
@@ -40,6 +70,27 @@ int iupdrvSetGlobal(const char *name, const char *value)
     int x, y;
     if (iupStrToIntInt(value, &x, &y, 'x') == 2)
       XWarpPointer(iupmot_display,None,RootWindow(iupmot_display, iupmot_screen),0,0,0,0,x,y);
+    return 0;
+  }
+  if (iupStrEqual(name, "KEYPRESS"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      motGlobalSendKey(key, 0x01);
+    return 0;
+  }
+  if (iupStrEqual(name, "KEYRELEASE"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      motGlobalSendKey(key, 0x02);
+    return 0;
+  }
+  if (iupStrEqual(name, "KEY"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      motGlobalSendKey(key, 0x03);
     return 0;
   }
   return 1;

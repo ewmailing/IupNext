@@ -35,6 +35,18 @@ static int btn_clip_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+int iupKeyNameToCode(const char *name);
+
+static int btn_key_cb (Ihandle* ih)
+{
+  Ihandle *mltline = IupGetDialogChild(ih, "mltline");
+  Ihandle *text = IupGetDialogChild(ih, "text");
+  IupSetFocus(mltline);
+  IupFlush();
+  IupSetfAttribute(NULL, "KEY", "%d", iupKeyNameToCode(IupGetAttribute(text, "VALUE")));
+  return IUP_DEFAULT;
+}
+
 static int btn_caret_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle("text2multi");
@@ -258,7 +270,7 @@ void TextTest(void)
 {
   int formatting = 0;
   Ihandle *dlg, *mltline, *text, *opt, *btn_def_enter, *btn_def_esc, *btn_active, *btn_overwrite,
-          *btn_append, *btn_insert, *btn_caret, *btn_clip, *btn_readonly, *btn_tabsize,
+          *btn_append, *btn_insert, *btn_caret, *btn_clip, *btn_key, *btn_readonly, *btn_tabsize,
           *btn_selection, *btn_selectedtext, *btn_nc, *btn_value, *lbl, *formattag, *btn_remformat;
 
 //  IupSetGlobal("UTF8AUTOCONVERT", "NO");
@@ -343,6 +355,7 @@ void TextTest(void)
   btn_value = IupButton ("VALUE", NULL);
   btn_tabsize = IupButton ("TABSIZE", NULL);
   btn_clip = IupButton ("CLIPBOARD", NULL);
+  btn_key = IupButton ("KEY", NULL);
   btn_def_enter = IupButton ("Default Enter", NULL);
   btn_def_esc = IupButton ("Default Esc", NULL);
   btn_active = IupButton("ACTIVE", NULL);
@@ -362,6 +375,7 @@ void TextTest(void)
   IupSetCallback(btn_value, "ACTION", (Icallback) btn_value_cb);
   IupSetCallback(btn_tabsize, "ACTION", (Icallback) btn_tabsize_cb);
   IupSetCallback(btn_clip, "ACTION", (Icallback) btn_clip_cb);
+  IupSetCallback(btn_key, "ACTION", (Icallback) btn_key_cb);
   IupSetCallback(btn_def_enter, "ACTION", (Icallback) btn_def_enter_cb);
   IupSetCallback(btn_def_esc, "ACTION", (Icallback) btn_def_esc_cb);
   IupSetCallback(btn_active, "ACTION", (Icallback) btn_active_cb);
@@ -376,7 +390,7 @@ void TextTest(void)
                           mltline, 
                           IupHbox (text, opt, NULL),
                           IupHbox (btn_append, btn_insert, btn_caret, btn_readonly, btn_selection, NULL),
-                          IupHbox (btn_selectedtext, btn_nc, btn_value, btn_tabsize, btn_clip, NULL), 
+                          IupHbox (btn_selectedtext, btn_nc, btn_value, btn_tabsize, btn_clip, btn_key, NULL), 
                           IupHbox (btn_def_enter, btn_def_esc, btn_active, btn_remformat, btn_overwrite, NULL), 
                           NULL));
   IupSetCallback(dlg, "K_cO", (Icallback)file_open);

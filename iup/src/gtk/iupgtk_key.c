@@ -20,14 +20,17 @@
 #include "iupgtk_drv.h"
 
 
-static struct {
+typedef struct _Igtk2iupkey
+{
   guint gtkcode;
   int iupcode;
   int s_iupcode;
   int c_iupcode;
   int m_iupcode;
   int y_iupcode;
-} gtkkey_map[]= {
+} Igtk2iupkey;
+
+static Igtk2iupkey gtkkey_map[] = {
 
 { GDK_Escape,    K_ESC,   K_sESC,    K_cESC,   K_mESC   ,K_yESC   },
 { GDK_Pause,     K_PAUSE, K_sPAUSE,  K_cPAUSE, K_mPAUSE ,K_yPAUSE },
@@ -61,6 +64,7 @@ static struct {
 { GDK_9,   K_9, K_parentleft,  K_c9, K_m9, K_y9 },
 { GDK_0,   K_0, K_parentright, K_c0, K_m0, K_y0 },
 
+/* Shift will be flaged so s_iupcode will contain the right code */
 { GDK_exclam,     K_1, K_exclam,      K_c1, K_m1, K_y1 },
 { GDK_at,         K_2, K_at,          K_c2, K_m2, K_y2 },
 { GDK_numbersign, K_3, K_numbersign,  K_c3, K_m3, K_y3 },
@@ -99,6 +103,7 @@ static struct {
 { GDK_y,   K_y, K_Y, K_cY, K_mY, K_yY },
 { GDK_z,   K_z, K_Z, K_cZ, K_mZ, K_yZ },
 
+/* Shift will be flaged so s_iupcode will contain the right code */
 { GDK_A,   K_a, K_A, K_cA, K_mA, K_yA },
 { GDK_B,   K_b, K_B, K_cB, K_mB, K_yB },
 { GDK_C,   K_c, K_C, K_cC, K_mC, K_yC },
@@ -151,6 +156,7 @@ static struct {
 { GDK_bracketright,K_bracketright, K_braceright, K_cBracketright,K_mBracketright,K_yBracketright },
 { GDK_apostrophe,  K_apostrophe,   K_quotedbl,   0, 0, 0 },
 
+/* Shift will be flaged so s_iupcode will contain the right code */
 { GDK_colon,      K_semicolon,    K_colon,      K_cSemicolon, K_mSemicolon, K_ySemicolon },
 { GDK_plus,       K_equal,        K_plus,       K_cEqual,     K_mEqual,  K_yEqual },
 { GDK_less,       K_comma,        K_less,       K_cComma,     K_mComma,  K_yComma },
@@ -210,6 +216,47 @@ static struct {
 
 };
 
+void iupgtkKeyEncode(int key, guint *keyval, guint *state)
+{
+  int i, iupcode = key & 0xFF; /* 0-255 interval */
+  int count = sizeof(gtkkey_map)/sizeof(gtkkey_map[0]);
+  for (i = 0; i < count; i++)
+  {
+    Igtk2iupkey* key_map = &(gtkkey_map[i]);
+    if (key_map->iupcode == iupcode)
+    {
+      *keyval = key_map->gtkcode;
+      *state = 0;
+
+      if (iupcode != key)
+      {
+        if (key_map->c_iupcode == key)
+          *state = GDK_CONTROL_MASK;
+        else if (key_map->m_iupcode == key)
+          *state = GDK_MOD1_MASK;
+        else if (key_map->y_iupcode == key)
+          *state = GDK_MOD4_MASK;
+        else if (key_map->s_iupcode == key)
+          *state = GDK_SHIFT_MASK;
+      }
+      return;
+    }
+    else if (key_map->s_iupcode == key)   /* There are Shift keys bellow 256 */
+    {
+      *keyval = key_map->gtkcode;
+      *state = GDK_SHIFT_MASK;
+
+      if ((*keyval >= GDK_a) &&
+          (*keyval <= GDK_z))
+      {
+        /* remap to upper case */
+        *keyval -= GDK_a-GDK_A;
+      }
+      return;
+    }
+  }
+}
+
 static int gtkKeyMap2Iup(int state, int i)
 {
   int code = 0;
@@ -242,19 +289,20 @@ static int gtkKeyDecode(GdkEventKey *evt)
 {
   int i;
   int count = sizeof(gtkkey_map)/sizeof(gtkkey_map[0]);
+  guint keyval = evt->keyval;
 
   if ((evt->state & GDK_MOD2_MASK) && /* NumLock */
-      (evt->keyval >= GDK_KP_Home) &&
-      (evt->keyval <= GDK_KP_Delete))
+      (keyval >= GDK_KP_Home) &&
+      (keyval <= GDK_KP_Delete))
   {
     /* remap to numeric keys */
     guint remap_numkey[] = {GDK_KP_7, GDK_KP_4, GDK_KP_8, GDK_KP_6, GDK_KP_2, GDK_KP_9, GDK_KP_3, GDK_KP_1, GDK_KP_5, GDK_KP_0, GDK_KP_Decimal};
-    evt->keyval = remap_numkey[evt->keyval-GDK_KP_Home];
+    keyval = remap_numkey[keyval-GDK_KP_Home];
   }
 
   for (i = 0; i < count; i++)
   {
-    if (gtkkey_map[i].gtkcode == evt->keyval)
+    if (gtkkey_map[i].gtkcode == keyval)
       return gtkKeyMap2Iup(evt->state, i);
   }
 

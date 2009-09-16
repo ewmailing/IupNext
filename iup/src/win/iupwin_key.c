@@ -58,6 +58,7 @@ static Iwin2iupkey winkey_map[] = {
 { VK_RETURN,    K_CR,    K_sCR,     K_cCR,    K_mCR,    K_yCR    },
 { VK_BACK,      K_BS,    K_sBS,     K_cBS,    K_mBS,    K_yBS    },
 
+/* VK_0 - VK_9 are the same as ASCII '0' - '9' (0x30 - 0x39) */
 { '1',   K_1, K_exclam,      K_c1, K_m1, K_y1 },
 { '2',   K_2, K_at,          K_c2, K_m2, K_y2 },
 { '3',   K_3, K_numbersign,  K_c3, K_m3, K_y3 },
@@ -69,6 +70,7 @@ static Iwin2iupkey winkey_map[] = {
 { '9',   K_9, K_parentleft,  K_c9, K_m9, K_y9 },
 { '0',   K_0, K_parentright, K_c0, K_m0, K_y0 },
 
+/* VK_A - VK_Z are the same as ASCII 'A' - 'Z' (0x41 - 0x5A) */
 { 'A',   K_a, K_A, K_cA, K_mA, K_yA},
 { 'B',   K_b, K_B, K_cB, K_mB, K_yB},
 { 'C',   K_c, K_C, K_cC, K_mC, K_yC},
@@ -162,6 +164,41 @@ static Iwin2iupkey keytable_abnt[] = {
 { VK_SEPARATOR,K_period,       K_sPeriod,    K_cPeriod, K_mPeriod, K_yPeriod },
 { VK_DECIMAL,  K_comma,        K_sComma,     K_cComma, K_mComma, K_yComma }
 };
+
+
+void iupwinKeyEncode(int key, unsigned int *keyval, unsigned int *state)
+{
+  int i, iupcode = key & 0xFF; /* 0-255 interval */
+  int count = sizeof(winkey_map)/sizeof(winkey_map[0]);
+  for (i = 0; i < count; i++)
+  {
+    Iwin2iupkey* key_map = &(winkey_map[i]);
+    if (key_map->iupcode == iupcode)
+    {
+      *keyval = key_map->wincode;
+      *state = 0;
+
+      if (iupcode != key)
+      {
+        if (key_map->c_iupcode == key)
+          *state = VK_CONTROL;
+        else if (key_map->m_iupcode == key)
+          *state = VK_MENU;
+        else if (key_map->y_iupcode == key)
+          *state = VK_LWIN;
+        else if (key_map->s_iupcode == key)
+          *state = VK_SHIFT;
+      }
+      return;
+    }
+    else if (key_map->s_iupcode == key)   /* There are Shift keys bellow 256 */
+    {
+      *keyval = key_map->wincode;
+      *state = VK_SHIFT;
+      return;
+    }
+  }
+}
 
 static int winKeyMap2Iup(Iwin2iupkey* table, int i)
 {

@@ -32,6 +32,7 @@ void iupmotCanvasKeyReleaseEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *co
 void iupmotKeyPressEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont);
 KeySym iupmotKeyCharToKeySym(char c);
 void iupmotButtonKeySetStatus(unsigned int state, unsigned int but, char* status, int doubleclick);
+void iupmotKeyEncode(int key, unsigned int *keyval, unsigned int *state);
 
 /* font */
 char* iupmotGetFontListAttrib(Ihandle *ih);

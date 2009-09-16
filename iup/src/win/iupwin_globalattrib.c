@@ -19,6 +19,85 @@
 
 static int win_monitor_index = 0;
 
+static void winGlobalSendKey(int key, int press)
+{
+  unsigned int keyval, state;
+  INPUT input[2];
+  LPARAM extra_info;
+  WORD state_scan = 0, key_scan;
+  ZeroMemory(input, 2*sizeof(INPUT));
+
+  iupwinKeyEncode(key, &keyval, &state);
+  if (!keyval)
+    return;
+
+  extra_info = GetMessageExtraInfo();
+  if (state)
+    state_scan = (WORD)MapVirtualKey(state, MAPVK_VK_TO_VSC);
+  key_scan = (WORD)MapVirtualKey(keyval, MAPVK_VK_TO_VSC);
+
+  if (press & 0x01)
+  {
+    if (state)
+    {
+      /* modifier first */
+      input[0].type = INPUT_KEYBOARD;
+      input[0].ki.wVk = (WORD)state;
+      input[0].ki.wScan = state_scan;
+      input[0].ki.dwExtraInfo = extra_info;
+
+      /* key second */
+      input[1].type = INPUT_KEYBOARD;
+      input[1].ki.wVk = (WORD)keyval;
+      input[1].ki.wScan = key_scan;
+      input[1].ki.dwExtraInfo = extra_info;
+
+      SendInput(2, input, sizeof(INPUT));
+    }
+    else
+    {
+      input[0].type = INPUT_KEYBOARD;
+      input[0].ki.wVk = (WORD)keyval;
+      input[0].ki.wScan = key_scan;
+      input[0].ki.dwExtraInfo = extra_info;
+
+      SendInput(1, input, sizeof(INPUT));
+    }
+  }
+
+  if (press & 0x02)
+  {
+    if (state)
+    {
+      /* key first */
+      input[0].type = INPUT_KEYBOARD;
+      input[0].ki.dwFlags = KEYEVENTF_KEYUP;
+      input[0].ki.wVk = (WORD)keyval;
+      input[0].ki.wScan = key_scan;
+      input[0].ki.dwExtraInfo = extra_info;
+
+      /* modifier second */
+      input[1].type = INPUT_KEYBOARD;
+      input[1].ki.dwFlags = KEYEVENTF_KEYUP;
+      input[1].ki.wVk = (WORD)state;
+      input[1].ki.wScan = state_scan;
+      input[1].ki.dwExtraInfo = extra_info;
+
+      SendInput(2, input, sizeof(INPUT));
+    }
+    else
+    {
+      input[0].type = INPUT_KEYBOARD;
+      input[0].ki.dwFlags = KEYEVENTF_KEYUP;
+      input[0].ki.wVk = (WORD)keyval;
+      input[0].ki.wScan = key_scan;
+      input[0].ki.dwExtraInfo = extra_info;
+
+      SendInput(1, input, sizeof(INPUT));
+    }
+  }
+}
+
 static BOOL CALLBACK winMonitorInfoEnum(HMONITOR handle, HDC handle_dc, LPRECT rect, LPARAM data)
 {
   RECT* monitors_rect = (RECT*)data;
@@ -41,6 +120,27 @@ int iupdrvSetGlobal(const char *name, const char *value)
     int x, y;
     if (iupStrToIntInt(value, &x, &y, 'x') == 2)
       SetCursorPos(x, y);
+    return 0;
+  }
+  if (iupStrEqual(name, "KEYPRESS"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      winGlobalSendKey(key, 0x01);
+    return 0;
+  }
+  if (iupStrEqual(name, "KEYRELEASE"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      winGlobalSendKey(key, 0x02);
+    return 0;
+  }
+  if (iupStrEqual(name, "KEY"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      winGlobalSendKey(key, 0x03);
     return 0;
   }
   return 1;

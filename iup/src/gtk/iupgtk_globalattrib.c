@@ -11,13 +11,52 @@
 
 #include "iup.h"
 
+#include "iup_object.h"
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_drvinfo.h"
 #include "iup_strmessage.h"
 
+#include "iupgtk_drv.h"
+
 
 int iupgtk_utf8autoconvert = 1;
+
+static void gtkGlobalSendKey(int key, int press)
+{
+  Ihandle* focus;
+  gint nkeys = 0; 
+  GdkKeymapKey *keys; 
+  GdkEventKey evt;
+  memset(&evt, 0, sizeof(GdkEventKey));
+  evt.send_event = TRUE;
+
+  focus = IupGetFocus();
+  if (!focus)
+    return;
+  evt.window = focus->handle->window;
+
+  iupgtkKeyEncode(key, &evt.keyval, &evt.state);
+  if (!evt.keyval)
+    return;
+
+  if (!gdk_keymap_get_entries_for_keyval(gdk_keymap_get_default(), evt.keyval, &keys, &nkeys))
+    return;
+  evt.hardware_keycode = (guint16)keys[0].keycode;
+  evt.group = (guint8)keys[0].group; 
+
+  if (press & 0x01)
+  {
+    evt.type = GDK_KEY_PRESS;
+    gdk_display_put_event(gdk_display_get_default(), (GdkEvent*)&evt);
+  }
+
+  if (press & 0x02)
+  {
+    evt.type = GDK_KEY_RELEASE;
+    gdk_display_put_event(gdk_display_get_default(), (GdkEvent*)&evt);
+  }
+}
 
 int iupdrvSetGlobal(const char *name, const char *value)
 {
@@ -41,6 +80,27 @@ int iupdrvSetGlobal(const char *name, const char *value)
       iupgtk_utf8autoconvert = 1;
     else
       iupgtk_utf8autoconvert = 0;
+    return 0;
+  }
+  if (iupStrEqual(name, "KEYPRESS"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      gtkGlobalSendKey(key, 0x01);
+    return 0;
+  }
+  if (iupStrEqual(name, "KEYRELEASE"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      gtkGlobalSendKey(key, 0x02);
+    return 0;
+  }
+  if (iupStrEqual(name, "KEY"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      gtkGlobalSendKey(key, 0x03);
     return 0;
   }
   return 1;

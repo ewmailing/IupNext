@@ -10,7 +10,7 @@
 /* from 32 to 126, all character sets are equal,
    the key code i the same as the character code. */
 
-#define K_SP          ' '   /* 32 */
+#define K_SP          ' '   /* 32 (0x20) */
 #define K_exclam      '!'   /* 33 */
 #define K_quotedbl    '\"'  /* 34 */
 #define K_numbersign  '#'   /* 35 */
@@ -26,7 +26,7 @@
 #define K_minus       '-'   /* 45 */
 #define K_period      '.'   /* 46 */
 #define K_slash       '/'   /* 47 */
-#define K_0           '0'   /* 48 */
+#define K_0           '0'   /* 48 (0x30) */
 #define K_1           '1'   /* 49 */
 #define K_2           '2'   /* 50 */
 #define K_3           '3'   /* 51 */
@@ -43,7 +43,7 @@
 #define K_greater     '>'   /* 62 */
 #define K_question    '?'   /* 63 */
 #define K_at          '@'   /* 64 */
-#define K_A           'A'   /* 65 */
+#define K_A           'A'   /* 65 (0x41) */
 #define K_B           'B'   /* 66 */
 #define K_C           'C'   /* 67 */
 #define K_D           'D'   /* 68 */
@@ -75,7 +75,7 @@
 #define K_circum      '^'   /* 94 */
 #define K_underscore  '_'   /* 95 */
 #define K_grave       '`'   /* 96 */
-#define K_a           'a'   /* 97 */
+#define K_a           'a'   /* 97 (0x61) */
 #define K_b           'b'   /* 98 */
 #define K_c           'c'   /* 99 */
 #define K_d           'd'   /* 100 */

@@ -21,14 +21,17 @@
 
 #include "iupmot_drv.h"
 
-static struct {
+typedef struct Imot2iupkey
+{
   KeySym motcode;
   int iupcode;
   int s_iupcode;
   int c_iupcode;
   int m_iupcode;
   int y_iupcode;
-} motkey_map[]= {
+} Imot2iupkey;
+
+static Imot2iupkey motkey_map[] = {
 
 { XK_Escape,    K_ESC,   K_sESC,    K_cESC,   K_mESC   ,K_yESC   },
 { XK_Pause,     K_PAUSE, K_sPAUSE,  K_cPAUSE, K_mPAUSE ,K_yPAUSE },
@@ -159,6 +162,40 @@ static struct {
 { XK_KP_Delete,    K_DEL,   K_sDEL,    K_cDEL,   K_mDEL,   K_yDEL   }
 
 };
+
+void iupmotKeyEncode(int key, unsigned int *keyval, unsigned int *state)
+{
+  int i, iupcode = key & 0xFF; /* 0-255 interval */
+  int count = sizeof(motkey_map)/sizeof(motkey_map[0]);
+  for (i = 0; i < count; i++)
+  {
+    Imot2iupkey* key_map = &(motkey_map[i]);
+    if (key_map->iupcode == iupcode)
+    {
+      *keyval = XKeysymToKeycode(iupmot_display, key_map->motcode);
+      *state = 0;
+
+      if (iupcode != key)
+      {
+        if (key_map->c_iupcode == key)
+          *state = ControlMask;
+        else if (key_map->m_iupcode == key)
+          *state = Mod1Mask;
+        else if (key_map->y_iupcode == key)
+          *state = Mod4Mask;
+        else if (key_map->s_iupcode == key)
+          *state = ShiftMask;
+      }
+      return;
+    }
+    else if (key_map->s_iupcode == key)   /* There are Shift keys bellow 256 */
+    {
+      *keyval = XKeysymToKeycode(iupmot_display, key_map->motcode);
+      *state = ShiftMask;
+      return;
+    }
+  }
+}
 
 static int motKeyMap2Iup(unsigned int state, int i)
 {

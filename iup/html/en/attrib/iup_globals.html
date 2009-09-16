@@ -48,6 +48,24 @@ Can be set only in GTK 2.8.</p>
 <p>Returns the state of the keyboard modifier keys: Shift, Ctrl, Alt and sYs(Win/Apple). In the format of 4 
   characters: &quot;SCAY&quot;. When not pressed the respective letter is replaced by a space &quot; &quot;. 
 </p>
+<h3><strong>KEYPRESS</strong> (write-only) (since 
+3.0)</h3>
+<p>Sends a key press message to the element with the focus. The value is a key 
+code. See the <a href="key.html">Keyboard Codes</a>
+  table for a list of the possible values. 
+</p>
+<h3><strong>KEY</strong>RELEASE (write-only) (since 
+3.0)</h3>
+<p>Sends a key release message to the element with the focus. The value is a key 
+code. See the <a href="key.html">Keyboard Codes</a>
+  table for a list of the possible values. 
+</p>
+<h3><strong>KEY</strong> (write-only) (since 
+3.0)</h3>
+<p>Sends a key press and a key release messages to the element with the focus. 
+The value is a key code. See the <a href="key.html">Keyboard Codes</a>
+  table for a list of the possible values. 
+</p>
 <h3><strong><a name="AUTOREPEAT">AUTOREPEAT</a></strong> [Motif Only]</h3>
 <p>Turns on/off&nbsp; (&quot;YES&quot; or 
     &quot;NO&quot;) the autorepeat of keyboard keys in 
