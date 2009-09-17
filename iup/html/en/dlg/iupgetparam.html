@@ -120,7 +120,7 @@ i</strong> = integer (shows a integer number filtered text
 r</strong> 
         = real (shows a real number filtered text box, use &quot;float&quot; in C)<strong><br>
 a</strong> = angle in degrees (shows 
-        a real number filtered text box and a dial [if IupControlsOpen is 
+        a real number filtered text box and a dial [if <strong>IupControlsOpen</strong> is 
 called], use &quot;float&quot; in C)<br>
 <strong>s</strong> 
         = string (shows a text box, use &quot;char*&quot; in C, it must have 
@@ -172,6 +172,11 @@ set to capture 3 or 4 unsigned integers from 0 to 255 (R G B) or (R G B A)
 (alpha is optional).</p>
 <p>The number of lines in the format string (&quot;\n&quot;s) will determine the number of required parameters. But separators 
   will not count as parameters.</p>
+<p>A integer parameter always has a spin attached to the text to incremente and 
+decrement the value. A real parameter only has a spin in a full intervall is 
+defined (min and max), in this case the default step is (max-min)/20. When the 
+callback is called because a spin was activated then the attribute SPINNING of 
+the dialog will be defined to a non NULL and non zero value.</p>
 <p>The dialog is resizable if it contains a string, a multiline string or a 
   number with a valuator. All the multiline strings will increase size equally in both directions.</p>
 <p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 

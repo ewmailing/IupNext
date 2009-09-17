@@ -109,13 +109,22 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
       IupStoreAttribute(aux, "VALUE", after);
   }
 
-  if (IupGetInt(self, "SPIN") && !IupGetInt(self, "SPINAUTO"))
+  if (IupGetInt(self, "SPIN"))
   {
-    float min = iupAttribGetFloat(param, "MIN");
-    float step = iupAttribGetFloat(self, "_IUPGP_INCSTEP");
-    float val;
-    if (iupStrToFloat(after, &val))
-      IupSetfAttribute(self, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
+    if (iupAttribGet(self, "_IUPGP_SPINREAL"))
+    {
+      float min = iupAttribGetFloat(param, "MIN");
+      float step = iupAttribGetFloat(self, "_IUPGP_INCSTEP");
+      float val;
+      if (iupStrToFloat(after, &val))
+        IupSetfAttribute(self, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
+    }
+    else
+    {
+      int val;
+      if (iupStrToInt(after, &val))
+        IupSetfAttribute(self, "SPINVALUE", "%d", val);
+    }
   }
 
   return IUP_DEFAULT;
@@ -189,12 +198,20 @@ static int iParamValAction_CB(Ihandle *self)
   else
     IupSetfAttribute(text, "VALUE", "%g", val);
 
-  if (IupGetInt(text, "SPIN") && !IupGetInt(text, "SPINAUTO"))
+  if (IupGetInt(text, "SPIN"))
   {
-    float min = iupAttribGetFloat(param, "MIN");
-    float step = iupAttribGetFloat(text, "_IUPGP_INCSTEP");
-    float val = IupGetFloat(text, "VALUE");
-    IupSetfAttribute(text, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
+    if (iupAttribGet(text, "_IUPGP_SPINREAL"))
+    {
+      float min = iupAttribGetFloat(param, "MIN");
+      float step = iupAttribGetFloat(text, "_IUPGP_INCSTEP");
+      float val = IupGetFloat(text, "VALUE");
+      IupSetfAttribute(text, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
+    }
+    else
+    {
+      int val = IupGetInt(text, "VALUE");
+      IupSetfAttribute(text, "SPINVALUE", "%d", val);
+    }
   }
 
   return IUP_DEFAULT;
@@ -295,6 +312,7 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
   float max = iupAttribGetFloat(param, "MAX");
   float val, step = iupAttribGetFloat(text, "_IUPGP_INCSTEP");
 
+  /* here spin is always [0-spinmax] converted to [min-max] */
   val = (float)pos*step + min;
   if (val < min)
     val = min;
@@ -303,9 +321,14 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
 
   iupAttribSetStrf(param, "VALUE", "%g", (double)val);
 
-  if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
+  if (cb) 
   {
-    return IUP_IGNORE;
+    int ret;
+    iupAttribSetStr(dlg, "SPINNING", "1");
+    ret = cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"));
+    iupAttribSetStr(dlg, "SPINNING", NULL);
+    if (!ret)
+      return IUP_IGNORE;
   }
 
   IupSetfAttribute(text, "VALUE", "%g", (double)val);
@@ -324,13 +347,23 @@ static int iParamSpinInt_CB(Ihandle *self, int pos)
   Ihandle* param = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
   Ihandle* dlg = IupGetDialog(self);
   Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
+  Ihandle* text = (Ihandle*)iupAttribGet(param, "CONTROL");
+
+  /* here spin is always [min-max] */
 
   iupAttribSetInt(param, "VALUE", pos);
 
-  if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
+  if (cb) 
   {
-    return IUP_IGNORE;
+    int ret;
+    iupAttribSetStr(dlg, "SPINNING", "1");
+    ret = cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"));
+    iupAttribSetStr(dlg, "SPINNING", NULL);
+    if (!ret)
+      return IUP_IGNORE;
   }
+
+  IupSetfAttribute(text, "VALUE", "%g", (double)pos);
 
   {
     Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
@@ -532,15 +565,18 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         if (step == 0) step = (max-min)/20.0f;
         IupSetfAttribute(ctrl, "MASKFLOAT", "%f:%f", (double)min, (double)max);
                              
-        IupSetAttribute(ctrl, "SPIN", "YES");
+        /* here spin is always [0-spinmax] converted to [min-max] */
+
+        IupSetAttribute(ctrl, "SPIN", "YES");   /* spin only for intervals */
         IupSetAttribute(ctrl, "SPINAUTO", "NO");
         IupAppend(box, ctrl);
         IupSetCallback(ctrl, "SPIN_CB", (Icallback)iParamSpinReal_CB);
-        IupSetAttribute(ctrl, "SPINMIN", "0");
+        /* SPINMIN=0 and SPININC=1 */
         IupSetfAttribute(ctrl, "SPINMAX", "%d", (int)((max-min)/step + 0.5));
         IupSetfAttribute(ctrl, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
 
         iupAttribSetStrf(ctrl, "_IUPGP_INCSTEP", "%g", step);
+        iupAttribSetStr(ctrl, "_IUPGP_SPINREAL", "1");
       }
       else if (iupAttribGetInt(param, "PARTIAL"))
       {
@@ -562,10 +598,15 @@ static Ihandle* iParamCreateBox(Ihandle* param)
     }
     else /* INTEGER*/
     {
-      IupSetAttribute(ctrl, "SPIN", "YES");
-      IupSetAttribute(ctrl, "SPINAUTO", "YES");
+      int val = iupAttribGetInt(param, "VALUE");
+      IupSetAttribute(ctrl, "SPIN", "YES");   /* spin always */
+      IupSetAttribute(ctrl, "SPINAUTO", "NO");  /* manually update spin so the callback can also updated it */
       IupAppend(box, ctrl);
       IupSetCallback(ctrl, "SPIN_CB", (Icallback)iParamSpinInt_CB);
+      iupAttribSetStr(ctrl, "_IUPGP_INCSTEP", "1");
+      IupSetfAttribute(ctrl, "SPINVALUE", "%d", val);
+
+      /* here spin is always [min-max] */
 
       if (iupAttribGetInt(param, "INTERVAL"))
       {
