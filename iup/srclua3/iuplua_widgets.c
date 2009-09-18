@@ -231,6 +231,14 @@ static int iupluaCanvasMotionCb(Ihandle* handle, int x, int y, char *r)
   return iuplua_call();
 }
 
+static int iupluaDialogMoveCb(Ihandle* handle, int x, int y)
+{
+  iuplua_call_start(handle, "move");
+  lua_pushnumber(x);
+  lua_pushnumber(y);
+  return iuplua_call();
+}
+
 static int canvas_mdiactivate(Ihandle* handle)
 {
   iuplua_call_start(handle, "mdiactivatecb");
@@ -583,6 +591,7 @@ int iupluawidgets_open(int tag)
     { "iup_keypress_cb", (lua_CFunction)iupluaCanvasKeypressCb},
     { "iup_scroll_cb", (lua_CFunction)iupluaCanvasScrollCb},
     { "iup_resize_cb", (lua_CFunction)iupluaCanvasResizeCb},
+    { "iup_move_cb", (lua_CFunction)iupluaDialogMoveCb},
     { "iup_motion_cb", (lua_CFunction)iupluaCanvasMotionCb},
     { "iup_mdiactivate_cb", (lua_CFunction)canvas_mdiactivate},
     { "iup_enterwindow_cb", (lua_CFunction)iupluaCanvasEnterwindowCb},

@@ -422,318 +422,6 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
   return 1;
 }
 
-
-/****************************************************************
-                     Callbacks and Events
-****************************************************************/
-
-
-static void motDialogCBclose(Widget w, XtPointer client_data, XtPointer call_data)
-{
-  Icallback cb;
-  Ihandle *ih = (Ihandle*)client_data;
-  if (!ih) return;
-  (void)call_data;
-  (void)w;
-
-  /* even when ACTIVE=NO the dialog gets this event */
-  if (!iupdrvIsActive(ih))
-    return;
-
-  cb = IupGetCallback(ih, "CLOSE_CB");
-  if (cb)
-  {
-    int ret = cb(ih);
-    if (ret == IUP_IGNORE)
-      return;
-    if (ret == IUP_CLOSE)
-      IupExitLoop();
-  }
-
-  IupHide(ih); /* default: close the window */
-}
-
-static void motDialogConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal *card)
-{
-  IFnii cb;
-  int border, caption, menu;
-  XConfigureEvent *cevent = (XConfigureEvent *)evt;
-  Ihandle* ih;
-  (void)s;
-  (void)card;
-
-  XtVaGetValues(w, XmNuserData, &ih, NULL);
-  if (!ih) return;
-
-  if (ih->data->menu && ih->data->menu->handle)
-  {
-    XtVaSetValues(ih->data->menu->handle,
-      XmNwidth, (XtArgVal)(cevent->width),
-      NULL);
-  }
-
-  if (ih->data->ignore_resize) return; 
-
-  iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
-
-  /* update dialog size */
-  ih->currentwidth = cevent->width + 2*border;
-  ih->currentheight = cevent->height + 2*border + caption; /* menu is inside the dialog_manager */
-
-  cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
-  if (!cb || cb(ih, cevent->width, cevent->height - menu)!=IUP_IGNORE)  /* width and height here are for the client area */
-  {
-    ih->data->ignore_resize = 1;
-    IupRefresh(ih);
-    ih->data->ignore_resize = 0;
-  }
-}
-
-static void motDialogCBStructureNotifyEvent(Widget w, XtPointer data, XEvent *evt, Boolean *cont)
-{
-  Ihandle *ih = (Ihandle*)data;
-  int state = -1;
-  (void)cont;
-  (void)w;
-
-  switch(evt->type)
-  {
-    case MapNotify:
-    {
-      if (ih->data->show_state == IUP_MINIMIZE) /* it is a RESTORE. */
-        state = IUP_RESTORE;
-      break;
-    }
-    case UnmapNotify:
-    {
-      if (ih->data->show_state != IUP_HIDE) /* it is a MINIMIZE. */
-        state = IUP_MINIMIZE;
-      break;
-    }
-  }
-
-  if (state < 0)
-    return;
-
-  if (ih->data->show_state != state)
-  {
-    IFni cb;
-    ih->data->show_state = state;
-
-    cb = (IFni)IupGetCallback(ih, "SHOW_CB");
-    if (cb && cb(ih, state) == IUP_CLOSE) 
-      IupExitLoop();
-  }
-}
-
-static void motDialogDestroyCallback(Widget w, Ihandle *ih, XtPointer call_data)
-{
-  /* If the IUP dialog was not destroyed, destroy it here. */
-  if (iupObjectCheck(ih))
-    IupDestroy(ih);
-
-  /* this callback is usefull to destroy children dialogs when the parent is destroyed. */
-  /* The application is responsable for destroying the children before this happen.     */
-  (void)w;
-  (void)call_data;
-}
-
-
-/****************************************************************
-                     Idialog
-****************************************************************/
-
-/* replace the common dialog SetChildrenPosition method because of 
-   the menu that it is inside the dialog. */
-static void motDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
-{
-  int menu_h = motDialogGetMenuSize(ih);
-  (void)x;
-  (void)y;
-
-  /* Child coordinates are relative to client left-top corner. */
-  iupBaseSetPosition(ih->firstchild, 0, menu_h);
-}
-
-static void* motDialogGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
-{
-  (void)child;
-  return XtNameToWidget(ih->handle, "*dialog_manager");
-}
-
-static int motDialogMapMethod(Ihandle* ih)
-{
-  Widget dialog_manager;
-  InativeHandle* parent;
-  int mwm_decor = 0;
-  int num_args = 0;
-  Arg args[20];
-
-  if (iupAttribGetBoolean(ih, "DIALOGFRAME")) 
-  {
-    iupAttribSetStr(ih, "RESIZE", "NO");
-    iupAttribSetStr(ih, "MAXBOX", "NO");
-    iupAttribSetStr(ih, "MINBOX", "NO");
-  }
-
-  /****************************/
-  /* Create the dialog shell  */
-  /****************************/
-
-  if (iupAttribGet(ih, "TITLE"))
-      mwm_decor |= MWM_DECOR_TITLE;
-  if (iupAttribGetBoolean(ih, "MENUBOX"))
-      mwm_decor |= MWM_DECOR_MENU;
-  if (iupAttribGetBoolean(ih, "MINBOX"))
-      mwm_decor |= MWM_DECOR_MINIMIZE;
-  if (iupAttribGetBoolean(ih, "MAXBOX"))
-      mwm_decor |= MWM_DECOR_MAXIMIZE;
-  if (iupAttribGetBoolean(ih, "RESIZE"))
-      mwm_decor |= MWM_DECOR_RESIZEH;
-  if (iupAttribGetBoolean(ih, "BORDER"))
-      mwm_decor |= MWM_DECOR_BORDER;
-
-  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* so XtRealizeWidget will not show the dialog */
-  iupmotSetArg(args, num_args, XmNdeleteResponse, XmDO_NOTHING);
-  iupmotSetArg(args, num_args, XmNallowShellResize, True); /* Used so the BulletinBoard can control the shell size */
-  iupmotSetArg(args, num_args, XmNtitle, "");
-  iupmotSetArg(args, num_args, XmNvisual, iupmot_visual);
-  
-  if (iupmotColorMap()) 
-    iupmotSetArg(args, num_args, XmNcolormap, iupmotColorMap());
-
-  if (mwm_decor != 0x7E) 
-    iupmotSetArg(args, num_args, XmNmwmDecorations, mwm_decor);
-
-  if (iupAttribGetBoolean(ih, "SAVEUNDER"))
-    iupmotSetArg(args, num_args, XmNsaveUnder, True);
-
-  parent = iupDialogGetNativeParent(ih);
-  if (parent)
-    ih->handle = XtCreatePopupShell(NULL, topLevelShellWidgetClass, (Widget)parent, args, num_args);
-  else
-    ih->handle = XtAppCreateShell(NULL, "dialog", topLevelShellWidgetClass, iupmot_display, args, num_args);
-
-  if (!ih->handle)
-    return IUP_ERROR;
-
-  XmAddWMProtocolCallback(ih->handle, iupmot_wm_deletewindow, motDialogCBclose, (XtPointer)ih);
-
-  XtAddEventHandler(ih->handle, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent,      (XtPointer)ih);
-  XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
-  XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
-  XtAddEventHandler(ih->handle, StructureNotifyMask, False, (XtEventHandler)motDialogCBStructureNotifyEvent, (XtPointer)ih);
-
-  XtAddCallback(ih->handle, XmNdestroyCallback, (XtCallbackProc)motDialogDestroyCallback, (XtPointer)ih);
-
-  /*****************************/
-  /* Create the dialog manager */
-  /*****************************/
-
-  dialog_manager = XtVaCreateManagedWidget(
-              "dialog_manager",
-              xmBulletinBoardWidgetClass,
-              ih->handle,
-              XmNmarginWidth, 0,
-              XmNmarginHeight, 0,
-              XmNwidth, 100,     /* set this to avoid size calculation problems */
-              XmNheight, 100,
-              XmNborderWidth, 0,
-              XmNshadowThickness, 0,
-              XmNnoResize, iupAttribGetBoolean(ih, "RESIZE")? False: True,
-              XmNresizePolicy, XmRESIZE_NONE, /* no automatic resize of children */
-              XmNuserData, ih, /* used only in motDialogConfigureNotify                   */
-              XmNnavigationType, XmTAB_GROUP,
-              NULL);
-
-  XtOverrideTranslations(dialog_manager, XtParseTranslationTable("<Configure>: iupDialogConfigure()"));
-  XtAddCallback(dialog_manager, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
-  XtAddEventHandler(dialog_manager, KeyPressMask, False,(XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
-
-  /* initialize the widget */
-  XtRealizeWidget(ih->handle);
-
-  /* child dialogs must be always on top of the parent */
-  if (parent)
-    XSetTransientForHint(iupmot_display, XtWindow(ih->handle), XtWindow(parent));
-
-  if (mwm_decor != 0x7E)  /* some decoration was changed */
-    motDialogSetWindowManagerStyle(ih);
-
-  /* Ignore VISIBLE before mapping */
-  iupAttribSetStr(ih, "VISIBLE", NULL);
-
-  if (IupGetGlobal("_IUP_RESET_DLGBGCOLOR"))
-  {
-    iupmotSetGlobalColorAttrib(dialog_manager, XmNbackground, "DLGBGCOLOR");
-    iupmotSetGlobalColorAttrib(dialog_manager, XmNforeground, "DLGFGCOLOR");
-    IupSetGlobal("_IUP_RESET_DLGBGCOLOR", NULL);
-  }
-
-  return IUP_NOERROR;
-}
-
-static void motDialogUnMapMethod(Ihandle* ih)
-{
-  Widget dialog_manager;
-  if (ih->data->menu) 
-  {
-    ih->data->menu->handle = NULL; /* the dialog will destroy the native menu */
-    IupDestroy(ih->data->menu);  
-  }
-
-  dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");
-  XtVaSetValues(dialog_manager, XmNuserData, NULL, NULL);
-
-  XtRemoveEventHandler(ih->handle, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent, (XtPointer)ih);
-  XtRemoveEventHandler(ih->handle, KeyPressMask, False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
-  XtRemoveEventHandler(ih->handle, StructureNotifyMask, False, (XtEventHandler)motDialogCBStructureNotifyEvent, (XtPointer)ih);
-  XtRemoveCallback(ih->handle, XmNdestroyCallback, (XtCallbackProc)motDialogDestroyCallback, (XtPointer)ih);
-
-  XtRemoveEventHandler(dialog_manager, KeyPressMask, False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
-  XtRemoveCallback(dialog_manager, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
-  
-  iupdrvBaseUnMapMethod(ih);
-}
-
-static void motDialogLayoutUpdateMethod(Ihandle *ih)
-{
-  int border, caption, menu;
-
-  if (ih->data->ignore_resize ||
-      iupAttribGet(ih, "_IUPMOT_FS_STYLE"))
-    return;
-
-  /* for dialogs the position is not updated here */
-  ih->data->ignore_resize = 1;
-
-  iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
-
-  if (!iupAttribGetBoolean(ih, "RESIZE"))
-  {
-    int width = ih->currentwidth - 2*border;
-    int height = ih->currentheight - 2*border - caption;
-    XtVaSetValues(ih->handle,
-      XmNwidth, width,
-      XmNheight, height,
-      XmNminWidth, width, 
-      XmNminHeight, height, 
-      XmNmaxWidth, width, 
-      XmNmaxHeight, height, 
-      NULL);
-  }
-  else
-  {
-    XtVaSetValues(ih->handle,
-      XmNwidth, (XtArgVal)(ih->currentwidth - 2*border),     /* excluding the border */
-      XmNheight, (XtArgVal)(ih->currentheight - 2*border - caption),
-      NULL);
-  }
-
-  ih->data->ignore_resize = 0;
-}
-
-
 /****************************************************************************
                                    Attributes
 ****************************************************************************/
@@ -1020,6 +708,320 @@ static int motDialogSetIconAttrib(Ihandle* ih, const char *value)
   }
   return 1;
 }
+
+/****************************************************************
+                     Callbacks and Events
+****************************************************************/
+
+
+static void motDialogCBclose(Widget w, XtPointer client_data, XtPointer call_data)
+{
+  Icallback cb;
+  Ihandle *ih = (Ihandle*)client_data;
+  if (!ih) return;
+  (void)call_data;
+  (void)w;
+
+  /* even when ACTIVE=NO the dialog gets this event */
+  if (!iupdrvIsActive(ih))
+    return;
+
+  cb = IupGetCallback(ih, "CLOSE_CB");
+  if (cb)
+  {
+    int ret = cb(ih);
+    if (ret == IUP_IGNORE)
+      return;
+    if (ret == IUP_CLOSE)
+      IupExitLoop();
+  }
+
+  IupHide(ih); /* default: close the window */
+}
+
+static void motDialogConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal *card)
+{
+  IFnii cb;
+  int border, caption, menu;
+  XConfigureEvent *cevent = (XConfigureEvent *)evt;
+  Ihandle* ih;
+  (void)s;
+  (void)card;
+
+printf("ConfigureNotify\n");
+
+  XtVaGetValues(w, XmNuserData, &ih, NULL);
+  if (!ih) return;
+
+  if (ih->data->menu && ih->data->menu->handle)
+  {
+    XtVaSetValues(ih->data->menu->handle,
+      XmNwidth, (XtArgVal)(cevent->width),
+      NULL);
+  }
+
+  if (ih->data->ignore_resize) return; 
+
+  iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+
+  /* update dialog size */
+  ih->currentwidth = cevent->width + 2*border;
+  ih->currentheight = cevent->height + 2*border + caption; /* menu is inside the dialog_manager */
+
+  cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
+  if (!cb || cb(ih, cevent->width, cevent->height - menu)!=IUP_IGNORE)  /* width and height here are for the client area */
+  {
+    ih->data->ignore_resize = 1;
+    IupRefresh(ih);
+    ih->data->ignore_resize = 0;
+  }
+}
+
+static void motDialogCBStructureNotifyEvent(Widget w, XtPointer data, XEvent *evt, Boolean *cont)
+{
+  Ihandle *ih = (Ihandle*)data;
+  int state = -1;
+  (void)cont;
+  (void)w;
+
+  switch(evt->type)
+  {
+    case MapNotify:
+    {
+      if (ih->data->show_state == IUP_MINIMIZE) /* it is a RESTORE. */
+        state = IUP_RESTORE;
+      break;
+    }
+    case UnmapNotify:
+    {
+      if (ih->data->show_state != IUP_HIDE) /* it is a MINIMIZE. */
+        state = IUP_MINIMIZE;
+      break;
+    }
+  }
+
+  if (state < 0)
+    return;
+
+  if (ih->data->show_state != state)
+  {
+    IFni cb;
+    ih->data->show_state = state;
+
+    cb = (IFni)IupGetCallback(ih, "SHOW_CB");
+    if (cb && cb(ih, state) == IUP_CLOSE) 
+      IupExitLoop();
+  }
+}
+
+static void motDialogDestroyCallback(Widget w, Ihandle *ih, XtPointer call_data)
+{
+  /* If the IUP dialog was not destroyed, destroy it here. */
+  if (iupObjectCheck(ih))
+    IupDestroy(ih);
+
+  /* this callback is usefull to destroy children dialogs when the parent is destroyed. */
+  /* The application is responsable for destroying the children before this happen.     */
+  (void)w;
+  (void)call_data;
+}
+
+
+/****************************************************************
+                     Idialog
+****************************************************************/
+
+/* replace the common dialog SetChildrenPosition method because of 
+   the menu that it is inside the dialog. */
+static void motDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
+{
+  int menu_h = motDialogGetMenuSize(ih);
+  (void)x;
+  (void)y;
+
+  /* Child coordinates are relative to client left-top corner. */
+  iupBaseSetPosition(ih->firstchild, 0, menu_h);
+}
+
+static void* motDialogGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
+{
+  (void)child;
+  return XtNameToWidget(ih->handle, "*dialog_manager");
+}
+
+static int motDialogMapMethod(Ihandle* ih)
+{
+  Widget dialog_manager;
+  InativeHandle* parent;
+  int mwm_decor = 0;
+  int num_args = 0;
+  Arg args[20];
+
+  if (iupAttribGetBoolean(ih, "DIALOGFRAME")) 
+  {
+    iupAttribSetStr(ih, "RESIZE", "NO");
+    iupAttribSetStr(ih, "MAXBOX", "NO");
+    iupAttribSetStr(ih, "MINBOX", "NO");
+  }
+
+  /****************************/
+  /* Create the dialog shell  */
+  /****************************/
+
+  if (iupAttribGet(ih, "TITLE"))
+      mwm_decor |= MWM_DECOR_TITLE;
+  if (iupAttribGetBoolean(ih, "MENUBOX"))
+      mwm_decor |= MWM_DECOR_MENU;
+  if (iupAttribGetBoolean(ih, "MINBOX"))
+      mwm_decor |= MWM_DECOR_MINIMIZE;
+  if (iupAttribGetBoolean(ih, "MAXBOX"))
+      mwm_decor |= MWM_DECOR_MAXIMIZE;
+  if (iupAttribGetBoolean(ih, "RESIZE"))
+      mwm_decor |= MWM_DECOR_RESIZEH;
+  if (iupAttribGetBoolean(ih, "BORDER"))
+      mwm_decor |= MWM_DECOR_BORDER;
+
+  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* so XtRealizeWidget will not show the dialog */
+  iupmotSetArg(args, num_args, XmNdeleteResponse, XmDO_NOTHING);
+  iupmotSetArg(args, num_args, XmNallowShellResize, True); /* Used so the BulletinBoard can control the shell size */
+  iupmotSetArg(args, num_args, XmNtitle, "");
+  iupmotSetArg(args, num_args, XmNvisual, iupmot_visual);
+  
+  if (iupmotColorMap()) 
+    iupmotSetArg(args, num_args, XmNcolormap, iupmotColorMap());
+
+  if (mwm_decor != 0x7E) 
+    iupmotSetArg(args, num_args, XmNmwmDecorations, mwm_decor);
+
+  if (iupAttribGetBoolean(ih, "SAVEUNDER"))
+    iupmotSetArg(args, num_args, XmNsaveUnder, True);
+
+  parent = iupDialogGetNativeParent(ih);
+  if (parent)
+    ih->handle = XtCreatePopupShell(NULL, topLevelShellWidgetClass, (Widget)parent, args, num_args);
+  else
+    ih->handle = XtAppCreateShell(NULL, "dialog", topLevelShellWidgetClass, iupmot_display, args, num_args);
+
+  if (!ih->handle)
+    return IUP_ERROR;
+
+  XmAddWMProtocolCallback(ih->handle, iupmot_wm_deletewindow, motDialogCBclose, (XtPointer)ih);
+
+  XtAddEventHandler(ih->handle, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent,      (XtPointer)ih);
+  XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+  XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+  XtAddEventHandler(ih->handle, StructureNotifyMask, False, (XtEventHandler)motDialogCBStructureNotifyEvent, (XtPointer)ih);
+
+  XtAddCallback(ih->handle, XmNdestroyCallback, (XtCallbackProc)motDialogDestroyCallback, (XtPointer)ih);
+
+  /*****************************/
+  /* Create the dialog manager */
+  /*****************************/
+
+  dialog_manager = XtVaCreateManagedWidget(
+              "dialog_manager",
+              xmBulletinBoardWidgetClass,
+              ih->handle,
+              XmNmarginWidth, 0,
+              XmNmarginHeight, 0,
+              XmNwidth, 100,     /* set this to avoid size calculation problems */
+              XmNheight, 100,
+              XmNborderWidth, 0,
+              XmNshadowThickness, 0,
+              XmNnoResize, iupAttribGetBoolean(ih, "RESIZE")? False: True,
+              XmNresizePolicy, XmRESIZE_NONE, /* no automatic resize of children */
+              XmNuserData, ih, /* used only in motDialogConfigureNotify                   */
+              XmNnavigationType, XmTAB_GROUP,
+              NULL);
+
+  XtOverrideTranslations(dialog_manager, XtParseTranslationTable("<Configure>: iupDialogConfigure()"));
+  XtAddCallback(dialog_manager, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
+  XtAddEventHandler(dialog_manager, KeyPressMask, False,(XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
+
+  /* initialize the widget */
+  XtRealizeWidget(ih->handle);
+
+  /* child dialogs must be always on top of the parent */
+  if (parent)
+    XSetTransientForHint(iupmot_display, XtWindow(ih->handle), XtWindow(parent));
+
+  if (mwm_decor != 0x7E)  /* some decoration was changed */
+    motDialogSetWindowManagerStyle(ih);
+
+  /* Ignore VISIBLE before mapping */
+  iupAttribSetStr(ih, "VISIBLE", NULL);
+
+  if (IupGetGlobal("_IUP_RESET_DLGBGCOLOR"))
+  {
+    iupmotSetGlobalColorAttrib(dialog_manager, XmNbackground, "DLGBGCOLOR");
+    iupmotSetGlobalColorAttrib(dialog_manager, XmNforeground, "DLGFGCOLOR");
+    IupSetGlobal("_IUP_RESET_DLGBGCOLOR", NULL);
+  }
+
+  return IUP_NOERROR;
+}
+
+static void motDialogUnMapMethod(Ihandle* ih)
+{
+  Widget dialog_manager;
+  if (ih->data->menu) 
+  {
+    ih->data->menu->handle = NULL; /* the dialog will destroy the native menu */
+    IupDestroy(ih->data->menu);  
+  }
+
+  dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");
+  XtVaSetValues(dialog_manager, XmNuserData, NULL, NULL);
+
+  XtRemoveEventHandler(ih->handle, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent, (XtPointer)ih);
+  XtRemoveEventHandler(ih->handle, KeyPressMask, False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
+  XtRemoveEventHandler(ih->handle, StructureNotifyMask, False, (XtEventHandler)motDialogCBStructureNotifyEvent, (XtPointer)ih);
+  XtRemoveCallback(ih->handle, XmNdestroyCallback, (XtCallbackProc)motDialogDestroyCallback, (XtPointer)ih);
+
+  XtRemoveEventHandler(dialog_manager, KeyPressMask, False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
+  XtRemoveCallback(dialog_manager, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
+  
+  iupdrvBaseUnMapMethod(ih);
+}
+
+static void motDialogLayoutUpdateMethod(Ihandle *ih)
+{
+  int border, caption, menu;
+
+  if (ih->data->ignore_resize ||
+      iupAttribGet(ih, "_IUPMOT_FS_STYLE"))
+    return;
+
+  /* for dialogs the position is not updated here */
+  ih->data->ignore_resize = 1;
+
+  iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+
+  if (!iupAttribGetBoolean(ih, "RESIZE"))
+  {
+    int width = ih->currentwidth - 2*border;
+    int height = ih->currentheight - 2*border - caption;
+    XtVaSetValues(ih->handle,
+      XmNwidth, width,
+      XmNheight, height,
+      XmNminWidth, width, 
+      XmNminHeight, height, 
+      XmNmaxWidth, width, 
+      XmNmaxHeight, height, 
+      NULL);
+  }
+  else
+  {
+    XtVaSetValues(ih->handle,
+      XmNwidth, (XtArgVal)(ih->currentwidth - 2*border),     /* excluding the border */
+      XmNheight, (XtArgVal)(ih->currentheight - 2*border - caption),
+      NULL);
+  }
+
+  ih->data->ignore_resize = 0;
+}
+
+/***************************************************************/
 
 void iupdrvDialogInitClass(Iclass* ic)
 {

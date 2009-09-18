@@ -104,6 +104,12 @@ static int resize_cb(Ihandle *ih, int w, int h)
   return IUP_DEFAULT;
 }
 
+static int move_cb(Ihandle *ih, int x, int y)
+{
+  printf("MOVE_CB(%s, %d, %d)\n", IupGetAttribute(ih, "TESTTITLE"), x, y);
+  return IUP_DEFAULT;
+}
+
 static int getfocus_cb(Ihandle *ih)
 {
   printf("GETFOCUS_CB(%s)\n", IupGetAttribute(ih, "TESTTITLE"));
@@ -328,6 +334,7 @@ static void new_dialog(int test, char* tip)
   IupSetCallback(dlg, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
   IupSetCallback(dlg, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
   IupSetCallback(dlg, "RESIZE_CB", (Icallback)resize_cb);
+  IupSetCallback(dlg, "MOVE_CB", (Icallback)move_cb);
                    
   // Windows and GTK Only  
   IupSetCallback(dlg, "DROPFILES_CB", (Icallback)dropfiles_cb);

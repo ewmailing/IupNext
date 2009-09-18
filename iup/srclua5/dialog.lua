@@ -10,6 +10,7 @@ local ctrl = {
     unmap_cb = "",
     close_cb = "",
     show_cb = "n",
+    move_cb = "nn",
     trayclick_cb = "nnn",
     dropfiles_cb = "snnn",
   }

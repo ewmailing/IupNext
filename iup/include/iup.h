@@ -29,30 +29,7 @@ typedef struct Ihandle_ Ihandle;
 typedef int (*Icallback)(Ihandle*);
 
 /************************************************************************/
-/*                      pre-definided dialogs                           */
-/************************************************************************/
-Ihandle* IupFileDlg(void);
-Ihandle* IupMessageDlg(void);
-Ihandle* IupColorDlg(void);
-Ihandle* IupFontDlg(void);
-
-int  IupGetFile(char *arq);
-void IupMessage(const char *title, const char *msg);
-void IupMessagef(const char *title, const char *format, ...);
-int  IupAlarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3);
-int  IupScanf(const char *format, ...);
-int  IupListDialog(int type, const char *title, int size, const char** list,
-                   int op, int max_col, int max_lin, int* marks);
-int  IupGetText(const char* title, char* text);
-int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
-
-typedef int (*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
-int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format,...);
-int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
-
-
-/************************************************************************/
-/*                      Functions                                       */
+/*                        Main API                                      */
 /************************************************************************/
 
 int       IupOpen          (int *argc, char ***argv);
@@ -152,6 +129,10 @@ Ihandle*  IupCreate (const char *classname);
 Ihandle*  IupCreatev(const char *classname, void* *params);
 Ihandle*  IupCreatep(const char *classname, void *first, ...);
 
+/************************************************************************/
+/*                        Elements                                      */
+/************************************************************************/
+
 Ihandle*  IupFill       (void);
 Ihandle*  IupRadio      (Ihandle* child);
 Ihandle*  IupVbox       (Ihandle* child, ...);
@@ -223,6 +204,31 @@ float IupTreeGetFloat      (Ihandle* ih, const char* name, int id);
 void  IupTreeSetfAttribute (Ihandle* ih, const char* name, int id, char* format, ...);
 
 
+/************************************************************************/
+/*                      Pre-definided dialogs                           */
+/************************************************************************/
+
+Ihandle* IupFileDlg(void);
+Ihandle* IupMessageDlg(void);
+Ihandle* IupColorDlg(void);
+Ihandle* IupFontDlg(void);
+
+int  IupGetFile(char *arq);
+void IupMessage(const char *title, const char *msg);
+void IupMessagef(const char *title, const char *format, ...);
+int  IupAlarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3);
+int  IupScanf(const char *format, ...);
+int  IupListDialog(int type, const char *title, int size, const char** list,
+                   int op, int max_col, int max_lin, int* marks);
+int  IupGetText(const char* title, char* text);
+int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
+
+typedef int (*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
+int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format,...);
+int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
+
+
+
 #ifdef __cplusplus
 }
 #endif
@@ -285,6 +291,8 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 #define iup_issys(_s)      (_s[7]=='Y')
 #define iup_isbutton4(_s)  (_s[8]=='4')
 #define iup_isbutton5(_s)  (_s[9]=='5')
+
+/* Old definitions for backward compatibility */
 #define isshift     iup_isshift
 #define iscontrol   iup_iscontrol
 #define isbutton1   iup_isbutton1
@@ -305,6 +313,8 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 #define IUP_MASK_EFLOAT   "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
 #define IUP_MASK_INT      "[+/-]?/d+"
 #define IUP_MASK_UINT     "/d+"
+
+/* Old definitions for backward compatibility */
 #define IUPMASK_FLOAT     IUP_MASK_FLOAT
 #define IUPMASK_UFLOAT    IUP_MASK_UFLOAT
 #define IUPMASK_EFLOAT    IUP_MASK_EFLOAT

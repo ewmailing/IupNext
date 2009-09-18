@@ -488,10 +488,6 @@ wb_usr.tree =
               link= "attrib/iup_expand.html"
             },
             {
-              name= {nl= "FLOATING"},
-              link= "attrib/iup_floating.html"
-            },
-            {
               name= {nl= "MAXSIZE"},
               link= "attrib/iup_maxsize.html"
             },
@@ -500,20 +496,34 @@ wb_usr.tree =
               link= "attrib/iup_minsize.html"
             },
             {
-              name= {nl= "NAME"},
-              link= "attrib/iup_name.html"
-            },
-            {
-              name= {nl= "POSITION"},
-              link= "attrib/iup_position.html"
-            },
-            {
               name= {nl= "RASTERSIZE"},
               link= "attrib/iup_rastersize.html"
             },
             {
               name= {nl= "SIZE"},
               link= "attrib/iup_size.html"
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "FLOATING"},
+              link= "attrib/iup_floating.html"
+            },
+            {
+              name= {nl= "POSITION"},
+              link= "attrib/iup_position.html"
+            },
+            {
+              name= {nl= "X"},
+              link= "attrib/iup_x.html"
+            },
+            {
+              name= {nl= "Y"},
+              link= "attrib/iup_y.html"
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "NAME"},
+              link= "attrib/iup_name.html"
             },
             {
               name= {nl= "TIP"},
@@ -530,14 +540,6 @@ wb_usr.tree =
             {
               name= {nl= "WID"},
               link= "attrib/iup_wid.html"
-            },
-            {
-              name= {nl= "X"},
-              link= "attrib/iup_x.html"
-            },
-            {
-              name= {nl= "Y"},
-              link= "attrib/iup_y.html"
             },
             {
               name= {nl= "ZORDER"},

@@ -280,6 +280,14 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
       }
       break;
     }
+  case WM_MOVE:
+    {
+      IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
+      RECT rect;
+      GetWindowRect(ih->handle, &rect);  /* ignore LPARAM because they are the clientpos and not X/Y */
+      if (cb) cb(ih, rect.left, rect.top);
+      break;
+    }
   case WM_SIZE:
     {
       if (ih->data->ignore_resize)

@@ -276,7 +276,8 @@ gboolean iupgtkDialogDeleteEvent(GtkWidget *widget, GdkEvent *evt, Ihandle *ih)
 
 static gboolean gtkDialogConfigureEvent(GtkWidget *widget, GdkEventConfigure *evt, Ihandle *ih)
 {
-  int old_width, old_height;
+  int old_width, old_height, old_x, old_y;
+  gint x, y;
   (void)widget;
 
 #ifndef HILDON
@@ -317,6 +318,22 @@ static gboolean gtkDialogConfigureEvent(GtkWidget *widget, GdkEventConfigure *ev
       IupRefresh(ih);
       ih->data->ignore_resize = 0;
     }
+  }
+
+  old_x = iupAttribGetInt(ih, "_IUPGTK_OLD_X");
+  old_y = iupAttribGetInt(ih, "_IUPGTK_OLD_Y");
+  gtk_window_get_position((GtkWindow*)ih->handle, &x, &y);  /* ignore evt->x and evt->y because they are the clientpos and not X/Y */
+
+  /* Check the position change, because configure is called also for size changes */
+  if (x != old_x || y != old_y)
+  {
+    IFnii cb;
+    iupAttribSetInt(ih, "_IUPGTK_OLD_X", x);
+    iupAttribSetInt(ih, "_IUPGTK_OLD_Y", y);
+
+    cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
+    if (cb)
+      cb(ih, x, y);
   }
 
   return FALSE;

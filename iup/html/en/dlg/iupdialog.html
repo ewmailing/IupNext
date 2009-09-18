@@ -298,6 +298,16 @@ dialog to be a MDI child. Can be YES or NO.
   event.</p>
 </blockquote>
 
+<p><strong>MOVE_CB</strong>
+  [Windows and GTK Only]: Called after the dialog was moved on screen. The 
+coordinates are the same as the <a href="../attrib/iup_x.html">X</a> and 
+<a href="../attrib/iup_y.html">Y</a> attributes. (since 3.0)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>x</strong>, int <strong>y</strong>); <em>[in C]</em><br><b>elem</b>:trayclick_cb(<strong>x</strong>, <strong>y</strong>: number) -&gt; (<strong>ret</strong>: number) <em>[in Lua]</em></pre>
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+<strong>x</strong>, <strong>y</strong>: coordinates of the new position. </p>
+
 <p><a href="../call/iup_resize_cb.html">RESIZE_CB</a>:
   Action generated when the dialog size is 
   changed. If returns IUP_IGNORE the dialog layout is NOT recalculated. (since 3.0)</p>
