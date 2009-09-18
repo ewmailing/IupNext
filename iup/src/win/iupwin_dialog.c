@@ -1041,24 +1041,31 @@ typedef BOOL (WINAPI*winSetLayeredWindowAttributes)(
   BYTE bAlpha,
   DWORD dwFlags);
 
-static int winDialogSetLayeredAttrib(Ihandle *ih, const char *value)
+static int winDialogSetOpacityAttrib(Ihandle *ih, const char *value)
 {
-  if (iupStrBoolean(value))
-    SetWindowLong(ih->handle, GWL_EXSTYLE, GetWindowLong(ih->handle, GWL_EXSTYLE) | WS_EX_LAYERED);
-  else
-    SetWindowLong(ih->handle, GWL_EXSTYLE, GetWindowLong(ih->handle, GWL_EXSTYLE) & ~WS_EX_LAYERED);
-  RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE|RDW_INVALIDATE|RDW_FRAME|RDW_ALLCHILDREN); /* invalidate everything and all children */
-  return 1;
-}
+  DWORD dwExStyle = GetWindowLong(ih->handle, GWL_EXSTYLE);
+  if (!value)
+  {
+    if (dwExStyle & WS_EX_LAYERED)
+    {
+      dwExStyle &= ~WS_EX_LAYERED;   /* remove the style */
+      SetWindowLong(ih->handle, GWL_EXSTYLE, dwExStyle);
+      RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE|RDW_INVALIDATE|RDW_FRAME|RDW_ALLCHILDREN); /* invalidate everything and all children */
+    }
+    return 0;
+  }
 
-static int winDialogSetLayerAlphaAttrib(Ihandle *ih, const char *value)
-{
-  if (value && iupAttribGetBoolean(ih, "LAYERED"))
+  if (!(dwExStyle & WS_EX_LAYERED))
+  {
+    dwExStyle |= WS_EX_LAYERED;   /* add the style */
+    SetWindowLong(ih->handle, GWL_EXSTYLE, dwExStyle);
+  }
+
   {
     static winSetLayeredWindowAttributes mySetLayeredWindowAttributes = NULL;
 
-    int alpha;
-    if (!iupStrToInt(value, &alpha))
+    int opacity;
+    if (!iupStrToInt(value, &opacity))
       return 0;
 
     if (!mySetLayeredWindowAttributes)
@@ -1069,8 +1076,10 @@ static int winDialogSetLayerAlphaAttrib(Ihandle *ih, const char *value)
     }
 
     if (mySetLayeredWindowAttributes)
-      mySetLayeredWindowAttributes(ih->handle, 0, (BYTE)alpha, LWA_ALPHA);
+      mySetLayeredWindowAttributes(ih->handle, 0, (BYTE)opacity, LWA_ALPHA);
   }
+
+  RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE|RDW_INVALIDATE|RDW_FRAME|RDW_ALLCHILDREN); /* invalidate everything and all children */
   return 1;
 }
 
@@ -1400,8 +1409,8 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "MDICLOSEALL", NULL, winDialogSetMdiCloseAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MDIACTIVE", winDialogGetMdiActiveAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MDINEXT", winDialogGetMdiNextAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LAYERED", NULL, winDialogSetLayeredAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LAYERALPHA", NULL, winDialogSetLayerAlphaAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OPACITY", NULL, winDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LAYERALPHA", NULL, winDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BRINGFRONT", NULL, winDialogSetBringFrontAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
 

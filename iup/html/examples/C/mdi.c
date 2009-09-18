@@ -286,8 +286,7 @@ Ihandle* createDialog (void)
 //  IupSetAttribute(_vbox_1,"ACTIVE","NO");
 
   //IupSetAttribute(dlg,"COMPOSITED", "YES");
-  //IupSetAttribute(dlg,"LAYERED", "YES");
-  //IupSetAttribute(dlg,"LAYERALPHA", "192");
+  //IupSetAttribute(dlg,"OPACITY", "192");
 
 //  IupMap(dlg);
 //  IupSetAttribute(dlg, "SIZE", NULL);

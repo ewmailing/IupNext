@@ -199,6 +199,10 @@ and keep the tray icon working without closing the main loop. It has the same
 effect as setting LOCKLOOP=Yes and normally hiding the dialog. IMPORTANT:
 <font SIZE="3">when you hide using HIDETASKBAR, you must show using HIDETASKBAR 
 also. </font>Possible values: YES, NO. </p>
+<p><strong>OPACITY</strong> [Windows and GTK Only]: sets the dialog transparency alpha 
+      value. Valid values range from 0 (completely transparent) to 255 (opaque). 
+In Windows set to NULL to remove the LAYERED style bit. (GTK 
+2.12)</p>
 
 <p><strong>TOPMOST</strong> [Windows and GTK Only]:&nbsp; puts the dialog always in front of all 
     other dialogs in all applications. Default: NO.</p>
@@ -232,13 +236,6 @@ only): Embeds the dialog inside another window.</p>
       Possible values: YES,
       NO. 
       Default: NO.</p>
-<p><strong>LAYERED</strong> [Windows Only]: sets and removes the layered style 
-      bit. Use &quot;YES&quot; 
-      to activate it. Default is &quot;NO&quot;. The 
-      LAYERALPHA attribute must also be set, just after this one.</p>
-<p><strong>LAYERALPHA</strong> [Windows Only]: sets the dialog transparency alpha 
-      value. The dialog must have LAYERED=YES. 
-      Valid values range from 0 (completely transparent) to 255 (opaque).</p>
 <p><strong>TOOLBOX</strong> [Windows Only] (creation only): makes the dialog look like a toolbar. 
     It is only valid if the PARENTDIALOG 
     or NATIVEPARENT 

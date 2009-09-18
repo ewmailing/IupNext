@@ -362,7 +362,8 @@ void SampleTest(void)
   IupSetHandle("dlg",dlg);
   IupSetAttribute(dlg,"MENU","mnu");
   IupSetAttribute(dlg,"TITLE","IupDialog Title");
-//  IupSetAttribute(dlg,"COMPOSITED","NO");   /* Windows Only */
+//  IupSetAttribute(dlg,"COMPOSITED","YES");   /* Windows Only */
+//  IupSetAttribute(dlg, "OPACITY", "192");
 
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
 //  IupSetAttribute(_vbox_1, "BGCOLOR", "92 92 255");

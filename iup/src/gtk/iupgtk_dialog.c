@@ -780,6 +780,18 @@ static int gtkDialogSetTopMostAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+#if GTK_CHECK_VERSION(2, 12, 0)
+static int gtkDialogSetOpacityAttrib(Ihandle *ih, const char *value)
+{
+  int opacity;
+  if (!iupStrToInt(value, &opacity))
+    return 0;
+
+  gtk_window_set_opacity((GtkWindow*)ih->handle, (double)opacity/255.0);
+  return 1;
+}
+#endif
+
 static int gtkDialogSetIconAttrib(Ihandle* ih, const char *value)
 {
   if (!value)
@@ -983,6 +995,9 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TOPMOST", NULL, gtkDialogSetTopMostAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DIALOGHINT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+#if GTK_CHECK_VERSION(2, 12, 0)
+  iupClassRegisterAttribute(ic, "OPACITY", NULL, gtkDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+#endif
 #if GTK_CHECK_VERSION(2, 10, 0)
   iupClassRegisterAttribute(ic, "TRAY", NULL, gtkDialogSetTrayAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYIMAGE", NULL, gtkDialogSetTrayImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);

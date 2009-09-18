@@ -287,8 +287,7 @@ static void new_dialog(int test, char* tip)
       {
         // Windows Only  
         IupSetAttribute(dlg, "TOPMOST", "YES");
-        IupSetAttribute(dlg, "LAYERED", "YES");
-        IupSetAttribute(dlg, "LAYERALPHA", "128");
+        IupSetAttribute(dlg, "OPACITY", "128");
         IupSetAttribute(dlg, "TOOLBOX", "YES");
       }
       count++;

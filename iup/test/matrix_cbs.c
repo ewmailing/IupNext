@@ -319,8 +319,7 @@ void MatrixCbsTest(void)
 //  IupSetAttribute(dlg,"BGCOLOR", "255 0 255");
 
   //IupSetAttribute(dlg,"COMPOSITED", "YES");
-  //IupSetAttribute(dlg,"LAYERED", "YES");
-  //IupSetAttribute(dlg,"LAYERALPHA", "192");
+  //IupSetAttribute(dlg,"OPACITY", "192");
 
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
 }
