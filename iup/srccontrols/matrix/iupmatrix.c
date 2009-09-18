@@ -710,7 +710,7 @@ static int iMatrixGetNaturalWidth(Ihandle* ih)
   {
     int start = ih->data->columns.num - (num-1); /* title is computed apart */
     if (start<1) start=1;
-    width += iupMatrixAuxGetColumnWidth(ih, 0);
+    width += iupMatrixAuxGetColumnWidth(ih, 0); /* compute title */
     for(col = start; col < ih->data->columns.num; col++)
       width += iupMatrixAuxGetColumnWidth(ih, col);
   }
@@ -735,7 +735,7 @@ static int iMatrixGetNaturalHeight(Ihandle* ih)
   {
     int start = ih->data->lines.num - (num-1);   /* title is computed apart */
     if (start<1) start=1;
-    height += iupMatrixAuxGetLineHeight(ih, 0);
+    height += iupMatrixAuxGetLineHeight(ih, 0);  /* compute title */
     for(lin = start; lin < ih->data->lines.num; lin++)
       height += iupMatrixAuxGetLineHeight(ih, lin);
   }

@@ -42,6 +42,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
   IupSetAttribute(mat,"MULTILINE", "YES");
   IupSetAttribute(mat,"RESIZEMATRIX", "YES");
+  IupSetAttribute(mat,"USETITLESIZE", "YES");
   //IupSetAttribute(mat,"SCROLLBAR", "NO");
   //IupSetAttribute(mat, "BGCOLOR1:2", "255 92 255");
   //IupSetAttribute(mat, "BGCOLOR2:*", "92 92 255");
