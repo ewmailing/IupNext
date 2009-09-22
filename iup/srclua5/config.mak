@@ -12,7 +12,7 @@ INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  
 LIBS = iup
 
-CTRLUA = button.lua canvas.lua dialog.lua colordlg.lua \
+CTRLUA = button.lua canvas.lua dialog.lua colordlg.lua clipboard.lua \
        filedlg.lua fill.lua frame.lua hbox.lua normalizer.lua \
        item.lua image.lua imagergb.lua imagergba.lua label.lua \
        menu.lua multiline.lua list.lua separator.lua user.lua \

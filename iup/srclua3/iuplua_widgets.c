@@ -306,6 +306,11 @@ static void CreateTimer(void)
   lua_pushusertag(IupTimer(), iuplua_tag);
 }
 
+static void CreateClipboard(void)
+{
+  lua_pushusertag(IupClipboard(), iuplua_tag);
+}
+
 static void CreateDialog(void)
 {
   lua_pushusertag(IupDialog(iuplua_checkihandle(1)), iuplua_tag);
@@ -554,6 +559,7 @@ int iupluawidgets_open(int tag)
     { "iupCreateButton", CreateButton },
     { "iupCreateDialog", CreateDialog },
     { "iupCreateTimer", CreateTimer },
+    { "iupCreateClipboard", CreateClipboard },
     { "iupCreateHbox", CreateHbox },
     { "iupCreateVbox", CreateVbox },
     { "iupCreateZbox", CreateZbox },

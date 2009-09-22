@@ -898,6 +898,7 @@ int iuplua_open(lua_State * L)
   iupnormalizerlua_open(L);
   iupuserlua_open(L);
   iuptreelua_open(L);
+  iupclipboardlua_open(L);
 
   iuplua_returnEnv(L);
 

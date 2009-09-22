@@ -195,6 +195,19 @@ iup.timer = iuptimer
 
 
 -- ###############
+IUPCLIPBOARD = {parent = WIDGET}
+
+function IUPCLIPBOARD:CreateIUPelement (obj)
+  return iupCreateClipboard()
+end
+
+function iupclipboard(o)
+  return IUPCLIPBOARD:Constructor(o)
+end
+iup.clipboard = iupclipboard
+
+
+-- ###############
 IUPDIALOG = {parent = WIDGET, type = {type_widget}}
 
 function IUPDIALOG:CreateIUPelement (obj)

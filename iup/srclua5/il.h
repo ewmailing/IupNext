@@ -47,7 +47,8 @@ int iupimagergblua_open(lua_State * L);
 int iupprogressbarlua_open(lua_State * L);
 int iupnormalizerlua_open(lua_State * L);
 int iupuserlua_open(lua_State * L);
-int iuptreelua_open (lua_State * L);
+int iuptreelua_open(lua_State * L);
+int iupclipboardlua_open(lua_State * L);
 
 void iupgetparamlua_open (lua_State * L);
 
