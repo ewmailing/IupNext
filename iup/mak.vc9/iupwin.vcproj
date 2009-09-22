@@ -176,6 +176,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\win\iupwin_clipboard.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\win\iupwin_colordlg.c"
 				>
 			</File>

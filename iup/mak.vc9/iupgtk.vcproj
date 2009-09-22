@@ -143,6 +143,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\gtk\iupgtk_clipboard.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\gtk\iupgtk_colordlg.c"
 				>
 			</File>

@@ -171,6 +171,7 @@ Ihandle*  IupText       (const char* action);
 Ihandle*  IupMultiLine  (const char* action);
 Ihandle*  IupToggle     (const char* title, const char* action);
 Ihandle*  IupTimer      (void);
+Ihandle*  IupClipboard  (void);
 Ihandle*  IupProgressBar(void);
 Ihandle*  IupVal        (const char *type);
 Ihandle*  IupTabs       (Ihandle* child, ...);

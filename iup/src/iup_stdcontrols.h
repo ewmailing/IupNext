@@ -52,6 +52,7 @@ Iclass* iupImageGetClass(void);
 Iclass* iupImageRGBGetClass(void);
 Iclass* iupImageRGBAGetClass(void);
 Iclass* iupUserGetClass(void);
+Iclass* iupClipboardGetClass(void);
 
 /*************************************************/
 

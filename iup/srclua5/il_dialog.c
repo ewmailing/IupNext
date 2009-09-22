@@ -12,6 +12,14 @@
 #include "il.h"
 
 
+static int dialog_move_cb(Ihandle *self, int p0, int p1)
+{
+  lua_State *L = iuplua_call_start(self, "move_cb");
+  lua_pushnumber(L, p0);
+  lua_pushnumber(L, p1);
+  return iuplua_call(L, 2);
+}
+
 static int dialog_map_cb(Ihandle *self)
 {
   lua_State *L = iuplua_call_start(self, "map_cb");
@@ -68,6 +76,7 @@ int iupdialoglua_open(lua_State * L)
 {
   iuplua_register(L, Dialog, "Dialog");
 
+  iuplua_register_cb(L, "MOVE_CB", (lua_CFunction)dialog_move_cb, NULL);
   iuplua_register_cb(L, "MAP_CB", (lua_CFunction)dialog_map_cb, NULL);
   iuplua_register_cb(L, "UNMAP_CB", (lua_CFunction)dialog_unmap_cb, NULL);
   iuplua_register_cb(L, "DROPFILES_CB", (lua_CFunction)dialog_dropfiles_cb, NULL);

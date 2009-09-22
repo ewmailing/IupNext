@@ -89,6 +89,7 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupImageRGBGetClass());
   iupRegisterClass(iupImageRGBAGetClass());
   iupRegisterClass(iupUserGetClass());
+  iupRegisterClass(iupClipboardGetClass());
 
   iupRegisterClass(iupRadioGetClass());
   iupRegisterClass(iupFillGetClass());

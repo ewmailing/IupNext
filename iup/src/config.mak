@@ -27,7 +27,7 @@ ifdef USE_GTK
 
   DEFINES += GTK_DISABLE_DEPRECATED
   INCLUDES += gtk
-    SRC += gtk/iupgtk_common.c gtk/iupgtk_focus.c gtk/iupgtk_font.c \
+    SRC += gtk/iupgtk_common.c gtk/iupgtk_focus.c gtk/iupgtk_font.c gtk/iupgtk_clipboard.c \
            gtk/iupgtk_globalattrib.c gtk/iupgtk_key.c gtk/iupgtk_tips.c \
            gtk/iupgtk_loop.c gtk/iupgtk_open.c gtk/iupgtk_messagedlg.c \
            gtk/iupgtk_dialog.c gtk/iupgtk_timer.c gtk/iupgtk_image.c gtk/iupgtk_label.c \
@@ -57,7 +57,7 @@ else
            win/iupwin_dialog.c win/iupwin_messagedlg.c win/iupwin_timer.c \
            win/iupwin_image.c win/iupwin_label.c win/iupwin_canvas.c win/iupwin_frame.c \
            win/iupwin_colordlg.c win/iupwin_fontdlg.c win/iupwin_filedlg.c \
-           win/iupwin_button.c win/iupwin_draw.c win/iupwin_toggle.c \
+           win/iupwin_button.c win/iupwin_draw.c win/iupwin_toggle.c win/iupwin_clipboard.c \
            win/iupwin_progressbar.c win/iupwin_text.c win/iupwin_val.c \
            win/iupwin_tabs.c win/iupwin_menu.c win/iupwin_list.c win/iupwin_tree.c
            
@@ -76,7 +76,7 @@ else
            mot/iupmot_globalattrib.c mot/iupmot_dialog.c mot/iupmot_messagedlg.c \
            mot/iupmot_timer.c mot/iupmot_image.c mot/iupmot_label.c mot/iupmot_canvas.c \
            mot/iupmot_colordlg.c mot/iupmot_fontdlg.c mot/iupmot_filedlg.c mot/iupmot_frame.c \
-           mot/iupmot_button.c mot/iupmot_toggle.c mot/iupmot_progressbar.c \
+           mot/iupmot_button.c mot/iupmot_toggle.c mot/iupmot_progressbar.c mot/iupmot_clipboard.c \
            mot/iupmot_text.c mot/iupmot_val.c mot/iupmot_tabs.c mot/iupmot_menu.c \
            mot/iupmot_list.c mot/iupmot_tree.c
            

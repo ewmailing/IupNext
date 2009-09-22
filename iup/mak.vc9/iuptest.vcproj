@@ -159,6 +159,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\test\clipboard.c"
+			>
+		</File>
+		<File
 			RelativePath="..\test\colorbar.c"
 			>
 		</File>

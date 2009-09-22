@@ -62,6 +62,7 @@ void ConfTest(void);
 void ZboxTest(void);
 void ScanfTest(void);
 void SboxTest(void);
+void ClipboardTest(void);
 
 void HelpTest(void)
 {
@@ -84,6 +85,7 @@ static TestItems test_list[] = {
   {"CellsDegrade", CellsDegradeTest},
   {"CellsNumbering", CellsNumberingTest},
   {"Class Conference", ConfTest},
+  {"Clipboard", ClipboardTest},
   {"ColorBrowser", ColorBrowserTest},
   {"Colorbar", ColorbarTest},
   {"Dial", DialTest},
