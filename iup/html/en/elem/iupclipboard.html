@@ -37,16 +37,24 @@ clipboard() [in LED]</pre>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p>TEXT: copy or paste text to or from the clipboard.</p>
-
-
-  <p>IMAGE: copy or paste an image to or from the clipboard.</p>
-
-
-  <p>TEXTAVAILABLE (read-only): informs if there is any text available at the 
-	clipboard.</p>
-<p>IMAGEAVAILABLE (read-only): informs if there is any image available at the 
+  <p><strong>IMAGE</strong> (write-only): name of an image to copy or paste, to or from the clipboard.</p>
+<p><strong>IMAGEAVAILABLE</strong> (read-only): informs if there is any image available at the 
 clipboard.</p>
+
+
+  <p><strong>NATIVEIMAGE</strong>: native handle of an image to copy or paste, 
+	to or from the clipboard. In Win32 is a <strong>HANDLE</strong> for a DIB. 
+	In GTK is a <strong>GdkPixbuf*</strong>. In Motif is a <strong>Pixmap</strong>. 
+	The returned handle must be released after used (GlobalFree(handle), 
+	g_object_unref(pixbuf) or XFreePixmap(display, pixmap)). After copying to 
+	the clipboard do NOT release the given handle.</p>
+
+
+<p><strong>TEXT</strong>: copy or paste text to or from the clipboard.</p>
+
+
+  <p><strong>TEXTAVAILABLE</strong> (read-only): informs if there is any text available at the 
+	clipboard.</p>
 
 
 <h3><a name="Examples">Examples</a></h3>

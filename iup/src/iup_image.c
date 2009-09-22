@@ -417,7 +417,7 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
   }
 
   bgcolor = iupAttribGet(ih, "BGCOLOR");
-  if (!bgcolor && ih_parent)  
+  if (ih_parent && !bgcolor)
     bgcolor = IupGetAttribute(ih_parent, "BGCOLOR"); /* Use IupGetAttribute to use inheritance and native implementation */
 
   if (make_inactive)
@@ -436,13 +436,13 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
   if (image)
     return image;
 
-  if (iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
+  if (ih_parent && iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
     iupAttribSetStr(ih, "FLAT_ALPHA", "1");
 
   /* Creates the native image */
   image = iupdrvImageCreateImage(ih, bgcolor, make_inactive);
 
-  if (iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
+  if (ih_parent && iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
     iupAttribSetStr(ih, "FLAT_ALPHA", NULL);
 
   if (iupAttribGet(ih, "_IUP_BGCOLOR_DEPEND") && bgcolor && !bg_concat)  /* _IUP_BGCOLOR_DEPEND could be set during creation */

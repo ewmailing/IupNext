@@ -15,6 +15,7 @@
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_image.h"
 
 #include "iupgtk_drv.h"
 
@@ -36,31 +37,31 @@ static char* gtkClipboardGetTextAttrib(Ihandle *ih)
 
 static int gtkClipboardSetImageAttrib(Ihandle *ih, const char *value)
 {
-  GtkClipboard *clipboard;
-  GdkPixbuf *pixbuf;
-  (void)ih;
-
-  clipboard = gtk_clipboard_get (gdk_atom_intern("CLIPBOARD", FALSE));
- // pixbuf = get_image_pixbuf (GTK_IMAGE (data));
-
+  GtkClipboard *clipboard = gtk_clipboard_get (gdk_atom_intern("CLIPBOARD", FALSE));
+  GdkPixbuf *pixbuf = (GdkPixbuf*)iupImageGetImage(value, ih, 0);
   gtk_clipboard_set_image (clipboard, pixbuf);
-  g_object_unref (pixbuf);
   return 0;
 }
 
-static char* gtkClipboardGetImageAttrib(Ihandle *ih)
+static int gtkClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
 {
-  GtkClipboard *clipboard = gtk_clipboard_get (gdk_atom_intern("CLIPBOARD", FALSE));
-  GdkPixbuf *pixbuf = gtk_clipboard_wait_for_image (clipboard);
+  GtkClipboard *clipboard;
   (void)ih;
 
-  if (pixbuf)
-  {
-//    gtk_image_set_from_pixbuf (GTK_IMAGE (data), pixbuf);
-    g_object_unref (pixbuf);
-  }
+  if (!value)
+    return 0;
 
-  return NULL;
+  clipboard = gtk_clipboard_get (gdk_atom_intern("CLIPBOARD", FALSE));
+
+  gtk_clipboard_set_image (clipboard, (GdkPixbuf*)value);
+  return 0;
+}
+
+static char* gtkClipboardGetNativeImageAttrib(Ihandle *ih)
+{
+  GtkClipboard *clipboard = gtk_clipboard_get (gdk_atom_intern("CLIPBOARD", FALSE));
+  (void)ih;
+  return (char*)gtk_clipboard_wait_for_image (clipboard);
 }
 
 static char* gtkClipboardGetTextAvailableAttrib(Ihandle *ih)
@@ -102,7 +103,8 @@ Iclass* iupClipboardGetClass(void)
 
   /* Attribute functions */
   iupClassRegisterAttribute(ic, "TEXT", gtkClipboardGetTextAttrib, gtkClipboardSetTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", gtkClipboardGetImageAttrib, gtkClipboardSetImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NATIVEIMAGE", gtkClipboardGetNativeImageAttrib, gtkClipboardSetNativeImageAttrib, NULL, NULL, IUPAF_NO_STRING|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, gtkClipboardSetImageAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTAVAILABLE", gtkClipboardGetTextAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEAVAILABLE", gtkClipboardGetImageAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
