@@ -1460,6 +1460,10 @@ wb_usr.tree =
           }
         },
         {
+          name= {nl= "IupClipboard"},
+          link= "elem/iupclipboard.html"
+        },
+        {
           name= {nl= "IupTimer"},
           link= "elem/iuptimer.html"
         },
