@@ -17,57 +17,12 @@
 #include "iup_str.h"
 #include "iup_image.h"
 
+#include "iupwin_drv.h"
 
-static HBITMAP winCopyBitmap(HBITMAP hBitmap)
-{
-  BITMAP bm;
-  HBITMAP hNewBitmap, old, old1;
-
-  HDC hdcMem = CreateCompatibleDC(NULL);
-  HDC hdcSrc = CreateCompatibleDC(NULL);
-
-  old = (HBITMAP)SelectObject(hdcSrc, hBitmap);
-  GetObject(hBitmap, sizeof(BITMAP), (LPSTR)&bm);
-
-  hNewBitmap = CreateBitmapIndirect(&bm);
-  if (!hNewBitmap)
-  {
-    SelectObject(hdcSrc, old);
-    DeleteDC(hdcMem);
-    DeleteDC(hdcSrc);
-    return NULL;
-  }
-
-  old1 = (HBITMAP) SelectObject(hdcMem, hNewBitmap);
-  BitBlt(hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, hdcSrc, 0, 0, SRCCOPY);
-
-  SelectObject(hdcMem, old1);
-
-  SelectObject(hdcSrc, old);
-  DeleteDC(hdcSrc);
-  DeleteDC(hdcMem);
-
-  return hNewBitmap;
-}
-
-static HANDLE winCopyHandle(HANDLE handle)
-{
-  SIZE_T size = GlobalSize(handle);
-  HANDLE newHandle = GlobalAlloc(GMEM_MOVEABLE, size); 
-  if (newHandle)
-  {
-    void* mem = GlobalLock(handle);
-    void* newMem = GlobalLock(newHandle);
-    CopyMemory(newMem, mem, size);
-    GlobalUnlock(handle);
-    GlobalUnlock(newHandle);
-  }
-  return newHandle;
-}
 
 static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
 {
-  HANDLE handle;
+  HANDLE hHandle;
   void* clip_str;
   int size = strlen(value)+1;
   (void)ih;
@@ -75,15 +30,15 @@ static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
   if (!OpenClipboard(NULL))
     return 0;
 
-  handle = GlobalAlloc(GMEM_MOVEABLE, size); 
-  if (!handle)
+  hHandle = GlobalAlloc(GMEM_MOVEABLE, size); 
+  if (!hHandle)
     return 0;
 
-  clip_str = GlobalLock(handle);
+  clip_str = GlobalLock(hHandle);
   CopyMemory(clip_str, value, size);
-  GlobalUnlock(handle);
+  GlobalUnlock(hHandle);
 
-  SetClipboardData(CF_TEXT, handle);
+  SetClipboardData(CF_TEXT, hHandle);
   CloseClipboard();
 
   return 0;
@@ -91,23 +46,23 @@ static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
 
 static char* winClipboardGetTextAttrib(Ihandle *ih)
 {
-  HANDLE handle;
+  HANDLE hHandle;
   char* str;
   (void)ih;
 
   if (!OpenClipboard(NULL))
     return NULL;
 
-  handle = GetClipboardData(CF_TEXT);
-  if (!handle)
+  hHandle = GetClipboardData(CF_TEXT);
+  if (!hHandle)
   {
     CloseClipboard();
     return NULL;
   }
   
-  str = iupStrGetMemoryCopy((char*)GlobalLock(handle));
+  str = iupStrGetMemoryCopy((char*)GlobalLock(hHandle));
  
-  GlobalUnlock(handle);
+  GlobalUnlock(hHandle);
   CloseClipboard();
   return str;
 }
@@ -120,8 +75,9 @@ static int winClipboardSetImageAttrib(Ihandle *ih, const char *value)
     return 0;
 
   hBitmap = (HBITMAP)iupImageGetImage(value, ih, 0);
+  iupImageClearCache(ih, hBitmap);
 
-  SetClipboardData(CF_BITMAP, winCopyBitmap(hBitmap));
+  SetClipboardData(CF_BITMAP, (HANDLE)hBitmap);
   CloseClipboard();
 
   return 0;
@@ -139,25 +95,42 @@ static int winClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
+static HANDLE winCopyHandle(HANDLE hHandle)
+{
+  void *src_data, *dst_data;
+  SIZE_T size = GlobalSize(hHandle);
+  HANDLE hNewHandle = GlobalAlloc(GMEM_MOVEABLE, size); 
+  if (!hNewHandle)
+    return NULL;
+
+  src_data = GlobalLock(hHandle);
+  dst_data = GlobalLock(hNewHandle);
+  CopyMemory(dst_data, src_data, size);
+  GlobalUnlock(hHandle);
+  GlobalUnlock(hNewHandle);
+
+  return hNewHandle;
+}
+
 static char* winClipboardGetNativeImageAttrib(Ihandle *ih)
 {
-  HANDLE handle;
+  HANDLE hHandle;
 
   if (!OpenClipboard(NULL))
     return 0;
 
-  handle = GetClipboardData(CF_DIB);
-  if (!handle)
+  hHandle = GetClipboardData(CF_DIB);
+  if (!hHandle)
   {
     CloseClipboard();
     return NULL;
   }
 
-  handle = winCopyHandle(handle);
+  hHandle = winCopyHandle(hHandle);   /* must duplicate because CloseClipboard will invalidate the handle */
   CloseClipboard();
   
   (void)ih;
-  return handle;
+  return (char*)hHandle;
 }
 
 static char* winClipboardGetTextAvailableAttrib(Ihandle *ih)

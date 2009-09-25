@@ -23,6 +23,98 @@
 #include "iupmot_color.h"
 
 
+void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
+{
+  Pixmap pixmap = (Pixmap)handle;
+  int w, h, y, x, bpp;
+  XImage *xi;
+
+  if (!iupdrvImageGetInfo(handle, &w, &h, &bpp))
+    return;
+
+  if (bpp==8)
+    return;
+
+  xi = XGetImage(iupmot_display, pixmap, 0, 0, w, h, ULONG_MAX, ZPixmap);
+  if (xi)
+  {
+    /* planes are separated in imgdata */
+    int planesize = w*h;
+    unsigned char *r = imgdata,
+                  *g = imgdata+planesize,
+                  *b = imgdata+2*planesize;
+    for (y=0; y<h; y++)
+    {
+      int lineoffset = (h-1 - y)*w;  /* imgdata is bottom up */
+      for (x=0; x<w; x++)
+      {
+        iupmotColorGetRGB(XGetPixel(xi, x, y), r + lineoffset+x, g + lineoffset+x, b + lineoffset+x);
+      }
+    }
+    
+    XDestroyImage(xi);
+  }
+}
+
+void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata)
+{
+  int y, x;
+  Pixmap pixmap;
+  GC gc;
+
+  pixmap = XCreatePixmap(iupmot_display,
+          RootWindow(iupmot_display,iupmot_screen),
+          width, height, iupdrvGetScreenDepth());
+  if (!pixmap)
+    return NULL;
+
+  gc = XCreateGC(iupmot_display,pixmap,0,NULL);
+
+  /* Pixmap is top-bottom */
+  /* imgdata is bottom up */
+
+  if (bpp == 8)
+  {
+    Pixel color2pixel[256];
+    int i;
+    for (i=0;i<colors_count;i++)
+      color2pixel[i] = iupmotColorGetPixel(colors[i].r, colors[i].g, colors[i].b);
+
+    for (y=0;y<height;y++)
+    {
+      int lineoffset = (height-1 - y)*width;  /* imgdata is bottom up */
+      for(x=0;x<width;x++)
+      {
+        unsigned long p = color2pixel[imgdata[lineoffset+x]];
+        XSetForeground(iupmot_display,gc,p);
+        XDrawPoint(iupmot_display,pixmap,gc,x,y);
+      }
+    }
+  }
+  else
+  {
+    /* planes are separated in imgdata */
+    int planesize = width*height;
+    unsigned char *r = imgdata,
+                  *g = imgdata+planesize,
+                  *b = imgdata+2*planesize;
+    for (y=0;y<height;y++)
+    {
+      int lineoffset = (height-1 - y)*width;  /* imgdata is bottom up */
+      for(x=0;x<width;x++)
+      {
+        unsigned long p = iupmotColorGetPixel(r[lineoffset+x], g[lineoffset+x], b[lineoffset+x]);
+        XSetForeground(iupmot_display,gc,p);
+        XDrawPoint(iupmot_display,pixmap,gc,x,y);
+      }
+    }
+  }
+
+  XFreeGC(iupmot_display,gc);
+
+  return (void*)pixmap;
+}
+
 void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive)
 {
   int y, x, bpp, bgcolor_depend = 0,
@@ -113,7 +205,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   if (bgcolor_depend || make_inactive)
     iupAttribSetStr(ih, "_IUP_BGCOLOR_DEPEND", "1");
 
- return (void*)pixmap;
+  return (void*)pixmap;
 }
 
 void* iupdrvImageCreateIcon(Ihandle *ih)
@@ -264,26 +356,42 @@ void* iupdrvImageLoad(const char* name, int type)
   }
 }
 
-void iupdrvImageGetInfo(void* image, int *w, int *h, int *bpp)
+int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
 {
-  Pixmap pixmap = (Pixmap)image;
+  Pixmap pixmap = (Pixmap)handle;
   Window root;
   int x, y;
   unsigned int width, height, b, depth;
-  XGetGeometry(iupmot_display, pixmap, &root, &x, &y, &width, &height, &b, &depth);
+  if (!XGetGeometry(iupmot_display, pixmap, &root, &x, &y, &width, &height, &b, &depth))
+  {
+    if (w) *w = 0;
+    if (h) *h = 0;
+    if (bpp) *bpp = 0;
+    return 0;
+  }
   if (w) *w = width;
   if (h) *h = height;
-  if (bpp) *bpp = depth;
+  if (bpp) iupImageNormBpp(depth);
+  return 1;
 }
 
-void iupdrvImageDestroy(void* image, int type)
+int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count)
+{
+  /* How to get the pallete? */
+  (void)colors;
+  (void)colors_count;
+  return iupdrvImageGetInfo(handle, w, h, bpp);
+}
+
+void iupdrvImageDestroy(void* handle, int type)
 {
   if (type == IUPIMAGE_CURSOR)
-    XFreeCursor(iupmot_display, (Cursor)image);
+    XFreeCursor(iupmot_display, (Cursor)handle);
   else
   {
     Screen* screen = ScreenOfDisplay(iupmot_display, iupmot_screen);
-    if (!XmDestroyPixmap(screen, (Pixmap)image))
-      XFreePixmap(iupmot_display, (Pixmap)image);
+    if (!XmDestroyPixmap(screen, (Pixmap)handle))
+      XFreePixmap(iupmot_display, (Pixmap)handle);
   }
 }
+

@@ -39,7 +39,8 @@ static int gtkClipboardSetImageAttrib(Ihandle *ih, const char *value)
 {
   GtkClipboard *clipboard = gtk_clipboard_get (gdk_atom_intern("CLIPBOARD", FALSE));
   GdkPixbuf *pixbuf = (GdkPixbuf*)iupImageGetImage(value, ih, 0);
-  gtk_clipboard_set_image (clipboard, pixbuf);
+  if (pixbuf)
+    gtk_clipboard_set_image (clipboard, pixbuf);
   return 0;
 }
 

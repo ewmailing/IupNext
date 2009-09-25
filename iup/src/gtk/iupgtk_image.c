@@ -21,6 +21,116 @@
 #include "iupgtk_drv.h"
 
 
+void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
+{
+  GdkPixbuf* pixbuf = (GdkPixbuf*)handle;
+  int w, h, y, x, bpp;
+  guchar *pixdata, *pixline_data;
+  int rowstride, channels, planesize;
+  unsigned char *r, *g, *b, *a;
+
+  if (!iupdrvImageGetInfo(handle, &w, &h, &bpp))
+    return;
+
+  if (bpp==8)
+    return;
+
+  pixdata = gdk_pixbuf_get_pixels(pixbuf);
+  rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+  channels = gdk_pixbuf_get_n_channels(pixbuf);
+
+  /* planes are separated in imgdata */
+  planesize = w*h;
+  r = imgdata;
+  g = imgdata+planesize;
+  b = imgdata+2*planesize;
+  a = imgdata+3*planesize;
+  for (y=0; y<h; y++)
+  {
+    int lineoffset = (h-1 - y)*w;  /* imgdata is bottom up */
+    pixline_data = pixdata + y * rowstride;
+    for(x=0;x<w;x++)
+    {
+      int pos = x*channels;
+      r[lineoffset+x] = pixline_data[pos];
+      g[lineoffset+x] = pixline_data[pos+1];
+      b[lineoffset+x] = pixline_data[pos+2];
+
+      if (bpp == 32)
+        a[lineoffset+x] = pixline_data[pos+3];
+    }
+  }
+}
+
+void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata)
+{
+  GdkPixbuf* pixbuf;
+  guchar *pixdata, *pixline_data;
+  int rowstride, channels;
+  unsigned char *line_data;
+  int x, y, has_alpha = (bpp==32);
+  (void)colors_count;
+
+  pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, has_alpha, 8, width, height);
+  if (!pixbuf)
+    return NULL;
+
+  pixdata = gdk_pixbuf_get_pixels(pixbuf);
+  rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+  channels = gdk_pixbuf_get_n_channels(pixbuf);
+
+  /* GdkPixbuf is top-bottom */
+  /* imgdata is bottom up */
+
+  if (bpp == 8)
+  {
+    for (y=0; y<height; y++)
+    {
+      pixline_data = pixdata + y * rowstride;
+      line_data = imgdata + (height-1 - y) * width;  /* imgdata is bottom up */
+
+      for (x=0; x<width; x++)
+      {
+        unsigned char index = line_data[x];
+        iupColor* c = &colors[index];
+        guchar *r = &pixline_data[channels*x],
+               *g = r+1,
+               *b = g+1;
+
+        *r = c->r;
+        *g = c->g;
+        *b = c->b;
+      }
+    }
+  }
+  else /* bpp == 32 or bpp == 24 */
+  {
+    /* planes are separated in imgdata */
+    int planesize = width*height;
+    unsigned char *r = imgdata,
+                  *g = imgdata+planesize,
+                  *b = imgdata+2*planesize,
+                  *a = imgdata+3*planesize;
+    for (y=0; y<height; y++)
+    {
+      int lineoffset = (height-1 - y)*width;  /* imgdata is bottom up */
+      pixline_data = pixdata + y * rowstride;
+      for(x=0;x<width;x++)
+      {
+        int pos = x*channels;
+        pixline_data[pos] = r[lineoffset+x];
+        pixline_data[pos+1] = g[lineoffset+x];
+        pixline_data[pos+2] = b[lineoffset+x];
+
+        if (bpp == 32)
+          pixline_data[pos+3] = a[lineoffset+x];
+      }
+    }
+  }
+
+  return pixbuf;
+}
+
 void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive)
 {
   GdkPixbuf* pixbuf;
@@ -287,25 +397,34 @@ void* iupdrvImageLoad(const char* name, int type)
   }
 }
 
-void iupdrvImageGetInfo(void* image, int *w, int *h, int *bpp)
+int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
 {
-  GdkPixbuf* pixbuf = (GdkPixbuf*)image;
+  GdkPixbuf* pixbuf = (GdkPixbuf*)handle;
   if (!GDK_IS_PIXBUF(pixbuf)) 
   {
     if (w) *w = 0;
     if (h) *h = 0;
     if (bpp) *bpp = 0;
-    return;
+    return 0;
   }
   if (w) *w = gdk_pixbuf_get_width(pixbuf);
   if (h) *h = gdk_pixbuf_get_height(pixbuf);
-  if (bpp) *bpp = gdk_pixbuf_get_bits_per_sample(pixbuf)*gdk_pixbuf_get_n_channels(pixbuf);
+  if (bpp) *bpp = iupImageNormBpp(gdk_pixbuf_get_bits_per_sample(pixbuf)*gdk_pixbuf_get_n_channels(pixbuf));
+  return 1;
 }
 
-void iupdrvImageDestroy(void* image, int type)
+int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count)
+{
+  /* GdkPixbuf are only 24 bpp or 32 bpp */
+  (void)colors;
+  (void)colors_count;
+  return iupdrvImageGetInfo(handle, w, h, bpp);
+}
+
+void iupdrvImageDestroy(void* handle, int type)
 {
   if (type == IUPIMAGE_CURSOR)
-    gdk_cursor_unref((GdkCursor*)image);
+    gdk_cursor_unref((GdkCursor*)handle);
   else
-    g_object_unref(image);
+    g_object_unref(handle);
 }

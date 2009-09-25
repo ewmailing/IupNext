@@ -12,7 +12,13 @@ extern "C" {
 #endif
 
 Ihandle* IupLoadImage(const char* file_name);
-int IupSaveImage(Ihandle* image, const char* file_name, const char* format);
+int IupSaveImage(Ihandle* ih, const char* file_name, const char* format);
+
+#ifdef __IM_IMAGE_H
+imImage* IupGetNativeHandleImage(void* handle);
+void* IupGetImageNativeHandle(imImage* image);
+#endif
+
 
 #if defined(__cplusplus)
 }

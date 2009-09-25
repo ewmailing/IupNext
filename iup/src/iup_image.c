@@ -91,11 +91,11 @@ void iupImageStockLoad(const char *name)
   else if (native_name)
   {
     /* dummy image to save the GTK stock name */
-    void* image = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
-    if (image)
+    void* handle = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
+    if (handle)
     {
       int w, h, bpp;
-      iupdrvImageGetInfo(image, &w, &h, &bpp);
+      iupdrvImageGetInfo(handle, &w, &h, &bpp);
       if (bpp == 32)
         ih = IupImageRGBA(w,h,NULL);
       else
@@ -109,6 +109,13 @@ void iupImageStockLoad(const char *name)
 /**************************************************************************************************/
 /**************************************************************************************************/
 
+
+int iupImageNormBpp(int bpp)
+{
+  if (bpp <= 8) return 8;
+  if (bpp <= 24) return 24;
+  return 32;
+}
 
 static void iupColorSet(iupColor *c, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
@@ -340,17 +347,17 @@ void* iupImageGetCursor(const char* name)
 
 void iupImageGetInfo(const char* name, int *w, int *h, int *bpp)
 {
-  void* image;
+  void* handle;
   Ihandle *ih;
 
   if (!name)
     return;
 
   /* Check first in the system resources. */
-  image = iupdrvImageLoad(name, IUPIMAGE_IMAGE);
-  if (image)
+  handle = iupdrvImageLoad(name, IUPIMAGE_IMAGE);
+  if (handle)
   {
-    iupdrvImageGetInfo(image, w, h, bpp);
+    iupdrvImageGetInfo(handle, w, h, bpp);
     return;
   }
 
@@ -364,10 +371,10 @@ void iupImageGetInfo(const char* name, int *w, int *h, int *bpp)
 
     if (native_name) 
     {
-      image = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
-      if (image) 
+      handle = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
+      if (handle) 
       {
-        iupdrvImageGetInfo(image, w, h, bpp);
+        iupdrvImageGetInfo(handle, w, h, bpp);
         return;
       }
     }
@@ -385,7 +392,7 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
 {
   char cache_name[100] = "_IUPIMAGE_IMAGE";
   char* bgcolor;
-  void* image;
+  void* handle;
   Ihandle *ih;
   int bg_concat = 0;
 
@@ -393,9 +400,9 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
     return NULL;
 
   /* Check first in the system resources. */
-  image = iupdrvImageLoad(name, IUPIMAGE_IMAGE);
-  if (image) 
-    return image;
+  handle = iupdrvImageLoad(name, IUPIMAGE_IMAGE);
+  if (handle) 
+    return handle;
 
   /* get handle from name */
   ih = IupGetHandle(name);
@@ -407,9 +414,9 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
 
     if (native_name) 
     {
-      image = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
-      if (image) 
-        return image;
+      handle = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
+      if (handle) 
+        return handle;
     }
 
     if (!ih)
@@ -432,15 +439,15 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
   }
   
   /* Check for an already created native image */
-  image = (void*)iupAttribGet(ih, cache_name);
-  if (image)
-    return image;
+  handle = (void*)iupAttribGet(ih, cache_name);
+  if (handle)
+    return handle;
 
   if (ih_parent && iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
     iupAttribSetStr(ih, "FLAT_ALPHA", "1");
 
   /* Creates the native image */
-  image = iupdrvImageCreateImage(ih, bgcolor, make_inactive);
+  handle = iupdrvImageCreateImage(ih, bgcolor, make_inactive);
 
   if (ih_parent && iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
     iupAttribSetStr(ih, "FLAT_ALPHA", NULL);
@@ -453,9 +460,9 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
   }
 
   /* save the native image in the cache */
-  iupAttribSetStr(ih, cache_name, (char*)image);
+  iupAttribSetStr(ih, cache_name, (char*)handle);
 
-  return image;
+  return handle;
 }
 
 void iupImageUpdateParent(Ihandle *ih)  /* ih here is the element that contains images */
@@ -492,22 +499,44 @@ static char* iImageGetHeightAttrib(Ihandle *ih)
   return str;
 }
 
+void iupImageClearCache(Ihandle* ih, void* handle)
+{
+  char *name;
+  void* cur_handle;
+
+  name = iupTableFirst(ih->attrib);
+  while (name)
+  {
+    if (iupStrEqualPartial(name, "_IUPIMAGE_"))
+    {
+      cur_handle = iupTableGetCurr(ih->attrib);
+      if (cur_handle == handle)
+      {
+        iupTableRemoveCurr(ih->attrib);
+        return;
+      }
+    }
+
+    name = iupTableNext(ih->attrib);
+  }
+}
+
 static void iImageUnMapMethod(Ihandle* ih)
 {
   char *name;
-  void* native_data;
+  void* handle;
 
-  native_data = iupAttribGet(ih, "_IUPIMAGE_ICON");
-  if (native_data) 
+  handle = iupAttribGet(ih, "_IUPIMAGE_ICON");
+  if (handle) 
   {
-    iupdrvImageDestroy(native_data, IUPIMAGE_ICON);
+    iupdrvImageDestroy(handle, IUPIMAGE_ICON);
     iupAttribSetStr(ih, "_IUPIMAGE_ICON", NULL);
   }
 
-  native_data = iupAttribGet(ih, "_IUPIMAGE_CURSOR");
-  if (native_data) 
+  handle = iupAttribGet(ih, "_IUPIMAGE_CURSOR");
+  if (handle) 
   {
-    iupdrvImageDestroy(native_data, IUPIMAGE_CURSOR);
+    iupdrvImageDestroy(handle, IUPIMAGE_CURSOR);
     iupAttribSetStr(ih, "_IUPIMAGE_CURSOR", NULL);
   }
 
@@ -517,8 +546,8 @@ static void iImageUnMapMethod(Ihandle* ih)
   {
     if (iupStrEqualPartial(name, "_IUPIMAGE_"))
     {
-      native_data = iupTableGetCurr(ih->attrib);
-      if (native_data) iupdrvImageDestroy(native_data, IUPIMAGE_IMAGE);
+      handle = iupTableGetCurr(ih->attrib);
+      if (handle) iupdrvImageDestroy(handle, IUPIMAGE_IMAGE);
     }
 
     name = iupTableNext(ih->attrib);
