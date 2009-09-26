@@ -748,8 +748,6 @@ static void motDialogConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal 
   (void)s;
   (void)card;
 
-printf("ConfigureNotify\n");
-
   XtVaGetValues(w, XmNuserData, &ih, NULL);
   if (!ih) return;
 

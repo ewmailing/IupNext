@@ -290,7 +290,7 @@ imImage* IupGetNativeHandleImage(void* handle)
 
       if (bpp<=8 && colors_count)
       {
-        long palette[256];
+        long* palette = (long*)malloc(256*sizeof(long));
         iInitPalette(palette, colors_count, colors);
         imImageSetPalette(image, palette, colors_count);
       }

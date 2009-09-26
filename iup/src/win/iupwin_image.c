@@ -307,8 +307,6 @@ int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colo
       colors[i].g = bitmap_colors[i].rgbGreen;
       colors[i].b = bitmap_colors[i].rgbBlue;
     }
-
-    free(bmih);
   }
 
   GlobalUnlock(hHandle);
@@ -633,10 +631,10 @@ void* iupdrvImageLoad(const char* name, int type)
   return hImage;
 }
 
-int iupdrvImageGetInfo(void* image, int *w, int *h, int *bpp)
+int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
 {
   BITMAP bm;
-  if (!GetObject((HBITMAP)image, sizeof(BITMAP), (LPSTR)&bm))
+  if (!GetObject((HBITMAP)handle, sizeof(BITMAP), (LPSTR)&bm))
   {
     if (w) *w = 0;
     if (h) *h = 0;
@@ -649,18 +647,21 @@ int iupdrvImageGetInfo(void* image, int *w, int *h, int *bpp)
   return 1;
 }
 
-void iupdrvImageDestroy(void* image, int type)
+void iupdrvImageDestroy(void* handle, int type)
 {
   switch (type)
   {
   case IUPIMAGE_IMAGE:
-    DeleteObject((HBITMAP)image);
+    if (GetObjectType((HBITMAP)handle)==OBJ_BITMAP)
+      DeleteObject((HBITMAP)handle);
+    else
+      GlobalFree((HANDLE)handle);
     break;
   case IUPIMAGE_ICON:
-    DestroyIcon((HICON)image);
+    DestroyIcon((HICON)handle);
     break;
   case IUPIMAGE_CURSOR:
-    DestroyCursor((HCURSOR)image);
+    DestroyCursor((HCURSOR)handle);
     break;
   }
 }
