@@ -23,7 +23,10 @@
 
 static Window motClipboardGetWindow(void)
 {
-  Ihandle* dlg = IupGetDialog(IupGetFocus());
+  Ihandle* focus = IupGetFocus();
+  Ihandle* dlg;
+  if (!focus) return (Window)NULL;
+  dlg = IupGetDialog(focus);
   if (dlg)
     return XtWindow(dlg->handle);
   else
@@ -97,6 +100,7 @@ static int motClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
   long item_id = 0;
   Window window = motClipboardGetWindow();
   XmString clip_label = XmStringCreateLocalized ("IupClipboard");
+  Pixmap pixmap = (Pixmap)value;
 
   if (XmClipboardStartCopy(iupmot_display, window, clip_label, CurrentTime, NULL, NULL, &item_id)!=ClipboardSuccess)
   {
@@ -106,7 +110,7 @@ static int motClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
 
   XmStringFree(clip_label);
 
-  XmClipboardCopy(iupmot_display, window, item_id, "PIXMAP", (char*)value, sizeof(Pixmap), 0, NULL);
+  XmClipboardCopy(iupmot_display, window, item_id, "PIXMAP", (char*)&pixmap, sizeof(Pixmap), 0, NULL);
   XmClipboardEndCopy(iupmot_display, window, item_id);
 
   (void)ih;

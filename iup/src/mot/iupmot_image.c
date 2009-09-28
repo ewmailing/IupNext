@@ -52,7 +52,7 @@ void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
       }
     }
     
-    XDestroyImage(xi);
+    //XDestroyImage(xi);
   }
 }
 
@@ -371,7 +371,7 @@ int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
   }
   if (w) *w = width;
   if (h) *h = height;
-  if (bpp) iupImageNormBpp(depth);
+  if (bpp) *bpp = iupImageNormBpp(depth);
   return 1;
 }
 
