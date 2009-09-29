@@ -52,7 +52,7 @@ void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
       }
     }
     
-    //XDestroyImage(xi);
+    XDestroyImage(xi);
   }
 }
 
