@@ -1528,7 +1528,7 @@ static int winTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 {
   if (!ih->handle)  /* do not store the action before map */
     return 0;
-  if(iupStrEqualNoCase(value, "SELECTED")) /* selectec here means the specified one */
+  if(iupStrEqualNoCase(value, "SELECTED")) /* selected here means the specified one */
   {
     HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
     HTREEITEM hItemRoot  = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
@@ -1546,11 +1546,9 @@ static int winTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
   else if(iupStrEqualNoCase(value, "CHILDREN"))  /* children of the specified one */
   {
     HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
-    HTREEITEM hItemRoot  = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
     HTREEITEM hChildItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItem);
 
-    /* the root node can't be deleted */
-    if(!hItem || hItem == hItemRoot)
+    if(!hItem)
       return 0;
 
     /* deleting the selected node's children */

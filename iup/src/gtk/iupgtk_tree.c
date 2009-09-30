@@ -1380,7 +1380,7 @@ static int gtkTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 {
   if (!ih->handle)  /* do not store the action before map */
     return 0;
-  if (iupStrEqualNoCase(value, "SELECTED"))  /* selectec here means the specified one */
+  if (iupStrEqualNoCase(value, "SELECTED"))  /* selected here means the specified one */
   {
     GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
     GtkTreeIter iterItem;
@@ -1400,13 +1400,10 @@ static int gtkTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
   else if(iupStrEqualNoCase(value, "CHILDREN"))  /* children of the specified one */
   {
     GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-    GtkTreeIter iterItem, iterChild, iterParent;
+    GtkTreeIter iterItem, iterChild;
     int hasChildren;
 
     if (!gtkTreeFindNodeFromString(ih, model, name_id, &iterItem))
-      return 0;
-
-    if (!gtk_tree_model_iter_parent(model, &iterParent, &iterItem)) /* the root node can't be deleted */
       return 0;
 
     hasChildren = gtk_tree_model_iter_children(model, &iterChild, &iterItem);

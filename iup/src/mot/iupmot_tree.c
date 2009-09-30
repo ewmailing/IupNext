@@ -1645,7 +1645,7 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 {
   if (!ih->handle)  /* do not store the action before map */
     return 0;
-  if(iupStrEqualNoCase(value, "SELECTED"))  /* selectec here means the specified one */
+  if(iupStrEqualNoCase(value, "SELECTED"))  /* selected here means the specified one */
   {
     Widget wItem = motTreeFindNodeFromString(ih, name_id);
     Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
@@ -1660,10 +1660,8 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
   else if(iupStrEqualNoCase(value, "CHILDREN"))  /* children of the specified one */
   {
     Widget wItem = motTreeFindNodeFromString(ih, name_id);
-    Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
 
-    /* the root node can't be deleted */
-    if(!wItem || wItem == wRoot)  /* root is the unique child */
+    if(!wItem)
       return 0;
 
     {
