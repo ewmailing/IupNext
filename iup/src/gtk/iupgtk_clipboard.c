@@ -37,15 +37,18 @@ static char* gtkClipboardGetTextAttrib(Ihandle *ih)
 
 static int gtkClipboardSetImageAttrib(Ihandle *ih, const char *value)
 {
+#if GTK_CHECK_VERSION(2, 6, 0)
   GtkClipboard *clipboard = gtk_clipboard_get (gdk_atom_intern("CLIPBOARD", FALSE));
   GdkPixbuf *pixbuf = (GdkPixbuf*)iupImageGetImage(value, ih, 0);
   if (pixbuf)
     gtk_clipboard_set_image (clipboard, pixbuf);
+#endif
   return 0;
 }
 
 static int gtkClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
 {
+#if GTK_CHECK_VERSION(2, 6, 0)
   GtkClipboard *clipboard;
   (void)ih;
 
@@ -55,14 +58,19 @@ static int gtkClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
   clipboard = gtk_clipboard_get (gdk_atom_intern("CLIPBOARD", FALSE));
 
   gtk_clipboard_set_image (clipboard, (GdkPixbuf*)value);
+#endif
   return 0;
 }
 
 static char* gtkClipboardGetNativeImageAttrib(Ihandle *ih)
 {
+#if GTK_CHECK_VERSION(2, 6, 0)
   GtkClipboard *clipboard = gtk_clipboard_get (gdk_atom_intern("CLIPBOARD", FALSE));
   (void)ih;
   return (char*)gtk_clipboard_wait_for_image (clipboard);
+#else
+  return NULL;
+#endif
 }
 
 static char* gtkClipboardGetTextAvailableAttrib(Ihandle *ih)
@@ -77,12 +85,16 @@ static char* gtkClipboardGetTextAvailableAttrib(Ihandle *ih)
 
 static char* gtkClipboardGetImageAvailableAttrib(Ihandle *ih)
 {
+#if GTK_CHECK_VERSION(2, 6, 0)
   GtkClipboard *clipboard = gtk_clipboard_get (gdk_atom_intern("CLIPBOARD", FALSE));
   (void)ih;
   if (gtk_clipboard_wait_is_image_available(clipboard))
     return "YES";
   else
     return "NO";
+#else
+  return NULL;
+#endif
 }
 
 /******************************************************************************/

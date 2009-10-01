@@ -38,9 +38,9 @@ clipboard() [in LED]</pre>
 
 
   <p><strong>IMAGE</strong> (write-only): name of an image to copy (set) or paste 
-	(get), to or from the clipboard.</p>
+	(get), to or from the clipboard. (GTK 2.6)</p>
 <p><strong>IMAGEAVAILABLE</strong> (read-only): informs if there is any image available at the 
-clipboard.</p>
+clipboard. (GTK 2.6)</p>
 
 
   <p><strong>NATIVEIMAGE</strong>: native handle of an image to copy or paste, 
@@ -48,7 +48,7 @@ clipboard.</p>
 	In GTK is a <strong>GdkPixbuf*</strong>. In Motif is a <strong>Pixmap</strong>. 
 	The returned handle in a paste must be released after used (GlobalFree(handle), 
 	g_object_unref(pixbuf) or XFreePixmap(display, pixmap)). After copy, do NOT release the given handle. See <a href="../iupim.html">IUP-IM Functions</a> 
-	for utility functions on image native handles.</p>
+	for utility functions on image native handles. (GTK 2.6)</p>
 
 
 <p><strong>TEXT</strong>: copy or paste text to or from the clipboard.</p>
