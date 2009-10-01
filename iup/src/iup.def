@@ -190,6 +190,7 @@ iupdrvActivate
 iupdrvImageCreateImageRaw
 iupdrvImageGetRawInfo
 iupdrvImageGetRawData
+iupdrvImageDestroy
 iupVersionDlg
 iupTableSetFunc
 iupTableSet
@@ -327,6 +328,7 @@ iupBaseTypeVoidMapMethod
 iupBaseSetPosition
 iupBaseComputeNaturalSize
 iupBaseSetCurrentSize
+iupBaseCallValueChangedCb
 iupAttribStoreStr
 iupAttribSetStrf
 iupAttribSetStr
