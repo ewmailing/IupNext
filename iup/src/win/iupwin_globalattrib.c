@@ -19,6 +19,11 @@
 
 static int win_monitor_index = 0;
 
+/* Not defined in compilers older than VC9 */
+#ifndef MAPVK_VK_TO_VSC
+#define MAPVK_VK_TO_VSC     (0)
+#endif
+
 static void winGlobalSendKey(int key, int press)
 {
   unsigned int keyval, state;
