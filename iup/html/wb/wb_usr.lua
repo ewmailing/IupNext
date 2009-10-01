@@ -1485,7 +1485,7 @@ wb_usr.tree =
     { link= "", name= {en= "" } },
     {
       name= {en= "Internal SDK"},
-      link= "../doxygen/main.html",
+      link= "../doxygen/index.html",
       folder=
       {
         {
