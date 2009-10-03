@@ -581,7 +581,7 @@ static int winTabsMapMethod(Ihandle* ih)
   if (!iupwinCreateWindowEx(ih, WC_TABCONTROL, dwExStyle, dwStyle))
     return IUP_ERROR;
 
-  /* replace the WinProc to handle base callbacks */
+  /* replace the WinProc to handle other messages */
   IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winTabsProc);
 
   /* Process WM_NOTIFY */

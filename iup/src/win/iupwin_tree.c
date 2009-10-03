@@ -299,7 +299,7 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
 {
   TVITEM item, tviPrevItem;
   TVINSERTSTRUCT tvins;
-  HTREEITEM hNewItem, hPrevItem = winTreeFindNodeFromString(ih, name_id);
+  HTREEITEM hPrevItem = winTreeFindNodeFromString(ih, name_id);
   int kindPrev;
   winTreeItemData* itemData;
 
@@ -354,7 +354,7 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
   }
 
   /* Add the node to the tree-view control */
-  hNewItem = (HTREEITEM)SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+  SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
 
   if (kindPrev == ITREE_BRANCH && tviPrevItem.cChildren==0)
   {

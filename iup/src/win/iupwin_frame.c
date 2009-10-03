@@ -178,7 +178,7 @@ static int winFrameMapMethod(Ihandle* ih)
   if (!iupwinCreateWindowEx(ih, "BUTTON", dwExStyle, dwStyle))
     return IUP_ERROR;
 
-  /* replace the WinProc to handle base callbacks */
+  /* replace the WinProc to handle other messages */
   IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winFrameProc);
 
   /* Process WM_DRAWITEM */
