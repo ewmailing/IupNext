@@ -159,6 +159,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\test\clipboard.c"
+			>
+		</File>
+		<File
 			RelativePath="..\test\colorbar.c"
 			>
 		</File>
@@ -255,6 +259,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\test\sbox.c"
+			>
+		</File>
+		<File
+			RelativePath="..\test\scanf.c"
+			>
+		</File>
+		<File
 			RelativePath="..\test\spin.c"
 			>
 		</File>
@@ -296,6 +308,10 @@
 		</File>
 		<File
 			RelativePath="..\test\vbox.c"
+			>
+		</File>
+		<File
+			RelativePath="..\test\zbox.c"
 			>
 		</File>
 	</Files>

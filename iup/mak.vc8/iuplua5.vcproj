@@ -123,6 +123,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\srclua5\il_clipboard.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\il_colordlg.c"
 					>
 				</File>
@@ -304,6 +308,10 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\cbox.lua"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\clipboard.lua"
 					>
 				</File>
 				<File
