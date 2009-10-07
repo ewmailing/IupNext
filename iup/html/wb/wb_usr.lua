@@ -152,6 +152,7 @@ wb_usr.tree =
           name= {en= "Contributions"},
           link= "guide.html#contrib"
         },
+        { link= "", name= {en= "" } },
         {
           name= {en= "IDEs"},
 
@@ -222,49 +223,60 @@ wb_usr.tree =
           }
         },
         {
-          name= {en= "Basic IupLua"},
-          link= "basic/index.html",
+          name= {en= "Lua Binding"},
+          link= "iuplua.html",
           folder=
           {
             {
-              name= {en= "Simple Output"},
-              link= "basic/index.html#Simple_Output"
-            },
-            {
-              name= {en= "Simple Input"},
-              link= "basic/index.html#Simple_Input"
-            },
-            {
-              name= {en= "Dialogs"},
-              link= "basic/index.html#Dialogs",
+              name= {en= "Basic IupLua"},
+              link= "basic/index.html",
               folder=
               {
                 {
-                  name= {en= "Layouts"},
-                  link= "basic/index.html#Dialogs"
+                  name= {en= "Simple Output"},
+                  link= "basic/index.html#Simple_Output"
                 },
                 {
-                  name= {en= "Timers and Idle"},
-                  link= "basic/index.html#Timers"
+                  name= {en= "Simple Input"},
+                  link= "basic/index.html#Simple_Input"
                 },
                 {
-                  name= {en= "Lists"},
-                  link= "basic/index.html#Lists"
-                },
-                {
-                  name= {en= "Trees"},
-                  link= "basic/index.html#Trees"
-                },
-                {
-                  name= {en= "Menus"},
-                  link= "basic/index.html#Menus"
-                },
-                {
-                  name= {en= "Plotting Data"},
-                  link= "basic/index.html#Plott"
-                },
+                  name= {en= "Dialogs"},
+                  link= "basic/index.html#Dialogs",
+                  folder=
+                  {
+                    {
+                      name= {en= "Layouts"},
+                      link= "basic/index.html#Dialogs"
+                    },
+                    {
+                      name= {en= "Timers and Idle"},
+                      link= "basic/index.html#Timers"
+                    },
+                    {
+                      name= {en= "Lists"},
+                      link= "basic/index.html#Lists"
+                    },
+                    {
+                      name= {en= "Trees"},
+                      link= "basic/index.html#Trees"
+                    },
+                    {
+                      name= {en= "Menus"},
+                      link= "basic/index.html#Menus"
+                    },
+                    {
+                      name= {en= "Plotting Data"},
+                      link= "basic/index.html#Plott"
+                    }
+                  }
+                }
               }
             },
+            {
+              name= {en= "IupLua Advanced"},
+              link= "iuplua_adv.html"
+            }
           }
         }
       }
@@ -288,19 +300,6 @@ wb_usr.tree =
               name= {nl= "LED"},
               link= "sys_guide.html#led"
             },
-            {
-              name= {nl= "IupLua"},
-              link= "sys_guide.html#iuplua"
-            },
-            {
-              name= {en= "IupLua Initialization"},
-              link= "sys_guide.html#iupluainit"
-            },
-            { link= "", name= {en= "" } },
-            {
-              name= {en= "IupLua Advanced"},
-              link= "iuplua.html"
-            }
           }
         },
         {
@@ -1292,43 +1291,93 @@ wb_usr.tree =
       }
     },
     {
-      name= {en= "Keyboard"},
-      link= "keyboard.html",
-      folder=
-      {
-        {
-          name= {en= "Codes"},
-          link= "attrib/key.html"
-        },
-        {
-          name= {en= "Reference"},
-          folder=
-          {
-            {
-              name= {nl= "IupNextField"},
-              link= "func/iupnextfield.html"
-            },
-            {
-              name= {nl= "IupPreviousField"},
-              link= "func/iuppreviousfield.html"
-            },
-            {
-              name= {nl= "IupGetFocus"},
-              link= "func/iupgetfocus.html"
-            },
-            {
-              name= {nl= "IupSetFocus"},
-              link= "func/iupsetfocus.html"
-            }
-          }
-        }
-      }
-    },
-    {
       name= {en= "Resources"},
       link= "resources.html",
       folder=
       {
+        {
+          name= {en= "Fonts"},
+
+          folder=
+          {
+            {
+              name= {nl= "FONT (2.x)"},
+              link= "attrib/iup_font2.html"
+            },
+            {
+              name= {nl= "FONT (3.0)"},
+              link= "attrib/iup_font.html"
+            },
+            {
+              name= {nl= "IupMapFont"},
+              link= "func/iupmapfont.html"
+            },
+            {
+              name= {nl= "IupUnMapFont"},
+              link= "func/iupunmapfont.html"
+            },
+          }
+        },
+        {
+          name= {en= "Images"},
+
+          folder=
+          {
+            {
+              name= {nl= "IupImage"},
+              link= "elem/iupimage.html"
+            },
+            {
+              name= {nl= "IupImageLib (2.x)"},
+              link= "iupimglib2.html"
+            },
+            {
+              name= {nl= "IupImageLib (3.0)"},
+              link= "iupimglib.html"
+            },
+            {
+              name= {nl= "Iup-IM"},
+              link= "iupim.html"
+            },
+            {
+              name= {nl= "IupSaveImageAsText"},
+              link= "func/iupsaveimageastext.html"
+            }
+          }
+        },
+        {
+          name= {en= "Keyboard"},
+          link= "keyboard.html",
+          folder=
+          {
+            {
+              name= {en= "Codes"},
+              link= "attrib/key.html"
+            },
+            {
+              name= {en= "Reference"},
+              folder=
+              {
+                {
+                  name= {nl= "IupNextField"},
+                  link= "func/iupnextfield.html"
+                },
+                {
+                  name= {nl= "IupPreviousField"},
+                  link= "func/iuppreviousfield.html"
+                },
+                {
+                  name= {nl= "IupGetFocus"},
+                  link= "func/iupgetfocus.html"
+                },
+                {
+                  name= {nl= "IupSetFocus"},
+                  link= "func/iupsetfocus.html"
+                }
+              }
+            }
+          }
+        },
         {
           name= {en= "Menus"},
 
@@ -1383,33 +1432,6 @@ wb_usr.tree =
           }
         },
         {
-          name= {en= "Images"},
-
-          folder=
-          {
-            {
-              name= {nl= "IupImage"},
-              link= "elem/iupimage.html"
-            },
-            {
-              name= {nl= "IupImageLib (2.x)"},
-              link= "iupimglib2.html"
-            },
-            {
-              name= {nl= "IupImageLib (3.0)"},
-              link= "iupimglib.html"
-            },
-            {
-              name= {nl= "Iup-IM"},
-              link= "iupim.html"
-            },
-            {
-              name= {nl= "IupSaveImageAsText"},
-              link= "func/iupsaveimageastext.html"
-            }
-          }
-        },
-        {
           name= {en= "Names"},
 
           folder=
@@ -1436,29 +1458,7 @@ wb_usr.tree =
             }
           }
         },
-        {
-          name= {en= "Fonts"},
-
-          folder=
-          {
-            {
-              name= {nl= "FONT (2.x)"},
-              link= "attrib/iup_font2.html"
-            },
-            {
-              name= {nl= "FONT (3.0)"},
-              link= "attrib/iup_font.html"
-            },
-            {
-              name= {nl= "IupMapFont"},
-              link= "func/iupmapfont.html"
-            },
-            {
-              name= {nl= "IupUnMapFont"},
-              link= "func/iupunmapfont.html"
-            },
-          }
-        },
+        { link= "", name= {en= "" } },
         {
           name= {nl= "IupClipboard"},
           link= "elem/iupclipboard.html"
