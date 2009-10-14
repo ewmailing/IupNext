@@ -579,8 +579,8 @@ void PPlotTest(void)
   boxinfo = IupVbox(lbl1, IupFill(), lbl2, NULL);
   boxdial1 = IupHbox(boxinfo, dial1, NULL);
 
-  IupSetAttribute(boxdial1, "ALIGN", "ACENTER");
-  IupSetAttribute(boxinfo, "ALIGN", "ACENTER");
+  IupSetAttribute(boxdial1, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(boxinfo, "ALIGNMENT", "ACENTER");
   IupSetAttribute(boxinfo, "SIZE", "20x52");
   IupSetAttribute(boxinfo, "GAP", "2");
   IupSetAttribute(boxinfo, "MARGIN", "4");
@@ -608,8 +608,8 @@ void PPlotTest(void)
   boxinfo = IupHbox(lbl1, IupFill(), lbl2, NULL);
   boxdial2 = IupVbox(dial2, boxinfo, NULL);
 
-  IupSetAttribute(boxdial2, "ALIGN", "ACENTER");
-  IupSetAttribute(boxinfo, "ALIGN", "ACENTER");
+  IupSetAttribute(boxdial2, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(boxinfo, "ALIGNMENT", "ACENTER");
   IupSetAttribute(boxinfo, "SIZE", "64x16");
   IupSetAttribute(boxinfo, "GAP", "2");
   IupSetAttribute(boxinfo, "MARGIN", "4");
