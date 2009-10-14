@@ -544,9 +544,6 @@ PPainterIup::PPainterIup(Ihandle *ih) :
 
 PPainterIup::~PPainterIup()
 {
-  if (_cddbuffer != NULL)
-    cdKillCanvas(_cddbuffer);
-
   delete _InteractionContainer;
 } /* d-tor */
 
@@ -2775,7 +2772,7 @@ void PPainterIup::SetStyle(const PStyle &inStyle)
   cdCanvasMarkSize(_cddbuffer, inStyle.mMarkSize);
 }
 
-int iPPlotMapMethod(Ihandle* ih)
+static int iPPlotMapMethod(Ihandle* ih)
 {
   int old_gdi = 0;
 
@@ -2800,12 +2797,20 @@ int iPPlotMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
-void iPPlotDestroyMethod(Ihandle* ih)
+static void iPPlotUnMapMethod(Ihandle* ih)
+{
+  if (ih->data->plt->_cddbuffer != NULL)
+    cdKillCanvas(ih->data->plt->_cddbuffer);
+
+  cdKillCanvas(ih->data->plt->_cdcanvas);
+}
+
+static void iPPlotDestroyMethod(Ihandle* ih)
 {
   delete ih->data->plt;
 }
 
-int iPPlotCreateMethod(Ihandle* ih, void **params)
+static int iPPlotCreateMethod(Ihandle* ih, void **params)
 {
   (void)params;
 
@@ -2841,6 +2846,7 @@ static Iclass* iupPPlotGetClass(void)
   ic->Create  = iPPlotCreateMethod;
   ic->Destroy = iPPlotDestroyMethod;
   ic->Map     = iPPlotMapMethod;
+  ic->UnMap   = iPPlotUnMapMethod;
 
   /* IupPPlot Callbacks */
   iupClassRegisterCallback(ic, "POSTDRAW_CB", "v");

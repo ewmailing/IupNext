@@ -147,8 +147,9 @@ char *iupStrCopyUntil(char **str, int c)
     return NULL;
 
   p_str=strchr(*str,c);
-  if (!p_str) return NULL;
-
+  if (!p_str) 
+    return NULL;
+  else
   {
     int i;
     int sl=(int)(p_str - (*str));
@@ -160,10 +161,10 @@ char *iupStrCopyUntil(char **str, int c)
       new_str[i] = (*str)[i];
 
     new_str[sl] = 0;
-  }
 
-  *str = p_str+1;
-  return new_str;
+    *str = p_str+1;
+    return new_str;
+  }
 }
 
 char *iupStrCopyUntilNoCase(char **str, int c)
@@ -174,11 +175,12 @@ char *iupStrCopyUntilNoCase(char **str, int c)
 
   p_str=strchr(*str,c); /* usually the lower case is enough */
   if (!p_str && isalpha(c)) 
-  {
     p_str=strchr(*str, toupper(c));  /* but check also for upper case */
-    if (!p_str) return NULL;
-  }
 
+  /* if both fail, then abort */
+  if (!p_str) 
+    return NULL;
+  else
   {
     int i;
     int sl=(int)(p_str - (*str));
@@ -190,10 +192,10 @@ char *iupStrCopyUntilNoCase(char **str, int c)
       new_str[i] = (*str)[i];
 
     new_str[sl] = 0;
-  }
 
-  *str = p_str+1;
-  return new_str;
+    *str = p_str+1;
+    return new_str;
+  }
 }
 
 char *iupStrGetMemory(int size)

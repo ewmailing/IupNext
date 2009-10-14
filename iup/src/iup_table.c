@@ -293,11 +293,11 @@ static void iTableRemoveItem(Itable *it, ItableEntry *entry, unsigned int itemIn
   if (item->itemType == IUPTABLE_STRING)
     free(item->value);
 
-  /* order the remaining items */
+  /* re-order the remaining items */
   for (i = itemIndex; i < entry->nextItemIndex-1; i++)
     entry->items[i] = entry->items[i+1];
 
-  /* clear the non used item */
+  /* clear the released item */
   memset(entry->items + entry->nextItemIndex, 0, sizeof (ItableItem));
 
   entry->nextItemIndex--;
