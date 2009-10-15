@@ -98,7 +98,18 @@
 	information to the main IUP library the problem solves. We tried to track down 
 	this error but it does not occurs with debug information and our attempts 
 	without debug does not gives any results. So the IUP main library for Watcom 
-	is now distributed with debug information. (since 3.0) </li>
+	is now distributed with debug information. (since 3.0)</li>
+
+</ul>
+
+<h3>Motif</h3>
+
+<ul>
+
+	<li><span class="style1">Known Issue:</span> when the <strong>IupList</strong> 
+	has DROPDOWN=Yes in Motif, and the list has items with the same string, the 
+	ACTION callback will return the index of the item with the first instance of 
+	the string only. This seems to be a bug in Motif.</li>
 
 </ul>
 
