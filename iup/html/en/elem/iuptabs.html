@@ -82,9 +82,10 @@ supported when TABTYPE=LEFT or TABTYPE=RIGHT. (GTK
     2.6)</p>
 <p><strong>TABTITLEn </strong>(<font SIZE="3">non inheritable</font>):
   Contains the text to be shown in the respective tab title. If this value is 
-NULL, it will remain empty.</p>
+NULL, it will remain empty. (since 3.0)</p>
 <p><strong>TABTITLE </strong>(<font SIZE="3">non inheritable</font>) <strong>(at children)</strong>:
-  Same as <strong>TABTITLEn</strong> but set in each child. Deprecated, use <strong>TABTITLEn</strong>.</p>
+  Same as <strong>TABTITLEn</strong> but set in each child. Works only before 
+the child is added to the tabs. Deprecated, use <strong>TABTITLEn</strong>.</p>
 <p><strong>TABTYPE </strong>(<font SIZE="3">non inheritable</font>) (creation 
 only in Windows):
   Indicates the type of tab, which can be &quot;TOP&quot;, &quot;BOTTOM&quot;, &quot;LEFT&quot; or &quot;RIGHT&quot;. Default is &quot;TOP&quot;. 
