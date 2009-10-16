@@ -163,7 +163,9 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
 
-  if (ih->iclass->childtype!=IUP_CHILDNONE || ih->iclass->nativetype == IUP_TYPEDIALOG)
+  if (ih->iclass->childtype!=IUP_CHILDNONE || 
+      ih->firstchild ||  /* some elements can be a combination of other elements and do not accept more children */
+      ih->iclass->nativetype == IUP_TYPEDIALOG)  /* pre-defined dialogs can restrict the number of children */
   {
     int w=0, h=0, children_expand;
 
@@ -198,8 +200,8 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
     /* for non-container only compute if user size is not defined */
     if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
     {
-      int w=0, h=0;
-      iupClassObjectComputeNaturalSize(ih, &w, &h, NULL);
+      int w=0, h=0, children_expand;
+      iupClassObjectComputeNaturalSize(ih, &w, &h, &children_expand);
 
       if (ih->naturalwidth <= 0) ih->naturalwidth = w;
       if (ih->naturalheight <= 0) ih->naturalheight = h;
@@ -226,7 +228,8 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
   }
   else
   {
-    if (ih->iclass->childtype!=IUP_CHILDNONE)
+    if (ih->iclass->childtype!=IUP_CHILDNONE || 
+        ih->firstchild)  /* some elements can be a combination of other elements and do not accept more children */
     {
       if (shrink)
       {
