@@ -1,8 +1,10 @@
-ï»¿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <title>FONT</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
 <style type="text/css">
@@ -41,35 +43,35 @@
 <body>
 
 <h2>FONT<span class="style9"> (since 3.0)</span></h2>
-<p>Character font of the text shown in the 
-  element. See <a href="iup_font2.html">FONT</a> definition up to IUP 2.x. 
-Although it is an inheritable attribute, it is defined only on elements that 
-have a native representation.</p>
+<p>Character font of the text shown in the element. See <a href="iup_font2.html">
+FONT</a> definition up to IUP 2.x. Although it is an inheritable attribute, it 
+is defined only on elements that have a native representation.</p>
 <h3>Value</h3>
 <p>Font description containing typeface, style and size. Default: the global 
 attribute DEFAULTFONT.</p>
 <p>The common format definition is similar to the the <a href="http://www.pango.org/">
-Pango</a> library Font Description, used by GTK+2. It is defined as having 3 parts: 
-&quot;&lt;font 
-family&gt;, &lt;font styles&gt; &lt;font size&gt;&quot;.  </p>
-<p>Font family can be a list of fonts face names, but this is only accepted in GTK. 
-So the font family can be reduced to <u>font face</u>.</p>
-<p>The  supported <u>font style</u> is a combination of: <b>Bold</b>, <b>Italic</b>, <b>Underline</b> and 
-<b>Strikeout</b>. The Pango 
-format include many other definitions not supported by the common format, they 
-are supported only by the GTK driver. Unsupported values are simply ignored.</p>
-<p><u>Font size</u> is in points (1/72 inch) or in pixels (using negative values).</p>
-<p>The 
-  old <a href="iup_font.html#Font_Names">Font Names</a> are still supported. The 
-old Windows <a href="iup_font.html">FONT</a> format is still supported in the 
-Windows driver.</p>
+Pango</a> library Font Description, used by GTK+2. It is defined as having 3 
+parts: &quot;&lt;font family&gt;, &lt;font styles&gt; &lt;font size&gt;&quot;.  </p>
+<p>Font family can be a list of fonts face names, but this is only accepted in 
+GTK. So the font family can be reduced to <u>font face</u>.</p>
+<p>The supported <u>font style</u> is a combination of: <b>Bold</b>, <b>Italic</b>, <b>
+Underline</b> and 
+<b>Strikeout</b>. The Pango format include many other definitions not supported 
+by the common format, they are supported only by the GTK driver. Unsupported 
+values are simply ignored.</p>
+<p><u>Font size</u> is in points (1/72 inch) or in pixels (using negative 
+values).</p>
+<p>The old <a href="iup_font.html#Font_Names">Font Names</a> are still 
+supported. The old Windows <a href="iup_font.html">FONT</a> format is still 
+supported in the Windows driver.</p>
 <p>Returned values will be the same value when changing the attribute, except 
 for the old font names that will be converted to the new common format 
 definition.</p>
 <h4>Windows</h4>
 <p>The DEFAULTFONT is retrieved from the System Settings (see bellow), if this 
 failed then &quot;Tahoma, 10&quot; is assumed.</p>
-<p>The native handle can be obtained using the &quot;<strong>HFONT</strong>&quot; attribute.</p>
+<p>The native handle can be obtained using the &quot;<strong>HFONT</strong>&quot; 
+attribute.</p>
 <p>In &quot;Control Panel&quot;, open the &quot;Display Properties&quot; then click on &quot;Advanced&quot; 
 and select &quot;Message Box&quot; and change its Font to affect the default font for 
 applications. In Vista go to &quot;Window Color and Appearance&quot;, then &quot;Open Classic 
@@ -78,22 +80,24 @@ Appearance&quot;, then Advanced.</p>
 <p>The DEFAULTFONT is retrieved from the user resource file (see bellow), if 
 failed then &quot;Fixed, 11&quot; is assumed.</p>
 <p>The X-Windows Logical Font Description format (XLFD) is also supported.</p>
-<p>The native handle can be obtained using the &quot;<strong>XMFONTLIST</strong>&quot; and &quot;<strong>XFONTSTRUCT</strong>&quot; attributes. 
-The selected X Logical Font Description string can be obtained from the 
-attribute &quot;<strong>XLFD</strong>&quot;.</p>
+<p>The native handle can be obtained using the &quot;<strong>XMFONTLIST</strong>&quot; and 
+&quot;<strong>XFONTSTRUCT</strong>&quot; attributes. The selected X Logical Font 
+Description string can be obtained from the attribute &quot;<strong>XLFD</strong>&quot;.</p>
 <p>You can use the <b>xfontsel</b> program to obtain a string in the X-Windows 
-Logical Font Description format (XLFD). Noticed that the first size entry of the X-Windows font string format 
-(<b>pxlsz</b>) is in 
+Logical Font Description format (XLFD). Noticed that the first size entry of the 
+X-Windows font string format (<b>pxlsz</b>) is in 
 <u>pixels</u> and the next one (<b>ptSz</b>) is in deci-points (multiply the 
 value in points by 10).</p>
-<p>Be aware that the resource files &quot;.Xdefaults&quot; and &quot;Iup&quot; in the user home folder can 
-affect the default font and many others visual appearance features in Motif.</p>
+<p>Be aware that the resource files &quot;.Xdefaults&quot; and &quot;Iup&quot; in the user home 
+folder can affect the default font and many others visual appearance features in 
+Motif.</p>
 <h4>GTK</h4>
 <p>The DEFAULTFONT is retrieved from the style defined by GNOME (see bellow), if 
 failed &quot;Sans, 10&quot; is assumed.</p>
 <p>The X-Windows Logical Font Description format (XLFD) is also supported.</p>
-<p>The native handle can be obtained using the &quot;<strong>PANGOFONTDESC</strong>&quot; attribute.</p>
-<p>Style can also be a combination of:  Small-Caps, 
+<p>The native handle can be obtained using the &quot;<strong>PANGOFONTDESC</strong>&quot; 
+attribute.</p>
+<p>Style can also be a combination of: Small-Caps, 
 [Ultra-Light|Light|Medium|Semi-Bold|Bold|Ultra-Bold|Heavy], 
 [Ultra-Condensed|Extra-Condensed|Condensed|Semi-Condensed|Semi-Expanded|Expanded|Extra-Expanded|Ultra-Expanded]. 
 Those values can be used only when the string is a full Pango compliant font, 
@@ -113,10 +117,9 @@ for menus.</p>
 <p>Since font face names are not a standard between Windows, Motif and GTK, a 
 few names are specially handled to improve application portability. If you want 
 to use names that work for all systems we recommend using: Courier, Times and 
-Helvetica (same as Motif). Those names always have a native system name equivalent. 
-If you use those names IUP will automatically map to the native system 
-equivalent. See the 
-table bellow:</p>
+Helvetica (same as Motif). Those names always have a native system name 
+equivalent. If you use those names IUP will automatically map to the native 
+system equivalent. See the table bellow:</p>
 <table align="center">
 	<tr>
 		<th>Motif</th>
@@ -145,13 +148,12 @@ table bellow:</p>
 </table>
 
 <h3>Auxiliary Attributes</h3>
-<p>They will change the FONT attribute, and depends on it. They are used 
-only to set partial FONT parameters of style and size. To do that the FONT 
-attribute is parsed, changed and updated to the new value in the common format 
-definition. This means that if the attribute was set in X-Windows format or in 
-the old Windows and IUP formats, the previous value will be replaced by a new 
-value in the common format definition. Pango additional styles will also be 
-removed.</p>
+<p>They will change the FONT attribute, and depends on it. They are used only to 
+set partial FONT parameters of style and size. To do that the FONT attribute is 
+parsed, changed and updated to the new value in the common format definition. 
+This means that if the attribute was set in X-Windows format or in the old 
+Windows and IUP formats, the previous value will be replaced by a new value in 
+the common format definition. Pango additional styles will also be removed.</p>
 <h4>FONTSTYLE (non inheritable) </h4>
 <p>Replaces or returns the style of the current FONT attribute.</p>
 <h4>FONTSIZE (non inheritable) </h4>
@@ -159,8 +161,8 @@ removed.</p>
 <h4>FONTFACE (read-only, non inheritable) </h4>
 <p>Returns the face name of the current FONT attribute.</p>
 <h4><a name="CHARSIZE">CHARSIZE</a> (read-only, non inheritable) </h4>
-<p>Returns the average character size of the current FONT attribute. This is 
-the factor used by the SIZE attribute to convert its units to pixels.</p>
+<p>Returns the average character size of the current FONT attribute. This is the 
+factor used by the SIZE attribute to convert its units to pixels.</p>
 <h4>FOUNDRY [Motif Only] (non inheritable) </h4>
 <p>Allows to select a foundry for the FONT being selected. Must be set before 
 setting the FONT attribute.</p>
@@ -177,8 +179,8 @@ application. The advantage is that different charsets can be used. For example,
 if the developer is using a charset, and its user is also using the same 
 encoding, then everything will work fine without the need of text encoding 
 conversions.</p>
-<p>GTK uses UTF-8 (ISO10646-1) as its charset for all displayed text, so IUP will 
-automatically convert all strings to (SetAttribute) and from (GetAttribute) 
+<p>GTK uses UTF-8 (ISO10646-1) as its charset for all displayed text, so IUP 
+will automatically convert all strings to (SetAttribute) and from (GetAttribute) 
 UTF-8. If you want to specify strings in the UTF-8 charset at the GTK driver, 
 then set the global attribute UTF8AUTOCONVERT to NO, the default is YES. If the 
 default locale is already UTF-8, but the given string is not UTF-8 then it will 
@@ -187,14 +189,13 @@ be assumed that the string uses the ISO8859-1 charset.</p>
 portability.</p>
 <h4>ISO8859-1 and Windows-1252 Displayable Characters </h4>
 
-<p>The Latin-1 charset (ISO8859-1) defines 
-an encoding for all of the characters used in Western languages. The first half 
-of Latin-1 is standard ASCII, while the second half (with the eighth bit set) 
-contains accented characters needed for Western languages other than English. In 
-Windows, the ISO8859-1 charset was changed, and some control characters were 
-replaced to include more display characters, this new charset is named 
-Windows-1252. These characters are marked in the table bellow 
-with thick borders.</p>
+<p>The Latin-1 charset (ISO8859-1) defines an encoding for all of the characters 
+used in Western languages. The first half of Latin-1 is standard ASCII, while 
+the second half (with the eighth bit set) contains accented characters needed 
+for Western languages other than English. In Windows, the ISO8859-1 charset was 
+changed, and some control characters were replaced to include more display 
+characters, this new charset is named Windows-1252. These characters are marked 
+in the table bellow with thick borders.</p>
 
 <table width="100%" style="border: 1px #808080 solid; text-align: center; font-family: monospace; border-collapse: collapse" class="style9">
 <tr>
@@ -220,7 +221,7 @@ with thick borders.</p>
 <br>
 
 <i><b>38</b></i></td>
-<td class="style5">&#39;<br>
+<td class="style5">'<br>
 <br>
 <i><b>39</b></i></td>
 <td class="style5">(<br>
@@ -528,54 +529,54 @@ with thick borders.</p>
 <i><b>127</b></i></td>
 </tr>
 <tr>
-<td style="border-width:3px" class="style5">â‚¬<br>
+<td style="border-width:3px" class="style5">€<br>
 
 <br>
 <i><b>128</b></i></td>
 <td style="border-width:3px">&nbsp;<br>
 <br>
 <i><b>129</b></i></td>
-<td style="border-width:3px" class="style5">â€š<br>
+<td style="border-width:3px" class="style5">‚<br>
 <br>
 <i><b>130</b></i></td>
-<td style="border-width:3px" class="style5">Æ’<br>
+<td style="border-width:3px" class="style5">ƒ<br>
 <br>
 
 <i><b>131</b></i></td>
-<td style="border-width:3px" class="style5">â€ž<br>
+<td style="border-width:3px" class="style5">„<br>
 <br>
 <i><b>132</b></i></td>
-<td style="border-width:3px" class="style5">â€¦<br>
+<td style="border-width:3px" class="style5">…<br>
 <br>
 <i><b>133</b></i></td>
-<td style="border-width:3px" class="style5">â€ <br>
+<td style="border-width:3px" class="style5">†<br>
 <br>
 
 <i><b>134</b></i></td>
-<td style="border-width:3px" class="style5">â€¡<br>
+<td style="border-width:3px" class="style5">‡<br>
 <br>
 <i><b>135</b></i></td>
-<td style="border-width:3px" class="style5">Ë†<br>
+<td style="border-width:3px" class="style5">ˆ<br>
 <br>
 <i><b>136</b></i></td>
-<td style="border-width:3px" class="style5">â€°<br>
+<td style="border-width:3px" class="style5">‰<br>
 <br>
 
 <i><b>137</b></i></td>
-<td style="border-width:3px" class="style8">Å <br>
+<td style="border-width:3px" class="style8">Š<br>
 <br>
 <i><b>138</b></i></td>
-<td style="border-width:3px" class="style5">â€¹<br>
+<td style="border-width:3px" class="style5">‹<br>
 <br>
 <i><b>139</b></i></td>
-<td style="border-width:3px" class="style8">Å’<br>
+<td style="border-width:3px" class="style8">Œ<br>
 <br>
 
 <i><b>140</b></i></td>
 <td style="border-width:3px">&nbsp;<br>
 <br>
 <i><b>141</b></i></td>
-<td style="border-width:3px" class="style8">Å½<br>
+<td style="border-width:3px" class="style8">Ž<br>
 <br>
 <i><b>142</b></i></td>
 <td style="border-width:3px">&nbsp;<br>
@@ -587,54 +588,54 @@ with thick borders.</p>
 <td style="border-width:3px">&nbsp;<br>
 <br>
 <i><b>144</b></i></td>
-<td style="border-width:3px" class="style5">â€˜<br>
+<td style="border-width:3px" class="style5">‘<br>
 <br>
 <i><b>145</b></i></td>
-<td style="border-width:3px" class="style5">â€™<br>
+<td style="border-width:3px" class="style5">’<br>
 
 <br>
 <i><b>146</b></i></td>
-<td style="border-width:3px" class="style5">â€œ<br>
+<td style="border-width:3px" class="style5">“<br>
 <br>
 <i><b>147</b></i></td>
-<td style="border-width:3px" class="style5">â€<br>
+<td style="border-width:3px" class="style5">”<br>
 <br>
 <i><b>148</b></i></td>
-<td style="border-width:3px" class="style5">â€¢<br>
+<td style="border-width:3px" class="style5">•<br>
 
 <br>
 <i><b>149</b></i></td>
-<td style="border-width:3px" class="style5">â€“<br>
+<td style="border-width:3px" class="style5">–<br>
 <br>
 <i><b>150</b></i></td>
-<td style="border-width:3px" class="style5">â€”<br>
+<td style="border-width:3px" class="style5">—<br>
 <br>
 <i><b>151</b></i></td>
-<td style="border-width:3px" class="style5">Ëœ<br>
+<td style="border-width:3px" class="style5">˜<br>
 
 <br>
 <i><b>152</b></i></td>
-<td style="border-width:3px" class="style5">â„¢<br>
+<td style="border-width:3px" class="style5">™<br>
 <br>
 <i><b>153</b></i></td>
-<td style="border-width:3px" class="style8">Å¡<br>
+<td style="border-width:3px" class="style8">š<br>
 <br>
 <i><b>154</b></i></td>
-<td style="border-width:3px" class="style5">â€º<br>
+<td style="border-width:3px" class="style5">›<br>
 
 <br>
 <i><b>155</b></i></td>
-<td style="border-width:3px" class="style8">Å“<br>
+<td style="border-width:3px" class="style8">œ<br>
 <br>
 <i><b>156</b></i></td>
 <td style="border-width:3px">&nbsp;<br>
 <br>
 <i><b>157</b></i></td>
-<td style="border-width:3px" class="style8">Å¾<br>
+<td style="border-width:3px" class="style8">ž<br>
 <br>
 
 <i><b>158</b></i></td>
-<td style="border-width:3px" class="style8">Å¸<br>
+<td style="border-width:3px" class="style8">Ÿ<br>
 <br>
 <i><b>159</b></i></td>
 </tr>
@@ -643,331 +644,331 @@ with thick borders.</p>
 <br>
 
 <i><b>160</b></i></td>
-<td class="style5">Â¡<br>
+<td class="style5">¡<br>
 <br>
 <i><b>161</b></i></td>
-<td class="style5">Â¢<br>
+<td class="style5">¢<br>
 <br>
 <i><b>162</b></i></td>
-<td class="style5">Â£<br>
+<td class="style5">£<br>
 <br>
 
 <i><b>163</b></i></td>
-<td class="style5">Â¤<br>
+<td class="style5">¤<br>
 <br>
 <i><b>164</b></i></td>
-<td class="style5">Â¥<br>
+<td class="style5">¥<br>
 <br>
 <i><b>165</b></i></td>
-<td class="style5">Â¦<br>
+<td class="style5">¦<br>
 <br>
 
 <i><b>166</b></i></td>
-<td class="style5">Â§<br>
+<td class="style5">§<br>
 <br>
 <i><b>167</b></i></td>
-<td class="style5">Â¨<br>
+<td class="style5">¨<br>
 <br>
 <i><b>168</b></i></td>
-<td class="style5">Â©<br>
+<td class="style5">©<br>
 <br>
 
 <i><b>169</b></i></td>
-<td class="style5">Âª<br>
+<td class="style5">ª<br>
 <br>
 <i><b>170</b></i></td>
-<td class="style5">Â«<br>
+<td class="style5">«<br>
 <br>
 <i><b>171</b></i></td>
-<td class="style5">Â¬<br>
+<td class="style5">¬<br>
 <br>
 
 <i><b>172</b></i></td>
 <td class="style5"><br>
 <br>
 <i><b>173</b></i></td>
-<td class="style5">Â®<br>
+<td class="style5">®<br>
 <br>
 <i><b>174</b></i></td>
-<td class="style5">Â¯<br>
+<td class="style5">¯<br>
 <br>
 
 <i><b>175</b></i></td>
 </tr>
 <tr>
-<td class="style5">Â°<br>
+<td class="style5">°<br>
 <br>
 <i><b>176</b></i></td>
-<td class="style5">Â±<br>
+<td class="style5">±<br>
 <br>
 
 <i><b>177</b></i></td>
-<td class="style5">Â²<br>
+<td class="style5">²<br>
 <br>
 <i><b>178</b></i></td>
-<td class="style5">Â³<br>
+<td class="style5">³<br>
 <br>
 <i><b>179</b></i></td>
-<td class="style5">Â´<br>
+<td class="style5">´<br>
 <br>
 
 <i><b>180</b></i></td>
-<td class="style5">Âµ<br>
+<td class="style5">µ<br>
 <br>
 <i><b>181</b></i></td>
-<td class="style5">Â¶<br>
+<td class="style5">¶<br>
 <br>
 <i><b>182</b></i></td>
-<td class="style5">Â·<br>
+<td class="style5">·<br>
 <br>
 
 <i><b>183</b></i></td>
-<td class="style5">Â¸<br>
+<td class="style5">¸<br>
 <br>
 <i><b>184</b></i></td>
-<td class="style5">Â¹<br>
+<td class="style5">¹<br>
 <br>
 <i><b>185</b></i></td>
-<td class="style5">Âº<br>
+<td class="style5">º<br>
 <br>
 
 <i><b>186</b></i></td>
-<td class="style5">Â»<br>
+<td class="style5">»<br>
 <br>
 <i><b>187</b></i></td>
-<td class="style5">Â¼<br>
+<td class="style5">¼<br>
 <br>
 <i><b>188</b></i></td>
-<td class="style5">Â½<br>
+<td class="style5">½<br>
 <br>
 
 <i><b>189</b></i></td>
-<td class="style5">Â¾<br>
+<td class="style5">¾<br>
 <br>
 <i><b>190</b></i></td>
-<td class="style5">Â¿<br>
+<td class="style5">¿<br>
 <br>
 <i><b>191</b></i></td>
 </tr>
 <tr>
-<td class="style8">Ã€<br>
+<td class="style8">À<br>
 <br>
 <i><b>192</b></i></td>
-<td class="style8">Ã<br>
+<td class="style8">Á<br>
 <br>
 <i><b>193</b></i></td>
-<td class="style8">Ã‚<br>
+<td class="style8">Â<br>
 
 <br>
 <i><b>194</b></i></td>
-<td class="style8">Ãƒ<br>
+<td class="style8">Ã<br>
 <br>
 <i><b>195</b></i></td>
-<td class="style8">Ã„<br>
+<td class="style8">Ä<br>
 <br>
 <i><b>196</b></i></td>
-<td class="style8">Ã…<br>
+<td class="style8">Å<br>
 
 <br>
 <i><b>197</b></i></td>
-<td class="style8">Ã†<br>
+<td class="style8">Æ<br>
 <br>
 <i><b>198</b></i></td>
-<td class="style8">Ã‡<br>
+<td class="style8">Ç<br>
 <br>
 <i><b>199</b></i></td>
-<td class="style8">Ãˆ<br>
+<td class="style8">È<br>
 
 <br>
 <i><b>200</b></i></td>
-<td class="style8">Ã‰<br>
+<td class="style8">É<br>
 <br>
 <i><b>201</b></i></td>
-<td class="style8">ÃŠ<br>
+<td class="style8">Ê<br>
 <br>
 <i><b>202</b></i></td>
-<td class="style8">Ã‹<br>
+<td class="style8">Ë<br>
 
 <br>
 <i><b>203</b></i></td>
-<td class="style8">ÃŒ<br>
+<td class="style8">Ì<br>
 <br>
 <i><b>204</b></i></td>
-<td class="style8">Ã<br>
+<td class="style8">Í<br>
 <br>
 <i><b>205</b></i></td>
-<td class="style8">ÃŽ<br>
+<td class="style8">Î<br>
 
 <br>
 <i><b>206</b></i></td>
-<td class="style8">Ã<br>
+<td class="style8">Ï<br>
 <br>
 <i><b>207</b></i></td>
 </tr>
 <tr>
-<td class="style8">Ã<br>
+<td class="style8">Ð<br>
 
 <br>
 <i><b>208</b></i></td>
-<td class="style8">Ã‘<br>
+<td class="style8">Ñ<br>
 <br>
 <i><b>209</b></i></td>
-<td class="style8">Ã’<br>
+<td class="style8">Ò<br>
 <br>
 <i><b>210</b></i></td>
-<td class="style8">Ã“<br>
+<td class="style8">Ó<br>
 
 <br>
 <i><b>211</b></i></td>
-<td class="style8">Ã”<br>
+<td class="style8">Ô<br>
 <br>
 <i><b>212</b></i></td>
-<td class="style8">Ã•<br>
+<td class="style8">Õ<br>
 <br>
 <i><b>213</b></i></td>
-<td class="style8">Ã–<br>
+<td class="style8">Ö<br>
 
 <br>
 <i><b>214</b></i></td>
-<td class="style5">Ã—<br>
+<td class="style5">×<br>
 <br>
 <i><b>215</b></i></td>
-<td class="style8">Ã˜<br>
+<td class="style8">Ø<br>
 <br>
 <i><b>216</b></i></td>
-<td class="style8">Ã™<br>
+<td class="style8">Ù<br>
 
 <br>
 <i><b>217</b></i></td>
-<td class="style8">Ãš<br>
+<td class="style8">Ú<br>
 <br>
 <i><b>218</b></i></td>
-<td class="style8">Ã›<br>
+<td class="style8">Û<br>
 <br>
 <i><b>219</b></i></td>
-<td class="style8">Ãœ<br>
+<td class="style8">Ü<br>
 
 <br>
 <i><b>220</b></i></td>
-<td class="style8">Ã<br>
+<td class="style8">Ý<br>
 <br>
 <i><b>221</b></i></td>
-<td class="style8">Ãž<br>
+<td class="style8">Þ<br>
 <br>
 <i><b>222</b></i></td>
-<td class="style8">ÃŸ<br>
+<td class="style8">ß<br>
 
 <br>
 <i><b>223</b></i></td>
 </tr>
 <tr>
-<td class="style8">Ã <br>
+<td class="style8">à<br>
 <br>
 <i><b>224</b></i></td>
-<td class="style8">Ã¡<br>
+<td class="style8">á<br>
 
 <br>
 <i><b>225</b></i></td>
-<td class="style8">Ã¢<br>
+<td class="style8">â<br>
 <br>
 <i><b>226</b></i></td>
-<td class="style8">Ã£<br>
+<td class="style8">ã<br>
 <br>
 <i><b>227</b></i></td>
-<td class="style8">Ã¤<br>
+<td class="style8">ä<br>
 
 <br>
 <i><b>228</b></i></td>
-<td class="style8">Ã¥<br>
+<td class="style8">å<br>
 <br>
 <i><b>229</b></i></td>
-<td class="style8">Ã¦<br>
+<td class="style8">æ<br>
 <br>
 <i><b>230</b></i></td>
-<td class="style8">Ã§<br>
+<td class="style8">ç<br>
 
 <br>
 <i><b>231</b></i></td>
-<td class="style8">Ã¨<br>
+<td class="style8">è<br>
 <br>
 <i><b>232</b></i></td>
-<td class="style8">Ã©<br>
+<td class="style8">é<br>
 <br>
 <i><b>233</b></i></td>
-<td class="style8">Ãª<br>
+<td class="style8">ê<br>
 
 <br>
 <i><b>234</b></i></td>
-<td class="style8">Ã«<br>
+<td class="style8">ë<br>
 <br>
 <i><b>235</b></i></td>
-<td class="style8">Ã¬<br>
+<td class="style8">ì<br>
 <br>
 <i><b>236</b></i></td>
-<td class="style8">Ã­<br>
+<td class="style8">í<br>
 
 <br>
 <i><b>237</b></i></td>
-<td class="style8">Ã®<br>
+<td class="style8">î<br>
 <br>
 <i><b>238</b></i></td>
-<td class="style8">Ã¯<br>
+<td class="style8">ï<br>
 <br>
 <i><b>239</b></i></td>
 </tr>
 
 <tr>
-<td class="style8">Ã°<br>
+<td class="style8">ð<br>
 <br>
 <i><b>240</b></i></td>
-<td class="style8">Ã±<br>
+<td class="style8">ñ<br>
 <br>
 <i><b>241</b></i></td>
 
-<td class="style8">Ã²<br>
+<td class="style8">ò<br>
 <br>
 <i><b>242</b></i></td>
-<td class="style8">Ã³<br>
+<td class="style8">ó<br>
 <br>
 <i><b>243</b></i></td>
-<td class="style8">Ã´<br>
+<td class="style8">ô<br>
 <br>
 <i><b>244</b></i></td>
 
-<td class="style8">Ãµ<br>
+<td class="style8">õ<br>
 <br>
 <i><b>245</b></i></td>
-<td class="style8">Ã¶<br>
+<td class="style8">ö<br>
 <br>
 <i><b>246</b></i></td>
-<td class="style5">Ã·<br>
+<td class="style5">÷<br>
 <br>
 <i><b>247</b></i></td>
 
-<td class="style8">Ã¸<br>
+<td class="style8">ø<br>
 <br>
 <i><b>248</b></i></td>
-<td class="style8">Ã¹<br>
+<td class="style8">ù<br>
 <br>
 <i><b>249</b></i></td>
-<td class="style8">Ãº<br>
+<td class="style8">ú<br>
 <br>
 <i><b>250</b></i></td>
 
-<td class="style8">Ã»<br>
+<td class="style8">û<br>
 <br>
 <i><b>251</b></i></td>
-<td class="style8">Ã¼<br>
+<td class="style8">ü<br>
 <br>
 <i><b>252</b></i></td>
-<td class="style8">Ã½<br>
+<td class="style8">ý<br>
 <br>
 <i><b>253</b></i></td>
 
-<td class="style8">Ã¾<br>
+<td class="style8">þ<br>
 <br>
 <i><b>254</b></i></td>
-<td class="style8">Ã¿<br>
+<td class="style8">ÿ<br>
 <br>
 <i><b>255</b></i></td>
 </tr>
@@ -992,7 +993,8 @@ with thick borders.</p>
 	</tr>
 </table>
 <p>Adapted from 
-<a target="_blank" href="http://en.wikipedia.org/wiki/Windows-1252">http://en.wikipedia.org/wiki/Windows-1252</a>.</p>
+<a target="_blank" href="http://en.wikipedia.org/wiki/Windows-1252">
+http://en.wikipedia.org/wiki/Windows-1252</a>.</p>
 </body>
 
 </html>

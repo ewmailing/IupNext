@@ -1,8 +1,9 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupImageLib</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <link rel="stylesheet" type="text/css" href="../style.css">
 <style type="text/css">
 .style1 {
@@ -16,16 +17,16 @@
 <body>
 
 <h2>IupImageLib (since 3.0)</h2>
-<p>A library of pre-defined images for buttons 
-  and labels. See <a href="iupimglib2.html">IupImageLib</a> up to IUP 2.x.</p>
+<p>A library of pre-defined images for buttons and labels. See <a href="iupimglib2.html">
+IupImageLib</a> up to IUP 2.x.</p>
 <h3>Initialization</h3>
 <p>To generate an application that uses this function, the program must be 
 linked to the functions library (<strong>iupimglib</strong>.lib on Windows and 
-<strong>libiupimglib</strong>.a on 
-Unix). 
+<strong>libiupimglib</strong>.a on Unix). 
 </p>
-<p>The library is  large and could increase the size of the executable. To avoid 
-linking with the library get the source code and extract only the image you need.</p>
+<p>The library is large and could increase the size of the executable. To avoid 
+linking with the library get the source code and extract only the image you 
+need.</p>
 <h3>Reference</h3>
 <pre>void IupImageLibOpen(void); [in C]
 iup.ImageLibOpen()  [in Lua]</pre>
@@ -39,10 +40,10 @@ automatically called.</p>
 are NOT registered using <b>IupSetHandle</b>, they will be automatically loaded 
 when associated with a control.</p>
 <h3>Bitmap Group</h3>
-    <p>These bitmaps are 16x16-8bpp (Motif), 16x16-32bpp 
-    (Win32) or 24x24-32bpp (GTK) pixels size images that can be used in Buttons, 
-    usually inside toolbars. Do not set RASTERSIZE of buttons so they can expand 
-    when switching to GTK.</p>
+    <p>These bitmaps are 16x16-8bpp (Motif), 16x16-32bpp (Win32) or 24x24-32bpp 
+	(GTK) pixels size images that can be used in Buttons, usually inside 
+	toolbars. Do not set RASTERSIZE of buttons so they can expand when switching 
+	to GTK.</p>
   <table align="center">
     <tr>
       <th bgcolor="#C0C0C0">Name</th>
@@ -521,7 +522,8 @@ when associated with a control.</p>
     </table>
 
 <h3>Icon Group</h3>
-    <p>These icons are 32x32 pixels size (or just 32 pixels height) images that can be used in Labels, usually inside toolbars.</p>
+    <p>These icons are 32x32 pixels size (or just 32 pixels height) images that 
+	can be used in Labels, usually inside toolbars.</p>
 <table align="center">
   <tr>
     <td align="center" class="style1">
@@ -576,7 +578,8 @@ when associated with a control.</p>
 </table>
 
 <h3>Logo Group</h3>
-    <p>These logos are 48x48 pixels size (or just 48 pixels height) images that can be used in Labels, usually inside dialogs.</p>
+    <p>These logos are 48x48 pixels size (or just 48 pixels height) images that 
+	can be used in Labels, usually inside dialogs.</p>
 <table align="center">
   <tr>
     <td align="center" class="style1">
@@ -631,8 +634,8 @@ when associated with a control.</p>
  
 <h3>Other</h3>
  
-<p>Here are other images available in the IUP stock library, commonly 
-used by the respective systems. All images are 48x48 pixels size and 32bpp.</p>
+<p>Here are other images available in the IUP stock library, commonly used by 
+the respective systems. All images are 48x48 pixels size and 32bpp.</p>
  
 <table align="center">
   <tr>
@@ -760,13 +763,16 @@ stock images, we selected this set to be used in Motif. Although the IUP Motif
 driver supports 32bpp images.</p>
 <p>Not available in AIX43.</p>
 
-<p>All &quot;Win32&quot; images copyright Microsoft and were extracted from the Visual Studio 2005 Image Library. 
-   Their use <b>must</b> be used consistently with their description in the Visual Studio 2005 Image Library, 
-and so consistently with the IUP name.
-   These files are available with Microsoft Visual Studio 2005 for redistribution under the Visual Studio 2005 license.</p>
+<p>All &quot;Win32&quot; images copyright Microsoft and were extracted from the Visual 
+Studio 2005 Image Library. Their use <b>must</b> be used consistently with their 
+description in the Visual Studio 2005 Image Library, and so consistently with 
+the IUP name. These files are available with Microsoft Visual Studio 2005 for 
+redistribution under the Visual Studio 2005 license.</p>
 <p>GTK stock images are released under the GTK license.</p>   
-<p>PUC-Rio, Tecgraf/PUC-Rio, Petrobras and Lua images are copyright of the respective companies or owners.</p>
-<p>Lua image graphic design by A. Nakonechnyj. Copyright © 1998. All rights reserved.</p>
+<p>PUC-Rio, Tecgraf/PUC-Rio, Petrobras and Lua images are copyright of the 
+respective companies or owners.</p>
+<p>Lua image graphic design by A. Nakonechnyj. Copyright � 1998. All rights 
+reserved.</p>
 
 <h3><a name="SeeAlso">See Also</a></h3>
 

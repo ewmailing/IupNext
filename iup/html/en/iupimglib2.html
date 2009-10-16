@@ -1,37 +1,38 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupImageLib</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <link rel="stylesheet" type="text/css" href="../style.css">
 </head>
 <body>
 
 <h2>IupImageLib (up to 2.x)</h2>
-<p>A library of pre-defined images for buttons 
-  and labels. See <a href="iupimglib.html">IupImageLib</a> since IUP 3.0.</p>
+<p>A library of pre-defined images for buttons and labels. See <a href="iupimglib.html">
+IupImageLib</a> since IUP 3.0.</p>
 <h3>Initialization</h3>
-<p>To generate an application that uses this 
-  function, the program must be linked to the functions library (iupimglib.lib on Windows and libiupimglib.a on Unix). The iupcontrols.h file must also be included in the source code. 
+<p>To generate an application that uses this function, the program must be 
+linked to the functions library (iupimglib.lib on Windows and libiupimglib.a on 
+Unix). The iupcontrols.h file must also be included in the source code. 
 </p>
 <p>The library is quite large because of the images. To avoid using all the 
-  images get the source code and extract only the image you need.</p>
+images get the source code and extract only the image you need.</p>
 <h3>Reference</h3>
 <pre>void IupImageLibOpen(void); [in C]
 iup.ImageLibOpen()  [in Lua]</pre>
-<p>This function loads all the images in the 
-    library.</p>
+<p>This function loads all the images in the library.</p>
 <p>In Lua, when require&quot;iupluaimglib&quot; is used this function will be 
 automatically called.</p>
 <pre>void IupImageLibClose(void); [in C]
 iup.ImageLibClose()  [in Lua]</pre>
-<p>This function releases all the images of the 
-    library.</p>
+<p>This function releases all the images of the library.</p>
 <h3>Usage</h3>
-<p>The following names are defined after the library initialization. The images do NOT include the button borders, 
-  this is just a preview for buttons!</p>
-<p>The &quot;BGCOLOR&quot; color value is set and the colors are distributed so that the automatic disable color algorithm works 
-  fine. Images for buttons have size 20x20, small images are 11x11, and label images have height=30.</p>
+<p>The following names are defined after the library initialization. The images 
+do NOT include the button borders, this is just a preview for buttons!</p>
+<p>The &quot;BGCOLOR&quot; color value is set and the colors are distributed so that the 
+automatic disable color algorithm works fine. Images for buttons have size 
+20x20, small images are 11x11, and label images have height=30.</p>
   <table align="center">
     <tr>
       <th width="39%">Names</th>
