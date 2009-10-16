@@ -1,8 +1,9 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupClipboard</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <link rel="stylesheet" type="text/css" href="../../style.css">
 <style type="text/css">
 .style1 {
@@ -25,7 +26,8 @@
 <h2>IupClipboard<span class="style1"> (since 3.0)</span></h2>
 
   <p>
-  Creates an element that allows access to the clipboard. Each clipboard should be destroyed using
+  Creates an element that allows access to the clipboard. Each clipboard should 
+	be destroyed using
   <a href="../func/iupdestroy.html">IupDestroy</a>, but you can use only one for 
 	entire application because it does not store any data inside. Or you can 
 	simply create and destroy everytime you need to copy or paste.</p>
@@ -36,31 +38,33 @@
 iup.clipboard{} -&gt; (<strong>elem</strong>: ihandle) [in Lua] 
 clipboard() [in LED]</pre>
   <p>
-  <u>Returns:</u> the identifier of the 
-  created element, or NULL if an error occurs.</p>
+  <u>Returns:</u> the identifier of the created element, or NULL if an error 
+	occurs.</p>
 
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-  <p><strong>IMAGE</strong> (write-only): name of an image to copy (set) or paste 
-	(get), to or from the clipboard. (GTK 2.6)</p>
-<p><strong>IMAGEAVAILABLE</strong> (read-only): informs if there is any image available at the 
-clipboard. (GTK 2.6)</p>
+  <p><strong>IMAGE</strong> (write-only): name of an image to copy (set) or 
+	paste (get), to or from the clipboard. (GTK 2.6)</p>
+<p><strong>IMAGEAVAILABLE</strong> (read-only): informs if there is any image 
+available at the clipboard. (GTK 2.6)</p>
 
 
   <p><strong>NATIVEIMAGE</strong>: native handle of an image to copy or paste, 
-	to or from the clipboard. In Win32 is a <strong>HANDLE</strong> of a DIB. 
-	In GTK is a <strong>GdkPixbuf*</strong>. In Motif is a <strong>Pixmap</strong>. 
-	The returned handle in a paste must be released after used (GlobalFree(handle), 
-	g_object_unref(pixbuf) or XFreePixmap(display, pixmap)). After copy, do NOT release the given handle. See <a href="../iupim.html">IUP-IM Functions</a> 
+	to or from the clipboard. In Win32 is a <strong>HANDLE</strong> of a DIB. In 
+	GTK is a <strong>GdkPixbuf*</strong>. In Motif is a <strong>Pixmap</strong>. 
+	The returned handle in a paste must be released after used 
+	(GlobalFree(handle), g_object_unref(pixbuf) or XFreePixmap(display, 
+	pixmap)). After copy, do NOT release the given handle. See <a href="../iupim.html">
+	IUP-IM Functions</a> 
 	for utility functions on image native handles. (GTK 2.6)</p>
 
 
 <p><strong>TEXT</strong>: copy or paste text to or from the clipboard.</p>
 
 
-  <p><strong>TEXTAVAILABLE</strong> (read-only): informs if there is any text available at the 
-	clipboard.</p>
+  <p><strong>TEXTAVAILABLE</strong> (read-only): informs if there is any text 
+	available at the clipboard.</p>
 
 
 <h3><a name="Examples">Examples</a></h3>
