@@ -408,13 +408,19 @@ static int winTreeIsItemExpanded(Ihandle* ih, HTREEITEM hItem)
 
 static void winTreeExpandItem(Ihandle* ih, HTREEITEM hItem, int expand)
 {
+  TV_ITEM item;
+  item.mask = TVIF_STATE | TVIF_HANDLE;
+  item.stateMask = TVIS_EXPANDED;
+  item.hItem = hItem;
+
   if (expand == -1)
     expand = !winTreeIsItemExpanded(ih, hItem); /* toggle */
 
-  if (expand)
-    SendMessage(ih->handle, TVM_EXPAND, TVE_EXPAND, (LPARAM)hItem);
-  else
-    SendMessage(ih->handle, TVM_EXPAND, TVE_COLLAPSE, (LPARAM)hItem);
+  item.state = expand ? TVIS_EXPANDED : 0;
+
+  SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)&item);
+
+  /* Do not use TVM_EXPAND because it only works if the branch has children */
 }
 
 /*****************************************************************************/
@@ -1230,7 +1236,18 @@ static int winTreeSetTitleFontAttrib(Ihandle* ih, const char* name_id, const cha
   itemData = (winTreeItemData*)item.lParam;
 
   if (value)
+  {
     itemData->hFont = iupwinGetHFont(value);
+    if (itemData->hFont)
+    {
+      TV_ITEM item;
+      item.mask = TVIF_STATE | TVIF_HANDLE;
+      item.stateMask = TVIS_BOLD;
+      item.hItem = hItem;
+      item.state = (strstr(value, "Bold")||strstr(value, "BOLD"))? TVIS_BOLD: 0;
+      SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)&item);
+    }
+  }
   else
     itemData->hFont = NULL;
 
