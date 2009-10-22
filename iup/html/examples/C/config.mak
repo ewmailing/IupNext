@@ -6,7 +6,7 @@ INCLUDES = ../include
 ifdef USE_GTK
   ifndef GTK_DEFAULT
     # Build GTK version in IRIX,SunOS,AIX,Win32
-    APPNAME = iupsample
+    APPNAME = iupsamplegtk
   endif
 else  
   ifdef GTK_DEFAULT

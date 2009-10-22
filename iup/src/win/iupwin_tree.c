@@ -2391,7 +2391,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
       itemData = (winTreeItemData*)item.lParam;
 
-      if (winTreeIsItemSelected(ih, hItem))
+      if (winTreeIsItemSelected(ih, hItem) && IupGetFocus()==ih)
         customdraw->clrText = winTreeInvertColor(itemData->color);
       else
         customdraw->clrText = itemData->color;
