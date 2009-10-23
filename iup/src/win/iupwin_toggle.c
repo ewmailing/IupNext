@@ -591,7 +591,7 @@ static int winToggleMapMethod(Ihandle* ih)
 {
   Ihandle* radio = iupRadioFindToggleParent(ih);
   char* value;
-  DWORD dwStyle = WS_CHILD | 
+  DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS |
                   BS_NOTIFY; /* necessary because of the base messages */
 
   if (!ih->parent)

@@ -1736,7 +1736,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
 static void winTextCreateSpin(Ihandle* ih)
 {
   HWND hSpin;
-  DWORD dwStyle = WS_CHILD|UDS_ARROWKEYS|UDS_HOTTRACK|UDS_NOTHOUSANDS;
+  DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS|UDS_ARROWKEYS|UDS_HOTTRACK|UDS_NOTHOUSANDS;
   int serial = iupDialogGetChildId(ih);
 
   if (iupStrEqualNoCase(iupAttribGetStr(ih, "SPINALIGN"), "LEFT"))
@@ -1826,7 +1826,7 @@ static void winTextLayoutUpdateMethod(Ihandle* ih)
 
 static int winTextMapMethod(Ihandle* ih)
 {
-  DWORD dwStyle = WS_CHILD, 
+  DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, 
       dwExStyle = 0;
   char* winclass = "EDIT", *value;
 

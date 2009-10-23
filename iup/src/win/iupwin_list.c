@@ -1301,7 +1301,7 @@ static void winListLayoutUpdateMethod(Ihandle *ih)
 static int winListMapMethod(Ihandle* ih)
 {
   char* class_name;
-  DWORD dwStyle = WS_CHILD,
+  DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS,
       dwExStyle = WS_EX_CLIENTEDGE;
 
   if (!ih->parent)

@@ -308,12 +308,13 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
 
 static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 { 
+  HDC hDC;
   iupwinBitmapDC bmpDC;
   int border, draw_border;
   int width = drawitem->rcItem.right - drawitem->rcItem.left;
   int height = drawitem->rcItem.bottom - drawitem->rcItem.top;
 
-  HDC hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, width, height);
+  hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, width, height);
 
   iupwinDrawParentBackground(ih, hDC, &drawitem->rcItem);
 
@@ -635,7 +636,7 @@ static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
 static int winButtonMapMethod(Ihandle* ih)
 {
   char* value;
-  DWORD dwStyle = WS_CHILD | 
+  DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS |
                   BS_NOTIFY; /* necessary because of the base messages */
 
   if (!ih->parent)

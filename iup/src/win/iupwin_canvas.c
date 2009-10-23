@@ -562,7 +562,7 @@ static int winCanvasMapMethod(Ihandle* ih)
   CLIENTCREATESTRUCT clientstruct;
   void *clientdata = NULL;
   char *classname;
-  DWORD dwStyle = WS_CHILD, dwExStyle = 0;
+  DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, dwExStyle = 0;
 
   if (!ih->parent)
     return IUP_ERROR;
@@ -575,8 +575,6 @@ static int winCanvasMapMethod(Ihandle* ih)
                            
   if (ih->firstchild) /* can be a container */
   {
-    dwStyle |= WS_CLIPSIBLINGS;
-
     if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
       dwExStyle |= WS_EX_COMPOSITED;
     else

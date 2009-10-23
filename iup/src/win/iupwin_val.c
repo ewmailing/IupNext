@@ -240,7 +240,7 @@ static int winValProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
 
 static int winValMapMethod(Ihandle* ih)
 {
-  DWORD dwStyle = WS_CHILD | TBS_AUTOTICKS;
+  DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS | TBS_AUTOTICKS;
   int show_ticks;
 
   if (!ih->parent)

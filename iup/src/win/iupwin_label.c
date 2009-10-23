@@ -257,6 +257,7 @@ static int winLabelProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *re
         *result = WVR_HREDRAW|WVR_VREDRAW;
         return 1;
       }
+      break;
     }
   }
 
@@ -266,7 +267,7 @@ static int winLabelProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *re
 static int winLabelMapMethod(Ihandle* ih)
 {
   char* value;
-  DWORD dwStyle = WS_CHILD |
+  DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS |
                   SS_NOTIFY; /* SS_NOTIFY is necessary because of the base messages */
 
   if (!ih->parent)

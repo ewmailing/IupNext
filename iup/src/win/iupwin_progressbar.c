@@ -106,7 +106,7 @@ static int winProgressBarSetFgColorAttrib(Ihandle* ih, const char* value)
 
 static int winProgressBarMapMethod(Ihandle* ih)
 {
-  DWORD dwStyle = WS_CHILD;
+  DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS;
 
   if (!ih->parent)
     return IUP_ERROR;

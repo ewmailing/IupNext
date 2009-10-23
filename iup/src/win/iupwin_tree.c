@@ -2447,7 +2447,7 @@ static void winTreeUnMapMethod(Ihandle* ih)
 
 static int winTreeMapMethod(Ihandle* ih)
 {
-  DWORD dwStyle = WS_CHILD | WS_BORDER | TVS_SHOWSELALWAYS;
+  DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS | WS_BORDER | TVS_SHOWSELALWAYS;
 
   /* can be set only on the Tree View creation */
 
