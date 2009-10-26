@@ -282,7 +282,7 @@ char *iupdrvGetSystemName(void)
 char *iupdrvGetSystemVersion(void)
 {
   struct utsname un;
-  char *str = iupStrGetMemory(60); 
+  char *str = iupStrGetMemory(100); 
 
   uname(&un);
   strcpy(str, un.release);
