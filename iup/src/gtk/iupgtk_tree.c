@@ -788,19 +788,7 @@ static int gtkTreeSetExpandAllAttrib(Ihandle* ih, const char* value)
   if (iupStrBoolean(value))
     gtk_tree_view_expand_all(GTK_TREE_VIEW(ih->handle));
   else
-  {
-    GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-    GtkTreeIter  iterRoot;
-    GtkTreePath* pathRoot;
-
     gtk_tree_view_collapse_all(GTK_TREE_VIEW(ih->handle));
-
-    /* The root node is always expanded */
-    gtk_tree_model_get_iter_first(model, &iterRoot);
-    pathRoot = gtk_tree_model_get_path(model, &iterRoot);
-    gtk_tree_view_expand_row(GTK_TREE_VIEW(ih->handle), pathRoot, FALSE);
-    gtk_tree_path_free(pathRoot);
-  }
 
   return 0;
 }

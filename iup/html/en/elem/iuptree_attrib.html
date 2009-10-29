@@ -135,7 +135,9 @@ imediate children has depth=1, their children has depth=2 and so on.</p>
 </blockquote>
 <p><strong>PARENTid </strong>(read only): returns the identifier of the 
 specified node.</p>
-<p><strong>STATEid</strong>: the state of the specified branch. Possible values: </p>
+<p><strong>STATEid</strong>: the state of the specified branch. In Windows, it 
+will be effective only if the branch has children. In GTK, it will be effective 
+only if the parent is expanded. Possible values: </p>
     <blockquote>
     <ul>
       <li>&quot;EXPANDED&quot;:
@@ -268,8 +270,7 @@ Ignored if set before map. Possible values:</p>
 </blockquote>
 
 <p><strong>EXPANDALL </strong>(write only): expand or contracts all nodes. Can 
-be YES (expand all), or NO (contract all). The root node always remains 
-expanded. (since 3.0)</p>
+be YES (expand all), or NO (contract all). (since 3.0)</p>
 <p><strong>FINDUSERDATAp
 </strong>(read only): finds the id of the given userdata. &quot;p&quot; must be the 
 address of a pointer formatted 

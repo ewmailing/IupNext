@@ -137,9 +137,6 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
 
   wNewItem = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
 
-  /* Root always expanded */
-  XtVaSetValues((Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM"), XmNoutlineState, XmEXPANDED, NULL);
-
   XtRealizeWidget(wNewItem);
 
   return wNewItem;
@@ -903,9 +900,6 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
       XtVaSetValues(wNewItem, XmNoutlineState, XmCOLLAPSED, NULL);
   }
 
-  /* Root always expanded */
-  XtVaSetValues((Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM"), XmNoutlineState, XmEXPANDED, NULL);
-
   XtRealizeWidget(wNewItem);
   XmStringFree(itemTitle);
 }
@@ -1139,7 +1133,7 @@ static char* motTreeGetStateAttrib(Ihandle* ih, const char* name_id)
 static int motTreeSetStateAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   Widget wItem = motTreeFindNodeFromString(ih, name_id);
-  if (!wItem)  
+  if (!wItem)
     return 0;
 
   if (iupStrEqualNoCase(value, "EXPANDED"))
@@ -1766,12 +1760,7 @@ static int motTreeSetExpandAllAttrib(Ihandle* ih, const char* value)
   if (iupStrBoolean(value))
     motTreeExpandCollapseAllNodes(ih, &wRoot, 1, XmEXPANDED);
   else
-  {
     motTreeExpandCollapseAllNodes(ih, &wRoot, 1, XmCOLLAPSED);
-
-    /* The root node is always expanded */
-    XtVaSetValues((Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM"), XmNoutlineState, XmEXPANDED, NULL);
-  }
 
   return 0;
 }

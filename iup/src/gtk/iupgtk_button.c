@@ -371,7 +371,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
       GtkSettings* settings = gtk_widget_get_settings(ih->handle);
       g_object_set(settings, "gtk-button-images", (int)TRUE, NULL);
 
-      gtk_button_set_label((GtkButton*)ih->handle, value);
+      gtk_button_set_label((GtkButton*)ih->handle, iupgtkStrConvertToUTF8(value));
       ih->data->type |= IUP_BUTTON_TEXT;
       
 #if GTK_CHECK_VERSION(2, 10, 0)
@@ -397,7 +397,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
 #endif
     }
     else
-      gtk_button_set_label((GtkButton*)ih->handle, title);
+      gtk_button_set_label((GtkButton*)ih->handle, iupgtkStrConvertToUTF8(title));
     ih->data->type = IUP_BUTTON_TEXT;
   }
 

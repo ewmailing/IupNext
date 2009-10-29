@@ -26,9 +26,13 @@ local function TreeSetAttributeHandle(handle, name, value)
    SetAttribute(handle, name, value)
 end
 
+-- must be after the branch has nodes
+function TreeSetState(handle, node, id)
+  if node.state then SetAttribute(handle, "STATE"..id, node.state) end
+end
+
 function TreeSetNodeAttrib(handle, node, id)
   if node.color then SetAttribute(handle, "COLOR"..id, node.color) end
-  if node.state then SetAttribute(handle, "STATE"..id, node.state) end
   if node.titlefont then SetAttribute(handle, "TITLEFONT"..id, node.titlefont) end
   if node.marked then SetAttribute(handle, "MARKED"..id, node.marked) end
   if node.image then TreeSetAttributeHandle(handle, "IMAGE"..id, node.image) end
@@ -46,6 +50,7 @@ function TreeSetValueRec(handle, t, id)
         SetAttribute(handle, "ADDBRANCH"..id, node.branchname)
         TreeSetNodeAttrib(handle, node, id+1)
         TreeSetValueRec(handle, node, id+1)
+        TreeSetState(handle, node, id+1)
       elseif node.leafname then
         SetAttribute(handle, "ADDLEAF"..id, node.leafname)
         TreeSetNodeAttrib(handle, node, id+1)
@@ -66,6 +71,7 @@ function TreeSetValue(handle, t, id)
     TreeSetNodeAttrib(handle, t, 0)
   end
   TreeSetValueRec(handle, t, id)
+  if (id == 0) then TreeSetState(handle, t, 0) end
 end
 
 function ctrl.createElement(class, arg)

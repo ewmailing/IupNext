@@ -110,6 +110,19 @@ static int insertbranch(void)
   return IUP_DEFAULT;
 }
 
+static int togglestate(void)
+{
+  char attr[50];
+  Ihandle* tree = IupGetHandle("tree");
+  int id = IupGetInt(tree, "VALUE");
+  sprintf(attr, "STATE%d", id);
+  if (strcmp(IupGetAttribute(tree, attr), "EXPANDED")==0)
+    IupSetAttribute(tree, attr, "COLLAPSED");
+  else
+    IupSetAttribute(tree, attr, "EXPANDED");
+  return IUP_DEFAULT;
+}
+
 static int text_cb(Ihandle* ih, int c, char *after)
 {
   if (c == K_ESC)
@@ -317,6 +330,7 @@ static int rightclick_cb(Ihandle* ih, int id)
     IupItem ("Insert Branch","insertbranch"),
     IupItem ("Remove Node","removenode"),
     IupItem ("Remove Children","removechild"),
+    IupItem ("Toggle State","togglestate"),
     IupSubmenu("Focus", IupMenu(
       IupItem ("ROOT", "selectnode"),
       IupItem ("LAST", "selectnode"),
@@ -343,6 +357,7 @@ static int rightclick_cb(Ihandle* ih, int id)
   IupSetFunction("removenode", (Icallback) removenode);
   IupSetFunction("removechild", (Icallback) removechild);
   IupSetFunction("renamenode", (Icallback) renamenode);
+  IupSetFunction("togglestate", (Icallback) togglestate);
 
 //  sprintf(attr, "%d", id);
 //  IupSetAttribute(ih, "VALUE", attr);
@@ -474,6 +489,7 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "ADDLEAF2",     "equilateral");  /* ... */
   IupSetAttribute(tree, "ADDLEAF3",     "isoceles");
   IupSetAttribute(tree, "ADDLEAF4",     "scalenus");
+  IupSetAttribute(tree, "STATE2",     "collapsed");
   IupSetAttribute(tree, "INSERTBRANCH2","parallelogram");  /* same depth as id=2, new id=6 */
   IupSetAttribute(tree, "ADDLEAF6",     "square");
   IupSetAttribute(tree, "ADDLEAF7",     "diamond");

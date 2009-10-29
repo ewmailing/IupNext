@@ -408,19 +408,8 @@ static int winTreeIsItemExpanded(Ihandle* ih, HTREEITEM hItem)
 
 static void winTreeExpandItem(Ihandle* ih, HTREEITEM hItem, int expand)
 {
-  TV_ITEM item;
-  item.mask = TVIF_STATE | TVIF_HANDLE;
-  item.stateMask = TVIS_EXPANDED;
-  item.hItem = hItem;
-
-  if (expand == -1)
-    expand = !winTreeIsItemExpanded(ih, hItem); /* toggle */
-
-  item.state = expand ? TVIS_EXPANDED : 0;
-
-  SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)&item);
-
-  /* Do not use TVM_EXPAND because it only works if the branch has children */
+  /* it only works if the branch has children */
+  SendMessage(ih->handle, TVM_EXPAND, expand? TVE_EXPAND: TVE_COLLAPSE, (LPARAM)hItem);
 }
 
 /*****************************************************************************/
@@ -1062,9 +1051,8 @@ static int winTreeSetSpacingAttrib(Ihandle* ih, const char* value)
 static int winTreeSetExpandAllAttrib(Ihandle* ih, const char* value)
 {
   HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
-  HTREEITEM hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItemRoot); /* skip the root node that is always expanded */
   int expand = iupStrBoolean(value);
-  winTreeExpandTree(ih, hItem, expand);
+  winTreeExpandTree(ih, hItemRoot, expand);
   return 0;
 }
 
@@ -2391,7 +2379,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
       itemData = (winTreeItemData*)item.lParam;
 
-      if (winTreeIsItemSelected(ih, hItem) && IupGetFocus()==ih)
+      if (winTreeIsItemSelected(ih, hItem) && GetFocus()==ih->handle)
         customdraw->clrText = winTreeInvertColor(itemData->color);
       else
         customdraw->clrText = itemData->color;
