@@ -410,6 +410,26 @@ static void winTreeExpandItem(Ihandle* ih, HTREEITEM hItem, int expand)
 {
   /* it only works if the branch has children */
   SendMessage(ih->handle, TVM_EXPAND, expand? TVE_EXPAND: TVE_COLLAPSE, (LPARAM)hItem);
+
+  /* update image */
+  {
+    TVITEM item;
+    winTreeItemData* itemData;
+
+    item.hItem = hItem;
+    item.mask = TVIF_HANDLE|TVIF_PARAM;
+    SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+    itemData = (winTreeItemData*)item.lParam;
+
+    if (expand)
+      item.iSelectedImage = item.iImage = (itemData->image_expanded!=-1)? itemData->image_expanded: (int)ih->data->def_image_expanded;
+    else
+      item.iSelectedImage = item.iImage = (itemData->image!=-1)? itemData->image: (int)ih->data->def_image_collapsed;
+
+    item.hItem = hItem;
+    item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+    SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
+  }
 }
 
 /*****************************************************************************/
