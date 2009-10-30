@@ -1617,21 +1617,12 @@ static int winTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 
 static int winTreeSetRenameAttrib(Ihandle* ih, const char* value)
 {  
-  HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
   if (ih->data->show_rename)
   {
-    IFni cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
-    if (cbShowRename)
-      cbShowRename(ih, winTreeGetNodeId(ih, hItemFocus));
-
+    HTREEITEM hItemFocus;
     SetFocus(ih->handle); /* the tree must have focus to activate the edit */
+    hItemFocus = winTreeGetFocusNode(ih);
     SendMessage(ih->handle, TVM_EDITLABEL, 0, (LPARAM)hItemFocus);
-  }
-  else
-  {
-    IFnis cbRenameNode = (IFnis)IupGetCallback(ih, "RENAMENODE_CB");
-    if (cbRenameNode)
-      cbRenameNode(ih, winTreeGetNodeId(ih, hItemFocus), winTreeGetTitle(ih, hItemFocus));  
   }
   
   (void)value;
@@ -2238,12 +2229,17 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     char* value;
     HWND hEdit;
     NMTVDISPINFO* info = (NMTVDISPINFO*)msg_info;
+    IFni cbShowRename;
            
     if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
     {
       *result = TRUE;  /* prevent the change */
       return 1;
     }
+
+    cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
+    if (cbShowRename)
+      cbShowRename(ih, winTreeGetNodeId(ih, info->item.hItem));
 
     hEdit = (HWND)SendMessage(ih->handle, TVM_GETEDITCONTROL, 0, 0);
 

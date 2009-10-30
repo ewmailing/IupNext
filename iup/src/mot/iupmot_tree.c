@@ -1615,20 +1615,8 @@ static int motTreeSetRenameAttrib(Ihandle* ih, const char* value)
 {  
   if (ih->data->show_rename)
   {
-    IFni cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
     Widget wItemFocus = motTreeGetFocusNode(ih);
-    if (cbShowRename)
-      cbShowRename(ih, motTreeGetNodeId(ih, wItemFocus));
     motTreeShowEditField(ih, wItemFocus);
-  }
-  else
-  {
-    IFnis cbRenameNode = (IFnis)IupGetCallback(ih, "RENAMENODE_CB");
-    if (cbRenameNode)
-    {
-      Widget wItemFocus = motTreeGetFocusNode(ih);
-      cbRenameNode(ih, motTreeGetNodeId(ih, wItemFocus), motTreeGetTitle(wItemFocus));  
-    }
   }
 
   (void)value;
@@ -2058,6 +2046,10 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
   XmFontList fontlist;
   Widget sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
 
+  IFni cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
+  if (cbShowRename)
+    cbShowRename(ih, motTreeGetNodeId(ih, wItem));
+
   XtVaGetValues(wItem, XmNx, &x, 
                        XmNy, &y,
                        XmNwidth, &w, 
@@ -2122,8 +2114,6 @@ static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCal
   int is_ctrl = 0;
   (void)w;
   (void)nptr;
-
-printf("SelectionCallback(%d)\n", nptr->selected_item_count);
 
   if (ih->data->mark_mode == ITREE_MARK_MULTIPLE)
   {

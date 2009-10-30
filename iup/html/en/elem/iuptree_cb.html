@@ -20,8 +20,8 @@
   combination of keys. </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id, int </strong>status) [in C]
 <strong>elem</strong>:selection_cb(<strong>id, status:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
 <strong>id</strong>:
     Node identifier.<br>
     status: 1 - node was selected, 0 - node was unselected. </p>
@@ -36,8 +36,8 @@ nodes is always completely included, independent if some node were already
 marked.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int* <strong>ids, int </strong>n) [in C]
 <strong>elem</strong>:multiselection_cb(<strong>ids: </strong>table<strong>, n:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
 <strong>ids</strong>:
     Array of node identifiers.<br>
 <b>n</b>: Number of nodes in the array.</p>
@@ -47,10 +47,10 @@ marked.</p>
   This action occurs when the user clicks the &quot;+&quot; sign on the left of the branch, or when double clicks the branch, or hits Enter on a collapsed branch.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>) [in C] 
 <strong>elem</strong>:branchopen_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
 <strong>id</strong>:
-    Node identifier. </p>
+    node identifier. </p>
 <p class="info"><span class="style1">Returns:</span> IUP_IGNORE for the branch not to be opened, or IUP_DEFAULT for the branch to be opened.</p>
 <p><strong>BRANCHCLOSE_CB</strong>:
   Action generated when a branch is collapsed. 
@@ -61,10 +61,10 @@ marked.</p>
   </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C]
 <strong>elem</strong>:branchclose_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
 <strong>id</strong>:
-    Identifier of the clicked node. </p>
+    node identifier. </p>
 <p class="info"><span class="style1">Returns:</span> IUP_IGNORE for the branch not to be closed, or IUP_DEFAULT for the branch to be closed.</p>
 <p><strong>EXECUTELEAF_CB</strong>:
   Action generated when a leaf is to be 
@@ -73,52 +73,38 @@ marked.</p>
   </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
 <strong>elem</strong>:executeleaf_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
 <strong>id</strong>:
-    Identifier of the clicked node.&nbsp;
+    node identifier.&nbsp;
     <br>
 </p>
 <hr>
-<p><strong>RENAMENODE_CB</strong>:
-  Action generated when a node is to be 
-  renamed 
-  and <strong>SHOWRENAME</strong>=<strong>NO</strong>. It occurs only when the user clicks 
-twice the node or press 
-<b>F2</b>.</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>, char *<strong>name</strong>); [in C]<strong>
-elem</strong>:renamenode_cb(<strong>id:</strong> number, <strong>name</strong>:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
-<strong>id</strong>:
-    Identifier of the clicked node. <br>
-<strong>name</strong>: Current name of the clicked node. <br>
-</p>
 <p><strong>SHOWRENAME_CB</strong>:
-  Action generated when a node is to be 
-  renamed in place and <strong>SHOWRENAME</strong>=<strong>YES</strong>. 
-  It occurs only when the user clicks twice the node or press 
-<b>F2</b>.</p>
+  Action generated when a node is about to be renamed. 
+  It occurs when the user clicks twice the node or press 
+<b>F2</b>. Called only if SHOWRENAME=YES.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C]<strong>
 elem</strong>:showrename_cb(<strong>id:</strong> number:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
 <strong>id</strong>:
-    Identifier of the clicked node.&nbsp;
+    node identifier.&nbsp;
     <br>
 </p>
 <p><strong>RENAME_CB</strong>:
   Action generated after a node was renamed in 
-  place. It occurs when the user press <b>Enter</b> after editing the name, or when the text box looses it focus.</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>, char *<strong>name</strong>); [in C]<strong>
-elem</strong>:rename_cb(<strong>id:</strong> number, <strong>name</strong>:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
+  place. It occurs when the user press <b>Enter</b> after editing the name, or when the text box looses it focus. 
+Called only if SHOWRENAME=YES.</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>, char *<strong>title</strong>); [in C]<strong>
+elem</strong>:rename_cb(<strong>id:</strong> number, <strong>title</strong>:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
 <strong>id</strong>:
-    Identifier of the clicked node. <br>
-<strong>name</strong>:
-    New name of the clicked node. </p>
-<p class="info"><span class="style1">Returns:</span> The new name is accepted only if the callback returns IUP_DEFAULT. If the callback does not exists the new name 
+    node identifier. <br>
+<strong>title</strong>: new node title. </p>
+<p class="info"><span class="style1">Returns:</span> The new title is accepted only if the callback returns IUP_DEFAULT. If the callback does not exists the new 
+title 
     is always accepted. If the user pressed <b>Enter</b> and the callback returns IUP_IGNORE the editing continues. If 
     the text box looses its focus the editing stops always.<br>
 </p>
@@ -128,8 +114,8 @@ elem</strong>:rename_cb(<strong>id:</strong> number, <strong>name</strong>:<stro
   a drag &amp; drop is executed. Only active if <strong>SHOWDRAGDROP=YES.</strong></p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <b>drag_id</b>, int <b>drop_id</b>, int <b>isshift</b>, int <b>iscontrol</b>); [in C] 
 <strong>elem</strong>:dragdrop_cb(<b>drag_id</b>, <b>drop_id</b>, <b>isshift</b>, <b>iscontrol</b><strong>:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
 <strong>drag_id</strong>:
     Identifier of the clicked node where the 
     drag start. <br>
@@ -151,10 +137,10 @@ of the leaf.<br>
 notification, the action can not be aborted. (since 3.0)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id, </strong>void* <strong>userdata</strong>); [in C] 
 <strong>elem</strong>:noderemoved_cb(<strong>id:</strong> number, <strong>userid</strong>: userdata/table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
 <strong>id</strong>:
-    Identifier of the node to be removed.<br>
+    node identifier.<br>
 <strong>userdata/userid</strong>: USERDATA attribute in C, or userid object in 
 Lua.</p>
 
@@ -165,10 +151,10 @@ Lua.</p>
   is pressed over the IupTree.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
 <strong>elem</strong>:rightclick_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the IupTree interacting with the user. <br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
 <strong>id</strong>:
-    Identifier of the clicked node. </p>
+    node identifier. </p>
 
   
   

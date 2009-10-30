@@ -1438,35 +1438,10 @@ static int gtkTreeSetRenameAttrib(Ihandle* ih, const char* value)
   if (ih->data->show_rename)
   {
     GtkTreePath* path;
-    IFni cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
     GtkTreeViewColumn *focus_column;
-
     gtk_tree_view_get_cursor(GTK_TREE_VIEW(ih->handle), &path, &focus_column);
-
-    if (cbShowRename)
-    {
-      GtkTreeIter iterItem;
-      GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-      gtk_tree_model_get_iter(model, &iterItem, path);
-      cbShowRename(ih, gtkTreeGetNodeId(ih, iterItem));
-    }
-
     gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), path, focus_column, TRUE);
     gtk_tree_path_free(path);
-  }
-  else
-  {
-    IFnis cbRenameNode = (IFnis)IupGetCallback(ih, "RENAMENODE_CB");
-    if (cbRenameNode)
-    {
-      GtkTreePath* path;
-      GtkTreeIter iterItem;
-      GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-      gtk_tree_view_get_cursor(GTK_TREE_VIEW(ih->handle), &path, NULL);
-      gtk_tree_model_get_iter(model, &iterItem, path);
-      gtk_tree_path_free(path);
-      cbRenameNode(ih, gtkTreeGetNodeId(ih, iterItem), gtkTreeGetTitle(model, iterItem));  
-    }
   }
 
   (void)value;
@@ -1692,6 +1667,13 @@ static void gtkTreeCellTextEditingStarted(GtkCellRenderer *cell, GtkCellEditable
   PangoFontDescription* fontdesc = NULL;
   GdkColor *color = NULL;
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  IFni cbShowRename;
+
+  gtk_tree_model_get_iter_from_string(model, &iterItem, path_string);
+
+  cbShowRename = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
+  if (cbShowRename)
+    cbShowRename(ih, gtkTreeGetNodeId(ih, iterItem));
 
   value = iupAttribGetStr(ih, "RENAMECARET");
   if (value)
@@ -1701,7 +1683,6 @@ static void gtkTreeCellTextEditingStarted(GtkCellRenderer *cell, GtkCellEditable
   if (value)
     gtkTreeSetRenameSelectionPos(editable, value);
 
-  gtk_tree_model_get_iter_from_string(model, &iterItem, path_string);
   gtk_tree_model_get(model, &iterItem, IUPGTK_TREE_FONT, &fontdesc, -1);
   if (fontdesc)
     gtk_widget_modify_font(GTK_WIDGET(editable), fontdesc);
