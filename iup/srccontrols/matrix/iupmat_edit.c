@@ -67,7 +67,7 @@ static int iMatrixEditDropDownAction_CB(Ihandle* ih, char* t, int i, int v)
     if (ret == IUP_CONTINUE)
     {
       iupMatrixEditHide(ih_matrix);
-      iupMatrixDrawUpdate(ih);
+      iupMatrixDrawUpdate(ih_matrix);
     }
   }
 
