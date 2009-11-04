@@ -745,7 +745,7 @@ static Widget motTreeGetFocusNode(Ihandle* ih)
 
 static Widget motTreeFindNodeFromString(Ihandle* ih, const char* name_id)
 {
-  if (name_id[0])
+  if (name_id && name_id[0])
   {
     Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
     iupStrToInt(name_id, &ih->data->id_control);

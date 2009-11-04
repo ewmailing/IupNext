@@ -225,7 +225,7 @@ static HTREEITEM winTreeFindNodeFromID(Ihandle* ih, HTREEITEM hItem)
 
 static HTREEITEM winTreeFindNodeFromString(Ihandle* ih, const char* name_id)
 {
-  if (name_id[0])
+  if (name_id && name_id[0])
   {
     HTREEITEM hRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
     iupStrToInt(name_id, &ih->data->id_control);

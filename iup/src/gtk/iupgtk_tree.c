@@ -428,7 +428,7 @@ static gboolean gtkTreeFindNodeFromID(Ihandle* ih, GtkTreeModel* model, GtkTreeI
 
 static gboolean gtkTreeFindNodeFromString(Ihandle* ih, GtkTreeModel* model, const char* name_id, GtkTreeIter *iterItem)
 {
-  if (name_id[0])
+  if (name_id && name_id[0])
   {
     int id;
     if (iupStrToInt(name_id, &id))
