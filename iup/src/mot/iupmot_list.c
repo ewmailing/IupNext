@@ -149,7 +149,25 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
 {
   /* The utility functions use 0=last 1=first */
   if (ih->data->is_dropdown || ih->data->has_editbox)
+  {
+    if (ih->data->is_dropdown && !ih->data->has_editbox)
+    {
+      /* must check if removing the current item */
+      int curpos;
+      XtVaGetValues(ih->handle, XmNselectedPosition, &curpos, NULL);
+      if (pos == curpos)
+      {
+        if (curpos > 0) curpos--;
+        else curpos++;
+
+        XtRemoveCallback(ih->handle, XmNselectionCallback, (XtCallbackProc)motListComboBoxSelectionCallback, (XtPointer)ih);
+        XtVaSetValues(ih->handle, XmNselectedPosition, curpos, NULL);  
+        iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", curpos+1);  /* IUP starts at 1 */
+        XtAddCallback(ih->handle, XmNselectionCallback, (XtCallbackProc)motListComboBoxSelectionCallback, (XtPointer)ih);
+      }
+    }
     XmComboBoxDeletePos(ih->handle, pos+1);
+  }
   else
     XmListDeletePos(ih->handle, pos+1);
 }
