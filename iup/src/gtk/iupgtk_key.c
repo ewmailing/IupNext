@@ -316,9 +316,9 @@ gboolean iupgtkKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
   if (code == 0) 
     return FALSE;
 
-  /* Avoid duplicate calls if a child of the dialog contains the focus.
-     GTK will call the callback for the child and for the dialog */
-  if (ih->iclass->nativetype == IUP_TYPEDIALOG && ih != IupGetFocus())
+  /* Avoid duplicate calls if a child of a native container contains the focus.
+     GTK will call the callback for the child and for the container. */
+  if (ih->iclass->childtype != IUP_CHILDNONE && ih != IupGetFocus())
     return FALSE;
 
   result = iupKeyCallKeyCb(ih, code);
