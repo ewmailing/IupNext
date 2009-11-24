@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="iupcd"
 	ProjectGUID="{BE7472E1-E76E-4969-A35F-054614F5884E}"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -42,7 +43,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\include;..\..\cd\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,CD_NO_OLD_INTERFACE,_CRT_SECURE_NO_DEPRECATE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="1"
 				PrecompiledHeaderFile="..\obj\iup/iupcd.pch"
 				AssemblerListingLocation=""
 				ObjectFile="$(IntDir)/"
