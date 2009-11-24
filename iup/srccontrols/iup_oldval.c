@@ -719,10 +719,16 @@ static int iValMapMethod(Ihandle* ih)
 static void iValUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
+  {
     cdKillCanvas(ih->data->cddbuffer);
+    ih->data->cddbuffer = NULL;
+  }
 
   if (ih->data->cdcanvas)
+  {
     cdKillCanvas(ih->data->cdcanvas);
+    ih->data->cdcanvas = NULL;
+  }
 }
 
 static void iValDestroyMethod(Ihandle* ih)

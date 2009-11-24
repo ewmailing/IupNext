@@ -575,10 +575,16 @@ static int iColorBrowserDlgColorCnvUnMap_CB(Ihandle* ih)
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   if (colordlg_data->color_cddbuffer)
+  {
     cdKillCanvas(colordlg_data->color_cddbuffer);
+    colordlg_data->color_cddbuffer = NULL;
+  }
 
   if (colordlg_data->color_cdcanvas)
+  {
     cdKillCanvas(colordlg_data->color_cdcanvas);
+    colordlg_data->color_cdcanvas = NULL;
+  }
 
   return IUP_DEFAULT;
 }

@@ -2487,10 +2487,16 @@ static int iTabsMapMethod(Ihandle* ih)
 static void iTabsUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
+  {
     cdKillCanvas(ih->data->cddbuffer);
+    ih->data->cddbuffer = NULL;
+  }
 
   if (ih->data->cdcanvas)
+  {
     cdKillCanvas(ih->data->cdcanvas);
+    ih->data->cdcanvas = NULL;
+  }
 }
 
 static void iTabsDestroyMethod(Ihandle* ih)

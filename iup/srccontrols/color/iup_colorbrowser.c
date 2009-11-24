@@ -781,10 +781,16 @@ static int iColorBrowserMapMethod(Ihandle* ih)
 static void iColorBrowserUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
+  {
     cdKillCanvas(ih->data->cddbuffer);
+    ih->data->cddbuffer = NULL;
+  }
 
   if (ih->data->cdcanvas)
+  {
     cdKillCanvas(ih->data->cdcanvas);
+    ih->data->cdcanvas = NULL;
+  }
 }
 
 static int iColorBrowserCreateMethod(Ihandle* ih, void **params)

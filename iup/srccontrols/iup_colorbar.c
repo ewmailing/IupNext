@@ -978,10 +978,16 @@ static int iColorbarMapMethod(Ihandle* ih)
 static void iColorbarUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
+  {
     cdKillCanvas(ih->data->cddbuffer);
+    ih->data->cddbuffer = NULL;
+  }
 
   if (ih->data->cdcanvas)
+  {
     cdKillCanvas(ih->data->cdcanvas);
+    ih->data->cdcanvas = NULL;
+  }
 }
 
 static int iColorbarCreateMethod(Ihandle* ih, void **params)

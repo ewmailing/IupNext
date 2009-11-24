@@ -2800,9 +2800,16 @@ static int iPPlotMapMethod(Ihandle* ih)
 static void iPPlotUnMapMethod(Ihandle* ih)
 {
   if (ih->data->plt->_cddbuffer != NULL)
+  {
     cdKillCanvas(ih->data->plt->_cddbuffer);
+    ih->data->plt->_cddbuffer = NULL;
+  }
 
-  cdKillCanvas(ih->data->plt->_cdcanvas);
+  if (ih->data->plt->_cdcanvas != NULL)
+  {
+    cdKillCanvas(ih->data->plt->_cdcanvas);
+    ih->data->plt->_cdcanvas = NULL;
+  }
 }
 
 static void iPPlotDestroyMethod(Ihandle* ih)

@@ -882,10 +882,16 @@ static int iCellsMapMethod(Ihandle* ih)
 static void iCellsUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cddbuffer)
+  {
     cdKillCanvas(ih->data->cddbuffer);
+    ih->data->cddbuffer = NULL;
+  }
 
   if (ih->data->cdcanvas)
+  {
     cdKillCanvas(ih->data->cdcanvas);
+    ih->data->cdcanvas = NULL;
+  }
 }
 
 static int iCellsCreateMethod(Ihandle* ih, void **params)
