@@ -176,9 +176,7 @@ void init_dlg(void)
   Ihandle* box = IupVbox(IupHbox(tree, IupButton("test", NULL), NULL), NULL);
   Ihandle* dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupTree");
-  IupSetAttribute(tree, "SIZE","QUARTERxTHIRD");
   IupSetAttribute(box, "MARGIN", "20x20");
-  IupSetAttribute(dlg, "BGCOLOR", "192 192 192");
   IupSetHandle("dlg",dlg);
 }
 
@@ -215,7 +213,6 @@ int main(int argc, char **argv)
   Ihandle* dlg;
   
   IupOpen(&argc, &argv);                            /* IUP initialization */
-  IupControlsOpen();                    /* Initializes the controls library */
 
   init_tree();                          /* Initializes IupTree */
   init_dlg();                           /* Initializes the dialog */

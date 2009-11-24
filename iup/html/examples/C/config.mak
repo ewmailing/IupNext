@@ -23,7 +23,7 @@ IUP = ../../..
 DBG = Yes
 
 #SRC = alarm.c
-SRC = button.c
+#SRC = button.c
 #SRC = dialog1.c
 #SRC = dialog2.c
 #SRC = filedlg.c
@@ -57,6 +57,7 @@ SRC = button.c
 #SRC = text.c
 #SRC = timer.c
 #SRC = toggle.c
+SRC = tree.c
 #SRC = val.c
 #SRC = vbox.c
 #SRC = zbox.c
@@ -89,7 +90,6 @@ SRC = button.c
 #SRC = getparam.c
 #SRC = matrix.c
 #SRC = mdi.c
-#SRC = tree.c
 
 #USE_IUPCONTROLS = Yes
 #LINKER = g++

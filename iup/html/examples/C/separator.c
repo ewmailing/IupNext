@@ -143,7 +143,7 @@ int main(int argc, char **argv)
   text = IupText (NULL);
   
   /* Sets value of the text and turns on expand */ 
-  IupSetAttributes (text, "VALUE = \"This text is here only to compose\", EXPAND = YES");
+  IupSetAttributes (text, "VALUE = \"This text is here only to compose\", EXPAND = HORIZONTAL");
  
   /* Creates six items */
   item_new = IupItem ("New", NULL);
