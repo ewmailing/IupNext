@@ -220,10 +220,18 @@ static void iDialogDestroyMethod(Ihandle* ih)
   iupDlgListRemove(ih);
 }
 
+static int iDialogSetMenuAttrib(Ihandle* ih, const char* value);
+
 static void iDialogComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
   int decorwidth, decorheight;
   Ihandle* child = ih->firstchild;
+
+  /* if does not have a menu, but the attribute is defined,
+     try to update the menu before retrieving the decoration. */
+  char* value = iupAttribGet(ih, "MENU");
+  if (!ih->data->menu && value)
+    iDialogSetMenuAttrib(ih, value);
 
   iupDialogGetDecorSize(ih, &decorwidth, &decorheight);
   *w = decorwidth;
