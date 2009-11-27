@@ -232,10 +232,7 @@ static HWND winTabCreatePageWindow(Ihandle* ih)
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, 
       dwExStyle = 0;
 
-  if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
-    dwExStyle |= WS_EX_COMPOSITED;
-  else
-    dwStyle |= WS_CLIPCHILDREN;
+  iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
   hWnd = CreateWindowEx(dwExStyle, "IupTabsPage", NULL, dwStyle, 
                         0, 0, CW_USEDEFAULT, CW_USEDEFAULT, 
@@ -564,19 +561,14 @@ static int winTabsMapMethod(Ihandle* ih)
   if (ih->data->is_multiline)
     dwStyle |= TCS_MULTILINE;
 
-  if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
-  {
-    dwExStyle |= WS_EX_COMPOSITED;
+  iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
-    if (!ih->data->is_multiline && iupwinIsVista())
-    {
-      /* workaround for composite bug in Vista */
-      ih->data->is_multiline = 1;  
-      dwStyle |= TCS_MULTILINE;
-    }
+  if (dwExStyle & WS_EX_COMPOSITED && !ih->data->is_multiline && iupwinIsVista())
+  {
+    /* workaround for composite bug in Vista */
+    ih->data->is_multiline = 1;  
+    dwStyle |= TCS_MULTILINE;
   }
-  else
-    dwStyle |= WS_CLIPCHILDREN;
 
   if (!iupwinCreateWindowEx(ih, WC_TABCONTROL, dwExStyle, dwStyle))
     return IUP_ERROR;

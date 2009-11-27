@@ -203,7 +203,7 @@ void GLCanvasCubeTest(void)
 
   dlg = IupDialog(IupSetAttributes(IupFrame(box), "TITLE=Teste"));
   IupSetAttribute(dlg, "TITLE", "IupGLCanvas Test");
-  IupSetAttribute(dlg, "COMPOSITED", "NO");
+//  IupSetAttribute(dlg, "COMPOSITED", "YES");
 
   IupMap(dlg);
 

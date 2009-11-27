@@ -77,6 +77,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
 /* Creates the Window with native parent and child ID, associate HWND with Ihandle*, 
    and replace the WinProc by iupwinBaseWinProc */
 int iupwinCreateWindowEx(Ihandle* ih, LPCSTR lpClassName, DWORD dwExStyle, DWORD dwStyle);
+void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle);
 
 int iupwinClassExist(const char* name);
 int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color);

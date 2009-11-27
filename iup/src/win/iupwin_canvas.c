@@ -372,6 +372,10 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       GetClientRect(ih->handle, &rect); 
       FillRect(hdc, &rect, iupwinBrushGet(color)); 
     }
+    else
+      InvalidateRect(ih->handle,NULL,FALSE);  /* This will invalidate all area. 
+                                                 Necessary in XP, or overlapping windows will have the effect of partial redrawing. */
+
     /* always return non zero value */
     *result = 1;
     return 1; 
@@ -542,27 +546,13 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     return iupwinBaseProc(ih, msg, wp, lp, result);
 }
 
-static void winCanvasRegisterClass(void)
-{
-  WNDCLASS wndclass;
-  ZeroMemory(&wndclass, sizeof(WNDCLASS));
-  
-  wndclass.hInstance      = iupwin_hinstance;
-  wndclass.lpszClassName  = "IupCanvas";
-  wndclass.lpfnWndProc    = (WNDPROC)iupwinBaseWinProc;
-  wndclass.hCursor        = LoadCursor(NULL, IDC_ARROW);
-  wndclass.style          = CS_DBLCLKS | CS_OWNDC | CS_HREDRAW | CS_VREDRAW; /* using CS_OWNDC will minimize the work of cdActivate in the CD library */
-  wndclass.hbrBackground  = NULL;  /* remove the background to optimize redraw */
-   
-  RegisterClass(&wndclass);
-}
-
 static int winCanvasMapMethod(Ihandle* ih)
 {
   CLIENTCREATESTRUCT clientstruct;
   void *clientdata = NULL;
   char *classname;
-  DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, dwExStyle = 0;
+  DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, 
+      dwExStyle = 0;
 
   if (!ih->parent)
     return IUP_ERROR;
@@ -574,12 +564,7 @@ static int winCanvasMapMethod(Ihandle* ih)
   }
                            
   if (ih->firstchild) /* can be a container */
-  {
-    if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
-      dwExStyle |= WS_EX_COMPOSITED;
-    else
-      dwStyle |= WS_CLIPCHILDREN;
-  }
+    iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
                            
   if (iupAttribGetBoolean(ih, "MDICLIENT"))  
   {
@@ -689,6 +674,21 @@ static void winCanvasReleaseMethod(Iclass* ic)
   (void)ic;
   if (iupwinClassExist("IupCanvas"))
     UnregisterClass("IupCanvas", iupwin_hinstance);
+}
+
+static void winCanvasRegisterClass(void)
+{
+  WNDCLASS wndclass;
+  ZeroMemory(&wndclass, sizeof(WNDCLASS));
+  
+  wndclass.hInstance      = iupwin_hinstance;
+  wndclass.lpszClassName  = "IupCanvas";
+  wndclass.lpfnWndProc    = (WNDPROC)iupwinBaseWinProc;
+  wndclass.hCursor        = LoadCursor(NULL, IDC_ARROW);
+  wndclass.style          = CS_DBLCLKS | CS_OWNDC | CS_HREDRAW | CS_VREDRAW; /* using CS_OWNDC will minimize the work of cdActivate in the CD library */
+  wndclass.hbrBackground  = NULL;  /* remove the background to optimize redraw */
+   
+  RegisterClass(&wndclass);
 }
 
 void iupdrvCanvasInitClass(Iclass* ic)

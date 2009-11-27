@@ -815,10 +815,7 @@ static int winDialogMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "DIALOGFRAME") && native_parent)
     dwExStyle |= WS_EX_DLGMODALFRAME;  /* this will hide the MENUBOX but not the close button */
 
-  if (iupAttribGetBoolean(ih, "COMPOSITED"))
-    dwExStyle |= WS_EX_COMPOSITED;
-  else
-    dwStyle |= WS_CLIPCHILDREN;
+  iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
   if (iupAttribGetBoolean(ih, "HELPBUTTON"))
     dwExStyle |= WS_EX_CONTEXTHELP;

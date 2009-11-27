@@ -29,7 +29,7 @@ void ZboxTest(void)
 
   text = IupText("");
 
-  IupSetAttributes (text, "EXPAND = YES, VALUE = \"Enter your text here\"");
+  IupSetAttributes (text, "EXPAND=YES, VALUE=\"Enter your text here\"");
   
   /* Creates a label */
   lbl = IupLabel("This element is a label");
@@ -42,7 +42,7 @@ void ZboxTest(void)
   IupSetHandle ("text", text);
   IupSetHandle ("lbl", lbl);
   IupSetHandle ("btn", btn);
-	
+
   /* Creates zbox with four elements */
   zbox = IupZbox (frame, text, lbl, btn, NULL);
 

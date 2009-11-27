@@ -170,10 +170,7 @@ static int winFrameMapMethod(Ihandle* ih)
   if (title)
     iupAttribSetStr(ih, "_IUPFRAME_HAS_TITLE", "1");
 
-  if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
-    dwExStyle |= WS_EX_COMPOSITED;
-  else
-    dwStyle |= WS_CLIPCHILDREN;
+  iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
   if (!iupwinCreateWindowEx(ih, "BUTTON", dwExStyle, dwStyle))
     return IUP_ERROR;

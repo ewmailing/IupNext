@@ -807,6 +807,14 @@ int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
   return 0;
 }
 
+void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle)
+{
+  *dwStyle |= WS_CLIPCHILDREN;
+
+  if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
+    *dwExStyle |= WS_EX_COMPOSITED;
+}
+
 int iupwinCreateWindowEx(Ihandle* ih, LPCSTR lpClassName, DWORD dwExStyle, DWORD dwStyle)
 {
   ih->serial = iupDialogGetChildId(ih);
