@@ -113,6 +113,8 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
   GtkTreeIter iter;
   gtk_list_store_insert(GTK_LIST_STORE(model), &iter, pos);
   gtk_list_store_set(GTK_LIST_STORE(model), &iter, 0, iupgtkStrConvertToUTF8(value), -1);
+
+  iupListUpdateOldValue(ih, pos, 0);
 }
 
 void iupdrvListRemoveItem(Ihandle* ih, int pos)
@@ -137,6 +139,8 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
     }
 
     gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
+
+    iupListUpdateOldValue(ih, pos, 1);
   }
 }
 
@@ -1366,9 +1370,9 @@ static int gtkListMapMethod(Ihandle* ih)
     if (!ih->data->has_editbox && ih->data->is_multiple)
     {
       gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
-#if GTK_CHECK_VERSION(2, 10, 0)
+  #if GTK_CHECK_VERSION(2, 10, 0)
       gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(ih->handle), TRUE);
-#endif
+  #endif
     }
     else
       gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);

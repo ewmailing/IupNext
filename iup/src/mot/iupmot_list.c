@@ -143,6 +143,8 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
     motListAddSortedItem(ih, value);
   else
     motListAddItem(ih, pos, value);
+
+  iupListUpdateOldValue(ih, pos, 0);
 }
 
 void iupdrvListRemoveItem(Ihandle* ih, int pos)
@@ -162,7 +164,6 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
 
         XtRemoveCallback(ih->handle, XmNselectionCallback, (XtCallbackProc)motListComboBoxSelectionCallback, (XtPointer)ih);
         XtVaSetValues(ih->handle, XmNselectedPosition, curpos, NULL);  
-        iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", curpos+1);  /* IUP starts at 1 */
         XtAddCallback(ih->handle, XmNselectionCallback, (XtCallbackProc)motListComboBoxSelectionCallback, (XtPointer)ih);
       }
     }
@@ -170,6 +171,8 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
   }
   else
     XmListDeletePos(ih->handle, pos+1);
+
+  iupListUpdateOldValue(ih, pos, 1);
 }
 
 void iupdrvListRemoveAllItems(Ihandle* ih)

@@ -30,6 +30,7 @@ char* iupListGetNCAttrib(Ihandle* ih);
 char* iupListGetPaddingAttrib(Ihandle* ih);
 char* iupListGetSpacingAttrib(Ihandle* ih);
 void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos);
+void iupListUpdateOldValue(Ihandle* ih, int pos, int removed);
 
 struct _IcontrolData 
 {

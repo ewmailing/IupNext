@@ -53,6 +53,37 @@ static void iListCallActionCallback(Ihandle* ih, IFnsii cb, int pos, int state)
     IupExitLoop();
 }
 
+void iupListUpdateOldValue(Ihandle* ih, int pos, int removed)
+{
+  if (!ih->data->has_editbox)
+  {
+    char* old_value = iupAttribGet(ih, "_IUPLIST_OLDVALUE");
+    if (old_value)
+    {
+      int old_pos = atoi(old_value)-1; /* was in IUP reference, starting at 1 */
+      if (ih->data->is_dropdown || !ih->data->is_multiple)
+      {
+        if (old_pos >= pos)
+        {
+          if (removed && old_pos == pos)
+          {
+            /* when the current item is removed nothing remains selected */
+            iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", NULL);
+          }
+          else
+            iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", removed? old_pos-1: old_pos+1);
+        }
+      }
+      else
+      {
+        /* multiple selection on a non drop-down list. */
+        char* value = IupGetAttribute(ih, "VALUE");
+        iupAttribStoreStr(ih, "_IUPLIST_OLDVALUE", value);
+      }
+    }
+  }
+}
+
 void iupListSingleCallActionCallback(Ihandle* ih, IFnsii cb, int pos)
 {
   char* old_str = iupAttribGet(ih, "_IUPLIST_OLDVALUE");
@@ -217,7 +248,10 @@ int iupListSetIdValueAttrib(Ihandle* ih, const char* name_id, const char* value)
       if (pos >= 0 && pos <= count-1)
       {
         if (pos == 0)
+        {
           iupdrvListRemoveAllItems(ih);
+          iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", NULL);
+        }
         else
         {
           int i = pos;
@@ -270,7 +304,10 @@ static int iListSetRemoveItemAttrib(Ihandle* ih, const char* value)
   if (!ih->handle)  /* do not store the action before map */
     return 0;
   if (!value)
+  {
     iupdrvListRemoveAllItems(ih);
+    iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", NULL);
+  }
   else
   {
     int pos = iupListGetPos(ih, value);

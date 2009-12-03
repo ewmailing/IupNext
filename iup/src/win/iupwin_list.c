@@ -154,6 +154,8 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
   SendMessage(ih->handle, WIN_INSERTSTRING(ih), pos, (LPARAM)value);
   SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)iupdrvFontGetStringWidth(ih, value));
   winListUpdateScrollWidth(ih);
+
+  iupListUpdateOldValue(ih, pos, 0);
 }
 
 void iupdrvListRemoveItem(Ihandle* ih, int pos)
@@ -173,6 +175,8 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
 
   SendMessage(ih->handle, WIN_DELETESTRING(ih), pos, 0L);
   winListUpdateScrollWidth(ih);
+
+  iupListUpdateOldValue(ih, pos, 1);
 }
 
 void iupdrvListRemoveAllItems(Ihandle* ih)
