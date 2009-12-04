@@ -149,7 +149,6 @@ static int motMenuMapMethod(Ihandle* ih)
                    XmNrowColumnType, XmMENU_BAR,
                    XmNmarginHeight, 0,
                    XmNmarginWidth, 0,
-                   XmNresizeWidth, False,
                    NULL);
     if (!ih->handle)
       return IUP_ERROR;
