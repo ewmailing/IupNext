@@ -245,11 +245,19 @@ static int gtkMenuMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
+static void gtkMenuUnMapMethod(Ihandle* ih)
+{
+  if (iupMenuIsMenuBar(ih))
+    ih->parent = NULL;
+
+  iupdrvBaseUnMapMethod(ih);
+}
+
 void iupdrvMenuInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
   ic->Map = gtkMenuMapMethod;
-  ic->UnMap = iupdrvBaseUnMapMethod;
+  ic->UnMap = gtkMenuUnMapMethod;
 
   /* Used by iupdrvMenuGetMenuBarSize */
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, NULL, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_DEFAULT);  /* use inheritance to retrieve standard fonts */

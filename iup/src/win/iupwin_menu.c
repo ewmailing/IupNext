@@ -385,7 +385,10 @@ static int winMenuMapMethod(Ihandle* ih)
 static void winMenuUnMapMethod(Ihandle* ih)
 {
   if (iupMenuIsMenuBar(ih))
+  {
     SetMenu(ih->parent->handle, NULL);
+    ih->parent = NULL;
+  }
 
   DestroyMenu((HMENU)ih->handle);   /* DestroyMenu is recursive */
 }

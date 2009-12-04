@@ -125,7 +125,10 @@ static void motPopupMenuUnmapCallback(Widget w, Ihandle* ih, XtPointer call_data
 static void motMenuUnMapMethod(Ihandle* ih)
 {
   if (iupMenuIsMenuBar(ih))
+  {
     XtDestroyWidget(ih->handle);
+    ih->parent = NULL;
+  }
   else
     XtDestroyWidget(XtParent(ih->handle));  /* in this case the RowColumn widget is a child of a MenuShell. */
 }
