@@ -76,8 +76,9 @@ int iupdrvOpen(int *argc, char ***argv)
       iupwin_hinstance = GetModuleHandle(NULL);
     IupSetGlobal("HINSTANCE", (char*)iupwin_hinstance);
   }
-
-  CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+  
+  if (CoInitializeEx(NULL, COINIT_APARTMENTTHREADED)==RPC_E_CHANGED_MODE)
+    IupSetGlobal("_IUPWIN_COINIT_MULTITHREADED", "1");
 
   {
     INITCOMMONCONTROLSEX InitCtrls;

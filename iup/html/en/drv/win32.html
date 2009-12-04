@@ -29,9 +29,10 @@ you to upgrade your compiler,
 <a href="http://msdn.microsoft.com/vstudio/express/visualc/">Visual C++ Express 
 Edition</a> is a free compiler that has with everything VC6 had.</p>
 <h4>COM Initialization</h4>
-<p>IupOpen calls &quot;CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);&quot;, if you need another concurrency model call 
-  CoInitializeEx with other options before calling IupOpen. Be aware that some features in some controls require 
-  single-thread apartment, and they will stop working, this includes: IupFileDLg when selecting a folder, and IupOle.</p>
+<p><strong>IupOpen</strong> calls &quot;CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);&quot;, if you need another concurrency model call 
+  CoInitializeEx with other options before calling <strong>IupOpen</strong>. Be aware that some features in some controls require 
+  single-thread apartment, and they will stop working, this includes: <strong>IupFileDLg</strong> when selecting a folder, and 
+<strong>IupOleControl</strong>.</p>
 <h4>InitCommonCtrlEx Linker Error</h4>
 <p>On Windows a common error occurs: 
   &quot;Cannot find function <b>InitCommonCtrlEx</b>()&quot;

@@ -45,7 +45,7 @@ version 3.x.<br>
 
 </p>
 
-<h3>CVS (03/Dec/2009)</h3>
+<h3>CVS (04/Dec/2009)</h3>
 
 <ul>
 	<li><span class="hist_new">New:</span> NMARGIN and NGAP non-inheritable 
@@ -56,6 +56,10 @@ version 3.x.<br>
 	<li><span class="hist_changed">Changed:</span>
     the RENAMENODE_CB callback in <strong>IupTree</strong> is not supported 
 	anymore.</li>
+	<li><span class="hist_changed">Changed:</span>
+    improved compatibility of <strong>IupFileDlg</strong> when DIALOGTYPE=DIR 
+	and CoInitializeEx was initialized with COINIT_MULTITHREADED prior to <strong>IupOpen</strong> 
+	in Windows.</li>
 
 	<li><span class="hist_fixed">Fixed:</span> memory leak in <strong>IupPPlot</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid memory access in set 

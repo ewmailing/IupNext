@@ -55,9 +55,13 @@ filedlg() [in LED]</pre>
   <blockquote>
   
   <p>In Windows, when DIALOGTYPE=DIR the dialog shown is not the same dialog for 
-  OPEN and SAVE, this dialog does not have the Help button neither filters. In 
+  OPEN and SAVE, this new dialog does not have the Help button neither filters. 
+	Also this new dialog needs CoInitializeEx with COINIT_APARTMENTTHREADED 
+	(done in <strong>IupOpen</strong>), if the COM library was initialized with 
+	COINIT_MULTITHREADED prior to <strong>IupOpen</strong> then the new dialog 
+	will have limited functionality. In 
   Motif or GTK the dialog is the same, but it only allows the user to select a 
-  directory.</p>
+  directory.&nbsp;</p>
     
   </blockquote>
     

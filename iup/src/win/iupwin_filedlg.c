@@ -90,7 +90,7 @@ static void winFileDlgGetFolder(Ihandle *ih)
   browseinfo.pszDisplayName = buffer; 
   browseinfo.lpfn = winFileDlgBrowseCallback;
   browseinfo.lParam = (LPARAM)ih;
-  browseinfo.ulFlags = BIF_NEWDIALOGSTYLE;
+  browseinfo.ulFlags = IupGetGlobal("_IUPWIN_COINIT_MULTITHREADED")? 0: BIF_NEWDIALOGSTYLE;
   browseinfo.hwndOwner = parent;
 
   selecteditem = SHBrowseForFolder(&browseinfo);
