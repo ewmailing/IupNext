@@ -340,14 +340,15 @@ static void motFileDlgPreviewCanvasExposeCallback(Widget w, Ihandle *ih, XtPoint
 static void motFileDlgBrowseSelectionCallback(Widget w, Ihandle* ih, XmListCallbackStruct* list_data)
 {
   char* filename;
+  IFnss cb;
 
   XmStringGetLtoR(list_data->item, XmSTRING_DEFAULT_CHARSET, &filename);
 
+  cb = (IFnss)IupGetCallback(ih, "FILE_CB");
   if (iupdrvIsFile(filename))
-  {
-    IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
     cb(ih, filename, "SELECT");
-  }
+  else
+    cb(ih, filename, "OTHER");
 
   XtFree(filename);
   (void)w;
@@ -501,8 +502,10 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
     file_cb = (IFnss)IupGetCallback(ih, "FILE_CB");
     if (file_cb)
     {
-      Widget file_list = XmFileSelectionBoxGetChild(filebox, XmDIALOG_LIST);
-      XtAddCallback(file_list, XmNbrowseSelectionCallback, (XtCallbackProc)motFileDlgBrowseSelectionCallback, (XtPointer)ih);
+      Widget list = XmFileSelectionBoxGetChild(filebox, XmDIALOG_LIST);
+      XtAddCallback(list, XmNbrowseSelectionCallback, (XtCallbackProc)motFileDlgBrowseSelectionCallback, (XtPointer)ih);
+      list = XmFileSelectionBoxGetChild(filebox, XmDIALOG_DIR_LIST);
+      XtAddCallback(list, XmNbrowseSelectionCallback, (XtCallbackProc)motFileDlgBrowseSelectionCallback, (XtPointer)ih);
 
       if (iupAttribGetBoolean(ih, "SHOWPREVIEW"))
       {

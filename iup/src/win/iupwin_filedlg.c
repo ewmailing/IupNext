@@ -159,9 +159,8 @@ static UINT_PTR CALLBACK winFileDlgSimpleHook(HWND hWnd, UINT uiMsg, WPARAM wPar
               char* file_msg;
 
               if (!iupdrvIsFile(filename))
-                break;
-
-              if (pofn->hdr.code == CDN_FILEOK)
+                file_msg = "OTHER";
+              else if (pofn->hdr.code == CDN_FILEOK)
                 file_msg = "OK";
               else 
                 file_msg = "SELECT";
@@ -331,9 +330,8 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
             char* file_msg;
 
             if (!iupdrvIsFile(filename))
-              break;
-
-            if (pofn->hdr.code == CDN_FILEOK)
+              file_msg = "OTHER";
+            else if (pofn->hdr.code == CDN_FILEOK)
               file_msg = "OK";
             else
               file_msg = "SELECT";
