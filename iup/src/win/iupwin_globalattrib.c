@@ -148,6 +148,11 @@ int iupdrvSetGlobal(const char *name, const char *value)
       winGlobalSendKey(key, 0x03);
     return 0;
   }
+  if (iupStrEqual(name, "DLL_HINSTANCE"))
+  {
+    iupwin_dll_hinstance = (HINSTANCE)value;
+    return 0;
+  }
   return 1;
 }
 
@@ -239,5 +244,7 @@ char *iupdrvGetGlobal(const char *name)
       return "YES";
     return "NO";
   }
+  if (iupStrEqual(name, "DLL_HINSTANCE"))
+    return (char*)iupwin_dll_hinstance;
   return NULL;
 }
