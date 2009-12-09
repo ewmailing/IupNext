@@ -515,6 +515,13 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
   case WM_RBUTTONDOWN:
     {
       iupwinButtonDown(ih, msg, wp, lp);
+
+      /* Feedback will NOT be done when not receiving the focus */
+      if (msg==WM_LBUTTONDOWN && !iupAttribGetBoolean(ih, "FOCUSONCLICK"))
+      {
+        SendMessage(ih->handle, BM_SETSTATE, TRUE, 0);
+        IupFlush();
+      }
       break;
     }
   case WM_XBUTTONUP:
@@ -531,7 +538,6 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
         if (cb && cb(ih) == IUP_CLOSE)
           IupExitLoop();
       }
-
       break;
     }
   case WM_KEYDOWN:
