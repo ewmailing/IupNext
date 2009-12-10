@@ -47,6 +47,27 @@ void iupdrvFrameGetDecorOffset(Ihandle* ih, int *x, int *y)
   }
 }
 
+static char* winFrameGetBgColorAttrib(Ihandle* ih)
+{
+  if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
+    return NULL;
+  else
+    return iupBaseNativeParentGetBgColorAttrib(ih);
+}
+
+static int winFrameSetBgColorAttrib(Ihandle* ih, const char* value)
+{
+  (void)value;
+
+  if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
+  {
+    IupUpdate(ih); /* post a redraw */
+    return 1;
+  }
+  else
+    return 0;
+}
+
 static void winFrameDrawText(HDC hDC, const char* text, int x, int y, COLORREF fgcolor)
 {
   COLORREF oldcolor;
@@ -126,6 +147,16 @@ static void winFrameDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
       DrawEdge(hDC, &drawitem->rcItem, EDGE_SUNKEN, BF_RECT);
     else
       DrawEdge(hDC, &drawitem->rcItem, EDGE_ETCHED, BF_RECT);
+
+    if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
+    {
+      unsigned char r=0, g=0, b=0;
+      char* color = iupAttribGetStr(ih, "BGCOLOR");
+      iupStrToRGB(color, &r, &g, &b);
+      SetDCBrushColor(hDC, RGB(r,g,b));
+      InflateRect(&drawitem->rcItem, -2, -2);
+      FillRect(hDC, &drawitem->rcItem, (HBRUSH)GetStockObject(DC_BRUSH));
+    }
   }
 
   iupwinDrawDestroyBitmapDC(&bmpDC);
@@ -169,6 +200,11 @@ static int winFrameMapMethod(Ihandle* ih)
   title = iupAttribGet(ih, "TITLE");
   if (title)
     iupAttribSetStr(ih, "_IUPFRAME_HAS_TITLE", "1");
+  else
+  {
+    if (iupAttribGet(ih, "BGCOLOR"))
+      iupAttribSetStr(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
+  }
 
   iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
@@ -192,7 +228,7 @@ void iupdrvFrameInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", winFrameGetBgColorAttrib, winFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);  
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NOT_MAPPED);

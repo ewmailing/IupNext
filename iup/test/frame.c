@@ -29,11 +29,10 @@ void FrameTest(void)
           );
 
   IupSetAttribute(frame1, "TITLE", "Title Text");
-//  IupSetAttribute(frame1, "FGCOLOR", "255 0 0");
-//  IupSetAttribute(frame1, "BGCOLOR", "0 128 0");
-  IupSetAttribute(frame2, "SUNKEN", "YES");
-
   IupSetAttribute(frame1, "MARGIN", "0x0");
+//  IupSetAttribute(frame1, "FGCOLOR", "255 0 0");
+//  IupSetAttribute(frame2, "SUNKEN", "YES");
+
   IupSetAttribute(frame2, "MARGIN", "0x0");
 //  IupSetAttribute(frame2, "BGCOLOR", "0 128 0");
   dlg = IupDialog(IupHbox(frame1, frame2, NULL));
@@ -43,7 +42,7 @@ void FrameTest(void)
   IupSetAttribute(dlg, "GAP", "5");
   IupSetAttribute(dlg, "FONTSIZE", "14");
 //  IupSetAttribute(dlg, "RASTERSIZE", "300x200");
-//  IupSetAttribute(dlg, "BGCOLOR", "0 128 0");
+//  IupSetAttribute(dlg, "BGCOLOR", "128 0 0");
 
   IupShow(dlg);
   printf("RASTERSIZE(%s)\n", IupGetAttribute(frame1, "RASTERSIZE"));

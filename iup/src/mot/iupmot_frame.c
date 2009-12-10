@@ -42,22 +42,33 @@ static int motFrameSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   Pixel color;
 
-  /* ignore given value, must use only from parent */
-  value = iupBaseNativeParentGetBgColor(ih);
+  if (!iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
+  {
+    /* ignore given value, must use only from parent */
+    value = iupBaseNativeParentGetBgColor(ih);
+  }
 
   color = iupmotColorGetPixelStr(value);
   if (color != (Pixel)-1)
   {
     Widget title_label, child_manager;
 
-    iupmotSetBgColor(ih->handle, color);
+    if (!iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
+    {
+      iupmotSetBgColor(ih->handle, color);
 
-    child_manager = XtNameToWidget(ih->handle, "*child_manager");
-    iupmotSetBgColor(child_manager, color);
+      child_manager = XtNameToWidget(ih->handle, "*child_manager");
+      iupmotSetBgColor(child_manager, color);
 
-    title_label = XtNameToWidget(ih->handle, "*title_label");
-    if (!title_label) return 1;
-    iupmotSetBgColor(title_label, color);
+      title_label = XtNameToWidget(ih->handle, "*title_label");
+      if (!title_label) return 1;
+      iupmotSetBgColor(title_label, color);
+    }
+    else
+    {
+      child_manager = XtNameToWidget(ih->handle, "*child_manager");
+      iupmotSetBgColor(child_manager, color);
+    }
 
     return 1;
   }
@@ -174,6 +185,9 @@ static int motFrameMapMethod(Ihandle* ih)
       iupmotSetArg(args, num_args, XmNshadowType, XmSHADOW_IN); 
     else
       iupmotSetArg(args, num_args, XmNshadowType, XmSHADOW_ETCHED_IN); 
+
+    if (iupAttribGet(ih, "BGCOLOR"))
+      iupAttribSetStr(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
   }
 
   /* Core */

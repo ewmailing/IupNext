@@ -57,7 +57,11 @@ static int gtkFrameSetBgColorAttrib(Ihandle* ih, const char* value)
   if (label)
     iupgtkBaseSetBgColor(label, r, g, b);
 
-  iupgtkBaseSetBgColor(ih->handle, r, g, b);
+  if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
+  {
+    GtkWidget* fixed = gtk_bin_get_child((GtkBin*)ih->handle);
+    iupgtkBaseSetBgColor(fixed, r, g, b);
+  }
 
   return 1;
 }
@@ -120,10 +124,15 @@ static int gtkFrameMapMethod(Ihandle* ih)
       gtk_frame_set_shadow_type((GtkFrame*)ih->handle, GTK_SHADOW_IN);
     else
       gtk_frame_set_shadow_type((GtkFrame*)ih->handle, GTK_SHADOW_ETCHED_IN);
+
+    if (iupAttribGet(ih, "BGCOLOR"))
+      iupAttribSetStr(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
   }
 
   /* the container that will receive the child element. */
   fixed = gtk_fixed_new();
+  if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
+    gtk_fixed_set_has_window((GtkFixed*)fixed, TRUE);
   gtk_container_add((GtkContainer*)ih->handle, fixed);
   gtk_widget_show(fixed);
 
