@@ -210,7 +210,7 @@ static int iZboxSetVisibleAttrib(Ihandle* ih, const char* value)
 {
   if (iupObjectCheck(ih->data->value_handle))
     IupSetAttribute(ih->data->value_handle, "VISIBLE", (char*)value);
-  return 0;
+  return 1;  /* must be 1 to mark when set at the element */
 }
 
 static void iZboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)

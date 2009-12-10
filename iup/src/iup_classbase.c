@@ -211,7 +211,45 @@ char* iupBaseGetVisibleAttrib(Ihandle* ih)
 int iupBaseSetVisibleAttrib(Ihandle* ih, const char* value)
 {
   iupdrvSetVisible(ih, iupStrBoolean(value));
-  return 0;
+  return 1;  /* must be 1 to mark when set at the element */
+}
+
+static void iBaseSetVisibleChildren(Ihandle *ih, int show)
+{
+  int inherit;
+  Ihandle* child = ih->firstchild;
+  while (child)
+  {
+    char* visible = iupTableGet(child->attrib, "VISIBLE");
+
+    /* when hide, do it for all controls,
+       when show, do it for those who do not have VISIBLE set, or have VISIBLE=YES set */
+    if (!show || (!visible || iupStrBoolean(visible)))
+    {
+      /* set on the class */
+      iupClassObjectSetAttribute(child, "VISIBLE", show?"YES":"NO", &inherit);
+
+      /* if not native container, must set at children,
+         native container will automatically hide its children. */
+      if (child->iclass->nativetype==IUP_TYPEVOID && child->iclass->childtype!=IUP_CHILDNONE)
+        iBaseSetVisibleChildren(child, show);
+
+      if (!show && visible && iupStrBoolean(visible))
+        iupTableRemove(child->attrib, "VISIBLE");  /* reset to default state */
+
+      IupFlush();
+    }
+
+    child = child->brother;
+  }
+}
+
+static int iBaseSetContainerVisible(Ihandle* ih, const char* value)
+{
+  /* called for containers that are not native elements */
+  int show = iupStrBoolean(value);
+  iBaseSetVisibleChildren(ih, show);
+  return 1;  /* must be 1 to mark when set at the element */
 }
 
 char* iupBaseNativeParentGetBgColorAttrib(Ihandle* ih)
@@ -412,12 +450,18 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "NORMALIZERGROUP", NULL, iBaseSetNormalizerGroupAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* make sure everyone has the correct default value */
-  iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "ACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
   if (ic->is_interactive)
     iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   else
     iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_INHERIT);
+
+  /* if not native container, must set at children,
+     native container will automatically hide its children. */
+  if (ic->nativetype==IUP_TYPEVOID && ic->childtype!=IUP_CHILDNONE)
+    iupClassRegisterAttribute(ic, "VISIBLE", NULL, iBaseSetContainerVisible, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT|IUPAF_NOT_MAPPED);
+  else
+    iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iupBaseSetSizeAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iupBaseSetRasterSizeAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
