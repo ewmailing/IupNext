@@ -55,6 +55,7 @@ static Ihandle* create_matrix(void)
   //IupSetAttribute(mat, "FONT*:3", "Times, Bold 14");
   //IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");
 //  IupSetAttribute(mat, "ACTIVE", "NO");
+//  IupSetAttribute(mat, "EXPAND", "NO");
 
   IupSetAttribute(mat,"MARKMODE","CELL");
 //  IupSetAttribute(mat,"MARKMODE","LIN");

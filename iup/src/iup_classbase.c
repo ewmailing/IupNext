@@ -164,8 +164,7 @@ static char* iBaseGetPositionAttrib(Ihandle* ih)
 
 static int iBaseSetPositionAttrib(Ihandle* ih, const char* value)
 {
-  if (ih->is_floating)
-    iupStrToIntInt(value, &ih->x, &ih->y, ',');
+  iupStrToIntInt(value, &ih->x, &ih->y, ',');
   return 0;
 }
 

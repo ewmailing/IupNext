@@ -175,7 +175,7 @@ static int iSpinCreateMethod(Ihandle* ih, void** params)
 
 static int iSpinboxCreateMethod(Ihandle* ih, void** params)
 {
-  Ihandle *spin, *ctrl;
+  Ihandle *spin;
 
   if (!params || !(params[0]))
     return IUP_ERROR;
@@ -184,8 +184,7 @@ static int iSpinboxCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(ih, "MARGIN",    "0x0");
   IupSetAttribute(ih, "ALIGNMENT", "ACENTER");
 
-  ctrl = (Ihandle*)(params[0]);
-  iupChildTreeAppend(ih, ctrl);
+  /* IupText is already a child of Spinbox because of the IupHbox Create method */
 
   spin = IupSpin();
   iupChildTreeAppend(ih, spin);
@@ -249,7 +248,7 @@ Iclass* iupSpinboxGetClass(void)
   ic->name = "spinbox";
   ic->format = "h"; /* one Ihandle */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype = IUP_CHILDNONE;
+  ic->childtype = IUP_CHILD_ONE; /* fake value to define it as a container */
   ic->is_interactive = 0;
 
   iupClassRegisterCallback(ic, "SPIN_CB", "i");
@@ -267,7 +266,7 @@ Iclass* iupSpinGetClass(void)
   ic->name = "spin";
   ic->format = NULL;  /* no parameters */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype = IUP_CHILDNONE;
+  ic->childtype = IUP_CHILD_ONE; /* fake value to define it as a container */
   ic->is_interactive = 0;
 
   /* Class functions */
