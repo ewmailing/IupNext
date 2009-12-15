@@ -360,13 +360,15 @@ void ButtonTest(void)
 
   button = IupButton(NULL, NULL);
   IupSetAttributeHandle(button, "IMAGE", image2);
-  IupSetAttribute(button, "TITLE", "Text2");
+//  IupSetAttribute(button, "TITLE", "Text2");
 //  IupSetAttribute(button, "IMAGEPOSITION", "TOP");
 //  IupSetAttribute(button, "SPACING", "30");
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
   IupSetAttribute(button, "FLAT", "YES");
-  IupSetAttribute(button, "FOCUSONCLICK", "NO");
+//  IupSetAttributeHandle(button, "IMPRESS", image2);
+//  IupSetAttribute(button, "FOCUSONCLICK", "NO");
+//  IupSetAttribute(button, "RASTERSIZE", "15x15");
   IupSetAttribute(button, "NAME", "button5");
   set_callbacks(button);
   IupAppend(box2, button);
@@ -387,7 +389,7 @@ void ButtonTest(void)
   IupSetAttribute(dlg, "TITLE", "IupButton Test");
 //  IupSetAttribute(box1, "BGCOLOR", "128 0 0");
 //  IupSetAttribute(dlg, "BGCOLOR", "0 128 0");
-//  IupSetAttribute(dlg, "BACKGROUND", "0 0 128");
+  IupSetAttribute(dlg, "BACKGROUND", "255 128 128");
 //  IupSetAttributeHandle(dlg, "BACKGROUND", image2);
 
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);

@@ -391,6 +391,8 @@ static void iuplua_openlibs (lua_State *L) {
   luaopen_iupluaimglib(L);
 #endif
 
+/* luaopen_lfs(L); */
+
 #ifndef IUPLUA_NO_GL
   iupgllua_open(L);
 /*  luaopen_luagl(L); */

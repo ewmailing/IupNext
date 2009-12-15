@@ -379,7 +379,6 @@ Iclass* iupTreeGetClass(void)
   iupClassRegisterCallback(ic, "BRANCHOPEN_CB",     "i");
   iupClassRegisterCallback(ic, "BRANCHCLOSE_CB",    "i");
   iupClassRegisterCallback(ic, "EXECUTELEAF_CB",    "i");
-  iupClassRegisterCallback(ic, "RENAMENODE_CB",     "is");
   iupClassRegisterCallback(ic, "SHOWRENAME_CB",     "i");
   iupClassRegisterCallback(ic, "RENAME_CB",         "is");
   iupClassRegisterCallback(ic, "DRAGDROP_CB",       "iiii");

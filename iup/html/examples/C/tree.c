@@ -56,12 +56,6 @@ int executeleaf_cb(Ihandle* h, int id)
   return IUP_DEFAULT;
 }
 
-int renamenode_cb(Ihandle* h, int id, char* name)
-{
-  printf("renamenode_cb (%d=%s)\n", id, name);
-  return IUP_DEFAULT;
-}
-
 int rename_cb(Ihandle* h, int id, char* name)
 {
   printf("rename_cb (%d=%s)\n", id, name);
@@ -158,7 +152,6 @@ void init_tree(void)
   Ihandle* tree = IupTree(); 
 
   IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback) executeleaf_cb);
-  IupSetCallback(tree, "RENAMENODE_CB", (Icallback) renamenode_cb);
   IupSetCallback(tree, "RENAME_CB", (Icallback) rename_cb);
   IupSetCallback(tree, "BRANCHCLOSE_CB", (Icallback) branchclose_cb);
   IupSetCallback(tree, "BRANCHOPEN_CB", (Icallback) branchopen_cb);

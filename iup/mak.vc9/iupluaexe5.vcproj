@@ -72,7 +72,7 @@
 				OutputFile="$(OutDir)/iuplua51.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\im\lib;..\..\cd\lib;..\lib;..\..\lua5.1\lib\vc9;..\..\luagl\lib\static"
+				AdditionalLibraryDirectories="..\..\im\lib;..\..\cd\lib;..\lib;..\..\lua5.1\lib\vc9;..\..\luagl\lib\static;..\..\lfs\lib\vc9"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="1"

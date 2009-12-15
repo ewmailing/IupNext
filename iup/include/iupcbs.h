@@ -24,7 +24,7 @@ typedef int (*IFnnii)(Ihandle*, Ihandle*, int, int); /* drop_cb */
 typedef int (*IFnnn)(Ihandle*, Ihandle*, Ihandle*); /* tabchange_cb */
 typedef int (*IFnss)(Ihandle*, char *, char *);  /* file_cb */
 typedef int (*IFns)(Ihandle*, char *);  /* multiselect_cb */
-typedef int (*IFnis)(Ihandle*, int, char *);  /* text_action, multiline_action, edit_cb, renamenode_cb, rename_cb */
+typedef int (*IFnis)(Ihandle*, int, char *);  /* text_action, multiline_action, edit_cb, rename_cb */
 typedef int (*IFnsii)(Ihandle*, char*, int, int);  /* list_action */
 typedef int (*IFnsiii)(Ihandle*, char*, int, int, int); /* dropfiles_cb */
 typedef int (*IFniis)(Ihandle*, int, int, char*);  /* motion_cb, click_cb, value_edit_cb */

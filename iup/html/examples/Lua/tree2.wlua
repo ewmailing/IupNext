@@ -23,8 +23,6 @@ t = {
 }
 iup.TreeSetValue(tree, t)
 
-tree.redraw = "YES"
-
 if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
   iup.MainLoop()
 end

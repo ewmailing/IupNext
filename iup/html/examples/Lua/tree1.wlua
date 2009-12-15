@@ -31,17 +31,14 @@ menu = iup.menu{addleaf, addbranch, renamenode}
 function tree:rightclick_cb(id)
   tree.value = id
   menu:popup(iup.MOUSEPOS,iup.MOUSEPOS)
-  return iup.DEFAULT
 end
 
 -- Callback called when a node will be renamed
-function tree:renamenode_cb(id)
+function tree:executeleaf_cb(id)
   text.value = tree.name
 
   dlg_rename:popup(iup.CENTER, iup.CENTER)
   iup.SetFocus(tree)
-  
-  return iup.DEFAULT
 end
 
 -- Callback called when the rename operation is cancelled
@@ -57,33 +54,25 @@ function ok:action()
 end
 
 function tree:k_any(c)
-  if c == 339 then tree.delnode = "MARKED" end
-  return iup.DEFAULT
+  if c == iup.K_DEL then tree.delnode = "MARKED" end
 end
 
 -- Callback called when a leaf is added
 function addleaf:action()
   tree.addleaf = ""
-  tree.redraw = "YES"
-  return iup.DEFAULT
 end
 
 -- Callback called when a branch is added
 function addbranch:action()
   tree.addbranch = ""
-  tree.redraw = "YES"
-  return iup.DEFAULT
 end
 
 -- Callback called when a branch will be renamed
 function renamenode:action()
-  tree:renamenode_cb(tree.value)
-  tree.redraw = "YES"
-  return iup.DEFAULT
+  tree:executeleaf_cb(tree.value)
 end
 
-function init_tree_atributes()
-  tree.font = "COURIER_NORMAL_10"
+function init_tree_nodes()
   tree.name = "Figures"
   tree.addbranch = "3D"
   tree.addbranch = "2D"
@@ -94,15 +83,11 @@ function init_tree_atributes()
   tree.addleaf2 = "scalenus"
   tree.addleaf2 = "isoceles"
   tree.value = "6"
-  tree.ctrl = "YES"
-  tree.shift = "YES"
-  tree.addexpanded = "NO"
-  tree.redraw = "YES"
 end
 
 dlg = iup.dialog{tree; title = "IupTree", size = "QUARTERxTHIRD"} 
 dlg:showxy(iup.CENTER,iup.CENTER)
-init_tree_atributes()
+init_tree_nodes()
 
 if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
   iup.MainLoop()

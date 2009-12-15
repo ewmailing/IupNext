@@ -11,7 +11,6 @@ local ctrl = {
     branchopen_cb = "n",
     branchclose_cb = "n",
     executeleaf_cb = "n",
-    renamenode_cb = "ns",
     noderemoved_cb = "ns",  -- fake definition to be replaced by treefuncs module
     rename_cb = "ns",
     showrename_cb = "n",

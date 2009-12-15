@@ -202,12 +202,6 @@ static int executeleaf_cb(Ihandle* ih, int id)
   return IUP_DEFAULT;
 }
 
-static int renamenode_cb(Ihandle* ih, int id, char* title)
-{
-  printf("RENAMENODE_CB (%d=%s)\n", id, title);
-  return IUP_DEFAULT;
-}
-
 static int rename_cb(Ihandle* ih, int id, char* title)
 {
   printf("RENAME_CB (%d=%s)\n", id, title);
@@ -399,7 +393,6 @@ static void init_tree(void)
   Ihandle* tree = IupTree(); 
 
   IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback) executeleaf_cb);
-  IupSetCallback(tree, "RENAMENODE_CB",  (Icallback) renamenode_cb);
   IupSetCallback(tree, "RENAME_CB",      (Icallback) rename_cb);
   IupSetCallback(tree, "BRANCHCLOSE_CB", (Icallback) branchclose_cb);
   IupSetCallback(tree, "BRANCHOPEN_CB",  (Icallback) branchopen_cb);
@@ -425,7 +418,7 @@ static void init_tree(void)
 
   //IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   //IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+  //IupSetAttribute(tree, "SHOWRENAME",   "YES");
   //IupSetAttribute(tree, "AUTODRAGDROP",   "YES");  /* Gtk Only */
 
   //IupSetAttribute(tree, "ADDEXPANDED",  "NO");

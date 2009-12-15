@@ -10,24 +10,25 @@ require( "iupluacontrols" )
 tree = iup.tree{}
 
 function tree:showrename_cb(id)
-  print("SHOWRENAME")
-  return iup.DEFAULT
-end
--- Callback called when a node will be renamed
-function tree:renamenode_cb(id)
-  print("RENAMENODE")
-  return iup.DEFAULT
+  print("SHOWRENAME_CB")
 end
 
+function tree:rename_cb(id)
+  print("RENAME_CB")
+end
 
 function tree:k_any(c)
-  if c == 316 then tree.delnode = "MARKED" end
-  return iup.DEFAULT
+  if c == iup.K_DEL then tree.delnode = "MARKED" end
 end
-
 
 function init_tree_atributes()
   tree.font = "COURIER_NORMAL_10"
+  tree.markmode = "MULTIPLE"
+  tree.addexpanded = "NO"
+  tree.showrename = "YES"
+end
+
+function init_tree_nodes()
   tree.name = "Figures"
   tree.addbranch = "3D"
   tree.addbranch = "2D"
@@ -38,17 +39,12 @@ function init_tree_atributes()
   tree.addleaf2 = "scalenus"
   tree.addleaf2 = "isoceles"
   tree.value = "6"
-  tree.ctrl = "YES"
-  tree.shift = "YES"
-  tree.addexpanded = "NO"
-  tree.redraw = "YES"
-  tree.showrename = "NO"
 end
 
-
 dlg = iup.dialog{tree; title = "IupTree", size = "QUARTERxTHIRD"} 
-dlg:showxy(iup.CENTER,iup.CENTER)
 init_tree_atributes()
+dlg:showxy(iup.CENTER,iup.CENTER)
+init_tree_nodes()
 
 if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
   iup.MainLoop()
