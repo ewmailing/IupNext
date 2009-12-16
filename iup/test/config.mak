@@ -14,6 +14,10 @@ else
   endif
 endif
 
+ifdef USE_GDK
+  APPNAME = iuptestgdk
+endif
+
 INCLUDES = ../include
 
 USE_IUP3 = Yes
