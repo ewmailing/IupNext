@@ -235,8 +235,6 @@ static void iBaseSetVisibleChildren(Ihandle *ih, int show)
 
       if (!show && visible && iupStrBoolean(visible))
         iupTableRemove(child->attrib, "VISIBLE");  /* reset to default state */
-
-      IupFlush();
     }
 
     child = child->brother;

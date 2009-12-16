@@ -2,9 +2,9 @@ PROJNAME = iup
 LIBNAME = iup
 OPT = YES
 
-#ifdef DBG
+ifdef DBG
   DEFINES += IUP_ASSERT
-#endif  
+endif  
 
 INCLUDES = ../include .
 
@@ -113,6 +113,6 @@ ifeq "$(TEC_UNAME)" "dll"
 endif
 
 ifeq "$(TEC_UNAME)" "owc1"
-  # Necessary or IUP will not work in Open Watcom
+  # Necessary or IUP 3 will not work in Open Watcom
   DBG=Yes
 endif

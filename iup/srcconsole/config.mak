@@ -1,11 +1,22 @@
 PROJNAME = iup
 APPNAME = iuplua51
-APPTYPE = console
+APPTYPE = CONSOLE
+
+ifdef GTK_DEFAULT
+  ifdef USE_MOTIF
+    # Build Motif version in Linux,Darwin,FreeBSD
+    APPNAME = iuplua51mot
+  endif
+else  
+  ifdef USE_GTK
+    # Build GTK version in IRIX,SunOS,AIX,Win32
+    APPNAME = iuplua51gtk
+  endif
+endif
 
 LOHDIR = loh
 SRCLUA = console5.lua
 SRC = iup_lua51.c
-
 
 # Disable strip
 STRIP = 
@@ -14,14 +25,6 @@ OPT = YES
 
 # IM and IupPPlot uses C++
 LINKER = $(CPPC)
-
-ifdef USE_GTK
-  APPNAME = iuplua51gtk
-endif
-
-ifdef USE_MOTIF
-  APPNAME = iuplua51mot
-endif
 
 ifdef DBG
   # Statically link everything only when debugging
@@ -146,10 +149,3 @@ ifneq ($(findstring AIX, $(TEC_UNAME)), )
   LFLAGS = -Xlinker "-bbigtoc"
 endif
 
-ifeq ($(TEC_UNAME), vc8)
-  ifdef DBG
-    #debug info not working for vc8 linker
-    define DBG
-    endef
-  endif
-endif         

@@ -1,20 +1,20 @@
+PROJNAME = iup
 APPNAME = iuptest
 APPTYPE = CONSOLE
 
-INCLUDES = ../include
-
-ifdef USE_GTK
-  ifndef GTK_DEFAULT
+ifdef GTK_DEFAULT
+  ifdef USE_MOTIF
+    # Build Motif version in Linux,Darwin,FreeBSD
+    APPNAME = iuptestmot
+  endif
+else  
+  ifdef USE_GTK
     # Build GTK version in IRIX,SunOS,AIX,Win32
     APPNAME = iuptestgtk
   endif
-else  
-  ifdef GTK_DEFAULT
-    # Build Motif version in Linux,Darwin,FreeBSD
-    USE_MOTIF = Yes
-    APPNAME = iuptestmot
-  endif
 endif
+
+INCLUDES = ../include
 
 USE_IUP3 = Yes
 USE_STATIC = Yes
