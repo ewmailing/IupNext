@@ -14,6 +14,7 @@
 #include <cdiup.h>
 #include <cdnative.h>
 
+//enum{CD_BASE_WIN, CD_BASE_X, CD_BASE_GDK};
 
 static void (*cdcreatecanvasNATIVE)(cdCanvas* canvas, void* data) = NULL;
 
@@ -24,8 +25,12 @@ static void cdcreatecanvasIUP(cdCanvas* canvas, Ihandle *ih_canvas)
 #endif
   char* data;
 
-  if (IupGetInt(ih_canvas, "CD_GDK"))
+  if (cdBaseDriver()==CD_BASE_GDK)
+  {
     data = IupGetAttribute(ih_canvas, "DRAWABLE");  /* new IUP 3 attribute, works for GTK only */
+    if (!data)
+      return;
+  }
   else
   {
 #ifdef WIN32
