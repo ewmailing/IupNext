@@ -25,7 +25,9 @@
 	one child is visible.</p>
 
   <p>
-  It does not have a native representation.</p>
+  It does not have a native representation. Zbox works by changing the VISIBLE 
+	attribute of its children, so if any of the grand children has its VISIBLE 
+	attribute directly defined then Zbox will NOT change its state.</p>
 
 <h3><a name="Creation">Creation</a></h3>
 <pre>Ihandle* IupZbox (Ihandle *<strong>child</strong>, ...); [in C]

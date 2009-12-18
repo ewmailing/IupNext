@@ -534,6 +534,8 @@ int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
 
 void iupdrvSetVisible(Ihandle* ih, int visible)
 {
+  if (iupStrEqual(ih->iclass->name, "colorbar"))
+    ih=ih;
   ShowWindow(ih->handle, visible? SW_SHOWNORMAL: SW_HIDE);
 }
 

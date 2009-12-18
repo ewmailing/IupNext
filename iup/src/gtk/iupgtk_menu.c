@@ -345,15 +345,10 @@ static int gtkItemSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* gtkItemGetValueAttrib(Ihandle* ih)
 {
-  if (GTK_IS_CHECK_MENU_ITEM(ih->handle))
-  {
-    if (gtk_check_menu_item_get_active((GtkCheckMenuItem*)ih->handle))
-      return "ON";
-    else
-      return "OFF";
-  }
+  if (GTK_IS_CHECK_MENU_ITEM(ih->handle) && gtk_check_menu_item_get_active((GtkCheckMenuItem*)ih->handle))
+    return "ON";
   else
-    return NULL;
+    return "OFF";
 }
 
 static int gtkItemMapMethod(Ihandle* ih)

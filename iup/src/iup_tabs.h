@@ -16,6 +16,7 @@ char* iupTabsGetTabOrientationAttrib(Ihandle* ih);
 char* iupTabsGetTabTypeAttrib(Ihandle* ih);
 char* iupTabsAttribGetStrId(Ihandle* ih, const char* name, int pos);
 char* iupTabsGetPaddingAttrib(Ihandle* ih);
+void iupTabsTestRemoveTab(Ihandle* ih, int pos);
 
 int iupdrvTabsExtraDecor(Ihandle* ih);
 int iupdrvTabsGetLineCountAttrib(Ihandle* ih);

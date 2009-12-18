@@ -76,13 +76,13 @@ static void gtkTabsUpdatePageBgColor(Ihandle* ih, unsigned char r, unsigned char
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
-    if (tab_page)
+    GtkWidget* tab_container = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
+    if (tab_container)
     {
       GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
       if (tab_label)
         iupgtkBaseSetBgColor(tab_label, r, g, b);
-      iupgtkBaseSetBgColor(tab_page, r, g, b);
+      iupgtkBaseSetBgColor(tab_container, r, g, b);
     }
   }
 }
@@ -127,9 +127,8 @@ static int gtkTabsSetPaddingAttrib(Ihandle* ih, const char* value)
 
 static void gtkTabsUpdateTabType(Ihandle* ih)
 {
-  GtkNotebook* tab_page = (GtkNotebook*)ih->handle;
   int iup2gtk[4] = {GTK_POS_TOP, GTK_POS_BOTTOM, GTK_POS_LEFT, GTK_POS_RIGHT};
-  gtk_notebook_set_tab_pos(tab_page, iup2gtk[ih->data->type]);
+  gtk_notebook_set_tab_pos((GtkNotebook*)ih->handle, iup2gtk[ih->data->type]);
 }
 
 static int gtkTabsSetTabTypeAttrib(Ihandle* ih, const char* value)
@@ -171,7 +170,7 @@ static int gtkTabsSetTabTitleAttrib(Ihandle* ih, const char* name_id, const char
     GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
     if (tab_label)
     {
-      GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
+      GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_PAGE");
       gtk_label_set_text((GtkLabel*)tab_label, iupgtkStrConvertToUTF8(value));
       gtk_notebook_set_menu_label_text((GtkNotebook*)ih->handle, tab_page, gtk_label_get_text((GtkLabel*)tab_label));
     }
@@ -238,8 +237,10 @@ void gtkTabSwitchPage(GtkNotebook* notebook, GtkNotebookPage *page, int pos, Iha
   IFnnn cb;
   Ihandle* child = IupGetChild(ih, pos);
   Ihandle* prev_child = IupGetChild(ih, iupdrvTabsGetCurrentTab(ih));
-  IupSetAttribute(child, "VISIBLE", "YES");
-  IupSetAttribute(prev_child, "VISIBLE", "NO");
+  GtkWidget* tab_container = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
+  GtkWidget* prev_tab_container = (GtkWidget*)iupAttribGet(prev_child, "_IUPTAB_CONTAINER");
+  if (tab_container) gtk_widget_show(tab_container);
+  if (prev_tab_container) gtk_widget_hide(prev_tab_container);
 
   if (iupAttribGet(ih, "_IUPGTK_IGNORE_CHANGE"))
     return;
@@ -263,7 +264,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
   if (ih->handle)
   {
-    GtkWidget* tab_page;
+    GtkWidget *tab_page, *tab_container;
     GtkWidget *tab_label = NULL, *tab_image = NULL;
     char *tabtitle, *tabimage;
     int pos;
@@ -271,8 +272,12 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     pos = IupGetChildPos(ih, child);
 
-    tab_page = gtk_fixed_new();
+    tab_page = gtk_vbox_new(FALSE, 0);
     gtk_widget_show(tab_page);
+
+    tab_container = gtk_fixed_new();
+    gtk_widget_show(tab_container);
+    gtk_container_add((GtkContainer*)tab_page, tab_container);
 
     tabtitle = iupAttribGet(child, "TABTITLE");
     if (!tabtitle) tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
@@ -327,9 +332,10 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     iupAttribSetStr(child, "_IUPGTK_TABIMAGE", (char*)tab_image);  /* store it even if its NULL */
     iupAttribSetStr(child, "_IUPGTK_TABLABEL", (char*)tab_label);
-    iupAttribSetStr(child, "_IUPTAB_CONTAINER", (char*)tab_page);
+    iupAttribSetStr(child, "_IUPTAB_CONTAINER", (char*)tab_container);
+    iupAttribSetStr(child, "_IUPTAB_PAGE", (char*)tab_page);
     iupStrToRGB(IupGetAttribute(ih, "BGCOLOR"), &r, &g, &b);
-    iupgtkBaseSetBgColor(tab_page, r, g, b);
+    iupgtkBaseSetBgColor(tab_container, r, g, b);
 
     if (tabtitle)
     {
@@ -354,10 +360,8 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     iupAttribSetStr(ih, "_IUPGTK_IGNORE_CHANGE", NULL);
 
-    if (pos == iupdrvTabsGetCurrentTab(ih))
-      IupSetAttribute(child, "VISIBLE", "YES");
-    else
-      IupSetAttribute(child, "VISIBLE", "NO");
+    if (pos != iupdrvTabsGetCurrentTab(ih))
+      gtk_widget_hide(tab_container);
   }
 }
 
@@ -365,10 +369,11 @@ static void gtkTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
 {
   if (ih->handle)
   {
-    GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
+    GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_PAGE");
     if (tab_page)
     {
       int pos = gtk_notebook_page_num((GtkNotebook*)ih->handle, tab_page);
+      iupTabsTestRemoveTab(ih, pos);
 
       iupAttribSetStr(ih, "_IUPGTK_IGNORE_CHANGE", "1");
       gtk_notebook_remove_page((GtkNotebook*)ih->handle, pos);
@@ -377,6 +382,7 @@ static void gtkTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       iupAttribSetStr(child, "_IUPGTK_TABIMAGE", NULL);
       iupAttribSetStr(child, "_IUPGTK_TABLABEL", NULL);
       iupAttribSetStr(child, "_IUPTAB_CONTAINER", NULL);
+      iupAttribSetStr(child, "_IUPTAB_PAGE", NULL);
     }
   }
 }

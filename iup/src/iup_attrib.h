@@ -104,14 +104,17 @@ void iupAttribSetHandleName(Ihandle *ih);
 
 
 /* For all attributes in the evironment, call the class SetAttribute only.
- * Called only after the element is mapped. */
+ * Called only after the element is mapped, but before the children are mapped. */
 void iupAttribUpdate(Ihandle* ih); 
 
 /* For all registered inherited attributes, checks the parent tree and 
  * call the class SetAttribute if the attribute is defined.
- * Called only after the element is mapped. */
+ * Called only after the element is mapped, but before the children are mapped. */
 void iupAttribUpdateFromParent(Ihandle* ih);
 
+/* For all attributes in the evironment, call the class SetAttribute only for the children.
+ * Called only after the element is mapped, and after the children are mapped. */
+void iupAttribUpdateChildren(Ihandle* ih);
 
 
 /* Other functions declared in <iup.h> and implemented here. 

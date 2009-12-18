@@ -307,6 +307,25 @@ static char* iTabsGetClientSizeAttrib(Ihandle* ih)
   return str;
 }
 
+void iupTabsTestRemoveTab(Ihandle* ih, int pos)
+{
+  int cur_pos = iupdrvTabsGetCurrentTab(ih);
+  if (cur_pos == pos)
+  {
+    if (cur_pos == 0)
+    {
+      Ihandle* child = IupGetChild(ih, 1);
+      if (!child) /* not found child, means only one child, do nothing */
+        return;
+
+      cur_pos = 1;
+    }
+    else
+      cur_pos--;
+
+    iupdrvTabsSetCurrentTab(ih, cur_pos);
+  }
+}
 
 /* ------------------------------------------------------------------------- */
 /* TABS - Methods                                                            */

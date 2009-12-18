@@ -53,35 +53,6 @@ void IupUnmap(Ihandle *ih)
   ih->handle = NULL;
 }
 
-static char* iShowGetVisible(Ihandle* ih)
-{
-  char* value = iupAttribGet(ih, "VISIBLE");   /* Check on the element first */
-  while (!value)
-  {
-    ih = ih->parent;   /* iheritance here independs on the attribute */
-    if (!ih)
-      return NULL;
-
-    value = iupAttribGet(ih, "VISIBLE");
-
-    /* only recursive up to the native parent */ 
-    if (ih->iclass->nativetype != IUP_TYPEVOID)
-      return value; /* can be NULL */
-  }
-
-  return value;
-}
-
-static void iShowUpdateVisible(Ihandle* ih)
-{
-  int inherit;
-  /* although default is VISIBLE=YES, 
-     when mapped the element is still hidden. 
-     So we must manually update the visible state. */
-  char* value = iShowGetVisible(ih);
-  iupClassObjectSetAttribute(ih, "VISIBLE", value, &inherit);
-}
-
 int IupMap(Ihandle* ih)
 {
   iupASSERT(iupObjectCheck(ih));
@@ -108,7 +79,7 @@ int IupMap(Ihandle* ih)
     return IUP_ERROR;
   }
 
-  /* update FONT, must be the before several others */
+  /* update FONT, must be the before several others, so we do it here */
   if (ih->iclass->nativetype != IUP_TYPEVOID &&
       ih->iclass->nativetype != IUP_TYPEIMAGE &&
       ih->iclass->nativetype != IUP_TYPEMENU)
@@ -117,18 +88,13 @@ int IupMap(Ihandle* ih)
   /* ensure attributes default values, at this time only the ones that need to be set after map */
   iupClassObjectEnsureDefaultAttributes(ih);
 
-  /* check visible state if not a dialog */
-  if (ih->iclass->nativetype == IUP_TYPECANVAS || 
-      ih->iclass->nativetype == IUP_TYPECONTROL)
-    iShowUpdateVisible(ih);
-
-  /* updates the defined attributes in the native system. */
+  /* updates the defined attributes from the hash table to the native system. */
   iupAttribUpdate(ih); 
 
-  /* updates attributes defined in the parent tree */
+  /* updates inheritable attributes defined in the parent tree */
   iupAttribUpdateFromParent(ih);
 
-  /* map children */
+  /* map children independent from childtype */
   {
     Ihandle* child = ih->firstchild;
     while (child)
@@ -139,6 +105,10 @@ int IupMap(Ihandle* ih)
       child = child->brother;
     }
   }
+
+  /* updates the defined attributes from the hash table to the native system. */
+  if (ih->iclass->childtype!=IUP_CHILDNONE)
+    iupAttribUpdateChildren(ih);
 
   /* moves and resizes the elements to reflect the layout computation */
   /* if the dialog is visible will be reflected in the user interface */

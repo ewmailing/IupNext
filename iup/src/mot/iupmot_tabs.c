@@ -52,8 +52,10 @@ void iupdrvTabsSetCurrentTab(Ihandle* ih, int pos)
 {
   Ihandle* child = IupGetChild(ih, pos);
   Ihandle* prev_child = IupGetChild(ih, iupdrvTabsGetCurrentTab(ih));
-  IupSetAttribute(child, "VISIBLE", "YES");
-  IupSetAttribute(prev_child, "VISIBLE", "NO");
+  Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
+  Widget prev_child_manager = (Widget)iupAttribGet(prev_child, "_IUPTAB_CONTAINER");
+  XtMapWidget(child_manager);
+  if (prev_child_manager) XtUnmapWidget(prev_child_manager);
 
   XtVaSetValues(ih->handle, XmNcurrentPageNumber, pos, NULL);
 }
@@ -313,8 +315,10 @@ void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct 
     IFnnn cb;
     Ihandle* child = IupGetChild(ih, nptr->page_number);
     Ihandle* prev_child = IupGetChild(ih, nptr->prev_page_number);
-    IupSetAttribute(child, "VISIBLE", "YES");
-    IupSetAttribute(prev_child, "VISIBLE", "NO");
+    Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
+    Widget prev_child_manager = (Widget)iupAttribGet(prev_child, "_IUPTAB_CONTAINER");
+    XtMapWidget(child_manager);
+    if (prev_child_manager) XtUnmapWidget(prev_child_manager);
 
     cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
     if (cb)
@@ -450,10 +454,8 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     iupAttribSetStr(child, "_IUPMOT_TABBUTTON", (char*)tab_button);
     iupAttribSetInt(child, "_IUPMOT_TABNUMBER", pos);
 
-    if (pos == iupdrvTabsGetCurrentTab(ih))
-      IupSetAttribute(child, "VISIBLE", "YES");
-    else
-      IupSetAttribute(child, "VISIBLE", "NO");
+    if (pos != iupdrvTabsGetCurrentTab(ih))
+      XtUnmapWidget(child_manager);
   }
 }
 
@@ -464,20 +466,11 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
     Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (child_manager)
     {
-      int cur_pos, pos;
+      int pos;
       Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
 
-      cur_pos = iupdrvTabsGetCurrentTab(ih);
       pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaGetValues(child_manager, XmNpageNumber) */
-      if (cur_pos == pos)
-      {
-        if (cur_pos == 0)
-          cur_pos = 1;
-        else
-          cur_pos--;
-
-        iupdrvTabsSetCurrentTab(ih, cur_pos);
-      }
+      iupTabsTestRemoveTab(ih, pos);
 
       XtDestroyWidget(tab_button);
       XtDestroyWidget(child_manager);

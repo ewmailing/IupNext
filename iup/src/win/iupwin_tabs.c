@@ -532,11 +532,10 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
     if (tab_page)
     {
       int pos = winTabsGetPageWindowPos(ih, tab_page);
+      iupTabsTestRemoveTab(ih, pos);
+
       SendMessage(ih->handle, TCM_DELETEITEM, pos, 0);
       DestroyWindow(tab_page);
-
-      if (pos==0) pos++;
-      iupdrvTabsSetCurrentTab(ih, pos-1);
 
       iupAttribSetStr(child, "_IUPTAB_CONTAINER", NULL);
     }

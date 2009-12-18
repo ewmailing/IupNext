@@ -474,8 +474,12 @@ void iupClassObjectEnsureDefaultAttributes(Ihandle* ih)
           (afunc->call_global_default && iupGlobalDefaultColorChanged(afunc->default_value)))
       {
         if ((!ih->handle && (afunc->flags & IUPAF_NOT_MAPPED)) ||
-            (ih->handle && !(afunc->flags & IUPAF_NOT_MAPPED) && !iupAttribGet(ih, name)))
-          afunc->set(ih, iClassGetDefaultValue(afunc));
+            (ih->handle && !(afunc->flags & IUPAF_NOT_MAPPED)))
+        {
+          char* value = iupAttribGet(ih, name);
+          if (!value)  /* if set will be updated later */
+            afunc->set(ih, iClassGetDefaultValue(afunc));
+        }
       }
     }
 

@@ -161,8 +161,9 @@ supported.</p>
 <p>The ENTERWINDOW_CB and LEAVEWINDOW_CB callbacks are called only when the 
 mouse enter or leaves the tabs buttons area.</p>
 
-<p>The Tabs children, differently from a ZBOX, automatically receives a name if 
-does not already have one when it is appended to the tabs in the native system.</p>
+<p>The Tabs children, differently from a <strong>IupZbox</strong>, automatically receives a name if 
+does not already have one when it is appended to the tabs in the native system. 
+Also <strong>IupTabs</strong> does NOT depends on the VISIBLE attribute.</p>
 <p>In GTK, when the tabs buttons are scrolled, the active tab is also changed.</p>
 <p>When you change the active tab the focus is usually not changed. If you want 
 to control the focus behavior call 

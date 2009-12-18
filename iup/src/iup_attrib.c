@@ -134,6 +134,30 @@ static void iAttribNotifyChildren(Ihandle *ih, const char* name, const char *val
   }
 }
 
+static int iAttribIsInherit(Ihandle* ih, const  char* name)
+{
+  int inherit;
+  char *def_value;
+  iupClassObjectGetAttributeInfo(ih, name, &def_value, &inherit);
+  return inherit;
+}
+
+void iupAttribUpdateChildren(Ihandle* ih)
+{
+  char *name = iupTableFirst(ih->attrib);
+  while (name)
+  {
+    if (!iupAttribIsInternal(name) && iAttribIsInherit(ih, name))
+    {
+      /* retrieve from the table */
+      char* value = iupTableGet(ih->attrib, name);
+      iAttribNotifyChildren(ih, name, value);
+    }
+
+    name = iupTableNext(ih->attrib);
+  }
+}
+
 void iupAttribUpdate(Ihandle* ih)
 {
   char** name_array;
