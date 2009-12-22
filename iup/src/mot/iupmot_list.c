@@ -157,7 +157,7 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
       /* must check if removing the current item */
       int curpos;
       XtVaGetValues(ih->handle, XmNselectedPosition, &curpos, NULL);
-      if (pos == curpos)
+      if (pos == curpos && iupdrvListGetCount(ih)>1)
       {
         if (curpos > 0) curpos--;
         else curpos++;

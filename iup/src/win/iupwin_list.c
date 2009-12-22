@@ -166,8 +166,14 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
     int curpos = SendMessage(ih->handle, WIN_GETCURSEL(ih), 0, 0);
     if (pos == curpos)
     {
-      if (curpos > 0) curpos--;
-      else curpos++;
+      if (curpos > 0) 
+        curpos--;
+      else 
+      {
+        curpos=1;
+        if (iupdrvListGetCount(ih)==1)
+          curpos = -1; /* remove the selection */
+      }
 
       SendMessage(ih->handle, WIN_SETCURSEL(ih), curpos, 0);
     }

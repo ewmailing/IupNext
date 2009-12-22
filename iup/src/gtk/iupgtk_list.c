@@ -129,8 +129,14 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
       int curpos = gtk_combo_box_get_active((GtkComboBox*)ih->handle);
       if (pos == curpos)
       {
-        if (curpos > 0) curpos--;
-        else curpos++;
+        if (curpos > 0) 
+          curpos--;
+        else 
+        {
+          curpos=1;
+          if (iupdrvListGetCount(ih)==1)
+            curpos = -1; /* remove the selection */
+        }
 
         g_signal_handlers_block_by_func(G_OBJECT(ih->handle), G_CALLBACK(gtkListComboBoxChanged), ih);
         gtk_combo_box_set_active((GtkComboBox*)ih->handle, curpos);
