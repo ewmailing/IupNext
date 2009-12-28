@@ -97,13 +97,14 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 void iupdrvDisplayRedraw(Ihandle *ih)
 {
   /* REDRAW Now */
-  RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_NOCHILDREN|RDW_UPDATENOW);
+  RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_UPDATENOW);
 }
 
 void iupdrvDisplayUpdate(Ihandle *ih)
 {
   /* Post a REDRAW */
-  RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_NOCHILDREN);
+  /* can NOT use RDW_NOCHILDREN because IupList has internal children that needs to be redraw */
+  RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT);  
 }
 
 void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)

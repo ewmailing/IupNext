@@ -365,6 +365,13 @@ static char* winTabsGetBgColorAttrib(Ihandle* ih)
   return IupGetGlobal("DLGBGCOLOR");
 }
 
+static int winTabsSetBgColorAttrib(Ihandle *ih, const char *value)
+{
+  (void)value;
+  iupdrvDisplayUpdate(ih);
+  return 1;
+}
+
 
 /* ------------------------------------------------------------------------- */
 /* winTabs - Calls the user callback to change of tab                        */
@@ -656,7 +663,7 @@ void iupdrvTabsInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winTabsGetBgColorAttrib, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", winTabsGetBgColorAttrib, winTabsSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NOT_MAPPED);

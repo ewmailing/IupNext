@@ -230,6 +230,13 @@ static void winListUpdateItemWidth(Ihandle* ih)
   }
 }
 
+static int winListSetBgColorAttrib(Ihandle *ih, const char *value)
+{
+  (void)value;
+  iupdrvDisplayUpdate(ih);
+  return 1;
+}
+
 static int winListSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
   iupdrvSetStandardFontAttrib(ih, value);
@@ -1436,7 +1443,7 @@ void iupdrvListInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winListSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NOT_MAPPED);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winListSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NOT_MAPPED);
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_NOT_MAPPED);

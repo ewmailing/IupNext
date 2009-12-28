@@ -56,6 +56,13 @@ void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
   }
 }
 
+static int winValSetBgColorAttrib(Ihandle *ih, const char *value)
+{
+  (void)value;
+  iupdrvDisplayUpdate(ih);
+  return 1;
+}
+
 static int winValSetStepAttrib(Ihandle* ih, const char* value)
 {
   int linesize;
@@ -312,4 +319,7 @@ void iupdrvValInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "STEP", iupValGetStepAttrib, winValSetStepAttrib, "0.01", NULL, IUPAF_NO_INHERIT);   /* force new default value */
 
   iupClassRegisterAttribute(ic, "TICKSPOS", NULL, NULL, "NORMAL", NULL, IUPAF_NOT_MAPPED);
+
+  /* Visual */
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winValSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 }

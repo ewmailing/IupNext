@@ -185,6 +185,24 @@ static int help_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int action1_cb(Ihandle* ih)
+{
+  IupSetAttribute(IupGetDialog(ih), "BACKGROUND", "255 128 128");
+  return IUP_DEFAULT;
+}
+
+static int action2_cb(Ihandle* ih)
+{
+  IupSetAttribute(IupGetDialog(ih), "BGCOLOR", "0 128 0");
+  return IUP_DEFAULT;
+}
+
+static int action3_cb(Ihandle* ih)
+{
+  IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "BGCOLOR", "128 0 0");
+  return IUP_DEFAULT;
+}
+
 static Ihandle* set_callbacks(Ihandle* ih)
 {
   IupSetCallback(ih, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
@@ -237,9 +255,9 @@ void SampleTest(void)
   _frm_1 = IupFrame(
     IupVbox(
       set_callbacks(IupSetAttributes(IupButton("Button Text", NULL), "PADDING=5x5")), 
-      set_callbacks(IupSetAttributes(IupButton("Text", NULL), "IMAGE=img1, PADDING=5x5")),
-      set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=img1")),
-      set_callbacks(IupSetAttributes(IupButton("", NULL), "IMAGE=img1,IMPRESS=img2")),
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton("Text", NULL), "IMAGE=img1, PADDING=5x5")),"ACTION", action1_cb, NULL), 
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=img1")),"ACTION", action2_cb, NULL), 
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton("", NULL), "IMAGE=img1,IMPRESS=img2")),"ACTION", action3_cb, NULL), 
       NULL));
   IupSetAttribute(_frm_1,"TITLE","IupButton");
 

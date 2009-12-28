@@ -1120,6 +1120,7 @@ static int winTextSetBgColorAttrib(Ihandle *ih, const char *value)
       SendMessage(ih->handle, EM_SETBKGNDCOLOR, 0, (LPARAM)color);
     }
   }
+  iupdrvDisplayUpdate(ih);
   return 1;
 }
 

@@ -953,7 +953,7 @@ static int winDialogSetBgColorAttrib(Ihandle* ih, const char* value)
   {
     iupAttribStoreStr(ih, "_IUPWIN_BACKGROUND_COLOR", value);
     iupAttribSetStr(ih, "_IUPWIN_BACKGROUND_BITMAP", NULL);
-    RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE|RDW_ERASENOW); /* force a WM_ERASEBKGND now */
+    RedrawWindow(ih->handle, NULL, NULL, RDW_INVALIDATE|RDW_ERASE|RDW_ERASENOW|RDW_ALLCHILDREN); /* force a WM_ERASEBKGND now */
     return 1;
   }
   return 0;
