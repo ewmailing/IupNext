@@ -17,10 +17,11 @@ pressed in the keyboard.</p>
 <p>IUP uses the US default codification this means that if you installed a 
 keyboard specific for your country the key codes will be different from the real 
 keys for a small group of keys. Except for the Brazilian ABNT keyboard which 
-works in Windows and Linux. This does not affect the IupText and IupMultiline 
+works in Windows and Linux. This does not affect the <strong>IupText</strong> and 
+<strong>IupMultiline</strong> 
 text input.</p>
 <p>Notice that somes key combinations are not available because they are 
-restrited by the system.</p>
+restricted by the system.</p>
 <p>The <strong>iup_isprint(key)</strong> macro informs if a key can be directly 
 used as a printable character. The
 <strong>iup_isXkey(key)</strong> macro informs if a given key is an extended 
@@ -31,7 +32,7 @@ the Alt modifier, and the <strong>iup_isSysXkey(key)</strong> macro for the Sys
 modifier. These macros are also available in Lua as a function with the same 
 name (iup.isprint(key), iup.isXkey(key), and so on).</p>
 <p>In the table bellow there are the most common definitions. Change the 
-definition to K_s*, K_c*, K_m* and K_y* when the repective modifier is pressed 
+definition to K_s*, K_c*, K_m* and K_y* when the respective modifier is pressed 
 (Shift, Control, Alt and Sys). Sys in Windows is the Windows key and in Mac is 
 the Apple key. Check the &quot;iupkey.h&quot; file header for all the definitions. To 
 detect the combination of two or more modifiers use global attribute 
