@@ -141,7 +141,8 @@ respective documentations for more information.</p>
     function is necessary when INDEX color is used.</p>
 <pre>void <strong>IupGLUseFont</strong>(Ihandle* <strong>ih</strong>, int <strong>first</strong>, int <strong>count</strong>, int <strong>list_base</strong>); [in C]
 iup.<strong>GLUseFont</strong>(<strong>ih</strong>:ihandle, <strong>first</strong>, <strong>count</strong>, <strong>list_base</strong>: number) [in Lua]</pre>
-<p>Creates a bitmap display list from the current FONT attribute. (since 3.0)</p>
+<p>Creates a bitmap display list from the current FONT attribute. See the 
+documentation of the wglUseFontBitmaps and glXUseXFont functions. (since 3.0)</p>
 <pre>void <strong>IupGLWait</strong>(int <strong>gl</strong>) [in C]
 iup.<strong>GLWait</strong>(<strong>gl</strong>: number) [in Lua]</pre>
 <p>If gl is non zero it will call glFinish or glXWaitGL, else will call GdiFlush 
