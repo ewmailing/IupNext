@@ -401,6 +401,7 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     int prev_pos = SendMessage(ih->handle, TCM_GETCURSEL, 0, 0);
     iupAttribSetInt(ih, "_IUPTABS_PREV_CHILD_POS", prev_pos);
 
+    /* save the previous handle if callback exists */
     if (cb)
     {
       Ihandle* prev_child = IupGetChild(ih, prev_pos);
@@ -424,7 +425,9 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       Ihandle* prev_child = (Ihandle*)iupAttribGet(ih, "_IUPTABS_PREV_CHILD");
       iupAttribSetStr(ih, "_IUPTABS_PREV_CHILD", NULL);
 
-      cb(ih, child, prev_child);
+      /* avoid duplicate calls when a Tab is inside another Tab. */
+      if (prev_child)
+        cb(ih, child, prev_child);
     }
   }
 

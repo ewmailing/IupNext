@@ -7,7 +7,6 @@ dg       = iup.dialog{iup.frame{cv}; title="IupCanvas"}
 
 function cv:motion_cb(x, y, r)
   print(x, y, r)
-  return iup.DEFAULT
 end
 
 dg:showxy(iup.CENTER, iup.CENTER)
