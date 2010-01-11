@@ -321,6 +321,9 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   if ((drawitem->itemState & ODS_FOCUS) && !(drawitem->itemState & ODS_HOTLIGHT))
     drawitem->itemState |= ODS_DEFAULT;
 
+  if (iupAttribGet(ih, "_IUPWINBUT_SELECTED"))
+    drawitem->itemState |= ODS_SELECTED;
+
   border = winButtonGetBorder();
 
   if (ih->data->type & IUP_BUTTON_IMAGE && iupAttribGet(ih, "IMPRESS") && !iupAttribGetStr(ih, "IMPRESSBORDER"))
@@ -519,8 +522,8 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       /* Feedback will NOT be done when not receiving the focus */
       if (msg==WM_LBUTTONDOWN && !iupAttribGetBoolean(ih, "FOCUSONCLICK"))
       {
-        SendMessage(ih->handle, BM_SETSTATE, TRUE, 0);
-        IupFlush();
+        iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", "1");
+        iupdrvDisplayRedraw(ih);
       }
       break;
     }
@@ -534,7 +537,12 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       /* BN_CLICKED will NOT be notified when not receiving the focus */
       if (msg==WM_LBUTTONUP && !iupAttribGetBoolean(ih, "FOCUSONCLICK"))
       {
-        Icallback cb = IupGetCallback(ih, "ACTION");
+        Icallback cb;
+
+        iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", NULL);
+        iupdrvDisplayRedraw(ih);
+
+        cb = IupGetCallback(ih, "ACTION");
         if (cb && cb(ih) == IUP_CLOSE)
           IupExitLoop();
       }
@@ -556,6 +564,11 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     if (!iupwin_comctl32ver6)
     {
       iupAttribSetStr(ih, "_IUPWINBUT_ENTERWIN", NULL);
+      iupdrvDisplayRedraw(ih);
+    }
+    if (!iupAttribGetBoolean(ih, "FOCUSONCLICK"))
+    {
+      iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", NULL);
       iupdrvDisplayRedraw(ih);
     }
     break;

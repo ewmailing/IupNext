@@ -32,7 +32,7 @@
 
 /* Since Windows XP, the focus feedback only appears after the user press a key.
    Except for the IupText where the feedback is the caret.
-   Before that if you click in a control the focus feedback will be hidden.
+   Before a key is pressed if you click in a control the focus feedback will be hidden.
 
    We manually send WM_CHANGEUISTATE because we do not use IsDialogMessage anymore,
    and the focus feedback was not shown even after the used press a key.
@@ -43,7 +43,9 @@
 void iupdrvSetFocus(Ihandle *ih)
 {
   SetFocus(ih->handle);
-  SendMessage(ih->handle, WM_CHANGEUISTATE, UIS_CLEAR|UISF_HIDEFOCUS, 0);
+
+  /* See comments above */
+  SendMessage(ih->handle, WM_CHANGEUISTATE, UIS_CLEAR|UISF_HIDEFOCUS, 0);  /* clear+hidefocus=showfocus */
 }
 
 void iupwinWmSetFocus(Ihandle *ih)
