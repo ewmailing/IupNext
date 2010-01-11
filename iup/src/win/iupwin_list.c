@@ -1012,13 +1012,27 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
   if (msg==WM_KEYDOWN) /* process K_ANY before text callbacks */
   {
     ret = iupwinBaseProc(ih, msg, wp, lp, result);
-    if (ret) return 1;
+    if (ret) 
+    {
+      iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", "1");
+      *result = 0;
+      return 1;
+    }
+    else
+      iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", NULL);
   }
 
   switch (msg)
   {
   case WM_CHAR:
     {
+      if (iupAttribGet(ih, "_IUPWIN_IGNORE_CHAR"))
+      {
+        iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", NULL);
+        *result = 0;
+        return 1;
+      }
+
       if ((char)wp == '\b')
       {              
         if (!winListCallEditCb(ih, cbedit, NULL, 0, -1))

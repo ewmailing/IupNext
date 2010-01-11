@@ -56,7 +56,7 @@ void iupdrvSetIdleFunction(Icallback f)
     mot_idle_id = XtAppAddWorkProc(iupmot_appcontext, motIdlecbWorkProc, NULL);
 }
 
-static int motLoopStep(void)
+static int motLoopProcessEvent(void)
 {
   XtAppProcessEvent(iupmot_appcontext, XtIMAll);
   return (mot_exitmainloop)? IUP_CLOSE : IUP_DEFAULT;
@@ -79,7 +79,7 @@ int IupMainLoop(void)
 
   while (!mot_exitmainloop)
   {
-    if (motLoopStep() == IUP_CLOSE)
+    if (motLoopProcessEvent() == IUP_CLOSE)
       break;
   }
 
@@ -93,14 +93,14 @@ int IupLoopStep(void)
   if (!XtAppPending(iupmot_appcontext)) 
     return IUP_DEFAULT;
 
-  return motLoopStep();
+  return motLoopProcessEvent();
 }
 
 void IupFlush(void)
 {
   while (XPending(iupmot_display) != 0)
   {
-    if (motLoopStep() == IUP_CLOSE)
+    if (motLoopProcessEvent() == IUP_CLOSE)
       break;
   }
 

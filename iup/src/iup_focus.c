@@ -220,15 +220,25 @@ void iupFocusPrevious(Ihandle *ih)
 /* local variables */
 static Ihandle* iup_current_focus = NULL;
 
+Ihandle* IupGetFocus(void)
+{
+  return iup_current_focus;
+}
+
+void iupSetCurrentFocus(Ihandle *ih)
+{
+  iup_current_focus = ih;
+}
+
 Ihandle *IupSetFocus(Ihandle *ih)
 {
-  Ihandle* old_focus = iup_current_focus;
+  Ihandle* old_focus = IupGetFocus();
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return old_focus;
 
-  /* iup_current_focus is NOT set here, 
+  /* Current focus is NOT set here, 
      only in the iupCallGetFocusCb */
 
   if (iupFocusCanAccept(ih))  
@@ -237,16 +247,11 @@ Ihandle *IupSetFocus(Ihandle *ih)
   return old_focus;
 }
 
-Ihandle *IupGetFocus(void)
-{
-  return iup_current_focus;
-}
-
 void iupCallGetFocusCb(Ihandle *ih)
 {
   Icallback cb;
 
-  if (ih == iup_current_focus)  /* avoid duplicate messages */
+  if (ih == IupGetFocus())  /* avoid duplicate messages */
     return;
 
   cb = (Icallback)IupGetCallback(ih, "GETFOCUS_CB");
@@ -258,14 +263,14 @@ void iupCallGetFocusCb(Ihandle *ih)
     if (cb2) cb2(ih, 1);
   }
 
-  iup_current_focus = ih;
+  iupSetCurrentFocus(ih);
 }
 
 void iupCallKillFocusCb(Ihandle *ih)
 {
   Icallback cb;
 
-  if (ih != iup_current_focus)  /* avoid duplicate messages */
+  if (ih != IupGetFocus())  /* avoid duplicate messages */
     return;
 
   cb = IupGetCallback(ih, "KILLFOCUS_CB");
@@ -277,5 +282,5 @@ void iupCallKillFocusCb(Ihandle *ih)
     if (cb2) cb2(ih, 0);
   }
 
-  iup_current_focus = NULL;
+  iupSetCurrentFocus(NULL);
 }

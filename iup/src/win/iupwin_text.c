@@ -1530,15 +1530,27 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     ret = iupwinBaseProc(ih, msg, wp, lp, result);
     if (ret) 
     {
+      iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", "1");
       *result = 0;
       return 1;
     }
+    else
+      iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", NULL);
   }
 
   switch (msg)
   {
   case WM_CHAR:
     {
+      /* even aborting WM_KEYDOWN, a WM_CHAR will be sent, so ignore it also */
+      /* if a dialog was shown, the loop will be processed, so ignore out of focus WM_CHAR messages */
+      if (GetFocus() != ih->handle || iupAttribGet(ih, "_IUPWIN_IGNORE_CHAR"))
+      {
+        iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", NULL);
+        *result = 0;
+        return 1;
+      }
+
       if ((char)wp == '\b')
       {              
         if (!winTextCallActionCb(ih, NULL, 0, -1))

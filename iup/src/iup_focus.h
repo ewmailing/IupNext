@@ -39,6 +39,7 @@ Ihandle* iupFocusNextInteractive(Ihandle *ih);
 void iupFocusNext(Ihandle *ih);
 void iupFocusPrevious(Ihandle *ih);
 
+void iupSetCurrentFocus(Ihandle *ih);
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupPreviousField
