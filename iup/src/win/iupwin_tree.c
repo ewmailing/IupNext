@@ -2395,7 +2395,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
       itemData = (winTreeItemData*)item.lParam;
 
-      if (winTreeIsItemSelected(ih, hItem) && GetFocus()==ih->handle)
+      if (GetFocus()==ih->handle && winTreeIsItemSelected(ih, hItem))
         customdraw->clrText = winTreeInvertColor(itemData->color);
       else
         customdraw->clrText = itemData->color;
@@ -2487,7 +2487,7 @@ static int winTreeMapMethod(Ihandle* ih)
       winTreeSetBgColorAttrib(ih, value);
       iupAttribSetStr(ih, "BGCOLOR", NULL);
     }
-    else if (iupwinGetSystemMajorVersion()<6) /* force background in XP because of the editbox background */
+    else if (!iupwin_comctl32ver6 || iupwinGetSystemMajorVersion()<6) /* force background in XP because of the editbox background */
       winTreeSetBgColorAttrib(ih, IupGetGlobal("TXTBGCOLOR"));
   }
 
