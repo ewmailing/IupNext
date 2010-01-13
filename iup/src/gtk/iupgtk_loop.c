@@ -69,6 +69,13 @@ int IupMainLoop(void)
   return IUP_NOERROR;
 }
 
+int IupLoopStepWait(void)
+{
+  if (gtk_main_iteration_do(TRUE))
+    return IUP_CLOSE;
+  return IUP_DEFAULT;
+}
+
 int IupLoopStep(void)
 {
   if (gtk_main_iteration_do(FALSE))

@@ -40,6 +40,7 @@ IupListDialog
 IupLoad
 IupLoadBuffer
 IupLoopStep
+IupLoopStepWait
 IupMainLoop
 IupMap
 IupMapFont

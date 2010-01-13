@@ -313,6 +313,12 @@ static int LoopStep(lua_State *L)
   return 1;
 }
 
+static int LoopStepWait(lua_State *L)
+{
+  lua_pushnumber(L,IupLoopStepWait());
+  return 1;
+}
+
 static int ExitLoop(lua_State *L)
 {
   (void)L;
@@ -806,6 +812,7 @@ int iupluaapi_open(lua_State * L)
     {"Load", Load},
     {"LoadBuffer", LoadBuffer},
     {"LoopStep", LoopStep},
+    {"LoopStepWait", LoopStepWait},
     {"ExitLoop", ExitLoop},
     {"MainLoop", MainLoop},
     {"MainLoopLevel", MainLoopLevel},

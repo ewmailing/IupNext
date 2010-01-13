@@ -106,6 +106,18 @@ int IupMainLoop(void)
   return IUP_NOERROR;
 }
 
+int IupLoopStepWait(void)
+{
+  MSG msg;
+  int ret = GetMessage(&msg, NULL, 0, 0);
+  if (ret == -1) /* error */
+    return IUP_ERROR;
+  if (ret == 0 || /* WM_QUIT */
+      winLoopProcessMessage(&msg) == IUP_CLOSE)  /* ret != 0 */
+    return IUP_CLOSE;
+  return IUP_DEFAULT;
+}
+
 int IupLoopStep(void)
 {
   MSG msg;

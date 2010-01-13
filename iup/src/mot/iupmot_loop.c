@@ -88,6 +88,13 @@ int IupMainLoop(void)
   return IUP_NOERROR;
 }
 
+int IupLoopStepWait(void)
+{
+  while(!XtAppPending(iupmot_appcontext));
+
+  return motLoopProcessEvent();
+}
+
 int IupLoopStep(void)
 {
   if (!XtAppPending(iupmot_appcontext)) 
