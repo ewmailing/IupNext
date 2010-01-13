@@ -68,7 +68,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
 
   standardfont = iupAttribGet(ih, "VALUE");
   if (!standardfont)
-    return IUP_ERROR;
+    standardfont = IupGetGlobal("DEFAULTFONT");
 
   /* parse the old format first */
   if (!iupFontParseWin(standardfont, typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))

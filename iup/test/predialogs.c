@@ -6,7 +6,25 @@
 #include "iupkey.h"
 #include "iupcontrols.h"
 
+//#define USE_GDK
 
+#ifdef USE_GDK
+#include <gtk/gtk.h>
+static void drawTest(Ihandle *ih)
+{
+  GtkWidget* widget = (GtkWidget*)IupGetAttribute(ih, "WID");
+  GdkGC* gc = widget->style->fg_gc[GTK_WIDGET_STATE(widget)];
+  int w = IupGetInt(ih, "PREVIEWWIDTH");
+  int h = IupGetInt(ih, "PREVIEWHEIGHT");
+  GdkColor color;
+
+  color.red = 65535;  color.green = 0;  color.blue  = 0;
+  gdk_gc_set_rgb_fg_color(gc, &color);
+
+  gdk_draw_line(widget->window, gc, 0, 0, w-1, h-1);
+  gdk_draw_line(widget->window, gc, 0, h-1, w-1, 0);
+}
+#else
 #ifdef WIN32
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0500
@@ -62,8 +80,12 @@ static void drawTest(Ihandle* ih)
   XDrawLine(dpy, wnd, gc, 0, h-1, w-1, 0);
 }
 #endif
+#endif
 
 #ifdef USE_OPENGL
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 #include "iupgl.h"
 

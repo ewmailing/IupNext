@@ -58,19 +58,31 @@ static unsigned char pixmap_cursor [ ] =
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 } ;
 
-//#define USE_GTK
+//#define USE_GDK
 
 /* draw a rectangle that has w=600 always, white background and a red X */
-#ifdef USE_GTK
+#ifdef USE_GDK
 #include <gtk/gtk.h>
 static void drawTest(Ihandle *ih, int posx)
 {
   GtkWidget* widget = (GtkWidget*)IupGetAttribute(ih, "WID");
-  gdk_draw_arc (widget->window,
-                widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
-                TRUE,
-                0, 0, widget->allocation.width, widget->allocation.height,
-                0, 64 * 360);
+  GdkGC* gc = widget->style->fg_gc[GTK_WIDGET_STATE(widget)];
+  int w, h;
+  GdkColor color;
+
+  IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+
+  /* white background */
+  color.red = 65535;  color.green = 65535;  color.blue  = 65535;
+  gdk_gc_set_rgb_fg_color(gc, &color);
+  gdk_draw_rectangle(widget->window, gc, TRUE, 0, 0, w, h);
+
+  /* red X */
+  w = 600; /* virtual size */
+  color.red = 65535;  color.green = 0;  color.blue  = 0;
+  gdk_gc_set_rgb_fg_color(gc, &color);
+  gdk_draw_line(widget->window, gc, -posx, 0, w-posx, h);
+  gdk_draw_line(widget->window, gc, -posx, h, w-posx, 0);
 }
 #else
 #ifdef WIN32

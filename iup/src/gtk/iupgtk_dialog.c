@@ -120,12 +120,13 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   static int native_border = 0;
   static int native_caption = 0;
 
-  int has_caption = iupAttribGetBoolean(ih, "MAXBOX")  ||
-                    iupAttribGetBoolean(ih, "MINBOX")  ||
-                    iupAttribGetBoolean(ih, "MENUBOX") || 
-                    IupGetAttribute(ih, "TITLE"); /* must use IupGetAttribute to check from the native implementation */
+  int has_titlebar = iupAttribGetBoolean(ih, "RESIZE")  || /* GTK and Motif only */
+                     iupAttribGetBoolean(ih, "MAXBOX")  ||
+                     iupAttribGetBoolean(ih, "MINBOX")  ||
+                     iupAttribGetBoolean(ih, "MENUBOX") || 
+                     IupGetAttribute(ih, "TITLE"); /* must use IupGetAttribute to check from the native implementation */
 
-  int has_border = has_caption ||
+  int has_border = has_titlebar ||
                    iupAttribGetBoolean(ih, "RESIZE") ||
                    iupAttribGetBoolean(ih, "BORDER");
 
@@ -147,7 +148,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
         *border = win_border;
 
       *caption = 0;
-      if (has_caption)
+      if (has_titlebar)
         *caption = win_caption;
 
       if (!native_border && *border)
@@ -171,7 +172,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   }
 
   *caption = 0;
-  if (has_caption)
+  if (has_titlebar)
   {
     if (native_caption)
       *caption = native_caption;
@@ -429,6 +430,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
   int functions = 0;
   InativeHandle* parent;
   GtkWidget* fixed;
+  int has_titlebar = 0;
 
 #ifdef HILDON
   if (iupAttribGetBoolean(ih, "HILDONWINDOW")) 
@@ -494,33 +496,41 @@ static int gtkDialogMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "MINBOX", "NO");
   }
 
-  if (IupGetAttribute(ih, "TITLE")) {  /* must use IupGetAttribute to check from the native implementation */
-    functions   |= GDK_FUNC_MOVE;
-    decorations |= GDK_DECOR_TITLE;
-  }
-
-  if (iupAttribGetBoolean(ih, "MENUBOX")) {
+  if (iupAttribGet(ih, "TITLE"))
+    has_titlebar = 1;
+  if (iupAttribGetBoolean(ih, "MENUBOX")) 
+  {
     functions   |= GDK_FUNC_CLOSE;
     decorations |= GDK_DECOR_MENU;
+    has_titlebar = 1;
   }
-
-  if (iupAttribGetBoolean(ih, "MINBOX")) {
+  if (iupAttribGetBoolean(ih, "MINBOX")) 
+  {
     functions   |= GDK_FUNC_MINIMIZE;
     decorations |= GDK_DECOR_MINIMIZE;
+    has_titlebar = 1;
   }
-
-  if (iupAttribGetBoolean(ih, "MAXBOX")) {
+  if (iupAttribGetBoolean(ih, "MAXBOX")) 
+  {
     functions   |= GDK_FUNC_MAXIMIZE;
     decorations |= GDK_DECOR_MAXIMIZE;
+    has_titlebar = 1;
   }
-
-  if (iupAttribGetBoolean(ih, "RESIZE")) {
+  if (iupAttribGetBoolean(ih, "RESIZE")) 
+  {
     functions   |= GDK_FUNC_RESIZE;
     decorations |= GDK_DECOR_RESIZEH;
-  }
 
-  if (iupAttribGetBoolean(ih, "BORDER"))
-    decorations |= GDK_DECOR_BORDER;
+    decorations |= GDK_DECOR_BORDER;  /* has_border */
+  }
+  if (has_titlebar)
+  {
+    functions   |= GDK_FUNC_MOVE;
+    decorations |= GDK_DECOR_TITLE;
+    gtk_window_set_title((GtkWindow*)ih->handle, "");
+  }
+  if (iupAttribGetBoolean(ih, "BORDER") || has_titlebar)
+    decorations |= GDK_DECOR_BORDER;  /* has_border */
 
   if (decorations == 0)
     gtk_window_set_decorated((GtkWindow*)ih->handle, FALSE);
@@ -980,11 +990,12 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterCallback(ic, "TRAYCLICK_CB", "iii");
 
   /* Driver Dependent Attribute functions */
-
-#ifdef WIN32                                 
-  iupClassRegisterAttribute(ic, "HWND", iupgtkGetNativeWindowHandle, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
-#else
-  iupClassRegisterAttribute(ic, "XWINDOW", iupgtkGetNativeWindowHandle, NULL, NULL, NULL, IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+#if !defined(__APPLE__) && !defined(__MACH__)
+  #ifdef WIN32                                 
+    iupClassRegisterAttribute(ic, "HWND", iupgtkGetNativeWindowHandle, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
+  #else
+    iupClassRegisterAttribute(ic, "XWINDOW", iupgtkGetNativeWindowHandle, NULL, NULL, NULL, IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  #endif
 #endif
 
   /* Visual */

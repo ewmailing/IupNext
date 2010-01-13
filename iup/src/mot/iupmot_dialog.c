@@ -134,12 +134,13 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   static int native_border = 0;
   static int native_caption = 0;
 
-  int has_caption = iupAttribGetBoolean(ih, "MAXBOX")  ||
-                    iupAttribGetBoolean(ih, "MINBOX")  ||
-                    iupAttribGetBoolean(ih, "MENUBOX") || 
-                    IupGetAttribute(ih, "TITLE");  /* must use IupGetAttribute to check from the native implementation */
+  int has_titlebar = iupAttribGetBoolean(ih, "RESIZE")  || /* GTK and Motif only */
+                     iupAttribGetBoolean(ih, "MAXBOX")  ||
+                     iupAttribGetBoolean(ih, "MINBOX")  ||
+                     iupAttribGetBoolean(ih, "MENUBOX") || 
+                     IupGetAttribute(ih, "TITLE");  /* must use IupGetAttribute to check from the native implementation */
 
-  int has_border = has_caption ||
+  int has_border = has_titlebar ||
                    iupAttribGetBoolean(ih, "RESIZE") ||
                    iupAttribGetBoolean(ih, "BORDER");
 
@@ -155,7 +156,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
         *border = win_border;
 
       *caption = 0;
-      if (has_caption)
+      if (has_titlebar)
         *caption = win_caption;
 
       if (!native_border && *border)
@@ -181,7 +182,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   }
 
   *caption = 0;
-  if (has_caption)
+  if (has_titlebar)
   {
     if (native_caption)
       *caption = native_caption;
@@ -853,6 +854,7 @@ static int motDialogMapMethod(Ihandle* ih)
   InativeHandle* parent;
   int mwm_decor = 0;
   int num_args = 0;
+  int has_titlebar = 0;
   Arg args[20];
 
   if (iupAttribGetBoolean(ih, "DIALOGFRAME")) 
@@ -867,17 +869,31 @@ static int motDialogMapMethod(Ihandle* ih)
   /****************************/
 
   if (iupAttribGet(ih, "TITLE"))
-      mwm_decor |= MWM_DECOR_TITLE;
+    has_titlebar = 1;
   if (iupAttribGetBoolean(ih, "MENUBOX"))
-      mwm_decor |= MWM_DECOR_MENU;
+  {
+    mwm_decor |= MWM_DECOR_MENU;
+    has_titlebar = 1;
+  }
   if (iupAttribGetBoolean(ih, "MINBOX"))
-      mwm_decor |= MWM_DECOR_MINIMIZE;
+  {
+    mwm_decor |= MWM_DECOR_MINIMIZE;
+    has_titlebar = 1;
+  }
   if (iupAttribGetBoolean(ih, "MAXBOX"))
-      mwm_decor |= MWM_DECOR_MAXIMIZE;
+  {
+    mwm_decor |= MWM_DECOR_MAXIMIZE;
+    has_titlebar = 1;
+  }
   if (iupAttribGetBoolean(ih, "RESIZE"))
-      mwm_decor |= MWM_DECOR_RESIZEH;
-  if (iupAttribGetBoolean(ih, "BORDER"))
-      mwm_decor |= MWM_DECOR_BORDER;
+  {
+    mwm_decor |= MWM_DECOR_RESIZEH;
+    mwm_decor |= MWM_DECOR_BORDER;  /* has_border */
+  }
+  if (has_titlebar)
+    mwm_decor |= MWM_DECOR_TITLE;
+  if (iupAttribGetBoolean(ih, "BORDER") || has_titlebar)   
+    mwm_decor |= MWM_DECOR_BORDER;  /* has_border */
 
   iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* so XtRealizeWidget will not show the dialog */
   iupmotSetArg(args, num_args, XmNdeleteResponse, XmDO_NOTHING);

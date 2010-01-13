@@ -102,9 +102,9 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   else
   {
     int has_titlebar = iupAttribGetBoolean(ih, "MAXBOX")  ||
-                      iupAttribGetBoolean(ih, "MINBOX")  ||
-                      iupAttribGetBoolean(ih, "MENUBOX") || 
-                      IupGetAttribute(ih, "TITLE");  /* must use IupGetAttribute to check from the native implementation */
+                       iupAttribGetBoolean(ih, "MINBOX")  ||
+                       iupAttribGetBoolean(ih, "MENUBOX") || 
+                       IupGetAttribute(ih, "TITLE");  /* must use IupGetAttribute to check from the native implementation */
 
     *caption = 0;
     if (has_titlebar)
@@ -118,14 +118,17 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
     *border = 0;
     if (iupAttribGetBoolean(ih, "RESIZE"))
     {
+      /* has_border */
       *border = GetSystemMetrics(SM_CXFRAME);     /* Thickness of the sizing border around the perimeter of a window  */
     }                                             /* that can be resized, in pixels.                                  */
     else if (has_titlebar)
     {
+      /* has_border */
       *border = GetSystemMetrics(SM_CXFIXEDFRAME);  /* Thickness of the frame around the perimeter of a window        */
     }                                               /* that has a caption but is not sizable, in pixels.              */
     else if (iupAttribGetBoolean(ih, "BORDER"))
     {
+      /* has_border */
       *border = GetSystemMetrics(SM_CXBORDER);
     }
   }
@@ -712,28 +715,27 @@ static int winDialogMapMethod(Ihandle* ih)
   }
 
   if (iupAttribGetBoolean(ih, "RESIZE"))
+  {
     dwStyle |= WS_THICKFRAME;
+    has_border = 1;
+  }
   else
     iupAttribSetStr(ih, "MAXBOX", "NO");  /* Must also remove this to RESIZE=NO work */
-
   if (iupAttribGetBoolean(ih, "MAXBOX"))
   {
     dwStyle |= WS_MAXIMIZEBOX;
     has_titlebar = 1;
   }
-
   if (iupAttribGetBoolean(ih, "MINBOX"))
   {
     dwStyle |= WS_MINIMIZEBOX;
     has_titlebar = 1;
   }
-
   if (iupAttribGetBoolean(ih, "MENUBOX"))
   {
     dwStyle |= WS_SYSMENU;
     has_titlebar = 1;
   }
-
   if (iupAttribGetBoolean(ih, "BORDER") || has_titlebar)
     has_border = 1;
 
@@ -875,7 +877,6 @@ static int winDialogMapMethod(Ihandle* ih)
   /* Reset attributes handled during creation that */
   /* also can be changed later, and can be consulted from the native system. */
   iupAttribSetStr(ih, "TITLE", NULL); 
-  iupAttribSetStr(ih, "BORDER", NULL);
 
   /* Ignore VISIBLE before mapping */
   iupAttribSetStr(ih, "VISIBLE", NULL);

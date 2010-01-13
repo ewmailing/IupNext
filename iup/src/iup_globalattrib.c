@@ -129,12 +129,14 @@ int iupGlobalIsPointer(const char* name)
   static struct {
     const char *name;
   } ptr_table[] = {
-#ifdef WIN32
+#if !defined(__APPLE__) && !defined(__MACH__)
+  #ifdef WIN32
     {"HINSTANCE"},
-#else
+  #else
     {"XDISPLAY"},
     {"XSCREEN"},
     {"APPSHELL"},
+  #endif
 #endif
   };
 #define PTR_TABLE_SIZE ((sizeof ptr_table)/(sizeof ptr_table[0]))

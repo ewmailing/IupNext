@@ -20,7 +20,52 @@
 
 #include "iupgtk_drv.h"
 
+#if defined(__APPLE__) && defined(__MACH__)   /******************* MAC ********************/
+#include <gdk/gdk.h>
 
+char* iupgtkGetNativeWindowHandle(Ihandle* ih)
+{
+  GdkWindow* window = ih->handle->window;
+  if (window)
+    return (char*)window;
+  else
+    return NULL;
+}
+
+void* iupgtkGetNativeGraphicsContext(GtkWidget* widget)
+{
+  return (void*)gdk_gc_new((GdkDrawable*)widget->window);
+}
+
+void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc)
+{
+  g_object_unref(gc);
+  (void)widget;
+}
+
+void* iupdrvGetDisplay(void)
+{
+  GdkDisplay* display = gdk_display_get_default();
+  return display;
+}
+
+void iupgtkPushVisualAndColormap(void* visual, void* colormap)
+{
+  GdkColormap* gdk_colormap;
+  GdkVisual *gdk_visual = gdk_visual_get_best();
+
+  gdk_colormap = gdk_colormap_new(gdk_visual, FALSE);
+
+  gtk_widget_push_colormap(gdk_colormap);
+
+  /* gtk_widget_push_visual is now deprecated */
+}
+
+static void gtkSetDrvGlobalAttrib(void)
+{
+}
+
+#else
 #ifdef WIN32   /******************************** WIN32 ************************************/
 #include <gdk/gdkwin32.h>
 
@@ -112,6 +157,8 @@ static void gtkSetDrvGlobalAttrib(void)
   IupSetGlobal("XSERVERVENDOR", ServerVendor(xdisplay));
   IupSetfAttribute(NULL, "XVENDORRELEASE", "%d", VendorRelease(xdisplay));
 }
+
+#endif
 
 #endif
 
