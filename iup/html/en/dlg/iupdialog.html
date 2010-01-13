@@ -86,7 +86,9 @@ accepted, regardless of the minimum size required by its children. For a dialog
 to have the minimum necessary size to fit all elements contained in it, simply 
 define NULL (in C) to SIZE.</p>
 <p><a href="../attrib/iup_title.html">TITLE</a> (<font SIZE="3">non inheritable</font>): 
-Dialog’s title.</p>
+Dialog’s title. Default: NULL. If you want to remove the title bar you must also 
+set MENUBOX=NO, MAXBOX=NO and MINBOX=NO, before map. But in Motif and GTK it 
+will hide it only if RESIZE=NO also.</p>
 <p><a href="../attrib/iup_visible.html">VISIBLE</a>: Simply call <b>IupShow</b> 
 or 
 <b>IupHide</b> 
