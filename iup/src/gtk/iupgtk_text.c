@@ -875,6 +875,7 @@ static int gtkTextSetInsertAttrib(Ihandle* ih, const char* value)
 
 static int gtkTextSetAppendAttrib(Ihandle* ih, const char* value)
 {
+  gint pos;
   if (!ih->handle)  /* do not store the action before map */
     return 0;
   /* disable callbacks */
@@ -884,13 +885,18 @@ static int gtkTextSetAppendAttrib(Ihandle* ih, const char* value)
     GtkTextIter iter;
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
     gtk_text_buffer_get_end_iter(buffer, &iter);
-    if (ih->data->append_newline)
+    pos = gtk_text_buffer_get_char_count(buffer);
+    if (ih->data->append_newline && pos!=0)
       gtk_text_buffer_insert(buffer, &iter, "\n", 1);
     gtk_text_buffer_insert(buffer, &iter, iupgtkStrConvertToUTF8(value), -1);
   }
   else
   {
-    gint pos = strlen(gtk_entry_get_text(GTK_ENTRY(ih->handle)))+1;
+#if GTK_CHECK_VERSION(2, 14, 0)
+    pos = gtk_entry_get_text_length(GTK_ENTRY(ih->handle))+1;
+#else
+    pos = strlen(gtk_entry_get_text(GTK_ENTRY(ih->handle)))+1;
+#endif
     gtk_editable_insert_text(GTK_EDITABLE(ih->handle), iupgtkStrConvertToUTF8(value), -1, &pos);
   }
   iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", NULL);

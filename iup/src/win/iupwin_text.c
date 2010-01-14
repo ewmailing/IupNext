@@ -867,7 +867,7 @@ static int winTextSetInsertAttrib(Ihandle* ih, const char* value)
 
 static int winTextSetAppendAttrib(Ihandle* ih, const char* value)
 {
-  int len;
+  int pos;
   char* str;
   if (!ih->handle)  /* do not store the action before map */
     return 0;
@@ -881,9 +881,9 @@ static int winTextSetAppendAttrib(Ihandle* ih, const char* value)
       str = iupStrToDos(str);
   }
   
-  len = GetWindowTextLength(ih->handle)+1;
-  SendMessage(ih->handle, EM_SETSEL, (WPARAM)len, (LPARAM)len);
-  if (ih->data->is_multiline && ih->data->append_newline)
+  pos = GetWindowTextLength(ih->handle)+1;
+  SendMessage(ih->handle, EM_SETSEL, (WPARAM)pos, (LPARAM)pos);
+  if (ih->data->is_multiline && ih->data->append_newline && pos!=1)
   {
     if (ih->data->has_formatting)
       SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)FALSE, (LPARAM)"\r");

@@ -212,7 +212,7 @@ static int motTextSetAppendAttrib(Ihandle* ih, const char* value)
   pos = XmTextGetLastPosition(ih->handle);
   /* disable callbacks */
   iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
-  if (ih->data->is_multiline && ih->data->append_newline)
+  if (ih->data->is_multiline && ih->data->append_newline && pos!=0)
     XmTextInsert(ih->handle, pos, "\n");
 	if (value)
     XmTextInsert(ih->handle, pos+1, (char*)value);
