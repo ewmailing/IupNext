@@ -432,8 +432,8 @@ static int winTextSetLinColToPosition(Ihandle *ih, int lin, int col)
   col--;
     
   linmax = SendMessage(ih->handle, EM_GETLINECOUNT, 0, 0L);
-  if (lin > linmax)
-    lin = linmax;
+  if (lin > linmax-1)
+    lin = linmax-1;
 
   lineindex = SendMessage(ih->handle, EM_LINEINDEX, (WPARAM)lin, 0L);
 
