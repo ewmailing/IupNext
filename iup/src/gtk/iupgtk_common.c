@@ -791,7 +791,17 @@ char* iupgtkStrConvertFromFilename(const char* str)   /* From Filename to IUP */
 
 gboolean iupgtkMotionNotifyEvent(GtkWidget *widget, GdkEventMotion *evt, Ihandle *ih)
 {
-  IFniis cb = (IFniis)IupGetCallback(ih,"MOTION_CB");
+  IFniis cb;
+
+  if (evt->is_hint)
+  {
+    int x, y;
+    gdk_window_get_pointer(widget->window, &x, &y, NULL);
+    evt->x = x;
+    evt->y = y;
+  }
+
+  cb = (IFniis)IupGetCallback(ih,"MOTION_CB");
   if (cb)
   {
     char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;

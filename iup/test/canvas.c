@@ -244,6 +244,18 @@ static int wheel_cb(Ihandle *ih,float delta,int x,int y,char* status)
 static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
   printf("MOTION_CB(x=%d, y=%d [%s])\n",x,y, status);
+
+  {
+    static int count=0;
+#ifdef WIN32
+    Sleep(1000);
+#else
+    sleep(1); //or do anything that takes some time
+#endif
+    count++;
+    printf("count(%d)\n",count);
+  }
+
   return IUP_DEFAULT;
 }
 
