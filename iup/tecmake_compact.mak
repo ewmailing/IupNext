@@ -1,12 +1,15 @@
 #-------------------------------------------------------------------------#
 #- Tecmake  (Compact Version)                                            -#
 #- Generic Makefile to build applications and libraries at TeCGraf       -#
-#- The user makefile usually has the name "config.mak".                  -#   
+#- The user makefile usually has the name "config.mak".                  -#
 #-------------------------------------------------------------------------#
 
+#---------------------------------#
 # Tecmake Version
-VERSION = 3.19
+VERSION = 3.21
 
+
+#---------------------------------#
 # First target 
 .PHONY: build
 build: tecmake
@@ -162,6 +165,9 @@ STDLFLAGS  := r
 DEBUGFLAGS := -g  
 STDLDFLAGS := -shared
 DLIBEXT := so
+DLIBPRE := lib
+APPEXT :=
+
 
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
   GTK_DEFAULT = Yes
@@ -175,6 +181,7 @@ endif
 ifneq ($(findstring Linux24, $(TEC_UNAME)), )
   GTK_DEFAULT :=
 endif  
+
 
 #---------------------------------#
 # Build Tools
@@ -279,6 +286,7 @@ ifdef USE_CC
   CC := cc
   CPPC := CC
   STDFLAGS = 
+  UNAMES := $(UNAMES_CC)
   ifdef USE_CC_DIR
     TEC_UNAME := $(TEC_UNAME)cc
   endif
@@ -297,7 +305,11 @@ ifneq ($(findstring gcc, $(TEC_UNAME)), )
 endif
 
 TEC_UNAME_DIR ?= $(TEC_UNAME)
+TEC_UNAME_LIB_DIR ?= $(TEC_UNAME)
 ifdef DBG
+  ifdef DBG_LIB_DIR
+    TEC_UNAME_LIB_DIR := $(TEC_UNAME_DIR)d
+  endif
   ifdef DBG_DIR
     TEC_UNAME_DIR := $(TEC_UNAME_DIR)d
   endif
@@ -455,7 +467,7 @@ ifneq ($(findstring Darwin, $(TEC_UNAME)), )
   MOTIF_INC := /usr/OpenMotif/include
   MOTIF_LIB := /usr/OpenMotif/lib
   ifdef BUILD_DYLIB
-    STDLDFLAGS := -dynamiclib -install_name lib$(TARGETNAME).dylib
+    STDLDFLAGS := -dynamiclib -Wl -headerpad_max_install_names -undefined dynamic_lookup -install_name lib$(TARGETNAME).dylib
     DLIBEXT := dylib
   else
     STDLDFLAGS := -bundle -undefined dynamic_lookup
@@ -468,12 +480,11 @@ ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
 endif
 
 
-################################
+#---------------------------------#
 # Allows an extra configuration file.
 ifdef EXTRA_CONFIG
 include $(EXTRA_CONFIG)
 endif
-################################
 
 
 #---------------------------------#
@@ -485,6 +496,7 @@ CD    ?= $(TECTOOLS_HOME)/cd
 IM    ?= $(TECTOOLS_HOME)/im
 LUA   ?= $(TECTOOLS_HOME)/lua
 LUA51 ?= $(TECTOOLS_HOME)/lua5.1
+LUA52 ?= $(TECTOOLS_HOME)/lua52
 
 
 #---------------------------------#
@@ -492,7 +504,7 @@ LUA51 ?= $(TECTOOLS_HOME)/lua5.1
 
 # Library order:
 #   user + iupcd + cd + iup + motif + X
-# Library path order is the oposite
+# Library path order is reversed
 
 ifdef USE_LUA
   LUASUFX :=
@@ -529,12 +541,18 @@ ifdef USE_LUA51
   NO_LUALIB := Yes
 endif
 
+ifdef USE_LUA52
+  LUASUFX := 52
+  LIBLUASUFX := 52
+  override USE_LUA = Yes
+  LUA := $(LUA52)
+  NO_LUALIB := Yes
+endif
+
 ifdef USE_IUP3
   override USE_IUP = Yes
-endif 
-
-ifdef USE_IUP3BETA
-  IUP := $(IUP)3
+# Inside Tecgraf only  
+#  IUP := $(IUP)3
 endif 
 
 ifdef USE_IUPBETA
@@ -553,19 +571,23 @@ ifdef USE_GLUT
   override USE_OPENGL = Yes
 endif
 
+ifdef USE_GDK
+  override USE_GTK = Yes
+endif
+
 ifdef USE_IUPCONTROLS
   override USE_CD = Yes
   override USE_IUP = Yes
   ifdef USE_IUPLUA
     ifdef USE_STATIC
-      SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupluacontrols$(LIBLUASUFX).a
+      SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupluacontrols$(LIBLUASUFX).a
     else
       LIBS += iupluacontrols$(LIBLUASUFX)
     endif
     override USE_CDLUA = Yes
   endif
   ifdef USE_STATIC
-    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupcontrols.a
+    SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupcontrols.a
   else
     LIBS += iupcontrols
   endif
@@ -574,7 +596,7 @@ endif
 ifdef USE_IMLUA
   override USE_IM = Yes
   ifdef USE_STATIC
-    SLIB += $(IM)/lib/$(TEC_UNAME)/libimlua$(LIBLUASUFX).a
+    SLIB += $(IM)/lib/$(TEC_UNAME_LIB_DIR)/libimlua$(LIBLUASUFX).a
   else
     LIBS += imlua$(LIBLUASUFX)
   endif
@@ -585,10 +607,10 @@ ifdef USE_CDLUA
   ifdef USE_STATIC
     ifdef USE_IUP
       ifdef USE_OLDNAMES
-        SLIB += $(CD)/lib/$(TEC_UNAME)/libcdluaiup$(LIBLUASUFX).a
+        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdluaiup$(LIBLUASUFX).a
       endif
     endif
-    SLIB += $(CD)/lib/$(TEC_UNAME)/libcdlua$(LIBLUASUFX).a
+    SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdlua$(LIBLUASUFX).a
   else
     ifdef USE_IUP
       ifdef USE_OLDNAMES
@@ -604,13 +626,13 @@ ifdef USE_IUPLUA
   ifdef USE_STATIC
     ifdef USE_CD
       ifndef USE_OLDNAMES
-        SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupluacd$(LIBLUASUFX).a
+        SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupluacd$(LIBLUASUFX).a
       endif
     endif
     ifdef USE_OPENGL
-      SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupluagl$(LIBLUASUFX).a
+      SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupluagl$(LIBLUASUFX).a
     endif
-    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiuplua$(LIBLUASUFX).a
+    SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiuplua$(LIBLUASUFX).a
   else
     ifdef USE_CD
       ifndef USE_OLDNAMES
@@ -625,7 +647,7 @@ ifdef USE_IUPLUA
 endif
 
 ifdef USE_LUA
-  LUA_LIB ?= $(LUA)/lib/$(TEC_UNAME)
+  LUA_LIB ?= $(LUA)/lib/$(TEC_UNAME_LIB_DIR)
   ifdef USE_STATIC
     ifndef NO_LUALIB
       SLIB += $(LUA_LIB)/liblualib$(LUASUFX).a
@@ -672,13 +694,13 @@ ifdef USE_IUP
   ifdef USE_STATIC
     ifdef USE_CD
       ifndef USE_OLDNAMES
-        SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupcd.a
+        SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupcd.a
       endif
     endif
     ifdef USE_OPENGL
-      SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupgl.a
+      SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupgl.a
     endif
-    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup$(IUPSUFX).a
+    SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiup$(IUPSUFX).a
   else
     ifdef USE_CD
       ifndef USE_OLDNAMES
@@ -689,7 +711,7 @@ ifdef USE_IUP
       LIBS += iupgl
     endif
     LIBS += iup$(IUPSUFX)
-    LDIR += $(IUP)/lib/$(TEC_UNAME)
+    LDIR += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)
   endif
   INCLUDES += $(IUP)/include
 endif
@@ -699,28 +721,37 @@ ifdef USE_CD
   ifdef USE_STATIC
     ifdef USE_IUP
       ifdef USE_OLDNAMES
-        SLIB += $(CD)/lib/$(TEC_UNAME)/libcdiup.a
+        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdiup.a
       endif
     endif
     ifdef USE_XRENDER
       ifdef USE_OLDNAMES
-        SLIB += $(CD)/lib/$(TEC_UNAME)/libcdxrender.a
+        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdxrender.a
       else
-        SLIB += $(CD)/lib/$(TEC_UNAME)/libcdcontextplus.a
+        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdcontextplus.a
       endif
     endif
-    SLIB += $(CD)/lib/$(TEC_UNAME)/libcd.a
+    ifdef USE_GDK
+      SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdgdk.a
+    else
+      SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcd.a
+    endif
     ifdef USE_XRENDER
       LIBS += Xrender Xft
     else
       ifndef USE_GTK
         ifndef USE_OLDNAMES
           # Freetype is included in GTK
-          SLIB += $(CD)/lib/$(TEC_UNAME)/libfreetype.a
+          SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libfreetype.a
         endif 
       endif
     endif
   else
+    ifdef USE_IUP
+      ifdef USE_OLDNAMES
+        LIBS += cdiup
+      endif
+    endif
     ifdef USE_XRENDER
       ifdef USE_OLDNAMES
         LIBS += cdxrender
@@ -728,8 +759,12 @@ ifdef USE_CD
         LIBS += cdcontextplus
       endif
     endif
-    LIBS += cd
-    LDIR += $(CD)/lib/$(TEC_UNAME)
+    ifdef USE_GDK
+      LIBS += cdgdk
+    else
+      LIBS += cd
+    endif
+    LDIR += $(CD)/lib/$(TEC_UNAME_LIB_DIR)
     ifdef USE_XRENDER
       LIBS += Xrender Xft
     else
@@ -746,16 +781,16 @@ endif
 
 ifdef USE_IM
   ifdef USE_STATIC
-    SLIB += $(IM)/lib/$(TEC_UNAME)/libim.a
+    SLIB += $(IM)/lib/$(TEC_UNAME_LIB_DIR)/libim.a
   else
     LIBS += im
-    LDIR += $(IM)/lib/$(TEC_UNAME)
+    LDIR += $(IM)/lib/$(TEC_UNAME_LIB_DIR)
   endif
   INCLUDES += $(IM)/include
 endif
 
-# All except gcc in Windows (Cygwin)
-ifeq ($(findstring gcc, $(TEC_UNAME)), )
+# All except gcc in Windows (Cygwin/MingW)
+ifeq ($(findstring Win, $(TEC_SYSNAME)), )
 
 ifdef USE_GLUT
   LIBS += glut
@@ -787,35 +822,41 @@ ifdef USE_MOTIF
 endif
 
 ifdef USE_GTK
-#  ifneq ($(findstring Darwin, $(TEC_UNAME)), )
-#    STDINCS += /Library/Frameworks/Gtk.framework/Headers
-#    STDINCS += /Library/Frameworks/GLib.framework/Headers
-#    STDINCS += /Library/Frameworks/Cairo.framework/Headers
-#    LFLAGS += -framework Gtk
-#  else
-    ifneq ($(findstring Darwin, $(TEC_UNAME)), )
-      GTK_BASE := /sw
-      LDIR += /sw/lib
-      LIBS += freetype
-    else
-      GTK_BASE := /usr
-    endif
+  ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+# Option 1 - old GTK port
+#   GTK_BASE := /sw
+#   LDIR += /sw/lib
+# Option 2 - old Framework
+#   STDINCS += /Library/Frameworks/Gtk.framework/Headers
+#   STDINCS += /Library/Frameworks/GLib.framework/Headers
+#   STDINCS += /Library/Frameworks/Cairo.framework/Headers
+#   LFLAGS += -framework Gtk
+# Option 3 - new Framework
+    GTK_BASE := /Users/cpts/gtk/inst
+    LDIR += $(GTK_BASE)/lib
+    LFLAGS += -framework Carbon
+    LIBS += gtk-quartz-2.0 gdk-quartz-2.0 pangoft2-1.0
+
+    LIBS += freetype
+  else
+    GTK_BASE := /usr
     override USE_X11 = Yes
-    LIBS += gtk-x11-2.0 gdk-x11-2.0 gdk_pixbuf-2.0 pango-1.0 pangox-1.0 gobject-2.0 gmodule-2.0 glib-2.0
-    STDINCS += $(GTK_BASE)/include/atk-1.0 $(GTK_BASE)/include/gtk-2.0 $(GTK_BASE)/include/cairo $(GTK_BASE)/include/pango-1.0 $(GTK_BASE)/include/glib-2.0
-    ifeq ($(TEC_SYSARCH), x64)
-      STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
-    else
-    ifeq ($(TEC_SYSARCH), ia64)
-      STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
-    else
-      STDINCS += $(GTK_BASE)/lib/glib-2.0/include $(GTK_BASE)/lib/gtk-2.0/include
-    endif
-    endif
-    ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
-      STDINCS += /lib/X11R6/include/gtk-2.0  
-    endif
-#  endif
+    LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
+  endif
+  LIBS += gdk_pixbuf-2.0 pango-1.0 gobject-2.0 gmodule-2.0 glib-2.0
+  STDINCS += $(GTK_BASE)/include/atk-1.0 $(GTK_BASE)/include/gtk-2.0 $(GTK_BASE)/include/cairo $(GTK_BASE)/include/pango-1.0 $(GTK_BASE)/include/glib-2.0
+  ifeq ($(TEC_SYSARCH), x64)
+    STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
+  else
+  ifeq ($(TEC_SYSARCH), ia64)
+    STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
+  else
+    STDINCS += $(GTK_BASE)/lib/glib-2.0/include $(GTK_BASE)/lib/gtk-2.0/include
+  endif
+  endif
+  ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
+    STDINCS += /lib/X11R6/include/gtk-2.0  
+  endif
 endif
 
 ifdef USE_QT
@@ -836,8 +877,16 @@ LIBS += m
 
 else
   # gcc in Windows
-  NO_DYNAMIC ?= Yes
   STDDEFS += -DWIN32
+
+  # Alternative MingW support (not currently used)
+  ifneq ($(findstring mingw, $(TEC_UNAME)), )
+    DLIBEXT := dll
+    APPEXT := .exe
+    DLIBPRE :=
+  else
+    NO_DYNAMIC ?= Yes
+  endif
   
   ifdef USE_NOCYGWIN
     STDFLAGS += -mno-cygwin
@@ -848,7 +897,7 @@ else
   endif 
 
   ifdef USE_OPENGL
-    LIBS += opengl32 glu32 glaux
+    LIBS += glaux glu32 opengl32
   endif 
 
   LIBS += gdi32 winspool comdlg32 comctl32 ole32
@@ -899,14 +948,18 @@ CXXFLAGS = $(CPPFLAGS) $(STDFLAGS) $(INCLUDES) $(STDINCS) $(EXTRAINCS) $(DEFINES
 # Sources with relative path
 SOURCES := $(addprefix $(SRCDIR)/, $(SRC))
 
+TARGETAPPNAME := $(TARGETNAME)$(APPEXT)
+TARGETSLIBNAME := lib$(TARGETNAME).a
+TARGETDLIBNAME := $(DLIBPRE)$(TARGETNAME).$(DLIBEXT)
+
 # Target for applications or libraries
 ifeq ($(MAKETYPE), APP)
-  TARGET := $(TARGETDIR)/$(TARGETNAME)
+  TARGET := $(TARGETDIR)/$(TARGETAPPNAME)
 else
   ifeq ($(NO_DYNAMIC), Yes) 
-    TARGET := $(TARGETDIR)/lib$(TARGETNAME).a
+    TARGET := $(TARGETDIR)/$(TARGETSLIBNAME)
   else
-    TARGET := $(TARGETDIR)/lib$(TARGETNAME).a $(TARGETDIR)/lib$(TARGETNAME).$(DLIBEXT)
+    TARGET := $(TARGETDIR)/$(TARGETSLIBNAME) $(TARGETDIR)/$(TARGETDLIBNAME)
   endif
 endif
 
@@ -961,9 +1014,9 @@ print-start:
 # Dynamic Library Build
 
 .PHONY: dynamic-lib
-dynamic-lib: $(TARGETDIR)/lib$(TARGETNAME).$(DLIBEXT)
+dynamic-lib: $(TARGETDIR)/$(TARGETDLIBNAME)
 
-$(TARGETDIR)/lib$(TARGETNAME).$(DLIBEXT) : $(LOHS) $(OBJS) $(EXTRADEPS)
+$(TARGETDIR)/$(TARGETDLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
 	$(LD) $(STDLDFLAGS) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
 	@echo 'Tecmake - Dynamic Library ($@) Done.'; echo ''
 
@@ -972,9 +1025,9 @@ $(TARGETDIR)/lib$(TARGETNAME).$(DLIBEXT) : $(LOHS) $(OBJS) $(EXTRADEPS)
 # Static Library Build
 
 .PHONY: static-lib
-static-lib: $(TARGETDIR)/lib$(TARGETNAME).a
+static-lib: $(TARGETDIR)/$(TARGETSLIBNAME)
 
-$(TARGETDIR)/lib$(TARGETNAME).a : $(LOHS) $(OBJS) $(EXTRADEPS)
+$(TARGETDIR)/$(TARGETSLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
 	$(AR) $(STDLFLAGS) $@ $(OBJS) $(SLIB) $(LCFLAGS)
 	-$(RANLIB) $@
 	@echo 'Tecmake - Static Library ($@) Done.'; echo ''
@@ -984,9 +1037,9 @@ $(TARGETDIR)/lib$(TARGETNAME).a : $(LOHS) $(OBJS) $(EXTRADEPS)
 # Application Build
 
 .PHONY: application
-application: $(TARGETDIR)/$(TARGETNAME)
+application: $(TARGETDIR)/$(TARGETAPPNAME)
 
-$(TARGETDIR)/$(TARGETNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
+$(TARGETDIR)/$(TARGETAPPNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
 	$(LINKER) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
 	@if [ ! -z "$(STRIP)" ]; then \
 	   echo "Striping debug information" ;\
@@ -1147,11 +1200,11 @@ clean-target:
 .PHONY: clean
 clean: clean-target clean-obj
 
-# make rebuild
+# make strip
 #   Remove symbols from executables
 .PHONY: strip
 strip:
-	test -r $(TARGETDIR)/$(TARGETNAME) && strip $(TARGETDIR)/$(TARGETNAME)
+	test -r $(TARGETDIR)/$(TARGETAPPNAME) && strip $(TARGETDIR)/$(TARGETAPPNAME)
 
 # make rebuild
 #   Rebuild target and object files 
@@ -1162,6 +1215,9 @@ rebuild: clean-extra clean-lohs clean-obj clean-target tecmake
 #   Rebuild target without rebuilding object files 
 .PHONY: relink
 relink: clean-target tecmake
+
+
+#---------------------------------#
 
 .PHONY: version
 version:
