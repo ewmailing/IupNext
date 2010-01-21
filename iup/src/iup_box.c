@@ -172,9 +172,9 @@ static int iBoxSetCMarginAttrib(Ihandle* ih, const char* value)
   iupdrvFontGetCharSize(ih, &charwidth, &charheight);
   iupStrToIntInt(value, &cmargin_x, &cmargin_y, 'x');
   if (cmargin_x!=-1)
-    ih->data->margin_x = iupHEIGHT2RASTER(cmargin_x, charheight);
+    ih->data->margin_x = iupWIDTH2RASTER(cmargin_x, charwidth);
   if (cmargin_y!=-1)
-    ih->data->margin_x = iupWIDTH2RASTER(cmargin_y, charwidth);
+    ih->data->margin_y = iupHEIGHT2RASTER(cmargin_y, charheight);
   return 0;
 }
 
