@@ -1521,10 +1521,21 @@ static char* winTreeGetParentAttrib(Ihandle* ih, const char* name_id)
   return str;
 }
 
-static void winTreeDelNodeData(Ihandle* ih, HTREEITEM hItem)
+static void winTreeDelNodeDataRec(Ihandle* ih, HTREEITEM hItem, int *id)
 {
+  int node_id = *id;
   TVITEM item; 
   HTREEITEM hChildItem;
+
+  (*id)++;
+
+  /* remove from children first */
+  hChildItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItem);
+  while (hChildItem)
+  {
+    winTreeDelNodeDataRec(ih, hChildItem, id);
+    hChildItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hChildItem);
+  }
 
   item.hItem = hItem;
   item.mask = TVIF_HANDLE|TVIF_PARAM; 
@@ -1534,19 +1545,18 @@ static void winTreeDelNodeData(Ihandle* ih, HTREEITEM hItem)
     if (itemData)
     {
       IFnis cb = (IFnis)IupGetCallback(ih, "NODEREMOVED_CB");
-      if (cb) cb(ih, winTreeGetNodeId(ih, hItem), (char*)itemData->userdata);
+      if (cb) cb(ih, node_id, (char*)itemData->userdata);
       free(itemData);
       item.lParam = (LPARAM)NULL;
       SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
     }
   }
+}
 
-  hChildItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItem);
-  while (hChildItem)
-  {
-    winTreeDelNodeData(ih, hChildItem);
-    hChildItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hChildItem);
-  }
+static void winTreeDelNodeData(Ihandle* ih, HTREEITEM hItem)
+{
+  int id = winTreeGetNodeId(ih, hItem);
+  winTreeDelNodeDataRec(ih, hItem, &id);
 }
 
 static int winTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)

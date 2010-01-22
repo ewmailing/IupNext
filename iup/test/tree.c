@@ -226,6 +226,12 @@ static int branchclose_cb(Ihandle* ih, int id)
   return IUP_DEFAULT;
 }
 
+static int noderemoved_cb(Ihandle* ih, int id, void* data)
+{
+  printf("NODEREMOVED_CB(%d)\n", id);
+  return IUP_DEFAULT;
+}
+
 static int dragdrop_cb(Ihandle* ih, int drag_id, int drop_id, int shift, int control)
 {
   printf("DRAGDROP_CB (%d)->(%d)\n", drag_id, drop_id);
@@ -408,6 +414,7 @@ static void init_tree(void)
   //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
   //IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
   //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
+  //IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
 
   IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
 

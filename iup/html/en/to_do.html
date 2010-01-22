@@ -70,7 +70,7 @@
 
 	<li>Support for text over image in <strong>IupLabel</strong>,
 	<strong>IupButton</strong> and <strong>IupToggle</strong>. Or a way to 
-	composte text on <strong>IupImage</strong>.</li>
+	compose a text on an <strong>IupImage</strong>.</li>
 
 	<li>Support for changing the system menu in Windows. Support for cascading <strong>
 	IupPopup</strong> for menus.</li>
@@ -92,7 +92,7 @@
 
 	<li><span class="style1">Known Issue:</span> In Windows Vista the 
 	COMPOSITE=YES attribute of the <strong>IupDialog</strong> is not working as expected. There 
-	is still flicker when the dialog is resized. IupTabs in Windows Vista when 
+	is still flicker when the dialog is resized. <strong>IupTabs</strong> in Windows Vista when 
 	COMPOSITE=YES works only if MULTILINE=YES. (since 3.0)</li>
 
 	<li><span class="style1">Known Issue:</span> The MDI Window menu is not 
@@ -138,6 +138,8 @@
 
 <ul>
 
+  <li><strong><span class="style2">Priority: </span></strong> Optimize internal node find from id and vice-versa.</li>
+
   <li>Define minimum size based on tree nodes.</li>
 
 	<li>Check mark for nodes.</li>
@@ -147,7 +149,6 @@
 	replaced by the new TITLEid. NAMEid will be removed in future versions. 
 	(since 3.0)</li>
 
-  <li>Optimize internal node find from id and vice-versa.</li>
 	<li>Add new nomenclature option for id, for example &quot;:2:1:4&quot;</li>
 	<li>RENAMEEDIT_CB callback and RENAMEMASKid attribute.</li>
 
@@ -185,8 +186,7 @@
 	reposition the elements interactively.</li>
 	<li class="style3">-----------------------------</li>
 	<li class="style3"><strong>Scrollbar</strong> <span class="style5">- just 
-	the scrollbar as a control.</span><li><strong>CanvasCD</strong> - a 
-	IupCanvas with a CD canvas associated.</li>
+	the scrollbar as a control.</span><li><strong>CanvasCD</strong> - an IupCanvas with a CD canvas associated.</li>
 
 	<li><strong>UrlButton</strong> - Button that activates a URL (looks like a 
 	flat label, but gives visual feedback when mouse is hover)</li>
@@ -197,7 +197,7 @@
 	<li><strong>Table</strong> - similar to IupMatrix but using native controls</li>
 	<li>-----------------------------</li>
 
-  <li>Project Manager/Dialog Editor/Integrated Debugger for IupLua</li>
+  <li><strong><span class="style2">Priority: </span></strong> Project Manager/Dialog Editor/Integrated Debugger for IupLua</li>
 
   <li>FontDlg for X fonts - Motif driver</li>
 
