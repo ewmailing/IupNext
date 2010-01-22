@@ -529,7 +529,7 @@ list = {
   branchname = &quot;Animals&quot;
 }
 
-iup.TreeSetValue(tree, list)
+iup.TreeAddNodes(tree, list)
 
 f = iup.dialog{tree; title = &quot;Tree Test&quot;}
 
@@ -574,9 +574,9 @@ On a filesystem, a node represents a full path to a file or directory, or there
 may be an ip address associated with a computer name. IUP provides you with a 
 way to associate arbitrary data with nodes even if the id changes. But to use 
 this you will have to understand how to build up a tree from scratch - <code>
-TreeSetValue</code> is very convenient, but won't help you if you have to add 
+TreeAddNodes</code> is very convenient, but won't help you if you have to add 
 nodes later. Replace the definition of <code>list</code> and the call to <code>
-TreeSetValue</code> with this code:</p>
+TreeAddNodes</code> with this code:</p>
 
 <pre><code>tree.name = &quot;Animals&quot;
 tree.addbranch = &quot;Birds&quot;

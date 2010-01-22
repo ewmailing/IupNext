@@ -193,17 +193,17 @@ matrix(<strong>action_cb</strong>) [in LED]</pre>
 <p>Returns the text of a cell.</p>
 <h3>Utility Functions </h3>
 <p>These functions can be used to help set and get attributes from the matrix:</p>
-<pre>void  IupMatSetAttribute(Ihandle*h, const char* a, int l, int c, char* v);
-void  IupMatStoreAttribute(Ihandle* ih, const char* a, int l, int c, char* v);
-char* IupMatGetAttribute(Ihandle* ih, const char* a, int l, int c);
-int   IupMatGetInt(Ihandle* ih, const char* a, int l, int c);
-float IupMatGetFloat(Ihandle* ih, const char* a, int l, int c);
-void  IupMatSetfAttribute(Ihandle* ih, const char* a, int l, int c, const char* f, ...);</pre>
+<pre>void  IupMatSetAttribute(Ihandle* ih, const char* name, int lin, int col, const char* value);
+void  IupMatStoreAttribute(Ihandle* ih, const char* name, int lin, int col, const char* value);
+char* IupMatGetAttribute(Ihandle* ih, const char* name, int lin, int col);
+int   IupMatGetInt(Ihandle* ih, const char* name, int lin, int col);
+float IupMatGetFloat(Ihandle* ih, const char* name, int lin, int col);
+void  IupMatSetfAttribute(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);</pre>
 <p>They work just like the respective tradicional set and get functions. But the attribute string is complemented with 
   the L and C values. For ex:</p>
-<pre>IupMatSetAttribute(ih, &quot;&quot; , 30, 10, v) = IupSetAttribute(n, &quot;30:10&quot;, v)
-IupMatSetAttribute(ih, &quot;BGCOLOR&quot; , 30, 10, v) = IupSetAttribute(n, &quot;BGCOLOR30:10&quot;, v)
-IupMatSetAttribute(ih, &quot;ALIGNMENT&quot; , 10, 0, v) = IupSetAttribute(n, &quot;ALIGNMENT10:0&quot;, v)  (*)
+<pre>IupMatSetAttribute(ih, &quot;&quot; , 30, 10, value) = IupSetAttribute(n, &quot;30:10&quot;, value)
+IupMatSetAttribute(ih, &quot;BGCOLOR&quot; , 30, 10, value) = IupSetAttribute(n, &quot;BGCOLOR30:10&quot;, value)
+IupMatSetAttribute(ih, &quot;ALIGNMENT&quot; , 10, 0, value) = IupSetAttribute(n, &quot;ALIGNMENT10:0&quot;, value)  (*)
     (*) noticed that in this case the second value will be ignored.</pre>
 <p>These functions are not available in Lua, since you can simply write:</p>
 <pre>elem[&quot;bgcolor&quot;..l..&quot;:&quot;..c] = v
