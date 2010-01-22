@@ -1297,8 +1297,9 @@ static int gtkTreeSetValueAttrib(Ihandle* ih, const char* value)
   /* select */
   if (ih->data->mark_mode==ITREE_MARK_SINGLE)
   {
-    iupAttribSetStr(ih, "_IUP_IGNORE_SELECTION", "1");
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
     gtk_tree_selection_select_iter(selection, &iterItem);
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
   }
 
   path = gtk_tree_model_get_path(model, &iterItem);
@@ -1353,13 +1354,15 @@ static int gtkTreeSetMarkedAttrib(Ihandle* ih, const char* name_id, const char* 
   if (!gtkTreeFindNodeFromString(ih, model, name_id, &iterItem))
     return 0;
 
-  iupAttribSetStr(ih, "_IUP_IGNORE_SELECTION", "1");
+  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
 
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
   if (iupStrBoolean(value))
     gtk_tree_selection_select_iter(selection, &iterItem);
   else
     gtk_tree_selection_unselect_iter(selection, &iterItem);
+
+  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
 
   return 0;
 }
@@ -1923,11 +1926,8 @@ static void gtkTreeSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
   {
     int curpos = -1, is_selected = 0;
 
-    if (iupAttribGet(ih, "_IUP_IGNORE_SELECTION"))
-    {
-      iupAttribSetStr(ih, "_IUP_IGNORE_SELECTION", NULL);
+    if (iupAttribGet(ih, "_IUPTREE_IGNORE_SELECTION_CB"))
       return;
-    }
 
     {
       GtkTreeIter iterFocus;

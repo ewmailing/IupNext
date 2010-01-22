@@ -477,7 +477,9 @@ static void winTreeSelectItem(Ihandle* ih, HTREEITEM hItem, int select)
 
   item.state = select ? TVIS_SELECTED : 0;
 
+  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
   SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)&item);
+  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
 }
 
 static HTREEITEM winTreeGetFocusNode(Ihandle* ih)
@@ -502,8 +504,6 @@ static void winTreeSetFocusNode(Ihandle* ih, HTREEITEM hItem)
     else
       wasFocusSelected = hItemFocus && winTreeIsItemSelected(ih, hItemFocus);
 
-    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
-
     if (wasFocusSelected)
     {
       /* prevent the tree from unselecting the old focus which it would do by default */
@@ -516,7 +516,6 @@ static void winTreeSetFocusNode(Ihandle* ih, HTREEITEM hItem)
     if (!wasSelected)
       winTreeSelectItem(ih, hItem, 0); /* need to clear the selection if was not selected */
 
-    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
     iupAttribSetStr(ih, "_IUPTREE_ALLOW_CHANGE", NULL);
   }
 }
@@ -1657,6 +1656,12 @@ static int winTreeSetMarkedAttrib(Ihandle* ih, const char* name_id, const char* 
   if (!hItem)
     return 0;
 
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE)
+  {
+    HTREEITEM hItemFocus = winTreeGetFocusNode(ih);
+    winTreeSelectItem(ih, hItemFocus, 0);
+  }
+
   winTreeSelectItem(ih, hItem, iupStrBoolean(value));
   return 0;
 }
@@ -1791,9 +1796,8 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
   {
     if (ih->data->mark_mode==ITREE_MARK_SINGLE)
     {
-      iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
+      winTreeSelectItem(ih, hItemFocus, 0);
       winTreeSelectItem(ih, hItem, 1);
-      iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
     }
     winTreeSetFocusNode(ih, hItem);
   }
@@ -1955,9 +1959,7 @@ static void winTreeExtendSelect(Ihandle* ih, int x, int y)
   hItemFirstSel = (HTREEITEM)iupAttribGet(ih, "_IUPTREE_FIRSTSELITEM");
   if (hItemFirstSel)
   {
-    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
     winTreeSelectRange(ih, hItemFirstSel, hItem, 1);
-    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
 
     iupAttribSetStr(ih, "_IUPTREE_LASTSELITEM", (char*)hItem);
     winTreeSetFocusNode(ih, hItem);
@@ -1991,9 +1993,7 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
     HTREEITEM hItemFirstSel = (HTREEITEM)iupAttribGet(ih, "_IUPTREE_FIRSTSELITEM");
     if (hItemFirstSel)
     {
-      iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
       winTreeSelectRange(ih, hItemFirstSel, hItem, 1);
-      iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
 
       winTreeCallMultiSelectionCb(ih);
       winTreeSetFocusNode(ih, hItem);
@@ -2110,9 +2110,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
           HTREEITEM hItemFirstSel = (HTREEITEM)iupAttribGet(ih, "_IUPTREE_FIRSTSELITEM");
           if (hItemFirstSel)
           {
-            iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
             winTreeSelectRange(ih, hItemFirstSel, hItemFocus, 1);
-            iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
 
             winTreeCallMultiSelectionCb(ih);
             winTreeSetFocusNode(ih, hItemFocus);
