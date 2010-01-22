@@ -80,6 +80,10 @@ version 3.x.<br>
 	IupVbox</strong> and <strong>IupHbox</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid memory access in 
 	NODEREMOVED_CB callback processing of <strong>IupTree</strong> on Windows.</li>
+	<li><span class="hist_fixed">Fixed:</span> VALUE attribute in <strong>
+	IupTree</strong> when MARKMODE=SINGLE, on Windows was not unselecting the 
+	previous node, on GTK if set during the SELECTION_CB was aborting the next 
+	call to the callback.</li>
 
 </ul>
 
