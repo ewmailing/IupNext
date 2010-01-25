@@ -1303,6 +1303,9 @@ static int gtkTreeSetValueAttrib(Ihandle* ih, const char* value)
   }
 
   path = gtk_tree_model_get_path(model, &iterItem);
+  /* make it visible */
+  if (!gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path))
+    gtk_tree_view_expand_to_path(GTK_TREE_VIEW(ih->handle), path);
   gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE, 0, 0); /* scroll to visible */
   gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE);  /* set focus */
   gtk_tree_path_free(path);

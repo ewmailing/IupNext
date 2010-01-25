@@ -1388,7 +1388,7 @@ static int motTreeSetMarkAttrib(Ihandle* ih, const char* value)
 
 static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
 {
-  Widget wRoot, wItem;
+  Widget wRoot, wItem, wItemParent;
 
   if (motTreeSetMarkAttrib(ih, value))
     return 0;
@@ -1463,6 +1463,15 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
     XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
 
     XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
+  }
+
+
+  /* expand all parents */
+  XtVaGetValues(wItem, XmNentryParent, &wItemParent, NULL);
+  while(wItemParent)
+  {
+    XtVaSetValues(wItemParent, XmNoutlineState, XmEXPANDED, NULL);
+    XtVaGetValues(wItemParent, XmNentryParent, &wItemParent, NULL);
   }
 
   /* set focus (will scroll to visible) */
