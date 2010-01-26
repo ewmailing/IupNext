@@ -13,6 +13,23 @@
 .style2 {
 	border-style: solid;
 }
+.style3 {
+	border-top-style: solid;
+	border-top-width: 1px;
+}
+.style4 {
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+}
+.style5 {
+	border-collapse: collapse;
+}
+.style6 {
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+}
 </style>
 </head>
 <body>
@@ -116,7 +133,7 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
 </p>
 <h3><a name="plat">Available Platforms</a></h3>
       <p>The following platforms can be available:</p>
-<table border="0" cellpadding="3" style="border-collapse: collapse" bordercolor="#111111" align="center">
+<table border="0" cellpadding="3" bordercolor="#111111" align="center" class="style5">
   <tr>
     <th bgcolor="#DDDDDD" align="right" class="style2">Package Name</th>
     <th bgcolor="#DDDDDD" class="style2">Description</th>
@@ -137,27 +154,31 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Linux24</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;Red Hat 7.3 (x86) / Kernel 2.4 / gcc 2.95 / Open Motif 2.1 
-    / GTK 2.0</td>
+    <td bgcolor="#DDDDDD">&nbsp;Red Hat 7.3 (x86) / Kernel 2.4 / gcc 2.95 / 
+    <a href="http://www.ist-inc.com/DOWNLOADS/motif_download.html">Open Motif 
+	2.1</a> / GTK 2.0</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Linux24g3</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;CentOS 3.9 (x86) / Kernel 2.4 / gcc 3.2 / Open Motif 2.2
+    <td bgcolor="#DDDDDD">&nbsp;CentOS 3.9 (x86) / Kernel 2.4 / gcc 3.2 / Open 
+	Motif 2.2
 	<sup><span class="style1">3</span></sup> / GTK 2.2</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right" style="height: 27px"><b>Linux24g3_64&nbsp; </b></td>
-    <td bgcolor="#DDDDDD">&nbsp;Red Hat E.L. WS 3 (x64)&nbsp;/ Kernel 2.4 / gcc 3.2 / Open Motif 
-      2.2 <sup><span class="style1">3</span></sup> / GTK 2.2</td>
+    <td bgcolor="#DDDDDD">&nbsp;Red Hat E.L. WS 3 (x64)&nbsp;/ Kernel 2.4 / gcc 
+	3.2 / Open Motif 2.2 <sup><span class="style1">3</span></sup> / GTK 2.2</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Linux26</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;CentOS 4.6 (x86) / Kernel 2.6 / gcc 3.4 / Open Motif 2.2
+    <td bgcolor="#DDDDDD">&nbsp;CentOS 4.6 (x86) / Kernel 2.6 / gcc 3.4 / Open 
+	Motif 2.2
 	<sup><span class="style1">3</span></sup> / GTK 2.4</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Linux26_64</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;CentOS 4.6 (x64) / Kernel 2.6 / gcc 3.4 / Open Motif 2.2
+    <td bgcolor="#DDDDDD">&nbsp;CentOS 4.6 (x64) / Kernel 2.6 / gcc 3.4 / Open 
+	Motif 2.2
 	<sup><span class="style1">3</span></sup> / GTK 2.4</td>
   </tr>
   <tr>
@@ -191,48 +212,56 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
     </td>
   </tr>
   <tr>
+    <td bgcolor="#C0C0C0" align="right"><b>SunOS510</b></td>
+    <td bgcolor="#C0C0C0">&nbsp;Sun Solaris 10 (sparc) / gcc 3.4 / Motif 2.1 
+    </td>
+  </tr>
+  <tr>
     <td bgcolor="#C0C0C0" align="right"><strong>SunOS510x86</strong></td>
     <td bgcolor="#C0C0C0">&nbsp;Sun Solaris 10 (x86) / gcc 3.3 / Motif 2.1 
     </td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>FreeBSD54</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;Free BSD 5.4 (x86) / gcc 3.4 / Open Motif 2.2 
-    <sup><span class="style1">3</span></sup></td>
+    <td bgcolor="#DDDDDD">&nbsp;Free BSD 5.4 (x86) / gcc 3.4</td>
   </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Darwin811</b></td>
     <td bgcolor="#C0C0C0">&nbsp;Mac OS X 10.4.11 (ppc) 
-	[Tiger] / Darwin Kernel 8.11 / gcc 4.0 / 
-    <a href="http://www.ist-inc.com/DOWNLOADS/motif_download.html">Open Motif 2.1</a></td>
+	[Tiger] / Darwin Kernel 8.11 / gcc 4.0</td>
   </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Darwin811x86</b></td>
     <td bgcolor="#C0C0C0">&nbsp;Mac OS X 10.4.11 (x86) 
-	[Tiger] / Darwin Kernel 8.11 / gcc 4.0 / Open Motif 2.1</td>
+	[Tiger] / Darwin Kernel 8.11 / gcc 4.0</td>
   </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Darwin94x86</b></td>
     <td bgcolor="#C0C0C0">&nbsp;Mac OS X 10.5.4 (x86) 
-	[Leopard] / Darwin Kernel 9.4 / gcc 4.0 / Open Motif 2.1</td>
+	[Leopard] / Darwin Kernel 9.4 / gcc 4.0</td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" align="right"><b>Darwin102x86</b></td>
+    <td bgcolor="#C0C0C0">&nbsp;Mac OS X 10.6.2 (x86) 
+	[Snow Leopard] / Darwin Kernel 10.2 / gcc 4.2</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Win32_vc6</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;Static library built with Microsoft Visual C++ 6 (static RTL/single thread)</td>
+    <td bgcolor="#DDDDDD" class="style4">&nbsp;Static library built with Microsoft Visual C++ 6 (static RTL/single thread)</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Win32_vc7</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;Static library built with Microsoft Visual C++ 7.1 (.NET 2003) (static RTL/single thread)<br>
+    <td bgcolor="#DDDDDD" class="style6">&nbsp;Static library built with Microsoft Visual C++ 7.1 (.NET 2003) (static RTL/single thread)<br>
       	&nbsp;Also compatible with Microsoft Visual C++ Toolkit 2003</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Win32_vc8</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;Static library built with Microsoft Visual C++ 8.0 (2005) (static RTL/multithread)<br>
+    <td bgcolor="#DDDDDD" class="style6">&nbsp;Static library built with Microsoft Visual C++ 8.0 (2005) (static RTL/multithread)<br>
       	&nbsp;Also compatible with Microsoft Visual C++ 2005 Express Edition</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Win32_vc9</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;Static library built with Microsoft Visual C++ 9.0 (2008) (static RTL/multithread)<br>
+    <td bgcolor="#DDDDDD" class="style3">&nbsp;Static library built with Microsoft Visual C++ 9.0 (2008) (static RTL/multithread)<br>
       &nbsp;Also compatible with Microsoft Visual C++ 2008 Express Edition -<br>
       &nbsp;<a href="http://www.microsoft.com/express/vc/">http://www.microsoft.com/express/vc/</a>
     ¹</td>
@@ -291,20 +320,25 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Win32_cygw15</b></td>
     <td bgcolor="#C0C0C0">&nbsp;Same as <b>Win32_gcc3</b>, but using the Cygwin Posix 
-    system</td>
+    system and also with a&nbsp;DLL and import library</td>
   </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Win32_cygw17</b></td>
     <td bgcolor="#C0C0C0">&nbsp;Same as <b>Win32_gcc4</b>, but using the Cygwin Posix 
-    system</td>
+    system and also with a&nbsp;DLL and import library</td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" align="right"><b>Win32_dllg4</b></td>
+    <td bgcolor="#C0C0C0" class="style3">&nbsp;DLL and import library built 
+	with Cygwin gcc 4.3 (See <b>Win32_gcc4</b>)</td>
   </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Win32_mingw3</b></td>
-    <td bgcolor="#C0C0C0">&nbsp;Static library built with MingW gcc 3.4</td>
+    <td bgcolor="#C0C0C0" class="style4">&nbsp;Static library built with MingW gcc 3.4</td>
   </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Win32_mingw4</b></td>
-    <td bgcolor="#C0C0C0">&nbsp;Static library built with MingW gcc 4.3 - 
+    <td bgcolor="#C0C0C0" class="style6">&nbsp;Static library built with MingW gcc 4.3 - 
     <a href="http://www.mingw.org/" style="text-decoration: none">http://www.mingw.org/</a>
     ¹<br>
 	&nbsp;Also compatible with Dev-C++ - 
@@ -315,8 +349,8 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
   </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Win32_dllw4</b></td>
-    <td bgcolor="#C0C0C0">&nbsp;DLL and import library built 
-	with MingW gcc 4.3</td>
+    <td bgcolor="#C0C0C0" class="style3">&nbsp;DLL and import library built 
+	with MingW gcc 4.3 (See <b>Win32_mingw4</b>)</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Win32_owc1</b></td>
@@ -334,7 +368,7 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Win32_bin</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;Executables only for Windows NT/2000/XP (can be 
+    <td bgcolor="#DDDDDD">&nbsp;Executables only for Windows NT/2000/XP/Vista/7 (can be 
 	generated by any of the above compilers)</td>
   </tr>
   <tr>
@@ -345,12 +379,12 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><strong>Win32_cygw15_bin</strong></td>
     <td bgcolor="#DDDDDD">&nbsp;Executables only for Windows NT/2000/XP, but 
-    using the Cygwin Posix system</td>
+    using the Cygwin Posix system (See <b>Win32_cygw15</b>)</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><strong>Win32_cygw17_bin</strong></td>
     <td bgcolor="#DDDDDD">&nbsp;Executables only for Windows NT/2000/XP, but 
-    using the Cygwin Posix system</td>
+    using the Cygwin Posix system (See <b>Win32_cygw17</b>)</td>
   </tr>
 </table>
   

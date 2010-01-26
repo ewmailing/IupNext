@@ -58,7 +58,7 @@
 #include "iup.h"
 
 /* This appears only here to avoid changing the iup.h header fo bug fixes */
-#define IUP_VERSION_FIX " RC4a"
+#define IUP_VERSION_FIX ""
 #define IUP_VERSION_FIX_NUMBER 0
 
 const char iup_ident[] = 
