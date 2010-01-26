@@ -195,14 +195,6 @@ DEBUGGER := $(TEC_TOOLCHAIN)gdb
 RCC      := $(TEC_TOOLCHAIN)windres 
 LD       := $(TEC_TOOLCHAIN)gcc
 
-ifeq ($(TEC_UNAME), gcc2)
-  ifdef USE_GCC_2
-    CC := $(CC)-2
-    CPPC := $(CPPC)-2
-    FF := $(FF)-2
-  endif
-endif
-
 
 #---------------------------------#
 # User Configuration File
@@ -261,9 +253,7 @@ else
   STDDEFS += -DNDEBUG
   ifdef OPT
     STDFLAGS += $(OPTFLAGS)
-    ifeq ($(findstring gcc, $(TEC_UNAME)), )
-      STRIP ?= Yes
-    endif
+    STRIP ?= Yes
   endif
 endif
 
@@ -295,12 +285,6 @@ endif
 ifdef BUILD_64
   ifdef BUILD_64_DIR
     TEC_UNAME := $(TEC_UNAME)_64
-  endif
-endif
-
-ifneq ($(findstring gcc, $(TEC_UNAME)), )
-  ifeq ($(MAKETYPE), APP)
-    TEC_UNAME_DIR ?= $(TEC_SYSNAME)
   endif
 endif
 
@@ -368,17 +352,6 @@ MOTIFGL_LIB := GLw              #include <GL/GLwMDrawA.h>
 #GLUT_LIB := 
 #GLUT_INC := 
 
-
-ifneq ($(findstring cygw, $(TEC_UNAME)), ) 
-  NO_DYNAMIC ?= Yes
-  ifdef BUILD_64
-    X11_LIB := /usr/X11R6/lib64
-  else
-    X11_LIB := /usr/X11R6/lib
-  endif
-  X11_INC := /usr/X11R6/include
-  MOTIFGL_LIB :=
-endif
 
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
   ifdef BUILD_64
@@ -789,9 +762,6 @@ ifdef USE_IM
   INCLUDES += $(IM)/include
 endif
 
-# All except gcc in Windows (Cygwin/MingW)
-ifeq ($(findstring Win, $(TEC_SYSNAME)), )
-
 ifdef USE_GLUT
   LIBS += glut
   LDIR += $(GLUT_LIB)
@@ -875,51 +845,14 @@ endif
 
 LIBS += m
 
-else
-  # gcc in Windows
-  STDDEFS += -DWIN32
-
-  # Alternative MingW support (not currently used)
-  ifneq ($(findstring mingw, $(TEC_UNAME)), )
-    DLIBEXT := dll
-    APPEXT := .exe
-    DLIBPRE :=
-  else
-    NO_DYNAMIC ?= Yes
-  endif
+ifneq ($(findstring cygw, $(TEC_UNAME)), )
+  DLIBEXT := dll
+  APPEXT := .exe
+# Use the cyg prefix to indicate that it is a Cygwin Posix DLL  
+  DLIBPRE := cyg
   
-  ifdef USE_NOCYGWIN
-    STDFLAGS += -mno-cygwin
-  endif
-  
-  ifdef USE_GLUT
-    LIBS += glut32
-  endif 
-
-  ifdef USE_OPENGL
-    LIBS += glaux glu32 opengl32
-  endif 
-
-  LIBS += gdi32 winspool comdlg32 comctl32 ole32
-  
-  ifdef USE_GTK
-    LIBS += gtk-win32-2.0 gdk-win32-2.0 gdk_pixbuf-2.0 pango-1.0 pangowin32-1.0 gobject-2.0 gmodule-2.0 glib-2.0
-    #LDIR += $(GTK)/lib
-    GTK_INC = /usr
-    STDINCS += $(GTK_INC)/include/atk-1.0 $(GTK_INC)/include/gtk-2.0 $(GTK_INC)/include/cairo $(GTK_INC)/include/pango-1.0 $(GTK_INC)/include/glib-2.0 $(GTK_INC)/lib/glib-2.0/include $(GTK_INC)/lib/gtk-2.0/include
-  endif
-  
-  APPTYPE ?= windows
-  
-  ifeq ($(APPTYPE), windows)
-    LFLAGS += -mwindows 
-  
-    ifdef USE_NOCYGWIN
-      LFLAGS += -mno-cygwin
-    endif
-  endif
-endif
-
+  STDLDFLAGS += -Wl,--out-implib=$(TARGETDIR)/lib$(TARGETNAME).dll.a
+endif 
 
 #---------------------------------#
 #  Building compilation flags that are sets
