@@ -193,7 +193,6 @@ RANLIB   := $(TEC_TOOLCHAIN)ranlib
 AR       := $(TEC_TOOLCHAIN)ar
 DEBUGGER := $(TEC_TOOLCHAIN)gdb
 RCC      := $(TEC_TOOLCHAIN)windres 
-LD       := $(TEC_TOOLCHAIN)gcc
 
 
 #---------------------------------#
@@ -306,8 +305,10 @@ TARGETDIR := $(TARGETROOT)/$(TEC_UNAME_DIR)
 ifndef LINKER
   ifneq "$(findstring .cpp, $(SRC))" ""
     LINKER := $(CPPC)
+    LD := $(CPPC)
   else
     LINKER := $(CC)
+    LD := $(CC)
   endif
 endif
 
@@ -631,8 +632,13 @@ ifdef USE_LUA
       LIBS += lualib$(LUASUFX)
     endif
     ifndef NO_LUALINK
-      LIBS += lua$(LUASUFX)
-      LDIR += $(LUA_LIB)
+        LIBS += lua$(LUASUFX)
+        LDIR += $(LUA_LIB)
+    else
+      ifneq ($(findstring cygw, $(TEC_UNAME)), )
+        LIBS += lua$(LUASUFX)
+        LDIR += $(LUA_LIB)
+      endif
     endif
   endif
   
@@ -771,7 +777,9 @@ endif
 ifdef USE_OPENGL
   override USE_X11 = Yes
   ifdef USE_MOTIF
-    LIBS += $(MOTIFGL_LIB)
+    ifndef USE_IUP3
+      LIBS += $(MOTIFGL_LIB)
+    endif
   endif
   LIBS += $(OPENGL_LIBS)
   LDIR += $(OPENGL_LIB)

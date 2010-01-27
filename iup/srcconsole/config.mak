@@ -104,13 +104,15 @@ ifdef DBG
 else
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     # Dinamically link in Windows, when not debugging
-    # Must call "tecmake dll8"
+    # Must call "tecmake dll8" so USE_* will use the correct TEC_UNAME
     USE_LUA51 = Yes
     USE_DLL = Yes
     GEN_MANIFEST = No
   else
     # In UNIX Lua is always statically linked, late binding is used.
-    USE_STATIC = Yes
+    ifeq ($(findstring cygw, $(TEC_UNAME)), )
+      USE_STATIC = Yes
+    endif
     USE_LUA51 = Yes
   endif
 endif
@@ -122,7 +124,6 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 endif
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
-  LDFLAGS = -s
   LIBS += readline history
 endif
 
