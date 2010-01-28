@@ -129,7 +129,7 @@ int iupGlobalIsPointer(const char* name)
   static struct {
     const char *name;
   } ptr_table[] = {
-#if !defined(__APPLE__) && !defined(__MACH__)
+#ifndef GTK_MAC
   #ifdef WIN32
     {"HINSTANCE"},
   #else

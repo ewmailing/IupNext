@@ -101,7 +101,7 @@ static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
   iupArrayDestroy(names_array);
 }
 
-#if defined(__APPLE__) && defined(__MACH__)   /******************* MAC ********************/
+#ifdef GTK_MAC
   #include <gdk/gdk.h>
 #else
   #ifdef WIN32
@@ -116,7 +116,7 @@ static void gtkFileDlgUpdatePreviewGLCanvas(Ihandle* ih)
   Ihandle* glcanvas = IupGetAttributeHandle(ih, "PREVIEWGLCANVAS");
   if (glcanvas)
   {
-#if !defined(__APPLE__) && !defined(__MACH__)
+#ifndef GTK_MAC
   #ifdef WIN32                                 
       iupAttribSetStr(glcanvas, "HWND", iupAttribGet(ih, "HWND"));
   #else
@@ -132,7 +132,7 @@ static void gtkFileDlgPreviewRealize(GtkWidget *widget, Ihandle *ih)
   iupAttribSetStr(ih, "PREVIEWDC", iupgtkGetNativeGraphicsContext(widget));
   iupAttribSetStr(ih, "WID", (char*)widget);
 
-#if !defined(__APPLE__) && !defined(__MACH__)
+#ifndef GTK_MAC
   #ifdef WIN32                                 
     iupAttribSetStr(ih, "HWND", (char*)GDK_WINDOW_HWND(widget->window));
   #else

@@ -990,7 +990,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterCallback(ic, "TRAYCLICK_CB", "iii");
 
   /* Driver Dependent Attribute functions */
-#if !defined(__APPLE__) && !defined(__MACH__)
+#ifndef GTK_MAC
   #ifdef WIN32                                 
     iupClassRegisterAttribute(ic, "HWND", iupgtkGetNativeWindowHandle, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
   #else

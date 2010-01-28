@@ -441,8 +441,9 @@ ifneq ($(findstring Darwin, $(TEC_UNAME)), )
   MOTIF_INC := /usr/OpenMotif/include
   MOTIF_LIB := /usr/OpenMotif/lib
   ifdef BUILD_DYLIB
-    STDLDFLAGS := -dynamiclib -Wl -headerpad_max_install_names -undefined dynamic_lookup -install_name lib$(TARGETNAME).dylib
+    STDLDFLAGS := -dynamiclib -Wl -fno-common -headerpad_max_install_names -undefined dynamic_lookup -install_name lib$(TARGETNAME).dylib
     DLIBEXT := dylib
+    STDFLAGS += -fno-common
   else
     STDLDFLAGS := -bundle -undefined dynamic_lookup
   endif

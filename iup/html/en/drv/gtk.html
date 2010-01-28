@@ -23,25 +23,33 @@ Critical features need at least version 2.8.</p>
 <p>Currently it is not available for IRIX, AIX and SunOS. But is it available 
 for SunOS10 and it is not available for Linux24.</p>
 <h3>Tips</h3>
-<p>The GTK driver can be compiled and used in Windows, but it is not recomended since it is slower and 
+<h4>Dependencies</h4>
+<p>GTK is in fact composed of several libraries. The GTK package contains the 
+GDK library and depends on the ATK, Cairo, Glib and Pango libraries.</p>
+<h4>Windows</h4>
+
+<p>The GTK driver can be compiled and used in Windows, but it is not recommended since it is slower and 
 much more memory 
   consuming than the IUP native Windows driver.</p>
-<p>The GTK driver also compiles in MacOSX with the new GTK port available at
-<a href="http://gtk-osx.sourceforge.net/">http://gtk-osx.sourceforge.net/</a>. 
-But the <strong>IupGLCanvas</strong> is not available yet, you must use the GDK base driver of 
-the CD library and some elements like <strong>IupTree</strong> are not 100% functional. The 
-installation of gtk-osx is quite complex because there are no pre-compiled 
-binaries. Also if the MacOSX theme is used several controls have problems. We hope that this will improve in the future.</p>
-<p>GTK uses UTF-8 as its charset for all displayed text, so IUP will 
-automatically convert all strings to (SetAttribute) and from (GetAttribute) 
-UTF-8. To use UTF-8 strings set the global attribute UTF8AUTOCONVERT to NO.</p>
 <p>When using DLLs in Windows, the &quot;iup.dll&quot; uses the Win32 driver. So 
 applications that dynamically load IUP will always use the &quot;iup.dll&quot;, for 
 example Lua using require. To use the IUP GTK dll in Windows you must rename the 
 &quot;iupgtk.dll&quot; to &quot;iup.dll&quot;, so the GTK driver will be loaded instead of the Win32 
 driver.</p>
-<p>GTK is in fact composed of several libraries. The GTK package contains the 
-GDK library and depends on the ATK, Cairo, Glib and Pango libraries.</p>
+<h4>MacOSX</h4>
+<p>The GTK driver also compiles in MacOSX with the new GTK port available at
+<a href="http://gtk-osx.sourceforge.net/">http://gtk-osx.sourceforge.net/</a>. 
+But the <strong>IupGLCanvas</strong> is not available yet, you must use the GDK base driver of 
+the CD library and some elements like <strong>IupTree</strong> are not 100% functional. The 
+installation of gtk-osx is quite complex because there are no pre-compiled 
+binaries. Also if the MacOSX theme is used several controls have problems. We hope that this will improve in the future. 
+Must define GTK_MAC in the config.mak makefile to enable this build.</p>
+<p>So for now we are distributing binaries that use the X11 version of GTK 2.16. 
+They were installed using <a href="http://www.finkproject.org/">Fink</a>.</p>
+<h4>UTF-8</h4>
+<p>GTK uses UTF-8 as its charset for all displayed text, so IUP will 
+automatically convert all strings to (SetAttribute) and from (GetAttribute) 
+UTF-8. To use UTF-8 strings set the global attribute UTF8AUTOCONVERT to NO.</p>
 
 </body>
 

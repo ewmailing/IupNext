@@ -20,7 +20,7 @@
 
 #include "iupgtk_drv.h"
 
-#if defined(__APPLE__) && defined(__MACH__)   /******************* MAC ********************/
+#ifdef GTK_MAC
 #include <gdk/gdk.h>
 
 char* iupgtkGetNativeWindowHandle(Ihandle* ih)
