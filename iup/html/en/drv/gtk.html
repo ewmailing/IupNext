@@ -36,6 +36,10 @@ applications that dynamically load IUP will always use the &quot;iup.dll&quot;, 
 example Lua using require. To use the IUP GTK dll in Windows you must rename the 
 &quot;iupgtk.dll&quot; to &quot;iup.dll&quot;, so the GTK driver will be loaded instead of the Win32 
 driver.</p>
+<p>After installing the GTK binaries, we recommend to change the default theme 
+to the &quot;MS-Windows&quot; theme. Edit the &quot;gtk\etc\gtk-2.0\gtkrc&quot; file and change its 
+contents to:</p>
+<pre>gtk-theme-name = &quot;MS-Windows&quot;</pre>
 <h4>MacOSX</h4>
 <p>The GTK driver also compiles in MacOSX with the new GTK port available at
 <a href="http://gtk-osx.sourceforge.net/">http://gtk-osx.sourceforge.net/</a>. 
