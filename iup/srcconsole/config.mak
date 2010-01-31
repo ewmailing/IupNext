@@ -110,8 +110,11 @@ else
     GEN_MANIFEST = No
   else
     # In UNIX Lua is always statically linked, late binding is used.
+    # Except in Cygwin and MacOSX
     ifeq ($(findstring cygw, $(TEC_UNAME)), )
-      USE_STATIC = Yes
+      ifeq ($(findstring Darwin, $(TEC_UNAME)), )
+        USE_STATIC = Yes
+      endif
     endif
     USE_LUA51 = Yes
   endif
@@ -125,6 +128,10 @@ endif
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
   LIBS += readline history
+endif
+
+ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+  LIBS += readline
 endif
 
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
