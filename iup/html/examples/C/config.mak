@@ -57,7 +57,7 @@ DBG = Yes
 #SRC = text.c
 #SRC = timer.c
 #SRC = toggle.c
-SRC = tree.c
+#SRC = tree.c
 #SRC = val.c
 #SRC = vbox.c
 #SRC = zbox.c
@@ -74,8 +74,8 @@ SRC = tree.c
 #SRC = canvas3.c
 #SRC = scrollbar.c
 
-#USE_OPENGL = Yes
-#SRC = glcanvas.c
+USE_OPENGL = Yes
+SRC = glcanvas.c
 
 #USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
