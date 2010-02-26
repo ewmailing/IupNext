@@ -51,9 +51,9 @@ iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: strin
   <pre>int function(Ihandle* <b>dialog</b>, int <b>param_index, </b>void* <b>user_data</b>); [in C]<br>luafunction(<b>dialog</b>: ihandle<b>, param_index</b>: number) -&gt; (ret: number) [in Lua]</pre>
   <p><b>dialog</b>: dialog handle<br>
   <b>param_index</b>: current parameter being 
-    changed. It is -1 if the user pressed the <b>OK</b> button. It is -2 when the dialog is 
+    changed. It is -1 if the user pressed the <b>OK</b> button. It is -2 after the dialog is 
   <b>mapped</b>, just before 
-    shown. It is -3 if the user pressed the <b>Cancel</b> button.<br>
+    it is shown. It is -3 if the user pressed the <b>Cancel</b> button.<br>
   <b>user_data</b>: a user pointer that is passed in the function call.</p>
   <p><span class="style1">Returns:</span> You can reject the change or the OK action by returning 0 in the callback, otherwise you must return 1.</p>
   <p>You should not programmatically change the current parameter value during the callback. On the other hand you can 
