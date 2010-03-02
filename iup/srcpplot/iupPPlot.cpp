@@ -942,7 +942,7 @@ PPlot::PPlot ():
   mHasAnyModifyingCalculatorBeenActive (false)
 {
    mMargins = kDefaultMargins;
-   mYAxisSetup.mAscending = false;
+   mYAxisSetup.mAscending = false;  /* default inverted for Y */
 }
 
 PPlot::~PPlot () {

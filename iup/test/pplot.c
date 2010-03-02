@@ -199,6 +199,7 @@ static void InitPlots(void)
   }
   IupPPlotEnd(plot[2]);
   IupSetAttribute(plot[2], "DS_COLOR", "100 100 200");
+  IupSetAttribute(plot[2], "DS_LINESTYLE", "DOTTED");
 
   /* PLOT 3 - MakeExamplePlot5 */
   IupSetAttribute(plot[3], "TITLE", "Bar Mode");

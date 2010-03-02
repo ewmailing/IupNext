@@ -33,7 +33,7 @@ very flexible license (<a href="http://sourceforge.net/softwaremap/trove_list.ph
 License</a>). IupPPlot library includes the PPlot source code so no external 
 references are needed. Also the standard PPlot distribution source code was 
 changed to improve features and visual appearance.</p>
-<p>IupPPlot first implementation was writen by Marian Trifon 
+<p>IupPPlot first implementation was written by Marian Trifon 
 (mtrif@katamail.com), then completed and documented by the IUP team.</p>
 <h3>Initialization and Usage</h3>
 <p>The <b>IupPPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
@@ -42,22 +42,22 @@ changed to improve features and visual appearance.</p>
 <p>To make the control available in Lua, use the initialization function in C, 
 <b>iuppplotlua_open</b>, after calling <b>iuplua_open</b>.
   &nbsp;The iuplua_pplot.h file must also be included in the source code. The program must be linked to the 
-lua control 
+Lua control 
   library (iuplua_pplot).</p>
 <h3>Guide</h3>
 <p>Each plot can contain 2 <b>axis</b> (X and Y), a <b>title</b>, a <b>
 legend</b> <b>box</b>, a <b>grid</b>, a <b>dataset</b> <b>area</b> and as many
 <b>datasets</b> you want. </p>
-<p>Each data set is added using the <b>IupPPlotAdd </b>function. Al other plot 
+<p>Each data set is added using the <b>IupPPlotAdd </b>function. All other plot 
 parameters are configured by attributes.</p>
-<p>If no attribute is set, the default values are choosed to try to best display 
+<p>If no attribute is set, the default values were selected to best display 
 the plot.</p>
 <p>When setting attributes the plot is NOT redrawn until the REDRAW attribute is 
-set or a redraw event occours.</p>
+set or a redraw event occurs.</p>
 <p>The <b>dataset area</b> is delimited by a margin. Data is only plotted inside 
 the dataset area. Axis and main title are 
-positioned indepent of this margin. It is very important to set the margins when 
-using axis automatic scaling or the axis itih maybe hidden.</p>
+positioned independent of this margin. It is very important to set the margins when 
+using axis automatic scaling or the axis maybe hidden.</p>
 <p>The <b>legend box</b> is a list of the dataset names, each one drawn with the 
 same color of the correspondent dataset. The box is located in one of the four 
 corners of the dataset area.</p>
@@ -108,7 +108,7 @@ iup.pplot{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 pplot(<strong>action</strong>) [in LED]</pre>
 </div>
 <p>This function returns the identifier of the 
-  created pplot, or NULL if an error occurs.</p>
+  created plot, or NULL if an error occurs.</p>
 <h3>Auxiliary Functions</h3>
 <pre>void <b>IupPPlotBegin</b>(Ihandle* <b>ih</b>, int <b>strXdata</b>); [in C]
 <b>iup.PPlotBegin</b>(<b>ih</b>: ihandle, <b>strXdata</b>: number) [in Lua]</pre>
@@ -187,7 +187,7 @@ specific axis. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>
 <p><b>CLEAR</b> (write-only): removes all datasets. Value is ignored.</p>
 <p><b>COUNT</b> [read-only]: <font SIZE="3">total number of datasets.</font></p>
 <p><b>CURRENT</b>: <font SIZE="3">current  dataset index. Default is 
--1. When a dataset is added it becames the current dataset. The index starts at 
+-1. When a dataset is added it becomes the current dataset. The index starts at 
 0. All &quot;DS_*&quot; attributes are dependent on this value.</font></p>
 <p><b>DS_LEGEND</b>: legend text of the current dataset. Default is dynamically 
 generated: &quot;plot 0&quot;, &quot;plot 1&quot;, &quot;plot 2&quot;, ...</p>
@@ -221,7 +221,8 @@ Can be YES or NO. Default: YES.</p>
 <p><b>AXS_XLABELCENTERED</b>, <b>AXS_YLABELCENTERED</b>: text label position at 
 center (YES) or at top/right (NO). Default: YES.</p>
 <p><b>AXS_XREVERSE, AXS_YREVERSE</b>: reverse the axis direction. Can be YES or 
-NO. Default: NO.</p>
+NO. Default: NO. Default is Y oriented bottom to top, and X oriented from left 
+to right.</p>
 <p><b>AXS_XCROSSORIGIN, AXS_YCROSSORIGIN</b>: allow the axis to cross the 
 origin and to be placed inside the dataset area. Can be YES or NO. Default: YES.</p>
 <p><b>AXS_XSCALE, AXS_YSCALE</b>: configures the scale of the respective axis. 
@@ -274,8 +275,8 @@ dataset.
 <strong>elem</strong>:delete_cb(<b>index, sample_index, x, y</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>index</strong>: index of the dataset<br>
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
-    x</strong>: X coodinate value of the sample<br>
-    <strong>y</strong>: Y coodinate value of the sample</p>
+    x</strong>: X coordinate value of the sample<br>
+    <strong>y</strong>: Y coordinate value of the sample</p>
     <p class="info">
     If the return value is IUP_IGNORE then the sample is not deleted.</p>
   
@@ -292,14 +293,14 @@ will begin or end. But they are called only if DELETE_CB is also defined.</p>
 <p><b>SELECT_CB</b>:
   Action generated when  a sample is selected.
     If multiple points are selected it is called once for each new selected point. 
-It is called only if the selection state of te sample is about to be changed.</p>
+It is called only if the selection state of the sample is about to be changed.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y, </strong>int <strong>select</strong>); [in C]
 <strong>elem</strong>:select_cb(<b>index, sample_index, x, y, select</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>index</strong>: index of the dataset<br>
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
-    x</strong>: X coodinate value of the sample<br>
-    <strong>y</strong>: Y coodinate value of the sample<br>
+    x</strong>: X coordinate value of the sample<br>
+    <strong>y</strong>: Y coordinate value of the sample<br>
     <b>select</b>: boolean value that a non zero value indicates if the point is 
     to be selected.</p>
     <p class="info">
@@ -319,16 +320,16 @@ defined.</p>
 <p><b>EDIT_CB</b>:
   Action generated when  a sample is selected.
     If multiple points are selected it is called once for each new selected point. 
-It is called only if the selection state of te sample is about to be changed.</p>
+It is called only if the selection state of the sample is about to be changed.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y, </strong>float <strong>*new_x</strong>, float <strong>*new_y</strong>); [in C]
 <strong>elem</strong>:edit_cb(<b>index, sample_index, x, y, </b><strong>new_x, new_y</strong>: number) -&gt; (<strong>new_x, new_y, ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>index</strong>: index of the dataset<br>
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
-    x</strong>: X coodinate value of the sample<br>
-    <strong>y</strong>: Y coodinate value of the sample<br>
-    <strong>new_x</strong>: the new X coodinate value of the sample<br>
-    <strong>new_y</strong>: the new Y coodinate value of the sample</p>
+    x</strong>: X coordinate value of the sample<br>
+    <strong>y</strong>: Y coordinate value of the sample<br>
+    <strong>new_x</strong>: the new X coordinate value of the sample<br>
+    <strong>new_y</strong>: the new Y coordinate value of the sample</p>
     <p class="info">
     If the return value is IUP_IGNORE then the sample is not edited. The 
     application can changed the new value before it is edited.</p>
@@ -346,7 +347,7 @@ defined.</p>
   
 <p><b>PREDRAW_CB, POSTDRAW_CB</b>: Actions generated before and after the redraw 
 operation. Predraw can be used to draw a different background and Postdraw can 
-be used to draw addicional information in the plot. Predraw has no restrictions, 
+be used to draw additional information in the plot. Predraw has no restrictions, 
 but Postdraw is clipped to the dataset area. To position elements in plot units, 
 use the <b>IupPPlotTransform</b> function.</p>
   
@@ -354,7 +355,7 @@ use the <b>IupPPlotTransform</b> function.</p>
 <strong>elem</strong>:predraw_cb(<b>cnv</b>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]
 <strong>elem</strong>:postdraw_cb(<b>cnv</b>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>cnv</strong>: the CD canvas where the draw operation 
-    occours.</p>
+    occurs.</p>
   <blockquote>
   <hr>
 </blockquote>
