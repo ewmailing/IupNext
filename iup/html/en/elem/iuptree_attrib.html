@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
-<html>
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupTree Attributes</title>
@@ -231,7 +231,7 @@ after the reference node, where id is the reference node identifier. If id is
 empty, then the focus node is used as reference node. The value is used as the 
 text label of the new node. The id of the new node will be the id of the 
 reference node + 1. 
-  The reference node is marked and all others unmarked. The reference node 
+  The attribute <strong>LASTADDNODE</strong> is set to the new id. The reference node is marked and all others unmarked. The reference node 
 position remains the same. If the reference node does not exist, nothing 
 happens. If the reference node is a branch then the depth of the new node is one 
 depth increment from the depth of the reference node, if the reference node is a 
@@ -279,7 +279,8 @@ in the string as &quot;%p&quot;. (since 3.0)</p>
 <p><strong>INSERTLEAFid</strong>, <strong>INSERTBRANCHid </strong>
 (write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
 the depth of the new node is always the same of the reference node. 
-(since 3.0)</p>
+The id of the new node can not be computed easily but the attribute <strong>
+LASTADDNODE</strong> is set to the new id. (since 3.0)</p>
 
 <p><strong>MOVENODEid </strong>(write only): Moves a node and its children, 
 where id is the specified node identifier. If id is empty, then the focus node 
