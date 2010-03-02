@@ -300,6 +300,7 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
   TVITEM item, tviPrevItem;
   TVINSERTSTRUCT tvins;
   HTREEITEM hPrevItem = winTreeFindNodeFromString(ih, name_id);
+  HTREEITEM hNewItem;
   int kindPrev;
   winTreeItemData* itemData;
 
@@ -354,7 +355,8 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
   }
 
   /* Add the node to the tree-view control */
-  SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+  hNewItem = (HTREEITEM)SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+  iupAttribSetStr(ih, "_IUPTREE_LASTADDNODE", (char*)hNewItem);
 
   if (kindPrev == ITREE_BRANCH && tviPrevItem.cChildren==0)
   {
@@ -1305,11 +1307,21 @@ static char* winTreeGetStateAttrib(Ihandle* ih, const char* name_id)
 
 static int winTreeSetStateAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
+  TVITEM item;
+  winTreeItemData* itemData;
   HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
   if (!hItem)
     return 0;
 
-  winTreeExpandItem(ih, hItem, iupStrEqualNoCase(value, "EXPANDED"));
+  /* Get Children: branch or leaf */
+  item.mask = TVIF_HANDLE|TVIF_PARAM|TVIF_STATE; 
+  item.hItem = hItem;
+  SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+  itemData = (winTreeItemData*)item.lParam;
+
+  if (itemData->kind == ITREE_BRANCH)
+    winTreeExpandItem(ih, hItem, iupStrEqualNoCase(value, "EXPANDED"));
+
   return 0;
 }
 
@@ -1483,6 +1495,22 @@ static char* winTreeGetCountAttrib(Ihandle* ih)
   char* str = iupStrGetMemory(10);
   sprintf(str, "%d", (int)SendMessage(ih->handle, TVM_GETCOUNT, 0, 0));
   return str;
+}
+
+static char* winTreeGetLastAddNodeAttrib(Ihandle* ih)
+{
+  HTREEITEM hItem = (HTREEITEM)iupAttribGet(ih, "_IUPTREE_LASTADDNODE");
+  if (hItem)
+  {
+    int id = winTreeGetNodeId(ih, hItem);
+    if (id != -1)
+    {
+      char* str = iupStrGetMemory(10);
+      sprintf(str, "%d", id);
+      return str;
+    }
+  }
+  return NULL;
 }
 
 static char* winTreeGetKindAttrib(Ihandle* ih, const char* name_id)
@@ -2533,6 +2561,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPACING", iupTreeGetSpacingAttrib, winTreeSetSpacingAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TOPITEM", NULL, winTreeSetTopItemAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LASTADDNODE", winTreeGetLastAddNodeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - IMAGES */
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, winTreeSetImageAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

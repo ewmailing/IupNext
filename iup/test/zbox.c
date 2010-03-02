@@ -45,6 +45,7 @@ void ZboxTest(void)
 
   /* Creates zbox with four elements */
   zbox = IupZbox (frame, text, lbl, btn, NULL);
+//  zbox = IupZbox (IupZbox(IupSetAttributes(IupCanvas(NULL), "RASTERSIZE=100x100"), NULL), NULL);
 
   /* Associates handle "zbox" with zbox */
   IupSetHandle ("zbox", zbox);

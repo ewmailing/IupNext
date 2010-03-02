@@ -418,14 +418,21 @@ Iclass* iupTreeGetClass(void)
 /********************************************************************************************/
 
 
-void IupTreeSetAttribute(Ihandle* ih, const char* a, int id, char* v)
+void IupTreeSetAttribute(Ihandle* ih, const char* a, int id, const char* v)
 {
   char* attr = iupStrGetMemory(50);
   sprintf(attr, "%s%d", a, id);
   IupSetAttribute(ih, attr, v);
 }
 
-void IupTreeStoreAttribute(Ihandle* ih, const char* a, int id, char* v)
+void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
+{
+  char* attr = iupStrGetMemory(50);
+  sprintf(attr, "%s%d", a, id);
+  IupSetAttributeHandle(ih, attr, ih_named);
+}
+
+void IupTreeStoreAttribute(Ihandle* ih, const char* a, int id, const char* v)
 {
   char* attr = iupStrGetMemory(50);
   sprintf(attr, "%s%d", a, id);
@@ -453,7 +460,7 @@ float IupTreeGetFloat(Ihandle* ih, const char* a, int id)
   return IupGetFloat(ih, attr);
 }
 
-void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, char* f, ...)
+void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, const char* f, ...)
 {
   static char v[SHRT_MAX];
   char* attr = iupStrGetMemory(50);

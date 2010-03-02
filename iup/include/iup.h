@@ -198,12 +198,13 @@ int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);
 void* IupTreeGetUserId(Ihandle* ih, int id);
 int   IupTreeGetId(Ihandle* ih, void *userid);
 
-void  IupTreeSetAttribute  (Ihandle* ih, const char* name, int id, char* value);
-void  IupTreeStoreAttribute(Ihandle* ih, const char* name, int id, char* value);
+void  IupTreeSetAttribute  (Ihandle* ih, const char* name, int id, const char* value);
+void  IupTreeStoreAttribute(Ihandle* ih, const char* name, int id, const char* value);
 char* IupTreeGetAttribute  (Ihandle* ih, const char* name, int id);
 int   IupTreeGetInt        (Ihandle* ih, const char* name, int id);
 float IupTreeGetFloat      (Ihandle* ih, const char* name, int id);
-void  IupTreeSetfAttribute (Ihandle* ih, const char* name, int id, char* format, ...);
+void  IupTreeSetfAttribute (Ihandle* ih, const char* name, int id, const char* format, ...);
+void  IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named);
 
 
 /************************************************************************/

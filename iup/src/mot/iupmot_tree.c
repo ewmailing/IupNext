@@ -888,6 +888,7 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
 
 
   wNewItem = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
+  iupAttribSetStr(ih, "_IUPTREE_LASTADDNODE", (char*)wNewItem);
 
   if (kind == ITREE_BRANCH)
   {
@@ -1132,14 +1133,19 @@ static char* motTreeGetStateAttrib(Ihandle* ih, const char* name_id)
 
 static int motTreeSetStateAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
+  motTreeItemData *itemData;
   Widget wItem = motTreeFindNodeFromString(ih, name_id);
   if (!wItem)
     return 0;
 
-  if (iupStrEqualNoCase(value, "EXPANDED"))
-    XtVaSetValues(wItem, XmNoutlineState, XmEXPANDED, NULL);
-  else 
-    XtVaSetValues(wItem, XmNoutlineState, XmCOLLAPSED, NULL);
+  XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
+  if (itemData->kind == ITREE_BRANCH)
+  {
+    if (iupStrEqualNoCase(value, "EXPANDED"))
+      XtVaSetValues(wItem, XmNoutlineState, XmEXPANDED, NULL);
+    else 
+      XtVaSetValues(wItem, XmNoutlineState, XmCOLLAPSED, NULL);
+  }
 
   return 0;
 }
@@ -1305,6 +1311,22 @@ static char* motTreeGetCountAttrib(Ihandle* ih)
   Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
   sprintf(str, "%d", motTreeCount(ih, wRoot));
   return str;
+}
+
+static char* motTreeGetLastAddNodeAttrib(Ihandle* ih)
+{
+  Widget wItem = (Widget)iupAttribGet(ih, "_IUPTREE_LASTADDNODE");
+  if (wItem)
+  {
+    int id = motTreeGetNodeId(ih, wItem);
+    if (id != -1)
+    {
+      char* str = iupStrGetMemory(10);
+      sprintf(str, "%d", id);
+      return str;
+    }
+  }
+  return NULL;
 }
 
 static char* motTreeGetKindAttrib(Ihandle* ih, const char* name_id)
@@ -2798,6 +2820,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "COUNT", motTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPACING", iupTreeGetSpacingAttrib, motTreeSetSpacingAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TOPITEM", NULL, motTreeSetTopItemAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LASTADDNODE", motTreeGetLastAddNodeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - IMAGES */
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, motTreeSetImageAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
