@@ -44,21 +44,15 @@ if
 <p>See the <a href="../attrib_guide.html">Attributes Guide</a> for more details.</p>
 <p>This function return value is not 
   necessarily the same pointer used by the application to define the attribute value.&nbsp;The pointers of internal IUP attributes 
-  returned by <strong>IupGetAttribute</strong> must <b>never</b> be freed or changed.</p>
-
-<h4>Storage and Inheritance</h4>
-
-<p>When the attribute is retrieved it is first checked at the element class implementation. If not defined then it checks in the 
-hash table. If not defined, the attribute will be inherited from its parent
-  hash table and so forth, until it reaches the dialog. But if still then the attribute is not defined 
-  a default value for the element is returned (the default value can also be NULL). 
-Inheritance can be blocked by the element class implementation.</p>
+  returned by <strong>IupGetAttribute</strong> should <b>never</b> be freed or changed, 
+except when you allocated the memory for that pointer at set it using <strong>
+IupSetAttribute</strong>.</p>
 
 <h4>IupLua</h4>
 
-<p>In IupLua, only known internal pointer attributes are returned as user data 
+<p>In IupLua, only known internal pointer attributes are returned as <strong>user data</strong> 
 or as an ihandle, all other attributes are returned as 
-  strings. To access attribute data always as user data use iup.GetAttributeData:</p>
+  strings. To access attribute data always as <strong>user data</strong> use iup.GetAttributeData:</p>
 
 <pre>iup.GetAttributeData(<strong>ih</strong>: ihandle) -&gt; <strong>value</strong>: userdata [in Lua]</pre>
 

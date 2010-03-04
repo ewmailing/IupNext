@@ -115,6 +115,14 @@ void iupAttribUpdateFromParent(Ihandle* ih)
   }
 }
 
+static int iAttribIsInherit(Ihandle* ih, const  char* name)
+{
+  int inherit;
+  char *def_value;
+  iupClassObjectGetAttributeInfo(ih, name, &def_value, &inherit);
+  return inherit;
+}
+
 static void iAttribNotifyChildren(Ihandle *ih, const char* name, const char *value)
 {
   int inherit;
@@ -123,23 +131,18 @@ static void iAttribNotifyChildren(Ihandle *ih, const char* name, const char *val
   {
     if (!iupTableGet(child->attrib, name))
     {
-      /* set on the class */
-      iupClassObjectSetAttribute(child, name, value, &inherit);
+      /* set only if an inheritable attribute at the child */
+      if (iAttribIsInherit(child, name))
+      {
+        /* set on the class */
+        iupClassObjectSetAttribute(child, name, value, &inherit);
 
-      if (inherit)  /* inherit can be different for the child */
         iAttribNotifyChildren(child, name, value);
+      }
     }
 
     child = child->brother;
   }
-}
-
-static int iAttribIsInherit(Ihandle* ih, const  char* name)
-{
-  int inherit;
-  char *def_value;
-  iupClassObjectGetAttributeInfo(ih, name, &def_value, &inherit);
-  return inherit;
 }
 
 void iupAttribUpdateChildren(Ihandle* ih)
