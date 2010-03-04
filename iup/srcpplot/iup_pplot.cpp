@@ -738,9 +738,9 @@ static int iPPlotSetLegendPosAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "TOPLEFT"))
     ih->data->plt->_plot.mLegendPos = PPLOT_TOPLEFT;
-  if (iupStrEqualNoCase(value, "BOTTOMLEFT"))
+  else if (iupStrEqualNoCase(value, "BOTTOMLEFT"))
     ih->data->plt->_plot.mLegendPos = PPLOT_BOTTOMLEFT;
-  if (iupStrEqualNoCase(value, "BOTTOMRIGHT"))
+  else if (iupStrEqualNoCase(value, "BOTTOMRIGHT"))
     ih->data->plt->_plot.mLegendPos = PPLOT_BOTTOMRIGHT;
   else
     ih->data->plt->_plot.mLegendPos = PPLOT_TOPRIGHT;
