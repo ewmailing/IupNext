@@ -135,9 +135,9 @@ MOVENODE</strong></p>
 <h4>Hierarchy</h4>
 <p>Branches can contain other branches or leaves. The tree always has at least one branch, 
   the <b>root</b>, which will be the parent of all the first level branches and leaves. 
-The root node has id=0 and depth=0. The tree nodes have a sequencial identification number 
+The root node has id=0 and depth=0. The tree nodes have a sequential identification number 
   (id), starting by the root, with id=0, and increases for each node independent 
-from the node depth. The following picture ilustrates the numbering of the nodes 
+from the node depth. The following picture illustrates the numbering of the nodes 
 in a tree.</p>
 <p class="style2">
 <img src="../../../../iup/html/en/elem/images/iuptree.png" width="165" height="279"><br>
@@ -160,7 +160,7 @@ TITLE0 = "Figures"
   INSERTBRANCH9 = "3D"
 </pre>
 <p>The following pseudo code initializes the tree from bottom to top 
-sequencially (except for branches), and also uses the focus node:</p>
+sequentially (except for branches), and also uses the focus node:</p>
 <pre>
 VALUE = 0  // Set the focus node at the root (default for a new element)
 TITLE = "Figures"
@@ -170,8 +170,8 @@ ADDBRANCH = "parallelogram"
 ADDLEAF1 = "diamond"
 ADDLEAF1 = "square"
 ADDBRANCH = "triangle"
-ADDLEAF1 = "scalenus"
-ADDLEAF1 = "isoceles"
+ADDLEAF1 = "scalene"
+ADDLEAF1 = "isosceles"
 ADDLEAF1 = "equilateral"
 ADDLEAF = "Other"
 </pre>
@@ -179,7 +179,7 @@ ADDLEAF = "Other"
 on the order of the operations. Currently we can NOT garantie the order before 
 mapping to the native system, so the initialization must be performed after the 
 tree is mapped.</p>
-<p>Scrollbars are automatically displayed if the tree is greatter than its 
+<p>Scrollbars are automatically displayed if the tree is greater than its 
 display area.</p>
 <p>Branches may be added in IupLua using a Lua Table, see 
 <a href="#TreeAddNodes">iup.TreeAddNodes</a>.&nbsp; </p>
@@ -197,12 +197,12 @@ and closed, empty branches can NOT be opened.</p>
   node as the tree is modified. For example, a id=2 will always refer to the third node in the tree. For that 
   reason, there is also the <strong>USERDATAid</strong>, which allows identifying a specific node. The 
 <strong>USERDATAid </strong>always refers to the same node. The <strong>
-USERDATAid</strong> may contain a user-created structure with other informations 
+USERDATAid</strong> may contain a user-created structure with other information 
 for the node.</p>
 <h4>Images</h4>
 <p>IupTree has three types of images: one associated to the leaf, one to the collapsed branch and 
   the other to the expanded branch. Each image can be changed, both globally and individually.</p>
-<p>The predefined images used in IupTree can be obtained by means of function IupGetHandle.The names of the 
+<p>The predefined images used in IupTree can be obtained by means of function IupGetHandle. The names of the 
   predefined images are: IMGLEAF, IMGCOLLAPSED, IMGEXPANDED, IMGBLANK (blank sheet of paper) and 
   IMGPAPER (written sheet of paper). By default:</p>
 <pre>&quot;IMAGELEAF&quot; uses &quot;IMGLEAF&quot;
@@ -210,7 +210,7 @@ for the node.</p>
 &quot;IMAGEBRANCHEXPANDED&quot; uses &quot;IMGEXPANDED&quot;</pre>
 <pre>&quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are designed for use as &quot;IMAGELEAF&quot;</pre>
 <h4>Simple Marking</h4>
-<p>Is the IupTree&#8217;s default operation mode (MARKMODE=SINGLE). In this mode only one node can 
+<p>Is the IupTree default operation mode (MARKMODE=SINGLE). In this mode only one node can 
 be selected.</p>
 <h4>Multiple Marking</h4>
 <p>IupTree allows marking several nodes simultaneously using the Shift and Control keys. To use 
@@ -236,14 +236,14 @@ also be selected using a rubber band if SHOW_DRAGDROP=NO.</p>
     branch, it is expanded; if it is a leaf, it is executed.</li>
 	<li><b>Ctrl+Arrow Up/Down</b>: Moves only the 
 	focus node.</li>
-  <li><b>Ctrl+Space</b>:&nbsp;Marks or unmarks the node at focus.</li>
-	<li><strong>F2</strong>: Calls the rename callback or invoke the inplace 
+  <li><b>Ctrl+Space</b>:&nbsp;Marks or unmark the node at focus.</li>
+	<li><strong>F2</strong>: Calls the rename callback or invoke the in place 
 	rename.</li>
-	<li><strong>Esc</strong>: cancels inplace rename.</li>
+	<li><strong>Esc</strong>: cancels in place rename.</li>
 </ul>
 <p>In Motif when pressing Tab the focus goes to the next visible node, if there 
 are no next visible node then the next control in the dialog receives the focus. 
-In Windows and Gtk the focus simply goes directly to the next control.</p>
+In Windows and GTK the focus simply goes directly to the next control.</p>
 <p>Using the left mouse button: </p>
 <ul>
   <li><b>Clicking a node</b>: Moves the focus node to the clicked node.</li>
@@ -254,7 +254,7 @@ In Windows and Gtk the focus simply goes directly to the next control.</p>
     branch, it is collapsed; if it is a collapsed branch, it is expanded; if it is a leaf, it is executed. 
   </li>
   <li><b>Clicking twice a node</b>: Calls the rename callback 
-    or invoke the inplace rename.</li>
+    or invoke the in place rename.</li>
 	<li><strong>Clicking and dragging a node</strong>: if SHOWDRAGDROP=Yes 
 	starts a drag. When mouse is released, the DRAGDROP_CB callback is called. 
 	If the callback does not exist or if it returns IUP_CONTINUE then the node is moved 
@@ -405,7 +405,7 @@ void  IupTreeSetfAttribute (Ihandle *ih, const char* name, int id, const char* f
 IupTreeSetAttribute(ih, &quot;ADDLEAF&quot; , 10, value) = IupSetAttribute(ih, &quot;ADDLEAF10&quot;, value)</pre>
 <p>See also the <a href="../guide.html#IupTreeUtil">IupTreeUtil</a> 
 contributed by Sergio Maffra and Frederico Abraham. It 
-  is an utility wrapper in C++ for the IupTree.</p>
+  is an utility wrapper in C++ for the IupTree with some limitations.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <div align="center">

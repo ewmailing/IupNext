@@ -820,6 +820,9 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
   if (!wItemPrev)
     return;
 
+  if (!title)
+    title = "";
+
   itemData = calloc(1, sizeof(motTreeItemData));
   itemData->image = XmUNSPECIFIED_PIXMAP;
   itemData->image_expanded = XmUNSPECIFIED_PIXMAP;
@@ -1567,6 +1570,9 @@ static int motTreeSetTitleAttrib(Ihandle* ih, const char* name_id, const char* v
   Widget wItem = motTreeFindNodeFromString(ih, name_id);
   if (!wItem)  
     return 0;
+
+  if (!value)
+    value = "";
 
   iupmotSetString(wItem, XmNlabelString, value);
 

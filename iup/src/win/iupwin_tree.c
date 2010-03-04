@@ -307,6 +307,9 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
   if (!hPrevItem)
     return;
 
+  if (!title)
+    title = "";
+
   itemData = calloc(1, sizeof(winTreeItemData));
   itemData->image = -1;
   itemData->image_expanded = -1;
@@ -1159,6 +1162,9 @@ static int winTreeSetTitleAttrib(Ihandle* ih, const char* name_id, const char* v
   if (!hItem)
     return 0;
 
+  if (!value)
+    value = "";
+
   item.hItem = hItem;
   item.mask = TVIF_HANDLE | TVIF_TEXT; 
   item.pszText = (char*)value;
@@ -1250,9 +1256,10 @@ static int winTreeSetTitleFontAttrib(Ihandle* ih, const char* name_id, const cha
     if (itemData->hFont)
     {
       TV_ITEM item;
-      item.mask = TVIF_STATE | TVIF_HANDLE;
+      item.mask = TVIF_STATE | TVIF_HANDLE | TVIF_TEXT;
       item.stateMask = TVIS_BOLD;
       item.hItem = hItem;
+      item.pszText = winTreeGetTitle(ih, hItem);   /* reset text to resize item */
       item.state = (strstr(value, "Bold")||strstr(value, "BOLD"))? TVIS_BOLD: 0;
       SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)&item);
     }
@@ -2314,7 +2321,9 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 
     iupAttribSetStr(ih, "_IUPWIN_EDITBOX", NULL);
 
-    if (info->item.pszText)
+    if (!info->item.pszText)
+      info->item.pszText = "";
+
     {
       IFnis cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
       if (cbRename)

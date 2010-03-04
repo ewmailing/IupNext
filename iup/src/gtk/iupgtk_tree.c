@@ -550,6 +550,9 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
 
   iupgtkGetColor(iupAttribGetStr(ih, "FGCOLOR"), &color);
 
+  if (!title)
+    title = "";
+
   /* set the attributes of the new node */
   gtk_tree_store_set(store, &iterNewItem, IUPGTK_TREE_HAS_IMAGE, FALSE,
                                           IUPGTK_TREE_HAS_IMAGE_EXPANDED, FALSE,
@@ -1077,6 +1080,8 @@ static int gtkTreeSetTitleAttrib(Ihandle* ih, const char* name_id, const char* v
   GtkTreeIter iterItem;
   if (!gtkTreeFindNodeFromString(ih, GTK_TREE_MODEL(store), name_id, &iterItem))
     return 0;
+  if (!value)
+    value = "";
   gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_TITLE, iupgtkStrConvertToUTF8(value), -1);
   return 0;
 }
@@ -1735,7 +1740,7 @@ static void gtkTreeCellTextEdited(GtkCellRendererText *cell, gchar *path_string,
   IFnis cbRename;
 
   if (!new_text)
-    return;
+    new_text = "";
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
   if (!gtk_tree_model_get_iter_from_string(model, &iterItem, path_string))
