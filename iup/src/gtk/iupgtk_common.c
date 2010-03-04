@@ -830,6 +830,23 @@ gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 
     iupgtkButtonKeySetStatus(evt->state, evt->button, status, doubleclick);
 
+    if (doubleclick)
+    {
+      /* Must compensate the fact that in GTK there is an extra button press event 
+         when occours a double click, we compensate that completing the event 
+         with a button release before the double click. */
+
+      status[5] = ' '; /* clear double click */
+
+      ret = cb(ih, b, 0, (int)evt->x, (int)evt->y, status);  /* release */
+      if (ret==IUP_CLOSE)
+        IupExitLoop();
+      else if (ret==IUP_IGNORE)
+        return TRUE;
+
+      status[5] = 'D'; /* restore double click */
+    }
+
     ret = cb(ih, b, press, (int)evt->x, (int)evt->y, status);
     if (ret==IUP_CLOSE)
       IupExitLoop();

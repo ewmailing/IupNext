@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -61,8 +61,16 @@ returned the action is ignored (this is system dependent).</p>
 behavior use the 
 ACTION 
   callback of the <b>IupButton</b>.</p>
-<p>In general a double click, is preceded by a single click/unclick calls. In 
-GTK, the double click is preceded by an additional single click call.</p>
+<p>A double click is preceded by two single clicks, one for pressed=1 and one 
+for pressed=0, and followed by a press=0, all three without the double click 
+flag set. In GTK, it is preceded by an additional two single clicks sequence. 
+For example, for one double click all the following calls are made:</p>
+<pre>BUTTON_CB(but=1 (1), x=154, y=83 [  1       ])
+BUTTON_CB(but=1 (0), x=154, y=83 [  1       ])
+    BUTTON_CB(but=1 (1), x=154, y=83 [  1       ])     (in GTK only)
+    BUTTON_CB(but=1 (0), x=154, y=83 [  1       ])     (in GTK only)
+BUTTON_CB(but=1 (1), x=154, y=83 [  1  D    ])
+BUTTON_CB(but=1 (0), x=154, y=83 [  1       ])</pre>
 <h3>Affects</h3>
 <p><a href="../elem/iupcanvas.html">IupCanvas</a>,
   <a href="../elem/iupbutton.html">IupButton</a>,
