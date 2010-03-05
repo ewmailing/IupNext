@@ -2264,8 +2264,11 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   else if (msg_info->code == TVN_SELCHANGED)
   {
     NMTREEVIEW* info = (NMTREEVIEW*)msg_info;
-    winTreeCallSelectionCb(ih, 0, info->itemOld.hItem);  /* node unselected */
-    winTreeCallSelectionCb(ih, 1, info->itemNew.hItem);  /* node selected */
+    if (!ih->data->mark_mode==ITREE_MARK_MULTIPLE || !(GetKeyState(VK_CONTROL) & 0x8000)) /* Mutiple selection with Control key is down */
+    {
+      winTreeCallSelectionCb(ih, 0, info->itemOld.hItem);  /* node unselected */
+      winTreeCallSelectionCb(ih, 1, info->itemNew.hItem);  /* node selected */
+    }
   }
   else if(msg_info->code == TVN_BEGINLABELEDIT)
   {

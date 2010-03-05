@@ -423,7 +423,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "SPACING",   "10");
 //  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
 
-  //IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
+  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   //IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
   //IupSetAttribute(tree, "SHOWRENAME",   "YES");
   //IupSetAttribute(tree, "AUTODRAGDROP",   "YES");  /* Gtk Only */
