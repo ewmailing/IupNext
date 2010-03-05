@@ -366,7 +366,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
     ih->data->type = IUP_BUTTON_IMAGE;
 
     value = iupAttribGet(ih, "TITLE");
-    if (value)
+    if (value && *value!=0)
     {
       GtkSettings* settings = gtk_widget_get_settings(ih->handle);
       g_object_set(settings, "gtk-button-images", (int)TRUE, NULL);

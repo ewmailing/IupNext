@@ -681,7 +681,7 @@ static int winButtonMapMethod(Ihandle* ih)
     ih->data->type = IUP_BUTTON_IMAGE;
 
     value = iupAttribGet(ih, "TITLE");
-    if (value)
+    if (value && *value!=0)
       ih->data->type |= IUP_BUTTON_TEXT;
   }
   else

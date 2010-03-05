@@ -100,8 +100,9 @@ static void iButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ex
     char* value = iupAttribGet(ih, "IMAGE");
     if (value)
     {
+      char* title = iupAttribGet(ih, "TITLE");
       type = IUP_BUTTON_IMAGE;
-      if (iupAttribGet(ih, "TITLE"))
+      if (title && *title!=0)
         type |= IUP_BUTTON_TEXT;
     }
     else

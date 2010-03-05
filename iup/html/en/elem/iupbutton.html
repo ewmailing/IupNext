@@ -114,7 +114,7 @@ global attribute DLGFGCOLOR.</p>
 	borders. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. If TITLE is also defined 
-	both will be shown (except in Motif). (GTK 2.6)</p>
+	and not empty both will be shown (except in Motif). (GTK 2.6)</p>
 
   
 <p><strong>IMINACTIVE</strong> (<font size="3">non inheritable</font>):
@@ -157,7 +157,7 @@ image associated and the button's text. Default: &quot;2&quot;.</p>
   
 <p><a href="../attrib/iup_title.html">TITLE</a> (<font size="3">non inheritable</font>):
 Button's text. If IMAGE is not defined before map, then the default
-behavior is to contain a text. The button behavior can not be changed
+behavior is to contain only a text. The button behavior can not be changed
 after map. The natural size will be larger enough to include all the
 text in the selected font, even using multiple lines, plus the button
 borders. The '\n' character is accepted for line change. The "&amp;"

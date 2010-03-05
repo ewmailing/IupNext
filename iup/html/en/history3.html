@@ -58,6 +58,10 @@ version 3.x.<br>
 	<li><span class="hist_changed">Changed:</span>
     double click sequence of events in GTK to match the sequences in Windows and 
 	Motif.</li>
+	<li><span class="hist_changed">Changed:</span>
+    when IMAGE is defined for a <strong>IupButton</strong>, TITLE will be also 
+	considered during map if not NULL and not empty. This will allow buttons 
+	with images created in LED to continue to use &quot;&quot; to define their titles.</li>
 
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupGetParam</strong> 
 	param parsing of %f and %c in Lua.</li>
@@ -71,6 +75,7 @@ version 3.x.<br>
 	<li><span class="hist_fixed">Fixed:</span> invalid call to SELECTION_CB 
 	callback in <strong>IupTree</strong> on Windows when MARKMODE=MULTIPLE and 
 	the user used the Ctrl key to select an item.</li>
+	<li></li>
 
 </ul>
 
