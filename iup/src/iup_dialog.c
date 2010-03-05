@@ -286,20 +286,22 @@ static void iDialogAfterShow(Ihandle* ih)
 {
   Ihandle* old_focus;
   IFni show_cb;
+  int show_state;
 
   /* process all pending messages */
   IupFlush();
 
   old_focus = IupGetFocus();
+  show_state = ih->data->show_state;
 
   show_cb = (IFni)IupGetCallback(ih, "SHOW_CB");
-  if (show_cb && show_cb(ih, ih->data->show_state) == IUP_CLOSE)
+  if (show_cb && show_cb(ih, show_state) == IUP_CLOSE)
   {
     IupExitLoop();
     return;
   }
 
-  if (ih->data->show_state == IUP_SHOW)
+  if (show_state == IUP_SHOW)
   {
     if (show_cb)
       IupFlush();  /* again to update focus */
