@@ -504,7 +504,7 @@ static void winTreeSetFocusNode(Ihandle* ih, HTREEITEM hItem)
     int wasSelected = winTreeIsItemSelected(ih, hItem);
     int wasFocusSelected = 0;
 
-    if (iupwinIsVista())
+    if (iupwinIsVista() && iupwin_comctl32ver6)
       iupAttribSetStr(ih, "_IUPTREE_ALLOW_CHANGE", (char*)hItem);  /* Vista Only */
     else
       wasFocusSelected = hItemFocus && winTreeIsItemSelected(ih, hItemFocus);
@@ -2264,7 +2264,8 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   else if (msg_info->code == TVN_SELCHANGED)
   {
     NMTREEVIEW* info = (NMTREEVIEW*)msg_info;
-    if (!ih->data->mark_mode==ITREE_MARK_MULTIPLE || !(GetKeyState(VK_CONTROL) & 0x8000)) /* Mutiple selection with Control key is down */
+    if (!ih->data->mark_mode==ITREE_MARK_MULTIPLE || /* Mutiple selection with Control or Shift key is down */
+        !(GetKeyState(VK_CONTROL) & 0x8000 || GetKeyState(VK_SHIFT) & 0x8000)) 
     {
       winTreeCallSelectionCb(ih, 0, info->itemOld.hItem);  /* node unselected */
       winTreeCallSelectionCb(ih, 1, info->itemNew.hItem);  /* node selected */
