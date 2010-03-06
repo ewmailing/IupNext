@@ -35,7 +35,7 @@ static struct          /* lexical variables */
 static int iLexGetChar (void);
 static int iLexToken(int *erro);
 static int iLexCapture (char* dlm);
-static int iLexSkip (char* dlm);
+static void iLexSkip (void);
 static int iLexCaptureAttr (void);
 
 int iupLexStart(const char* filename, int is_file)      /* initialize lexical analysis */
@@ -188,7 +188,7 @@ static int iLexToken(int *erro)
 
     case '#':          /* iLexSkip comment */
     case '%':          /* iLexSkip comment */
-      iLexSkip ("\n\r");
+      iLexSkip();
       continue;
 
     case ' ':          /* ignore whitespace */
@@ -276,14 +276,13 @@ static int iLexCaptureAttr (void)
   return c;                                      /* return delimiter */
 }
 
-static int iLexSkip (char* dlm)
+static void iLexSkip (void)
 {
   int c;
   do
   {
-    c = iLexGetChar ();
-  } while ((c > 0) && !strchr (dlm,c));
-  return c;                                      /* return delimiter */
+    c = iLexGetChar();
+  } while ((c > 0) && (c != '\n'));
 }
 
 static int iLexGetChar (void)

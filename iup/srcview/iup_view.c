@@ -7,10 +7,12 @@
 #include "iup.h"
 #include "iupcontrols.h"
 #include "iupgl.h"
+
 #include "iup_str.h"
+#include "iup_object.h"
 
 
-#define MAX_NAMES 500
+#define MAX_NAMES 5000
 
 #ifdef USE_IM
 #include "iupim.h"
@@ -547,13 +549,17 @@ static void mainUpdateInternals(void)
 static int destroyall_cb(Ihandle* self)
 {
   char *names[MAX_NAMES];
+  Ihandle* ih_names[MAX_NAMES];
   Ihandle* list = (Ihandle*)IupGetAttribute(self, "mainList");
   int i, num_names = IupGetAllNames(names, MAX_NAMES); 
   for (i = 0; i < num_names; i++)
+    ih_names[i] = IupGetHandle(names[i]);
+
+  for (i = 0; i < num_names; i++)
   {
-    Ihandle* elem = IupGetHandle(names[i]);
+    Ihandle* elem = ih_names[i];
     
-    if (elem && IupGetInt(elem, "_INTERNAL") == 0)
+    if (iupObjectCheck(elem) && IupGetInt(elem, "_INTERNAL") == 0)
     {
       char* type = IupGetClassName(elem);
 
@@ -803,6 +809,7 @@ static Ihandle* mainDialog(void)
     IupFrame(label = IupLabel("")),
     NULL);
   IupSetAttribute(box, "MARGIN", "10x10");
+  IupSetAttribute(list, "SORT", "YES");
   IupSetCallback(list, "ACTION", (Icallback)list_cb);
   IupSetCallback(list, "DBLCLICK_CB", (Icallback)list_dbclick_cb);
 

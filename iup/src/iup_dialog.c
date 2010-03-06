@@ -728,7 +728,8 @@ Iclass* iupDialogGetClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iDialogSetVisibleAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_INHERIT); /* the only case where VISIBLE default is NO */
+  /* the only case where VISIBLE default is NO, and must not be propagated to the dialog children */
+  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iDialogSetVisibleAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_INHERIT); 
 
   /* IupDialog only */
   iupClassRegisterAttribute(ic, "MENU", NULL, iDialogSetMenuAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
