@@ -582,6 +582,15 @@ static void iAttribCapture(char* env_buffer, char* dlm)
   env_buffer[i-1]='\0';                                /* discard delimiter */
 }
 
+static void iAttribSkipComment(void)
+{
+  int c;
+  do
+  {
+    c = *env_str; ++env_str;
+  } while ((c > 0) && (c != '\n'));
+}
+
 static int iAttribToken(char* env_buffer)
 {
   for (;;)
@@ -591,6 +600,11 @@ static int iAttribToken(char* env_buffer)
     {
     case 0:
       return IUPLEX_TK_END;
+
+    case '#':          /* Skip comment */
+    case '%':          /* Skip comment */
+      iAttribSkipComment();
+      continue;
 
     case ' ':          /* ignore whitespace */
     case '\t':
@@ -636,7 +650,7 @@ static void iAttribParse(Ihandle *ih, const char* str)
   {
     switch (iAttribToken(env_buffer))
     {
-    case IUPLEX_TK_END:                 /* procedimento igual ao IUPLEX_TK_COMMA */
+    case IUPLEX_TK_END:           /* same as IUPLEX_TK_COMMA */
       end = 1;
     case IUPLEX_TK_COMMA:
       if (name)
