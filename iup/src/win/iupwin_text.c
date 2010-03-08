@@ -1886,7 +1886,7 @@ static int winTextMapMethod(Ihandle* ih)
   }
   else
   {
-    dwStyle |= ES_AUTOHSCROLL|ES_NOHIDESEL;
+    dwStyle |= ES_AUTOHSCROLL;
 
     if (iupAttribGetBoolean(ih, "PASSWORD"))
       dwStyle |= ES_PASSWORD;
