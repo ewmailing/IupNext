@@ -20,6 +20,25 @@
 static Itable *inames_strtable = NULL;   /* table indexed by name containing Ihandle* address */
 static Itable *inames_ihtable = NULL;    /* table indexed by Ihandle* address containing names */
 
+static Ihandle* iNameGetTopParent(Ihandle* ih)
+{
+  Ihandle* parent = ih;
+  while (parent->parent)
+    parent = parent->parent;
+  return parent;
+}
+
+static int iNameCheckArray(Ihandle** ih_array, int count, Ihandle* ih)
+{
+  int i;
+  for (i = 0; i < count; i++)
+  {
+    if (ih_array[i] == ih)
+      return 0;
+  }
+  return 1;
+}
+
 void iupNamesDestroyHandles(void)
 {
   char *name;
@@ -39,8 +58,12 @@ void iupNamesDestroyHandles(void)
     ih = (Ihandle*)iupTableGetCurr(inames_strtable);
     if (iupObjectCheck(ih))
     {
-      ih_array[i] = ih;
-      i++;
+      ih = iNameGetTopParent(ih);
+      if (iNameCheckArray(ih_array, i, ih))
+      {
+        ih_array[i] = ih;
+        i++;
+      }
     }
     name = iupTableNext(inames_strtable);
   }
