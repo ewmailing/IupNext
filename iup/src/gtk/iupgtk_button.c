@@ -150,8 +150,10 @@ static int gtkButtonSetPaddingAttrib(Ihandle* ih, const char* value)
       gtk_alignment_set_padding(alignment, ih->data->vert_padding, ih->data->vert_padding, 
                                            ih->data->horiz_padding, ih->data->horiz_padding);
     }
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 #ifdef WIN32

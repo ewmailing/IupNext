@@ -639,8 +639,12 @@ static int winTextSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &(ih->data->horiz_padding), &(ih->data->vert_padding), 'x');
   ih->data->vert_padding = 0;
   if (ih->handle)
+  {
     SendMessage(ih->handle, EM_SETMARGINS, EC_LEFTMARGIN|EC_RIGHTMARGIN, MAKELPARAM(ih->data->horiz_padding, ih->data->horiz_padding));
-  return 0;
+    return 0;
+  }
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int winTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
@@ -713,8 +717,11 @@ static int winTextSetNCAttrib(Ihandle* ih, const char* value)
       SendMessage(ih->handle, EM_EXLIMITTEXT, 0, ih->data->nc);   /* so it can be larger than 64k */
     else
       SendMessage(ih->handle, EM_LIMITTEXT, ih->data->nc, 0L);
+
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int winTextSetSelectionAttrib(Ihandle* ih, const char* value)
@@ -845,7 +852,7 @@ static char* winTextGetSelectionPosAttrib(Ihandle* ih)
 
 static int winTextSetInsertAttrib(Ihandle* ih, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (value)
   {
@@ -869,7 +876,7 @@ static int winTextSetAppendAttrib(Ihandle* ih, const char* value)
 {
   int pos;
   char* str;
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (!value) value = "";
   str = (char*)value;
@@ -1963,7 +1970,7 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winTextSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED);
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winTextSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NOT_MAPPED);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winTextSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_DEFAULT);  
   iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, winTextSetVisibleAttrib, "YES", "NO", IUPAF_DEFAULT);
 
   /* Special */

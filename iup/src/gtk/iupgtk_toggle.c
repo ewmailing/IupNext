@@ -213,8 +213,10 @@ static int gtkToggleSetPaddingAttrib(Ihandle* ih, const char* value)
     GtkButton* button = (GtkButton*)ih->handle;
     GtkMisc* misc = (GtkMisc*)gtk_button_get_image(button);
     gtk_misc_set_padding(misc, ih->data->horiz_padding, ih->data->vert_padding);
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int gtkToggleSetFgColorAttrib(Ihandle* ih, const char* value)

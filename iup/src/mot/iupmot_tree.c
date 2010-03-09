@@ -1209,7 +1209,7 @@ static int motTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
 {
   Widget wItemDst, wParent, wItemSrc;
 
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   wItemSrc = motTreeFindNodeFromString(ih, name_id);
   if (!wItemSrc)
@@ -1240,7 +1240,7 @@ static int motTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char
 {
   Widget wItemDst, wParent, wItemSrc;
 
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   wItemSrc = motTreeFindNodeFromString(ih, name_id);
   if (!wItemSrc)
@@ -1640,10 +1640,14 @@ static int motTreeSetUserDataAttrib(Ihandle* ih, const char* name_id, const char
   motTreeItemData *itemData;
   Widget wItem = motTreeFindNodeFromString(ih, name_id);
   if (!wItem)  
+  {
+    iupAttribSetStr(ih, "_IUPTREE_NODEFOUND", NULL);
     return 0;
+  }
 
   XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
   itemData->userdata = (void*)value;
+  iupAttribSetStr(ih, "_IUPTREE_NODEFOUND", "1");
 
   return 0;
 }
@@ -1662,7 +1666,7 @@ static int motTreeSetRenameAttrib(Ihandle* ih, const char* value)
 
 static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   if(iupStrEqualNoCase(value, "SELECTED"))  /* selected here means the specified one */
   {
@@ -2807,6 +2811,8 @@ static int motTreeMapMethod(Ihandle* ih)
   motTreeAddRootNode(ih);
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)motTreeConvertXYToPos);
+
+  iupdrvTreeUpdateMarkMode(ih);
 
   return IUP_NOERROR;
 }

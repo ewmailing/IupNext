@@ -240,7 +240,9 @@ static int winLabelSetFgColorAttrib(Ihandle* ih, const char* value)
     if (iupStrToRGB(value, &r, &g, &b))
     {
       ih->data->fgcolor = RGB(r,g,b);
-      iupdrvDisplayRedraw(ih);
+
+      if (ih->handle)
+        iupdrvDisplayRedraw(ih);
     }
   }
   return 1;

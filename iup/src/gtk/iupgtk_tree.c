@@ -820,7 +820,7 @@ static int gtkTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
   GtkTreeIter iterItemSrc, iterItemDst, iterNewItem;
   GtkTreeIter iterParent, iterNextParent;
 
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
@@ -855,7 +855,7 @@ static int gtkTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char
   GtkTreeIter iterItemSrc, iterItemDst, iterNewItem;
   GtkTreeIter iterParent, iterNextParent;
 
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
@@ -1142,8 +1142,14 @@ static int gtkTreeSetUserDataAttrib(Ihandle* ih, const char* name_id, const char
   GtkTreeStore* store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
   GtkTreeIter iterItem;
   if (!gtkTreeFindNodeFromString(ih, GTK_TREE_MODEL(store), name_id, &iterItem))
+  {
+    iupAttribSetStr(ih, "_IUPTREE_NODEFOUND", NULL);
     return 0;
+  }
+
   gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_USERDATA, value, -1);
+  iupAttribSetStr(ih, "_IUPTREE_NODEFOUND", "1");
+
   return 0;
 }
 
@@ -1405,7 +1411,7 @@ static int gtkTreeSetMarkedAttrib(Ihandle* ih, const char* name_id, const char* 
 
 static int gtkTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (iupStrEqualNoCase(value, "SELECTED"))  /* selected here means the specified one */
   {
@@ -2313,6 +2319,8 @@ static int gtkTreeMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "DRAGDROP", "YES");
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)gtkTreeConvertXYToPos);
+
+  iupdrvTreeUpdateMarkMode(ih);
 
   return IUP_NOERROR;
 }

@@ -873,8 +873,10 @@ static int motListSetNCAttrib(Ihandle* ih, const char* value)
     Widget cbedit;
     XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
     XtVaSetValues(cbedit, XmNmaxLength, ih->data->nc, NULL);
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int motListSetClipboardAttrib(Ihandle *ih, const char *value)

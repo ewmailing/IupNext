@@ -800,9 +800,10 @@ static int gtkListSetNCAttrib(Ihandle* ih, const char* value)
   {
     GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
     gtk_entry_set_max_length(entry, ih->data->nc);
+    return 0;
   }
-
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int gtkListSetClipboardAttrib(Ihandle *ih, const char *value)

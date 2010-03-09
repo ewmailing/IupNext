@@ -294,7 +294,7 @@ int iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value)
 {
   int base, count, lines_num = ih->data->lines.num;
 
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
 
   if (!iMatrixGetStartEnd(value, &base, &count, lines_num, 0))
@@ -326,7 +326,7 @@ int iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value)
 {
   int base, count, lines_num = ih->data->lines.num;
 
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
 
   if (!iMatrixGetStartEnd(value, &base, &count, lines_num, 1))
@@ -366,7 +366,7 @@ int iupMatrixSetAddColAttrib(Ihandle* ih, const char* value)
 {
   int base, count, columns_num = ih->data->columns.num;
 
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
 
   if (!iMatrixGetStartEnd(value, &base, &count, columns_num, 0))
@@ -398,7 +398,7 @@ int iupMatrixSetDelColAttrib(Ihandle* ih, const char* value)
 {
   int base, count, columns_num = ih->data->columns.num;
 
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
 
   if (!iMatrixGetStartEnd(value, &base, &count, columns_num, 1))

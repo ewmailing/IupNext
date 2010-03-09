@@ -221,8 +221,10 @@ static int iTreeSetMarkModeAttrib(Ihandle* ih, const char* value)
     ih->data->mark_mode = ITREE_MARK_MULTIPLE;    
   else 
     ih->data->mark_mode = ITREE_MARK_SINGLE;
+
   if (ih->handle)
-    iupdrvTreeUpdateMarkMode(ih);
+    iupdrvTreeUpdateMarkMode(ih); /* for this to work, must update during map */
+
   return 0;
 }
 
@@ -290,7 +292,7 @@ static int iTreeSetShowDragDropAttrib(Ihandle* ih, const char* value)
 
 static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value, 1);
   return 0;
@@ -298,7 +300,7 @@ static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* v
 
 static int iTreeSetAddBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 1);
   return 0;
@@ -306,7 +308,7 @@ static int iTreeSetAddBranchAttrib(Ihandle* ih, const char* name_id, const char*
 
 static int iTreeSetInsertLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value, 0);
   return 0;
@@ -314,7 +316,7 @@ static int iTreeSetInsertLeafAttrib(Ihandle* ih, const char* name_id, const char
 
 static int iTreeSetInsertBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 0);
   return 0;
@@ -481,7 +483,7 @@ int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
   char attr[30];
   sprintf(attr,"USERDATA%d",id);
   IupSetAttribute(ih, attr, userdata);
-  return IupGetAttribute(ih, attr)? 1: 0;
+  return iupAttribGet(ih, "_IUPTREE_NODEFOUND")? 1: 0;
 }
 
 int IupTreeGetId(Ihandle* ih, void *userdata)

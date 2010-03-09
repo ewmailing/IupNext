@@ -851,7 +851,7 @@ static char* gtkTextGetValueAttrib(Ihandle* ih)
                        
 static int gtkTextSetInsertAttrib(Ihandle* ih, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (!value)
     return 0;
@@ -876,7 +876,7 @@ static int gtkTextSetInsertAttrib(Ihandle* ih, const char* value)
 static int gtkTextSetAppendAttrib(Ihandle* ih, const char* value)
 {
   gint pos;
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   /* disable callbacks */
   iupAttribSetStr(ih, "_IUPGTK_DISABLE_TEXT_CB", "1");
@@ -952,8 +952,10 @@ static int gtkTextSetPaddingAttrib(Ihandle* ih, const char* value)
       gtk_entry_set_inner_border(GTK_ENTRY(ih->handle), &border);
 #endif
     }
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int gtkTextSetNCAttrib(Ihandle* ih, const char* value)
@@ -961,10 +963,14 @@ static int gtkTextSetNCAttrib(Ihandle* ih, const char* value)
   if (!iupStrToInt(value, &ih->data->nc))
     ih->data->nc = INT_MAX;
 
-  if (!ih->data->is_multiline && ih->handle)
-    gtk_entry_set_max_length(GTK_ENTRY(ih->handle), ih->data->nc);
-
-  return 0;
+  if (ih->handle)
+  {
+    if (!ih->data->is_multiline)
+      gtk_entry_set_max_length(GTK_ENTRY(ih->handle), ih->data->nc);
+    return 0;
+  }
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int gtkTextSetClipboardAttrib(Ihandle *ih, const char *value)

@@ -233,15 +233,19 @@ static void winListUpdateItemWidth(Ihandle* ih)
 static int winListSetBgColorAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
-  iupdrvDisplayUpdate(ih);
+  if (ih->handle)
+    iupdrvDisplayUpdate(ih);
   return 1;
 }
 
 static int winListSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
   iupdrvSetStandardFontAttrib(ih, value);
-  winListUpdateItemWidth(ih);
-  winListUpdateScrollWidth(ih);
+  if (ih->handle)
+  {
+    winListUpdateItemWidth(ih);
+    winListUpdateScrollWidth(ih);
+  }
   return 1;
 }
 
@@ -531,8 +535,10 @@ static int winListSetNCAttrib(Ihandle* ih, const char* value)
   {
     HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
     SendMessage(cbedit, EM_LIMITTEXT, ih->data->nc, 0L);
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int winListSetSelectionAttrib(Ihandle* ih, const char* value)

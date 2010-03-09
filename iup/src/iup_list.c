@@ -279,7 +279,7 @@ int iupListSetIdValueAttrib(Ihandle* ih, const char* name_id, const char* value)
 
 static int iListSetAppendItemAttrib(Ihandle* ih, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (value)
     iupdrvListAppendItem(ih, value);
@@ -288,7 +288,7 @@ static int iListSetAppendItemAttrib(Ihandle* ih, const char* value)
 
 static int iListSetInsertItemAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (value)
   {
@@ -301,7 +301,7 @@ static int iListSetInsertItemAttrib(Ihandle* ih, const char* name_id, const char
 
 static int iListSetRemoveItemAttrib(Ihandle* ih, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (!value)
   {

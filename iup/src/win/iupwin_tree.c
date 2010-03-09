@@ -509,6 +509,8 @@ static void winTreeSetFocusNode(Ihandle* ih, HTREEITEM hItem)
     else
       wasFocusSelected = hItemFocus && winTreeIsItemSelected(ih, hItemFocus);
 
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
+
     if (wasFocusSelected)
     {
       /* prevent the tree from unselecting the old focus which it would do by default */
@@ -521,6 +523,7 @@ static void winTreeSetFocusNode(Ihandle* ih, HTREEITEM hItem)
     if (!wasSelected)
       winTreeSelectItem(ih, hItem, 0); /* need to clear the selection if was not selected */
 
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
     iupAttribSetStr(ih, "_IUPTREE_ALLOW_CHANGE", NULL);
   }
 }
@@ -870,6 +873,25 @@ static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem)
   return IUP_DEFAULT;
 }
 
+static void winTreeCallMultiUnSelectionCb(Ihandle* ih)
+{
+  IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
+  if (cbSelec)
+  {
+    Iarray* markedArray = winTreeGetSelectedArrayId(ih);
+    int* id_hitem = (int*)iupArrayGetData(markedArray);
+    int i, count = iupArrayCount(markedArray);
+
+    if (count > 1)
+    {
+      for (i=0; i<count; i++)
+        cbSelec(ih, id_hitem[i], 0);
+    }
+
+    iupArrayDestroy(markedArray);
+  }
+}
+
 static void winTreeCallMultiSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
@@ -1209,7 +1231,10 @@ static int winTreeSetUserDataAttrib(Ihandle* ih, const char* name_id, const char
   winTreeItemData* itemData;
   HTREEITEM hItem = winTreeFindNodeFromString(ih, name_id);
   if (!hItem)
+  {
+    iupAttribSetStr(ih, "_IUPTREE_NODEFOUND", NULL);
     return 0;
+  }
 
   item.hItem = hItem;
   item.mask = TVIF_HANDLE | TVIF_PARAM;
@@ -1217,6 +1242,7 @@ static int winTreeSetUserDataAttrib(Ihandle* ih, const char* name_id, const char
   itemData = (winTreeItemData*)item.lParam;
 
   itemData->userdata = (void*)value;
+  iupAttribSetStr(ih, "_IUPTREE_NODEFOUND", "1");
 
   return 0;
 }
@@ -1357,7 +1383,7 @@ static int winTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
 {
   HTREEITEM hItemDst, hParent, hItemSrc;
 
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   hItemSrc = winTreeFindNodeFromString(ih, name_id);
   if (!hItemSrc)
@@ -1388,7 +1414,7 @@ static int winTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char
 {
   HTREEITEM hItemDst, hParent, hItemSrc;
 
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   hItemSrc = winTreeFindNodeFromString(ih, name_id);
   if (!hItemSrc)
@@ -1595,7 +1621,7 @@ static void winTreeDelNodeData(Ihandle* ih, HTREEITEM hItem)
 
 static int winTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   if(iupStrEqualNoCase(value, "SELECTED")) /* selected here means the specified one */
   {
@@ -2036,10 +2062,14 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
     }
   }
 
+  winTreeCallMultiUnSelectionCb(ih);
+
   /* simple click */
   winTreeClearSelection(ih, hItem);
   iupAttribSetStr(ih, "_IUPTREE_FIRSTSELITEM", (char*)hItem);
   iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", "1");
+
+  /* Call SELECT_CB for all unselected nodes */
 
   return 0;
 }
@@ -2264,10 +2294,11 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   else if (msg_info->code == TVN_SELCHANGED)
   {
     NMTREEVIEW* info = (NMTREEVIEW*)msg_info;
-    if (!ih->data->mark_mode==ITREE_MARK_MULTIPLE || /* Mutiple selection with Control or Shift key is down */
+    if (ih->data->mark_mode!=ITREE_MARK_MULTIPLE || /* (NOT) Multiple selection with Control or Shift key is down */
         !(GetKeyState(VK_CONTROL) & 0x8000 || GetKeyState(VK_SHIFT) & 0x8000)) 
     {
-      winTreeCallSelectionCb(ih, 0, info->itemOld.hItem);  /* node unselected */
+//      if (ih->data->mark_mode!=ITREE_MARK_MULTIPLE)
+        winTreeCallSelectionCb(ih, 0, info->itemOld.hItem);  /* node unselected */
       winTreeCallSelectionCb(ih, 1, info->itemNew.hItem);  /* node selected */
     }
   }
@@ -2553,6 +2584,8 @@ static int winTreeMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "DRAGDROP", "YES");
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)winTreeConvertXYToPos);
+
+  iupdrvTreeUpdateMarkMode(ih);
 
   return IUP_NOERROR;
 }

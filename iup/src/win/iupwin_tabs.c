@@ -252,9 +252,12 @@ static int winTabsSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
 
   if (ih->handle)
+  {
     SendMessage(ih->handle, TCM_SETPADDING, 0, MAKELPARAM(ih->data->horiz_padding, ih->data->vert_padding));
-
-  return 0;
+    return 0;
+  }
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int winTabsSetMultilineAttrib(Ihandle* ih, const char* value)

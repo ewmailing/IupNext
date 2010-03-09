@@ -147,8 +147,10 @@ static int motLabelSetPaddingAttrib(Ihandle* ih, const char* value)
   {
     XtVaSetValues(ih->handle, XmNmarginHeight, ih->data->vert_padding,
                               XmNmarginWidth, ih->data->horiz_padding, NULL);
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int motLabelMapMethod(Ihandle* ih)

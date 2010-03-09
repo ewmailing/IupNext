@@ -133,8 +133,10 @@ static int gtkLabelSetPaddingAttrib(Ihandle* ih, const char* value)
   {
     GtkMisc* misc = (GtkMisc*)ih->handle;
     gtk_misc_set_padding(misc, ih->data->horiz_padding, ih->data->vert_padding);
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static char* gtkLabelGetPangoLayoutAttrib(Ihandle* ih)

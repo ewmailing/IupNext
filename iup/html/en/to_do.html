@@ -39,12 +39,12 @@
 <h3>Roadmap for the Next Version</h3>
 
 <ol>
-	<li><strong>IupSplitbox</strong> (native IupSbox)</li>
+	<li><strong>IupTree</strong> optimization</li>
+	<li>Better scrolling in <strong>IupMatrix</strong></li>
+	<li><strong>IupSplitbox</strong> (native <strong>IupSbox</strong>)</li>
 	<li>Other New Controls: <strong>DropDownButton, GridBox, ScrollBox</strong> 
 	and <strong>LayoutBuilder</strong></li>
 	<li>UTF-8 in Windows</li>
-	<li>Drag&amp;Drop</li>
-	<li>Tutorial and Demo</li>
 	<li>[Sugestions?]</li>
 </ol>
 
@@ -59,11 +59,11 @@
 	<li><strong><span class="style6">Priority:</span></strong> Lua Rocks and 
 	Debian distribution packages.</li>
 
-	<li>A MacOS X native driver using Carbon.</li>
+	<li>A MacOS X native driver using Carbon or Cocoa.</li>
 	<li><strong>IupGLCanvas</strong> for MacOSX.</li>
 
-  <li>The actual model for control data structure in the internal SDK is limited 
-	and hard to use for derived classes.</li>
+  <li>The actual model for control data structure in the internal SDK is 
+	restricted for derived classes.</li>
 
 	<li>Unicode Support (UTF-8) in Windows and Motif.</li>
 
@@ -86,14 +86,11 @@
 
 <ul>
 
-	<li><span class="style1">Known Issue:</span> In Windows, when using a font 
+	<li><span class="style1">Known Issue:</span> In Windows XP, when using a font 
 	for an node with TITLEFONTid in <strong>IupTree</strong> that is larger than 
 	the element FONT the item text will be cropped at right and bottom because 
 	the system uses the element font to calculate the item size. The only 
 	exception is when you just change the font to add a Bold style.</li>
-	<li><span class="style1">Known Issue:</span> The <strong>IupImgLib</strong> 
-	takes an very long time to compile under Visual C++. In a 2.5GHz CPU tooks 
-	about 5min! (since 3.0)</li>
 
 	<li><span class="style1">Known Issue:</span> In Windows Vista the 
 	COMPOSITE=YES attribute of the <strong>IupDialog</strong> is not working as expected. There 
@@ -102,7 +99,11 @@
 
 	<li><span class="style1">Known Issue:</span> The MDI Window menu is not 
 	properly updated when the child mdi is closed. (since 3.0)</li>
-	<li><span class="style1">Known Issue:</span> When building with Open Watcom 
+	<li><span class="style1">Known Issue (Compiler):</span> The <strong>IupImgLib</strong> 
+	takes an very long time to compile under Visual C++. In a 2.5GHz CPU tooks 
+	about 5min! (since 3.0)</li>
+
+	<li><span class="style1">Known Issue (Compiler):</span> When building with Open Watcom 
 	the additional controls crash. When you add debug information to the main 
 	IUP library the problem solves. We tried to track down this error but it 
 	does not occurs with debug information and our attempts without debug does 
@@ -126,11 +127,12 @@
 
 <ul>
 
+	<li><strong><span class="style2">Priority: </span></strong> Scroll with position free (not fixed to cell boundaries).</li>
+
   <li>Change the style of the grid lines.</li>
 
 	<li>Use an image as a cell content.</li>
 	<li>Mark using the keyboard.</li>
-	<li>Scroll with position free (not fixed to cell boundaries).</li>
 	<li>Merge cells.</li>
 	<li>Check mark for cells.</li>
 	<li>Other columns/lines fixed at start like column 0 and line 0.</li>
@@ -162,12 +164,12 @@
 
 <h3>IupPPlot</h3>
 <ul>
+	<li><strong><span class="style2">Priority: </span></strong> Support for inserting a new point in an existing dataset 
+	programmatically and interactively. </li>
   <li>Add support of legend text near each dataset plot.</li>
   <li>Adjust AutoScale to start and end at major axis ticks.</li>
   <li>Improve the display of values near each sample.</li>
 	<li>Custom legend position.</li>
-	<li>Support for inserting a new point in an existing dataset 
-	programmatically and interactively. </li>
   <li>PPlot force the definitions of the margins. It should have a way to 
 	automatic calculate the margins when doing automatic scaling.</li>
   <li>PPlot has a callback mode feature that is not available in IupPPlot.</li>

@@ -285,6 +285,7 @@ iup.TreeSetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number, <st
 <strong>userid</strong>:
       User pointer or Lua table to be associated with the node. 
       Use NULL (nil) value to remove the association.</p>
+<p>Returns a non zero value if the node was found.</p>
 <p>Associates an userid with a given id. If the id of the node is changed, the 
 userid remains the same.</p>
 <p>Associations to Lua objects in Lua 5 are referenced in the Lua REGISTRY. So they can be retrieved later. This 

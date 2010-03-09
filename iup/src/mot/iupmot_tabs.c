@@ -202,7 +202,7 @@ static int motTabsSetTabTypeAttrib(Ihandle* ih, const char* value)
     ih->data->type = ITABS_TOP;
 
   if (ih->handle)
-    motTabsUpdateTabType(ih);
+    motTabsUpdateTabType(ih);  /* for this to work must be updated in map */
 
   return 0;
 }

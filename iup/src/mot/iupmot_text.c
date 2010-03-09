@@ -142,8 +142,10 @@ static int motTextSetPaddingAttrib(Ihandle* ih, const char* value)
   {
     XtVaSetValues(ih->handle, XmNmarginHeight, ih->data->vert_padding,
                               XmNmarginWidth, ih->data->horiz_padding, NULL);
+    return 0;
   }
-  return 0;
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int motTextSetReadOnlyAttrib(Ihandle* ih, const char* value)
@@ -164,7 +166,7 @@ static char* motTextGetReadOnlyAttrib(Ihandle* ih)
 
 static int motTextSetInsertAttrib(Ihandle* ih, const char* value)
 {
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (!value)
     return 0;
@@ -207,7 +209,7 @@ static char* motTextGetSelectedTextAttrib(Ihandle* ih)
 static int motTextSetAppendAttrib(Ihandle* ih, const char* value)
 {
   XmTextPosition pos;
-  if (!ih->handle)  /* do not store the action before map */
+  if (!ih->handle)  /* do not do the action before map */
     return 0;
   pos = XmTextGetLastPosition(ih->handle);
   /* disable callbacks */
@@ -482,8 +484,12 @@ static int motTextSetNCAttrib(Ihandle* ih, const char* value)
   if (!iupStrToInt(value, &ih->data->nc))
     ih->data->nc = INT_MAX;
   if (ih->handle)
+  {
     XtVaSetValues(ih->handle, XmNmaxLength, ih->data->nc, NULL);
-  return 0;
+    return 0;
+  }
+  else
+    return 1; /* store until not mapped, when mapped will be set again */
 }
 
 static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
