@@ -121,6 +121,7 @@ static int gtkTabsSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
 
   if (ih->handle)
+  {
     gtkTabsUpdatePagePadding(ih);
     return 0;
   }
