@@ -148,6 +148,8 @@ Ihandle* IupCreate(const char *name)
 
 void IupDestroy(Ihandle *ih)
 {
+  Icallback cb;
+
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
@@ -155,6 +157,9 @@ void IupDestroy(Ihandle *ih)
   /* Hide before destroy to avoid children redraw */
   if (ih->iclass->nativetype == IUP_TYPEDIALOG)
     IupHide(ih);
+
+  cb = IupGetCallback(ih, "DESTROY_CB");
+  if (cb) cb(ih);
 
   /* Destroy all its children.
      Just need to remove the first child,

@@ -170,6 +170,12 @@ static int iupluaUnMapCb(Ihandle* handle)
   return iuplua_call();
 }
 
+static int iupluaDestroyCb(Ihandle* handle)
+{
+  iuplua_call_start(handle, "destroycb");
+  return iuplua_call();
+}
+
 static int iupluaMapCb(Ihandle* handle)
 {
   iuplua_call_start(handle, "mapcb");
@@ -610,6 +616,7 @@ int iupluawidgets_open(int tag)
     { "iup_show_cb", (lua_CFunction)dialog_show},
     { "iup_map_cb", (lua_CFunction)iupluaMapCb},
     { "iup_unmap_cb", (lua_CFunction)iupluaUnMapCb},
+    { "iup_destroy_cb", (lua_CFunction)iupluaDestroyCb},
     { "iup_dropfiles_cb", (lua_CFunction)iupluaDropfilesCb},
     { "iup_trayclick_cb", (lua_CFunction)dialog_trayclick},
     { "iup_getfocus_cb", (lua_CFunction)iupluaGetfocusCb},
