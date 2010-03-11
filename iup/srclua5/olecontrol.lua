@@ -35,8 +35,8 @@ int luaopen_iupluaole51(lua_State* L)
 ]]
 }
 
-function ctrl.createElement(class, arg)
-  return OleControl(arg[1])
+function ctrl.createElement(class, param)
+  return OleControl(param[1])
 end
 
 function ctrl.CreateLuaCOM(handle)

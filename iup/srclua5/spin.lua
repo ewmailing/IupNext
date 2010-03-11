@@ -10,8 +10,8 @@ local ctrl = {
   },
 }
 
-function ctrl.createElement(class, arg)
-   return Spin(arg.action)
+function ctrl.createElement(class, param)
+   return Spin(param.action)
 end
 
 iupRegisterWidget(ctrl)

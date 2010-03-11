@@ -23,8 +23,8 @@ function ctrl.SetChildrenNames(obj)
   end
 end
 
-function ctrl.createElement(class, arg)
-   ctrl.SetChildrenNames(arg)
+function ctrl.createElement(class, param)
+   ctrl.SetChildrenNames(param)
    return Zbox()
 end
 

@@ -135,7 +135,8 @@ imediate children has depth=1, their children has depth=2 and so on.</p>
 </blockquote>
 <p><strong>PARENTid </strong>(read only): returns the identifier of the 
 specified node.</p>
-<p><strong>STATEid</strong>: the state of the specified branch. In Windows, it 
+<p><strong>STATEid</strong>: the state of the specified branch. Returns NULL for 
+a LEAF. In Windows, it 
 will be effective only if the branch has children. In GTK, it will be effective 
 only if the parent is expanded. Possible values: </p>
     <blockquote>
@@ -279,7 +280,10 @@ in the string as &quot;%p&quot;. (since 3.0)</p>
 <p><strong>INSERTLEAFid</strong>, <strong>INSERTBRANCHid </strong>
 (write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
 the depth of the new node is always the same of the reference node. 
-The id of the new node can not be computed easily but the attribute <strong>
+If the reference node is a leaf, then the id of the new node will be the id of 
+the reference node + 1. If the reference node is a branch the id of the new node 
+will be the id of the reference node + 1 + the total number of child nodes of 
+the reference node. The attribute <strong>
 LASTADDNODE</strong> is set to the new id. (since 3.0)</p>
 
 <p><strong>MOVENODEid </strong>(write only): Moves a node and its children, 

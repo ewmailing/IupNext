@@ -12,8 +12,8 @@ local ctrl = {
   },
 }
 
-function ctrl.createElement(class, arg)
-   return Val(arg[1])
+function ctrl.createElement(class, param)
+   return Val(param[1])
 end
 
 iupRegisterWidget(ctrl)

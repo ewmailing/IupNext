@@ -20,8 +20,8 @@ static int Cboxv(lua_State *L)
   ]],
 }
 
-function ctrl.createElement(class, arg)
-  return Cboxv(arg)
+function ctrl.createElement(class, param)
+  return Cboxv(param)
 end
 
 iupRegisterWidget(ctrl)

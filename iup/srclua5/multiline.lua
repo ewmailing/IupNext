@@ -11,7 +11,7 @@ local ctrl = {
   funcname = "MultiLine",
 } 
 
-function ctrl.createElement(class, arg)
+function ctrl.createElement(class, param)
    return MultiLine()
 end
    

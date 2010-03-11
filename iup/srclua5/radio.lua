@@ -24,9 +24,9 @@ function ctrl.CreateChildrenNames(obj)
   end
 end
 
-function ctrl.createElement(class, arg)
-   ctrl.CreateChildrenNames(arg[1])
-   return Radio(arg[1])
+function ctrl.createElement(class, param)
+   ctrl.CreateChildrenNames(param[1])
+   return Radio(param[1])
 end
    
 iupRegisterWidget(ctrl)

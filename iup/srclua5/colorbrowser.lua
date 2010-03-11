@@ -13,8 +13,8 @@ local ctrl = {
   include = "iupcontrols.h",
 }
 
-function ctrl.createElement(class, arg)
-   return ColorBrowser(arg.action)
+function ctrl.createElement(class, param)
+   return ColorBrowser(param.action)
 end
 
 iupRegisterWidget(ctrl)

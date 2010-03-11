@@ -9,7 +9,7 @@ local ctrl = {
   },
 } 
 
-function ctrl.createElement(class, arg)
+function ctrl.createElement(class, param)
   return Clipboard()
 end
    

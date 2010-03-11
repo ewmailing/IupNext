@@ -81,7 +81,7 @@ int luaopen_iupluamycontrol51(lua_State* L)
 }
 
 -- must be defined so the WIDGET constructor can call it
-function ctrl.createElement(class, arg)  
+function ctrl.createElement(class, param)  
    return myControl()
 end
 

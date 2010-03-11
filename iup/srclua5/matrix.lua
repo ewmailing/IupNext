@@ -30,8 +30,8 @@ local ctrl = {
   extrafuncs = 1,
 }
 
-function ctrl.createElement(class, arg)
-   return Matrix(arg.action)
+function ctrl.createElement(class, param)
+   return Matrix(param.action)
 end
 
 function ctrl.setcell(handle, l, c, val)

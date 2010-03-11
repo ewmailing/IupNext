@@ -24,7 +24,7 @@ function ctrl.redraw(handle)
    handle.repaint = "YES"
 end
 
-function ctrl.createElement(class, arg)
+function ctrl.createElement(class, param)
    return Cells()
 end
 

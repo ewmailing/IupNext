@@ -23,8 +23,8 @@ static int ImageRGBA(lua_State *L)
 ]]
 }
 
-function ctrl.createElement(class, arg)
-   return ImageRGBA(arg.width, arg.height, arg.pixels)
+function ctrl.createElement(class, param)
+   return ImageRGBA(param.width, param.height, param.pixels)
 end
 
 iupRegisterWidget(ctrl)

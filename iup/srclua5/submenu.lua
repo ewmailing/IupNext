@@ -11,8 +11,8 @@ local ctrl = {
   }
 } 
 
-function ctrl.createElement(class, arg)
-  return Submenu(arg.title, arg[1])
+function ctrl.createElement(class, param)
+  return Submenu(param.title, param[1])
 end
    
 iupRegisterWidget(ctrl)

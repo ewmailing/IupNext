@@ -23,8 +23,8 @@ local ctrl = {
   extrafuncs = 1,
 }
 
-function ctrl.createElement(class, arg)
-   return PPlot(arg.action)
+function ctrl.createElement(class, param)
+   return PPlot(param.action)
 end
 
 iupRegisterWidget(ctrl)

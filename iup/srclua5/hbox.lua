@@ -12,7 +12,7 @@ function ctrl.append(handle, elem)
   Append(handle, elem)
 end
 
-function ctrl.createElement(class, arg)
+function ctrl.createElement(class, param)
    return Hbox()
 end
 

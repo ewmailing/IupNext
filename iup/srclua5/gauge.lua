@@ -9,8 +9,8 @@ local ctrl = {
   include = "iupcontrols.h",
 }
 
-function ctrl.createElement(class, arg)
-   return Gauge(arg.action)
+function ctrl.createElement(class, param)
+   return Gauge(param.action)
 end
 
 iupRegisterWidget(ctrl)

@@ -13,8 +13,8 @@ local ctrl = {
   include = "iupcontrols.h",
 }
 
-function ctrl.createElement(class, arg)
-   return Dial(arg[1])
+function ctrl.createElement(class, param)
+   return Dial(param[1])
 end
 
 iupRegisterWidget(ctrl)

@@ -18,8 +18,8 @@ local ctrl = {
 PRIMARY = -1
 SECONDARY = -2
 
-function ctrl.createElement(class, arg)
-   return Colorbar(arg.action)
+function ctrl.createElement(class, param)
+   return Colorbar(param.action)
 end
 
 iupRegisterWidget(ctrl)

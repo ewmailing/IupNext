@@ -8,6 +8,7 @@ local ctrl = {
   callback = {
     map_cb = "",
     unmap_cb = "",
+    destroy_cb = "",
     close_cb = "",
     show_cb = "n",
     move_cb = "nn",
@@ -16,8 +17,8 @@ local ctrl = {
   }
 }
 
-function ctrl.createElement(class, arg)
-   return Dialog(arg[1])
+function ctrl.createElement(class, param)
+   return Dialog(param[1])
 end
 
 function ctrl.popup(handle, x, y)

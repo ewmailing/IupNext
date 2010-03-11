@@ -38,7 +38,7 @@ int luaopen_iupluagl51(lua_State* L)
 ]]
 }
 
-function ctrl.createElement(class, arg)
+function ctrl.createElement(class, param)
    return GLCanvas()
 end
 

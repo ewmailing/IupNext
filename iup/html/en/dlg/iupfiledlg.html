@@ -65,7 +65,9 @@ filedlg() [in LED]</pre>
     
   </blockquote>
     
-  <p><strong>DIRECTORY</strong>: Initial directory. </p>
+  <p><strong>DIRECTORY</strong>: Initial directory. When consulted after the 
+	dialog is closed and the user pressed the OK button, it will contain the 
+	directory of the selected file.</p>
   <blockquote>
     
   <p>In Motif or GTK, if not defined the dialog opens in the current directory. </p>
@@ -103,9 +105,9 @@ filedlg() [in LED]</pre>
     EXTFILTER to use starting at 1. It returns the selection made by the user. 
   Set only if EXTFILTER is defined.</p>
     
-  <p><strong>MULTIPLEFILES</strong> [Windows and GTK Only]: When &quot;YES&quot;, this attribute allows the user of
-    IupFileDlg in fileopen mode to select multiple 
-    files.&nbsp; The value returned by VALUE is to be changed the following way: the directory and 
+  <p><strong>MULTIPLEFILES</strong> [Windows and GTK Only]: When &quot;YES&quot;, this 
+	attribute allows the user to select multiple 
+    files when DIALOGTYPE=OPEN.&nbsp;The value returned by VALUE is to be changed the following way: the directory and 
     the files are passed separately, in this order. The character used for separating the directory and the files is '|'. 
     The file list ends with character '|'. When the user selects just one file, the directory and the file are not separated by '|'. 
 For example:</p>

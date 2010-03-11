@@ -675,6 +675,10 @@ wb_usr.tree =
               link= "call/iup_unmap_cb.html"
             },
             {
+              name= {nl= "DESTROY_CB"},
+              link= "call/iup_destroy_cb.html"
+            },
+            {
               name= {nl= "GETFOCUS_CB"},
               link= "call/iup_getfocus_cb.html"
             },

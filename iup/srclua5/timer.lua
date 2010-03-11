@@ -10,7 +10,7 @@ local ctrl = {
   },
 } 
 
-function ctrl.createElement(class, arg)
+function ctrl.createElement(class, param)
   return Timer()
 end
    

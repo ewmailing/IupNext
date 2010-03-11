@@ -17,7 +17,7 @@ function ctrl.destroy(handle)
   return Destroy(handle)
 end
 
-function ctrl.createElement(class, arg)
+function ctrl.createElement(class, param)
    return FontDlg()
 end
    

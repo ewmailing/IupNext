@@ -9,7 +9,7 @@ local ctrl = {
   callback = {}
 }
 
-function ctrl.createElement(class, arg)
+function ctrl.createElement(class, param)
    return User()
 end
 

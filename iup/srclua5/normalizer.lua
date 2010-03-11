@@ -9,18 +9,18 @@ local ctrl = {
   callback = {}
 }
 
-function ctrl.setAttributes(object, arg)
+function ctrl.setAttributes(object, param)
   local handle = rawget(object, "handle")
-  local n = #arg
+  local n = #param
   for i = 1, n do
-    if iupGetClass(arg[i]) == "iup handle" then 
-      object.addcontrol = arg[i]
+    if iupGetClass(param[i]) == "iup handle" then 
+      object.addcontrol = param[i]
     end
   end
-  WIDGET.setAttributes(object, arg)
+  WIDGET.setAttributes(object, param)
 end
 
-function ctrl.createElement(class, arg)
+function ctrl.createElement(class, param)
    return Normalizer()
 end
 

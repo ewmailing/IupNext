@@ -130,8 +130,8 @@ function ihandle_setname(v)  -- used also by radio and zbox
 end
 
 function iupRegisterWidget(ctrl) -- called by all the controls initialization functions
-  iup[ctrl.nick] = function(arg)
-    return ctrl:constructor(arg)
+  iup[ctrl.nick] = function(param)
+    return ctrl:constructor(param)
   end
 end
 
@@ -175,8 +175,8 @@ function WIDGET.map(object)
   Map(object.handle)
 end
 
-function WIDGET.constructor(class, arg)
-  local handle = class:createElement(arg)
+function WIDGET.constructor(class, param)
+  local handle = class:createElement(param)
   local object = { 
     parent = class,
     handle = handle
@@ -184,13 +184,13 @@ function WIDGET.constructor(class, arg)
   iupSetClass(handle, "iup handle")
   iupSetClass(object, "iup widget")
   iupSetWidget(handle, object)
-  object:setAttributes(arg)
+  object:setAttributes(param)
   return handle
 end
 
-function WIDGET.setAttributes(object, arg)
+function WIDGET.setAttributes(object, param)
   local handle = object.handle
-  for i,v in pairs(arg) do 
+  for i,v in pairs(param) do 
     if type(i) == "number" and iupGetClass(v) == "iup handle" then
       -- We should not set this or other elements (such as iuptext)
       -- will erroneosly inherit it
@@ -215,15 +215,15 @@ BOX = {
   parent = WIDGET
 }
 
-function BOX.setAttributes(object, arg)
+function BOX.setAttributes(object, param)
   local handle = rawget(object, "handle")
-  local n = #arg
+  local n = #param
   for i = 1, n do
-    if iupGetClass(arg[i]) == "iup handle" then 
-      Append(handle, arg[i]) 
+    if iupGetClass(param[i]) == "iup handle" then 
+      Append(handle, param[i]) 
     end
   end
-  WIDGET.setAttributes(object, arg)
+  WIDGET.setAttributes(object, param)
 end
 
 iupSetClass(BOX, "iup widget")

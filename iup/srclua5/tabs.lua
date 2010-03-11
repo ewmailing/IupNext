@@ -23,8 +23,8 @@ static int Tabsv(lua_State *L)
 ]],
 }
 
-function ctrl.createElement(class, arg)
-  return Tabsv(arg)
+function ctrl.createElement(class, param)
+  return Tabsv(param)
 end
 
 iupRegisterWidget(ctrl)

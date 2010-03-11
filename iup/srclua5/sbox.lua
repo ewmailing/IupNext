@@ -8,8 +8,8 @@ local ctrl = {
   callback = {}
 }
 
-function ctrl.createElement(class, arg)
-   return Sbox(arg[1])
+function ctrl.createElement(class, param)
+   return Sbox(param[1])
 end
 
 iupRegisterWidget(ctrl)

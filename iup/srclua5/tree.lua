@@ -106,7 +106,7 @@ end
 -- backward compatibility
 TreeSetValue = TreeAddNodes
 
-function ctrl.createElement(class, arg)
+function ctrl.createElement(class, param)
   return Tree()
 end
 

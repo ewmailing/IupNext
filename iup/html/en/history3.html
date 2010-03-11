@@ -52,6 +52,7 @@ version 3.x.<br>
 	<li><span class="hist_new">New:</span> LASTADDNODE attribute in <strong>
 	IupTree,</strong> so you can retrieve the id of the node created by an 
 	INSERT operation.</li>
+	<li><span class="hist_new">New:</span> common callback DESTROY_CB.</li>
 	<li><span class="hist_changed">Changed:</span>
     propagation of attributes will be ignored at a child where the attribute is 
 	marked as non inheritable.</li>
@@ -62,6 +63,10 @@ version 3.x.<br>
     when IMAGE is defined for a <strong>IupButton</strong>, TITLE will be also 
 	considered during map if not NULL and not empty. This will allow buttons 
 	with images created in LED to continue to use &quot;&quot; to define their titles.</li>
+	<li><strong><span class="hist_changed">Changed:</span>
+    </strong>When the DIRECTORY attribute of IupFileDlg is consulted after the 
+	dialog is closed and the user pressed the OK button, it will contain the 
+	directory of the selected file.</li>
 
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupGetParam</strong> 
 	param parsing of %f and %c in Lua.</li>

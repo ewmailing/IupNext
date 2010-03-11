@@ -10,8 +10,8 @@ local ctrl = {
   }
 } 
 
-function ctrl.createElement(class, arg)
-  return Toggle(arg.title)
+function ctrl.createElement(class, param)
+  return Toggle(param.title)
 end
    
 iupRegisterWidget(ctrl)
