@@ -112,14 +112,18 @@ static int insertbranch(void)
 
 static int togglestate(void)
 {
-  char attr[50];
+  char attr[50], *value;
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
   sprintf(attr, "STATE%d", id);
-  if (strcmp(IupGetAttribute(tree, attr), "EXPANDED")==0)
-    IupSetAttribute(tree, attr, "COLLAPSED");
-  else
-    IupSetAttribute(tree, attr, "EXPANDED");
+  value = IupGetAttribute(tree, attr);
+  if (value)
+  {
+    if (strcmp(value, "EXPANDED")==0)
+      IupSetAttribute(tree, attr, "COLLAPSED");
+    else
+      IupSetAttribute(tree, attr, "EXPANDED");
+  }
   return IUP_DEFAULT;
 }
 
@@ -425,7 +429,7 @@ static void init_tree(void)
 
   IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   //IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-  //IupSetAttribute(tree, "SHOWRENAME",   "YES");
+  IupSetAttribute(tree, "SHOWRENAME",   "YES");
   //IupSetAttribute(tree, "AUTODRAGDROP",   "YES");  /* Gtk Only */
 
   //IupSetAttribute(tree, "ADDEXPANDED",  "NO");
@@ -466,13 +470,13 @@ static void init_tree_nodes(void)
 {
   Ihandle* tree = IupGetHandle("tree");
 
-#if 0
+#if 1
   /* create from bottom to top */
   /* the current node is the ROOT */
   //IupSetAttribute(tree, "VALUE", "0");
   IupSetAttribute(tree, "TITLE",         "Figures");  /* title of the root, id=0 */
   IupSetAttribute(tree, "ADDBRANCH",    "3D");    /* 3D=1 */
-  IupSetAttribute(tree, "ADDBRANCH",    "2D");    /* add to the root, so it will be before "3D", now 2D=1, 3D=2 */
+  IupSetAttribute(tree, "ADDLEAF",    "2D");    /* add to the root, so it will be before "3D", now 2D=1, 3D=2 */
   IupSetAttribute(tree, "ADDBRANCH",   "parallelogram"); /* id=1 */ 
   IupSetAttribute(tree, "ADDLEAF1",     "diamond");
   IupSetAttribute(tree, "ADDLEAF1",     "square");
@@ -493,7 +497,7 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "INSERTBRANCH2","parallelogram");  /* same depth as id=2, new id=6 */
   IupSetAttribute(tree, "ADDLEAF6",     "square");
   IupSetAttribute(tree, "ADDLEAF7",     "diamond");
-  IupSetAttribute(tree, "INSERTBRANCH6","2D");  /* new id=9 */
+  IupSetAttribute(tree, "INSERTLEAF6","2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
 #endif
 
