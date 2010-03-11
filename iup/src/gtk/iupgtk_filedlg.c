@@ -77,6 +77,8 @@ static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
       cur_len = iupArrayCount(names_array);
       all_names = iupArrayAdd(names_array, dir_len+1);
       memcpy(all_names+cur_len, filename, dir_len);
+      all_names[cur_len+dir_len] = '0';
+      iupAttribStoreStr(ih, "DIRECTORY", all_names);
       all_names[cur_len+dir_len] = '|';
 
       dir_len++; /* skip separator */
@@ -478,6 +480,13 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
         char* filename = (char*)file_list->data;
         iupAttribStoreStr(ih, "VALUE", iupgtkStrConvertFromFilename(filename));
         g_free(filename);
+
+        /* store the DIRECTORY */
+        {
+          char* dir = iupStrFileGetPath(filename);
+          iupAttribStoreStr(ih, "DIRECTORY", dir);
+          free(dir);
+        }
       }
 
       g_slist_free(file_list);
@@ -490,6 +499,14 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       iupAttribStoreStr(ih, "VALUE", iupgtkStrConvertFromFilename(filename));
       file_exist = iupdrvIsFile(filename);
       dir_exist = iupdrvIsDirectory(filename);
+
+      if (file_exist)
+      {
+        char* dir = iupStrFileGetPath(filename);
+        iupAttribStoreStr(ih, "DIRECTORY", dir);
+        free(dir);
+      }
+
       g_free(filename);
     }
 

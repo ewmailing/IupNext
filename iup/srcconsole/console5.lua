@@ -1,10 +1,9 @@
 require"iuplua"
 
-iup.console = {}
-
 -- Utilities
+iup_console = {}
 
-function iup.console.printtable(t)
+function iup_console.printtable(t)
   local n,v = next(t, nil)
   print("--printtable Start--")
   while n do
@@ -14,7 +13,7 @@ function iup.console.printtable(t)
   print("--printtable End--")
 end
 
-function iup.console.print_version_info()
+function iup_console.print_version_info()
   if (im) then print("IM " .. im._VERSION .. "  " .. im._COPYRIGHT) end
 
   if (cd) then print("CD " .. cd._VERSION .. "  " .. cd._COPYRIGHT) end
@@ -38,30 +37,30 @@ end
 
 -- Console Dialog
 
-iup.console.lastfilename = nil -- Last file open
-iup.console.mlCode = iup.multiline{expand="YES", size="200x120", font="COURIER_NORMAL_10"}
-iup.console.lblPosition = iup.label{title="0:0", size="50x"}
-iup.console.lblFileName = iup.label{title="", size="50x", expand="HORIZONTAL"}
+iup_console.lastfilename = nil -- Last file open
+iup_console.mlCode = iup.multiline{expand="YES", size="200x120", font="COURIER_NORMAL_10"}
+iup_console.lblPosition = iup.label{title="0:0", size="50x"}
+iup_console.lblFileName = iup.label{title="", size="50x", expand="HORIZONTAL"}
 
-function iup.console.mlCode:caret_cb(lin, col)
-  iup.console.lblPosition.title = lin..":"..col
+function iup_console.mlCode:caret_cb(lin, col)
+  iup_console.lblPosition.title = lin..":"..col
 end
 
-iup.console.butExecute = iup.button{size="50x15", title="Execute",
-                                    action="iup.dostring(iup.console.mlCode.value)"}
-iup.console.butClearCommands = iup.button{size="50x15", title="Clear",
-                                          action="iup.console.mlCode.value=''  iup.console.lblFileName.title = ''  iup.console.lastfilename = nil"}
-iup.console.butLoadFile = iup.button{size="50x15", title="Load..."}
-iup.console.butSaveasFile = iup.button{size="50x15", title="Save As..."}
-iup.console.butSaveFile = iup.button{size="50x15", title="Save"}
+iup_console.butExecute = iup.button{size="50x15", title="Execute",
+                                    action="iup.dostring(iup_console.mlCode.value)"}
+iup_console.butClearCommands = iup.button{size="50x15", title="Clear",
+                                          action="iup_console.mlCode.value=''  iup_console.lblFileName.title = ''  iup_console.lastfilename = nil"}
+iup_console.butLoadFile = iup.button{size="50x15", title="Load..."}
+iup_console.butSaveasFile = iup.button{size="50x15", title="Save As..."}
+iup_console.butSaveFile = iup.button{size="50x15", title="Save"}
 
-function iup.console.butSaveFile:action()
-  if (iup.console.lastfilename == nil) then
-    iup.console.butSaveasFile:action()
+function iup_console.butSaveFile:action()
+  if (iup_console.lastfilename == nil) then
+    iup_console.butSaveasFile:action()
   else
-    newfile = io.open(iup.console.lastfilename, "w+")
+    newfile = io.open(iup_console.lastfilename, "w+")
     if (newfile) then
-      newfile:write(iup.console.mlCode.value)
+      newfile:write(iup_console.mlCode.value)
       newfile:close()
     else
       error ("Cannot Save file "..filename)
@@ -69,21 +68,26 @@ function iup.console.butSaveFile:action()
   end
 end
 
-function iup.console.butSaveasFile:action()
-  local fd = iup.filedlg{dialogtype="SAVE", title="Save File",
+function iup_console.butSaveasFile:action()
+  local fd = iup.filedlg{dialogtype="SAVE", title="Save File", 
+                         nochangedir="NO", directory=iup_console.last_directory,
                          filter="*.*", filterinfo="All files",allownew=yes}
+                         
   fd:popup(iup.LEFT, iup.LEFT)
+  
   local status = fd.status
-  iup.console.lastfilename = fd.value
-  iup.console.lblFileName.title = iup.console.lastfilename
+  iup_console.lastfilename = fd.value
+  iup_console.lblFileName.title = fd.value
+  iup_console.last_directory = fd.directory
   fd:destroy()
+  
   if status ~= "-1" then
-    if (iup.console.lastfilename == nil) then
+    if (iup_console.lastfilename == nil) then
       error ("Cannot Save file "..filename)
     end
-    local newfile=io.open(iup.console.lastfilename, "w+")
+    local newfile=io.open(iup_console.lastfilename, "w+")
     if (newfile) then
-      newfile:write(iup.console.mlCode.value)
+      newfile:write(iup_console.mlCode.value)
       newfile:close(newfile)
     else
       error ("Cannot Save file")
@@ -91,24 +95,26 @@ function iup.console.butSaveasFile:action()
    end
 end
 
-function iup.console.LoadFile(filename)
+function iup_console.LoadFile(filename)
   local newfile = io.open (filename, "r")
   if (newfile == nil) then
     error ("Cannot load file "..filename)
   else
-    iup.console.mlCode.value=newfile:read("*a")
+    iup_console.mlCode.value=newfile:read("*a")
     newfile:close (newfile)
-    iup.console.lastfilename = filename
-    iup.console.lblFileName.title = iup.console.lastfilename
+    iup_console.lastfilename = filename
+    iup_console.lblFileName.title = iup_console.lastfilename
   end
 end
 
-function iup.console.butLoadFile:action()
-  local fd=iup.filedlg{dialogtype="OPEN", title="Load File",
+function iup_console.butLoadFile:action()
+  local fd=iup.filedlg{dialogtype="OPEN", title="Load File", 
+                       nochangedir="NO", directory=iup_console.last_directory,
                        filter="*.*", filterinfo="All Files", allownew="NO"}
   fd:popup(iup.CENTER, iup.CENTER)
   local status = fd.status
   local filename = fd.value
+  iup_console.last_directory = fd.directory
   fd:destroy()
   
   if (status == "-1") or (status == "1") then
@@ -116,21 +122,21 @@ function iup.console.butLoadFile:action()
       error ("Cannot load file "..filename)
     end
   else
-    iup.console.LoadFile(filename)
+    iup_console.LoadFile(filename)
   end
 end
 
-iup.console.vbxConsole = iup.vbox
+iup_console.vbxConsole = iup.vbox
 {
-  iup.frame{iup.hbox{iup.vbox{iup.console.butLoadFile,
-                              iup.console.butSaveFile,
-                              iup.console.butSaveasFile,
-                              iup.console.butClearCommands,
-                              iup.console.butExecute;
+  iup.frame{iup.hbox{iup.vbox{iup_console.butLoadFile,
+                              iup_console.butSaveFile,
+                              iup_console.butSaveasFile,
+                              iup_console.butClearCommands,
+                              iup_console.butExecute;
                               margin="0x0", gap="10"},
-                     iup.vbox{iup.console.lblFileName,
-                              iup.console.mlCode,
-                              iup.console.lblPosition;
+                     iup.vbox{iup_console.lblFileName,
+                              iup_console.mlCode,
+                              iup_console.lblPosition;
                               alignment = "ARIGHT"};
                      alignment="ATOP"}; title="Commands"}
    ;alignment="ACENTER", margin="5x5", gap="5"
@@ -138,7 +144,7 @@ iup.console.vbxConsole = iup.vbox
 
 -- Main Menu Definition.
 
-iup.console.mnuMain = iup.menu
+iup_console.mnuMain = iup.menu
 {
   iup.submenu
   {
@@ -149,29 +155,29 @@ iup.console.mnuMain = iup.menu
   },
   iup.submenu{iup.menu
   {
-    iup.item{title="Print Version Info...", action=iup.console.print_version_info},
-    iup.item{title="About...", action="iup.console.dlgAbout:popup(iup.CENTER, iup.CENTER)"}
+    iup.item{title="Print Version Info...", action=iup_console.print_version_info},
+    iup.item{title="About...", action="iup_console.dlgAbout:popup(iup.CENTER, iup.CENTER)"}
   };title="Help"}
 }
 
 -- Main Dialog Definition.
 
-iup.console.dlgMain = iup.dialog{iup.console.vbxConsole;
+iup_console.dlgMain = iup.dialog{iup_console.vbxConsole;
                                  title="IupLua Console",
-                                 menu=iup.console.mnuMain,
+                                 menu=iup_console.mnuMain,
                                  dragdrop = "YES",
-                                 defaultenter=iup.console.butExecute,
+                                 defaultenter=iup_console.butExecute,
                                  close_cb = "return iup.CLOSE"}
 
-function iup.console.dlgMain:dropfiles_cb(filename, num, x, y)
+function iup_console.dlgMain:dropfiles_cb(filename, num, x, y)
   if (num == 0) then
-    iup.console.LoadFile(filename)
+    iup_console.LoadFile(filename)
   end
 end
 
 -- About Dialog Definition.
 
-iup.console.dlgAbout = iup.dialog
+iup_console.dlgAbout = iup.dialog
 {
   iup.vbox
   {
@@ -195,10 +201,12 @@ iup.console.dlgAbout = iup.dialog
 
 -- Displays the Main Dialog
 
-iup.console.dlgMain:show()
-iup.SetFocus(iup.console.mlCode)
+iup_console.dlgMain:show()
+iup.SetFocus(iup_console.mlCode)
 
-iup.MainLoop()
+if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end
 
-iup.console.dlgMain:destroy()
-iup.console.dlgAbout:destroy()
+iup_console.dlgMain:destroy()
+iup_console.dlgAbout:destroy()

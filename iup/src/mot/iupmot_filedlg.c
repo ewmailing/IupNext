@@ -154,11 +154,16 @@ static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallback
     else
     {
       IFnss file_cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-      if (file_cb && file_cb(ih, iupAttribGet(ih, "VALUE"), "OK") == IUP_IGNORE)
+      filename = iupAttribGet(ih, "VALUE");
+      if (file_cb && file_cb(ih, filename, "OK") == IUP_IGNORE)
         return;
 
-      if (iupdrvIsFile(iupAttribGet(ih, "VALUE")))  /* check if file exists */
+      if (iupdrvIsFile(filename))  /* check if file exists */
       {
+        char* dir = iupStrFileGetPath(filename);
+        iupAttribStoreStr(ih, "DIRECTORY", dir);
+        free(dir);
+
         iupAttribSetStr(ih, "FILEEXIST", "YES");
         iupAttribSetStr(ih, "STATUS", "0");
       }
