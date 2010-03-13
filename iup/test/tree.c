@@ -179,6 +179,8 @@ static int showrename_cb(Ihandle* ih, int id)
 {
   (void)ih;
   printf("SHOWRENAME_CB(%d)\n", id);
+  if (id == 6)
+    return IUP_IGNORE;
   return IUP_DEFAULT;
 }
 
@@ -230,9 +232,9 @@ static int branchclose_cb(Ihandle* ih, int id)
   return IUP_DEFAULT;
 }
 
-static int noderemoved_cb(Ihandle* ih, int id, void* data)
+static int noderemoved_cb(Ihandle* ih, void* data)
 {
-  printf("NODEREMOVED_CB(%d)\n", id);
+  printf("NODEREMOVED_CB(%p)\n", data);
   return IUP_DEFAULT;
 }
 
@@ -418,7 +420,7 @@ static void init_tree(void)
   //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
   //IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
   //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
-  //IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
+  IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
 
   IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
 
@@ -470,7 +472,7 @@ static void init_tree_nodes(void)
 {
   Ihandle* tree = IupGetHandle("tree");
 
-#if 1
+#if 0
   /* create from bottom to top */
   /* the current node is the ROOT */
   //IupSetAttribute(tree, "VALUE", "0");

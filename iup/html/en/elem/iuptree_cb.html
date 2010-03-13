@@ -89,7 +89,10 @@ elem</strong>:showrename_cb(<strong>id:</strong> number:<strong> </strong>string
 the event. <br>
 <strong>id</strong>:
     node identifier.&nbsp;
-    <br>
+    </p>
+<p class="info"><span class="style1">Returns:</span> if IUP_IGNORE is returned, 
+the rename is canceled (in GTK the rename continuous but the edit box is 
+read-only).<br>
 </p>
 <p><strong>RENAME_CB</strong>:
   Action generated after a node was renamed in 
@@ -134,21 +137,19 @@ of the leaf.<br>
 <p><strong>NODEREMOVED_CB</strong>:
   Action generated when a node is going to be removed. It is only a 
 notification, the action can not be aborted. No node dependent attribute can be 
-consulted during the callback. (since 3.0)</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>id, </strong>void* <strong>userdata</strong>); [in C] 
-<strong>elem</strong>:noderemoved_cb(<strong>id:</strong> number, <strong>userid</strong>: userdata/table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+consulted during the callback. It is usefull to remove memory allocated for the 
+userdata. (since 3.0)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, void* <strong>userdata</strong>); [in C] 
+<strong>elem</strong>:noderemoved_cb(<strong>userid</strong>: userdata/table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
-<strong>id</strong>:
-    node identifier.<br>
 <strong>userdata/userid</strong>: USERDATA attribute in C, or userid object in 
 Lua.</p>
 
   
   
-<p><strong>RIGHTCLICK_CB</strong>:
-  Action generated when the right mouse button 
-  is pressed over the IupTree.</p>
+<p><strong>RIGHTCLICK_CB</strong>: Action generated when the right mouse button 
+is pressed over a node.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
 <strong>elem</strong>:rightclick_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 

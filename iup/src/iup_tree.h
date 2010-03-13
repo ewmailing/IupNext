@@ -29,6 +29,28 @@ void iupdrvTreeUpdateMarkMode(Ihandle *ih);
 
 char* iupTreeGetSpacingAttrib(Ihandle* ih);
 
+#if defined(GTK_MAJOR_VERSION)
+typedef void InodeData;
+#elif defined(XmVERSION)
+typedef struct _WidgetRec InodeData;
+#elif defined(WINVER)
+typedef struct _TREEITEM InodeData;
+#else
+typedef struct _InodeData InodeData;
+#endif
+
+typedef int (*iupTreeNodeFunc)(Ihandle* ih, InodeData* node, int id, void* userdata);
+int iupTreeForEach(Ihandle* ih, iupTreeNodeFunc func, void* userdata);
+InodeData* iupTreeGetNode(Ihandle* ih, int id);
+InodeData* iupTreeGetNodeFromString(Ihandle* ih, const char* name_id);
+int iupTreeFindNodeId(Ihandle* ih, InodeData* node);
+
+InodeData* iupdrvTreeGetFocusNode(Ihandle* ih);
+int iupdrvTreeTotalChildCount(Ihandle* ih, InodeData* node);
+
+void iupTreeDelFromCache(Ihandle* ih, int id, int count);
+void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeData* prevNode, InodeData* node);
+
 /* Structure of the tree */
 struct _IcontrolData
 {
@@ -44,9 +66,10 @@ struct _IcontrolData
 
   void* def_image_leaf_mask;       /* Motif Only */
   void* def_image_collapsed_mask;  
-  void* def_image_expanded_mask;   
+  void* def_image_expanded_mask;  
 
-  int id_control;  /* auxiliary variable for computing or finding the id of a node */
+  InodeData* *node_cache;
+  int node_cache_max, node_count;
 };
 
 

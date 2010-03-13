@@ -151,12 +151,11 @@ static int tree_multiselection_cb(Ihandle *ih, int* ids, int p1)
   return iuplua_call(L, 2);
 }
 
-static int tree_noderemoved_cb(Ihandle *ih, int id, void* p1)
+static int tree_noderemoved_cb(Ihandle *ih, void* p1)
 {
   lua_State *L = iuplua_call_start(ih, "noderemoved_cb");
-  lua_pushnumber(L, id);
   tree_push_userid(L, p1);
-  return iuplua_call(L, 2);
+  return iuplua_call(L, 1);
 }
 
 void iuplua_treefuncs_open (lua_State *L)
