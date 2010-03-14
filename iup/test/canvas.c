@@ -319,7 +319,7 @@ void CanvasTest(void)
   IupSetCallback(canvas, "MAP_CB",       (Icallback)map_cb);
 
   IupSetCallback(canvas, "KEYPRESS_CB",  (Icallback)keypress_cb);
-  IupSetCallback(canvas, "K_ANY",        (Icallback)k_any);
+//  IupSetCallback(canvas, "K_ANY",        (Icallback)k_any);
   IupSetCallback(canvas, "HELP_CB",      (Icallback)help_cb);
 
   IupSetCallback(canvas, "GETFOCUS_CB",  (Icallback)getfocus_cb); 

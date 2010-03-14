@@ -1679,55 +1679,68 @@ static int motTreeCallBranchOpenCb(Ihandle* ih, Widget wItem)
   return IUP_DEFAULT;
 }
 
+static void motTreeFindRange(Ihandle* ih, WidgetList wSelectedItemList, int countItems, int *id1, int *id2)
+{
+  int i = 0, id;
+  unsigned char isSelected;
+
+  *id1 = ih->data->node_count;
+  *id2 = -1;
+
+  for(i = 0; i < countItems; i++)
+  {
+    int is_icon = XmIsIconGadget(wSelectedItemList[i]); /* this line generates a warning in some compilers */
+    if (is_icon)
+    {
+      id = iupTreeFindNodeId(ih, wSelectedItemList[i]);
+      if (id < *id1)
+        *id1 = id;
+      if (id > *id2)
+        *id2 = id;
+    }
+  }
+
+  /* interactive selection of several nodes will NOT select hidden nodes,
+     so make sure that they are selected. */
+  for(i = *id1; i <= *id2; i++)
+  {
+    XtVaGetValues(ih->data->node_cache[i], XmNvisualEmphasis, &isSelected, NULL);
+    if (isSelected == XmNOT_SELECTED)
+      XtVaSetValues(ih->data->node_cache[i], XmNvisualEmphasis, XmSELECTED, NULL);
+  }
+}
+
 static void motTreeCallMultiSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
   WidgetList wSelectedItemList = NULL;
-  Widget wRoot;
-  int countItems;
-
-  wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
-
-  /* Must be a continuous range of selection ids */
+  int countItems, id1, id2, i;
 
   XtVaGetValues(ih->handle, XmNselectedObjects, &wSelectedItemList,
                         XmNselectedObjectCount, &countItems, NULL);
   if (countItems == 0)
     return;
 
+  /* Must be a continuous range of selection ids */
+  motTreeFindRange(ih, wSelectedItemList, countItems, &id1, &id2);
+  countItems = id2-id1+1;
+
   if (cbMulti)
   {
     int* id_rowItem = malloc(sizeof(int) * countItems);
-    int i = 0, n = 0;
 
     for(i = 0; i < countItems; i++)
-    {
-      int is_icon = XmIsIconGadget(wSelectedItemList[i]); /* this line generates a warning in some compilers */
-      if (is_icon)
-      {
-        id_rowItem[n] = iupTreeFindNodeId(ih, wSelectedItemList[i]);
-        n++;
-      }
-    }
+      id_rowItem[i] = id1+i;
 
-    cbMulti(ih, id_rowItem, n);
+    cbMulti(ih, id_rowItem, countItems);
 
     free(id_rowItem);
   }
   else if (cbSelec)
   {
-    int i = 0, id;
-
     for (i=0; i<countItems; i++)
-    {
-      int is_icon = XmIsIconGadget(wSelectedItemList[i]); /* this line generates a warning in some compilers */
-      if (is_icon)
-      {
-        id = iupTreeFindNodeId(ih, wSelectedItemList[i]);
-        cbSelec(ih, id, 1);
-      }
-    }
+      cbSelec(ih, id1+i, 1);
   }
 }
 
@@ -1952,10 +1965,7 @@ static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCal
       if (IupGetCallback(ih, "MULTISELECTION_CB"))
       {
         if (nptr->auto_selection_type==XmAUTO_NO_CHANGE)
-        {
-          printf("OPPPPPPPPSSSSSSSSSSS!\n");
-          //motTreeCallMultiSelectionCb(ih);
-        }
+          motTreeCallMultiSelectionCb(ih);
       }
       else
       {

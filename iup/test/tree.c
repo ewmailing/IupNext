@@ -413,7 +413,7 @@ static void init_tree(void)
   IupSetCallback(tree, "K_ANY",          (Icallback) k_any_cb);
   IupSetCallback(tree, "SHOWRENAME_CB", (Icallback) showrename_cb);
   IupSetCallback(tree, "SELECTION_CB", (Icallback) selection_cb);
-//  IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
+  IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
   IupSetCallback(tree, "GETFOCUS_CB", (Icallback) getfocus_cb);
   IupSetCallback(tree, "KILLFOCUS_CB", (Icallback) killfocus_cb);
   //IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
