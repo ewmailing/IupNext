@@ -23,22 +23,22 @@
 the event. <br>
 <strong>id</strong>:
     Node identifier.<br>
-    status: 1 - node was selected, 0 - node was unselected. </p>
+    <strong>status</strong>: 1=node selected, 0=node unselected. </p>
 <p><strong>MULTISELECTION_CB</strong>:
   Action generated 
-  when multiple nodes are selected during the same operation (when mouse is 
-clicked and Shift is pressed, or when a navigation key is released and shift is 
-pressed). If 
-not defined the SELECTION_CB will be called for all selected nodes every time a 
-new node is selected. The block of 
-nodes is always completely included, independent if some node were already 
-marked.</p>
+  when a continuous range of nodes is selected in one single operation. That 
+occurs only when the Shift key is pressed and the mouse left button, or a 
+navigation key, is released. If 
+not defined the SELECTION_CB with status=1 will be called for all nodes in the 
+range. The range is always completely included, independent if some nodes were already 
+marked. Also means that all other nodes outside the range are not selected.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int* <strong>ids, int </strong>n) [in C]
 <strong>elem</strong>:multiselection_cb(<strong>ids: </strong>table<strong>, n:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>ids</strong>:
-    Array of node identifiers.<br>
+    Array of node identifiers. This array is kept for backward compatibility, 
+the range is simply defined by ids[0] to ids[n-1], where <code>ids[i+1]=ids[i]+1</code>.<br>
 <b>n</b>: Number of nodes in the array.</p>
 <hr>
 <p><strong>BRANCHOPEN_CB</strong>:

@@ -390,46 +390,28 @@ static void winTreeSetFocusNode(Ihandle* ih, HTREEITEM hItem)
   }
 }
 
-typedef struct _winTreeRange{
-  HTREEITEM hItem1, hItem2;
-  char inside, clear;
-}winTreeRange;
-
-static int winTreeSelectRangeFunc(Ihandle* ih, HTREEITEM hItem, int id, winTreeRange* range)
+static void winTreeSelectRange(Ihandle* ih, HTREEITEM hItem1, HTREEITEM hItem2, int clear)
 {
-  int end_range = 0;
-  (void)id;
-
-  if (range->inside == 0) /* detect the range start */
+  int i;
+  int id1 = iupTreeFindNodeId(ih, hItem1);
+  int id2 = iupTreeFindNodeId(ih, hItem2);
+  if (id1 > id2)
   {
-    if (range->hItem1 == hItem) range->inside=1;
-    else if (range->hItem2 == hItem) range->inside=1;
-  }
-  else if (range->inside == 1) /* detect the range end */
-  {
-    if (range->hItem1 == hItem) end_range=1;
-    else if (range->hItem2 == hItem) end_range=1;
+    int tmp = id1;
+    id1 = id2;
+    id2 = tmp;
   }
 
-  if (range->inside == 1) /* if inside, select */
-    winTreeSelectItem(ih, hItem, 1);
-  else if (range->clear)  /* if outside and clear, unselect */
-    winTreeSelectItem(ih, hItem, 0);
-
-  if (end_range || (range->inside && range->hItem1==range->hItem2))
-    range->inside=-1;  /* update after selecting the node */
-
-  return 1;
-}
-
-static void winTreeSelectRange(Ihandle* ih, HTREEITEM hItemFrom, HTREEITEM hItemTo, int clear)
-{
-  winTreeRange range;
-  range.hItem1 = hItemFrom;
-  range.hItem2 = hItemTo;
-  range.inside = 0;
-  range.clear = (char)clear;
-  iupTreeForEach(ih, (iupTreeNodeFunc)winTreeSelectRangeFunc, &range);
+  for (i = 0; i < ih->data->node_count; i++)
+  {
+    if (i < id1 || i > id2)
+    {
+      if (clear)
+        winTreeSelectItem(ih, ih->data->node_cache[i], 0);
+    }
+    else
+      winTreeSelectItem(ih, ih->data->node_cache[i], 1);
+  }
 }
 
 static void winTreeSelectAll(Ihandle* ih)

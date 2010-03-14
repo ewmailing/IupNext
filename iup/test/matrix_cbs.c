@@ -305,7 +305,7 @@ void MatrixCbsTest(void)
 //          IupZbox(
           IupTabs(
             IupSetAttributes(
-              IupVbox((create_mat()), bt, IupText(""), IupLabel("Label Text"), IupVal("HORIZONTAL"), 
+              IupVbox((create_mat()), bt, IupText(""), IupLabel("Label Text"), IupFrame(IupVal("HORIZONTAL")), 
                 NULL), "MARGIN=10x10, GAP=10, TABTITLE=Test1"),
             IupSetAttributes(
               IupVbox(IupFrame(create_mat()), IupText(""), IupLabel("Label Text"), IupVal("HORIZONTAL"), 

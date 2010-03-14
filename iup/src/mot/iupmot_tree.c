@@ -447,47 +447,28 @@ static void motTreeInvertAllNodeMarking(Ihandle* ih)
   iupTreeForEach(ih, (iupTreeNodeFunc)motTreeSelectFunc, &select);
 }
 
-typedef struct _motTreeRange{
-  Widget wItem1, wItem2;
-  char inside, clear;
-}motTreeRange;
-
-static int motTreeSelectRangeFunc(Ihandle* ih, Widget wItem, int id, motTreeRange* range)
-{
-  int end_range = 0;
-
-  if (range->inside == 0) /* detect the range start */
-  {
-    if (range->wItem1 == wItem) range->inside=1;
-    else if (range->wItem2 == wItem) range->inside=1;
-  }
-  else if (range->inside == 1) /* detect the range end */
-  {
-    if (range->wItem1 == wItem) end_range=1;
-    else if (range->wItem2 == wItem) end_range=1;
-  }
-
-  if (range->inside == 1) /* if inside, select */
-    XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
-  else if (range->clear)  /* if outside and clear, unselect */
-    XtVaSetValues(wItem, XmNvisualEmphasis, XmNOT_SELECTED, NULL);
-
-  if (end_range || (range->inside && range->wItem1==range->wItem2))
-    range->inside=-1;  /* update after selecting the node */
-
-  (void)ih;
-  (void)id;
-  return 1;
-}
-
 static void motTreeSelectRange(Ihandle* ih, Widget wItem1, Widget wItem2, int clear)
 {
-  motTreeRange range;
-  range.wItem1 = wItem1;
-  range.wItem2 = wItem2;
-  range.inside = 0;
-  range.clear = (char)clear;
-  iupTreeForEach(ih, (iupTreeNodeFunc)motTreeSelectRangeFunc, &range);
+  int i;
+  int id1 = iupTreeFindNodeId(ih, wItem1);
+  int id2 = iupTreeFindNodeId(ih, wItem2);
+  if (id1 > id2)
+  {
+    int tmp = id1;
+    id1 = id2;
+    id2 = tmp;
+  }
+
+  for (i = 0; i < ih->data->node_count; i++)
+  {
+    if (i < id1 || i > id2)
+    {
+      if (clear)
+        XtVaSetValues(ih->data->node_cache[i], XmNvisualEmphasis, XmNOT_SELECTED, NULL);
+    }
+    else
+      XtVaSetValues(ih->data->node_cache[i], XmNvisualEmphasis, XmSELECTED, NULL);
+  }
 }
 
 void motTreeExpandCollapseAllNodes(Ihandle* ih, WidgetList itemList, int numItems, unsigned char itemState)
@@ -1492,8 +1473,8 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 
     for(i = 0; i < countItems; i++)
     {
-      int ok = XmIsIconGadget(wSelectedItemList[i]);
-      if ((wSelectedItemList[i] != wRoot) && ok)  /* the root node can't be deleted */
+      int is_icon = XmIsIconGadget(wSelectedItemList[i]); /* this line generates a warning in some compilers */
+      if ((wSelectedItemList[i] != wRoot) && is_icon)  /* the root node can't be deleted */
         motTreeRemoveNode(ih, wSelectedItemList[i], 1, 1);
     }
   }
@@ -1708,28 +1689,45 @@ static void motTreeCallMultiSelectionCb(Ihandle* ih)
 
   wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
 
+  /* Must be a continuous range of selection ids */
+
   XtVaGetValues(ih->handle, XmNselectedObjects, &wSelectedItemList,
                         XmNselectedObjectCount, &countItems, NULL);
   if (countItems == 0)
     return;
 
-  if (cbMulti || cbSelec)
+  if (cbMulti)
   {
     int* id_rowItem = malloc(sizeof(int) * countItems);
-    int i = 0;
+    int i = 0, n = 0;
 
     for(i = 0; i < countItems; i++)
-      id_rowItem[i] = iupTreeFindNodeId(ih, wSelectedItemList[i]);
-
-    if (cbMulti)
-      cbMulti(ih, id_rowItem, countItems);
-    else
     {
-      for (i=0; i<countItems; i++)
-        cbSelec(ih, id_rowItem[i], 1);
+      int is_icon = XmIsIconGadget(wSelectedItemList[i]); /* this line generates a warning in some compilers */
+      if (is_icon)
+      {
+        id_rowItem[n] = iupTreeFindNodeId(ih, wSelectedItemList[i]);
+        n++;
+      }
     }
 
+    cbMulti(ih, id_rowItem, n);
+
     free(id_rowItem);
+  }
+  else if (cbSelec)
+  {
+    int i = 0, id;
+
+    for (i=0; i<countItems; i++)
+    {
+      int is_icon = XmIsIconGadget(wSelectedItemList[i]); /* this line generates a warning in some compilers */
+      if (is_icon)
+      {
+        id = iupTreeFindNodeId(ih, wSelectedItemList[i]);
+        cbSelec(ih, id, 1);
+      }
+    }
   }
 }
 
@@ -1954,7 +1952,10 @@ static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCal
       if (IupGetCallback(ih, "MULTISELECTION_CB"))
       {
         if (nptr->auto_selection_type==XmAUTO_NO_CHANGE)
-          motTreeCallMultiSelectionCb(ih);
+        {
+          printf("OPPPPPPPPSSSSSSSSSSS!\n");
+          //motTreeCallMultiSelectionCb(ih);
+        }
       }
       else
       {

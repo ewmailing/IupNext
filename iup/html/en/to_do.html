@@ -39,7 +39,6 @@
 <h3>Roadmap for the Next Version</h3>
 
 <ol>
-	<li><strong>IupTree</strong> optimization</li>
 	<li>Better scrolling in <strong>IupMatrix</strong></li>
 	<li><strong>IupSplitbox</strong> (native <strong>IupSbox</strong>)</li>
 	<li>Other New Controls: <strong>DropDownButton, GridBox, ScrollBox</strong> 
@@ -86,6 +85,11 @@
 
 <ul>
 
+	<li><span class="style1">Known Issue:</span> when an <strong>IupVal</strong> 
+	is inside an <strong>IupTabs</strong>, the tabs disappear when the mouse 
+	moves over it after being used in the valuator. A workaround is to put the 
+	valuator inside an <strong>IupFrame</strong> and then inside the <strong>
+	IupTabs</strong>, then the problem does not occour.</li>
 	<li><span class="style1">Known Issue:</span> In Windows XP, when using a font 
 	for an node with TITLEFONTid in <strong>IupTree</strong> that is larger than 
 	the element FONT the item text will be cropped at right and bottom because 

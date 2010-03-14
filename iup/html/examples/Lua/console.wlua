@@ -3,36 +3,34 @@ require"iuplua"
 -- Utilities
 iup_console = {}
 
-function iup_console.printtable(t)
-  local n,v = next(t, nil)
-  print("--printtable Start--")
-  while n do
-    print(tostring(n).."="..tostring(v))
-    n,v = next(t, n)
-  end
-  print("--printtable End--")
+function iup_console.concat(str, info)
+  return str .. info .. "\n"
 end
 
 function iup_console.print_version_info()
-  if (im) then print("IM " .. im._VERSION .. "  " .. im._COPYRIGHT) end
+  iup_console.clear()
+  local str = ""
+  if (im) then str = iup_console.concat(str, "IM " .. im._VERSION .. "  " .. im._COPYRIGHT) end
 
-  if (cd) then print("CD " .. cd._VERSION .. "  " .. cd._COPYRIGHT) end
+  if (cd) then str = iup_console.concat(str, "CD " .. cd._VERSION .. "  " .. cd._COPYRIGHT) end
 
-  print("IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT)
-  print("")
-  print("IUP Info")
-  print("  System: " .. iup.GetGlobal("SYSTEM"))
-  print("  System Version: " .. iup.GetGlobal("SYSTEMVERSION"))
+  str = iup_console.concat(str, "IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT)
+  str = iup_console.concat(str, "")
+  str = iup_console.concat(str, "IUP Info")
+  str = iup_console.concat(str, "  System: " .. iup.GetGlobal("SYSTEM"))
+  str = iup_console.concat(str, "  System Version: " .. iup.GetGlobal("SYSTEMVERSION"))
 
   local mot = iup.GetGlobal("MOTIFVERSION")
-  if (mot) then print("  Motif Version: ", mot) end
+  if (mot) then str = iup_console.concat(str, "  Motif Version: ", mot) end
 
-  print("  Screen Size: " .. iup.GetGlobal("SCREENSIZE"))
-  print("  Screen Depth: " .. iup.GetGlobal("SCREENDEPTH"))
+  str = iup_console.concat(str, "  Screen Size: " .. iup.GetGlobal("SCREENSIZE"))
+  str = iup_console.concat(str, "  Screen Depth: " .. iup.GetGlobal("SCREENDEPTH"))
 
-  if (iup.GL_VENDOR) then print("  OpenGL Vendor: " .. iup.GL_VENDOR) end
-  if (iup.GL_RENDERER) then print("  OpenGL Renderer: " .. iup.GL_RENDERER) end
-  if (iup.GL_VERSION) then print("  OpenGL Version: " .. iup.GL_VERSION) end
+  if (iup.GL_VENDOR) then str = iup_console.concat(str, "  OpenGL Vendor: " .. iup.GL_VENDOR) end
+  if (iup.GL_RENDERER) then str = iup_console.concat(str, "  OpenGL Renderer: " .. iup.GL_RENDERER) end
+  if (iup.GL_VERSION) then str = iup_console.concat(str, "  OpenGL Version: " .. iup.GL_VERSION) end
+  
+  iup_console.mlCode.value=str
 end
 
 -- Console Dialog
@@ -46,10 +44,15 @@ function iup_console.mlCode:caret_cb(lin, col)
   iup_console.lblPosition.title = lin..":"..col
 end
 
+function iup_console.clear()
+  iup_console.mlCode.value=''  
+  iup_console.lblFileName.title = ''  
+  iup_console.lastfilename = nil
+end
+
 iup_console.butExecute = iup.button{size="50x15", title="Execute",
                                     action="iup.dostring(iup_console.mlCode.value)"}
-iup_console.butClearCommands = iup.button{size="50x15", title="Clear",
-                                          action="iup_console.mlCode.value=''  iup_console.lblFileName.title = ''  iup_console.lastfilename = nil"}
+iup_console.butClearCommands = iup.button{size="50x15", title="Clear", action=iup_console.clear}
 iup_console.butLoadFile = iup.button{size="50x15", title="Load..."}
 iup_console.butSaveasFile = iup.button{size="50x15", title="Save As..."}
 iup_console.butSaveFile = iup.button{size="50x15", title="Save"}
