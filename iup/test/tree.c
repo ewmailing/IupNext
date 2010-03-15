@@ -156,6 +156,13 @@ static int removechild(void)
   return IUP_DEFAULT;
 }
 
+static int removemarked(void)
+{
+  Ihandle* tree = IupGetHandle("tree");
+  IupSetAttribute(tree, "DELNODE", "MARKED");
+  return IUP_DEFAULT;
+}
+
 int renamenode(void)
 {
   Ihandle* tree = IupGetHandle("tree");
@@ -336,6 +343,7 @@ static int rightclick_cb(Ihandle* ih, int id)
     IupItem ("Insert Branch","insertbranch"),
     IupItem ("Remove Node","removenode"),
     IupItem ("Remove Children","removechild"),
+    IupItem ("Remove Marked","removemarked"),
     IupItem ("Toggle State","togglestate"),
     IupSubmenu("Focus", IupMenu(
       IupItem ("ROOT", "selectnode"),
@@ -362,6 +370,7 @@ static int rightclick_cb(Ihandle* ih, int id)
   IupSetFunction("insertbranch",  (Icallback) insertbranch);
   IupSetFunction("removenode", (Icallback) removenode);
   IupSetFunction("removechild", (Icallback) removechild);
+  IupSetFunction("removemarked", (Icallback) removemarked);
   IupSetFunction("renamenode", (Icallback) renamenode);
   IupSetFunction("togglestate", (Icallback) togglestate);
 

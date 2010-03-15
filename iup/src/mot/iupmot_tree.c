@@ -421,15 +421,32 @@ static void motTreeUpdateImages(Ihandle* ih, WidgetList itemList, int numItems, 
   }
 }
 
+static int motTreeIsNodeSelected(Widget wItem)
+{
+  unsigned char isSelected;
+  XtVaGetValues(wItem, XmNvisualEmphasis, &isSelected, NULL);
+  if(isSelected == XmSELECTED)
+    return 1;
+  else
+    return 0;
+}
+
+static void motTreeSelectNode(Widget wItem, int select)
+{
+  if (select == -1)
+    select = !motTreeIsNodeSelected(wItem);  /* toggle */
+
+  if (select)
+    XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
+  else
+    XtVaSetValues(wItem, XmNvisualEmphasis, XmNOT_SELECTED, NULL);
+}
+
 static int motTreeSelectFunc(Ihandle* ih, Widget wItem, int id, int *select)
 {
   int do_select = *select;
   if (do_select == -1)
-  {
-    unsigned char isSelected;
-    XtVaGetValues(wItem, XmNvisualEmphasis, &isSelected, NULL);
-    do_select = (isSelected == XmSELECTED)? 0: 1; /* toggle */
-  }
+    do_select = !motTreeIsNodeSelected(wItem); /* toggle */
 
   if (do_select)
     XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
@@ -1155,16 +1172,11 @@ static int motTreeSetMarkAttrib(Ihandle* ih, const char* value)
     motTreeInvertAllNodeMarking(ih);
   else if(iupStrEqualPartial(value, "INVERT"))
   {
-    unsigned char isSelected;
     Widget wItem = iupTreeGetNodeFromString(ih, &value[strlen("INVERT")]);
     if (!wItem)  
       return 0;
 
-    XtVaGetValues(wItem, XmNvisualEmphasis, &isSelected, NULL);
-    if (isSelected == XmSELECTED)
-      XtVaSetValues(wItem, XmNvisualEmphasis, XmNOT_SELECTED, NULL);
-    else
-      XtVaSetValues(wItem, XmNvisualEmphasis, XmSELECTED, NULL);
+    motTreeSelectNode(wItem, -1);
   }
   else if(iupStrEqualNoCase(value, "BLOCK"))
   {
@@ -1285,14 +1297,11 @@ static int motTreeSetMarkStartAttrib(Ihandle* ih, const char* name_id)
 
 static char* motTreeGetMarkedAttrib(Ihandle* ih, const char* name_id)
 {
-  unsigned char isSelected;
   Widget wItem = iupTreeGetNodeFromString(ih, name_id);
   if (!wItem)  
     return NULL;
 
-  XtVaGetValues(wItem, XmNvisualEmphasis, &isSelected, NULL);
-
-  if(isSelected == XmSELECTED)
+  if (motTreeIsNodeSelected(wItem))
     return "YES";
   else
     return "NO";
@@ -1462,20 +1471,13 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
   }
   else if(iupStrEqualNoCase(value, "MARKED"))  /* Delete the array of marked nodes */
   {
-    WidgetList wSelectedItemList = NULL;
-    Widget wRoot;
-    int countItems, i;
-
-    XtVaGetValues(ih->handle, XmNselectedObjects, &wSelectedItemList,
-                              XmNselectedObjectCount, &countItems, NULL);
-
-    wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
-
-    for(i = 0; i < countItems; i++)
+    int i;
+    for(i = 1; i < ih->data->node_count; /* increment only if not removed */)
     {
-      int is_icon = XmIsIconGadget(wSelectedItemList[i]); /* this line generates a warning in some compilers */
-      if ((wSelectedItemList[i] != wRoot) && is_icon)  /* the root node can't be deleted */
-        motTreeRemoveNode(ih, wSelectedItemList[i], 1, 1);
+      if (motTreeIsNodeSelected(ih->data->node_cache[i]))
+        motTreeRemoveNode(ih, ih->data->node_cache[i], 1, 1);
+      else
+        i++;
     }
   }
 
@@ -1682,7 +1684,6 @@ static int motTreeCallBranchOpenCb(Ihandle* ih, Widget wItem)
 static void motTreeFindRange(Ihandle* ih, WidgetList wSelectedItemList, int countItems, int *id1, int *id2)
 {
   int i = 0, id;
-  unsigned char isSelected;
 
   *id1 = ih->data->node_count;
   *id2 = -1;
@@ -1704,9 +1705,33 @@ static void motTreeFindRange(Ihandle* ih, WidgetList wSelectedItemList, int coun
      so make sure that they are selected. */
   for(i = *id1; i <= *id2; i++)
   {
-    XtVaGetValues(ih->data->node_cache[i], XmNvisualEmphasis, &isSelected, NULL);
-    if (isSelected == XmNOT_SELECTED)
+    if (!motTreeIsNodeSelected(ih->data->node_cache[i]))
       XtVaSetValues(ih->data->node_cache[i], XmNvisualEmphasis, XmSELECTED, NULL);
+  }
+}
+
+static void motTreeCallMultiUnSelectionCb(Ihandle* ih)
+{
+  IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
+  if (cbSelec)
+  {
+    WidgetList wSelectedItemList = NULL;
+    int countItems, id1, id2, i;
+
+    XtVaGetValues(ih->handle, XmNselectedObjects, &wSelectedItemList,
+                          XmNselectedObjectCount, &countItems, NULL);
+    if (countItems == 0)
+      return;
+
+    /* Must be a continuous range of selection ids */
+    motTreeFindRange(ih, wSelectedItemList, countItems, &id1, &id2);
+    countItems = id2-id1+1;
+
+    if (countItems > 1)
+    {
+      for (i=0; i<countItems; i++)
+        cbSelec(ih, id1+i, 0);
+    }
   }
 }
 
@@ -1964,11 +1989,13 @@ static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCal
     {
       if (IupGetCallback(ih, "MULTISELECTION_CB"))
       {
+        /* current selection same as the initial selection */
         if (nptr->auto_selection_type==XmAUTO_NO_CHANGE)
           motTreeCallMultiSelectionCb(ih);
       }
       else
       {
+        /* current selection is caused by button drag */
         if (nptr->auto_selection_type==XmAUTO_MOTION)
           motTreeCallMultiSelectionCb(ih);
       }
@@ -1982,11 +2009,7 @@ static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCal
     Widget wItemFocus = iupdrvTreeGetFocusNode(ih);
     int curpos = iupTreeFindNodeId(ih, wItemFocus);
     if (is_ctrl) 
-    {
-      unsigned char isSelected;
-      XtVaGetValues(wItemFocus, XmNvisualEmphasis, &isSelected, NULL);
-      cbSelec(ih, curpos, isSelected == XmSELECTED? 1: 0);
-    }
+      cbSelec(ih, curpos, motTreeIsNodeSelected(wItemFocus));
     else
     {
       int oldpos = iupAttribGetInt(ih, "_IUPTREE_OLDVALUE");
@@ -2162,14 +2185,7 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
   {
     Widget wItemFocus = iupdrvTreeGetFocusNode(ih);
     if (wItemFocus)
-    {
-      unsigned char isSelected;
-      XtVaGetValues(wItemFocus, XmNvisualEmphasis, &isSelected, NULL);
-      if (isSelected == XmSELECTED)
-        XtVaSetValues(wItemFocus, XmNvisualEmphasis, XmNOT_SELECTED, NULL);
-      else
-        XtVaSetValues(wItemFocus, XmNvisualEmphasis, XmSELECTED, NULL);
-    }
+      motTreeSelectNode(wItemFocus, -1);
   }
 }
 
@@ -2209,6 +2225,11 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
         *cont = False;
       }
       wLastItem = wItemFocus;
+
+      if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && 
+          !(evt->state & ShiftMask) &&
+          !(evt->state & ControlMask))
+        motTreeCallMultiUnSelectionCb(ih);
     }
     else if (evt->button==Button3)
       motTreeCallRightClickCb(ih, evt->x, evt->y);

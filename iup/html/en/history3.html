@@ -68,7 +68,7 @@ version 3.x.<br>
 	dialog is closed and the user pressed the OK button, it will contain the 
 	directory of the selected file.</li>
 	<li><strong><span class="hist_changed">Changed:</span>
-    IupTree</strong> internal optimization to match faster ids to/from native 
+    IupTree</strong> internal optimization to match ids to/from native 
 	nodes. SHOWRENAME_CB callback return code to accept IUP_IGNORE. The 
 	NODEREMOVED_CB callback now only receive the node userdata.</li>
 
@@ -83,9 +83,12 @@ version 3.x.<br>
 	<li><span class="hist_fixed">Fixed:</span> LEGENDPOS attribute in IupPPlot.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid call to SELECTION_CB 
 	callback in <strong>IupTree</strong> on Windows when MARKMODE=MULTIPLE and 
-	the user used the Ctrl key to select an item. Invalid change of the 
+	the user pressed the Ctrl key to select an item. Missing call to 
+	SELECTION_CB in GTK and Motif when user unselect multiple nodes at once. Invalid change of the 
 	selection when focus is changed in <strong>IupTree</strong> on Windows 
-	Vista/7 when not using visual styles.</li>
+	Vista/7 when not using visual styles. In GTK and Motif children of not 
+	expanded nodes were not being selected when multiple nodes were selected in 
+	one operation.</li>
 	<li><span class="hist_fixed">Fixed:</span> interpretation of comments inside 
 	elements declaration in LED.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid memory access in <strong>
