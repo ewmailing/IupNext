@@ -4,7 +4,7 @@
 local ctrl = {
   nick = "radio",
   parent = WIDGET,
-  creation = "i",
+  creation = "I",
   callback = {}
 } 
 

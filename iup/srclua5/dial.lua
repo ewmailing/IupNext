@@ -4,7 +4,7 @@
 local ctrl = {
   nick = "dial",
   parent = WIDGET,
-  creation = "s",
+  creation = "S",
   callback = {
      mousemove_cb = "d",       -- already registered by the val, but has a name conflict
 --     button_press_cb = "d",    -- already registered by the val

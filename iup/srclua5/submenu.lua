@@ -4,7 +4,7 @@
 local ctrl = {
   nick = "submenu",
   parent = WIDGET,
-  creation = "Si",
+  creation = "SI",
   callback = {
 --    open_cb = "",       -- already registered by the menu
 --    menuclose_cb = "",  -- already registered by the menu

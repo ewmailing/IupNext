@@ -2,9 +2,9 @@
 -- Sbox class 
 ------------------------------------------------------------------------------
 local ctrl = {
-	nick = "sbox",
+  nick = "sbox",
   parent = WIDGET,
-	creation = "i",
+  creation = "I",
   callback = {}
 }
 

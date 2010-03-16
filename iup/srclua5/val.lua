@@ -4,7 +4,7 @@
 local ctrl = {
   nick = "val",
   parent = WIDGET,
-  creation = "s",
+  creation = "S",
   callback = {
     mousemove_cb = "d",
     button_press_cb = "d",

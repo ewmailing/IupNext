@@ -4,7 +4,7 @@
 local ctrl = {
   nick = "frame",
   parent = WIDGET,
-  creation = "i",
+  creation = "I",
   callback = {}
 }
 
