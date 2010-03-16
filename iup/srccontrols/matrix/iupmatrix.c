@@ -700,11 +700,33 @@ static void iMatrixUnMapMethod(Ihandle* ih)
   iupMatrixMemRelease(ih);
 }
 
+static char* iMatrixGetDefault(Ihandle* ih, const char* name)
+{
+  int inherit;
+  char *def_value;
+  iupClassObjectGetAttributeInfo(ih, name, &def_value, &inherit);
+  return def_value;
+}
+
+static int iMatrixGetInt(Ihandle* ih, const char* name)
+{
+  char *value = iupAttribGet(ih, name);
+  if (!value) value = iMatrixGetDefault(ih, name);
+  if (value)
+  {
+    int i = 0;
+    if (iupStrToInt(value, &i))
+      return i;
+  }
+  return 0;
+}
+
 static int iMatrixGetNaturalWidth(Ihandle* ih)
 {
   int width = 0, num, col;
 
-  num = iupAttribGetInt(ih, "NUMCOL_VISIBLE")+1;  /* include the title column */
+  /* must use this custom function because the get function for this attribute returns a value with a different meaning */
+  num = iMatrixGetInt(ih, "NUMCOL_VISIBLE")+1;  /* include the title column */
 
   if (iupAttribGetInt(ih, "NUMCOL_VISIBLE_LAST"))
   {
@@ -729,7 +751,8 @@ static int iMatrixGetNaturalHeight(Ihandle* ih)
 {
   int height = 0, num, lin;
 
-  num = iupAttribGetInt(ih, "NUMLIN_VISIBLE")+1;  /* include the title line */
+  /* must use this custom function because the get function for this attribute returns a value with a different meaning */
+  num = iMatrixGetInt(ih, "NUMLIN_VISIBLE")+1;  /* include the title line */
 
   if (iupAttribGetInt(ih, "NUMLIN_VISIBLE_LAST"))
   {

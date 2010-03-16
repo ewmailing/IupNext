@@ -15,45 +15,6 @@ static int dropcheck_cb(Ihandle *self, int lin, int col)
   return IUP_IGNORE;
 }
 
-static int gui_resize_cb(Ihandle *ih, int width, int height) 
-{
-  Icallback original = IupGetCallback(ih, "OLD_RESIZE_CB");
-  if (original == NULL) return IUP_DEFAULT; // Isso nunca deve acontecer...
-  else {
-    int newsize, oldsize=0;
-    char attrib[20]; // buffer para guardar o nome do atributo
-    const char *buffer;
-
-    buffer = IupGetAttribute(ih, "SIZE_BACKUP");
-    if (buffer) sscanf(buffer, "%dx", &oldsize);
-printf("SIZE_BACKUP=%s\n", buffer);
-    buffer = IupGetAttribute(ih, "SIZE");
-    sscanf(buffer, "%dx", &newsize);
-printf("SIZE=%s\n", buffer);
-    IupStoreAttribute(ih, "SIZE_BACKUP", buffer);
-
-    // Redefine a largura de cada uma das colunas
-    if (oldsize) {
-      int i;
-      double resizefactor = (double)newsize/(double)oldsize;
-printf("resizefactor=%g\n", resizefactor);
-      for (i = 1; i <= IupGetInt(ih, "NUMCOL"); i++)
-      {
-        int colwidth;
-        char valbuf[10];
-        sprintf(attrib, "RASTERWIDTH%d", i);
-        colwidth = IupGetInt(ih, attrib);
-        colwidth = (int)(colwidth*resizefactor + 0.5);
-        if (colwidth < 20) colwidth = 20;
-        sprintf(valbuf, "%d", colwidth);
-        IupStoreAttribute(ih, attrib, valbuf);
-      }
-    }
-  }
-  return ((IFnii)original)(ih, width, height); // Chama a callback original 
-}
-
-
 static Ihandle* create_matrix(void)
 {
   Ihandle* mat = IupMatrix(NULL); 
@@ -107,6 +68,10 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat,"MARK2:3","YES");
   IupSetAttribute(mat,"MARK3:3","YES");
 
+  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","255 255 255");
+  IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 255");
+  IupSetAttribute(mat,"FRAMEHORIZCOLOR1:4","255 255 255");
+  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:4","255 255 255");
 
 //  IupSetAttribute(mat,"MARKMODE","LINCOL");
 
@@ -124,10 +89,6 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "8");
 
   IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
-
-  IupSetAttribute(mat, "EXPAND", "YES");
-  IupSetCallback(mat, "OLD_RESIZE_CB", IupGetCallback(mat, "RESIZE_CB"));
-  IupSetCallback(mat, "RESIZE_CB", (Icallback)gui_resize_cb);
 
   return mat;
 }
