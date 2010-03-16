@@ -44,6 +44,9 @@ oriented from top to bottom in IUP. So if you want to consider YMIN and YMAX as
 bottom-up oriented, then the actual YPOS must be obtained using <strong>
 YMAX-DY-POSY</strong>.</p>
 <p>
+Important: the LINE*, *MAX and *MIN are only updated in the scrollbar when the 
+respective D* is updated.</p>
+<p>
 If you have to change the properties of the scrollbar (XMIN, XMAX and DX) but 
 you want to keep the thumb still (if possible) in the same relative position, 
 then you have to also recalculate its position (POSX) using the old position as 

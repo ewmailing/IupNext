@@ -1,6 +1,6 @@
 PROJNAME = iup
 APPNAME = iupsample
-APPTYPE = CONSOLE
+APPTYPE = console
 
 ifdef GTK_DEFAULT
   ifdef USE_MOTIF
@@ -42,7 +42,7 @@ DBG = Yes
 #SRC = lua_init.c
 #SRC = mask.c
 #SRC = menu.c
-#SRC = message.c
+SRC = message.c
 #SRC = multiline1.c
 #SRC = multiline2.c
 #SRC = progressbar.c
@@ -74,8 +74,8 @@ DBG = Yes
 #SRC = canvas3.c
 #SRC = scrollbar.c
 
-USE_OPENGL = Yes
-SRC = glcanvas.c
+#USE_OPENGL = Yes
+#SRC = glcanvas.c
 
 #USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
