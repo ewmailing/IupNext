@@ -192,12 +192,11 @@ static void gtkTreeSelectNode(GtkTreeModel* model, GtkTreeSelection* selection, 
 static void gtkTreeSelectAll(Ihandle* ih, GtkTreeModel* model, GtkTreeSelection* selection, int selected)
 {
   int i;
-  GtkTreeIter iterItem = {0,0,0,0};
-  iterItem.stamp = gtkTreeIterStamp;
+  GtkTreeIter iterItem;
 
   for (i = 0; i < ih->data->node_count; i++)
   {
-    iterItem.user_data = ih->data->node_cache[i];
+    gtkTreeIterInit(&iterItem, ih->data->node_cache[i]);
     gtkTreeSelectNodeRaw(model, &iterItem, selected);
   }
 
@@ -210,12 +209,11 @@ static void gtkTreeSelectAll(Ihandle* ih, GtkTreeModel* model, GtkTreeSelection*
 static void gtkTreeInvertAllNodeMarking(Ihandle* ih, GtkTreeModel* model, GtkTreeSelection* selection)
 {
   int i;
-  GtkTreeIter iterItem = {0,0,0,0};
-  iterItem.stamp = gtkTreeIterStamp;
+  GtkTreeIter iterItem;
 
   for (i = 0; i < ih->data->node_count; i++)
   {
-    iterItem.user_data = ih->data->node_cache[i];
+    gtkTreeIterInit(&iterItem, ih->data->node_cache[i]);
     gtkTreeSelectNode(model, selection, &iterItem, -1);
   }
 }
@@ -225,8 +223,7 @@ static void gtkTreeSelectRange(Ihandle* ih, GtkTreeModel* model, GtkTreeSelectio
   int i;
   int id1 = iupTreeFindNodeId(ih, iterItem1->user_data);
   int id2 = iupTreeFindNodeId(ih, iterItem2->user_data);
-  GtkTreeIter iterItem = {0,0,0,0};
-  iterItem.stamp = gtkTreeIterStamp;
+  GtkTreeIter iterItem;
 
   if (id1 > id2)
   {
@@ -237,7 +234,7 @@ static void gtkTreeSelectRange(Ihandle* ih, GtkTreeModel* model, GtkTreeSelectio
 
   for (i = 0; i < ih->data->node_count; i++)
   {
-    iterItem.user_data = ih->data->node_cache[i];
+    gtkTreeIterInit(&iterItem, ih->data->node_cache[i]);
     if (i < id1 || i > id2)
     {
       if (clear)
@@ -338,12 +335,11 @@ static int gtkTreeGetUserDataId(Ihandle* ih, GtkTreeModel* model, void* userdata
 {
   int i;
   void* node_userdata;
-  GtkTreeIter iterItem = {0,0,0,0};
-  iterItem.stamp = gtkTreeIterStamp;
+  GtkTreeIter iterItem;
 
   for (i = 0; i < ih->data->node_count; i++)
   {
-    iterItem.user_data = ih->data->node_cache[i];
+    gtkTreeIterInit(&iterItem, ih->data->node_cache[i]);
     gtk_tree_model_get(model, &iterItem, IUPGTK_TREE_USERDATA, &node_userdata, -1);
 
     if (node_userdata == userdata)
@@ -707,7 +703,6 @@ static void gtkTreeCallMultiSelectionCb(Ihandle* ih)
     GtkTreeIter iterItem;
     int i = 0, countItems;
     gtkTreeSelectMinMax minmax;
-    iterItem.stamp = gtkTreeIterStamp;
 
     minmax.ih = ih;
     minmax.id1 = ih->data->node_count;
@@ -721,7 +716,7 @@ static void gtkTreeCallMultiSelectionCb(Ihandle* ih)
        so make sure that they are selected. */
     for(i = minmax.id1; i <= minmax.id2; i++)
     {
-      iterItem.user_data = ih->data->node_cache[i];
+      gtkTreeIterInit(&iterItem, ih->data->node_cache[i]);
       if (!gtkTreeIsNodeSelected(model, &iterItem))
         gtkTreeSelectNodeRaw(model, &iterItem, 1);
     }
@@ -2097,10 +2092,8 @@ static void gtkTreeCallMultiUnSelectionCb(Ihandle* ih)
   if (cbSelec)
   {
     GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
-    GtkTreeIter iterItem;
     int i = 0, countItems;
     gtkTreeSelectMinMax minmax;
-    iterItem.stamp = gtkTreeIterStamp;
 
     minmax.ih = ih;
     minmax.id1 = ih->data->node_count;
