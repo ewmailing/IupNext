@@ -14,7 +14,7 @@
 
 static int Frame(lua_State *L)
 {
-  Ihandle *ih = IupFrame(iuplua_checkihandle(L, 1));
+  Ihandle *ih = IupFrame(iuplua_checkihandleornil(L, 1));
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

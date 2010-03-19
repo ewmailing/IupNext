@@ -84,9 +84,10 @@ static int insertleaf(void)
 {
   char attr[50];
   Ihandle* tree = IupGetHandle("tree");
-  int id = IupGetInt(tree, "VALUE");
-  sprintf(attr, "INSERTLEAF%d", id);
-  IupSetAttribute(tree, attr, "");
+//  int id = IupGetInt(tree, "VALUE");
+//  sprintf(attr, "INSERTLEAF%d", id);
+//  IupSetAttribute(tree, attr, "");
+  IupSetAttributeHandle(tree, "IMAGELEAF", load_image_LogoTecgraf());
   return IUP_DEFAULT;
 }
 

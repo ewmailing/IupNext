@@ -37,7 +37,11 @@ ifdef USE_IM
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     LIBS = iupim iupimglib
   else
-    IUPLIB = $(IUP)/lib/$(TEC_UNAME)
+    ifdef DBG_DIR
+      IUPLIB = $(IUP)/lib/$(TEC_UNAME)d
+    else
+      IUPLIB = $(IUP)/lib/$(TEC_UNAME)
+    endif  
     SLIB = $(IUPLIB)/libiupim.a $(IUPLIB)/libiupimglib.a
   endif             
 endif 

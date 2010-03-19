@@ -24,8 +24,15 @@ USE_IUP3 = Yes
 USE_STATIC = Yes
 IUP = ..
 
-#TEC_UNAME_DIR = Win32.$(TEC_UNAME)
-#DBG = Yes
+ifdef DBG_DIR
+  IUPLIB = $(IUP)/lib/$(TEC_UNAME)d
+  CDLIB = $(CD)/lib/$(TEC_UNAME)d
+  IMLIB = $(IM)/lib/$(TEC_UNAME)d
+else
+  IUPLIB = $(IUP)/lib/$(TEC_UNAME)
+  CDLIB = $(CD)/lib/$(TEC_UNAME)
+  IMLIB = $(IM)/lib/$(TEC_UNAME)
+endif  
 
 # Must uncomment all SRC lines
 DEFINES = BIG_TEST
@@ -67,7 +74,7 @@ SRC += clipboard.c
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
 #else
-#  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupimglib.a
+#  SLIB += $(IUPLIB)/libiupimglib.a
 #endif
 
 USE_CD = Yes
@@ -100,8 +107,8 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += cdpdflib
 #  LDIR += $(IUP)/lib/$(TEC_UNAME)
 else
-  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_pplot.a
-#  SLIB += $(CD)/lib/$(TEC_UNAME)/libcdpdflib.a
+  SLIB += $(IUPLIB)/libiup_pplot.a
+#  SLIB += $(CDLIB)/libcdpdflib.a
 endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )

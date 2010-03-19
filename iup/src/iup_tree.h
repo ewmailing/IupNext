@@ -58,6 +58,7 @@ struct _IcontrolData
       add_expanded,
       show_dragdrop,
       show_rename,
+      stamp,    /* Used by GTK only */
       spacing;
 
   void* def_image_leaf;       /* Default image leaf */

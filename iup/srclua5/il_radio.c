@@ -14,7 +14,7 @@
 
 static int Radio(lua_State *L)
 {
-  Ihandle *ih = IupRadio(iuplua_checkihandle(L, 1));
+  Ihandle *ih = IupRadio(iuplua_checkihandleornil(L, 1));
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

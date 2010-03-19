@@ -81,12 +81,11 @@ static int tree_rightclick_cb(Ihandle *self, int p0)
   return iuplua_call(L, 1);
 }
 
-static int tree_noderemoved_cb(Ihandle *self, int p0, char * p1)
+static int tree_noderemoved_cb(Ihandle *self, char * p0)
 {
   lua_State *L = iuplua_call_start(self, "noderemoved_cb");
-  lua_pushnumber(L, p0);
-  lua_pushstring(L, p1);
-  return iuplua_call(L, 2);
+  lua_pushstring(L, p0);
+  return iuplua_call(L, 1);
 }
 
 static int Tree(lua_State *L)
