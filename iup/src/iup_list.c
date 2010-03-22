@@ -176,7 +176,8 @@ int iupListGetPos(Ihandle* ih, const char* name_id)
     pos--; /* IUP items start at 1 */
 
     if (pos < 0) return -1;
-    if (pos > count-1) return -1;
+    if (pos == count) return -2;
+    if (pos > count) return -1;
 
     return pos;
   }
@@ -293,8 +294,10 @@ static int iListSetInsertItemAttrib(Ihandle* ih, const char* name_id, const char
   if (value)
   {
     int pos = iupListGetPos(ih, name_id);
-    if (pos!=-1)
+    if (pos >= 0)
       iupdrvListInsertItem(ih, pos, value);
+    else if (pos == -2)
+      iupdrvListAppendItem(ih, value);
   }
   return 0;
 }
@@ -311,7 +314,7 @@ static int iListSetRemoveItemAttrib(Ihandle* ih, const char* value)
   else
   {
     int pos = iupListGetPos(ih, value);
-    if (pos!=-1)
+    if (pos >= 0)
       iupdrvListRemoveItem(ih, pos);
   }
   return 0;

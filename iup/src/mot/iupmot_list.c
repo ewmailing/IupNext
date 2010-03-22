@@ -195,7 +195,7 @@ void iupdrvListRemoveAllItems(Ihandle* ih)
 static char* motListGetIdValueAttrib(Ihandle* ih, const char* name_id)
 {
   int pos = iupListGetPos(ih, name_id);
-  if (pos != -1)
+  if (pos >= 0)
   {
     XmString* items;
     XtVaGetValues(ih->handle, XmNitems, &items, NULL);
