@@ -236,8 +236,13 @@ static int saveallimages_cb(void)
       if (!IupSaveImageAsText(elem, file_name, imgtype, names[i]))
       {
 #ifdef USE_IM
-        if (!IupSaveImage(elem, file_name, StrUpper(imgtype)))  /* already displayed an error message */
+        if (!IupSaveImage(elem, file_name, StrUpper(imgtype)))
+        {
+          char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
+          if (err_msg)
+            IupMessage("Error", err_msg);
           return IUP_DEFAULT;
+        }
 #else
         IupMessage("Error", "Failed to save the image.");
         return IUP_DEFAULT;
@@ -436,11 +441,19 @@ static int saveimage_cb(Ihandle* self)
       if (GetSaveAsFile(file_name, imgtype) != -1)
       {
         if (!IupSaveImageAsText(elem, file_name, imgtype, name))
+        {
 #ifdef USE_IM
-          IupSaveImage(elem, file_name, StrUpper(imgtype));  /* already displayed an error message */
+          if (!IupSaveImage(elem, file_name, StrUpper(imgtype)))
+          {
+            char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
+            if (err_msg)
+              IupMessage("Error", err_msg);
+            return IUP_DEFAULT;
+          }
 #else
           IupMessage("Error", "Failed to save the image.");
 #endif
+        }
       }
     }
     else
@@ -694,6 +707,12 @@ static void LoadImageFile(Ihandle* self, const char* file_name)
     IupSetHandle(file_title, new_image);
     free(file_title);
     mainUpdateList(self, file_name);
+  }
+  else
+  {
+    char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
+    if (err_msg)
+      IupMessage("Error", err_msg);
   }
 }
 

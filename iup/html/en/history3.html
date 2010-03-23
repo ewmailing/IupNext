@@ -52,6 +52,9 @@ version 3.x.<br>
 	<li><span class="hist_changed">Changed:</span>
     INSERTITEMn attribute in <strong>IupList</strong> now allows to add an item 
 	after the last item using n=count+1.</li>
+	<li><span class="hist_changed">Changed:</span>
+    removed <strong>IupMessage</strong> from error handling in IUP-IM utilities. 
+	Now a global attribute &quot;IUPIM_LASTERROR&quot; is set instead.</li>
 	<li><span class="hist_fixed">Fixed:</span> optional creation parameter of
 	<strong>IupSubmenu</strong>, <strong>IupSbox</strong>, <strong>IupFrame</strong>,
 	<strong>IupRadio</strong>, <strong>IupVal</strong> and <strong>IupDial</strong> 
@@ -60,6 +63,8 @@ version 3.x.<br>
 	default value in <strong>IupMatrix</strong>. </li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupSbox</strong> handler 
 	feedback when MAXSIZE or MINSIZE is used.</li>
+	<li><span class="hist_fixed">Fixed:</span> color value in <strong>
+	IupGetParam</strong> after the color browser dialog canceled editing.</li>
 
 </ul>
 

@@ -39,11 +39,11 @@
 <h3>Roadmap for the Next Version</h3>
 
 <ol>
-	<li>Better scrolling in <strong>IupMatrix</strong></li>
+	<li>Fix scrolling in <strong>IupMatrix</strong></li>
+	<li>Improve <strong>IupTree</strong></li>
 	<li><strong>IupSplitbox</strong> (native <strong>IupSbox</strong>)</li>
-	<li>Other New Controls: <strong>DropDownButton, GridBox, ScrollBox</strong> 
-	and <strong>LayoutBuilder</strong></li>
-	<li>UTF-8 in Windows</li>
+	<li>New Controls</li>
+	<li>UTF-8 in all drivers and in text callbacks</li>
 	<li>[Suggestions?]</li>
 </ol>
 
@@ -51,20 +51,21 @@
 
 <ul>
 
-	<li><span class="style2">Priority: </span>Drag&amp;Drop between controls.</li>
-
-	<li><span class="style2">Priority: </span>A tutorial section in the 
-	documentation. One big Controls Demo just like GTK, wxWidgets and Qt have.</li>
 	<li><strong><span class="style6">Priority:</span></strong> Lua Rocks and 
 	Debian distribution packages.</li>
+
+	<li><strong><span class="style6">Priority:</span></strong> Unicode Support (UTF-8) in Windows and Motif.</li>
+
+	<li>Drag&amp;Drop between controls.</li>
+
+	<li>A tutorial section in the 
+	documentation. One big Controls Demo just like GTK, wxWidgets and Qt have.</li>
 
 	<li>A MacOS X native driver using Carbon or Cocoa.</li>
 	<li><strong>IupGLCanvas</strong> for MacOSX.</li>
 
   <li>The actual model for control data structure in the internal SDK is 
 	restricted for derived classes.</li>
-
-	<li>Unicode Support (UTF-8) in Windows and Motif.</li>
 
 	<li>Simplify IupLua implementation. More similar to a regular binding 
 	implementation like CDLua and IMLua.</li>
@@ -89,7 +90,7 @@
 	is inside an <strong>IupTabs</strong>, the tabs disappear when the mouse 
 	moves over it after being used in the valuator. A workaround is to put the 
 	valuator inside an <strong>IupFrame</strong> and then inside the <strong>
-	IupTabs</strong>, then the problem does not occour.</li>
+	IupTabs</strong>, so the problem does not occur.</li>
 	<li><span class="style1">Known Issue:</span> In Windows XP, when using a font 
 	for an node with TITLEFONTid in <strong>IupTree</strong> that is larger than 
 	the element FONT the item text will be cropped at right and bottom because 
@@ -188,6 +189,10 @@
 
 <ul>
 
+  <li><strong><span class="style2">Priority: </span></strong> Project Manager/Dialog Editor/Integrated Debugger for IupLua</li>
+
+  <li><strong><span class="style2">Priority: </span></strong> HTML viewer</li>
+
   <li><strong><span class="style2">Priority: </span>DropDownButton</strong> - 
 	Mix between a drop down list and a button</li>
 
@@ -208,11 +213,8 @@
 
 	<li><strong>Toobar -</strong> button/toggle/list, detachable</li>
 
-	<li><strong>ImageList</strong> - A list that contains images</li>
 	<li><strong>Table</strong> - similar to IupMatrix but using native controls</li>
 	<li>-----------------------------</li>
-
-  <li><strong><span class="style2">Priority: </span></strong> Project Manager/Dialog Editor/Integrated Debugger for IupLua</li>
 
   <li>FontDlg for X fonts - Motif driver</li>
 
@@ -221,8 +223,6 @@
 	<li>PropertyGrid -&nbsp;a 2 column matrix with expandable/closeable items</li>
 
 	<li>LUT - Lookup Table, maps a set of values in another set using a curve.</li>
-
-  <li>HTML viewer</li>
 
 	<li>Statusbar</li>
 
