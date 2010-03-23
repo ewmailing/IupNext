@@ -53,7 +53,7 @@
 #endif
 
 #ifdef WIN32
-#include <tchar.h>
+//#include <tchar.h>
 #ifdef UNICODE
 #include <wchar.h>
 #endif

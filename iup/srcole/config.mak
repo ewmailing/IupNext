@@ -15,3 +15,8 @@ SRC = iup_olecontrol.cpp \
 			tOleHandler.cpp \
 			tOleInPlaceFrame.cpp \
 			tOleInPlaceSite.cpp
+
+
+ifneq ($(findstring cygw, $(TEC_UNAME)), )
+  LIBS += uuid ole32 gdi32 oleaut32
+endif
