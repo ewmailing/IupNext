@@ -136,7 +136,7 @@ void iupLayoutCompute(Ihandle* ih)
   iupBaseSetPosition(ih, 0, 0);
 }
 
-static void iLayoutSetMinMaxSize(Ihandle* ih, int *w, int *h)
+void iupLayoutSetMinMaxSize(Ihandle* ih, int *w, int *h)
 {
   if (ih->has_minsize)
   {
@@ -191,7 +191,7 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
       ih->naturalheight = iupMAX(ih->naturalheight, h);
 
       /* crop the natural size */
-      iLayoutSetMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
+      iupLayoutSetMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
     }
   }
   else 
@@ -207,7 +207,7 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
     }
 
     /* crop the natural size */
-    iLayoutSetMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
+    iupLayoutSetMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
   }
 }
 
@@ -260,7 +260,7 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
 
     /* crop the current size if expanded */
     if (ih->expand & IUP_EXPAND_WIDTH || ih->expand & IUP_EXPAND_HEIGHT)
-      iLayoutSetMinMaxSize(ih, &(ih->currentwidth), &(ih->currentheight));
+      iupLayoutSetMinMaxSize(ih, &(ih->currentwidth), &(ih->currentheight));
   }
 }
 
