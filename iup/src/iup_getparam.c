@@ -288,7 +288,7 @@ static int iParamColorButton_CB(Ihandle *self, int button, int pressed)
 
     IupPopup(dlg, IUP_CENTER, IUP_CENTER);
 
-    if (IupGetInt(dlg, "STATUS") != -1)
+    if (IupGetInt(dlg, "STATUS")==1)
     {
       char* value = IupGetAttribute(dlg, "VALUE");
       IupSetAttribute(textbox, "VALUE", value);
