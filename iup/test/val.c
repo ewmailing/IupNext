@@ -143,8 +143,8 @@ void ValTest(void)
 
   val_h = IupVal("HORIZONTAL");
   IupSetAttribute(val_h, "MAX", "100.0");
-  IupSetAttribute(val_h, "SHOWTICKS", "10");
-  IupSetAttribute(val_h, "TICKSPOS", "BOTH");   /* Windows Only */
+//  IupSetAttribute(val_h, "SHOWTICKS", "10");
+//  IupSetAttribute(val_h, "TICKSPOS", "BOTH");   /* Windows Only */
 //  IupSetAttribute(val_h, "INVERTED", "YES");
   IupSetAttribute(val_h, "EXPAND", "HORIZONTAL");
   

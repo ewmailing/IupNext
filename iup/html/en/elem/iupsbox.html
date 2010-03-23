@@ -70,13 +70,17 @@ MAXSIZE</a>:
 also accepted.</p>
 
 <h3>Notes</h3>
-<p>The controls that you want to be resized must have the EXPAND=YES attribute set.</p>
+<p>The controls that you want to be resized must have the EXPAND=YES attribute set. 
+The control inside the sbox will not be resized with a size lesser than its
+<strong>Natural</strong> size. See the <a href="../layout_guide.html">Layout Guide</a> for mode details 
+  on sizes.</p>
 <p>The <strong>IupCanvas</strong> bar handler is always the first child of the 
 sbox. It can be obtained using <strong>IupGetChild</strong> or <strong>
 IupGetNextChild</strong>.</p>
 <p><strong>IupSbox</strong> can be resized above the maximum size so some controls go to outside the dialog area 
   at right or bottom. In fact this is part of the dynamic layout default reposition of controls inside the dialog. See 
-  the <strong>IupRefresh</strong> function. The IUP layout does not have a maximum limit only a minimum.</p>
+  the <strong>IupRefresh</strong> function. The IUP layout does not have a maximum limit only a minimum, 
+except if you use the MAXSIZE common attribute.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 
