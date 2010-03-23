@@ -23,7 +23,7 @@
 #include "iup_image.h"
 
 
-static void PrintError(int error)
+static void iSaveErrorMsg(int error)
 {
   char* lang = IupGetLanguage();
   char* msg;
@@ -31,20 +31,22 @@ static void PrintError(int error)
   {
     switch (error)
     {
+    case IM_ERR_NONE:
+      msg = NULL;
     case IM_ERR_OPEN:
-      msg = "Error Opening File.\n";
+      msg = "Error Opening Image File.\n";
       break;
     case IM_ERR_MEM:
       msg = "Insuficient memory.\n";
       break;
     case IM_ERR_ACCESS:
-      msg = "Error Accessing File.\n";
+      msg = "Error Accessing Image File.\n";
       break;
     case IM_ERR_DATA:
       msg = "Image type not Suported.\n";
       break;
     case IM_ERR_FORMAT:
-      msg = "Invalid Format.\n";
+      msg = "Invalid Image File Format.\n";
       break;
     case IM_ERR_COMPRESS:
       msg = "Invalid or unsupported compression.\n";
@@ -57,20 +59,22 @@ static void PrintError(int error)
   {
     switch (error)
     {
+    case IM_ERR_NONE:
+      msg = NULL;
     case IM_ERR_OPEN:
-      msg = "Erro Abrindo Arquivo.\n";
+      msg = "Erro Abrindo Arquivo de Imagem.\n";
       break;
     case IM_ERR_MEM:
       msg = "Memória Insuficiente.\n";
       break;
     case IM_ERR_ACCESS:
-      msg = "Erro Acessando Arquivo.\n";
+      msg = "Erro Acessando Arquivo de Imagem.\n";
       break;
     case IM_ERR_DATA:
       msg = "Tipo de Imagem não Suportado.\n";
       break;
     case IM_ERR_FORMAT:
-      msg = "Formato Inválido.\n";
+      msg = "Formato de Arquivo de Imagem Inválido.\n";
       break;
     case IM_ERR_COMPRESS:
       msg = "Compressão Inválida ou não Suportada.\n";
@@ -80,7 +84,7 @@ static void PrintError(int error)
     }
   }
 
-  IupMessage("Error", msg);
+  IupSetGlobal("IUPIM_LASTERROR", msg);
 }
 
 Ihandle* IupLoadImage(const char* file_name)
@@ -165,7 +169,7 @@ load_finish:
   imCounterSetCallback(NULL, old_callback);
   if (ifile) imFileClose(ifile);
   if (image_data) free(image_data);
-  if (error) PrintError(error);
+  iSaveErrorMsg(error);
   return iup_image;
 }
 
@@ -188,7 +192,7 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
   ifile = imFileNew(file_name, format, &error);
   if (!ifile)
   {
-    PrintError(error);
+    iSaveErrorMsg(error);
     return 0;
   }
 
@@ -238,8 +242,7 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
 
   imFileClose(ifile); 
 
-  if (error)
-    PrintError(error);
+  iSaveErrorMsg(error);
 
   return error == IM_ERR_NONE? 1: 0;
 }
