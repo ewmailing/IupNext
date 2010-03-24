@@ -366,7 +366,7 @@ static void winTreeSetFocusNode(Ihandle* ih, HTREEITEM hItem)
     int wasSelected = winTreeIsNodeSelected(ih, hItem);
     int wasFocusSelected = 0;
 
-    if (iupwinIsVista() && iupwin_comctl32ver6)
+    if (iupwinIsVistaOrNew() && iupwin_comctl32ver6)
       iupAttribSetStr(ih, "_IUPTREE_ALLOW_CHANGE", (char*)hItem);  /* Vista Only */
     else
       wasFocusSelected = hItemFocus && winTreeIsNodeSelected(ih, hItemFocus);

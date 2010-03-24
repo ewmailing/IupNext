@@ -575,7 +575,7 @@ static int winTabsMapMethod(Ihandle* ih)
 
   iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
-  if (dwExStyle & WS_EX_COMPOSITED && !ih->data->is_multiline && iupwinIsVista())
+  if (dwExStyle & WS_EX_COMPOSITED && !ih->data->is_multiline && iupwinIsVistaOrNew())
   {
     /* workaround for composite bug in Vista */
     ih->data->is_multiline = 1;  

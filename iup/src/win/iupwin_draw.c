@@ -201,7 +201,7 @@ int iupwinDrawGetThemeTabsBgColor(HWND hWnd, COLORREF *color)
   if (!hTheme) 
     return 0;
 
-  if (iupwinIsVista())
+  if (iupwinIsVistaOrNew())
     ret = winThemeGetColor(hTheme, TABP_AEROWIZARDBODY, TIS_NORMAL, TMT_FILLCOLORHINT, color);
   else
     ret = winThemeGetColor(hTheme, TABP_BODY, TIS_NORMAL, TMT_FILLCOLORHINT, color);

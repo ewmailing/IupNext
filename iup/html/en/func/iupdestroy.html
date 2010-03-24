@@ -22,8 +22,9 @@ or <strong>ih</strong>:destroy() [in Lua]</pre>
 <h3>Notes</h3>
 <p>It will automatically <b>unmap</b> and <b>detach</b> the element if 
 necessary, and then <strong>destroy</strong> the element.</p>
-<p>This function also deletes the names 
-  associated to the interface elements being destroyed. </p>
+<p>This function also deletes the main names 
+  associated to the interface element being destroyed, but if it has more than 
+one name then some names may be left behind. </p>
 <p><strong>Menu</strong> bars associated with dialogs are automatically destroyed 
 when the dialog is destroyed.  </p>
 

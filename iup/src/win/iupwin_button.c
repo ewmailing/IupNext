@@ -27,6 +27,7 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
+#include "iupwin_info.h"
 
 
 #ifndef CDIS_SHOWKEYBOARDCUES
@@ -547,6 +548,15 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
         cb = IupGetCallback(ih, "ACTION");
         if (cb && cb(ih) == IUP_CLOSE)
           IupExitLoop();
+      }
+
+      if (!iupwinIsVistaOrNew())
+      {
+        /* TIPs desapear forever after a button click in XP,
+           so we force an update. */
+        char* tip = iupAttribGet(ih, "TIP");
+        if (tip)
+          iupdrvBaseSetTipAttrib(ih, tip);
       }
       break;
     }

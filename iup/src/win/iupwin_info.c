@@ -18,7 +18,7 @@
 #include "iupwin_info.h"
 
 
-int iupwinIsVista(void)
+int iupwinIsVistaOrNew(void)
 {
   OSVERSIONINFO osvi;
   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
