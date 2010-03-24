@@ -346,13 +346,13 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT:ATOP");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
 //  IupSetAttribute(button, "IMAGEPOSITION", "BOTTOM");
-  IupSetAttribute(button, "PADDING", "5x5");
+//  IupSetAttribute(button, "PADDING", "5x5");
 //  IupSetAttribute(button, "TITLE", "Text1");
-  IupSetAttribute(button, "FONT", "Helvetica, 14");
+//  IupSetAttribute(button, "FONT", "Helvetica, 14");
 //  IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
   IupSetAttributeHandle(button, "IMAGE", image1);
 //  IupSetAttributeHandle(button, "IMINACTIVE", image1i);
-//  IupSetAttributeHandle(button, "XXX__IMPRESS", image1p);
+  IupSetAttributeHandle(button, "IMPRESS", image1p);
   IupSetAttribute(button, "TIP", "Image Label");
   IupSetAttribute(button, "NAME", "button4");
   set_callbacks(button);
@@ -384,6 +384,12 @@ void ButtonTest(void)
 
   label = IupLabel(NULL);
   IupSetAttribute(label, "SEPARATOR", "VERTICAL");
+  IupSetHandle("teste1", label);
+  IupSetHandle("xxxx", label);
+  IupSetHandle("teste2", label);
+  IupSetHandle("yyy", label);
+  IupSetHandle("dasdasdas", label);
+  IupSetHandle("label", label);
 
   dlg = IupDialog(IupHbox(box1, label, box2, NULL));
   IupSetAttribute(dlg, "TITLE", "IupButton Test");
