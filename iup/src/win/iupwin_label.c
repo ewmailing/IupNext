@@ -248,6 +248,16 @@ static int winLabelSetFgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+static int winLabelSetUpdateAttrib(Ihandle* ih, const char* value)
+{
+  (void)value;
+
+  if (ih->handle)
+    iupdrvDisplayUpdate(ih);  /* Post a redraw */
+
+  return 1;
+}
+
 static int winLabelProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   switch (msg)
@@ -333,7 +343,7 @@ void iupdrvLabelInitClass(Iclass* ic)
 
   /* IupLabel only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", winLabelGetAlignmentAttrib, winLabelSetAlignmentAttrib, IUPAF_SAMEASSYSTEM, "ALEFT:ACENTER", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, winLabelSetUpdateAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, winLabelSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 
   /* IupLabel Windows and GTK only */
