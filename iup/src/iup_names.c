@@ -14,11 +14,22 @@
 #include "iup_object.h"
 #include "iup_class.h"
 #include "iup_assert.h"
+#include "iup_attrib.h"
 #include "iup_str.h"
 
 
 static Itable *inames_strtable = NULL;   /* table indexed by name containing Ihandle* address */
-static Itable *inames_ihtable = NULL;    /* table indexed by Ihandle* address containing names */
+
+void iupNamesInit(void)
+{
+  inames_strtable = iupTableCreate(IUPTABLE_STRINGINDEXED);
+}
+
+void iupNamesFinish(void)
+{
+  iupTableDestroy(inames_strtable);
+  inames_strtable = NULL;
+}
 
 static Ihandle* iNameGetTopParent(Ihandle* ih)
 {
@@ -56,7 +67,7 @@ void iupNamesDestroyHandles(void)
   while (name)
   {
     ih = (Ihandle*)iupTableGetCurr(inames_strtable);
-    if (iupObjectCheck(ih))
+    if (iupObjectCheck(ih))   /* here must be a handle */
     {
       ih = iNameGetTopParent(ih);
       if (iNameCheckArray(ih_array, i, ih))
@@ -71,44 +82,28 @@ void iupNamesDestroyHandles(void)
   count = i;
   for (i = 0; i < count; i++)
   {
-    if (iupObjectCheck(ih_array[i]))
+    if (iupObjectCheck(ih_array[i]))  /* here must be a handle */
       IupDestroy(ih_array[i]);
   }
 
   free(ih_array);
 }
 
-void iupNamesInit(void)
-{
-  inames_strtable = iupTableCreate(IUPTABLE_STRINGINDEXED);
-  inames_ihtable = iupTableCreate(IUPTABLE_POINTERINDEXED);
-}
-
-void iupNamesFinish(void)
-{
-  iupTableDestroy(inames_strtable);
-  inames_strtable = NULL;
-
-  iupTableDestroy(inames_ihtable);
-  inames_ihtable = NULL;
-}
-
-void iupRemoveAllNames(Ihandle* ih)
+void iupRemoveNames(Ihandle* ih)
 {
   char *name;
-  Ihandle *cur_ih;
 
-  name = iupTableFirst(inames_strtable);
-  while (name)
-  {
-    cur_ih = (Ihandle*)iupTableGetCurr(inames_strtable);
-    if (iupObjectCheck(cur_ih) && cur_ih == ih)
-      iupTableRemoveCurr(inames_strtable);
+  /* clear the cache */
+  name = iupAttribGet(ih, "_IUP_LASTHANDLENAME");
+  if (name)
+    iupTableRemove(inames_strtable, name);
 
-    name = iupTableNext(inames_strtable);
-  }
+  /* check for an internal name */
+  name = iupAttribGetHandleName(ih);
+  if (name)
+    iupTableRemove(inames_strtable, name);
 
-  iupTableRemove(inames_ihtable, (char*)ih);
+  /* Do NOT search for other names */
 }
 
 Ihandle *IupGetHandle(const char *name)
@@ -127,22 +122,24 @@ Ihandle* IupSetHandle(const char *name, Ihandle *ih)
     return NULL;
 
   old_ih = iupTableGet(inames_strtable, name);
+
   if (ih != NULL)
   {
     iupTableSet(inames_strtable, name, ih, IUPTABLE_POINTER);
-    iupTableSet(inames_ihtable, (char*)ih, (char*)name, IUPTABLE_STRING);  /* keep only the last name set */
+
+    /* save the name in the cache if it is a valid handle */
+    if (iupObjectCheck(ih))
+      iupAttribStoreStr(ih, "_IUP_LASTHANDLENAME", name);
   }
   else
   {
-    ih = iupTableGet(inames_strtable, name);
     iupTableRemove(inames_strtable, name);
-    if (ih) 
-    {
-      char* cur_name = iupTableGet(inames_ihtable, (char*)ih);
-      if (iupStrEqualNoCase(cur_name, name))
-        iupTableRemove(inames_ihtable, (char*)ih);
-    }
+
+    /* clear the name from the cache if it is a valid handle */
+    if (iupObjectCheck(old_ih))
+      iupAttribSetStr(old_ih, "_IUP_LASTHANDLENAME", NULL);
   }
+
   return old_ih;
 }
 
@@ -174,7 +171,8 @@ static int iNamesCountDialogs(void)
   while (name)
   {
     Ihandle* dlg = (Ihandle*)iupTableGetCurr(inames_strtable);
-    if (iupObjectCheck(dlg) && dlg->iclass->nativetype == IUP_TYPEDIALOG)
+    if (iupObjectCheck(dlg) &&  /* here must be a handle */
+        dlg->iclass->nativetype == IUP_TYPEDIALOG)
       i++;
 
     name = iupTableNext(inames_strtable);
@@ -194,7 +192,8 @@ int IupGetAllDialogs(char** names, int n)
   while (name)
   {
     Ihandle* dlg = (Ihandle*)iupTableGetCurr(inames_strtable);
-    if (iupObjectCheck(dlg) && dlg->iclass->nativetype == IUP_TYPEDIALOG)
+    if (iupObjectCheck(dlg) &&  /* here must be a handle */
+        dlg->iclass->nativetype == IUP_TYPEDIALOG)
     {
       names[i] = name;
       i++;
@@ -209,8 +208,32 @@ int IupGetAllDialogs(char** names, int n)
 
 char* IupGetName(Ihandle* ih)
 {
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
+  char *name;
+  if (!ih) /* no iupASSERT needed here */
     return NULL;
-  return iupTableGet(inames_ihtable, (char*)ih);
+
+  if (iupObjectCheck(ih))
+  {
+    /* check the cache first, but must be a handle */
+    name = iupAttribGet(ih, "_IUP_LASTHANDLENAME");
+    if (name)
+      return name;
+  }
+
+  /* check for an internal name */
+  name = iupAttribGetHandleName(ih);
+  if (name)
+    return name;
+                               
+  /* search for the name */
+  name = iupTableFirst(inames_strtable);
+  while (name)
+  {
+    if ((Ihandle*)iupTableGetCurr(inames_strtable) == ih)
+      return name;
+
+    name = iupTableNext(inames_strtable);
+  }
+
+  return NULL;
 }

@@ -17,7 +17,7 @@ void iupNamesFinish(void);
 void iupNamesDestroyHandles(void);
 
 /* called from IupDestroy */
-void iupRemoveAllNames(Ihandle* ih);
+void iupRemoveNames(Ihandle* ih);
 
 /* Other functions declared in <iup.h> and implemented here.
 IupGetName

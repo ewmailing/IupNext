@@ -113,6 +113,7 @@ Ihandle* iupObjectCreate(Iclass* ic, void** params);
 void** iupObjectGetParamList(void* first, va_list arglist);
  
 /** Checks if the handle is still valid based on the signature.
+ * But if the handle was destroyed still can access invalid memory.
  * \ingroup object */
 int iupObjectCheck(Ihandle* ih);
 

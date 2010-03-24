@@ -373,6 +373,16 @@ void iupAttribSetHandleName(Ihandle *ih)
   IupSetHandle(str_name, ih);
 }
 
+char* iupAttribGetHandleName(Ihandle *ih)
+{
+  char str_name[100];
+  sprintf(str_name, "_IUP_NAME(%p)", ih);
+  if (IupGetHandle(str_name)==ih)
+    return iupStrGetMemoryCopy(str_name);
+  else
+    return NULL;
+}
+
 void IupSetAttributeHandle(Ihandle *ih, const char* name, Ihandle *ih_named)
 {
   int inherit;

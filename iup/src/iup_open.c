@@ -101,8 +101,8 @@ void IupClose(void)
 
   iupdrvSetIdleFunction(NULL);  /* stop any idle */
 
-  iupDlgListDestroyAll();    /* destroy all dialogs */
-  iupNamesDestroyHandles();  /* destroy everything else that have names */
+  iupDlgListDestroyAll();    /* destroy all dialogs and their children */
+  iupNamesDestroyHandles();  /* destroy everything that do not belong to a dialog */
   iupImageStockFinish();     /* release stock images hash table and the images */
 
   iupRegisterFinish();  /* release native classes */

@@ -170,15 +170,15 @@ void IupDestroy(Ihandle *ih)
   /* unmap if mapped and remove from its parent child list */
   IupDetach(ih);
 
+  /* removes names associated with the element */
+  iupRemoveNames(ih);
+
   /* destroy the element */
   iupClassObjectDestroy(ih);
 
   /* destroy the private data */
   if (ih->data)
     free(ih->data);
-
-  /* removes all the names associated with the element */
-  iupRemoveAllNames(ih);
 
   /* destroy the base handle structure */
   iHandleDestroy(ih);

@@ -102,6 +102,10 @@ float iupAttribGetFloat(Ihandle* ih, const char* name);
  * \ingroup attrib */
 void iupAttribSetHandleName(Ihandle *ih);
 
+/** Returns the internal name if set.
+ * \ingroup attrib */
+char* iupAttribGetHandleName(Ihandle *ih);
+
 
 /* For all attributes in the evironment, call the class SetAttribute only.
  * Called only after the element is mapped, but before the children are mapped. */

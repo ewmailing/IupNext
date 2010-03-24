@@ -498,6 +498,8 @@ static void iTableFreeItemArray(Itable_IndexTypes indexType, unsigned int nextFr
 {
   unsigned int i;
 
+  /* Used only in iupTableClear */
+
   iupASSERT(items!=NULL);
   if (!items)
     return;
