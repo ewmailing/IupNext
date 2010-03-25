@@ -341,83 +341,56 @@ static void motTreeRebuildCache(Ihandle* ih)
   motTreeChildRebuildCacheRec(ih, ih->data->node_cache[0], &i);
 }
 
-static void motTreeUpdateBgColor(Ihandle* ih, WidgetList itemList, int numItems, Pixel bgcolor)
+static void motTreeUpdateBgColor(Ihandle* ih, Pixel bgcolor)
 {
-  WidgetList itemChildList;
-  int i = 0;
-  int numChild;
-
-  while(i != numItems)
+  int i;
+  for (i = 0; i < ih->data->node_count; i++)
   {
-    XtVaSetValues(itemList[i], XmNbackground, bgcolor, NULL);
-
-    /* Check whether we have child items */
-    itemChildList = NULL;
-    numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
-    if(numChild)
-      motTreeUpdateBgColor(ih, itemChildList, numChild, bgcolor);
-    if (itemChildList) XtFree((char*)itemChildList);
-
-    /* Go to next sibling item */
-    i++;
+    XtVaSetValues(ih->data->node_cache[i], XmNbackground, bgcolor, NULL);
   }
 }
 
-static void motTreeUpdateImages(Ihandle* ih, WidgetList itemList, int numItems, int mode)
+static void motTreeUpdateImages(Ihandle* ih, int mode)
 {
-  motTreeItemData *itemData;
-  int i = 0;
-
+  int i;
   /* called when one of the default images is changed */
-
-  while(i != numItems)
+  for (i = 0; i < ih->data->node_count; i++)
   {
-    /* Get node attributes */
-    XtVaGetValues(itemList[i], XmNuserData, &itemData, NULL);
-	  
+    motTreeItemData *itemData;
+    Widget wItem = ih->data->node_cache[i];
+
+    XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
+
     if (itemData->kind == ITREE_BRANCH)
     {
       unsigned char itemState;
-      XtVaGetValues(itemList[i], XmNoutlineState,  &itemState, NULL);
+      XtVaGetValues(wItem, XmNoutlineState,  &itemState, NULL);
       
       if (itemState == XmEXPANDED)
       {
         if (mode == ITREE_UPDATEIMAGE_EXPANDED)
         {
-          XtVaSetValues(itemList[i], XmNsmallIconPixmap, (itemData->image_expanded!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded: (Pixmap)ih->data->def_image_expanded, NULL);
-          XtVaSetValues(itemList[i], XmNsmallIconMask, (itemData->image_expanded_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded_mask: (Pixmap)ih->data->def_image_expanded_mask, NULL);
+          XtVaSetValues(wItem, XmNsmallIconPixmap, (itemData->image_expanded!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded: (Pixmap)ih->data->def_image_expanded, NULL);
+          XtVaSetValues(wItem, XmNsmallIconMask, (itemData->image_expanded_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded_mask: (Pixmap)ih->data->def_image_expanded_mask, NULL);
         }
       }
       else 
       {
         if (mode == ITREE_UPDATEIMAGE_COLLAPSED)
         {
-          XtVaSetValues(itemList[i], XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_collapsed, NULL);
-          XtVaSetValues(itemList[i], XmNsmallIconMask, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_collapsed_mask, NULL);
+          XtVaSetValues(wItem, XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_collapsed, NULL);
+          XtVaSetValues(wItem, XmNsmallIconMask, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_collapsed_mask, NULL);
         }
-      }
-
-      /* Recursively traverse child items */
-      {
-        WidgetList itemChildList;
-        int numChild;
-        itemChildList = NULL;
-        numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
-        motTreeUpdateImages(ih, itemChildList, numChild, mode);
-        if (itemChildList) XtFree((char*)itemChildList);
       }
     }
     else 
     {
       if (mode == ITREE_UPDATEIMAGE_LEAF)
       {
-        XtVaSetValues(itemList[i], XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_leaf, NULL);
-        XtVaSetValues(itemList[i], XmNsmallIconMask, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_leaf_mask, NULL);
+        XtVaSetValues(wItem, XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_leaf, NULL);
+        XtVaSetValues(wItem, XmNsmallIconMask, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_leaf_mask, NULL);
       }
     }
-
-    /* Go to next sibling node */
-    i++;
   }
 }
 
@@ -499,8 +472,7 @@ void motTreeExpandCollapseAllNodes(Ihandle* ih, WidgetList itemList, int numItem
     /* Check whether we have child items */
     itemChildList = NULL;
     numChild = XmContainerGetItemChildren(ih->handle, itemList[i], &itemChildList);
-
-    if(numChild)
+    if (numChild)
     {
       XtVaSetValues(itemList[i], XmNoutlineState, itemState, NULL);
       motTreeExpandCollapseAllNodes(ih, itemChildList, numChild, itemState);
@@ -877,7 +849,6 @@ static int motTreeSetImageAttrib(Ihandle* ih, const char* name_id, const char* v
 
 static int motTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 {
-  Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
   ih->data->def_image_expanded = iupImageGetImage(value, ih, 0);
   if (!ih->data->def_image_expanded) 
   {
@@ -891,14 +862,13 @@ static int motTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
   }
     
   /* Update all images, starting at root node */
-  motTreeUpdateImages(ih, &wRoot, 1, ITREE_UPDATEIMAGE_EXPANDED);
+  motTreeUpdateImages(ih, ITREE_UPDATEIMAGE_EXPANDED);
 
   return 1;
 }
 
 static int motTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 {
-  Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
   ih->data->def_image_collapsed = iupImageGetImage(value, ih, 0);
   if (!ih->data->def_image_collapsed) 
   {
@@ -912,14 +882,13 @@ static int motTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
   }
    
   /* Update all images, starting at root node */
-  motTreeUpdateImages(ih, &wRoot, 1, ITREE_UPDATEIMAGE_COLLAPSED);
+  motTreeUpdateImages(ih, ITREE_UPDATEIMAGE_COLLAPSED);
 
   return 1;
 }
 
 static int motTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
 {
-  Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
   ih->data->def_image_leaf = iupImageGetImage(value, ih, 0);
   if (!ih->data->def_image_leaf) 
   {
@@ -933,7 +902,7 @@ static int motTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
   }
     
   /* Update all images, starting at root node */
-  motTreeUpdateImages(ih, &wRoot, 1, ITREE_UPDATEIMAGE_LEAF);
+  motTreeUpdateImages(ih, ITREE_UPDATEIMAGE_LEAF);
 
   return 1;
 }
@@ -1586,16 +1555,13 @@ static int motTreeSetBgColorAttrib(Ihandle* ih, const char* value)
   color = iupmotColorGetPixelStr(value);
   if (color != (Pixel)-1)
   {
-    Widget wRoot;
     Widget clipwin = NULL;
 
     XtVaGetValues(sb_win, XmNclipWindow, &clipwin, NULL);
     if (clipwin) iupmotSetBgColor(clipwin, color);
 
-    wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
-    
     /* Update all children, starting at root node */
-    motTreeUpdateBgColor(ih, &wRoot, 1, color);
+    motTreeUpdateBgColor(ih, color);
   }
 
   iupdrvBaseSetBgColorAttrib(ih, value);   /* use given value for contents */
