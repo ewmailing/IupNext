@@ -338,7 +338,7 @@ static void new_dialog(int test, char* tip)
                    
   // Windows and GTK Only  
   IupSetCallback(dlg, "DROPFILES_CB", (Icallback)dropfiles_cb);
-
+  
   if (test == 0 || test == 1)
     IupShow(dlg);
   else if (test == 3)
