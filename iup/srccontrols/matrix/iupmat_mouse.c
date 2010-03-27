@@ -182,14 +182,14 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y)
   if (ih->data->leftpressed && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
   {
     if ((x < ih->data->columns.sizes[0] || x < IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.first > 1))
-      iupMatrixScrollLeft(ih);
+      iupMATRIX_ScrollLeft(ih);
     else if ((x > ih->data->w - IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.last < ih->data->columns.num-1))
-      iupMatrixScrollRight(ih);
+      iupMATRIX_ScrollRight(ih);
 
     if ((y < ih->data->lines.sizes[0] || y < IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.first > 1))
-      iupMatrixScrollUp(ih);
+      iupMATRIX_ScrollUp(ih);
     else if ((y > ih->data->h - IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.last < ih->data->lines.num-1))
-      iupMatrixScrollDown(ih);
+      iupMATRIX_ScrollDown(ih);
 
     if (iupMatrixAuxGetLinColFromXY(ih, x, y, &lin, &col))
     {

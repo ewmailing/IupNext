@@ -81,7 +81,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   if (height < 0)
     height_pixels = height;  /* already in pixels */
   else
-    height_pixels = -IUPWIN_PT2PIXEL(height, res);
+    height_pixels = -iupWIN_PT2PIXEL(height, res);
 
   if (height_pixels == 0)
     return IUP_ERROR;
@@ -134,7 +134,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   if (height < 0) /* not an error, use old value as a reference for the units */
     height = height_pixels;   /* return in pixels */
   else
-    height = IUPWIN_PIXEL2PT(-height_pixels, res);   /* return in points */
+    height = iupWIN_PIXEL2PT(-height_pixels, res);   /* return in points */
 
   iupAttribSetStrf(ih, "VALUE", "%s, %s%s%s%s %d", logfont.lfFaceName, 
                                                     is_bold?"Bold ":"", 

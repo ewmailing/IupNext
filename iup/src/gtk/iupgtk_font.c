@@ -132,9 +132,9 @@ static IgtkFont* gtkFindFont(const char *standardfont)
 
   metrics = pango_context_get_metrics(gtk_fonts_context, fontdesc, pango_context_get_language(gtk_fonts_context));
   fonts[i].charheight = pango_font_metrics_get_ascent(metrics) + pango_font_metrics_get_descent(metrics);
-  fonts[i].charheight = IUPGTK_PANGOUNITS2PIXELS(fonts[i].charheight);
+  fonts[i].charheight = iupGTK_PANGOUNITS2PIXELS(fonts[i].charheight);
   fonts[i].charwidth = pango_font_metrics_get_approximate_char_width(metrics);
-  fonts[i].charwidth = IUPGTK_PANGOUNITS2PIXELS(fonts[i].charwidth);
+  fonts[i].charwidth = iupGTK_PANGOUNITS2PIXELS(fonts[i].charwidth);
   pango_font_metrics_unref(metrics); 
 
   gtkFontUpdate(&(fonts[i]));

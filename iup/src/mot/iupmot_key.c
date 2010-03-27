@@ -393,33 +393,33 @@ void iupmotKeyPressEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
 void iupmotButtonKeySetStatus(unsigned int state, unsigned int but, char* status, int doubleclick)
 {
   if (state & ShiftMask)
-    iupKEYSETSHIFT(status);
+    iupKEY_SETSHIFT(status);
 
   if (state & ControlMask)
-    iupKEYSETCONTROL(status); 
+    iupKEY_SETCONTROL(status); 
 
   if ((state & Button1Mask) || but==Button1)
-    iupKEYSETBUTTON1(status);
+    iupKEY_SETBUTTON1(status);
 
   if ((state & Button2Mask) || but==Button2)
-    iupKEYSETBUTTON2(status);
+    iupKEY_SETBUTTON2(status);
 
   if ((state & Button3Mask) || but==Button3)
-    iupKEYSETBUTTON3(status);
+    iupKEY_SETBUTTON3(status);
 
   if ((state & Button4Mask) || but==Button4)
-    iupKEYSETBUTTON4(status);
+    iupKEY_SETBUTTON4(status);
 
   if ((state & Button5Mask) || but==Button5)
-    iupKEYSETBUTTON5(status);
+    iupKEY_SETBUTTON5(status);
 
   if (state & Mod1Mask || state & Mod5Mask) /* Alt */
-    iupKEYSETALT(status);
+    iupKEY_SETALT(status);
 
   if (state & Mod4Mask) /* Apple/Win */
-    iupKEYSETSYS(status);
+    iupKEY_SETSYS(status);
 
   if (doubleclick)
-    iupKEYSETDOUBLE(status);
+    iupKEY_SETDOUBLE(status);
 }
 

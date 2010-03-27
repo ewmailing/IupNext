@@ -101,7 +101,7 @@ static void gtkTextParseParagraphFormat(Ihandle* formattag, GtkTextTag* tag)
         align = PANGO_TAB_LEFT;
       free(str);
 
-      pango_tab_array_set_tab(tabs, i, align, IUPGTK_PIXELS2PANGOUNITS(pos));
+      pango_tab_array_set_tab(tabs, i, align, iupGTK_PIXELS2PANGOUNITS(pos));
       i++;
       if (i == 32) break;
     }
@@ -171,7 +171,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
     else 
       iupStrToInt(format, &val);
 
-    val = IUPGTK_PIXELS2PANGOUNITS(val);
+    val = iupGTK_PIXELS2PANGOUNITS(val);
     g_object_set(G_OBJECT(tag), "rise", val, NULL);
   }
 
@@ -214,7 +214,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
   {
     if (val < 0)  /* in pixels */
     {
-      val = IUPGTK_PIXELS2PANGOUNITS(-val);
+      val = iupGTK_PIXELS2PANGOUNITS(-val);
       g_object_set(G_OBJECT(tag), "size", val, NULL);
     }
     else  /* in points */
@@ -387,8 +387,8 @@ static int gtkTextConvertXYToPos(Ihandle* ih, int x, int y)
 
     /* transform to Layout coordinates */
     gtk_entry_get_layout_offsets(GTK_ENTRY(ih->handle), &off_x, &off_y);
-    x = IUPGTK_PIXELS2PANGOUNITS(x - off_x); 
-    y = IUPGTK_PIXELS2PANGOUNITS(y - off_y);
+    x = iupGTK_PIXELS2PANGOUNITS(x - off_x); 
+    y = iupGTK_PIXELS2PANGOUNITS(y - off_y);
 
     pango_layout_xy_to_index(gtk_entry_get_layout(GTK_ENTRY(ih->handle)), x, y, &pos, &trailing);
     return pos;

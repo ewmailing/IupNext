@@ -37,7 +37,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
   int ret = IUP_IGNORE; /* default for processed keys */
 
   /* If the focus is not visible, a scroll is done for that the focus to be visible */
-  if (!iupMatrixAuxIsCellFullVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
+  if (!iupMatrixAuxIsCellStartVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
     iupMatrixScrollToVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 
   switch (c)
@@ -47,7 +47,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     case K_HOME:
       if(iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
         break;
-      iupMatrixScrollKeyHome(ih);
+      iupMATRIX_ScrollKeyHome(ih);
       ih->data->homekeycount++;
       iupMatrixAuxCallEnterCellCb(ih);
       break;
@@ -57,7 +57,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     case K_END:
       if(iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
         break;
-      iupMatrixScrollKeyEnd(ih);
+      iupMATRIX_ScrollKeyEnd(ih);
       ih->data->endkeycount++;
       iupMatrixAuxCallEnterCellCb(ih);
       break;
@@ -71,7 +71,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     case K_LEFT:
       if (iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
         break;
-      iupMatrixScrollKeyLeft(ih);
+      iupMATRIX_ScrollKeyLeft(ih);
       iupMatrixAuxCallEnterCellCb(ih);
       break;
 
@@ -80,7 +80,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     case K_RIGHT:
       if(iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
         break;
-      iupMatrixScrollKeyRight(ih);
+      iupMATRIX_ScrollKeyRight(ih);
       iupMatrixAuxCallEnterCellCb(ih);
       break;
 
@@ -89,7 +89,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     case K_UP:
       if(iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
         break;
-      iupMatrixScrollKeyUp(ih);
+      iupMATRIX_ScrollKeyUp(ih);
       iupMatrixAuxCallEnterCellCb(ih);
       break ;
 
@@ -98,7 +98,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     case K_DOWN:
       if(iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
         break;
-      iupMatrixScrollKeyDown(ih);
+      iupMATRIX_ScrollKeyDown(ih);
       iupMatrixAuxCallEnterCellCb(ih);
       break;
 
@@ -106,7 +106,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     case K_PGUP:
       if(iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
         break;
-      iupMatrixScrollKeyPgUp(ih);
+      iupMATRIX_ScrollKeyPgUp(ih);
       iupMatrixAuxCallEnterCellCb(ih);
       break;
 
@@ -114,7 +114,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     case K_PGDN:
       if(iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
         break;
-      iupMatrixScrollKeyPgDown(ih);
+      iupMATRIX_ScrollKeyPgDown(ih);
       iupMatrixAuxCallEnterCellCb(ih);
       break;
 

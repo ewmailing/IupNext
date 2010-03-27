@@ -401,12 +401,12 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     /* Create tabs */
     /* Label */
-    iupmotSetArg(args, num_args, XmNlabelType, tabtitle? XmSTRING: XmPIXMAP);
-    iupmotSetArg(args, num_args, XmNmarginHeight, 0);
-    iupmotSetArg(args, num_args, XmNmarginWidth, 0);
+    iupMOT_SETARG(args, num_args, XmNlabelType, tabtitle? XmSTRING: XmPIXMAP);
+    iupMOT_SETARG(args, num_args, XmNmarginHeight, 0);
+    iupMOT_SETARG(args, num_args, XmNmarginWidth, 0);
     /* Notebook Constraint */
-    iupmotSetArg(args, num_args, XmNnotebookChildType, XmMAJOR_TAB);
-    iupmotSetArg(args, num_args, XmNpageNumber, pos);
+    iupMOT_SETARG(args, num_args, XmNnotebookChildType, XmMAJOR_TAB);
+    iupMOT_SETARG(args, num_args, XmNpageNumber, pos);
     tab_button = XtCreateManagedWidget("tab_button", xmPushButtonWidgetClass, ih->handle, args, num_args);
 
     /* Disable Drag Source */
@@ -494,22 +494,22 @@ static int motTabsMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* Core */
-  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
-  iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
-  iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
-  iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
-  iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
+  iupMOT_SETARG(args, num_args, XmNx, 0);  /* x-position */
+  iupMOT_SETARG(args, num_args, XmNy, 0);  /* y-position */
+  iupMOT_SETARG(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNheight, 10); /* default height to avoid 0 */
   /* Manager */
-  iupmotSetArg(args, num_args, XmNshadowThickness, 0);
-  iupmotSetArg(args, num_args, XmNtraversalOn, True);
-  iupmotSetArg(args, num_args, XmNhighlightThickness, 0);
+  iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
+  iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
+  iupMOT_SETARG(args, num_args, XmNhighlightThickness, 0);
   /* Notebook */
-  iupmotSetArg(args, num_args, XmNbindingType, XmNONE);
-  iupmotSetArg(args, num_args, XmNbindingWidth, 0);
-  iupmotSetArg(args, num_args, XmNfirstPageNumber, 0);  /* IupTabs index always starts with zero */
-  iupmotSetArg(args, num_args, XmNbackPageSize, 0);
-  iupmotSetArg(args, num_args, XmNbackPageNumber, 1);
-  iupmotSetArg(args, num_args, XmNframeShadowThickness, 2);
+  iupMOT_SETARG(args, num_args, XmNbindingType, XmNONE);
+  iupMOT_SETARG(args, num_args, XmNbindingWidth, 0);
+  iupMOT_SETARG(args, num_args, XmNfirstPageNumber, 0);  /* IupTabs index always starts with zero */
+  iupMOT_SETARG(args, num_args, XmNbackPageSize, 0);
+  iupMOT_SETARG(args, num_args, XmNbackPageNumber, 1);
+  iupMOT_SETARG(args, num_args, XmNframeShadowThickness, 2);
 
   ih->handle = XtCreateManagedWidget(
     iupDialogGetChildIdStr(ih),  /* child identifier */

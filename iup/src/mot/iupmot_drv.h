@@ -65,7 +65,7 @@ void iupmotGetWindowSize(Ihandle *ih, int *width, int *height);
 
 char* iupmotGetXWindowAttrib(Ihandle *ih);
 
-#define iupmotSetArg(_a, _i, _n, _d) ((_a)[(_i)].name = (_n), (_a)[(_i)].value = (XtArgVal)(_d), (_i)++)
+#define iupMOT_SETARG(_a, _i, _n, _d) ((_a)[(_i)].name = (_n), (_a)[(_i)].value = (XtArgVal)(_d), (_i)++)
 
 
 #ifdef __cplusplus

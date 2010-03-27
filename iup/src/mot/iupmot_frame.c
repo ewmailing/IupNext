@@ -182,25 +182,25 @@ static int motFrameMapMethod(Ihandle* ih)
   {
     char* value = iupAttribGetStr(ih, "SUNKEN");
     if (iupStrBoolean(value))
-      iupmotSetArg(args, num_args, XmNshadowType, XmSHADOW_IN); 
+      iupMOT_SETARG(args, num_args, XmNshadowType, XmSHADOW_IN); 
     else
-      iupmotSetArg(args, num_args, XmNshadowType, XmSHADOW_ETCHED_IN); 
+      iupMOT_SETARG(args, num_args, XmNshadowType, XmSHADOW_ETCHED_IN); 
 
     if (iupAttribGet(ih, "BGCOLOR"))
       iupAttribSetStr(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
   }
 
   /* Core */
-  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
-  iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
-  iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
-  iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
-  iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
+  iupMOT_SETARG(args, num_args, XmNx, 0);  /* x-position */
+  iupMOT_SETARG(args, num_args, XmNy, 0);  /* y-position */
+  iupMOT_SETARG(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNheight, 10); /* default height to avoid 0 */
   /* Manager */
-  iupmotSetArg(args, num_args, XmNshadowThickness, 2);
+  iupMOT_SETARG(args, num_args, XmNshadowThickness, 2);
   /* Frame */
-  iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* no shadow margins */
-  iupmotSetArg(args, num_args, XmNmarginWidth, 0);  /* no shadow margins */
+  iupMOT_SETARG(args, num_args, XmNmarginHeight, 0);  /* no shadow margins */
+  iupMOT_SETARG(args, num_args, XmNmarginWidth, 0);  /* no shadow margins */
   
   ih->handle = XtCreateManagedWidget(
     iupDialogGetChildIdStr(ih),  /* child identifier */
@@ -218,11 +218,11 @@ static int motFrameMapMethod(Ihandle* ih)
     Widget title_label;
     num_args = 0;
     /* Label */
-    iupmotSetArg(args, num_args, XmNlabelType, XmSTRING); 
-    iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* default padding */
-    iupmotSetArg(args, num_args, XmNmarginWidth, 0);
+    iupMOT_SETARG(args, num_args, XmNlabelType, XmSTRING); 
+    iupMOT_SETARG(args, num_args, XmNmarginHeight, 0);  /* default padding */
+    iupMOT_SETARG(args, num_args, XmNmarginWidth, 0);
     /* Frame Constraint */
-    iupmotSetArg(args, num_args, XmNchildType, XmFRAME_TITLE_CHILD);
+    iupMOT_SETARG(args, num_args, XmNchildType, XmFRAME_TITLE_CHILD);
     title_label = XtCreateManagedWidget("title_label", xmLabelWidgetClass, ih->handle, args, num_args);
     iupmotSetString(title_label, XmNlabelString, title);
   }

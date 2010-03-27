@@ -458,19 +458,19 @@ static int motCanvasMapMethod(Ihandle* ih)
   /* Create the scrolled window */
   /******************************/
 
-  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
-  iupmotSetArg(args, num_args, XmNscrollingPolicy, XmAPPLICATION_DEFINED);
-  iupmotSetArg(args, num_args, XmNvisualPolicy, XmVARIABLE);
-  iupmotSetArg(args, num_args, XmNspacing, 0); /* no space between scrollbars and draw area */
-  iupmotSetArg(args, num_args, XmNshadowThickness, 0);
+  iupMOT_SETARG(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
+  iupMOT_SETARG(args, num_args, XmNscrollingPolicy, XmAPPLICATION_DEFINED);
+  iupMOT_SETARG(args, num_args, XmNvisualPolicy, XmVARIABLE);
+  iupMOT_SETARG(args, num_args, XmNspacing, 0); /* no space between scrollbars and draw area */
+  iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
 
   if (iupAttribGetBoolean(ih, "BORDER"))
   {
-    iupmotSetArg(args, num_args, XmNborderWidth, 1);
-    iupmotSetArg(args, num_args, XmNborderColor, iupmotColorGetPixelStr("0 0 0"));
+    iupMOT_SETARG(args, num_args, XmNborderWidth, 1);
+    iupMOT_SETARG(args, num_args, XmNborderColor, iupmotColorGetPixelStr("0 0 0"));
   }
   else
-    iupmotSetArg(args, num_args, XmNborderWidth, 0);
+    iupMOT_SETARG(args, num_args, XmNborderWidth, 0);
   
   sb_win = XtCreateManagedWidget(
     iupDialogGetChildIdStr(ih),  /* child identifier */
@@ -488,36 +488,36 @@ static int motCanvasMapMethod(Ihandle* ih)
   /****************************/
 
   num_args = 0;
-  iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* no shadow margins */
-  iupmotSetArg(args, num_args, XmNmarginWidth, 0);  /* no shadow margins */
-  iupmotSetArg(args, num_args, XmNshadowThickness, 0);
-  iupmotSetArg(args, num_args, XmNresizePolicy, XmRESIZE_NONE); /* no automatic resize of children */
+  iupMOT_SETARG(args, num_args, XmNmarginHeight, 0);  /* no shadow margins */
+  iupMOT_SETARG(args, num_args, XmNmarginWidth, 0);  /* no shadow margins */
+  iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
+  iupMOT_SETARG(args, num_args, XmNresizePolicy, XmRESIZE_NONE); /* no automatic resize of children */
   if (ih->iclass->is_interactive)
   {
-    iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP); /* include in navigation */
+    iupMOT_SETARG(args, num_args, XmNnavigationType, XmTAB_GROUP); /* include in navigation */
 
     if (iupAttribGetBoolean(ih, "CANFOCUS"))
-      iupmotSetArg(args, num_args, XmNtraversalOn, True);
+      iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
     else
-      iupmotSetArg(args, num_args, XmNtraversalOn, False);
+      iupMOT_SETARG(args, num_args, XmNtraversalOn, False);
   }
   else
   {
-    iupmotSetArg(args, num_args, XmNnavigationType, XmNONE);
-    iupmotSetArg(args, num_args, XmNtraversalOn, False);
+    iupMOT_SETARG(args, num_args, XmNnavigationType, XmNONE);
+    iupMOT_SETARG(args, num_args, XmNtraversalOn, False);
   }
 
-  iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
-  iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
-  iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
-  iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNx, 0);  /* x-position */
+  iupMOT_SETARG(args, num_args, XmNy, 0);  /* y-position */
+  iupMOT_SETARG(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNheight, 10); /* default height to avoid 0 */
 
   visual = IupGetAttribute(ih, "VISUAL");   /* defined by the OpenGL Canvas or NULL */
   if (visual)
   {
     Colormap colormap = (Colormap)iupAttribGet(ih, "COLORMAP");
     if (colormap)
-      iupmotSetArg(args, num_args, XmNcolormap,colormap);
+      iupMOT_SETARG(args, num_args, XmNcolormap,colormap);
 
     iupmotDialogSetVisual(ih, visual);
   }

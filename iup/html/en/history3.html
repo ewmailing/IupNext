@@ -45,7 +45,7 @@ version 3.x.<br>
 
 </p>
 
-<h3>CVS (16/Mar/2010)</h3>
+<h3>CVS (26/Mar/2010)</h3>
 
 <ul>
 
@@ -55,6 +55,10 @@ version 3.x.<br>
 	<li><span class="hist_changed">Changed:</span>
     removed <strong>IupMessage</strong> from error handling in IUP-IM utilities. 
 	Now a global attribute &quot;IUPIM_LASTERROR&quot; is set instead.</li>
+	<li><span class="hist_changed">Changed:</span>
+    NUMCOL_VISIBLE and NUMLIN_VISIBLE attributes can now be greater than the 
+	actual number of columns/lines, so room will be reserved for adding new 
+	columns/lines without the need to resize the matrix.</li>
 	<li><span class="hist_fixed">Fixed:</span> optional creation parameter of
 	<strong>IupSubmenu</strong>, <strong>IupSbox</strong>, <strong>IupFrame</strong>,
 	<strong>IupRadio</strong>, <strong>IupVal</strong> and <strong>IupDial</strong> 
@@ -73,6 +77,13 @@ version 3.x.<br>
 	Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> default image update in <strong>
 	IupTree</strong> on Motif.</li>
+	<li><span class="hist_fixed">Fixed:</span> scrollbar position in <strong>
+	IupCanvas</strong> on Windows after dragging the thumb when it is released.</li>
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupMatrix</strong> 
+	scrolling can now position cells in intermediate positions. When using the 
+	scrollbar button still scrolls in cell steps, when dragging the scrollbar 
+	can freely position the cells. This fixes the problem of the last column or 
+	line being incomplete visible.</li>
 
 </ul>
 

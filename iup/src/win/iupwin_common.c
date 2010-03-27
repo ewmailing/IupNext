@@ -761,29 +761,29 @@ int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
   if (msg==WM_LBUTTONUP)
   {
     b = IUP_BUTTON1;
-    iupKEYSETBUTTON1(status);  
+    iupKEY_SETBUTTON1(status);  
   }
   else if (msg==WM_MBUTTONUP)
   {
     b = IUP_BUTTON2;
-    iupKEYSETBUTTON2(status);
+    iupKEY_SETBUTTON2(status);
   }
   else if (msg==WM_RBUTTONUP)
   {
     b = IUP_BUTTON3;
-    iupKEYSETBUTTON3(status);
+    iupKEY_SETBUTTON3(status);
   }
   else if (msg==WM_XBUTTONUP)
   {
     if (HIWORD(wp) == XBUTTON1)
     {
       b = IUP_BUTTON4;
-      iupKEYSETBUTTON4(status);
+      iupKEY_SETBUTTON4(status);
     }
     else
     {
       b = IUP_BUTTON5;
-      iupKEYSETBUTTON5(status);
+      iupKEY_SETBUTTON5(status);
     }
   }
 

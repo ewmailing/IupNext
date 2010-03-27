@@ -199,29 +199,31 @@ Has lower priority than HEIGHTn.</p>
 <h3>Number of Cells Attributes</h3>
 <p><strong><a name="NUMCOL">NUMCOL</a></strong>:
   Defines the number of columns in the matrix. Must be an integer number. Default: &quot;0&quot;. 
-It does not includes the title column. If changed after map will add empty cells 
+It does not include the title column. If changed after map will add empty cells 
 or discard cells at the end.</p>
 <p><strong><a name="NUMCOL_VISIBLE">NUMCOL_VISIBLE</a></strong>:
   When set defines the number of 
   visible columns to be counted when calculating the <strong>Natural</strong> 
 size, not counting the title column. Not used elsewhere. 
   The <strong>Natural</strong> size will always include the title column if any. 
-Also it will always use the first columns of the matrix, except if 
+Can be greater than the actual number of columns, so room will be reserved for 
+adding new columns without the need to resize the matrix. Also it will always use the first columns of the matrix, except if 
 <strong>NUMCOL_VISIBLE_LAST</strong>=YES then it will use the last columns. The remaining columns will be accessible 
-  only by using the scrollbar. When retrieved returns the current number of 
+  only by using the scrollbar. IMPORTANT: When retrieved returns the current number of 
 visible lines. Default: &quot;4&quot;.</p>
 <p><strong><a name="NUMLIN">NUMLIN</a></strong>:
   Defines the number of lines in the matrix. Must be an integer number. Default: &quot;0&quot;. 
-It does not includes the title line. If changed after map will add empty cells 
+It does not include the title line. If changed after map will add empty cells 
 or discard cells at the end.</p>
 <p><strong><a name="NUMLIN_VISIBLE">NUMLIN_VISIBLE</a></strong>:
   When set defines the number of visible lines to be counted when calculating 
 the <strong>Natural</strong> size, not counting the title line. Not used elsewhere. 
 The <strong>Natural</strong> size will always include the title line if any. 
-Also it will always use the 
+Can be greater than the actual number of lines, so room will be reserved for 
+adding new lines without the need to resize the matrix. Also it will always use the 
 first lines of the matrix, except if <strong>NUMLIN_VISIBLE_LAST</strong>=YES 
 then it will use the last lines. The remaining lines will be accessible only by using 
-the scrollbar. When 
+the scrollbar. IMPORTANT: When 
   retrieved returns the current number of visible lines. Default: &quot;3&quot;.</p>
 <h3>Mark Attributes</h3>
 <p><strong><a name="MARKAREA">AREA</a></strong>:

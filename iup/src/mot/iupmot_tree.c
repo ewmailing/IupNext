@@ -68,13 +68,13 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
   Pixmap image = XmUNSPECIFIED_PIXMAP, mask = XmUNSPECIFIED_PIXMAP;
   unsigned char state;
 
-  iupmotSetArg(args, num_args,  XmNentryParent, wParent);
-  iupmotSetArg(args, num_args, XmNmarginHeight, ih->data->spacing);
-  iupmotSetArg(args, num_args,  XmNmarginWidth, 0);
-  iupmotSetArg(args, num_args,     XmNviewType, XmSMALL_ICON);
-  iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
-  iupmotSetArg(args, num_args, XmNtraversalOn, True);
-  iupmotSetArg(args, num_args, XmNshadowThickness, 0);
+  iupMOT_SETARG(args, num_args,  XmNentryParent, wParent);
+  iupMOT_SETARG(args, num_args, XmNmarginHeight, ih->data->spacing);
+  iupMOT_SETARG(args, num_args,  XmNmarginWidth, 0);
+  iupMOT_SETARG(args, num_args,     XmNviewType, XmSMALL_ICON);
+  iupMOT_SETARG(args, num_args, XmNnavigationType, XmTAB_GROUP);
+  iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
+  iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
 
   /* Get values to copy */
   XtVaGetValues(wItem, XmNlabelString, &title,
@@ -94,18 +94,18 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
     itemData = itemDataNew;
   }
 
-  iupmotSetArg(args, num_args,  XmNlabelString, title);
-  iupmotSetArg(args, num_args,       XmNuserData, itemData);
-  iupmotSetArg(args, num_args,   XmNforeground, fgcolor);
-  iupmotSetArg(args, num_args, XmNsmallIconPixmap, image);
-  iupmotSetArg(args, num_args, XmNsmallIconMask, mask);
-  iupmotSetArg(args, num_args, XmNoutlineState, state);
+  iupMOT_SETARG(args, num_args,  XmNlabelString, title);
+  iupMOT_SETARG(args, num_args,       XmNuserData, itemData);
+  iupMOT_SETARG(args, num_args,   XmNforeground, fgcolor);
+  iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, image);
+  iupMOT_SETARG(args, num_args, XmNsmallIconMask, mask);
+  iupMOT_SETARG(args, num_args, XmNoutlineState, state);
 
-  iupmotSetArg(args, num_args,  XmNentryParent, wParent);
-  iupmotSetArg(args, num_args, XmNpositionIndex, pos);
+  iupMOT_SETARG(args, num_args,  XmNentryParent, wParent);
+  iupMOT_SETARG(args, num_args, XmNpositionIndex, pos);
 
   XtVaGetValues(ih->handle, XmNbackground, &bgcolor, NULL);
-  iupmotSetArg(args, num_args,   XmNbackground, bgcolor);
+  iupMOT_SETARG(args, num_args,   XmNbackground, bgcolor);
 
   /* Add the new node */
   wNewItem = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
@@ -638,8 +638,8 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
   if (kindPrev == ITREE_BRANCH && add)
   {
     /* wItemPrev is parent of the new item (firstchild of it) */
-    iupmotSetArg(args, num_args,   XmNentryParent, wItemPrev);
-    iupmotSetArg(args, num_args, XmNpositionIndex, 0);
+    iupMOT_SETARG(args, num_args,   XmNentryParent, wItemPrev);
+    iupMOT_SETARG(args, num_args, XmNpositionIndex, 0);
   }
   else
   {
@@ -650,38 +650,38 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
     XtVaGetValues(wItemPrev, XmNentryParent, &wItemParent, NULL);
     XtVaGetValues(wItemPrev, XmNpositionIndex, &pos, NULL);
 
-    iupmotSetArg(args, num_args, XmNentryParent, wItemParent);
-    iupmotSetArg(args, num_args, XmNpositionIndex, pos+1);
+    iupMOT_SETARG(args, num_args, XmNentryParent, wItemParent);
+    iupMOT_SETARG(args, num_args, XmNpositionIndex, pos+1);
   }
 
-  iupmotSetArg(args, num_args,       XmNuserData, itemData);
-  iupmotSetArg(args, num_args,   XmNforeground, fgcolor);
-  iupmotSetArg(args, num_args,   XmNbackground, bgcolor);
-  iupmotSetArg(args, num_args, XmNmarginHeight, ih->data->spacing);
-  iupmotSetArg(args, num_args,  XmNmarginWidth, 0);
-  iupmotSetArg(args, num_args,     XmNviewType, XmSMALL_ICON);
-  iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
-  iupmotSetArg(args, num_args, XmNtraversalOn, True);
-  iupmotSetArg(args, num_args, XmNshadowThickness, 0);
-  iupmotSetArg(args, num_args, XmNlabelString, itemTitle);
+  iupMOT_SETARG(args, num_args,       XmNuserData, itemData);
+  iupMOT_SETARG(args, num_args,   XmNforeground, fgcolor);
+  iupMOT_SETARG(args, num_args,   XmNbackground, bgcolor);
+  iupMOT_SETARG(args, num_args, XmNmarginHeight, ih->data->spacing);
+  iupMOT_SETARG(args, num_args,  XmNmarginWidth, 0);
+  iupMOT_SETARG(args, num_args,     XmNviewType, XmSMALL_ICON);
+  iupMOT_SETARG(args, num_args, XmNnavigationType, XmTAB_GROUP);
+  iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
+  iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
+  iupMOT_SETARG(args, num_args, XmNlabelString, itemTitle);
 
   if (kind == ITREE_BRANCH)
   {
     if (ih->data->add_expanded)
     {
-      iupmotSetArg(args, num_args, XmNsmallIconPixmap, ih->data->def_image_expanded);
-      iupmotSetArg(args, num_args, XmNsmallIconMask, ih->data->def_image_expanded_mask);
+      iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, ih->data->def_image_expanded);
+      iupMOT_SETARG(args, num_args, XmNsmallIconMask, ih->data->def_image_expanded_mask);
     }
     else
     {
-      iupmotSetArg(args, num_args, XmNsmallIconPixmap, ih->data->def_image_collapsed);
-      iupmotSetArg(args, num_args, XmNsmallIconMask, ih->data->def_image_collapsed_mask);
+      iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, ih->data->def_image_collapsed);
+      iupMOT_SETARG(args, num_args, XmNsmallIconMask, ih->data->def_image_collapsed_mask);
     }
   }
   else
   {
-    iupmotSetArg(args, num_args, XmNsmallIconPixmap, ih->data->def_image_leaf);
-    iupmotSetArg(args, num_args, XmNsmallIconMask, ih->data->def_image_leaf_mask);
+    iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, ih->data->def_image_leaf);
+    iupMOT_SETARG(args, num_args, XmNsmallIconMask, ih->data->def_image_leaf_mask);
   }
 
   /* Add the new node */
@@ -722,19 +722,19 @@ static void motTreeAddRootNode(Ihandle* ih)
   XtVaGetValues(ih->handle, XmNforeground, &fgcolor, NULL);
   XtVaGetValues(ih->handle, XmNbackground, &bgcolor, NULL);
 
-  iupmotSetArg(args, num_args,  XmNentryParent, NULL);
-  iupmotSetArg(args, num_args,       XmNuserData, itemData);
-  iupmotSetArg(args, num_args,   XmNforeground, fgcolor);
-  iupmotSetArg(args, num_args,   XmNbackground, bgcolor);
-  iupmotSetArg(args, num_args, XmNoutlineState, XmEXPANDED);
-  iupmotSetArg(args, num_args, XmNmarginHeight, ih->data->spacing);
-  iupmotSetArg(args, num_args,  XmNmarginWidth, 0);
-  iupmotSetArg(args, num_args,     XmNviewType, XmSMALL_ICON);
-  iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
-  iupmotSetArg(args, num_args, XmNtraversalOn, True);
-  iupmotSetArg(args, num_args, XmNshadowThickness, 0);
-  iupmotSetArg(args, num_args, XmNsmallIconPixmap, ih->data->def_image_expanded);
-  iupmotSetArg(args, num_args, XmNsmallIconMask, ih->data->def_image_expanded_mask);
+  iupMOT_SETARG(args, num_args,  XmNentryParent, NULL);
+  iupMOT_SETARG(args, num_args,       XmNuserData, itemData);
+  iupMOT_SETARG(args, num_args,   XmNforeground, fgcolor);
+  iupMOT_SETARG(args, num_args,   XmNbackground, bgcolor);
+  iupMOT_SETARG(args, num_args, XmNoutlineState, XmEXPANDED);
+  iupMOT_SETARG(args, num_args, XmNmarginHeight, ih->data->spacing);
+  iupMOT_SETARG(args, num_args,  XmNmarginWidth, 0);
+  iupMOT_SETARG(args, num_args,     XmNviewType, XmSMALL_ICON);
+  iupMOT_SETARG(args, num_args, XmNnavigationType, XmTAB_GROUP);
+  iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
+  iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
+  iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, ih->data->def_image_expanded);
+  iupMOT_SETARG(args, num_args, XmNsmallIconMask, ih->data->def_image_expanded_mask);
 
   /* Add the new node */
   wRootItem = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
@@ -1891,16 +1891,16 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
   iupdrvImageGetInfo((void*)image, &w_img, NULL, NULL);
   w_img += 3; /* add some room for borders */
 
-  iupmotSetArg(args, num_args, XmNx, x+w_img);      /* x-position */
-  iupmotSetArg(args, num_args, XmNy, y);         /* y-position */
-  iupmotSetArg(args, num_args, XmNwidth, w-w_img);  /* default width to avoid 0 */
-  iupmotSetArg(args, num_args, XmNheight, h);    /* default height to avoid 0 */
-  iupmotSetArg(args, num_args, XmNmarginHeight, ih->data->spacing);  /* default padding */
-  iupmotSetArg(args, num_args, XmNmarginWidth, 0);
-  iupmotSetArg(args, num_args, XmNforeground, color);
-  iupmotSetArg(args, num_args, XmNrenderTable, fontlist);
-  iupmotSetArg(args, num_args, XmNvalue, iupmotConvertString(title));
-  iupmotSetArg(args, num_args, XmNtraversalOn, True);
+  iupMOT_SETARG(args, num_args, XmNx, x+w_img);      /* x-position */
+  iupMOT_SETARG(args, num_args, XmNy, y);         /* y-position */
+  iupMOT_SETARG(args, num_args, XmNwidth, w-w_img);  /* default width to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNheight, h);    /* default height to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNmarginHeight, ih->data->spacing);  /* default padding */
+  iupMOT_SETARG(args, num_args, XmNmarginWidth, 0);
+  iupMOT_SETARG(args, num_args, XmNforeground, color);
+  iupMOT_SETARG(args, num_args, XmNrenderTable, fontlist);
+  iupMOT_SETARG(args, num_args, XmNvalue, iupmotConvertString(title));
+  iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
 
   cbEdit = XtCreateManagedWidget(
     child_id,       /* child identifier */
@@ -2284,8 +2284,8 @@ static void motTreeDropProc(Widget w, XtPointer client_data, XmDropProcCallbackS
   drop_context = drop_data->dragContext;
 
   /* retrieve the data targets */
-  iupmotSetArg(args, num_args, XmNexportTargets, &exportTargets);
-  iupmotSetArg(args, num_args, XmNnumExportTargets, &numExportTargets);
+  iupMOT_SETARG(args, num_args, XmNexportTargets, &exportTargets);
+  iupMOT_SETARG(args, num_args, XmNnumExportTargets, &numExportTargets);
   XtGetValues(drop_context, args, num_args);
 
   for (i = 0; i < (int)numExportTargets; i++) 
@@ -2304,17 +2304,17 @@ static void motTreeDropProc(Widget w, XtPointer client_data, XmDropProcCallbackS
   num_args = 0;
   if ((!found) || (drop_data->dropAction != XmDROP) ||  (drop_data->operation != XmDROP_COPY && drop_data->operation != XmDROP_MOVE)) 
   {
-    iupmotSetArg(args, num_args, XmNtransferStatus, XmTRANSFER_FAILURE);
-    iupmotSetArg(args, num_args, XmNnumDropTransfers, 0);
+    iupMOT_SETARG(args, num_args, XmNtransferStatus, XmTRANSFER_FAILURE);
+    iupMOT_SETARG(args, num_args, XmNnumDropTransfers, 0);
   }
   else 
   {
     /* set up transfer requests for drop site */
     transferList[0].target = atomTreeItem;
     transferList[0].client_data = (XtPointer)wItemDrop;
-    iupmotSetArg(args, num_args, XmNdropTransfers, transferList);
-    iupmotSetArg(args, num_args, XmNnumDropTransfers, 1);
-    iupmotSetArg(args, num_args, XmNtransferProc, motTreeTransferProc);
+    iupMOT_SETARG(args, num_args, XmNdropTransfers, transferList);
+    iupMOT_SETARG(args, num_args, XmNnumDropTransfers, 1);
+    iupMOT_SETARG(args, num_args, XmNtransferProc, motTreeTransferProc);
   }
 
   XmDropTransferStart(drop_context, args, num_args);
@@ -2393,23 +2393,23 @@ static void motTreeStartDrag(Widget w, XButtonEvent* evt, String* params, Cardin
                            XmNforeground, &fg,
                            NULL);
 
-  iupmotSetArg(args, num_args, XmNpixmap, pixmap);
-  iupmotSetArg(args, num_args, XmNmask, mask);
+  iupMOT_SETARG(args, num_args, XmNpixmap, pixmap);
+  iupMOT_SETARG(args, num_args, XmNmask, mask);
   drag_icon = XmCreateDragIcon(w, "drag_icon", args, num_args);
 
   exportList[0] = atomTreeItem;
 
   /* specify resources for DragContext for the transfer */
   num_args = 0;
-  iupmotSetArg(args, num_args, XmNcursorBackground, bg);
-  iupmotSetArg(args, num_args, XmNcursorForeground, fg);
-  /* iupmotSetArg(args, num_args, XmNsourcePixmapIcon, drag_icon);  works, but only outside the dialog, inside disapears */
-  iupmotSetArg(args, num_args, XmNsourceCursorIcon, drag_icon);  /* does not work, shows the default cursor */
-  iupmotSetArg(args, num_args, XmNexportTargets, exportList);
-  iupmotSetArg(args, num_args, XmNnumExportTargets, 1);
-  iupmotSetArg(args, num_args, XmNdragOperations, XmDROP_MOVE|XmDROP_COPY);
-  iupmotSetArg(args, num_args, XmNconvertProc, motTreeConvertProc);
-  iupmotSetArg(args, num_args, XmNclientData, wItemDrag);
+  iupMOT_SETARG(args, num_args, XmNcursorBackground, bg);
+  iupMOT_SETARG(args, num_args, XmNcursorForeground, fg);
+  /* iupMOT_SETARG(args, num_args, XmNsourcePixmapIcon, drag_icon);  works, but only outside the dialog, inside disapears */
+  iupMOT_SETARG(args, num_args, XmNsourceCursorIcon, drag_icon);  /* does not work, shows the default cursor */
+  iupMOT_SETARG(args, num_args, XmNexportTargets, exportList);
+  iupMOT_SETARG(args, num_args, XmNnumExportTargets, 1);
+  iupMOT_SETARG(args, num_args, XmNdragOperations, XmDROP_MOVE|XmDROP_COPY);
+  iupMOT_SETARG(args, num_args, XmNconvertProc, motTreeConvertProc);
+  iupMOT_SETARG(args, num_args, XmNclientData, wItemDrag);
 
   /* start the drag and register a callback to clean up when done */
   drop_context = XmDragStart(w, (XEvent*)evt, args, num_args);
@@ -2437,10 +2437,10 @@ static void motTreeEnableDragDrop(Widget w)
   XtOverrideTranslations(w, XtParseTranslationTable(dragTranslations));
 
   importList[0] = atomTreeItem;
-  iupmotSetArg(args, num_args, XmNimportTargets, importList);
-  iupmotSetArg(args, num_args, XmNnumImportTargets, 1);
-  iupmotSetArg(args, num_args, XmNdropSiteOperations, XmDROP_MOVE|XmDROP_COPY);
-  iupmotSetArg(args, num_args, XmNdropProc, motTreeDropProc);
+  iupMOT_SETARG(args, num_args, XmNimportTargets, importList);
+  iupMOT_SETARG(args, num_args, XmNnumImportTargets, 1);
+  iupMOT_SETARG(args, num_args, XmNdropSiteOperations, XmDROP_MOVE|XmDROP_COPY);
+  iupMOT_SETARG(args, num_args, XmNdropProc, motTreeDropProc);
   XmDropSiteUpdate(w, args, num_args);
 
   XtVaSetValues(XmGetXmDisplay(iupmot_display), XmNenableDragIcon, True, NULL);
@@ -2457,13 +2457,13 @@ static int motTreeMapMethod(Ihandle* ih)
   /******************************/
   /* Create the scrolled window */
   /******************************/
-  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
-  iupmotSetArg(args, num_args, XmNscrollingPolicy, XmAUTOMATIC);
-  iupmotSetArg(args, num_args, XmNvisualPolicy, XmVARIABLE); 
-  iupmotSetArg(args, num_args, XmNscrollBarDisplayPolicy, XmAS_NEEDED);
-  iupmotSetArg(args, num_args, XmNspacing, 0); /* no space between scrollbars and text */
-  iupmotSetArg(args, num_args, XmNborderWidth, 0);
-  iupmotSetArg(args, num_args, XmNshadowThickness, 2);
+  iupMOT_SETARG(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
+  iupMOT_SETARG(args, num_args, XmNscrollingPolicy, XmAUTOMATIC);
+  iupMOT_SETARG(args, num_args, XmNvisualPolicy, XmVARIABLE); 
+  iupMOT_SETARG(args, num_args, XmNscrollBarDisplayPolicy, XmAS_NEEDED);
+  iupMOT_SETARG(args, num_args, XmNspacing, 0); /* no space between scrollbars and text */
+  iupMOT_SETARG(args, num_args, XmNborderWidth, 0);
+  iupMOT_SETARG(args, num_args, XmNshadowThickness, 2);
 
   sb_win = XtCreateManagedWidget(
     child_id,  /* child identifier */
@@ -2481,37 +2481,37 @@ static int motTreeMapMethod(Ihandle* ih)
 
   num_args = 0;
  
-  iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
-  iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
-  iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
-  iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNx, 0);  /* x-position */
+  iupMOT_SETARG(args, num_args, XmNy, 0);  /* y-position */
+  iupMOT_SETARG(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNheight, 10); /* default height to avoid 0 */
 
-  iupmotSetArg(args, num_args, XmNmarginHeight, 0);  /* default padding */
-  iupmotSetArg(args, num_args, XmNmarginWidth, 0);
+  iupMOT_SETARG(args, num_args, XmNmarginHeight, 0);  /* default padding */
+  iupMOT_SETARG(args, num_args, XmNmarginWidth, 0);
 
   if (iupAttribGetBoolean(ih, "CANFOCUS"))
-    iupmotSetArg(args, num_args, XmNtraversalOn, True);
+    iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
   else
-    iupmotSetArg(args, num_args, XmNtraversalOn, False);
+    iupMOT_SETARG(args, num_args, XmNtraversalOn, False);
 
-  iupmotSetArg(args, num_args, XmNnavigationType, XmTAB_GROUP);
-  iupmotSetArg(args, num_args, XmNhighlightThickness, 2);
-  iupmotSetArg(args, num_args, XmNshadowThickness, 0);
+  iupMOT_SETARG(args, num_args, XmNnavigationType, XmTAB_GROUP);
+  iupMOT_SETARG(args, num_args, XmNhighlightThickness, 2);
+  iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
 
-  iupmotSetArg(args, num_args, XmNlayoutType, XmOUTLINE);
-  iupmotSetArg(args, num_args, XmNentryViewType, XmSMALL_ICON);
-  iupmotSetArg(args, num_args, XmNselectionPolicy, XmSINGLE_SELECT);
-  iupmotSetArg(args, num_args, XmNoutlineIndentation, 20);
+  iupMOT_SETARG(args, num_args, XmNlayoutType, XmOUTLINE);
+  iupMOT_SETARG(args, num_args, XmNentryViewType, XmSMALL_ICON);
+  iupMOT_SETARG(args, num_args, XmNselectionPolicy, XmSINGLE_SELECT);
+  iupMOT_SETARG(args, num_args, XmNoutlineIndentation, 20);
 
   if (iupAttribGetBoolean(ih, "HIDELINES"))
-    iupmotSetArg(args, num_args, XmNoutlineLineStyle,  XmNO_LINE);
+    iupMOT_SETARG(args, num_args, XmNoutlineLineStyle,  XmNO_LINE);
   else
-    iupmotSetArg(args, num_args, XmNoutlineLineStyle, XmSINGLE);
+    iupMOT_SETARG(args, num_args, XmNoutlineLineStyle, XmSINGLE);
 
   if (iupAttribGetBoolean(ih, "HIDEBUTTONS"))
-    iupmotSetArg(args, num_args, XmNoutlineButtonPolicy,  XmOUTLINE_BUTTON_ABSENT);
+    iupMOT_SETARG(args, num_args, XmNoutlineButtonPolicy,  XmOUTLINE_BUTTON_ABSENT);
   else
-    iupmotSetArg(args, num_args, XmNoutlineButtonPolicy, XmOUTLINE_BUTTON_PRESENT);
+    iupMOT_SETARG(args, num_args, XmNoutlineButtonPolicy, XmOUTLINE_BUTTON_PRESENT);
 
   ih->handle = XtCreateManagedWidget(
     child_id,       /* child identifier */

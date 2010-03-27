@@ -158,7 +158,7 @@ static void iColorBrowserDlgBrowserRGB_Update(IcolorDlgData* colordlg_data)
 
 static void iColorBrowserDlgBrowserHSI_Update(IcolorDlgData* colordlg_data)
 {
-  IupSetfAttribute(colordlg_data->color_browser, "HSI", "%f %f %f", (double)colordlg_data->hue, (double)colordlg_data->saturation, (double)colordlg_data->intensity);
+  IupSetfAttribute(colordlg_data->color_browser, "HSI", "%g %g %g", (double)colordlg_data->hue, (double)colordlg_data->saturation, (double)colordlg_data->intensity);
 }
 
 /*****************************************\

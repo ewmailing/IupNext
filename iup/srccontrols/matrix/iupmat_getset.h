@@ -26,7 +26,7 @@ void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
 
 void iupMatrixCellUpdateValue(Ihandle* ih);
 
-char* iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels);
+char* iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels_unit);
 
 int   iupMatrixCheckCellPos(Ihandle* ih, int lin, int col);
 

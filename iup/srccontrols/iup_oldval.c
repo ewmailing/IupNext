@@ -533,7 +533,7 @@ static char* iValGetTypeAttrib(Ihandle* ih)
 static char* iValGetValueAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(20);
-  sprintf(str, "%f", ih->data->val);
+  sprintf(str, "%g", ih->data->val);
   return str;
 }
 
@@ -576,7 +576,7 @@ static int iValSetStepAttrib(Ihandle* ih, const char* step)
 static char* iValGetStepAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(20);
-  sprintf(str, "%f", ih->data->step);
+  sprintf(str, "%g", ih->data->step);
   return str;
 }
 
@@ -590,7 +590,7 @@ static int iValSetPageStepAttrib(Ihandle* ih, const char* pagestep)
 static char* iValGetPageStepAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(20);
-  sprintf(str, "%f", ih->data->pagestep);
+  sprintf(str, "%g", ih->data->pagestep);
   return str;
 }
 
@@ -605,7 +605,7 @@ static int iValSetMaxAttrib(Ihandle* ih, const char* max)
 static char* iValGetMaxAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(20);
-  sprintf(str, "%f", ih->data->vmax);
+  sprintf(str, "%g", ih->data->vmax);
   return str;
 }
 
@@ -620,7 +620,7 @@ static int iValSetMinAttrib(Ihandle* ih, const char* min)
 static char* iValGetMinAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(20);
-  sprintf(str, "%f", ih->data->vmin);
+  sprintf(str, "%g", ih->data->vmin);
   return str;
 }
 

@@ -12,19 +12,22 @@
 extern "C" {
 #endif
 
-int   iupMatrixAuxIsCellFullVisible(Ihandle* ih, int lin, int col);
+int   iupMatrixAuxIsFullVisibleLast(ImatLinColData *p);
+int   iupMatrixAuxIsCellStartVisible(Ihandle* ih, int lin, int col);
 int   iupMatrixAuxIsCellVisible(Ihandle* ih, int lin, int col);
 void  iupMatrixAuxGetVisibleCellDim   (Ihandle* ih, int lin, int col, int* x, int* y, int* w, int* h);
 
 void  iupMatrixAuxCalcSizes(Ihandle* ih);
 
-void  iupMatrixAuxUpdateVisiblePos(Ihandle* ih, int m);
+void iupMatrixAuxAdjustFirstFromLast(ImatLinColData* p);
+void iupMatrixAuxAdjustFirstFromScrollPos(ImatLinColData* p, int scroll_pos);
+void  iupMatrixAuxUpdateScrollPos(Ihandle* ih, int m);
 void  iupMatrixAuxUpdateLast(ImatLinColData *p);
 
 int   iupMatrixAuxGetColumnWidth(Ihandle* ih, int col);
 int   iupMatrixAuxGetLineHeight (Ihandle* ih, int lin);
 
-int   iupMatrixAuxGetLinColFromXY        (Ihandle* ih, int x, int y, int* l, int* c);
+int   iupMatrixAuxGetLinColFromXY    (Ihandle* ih, int x, int y, int* l, int* c);
 
 int   iupMatrixAuxCallLeaveCellCb    (Ihandle* ih);
 void  iupMatrixAuxCallEnterCellCb    (Ihandle* ih);

@@ -220,7 +220,7 @@ static void winCanvasUpdateHorScroll(Ihandle* ih, WORD winop)
   xmax = iupAttribGetFloat(ih,"XMAX");
   xmin = iupAttribGetFloat(ih,"XMIN");
 
-  winCanvasGetScrollInfo(ih->handle, &iposx, &ipagex, SB_HORZ, winop==SB_THUMBTRACK? 1: 0);
+  winCanvasGetScrollInfo(ih->handle, &iposx, &ipagex, SB_HORZ, winop==SB_THUMBTRACK||winop==SB_THUMBPOSITION? 1: 0);
 
   if (!iupAttribGet(ih,"LINEX"))
   {
@@ -296,7 +296,7 @@ static void winCanvasUpdateVerScroll(Ihandle* ih, WORD winop)
   ymax = iupAttribGetFloat(ih,"YMAX");
   ymin = iupAttribGetFloat(ih,"YMIN");
 
-  winCanvasGetScrollInfo(ih->handle, &iposy, &ipagey, SB_VERT, winop==SB_THUMBTRACK? 1: 0);
+  winCanvasGetScrollInfo(ih->handle, &iposy, &ipagey, SB_VERT, winop==SB_THUMBTRACK||winop==SB_THUMBPOSITION? 1: 0);
 
   if (!iupAttribGet(ih, "LINEY"))
   {

@@ -63,7 +63,7 @@ char* IupGetAttributes(Ihandle *ih)
   name = iupTableFirst(ih->attrib);
   while (name)
   {
-    if (!iupAttribIsInternal(name))
+    if (!iupATTRIB_ISINTERNAL(name))
     {
       if (buffer[0] != 0)
         strcat(buffer,",");
@@ -150,7 +150,7 @@ void iupAttribUpdateChildren(Ihandle* ih)
   char *name = iupTableFirst(ih->attrib);
   while (name)
   {
-    if (!iupAttribIsInternal(name) && iAttribIsInherit(ih, name))
+    if (!iupATTRIB_ISINTERNAL(name) && iAttribIsInherit(ih, name))
     {
       /* retrieve from the table */
       char* value = iupTableGet(ih->attrib, name);
@@ -186,7 +186,7 @@ void iupAttribUpdate(Ihandle* ih)
   for (i = 0; i < count; i++)
   {
     name = name_array[i];
-    if (!iupAttribIsInternal(name))
+    if (!iupATTRIB_ISINTERNAL(name))
     {
       /* retrieve from the table */
       value = iupTableGet(ih->attrib, name);
@@ -223,7 +223,7 @@ void IupSetAttribute(Ihandle *ih, const char* name, const char *value)
   if (!iupObjectCheck(ih))
     return;
 
-  if (iupAttribIsInternal(name))
+  if (iupATTRIB_ISINTERNAL(name))
     iupAttribSetStr(ih, name, value);
   else
   {
@@ -252,7 +252,7 @@ void IupStoreAttribute(Ihandle *ih, const char* name, const char *value)
   if (!iupObjectCheck(ih))
     return;
 
-  if (iupAttribIsInternal(name))
+  if (iupATTRIB_ISINTERNAL(name))
     iupAttribStoreStr(ih, name, value);
   else
   {
@@ -284,7 +284,7 @@ char* IupGetAttribute(Ihandle *ih, const char* name)
   if (!value)
     value = iupAttribGet(ih, name);
 
-  if (!value && !iupAttribIsInternal(name))
+  if (!value && !iupATTRIB_ISINTERNAL(name))
   {
     if (inherit)
     {
@@ -463,7 +463,7 @@ void iupAttribSetInt(Ihandle *ih, const char* name, int num)
 
 void iupAttribSetFloat(Ihandle *ih, const char* name, float num)
 {
-  iupAttribSetStrf(ih, name, "%f", (double)num);
+  iupAttribSetStrf(ih, name, "%g", (double)num);
 }
 
 int iupAttribGetBoolean(Ihandle* ih, const char* name)
@@ -516,7 +516,7 @@ char* iupAttribGetStr(Ihandle* ih, const char* name)
 
   value = iupTableGet(ih->attrib, name);
 
-  if (!value && !iupAttribIsInternal(name))
+  if (!value && !iupATTRIB_ISINTERNAL(name))
   {
     int inherit;
     char *def_value;

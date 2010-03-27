@@ -390,33 +390,33 @@ gboolean iupgtkKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 void iupgtkButtonKeySetStatus(guint state, unsigned int but, char* status, int doubleclick)
 {
   if (state & GDK_SHIFT_MASK)
-    iupKEYSETSHIFT(status);
+    iupKEY_SETSHIFT(status);
 
   if (state & GDK_CONTROL_MASK)
-    iupKEYSETCONTROL(status); 
+    iupKEY_SETCONTROL(status); 
 
   if ((state & GDK_BUTTON1_MASK) || but==1)
-    iupKEYSETBUTTON1(status);
+    iupKEY_SETBUTTON1(status);
 
   if ((state & GDK_BUTTON2_MASK) || but==2)
-    iupKEYSETBUTTON2(status);
+    iupKEY_SETBUTTON2(status);
 
   if ((state & GDK_BUTTON3_MASK) || but==3)
-    iupKEYSETBUTTON3(status);
+    iupKEY_SETBUTTON3(status);
 
   if ((state & GDK_BUTTON4_MASK) || but==4)
-    iupKEYSETBUTTON4(status);
+    iupKEY_SETBUTTON4(status);
 
   if ((state & GDK_BUTTON5_MASK) || but==5)
-    iupKEYSETBUTTON5(status);
+    iupKEY_SETBUTTON5(status);
 
   if (state & GDK_MOD1_MASK || state & GDK_MOD5_MASK) /* Alt */
-    iupKEYSETALT(status);
+    iupKEY_SETALT(status);
 
   if (state & GDK_MOD4_MASK) /* Apple/Win */
-    iupKEYSETSYS(status);
+    iupKEY_SETSYS(status);
 
   if (doubleclick)
-    iupKEYSETDOUBLE(status);
+    iupKEY_SETDOUBLE(status);
 }
 

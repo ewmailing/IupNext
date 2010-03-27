@@ -42,14 +42,14 @@ int iupmaskMatSetInt(Ihandle *ih, int autofill, int min, int max, int lin, int c
 int iupmaskSetFloat(Ihandle* ih, int autofill, float min, float max)
 {
   (void)autofill;
-  IupSetfAttribute(ih,"MASKFLOAT", "%f:%f", min, max);
+  IupSetfAttribute(ih,"MASKFLOAT", "%g:%g", min, max);
   return 1;
 }
 
 int iupmaskMatSetFloat(Ihandle* ih, int autofill, float min, float max, int lin, int col)
 {
   (void)autofill;
-  IupMatSetfAttribute(ih,"MASKFLOAT", lin, col, "%f:%f", min, max);
+  IupMatSetfAttribute(ih,"MASKFLOAT", lin, col, "%g:%g", min, max);
   return 0;
 }
 

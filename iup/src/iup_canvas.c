@@ -55,14 +55,14 @@ void iupCanvasCalcScrollRealPos(double min, double max, double *pos,
 char* iupCanvasGetPosXAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(20);
-  sprintf(str, "%f", ih->data->posx);
+  sprintf(str, "%g", ih->data->posx);
   return str;
 }
 
 char* iupCanvasGetPosYAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(20);
-  sprintf(str, "%f", ih->data->posy);
+  sprintf(str, "%g", ih->data->posy);
   return str;
 }
 

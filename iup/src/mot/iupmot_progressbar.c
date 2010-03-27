@@ -98,25 +98,25 @@ static int motProgressBarMapMethod(Ihandle* ih)
   Arg args[30];
  
   /* Core */
-  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
-  iupmotSetArg(args, num_args, XmNx, 0);  /* x-position */
-  iupmotSetArg(args, num_args, XmNy, 0);  /* y-position */
-  iupmotSetArg(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
-  iupmotSetArg(args, num_args, XmNheight, 10); /* default height to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNmappedWhenManaged, False);  /* not visible when managed */
+  iupMOT_SETARG(args, num_args, XmNx, 0);  /* x-position */
+  iupMOT_SETARG(args, num_args, XmNy, 0);  /* y-position */
+  iupMOT_SETARG(args, num_args, XmNwidth, 10);  /* default width to avoid 0 */
+  iupMOT_SETARG(args, num_args, XmNheight, 10); /* default height to avoid 0 */
   /* Primitive */
-  iupmotSetArg(args, num_args, XmNtraversalOn, False);
-  iupmotSetArg(args, num_args, XmNhighlightThickness, 0);
+  iupMOT_SETARG(args, num_args, XmNtraversalOn, False);
+  iupMOT_SETARG(args, num_args, XmNhighlightThickness, 0);
   /* Scale */
-  iupmotSetArg(args, num_args, XmNminimum,   0);
-  iupmotSetArg(args, num_args, XmNmaximum, SHRT_MAX);
-  iupmotSetArg(args, num_args, XmNslidingMode, XmTHERMOMETER); /* thermometer effect */
-  iupmotSetArg(args, num_args, XmNsliderMark, XmNONE);
-  iupmotSetArg(args, num_args, XmNeditable, False);
-  iupmotSetArg(args, num_args, XmNshowValue, XmNONE);
+  iupMOT_SETARG(args, num_args, XmNminimum,   0);
+  iupMOT_SETARG(args, num_args, XmNmaximum, SHRT_MAX);
+  iupMOT_SETARG(args, num_args, XmNslidingMode, XmTHERMOMETER); /* thermometer effect */
+  iupMOT_SETARG(args, num_args, XmNsliderMark, XmNONE);
+  iupMOT_SETARG(args, num_args, XmNeditable, False);
+  iupMOT_SETARG(args, num_args, XmNshowValue, XmNONE);
 
   if (iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "VERTICAL"))
   {
-    iupmotSetArg(args, num_args, XmNorientation, XmVERTICAL);
+    iupMOT_SETARG(args, num_args, XmNorientation, XmVERTICAL);
 
     if (ih->currentheight < ih->currentwidth)
     {
@@ -126,7 +126,7 @@ static int motProgressBarMapMethod(Ihandle* ih)
     }
   }
   else
-    iupmotSetArg(args, num_args, XmNorientation, XmHORIZONTAL);
+    iupMOT_SETARG(args, num_args, XmNorientation, XmHORIZONTAL);
   
   ih->handle = XtCreateManagedWidget(
     iupDialogGetChildIdStr(ih),  /* child identifier */

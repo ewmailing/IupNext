@@ -8,6 +8,12 @@
 #include "iupcontrols.h"
 #include "iupcbs.h"
 
+static int mousemove_cb(Ihandle *ih, int lin, int col)
+{
+  printf("mousemove_cb(%d, %d)\n", lin, col);
+  return IUP_DEFAULT;
+}
+
 static int dropcheck_cb(Ihandle *self, int lin, int col)
 {
   if (lin == 3 && col == 1)
@@ -43,7 +49,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat,"SORTSIGN2","DOWN");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
 //  IupSetAttribute(mat,"MULTILINE", "YES");
-//  IupSetAttribute(mat,"RESIZEMATRIX", "YES");
+  IupSetAttribute(mat,"RESIZEMATRIX", "YES");
 //  IupSetAttribute(mat,"USETITLESIZE", "YES");
   //IupSetAttribute(mat,"SCROLLBAR", "NO");
   //IupSetAttribute(mat, "BGCOLOR1:2", "255 92 255");
@@ -78,17 +84,17 @@ static Ihandle* create_matrix(void)
   //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");
   //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");
 //  IupSetAttribute(mat, "WIDTHDEF", "15");
-  IupSetAttribute(mat, "20:15", "The End");
+  IupSetAttribute(mat, "20:8", "The End");
   IupSetAttribute(mat, "10:0", "Middle Line");
   IupSetAttribute(mat, "15:0", "Middle Line");
-  IupSetAttribute(mat, "0:7", "Middle Column");
-  IupSetAttribute(mat, "0:11", "Middle Column");
+  IupSetAttribute(mat, "0:4", "Middle Column");
   IupSetAttribute(mat, "20:0", "Line Title Test");
-  IupSetAttribute(mat, "0:15", "Column Title Test");
+  IupSetAttribute(mat, "0:8", "Column Title Test");
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "8");
 
   IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
+  IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);
 
   return mat;
 }

@@ -34,15 +34,17 @@
    if so the resize is started */
 int iupMatrixColResStart(Ihandle* ih, int x, int y)
 {
-  if (ih->data->lines.sizes[0] && y < ih->data->lines.sizes[0] && iupAttribGetBoolean(ih, "RESIZEMATRIX"))
+  if (ih->data->lines.sizes[0] && 
+      y < ih->data->lines.sizes[0] && 
+      iupAttribGetBoolean(ih, "RESIZEMATRIX"))
   {
-    int size, col;
+    int x_col, col;
    
     /* Check if is the column of titles */
-    size = ih->data->columns.sizes[0];
-    if (abs(size-x) < IMAT_COLRES_TOL)
+    x_col = ih->data->columns.sizes[0];
+    if (abs(x_col-x) < IMAT_COLRES_TOL)
     {
-      ih->data->colres_drag_col_start_x = 0;
+      ih->data->colres_drag_col_start_x = x;
       ih->data->colres_dragging =  1;
       ih->data->colres_drag_col_last_x = -1;
       ih->data->colres_drag_col = 0;
@@ -51,12 +53,13 @@ int iupMatrixColResStart(Ihandle* ih, int x, int y)
     else
     {
       /* find the column */
+      x_col -= ih->data->columns.first_offset;
       for(col = ih->data->columns.first; col <= ih->data->columns.last; col++)
       {
-        ih->data->colres_drag_col_start_x = size;
-        size += ih->data->columns.sizes[col];
-        if (abs(size-x) < IMAT_COLRES_TOL)
+        x_col += ih->data->columns.sizes[col];
+        if (abs(x_col-x) < IMAT_COLRES_TOL)
         {
+          ih->data->colres_drag_col_start_x = x;
           ih->data->colres_dragging =  1;
           ih->data->colres_drag_col_last_x = -1;
           ih->data->colres_drag_col = col;
@@ -71,7 +74,8 @@ int iupMatrixColResStart(Ihandle* ih, int x, int y)
 void iupMatrixColResFinish(Ihandle* ih, int x)
 {
   char str[100];
-  int width = x - ih->data->colres_drag_col_start_x;
+  int delta = x - ih->data->colres_drag_col_start_x;
+  int width = ih->data->columns.sizes[ih->data->colres_drag_col] + delta;
   if (width < 0)
     width = 0;
 
@@ -83,8 +87,8 @@ void iupMatrixColResFinish(Ihandle* ih, int x)
 
     cdCanvasWriteMode(ih->data->cdcanvas, CD_XOR);
     cdCanvasForeground(ih->data->cdcanvas, IMAT_RESIZE_COLOR);               
-    cdCanvasLine(ih->data->cdcanvas, ih->data->colres_drag_col_last_x, iupMatrixInvertYAxis(ih, y1), 
-                                     ih->data->colres_drag_col_last_x, iupMatrixInvertYAxis(ih, y2));
+    cdCanvasLine(ih->data->cdcanvas, ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y1), 
+                                     ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y2));
     cdCanvasWriteMode(ih->data->cdcanvas, CD_REPLACE);
   }
 
@@ -106,7 +110,8 @@ void iupMatrixColResMove(Ihandle* ih, int x)
 {
   int y1, y2;
 
-  int width = x - ih->data->colres_drag_col_start_x;
+  int delta = x - ih->data->colres_drag_col_start_x;
+  int width = ih->data->columns.sizes[ih->data->colres_drag_col] + delta;
   if (width < 0)
     return;
 
@@ -119,12 +124,12 @@ void iupMatrixColResMove(Ihandle* ih, int x)
   /* If it is not the first time, move old line */
   if (ih->data->colres_drag_col_last_x != -1)
   {
-    cdCanvasLine(ih->data->cdcanvas, ih->data->colres_drag_col_last_x, iupMatrixInvertYAxis(ih, y1), 
-                                     ih->data->colres_drag_col_last_x, iupMatrixInvertYAxis(ih, y2));
+    cdCanvasLine(ih->data->cdcanvas, ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y1), 
+                                     ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y2));
   }
 
-  cdCanvasLine(ih->data->cdcanvas, x, iupMatrixInvertYAxis(ih, y1), 
-                                   x, iupMatrixInvertYAxis(ih, y2));
+  cdCanvasLine(ih->data->cdcanvas, x, iupMATRIX_INVERTYAXIS(ih, y1), 
+                                   x, iupMATRIX_INVERTYAXIS(ih, y2));
 
   ih->data->colres_drag_col_last_x = x;
   cdCanvasWriteMode(ih->data->cdcanvas, CD_REPLACE);
@@ -144,20 +149,23 @@ static void iMatrixColResResetMatrixCursor(Ihandle* ih)
 /* Change the cursor when it passes over a group of the column titles. */
 void iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y)
 {
-  if(ih->data->lines.sizes[0] && y < ih->data->lines.sizes[0] && iupAttribGetBoolean(ih, "RESIZEMATRIX"))
+  if(ih->data->lines.sizes[0] && 
+     y < ih->data->lines.sizes[0] && 
+     iupAttribGetBoolean(ih, "RESIZEMATRIX"))
   {
     /* It is in the column titles area and the resize mode is on */
-    int found = 0, size, col;
+    int found = 0, x_col, col;
 
-    size = ih->data->columns.sizes[0];
-    if (abs(size - x) < IMAT_COLRES_TOL)
+    x_col = ih->data->columns.sizes[0];
+    if (abs(x_col - x) < IMAT_COLRES_TOL)
       found = 1;    /* line titles */
     else
     {
+      x_col -= ih->data->columns.first_offset;
       for(col = ih->data->columns.first; col <= ih->data->columns.last && !found; col++)
       {
-        size += ih->data->columns.sizes[col];
-        if(abs(size - x) < IMAT_COLRES_TOL)
+        x_col += ih->data->columns.sizes[col];
+        if(abs(x_col - x) < IMAT_COLRES_TOL)
           found = 1;
       }
     }
@@ -168,7 +176,7 @@ void iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y)
         iupAttribStoreStr(ih, "_IUPMAT_CURSOR", IupGetAttribute(ih, "CURSOR"));
       IupSetAttribute(ih, "CURSOR", "RESIZE_W");
     }
-    else /* It is in the empty area after the last column */
+    else /* It is in the empty area after the last column, or inside a cell */
       iMatrixColResResetMatrixCursor(ih); 
   }
   else

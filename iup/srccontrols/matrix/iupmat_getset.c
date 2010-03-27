@@ -313,7 +313,7 @@ char* iupMatrixGetFont(Ihandle* ih, int lin, int col)
   return font;
 }
 
-char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels)
+char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels_unit)
 {
   char* str;
   int size;
@@ -342,7 +342,7 @@ char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels)
     else
       size -= IMAT_PADDING_H + IMAT_FRAME_H;
 
-    if (!pixels)
+    if (!pixels_unit)
     {
       int charwidth, charheight;
       iupdrvFontGetCharSize(ih, &charwidth, &charheight);

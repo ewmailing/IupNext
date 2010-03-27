@@ -36,8 +36,10 @@
  * \subsection com File Comments (at start)
  *  - Check an existant file for example.
  *    
- * \subsection inc Include Defines
- *  -  __IUPXXX_H   (same file name, upper case, "__" preffix and replace "." by "_")
+ * \subsection def Defines
+ *  - __IUPXXX_H   (for include file, same file name, upper case, "__" preffix and replace "." by "_")
+ *  - IUP_XXX      (for enumerations)
+ *  - iupXXX       (for macros, complement with Function Names rules)
  *   
  * \subsection doc Documentation
  *  - In the header, using Doxygen commands.

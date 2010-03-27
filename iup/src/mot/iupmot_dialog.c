@@ -895,20 +895,20 @@ static int motDialogMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "BORDER") || has_titlebar)   
     mwm_decor |= MWM_DECOR_BORDER;  /* has_border */
 
-  iupmotSetArg(args, num_args, XmNmappedWhenManaged, False);  /* so XtRealizeWidget will not show the dialog */
-  iupmotSetArg(args, num_args, XmNdeleteResponse, XmDO_NOTHING);
-  iupmotSetArg(args, num_args, XmNallowShellResize, True); /* Used so the BulletinBoard can control the shell size */
-  iupmotSetArg(args, num_args, XmNtitle, "");
-  iupmotSetArg(args, num_args, XmNvisual, iupmot_visual);
+  iupMOT_SETARG(args, num_args, XmNmappedWhenManaged, False);  /* so XtRealizeWidget will not show the dialog */
+  iupMOT_SETARG(args, num_args, XmNdeleteResponse, XmDO_NOTHING);
+  iupMOT_SETARG(args, num_args, XmNallowShellResize, True); /* Used so the BulletinBoard can control the shell size */
+  iupMOT_SETARG(args, num_args, XmNtitle, "");
+  iupMOT_SETARG(args, num_args, XmNvisual, iupmot_visual);
   
   if (iupmotColorMap()) 
-    iupmotSetArg(args, num_args, XmNcolormap, iupmotColorMap());
+    iupMOT_SETARG(args, num_args, XmNcolormap, iupmotColorMap());
 
   if (mwm_decor != 0x7E) 
-    iupmotSetArg(args, num_args, XmNmwmDecorations, mwm_decor);
+    iupMOT_SETARG(args, num_args, XmNmwmDecorations, mwm_decor);
 
   if (iupAttribGetBoolean(ih, "SAVEUNDER"))
-    iupmotSetArg(args, num_args, XmNsaveUnder, True);
+    iupMOT_SETARG(args, num_args, XmNsaveUnder, True);
 
   parent = iupDialogGetNativeParent(ih);
   if (parent)

@@ -317,32 +317,32 @@ int iupwinKeyEvent(Ihandle* ih, int wincode, int press)
 void iupwinButtonKeySetStatus(WORD keys, char* status, int doubleclick)
 {
   if (keys & MK_SHIFT)
-    iupKEYSETSHIFT(status);
+    iupKEY_SETSHIFT(status);
 
   if (keys & MK_CONTROL)
-    iupKEYSETCONTROL(status); 
+    iupKEY_SETCONTROL(status); 
 
   if (keys & MK_LBUTTON)
-    iupKEYSETBUTTON1(status);
+    iupKEY_SETBUTTON1(status);
 
   if (keys & MK_MBUTTON)
-    iupKEYSETBUTTON2(status);
+    iupKEY_SETBUTTON2(status);
 
   if (keys & MK_RBUTTON)
-    iupKEYSETBUTTON3(status);
+    iupKEY_SETBUTTON3(status);
 
   if (doubleclick)
-    iupKEYSETDOUBLE(status);
+    iupKEY_SETDOUBLE(status);
 
   if (GetKeyState(VK_MENU) & 0x8000)
-    iupKEYSETALT(status);
+    iupKEY_SETALT(status);
 
   if ((GetKeyState(VK_LWIN) & 0x8000) || (GetKeyState(VK_RWIN) & 0x8000))
-    iupKEYSETSYS(status);
+    iupKEY_SETSYS(status);
 
   if (keys & MK_XBUTTON1)
-    iupKEYSETBUTTON4(status);
+    iupKEY_SETBUTTON4(status);
 
   if (keys & MK_XBUTTON2)
-    iupKEYSETBUTTON5(status);
+    iupKEY_SETBUTTON5(status);
 }

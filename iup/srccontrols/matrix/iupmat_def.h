@@ -49,6 +49,7 @@ typedef struct _ImatLinColData
   int num;         /* Number of columns/lines in the matrix, default/minimum=1, always includes the title */
   int num_alloc;   /* Number of columns/lines allocated, default=5 */
 
+  int first_offset; /* scroll offset of the first visible column/line from right to left (or the invisible part of the first cell) */
   int first;       /* First visible column/line */
   int last;        /* Last visible column/line  */
 
@@ -92,8 +93,8 @@ struct _IcontrolData
 
   /* ColRes AUX */
   int colres_dragging,   /* indicates if it is being made a column resize  */
-      colres_drag_col,   /* column being resized */
-      colres_drag_col_start_x, /* position of the start of the column being resized */
+      colres_drag_col,   /* column being resized, handler is at right of the column */
+      colres_drag_col_start_x, /* handler start position */
       colres_drag_col_last_x;  /* previous position */
 
   /* Mark AUX */
@@ -107,12 +108,14 @@ struct _IcontrolData
   IFniiIII fgcolor_cb;
   IFniiIII bgcolor_cb;
   char *bgcolor, *bgcolor_parent, *fgcolor, *font;  /* not need to free */
+
+  int clip_x1, clip_x2, clip_y1, clip_y2;  /* aux for cell clipping */
 };
 
 
 int iupMatrixIsValid(Ihandle* ih, int check_cells);
 
-#define iupMatrixInvertYAxis(_ih, _y) ((_ih)->data->h-1 - (_y))
+#define iupMATRIX_INVERTYAXIS(_ih, _y) ((_ih)->data->h-1 - (_y))
 
 
 #ifdef __cplusplus

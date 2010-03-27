@@ -59,8 +59,8 @@ void iupgtkFontUpdateObjectPangoLayout(Ihandle* ih, gpointer object);
 /* There are PANGO_SCALE Pango units in one device unit. 
   For an output backend where a device unit is a pixel, 
   a size value of 10 * PANGO_SCALE gives 10 pixels. */
-#define IUPGTK_PANGOUNITS2PIXELS(_x) (((_x) + PANGO_SCALE/2) / PANGO_SCALE)
-#define IUPGTK_PIXELS2PANGOUNITS(_x) ((_x) * PANGO_SCALE)
+#define iupGTK_PANGOUNITS2PIXELS(_x) (((_x) + PANGO_SCALE/2) / PANGO_SCALE)
+#define iupGTK_PIXELS2PANGOUNITS(_x) ((_x) * PANGO_SCALE)
 
 
 /* open */

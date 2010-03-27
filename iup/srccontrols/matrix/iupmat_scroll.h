@@ -12,54 +12,54 @@
 extern "C" {
 #endif
 
-int  iupMatrixScroll_CB(Ihandle* ih, int action, float x, float y);
+int  iupMatrixScroll_CB(Ihandle* ih, int action, float posx, float posy);
 
 void iupMatrixScrollToVisible(Ihandle* ih, int lin, int col);
 
-typedef void (*iupMatrixScrollMoveF)(Ihandle* ih, int mode, float pos, int m);
-void  iupMatrixScrollMoveCursor(iupMatrixScrollMoveF func, Ihandle* ih, int mode, float pos, int m);
+typedef void (*iupMatrixScrollMoveFunc)(Ihandle* ih, int mode, float pos, int m);
+void  iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, float pos, int m);
 
 /* Used only by the macros bellow */
-void iupMatrixScrollHome       (Ihandle* ih, int, float, int);
-void iupMatrixScrollEnd        (Ihandle* ih, int, float, int);
-void iupMatrixScrollLeftUp     (Ihandle* ih, int, float, int);
-void iupMatrixScrollRightDown  (Ihandle* ih, int, float, int);
-void iupMatrixScrollPgLeftUp   (Ihandle* ih, int, float, int);
-void iupMatrixScrollPgRightDown(Ihandle* ih, int, float, int);
-void iupMatrixScrollPos        (Ihandle* ih, int, float, int);
-void iupMatrixScrollCr         (Ihandle* ih, int, float, int);
+void iupMatrixScrollHomeFunc       (Ihandle* ih, int, float, int);
+void iupMatrixScrollEndFunc        (Ihandle* ih, int, float, int);
+void iupMatrixScrollLeftUpFunc     (Ihandle* ih, int, float, int);
+void iupMatrixScrollRightDownFunc  (Ihandle* ih, int, float, int);
+void iupMatrixScrollPgLeftUpFunc   (Ihandle* ih, int, float, int);
+void iupMatrixScrollPgRightDownFunc(Ihandle* ih, int, float, int);
+void iupMatrixScrollPosFunc        (Ihandle* ih, int, float, int);
+void iupMatrixScrollCrFunc         (Ihandle* ih, int, float, int);
 
 /* Mode used to "walk" inside the matrix.
    It shows if the movement request was from the scrollbar or from a key.
-   Possible values for the "mode" parameter of the iupMatrixScrollMoveCursor function.
+   Possible values for the "mode" parameter of the iupMatrixScrollMove function.
  */
 #define IMAT_SCROLLBAR    0
 #define IMAT_SCROLLKEY    1
 
-/* Macros to help during the call of iupMatrixScrollMoveCursor function */
+/* Macros to help during the call of iupMatrixScrollMove function */
 
 /* used in the keyboard processing module */
-#define iupMatrixScrollKeyHome(ih)    iupMatrixScrollMoveCursor(iupMatrixScrollHome       , ih, IMAT_SCROLLKEY, 0, 0)
-#define iupMatrixScrollKeyEnd(ih)     iupMatrixScrollMoveCursor(iupMatrixScrollEnd        , ih, IMAT_SCROLLKEY, 0, 0)
-#define iupMatrixScrollKeyPgUp(ih)    iupMatrixScrollMoveCursor(iupMatrixScrollPgLeftUp   , ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN)
-#define iupMatrixScrollKeyPgDown(ih)  iupMatrixScrollMoveCursor(iupMatrixScrollPgRightDown, ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN)
-#define iupMatrixScrollKeyDown(ih)    iupMatrixScrollMoveCursor(iupMatrixScrollRightDown  , ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN)
-#define iupMatrixScrollKeyRight(ih)   iupMatrixScrollMoveCursor(iupMatrixScrollRightDown  , ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_COL)
-#define iupMatrixScrollKeyUp(ih)      iupMatrixScrollMoveCursor(iupMatrixScrollLeftUp     , ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN)
-#define iupMatrixScrollKeyLeft(ih)    iupMatrixScrollMoveCursor(iupMatrixScrollLeftUp     , ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_COL)
-#define iupMatrixScrollKeyCr(ih)      iupMatrixScrollMoveCursor(iupMatrixScrollCr         , ih, IMAT_SCROLLKEY, 0, 0)
+#define iupMATRIX_ScrollKeyHome(ih)    iupMatrixScrollMove(iupMatrixScrollHomeFunc       , ih, IMAT_SCROLLKEY, 0, 0)
+#define iupMATRIX_ScrollKeyEnd(ih)     iupMatrixScrollMove(iupMatrixScrollEndFunc        , ih, IMAT_SCROLLKEY, 0, 0)
+#define iupMATRIX_ScrollKeyPgUp(ih)    iupMatrixScrollMove(iupMatrixScrollPgLeftUpFunc   , ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN)
+#define iupMATRIX_ScrollKeyPgDown(ih)  iupMatrixScrollMove(iupMatrixScrollPgRightDownFunc, ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN)
+#define iupMATRIX_ScrollKeyDown(ih)    iupMatrixScrollMove(iupMatrixScrollRightDownFunc  , ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN)
+#define iupMATRIX_ScrollKeyRight(ih)   iupMatrixScrollMove(iupMatrixScrollRightDownFunc  , ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_COL)
+#define iupMATRIX_ScrollKeyUp(ih)      iupMatrixScrollMove(iupMatrixScrollLeftUpFunc     , ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN)
+#define iupMATRIX_ScrollKeyLeft(ih)    iupMatrixScrollMove(iupMatrixScrollLeftUpFunc     , ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_COL)
+#define iupMATRIX_ScrollKeyCr(ih)      iupMatrixScrollMove(iupMatrixScrollCrFunc         , ih, IMAT_SCROLLKEY, 0, 0)
 
 /* Used by the scrollbar callback only */
-#define iupMatrixScrollUp(ih)         iupMatrixScrollMoveCursor(iupMatrixScrollLeftUp     , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_LIN)
-#define iupMatrixScrollLeft(ih)       iupMatrixScrollMoveCursor(iupMatrixScrollLeftUp     , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_COL)
-#define iupMatrixScrollDown(ih)       iupMatrixScrollMoveCursor(iupMatrixScrollRightDown  , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_LIN)
-#define iupMatrixScrollRight(ih)      iupMatrixScrollMoveCursor(iupMatrixScrollRightDown  , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_COL)
-#define iupMatrixScrollPgUp(ih)       iupMatrixScrollMoveCursor(iupMatrixScrollPgLeftUp   , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_LIN)
-#define iupMatrixScrollPgLeft(ih)     iupMatrixScrollMoveCursor(iupMatrixScrollPgLeftUp   , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_COL)
-#define iupMatrixScrollPgDown(ih)     iupMatrixScrollMoveCursor(iupMatrixScrollPgRightDown, ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_LIN)
-#define iupMatrixScrollPgRight(ih)    iupMatrixScrollMoveCursor(iupMatrixScrollPgRightDown, ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_COL)
-#define iupMatrixScrollPosVer(ih, y)  iupMatrixScrollMoveCursor(iupMatrixScrollPos        , ih, IMAT_SCROLLBAR, y, IMAT_PROCESS_LIN)
-#define iupMatrixScrollPosHor(ih, x)  iupMatrixScrollMoveCursor(iupMatrixScrollPos        , ih, IMAT_SCROLLBAR, x, IMAT_PROCESS_COL)
+#define iupMATRIX_ScrollUp(ih)         iupMatrixScrollMove(iupMatrixScrollLeftUpFunc     , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_LIN)
+#define iupMATRIX_ScrollLeft(ih)       iupMatrixScrollMove(iupMatrixScrollLeftUpFunc     , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_COL)
+#define iupMATRIX_ScrollDown(ih)       iupMatrixScrollMove(iupMatrixScrollRightDownFunc  , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_LIN)
+#define iupMATRIX_ScrollRight(ih)      iupMatrixScrollMove(iupMatrixScrollRightDownFunc  , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_COL)
+#define iupMATRIX_ScrollPgUp(ih)       iupMatrixScrollMove(iupMatrixScrollPgLeftUpFunc   , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_LIN)
+#define iupMATRIX_ScrollPgLeft(ih)     iupMatrixScrollMove(iupMatrixScrollPgLeftUpFunc   , ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_COL)
+#define iupMATRIX_ScrollPgDown(ih)     iupMatrixScrollMove(iupMatrixScrollPgRightDownFunc, ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_LIN)
+#define iupMATRIX_ScrollPgRight(ih)    iupMatrixScrollMove(iupMatrixScrollPgRightDownFunc, ih, IMAT_SCROLLBAR, 0, IMAT_PROCESS_COL)
+#define iupMATRIX_ScrollPosVer(ih, y)  iupMatrixScrollMove(iupMatrixScrollPosFunc        , ih, IMAT_SCROLLBAR, posy, IMAT_PROCESS_LIN)
+#define iupMATRIX_ScrollPosHor(ih, x)  iupMatrixScrollMove(iupMatrixScrollPosFunc        , ih, IMAT_SCROLLBAR, posx, IMAT_PROCESS_COL)
 
 
 #ifdef __cplusplus
