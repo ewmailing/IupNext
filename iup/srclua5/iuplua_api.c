@@ -99,7 +99,7 @@ static int GetAttribute (lua_State *L)
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *name = luaL_checkstring(L,2);
   const char *value = IupGetAttribute(ih, name);
-  if (!value || iupAttribIsInternal(name))
+  if (!value || iupATTRIB_ISINTERNAL(name))
     lua_pushnil(L);
   else
   {

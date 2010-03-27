@@ -182,7 +182,7 @@ static void GetAttribute(void)
   char *name = luaL_check_string(2);
   Ihandle* ih = iuplua_checkihandle(1);
   char *value = IupGetAttribute(ih, name);
-  if (!value || iupAttribIsInternal(name))
+  if (!value || iupATTRIB_ISINTERNAL(name))
     lua_pushnil();
   else
   {
