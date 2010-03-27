@@ -122,19 +122,11 @@ void iupMatrixAuxAdjustFirstFromLast(ImatLinColData* p)
     sum += p->sizes[i];
   }
 
-  if (i==1)
+  if (i==1 && sum < p->visible_size)
   {
+    /* if there are room for everyone then position at start */
     p->first = 1;
-
-    if (sum < p->visible_size)
-    {
-      /* if there are room for everyone then position at start */
-      p->first_offset = 0;
-    }
-    else
-    {
-      p->first_offset = sum - p->visible_size;
-    }
+    p->first_offset = 0;
   }
   else
   {
