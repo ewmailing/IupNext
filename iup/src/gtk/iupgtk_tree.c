@@ -719,6 +719,9 @@ static void gtkTreeCallMultiSelectionCb(Ihandle* ih)
         gtkTreeSelectNodeRaw(model, &iterItem, 1);
     }
 
+    /* if last selected item is a branch, then select its children */
+    iupTreeSelectLastCollapsedBranch(ih, &(minmax.id2));
+
     countItems = minmax.id2-minmax.id1+1;
 
     if (cbMulti)
@@ -2084,30 +2087,49 @@ static int gtkTreeConvertXYToPos(Ihandle* ih, int x, int y)
   return -1;
 }
 
+static Iarray* gtkTreeGetSelectedArrayId(Ihandle* ih)
+{
+  Iarray* selarray = iupArrayCreate(1, sizeof(int));
+  int i;
+  GtkTreeIter iterItem;
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+
+  for (i = 0; i < ih->data->node_count; i++)
+  {
+    gtkTreeIterInit(ih, &iterItem, ih->data->node_cache[i]);
+    if (gtkTreeIsNodeSelected(model, &iterItem))
+    {
+      int* id_hitem = (int*)iupArrayInc(selarray);
+      int j = iupArrayCount(selarray);
+      id_hitem[j-1] = i;
+    }
+  }
+
+  return selarray;
+}
+
 static void gtkTreeCallMultiUnSelectionCb(Ihandle* ih)
 {
+  IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTIUNSELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
-  if (cbSelec)
+  if (cbSelec || cbMulti)
   {
-    GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
-    int i = 0, countItems;
-    gtkTreeSelectMinMax minmax;
+    Iarray* markedArray = gtkTreeGetSelectedArrayId(ih);
+    int* id_hitem = (int*)iupArrayGetData(markedArray);
+    int i, count = iupArrayCount(markedArray);
 
-    minmax.ih = ih;
-    minmax.id1 = ih->data->node_count;
-    minmax.id2 = -1;
-
-    gtk_tree_selection_selected_foreach(selection, (GtkTreeSelectionForeachFunc)gtkTreeSelected_Foreach_Func, &minmax);
-    if (minmax.id2 == -1)
-      return;
-
-    countItems = minmax.id2-minmax.id1+1;
-
-    if (countItems > 1)
+    if (count > 1)
     {
-      for (i=0; i<countItems; i++)
-        cbSelec(ih, minmax.id1+i, 0);
+      if (cbMulti)
+        cbMulti(ih, id_hitem, iupArrayCount(markedArray));
+      else
+      {
+        for (i=0; i<count; i++)
+          cbSelec(ih, id_hitem[i], 0);
+      }
     }
+
+    iupArrayDestroy(markedArray);
   }
 }
 

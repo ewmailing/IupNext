@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -26,7 +26,7 @@ the event. <br>
     <strong>status</strong>: 1=node selected, 0=node unselected. </p>
 <p><strong>MULTISELECTION_CB</strong>:
   Action generated 
-  when a continuous range of nodes is selected in one single operation. If 
+  after a continuous range of nodes is selected in one single operation. If 
 not defined the SELECTION_CB with status=1 will be called for all nodes in the 
 range. The range is always completely included, independent if some nodes were already 
 marked. That single operation also guaranties that all other nodes outside the 
@@ -38,6 +38,19 @@ the event. <br>
 <strong>ids</strong>:
     Array of node identifiers. This array is kept for backward compatibility, 
 the range is simply defined by ids[0] to ids[n-1], where <code>ids[i+1]=ids[i]+1</code>.<br>
+<b>n</b>: Number of nodes in the array.</p>
+<p><strong>MULTIUNSELECTION_CB</strong>:
+  Action generated 
+  before multiple nodes are unselected in one single operation. If 
+not defined the SELECTION_CB with status=0 will be called for all nodes in the 
+range. The range is not necessarily continuous. Called only if MARKMODE=MULTIPLE. 
+(Since 3.0)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int* <strong>ids, int </strong>n) [in C]
+<strong>elem</strong>:multiunselection_cb(<strong>ids: </strong>table<strong>, n:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
+<strong>ids</strong>:
+    Array of node identifiers.<br>
 <b>n</b>: Number of nodes in the array.</p>
 <hr>
 <p><strong>BRANCHOPEN_CB</strong>:

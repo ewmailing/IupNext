@@ -47,6 +47,7 @@ iup.TreeSetValue = TreeSetValue
 
 iup_callbacks.selection      = {"SELECTION_CB", iup_tree_selection_cb}
 iup_callbacks.multiselection = {"MULTISELECTION_CB", iup_tree_multiselection_cb}
+iup_callbacks.multiunselection = {"MULTIUNSELECTION_CB", iup_tree_multiunselection_cb}
 iup_callbacks.branchopen     = {"BRANCHOPEN_CB", iup_tree_branchopen_cb}
 iup_callbacks.branchclose    = {"BRANCHCLOSE_CB", iup_tree_branchclose_cb}
 iup_callbacks.executeleaf    = {"EXECUTELEAF_CB", iup_tree_executeleaf_cb}
@@ -58,6 +59,7 @@ iup_callbacks.dragdrop       = {"DRAGDROP_CB", iup_tree_dragdrop_cb}
 
 iup_callbacks.selection_cb      = iup_callbacks.selection      
 iup_callbacks.multiselection_cb = iup_callbacks.multiselection 
+iup_callbacks.multiunselection_cb = iup_callbacks.multiunselection 
 iup_callbacks.branchopen_cb     = iup_callbacks.branchopen     
 iup_callbacks.branchclose_cb    = iup_callbacks.branchclose    
 iup_callbacks.executeleaf_cb    = iup_callbacks.executeleaf    

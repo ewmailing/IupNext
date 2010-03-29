@@ -91,6 +91,29 @@ static int TREE_multiselection (Ihandle *handle, int *ids, int n)
   return iuplua_call();
 }
 
+static int TREE_multiunselection (Ihandle *handle, int *ids, int n)
+{
+  int i;
+  lua_Object tb;
+
+  iuplua_call_start(handle, "multiunselection");
+
+  tb = lua_createtable();
+  for (i = 0; i < n; i++) 
+  {
+    lua_beginblock();
+    lua_pushobject(tb);
+    lua_pushnumber(i+1);
+    lua_pushnumber(ids[i]);
+    lua_settable();
+    lua_endblock();   
+  }
+  lua_pushobject(tb);
+
+  lua_pushnumber (n);
+  return iuplua_call();
+}
+
 static int TREE_dragdrop(Ihandle* handle, int drag_id, int drop_id, int isshift, int iscontrol)
 {
   iuplua_call_start(handle, "dragdrop");
@@ -232,6 +255,7 @@ int treelua_open(void)
     lua_CFunction func;
   } TreeAssocList [] = {
     {"iup_tree_multiselection_cb", (lua_CFunction)TREE_multiselection},
+    {"iup_tree_multiunselection_cb", (lua_CFunction)TREE_multiunselection},
     {"iup_tree_selection_cb", (lua_CFunction)TREE_selection},
     {"iup_tree_branchopen_cb", (lua_CFunction)TREE_branchopen},
     {"iup_tree_branchclose_cb", (lua_CFunction)TREE_branchclose},

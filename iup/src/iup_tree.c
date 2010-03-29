@@ -200,6 +200,23 @@ void iupTreeUpdateImages(Ihandle *ih)
   iupClassObjectSetAttribute(ih, "IMAGEBRANCHEXPANDED", value, &inherit);
 }
 
+void iupTreeSelectLastCollapsedBranch(Ihandle* ih, int *last_id)
+{
+  /* if last selected item is a branch, then select its children */
+  if (iupStrEqual(IupTreeGetAttribute(ih, "KIND", *last_id), "BRANCH") && 
+      iupStrEqual(IupTreeGetAttribute(ih, "STATE", *last_id), "COLLAPSED"))
+  {
+    int childcount = IupTreeGetInt(ih, "CHILDCOUNT", *last_id);
+    if (childcount > 0)
+    {
+      int start = *last_id + 1;
+      int end = *last_id + childcount;
+      IupSetfAttribute(ih, "MARK", "%d-%d", start, end);
+      *last_id = *last_id + childcount;
+    }
+  }
+}
+
 int iupTreeForEach(Ihandle* ih, iupTreeNodeFunc func, void* userdata)
 {
   int i;
@@ -534,6 +551,7 @@ Iclass* iupTreeGetClass(void)
   /* Callbacks */
   iupClassRegisterCallback(ic, "SELECTION_CB",      "ii");
   iupClassRegisterCallback(ic, "MULTISELECTION_CB", "Ii");
+  iupClassRegisterCallback(ic, "MULTIUNSELECTION_CB", "Ii");
   iupClassRegisterCallback(ic, "BRANCHOPEN_CB",     "i");
   iupClassRegisterCallback(ic, "BRANCHCLOSE_CB",    "i");
   iupClassRegisterCallback(ic, "EXECUTELEAF_CB",    "i");

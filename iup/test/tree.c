@@ -210,6 +210,17 @@ static int multiselection_cb(Ihandle *ih, int* ids, int n)
   return IUP_DEFAULT;
 }
 
+static int multiunselection_cb(Ihandle *ih, int* ids, int n)
+{
+  int i;
+  (void)ih;
+  printf("MULTIUNSELECTION_CB(");
+  for (i = 0; i < n; i++)
+    printf("%d, ", ids[i]);
+  printf("n=%d)\n", n);
+  return IUP_DEFAULT;
+}
+
 static int executeleaf_cb(Ihandle* ih, int id)
 {
   printf("EXECUTELEAF_CB (%d)\n", id);
@@ -424,6 +435,7 @@ static void init_tree(void)
   IupSetCallback(tree, "SHOWRENAME_CB", (Icallback) showrename_cb);
   IupSetCallback(tree, "SELECTION_CB", (Icallback) selection_cb);
   IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
+  IupSetCallback(tree, "MULTIUNSELECTION_CB", (Icallback) multiunselection_cb);
   IupSetCallback(tree, "GETFOCUS_CB", (Icallback) getfocus_cb);
   IupSetCallback(tree, "KILLFOCUS_CB", (Icallback) killfocus_cb);
   //IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);

@@ -1674,29 +1674,56 @@ static void motTreeFindRange(Ihandle* ih, WidgetList wSelectedItemList, int coun
     if (!motTreeIsNodeSelected(ih->data->node_cache[i]))
       XtVaSetValues(ih->data->node_cache[i], XmNvisualEmphasis, XmSELECTED, NULL);
   }
+
+  /* if last selected item is a branch, then select its children */
+  iupTreeSelectLastCollapsedBranch(ih, id2);
+}
+
+static Iarray* motTreeGetSelectedArrayId(Ihandle* ih, WidgetList wSelectedItemList, int countItems)
+{
+  Iarray* selarray = iupArrayCreate(1, sizeof(int));
+  int i;
+
+  for(i = 0; i < countItems; i++)
+  {
+    int is_icon = XmIsIconGadget(wSelectedItemList[i]); /* this line generates a warning in some compilers */
+    if (is_icon)
+    {
+      int* id_hitem = (int*)iupArrayInc(selarray);
+      int j = iupArrayCount(selarray);
+      id_hitem[j-1] = iupTreeFindNodeId(ih, wSelectedItemList[i]);
+    }
+  }
+
+  return selarray;
 }
 
 static void motTreeCallMultiUnSelectionCb(Ihandle* ih)
 {
+  IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTIUNSELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
-  if (cbSelec)
+  if (cbSelec || cbMulti)
   {
     WidgetList wSelectedItemList = NULL;
-    int countItems, id1, id2, i;
+    int countItems = 0;
 
     XtVaGetValues(ih->handle, XmNselectedObjects, &wSelectedItemList,
                           XmNselectedObjectCount, &countItems, NULL);
-    if (countItems == 0)
-      return;
-
-    /* Must be a continuous range of selection ids */
-    motTreeFindRange(ih, wSelectedItemList, countItems, &id1, &id2);
-    countItems = id2-id1+1;
-
     if (countItems > 1)
     {
-      for (i=0; i<countItems; i++)
-        cbSelec(ih, id1+i, 0);
+      Iarray* markedArray = motTreeGetSelectedArrayId(ih, wSelectedItemList, countItems);
+      int* id_hitem = (int*)iupArrayGetData(markedArray);
+      int i, count = iupArrayCount(markedArray);
+
+      if (cbMulti)
+        cbMulti(ih, id_hitem, iupArrayCount(markedArray));
+      else
+      {
+        for (i=0; i<count; i++)
+          cbSelec(ih, id_hitem[i], 0);
+      }
+
+      iupArrayDestroy(markedArray);
     }
   }
 }

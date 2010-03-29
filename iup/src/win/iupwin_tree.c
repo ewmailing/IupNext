@@ -717,8 +717,9 @@ static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem)
 
 static void winTreeCallMultiUnSelectionCb(Ihandle* ih)
 {
+  IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTIUNSELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
-  if (cbSelec)
+  if (cbSelec || cbMulti)
   {
     Iarray* markedArray = winTreeGetSelectedArrayId(ih);
     int* id_hitem = (int*)iupArrayGetData(markedArray);
@@ -726,8 +727,13 @@ static void winTreeCallMultiUnSelectionCb(Ihandle* ih)
 
     if (count > 1)
     {
-      for (i=0; i<count; i++)
-        cbSelec(ih, id_hitem[i], 0);
+      if (cbMulti)
+        cbMulti(ih, id_hitem, iupArrayCount(markedArray));
+      else
+      {
+        for (i=0; i<count; i++)
+          cbSelec(ih, id_hitem[i], 0);
+      }
     }
 
     iupArrayDestroy(markedArray);
@@ -1931,7 +1937,11 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
     HTREEITEM hItemFirstSel = (HTREEITEM)iupAttribGet(ih, "_IUPTREE_FIRSTSELITEM");
     if (hItemFirstSel)
     {
+      int last_id = iupTreeFindNodeId(ih, hItem);
       winTreeSelectRange(ih, hItemFirstSel, hItem, 1);
+
+      /* if last selected item is a branch, then select its children */
+      iupTreeSelectLastCollapsedBranch(ih, &last_id);
 
       winTreeCallMultiSelectionCb(ih);
       winTreeSetFocusNode(ih, hItem);
@@ -2107,7 +2117,12 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     if (ih->data->show_dragdrop && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
       winTreeDrag(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
     else if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
-      winTreeExtendSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+    {
+      if (wp & MK_LBUTTON)
+        winTreeExtendSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+      else
+        iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", NULL);
+    }
 
     iupwinMouseMove(ih, msg, wp, lp);
     break;

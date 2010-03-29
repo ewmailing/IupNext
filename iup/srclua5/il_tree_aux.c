@@ -151,6 +151,21 @@ static int tree_multiselection_cb(Ihandle *ih, int* ids, int p1)
   return iuplua_call(L, 2);
 }
 
+static int tree_multiunselection_cb(Ihandle *ih, int* ids, int p1)
+{
+  int i;
+  lua_State *L = iuplua_call_start(ih, "multiunselection_cb");
+  lua_newtable(L);
+  for (i = 0; i < p1; i++)
+  {
+    lua_pushnumber(L,i+1);
+    lua_pushnumber(L,ids[i]);
+    lua_settable(L,-3);
+  }
+  lua_pushnumber(L, p1);
+  return iuplua_call(L, 2);
+}
+
 static int tree_noderemoved_cb(Ihandle *ih, void* p1)
 {
   lua_State *L = iuplua_call_start(ih, "noderemoved_cb");
@@ -163,6 +178,7 @@ void iuplua_treefuncs_open (lua_State *L)
   iuplua_dostring(L, "IUPTREEREFTABLE={}", "");
 
   iuplua_register_cb(L, "MULTISELECTION_CB", (lua_CFunction)tree_multiselection_cb, NULL);
+  iuplua_register_cb(L, "MULTIUNSELECTION_CB", (lua_CFunction)tree_multiunselection_cb, NULL);
   iuplua_register_cb(L, "NODEREMOVED_CB", (lua_CFunction)tree_noderemoved_cb, NULL);
 
 /* In Lua 5:

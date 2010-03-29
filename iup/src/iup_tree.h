@@ -47,6 +47,7 @@ int iupTreeFindNodeId(Ihandle* ih, InodeData* node);
 
 InodeData* iupdrvTreeGetFocusNode(Ihandle* ih);
 int iupdrvTreeTotalChildCount(Ihandle* ih, InodeData* node);
+void iupTreeSelectLastCollapsedBranch(Ihandle* ih, int *last_id);
 
 void iupTreeDelFromCache(Ihandle* ih, int id, int count);
 void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeData* prevNode, InodeData* node);
