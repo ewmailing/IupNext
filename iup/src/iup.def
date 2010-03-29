@@ -27,6 +27,8 @@ IupGetFunction
 IupGetGlobal
 IupGetHandle
 IupGetInt
+IupGetInt2
+IupGetIntInt
 IupGetLanguage
 IupGetName
 IupHbox

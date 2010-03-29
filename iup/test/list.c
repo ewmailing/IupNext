@@ -232,7 +232,7 @@ static void set_callbacks(Ihandle* list)
   IupSetCallback(list, "EDIT_CB", (Icallback)edit_cb);
   IupSetCallback(list, "CARET_CB", (Icallback)caret_cb);
 //  IupSetCallback(list, "BUTTON_CB",    (Icallback)button_cb);
-//  IupSetCallback(list, "MOTION_CB",    (Icallback)motion_cb);
+  IupSetCallback(list, "MOTION_CB",    (Icallback)motion_cb);
 
   //IupSetCallback(list, "GETFOCUS_CB", getfocus_cb);
   //IupSetCallback(list, "KILLFOCUS_CB", killfocus_cb);

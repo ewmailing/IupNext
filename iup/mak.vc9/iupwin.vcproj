@@ -248,6 +248,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\src\iup.def"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
