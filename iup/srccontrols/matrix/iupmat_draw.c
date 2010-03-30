@@ -189,9 +189,13 @@ static void iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1,
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || ih->data->cells[lin][col].flags & IUPMAT_FRAMEHCOLOR))
   {
+    char* color;
     unsigned char r,g,b;
     sprintf(str, "FRAMEHORIZCOLOR%d:%d", lin, col);
-    if (iupStrToRGB(iupAttribGet(ih, str), &r, &g, &b))
+    color = iupAttribGet(ih, str);
+    if (iupStrEqual(color, "BGCOLOR"))
+      return;
+    if (iupStrToRGB(color, &r, &g, &b))
       framecolor = cdEncodeColor(r, g, b);
   }
 
@@ -203,9 +207,13 @@ static void iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, i
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || ih->data->cells[lin][col].flags & IUPMAT_FRAMEVCOLOR))
   {
+    char* color;
     unsigned char r,g,b;
     sprintf(str, "FRAMEVERTCOLOR%d:%d", lin, col);
-    if (iupStrToRGB(iupAttribGet(ih, str), &r, &g, &b))
+    color = iupAttribGet(ih, str);
+    if (iupStrEqual(color, "BGCOLOR"))
+      return;
+    if (iupStrToRGB(color, &r, &g, &b))
       framecolor = cdEncodeColor(r, g, b);
   }
 
@@ -219,10 +227,12 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
   x2 -= IMAT_FRAME_W/2;
   y2 -= IMAT_FRAME_H/2;
 
-  iMatrixDrawFrameVertLineCell(ih, lin, col, x2, y1, y2, framecolor, str);  /* right vertical line */
+  /* right vertical line */
+  iMatrixDrawFrameVertLineCell(ih, lin, col, x2, y1, y2, framecolor, str);  
   if (col==0)
   {
-    iupMATRIX_LINE(ih, x1, y1, x1, y2);    /* left vertical line, reuse Foreground */
+    /* left vertical line, reuse Foreground */
+    iupMATRIX_LINE(ih, x1, y1, x1, y2);    
     x1++;
   }
   else if (col==1 && ih->data->columns.sizes[0] == 0)
@@ -232,13 +242,16 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
     x1++;
   }
 
-  cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);  /* Titles have a white line near the frame */
+  /* Titles have a white line near the frame, at left */
+  cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);  
   iupMATRIX_LINE(ih, x1, y1+1, x1, y2-1);
 
-  iMatrixDrawFrameHorizLineCell(ih, lin, col, x1, x2, y2, framecolor, str);  /* bottom horizontal line */
+  /* bottom horizontal line */
+  iMatrixDrawFrameHorizLineCell(ih, lin, col, x1, x2, y2, framecolor, str);  
   if (lin==0)
   {
-    iupMATRIX_LINE(ih, x1, y1, x2, y1);    /* top horizontal line, reuse Foreground */
+    /* top horizontal line, reuse Foreground */
+    iupMATRIX_LINE(ih, x1, y1, x2, y1);    
     y1++;
   }
   else if (lin==1 && ih->data->lines.sizes[0] == 0)
@@ -248,7 +261,8 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
     y1++;
   }
 
-  cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);  /* Titles have a white line near the frame */
+  /* Titles have a white line near the frame, at top */
+  cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);  
   iupMATRIX_LINE(ih, x1, y1, x2-1, y1);
 }
 
@@ -270,7 +284,7 @@ static void iMatrixDrawFrameRectCell(Ihandle* ih, int lin, int col, int x1, int 
   iMatrixDrawFrameHorizLineCell(ih, lin, col, x1, x2-1, y2-1, framecolor, str);
   
   /* rigth line */
-  iMatrixDrawFrameVertLineCell(ih, lin, col, x2-1, y1, y2-1, framecolor, str);
+  iMatrixDrawFrameVertLineCell(ih, lin, col, x2-1, y1, y2-2, framecolor, str);
 }
 
 static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int active, char* str)
