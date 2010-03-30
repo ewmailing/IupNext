@@ -66,8 +66,6 @@ version 3.x.<br>
 	<strong>IupSubmenu</strong>, <strong>IupSbox</strong>, <strong>IupFrame</strong>,
 	<strong>IupRadio</strong>, <strong>IupVal</strong> and <strong>IupDial</strong> 
 	in Lua.</li>
-	<li><span class="hist_fixed">Fixed:</span> NUMCOL_VISIBLE and NUMLIN_VISIBLE 
-	default value in <strong>IupMatrix</strong>. </li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupSbox</strong> handler 
 	feedback when MAXSIZE or MINSIZE is used.</li>
 	<li><span class="hist_fixed">Fixed:</span> color value in <strong>
@@ -82,11 +80,17 @@ version 3.x.<br>
 	IupTree</strong> on Motif.</li>
 	<li><span class="hist_fixed">Fixed:</span> scrollbar position in <strong>
 	IupCanvas</strong> on Windows after dragging the thumb when it is released.</li>
+	<li><span class="hist_fixed">Fixed:</span> NUMCOL_VISIBLE and NUMLIN_VISIBLE 
+	default value in <strong>IupMatrix</strong>. </li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupMatrix</strong> 
 	scrolling can now position cells in intermediate positions. When using the 
 	scrollbar button still scrolls in cell steps, when dragging the scrollbar 
 	can freely position the cells. This fixes the problem of the last column or 
 	line being incomplete visible.</li>
+	<li><span class="hist_fixed">Fixed:</span> vertical frame drawing of a cell 
+	when using FRAMEVERTCOLORL:C equals to the background color.&nbsp; 
+	FRAMEVERTCOLORL:C and FRAMEHORIZCOLORL:C can now use &quot;BGCOLOR&quot; as value to 
+	not draw the frame line.</li>
 	<li><span class="hist_fixed">Fixed:</span> added missing exports in the main 
 	DLL for <strong>IupGetInt2</strong> and <strong>IupGetIntInt</strong>.</li>
 

@@ -74,10 +74,10 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat,"MARK2:3","YES");
   IupSetAttribute(mat,"MARK3:3","YES");
 
-  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","255 255 255");
-  IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 255");
-  IupSetAttribute(mat,"FRAMEHORIZCOLOR1:4","255 255 255");
-  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:4","255 255 255");
+  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","BGCOLOR");
+  IupSetAttribute(mat,"FRAMEHORIZCOLOR1:2","0 0 255");
+  IupSetAttribute(mat,"FRAMEHORIZCOLOR1:3","0 255 0");
+  IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 0");
 
 //  IupSetAttribute(mat,"MARKMODE","LINCOL");
 
