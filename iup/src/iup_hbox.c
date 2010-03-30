@@ -213,6 +213,13 @@ static void iHboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
       else
       {
         int empty = (child->expand & IUP_EXPAND_W1)? empty_w1: ((child->expand & IUP_EXPAND_W0)? empty_w0: 0);
+        char* weigth_str = iupAttribGet(child, "EXPANDWEIGTH");
+        if (weigth_str)
+        {
+          float weigth; 
+          if (iupStrToFloat(weigth_str, &weigth))
+            empty = iupROUND(empty * weigth);
+        }
         iupBaseSetCurrentSize(child, child->naturalwidth+empty, client_height, shrink);
       }
 
