@@ -30,27 +30,33 @@ void iupdrvTreeUpdateMarkMode(Ihandle *ih);
 char* iupTreeGetSpacingAttrib(Ihandle* ih);
 
 #if defined(GTK_MAJOR_VERSION)
-typedef void InodeData;
+typedef void InodeHandle;
 #elif defined(XmVERSION)
-typedef struct _WidgetRec InodeData;
+typedef struct _WidgetRec InodeHandle;
 #elif defined(WINVER)
-typedef struct _TREEITEM InodeData;
+typedef struct _TREEITEM InodeHandle;
 #else
-typedef struct _InodeData InodeData;
+typedef struct _InodeData InodeHandle;
 #endif
 
-typedef int (*iupTreeNodeFunc)(Ihandle* ih, InodeData* node, int id, void* userdata);
-int iupTreeForEach(Ihandle* ih, iupTreeNodeFunc func, void* userdata);
-InodeData* iupTreeGetNode(Ihandle* ih, int id);
-InodeData* iupTreeGetNodeFromString(Ihandle* ih, const char* name_id);
-int iupTreeFindNodeId(Ihandle* ih, InodeData* node);
+typedef struct _InodeData
+{
+  InodeHandle* node_handle;
+  void* userdata;
+} InodeData;
 
-InodeData* iupdrvTreeGetFocusNode(Ihandle* ih);
-int iupdrvTreeTotalChildCount(Ihandle* ih, InodeData* node);
+typedef int (*iupTreeNodeFunc)(Ihandle* ih, InodeHandle* node_handle, int id, void* userdata);
+int iupTreeForEach(Ihandle* ih, iupTreeNodeFunc func, void* userdata);
+InodeHandle* iupTreeGetNode(Ihandle* ih, int id);
+InodeHandle* iupTreeGetNodeFromString(Ihandle* ih, const char* name_id);
+int iupTreeFindNodeId(Ihandle* ih, InodeHandle* node_handle);
+
+InodeHandle* iupdrvTreeGetFocusNode(Ihandle* ih);
+int iupdrvTreeTotalChildCount(Ihandle* ih, InodeHandle* node_handle);
 void iupTreeSelectLastCollapsedBranch(Ihandle* ih, int *last_id);
 
 void iupTreeDelFromCache(Ihandle* ih, int id, int count);
-void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeData* prevNode, InodeData* node);
+void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeHandle* prevNode, InodeHandle* node_handle);
 
 /* Structure of the tree */
 struct _IcontrolData
@@ -59,7 +65,7 @@ struct _IcontrolData
       add_expanded,
       show_dragdrop,
       show_rename,
-      stamp,    /* Used by GTK only */
+      stamp,    /* GTK only */
       spacing;
 
   void* def_image_leaf;       /* Default image leaf */
@@ -70,7 +76,7 @@ struct _IcontrolData
   void* def_image_collapsed_mask;  
   void* def_image_expanded_mask;  
 
-  InodeData* *node_cache;
+  InodeData *node_cache;
   int node_cache_max, node_count;
 };
 

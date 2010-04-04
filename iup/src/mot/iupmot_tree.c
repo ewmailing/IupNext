@@ -46,7 +46,6 @@ typedef struct _motTreeItemData
   Pixmap image, image_mask;
   Pixmap image_expanded, image_expanded_mask;
   unsigned char kind;
-  void* userdata;
 } motTreeItemData;
 
 
@@ -85,12 +84,11 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
                       XmNoutlineState, &state,
                                        NULL);
 
-  if (full_copy) /* during a full copy the userdata reference is not copied */
+  if (full_copy) /* during a full copy the itemdata reference is not copied */
   {
     /* create a new one */
     motTreeItemData* itemDataNew = malloc(sizeof(motTreeItemData));
     memcpy(itemDataNew, itemData, sizeof(motTreeItemData));
-    itemDataNew->userdata = NULL;
     itemData = itemDataNew;
   }
 
@@ -233,11 +231,11 @@ static Widget motTreeGetLastVisibleNode(Ihandle* ih)
 
   for (i = ih->data->node_count-1; i >= 0; i--)
   {
-    if (motTreeIsNodeVisible(ih->data->node_cache[i], &wLastItemParent))
-      return ih->data->node_cache[i];
+    if (motTreeIsNodeVisible(ih->data->node_cache[i].node_handle, &wLastItemParent))
+      return ih->data->node_cache[i].node_handle;
   }
 
-  return ih->data->node_cache[0];  /* root is always visible */
+  return ih->data->node_cache[0].node_handle;  /* root is always visible */
 }
 
 static Widget motTreeGetNextVisibleNode(Ihandle* ih, Widget wItem, int count)
@@ -250,11 +248,11 @@ static Widget motTreeGetNextVisibleNode(Ihandle* ih, Widget wItem, int count)
 
   for (i = id; i < ih->data->node_count; i++)
   {
-    if (motTreeIsNodeVisible(ih->data->node_cache[i], &wLastItemParent))
-      return ih->data->node_cache[i];
+    if (motTreeIsNodeVisible(ih->data->node_cache[i].node_handle, &wLastItemParent))
+      return ih->data->node_cache[i].node_handle;
   }
 
-  return ih->data->node_cache[0]; /* root is always visible */
+  return ih->data->node_cache[0].node_handle; /* root is always visible */
 }
 
 static Widget motTreeGetPreviousVisibleNode(Ihandle* ih, Widget wItem, int count)
@@ -267,8 +265,8 @@ static Widget motTreeGetPreviousVisibleNode(Ihandle* ih, Widget wItem, int count
 
   for (i = id; i >= 0; i--)
   {
-    if (motTreeIsNodeVisible(ih->data->node_cache[i], &wLastItemParent))
-      return ih->data->node_cache[i];
+    if (motTreeIsNodeVisible(ih->data->node_cache[i].node_handle, &wLastItemParent))
+      return ih->data->node_cache[i].node_handle;
   }
 
   return motTreeGetLastVisibleNode(ih);
@@ -300,21 +298,6 @@ int iupdrvTreeTotalChildCount(Ihandle* ih, Widget wItem)
   return count;
 }
 
-static int motTreeGetUserDataId(Ihandle* ih, void* userdata)
-{
-  int i;
-  for (i = 0; i < ih->data->node_count; i++)
-  {
-    motTreeItemData *itemData;
-
-    XtVaGetValues(ih->data->node_cache[i], XmNuserData, &itemData, NULL);
-
-    if (itemData->userdata == userdata)
-      return i;
-  }
-  return -1;
-}
-
 static void motTreeChildRebuildCacheRec(Ihandle* ih, Widget wItem, int *id)
 {
   WidgetList itemChildList = NULL;
@@ -326,7 +309,7 @@ static void motTreeChildRebuildCacheRec(Ihandle* ih, Widget wItem, int *id)
   for (i = 0; i < numChild; i++)
   {
     (*id)++;
-    ih->data->node_cache[*id] = itemChildList[i];
+    ih->data->node_cache[*id].node_handle = itemChildList[i];
 
     /* go recursive to children */
     motTreeChildRebuildCacheRec(ih, itemChildList[i], id);
@@ -338,7 +321,7 @@ static void motTreeChildRebuildCacheRec(Ihandle* ih, Widget wItem, int *id)
 static void motTreeRebuildCache(Ihandle* ih)
 {
   int i = 0;
-  motTreeChildRebuildCacheRec(ih, ih->data->node_cache[0], &i);
+  motTreeChildRebuildCacheRec(ih, ih->data->node_cache[0].node_handle, &i);
 }
 
 static void motTreeUpdateBgColor(Ihandle* ih, Pixel bgcolor)
@@ -346,7 +329,7 @@ static void motTreeUpdateBgColor(Ihandle* ih, Pixel bgcolor)
   int i;
   for (i = 0; i < ih->data->node_count; i++)
   {
-    XtVaSetValues(ih->data->node_cache[i], XmNbackground, bgcolor, NULL);
+    XtVaSetValues(ih->data->node_cache[i].node_handle, XmNbackground, bgcolor, NULL);
   }
 }
 
@@ -357,7 +340,7 @@ static void motTreeUpdateImages(Ihandle* ih, int mode)
   for (i = 0; i < ih->data->node_count; i++)
   {
     motTreeItemData *itemData;
-    Widget wItem = ih->data->node_cache[i];
+    Widget wItem = ih->data->node_cache[i].node_handle;
 
     XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
 
@@ -454,10 +437,10 @@ static void motTreeSelectRange(Ihandle* ih, Widget wItem1, Widget wItem2, int cl
     if (i < id1 || i > id2)
     {
       if (clear)
-        XtVaSetValues(ih->data->node_cache[i], XmNvisualEmphasis, XmNOT_SELECTED, NULL);
+        XtVaSetValues(ih->data->node_cache[i].node_handle, XmNvisualEmphasis, XmNOT_SELECTED, NULL);
     }
     else
-      XtVaSetValues(ih->data->node_cache[i], XmNvisualEmphasis, XmSELECTED, NULL);
+      XtVaSetValues(ih->data->node_cache[i].node_handle, XmNvisualEmphasis, XmSELECTED, NULL);
   }
 }
 
@@ -484,13 +467,13 @@ void motTreeExpandCollapseAllNodes(Ihandle* ih, WidgetList itemList, int numItem
   }
 }
 
-static void motTreeDestroyItemData(Ihandle* ih, Widget wItem, int del_data, IFns cb)
+static void motTreeDestroyItemData(Ihandle* ih, Widget wItem, int del_data, IFns cb, int id)
 {
   motTreeItemData *itemData = NULL;
   XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
   if (itemData)
   {
-    if (cb) cb(ih, (char*)itemData->userdata);
+    if (cb) cb(ih, (char*)ih->data->node_cache[id].userdata);
 
     if (del_data)
     {
@@ -500,10 +483,11 @@ static void motTreeDestroyItemData(Ihandle* ih, Widget wItem, int del_data, IFns
   }
 }
 
-static void motTreeRemoveNodeRec(Ihandle* ih, Widget wItem, int del_data, IFns cb)
+static void motTreeRemoveNodeRec(Ihandle* ih, Widget wItem, int del_data, IFns cb, int *id)
 {
   WidgetList itemChildList = NULL;
   int i, numChild;
+  int old_id = *id;
 
   /* Check whether we have child items */
   /* remove from children first */
@@ -511,15 +495,17 @@ static void motTreeRemoveNodeRec(Ihandle* ih, Widget wItem, int del_data, IFns c
   for (i = 0; i < numChild; i++)
   {
     /* go recursive to children */
-    motTreeRemoveNodeRec(ih, itemChildList[i], del_data, cb);
+    motTreeRemoveNodeRec(ih, itemChildList[i], del_data, cb, id);
   }
   if (itemChildList) XtFree((char*)itemChildList);
 
   /* actually do it for the node */
   ih->data->node_count--;
+  (*id)++;
 
   if (del_data || cb)
-    motTreeDestroyItemData(ih, wItem, del_data, cb);
+    motTreeDestroyItemData(ih, wItem, del_data, cb, old_id);
+
   XtDestroyWidget(wItem);  /* must manually destroy each node, this is NOT recursive */
 }
 
@@ -528,11 +514,12 @@ static void motTreeRemoveNode(Ihandle* ih, Widget wItem, int del_data, int call_
   IFns cb = call_cb? (IFns)IupGetCallback(ih, "NODEREMOVED_CB"): NULL;
   int old_count = ih->data->node_count;
   int id = iupTreeFindNodeId(ih, wItem);
+  int old_id = id;
 
-  motTreeRemoveNodeRec(ih, wItem, del_data, cb);
+  motTreeRemoveNodeRec(ih, wItem, del_data, cb, &id);
 
   if (call_cb)
-    iupTreeDelFromCache(ih, id, old_count-ih->data->node_count);
+    iupTreeDelFromCache(ih, old_id, old_count-ih->data->node_count);
 }
 
 static void motTreeSetFocusNode(Ihandle* ih, Widget wItem)
@@ -739,10 +726,18 @@ static void motTreeAddRootNode(Ihandle* ih)
   /* Add the new node */
   wRootItem = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
   ih->data->node_count = 1;
-  ih->data->node_cache[0] = wRootItem;
+  ih->data->node_cache[0].node_handle = wRootItem;
 
   /* Select the new item */
   XtVaSetValues(wRootItem, XmNvisualEmphasis, XmSELECTED, NULL);
+
+  if (ih->data->add_expanded)
+  {
+    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCHOPEN", "1");
+    XtVaSetValues(wRootItem, XmNoutlineState, XmEXPANDED, NULL);
+  }
+  else
+    XtVaSetValues(wRootItem, XmNoutlineState, XmCOLLAPSED, NULL);
 
   XtRealizeWidget(wRootItem);
 
@@ -1028,7 +1023,7 @@ static int motTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
   motTreeCopyNode(ih, wItemSrc, wItemDst, 0);  /* not a full copy, preserve user data */
 
   /* Deleting the node (and its children) from the old position */
-  /* do not delete the user data, we copy the references in CopyNode */
+  /* do not delete the itemdata, we copy the references in CopyNode */
   motTreeRemoveNode(ih, wItemSrc, 0, 0);
 
   /* restore count */
@@ -1351,50 +1346,6 @@ static char* motTreeGetTitleFontAttrib(Ihandle* ih, const char* name_id)
   return iupmotFindFontList(fontlist);
 }
 
-static char* motTreeGetFindUserDataAttrib(Ihandle* ih, const char* name_id)
-{
-  int id;
-  char* str = (char*)(name_id+1); /* skip ':' */
-  void* userdata = NULL;
-  if (sscanf(str, "%p", &userdata)!=1)
-    return NULL;
-  id = motTreeGetUserDataId(ih, userdata);
-  if (id == -1)
-    return NULL;
-  str = iupStrGetMemory(16);
-  sprintf(str, "%d", id);
-  return str;
-}
-
-static char* motTreeGetUserDataAttrib(Ihandle* ih, const char* name_id)
-{
-  motTreeItemData *itemData;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
-  if (!wItem)  
-    return NULL;
-
-  XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
-
-  return itemData->userdata;
-}
-
-static int motTreeSetUserDataAttrib(Ihandle* ih, const char* name_id, const char* value)
-{
-  motTreeItemData *itemData;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
-  if (!wItem)  
-  {
-    iupAttribSetStr(ih, "_IUPTREE_NODEFOUND", NULL);
-    return 0;
-  }
-
-  XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
-  itemData->userdata = (void*)value;
-  iupAttribSetStr(ih, "_IUPTREE_NODEFOUND", "1");  /* Used in IupTreeSetUserId */
-
-  return 0;
-}
-
 static int motTreeSetRenameAttrib(Ihandle* ih, const char* value)
 {  
   if (ih->data->show_rename)
@@ -1443,8 +1394,8 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
     int i;
     for(i = 1; i < ih->data->node_count; /* increment only if not removed */)
     {
-      if (motTreeIsNodeSelected(ih->data->node_cache[i]))
-        motTreeRemoveNode(ih, ih->data->node_cache[i], 1, 1);
+      if (motTreeIsNodeSelected(ih->data->node_cache[i].node_handle))
+        motTreeRemoveNode(ih, ih->data->node_cache[i].node_handle, 1, 1);
       else
         i++;
     }
@@ -1671,8 +1622,8 @@ static void motTreeFindRange(Ihandle* ih, WidgetList wSelectedItemList, int coun
      so make sure that they are selected. */
   for(i = *id1; i <= *id2; i++)
   {
-    if (!motTreeIsNodeSelected(ih->data->node_cache[i]))
-      XtVaSetValues(ih->data->node_cache[i], XmNvisualEmphasis, XmSELECTED, NULL);
+    if (!motTreeIsNodeSelected(ih->data->node_cache[i].node_handle))
+      XtVaSetValues(ih->data->node_cache[i].node_handle, XmNvisualEmphasis, XmSELECTED, NULL);
   }
 
   /* if last selected item is a branch, then select its children */
@@ -2272,7 +2223,7 @@ static void motTreeTransferProc(Widget drop_context, XtPointer client_data, Atom
       if (!is_ctrl)
       {
         /* Deleting the node (and its children) from the old position */
-        /* do not delete the user data, we copy the references in CopyNode */
+        /* do not delete the itemdata, we copy the references in CopyNode */
         motTreeRemoveNode(ih, wItemDrag, 0, 0);
 
         /* restore count */
@@ -2675,7 +2626,6 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "COLOR",  motTreeGetColorAttrib,  motTreeSetColorAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NAME",   motTreeGetTitleAttrib,   motTreeSetTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLE",   motTreeGetTitleAttrib,   motTreeSetTitleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "USERDATA",   motTreeGetUserDataAttrib,   motTreeSetUserDataAttrib, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "CHILDCOUNT",   motTreeGetChildCountAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLEFONT", motTreeGetTitleFontAttrib, motTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 
@@ -2692,5 +2642,4 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "RENAME",  NULL, motTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, motTreeSetMoveNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, motTreeSetCopyNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "FINDUSERDATA", motTreeGetFindUserDataAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 }

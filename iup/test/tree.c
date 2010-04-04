@@ -72,58 +72,48 @@ static Ihandle* load_image_TestImage(void)
 
 static int addleaf(void)
 {
-  char attr[50];
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
-  sprintf(attr, "ADDLEAF%d", id);
-  IupSetAttribute(tree, attr, "");
+  IupTreeSetAttribute(tree, "ADDLEAF", id, "");
   return IUP_DEFAULT;
 }
 
 static int insertleaf(void)
 {
-  char attr[50];
   Ihandle* tree = IupGetHandle("tree");
-//  int id = IupGetInt(tree, "VALUE");
-//  sprintf(attr, "INSERTLEAF%d", id);
-//  IupSetAttribute(tree, attr, "");
-  IupSetAttributeHandle(tree, "IMAGELEAF", load_image_LogoTecgraf());
+  int id = IupGetInt(tree, "VALUE");
+  IupTreeSetAttribute(tree, "INSERTLEAF", id, "");
   return IUP_DEFAULT;
 }
 
 static int addbranch(void)
 {
-  char attr[50];
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
-  sprintf(attr, "ADDBRANCH%d", id);
-  IupSetAttribute(tree, attr, "");
+  IupTreeSetAttribute(tree, "ADDBRANCH", id, "");
   return IUP_DEFAULT;
 }
 
 static int insertbranch(void)
 {
-  char attr[50];
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
-  sprintf(attr, "INSERTBRANCH%d", id);
-  IupSetAttribute(tree, attr, "");
+  IupTreeSetAttribute(tree, "INSERTBRANCH", id, "");
   return IUP_DEFAULT;
 }
 
 static int togglestate(void)
 {
-  char attr[50], *value;
+  char *value;
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
-  sprintf(attr, "STATE%d", id);
-  value = IupGetAttribute(tree, attr);
+  value = IupTreeGetAttribute(tree, "STATE", id);
   if (value)
   {
     if (strcmp(value, "EXPANDED")==0)
-      IupSetAttribute(tree, attr, "COLLAPSED");
+      IupTreeSetAttribute(tree, "STATE", id, "COLLAPSED");
     else
-      IupSetAttribute(tree, attr, "EXPANDED");
+      IupTreeSetAttribute(tree, "STATE", id, "EXPANDED");
   }
   return IUP_DEFAULT;
 }
@@ -456,7 +446,7 @@ static void init_tree(void)
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   //IupSetAttribute(tree, "AUTODRAGDROP",   "YES");  /* Gtk Only */
 
-  //IupSetAttribute(tree, "ADDEXPANDED",  "NO");
+  IupSetAttribute(tree, "ADDEXPANDED",  "NO");
 //  IupSetAttribute(tree, "HIDELINES",    "YES");
 //  IupSetAttribute(tree, "HIDEBUTTONS",    "YES");
 //  IupSetAttribute(tree, "INDENTATION",   "40");
@@ -525,7 +515,7 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
 #endif
 
-  IupSetAttribute(tree, "VALUE",        "6");
+  //IupSetAttribute(tree, "VALUE",        "6");
   IupSetAttribute(tree, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
   IupSetAttribute(tree, "COLOR8", "92 92 255");
   IupSetAttribute(tree, "TITLEFONT8", "Courier, 14");
