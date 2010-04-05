@@ -477,7 +477,17 @@ STDMETHODIMP tOleInPlaceSite::Scroll(SIZE sz)
 STDMETHODIMP tOleInPlaceSite::OnPosRectChange(LPCRECT prcPos)
     {
     if (NULL!=prcPos)
+        {
+        // This change was necessary because some controls were not working, and being positioned in a wrong place.
+        // Contribution by Kommit
+        LPRECT pPos = (LPRECT)prcPos; // convert the const pointer to non-const pointer to modify it's member values.
+        pPos->right -= pPos->left;
+        pPos->bottom -= pPos->top;
+        pPos->left = 0;
+        pPos->top = 0;
+
         m_pTen->m_rcPos=*prcPos;
+        }
 
     m_pTen->UpdateInPlaceObjectRects(prcPos, FALSE);
     return NOERROR;
