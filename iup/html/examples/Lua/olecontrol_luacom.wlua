@@ -5,7 +5,7 @@ require "iupluaole"
 require "luacom"
 
 local control = iup.olecontrol{"COMCTL.ListViewCtrl"} -- this control works, but lacks many function
---local control = iup.olecontrol{"MsComCtlLib.ListViewCtrl"} -- this control can not show
+--local control = iup.olecontrol{"MsComCtlLib.ListViewCtrl"}
 
 -- connect it to LuaCOM
 control:CreateLuaCOM()
