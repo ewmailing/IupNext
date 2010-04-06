@@ -1128,6 +1128,59 @@ static char* gtkTreeGetValueAttrib(Ihandle* ih)
   return "0"; /* default VALUE is root */
 }
 
+static char* gtkTreeGetMarkedNodesAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(ih->data->node_count+1);
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  GtkTreeIter iterItem;
+  int i;
+
+  for (i=0; i<ih->data->node_count; i++)
+  {
+    gtkTreeIterInit(ih, &iterItem, ih->data->node_cache[i].node_handle);
+    if (gtkTreeIsNodeSelected(model, &iterItem))
+      str[i] = '+';
+    else
+      str[i] = '-';
+  }
+
+  str[ih->data->node_count] = 0;
+  return str;
+}
+
+static int gtkTreeSetMarkedNodesAttrib(Ihandle* ih, const char* value)
+{
+  int count, i;
+  GtkTreeModel* model;
+  GtkTreeIter iterItem;
+  GtkTreeSelection* selection;
+
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE || !value)
+    return 0;
+
+  count = strlen(value);
+  if (count > ih->data->node_count)
+    count = ih->data->node_count;
+
+  selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+
+  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
+
+  for (i=0; i<count; i++)
+  {
+    gtkTreeIterInit(ih, &iterItem, ih->data->node_cache[i].node_handle);
+    if (value[i] == '+')
+      gtkTreeSelectNode(model, selection, &iterItem, 1);
+    else
+      gtkTreeSelectNode(model, selection, &iterItem, 0);
+  }
+
+  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
+
+  return 0;
+}
+
 static int gtkTreeSetMarkAttrib(Ihandle* ih, const char* value)
 {
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
@@ -2376,6 +2429,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute  (ic, "MARK",    NULL,    gtkTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "STARTING", NULL, gtkTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARKSTART", NULL, gtkTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "MARKEDNODES",    gtkTreeGetMarkedNodesAttrib,    gtkTreeSetMarkedNodesAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute  (ic, "VALUE",    gtkTreeGetValueAttrib,    gtkTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 

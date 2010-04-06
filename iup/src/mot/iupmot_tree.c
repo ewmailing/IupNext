@@ -1146,6 +1146,50 @@ static char* motTreeGetValueAttrib(Ihandle* ih)
   return str;
 }
 
+static char* motTreeGetMarkedNodesAttrib(Ihandle* ih)
+{
+  char* str;
+  int i;
+
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE)
+    return NULL;
+
+  str = iupStrGetMemory(ih->data->node_count+1);
+
+  for (i=0; i<ih->data->node_count; i++)
+  {
+    if (motTreeIsNodeSelected(ih->data->node_cache[i].node_handle))
+      str[i] = '+';
+    else
+      str[i] = '-';
+  }
+
+  str[ih->data->node_count] = 0;
+  return str;
+}
+
+static int motTreeSetMarkedNodesAttrib(Ihandle* ih, const char* value)
+{
+  int count, i;
+
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE || !value)
+    return 0;
+
+  count = strlen(value);
+  if (count > ih->data->node_count)
+    count = ih->data->node_count;
+
+  for (i=0; i<count; i++)
+  {
+    if (value[i] == '+')
+      XtVaSetValues(ih->data->node_cache[i].node_handle, XmNvisualEmphasis, XmSELECTED, NULL);
+    else
+      XtVaSetValues(ih->data->node_cache[i].node_handle, XmNvisualEmphasis, XmNOT_SELECTED, NULL);
+  }
+
+  return 0;
+}
+
 static int motTreeSetMarkAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->mark_mode==ITREE_MARK_SINGLE)
@@ -2646,6 +2690,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute  (ic, "MARK",    NULL,    motTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "STARTING", NULL, motTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARKSTART", NULL, motTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "MARKEDNODES",    motTreeGetMarkedNodesAttrib, motTreeSetMarkedNodesAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute  (ic, "VALUE",    motTreeGetValueAttrib,    motTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 

@@ -1588,6 +1588,45 @@ static char* winTreeGetValueAttrib(Ihandle* ih)
   return str;
 }
 
+static char* winTreeGetMarkedNodesAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(ih->data->node_count+1);
+  int i;
+
+  for (i=0; i<ih->data->node_count; i++)
+  {
+    if (winTreeIsNodeSelected(ih, ih->data->node_cache[i].node_handle))
+      str[i] = '+';
+    else
+      str[i] = '-';
+  }
+
+  str[ih->data->node_count] = 0;
+  return str;
+}
+
+static int winTreeSetMarkedNodesAttrib(Ihandle* ih, const char* value)
+{
+  int count, i;
+
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE || !value)
+    return 0;
+
+  count = strlen(value);
+  if (count > ih->data->node_count)
+    count = ih->data->node_count;
+
+  for (i=0; i<count; i++)
+  {
+    if (value[i] == '+')
+      winTreeSelectNode(ih, ih->data->node_cache[i].node_handle, 1);
+    else
+      winTreeSelectNode(ih, ih->data->node_cache[i].node_handle, 0);
+  }
+
+  return 0;
+}
+
 static int winTreeSetMarkAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->mark_mode==ITREE_MARK_SINGLE)
@@ -2496,6 +2535,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute  (ic, "MARK",    NULL,    winTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "STARTING", NULL, winTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARKSTART", NULL, winTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "MARKEDNODES",    winTreeGetMarkedNodesAttrib,    winTreeSetMarkedNodesAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute  (ic, "VALUE",    winTreeGetValueAttrib,    winTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
