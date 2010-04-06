@@ -304,20 +304,23 @@ static void iTreeAddToCache(Ihandle* ih, int id, InodeHandle* node_handle)
   if (id < 0 || id >= ih->data->node_count)
     return;
 
-  /* node_count already contains the final count */
+  /* node_count here already contains the final count */
+
   if (id == ih->data->node_count-1)
     ih->data->node_cache[id].node_handle = node_handle;
   else
   {
     /* open space for the new id */
-    int offset = ih->data->node_count-id;
-    memmove(ih->data->node_cache+id+1, ih->data->node_cache+id, offset*sizeof(InodeData));
+    int remain_count = ih->data->node_count-id;
+    memmove(ih->data->node_cache+id+1, ih->data->node_cache+id, remain_count*sizeof(InodeData));
     ih->data->node_cache[id].node_handle = node_handle;
   }
 }
 
 static void iTreeIncCacheMem(Ihandle* ih)
 {
+  /* node_count here already contains the final count */
+
   if (ih->data->node_count+10 > ih->data->node_cache_max)
   {
     int old_node_cache_max = ih->data->node_cache_max;
@@ -331,9 +334,10 @@ void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeHandle* prevNode
 {
   int new_id;
 
-  iTreeIncCacheMem(ih);
-
   ih->data->node_count++;
+
+  /* node_count here already contains the final count */
+  iTreeIncCacheMem(ih);
 
   if (add || kindPrev == ITREE_LEAF)
   {
@@ -356,21 +360,69 @@ void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeHandle* prevNode
 
 void iupTreeDelFromCache(Ihandle* ih, int id, int count)
 {
-  int offset;
+  int remain_count;
 
   /* id can be the last node, actually==node_count becase node_count is already updated */
   iupASSERT(id >= 0 && id <= ih->data->node_count);  
   if (id < 0 || id > ih->data->node_count)
     return;
 
-  /* node_count already contains the final count */
+  /* node_count here already contains the final count */
 
   /* remove id+count */
-  offset = ih->data->node_count-id;
-  memmove(ih->data->node_cache+id, ih->data->node_cache+id+count, offset*sizeof(InodeData));
+  remain_count = ih->data->node_count-id;
+  memmove(ih->data->node_cache+id, ih->data->node_cache+id+count, remain_count*sizeof(InodeData));
 
   /* clear the remaining space */
   memset(ih->data->node_cache+ih->data->node_count, 0, count*sizeof(InodeData));
+}
+
+void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is_copy)
+{
+  int remain_count;
+
+  iupASSERT(id_src >= 0 && id_src < ih->data->node_count);
+  if (id_src < 0 || id_src >= ih->data->node_count)
+    return;
+
+  iupASSERT(id_dst >= 0 && id_dst < ih->data->node_count);
+  if (id_dst < 0 || id_dst >= ih->data->node_count)
+    return;
+
+  iupASSERT(id_dst < id_src || id_dst > id_src+count);
+  if (id_dst >= id_src && id_dst <= id_src+count)
+    return;
+
+  /* id_dst here points to the final position for a copy operation */
+
+  /* node_count here contains the final count for a copy operation */
+  iTreeIncCacheMem(ih);
+
+  /* add space for new nodes */
+  remain_count = ih->data->node_count - (id_dst + count);
+  memmove(ih->data->node_cache+id_dst+count, ih->data->node_cache+id_dst, remain_count*sizeof(InodeData));
+
+  /* compensate because we add space for new nodes */
+  if (id_src > id_dst)
+    id_src += count;
+
+  if (is_copy) 
+  {
+    /* during a copy, the userdata is not reused, so clear it */
+    memset(ih->data->node_cache+id_dst, 0, count*sizeof(InodeData));
+  }
+  else /* move = copy + delete */
+  {
+    /* copy userdata from src to dst */
+    memcpy(ih->data->node_cache+id_dst, ih->data->node_cache+id_src, count*sizeof(InodeData));
+
+    /* remove the src */
+    remain_count = ih->data->node_count - (id_src + count);
+    memmove(ih->data->node_cache+id_src, ih->data->node_cache+id_src+count, remain_count*sizeof(InodeData));
+
+    /* clear the remaining space */
+    memset(ih->data->node_cache+ih->data->node_count-count, 0, count*sizeof(InodeData));
+  }
 }
 
 

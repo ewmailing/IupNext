@@ -31,6 +31,7 @@
 #include "iup_drvinfo.h"
 #include "iupgtk_drv.h"
 
+
 /* IMPORTANT: 
 
   GtkTreeStore uses the "user_data" field of the GtkTreeIter 
@@ -61,11 +62,13 @@ enum
   IUPGTK_TREE_LAST_DATA /* used as a count */
 };
 
+static void gtkTreeRebuildNodeCache(Ihandle* ih, int id, GtkTreeIter iterItem);
+
 /*****************************************************************************/
 /* COPYING ITEMS (Branches and its children)                                 */
 /*****************************************************************************/
 /* Insert the copied item in a new location. Returns the new item. */
-static void gtkTreeCopyItem(Ihandle* ih, GtkTreeModel* model, GtkTreeIter* iterItem, GtkTreeIter* iterParent, int position, GtkTreeIter *iterNewItem, int full_copy)
+static void gtkTreeCopyItem(Ihandle* ih, GtkTreeModel* model, GtkTreeIter* iterItem, GtkTreeIter* iterParent, int position, GtkTreeIter *iterNewItem)
 {
   GtkTreeStore* store = GTK_TREE_STORE(model);
   int kind;
@@ -94,9 +97,6 @@ static void gtkTreeCopyItem(Ihandle* ih, GtkTreeModel* model, GtkTreeIter* iterI
   else                                                                  /* copy as next brother of item or collapsed branch */
     gtk_tree_store_insert_after(store, iterNewItem, NULL, iterParent);  /* iterParent is sibling of the new item */
 
-//  if (full_copy) /* during a full copy the userdata reference is not copied */
-//    userdata = NULL;
-
   gtk_tree_store_set(store, iterNewItem,  IUPGTK_TREE_IMAGE,      image,
                                           IUPGTK_TREE_HAS_IMAGE,  has_image,
                                           IUPGTK_TREE_IMAGE_EXPANDED,  image_expanded,
@@ -109,17 +109,17 @@ static void gtkTreeCopyItem(Ihandle* ih, GtkTreeModel* model, GtkTreeIter* iterI
                                           -1);
 }
 
-static void gtkTreeCopyChildren(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *iterItemSrc, GtkTreeIter *iterItemDst, int full_copy)
+static void gtkTreeCopyChildren(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *iterItemSrc, GtkTreeIter *iterItemDst)
 {
   GtkTreeIter iterChildSrc;
   int hasItem = gtk_tree_model_iter_children(model, &iterChildSrc, iterItemSrc);  /* get the firstchild */
   while(hasItem)
   {
     GtkTreeIter iterNewItem;
-    gtkTreeCopyItem(ih, model, &iterChildSrc, iterItemDst, 2, &iterNewItem, full_copy);  /* append always */
+    gtkTreeCopyItem(ih, model, &iterChildSrc, iterItemDst, 2, &iterNewItem);  /* append always */
 
     /* Recursively transfer all the items */
-    gtkTreeCopyChildren(ih, model, &iterChildSrc, &iterNewItem, full_copy);  
+    gtkTreeCopyChildren(ih, model, &iterChildSrc, &iterNewItem);  
 
     /* Go to next sibling item */
     hasItem = gtk_tree_model_iter_next(model, &iterChildSrc);
@@ -127,9 +127,17 @@ static void gtkTreeCopyChildren(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *i
 }
 
 /* Copies all items in a branch to a new location. Returns the new branch node. */
-static void gtkTreeCopyNode(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *iterItemSrc, GtkTreeIter *iterItemDst, GtkTreeIter* iterNewItem, int full_copy)
+static void gtkTreeCopyMoveNode(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *iterItemSrc, GtkTreeIter *iterItemDst, GtkTreeIter* iterNewItem, int is_copy)
 {
   int kind, position = 0; /* insert after iterItemDst */
+  int id_new, count, id_src, id_dst;
+
+  int old_count = ih->data->node_count;
+
+  id_src = iupTreeFindNodeId(ih, iterItemSrc);
+  id_dst = iupTreeFindNodeId(ih, iterItemDst);
+  id_new = id_dst+1; /* contains the position for a copy operation */
+
   gtk_tree_model_get(model, iterItemDst, IUPGTK_TREE_KIND, &kind, -1);
 
   if (kind == ITREE_BRANCH)
@@ -137,12 +145,44 @@ static void gtkTreeCopyNode(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *iterI
     GtkTreePath* path = gtk_tree_model_get_path(model, iterItemDst);
     if (gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path))
       position = 1;  /* insert as first child of iterItemDst */
+    else
+    {
+      int child_count = iupdrvTreeTotalChildCount(ih, iterItemDst);
+      id_new += child_count;
+    }
     gtk_tree_path_free(path);
   }
 
-  gtkTreeCopyItem(ih, model, iterItemSrc, iterItemDst, position, iterNewItem, full_copy);  
+  /* move to the same place does nothing */
+  if (!is_copy && id_new == id_src)
+  {
+    iterNewItem->stamp = 0;
+    return;
+  }
 
-  gtkTreeCopyChildren(ih, model, iterItemSrc, iterNewItem, full_copy);
+  gtkTreeCopyItem(ih, model, iterItemSrc, iterItemDst, position, iterNewItem);  
+
+  gtkTreeCopyChildren(ih, model, iterItemSrc, iterNewItem);
+
+  count = ih->data->node_count - old_count;
+  iupTreeCopyMoveCache(ih, id_src, id_new, count, is_copy);
+
+  if (!is_copy)
+  {
+    /* Deleting the node of its old position */
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
+    gtk_tree_store_remove(GTK_TREE_STORE(model), iterItemSrc);
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
+
+    /* restore count, because we remove src */
+    ih->data->node_count = old_count;
+
+    /* compensate position for a move */
+    if (id_new > id_src)
+      id_new -= count;
+  }
+
+  gtkTreeRebuildNodeCache(ih, id_new, *iterNewItem);
 }
 
 /*****************************************************************************/
@@ -572,12 +612,10 @@ static void gtkTreeChildRebuildCacheRec(Ihandle* ih, GtkTreeModel *model, GtkTre
   }
 }
 
-static void gtkTreeRebuildCache(Ihandle* ih)
+static void gtkTreeRebuildNodeCache(Ihandle* ih, int id, GtkTreeIter iterItem)
 {
-  int id = 0;
-  GtkTreeIter iterItem;
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-  gtkTreeIterInit(ih, &iterItem, ih->data->node_cache[0].node_handle);
+  ih->data->node_cache[id].node_handle = iterItem.user_data;
   gtkTreeChildRebuildCacheRec(ih, model, &iterItem, &id);
 }
 
@@ -827,7 +865,6 @@ static int gtkTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
   GtkTreeModel* model;
   GtkTreeIter iterItemSrc, iterItemDst, iterNewItem;
   GtkTreeIter iterParent, iterNextParent;
-  int old_count;
 
   if (!ih->handle)  /* do not do the action before map */
     return 0;
@@ -848,20 +885,8 @@ static int gtkTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
     iterParent = iterNextParent;
   }
 
-  /* Copying the node and its children to the new position */
-  old_count = ih->data->node_count;
-  gtkTreeCopyNode(ih, model, &iterItemSrc, &iterItemDst, &iterNewItem, 0);  /* not a full copy, preserve user data */
-
-  /* Deleting the node of its old position */
-  // do not delete the user data, we copy the references in CopyNode
-  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
-  gtk_tree_store_remove(GTK_TREE_STORE(model), &iterItemSrc);
-  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
-
-  /* restore count */
-  ih->data->node_count = old_count;
-
-  gtkTreeRebuildCache(ih);
+  /* Move the node and its children to the new position */
+  gtkTreeCopyMoveNode(ih, model, &iterItemSrc, &iterItemDst, &iterNewItem, 0);
 
   return 0;
 }
@@ -891,10 +916,8 @@ static int gtkTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char
     iterParent = iterNextParent;
   }
 
-  /* Copying the node and its children to the new position */
-  gtkTreeCopyNode(ih, model, &iterItemSrc, &iterItemDst, &iterNewItem, 1);
-
-  gtkTreeRebuildCache(ih);
+  /* Copy the node and its children to the new position */
+  gtkTreeCopyMoveNode(ih, model, &iterItemSrc, &iterItemDst, &iterNewItem, 1);
 
   return 0;
 }
@@ -1710,27 +1733,13 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
 
     if (gtkTreeCallDragDropCb(ih, &iterDrag, &iterDrop, &is_ctrl) == IUP_CONTINUE)
     {
-      int old_count = ih->data->node_count;
       GtkTreeIter iterNewItem;
 
-      /* Copy the dragged item to the new position. */
-      gtkTreeCopyNode(ih, model, &iterDrag, &iterDrop, &iterNewItem, is_ctrl);
-
-      if (!is_ctrl)
-      {
-        /* Deleting the node (and its children) from the old position */
-        // do not delete the user data, we copy the references in CopyNode
-        iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
-        gtk_tree_store_remove(GTK_TREE_STORE(model), &iterDrag);
-        iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
-
-        /* restore count */
-        ih->data->node_count = old_count;
-      }
-
-      gtkTreeRebuildCache(ih);
+      /* Copy or move the dragged item to the new position. */
+      gtkTreeCopyMoveNode(ih, model, &iterDrag, &iterDrop, &iterNewItem, is_ctrl);
 
       /* set focus and selection */
+      if (iterNewItem.stamp)
       {
         GtkTreePath *pathNew;
         GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
@@ -2168,29 +2177,14 @@ static void gtkTreeEnableDragDrop(Ihandle* ih)
     { "GTK_TREE_MODEL_ROW", GTK_TARGET_SAME_WIDGET, 0 }
   };
 
-  if (iupAttribGetBoolean(ih, "AUTODRAGDROP"))
-  {
-    gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW(ih->handle),
-              GDK_BUTTON1_MASK,
-              row_targets,
-              G_N_ELEMENTS(row_targets),
-              GDK_ACTION_MOVE|GDK_ACTION_COPY);
-    gtk_tree_view_enable_model_drag_dest (GTK_TREE_VIEW(ih->handle),
-            row_targets,
-            G_N_ELEMENTS(row_targets),
-            GDK_ACTION_MOVE|GDK_ACTION_COPY);
-  }
-  else
-  {
-    gtk_drag_source_set(ih->handle, GDK_BUTTON1_MASK, row_targets, G_N_ELEMENTS(row_targets), GDK_ACTION_MOVE|GDK_ACTION_COPY);
-    gtk_drag_dest_set(ih->handle, GDK_BUTTON1_MASK, row_targets, G_N_ELEMENTS(row_targets), GDK_ACTION_MOVE|GDK_ACTION_COPY);
+  gtk_drag_source_set(ih->handle, GDK_BUTTON1_MASK, row_targets, G_N_ELEMENTS(row_targets), GDK_ACTION_MOVE|GDK_ACTION_COPY);
+  gtk_drag_dest_set(ih->handle, GDK_BUTTON1_MASK, row_targets, G_N_ELEMENTS(row_targets), GDK_ACTION_MOVE|GDK_ACTION_COPY);
 
-    g_signal_connect(G_OBJECT(ih->handle),  "drag-begin", G_CALLBACK(gtkTreeDragBegin), ih);
-    g_signal_connect(G_OBJECT(ih->handle), "drag-motion", G_CALLBACK(gtkTreeDragMotion), ih);
-    g_signal_connect(G_OBJECT(ih->handle), "drag-leave", G_CALLBACK(gtkTreeDragLeave), NULL);
-    g_signal_connect(G_OBJECT(ih->handle),   "drag-drop", G_CALLBACK(gtkTreeDragDrop), ih);
-    g_signal_connect(G_OBJECT(ih->handle), "drag-data-received", G_CALLBACK(gtkTreeDragDataReceived), ih);
-  }
+  g_signal_connect(G_OBJECT(ih->handle),  "drag-begin", G_CALLBACK(gtkTreeDragBegin), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "drag-motion", G_CALLBACK(gtkTreeDragMotion), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "drag-leave", G_CALLBACK(gtkTreeDragLeave), NULL);
+  g_signal_connect(G_OBJECT(ih->handle),   "drag-drop", G_CALLBACK(gtkTreeDragDrop), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "drag-data-received", G_CALLBACK(gtkTreeDragDataReceived), ih);
 }
 
 /*****************************************************************************/
@@ -2390,6 +2384,4 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "RENAME",  NULL, gtkTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, gtkTreeSetMoveNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, gtkTreeSetCopyNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-
-  iupClassRegisterAttribute  (ic, "AUTODRAGDROP",    NULL,    NULL,    NULL, NULL, IUPAF_DEFAULT);
 }

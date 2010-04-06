@@ -57,6 +57,7 @@ void iupTreeSelectLastCollapsedBranch(Ihandle* ih, int *last_id);
 
 void iupTreeDelFromCache(Ihandle* ih, int id, int count);
 void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeHandle* prevNode, InodeHandle* node_handle);
+void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is_copy);
 
 /* Structure of the tree */
 struct _IcontrolData

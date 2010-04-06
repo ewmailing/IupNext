@@ -36,6 +36,8 @@
 void iupdrvToggleAddCheckBox(int *x, int *y)
 {
   (*x) += 16+8;
+  if (!iupwin_comctl32ver6)
+    (*x) += 4;
   if ((*y) < 16) (*y) = 16; /* minimum height */
 }
 

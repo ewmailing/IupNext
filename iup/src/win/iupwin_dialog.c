@@ -954,7 +954,7 @@ static int winDialogSetBgColorAttrib(Ihandle* ih, const char* value)
   {
     iupAttribStoreStr(ih, "_IUPWIN_BACKGROUND_COLOR", value);
     iupAttribSetStr(ih, "_IUPWIN_BACKGROUND_BITMAP", NULL);
-    RedrawWindow(ih->handle, NULL, NULL, RDW_INVALIDATE|RDW_ERASE|RDW_ERASENOW|RDW_ALLCHILDREN); /* force a WM_ERASEBKGND now */
+    RedrawWindow(ih->handle, NULL, NULL, RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN); /* post WM_ERASEBKGND and WM_PAINT */
     return 1;
   }
   return 0;
@@ -971,7 +971,7 @@ static int winDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     {
       iupAttribSetStr(ih, "_IUPWIN_BACKGROUND_COLOR", NULL);
       iupAttribSetStr(ih, "_IUPWIN_BACKGROUND_BITMAP", (char*)hBitmap);
-      RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE|RDW_ERASENOW); /* force a WM_ERASEBKGND now */
+      RedrawWindow(ih->handle, NULL, NULL, RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN); /* post WM_ERASEBKGND and WM_PAINT */
       return 1;
     }
   }

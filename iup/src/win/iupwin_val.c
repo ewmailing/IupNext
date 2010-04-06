@@ -117,18 +117,6 @@ static int winValSetValueAttrib(Ihandle* ih, const char* value)
 /*********************************************************************************************/
 
 
-static int winValCtlColor(Ihandle* ih, HDC hdc, LRESULT *result)
-{
-  COLORREF cr;
-  if (iupwinGetParentBgColor(ih, &cr))
-  {
-    SetDCBrushColor(hdc, cr);
-    *result = (LRESULT)GetStockObject(DC_BRUSH);
-    return 1;
-  }
-  return 0;
-}
-
 static int winValCustomScroll(Ihandle* ih, int msg)
 {
   double old_val = ih->data->val;
@@ -195,6 +183,19 @@ static void winValIncPageValue(Ihandle *ih, int dir)
   SendMessage(ih->handle, TBM_SETPOS, TRUE, ival);
 
   winValCustomScroll(ih, 0);
+}
+
+static int winValCtlColor(Ihandle* ih, HDC hdc, LRESULT *result)
+{
+  COLORREF cr;
+  if (iupwinGetParentBgColor(ih, &cr))
+  {
+    SetBkColor(hdc, cr);
+    SetDCBrushColor(hdc, cr);
+    *result = (LRESULT)GetStockObject(DC_BRUSH);
+    return 1;
+  }
+  return 0;
 }
 
 static int winValProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)

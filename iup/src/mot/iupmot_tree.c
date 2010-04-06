@@ -50,15 +50,16 @@ typedef struct _motTreeItemData
 
 
 static void motTreeShowEditField(Ihandle* ih, Widget wItem);
+static void motTreeRemoveNode(Ihandle* ih, Widget wItem, int del_data, int call_cb);
 
 
 /*****************************************************************************/
 /* COPYING ITEMS (Branches and its children)                                 */
 /*****************************************************************************/
 /* Insert the copied item in a new location. Returns the new item. */
-static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos, int full_copy)
+static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos, int is_copy)
 {
-  Widget wNewItem;
+  Widget wItemNew;
   XmString title;
   motTreeItemData *itemData;
   Pixel fgcolor, bgcolor;
@@ -84,7 +85,7 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
                       XmNoutlineState, &state,
                                        NULL);
 
-  if (full_copy) /* during a full copy the itemdata reference is not copied */
+  if (is_copy) /* during a copy the itemdata reference is not reused */
   {
     /* create a new one */
     motTreeItemData* itemDataNew = malloc(sizeof(motTreeItemData));
@@ -106,25 +107,51 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
   iupMOT_SETARG(args, num_args,   XmNbackground, bgcolor);
 
   /* Add the new node */
-  wNewItem = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
+  wItemNew = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
   ih->data->node_count++;
 
-  XtRealizeWidget(wNewItem);
+  XtRealizeWidget(wItemNew);
 
-  return wNewItem;
+  return wItemNew;
 }
 
-static void motTreeCopyChildren(Ihandle* ih, Widget wItemSrc, Widget wItemDst, int full_copy)
+static void motTreeChildRebuildCacheRec(Ihandle* ih, Widget wItem, int *id)
+{
+  WidgetList itemChildList = NULL;
+  int i, numChild;
+
+  /* Check whether we have child items */
+  numChild = XmContainerGetItemChildren(ih->handle, wItem, &itemChildList);
+
+  for (i = 0; i < numChild; i++)
+  {
+    (*id)++;
+    ih->data->node_cache[*id].node_handle = itemChildList[i];
+
+    /* go recursive to children */
+    motTreeChildRebuildCacheRec(ih, itemChildList[i], id);
+  }
+
+  if (itemChildList) XtFree((char*)itemChildList);
+}
+
+static void motTreeRebuildNodeCache(Ihandle* ih, int id, Widget wItem)
+{
+  ih->data->node_cache[id].node_handle = wItem;
+  motTreeChildRebuildCacheRec(ih, wItem, &id);
+}
+
+static void motTreeCopyChildren(Ihandle* ih, Widget wItemSrc, Widget wItemDst, int is_copy)
 {
   WidgetList wItemChildList = NULL;
   int i = 0;
   int numChild = XmContainerGetItemChildren(ih->handle, wItemSrc, &wItemChildList);
   while(i != numChild)
   {
-    Widget wNewItem = motTreeCopyItem(ih, wItemChildList[i], wItemDst, i, full_copy);  /* Use the same order they where enumerated */
+    Widget wItemNew = motTreeCopyItem(ih, wItemChildList[i], wItemDst, i, is_copy);  /* Use the same order they where enumerated */
 
     /* Recursively transfer all the items */
-    motTreeCopyChildren(ih, wItemChildList[i], wNewItem, full_copy);  
+    motTreeCopyChildren(ih, wItemChildList[i], wItemNew, is_copy);  
 
     /* Go to next sibling item */
     i++;
@@ -134,12 +161,18 @@ static void motTreeCopyChildren(Ihandle* ih, Widget wItemSrc, Widget wItemDst, i
 }
 
 /* Copies all items in a branch to a new location. Returns the new branch node. */
-static Widget motTreeCopyNode(Ihandle* ih, Widget wItemSrc, Widget wItemDst, int full_copy)
+static Widget motTreeCopyMoveNode(Ihandle* ih, Widget wItemSrc, Widget wItemDst, int is_copy)
 {
-  Widget wNewItem, wParent;
+  Widget wItemNew, wParent;
   motTreeItemData *itemDataDst;
   unsigned char stateDst;
-  int pos;
+  int pos, id_new, count, id_src, id_dst;
+
+  int old_count = ih->data->node_count;
+
+  id_src = iupTreeFindNodeId(ih, wItemSrc);
+  id_dst = iupTreeFindNodeId(ih, wItemDst);
+  id_new = id_dst+1; /* contains the position for a copy operation */
 
   XtVaGetValues(wItemDst, XmNoutlineState, &stateDst, 
                           XmNuserData, &itemDataDst, 
@@ -153,17 +186,46 @@ static Widget motTreeCopyNode(Ihandle* ih, Widget wItemSrc, Widget wItemDst, int
   }
   else
   {
+    if (itemDataDst->kind == ITREE_BRANCH)
+    {
+      int child_count = iupdrvTreeTotalChildCount(ih, wItemDst);
+      id_new += child_count;
+    }
+
     /* copy as next brother of item or collapsed branch */
     XtVaGetValues(wItemDst, XmNentryParent, &wParent, NULL);
     XtVaGetValues(wItemDst, XmNpositionIndex, &pos, NULL);
     pos++;
   }
 
-  wNewItem = motTreeCopyItem(ih, wItemSrc, wParent, pos, full_copy);
+  /* move to the same place does nothing */
+  if (!is_copy && id_new == id_src)
+    return NULL;
 
-  motTreeCopyChildren(ih, wItemSrc, wNewItem, full_copy);
+  wItemNew = motTreeCopyItem(ih, wItemSrc, wParent, pos, is_copy);
 
-  return wNewItem;
+  motTreeCopyChildren(ih, wItemSrc, wItemNew, is_copy);
+
+  count = ih->data->node_count - old_count;
+  iupTreeCopyMoveCache(ih, id_src, id_new, count, is_copy);
+
+  if (!is_copy)
+  {
+    /* Deleting the node (and its children) from the old position */
+    /* do not delete the itemdata, we reuse the references in CopyNode */
+    motTreeRemoveNode(ih, wItemSrc, 0, 0);
+
+    /* restore count, because we remove src */
+    ih->data->node_count = old_count;
+
+    /* compensate position for a move */
+    if (id_new > id_src)
+      id_new -= count;
+  }
+
+  motTreeRebuildNodeCache(ih, id_new, wItemNew);
+
+  return wItemNew;
 }
 
 static void motTreeContainerDeselectAll(Ihandle *ih)
@@ -296,32 +358,6 @@ int iupdrvTreeTotalChildCount(Ihandle* ih, Widget wItem)
   int count = 0;
   motTreeChildCountRec(ih, wItem, &count);
   return count;
-}
-
-static void motTreeChildRebuildCacheRec(Ihandle* ih, Widget wItem, int *id)
-{
-  WidgetList itemChildList = NULL;
-  int i, numChild;
-
-  /* Check whether we have child items */
-  numChild = XmContainerGetItemChildren(ih->handle, wItem, &itemChildList);
-
-  for (i = 0; i < numChild; i++)
-  {
-    (*id)++;
-    ih->data->node_cache[*id].node_handle = itemChildList[i];
-
-    /* go recursive to children */
-    motTreeChildRebuildCacheRec(ih, itemChildList[i], id);
-  }
-
-  if (itemChildList) XtFree((char*)itemChildList);
-}
-
-static void motTreeRebuildCache(Ihandle* ih)
-{
-  int i = 0;
-  motTreeChildRebuildCacheRec(ih, ih->data->node_cache[0].node_handle, &i);
 }
 
 static void motTreeUpdateBgColor(Ihandle* ih, Pixel bgcolor)
@@ -592,7 +628,7 @@ static void motTreeFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean 
 void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* title, int add)
 {
   Widget wItemPrev = iupTreeGetNodeFromString(ih, name_id);
-  Widget wNewItem;
+  Widget wItemNew;
   XmString itemTitle;
   motTreeItemData *itemData, *itemDataPrev;
   Pixel bgcolor, fgcolor;
@@ -672,21 +708,21 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
   }
 
   /* Add the new node */
-  wNewItem = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
-  iupTreeAddToCache(ih, add, kindPrev, wItemPrev, wNewItem);
+  wItemNew = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
+  iupTreeAddToCache(ih, add, kindPrev, wItemPrev, wItemNew);
 
   if (kind == ITREE_BRANCH)
   {
     if (ih->data->add_expanded)
     {
       iupAttribSetStr(ih, "_IUP_IGNORE_BRANCHOPEN", "1");
-      XtVaSetValues(wNewItem, XmNoutlineState, XmEXPANDED, NULL);
+      XtVaSetValues(wItemNew, XmNoutlineState, XmEXPANDED, NULL);
     }
     else
-      XtVaSetValues(wNewItem, XmNoutlineState, XmCOLLAPSED, NULL);
+      XtVaSetValues(wItemNew, XmNoutlineState, XmCOLLAPSED, NULL);
   }
 
-  XtRealizeWidget(wNewItem);
+  XtRealizeWidget(wItemNew);
   XmStringFree(itemTitle);
 }
 
@@ -998,7 +1034,6 @@ static char* motTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
 static int motTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
 {
   Widget wItemDst, wParent, wItemSrc;
-  int old_count;
 
   if (!ih->handle)  /* do not do the action before map */
     return 0;
@@ -1018,18 +1053,8 @@ static int motTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
       return 0;
   }
 
-  /* Copying the node and its children to the new position */
-  old_count = ih->data->node_count;
-  motTreeCopyNode(ih, wItemSrc, wItemDst, 0);  /* not a full copy, preserve user data */
-
-  /* Deleting the node (and its children) from the old position */
-  /* do not delete the itemdata, we copy the references in CopyNode */
-  motTreeRemoveNode(ih, wItemSrc, 0, 0);
-
-  /* restore count */
-  ih->data->node_count = old_count;
-
-  motTreeRebuildCache(ih);
+  /* Move the node and its children to the new position */
+  motTreeCopyMoveNode(ih, wItemSrc, wItemDst, 0);
 
   return 0;
 }
@@ -1056,10 +1081,8 @@ static int motTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char
       return 0;
   }
 
-  /* Copying the node and its children to the new position */
-  motTreeCopyNode(ih, wItemSrc, wItemDst, 1);
-
-  motTreeRebuildCache(ih);
+  /* Copy the node and its children to the new position */
+  motTreeCopyMoveNode(ih, wItemSrc, wItemDst, 1);
 
   return 0;
 }
@@ -2215,29 +2238,18 @@ static void motTreeTransferProc(Widget drop_context, XtPointer client_data, Atom
 
     if (motTreeCallDragDropCb(ih, wItemDrag, wItemDrop, &is_ctrl) == IUP_CONTINUE)
     {
-      int old_count = ih->data->node_count;
+      /* Copy or move the dragged item to the new position. */
+      Widget wItemNew = motTreeCopyMoveNode(ih, wItemDrag, wItemDrop, is_ctrl);
 
-      /* Copy the dragged item to the new position. */
-      Widget wNewItem = motTreeCopyNode(ih, wItemDrag, wItemDrop, is_ctrl);
-
-      if (!is_ctrl)
+      /* Set focus and selection */
+      if (wItemNew)
       {
-        /* Deleting the node (and its children) from the old position */
-        /* do not delete the itemdata, we copy the references in CopyNode */
-        motTreeRemoveNode(ih, wItemDrag, 0, 0);
+        XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
+        XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
+        XtVaSetValues(wItemNew, XmNvisualEmphasis, XmSELECTED, NULL);
 
-        /* restore count */
-        ih->data->node_count = old_count;
+        motTreeSetFocusNode(ih, wItemNew);
       }
-
-      motTreeRebuildCache(ih);
-
-      /* Select the dragged item */
-      XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
-      XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
-      XtVaSetValues(wNewItem, XmNvisualEmphasis, XmSELECTED, NULL);
-
-      motTreeSetFocusNode(ih, wNewItem);
     }
   }
 
