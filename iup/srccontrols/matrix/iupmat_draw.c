@@ -410,7 +410,7 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
   if (text && *text)
   {
     int num_line, line_height, total_height;
-    int charheight, ypos;
+    int charheight, ypos, hidden_text_marks = 0;
 
     num_line = iupStrLineCount(text);
     iupdrvFontGetCharSize(ih, NULL, &charheight);
@@ -418,12 +418,18 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
     line_height  = charheight;
     total_height = (line_height + IMAT_PADDING_H/2) * num_line - IMAT_PADDING_H/2 - IMAT_FRAME_H/2;
 
-    if (lin==0)
+    if (lin==0 || ih->data->hidden_text_marks)
     {
       int text_w;
       iupdrvFontGetMultiLineStringSize(ih, text, &text_w, NULL);
       if (text_w > x2 - x1 + 1 - IMAT_PADDING_W - IMAT_FRAME_W)
-        alignment = IMAT_T_LEFT;
+      {
+        if (lin == 0)
+          alignment = IMAT_T_LEFT;
+
+        if (ih->data->hidden_text_marks)
+          hidden_text_marks = 1;
+      }
     }
 
     /* Set the color used to draw the text */
@@ -433,7 +439,13 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
       iMatrixDrawSetFgColor(ih, lin, col, marked);
 
     /* Set the clip area to the cell region informed, the text maybe greatter than the cell */
-    iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
+    if (hidden_text_marks)
+    {
+      int crop = iupdrvFontGetStringWidth(ih, "...") + 2;
+      iMatrixDrawSetCellClipping(ih, x1, x2-crop, y1, y2);
+    }
+    else
+      iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
 
     cdCanvasNativeFont(ih->data->cddbuffer, iupMatrixGetFont(ih, lin, col));
 
@@ -495,6 +507,14 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
     }
 
     iMatrixDrawResetCellClipping(ih);
+
+    if (hidden_text_marks)
+    {
+      cdCanvasTextAlignment(ih->data->cddbuffer, CD_EAST);
+      ypos = (int)((y1 + y2) / 2.0 - 0.5);
+      iupMATRIX_TEXT(ih, x2+IMAT_PADDING_W/2, ypos, "...");
+    }
+
   }
 }
 
@@ -833,7 +853,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 
       if (dropcheck_cb && dropcheck_cb(ih, lin, col) == IUP_DEFAULT)
       {
-        drop = IMAT_COMBOBOX_W;
+        drop = IMAT_COMBOBOX_W+IMAT_PADDING_W/2;
         iMatrixDrawComboFeedback(ih, x2, y1, y2, active, framecolor);
       }
         

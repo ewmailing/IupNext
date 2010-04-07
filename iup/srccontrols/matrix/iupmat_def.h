@@ -85,7 +85,7 @@ struct _IcontrolData
 
   /* attributes */
   int mark_continuous, mark_mode, mark_multiple;
-  int checkframecolor;
+  int checkframecolor, hidden_text_marks;
 
   /* Mouse and Keyboard AUX */
   int leftpressed;  /* left mouse button is pressed */

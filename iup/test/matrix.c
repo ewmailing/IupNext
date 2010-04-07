@@ -39,10 +39,10 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "0:2", "February 2000"); 
   IupSetAttribute(mat, "1:1", "5.6\n3.33");
   IupSetAttribute(mat, "2:1", "2.2");
-  IupSetAttribute(mat, "3:1", "7.2");
+  IupSetAttribute(mat, "3:2", "Very Very Very Very Very Large Text");
   IupSetAttribute(mat, "1:2", "4.5");
   IupSetAttribute(mat, "2:2", "8.1");
-  IupSetAttribute(mat, "3:2", "3.4");
+  IupSetAttribute(mat, "3:1", "3.4");
   IupSetAttribute(mat, "3:3", "Font Test");
 //  IupSetAttribute(mat, "WIDTH2", "90");
 //  IupSetAttribute(mat, "HEIGHT2", "30");
@@ -50,6 +50,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
 //  IupSetAttribute(mat,"MULTILINE", "YES");
   IupSetAttribute(mat,"RESIZEMATRIX", "YES");
+  IupSetAttribute(mat,"HIDDENTEXTMARKS", "YES");
 //  IupSetAttribute(mat,"USETITLESIZE", "YES");
   //IupSetAttribute(mat,"SCROLLBAR", "NO");
   //IupSetAttribute(mat, "BGCOLOR1:2", "255 92 255");
@@ -94,7 +95,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "8");
 
   IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
-  IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);
+//  IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);
 
   return mat;
 }

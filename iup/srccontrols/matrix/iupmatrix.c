@@ -176,6 +176,23 @@ static char* iMatrixGetUseTitleSizeAttrib(Ihandle* ih)
     return "NO";
 }
 
+static int iMatrixSetHiddenTextMarksAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->hidden_text_marks = 1;
+  else 
+    ih->data->hidden_text_marks = 0;
+  return 0;
+}
+
+static char* iMatrixGetHiddenTextMarksAttrib(Ihandle* ih)
+{
+  if (ih->data->hidden_text_marks)
+    return "YES";
+  else
+    return "NO";
+}
+
 static int iMatrixSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (IupGetInt(ih->data->datah, "VISIBLE"))
@@ -925,6 +942,8 @@ Iclass* iupMatrixGetClass(void)
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIDDENTEXTMARKS", iMatrixGetHiddenTextMarksAttrib, iMatrixSetHiddenTextMarksAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "READONLY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESIZEMATRIX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
