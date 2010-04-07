@@ -36,7 +36,7 @@ iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: strin
 	<p>title</b>: dialog title.<br>
 	<b>action:</b> user callback to be called whenever a parameter value was changed, 
     and when the user pressed the OK button. It can be NULL.<br>
-	<b>user_data</b>: user pointer repassed to the user callback.<br>
+	<b>user_data</b>: user pointer passed to the user callback.<br>
 	<b>format</b>: string describing the parameter<br>
     ...: list of variables address with initial values for the parameters. </p>
 	<p><span class="style1">Returns:</span> a <strong>status</strong> code 1 if the OK button is pressed, 0 if the user canceled or if an error occurred.</p>
@@ -96,7 +96,7 @@ if (value2 == 0)
 <strong>IupGetFloat</strong> and <strong>IupGetInt</strong> 
     can also be used. It usually contains the new value of the control while the 
 VALUE attribute of the control still has the old value.</p>
-<p>In Lua, to retreive a parameter you must use the following function:</p>
+<p>In Lua, to retrieve a parameter you must use the following function:</p>
 <pre>iup.GetParamParam(<strong>dialog: </strong>ihandle, <b>param_index</b><strong>: </strong>number)-&gt; (<b>param</b>: ihandle) [in Lua]</pre>
 <p><strong>dialog</strong>:
     Identifier of the 
@@ -142,7 +142,8 @@ to open a color selection dialog box)</p>
 <p style="margin-left: 40px">
 <strong>[min,max,step]</strong>
         are optional limits for <u>integer</u> and
-        <u>real</u> types. The maximum and step values can be omited. When 
+        <u>real</u> types. The <strong>max</strong> and <strong>step</strong> values can be 
+omitted. When 
 <strong>min</strong> and <strong>max</strong> are specified a valuator will also be added to 
         change the value. To specify <strong>step</strong>, <strong>max</strong> 
 must be also specified. <strong>step</strong> is the size of the increment.<br>
@@ -172,8 +173,8 @@ set to capture 3 or 4 unsigned integers from 0 to 255 (R G B) or (R G B A)
 (alpha is optional).</p>
 <p>The number of lines in the format string (&quot;\n&quot;s) will determine the number of required parameters. But separators 
   will not count as parameters.</p>
-<p>A integer parameter always has a spin attached to the text to incremente and 
-decrement the value. A real parameter only has a spin in a full intervall is 
+<p>A integer parameter always has a spin attached to the text to increment and 
+decrement the value. A real parameter only has a spin in a full interval is 
 defined (min and max), in this case the default step is (max-min)/20. When the 
 callback is called because a spin was activated then the attribute SPINNING of 
 the dialog will be defined to a non NULL and non zero value.</p>
