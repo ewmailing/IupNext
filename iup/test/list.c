@@ -232,7 +232,7 @@ static void set_callbacks(Ihandle* list)
   IupSetCallback(list, "EDIT_CB", (Icallback)edit_cb);
   IupSetCallback(list, "CARET_CB", (Icallback)caret_cb);
 //  IupSetCallback(list, "BUTTON_CB",    (Icallback)button_cb);
-  IupSetCallback(list, "MOTION_CB",    (Icallback)motion_cb);
+//  IupSetCallback(list, "MOTION_CB",    (Icallback)motion_cb);
 
   //IupSetCallback(list, "GETFOCUS_CB", getfocus_cb);
   //IupSetCallback(list, "KILLFOCUS_CB", killfocus_cb);
@@ -282,7 +282,7 @@ void ListTest(void)
   //IupSetAttributes(list2, "11=\"R$ 1000\", 12=\"R$ 2000\", 13=\"R$ 123456789\", 14=\"R$ 4000\", 15=\"R$ 5000\",");
   //IupSetAttributes(list2, "16=\"R$ 1000\", 17=\"R$ 2000\", 18=\"R$ 123456789\", 19=\"R$ 4000\", 20=\"R$ 5000\",");
   
-//  IupSetCallback(list4, "MULTISELECT_CB", (Icallback)multilist_cb);
+  IupSetCallback(list4, "MULTISELECT_CB", (Icallback)multilist_cb);
 
 //  IupSetAttribute(list1, "READONLY", "YES");
 //  IupSetAttribute(list3, "READONLY", "YES");

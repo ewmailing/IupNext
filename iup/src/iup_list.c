@@ -108,7 +108,7 @@ void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, in
   char* old_str = iupAttribGet(ih, "_IUPLIST_OLDVALUE");
   int old_count = old_str? strlen(old_str): 0;
 
-  char* str = iupStrGetMemory(count+1);
+  char* str = malloc(count+1);
   memset(str, '-', count);
   str[count]=0;
   for (i=0; i<sel_count; i++)
@@ -123,6 +123,11 @@ void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, in
   if (multi_cb)
   {
     int unchanged = 1;
+
+    if (old_str)
+      printf("OLD_VALUE=%s\n", old_str);
+    printf("VALUE=%s\n", str);
+
     for (i=0; i<count && old_str; i++)
     {
       if (str[i] == old_str[i])
@@ -132,7 +137,10 @@ void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, in
     }
 
     if (old_str && unchanged)
+    {
+      free(str);
       return;
+    }
 
     if (multi_cb(ih, str) == IUP_CLOSE)
       IupExitLoop();
@@ -164,6 +172,7 @@ void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, in
   }
 
   iupAttribStoreStr(ih, "_IUPLIST_OLDVALUE", str);
+  free(str);
 }
 
 int iupListGetPos(Ihandle* ih, const char* name_id)
