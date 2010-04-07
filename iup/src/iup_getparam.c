@@ -620,6 +620,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         }
         IupSetfAttribute(ctrl, "SPINMAX", "%d", max);
         IupSetfAttribute(ctrl, "SPINMIN", "%d", min);
+        IupSetfAttribute(ctrl, "MASKINT", "%d:%d", min, max);
       }
       else if (iupAttribGetInt(param, "PARTIAL"))
       {

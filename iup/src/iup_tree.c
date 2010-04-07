@@ -315,6 +315,8 @@ static void iTreeAddToCache(Ihandle* ih, int id, InodeHandle* node_handle)
     memmove(ih->data->node_cache+id+1, ih->data->node_cache+id, remain_count*sizeof(InodeData));
     ih->data->node_cache[id].node_handle = node_handle;
   }
+
+  ih->data->node_cache[id].userdata = NULL;
 }
 
 static void iTreeIncCacheMem(Ihandle* ih)
