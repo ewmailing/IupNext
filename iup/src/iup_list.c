@@ -124,10 +124,6 @@ void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, in
   {
     int unchanged = 1;
 
-    if (old_str)
-      printf("OLD_VALUE=%s\n", old_str);
-    printf("VALUE=%s\n", str);
-
     for (i=0; i<count && old_str; i++)
     {
       if (str[i] == old_str[i])
