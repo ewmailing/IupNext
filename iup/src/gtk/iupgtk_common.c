@@ -202,7 +202,11 @@ void iupdrvSetVisible(Ihandle* ih, int visible)
 
 int iupdrvIsVisible(Ihandle* ih)
 {
+#if GTK_CHECK_VERSION(2, 18, 0)
+  if (gtk_widget_get_visible(ih->handle))
+#else
   if (GTK_WIDGET_VISIBLE(ih->handle))
+#endif
   {
     /* if marked as visible, since we use gtk_widget_hide and NOT gtk_widget_hide_all
        must check its parents. */
@@ -211,7 +215,11 @@ int iupdrvIsVisible(Ihandle* ih)
     {
       if (parent->iclass->nativetype != IUP_TYPEVOID)
       {
+#if GTK_CHECK_VERSION(2, 18, 0)
+        if (!gtk_widget_get_visible(parent->handle))
+#else
         if (!GTK_WIDGET_VISIBLE(parent->handle))
+#endif
           return 0;
       }
 
@@ -225,7 +233,11 @@ int iupdrvIsVisible(Ihandle* ih)
 
 int iupdrvIsActive(Ihandle *ih)
 {
-  return (GTK_WIDGET_IS_SENSITIVE(ih->handle));
+#if GTK_CHECK_VERSION(2, 18, 0)
+  return gtk_widget_is_sensitive(ih->handle);
+#else
+  return GTK_WIDGET_IS_SENSITIVE(ih->handle);
+#endif
 }
 
 void iupdrvSetActive(Ihandle* ih, int enable)
@@ -571,19 +583,23 @@ void iupdrvDrawFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h)
 {
   GdkWindow* window = ih->handle->window;
   GtkStyle *style = gtk_widget_get_style(ih->handle);
+#if GTK_CHECK_VERSION(2, 18, 0)
+  GtkStateType state = gtk_widget_get_state(ih->handle);
+#else
+  GtkStateType state = GTK_WIDGET_STATE(ih->handle);
+#endif
+  gtk_paint_focus(style, window, state, NULL, ih->handle, NULL, x, y, w, h);
   (void)_gc;
-
-  gtk_paint_focus(style, window, GTK_WIDGET_STATE(ih->handle), NULL, ih->handle, NULL, x, y, w, h);
 }
 
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
 #ifndef GTK_MAC
-  #ifdef WIN32                                 
-    iupClassRegisterAttribute(ic, "HFONT", iupgtkGetFontIdAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
-  #else
-    iupClassRegisterAttribute(ic, "XFONTID", iupgtkGetFontIdAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
-  #endif
+#ifdef WIN32                                 
+  iupClassRegisterAttribute(ic, "HFONT", iupgtkGetFontIdAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+#else
+  iupClassRegisterAttribute(ic, "XFONTID", iupgtkGetFontIdAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+#endif
 #endif
   iupClassRegisterAttribute(ic, "PANGOFONTDESC", iupgtkGetPangoFontDescAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 }
