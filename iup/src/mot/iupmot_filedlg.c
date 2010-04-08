@@ -17,6 +17,7 @@
 #include <Xm/DrawingA.h>
 #include <Xm/PushB.h>
 #include <Xm/Frame.h>
+#include <Xm/List.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -28,6 +29,7 @@
 #include "iup_dialog.h"
 #include "iup_strmessage.h"
 #include "iup_drvinfo.h"
+#include "iup_array.h"
 
 #include "iupmot_drv.h"
 
@@ -87,14 +89,14 @@ static int motFileDlgCheckValue(Ihandle* ih, Widget w)
       return 0;
     }
   }
-  else
+  else if (!iupAttribGetBoolean(ih, "MULTIPLEFILES"))
   {
     if (iupdrvIsDirectory(value))  /* selected a directory */
     {
       iupStrMessageShowError(ih, "IUP_INVALIDDIR");
       return 0;
     }
-    else if (!iupdrvIsFile(value))      /* new file */
+    else if (!iupdrvIsFile(value))      /* not a file == new file */
     {
       value = iupAttribGet(ih, "ALLOWNEW");
       if (!value)
@@ -132,6 +134,51 @@ static void motFileDlgCBclose(Widget w, XtPointer client_data, XtPointer call_da
   iupAttribSetStr(ih, "_IUP_WM_DELETE", "1");
 }
 
+static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList)
+{
+  int *pos, sel_count, dir_len;
+  int i, len, cur_len;
+  char *filename, *all_names;
+  Iarray* names_array;
+  XmString* items;
+
+  if (!XmListGetSelectedPos(wList, &pos, &sel_count))
+    return 0;
+
+  names_array = iupArrayCreate(1024, 1);  /* just set an initial size, but count is 0 */
+  XtVaGetValues(wList, XmNitems, &items, NULL);
+
+  cur_len = strlen(dir);
+
+  all_names = iupArrayAdd(names_array, cur_len+1);
+  memcpy(all_names, dir, cur_len);
+  all_names[cur_len] = '|';
+  dir_len = cur_len;
+  cur_len++; /* skip separator */
+
+  for (i = 0; i<sel_count; i++)
+  {
+    filename = iupmotConvertString(items[pos[i]-1]);  /* XmListGetSelectedPos starts at 1 */
+    len = strlen(filename)-dir_len;
+
+    cur_len = iupArrayCount(names_array);
+    all_names = iupArrayAdd(names_array, len+1);
+    memcpy(all_names+cur_len, filename+dir_len, len);
+    all_names[cur_len+len] = '|';
+  }
+
+  XtFree((char*)pos);
+
+  cur_len = iupArrayCount(names_array);
+  all_names = iupArrayInc(names_array);
+  all_names[cur_len+1] = 0;
+
+  iupAttribStoreStr(ih, "VALUE", all_names);
+
+  iupArrayDestroy(names_array);
+  return 1;
+}
+
 static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallbackStruct* call_data)
 {
   (void)w;
@@ -150,6 +197,25 @@ static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallback
     {
       iupAttribSetStr(ih, "STATUS", "0");
       iupAttribSetStr(ih, "FILEEXIST", NULL);
+    }
+    else if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
+    {
+      Widget wList = XmFileSelectionBoxGetChild(w, XmDIALOG_LIST);
+
+      /* VALUE obtained above contains exactly the DIRECTORY */
+      char* dir = iupAttribGet(ih, "VALUE");
+      int len = strlen(dir);
+      if (dir[len-1]=='/') dir[len-1] = 0;  /* remove last '/' */
+      iupAttribStoreStr(ih, "DIRECTORY", dir);
+
+      if (!motFileDlgGetMultipleFiles(ih, iupAttribGet(ih, "DIRECTORY"), wList))
+      {
+        iupStrMessageShowError(ih, "IUP_FILENOTEXIST");
+        return;
+      }
+
+      iupAttribSetStr(ih, "STATUS", "0");
+      iupAttribSetStr(ih, "FILEEXIST", "YES");
     }
     else
     {
@@ -193,9 +259,8 @@ static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallback
   }
 }
 
-static void motFileDlgHelpCallback(Widget w, XtPointer client_data, XtPointer call_data)
+static void motFileDlgHelpCallback(Widget w, Ihandle *ih, XtPointer call_data)
 {
-  Ihandle *ih = (Ihandle*)client_data;
   Icallback cb = IupGetCallback(ih, "HELP_CB");
   if (cb && cb(ih) == IUP_CLOSE)
   {
@@ -423,6 +488,13 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
   if (dialogtype == IUP_DIALOGDIR)
     XtVaSetValues(filebox, XmNfileTypeMask, XmFILE_DIRECTORY, NULL);
 
+  if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
+  {
+    Widget wList = XmFileSelectionBoxGetChild(filebox, XmDIALOG_LIST);
+    XtVaSetValues(wList, XmNselectionPolicy, XmEXTENDED_SELECT, NULL);
+    XtAddCallback(wList, XmNextendedSelectionCallback, (XtCallbackProc)motFileDlgBrowseSelectionCallback, (XtPointer)ih);
+  }
+
   /* just check for the path inside FILE */
   value = iupAttribGet(ih, "FILE");
   if (value && value[0] == '/')
@@ -583,4 +655,6 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
 void iupdrvFileDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = motFileDlgPopup;
+
+  iupClassRegisterAttribute(ic, "MULTIPLEFILES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

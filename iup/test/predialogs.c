@@ -245,12 +245,12 @@ static void new_file(char* dialogtype, int preview)
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"/tecgraf/iup\"");   // OK
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"\\tecgraf\\iup\"");  // OK
 //  IupSetAttribute(dlg, "NOCHANGEDIR", "NO");
-//  IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
+  IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
+  IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
 
   if (preview)
   {
     IupSetAttribute(dlg, "SHOWPREVIEW", "YES");
-    IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
 
 #ifdef USE_OPENGL
     if (preview==2)

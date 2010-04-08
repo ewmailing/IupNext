@@ -63,7 +63,7 @@ static INT CALLBACK winFileDlgBrowseCallback(HWND hWnd, UINT uMsg, LPARAM lParam
   }
   else if (uMsg == BFFM_SELCHANGED)
   {
-    char* buffer = iupStrGetMemory(MAX_FILENAME_SIZE);
+    char buffer[MAX_FILENAME_SIZE];
     ITEMIDLIST* selecteditem = (ITEMIDLIST*)lParam;
     buffer[0] = 0;
     SHGetPathFromIDList(selecteditem, buffer);
@@ -112,6 +112,37 @@ static void winFileDlgGetFolder(Ihandle *ih)
 
 /************************************************************************************************/
 
+static int winFileDlgGetSelectedFile(Ihandle* ih, HWND hWnd, char* filename)
+{
+  int ret = CommDlg_OpenSave_GetFilePath(GetParent(hWnd), filename, MAX_FILENAME_SIZE);
+  if (ret < 0)
+    return 0;
+
+  if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
+  {
+    /* check if there are more than 1 files and return only the first one */
+    int found = 0;
+    while(*filename != 0)
+    {            
+      if (*filename == '"')
+      {
+        if (!found)
+          found = 1;
+        else
+        {
+          *(filename-1) = 0;
+          return 1;
+        }
+      }
+      if (found)
+        *filename = *(filename+1);
+      filename++;
+    }
+  }
+
+  return 1;
+}
+
 static UINT_PTR CALLBACK winFileDlgSimpleHook(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
   (void)wParam;
@@ -152,8 +183,8 @@ static UINT_PTR CALLBACK winFileDlgSimpleHook(HWND hWnd, UINT uiMsg, WPARAM wPar
           IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
           if (cb)
           {
-            char* filename = iupStrGetMemory(MAX_FILENAME_SIZE);
-            if (CommDlg_OpenSave_GetFilePath(GetParent(hWnd), filename, MAX_FILENAME_SIZE) <= MAX_FILENAME_SIZE)
+            char filename[MAX_FILENAME_SIZE];
+            if (winFileDlgGetSelectedFile(ih, hWnd, filename))
             {
               int ret;
               char* file_msg;
@@ -266,9 +297,9 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
         LPDRAWITEMSTRUCT lpDrawItem = (LPDRAWITEMSTRUCT)lParam;
         Ihandle* ih = (Ihandle*)GetWindowLongPtr(hWnd, DWLP_USER);
         IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-        char* filename = iupStrGetMemory(MAX_FILENAME_SIZE);
+        char filename[MAX_FILENAME_SIZE];
         iupAttribSetStr(ih, "PREVIEWDC", (char*)lpDrawItem->hDC);
-        if (CommDlg_OpenSave_GetFilePath(GetParent(hWnd), filename, MAX_FILENAME_SIZE) <= MAX_FILENAME_SIZE)
+        if (winFileDlgGetSelectedFile(ih, hWnd, filename))
         {
           if (iupdrvIsFile(filename))
             cb(ih, filename, "PAINT");
@@ -323,8 +354,8 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
       case CDN_SELCHANGE:
         {
           HWND hWndPreview = GetDlgItem(hWnd, IUP_PREVIEWCANVAS);
-          char* filename = iupStrGetMemory(MAX_FILENAME_SIZE);
-          if (CommDlg_OpenSave_GetFilePath(GetParent(hWnd), filename, MAX_FILENAME_SIZE) <= MAX_FILENAME_SIZE)
+          char filename[MAX_FILENAME_SIZE];
+          if (winFileDlgGetSelectedFile(ih, hWnd, filename))
           {
             int ret;
             char* file_msg;
@@ -522,10 +553,9 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
       char* dir = iupStrFileGetPath(openfilename.lpstrFile);  /* the first part is the directory already */
       iupAttribStoreStr(ih, "DIRECTORY", dir);
       free(dir);
-      
+    
       /* If there is more than one file, replace terminator by the separator */
-      if (openfilename.lpstrFile && 
-          openfilename.lpstrFile[openfilename.nFileOffset-1] == 0 && 
+      if (openfilename.lpstrFile[openfilename.nFileOffset-1] == 0 && 
           openfilename.nFileOffset>0) 
       {
         while (openfilename.lpstrFile[i] != 0 || openfilename.lpstrFile[i+1] != 0)
@@ -538,7 +568,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
       }
 
       iupAttribSetStr(ih, "STATUS", "0");
-      iupAttribSetStr(ih, "FILEEXIST", NULL);
+      iupAttribSetStr(ih, "FILEEXIST", "YES");
     }
     else
     {
