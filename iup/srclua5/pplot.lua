@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "pplot",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "",
   funcname = "PPlot",
   callback = {
@@ -24,8 +24,8 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-   return PPlot(param.action)
+   return iup.PPlot(param.action)
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

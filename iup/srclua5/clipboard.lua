@@ -3,15 +3,15 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick     = "clipboard",
-  parent   = WIDGET,
+  parent   = iup.WIDGET,
   creation = "",
   callback = {
   },
 } 
 
 function ctrl.createElement(class, param)
-  return Clipboard()
+  return iup.Clipboard()
 end
    
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

@@ -57,9 +57,8 @@ int iupolelua_open(lua_State* L)
   if (iuplua_opencall_internal(L))
     IupOleControlOpen();
     
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
   iupolecontrollua_open(L);
-  iuplua_returnEnv(L);
   return 0;
 }
 

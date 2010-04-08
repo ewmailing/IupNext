@@ -70,9 +70,8 @@ int iupgllua_open(lua_State * L)
   if (iuplua_opencall_internal(L))
     IupGLCanvasOpen();
 
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
   iupglcanvaslua_open(L);
-  iuplua_returnEnv(L);
   return 0;
 }
 

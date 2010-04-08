@@ -3,70 +3,70 @@
 ----------------------------------------------------------------------------
 --  Common return values              
 ----------------------------------------------------------------------------
-ERROR   =  1
-NOERROR =  0
-OPENED  = -1
-INVALID = -1
+iup.ERROR   =  1
+iup.NOERROR =  0
+iup.OPENED  = -1
+iup.INVALID = -1
 
 ----------------------------------------------------------------------------
 --  Callback return values              
 ----------------------------------------------------------------------------
-IGNORE   = -1
-DEFAULT  = -2
-CLOSE    = -3
-CONTINUE = -4
+iup.IGNORE   = -1
+iup.DEFAULT  = -2
+iup.CLOSE    = -3
+iup.CONTINUE = -4
 
 ----------------------------------------------------------------------------
 --  IupPopup e IupShowXY        
 ----------------------------------------------------------------------------
-CENTER       = 65535
-LEFT         = 65534
-RIGHT        = 65533
-MOUSEPOS     = 65532
-CURRENT      = 65531
-CENTERPARENT = 65530
-TOP = LEFT
-BOTTOM = RIGHT
+iup.CENTER       = 65535
+iup.LEFT         = 65534
+iup.RIGHT        = 65533
+iup.MOUSEPOS     = 65532
+iup.CURRENT      = 65531
+iup.CENTERPARENT = 65530
+iup.TOP = LEFT
+iup.BOTTOM = RIGHT
 
 ----------------------------------------------------------------------------
 --  Scrollbar
 ----------------------------------------------------------------------------
-SBUP      = 0  
-SBDN      = 1  
-SBPGUP    = 2  
-SBPGDN    = 3  
-SBPOSV    = 4  
-SBDRAGV   = 5  
-SBLEFT    = 6  
-SBRIGHT   = 7  
-SBPGLEFT  = 8  
-SBPGRIGHT = 9  
-SBPOSH    = 10 
-SBDRAGH   = 11 
+iup.SBUP      = 0  
+iup.SBDN      = 1  
+iup.SBPGUP    = 2  
+iup.SBPGDN    = 3  
+iup.SBPOSV    = 4  
+iup.SBDRAGV   = 5  
+iup.SBLEFT    = 6  
+iup.SBRIGHT   = 7  
+iup.SBPGLEFT  = 8  
+iup.SBPGRIGHT = 9  
+iup.SBPOSH    = 10 
+iup.SBDRAGH   = 11 
 
 ----------------------------------------------------------------------------
 --  SHOW_CB                      
 ----------------------------------------------------------------------------
-SHOW     = 0
-RESTORE  = 1
-MINIMIZE = 2
-MAXIMIZE = 3
-HIDE     = 4
+iup.SHOW     = 0
+iup.RESTORE  = 1
+iup.MINIMIZE = 2
+iup.MAXIMIZE = 3
+iup.HIDE     = 4
 
 ----------------------------------------------------------------------------
 --  BUTTON_CB        
 ----------------------------------------------------------------------------
-BUTTON1 = string.byte('1')
-BUTTON2 = string.byte('2')
-BUTTON3 = string.byte('3')
-BUTTON4 = string.byte('4')
-BUTTON5 = string.byte('5')
+iup.BUTTON1 = string.byte('1')
+iup.BUTTON2 = string.byte('2')
+iup.BUTTON3 = string.byte('3')
+iup.BUTTON4 = string.byte('4')
+iup.BUTTON5 = string.byte('5')
 
 ----------------------------------------------------------------------------
 --  Pre-Defined Masks        
 ----------------------------------------------------------------------------
-MASK_FLOAT   = "[+/-]?(/d+/.?/d*|/./d+)"
-MASK_UFLOAT  = "(/d+/.?/d*|/./d+)"
-MASK_EFLOAT  = "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
-MASK_INT     = "[+/-]?/d+"
-MASK_UINT    = "/d+"
+iup.MASK_FLOAT   = "[+/-]?(/d+/.?/d*|/./d+)"
+iup.MASK_UFLOAT  = "(/d+/.?/d*|/./d+)"
+iup.MASK_EFLOAT  = "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
+iup.MASK_INT     = "[+/-]?/d+"
+iup.MASK_UINT    = "/d+"

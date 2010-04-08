@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "button",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "S-",
   callback = {
     action = "", 
@@ -11,8 +11,8 @@ local ctrl = {
 } 
 
 function ctrl.createElement(class, param)
-  return Button(param.title)
+  return iup.Button(param.title)
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

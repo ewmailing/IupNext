@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "dial",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "S",
   callback = {
      mousemove_cb = "d",       -- already registered by the val, but has a name conflict
@@ -14,8 +14,8 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-   return Dial(param[1])
+   return iup.Dial(param[1])
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

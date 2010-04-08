@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "filedlg",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "",
   callback = {
     file_cb = "ss",
@@ -12,17 +12,17 @@ local ctrl = {
 } 
 
 function ctrl.popup(handle, x, y)
-  Popup(handle,x,y)
+  iup.Popup(handle,x,y)
 end
 
 function ctrl.destroy(handle)
-  return Destroy(handle)
+  return iup.Destroy(handle)
 end
 
 function ctrl.createElement(class, param)
-   return FileDlg()
+   return iup.FileDlg()
 end
    
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")
 

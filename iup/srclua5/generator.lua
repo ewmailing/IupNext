@@ -1,17 +1,18 @@
 
 function dofile(f)
-    pcall(loadfile(f))
+  pcall(loadfile(f))
 end
 
 -- compatibility functions (with iuplua.lua)
-function iupSetClass(ctrl, name)
+iup = {}
+function iup.SetClass(ctrl, name)
   element = ctrl
 end
 
 -- dummy functions
-iupluaNewClass = function() end
-iupSetMethod = iupluaNewClass
-iupRegisterWidget = iupluaNewClass
+iupDoNothing = function() end
+iupSetMethod = iupDoNothing
+iup.RegisterWidget = iupDoNothing
 
 c_types = {
   n = "int",

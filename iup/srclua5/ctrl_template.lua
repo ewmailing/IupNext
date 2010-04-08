@@ -6,7 +6,7 @@
 local ctrl = {
   nick = "mycontrol", -- name of the control, used in the control creation: iup.mycontrol{}
                       -- also used for the generated C module
-  parent = WIDGET, -- used to define a few methods used fro creation and set attribute
+  parent = iup.WIDGET, -- used to define a few methods used fro creation and set attribute
   creation = "nn", -- the creation parameters in Lua
       -- "n"  = int
       -- "d" = double
@@ -82,13 +82,13 @@ int luaopen_iupluamycontrol51(lua_State* L)
 
 -- must be defined so the WIDGET constructor can call it
 function ctrl.createElement(class, param)  
-   return myControl()
+   return iup.myControl()
 end
 
 -- here you can add some custom methods to the class
 function ctrl.popup(handle, x, y)
-  Popup(handle,x,y)
+  iup.Popup(handle,x,y)
 end
 
-iupRegisterWidget(ctrl) -- will make iup.mycontrol available
-iupSetClass(ctrl, "iup widget") -- register the class in the registry
+iup.RegisterWidget(ctrl) -- will make iup.mycontrol available
+iup.SetClass(ctrl, "iup widget") -- register the class in the registry

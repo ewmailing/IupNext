@@ -3,15 +3,15 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "progressbar",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "",
   funcname = "ProgressBar",
   callback = {}
 } 
 
 function ctrl.createElement(class, param)
-   return ProgressBar()
+   return iup.ProgressBar()
 end
    
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

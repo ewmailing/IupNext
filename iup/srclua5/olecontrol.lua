@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "olecontrol",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "s",
   funcname = "OleControl",
   callback = {},
@@ -14,9 +14,8 @@ int iupolelua_open(lua_State* L)
   if (iuplua_opencall_internal(L))
     IupOleControlOpen();
     
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
   iupolecontrollua_open(L);
-  iuplua_returnEnv(L);
   return 0;
 }
 
@@ -36,7 +35,7 @@ int luaopen_iupluaole51(lua_State* L)
 }
 
 function ctrl.createElement(class, param)
-  return OleControl(param[1])
+  return iup.OleControl(param[1])
 end
 
 function ctrl.CreateLuaCOM(handle)
@@ -50,5 +49,5 @@ function ctrl.CreateLuaCOM(handle)
   end
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

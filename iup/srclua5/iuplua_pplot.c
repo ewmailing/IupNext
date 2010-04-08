@@ -140,9 +140,8 @@ int iup_pplotlua_open(lua_State * L)
   if (iuplua_opencall_internal(L))
     IupPPlotOpen();
 
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
   iuppplotlua_open(L);
-  iuplua_returnEnv(L);
   return 0;
 }
 

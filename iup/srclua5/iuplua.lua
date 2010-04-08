@@ -4,9 +4,9 @@
 -- Callback handler  
 ------------------------------------------------------------------------------
 
-callbacks = {}
+iup.callbacks = {}
 
-function iupCallMethod(name, ...)
+function iup.CallMethod(name, ...)
   local handle = arg[1] -- always the handle
   local func = handle[name]
   if (not func) then
@@ -26,9 +26,9 @@ function iupCallMethod(name, ...)
   end
 end
 
-function RegisterCallback(name, func, type)
-  if not callbacks[name] then callbacks[name] = {} end
-  local cb = callbacks[name]
+function iup.RegisterCallback(name, func, type)
+  if not iup.callbacks[name] then iup.callbacks[name] = {} end
+  local cb = iup.callbacks[name]
   if type then
     cb[type] = func
   else
@@ -52,24 +52,24 @@ local widget_gettable = function(object, index)
   end
 end
 
-iupNewClass("iup widget")
-iupSetMethod("iup widget", "__index", widget_gettable)
+iup.NewClass("iup widget")
+iup.SetMethod("iup widget", "__index", widget_gettable)
 
 
 local ihandle_gettable = function(handle, index)
   local INDEX = string.upper(index)
-  if (callbacks[INDEX]) then 
-   local object = iupGetWidget(handle)
+  if (iup.callbacks[INDEX]) then 
+   local object = iup.GetWidget(handle)
    if (not object or type(object)~="table") then error("invalid iup handle") end
    return object[index]
   else
-    local value = GetAttribute(handle, INDEX)
+    local value = iup.GetAttribute(handle, INDEX)
     if (not value) then
-      local object = iupGetWidget(handle)
+      local object = iup.GetWidget(handle)
       if (not object or type(object)~="table") then error("invalid iup handle") end
       return object[index]
-    elseif type(value)== "number" or type(value) == "string"  then
-      local ih = GetHandle(value)
+    elseif type(value)== "number" or type(value) == "string" then
+      local ih = iup.GetHandle(value)
       if ih then return ih
       else return value end
     else
@@ -81,24 +81,24 @@ end
 local ihandle_settable = function(handle, index, value)
   local ti = type(index)
   local tv = type(value)
-  local object = iupGetWidget(handle)
+  local object = iup.GetWidget(handle)
   if (not object or type(object)~="table") then error("invalid iup handle") end
   if ti == "number" or ti == "string" then -- check if a valid C name
     local INDEX = string.upper(index)
-    local cb = callbacks[INDEX]
+    local cb = iup.callbacks[INDEX]
     if (cb) then -- if a callback name
       local func = cb[1]
       if (not func) then
-        func = cb[GetClassName(handle)]
+        func = cb[iup.GetClassName(handle)]
       end
-      iupSetCallback(handle, INDEX, func, value) -- register the pre-defined C callback
+      iup.SetCallback(handle, INDEX, func, value) -- register the pre-defined C callback
       object[index] = value -- store also in Lua
-    elseif iupGetClass(value) == "iup handle" then -- if a iup handle
-      local name = ihandle_setname(value)
-      SetAttribute(handle, INDEX, name)
+    elseif iup.GetClass(value) == "iup handle" then -- if a iup handle
+      local name = iup.SetHandleName(value)
+      iup.SetAttribute(handle, INDEX, name)
       object[index] = nil -- if there was something in Lua remove it
     elseif tv == "string" or tv == "number" or tv == "nil" then -- if a common value
-      SetAttribute(handle, INDEX, value)
+      iup.SetAttribute(handle, INDEX, value)
       object[index] = nil -- if there was something in Lua remove it
     else
       object[index] = value -- store also in Lua
@@ -108,38 +108,39 @@ local ihandle_settable = function(handle, index, value)
   end
 end
 
-iupNewClass("iup handle")
-iupSetMethod("iup handle", "__index", ihandle_gettable)
-iupSetMethod("iup handle", "__newindex", ihandle_settable)
-iupSetMethod("iup handle", "__tostring", ihandle_tostring)
-iupSetMethod("iup handle", "__eq", ihandle_compare) -- implemented in C
+iup.NewClass("iup handle")
+iup.SetMethod("iup handle", "__index", ihandle_gettable)
+iup.SetMethod("iup handle", "__newindex", ihandle_settable)
+iup.SetMethod("iup handle", "__tostring", iup.ihandle_tostring) -- implemented in C
+iup.SetMethod("iup handle", "__eq", iup.ihandle_compare) -- implemented in C
 
 
 ------------------------------------------------------------------------------
 -- Utilities 
 ------------------------------------------------------------------------------
 
-function ihandle_setname(v)  -- used also by radio and zbox
-  local name = GetName(v)
+function iup.SetHandleName(v)  -- used also by radio and zbox
+  local name = iup.GetName(v)
   if not name then
     local autoname = string.format("_IUPLUA_NAME(%s)", tostring(v))
-    SetHandle(autoname, v)
+    iup.SetHandle(autoname, v)
     return autoname
   end
   return name
 end
 
-function iupRegisterWidget(ctrl) -- called by all the controls initialization functions
+function iup.RegisterWidget(ctrl) -- called by all the controls initialization functions
   iup[ctrl.nick] = function(param)
+    if (not ctrl.constructor) then print(ctrl.nick) end
     return ctrl:constructor(param)
   end
 end
 
-function RegisterHandle(handle, typename)
+function iup.RegisterHandle(handle, typename)
 
-  iupSetClass(handle, "iup handle")
+  iup.SetClass(handle, "iup handle")
   
-  local object = iupGetWidget(handle)
+  local object = iup.GetWidget(handle)
   if not object then
 
     local class = iup[string.upper(typename)]
@@ -148,8 +149,8 @@ function RegisterHandle(handle, typename)
     end
 
     local object = { parent=class, handle=handle }
-    iupSetClass(object, "iup widget")
-    iupSetWidget(handle, object)
+    iup.SetClass(object, "iup widget")
+    iup.SetWidget(handle, object)
   end
   
   return handle
@@ -159,39 +160,39 @@ end
 -- Widget class (top class) 
 ------------------------------------------------------------------------------
 
-WIDGET = {
+iup.WIDGET = {
   callback = {}
 }
 
-function WIDGET.show(object)
-  Show(object.handle)
+function iup.WIDGET.show(object)
+  iup.Show(object.handle)
 end
 
-function WIDGET.hide(object)
-  Hide(object.handle)
+function iup.WIDGET.hide(object)
+  iup.Hide(object.handle)
 end
 
-function WIDGET.map(object)
-  Map(object.handle)
+function iup.WIDGET.map(object)
+  iup.Map(object.handle)
 end
 
-function WIDGET.constructor(class, param)
+function iup.WIDGET.constructor(class, param)
   local handle = class:createElement(param)
   local object = { 
     parent = class,
     handle = handle
   }
-  iupSetClass(handle, "iup handle")
-  iupSetClass(object, "iup widget")
-  iupSetWidget(handle, object)
+  iup.SetClass(handle, "iup handle")
+  iup.SetClass(object, "iup widget")
+  iup.SetWidget(handle, object)
   object:setAttributes(param)
   return handle
 end
 
-function WIDGET.setAttributes(object, param)
+function iup.WIDGET.setAttributes(object, param)
   local handle = object.handle
   for i,v in pairs(param) do 
-    if type(i) == "number" and iupGetClass(v) == "iup handle" then
+    if type(i) == "number" and iup.GetClass(v) == "iup handle" then
       -- We should not set this or other elements (such as iuptext)
       -- will erroneosly inherit it
       rawset(object, i, v)
@@ -204,63 +205,63 @@ end
 
 -- all the objects in the hierarchy must be "iup widget"
 -- Must repeat this call for every new widget
-iupSetClass(WIDGET, "iup widget")
+iup.SetClass(iup.WIDGET, "iup widget")
 
 
 ------------------------------------------------------------------------------
 -- Box class (inherits from WIDGET) 
 ------------------------------------------------------------------------------
 
-BOX = {
-  parent = WIDGET
+iup.BOX = {
+  parent = iup.WIDGET
 }
 
-function BOX.setAttributes(object, param)
+function iup.BOX.setAttributes(object, param)
   local handle = rawget(object, "handle")
   local n = #param
   for i = 1, n do
-    if iupGetClass(param[i]) == "iup handle" then 
-      Append(handle, param[i]) 
+    if iup.GetClass(param[i]) == "iup handle" then 
+      iup.Append(handle, param[i]) 
     end
   end
-  WIDGET.setAttributes(object, param)
+  iup.WIDGET.setAttributes(object, param)
 end
 
-iupSetClass(BOX, "iup widget")
+iup.SetClass(iup.BOX, "iup widget")
 
 
 ------------------------------------------------------------------------------
 -- Compatibility functions.
 ------------------------------------------------------------------------------
 
-error_message_popup = nil
+iup.error_message_popup = nil
 
-function _ERRORMESSAGE(err,traceback)
+function iup._ERRORMESSAGE(err,traceback)
   err = err..(traceback or "")
-  if (error_message_popup) then
-    error_message_popup.value = err
+  if (iup.error_message_popup) then
+    iup.error_message_popup.value = err
   else  
-    local bt = button{title="Ok", size="60", action="error_message_popup = nil; return iup.CLOSE"}
-    local ml = multiline{expand="YES", readonly="YES", value=err, size="300x150"}
-    local vb = vbox{ml, bt; alignment="ACENTER", margin="10x10", gap="10"}
-    local dg = dialog{vb; title="Error Message",defaultesc=bt,defaultenter=bt,startfocus=bt}
-    error_message_popup = ml
+    local bt = iup.button{title="Ok", size="60", action="iup.error_message_popup = nil; return iup.CLOSE"}
+    local ml = iup.multiline{expand="YES", readonly="YES", value=err, size="300x150"}
+    local vb = iup.vbox{ml, bt; alignment="ACENTER", margin="10x10", gap="10"}
+    local dg = iup.dialog{vb; title="Error Message",defaultesc=bt,defaultenter=bt,startfocus=bt}
+    iup.error_message_popup = ml
     dg:popup(CENTER, CENTER)
     dg:destroy()
-    error_message_popup = nil
+    iup.error_message_popup = nil
   end
 end
 
-pack = function (...) return arg end
+iup.pack = function (...) return arg end
 
-function protectedcall_(f, err)
+function iup.protectedcall_(f, err)
   if not f then 
-    _ERRORMESSAGE(err)
+    iup._ERRORMESSAGE(err)
     return 
   end
-  local ret = pack(pcall(f))
+  local ret = iup.pack(pcall(f))
   if not ret[1] then 
-    _ERRORMESSAGE(ret[2])
+    iup._ERRORMESSAGE(ret[2])
     return
   else  
     table.remove(ret, 1)
@@ -268,10 +269,10 @@ function protectedcall_(f, err)
   end
 end
 
-function dostring(s) return protectedcall_(loadstring(s)) end
-function dofile(f) return protectedcall_(loadfile(f)) end
+function iup.dostring(s) return iup.protectedcall_(loadstring(s)) end
+function iup.dofile(f) return iup.protectedcall_(loadfile(f)) end
 
-function RGB(r, g, b)
+function iup.RGB(r, g, b)
   return string.format("%d %d %d", 255*r, 255*g, 255*b)
 end
 

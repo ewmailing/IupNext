@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "submenu",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "SI",
   callback = {
 --    open_cb = "",       -- already registered by the menu
@@ -12,8 +12,8 @@ local ctrl = {
 } 
 
 function ctrl.createElement(class, param)
-  return Submenu(param.title, param[1])
+  return iup.Submenu(param.title, param[1])
 end
    
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

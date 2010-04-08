@@ -29,11 +29,10 @@ static int GLMakeCurrent(lua_State *L)
 {  
    IupGLMakeCurrent(iuplua_checkihandle(L,1));
 
-   iuplua_changeEnv(L);
+   iuplua_get_env(L);
    iuplua_regstring(L, (const char*)glGetString(GL_VENDOR), "GL_VENDOR");
    iuplua_regstring(L, (const char*)glGetString(GL_RENDERER), "GL_RENDERER");
    iuplua_regstring(L, (const char*)glGetString(GL_VERSION), "GL_VERSION");
-   iuplua_returnEnv(L);
 
    return 0;
 }

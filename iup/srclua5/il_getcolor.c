@@ -37,10 +37,10 @@ static int GetColor(lua_State *L)
     return 1;
   }
 }
+
 int iupgclua_open(lua_State * L)
 {
-  lua_pushcfunction(L, GetColor);
-  lua_setglobal(L, "GetColor");
+  iuplua_register(L, GetColor, "GetColor");
   return 0;
 }
 

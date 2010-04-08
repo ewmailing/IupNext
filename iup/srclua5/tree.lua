@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "tree",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "",
   callback = {
     selection_cb = "nn",
@@ -21,13 +21,13 @@ local ctrl = {
   extrafuncs = 1,
 }
 
-function TreeSetNodeAttributes(handle, id, attrs)
+function iup.TreeSetNodeAttributes(handle, id, attrs)
   for attr, val in pairs(attrs) do
     handle[attr..id] = val
   end
 end
 
-function TreeSetAncestorsAttributes(handle, ini, attrs)
+function iup.TreeSetAncestorsAttributes(handle, ini, attrs)
   ini = handle["parent"..ini]
   local stack = {}
     while ini do
@@ -35,81 +35,81 @@ function TreeSetAncestorsAttributes(handle, ini, attrs)
       ini = handle["parent"..ini]
     end
   for i = 1, #stack do
-    TreeSetNodeAttributes(handle, stack[i], attrs)
+    iup.TreeSetNodeAttributes(handle, stack[i], attrs)
   end
 end
 
-function TreeSetDescentsAttributes(handle, ini, attrs)
+function iup.TreeSetDescentsAttributes(handle, ini, attrs)
   local id = ini
   for i = 1, handle["childcount"..ini] do
     id = id+1
-    TreeSetNodeAttributes(handle, id, attrs)
+    iup.TreeSetNodeAttributes(handle, id, attrs)
     if handle["kind"..id] == "BRANCH" then
-      id = TreeSetDescentsAttributes(handle, id, attrs)
+      id = iup.TreeSetDescentsAttributes(handle, id, attrs)
     end
   end
   return id
 end
 
-local function TreeSetAttributeHandle(handle, name, value)
-   if iupGetClass(value) == "iup handle" then value = ihandle_setname(value) end
-   SetAttribute(handle, name, value)
+function iup.TreeSetAttributeHandle(handle, name, value)
+   if iup.GetClass(value) == "iup handle" then value = iup.SetHandleName(value) end
+   iup.SetAttribute(handle, name, value)
 end
 
 -- must be after the branch has nodes
-function TreeSetState(handle, tnode, id)
-  if tnode.state then SetAttribute(handle, "STATE"..id, tnode.state) end
+function iup.TreeSetState(handle, tnode, id)
+  if tnode.state then iup.SetAttribute(handle, "STATE"..id, tnode.state) end
 end
 
-function TreeSetNodeAttrib(handle, tnode, id)
-  if tnode.color then SetAttribute(handle, "COLOR"..id, tnode.color) end
-  if tnode.titlefont then SetAttribute(handle, "TITLEFONT"..id, tnode.titlefont) end
-  if tnode.marked then SetAttribute(handle, "MARKED"..id, tnode.marked) end
-  if tnode.image then TreeSetAttributeHandle(handle, "IMAGE"..id, tnode.image) end
-  if tnode.imageexpanded then TreeSetAttributeHandle(handle, "IMAGEEXPANDED"..id, tnode.imageexpanded) end
-  if tnode.userid then TreeSetUserId(handle, id, tnode.userid) end
+function iup.TreeSetNodeAttrib(handle, tnode, id)
+  if tnode.color then iup.SetAttribute(handle, "COLOR"..id, tnode.color) end
+  if tnode.titlefont then iup.SetAttribute(handle, "TITLEFONT"..id, tnode.titlefont) end
+  if tnode.marked then iup.SetAttribute(handle, "MARKED"..id, tnode.marked) end
+  if tnode.image then iup.TreeSetAttributeHandle(handle, "IMAGE"..id, tnode.image) end
+  if tnode.imageexpanded then iup.TreeSetAttributeHandle(handle, "IMAGEEXPANDED"..id, tnode.imageexpanded) end
+  if tnode.userid then iup.TreeSetUserId(handle, id, tnode.userid) end
 end
 
-function TreeAddNodesRec(handle, t, id)
+function iup.TreeAddNodesRec(handle, t, id)
   if t == nil then return end
   local cont = #t
   while cont >= 0 do
     local tnode = t[cont]
     if type(tnode) == "table" then
       if tnode.branchname then
-        SetAttribute(handle, "ADDBRANCH"..id, tnode.branchname)
-        TreeSetNodeAttrib(handle, tnode, id+1)
-        TreeAddNodesRec(handle, tnode, id+1)
-        TreeSetState(handle, tnode, id+1)
+        iup.SetAttribute(handle, "ADDBRANCH"..id, tnode.branchname)
+        iup.TreeSetNodeAttrib(handle, tnode, id+1)
+        iup.TreeAddNodesRec(handle, tnode, id+1)
+        iup.TreeSetState(handle, tnode, id+1)
       elseif tnode.leafname then
-        SetAttribute(handle, "ADDLEAF"..id, tnode.leafname)
-        TreeSetNodeAttrib(handle, tnode, id+1)
+        iup.SetAttribute(handle, "ADDLEAF"..id, tnode.leafname)
+        iup.TreeSetNodeAttrib(handle, tnode, id+1)
       end
     else
       if tnode then
-        SetAttribute(handle, "ADDLEAF"..id, tnode)
+        iup.SetAttribute(handle, "ADDLEAF"..id, tnode)
       end
     end
     cont = cont - 1
    end
 end
 
-function TreeAddNodes(handle, t, id)
+function iup.TreeAddNodes(handle, t, id)
   if (not id) then
     id = 0  -- default is the root
-    if t.branchname then SetAttribute(handle, "TITLE0", t.branchname) end
-    TreeSetNodeAttrib(handle, t, 0)
+    if t.branchname then iup.SetAttribute(handle, "TITLE0", t.branchname) end
+    iup.TreeSetNodeAttrib(handle, t, 0)
   end
-  TreeAddNodesRec(handle, t, id)
-  if (id == 0) then TreeSetState(handle, t, 0) end
+  iup.TreeAddNodesRec(handle, t, id)
+  if (id == 0) then iup.TreeSetState(handle, t, 0) end
 end
 
 -- backward compatibility
-TreeSetValue = TreeAddNodes
+iup.TreeSetValue = iup.TreeAddNodes
 
 function ctrl.createElement(class, param)
-  return Tree()
+  return iup.Tree()
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

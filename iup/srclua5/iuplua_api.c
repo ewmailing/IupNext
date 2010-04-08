@@ -780,7 +780,7 @@ static int UnMapFont (lua_State *L)
 ****************************************************************************/
 
 
-int iupluaapi_open(lua_State * L)
+void iupluaapi_open(lua_State * L)
 {
   struct luaL_reg funcs[] = {
     {"Append", Append},
@@ -874,8 +874,6 @@ int iupluaapi_open(lua_State * L)
     {NULL, NULL},
   };
 
-  /* Registers functions in iup namespace */
-  luaL_openlib(L, NULL, funcs, 0);
-
-  return 0; /* nothing in stack */
+  /* "iup" table is at the top of the stack */
+  luaL_register(L, NULL, funcs);
 }

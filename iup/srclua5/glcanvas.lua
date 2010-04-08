@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "glcanvas",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "-",
   funcname = "GLCanvas",
   include = "iupgl.h",
@@ -17,9 +17,8 @@ int iupgllua_open(lua_State * L)
   if (iuplua_opencall_internal(L))
     IupGLCanvasOpen();
 
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
   iupglcanvaslua_open(L);
-  iuplua_returnEnv(L);
   return 0;
 }
 
@@ -39,8 +38,8 @@ int luaopen_iupluagl51(lua_State* L)
 }
 
 function ctrl.createElement(class, param)
-   return GLCanvas()
+   return iup.GLCanvas()
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

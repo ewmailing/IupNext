@@ -34,10 +34,9 @@ static int LoadImage(lua_State *L)
 
 int iupimlua_open(lua_State *L)
 {
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
   iuplua_register(L, LoadImage, "LoadImage");
   iuplua_register(L, SaveImage, "SaveImage");
-  iuplua_returnEnv(L);
   return 0; /* nothing in stack */
 }
 

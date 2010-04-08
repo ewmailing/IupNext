@@ -20,7 +20,7 @@ int iupcontrolslua_open(lua_State * L)
   if (iuplua_opencall_internal(L))
     IupControlsOpen();
 
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
 
   iupgaugelua_open(L);
   iupmatrixlua_open(L);
@@ -29,8 +29,6 @@ int iupcontrolslua_open(lua_State * L)
   iupcolorbrowserlua_open(L);
   iupcellslua_open(L);
   iupcolorbarlua_open(L);
-
-  iuplua_returnEnv(L);
 
   return 0;
 }
