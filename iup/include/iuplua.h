@@ -23,7 +23,7 @@ int iuplua_dofile (char *filename);
 
 #ifdef LUA_TNONE  /* Lua 5 */
 int iuplua_open(lua_State *L);
-int iupkey_open(lua_State *L);
+int iupkey_open(lua_State *L);  /* does nothing, kept for backward compatibility */
 int iuplua_close(lua_State * L);
 
 /* utilities */

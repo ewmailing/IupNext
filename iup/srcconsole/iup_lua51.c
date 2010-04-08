@@ -386,7 +386,6 @@ static void iuplua_openlibs (lua_State *L) {
 #ifdef USE_STATIC
   /* iuplua initialization */
   iuplua_open(L);
-  iupkey_open(L);
 #ifdef IUPLUA_IMGLIB
   luaopen_iupluaimglib(L);
 #endif
