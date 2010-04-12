@@ -80,6 +80,9 @@ static Ihandle* create_matrix(void)
   //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");
 //  IupSetAttribute(mat, "WIDTHDEF", "15");
 
+//  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","BGCOLOR");
+//  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:1","BGCOLOR");
+
   return mat;
 }
 
