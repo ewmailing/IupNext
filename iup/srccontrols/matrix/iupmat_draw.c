@@ -86,6 +86,8 @@ static int iMatrixDrawGetColAlignment(Ihandle* ih, int col, char* str)
   sprintf(str, "ALIGNMENT%d", col);
   align = iupAttribGet(ih, str);
   if (!align)
+    align = iupAttribGet(ih, "ALIGNMENT");
+  if (!align)
   {
     if (col == 0)
       return IMAT_T_LEFT;

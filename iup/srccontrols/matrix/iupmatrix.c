@@ -447,13 +447,19 @@ static char* iMatrixGetAlignmentAttrib(Ihandle* ih, const char* name_id)
   align = iupAttribGet(ih, str);
   if (!align)
   {
-    int col;
-    if (iupStrToInt(name_id, &col))
+    align = iupAttribGet(ih, "ALIGNMENT");
+    if (align)
+      return align;
+    else
     {
-      if (col == 0)
-        return "ALEFT";
-      else
-        return "ACENTER";
+      int col;
+      if (iupStrToInt(name_id, &col))
+      {
+        if (col == 0)
+          return "ALEFT";
+        else
+          return "ACENTER";
+      }
     }
   }
     
