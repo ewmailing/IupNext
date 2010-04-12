@@ -2276,27 +2276,26 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   }
   else if(msg_info->code == TVN_ENDLABELEDIT)
   {
+    IFnis cbRename;
     NMTVDISPINFO* info = (NMTVDISPINFO*)msg_info;
 
     iupAttribSetStr(ih, "_IUPWIN_EDITBOX", NULL);
 
-    if (!info->item.pszText)
-      info->item.pszText = "";
+    if (!info->item.pszText)  /* cancel, so abort */
+      return 0;
 
+    cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
+    if (cbRename)
     {
-      IFnis cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
-      if (cbRename)
+      if (cbRename(ih, iupTreeFindNodeId(ih, info->item.hItem), info->item.pszText) == IUP_IGNORE)
       {
-        if (cbRename(ih, iupTreeFindNodeId(ih, info->item.hItem), info->item.pszText) == IUP_IGNORE)
-        {
-          *result = FALSE;
-          return 1;
-        }
+        *result = FALSE;
+        return 1;
       }
-
-      *result = TRUE;
-      return 1;
     }
+
+    *result = TRUE;
+    return 1;
   }
   else if(msg_info->code == NM_DBLCLK)
   {
