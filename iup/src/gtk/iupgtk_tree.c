@@ -2166,18 +2166,6 @@ static gboolean gtkTreeButtonEvent(GtkWidget *treeview, GdkEventButton *evt, Iha
       gtk_tree_path_free(path);
     }
   }
-  else if (evt->type == GDK_BUTTON_RELEASE && evt->button == 1)  /* left single release */
-  {
-    if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && (evt->state & GDK_SHIFT_MASK))
-      gtkTreeCallMultiSelectionCb(ih); /* Multi Selection Callback */
-
-    if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && 
-        !(evt->state & GDK_SHIFT_MASK) && !(evt->state & GDK_CONTROL_MASK))
-    {
-      if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
-        iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", "2");
-    }
-  }
   else if (evt->type == GDK_BUTTON_PRESS && evt->button == 1)  /* left single press */
   {
     iupAttribSetInt(ih, "_IUPTREE_DRAG_X", (int)evt->x);
@@ -2188,6 +2176,18 @@ static gboolean gtkTreeButtonEvent(GtkWidget *treeview, GdkEventButton *evt, Iha
     {
       gtkTreeCallMultiUnSelectionCb(ih);
       iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", "1");
+    }
+  }
+  else if (evt->type == GDK_BUTTON_RELEASE && evt->button == 1)  /* left single release */
+  {
+    if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && (evt->state & GDK_SHIFT_MASK))
+      gtkTreeCallMultiSelectionCb(ih); /* Multi Selection Callback */
+
+    if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && 
+        !(evt->state & GDK_SHIFT_MASK) && !(evt->state & GDK_CONTROL_MASK))
+    {
+      if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
+        iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", "2");
     }
   }
   

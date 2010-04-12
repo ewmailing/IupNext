@@ -2168,6 +2168,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
     {
       iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", NULL);
+
       if (iupAttribGet(ih, "_IUPTREE_LASTSELITEM"))
       {
         winTreeCallMultiSelectionCb(ih);

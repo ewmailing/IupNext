@@ -406,7 +406,8 @@ static int next(Ihandle *ih)
 static int prev(Ihandle *ih)
 {
   Ihandle* tree = IupGetHandle("tree");
-  IupSetAttribute(tree, "VALUE",  "PREVIOUS");
+//  IupSetAttribute(tree, "VALUE",  "PREVIOUS");
+  IupSetAttribute(tree, "STATE2", "COLLAPSED");
   return IUP_DEFAULT;
 }
 
@@ -441,11 +442,11 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "SPACING",   "10");
 //  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
 
-//  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
-  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
+//  IupSetAttribute(tree, "SHOWRENAME",   "YES");
 //  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
 
-//  IupSetAttribute(tree, "ADDEXPANDED",  "NO");
+  IupSetAttribute(tree, "ADDEXPANDED",  "YES");
 //  IupSetAttribute(tree, "HIDELINES",    "YES");
 //  IupSetAttribute(tree, "HIDEBUTTONS",    "YES");
 //  IupSetAttribute(tree, "INDENTATION",   "40");
