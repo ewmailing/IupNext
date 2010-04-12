@@ -713,13 +713,12 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
 
   if (kind == ITREE_BRANCH)
   {
+    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCH_CB", "1");
     if (ih->data->add_expanded)
-    {
-      iupAttribSetStr(ih, "_IUP_IGNORE_BRANCHOPEN", "1");
       XtVaSetValues(wItemNew, XmNoutlineState, XmEXPANDED, NULL);
-    }
     else
       XtVaSetValues(wItemNew, XmNoutlineState, XmCOLLAPSED, NULL);
+    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCH_CB", NULL);
   }
 
   XtRealizeWidget(wItemNew);
@@ -767,13 +766,12 @@ static void motTreeAddRootNode(Ihandle* ih)
   /* Select the new item */
   XtVaSetValues(wRootItem, XmNvisualEmphasis, XmSELECTED, NULL);
 
+  iupAttribSetStr(ih, "_IUP_IGNORE_BRANCH_CB", "1");
   if (ih->data->add_expanded)
-  {
-    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCHOPEN", "1");
     XtVaSetValues(wRootItem, XmNoutlineState, XmEXPANDED, NULL);
-  }
   else
     XtVaSetValues(wRootItem, XmNoutlineState, XmCOLLAPSED, NULL);
+  iupAttribSetStr(ih, "_IUP_IGNORE_BRANCH_CB", NULL);
 
   XtRealizeWidget(wRootItem);
 
@@ -970,10 +968,12 @@ static int motTreeSetStateAttrib(Ihandle* ih, const char* name_id, const char* v
   XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
   if (itemData->kind == ITREE_BRANCH)
   {
+    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCH_CB", "1");
     if (iupStrEqualNoCase(value, "EXPANDED"))
       XtVaSetValues(wItem, XmNoutlineState, XmEXPANDED, NULL);
     else 
       XtVaSetValues(wItem, XmNoutlineState, XmCOLLAPSED, NULL);
+    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCH_CB", NULL);
   }
 
   return 0;
@@ -1640,9 +1640,13 @@ static void motTreeSetRenameSelectionPos(Widget cbEdit, const char* value)
 
 static int motTreeCallBranchCloseCb(Ihandle* ih, Widget wItem)
 {
-  IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
+  IFni cbBranchClose;
 
-  if(cbBranchClose)
+  if (iupAttribGet(ih, "_IUP_IGNORE_BRANCH_CB"))
+    return IUP_DEFAULT;
+
+  cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
+  if (cbBranchClose)
     return cbBranchClose(ih, iupTreeFindNodeId(ih, wItem));
 
   return IUP_DEFAULT;
@@ -1652,11 +1656,8 @@ static int motTreeCallBranchOpenCb(Ihandle* ih, Widget wItem)
 {
   IFni cbBranchOpen;
   
-  if (iupAttribGet(ih, "_IUP_IGNORE_BRANCHOPEN"))
-  {
-    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCHOPEN", NULL);
+  if (iupAttribGet(ih, "_IUP_IGNORE_BRANCH_CB"))
     return IUP_DEFAULT;
-  }
 
   cbBranchOpen = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
   if (cbBranchOpen)

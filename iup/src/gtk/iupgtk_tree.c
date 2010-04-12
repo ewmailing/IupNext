@@ -547,13 +547,12 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
   if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store), &iterParent) == 1)
   {
     path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iterParent);
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_BRANCH_CB", "1");
     if (ih->data->add_expanded)
-    {
-      iupAttribSetStr(ih, "_IUPTREE_IGNORE_BRANCHOPEN_CB", "1");
       gtk_tree_view_expand_row(GTK_TREE_VIEW(ih->handle), path, FALSE);
-    }
     else
       gtk_tree_view_collapse_row(GTK_TREE_VIEW(ih->handle), path);
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_BRANCH_CB", NULL);
     gtk_tree_path_free(path);
   }
 }
@@ -1048,7 +1047,9 @@ static int gtkTreeSetStateAttrib(Ihandle* ih, const char* name_id, const char* v
   if (kind == ITREE_BRANCH)
   {
     path = gtk_tree_model_get_path(model, &iterItem);
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_BRANCH_CB", "1");
     gtkTreeExpandItem(ih, path, iupStrEqualNoCase(value, "EXPANDED"));
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_BRANCH_CB", NULL);
     gtk_tree_path_free(path);
   }
 
@@ -2020,11 +2021,8 @@ static gboolean gtkTreeTestExpandRow(GtkTreeView* tree_view, GtkTreeIter *iterIt
   IFni cbBranchOpen = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
   if (cbBranchOpen)
   {
-    if (iupAttribGet(ih, "_IUPTREE_IGNORE_BRANCHOPEN_CB"))
-    {
-      iupAttribSetStr(ih, "_IUPTREE_IGNORE_BRANCHOPEN_CB", NULL);
+    if (iupAttribGet(ih, "_IUPTREE_IGNORE_BRANCH_CB"))
       return FALSE;
-    }
 
     if (cbBranchOpen(ih, gtkTreeFindNodeId(ih, iterItem)) == IUP_IGNORE)
       return TRUE;  /* prevent the change */
@@ -2040,6 +2038,9 @@ static gboolean gtkTreeTestCollapseRow(GtkTreeView* tree_view, GtkTreeIter *iter
   IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
   if (cbBranchClose)
   {
+    if (iupAttribGet(ih, "_IUPTREE_IGNORE_BRANCH_CB"))
+      return FALSE;
+
     if (cbBranchClose(ih, gtkTreeFindNodeId(ih, iterItem)) == IUP_IGNORE)
       return TRUE;
   }
