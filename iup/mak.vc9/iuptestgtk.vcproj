@@ -262,6 +262,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\test\split.c"
+			>
+		</File>
+		<File
 			RelativePath="..\test\sysinfo.c"
 			>
 		</File>

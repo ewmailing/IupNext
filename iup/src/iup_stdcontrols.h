@@ -46,6 +46,7 @@ Iclass* iupZboxGetClass(void);
 Iclass* iupCboxGetClass(void);
 Iclass* iupSboxGetClass(void);
 Iclass* iupNormalizerGetClass(void);
+Iclass* iupSplitGetClass(void);
 
 Iclass* iupTimerGetClass(void);
 Iclass* iupImageGetClass(void);

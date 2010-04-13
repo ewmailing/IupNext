@@ -149,6 +149,7 @@ Ihandle*  IupNormalizerv(Ihandle* *ih_list);
 Ihandle*  IupCbox       (Ihandle* child, ...);
 Ihandle*  IupCboxv      (Ihandle* *children);
 Ihandle*  IupSbox       (Ihandle *child);
+Ihandle*  IupSplit      (Ihandle* child1, Ihandle* child2);
 
 Ihandle*  IupFrame      (Ihandle* child);
 
@@ -340,7 +341,7 @@ int IupMain (int argc, char** argv); /* In C++ we have to declare the prototype 
 #endif
 
 /******************************************************************************
-* Copyright (C) 1994-2009 Tecgraf, PUC-Rio.
+* Copyright (C) 1994-2010 Tecgraf, PUC-Rio.
 *
 * Permission is hereby granted, free of charge, to any person obtaining
 * a copy of this software and associated documentation files (the

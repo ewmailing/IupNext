@@ -99,6 +99,7 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupCboxGetClass());
   iupRegisterClass(iupSboxGetClass());
   iupRegisterClass(iupNormalizerGetClass());
+  iupRegisterClass(iupSplitGetClass());
 
   iupRegisterClass(iupMenuGetClass());
   iupRegisterClass(iupItemGetClass());

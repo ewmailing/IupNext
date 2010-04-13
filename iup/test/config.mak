@@ -69,6 +69,7 @@ SRC += zbox.c
 SRC += scanf.c
 SRC += sbox.c
 SRC += clipboard.c
+SRC += split.c
 
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
