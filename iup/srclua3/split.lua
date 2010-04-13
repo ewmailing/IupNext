@@ -1,10 +1,10 @@
-IUPSBOX = {parent = WIDGET}
+IUPSPLIT = {parent = WIDGET}
 
-function IUPSBOX:CreateIUPelement (obj)
-  return iupCreateSbox(obj[1])
+function IUPSPLIT:CreateIUPelement (obj)
+  return iupCreateSplit(obj[1], obj[2])
 end
 
-function iupsbox (o)
-  return IUPSBOX:Constructor (o)
+function iupsplit (o)
+  return IUPSPLIT:Constructor (o)
 end
-iup.sbox = iupsbox
+iup.split = iupplit

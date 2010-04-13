@@ -15,6 +15,7 @@ int iupluaapi_open(void);
 int iupluawidgets_open(int tag);
 
 int sboxlua_open(void);
+int splitlua_open(void);
 int spinlua_open(void);
 int cboxlua_open(void);
 int gclua_open (void);

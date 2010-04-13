@@ -481,6 +481,7 @@ int iuplua_open(void)
   iupluawidgets_open(iuplua_tag);
 
   sboxlua_open();
+  splitlua_open();
   spinlua_open();
   cboxlua_open();
   vallua_open();

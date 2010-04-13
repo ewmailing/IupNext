@@ -116,6 +116,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\srclua3\il_split.c"
+				>
+			</File>
+			<File
 				RelativePath="..\srclua3\il_tabs.c"
 				>
 			</File>
@@ -161,6 +165,10 @@
 			</File>
 			<File
 				RelativePath="..\srclua3\spin.lua"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\split.lua"
 				>
 			</File>
 			<File

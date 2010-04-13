@@ -231,6 +231,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\srclua5\il_split.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\il_submenu.c"
 					>
 				</File>
@@ -404,6 +408,10 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\spinbox.lua"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\split.lua"
 					>
 				</File>
 				<File
