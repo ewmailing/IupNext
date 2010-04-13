@@ -89,11 +89,6 @@
 	<li><span class="style1">Known Issue:</span> when the dialog background is 
 	dynamically changed the <strong>IupVal</strong> background is only updated 
 	after the user click on the control or when the control is redisplayed.</li>
-	<li><span class="style1">Known Issue:</span> In Windows XP, when using a font 
-	for an node with TITLEFONTid in <strong>IupTree</strong> that is larger than 
-	the element FONT the item text will be cropped at right and bottom because 
-	the system uses the element font to calculate the item size. The only 
-	exception is when you just change the font to add a Bold style.</li>
 
 	<li><span class="style1">Known Issue:</span> In Windows Vista the 
 	COMPOSITE=YES attribute of the <strong>IupDialog</strong> is not working as expected. There 
@@ -150,9 +145,18 @@
 
 	<li><strong><span class="style2">Priority: </span></strong> Check mark for nodes.</li>
 	<li><strong><span class="style2">Priority:</span></strong>  RENAMEEDIT_CB callback and RENAMEMASKid attribute.</li>
+	<li><span class="style1">Known Issue:</span> the rubber band gets lost 
+	depending on what you do inside the SELECTION_CB callback in GTK. To avoid 
+	that set&nbsp; RUBBERBAND=NO.</li>
 
 	<li><span class="style1">Known Issue:</span> the SELECTION_CB callback may 
 	be called more than once for the same node with the same status.</li>
+	<li><span class="style1">Known Issue:</span> In Windows XP, when using a font 
+	for an node with TITLEFONTid in <strong>IupTree</strong> that is larger than 
+	the element FONT the item text will be cropped at right and bottom because 
+	the system uses the element font to calculate the item size. The only 
+	exception is when you just change the font to add a Bold style.</li>
+
 	<li><span class="style1">Important:</span> Old NAMEid attribute conflicts with the common attribute NAME. Should be 
 	replaced by the new TITLEid. NAMEid will be removed in future versions. 
 	(since 3.0)</li>

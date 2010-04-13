@@ -28,9 +28,8 @@ enum { ISPLIT_VERT, ISPLIT_HORIZ };
 
 struct _IcontrolData
 {
-  int isholding;
-  int start_pos;
-  int start_size;
+  int is_holding;
+  int start_pos, start_bar, start_size;
 
   int direction;  /* one of the types: ISPLIT_VERT, ISPLIT_HORIZ */
   int val;  /* split value: 0-1000, default 500 */
@@ -50,6 +49,17 @@ static int iSplitGetHeight1(Ihandle* ih)
   return height1;
 }
 
+static void iSplitSetBarPosition(Ihandle* ih, int cur_x, int cur_y)
+{
+  if (ih->data->direction == ISPLIT_VERT)
+    ih->firstchild->x = ih->data->start_bar + (cur_x - ih->data->start_pos);
+  else /* ISPLIT_HORIZ */
+    ih->firstchild->y = ih->data->start_bar + (cur_y - ih->data->start_pos);
+
+  IupSetAttribute(ih->firstchild, "ZORDER", "TOP");
+  iupClassObjectLayoutUpdate(ih->firstchild);
+}
+
 
 /*****************************************************************************\
 |* Callbacks of canvas bar                                                   *|
@@ -60,7 +70,7 @@ static int iSplitMotion_CB(Ihandle* bar, int x, int y, char *status)
 {
   Ihandle* ih = bar->parent;
 
-  if (ih->data->isholding)
+  if (ih->data->is_holding)
   {
     if (iup_isbutton1(status))
     {
@@ -84,10 +94,12 @@ static int iSplitMotion_CB(Ihandle* bar, int x, int y, char *status)
       if (ih->data->val < 0) ih->data->val = 0;
       if (ih->data->val > 1000) ih->data->val = 1000;
 
-      IupRefresh(ih);  /* may affect all the elements in the dialog */
+      iSplitSetBarPosition(ih, cur_x, cur_y);
+
+//      IupRefresh(ih);  /* may affect all the elements in the dialog */
     }
     else
-      ih->data->isholding = 0;
+      ih->data->is_holding = 0;
   }
 
   (void)x;
@@ -102,28 +114,34 @@ static int iSplitButton_CB(Ihandle* bar, int button, int pressed, int x, int y, 
   if (button!=IUP_BUTTON1)
     return IUP_DEFAULT;
 
-  if (!ih->data->isholding && pressed)
+  if (!ih->data->is_holding && pressed)
   {
     int cur_x, cur_y;
 
-    ih->data->isholding = 1;
+    ih->data->is_holding = 1;
 
     iupStrToIntInt(IupGetGlobal("CURSORPOS"), &cur_x, &cur_y, 'x');
 
     /* Save the cursor position and size */
     if (ih->data->direction == ISPLIT_VERT)
     {
+      ih->data->start_bar = ih->firstchild->x;
       ih->data->start_pos = cur_x;
       ih->data->start_size = iSplitGetWidth1(ih);
     }
     else
     {
+      ih->data->start_bar = ih->firstchild->y;
       ih->data->start_pos = cur_y;
       ih->data->start_size = iSplitGetHeight1(ih);
     }
   }
-  else if (ih->data->isholding && !pressed)
-    ih->data->isholding = 0;
+  else if (ih->data->is_holding && !pressed)
+  {
+    ih->data->is_holding = 0;
+
+    IupRefresh(ih);  /* may affect all the elements in the dialog */
+  }
 
   (void)x;
   (void)y;
@@ -138,8 +156,8 @@ static int iSplitFocus_CB(Ihandle* bar, int focus)
   if (!ih || focus) /* use only kill focus */
     return IUP_DEFAULT;
 
-  if (ih->data->isholding)
-    ih->data->isholding = 0;
+  if (ih->data->is_holding)
+    ih->data->is_holding = 0;
 
   return IUP_DEFAULT;
 }

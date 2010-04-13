@@ -1628,6 +1628,7 @@ void iupdrvTreeUpdateMarkMode(Ihandle *ih)
   if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && !ih->data->show_dragdrop)
   {
 #if GTK_CHECK_VERSION(2, 10, 0)
+    if (iupAttribGetInt(ih, "RUBBERBAND"))
       gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(ih->handle), TRUE);
 #endif
   }
@@ -2190,7 +2191,7 @@ static gboolean gtkTreeButtonEvent(GtkWidget *treeview, GdkEventButton *evt, Iha
         iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", "2");
     }
   }
-  
+
   return FALSE;
 }
 
@@ -2439,4 +2440,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "RENAME",  NULL, gtkTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, gtkTreeSetMoveNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, gtkTreeSetCopyNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+
+  /* IupTree Attributes - GTK Only */
+  iupClassRegisterAttribute  (ic, "RUBBERBAND", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 }
