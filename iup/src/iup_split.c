@@ -28,7 +28,7 @@ enum { ISPLIT_VERT, ISPLIT_HORIZ };
 
 struct _IcontrolData
 {
-  int is_holding;
+  int is_holding, showdrag;
   int start_pos, start_bar, start_size;
 
   int direction;  /* one of the types: ISPLIT_VERT, ISPLIT_HORIZ */
@@ -94,9 +94,10 @@ static int iSplitMotion_CB(Ihandle* bar, int x, int y, char *status)
       if (ih->data->val < 0) ih->data->val = 0;
       if (ih->data->val > 1000) ih->data->val = 1000;
 
-      iSplitSetBarPosition(ih, cur_x, cur_y);
-
-//      IupRefresh(ih);  /* may affect all the elements in the dialog */
+      if (ih->data->showdrag)
+        IupRefresh(ih);  /* may affect all the elements in the dialog */
+      else
+        iSplitSetBarPosition(ih, cur_x, cur_y);
     }
     else
       ih->data->is_holding = 0;
@@ -140,7 +141,8 @@ static int iSplitButton_CB(Ihandle* bar, int button, int pressed, int x, int y, 
   {
     ih->data->is_holding = 0;
 
-    IupRefresh(ih);  /* may affect all the elements in the dialog */
+    if (!ih->data->showdrag)
+      IupRefresh(ih);  /* may affect all the elements in the dialog */
   }
 
   (void)x;
@@ -168,19 +170,53 @@ static int iSplitFocus_CB(Ihandle* bar, int focus)
 \*****************************************************************************/
 
 
-//static char* iSplitGetClientSizeAttrib(Ihandle* ih)
-//{
-//  int width, height;
-//  char* str = iupStrGetMemory(20);
-//  width = ih->currentwidth;
-//  height = ih->currentheight;
-//  width -= iSplitGetXdecor(ih);
-//  height -= iSplitGetYdecor(ih);
-//  if (width < 0) width = 0;
-//  if (height < 0) height = 0;
-//  sprintf(str, "%dx%d", width, height);
-//  return str;
-//}
+static char* iSplitGetClientSize1Attrib(Ihandle* ih)
+{
+  int width, height;
+  char* str = iupStrGetMemory(20);
+
+  if (ih->data->direction == ISPLIT_VERT)
+  {
+    width = iSplitGetWidth1(ih);
+    height = ih->currentheight;
+  }
+  else /* ISPLIT_HORIZ */
+  {
+    height = iSplitGetHeight1(ih);
+    width = ih->currentwidth;
+  }
+
+  sprintf(str, "%dx%d", width, height);
+  return str;
+}
+
+static char* iSplitGetClientSize2Attrib(Ihandle* ih)
+{
+  int width, height;
+  char* str = iupStrGetMemory(20);
+
+  if (ih->data->direction == ISPLIT_VERT)
+  {
+    int width1 = iSplitGetWidth1(ih);
+
+    width = (ih->currentwidth-ISPLIT_THICK)-width1;
+    if (width < 0) width = 0;
+
+    height = ih->currentheight;
+  }
+  else /* ISPLIT_HORIZ */
+  {
+    int height1 = iSplitGetHeight1(ih);
+
+    height = (ih->currentheight-ISPLIT_THICK)-height1;
+    if (height < 0) height = 0;
+
+    width = ih->currentwidth;
+  }
+
+  sprintf(str, "%dx%d", width, height);
+  return str;
+}
 
 static int iSplitSetColorAttrib(Ihandle* ih, const char* value)
 {
@@ -231,6 +267,24 @@ static char* iSplitGetValueAttrib(Ihandle* ih)
   char* str = iupStrGetMemory(30);
   sprintf(str, "%d", ih->data->val);
   return str;
+}
+
+static int iSplitSetShowDragAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->showdrag = 1;
+  else
+    ih->data->showdrag = 0;
+
+  return 0; /* do not store value in hash table */
+}
+
+static char* iSplitGetShowDragAttrib(Ihandle* ih)
+{
+  if (ih->data->showdrag)
+    return "YES";
+  else
+    return "NO";
 }
 
 
@@ -408,6 +462,7 @@ static int iSplitCreateMethod(Ihandle* ih, void** params)
 
   ih->data->direction = ISPLIT_VERT;
   ih->data->val = -1;
+  ih->data->showdrag = 1;
 
   bar = IupCanvas(NULL);
   iupChildTreeAppend(ih, bar);  /* bar will always be the firstchild */
@@ -453,13 +508,15 @@ Iclass* iupSplitGetClass(void)
   iupBaseRegisterCommonAttrib(ic);
 
   /* Base Container */
-//  iupClassRegisterAttribute(ic, "CLIENTSIZE", iSplitGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE1", iSplitGetClientSize1Attrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE2", iSplitGetClientSize2Attrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupSplit only */
   iupClassRegisterAttribute(ic, "COLOR",     NULL, iSplitSetColorAttrib,     IUPAF_SAMEASSYSTEM, "192 192 192", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DIRECTION", NULL, iSplitSetDirectionAttrib, IUPAF_SAMEASSYSTEM, "EAST", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DIRECTION", NULL, iSplitSetDirectionAttrib, IUPAF_SAMEASSYSTEM, "VERTICAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", iSplitGetValueAttrib, iSplitSetValueAttrib, IUPAF_SAMEASSYSTEM, "500", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDRAG", iSplitGetShowDragAttrib, iSplitSetShowDragAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }

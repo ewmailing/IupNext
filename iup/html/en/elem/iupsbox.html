@@ -19,7 +19,7 @@
 </div>
 
 <h2>IupSbox</h2>
-<p>Creates an user expander container. Allows the provided control to be 
+<p>Creates a resizeable container. Allows the provided control to be 
 enclosed in a box that allows expanding and contracting the element <strong>size</strong> in one 
 direction.</p>
 
@@ -32,7 +32,8 @@ direction.</p>
 <pre>Ihandle* IupSbox(Ihandle*<strong> child</strong>); [in C]
 iup.sbox{<strong>child</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 sbox(<strong>child</strong>) [in LED]</pre>
-  <p><strong>child</strong>: Identifier of an interface element which will receive the frame. It can be NULL.</p>
+  <p><strong>child</strong>: Identifier of an interface element which will receive the 
+	box. It can be NULL.</p>
   <p>
   <u>Returns:</u> the identifier of the 
   created element, or NULL if an error occurs.</p>
