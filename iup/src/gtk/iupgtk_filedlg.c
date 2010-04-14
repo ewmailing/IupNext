@@ -483,7 +483,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
         /* store the DIRECTORY */
         {
-          char* dir = iupStrFileGetPath(filename);
+          char* dir = iupStrFileGetPath(iupAttribGet(ih, "VALUE"));
           iupAttribStoreStr(ih, "DIRECTORY", dir);
           free(dir);
         }
@@ -533,8 +533,11 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     {
       /* GtkFileChooser does not change the current directory */
       char* dir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));
-      if (dir) iupdrvSetCurrentDirectory(dir);
-      g_free(dir);
+      if (dir) 
+      {
+        iupdrvSetCurrentDirectory(dir);
+        g_free(dir);
+      }
     }
   }
   else
