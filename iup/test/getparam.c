@@ -20,6 +20,9 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
   case -3:
     printf("IupGetParam - Cancel\n");
     break;
+  case -4:
+    printf("IupGetParam - Help\n");
+    break;
 //  case 1:
 //    return 0;
   default:
@@ -50,7 +53,7 @@ void GetParamTest(void)
   char file_name[500] = "test.jpg";
   
   if (!IupGetParam("Title", param_action, 0,
-                   "Bt %u[, MyCancel]\n"
+                   "Bt %u[, MyCancel, Help!]\n"
                    "Boolean: %b[No,Yes]\n"
                    "Integer: %i\n"
                    "Real 1: %r\n"

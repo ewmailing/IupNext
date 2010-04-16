@@ -45,6 +45,14 @@ static int iParamButtonCancel_CB(Ihandle* self)
   return IUP_CLOSE;
 }
 
+static int iParamButtonHelp_CB(Ihandle* self)
+{
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
+  if (cb) cb(dlg, -4, (void*)iupAttribGet(dlg, "USER_DATA"));
+  return IUP_DEFAULT;
+}
+
 static int iParamToggleAction_CB(Ihandle *self, int v)
 {
   Ihandle* param = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
@@ -699,7 +707,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
 
 static Ihandle* IupParamDlgP(Ihandle** params)
 {
-  Ihandle *dlg, *button_ok, *button_cancel, 
+  Ihandle *dlg, *button_ok, *button_cancel, *button_help=NULL, 
           *dlg_box, *button_box, *param_box;
   int i, lbl_width, p, expand;
 
@@ -725,6 +733,13 @@ static Ihandle* IupParamDlgP(Ihandle** params)
       if (value && *value) IupSetAttribute(button_ok, "TITLE", value);
       value = iupAttribGet(params[i], "_IUPGP_CANCEL");
       if (value && *value) IupSetAttribute(button_cancel, "TITLE", value);
+      value = iupAttribGet(params[i], "_IUPGP_HELP");
+      if (value && *value) 
+      {
+        button_help = IupButton(value, NULL);
+        IupSetAttribute(button_help, "PADDING", "20x0");
+        IupSetCallback(button_help, "ACTION", (Icallback)iParamButtonHelp_CB);
+      }
     }
 
     if (IupGetInt(params[i], "EXPAND"))
@@ -737,6 +752,7 @@ static Ihandle* IupParamDlgP(Ihandle** params)
     IupFill(),
     button_ok,
     button_cancel,
+    button_help,
     NULL);
   IupSetAttribute(button_box,"MARGIN","0x0");
   IupSetAttribute(button_box, "NORMALIZESIZE", "HORIZONTAL");
@@ -940,7 +956,7 @@ static void iParamSetFileOptions(char* extra, Ihandle* param)
 
 static void iParamSetButtonNames(char* extra, Ihandle* param)
 {
-  char *ok, *cancel;
+  char *ok, *cancel, *help;
   int count;
 
   if (!extra)
@@ -948,9 +964,11 @@ static void iParamSetButtonNames(char* extra, Ihandle* param)
 
   ok = iParamGetNextStrItem(extra, ',', &count);  extra += count;
   cancel = iParamGetNextStrItem(extra, ',', &count);  extra += count;
+  help = iParamGetNextStrItem(extra, ',', &count);  extra += count;
 
   iupAttribStoreStr(param, "_IUPGP_OK", ok);
   iupAttribStoreStr(param, "_IUPGP_CANCEL", cancel);
+  iupAttribStoreStr(param, "_IUPGP_HELP", help);
 }
 
 static void iParamSetListItems(char* extra, Ihandle* param)
