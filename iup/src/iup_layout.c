@@ -43,7 +43,7 @@ static void iLayoutDisplayUpdateChildren(Ihandle *ih)
     iLayoutDisplayUpdateChildren(child);
 
     if (child->handle && child->iclass->nativetype != IUP_TYPEVOID)
-      iupdrvDisplayUpdate(child);
+      iupdrvPostRedraw(child);
   }
 }
 
@@ -54,7 +54,7 @@ void IupUpdate(Ihandle* ih)
     return;
 
   if (ih->handle && ih->iclass->nativetype != IUP_TYPEVOID)
-    iupdrvDisplayUpdate(ih);
+    iupdrvPostRedraw(ih);
 }
 
 void IupUpdateChildren(Ihandle* ih)
@@ -74,7 +74,7 @@ static void iLayoutDisplayRedrawChildren(Ihandle *ih)
     iLayoutDisplayRedrawChildren(child);
 
     if (child->handle && child->iclass->nativetype != IUP_TYPEVOID)
-      iupdrvDisplayRedraw(child);
+      iupdrvRedrawNow(child);
   }
 }
 
@@ -85,7 +85,7 @@ void IupRedraw(Ihandle* ih, int children)
     return;
 
   if (ih->handle && ih->iclass->nativetype != IUP_TYPEVOID)
-    iupdrvDisplayRedraw(ih);
+    iupdrvRedrawNow(ih);
 
   if (children)
     iLayoutDisplayRedrawChildren(ih);

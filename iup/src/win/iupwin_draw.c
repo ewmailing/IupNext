@@ -20,6 +20,8 @@
 #include "iup_attrib.h"
 #include "iup_class.h"
 #include "iup_str.h"
+#include "iup_object.h"
+#include "iup_draw.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_info.h"
@@ -36,6 +38,11 @@
 #ifndef TMT_TEXTCOLOR
 #define TMT_TEXTCOLOR 3823
 #endif
+
+
+/******************************************************************************
+                             Themes
+*******************************************************************************/
 
 
 typedef HTHEME  (STDAPICALLTYPE *_winThemeOpenData)(HWND hwnd, LPCWSTR pszClassList);
@@ -59,58 +66,6 @@ static _winAlphaBlendFunc winAlphaBlend = NULL;
 static int winDrawThemeEnabled(void)
 {
   return winThemeOpenData? 1: 0;
-}
-
-void iupwinDrawText(HDC hDC, const char* text, int x, int y, int width, int height, HFONT hFont, COLORREF fgcolor, int style)
-{
-  COLORREF oldcolor;
-  RECT rect;
-  HFONT hOldFont = SelectObject(hDC, hFont);
-
-  rect.left = x;
-  rect.top = y;
-  rect.right = x+width;
-  rect.bottom = y+height;
-
-  SetTextAlign(hDC, TA_TOP|TA_LEFT);
-  SetBkMode(hDC, TRANSPARENT);
-  oldcolor = SetTextColor(hDC, fgcolor);
-
-  DrawText(hDC, text, -1, &rect, style|DT_NOCLIP);
-
-  SelectObject(hDC, hOldFont);
-  SetTextColor(hDC, oldcolor);
-  SetBkMode(hDC, OPAQUE);
-}
-
-void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, HBITMAP hMask, int x, int y, int width, int height, int bpp)
-{
-  HDC hMemDC = CreateCompatibleDC(hDC);
-  SelectObject(hMemDC, hBitmap);
-
-  if (bpp == 32 && winAlphaBlend)
-  {
-    BLENDFUNCTION blendfunc;
-    blendfunc.BlendOp = AC_SRC_OVER;
-    blendfunc.BlendFlags = 0;
-    blendfunc.SourceConstantAlpha = 0xFF;
-    blendfunc.AlphaFormat = AC_SRC_ALPHA;
-
-    winAlphaBlend(hDC, x, y, width, height, 
-                  hMemDC, 0, 0, width, height, 
-                  blendfunc);
-  }
-  else if (bpp == 8 && hMask)
-    MaskBlt(hDC, x, y, width, height, 
-            hMemDC, 0, 0, 
-            hMask, 0, 0, MAKEROP4(SRCCOPY, 0xAA0000));
-  else
-    BitBlt(hDC, x, y, width, height, 
-           hMemDC, 0, 0, 
-           SRCCOPY);
-
-
-  DeleteDC(hMemDC);
 }
 
 void iupwinDrawInit(void)
@@ -246,6 +201,79 @@ int iupwinDrawGetThemeFrameFgColor(HWND hWnd, COLORREF *color)
   return (ret == S_OK)? 1: 0;
 }
 
+void iupwinDrawRemoveTheme(HWND hwnd)
+{
+  typedef HRESULT (STDAPICALLTYPE *winSetWindowTheme)(HWND hwnd, LPCWSTR pszSubAppName, LPCWSTR pszSubIdList);
+  static winSetWindowTheme mySetWindowTheme = NULL;
+  if (!mySetWindowTheme)
+  {
+    HMODULE hinstDll = LoadLibrary("uxtheme.dll");
+    if (hinstDll)
+      mySetWindowTheme = (winSetWindowTheme)GetProcAddress(hinstDll, "SetWindowTheme");
+  }
+
+  if (mySetWindowTheme)
+    mySetWindowTheme(hwnd, L"", L"");
+}
+
+
+/******************************************************************************
+                             Utilities
+*******************************************************************************/
+
+
+void iupwinDrawText(HDC hDC, const char* text, int x, int y, int width, int height, HFONT hFont, COLORREF fgcolor, int style)
+{
+  COLORREF oldcolor;
+  RECT rect;
+  HFONT hOldFont = SelectObject(hDC, hFont);
+
+  rect.left = x;
+  rect.top = y;
+  rect.right = x+width;
+  rect.bottom = y+height;
+
+  SetTextAlign(hDC, TA_TOP|TA_LEFT);
+  SetBkMode(hDC, TRANSPARENT);
+  oldcolor = SetTextColor(hDC, fgcolor);
+
+  DrawText(hDC, text, -1, &rect, style|DT_NOCLIP);
+
+  SelectObject(hDC, hOldFont);
+  SetTextColor(hDC, oldcolor);
+  SetBkMode(hDC, OPAQUE);
+}
+
+void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, HBITMAP hMask, int x, int y, int width, int height, int bpp)
+{
+  HDC hMemDC = CreateCompatibleDC(hDC);
+  SelectObject(hMemDC, hBitmap);
+
+  if (bpp == 32 && winAlphaBlend)
+  {
+    BLENDFUNCTION blendfunc;
+    blendfunc.BlendOp = AC_SRC_OVER;
+    blendfunc.BlendFlags = 0;
+    blendfunc.SourceConstantAlpha = 0xFF;
+    blendfunc.AlphaFormat = AC_SRC_ALPHA;
+
+    winAlphaBlend(hDC, x, y, width, height, 
+                  hMemDC, 0, 0, width, height, 
+                  blendfunc);
+  }
+  else if (bpp == 8 && hMask)
+    MaskBlt(hDC, x, y, width, height, 
+            hMemDC, 0, 0, 
+            hMask, 0, 0, MAKEROP4(SRCCOPY, 0xAA0000));
+  else
+    BitBlt(hDC, x, y, width, height, 
+           hMemDC, 0, 0, 
+           SRCCOPY);
+
+
+  DeleteDC(hMemDC);
+}
+
 static int winDrawGetStateId(int itemState)
 {
   if (itemState & ODS_DISABLED)
@@ -282,21 +310,6 @@ void iupdrvDrawFocusRect(Ihandle* ih, void* gc, int x, int y, int w, int h)
   DrawFocusRect(hDC, &rect);
 }
 
-void iupwinDrawRemoveTheme(HWND hwnd)
-{
-  typedef HRESULT (STDAPICALLTYPE *winSetWindowTheme)(HWND hwnd, LPCWSTR pszSubAppName, LPCWSTR pszSubIdList);
-  static winSetWindowTheme mySetWindowTheme = NULL;
-  if (!mySetWindowTheme)
-  {
-    HMODULE hinstDll = LoadLibrary("uxtheme.dll");
-    if (hinstDll)
-      mySetWindowTheme = (winSetWindowTheme)GetProcAddress(hinstDll, "SetWindowTheme");
-  }
-
-  if (mySetWindowTheme)
-    mySetWindowTheme(hwnd, L"", L"");
-}
-
 void iupwinDrawParentBackground(Ihandle* ih, HDC hDC, RECT* rect)
 {
   unsigned char r=0, g=0, b=0;
@@ -326,3 +339,81 @@ void iupwinDrawDestroyBitmapDC(iupwinBitmapDC *bmpDC)
   DeleteDC(bmpDC->hBitmapDC);
 }
 
+
+/******************************************************************************
+                             Simple Draw
+*******************************************************************************/
+
+struct _IdrawCanvas{
+  Ihandle* ih;
+  int w, h;
+
+  int release_dc;
+  HBITMAP hBitmap, hOldBitmap;
+  HDC hBitmapDC, hDC;
+};
+
+IdrawCanvas* iupDrawCreateCanvas(Ihandle* ih)
+{
+  IdrawCanvas* dc = calloc(1, sizeof(IdrawCanvas));
+  RECT rect;
+
+  /* valid only inside the ACTION callback of an IupCanvas */
+  dc->hDC = (HDC)IupGetAttribute(ih, "HDC_WMPAINT");
+  if (!dc->hDC)
+  {
+    dc->hDC = GetDC(ih->handle);
+    dc->release_dc = 1;
+  }
+
+  GetClientRect(ih->handle, &rect);
+  dc->w = rect.right - rect.left;
+  dc->h = rect.bottom - rect.top;
+
+  dc->hBitmap = CreateCompatibleBitmap(dc->hDC, dc->w, dc->h);
+  dc->hBitmapDC = CreateCompatibleDC(dc->hDC);
+  dc->hOldBitmap = SelectObject(dc->hBitmapDC, dc->hBitmap);
+
+  return dc;
+}
+
+void iupDrawKillCanvas(IdrawCanvas* dc)
+{
+  SelectObject(dc->hBitmapDC, dc->hOldBitmap);
+  DeleteObject(dc->hBitmap);
+  DeleteDC(dc->hBitmapDC);
+  if (dc->release_dc)
+    DeleteDC(dc->hDC);
+
+  free(dc);
+}
+
+void iupDrawFlush(IdrawCanvas* dc)
+{
+  BitBlt(dc->hDC, 0, 0, dc->w, dc->h, dc->hBitmapDC, 0, 0, SRCCOPY);
+}
+
+void iupDrawGetSize(IdrawCanvas* dc, int *w, int *h)
+{
+  if (w) *w = dc->w;
+  if (h) *h = dc->h;
+}
+
+void iupDrawParentBackground(IdrawCanvas* dc)
+{
+  unsigned char r=0, g=0, b=0;
+  char* color = iupBaseNativeParentGetBgColorAttrib(dc->ih);
+  iupStrToRGB(color, &r, &g, &b);
+  iupDrawRectangle(dc, 0, 0, dc->w-1, dc->h-1, r, g, b, 1);
+}
+
+void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int filled)
+{
+  RECT rect;
+  rect.left = x1; rect.top = y1; rect.right = x2+1; rect.bottom = y2+1;
+  SetDCBrushColor(dc->hBitmapDC, RGB(r,g,b));
+  if (filled)
+    FillRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+  else
+    FrameRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+}

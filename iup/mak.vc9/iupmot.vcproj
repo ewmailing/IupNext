@@ -109,6 +109,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\mot\iupmot_draw.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\mot\iupmot_focus.c"
 				>
 			</File>

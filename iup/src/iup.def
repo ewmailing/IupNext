@@ -179,8 +179,8 @@ iupdrvFontGetStringWidth
 iupdrvFontGetMultiLineStringSize
 iupdrvFontGetCharSize
 iupdrvDrawFocusRect
-iupdrvDisplayUpdate
-iupdrvDisplayRedraw
+iupdrvPostRedraw
+iupdrvRedrawNow
 iupdrvBaseUnMapMethod
 iupdrvBaseSetZorderAttrib
 iupdrvBaseSetTipVisibleAttrib
@@ -355,3 +355,9 @@ iupArrayCreate
 iupArrayCount
 iupArrayAdd
 iupSaveImageAsText
+iupDrawCreateCanvas
+iupDrawKillCanvas
+iupDrawFlush
+iupDrawGetSize
+iupDrawParentBackground
+iupDrawRectangle

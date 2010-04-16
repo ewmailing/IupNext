@@ -59,7 +59,7 @@ void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
 static int winValSetBgColorAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
-  iupdrvDisplayUpdate(ih);
+  iupdrvPostRedraw(ih);
   return 1;
 }
 

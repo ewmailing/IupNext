@@ -370,7 +370,7 @@ static int winButtonSetImageAttrib(Ihandle* ih, const char* value)
   (void)value;
   if (ih->data->type != IUP_BUTTON_TEXT)
   {
-    iupdrvDisplayUpdate(ih);
+    iupdrvPostRedraw(ih);
     return 1;
   }
   else
@@ -382,7 +382,7 @@ static int winButtonSetImInactiveAttrib(Ihandle* ih, const char* value)
   (void)value;
   if (ih->data->type != IUP_BUTTON_TEXT)
   {
-    iupdrvDisplayUpdate(ih);
+    iupdrvPostRedraw(ih);
     return 1;
   }
   else
@@ -394,7 +394,7 @@ static int winButtonSetImPressAttrib(Ihandle* ih, const char* value)
   (void)value;
   if (ih->data->type != IUP_BUTTON_TEXT)
   {
-    iupdrvDisplayUpdate(ih);
+    iupdrvPostRedraw(ih);
     return 1;
   }
   else
@@ -405,7 +405,7 @@ static int winButtonSetActiveAttrib(Ihandle* ih, const char* value)
 {
   /* redraw IMINACTIVE image if any */
   if (ih->data->type != IUP_BUTTON_TEXT)
-    iupdrvDisplayUpdate(ih);
+    iupdrvPostRedraw(ih);
 
   return iupBaseSetActiveAttrib(ih, value);
 }
@@ -430,7 +430,7 @@ static int winButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
   else /* "ACENTER" */
     ih->data->vert_alignment = IUP_ALIGN_ACENTER;
 
-  iupdrvDisplayRedraw(ih);
+  iupdrvRedrawNow(ih);
 
   return 1;
 }
@@ -448,7 +448,7 @@ static int winButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 {
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle)
-    iupdrvDisplayRedraw(ih);
+    iupdrvRedrawNow(ih);
   return 0;
 }
 
@@ -459,7 +459,7 @@ static int winButtonSetBgColorAttrib(Ihandle* ih, const char* value)
   {
     iupAttribSetStr(ih, "BGCOLOR", value);
     iupImageUpdateParent(ih);
-    iupdrvDisplayRedraw(ih);
+    iupdrvRedrawNow(ih);
   }
   return 1;
 }
@@ -493,7 +493,7 @@ static int winButtonSetFgColorAttrib(Ihandle* ih, const char* value)
     ih->data->fgcolor = RGB(r,g,b);
 
     if (ih->handle)
-      iupdrvDisplayRedraw(ih);
+      iupdrvRedrawNow(ih);
   }
   return 1;
 }
@@ -506,7 +506,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
   {
     /* redraw IMPRESS image if any */
     if ((msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP) && iupAttribGet(ih, "IMPRESS"))
-      iupdrvDisplayRedraw(ih);
+      iupdrvRedrawNow(ih);
   }
 
   switch (msg)
@@ -526,7 +526,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       if (msg==WM_LBUTTONDOWN && !iupAttribGetBoolean(ih, "FOCUSONCLICK"))
       {
         iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", "1");
-        iupdrvDisplayRedraw(ih);
+        iupdrvRedrawNow(ih);
       }
       break;
     }
@@ -543,7 +543,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
         Icallback cb;
 
         iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", NULL);
-        iupdrvDisplayRedraw(ih);
+        iupdrvRedrawNow(ih);
 
         cb = IupGetCallback(ih, "ACTION");
         if (cb && cb(ih) == IUP_CLOSE)
@@ -576,12 +576,12 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     if (!iupwin_comctl32ver6)
     {
       iupAttribSetStr(ih, "_IUPWINBUT_ENTERWIN", NULL);
-      iupdrvDisplayRedraw(ih);
+      iupdrvRedrawNow(ih);
     }
     if (!iupAttribGetBoolean(ih, "FOCUSONCLICK"))
     {
       iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", NULL);
-      iupdrvDisplayRedraw(ih);
+      iupdrvRedrawNow(ih);
     }
     break;
   case WM_MOUSEMOVE:
@@ -590,7 +590,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       if (!iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
       {
         iupAttribSetStr(ih, "_IUPWINBUT_ENTERWIN", "1");
-        iupdrvDisplayRedraw(ih);
+        iupdrvRedrawNow(ih);
       }
     }
     break;

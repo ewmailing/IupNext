@@ -91,13 +91,13 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
   gtk_widget_destroy(widget);   /* To match the call to gtk_*****_new     */
 }
 
-void iupdrvDisplayUpdate(Ihandle *ih)
+void iupdrvPostRedraw(Ihandle *ih)
 {
   /* Post a REDRAW */
   gtk_widget_queue_draw(ih->handle);
 }
 
-void iupdrvDisplayRedraw(Ihandle *ih)
+void iupdrvRedrawNow(Ihandle *ih)
 {
   GdkWindow* window = ih->handle->window;
   /* Post a REDRAW */
@@ -436,9 +436,11 @@ static GdkCursor* gtkGetCursor(Ihandle* ih, const char* name)
     { "RESIZE_N",  GDK_TOP_SIDE},
     { "RESIZE_S",  GDK_BOTTOM_SIDE},
     { "RESIZE_NS", GDK_SB_V_DOUBLE_ARROW},
+    { "SPLITTER_HORIZ", GDK_SB_V_DOUBLE_ARROW},
     { "RESIZE_W",  GDK_LEFT_SIDE},
     { "RESIZE_E",  GDK_RIGHT_SIDE},
     { "RESIZE_WE", GDK_SB_H_DOUBLE_ARROW},
+    { "SPLITTER_VERT", GDK_SB_H_DOUBLE_ARROW},
     { "RESIZE_NE", GDK_TOP_RIGHT_CORNER},
     { "RESIZE_SE", GDK_BOTTOM_RIGHT_CORNER},
     { "RESIZE_NW", GDK_TOP_LEFT_CORNER},

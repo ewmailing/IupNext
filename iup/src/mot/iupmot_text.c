@@ -917,6 +917,10 @@ static void motTextLayoutUpdateMethod(Ihandle* ih)
   Widget spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (spinbox && XmIsSpinBox(spinbox))
   {
+    /* avoid abort in X */
+    if (ih->currentwidth == 0) ih->currentwidth = 1;
+    if (ih->currentheight == 0) ih->currentheight = 1;
+
     XtVaSetValues(ih->handle,
       XmNwidth, (XtArgVal)ih->currentwidth-ih->currentheight/2,
       XmNheight, (XtArgVal)ih->currentheight,

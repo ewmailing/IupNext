@@ -24,7 +24,7 @@ static const unsigned int itable_itemGrow = 5;
 
 /* Iteration context.
  */
-typedef struct ItableContext
+typedef struct _ItableContext
 {
   unsigned int entryIndex;  /* index at the Itable::entries array */
   unsigned int itemIndex;   /* index at the ItableEntry::items array */
@@ -41,7 +41,7 @@ typedef struct ItableContext
  * this is simply the pointer (in this case keyIndex
  * and keyStr are equal).
 */
-typedef struct ItableKey
+typedef struct _ItableKey
 {
   unsigned long keyIndex;  /* the secondary hash number */
   const char   *keyStr;
@@ -52,7 +52,7 @@ ItableKey;
  * Such an item is stored in the item list of
  * an entry.
  */
-typedef struct ItableItem
+typedef struct _ItableItem
 {
   Itable_Types  itemType;
   ItableKey          key;
@@ -67,7 +67,7 @@ ItableItem;
  * in nextItemIndex.
  * size is the current size of the items array.
  */
-typedef struct ItableEntry
+typedef struct _ItableEntry
 {
   unsigned int  nextItemIndex;
   unsigned int  size;
@@ -82,7 +82,7 @@ ItableEntry;
  * entry by its index.
  * size is the number of entries in the hash table...
  */
-struct Itable
+struct _Itable
 {
   unsigned int            size;
   unsigned int            numberOfEntries;
@@ -121,7 +121,7 @@ Itable *iupTableCreate(Itable_IndexTypes indexType)
 
 Itable *iupTableCreateSized(Itable_IndexTypes indexType, unsigned int initialSizeIndex)
 {
-  Itable *it = (Itable *)malloc(sizeof(struct Itable));
+  Itable *it = (Itable *)malloc(sizeof(struct _Itable));
 
   iupASSERT(it!=NULL);
   if (!it)

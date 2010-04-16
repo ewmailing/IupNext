@@ -173,7 +173,7 @@ static int winLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
     else /* "ATOP" */
       ih->data->vert_alignment = IUP_ALIGN_ATOP;
 
-    iupdrvDisplayRedraw(ih);
+    iupdrvRedrawNow(ih);
   }
   return 0;
 }
@@ -197,7 +197,7 @@ static int winLabelSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
 
   if (ih->handle && ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
-    iupdrvDisplayRedraw(ih);
+    iupdrvRedrawNow(ih);
 
   return 0;
 }
@@ -211,7 +211,7 @@ static int winLabelSetWordWrapAttrib(Ihandle* ih, const char* value)
     else
       ih->data->text_style &= ~DT_WORDBREAK;
 
-    iupdrvDisplayRedraw(ih);
+    iupdrvRedrawNow(ih);
   }
 
   return 1;
@@ -226,7 +226,7 @@ static int winLabelSetEllipsisAttrib(Ihandle* ih, const char* value)
     else
       ih->data->text_style &= ~DT_END_ELLIPSIS;
 
-    iupdrvDisplayRedraw(ih);
+    iupdrvRedrawNow(ih);
   }
 
   return 1;
@@ -242,7 +242,7 @@ static int winLabelSetFgColorAttrib(Ihandle* ih, const char* value)
       ih->data->fgcolor = RGB(r,g,b);
 
       if (ih->handle)
-        iupdrvDisplayRedraw(ih);
+        iupdrvRedrawNow(ih);
     }
   }
   return 1;
@@ -253,7 +253,7 @@ static int winLabelSetUpdateAttrib(Ihandle* ih, const char* value)
   (void)value;
 
   if (ih->handle)
-    iupdrvDisplayUpdate(ih);  /* Post a redraw */
+    iupdrvPostRedraw(ih);  /* Post a redraw */
 
   return 1;
 }

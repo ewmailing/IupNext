@@ -94,13 +94,13 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
                SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
 }
 
-void iupdrvDisplayRedraw(Ihandle *ih)
+void iupdrvRedrawNow(Ihandle *ih)
 {
   /* REDRAW Now */
   RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_UPDATENOW);
 }
 
-void iupdrvDisplayUpdate(Ihandle *ih)
+void iupdrvPostRedraw(Ihandle *ih)
 {
   /* Post a REDRAW */
   /* can NOT use RDW_NOCHILDREN because IupList has internal children that needs to be redraw */
@@ -621,6 +621,18 @@ char* iupdrvBaseGetClientSizeAttrib(Ihandle* ih)
 #define IDC_HELP            MAKEINTRESOURCE(32651)
 #endif
 
+static HCURSOR winLoadComCtlCursor(LPCTSTR lpCursorName)
+{
+  HCURSOR cur = NULL;
+  HINSTANCE hinstDll = LoadLibrary("comctl32.dll");
+  if (hinstDll)
+  {
+    cur = LoadCursor(hinstDll, lpCursorName);
+    FreeLibrary(hinstDll);
+  }
+  return cur;
+}
+
 static HCURSOR winGetCursor(Ihandle* ih, const char* name)
 {
   static struct {
@@ -652,7 +664,7 @@ static HCURSOR winGetCursor(Ihandle* ih, const char* name)
     {"APPSTARTING", IDC_APPSTARTING}
   };
 
-  HCURSOR cur;
+  HCURSOR cur = NULL;
   char str[50];
   int i, count = sizeof(table)/sizeof(table[0]);
 
@@ -679,12 +691,20 @@ static HCURSOR winGetCursor(Ihandle* ih, const char* name)
   if (i == count)
   {
     /* check other system cursors */
-    /* cursor PEN is handled here */
+
     if (iupStrEqualNoCase(name, "PEN"))
-      name = "CURSOR_PEN";
+      name = "CURSOR_PEN"; /* name in "iup.rc" */
 
     /* check for an name defined cursor */
     cur = iupImageGetCursor(name);
+  }
+
+  if (!cur)
+  {
+    if (iupStrEqualNoCase(name, "SPLITTER_VERT"))
+      cur = winLoadComCtlCursor(MAKEINTRESOURCE(107));
+    else if (iupStrEqualNoCase(name, "SPLITTER_HORIZ"))
+      cur = winLoadComCtlCursor(MAKEINTRESOURCE(135));
   }
 
   iupAttribSetStr(ih, str, (char*)cur);

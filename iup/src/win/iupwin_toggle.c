@@ -231,7 +231,7 @@ static int winToggleSetImageAttrib(Ihandle* ih, const char* value)
       iupAttribSetStr(ih, "IMAGE", (char*)value);
 
     if (iupwin_comctl32ver6)
-      iupdrvDisplayRedraw(ih);
+      iupdrvRedrawNow(ih);
     else
     {
       int check = SendMessage(ih->handle, BM_GETCHECK, 0L, 0L);
@@ -251,7 +251,7 @@ static int winToggleSetImInactiveAttrib(Ihandle* ih, const char* value)
       iupAttribSetStr(ih, "IMINACTIVE", (char*)value);
 
     if (iupwin_comctl32ver6)
-      iupdrvDisplayRedraw(ih);
+      iupdrvRedrawNow(ih);
     else
     {
       int check = SendMessage(ih->handle, BM_GETCHECK, 0L, 0L);
@@ -271,7 +271,7 @@ static int winToggleSetImPressAttrib(Ihandle* ih, const char* value)
       iupAttribSetStr(ih, "IMPRESS", (char*)value);
 
     if (iupwin_comctl32ver6)
-      iupdrvDisplayRedraw(ih);
+      iupdrvRedrawNow(ih);
     else
     {
       int check = SendMessage(ih->handle, BM_GETCHECK, 0L, 0L);
@@ -341,7 +341,7 @@ static int winToggleSetActiveAttrib(Ihandle* ih, const char* value)
     if (iupwin_comctl32ver6)
     {
       iupBaseSetActiveAttrib(ih, value);
-      iupdrvDisplayRedraw(ih);
+      iupdrvRedrawNow(ih);
       return 0;
     }
     else
@@ -384,7 +384,7 @@ static int winToggleSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
 
   if (ih->handle && iupwin_comctl32ver6 && ih->data->type == IUP_TOGGLE_IMAGE)
-    iupdrvDisplayRedraw(ih);
+    iupdrvRedrawNow(ih);
 
   return 0;
 }
@@ -394,7 +394,7 @@ static int winToggleSetUpdateAttrib(Ihandle* ih, const char* value)
   (void)value;
 
   if (ih->handle)
-    iupdrvDisplayUpdate(ih);  /* Post a redraw */
+    iupdrvPostRedraw(ih);  /* Post a redraw */
 
   return 1;
 }
@@ -407,7 +407,7 @@ static int winToggleSetBgColorAttrib(Ihandle* ih, const char* value)
     /* update internal image cache for controls that have the IMAGE attribute */
     iupAttribSetStr(ih, "BGCOLOR", value);
     iupImageUpdateParent(ih);
-    iupdrvDisplayRedraw(ih);
+    iupdrvRedrawNow(ih);
   }
   return 1;
 }

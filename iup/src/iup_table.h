@@ -42,8 +42,8 @@ typedef enum _Itable_Types
 
 typedef void (*Ifunc)(void);
 
-struct Itable;
-typedef struct Itable Itable;
+struct _Itable;
+typedef struct _Itable Itable;
 
 
 /** Creates a hash table with an initial default size.
@@ -63,7 +63,7 @@ Itable *iupTableCreateSized(Itable_IndexTypes indexType, unsigned int initialSiz
 /** Destroys the Itable.
  * Calls \ref iupTableClear.
  * \ingroup table */
-void iupTableDestroy(Itable *n);
+void iupTableDestroy(Itable *it);
 
 /** Removes all items in the table.
  * This function does also free the memory of strings contained in the table!!!!
@@ -76,33 +76,33 @@ int iupTableCount(Itable *it);
 
 /** Store an element in the table.
  * \ingroup table */
-void iupTableSet(Itable *n, const char *key, void *value, Itable_Types itemType);
+void iupTableSet(Itable *it, const char *key, void *value, Itable_Types itemType);
 
 /** Store a function pointer in the table.
  * Type is set to IUPTABLE_FUNCPOINTER.
  * \ingroup table */
-void iupTableSetFunc(Itable *n, const char *key, Ifunc func);
+void iupTableSetFunc(Itable *it, const char *key, Ifunc func);
 
 /** Retrieves an element from the table.
  * Returns NULL if not found.
  * \ingroup table */
-void *iupTableGet(Itable *n, const char *key);
+void *iupTableGet(Itable *it, const char *key);
 
 /** Retrieves a function pointer from the table. 
  * If not a function or not found returns NULL.
  * value always contains the element pointer.
  * \ingroup table */
-Ifunc iupTableGetFunc(Itable *n, const char *key, void **value);
+Ifunc iupTableGetFunc(Itable *it, const char *key, void **value);
 
 /** Retrieves an element from the table and its type.
  * \ingroup table */
-void *iupTableGetTyped(Itable *n, const char *key, Itable_Types *itemType);
+void *iupTableGetTyped(Itable *it, const char *key, Itable_Types *itemType);
 
 /** Removes the entry at the specified key from the
  * hash table and frees the memory used by it if
  * it is a string...
  * \ingroup table */
-void iupTableRemove(Itable *n, const char *key);
+void iupTableRemove(Itable *it, const char *key);
 
 /** Key iteration function. Returns a key.
  * To iterate over all keys call iupTableFirst at the first

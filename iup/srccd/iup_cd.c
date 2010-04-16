@@ -14,8 +14,6 @@
 #include <cdiup.h>
 #include <cdnative.h>
 
-//enum{CD_BASE_WIN, CD_BASE_X, CD_BASE_GDK};
-
 static void (*cdcreatecanvasNATIVE)(cdCanvas* canvas, void* data) = NULL;
 
 static void cdcreatecanvasIUP(cdCanvas* canvas, Ihandle *ih_canvas)

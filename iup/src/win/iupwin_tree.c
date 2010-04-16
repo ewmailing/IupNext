@@ -272,28 +272,28 @@ static int winTreeIsItemExpanded(Ihandle* ih, HTREEITEM hItem)
 
 static void winTreeExpandItem(Ihandle* ih, HTREEITEM hItem, int expand)
 {
+  TVITEM item;
+  winTreeItemData* itemData;
+
+  iupAttribSetStr(ih, "_IUPTREE_IGNORE_BRANCH_CB", "1");
   /* it only works if the branch has children */
   SendMessage(ih->handle, TVM_EXPAND, expand? TVE_EXPAND: TVE_COLLAPSE, (LPARAM)hItem);
+  iupAttribSetStr(ih, "_IUPTREE_IGNORE_BRANCH_CB", NULL);
 
   /* update image */
-  {
-    TVITEM item;
-    winTreeItemData* itemData;
+  item.hItem = hItem;
+  item.mask = TVIF_HANDLE|TVIF_PARAM;
+  SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+  itemData = (winTreeItemData*)item.lParam;
 
-    item.hItem = hItem;
-    item.mask = TVIF_HANDLE|TVIF_PARAM;
-    SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
-    itemData = (winTreeItemData*)item.lParam;
+  if (expand)
+    item.iSelectedImage = item.iImage = (itemData->image_expanded!=-1)? itemData->image_expanded: (int)ih->data->def_image_expanded;
+  else
+    item.iSelectedImage = item.iImage = (itemData->image!=-1)? itemData->image: (int)ih->data->def_image_collapsed;
 
-    if (expand)
-      item.iSelectedImage = item.iImage = (itemData->image_expanded!=-1)? itemData->image_expanded: (int)ih->data->def_image_expanded;
-    else
-      item.iSelectedImage = item.iImage = (itemData->image!=-1)? itemData->image: (int)ih->data->def_image_collapsed;
-
-    item.hItem = hItem;
-    item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-    SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
-  }
+  item.hItem = hItem;
+  item.mask = TVIF_HANDLE | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+  SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
 }
 
 /*****************************************************************************/
@@ -721,6 +721,9 @@ static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem)
 
   if (itemData->kind == ITREE_BRANCH)
   {
+    if (iupAttribGet(ih, "_IUPTREE_IGNORE_BRANCH_CB"))
+      return IUP_DEFAULT;
+
     if (item.state & TVIS_EXPANDED)
     {
       IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
@@ -1121,7 +1124,7 @@ static int winTreeSetTitleFontAttrib(Ihandle* ih, const char* name_id, const cha
   else
     itemData->hFont = NULL;
 
-  iupdrvDisplayUpdate(ih);
+  iupdrvPostRedraw(ih);
 
   return 0;
 }
@@ -1306,7 +1309,7 @@ static int winTreeSetColorAttrib(Ihandle* ih, const char* name_id, const char* v
   if (iupStrToRGB(value, &r, &g, &b))
   {
     itemData->color = RGB(r,g,b);
-    iupdrvDisplayUpdate(ih);
+    iupdrvPostRedraw(ih);
   }
 
  return 0;

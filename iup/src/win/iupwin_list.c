@@ -234,7 +234,7 @@ static int winListSetBgColorAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
   if (ih->handle)
-    iupdrvDisplayUpdate(ih);
+    iupdrvPostRedraw(ih);
   return 1;
 }
 

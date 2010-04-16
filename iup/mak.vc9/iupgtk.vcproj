@@ -95,6 +95,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\gtk\iupgtk_draw.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\gtk\iupgtk_focus.c"
 				>
 			</File>

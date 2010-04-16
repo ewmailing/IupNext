@@ -60,11 +60,11 @@ void iupdrvSetActive(Ihandle* ih, int enable);
 
 /** Post a redraw of a control.
  * \ingroup drv */
-void iupdrvDisplayUpdate(Ihandle *ih);
+void iupdrvPostRedraw(Ihandle *ih);
 
 /** Force a redraw of a control.
  * \ingroup drv */
-void iupdrvDisplayRedraw(Ihandle *ih);
+void iupdrvRedrawNow(Ihandle *ih);
 
 /** Reparent the native control.
  * \ingroup drv */

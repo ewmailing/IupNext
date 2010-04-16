@@ -45,7 +45,7 @@ static void winCanvasSetScrollInfo(HWND hWnd, int imin, int imax, int ipos, int 
 static int winCanvasSetBgColorAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
-  iupdrvDisplayUpdate(ih);
+  iupdrvPostRedraw(ih);
   return 1;
 }
 
@@ -386,7 +386,7 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(ih->handle, &ps);
-        iupAttribSetStr(ih, "HDC_WMPAINT", (char*)&hdc);
+        iupAttribSetStr(ih, "HDC_WMPAINT", (char*)hdc);
         iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", ps.rcPaint.left, ps.rcPaint.top, ps.rcPaint.right-ps.rcPaint.left, ps.rcPaint.bottom-ps.rcPaint.top);
 
         cb(ih, ih->data->posx, ih->data->posy);

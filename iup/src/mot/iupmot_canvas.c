@@ -434,6 +434,10 @@ static void motCanvasLayoutUpdateMethod(Ihandle *ih)
 
   XtVaGetValues(sb_win, XmNborderWidth, &border, NULL);
 
+  /* avoid abort in X */
+  if (ih->currentwidth <= 2*border) ih->currentwidth = 2*border+1;
+  if (ih->currentheight <= 2*border) ih->currentheight = 2*border+1;
+
   XtVaSetValues(sb_win,
     XmNx, (XtArgVal)ih->x,
     XmNy, (XtArgVal)ih->y,

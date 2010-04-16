@@ -371,7 +371,7 @@ static char* winTabsGetBgColorAttrib(Ihandle* ih)
 static int winTabsSetBgColorAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
-  iupdrvDisplayUpdate(ih);
+  iupdrvPostRedraw(ih);
   return 1;
 }
 
@@ -532,7 +532,7 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
         }
       }
 
-      iupdrvDisplayRedraw(ih);
+      iupdrvRedrawNow(ih);
     }
   }
 }

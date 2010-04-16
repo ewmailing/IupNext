@@ -14,9 +14,12 @@ void SplitTest(void)
   IupSetAttribute(ml, "VISIBLECOLUMNS", "10");
   
   split = IupSplit(bt, ml);
-  IupSetAttribute(split, "DIRECTION", "VERTICAL");
+//  IupSetAttribute(split, "DIRECTION", "VERTICAL");
 //  IupSetAttribute(split, "DIRECTION", "HORIZONTAL");
 //  IupSetAttribute(split, "COLOR", "127 127 255");
+//  IupSetAttribute(split, "LAYOUTDRAG", "NO");
+//  IupSetAttribute(split, "AUTOHIDE", "YES");
+//  IupSetAttribute(split, "SHOWGRIP", "NO");
 
   vbox = IupVbox(split, NULL);
   IupSetAttribute(vbox, "MARGIN", "10x10");

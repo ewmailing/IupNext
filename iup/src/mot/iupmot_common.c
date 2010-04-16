@@ -167,6 +167,10 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
   Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
+  /* avoid abort in X */
+  if (ih->currentwidth == 0) ih->currentwidth = 1;
+  if (ih->currentheight == 0) ih->currentheight = 1;
+
   XtVaSetValues(widget,
     XmNx, (XtArgVal)ih->x,
     XmNy, (XtArgVal)ih->y,
@@ -184,7 +188,7 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
   XtDestroyWidget(widget);   /* To match the call to XtCreateManagedWidget */
 }
 
-void iupdrvDisplayUpdate(Ihandle *ih)
+void iupdrvPostRedraw(Ihandle *ih)
 {
   XExposeEvent evt;
   Dimension w, h;
@@ -209,12 +213,12 @@ void iupdrvDisplayUpdate(Ihandle *ih)
   XSendEvent(iupmot_display, XtWindow(ih->handle), False, ExposureMask, (XEvent*)&evt);
 }
 
-void iupdrvDisplayRedraw(Ihandle *ih)
+void iupdrvRedrawNow(Ihandle *ih)
 {
   Widget w;
 
   /* POST a Redraw */
-  iupdrvDisplayUpdate(ih);
+  iupdrvPostRedraw(ih);
 
   /* if this element has an inner native parent (like IupTabs), 
      then redraw that native parent if different from the element. */
@@ -223,7 +227,7 @@ void iupdrvDisplayRedraw(Ihandle *ih)
   {
     Widget handle = ih->handle;
     ih->handle = w;
-    iupdrvDisplayUpdate(ih);
+    iupdrvPostRedraw(ih);
     ih->handle = handle;
   }
 
@@ -456,9 +460,11 @@ static Cursor motGetCursor(Ihandle* ih, const char* name)
     { "RESIZE_N",  XC_top_side},
     { "RESIZE_S",  XC_bottom_side},
     { "RESIZE_NS", XC_sb_v_double_arrow},
+    { "SPLITTER_HORIZ", XC_sb_v_double_arrow},
     { "RESIZE_W",  XC_left_side},
     { "RESIZE_E",  XC_right_side},
     { "RESIZE_WE", XC_sb_h_double_arrow},
+    { "SPLITTER_VERT", XC_sb_h_double_arrow},
     { "RESIZE_NE", XC_top_right_corner},
     { "RESIZE_SE", XC_bottom_right_corner},
     { "RESIZE_NW", XC_top_left_corner},

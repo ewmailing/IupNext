@@ -927,7 +927,7 @@ static int winTextSetTabSizeAttrib(Ihandle* ih, const char* value)
   iupStrToInt(value, &tabsize);
   tabsize *= 4;
   SendMessage(ih->handle, EM_SETTABSTOPS, (WPARAM)1L, (LPARAM)&tabsize);
-  iupdrvDisplayRedraw(ih);
+  iupdrvRedrawNow(ih);
   return 1;
 }
 
@@ -1127,7 +1127,7 @@ static int winTextSetBgColorAttrib(Ihandle *ih, const char *value)
       SendMessage(ih->handle, EM_SETBKGNDCOLOR, 0, (LPARAM)color);
     }
   }
-  iupdrvDisplayUpdate(ih);
+  iupdrvPostRedraw(ih);
   return 1;
 }
 
