@@ -50,6 +50,7 @@ void GetParamTest(void)
   char file_name[500] = "test.jpg";
   
   if (!IupGetParam("Title", param_action, 0,
+                   "Bt %u[, MyCancel]\n"
                    "Boolean: %b[No,Yes]\n"
                    "Integer: %i\n"
                    "Real 1: %r\n"

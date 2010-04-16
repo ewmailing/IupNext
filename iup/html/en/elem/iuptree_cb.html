@@ -44,7 +44,7 @@ the range is simply defined by ids[0] to ids[n-1], where <code>ids[i+1]=ids[i]+1
   before multiple nodes are unselected in one single operation. If 
 not defined the SELECTION_CB with status=0 will be called for all nodes in the 
 range. The range is not necessarily continuous. Called only if MARKMODE=MULTIPLE. 
-(Since 3.0)</p>
+(Since 3.1)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int* <strong>ids, int </strong>n) [in C]
 <strong>elem</strong>:multiunselection_cb(<strong>ids: </strong>table<strong>, n:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
