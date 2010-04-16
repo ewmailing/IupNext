@@ -36,6 +36,11 @@ void iupDrawKillCanvas(IdrawCanvas* dc);
  * \ingroup draw */
 void iupDrawFlush(IdrawCanvas* dc);
 
+/** Rebuild the offscreen image if the canvas size has changed.
+ * Automatically done in iupDrawCreateCanvas.
+ * \ingroup draw */
+void iupDrawUpdateSize(IdrawCanvas* dc);
+
 /** Returns the canvas size available for drawing.
  * \ingroup draw */
 void iupDrawGetSize(IdrawCanvas* dc, int *w, int *h);
@@ -44,22 +49,44 @@ void iupDrawGetSize(IdrawCanvas* dc, int *w, int *h);
  * \ingroup draw */
 void iupDrawParentBackground(IdrawCanvas* dc);
 
-/** Draws a filled rectangle.
+/** Draws a line.
+ * \ingroup draw */
+void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b);
+
+/** Draws a filled/hollow rectangle.
  * \ingroup draw */
 void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int filled);
 
+/** Draws a filled/hollow arc.
+ * \ingroup draw */
+void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int filled);
+
+/** Draws a filled/hollow polygon.
+ * points are arranged xyxyxy...
+ * \ingroup draw */
+void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int filled);
+
+/** Draws a text.
+ * x,y is at left,top corner of the text.
+ * \ingroup draw */
+void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b);
+
+/** Draws an image.
+ * x,y is at left,top corner of the image.
+ * \ingroup draw */
+void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y);
+
+/** Sets a rectangle clipping area.
+ * \ingroup draw */
+void iupDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
+
+/** Removes clipping.
+ * \ingroup draw */
+void iupDrawResetClip(IdrawCanvas* dc);
+
 /*
 TO DO:
-
-Update
-void iupDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
-void iupDrawResetClip(IdrawCanvas* dc);
-void iupDrawText(IdrawCanvas* dc, const char* text, int x, int y, unsigned char r, unsigned char g, unsigned char b);
-void iupDrawImage(IdrawCanvas* dc, Ihandle* image, int x, int y);
-void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b);
-- polygon
-- arc
-
+- check position and size of primitives
 */
 
 

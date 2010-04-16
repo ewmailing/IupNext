@@ -17,6 +17,7 @@
 #include "iup_class.h"
 #include "iup_str.h"
 #include "iup_object.h"
+#include "iup_image.h"
 #include "iup_draw.h"
 
 #include "iupgtk_drv.h"
@@ -55,6 +56,21 @@ void iupDrawKillCanvas(IdrawCanvas* dc)
   free(dc);
 }
 
+void iupDrawUpdateSize(IdrawCanvas* dc)
+{
+  int w, h;
+  gdk_drawable_get_size(dc->wnd, &w, &h);
+
+  if (w != dc->w || h != dc->h)
+  {
+    g_object_unref(dc->pixmap_gc); 
+    g_object_unref(dc->pixmap); 
+
+    dc->pixmap = gdk_pixmap_new(dc->wnd, dc->w, dc->h, gdk_drawable_get_depth(dc->wnd));
+    dc->pixmap_gc = gdk_gc_new(dc->pixmap);
+  }
+}
+
 void iupDrawFlush(IdrawCanvas* dc)
 {
   gdk_draw_drawable(dc->wnd, dc->gc, dc->pixmap, 0, 0, 0, 0, dc->w, dc->h);
@@ -80,4 +96,66 @@ void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned 
   iupgdkColorSet(&color, r, g, b);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
   gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, filled, x1, y1, x2-x1+1, y2-y1+1);
+}
+
+void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b)
+{
+  GdkColor color;
+  iupgdkColorSet(&color, r, g, b);
+  gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
+  gdk_draw_line(dc->pixmap, dc->pixmap_gc, x1, y1, x2, y2);
+}
+
+void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int filled)
+{
+  GdkColor color;
+  iupgdkColorSet(&color, r, g, b);
+  gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
+  gdk_draw_arc(dc->pixmap, dc->pixmap_gc, filled, x1, y1, x2-x1+1, y2-y1+1, iupROUND(a1*64), iupROUND((a2 - a1)*64));
+}
+
+void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int filled)
+{
+  GdkColor color;
+  iupgdkColorSet(&color, r, g, b);
+  gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
+  gdk_draw_polygon(dc->pixmap, dc->pixmap_gc, filled, (GdkPoint*)points, count);
+}
+
+void iupDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+{
+  GdkRectangle rect;
+  rect.x      = x1;
+  rect.y      = y1;
+  rect.width  = x2-x1+1;
+  rect.height = y2-y1+1;
+  gdk_gc_set_clip_rectangle(dc->pixmap_gc, &rect);
+}
+
+void iupDrawResetClip(IdrawCanvas* dc)
+{
+  gdk_gc_set_clip_region(dc->pixmap_gc, NULL);
+}
+
+void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b)
+{
+  PangoLayout* fontlayout = (PangoLayout*)IupGetAttribute(dc->ih, "PANGOLAYOUT");
+  GdkColor color;
+  iupgdkColorSet(&color, r, g, b);
+  gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
+  pango_layout_set_text(fontlayout, iupgtkStrConvertToUTF8(text), len);
+  gdk_draw_layout(dc->pixmap, dc->pixmap_gc, x, y, fontlayout);
+}
+
+void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
+{
+  int img_w, img_h, bpp;
+  GdkPixbuf* pixbuf = iupImageGetImage(name, dc->ih, make_inactive);
+  if (!pixbuf)
+    return;
+
+  /* must use this info, since image can be a driver image loaded from resources */
+  iupdrvImageGetInfo(pixbuf, &img_w, &img_h, &bpp);
+
+  gdk_draw_pixbuf(dc->pixmap, dc->pixmap_gc, pixbuf, 0, 0, x, y, img_w, img_h, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
