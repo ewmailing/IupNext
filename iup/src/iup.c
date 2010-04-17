@@ -60,8 +60,8 @@
 #include "iup.h"
 
 /* This appears only here to avoid changing the iup.h header fo bug fixes */
-#define IUP_VERSION_FIX ".1"
-#define IUP_VERSION_FIX_NUMBER 1
+#define IUP_VERSION_FIX ""
+#define IUP_VERSION_FIX_NUMBER 0
 
 const char iup_ident[] = 
   "$IUP: " IUP_VERSION IUP_VERSION_FIX " " IUP_COPYRIGHT " $\n"
