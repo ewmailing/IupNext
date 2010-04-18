@@ -15,9 +15,6 @@ extern "C" {
 int IupControlsOpen(void);
 void IupControlsClose(void);   /* for backward compatibility only, does nothing since IUP 3 */
 
-void IupOldValOpen(void);
-void IupOldTabsOpen(void);
-
 Ihandle* IupColorbar(void);
 Ihandle* IupCells(void);
 Ihandle *IupColorBrowser(void);

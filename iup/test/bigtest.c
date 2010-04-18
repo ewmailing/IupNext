@@ -166,8 +166,6 @@ int main(int argc, char* argv[])
 
   IupOpen(&argc, &argv);
   IupControlsOpen();
-//  IupOldValOpen();
-//  IupOldTabsOpen();
 
   dlg = IupDialog(IupVbox(list = IupList(NULL), NULL));
   IupSetAttribute(dlg, "MARGIN", "10x10");

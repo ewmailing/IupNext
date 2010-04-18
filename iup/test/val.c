@@ -118,8 +118,6 @@ void ValTest(void)
 {
   Ihandle *dlg, *val_h, *val_v;
 
-//  IupOldValOpen();
-
   lbl_v = IupLabel("VALUE=");
   IupSetAttribute(lbl_v, "SIZE", "70x");
 

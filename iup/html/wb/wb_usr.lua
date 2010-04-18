@@ -1273,14 +1273,6 @@ wb_usr.tree =
               name= {nl= "IupGauge (OLD)"},
               link= "ctrl/iupgauge.html"
             },
-            {
-              name= {nl= "IupTabs (OLD)"},
-              link= "ctrl/iuptabs.html"
-            },
-            {
-              name= {nl= "IupVal (OLD)"},
-              link= "ctrl/iupval.html"
-            },
             { link= "", name= {en= "" } },
             {
               name= {nl= "IupGLCanvas"},

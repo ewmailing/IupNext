@@ -13,7 +13,7 @@ SRCMATRIX = iupmat_key.c iupmat_mark.c iupmat_aux.c iupmat_mem.c iupmat_mouse.c 
 SRCMATRIX := $(addprefix matrix/, $(SRCMATRIX))
 
 SRC = iup_cdutil.c iup_gauge.c iup_cells.c iup_colorbar.c iup_controls.c \
-      iup_dial.c iup_oldtabs.c iup_oldval.c iup_oldmask.c \
+      iup_dial.c iup_oldmask.c \
       $(SRCCOLOR) $(SRCMATRIX)
 
 LIBS = iup iupcd

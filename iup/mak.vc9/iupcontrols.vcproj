@@ -311,14 +311,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\srccontrols\iup_oldtabs.c"
-			>
-		</File>
-		<File
-			RelativePath="..\srccontrols\iup_oldval.c"
-			>
-		</File>
-		<File
 			RelativePath="..\srccontrols\iupcontrols.def"
 			>
 			<FileConfiguration
