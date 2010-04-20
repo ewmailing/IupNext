@@ -35,13 +35,11 @@ int iupMatrixFocus_CB(Ihandle* ih, int focus)
   if (!iupMatrixIsValid(ih, 1))
     return IUP_DEFAULT;
 
-  if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Motif"))
+  if (IupGetGlobal("MOTIFVERSION"))
   {
-    if (focus && iupAttribGet(ih, "_IUPMAT_DOUBLE_CLICK"))
-    {
-      iupAttribSetStr(ih, "_IUPMAT_DOUBLE_CLICK", NULL);
+    if (iupAttribGet(ih, "_IUPMAT_DROPDOWN") ||  /* from iMatrixEditDropDown_CB, in Motif */
+        iupAttribGet(ih, "_IUPMAT_DOUBLECLICK"))  /* from iMatrixMouseLeftPress, in Motif */
       return IUP_DEFAULT;
-    }
   }
 
   ih->data->has_focus = focus;

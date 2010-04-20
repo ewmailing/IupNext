@@ -80,12 +80,18 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
     
     if (iupMatrixEditShow(ih))
     {
-      if(ih->data->datah == ih->data->droph) 
+      if (ih->data->datah == ih->data->droph)
         IupSetAttribute(ih->data->datah, "SHOWDROPDOWN", "YES");
 
-      if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Motif"))
-        if(atoi(IupGetGlobal("MOTIFNUMBER")) < 2203) /* since OpenMotif version 2.2.3 this is not necessary */
-          iupAttribSetStr(ih, "_IUPMAT_DOUBLE_CLICK", "1");
+      if (IupGetGlobal("MOTIFVERSION"))
+      {
+        /* Sequece of focus_cb in Motif from here:
+              Matrix-Focus(0) - ok
+              Edit-KillFocus - weird, must avoid using _IUPMAT_DOUBLECLICK
+           Since OpenMotif version 2.2.3 this is not necessary anymore. */
+        if (atoi(IupGetGlobal("MOTIFNUMBER")) < 2203) 
+          iupAttribSetStr(ih, "_IUPMAT_DOUBLECLICK", "1");
+      }
     }
   }
   else /* single click */
