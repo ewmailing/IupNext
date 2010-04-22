@@ -133,10 +133,11 @@ MOVENODE</strong></p>
   is pressed over a node.</p>
 <h3><a name="Notes">Notes</a></h3>
 <h4>Hierarchy</h4>
-<p>Branches can contain other branches or leaves. The tree always has at least one branch, 
-  the <b>root</b>, which will be the parent of all the first level branches and leaves. 
-The root node has id=0 and depth=0. The tree nodes have a sequential identification number 
-  (id), starting by the root, with id=0, and increases for each node independent 
+<p>Branches can contain other branches or leaves. When ADDROOT=Yes the tree has 
+initially one branch, 
+  the <b>root</b>. 
+The first node always has id=0 and depth=0. The tree nodes have a sequential identification number 
+  (id), starting by the first, with id=0, and increases for each node independent 
 from the node depth. The following picture illustrates the numbering of the nodes 
 in a tree.</p>
 <p class="style2">
@@ -162,7 +163,7 @@ TITLE0 = "Figures"
 <p>The following pseudo code initializes the tree from bottom to top 
 sequentially (except for branches), and also uses the focus node:</p>
 <pre>
-VALUE = 0  // Set the focus node at the root (default for a new element)
+VALUE = 0  // Set the focus node at the first (default for a new element)
 TITLE = "Figures"
 ADDBRANCH = "3D"
 ADDBRANCH = "2D"
@@ -229,7 +230,7 @@ also be selected using a rubber band if SHOW_DRAGDROP=NO.</p>
 <ul>
   <li><b>Arrow Up/Down</b>: Moves the focus node to the neighbor 
     node, according to the arrow direction.</li>
-  <li><b>Home/End</b>: Moves the focus node to the root/last node.</li>
+  <li><b>Home/End</b>: Moves the focus node to the first/last node.</li>
   <li><b>Page Up/Page Down</b>: Moves the focus node to the node one visible page above/below the 
     focus node.</li>
   <li><b>Enter</b>: If the focus node is an expanded branch, it is collapsed; if it is a collapsed
@@ -323,7 +324,7 @@ attribute.</p>
 <pre>iup.<a name="TreeAddNodes">TreeAddNodes</a>(<strong>ih: </strong>ihandle, <strong>tree: </strong>table, [<strong>id</strong>: number]) [in Lua]</pre>
 <p><strong>ih</strong>: Identifier of the interface element.<br>
 <strong>tree</strong>: table of nodes.<br>
-<strong>id</strong>: optional existing node. The default is the root (0).</p>
+<strong>id</strong>: optional existing node. The default is the first (0).</p>
 <p>Initializes the tree using the given Lua table as values for the tree nodes 
 using ADDBRANCH and ADDLEAF. For example:</p>
 <pre>tree_nodes = 

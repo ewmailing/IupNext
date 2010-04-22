@@ -55,7 +55,7 @@ static const char* iClassFindId(const char* name)
   {
     if (*name >= '0' && *name <= '9')
       return name;
-    if (*name == '*' || *name == ':')
+    if (*name == '*' || *name == ':' || *name == '-')
       return name;
 
     name++;
@@ -94,7 +94,6 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
     const char* name_id = iClassFindId(name);
     if (name_id)
     {
-      IattribFunc* afunc;
       const char* partial_name = iClassCutNameId(name, name_id);
       if (!partial_name)
         partial_name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 

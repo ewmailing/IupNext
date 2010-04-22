@@ -334,26 +334,29 @@ static void iTreeIncCacheMem(Ihandle* ih)
 
 void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeHandle* prevNode, InodeHandle* node_handle)
 {
-  int new_id;
+  int new_id = 0;
 
   ih->data->node_count++;
 
   /* node_count here already contains the final count */
   iTreeIncCacheMem(ih);
 
-  if (add || kindPrev == ITREE_LEAF)
+  if (prevNode)
   {
-    /* ADD implies always that id=prev_id+1 */
-    /* INSERT after a leaf implies always that new_id=prev_id+1 */
-    int prev_id = iupTreeFindNodeId(ih, prevNode);
-    new_id = prev_id+1;
-  }
-  else
-  {
-    /* INSERT after a branch implies always that new_id=prev_id+1+child_count */
-    int prev_id = iupTreeFindNodeId(ih, prevNode);
-    int child_count = iupdrvTreeTotalChildCount(ih, prevNode);
-    new_id = prev_id+1+child_count;
+    if (add || kindPrev == ITREE_LEAF)
+    {
+      /* ADD implies always that id=prev_id+1 */
+      /* INSERT after a leaf implies always that new_id=prev_id+1 */
+      int prev_id = iupTreeFindNodeId(ih, prevNode);
+      new_id = prev_id+1;
+    }
+    else
+    {
+      /* INSERT after a branch implies always that new_id=prev_id+1+child_count */
+      int prev_id = iupTreeFindNodeId(ih, prevNode);
+      int child_count = iupdrvTreeTotalChildCount(ih, prevNode);
+      new_id = prev_id+1+child_count;
+    }
   }
 
   iTreeAddToCache(ih, new_id, node_handle);
@@ -707,7 +710,8 @@ Iclass* iupTreeGetClass(void)
   iupClassRegisterAttribute(ic, "SHOWRENAME",   iTreeGetShowRenameAttrib,      iTreeSetShowRenameAttrib,   NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ADDEXPANDED",  iTreeGetAddExpandedAttrib,     iTreeSetAddExpandedAttrib,  IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COUNT",        iTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LASTADDNODE", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LASTADDNODE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ADDROOT", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttribute(ic, "CTRL",  NULL, iTreeSetCtrlAttrib,  NULL, NULL, IUPAF_NOT_MAPPED);

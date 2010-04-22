@@ -154,6 +154,27 @@ static int removemarked(void)
   return IUP_DEFAULT;
 }
 
+static int removeall(void)
+{
+  Ihandle* tree = IupGetHandle("tree");
+  IupSetAttribute(tree, "DELNODE", "ALL");
+  return IUP_DEFAULT;
+}
+
+static int expandall(void)
+{
+  Ihandle* tree = IupGetHandle("tree");
+  IupSetAttribute(tree, "EXPANDALL", "YES");
+  return IUP_DEFAULT;
+}
+
+static int contractall(void)
+{
+  Ihandle* tree = IupGetHandle("tree");
+  IupSetAttribute(tree, "EXPANDALL", "NO");
+  return IUP_DEFAULT;
+}
+
 int renamenode(void)
 {
   Ihandle* tree = IupGetHandle("tree");
@@ -346,7 +367,10 @@ static int rightclick_cb(Ihandle* ih, int id)
     IupItem ("Remove Node","removenode"),
     IupItem ("Remove Children","removechild"),
     IupItem ("Remove Marked","removemarked"),
+    IupItem ("Remove All","removeall"),
     IupItem ("Toggle State","togglestate"),
+    IupItem ("Expand All","expandall"),
+    IupItem ("Contract All","contractall"),
     IupSubmenu("Focus", IupMenu(
       IupItem ("ROOT", "selectnode"),
       IupItem ("LAST", "selectnode"),
@@ -375,6 +399,9 @@ static int rightclick_cb(Ihandle* ih, int id)
   IupSetFunction("removemarked", (Icallback) removemarked);
   IupSetFunction("renamenode", (Icallback) renamenode);
   IupSetFunction("togglestate", (Icallback) togglestate);
+  IupSetFunction("removeall", (Icallback) removeall);
+  IupSetFunction("expandall", (Icallback) expandall);
+  IupSetFunction("contractall", (Icallback) contractall);
 
 //  sprintf(attr, "%d", id);
 //  IupSetAttribute(ih, "VALUE", attr);
@@ -443,7 +470,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
 
   IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
-//  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+  IupSetAttribute(tree, "SHOWRENAME",   "YES");
 //  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
 
   IupSetAttribute(tree, "ADDEXPANDED",  "YES");

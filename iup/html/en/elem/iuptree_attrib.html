@@ -20,13 +20,16 @@
 
 <h2>IupTree Attributes</h2>
 <h3><a name="global">General</a></h3>
-<p><strong>ADDEXPANDED</strong>:
+<p><strong>ADDEXPANDED</strong> (<font size="3">non inheritable</font>):
   Defines if branches will be expanded when 
   created. The branch will be actually expanded when it receives the first 
 child. Possible values: &quot;YES&quot; =
     The branches will be created expanded; &quot;NO&quot; =
     The branches will be created collapsed. Default:
     &quot;YES&quot;.</p>
+<p><strong>ADDROOT</strong> (<font size="3">non inheritable</font>): 
+automatically adds an empty branch as the first node when the tree is mapped. 
+(Since 3.1)</p>
 
 <p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: Background color of the 
 tree. Default: the global attribute TXTBGCOLOR.</p>
@@ -72,7 +75,7 @@ is limited to a minimum of 5 pixels. (since 3.0)&nbsp; (GTK 2.12)</p>
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a> (<font size="3">non inheritable</font>): 
 the initial size is &quot;400x200&quot;. Set to NULL to allow the automatic 
 layout use smaller values.</p>
-<p><strong>SHOWDRAGDROP</strong> (creation only): Enables the drag and drop of 
+<p><strong>SHOWDRAGDROP</strong> (creation only) (<font size="3">non inheritable</font>): Enables the drag and drop of 
 nodes, and enables the <strong>DRAGDROP_CB</strong> callback. Default:
   &quot;NO&quot;. Works only if MARKMODE=SINGLE.</p>
 
@@ -116,7 +119,7 @@ versions.</p>
 <p><strong>COLORid</strong>: text foreground color of the specified node. The value should be a string in the format &quot;R G B&quot; where R, G, B are numbers 
   from 0 to 255.</p>
 <p><strong>DEPTHid </strong>(read only): returns the depth of the specified 
-node. The root node has depth=0, its 
+node. The first node has depth=0, its 
 immediate children has depth=1, their children has depth=2 and so on.</p>
 <p><strong>KINDid </strong>(read only):
   returns the kind of the specified node. Possible values: 
@@ -179,22 +182,25 @@ updated.</p>
 updated.</p>
 <h3><a name="focus">Focus Node</a></h3>
 <p><strong>VALUE</strong> (<font size="3">non inheritable</font>):
-  The focus node identifier. When MARKMODE=SINGLE the node is also selected. The tree is 
+  The focus node identifier. When retrieved but there isn't a node with focus it 
+returns 0 if there are any nodes, and returns -1 if there are no nodes. When 
+changed and MARKMODE=SINGLE the node is also selected. The tree is 
 always scrolled so 
 the node becomes visible. In Motif the tree will also receive the focus. 
 Additionally accepts the values:</p>
 <blockquote>
-<p class="info"><span class="style3">&quot;ROOT&quot;:
-      the root node</span><br>
+<p class="info"><span class="style3">&quot;ROOT&quot; or &quot;FIRST&quot;:
+      the first node</span><br>
 &quot;LAST&quot;:
       the last visible node<br>
 &quot;NEXT&quot;:
       the next visible node, one node after the focus node. If at the last does nothing<br>
-&quot;PREVIOUS&quot;: the previous visible node, one node before the focus node. If at the root does nothing<br>
+&quot;PREVIOUS&quot;: the previous visible node, one node before the focus node. If at the 
+first does nothing<br>
 &quot;PGDN&quot;: the next visible node, ten nodes node after the focus node. If 
 at the last does nothing <br>
 &quot;PGUP&quot;: the previous visible node, ten nodes before the focus node. If 
-at the root does nothing</p>
+at the first does nothing</p>
 </blockquote>
 <h3><a name="marks0">Marks</a></h3>
 <p><strong>MARK</strong> (write only) (<font size="3">non inheritable</font>): Selects a range 
@@ -229,12 +235,13 @@ SINGLE or MULTIPLE. Default: SINGLE.</p>
   Defines the initial node for the block 
   marking, used when MARK=BLOCK. The value must be the node identifier.
     Default:
-    0 (root node).</p>
+    0 (first node).</p>
 <h3><a name="tree">Hierarchy</a>&nbsp; (<font size="3">non inheritable</font>)</h3>
 <p><strong>ADDLEAF</strong><b>id</b><strong> </strong>(write only):
   Adds a new leaf 
 after the reference node, where id is the reference node identifier. If id is 
-empty, then the focus node is used as reference node. The value is used as the 
+empty, then the focus node is used as reference node. Use id=-1 to add the first 
+node in an empty tree. The value is used as the 
 text label of the new node. The id of the new node will be the id of the 
 reference node + 1. 
   The attribute <strong>LASTADDNODE</strong> is set to the new id. The reference node is marked and all others unmarked. The reference node 
@@ -260,11 +267,11 @@ copied, except user data. Ignored if set before map. (since 3.0)</p>
 
 <p><strong>DELNODEid </strong>(write only):
   Removes a node and/or its children, where id is the specified node identifier. 
-If id is empty, then the focus node is used as the specified node. The root cannot be removed. 
-Ignored if set before map. Possible values:</p>
+If id is empty, then the focus node is used as the specified node. Ignored if set before map. Possible values:</p>
 <blockquote>
 <ul>
-  <li>&quot;SELECTED&quot;:
+  <li>&quot;ALL&quot;: deletes all nodes, id is ignored (Since 3.1)</li>
+	<li>&quot;SELECTED&quot;:
     deletes the specified node and its children</li>
   <li>&quot;CHILDREN&quot;:
     deletes only the children of the 
@@ -283,12 +290,11 @@ in the string as &quot;%p&quot;. (since 3.0)</p>
 
 <p><strong>INSERTLEAFid</strong>, <strong>INSERTBRANCHid </strong>
 (write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRACH</strong> but 
-the depth of the new node is always the same of the reference node. 
-If the reference node is a leaf, then the id of the new node will be the id of 
-the reference node + 1. If the reference node is a branch the id of the new node 
+the depth of the new node is always the same of the reference node. If the 
+reference node is a leaf, then the id of the new node will be the id of the 
+reference node + 1. If the reference node is a branch the id of the new node 
 will be the id of the reference node + 1 + the total number of child nodes of 
-the reference node. The attribute <strong>
-LASTADDNODE</strong> is set to the new id. (since 3.0)</p>
+the reference node. (since 3.0)</p>
 
 <p><strong>MOVENODEid </strong>(write only): Moves a node and its children, 
 where id is the specified node identifier. If id is empty, then the focus node 
@@ -311,7 +317,7 @@ for <a href="iuptext.html#Attributes">IupText</a>.</p>
   interval 
   of the text box when in-place renaming. Same as the SELECTION attribute for
 <a href="iuptext.html#Attributes">IupText</a>.</p>
-<p><strong>SHOWRENAME</strong> (creation only): Allows the in place rename of a 
+<p><strong>SHOWRENAME</strong> (creation only) (<font size="3">non inheritable</font>): Allows the in place rename of a 
 node. Default:
   &quot;NO&quot;. Since IUP 3.0, F2 and clicking twice only starts to rename a 
 node if SHOWRENAME=Yes.</p>

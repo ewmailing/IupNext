@@ -149,7 +149,8 @@ of the leaf.<br>
 <p><strong>NODEREMOVED_CB</strong>:
   Action generated when a node is going to be removed. It is only a 
 notification, the action can not be aborted. No node dependent attribute can be 
-consulted during the callback. It is usefull to remove memory allocated for the 
+consulted during the callback. Not called when the tree is unmapped. It is 
+useful to remove memory allocated for the 
 userdata. (since 3.0)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, void* <strong>userdata</strong>); [in C] 
 <strong>elem</strong>:noderemoved_cb(<strong>userid</strong>: userdata/table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -210,8 +211,8 @@ the event. <br>
   <a href="../call/iup_help_cb.html">HELP_CB</a>: All common callbacks are 
 supported.</p>
 
-<p>In Motif the tree always resets the focus to the root node when receive the 
-focus. The KILLFOCUS_CB callback is called only when the focus is at the root 
+<p>In Motif the tree always resets the focus to the first node when receive the 
+focus. The KILLFOCUS_CB callback is called only when the focus is at the first 
 node. Also in Motif some LEAVEWINDOW_CB events are delayed to when the user 
 enter again, firing a leave and enter events at enter time.</p>
 
