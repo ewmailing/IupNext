@@ -19,7 +19,7 @@
 /* Adjust these parameters for optimal performance and memory usage */
 static const unsigned int itable_maxTableSizeIndex = 8;
 static const unsigned int itable_hashTableSize[] = { 31, 101, 401, 1601, 4001, 8009, 16001, 32003, 64007 };
-static const float itable_resizeLimit = 2;
+static const unsigned int itable_resizeLimit = 2;
 static const unsigned int itable_itemGrow = 5;
 
 /* Iteration context.
@@ -55,8 +55,8 @@ ItableKey;
 typedef struct _ItableItem
 {
   Itable_Types  itemType;
-  ItableKey          key;
-  void              *value;
+  ItableKey     key;
+  void*         value;
 }
 ItableItem;
 
@@ -70,26 +70,25 @@ ItableItem;
 typedef struct _ItableEntry
 {
   unsigned int  nextItemIndex;
-  unsigned int  size;
-  ItableItem   *items;
+  unsigned int  itemsSize;
+  ItableItem*   items;
 }
 ItableEntry;
 
 
 /* A hash table.
- * indexType is the type of the index.
  * entries is an array of entries. Select an
  * entry by its index.
  * size is the number of entries in the hash table...
  */
 struct _Itable
 {
-  unsigned int            size;
-  unsigned int            numberOfEntries;
-  unsigned int            tableSizeIndex;  /* index into itable_hashTableSize array */
-  Itable_IndexTypes  indexType;
-  ItableEntry            *entries;
-  ItableContext           context;
+  unsigned int         entriesSize;
+  unsigned int         numberOfEntries;
+  unsigned int         tableSizeIndex;  /* index into itable_hashTableSize array */
+  Itable_IndexTypes    indexType;  /* type of the index: string or pointer. */
+  ItableEntry          *entries;
+  ItableContext        context;
 };
 
 
@@ -121,8 +120,7 @@ Itable *iupTableCreate(Itable_IndexTypes indexType)
 
 Itable *iupTableCreateSized(Itable_IndexTypes indexType, unsigned int initialSizeIndex)
 {
-  Itable *it = (Itable *)malloc(sizeof(struct _Itable));
-
+  Itable *it = (Itable *)malloc(sizeof(Itable));
   iupASSERT(it!=NULL);
   if (!it)
     return 0;
@@ -130,12 +128,12 @@ Itable *iupTableCreateSized(Itable_IndexTypes indexType, unsigned int initialSiz
   if (initialSizeIndex > itable_maxTableSizeIndex)
     initialSizeIndex = itable_maxTableSizeIndex;
 
-  it->size            = itable_hashTableSize[initialSizeIndex];
+  it->entriesSize    = itable_hashTableSize[initialSizeIndex];
   it->tableSizeIndex  = initialSizeIndex;
   it->numberOfEntries = 0;
   it->indexType       = indexType;
 
-  it->entries = (ItableEntry *)malloc(it->size * sizeof(ItableEntry));
+  it->entries = (ItableEntry *)malloc(it->entriesSize * sizeof(ItableEntry));
   iupASSERT(it->entries!=NULL);
   if (!it->entries)
   {
@@ -143,7 +141,7 @@ Itable *iupTableCreateSized(Itable_IndexTypes indexType, unsigned int initialSiz
     return 0;
   }
 
-  memset(it->entries, 0, it->size * sizeof(ItableEntry));
+  memset(it->entries, 0, it->entriesSize * sizeof(ItableEntry));
 
   it->context.entryIndex = (unsigned int)-1;
   it->context.itemIndex = (unsigned int)-1;
@@ -158,16 +156,19 @@ void iupTableClear(Itable *it)
   if (!it)
     return;
 
-  for (i = 0; i < it->size; i++)
+  for (i = 0; i < it->entriesSize; i++)
   {
     ItableEntry *entry = &(it->entries[i]);
     if (entry->items)
+    {
       iTableFreeItemArray(it->indexType, entry->nextItemIndex, entry->items);
+      entry->items = NULL;
+    }
   }
 
   it->numberOfEntries = 0;
 
-  memset(it->entries, 0, it->size * sizeof(ItableEntry));
+  memset(it->entries, 0, it->entriesSize * sizeof(ItableEntry));
 
   it->context.entryIndex = (unsigned int)-1;
   it->context.itemIndex = (unsigned int)-1;
@@ -185,7 +186,10 @@ void iupTableDestroy(Itable *it)
   iupTableClear(it);
 
   if (it->entries)
+  {
     free(it->entries);
+    it->entries = NULL;
+  }
 
   free(it);
 }
@@ -288,17 +292,23 @@ static void iTableRemoveItem(Itable *it, ItableEntry *entry, unsigned int itemIn
   item = &(entry->items[itemIndex]);
 
   if (it->indexType == IUPTABLE_STRINGINDEXED)
+  {
     free((void *)item->key.keyStr);
+    item->key.keyStr = NULL;
+  }
 
   if (item->itemType == IUPTABLE_STRING)
+  {
     free(item->value);
+    item->value = NULL;
+  }
 
   /* re-order the remaining items */
   for (i = itemIndex; i < entry->nextItemIndex-1; i++)
     entry->items[i] = entry->items[i+1];
 
   /* clear the released item */
-  memset(entry->items + entry->nextItemIndex, 0, sizeof (ItableItem));
+  memset(entry->items + entry->nextItemIndex-1, 0, sizeof (ItableItem));
 
   entry->nextItemIndex--;
   it->numberOfEntries--;
@@ -398,7 +408,7 @@ char *iupTableFirst(Itable *it)
   it->context.itemIndex = (unsigned int)-1;
 
   /* find the first used entry */
-  for (entryIndex = 0; entryIndex < it->size; entryIndex++)
+  for (entryIndex = 0; entryIndex < it->entriesSize; entryIndex++)
   {
     if (it->entries[entryIndex].nextItemIndex > 0)
     {
@@ -430,7 +440,7 @@ char *iupTableNext(Itable *it)
   else
   {
     /* find the next used entry */
-    for (entryIndex = it->context.entryIndex+1; entryIndex < it->size; entryIndex++)
+    for (entryIndex = it->context.entryIndex+1; entryIndex < it->entriesSize; entryIndex++)
     {
       if (it->entries[entryIndex].nextItemIndex > 0)
       {
@@ -471,7 +481,7 @@ char *iupTableRemoveCurr(Itable *it)
   else
   {
     /* find the next used entry */
-    for (entryIndex = it->context.entryIndex+1; entryIndex < it->size; entryIndex++)
+    for (entryIndex = it->context.entryIndex+1; entryIndex < it->entriesSize; entryIndex++)
     {
       if (it->entries[entryIndex].nextItemIndex > 0)
       {
@@ -507,13 +517,19 @@ static void iTableFreeItemArray(Itable_IndexTypes indexType, unsigned int nextFr
   if (indexType == IUPTABLE_STRINGINDEXED)
   {
     for (i = 0; i < nextFreeIndex; i++)
+    {
       free((void *)(items[i].key.keyStr));
+      items[i].key.keyStr = NULL;
+    }
   }
 
   for (i = 0; i < nextFreeIndex; i++)
   {
     if (items[i].itemType == IUPTABLE_STRING)
+    {
       free(items[i].value);
+      items[i].value = NULL;
+    }
   }
 
   free(items);
@@ -547,7 +563,7 @@ static unsigned int iTableGetEntryIndex(Itable *it, const char *key, unsigned lo
     *keyIndex = (unsigned long)key;   /* this could NOT be dependent from table size */
   }
 
-  return (unsigned int)((*keyIndex) % it->size);
+  return (unsigned int)((*keyIndex) % it->entriesSize);
 }
 
 #ifdef DEBUGTABLE
@@ -605,24 +621,23 @@ static unsigned int iTableFindItem(Itable *it, const char *key, ItableEntry **en
 
 static void iTableUpdateArraySize(ItableEntry *entry)
 {
-  if (entry->nextItemIndex >= entry->size)
+  if (entry->nextItemIndex >= entry->itemsSize)
   {
     /* we have to expand the item array */
     unsigned int newSize;
 
-    newSize = entry->size + itable_itemGrow;
+    newSize = entry->itemsSize + itable_itemGrow;
 
     entry->items = (ItableItem *)realloc(entry->items, newSize * sizeof(ItableItem));
     iupASSERT(entry->items!=NULL);
     if (!entry->items)
       return;
 
-    memset(entry->items + entry->size, 0, itable_itemGrow * sizeof(ItableItem));
+    memset(entry->items + entry->itemsSize, 0, itable_itemGrow * sizeof(ItableItem));
 
-    entry->size = newSize;
+    entry->itemsSize = newSize;
   }
 }
-
 
 static void iTableAdd(Itable *it, ItableKey *key, void *value, Itable_Types itemType)
 {
@@ -659,7 +674,7 @@ static unsigned int iTableResize(Itable *it)
   /* check if we do not need to resize the hash table */
   if (it->numberOfEntries == 0 ||
      it->tableSizeIndex >= itable_maxTableSizeIndex ||
-     it->size / it->numberOfEntries >= itable_resizeLimit)
+     it->entriesSize / it->numberOfEntries >= itable_resizeLimit)
     return 0;
 
   /* create a new hash table and copy the contents of
@@ -668,7 +683,7 @@ static unsigned int iTableResize(Itable *it)
   newSizeIndex = it->tableSizeIndex + 1;
   newTable = iupTableCreateSized(it->indexType, newSizeIndex);
 
-  for (entryIndex = 0; entryIndex < it->size; entryIndex++)
+  for (entryIndex = 0; entryIndex < it->entriesSize; entryIndex++)
   {
     entry = &(it->entries[entryIndex]);
 
@@ -682,12 +697,13 @@ static unsigned int iTableResize(Itable *it)
       }     
 
       free(entry->items);
+      entry->items = NULL;
     }
   }
 
   free(it->entries);
 
-  it->size            = newTable->size;
+  it->entriesSize    = newTable->entriesSize;
   it->tableSizeIndex  = newTable->tableSizeIndex;
   it->numberOfEntries = newTable->numberOfEntries;
   it->entries         = newTable->entries;
@@ -714,11 +730,11 @@ static void iTableShowStatistics(Itable *it)
     return;
   }
 
-  nofSlots = it->size;
+  nofSlots = it->entriesSize;
   nofKeys  = it->numberOfEntries;
   optimalNofKeysPerSlot = (double)nofKeys / (double)nofSlots;
 
-  for (entryIndex = 0; entryIndex < it->size; entryIndex++)
+  for (entryIndex = 0; entryIndex < it->entriesSize; entryIndex++)
   {
     ItableEntry *entry = &(it->entries[entryIndex]);
 

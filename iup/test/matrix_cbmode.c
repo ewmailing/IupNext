@@ -5,12 +5,12 @@
 #include "iup.h"
 #include "iupcontrols.h"
 
-static char data[3][3][50] = 
-{
-  {"1:1", "1:2", "1:3"}, 
-  {"2:1", "2:2", "2:3"}, 
-  {"3:1", "3:2", "3:3"}, 
-};
+//static char data[3][3][50] = 
+//{
+//  {"1:1", "1:2", "1:3"}, 
+//  {"2:1", "2:2", "2:3"}, 
+//  {"3:1", "3:2", "3:3"}, 
+//};
 
 
 static int dropcheck_cb(Ihandle *self, int lin, int col)
@@ -42,21 +42,23 @@ static char* value_cb(Ihandle *self, int lin, int col)
 {
   if (lin == 0 || col == 0)
     return "Title";
-  return data[lin-1][col-1];
+  return "cell";
+//  return data[lin-1][col-1];
 }
 
 static int value_edit_cb(Ihandle *self, int lin, int col, char* newvalue)
 {
-  strcpy(data[lin-1][col-1], newvalue);
+//  strcpy(data[lin-1][col-1], newvalue);
   return IUP_DEFAULT;
 }
 
 static Ihandle* create_matrix(void)
 {
   Ihandle* mat = IupMatrix(NULL); 
+  int lin, col;
   
-  IupSetAttribute(mat, "NUMCOL", "3"); 
-  IupSetAttribute(mat, "NUMLIN", "3"); 
+  IupSetAttribute(mat, "NUMCOL", "20"); 
+  IupSetAttribute(mat, "NUMLIN", "5000"); 
   
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "3");
@@ -65,16 +67,19 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "HEIGHT2", "30");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
 //  IupSetAttribute(mat,"RESIZEMATRIX", "YES");
-  IupSetAttribute(mat,"SCROLLBAR", "NO");
+  IupSetAttribute(mat,"SCROLLBAR", "YES");
   IupSetCallback(mat,"VALUE_CB",(Icallback)value_cb);
-  IupSetCallback(mat,"VALUE_EDIT_CB",(Icallback)value_edit_cb);
-  IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
-  IupSetCallback(mat,"DROP_CB",(Icallback)drop);
+//  IupSetCallback(mat,"VALUE_EDIT_CB",(Icallback)value_edit_cb);
+//  IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
+//  IupSetCallback(mat,"DROP_CB",(Icallback)drop);
 
 //  IupSetAttribute(mat, "HEIGHT0", "10");
 //  IupSetAttribute(mat, "WIDTH0", "90");
 //  IupSetAttribute(mat,"MARKMODE","LIN");
 //  IupSetAttribute(mat,"MARKMULTIPLE","NO");
+  IupSetAttribute(mat,"MARKMODE","CELL");
+  IupSetAttribute(mat,"MARKMULTIPLE","YES");
+  IupSetAttribute(mat,"USETITLESIZE","YES");
 
   //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");
   //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");
@@ -82,6 +87,15 @@ static Ihandle* create_matrix(void)
 
 //  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","BGCOLOR");
 //  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:1","BGCOLOR");
+
+  for (lin = 0; lin < 3000; lin++)
+  {
+    for (col = 0; col < 20; col++)
+    {
+      IupMatSetAttribute(mat,"BGCOLOR", lin, col, "192 192 192");
+      IupMatSetAttribute(mat,"FGCOLOR", lin, col, "1 1 1");
+    }
+  }
 
   return mat;
 }
