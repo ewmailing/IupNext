@@ -139,6 +139,7 @@ endif
 endif
 
 ifeq ($(TEC_SYSARCH), x64)
+  TEC_BYTEORDER = TEC_LITTLEENDIAN
   TEC_WORDSIZE = TEC_64
 else
 ifdef BUILD_64
