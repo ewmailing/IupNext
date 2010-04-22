@@ -1575,25 +1575,29 @@ wb_usr.tree =
           folder=
           {
             {
-              name= {nl= "Simple Array"},
-              link= "../doxygen/group__iarray.html"
-            },
-            {
               name= {nl= "Assert Utilities"},
               link= "../doxygen/group__assert.html"
             },
             {
-              name= {nl= "String Utilities"},
-              link= "../doxygen/group__str.html"
+              name= {nl= "Hash Table"},
+              link= "../doxygen/group__table.html"
             },
             {
               name= {nl= "Language Dependent Messages"},
               link= "../doxygen/group__strmessage.html"
             },
             {
-              name= {nl= "Hash Table"},
-              link= "../doxygen/group__table.html"
-            }
+              name= {nl= "Simple Array"},
+              link= "../doxygen/group__iarray.html"
+            },
+            {
+              name= {nl= "Simple Draw"},
+              link= "../doxygen/group__draw.html"
+            },
+            {
+              name= {nl= "String Utilities"},
+              link= "../doxygen/group__str.html"
+            },
           }
         },
         {

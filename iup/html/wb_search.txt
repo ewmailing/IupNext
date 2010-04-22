@@ -22,6 +22,7 @@ en/call/iup_action.html
 en/func/iupshow.html
 en/sample_results_bgcolor.html
 en/history3.html
+en/../doxygen/group__draw.html
 en/func/iupflush.html
 en/ide_guide/dev-cpp.html
 en/elem/iupcanvas.html
@@ -186,9 +187,9 @@ en/elem/iuptree_attrib.html
 en/elem/iupitem.html
 en/dlg/iupgetfile.html
 en/func/iupcreate.html
-en/../doxygen/group__table.html
-en/../doxygen/group__strmessage.html
 en/../doxygen/group__iarray.html
+en/../doxygen/group__strmessage.html
+en/../doxygen/group__table.html
 en/copyright.html
 en/../doxygen/group__util.html
 en/../doxygen/group__drvfont.html
