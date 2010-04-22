@@ -71,6 +71,7 @@ IupShowXY
 IupStoreAttribute
 IupStoreGlobal
 IupSubmenu
+IupSplit
 IupText
 IupToggle
 IupUnMapFont
