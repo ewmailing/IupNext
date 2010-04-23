@@ -3,4 +3,4 @@
 do_all: iupcontrols
 
 iupcontrols:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak 
+	@$(MAKE) --no-print-directory -f ../tecmake.mak 

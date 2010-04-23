@@ -1,12 +1,12 @@
 #-------------------------------------------------------------------------#
-#- Tecmake  (Compact Version)                                            -#
+#- Tecmake  (POSIX Version)                                              -#
 #- Generic Makefile to build applications and libraries at TeCGraf       -#
 #- The user makefile usually has the name "config.mak".                  -#
 #-------------------------------------------------------------------------#
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 3.21
+VERSION = 4.0
 
 
 #---------------------------------#
@@ -18,96 +18,101 @@ build: tecmake
 #---------------------------------#
 # System Variables Definitions
 
-# Base Defintions
-TEC_SYSNAME:=$(shell uname -s)
-TEC_SYSVERSION:=$(shell uname -r|cut -f1 -d.)
-TEC_SYSMINOR:=$(shell uname -r|cut -f2 -d.)
-TEC_SYSARCH:=$(shell uname -m)
+ifndef TEC_UNAME
+  # Base Defintions
+  TEC_SYSNAME:=$(shell uname -s)
+  TEC_SYSVERSION:=$(shell uname -r|cut -f1 -d.)
+  TEC_SYSMINOR:=$(shell uname -r|cut -f2 -d.)
+  TEC_SYSARCH:=$(shell uname -m)
 
-# Fixes
-ifeq ($(TEC_SYSNAME), SunOS)
-	TEC_SYSARCH:=$(shell uname -p)
-endif
-ifeq ($(TEC_SYSNAME), IRIX)
-	TEC_SYSARCH:=$(shell uname -p)
-endif
-ifeq ($(TEC_SYSNAME), FreeBSD)
-	TEC_SYSMINOR:=$(shell uname -r|cut -f2 -d.|cut -f1 -d-)
-endif
-ifeq ($(TEC_SYSNAME), AIX)
-	TEC_SYSVERSION:=$(shell uname -v)
-	TEC_SYSMINOR:=$(shell uname -r)
-	TEC_SYSARCH:=ppc
-endif
-ifeq ($(TEC_SYSNAME), Darwin)
-	TEC_SYSARCH:=$(shell uname -p)
+  # Fixes
+  ifeq ($(TEC_SYSNAME), SunOS)
+    TEC_SYSARCH:=$(shell uname -p)
+  endif
+  ifeq ($(TEC_SYSNAME), IRIX)
+    TEC_SYSARCH:=$(shell uname -p)
+  endif
+  ifeq ($(TEC_SYSNAME), FreeBSD)
+    TEC_SYSMINOR:=$(shell uname -r|cut -f2 -d.|cut -f1 -d-)
+  endif
+  ifeq ($(TEC_SYSNAME), AIX)
+    TEC_SYSVERSION:=$(shell uname -v)
+    TEC_SYSMINOR:=$(shell uname -r)
+    TEC_SYSARCH:=ppc
+  endif
+  ifeq ($(TEC_SYSNAME), Darwin)
+    TEC_SYSARCH:=$(shell uname -p)
+  endif
+
+  ifeq ($(TEC_SYSARCH), i686)
+    TEC_SYSARCH:=x86
+  endif
+  ifeq ($(TEC_SYSARCH), i386)
+    TEC_SYSARCH:=x86
+  endif
+  ifeq ($(TEC_SYSARCH), powerpc)
+    TEC_SYSARCH:=ppc
+  endif
+  ifeq ($(TEC_SYSARCH), x86_64)
+    TEC_SYSARCH:=x64
+  endif
+
+  # Compose
+  TEC_SYSRELEASE:=$(TEC_SYSVERSION).$(TEC_SYSMINOR)
+  TEC_UNAME:=$(TEC_SYSNAME)$(TEC_SYSVERSION)$(TEC_SYSMINOR)
+
+  # Linux 2.4 and GCC 3.x
+  ifeq ($(TEC_UNAME), Linux24)
+    GCCVER:=$(shell gcc -dumpversion|cut -f1 -d.)
+    ifeq ($(GCCVER), 3)
+      TEC_UNAME:=$(TEC_UNAME)g3
+    endif
+  endif
+
+  # Linux 2.6 and GCC 4.x
+  ifeq ($(TEC_UNAME), Linux26)
+    GCCVER:=$(shell gcc -dumpversion|cut -f1 -d.)
+    ifeq ($(GCCVER), 4)
+      TEC_UNAME:=$(TEC_UNAME)g4
+    endif
+  endif
+
+  # Linux and PowerPC
+  ifeq ($(TEC_SYSNAME), Linux)
+    ifeq ($(TEC_SYSARCH), ppc)
+      TEC_UNAME:=$(TEC_UNAME)ppc
+    endif
+  endif
+
+  # 64-bits Linux
+  ifeq ($(TEC_SYSARCH), x64)
+    BUILD_64=Yes
+    TEC_UNAME:=$(TEC_UNAME)_64
+  endif
+
+  ifeq ($(TEC_SYSARCH), ia64)
+    BUILD_64=Yes
+    TEC_UNAME:=$(TEC_UNAME)_ia64
+  endif
+
+  # Solaris and Intel
+  ifeq ($(TEC_SYSNAME), SunOS)
+    ifeq ($(TEC_SYSARCH) , x86)
+      TEC_UNAME:=$(TEC_UNAME)x86
+    endif
+  endif
+
+  # Darwin and Intel
+  ifeq ($(TEC_SYSNAME), Darwin)
+  ifeq ($(TEC_SYSARCH), x86)
+      TEC_UNAME:=$(TEC_UNAME)x86
+    endif
+  endif
+
 endif
 
-ifeq ($(TEC_SYSARCH), powerpc)
-	TEC_SYSARCH:=ppc
-endif
-ifeq ($(TEC_SYSARCH), i686)
-	TEC_SYSARCH:=x86
-endif
-ifeq ($(TEC_SYSARCH), i386)
-	TEC_SYSARCH:=x86
-endif
-ifeq ($(TEC_SYSARCH), x86_64)
-	TEC_SYSARCH:=x64
-endif
 
-# Compose
-TEC_SYSRELEASE:=$(TEC_SYSVERSION).$(TEC_SYSMINOR)
-TEC_UNAME:=$(TEC_SYSNAME)$(TEC_SYSVERSION)$(TEC_SYSMINOR)
-
-# Linux 2.4 and GCC 3.x
-ifeq ($(TEC_UNAME), Linux24)
-	GCCVER:=$(shell gcc -dumpversion|cut -f1 -d.)
-	ifeq ($(GCCVER), 3)
-		TEC_UNAME:=$(TEC_UNAME)g3
-	endif
-endif
-
-# Linux 2.6 and GCC 4.x
-ifeq ($(TEC_UNAME), Linux26)
-	GCCVER:=$(shell gcc -dumpversion|cut -f1 -d.)
-	ifeq ($(GCCVER), 4)
-		TEC_UNAME:=$(TEC_UNAME)g4
-	endif
-endif
-
-# Linux and PowerPC
-ifeq ($(TEC_SYSNAME), Linux)
-	ifeq ($(TEC_SYSARCH), ppc)
-		TEC_UNAME:=$(TEC_UNAME)ppc
-	endif
-endif
-
-# 64-bits Linux
-ifeq ($(TEC_SYSARCH), x64)
-	BUILD_64=Yes
-	TEC_UNAME:=$(TEC_UNAME)_64
-endif
-
-ifeq ($(TEC_SYSARCH), ia64)
-	BUILD_64=Yes
-	TEC_UNAME:=$(TEC_UNAME)_ia64
-endif
-
-# Solaris and Intel
-ifeq ($(TEC_SYSNAME), SunOS)
-	ifeq ($(TEC_SYSARCH) , x86)
-		TEC_UNAME:=$(TEC_UNAME)x86
-	endif
-endif
-
-# Darwin and Intel
-ifeq ($(TEC_SYSNAME), Darwin)
-ifeq ($(TEC_SYSARCH), x86)
-		TEC_UNAME:=$(TEC_UNAME)x86
-	endif
-endif
-
+#---------------------------------#
 # System Info
 .PHONY: sysinfo
 sysinfo:
@@ -118,8 +123,16 @@ sysinfo:
 	@echo 'TEC_SYSARCH = $(TEC_SYSARCH)'
 	@echo 'TEC_UNAME = $(TEC_UNAME)'; echo ''
 
+  
+#---------------------------------#
+# Known Platforms
+
+UNAMES = Linux24 Linux24g3 Linux24g3_64 Linux26 Linux26_64 Linux26g4 Linux26g4_64 Linux26_ia64 FreeBSD54 SunOS57 SunOS58 SunOS510 SunOS510_x86 AIX43 IRIX65 IRIX6465
+
+
 #---------------------------------#
 # Directories Definitions
+
 PROJDIR = ..
 SRCDIR  = .
 OBJROOT = $(PROJDIR)/obj
@@ -170,6 +183,9 @@ DLIBPRE := lib
 APPEXT :=
 
 
+ifneq ($(findstring cygw, $(TEC_UNAME)), )
+  GTK_DEFAULT = Yes
+endif  
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
   GTK_DEFAULT = Yes
 endif  
@@ -185,7 +201,7 @@ endif
 
 
 #---------------------------------#
-# Build Tools
+# Tools
 
 CC       := $(TEC_TOOLCHAIN)gcc
 CPPC     := $(TEC_TOOLCHAIN)g++
@@ -194,6 +210,12 @@ RANLIB   := $(TEC_TOOLCHAIN)ranlib
 AR       := $(TEC_TOOLCHAIN)ar
 DEBUGGER := $(TEC_TOOLCHAIN)gdb
 RCC      := $(TEC_TOOLCHAIN)windres 
+
+# Remote build script
+REMOTE  = $(TECMAKE_HOME)/remote
+
+# Packed LOHs script
+LUAPRE = $(TECMAKE_HOME)/luapre.lua
 
 
 #---------------------------------#
@@ -335,22 +357,22 @@ endif
 #---------------------------------#
 #  Platform specific variables
 
-# Definicoes para o X11
+# Definitions for X11
 X11_LIBS := Xmu Xt Xext X11
 #X11_LIB := 
 #X11_INC :=                     #include <X11/X.h>
 
-# Definicoes para o OpenGL
+# Definitions for OpenGL
 OPENGL_LIBS := GLU GL
 #OPENGL_LIB := 
 #OPENGL_INC :=                  #include <GL/gl.h>  and possibly  
 MOTIFGL_LIB := GLw              #include <GL/GLwMDrawA.h>
 
-# Definicoes para o Motif
+# Definitions for Motif
 #MOTIF_LIB := 
 #MOTIF_INC :=                   #include <Xm/Xm.h>
 
-# Definicoes para o GLUT
+# Definitions for GLUT
 #GLUT_LIB := 
 #GLUT_INC := 
 
@@ -371,7 +393,7 @@ ifneq ($(findstring Linux, $(TEC_UNAME)), )
   MOTIFGL_LIB := 
 endif
 
-ifneq ($(findstring IRIX, $(TEC_UNAME)), ) # any IRIX
+ifneq ($(findstring IRIX, $(TEC_UNAME)), )
   LD = ld
   STDLDFLAGS := -elf -shared -rdata_shared -soname lib$(TARGETNAME).so
   RANLIB := /bin/true
@@ -528,7 +550,9 @@ endif
 ifdef USE_IUP3
   override USE_IUP = Yes
 # Inside Tecgraf only  
+  ifndef IUP3_BUILD
 #  IUP := $(IUP)3
+  endif
 endif 
 
 ifdef USE_IUPBETA
@@ -803,28 +827,37 @@ endif
 
 ifdef USE_GTK
   ifneq ($(findstring Darwin, $(TEC_UNAME)), )
-# Option 1 - old GTK port
-#   GTK_BASE := /sw
-#   LDIR += /sw/lib
-# Option 2 - old Framework
+# Option 1 - Fink GTK port
+    GTK_BASE ?= /sw
+    LDIR += $(GTK_BASE)/lib
+    override USE_X11 = Yes
+    LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
+# Option 2 - Imendio Framework
 #   STDINCS += /Library/Frameworks/Gtk.framework/Headers
 #   STDINCS += /Library/Frameworks/GLib.framework/Headers
 #   STDINCS += /Library/Frameworks/Cairo.framework/Headers
 #   LFLAGS += -framework Gtk
-# Option 3 - new Framework
-    GTK_BASE := /Users/cpts/gtk/inst
-    LDIR += $(GTK_BASE)/lib
-    LFLAGS += -framework Carbon
-    LIBS += gtk-quartz-2.0 gdk-quartz-2.0 pangoft2-1.0
+# Option 3 - GTK-OSX Framework
+#   GTK_BASE := /Users/cpts/gtk/inst
+#   LDIR += $(GTK_BASE)/lib
+#   LFLAGS += -framework Carbon
+#   LIBS += gtk-quartz-2.0 gdk-quartz-2.0 pangoft2-1.0
 
     LIBS += freetype
   else
-    GTK_BASE := /usr
+    # if not the default, then include it for linker
+    # must be before the default
+    ifdef GTK_BASE
+      LDIR += $(GTK_BASE)/lib
+    endif
+    GTK_BASE ?= /usr
     override USE_X11 = Yes
     LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
   endif
+  
   LIBS += gdk_pixbuf-2.0 pango-1.0 gobject-2.0 gmodule-2.0 glib-2.0
   STDINCS += $(GTK_BASE)/include/atk-1.0 $(GTK_BASE)/include/gtk-2.0 $(GTK_BASE)/include/cairo $(GTK_BASE)/include/pango-1.0 $(GTK_BASE)/include/glib-2.0
+  
   ifeq ($(TEC_SYSARCH), x64)
     STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
   else
@@ -856,9 +889,15 @@ endif
 LIBS += m
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
+  # INCLUDES for dependencies, remove references to "c:" and similars
+  DEPINCS := $(patsubst c:%, /cygdrive/c%, $(INCLUDES))
+  DEPINCS := $(patsubst d:%, /cygdrive/d%, $(DEPINCS))
+  DEPINCS := $(patsubst x:%, /cygdrive/x%, $(DEPINCS))
+  DEPINCS := $(patsubst t:%, /cygdrive/t%, $(DEPINCS))
+  
   DLIBEXT := dll
   APPEXT := .exe
-# Use the cyg prefix to indicate that it is a Cygwin Posix DLL  
+  # Use the cyg prefix to indicate that it is a Cygwin Posix DLL  
   DLIBPRE := cyg
   
   STDLDFLAGS += -Wl,--out-implib=$(TARGETDIR)/lib$(TARGETNAME).dll.a
@@ -866,6 +905,9 @@ endif
 
 #---------------------------------#
 #  Building compilation flags that are sets
+
+DEPINCS ?= $(INCLUDES)
+DEPINCS := $(addprefix -I, $(DEPINCS))
 
 INCLUDES := $(addprefix -I, $(INCLUDES))
 STDINCS := $(addprefix -I, $(STDINCS))
@@ -918,15 +960,21 @@ OBJ := $(OBJ:.for=.o)
 OBJ := $(OBJ:.rc=.ro)
 OBJS = $(addprefix $(OBJDIR)/, $(OBJ))
 
-# LOH: list of .loh, without path
-# LOHS: list of .loh, with relative path
-LO = $(notdir $(SRCLUA))
-LO := $(LO:.lua=$(LO_SUFFIX).lo)
-LOS = $(addprefix $(OBJROOT)/, $(LO))
+ifdef LOHPACK
+  # Package with all LOHs
+  LOHS := $(LOHDIR)/$(LOHPACK)
+  LOHDIRS :=
+else
+  # LOH: list of .loh, without path
+  # LOHS: list of .loh, with relative path
+  LO = $(notdir $(SRCLUA))
+  LO := $(LO:.lua=$(LO_SUFFIX).lo)
+  LOS = $(addprefix $(OBJROOT)/, $(LO))
 
-LOH = $(notdir $(SRCLUA))
-LOH := $(LOH:.lua=$(LO_SUFFIX).loh)
-LOHS = $(addprefix $(LOHDIR)/, $(LOH))
+  LOH = $(notdir $(SRCLUA))
+  LOH := $(LOH:.lua=$(LO_SUFFIX).loh)
+  LOHS = $(addprefix $(LOHDIR)/, $(LOH))
+endif
 
 # Construct VPATH variable
 P-SRC = $(dir $(SRC))
@@ -1078,6 +1126,12 @@ $(OBJROOT)/%$(LO_SUFFIX).lo:  $(SRCLUADIR)/%.lua
 	@echo Compiling $(<F)...
 	$(LUAC) -o $@ $<
 
+ifdef LOHPACK
+$(LOHDIR)/$(LOHPACK):  $(SRCLUA)
+	@echo Generating $(<F)...
+	$(LUABIN) $(LUAPRE) $(LUAPREFLAGS) -l $(SRCLUADIR) -o $@ $(SRCLUA)
+endif
+
   
 #---------------------------------#
 # Dependencies
@@ -1093,7 +1147,7 @@ $(DEPEND): $(MAKENAME)
 	  @which $(CPPC) 2> /dev/null 1>&2 ;\
 	  if [ $$? -eq 0 ]; then \
 	    echo "Building dependencies... (can be slow)" ;\
-	    $(CPPC) $(INCLUDES) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
+	    $(CPPC) $(DEPINCS) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
 	    sed -e '1,$$s/^\([^ ]\)/$$(OBJDIR)\/\1/' > $(DEPEND) ;\
 	  else \
 	    echo "" ;\
@@ -1138,6 +1192,11 @@ clean-obj:
 clean-target:
 	rm -f $(TARGET)
 
+# make clean-dir
+.PHONY: clean-dir
+clean-dir:
+	rm -fr $(OBJROOT) $(TARGETROOT)
+
 # make clean
 #   Remove target and object files
 .PHONY: clean
@@ -1159,11 +1218,36 @@ rebuild: clean-extra clean-lohs clean-obj clean-target tecmake
 .PHONY: relink
 relink: clean-target tecmake
 
+# make clean-all-obj
+#   Remove target and object files
+.PHONY: clean-all-obj
+clean-all-obj:
+	@for d in $(UNAMES); do \
+	  (cd $(OBJROOT)/$$d; echo $(OBJ) | xargs rm -f) ;\
+	done
+
+# make clean-all-target
+#   Remove libraries and executables for all platforms
+.PHONY: clean-all-target
+clean-all-target:
+	@for d in $(UNAMES); do \
+	  (rm -f $(TARGETROOT)/$$d/$(TARGETNAME) $(TARGETROOT)/$$d/$(TARGETSLIBNAME) $(TARGETROOT)/$$d/$(TARGETDLIBNAME)) ;\
+	done
+ 
+#---------------------------------#
+# Remote build
+# There must be aliases in DNS for the known UNAMES
+.PHONY: $(UNAMES)
+$(UNAMES):
+	@cwd=`csh -c "\\pwd"` ; home=`csh -c "cd;\\pwd"` ;\
+	 dir=`echo $$cwd | sed -e "s|$$home/||"` ;\
+	 xterm -bg black -fg lightblue -T "Tecmake: $@ ($(TARGETNAME))" -e ssh $@ $(REMOTE) $$dir $(TECMAKEFLAGS) $(MAKEFLAGS) & 2> /dev/null
+
 
 #---------------------------------#
 
 .PHONY: version
 version:
-	@echo "Tecmake Compact Version $(VERSION)"
+	@echo "Tecmake Posix Version $(VERSION)"
 
 #---------------------------------#

@@ -3,4 +3,4 @@
 do_all: iupgl
 
 iupgl:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak 
+	@$(MAKE) --no-print-directory -f ../tecmake.mak 

@@ -3,4 +3,4 @@
 do_all: ledc
 
 ledc:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak 
+	@$(MAKE) --no-print-directory -f ../tecmake.mak 

@@ -3,7 +3,7 @@
 do_all: iupview
 
 iupview:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak 
+	@$(MAKE) --no-print-directory -f ../tecmake.mak 
 
 iupviewgtk:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak USE_GTK=Yes
+	@$(MAKE) --no-print-directory -f ../tecmake.mak USE_GTK=Yes

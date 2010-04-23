@@ -3,22 +3,22 @@
 do_all: iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib
 
 iuplua:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak 
+	@$(MAKE) --no-print-directory -f ../tecmake.mak 
 
 iupluacd:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak MF=iupcd
+	@$(MAKE) --no-print-directory -f ../tecmake.mak MF=iupcd
 
 iupluacontrols:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak MF=iupcontrols
+	@$(MAKE) --no-print-directory -f ../tecmake.mak MF=iupcontrols
 
 iuplua_pplot:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak MF=iup_pplot
+	@$(MAKE) --no-print-directory -f ../tecmake.mak MF=iup_pplot
 
 iupluagl:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak MF=iupgl
+	@$(MAKE) --no-print-directory -f ../tecmake.mak MF=iupgl
 
 iupluaim:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak MF=iupim
+	@$(MAKE) --no-print-directory -f ../tecmake.mak MF=iupim
 
 iupluaimglib:
-	@$(MAKE) --no-print-directory -f ../tecmake_compact.mak MF=iupimglib
+	@$(MAKE) --no-print-directory -f ../tecmake.mak MF=iupimglib
