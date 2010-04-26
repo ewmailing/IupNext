@@ -8,6 +8,7 @@ local ctrl = {
   callback = {}
 } 
 
+-- TODO: remove this code in the future, it seems to be useless an incorrect
 function ctrl.SetChildrenNames(obj)
   if obj then
     if obj.parent.parent == iup.BOX then
