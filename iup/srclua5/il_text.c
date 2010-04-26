@@ -15,16 +15,16 @@
 static int text_caret_cb(Ihandle *self, int p0, int p1, int p2)
 {
   lua_State *L = iuplua_call_start(self, "caret_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
   return iuplua_call(L, 3);
 }
 
 static int text_action(Ihandle *self, int p0, char * p1)
 {
   lua_State *L = iuplua_call_start(self, "action");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   lua_pushstring(L, p1);
   return iuplua_call(L, 2);
 }

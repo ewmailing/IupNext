@@ -16,30 +16,30 @@
 static int colorbar_switch_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "switch_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int colorbar_select_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "select_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static char * colorbar_cell_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "cell_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call_rs(L, 1);
 }
 
 static int colorbar_extended_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "extended_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 

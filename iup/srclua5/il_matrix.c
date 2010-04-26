@@ -16,76 +16,76 @@
 static char * matrix_font_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "font_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call_rs(L, 2);
 }
 
 static int matrix_draw_cb(Ihandle *self, int p0, int p1, int p2, int p3, int p4, int p5, int p6)
 {
   lua_State *L = iuplua_call_start(self, "draw_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
-  lua_pushnumber(L, p3);
-  lua_pushnumber(L, p4);
-  lua_pushnumber(L, p5);
-  lua_pushnumber(L, p6);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
+  lua_pushinteger(L, p3);
+  lua_pushinteger(L, p4);
+  lua_pushinteger(L, p5);
+  lua_pushinteger(L, p6);
   return iuplua_call(L, 7);
 }
 
 static int matrix_edition_cb(Ihandle *self, int p0, int p1, int p2, int p3)
 {
   lua_State *L = iuplua_call_start(self, "edition_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
-  lua_pushnumber(L, p3);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
+  lua_pushinteger(L, p3);
   return iuplua_call(L, 4);
 }
 
 static int matrix_mark_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "mark_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int matrix_markedit_cb(Ihandle *self, int p0, int p1, int p2)
 {
   lua_State *L = iuplua_call_start(self, "markedit_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
   return iuplua_call(L, 3);
 }
 
 static int matrix_bgcolor_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "bgcolor_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static char * matrix_value_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "value_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call_rs(L, 2);
 }
 
 static int matrix_dropselect_cb(Ihandle *self, int p0, int p1, Ihandle * p2, char * p3, int p4, int p5)
 {
   lua_State *L = iuplua_call_start(self, "dropselect_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   iuplua_pushihandle(L, p2);
   lua_pushstring(L, p3);
-  lua_pushnumber(L, p4);
-  lua_pushnumber(L, p5);
+  lua_pushinteger(L, p4);
+  lua_pushinteger(L, p5);
   return iuplua_call(L, 6);
 }
 
@@ -93,26 +93,26 @@ static int matrix_drop_cb(Ihandle *self, Ihandle * p0, int p1, int p2)
 {
   lua_State *L = iuplua_call_start(self, "drop_cb");
   iuplua_pushihandle(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
   return iuplua_call(L, 3);
 }
 
 static int matrix_dropcheck_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "dropcheck_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int matrix_action_cb(Ihandle *self, int p0, int p1, int p2, int p3, char * p4)
 {
   lua_State *L = iuplua_call_start(self, "action_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
-  lua_pushnumber(L, p3);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
+  lua_pushinteger(L, p3);
   lua_pushstring(L, p4);
   return iuplua_call(L, 5);
 }
@@ -120,40 +120,40 @@ static int matrix_action_cb(Ihandle *self, int p0, int p1, int p2, int p3, char 
 static int matrix_enteritem_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "enteritem_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int matrix_leaveitem_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "leaveitem_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int matrix_scrolltop_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "scrolltop_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int matrix_fgcolor_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "fgcolor_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int matrix_release_cb(Ihandle *self, int p0, int p1, char * p2)
 {
   lua_State *L = iuplua_call_start(self, "release_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   lua_pushstring(L, p2);
   return iuplua_call(L, 3);
 }
@@ -161,16 +161,16 @@ static int matrix_release_cb(Ihandle *self, int p0, int p1, char * p2)
 static int matrix_mousemove_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "mousemove_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int matrix_value_edit_cb(Ihandle *self, int p0, int p1, char * p2)
 {
   lua_State *L = iuplua_call_start(self, "value_edit_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   lua_pushstring(L, p2);
   return iuplua_call(L, 3);
 }
@@ -178,8 +178,8 @@ static int matrix_value_edit_cb(Ihandle *self, int p0, int p1, char * p2)
 static int matrix_click_cb(Ihandle *self, int p0, int p1, char * p2)
 {
   lua_State *L = iuplua_call_start(self, "click_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   lua_pushstring(L, p2);
   return iuplua_call(L, 3);
 }

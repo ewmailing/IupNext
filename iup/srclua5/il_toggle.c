@@ -15,7 +15,7 @@
 static int toggle_action(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "action");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 

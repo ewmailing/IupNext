@@ -21,8 +21,8 @@ static int dialog_map_cb(Ihandle *self)
 static int dialog_move_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "move_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
@@ -30,9 +30,9 @@ static int dialog_dropfiles_cb(Ihandle *self, char * p0, int p1, int p2, int p3)
 {
   lua_State *L = iuplua_call_start(self, "dropfiles_cb");
   lua_pushstring(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
-  lua_pushnumber(L, p3);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
+  lua_pushinteger(L, p3);
   return iuplua_call(L, 4);
 }
 
@@ -45,16 +45,16 @@ static int dialog_unmap_cb(Ihandle *self)
 static int dialog_show_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "show_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 
 static int dialog_trayclick_cb(Ihandle *self, int p0, int p1, int p2)
 {
   lua_State *L = iuplua_call_start(self, "trayclick_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
   return iuplua_call(L, 3);
 }
 

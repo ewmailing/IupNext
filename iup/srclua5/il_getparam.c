@@ -38,10 +38,10 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
     lua_State *L = gp->L;
     lua_getref(L, gp->func_ref);
     iuplua_pushihandle(L, dialog);
-    lua_pushnumber(L, param_index);
+    lua_pushinteger(L, param_index);
     if (iuplua_call_raw(L, 2, 1) != 0)    /* 2 args, 1 return */
     {
-      ret = (int)lua_tonumber(L,-1);
+      ret = lua_tointeger(L,-1);
       lua_pop(L, 1);
     }
   }
@@ -84,10 +84,18 @@ static int GetParam(lua_State *L)
     switch(t)
     {
     case 'b':
+/*  TO DO: add this code some day:
+      if (lua_isboolean(L, lua_param_start))
+      {
+        param_data[i] = malloc(sizeof(int));
+        *(int*)(param_data[i]) = lua_toboolean(L, lua_param_start); lua_param_start++;
+        break;
+      }  */
+      /* else continuous and get an integer */
     case 'i':
     case 'l':
       param_data[i] = malloc(sizeof(int));
-      *(int*)(param_data[i]) = (int)luaL_checknumber(L, lua_param_start); lua_param_start++;
+      *(int*)(param_data[i]) = luaL_checkinteger(L, lua_param_start); lua_param_start++;
       break;
     case 'a':
     case 'r':
@@ -132,7 +140,7 @@ static int GetParam(lua_State *L)
       case 'b':
       case 'i':
       case 'l':
-        lua_pushnumber(L, *(int*)(param_data[i]));
+        lua_pushinteger(L, *(int*)(param_data[i]));
         break;
       case 'a':
       case 'r':
@@ -165,7 +173,7 @@ static int GetParam(lua_State *L)
 static int GetParamParam(lua_State *L)
 {
   Ihandle *dialog = iuplua_checkihandle(L, 1);
-  int param_index = (int)luaL_checknumber(L, 2);
+  int param_index = luaL_checkinteger(L, 2);
   Ihandle* param;
   char param_str[50];
   sprintf(param_str, "PARAM%d", param_index);

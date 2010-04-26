@@ -15,32 +15,32 @@
 static int tree_branchopen_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "branchopen_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 
 static int tree_selection_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "selection_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int tree_dragdrop_cb(Ihandle *self, int p0, int p1, int p2, int p3)
 {
   lua_State *L = iuplua_call_start(self, "dragdrop_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
-  lua_pushnumber(L, p3);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
+  lua_pushinteger(L, p3);
   return iuplua_call(L, 4);
 }
 
 static int tree_rename_cb(Ihandle *self, int p0, char * p1)
 {
   lua_State *L = iuplua_call_start(self, "rename_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   lua_pushstring(L, p1);
   return iuplua_call(L, 2);
 }
@@ -48,44 +48,44 @@ static int tree_rename_cb(Ihandle *self, int p0, char * p1)
 static int tree_multiunselection_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "multiunselection_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int tree_rightclick_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "rightclick_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 
 static int tree_multiselection_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "multiselection_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int tree_branchclose_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "branchclose_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 
 static int tree_executeleaf_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "executeleaf_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 
 static int tree_showrename_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "showrename_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 

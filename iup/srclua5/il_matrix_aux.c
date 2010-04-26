@@ -38,7 +38,7 @@ static int matrix_bgcolor_cb(Ihandle *self, int p0, int p1, unsigned int *p2, un
   ret = iuplua_call_raw(L, 2+2, LUA_MULTRET);   /* 2 args + 2 args(errormsg, handle), variable number of returns */
   if (ret || lua_isnil(L, -1))
     return IUP_DEFAULT;
-  ret = (int)lua_tonumber(L,-1);
+  ret = lua_tointeger(L,-1);
 
   if (ret == IUP_IGNORE) 
   {
@@ -46,9 +46,9 @@ static int matrix_bgcolor_cb(Ihandle *self, int p0, int p1, unsigned int *p2, un
     return IUP_IGNORE;
   }
 
-  *p2 = (unsigned int)lua_tonumber(L, -4); 
-  *p3 = (unsigned int)lua_tonumber(L, -3); 
-  *p4 = (unsigned int)lua_tonumber(L, -2); 
+  *p2 = (unsigned int)lua_tointeger(L, -4); 
+  *p3 = (unsigned int)lua_tointeger(L, -3); 
+  *p4 = (unsigned int)lua_tointeger(L, -2); 
   lua_pop(L, 1);
   return IUP_DEFAULT;
 }
@@ -62,7 +62,7 @@ static int matrix_fgcolor_cb(Ihandle *self, int p0, int p1, unsigned int *p2, un
   ret = iuplua_call_raw(L, 2+2, LUA_MULTRET);   /* 2 args + 2 args(errormsg, handle), variable number of returns */
   if (ret || lua_isnil(L, -1))
     return IUP_DEFAULT;
-  ret = (int)lua_tonumber(L,-1);
+  ret = lua_tointeger(L,-1);
 
   if (ret == IUP_IGNORE) 
   {
@@ -70,9 +70,9 @@ static int matrix_fgcolor_cb(Ihandle *self, int p0, int p1, unsigned int *p2, un
     return IUP_IGNORE;
   }
 
-  *p2 = (unsigned int)lua_tonumber(L, -4); 
-  *p3 = (unsigned int)lua_tonumber(L, -3); 
-  *p4 = (unsigned int)lua_tonumber(L, -2); 
+  *p2 = (unsigned int)lua_tointeger(L, -4); 
+  *p3 = (unsigned int)lua_tointeger(L, -3); 
+  *p4 = (unsigned int)lua_tointeger(L, -2); 
   lua_pop(L, 1);
   return IUP_DEFAULT;
 }

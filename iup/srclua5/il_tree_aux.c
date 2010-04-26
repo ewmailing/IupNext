@@ -55,7 +55,7 @@ static int tree_gettableref(lua_State *L, int pos)
   }
   else
   {
-    int ref = (int) lua_tonumber(L, -1);
+    int ref = lua_tointeger(L, -1);
     lua_pop(L, 1);
     return ref;
   }
@@ -99,7 +99,7 @@ static int TreeGetId(lua_State *L)
 static int TreeGetUserId(lua_State *L)
 {  
   Ihandle *ih = iuplua_checkihandle(L,1);
-  int id = (int)luaL_checknumber(L,2);
+  int id = luaL_checkinteger(L,2);
   tree_push_userid(L, IupTreeGetUserId(ih, id));
   return 1;
 }
@@ -107,7 +107,7 @@ static int TreeGetUserId(lua_State *L)
 static int TreeSetUserId(lua_State *L)
 {  
   Ihandle *ih = iuplua_checkihandle(L,1);
-  int id = (int)luaL_checknumber(L,2);
+  int id = luaL_checkinteger(L,2);
   int ref = (int)IupTreeGetUserId(ih, id);
   if (ref != 0) /* userid is not NULL */
   {

@@ -22,14 +22,14 @@ static int pplot_edit_cb(Ihandle *self, int p0, int p1, float p2, float p3, floa
 {
   int ret;
   lua_State *L = iuplua_call_start(self, "edit_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   lua_pushnumber(L, p2);
   lua_pushnumber(L, p3);
   ret = iuplua_call_raw(L, 4+2, LUA_MULTRET);  /* 4 args + 2 args(errormsg, handle), variable number of returns */
   if (ret || lua_isnil(L, -1))
     return IUP_DEFAULT;
-  ret = (int)lua_tonumber(L,-1);
+  ret = lua_tointeger(L,-1);
 
   if (ret == IUP_IGNORE) 
   {
@@ -82,7 +82,7 @@ static int PPlotEnd(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   int ret = IupPPlotEnd(ih);
-  lua_pushnumber(L, ret);
+  lua_pushinteger(L, ret);
   return 1;
 }
 
@@ -105,8 +105,8 @@ static int PPlotTransform(lua_State *L)
   Ihandle *ih = iuplua_checkihandle(L,1);
   int ix, iy;
   IupPPlotTransform(ih, (float)luaL_checknumber(L,2), (float)luaL_checknumber(L,3), &ix, &iy);
-  lua_pushnumber(L, ix);
-  lua_pushnumber(L, iy);
+  lua_pushinteger(L, ix);
+  lua_pushinteger(L, iy);
   return 2;
 }
 

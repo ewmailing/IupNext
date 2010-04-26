@@ -113,17 +113,17 @@ int iupluaScanf(lua_State *L)
       if (s[-3] == 'l') {
         long l = 0;
         sscanf(text[i], "%ld", &l);
-        lua_pushnumber(L, l);
+        lua_pushinteger(L, l);
         total++;
       } else if (s[-3] == 'h') {
         short l = 0;
         sscanf(text[i], "%hd", &l);
-        lua_pushnumber(L, l);
+        lua_pushinteger(L, l);
         total++;
       } else {
         int l = 0;
         sscanf(text[i], "%d", &l);
-        lua_pushnumber(L, l);
+        lua_pushinteger(L, l);
         total++;
       }
       break;
@@ -134,17 +134,17 @@ int iupluaScanf(lua_State *L)
       if (s[-3] == 'l') {
         long l = 0;
         sscanf(text[i], "%li", &l);
-        lua_pushnumber(L, l);
+        lua_pushinteger(L, l);
         total++;
       } else if (s[-3] == 'h') {
         short l = 0;
         sscanf(text[i], "%hi", &l);
-        lua_pushnumber(L, l);
+        lua_pushinteger(L, l);
         total++;
       } else {
         int l = 0;
         sscanf(text[i], "%i", &l);
-        lua_pushnumber(L, l);
+        lua_pushinteger(L, l);
         total++;
       }
       break;

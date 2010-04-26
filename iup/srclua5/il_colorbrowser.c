@@ -16,18 +16,18 @@
 static int colorbrowser_drag_cb(Ihandle *self, unsigned char  p0, unsigned char  p1, unsigned char  p2)
 {
   lua_State *L = iuplua_call_start(self, "drag_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
   return iuplua_call(L, 3);
 }
 
 static int colorbrowser_change_cb(Ihandle *self, unsigned char  p0, unsigned char  p1, unsigned char  p2)
 {
   lua_State *L = iuplua_call_start(self, "change_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
   return iuplua_call(L, 3);
 }
 

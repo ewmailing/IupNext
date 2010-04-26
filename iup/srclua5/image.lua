@@ -22,7 +22,7 @@ static int Image (lua_State * L)
     h = luaL_getn(L, 1);  
 
     /* get the number of columns of the first line */
-    lua_pushnumber(L, 1);
+    lua_pushinteger(L, 1);
     lua_gettable(L, 1);
     w = luaL_getn(L, -1);  
     lua_pop(L, 1);
@@ -31,14 +31,14 @@ static int Image (lua_State * L)
 
     for (i=1; i<=h; i++)
     {
-      lua_pushnumber(L, i);
+      lua_pushinteger(L, i);
       lua_gettable(L, 1);
       for (j=1; j<=w; j++)
       {
         int idx = (i-1)*w+(j-1);
-        lua_pushnumber(L, j);
+        lua_pushinteger(L, j);
         lua_gettable(L, -2);
-        pixels[idx] = (unsigned char)lua_tonumber(L, -1);
+        pixels[idx] = (unsigned char)lua_tointeger(L, -1);
         lua_pop(L, 1);
       }
       lua_pop(L, 1);

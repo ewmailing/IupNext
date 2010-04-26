@@ -29,8 +29,8 @@ static int canvas_leavewindow_cb(Ihandle *self)
 static int canvas_resize_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "resize_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
@@ -38,8 +38,8 @@ static int canvas_wheel_cb(Ihandle *self, float p0, int p1, int p2, char * p3)
 {
   lua_State *L = iuplua_call_start(self, "wheel_cb");
   lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
   lua_pushstring(L, p3);
   return iuplua_call(L, 4);
 }
@@ -59,17 +59,17 @@ static int canvas_enterwindow_cb(Ihandle *self)
 static int canvas_focus_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "focus_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 
 static int canvas_button_cb(Ihandle *self, int p0, int p1, int p2, int p3, char * p4)
 {
   lua_State *L = iuplua_call_start(self, "button_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
-  lua_pushnumber(L, p3);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
+  lua_pushinteger(L, p3);
   lua_pushstring(L, p4);
   return iuplua_call(L, 5);
 }
@@ -77,16 +77,16 @@ static int canvas_button_cb(Ihandle *self, int p0, int p1, int p2, int p3, char 
 static int canvas_keypress_cb(Ihandle *self, int p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "keypress_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
 static int canvas_motion_cb(Ihandle *self, int p0, int p1, char * p2)
 {
   lua_State *L = iuplua_call_start(self, "motion_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
   lua_pushstring(L, p2);
   return iuplua_call(L, 3);
 }
@@ -94,14 +94,14 @@ static int canvas_motion_cb(Ihandle *self, int p0, int p1, char * p2)
 static int canvas_wom_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "wom_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 
 static int canvas_scroll_cb(Ihandle *self, int p0, float p1, float p2)
 {
   lua_State *L = iuplua_call_start(self, "scroll_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   lua_pushnumber(L, p1);
   lua_pushnumber(L, p2);
   return iuplua_call(L, 3);

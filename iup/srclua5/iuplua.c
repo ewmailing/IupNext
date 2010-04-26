@@ -258,7 +258,7 @@ char ** iuplua_checkstring_array(lua_State *L, int pos)
   v = (char **) malloc (n*sizeof(char *));
   for(i=1; i<=n; i++)
   {
-    lua_pushnumber(L,i);
+    lua_pushinteger(L,i);
     lua_gettable(L,pos);
     v[i-1] = (char*)lua_tostring(L, -1);
     lua_pop(L,1);
@@ -274,9 +274,9 @@ int * iuplua_checkint_array(lua_State *L, int pos)
   v = (int *) malloc (n*sizeof(int));
   for(i=1; i<=n; i++)
   {
-    lua_pushnumber(L,i);
+    lua_pushinteger(L,i);
     lua_gettable(L,pos);
-    v[i-1] = (int)lua_tonumber(L, -1);
+    v[i-1] = lua_tointeger(L, -1);
     lua_pop(L,1);
   }
   return v;
@@ -295,9 +295,9 @@ unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int count)
   v = (unsigned char *) malloc (n*sizeof(unsigned char));
   for(i=1; i<=n; i++)
   {
-    lua_pushnumber(L,i);
+    lua_pushinteger(L,i);
     lua_gettable(L,pos);
-    v[i-1] = (unsigned char)lua_tonumber(L, -1);
+    v[i-1] = (unsigned char)lua_tointeger(L, -1);
     lua_pop(L,1);
   }
   return v;
@@ -310,7 +310,7 @@ Ihandle ** iuplua_checkihandle_array(lua_State *L, int pos)
   v = (Ihandle **) malloc ((n+1)*sizeof(Ihandle *));
   for (i=1; i<=n; i++)
   {
-    lua_pushnumber(L,i);
+    lua_pushinteger(L,i);
     lua_gettable(L,pos);
     v[i-1] = iuplua_checkihandle(L, -1);
     lua_pop(L,1);
@@ -600,7 +600,7 @@ static int getfocus_cb(Ihandle *self)
 static int k_any(Ihandle *self, int c)
 {
   lua_State *L = iuplua_call_start(self, "k_any");
-  lua_pushnumber(L, c);
+  lua_pushinteger(L, c);
   return iuplua_call(L, 1);
 }
 
@@ -616,7 +616,7 @@ static int Idlecall(void)
   lua_State *L = (lua_State *) IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
   lua_getglobal(L, "_IUP_LUA_IDLE_FUNC_"); 
   lua_call(L, 0, 1);
-  ret = (int) lua_tonumber(L, -1);
+  ret = lua_tointeger(L, -1);
   lua_pop(L, 1);
   return ret;
 }
@@ -650,7 +650,7 @@ static int GetFromC(lua_State *L)
     lua_error(L);
     return 0;
   }
-  lua_pushnumber(L, 1);
+  lua_pushinteger(L, 1);
   lua_gettable(L, -2);
   if (!lua_isstring(L, -1)) 
   {
@@ -676,7 +676,7 @@ static int GetFromC(lua_State *L)
 static void register_key(char *name, int code, void* user_data)
 {
   lua_State *L = (lua_State*)user_data;
-  lua_pushnumber(L, code); 
+  lua_pushinteger(L, code); 
   lua_setfield(L, -2, name);
 }
 
@@ -709,7 +709,7 @@ static int il_open(lua_State * L)
     argv = malloc(sizeof(char*)*argc);
     for(i=1; i<=argc; i++)
     {
-      lua_pushnumber(L,i);
+      lua_pushinteger(L,i);
       lua_gettable(L,-2);
       argv[i-1] = (char*)lua_tostring(L, -1);
       lua_pop(L,1);

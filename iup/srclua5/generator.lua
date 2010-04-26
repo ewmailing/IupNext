@@ -126,7 +126,9 @@ function write_callbacks(o, c)
       io.write('  lua_State *L = iuplua_call_start(self, "', i, '");')
       aux.n = 0
       string.gsub(s, "(.)", function(p)
-         if p == "n" or p == "f" or p == "d" or p == "c" then
+         if p == "n" or p == "c" then
+            io.write("\n  lua_pushinteger(L, p"..aux.n..");")
+         elseif p == "f" or p == "d" then
             io.write("\n  lua_pushnumber(L, p"..aux.n..");")
          elseif p == "s" then
             io.write("\n  lua_pushstring(L, p"..aux.n..");")

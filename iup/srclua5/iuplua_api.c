@@ -35,8 +35,8 @@ static int SaveImageAsText(lua_State *L)
 
 static int Reparent(lua_State *L)
 {
-  lua_pushnumber(L, IupReparent(iuplua_checkihandle(L,1),
-                                iuplua_checkihandle(L,2)));
+  lua_pushinteger(L, IupReparent(iuplua_checkihandle(L,1),
+                                 iuplua_checkihandle(L,2)));
   return 1;
 }
 
@@ -132,11 +132,11 @@ static int GetAllDialogs(lua_State *L)
   lua_newtable(L);
   for (i=0; i<n; i++)
   {
-    lua_pushnumber(L,i+1);
+    lua_pushinteger(L,i+1);
     lua_pushstring(L,names[i]);
     lua_settable(L,-3);
   }
-  lua_pushnumber(L,n);
+  lua_pushinteger(L,n);
   free(names);
   return 2;
 }
@@ -149,11 +149,11 @@ static int GetAllNames(lua_State *L)
   lua_newtable(L);
   for (i=0; i<n; i++)
   {
-    lua_pushnumber(L,i+1);
+    lua_pushinteger(L,i+1);
     lua_pushstring(L,names[i]);
     lua_settable(L,-3);
   }
-  lua_pushnumber(L,n);
+  lua_pushinteger(L,n);
   free(names);
   return 2;
 }
@@ -166,11 +166,11 @@ static int GetAllAttributes(lua_State *L)
   lua_newtable(L);
   for (i=0; i<n; i++)
   {
-    lua_pushnumber(L,i+1);
+    lua_pushinteger(L,i+1);
     lua_pushstring(L,names[i]);
     lua_settable(L,-3);
   }
-  lua_pushnumber(L,n);
+  lua_pushinteger(L,n);
   free(names);
   return 2;
 }
@@ -190,11 +190,11 @@ static int GetClassAttributes(lua_State *L)
   lua_newtable(L);
   for (i=0; i<n; i++)
   {
-    lua_pushnumber(L,i+1);
+    lua_pushinteger(L,i+1);
     lua_pushstring(L,names[i]);
     lua_settable(L,-3);
   }
-  lua_pushnumber(L,n);
+  lua_pushinteger(L,n);
   free(names);
   return 2;
 }
@@ -219,7 +219,7 @@ static int GetFile (lua_State *L)
   iupStrCopyN(returned_fname, 10240, fname);
   ret = IupGetFile(returned_fname);
   lua_pushstring(L, returned_fname);
-  lua_pushnumber(L, ret);
+  lua_pushinteger(L, ret);
   return 2;
 }
 
@@ -287,7 +287,7 @@ static int Help(lua_State *L)
 static int Hide(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  lua_pushnumber(L, IupHide(ih));
+  lua_pushinteger(L, IupHide(ih));
   return 1;
 }
 
@@ -309,13 +309,13 @@ static int LoadBuffer(lua_State *L)
 
 static int LoopStep(lua_State *L)
 {
-  lua_pushnumber(L,IupLoopStep());
+  lua_pushinteger(L,IupLoopStep());
   return 1;
 }
 
 static int LoopStepWait(lua_State *L)
 {
-  lua_pushnumber(L,IupLoopStepWait());
+  lua_pushinteger(L,IupLoopStepWait());
   return 1;
 }
 
@@ -328,20 +328,20 @@ static int ExitLoop(lua_State *L)
 
 static int MainLoop(lua_State *L)
 {
-  lua_pushnumber(L,IupMainLoop());
+  lua_pushinteger(L,IupMainLoop());
   return 1;
 }
 
 static int MainLoopLevel(lua_State *L)
 {
-  lua_pushnumber(L,IupMainLoopLevel());
+  lua_pushinteger(L,IupMainLoopLevel());
   return 1;
 }
 
 static int Map(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  lua_pushnumber(L, IupMap(ih));
+  lua_pushinteger(L, IupMap(ih));
   return 1;
 }
 
@@ -375,7 +375,7 @@ static int Alarm(lua_State *L)
                    luaL_checkstring(L, 3), 
                    luaL_optstring(L, 4, NULL), 
                    luaL_optstring(L, 5, NULL));
-  lua_pushnumber(L, n);
+  lua_pushinteger(L, n);
   return 1;
 }
 
@@ -406,13 +406,13 @@ static int ListDialog(lua_State *L)
   {
     for (i=0; i<size; i++)
     {
-      lua_pushnumber(L, i+1);
-      lua_pushnumber(L, marks[i]);
+      lua_pushinteger(L, i+1);
+      lua_pushinteger(L, marks[i]);
       lua_settable(L, 8);
     }
   }
 
-  lua_pushnumber(L, ret);
+  lua_pushinteger(L, ret);
     
   if (marks) free(marks);
   free(list);
@@ -455,21 +455,21 @@ static int Popup(lua_State *L)
   Ihandle *ih = iuplua_checkihandle(L,1);
   int x = luaL_optint(L,2, IUP_CURRENT);
   int y = luaL_optint(L,3, IUP_CURRENT);
-  lua_pushnumber(L,IupPopup(ih,x,y));
+  lua_pushinteger(L,IupPopup(ih,x,y));
   return 1;
 }
 
 static int cf_isprint(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
-  lua_pushnumber(L, iup_isprint(value));
+  lua_pushinteger(L, iup_isprint(value));
   return 1;
 }
 
 static int cf_xCODE(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
-  lua_pushnumber(L, IUPxCODE(value));
+  lua_pushinteger(L, IUPxCODE(value));
   return 1;
 }
 
@@ -588,7 +588,7 @@ static int GetParent(lua_State *L)
 
 static int VersionNumber(lua_State *L)
 {
-  lua_pushnumber(L, IupVersionNumber());
+  lua_pushinteger(L, IupVersionNumber());
   return 1;
 }
 
@@ -605,7 +605,7 @@ static int GetChildPos(lua_State *L)
 {
   Ihandle* ih = iuplua_checkihandle(L,1);
   Ihandle* child = iuplua_checkihandle(L,2);
-  lua_pushnumber(L, IupGetChildPos(ih, child));
+  lua_pushinteger(L, IupGetChildPos(ih, child));
   return 1;
 }
 
@@ -691,13 +691,13 @@ static int SetLanguage(lua_State *L)
 
 static int GetChildCount (lua_State *L)
 {
-  lua_pushnumber(L, IupGetChildCount(iuplua_checkihandle(L,1)));
+  lua_pushinteger(L, IupGetChildCount(iuplua_checkihandle(L,1)));
   return 1;
 }
 
 static int Show (lua_State *L)
 {
-  lua_pushnumber(L, IupShow(iuplua_checkihandle(L,1)));
+  lua_pushinteger(L, IupShow(iuplua_checkihandle(L,1)));
   return 1;
 }
 
@@ -730,7 +730,7 @@ static int ShowXY(lua_State *L)
   Ihandle *ih = iuplua_checkihandle(L,1);
   int x = luaL_optint(L,2, IUP_CURRENT);
   int y = luaL_optint(L,3, IUP_CURRENT);
-  lua_pushnumber(L,IupShowXY(ih,x,y));
+  lua_pushinteger(L, IupShowXY(ih,x,y));
   return 1;
 }
 

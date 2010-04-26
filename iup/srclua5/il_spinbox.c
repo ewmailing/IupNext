@@ -15,7 +15,7 @@
 static int spinbox_spin_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "spin_cb");
-  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
 
