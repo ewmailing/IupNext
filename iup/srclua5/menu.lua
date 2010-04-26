@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "menu",
-  parent = iup.BOX,
+  parent = iup.BOX,  -- iup.Append will be automatically called after createElement
   creation = "-",
   callback = {
     open_cb = "",
@@ -19,24 +19,37 @@ function ctrl.append(handle, elem)
   iup.Append(handle, elem)
 end
 
+function ctrl.getargs(menu_param)
+  local itemarg = {}
+  -- copy the named attributes to the element parameters
+  for u,v in pairs(menu_param) do
+    if type(u) ~= "number" then
+      itemarg[u] = v
+    end
+  end
+  return itemarg
+end
+
 function ctrl.createElement(class, param)
   local n = #param
   for i=1,n do
-    if type(param[i]) == "table" then 
-      local itemarg = {}
-      for u,v in pairs(param[i]) do
-        if type(u) ~= "number" then
-          itemarg[u] = v
+    local menu_param = param[i]
+    if type(menu_param) == "table" then 
+      -- replace param[i], so it will be used by iup.Append after createElement
+      -- other elements already created can also be used
+      if type(menu_param[1]) == nil then
+        param[i] = iup.separator()
+      elseif type(menu_param[1]) == "string" then
+        local itemarg = ctrl.getargs(menu_param)
+        if type(menu_param[2]) == "userdata" then
+          itemarg[1] = menu_param[2]
+          itemarg.title = menu_param[1]
+          param[i] = iup.submenu(itemarg)
+        else
+          itemarg.title = menu_param[1]
+          itemarg.action = menu_param[2]
+          param[i] = iup.item(itemarg)
         end
-      end
-      if type(param[i][1]) == "string" and (type(param[i][2]) == "function" or type(param[i][2]) == "string") then
-        itemarg.title = param[i][1]
-        itemarg.action = param[i][2]
-        param[i] = iup.item(itemarg)
-      elseif type(param[i][1]) == "string" and type(param[i][2]) == "userdata" then
-        itemarg[1] = param[i][2]
-        itemarg.title = param[i][1]
-        param[i] = iup.submenu(itemarg)
       end
     end
   end
