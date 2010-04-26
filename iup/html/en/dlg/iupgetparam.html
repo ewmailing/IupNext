@@ -43,7 +43,8 @@ iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: strin
 	<p>The function 
     will abort if there are errors in the format string as in the number of the expected parameters. 
 	In Lua, the values are returned by the function in the same order they were 
-	passed.</p>
+	passed. The Lua type of each parameter is the equivalent C type (boolean is 
+	integer).</p>
 	</dl>
 </dl>
 <h3><a name="Callbacks">Callbacks</a></h3>
