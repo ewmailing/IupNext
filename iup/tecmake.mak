@@ -104,11 +104,14 @@ ifndef TEC_UNAME
 
   # Darwin and Intel
   ifeq ($(TEC_SYSNAME), Darwin)
-  ifeq ($(TEC_SYSARCH), x86)
-      TEC_UNAME:=$(TEC_UNAME)x86
+    ifeq ($(TEC_SYSVERSION), 10)
+      TEC_SYSARCH:=x64
+    else
+      ifeq ($(TEC_SYSARCH), x86)
+        TEC_UNAME:=$(TEC_UNAME)x86
+      endif
     endif
   endif
-
 endif
 
 
@@ -860,6 +863,8 @@ ifdef USE_GTK
   
   ifeq ($(TEC_SYSARCH), x64)
     STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
+    # Add also these to avoid errors in systems that lib64 does not exists
+    STDINCS += $(GTK_BASE)/lib/glib-2.0/include $(GTK_BASE)/lib/gtk-2.0/include
   else
   ifeq ($(TEC_SYSARCH), ia64)
     STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
