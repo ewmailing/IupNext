@@ -1,48 +1,52 @@
--- IpuOle and LuaCom example contributed by Kommit
+-- IpuOle and LuaCom example contributed by Kommit <kommit@gmail.com>
 
 require "iuplua"
 require "iupluaole"
 require "luacom"
 
-local control = iup.olecontrol{"COMCTL.ListViewCtrl"} -- this control works, but lacks many function
---local control = iup.olecontrol{"MsComCtlLib.ListViewCtrl"}
+local control = iup.olecontrol{"MsComCtlLib.ListViewCtrl"}
 
--- connect it to LuaCOM
+-- Connect it to LuaCOM
 control:CreateLuaCOM()
 
 -- Sets production mode
 control.designmode= "NO"
 
-control.bgcolor = "0 0 0"  -- if control is not showing, you will see a black window...
+control.bgcolor = "255 255 255"
 
 -- Create a dialog containing the OLE control
 
 local dlg = iup.dialog{
     title="IupOle",
-    size="HALFxHALF",
+    size="150x80",
     iup.vbox{
     control,
     }
 }
 
--- Show the dialog and run the main loop
-dlg:show()
-
 control.com.View = 3  -- Report View
 
--- control.com.FullRowSelect = true -- this property is only support by MsComCtlLib
-control.com.ColumnHeaders:Add(nil, nil, "Header 1")
-control.com.ColumnHeaders:Add(nil, nil, "Header 2")
-control.com.ListItems:Add(nil, nil, "Value 1")
-control.com.ListItems:Add(nil, nil, "Value 3")
--- following operations are only support by MsComCtlLib
--- control.com.ListItems:Item(1).ListSubItems:Add(nil, nil, "Value2")
--- control.com.ListItems:Item(2).ListSubItems:Add(nil, nil, "Value4")
+control.com.FullRowSelect = 1
+control.com.ColumnHeaders:Add(nil, nil, "Name")
+control.com.ColumnHeaders:Add(nil, nil, "Score")
+
+-- First column
+control.com.ListItems:Add(nil, nil, "Daimon")
+control.com.ListItems:Add(nil, nil, "Andy")
+control.com.ListItems:Add(nil, nil, "Chris")
+control.com.ListItems:Add(nil, nil, "Billy")
+
+-- Second column
+control.com.ListItems:Item(1).ListSubItems:Add(nil, nil, 16)
+control.com.ListItems:Item(2).ListSubItems:Add(nil, nil, 17)
+control.com.ListItems:Item(3).ListSubItems:Add(nil, nil, 24)
+control.com.ListItems:Item(4).ListSubItems:Add(nil, nil, 11)
 
 
--- add events to to the control
+-- Add events to to the control
 list_events = {}
 
+-- Callback function
 function list_events:ColumnClick(column)
     control.com.Sorted = 1
 
@@ -60,7 +64,8 @@ end
 
 luacom.Connect(control.com, list_events)
 
-
+-- Show the dialog and run the main loop
+dlg:show()
 
 if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
   iup.MainLoop()
