@@ -19,31 +19,31 @@
    Given an ID, to retreive a Lua object is quite simple.
 
    But given a user_id to obtain the ID is more complicated.
-   The IUPTREEREFTABLE is used to do this mapping.
+   The iup.TREEREFTABLE is used to do this mapping.
    We use the object as the index to this table.
 */
 
-/* iup.IUPTREEREFTABLE[object at pos] = ref */
+/* iup.TREEREFTABLE[object at pos] = ref */
 static void tree_settableref(lua_State *L, int pos, int ref)
 {
   lua_getglobal(L, "iup");
-  lua_pushstring(L, "IUPTREEREFTABLE");
+  lua_pushstring(L, "TREEREFTABLE");
   lua_gettable(L, -2);
   lua_remove(L, -2);
   lua_pushvalue(L, pos);
   if(ref == LUA_NOREF)
     lua_pushnil(L);
   else
-    lua_pushnumber(L, ref);
+    lua_pushinteger(L, ref);
   lua_settable(L, -3);
   lua_pop(L, 1);
 }
 
-/* ref = iup.IUPTREEREFTABLE[object at pos] */
+/* ref = iup.TREEREFTABLE[object at pos] */
 static int tree_gettableref(lua_State *L, int pos)
 {
   lua_getglobal(L, "iup");
-  lua_pushstring(L, "IUPTREEREFTABLE");
+  lua_pushstring(L, "TREEREFTABLE");
   lua_gettable(L, -2);
   lua_remove(L, -2);
   lua_pushvalue(L, pos);
@@ -91,7 +91,7 @@ static int TreeGetId(lua_State *L)
     if (id == -1)
       lua_pushnil(L);
     else
-      lua_pushnumber(L, id);
+      lua_pushinteger(L, id);
   }
   return 1;        
 }
@@ -143,11 +143,11 @@ static int tree_multiselection_cb(Ihandle *ih, int* ids, int p1)
   lua_newtable(L);
   for (i = 0; i < p1; i++)
   {
-    lua_pushnumber(L,i+1);
-    lua_pushnumber(L,ids[i]);
+    lua_pushinteger(L,i+1);
+    lua_pushinteger(L,ids[i]);
     lua_settable(L,-3);
   }
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
@@ -158,11 +158,11 @@ static int tree_multiunselection_cb(Ihandle *ih, int* ids, int p1)
   lua_newtable(L);
   for (i = 0; i < p1; i++)
   {
-    lua_pushnumber(L,i+1);
-    lua_pushnumber(L,ids[i]);
+    lua_pushinteger(L,i+1);
+    lua_pushinteger(L,ids[i]);
     lua_settable(L,-3);
   }
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
 }
 
@@ -175,8 +175,6 @@ static int tree_noderemoved_cb(Ihandle *ih, void* p1)
 
 void iuplua_treefuncs_open (lua_State *L)
 {
-  iuplua_dostring(L, "IUPTREEREFTABLE={}", "");
-
   iuplua_register_cb(L, "MULTISELECTION_CB", (lua_CFunction)tree_multiselection_cb, NULL);
   iuplua_register_cb(L, "MULTIUNSELECTION_CB", (lua_CFunction)tree_multiunselection_cb, NULL);
   iuplua_register_cb(L, "NODEREMOVED_CB", (lua_CFunction)tree_noderemoved_cb, NULL);

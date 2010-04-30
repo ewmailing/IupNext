@@ -21,6 +21,8 @@ local ctrl = {
   extrafuncs = 1,
 }
 
+iup.TREEREFTABLE={}
+
 function iup.TreeSetNodeAttributes(handle, id, attrs)
   for attr, val in pairs(attrs) do
     handle[attr..id] = val
