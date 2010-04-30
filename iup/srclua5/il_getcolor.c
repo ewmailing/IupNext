@@ -26,9 +26,9 @@ static int GetColor(lua_State *L)
   int ret = IupGetColor(x,y,&r,&g,&b);
   if (ret) 
   {
-    lua_pushnumber(L, (int) r);
-    lua_pushnumber(L, (int) g);
-    lua_pushnumber(L, (int) b);
+    lua_pushinteger(L, r);
+    lua_pushinteger(L, g);
+    lua_pushinteger(L, b);
     return 3;
   } 
   else 

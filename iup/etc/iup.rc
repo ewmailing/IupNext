@@ -1,8 +1,8 @@
 TECGRAF_ICON ICON "tecgraf.ico"
 
 1 VERSIONINFO
- FILEVERSION 3,0,0,0
- PRODUCTVERSION 3,0,0,0
+ FILEVERSION 3,1,0,0
+ PRODUCTVERSION 3,1,0,0
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
@@ -11,11 +11,11 @@ BEGIN
             VALUE "Comments", "www.tecgraf.puc-rio.br/iup\0"
             VALUE "CompanyName", "Tecgraf/PUC-Rio\0"
             VALUE "FileDescription", "IUP - Portable User Interface\0"
-            VALUE "FileVersion", "3.0.0\0"
+            VALUE "FileVersion", "3.1.0\0"
             VALUE "LegalCopyright", "Copyright © 1994-2010 Tecgraf, PUC-Rio.\0"
             VALUE "OriginalFilename", "iup.dll\0"
             VALUE "ProductName", "IUP for Windows\0"
-            VALUE "ProductVersion", "3.0.0\0"
+            VALUE "ProductVersion", "3.1.0\0"
         END
     END
 END
@@ -40,5 +40,12 @@ BEGIN
   CONTROL  "", IUP_PREVIEWCANVAS, "STATIC", SS_OWNERDRAW, 70, 0, 120, 90, WS_EX_STATICEDGE
 END
 
+/* don't add this if building the DLL */
+#ifndef IUP_DLL
 /* The following line will enable Windows XP Visual Styles */
+#ifdef WIN64
+1 24 "iup64.manifest"
+#else
 1 24 "iup.manifest"
+#endif
+#endif

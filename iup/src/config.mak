@@ -108,7 +108,8 @@ endif
 
 ifneq ($(findstring dll, $(TEC_UNAME)), )
   DEFINES += IUP_DLL
-  SRC += iup_dll.rc
+  INCLUDES += ../etc
+  SRC += ../etc/iup.rc
   DEF_FILE = iup.def
 endif
 

@@ -458,7 +458,7 @@ static void init_tree(void)
   IupSetCallback(tree, "KILLFOCUS_CB", (Icallback) killfocus_cb);
   //IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
   //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
-  //IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
+  IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
   //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
 
