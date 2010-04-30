@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -26,6 +26,11 @@ for SunOS10 and it is not available for Linux24.</p>
 <h4>Dependencies</h4>
 <p>GTK is in fact composed of several libraries. The GTK package contains the 
 GDK library and depends on the ATK, Cairo, Glib and Pango libraries.</p>
+<h4>UTF-8</h4>
+<p>GTK uses UTF-8 as its charset for all displayed text, so IUP will 
+automatically convert all strings to (SetAttribute) and from (GetAttribute) 
+UTF-8. To use UTF-8 strings set the global attribute UTF8AUTOCONVERT to NO.</p>
+
 <h4>Windows</h4>
 
 <p>The GTK driver can be compiled and used in Windows, but it is not recommended since it is slower and 
@@ -43,17 +48,38 @@ contents to:</p>
 <h4>MacOSX</h4>
 <p>The GTK driver also compiles in MacOSX with the new GTK port available at
 <a href="http://gtk-osx.sourceforge.net/">http://gtk-osx.sourceforge.net/</a>. 
-But the <strong>IupGLCanvas</strong> is not available yet, you must use the GDK base driver of 
-the CD library and some elements like <strong>IupTree</strong> are not 100% functional. The 
+But the <strong>IupGLCanvas</strong> is not available yet. You must use the GDK base driver of 
+the CD library. Some elements like <strong>IupTree</strong> are not 100% functional 
+because of the gtk-osx implementation. The 
 installation of gtk-osx is quite complex because there are no pre-compiled 
-binaries. Also if the MacOSX theme is used several controls have problems. We hope that this will improve in the future. 
+binaries. Also if the MacOSX theme is used, several controls have problems. We hope that this will improve in the future. 
 Must define GTK_MAC in the config.mak makefile to enable this build.</p>
 <p>So for now we are distributing binaries that use the X11 version of GTK 2.16. 
-They were installed using <a href="http://www.finkproject.org/">Fink</a>.</p>
-<h4>UTF-8</h4>
-<p>GTK uses UTF-8 as its charset for all displayed text, so IUP will 
-automatically convert all strings to (SetAttribute) and from (GetAttribute) 
-UTF-8. To use UTF-8 strings set the global attribute UTF8AUTOCONVERT to NO.</p>
+They were installed using <a href="http://www.finkproject.org/">Fink</a>. Here 
+is a simple guide to install fink so the pre-compiled binaries will work (tested 
+in 10.5 and 10.6):</p>
+<pre>Download latest fink source: <a href="http://downloads.sourceforge.net/fink/fink-0.29.10.tar.gz">fink-0.29.10</a>
+tar -xvzf fink-0.29.10.tar.gz 
+cd fink-0.29.10
+./bootstrap
+	Use all default answers, except for the second question about 64bits:
+	(10.5) =&gt; (1) Default (mostly 32bit)  [because gcc use 32bit as default]
+	(10.6) =&gt; (2) 64bit-only              [because gcc use 64bit as default]
+/sw/bin/pathsetup.sh
+fink install gtk+2 gtk+2-dev</pre>
+<p>It will take some time to download and install everything, so have patience.</p>
+<p>After that you should get something like this:</p>
+<pre>fink --version
+  Package manager version: 0.29.10
+  Distribution version: selfupdate-rsync Thu Apr 29 11:51:11 2010, 10.6, x86_64  (10.6)
+  Distribution version: selfupdate-rsync Thu Apr 29 11:50:49 2010, 10.5, i386    (10.5)
+
+fink list -i gtk+2
+  Information about XXXX packages read in X seconds.
+   i   gtk+2            2.16.6-3     The Gimp Toolkit
+   i   gtk+2-dev        2.16.6-3     The Gimp Toolkit
+   i   gtk+2-shlibs     2.16.6-3     The Gimp Toolkit
+</pre>
 
 </body>
 

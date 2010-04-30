@@ -629,10 +629,12 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
           char str[100] = "MARK";
           strcat(str, name_id);
           if (mark)
+          {
             iupAttribSetStr(ih, str, "1");
+            ret = 1;
+          }
           else
             iupAttribSetStr(ih, str, NULL);
-          ret = 1;
         }
       }
       else
