@@ -1,4 +1,8 @@
-TECGRAF_ICON ICON "tecgraf.ico"
+TECGRAF_ICON ICON "tecgraf.ico"  /* the first icon will also defines the executable icon in Explorer */
+CURSOR_PEN CURSOR "pen.cur"
+
+/****************************************************/
+/* Applications can change or remove this */
 
 1 VERSIONINFO
  FILEVERSION 3,1,0,0
@@ -20,7 +24,8 @@ BEGIN
     END
 END
 
-CURSOR_PEN CURSOR "pen.cur"
+/****************************************************/
+/* Used by IupFileDlg when SHOWPREVIEW=Yes */
 
 /* To avoid the inclusion of <winuser.h> */
 #define WS_CHILD            0x40000000L
@@ -40,12 +45,16 @@ BEGIN
   CONTROL  "", IUP_PREVIEWCANVAS, "STATIC", SS_OWNERDRAW, 70, 0, 120, 90, WS_EX_STATICEDGE
 END
 
+/****************************************************/
+/* The following lines will enable Windows XP/Vista Visual Styles */
+
 /* don't add this if building the DLL */
 #ifndef IUP_DLL
-/* The following line will enable Windows XP Visual Styles */
-#ifdef WIN64
+#ifdef TEC_64
 1 24 "iup64.manifest"
 #else
 1 24 "iup.manifest"
 #endif
 #endif
+
+/****************************************************/

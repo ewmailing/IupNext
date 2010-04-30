@@ -1,6 +1,5 @@
 TECGRAF_ICON ICON "../etc/tecgraf.ico"
-TECGRAF_BITMAP BITMAP "../test/tecgraf.bmp"
-
+TECGRAF_BITMAP BITMAP "tecgraf.bmp"
 CURSOR_PEN CURSOR "../etc/pen.cur"
 
 /* To avoid the inclusion of <winuser.h> */
@@ -23,7 +22,7 @@ END
 
 #ifndef IUP_DLL
 /* The following line will enable Windows XP Visual Styles */
-#ifdef WIN64
+#ifdef TEC_64
 1 24 "../etc/iup64.manifest"
 #else
 1 24 "../etc/iup.manifest"
