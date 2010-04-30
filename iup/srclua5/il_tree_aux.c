@@ -130,7 +130,7 @@ static int TreeSetUserId(lua_State *L)
     tree_settableref(L, 3, ref);
 
     if (ref >= 0) ref++;  /* only positive references are shifted */
-    IupTreeSetUserId(ih, id, (char*)ref);
+    IupTreeSetUserId(ih, id, (void*)ref);
   }
 
   return 0;

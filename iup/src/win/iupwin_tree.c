@@ -91,8 +91,10 @@ static HTREEITEM winTreeFindNodePointed(Ihandle* ih)
   DWORD pos = GetMessagePos();
   info.pt.x = LOWORD(pos);
   info.pt.y = HIWORD(pos);
-  ScreenToClient(ih->handle, &info.pt);
-  return (HTREEITEM)SendMessage(ih->handle, TVM_HITTEST, 0, (LPARAM)(LPTVHITTESTINFO)&info);
+  if (ScreenToClient(ih->handle, &info.pt))
+    return (HTREEITEM)SendMessage(ih->handle, TVM_HITTEST, 0, (LPARAM)(LPTVHITTESTINFO)&info);
+  else
+    return NULL;
 }
 
 int iupwinGetColor(const char* value, COLORREF *color)
@@ -2369,9 +2371,12 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   else if(msg_info->code == NM_RCLICK)
   {
     HTREEITEM hItem = winTreeFindNodePointed(ih);
-    IFni cbRightClick  = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
-    if (cbRightClick)
-      cbRightClick(ih, iupTreeFindNodeId(ih, hItem));
+    if (hItem)
+    {
+      IFni cbRightClick  = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
+      if (cbRightClick)
+        cbRightClick(ih, iupTreeFindNodeId(ih, hItem));
+    }
   }
   else if (msg_info->code == NM_CUSTOMDRAW)
   {
