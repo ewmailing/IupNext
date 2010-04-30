@@ -372,7 +372,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_CTLCOLORSTATIC:
     {
       Ihandle* child = iupwinHandleGet((void*)lp);
-      if (child)
+      if (child && iupChildTreeGetNativeParent(child)==ih)
       {
         IFctlColor cb = (IFctlColor)IupGetCallback(child, "_IUPWIN_CTLCOLOR_CB");
         if (cb)
@@ -390,7 +390,11 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       if (wp == 0) /* a menu */
         child = iupwinMenuGetItemHandle((HMENU)drawitem->hwndItem, drawitem->itemID);
       else
+      {
         child = iupwinHandleGet(drawitem->hwndItem); 
+        if (child && iupChildTreeGetNativeParent(child)!=ih)
+          child = NULL;
+      }
 
       if (child)
       {
@@ -408,7 +412,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_VSCROLL:
     {
       Ihandle *child = iupwinHandleGet((void*)lp);
-      if (child)
+      if (child && iupChildTreeGetNativeParent(child)==ih)
       {
         IFni cb = (IFni)IupGetCallback(child, "_IUPWIN_CUSTOMSCROLL_CB");
         if (cb)
@@ -426,7 +430,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         break;
 
       child = iupwinHandleGet(msg_info->hwndFrom); 
-      if (child)
+      if (child && iupChildTreeGetNativeParent(child)==ih)
       {
         IFnotify cb = (IFnotify)IupGetCallback(child, "_IUPWIN_NOTIFY_CB");
         if (cb)
