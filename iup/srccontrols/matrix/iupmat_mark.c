@@ -62,8 +62,12 @@ static void iMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark, IFniii m
 
   if (ih->data->callback_mode)
   {
-    if (markedit_cb)
+    if (markedit_cb && !ih->data->inside_markedit_cb)
+    {
+      ih->data->inside_markedit_cb = 1;
       markedit_cb(ih, lin, col, mark);
+      ih->data->inside_markedit_cb = 0;
+    }
     else
     {
       sprintf(str, "MARK%d:%d", lin, col);
@@ -604,7 +608,7 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
 
     if (ih->data->mark_mode == IMAT_MARK_CELL)
     {
-      int mark;
+      int mark, ret = 0;
 
       if (lin == 0 || col == 0) /* title can NOT have a mark */
         return 0;
@@ -614,10 +618,22 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
       if (ih->data->callback_mode)
       {
         IFniii markedit_cb = (IFniii)IupGetCallback(ih, "MARKEDIT_CB");
-        if (markedit_cb)
+        if (markedit_cb && !ih->data->inside_markedit_cb)
+        {
+          ih->data->inside_markedit_cb = 1;
           markedit_cb(ih, lin, col, mark);
-        else if (mark)
-          return 1;  /* store the attribute */
+          ih->data->inside_markedit_cb = 0;
+        }
+        else
+        {
+          char str[100] = "MARK";
+          strcat(str, name_id);
+          if (mark)
+            iupAttribSetStr(ih, str, "1");
+          else
+            iupAttribSetStr(ih, str, NULL);
+          ret = 1;
+        }
       }
       else
       {
@@ -633,6 +649,8 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
         iupMatrixPrepareDrawData(ih);
         iupMatrixDrawCells(ih, lin, col, lin, col);
       }
+
+      return ret;
     }
     else
     {
