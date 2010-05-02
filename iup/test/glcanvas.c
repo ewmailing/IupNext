@@ -11,6 +11,12 @@
 #include "iupgl.h"
 
 
+static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
+{
+  printf("BUTTON_CB(but=%c (pressed=%d), x=%d, y=%d [%s])\n",(char)but,pressed,x,y, status);
+  return IUP_DEFAULT;
+}
+
 static int action(Ihandle *ih)
 {
   IupGLMakeCurrent(ih);
@@ -45,6 +51,7 @@ void GLCanvasTest(void)
   IupSetAttribute(canvas, "BUFFER", "DOUBLE");
   IupSetAttribute(canvas, "BORDER", "NO");
   IupSetAttribute(canvas, "RASTERSIZE", "300x200");
+  IupSetCallback(canvas, "BUTTON_CB",    (Icallback)button_cb);
   IupAppend(box, canvas);
 
   dlg = IupDialog(box);
