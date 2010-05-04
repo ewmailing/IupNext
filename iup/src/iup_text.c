@@ -365,9 +365,9 @@ static void iTextComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
   {
     int sb_size = iupdrvGetScrollbarSize();
     if (ih->data->sb & IUP_SB_HORIZ)
-      natural_w += sb_size;
+      natural_h += sb_size;  /* sb horizontal affects vertical size */
     if (ih->data->sb & IUP_SB_VERT)
-      natural_h += sb_size;
+      natural_w += sb_size;  /* sb vertical affects horizontal size */
   }
 
   *w = natural_w;
