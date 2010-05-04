@@ -453,7 +453,9 @@ void IupSaveClassAttributes(Ihandle* ih)
       int inherit;
       char *def_value;
       char *value = iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
-      if (value && value != iupAttribGet(ih, name))
+      if (value &&     /* NOT NULL */
+          !iupStrEqualNoCase(value, iupAttribGet(ih, name)) &&     /* NOT already stored */
+          !iupStrEqualNoCase(value, def_value))    /* NOT equal to the default value */
         iupAttribStoreStr(ih, name, value);
     }
 
@@ -514,7 +516,7 @@ char* iupClassGetDefaultAttribute(const char* classname, const char *attrib_name
 
   afunc = (IattribFunc*)iupTableGet(ic->attrib_func, attrib_name);
   if (afunc)
-    return (char*)afunc->default_value;
+    return iClassGetDefaultValue(afunc);
   else
     return NULL;
 }
