@@ -30,6 +30,19 @@ void iupdrvSetIdleFunction(Icallback f)
   win_idle_cb = (IFidle)f;
 }
 
+static int winLoopCallIdle(void)
+{
+  int ret = win_idle_cb();
+  if (ret == IUP_CLOSE)
+  {
+    win_idle_cb = NULL;
+    return IUP_CLOSE;
+  }
+  if (ret == IUP_IGNORE) 
+    win_idle_cb = NULL;
+  return ret;
+}
+
 void IupExitLoop(void)
 {
   PostQuitMessage(0);
@@ -74,15 +87,11 @@ int IupMainLoop(void)
       }
       else
       {
-        int ret = win_idle_cb();
-        if (ret == IUP_CLOSE)
+        if (winLoopCallIdle() == IUP_CLOSE)
         {
-          win_idle_cb = NULL;
           win_main_loop--;
           return IUP_CLOSE;
         }
-        if (ret == IUP_IGNORE) 
-          win_idle_cb = NULL;
       }
     }
     else
@@ -123,6 +132,8 @@ int IupLoopStep(void)
   MSG msg;
   if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
     return winLoopProcessMessage(&msg);
+  else if (win_idle_cb)
+    return winLoopCallIdle();
 
   return IUP_DEFAULT;
 }
