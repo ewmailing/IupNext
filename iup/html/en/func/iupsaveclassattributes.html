@@ -20,8 +20,11 @@ iup.SaveClassAttributes(<strong>ih</strong>: ihandle) [in Lua]</pre>
 <h3>Notes</h3>
 <p>When the element is mapped some attributes are stored only in the native 
 system. If the element is <b>unmaped</b> those attributes are lost. So this 
-function is usefull when you want to <b>unmap</b> the element and keep its 
+function is useful when you want to <b>unmap</b> the element and keep its 
 attributes.</p>
+<p>It will not save variable name attributes, like those which has a 
+complementary number. For example: items in a <strong>IupList</strong>, <strong>
+IupTree</strong> or <strong>IupMatrix</strong>.</p>
 <h3>See Also</h3>
 <p>
 <a href="iupgetclassattributes.html">IupGetClassAttributes</a>,

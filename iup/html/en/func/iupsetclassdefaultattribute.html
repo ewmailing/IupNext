@@ -32,11 +32,9 @@ name</b>: name of the attribute<br>
 <p>If the value is DEFAULTFONT, DLGBGCOLOR, DLGFGCOLOR, TXTBGCOLOR, TXTFGCOLOR or 
 MENUBGCOLOR then the actual default value will be the global attribute of the 
 same name consulted at the time the attribute is consulted.</p>
-<p>Some attributes can NOT have a default value, so even if you set and <strong>
-IupGetAttribute</strong> return it, internally it will not be used. Those 
-attributes are all non inheritable attributes, see the
-<a href="../attrib_guide.html#Inheritance">Attributes Guide</a> in the 
-Inheritance section.</p>
+<p>Attributes that are not strings and attributes that have variable names, like 
+those which has a complementary number, can NOT have a default value. Some 
+attributes can NOT have a default value by definition.</p>
 <p>If the new default value is (char*)-1, then the default value is set to be 
 the system default if any is defined.</p>
 <h3>See Also</h3>

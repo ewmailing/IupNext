@@ -131,7 +131,8 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
   *inherit = 1; /* default is inheritable */
   if (afunc)
   {
-    *inherit = !(afunc->flags & IUPAF_NO_INHERIT) && !(afunc->flags & IUPAF_NO_STRING);
+    *inherit = !(afunc->flags & IUPAF_NO_INHERIT) &&   /* is inheritable */
+               !(afunc->flags & IUPAF_NO_STRING);      /* is a string */
 
     if (afunc->flags & IUPAF_READONLY)
     {
@@ -216,7 +217,8 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
   if (afunc)
   {
     *def_value = iClassGetDefaultValue(afunc);
-    *inherit = !(afunc->flags & IUPAF_NO_INHERIT) && !(afunc->flags & IUPAF_NO_STRING);
+    *inherit = !(afunc->flags & IUPAF_NO_INHERIT) &&   /* is inheritable */
+               !(afunc->flags & IUPAF_NO_STRING);      /* is a string */
 
     if (afunc->flags & IUPAF_WRITEONLY)
       return NULL;
@@ -267,7 +269,8 @@ void iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_va
   if (afunc)
   {
     *def_value = iClassGetDefaultValue(afunc);
-    *inherit = !(afunc->flags & IUPAF_NO_INHERIT) && !(afunc->flags & IUPAF_NO_STRING);
+    *inherit = !(afunc->flags & IUPAF_NO_INHERIT) &&  /* is inheritable */
+               !(afunc->flags & IUPAF_NO_STRING);     /* is a string */
   }
 }
 
@@ -411,7 +414,9 @@ void IupSetClassDefaultAttribute(const char* classname, const char *name, const 
     return;
 
   afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
-  if (afunc && (!(afunc->flags & IUPAF_NO_DEFAULTVALUE) || !(afunc->flags & IUPAF_NO_STRING) || !(afunc->flags & IUPAF_HAS_ID)))
+  if (afunc && !(afunc->flags & IUPAF_NO_DEFAULTVALUE) &&   /* can has default */
+               !(afunc->flags & IUPAF_NO_STRING) &&     /* is a string */
+               !(afunc->flags & IUPAF_HAS_ID))
   {
     if (default_value == IUPAF_SAMEASSYSTEM)
       afunc->default_value = afunc->system_default;
@@ -423,7 +428,7 @@ void IupSetClassDefaultAttribute(const char* classname, const char *name, const 
     else
       afunc->call_global_default = 0;
   }
-  else if (default_value)
+  else if (!afunc && default_value)
     iupClassRegisterAttribute(ic, name, NULL, NULL, default_value, NULL, IUPAF_DEFAULT);
 }
 
@@ -442,7 +447,8 @@ void IupSaveClassAttributes(Ihandle* ih)
   while (name)
   {
     IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
-    if (afunc && !(afunc->flags & IUPAF_NO_STRING))
+    if (afunc && !(afunc->flags & IUPAF_NO_STRING) &&   /* is a string */
+                 !(afunc->flags & IUPAF_HAS_ID))
     {
       int inherit;
       char *def_value;
@@ -466,8 +472,11 @@ void iupClassObjectEnsureDefaultAttributes(Ihandle* ih)
   while (name)
   {
     IattribFunc* afunc = (IattribFunc*)iupTableGetCurr(ic->attrib_func);
-    if (afunc && afunc->set && (afunc->default_value || afunc->system_default) &&
-        (!(afunc->flags & IUPAF_NO_DEFAULTVALUE) || !(afunc->flags & IUPAF_NO_STRING) || !(afunc->flags & IUPAF_HAS_ID)))
+    if (afunc && afunc->set && 
+        (afunc->default_value || afunc->system_default) &&
+        !(afunc->flags & IUPAF_NO_DEFAULTVALUE) &&   /* can has default */
+        !(afunc->flags & IUPAF_NO_STRING) &&       /* is a string */
+        !(afunc->flags & IUPAF_HAS_ID))
     {
       if ((!iupStrEqualNoCase(afunc->default_value, afunc->system_default)) || 
           (afunc->call_global_default && iupGlobalDefaultColorChanged(afunc->default_value)))
