@@ -264,6 +264,39 @@ void IupStoreAttribute(Ihandle *ih, const char* name, const char *value)
   }
 }
 
+static void iAttribResetChildren(Ihandle *ih, const char* name)
+{
+  Ihandle* child = ih->firstchild;
+  while (child)
+  {
+    /* set only if an inheritable attribute at the child */
+    if (iAttribIsInherit(child, name))
+    {
+      iupAttribSetStr(child, name, NULL);
+
+      iAttribResetChildren(child, name);
+    }
+
+    child = child->brother;
+  }
+}
+
+void IupResetAttribute(Ihandle *ih, const char* name)
+{
+  iupASSERT(name!=NULL);
+  if (!name)
+    return;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  iupAttribSetStr(ih, name, NULL);
+
+  if (iAttribIsInherit(ih, name))
+    iAttribResetChildren(ih, name);
+}
+
 char* IupGetAttribute(Ihandle *ih, const char* name)
 {
   int inherit;

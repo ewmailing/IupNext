@@ -55,6 +55,7 @@ IupOpen
 IupPopup
 IupPreviousField
 IupRadio
+IupResetAttribute
 IupScanf
 IupSeparator
 IupSetAttribute

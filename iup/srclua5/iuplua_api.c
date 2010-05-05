@@ -734,6 +734,14 @@ static int ShowXY(lua_State *L)
   return 1;
 }
 
+static int ResetAttribute(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  const char *a = luaL_checkstring(L,2);
+  IupResetAttribute(ih, a);
+  return 0;
+}
+
 static int StoreAttribute(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -826,6 +834,7 @@ void iupluaapi_open(lua_State * L)
     {"NextField", NextField},
     {"Popup", Popup},
     {"PreviousField", PreviousField},
+    {"ResetAttribute", ResetAttribute},
     {"SetAttribute", StoreAttribute},
     {"SetAttributes", SetAttributes},
     {"isbutton1", cf_isbutton1},

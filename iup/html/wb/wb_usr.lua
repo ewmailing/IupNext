@@ -407,6 +407,10 @@ wb_usr.tree =
               link= "func/iupsetattributes.html"
             },
             {
+              name= {nl= "IupResetAttribute"},
+              link= "func/iupresetattribute.html"
+            },
+            {
               name= {nl= "IupSetAtt"},
               link= "func/iupsetatt.html"
             },
@@ -414,6 +418,7 @@ wb_usr.tree =
               name= {nl= "IupSetAttributeHandle"},
               link= "func/iupsetattributehandle.html"
             },
+            { link= "", name= {en= "" } },
             {
               name= {nl= "IupGetAttributeHandle"},
               link= "func/iupgetattributehandle.html"
