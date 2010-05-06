@@ -483,6 +483,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
   XtVaSetValues(filebox,
                 XmNdialogStyle, style,
                 XmNautoUnmanage, False,
+                XmNresizePolicy, XmRESIZE_GROW,
                 NULL);
 
   if (dialogtype == IUP_DIALOGDIR)
@@ -618,6 +619,14 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
       motFileDlgPreviewCanvasInit(ih, preview_canvas);
 
     file_cb(ih, NULL, "INIT");
+  }
+
+  if (ih->userwidth && ih->userheight)
+  {
+    XtVaSetValues(dialog,
+      XmNwidth, (XtArgVal)(ih->userwidth),
+      XmNheight, (XtArgVal)(ih->userheight),
+      NULL);
   }
 
   if (style == XmDIALOG_MODELESS)
