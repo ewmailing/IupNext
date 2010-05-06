@@ -494,6 +494,10 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   if (!ih->handle)
       return IUP_ERROR;
 
+#if GTK_CHECK_VERSION(2, 18, 0)
+    gtk_widget_set_has_window(ih->handle, TRUE);  /* CD will NOT work without this, but this is NOT working... */
+#endif
+
   scrolled_window = (GtkScrolledWindow*)gtk_scrolled_window_new(NULL, NULL);
   if (!scrolled_window)
     return IUP_ERROR;

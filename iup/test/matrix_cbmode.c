@@ -5,13 +5,15 @@
 #include "iup.h"
 #include "iupcontrols.h"
 
-//static char data[3][3][50] = 
-//{
-//  {"1:1", "1:2", "1:3"}, 
-//  {"2:1", "2:2", "2:3"}, 
-//  {"3:1", "3:2", "3:3"}, 
-//};
-
+//#define BIG_MATRIX
+#ifndef BIG_MATRIX
+static char data[3][3][50] = 
+{
+  {"1:1", "1:2", "1:3"}, 
+  {"2:1", "2:2", "2:3"}, 
+  {"3:1", "3:2", "3:3"}, 
+};
+#endif
 
 static int dropcheck_cb(Ihandle *self, int lin, int col)
 {
@@ -40,15 +42,22 @@ static int drop(Ihandle *self, Ihandle *drop, int lin, int col)
 
 static char* value_cb(Ihandle *self, int lin, int col)
 {
+#ifdef BIG_MATRIX
   if (lin == 0 || col == 0)
     return "Title";
   return "cell";
-//  return data[lin-1][col-1];
+#else
+  if (lin == 0 || col == 0)
+    return NULL;
+  return data[lin-1][col-1];
+#endif
 }
 
 static int value_edit_cb(Ihandle *self, int lin, int col, char* newvalue)
 {
-//  strcpy(data[lin-1][col-1], newvalue);
+#ifndef BIG_MATRIX
+  strcpy(data[lin-1][col-1], newvalue);
+#endif
   return IUP_DEFAULT;
 }
 
@@ -57,8 +66,13 @@ static Ihandle* create_matrix(void)
   Ihandle* mat = IupMatrix(NULL); 
   int lin, col;
   
+#ifdef BIG_MATRIX
   IupSetAttribute(mat, "NUMCOL", "20"); 
   IupSetAttribute(mat, "NUMLIN", "5000"); 
+#else
+  IupSetAttribute(mat, "NUMCOL", "3"); 
+  IupSetAttribute(mat, "NUMLIN", "3"); 
+#endif
   
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "3");
@@ -85,9 +99,12 @@ static Ihandle* create_matrix(void)
   //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");
 //  IupSetAttribute(mat, "WIDTHDEF", "15");
 
-//  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","BGCOLOR");
-//  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:1","BGCOLOR");
+  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","BGCOLOR");
+  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:1","BGCOLOR");
+//  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","255 255 255");
+//  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:1","255 255 255");
 
+#ifdef BIG_MATRIX
   for (lin = 0; lin < 3000; lin++)
   {
     for (col = 0; col < 20; col++)
@@ -96,6 +113,7 @@ static Ihandle* create_matrix(void)
       IupMatSetAttribute(mat,"FGCOLOR", lin, col, "1 1 1");
     }
   }
+#endif
 
   return mat;
 }
