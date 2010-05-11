@@ -383,7 +383,7 @@ static void winTreeSelectRange(Ihandle* ih, HTREEITEM hItem1, HTREEITEM hItem2, 
   int i;
   int id1 = iupTreeFindNodeId(ih, hItem1);
   int id2 = iupTreeFindNodeId(ih, hItem2);
-  if (id2 == -1) id2 = ih->data->node_count-1;
+  
   if (id1 > id2)
   {
     int tmp = id1;
@@ -405,13 +405,19 @@ static void winTreeSelectRange(Ihandle* ih, HTREEITEM hItem1, HTREEITEM hItem2, 
 
 static void winTreeSelectAll(Ihandle* ih)
 {
-  HTREEITEM hItemRoot = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_ROOT, 0);
-  winTreeSelectRange(ih, hItemRoot, NULL, 0);
+  int i;
+  for (i = 0; i < ih->data->node_count; i++)
+    winTreeSelectNode(ih, ih->data->node_cache[i].node_handle, 1);
 }
 
 static void winTreeClearSelection(Ihandle* ih, HTREEITEM hItemExcept)
 {
-  winTreeSelectRange(ih, hItemExcept, hItemExcept, 1);
+  int i;
+  for (i = 0; i < ih->data->node_count; i++)
+  {
+    if (ih->data->node_cache[i].node_handle != hItemExcept)
+      winTreeSelectNode(ih, ih->data->node_cache[i].node_handle, 0);
+  }
 }
 
 static int winTreeInvertSelectFunc(Ihandle* ih, HTREEITEM hItem, int id, void* userdata)
