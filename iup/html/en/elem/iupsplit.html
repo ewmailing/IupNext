@@ -68,6 +68,11 @@ The default value is &quot;YES&quot;.</p>
 <p><strong>LAYOUTDRAG</strong> (<font SIZE="3">non inheritable</font>): When the 
 bar is moved automatically update the children layout. Default: YES. If set to 
 NO then the layout will be updated only when the mouse drag is released.</p>
+<p><strong>MINMAX</strong> (<font SIZE="3">non inheritable</font>): sets minimum 
+and maximum crop values for VALUE, in the format &quot;%d:%d&quot; [min:max]. The min 
+value can not be less than 0, and the max value can not be larger than 1000. 
+This will constrain the interactive change of the bar handler. Default: 
+&quot;0:1000&quot;. (Since 3.2)</p>
 <p><strong>SHOWGRIP</strong> (<font SIZE="3">non inheritable</font>): Shows the 
 bar grip affordance. Default: YES. When set to NO, the BARSIZE is changed from 5 
 to 3.</p>

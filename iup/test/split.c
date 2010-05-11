@@ -7,6 +7,7 @@ void SplitTest(void)
 
   bt = IupButton("Button", NULL);
   IupSetAttribute(bt, "EXPAND", "YES");
+//  IupSetAttribute(bt, "MINSIZE", "30x");
 
   ml = IupMultiLine(NULL);
   IupSetAttribute(ml, "EXPAND", "YES");
@@ -20,6 +21,7 @@ void SplitTest(void)
 //  IupSetAttribute(split, "LAYOUTDRAG", "NO");
 //  IupSetAttribute(split, "AUTOHIDE", "YES");
 //  IupSetAttribute(split, "SHOWGRIP", "NO");
+//  IupSetAttribute(split, "MINMAX", "100:800");
 
   vbox = IupVbox(split, NULL);
   IupSetAttribute(vbox, "MARGIN", "10x10");
