@@ -1446,7 +1446,7 @@ static int gtkTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
 
     iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
 
-    for(i = 1; i < ih->data->node_count; /* increment only if not removed */)
+    for(i = 0; i < ih->data->node_count; /* increment only if not removed */)
     {
       gtkTreeIterInit(ih, &iterItem, ih->data->node_cache[i].node_handle);
       if (gtkTreeIsNodeSelected(model, &iterItem))

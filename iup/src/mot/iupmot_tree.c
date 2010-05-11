@@ -1440,7 +1440,7 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
   else if(iupStrEqualNoCase(value, "MARKED"))  /* Delete the array of marked nodes */
   {
     int i;
-    for(i = 1; i < ih->data->node_count; /* increment only if not removed */)
+    for(i = 0; i < ih->data->node_count; /* increment only if not removed */)
     {
       if (motTreeIsNodeSelected(ih->data->node_cache[i].node_handle))
         motTreeRemoveNode(ih, ih->data->node_cache[i].node_handle, 1, 1);
