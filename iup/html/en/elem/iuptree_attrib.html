@@ -308,15 +308,17 @@ attributes are preserved. Ignored if set before map. (since 3.0)</p>
 <p><b>RENAME </b>(write only): Forces a rename action to take place. Valid only 
 when SHOWRENAME=YES.</p>
 
-<p><span class="style4">RENAMECARET</span>:
+<p><span class="style4">RENAMECARET</span><b> </b>(write only):
   the caret&#8217;s 
   position of the text box when in-place renaming. Same as the CARET attribute 
-for <a href="iuptext.html#Attributes">IupText</a>.</p>
-<p><span class="style4">RENAMESELECTION</span>:
+for <a href="iuptext.html#Attributes">IupText</a>, but here is used only once 
+after SHOWRENAME_CB is called and before the text box is shown.</p>
+<p><span class="style4">RENAMESELECTION</span><b> </b>(write only):
   the selection 
   interval 
   of the text box when in-place renaming. Same as the SELECTION attribute for
-<a href="iuptext.html#Attributes">IupText</a>.</p>
+<a href="iuptext.html#Attributes">IupText</a>, but here is used only once after SHOWRENAME_CB 
+is called and before the text box is shown.</p>
 <p><strong>SHOWRENAME</strong> (creation only) (<font size="3">non inheritable</font>): Allows the in place rename of a 
 node. Default:
   &quot;NO&quot;. Since IUP 3.0, F2 and clicking twice only starts to rename a 
