@@ -215,12 +215,12 @@ static void iVboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
       else
       {
         int empty = (child->expand & IUP_EXPAND_H1)? empty_h1: ((child->expand & IUP_EXPAND_H0)? empty_h0: 0);
-        char* weigth_str = iupAttribGet(child, "EXPANDWEIGTH");
-        if (weigth_str)
+        char* weight_str = iupAttribGet(child, "EXPANDWEIGHT");
+        if (weight_str)
         {
-          float weigth; 
-          if (iupStrToFloat(weigth_str, &weigth))
-            empty = iupROUND(empty * weigth);
+          float weight; 
+          if (iupStrToFloat(weight_str, &weight))
+            empty = iupROUND(empty * weight);
         }
         iupBaseSetCurrentSize(child, client_width, child->naturalheight+empty, shrink);
       }
