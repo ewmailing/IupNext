@@ -82,11 +82,11 @@ internal value is &quot;0x0&quot;. When set to NULL the <b>User</b> size is
 internally  set to &quot;0x0&quot;.</p>
 <p>By default the layout computation uses the <strong>Natural</strong> size of 
 the elements to compose the layout of the dialog, but if the <strong>User</strong> 
-size is defined then it is used instead of the <strong>Natural</strong> size, 
+size is defined then it is used <span class="style1">instead</span> of the <strong>Natural</strong> size, 
 except for containers (not including the dialog) where the <strong>User</strong> 
-size will be used only if bigger than the <strong>Natural</strong> size. For the 
+size will be used only if <span class="style1">bigger</span> than the <strong>Natural</strong> size. For the 
 dialog, when the <strong>User</strong> size is not defined, the <strong>Natural</strong> 
-size is used only if bigger than the <strong>Current</strong> size, so in this 
+size is used only if <span class="style1">bigger</span> than the <strong>Current</strong> size, so in this 
 case the dialog will automatically increase its size to fit all its contents, 
 but if the <strong>Natural</strong> size is smaller then the dialog size will 
 remains the same, i.e. the dialog will not automatically shrink its size.</p>
@@ -165,7 +165,7 @@ elements will receive equal spaces to expand according to the remaining empty
 space in the box. This is why elements in diferent boxes does not align 
 perfectly when EXPAND is set.</p>
 <h4>SHRINK</h4>
-<p>To reduze the size of the dialog and its containers to a size smaller than the
+<p>To reduce the size of the dialog and its containers to a size smaller than the
 <b>Natural</b> size the SHRINK attribute of the dialog can be used. If set to 
 YES all the containers of the dialog will be able to reduce its size. But be 
 aware that elements may overlap and the layout result could be visually bad if 
@@ -199,12 +199,12 @@ dlg:show()</pre>
 <p>The layout of the elements of a dialog in IUP has a natural hierarchy because of the way they are composed 
   together.  </p>
 <p>To create a node simply call one of the pre-defined constructors like <b>
-IupLabel</b>, <b>IupButton</b>, <b>IupCanvas</b>, and so on. To create a brach 
+IupLabel</b>, <b>IupButton</b>, <b>IupCanvas</b>, and so on. To create a branch 
 just call the constructors of containers like <b>IupDialog</b>, <b>IupFrame</b>,
 <b>IupVBox</b>, and so on. Internally they all call
 <a href="func/iupcreate.html">IupCreate</a> to create branches or nodes. To 
 destroy a node or branch call <a href="func/iupdestroy.html">IupDestroy</a>.</p>
-<p>Some of the constructors already append childreen to its branch, but you can 
+<p>Some of the constructors already append children to its branch, but you can 
 add other children using <a href="func/iupappend.html">IupAppend</a> or
 <a href="func/iupinsert.html">IupInsert</a>. To 
 remove from the tree call <a href="func/iupdetach.html">IupDetach</a>.</p>

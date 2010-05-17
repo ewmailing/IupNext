@@ -563,6 +563,32 @@ static int iDialogSetSizeAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iDialogGetSizeAttrib(Ihandle* ih)
+{
+  char* str;
+  int charwidth, charheight, width, height;
+
+  if (ih->handle)
+  {
+    /* ih->currentwidth and/or ih->currentheight could have been reset in SetSize */
+    iupdrvDialogGetSize(ih->handle, &width, &height);
+  }
+  else
+  {
+    width = ih->userwidth;
+    height = ih->userheight;
+  }
+
+  iupdrvFontGetCharSize(ih, &charwidth, &charheight);
+  if (charwidth == 0 || charheight == 0)
+    return NULL;  /* if font failed get from the hash table */
+
+  str = iupStrGetMemory(50);
+  sprintf(str, "%dx%d", iupRASTER2WIDTH(width, charwidth), 
+                        iupRASTER2HEIGHT(height, charheight));
+  return str;
+}
+
 static int iDialogSetRasterSizeAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
@@ -586,6 +612,30 @@ static int iDialogSetRasterSizeAttrib(Ihandle* ih, const char* value)
   ih->currentheight = 0;
 
   return 0;
+}
+
+static char* iDialogGetRasterSizeAttrib(Ihandle* ih)
+{
+  char* str;
+  int width, height;
+
+  if (ih->handle)
+  {
+    /* ih->currentwidth and/or ih->currentheight could have been reset in SetRasterSize */
+    iupdrvDialogGetSize(ih->handle, &width, &height);
+  }
+  else
+  {
+    width = ih->userwidth;
+    height = ih->userheight;
+  }
+
+  if (!width && !height)
+    return NULL;
+
+  str = iupStrGetMemory(50);
+  sprintf(str, "%dx%d", width, height);
+  return str;
 }
 
 static int iDialogSetVisibleAttrib(Ihandle* ih, const char* value)
@@ -717,8 +767,8 @@ Iclass* iupDialogGetClass(void)
   iupBaseRegisterCommonAttrib(ic);
 
   /* Overwrite Common */
-  iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iDialogSetSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iDialogSetRasterSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SIZE", iDialogGetSizeAttrib, iDialogSetSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RASTERSIZE", iDialogGetRasterSizeAttrib, iDialogSetRasterSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "POSITION", NULL, NULL, NULL, NULL, IUPAF_WRITEONLY|IUPAF_READONLY|IUPAF_NO_INHERIT); /* forbidden in dialog */
 
   /* Base Container */

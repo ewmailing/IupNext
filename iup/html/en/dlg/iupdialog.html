@@ -78,13 +78,24 @@ and/or height: </p>
 	<li>&quot;EIGHTH&quot;: Defines the dialog’s width (or height) equal to 1/8 of the 
 	screen's width (or height)</li>
 </ul>
-<p class="info">If SIZE or RASTERSIZE are set changing the user size, then the 
-current size is internally reset to 0x0, so the user size or the natural size 
-can be used when updating the actual current size of the dialog.</p>
-<p class="info">Values attributed to the SIZE attribute of a dialog are always 
+<p class="info">The dialog <strong>Natural</strong> size is only considered when 
+the <strong>User</strong> size is not defined or when it is bigger than the
+<strong>Current</strong> size. This behavior is different from a control that 
+goes inside the dialog. Because of that, when SIZE or RASTERSIZE are set (changing the 
+<strong>User</strong> size), the 
+<strong>Current</strong> size is internally reset to 0x0, so the the <strong>Natural</strong> size 
+can be considered when re-computing the <strong>Current</strong> size of the dialog.</p>
+<p class="info">Values set at SIZE or RASTERSIZE attributes of a dialog are always 
 accepted, regardless of the minimum size required by its children. For a dialog 
 to have the minimum necessary size to fit all elements contained in it, simply 
-define NULL (in C) to SIZE.</p>
+define SIZE or RASTERSIZE to NULL. Also if you set SIZE or RASTERSIZE to be used 
+as the initial size of the dialog, its contents will be limited to this size as 
+the minimum size, if you do not want that, then after showing the dialog reset 
+this size to NULL so the dialog can be resized to smaller values. But notice 
+that its contents will still be limited by the <strong>Natural</strong> size, to 
+also remove that limitation set SHRINK=YES.</p>
+<p class="info">For more information see <a href="../layout_guide.html">Layout 
+Guide</a>.</p>
 <p><a href="../attrib/iup_title.html">TITLE</a> (<font SIZE="3">non inheritable</font>): 
 Dialog’s title. Default: NULL. If you want to remove the title bar you must also 
 set MENUBOX=NO, MAXBOX=NO and MINBOX=NO, before map. But in Motif and GTK it 

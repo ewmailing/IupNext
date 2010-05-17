@@ -397,6 +397,8 @@ void SampleTest(void)
   
 //  IupSetAttribute(box, "FGCOLOR", "255 0 0");
 
+//  IupSetAttribute(dlg,"RASTERSIZE","1000x800");
+
   IupMap(dlg);
 
   IupSetAttribute(tree, "TITLE0",         "Figures");  
@@ -407,6 +409,8 @@ void SampleTest(void)
   IupSetAttribute(tree, "ADDLEAF4",     "scalenus");
 
   IupShow(dlg);
+
+//  IupSetAttribute(dlg,"RASTERSIZE", NULL);
 }
 
 #ifndef BIG_TEST
