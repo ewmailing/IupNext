@@ -12,9 +12,21 @@
 #include "il.h"
 
 
-static int dialog_map_cb(Ihandle *self)
+static int dialog_unmap_cb(Ihandle *self)
 {
-  lua_State *L = iuplua_call_start(self, "map_cb");
+  lua_State *L = iuplua_call_start(self, "unmap_cb");
+  return iuplua_call(L, 0);
+}
+
+static int dialog_destroy_cb(Ihandle *self)
+{
+  lua_State *L = iuplua_call_start(self, "destroy_cb");
+  return iuplua_call(L, 0);
+}
+
+static int dialog_close_cb(Ihandle *self)
+{
+  lua_State *L = iuplua_call_start(self, "close_cb");
   return iuplua_call(L, 0);
 }
 
@@ -36,17 +48,19 @@ static int dialog_dropfiles_cb(Ihandle *self, char * p0, int p1, int p2, int p3)
   return iuplua_call(L, 4);
 }
 
-static int dialog_unmap_cb(Ihandle *self)
-{
-  lua_State *L = iuplua_call_start(self, "unmap_cb");
-  return iuplua_call(L, 0);
-}
-
 static int dialog_show_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "show_cb");
   lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
+}
+
+static int dialog_copydata_cb(Ihandle *self, char * p0, int p1)
+{
+  lua_State *L = iuplua_call_start(self, "copydata_cb");
+  lua_pushstring(L, p0);
+  lua_pushinteger(L, p1);
+  return iuplua_call(L, 2);
 }
 
 static int dialog_trayclick_cb(Ihandle *self, int p0, int p1, int p2)
@@ -58,15 +72,9 @@ static int dialog_trayclick_cb(Ihandle *self, int p0, int p1, int p2)
   return iuplua_call(L, 3);
 }
 
-static int dialog_destroy_cb(Ihandle *self)
+static int dialog_map_cb(Ihandle *self)
 {
-  lua_State *L = iuplua_call_start(self, "destroy_cb");
-  return iuplua_call(L, 0);
-}
-
-static int dialog_close_cb(Ihandle *self)
-{
-  lua_State *L = iuplua_call_start(self, "close_cb");
+  lua_State *L = iuplua_call_start(self, "map_cb");
   return iuplua_call(L, 0);
 }
 
@@ -82,14 +90,15 @@ int iupdialoglua_open(lua_State * L)
 {
   iuplua_register(L, Dialog, "Dialog");
 
-  iuplua_register_cb(L, "MAP_CB", (lua_CFunction)dialog_map_cb, NULL);
-  iuplua_register_cb(L, "MOVE_CB", (lua_CFunction)dialog_move_cb, NULL);
-  iuplua_register_cb(L, "DROPFILES_CB", (lua_CFunction)dialog_dropfiles_cb, NULL);
   iuplua_register_cb(L, "UNMAP_CB", (lua_CFunction)dialog_unmap_cb, NULL);
-  iuplua_register_cb(L, "SHOW_CB", (lua_CFunction)dialog_show_cb, NULL);
-  iuplua_register_cb(L, "TRAYCLICK_CB", (lua_CFunction)dialog_trayclick_cb, NULL);
   iuplua_register_cb(L, "DESTROY_CB", (lua_CFunction)dialog_destroy_cb, NULL);
   iuplua_register_cb(L, "CLOSE_CB", (lua_CFunction)dialog_close_cb, NULL);
+  iuplua_register_cb(L, "MOVE_CB", (lua_CFunction)dialog_move_cb, NULL);
+  iuplua_register_cb(L, "DROPFILES_CB", (lua_CFunction)dialog_dropfiles_cb, NULL);
+  iuplua_register_cb(L, "SHOW_CB", (lua_CFunction)dialog_show_cb, NULL);
+  iuplua_register_cb(L, "COPYDATA_CB", (lua_CFunction)dialog_copydata_cb, NULL);
+  iuplua_register_cb(L, "TRAYCLICK_CB", (lua_CFunction)dialog_trayclick_cb, NULL);
+  iuplua_register_cb(L, "MAP_CB", (lua_CFunction)dialog_map_cb, NULL);
 
 #ifdef IUPLUA_USELOH
 #ifdef TEC_BIGENDIAN
