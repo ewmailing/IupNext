@@ -138,6 +138,12 @@ static unsigned char img_bits2[] =
 ,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 };
 
+static int copydata_cb(Ihandle* ih, char* value, int size)
+{
+  printf("COPYDATA(%s, %d)\n", value, size);
+  return IUP_DEFAULT;
+}
+
 static int valuechanged_cb(Ihandle *ih)
 {
   printf("VALUECHANGED_CB(%s)=%s\n", IupGetClassName(ih), IupGetAttribute(ih, "VALUE"));
@@ -399,6 +405,9 @@ void SampleTest(void)
 
 //  IupSetAttribute(dlg,"RASTERSIZE","1000x800");
 
+  IupSetCallback(dlg, "COPYDATA_CB", (Icallback)copydata_cb);
+
+
   IupMap(dlg);
 
   IupSetAttribute(tree, "TITLE0",         "Figures");  
@@ -417,6 +426,13 @@ void SampleTest(void)
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
+
+  IupSetGlobal("SINGLEINSTANCE", "Iup Sample");
+  if (!IupGetGlobal("SINGLEINSTANCE"))
+  {
+    IupClose();  
+    return EXIT_SUCCESS;
+  }
 
   SampleTest();
 

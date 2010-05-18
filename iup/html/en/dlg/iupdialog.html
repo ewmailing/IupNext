@@ -298,6 +298,17 @@ Default: NO.</p>
 
 <p><a href="../call/iup_close_cb.html">CLOSE_CB</a>: Called right before the 
 dialog is closed.</p>
+
+<p><strong>COPYDATA_CB</strong>
+  [Windows Only]: Called at the first instance, when a second instance is 
+running. Must set the global attribute SINGLEINSTANCE to be called. (since 3.2)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, char* <strong>cmdLine</strong>, int <strong>size</strong>); <em>[in C]</em><br><b>elem</b>:copydata_cb(<strong>cmdLine</strong>: string, <strong>size</strong>: number) -&gt; (<strong>ret</strong>: number) <em>[in Lua]</em></pre>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
+<strong>cmdLine</strong>: command line of the second instance. <br>
+<strong>size</strong>: size of the command line string including the null 
+character. </p>
+
 <p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a> [Windows and GTK 
 Only]: Action generated when one or more files are dropped in the dialog.</p>
 <p><strong>MDIACTIVATE_CB</strong>

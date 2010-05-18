@@ -76,7 +76,14 @@ automatically convert all strings to (SetAttribute) and from (GetAttribute)
 UTF-8. Default: YES. If the default locale is already UTF-8, but the given 
 string is not UTF-8 then it will be assumed that the string uses the ISO8859-1 
 charset.</p>
-<p>&nbsp;</p>
+<h3><strong>SINGLEINSTANCE</strong> [Windows Only] (since 3.2)</h3>
+<p>Restricts the number of instances of the application by using a name to 
+identify it. The value must also be a partial match to the title of a dialog 
+that will receive the COPYDATA_CB callback with the command line of the second 
+instance. When consulted return NULL if inside the second instance. So usually 
+in the application initialization after <strong>IupOpen</strong>, set SINGLEINSTANCE 
+and then consult its value, if NULL abort the second instance by calling <strong>
+IupClose</strong> and returning from <em>main</em>.</p>
 <h2 style="text-align: center">System <a name="Information">Information</a></h2>
 <h3><strong>SYSTEMLANGUAGE</strong> 
 (read-only)</h3>
@@ -163,11 +170,10 @@ information is terminated by a &quot;\n&quot; character.</p>
 <p>String in the &quot;<i>x y width height</i>\n<i>x y width height</i>\n...&quot; format.</p>
 <h2 align="center">System <a name="Data">Data</a>&nbsp;</h2>
 <h3><a name="HINSTANCE"><strong>HINSTANCE</strong></a> (read-only) [Win32 Only]</h3>
-<p>This attribute returns a handle (HINSTANCE) that identifies the application in the native system.</p>
+<p>Returns a handle (HINSTANCE) that identifies the application in the native system.</p>
 <h3><a name="DLL_HINSTANCE"><strong>DLL_HINSTANCE</strong></a> [Win32 Only] (since 
 3.0)</h3>
-<p>This attribute changes and returns a handle (HINSTANCE) that identifies the 
-dll where resources are stored.</p>
+<p>Changes and returns a handle (HINSTANCE) that identifies the DLL where resources are stored.</p>
 <h3><a name="APPSHELL"><strong>APPSHELL</strong></a> (read-only) [Motif Only] (since 3.0)</h3>
 <p>Returns the shell Widget created by XtOpenApplication.</p>
 <h3><a name="XDISPLAY"><strong>XDISPLAY</strong></a> (read-only) [GTK and Motif 

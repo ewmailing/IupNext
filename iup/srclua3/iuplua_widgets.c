@@ -200,6 +200,14 @@ static int dialog_trayclick(Ihandle *handle, int p1, int p2, int p3)
   lua_pushnumber(p3);
   return iuplua_call();
 }
+                                      
+static int dialog_copydata(Ihandle *handle, char* p1, int p2)
+{
+  iuplua_call_start(handle, "copydata");
+  lua_pushstring(p1);
+  lua_pushnumber(p2);
+  return iuplua_call();
+}
 
 static int iupluaCanvasAction(Ihandle* handle, float x, float y)
 {
@@ -619,6 +627,7 @@ int iupluawidgets_open(int tag)
     { "iup_destroy_cb", (lua_CFunction)iupluaDestroyCb},
     { "iup_dropfiles_cb", (lua_CFunction)iupluaDropfilesCb},
     { "iup_trayclick_cb", (lua_CFunction)dialog_trayclick},
+    { "iup_copydata_cb", (lua_CFunction)dialog_copydata},
     { "iup_getfocus_cb", (lua_CFunction)iupluaGetfocusCb},
     { "iup_killfocus_cb", (lua_CFunction)iupluaKillfocusCb},
     { "iup_k_any", (lua_CFunction)iupluaKanyCb},

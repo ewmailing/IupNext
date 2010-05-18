@@ -423,6 +423,13 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
       *result = 0;
       return 1;
     }
+  case WM_COPYDATA:  /* usually from SetGlobal("SINGLEINSTANCE") */
+    {
+      COPYDATASTRUCT* cds = (COPYDATASTRUCT*)lp;
+      IFnsi cb = (IFnsi)IupGetCallback(ih, "COPYDATA_CB");
+      if (cb) cb(ih, cds->lpData, cds->cbData);
+      break; 
+    }
   case WM_SETCURSOR: 
     { 
       if (ih->handle == (HWND)wp && LOWORD(lp)==HTCLIENT)

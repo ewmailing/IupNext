@@ -12,6 +12,7 @@ local ctrl = {
     close_cb = "",
     show_cb = "n",
     move_cb = "nn",
+    copydata_cb = "sn",
     trayclick_cb = "nnn",
     dropfiles_cb = "snnn",
   }

@@ -198,7 +198,7 @@ void init_dialog (void)
   dlg = IupDialog(_vbox_1);
   IupSetHandle("dlg",dlg);
   IupSetAttribute(dlg,"MENU","mnu");
-  IupSetAttribute(dlg,"TITLE","IupDialog Title");
+  IupSetAttribute(dlg,"TITLE","Iup Sample");
 }
 
 int main(int argc, char **argv)
