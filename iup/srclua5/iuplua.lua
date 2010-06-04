@@ -7,14 +7,14 @@
 iup.callbacks = {}
 
 function iup.CallMethod(name, ...)
-  local handle = arg[1] -- always the handle
+  local handle = ... -- the first argument is always the handle
   local func = handle[name]
   if (not func) then
     return
   end
   
   if type(func) == "function" then
-    return func(unpack(arg))
+    return func(...)
   elseif type(func) == "string" then  
     local temp = self
     self = handle
@@ -252,9 +252,9 @@ function iup._ERRORMESSAGE(err,traceback)
   end
 end
 
-iup.pack = function (...) return arg end
+iup.pack = function (...) return ... end
 
-function iup.protectedcall_(f, err)
+function iup.protectedcall(f, err)
   if not f then 
     iup._ERRORMESSAGE(err)
     return 
@@ -269,8 +269,8 @@ function iup.protectedcall_(f, err)
   end
 end
 
-function iup.dostring(s) return iup.protectedcall_(loadstring(s)) end
-function iup.dofile(f) return iup.protectedcall_(loadfile(f)) end
+function iup.dostring(s) return iup.protectedcall(loadstring(s)) end
+function iup.dofile(f) return iup.protectedcall(loadfile(f)) end
 
 function iup.RGB(r, g, b)
   return string.format("%d %d %d", 255*r, 255*g, 255*b)

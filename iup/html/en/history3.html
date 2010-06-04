@@ -45,7 +45,7 @@ version 3.x.<br>
 
 </p>
 
-<h3>CVS (04/May/2010)</h3>
+<h3>CVS (04/June/2010)</h3>
 
 <ul>
 
@@ -56,7 +56,10 @@ version 3.x.<br>
 	COPYDATA_CB callback for <strong>IupDialog</strong> in Windows to receive 
 	the command line of the secondary instances when SINGLEINSTANCE is used.</li>
 	<li><span class="hist_changed">Changed:</span>
-    some Lua parameters that use number to integer.</li>
+    some Lua parameters that use &quot;number&quot; to &quot;integer&quot;.</li>
+	<li><span class="hist_changed">Changed:</span>
+    replaced old &quot;arg&quot; usage for &quot;...&quot; to improve better compatibility with 
+	LuaJIT. Thanks to J.-F. Cap.</li>
 	<li><span class="hist_changed">Changed:</span>
     <strong>IupSaveClassAttributes</strong> to not save values that are equal to 
 	the default values.</li>

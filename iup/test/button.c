@@ -156,7 +156,8 @@ static char* get_name(Ihandle* ih)
 
 static int action_cb(Ihandle *ih)
 {
-  printf("ACTION(%s)\n", get_name(ih));
+  static int count = 1;
+  printf("ACTION(%s) - %d\n", get_name(ih), count); count++;
   return IUP_DEFAULT;
 }
 
@@ -366,6 +367,7 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
   IupSetAttribute(button, "FLAT", "YES");
+//  IupSetAttribute(button, "CANFOCUS", "NO");
 //  IupSetAttributeHandle(button, "IMPRESS", image2);
 //  IupSetAttribute(button, "FOCUSONCLICK", "NO");
 //  IupSetAttribute(button, "RASTERSIZE", "15x15");
