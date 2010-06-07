@@ -32,6 +32,6 @@ end
 dlg=iup.dialog{matrix; title="IupMatrix in Callback Mode" }
 dlg:show()
 
-if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+if (iup.MainLoopLevel()==0) then
   iup.MainLoop()
 end

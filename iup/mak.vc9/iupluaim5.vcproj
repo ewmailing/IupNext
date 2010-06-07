@@ -92,6 +92,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\srclua5\iupluaim.def"
+			>
+		</File>
+		<File
 			RelativePath="..\include\iupluaim.h"
 			>
 		</File>

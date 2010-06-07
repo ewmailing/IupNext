@@ -91,6 +91,10 @@
 			RelativePath="..\srclua5\iuplua_imglib.c"
 			>
 		</File>
+		<File
+			RelativePath="..\srclua5\iupluaimglib.def"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

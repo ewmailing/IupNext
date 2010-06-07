@@ -207,7 +207,7 @@ iup_console.dlgAbout = iup.dialog
 iup_console.dlgMain:show()
 iup.SetFocus(iup_console.mlCode)
 
-if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+if (iup.MainLoopLevel()==0) then
   iup.MainLoop()
 end
 

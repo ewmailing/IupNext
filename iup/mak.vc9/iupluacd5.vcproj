@@ -93,6 +93,10 @@
 			RelativePath="..\srclua5\iuplua_cd.c"
 			>
 		</File>
+		<File
+			RelativePath="..\srclua5\iupluacd.def"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

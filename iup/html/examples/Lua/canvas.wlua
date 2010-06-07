@@ -11,6 +11,6 @@ end
 
 dg:showxy(iup.CENTER, iup.CENTER)
 
-if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+if (iup.MainLoopLevel()==0) then
   iup.MainLoop()
 end

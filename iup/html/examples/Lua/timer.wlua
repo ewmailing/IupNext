@@ -22,6 +22,6 @@ timer2.run = "YES"
 dg = iup.dialog{iup.label{title="Wait..."}; title="Timer example"}
 dg:show()
 
-if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+if (iup.MainLoopLevel()==0) then
   iup.MainLoop()
 end

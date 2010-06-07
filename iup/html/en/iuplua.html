@@ -19,7 +19,8 @@
     <pre>iupXxx&nbsp; -&gt; iup.Xxx    (for functions)<br />IUP_XXX -&gt; iup.XXX    (for definitions)<br /></pre>
     <p>
         All the
-  metatables have the &quot;tostring&quot; metamethod implemented to help debuging.</p>
+  metatables have the &quot;tostring&quot; metamethod implemented to help 
+		debugging.</p>
     <p>
         Also the functions which receive values by reference in C were  modified. Generally, the values of
   parameters that would have their values modified are now returned by the function in the same order.</p>
@@ -121,7 +122,7 @@ bin2c5.1 myfile.lo &gt; myfile.loh</pre>
     <p>
         In C, you can used a define to interchanged the use of .LOH files:</p>
     <pre>#ifdef _DEBUG
-  ret_val = lua_dofile("myfile.lua");
+  ret_val = iuplua_dofile("myfile.lua");
 #else
 #include "myfile.loh"
 #endif</pre>

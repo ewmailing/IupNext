@@ -27,12 +27,15 @@
 <p class="MsoBodyText">where &quot;name&quot; is the name of the element previously defined with
     IupSetHandle.</p>
 <h3>Error Handling</h3>
-<p>In Lua 5 to improve the error report the following functions have been created to 
+<p>In C to improve the error report, use the following functions to 
   execute Lua code:</p>
-<pre>int iuplua_dofile(lua_State *L, char *filename);
-int iuplua_dostring(lua_State *L, const char *string, const char *chunk_name);</pre>
+<pre>int <strong>iuplua_dofile</strong>(lua_State *L, const char *filename);
+int <strong>iuplua_dostring</strong>(lua_State *L, const char *string, const char *chunk_name);</pre>
 <p>These functions mimics the implementation in the standalone interpreter for Lua 5, that displays the error message 
   followed by the stack.</p>
+<p>If <strong>iuplua_dofile</strong> fail to open the given file, then it will 
+preppend the contents of the environment variable IUPLUA_DIR to the file name 
+and tries to open it again. (Since 3.2)</p>
 <p>If the these functions are used the errors will be reported through the &quot;iup._ERRORMESSAGE(msg)&quot; function. By 
   default _ERRORMESSAGE is defined to show a dialog with the error message.</p>
 <p>When printing an Ihandle reference the returned string is &quot;IUP(<em>type</em>):

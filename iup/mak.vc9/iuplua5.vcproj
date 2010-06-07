@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\..\lua5.1\include"
+				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\srclua5\loh51\le32;..\..\lua5.1\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELOH,_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -102,6 +102,10 @@
 						WarningLevel="4"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\srclua5\iuplua.def"
+				>
 			</File>
 			<File
 				RelativePath="..\srclua5\iuplua_api.c"

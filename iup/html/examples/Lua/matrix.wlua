@@ -18,6 +18,6 @@ mat:setcell(3,2,"1.4")
 dlg = iup.dialog{iup.vbox{mat; margin="10x10"}}
 dlg:showxy(iup.CENTER, iup.CENTER)
 
-if (not iup.MainLoopLevel or iup.MainLoopLevel()==0) then
+if (iup.MainLoopLevel()==0) then
   iup.MainLoop()
 end

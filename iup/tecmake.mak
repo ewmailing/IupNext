@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.0
+VERSION = 4.1
 
 
 #---------------------------------#
@@ -258,9 +258,6 @@ ifdef DEPENDDIR
   DEPEND := $(DEPENDDIR)/$(TARGETNAME).dep.$(TEC_UNAME)
 endif
 
-SRCLUADIR ?= $(SRCDIR)
-LOHDIR ?= $(SRCLUADIR)
-
 ifeq ($(MAKETYPE), APP)
   TARGETROOT ?= $(PROJDIR)/bin
 else
@@ -342,19 +339,41 @@ endif
 #---------------------------------#
 # LO and LOH Suffix
 
-ifeq ($(TEC_BYTEORDER), TEC_BIGENDIAN)
-  ifeq ($(TEC_WORDSIZE), TEC_64)
-    LO_SUFFIX ?= _be64
+SRCLUADIR ?= $(SRCDIR)
+LOHDIR ?= $(SRCLUADIR)
+
+ifdef USE_LOH_SUBDIR
+  ifeq ($(TEC_BYTEORDER), TEC_BIGENDIAN)
+    ifeq ($(TEC_WORDSIZE), TEC_64)
+      LOH_SUBDIR ?= be64
+    else
+      LOH_SUBDIR ?= be32
+    endif
   else
-    LO_SUFFIX ?= _be32
+    ifeq ($(TEC_WORDSIZE), TEC_64)
+      LOH_SUBDIR ?= le64
+    else
+      LOH_SUBDIR ?= le32
+    endif
   endif
+  LOHDIR := $(LOHDIR)/$(LOH_SUBDIR)
+  INCLUDES += $(LOHDIR)
 else
-  ifeq ($(TEC_WORDSIZE), TEC_64)
-    LO_SUFFIX ?= _le64
+  ifeq ($(TEC_BYTEORDER), TEC_BIGENDIAN)
+    ifeq ($(TEC_WORDSIZE), TEC_64)
+      LO_SUFFIX ?= _be64
+    else
+      LO_SUFFIX ?= _be32
+    endif
   else
-    LO_SUFFIX ?=
+    ifeq ($(TEC_WORDSIZE), TEC_64)
+      LO_SUFFIX ?= _le64
+    else
+      LO_SUFFIX ?=
+    endif
   endif
 endif
+
 
 
 #---------------------------------#
@@ -608,18 +627,8 @@ endif
 ifdef USE_CDLUA
   override USE_CD = Yes
   ifdef USE_STATIC
-    ifdef USE_IUP
-      ifdef USE_OLDNAMES
-        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdluaiup$(LIBLUASUFX).a
-      endif
-    endif
     SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdlua$(LIBLUASUFX).a
   else
-    ifdef USE_IUP
-      ifdef USE_OLDNAMES
-        LIBS += cdluaiup$(LIBLUASUFX)
-      endif
-    endif
     LIBS += cdlua$(LIBLUASUFX)
   endif
 endif
@@ -628,9 +637,7 @@ ifdef USE_IUPLUA
   override USE_IUP = Yes
   ifdef USE_STATIC
     ifdef USE_CD
-      ifndef USE_OLDNAMES
-        SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupluacd$(LIBLUASUFX).a
-      endif
+      SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupluacd$(LIBLUASUFX).a
     endif
     ifdef USE_OPENGL
       SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupluagl$(LIBLUASUFX).a
@@ -638,9 +645,7 @@ ifdef USE_IUPLUA
     SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiuplua$(LIBLUASUFX).a
   else
     ifdef USE_CD
-      ifndef USE_OLDNAMES
-        LIBS += iupluacd$(LIBLUASUFX)
-      endif
+      LIBS += iupluacd$(LIBLUASUFX)
     endif
     ifdef USE_OPENGL
       LIBS += iupluagl$(LIBLUASUFX)
@@ -688,6 +693,7 @@ ifdef USE_IUP
         IUPSUFX := mot
       else
         override USE_GTK = Yes
+        override USE_GDK = Yes
       endif
     else
       ifdef USE_GTK
@@ -701,9 +707,7 @@ ifdef USE_IUP
   endif
   ifdef USE_STATIC
     ifdef USE_CD
-      ifndef USE_OLDNAMES
-        SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupcd.a
-      endif
+      SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupcd.a
     endif
     ifdef USE_OPENGL
       SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupgl.a
@@ -711,9 +715,7 @@ ifdef USE_IUP
     SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiup$(IUPSUFX).a
   else
     ifdef USE_CD
-      ifndef USE_OLDNAMES
-        LIBS += iupcd
-      endif
+      LIBS += iupcd
     endif
     ifdef USE_OPENGL
       LIBS += iupgl
@@ -727,17 +729,12 @@ endif
 ifdef USE_CD
   override USE_X11 = Yes
   ifdef USE_STATIC
-    ifdef USE_IUP
-      ifdef USE_OLDNAMES
-        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdiup.a
-      endif
-    endif
     ifdef USE_XRENDER
-      ifdef USE_OLDNAMES
-        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdxrender.a
-      else
-        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdcontextplus.a
-      endif
+      SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdcontextplus.a
+    endif
+    ifdef USE_CAIRO
+      # To use Cairo with X11 base driver (NOT for GDK)
+      SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdcairo.a
     endif
     ifdef USE_GDK
       SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdgdk.a
@@ -747,25 +744,22 @@ ifdef USE_CD
     ifdef USE_XRENDER
       LIBS += Xrender Xft
     else
+      ifdef USE_CAIRO
+        # To use Cairo with X11 base driver (NOT for GDK)
+        LIBS += pangocairo-1.0 cairo
+      endif
       ifndef USE_GTK
-        ifndef USE_OLDNAMES
-          # Freetype is included in GTK
-          SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libfreetype.a
-        endif 
+        # Freetype is already included in GTK
+        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libfreetype.a
       endif
     endif
   else
-    ifdef USE_IUP
-      ifdef USE_OLDNAMES
-        LIBS += cdiup
-      endif
-    endif
     ifdef USE_XRENDER
-      ifdef USE_OLDNAMES
-        LIBS += cdxrender
-      else
-        LIBS += cdcontextplus
-      endif
+      LIBS += cdcontextplus
+    endif
+    ifdef USE_CAIRO
+      # To use Cairo with X11 base driver (NOT for GDK)
+      LIBS += cdcairo
     endif
     ifdef USE_GDK
       LIBS += cdgdk
@@ -776,11 +770,13 @@ ifdef USE_CD
     ifdef USE_XRENDER
       LIBS += Xrender Xft
     else
+      ifdef USE_CAIRO
+        # To use Cairo with X11 base driver (NOT for GDK)
+        LIBS += pangocairo-1.0 cairo
+      endif
       ifndef USE_GTK
-        ifndef USE_OLDNAMES
-          # Freetype is included in GTK
-          LIBS += freetype
-        endif
+        # Freetype is already included in GTK
+        LIBS += freetype
       endif
     endif
   endif

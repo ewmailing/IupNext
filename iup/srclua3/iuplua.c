@@ -13,6 +13,7 @@
 
 #include "iup.h"
 #include "iupkey.h"
+#include "iup_str.h"
 
 #include "iuplua.h"
 #include "il.h"
@@ -372,13 +373,10 @@ int iuplua_dofile(char *filename)
       return 0;
     else 
     {
-      int len = strlen(dir);
-      char *full_name = malloc((len + strlen(filename) + 2) * sizeof(char));
+      char* full_name = iupStrFileMakeFileName(dir, filename);
       if (!full_name)
         return 0;
-      strcpy(full_name, dir);
-      strcat(full_name, "/");
-      strcat(full_name, filename);
+
       if (lua_dofile(full_name)) 
       {
         free(full_name);
