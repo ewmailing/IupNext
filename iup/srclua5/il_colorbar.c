@@ -61,25 +61,13 @@ int iupcolorbarlua_open(lua_State * L)
   iuplua_register_cb(L, "EXTENDED_CB", (lua_CFunction)colorbar_extended_cb, NULL);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/colorbar_be64.loh"
+#include "colorbar.loh"
 #else
-#include "loh/colorbar_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/colorbar_le64w.loh"
-#else
-#include "loh/colorbar_le64.loh"
-#endif
-#else
-#include "loh/colorbar.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "colorbar.lzh"
 #else
   iuplua_dofile(L, "colorbar.lua");
+#endif
 #endif
 
   return 0;

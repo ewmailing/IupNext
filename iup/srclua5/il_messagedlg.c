@@ -26,25 +26,13 @@ int iupmessagedlglua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/messagedlg_be64.loh"
+#include "messagedlg.loh"
 #else
-#include "loh/messagedlg_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/messagedlg_le64w.loh"
-#else
-#include "loh/messagedlg_le64.loh"
-#endif
-#else
-#include "loh/messagedlg.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "messagedlg.lzh"
 #else
   iuplua_dofile(L, "messagedlg.lua");
+#endif
 #endif
 
   return 0;

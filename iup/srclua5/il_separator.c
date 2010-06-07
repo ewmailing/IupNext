@@ -26,25 +26,13 @@ int iupseparatorlua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/separator_be64.loh"
+#include "separator.loh"
 #else
-#include "loh/separator_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/separator_le64w.loh"
-#else
-#include "loh/separator_le64.loh"
-#endif
-#else
-#include "loh/separator.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "separator.lzh"
 #else
   iuplua_dofile(L, "separator.lua");
+#endif
 #endif
 
   return 0;

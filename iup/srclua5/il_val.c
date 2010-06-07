@@ -50,25 +50,13 @@ int iupvallua_open(lua_State * L)
   iuplua_register_cb(L, "BUTTON_RELEASE_CB", (lua_CFunction)val_button_release_cb, NULL);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/val_be64.loh"
+#include "val.loh"
 #else
-#include "loh/val_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/val_le64w.loh"
-#else
-#include "loh/val_le64.loh"
-#endif
-#else
-#include "loh/val.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "val.lzh"
 #else
   iuplua_dofile(L, "val.lua");
+#endif
 #endif
 
   return 0;

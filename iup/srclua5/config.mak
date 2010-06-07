@@ -1,12 +1,21 @@
 PROJNAME = iup
-LIBNAME  = iuplua51
+LIBNAME  = iuplua
 OPT = YES
-DEF_FILE = iuplua5.def
+DEF_FILE = iuplua.def
 
 DEFINES = IUPLUA_USELOH
 
-USE_LUA51 = Yes
+ifdef USE_LUA52
+  LOHDIR = loh52
+  LIBNAME := $(LIBNAME)52
+else
+  USE_LUA51 = Yes
+  LOHDIR = loh51
+  LIBNAME := $(LIBNAME)51
+endif
+
 NO_LUALINK = Yes
+USE_LOH_SUBDIR = Yes
 
 INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  
@@ -22,8 +31,8 @@ CTRLUA = button.lua canvas.lua dialog.lua colordlg.lua clipboard.lua \
 
 GC := $(addsuffix .c, $(basename $(CTRLUA)))
 GC := $(addprefix il_, $(GC))
+
 SRCLUA = iuplua.lua constants.lua $(CTRLUA)
-LOHDIR = loh
 
 $(GC) : il_%.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<

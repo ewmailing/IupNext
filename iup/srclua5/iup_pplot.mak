@@ -1,7 +1,7 @@
 PROJNAME = iup
-LIBNAME = iuplua_pplot51
+LIBNAME = iuplua_pplot
 OPT = YES
-DEF_FILE = iuplua_pplot5.def
+DEF_FILE = iuplua_pplot.def
 
 IUP := ..
 
@@ -12,11 +12,19 @@ USE_IUPLUA = Yes
 USE_CDLUA = Yes
 LIBS = iup_pplot
 
-USE_LUA51 = Yes
-NO_LUALINK = Yes
+ifdef USE_LUA52
+  LOHDIR = loh52
+  LIBNAME := $(LIBNAME)52
+else
+  USE_LUA51 = Yes
+  LOHDIR = loh51
+  LIBNAME := $(LIBNAME)51
+endif
 
-LOHDIR = loh
+NO_LUALINK = Yes
+USE_LOH_SUBDIR = Yes
 SRCLUA = pplot.lua
+
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix il_, $(GC))
 

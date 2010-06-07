@@ -221,25 +221,13 @@ int iupmatrixlua_open(lua_State * L)
   iuplua_matrixfuncs_open(L);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/matrix_be64.loh"
+#include "matrix.loh"
 #else
-#include "loh/matrix_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/matrix_le64w.loh"
-#else
-#include "loh/matrix_le64.loh"
-#endif
-#else
-#include "loh/matrix.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "matrix.lzh"
 #else
   iuplua_dofile(L, "matrix.lua");
+#endif
 #endif
 
   return 0;

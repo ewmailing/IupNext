@@ -25,12 +25,6 @@ int luaopen_iupluaole(lua_State* L)
   return iupolelua_open(L);
 }
 
-/* obligatory to use require"iupluaole51" */
-int luaopen_iupluaole51(lua_State* L)
-{
-  return iupolelua_open(L);
-}
-
 ]]
 }
 

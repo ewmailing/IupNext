@@ -26,25 +26,13 @@ int iupnormalizerlua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/normalizer_be64.loh"
+#include "normalizer.loh"
 #else
-#include "loh/normalizer_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/normalizer_le64w.loh"
-#else
-#include "loh/normalizer_le64.loh"
-#endif
-#else
-#include "loh/normalizer.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "normalizer.lzh"
 #else
   iuplua_dofile(L, "normalizer.lua");
+#endif
 #endif
 
   return 0;

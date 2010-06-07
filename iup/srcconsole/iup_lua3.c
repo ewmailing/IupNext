@@ -81,19 +81,19 @@ int main ( int argc, char **argv )
     {
 #ifdef TEC_BIGENDIAN
 #ifdef TEC_64
-#include "loh/console3_be64.loh"
+#include "loh3/console3_be64.loh"
 #else
-#include "loh/console3_be32.loh"
+#include "loh3/console3_be32.loh"
 #endif  
 #else
 #ifdef TEC_64
 #ifdef WIN64
-#include "loh/console3_le64w.loh"
+#include "loh3/console3_le64w.loh"
 #else
-#include "loh/console3_le64.loh"
+#include "loh3/console3_le64.loh"
 #endif  
 #else
-#include "loh/console3.loh"
+#include "loh3/console3.loh"
 #endif  
 #endif  
     }

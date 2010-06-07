@@ -415,24 +415,17 @@ static void iuplua_openlibs (lua_State *L) {
 #endif
 }
 
-static void iuplua_input (lua_State *L) {
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/console5_be64.loh"
+static void iuplua_input (lua_State *L) 
+{
+#ifdef IUPLUA_USELOH
+#include "console5.loh"
 #else
-#include "loh/console5_be32.loh"
-#endif  
+#ifdef IUPLUA_USELZH
+#include "console5.lzh"
 #else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/console5_le64w.loh"
-#else
-#include "loh/console5_le64.loh"
-#endif  
-#else
-#include "loh/console5.loh"
-#endif  
-#endif  
+  iuplua_dofile(L, "console5.lua");
+#endif
+#endif
 }
 /******************* IUP *********************/
 

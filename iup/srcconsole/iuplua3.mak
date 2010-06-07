@@ -10,7 +10,7 @@ LINKER = $(CPPC)
 
 SRC = iup_lua3.c
 SRCLUA = console3.lua
-LOHDIR = loh
+LOHDIR = loh3
 
 USE_LUA = Yes
 USE_IUPLUA = Yes

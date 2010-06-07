@@ -40,25 +40,13 @@ int iupglcanvaslua_open(lua_State * L)
   iuplua_glcanvasfuncs_open(L);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/glcanvas_be64.loh"
+#include "glcanvas.loh"
 #else
-#include "loh/glcanvas_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/glcanvas_le64w.loh"
-#else
-#include "loh/glcanvas_le64.loh"
-#endif
-#else
-#include "loh/glcanvas.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "glcanvas.lzh"
 #else
   iuplua_dofile(L, "glcanvas.lua");
+#endif
 #endif
 
   return 0;
@@ -77,12 +65,6 @@ int iupgllua_open(lua_State * L)
 
 /* obligatory to use require"iupluagl" */
 int luaopen_iupluagl(lua_State* L)
-{
-  return iupgllua_open(L);
-}
-
-/* obligatory to use require"iupluagl51" */
-int luaopen_iupluagl51(lua_State* L)
 {
   return iupgllua_open(L);
 }

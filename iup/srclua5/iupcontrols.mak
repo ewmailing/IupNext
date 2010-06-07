@@ -1,7 +1,7 @@
 PROJNAME = iup
-LIBNAME = iupluacontrols51
+LIBNAME = iupluacontrols
 OPT = YES
-DEF_FILE = iupluacontrols5.def
+DEF_FILE = iupluacontrols.def
 
 IUP := ..
 
@@ -12,10 +12,17 @@ USE_IUPLUA = Yes
 USE_CDLUA = Yes
 LIBS = iupcontrols
 
-USE_LUA51 = Yes
-NO_LUALINK = Yes
+ifdef USE_LUA52
+  LOHDIR = loh52
+  LIBNAME := $(LIBNAME)52
+else
+  USE_LUA51 = Yes
+  LOHDIR = loh51
+  LIBNAME := $(LIBNAME)51
+endif
 
-LOHDIR = loh
+NO_LUALINK = Yes
+USE_LOH_SUBDIR = Yes
 SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua cells.lua
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix il_, $(GC))

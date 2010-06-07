@@ -252,7 +252,7 @@ function iup._ERRORMESSAGE(err,traceback)
   end
 end
 
-iup.pack = function (...) return ... end
+iup.pack = function (...) return {...} end
 
 function iup.protectedcall(f, err)
   if not f then 

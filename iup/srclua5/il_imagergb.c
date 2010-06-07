@@ -31,25 +31,13 @@ int iupimagergblua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/imagergb_be64.loh"
+#include "imagergb.loh"
 #else
-#include "loh/imagergb_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/imagergb_le64w.loh"
-#else
-#include "loh/imagergb_le64.loh"
-#endif
-#else
-#include "loh/imagergb.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "imagergb.lzh"
 #else
   iuplua_dofile(L, "imagergb.lua");
+#endif
 #endif
 
   return 0;

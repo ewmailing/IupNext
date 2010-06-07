@@ -26,25 +26,13 @@ int iupsplitlua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/split_be64.loh"
+#include "split.loh"
 #else
-#include "loh/split_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/split_le64w.loh"
-#else
-#include "loh/split_le64.loh"
-#endif
-#else
-#include "loh/split.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "split.lzh"
 #else
   iuplua_dofile(L, "split.lua");
+#endif
 #endif
 
   return 0;

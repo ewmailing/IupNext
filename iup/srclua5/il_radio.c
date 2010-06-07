@@ -26,25 +26,13 @@ int iupradiolua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/radio_be64.loh"
+#include "radio.loh"
 #else
-#include "loh/radio_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/radio_le64w.loh"
-#else
-#include "loh/radio_le64.loh"
-#endif
-#else
-#include "loh/radio.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "radio.lzh"
 #else
   iuplua_dofile(L, "radio.lua");
+#endif
 #endif
 
   return 0;

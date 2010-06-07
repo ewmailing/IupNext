@@ -26,25 +26,13 @@ int iupclipboardlua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/clipboard_be64.loh"
+#include "clipboard.loh"
 #else
-#include "loh/clipboard_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/clipboard_le64w.loh"
-#else
-#include "loh/clipboard_le64.loh"
-#endif
-#else
-#include "loh/clipboard.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "clipboard.lzh"
 #else
   iuplua_dofile(L, "clipboard.lua");
+#endif
 #endif
 
   return 0;

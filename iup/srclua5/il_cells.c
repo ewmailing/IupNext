@@ -110,25 +110,13 @@ int iupcellslua_open(lua_State * L)
   iuplua_register_cb(L, "VSPAN_CB", (lua_CFunction)cells_vspan_cb, NULL);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/cells_be64.loh"
+#include "cells.loh"
 #else
-#include "loh/cells_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/cells_le64w.loh"
-#else
-#include "loh/cells_le64.loh"
-#endif
-#else
-#include "loh/cells.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "cells.lzh"
 #else
   iuplua_dofile(L, "cells.lua");
+#endif
 #endif
 
   return 0;

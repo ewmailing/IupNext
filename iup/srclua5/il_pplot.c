@@ -125,25 +125,13 @@ int iuppplotlua_open(lua_State * L)
   iuplua_pplotfuncs_open(L);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/pplot_be64.loh"
+#include "pplot.loh"
 #else
-#include "loh/pplot_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/pplot_le64w.loh"
-#else
-#include "loh/pplot_le64.loh"
-#endif
-#else
-#include "loh/pplot.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "pplot.lzh"
 #else
   iuplua_dofile(L, "pplot.lua");
+#endif
 #endif
 
   return 0;

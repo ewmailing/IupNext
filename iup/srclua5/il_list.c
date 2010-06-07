@@ -70,25 +70,13 @@ int iuplistlua_open(lua_State * L)
   iuplua_register_cb(L, "MULTISELECT_CB", (lua_CFunction)list_multiselect_cb, NULL);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/list_be64.loh"
+#include "list.loh"
 #else
-#include "loh/list_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/list_le64w.loh"
-#else
-#include "loh/list_le64.loh"
-#endif
-#else
-#include "loh/list.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "list.lzh"
 #else
   iuplua_dofile(L, "list.lua");
+#endif
 #endif
 
   return 0;

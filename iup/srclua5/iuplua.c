@@ -140,6 +140,19 @@ int iuplua_dofile(lua_State *L, const char *filename)
   int status = luaL_loadfile(L, filename);
   if (status == 0)
     status = docall(L, 0, 0);
+  else if (status == LUA_ERRFILE)
+  {
+    char *dir = getenv("IUPLUA_DIR");
+    if (dir)
+    {
+      char* full_name = iupStrFileMakeFileName(dir, filename);
+      if (full_name)
+      {
+        status = luaL_loadfile(L, full_name);
+        free(full_name);
+      }
+    }
+  }
   return report(L, status, 1);
 }
 
@@ -806,31 +819,16 @@ int iuplua_open(lua_State * L)
   IupSetGlobal("_IUP_LUA_DEFAULT_STATE", (char *) L);  
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/iuplua_be64.loh"
-#include "loh/constants_be64.loh"
+#include "iuplua.loh"
+#include "constants.loh"
 #else
-#include "loh/iuplua_be32.loh"
-#include "loh/constants_be32.loh"
-#endif  
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/iuplua_le64w.loh"
-#include "loh/constants_le64w.loh"
-#else
-#include "loh/iuplua_le64.loh"
-#include "loh/constants_le64.loh"
-#endif  
-#else
-#include "loh/iuplua.loh"
-#include "loh/constants.loh"
-#endif  
-#endif  
+#ifdef IUPLUA_USELZH
+#include "iuplua.lzh"
+#include "constants.lzh"
 #else
   iuplua_dofile(L, "iuplua.lua");
   iuplua_dofile(L, "constants.lua");
+#endif
 #endif
 
   /* Register the common callbacks */
@@ -893,8 +891,3 @@ int luaopen_iuplua(lua_State* L)
   return iuplua_open(L);
 }
 
-/* obligatory to use require"iuplua51" */
-int luaopen_iuplua51(lua_State* L)
-{
-  return iuplua_open(L);
-}

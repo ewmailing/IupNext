@@ -37,7 +37,3 @@ int luaopen_iupluaimglib(lua_State* L)
   return iupluaimglib_open(L);
 }
 
-int luaopen_iupluaimglib51(lua_State* L)
-{
-  return iupluaimglib_open(L);
-}

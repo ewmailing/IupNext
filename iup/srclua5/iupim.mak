@@ -1,8 +1,8 @@
 PROJNAME = iup
-LIBNAME  = iupluaim51
+LIBNAME  = iupluaim
 OPT = YES
                      
-DEF_FILE = iupluaim5.def
+DEF_FILE = iupluaim.def
 SRC = iuplua_im.c
 
 INCLUDES = ../src
@@ -13,5 +13,11 @@ IUP := ..
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
 USE_IM = Yes
-USE_LUA51 = Yes
 NO_LUALINK = Yes
+
+ifdef USE_LUA52
+  LIBNAME := $(LIBNAME)52
+else
+  USE_LUA51 = Yes
+  LIBNAME := $(LIBNAME)51
+endif

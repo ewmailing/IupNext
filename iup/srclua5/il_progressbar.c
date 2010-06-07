@@ -26,25 +26,13 @@ int iupprogressbarlua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/progressbar_be64.loh"
+#include "progressbar.loh"
 #else
-#include "loh/progressbar_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/progressbar_le64w.loh"
-#else
-#include "loh/progressbar_le64.loh"
-#endif
-#else
-#include "loh/progressbar.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "progressbar.lzh"
 #else
   iuplua_dofile(L, "progressbar.lua");
+#endif
 #endif
 
   return 0;

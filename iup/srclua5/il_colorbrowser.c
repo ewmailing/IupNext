@@ -47,25 +47,13 @@ int iupcolorbrowserlua_open(lua_State * L)
   iuplua_register_cb(L, "CHANGE_CB", (lua_CFunction)colorbrowser_change_cb, NULL);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/colorbrowser_be64.loh"
+#include "colorbrowser.loh"
 #else
-#include "loh/colorbrowser_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/colorbrowser_le64w.loh"
-#else
-#include "loh/colorbrowser_le64.loh"
-#endif
-#else
-#include "loh/colorbrowser.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "colorbrowser.lzh"
 #else
   iuplua_dofile(L, "colorbrowser.lua");
+#endif
 #endif
 
   return 0;

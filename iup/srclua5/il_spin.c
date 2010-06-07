@@ -34,25 +34,13 @@ int iupspinlua_open(lua_State * L)
   iuplua_register_cb(L, "SPIN_CB", (lua_CFunction)spin_spin_cb, NULL);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/spin_be64.loh"
+#include "spin.loh"
 #else
-#include "loh/spin_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/spin_le64w.loh"
-#else
-#include "loh/spin_le64.loh"
-#endif
-#else
-#include "loh/spin.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "spin.lzh"
 #else
   iuplua_dofile(L, "spin.lua");
+#endif
 #endif
 
   return 0;

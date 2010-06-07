@@ -50,7 +50,3 @@ int luaopen_iupluacd(lua_State* L)
   return cdluaiup_open(L);
 }
 
-int luaopen_iupluacd51(lua_State* L)
-{
-  return cdluaiup_open(L);
-}

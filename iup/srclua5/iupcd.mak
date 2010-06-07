@@ -1,21 +1,27 @@
 PROJNAME = iup
-LIBNAME = iupluacd51
+LIBNAME = iupluacd
 OPT = YES
 
 DEFINES = CD_NO_OLD_INTERFACE
 SRC = iuplua_cd.c
-DEF_FILE = iupluacd5.def
+DEF_FILE = iupluacd.def
 
 # Can not use USE_IUPLUA because Tecmake will include "iupluacd51" in linker
 
 INCLUDES = ../include
-LIBS = iuplua51
+LIBS = iuplua$(LIBLUASUFX)
 LDIR = ../lib/$(TEC_UNAME)
 
 IUP := ..
 
 USE_CD = YES
 USE_IUP3 = YES
-USE_LUA51 = Yes
 NO_LUALINK = Yes
 USE_CDLUA = YES
+
+ifdef USE_LUA52
+  LIBNAME := $(LIBNAME)52
+else
+  USE_LUA51 = Yes
+  LIBNAME := $(LIBNAME)51
+endif

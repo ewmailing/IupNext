@@ -93,25 +93,13 @@ int iupimagelua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/image_be64.loh"
+#include "image.loh"
 #else
-#include "loh/image_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/image_le64w.loh"
-#else
-#include "loh/image_le64.loh"
-#endif
-#else
-#include "loh/image.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "image.lzh"
 #else
   iuplua_dofile(L, "image.lua");
+#endif
 #endif
 
   return 0;

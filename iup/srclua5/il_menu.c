@@ -40,25 +40,13 @@ int iupmenulua_open(lua_State * L)
   iuplua_register_cb(L, "MENUCLOSE_CB", (lua_CFunction)menu_menuclose_cb, NULL);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/menu_be64.loh"
+#include "menu.loh"
 #else
-#include "loh/menu_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/menu_le64w.loh"
-#else
-#include "loh/menu_le64.loh"
-#endif
-#else
-#include "loh/menu.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "menu.lzh"
 #else
   iuplua_dofile(L, "menu.lua");
+#endif
 #endif
 
   return 0;

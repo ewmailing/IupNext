@@ -26,25 +26,13 @@ int iuphboxlua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/hbox_be64.loh"
+#include "hbox.loh"
 #else
-#include "loh/hbox_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/hbox_le64w.loh"
-#else
-#include "loh/hbox_le64.loh"
-#endif
-#else
-#include "loh/hbox.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "hbox.lzh"
 #else
   iuplua_dofile(L, "hbox.lua");
+#endif
 #endif
 
   return 0;

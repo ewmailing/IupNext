@@ -33,25 +33,13 @@ int iuptimerlua_open(lua_State * L)
   iuplua_register_cb(L, "ACTION_CB", (lua_CFunction)timer_action_cb, "timer");
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/timer_be64.loh"
+#include "timer.loh"
 #else
-#include "loh/timer_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/timer_le64w.loh"
-#else
-#include "loh/timer_le64.loh"
-#endif
-#else
-#include "loh/timer.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "timer.lzh"
 #else
   iuplua_dofile(L, "timer.lua");
+#endif
 #endif
 
   return 0;

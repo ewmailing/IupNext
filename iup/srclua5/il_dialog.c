@@ -101,25 +101,13 @@ int iupdialoglua_open(lua_State * L)
   iuplua_register_cb(L, "MAP_CB", (lua_CFunction)dialog_map_cb, NULL);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/dialog_be64.loh"
+#include "dialog.loh"
 #else
-#include "loh/dialog_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/dialog_le64w.loh"
-#else
-#include "loh/dialog_le64.loh"
-#endif
-#else
-#include "loh/dialog.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "dialog.lzh"
 #else
   iuplua_dofile(L, "dialog.lua");
+#endif
 #endif
 
   return 0;

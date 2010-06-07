@@ -72,10 +72,6 @@ static int myControl (lua_State * L)
 ]]
 
   extracode = [[        -- [optional] extra fucntions to be defined in C.
-int luaopen_iupluamycontrol51(lua_State* L)
-{
-  return iupmycontrollua_open(L);
-}
 ]]
 
 }

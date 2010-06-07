@@ -46,8 +46,3 @@ int luaopen_iupluaim(lua_State* L)
   return iupimlua_open(L);
 }
 
-/* obligatory to use require"iupluaim51" */
-int luaopen_iupluaim51(lua_State* L)
-{
-  return iupimlua_open(L);
-}

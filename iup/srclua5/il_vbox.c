@@ -26,25 +26,13 @@ int iupvboxlua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/vbox_be64.loh"
+#include "vbox.loh"
 #else
-#include "loh/vbox_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/vbox_le64w.loh"
-#else
-#include "loh/vbox_le64.loh"
-#endif
-#else
-#include "loh/vbox.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "vbox.lzh"
 #else
   iuplua_dofile(L, "vbox.lua");
+#endif
 #endif
 
   return 0;

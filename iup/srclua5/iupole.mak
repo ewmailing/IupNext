@@ -1,7 +1,7 @@
 PROJNAME = iup
-LIBNAME = iupluaole51
+LIBNAME = iupluaole
 OPT = YES
-DEF_FILE = iupluaole5.def
+DEF_FILE = iupluaole.def
 
 IUP := ..
 
@@ -9,11 +9,20 @@ DEFINES = IUPLUA_USELOH
 
 USE_IUPLUA = Yes
 LIBS = iupole
-USE_LUA51 = Yes
-NO_LUALINK = Yes
 
-LOHDIR = loh
+ifdef USE_LUA52
+  LOHDIR = loh52
+  LIBNAME := $(LIBNAME)52
+else
+  USE_LUA51 = Yes
+  LOHDIR = loh51
+  LIBNAME := $(LIBNAME)51
+endif
+
+NO_LUALINK = Yes
+USE_LOH_SUBDIR = Yes
 SRCLUA = olecontrol.lua
+
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix il_, $(GC))
 

@@ -26,25 +26,13 @@ int iupuserlua_open(lua_State * L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/user_be64.loh"
+#include "user.loh"
 #else
-#include "loh/user_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/user_le64w.loh"
-#else
-#include "loh/user_le64.loh"
-#endif
-#else
-#include "loh/user.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "user.lzh"
 #else
   iuplua_dofile(L, "user.lua");
+#endif
 #endif
 
   return 0;

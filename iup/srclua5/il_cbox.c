@@ -27,25 +27,13 @@ static int Cboxv(lua_State *L)
 
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/cbox_be64.loh"
+#include "cbox.loh"
 #else
-#include "loh/cbox_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/cbox_le64w.loh"
-#else
-#include "loh/cbox_le64.loh"
-#endif
-#else
-#include "loh/cbox.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "cbox.lzh"
 #else
   iuplua_dofile(L, "cbox.lua");
+#endif
 #endif
 
   return 0;

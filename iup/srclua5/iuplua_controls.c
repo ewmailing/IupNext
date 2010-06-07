@@ -46,8 +46,3 @@ int luaopen_iupluacontrols(lua_State* L)
   return iupcontrolslua_open(L);
 }
 
-/* obligatory to use require"iupluacontrols51" */
-int luaopen_iupluacontrols51(lua_State* L)
-{
-  return iupcontrolslua_open(L);
-}

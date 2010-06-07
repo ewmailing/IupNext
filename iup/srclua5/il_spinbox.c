@@ -34,25 +34,13 @@ int iupspinboxlua_open(lua_State * L)
   iuplua_register_cb(L, "SPIN_CB", (lua_CFunction)spinbox_spin_cb, NULL);
 
 #ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/spinbox_be64.loh"
+#include "spinbox.loh"
 #else
-#include "loh/spinbox_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/spinbox_le64w.loh"
-#else
-#include "loh/spinbox_le64.loh"
-#endif
-#else
-#include "loh/spinbox.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELZH
+#include "spinbox.lzh"
 #else
   iuplua_dofile(L, "spinbox.lua");
+#endif
 #endif
 
   return 0;
