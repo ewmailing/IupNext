@@ -423,7 +423,7 @@ static void iuplua_input (lua_State *L)
 #ifdef IUPLUA_USELZH
 #include "console5.lzh"
 #else
-  iuplua_dofile(L, "console5.lua");
+  luaL_dofile(L, "console5.lua");
 #endif
 #endif
 }

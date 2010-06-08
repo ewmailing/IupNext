@@ -25,6 +25,7 @@ else
   endif
 endif
 
+DEFINES = IUPLUA_USELOH
 USE_LOH_SUBDIR = Yes
 SRCLUA = console5.lua
 
@@ -53,7 +54,7 @@ ifdef DBG
     IMLIB = $(IM)/lib/$(TEC_UNAME)
   endif  
   
-  DEFINES = USE_STATIC
+  DEFINES += USE_STATIC
 
   ifeq "$(TEC_UNAME)" "SunOS510x86"
     IUPLUA_NO_GL = Yes
