@@ -2141,6 +2141,24 @@ static void gtkTreeCallMultiUnSelectionCb(Ihandle* ih)
   }
 }
 
+static void gtkTreeCallRightClickCb(Ihandle* ih, int x, int y)
+{
+  GtkTreePath* path;
+  if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, NULL))
+  {
+    IFni cbRightClick = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
+    if (cbRightClick)
+    {
+      GtkTreeIter iterItem;
+      GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+      gtk_tree_model_get_iter(model, &iterItem, path);
+      cbRightClick(ih, gtkTreeFindNodeId(ih, &iterItem));
+    }
+
+    gtk_tree_path_free (path);
+  }
+}
+
 static gboolean gtkTreeButtonEvent(GtkWidget *treeview, GdkEventButton *evt, Ihandle* ih)
 {
   if (iupgtkButtonEvent(treeview, evt, ih) == TRUE)
@@ -2148,14 +2166,8 @@ static gboolean gtkTreeButtonEvent(GtkWidget *treeview, GdkEventButton *evt, Iha
 
   if (evt->type == GDK_BUTTON_PRESS && evt->button == 3)  /* right single click */
   {
-    IFni cbRightClick  = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
-    if (cbRightClick)
-    {
-      int id = gtkTreeConvertXYToPos(ih, (int)evt->x, (int)evt->y);
-      if (id != -1)
-        cbRightClick(ih, id);
-      return TRUE;
-    }
+    gtkTreeCallRightClickCb(ih, (int)evt->x, (int)evt->y);
+    return TRUE;
   }
   else if (evt->type == GDK_2BUTTON_PRESS && evt->button == 1)  /* left double click */
   {

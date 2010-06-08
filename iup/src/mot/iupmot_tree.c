@@ -1770,13 +1770,13 @@ static int motTreeConvertXYToPos(Ihandle* ih, int x, int y)
 
 static void motTreeCallRightClickCb(Ihandle* ih, int x, int y)
 {
-  IFni cbRightClick  = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
-  if (cbRightClick)
+  Widget wItem = XmObjectAtPoint(ih->handle, (Position)x, (Position)y);
+  if (wItem)
   {
-    int id = motTreeConvertXYToPos(ih, x, y);
-    if (id != -1)
-      cbRightClick(ih, id);
-  }    
+    IFni cbRightClick = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
+    if (cbRightClick)
+        cbRightClick(ih, iupTreeFindNodeId(ih, wItem));
+  }
 }
 
 static void motTreeCallRenameCb(Ihandle* ih)

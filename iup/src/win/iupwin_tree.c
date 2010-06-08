@@ -85,18 +85,6 @@ static HTREEITEM winTreeFindNodeXY(Ihandle* ih, int x, int y)
   return (HTREEITEM)SendMessage(ih->handle, TVM_HITTEST, 0, (LPARAM)(LPTVHITTESTINFO)&info);
 }
 
-static HTREEITEM winTreeFindNodePointed(Ihandle* ih)
-{
-  TVHITTESTINFO info;
-  DWORD pos = GetMessagePos();
-  info.pt.x = LOWORD(pos);
-  info.pt.y = HIWORD(pos);
-  if (ScreenToClient(ih->handle, &info.pt))
-    return (HTREEITEM)SendMessage(ih->handle, TVM_HITTEST, 0, (LPARAM)(LPTVHITTESTINFO)&info);
-  else
-    return NULL;
-}
-
 int iupwinGetColor(const char* value, COLORREF *color)
 {
   unsigned char r, g, b;
@@ -2017,6 +2005,17 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
   return 0;
 }
 
+static void winTreeCallRightClickCb(Ihandle* ih, int x, int y)
+{
+  HTREEITEM hItem = winTreeFindNodeXY(ih, x, y);
+  if (hItem)
+  {
+    IFni cbRightClick = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
+    if (cbRightClick)
+      cbRightClick(ih, iupTreeFindNodeId(ih, hItem));
+  }
+}
+
 static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   switch (msg)
@@ -2158,8 +2157,11 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       }
     }
     break;
-  case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
+    winTreeCallRightClickCb(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+    *result = 0;
+    return 1;  /* must abort the normal behavior, because it is weird and just causes trouble */
+  case WM_MBUTTONDOWN:
   case WM_LBUTTONDBLCLK:
   case WM_MBUTTONDBLCLK:
   case WM_RBUTTONDBLCLK:
@@ -2372,16 +2374,6 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     {
       *result = TRUE;  /* prevent the change */
       return 1;
-    }
-  }
-  else if(msg_info->code == NM_RCLICK)
-  {
-    HTREEITEM hItem = winTreeFindNodePointed(ih);
-    if (hItem)
-    {
-      IFni cbRightClick  = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
-      if (cbRightClick)
-        cbRightClick(ih, iupTreeFindNodeId(ih, hItem));
     }
   }
   else if (msg_info->code == NM_CUSTOMDRAW)
