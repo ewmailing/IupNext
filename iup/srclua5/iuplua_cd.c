@@ -39,8 +39,13 @@ static cdluaContext cdluaiupctx =
 int cdluaiup_open (lua_State *L)
 {
   cdluaLuaState* cdL = cdlua_getstate(L);
+  /* leave "cd" table at the top of the stack */
   lua_pushstring(L, "cd");
-  lua_gettable(L, LUA_GLOBALSINDEX);     /* leave "cd" table at the top of the stack */
+#if LUA_VERSION_NUM > 501
+  lua_pushglobaltable(L);
+#else
+  lua_gettable(L, LUA_GLOBALSINDEX);     
+#endif
   cdlua_addcontext(L, cdL, &cdluaiupctx);
   return 1;
 }

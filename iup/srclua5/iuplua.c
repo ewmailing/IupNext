@@ -76,7 +76,7 @@ static int report (lua_State *L, int status, int concat_traceback)
 }
 
 static int traceback (lua_State *L) {
-  lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+  lua_getglobal(L, "debug");
   if (!lua_istable(L, -1)) {
     lua_pop(L, 1);
     return 1;
@@ -150,6 +150,8 @@ int iuplua_dofile(lua_State *L, const char *filename)
       {
         status = luaL_loadfile(L, full_name);
         free(full_name);
+        if (status == 0)
+          status = docall(L, 0, 0);
       }
     }
   }
