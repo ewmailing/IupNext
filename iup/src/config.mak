@@ -1,11 +1,11 @@
 PROJNAME = iup
-LIBNAME = iup
+LIBNAME := iup
 OPT = YES
 
 ifdef GTK_DEFAULT
   ifdef USE_MOTIF
     # Build Motif version in Linux,Darwin,FreeBSD
-    LIBNAME = iupmot
+    LIBNAME := $(LIBNAME)mot
   else
     ifeq ($(findstring Win, $(TEC_SYSNAME)), )
       # Force definition if not in Windows
@@ -15,7 +15,7 @@ ifdef GTK_DEFAULT
 else  
   ifdef USE_GTK
     # Build GTK version in IRIX,SunOS,AIX,Win32
-    LIBNAME = iupgtk
+    LIBNAME := $(LIBNAME)gtk
   else
     ifeq ($(findstring Win, $(TEC_SYSNAME)), )
       # Force definition if not in Windows

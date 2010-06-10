@@ -5,17 +5,13 @@ APPTYPE = CONSOLE
 ifdef GTK_DEFAULT
   ifdef USE_MOTIF
     # Build Motif version in Linux,Darwin,FreeBSD
-    APPNAME = iuptestmot
+    APPNAME := $(APPNAME)mot
   endif
 else  
   ifdef USE_GTK
     # Build GTK version in IRIX,SunOS,AIX,Win32
-    APPNAME = iuptestgtk
+    APPNAME := $(APPNAME)gtk
   endif
-endif
-
-ifdef USE_GDK
-  APPNAME = iuptestgdk
 endif
 
 INCLUDES = ../include
