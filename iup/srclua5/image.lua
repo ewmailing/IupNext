@@ -19,12 +19,12 @@ static int Image (lua_State * L)
     int i, j;
 
     /* get the number of lines */
-    h = luaL_getn(L, 1);  
+    h = iuplua_getn(L, 1);  
 
     /* get the number of columns of the first line */
     lua_pushinteger(L, 1);
     lua_gettable(L, 1);
-    w = luaL_getn(L, -1);  
+    w = iuplua_getn(L, -1);  
     lua_pop(L, 1);
     
     pixels = (unsigned char *) malloc (h*w);
@@ -47,7 +47,7 @@ static int Image (lua_State * L)
     ih = IupImage(w,h,pixels);  
     free(pixels);
 
-    num_colors = luaL_getn(L, 2);
+    num_colors = iuplua_getn(L, 2);
     num_colors = num_colors>255? 255: num_colors;
     for(c=1; c<=num_colors; c++)
     {
@@ -65,7 +65,7 @@ static int Image (lua_State * L)
     ih = IupImage(w, h, pixels);
     free(pixels);
 
-    num_colors = luaL_getn(L, 4);
+    num_colors = iuplua_getn(L, 4);
     num_colors = num_colors>256? 256: num_colors;
     for(c=1; c<=num_colors; c++)
     {

@@ -149,6 +149,12 @@ Ihandle *iuplua_checkihandleornil(lua_State *L, int pos);
  */
 void iuplua_removeihandle(lua_State *L, Ihandle *ih);
 
+#if LUA_VERSION_NUM > 501
+#define iuplua_getn(L,i)          ((int)lua_rawlen(L, i))
+#else
+#define iuplua_getn(L,i)          ((int)lua_objlen(L, i))
+#endif
+
 
 #ifdef __cplusplus
 }

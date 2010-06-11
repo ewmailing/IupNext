@@ -182,7 +182,7 @@ Ihandle *iuplua_checkihandle(lua_State *L, int pos)
   lua_getmetatable(L, pos);   /* t2 = metatable(stack(pos)) */
   lua_pushstring(L, "iup handle");
   lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iup handle"] */
-  if (lua_equal(L, -2, -1))   /* check (t2==t)? */
+  if (lua_rawequal(L, -2, -1))   /* check (t2==t)? */
   {
     lua_pop (L, 2);
     return *(Ihandle**)lua_touserdata(L, pos);
@@ -269,7 +269,7 @@ char ** iuplua_checkstring_array(lua_State *L, int pos)
 {
   int i,n;
   char **v;
-  n = luaL_getn(L,pos);
+  n = iuplua_getn(L,pos);
   v = (char **) malloc (n*sizeof(char *));
   for(i=1; i<=n; i++)
   {
@@ -285,7 +285,7 @@ int * iuplua_checkint_array(lua_State *L, int pos)
 {
   int i,n;
   int *v;
-  n = luaL_getn(L,pos);
+  n = iuplua_getn(L,pos);
   v = (int *) malloc (n*sizeof(int));
   for(i=1; i<=n; i++)
   {
@@ -301,7 +301,7 @@ unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int count)
 {
   int i,n;
   unsigned char *v;
-  n = luaL_getn(L,pos);
+  n = iuplua_getn(L,pos);
   if (n != count)
   {
     lua_pushstring(L, "invalid number of elements in array");
@@ -321,7 +321,7 @@ unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int count)
 Ihandle ** iuplua_checkihandle_array(lua_State *L, int pos)
 {
   Ihandle **v;
-  int i, n = luaL_getn(L, pos);
+  int i, n = iuplua_getn(L, pos);
   v = (Ihandle **) malloc ((n+1)*sizeof(Ihandle *));
   for (i=1; i<=n; i++)
   {
@@ -720,7 +720,7 @@ static int il_open(lua_State * L)
   if (lua_istable(L, -1))
   {
     int i;
-    argc = luaL_getn(L, -1);
+    argc = iuplua_getn(L, -1);
     argv = malloc(sizeof(char*)*argc);
     for(i=1; i<=argc; i++)
     {
