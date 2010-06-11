@@ -265,7 +265,7 @@ function iup.protectedcall(f, err)
     return
   else  
     table.remove(ret, 1)
-    return unpack(ret)
+    return unpack(ret)   --must replace this by table.unpack when 5.1 is not supported
   end
 end
 
