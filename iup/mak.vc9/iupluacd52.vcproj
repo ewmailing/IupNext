@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="iupluacd51"
-	ProjectGUID="{B4823266-DF8C-4EFB-91C0-C7688C234EAC}"
+	Name="iupluacd52"
+	ProjectGUID="{B4823266-DF8C-4EFB-4EFB-4EFB8C234EAC}"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;..\..\lua5.1\include;..\..\cd\include"
+				AdditionalIncludeDirectories="..\include;..\..\lua52\include;..\..\cd\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,CD_NO_OLD_INTERFACE,_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"

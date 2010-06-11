@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="iupluacd51"
-	ProjectGUID="{B4823266-DF8C-4EFB-91C0-C7688C234EAC}"
+	Name="iupluaim52"
+	ProjectGUID="{1EBC7A53-4677-ADF1-ADF1-ADF101F17D85}"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -41,14 +41,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;..\..\lua5.1\include;..\..\cd\include"
-				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,CD_NO_OLD_INTERFACE,_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\..\lua52\include"
+				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELOH,_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				PrecompiledHeaderFile=""
-				AssemblerListingLocation=""
-				ObjectFile="$(IntDir)\"
-				ProgramDataBaseFileName="$(IntDir)\vc90.pdb"
+				UsePrecompiledHeader="0"
 				BrowseInformation="0"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -60,6 +57,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				Culture="1046"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -90,11 +88,15 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="..\srclua5\iuplua_cd.c"
+			RelativePath="..\srclua5\iuplua_im.c"
 			>
 		</File>
 		<File
-			RelativePath="..\srclua5\iupluacd.def"
+			RelativePath="..\srclua5\iupluaim.def"
+			>
+		</File>
+		<File
+			RelativePath="..\include\iupluaim.h"
 			>
 		</File>
 	</Files>

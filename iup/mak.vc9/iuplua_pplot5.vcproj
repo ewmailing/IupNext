@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="iuplua_pplot5"
+	Name="iuplua_pplot51"
 	ProjectGUID="{1EBC7A53-4677-AAAA-1234-49D301F17D85}"
 	TargetFrameworkVersion="0"
 	>
@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName)1.lib"
+				OutputFile="$(OutDir)/$(ProjectName).lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
