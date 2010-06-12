@@ -236,13 +236,13 @@ iup.SetClass(iup.BOX, "iup widget")
 
 iup.error_message_popup = nil
 
-function iup._ERRORMESSAGE(err,traceback)
-  err = err..(traceback or "")
+function iup._ERRORMESSAGE(msg,traceback)
+  msg = msg..(traceback or "")
   if (iup.error_message_popup) then
-    iup.error_message_popup.value = err
+    iup.error_message_popup.value = msg
   else  
     local bt = iup.button{title="Ok", size="60", action="iup.error_message_popup = nil; return iup.CLOSE"}
-    local ml = iup.multiline{expand="YES", readonly="YES", value=err, size="300x150"}
+    local ml = iup.multiline{expand="YES", readonly="YES", value=msg, size="300x150"}
     local vb = iup.vbox{ml, bt; alignment="ACENTER", margin="10x10", gap="10"}
     local dg = iup.dialog{vb; title="Error Message",defaultesc=bt,defaultenter=bt,startfocus=bt}
     iup.error_message_popup = ml
@@ -254,9 +254,9 @@ end
 
 iup.pack = function (...) return {...} end
 
-function iup.protectedcall(f, err)
+function iup.protectedcall(f, msg)
   if not f then 
-    iup._ERRORMESSAGE(err)
+    iup._ERRORMESSAGE(msg)
     return 
   end
   local ret = iup.pack(pcall(f))

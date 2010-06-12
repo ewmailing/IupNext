@@ -29,7 +29,7 @@ static void tree_settableref(lua_State *L, int pos, int ref)
   lua_getglobal(L, "iup");
   lua_pushstring(L, "TREEREFTABLE");
   lua_gettable(L, -2);
-  lua_remove(L, -2);
+  lua_remove(L, -2); /* remove "iup" from stack */
   lua_pushvalue(L, pos);
   if(ref == LUA_NOREF)
     lua_pushnil(L);
@@ -45,7 +45,7 @@ static int tree_gettableref(lua_State *L, int pos)
   lua_getglobal(L, "iup");
   lua_pushstring(L, "TREEREFTABLE");
   lua_gettable(L, -2);
-  lua_remove(L, -2);
+  lua_remove(L, -2); /* remove "iup" from stack */
   lua_pushvalue(L, pos);
   lua_gettable(L, -2);
   if (lua_isnil(L, -1))
