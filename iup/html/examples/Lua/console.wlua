@@ -21,6 +21,7 @@ console.prompt.tip = "Enter - executes a Lua command\n"..
                   
 console.orig_output = io.output
 console.orig_write = io.write
+console.orig_print = print
 
 function io.output(filename)
   console.orig_output(filename)
@@ -210,7 +211,9 @@ dialog = iup.dialog
 }
 
 function dialog:close_cb()
-  iup.ExitLoop() -- should be removed if used inside a bigger application
+  print = console.orig_print  -- restore print and io.write
+  io.write = console.orig_write
+  iup.ExitLoop()  -- should be removed if used inside a bigger application
   dialog:destroy()
   return iup.IGNORE
 end
