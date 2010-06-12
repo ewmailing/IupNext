@@ -1,215 +1,239 @@
-require"iuplua"
+require ("iuplua")
 
--- Utilities
-iup_console = {}
+console = {}
 
-function iup_console.concat(str, info)
-  return str .. info .. "\n"
-end
+console.prompt = iup.text{expand="Horizontal", dragdrop = "Yes"}
+console.output = iup.text{expand="Yes", 
+                  readonly="Yes", 
+                  bgcolor="232 232 232", 
+                  font = "Courier, 11",
+                  appendnewline = "No",
+                  multiline = "Yes"}
 
-function iup_console.print_version_info()
-  iup_console.clear()
-  local str = ""
-  if (im) then str = iup_console.concat(str, "IM " .. im._VERSION .. "  " .. im._COPYRIGHT) end
+console.prompt.tip = "Enter - executes a Lua command\n"..
+                     "Esc - clears the command\n"..
+                     "Ctrl+Del - clears the output\n"..
+                     "Ctrl+O - selects a file and execute it\n"..
+                     "Ctrl+X - exits the console\n"..
+                     "Up Arrow - shows the previous command in history\n"..
+                     "Down Arrow - shows the next command in history\n"..
+                     "Drop files here to execute them"
+                  
+console.orig_output = io.output
+console.orig_write = io.write
 
-  if (cd) then str = iup_console.concat(str, "CD " .. cd._VERSION .. "  " .. cd._COPYRIGHT) end
-
-  str = iup_console.concat(str, "IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT)
-  str = iup_console.concat(str, "")
-  str = iup_console.concat(str, "IUP Info")
-  str = iup_console.concat(str, "  System: " .. iup.GetGlobal("SYSTEM"))
-  str = iup_console.concat(str, "  System Version: " .. iup.GetGlobal("SYSTEMVERSION"))
-
-  local mot = iup.GetGlobal("MOTIFVERSION")
-  if (mot) then str = iup_console.concat(str, "  Motif Version: ", mot) end
-
-  str = iup_console.concat(str, "  Screen Size: " .. iup.GetGlobal("SCREENSIZE"))
-  str = iup_console.concat(str, "  Screen Depth: " .. iup.GetGlobal("SCREENDEPTH"))
-
-  if (iup.GL_VENDOR) then str = iup_console.concat(str, "  OpenGL Vendor: " .. iup.GL_VENDOR) end
-  if (iup.GL_RENDERER) then str = iup_console.concat(str, "  OpenGL Renderer: " .. iup.GL_RENDERER) end
-  if (iup.GL_VERSION) then str = iup_console.concat(str, "  OpenGL Version: " .. iup.GL_VERSION) end
-  
-  iup_console.mlCode.value=str
-end
-
--- Console Dialog
-
-iup_console.lastfilename = nil -- Last file open
-iup_console.mlCode = iup.multiline{expand="YES", size="200x120", font="COURIER_NORMAL_10"}
-iup_console.lblPosition = iup.label{title="0:0", size="50x"}
-iup_console.lblFileName = iup.label{title="", size="50x", expand="HORIZONTAL"}
-
-function iup_console.mlCode:caret_cb(lin, col)
-  iup_console.lblPosition.title = lin..":"..col
-end
-
-function iup_console.clear()
-  iup_console.mlCode.value=''  
-  iup_console.lblFileName.title = ''  
-  iup_console.lastfilename = nil
-end
-
-iup_console.butExecute = iup.button{size="50x15", title="Execute",
-                                    action="iup.dostring(iup_console.mlCode.value)"}
-iup_console.butClearCommands = iup.button{size="50x15", title="Clear", action=iup_console.clear}
-iup_console.butLoadFile = iup.button{size="50x15", title="Load..."}
-iup_console.butSaveasFile = iup.button{size="50x15", title="Save As..."}
-iup_console.butSaveFile = iup.button{size="50x15", title="Save"}
-
-function iup_console.butSaveFile:action()
-  if (iup_console.lastfilename == nil) then
-    iup_console.butSaveasFile:action()
+function io.output(filename)
+  console.orig_output(filename)
+  if (filename) then
+    io.write = console.orig_write
   else
-    newfile = io.open(iup_console.lastfilename, "w+")
-    if (newfile) then
-      newfile:write(iup_console.mlCode.value)
-      newfile:close()
+    io.write = console.new_write
+  end
+end
+
+function console.new_write(...)
+  -- Try to simulate the same behavior of the standard io.write
+  local arg = {...}
+  local str -- allow to print a nil value
+  for i,v in ipairs(arg) do
+    if (str) then
+      str = str .. tostring(v) 
     else
-      error ("Cannot Save file "..filename)
+      str = tostring(v)
+    end
+  end
+  console.print2output(str, true)
+end
+io.write = console.new_write
+
+function print(...)
+  -- Try to simulate the same behavior of the standard print
+  local arg = {...}
+  local str -- allow to print a nil value
+  for i,v in ipairs(arg) do
+    if (i > 1) then
+      str = str .. "\t"  -- only add Tab for more than 1 parameters
+    end
+    if (str) then
+      str = str .. tostring(v) 
+    else
+      str = tostring(v)
+    end
+  end
+  console.print2output(str)
+end
+                  
+function console.print2output(s, no_newline)
+  if (no_newline) then
+    console.output.append = tostring(s)
+    console.no_newline = no_newline
+  else
+    if (console.no_newline) then
+      -- if io.write was called, then a print is called, must add a new line before
+      console.output.append = "\n" .. tostring(s) .. "\n"
+      console.no_newline = nil
+    else  
+      console.output.append = tostring(s) .. "\n"
     end
   end
 end
 
-function iup_console.butSaveasFile:action()
-  local fd = iup.filedlg{dialogtype="SAVE", title="Save File", 
-                         nochangedir="NO", directory=iup_console.last_directory,
-                         filter="*.*", filterinfo="All files",allownew=yes}
-                         
-  fd:popup(iup.LEFT, iup.LEFT)
-  
-  local status = fd.status
-  iup_console.lastfilename = fd.value
-  iup_console.lblFileName.title = fd.value
-  iup_console.last_directory = fd.directory
-  fd:destroy()
-  
-  if status ~= "-1" then
-    if (iup_console.lastfilename == nil) then
-      error ("Cannot Save file "..filename)
-    end
-    local newfile=io.open(iup_console.lastfilename, "w+")
-    if (newfile) then
-      newfile:write(iup_console.mlCode.value)
-      newfile:close(newfile)
-    else
-      error ("Cannot Save file")
-    end
-   end
+function console.print_command(cmd)
+  console.add_command(cmd)
+  console.print2output("> " .. cmd)
 end
 
-function iup_console.LoadFile(filename)
-  local newfile = io.open (filename, "r")
-  if (newfile == nil) then
-    error ("Cannot load file "..filename)
-  else
-    iup_console.mlCode.value=newfile:read("*a")
-    newfile:close (newfile)
-    iup_console.lastfilename = filename
-    iup_console.lblFileName.title = iup_console.lastfilename
+function  console.add_command(cmd)
+  console.cmd_index = nil
+  if (not console.cmd_list) then
+    console.cmd_list = {}
   end
+  local n = #(console.cmd_list)
+  console.cmd_list[n+1] = cmd
 end
 
-function iup_console.butLoadFile:action()
+function  console.prev_command()
+  if (not console.cmd_list) then
+    return
+  end
+  if (not console.cmd_index) then
+    console.cmd_index = #(console.cmd_list)
+  else
+    console.cmd_index = console.cmd_index - 1
+    if (console.cmd_index == 0) then
+      console.cmd_index = 1
+    end
+  end
+  console.prompt.value = console.cmd_list[console.cmd_index]
+end
+
+function  console.next_command()
+  if (not console.cmd_list) then
+    return
+  end
+  if (not console.cmd_index) then
+    return
+  else
+    console.cmd_index = console.cmd_index + 1
+    local n = #(console.cmd_list)
+    if (console.cmd_index == n+1) then
+      console.cmd_index = n
+    end
+  end
+  console.prompt.value = console.cmd_list[console.cmd_index]
+end
+
+function console.do_file(filename)
+  local cmd = 'dofile(' .. string.format('%q', filename) .. ')'
+  console.print_command(cmd)
+  dofile(filename)
+end
+
+function console.open_file()
   local fd=iup.filedlg{dialogtype="OPEN", title="Load File", 
-                       nochangedir="NO", directory=iup_console.last_directory,
+                       nochangedir="NO", directory=console.last_directory,
                        filter="*.*", filterinfo="All Files", allownew="NO"}
   fd:popup(iup.CENTER, iup.CENTER)
   local status = fd.status
   local filename = fd.value
-  iup_console.last_directory = fd.directory
+  console.last_directory = fd.directory -- save the previous directory
   fd:destroy()
   
   if (status == "-1") or (status == "1") then
     if (status == "1") then
-      error ("Cannot load file "..filename)
+      error ("Cannot load file: "..filename)
     end
   else
-    iup_console.LoadFile(filename)
+    console.do_file(filename)
   end
 end
 
-iup_console.vbxConsole = iup.vbox
-{
-  iup.frame{iup.hbox{iup.vbox{iup_console.butLoadFile,
-                              iup_console.butSaveFile,
-                              iup_console.butSaveasFile,
-                              iup_console.butClearCommands,
-                              iup_console.butExecute;
-                              margin="0x0", gap="10"},
-                     iup.vbox{iup_console.lblFileName,
-                              iup_console.mlCode,
-                              iup_console.lblPosition;
-                              alignment = "ARIGHT"};
-                     alignment="ATOP"}; title="Commands"}
-   ;alignment="ACENTER", margin="5x5", gap="5"
-}
+function console.prompt:dropfiles_cb(filename)
+  -- will execute all dropped files, can drop more than one at once
+  -- works in Windows and in Linux
+  console.do_file(filename)
+end
 
--- Main Menu Definition.
-
-iup_console.mnuMain = iup.menu
-{
-  iup.submenu
-  {
-    iup.menu
-    {
-      iup.item{title="Exit", action="return iup.CLOSE"}
-    }; title="File"
-  },
-  iup.submenu{iup.menu
-  {
-    iup.item{title="Print Version Info...", action=iup_console.print_version_info},
-    iup.item{title="About...", action="iup_console.dlgAbout:popup(iup.CENTER, iup.CENTER)"}
-  };title="Help"}
-}
-
--- Main Dialog Definition.
-
-iup_console.dlgMain = iup.dialog{iup_console.vbxConsole;
-                                 title="IupLua Console",
-                                 menu=iup_console.mnuMain,
-                                 dragdrop = "YES",
-                                 defaultenter=iup_console.butExecute,
-                                 close_cb = "return iup.CLOSE"}
-
-function iup_console.dlgMain:dropfiles_cb(filename, num, x, y)
-  if (num == 0) then
-    iup_console.LoadFile(filename)
+function console.prompt:k_any(key)
+  if (key == iup.K_CR) then  -- Enter executes the string
+    local cmd = self.value
+    console.print_command(cmd)
+    assert(loadstring(cmd))()
+    self.value = ""
+  end
+  if (key == iup.K_ESC) then  -- Esc clears console.prompt
+    self.value = ""
+  end
+  if (key == iup.K_cO) then  -- Ctrl+O selects a file and execute it
+    console.open_file()
+  end
+  if (key == iup.K_cX) then  -- Ctrl+X exits the console
+    dialog:close_cb()
+  end
+  if (key == iup.K_cDEL) then  -- Ctrl+Del clears console.output
+    console.output.value = ""
+  end
+  if (key == iup.K_UP) then  -- Up Arrow - shows the previous command in history
+    console.prev_command()
+  end
+  if (key == iup.K_DOWN) then  -- Down Arrow - shows the next command in history
+    console.next_command()
   end
 end
 
--- About Dialog Definition.
-
-iup_console.dlgAbout = iup.dialog
+dialog = iup.dialog
 {
   iup.vbox
   {
-      iup.label{title="IupLua Console"},
-      iup.fill{size="5"},
-      iup.fill{size="5"},
-      iup.frame
+    iup.frame
+    {
+      iup.hbox -- use it to inherit margins
       {
-          iup.vbox
-          {
-              iup.label{title="Tecgraf/PUC-Rio"},
-              iup.label{title="iup@tecgraf.puc-rio.br"}
-          }
+        console.prompt,
       },
-      iup.fill{size="5"},
-      iup.button{title="OK", action="return iup.CLOSE", size="50X20"}
-      ;margin="10x10", alignment="ACENTER"
-   }
-   ;maxbox="NO", minbox="NO", resize="NO", title="About"
+      title = "Command:",
+    },
+    iup.frame
+    {
+      iup.hbox -- use it to inherit margins
+      {
+        console.output
+      },
+      title = "Output:",
+    },
+    margin = "5x5",
+    gap = "5",
+  },
+  title="Lua Console", 
+  size="250x180", -- initial size
+  icon=0, -- use the Lua icon from the executable in Windows
 }
 
--- Displays the Main Dialog
-
-iup_console.dlgMain:show()
-iup.SetFocus(iup_console.mlCode)
-
-if (iup.MainLoopLevel()==0) then
-  iup.MainLoop()
+function dialog:close_cb()
+  iup.ExitLoop() -- should be removed if used inside a bigger application
+  dialog:destroy()
+  return iup.IGNORE
 end
 
-iup_console.dlgMain:destroy()
-iup_console.dlgAbout:destroy()
+function console.version_info()
+  print(_VERSION, _COPYRIGHT) -- _COPYRIGHT does not exists by default, but it could...
+  
+  print("IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT)
+  print("  System: " .. iup.GetGlobal("SYSTEM"))
+  print("  System Version: " .. iup.GetGlobal("SYSTEMVERSION"))
+
+  local mot = iup.GetGlobal("MOTIFVERSION")
+  if (mot) then print("  Motif Version: ", mot) end
+  
+  local gtk = iup.GetGlobal("GTKVERSION")
+  if (gtk) then print("  GTK Version: ", gtk) end
+end
+
+dialog:show()
+dialog.size = nil -- reset initial size, allow resize to smaller values
+
+console.version_info()
+
+if (iup.MainLoopLevel() == 0) then
+  iup.MainLoop()
+end
