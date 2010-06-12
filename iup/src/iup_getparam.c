@@ -20,6 +20,7 @@
 
 #define RAD2DEG  57.296f   /* radians to degrees */
 
+enum {IPARAM_TYPE_STR, IPARAM_TYPE_INT, IPARAM_TYPE_FLOAT, IPARAM_TYPE_NONE=-1};
 
 /*******************************************************************************************
                     Internal Callbacks
@@ -150,7 +151,7 @@ static int iParamValAction_CB(Ihandle *self)
   char* type = iupAttribGet(param, "TYPE");
   if (iupStrEqual(type, "INTEGER"))
   {
-    iupAttribSetStrf(param, "VALUE", "%d", (int)val);
+    iupAttribSetInt(param, "VALUE", (int)val);
   }
   else
   {
@@ -161,7 +162,7 @@ static int iParamValAction_CB(Ihandle *self)
       if (val == 0)
       {
         old_angle = iupAttribGetFloat(param, "VALUE");
-        iupAttribSetStrf(param, "_IUPGP_OLD_ANGLE", "%g", old_angle);
+        iupAttribSetFloat(param, "_IUPGP_OLD_ANGLE", old_angle);
       }
       else
         old_angle = iupAttribGetFloat(param, "_IUPGP_OLD_ANGLE");
@@ -185,13 +186,13 @@ static int iParamValAction_CB(Ihandle *self)
       }
     }
 
-    iupAttribSetStrf(param, "VALUE", "%g", val);
+    iupAttribSetFloat(param, "VALUE", val);
   }
 
   if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
   {
     /* Undo */
-    iupAttribSetStrf(param, "VALUE", "%g", old_value);
+    iupAttribSetFloat(param, "VALUE", old_value);
 
     if (!iupAttribGetInt(param, "ANGLE"))
       IupSetfAttribute(self, "VALUE", "%g", old_value);
@@ -235,12 +236,12 @@ static int iParamListAction_CB(Ihandle *self, char *t, int i, int v)
     Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
     int old_i = iupAttribGetInt(param, "VALUE");
 
-    iupAttribSetStrf(param, "VALUE", "%d", i-1);
+    iupAttribSetInt(param, "VALUE", i-1);
 
     if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
     {
       /* Undo */
-      iupAttribSetStrf(param, "VALUE", "%d", old_i);
+      iupAttribSetInt(param, "VALUE", old_i);
       IupSetfAttribute(self, "VALUE", "%d", old_i+1);
 
       /* there is no IUP_IGNORE for IupList */
@@ -327,7 +328,7 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
   if (val > max)
     val = max;
 
-  iupAttribSetStrf(param, "VALUE", "%g", (double)val);
+  iupAttribSetFloat(param, "VALUE", val);
 
   if (cb) 
   {
@@ -437,7 +438,6 @@ static Ihandle* iParamCreateBox(Ihandle* param)
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamToggleAction_CB);
 
     IupAppend(box, ctrl);
-    iupAttribSetStr(param, "DATA_TYPE", "1");
   }
   else if (iupStrEqual(type, "SEPARATOR"))
   {
@@ -445,7 +445,6 @@ static Ihandle* iParamCreateBox(Ihandle* param)
     IupSetAttribute(ctrl, "SEPARATOR", "HORIZONTAL");
 
     IupAppend(box, ctrl);
-    iupAttribSetStr(param, "DATA_TYPE", "-1");
   }
   else if (iupStrEqual(type, "LIST"))
   {
@@ -465,7 +464,6 @@ static Ihandle* iParamCreateBox(Ihandle* param)
     IupStoreAttribute(ctrl, str, NULL);
 
     IupAppend(box, ctrl);
-    iupAttribSetStr(param, "DATA_TYPE", "1");
   }
   else if (iupStrEqual(type, "STRING"))
   {
@@ -498,7 +496,6 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         IupStoreAttribute(ctrl, "MASK", mask);
     }
 
-    iupAttribSetStr(param, "DATA_TYPE", "0");
     iupAttribSetStr(param, "EXPAND", "1");
   }
   else if (iupStrEqual(type, "FILE"))
@@ -513,7 +510,6 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
       IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
-      iupAttribSetStr(param, "DATA_TYPE", "0");
       iupAttribSetStr(param, "EXPAND", "1");
 
       
@@ -540,9 +536,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       IupSetAttribute(ctrl, "MASK", "(/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)) (/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)) (/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)) (/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5))");
       IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
-      iupAttribSetStr(param, "DATA_TYPE", "0");
       iupAttribSetStr(param, "EXPAND", "1");
-
       
       aux = IupCanvas(NULL);
       IupSetAttribute(aux, "SIZE", "20x10");
@@ -585,7 +579,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         IupSetfAttribute(ctrl, "SPINMAX", "%d", (int)((max-min)/step + 0.5));
         IupSetfAttribute(ctrl, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
 
-        iupAttribSetStrf(ctrl, "_IUPGP_INCSTEP", "%g", step);
+        iupAttribSetFloat(ctrl, "_IUPGP_INCSTEP", step);
         iupAttribSetStr(ctrl, "_IUPGP_SPINREAL", "1");
       }
       else if (iupAttribGetInt(param, "PARTIAL"))
@@ -603,7 +597,6 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         IupAppend(box, ctrl);
       }
 
-      iupAttribSetStr(param, "DATA_TYPE", "2");
       IupSetAttribute(ctrl, "SIZE", "50x");
     }
     else /* INTEGER*/
@@ -625,7 +618,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         int step = iupAttribGetInt(param, "STEP");
         if (step)
         {
-          iupAttribSetStrf(ctrl, "_IUPGP_INCSTEP", "%d", step);
+          iupAttribSetInt(ctrl, "_IUPGP_INCSTEP", step);
           IupSetfAttribute(ctrl, "SPININC", "%d", step);
         }
         IupSetfAttribute(ctrl, "SPINMAX", "%d", max);
@@ -649,7 +642,6 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         IupSetAttribute(ctrl, "MASK", IUP_MASK_INT);
       }
 
-      iupAttribSetStr(param, "DATA_TYPE", "1");
       IupSetAttribute(ctrl, "SIZE", "50x");
     }
 
@@ -790,13 +782,12 @@ static Ihandle* IupParamDlgP(Ihandle** params)
   {
     int w;
 
-    char* type = iupAttribGet(params[i], "TYPE");
-    if (!iupStrEqual(type, "SEPARATOR"))
+    if (IupGetInt(params[i], "DATA_TYPE") != IPARAM_TYPE_NONE)
     {
       char str[20];
       sprintf(str, "PARAM%d", p);
-      IupSetAttribute(dlg, str, (char*)params[i]);
-      iupAttribSetStrf(params[i], "INDEX", "%d", p);
+      iupAttribSetStr(dlg, str, (char*)params[i]);
+      iupAttribSetInt(params[i], "INDEX", p);
       p++;
     }
 
@@ -810,9 +801,9 @@ static Ihandle* IupParamDlgP(Ihandle** params)
   i = 0;
   while (params[i] != NULL)
   {
-    char* type = iupAttribGet(params[i], "TYPE");
-    if (!iupStrEqual(type, "SEPARATOR"))
+    if (IupGetInt(params[i], "DATA_TYPE") != IPARAM_TYPE_NONE)
     {
+      char* type = iupAttribGet(params[i], "TYPE");
       if (iupStrEqual(type, "LIST"))
       {
         /* set a minimum size for lists */
@@ -1040,6 +1031,7 @@ static int iParamCopyStrLine(char* line, const char* format)
   return i+1; 
 }
 
+/* Used in IupLua also */
 char iupGetParamType(const char* format, int *line_size)
 {
   char* type = strchr(format, '%');
@@ -1072,19 +1064,19 @@ static Ihandle *IupParamf(const char* format, int *line_size)
   {
   case 'b':
     iupAttribSetStr(param, "TYPE", "BOOLEAN");
-    iupAttribSetStr(param, "DATA_TYPE", "1");  /* integer */
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_INT);
     extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamSetBoolNames(extra, param);
     break;
   case 'l':
     iupAttribSetStr(param, "TYPE", "LIST");
-    iupAttribSetStr(param, "DATA_TYPE", "1");  /* integer */
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_INT);
     extra = iParamGetStrExtra(line_ptr, '|', '|', &count);  line_ptr += count;
     iParamSetListItems(extra, param);
     break;
   case 'a':
     iupAttribSetStr(param, "TYPE", "REAL");
-    iupAttribSetStr(param, "DATA_TYPE", "2");  /* real */
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_FLOAT);
     iupAttribSetStr(param, "ANGLE", "1");
     extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamSetInterval(extra, param);
@@ -1094,7 +1086,7 @@ static Ihandle *IupParamf(const char* format, int *line_size)
     /* continue */
   case 's':
     iupAttribSetStr(param, "TYPE", "STRING");
-    iupAttribSetStr(param, "DATA_TYPE", "0");  /* string */
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_STR);
     mask = iParamGetNextStrItem(line_ptr, '{', &count);  
     if (*mask) 
       iupAttribStoreStr(param, "MASK", mask);
@@ -1103,33 +1095,33 @@ static Ihandle *IupParamf(const char* format, int *line_size)
     break;
   case 'i':
     iupAttribSetStr(param, "TYPE", "INTEGER");
-    iupAttribSetStr(param, "DATA_TYPE", "1");  /* integer */
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_INT);
     extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamSetInterval(extra, param);
     break;
   case 'r':
     iupAttribSetStr(param, "TYPE", "REAL");
-    iupAttribSetStr(param, "DATA_TYPE", "2");  /* real */
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_FLOAT);
     extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamSetInterval(extra, param);
     break;
   case 'f':
     iupAttribSetStr(param, "TYPE", "FILE");
-    iupAttribSetStr(param, "DATA_TYPE", "0");  /* string */
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_STR);
     extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamSetFileOptions(extra, param);
     break;
   case 'c':
     iupAttribSetStr(param, "TYPE", "COLOR");
-    iupAttribSetStr(param, "DATA_TYPE", "0");  /* string */
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_STR);
     break;
   case 't':
     iupAttribSetStr(param, "TYPE", "SEPARATOR");
-    iupAttribSetStr(param, "DATA_TYPE", "-1"); /* NONE */
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_NONE);
     break;
   case 'u':
     iupAttribSetStr(param, "TYPE", "BUTTONNAMES");
-    iupAttribSetStr(param, "DATA_TYPE", "-1"); /* NONE */
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_NONE);
     extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamSetButtonNames(extra, param);
     break;
@@ -1148,6 +1140,7 @@ static Ihandle *IupParamf(const char* format, int *line_size)
                     Exported Functions
 *******************************************************************************************/
 
+/* Used in IupLua also */
 int iupGetParamCount(const char *format, int *param_extra)
 {
   int param_count = 0, extra = 0;
@@ -1211,21 +1204,21 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
       return 0;
 
     data_type = IupGetInt(params[i], "DATA_TYPE");
-    if (data_type == 2) /* float */
+    if (data_type == IPARAM_TYPE_FLOAT)
     {
       float *data_float = (float*)(param_data[p]);
       if (!data_float) return 0;
-      iupAttribSetStrf(params[i], "VALUE", "%g", *data_float);
+      iupAttribSetFloat(params[i], "VALUE", *data_float);
       p++;
     }
-    else if (data_type == 1) /* integer */
+    else if (data_type == IPARAM_TYPE_INT)
     {
       int *data_int = (int*)(param_data[p]);
       if (!data_int) return 0;
-      iupAttribSetStrf(params[i], "VALUE", "%d", *data_int);
+      iupAttribSetInt(params[i], "VALUE", *data_int);
       p++;
     }
-    else if (data_type == 0)  /* string */
+    else if (data_type == IPARAM_TYPE_STR)
     {
       char *data_str = (char*)(param_data[p]);
       if (!data_str) return 0;
@@ -1255,31 +1248,25 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   }
   else
   {
-    for (i = 0, p = 0; i < param_count; i++)
+    for (i = 0, p = 0; i < param_count+param_extra; i++)
     {
-      Ihandle* param;
-      int data_type;
-      char str[20];
-
-      sprintf(str, "PARAM%d", i);
-      param = (Ihandle*)iupAttribGet(dlg, str);
-
-      data_type = iupAttribGetInt(param, "DATA_TYPE");
-      if (data_type == 1)
+      Ihandle* param = params[i];
+      int data_type = iupAttribGetInt(param, "DATA_TYPE");
+      if (data_type == IPARAM_TYPE_INT)
       {
-        int *data_int = (int*)(param_data[i]);
+        int *data_int = (int*)(param_data[p]);
         *data_int = iupAttribGetInt(param, "VALUE");
         p++;
       }
-      else if (data_type == 2)
+      else if (data_type == IPARAM_TYPE_FLOAT)
       {
-        float *data_float = (float*)(param_data[i]);
+        float *data_float = (float*)(param_data[p]);
         *data_float = iupAttribGetFloat(param, "VALUE");
         p++;
       }
-      else 
+      else if (data_type == IPARAM_TYPE_STR)
       {
-        char *data_str = (char*)(param_data[i]);
+        char *data_str = (char*)(param_data[p]);
         strcpy(data_str, iupAttribGet(param, "VALUE"));
         p++;
       }
