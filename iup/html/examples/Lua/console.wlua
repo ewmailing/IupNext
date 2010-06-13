@@ -169,7 +169,7 @@ function console.prompt:k_any(key)
     console.open_file()
   end
   if (key == iup.K_cX) then  -- Ctrl+X exits the console
-    dialog:close_cb()
+    console.dialog:close_cb()
   end
   if (key == iup.K_cDEL) then  -- Ctrl+Del clears console.output
     console.output.value = ""
@@ -182,7 +182,7 @@ function console.prompt:k_any(key)
   end
 end
 
-dialog = iup.dialog
+console.dialog = iup.console.dialog
 {
   iup.vbox
   {
@@ -210,11 +210,11 @@ dialog = iup.dialog
   icon=0, -- use the Lua icon from the executable in Windows
 }
 
-function dialog:close_cb()
+function console.dialog:close_cb()
   print = console.orig_print  -- restore print and io.write
   io.write = console.orig_write
   iup.ExitLoop()  -- should be removed if used inside a bigger application
-  dialog:destroy()
+  console.dialog:destroy()
   return iup.IGNORE
 end
 
@@ -232,8 +232,9 @@ function console.version_info()
   if (gtk) then print("  GTK Version: ", gtk) end
 end
 
-dialog:show()
-dialog.size = nil -- reset initial size, allow resize to smaller values
+console.dialog:show()
+console.dialog.size = nil -- reset initial size, allow resize to smaller values
+iup.SetFocus(console.prompt)
 
 console.version_info()
 
