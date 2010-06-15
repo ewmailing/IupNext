@@ -130,6 +130,11 @@ function console.do_file(filename)
   dofile(filename)
 end
 
+function console.do_string(cmd)
+  console.print_command(cmd)
+  assert(loadstring(cmd))()
+end
+
 function console.open_file()
   local fd=iup.filedlg{dialogtype="OPEN", title="Load File", 
                        nochangedir="NO", directory=console.last_directory,
@@ -157,9 +162,7 @@ end
 
 function console.prompt:k_any(key)
   if (key == iup.K_CR) then  -- Enter executes the string
-    local cmd = self.value
-    console.print_command(cmd)
-    assert(loadstring(cmd))()
+    console.do_string(self.value)
     self.value = ""
   end
   if (key == iup.K_ESC) then  -- Esc clears console.prompt
@@ -182,7 +185,7 @@ function console.prompt:k_any(key)
   end
 end
 
-console.dialog = iup.console.dialog
+console.dialog = iup.dialog
 {
   iup.vbox
   {

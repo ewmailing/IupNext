@@ -3,7 +3,6 @@
  *
  * See Copyright Notice in iup.h
  */
-
 #undef NOTREEVIEW
 #include <windows.h>
 #include <commctrl.h>
