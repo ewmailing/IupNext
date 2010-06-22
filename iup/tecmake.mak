@@ -41,6 +41,9 @@ ifndef TEC_UNAME
     TEC_SYSARCH:=ppc
   endif
   ifeq ($(TEC_SYSNAME), Darwin)
+    TEC_SYSNAME:=MacOS
+    TEC_SYSVERSION:=$(shell sw_vers -productVersion|cut -f1 -d.)
+    TEC_SYSMINOR:=$(shell sw_vers -productVersion|cut -f2 -d.)
     TEC_SYSARCH:=$(shell uname -p)
   endif
 
@@ -102,9 +105,9 @@ ifndef TEC_UNAME
     endif
   endif
 
-  # Darwin and Intel
-  ifeq ($(TEC_SYSNAME), Darwin)
-    ifeq ($(TEC_SYSVERSION), 10)
+  # MacOS and Intel
+  ifeq ($(TEC_SYSNAME), MacOS)
+    ifeq ($(TEC_SYSMINOR), 6)
       TEC_SYSARCH:=x64
     else
       ifeq ($(TEC_SYSARCH), x86)
@@ -192,7 +195,7 @@ endif
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
   GTK_DEFAULT = Yes
 endif  
-ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   GTK_DEFAULT = Yes
 endif  
 ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
@@ -398,6 +401,19 @@ MOTIFGL_LIB := GLw              #include <GL/GLwMDrawA.h>
 #GLUT_LIB := 
 #GLUT_INC := 
 
+# Definitions for GTK
+ifdef GTK_BASE
+  GTK := $(GTK_BASE)
+else
+  ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  # Option 1 - Fink GTK port
+    GTK = /sw
+  # Option 3 - GTK-OSX Framework
+  #   GTK := /Users/cpts/gtk/inst
+  else
+    GTK = /usr
+  endif
+endif
 
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
   ifdef BUILD_64
@@ -479,7 +495,7 @@ ifneq ($(findstring SunOS, $(TEC_UNAME)), )
   endif
 endif
 
-ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   X11_LIBS := Xmu Xp Xt Xext X11
   X11_LIB := /usr/X11R6/lib
   X11_INC := /usr/X11R6/include
@@ -498,7 +514,6 @@ ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
   X11_LIB := /usr/X11R6/lib
   X11_INC := /usr/X11R6/include
 endif
-
 
 #---------------------------------#
 # Allows an extra configuration file.
@@ -727,57 +742,49 @@ ifdef USE_IUP
 endif
 
 ifdef USE_CD
+  CDSUFX := 
   override USE_X11 = Yes
+  ifdef USE_GDK
+    ifndef GTK_DEFAULT
+      CDSUFX := gdk
+    endif
+  else
+    ifdef GTK_DEFAULT
+      CDSUFX := x11
+    endif
+  endif
   ifdef USE_STATIC
     ifdef USE_XRENDER
       SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdcontextplus.a
+      LIBS += Xrender Xft
     endif
     ifdef USE_CAIRO
       # To use Cairo with X11 base driver (NOT for GDK)
+      # Can NOT be used together with XRender
       SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdcairo.a
+      LIBS += pangocairo-1.0 cairo
     endif
-    ifdef USE_GDK
-      SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdgdk.a
-    else
-      SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcd.a
-    endif
-    ifdef USE_XRENDER
-      LIBS += Xrender Xft
-    else
-      ifdef USE_CAIRO
-        # To use Cairo with X11 base driver (NOT for GDK)
-        LIBS += pangocairo-1.0 cairo
-      endif
-      ifndef USE_GTK
-        # Freetype is already included in GTK
-        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libfreetype.a
-      endif
+    SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcd$(CDSUFX).a
+    ifndef USE_GTK
+      # Freetype is already included in GTK
+      SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libfreetype.a
     endif
   else
     ifdef USE_XRENDER
       LIBS += cdcontextplus
+      LIBS += Xrender Xft
     endif
     ifdef USE_CAIRO
       # To use Cairo with X11 base driver (NOT for GDK)
+      # Can NOT be used together with XRender
       LIBS += cdcairo
+      LIBS += pangocairo-1.0 cairo
     endif
-    ifdef USE_GDK
-      LIBS += cdgdk
-    else
-      LIBS += cd
-    endif
+    LIBS += cd$(CDSUFX)
     LDIR += $(CD)/lib/$(TEC_UNAME_LIB_DIR)
-    ifdef USE_XRENDER
-      LIBS += Xrender Xft
-    else
-      ifdef USE_CAIRO
-        # To use Cairo with X11 base driver (NOT for GDK)
-        LIBS += pangocairo-1.0 cairo
-      endif
-      ifndef USE_GTK
-        # Freetype is already included in GTK
-        LIBS += freetype
-      endif
+    ifndef USE_GTK
+      # Freetype is already included in GTK
+      LIBS += freetype
     endif
   endif
   INCLUDES += $(CD)/include
@@ -825,10 +832,9 @@ ifdef USE_MOTIF
 endif
 
 ifdef USE_GTK
-  ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+  ifneq ($(findstring MacOS, $(TEC_UNAME)), )
 # Option 1 - Fink GTK port
-    GTK_BASE ?= /sw
-    LDIR += $(GTK_BASE)/lib
+    LDIR += $(GTK)/lib
     override USE_X11 = Yes
     LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
 # Option 2 - Imendio Framework
@@ -837,8 +843,7 @@ ifdef USE_GTK
 #   STDINCS += /Library/Frameworks/Cairo.framework/Headers
 #   LFLAGS += -framework Gtk
 # Option 3 - GTK-OSX Framework
-#   GTK_BASE := /Users/cpts/gtk/inst
-#   LDIR += $(GTK_BASE)/lib
+#   LDIR += $(GTK)/lib
 #   LFLAGS += -framework Carbon
 #   LIBS += gtk-quartz-2.0 gdk-quartz-2.0 pangoft2-1.0
 
@@ -847,25 +852,24 @@ ifdef USE_GTK
     # if not the default, then include it for linker
     # must be before the default
     ifdef GTK_BASE
-      LDIR += $(GTK_BASE)/lib
+      LDIR += $(GTK)/lib
     endif
-    GTK_BASE ?= /usr
     override USE_X11 = Yes
     LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
   endif
   
   LIBS += gdk_pixbuf-2.0 pango-1.0 gobject-2.0 gmodule-2.0 glib-2.0
-  STDINCS += $(GTK_BASE)/include/atk-1.0 $(GTK_BASE)/include/gtk-2.0 $(GTK_BASE)/include/cairo $(GTK_BASE)/include/pango-1.0 $(GTK_BASE)/include/glib-2.0
+  STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0
   
   ifeq ($(TEC_SYSARCH), x64)
-    STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
+    STDINCS += $(GTK)/lib64/glib-2.0/include $(GTK)/lib64/gtk-2.0/include
     # Add also these to avoid errors in systems that lib64 does not exists
-    STDINCS += $(GTK_BASE)/lib/glib-2.0/include $(GTK_BASE)/lib/gtk-2.0/include
+    STDINCS += $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
   else
   ifeq ($(TEC_SYSARCH), ia64)
-    STDINCS += $(GTK_BASE)/lib64/glib-2.0/include $(GTK_BASE)/lib64/gtk-2.0/include
+    STDINCS += $(GTK)/lib64/glib-2.0/include $(GTK)/lib64/gtk-2.0/include
   else
-    STDINCS += $(GTK_BASE)/lib/glib-2.0/include $(GTK_BASE)/lib/gtk-2.0/include
+    STDINCS += $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
   endif
   endif
   ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
