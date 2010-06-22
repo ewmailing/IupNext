@@ -16,6 +16,11 @@
    background-color: #E1E1E1;
    border: 1px solid #808080;
    color: #5C5C5C;
+	border-radius: .3em;
+	-webkit-border-radius: .3em;
+	-moz-border-radius: .3em;
+	-webkit-box-shadow: 2px 2px 3px #999;
+	-moz-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 2px;
  }
  pre {
    background-color: #CEE7FF;
