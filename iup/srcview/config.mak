@@ -14,7 +14,7 @@ USE_IUP3 = Yes
 
 ifdef GTK_DEFAULT
   ifdef USE_MOTIF
-    # Build Motif version in Linux,Darwin,FreeBSD
+    # Build Motif version in Linux and BSD
     APPNAME := $(APPNAME)mot
   endif
 else  

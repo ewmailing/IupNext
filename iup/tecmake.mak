@@ -122,7 +122,7 @@ endif
 # System Info
 .PHONY: sysinfo
 sysinfo:
-	@echo ''; echo 'Tecmake - System Info'
+	@echo ''; echo 'Tecmake: System Info'
 	@echo 'TEC_SYSNAME = $(TEC_SYSNAME)'
 	@echo 'TEC_SYSVERSION = $(TEC_SYSVERSION)'
 	@echo 'TEC_SYSMINOR = $(TEC_SYSMINOR)'
@@ -338,6 +338,9 @@ ifndef LINKER
   endif
 endif
 
+ifdef NO_ECHO
+  ECHO:=@
+endif
 
 #---------------------------------#
 # LO and LOH Suffix
@@ -744,13 +747,15 @@ endif
 ifdef USE_CD
   CDSUFX := 
   override USE_X11 = Yes
-  ifdef USE_GDK
-    ifndef GTK_DEFAULT
-      CDSUFX := gdk
-    endif
-  else
-    ifdef GTK_DEFAULT
-      CDSUFX := x11
+  ifdef USE_IUP3
+    ifdef USE_GDK
+      ifndef GTK_DEFAULT
+        CDSUFX := gdk
+      endif
+    else
+      ifdef GTK_DEFAULT
+        CDSUFX := x11
+      endif
     endif
   endif
   ifdef USE_STATIC
@@ -949,7 +954,11 @@ else
   ifeq ($(NO_DYNAMIC), Yes) 
     TARGET := $(TARGETDIR)/$(TARGETSLIBNAME)
   else
+  ifeq ($(NO_STATIC), Yes) 
+    TARGET := $(TARGETDIR)/$(TARGETDLIBNAME)
+  else
     TARGET := $(TARGETDIR)/$(TARGETSLIBNAME) $(TARGETDIR)/$(TARGETDLIBNAME)
+  endif
   endif
 endif
 
@@ -997,13 +1006,17 @@ else
   ifeq ($(NO_DYNAMIC), Yes) 
     tecmake: print-start directories static-lib
   else
+  ifeq ($(NO_STATIC), Yes) 
+    tecmake: print-start directories dynamic-lib
+  else
     tecmake: print-start directories static-lib dynamic-lib
+  endif
   endif
 endif
 
 .PHONY: print-start
 print-start:
-	@echo ''; echo 'Tecmake - Starting [ $(TARGETNAME):$(TEC_UNAME) ]'
+	@echo ''; echo 'Tecmake: starting [ $(TARGETNAME):$(TEC_UNAME) ]'
 
   
 #---------------------------------#
@@ -1013,8 +1026,9 @@ print-start:
 dynamic-lib: $(TARGETDIR)/$(TARGETDLIBNAME)
 
 $(TARGETDIR)/$(TARGETDLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
-	$(LD) $(STDLDFLAGS) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
-	@echo 'Tecmake - Dynamic Library ($@) Done.'; echo ''
+	@echo ''; echo Tecmake: linking $(<F)...
+	$(ECHO)$(LD) $(STDLDFLAGS) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
+	@echo ''; echo 'Tecmake: Dynamic Library ($@) Done.'; echo ''
 
   
 #---------------------------------#
@@ -1024,9 +1038,11 @@ $(TARGETDIR)/$(TARGETDLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
 static-lib: $(TARGETDIR)/$(TARGETSLIBNAME)
 
 $(TARGETDIR)/$(TARGETSLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
-	$(AR) $(STDLFLAGS) $@ $(OBJS) $(SLIB) $(LCFLAGS)
-	-$(RANLIB) $@
-	@echo 'Tecmake - Static Library ($@) Done.'; echo ''
+	@echo ''; echo Tecmake: librarian $(<F)...
+	$(ECHO)$(AR) $(STDLFLAGS) $@ $(OBJS) $(SLIB) $(LCFLAGS)
+	@echo ''; echo Tecmake: updating lib TOC $(<F)...
+	$(ECHO)-$(RANLIB) $@
+	@echo ''; echo 'Tecmake: Static Library ($@) Done.'; echo ''
 
   
 #---------------------------------#
@@ -1036,12 +1052,13 @@ $(TARGETDIR)/$(TARGETSLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
 application: $(TARGETDIR)/$(TARGETAPPNAME)
 
 $(TARGETDIR)/$(TARGETAPPNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
-	$(LINKER) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
+	@echo ''; echo Tecmake: linking $(<F)...
+	$(ECHO)$(LINKER) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
 	@if [ ! -z "$(STRIP)" ]; then \
-	   echo "Striping debug information" ;\
-	   strip $@ ;\
+	   echo ''; echo 'Tecmake: striping debug information' ;\
+	   $(ECHO)strip $@ ;\
 	 fi
-	@echo 'Tecmake - Application ($@) Done.'; echo ''
+	@echo ''; echo 'Tecmake: Application ($@) Done.'; echo ''
 
   
 #---------------------------------#
@@ -1058,7 +1075,7 @@ else
 endif
   
 $(SRELEASE): $(MAKENAME)
-	@echo 'Building script $(@F)'
+	@echo ''; echo 'Tecmake: building script $(@F)'
 	@echo "#!/bin/csh" > $@
 	@echo "# Script generated automatically by tecmake v$(VERSION)" >> $@
 	@echo "# Remove the comment bellow to set the LD_LIBRARY_PATH if needed." >> $@
@@ -1096,45 +1113,45 @@ endif
 # Compilation Rules
 
 $(OBJDIR)/%.o:  $(SRCDIR)/%.c
-	@echo Compiling $(<F)...
-	$(CC) -c $(CFLAGS) -o $@ $<
+	@echo ''; echo Tecmake: compiling $(<F)...
+	$(ECHO)$(CC) -c $(CFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o:  $(SRCDIR)/%.cpp
-	@echo Compiling $(<F)...
-	$(CPPC) -c $(CXXFLAGS) -o $@ $<
+	@echo ''; echo Tecmake: compiling $(<F)...
+	$(ECHO)$(CPPC) -c $(CXXFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o:  $(SRCDIR)/%.cxx
-	@echo Compiling $(<F)...
-	$(CPPC) -c $(CXXFLAGS) -o $@ $<
+	@echo ''; echo Tecmake: compiling $(<F)...
+	$(ECHO)$(CPPC) -c $(CXXFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o:  $(SRCDIR)/%.cc
-	@echo Compiling $(<F)...
-	$(CPPC) -c $(CXXFLAGS) -o $@ $<
+	@echo ''; echo Tecmake: compiling $(<F)...
+	$(ECHO)$(CPPC) -c $(CXXFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.f
-	@echo Compiling $(<F)...
-	$(FC) -c $(FFLAGS) -o $@ $<
+	@echo ''; echo Tecmake: compiling $(<F)...
+	$(ECHO)$(FC) -c $(FFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.for
-	@echo Compiling $(<F)...
-	$(FC) -c $(FFLAGS) -o $@ $<
+	@echo ''; echo Tecmake: compiling $(<F)...
+	$(ECHO)$(FC) -c $(FFLAGS) -o $@ $<
 
 $(OBJDIR)/%.ro:  $(SRCDIR)/%.rc
-	@echo Compiling $(<F)...
-	$(RCC) $(RCFLAGS) -O coff -o $@ $<
+	@echo ''; echo Tecmake: compiling $(<F)...
+	$(ECHO)$(RCC) $(RCFLAGS) -O coff -o $@ $<
 
 $(LOHDIR)/%.loh:  $(OBJROOT)/%.lo
-	@echo Generating $(<F)...
-	$(BIN2C) $< > $@
+	@echo ''; echo Tecmake: generating $(<F)...
+	$(ECHO)$(BIN2C) $< > $@
 
 $(OBJROOT)/%$(LO_SUFFIX).lo:  $(SRCLUADIR)/%.lua
-	@echo Compiling $(<F)...
-	$(LUAC) -o $@ $<
+	@echo ''; echo Tecmake: compiling $(<F)...
+	$(ECHO)$(LUAC) -o $@ $<
 
 ifdef LOHPACK
 $(LOHDIR)/$(LOHPACK):  $(SRCLUA)
-	@echo Generating $(<F)...
-	$(LUABIN) $(LUAPRE) $(LUAPREFLAGS) -l $(SRCLUADIR) -o $@ $(SRCLUA)
+	@echo ''; echo Tecmake: generating $(<F)...
+	$(ECHO)$(LUABIN) $(LUAPRE) $(LUAPREFLAGS) -l $(SRCLUADIR) -o $@ $(SRCLUA)
 endif
 
   
@@ -1151,12 +1168,12 @@ $(DEPEND): $(MAKENAME)
 	  @echo "" > $(DEPEND)
 	  @which $(CPPC) 2> /dev/null 1>&2 ;\
 	  if [ $$? -eq 0 ]; then \
-	    echo "Building dependencies... (can be slow)" ;\
+	    echo "Tecmake: Building Dependencies... (can be slow)" ;\
 	    $(CPPC) $(DEPINCS) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
 	    sed -e '1,$$s/^\([^ ]\)/$$(OBJDIR)\/\1/' > $(DEPEND) ;\
 	  else \
 	    echo "" ;\
-	    echo "$(CPPC) not found. Dependencies can not be built." ;\
+	    echo "Tecmake: error, $(CPPC) not found. Dependencies can not be built." ;\
 	    echo "Must set USE_NODEPEND=Yes." ;\
 	    echo "" ;\
 	    exit 1 ;\

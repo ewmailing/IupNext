@@ -4,7 +4,7 @@ OPT = YES
 
 ifdef GTK_DEFAULT
   ifdef USE_MOTIF
-    # Build Motif version in Linux,Darwin,FreeBSD
+    # Build Motif version in Linux and BSD
     LIBNAME := $(LIBNAME)mot
   else
     ifeq ($(findstring Win, $(TEC_SYSNAME)), )

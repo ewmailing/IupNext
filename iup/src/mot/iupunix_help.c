@@ -26,7 +26,7 @@ int IupHelp(const char *url)
     if (iupStrEqualNoCase(system, "Linux") ||
         iupStrEqualNoCase(system, "FreeBSD"))
       browser = "firefox";
-    else if (iupStrEqualNoCase(system, "Darwin"))
+    else if (iupStrEqualNoCase(system, "MacOS"))
       browser = "safari";
     else if (iupStrEqualPartial(system, "CYGWIN"))
       browser = "iexplore";

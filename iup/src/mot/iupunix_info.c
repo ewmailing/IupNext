@@ -274,7 +274,10 @@ char *iupdrvGetSystemName(void)
   char *str = iupStrGetMemory(50); 
 
   uname(&un);
-  strcpy(str, un.sysname);
+  if (iupStrEqualNoCase(un.sysname, "Darwin"))
+    strcpy(str, "MacOS");
+  else
+    strcpy(str, un.sysname);
 
   return str;
 }
@@ -285,9 +288,17 @@ char *iupdrvGetSystemVersion(void)
   char *str = iupStrGetMemory(100); 
 
   uname(&un);
-  strcpy(str, un.release);
-  strcat(str, ".");
-  strcat(str, un.version);
+  if (iupStrEqualNoCase(un.sysname, "Darwin"))
+  {
+    int release = atoi(un.release);
+    sprintf(str, "%d", release-4);
+  }
+  else
+  {
+    strcpy(str, un.release);
+    strcat(str, ".");
+    strcat(str, un.version);
+  }
 
   return str;
 }

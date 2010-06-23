@@ -4,7 +4,7 @@ APPTYPE = console
 
 ifdef GTK_DEFAULT
   ifdef USE_MOTIF
-    # Build Motif version in Linux,Darwin,FreeBSD
+    # Build Motif version in Linux and BSD
     APPNAME = iupsamplemot
   endif
 else  

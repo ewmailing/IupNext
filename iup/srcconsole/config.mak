@@ -15,7 +15,7 @@ endif
 
 ifdef GTK_DEFAULT
   ifdef USE_MOTIF
-    # Build Motif version in Linux,Darwin,FreeBSD
+    # Build Motif version in Linux and BSD
     APPNAME := $(APPNAME)mot
   endif
 else  
@@ -126,7 +126,7 @@ else
     # In UNIX Lua is always statically linked, late binding is used.
     # Except in Cygwin and MacOSX
     ifeq ($(findstring cygw, $(TEC_UNAME)), )
-      ifeq ($(findstring Darwin, $(TEC_UNAME)), )
+      ifeq ($(findstring MacOS, $(TEC_UNAME)), )
         USE_STATIC = Yes
       endif
     endif
@@ -143,7 +143,7 @@ ifneq ($(findstring cygw, $(TEC_UNAME)), )
   LIBS += readline history
 endif
 
-ifneq ($(findstring Darwin, $(TEC_UNAME)), )
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   LIBS += readline
 endif
 
