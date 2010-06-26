@@ -8,7 +8,6 @@
 # Tecmake Version
 VERSION = 4.1
 
-
 #---------------------------------#
 # First target 
 .PHONY: build
@@ -419,6 +418,7 @@ else
 endif
 
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
+  UNIX_LINUX = Yes
   ifdef BUILD_64
     ifeq ($(TEC_SYSARCH), ia64)
       STDFLAGS += -fPIC
@@ -435,6 +435,7 @@ ifneq ($(findstring Linux, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring IRIX, $(TEC_UNAME)), )
+  UNIX_POSIX = Yes
   LD = ld
   STDLDFLAGS := -elf -shared -rdata_shared -soname lib$(TARGETNAME).so
   RANLIB := /bin/true
@@ -455,6 +456,7 @@ ifneq ($(findstring IRIX, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring AIX, $(TEC_UNAME)), ) 
+  UNIX_POSIX = Yes
   NO_DYNAMIC ?= Yes
   ifdef BUILD_64
     ifdef USE_CC  
@@ -467,6 +469,7 @@ ifneq ($(findstring AIX, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring HP-UX, $(TEC_UNAME)), )
+  UNIX_POSIX = Yes
   NO_DYNAMIC ?= Yes
   MOTIF_INC := /usr/include/Motif2.1
   X11_LIBS := Xt Xext X11
@@ -479,6 +482,7 @@ ifneq ($(findstring HP-UX, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring SunOS, $(TEC_UNAME)), )
+  UNIX_POSIX = Yes
   LD = ld
   STDLDFLAGS := -G
   X11_INC := /usr/openwin/share/include
@@ -499,6 +503,7 @@ ifneq ($(findstring SunOS, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  UNIX_BSD = Yes
   X11_LIBS := Xmu Xp Xt Xext X11
   X11_LIB := /usr/X11R6/lib
   X11_INC := /usr/X11R6/include
@@ -514,6 +519,7 @@ ifneq ($(findstring MacOS, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
+  BSD = Yes
   X11_LIB := /usr/X11R6/lib
   X11_INC := /usr/X11R6/include
 endif
@@ -591,7 +597,7 @@ ifdef USE_IUP3
   override USE_IUP = Yes
 # Inside Tecgraf only  
   ifndef IUP3_BUILD
-#  IUP := $(IUP)3
+#    IUP := $(IUP)3
   endif
 endif 
 
@@ -747,19 +753,20 @@ endif
 ifdef USE_CD
   CDSUFX := 
   override USE_X11 = Yes
-  ifdef USE_IUP3
-    ifdef USE_GDK
-      ifndef GTK_DEFAULT
-        CDSUFX := gdk
+  ifndef USE_CD_OLD  
+    ifdef GTK_DEFAULT
+      ifdef USE_MOTIF
+        CDSUFX := x11
       endif
     else
-      ifdef GTK_DEFAULT
-        CDSUFX := x11
+      ifdef USE_GTK
+        CDSUFX := gdk
       endif
     endif
   endif
   ifdef USE_STATIC
     ifdef USE_XRENDER
+      CHECK_XRENDER = Yes
       SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdcontextplus.a
       LIBS += Xrender Xft
     endif
@@ -776,6 +783,7 @@ ifdef USE_CD
     endif
   else
     ifdef USE_XRENDER
+      CHECK_XRENDER = Yes
       LIBS += cdcontextplus
       LIBS += Xrender Xft
     endif
@@ -837,6 +845,7 @@ ifdef USE_MOTIF
 endif
 
 ifdef USE_GTK
+  CHECK_GTK = Yes
   ifneq ($(findstring MacOS, $(TEC_UNAME)), )
 # Option 1 - Fink GTK port
     LDIR += $(GTK)/lib
@@ -899,6 +908,8 @@ endif
 LIBS += m
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
+  WIN_OTHER := Yes
+  
   # INCLUDES for dependencies, remove references to "c:" and similars
   DEPINCS := $(patsubst c:%, /cygdrive/c%, $(INCLUDES))
   DEPINCS := $(patsubst d:%, /cygdrive/d%, $(DEPINCS))
@@ -1001,15 +1012,15 @@ VPATH = .:$(foreach dir,$(P-SRC),$(if $(dir)="./",:$(dir)))
 
 .PHONY: tecmake 
 ifeq ($(MAKETYPE), APP)
-  tecmake: print-start directories application scripts
+  tecmake: print-start system-check directories application scripts
 else
   ifeq ($(NO_DYNAMIC), Yes) 
-    tecmake: print-start directories static-lib
+    tecmake: print-start system-check directories static-lib
   else
   ifeq ($(NO_STATIC), Yes) 
-    tecmake: print-start directories dynamic-lib
+    tecmake: print-start system-check directories dynamic-lib
   else
-    tecmake: print-start directories static-lib dynamic-lib
+    tecmake: print-start system-check directories static-lib dynamic-lib
   endif
   endif
 endif
@@ -1018,6 +1029,29 @@ endif
 print-start:
 	@echo ''; echo 'Tecmake: starting [ $(TARGETNAME):$(TEC_UNAME) ]'
 
+.PHONY: system-check
+system-check:
+  ifdef CHECK_XRENDER
+    ifdef UNIX_POSIX
+			@echo ''; echo 'Tecmake: check failed, XRender NOT available in this system.'; echo ''; exit 1;
+    endif
+  endif
+  ifdef CHECK_GTK
+    ifdef UNIX_POSIX
+		@echo ''; echo 'Tecmake: check failed, GTK NOT available in this system.'; echo ''; exit 1;
+    else
+      ifneq ($(findstring Linux24, $(TEC_UNAME)), )
+        ifndef GTK_BASE
+					@echo ''; echo 'Tecmake: check failed, GTK too OLD in this system.'; echo ''; exit 1;
+        endif  
+      endif  
+    endif
+  endif
+  ifdef CHECK_GDIPLUS
+    ifdef WIN_OTHER
+			@echo ''; echo 'Tecmake: check failed, GDI+ NOT available in this system.'; echo ''; exit 1;
+    endif
+  endif
   
 #---------------------------------#
 # Dynamic Library Build
@@ -1026,7 +1060,7 @@ print-start:
 dynamic-lib: $(TARGETDIR)/$(TARGETDLIBNAME)
 
 $(TARGETDIR)/$(TARGETDLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
-	@echo ''; echo Tecmake: linking $(<F)...
+	@echo ''; echo Tecmake: linking $(@F) ...
 	$(ECHO)$(LD) $(STDLDFLAGS) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
 	@echo ''; echo 'Tecmake: Dynamic Library ($@) Done.'; echo ''
 
@@ -1038,9 +1072,9 @@ $(TARGETDIR)/$(TARGETDLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
 static-lib: $(TARGETDIR)/$(TARGETSLIBNAME)
 
 $(TARGETDIR)/$(TARGETSLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
-	@echo ''; echo Tecmake: librarian $(<F)...
+	@echo ''; echo Tecmake: librarian $(@F) ...
 	$(ECHO)$(AR) $(STDLFLAGS) $@ $(OBJS) $(SLIB) $(LCFLAGS)
-	@echo ''; echo Tecmake: updating lib TOC $(<F)...
+	@echo ''; echo Tecmake: updating lib TOC $(@F) ...
 	$(ECHO)-$(RANLIB) $@
 	@echo ''; echo 'Tecmake: Static Library ($@) Done.'; echo ''
 
@@ -1052,11 +1086,11 @@ $(TARGETDIR)/$(TARGETSLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
 application: $(TARGETDIR)/$(TARGETAPPNAME)
 
 $(TARGETDIR)/$(TARGETAPPNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
-	@echo ''; echo Tecmake: linking $(<F)...
+	@echo ''; echo Tecmake: linking $(@F) ...
 	$(ECHO)$(LINKER) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
 	@if [ ! -z "$(STRIP)" ]; then \
 	   echo ''; echo 'Tecmake: striping debug information' ;\
-	   $(ECHO)strip $@ ;\
+	   strip $@ ;\
 	 fi
 	@echo ''; echo 'Tecmake: Application ($@) Done.'; echo ''
 
@@ -1113,44 +1147,44 @@ endif
 # Compilation Rules
 
 $(OBJDIR)/%.o:  $(SRCDIR)/%.c
-	@echo ''; echo Tecmake: compiling $(<F)...
+	@echo ''; echo Tecmake: compiling $(<F) ...
 	$(ECHO)$(CC) -c $(CFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o:  $(SRCDIR)/%.cpp
-	@echo ''; echo Tecmake: compiling $(<F)...
+	@echo ''; echo Tecmake: compiling $(<F) ...
 	$(ECHO)$(CPPC) -c $(CXXFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o:  $(SRCDIR)/%.cxx
-	@echo ''; echo Tecmake: compiling $(<F)...
+	@echo ''; echo Tecmake: compiling $(<F) ...
 	$(ECHO)$(CPPC) -c $(CXXFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o:  $(SRCDIR)/%.cc
-	@echo ''; echo Tecmake: compiling $(<F)...
+	@echo ''; echo Tecmake: compiling $(<F) ...
 	$(ECHO)$(CPPC) -c $(CXXFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.f
-	@echo ''; echo Tecmake: compiling $(<F)...
+	@echo ''; echo Tecmake: compiling $(<F) ...
 	$(ECHO)$(FC) -c $(FFLAGS) -o $@ $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.for
-	@echo ''; echo Tecmake: compiling $(<F)...
+	@echo ''; echo Tecmake: compiling $(<F) ...
 	$(ECHO)$(FC) -c $(FFLAGS) -o $@ $<
 
 $(OBJDIR)/%.ro:  $(SRCDIR)/%.rc
-	@echo ''; echo Tecmake: compiling $(<F)...
+	@echo ''; echo Tecmake: compiling $(<F) ...
 	$(ECHO)$(RCC) $(RCFLAGS) -O coff -o $@ $<
 
 $(LOHDIR)/%.loh:  $(OBJROOT)/%.lo
-	@echo ''; echo Tecmake: generating $(<F)...
+	@echo ''; echo Tecmake: generating $(<F) ...
 	$(ECHO)$(BIN2C) $< > $@
 
 $(OBJROOT)/%$(LO_SUFFIX).lo:  $(SRCLUADIR)/%.lua
-	@echo ''; echo Tecmake: compiling $(<F)...
+	@echo ''; echo Tecmake: compiling $(<F) ...
 	$(ECHO)$(LUAC) -o $@ $<
 
 ifdef LOHPACK
 $(LOHDIR)/$(LOHPACK):  $(SRCLUA)
-	@echo ''; echo Tecmake: generating $(<F)...
+	@echo ''; echo Tecmake: generating $(<F) ...
 	$(ECHO)$(LUABIN) $(LUAPRE) $(LUAPREFLAGS) -l $(SRCLUADIR) -o $@ $(SRCLUA)
 endif
 
@@ -1158,7 +1192,6 @@ endif
 #---------------------------------#
 # Dependencies
 
-# make depend
 #   Build dependencies
 .PHONY: depend
 depend: $(DEPEND)
@@ -1168,7 +1201,7 @@ $(DEPEND): $(MAKENAME)
 	  @echo "" > $(DEPEND)
 	  @which $(CPPC) 2> /dev/null 1>&2 ;\
 	  if [ $$? -eq 0 ]; then \
-	    echo "Tecmake: Building Dependencies... (can be slow)" ;\
+	    echo "Tecmake: Building Dependencies ... [ $(DEPEND) ] (can be slow)" ;\
 	    $(CPPC) $(DEPINCS) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
 	    sed -e '1,$$s/^\([^ ]\)/$$(OBJDIR)\/\1/' > $(DEPEND) ;\
 	  else \
@@ -1190,57 +1223,47 @@ endif
 #---------------------------------#
 # Management Rules
 
-# make clean-extra
 #   Remove extra files
 .PHONY: clean-extra
 clean-extra:
 	rm -f $(DEPEND) $(SRELEASE) so_locations
 	
-# make clean-lohs
 #   Remove Lua object inclusion files
 .PHONY: clean-lohs
 clean-lohs:
 	rm -f $(LOS) $(LOHS)
 	
-# make clean-obj
 #   Remove object files
 .PHONY: clean-obj
 clean-obj:
 	rm -f $(OBJS)
 
-# make clean-target
 #   Remove target
 .PHONY: clean-target
 clean-target:
 	rm -f $(TARGET)
 
-# make clean-dir
 .PHONY: clean-dir
 clean-dir:
 	rm -fr $(OBJROOT) $(TARGETROOT)
 
-# make clean
 #   Remove target and object files
 .PHONY: clean
 clean: clean-target clean-obj
 
-# make strip
 #   Remove symbols from executables
 .PHONY: strip
 strip:
 	test -r $(TARGETDIR)/$(TARGETAPPNAME) && strip $(TARGETDIR)/$(TARGETAPPNAME)
 
-# make rebuild
 #   Rebuild target and object files 
 .PHONY: rebuild
 rebuild: clean-extra clean-lohs clean-obj clean-target tecmake
 
-# make relink
 #   Rebuild target without rebuilding object files 
 .PHONY: relink
 relink: clean-target tecmake
 
-# make clean-all-obj
 #   Remove target and object files
 .PHONY: clean-all-obj
 clean-all-obj:
@@ -1248,7 +1271,6 @@ clean-all-obj:
 	  (cd $(OBJROOT)/$$d; echo $(OBJ) | xargs rm -f) ;\
 	done
 
-# make clean-all-target
 #   Remove libraries and executables for all platforms
 .PHONY: clean-all-target
 clean-all-target:
