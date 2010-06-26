@@ -21,5 +21,11 @@ ifneq ($(findstring owc, $(TEC_UNAME)), )
 endif
 
 ifeq "$(TEC_UNAME)" "vc6"
-  INCLUDES += C:\LNG\STLport\include
+  INCLUDES += D:\LNG\STLport\include
+endif
+
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  ifneq ($(TEC_SYSMINOR), 4)
+    BUILD_DYLIB=Yes
+  endif
 endif

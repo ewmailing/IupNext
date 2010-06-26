@@ -5,9 +5,7 @@ OPT = YES
 SRC = iuplua_imglib.c
 DEF_FILE = iupluaimglib.def
 
-INCLUDES = ../include
 LIBS = iupimglib
-LDIR = ../lib/$(TEC_UNAME)
 
 IUP := ..
 
@@ -20,4 +18,10 @@ ifdef USE_LUA52
 else
   USE_LUA51 = Yes
   LIBNAME := $(LIBNAME)51
+endif
+
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  USE_IUPLUA:=
+  INCLUDES += ../include
+  LDIR = ../lib/$(TEC_UNAME)
 endif

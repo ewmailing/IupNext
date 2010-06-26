@@ -12,3 +12,9 @@ USE_CD=YES
 INCLUDES = ../include
 LIBS = iup
 LDIR = ../lib/$(TEC_UNAME)
+
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  ifneq ($(TEC_SYSMINOR), 4)
+    BUILD_DYLIB=Yes
+  endif
+endif

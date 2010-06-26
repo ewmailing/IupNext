@@ -31,3 +31,10 @@ $(GC) : il_%.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<
 
 SRC := iuplua_controls.c il_mask.c il_matrix_aux.c $(GC)
+
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  USE_IUPLUA:=
+  USE_CDLUA:=
+  INCLUDES += ../include
+  LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
+endif

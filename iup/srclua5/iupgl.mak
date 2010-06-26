@@ -32,3 +32,7 @@ $(GC) : il_%.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<
 
 SRC	= iuplua_glcanvas.c $(GC)
+
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  LIBS:=
+endif

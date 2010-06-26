@@ -132,3 +132,9 @@ ifeq "$(TEC_UNAME)" "owc1"
   # Necessary or IUP 3 will not work in Open Watcom
   DBG=Yes
 endif
+
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  ifneq ($(TEC_SYSMINOR), 4)
+    BUILD_DYLIB=Yes
+  endif
+endif

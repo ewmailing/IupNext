@@ -46,3 +46,9 @@ endif
 ifneq ($(findstring SunOS, $(TEC_UNAME)), )
   DEFINES += IUP_DEFMATHFLOAT
 endif
+
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  ifneq ($(TEC_SYSMINOR), 4)
+    BUILD_DYLIB=Yes
+  endif
+endif
