@@ -35,6 +35,5 @@ SRC := iuplua_controls.c il_mask.c il_matrix_aux.c $(GC)
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   USE_IUPLUA:=
   USE_CDLUA:=
-  INCLUDES += ../include
-  LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
+  USE_CD = Yes
 endif

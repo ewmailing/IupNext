@@ -36,6 +36,5 @@ SRC := iuplua_pplot.c $(GC)
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   USE_IUPLUA:=
   USE_CDLUA:=
-  INCLUDES += ../include
-  LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
+  USE_CD = Yes
 endif
