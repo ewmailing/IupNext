@@ -225,7 +225,8 @@ font. </p>
 <p><strong><a name="DROPSELECT_CB">DROPSELECT_CB</a></strong>:
   Action generated when an element in the 
   dropdown list is selected. If returns
-  IUP_CONTINUE the value is accepted as a new value and the matrix leaves edition mode.</p>
+  IUP_CONTINUE the value is accepted as a new value and the matrix leaves edition mode, 
+else the item is selected and editing remains.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, Ihandle *<strong>drop</strong>, char *<strong>t</strong>, int <strong>i, </strong>int <strong>v</strong>); [in C]
 <strong>elem</strong>:dropselect_cb(<strong>lin, col</strong>: number, <strong>drop: </strong>ihandle,<strong> t</strong>: string, <strong>i, v</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua] </pre>
 <p class="info"><strong>ih</strong>:
