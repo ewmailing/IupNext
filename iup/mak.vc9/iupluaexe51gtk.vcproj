@@ -37,9 +37,12 @@
 				Name="VCWebServiceProxyGeneratorTool"
 			/>
 			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;..\srclua5;..\..\lua5.1\include;..\..\cd\include;..\..\im\include"
+				AdditionalIncludeDirectories="..\include;..\srclua5;..\srcconsole\loh51\le32;..\..\lua5.1\include;..\..\cd\include;..\..\im\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUPLUA_IMGLIB;USE_STATIC;IUPLUA_USELOH"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
