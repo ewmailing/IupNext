@@ -508,6 +508,8 @@ static int iDialResize_CB(Ihandle* ih)
     break;
   }
 
+  if (ih->data->num_div < 3) ih->data->num_div = 3;
+
   /* update render */
   cdCanvasBackground(ih->data->cddbuffer, ih->data->bgcolor);
   cdCanvasClear(ih->data->cddbuffer);
@@ -810,6 +812,7 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
   iDialSetTypeAttrib(ih, type);
   ih->data->density = IDIAL_DEFAULT_DENSITY; 
   ih->data->unit = 1.0;  /* RADIANS */
+  ih->data->num_div = 3;
   iDialUpdateFgColors(ih, IDIAL_DEFAULT_FGCOLOR_COMP, IDIAL_DEFAULT_FGCOLOR_COMP, IDIAL_DEFAULT_FGCOLOR_COMP);
 
   /* IupCanvas callbacks */
