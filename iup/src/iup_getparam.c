@@ -256,28 +256,33 @@ static int iParamFileButton_CB(Ihandle *self)
 {
   Ihandle* param   = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
   Ihandle* textbox = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_TEXT");
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
 
-  Ihandle* dlg = IupFileDlg();
+  Ihandle* fdlg = IupFileDlg();
 
-  IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(self));
-  IupSetAttribute(dlg, "TITLE", iupAttribGet(param, "TITLE"));
-  IupSetAttribute(dlg, "VALUE", iupAttribGet(param, "VALUE"));
+  IupSetAttributeHandle(fdlg, "PARENTDIALOG", IupGetDialog(self));
+  IupSetAttribute(fdlg, "TITLE", iupAttribGet(param, "TITLE"));
+  IupSetAttribute(fdlg, "VALUE", iupAttribGet(param, "VALUE"));
 
-  IupSetAttribute(dlg, "DIALOGTYPE", iupAttribGet(param, "_IUPGP_DIALOGTYPE"));
-  IupSetAttribute(dlg, "FILTER", iupAttribGet(param, "_IUPGP_FILTER"));
-  IupSetAttribute(dlg, "DIRECTORY", iupAttribGet(param, "_IUPGP_DIRECTORY"));
-  IupSetAttribute(dlg, "NOCHANGEDIR", iupAttribGet(param, "_IUPGP_NOCHANGEDIR"));
-  IupSetAttribute(dlg, "NOOVERWRITEPROMPT", iupAttribGet(param, "_IUPGP_NOOVERWRITEPROMPT"));
+  IupSetAttribute(fdlg, "DIALOGTYPE", iupAttribGet(param, "_IUPGP_DIALOGTYPE"));
+  IupSetAttribute(fdlg, "FILTER", iupAttribGet(param, "_IUPGP_FILTER"));
+  IupSetAttribute(fdlg, "DIRECTORY", iupAttribGet(param, "_IUPGP_DIRECTORY"));
+  IupSetAttribute(fdlg, "NOCHANGEDIR", iupAttribGet(param, "_IUPGP_NOCHANGEDIR"));
+  IupSetAttribute(fdlg, "NOOVERWRITEPROMPT", iupAttribGet(param, "_IUPGP_NOOVERWRITEPROMPT"));
 
-  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(fdlg, IUP_CENTER, IUP_CENTER);
 
-  if (IupGetInt(dlg, "STATUS") != -1)
+  if (!cb || cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
   {
-    IupSetAttribute(textbox, "VALUE", iupAttribGet(dlg, "VALUE"));
-    iupAttribStoreStr(param, "VALUE", iupAttribGet(dlg, "VALUE"));
-  } 
+    if (IupGetInt(fdlg, "STATUS") != -1)
+    {
+      IupSetAttribute(textbox, "VALUE", iupAttribGet(fdlg, "VALUE"));
+      iupAttribStoreStr(param, "VALUE", iupAttribGet(fdlg, "VALUE"));
+    }
+  }
 
-  IupDestroy(dlg);
+  IupDestroy(fdlg);
 
   return IUP_DEFAULT;
 }
@@ -288,24 +293,29 @@ static int iParamColorButton_CB(Ihandle *self, int button, int pressed)
   {
     Ihandle* param   = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
     Ihandle* textbox = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_TEXT");
+    Ihandle* dlg = IupGetDialog(self);
+    Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
 
-    Ihandle* dlg = IupColorDlg();
+    Ihandle* cdlg = IupColorDlg();
 
-    IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(self));
-    IupSetAttribute(dlg, "TITLE", iupAttribGet(param, "TITLE"));
-    IupSetAttribute(dlg, "VALUE", iupAttribGet(param, "VALUE"));
+    IupSetAttributeHandle(cdlg, "PARENTDIALOG", IupGetDialog(self));
+    IupSetAttribute(cdlg, "TITLE", iupAttribGet(param, "TITLE"));
+    IupSetAttribute(cdlg, "VALUE", iupAttribGet(param, "VALUE"));
 
-    IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+    IupPopup(cdlg, IUP_CENTER, IUP_CENTER);
 
-    if (IupGetInt(dlg, "STATUS")==1)
+    if (!cb || cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
     {
-      char* value = IupGetAttribute(dlg, "VALUE");
-      IupSetAttribute(textbox, "VALUE", value);
-      iupAttribStoreStr(param, "VALUE", value);
-      IupStoreAttribute(self, "BGCOLOR", value);
-    } 
+      if (IupGetInt(cdlg, "STATUS")==1)
+      {
+        char* value = IupGetAttribute(cdlg, "VALUE");
+        IupSetAttribute(textbox, "VALUE", value);
+        iupAttribStoreStr(param, "VALUE", value);
+        IupStoreAttribute(self, "BGCOLOR", value);
+      }
+    }
 
-    IupDestroy(dlg);
+    IupDestroy(cdlg);
   }
 
   return IUP_DEFAULT;
