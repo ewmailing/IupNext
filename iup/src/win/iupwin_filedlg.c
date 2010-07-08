@@ -472,10 +472,10 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
       sz1 = strlen(info)+1;
       sz2 = strlen(value)+1;
       openfilename.lpstrFilter = (char*)malloc(sz1+sz2+1);
-
       memcpy((char*)openfilename.lpstrFilter, info, sz1);
       memcpy((char*)openfilename.lpstrFilter+sz1, value, sz2);
       ((char*)openfilename.lpstrFilter)[sz1+sz2] = 0; /* additional 0 at the end */
+
       openfilename.nFilterIndex = 1;
     }
   }

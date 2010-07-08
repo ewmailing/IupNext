@@ -19,13 +19,13 @@
 #define COLOR 1
 
 static FILE* outfile = NULL;
+static long  vetsizepos;
 
+/* used in y.tab.c */
 char *filename;
 char *outname = 0;
 char *funcname = 0;
 int   nocode = 0;
-
-static long  vetsizepos;
 
 typedef struct {
   char* name;
@@ -41,21 +41,14 @@ static Tlist* all_late;
 
 static int nerrors = 0;
 
-struct {
+static struct {
   char* name;
   int used;
 } headerfile[] = {
   { "iup",        1 },
-  { "iupdial",    0 },
-  { "iupgauge",   0 },
-  { "iupmatrix",  0 },
+  { "iupcontrols",0 },
   { "iupgl",      0 },
-  { "iuptree",    0 },
-  { "iupcolorbar",0 },
-  { "iupcb",      0 },
-  { "iupcells",   0 },
   { "iupole",     0 },
-  { "iupspin",    0 },
   { "iup_pplot",  0 }
 };
 #define nheaders (sizeof(headerfile)/sizeof(headerfile[0]))
@@ -79,9 +72,9 @@ static void check_elemlist( Telem* elem );
 static void check_string_cb( Telem* elem );
 static void check_string_elem( Telem* elem );
 static void check_iupCpi( Telem* elem );
+
 static void code_image( Telem* elem );
 static void code_iupCpi( Telem* elem );
-
 static void code_empty( Telem* elem );
 static void code_string( Telem* elem );
 static void code_string_cb( Telem* elem );
@@ -150,7 +143,7 @@ static int mystricmp(char *s1, char *s2)
 {
    int i = 0;
    if (s1 == s2) return 0;
-   while (s1[i] && s2[i] && tolower(s1[i])==tolower(s2[i])) i++;
+   while ((int)s1[i] && (int)s2[i] && tolower((int)s1[i])==tolower((int)s2[i])) i++;
    if (s1[i] == s2[i]) return 0;
    else if (s1[i]<s2[i]) return -1;
    return 1;
@@ -177,6 +170,7 @@ static void warning( char* fmt, ... )
   va_end(args);
 }
 
+/* used in y.tab.c */
 void named( char* name )
 {
   Tname *n = alloc(Tname);
@@ -185,6 +179,7 @@ void named( char* name )
   addlist( all_names, n );
 }
 
+/* used in y.tab.c */
 void use( char* name )
 {
   Telemlist* p = all_names->first;
@@ -457,7 +452,7 @@ static void codeelemname( Telem *elem )
     fprintf( outfile, "Iup%s", elems[elem->elemidx].name );
   else
   {
-    fprintf( outfile, "Iup%c%s", toupper(elem->elemname[0]), elem->elemname+1 );
+    fprintf( outfile, "Iup%c%s", (char)toupper((int)elem->elemname[0]), elem->elemname+1 );
   }
 }
 
@@ -687,7 +682,7 @@ static void code_string_elem( Telem* elem )
 static char* strlower( char* str )
 {
   int i=0;
-  while (str[i]) { str[i]=(char)tolower(str[i]); i++; }
+  while (str[i]) { str[i]=(char)tolower((int)str[i]); i++; }
   return str;
 }
 
@@ -723,6 +718,7 @@ Tparam* param( int tag, void* value )
   return ret;
 }
 
+/* used in y.tab.c */
 Telem* elem( char* name, Tlist* attrs, Tlist* params )
 {
   Telem* ret = alloc(Telem);

@@ -234,10 +234,11 @@ static void new_file(char* dialogtype, int preview)
   IupSetAttribute(dlg, "DIRECTORY", "/tecgraf/iup");
   if (strcmp(dialogtype, "DIR")!=0)
   {
-    IupSetAttributes(dlg, "FILTER = \"*.bmp\", FILTERINFO = \"Bitmap Files\"");
+//    IupSetAttributes(dlg, "FILTER = \"*.bmp\", FILTERINFO = \"Bitmap Files\"");
+//    IupSetAttribute(dlg, "FILTER", "*.jpg;*.jpeg;*.bmp;*.gif;*.tif;*.tiff;*.png");
     IupSetAttribute(dlg, "EXTFILTER", "Text files|*.txt;*.doc|Image files|*.jpg;*.bmp;*.gif|");
 //    IupSetAttribute(dlg, "FILE", "/tecgraf/im/test.bmp");
-    IupSetAttribute(dlg, "FILE", "test.bmp");
+//    IupSetAttribute(dlg, "FILE", "test.bmp");
   }
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
 //  IupSetAttributes(dlg, "FILE = \"\\tecgraf\\iup\\test.bmp\""); // OK

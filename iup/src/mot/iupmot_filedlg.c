@@ -518,6 +518,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
     char *p = strchr(value, ';');
     if (p) 
     {
+      /* Use only the first filter */
       int size = p-value;
       filter = (char*)malloc(size+1);
       memcpy(filter, value, size);
