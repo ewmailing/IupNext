@@ -655,8 +655,17 @@ static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
   case BN_CLICKED:
     {
       Icallback cb = IupGetCallback(ih, "ACTION");
-      if (cb && cb(ih) == IUP_CLOSE)
-        IupExitLoop();
+      if (cb)
+      {
+        /* to avoid double calls when pressing enter and a dialog is displayed */
+        if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION"))
+        {
+          iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", "1");
+          if (cb(ih) == IUP_CLOSE)
+            IupExitLoop();
+          iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", NULL);
+        }
+      }
     }
   }
 
