@@ -635,3 +635,89 @@ void iupmotPointerMotionEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
   (void)w;
   (void)cont;
 }
+
+void iupdrvSendKey(int key, int press)
+{
+  Window focus;
+	int revert_to;
+  XKeyEvent evt;
+  memset(&evt, 0, sizeof(XKeyEvent));
+  evt.display = iupmot_display;
+  evt.send_event = True;
+  evt.root = DefaultRootWindow(iupmot_display);
+
+	XGetInputFocus(iupmot_display, &focus, &revert_to);
+  evt.window = focus;
+
+  iupmotKeyEncode(key, &evt.keycode, &evt.state);
+  if (!evt.keycode)
+    return;
+
+  if (press & 0x01)
+  {
+    evt.type = KeyPress;
+    XSendEvent(iupmot_display, (Window)InputFocus, False, KeyPressMask, (XEvent*)&evt);
+  }
+
+  if (press & 0x02)
+  {
+    evt.type = KeyRelease;
+    XSendEvent(iupmot_display, (Window)InputFocus, False, KeyReleaseMask, (XEvent*)&evt);
+  }
+}
+
+void iupdrvSendMouse(int x, int y, int bt, int status)
+{
+  XWarpPointer(iupmot_display,None,RootWindow(iupmot_display, iupmot_screen),0,0,0,0,x,y);
+
+  if (status != -1)
+  {
+    XButtonEvent evt;
+    memset(&evt, 0, sizeof(XButtonEvent));
+    evt.display = iupmot_display;
+    evt.send_event = True;
+
+	  XQueryPointer(iupmot_display, RootWindow(iupmot_display, DefaultScreen(iupmot_display)), 
+                  &evt.root, &evt.window, &evt.x_root, &evt.y_root, &evt.x, &evt.y, &evt.state);
+  	
+	  evt.subwindow = evt.window;
+	  while(evt.subwindow)
+	  {
+		  evt.window = evt.subwindow;
+		  XQueryPointer(iupmot_display, evt.window, &evt.root, &evt.subwindow, &evt.x_root, &evt.y_root, &evt.x, &evt.y, &evt.state);
+	  }
+	
+    evt.type = (status==1)? ButtonPress: ButtonRelease;
+    evt.root = DefaultRootWindow(iupmot_display);
+    evt.x = x;
+    evt.y = y;
+
+    switch(bt)
+    {
+    case IUP_BUTTON1:
+      evt.state = Button1Mask;
+      evt.button = Button1;
+      break;
+    case IUP_BUTTON2:
+      evt.state = Button2Mask;
+      evt.button = Button2;
+      break;
+    case IUP_BUTTON3:
+      evt.state = Button3Mask;
+      evt.button = Button3;
+      break;
+    case IUP_BUTTON4:
+      evt.state = Button4Mask;
+      evt.button = Button4;
+      break;
+    case IUP_BUTTON5:
+      evt.state = Button5Mask;
+      evt.button = Button5;
+      break;
+    default:
+      return;
+    }
+
+    XSendEvent(iupmot_display, (Window)PointerWindow, False, (status==1)? ButtonPressMask: ButtonReleaseMask, (XEvent*)&evt);
+  }
+}

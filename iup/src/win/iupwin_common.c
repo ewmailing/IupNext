@@ -898,3 +898,123 @@ char* iupwinGetClipboardText(Ihandle* ih)
 
   return str;
 }
+
+void iupdrvSendKey(int key, int press)
+{
+  unsigned int keyval, state;
+  INPUT input[2];
+  LPARAM extra_info;
+  WORD state_scan = 0, key_scan;
+  ZeroMemory(input, 2*sizeof(INPUT));
+
+  iupwinKeyEncode(key, &keyval, &state);
+  if (!keyval)
+    return;
+
+  extra_info = GetMessageExtraInfo();
+  if (state)
+    state_scan = (WORD)MapVirtualKey(state, MAPVK_VK_TO_VSC);
+  key_scan = (WORD)MapVirtualKey(keyval, MAPVK_VK_TO_VSC);
+
+  if (press & 0x01)
+  {
+    if (state)
+    {
+      /* modifier first */
+      input[0].type = INPUT_KEYBOARD;
+      input[0].ki.wVk = (WORD)state;
+      input[0].ki.wScan = state_scan;
+      input[0].ki.dwExtraInfo = extra_info;
+
+      /* key second */
+      input[1].type = INPUT_KEYBOARD;
+      input[1].ki.wVk = (WORD)keyval;
+      input[1].ki.wScan = key_scan;
+      input[1].ki.dwExtraInfo = extra_info;
+
+      SendInput(2, input, sizeof(INPUT));
+    }
+    else
+    {
+      input[0].type = INPUT_KEYBOARD;
+      input[0].ki.wVk = (WORD)keyval;
+      input[0].ki.wScan = key_scan;
+      input[0].ki.dwExtraInfo = extra_info;
+
+      SendInput(1, input, sizeof(INPUT));
+    }
+  }
+
+  if (press & 0x02)
+  {
+    if (state)
+    {
+      /* key first */
+      input[0].type = INPUT_KEYBOARD;
+      input[0].ki.dwFlags = KEYEVENTF_KEYUP;
+      input[0].ki.wVk = (WORD)keyval;
+      input[0].ki.wScan = key_scan;
+      input[0].ki.dwExtraInfo = extra_info;
+
+      /* modifier second */
+      input[1].type = INPUT_KEYBOARD;
+      input[1].ki.dwFlags = KEYEVENTF_KEYUP;
+      input[1].ki.wVk = (WORD)state;
+      input[1].ki.wScan = state_scan;
+      input[1].ki.dwExtraInfo = extra_info;
+
+      SendInput(2, input, sizeof(INPUT));
+    }
+    else
+    {
+      input[0].type = INPUT_KEYBOARD;
+      input[0].ki.dwFlags = KEYEVENTF_KEYUP;
+      input[0].ki.wVk = (WORD)keyval;
+      input[0].ki.wScan = key_scan;
+      input[0].ki.dwExtraInfo = extra_info;
+
+      SendInput(1, input, sizeof(INPUT));
+    }
+  }
+}
+
+void iupdrvSendMouse(int x, int y, int bt, int status)
+{
+  SetCursorPos(x, y);
+
+  if (status != -1)
+  {
+    INPUT input[1];
+    ZeroMemory(input, sizeof(INPUT));
+
+    input[0].type = INPUT_MOUSE;
+    input[0].mi.dx = x;
+    input[0].mi.dy = y;
+    input[0].mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+
+    switch(bt)
+    {
+    case IUP_BUTTON1:
+      input[0].mi.dwFlags |= (status==1)? MOUSEEVENTF_LEFTDOWN: MOUSEEVENTF_LEFTUP;
+      break;
+    case IUP_BUTTON2:
+      input[0].mi.dwFlags |= (status==1)? MOUSEEVENTF_MIDDLEDOWN: MOUSEEVENTF_MIDDLEUP;
+      break;
+    case IUP_BUTTON3:
+      input[0].mi.dwFlags |= (status==1)? MOUSEEVENTF_RIGHTDOWN: MOUSEEVENTF_RIGHTUP;
+      break;
+    case IUP_BUTTON4:
+      input[0].mi.mouseData = XBUTTON1;
+      input[0].mi.dwFlags |= (status==1)? MOUSEEVENTF_XDOWN: MOUSEEVENTF_XUP;
+      break;
+    case IUP_BUTTON5:
+      input[0].mi.mouseData = XBUTTON2;
+      input[0].mi.dwFlags |= (status==1)? MOUSEEVENTF_XDOWN: MOUSEEVENTF_XUP;
+      break;
+    default:
+      return;
+    }
+
+    SendInput(1, input, sizeof(INPUT));
+  }
+}

@@ -193,6 +193,8 @@ iupdrvBaseGetYAttrib
 iupdrvBaseGetXAttrib
 iupdrvBaseGetClientSizeAttrib
 iupdrvActivate
+iupdrvSendMouse
+iupdrvSendKey
 iupdrvImageCreateImageRaw
 iupdrvImageGetRawInfo
 iupdrvImageGetRawData

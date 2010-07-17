@@ -33,7 +33,7 @@ char* iupdrvGetGlobal(const char* name);
  * \ingroup drv */
 void iupdrvSetIdleFunction(Icallback func);
 
-/** Convert the coordinates from screen relative to client area releative.
+/** Convert the coordinates from screen relative to client area.
  * \ingroup drv */
 void iupdrvScreenToClient(Ihandle* ih, int *x, int *y);
 
@@ -85,6 +85,15 @@ void iupdrvActivate(Ihandle* ih);
 /** Returns the height of a menu bar.
  * \ingroup drv */
 int iupdrvMenuGetMenuBarSize(Ihandle* ih);
+
+/** Sends a global keyboard message.
+ * \ingroup drv */
+void iupdrvSendKey(int key, int press);
+
+/** Sends a global mouse message.
+ * status: 1=pressed, 0=released, -1=move
+ * \ingroup drv */
+void iupdrvSendMouse(int x, int y, int bt, int status);
 
 
 /* Called only from IupOpen/IupClose. */

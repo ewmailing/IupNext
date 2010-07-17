@@ -15,6 +15,7 @@
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
+#include "iup_drvinfo.h"
 
 #include "iupmot_drv.h"
 #include "iupmot_color.h"
@@ -40,13 +41,10 @@ static Imottips mot_tips = {0, 0, 0, 0, 0, 0};
 
 static void motTipsShow(void)
 {
-  Window root, child;
-  int cx, cy, x, y;
-  unsigned int keys;
   char* value;
+  int x, y;
 
-  XQueryPointer(iupmot_display, RootWindow(iupmot_display, iupmot_screen),
-                &root, &child, &x, &y, &cx, &cy, &keys);
+  iupdrvGetCursorPos(&x, &y);
 
   value = iupAttribGet(mot_tips.ih, "TIPRECT");
   if (value)

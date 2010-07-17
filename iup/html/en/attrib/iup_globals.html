@@ -37,8 +37,16 @@ LOCKLOOP=YES before hiding the last dialog. Possible values: &quot;YES&quot; or 
 Default: &quot;NO&quot;. </p>
 <h3><strong><a name="cursorpos">CURSORPOS</a></strong></h3>
 <p>The cursor position in absolute coordinates relative to the upper left corner 
-of the screen. Accept values in the format &quot;X<b>x</b>Y&quot;, example &quot;200x200&quot;. 
-Can be set only in GTK 2.8.</p>
+of the screen. Accept values in the format &quot;X<b>x</b>Y&quot; (in C &quot;%dx%d), example &quot;200x200&quot;. 
+(since GTK 2.8)</p>
+<h3><strong><a name="MOUSEBUTTON">MOUSEBUTTON</a> </strong>(write-only) (since 3.3)</h3>
+<p>Simulates a mouse button press or release at the given coordinates. The position 
+is in absolute coordinates relative to the upper left corner 
+of the screen. Accept values in the format &quot;X<b>x</b>Y button state&quot; 
+(in C &quot;%dx%d %c %d&quot;), example &quot;200x200 1 1&quot;. 
+<strong>button</strong> can be one of the IUP_BUTTON1,... definitions. <strong>
+state</strong> can be 1=pressed, or 0=released. The cursor position is always 
+updated. (since GTK 2.8)</p>
 <h3><a name="SHIFTKEY"><strong>SHIFTKEY</strong></a> (read-only) (since 3.0)</h3>
 <p>Returns the state of the Shit keys (left and right). Possible values: &quot;ON&quot; or &quot;OFF&quot;.</p>
 <h3><a name="CONTROLKEY"><strong>CONTROLKEY</strong></a> (read-only) (since 3.0)</h3>

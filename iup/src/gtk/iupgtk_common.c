@@ -875,3 +875,103 @@ gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
   (void)widget;
   return FALSE;
 }
+
+void iupdrvSendKey(int key, int press)
+{
+  Ihandle* focus;
+  gint nkeys = 0; 
+  GdkKeymapKey *keys; 
+  GdkEventKey evt;
+  memset(&evt, 0, sizeof(GdkEventKey));
+  evt.send_event = TRUE;
+
+  focus = IupGetFocus();
+  if (!focus)
+    return;
+  evt.window = focus->handle->window;
+
+  iupgtkKeyEncode(key, &evt.keyval, &evt.state);
+  if (!evt.keyval)
+    return;
+
+  if (!gdk_keymap_get_entries_for_keyval(gdk_keymap_get_default(), evt.keyval, &keys, &nkeys))
+    return;
+  evt.hardware_keycode = (guint16)keys[0].keycode;
+  evt.group = (guint8)keys[0].group; 
+
+  if (press & 0x01)
+  {
+    evt.type = GDK_KEY_PRESS;
+    gdk_display_put_event(gdk_display_get_default(), (GdkEvent*)&evt);
+  }
+
+  if (press & 0x02)
+  {
+    evt.type = GDK_KEY_RELEASE;
+    gdk_display_put_event(gdk_display_get_default(), (GdkEvent*)&evt);
+  }
+}
+
+void iupdrvSendMouse(int x, int y, int bt, int status)
+{
+#if GTK_CHECK_VERSION(2, 8, 0)
+  gdk_display_warp_pointer(gdk_display_get_default(), gdk_screen_get_default(), x, y);
+#endif
+
+  if (status != -1)
+  {
+    /* Should we use gdk_event_new and gdk_event_free ???? */
+    GtkWidget* grab_widget;
+    gint origin_x, origin_y;
+
+    GdkEventButton evt;
+    memset(&evt, 0, sizeof(GdkEventButton));
+    evt.send_event = TRUE;
+
+    evt.x = x;
+    evt.y = y;
+    evt.type = (status==1)? GDK_BUTTON_PRESS: GDK_BUTTON_RELEASE;
+    evt.device = gdk_device_get_core_pointer();
+
+    grab_widget = gtk_grab_get_current();
+    if (grab_widget) 
+      evt.window = grab_widget->window;
+    else
+    {
+      gint tx, ty;
+      evt.window = gdk_window_at_pointer(&tx, &ty);
+    }
+
+    switch(bt)
+    {
+    case IUP_BUTTON1:
+      evt.state = GDK_BUTTON1_MASK;
+      evt.button = 1;
+      break;
+    case IUP_BUTTON2:
+      evt.state = GDK_BUTTON2_MASK;
+      evt.button = 2;
+      break;
+    case IUP_BUTTON3:
+      evt.state = GDK_BUTTON3_MASK;
+      evt.button = 3;
+      break;
+    case IUP_BUTTON4:
+      evt.state = GDK_BUTTON4_MASK;
+      evt.button = 4;
+      break;
+    case IUP_BUTTON5:
+      evt.state = GDK_BUTTON5_MASK;
+      evt.button = 5;
+      break;
+    default:
+      return;
+    }
+
+    gdk_window_get_origin(evt.window, &origin_x, &origin_y);
+    evt.x_root = x + origin_x;
+    evt.y_root = y + origin_y;
+
+    gdk_display_put_event(gdk_display_get_default(), (GdkEvent*)&evt);
+  }
+}

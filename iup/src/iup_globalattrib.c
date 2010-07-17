@@ -14,8 +14,10 @@
 #include "iup_globalattrib.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
+#include "iup_drvinfo.h"
 #include "iup_assert.h"
 #include "iup_str.h"
+#include "iup_strmessage.h"
 
 
 static Itable *iglobal_table = NULL;
@@ -65,7 +67,17 @@ void iupGlobalSetDefaultColorAttrib(const char* name, int r, int g, int b)
   }
 }
 
-void IupSetGlobal(const char *name, const char *value)
+static void iGlobalTableSet(const char *name, const char *value, int store)
+{
+  if (!value)
+    iupTableRemove(iglobal_table, name);
+  else if (store)
+    iupTableSet(iglobal_table, name, (void*)value, IUPTABLE_STRING);
+  else
+    iupTableSet(iglobal_table, name, (void*)value, IUPTABLE_POINTER);
+}
+
+static void iGlobalSet(const char *name, const char *value, int store)
 {
   iupASSERT(name!=NULL);
   if (!name) return;
@@ -75,34 +87,62 @@ void IupSetGlobal(const char *name, const char *value)
     iupSetDefaultFontSizeGlobalAttrib(value);
     return;
   }
-
-  if (iGlobalChangingDefaultColor(name) || iupdrvSetGlobal(name, value))
+  if (iupStrEqual(name, "KEYPRESS"))
   {
-    if (!value)
-      iupTableRemove(iglobal_table, name);
-    else
-      iupTableSet(iglobal_table, name, (void*)value, IUPTABLE_POINTER);
+    int key;
+    if (iupStrToInt(value, &key))
+      iupdrvSendKey(key, 0x01);
+    return;
   }
+  if (iupStrEqual(name, "KEYRELEASE"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      iupdrvSendKey(key, 0x02);
+    return;
+  }
+  if (iupStrEqual(name, "KEY"))
+  {
+    int key;
+    if (iupStrToInt(value, &key))
+      iupdrvSendKey(key, 0x03);
+    return;
+  }
+  if (iupStrEqual(name, "LANGUAGE"))
+  {
+    iupStrMessageUpdateLanguage(value);
+    iGlobalTableSet(name, value, store);
+    return;
+  }
+  if (iupStrEqual(name, "CURSORPOS"))
+  {
+    int x, y;
+    if (iupStrToIntInt(value, &x, &y, 'x') == 2)
+      iupdrvSendMouse(x, y, 0, -1);
+    return;
+  }
+  if (iupStrEqual(name, "MOUSEBUTTON"))
+  {
+    int x, y, status;
+    char bt; 
+    if (sscanf(value, "%dx%d %c %d", &x, &y, &bt, &status) == 4)
+      iupdrvSendMouse(x, y, bt, status);
+    return;
+  }
+
+  if (iGlobalChangingDefaultColor(name) || 
+      iupdrvSetGlobal(name, value))
+    iGlobalTableSet(name, value, store);
+}
+
+void IupSetGlobal(const char *name, const char *value)
+{
+  iGlobalSet(name, value, 0);
 }
 
 void IupStoreGlobal(const char *name, const char *value)
 {
-  iupASSERT(name!=NULL);
-  if (!name) return;
-
-  if (iupStrEqual(name, "DEFAULTFONTSIZE"))
-  {
-    iupSetDefaultFontSizeGlobalAttrib(value);
-    return;
-  }
-
-  if (iGlobalChangingDefaultColor(name) || iupdrvSetGlobal(name, value))
-  {
-    if (!value)
-      iupTableRemove(iglobal_table, name);
-    else
-      iupTableSet(iglobal_table, name, (void*)value, IUPTABLE_STRING);
-  }
+  iGlobalSet(name, value, 1);
 }
 
 char *IupGetGlobal(const char *name)
@@ -115,6 +155,61 @@ char *IupGetGlobal(const char *name)
 
   if (iupStrEqual(name, "DEFAULTFONTSIZE"))
     return iupGetDefaultFontSizeGlobalAttrib();
+  if (iupStrEqual(name, "CURSORPOS"))
+  {
+    char *str = iupStrGetMemory(50);
+    int x, y;
+    iupdrvGetCursorPos(&x, &y);
+    sprintf(str, "%dx%d", (int)x, (int)y);
+    return str;
+  }
+  if (iupStrEqual(name, "SHIFTKEY"))
+  {
+    char key[5];
+    iupdrvGetKeyState(key);
+    if (key[0] == 'S')
+      return "ON";
+    else
+      return "OFF";
+  }
+  if (iupStrEqual(name, "CONTROLKEY"))
+  {
+    char key[5];
+    iupdrvGetKeyState(key);
+    if (key[1] == 'C')
+      return "ON";
+    else
+      return "OFF";
+  }
+  if (iupStrEqual(name, "MODKEYSTATE"))
+  {
+    char *str = iupStrGetMemory(5);
+    iupdrvGetKeyState(str);
+    return str;
+  }
+  if (iupStrEqual(name, "SCREENSIZE"))
+  {
+    char *str = iupStrGetMemory(50);
+    int w, h;
+    iupdrvGetScreenSize(&w, &h);
+    sprintf(str, "%dx%d", w, h);
+    return str;
+  }
+  if (iupStrEqual(name, "FULLSIZE"))
+  {
+    char *str = iupStrGetMemory(50);
+    int w, h;
+    iupdrvGetFullSize(&w, &h);
+    sprintf(str, "%dx%d", w, h);
+    return str;
+  }
+  if (iupStrEqual(name, "SCREENDEPTH"))
+  {
+    char *str = iupStrGetMemory(50);
+    int bpp = iupdrvGetScreenDepth();
+    sprintf(str, "%d", bpp);
+    return str;
+  }
 
   value = iupdrvGetGlobal(name);
 

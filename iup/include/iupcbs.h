@@ -37,6 +37,7 @@ typedef int (*IFnd)(Ihandle*, double);  /* mousemove_cb, button_press_cb, button
 typedef int (*IFniiIII)(Ihandle*, int, int, int*, int*, int*); /* fgcolor_cb, bgcolor_cb */
 typedef int (*IFniinsii)(Ihandle*, int, int, Ihandle*, char*, int, int); /* dropselect_cb */
 typedef int (*IFnccc)(Ihandle*, unsigned char, unsigned char, unsigned char); /* drag_cb, change_cb */
+typedef int (*IFniIII)(Ihandle*, int, int*, int*, int*); /* multitouch_cb */
 
 typedef char* (*sIFnii)(Ihandle*, int, int);  /* value_cb */
 typedef char* (*sIFni)(Ihandle*, int);  /* cell_cb */

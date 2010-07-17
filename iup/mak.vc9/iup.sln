@@ -221,6 +221,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluaole52", "iupluaole52.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuplua52gtk_exe", "iupluaexe52gtk.vcproj", "{389DF3C9-A628-4F6D-A628-ABABFA01DE66}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuptuio", "iuptuio.vcproj", "{E251B414-01CA-482B-12F6-DD34ADAAB6AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -317,6 +319,8 @@ Global
 		{1EBC7A53-4677-DF67-DF67-55D301157985}.Debug|Win32.Build.0 = Debug|Win32
 		{389DF3C9-A628-4F6D-A628-ABABFA01DE66}.Debug|Win32.ActiveCfg = Debug|Win32
 		{389DF3C9-A628-4F6D-A628-ABABFA01DE66}.Debug|Win32.Build.0 = Debug|Win32
+		{E251B414-01CA-482B-12F6-DD34ADAAB6AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E251B414-01CA-482B-12F6-DD34ADAAB6AA}.Debug|Win32.Build.0 = Debug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
