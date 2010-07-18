@@ -1,6 +1,6 @@
 
-.PHONY: do_all iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib
-do_all: iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib
+.PHONY: do_all iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib iupluatuio
+do_all: iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib iupluatuio
 
 iuplua:
 	@$(MAKE) --no-print-directory -f ../tecmake.mak 
@@ -22,3 +22,6 @@ iupluaim:
 
 iupluaimglib:
 	@$(MAKE) --no-print-directory -f ../tecmake.mak MF=iupimglib
+  
+iupluatuio:
+	@$(MAKE) --no-print-directory -f ../tecmake.mak MF=iuptuio
