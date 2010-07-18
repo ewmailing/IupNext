@@ -31,16 +31,18 @@
 <p>The <b>IupGLCanvasOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iupgl.h&quot; file must also be included in the source code. The program must be linked to the controls 
   library (iupgl), and with the OpenGL library.</p>
-<p>To make the control available in Lua, use the initialization function in C, 
+<p>To make the control available in Lua use require&quot;iupluagl&quot; or manually 
+call the initialization function in C, 
 <b>iupgllua_open</b>, after calling <b>iuplua_open</b>.
-  &nbsp;The iupluagl.h file must also be included in the source code. The program must be linked to the 
-lua control 
+  When manually calling the function the iupluagl.h file must also be included in the source code 
+and the program must be linked to the lua control 
   library (iupluagl).</p>
 <p>To link with the OpenGL libraries in Windows add:
   opengl32.lib. 
   In UNIX add before the X-Windows libraries: -LGL.</p>
 <p>The Lua binding does not include OpenGL functions. But you can use any OpenGL 
-binding available.</p>
+binding available, for example the <a href="http://luagl.sourceforge.net/">LuaGL</a> 
+binding.</p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupGLCanvas(const char* <strong>action</strong>); [in C]

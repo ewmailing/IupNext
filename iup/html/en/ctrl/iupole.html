@@ -29,8 +29,7 @@
 <p>The IupOleControl hosts an windows OLE control (also named ActiveX control), allowing it to be 
   used inside IUP dialogs. There are many OLE controls available, like calendars, internet browsers, PDF readers etc.</p>
 <p>Notice that IupOleControl just takes care of the visualization of the control (size and 
-  positioning). It does not deal with properties, methods and events. The application must deal with them using the the 
-  COM interfaces offered by the control. Nevertheless, using IupLua together with 
+  positioning). It does not deal with properties, methods and events. The application must deal with them using the COM interfaces offered by the control. Nevertheless, using IupLua together with 
   <a target="_blank" href="http://luaforge.net/projects/luacom/">LuaCOM</a> makes it possible to use OLE 
   controls very easily in Lua, accessing their methods, properties and events similarly to the other IUP elements.</p>
 <p>Notice that this control works only on Windows.</p>
@@ -38,10 +37,11 @@
 <p>The <b>IupOleControlOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The iupole.h file must also be included in the source code. The program must be linked to the controls 
   library (iupole).</p>
-<p>To make the control available in Lua, use the initialization function in C, 
+<p>To make the control available in Lua use require&quot;iupluaole&quot; or manually 
+call the initialization function in C, 
 <b>iupolelua_open</b>, after calling <b>iuplua_open</b>.
-  The iupluaole.h file must also be included in the source code. The program must be linked to the 
-lua control 
+  When manually calling the function the iupluaole.h file must also be included in the source code, 
+and the program must be linked to the lua control 
   library (iupluaole).</p>
 <h3><a name="Creation">Creation</a></h3>
 

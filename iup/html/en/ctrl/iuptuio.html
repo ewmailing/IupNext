@@ -1,0 +1,115 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupTuioClient</title>
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	font-size: large;
+}
+</style>
+</head>
+<body>
+<div id="navigation">
+  <ul>
+    <li><a href="#Creation">Creation</a></li>
+    <li><a href="#Attributes">Attributes</a></li>
+    <li><a href="#Callbacks">Callbacks</a></li>
+    <li><a href="#Notes">Notes</a></li>
+    <li><a href="#Examples">Examples</a></li>
+    <li><a href="#SeeAlso">See Also</a></li>
+  </ul>
+</div>
+
+<h2>IupTuioClient<span class="style1"> (since 3.3)</span></h2>
+<p>X</p>
+<h3>Initialization and usage</h3>
+<p>The <b>IupTuioOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
+  The iuptuio.h file must also be included in the source code. The program must be linked to the controls 
+  library (iuptuio). There is no external dependencies, the TUIO client library 
+is already included.</p>
+<p>To make the control available in Lua use require&quot;iupluatuio&quot; or manually 
+call the initialization function in C, 
+<b>iuptuiolua_open</b>, after calling <b>iuplua_open</b>.
+  When manually calling the function the iupluatuio.h file must also be included in the source code 
+and the program must be linked to the lua control 
+  library (iupluatuio).</p>
+<h3><a name="Creation">Creation</a></h3>
+
+<pre>Ihandle* IupTuioClient(int <strong>port</strong>); [in C]
+iup.tuioclient{<b>[port</b>: number]} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+</pre>
+<b>
+<p>port</b>: the UDP port used to connect to the TUIO server. If 0 is specified 
+then the default value of 3333 will be used. In Lua can be ommited.</p>
+<p>
+  <u>Returns:</u> the identifier of the 
+  created element, or NULL if an error occurs.</p>
+<h3><a name="Attributes">Attributes</a></h3>
+
+
+<p><strong>CONNECT</strong>: connects (YES) or disconnects (NO) to the TUIO 
+server. Returns the connected state. If LOCKED is used when connected the
+<strong>IupSetAttribute</strong> will not return until it is disconnected.</p>
+<p><strong>DEBUG</strong>: when set will enable a print a log of TUIO cursor 
+messages on standard output.</p>
+
+
+<p><strong>TARGETCANVAS</strong><b>:</b> name of a handle to an <strong>
+IupCanvas</strong> that will be used to receive the multi-touch event. See the <strong>MULTITOUCH_CB</strong>&nbsp; callback 
+bellow.</p>
+<h3><a name="Callbacks">Callbacks</a></h3>
+
+<p><strong>CURSOR_CB</strong>:
+  Action generated 
+  when a TUIO cursor event occurred.</p>
+<pre>int function(Ihandle* <strong>ih</strong>, int <strong>id</strong>, int <strong>sid</strong>, int <strong>x</strong>, int <strong>y</strong>, char* <strong>status</strong>); [in C]
+<strong>elem</strong>:button_cb(<strong>but</strong>, <strong>id</strong>, <strong>sid</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p><strong>ih</strong>: identifies the element that activated the event.<br>
+<strong>id</strong>: identifies the cursor:<br>
+<strong>sid</strong>: identifies the session. When a cursor is destroyed another 
+cursor can be created with the same id, the difference between them is the 
+session id that is always incremented every time a cursor is added or removed.<br>
+<strong>x</strong>, <strong>y</strong>: position in pixels relative to the 
+top-left corner of the screen.<br>
+<strong>status</strong>: the cursor status: ADD, UPDATE, REMOVE.</p>
+<hr>
+<p><strong>MULTITOUCH_CB</strong> (for the <strong>IupCanvas</strong> associated 
+with TARGETCANVAS):
+  Action generated 
+  after a refresh cycle of the cursors state.</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>count</strong>, int* <strong>px</strong>, int* <strong>py</strong>, int* <strong>id</strong>) [in C]
+<strong>elem</strong>:multitouch_cb(<strong>count:</strong> number<strong>, px, py, id: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
+<strong>count</strong>: Number of cursors in the array.<br>
+<strong>px</strong>:
+    Array of cursors x coordinates in pixels relative to the top-left corner of 
+the canvas.<br>
+<strong>py</strong>:
+    Array of cursors y coordinates in pixels relative to the top-left corner of 
+the canvas.<br>
+<strong>id</strong>:
+    Array of cursors id. This is actually a combination of the TUIO cursor id 
+and the session id &quot;(sid&lt;&lt;16)|id&quot;.</p>
+<p><u>Returns</u>: IUP_CLOSE will be processed.</p>
+<p class="info">This callback will be the same for a native multi-touch support 
+in <strong>IupCanvas</strong>.</p>
+<h3><a name="Notes">Notes</a></h3>
+<p>Windows 7 multi-touch support in IUP will be the <strong>MULTITOUCH_CB</strong> 
+callback and an attribute to enable multi-touch in the canvas. It is not 
+implemented yet simply because we don&#39;t have where to test it.</p>
+<p>To learn more about TUIO:</p>
+<p class="info"><a target="_blank" href="http://www.microsoft.com/com">http://www.t</a><a href="http://www.tuio.org">uio.org</a></p>
+<h3><a name="Examples">Examples</a></h3>
+<p><a href="../../examples/">Browse for Example Files</a> (see
+<a href="../../examples/C/canvas1.c">canvas1.c</a>)</p>
+
+</body>
+
+</html>
+
+</body>
+
+</html>
