@@ -3,7 +3,7 @@ LIBNAME  = iupluatuio
 OPT = YES
                      
 DEF_FILE = iupluatuio.def
-SRCLUA = tuio.lua
+SRCLUA = tuioclient.lua
 
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix il_, $(GC))
