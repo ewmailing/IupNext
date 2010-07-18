@@ -16,21 +16,21 @@ static int tuio_multitouch_cb(Ihandle *ih, int count, int* px, int* py, int* id)
   int i;
   lua_State *L = iuplua_call_start(ih, "multitouch_cb");
   lua_pushinteger(L, count);
-  lua_newtable(L);
+  lua_createtable(L, count, 0);
   for (i = 0; i < count; i++)
   {
     lua_pushinteger(L,i+1);
     lua_pushinteger(L,px[i]);
     lua_settable(L,-3);
   }
-  lua_newtable(L);
+  lua_createtable(L, count, 0);
   for (i = 0; i < count; i++)
   {
     lua_pushinteger(L,i+1);
     lua_pushinteger(L,py[i]);
     lua_settable(L,-3);
   }
-  lua_newtable(L);
+  lua_createtable(L, count, 0);
   for (i = 0; i < count; i++)
   {
     lua_pushinteger(L,i+1);

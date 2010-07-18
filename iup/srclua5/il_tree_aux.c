@@ -140,7 +140,7 @@ static int tree_multiselection_cb(Ihandle *ih, int* ids, int p1)
 {
   int i;
   lua_State *L = iuplua_call_start(ih, "multiselection_cb");
-  lua_newtable(L);
+  lua_createtable(L, p1, 0);
   for (i = 0; i < p1; i++)
   {
     lua_pushinteger(L,i+1);
@@ -155,7 +155,7 @@ static int tree_multiunselection_cb(Ihandle *ih, int* ids, int p1)
 {
   int i;
   lua_State *L = iuplua_call_start(ih, "multiunselection_cb");
-  lua_newtable(L);
+  lua_createtable(L, p1, 0);
   for (i = 0; i < p1; i++)
   {
     lua_pushinteger(L,i+1);
