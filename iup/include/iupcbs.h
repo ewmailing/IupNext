@@ -29,10 +29,11 @@ typedef int (*IFnis)(Ihandle*, int, char *);  /* text_action, multiline_action, 
 typedef int (*IFnsii)(Ihandle*, char*, int, int);  /* list_action */
 typedef int (*IFnsiii)(Ihandle*, char*, int, int, int); /* dropfiles_cb */
 typedef int (*IFniis)(Ihandle*, int, int, char*);  /* motion_cb, click_cb, value_edit_cb */
+typedef int (*IFniiis)(Ihandle*, int, int, int, char*);  /* touch_cb */
 typedef int (*IFniiiis)(Ihandle*, int, int, int, int, char*);  /* button_cb, matrix_action, mousemotion_cb */
 typedef int (*IFniiiiiis)(Ihandle*, int, int, int, int, int, int, char*);  /* mouseclick_cb */
 
-typedef int (*IFnIi)(Ihandle*, int*, int); /* multiselection_cb, multiselection_cb */
+typedef int (*IFnIi)(Ihandle*, int*, int); /* multiselection_cb, multiunselection_cb */
 typedef int (*IFnd)(Ihandle*, double);  /* mousemove_cb, button_press_cb, button_release_cb */
 typedef int (*IFniiIII)(Ihandle*, int, int, int*, int*, int*); /* fgcolor_cb, bgcolor_cb */
 typedef int (*IFniinsii)(Ihandle*, int, int, Ihandle*, char*, int, int); /* dropselect_cb */

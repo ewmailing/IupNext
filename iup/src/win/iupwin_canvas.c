@@ -28,7 +28,27 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 #include "iupwin_brush.h"
+#include "iupwin_info.h"
 
+
+#ifndef WM_TOUCH
+#define WM_TOUCH                        0x0240
+DECLARE_HANDLE(HTOUCHINPUT);
+typedef struct tagTOUCHINPUT {
+    LONG x; LONG y; HANDLE hSource; DWORD dwID; DWORD dwFlags; DWORD dwMask;
+    DWORD dwTime; ULONG_PTR dwExtraInfo; DWORD cxContact; DWORD cyContact;
+} TOUCHINPUT;
+#define TOUCHEVENTF_MOVE            0x0001
+#define TOUCHEVENTF_DOWN            0x0002
+#define TOUCHEVENTF_UP              0x0004
+#endif
+
+static int has_touch = 0;
+static BOOL (WINAPI *winGetTouchInputInfo)(HTOUCHINPUT hTouchInput, UINT cInputs, TOUCHINPUT* pInputs, int cbSize) = NULL;
+static BOOL (WINAPI *winCloseTouchInputHandle)(HTOUCHINPUT hTouchInput) = NULL;
+static BOOL (WINAPI *winRegisterTouchWindow)(HWND hwnd, ULONG ulFlags) = NULL;
+static BOOL (WINAPI *winUnregisterTouchWindow)(HWND hwnd) = NULL;
+static BOOL (WINAPI *winIsTouchWindow)(HWND hwnd, PULONG pulFlags) = NULL;
 
 static void winCanvasSetScrollInfo(HWND hWnd, int imin, int imax, int ipos, int ipage, int flag)
 {
@@ -357,6 +377,120 @@ static void winCanvasUpdateVerScroll(Ihandle* ih, WORD winop)
   }
 }
 
+static void winCanvasInitTouch(void)
+{
+  HINSTANCE lib = LoadLibrary("user32");
+  has_touch = 1;
+  winGetTouchInputInfo = (BOOL (WINAPI *)(HTOUCHINPUT,UINT,TOUCHINPUT *,int))GetProcAddress(lib, "GetTouchInputInfo");
+  winCloseTouchInputHandle = (BOOL (WINAPI *)(HTOUCHINPUT))GetProcAddress(lib, "CloseTouchInputHandle");
+  winRegisterTouchWindow = (BOOL (WINAPI *)(HWND,ULONG))GetProcAddress(lib, "RegisterTouchWindow");
+  winUnregisterTouchWindow = (BOOL (WINAPI *)(HWND))GetProcAddress(lib, "UnregisterTouchWindow");
+  winIsTouchWindow = (BOOL (WINAPI *)(HWND,PULONG))GetProcAddress(lib, "IsTouchWindow");
+}
+
+static int winCanvasSetTouchAttrib(Ihandle *ih, const char *value)
+{
+  if (has_touch)
+  {
+    if (iupStrBoolean(value))
+      winRegisterTouchWindow(ih->handle, 0);
+    else
+      winUnregisterTouchWindow(ih->handle);
+  }
+  return 0;
+}
+
+static char* winCanvasGetTouchAttrib(Ihandle* ih)
+{
+  ULONG pulFlags = 0;
+  if (has_touch && winIsTouchWindow(ih->handle, &pulFlags))
+    return "Yes";
+  else
+    return "No";
+}
+
+static void winCanvasProcessMultiTouch(Ihandle* ih, int count, HTOUCHINPUT hTouchInput)
+{
+  IFniIII mcb = (IFniIII)IupGetCallback(ih, "MULTITOUCH_CB");
+  IFniiis cb = (IFniiis)IupGetCallback(ih, "TOUCH_CB");
+
+  if (mcb || cb)
+  {
+    int *px=NULL, *py=NULL, *id=NULL;
+    TOUCHINPUT* ti = malloc(count*sizeof(TOUCHINPUT));
+
+    if (mcb)
+    {
+      px = malloc(sizeof(int)*(count?count:1));
+      py = malloc(sizeof(int)*(count?count:1));
+      id = malloc(sizeof(int)*(count?count:1));
+    }
+
+    if (winGetTouchInputInfo(hTouchInput, count, ti, sizeof(TOUCHINPUT)))
+    {
+      int i, x, y;
+      for (i = 0; i < count; i++)
+      {
+        x = ti[i].x / 100;
+        y = ti[i].y / 100;
+        iupdrvScreenToClient(ih, &x, &y);
+
+        if (ti[i].dwFlags & TOUCHEVENTF_DOWN)
+        {
+          if (cb)
+          {
+            if (cb(ih, ti->dwID, x, y, "DOWN")==IUP_CLOSE)
+              IupExitLoop();
+          }
+
+          if (mcb)
+          {
+            px[i] = x;
+            py[i] = y;
+            id[i] = ti[i].dwID;
+          }
+        }
+        else if (ti[i].dwFlags & TOUCHEVENTF_MOVE)
+        {
+          if (cb)
+          {
+            if (cb(ih, ti->dwID, x, y, "MOVE")==IUP_CLOSE)
+              IupExitLoop();
+          }
+
+          if (mcb)
+          {
+            px[i] = x;
+            py[i] = y;
+            id[i] = ti[i].dwID;
+          }
+        }
+        else if (ti[i].dwFlags & TOUCHEVENTF_UP)
+        {
+          if (cb)
+          {
+            if (cb(ih, ti->dwID, x, y, "UP")==IUP_CLOSE)
+              IupExitLoop();
+          }
+        }
+      }
+    }
+
+    if (mcb)
+    {
+      if (mcb(ih, count, id, px, py)==IUP_CLOSE)
+        IupExitLoop();
+
+      free(px);
+      free(py);
+      free(id);
+    }
+
+    winCloseTouchInputHandle(hTouchInput);
+    free(ti);
+  }
+}
+
 static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   switch (msg)
@@ -537,6 +671,10 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     winCanvasUpdateHorScroll(ih, LOWORD(wp));
     *result = 0;
     return 1;
+  case WM_TOUCH:
+    if (has_touch)
+      winCanvasProcessMultiTouch(ih, (int)LOWORD(wp), (HTOUCHINPUT)lp);
+    break;
   }
 
   /* can be a container */
@@ -627,6 +765,9 @@ static int winCanvasMapMethod(Ihandle* ih)
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DRAGDROP", "YES");
 
+  if (iupwinIs7OrNew())
+    winCanvasInitTouch();
+
   return IUP_NOERROR;
 }
 
@@ -696,6 +837,9 @@ void iupdrvCanvasInitClass(Iclass* ic)
   if (!iupwinClassExist("IupCanvas"))
     winCanvasRegisterClass();
 
+  iupClassRegisterCallback(ic, "TOUCH_CB", "iiis");
+  iupClassRegisterCallback(ic, "MULTITOUCH_CB", "iIII");
+
   /* Driver Dependent Class functions */
   ic->Map = winCanvasMapMethod;
   ic->UnMap = winCanvasUnMapMethod;
@@ -708,6 +852,7 @@ void iupdrvCanvasInitClass(Iclass* ic)
 
   /* IupCanvas only */
   iupClassRegisterAttribute(ic, "DRAWSIZE", iupdrvBaseGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOUCH", winCanvasGetTouchAttrib, winCanvasSetTouchAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DX", NULL, winCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "DY", NULL, winCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */

@@ -163,6 +163,8 @@ inheritable.</font></p>
 	<b><a name="YAUTOHIDE">YAUTOHIDE</a></b>: When enabled, if DY &gt;= YMAX-YMIN then 
   the vertical scrollbar is hidden. Default: "YES". (since 3.0)</p>
 
+<p><strong>TOUCH</strong> [Windows 7 Only]: enable the multi-touch events 
+processing. (Since 3.3)</p>
 <p><strong>XDISPLAY</strong> [UNIX Only](<font size="3">non inheritable, 
 read-only</font>): Returns the X-Windows Display. Available in the Motif driver 
 or in the GTK driver in UNIX.</p>
@@ -261,6 +263,40 @@ focus.</p>
   Called when the scrollbar is manipulated.
   (GTK 2.8) Also the POSX and POSY values will not be correctly updated for 
 older GTK versions.</p>
+
+<p><strong>TOUCH_CB</strong> [Windows 7 Only]:
+  Action generated 
+  when a touch event occurred. Multiple touch events will trigger several calls. 
+Must set TOUCH=Yes. (Since 3.3)</p>
+<pre>int function(Ihandle* <strong>ih</strong>, int <strong>id</strong>, int <strong>x</strong>, int <strong>y</strong>, char* <strong>status</strong>); [in C]
+<strong>elem</strong>:button_cb(<strong>but</strong>, <strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifies the element that activated the event. 
+If TARGETCANVAS is not defined then it is the <strong>IupTuioClient</strong> 
+control.<br>
+<strong>id</strong>: identifies the touch point.
+<strong><br>
+x</strong>, <strong>y</strong>: position in pixels, relative to the 
+top-left corner of the canvas, or the screen if TARGETCANVAS is not defined.<br>
+<strong>status</strong>: the touch point status. Can be: DOWN, MOVE or UP.</p>
+<p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
+<p><strong>MULTITOUCH_CB</strong> [Windows 7 Only]: Action generated when 
+multiple touch events occurred. Must set TOUCH=Yes. (Since 3.3)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>count</strong>, int* <strong>id</strong>, int* <strong>px</strong>, int* <strong>py</strong>) [in C]
+<strong>elem</strong>:multitouch_cb(<strong>count:</strong> number<strong>, id, px, py: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. If TARGETCANVAS is not defined then it is the <strong>IupTuioClient</strong> 
+control.<br>
+<strong>count</strong>: Number of touch points in the array.<br>
+<strong>id</strong>:
+    Array of touch point ids.<br>
+<strong>px</strong>:
+    Array of touch point x coordinates in pixels, relative to the top-left corner of 
+the canvas, or the screen if TARGETCANVAS is not defined.<br>
+<strong>py</strong>:
+    Array of touch point y coordinates in pixels, relative to the top-left corner of 
+the canvas, or the screen if TARGETCANVAS is not defined.<br>
+</p>
+<p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
 
   
 <p><a href="../call/iup_wheel_cb.html">WHEEL_CB</a>: Action generated when the mouse wheel is 

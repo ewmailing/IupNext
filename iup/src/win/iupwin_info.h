@@ -17,6 +17,7 @@ int   iupwinGetComCtl32Version(void);
 char* iupwinGetSystemLanguage(void);
 int   iupwinIsAppThemed(void);
 int   iupwinIsVistaOrNew(void);
+int   iupwinIs7OrNew(void);
 
 /* color */
 void iupwinGetSysColor(char* color, int wincolor);

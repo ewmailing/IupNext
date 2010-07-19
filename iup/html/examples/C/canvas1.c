@@ -58,21 +58,25 @@ int redraw_cb( Ihandle *self, float x, float y )
 
 #ifdef USE_TUIO
 
-/* TODO: Instead of using absolute coordinates, 
-         use relative coordinates to simulate a touchpad like in a laptop. */
-
-int cursor_cb(Ihandle *self, int id, int sid, int x, int y, char* state)
+int touch_cb(Ihandle *self, int id, int x, int y, char* state)
 {
-  printf("cursor_cb(id=%d sid=%d x=%d y=%d state=%s)\n",id, sid, x, y, state);
-  if (id == 0)
+  if (id >= 0xFFFF)
+    printf("touch_cb(id=%d sid=%d, x=%d y=%d state=%s)\n", id&0xFFFF, (id>>16)&0xFFFF, x, y, state);
+  else
+    printf("touch_cb(id=%d x=%d y=%d state=%s)\n", id, x, y, state);
+
+  if (id&0xFFFF == 0)  // How about Windows 7 Ids?
   {
     static int tap_x = 0;
     static int tap_y = 0;
 
+    /* TODO: Instead of using absolute coordinates, 
+             use relative coordinates to simulate a touchpad like in a laptop. */
+
     /* simulate a cursor */
     IupSetfAttribute(NULL, "CURSORPOS", "%dx%d", x, y);
 
-    if (state[0] == 'A') /* ADD */
+    if (state[0] == 'D') /* DOWN */
     {
       if (IupGetInt(NULL, "CONTROLKEY")) /* Ctrl pressed */
         IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, IUP_BUTTON1, 1);  /* mouse down */
@@ -80,7 +84,7 @@ int cursor_cb(Ihandle *self, int id, int sid, int x, int y, char* state)
       tap_x = x;
       tap_y = y;
     }
-    else if (state[0] == 'R') /* REMOVE */
+    else if (state[0] == 'U') /* UP */
     {
       if (IupGetInt(NULL, "CONTROLKEY")) /* Ctrl pressed */
         IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, IUP_BUTTON1, -1);  /* mouse up */
@@ -100,7 +104,10 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py)
   printf("multitouch_cb(count=%d)\n", count);
   for (i = 0; i < count; i++)
   {
-    printf("    id=%d sid=%d x=%d y=%d\n", id[i]&0xFFFF, (id[i]>>16)&0xFFFF, px[i], py[i]);
+    if (id[i] >= 0xFFFF)
+      printf("    id=%d sid=%d x=%d y=%d\n", id[i]&0xFFFF, (id[i]>>16)&0xFFFF, px[i], py[i]);
+    else
+      printf("    id=%d x=%d y=%d\n", id[i], px[i], py[i]);
     cdCanvasPixel(cdcanvas, px[i], cdCanvasInvertYAxis(cdcanvas, py[i]), CD_RED);
   }
   return IUP_DEFAULT;
@@ -125,8 +132,10 @@ int main(int argc, char **argv)
     tuio = IupTuioClient(0);
     IupSetAttribute(tuio, "CONNECT", "YES");
 //    IupSetAttribute(tuio, "DEBUG", "YES");
-    IupSetCallback(tuio, "CURSOR_CB",(Icallback)cursor_cb);
+//    IupSetCallback(tuio, "TOUCH_CB",(Icallback)touch_cb);
+//    IupSetCallback(tuio, "MULTITOUCH_CB",(Icallback)multitouch_cb);
     IupSetAttributeHandle(tuio, "TARGETCANVAS", cnvs);
+    IupSetCallback(cnvs, "TOUCH_CB",(Icallback)touch_cb);
     IupSetCallback(cnvs, "MULTITOUCH_CB",(Icallback)multitouch_cb);
   }
 #endif
