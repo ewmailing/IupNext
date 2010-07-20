@@ -15,7 +15,7 @@ OSC_WIN32 = oscpack/ip/win32/NetworkingUtils.cpp oscpack/ip/win32/UdpSocket.cpp
 OSC_POSIX = oscpack/ip/posix/NetworkingUtils.cpp oscpack/ip/posix/UdpSocket.cpp
 OSC = oscpack/osc/OscTypes.cpp oscpack/osc/OscOutboundPacketStream.cpp oscpack/osc/OscReceivedElements.cpp oscpack/osc/OscPrintReceivedElements.cpp 
 
-SRC := iup_tuio.cpp $(TUIO) $(OSC)
+SRC := $(TUIO) $(OSC) iup_tuio.cpp
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC += $(OSC_WIN32)

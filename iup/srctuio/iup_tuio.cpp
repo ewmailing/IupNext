@@ -32,7 +32,7 @@ class IupTuioListener : public TuioListener
   TuioClient* client;
   Ihandle* ih;
 
-  void processCursor(TuioCursor *tcur, char* state, char* action);
+  void processCursor(TuioCursor *tcur, const char* state, const char* action);
 
   public:
     int debug;
@@ -51,7 +51,7 @@ class IupTuioListener : public TuioListener
 };
 
 IupTuioListener::IupTuioListener(Ihandle* _ih, TuioClient* _client)
-  :debug(0), changed(0), ih(_ih), client(_client)
+  :changed(0), client(_client), ih(_ih), debug(0)
 {
 }
 
@@ -88,7 +88,7 @@ void IupTuioListener::removeTuioCursor(TuioCursor *tcur)
   IupTuioListener::processCursor(tcur, "UP", "RemoveCursor"); 
 }
 
-void IupTuioListener::processCursor(TuioCursor *tcur, char* state, char* action) 
+void IupTuioListener::processCursor(TuioCursor *tcur, const char* state, const char* action) 
 {
   int has_canvas = 0;
   this->changed = 1;
@@ -112,12 +112,12 @@ void IupTuioListener::processCursor(TuioCursor *tcur, char* state, char* action)
     if (has_canvas)
       iupdrvScreenToClient(ih_canvas, &x, &y);
 
-    if (cb(ih_canvas, id, x, y, state)==IUP_CLOSE)
+    if (cb(ih_canvas, id, x, y, (char*)state)==IUP_CLOSE)
       IupExitLoop();
   }
 
   if (this->debug)
-    printf("IupTuioClient-%s(id=%d sid=%d x=%d y=%d)\n", action, tcur->getCursorID(), tcur->getSessionID(), tcur->getX(), tcur->getY());
+    printf("IupTuioClient-%s(id=%d sid=%d x=%d y=%d)\n", action, tcur->getCursorID(), (int)tcur->getSessionID(), (int)tcur->getX(), (int)tcur->getY());
 }
 
 void  IupTuioListener::refresh(TuioTime frameTime) 
@@ -178,7 +178,7 @@ void  IupTuioListener::refresh(TuioTime frameTime)
     }
 
     if (this->debug)
-      printf("IupTuioClient-RefreshChanged(time=%d)\n", frameTime.getTotalMilliseconds());
+      printf("IupTuioClient-RefreshChanged(time=%d)\n", (int)frameTime.getTotalMilliseconds());
   }
 }
 
@@ -229,7 +229,7 @@ static int iTuioCreateMethod(Ihandle* ih, void** params)
 {
   int port = 3333;
   if (params && params[0])
-    port = (int)(params[0]);
+    port = (int)(long)(params[0]); /* must cast to long first to avoid 64bit compiler error */
   
   ih->data = iupALLOCCTRLDATA();
   
