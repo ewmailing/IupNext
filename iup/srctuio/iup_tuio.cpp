@@ -267,6 +267,9 @@ static Iclass* iTuioGetClass(void)
   ic->Create = iTuioCreateMethod;
   ic->Destroy = iTuioDestroyMethod;
 
+  iupClassRegisterCallback(ic, "TOUCH_CB", "iiis");
+  iupClassRegisterCallback(ic, "MULTITOUCH_CB", "iIII");
+
   iupClassRegisterAttribute(ic, "CONNECT", iTuioGetConnectAttrib, iTuioSetConnectAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DEBUG", iTuioGetDebugAttrib, iTuioSetDebugAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 

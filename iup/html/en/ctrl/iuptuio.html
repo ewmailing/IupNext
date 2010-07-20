@@ -67,7 +67,7 @@ IupCanvas</strong> that will be used to receive the events.</p>
   Action generated 
   when a touch event occurred. Multiple touch events will trigger several calls.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>id</strong>, int <strong>x</strong>, int <strong>y</strong>, char* <strong>status</strong>); [in C]
-<strong>elem</strong>:touch_cb(<strong>but</strong>, <strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>elem</strong>:touch_cb(<strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifies the element that activated the event. 
 If TARGETCANVAS is not defined then it is the <strong>IupTuioClient</strong> 
 control.<br>
@@ -79,13 +79,13 @@ top-left corner of the canvas, or the screen if TARGETCANVAS is not defined.<br>
 <p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
 <p><strong>MULTITOUCH_CB</strong>: Action generated when multiple touch events 
 occourred.</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>count</strong>, int* <strong>id</strong>, int* <strong>px</strong>, int* <strong>py</strong>) [in C]
-<strong>elem</strong>:multitouch_cb(<strong>count:</strong> number<strong>, id, px, py: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>count</strong>, int* <strong>pid</strong>, int* <strong>px</strong>, int* <strong>py</strong>) [in C]
+<strong>elem</strong>:multitouch_cb(<strong>count:</strong> number<strong>, pid, px, py: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. If TARGETCANVAS is not defined then it is the <strong>IupTuioClient</strong> 
 control.<br>
 <strong>count</strong>: Number of touch points in the array.<br>
-<strong>id</strong>:
+<strong>pid</strong>:
     Array of touch point ids.<br>
 <strong>px</strong>:
     Array of touch point x coordinates in pixels, relative to the top-left corner of 
