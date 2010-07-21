@@ -14,7 +14,7 @@
 
 static int Submenu(lua_State *L)
 {
-  Ihandle *ih = IupSubmenu((char *) luaL_optstring(L, 1, NULL), iuplua_checkihandleornil(L, 2));
+  Ihandle *ih = IupSubmenu((char *)luaL_optstring(L, 1, NULL), iuplua_checkihandleornil(L, 2));
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

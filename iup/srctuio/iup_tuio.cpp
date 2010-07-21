@@ -26,16 +26,33 @@
 
 using namespace TUIO;
 
+struct iTuioCursorEnvent{
+  int id;
+  float x, y;
+  char state;
+
+  iTuioCursorEnvent(int _id, float _x, float _y, char _state);
+};
+
+iTuioCursorEnvent::iTuioCursorEnvent(int _id, float _x, float _y, char _state)
+:id(_id), x(_x), y(_y), state(_state)
+{
+}
+
 class IupTuioListener : public TuioListener 
 {
-  int changed;
+  int changed, locked;
   TuioClient* client;
   Ihandle* ih;
+  std::list<iTuioCursorEnvent> cursor_events;
 
   void processCursor(TuioCursor *tcur, const char* state, const char* action);
 
+  static int timer_action_cb(Ihandle *timer);
+
   public:
     int debug;
+    Ihandle* timer;
 
     IupTuioListener(Ihandle* _ih, TuioClient* _client);
 
@@ -51,8 +68,12 @@ class IupTuioListener : public TuioListener
 };
 
 IupTuioListener::IupTuioListener(Ihandle* _ih, TuioClient* _client)
-  :changed(0), client(_client), ih(_ih), debug(0)
+  :changed(0), locked(0), client(_client), ih(_ih), debug(0)
 {
+  timer = IupTimer();
+  IupSetAttribute(timer, "TIME", "50");
+  IupSetAttribute(timer, "_IUP_TUIOLISTENER", (char*)this);
+  IupSetCallback(timer, "ACTION_CB", timer_action_cb);
 }
 
 void IupTuioListener::addTuioObject(TuioObject *tobj) 
@@ -90,31 +111,12 @@ void IupTuioListener::removeTuioCursor(TuioCursor *tcur)
 
 void IupTuioListener::processCursor(TuioCursor *tcur, const char* state, const char* action) 
 {
-  int has_canvas = 0;
+  float x = tcur->getX();
+  float y = tcur->getY();
+  int id = (((int)tcur->getSessionID()) << 16) | tcur->getCursorID();
+  cursor_events.push_back(iTuioCursorEnvent(id, x, y, state[0]));
+
   this->changed = 1;
-
-  Ihandle* ih_canvas = IupGetAttributeHandle(this->ih, "TARGETCANVAS");
-  if (ih_canvas)
-    has_canvas = 1;
-  else
-    ih_canvas = this->ih;
-
-  IFniiis cb = (IFniiis)IupGetCallback(ih_canvas, "TOUCH_CB");
-  if (cb)
-  {
-    int w, h, x, y, id;
-    iupdrvGetFullSize(&w, &h);
-
-    x = tcur->getScreenX(w);
-    y = tcur->getScreenY(h);
-    id = (((int)tcur->getSessionID()) << 16) | tcur->getCursorID();
-
-    if (has_canvas)
-      iupdrvScreenToClient(ih_canvas, &x, &y);
-
-    if (cb(ih_canvas, id, x, y, (char*)state)==IUP_CLOSE)
-      IupExitLoop();
-  }
 
   if (this->debug)
     printf("IupTuioClient-%s(id=%d sid=%d x=%d y=%d)\n", action, tcur->getCursorID(), (int)tcur->getSessionID(), (int)tcur->getX(), (int)tcur->getY());
@@ -124,62 +126,98 @@ void  IupTuioListener::refresh(TuioTime frameTime)
 {
   if (this->changed)
   {
-    std::list<TuioCursor*>::iterator iter;
-    int i, w, h, x, y;
-    IFniIII cb = NULL;
-    int *px=NULL, *py=NULL, *id=NULL;
-    int has_canvas = 0;
+    Ihandle* ih_canvas = IupGetAttributeHandle(this->ih, "TARGETCANVAS");
+    if (!ih_canvas)
+      ih_canvas = this->ih;
 
     this->changed = 0;
 
-    Ihandle* ih_canvas = IupGetAttributeHandle(this->ih, "TARGETCANVAS");
-    if (ih_canvas)
-      has_canvas = 1;
-    else
-      ih_canvas = this->ih;
-
-    cb = (IFniIII)IupGetCallback(ih_canvas, "MULTITOUCH_CB");
-    if (cb)
+    IFniiis cb = (IFniiis)IupGetCallback(ih_canvas, "TOUCH_CB");
+    IFniIIII mcb = (IFniIIII)IupGetCallback(ih_canvas, "MULTITOUCH_CB");
+    if (cb || mcb)
     {
       this->client->lockCursorList();
-
-      iupdrvGetFullSize(&w, &h);
-
-      std::list<TuioCursor*> cursorList = this->client->getTuioCursors();
-      int count = cursorList.size();
-
-      px = new int[count?count:1];
-      py = new int[count?count:1];
-      id = new int[count?count:1];
-
-      for (i = 0, iter = cursorList.begin(); i<count; iter++,i++) 
-      {
-        TuioCursor *tcur = (*iter);
-
-        x = tcur->getScreenX(w);
-        y = tcur->getScreenY(h);
-
-        if (has_canvas)
-          iupdrvScreenToClient(ih_canvas, &x, &y);
-
-        px[i] = x;
-        py[i] = y;
-        id[i] = (((int)tcur->getSessionID()) << 16) | tcur->getCursorID();
-      }
-
-      if (cb(ih_canvas, count, id, px, py)==IUP_CLOSE)
-        IupExitLoop();
-       
-      delete[] px;
-      delete[] py;
-      delete[] id;
-
-      this->client->unlockCursorList();
+      this->locked = 1;
     }
 
     if (this->debug)
       printf("IupTuioClient-RefreshChanged(time=%d)\n", (int)frameTime.getTotalMilliseconds());
   }
+}
+
+int IupTuioListener::timer_action_cb(Ihandle *timer)
+{
+  IupTuioListener* listener = reinterpret_cast<IupTuioListener*>(IupGetAttribute(timer, "_IUP_TUIOLISTENER"));
+
+  if (!listener->locked)
+    return IUP_DEFAULT;
+
+  int has_canvas = 0;
+  Ihandle* ih_canvas = IupGetAttributeHandle(listener->ih, "TARGETCANVAS");
+  if (ih_canvas)
+    has_canvas = 1;
+  else
+    ih_canvas = listener->ih;
+
+  IFniiis cb = (IFniiis)IupGetCallback(ih_canvas, "TOUCH_CB");
+  IFniIIII mcb = (IFniIIII)IupGetCallback(ih_canvas, "MULTITOUCH_CB");
+
+  int w, h, x, y;
+  iupdrvGetFullSize(&w, &h);
+
+  int count = listener->cursor_events.size();
+
+  int *px=NULL, *py=NULL, *pid=NULL, *pstate=NULL;
+  if (mcb)
+  {
+    px = new int[count?count:1];
+    py = new int[count?count:1];
+    pid = new int[count?count:1];
+    pstate = new int[count?count:1];
+  }
+
+  for (int i = 0; i<count; i++) 
+  {
+    const iTuioCursorEnvent& evt = listener->cursor_events.front();
+
+    char* state = (evt.state=='D')? "DOWN": ((evt.state=='U')? "UP": "MOVE");
+    x = (int)floor(evt.x*w+0.5f);
+    y = (int)floor(evt.y*h+0.5f);
+
+    if (has_canvas)
+      iupdrvScreenToClient(ih_canvas, &x, &y);
+
+    if (cb)
+    {
+      if (cb(ih_canvas, evt.id, x, y, state)==IUP_CLOSE)
+        IupExitLoop();
+    }
+
+    if (mcb)
+    {
+      px[i] = x;
+      py[i] = y;
+      pid[i] = evt.id;
+      pstate[i] = state[0];
+    }
+
+    listener->cursor_events.pop_front();
+  }
+
+  if (mcb)
+  {
+    if (mcb(ih_canvas, count, pid, px, py, pstate)==IUP_CLOSE)
+      IupExitLoop();
+     
+    delete[] px;
+    delete[] py;
+    delete[] pid;
+    delete[] pstate;
+  }
+
+  listener->locked = 0;
+  listener->client->unlockCursorList();
+  return IUP_DEFAULT;
 }
 
 /**************************************************************************************/
@@ -193,12 +231,21 @@ struct _IcontrolData
 static int iTuioSetConnectAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->client->isConnected())
+  {
+    IupSetAttribute(ih->data->listener->timer, "RUN", "NO");
     ih->data->client->disconnect();
-    
+  }
+
   if (iupStrEqualNoCase(value, "YES"))
+  {
     ih->data->client->connect(false);
+    IupSetAttribute(ih->data->listener->timer, "RUN", "YES");
+  }
   else if (iupStrEqualNoCase(value, "LOCKED"))
+  {
     ih->data->client->connect(true);
+    IupSetAttribute(ih->data->listener->timer, "RUN", "YES");
+  }
     
   return 0;
 }
@@ -242,6 +289,7 @@ static int iTuioCreateMethod(Ihandle* ih, void** params)
 
 static void iTuioDestroyMethod(Ihandle* ih)
 {
+  IupDestroy(ih->data->listener->timer);
   delete ih->data->client;
   delete ih->data->listener;
 }
@@ -268,7 +316,7 @@ static Iclass* iTuioGetClass(void)
   ic->Destroy = iTuioDestroyMethod;
 
   iupClassRegisterCallback(ic, "TOUCH_CB", "iiis");
-  iupClassRegisterCallback(ic, "MULTITOUCH_CB", "iIII");
+  iupClassRegisterCallback(ic, "MULTITOUCH_CB", "iIIII");
 
   iupClassRegisterAttribute(ic, "CONNECT", iTuioGetConnectAttrib, iTuioSetConnectAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DEBUG", iTuioGetDebugAttrib, iTuioSetDebugAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

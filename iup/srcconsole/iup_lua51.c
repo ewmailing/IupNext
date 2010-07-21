@@ -52,6 +52,11 @@
 #include <cdluaim.h>
 #endif
 #endif
+
+#ifdef IUPLUA_TUIO
+#include "iupluatuio.h"
+#endif
+
 #endif
 /******************* IUP *********************/
 
@@ -386,8 +391,12 @@ static void iuplua_openlibs (lua_State *L) {
 #ifdef USE_STATIC
   /* iuplua initialization */
   iuplua_open(L);
+
 #ifdef IUPLUA_IMGLIB
   luaopen_iupluaimglib(L);
+#endif
+#ifdef IUPLUA_TUIO
+  iuptuiolua_open(L);
 #endif
 
 /* luaopen_lfs(L); */

@@ -1,5 +1,5 @@
 /*
-** $Id: iup_lua52.c,v 1.1 2010-06-11 14:46:36 scuri Exp $
+** $Id: iup_lua52.c,v 1.2 2010-07-21 18:49:34 scuri Exp $
 ** Lua stand-alone interpreter
 ** See Copyright Notice in lua.h
 */
@@ -51,6 +51,11 @@
 #include <cdluaim.h>
 #endif
 #endif
+
+#ifdef IUPLUA_TUIO
+#include "iupluatuio.h"
+#endif
+
 #endif
 /******************* IUP *********************/
 
@@ -456,8 +461,12 @@ static void iuplua_openlibs (lua_State *L) {
 #ifdef USE_STATIC
   /* iuplua initialization */
   iuplua_open(L);
+
 #ifdef IUPLUA_IMGLIB
   luaopen_iupluaimglib(L);
+#endif
+#ifdef IUPLUA_TUIO
+  iuptuiolua_open(L);
 #endif
 
 /* luaopen_lfs(L); */

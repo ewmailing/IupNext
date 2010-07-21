@@ -35,7 +35,7 @@ static int val_button_release_cb(Ihandle *self, double p0)
 
 static int Val(lua_State *L)
 {
-  Ihandle *ih = IupVal((char *) luaL_optstring(L, 1, NULL));
+  Ihandle *ih = IupVal((char *)luaL_optstring(L, 1, NULL));
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

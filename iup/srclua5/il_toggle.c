@@ -21,7 +21,7 @@ static int toggle_action(Ihandle *self, int p0)
 
 static int Toggle(lua_State *L)
 {
-  Ihandle *ih = IupToggle((char *) luaL_optstring(L, 1, NULL), NULL);
+  Ihandle *ih = IupToggle((char *)luaL_optstring(L, 1, NULL), NULL);
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

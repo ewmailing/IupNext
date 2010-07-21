@@ -14,7 +14,7 @@
 
 static int Label(lua_State *L)
 {
-  Ihandle *ih = IupLabel((char *) luaL_optstring(L, 1, NULL));
+  Ihandle *ih = IupLabel((char *)luaL_optstring(L, 1, NULL));
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

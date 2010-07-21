@@ -20,7 +20,7 @@ static int button_action(Ihandle *self)
 
 static int Button(lua_State *L)
 {
-  Ihandle *ih = IupButton((char *) luaL_optstring(L, 1, NULL), NULL);
+  Ihandle *ih = IupButton((char *)luaL_optstring(L, 1, NULL), NULL);
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

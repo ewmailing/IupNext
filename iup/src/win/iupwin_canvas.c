@@ -411,19 +411,20 @@ static char* winCanvasGetTouchAttrib(Ihandle* ih)
 
 static void winCanvasProcessMultiTouch(Ihandle* ih, int count, HTOUCHINPUT hTouchInput)
 {
-  IFniIII mcb = (IFniIII)IupGetCallback(ih, "MULTITOUCH_CB");
+  IFniIIII mcb = (IFniIIII)IupGetCallback(ih, "MULTITOUCH_CB");
   IFniiis cb = (IFniiis)IupGetCallback(ih, "TOUCH_CB");
 
   if (mcb || cb)
   {
-    int *px=NULL, *py=NULL, *id=NULL;
+    int *px=NULL, *py=NULL, *pid=NULL, *pstate=NULL;
     TOUCHINPUT* ti = malloc(count*sizeof(TOUCHINPUT));
 
     if (mcb)
     {
       px = malloc(sizeof(int)*(count?count:1));
       py = malloc(sizeof(int)*(count?count:1));
-      id = malloc(sizeof(int)*(count?count:1));
+      pid = malloc(sizeof(int)*(count?count:1));
+      pstate = malloc(sizeof(int)*(count?count:1));
     }
 
     if (winGetTouchInputInfo(hTouchInput, count, ti, sizeof(TOUCHINPUT)))
@@ -435,11 +436,14 @@ static void winCanvasProcessMultiTouch(Ihandle* ih, int count, HTOUCHINPUT hTouc
         y = ti[i].y / 100;
         iupdrvScreenToClient(ih, &x, &y);
 
-        if (ti[i].dwFlags & TOUCHEVENTF_DOWN)
+        if (ti[i].dwFlags & TOUCHEVENTF_DOWN ||
+            ti[i].dwFlags & TOUCHEVENTF_MOVE ||
+            ti[i].dwFlags & TOUCHEVENTF_UP)
         {
+          char* state = (ti[i].dwFlags & TOUCHEVENTF_DOWN)? "DOWN": ((ti[i].dwFlags & TOUCHEVENTF_UP)? "UP": "MOVE");
           if (cb)
           {
-            if (cb(ih, ti->dwID, x, y, "DOWN")==IUP_CLOSE)
+            if (cb(ih, ti->dwID, x, y, state)==IUP_CLOSE)
               IupExitLoop();
           }
 
@@ -447,30 +451,8 @@ static void winCanvasProcessMultiTouch(Ihandle* ih, int count, HTOUCHINPUT hTouc
           {
             px[i] = x;
             py[i] = y;
-            id[i] = ti[i].dwID;
-          }
-        }
-        else if (ti[i].dwFlags & TOUCHEVENTF_MOVE)
-        {
-          if (cb)
-          {
-            if (cb(ih, ti->dwID, x, y, "MOVE")==IUP_CLOSE)
-              IupExitLoop();
-          }
-
-          if (mcb)
-          {
-            px[i] = x;
-            py[i] = y;
-            id[i] = ti[i].dwID;
-          }
-        }
-        else if (ti[i].dwFlags & TOUCHEVENTF_UP)
-        {
-          if (cb)
-          {
-            if (cb(ih, ti->dwID, x, y, "UP")==IUP_CLOSE)
-              IupExitLoop();
+            pid[i] = ti[i].dwID;
+            pstate[i] = state[0];
           }
         }
       }
@@ -478,12 +460,13 @@ static void winCanvasProcessMultiTouch(Ihandle* ih, int count, HTOUCHINPUT hTouc
 
     if (mcb)
     {
-      if (mcb(ih, count, id, px, py)==IUP_CLOSE)
+      if (mcb(ih, count, pid, px, py, pstate)==IUP_CLOSE)
         IupExitLoop();
 
       free(px);
       free(py);
-      free(id);
+      free(pid);
+      free(pstate);
     }
 
     winCloseTouchInputHandle(hTouchInput);

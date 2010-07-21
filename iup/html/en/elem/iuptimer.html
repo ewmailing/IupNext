@@ -41,7 +41,8 @@ timer() [in LED]</pre>
 
   <p><strong>RUN</strong>: Starts and stops 
   the timer. Possible values: &quot;YES&quot; or &quot;NO&quot;. Returns the 
-  current timer state.</p>
+  current timer state. If you have multiple threads start the timer in the main 
+	thread.</p>
 
 
   <p><b>WID</b> (read-only): Returns the native serial number of the timer. Returns -1 if 

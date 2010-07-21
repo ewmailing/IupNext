@@ -54,7 +54,8 @@ then the default value of 3333 will be used (in Lua it can be simply omitted).</
 
 <p><strong>CONNECT</strong>: connects (YES) or disconnects (NO) to the TUIO 
 server. Returns the connected state. If LOCKED is used when connected the
-<strong>IupSetAttribute</strong> will not return until it is disconnected.</p>
+<strong>IupSetAttribute</strong> will not return until it is disconnected (not 
+recommended).</p>
 <p><strong>DEBUG</strong>: when set will enable a print a log of TUIO cursor 
 messages on standard output.</p>
 
@@ -66,8 +67,8 @@ IupCanvas</strong> that will be used to receive the events.</p>
 <p><strong>TOUCH_CB</strong>:
   Action generated 
   when a touch event occurred. Multiple touch events will trigger several calls.</p>
-<pre>int function(Ihandle* <strong>ih</strong>, int <strong>id</strong>, int <strong>x</strong>, int <strong>y</strong>, char* <strong>status</strong>); [in C]
-<strong>elem</strong>:touch_cb(<strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle* <strong>ih</strong>, int <strong>id</strong>, int <strong>x</strong>, int <strong>y</strong>, char* <strong>state</strong>); [in C]
+<strong>elem</strong>:touch_cb(<strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> state</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifies the element that activated the event. 
 If TARGETCANVAS is not defined then it is the <strong>IupTuioClient</strong> 
 control.<br>
@@ -75,12 +76,12 @@ control.<br>
 <strong><br>
 x</strong>, <strong>y</strong>: position in pixels, relative to the 
 top-left corner of the canvas, or the screen if TARGETCANVAS is not defined.<br>
-<strong>status</strong>: the touch point status. Can be: DOWN, MOVE or UP.</p>
+<strong>state</strong>: the touch point state. Can be: DOWN, MOVE or UP.</p>
 <p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
 <p><strong>MULTITOUCH_CB</strong>: Action generated when multiple touch events 
-occourred.</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>count</strong>, int* <strong>pid</strong>, int* <strong>px</strong>, int* <strong>py</strong>) [in C]
-<strong>elem</strong>:multitouch_cb(<strong>count:</strong> number<strong>, pid, px, py: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+occurred.</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>count</strong>, int* <strong>pid</strong>, int* <strong>px</strong>, int* <strong>py</strong>, int* <strong>pstate</strong>) [in C]
+<strong>elem</strong>:multitouch_cb(<strong>count:</strong> number<strong>, pid, px, py, pstate: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. If TARGETCANVAS is not defined then it is the <strong>IupTuioClient</strong> 
 control.<br>
@@ -93,6 +94,8 @@ the canvas, or the screen if TARGETCANVAS is not defined.<br>
 <strong>py</strong>:
     Array of touch point y coordinates in pixels, relative to the top-left corner of 
 the canvas, or the screen if TARGETCANVAS is not defined.<br>
+<strong>pstate</strong>: Array of touch point states. Can be &#39;D&#39; (DOWN), &#39;U&#39; 
+(UP) or &#39;M&#39; (MOVE).<br>
 </p>
 <p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
 <h3><a name="Notes">Notes</a></h3>

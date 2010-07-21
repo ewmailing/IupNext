@@ -26,7 +26,7 @@ static int item_highlight_cb(Ihandle *self)
 
 static int Item(lua_State *L)
 {
-  Ihandle *ih = IupItem((char *) luaL_optstring(L, 1, NULL), NULL);
+  Ihandle *ih = IupItem((char *)luaL_optstring(L, 1, NULL), NULL);
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

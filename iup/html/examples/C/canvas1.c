@@ -65,7 +65,7 @@ int touch_cb(Ihandle *self, int id, int x, int y, char* state)
   else
     printf("touch_cb(id=%d x=%d y=%d state=%s)\n", id, x, y, state);
 
-  if (id&0xFFFF == 0)  // How about Windows 7 Ids?
+  if ((id&0xFFFF) == 0)  // How about Windows 7 Ids?
   {
     static int tap_x = 0;
     static int tap_y = 0;
@@ -98,16 +98,17 @@ int touch_cb(Ihandle *self, int id, int x, int y, char* state)
   return IUP_DEFAULT;
 }
 
-int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py)
+int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *pstate)
 {
   int i;
   printf("multitouch_cb(count=%d)\n", count);
   for (i = 0; i < count; i++)
   {
     if (id[i] >= 0xFFFF)
-      printf("    id=%d sid=%d x=%d y=%d\n", id[i]&0xFFFF, (id[i]>>16)&0xFFFF, px[i], py[i]);
+      printf("    id=%d sid=%d x=%d y=%d state=%c\n", id[i]&0xFFFF, (id[i]>>16)&0xFFFF, px[i], py[i], pstate[i]);
     else
-      printf("    id=%d x=%d y=%d\n", id[i], px[i], py[i]);
+      printf("    id=%d x=%d y=%d state=%c\n", id[i], px[i], py[i], pstate[i]);
+
     cdCanvasPixel(cdcanvas, px[i], cdCanvasInvertYAxis(cdcanvas, py[i]), CD_RED);
   }
   return IUP_DEFAULT;

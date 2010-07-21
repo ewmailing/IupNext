@@ -22,7 +22,7 @@ static int dial_mousemove_cb(Ihandle *self, double p0)
 
 static int Dial(lua_State *L)
 {
-  Ihandle *ih = IupDial((char *) luaL_optstring(L, 1, NULL));
+  Ihandle *ih = IupDial((char *)luaL_optstring(L, 1, NULL));
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

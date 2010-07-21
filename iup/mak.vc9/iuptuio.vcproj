@@ -97,45 +97,49 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srctuio\tuio\TuioClient.h"
-				>
-			</File>
-			<File
-				RelativePath="..\srctuio\tuio\TuioContainer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\srctuio\tuio\TuioCursor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\srctuio\tuio\TuioListener.h"
-				>
-			</File>
-			<File
-				RelativePath="..\srctuio\tuio\TuioObject.h"
-				>
-			</File>
-			<File
-				RelativePath="..\srctuio\tuio\TuioPoint.h"
-				>
-			</File>
-			<File
 				RelativePath="..\srctuio\tuio\TuioServer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\srctuio\tuio\TuioServer.h"
 				>
 			</File>
 			<File
 				RelativePath="..\srctuio\tuio\TuioTime.cpp"
 				>
 			</File>
-			<File
-				RelativePath="..\srctuio\tuio\TuioTime.h"
+			<Filter
+				Name="inc"
 				>
-			</File>
+				<File
+					RelativePath="..\srctuio\tuio\TuioClient.h"
+					>
+				</File>
+				<File
+					RelativePath="..\srctuio\tuio\TuioContainer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\srctuio\tuio\TuioCursor.h"
+					>
+				</File>
+				<File
+					RelativePath="..\srctuio\tuio\TuioListener.h"
+					>
+				</File>
+				<File
+					RelativePath="..\srctuio\tuio\TuioObject.h"
+					>
+				</File>
+				<File
+					RelativePath="..\srctuio\tuio\TuioPoint.h"
+					>
+				</File>
+				<File
+					RelativePath="..\srctuio\tuio\TuioServer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\srctuio\tuio\TuioTime.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="oscpack"

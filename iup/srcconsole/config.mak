@@ -116,6 +116,16 @@ ifdef DBG
       SLIB += $(IUPLIB)/libiupluaimglib$(LIBLUASUFX).a $(IUPLIB)/libiupimglib.a
     endif
   endif
+  
+  IUPLUA_TUIO = Yes
+  ifdef IUPLUA_TUIO
+    DEFINES += IUPLUA_TUIO
+    ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+      LIBS += iupluatuio$(LIBLUASUFX) iuptuio
+    else
+      SLIB += $(IUPLIB)/libiupluatuio$(LIBLUASUFX).a $(IUPLIB)/libiuptuio.a
+    endif
+  endif
 else
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     # Dinamically link in Windows, when not debugging
