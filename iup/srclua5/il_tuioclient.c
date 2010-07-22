@@ -81,6 +81,7 @@ static int tuio_multitouch_cb(Ihandle *ih, int count, int* id, int* px, int* py,
     lua_settable(L,-3);
   }
   
+  
   lua_createtable(L, count, 0);
   for (i = 0; i < count; i++)
   {
@@ -88,8 +89,8 @@ static int tuio_multitouch_cb(Ihandle *ih, int count, int* id, int* px, int* py,
     lua_pushinteger(L,pstate[i]);
     lua_settable(L,-3);
   }
-
-  return iuplua_call(L, 2);
+  
+  return iuplua_call(L, 5);
 }
 
 int iuptuiolua_open(lua_State* L)

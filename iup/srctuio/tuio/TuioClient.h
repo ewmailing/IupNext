@@ -154,10 +154,9 @@ namespace TUIO {
 		 */
 		void unlockObjectList();
 
-		/** IUP
-		 * Returns the number of elements in the TuioCursor list
-		 */
-		int CursorListCount() const;
+		/** IUP */
+		int CursorListCount();
+    std::list<TuioCursor*>& getCursorList();
 
 		/**
 		 * Locks the TuioCursor list in order to avoid updates during access

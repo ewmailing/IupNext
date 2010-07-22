@@ -76,7 +76,8 @@ control.<br>
 <strong><br>
 x</strong>, <strong>y</strong>: position in pixels, relative to the 
 top-left corner of the canvas, or the screen if TARGETCANVAS is not defined.<br>
-<strong>state</strong>: the touch point state. Can be: DOWN, MOVE or UP.</p>
+<strong>state</strong>: the touch point state. Can be: DOWN, MOVE or UP. If the 
+point is a &quot;primary&quot; point then &quot;-PRIMARY&quot; is appended to the string.</p>
 <p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
 <p><strong>MULTITOUCH_CB</strong>: Action generated when multiple touch events 
 occurred.</p>
@@ -99,14 +100,15 @@ the canvas, or the screen if TARGETCANVAS is not defined.<br>
 </p>
 <p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
 <h3><a name="Notes">Notes</a></h3>
-<p>The cursor ID used in the callbacks is actually a combination of the TUIO 
-cursor id and the session id &quot;(sid&lt;&lt;16)|id&quot;. When a cursor is destroyed another 
-cursor can be created with the same id, the difference between them is the 
-session id that is always incremented every time a cursor is added or removed.</p>
+<p>The cursor ID used in the callbacks is the session ID. In TUIO when a cursor is destroyed another 
+cursor can be created with the same ID, the difference between them is the 
+session ID that is always incremented every time a cursor is added or removed. 
+We consider the primary cursor the existing cursor with the smaller session ID.</p>
 <p>The native support for multi-touch in Windows 7 uses the same callbacks 
 described here without the need of a <strong>IupTuioClient</strong> control. So 
 the application will work without change. But the attribute TOUCH=YES must be 
-set on the <strong>IupCanvas</strong>.</p>
+set on the <strong>IupCanvas</strong>, and coordinates will be always relative 
+to the top-left corner of the canvas.</p>
 <p>The <strong>IupTuioClient</strong> does not emulates a mouse for single touch 
 events. But as you can see from the example a mouse emulator can be easily 
 implemented.</p>

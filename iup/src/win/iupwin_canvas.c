@@ -41,6 +41,7 @@ typedef struct tagTOUCHINPUT {
 #define TOUCHEVENTF_MOVE            0x0001
 #define TOUCHEVENTF_DOWN            0x0002
 #define TOUCHEVENTF_UP              0x0004
+#define TOUCHEVENTF_PRIMARY         0x0010
 #endif
 
 static int has_touch = 0;
@@ -421,10 +422,10 @@ static void winCanvasProcessMultiTouch(Ihandle* ih, int count, HTOUCHINPUT hTouc
 
     if (mcb)
     {
-      px = malloc(sizeof(int)*(count?count:1));
-      py = malloc(sizeof(int)*(count?count:1));
-      pid = malloc(sizeof(int)*(count?count:1));
-      pstate = malloc(sizeof(int)*(count?count:1));
+      px = malloc(sizeof(int)*(count));
+      py = malloc(sizeof(int)*(count));
+      pid = malloc(sizeof(int)*(count));
+      pstate = malloc(sizeof(int)*(count));
     }
 
     if (winGetTouchInputInfo(hTouchInput, count, ti, sizeof(TOUCHINPUT)))
@@ -443,6 +444,9 @@ static void winCanvasProcessMultiTouch(Ihandle* ih, int count, HTOUCHINPUT hTouc
           char* state = (ti[i].dwFlags & TOUCHEVENTF_DOWN)? "DOWN": ((ti[i].dwFlags & TOUCHEVENTF_UP)? "UP": "MOVE");
           if (cb)
           {
+            if (ti[i].dwFlags & TOUCHEVENTF_PRIMARY)
+              state = (ti[i].dwFlags & TOUCHEVENTF_DOWN)? "DOWN-PRIMARY": ((ti[i].dwFlags & TOUCHEVENTF_UP)? "UP-PRIMARY": "MOVE-PRIMARY");
+
             if (cb(ih, ti->dwID, x, y, state)==IUP_CLOSE)
               IupExitLoop();
           }
@@ -655,7 +659,7 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     *result = 0;
     return 1;
   case WM_TOUCH:
-    if (has_touch)
+    if (has_touch && LOWORD(wp))
       winCanvasProcessMultiTouch(ih, (int)LOWORD(wp), (HTOUCHINPUT)lp);
     break;
   }

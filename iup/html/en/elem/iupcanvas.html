@@ -267,34 +267,35 @@ older GTK versions.</p>
 <p><strong>TOUCH_CB</strong> [Windows 7 Only]:
   Action generated 
   when a touch event occurred. Multiple touch events will trigger several calls. 
-Must set TOUCH=Yes. (Since 3.3)</p>
-<pre>int function(Ihandle* <strong>ih</strong>, int <strong>id</strong>, int <strong>x</strong>, int <strong>y</strong>, char* <strong>status</strong>); [in C]
-<strong>elem</strong>:button_cb(<strong>but</strong>, <strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>: identifies the element that activated the event. 
-If TARGETCANVAS is not defined then it is the <strong>IupTuioClient</strong> 
-control.<br>
+Must set TOUCH=Yes to receive this event. (Since 3.3)</p>
+<pre>int function(Ihandle* <strong>ih</strong>, int <strong>id</strong>, int <strong>x</strong>, int <strong>y</strong>, char* <strong>state</strong>); [in C]
+<strong>elem</strong>:touch_cb(<strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> state</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifies the element that activated the 
+event.<br>
 <strong>id</strong>: identifies the touch point.
 <strong><br>
 x</strong>, <strong>y</strong>: position in pixels, relative to the 
-top-left corner of the canvas, or the screen if TARGETCANVAS is not defined.<br>
-<strong>status</strong>: the touch point status. Can be: DOWN, MOVE or UP.</p>
+top-left corner of the canvas.<br>
+<strong>state</strong>: the touch point state. Can be: DOWN, MOVE or UP. If the 
+point is a &quot;primary&quot; point then &quot;-PRIMARY&quot; is appended to the string.</p>
 <p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
 <p><strong>MULTITOUCH_CB</strong> [Windows 7 Only]: Action generated when 
-multiple touch events occurred. Must set TOUCH=Yes. (Since 3.3)</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>count</strong>, int* <strong>id</strong>, int* <strong>px</strong>, int* <strong>py</strong>) [in C]
-<strong>elem</strong>:multitouch_cb(<strong>count:</strong> number<strong>, id, px, py: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+multiple touch events occurred. Must set TOUCH=Yes to receive this event. (Since 3.3)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>count</strong>, int* <strong>pid</strong>, int* <strong>px</strong>, int* <strong>py</strong>, int* <strong>pstate</strong>) [in C]
+<strong>elem</strong>:multitouch_cb(<strong>count:</strong> number<strong>, pid, px, py, pstate: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
-the event. If TARGETCANVAS is not defined then it is the <strong>IupTuioClient</strong> 
-control.<br>
+the event.<br>
 <strong>count</strong>: Number of touch points in the array.<br>
-<strong>id</strong>:
+<strong>pid</strong>:
     Array of touch point ids.<br>
 <strong>px</strong>:
     Array of touch point x coordinates in pixels, relative to the top-left corner of 
-the canvas, or the screen if TARGETCANVAS is not defined.<br>
+the canvas.<br>
 <strong>py</strong>:
     Array of touch point y coordinates in pixels, relative to the top-left corner of 
-the canvas, or the screen if TARGETCANVAS is not defined.<br>
+the canvas.<br>
+<strong>pstate</strong>: Array of touch point states. Can be &#39;D&#39; (DOWN), &#39;U&#39; 
+(UP) or &#39;M&#39; (MOVE).<br>
 </p>
 <p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
 

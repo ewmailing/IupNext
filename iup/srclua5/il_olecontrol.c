@@ -15,7 +15,7 @@
 
 static int OleControl(lua_State *L)
 {
-  Ihandle *ih = IupOleControl((char *) luaL_checkstring(L, 1));
+  Ihandle *ih = IupOleControl((char *)luaL_checkstring(L, 1));
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;

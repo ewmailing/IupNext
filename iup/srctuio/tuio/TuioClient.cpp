@@ -566,6 +566,10 @@ std::list<TuioCursor*> TuioClient::getTuioCursors() {
 	return listBuffer;
 }
 
-int TuioClient::CursorListCount() const {
+std::list<TuioCursor*>& TuioClient::getCursorList() {
+	return cursorList;
+}
+
+int TuioClient::CursorListCount() {
   return cursorList.size();
 }

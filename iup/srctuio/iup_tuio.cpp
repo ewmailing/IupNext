@@ -47,6 +47,10 @@ class IupTuioListener : public TuioListener
   std::list<iTuioCursorEnvent> cursor_events;
 
   void processCursor(TuioCursor *tcur, const char* state, const char* action);
+  void initCursorInfo(int cursor_count, int* pid, int* pstate);
+  void finishCursorInfo(int cursor_count, int* px, int* py, int* pstate, int w, int h, int use_client_coord, Ihandle* ih_canvas);
+  void updateCursorInfo(int *cursor_count, int* pid, int* px, int* py, int* pstate, int id, int x, int y, int state);
+  int GetMainCursor();
 
   static int timer_action_cb(Ihandle *timer);
 
@@ -113,7 +117,7 @@ void IupTuioListener::processCursor(TuioCursor *tcur, const char* state, const c
 {
   float x = tcur->getX();
   float y = tcur->getY();
-  int id = (((int)tcur->getSessionID()) << 16) | tcur->getCursorID();
+  int id = (int)tcur->getSessionID();
   cursor_events.push_back(iTuioCursorEnvent(id, x, y, state[0]));
 
   this->changed = 1;
@@ -145,6 +149,89 @@ void  IupTuioListener::refresh(TuioTime frameTime)
   }
 }
 
+void IupTuioListener::initCursorInfo(int cursor_count, int* pid, int* pstate)
+{
+  std::list<TuioCursor*>& cursorList = this->client->getCursorList();
+  std::list <TuioCursor*>::iterator iter;
+  int i;
+
+  for (i = 0, iter = cursorList.begin() ; i<cursor_count; iter++, i++) 
+  {
+    TuioCursor* tcur = (*iter);
+    pid[i] = (int)tcur->getSessionID();
+    pstate[i] = 0;  /* mark to be updated later */
+  }
+}
+
+int IupTuioListener::GetMainCursor()
+{
+  std::list<TuioCursor*>& cursorList = this->client->getCursorList();
+  std::list <TuioCursor*>::iterator iter;
+  std::list <TuioCursor*>::iterator end = cursorList.end();
+  int min_id = -1;
+
+  for (iter = cursorList.begin(); iter!=end; iter++) 
+  {
+    TuioCursor* tcur = (*iter);
+    int id = (int)tcur->getSessionID();
+    if (min_id == -1 || id < min_id)
+      min_id = id;
+  }
+
+  return min_id;
+}
+
+void IupTuioListener::finishCursorInfo(int cursor_count, int* px, int* py, int* pstate, int w, int h, int use_client_coord, Ihandle* ih_canvas)
+{
+  std::list<TuioCursor*>& cursorList = this->client->getCursorList();
+  std::list <TuioCursor*>::iterator iter;
+  std::list <TuioCursor*>::iterator end = cursorList.end();
+  int i;
+
+  for (i = 0, iter = cursorList.begin(); i<cursor_count && iter!=end; iter++, i++) 
+  {
+    if (pstate[i] == 0) /* if still 0, then it was not updated, must fill it here */
+    {
+      TuioCursor* tcur = (*iter);
+
+      int x = tcur->getScreenX(w);
+      int y = tcur->getScreenY(h);
+
+      if (use_client_coord)
+        iupdrvScreenToClient(ih_canvas, &x, &y);
+
+      px[i] = x;
+      py[i] = y;
+      pstate[i] = 'M';  /* mark as MOVE */
+    }
+  }
+}
+
+void IupTuioListener::updateCursorInfo(int *cursor_count, int* pid, int* px, int* py, int* pstate, int id, int x, int y, int state)
+{
+  int i;
+
+  for(i = 0; i < *cursor_count; i++)
+  {
+    if (pid[i] == id)
+    {
+      px[i] = x;
+      py[i] = y;
+      pstate[i] = state;
+      return;
+    }
+  }
+
+  if (state == 'U')  /* UP - not in the cursorList, add it */
+  {
+    pid[i] = id;
+    px[i] = x;
+    py[i] = y;
+    pstate[i] = state;
+    (*cursor_count)++;
+  }
+}
+
 int IupTuioListener::timer_action_cb(Ihandle *timer)
 {
   IupTuioListener* listener = reinterpret_cast<IupTuioListener*>(IupGetAttribute(timer, "_IUP_TUIOLISTENER"));
@@ -152,10 +239,20 @@ int IupTuioListener::timer_action_cb(Ihandle *timer)
   if (!listener->locked)
     return IUP_DEFAULT;
 
-  int has_canvas = 0;
+  int events_count = listener->cursor_events.size();
+  int cursor_count = listener->client->CursorListCount();
+  int total_count = events_count+cursor_count;
+  if (!total_count)
+  {
+    listener->locked = 0;
+    listener->client->unlockCursorList();
+    return IUP_DEFAULT;
+  }
+
+  int use_client_coord = 0;
   Ihandle* ih_canvas = IupGetAttributeHandle(listener->ih, "TARGETCANVAS");
   if (ih_canvas)
-    has_canvas = 1;
+    use_client_coord = 1;
   else
     ih_canvas = listener->ih;
 
@@ -165,48 +262,52 @@ int IupTuioListener::timer_action_cb(Ihandle *timer)
   int w, h, x, y;
   iupdrvGetFullSize(&w, &h);
 
-  int count = listener->cursor_events.size();
-
   int *px=NULL, *py=NULL, *pid=NULL, *pstate=NULL;
   if (mcb)
   {
-    px = new int[count?count:1];
-    py = new int[count?count:1];
-    pid = new int[count?count:1];
-    pstate = new int[count?count:1];
+    px = new int[total_count];
+    py = new int[total_count];
+    pid = new int[total_count];
+    pstate = new int[total_count];
+
+    listener->initCursorInfo(cursor_count, pid, pstate);
   }
 
-  for (int i = 0; i<count; i++) 
+  int min_id = -1;
+  if (cb)
+    min_id = listener->GetMainCursor();
+
+  for (int i = 0; i<events_count; i++) 
   {
     const iTuioCursorEnvent& evt = listener->cursor_events.front();
 
-    char* state = (evt.state=='D')? "DOWN": ((evt.state=='U')? "UP": "MOVE");
+    const char* state = (evt.state=='D')? "DOWN": ((evt.state=='U')? "UP": "MOVE");
     x = (int)floor(evt.x*w+0.5f);
     y = (int)floor(evt.y*h+0.5f);
 
-    if (has_canvas)
+    if (use_client_coord)
       iupdrvScreenToClient(ih_canvas, &x, &y);
 
     if (cb)
     {
-      if (cb(ih_canvas, evt.id, x, y, state)==IUP_CLOSE)
+      if (min_id == evt.id)
+        state = (evt.state=='D')? "DOWN-PRIMARY": ((evt.state=='U')? "UP-PRIMARY": "MOVE-PRIMARY");
+
+      if (cb(ih_canvas, evt.id, x, y, (char*)state)==IUP_CLOSE)
         IupExitLoop();
     }
 
     if (mcb)
-    {
-      px[i] = x;
-      py[i] = y;
-      pid[i] = evt.id;
-      pstate[i] = state[0];
-    }
+      listener->updateCursorInfo(&cursor_count, pid, px, py, pstate, evt.id, x, y, state[0]);
 
     listener->cursor_events.pop_front();
   }
 
   if (mcb)
   {
-    if (mcb(ih_canvas, count, pid, px, py, pstate)==IUP_CLOSE)
+    listener->finishCursorInfo(cursor_count, px, py, pstate, w, h, use_client_coord, ih_canvas);
+
+    if (mcb(ih_canvas, cursor_count, pid, px, py, pstate)==IUP_CLOSE)
       IupExitLoop();
      
     delete[] px;

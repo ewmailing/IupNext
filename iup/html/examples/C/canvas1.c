@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "iup.h"
 #include "cd.h"
@@ -60,15 +61,16 @@ int redraw_cb( Ihandle *self, float x, float y )
 
 int touch_cb(Ihandle *self, int id, int x, int y, char* state)
 {
-  if (id >= 0xFFFF)
-    printf("touch_cb(id=%d sid=%d, x=%d y=%d state=%s)\n", id&0xFFFF, (id>>16)&0xFFFF, x, y, state);
-  else
-    printf("touch_cb(id=%d x=%d y=%d state=%s)\n", id, x, y, state);
+  printf("touch_cb(id=%d x=%d y=%d state=%s)\n", id, x, y, state);
 
-  if ((id&0xFFFF) == 0)  // How about Windows 7 Ids?
+  if (strstr(state, "PRIMARY")!=0)
   {
     static int tap_x = 0;
     static int tap_y = 0;
+
+    /* if self is the canvas, then must convert to screen coordinates */
+    x += IupGetInt(self, "X");
+    y += IupGetInt(self, "Y");
 
     /* TODO: Instead of using absolute coordinates, 
              use relative coordinates to simulate a touchpad like in a laptop. */
@@ -104,10 +106,7 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
   printf("multitouch_cb(count=%d)\n", count);
   for (i = 0; i < count; i++)
   {
-    if (id[i] >= 0xFFFF)
-      printf("    id=%d sid=%d x=%d y=%d state=%c\n", id[i]&0xFFFF, (id[i]>>16)&0xFFFF, px[i], py[i], pstate[i]);
-    else
-      printf("    id=%d x=%d y=%d state=%c\n", id[i], px[i], py[i], pstate[i]);
+    printf("    id=%d x=%d y=%d state=%c\n", id[i], px[i], py[i], pstate[i]);
 
     cdCanvasPixel(cdcanvas, px[i], cdCanvasInvertYAxis(cdcanvas, py[i]), CD_RED);
   }

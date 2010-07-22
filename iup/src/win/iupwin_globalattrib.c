@@ -16,11 +16,6 @@
 
 #include "iupwin_drv.h"
 
-/* Not defined in compilers older than VC9 */
-#ifndef MAPVK_VK_TO_VSC
-#define MAPVK_VK_TO_VSC     (0)
-#endif
-
 
 static int win_monitor_index = 0;
 static HANDLE win_singleintance = NULL;

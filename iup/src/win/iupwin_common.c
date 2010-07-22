@@ -30,6 +30,10 @@
 #include "iupwin_handle.h"
 #include "iupwin_brush.h"
 
+/* Not defined in compilers older than VC9 or WinSDK older than 6.0 */
+#ifndef MAPVK_VK_TO_VSC
+#define MAPVK_VK_TO_VSC     (0)
+#endif
 
 #ifndef  XBUTTON1
 #define XBUTTON1      0x0001     /* not defined in MingW3 */
