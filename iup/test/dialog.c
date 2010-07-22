@@ -157,6 +157,8 @@ static int k_any(Ihandle *ih, int c)
   case K_r:
     IupSetAttribute(ih, "RASTERSIZE", "300x300");
     IupRefresh(ih);
+    IupFlush();
+    printf("  RASTERSIZE=%s\n", IupGetAttribute(ih, "RASTERSIZE"));
     break;
   case K_1:
     new_dialog(1, "SIZE=FULLxFULL + IupShow.\n"
@@ -379,6 +381,8 @@ static void new_dialog(int test, char* tip)
     IupSetAttribute(dlg, "FULLSCREEN", "YES");
     IupShow(dlg);
   }
+
+
 }
 
 static void create_images(void)

@@ -50,17 +50,11 @@ int iupdrvDialogIsVisible(Ihandle* ih)
   return iupdrvIsVisible(ih);
 }
 
-void iupdrvDialogUpdateSize(Ihandle* ih)
+void iupdrvDialogGetSize(Ihandle* ih, InativeHandle* handle, int *w, int *h)
 {
   RECT rect;
-  GetWindowRect(ih->handle, &rect);
-  ih->currentwidth = rect.right-rect.left;
-  ih->currentheight = rect.bottom-rect.top;
-}
-
-void iupdrvDialogGetSize(InativeHandle* handle, int *w, int *h)
-{
-  RECT rect;
+  if (!handle)
+    handle = ih->handle;
   GetWindowRect(handle, &rect);
   if (w) *w = rect.right-rect.left;
   if (h) *h = rect.bottom-rect.top;
@@ -254,7 +248,7 @@ static void winDialogResize(Ihandle* ih, int width, int height)
 {
   IFnii cb;
 
-  iupdrvDialogUpdateSize(ih);
+  iupdrvDialogGetSize(ih, NULL, &(ih->currentwidth), &(ih->currentheight));
 
   cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
   if (!cb || cb(ih, width, height)!=IUP_IGNORE)  /* width and height here are for the client area */

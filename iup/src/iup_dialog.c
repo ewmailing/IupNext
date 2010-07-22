@@ -74,14 +74,16 @@ static void iupDialogAdjustPos(Ihandle *ih, int *x, int *y)
     InativeHandle* parent = iupDialogGetNativeParent(ih);
     if (parent)
     {
+      Ihandle* ih_parent = IupGetAttributeHandle(ih, "PARENTDIALOG");
+
       iupdrvDialogGetPosition(parent, &parent_x, &parent_y);
 
       if (*x == IUP_CENTERPARENT && *y == IUP_CENTERPARENT)
-        iupdrvDialogGetSize(parent, &screen_width, &screen_height);
+        iupdrvDialogGetSize(ih_parent, parent, &screen_width, &screen_height);
       else if (*x == IUP_CENTERPARENT)
-        iupdrvDialogGetSize(parent, &screen_width, NULL);
+        iupdrvDialogGetSize(ih_parent, parent, &screen_width, NULL);
       else if (*y == IUP_CENTERPARENT)
-        iupdrvDialogGetSize(parent, NULL, &screen_height);
+        iupdrvDialogGetSize(ih_parent, parent, NULL, &screen_height);
     }
   }
 
@@ -571,7 +573,7 @@ static char* iDialogGetSizeAttrib(Ihandle* ih)
   if (ih->handle)
   {
     /* ih->currentwidth and/or ih->currentheight could have been reset in SetSize */
-    iupdrvDialogGetSize(ih->handle, &width, &height);
+    iupdrvDialogGetSize(ih, NULL, &width, &height);
   }
   else
   {
@@ -622,7 +624,7 @@ static char* iDialogGetRasterSizeAttrib(Ihandle* ih)
   if (ih->handle)
   {
     /* ih->currentwidth and/or ih->currentheight could have been reset in SetRasterSize */
-    iupdrvDialogGetSize(ih->handle, &width, &height);
+    iupdrvDialogGetSize(ih, NULL, &width, &height);
   }
   else
   {
@@ -652,7 +654,7 @@ void iupDialogUpdatePosition(Ihandle* ih)
   /* Used by pre-defined popup native dialogs */
   int x = iupAttribGetInt(ih, "_IUPDLG_X");
   int y = iupAttribGetInt(ih, "_IUPDLG_Y");
-  iupdrvDialogUpdateSize(ih);
+  iupdrvDialogGetSize(ih, NULL, &(ih->currentwidth), &(ih->currentheight));
   /* handle always as visible for the first time */
   ih->data->first_show = 0;
   iupDialogAdjustPos(ih, &x, &y);

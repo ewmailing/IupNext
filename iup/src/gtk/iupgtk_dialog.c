@@ -49,20 +49,20 @@ int iupdrvDialogIsVisible(Ihandle* ih)
   return iupdrvIsVisible(ih);
 }
 
-void iupdrvDialogUpdateSize(Ihandle* ih)
+void iupdrvDialogGetSize(Ihandle* ih, InativeHandle* handle, int *w, int *h)
 {
   int width, height;
-  gtk_window_get_size((GtkWindow*)ih->handle, &width, &height);
-  ih->currentwidth = width;
-  ih->currentheight = height;
-}
+  int border = 0, caption = 0, menu;
+  if (!handle)
+    handle = ih->handle;
 
-void iupdrvDialogGetSize(InativeHandle* handle, int *w, int *h)
-{
-  int width, height;
-  gtk_window_get_size((GtkWindow*)handle, &width, &height);
-  if (w) *w = width;
-  if (h) *h = height;
+  gtk_window_get_size((GtkWindow*)handle, &width, &height);  /* client size */
+
+  if (ih)
+    iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+
+  if (w) *w = width + 2*border;
+  if (h) *h = height + 2*border + caption;  /* menu is inside the dialog_manager */
 }
 
 void iupdrvDialogSetVisible(Ihandle* ih, int visible)
@@ -733,6 +733,8 @@ static char* gtkDialogGetClientSizeAttrib(Ihandle *ih)
  
   int width, height;
   gtk_window_get_size((GtkWindow*)ih->handle, &width, &height);
+
+  /* remove the menu because it is placed inside the client area */
   height -= gtkDialogGetMenuSize(ih);
 
   sprintf(str, "%dx%d", width, height);

@@ -52,20 +52,25 @@ int iupdrvDialogIsVisible(Ihandle* ih)
   return iupdrvIsVisible(ih) || ih->data->show_state == IUP_MINIMIZE;
 }
 
-void iupdrvDialogUpdateSize(Ihandle* ih)
-{
-  Dimension width, height;
-  XtVaGetValues(ih->handle, XmNwidth, &width, XmNheight, &height, NULL);
-  ih->currentwidth = width;
-  ih->currentheight = height;
-}
+  //int border, caption, menu;
+  //iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+  //ih->currentwidth = width + 2*border;
+  //ih->currentheight = height + 2*border + caption;  /* menu is inside the dialog_manager */
 
-void iupdrvDialogGetSize(InativeHandle* handle, int *w, int *h)
+void iupdrvDialogGetSize(Ihandle* ih, InativeHandle* handle, int *w, int *h)
 {
   Dimension width, height;
+  int border=0, caption=0, menu;
+  if (!handle)
+    handle = ih->handle;
+
   XtVaGetValues(handle, XmNwidth, &width, XmNheight, &height, NULL);
-  if (w) *w = width;
-  if (h) *h = height;
+
+  if (ih)
+    iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+
+  if (w) *w = width + 2*border;
+  if (h) *h = height + 2*border + caption;  /* menu is inside the dialog_manager */
 }
 
 void iupmotDialogSetVisual(Ihandle* ih, void* visual)
@@ -149,7 +154,8 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   if (ih->handle && iupdrvDialogIsVisible(ih))
   {
     int win_border, win_caption;
-    if (iupdrvGetWindowDecor((void*)XtWindow(ih->handle), &win_border, &win_caption))
+    if (iupdrvGetWindowDecor((void*)XtWindow(XtNameToWidget(ih->handle, "*dialog_manager")), &win_border, &win_caption))
+//    if (iupdrvGetWindowDecor((void*)XtWindow(ih->handle), &win_border, &win_caption))
     {
       *border = 0;
       if (has_border)
@@ -517,10 +523,13 @@ static char* motDialogGetClientSizeAttrib(Ihandle *ih)
   Dimension manager_width, manager_height;
   Widget dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");
   XtVaGetValues(dialog_manager, XmNwidth,  &manager_width,
-                         XmNheight, &manager_height, 
-                         NULL);
+                                XmNheight, &manager_height, 
+                                NULL);
 
-  sprintf(str, "%dx%d", (int)manager_width, (int)manager_height - motDialogGetMenuSize(ih));
+  /* remove the menu because it is placed inside the client area */
+  manager_height -= (Dimension)motDialogGetMenuSize(ih);
+
+  sprintf(str, "%dx%d", (int)manager_width, (int)manager_height);
   return str;
 }
 
@@ -604,7 +613,7 @@ static int motDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
 
         /* save the previous decoration */
         XtVaGetValues(ih->handle, XmNmwmDecorations, &decor, NULL);
-        iupAttribSetStr(ih, "_IUPMOT_FS_DECOR", (char*)decor);
+        iupAttribSetStr(ih, "_IUPMOT_FS_DECOR", (char*)(long)decor);
 
         /* remove the decorations */
         XtVaSetValues(ih->handle, XmNmwmDecorations, (XtArgVal)0, NULL);
@@ -614,11 +623,11 @@ static int motDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
         iupdrvGetFullSize(&width, &height);
 
         /* set position and size */
-        XtVaSetValues(ih->handle, XmNwidth,  (XtArgVal)width,
-                                          XmNheight, (XtArgVal)height, 
-                                          XmNx,      (XtArgVal)0,
-                                          XmNy,      (XtArgVal)0,
-                                          NULL);
+        XtVaSetValues(ih->handle, XmNwidth,  (XtArgVal)width,  /* client size */
+                                  XmNheight, (XtArgVal)height, 
+                                  XmNx,      (XtArgVal)0,
+                                  XmNy,      (XtArgVal)0,
+                                  NULL);
 
         /* layout will be updated in motDialogConfigureNotify */
         if (visible)
@@ -653,7 +662,7 @@ static int motDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
             XtUnmapWidget(ih->handle);
 
           /* restore the decorations */
-          XtVaSetValues(ih->handle, XmNmwmDecorations, (XtArgVal)(int)iupAttribGet(ih, "_IUPMOT_FS_DECOR"), NULL);
+          XtVaSetValues(ih->handle, XmNmwmDecorations, (XtArgVal)(int)(long)iupAttribGet(ih, "_IUPMOT_FS_DECOR"), NULL);
           motDialogSetWindowManagerStyle(ih);
 
           /* the dialog decoration will not be considered yet in the next XtVaSetValues */
@@ -753,11 +762,7 @@ static void motDialogConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal 
   if (!ih) return;
 
   if (ih->data->menu && ih->data->menu->handle)
-  {
-    XtVaSetValues(ih->data->menu->handle,
-      XmNwidth, (XtArgVal)(cevent->width),
-      NULL);
-  }
+    XtVaSetValues(ih->data->menu->handle, XmNwidth, (XtArgVal)(cevent->width), NULL);
 
   if (ih->data->ignore_resize) return; 
 
@@ -1016,7 +1021,7 @@ static void motDialogLayoutUpdateMethod(Ihandle *ih)
     int width = ih->currentwidth - 2*border;
     int height = ih->currentheight - 2*border - caption;
     XtVaSetValues(ih->handle,
-      XmNwidth, width,
+      XmNwidth, width,  /* client size */
       XmNheight, height,
       XmNminWidth, width, 
       XmNminHeight, height, 
