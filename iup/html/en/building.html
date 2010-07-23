@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>Guide</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+
+<h1 align="center" style="text-align:center">Building Lua, IM, CD and IUP in 
+Linux</h1>
+<p>This is a guide to build all the Lua, IM, CD and IUP libraries in Linux. 
+Notice that you may not use all the libraries, but this guide will build all of 
+them. Later on it is explained hoe to build a single library.</p>
+<h3>System Configuration</h3>
+<p>You will have to download the development version of some packages installed 
+on your system. Although the run time version of some of these packages were 
+already installed, the development versions are usually not. The packages 
+described here are for Ubuntu, but you will be able to identify them for other 
+systems as well.</p>
+<p>To build Lua you will need:</p>
+			<pre>libreadline5-dev</pre>
+		<p>To build IM you will need:</p>
+			<pre>g++</pre>
+		<p>To build CD you will need:</p>
+<pre>libx11-dev
+libxpm-dev
+libxmu-dev
+  libxft-dev (for the XRender driver, OPTIONAL)
+libgtk2.0-dev (for the GDK driver)</pre>
+
+<p>To build IUP you will need:</p>
+<pre>libgtk2.0-dev (for the GTK driver) [already installed for CD]
+  libmotif-dev and x11proto-print-dev (for the Motif driver, OPTIONAL)
+libgl1-mesa-dev and libglu1-mesa-dev (for the IupGLCanvas)</pre>
+<h3>Download</h3>
+<p>Download the &quot;xxx-X.X_Sources.tar.gz&quot; package from the &quot;Docs and Sources&quot; 
+folder for the version you want to build. Here are links for the Files section 
+in Source Forge:</p>
+<p>Lua - <a href="http://sourceforge.net/projects/luabinaries/files/">
+http://sourceforge.net/projects/luabinaries/files/</a><br>
+IM - <a href="http://sourceforge.net/projects/imtoolkit/files/">
+http://sourceforge.net/projects/imtoolkit/files/</a><br>
+CD - <a href="http://sourceforge.net/projects/canvasdraw/files/">
+http://sourceforge.net/projects/canvasdraw/files/</a><br>
+IUP - <a href="http://sourceforge.net/projects/iup/files/">
+http://sourceforge.net/projects/iup/files/</a></p>
+<h3>Lua</h3>
+<p>Although we use Lua from LuaBinaries, any Lua installation can also be used. 
+But you will have to define some evironment variables before building IM, CD and 
+IUP. Here is an example:</p>
+<pre class="example">export LUA_SUFFIX=
+export LUA_INC=/usr/local/include      [actually NOT necessary, this one is already used by gcc/g++]
+export LUA_LIB=/usr/local/lib          [            &quot;         ]
+export LUA_BIN=/usr/local/bin          [necessary because luac will not be used from the PATH]</pre>
+<p>The tools bin2c and luac are necessary only if you need to rebuild LOH files. 
+But since the source packages already includes them, those tools are in fact no 
+necessary.</p>
+<h3>Unpacking</h3>
+<p>If you are going to build all the libraries, the makefiles and projects 
+expect the following directory tree:</p>
+<pre>/xxxx/
+      iup/
+      cd/
+      im/
+      lua5.1/  [optional]</pre>
+
+<p>So, unpack all the source packages in the same folder that will do fine.</p>
+<h3>Building</h3>
+
+<p>As a general rule (excluding system dependencies): IUP depends on CD and IM, 
+and CD depends on IM. So start by build IM, then CD, then IUP.</p>
+<p>To start building go the the &quot;src&quot; folder and type &quot;make&quot;. In IUP there are 
+many &quot;srcxxx&quot; folders, so go to the up folder &quot;iup&quot; and type make that all the 
+sub folders will be built.</p>
+<p>Instead of building all the libraries, try building only the libraries you 
+are going to use. The provided makefiles will build all the libraries, but take 
+a look inside them and you will figure out how to build just one library. </p>
+<h3>Installation</h3>
+
+<p>XXX</p>
+
+</body>
+
+</html>
