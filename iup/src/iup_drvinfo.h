@@ -69,12 +69,6 @@ void iupdrvGetCursorPos(int *x, int *y);
  * \ingroup drvinfo */
 void* iupdrvGetDisplay(void);
 
-/** Returns the decoration size of the native window.
- * In Windows will also includes the menu if any.
- * Used in DialogGetDecoration.
- * \ingroup drvinfo */
-int iupdrvGetWindowDecor(void* wnd, int *border, int *caption);
-
 /** Returns the current directory.
  * \ingroup drvinfo */
 char* iupdrvGetCurrentDirectory(void);

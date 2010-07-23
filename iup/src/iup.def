@@ -163,7 +163,6 @@ iupdrvIsVisible
 iupdrvIsFile
 iupdrvIsDirectory
 iupdrvIsActive
-iupdrvGetWindowDecor
 iupdrvGetUserName
 iupdrvGetSystemVersion
 iupdrvGetSystemName

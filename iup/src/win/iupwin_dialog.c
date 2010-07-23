@@ -79,6 +79,23 @@ void iupdrvDialogSetPosition(Ihandle *ih, int x, int y)
   SetWindowPos(ih->handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
 }
 
+static void winDialogGetWindowDecor(Ihandle* ih, int *border, int *caption)
+{
+  WINDOWINFO wi;
+  wi.cbSize = sizeof(WINDOWINFO);
+  GetWindowInfo(ih->handle, &wi);
+
+  *border = wi.cxWindowBorders;
+
+  if (wi.rcClient.bottom == wi.rcClient.top)
+    *caption = wi.rcClient.bottom - wi.cyWindowBorders; 
+  else
+  {
+    /* caption = window height - top border - client height */
+    *caption = (wi.rcWindow.bottom-wi.rcWindow.top) - 2*wi.cyWindowBorders - (wi.rcClient.bottom-wi.rcClient.top); 
+  }
+}
+
 void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu)
 {
   if (ih->data->menu)
@@ -88,7 +105,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
 
   if (ih->handle)
   {
-    iupdrvGetWindowDecor(ih->handle, border, caption);
+    winDialogGetWindowDecor(ih, border, caption);
 
     if (*menu)
       *caption -= *menu;

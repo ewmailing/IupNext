@@ -85,24 +85,6 @@ int iupdrvSetCurrentDirectory(const char* dir)
   return chdir(dir) == 0? 1: 0;
 }
 
-int iupdrvGetWindowDecor(void* wnd, int *border, int *caption)
-{
-  XWindowAttributes wa;
-  wa.x = 0; wa.y = 0;
-  XGetWindowAttributes((Display*)iupdrvGetDisplay(), (Window)wnd, &wa);
-  if (wa.x > 0 && wa.y > 0 && wa.y >= wa.x)
-  {
-    *border = wa.x;
-    *caption = wa.y - *border;
-    return 1;
-  }
-
-  *border = 0;
-  *caption = 0;
-
-  return 0;
-}
-
 static int xGetWorkAreaSize(Display* display, int screen, int *width, int *height)
 {
   /* _NET_WORKAREA, x, y, width, height CARDINAL[][4]/32 */

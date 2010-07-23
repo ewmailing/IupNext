@@ -134,6 +134,25 @@ static int motDialogGetMenuSize(Ihandle* ih)
     return 0;
 }
 
+static int motDialogGetWindowDecor(Ihandle* ih, int *border, int *caption)
+{
+  Widget dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");
+  XWindowAttributes wa;
+  wa.x = 0; wa.y = 0;
+  XGetWindowAttributes((Display*)iupdrvGetDisplay(), XtWindow(dialog_manager), &wa);
+  if (wa.x > 0 && wa.y > 0 && wa.y >= wa.x)
+  {
+    *border = wa.x;
+    *caption = wa.y - *border;
+    return 1;
+  }
+
+  *border = 0;
+  *caption = 0;
+
+  return 0;
+}
+
 void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu)
 {
   static int native_border = 0;
@@ -154,8 +173,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   if (ih->handle && iupdrvDialogIsVisible(ih))
   {
     int win_border, win_caption;
-    if (iupdrvGetWindowDecor((void*)XtWindow(XtNameToWidget(ih->handle, "*dialog_manager")), &win_border, &win_caption))
-//    if (iupdrvGetWindowDecor((void*)XtWindow(ih->handle), &win_border, &win_caption))
+    if (motDialogGetWindowDecor(ih, &win_border, &win_caption))
     {
       *border = 0;
       if (has_border)

@@ -62,25 +62,6 @@ int iupdrvSetCurrentDirectory(const char* dir)
   return SetCurrentDirectory(dir);
 }
 
-int iupdrvGetWindowDecor(void* wnd, int *border, int *caption)
-{
-  WINDOWINFO wi;
-  wi.cbSize = sizeof(WINDOWINFO);
-  GetWindowInfo((HWND)wnd, &wi);
-
-  *border = wi.cxWindowBorders;
-
-  if (wi.rcClient.bottom == wi.rcClient.top)
-    *caption = wi.rcClient.bottom - wi.cyWindowBorders; 
-  else
-  {
-    /* caption = window height - top border - client height */
-    *caption = (wi.rcWindow.bottom-wi.rcWindow.top) - 2*wi.cyWindowBorders - (wi.rcClient.bottom-wi.rcClient.top); 
-  }
-
-  return 1;
-}
-
 void iupdrvGetScreenSize(int *width, int *height)
 {
   RECT area;
