@@ -1,10 +1,10 @@
 require 'iuplua'
-require "iuplua_pplot51" 
+require "iuplua_pplot"
 
 iupxpplot = {}
 
 function iupxpplot.pplot (tbl)
-	
+
 	if tbl.AXS_BOUNDS then
 		local t = tbl.AXS_BOUNDS
 		tbl.AXS_XMIN = t[1]

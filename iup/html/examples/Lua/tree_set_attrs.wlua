@@ -132,4 +132,7 @@ dlg = iup.dialog{
 dlg:show()
 tree.value = 15
 no.value = 15
---iup.MainLoop()
+
+if (iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end

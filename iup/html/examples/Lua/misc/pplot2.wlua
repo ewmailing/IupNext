@@ -1,6 +1,6 @@
 require( "iuplua" )
 require( "iupluacontrols" )
-require( "iuplua_pplot51"  )
+require( "iuplua_pplot"  )
 
 --MARGINBOTTOM="20"
 

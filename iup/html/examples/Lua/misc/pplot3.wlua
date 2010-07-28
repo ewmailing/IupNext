@@ -1,7 +1,7 @@
 require( "iuplua" )
 
 function create_pplot (tbl)
-    require( "iuplua_pplot51"  )
+    require( "iuplua_pplot" )
 
     -- if we explicitly supply ranges, then auto must be switched off for that direction.
     if tbl.AXS_YMIN then tbl.AXS_YAUTOMIN = "NO" end

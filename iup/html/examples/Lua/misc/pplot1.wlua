@@ -1,6 +1,6 @@
 require( "iuplua" )
 require( "iupluacontrols" )
-require( "iuplua_pplot51"  )
+require( "iuplua_pplot"  )
 
 plot = iup.pplot{TITLE = "A simple XY Plot",
                     MARGINBOTTOM="35",
