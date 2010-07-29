@@ -37,8 +37,8 @@ function ctrl.createElement(class, param)
     if type(menu_param) == "table" then 
       -- replace param[i], so it will be used by iup.Append after createElement
       -- other elements already created can also be used
-      if type(menu_param[1]) == nil then
-        param[i] = iup.separator()
+      if type(menu_param[1]) == "nil" then
+        param[i] = iup.separator{}
       elseif type(menu_param[1]) == "string" then
         local itemarg = ctrl.getargs(menu_param)
         if type(menu_param[2]) == "userdata" then

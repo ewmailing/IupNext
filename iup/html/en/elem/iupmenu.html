@@ -8,6 +8,9 @@
 .style1 {
 	margin-left: 40px;
 }
+.style2 {
+	text-align: center;
+}
 </style>
 </head>
 <body>
@@ -96,6 +99,8 @@ supported.</p>
 {&quot;&lt;submenu_name&gt;&quot;, &lt;menu&gt;} - submenu
 {} - separator</pre>
 <p>For example:</p>
+<p class="style2">
+<img alt="" src="images/iupmenu_fromsyntax.png" width="403" height="78"></p>
   
     <pre>mnu = iup.menu
 {
@@ -111,7 +116,7 @@ supported.</p>
   },
   iup.item{title=&quot;IupItem 3&quot;},
   iup.item{title=&quot;IupItem 4&quot;}
-}</pre>
+}:popup(iup.CENTER, iup.CENTER)</pre>
   
   <p>The same example using the cleaner syntax:</p>
   
@@ -128,7 +133,7 @@ supported.</p>
   },
   {&quot;IupItem 3&quot;},
   {&quot;IupItem 4&quot;}
-}</pre>
+}:popup(iup.CENTER, iup.CENTER)</pre>
 <p>It is also possible to mix the cleaner syntax with the normal syntax or with 
 already create elements.</p>
   
