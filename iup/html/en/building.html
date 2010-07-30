@@ -12,10 +12,10 @@
 Linux</h1>
 <p>This is a guide to build all the Lua, IM, CD and IUP libraries in Linux. 
 Notice that you may not use all the libraries, but this guide will build all of 
-them. Later on it is explained hoe to build a single library.</p>
+them. Later on it is explained how to build a single library.</p>
 <h3>System Configuration</h3>
 <p>You will have to download the development version of some packages installed 
-on your system. Although the run time version of some of these packages were 
+on your system. Although the run time version of some of these packages are 
 already installed, the development versions are usually not. The packages 
 described here are for Ubuntu, but you will be able to identify them for other 
 systems as well.</p>
@@ -35,9 +35,9 @@ libgtk2.0-dev (for the GDK driver)</pre>
   libmotif-dev and x11proto-print-dev (for the Motif driver, OPTIONAL)
 libgl1-mesa-dev and libglu1-mesa-dev (for the IupGLCanvas)</pre>
 <h3>Download</h3>
-<p>Download the &quot;xxx-X.X_Sources.tar.gz&quot; package from the &quot;Docs and Sources&quot; 
-folder for the version you want to build. Here are links for the Files section 
-in Source Forge:</p>
+<p>Download the &quot;xxx-X.X_Sources.tar.gz&quot; package from the &quot;<strong>Docs and Sources</strong>&quot; 
+folder for the version you want to build. Here are links for the <strong>Files</strong> section 
+in <strong>Source Forge</strong>:</p>
 <p>Lua - <a href="http://sourceforge.net/projects/luabinaries/files/">
 http://sourceforge.net/projects/luabinaries/files/</a><br>
 IM - <a href="http://sourceforge.net/projects/imtoolkit/files/">
@@ -48,14 +48,14 @@ IUP - <a href="http://sourceforge.net/projects/iup/files/">
 http://sourceforge.net/projects/iup/files/</a></p>
 <h3>Lua</h3>
 <p>Although we use Lua from LuaBinaries, any Lua installation can also be used. 
-But you will have to define some evironment variables before building IM, CD and 
+But you will have to define some environment variables before building IM, CD and 
 IUP. Here is an example:</p>
 <pre class="example">export LUA_SUFFIX=
 export LUA_INC=/usr/local/include      [actually NOT necessary, this one is already used by gcc/g++]
 export LUA_LIB=/usr/local/lib          [            &quot;         ]
 export LUA_BIN=/usr/local/bin          [necessary because luac will not be used from the PATH]</pre>
-<p>The tools bin2c and luac are necessary only if you need to rebuild LOH files. 
-But since the source packages already includes them, those tools are in fact no 
+<p>The tools <strong>bin2c</strong> and <strong>luac</strong> are necessary only if you need to rebuild LOH files. 
+But since the source packages already includes them, those tools are in fact not 
 necessary.</p>
 <h3>Unpacking</h3>
 <p>If you are going to build all the libraries, the makefiles and projects 
@@ -71,15 +71,46 @@ expect the following directory tree:</p>
 
 <p>As a general rule (excluding system dependencies): IUP depends on CD and IM, 
 and CD depends on IM. So start by build IM, then CD, then IUP.</p>
-<p>To start building go the the &quot;src&quot; folder and type &quot;make&quot;. In IUP there are 
-many &quot;srcxxx&quot; folders, so go to the up folder &quot;iup&quot; and type make that all the 
+<p>To start building go the the &quot;<strong>src</strong>&quot; folder and type &quot;<strong>make</strong>&quot;. In IUP there are 
+many &quot;srcxxx&quot; folders, so go to the up folder &quot;iup&quot; and type 
+&quot;<strong>make</strong>&quot; that all the 
 sub folders will be built.</p>
 <p>Instead of building all the libraries, try building only the libraries you 
 are going to use. The provided makefiles will build all the libraries, but take 
 a look inside them and you will figure out how to build just one library. </p>
 <h3>Installation</h3>
 
-<p>XXX</p>
+<p>After building you can copy the libraries files to the system folder. This is 
+not necessary since you can use -I and -L on your makefiles, but it can be done. 
+If you are inside one of the libraries main folder you can type:</p>
+<pre>cp lib/Linux26g4/* /usr/local/lib
+cp include/* /usr/local/include</pre>
+<p>This will copy run time and development files. If you just want the run time, 
+then do simply:</p>
+<pre>cp lib/Linux26g4/*.so /usr/local/lib</pre>
+<p>Also when coping development folders, if you want to keep the library headers 
+in a separate folder, you can do:</p>
+<pre>cp -R iup/include /usr/local/include/iup
+cp -R cd/include /usr/local/include/cd
+cp -R im/include /usr/local/include/im</pre>
+<p>Then use in your makefile -Iiup -Icd -Iim.</p>
+<p>This installation procedure also can be used for the pre-compiled binaries 
+packages available for download. They contain the development and run time files 
+you need. </p>
+<p>If you <strong>don't</strong> want to copy the libraries to your system 
+folder, you can still use them, but you will need to add the binaries folders to 
+the LD_LIBRARY_PATH, for example:</p>
+<pre>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/xxxx/iup/lib/Linux26g4:/xxxx/cd/lib/Linux26g4:/xxxx/im/lib/Linux26g4</pre>
+<h4>Lua</h4>
+<p>If you are NOT using LuaBinaries then you have a few options to be able to use 
+&quot;require&quot; with these libraries. You can create symbolic links in the Lua C 
+modules folder to the installed libraries run time:</p>
+<pre>ln -s /usr/local/lib/lipiuplua51.so /usr/local/lib/lua/5.1/iuplua.so
+ln -s /usr/local/lib/lipiupluacontrols51.so /usr/local/lib/lua/5.1/iupluacontrols.so
+...</pre>
+<p>You can set the LUA_CPATH environment variable:</p>
+<pre>export LUA_CPATH=./\?.so\;./lib\?.so\;./lib\?51.so\;
+</pre>
 
 </body>
 
