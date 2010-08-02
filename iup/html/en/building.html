@@ -101,8 +101,10 @@ you need. </p>
 folder, you can still use them, but you will need to add the binaries folders to 
 the LD_LIBRARY_PATH, for example:</p>
 <pre>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/xxxx/iup/lib/Linux26g4:/xxxx/cd/lib/Linux26g4:/xxxx/im/lib/Linux26g4</pre>
+<p>In this case, in your makefile will will also need to specify those paths 
+when linking using -L/xxxx/iup/lib/Linux26g4.</p>
 <h4>Lua</h4>
-<p>If you are NOT using LuaBinaries then you have a few options to be able to use 
+<p>If you are NOT using LuaBinaries then you have two options to be able to use 
 &quot;require&quot; with these libraries. You can create symbolic links in the Lua C 
 modules folder to the installed libraries run time:</p>
 <pre>ln -s /usr/local/lib/lipiuplua51.so /usr/local/lib/lua/5.1/iuplua.so

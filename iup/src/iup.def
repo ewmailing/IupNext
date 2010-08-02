@@ -95,6 +95,7 @@ IupHboxv
 IupMenuv
 IupSetCallback
 IupGetCallback
+IupSetCallbacks
 IupGetChild
 IupGetChildPos
 IupGetChildCount

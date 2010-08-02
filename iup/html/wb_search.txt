@@ -1,4 +1,5 @@
 en/iupcontrols.html
+en/building.html
 en/ctrl/iupmatrix_cb.html
 en/gallery_dlg.html
 en/func/iuppreviousfield.html
@@ -203,8 +204,8 @@ en/func/iupgetfocus.html
 en/ide_guide/msvc.html
 en/../doxygen/group__iclassbase.html
 en/../doxygen/group__iclass.html
-en/call/iup_show_cb.html
 en/../doxygen/group__cpi.html
+en/call/iup_show_cb.html
 en/../doxygen/index.html
 en/func/iupgetfunction.html
 en/elem/iuptimer.html
