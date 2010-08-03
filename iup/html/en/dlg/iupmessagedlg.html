@@ -11,6 +11,9 @@
 .style2 {
 	border-width: 0;
 }
+.style3 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 <body>
@@ -31,7 +34,7 @@
   IupPopup function only.</p>
 <h3><a name="Creation">Creation</a></h3>
 <pre>Ihandle* IupMessageDlg(void); [in C]
-iup.messagedlg() -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.messagedlg<span class="style3">{}</span> -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 messagedlg() [in LED]</pre>
 <p><u>Returns:</u> the identifier of the 
   created element, or NULL if an error occurs.</p>
