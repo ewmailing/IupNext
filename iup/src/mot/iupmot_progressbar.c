@@ -29,8 +29,44 @@
 #include "iupmot_color.h"
 
 
+static int motProgressBarTimeCb(Ihandle* timer)
+{
+  Ihandle* ih = (Ihandle*)iupAttribGet(timer, "_IUP_PROGRESSBAR");
+  int value;
+  XtVaGetValues(ih->handle, XmNvalue, &value, NULL);
+  value += SHRT_MAX/50;
+  if (value > SHRT_MAX)
+  {
+    unsigned char dir;
+    value = 0;
+    XtVaGetValues(ih->handle, XmNprocessingDirection, &dir, NULL);
+    if (dir == XmMAX_ON_RIGHT)
+      XtVaSetValues(ih->handle, XmNprocessingDirection, XmMAX_ON_LEFT, NULL);
+    else
+      XtVaSetValues(ih->handle, XmNprocessingDirection, XmMAX_ON_RIGHT, NULL);
+  }
+  XtVaSetValues(ih->handle, XmNvalue, value, NULL);
+  return IUP_DEFAULT;
+}
+
+static int motProgressBarSetMarqueeAttrib(Ihandle* ih, const char* value)
+{
+  if (!ih->data->marquee)
+    return 0;
+
+  if (iupStrBoolean(value))
+    IupSetAttribute(ih->data->timer, "RUN", "YES");
+  else
+    IupSetAttribute(ih->data->timer, "RUN", "NO");
+
+  return 1;
+}
+
 static int motProgressBarSetValueAttrib(Ihandle* ih, const char* value)
 {
+  if (ih->data->marquee)
+    return 0;
+
   if (!value)
     ih->data->value = 0;
   else
@@ -109,8 +145,8 @@ static int motProgressBarMapMethod(Ihandle* ih)
   /* Scale */
   iupMOT_SETARG(args, num_args, XmNminimum,   0);
   iupMOT_SETARG(args, num_args, XmNmaximum, SHRT_MAX);
-  iupMOT_SETARG(args, num_args, XmNslidingMode, XmTHERMOMETER); /* thermometer effect */
   iupMOT_SETARG(args, num_args, XmNsliderMark, XmNONE);
+  iupMOT_SETARG(args, num_args, XmNsliderVisual, XmTROUGH_COLOR);
   iupMOT_SETARG(args, num_args, XmNeditable, False);
   iupMOT_SETARG(args, num_args, XmNshowValue, XmNONE);
 
@@ -127,6 +163,21 @@ static int motProgressBarMapMethod(Ihandle* ih)
   }
   else
     iupMOT_SETARG(args, num_args, XmNorientation, XmHORIZONTAL);
+
+  if (iupAttribGetBoolean(ih, "MARQUEE"))
+  {
+    ih->data->marquee = 1;
+    ih->data->timer = IupTimer();
+    IupSetCallback(ih->data->timer, "ACTION_CB", (Icallback)motProgressBarTimeCb);
+    IupSetAttribute(ih->data->timer, "TIME", "100");
+    iupAttribSetStr(ih->data->timer, "_IUP_PROGRESSBAR", (char*)ih);
+    iupMOT_SETARG(args, num_args, XmNslidingMode, XmSLIDER);
+  }
+  else
+  {
+    iupMOT_SETARG(args, num_args, XmNslidingMode, XmTHERMOMETER);
+    ih->data->marquee = 0;
+  }
   
   ih->handle = XtCreateManagedWidget(
     iupDialogGetChildIdStr(ih),  /* child identifier */
@@ -162,4 +213,5 @@ void iupdrvProgressBarInitClass(Iclass* ic)
   /* IupProgressBar only */
   iupClassRegisterAttribute(ic, "VALUE",  iProgressBarGetValueAttrib,  motProgressBarSetValueAttrib,  NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, "HORIZONTAL", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARQUEE",     NULL, motProgressBarSetMarqueeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }

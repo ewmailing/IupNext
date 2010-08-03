@@ -75,6 +75,12 @@ static int iProgressBarCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
+static void iProgressBarDestroyMethod(Ihandle* ih)
+{
+  if (ih->data->timer)
+    IupDestroy(ih->data->timer);
+}
+
 Iclass* iupProgressBarGetClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
@@ -87,6 +93,7 @@ Iclass* iupProgressBarGetClass(void)
 
   /* Class functions */
   ic->Create = iProgressBarCreateMethod;
+  ic->Destroy = iProgressBarDestroyMethod;
 
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;

@@ -20,6 +20,8 @@ struct _IcontrolData
   double value,  /* value is min < value < max */
          vmin,
          vmax;
+
+  Ihandle* timer; /* used in GTK and MOtif */
 };
 
 void  iProgressBarCropValue(Ihandle* ih);

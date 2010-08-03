@@ -26,20 +26,22 @@
 #include "iupgtk_drv.h"
 
 
+static int gtkProgressBarTimeCb(Ihandle* timer)
+{
+  Ihandle* ih = (Ihandle*)iupAttribGet(timer, "_IUP_PROGRESSBAR");
+  gtk_progress_bar_pulse((GtkProgressBar*)ih->handle);
+  return IUP_DEFAULT;
+}
+
 static int gtkProgressBarSetMarqueeAttrib(Ihandle* ih, const char* value)
 {
-  GtkProgress* progress = (GtkProgress*)ih->handle;
+  if (!ih->data->marquee)
+    return 0;
 
   if (iupStrBoolean(value))
-  {
-    ih->data->marquee = 1;
-    gtk_progress_set_activity_mode(progress, TRUE);
-  }
+    IupSetAttribute(ih->data->timer, "RUN", "YES");
   else
-  {
-    gtk_progress_set_activity_mode(progress, FALSE);
-    ih->data->marquee = 0;
-  }
+    IupSetAttribute(ih->data->timer, "RUN", "NO");
 
   return 1;
 }
@@ -48,16 +50,16 @@ static int gtkProgressBarSetValueAttrib(Ihandle* ih, const char* value)
 {
   GtkProgressBar* pbar = (GtkProgressBar*)ih->handle;
 
+  if (ih->data->marquee)
+    return 0;
+
   if (!value)
     ih->data->value = 0;
   else
     ih->data->value = atof(value);
   iProgressBarCropValue(ih);
 
-  if (ih->data->marquee)
-    gtk_progress_bar_pulse(pbar);
-  else
-    gtk_progress_bar_set_fraction(pbar, (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
+  gtk_progress_bar_set_fraction(pbar, (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
 
   return 0;
 }
@@ -65,6 +67,9 @@ static int gtkProgressBarSetValueAttrib(Ihandle* ih, const char* value)
 static int gtkProgressBarSetDashedAttrib(Ihandle* ih, const char* value)
 {
   GtkProgressBar* pbar = (GtkProgressBar*)ih->handle;
+
+  if (ih->data->marquee)
+    return 0;
 
   /* gtk_progress_bar_set_bar_style is deprecated */
   if (iupStrBoolean(value))
@@ -105,6 +110,22 @@ static int gtkProgressBarMapMethod(Ihandle* ih)
   }
   else
     gtk_progress_bar_set_orientation((GtkProgressBar*)ih->handle, GTK_PROGRESS_LEFT_TO_RIGHT);
+
+  if (iupAttribGetBoolean(ih, "MARQUEE"))
+  {
+    ih->data->marquee = 1;
+    gtk_progress_set_activity_mode((GtkProgress*)ih->handle, TRUE);
+    ih->data->timer = IupTimer();
+    IupSetCallback(ih->data->timer, "ACTION_CB", (Icallback)gtkProgressBarTimeCb);
+    IupSetAttribute(ih->data->timer, "TIME", "100");
+    iupAttribSetStr(ih->data->timer, "_IUP_PROGRESSBAR", (char*)ih);
+    gtk_progress_bar_set_pulse_step((GtkProgressBar*)ih->handle, 0.02);
+  }
+  else
+  {
+    gtk_progress_set_activity_mode((GtkProgress*)ih->handle, FALSE);
+    ih->data->marquee = 0;
+  }
 
   return IUP_NOERROR;
 }

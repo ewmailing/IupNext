@@ -160,12 +160,7 @@ static void createimg_s (void)
 
 static int time_cb(void)
 {
-  float value = IupGetFloat(progressbar1, "VALUE");
-  value += increment;
-  if (value > 1) value = 0; /* start over */
-  IupSetfAttribute(progressbar1, "VALUE", "%f", (double)value);
-
-  value = IupGetFloat(progressbar2, "VALUE");
+  float value = IupGetFloat(progressbar2, "VALUE");
   value += increment*50;
   if (value > 50) value = 0; /* start over */
   IupSetfAttribute(progressbar2, "VALUE", "%f", (double)value);
@@ -176,11 +171,13 @@ static int btn_pause_cb(void)
 {
   if (!IupGetInt(timer, "RUN"))
   {
+    IupSetAttribute(progressbar1, "MARQUEE", "YES");
     IupSetAttribute(timer, "RUN", "YES");
     IupSetAttribute(btn_pause, "IMAGE", "img_pause");
   }
   else
   {
+    IupSetAttribute(progressbar1, "MARQUEE", "NO");
     IupSetAttribute(timer, "RUN", "NO");
     IupSetAttribute(btn_pause, "IMAGE", "img_play");
   }
@@ -198,7 +195,6 @@ static int unmap_cb(Ihandle* ih)
 
 static int btn_restart_cb(void)
 {
-  IupSetAttribute(progressbar1, "VALUE", "0");
   IupSetAttribute(progressbar2, "VALUE", "0");
   return IUP_DEFAULT;
 }
@@ -217,10 +213,10 @@ static int btn_decelerate_cb(void)
 
 static int btn_show1_cb(void)
 {
-  if (!IupGetInt(progressbar1, "DASHED"))
-    IupSetAttribute(progressbar1, "DASHED", "YES");
+  if (!IupGetInt(progressbar2, "DASHED"))
+    IupSetAttribute(progressbar2, "DASHED", "YES");
   else
-    IupSetAttribute(progressbar1, "DASHED", "NO");
+    IupSetAttribute(progressbar2, "DASHED", "NO");
   
   return IUP_DEFAULT;
 }
@@ -240,6 +236,7 @@ void ProgressbarTest(void)
   Ihandle *dlg, *vbox, *hbox;
   Ihandle *btn_restart, *btn_accelerate, *btn_decelerate, *btn_show1, *btn_show2;
 
+  /* timer to update progressbar2 */
   if (timer)
     IupDestroy(timer);
   timer = IupTimer();
@@ -250,7 +247,6 @@ void ProgressbarTest(void)
   progressbar2 = IupProgressBar();
  
   IupSetAttribute(progressbar1, "EXPAND", "YES");
-  //IupSetAttribute(progressbar1, "DASHED", "YES");
   IupSetAttribute(progressbar1, "MARQUEE", "YES");
 
   IupSetAttribute(progressbar2, "ORIENTATION", "VERTICAL");
@@ -259,6 +255,7 @@ void ProgressbarTest(void)
   IupSetAttribute(progressbar2, "RASTERSIZE", "30x100");
   IupSetAttribute(progressbar2, "MAX", "50");
   IupSetAttribute(progressbar2, "VALUE", "25");
+  //IupSetAttribute(progressbar2, "DASHED", "YES");
 
   btn_restart = IupButton(NULL, NULL);
   btn_pause = IupButton(NULL, NULL);
