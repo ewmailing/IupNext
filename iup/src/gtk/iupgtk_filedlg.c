@@ -148,9 +148,9 @@ static void gtkFileDlgPreviewRealize(GtkWidget *widget, Ihandle *ih)
 
 static void gtkFileDlgRealize(GtkWidget *widget, Ihandle *ih)
 {
+  /* callback here always exists */
   IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
   cb(ih, NULL, "INIT");
-
   (void)widget;
 }
 
@@ -168,6 +168,7 @@ static gboolean gtkFileDlgPreviewExposeEvent(GtkWidget *widget, GdkEventExpose *
   GtkFileChooser *file_chooser = (GtkFileChooser*)iupAttribGet(ih, "_IUPDLG_FILE_CHOOSER");
   char *filename = gtk_file_chooser_get_preview_filename(file_chooser);
 
+  /* callback here always exists */
   IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
   if (iupdrvIsFile(filename))
     cb(ih, iupgtkStrConvertFromFilename(filename), "PAINT");
@@ -185,6 +186,7 @@ static void gtkFileDlgUpdatePreview(GtkFileChooser *file_chooser, Ihandle* ih)
 {
   char *filename = gtk_file_chooser_get_preview_filename(file_chooser);
 
+  /* callback here always exists */
   IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
   if (iupdrvIsFile(filename))
     cb(ih, iupgtkStrConvertFromFilename(filename), "SELECT");

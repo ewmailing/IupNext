@@ -396,6 +396,7 @@ static void motFileDlgPreviewCanvasExposeCallback(Widget w, Ihandle *ih, XtPoint
   XtVaGetValues(filebox, XmNdirSpec, &xm_file, NULL);
   XmStringGetLtoR(xm_file, XmSTRING_DEFAULT_CHARSET, &filename);
 
+  /* callback here always exists */
   cb = (IFnss)IupGetCallback(ih, "FILE_CB");
   if (iupdrvIsFile(filename))
     cb(ih, filename, "PAINT");
@@ -414,6 +415,7 @@ static void motFileDlgBrowseSelectionCallback(Widget w, Ihandle* ih, XmListCallb
 
   XmStringGetLtoR(list_data->item, XmSTRING_DEFAULT_CHARSET, &filename);
 
+  /* callback here always exists */
   cb = (IFnss)IupGetCallback(ih, "FILE_CB");
   if (iupdrvIsFile(filename))
     cb(ih, filename, "SELECT");
@@ -488,13 +490,6 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
 
   if (dialogtype == IUP_DIALOGDIR)
     XtVaSetValues(filebox, XmNfileTypeMask, XmFILE_DIRECTORY, NULL);
-
-  if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
-  {
-    Widget wList = XmFileSelectionBoxGetChild(filebox, XmDIALOG_LIST);
-    XtVaSetValues(wList, XmNselectionPolicy, XmEXTENDED_SELECT, NULL);
-    XtAddCallback(wList, XmNextendedSelectionCallback, (XtCallbackProc)motFileDlgBrowseSelectionCallback, (XtPointer)ih);
-  }
 
   /* just check for the path inside FILE */
   value = iupAttribGet(ih, "FILE");
@@ -603,6 +598,15 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
 
         iupAttribSetStr(ih, "_IUPDLG_FILEBOX", (char*)filebox);
       }
+    }
+
+    if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
+    {
+      Widget wList = XmFileSelectionBoxGetChild(filebox, XmDIALOG_LIST);
+      XtVaSetValues(wList, XmNselectionPolicy, XmEXTENDED_SELECT, NULL);
+
+      if (file_cb)
+        XtAddCallback(wList, XmNextendedSelectionCallback, (XtCallbackProc)motFileDlgBrowseSelectionCallback, (XtPointer)ih);
     }
   }
 

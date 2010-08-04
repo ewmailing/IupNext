@@ -296,6 +296,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
       {
         LPDRAWITEMSTRUCT lpDrawItem = (LPDRAWITEMSTRUCT)lParam;
         Ihandle* ih = (Ihandle*)GetWindowLongPtr(hWnd, DWLP_USER);
+        /* callback here always exists */
         IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
         char filename[MAX_FILENAME_SIZE];
         iupAttribSetStr(ih, "PREVIEWDC", (char*)lpDrawItem->hDC);
@@ -332,6 +333,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
   case WM_DESTROY:
     {
       Ihandle* ih = (Ihandle*)GetWindowLongPtr(hWnd, DWLP_USER);
+      /* callback here always exists */
       IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
       cb(ih, NULL, "FINISH");
       break;
@@ -340,6 +342,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
     {
       LPOFNOTIFY pofn = (LPOFNOTIFY)lParam;
       Ihandle* ih = (Ihandle*)pofn->lpOFN->lCustData;
+      /* callback here always exists */
       IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
       switch (pofn->hdr.code)
       {
