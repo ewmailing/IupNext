@@ -319,10 +319,11 @@ after SHOWRENAME_CB is called and before the text box is shown.</p>
   of the text box when in-place renaming. Same as the SELECTION attribute for
 <a href="iuptext.html#Attributes">IupText</a>, but here is used only once after SHOWRENAME_CB 
 is called and before the text box is shown.</p>
-<p><strong>SHOWRENAME</strong> (creation only) (<font size="3">non inheritable</font>): Allows the in place rename of a 
+<p><strong>SHOWRENAME</strong> (creation in Windows) (<font size="3">non inheritable</font>): Allows the in place rename of a 
 node. Default:
   &quot;NO&quot;. Since IUP 3.0, F2 and clicking twice only starts to rename a 
-node if SHOWRENAME=Yes.</p>
+node if SHOWRENAME=Yes. In Windows must be set to YES before map, but can be 
+changed later (since 3.3).</p>
 
 </body>
 

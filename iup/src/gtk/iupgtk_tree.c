@@ -1629,6 +1629,22 @@ static int gtkTreeSetFgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+static int gtkTreeSetShowRenameAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->show_rename = 1;
+  else
+    ih->data->show_rename = 0;
+
+  if (ih->handle)
+  {
+    GtkCellRenderer *renderer_txt = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_TEXT");
+    g_object_set(G_OBJECT(renderer_txt), "editable", ih->data->show_rename, NULL);
+  }
+
+  return 0;
+}
+
 void iupdrvTreeUpdateMarkMode(Ihandle *ih)
 {
   GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
@@ -2445,6 +2461,13 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "NAME",   gtkTreeGetTitleAttrib,   gtkTreeSetTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLE",   gtkTreeGetTitleAttrib,   gtkTreeSetTitleAttrib, IUPAF_NO_INHERIT);
   
+  {
+    /* Change the set method for GTK */
+    IattribGetFunc _get;
+    iupClassRegisterGetAttribute(ic, "SHOWRENAME", &_get, NULL, NULL, NULL, NULL);
+    iupClassRegisterAttribute(ic, "SHOWRENAME", _get,  gtkTreeSetShowRenameAttrib,   NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  }
+
   iupClassRegisterAttributeId(ic, "CHILDCOUNT",   gtkTreeGetChildCountAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLEFONT", gtkTreeGetTitleFontAttrib, gtkTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 

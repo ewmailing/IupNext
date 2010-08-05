@@ -490,10 +490,6 @@ static char* iTreeGetShowRenameAttrib(Ihandle* ih)
 
 static int iTreeSetShowRenameAttrib(Ihandle* ih, const char* value)
 {
-  /* valid only before map */
-  if (ih->handle)
-    return 0;
-
   if (iupStrBoolean(value))
     ih->data->show_rename = 1;
   else

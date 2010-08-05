@@ -2262,6 +2262,12 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     HWND hEdit;
     NMTVDISPINFO* info = (NMTVDISPINFO*)msg_info;
     IFni cbShowRename;
+
+    if (!ih->data->show_rename)
+    {
+      *result = TRUE;  /* prevent the change */
+      return 1;
+    }
            
     if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
     {
