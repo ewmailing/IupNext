@@ -69,13 +69,9 @@ void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
   {
     (*x) += 3; /* extra space for the dropdown button */
 
-    if (ih->data->has_editbox)
-    {
-      /* extra border for the editbox */
-      int internal_border_size = 2*6;
-      (*x) += internal_border_size; 
-      (*y) += internal_border_size;
-    }
+    /* IMPORTANT: In Windows the DROPDOWN box is always sized by the system
+       to have the height just right to include the borders and the text.
+       So the user height from RASTERSIZE or SIZE will be always ignored. */
   }
   else
   {

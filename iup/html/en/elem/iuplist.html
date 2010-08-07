@@ -12,6 +12,9 @@
 .style1 {
 	margin-left: 40px;
 }
+  .style2 {
+	color: #FF0000;
+}
   </style>
 </head>
 
@@ -523,6 +526,10 @@ looses its focus and it gets it back only if the edit box is clicked.</li>
 is near the control border. Also the selection and caret attributes are not 
 preserved if the list loses its focus, or in other words these attributes are 
 only useful in Windows if the list has the focus.</p>
+<p> <span class="style2"><strong>IMPORTANT:</strong></span> In Windows when 
+DROPDOWN=Yes the vertical size is controled by the system, and has the height 
+just right to include the borders and the text. So the <strong>User</strong> 
+height from RASTERSIZE or SIZE will be always ignored.</p>
 <p> In GTK older than 2.12, the editbox of a dropdown will not follow the list 
 attributes: FONT, BGCOLOR, FGCOLOR and SPACING.</p>
 
