@@ -707,6 +707,12 @@ static int Refresh (lua_State *L)
   return 0;
 }
 
+static int RefreshChildren (lua_State *L)
+{
+  IupRefreshChildren(iuplua_checkihandle(L,1));
+  return 0;
+}
+
 static int Update (lua_State *L)
 {
   IupUpdate(iuplua_checkihandle(L,1));
@@ -860,6 +866,7 @@ void iupluaapi_open(lua_State * L)
     {"Show", Show},
     {"GetChildCount", GetChildCount},
     {"Refresh", Refresh},
+    {"RefreshChildren", RefreshChildren},
     {"Update", Update},
     {"UpdateChildren", UpdateChildren},
     {"SaveImageAsText", SaveImageAsText},

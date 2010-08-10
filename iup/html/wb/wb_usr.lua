@@ -899,6 +899,10 @@ wb_usr.tree =
               link= "func/iuprefresh.html"
             },
             {
+              name= {nl= "IupRefreshChildren"},
+              link= "func/iuprefreshchildren.html"
+            },
+            {
               name= {nl= "IupUpdate"},
               link= "func/iupupdate.html"
             },

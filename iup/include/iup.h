@@ -47,6 +47,7 @@ void      IupUpdate        (Ihandle* ih);
 void      IupUpdateChildren(Ihandle* ih);
 void      IupRedraw        (Ihandle* ih, int children);
 void      IupRefresh       (Ihandle* ih);
+void      IupRefreshChildren(Ihandle* ih);
 
 char*     IupMapFont       (const char *iupfont);
 char*     IupUnMapFont     (const char *driverfont);

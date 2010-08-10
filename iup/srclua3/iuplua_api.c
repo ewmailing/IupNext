@@ -254,6 +254,11 @@ static void Refresh(void)
   IupRefresh(iuplua_checkihandle(1));
 }
 
+static void RefreshChildren(void)
+{
+  IupRefreshChildren(iuplua_checkihandle(1));
+}
+
 static void Update(void)
 {
   IupUpdate(iuplua_checkihandle(1));
@@ -679,6 +684,7 @@ int iupluaapi_open(void)
     { "IupShow", Show },
     { "IupGetChildCount", GetChildCount },
     { "IupRefresh", Refresh },
+    { "IupRefreshChildren", RefreshChildren },
     { "IupUpdate", Update },
     { "IupUpdateChildren", UpdateChildren },
     { "IupRedraw", Redraw },

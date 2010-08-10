@@ -18,6 +18,57 @@
 #include "iup_assert.h" 
 
  
+void IupRefreshChildren(Ihandle* ih)
+{
+  int shrink;
+  Ihandle *dialog, *child;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  /* must be mapped */
+  if (!ih->handle)
+    return;
+
+  /* must have children */
+  if (!ih->firstchild || ih->iclass->childtype==IUP_CHILDNONE)
+    return;
+
+  /* NOT a dialog, but inside one */
+  dialog = IupGetDialog(ih);
+  if (!dialog || dialog==ih)
+    return;
+
+  /****** local iupLayoutCompute,
+     but ih will not be changed, only its children. */
+
+  shrink = iupAttribGetBoolean(dialog, "SHRINK");
+
+  /* children only iupBaseComputeNaturalSize */
+  {
+    int w=0, h=0, children_expand=ih->expand;
+    iupClassObjectComputeNaturalSize(ih, &w, &h, &children_expand);
+
+    /* If the container natural size changed from inside, simply ignore the change */
+  }
+
+  /* children only iupBaseSetCurrentSize */
+  iupClassObjectSetChildrenCurrentSize(ih, shrink);
+
+  /* children only iupBaseSetPosition */
+  iupClassObjectSetChildrenPosition(ih, ih->x, ih->y);
+
+
+  /****** local iupLayoutUpdate,
+     but ih will not be changed, only its children. */
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    if (child->handle)
+      iupLayoutUpdate(child);
+  }
+}
+
 void IupRefresh(Ihandle* ih)
 {
   Ihandle* dialog;
@@ -108,6 +159,8 @@ void iupLayoutUpdate(Ihandle* ih)
 
 void iupLayoutCompute(Ihandle* ih)
 {
+  /* called only for the dialog */
+
   int shrink = iupAttribGetBoolean(ih, "SHRINK");
 
   /* Compute the natural size for all elements in the dialog,   
