@@ -17,6 +17,7 @@
 #include "iup_drvfont.h"
 #include "iup_str.h"
 #include "iup_attrib.h"
+#include "iup_layout.h"
 #include "iup_assert.h"
 
 
@@ -320,14 +321,22 @@ int iupBaseSetNameAttrib(Ihandle* ih, const char* value)
 
 static int iBaseSetFloatingAttrib(Ihandle* ih, const char* value)
 {
-  ih->is_floating = iupStrBoolean(value);
+  if (iupStrEqualNoCase(value, "IGNORE"))
+    ih->is_floating = IUP_FLOATING_IGNORE;
+  else
+    ih->is_floating = iupStrBoolean(value);
   return 0;
 }
 
 static char* iBaseGetFloatingAttrib(Ihandle* ih)
 {
   if (ih->is_floating)
-    return "YES";
+  {
+    if (ih->is_floating==IUP_FLOATING_IGNORE)
+      return "IGNORE";
+    else
+      return "YES";
+  }
   else
     return "NO";
 }

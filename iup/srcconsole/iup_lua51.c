@@ -35,7 +35,6 @@
 #include "iup_pplot.h"
 #include "iuplua_pplot.h"
 #include <cd.h>
-#include <cdgdiplus.h>
 #include <cdlua.h>
 #include <cdluaiup.h>
 #endif
@@ -410,6 +409,7 @@ static void iuplua_openlibs (lua_State *L) {
   iup_pplotlua_open(L);
   cdlua_open(L);
   cdluaiup_open(L);
+  cdInitContextPlus();
 #endif
 #ifndef IUPLUA_NO_IM
   iupimlua_open(L);

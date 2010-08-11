@@ -11,6 +11,7 @@
 extern "C" {
 #endif
 
+#define IUP_FLOATING_IGNORE 2
 
 /* called from IupMap and IupRefresh */
 void iupLayoutCompute(Ihandle* ih);  /* can be called before map */

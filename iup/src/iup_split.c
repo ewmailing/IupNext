@@ -133,12 +133,12 @@ static void iSplitShowHide(Ihandle* child, int hide)
 {
   if (hide)
   {
-    IupSetAttribute(child, "FLOATING", "YES");
+    IupSetAttribute(child, "FLOATING", "IGNORE");
     IupSetAttribute(child, "VISIBLE", "NO");
   }
   else if (!IupGetInt(child, "VISIBLE"))
   {
-    IupSetAttribute(child, "FLOATING", "NO");
+    IupSetAttribute(child, "FLOATING", "IGNORE");
     IupSetAttribute(child, "VISIBLE", "YES");
   }
 }
@@ -294,7 +294,7 @@ static int iSplitMotion_CB(Ihandle* bar, int x, int y, char *status)
           iSplitAutoHideXY(ih);
         }
 
-        IupRefresh(ih);  /* may affect all the elements in the dialog */
+        IupRefreshChildren(ih);  
       }
       else
         iSplitSetBarPosition(ih, cur_x, cur_y, 1);
@@ -351,7 +351,7 @@ static int iSplitButton_CB(Ihandle* bar, int button, int pressed, int x, int y, 
         iSplitAutoHideXY(ih);
       }
 
-      IupRefresh(ih);  /* may affect all the elements in the dialog */
+      IupRefreshChildren(ih);  
     }
   }
 
@@ -463,7 +463,7 @@ static int iSplitSetValueAttrib(Ihandle* ih, const char* value)
       iSplitAutoHideVal(ih);
 
     if (ih->handle)
-      IupRefresh(ih);  /* may affect all the elements in the dialog */
+      IupRefreshChildren(ih);  
   }
   else
   {
@@ -477,7 +477,7 @@ static int iSplitSetValueAttrib(Ihandle* ih, const char* value)
         iSplitAutoHideVal(ih);
 
       if (ih->handle)
-        IupRefresh(ih);  /* may affect all the elements in the dialog */
+        IupRefreshChildren(ih);  
     }
   }
 
@@ -499,7 +499,7 @@ static int iSplitSetBarSizeAttrib(Ihandle* ih, const char* value)
       iSplitAutoHideVal(ih);
 
     if (ih->handle)
-      IupRefresh(ih);  /* may affect all the elements in the dialog */
+      IupRefreshChildren(ih);  
   }
   return 0; /* do not store value in hash table */
 }
@@ -531,7 +531,7 @@ static int iSplitSetMinMaxAttrib(Ihandle* ih, const char* value)
       iSplitAutoHideVal(ih);
 
     if (ih->handle)
-      IupRefresh(ih);  /* may affect all the elements in the dialog */
+      IupRefreshChildren(ih);  
   }
   return 0; /* do not store value in hash table */
 }

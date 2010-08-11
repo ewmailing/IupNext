@@ -146,6 +146,9 @@ void iupLayoutUpdate(Ihandle* ih)
 {
   Ihandle* child;
 
+  if (ih->is_floating==IUP_FLOATING_IGNORE)
+    return;
+
   /* update size and position of the native control */
   iupClassObjectLayoutUpdate(ih);
 
