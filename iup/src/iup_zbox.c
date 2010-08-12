@@ -227,7 +227,8 @@ static void iZboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
   for (child = ih->firstchild; child; child = child->brother)
   {
     /* update child natural size first */
-    iupBaseComputeNaturalSize(child);
+    if (child->is_floating!=IUP_FLOATING_IGNORE)
+      iupBaseComputeNaturalSize(child);
 
     if (!child->is_floating)
     {

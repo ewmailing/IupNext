@@ -95,7 +95,8 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
   for (child = ih->firstchild; child; child = child->brother)
   {
     /* update child natural size first */
-    iupBaseComputeNaturalSize(child);
+    if (child->is_floating!=IUP_FLOATING_IGNORE)
+      iupBaseComputeNaturalSize(child);
 
     if (!child->is_floating)
     {
@@ -226,7 +227,7 @@ static void iHboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
       if (ih->data->expand_children)
         child->expand = old_expand;
     }
-    else
+    else if (child->is_floating!=IUP_FLOATING_IGNORE)
     {
       /* update children to their own natural size */
       iupBaseSetCurrentSize(child, child->naturalwidth, child->naturalheight, shrink);
