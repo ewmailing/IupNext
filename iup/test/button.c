@@ -281,6 +281,7 @@ void ButtonTest(void)
   IupSetAttribute(button, "ALIGNMENT", "ACENTER:ACENTER");
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT:ATOP");
   IupSetAttribute(button, "NAME", "button1");
+  IupSetAttribute(button, "FOCUSONCLICK", "NO");
   set_callbacks(button);
   IupAppend(box1, button);
 

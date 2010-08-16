@@ -657,8 +657,8 @@ static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
       Icallback cb = IupGetCallback(ih, "ACTION");
       if (cb)
       {
-        /* to avoid double calls when pressing enter and a dialog is displayed */
-        if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION"))
+        if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION") &&  /* to avoid double calls when pressing enter and a dialog is displayed */
+            iupAttribGetBoolean(ih, "FOCUSONCLICK"))  /* to avoid multiple calls to action in a double click */
         {
           iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", "1");
           if (cb(ih) == IUP_CLOSE)
