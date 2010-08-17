@@ -451,7 +451,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\iup_predial.c"
+				RelativePath="..\src\iup_predialogs.c"
 				>
 			</File>
 			<File
@@ -552,6 +552,10 @@
 			</File>
 			<File
 				RelativePath="..\src\iup_menu.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\iup_predialogs.h"
 				>
 			</File>
 			<File

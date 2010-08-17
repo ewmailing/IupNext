@@ -16,7 +16,7 @@
 #include "iup_drv.h"
 #include "iup_drvinfo.h"
 #include "iup_drvfont.h"
-#include "iup_predial.h"
+#include "iup_predialogs.h"
 #include "iup_class.h"
 #include "iup_register.h"
 #include "iup_key.h"

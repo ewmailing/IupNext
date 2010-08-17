@@ -17,7 +17,7 @@
 #include "il.h"
 
 #include "iup_str.h"
-#include "iup_predial.h"
+#include "iup_predialogs.h"
 
 #define ALLOC(n,t)  ((t *)calloc((n),sizeof(t)))
 #define REQUIRE(b)  {if (!(b)) goto cleanup;}

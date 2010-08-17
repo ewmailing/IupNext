@@ -32,7 +32,7 @@ INCLUDES = ../include .
 
 SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font.c \
       iup_globalattrib.c iup_object.c iup_key.c iup_layout.c iup_ledlex.c iup_names.c iup_open.c \
-      iup_ledparse.c iup_predial.c iup_register.c iup_scanf.c iup_show.c iup_str.c iup_table.c \
+      iup_ledparse.c iup_predialogs.c iup_register.c iup_scanf.c iup_show.c iup_str.c iup_table.c \
       iup_func.c iup_childtree.c iup.c iup_classattrib.c iup_dialog.c iup_assert.c iup_canvas.c \
       iup_messagedlg.c iup_timer.c iup_image.c iup_label.c iup_fill.c iup_zbox.c \
       iup_colordlg.c iup_fontdlg.c iup_filedlg.c iup_strmessage.c iup_menu.c iup_frame.c \
