@@ -277,10 +277,13 @@ function iup.RGB(r, g, b)
 end
 
 -- This will allow both names to be used in the same application
--- also will allow static linking to work with require
+-- also will allow static linking to work with require for the main library (only)
 if _G.package then
    _G.package.loaded["iuplua"] = iup
-   _G.package.loaded["iuplua51"] = iup
    iup._M = iup
    iup._PACKAGE = "iuplua"
+end
+
+function iup.layoutdialog(obj)
+  return iup.LayoutDialog(obj[1])
 end

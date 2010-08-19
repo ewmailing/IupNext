@@ -574,6 +574,27 @@ char* iupAttribGetStr(Ihandle* ih, const char* name)
   return value;
 }
 
+char* iupAttribGetLocal(Ihandle* ih, const char* name)
+{
+  char* value;
+  if (!ih || !name)
+    return NULL;
+
+  value = iupTableGet(ih->attrib, name);
+
+  if (!value && !iupATTRIB_ISINTERNAL(name))
+  {
+    int inherit;
+    char *def_value;
+    value = iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
+
+    if (!value)
+      value = def_value;
+  }
+
+  return value;
+}
+
 char* iupAttribGetInherit(Ihandle* ih, const char* name)
 {
   char* value;

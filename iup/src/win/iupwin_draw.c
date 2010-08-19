@@ -360,6 +360,8 @@ IdrawCanvas* iupDrawCreateCanvas(Ihandle* ih)
   IdrawCanvas* dc = calloc(1, sizeof(IdrawCanvas));
   RECT rect;
 
+  dc->ih = ih;
+
   /* valid only inside the ACTION callback of an IupCanvas */
   dc->hDC = (HDC)IupGetAttribute(ih, "HDC_WMPAINT");
   if (!dc->hDC)
@@ -440,10 +442,29 @@ void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned 
   RECT rect;
   rect.left = x1; rect.top = y1; rect.right = x2+1; rect.bottom = y2+1;
   SetDCBrushColor(dc->hBitmapDC, RGB(r,g,b));
-  if (filled)
+  if (filled==IUP_DRAW_FILL)
     FillRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
-  else
+  else if (filled==IUP_DRAW_STROKE)
     FrameRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+  else
+  {
+    POINT line_poly[5];
+    HPEN hPen = CreatePen(filled==IUP_DRAW_STROKE_DASH? PS_DASH: PS_SOLID, 1, RGB(r, g, b));
+    HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
+    line_poly[0].x = x1;
+    line_poly[0].y = y1;
+    line_poly[1].x = x1;
+    line_poly[1].y = y2;
+    line_poly[2].x = x2;
+    line_poly[2].y = y2;
+    line_poly[3].x = x2;
+    line_poly[3].y = y1;
+    line_poly[4].x = x1;
+    line_poly[4].y = y1;
+    Polyline(dc->hBitmapDC, line_poly, 5);
+    SelectObject(dc->hBitmapDC, hPenOld);
+    DeleteObject(hPen);
+  }
 }
 
 void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b)
@@ -480,7 +501,7 @@ void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, doub
   int YStartArc = winDrawCalcArc(y1, y2, a1, 1);
   int YEndArc = winDrawCalcArc(y1, y2, a2, 0);
 
-  if (filled)
+  if (filled==IUP_DRAW_FILL)
   {
     HBRUSH hBrush = CreateSolidBrush(RGB(r,g,b));
     HPEN hBrushOld = SelectObject(dc->hBitmapDC, hBrush); 
@@ -493,7 +514,7 @@ void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, doub
   }
   else
   {
-    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b));
+    HPEN hPen = CreatePen(filled==IUP_DRAW_STROKE_DASH? PS_DASH: PS_SOLID, 1, RGB(r, g, b));
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     Arc(dc->hBitmapDC, x1, y1, x2+1, y2+1, XStartArc, YStartArc, XEndArc, YEndArc);
     SelectObject(dc->hBitmapDC, hPenOld);
@@ -503,7 +524,7 @@ void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, doub
 
 void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int filled)
 {
-  if (filled)
+  if (filled==IUP_DRAW_FILL)
   {
     HBRUSH hBrush = CreateSolidBrush(RGB(r,g,b));
     HPEN hBrushOld = SelectObject(dc->hBitmapDC, hBrush); 
@@ -516,7 +537,7 @@ void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, un
   }
   else
   {
-    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(r, g, b));
+    HPEN hPen = CreatePen(filled==IUP_DRAW_STROKE_DASH? PS_DASH: PS_SOLID, 1, RGB(r, g, b));
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     Polyline(dc->hBitmapDC, (POINT*)points, count);
     SelectObject(dc->hBitmapDC, hPenOld);

@@ -367,7 +367,7 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "SPACING", "30");
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
-  IupSetAttribute(button, "FLAT", "YES");
+//  IupSetAttribute(button, "FLAT", "YES");
 //  IupSetAttribute(button, "CANFOCUS", "NO");
 //  IupSetAttributeHandle(button, "IMPRESS", image2);
 //  IupSetAttribute(button, "FOCUSONCLICK", "NO");

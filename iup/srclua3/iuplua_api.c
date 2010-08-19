@@ -494,6 +494,12 @@ static void Message(void)
   IupMessage(luaL_check_string(1), luaL_check_string(2));
 }
 
+
+static void LayoutDlg(void)
+{
+  iuplua_pushihandle(IupLayoutDialog(iuplua_checkihandle(1)));
+}
+
 static void GetText(void)
 {
   char buffer[10240];
@@ -733,6 +739,7 @@ int iupluaapi_open(void)
     { "IupVersion", Version },
     { "IupHelp", Help },
     { "IupScanf", iupluaScanf },
+    { "IupLayoutDialog", LayoutDlg },
     { "IupTextConvertLinColToPos", TextConvertLinColToPos},
     { "IupTextConvertPosToLinCol", TextConvertPosToLinCol},
     { "IupConvertXYToPos", ConvertXYToPos},

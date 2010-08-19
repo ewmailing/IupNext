@@ -147,7 +147,7 @@ static PangoLayout* gtkFontGetWidgetPangoLayout(Ihandle *ih)
   int inherit;
   char *def_value;
   /* only check the  native implementation */
-  return (PangoLayout*)iupClassObjectGetAttribute(ih, "PANGOLAYOUT", &def_value, &inherit);
+  return (PangoLayout*)iupClassObjectGetAttribute(ih, "WIDGETPANGOLAYOUT", &def_value, &inherit);
 }
 
 static IgtkFont* gtkFontCreateNativeFont(Ihandle* ih, const char* value)
@@ -274,6 +274,15 @@ char* iupgtkGetPangoFontDescAttrib(Ihandle *ih)
     return NULL;
   else
     return (char*)gtkfont->fontdesc;
+}
+
+char* iupgtkGetPangoLayoutAttrib(Ihandle *ih)
+{
+  IgtkFont* gtkfont = gtkFontGet(ih);
+  if (!gtkfont)
+    return NULL;
+  else
+    return (char*)gtkfont->layout;
 }
 
 char* iupgtkGetFontIdAttrib(Ihandle *ih)

@@ -626,6 +626,12 @@ static int GetDialogChild(lua_State *L)
   return 1;
 }
 
+static int LayoutDlg(lua_State *L)
+{
+  iuplua_pushihandle(L,IupLayoutDialog(iuplua_checkihandle(L,1)));
+  return 1;
+}
+
 static int ConvertXYToPos(lua_State *L)
 {
   lua_pushinteger(L, IupConvertXYToPos(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3)));
@@ -859,6 +865,7 @@ void iupluaapi_open(lua_State * L)
     {"VersionNumber", VersionNumber},
     {"GetBrother", GetBrother},
     {"GetDialogChild", GetDialogChild},
+    {"LayoutDlg", LayoutDlg},
     {"SetFocus", SetFocus},
     {"SetGlobal", SetGlobal},
     {"SetHandle", SetHandle},

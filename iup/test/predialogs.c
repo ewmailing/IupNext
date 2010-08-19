@@ -417,6 +417,9 @@ static int k_any(Ihandle *ih, int c)
   case K_a:
     new_alarm();
     break;
+  case K_y:
+    IupShow(IupLayoutDialog(NULL));
+    break;
   case K_g:
     new_getfile();
     break;
@@ -455,6 +458,7 @@ void PreDialogsTest(void)
               "t = IupGetText\n"
               "g = IupGetFile\n"
               "l = IupListDialog\n"
+              "y = IupLayoutDialog\n"
               "--------------------\n"
               "Esc = quit";
   Ihandle *dlg = IupDialog(IupVbox(IupLabel(msg), NULL));

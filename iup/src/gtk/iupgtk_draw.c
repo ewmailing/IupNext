@@ -36,6 +36,7 @@ IdrawCanvas* iupDrawCreateCanvas(Ihandle* ih)
 {
   IdrawCanvas* dc = calloc(1, sizeof(IdrawCanvas));
 
+  dc->ih = ih;
   dc->wnd = ih->handle->window;
   dc->gc = gdk_gc_new(dc->wnd);
 
@@ -87,15 +88,21 @@ void iupDrawParentBackground(IdrawCanvas* dc)
   unsigned char r=0, g=0, b=0;
   char* color = iupBaseNativeParentGetBgColorAttrib(dc->ih);
   iupStrToRGB(color, &r, &g, &b);
-  iupDrawRectangle(dc, 0, 0, dc->w-1, dc->h-1, r, g, b, 1);
+  iupDrawRectangle(dc, 0, 0, dc->w-1, dc->h-1, r, g, b, IUP_DRAW_FILL);
 }
 
 void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int filled)
 {
+  GdkGCValues gcval;
   GdkColor color;
   iupgdkColorSet(&color, r, g, b);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
-  gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, filled, x1, y1, x2-x1+1, y2-y1+1);
+  if (filled==IUP_DRAW_STROKE_DASH)
+    gcval.line_style = GDK_LINE_ON_OFF_DASH;
+  else
+    gcval.line_style = GDK_LINE_SOLID;
+  gdk_gc_set_values(dc->pixmap_gc, &gcval, GDK_GC_LINE_STYLE);
+  gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, filled==IUP_DRAW_FILL, x1, y1, x2-x1+1, y2-y1+1);
 }
 
 void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b)
@@ -108,18 +115,30 @@ void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char 
 
 void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int filled)
 {
+  GdkGCValues gcval;
   GdkColor color;
   iupgdkColorSet(&color, r, g, b);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
-  gdk_draw_arc(dc->pixmap, dc->pixmap_gc, filled, x1, y1, x2-x1+1, y2-y1+1, iupROUND(a1*64), iupROUND((a2 - a1)*64));
+  if (filled==IUP_DRAW_STROKE_DASH)
+    gcval.line_style = GDK_LINE_ON_OFF_DASH;
+  else
+    gcval.line_style = GDK_LINE_SOLID;
+  gdk_gc_set_values(dc->pixmap_gc, &gcval, GDK_GC_LINE_STYLE);
+  gdk_draw_arc(dc->pixmap, dc->pixmap_gc, filled==IUP_DRAW_FILL, x1, y1, x2-x1+1, y2-y1+1, iupROUND(a1*64), iupROUND((a2 - a1)*64));
 }
 
 void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int filled)
 {
+  GdkGCValues gcval;
   GdkColor color;
   iupgdkColorSet(&color, r, g, b);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
-  gdk_draw_polygon(dc->pixmap, dc->pixmap_gc, filled, (GdkPoint*)points, count);
+  if (filled==IUP_DRAW_STROKE_DASH)
+    gcval.line_style = GDK_LINE_ON_OFF_DASH;
+  else
+    gcval.line_style = GDK_LINE_SOLID;
+  gdk_gc_set_values(dc->pixmap_gc, &gcval, GDK_GC_LINE_STYLE);
+  gdk_draw_polygon(dc->pixmap, dc->pixmap_gc, filled==IUP_DRAW_FILL, (GdkPoint*)points, count);
 }
 
 void iupDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)

@@ -243,8 +243,8 @@ static int iSplitAction_CB(Ihandle* bar)
 
     for (i = 0; i < count; i++)
     {
-      iupDrawRectangle(dc, x+1, y+1, x+2, y+2, bg_r, bg_g, bg_b, 1);
-      iupDrawRectangle(dc, x, y, x+1, y+1, r, g, b, 1);
+      iupDrawRectangle(dc, x+1, y+1, x+2, y+2, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
+      iupDrawRectangle(dc, x, y, x+1, y+1, r, g, b, IUP_DRAW_FILL);
       if (ih->data->direction == ISPLIT_VERT)
         y += 5;
       else

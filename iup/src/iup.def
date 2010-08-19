@@ -113,6 +113,7 @@ IupReparent
 IupMessageDlg 
 IupColorDlg   
 IupFontDlg    
+IupLayoutDialog
 IupSbox
 IupSpin
 IupSpinbox
@@ -350,6 +351,7 @@ iupAttribGet
 iupAttribGetInherit
 iupAttribGetInheritNativeParent
 iupAttribGetStr
+iupAttribGetLocal
 iupAttribGetInt
 iupAttribGetBoolean
 iupAttribGetFloat

@@ -1046,7 +1046,7 @@ static char* gtkTextGetReadOnlyAttrib(Ihandle* ih)
     return "NO";
 }
 
-static char* gtkTextGetPangoLayoutAttrib(Ihandle* ih)
+static char* gtkTextGetWidgetPangoLayoutAttrib(Ihandle* ih)
 {
   if (ih->data->is_multiline)
     return NULL;
@@ -1687,7 +1687,7 @@ void iupdrvTextInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Common GTK only (when text is in a secondary element) */
-  iupClassRegisterAttribute(ic, "PANGOLAYOUT", gtkTextGetPangoLayoutAttrib, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WIDGETPANGOLAYOUT", gtkTextGetWidgetPangoLayoutAttrib, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkTextSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_DEFAULT);

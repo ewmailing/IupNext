@@ -50,6 +50,7 @@ void iupgtkKeyEncode(int key, guint *keyval, guint *state);
 
 /* font */
 char* iupgtkGetPangoFontDescAttrib(Ihandle *ih);
+char* iupgtkGetPangoLayoutAttrib(Ihandle *ih);
 char* iupgtkGetFontIdAttrib(Ihandle *ih);
 PangoFontDescription* iupgtkGetPangoFontDesc(const char* value);
 char* iupgtkFindPangoFontDesc(PangoFontDescription* fontdesc);

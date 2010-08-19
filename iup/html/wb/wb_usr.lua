@@ -1064,6 +1064,11 @@ wb_usr.tree =
               name= {nl= "IupScanf"},
               link= "dlg/iupscanf.html"
             },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "IupLayoutDialog"},
+              link= "dlg/iuplayoutdialog.html"
+            },
           }
         }
       }

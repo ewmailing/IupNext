@@ -64,11 +64,13 @@ void iupAttribSetInt(Ihandle *ih, const char* name, int num);
 void iupAttribSetFloat(Ihandle *ih, const char* name, float num);
 
 /** Returns the attribute from the hash table only. 
+ * NO inheritance, NO control implementation, NO defalt value here.
  * \ingroup attrib */
 char* iupAttribGet(Ihandle* ih, const char* name);
 
 /** Returns the attribute from the hash table only, 
  * but if not defined then checks in its parent tree.
+ * NO control implementation, NO defalt value here.
  * \ingroup attrib */
 char* iupAttribGetInherit(Ihandle* ih, const char* name);
 
@@ -81,8 +83,16 @@ char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name);
 /** Returns the attribute from the hash table as a string, 
  * but if not defined then checks in its parent tree if allowed by the control implementation, 
  * if still not defined then returns the registered default value if any.
+ * NO control implementation, only checks inheritance and default value from it.
  * \ingroup attrib */
 char* iupAttribGetStr(Ihandle* ih, const char* name);   
+
+/** Returns the attribute from the hash table as a string, 
+ * but if not defined then checks in the control implementation, 
+ * if still not defined then returns the registered default value if any.
+ * NO inheritance here.
+ * \ingroup attrib */
+char* iupAttribGetLocal(Ihandle* ih, const char* name);
 
 /** Same as \ref iupAttribGetStr but returns an integer number.
  * Checks also for boolean values.

@@ -233,6 +233,7 @@ typedef int (*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
 int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format,...);
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
 
+Ihandle* IupLayoutDialog(Ihandle* dialog);
 
 
 #ifdef __cplusplus
