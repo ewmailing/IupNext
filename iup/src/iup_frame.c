@@ -33,9 +33,7 @@ static void iFrameGetDecorSize(Ihandle* ih, int *width, int *height)
   *height = 5;
 
   if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGet(ih, "TITLE"))
-  {
     (*height) += iupFrameGetTitleHeight(ih);
-  }
 }
 
 static char* iFrameGetClientSizeAttrib(Ihandle* ih)
@@ -50,6 +48,17 @@ static char* iFrameGetClientSizeAttrib(Ihandle* ih)
   if (width < 0) width = 0;
   if (height < 0) height = 0;
   sprintf(str, "%dx%d", width, height);
+  return str;
+}
+
+static char* iFrameGetClientOffsetAttrib(Ihandle* ih)
+{
+  int dx, dy;
+  char* str = iupStrGetMemory(20);
+  iupdrvFrameGetDecorOffset(&dx, &dy);
+  if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGet(ih, "TITLE"))
+    dy += iupFrameGetTitleHeight(ih);
+  sprintf(str, "%dx%d", dx, dy);
   return str;
 }
 
@@ -96,18 +105,33 @@ static void iFrameSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   if (width < 0) width = 0;
   if (height < 0) height = 0;
 
-  iupBaseSetCurrentSize(ih->firstchild, width, height, shrink);
+  if (ih->firstchild)
+    iupBaseSetCurrentSize(ih->firstchild, width, height, shrink);
 }
 
 static void iFrameSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
+  int dx=0, dy=0;
+  (void)x;
+  (void)y;
+
   /* IupFrame is the native parent of its children,
-     so the position is restarted at (0,0) */
+     so the position is restarted at (0,0).
+     In all systems, each frame is a native window covering the client area.
+     Child coordinates are relative to client left-top corner of the frame. */
 
-  iupdrvFrameGetDecorOffset(ih, &x, &y);
+  /* In Windows the position of the child is still 
+     relative to the top-left corner of the frame.
+     So we must manually add the decorations. */
+  if (iupdrvFrameHasClientOffset())
+  {
+    iupdrvFrameGetDecorOffset(&dx, &dy);
+    if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGet(ih, "TITLE"))
+      dy += iupFrameGetTitleHeight(ih);
+  }
 
-  /* Child coordinates are relative to client left-top corner. */
-  iupBaseSetPosition(ih->firstchild, x, y);
+  if (ih->firstchild)
+    iupBaseSetPosition(ih->firstchild, dx, dy);
 }
 
 
@@ -154,6 +178,7 @@ Iclass* iupFrameGetClass(void)
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iFrameGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iFrameGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupFrame only */

@@ -118,6 +118,11 @@ int iupBaseSetRasterSizeAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+char* iupBaseGetClientOffsetAttrib(Ihandle* ih)
+{
+  return "0x0";
+}
+
 char* iupBaseGetRasterSizeAttrib(Ihandle* ih)
 {
   char* str;

@@ -186,20 +186,6 @@ static int iSboxFocus_CB(Ihandle* bar, int focus)
 \*****************************************************************************/
 
 
-static char* iSboxGetClientSizeAttrib(Ihandle* ih)
-{
-  int width, height;
-  char* str = iupStrGetMemory(20);
-  width = ih->currentwidth;
-  height = ih->currentheight;
-  width -= iSboxGetXborder(ih);
-  height -= iSboxGetYborder(ih);
-  if (width < 0) width = 0;
-  if (height < 0) height = 0;
-  sprintf(str, "%dx%d", width, height);
-  return str;
-}
-
 static int iSboxSetColorAttrib(Ihandle* ih, const char* value)
 {
   IupSetAttribute(ih->firstchild, "BGCOLOR", value);
@@ -395,7 +381,8 @@ Iclass* iupSboxGetClass(void)
   iupBaseRegisterCommonAttrib(ic);
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iSboxGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupSbox only */

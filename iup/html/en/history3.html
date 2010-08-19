@@ -45,7 +45,7 @@ version 3.x.<br>
 
 </p>
 
-<h3>CVS (16/Aug/2010)</h3>
+<h3>CVS (18/Aug/2010)</h3>
 
 <ul>
 
@@ -64,11 +64,17 @@ version 3.x.<br>
 	attribute.</li>
 	<li><span class="hist_new">New:</span> guide for building IUP, CD and IM in 
 	Linux on the documentation.</li>
+	<li><span class="hist_new">New:</span> CLIENTOFFSET attribute for 
+	all containers.</li>
 	<li><span class="hist_changed">Changed:</span>
     MARQUEE attribute support in <strong>IupProgressBar</strong><span class="style1"> </span>
 	on GTK and Motif now works just like on Windows.</li>
 	<li><span class="hist_changed">Changed:</span>
     SHOWRENAME in <strong>IupTree</strong> can now be changed after map.</li>
+	<li><span class="hist_changed">Changed:</span>
+    CLIENTSIZE in <strong>IupVbox</strong> and <strong>IupHbox</strong> will not 
+	include margins anymore. Removed CLIENTSIZE1 and CLIENTSIZE2 from <strong>
+	IupSplit</strong> and added CLIENTSIZE.</li>
 
 	<li><span class="hist_fixed">Fixed:</span> callback not called in <strong>
 	IupGetParam</strong> when a file name or a color string are selected by the 

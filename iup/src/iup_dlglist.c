@@ -67,6 +67,11 @@ void iupDlgListRemove(Ihandle *ih)
 
 static Idiallst *idlg_first = NULL;
 
+int iupDlgListCount(void)
+{
+  return idlg_count;
+}
+
 Ihandle *iupDlgListFirst (void)
 {
   idlg_first = idlglist;

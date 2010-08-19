@@ -965,6 +965,12 @@ static void winDialogReleaseMethod(Iclass* ic)
 ****************************************************************************/
 
 
+static char* winDialogGetClientOffsetAttrib(Ihandle *ih)
+{
+  (void)ih;
+  return "0x0";
+}
+
 static int winDialogSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
@@ -1417,6 +1423,7 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iupdrvBaseGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", winDialogGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* IupDialog only */
   iupClassRegisterAttribute(ic, "BACKGROUND", NULL, winDialogSetBackgroundAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);

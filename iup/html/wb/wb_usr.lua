@@ -492,6 +492,10 @@ wb_usr.tree =
               link= "attrib/iup_clientsize.html"
             },
             {
+              name= {nl= "CLIENTOFFSET"},
+              link= "attrib/iup_clientoffset.html"
+            },
+            {
               name= {nl= "EXPAND"},
               link= "attrib/iup_expand.html"
             },

@@ -347,7 +347,7 @@ void SampleTest(void)
   IupSetAttribute(pbar, "VALUE", "0.5");
   set_callbacks(pbar);
 
-  tabs = IupTabs(IupVbox(NULL), IupVbox(NULL), IupVbox(NULL), NULL);
+  tabs = IupTabs(IupVbox(IupLabel(""), NULL), IupVbox(NULL), IupVbox(NULL), NULL);
   IupSetAttribute(tabs,"TABTITLE0","Tab Title 0");
   IupSetAttribute(tabs,"TABTITLE1","Tab Title 1");
   IupSetAttributeHandle(tabs,"TABIMAGE1", load_image_LogoTecgraf());

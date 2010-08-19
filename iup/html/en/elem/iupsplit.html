@@ -24,12 +24,12 @@
 </div>
 
 <h2>IupSplit <span class="style1">(since 3.1)</span></h2>
-<p>Creates a container that split its client area in two. Allows the provided controls to be 
+<p>Creates a void container that split its client area in two. Allows the provided controls to be 
 enclosed in a box that allows expanding and contracting the element <strong>size</strong> in one 
 direction, but when one is expanded the other is contracted.</p>
 
   <p>
-  It does not have a native representation but it uses a <strong>IupCanvas</strong> to implement 
+  It does not have a native representation, but it contains also a <strong>IupCanvas</strong> to implement 
 	the bar handler.</p>
 
 <h3><a name="Creation">Creation</a></h3>
@@ -56,9 +56,6 @@ the size of the bar handler. Default: 5.</p>
 <p><strong>COLOR</strong>: Changes the color of the
   bar grip affordance. The value should be given in &quot;R G B&quot; color style. 
 Default: &quot;192 192 192&quot;.</p>
-<p><strong>CLIENTSIZE1</strong>, <strong>CLIENTSIZE2</strong>: Same as
-<a href="../attrib/iup_clientsize.html">CLIENTSIZE</a>, 
-	but one for each of the child areas.</p>
 
 
 <p><strong>DIRECTION</strong> (creation only): Indicates the direction of the 
@@ -91,7 +88,9 @@ the two children will define its initial size.</p>
 <a href="../attrib/iup_font.html">FONT</a>,
     <a href="../attrib/iup_size.html">SIZE</a>,
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a>,
-<a href="../attrib/iup_position.html">POSITION</a>, 
+<a href="../attrib/iup_clientsize.html">CLIENTSIZE</a>, 
+	<a href="../attrib/iup_clientoffset.html">CLIENTOFFSET</a>, 
+	<a href="../attrib/iup_position.html">POSITION</a>, 
 <a href="../attrib/iup_minsize.html">
 MINSIZE</a>, <a href="../attrib/iup_maxsize.html">
 MAXSIZE</a>: 

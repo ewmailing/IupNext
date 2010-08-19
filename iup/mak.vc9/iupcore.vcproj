@@ -238,6 +238,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\iup_draw.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\iup_drv.h"
 				>
 			</File>
@@ -432,6 +436,10 @@
 			</File>
 			<File
 				RelativePath="..\src\iup_label.c"
+				>
+			</File>
+			<File
+				RelativePath="..\src\iup_layoutdlg.c"
 				>
 			</File>
 			<File

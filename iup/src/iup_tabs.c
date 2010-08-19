@@ -166,6 +166,54 @@ static void iTabsGetDecorSize(Ihandle* ih, int *width, int *height)
   *height += ih->data->vert_padding;
 }
 
+static void iTabsGetDecorOffset(Ihandle* ih, int *dx, int *dy)
+{
+  if (ih->data->type == ITABS_LEFT || ih->data->type == ITABS_RIGHT)
+  {
+    if (ih->data->orientation == ITABS_HORIZONTAL)
+    {
+      int max_width = iTabsGetMaxWidth(ih);
+      *dx = 4 + (3 + max_width + 3) + 2;
+      *dy = 4;
+    }
+    else
+    {
+      int max_height = iTabsGetMaxHeight(ih);
+      *dx = 4 + (3 + max_height + 3) + 2;
+      *dy = 4;
+
+      if (ih->handle && ih->data->is_multiline)
+      {
+        int num_lin = iupdrvTabsGetLineCountAttrib(ih);
+        *dx += (num_lin-1)*(3 + max_height + 3 + 1);
+      }
+    }
+  }
+  else /* "BOTTOM" or "TOP" */
+  {
+    if (ih->data->orientation == ITABS_HORIZONTAL)
+    {
+      int max_height = iTabsGetMaxHeight(ih);
+      *dx = 4;
+      *dy = 4 + (3 + max_height + 3) + 2;
+
+      if (ih->handle && ih->data->is_multiline)
+      {
+        int num_lin = iupdrvTabsGetLineCountAttrib(ih);
+        *dy += (num_lin-1)*(3 + max_height + 3 + 1);
+      }
+    }
+    else
+    {
+      int max_width = iTabsGetMaxWidth(ih);
+      *dx = 4;
+      *dy = 4 + (3 + max_width + 3) + 2;
+    }
+  }
+
+  *dx += ih->data->horiz_padding;
+  *dy += ih->data->vert_padding;
+}
 
 /* ------------------------------------------------------------------------- */
 /* TABS - Sets and Gets - Accessors                                          */
@@ -304,6 +352,15 @@ static char* iTabsGetClientSizeAttrib(Ihandle* ih)
   if (width < 0) width = 0;
   if (height < 0) height = 0;
   sprintf(str, "%dx%d", width, height);
+  return str;
+}
+
+static char* iTabsGetClientOffsetAttrib(Ihandle* ih)
+{
+  int dx, dy;
+  char* str = iupStrGetMemory(20);
+  iTabsGetDecorOffset(ih, &dx, &dy);
+  sprintf(str, "%dx%d", dx, dy);
   return str;
 }
 
@@ -461,6 +518,7 @@ Iclass* iupTabsGetClass(void)
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iTabsGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iTabsGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvTabsInitClass(ic);

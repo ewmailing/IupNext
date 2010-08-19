@@ -37,34 +37,6 @@ static int iBoxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static char* iBoxGetClientSizeAttrib(Ihandle* ih)
-{
-  char* str;
-  int width, height;
-
-  if (ih->handle)
-  {
-    width = ih->currentwidth;
-    height = ih->currentheight;
-  }
-  else
-  {
-    width = ih->userwidth;
-    height = ih->userheight;
-  }
-
-  if (!width && !height)
-    return NULL;
-
-  str = iupStrGetMemory(50);
-
-  width -= 2*ih->data->margin_x;
-  height -= 2*ih->data->margin_y;
-
-  sprintf(str, "%dx%d", width, height);
-  return str;
-}
-
 static int iBoxSetCGapAttrib(Ihandle* ih, const char* value)
 {
   int cgap;
@@ -222,7 +194,8 @@ Iclass* iupBoxClassBase(void)
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iBoxGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* boxes only */
   iupClassRegisterAttribute(ic, "GAP", iBoxGetGapAttrib, iBoxSetGapAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);

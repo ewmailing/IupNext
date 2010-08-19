@@ -738,6 +738,14 @@ static char* gtkDialogGetClientSizeAttrib(Ihandle *ih)
   return str;
 }
 
+static char* gtkDialogGetClientOffsetAttrib(Ihandle *ih)
+{
+  char* str = iupStrGetMemory(20);
+  /* remove the menu because it is placed inside the client area */
+  sprintf(str, "0x%d", -gtkDialogGetMenuSize(ih));
+  return str;
+}
+
 static int gtkDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
 {                       
   if (iupStrBoolean(value))
@@ -1006,6 +1014,7 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", gtkDialogGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", gtkDialogGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "TITLE", gtkDialogGetTitleAttrib, gtkDialogSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

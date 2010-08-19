@@ -20,12 +20,14 @@
 <h2>IupZbox</h2>
 
   <p>
-  Creates a zbox
-  container for composing elements. It is a box that piles up the children it contains, only the 
+  Creates a void
+  container for composing elements in hidden layers with only one layer visible. It is a box that piles up the children it contains, only the 
 	one child is visible.</p>
+<p>
+  It does not have a native representation. </p>
 
   <p>
-  It does not have a native representation. Zbox works by changing the VISIBLE 
+  Zbox works by changing the VISIBLE 
 	attribute of its children, so if any of the grand children has its VISIBLE 
 	attribute directly defined then Zbox will NOT change its state.</p>
 
@@ -98,6 +100,7 @@ the first element inserted is set as the visible child. (since 3.0)</p>
   <p>
 <a href="../attrib/iup_font.html">FONT</a>,
     <a href="../attrib/iup_clientsize.html">CLIENTSIZE</a>, 
+	<a href="../attrib/iup_clientoffset.html">CLIENTOFFSET</a>, 
 	<a href="../attrib/iup_position.html">POSITION</a>, 
 <a href="../attrib/iup_minsize.html">
 MINSIZE</a>, <a href="../attrib/iup_maxsize.html">

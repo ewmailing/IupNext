@@ -11,8 +11,9 @@
 extern "C" {
 #endif
 
+int iupdrvFrameHasClientOffset(void);
 void iupdrvFrameInitClass(Iclass* ic);
-void iupdrvFrameGetDecorOffset(Ihandle* ih, int *x, int *y);
+void iupdrvFrameGetDecorOffset(int *x, int *y);
 int iupFrameGetTitleHeight(Ihandle* ih);
 
 #ifdef __cplusplus

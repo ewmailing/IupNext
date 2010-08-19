@@ -26,11 +26,15 @@
 #include "iupgtk_drv.h"
 
 
-void iupdrvFrameGetDecorOffset(Ihandle* ih, int *x, int *y)
+void iupdrvFrameGetDecorOffset(int *x, int *y)
 {
-  (void)ih;
-  *x = 0;
-  *y = 0;
+  *x = 2;
+  *y = 2;
+}
+
+int iupdrvFrameHasClientOffset(void)
+{
+  return 0;
 }
 
 static char* gtkFrameGetTitleAttrib(Ihandle* ih)

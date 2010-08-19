@@ -380,54 +380,6 @@ static int iSplitFocus_CB(Ihandle* bar, int focus)
 \*****************************************************************************/
 
 
-static char* iSplitGetClientSize1Attrib(Ihandle* ih)
-{
-  int width1, height1;
-  char* str = iupStrGetMemory(20);
-
-  if (ih->data->direction == ISPLIT_VERT)
-  {
-    width1 = iSplitGetWidth1(ih);
-    height1 = ih->currentheight;
-  }
-  else /* ISPLIT_HORIZ */
-  {
-    height1 = iSplitGetHeight1(ih);
-    width1 = ih->currentwidth;
-  }
-
-  sprintf(str, "%dx%d", width1, height1);
-  return str;
-}
-
-static char* iSplitGetClientSize2Attrib(Ihandle* ih)
-{
-  int width2, height2;
-  char* str = iupStrGetMemory(20);
-
-  if (ih->data->direction == ISPLIT_VERT)
-  {
-    int width1 = iSplitGetWidth1(ih);
-
-    width2 = (ih->currentwidth-ih->data->barsize)-width1;
-    if (width2 < 0) width2 = 0;
-
-    height2 = ih->currentheight;
-  }
-  else /* ISPLIT_HORIZ */
-  {
-    int height1 = iSplitGetHeight1(ih);
-
-    height2 = (ih->currentheight-ih->data->barsize)-height1;
-    if (height2 < 0) height2 = 0;
-
-    width2 = ih->currentwidth;
-  }
-
-  sprintf(str, "%dx%d", width2, height2);
-  return str;
-}
-
 static int iSplitSetColorAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
@@ -839,9 +791,9 @@ Iclass* iupSplitGetClass(void)
   iupBaseRegisterCommonAttrib(ic);
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "CLIENTSIZE1", iSplitGetClientSize1Attrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTSIZE2", iSplitGetClientSize2Attrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* IupSplit only */
   iupClassRegisterAttribute(ic, "COLOR",     NULL, iSplitSetColorAttrib,     IUPAF_SAMEASSYSTEM, "160 160 160", IUPAF_NO_INHERIT);

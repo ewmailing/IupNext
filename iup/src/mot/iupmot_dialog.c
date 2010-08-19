@@ -551,6 +551,14 @@ static char* motDialogGetClientSizeAttrib(Ihandle *ih)
   return str;
 }
 
+static char* motDialogGetClientOffsetAttrib(Ihandle *ih)
+{
+  char* str = iupStrGetMemory(20);
+  /* remove the menu because it is placed inside the client area */
+  sprintf(str, "0x%d", -motDialogGetMenuSize(ih));
+  return str;
+}
+
 static int motDialogSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   Pixel color = iupmotColorGetPixelStr(value);
@@ -1091,6 +1099,7 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", motDialogGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", motDialogGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "TITLE", motDialogGetTitleAttrib, motDialogSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

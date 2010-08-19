@@ -13,7 +13,7 @@
 
 #include "iup.h" 
 
-#include "iup_predial.h"
+#include "iup_predialogs.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_strmessage.h"

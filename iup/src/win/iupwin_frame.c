@@ -28,7 +28,7 @@
 #include "iupwin_info.h"
 
 
-void iupdrvFrameGetDecorOffset(Ihandle* ih, int *x, int *y)
+void iupdrvFrameGetDecorOffset(int *x, int *y)
 {
   if (iupwin_comctl32ver6)
   {
@@ -40,11 +40,19 @@ void iupdrvFrameGetDecorOffset(Ihandle* ih, int *x, int *y)
     *x = 2;
     *y = 2;
   }
+}
 
-  if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGet(ih, "TITLE"))
-  {
-    (*y) += iupFrameGetTitleHeight(ih);
-  }
+int iupdrvFrameHasClientOffset(void)
+{
+  return 1;
+}
+
+static char* winFrameGetClientOffsetAttrib(Ihandle* ih)
+{
+  /* In Windows the position of the child is still 
+     relative to the top-left corner of the frame.
+     So we the decorations were already added. */
+  return "0x0";
 }
 
 static char* winFrameGetBgColorAttrib(Ihandle* ih)
@@ -226,6 +234,9 @@ void iupdrvFrameInitClass(Iclass* ic)
   ic->Map = winFrameMapMethod;
 
   /* Driver Dependent Attribute functions */
+
+  /* Frame */
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", winFrameGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", winFrameGetBgColorAttrib, winFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);  

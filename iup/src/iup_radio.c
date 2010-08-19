@@ -143,12 +143,14 @@ static void iRadioComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *exp
 
 static void iRadioSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  iupBaseSetCurrentSize(ih->firstchild, ih->currentwidth, ih->currentheight, shrink);
+  if (ih->firstchild)
+    iupBaseSetCurrentSize(ih->firstchild, ih->currentwidth, ih->currentheight, shrink);
 }
 
 static void iRadioSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  iupBaseSetPosition(ih->firstchild, x, y);
+  if (ih->firstchild)
+    iupBaseSetPosition(ih->firstchild, x, y);
 }
 
 
@@ -186,6 +188,7 @@ Iclass* iupRadioGetClass(void)
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Radio only */
   iupClassRegisterAttribute(ic, "VALUE", iRadioGetValueAttrib, iRadioSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

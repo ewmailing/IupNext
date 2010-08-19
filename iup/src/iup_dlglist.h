@@ -26,6 +26,10 @@ void iupDlgListAdd(Ihandle *ih);
  * \ingroup dlglist */
 void iupDlgListRemove(Ihandle *ih);
 
+/** Returns the number of dialogs.
+ * \ingroup dlglist */
+int iupDlgListCount(void);
+
 /** Starts a loop for all the created dialogs. 
  * \ingroup dlglist */
 Ihandle* iupDlgListFirst(void);
