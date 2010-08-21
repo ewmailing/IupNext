@@ -52,20 +52,20 @@ void iupDrawParentBackground(IdrawCanvas* dc);
 
 /** Draws a line.
  * \ingroup draw */
-void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b);
+void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
 
 /** Draws a filled/hollow rectangle.
  * \ingroup draw */
-void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int filled);
+void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
 
 /** Draws a filled/hollow arc.
  * \ingroup draw */
-void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int filled);
+void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style);
 
 /** Draws a filled/hollow polygon.
  * points are arranged xyxyxy...
  * \ingroup draw */
-void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int filled);
+void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style);
 
 /** Draws a text.
  * x,y is at left,top corner of the text.

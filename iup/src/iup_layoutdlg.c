@@ -57,18 +57,28 @@ static char* iLayoutGetTitle(Ihandle* ih)
 {
   char* title = IupGetAttribute(ih, "TITLE");
   char* name = IupGetName(ih);
-  char* str = iupStrGetMemory(1000);
+  char* str = iupStrGetMemory(200);
   if (title)
   {
+    char buffer[51];
+    int len;
+    if (iupStrNextLine(title, &len)!=title ||
+        len > 50)
+    {
+      if (len > 50) len = 50;
+      iupStrCopyN(buffer, len+1, title);
+      title = &buffer[0];
+    }
+
     if (name)
-      sprintf(str, "%s: %s [%s]", IupGetClassName(ih), title, name);
+      sprintf(str, "%s: %.50s [%.50s]", IupGetClassName(ih), title, name);
     else
-      sprintf(str, "%s: %s", IupGetClassName(ih), title);
+      sprintf(str, "%s: %.50s", IupGetClassName(ih), title);
   }
   else
   {
     if (name)
-      sprintf(str, "%s [%s]", IupGetClassName(ih), name);
+      sprintf(str, "%s [%.50s]", IupGetClassName(ih), name);
     else
       sprintf(str, "%s", IupGetClassName(ih));
   }
@@ -127,6 +137,9 @@ static void iLayoutRebuildTree(Ihandle* dlg, iLayoutDialog* layoutdlg)
   Ihandle* tree = layoutdlg->tree;
   IupSetAttribute(tree, "DELNODE0", "CHILDREN");
 
+  /* must sure the dialog layout is updated */
+  IupRefresh(layoutdlg->dialog);
+
   iLayoutTreeSetNodeInfo(tree, 0, layoutdlg->dialog);
   iLayoutTreeAddChildren(tree, 0, layoutdlg->dialog);
 
@@ -180,6 +193,8 @@ static int iLayoutMenuRefresh_CB(Ihandle* ih)
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   IupRefresh(layoutdlg->dialog);
+  /* redraw canvas */
+  IupUpdate(IupGetNextChild(dlg, layoutdlg->tree));
   return IUP_DEFAULT;
 }
 
@@ -239,7 +254,7 @@ static int iLayoutMenuShow_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static void iLayoutDialogLoad(iLayoutDialog* layoutdlg, int only_visible)
+static void iLayoutDialogLoad(Ihandle* lo_dlg, iLayoutDialog* layoutdlg, int only_visible)
 {
   int ret, count, i; 	
   Ihandle* *dlg_list;
@@ -269,7 +284,14 @@ static void iLayoutDialogLoad(iLayoutDialog* layoutdlg, int only_visible)
   if (i != count)
     count = i;
 
+  IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttributeHandle(NULL, "PARENTDIALOG", lo_dlg);
+
   ret = IupListDialog(1,"Dialogs",count,dlg_list_str,1,30,count+1,NULL);
+
+  IupStoreGlobal("PARENTDIALOG", IupGetGlobal("_IUP_OLD_PARENTDIALOG"));
+  IupSetGlobal("_IUP_OLD_PARENTDIALOG", NULL);
+
   if (ret != -1)
   {
     if (layoutdlg->destroy)
@@ -289,7 +311,7 @@ static int iLayoutMenuLoad_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
-  iLayoutDialogLoad(layoutdlg, 0);
+  iLayoutDialogLoad(dlg, layoutdlg, 0);
   iLayoutRebuildTree(dlg, layoutdlg);
   return IUP_DEFAULT;
 }
@@ -298,7 +320,7 @@ static int iLayoutMenuLoadVisible_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
-  iLayoutDialogLoad(layoutdlg, 1);
+  iLayoutDialogLoad(dlg, layoutdlg, 1);
   iLayoutRebuildTree(dlg, layoutdlg);
   return IUP_DEFAULT;
 }
@@ -318,11 +340,17 @@ static void iLayoutGetNativeParentOffset(Ihandle* ih, int *x, int *y)
 
 static void iLayoutDrawElements(iLayoutDialog* layoutdlg, int showhidden, Ihandle* canvas, IdrawCanvas* dc, 
                                 unsigned char fr, unsigned char fg, unsigned char fb,
+                                unsigned char fvr, unsigned char fvg, unsigned char fvb,
+                                unsigned char fmr, unsigned char fmg, unsigned char fmb,
                                 unsigned char br, unsigned char bg, unsigned char bb)
 {
   Ihandle* tree = layoutdlg->tree;
   int x, y, w, h, id, 
       count = IupGetInt(tree, "COUNT");
+
+  iupDrawGetSize(dc, &w, &h);
+  iupDrawRectangle(dc, 0, 0, w-1, h-1, br, bg, bb, IUP_DRAW_FILL);
+
   for (id=0; id<count; id++)
   {
     Ihandle* ih = (Ihandle*)IupTreeGetUserId(tree, id);
@@ -340,6 +368,8 @@ static void iLayoutDrawElements(iLayoutDialog* layoutdlg, int showhidden, Ihandl
       y = ih->y;
       w = ih->currentwidth;
       h = ih->currentheight;
+      if (w<=0) w=1;
+      if (h<=0) h=1;
 
       iLayoutGetNativeParentOffset(ih, &x, &y);
 
@@ -351,15 +381,36 @@ static void iLayoutDrawElements(iLayoutDialog* layoutdlg, int showhidden, Ihandl
         iupDrawRectangle(dc, x, y, x+w-1, y+h-1, r, g, b, IUP_DRAW_FILL);
       }
 
-      iupDrawRectangle(dc, x, y, x+w-1, y+h-1, fr, fg, fb, ih->iclass->nativetype==IUP_TYPEVOID? IUP_DRAW_STROKE_DASH: IUP_DRAW_STROKE);
+      if (ih->iclass->nativetype==IUP_TYPEVOID)
+        iupDrawRectangle(dc, x, y, x+w-1, y+h-1, fvr, fvg, fvb, IUP_DRAW_STROKE_DASH);
+      else
+        iupDrawRectangle(dc, x, y, x+w-1, y+h-1, fr, fg, fb, IUP_DRAW_STROKE);
+
+      if (ih->iclass->childtype==IUP_CHILDNONE)
+      {
+        int pw, ph;
+        IupGetIntInt(ih->parent, "CLIENTSIZE", &pw, &ph);
+
+        //last pixel iupDrawLine
+
+        if (ih->currentwidth == pw && ih->currentwidth == ih->naturalwidth)
+        {
+          iupDrawLine(dc, x+1, y+1, x+w-2, y+1, fmr, fmg, fmb, IUP_DRAW_STROKE);
+          iupDrawLine(dc, x+1, y+h-2, x+w-2, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+        }
+
+        if (ih->currentheight == ph && ih->currentheight == ih->naturalheight)
+        {
+          iupDrawLine(dc, x+1, y+1, x+1, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+          iupDrawLine(dc, x+w-2, y+1, x+w-2, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+        }
+      }
 
       title = iupAttribGetLocal(ih, "TITLE");
       if (title)
       {
-        char* line = strstr(title, "\n");
         int len;
-        if (line) len = line-title;
-        else len = strlen(title);
+        iupStrNextLine(title, &len);
         IupSetAttribute(canvas, "FONT", IupGetAttribute(ih, "FONT"));
         iupDrawSetClipRect(dc, x+1, y+1, x+w-2, y+h-2);
         r = fr, g = fg, b = fb;
@@ -377,17 +428,28 @@ static int iLayoutCanvas_CB(Ihandle* canvas)
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   IdrawCanvas* dc = iupDrawCreateCanvas(canvas);
   int showhidden = IupGetInt(dlg, "SHOWHIDDEN");
-  int w, h;
-  unsigned char br, bg, bb, fr, fg, fb;
+  unsigned char br, bg, bb, 
+                fr, fg, fb,
+                fmr, fmg, fmb,
+                fvr, fvg, fvb;
 
   br = 255, bg = 255, bb = 255;
-  iupStrToRGB(IupGetAttribute(dlg, "BGCOLOR"), &br, &bg, &bb);
-  iupDrawGetSize(dc, &w, &h);
-  iupDrawRectangle(dc, 0, 0, w-1, h-1, br, bg, bb, IUP_DRAW_FILL);
+  iupStrToRGB(IupGetAttribute(dlg, "BACKCOLOR"), &br, &bg, &bb);
 
-  br = 0, bg = 0, bb = 0;
-  iupStrToRGB(IupGetAttribute(dlg, "FGCOLOR"), &fr, &fg, &fb);
-  iLayoutDrawElements(layoutdlg, showhidden, canvas, dc, fr, fg, fb, br, bg, bb);
+  fr = 0, fg = 0, fb = 0;
+  iupStrToRGB(IupGetAttribute(dlg, "FORECOLOR"), &fr, &fg, &fb);
+
+  fvr = 0, fvg = 0, fvb = 0;
+  iupStrToRGB(IupGetAttribute(dlg, "FORECOLORVOID"), &fvr, &fvg, &fvb);
+
+  fmr = 0, fmg = 0, fmb = 0;
+  iupStrToRGB(IupGetAttribute(dlg, "FORECOLORMAX"), &fmr, &fmg, &fmb);
+
+  iLayoutDrawElements(layoutdlg, showhidden, canvas, dc, 
+                      fr, fg, fb, 
+                      fvr, fvg, fvb, 
+                      fmr, fmg, fmb, 
+                      br, bg, bb);
 
   iupDrawFlush(dc);
 
@@ -478,8 +540,6 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
 
   dlg = IupDialog(IupSetAttributes(IupSplit(tree, canvas), "VALUE=300"));
   IupSetAttribute(dlg,"TITLE", "Dialog Layout");
-  IupSetAttribute(dlg,"MINBOX","NO");
-  IupSetAttribute(dlg,"MAXBOX","NO");
   IupSetAttribute(dlg,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
   IupSetCallback(dlg, "DESTROY_CB", iLayoutDialogDestroy_CB);
@@ -489,8 +549,10 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
   iupAttribSetStr(dlg, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
   IupSetAttributeHandle(dlg, "MENU", menu);
 
-  IupSetAttribute(dlg,"BGCOLOR", "255 255 255");
-  IupSetAttribute(dlg,"FGCOLOR", "0 0 0");
+  IupSetAttribute(dlg,"BACKCOLOR", "255 255 255");
+  IupSetAttribute(dlg,"FORECOLOR", "0 0 0");
+  IupSetAttribute(dlg,"FORECOLORVOID", "164 164 164");
+  IupSetAttribute(dlg,"FORECOLORMAX", "255 0 0");
   IupSetAttribute(dlg,"DESTROYWHENCLOSED", "Yes");
 
   {

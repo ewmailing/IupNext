@@ -102,36 +102,42 @@ void iupDrawParentBackground(IdrawCanvas* dc)
   unsigned char r=0, g=0, b=0;
   char* color = iupBaseNativeParentGetBgColorAttrib(dc->ih);
   iupStrToRGB(color, &r, &g, &b);
-  iupDrawRectangle(dc, 0, 0, dc->w-1, dc->h-1, r, g, b, 1);
+  iupDrawRectangle(dc, 0, 0, dc->w-1, dc->h-1, r, g, b, IUP_DRAW_FILL);
 }
 
-void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int filled)
+void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
 {
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(r, g, b));
-  if (filled==IUP_DRAW_FILL)
+  if (style==IUP_DRAW_FILL)
     XFillRectangle(iupmot_display, dc->pixmap, dc->pixmap_gc, x1, y1, x2-x1+1, y2-y1+1);
   else
   {
     XGCValues gcval;
-    if (filled==IUP_DRAW_STROKE_DASH)
+    if (style==IUP_DRAW_STROKE_DASH)
       gcval.line_style = LineOnOffDash;
     else
       gcval.line_style = LineSolid;
     XChangeGC(iupmot_display, dc->pixmap_gc, GCLineStyle, &gcval);
-    XDrawRectangle(iupmot_display, dc->pixmap, dc->pixmap_gc, x1, y1, x2-x1+1, y2-y1+1);
+    XDrawRectangle(iupmot_display, dc->pixmap, dc->pixmap_gc, x1, y1, x2-x1, y2-y1);
   }
 }
 
-void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b)
+void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
 {
+  XGCValues gcval;
+  if (style==IUP_DRAW_STROKE_DASH)
+    gcval.line_style = LineOnOffDash;
+  else
+    gcval.line_style = LineSolid;
+  XChangeGC(iupmot_display, dc->pixmap_gc, GCLineStyle, &gcval);
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(r, g, b));
   XDrawLine(iupmot_display, dc->pixmap, dc->pixmap_gc, x1, y1, x2, y2);
 }
 
-void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int filled)
+void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style)
 {
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(r, g, b));
-  if (filled==IUP_DRAW_FILL)
+  if (style==IUP_DRAW_FILL)
   {
     XSetArcMode(iupmot_display, dc->pixmap_gc, ArcPieSlice);
     XFillArc(iupmot_display, dc->pixmap, dc->pixmap_gc, x1, y1, x2-x1+1, y2-y1+1, iupROUND(a1*64), iupROUND((a2 - a1)*64));
@@ -139,7 +145,7 @@ void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, doub
   else
   {
     XGCValues gcval;
-    if (filled==IUP_DRAW_STROKE_DASH)
+    if (style==IUP_DRAW_STROKE_DASH)
       gcval.line_style = LineOnOffDash;
     else
       gcval.line_style = LineSolid;
@@ -148,7 +154,7 @@ void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, doub
   }
 }
 
-void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int filled)
+void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style)
 {
   int i;
   XPoint* pnt = (XPoint*)malloc(count*sizeof(XPoint)); /* XPoint uses short for coordinates */
@@ -160,12 +166,12 @@ void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, un
   }
 
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(r, g, b));
-  if (filled==IUP_DRAW_FILL)
+  if (style==IUP_DRAW_FILL)
     XFillPolygon(iupmot_display, dc->pixmap, dc->pixmap_gc, pnt, count, Complex, CoordModeOrigin);
   else
   {
     XGCValues gcval;
-    if (filled==IUP_DRAW_STROKE_DASH)
+    if (style==IUP_DRAW_STROKE_DASH)
       gcval.line_style = LineOnOffDash;
     else
       gcval.line_style = LineSolid;

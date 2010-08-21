@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 
@@ -302,14 +302,14 @@ also accepted.</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, char *<strong>text</strong>, int <strong>pos</strong>, int <strong>state</strong>); [in C]<br><b>elem</b>:action(<b>text</b>: string, <strong>pos</strong><b>, </b><strong>state</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, char *<strong>text</strong>, int <strong>item</strong>, int <strong>state</strong>); [in C]<br><b>elem</b>:action(<b>text</b>: string, <strong>item</strong><b>, </b><strong>state</strong>: number) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
 
 	<strong>text</strong>: Text of the changed item.<br>
-<strong>pos</strong>: Number of the changed item.<br>
+<strong>item</strong>: Number of the changed item starting at 1.<br>
 
 <strong>state</strong>: Equal to 1 if the option was selected or to 0 if the option was deselected.</p>
 
@@ -360,13 +360,13 @@ Called only when DROPDOWN=NO. (since 3.0)</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>pos</strong>, char *<strong>text</strong>); [in C]<br><b>elem</b>:action(<strong>pos</strong>: number<b>, text</b>: string) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>item</strong>, char *<strong>text</strong>); [in C]<br><b>elem</b>:action(<strong>item</strong>: number<b>, text</b>: string) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
 
-	<strong>pos</strong>: Number of the selected item.<br>
+	<strong>item</strong>: Number of the selected item starting at 1.<br>
 
 <strong>text</strong>: Text of the selected item.</p>
 

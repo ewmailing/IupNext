@@ -85,6 +85,8 @@ int IupLoopStep(void)
 
 void IupFlush(void)
 {
+  int count = 0;
+
   IFidle old_gtk_idle_cb = NULL;
   if (gtk_idle_cb)
   {
@@ -92,8 +94,16 @@ void IupFlush(void)
     iupdrvSetIdleFunction(NULL);
   }
 
-  while (gtk_events_pending())
+  while (count<100 && gtk_events_pending())
+  {
     gtk_main_iteration();
+
+    /* we detected that after destroying a popup dialog
+       just after clicking in a button of the same dialog,
+       sometimes a message gets lost and gtk_events_pending
+       keeps returning TRUE */
+    count++;
+  }
 
   if (old_gtk_idle_cb)
     iupdrvSetIdleFunction((Icallback)old_gtk_idle_cb);

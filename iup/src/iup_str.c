@@ -137,7 +137,8 @@ void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str)
 {
   int size = strlen(src_str)+1;
   if (size > dst_max_size) size = dst_max_size;
-  memcpy(dst_str, src_str, size);
+  memcpy(dst_str, src_str, size-1);
+  dst_str[size-1] = 0;
 }
 
 char *iupStrCopyUntil(char **str, int c)

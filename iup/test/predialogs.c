@@ -121,7 +121,6 @@ static void drawTestGL(Ihandle* ih)
 
 static int close_cb(Ihandle *ih)
 {
-  printf("CLOSE_CB\n");
   IupDestroy(ih);
   return IUP_IGNORE;
 }

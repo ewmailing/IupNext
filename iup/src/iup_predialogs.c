@@ -31,23 +31,19 @@ static int CB_button_CANCEL (Ihandle* ih)
   return IUP_CLOSE;
 }
 
-static int CB_lista (Ihandle *h, char *n, int o, int v)
+static int CB_dblclick(Ihandle *ih, int item, char *text)
 {
-  static clock_t oldtimesel = 0;
-  static int oldopc = 0;
-  (void)n; /* not used */
-  if (v)
-  {
-    clock_t timesel = clock();
+  (void)text;
+  iupAttribSetStrf(IupGetDialog(ih), "_IUP_LIST_NUMBER", "%d", item-1);
+  iupAttribSetStr(IupGetDialog(ih), "STATUS", "1");
+  return IUP_CLOSE;
+}
 
-    iupAttribSetStrf(IupGetDialog(h), "_IUP_LIST_NUMBER", "%d", o-1);
-
-    if (((timesel-oldtimesel) < 500) && (o == oldopc))
-      return IUP_CLOSE;
-
-    oldtimesel = timesel;
-    oldopc     = o;
-  }
+static int CB_list (Ihandle *ih, char *text, int item, int state)
+{
+  (void)text;
+  if (state)
+    iupAttribSetStrf(IupGetDialog(ih), "_IUP_LIST_NUMBER", "%d", item-1);
   return IUP_DEFAULT;
 }
 
@@ -104,7 +100,8 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
     if (op<1 || op>size) op=1;
     iupAttribSetStrf(dlg, "_IUP_LIST_NUMBER", "%d", op-1);
     IupSetfAttribute(lst,"VALUE","%d",op);
-    IupSetCallback(lst, "ACTION", (Icallback)CB_lista);
+    IupSetCallback(lst, "ACTION", (Icallback)CB_list);
+    IupSetCallback(lst, "DBLCLICK_CB", (Icallback)CB_dblclick);
   }
   else if ((type == 2) && (marks != NULL))
   {

@@ -420,9 +420,7 @@ void IupSetAttributeHandle(Ihandle *ih, const char* name, Ihandle *ih_named)
 {
   int inherit;
   char* handle_name;
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return;
+
   iupASSERT(name!=NULL);
   if (!name)
     return;
@@ -434,8 +432,17 @@ void IupSetAttributeHandle(Ihandle *ih, const char* name, Ihandle *ih_named)
     handle_name = IupGetName(ih_named);
   }
 
-  iupClassObjectSetAttribute(ih, name, handle_name, &inherit);
-  iupAttribStoreStr(ih, name, handle_name);
+  if (ih)
+  {
+    iupASSERT(iupObjectCheck(ih));
+    if (!iupObjectCheck(ih))
+      return;
+
+    iupClassObjectSetAttribute(ih, name, handle_name, &inherit);
+    iupAttribStoreStr(ih, name, handle_name);
+  }
+  else
+    IupStoreGlobal(name, handle_name);
 }
 
 Ihandle* IupGetAttributeHandle(Ihandle *ih, const char* name)
