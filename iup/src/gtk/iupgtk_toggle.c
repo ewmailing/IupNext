@@ -402,6 +402,26 @@ static gboolean gtkToggleKeyEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *
   return FALSE;
 }
 
+static gboolean gtkToggleEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *evt, Ihandle *ih)
+{
+  /* Used only when FLAT=Yes */
+
+  iupgtkEnterLeaveEvent(widget, evt, ih);
+  (void)widget;
+
+  if (gtkToggleGetCheck(ih) == 1)
+    gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NORMAL);
+  else
+  {
+    if (evt->type == GDK_ENTER_NOTIFY)
+      gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NORMAL);
+    else  if (evt->type == GDK_LEAVE_NOTIFY)               
+      gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NONE);
+  }
+
+  return FALSE;
+}
+
 static int gtkToggleMapMethod(Ihandle* ih)
 {
   Ihandle* radio = iupRadioFindToggleParent(ih);
@@ -462,8 +482,18 @@ static int gtkToggleMapMethod(Ihandle* ih)
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
-  g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+  if (ih->data->type == IUP_TOGGLE_IMAGE && iupAttribGetBoolean(ih, "FLAT"))
+  {
+    gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NONE);
+
+    g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(gtkToggleEnterLeaveEvent), ih);
+    g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(gtkToggleEnterLeaveEvent), ih);
+  }
+  else
+  {
+    g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+    g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+  }
 
   g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);

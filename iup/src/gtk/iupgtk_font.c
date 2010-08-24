@@ -267,6 +267,17 @@ PangoFontDescription* iupgtkGetPangoFontDesc(const char* value)
   return gtkfont->fontdesc;
 }
 
+PangoLayout* iupgtkGetPangoLayout(const char* value)
+{
+  IgtkFont *gtkfont = gtkFindFont(value);
+  if (!gtkfont)
+  {
+    iupERROR1("Failed to create Font: %s", value); 
+    return NULL;
+  }
+  return gtkfont->layout;
+}
+
 char* iupgtkGetPangoFontDescAttrib(Ihandle *ih)
 {
   IgtkFont* gtkfont = gtkFontGet(ih);

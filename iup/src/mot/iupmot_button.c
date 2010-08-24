@@ -173,6 +173,8 @@ static void motButtonActivateCallback(Widget w, Ihandle* ih, XtPointer call_data
 
 static void motButtonEnterLeaveWindowEvent(Widget w, Ihandle* ih, XEvent *evt, Boolean *cont)
 {
+  /* Used only when FLAT=Yes */
+
   iupmotEnterLeaveWindowEvent(w, ih, evt, cont);
 
   if (evt->type == EnterNotify)

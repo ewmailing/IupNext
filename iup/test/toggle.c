@@ -247,6 +247,8 @@ void ToggleTest(void)
   IupSetAttribute(toggle2, "IMAGE",   "image2");
   IupSetAttribute(toggle1, "NAME", "1");
   IupSetAttribute(toggle2, "NAME", "2");
+//  IupSetAttribute(toggle1, "FLAT", "Yes");
+//  IupSetAttribute(toggle2, "FLAT", "Yes");
   IupSetAttribute(toggle3, "NAME", "3");
   IupSetAttribute(toggle4, "NAME", "4");
   IupSetAttribute(toggle5, "NAME", "5");

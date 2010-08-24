@@ -307,6 +307,8 @@ static int gtkButtonSetFocusOnClickAttrib(Ihandle* ih, const char* value)
 
 static gboolean gtkButtonEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *evt, Ihandle *ih)
 {
+  /* Used only when FLAT=Yes */
+
   iupgtkEnterLeaveEvent(widget, evt, ih);
   (void)widget;
 

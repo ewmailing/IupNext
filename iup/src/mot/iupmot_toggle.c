@@ -75,7 +75,18 @@ static int motToggleSetBgColorAttrib(Ihandle* ih, const char* value)
     return 0; 
   }
   else
+  {
+    if (iupAttribGetBoolean(ih, "FLAT"))
+    {
+      /* ignore given value, must use only from parent */
+      value = iupBaseNativeParentGetBgColor(ih);
+
+      if (iupdrvBaseSetBgColorAttrib(ih, value))
+        return 1;
+    }
+
     return iupdrvBaseSetBgColorAttrib(ih, value); 
+  }
 }
 
 static int motToggleSetBackgroundAttrib(Ihandle* ih, const char* value)
@@ -100,6 +111,26 @@ static int motToggleSetBackgroundAttrib(Ihandle* ih, const char* value)
       {
         XtVaSetValues(ih->handle, XmNbackgroundPixmap, pixmap, NULL);
         return 1;
+      }
+    }
+  }
+  else
+  {
+    if (iupAttribGetBoolean(ih, "FLAT"))
+    {
+      /* ignore given value, must use only from parent */
+      value = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
+
+      if (iupdrvBaseSetBgColorAttrib(ih, value))
+        return 1;
+      else
+      {
+        Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
+        if (pixmap)
+        {
+          XtVaSetValues(ih->handle, XmNbackgroundPixmap, pixmap, NULL);
+          return 1;
+        }
       }
     }
   }
@@ -324,6 +355,25 @@ static void motToggleValueChangedCallback(Widget w, Ihandle* ih, XmToggleButtonC
   (void)w;
 }
 
+static void motToggleEnterLeaveWindowEvent(Widget w, Ihandle* ih, XEvent *evt, Boolean *cont)
+{
+  /* Used only when FLAT=Yes */
+  unsigned char check = 0;
+
+  iupmotEnterLeaveWindowEvent(w, ih, evt, cont);
+
+  XtVaGetValues (ih->handle, XmNset, &check, NULL);
+  if (check == XmSET)
+    XtVaSetValues(ih->handle, XmNshadowThickness, 2, NULL);
+  else
+  {
+    if (evt->type == EnterNotify)
+      XtVaSetValues(ih->handle, XmNshadowThickness, 2, NULL);
+    else  if (evt->type == LeaveNotify)
+      XtVaSetValues(ih->handle, XmNshadowThickness, 0, NULL);
+  }
+}
+
 static int motToggleMapMethod(Ihandle* ih)
 {
   Ihandle* radio = iupRadioFindToggleParent(ih);
@@ -424,8 +474,17 @@ static int motToggleMapMethod(Ihandle* ih)
 
   XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
 
-  XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
-  XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+  if (ih->data->type == IUP_TOGGLE_IMAGE && iupAttribGetBoolean(ih, "FLAT"))
+  {
+    XtVaSetValues(ih->handle, XmNshadowThickness, 0, NULL);
+    XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)motToggleEnterLeaveWindowEvent, (XtPointer)ih);
+    XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)motToggleEnterLeaveWindowEvent, (XtPointer)ih);
+  }
+  else
+  {
+    XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+    XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+  }
 
   XtAddEventHandler(ih->handle, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent, (XtPointer)ih);
   XtAddEventHandler(ih->handle, KeyPressMask,    False, (XtEventHandler)iupmotKeyPressEvent,    (XtPointer)ih);

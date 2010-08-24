@@ -189,7 +189,7 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
 
 static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 { 
-  int width, height, border = 4, check;
+  int width, height, border = 4, check, draw_border;
   HDC hDC;
   iupwinBitmapDC bmpDC;
 
@@ -206,7 +206,18 @@ static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   else
     drawitem->itemState |= ODS_DEFAULT;  /* use default mark for NOT checked */
 
-  iupwinDrawButtonBorder(ih->handle, hDC, &drawitem->rcItem, drawitem->itemState);
+  if (!check && iupAttribGetBoolean(ih, "FLAT"))
+  {
+    if (drawitem->itemState & ODS_HOTLIGHT || iupAttribGet(ih, "_IUPWINTOG_ENTERWIN"))
+      draw_border = 1;
+    else
+      draw_border = 0;
+  }
+  else
+    draw_border = 1;
+
+  if (draw_border)
+    iupwinDrawButtonBorder(ih->handle, hDC, &drawitem->rcItem, drawitem->itemState);
 
   winToggleDrawImage(ih, hDC, width, height, border, drawitem->itemState);
 
@@ -497,25 +508,44 @@ static int winToggleProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
   (void)lp;
   (void)wp;
 
+  /* Called only when (ih->data->type == IUP_TOGGLE_IMAGE) and !iupwin_comctl32ver6 */
+
   switch (msg)
   {
-    case WM_MOUSEACTIVATE:
-      if (!winToggleIsActive(ih))
+  case WM_MOUSELEAVE:
+    if (iupAttribGetBoolean(ih, "FLAT"))
+    {
+      iupAttribSetStr(ih, "_IUPWINTOG_ENTERWIN", NULL);
+      iupdrvRedrawNow(ih);
+    }
+    break;
+  case WM_MOUSEMOVE:
+    if (iupAttribGetBoolean(ih, "FLAT"))
+    {
+      if (!iupAttribGet(ih, "_IUPWINTOG_ENTERWIN"))
       {
-        *result = MA_NOACTIVATEANDEAT;
-        return 1;
+        iupAttribSetStr(ih, "_IUPWINTOG_ENTERWIN", "1");
+        iupdrvRedrawNow(ih);
       }
-      break;
-    case WM_LBUTTONDOWN:
-    case WM_LBUTTONUP:
-    case WM_ACTIVATE:
-    case WM_SETFOCUS:
-      if (!winToggleIsActive(ih)) 
-      {
-        *result = 0;
-        return 1;
-      }
-      break;
+    }
+    break;
+  case WM_MOUSEACTIVATE:
+    if (!winToggleIsActive(ih))
+    {
+      *result = MA_NOACTIVATEANDEAT;
+      return 1;
+    }
+    break;
+  case WM_LBUTTONDOWN:
+  case WM_LBUTTONUP:
+  case WM_ACTIVATE:
+  case WM_SETFOCUS:
+    if (!winToggleIsActive(ih)) 
+    {
+      *result = 0;
+      return 1;
+    }
+    break;
   }
 
   if (msg == WM_LBUTTONDOWN)

@@ -573,7 +573,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     }
     break;
   case WM_MOUSELEAVE:
-    if (!iupwin_comctl32ver6)
+    if (!iupwin_comctl32ver6 && iupAttribGetBoolean(ih, "FLAT"))
     {
       iupAttribSetStr(ih, "_IUPWINBUT_ENTERWIN", NULL);
       iupdrvRedrawNow(ih);
@@ -585,7 +585,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     }
     break;
   case WM_MOUSEMOVE:
-    if (!iupwin_comctl32ver6)
+    if (!iupwin_comctl32ver6 && iupAttribGetBoolean(ih, "FLAT"))
     {
       if (!iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
       {
@@ -685,7 +685,8 @@ static int winButtonMapMethod(Ihandle* ih)
  /* Buttons with the BS_PUSHBUTTON style do NOT use the returned brush in WM_CTLCOLORBTN. 
     Buttons with these styles are always drawn with the default system colors.
     So FGCOLOR and BGCOLOR do NOT work.
-    The BS_FLAT style does NOT completely remove the borders. With XP styles is ignored. So FLAT do NOT work.
+    The BS_FLAT style does NOT completely remove the borders. With XP styles is ignored. 
+    So FLAT do NOT work.
     BCM_SETTEXTMARGIN is not working. 
     Buttons with images and with XP styles do NOT draw the focus feedback.
     Can NOT remove the borders when using IMPRESS.

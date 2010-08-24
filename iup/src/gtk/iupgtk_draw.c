@@ -165,9 +165,9 @@ void iupDrawResetClip(IdrawCanvas* dc)
   gdk_gc_set_clip_region(dc->pixmap_gc, NULL);
 }
 
-void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b)
+void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font)
 {
-  PangoLayout* fontlayout = (PangoLayout*)IupGetAttribute(dc->ih, "PANGOLAYOUT");
+  PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
   GdkColor color;
   iupgdkColorSet(&color, r, g, b);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
