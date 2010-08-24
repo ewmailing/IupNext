@@ -15,7 +15,7 @@ enum {IVAL_VERTICAL, IVAL_HORIZONTAL};
 
 struct _IcontrolData
 {
-  int type;
+  int orientation;
   int show_ticks;  /* Windows and Motif only - can be used only after map */
   int inverted;
   double val;

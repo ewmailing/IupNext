@@ -44,7 +44,7 @@ void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
       ticks_size = 8;
   }
 
-  if (ih->data->type == IVAL_HORIZONTAL)
+  if (ih->data->orientation == IVAL_HORIZONTAL)
   {
     *w = 35;
     *h = 30+ticks_size;
@@ -255,7 +255,7 @@ static int winValMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* Track bar Orientation */
-  if (ih->data->type == IVAL_HORIZONTAL)
+  if (ih->data->orientation == IVAL_HORIZONTAL)
     dwStyle |= TBS_HORZ;
   else
     dwStyle |= TBS_VERT;

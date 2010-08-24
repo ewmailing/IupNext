@@ -10,7 +10,7 @@ static void printdial(Ihandle *c, double a, char* color)
   char *type=NULL;
   Ihandle* label = NULL;
 
-  type = IupGetAttribute(c, "TYPE");
+  type = IupGetAttribute(c, "ORIENTATION");
 
   switch(type[0])
   {

@@ -16,7 +16,7 @@ static int mousemove(Ihandle *c,double a)
 
   sprintf(buffer, "VALUE=%.2g", a);
 
-  type = IupGetAttribute(c, "TYPE");
+  type = IupGetAttribute(c, "ORIENTATION");
 
   switch(type[0])
   {
@@ -34,7 +34,7 @@ static int mousemove(Ihandle *c,double a)
 
 static int button_press(Ihandle *c,double a)
 {
-  char *type = IupGetAttribute(c, "TYPE");
+  char *type = IupGetAttribute(c, "ORIENTATION");
 
   switch(type[0])
   {
@@ -54,7 +54,7 @@ static int button_press(Ihandle *c,double a)
 
 static int button_release(Ihandle *c,double a)
 {
-  char *type = IupGetAttribute(c, "TYPE");
+  char *type = IupGetAttribute(c, "ORIENTATION");
 
   switch(type[0])
   {

@@ -28,10 +28,10 @@ in the
 <a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupDial(const char *<strong>type</strong>); [in C]
-iup.dial{<strong>type</strong>: string} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
-dial(<strong>type</strong>) [in LED] </pre>
-<p><strong>type</strong>: optional dial type, can be NULL. See TYPE attribute.</p>
+<pre>Ihandle* IupDial(const char *<strong>orientation</strong>); [in C]
+iup.dial{<strong>orientation</strong>: string} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+dial(<strong>orientation</strong>) [in LED] </pre>
+<p><strong>orientation</strong>: optional dial orientation, can be NULL. See ORIENTATION attribute.</p>
 <p>
   <u>Returns:</u> the identifier of the 
   created element, or NULL if an error occurs.</p>
@@ -47,9 +47,9 @@ dial(<strong>type</strong>) [in LED] </pre>
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: foreground color. The default value is &quot;64 64 64&quot;. 
 Not used for the circular dial.</p>
 <p> <a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): 
-the initial size is &quot;16x80&quot;, &quot;80x16&quot; or &quot;40x35&quot; according to the dial type. Set 
+the initial size is &quot;16x80&quot;, &quot;80x16&quot; or &quot;40x35&quot; according to the dial orientation. Set 
 to NULL to allow the automatic layout use smaller values.</p>
-<p><strong>TYPE</strong> (creation only) (<font SIZE="3">non inheritable</font>):&nbsp; dial layout configuration &quot;VERTICAL&quot;, 
+<p><strong>ORIENTATION</strong> (creation only) (<font SIZE="3">non inheritable</font>):&nbsp; dial layout configuration &quot;VERTICAL&quot;, 
   &quot;HORIZONTAL&quot; or &quot;CIRCULAR&quot;. Default: &quot;HORIZONTAL&quot;.</p>
 <p><strong>UNIT</strong>: unit of the angle. Can be &quot;DEGREES&quot; 
   or &quot;RADIANS&quot;. Default is &quot;RADIANS&quot;. Used only in the 
@@ -57,8 +57,8 @@ callbacks.</p>
 <p><strong>VALUE </strong>(<font SIZE="3">non inheritable</font>):
   The dial angular value in radians. 
   The value is reset to zero when the interaction is started, except for 
-TYPE=CIRCULAR. When type is vertical or horizontal, the dial measures relative 
-angles. When type is circular the dial measure absolute angles, where the origin 
+ORIENTATION=CIRCULAR. When orientation is vertical or horizontal, the dial measures relative 
+angles. When orientation is circular the dial measure absolute angles, where the origin 
 is at 3 O'clock.</p>
 <blockquote>
   <hr>

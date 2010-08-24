@@ -9,7 +9,7 @@
   <title>IupVal</title>
   <link rel="stylesheet" type="text/css" href="../../style.css">
 
-  <style type="text/css">
+  <style orientation="text/css">
 .style1 {
 	font-size: large;
 }
@@ -50,11 +50,11 @@ as Scale or Trackbar in native systems.</p>
 
 <div>
   
-<pre>Ihandle* IupVal(const char *<strong>type</strong>); [in C]<br>iup.val{<strong>type</strong>: string} -&gt; (<strong>elem</strong>: ihandle) [in Lua]<br>val(<strong>type</strong>) [in LED] </pre>
+<pre>Ihandle* IupVal(const char *<strong>orientation</strong>); [in C]<br>iup.val{<strong>orientation</strong>: string} -&gt; (<strong>elem</strong>: ihandle) [in Lua]<br>val(<strong>orientation</strong>) [in LED] </pre>
 
 </div>
 
-<p><strong>type</strong>: optional type of valuator. Can be NULL. See TYPE 
+<p><strong>orientation</strong>: optional orientation of valuator. Can be NULL. See ORIENTATION 
 attribute.</p>
 
   
@@ -77,8 +77,8 @@ control. Default: YES. (since 3.0)</p>
 <p><strong>INVERTED</strong>: Invert the minimum and maximum positions on 
 screen. When INVERTED=YES maximum is at top and left (minimum is bottom and 
 right), when INVERTED=NO maximum is at bottom and right (minimum is top and 
-left). The initial value depends on TYPE passed as parameter on creation, if TYPE=VERTICAL default is YES, if 
-TYPE=HORIZONTAL default is NO. (since 3.0)</p>
+left). The initial value depends on ORIENTATION passed as parameter on creation, if ORIENTATION=VERTICAL default is YES, if 
+ORIENTATION=HORIZONTAL default is NO. (since 3.0)</p>
 
 <p><strong>MAX</strong>:
   Contains the maximum valuator value. Default 
@@ -121,7 +121,7 @@ position is always normal. (since 3.0)</p>
 
 
 
-<p><strong>TYPE </strong>(<font size="3">non inheritable</font>):&nbsp; Informs whether the valuator is "VERTICAL" 
+<p><strong>ORIENTATION </strong>(<font size="3">non inheritable</font>):&nbsp; Informs whether the valuator is "VERTICAL" 
   or "HORIZONTAL". 
   Vertical valuators are bottom to up, and horizontal valuators are left to right variations of min to max 
 (but can be inverted using INVERTED). 
@@ -194,7 +194,7 @@ the control loses its focus.</p>
 <h4>Keyboard Mapping</h4>
 
 <p>This is the default mapping when INVERTED has the default value, or 
-TYPE=HORIZONTAL+INVERTED=NO.</p>
+ORIENTATION=HORIZONTAL+INVERTED=NO.</p>
 
 <table align="center">
 
@@ -261,7 +261,7 @@ TYPE=HORIZONTAL+INVERTED=NO.</p>
 
 
 <p>This is the default mapping when INVERTED has the default value, or 
-TYPE=VERTICAL+INVERTED=YES.</p>
+ORIENTATION=VERTICAL+INVERTED=YES.</p>
 
 
 <table align="center">

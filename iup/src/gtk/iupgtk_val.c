@@ -30,7 +30,7 @@
 
 void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
 {
-  if (ih->data->type == IVAL_HORIZONTAL)
+  if (ih->data->orientation == IVAL_HORIZONTAL)
   {
     *w = 20;
     *h = 35;
@@ -150,7 +150,7 @@ static int gtkValMapMethod(Ihandle* ih)
   if (!adjustment)
     return IUP_ERROR;
 
-  if (ih->data->type == IVAL_HORIZONTAL)
+  if (ih->data->orientation == IVAL_HORIZONTAL)
     ih->handle = gtk_hscale_new(GTK_ADJUSTMENT(adjustment));
   else
     ih->handle = gtk_vscale_new(GTK_ADJUSTMENT(adjustment));

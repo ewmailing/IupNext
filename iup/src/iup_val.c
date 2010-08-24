@@ -87,7 +87,7 @@ static char* iValGetMinAttrib(Ihandle* ih)
   return str;
 }
 
-static int iValSetTypeAttrib(Ihandle* ih, const char *value)
+static int iValSetOrientationAttrib(Ihandle* ih, const char *value)
 {
   int min_w, min_h;
 
@@ -101,23 +101,23 @@ static int iValSetTypeAttrib(Ihandle* ih, const char *value)
   {
     /* val natural vertical size is MinWx100 */
     IupSetfAttribute(ih, "RASTERSIZE", "%dx%d", min_w, 100);
-    ih->data->type = IVAL_VERTICAL;
+    ih->data->orientation = IVAL_VERTICAL;
   }
   else /* "HORIZONTAL" */
   {
     /* val natural horizontal size is 100xMinH */
     IupSetfAttribute(ih, "RASTERSIZE", "%dx%d", 100, min_h);
-    ih->data->type = IVAL_HORIZONTAL;
+    ih->data->orientation = IVAL_HORIZONTAL;
   }
 
   return 0; /* do not store value in hash table */
 }
 
-static char* iValGetTypeAttrib(Ihandle* ih)
+static char* iValGetOrientationAttrib(Ihandle* ih)
 {
-  if (ih->data->type == IVAL_HORIZONTAL)
+  if (ih->data->orientation == IVAL_HORIZONTAL)
     return "HORIZONTAL";
-  else /* (ih->data->type == IVAL_VERTICAL) */
+  else /* (ih->data->orientation == IVAL_VERTICAL) */
     return "VERTICAL";
 }
 
@@ -145,14 +145,14 @@ static char* iValGetInvertedAttrib(Ihandle* ih)
 
 static int iValCreateMethod(Ihandle* ih, void **params)
 {
-  char* type = "HORIZONTAL";
+  char* orientation = "HORIZONTAL";
   if (params && params[0])
-    type = params[0];
+    orientation = params[0];
 
   ih->data = iupALLOCCTRLDATA();
 
-  iValSetTypeAttrib(ih, type);
-  if (ih->data->type == IVAL_VERTICAL)
+  iValSetOrientationAttrib(ih, orientation);
+  if (ih->data->orientation == IVAL_VERTICAL)
     ih->data->inverted = 1;  /* default is YES when vertical */
 
   ih->data->vmax = 1.00;
@@ -192,7 +192,8 @@ Iclass* iupValGetClass(void)
   /* IupVal only */
   iupClassRegisterAttribute(ic, "MAX", iValGetMaxAttrib, iValSetMaxAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "MIN", iValGetMinAttrib, iValSetMinAttrib, IUPAF_SAMEASSYSTEM, "0.0", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TYPE", iValGetTypeAttrib, iValSetTypeAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TYPE", iValGetOrientationAttrib, iValSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ORIENTATION", iValGetOrientationAttrib, iValSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "INVERTED", iValGetInvertedAttrib, iValSetInvertedAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvValInitClass(ic);
@@ -200,10 +201,10 @@ Iclass* iupValGetClass(void)
   return ic;
 }
 
-Ihandle *IupVal(const char *type)
+Ihandle *IupVal(const char *orientation)
 {
   void *params[2];
-  params[0] = (void*)type;
+  params[0] = (void*)orientation;
   params[1] = NULL;
   return IupCreatev("val", params);
 }

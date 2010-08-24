@@ -11,7 +11,7 @@ if not string then
 end
 
 function fbuttonpress(self)
-  if(self.type == "VERTICAL") then
+  if(self.orientation == "VERTICAL") then
     lbl_v.fgcolor = "255 0 0"
   else
     lbl_h.fgcolor = "255 0 0"
@@ -20,7 +20,7 @@ function fbuttonpress(self)
 end
 
 function fbuttonrelease(self)
-  if(self.type == "VERTICAL") then
+  if(self.orientation == "VERTICAL") then
     lbl_v.fgcolor = "0 0 0"
   else
     lbl_h.fgcolor = "0 0 0"
@@ -30,7 +30,7 @@ end
 
 function fmousemove(self, val)
   local buffer = "iup.VALUE="..string.format('%.2f', val)
-  if (self.type == "VERTICAL") then
+  if (self.orientation == "VERTICAL") then
     lbl_v.title=buffer
   else
     lbl_h.title=buffer
@@ -44,7 +44,7 @@ val_v = iup.val{"VERTICAL"; min=0, max=1,	value="0.3",
 		button_release_cb=fbuttonrelease
 }
 
-lbl_v = iup.label{title="VALUE=   ", size=70, type="1"}
+lbl_v = iup.label{title="VALUE=   ", size=70}
 
 val_h = iup.val{"HORIZONTAL"; min=0, max=1,	value=0,	
     mousemove_cb=fmousemove,
@@ -52,7 +52,7 @@ val_h = iup.val{"HORIZONTAL"; min=0, max=1,	value=0,
 		button_release_cb=fbuttonrelease
 }
 
-lbl_h = iup.label{title="VALUE=   ", size=70, type="2"}
+lbl_h = iup.label{title="VALUE=   ", size=70}
 
 dlg_val = iup.dialog
 {

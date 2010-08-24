@@ -48,7 +48,7 @@ struct _IcontrolData
 
   /* attributes */
   double angle;
-  int type;
+  int orientation;
   double unit;
   double density;
 
@@ -322,7 +322,7 @@ static int iDialButtonPress(Ihandle* ih, int button, int x, int y)
   ih->data->px = x;
   ih->data->py = y;
 
-  if (ih->data->type != IDIAL_CIRCULAR)
+  if (ih->data->orientation != IDIAL_CIRCULAR)
     ih->data->angle=0;
 
   cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
@@ -493,7 +493,7 @@ static int iDialResize_CB(Ihandle* ih)
   cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
 
   /* update number of divisions */
-  switch(ih->data->type)
+  switch(ih->data->orientation)
   {
   case IDIAL_VERTICAL:
     ih->data->num_div = (int)((ih->data->h-2 * IDIAL_SPACE-2) * ih->data->density);
@@ -585,7 +585,7 @@ static int iDialKeyPress_CB(Ihandle* ih, int c, int press)
     else
     {
       ih->data->pressing = 1;
-      if (ih->data->type != IDIAL_CIRCULAR)
+      if (ih->data->orientation != IDIAL_CIRCULAR)
         ih->data->angle = 0;
       cb_name = "BUTTON_PRESS_CB";
     }
@@ -723,7 +723,7 @@ static int iDialSetUnitAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static int iDialSetTypeAttrib(Ihandle* ih, const char* value)
+static int iDialSetOrientationAttrib(Ihandle* ih, const char* value)
 {
   /* valid only before map */
   if (ih->handle)
@@ -732,34 +732,34 @@ static int iDialSetTypeAttrib(Ihandle* ih, const char* value)
   if (iupStrEqualNoCase(value, "VERTICAL"))
   {
     ih->data->Draw = iDialDrawVertical;
-    ih->data->type = IDIAL_VERTICAL;
+    ih->data->orientation = IDIAL_VERTICAL;
     IupSetCallback(ih, "MOTION_CB", (Icallback)iDialMotionVertical_CB);
     IupSetAttribute(ih, "SIZE", "16x80");
   }
   else if (iupStrEqualNoCase(value, "CIRCULAR"))
   {
     ih->data->Draw = iDialDrawCircular;
-    ih->data->type = IDIAL_CIRCULAR;
+    ih->data->orientation = IDIAL_CIRCULAR;
     IupSetCallback(ih, "MOTION_CB", (Icallback)iDialMotionCircular_CB);
     IupSetAttribute(ih, "SIZE", "40x36");
   }
   else /* "HORIZONTAL" */
   {
     ih->data->Draw = iDialDrawHorizontal;
-    ih->data->type = IDIAL_HORIZONTAL;
+    ih->data->orientation = IDIAL_HORIZONTAL;
     IupSetCallback(ih, "MOTION_CB", (Icallback)iDialMotionHorizontal_CB);
     IupSetAttribute(ih, "SIZE", "80x16");
   }
   return 0; /* do not store value in hash table */
 }
 
-static char* iDialGetTypeAttrib(Ihandle* ih)
+static char* iDialGetOrientationAttrib(Ihandle* ih)
 {
-  if (ih->data->type == IDIAL_HORIZONTAL)
+  if (ih->data->orientation == IDIAL_HORIZONTAL)
     return "HORIZONTAL";
-  else if (ih->data->type == IDIAL_VERTICAL)
+  else if (ih->data->orientation == IDIAL_VERTICAL)
     return "VERTICAL";
-  else /* (ih->data->type == IDIAL_CIRCULAR) */
+  else /* (ih->data->orientation == IDIAL_CIRCULAR) */
     return "CIRCULAR";
 }
 
@@ -796,9 +796,9 @@ static void iDialUnMapMethod(Ihandle* ih)
 
 static int iDialCreateMethod(Ihandle* ih, void **params)
 {
-  char* type = "HORIZONTAL";
+  char* orientation = "HORIZONTAL";
   if (params && params[0])
-    type = params[0];
+    orientation = params[0];
 
   /* free the data allocated by IupCanvas */
   if (ih->data) free(ih->data);
@@ -809,7 +809,7 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
   ih->expand = IUP_EXPAND_NONE;
 
   /* default values */
-  iDialSetTypeAttrib(ih, type);
+  iDialSetOrientationAttrib(ih, orientation);
   ih->data->density = IDIAL_DEFAULT_DENSITY; 
   ih->data->unit = 1.0;  /* RADIANS */
   ih->data->num_div = 3;
@@ -851,7 +851,8 @@ Iclass* iupDialGetClass(void)
 
   /* IupDial only */
   iupClassRegisterAttribute(ic, "VALUE", iDialGetValueAttrib, iDialSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TYPE", iDialGetTypeAttrib, iDialSetTypeAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TYPE", iDialGetOrientationAttrib, iDialSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ORIENTATION", iDialGetOrientationAttrib, iDialSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DENSITY", iDialGetDensityAttrib, iDialSetDensityAttrib, IDIAL_DEFAULT_DENSITY_STR, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iDialSetFgColorAttrib, IDIAL_DEFAULT_FGCOLOR, NULL, IUPAF_NOT_MAPPED);
@@ -864,10 +865,10 @@ Iclass* iupDialGetClass(void)
   return ic;
 }
 
-Ihandle* IupDial(const char* type)
+Ihandle* IupDial(const char* orientation)
 {
   void *params[2];
-  params[0] = (void*)type;
+  params[0] = (void*)orientation;
   params[1] = NULL;
   return IupCreatev("dial", params);
 }

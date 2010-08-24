@@ -39,7 +39,7 @@ void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
   if (iupAttribGetInt(ih, "SHOWTICKS"))
     ticks_size = 8;
 
-  if (ih->data->type == IVAL_HORIZONTAL)
+  if (ih->data->orientation == IVAL_HORIZONTAL)
   {
     *w = 30;
     *h = 20+ticks_size;
@@ -403,7 +403,7 @@ static int motValMapMethod(Ihandle* ih)
   iupMOT_SETARG(args, num_args, XmNsliderSize, 16);
   iupMOT_SETARG(args, num_args, XmNshowValue, XmNONE);
 
-  if (ih->data->type == IVAL_HORIZONTAL)
+  if (ih->data->orientation == IVAL_HORIZONTAL)
   {
     iupMOT_SETARG(args, num_args, XmNorientation, XmHORIZONTAL);
     if (ih->data->inverted)
