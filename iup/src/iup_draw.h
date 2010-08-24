@@ -70,7 +70,7 @@ void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, un
 /** Draws a text.
  * x,y is at left,top corner of the text.
  * \ingroup draw */
-void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b);
+void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font);
 
 /** Draws an image.
  * x,y is at left,top corner of the image.

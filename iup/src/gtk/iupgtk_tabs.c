@@ -283,10 +283,20 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     gtk_widget_show(tab_container);
     gtk_container_add((GtkContainer*)tab_page, tab_container);
 
-    tabtitle = iupAttribGet(child, "TABTITLE");
-    if (!tabtitle) tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
-    tabimage = iupAttribGet(child, "TABIMAGE");
-    if (!tabimage) tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
+    if (!tabtitle) 
+    {
+      tabtitle = iupAttribGet(child, "TABTITLE");
+      if (tabtitle)
+        iupTabsAttribSetStrId(ih, "TABTITLE", pos, tabtitle);
+    }
+    tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    if (!tabimage) 
+    {
+      tabimage = iupAttribGet(child, "TABIMAGE");
+      if (tabimage)
+        iupTabsAttribSetStrId(ih, "TABIMAGE", pos, tabimage);
+    }
     if (!tabtitle && !tabimage)
       tabtitle = "     ";
 

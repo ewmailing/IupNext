@@ -37,6 +37,7 @@ void iupmotKeyEncode(int key, unsigned int *keyval, unsigned int *state);
 /* font */
 char* iupmotGetFontListAttrib(Ihandle *ih);
 XmFontList iupmotGetFontList(const char* foundry, const char* value);
+XFontStruct* iupmotGetFontStruct(const char* value);
 char* iupmotFindFontList(XmFontList fontlist);
 char* iupmotGetFontStructAttrib(Ihandle *ih);
 char* iupmotGetFontIdAttrib(Ihandle *ih);

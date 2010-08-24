@@ -480,10 +480,20 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     if (pos == 0)
       ShowWindow(tab_page, SW_SHOW);
 
-    tabtitle = iupAttribGet(child, "TABTITLE");
-    if (!tabtitle) tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
-    tabimage = iupAttribGet(child, "TABIMAGE");
-    if (!tabimage) tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
+    if (!tabtitle) 
+    {
+      tabtitle = iupAttribGet(child, "TABTITLE");
+      if (tabtitle)
+        iupTabsAttribSetStrId(ih, "TABTITLE", pos, tabtitle);
+    }
+    tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    if (!tabimage) 
+    {
+      tabimage = iupAttribGet(child, "TABIMAGE");
+      if (tabimage)
+        iupTabsAttribSetStrId(ih, "TABIMAGE", pos, tabimage);
+    }
     if (!tabtitle && !tabimage)
       tabtitle = "     ";
 

@@ -53,6 +53,7 @@ char* iupgtkGetPangoFontDescAttrib(Ihandle *ih);
 char* iupgtkGetPangoLayoutAttrib(Ihandle *ih);
 char* iupgtkGetFontIdAttrib(Ihandle *ih);
 PangoFontDescription* iupgtkGetPangoFontDesc(const char* value);
+PangoLayout* iupgtkGetPangoLayout(const char* value);
 char* iupgtkFindPangoFontDesc(PangoFontDescription* fontdesc);
 void iupgtkFontUpdatePangoLayout(Ihandle* ih, PangoLayout* layout);
 void iupgtkFontUpdateObjectPangoLayout(Ihandle* ih, gpointer object);

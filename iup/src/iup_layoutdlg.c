@@ -132,7 +132,7 @@ static void iLayoutTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent
   }
 }
 
-static void iLayoutRebuildTree(Ihandle* dlg, iLayoutDialog* layoutdlg)
+static void iLayoutRebuildTree(iLayoutDialog* layoutdlg)
 {
   Ihandle* tree = layoutdlg->tree;
   IupSetAttribute(tree, "DELNODE0", "CHILDREN");
@@ -144,7 +144,7 @@ static void iLayoutRebuildTree(Ihandle* dlg, iLayoutDialog* layoutdlg)
   iLayoutTreeAddChildren(tree, 0, layoutdlg->dialog);
 
   /* redraw canvas */
-  IupUpdate(IupGetNextChild(dlg, tree));
+  IupUpdate(IupGetBrother(tree));
 }
 
 static int iLayoutMenuNew_CB(Ihandle* ih)
@@ -155,7 +155,7 @@ static int iLayoutMenuNew_CB(Ihandle* ih)
     IupDestroy(layoutdlg->dialog);
   layoutdlg->dialog = IupDialog(NULL);
   layoutdlg->destroy = 1;
-  iLayoutRebuildTree(dlg, layoutdlg);
+  iLayoutRebuildTree(layoutdlg);
   return IUP_DEFAULT;
 }
 
@@ -163,7 +163,7 @@ static int iLayoutMenuReload_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
-  iLayoutRebuildTree(dlg, layoutdlg);
+  iLayoutRebuildTree(layoutdlg);
   return IUP_DEFAULT;
 }
 
@@ -194,7 +194,7 @@ static int iLayoutMenuRefresh_CB(Ihandle* ih)
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   IupRefresh(layoutdlg->dialog);
   /* redraw canvas */
-  IupUpdate(IupGetNextChild(dlg, layoutdlg->tree));
+  IupUpdate(IupGetBrother(layoutdlg->tree));
   return IUP_DEFAULT;
 }
 
@@ -203,7 +203,7 @@ static int iLayoutMenuUpdate_CB(Ihandle* ih)
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   /* redraw canvas */
-  IupUpdate(IupGetNextChild(dlg, layoutdlg->tree));
+  IupUpdate(IupGetBrother(layoutdlg->tree));
   return IUP_DEFAULT;
 }
 
@@ -287,7 +287,7 @@ static void iLayoutDialogLoad(Ihandle* lo_dlg, iLayoutDialog* layoutdlg, int onl
   IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttributeHandle(NULL, "PARENTDIALOG", lo_dlg);
 
-  ret = IupListDialog(1,"Dialogs",count,dlg_list_str,1,30,count+1,NULL);
+  ret = IupListDialog(1,"Dialogs",count,(const char**)dlg_list_str,1,30,count+1,NULL);
 
   IupStoreGlobal("PARENTDIALOG", IupGetGlobal("_IUP_OLD_PARENTDIALOG"));
   IupSetGlobal("_IUP_OLD_PARENTDIALOG", NULL);
@@ -312,7 +312,7 @@ static int iLayoutMenuLoad_CB(Ihandle* ih)
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   iLayoutDialogLoad(dlg, layoutdlg, 0);
-  iLayoutRebuildTree(dlg, layoutdlg);
+  iLayoutRebuildTree(layoutdlg);
   return IUP_DEFAULT;
 }
 
@@ -321,104 +321,152 @@ static int iLayoutMenuLoadVisible_CB(Ihandle* ih)
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   iLayoutDialogLoad(dlg, layoutdlg, 1);
-  iLayoutRebuildTree(dlg, layoutdlg);
+  iLayoutRebuildTree(layoutdlg);
   return IUP_DEFAULT;
 }
 
-static void iLayoutGetNativeParentOffset(Ihandle* ih, int *x, int *y)
+static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int native_parent_x, int native_parent_y,
+                               unsigned char fr, unsigned char fg, unsigned char fb,
+                               unsigned char fvr, unsigned char fvg, unsigned char fvb,
+                               unsigned char fmr, unsigned char fmg, unsigned char fmb,
+                               unsigned char br, unsigned char bg, unsigned char bb)
 {
-  int dx = 0, dy = 0;
-  Ihandle* native_parent = iupChildTreeGetNativeParent(ih);
-  while(native_parent)
+  int x, y, w, h; 
+  char *title, *bgcolor;
+  unsigned char r, g, b;
+
+  x = ih->x+native_parent_x;
+  y = ih->y+native_parent_y;
+  w = ih->currentwidth;
+  h = ih->currentheight;
+  if (w<=0) w=1;
+  if (h<=0) h=1;
+
+  bgcolor = iupAttribGetLocal(ih, "BGCOLOR");
+  if (bgcolor)
   {
-    IupGetIntInt(native_parent, "CLIENTOFFSET", &dx, &dy);
-    *x += native_parent->x+dx;
-    *y += native_parent->y+dy;
-    native_parent = iupChildTreeGetNativeParent(native_parent);
+    r = br, g = bg, b = bb;
+    iupStrToRGB(bgcolor, &r, &g, &b);
+    iupDrawRectangle(dc, x, y, x+w-1, y+h-1, r, g, b, IUP_DRAW_FILL);
+  }
+
+  if (ih->iclass->nativetype==IUP_TYPEVOID)
+    iupDrawRectangle(dc, x, y, x+w-1, y+h-1, fvr, fvg, fvb, IUP_DRAW_STROKE_DASH);
+  else
+    iupDrawRectangle(dc, x, y, x+w-1, y+h-1, fr, fg, fb, IUP_DRAW_STROKE);
+
+  if (ih->iclass->childtype==IUP_CHILDNONE)
+  {
+    int pw, ph;
+    IupGetIntInt(ih->parent, "CLIENTSIZE", &pw, &ph);
+
+    if (ih->currentwidth == pw && ih->currentwidth == ih->naturalwidth)
+    {
+      iupDrawLine(dc, x+1, y+1, x+w-2, y+1, fmr, fmg, fmb, IUP_DRAW_STROKE);
+      iupDrawLine(dc, x+1, y+h-2, x+w-2, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+    }
+
+    if (ih->currentheight == ph && ih->currentheight == ih->naturalheight)
+    {
+      iupDrawLine(dc, x+1, y+1, x+1, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+      iupDrawLine(dc, x+w-2, y+1, x+w-2, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+    }
+  }
+
+  title = iupAttribGetLocal(ih, "0:0");  /* Matrix title cell */
+  if (!title) 
+  title = iupAttribGetLocal(ih, "TITLE0");  /* Tree root node title */
+  if (!title)
+  {
+    title = iupAttribGetLocal(ih, "TABTITLE0");  /* Tabs first tab title */
+    if (title)
+    {
+      /* returns the title of the active tab */
+      int pos = IupGetInt(ih, "VALUEPOS");
+      title = IupTreeGetAttribute(ih, "TABTITLE", pos);
+    }
+  }
+  if (!title) 
+    title = iupAttribGetLocal(ih, "TITLE");
+  if (title)
+  {
+    int len;
+    iupStrNextLine(title, &len);
+    iupDrawSetClipRect(dc, x+1, y+1, x+w-2, y+h-2);
+    r = fr, g = fg, b = fb;
+    iupStrToRGB(iupAttribGetLocal(ih, "FGCOLOR"), &r, &g, &b);
+    iupDrawText(dc, title, len, x+1, y+1, r, g, b, IupGetAttribute(ih, "FONT"));
+    iupDrawResetClip(dc);
   }
 }
 
-static void iLayoutDrawElements(iLayoutDialog* layoutdlg, int showhidden, Ihandle* canvas, IdrawCanvas* dc, 
-                                unsigned char fr, unsigned char fg, unsigned char fb,
-                                unsigned char fvr, unsigned char fvg, unsigned char fvb,
-                                unsigned char fmr, unsigned char fmg, unsigned char fmb,
-                                unsigned char br, unsigned char bg, unsigned char bb)
+static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, Ihandle* ih, int native_parent_x, int native_parent_y,
+                                   unsigned char fr, unsigned char fg, unsigned char fb,
+                                   unsigned char fvr, unsigned char fvg, unsigned char fvb,
+                                   unsigned char fmr, unsigned char fmg, unsigned char fmb,
+                                   unsigned char br, unsigned char bg, unsigned char bb)
 {
-  Ihandle* tree = layoutdlg->tree;
-  int x, y, w, h, id, 
-      count = IupGetInt(tree, "COUNT");
+  Ihandle *child;
+  int dx, dy;
+
+  if (showhidden || iupAttribGetLocal(ih, "VISIBLE"))
+  {
+    /* draw the element */
+    iLayoutDrawElement(dc, ih, native_parent_x, native_parent_y,
+                       fr, fg, fb, fvr, fvg, fvb, fmr, fmg, fmb, br, bg, bb);
+
+    if (ih->iclass->childtype != IUP_CHILDNONE)
+    {
+      /* if ih is a native parent, then update the offset */
+      if (ih->iclass->nativetype!=IUP_TYPEVOID)
+      {
+        dx = 0, dy = 0;
+        IupGetIntInt(ih, "CLIENTOFFSET", &dx, &dy);
+        native_parent_x += ih->x+dx;
+        native_parent_y += ih->y+dy;
+      }
+
+      /* if ih is a Tabs, then draw only the active child */
+      if (iupStrEqualNoCase(ih->iclass->name, "tabs"))
+      {
+        child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
+        if (child)
+          iLayoutDrawElementTree(dc, showhidden, child, native_parent_x, native_parent_y,
+                                 fr, fg, fb, fvr, fvg, fvb, fmr, fmg, fmb, br, bg, bb);
+        return;
+      }
+    }
+
+    /* draw its children */
+    for (child = ih->firstchild; child; child = child->brother)
+    {
+      iLayoutDrawElementTree(dc, showhidden, child, native_parent_x, native_parent_y,
+                             fr, fg, fb, fvr, fvg, fvb, fmr, fmg, fmb, br, bg, bb);
+    }
+  }
+}
+
+static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, IdrawCanvas* dc, 
+                              unsigned char fr, unsigned char fg, unsigned char fb,
+                              unsigned char fvr, unsigned char fvg, unsigned char fvb,
+                              unsigned char fmr, unsigned char fmg, unsigned char fmb,
+                              unsigned char br, unsigned char bg, unsigned char bb)
+{
+  int w, h;
 
   iupDrawGetSize(dc, &w, &h);
   iupDrawRectangle(dc, 0, 0, w-1, h-1, br, bg, bb, IUP_DRAW_FILL);
 
-  for (id=0; id<count; id++)
+  /* draw the dialog */
+  IupGetIntInt(layoutdlg->dialog, "CLIENTSIZE", &w, &h);
+  iupDrawRectangle(dc, 0, 0, w-1, h-1, fr, fg, fb, IUP_DRAW_STROKE);
+
+  if (layoutdlg->dialog->firstchild)
   {
-    Ihandle* ih = (Ihandle*)IupTreeGetUserId(tree, id);
-    if (id == 0) /* exclude dialog decorations */
-    {
-      IupGetIntInt(ih, "CLIENTSIZE", &w, &h);
-      iupDrawRectangle(dc, 0, 0, w-1, h-1, fr, fg, fb, IUP_DRAW_STROKE);
-    }
-    else if (showhidden || iupAttribGetLocal(ih, "VISIBLE"))
-    {
-      char *title, *bgcolor;
-      unsigned char r, g, b;
-
-      x = ih->x;
-      y = ih->y;
-      w = ih->currentwidth;
-      h = ih->currentheight;
-      if (w<=0) w=1;
-      if (h<=0) h=1;
-
-      iLayoutGetNativeParentOffset(ih, &x, &y);
-
-      bgcolor = iupAttribGetLocal(ih, "BGCOLOR");
-      if (bgcolor)
-      {
-        r = br, g = bg, b = bb;
-        iupStrToRGB(bgcolor, &r, &g, &b);
-        iupDrawRectangle(dc, x, y, x+w-1, y+h-1, r, g, b, IUP_DRAW_FILL);
-      }
-
-      if (ih->iclass->nativetype==IUP_TYPEVOID)
-        iupDrawRectangle(dc, x, y, x+w-1, y+h-1, fvr, fvg, fvb, IUP_DRAW_STROKE_DASH);
-      else
-        iupDrawRectangle(dc, x, y, x+w-1, y+h-1, fr, fg, fb, IUP_DRAW_STROKE);
-
-      if (ih->iclass->childtype==IUP_CHILDNONE)
-      {
-        int pw, ph;
-        IupGetIntInt(ih->parent, "CLIENTSIZE", &pw, &ph);
-
-        //last pixel iupDrawLine
-
-        if (ih->currentwidth == pw && ih->currentwidth == ih->naturalwidth)
-        {
-          iupDrawLine(dc, x+1, y+1, x+w-2, y+1, fmr, fmg, fmb, IUP_DRAW_STROKE);
-          iupDrawLine(dc, x+1, y+h-2, x+w-2, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
-        }
-
-        if (ih->currentheight == ph && ih->currentheight == ih->naturalheight)
-        {
-          iupDrawLine(dc, x+1, y+1, x+1, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
-          iupDrawLine(dc, x+w-2, y+1, x+w-2, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
-        }
-      }
-
-      title = iupAttribGetLocal(ih, "TITLE");
-      if (title)
-      {
-        int len;
-        iupStrNextLine(title, &len);
-        IupSetAttribute(canvas, "FONT", IupGetAttribute(ih, "FONT"));
-        iupDrawSetClipRect(dc, x+1, y+1, x+w-2, y+h-2);
-        r = fr, g = fg, b = fb;
-        iupStrToRGB(iupAttribGetLocal(ih, "FGCOLOR"), &r, &g, &b);
-        iupDrawText(dc, title, len, x+1, y+1, r, g, b);
-        iupDrawResetClip(dc);
-      }
-    }
+    int native_parent_x = 0, native_parent_y = 0;
+    IupGetIntInt(layoutdlg->dialog, "CLIENTOFFSET", &native_parent_x, &native_parent_y);
+    iLayoutDrawElementTree(dc, showhidden, layoutdlg->dialog->firstchild, native_parent_x, native_parent_y,
+                           fr, fg, fb, fvr, fvg, fvb, fmr, fmg, fmb, br, bg, bb);
   }
 }
 
@@ -445,7 +493,7 @@ static int iLayoutCanvas_CB(Ihandle* canvas)
   fmr = 0, fmg = 0, fmb = 0;
   iupStrToRGB(IupGetAttribute(dlg, "FORECOLORMAX"), &fmr, &fmg, &fmb);
 
-  iLayoutDrawElements(layoutdlg, showhidden, canvas, dc, 
+  iLayoutDrawDialog(layoutdlg, showhidden, dc, 
                       fr, fg, fb, 
                       fvr, fvg, fvb, 
                       fmr, fmg, fmb, 
@@ -467,6 +515,9 @@ static int iLayoutDialogKAny_CB(Ihandle* dlg, int key)
     break;
   case K_ESC:
     iLayoutMenuClose_CB(dlg);
+    break;
+  case K_cO:
+    iLayoutMenuLoad_CB(dlg);
     break;
   case K_cF5:
     iLayoutMenuReload_CB(dlg);
@@ -518,9 +569,9 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
 //int function(Ihandle *ih, int id, int status)
 
   menu = IupMenu(
-    IupSubmenu("Dialog", IupMenu(
+    IupSubmenu("&Dialog", IupMenu(
       IupSetCallbacks(IupItem("New", NULL), "ACTION", iLayoutMenuNew_CB, NULL),
-      IupSetCallbacks(IupItem("Load...", NULL), "ACTION", iLayoutMenuLoad_CB, NULL),
+      IupSetCallbacks(IupItem("Load...\tCtrl+O", NULL), "ACTION", iLayoutMenuLoad_CB, NULL),
       IupSetCallbacks(IupItem("Load Visible...", NULL), "ACTION", iLayoutMenuLoadVisible_CB, NULL),
       IupSetCallbacks(IupItem("Reload\tCtrl+F5", NULL), "ACTION", iLayoutMenuReload_CB, NULL),
       IupSeparator(),
@@ -528,10 +579,10 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
       IupSetCallbacks(IupItem("Redraw", NULL), "ACTION", iLayoutMenuRedraw_CB, NULL),
       IupSetCallbacks(IupItem("Show", NULL), "ACTION", iLayoutMenuShow_CB, NULL),
       IupSeparator(),
-      IupSetCallbacks(IupItem("Close\tEsc", NULL), "ACTION", iLayoutMenuClose_CB, NULL),
+      IupSetCallbacks(IupItem("&Close\tEsc", NULL), "ACTION", iLayoutMenuClose_CB, NULL),
       NULL)),
-    IupSubmenu("Layout", IupMenu(
-      IupSetCallbacks(IupSetAttributes(IupItem("Hierarchy", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuTree_CB, NULL),
+    IupSubmenu("&Layout", IupMenu(
+      IupSetCallbacks(IupSetAttributes(IupItem("&Hierarchy", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuTree_CB, NULL),
       IupSetCallbacks(IupItem("Update\tF5", NULL), "ACTION", iLayoutMenuUpdate_CB, NULL),
       IupSetCallbacks(IupItem("Opacity\tCtrl+/Ctrl-", NULL), "ACTION", iLayoutMenuOpacity_CB, NULL),
 //      IupSetCallbacks(IupItem("Expanded", NULL), "ACTION", iLayoutMenuExpanded_CB, NULL),
@@ -566,7 +617,7 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
 
   IupMap(dlg);
 
-  iLayoutRebuildTree(dlg, layoutdlg);
+  iLayoutRebuildTree(layoutdlg);
 
   return dlg;
 }

@@ -15,6 +15,7 @@ extern "C" {
 char* iupTabsGetTabOrientationAttrib(Ihandle* ih);
 char* iupTabsGetTabTypeAttrib(Ihandle* ih);
 char* iupTabsAttribGetStrId(Ihandle* ih, const char* name, int pos);
+void iupTabsAttribSetStrId(Ihandle* ih, const char* name, int pos, const char* value);
 char* iupTabsGetPaddingAttrib(Ihandle* ih);
 void iupTabsTestRemoveTab(Ihandle* ih, int pos);
 

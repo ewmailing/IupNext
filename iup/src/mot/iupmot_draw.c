@@ -197,9 +197,9 @@ void iupDrawResetClip(IdrawCanvas* dc)
   XSetClipMask(iupmot_display, dc->pixmap_gc, None);
 }
 
-void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b)
+void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font)
 {
-  XFontStruct* xfont = (XFontStruct*)IupGetAttribute(dc->ih, "XFONTSTRUCT");
+  XFontStruct* xfont = (XFontStruct*)iupmotGetFontStruct(font);
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(r, g, b));
   XSetFont(iupmot_display, dc->pixmap_gc, xfont->fid);
   XDrawString(iupmot_display, dc->pixmap, dc->pixmap_gc, x, y+xfont->ascent, text, len);

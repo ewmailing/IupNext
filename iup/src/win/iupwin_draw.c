@@ -558,9 +558,9 @@ void iupDrawResetClip(IdrawCanvas* dc)
   SelectClipRgn(dc->hBitmapDC, NULL);
 }
 
-void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b)
+void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font)
 {
-  HFONT hOldFont, hFont = (HFONT)IupGetAttribute(dc->ih, "HFONT");
+  HFONT hOldFont, hFont = (HFONT)iupwinGetHFont(font);
   SetTextColor(dc->hBitmapDC, RGB(r, g, b));
   hOldFont = SelectObject(dc->hBitmapDC, hFont);
   TextOut(dc->hBitmapDC, x, y, text, len);

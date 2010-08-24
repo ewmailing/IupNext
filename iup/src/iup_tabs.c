@@ -39,6 +39,13 @@ char* iupTabsAttribGetStrId(Ihandle* ih, const char* name, int pos)
   return iupAttribGet(ih, str);
 }
 
+void iupTabsAttribSetStrId(Ihandle* ih, const char* name, int pos, const char* value)
+{
+  char str[50];
+  sprintf(str, "%s%d", name, pos);
+  iupAttribStoreStr(ih, str, value);
+}
+
 static int iTabsGetMaxWidth(Ihandle* ih)
 {
   int max_width = 0, width, pos;
@@ -47,10 +54,10 @@ static int iTabsGetMaxWidth(Ihandle* ih)
 
   for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
   {
-    tabtitle = iupAttribGet(child, "TABTITLE");
-    if (!tabtitle) tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
-    tabimage = iupAttribGet(child, "TABIMAGE");
-    if (!tabimage) tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
+    if (!tabtitle) tabtitle = iupAttribGet(child, "TABTITLE");
+    tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    if (!tabimage) tabimage = iupAttribGet(child, "TABIMAGE");
     if (!tabtitle && !tabimage)
       tabtitle = "     ";
 
@@ -83,8 +90,8 @@ static int iTabsGetMaxHeight(Ihandle* ih)
 
   for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
   {
-    tabimage = iupAttribGet(child, "TABIMAGE");
-    if (!tabimage) tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    if (!tabimage) tabimage = iupAttribGet(child, "TABIMAGE");
 
     if (tabimage)
     {
