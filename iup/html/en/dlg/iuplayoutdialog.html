@@ -69,11 +69,15 @@ Default: NO.</p>
 	New  - creates a new empty dialog, it will be destroyed when the layout is destroyed.
 	Load - loads an existent dialog from the application.
 	Load Visible - lists only visible dialogs from the application to be loaded.
-	Reload - Reloads the current dialog into the Layout Dialog.
+	Reload - reloads the current dialog into the Layout Dialog.
+	Refresh - recalculates the dialog layout of the current dialog (IupRefresh).
+	Redraw - send a redraw to the current dialog (IupRedraw).
+	Show - shows the current dialog (IupShow) 
 	Close - hides the Layout Dialog, optionally self destroy according to <strong>DESTROYWHENCLOSED</strong>.
 Layout
 	Hierarchy - shows or hides the layout hierarchy tree at left.
-	Update - Redraw the layout.
+	Update - redraw the layout.
+	Auto Update - periodically redraw the layout.
 	Opacity - controls the Layout Dialog opacity so you can composite it on top of the selected dialog.</pre>
 <p>Use <strong>Reload</strong> when the dialog has been changed and the layout 
 was modified by the application. Use <strong>Update</strong> when attributes of 

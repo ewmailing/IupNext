@@ -74,8 +74,9 @@ void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsig
 
 /** Draws an image.
  * x,y is at left,top corner of the image.
+ * Returns the image size.
  * \ingroup draw */
-void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y);
+void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y, int *img_w, int *img_h);
 
 /** Sets a rectangle clipping area.
  * \ingroup draw */

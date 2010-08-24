@@ -34,7 +34,8 @@ Parameters/Return</h3>
 iup.Popup(<strong>ih</strong>: ihandle[, <strong>x</strong>, <strong>y</strong>: number]) -&gt; (<strong>ret</strong>: number) [in Lua]
 or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><b>ih</b>: Identifier of a dialog or a menu.<br>
-<b>x</b>: horizontal position of the dialog or menu relative to the origin of the screen.
+<b>x</b>: horizontal position of the dialog or menu relative to the origin of the 
+main screen.
     The following macros are 
   valid:</p>
 <ul>
@@ -55,7 +56,7 @@ or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -
   in Lua if the parameter is not defined. Not valid for menus. (Since 3.0)</li>
 </ul>
 <p><b>y</b>: vertical position of the dialog or menu relative to the origin of the
-    screen. The following macros are valid:</p>
+    main screen. The following macros are valid:</p>
 <ul>
   <li>IUP_TOP:
     Positions the element on the top of the 
@@ -87,6 +88,7 @@ or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -
 replaced by IUP_CENTER.</p>
 <p>When IUP_CURRENT is used at the first time the dialog is shown then it will 
 be replaced by IUP_CENTERPARENT.</p>
+<p>The main screen size does not include additional monitors.</p>
 <p><b>IupPopup</b> works just like <b>IupShow</b> and <b>IupShowXY</b>, but it inhibits interaction with other dialogs and interrupts the processing until 
   IUP_CLOSE is returned in a callback or the dialog is hidden. Althougth it 
   interrupts the processing, it does not destroy the dialog when it ends. To destroy the dialog, 

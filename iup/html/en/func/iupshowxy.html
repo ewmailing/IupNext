@@ -22,7 +22,7 @@ Parameters/Return</h3>
 iup.ShowXY(<strong>ih</strong>: ihandle[, <strong>x</strong>, <strong>y</strong>: number]) -&gt; (<strong>ret</strong>: number) [in Lua]
 or <strong>ih</strong>:showxy(<strong>[x</strong>, <strong>y</strong>: number]) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><b>ih</b>: identifier of the dialog.<br>
-<b>x</b>: horizontal position of the dialog relative to the origin of the screen. The following macros are valid:</p>
+<b>x</b>: horizontal position of the dialog relative to the origin of the main screen. The following macros are valid:</p>
 <ul>
   <li>IUP_LEFT:
     Positions the dialog on the left corner of 
@@ -41,7 +41,7 @@ or <strong>ih</strong>:showxy(<strong>[x</strong>, <strong>y</strong>: number]) 
     of the dialog. This is the default value 
   in Lua if the parameter is not defined. (Since 3.0)</li>
 </ul>
-<p><b>y</b>: vertical position of the dialog relative to the origin of the screen.
+<p><b>y</b>: vertical position of the dialog relative to the origin of the main screen.
     The following macros are valid:</p>
 <ul>
   <li>IUP_TOP:
@@ -71,6 +71,7 @@ or <strong>ih</strong>:showxy(<strong>[x</strong>, <strong>y</strong>: number]) 
 replaced by IUP_CENTER.</p>
 <p>When IUP_CURRENT is used at the first time the dialog is shown then it will 
 be replaced by IUP_CENTERPARENT.</p>
+<p>The main screen size does not include additional monitors.</p>
 <p>This function can be executed more than once 
   for the same dialog. This will make the dialog be placed above all other dialogs in the application, 
   changing its Z-order, and update its position and/or size on screen. </p>

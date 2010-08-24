@@ -175,15 +175,15 @@ void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsig
   gdk_draw_layout(dc->pixmap, dc->pixmap_gc, x, y, fontlayout);
 }
 
-void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
+void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y, int *img_w, int *img_h)
 {
-  int img_w, img_h, bpp;
+  int bpp;
   GdkPixbuf* pixbuf = iupImageGetImage(name, dc->ih, make_inactive);
   if (!pixbuf)
     return;
 
   /* must use this info, since image can be a driver image loaded from resources */
-  iupdrvImageGetInfo(pixbuf, &img_w, &img_h, &bpp);
+  iupdrvImageGetInfo(pixbuf, img_w, img_h, &bpp);
 
-  gdk_draw_pixbuf(dc->pixmap, dc->pixmap_gc, pixbuf, 0, 0, x, y, img_w, img_h, GDK_RGB_DITHER_NORMAL, 0, 0);
+  gdk_draw_pixbuf(dc->pixmap, dc->pixmap_gc, pixbuf, 0, 0, x, y, *img_w, *img_h, GDK_RGB_DITHER_NORMAL, 0, 0);
 }

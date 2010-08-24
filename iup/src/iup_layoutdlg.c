@@ -24,7 +24,7 @@
 
 typedef struct _iLayoutDialog {
   int destroy;
-  Ihandle *dialog, *tree;
+  Ihandle *dialog, *tree, *timer;
 } iLayoutDialog;
 
 static int iLayoutDialogShow_CB(Ihandle* dlg, int state)
@@ -47,6 +47,7 @@ static int iLayoutDialogClose_CB(Ihandle* dlg)
 static int iLayoutDialogDestroy_CB(Ihandle* dlg)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+  IupDestroy(layoutdlg->timer);
   if (layoutdlg->destroy)
     IupDestroy(layoutdlg->dialog);
   free(layoutdlg);
@@ -198,6 +199,25 @@ static int iLayoutMenuRefresh_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int iLayoutAutoUpdate_CB(Ihandle* ih)
+{
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(ih, "_IUP_LAYOUTDIALOG");
+  /* redraw canvas */
+  IupUpdate(IupGetBrother(layoutdlg->tree));
+  return IUP_DEFAULT;
+}
+
+static int iLayoutMenuAutoUpdate_CB(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+  if (IupGetInt(layoutdlg->timer, "RUN"))
+    IupSetAttribute(layoutdlg->timer, "RUN", "No");
+  else
+    IupSetAttribute(layoutdlg->timer, "RUN", "Yes");
+  return IUP_DEFAULT;
+}
+
 static int iLayoutMenuUpdate_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
@@ -332,7 +352,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int native_parent_x
                                unsigned char br, unsigned char bg, unsigned char bb)
 {
   int x, y, w, h; 
-  char *title, *bgcolor;
+  char *title, *bgcolor, *image;
   unsigned char r, g, b;
 
   x = ih->x+native_parent_x;
@@ -373,9 +393,42 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int native_parent_x
     }
   }
 
+  /* always draw the image first */
+
+  image = iupAttribGetLocal(ih, "IMAGE0");  /* Tree root node title */
+  if (!image) 
+    image = iupAttribGetLocal(ih, "TABIMAGE0");  /* Tabs first tab image */
+  if (image)
+  {
+    /* returns the image of the active tab */
+    int pos = IupGetInt(ih, "VALUEPOS");
+    image = IupTreeGetAttribute(ih, "TABIMAGE", pos);
+  }
+  if (!image) 
+    image = iupAttribGetLocal(ih, "IMAGE");
+  if (image)
+  {
+    char* position;
+    int img_w, img_h;
+
+    iupDrawSetClipRect(dc, x+1, y+1, x+w-2, y+h-2);
+    iupDrawImage(dc, image, 0, x+1, y+1, &img_w, &img_h);
+    iupDrawResetClip(dc);
+
+    position = iupAttribGetLocal(ih, "IMAGEPOSITION");
+    if (position &&
+        (iupStrEqualNoCase(position, "BOTTOM") ||
+         iupStrEqualNoCase(position, "TOP")))
+      y += img_h;
+    else
+      x += img_w;
+  }
+
   title = iupAttribGetLocal(ih, "0:0");  /* Matrix title cell */
   if (!title) 
-  title = iupAttribGetLocal(ih, "TITLE0");  /* Tree root node title */
+    title = iupAttribGetLocal(ih, "1");  /* List first item */
+  if (!title) 
+    title = iupAttribGetLocal(ih, "TITLE0");  /* Tree root node title */
   if (!title)
   {
     title = iupAttribGetLocal(ih, "TABTITLE0");  /* Tabs first tab title */
@@ -397,6 +450,48 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int native_parent_x
     iupStrToRGB(iupAttribGetLocal(ih, "FGCOLOR"), &r, &g, &b);
     iupDrawText(dc, title, len, x+1, y+1, r, g, b, IupGetAttribute(ih, "FONT"));
     iupDrawResetClip(dc);
+  }
+
+  if (ih->iclass->nativetype!=IUP_TYPEVOID &&
+      ih->iclass->childtype==IUP_CHILDNONE &&
+      !title && !image)
+  {
+    if (iupStrEqualNoCase(ih->iclass->name, "progressbar"))
+    {
+      float min = IupGetFloat(ih, "MIN");
+      float max = IupGetFloat(ih, "MAX");
+      float val = IupGetFloat(ih, "VALUE");
+      r = fr, g = fg, b = fb;
+      iupStrToRGB(iupAttribGetLocal(ih, "FGCOLOR"), &r, &g, &b);
+      if (iupStrEqualNoCase(iupAttribGetLocal(ih, "ORIENTATION"), "VERTICAL"))
+      {
+        int ph = (int)(((max-val)*(h-5))/(max-min));
+        iupDrawRectangle(dc, x+2, y+2, x+w-3, y+ph, r, g, b, IUP_DRAW_FILL);
+      }
+      else
+      {
+        int pw = (int)(((val-min)*(w-5))/(max-min));
+        iupDrawRectangle(dc, x+2, y+2, x+pw, y+h-3, r, g, b, IUP_DRAW_FILL);
+      }
+    }
+    else if (iupStrEqualNoCase(ih->iclass->name, "val"))
+    {
+      float min = IupGetFloat(ih, "MIN");
+      float max = IupGetFloat(ih, "MAX");
+      float val = IupGetFloat(ih, "VALUE");
+      r = fr, g = fg, b = fb;
+      iupStrToRGB(iupAttribGetLocal(ih, "FGCOLOR"), &r, &g, &b);
+      if (iupStrEqualNoCase(iupAttribGetLocal(ih, "ORIENTATION"), "VERTICAL"))
+      {
+        int ph = (int)(((max-val)*(h-5))/(max-min));
+        iupDrawRectangle(dc, x+2, y+ph-1, x+w-3, y+ph+1, r, g, b, IUP_DRAW_FILL);
+      }
+      else
+      {
+        int pw = (int)(((val-min)*(w-5))/(max-min));
+        iupDrawRectangle(dc, x+pw-1, y+2, x+pw+1, y+h-3, r, g, b, IUP_DRAW_FILL);
+      }
+    }
   }
 }
 
@@ -424,16 +519,16 @@ static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, Ihandle* ih,
         IupGetIntInt(ih, "CLIENTOFFSET", &dx, &dy);
         native_parent_x += ih->x+dx;
         native_parent_y += ih->y+dy;
-      }
 
-      /* if ih is a Tabs, then draw only the active child */
-      if (iupStrEqualNoCase(ih->iclass->name, "tabs"))
-      {
-        child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
-        if (child)
-          iLayoutDrawElementTree(dc, showhidden, child, native_parent_x, native_parent_y,
-                                 fr, fg, fb, fvr, fvg, fvb, fmr, fmg, fmb, br, bg, bb);
-        return;
+        /* if ih is a Tabs, then draw only the active child */
+        if (iupStrEqualNoCase(ih->iclass->name, "tabs"))
+        {
+          child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
+          if (child)
+            iLayoutDrawElementTree(dc, showhidden, child, native_parent_x, native_parent_y,
+                                   fr, fg, fb, fvr, fvg, fvb, fmr, fmg, fmb, br, bg, bb);
+          return;
+        }
       }
     }
 
@@ -557,6 +652,11 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
     layoutdlg->destroy = 1;
   }
 
+  layoutdlg->timer = IupTimer();
+  IupSetCallback(layoutdlg->timer, "ACTION_CB", iLayoutAutoUpdate_CB);
+  IupSetAttribute(layoutdlg->timer, "TIME", "300");
+  IupSetAttribute(layoutdlg->timer, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
+
   canvas = IupCanvas(NULL);
   IupSetCallback(canvas, "ACTION", iLayoutCanvas_CB);
 //BUTTON_CB
@@ -584,8 +684,9 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
     IupSubmenu("&Layout", IupMenu(
       IupSetCallbacks(IupSetAttributes(IupItem("&Hierarchy", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuTree_CB, NULL),
       IupSetCallbacks(IupItem("Update\tF5", NULL), "ACTION", iLayoutMenuUpdate_CB, NULL),
+      IupSetCallbacks(IupSetAttributes(IupItem("Auto Update", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuAutoUpdate_CB, NULL),
       IupSetCallbacks(IupItem("Opacity\tCtrl+/Ctrl-", NULL), "ACTION", iLayoutMenuOpacity_CB, NULL),
-//      IupSetCallbacks(IupItem("Expanded", NULL), "ACTION", iLayoutMenuExpanded_CB, NULL),
+/*      IupSetCallbacks(IupItem("Expanded", NULL), "ACTION", iLayoutMenuExpanded_CB, NULL), */
       NULL)),
     NULL);
 
