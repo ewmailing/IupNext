@@ -91,17 +91,13 @@ driver, the
 BGCOLOR attribute is ignored if text or image is defined. Default: the global 
 attribute DLGBGCOLOR.</p>
 
-<p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the 
-control. Default: YES. (since 3.0)</p>
+<p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the control. In Windows the button will respect CANFOCUS in 
+opposite to the other controls. Default: YES. (since 3.0)</p>
 
   
 <p><b>FLAT</b> (creation only): Hides the button borders until the mouse enter the 
   button area. Can be YES or NO.</p>
 
-<p><strong>FOCUSONCLICK </strong>(creation only): if NO the button will not 
-receive the focus when clicked. Default: YES. Useful for toolbar buttons.</p>
-
-  
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
 global attribute DLGFGCOLOR.</p>
 
@@ -257,7 +253,7 @@ buttons have no padding.</p>
 
 		<th>Windows <br>
 
-		XP Style</th>
+		w/ Styles</th>
 
 		<th>GTK</th>
 

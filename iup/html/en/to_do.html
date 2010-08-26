@@ -94,18 +94,21 @@
 	dynamically changed the <strong>IupVal</strong> background is only updated 
 	after the user click on the control or when the control is redisplayed.</li>
 
-	<li><span class="style1">Known Issue:</span> In Windows Vista the 
+	<li><span class="style1">Known Issue:</span> in Windows Vista the 
 	COMPOSITE=YES attribute of the <strong>IupDialog</strong> is not working as expected. There 
 	is still flicker when the dialog is resized. <strong>IupTabs</strong> in Windows Vista when 
 	COMPOSITE=YES works only if MULTILINE=YES. (since 3.0)</li>
 
-	<li><span class="style1">Known Issue:</span> The MDI Window menu is not 
+	<li><span class="style1">Known Issue:</span> the MDI Window menu is not 
 	properly updated when the child mdi is closed. (since 3.0)</li>
-	<li><span class="style1">Known Issue (Compiler):</span> The <strong>IupImgLib</strong> 
+	<li><span class="style1">Known Issue:</span> in Windows when CANFOCUS=NO 
+	only the Tab key navigation is not done, when clicked the control will still 
+	get the focus. The only exceptions are button and canvas.</li>
+	<li><span class="style1">Known Issue (Compiler):</span> the <strong>IupImgLib</strong> 
 	takes an very long time to compile under Visual C++. In a 2.5GHz CPU took 
 	about 5min! (since 3.0)</li>
 
-	<li><span class="style1">Known Issue (Compiler):</span> When building with Open Watcom 
+	<li><span class="style1">Known Issue (Compiler):</span> when building with Open Watcom 
 	the additional controls crash. When you add debug information to the main 
 	IUP library the problem solves. We tried to track down this error but it 
 	does not occurs with debug information and our attempts without debug does 
@@ -129,9 +132,9 @@
 
 <ul>
 
-	<li><strong><span class="style2">Priority: </span></strong> Image, check mark 
+	<li><strong><span class="style2">Priority: </span></strong>image, check mark 
 	and gauge for cells.</li>
-	<li><strong><span class="style2">Priority: </span></strong> Mark using the keyboard.</li>
+	<li><strong><span class="style2">Priority: </span></strong>mark using the keyboard.</li>
 	<li><strong><span class="style2">Priority:</span></strong> drag&amp;drop of 
 	columns.</li>
 	<li>Merge cells.</li>
@@ -143,20 +146,20 @@
 
 <ul>
 
-	<li><strong><span class="style2">Priority: </span></strong> Check mark for nodes.</li>
+	<li><strong><span class="style2">Priority:</span></strong> check mark for nodes.</li>
 	<li><span class="style1">Known Issue:</span> the rubber band gets lost 
 	depending on what you do inside the SELECTION_CB callback in GTK. To avoid 
 	that set&nbsp; RUBBERBAND=NO.</li>
 
 	<li><span class="style1">Known Issue:</span> the SELECTION_CB callback may 
 	be called more than once for the same node with the same status.</li>
-	<li><span class="style1">Known Issue:</span> In Windows XP, when using a font 
+	<li><span class="style1">Known Issue:</span> in Windows XP, when using a font 
 	for an node with TITLEFONTid in <strong>IupTree</strong> that is larger than 
 	the element FONT the item text will be cropped at right and bottom because 
 	the system uses the element font to calculate the item size. The only 
 	exception is when you just change the font to add a Bold style.</li>
 
-	<li><span class="style1">Important:</span> Old NAMEid attribute conflicts with the common attribute NAME. Should be 
+	<li><span class="style1">Important:</span> old NAMEid attribute conflicts with the common attribute NAME. Should be 
 	replaced by the new TITLEid. NAMEid will be removed in future versions. 
 	(since 3.0)</li>
 

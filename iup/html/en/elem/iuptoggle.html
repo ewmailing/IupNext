@@ -81,7 +81,7 @@
   "ACENTER:ACENTER". Partial values are also accepted, like "ARIGHT" or 
   ":ATOP", the other value will be used from the current alignment. In Motif, 
   vertical alignment is restricted to "ACENTER". In Windows works only 
-when XP Style is active. Text is always left aligned. (since 3.0)</p>
+when Visual Styles is active. Text is always left aligned. (since 3.0)</p>
 
 
 
@@ -91,17 +91,17 @@ background color of the native parent. When displaying an image in Windows the
 background is ignored and the system color is used. Default: the global 
 attribute DLGBGCOLOR.</p>
 
-<p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the 
-control. Default: YES. (since 3.0)</p>
+<p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the control. In Windows the control will still get the focus when clicked. Default: YES. (since 3.0)</p>
 
   
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Color of the text shown on 
-the toggle. In Windows, when using XP Style FGCOLOR is ignored. Default: the 
+the toggle. In Windows, when using Visual Styles FGCOLOR is ignored. Default: the 
 global attribute DLGFGCOLOR.</p>
 
   
 <p><b>FLAT</b> (creation only): Hides the toggle borders until the mouse enter the 
-  toggle area. Used only when IMAGE is defined. Can be YES or NO. (since 3.3)</p>
+  toggle area. Used only when IMAGE is defined. Can be YES or NO. In Windows is 
+ignored if Visual Styles are not used. (since 3.3)</p>
 
   
 <p><strong>IMAGE</strong> (<font size="3">non inheritable</font>): Image name. When the IMAGE attribute is defined, the TITLE is not shown. 
@@ -272,7 +272,7 @@ belongs to a radio in Windows, then put the radio inside a <strong>IupFrame</str
 
 		<th>Windows <br>
 
-		XP Style</th>
+		w/ Styles</th>
 
 		<th>GTK</th>
 
