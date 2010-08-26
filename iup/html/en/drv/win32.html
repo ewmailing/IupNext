@@ -46,15 +46,15 @@ Edition</a> is a free compiler that has everything VC6 had and more.</p>
   the cursor files.</p>
 <h4>Windows XP/Vista/7 Visual Styles</h4>
 <p>Windows Visual Styles can be enabled using a manifest file. Uncomment the manifest file section in &quot;iup.rc&quot; file or copy 
-  it to your own resource file, you will need also to copy the manifest file &quot;iup.manifest&quot;.</p>
+  it to your own resource file (you will need also to copy the manifest file &quot;iup.manifest&quot;).</p>
 <p>When using Visual C++ 8/9/10 with &quot;iup.manifest&quot;, configure the linker properties 
 of your project to do NOT generate a manifest file or the Windows Visual 
 Styles from the RC file won't work.</p>
-<p>If your Windows is using the Windows Classic theme or any other style, IUP 
-controls appearance will follow the system appearance if you are using a 
-Manifest. If not, it will always look like Windows Classic.</p>
+<p>If your Windows is using the Windows Classic theme or any other theme, IUP 
+controls appearance will follow the system appearance only if you are using the 
+manifest. If not using the manifest, then it will always look like Windows Classic.</p>
 <h4><b>Black Canvas</b></h4>
-<p>The IupGLCanvas does not work when inside an IupFrame, the result is a black canvas with no drawing. 
+<p>The <strong>IupGLCanvas</strong> does not work when inside an <strong>IupFrame</strong>, the result is a black canvas with no drawing. 
 (Only in IUP 2.x)</p>
 
 <h4><b>Help in CHM format fail to open</b></h4>
