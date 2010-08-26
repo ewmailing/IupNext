@@ -33,6 +33,11 @@ void iupdrvGetFullSize(int *width, int *height);
  * \ingroup drvinfo */
 void iupdrvGetScreenSize(int *width, int *height);
 
+/** Retrieve the main desktop size when there are multiple monitors.
+ * Useful only when in GTK.
+ * \ingroup drvinfo */
+int iupdrvCheckMainScreen(int *width, int *height);
+
 /** Retrieve the default desktop bits per pixel.
  * \ingroup drvinfo */
 int iupdrvGetScreenDepth(void);

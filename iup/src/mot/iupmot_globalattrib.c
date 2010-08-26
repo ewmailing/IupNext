@@ -17,6 +17,13 @@
 #include "iupmot_drv.h"
 
 
+int iupdrvCheckMainScreen(int *w, int *h)
+{
+  (void)w;
+  (void)h;
+  return 0;
+}
+
 int iupdrvSetGlobal(const char *name, const char *value)
 {
   if (iupStrEqual(name, "AUTOREPEAT"))

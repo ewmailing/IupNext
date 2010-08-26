@@ -22,6 +22,13 @@ static HANDLE win_singleintance = NULL;
 static HWND win_findwindow = NULL;
 
 
+int iupdrvCheckMainScreen(int *w, int *h)
+{
+  (void)w;
+  (void)h;
+  return 0;
+}
+
 static int winGlobalSetMutex(const char* name)
 {
   if (win_singleintance)

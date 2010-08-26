@@ -115,12 +115,15 @@ static int xGetWorkAreaSize(Display* display, int screen, int *width, int *heigh
 
 void iupdrvGetScreenSize(int *width, int *height)
 {
-  Display* display = (Display*)iupdrvGetDisplay();
-  int screen = XDefaultScreen(display);
-  if (!xGetWorkAreaSize(display, screen, width, height))
+  if (!iupdrvCheckMainScreen(width, height))
   {
-    *width = DisplayWidth(display, screen);
-    *height = DisplayHeight(display, screen);
+    Display* display = (Display*)iupdrvGetDisplay();
+    int screen = XDefaultScreen(display);
+    if (!xGetWorkAreaSize(display, screen, width, height))
+    {
+      *width = DisplayWidth(display, screen);
+      *height = DisplayHeight(display, screen);
+    }
   }
 }
 
