@@ -352,7 +352,8 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   else  /* both */
     winButtonDrawImageText(ih, hDC, width, height, border, drawitem->itemState);
 
-  if (drawitem->itemState & ODS_FOCUS)
+  if (drawitem->itemState & ODS_FOCUS &&
+      iupAttribGetBoolean(ih, "CANFOCUS"))
   {
     border--;
     iupdrvDrawFocusRect(ih, hDC, border, border, width-2*border, height-2*border);
@@ -523,7 +524,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       iupwinButtonDown(ih, msg, wp, lp);
 
       /* Feedback will NOT be done when not receiving the focus */
-      if (msg==WM_LBUTTONDOWN && !iupAttribGetBoolean(ih, "FOCUSONCLICK"))
+      if (msg==WM_LBUTTONDOWN && !iupAttribGetBoolean(ih, "CANFOCUS"))
       {
         iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", "1");
         iupdrvRedrawNow(ih);
@@ -538,7 +539,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       iupwinButtonUp(ih, msg, wp, lp);
 
       /* BN_CLICKED will NOT be notified when not receiving the focus */
-      if (msg==WM_LBUTTONUP && !iupAttribGetBoolean(ih, "FOCUSONCLICK"))
+      if (msg==WM_LBUTTONUP && !iupAttribGetBoolean(ih, "CANFOCUS"))
       {
         Icallback cb;
 
@@ -578,7 +579,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       iupAttribSetStr(ih, "_IUPWINBUT_ENTERWIN", NULL);
       iupdrvRedrawNow(ih);
     }
-    if (!iupAttribGetBoolean(ih, "FOCUSONCLICK"))
+    if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     {
       iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", NULL);
       iupdrvRedrawNow(ih);
@@ -597,7 +598,8 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
   case WM_SETFOCUS:
     {
       HWND previous = (HWND)wp;
-      if (!iupAttribGetBoolean(ih, "FOCUSONCLICK") && wp && iupAttribGet(ih, "_IUPWIN_ENTERWIN"))
+      if (previous && previous!=ih->handle &&
+          !iupAttribGetBoolean(ih, "CANFOCUS"))
       {
         SetFocus(previous);
         *result = 0;
@@ -657,8 +659,7 @@ static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
       Icallback cb = IupGetCallback(ih, "ACTION");
       if (cb)
       {
-        if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION") &&  /* to avoid double calls when pressing enter and a dialog is displayed */
-            iupAttribGetBoolean(ih, "FOCUSONCLICK"))  /* to avoid multiple calls to action in a double click */
+        if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION"))  /* to avoid double calls when pressing enter and a dialog is displayed */
         {
           iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", "1");
           if (cb(ih) == IUP_CLOSE)
@@ -751,7 +752,6 @@ void iupdrvButtonInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "IMAGE", NULL, winButtonSetImageAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, winButtonSetImInactiveAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMPRESS", NULL, winButtonSetImPressAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FOCUSONCLICK", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "PADDING", iupButtonGetPaddingAttrib, winButtonSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 }

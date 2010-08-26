@@ -466,11 +466,13 @@ static int winToggleCtlColor(Ihandle* ih, HDC hdc, LRESULT *result)
   return 0;
 }
 
-static int winToggleWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
+static int winToggleImageWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 {
+  /* called only when (ih->data->type==IUP_TOGGLE_IMAGE) and
+                       iupwin_comctl32ver6 */
+
   if (msg_info->code == NM_CUSTOMDRAW)
   {
-    /* called only when iupwin_comctl32ver6 AND (ih->data->type==IUP_TOGGLE_IMAGE) */
     NMCUSTOMDRAW *customdraw = (NMCUSTOMDRAW*)msg_info;
 
     if (customdraw->dwDrawStage==CDDS_PREERASE)
@@ -503,32 +505,37 @@ static int winToggleWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   return 0; /* result not used */
 }
 
-static int winToggleProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winToggleImageFlatProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
-  (void)lp;
-  (void)wp;
-
-  /* Called only when (ih->data->type == IUP_TOGGLE_IMAGE) and !iupwin_comctl32ver6 */
+  /* Called only when (ih->data->type == IUP_TOGGLE_IMAGE) and 
+                      iupwin_comctl32ver6 and 
+                      FLAT=Yes */
 
   switch (msg)
   {
   case WM_MOUSELEAVE:
-    if (iupAttribGetBoolean(ih, "FLAT"))
+    iupAttribSetStr(ih, "_IUPWINTOG_ENTERWIN", NULL);
+    iupdrvRedrawNow(ih);
+    break;
+  case WM_MOUSEMOVE:
+    if (!iupAttribGet(ih, "_IUPWINTOG_ENTERWIN"))
     {
-      iupAttribSetStr(ih, "_IUPWINTOG_ENTERWIN", NULL);
+      iupAttribSetStr(ih, "_IUPWINTOG_ENTERWIN", "1");
       iupdrvRedrawNow(ih);
     }
     break;
-  case WM_MOUSEMOVE:
-    if (iupAttribGetBoolean(ih, "FLAT"))
-    {
-      if (!iupAttribGet(ih, "_IUPWINTOG_ENTERWIN"))
-      {
-        iupAttribSetStr(ih, "_IUPWINTOG_ENTERWIN", "1");
-        iupdrvRedrawNow(ih);
-      }
-    }
-    break;
+  }
+
+  return iupwinBaseProc(ih, msg, wp, lp, result);
+}
+
+static int winToggleImageProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+{
+  /* Called only when (ih->data->type == IUP_TOGGLE_IMAGE) and 
+                      !iupwin_comctl32ver6 */
+
+  switch (msg)
+  {
   case WM_MOUSEACTIVATE:
     if (!winToggleIsActive(ih))
     {
@@ -690,10 +697,14 @@ static int winToggleMapMethod(Ihandle* ih)
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
     if (iupwin_comctl32ver6)
-      IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winToggleWmNotify);  /* Process WM_NOTIFY */
+    {
+      IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winToggleImageWmNotify);  /* Process WM_NOTIFY */
+      if (iupAttribGetBoolean(ih, "FLAT"))
+        IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winToggleImageFlatProc);
+    }
     else
     {
-      IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winToggleProc);
+      IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winToggleImageProc);
       iupAttribSetStr(ih, "_IUPWIN_ACTIVE", "YES");
     }
   }

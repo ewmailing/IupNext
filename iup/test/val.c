@@ -145,6 +145,7 @@ void ValTest(void)
 //  IupSetAttribute(val_h, "TICKSPOS", "BOTH");   /* Windows Only */
 //  IupSetAttribute(val_h, "INVERTED", "YES");
   IupSetAttribute(val_h, "EXPAND", "HORIZONTAL");
+//  IupSetAttribute(val_h, "CANFOCUS", "NO");
   
   dlg = IupDialog
   (

@@ -35,7 +35,7 @@
 #define	EM_SETCUEBANNER	    (ECM_FIRST + 1)
 #endif
 
-#define WM_CARET WM_APP+1   /* Custom IUP message */
+#define WM_IUPCARET WM_APP+1   /* Custom IUP message */
 
 #define WIN_GETCOUNT(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_GETCOUNT: LB_GETCOUNT)
 #define WIN_GETTEXTLEN(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_GETLBTEXTLEN: LB_GETTEXTLEN)
@@ -1057,7 +1057,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
           ret = 1;
       }
 
-      PostMessage(cbedit, WM_CARET, 0, 0L);
+      PostMessage(cbedit, WM_IUPCARET, 0, 0L);
 
       if (wp==VK_TAB)  /* the keys have the same definitions as the chars */
         ret = 1;  /* abort default processing to avoid beep */
@@ -1076,7 +1076,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
         SendMessage(cbedit, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
       }
 
-      PostMessage(cbedit, WM_CARET, 0, 0L);
+      PostMessage(cbedit, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_CLEAR:
@@ -1084,7 +1084,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       if (!winListCallEditCb(ih, cbedit, NULL, 0, 1))
         ret = 1;
 
-      PostMessage(cbedit, WM_CARET, 0, 0L);
+      PostMessage(cbedit, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_CUT:
@@ -1092,7 +1092,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       if (!winListCallEditCb(ih, cbedit, NULL, 0, 1))
         ret = 1;
 
-      PostMessage(cbedit, WM_CARET, 0, 0L);
+      PostMessage(cbedit, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_PASTE:
@@ -1108,7 +1108,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
         }
       }
 
-      PostMessage(cbedit, WM_CARET, 0, 0L);
+      PostMessage(cbedit, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_UNDO:
@@ -1126,7 +1126,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
         ret = 1;
       }
 
-      PostMessage(cbedit, WM_CARET, 0, 0L);
+      PostMessage(cbedit, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_KEYUP:
@@ -1139,9 +1139,9 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
   case WM_LBUTTONUP:
-    PostMessage(cbedit, WM_CARET, 0, 0L);
+    PostMessage(cbedit, WM_IUPCARET, 0, 0L);
     break;
-  case WM_CARET:
+  case WM_IUPCARET:
     winListCallCaretCb(ih, cbedit);
     break;
   }

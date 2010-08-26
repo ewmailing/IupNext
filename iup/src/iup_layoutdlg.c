@@ -722,4 +722,3 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
 
   return dlg;
 }
-

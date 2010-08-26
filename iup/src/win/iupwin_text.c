@@ -75,7 +75,7 @@
 #define	EM_SETCUEBANNER	    (ECM_FIRST + 1)
 #endif
 
-#define WM_CARET WM_APP+1   /* Custom IUP message */
+#define WM_IUPCARET WM_APP+1   /* Custom IUP message */
 
 
 void iupdrvTextAddSpin(int *w, int h)
@@ -1588,7 +1588,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
           ret = 1;
       }
 
-      PostMessage(ih->handle, WM_CARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
 
       if (!ih->data->is_multiline && 
           (wp==VK_RETURN || wp==VK_ESCAPE || wp==VK_TAB))  /* the keys have the same definitions as the chars */
@@ -1628,7 +1628,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
           ret = 1;
       }
 
-      PostMessage(ih->handle, WM_CARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
 
       if (ret)       /* if abort processing, then the result is 0 */
       {
@@ -1640,7 +1640,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     }
   case WM_KEYUP:
     {
-      PostMessage(ih->handle, WM_CARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_CLEAR:
@@ -1648,7 +1648,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       if (!winTextCallActionCb(ih, NULL, 0, 1))
         ret = 1;
 
-      PostMessage(ih->handle, WM_CARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_CUT:
@@ -1656,7 +1656,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       if (!winTextCallActionCb(ih, NULL, 0, 1))
         ret = 1;
 
-      PostMessage(ih->handle, WM_CARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_PASTE:
@@ -1672,7 +1672,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
         }
       }
 
-      PostMessage(ih->handle, WM_CARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_UNDO:
@@ -1690,7 +1690,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
         ret = 1;
       }
 
-      PostMessage(ih->handle, WM_CARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_LBUTTONDBLCLK:
@@ -1705,7 +1705,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
         *result = 0;
         return 1;
       }
-      PostMessage(ih->handle, WM_CARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_MBUTTONUP:
@@ -1717,10 +1717,10 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
         *result = 0;
         return 1;
       }
-      PostMessage(ih->handle, WM_CARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
-  case WM_CARET:
+  case WM_IUPCARET:
     {
       winTextCallCaretCb(ih);
       break;

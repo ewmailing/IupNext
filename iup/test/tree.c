@@ -477,6 +477,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "HIDELINES",    "YES");
 //  IupSetAttribute(tree, "HIDEBUTTONS",    "YES");
 //  IupSetAttribute(tree, "INDENTATION",   "40");
+//  IupSetAttribute(tree, "CANFOCUS", "NO");
 
   IupSetHandle("tree", tree);
 }

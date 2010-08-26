@@ -219,13 +219,8 @@ static int motButtonMapMethod(Ihandle* ih)
   iupMOT_SETARG(args, num_args, XmNfillOnArm, False);
 
   /* Primitive */
-  if (iupAttribGetBoolean(ih, "FOCUSONCLICK"))
-  {
-    if (iupAttribGetBoolean(ih, "CANFOCUS"))
-      iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
-    else
-      iupMOT_SETARG(args, num_args, XmNtraversalOn, False);
-  }
+  if (iupAttribGetBoolean(ih, "CANFOCUS"))
+    iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
   else
     iupMOT_SETARG(args, num_args, XmNtraversalOn, False);
   iupMOT_SETARG(args, num_args, XmNhighlightThickness, 2);
@@ -299,7 +294,6 @@ void iupdrvButtonInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "IMAGE", NULL, motButtonSetImageAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, motButtonSetImInactiveAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMPRESS", NULL, motButtonSetImPressAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FOCUSONCLICK", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "PADDING", iupButtonGetPaddingAttrib, motButtonSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 }

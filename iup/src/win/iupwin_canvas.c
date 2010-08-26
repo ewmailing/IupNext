@@ -662,6 +662,14 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     if (has_touch && LOWORD(wp))
       winCanvasProcessMultiTouch(ih, (int)LOWORD(wp), (HTOUCHINPUT)lp);
     break;
+  case WM_SETFOCUS:
+    if (!iupAttribGetBoolean(ih, "CANFOCUS"))
+    {
+      HWND previous = (HWND)wp;
+      if (previous && previous != ih->handle)
+        SetFocus(previous);
+    }
+    break;
   }
 
   /* can be a container */

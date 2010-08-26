@@ -281,7 +281,7 @@ void ButtonTest(void)
   IupSetAttribute(button, "ALIGNMENT", "ACENTER:ACENTER");
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT:ATOP");
   IupSetAttribute(button, "NAME", "button1");
-  IupSetAttribute(button, "FOCUSONCLICK", "NO");
+  IupSetAttribute(button, "CANFOCUS", "NO");
   set_callbacks(button);
   IupAppend(box1, button);
 
@@ -368,9 +368,8 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
 //  IupSetAttribute(button, "FLAT", "YES");
-//  IupSetAttribute(button, "CANFOCUS", "NO");
 //  IupSetAttributeHandle(button, "IMPRESS", image2);
-//  IupSetAttribute(button, "FOCUSONCLICK", "NO");
+  IupSetAttribute(button, "CANFOCUS", "NO");
 //  IupSetAttribute(button, "RASTERSIZE", "15x15");
   IupSetAttribute(button, "NAME", "button5");
   set_callbacks(button);
