@@ -73,7 +73,7 @@ void FreeTexture()
 
 void reshape(int w, int h)
 {
-	double tempWin = window * (scaleVal*zoomFactor);
+	double tempWin = window * (scaleVal/zoomFactor);
 
 	if(tempWin < 0)
 		tempWin = 0.0;
@@ -194,7 +194,8 @@ int redraw(Ihandle *self, float x, float y)
 #ifdef USE_TUIO
 
 #define GRAD_PI            57.2957787  /* 180.0f / 3.1415927f */
-#define MAX_ANGLE_VARIANCE 10.0
+#define MAX_ANGLE_VARIANCE 20.0
+#define INVERT_Y_AXIS(_y, _h) (_h - _y - 1)
 
 int oldX = 0, oldY = 0;
 double initDist = 0, initAngle = 0;
@@ -227,13 +228,15 @@ http://wiki.nuigroup.com/Gesture_recognition
 */
 int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *pstate)
 {
-  (void)id;
+  int w, h;
+  char *size = IupGetAttribute(self, "RASTERSIZE");
+  sscanf(size, "%dx%d", &w, &h);
 
   // DOWN - first blob on surface
   if(pstate[0] == 'D')
   {
     oldX = px[0];
-    oldY = py[0];
+    oldY = INVERT_Y_AXIS(py[0], h);
   }
 
   // DOWN - second blob on surface
@@ -245,7 +248,7 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
       int initDiffY;
 
       initDiffX = px[1] - oldX;
-      initDiffY = py[1] - oldY;
+      initDiffY = INVERT_Y_AXIS(py[1], h) - oldY;
       initAngle = getAngleTrig(initDiffX, initDiffY);
       initDist  = sqrt(pow((double)initDiffX, 2) + pow((double)initDiffY, 2));
     }
@@ -254,11 +257,22 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
   // MOVE - there is one blob on surface, and it is moving
   if(count == 1 && pstate[0] == 'M')
   {
-    moveX += (px[0] - oldX) * (-1);  //  PAN GESTURE
-    moveY += (py[0] - oldY) * (-1);  //  (translate XY)
+    double speedFactor = 0;
+
+    // Speed control = ignores large distances when very fast movements are performed
+    if(abs(px[0] - oldX) < 10 && abs(INVERT_Y_AXIS(py[0], h) - oldY) < 10)
+      speedFactor = -1;
+    else if(abs(px[0] - oldX) < 50 && abs(INVERT_Y_AXIS(py[0], h) - oldY) < 50)
+      speedFactor = -0.2;
+    else if(abs(px[0] - oldX) < 100 && abs(INVERT_Y_AXIS(py[0], h) - oldY) < 100)
+      speedFactor = -0.1;
+
+    moveX += (double)(px[0] - oldX)*speedFactor;                    //  PAN GESTURE
+    moveY += (double)(INVERT_Y_AXIS(py[0], h) - oldY)*speedFactor;  //  (translate XY)
 
     oldX = px[0];
-    oldY = py[0];
+    oldY = INVERT_Y_AXIS(py[0], h);
+
   }
   // MOVE - there are two blobs on surface, and they are moving
   else if(count == 2)
@@ -266,15 +280,22 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
     if(pstate[0] == 'M' && pstate[1] == 'M')
     {
       int curDiffX = px[1]-px[0];
-      int curDiffY = py[1]-py[0];
+      int curDiffY = INVERT_Y_AXIS(py[1], h) - INVERT_Y_AXIS(py[0], h);
       double curAngle = getAngleTrig((double)curDiffX, (double)curDiffY);
       double curDist = sqrt(pow((double)curDiffX, 2) + pow((double)curDiffY, 2));
 
       if(abs(curAngle-initAngle) > MAX_ANGLE_VARIANCE)
-        rotationAngle = curAngle-initAngle;  // ROTATE GESTURE (rotate angle)
-      else
-        zoomFactor = curDist/initDist;  // ZOOM GESTURE (scale factor)
-    }
+			{
+				// ROTATE GESTURE (rotate angle)
+        rotationAngle = curAngle-initAngle;
+      }
+			else
+      {
+				// ZOOM GESTURE (scale factor)
+				if(initDist > 0) // Prevent a divide by zero
+          zoomFactor = curDist/initDist;
+      }
+		}
   }
 
   // UP - the first blob is out of surface... Now, the second blob becomes the first!
@@ -284,7 +305,7 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
     if(count == 2)
     {
       oldX = px[1];
-      oldY = py[1];
+      oldY = INVERT_Y_AXIS(py[1], h);
     }
 
     initDist = 0;
@@ -301,13 +322,13 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
       initAngle = 0;
 
       rotateVal += rotationAngle;
-      if(abs(rotateVal) >= 360.0)
-        rotateVal = rotationAngle;
+      if(abs(rotateVal) > 360)
+        rotateVal = (int)rotateVal % 360;
       rotationAngle = 0;
 
-      scaleVal *= zoomFactor;
+      scaleVal /= zoomFactor;
       if(scaleVal < 0)
-        scaleVal = 0;
+        scaleVal = 1;
       zoomFactor = 1;
     }
   }
@@ -315,6 +336,7 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
   // Updating the display
   IupRedraw(self, 0);
 
+  (void)id;
   return IUP_DEFAULT;
 }
 
