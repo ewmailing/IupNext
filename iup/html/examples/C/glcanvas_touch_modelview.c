@@ -26,10 +26,12 @@
 #endif
 
 double window = 50.0;
+double left, right, bottom, top;
 
 double moveX = 0, moveY = 0;
 double rotationAngle = 0, rotateVal = 0;
 double zoomFactor = 1, scaleVal = 1;
+double translateX = 0, translateY = 0;
 
 GLuint textureID;
 Ihandle* image;
@@ -76,10 +78,21 @@ void reshape(int w, int h)
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  if (w <= h) 
-    gluOrtho2D (-window, window, -window*h/w, window*h/w);
-  else 
-    gluOrtho2D (-window*w/h, window*w/h, -window, window);
+  left = bottom = -window;
+  right  =  top =  window;
+
+  if (w > h)
+  {
+    left  = -window*w/h;
+    right =  window*w/h;
+  }
+  else
+  {
+    bottom = -window*h/w;
+    top    =  window*h/w;
+  }
+
+  gluOrtho2D(left, right, bottom, top);
 
   glMatrixMode(GL_MODELVIEW);
 }
@@ -162,7 +175,7 @@ int redraw(Ihandle *self, float x, float y)
   LoadTexture();
 
   glPushMatrix();
-    glTranslated(moveX, moveY, 0.0);
+    glTranslated(moveX+translateX, moveY+translateY, 0.0);
     glRotated(rotateVal+rotationAngle, 0.0, 0.0, 1.0);
     glScaled(scaleVal*zoomFactor, scaleVal*zoomFactor, 1.0);
 
@@ -190,7 +203,7 @@ int redraw(Ihandle *self, float x, float y)
 #ifdef USE_TUIO
 
 #define GRAD_PI               57.2957787  /* 180.0f / 3.1415927f */
-#define MAX_ANGLE_VARIANCE    20.0
+#define MAX_ANGLE_VARIANCE    10.0
 #define INVERT_Y_AXIS(_y, _h) (_h - _y - 1)
 
 int oldX = 0, oldY = 0;
@@ -224,9 +237,19 @@ http://wiki.nuigroup.com/Gesture_recognition
 */
 int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *pstate)
 {
-  int w, h;
+  int w, h, fullw, fullh;
   char *size = IupGetAttribute(self, "RASTERSIZE");
+  char *full = IupGetGlobal("FULLSIZE");
   sscanf(size, "%dx%d", &w, &h);
+  sscanf(full, "%dx%d", &fullw, &fullh);
+
+  /* if self is the canvas, then must convert to screen coordinates */
+  px[0] += IupGetInt(self, "X");
+  py[0] += IupGetInt(self, "Y");
+
+  /* Now, convert to the GL window coordinates */
+  px[0] = (int)(px[0]*(right-left)/fullw - right);
+  py[0] = (int)(py[0]*(top-bottom)/fullh - top);
 
   // DOWN - first blob on surface
   if(pstate[0] == 'D')
@@ -238,6 +261,14 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
   // DOWN - second blob on surface
   if(count == 2)
   {
+    /* if self is the canvas, then must convert to screen coordinates */
+    px[1] += IupGetInt(self, "X");
+    py[1] += IupGetInt(self, "Y");
+
+    /* Now, convert to the GL window coordinates */
+    px[1] = (int)(px[1]*(right-left)/fullw - right);
+    py[1] = (int)(py[1]*(top-bottom)/fullh - top);
+
     if(pstate[1] == 'D')
     {
       int initDiffX;
@@ -253,19 +284,9 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
   // MOVE - there is one blob on surface, and it is moving
   if(count == 1 && pstate[0] == 'M')
   {
-    double speedFactor = 0;
-
-    // Speed control = ignores large distances when very fast movements are performed
-    if(abs(px[0] - oldX) < 10 && abs(INVERT_Y_AXIS(py[0], h) - oldY) < 10)
-      speedFactor = 1;
-    else if(abs(px[0] - oldX) < 50 && abs(INVERT_Y_AXIS(py[0], h) - oldY) < 50)
-      speedFactor = 0.2;
-    else if(abs(px[0] - oldX) < 100 && abs(INVERT_Y_AXIS(py[0], h) - oldY) < 100)
-      speedFactor = 0.1;
-
-    moveX += (double)(px[0] - oldX)*speedFactor;                    //  PAN GESTURE
-    moveY += (double)(INVERT_Y_AXIS(py[0], h) - oldY)*speedFactor;  //  (translate XY)
-
+    translateX += (double)(px[0] - oldX);                    //  PAN GESTURE
+    translateY += (double)(INVERT_Y_AXIS(py[0], h) - oldY);  //  (translate XY)
+ 
     oldX = px[0];
     oldY = INVERT_Y_AXIS(py[0], h);
   }
@@ -281,13 +302,13 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
 
       if(abs(curAngle-initAngle) > MAX_ANGLE_VARIANCE)
 			{
-				// ROTATE GESTURE (rotate angle)
+        // ROTATE GESTURE (rotate angle)
         rotationAngle = curAngle-initAngle;
       }
 			else
       {
-				// ZOOM GESTURE (scale factor)
-				if(initDist > 0) // Prevent a divide by zero
+        // ZOOM GESTURE (scale factor)
+        if(initDist > 0) // Prevent a divide by zero
           zoomFactor = curDist/initDist;
       }
     }
@@ -302,6 +323,11 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
       oldX = px[1];
       oldY = INVERT_Y_AXIS(py[1], h);
     }
+
+    moveX += translateX;
+    moveY += translateY;
+    translateX = 0;
+    translateY = 0;
 
     initDist = 0;
     initAngle = 0;
@@ -351,7 +377,7 @@ int main(int argc, char **argv)
   IupSetCallback(canvas, "DROPFILES_CB", (Icallback) drop_image);
 
   IupSetAttribute(canvas, IUP_BUFFER, IUP_DOUBLE);
-  IupSetAttribute(canvas, "RASTERSIZE", "450x450");
+  IupSetAttribute(canvas, "RASTERSIZE", "640x480");
 
 #ifdef USE_TUIO
   {
