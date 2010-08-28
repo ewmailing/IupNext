@@ -1,10 +1,10 @@
 /*
- * IupGLCanvas PROJECTION Sample
- * Description : Creates a IUP GL canvas and uses OpenGL to draw on it
- *               IUP TUIO multi-touch sample (PROJECTION = Zoom, Pan and Rotate)
- *               The texture is loaded using Drag/Drop operation and IUP IM function
- *      Remark : IUP must be linked to the IM library
- */
+* IupGLCanvas PROJECTION Sample
+* Description : Creates a IUP GL canvas and uses OpenGL to draw on it
+*               IUP TUIO multi-touch sample (PROJECTION = Zoom, Pan and Rotate)
+*               The texture is loaded using Drag/Drop operation and IUP IM function
+*      Remark : IUP must be linked to the IM library
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,10 +26,12 @@
 #endif
 
 double window = 50.0;
+double left, right, bottom, top;
 
 double moveX = 0, moveY = 0;
 double rotationAngle = 0, rotateVal = 0;
 double zoomFactor = 1, scaleVal = 1;
+double translateX = 0, translateY = 0;
 
 GLuint textureID;
 Ihandle* image;
@@ -39,7 +41,7 @@ void LoadTexture()
 {
   int width  = IupGetInt(image, "WIDTH");
   int height = IupGetInt(image, "HEIGHT");
-  
+
   data = (unsigned char*)IupGetAttribute(image, "WID");
 
   // allocate a texture name
@@ -53,7 +55,7 @@ void LoadTexture()
 
   // select filter for the small areas
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-  
+
   // select filter for the large areas
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR );
 
@@ -73,23 +75,28 @@ void FreeTexture()
 
 void reshape(int w, int h)
 {
-	double tempWin = window * (scaleVal/zoomFactor);
-
-	if(tempWin < 0)
-		tempWin = 0.0;
-
-	if(tempWin > (w + h))
-		tempWin = w + h;
-
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  if (w <= h) 
-		gluOrtho2D (-tempWin+moveX, tempWin+moveX, -tempWin*h/w+moveY, tempWin*h/w+moveY);
-	else 
-		gluOrtho2D (-tempWin*w/h+moveX, tempWin*w/h+moveX, -tempWin+moveY, tempWin+moveY);
+  left = bottom = -window;
+  right  =  top =  window;
 
+  if (w > h)
+  {
+    left  = -window*w/h;
+    right =  window*w/h;
+  }
+  else
+  {
+    bottom = -window*h/w;
+    top    =  window*h/w;
+  }
+
+  gluOrtho2D(left, right, bottom, top);
+
+  glTranslated(moveX+translateX, moveY+translateY, 0.0);
   glRotated(rotateVal+rotationAngle, 0.0, 0.0, 1.0);
+  glScaled(scaleVal*zoomFactor, scaleVal*zoomFactor, 1.0);
 
   glMatrixMode(GL_MODELVIEW);
 }
@@ -124,24 +131,24 @@ int k_any(Ihandle *self, int key)
   switch(key)
   {
   case K_UP:     // moving the window to up
-    moveY -= 1.0;
-    break;
-  case K_DOWN:   // moving the window to down
     moveY += 1.0;
     break;
-  case K_LEFT:   // moving the window to the left
-    moveX += 1.0;
+  case K_DOWN:   // moving the window to down
+    moveY -= 1.0;
     break;
-  case K_RIGHT:  // moving the window to the right
+  case K_LEFT:   // moving the window to the left
     moveX -= 1.0;
     break;
+  case K_RIGHT:  // moving the window to the right
+    moveX += 1.0;
+    break;
   case K_PGUP:
-    zoomFactor -= 0.1; // zoom in
-    if(zoomFactor < 0)
-      zoomFactor = 0;
+    zoomFactor += 0.1; // zoom in
     break;
   case K_PGDN:
-    zoomFactor += 0.1; // zoom out
+    zoomFactor -= 0.1; // zoom out
+    if(zoomFactor < 0)
+      zoomFactor = 0;
     break;
   case K_HOME:
     rotationAngle -= 1.0; // rotate clockwise
@@ -172,12 +179,12 @@ int redraw(Ihandle *self, float x, float y)
   LoadTexture();
 
   glPushMatrix();
-    glBegin( GL_QUADS );
-      glTexCoord2d(0.0, 0.0); glVertex2d(-10.0,  10.0);
-      glTexCoord2d(1.0, 0.0); glVertex2d( 10.0,  10.0);
-      glTexCoord2d(1.0, 1.0); glVertex2d( 10.0, -10.0);
-      glTexCoord2d(0.0, 1.0); glVertex2d(-10.0, -10.0);
-    glEnd();
+  glBegin( GL_QUADS );
+  glTexCoord2d(0.0, 0.0); glVertex2d(-10.0,  10.0);
+  glTexCoord2d(1.0, 0.0); glVertex2d( 10.0,  10.0);
+  glTexCoord2d(1.0, 1.0); glVertex2d( 10.0, -10.0);
+  glTexCoord2d(0.0, 1.0); glVertex2d(-10.0, -10.0);
+  glEnd();
   glPopMatrix();
 
   FreeTexture();
@@ -228,9 +235,19 @@ http://wiki.nuigroup.com/Gesture_recognition
 */
 int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *pstate)
 {
-  int w, h;
+  int w, h, fullw, fullh;
   char *size = IupGetAttribute(self, "RASTERSIZE");
+  char *full = IupGetGlobal("FULLSIZE");
   sscanf(size, "%dx%d", &w, &h);
+  sscanf(full, "%dx%d", &fullw, &fullh);
+
+  /* if self is the canvas, then must convert to screen coordinates */
+  px[0] += IupGetInt(self, "X");
+  py[0] += IupGetInt(self, "Y");
+
+  /* Now, convert to the GL window coordinates */
+  px[0] = (int)(px[0]*(right-left)/fullw - right);
+  py[0] = (int)(py[0]*(top-bottom)/fullh - top);
 
   // DOWN - first blob on surface
   if(pstate[0] == 'D')
@@ -242,6 +259,14 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
   // DOWN - second blob on surface
   if(count == 2)
   {
+    /* if self is the canvas, then must convert to screen coordinates */
+    px[1] += IupGetInt(self, "X");
+    py[1] += IupGetInt(self, "Y");
+
+    /* Now, convert to the GL window coordinates */
+    px[1] = (int)(px[1]*(right-left)/fullw - right);
+    py[1] = (int)(py[1]*(top-bottom)/fullh - top);
+
     if(pstate[1] == 'D')
     {
       int initDiffX;
@@ -257,22 +282,11 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
   // MOVE - there is one blob on surface, and it is moving
   if(count == 1 && pstate[0] == 'M')
   {
-    double speedFactor = 0;
-
-    // Speed control = ignores large distances when very fast movements are performed
-    if(abs(px[0] - oldX) < 10 && abs(INVERT_Y_AXIS(py[0], h) - oldY) < 10)
-      speedFactor = -1;
-    else if(abs(px[0] - oldX) < 50 && abs(INVERT_Y_AXIS(py[0], h) - oldY) < 50)
-      speedFactor = -0.2;
-    else if(abs(px[0] - oldX) < 100 && abs(INVERT_Y_AXIS(py[0], h) - oldY) < 100)
-      speedFactor = -0.1;
-
-    moveX += (double)(px[0] - oldX)*speedFactor;                    //  PAN GESTURE
-    moveY += (double)(INVERT_Y_AXIS(py[0], h) - oldY)*speedFactor;  //  (translate XY)
+    translateX += (double)(px[0] - oldX);                    //  PAN GESTURE
+    translateY += (double)(INVERT_Y_AXIS(py[0], h) - oldY);  //  (translate XY)
 
     oldX = px[0];
     oldY = INVERT_Y_AXIS(py[0], h);
-
   }
   // MOVE - there are two blobs on surface, and they are moving
   else if(count == 2)
@@ -285,17 +299,17 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
       double curDist = sqrt(pow((double)curDiffX, 2) + pow((double)curDiffY, 2));
 
       if(abs(curAngle-initAngle) > MAX_ANGLE_VARIANCE)
-			{
-				// ROTATE GESTURE (rotate angle)
+      {
+        // ROTATE GESTURE (rotate angle)
         rotationAngle = curAngle-initAngle;
       }
-			else
+      else
       {
-				// ZOOM GESTURE (scale factor)
-				if(initDist > 0) // Prevent a divide by zero
+        // ZOOM GESTURE (scale factor)
+        if(initDist > 0) // Prevent a divide by zero
           zoomFactor = curDist/initDist;
       }
-		}
+    }
   }
 
   // UP - the first blob is out of surface... Now, the second blob becomes the first!
@@ -307,6 +321,11 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
       oldX = px[1];
       oldY = INVERT_Y_AXIS(py[1], h);
     }
+
+    moveX += translateX;
+    moveY += translateY;
+    translateX = 0;
+    translateY = 0;
 
     initDist = 0;
     initAngle = 0;
@@ -326,7 +345,7 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
         rotateVal = (int)rotateVal % 360;
       rotationAngle = 0;
 
-      scaleVal /= zoomFactor;
+      scaleVal *= zoomFactor;
       if(scaleVal < 0)
         scaleVal = 1;
       zoomFactor = 1;
