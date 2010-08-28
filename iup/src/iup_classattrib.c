@@ -101,7 +101,7 @@ int iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id
     name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
                           translate them into IDVALUE. */
   afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
-  if (afunc && afunc->flags & IUPAF_HAS_ID2)
+  if (afunc)
   {         
     if (afunc->flags & IUPAF_READONLY)
     {
@@ -114,8 +114,17 @@ int iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id
         (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
     {
       /* id numbered attributes have default value NULL always */
-      IattribSetId2Func id2_set = (IattribSetId2Func)afunc->set;
-      return id2_set(ih, id1, id2, value);
+
+      if (afunc->flags & IUPAF_HAS_ID2)
+      {
+        IattribSetId2Func id2_set = (IattribSetId2Func)afunc->set;
+        return id2_set(ih, id1, id2, value);
+      }
+      else if (afunc->flags & IUPAF_HAS_ID)
+      {
+        IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
+        return id_set(ih, id1, value);  /* id2 is ignored */
+      }
     }
 
     if (afunc->flags & IUPAF_NO_STRING)
@@ -278,7 +287,7 @@ char* iupClassObjectGetAttributeId2(Ihandle* ih, const char* name, int id1, int 
     name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
                           translate them into IDVALUE. */
   afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
-  if (afunc && afunc->flags & IUPAF_HAS_ID2)
+  if (afunc)
   {
     if (afunc->flags & IUPAF_WRITEONLY)
       return NULL;
@@ -286,8 +295,16 @@ char* iupClassObjectGetAttributeId2(Ihandle* ih, const char* name, int id1, int 
     if (afunc->get && 
         (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
     {
-      IattribGetId2Func id2_get = (IattribGetId2Func)afunc->get;
-      return id2_get(ih, id1, id2);
+      if (afunc->flags & IUPAF_HAS_ID2)
+      {
+        IattribGetId2Func id2_get = (IattribGetId2Func)afunc->get;
+        return id2_get(ih, id1, id2);
+      }
+      else if (afunc->flags & IUPAF_HAS_ID)
+      {
+        IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
+        return id_get(ih, id1);  /* id2 is ignored */
+      }
     }
   }
 
