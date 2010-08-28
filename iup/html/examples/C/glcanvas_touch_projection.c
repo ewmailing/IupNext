@@ -200,8 +200,8 @@ int redraw(Ihandle *self, float x, float y)
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef USE_TUIO
 
-#define GRAD_PI            57.2957787  /* 180.0f / 3.1415927f */
-#define MAX_ANGLE_VARIANCE 20.0
+#define GRAD_PI               57.2957787  /* 180.0f / 3.1415927f */
+#define MAX_ANGLE_VARIANCE    10.0
 #define INVERT_Y_AXIS(_y, _h) (_h - _y - 1)
 
 int oldX = 0, oldY = 0;
