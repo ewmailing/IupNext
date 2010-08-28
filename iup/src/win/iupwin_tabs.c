@@ -319,10 +319,9 @@ static int winTabsSetTabTypeAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int winTabsSetTabTitleAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int winTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 {
-  int pos;
-  if (value && iupStrToInt(name_id, &pos)==1)
+  if (value)
   {
     TCITEM tie;
 
@@ -335,10 +334,9 @@ static int winTabsSetTabTitleAttrib(Ihandle* ih, const char* name_id, const char
   return 1;
 }
 
-static int winTabsSetTabImageAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int winTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
 {
-  int pos;
-  if (value && iupStrToInt(name_id, &pos)==1)
+  if (value)
   {
     TCITEM tie;
 

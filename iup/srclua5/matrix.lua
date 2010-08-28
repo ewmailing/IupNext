@@ -35,11 +35,11 @@ function ctrl.createElement(class, param)
 end
 
 function ctrl.setcell(handle, l, c, val)
-  iup.SetAttribute(handle,l..":"..c,val)
+  iup.MatSetAttribute(handle,"",l,c,val)
 end
 
 function ctrl.getcell(handle, l, c)
-  return iup.GetAttribute(handle,l..":"..c)
+  return iup.MatGetAttribute(handle,"",l,c)
 end
 
 iup.RegisterWidget(ctrl)

@@ -205,6 +205,99 @@ void iupAttribUpdate(Ihandle* ih)
   free(name_array);
 }
 
+void IupSetAttributeId(Ihandle *ih, const char* name, int id, const char *value)
+{
+  iupASSERT(name!=NULL);
+  if (!name)
+    return;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (iupClassObjectSetAttributeId(ih, name, id, value)!=0) /* store strings and pointers */
+  {
+    char attr[100];
+    sprintf(attr, "%s%d", name, id);
+    iupAttribSetStr(ih, attr, value);
+  }
+}
+
+void IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char *value)
+{
+  iupASSERT(name!=NULL);
+  if (!name)
+    return;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (iupClassObjectSetAttributeId(ih, name, id, value)==1) /* store only strings */
+  {
+    char attr[100];
+    sprintf(attr, "%s%d", name, id);
+    iupAttribStoreStr(ih, attr, value);
+  }
+}
+
+char* IupGetAttributeId(Ihandle *ih, const char* name, int id)
+{
+  char *value;
+
+  iupASSERT(name!=NULL);
+  if (!name)
+    return NULL;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return NULL;
+
+  value = iupClassObjectGetAttributeId(ih, name, id);
+  if (!value)
+  {
+    char attr[100];
+    sprintf(attr, "%s%d", name, id);
+    value = iupAttribGet(ih, attr);
+  }
+
+  return value;
+}
+
+float IupGetFloatId(Ihandle *ih, const char* name, int id)
+{
+  float f = 0;
+  char *value = IupGetAttributeId(ih, name, id);
+  if (value)
+    iupStrToFloat(value, &f);
+  return f;
+}
+
+int IupGetIntId(Ihandle *ih, const char* name, int id)
+{
+  int i = 0;
+  char *value = IupGetAttributeId(ih, name, id);
+  if (value)
+  {
+    if (!iupStrToInt(value, &i))
+    {
+      if (iupStrBoolean(value))
+        i = 1;
+    }
+  }
+  return i;
+}
+
+void IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* f, ...)
+{
+  static char value[SHRT_MAX];
+  va_list arglist;
+  va_start(arglist, f);
+  vsprintf(value, f, arglist);
+  va_end(arglist);
+  IupStoreAttributeId(ih, name, id, value);
+}
+
 void IupSetAttribute(Ihandle *ih, const char* name, const char *value)
 {
   int inherit;

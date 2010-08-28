@@ -273,10 +273,9 @@ static int motTabsSetStandardFontAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static int motTabsSetTabTitleAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 {
-  int pos;
-  if (value && iupStrToInt(name_id, &pos)==1)
+  if (value)
   {
     Ihandle* child = IupGetChild(ih, pos);
     Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
@@ -286,10 +285,9 @@ static int motTabsSetTabTitleAttrib(Ihandle* ih, const char* name_id, const char
   return 1;
 }
 
-static int motTabsSetTabImageAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
 {
-  int pos;
-  if (value && iupStrToInt(name_id, &pos)==1)
+  if (value)
   {
     Ihandle* child = IupGetChild(ih, pos);
     Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");

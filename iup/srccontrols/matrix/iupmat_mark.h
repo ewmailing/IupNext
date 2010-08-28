@@ -20,8 +20,8 @@ extern "C" {
 
 int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value);
 char* iupMatrixGetMarkedAttrib(Ihandle* ih);
-char* iupMatrixGetMarkAttrib(Ihandle* ih, const char* name_id);
-int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value);
+char* iupMatrixGetMarkAttrib(Ihandle* ih, int lin, int col);
+int iupMatrixSetMarkAttrib(Ihandle* ih, int lin, int col, const char* value);
 
 void iupMatrixMarkClearAll(Ihandle* ih, int check);
 

@@ -11,6 +11,9 @@
 .style1 {
 	font-size: large;
 }
+.style3 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 <body>
@@ -170,6 +173,20 @@ Also <strong>IupTabs</strong> does NOT depends on the VISIBLE attribute.</p>
 to control the focus behavior call 
 <strong>IupSetFocus</strong> 
   in the TABCHANGE_CB callback.</p>
+<h3>Utility Functions </h3>
+<p>These functions can be used to set and get attributes from the element:</p>
+<pre>void  IupSetAttributeId(Ihandle *ih, const char* name, int id, const char* value);
+void  IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char* value);
+char* IupGetAttribute<span class="style3">Id</span>(Ihandle *ih, const char* name, int id);
+int   IupGetInt<span class="style3">Id</span>(Ihandle *ih, const char* name, int id);
+float IupGetFloat<span class="style3">Id</span>(Ihandle *ih, const char* name, int id);
+void  IupSetfAttribute<span class="style3">Id</span>(Ihandle *ih, const char* name, int id, const char* format, ...);</pre>
+<p>They work just like the respective traditional set and get functions. But the attribute string is complemented with 
+  the id value. For ex:</p>
+<pre>IupSetAttributeId(ih, &quot;TABTITLE&quot;, 3, value) == IupSetAttribute(ih, &quot;TABTITLE3&quot;, value)</pre>
+<p>But these functions are faster than the traditional functions because they do 
+not need to parse the attribute name string and the application does not need to 
+concatenate the attribute name with the id.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <p>In Windows, the Visual Styles work only when TABTYPE is TOP.</p>

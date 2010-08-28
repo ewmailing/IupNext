@@ -21,8 +21,8 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value);
 void iupdrvListRemoveItem(Ihandle* ih, int pos);
 void iupdrvListRemoveAllItems(Ihandle* ih);
 
-int iupListGetPos(Ihandle* ih, const char* name_id);
-int iupListSetIdValueAttrib(Ihandle* ih, const char* name_id, const char* value);
+int iupListGetPos(Ihandle* ih, int id);
+int iupListSetIdValueAttrib(Ihandle* ih, int id, const char* value);
 void iupListSetInitialItems(Ihandle* ih);
 void iupListSingleCallActionCallback(Ihandle* ih, IFnsii cb, int pos);
 void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, int* pos, int sel_count);

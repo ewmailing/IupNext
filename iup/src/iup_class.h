@@ -62,7 +62,7 @@ struct Iclass_
   IchildType childtype;   /**< children count enum: none, one, or many. Default is IUP_CHILDNONE. Used only by IupAppend and IupInsert to control the number of children. */
   int is_interactive;     /**< keyboard interactive boolean, 
                             * true if the class can have the keyboard input focus. Default is false. */
-  int has_attrib_id;  /**< boolean to indicate if any attribute is numbered. Default is false. */
+  int has_attrib_id;  /**< indicate if any attribute is numbered. Default is not. Can be 1 or 2. */
 
   Iclass* parent; /**< class parent to implement inheritance.
                    * Class name must be different.
@@ -200,13 +200,23 @@ void iupClassRelease(Iclass* ic);
  * \ingroup iclass */
 typedef char* (*IattribGetFunc)(Ihandle* ih);
 
-/** GetAttribute called for a specific attribute when has_attrib_id is true. \n
+/** GetAttribute called for a specific attribute when has_attrib_id is 1. \n
  * Same as IattribGetFunc but handle attribute names with number ids at the end. \n
  * When calling iupClassRegisterAttribute just use a typecast. \n
+ * -1 is used for invalid ids. \n
  * Pure numbers are translated into IDVALUEid.
  * Used by \ref iupClassRegisterAttribute.
  * \ingroup iclass */
-typedef char* (*IattribGetIdFunc)(Ihandle* ih, const char* name_id);
+typedef char* (*IattribGetIdFunc)(Ihandle* ih, int id);
+
+/** GetAttribute called for a specific attribute when has_attrib_id is 1. \n
+ * Same as IattribGetFunc but handle attribute names with number ids at the end. \n
+ * When calling iupClassRegisterAttribute just use a typecast. \n
+ * -1 is used for invalid ids. \n
+ * Pure numbers are translated into IDVALUEid.
+ * Used by \ref iupClassRegisterAttribute.
+ * \ingroup iclass */
+typedef char* (*IattribGetId2Func)(Ihandle* ih, int id1, int id2);
 
 /** SetAttribute called for a specific attribute. \n
  * If returns 0, the attribute will not be stored in the hash table
@@ -216,13 +226,23 @@ typedef char* (*IattribGetIdFunc)(Ihandle* ih, const char* name_id);
  * \ingroup iclass */
 typedef int (*IattribSetFunc)(Ihandle* ih, const char* value);
 
-/** SetAttribute called for a specific attribute when has_attrib_id is true. \n
+/** SetAttribute called for a specific attribute when has_attrib_id is 1. \n
  * Same as IattribSetFunc but handle attribute names with number ids at the end. \n
  * When calling iupClassRegisterAttribute just use a typecast. \n
+ * -1 is used for invalid ids. \n
  * Pure numbers are translated into IDVALUEid, ex: "1" = "IDVALUE1".
  * Used by \ref iupClassRegisterAttribute.
  * \ingroup iclass */
-typedef int (*IattribSetIdFunc)(Ihandle* ih, const char* name_id, const char* value);
+typedef int (*IattribSetIdFunc)(Ihandle* ih, int id, const char* value);
+
+/** SetAttribute called for a specific attribute when has_attrib_id is 2. \n
+ * Same as IattribSetFunc but handle attribute names with number ids at the end. \n
+ * When calling iupClassRegisterAttribute just use a typecast. \n
+ * -1 is used for invalid ids. \n
+ * Pure numbers are translated into IDVALUEid, ex: "1" = "IDVALUE1".
+ * Used by \ref iupClassRegisterAttribute.
+ * \ingroup iclass */
+typedef int (*IattribSetId2Func)(Ihandle* ih, int id1, int id2, const char* value);
 
 /** Attribute flags.
  * Used by \ref iupClassRegisterAttribute.
@@ -235,7 +255,8 @@ typedef enum _IattribFlags{
   IUPAF_NOT_MAPPED=8,  /**< will call the set/get functions also when not mapped */
   IUPAF_HAS_ID=16,     /**< can has an ID at the end of the name, automatically set by \ref iupClassRegisterAttributeId */
   IUPAF_READONLY=32,   /**< is read-only, can not be changed */
-  IUPAF_WRITEONLY=64   /**< is write-only, usually an action */
+  IUPAF_WRITEONLY=64,  /**< is write-only, usually an action */
+  IUPAF_HAS_ID2=128    /**< can has two IDs at the end of the name, automatically set by \ref iupClassRegisterAttributeId2 */
 } IattribFlags;
 
 #define IUPAF_SAMEASSYSTEM ((char*)-1)  /**< means that the default value is the same as the system default value, used only in \ref iupClassRegisterAttribute */
@@ -262,6 +283,13 @@ void iupClassRegisterAttribute(Iclass* ic, const char* name,
 void iupClassRegisterAttributeId(Iclass* ic, const char* name, 
                                            IattribGetIdFunc get, 
                                            IattribSetIdFunc set, 
+                                           int flags);
+
+/** Same as \ref iupClassRegisterAttribute for attributes with two Ids.
+ * \ingroup iclass */
+void iupClassRegisterAttributeId2(Iclass* ic, const char* name, 
+                                           IattribGetId2Func get, 
+                                           IattribSetId2Func set, 
                                            int flags);
 
 /** Returns the attribute handling functions.
@@ -382,6 +410,10 @@ int iupClassObjectDlgPopup(Ihandle* ih, int x, int y);
  */
 int   iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char* value, int *inherit);
 char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value, int *inherit);
+int   iupClassObjectSetAttributeId(Ihandle* ih, const char* name, int id, const char* value);
+char* iupClassObjectGetAttributeId(Ihandle* ih, const char* name, int id);
+int   iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id2, const char* value);
+char* iupClassObjectGetAttributeId2(Ihandle* ih, const char* name, int id1, int id2);
 
 /* Used only in iupAttribGetStr */
 void  iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit);

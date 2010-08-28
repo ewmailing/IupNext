@@ -594,14 +594,12 @@ char* iupMatrixGetMarkedAttrib(Ihandle* ih)
   return exist_mark? value: NULL;
 }
 
-int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
+int iupMatrixSetMarkAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  int lin = 0, col = 0;
-
   if (ih->data->mark_mode == IMAT_MARK_NO)
     return 0;
 
-  if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
+  if (lin > -1 && col > -1)  /* both are specified */
   {
     if (!iupMatrixCheckCellPos(ih, lin, col))
       return 0;
@@ -626,8 +624,8 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
         }
         else
         {
-          char str[100] = "MARK";
-          strcat(str, name_id);
+          char str[100];
+          sprintf(str, "MARK%d:%d", lin, col);
           if (mark)
           {
             iupAttribSetStr(ih, str, "1");
@@ -658,7 +656,7 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
     {
       int mark = iupStrBoolean(value);
 
-      if (ih->data->mark_mode & IMAT_MARK_LIN && lin!=0)
+      if (ih->data->mark_mode & IMAT_MARK_LIN && lin>0)
       {
         if (mark)
           ih->data->lines.flags[lin] |= IUPMAT_MARK;
@@ -666,7 +664,7 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
           ih->data->lines.flags[lin] &= ~IUPMAT_MARK;
       }
 
-      if (ih->data->mark_mode & IMAT_MARK_COL && col!=0)
+      if (ih->data->mark_mode & IMAT_MARK_COL && col>0)
       {
         if (mark)
           ih->data->columns.flags[col] |= IUPMAT_MARK;
@@ -676,7 +674,7 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
 
       if (ih->handle)
       {
-        /* This assumes that the matrix has been draw completely previously */
+        /* This assumes that the matrix has been drawn completely previously */
         iupMatrixPrepareDrawData(ih);
         iupMatrixDrawCells(ih, lin, col, lin, col);
       }
@@ -686,14 +684,12 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, const char* name_id, const char* value)
   return 0;
 }
 
-char* iupMatrixGetMarkAttrib(Ihandle* ih, const char* name_id)
+char* iupMatrixGetMarkAttrib(Ihandle* ih, int lin, int col)
 {
-  int lin = 0, col = 0;
-
   if (ih->data->mark_mode == IMAT_MARK_NO)
     return "0";
 
-  if (iupStrToIntInt(name_id, &lin, &col, ':') == 2)
+  if (lin > -1 && col > -1)  /* both are specified */
   {
     if (!iupMatrixCheckCellPos(ih, lin, col))
       return NULL;
@@ -726,10 +722,14 @@ char* iupMatrixGetMarkAttrib(Ihandle* ih, const char* name_id)
     }
     else
     {
-      if (ih->data->mark_mode & IMAT_MARK_LIN && lin!=0 && ih->data->lines.flags[lin] & IUPMAT_MARK)
+      if (ih->data->mark_mode & IMAT_MARK_LIN && 
+          lin>0 && 
+          ih->data->lines.flags[lin] & IUPMAT_MARK)
         return "1";
 
-      if (ih->data->mark_mode & IMAT_MARK_COL && col!=0 && ih->data->columns.flags[col] & IUPMAT_MARK)
+      if (ih->data->mark_mode & IMAT_MARK_COL && 
+          col>0 && 
+          ih->data->columns.flags[col] & IUPMAT_MARK)
         return "1";
 
       return "0";

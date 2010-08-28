@@ -24,12 +24,12 @@ Ihandle *IupDial(const char* type);
 Ihandle* IupMatrix(const char *action);
 
 /* IupMatrix utilities */
-void  IupMatSetAttribute  (Ihandle* ih, const char* name, int lin, int col, char* value);
-void  IupMatStoreAttribute(Ihandle* ih, const char* name, int lin, int col, char* value);
+void  IupMatSetAttribute  (Ihandle* ih, const char* name, int lin, int col, const char* value);
+void  IupMatStoreAttribute(Ihandle* ih, const char* name, int lin, int col, const char* value);
 char* IupMatGetAttribute  (Ihandle* ih, const char* name, int lin, int col);
 int   IupMatGetInt        (Ihandle* ih, const char* name, int lin, int col);
 float IupMatGetFloat      (Ihandle* ih, const char* name, int lin, int col);
-void  IupMatSetfAttribute (Ihandle* ih, const char* name, int lin, int col, char* format, ...);
+void  IupMatSetfAttribute (Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
 
 /* Used by IupColorbar */
 #define IUP_PRIMARY -1

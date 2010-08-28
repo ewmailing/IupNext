@@ -720,15 +720,10 @@ static char* iCellsGetFirstColAttrib(Ihandle* ih)
   return buffer;
 }
 
-static char* iCellsGetLimitsAttrib(Ihandle* ih, const char* name_id)
+static char* iCellsGetLimitsAttrib(Ihandle* ih, int i, int j)
 {
   char* buffer = iupStrGetMemory(80);
   int xmin, xmax, ymin, ymax;
-  int i, j;
-
-  if (iupStrToIntInt(name_id, &i, &j, ':') != 2) 
-    return NULL;
-  
   iCellsGetLimits(ih, i, j, &xmin, &xmax, &ymin, &ymax);
   sprintf(buffer, "%d:%d:%d:%d", xmin, xmax, ymin, ymax);
   return buffer;
@@ -929,7 +924,7 @@ Iclass* iupCellsGetClass(void)
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
-  ic->has_attrib_id = 1;  /* has attributes with IDs that must be parsed */
+  ic->has_attrib_id = 2;  /* has attributes with two IDs that must be parsed */
 
   /* Class functions */
   ic->Create  = iCellsCreateMethod;
@@ -962,7 +957,7 @@ Iclass* iupCellsGetClass(void)
 
   iupClassRegisterAttribute(ic, "FULL_VISIBLE", NULL, iCellsSetFullVisibleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REPAINT", NULL, iCellsSetRepaintAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "LIMITS", iCellsGetLimitsAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId2(ic, "LIMITS", iCellsGetLimitsAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIRST_COL", iCellsGetFirstColAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIRST_LINE", iCellsGetFirstLineAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGE_CANVAS", iCellsGetImageCanvasAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_READONLY|IUPAF_NO_INHERIT);

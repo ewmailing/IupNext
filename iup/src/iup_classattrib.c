@@ -49,13 +49,18 @@ static int iClassIsGlobalDefault(const char* name)
   return 0;
 }
 
+/* '*' is used in IupMatrix to indicate a full line or column
+   ':' is the regular separator
+   '-' the minus sign, so we can specify negative values */
+#define IUP_CHECKIDSEP(_str) (*(_str) == '*' || *(_str) == ':' || *(_str) == '-')
+
 static const char* iClassFindId(const char* name)
 {
   while(*name)
   {
     if (*name >= '0' && *name <= '9')
       return name;
-    if (*name == '*' || *name == ':' || *name == '-')
+    if (IUP_CHECKIDSEP(name))
       return name;
 
     name++;
@@ -85,11 +90,82 @@ static char* iClassGetDefaultValue(IattribFunc* afunc)
     return (char*)afunc->default_value;
 }
 
+int iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id2, const char* value)
+{
+  IattribFunc* afunc;
+
+  if (ih->iclass->has_attrib_id!=2)
+    return 0;
+
+  if (name[0]==0)
+    name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
+                          translate them into IDVALUE. */
+  afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  if (afunc && afunc->flags & IUPAF_HAS_ID2)
+  {         
+    if (afunc->flags & IUPAF_READONLY)
+    {
+      if (afunc->flags & IUPAF_NO_STRING)
+        return -1;  /* value is NOT a string, can NOT call iupAttribStoreStr */
+      return 0;
+    }
+
+    if (afunc->set && 
+        (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
+    {
+      /* id numbered attributes have default value NULL always */
+      IattribSetId2Func id2_set = (IattribSetId2Func)afunc->set;
+      return id2_set(ih, id1, id2, value);
+    }
+
+    if (afunc->flags & IUPAF_NO_STRING)
+      return -1; /* value is NOT a string, can NOT call iupAttribStoreStr */
+  }
+
+  return 1;
+}
+
+int iupClassObjectSetAttributeId(Ihandle* ih, const char* name, int id, const char * value)
+{
+  IattribFunc* afunc;
+
+  if (ih->iclass->has_attrib_id!=1)
+    return 0;
+
+  if (name[0]==0)
+    name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
+                          translate them into IDVALUE. */
+  afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  if (afunc && afunc->flags & IUPAF_HAS_ID)
+  {         
+    if (afunc->flags & IUPAF_READONLY)
+    {
+      if (afunc->flags & IUPAF_NO_STRING)
+        return -1;  /* value is NOT a string, can NOT call iupAttribStoreStr */
+      return 0;
+    }
+
+    if (afunc->set && 
+        !(afunc->flags & IUPAF_HAS_ID2) &&
+        (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
+    {
+      /* id numbered attributes have default value NULL always */
+      IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
+      return id_set(ih, id, value);
+    }
+
+    if (afunc->flags & IUPAF_NO_STRING)
+      return -1; /* value is NOT a string, can NOT call iupAttribStoreStr */
+  }
+
+  return 1;
+}
+
 int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value, int *inherit)
 {
   IattribFunc* afunc;
 
-  if (ih->iclass->has_attrib_id)
+  if (ih->iclass->has_attrib_id!=0)
   {
     const char* name_id = iClassFindId(name);
     if (name_id)
@@ -99,7 +175,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
         partial_name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
                                       translate them into IDVALUE. */
       afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, partial_name);
-      if (afunc)
+      if (afunc && afunc->flags & IUPAF_HAS_ID)
       {         
         *inherit = 0;       /* id numbered attributes are NON inheritable always */
 
@@ -112,9 +188,20 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
 
         if (afunc->set && (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
         {
-          /* id numbered attributes have default value NULL always */
-          IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
-          return id_set(ih, name_id, value);
+          if (afunc->flags & IUPAF_HAS_ID2)
+          {
+            IattribSetId2Func id2_set = (IattribSetId2Func)afunc->set;
+            int id1=-1, id2=-1;
+            iupStrToIntInt(name_id, &id1, &id2, ':');
+            return id2_set(ih, id1, id2, value);
+          }
+          else
+          {
+            IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
+            int id=-1;
+            if (iupStrToInt(name_id, &id))
+              return id_set(ih, id, value);
+          }
         }
 
         if (afunc->flags & IUPAF_NO_STRING)
@@ -154,10 +241,15 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
           value = iClassGetDefaultValue(afunc);
       }
 
-      if (afunc->flags & IUPAF_HAS_ID)
+      if (afunc->flags & IUPAF_HAS_ID2)
+      {
+        IattribSetId2Func id2_set = (IattribSetId2Func)afunc->set;
+        return id2_set(ih, -1, -1, value);  /* empty Id */
+      }
+      else if (afunc->flags & IUPAF_HAS_ID)
       {
         IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
-        return id_set(ih, "", value);  /* empty Id */
+        return id_set(ih, -1, value);  /* empty Id */
       }
       else
         ret = afunc->set(ih, value);
@@ -175,11 +267,66 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
   return 1;
 }
 
+char* iupClassObjectGetAttributeId2(Ihandle* ih, const char* name, int id1, int id2)
+{
+  IattribFunc* afunc;
+
+  if (ih->iclass->has_attrib_id!=2)
+    return NULL;
+
+  if (name[0]==0)
+    name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
+                          translate them into IDVALUE. */
+  afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  if (afunc && afunc->flags & IUPAF_HAS_ID2)
+  {
+    if (afunc->flags & IUPAF_WRITEONLY)
+      return NULL;
+
+    if (afunc->get && 
+        (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
+    {
+      IattribGetId2Func id2_get = (IattribGetId2Func)afunc->get;
+      return id2_get(ih, id1, id2);
+    }
+  }
+
+  return NULL;
+}
+
+char* iupClassObjectGetAttributeId(Ihandle* ih, const char* name, int id)
+{
+  IattribFunc* afunc;
+
+  if (ih->iclass->has_attrib_id!=1)
+    return NULL;
+
+  if (name[0]==0)
+    name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
+                          translate them into IDVALUE. */
+  afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  if (afunc && afunc->flags & IUPAF_HAS_ID)
+  {
+    if (afunc->flags & IUPAF_WRITEONLY)
+      return NULL;
+
+    if (afunc->get && 
+        !(afunc->flags & IUPAF_HAS_ID2) &&
+        (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
+    {
+      IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
+      return id_get(ih, id);
+    }
+  }
+
+  return NULL;
+}
+
 char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value, int *inherit)
 {
   IattribFunc* afunc;
 
-  if (ih->iclass->has_attrib_id)
+  if (ih->iclass->has_attrib_id!=0)
   {
     const char* name_id = iClassFindId(name);
     if (name_id)
@@ -190,7 +337,7 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
         partial_name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
                                       translate them into IDVALUE. */
       afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, partial_name);
-      if (afunc)
+      if (afunc && afunc->flags & IUPAF_HAS_ID)
       {
         *def_value = NULL;  /* id numbered attributes have default value NULL always */
         *inherit = 0;       /* id numbered attributes are NON inheritable always */
@@ -200,8 +347,20 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
 
         if (afunc->get && (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
         {
-          IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
-          return id_get(ih, name_id);
+          if (afunc->flags & IUPAF_HAS_ID2)
+          {
+            IattribGetId2Func id2_get = (IattribGetId2Func)afunc->get;
+            int id1=-1, id2=-1;
+            iupStrToIntInt(name_id, &id1, &id2, ':');
+            return id2_get(ih, id1, id2);
+          }
+          else
+          {
+            IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
+            int id=-1;
+            if (iupStrToInt(name_id, &id))
+              return id_get(ih, id);
+          }
         }
         else
           return NULL;      /* if the function exists, then must return here */
@@ -225,10 +384,15 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
 
     if (afunc->get && (ih->handle || afunc->flags & IUPAF_NOT_MAPPED))
     {
-      if (afunc->flags & IUPAF_HAS_ID)
+      if (afunc->flags & IUPAF_HAS_ID2)
+      {
+        IattribGetId2Func id2_get = (IattribGetId2Func)afunc->get;
+        return id2_get(ih, -1, -1);  /* empty Id */
+      }
+      else if (afunc->flags & IUPAF_HAS_ID)
       {
         IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
-        return id_get(ih, "");  /* empty Id */
+        return id_get(ih, -1);  /* empty Id */
       }
       else
         return afunc->get(ih);
@@ -241,7 +405,7 @@ void iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_va
 {
   IattribFunc* afunc;
 
-  if (ih->iclass->has_attrib_id)
+  if (ih->iclass->has_attrib_id!=0)
   {
     const char* name_id = iClassFindId(name);
     if (name_id)
@@ -330,6 +494,25 @@ void iupClassRegisterAttributeId(Iclass* ic, const char* name,
   afunc->default_value = NULL;
   afunc->system_default = NULL;
   afunc->flags = _flags|IUPAF_HAS_ID|IUPAF_NO_INHERIT|IUPAF_NO_DEFAULTVALUE;
+  afunc->call_global_default = 0;
+
+  iupTableSet(ic->attrib_func, name, (void*)afunc, IUPTABLE_POINTER);
+}
+
+void iupClassRegisterAttributeId2(Iclass* ic, const char* name, 
+                               IattribGetId2Func _get, IattribSetId2Func _set, 
+                               int _flags)
+{
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
+  if (afunc)
+    free(afunc);  /* overwrite a previous registration */
+
+  afunc = (IattribFunc*)malloc(sizeof(IattribFunc));
+  afunc->get = (IattribGetFunc)_get;
+  afunc->set = (IattribSetFunc)_set;
+  afunc->default_value = NULL;
+  afunc->system_default = NULL;
+  afunc->flags = _flags|IUPAF_HAS_ID2|IUPAF_HAS_ID|IUPAF_NO_INHERIT|IUPAF_NO_DEFAULTVALUE;
   afunc->call_global_default = 0;
 
   iupTableSet(ic->attrib_func, name, (void*)afunc, IUPTABLE_POINTER);

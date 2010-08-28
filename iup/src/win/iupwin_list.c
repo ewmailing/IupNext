@@ -245,9 +245,9 @@ static int winListSetStandardFontAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static char* winListGetIdValueAttrib(Ihandle* ih, const char* name_id)
+static char* winListGetIdValueAttrib(Ihandle* ih, int id)
 {
-  int pos = iupListGetPos(ih, name_id);
+  int pos = iupListGetPos(ih, id);
   if (pos >= 0)
   {
     int len = SendMessage(ih->handle, WIN_GETTEXTLEN(ih), (WPARAM)pos, 0);

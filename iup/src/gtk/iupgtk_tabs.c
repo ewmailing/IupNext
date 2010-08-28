@@ -165,10 +165,9 @@ static int gtkTabsSetTabOrientationAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int gtkTabsSetTabTitleAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int gtkTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 {
-  int pos;
-  if (value && iupStrToInt(name_id, &pos)==1)
+  if (value)
   {
     Ihandle* child = IupGetChild(ih, pos);
     GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
@@ -182,10 +181,9 @@ static int gtkTabsSetTabTitleAttrib(Ihandle* ih, const char* name_id, const char
   return 1;
 }
 
-static int gtkTabsSetTabImageAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int gtkTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
 {
-  int pos;
-  if (value && iupStrToInt(name_id, &pos)==1)
+  if (value)
   {
     Ihandle* child = IupGetChild(ih, pos);
     GtkWidget* tab_image = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABIMAGE");

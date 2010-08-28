@@ -271,23 +271,11 @@ static int iTreeFindUserDataId(Ihandle* ih, void* userdata)
     return -1;
 }
 
-static int iTreeGetIdFromString(const char* name_id)
-{
-  if (name_id && name_id[0])
-  {
-    int id = -1;
-    iupStrToInt(name_id, &id);
-    return id;
-  }
-  else
-    return -2;
-}
-
 InodeHandle* iupTreeGetNode(Ihandle* ih, int id)
 {
   if (id >= 0 && id < ih->data->node_count)
     return ih->data->node_cache[id].node_handle;
-  else if (id == -2)
+  else if (id == -1 && ih->data->node_count!=0)
     return iupdrvTreeGetFocusNode(ih);
   else
     return NULL;
@@ -295,7 +283,9 @@ InodeHandle* iupTreeGetNode(Ihandle* ih, int id)
 
 InodeHandle* iupTreeGetNodeFromString(Ihandle* ih, const char* name_id)
 {
-  return iupTreeGetNode(ih, iTreeGetIdFromString(name_id));
+  int id = -1;
+  iupStrToInt(name_id, &id);
+  return iupTreeGetNode(ih, id);
 }
 
 static void iTreeAddToCache(Ihandle* ih, int id, InodeHandle* node_handle)
@@ -520,35 +510,35 @@ static int iTreeSetShowDragDropAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iTreeSetAddLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int iTreeSetAddLeafAttrib(Ihandle* ih, int id, const char* value)
 {
   if (!ih->handle)  /* do not do the action before map */
     return 0;
-  iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value, 1);
+  iupdrvTreeAddNode(ih, id, ITREE_LEAF, value, 1);
   return 0;
 }
 
-static int iTreeSetAddBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int iTreeSetAddBranchAttrib(Ihandle* ih, int id, const char* value)
 {
   if (!ih->handle)  /* do not do the action before map */
     return 0;
-  iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 1);
+  iupdrvTreeAddNode(ih, id, ITREE_BRANCH, value, 1);
   return 0;
 }
 
-static int iTreeSetInsertLeafAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int iTreeSetInsertLeafAttrib(Ihandle* ih, int id, const char* value)
 {
   if (!ih->handle)  /* do not do the action before map */
     return 0;
-  iupdrvTreeAddNode(ih, name_id, ITREE_LEAF, value, 0);
+  iupdrvTreeAddNode(ih, id, ITREE_LEAF, value, 0);
   return 0;
 }
 
-static int iTreeSetInsertBranchAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int iTreeSetInsertBranchAttrib(Ihandle* ih, int id, const char* value)
 {
   if (!ih->handle)  /* do not do the action before map */
     return 0;
-  iupdrvTreeAddNode(ih, name_id, ITREE_BRANCH, value, 0);
+  iupdrvTreeAddNode(ih, id, ITREE_BRANCH, value, 0);
   return 0;
 }
 
@@ -577,10 +567,10 @@ static char* iTreeGetCountAttrib(Ihandle* ih)
   return str;
 }
 
-static char* iTreeGetTotalChildCountAttrib(Ihandle* ih, const char* name_id)
+static char* iTreeGetTotalChildCountAttrib(Ihandle* ih, int id)
 {
   char* str;
-  InodeHandle* node_handle = iupTreeGetNodeFromString(ih, name_id);
+  InodeHandle* node_handle = iupTreeGetNode(ih, id);
   if (!node_handle)
     return NULL;
 
@@ -590,10 +580,9 @@ static char* iTreeGetTotalChildCountAttrib(Ihandle* ih, const char* name_id)
 }
 
 
-static char* iTreeGetFindUserDataAttrib(Ihandle* ih, const char* name_id)
+static char* iTreeGetFindUserDataAttrib(Ihandle* ih, int id)
 {
-  int id;
-  char* str = (char*)(name_id+1); /* skip ':' */
+  char* str = (char*)(id+1); /* skip ':' */
   void* userdata = NULL;
   if (sscanf(str, "%p", &userdata)!=1)
     return NULL;
@@ -605,12 +594,11 @@ static char* iTreeGetFindUserDataAttrib(Ihandle* ih, const char* name_id)
   return str;
 }
 
-static char* iTreeGetUserDataAttrib(Ihandle* ih, const char* name_id)
+static char* iTreeGetUserDataAttrib(Ihandle* ih, int id)
 {
-  int id = iTreeGetIdFromString(name_id);
   if (id >= 0 && id < ih->data->node_count)
     return ih->data->node_cache[id].userdata;
-  else if (id == -2)
+  else if (id == -1 && ih->data->node_count!=0)
   {
     InodeHandle* node_handle = iupdrvTreeGetFocusNode(ih);
     id = iupTreeFindNodeId(ih, node_handle);
@@ -620,12 +608,11 @@ static char* iTreeGetUserDataAttrib(Ihandle* ih, const char* name_id)
   return NULL;
 }
 
-static int iTreeSetUserDataAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int iTreeSetUserDataAttrib(Ihandle* ih, int id, const char* value)
 {
-  int id = iTreeGetIdFromString(name_id);
   if (id >= 0 && id < ih->data->node_count)
     ih->data->node_cache[id].userdata = (void*)value;
-  else if (id == -2)
+  else if (id == -1 && ih->data->node_count!=0)
   {
     InodeHandle* node_handle = iupdrvTreeGetFocusNode(ih);
     id = iupTreeFindNodeId(ih, node_handle);
@@ -737,9 +724,7 @@ Iclass* iupTreeGetClass(void)
 
 void IupTreeSetAttribute(Ihandle* ih, const char* a, int id, const char* v)
 {
-  char* attr = iupStrGetMemory(50);
-  sprintf(attr, "%s%d", a, id);
-  IupSetAttribute(ih, attr, v);
+  IupSetAttributeId(ih, a, id, v);
 }
 
 void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
@@ -751,42 +736,32 @@ void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_n
 
 void IupTreeStoreAttribute(Ihandle* ih, const char* a, int id, const char* v)
 {
-  char* attr = iupStrGetMemory(50);
-  sprintf(attr, "%s%d", a, id);
-  IupStoreAttribute(ih, attr, v);
+  IupStoreAttributeId(ih, a, id, v);
 }
 
 char* IupTreeGetAttribute(Ihandle* ih, const char* a, int id)
 {
-  char* attr = iupStrGetMemory(50);
-  sprintf(attr, "%s%d", a, id);
-  return IupGetAttribute(ih, attr);
+  return IupGetAttributeId(ih, a, id);
 }
 
 int IupTreeGetInt(Ihandle* ih, const char* a, int id)
 {
-  char* attr = iupStrGetMemory(50);
-  sprintf(attr, "%s%d", a, id);
-  return IupGetInt(ih, attr);
+  return IupGetIntId(ih, a, id);
 }
 
 float IupTreeGetFloat(Ihandle* ih, const char* a, int id)
 {
-  char* attr = iupStrGetMemory(50);
-  sprintf(attr, "%s%d", a, id);
-  return IupGetFloat(ih, attr);
+  return IupGetFloatId(ih, a, id);
 }
 
 void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, const char* f, ...)
 {
   static char v[SHRT_MAX];
-  char* attr = iupStrGetMemory(50);
   va_list arglist;
-  sprintf(attr, "%s%d", a, id);
   va_start(arglist, f);
   vsprintf(v, f, arglist);
   va_end(arglist);
-  IupStoreAttribute(ih, attr, v);
+  IupStoreAttributeId(ih, a, id, v);
 }
 
 /************************************************************************************/

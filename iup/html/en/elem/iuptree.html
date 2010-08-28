@@ -11,6 +11,9 @@
 .style2 {
 	text-align: center;
 }
+.style3 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 <body>
@@ -394,17 +397,21 @@ given node (not including the node).</p>
 given node (not including the node).</p>
 </font>
 <h3>Utility Functions </h3>
-<p>These functions can be used to help set and get attributes from the tree:</p>
-<pre>void  IupTreeSetAttribute (Ihandle *ih, const char* name, int id, const char* value);
-void  IupTreeStoreAttribute(Ihandle *ih, const char* name, int id, const char* value);
-char* IupTreeGetAttribute (Ihandle *ih, const char* name, int id);
-int   IupTreeGetInt (Ihandle *ih, const char* name, int id);
-float IupTreeGetFloat (Ihandle *ih, const char* name, int id);
-void  IupTreeSetfAttribute (Ihandle *ih, const char* name, int id, const char* format, ...);</pre>
-<p>They work just like the respective tradicional set and get functions. But the attribute string is complemented with 
+<p>These functions can be used to set and get attributes from the element:</p>
+<pre>void  IupSetAttributeId(Ihandle *ih, const char* name, int id, const char* value);
+void  IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char* value);
+char* IupGetAttribute<span class="style3">Id</span>(Ihandle *ih, const char* name, int id);
+int   IupGetInt<span class="style3">Id</span>(Ihandle *ih, const char* name, int id);
+float IupGetFloat<span class="style3">Id</span>(Ihandle *ih, const char* name, int id);
+void  IupSetfAttribute<span class="style3">Id</span>(Ihandle *ih, const char* name, int id, const char* format, ...);</pre>
+<p>They work just like the respective traditional set and get functions. But the attribute string is complemented with 
   the id value. For ex:</p>
-<pre>IupTreeSetAttribute(ih, &quot;KIND&quot; , 30, value) = IupSetAttribute(ih, &quot;KIND30&quot;, value)
-IupTreeSetAttribute(ih, &quot;ADDLEAF&quot; , 10, value) = IupSetAttribute(ih, &quot;ADDLEAF10&quot;, value)</pre>
+<pre>IupSetAttributeId(ih, &quot;KIND&quot;, 30, value) == IupSetAttribute(ih, &quot;KIND30&quot;, value)
+IupSetAttributeId(ih, &quot;ADDLEAF&quot;, 10, value) == IupSetAttribute(ih, &quot;ADDLEAF10&quot;, value)</pre>
+<p>But these functions are faster than the traditional functions because they do 
+not need to parse the attribute name string and the application does not need to 
+concatenate the attribute name with the id.</p>
+<hr>
 <p>See also the <a href="../guide.html#IupTreeUtil">IupTreeUtil</a> 
 contributed by Sergio Maffra and Frederico Abraham. It 
   is an utility wrapper in C++ for the IupTree with some limitations.</p>

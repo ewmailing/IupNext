@@ -171,22 +171,17 @@ void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, in
   free(str);
 }
 
-int iupListGetPos(Ihandle* ih, const char* name_id)
+int iupListGetPos(Ihandle* ih, int pos)
 {
-  int pos;
-  if (iupStrToInt(name_id, &pos))
-  {
-    int count = iupdrvListGetCount(ih);
+  int count = iupdrvListGetCount(ih);
 
-    pos--; /* IUP items start at 1 */
+  pos--; /* IUP items start at 1 */
 
-    if (pos < 0) return -1;
-    if (pos == count) return -2;
-    if (pos > count) return -1;
+  if (pos < 0) return -1;
+  if (pos == count) return -2;
+  if (pos > count) return -1;
 
-    return pos;
-  }
-  return -1;
+  return pos;
 }
 
 void iupListSetInitialItems(Ihandle* ih)
@@ -240,45 +235,41 @@ char* iupListGetNCAttrib(Ihandle* ih)
     return NULL;
 }
 
-int iupListSetIdValueAttrib(Ihandle* ih, const char* name_id, const char* value)
+int iupListSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
 {
-  int pos;
-  if (iupStrToInt(name_id, &pos))
+  int count = iupdrvListGetCount(ih);
+
+  pos--; /* IUP starts at 1 */
+
+  if (!value)
   {
-    int count = iupdrvListGetCount(ih);
-
-    pos--; /* IUP starts at 1 */
-
-    if (!value)
+    if (pos >= 0 && pos <= count-1)
     {
-      if (pos >= 0 && pos <= count-1)
+      if (pos == 0)
       {
-        if (pos == 0)
+        iupdrvListRemoveAllItems(ih);
+        iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", NULL);
+      }
+      else
+      {
+        int i = pos;
+        while (i < count)
         {
-          iupdrvListRemoveAllItems(ih);
-          iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", NULL);
-        }
-        else
-        {
-          int i = pos;
-          while (i < count)
-          {
-            iupdrvListRemoveItem(ih, pos);
-            i++;
-          }
+          iupdrvListRemoveItem(ih, pos);
+          i++;
         }
       }
     }
-    else
+  }
+  else
+  {
+    if (pos >= 0 && pos <= count-1)
     {
-      if (pos >= 0 && pos <= count-1)
-      {
-        iupdrvListRemoveItem(ih, pos);
-        iupdrvListInsertItem(ih, pos, value);
-      }
-      else if (pos == count)
-        iupdrvListAppendItem(ih, value);
+      iupdrvListRemoveItem(ih, pos);
+      iupdrvListInsertItem(ih, pos, value);
     }
+    else if (pos == count)
+      iupdrvListAppendItem(ih, value);
   }
   return 1;
 }
@@ -292,13 +283,13 @@ static int iListSetAppendItemAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iListSetInsertItemAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int iListSetInsertItemAttrib(Ihandle* ih, int id, const char* value)
 {
   if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (value)
   {
-    int pos = iupListGetPos(ih, name_id);
+    int pos = iupListGetPos(ih, id);
     if (pos >= 0)
       iupdrvListInsertItem(ih, pos, value);
     else if (pos == -2)
@@ -318,9 +309,13 @@ static int iListSetRemoveItemAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    int pos = iupListGetPos(ih, value);
-    if (pos >= 0)
-      iupdrvListRemoveItem(ih, pos);
+    int id;
+    if (iupStrToInt(value, &id))
+    {
+      int pos = iupListGetPos(ih, id);
+      if (pos >= 0)
+        iupdrvListRemoveItem(ih, pos);
+    }
   }
   return 0;
 }

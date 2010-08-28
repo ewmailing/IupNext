@@ -71,6 +71,12 @@ version 3.x.<br>
 	time.</li>
 	<li><span class="hist_new">New:</span> FLAT attribute for <strong>IupToggle</strong> 
 	when IMAGE is defined.</li>
+	<li><span class="hist_new">New:</span> functions <strong>Iup*AttributeId</strong> 
+	to get and set attributes that need an ID. These functions are faster than 
+	the traditional functions because they do not need to parse the attribute 
+	name string and the application does not need to 
+concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong> 
+	functions also became faster than the traditional functions.</li>
 	<li><span class="hist_changed">Changed:</span>
     MARQUEE attribute support in <strong>IupProgressBar</strong><span class="style1"> </span>
 	on GTK and Motif now works just like on Windows.</li>

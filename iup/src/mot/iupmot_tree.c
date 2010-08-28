@@ -620,9 +620,9 @@ static void motTreeFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean 
   }
 }
 
-void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* title, int add)
+void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add)
 {
-  Widget wItemPrev = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItemPrev = iupTreeGetNode(ih, id);
   Widget wItemNew;
   XmString itemTitle;
   motTreeItemData *itemData;
@@ -630,13 +630,10 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
   int kindPrev = 0, num_args = 0;
   Arg args[30];
 
-  if (!wItemPrev)
-  {
-    /* check if the root was really specified */
-    int id = 0;
-    if (!iupStrToInt(name_id, &id) || id != -1)
+  /* the previous node is not necessary only
+     if adding the root in an empty tree. */
+  if (!wItemPrev && ih->data->node_count!=0)
       return;
-  }
 
   if (!title)
     title = "";
@@ -746,11 +743,11 @@ void iupdrvTreeAddNode(Ihandle* ih, const char* name_id, int kind, const char* t
 
 /*****************************************************************************/
 
-static int motTreeSetImageExpandedAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetImageExpandedAttrib(Ihandle* ih, int id, const char* value)
 {
   motTreeItemData *itemData;
   unsigned char itemState;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)
     return 0;
 
@@ -783,10 +780,10 @@ static int motTreeSetImageExpandedAttrib(Ihandle* ih, const char* name_id, const
   return 1;
 }
 
-static int motTreeSetImageAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetImageAttrib(Ihandle* ih, int id, const char* value)
 {
   motTreeItemData *itemData;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return 0;
 
@@ -894,11 +891,11 @@ static int motTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static char* motTreeGetStateAttrib(Ihandle* ih, const char* name_id)
+static char* motTreeGetStateAttrib(Ihandle* ih, int id)
 {
   int hasChildren;
   unsigned char itemState;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return 0;
 
@@ -916,10 +913,10 @@ static char* motTreeGetStateAttrib(Ihandle* ih, const char* name_id)
   return NULL;
 }
 
-static int motTreeSetStateAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetStateAttrib(Ihandle* ih, int id, const char* value)
 {
   motTreeItemData *itemData;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)
     return 0;
 
@@ -937,12 +934,12 @@ static int motTreeSetStateAttrib(Ihandle* ih, const char* name_id, const char* v
   return 0;
 }
 
-static char* motTreeGetColorAttrib(Ihandle* ih, const char* name_id)
+static char* motTreeGetColorAttrib(Ihandle* ih, int id)
 {
   unsigned char r, g, b;
   Pixel color;
   char* str;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);  
+  Widget wItem = iupTreeGetNode(ih, id);  
   if (!wItem)  
     return NULL;
 
@@ -954,10 +951,10 @@ static char* motTreeGetColorAttrib(Ihandle* ih, const char* name_id)
   return str;
 }
 
-static int motTreeSetColorAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetColorAttrib(Ihandle* ih, int id, const char* value)
 {
   Pixel color;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);  
+  Widget wItem = iupTreeGetNode(ih, id);  
   if (!wItem)  
     return 0;
 
@@ -967,11 +964,11 @@ static int motTreeSetColorAttrib(Ihandle* ih, const char* name_id, const char* v
   return 0; 
 }
 
-static char* motTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
+static char* motTreeGetDepthAttrib(Ihandle* ih, int id)
 {
   int depth = -1;
   char* str;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);  
+  Widget wItem = iupTreeGetNode(ih, id);  
   if (!wItem)  
     return NULL;
 
@@ -986,13 +983,13 @@ static char* motTreeGetDepthAttrib(Ihandle* ih, const char* name_id)
   return str;
 }
 
-static int motTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetMoveNodeAttrib(Ihandle* ih, int id, const char* value)
 {
   Widget wItemDst, wParent, wItemSrc;
 
   if (!ih->handle)  /* do not do the action before map */
     return 0;
-  wItemSrc = iupTreeGetNodeFromString(ih, name_id);
+  wItemSrc = iupTreeGetNode(ih, id);
   if (!wItemSrc)
     return 0;
   wItemDst = iupTreeGetNodeFromString(ih, value);
@@ -1014,13 +1011,13 @@ static int motTreeSetMoveNodeAttrib(Ihandle* ih, const char* name_id, const char
   return 0;
 }
 
-static int motTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetCopyNodeAttrib(Ihandle* ih, int id, const char* value)
 {
   Widget wItemDst, wParent, wItemSrc;
 
   if (!ih->handle)  /* do not do the action before map */
     return 0;
-  wItemSrc = iupTreeGetNodeFromString(ih, name_id);
+  wItemSrc = iupTreeGetNode(ih, id);
   if (!wItemSrc)
     return 0;
   wItemDst = iupTreeGetNodeFromString(ih, value);
@@ -1042,11 +1039,11 @@ static int motTreeSetCopyNodeAttrib(Ihandle* ih, const char* name_id, const char
   return 0;
 }
 
-static char* motTreeGetParentAttrib(Ihandle* ih, const char* name_id)
+static char* motTreeGetParentAttrib(Ihandle* ih, int id)
 {
   Widget wItemParent;
   char* str;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return NULL;
 
@@ -1060,11 +1057,11 @@ static char* motTreeGetParentAttrib(Ihandle* ih, const char* name_id)
   return str;
 }
 
-static char* motTreeGetChildCountAttrib(Ihandle* ih, const char* name_id)
+static char* motTreeGetChildCountAttrib(Ihandle* ih, int id)
 {
   char* str;
   WidgetList wList = NULL;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return NULL;
 
@@ -1074,10 +1071,10 @@ static char* motTreeGetChildCountAttrib(Ihandle* ih, const char* name_id)
   return str;
 }
 
-static char* motTreeGetKindAttrib(Ihandle* ih, const char* name_id)
+static char* motTreeGetKindAttrib(Ihandle* ih, int id)
 {
   motTreeItemData *itemData;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return NULL;
 
@@ -1273,9 +1270,9 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
   return 0;
 } 
 
-static int motTreeSetMarkStartAttrib(Ihandle* ih, const char* name_id)
+static int motTreeSetMarkStartAttrib(Ihandle* ih, const char* value)
 {
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNodeFromString(ih, value);
   if (!wItem)  
     return 0;
 
@@ -1284,9 +1281,9 @@ static int motTreeSetMarkStartAttrib(Ihandle* ih, const char* name_id)
   return 1;
 }
 
-static char* motTreeGetMarkedAttrib(Ihandle* ih, const char* name_id)
+static char* motTreeGetMarkedAttrib(Ihandle* ih, int id)
 {
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return NULL;
 
@@ -1296,9 +1293,9 @@ static char* motTreeGetMarkedAttrib(Ihandle* ih, const char* name_id)
     return "NO";
 }
 
-static int motTreeSetMarkedAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetMarkedAttrib(Ihandle* ih, int id, const char* value)
 {
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return 0;
 
@@ -1320,17 +1317,17 @@ static char* motTreeGetTitle(Widget wItem)
   return title;
 }
 
-static char* motTreeGetTitleAttrib(Ihandle* ih, const char* name_id)
+static char* motTreeGetTitleAttrib(Ihandle* ih, int id)
 {
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return NULL;
   return motTreeGetTitle(wItem);
 }
 
-static int motTreeSetTitleAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
 {
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return 0;
 
@@ -1342,17 +1339,17 @@ static int motTreeSetTitleAttrib(Ihandle* ih, const char* name_id, const char* v
   return 0;
 }
 
-static int motTreeSetTitleFontAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetTitleFontAttrib(Ihandle* ih, int id, const char* value)
 {
   XmFontList fontlist = NULL;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return 0;
 
   if (value)
   {
     char attr[20];
-    sprintf(attr, "TITLEFOUNDRY%s", name_id);
+    sprintf(attr, "TITLEFOUNDRY%d", id);
     fontlist = iupmotGetFontList(iupAttribGet(ih, attr), value);
   }
   XtVaSetValues(wItem, XmNrenderTable, fontlist, NULL);
@@ -1360,10 +1357,10 @@ static int motTreeSetTitleFontAttrib(Ihandle* ih, const char* name_id, const cha
   return 0;
 }
 
-static char* motTreeGetTitleFontAttrib(Ihandle* ih, const char* name_id)
+static char* motTreeGetTitleFontAttrib(Ihandle* ih, int id)
 {
   XmFontList fontlist;
-  Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+  Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return NULL;
 
@@ -1404,7 +1401,7 @@ static void motTreeRemoveAllNodes(Ihandle* ih, int call_cb)
     iupTreeDelFromCache(ih, 0, old_count);
 }
 
-static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char* value)
+static int motTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
 {
   if (!ih->handle)  /* do not do the action before map */
     return 0;
@@ -1415,7 +1412,7 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
   }
   if(iupStrEqualNoCase(value, "SELECTED"))  /* selected here means the reference node */
   {
-    Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+    Widget wItem = iupTreeGetNode(ih, id);
     if(!wItem)
       return 0;
 
@@ -1426,7 +1423,7 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, const char* name_id, const char*
   {
     int numChild, i;
     WidgetList wItemList = NULL;
-    Widget wItem = iupTreeGetNodeFromString(ih, name_id);
+    Widget wItem = iupTreeGetNode(ih, id);
 
     if(!wItem)
       return 0;
@@ -2612,7 +2609,7 @@ static int motTreeMapMethod(Ihandle* ih)
   }
 
   if (iupAttribGetInt(ih, "ADDROOT"))
-    iupdrvTreeAddNode(ih, "-1", ITREE_BRANCH, "", 0);
+    iupdrvTreeAddNode(ih, -1, ITREE_BRANCH, "", 0);
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)motTreeConvertXYToPos);
 

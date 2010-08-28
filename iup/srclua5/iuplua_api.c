@@ -116,6 +116,29 @@ static int GetAttribute (lua_State *L)
   return 1;
 }
 
+static int GetAttributeId(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  const char *name = luaL_checkstring(L,2);
+  int id = luaL_checkinteger(L,3);
+  const char *value = IupGetAttributeId(ih, name, id);
+  if (!value || iupATTRIB_ISINTERNAL(name))
+    lua_pushnil(L);
+  else
+  {
+    if (iupAttribIsPointer(ih, name))
+    {
+      if (iupObjectCheck((Ihandle*)value))
+        iuplua_pushihandle(L, (Ihandle*)value);
+      else
+        lua_pushlightuserdata(L, (void*)value);
+    }
+    else
+      lua_pushstring(L,value);
+  }
+  return 1;
+}
+
 static int GetAttributes(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -778,6 +801,31 @@ static int StoreAttribute(lua_State *L)
   return 0;
 }
 
+static int StoreAttributeId(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  const char *a = luaL_checkstring(L,2);
+  int id = luaL_checkinteger(L,3);
+
+  if (lua_isnil(L,4)) 
+    IupSetAttributeId(ih,a,id,NULL);
+  else 
+  {
+    const char *v;
+    if(lua_isuserdata(L,4)) 
+    {
+      v = lua_touserdata(L,4);
+      IupSetAttributeId(ih,a,id,v);
+    }
+    else 
+    {
+      v = luaL_checkstring(L,4);
+      IupStoreAttributeId(ih,a,id,v);
+    }
+  }
+  return 0;
+}
+
 static int StoreGlobal(lua_State *L)
 {
   const char *a = luaL_checkstring(L,1);
@@ -894,6 +942,9 @@ void iupluaapi_open(lua_State * L)
     {"TextConvertLinColToPos", TextConvertLinColToPos},
     {"TextConvertPosToLinCol", TextConvertPosToLinCol},
     {"ConvertXYToPos", ConvertXYToPos},
+    {"StoreAttributeId", StoreAttributeId},
+    {"GetAttributeId", GetAttributeId},
+    {"SetAttributeId", StoreAttributeId},
     {NULL, NULL},
   };
 

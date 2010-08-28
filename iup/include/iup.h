@@ -96,6 +96,13 @@ void      IupResetAttribute(Ihandle *ih, const char* name);
 int       IupGetAllAttributes(Ihandle* ih, char** names, int n);
 Ihandle*  IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...);
 
+void  IupSetAttributeId(Ihandle *ih, const char* name, int id, const char *value);
+void  IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char *value);
+char* IupGetAttributeId(Ihandle *ih, const char* name, int id);
+float IupGetFloatId(Ihandle *ih, const char* name, int id);
+int   IupGetIntId(Ihandle *ih, const char* name, int id);
+void  IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* format, ...);
+
 void      IupSetGlobal     (const char* name, const char* value);
 void      IupStoreGlobal   (const char* name, const char* value);
 char*     IupGetGlobal     (const char* name);
@@ -201,6 +208,7 @@ int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);
 void* IupTreeGetUserId(Ihandle* ih, int id);
 int   IupTreeGetId(Ihandle* ih, void *userid);
 
+/* Old IupTree utilities, use Iup*AttributeId functions */
 void  IupTreeSetAttribute  (Ihandle* ih, const char* name, int id, const char* value);
 void  IupTreeStoreAttribute(Ihandle* ih, const char* name, int id, const char* value);
 char* IupTreeGetAttribute  (Ihandle* ih, const char* name, int id);

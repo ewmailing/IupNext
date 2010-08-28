@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 
@@ -27,12 +27,14 @@
 <h3>
 Parameters/Return</h3>
 
-<pre>char *IupGetAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>); [in C]<br>iup.GetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string) -&gt; <strong>value</strong>: string [in Lua]</pre>
+<pre>char *IupGetAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>); [in C]<br>iup.GetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string) -&gt; <strong>value</strong>: string [in Lua]
+char *IupGetAttributeId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>); [in C]<br>iup.GetAttributeId(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>id</strong>: number) -&gt; <strong>value</strong>: string [in Lua]</pre>
 
 <p><b>ih</b>: Identifier of the interface element. If
   NULL will retrieve from the global environment.<br>
 
-  <strong>name</strong>: name of the attribute.</p>
+  <strong>name</strong>: name of the attribute.<br>
+<strong>id</strong>: used when the attribute has an additional id.</p>
 
 <p><span class="style1">Returns:</span> the attribute value or NULL (nil in Lua) 
 if 

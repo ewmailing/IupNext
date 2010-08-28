@@ -186,9 +186,9 @@ static int gtkListSetStandardFontAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static char* gtkListGetIdValueAttrib(Ihandle* ih, const char* name_id)
+static char* gtkListGetIdValueAttrib(Ihandle* ih, int id)
 {
-  int pos = iupListGetPos(ih, name_id);
+  int pos = iupListGetPos(ih, id);
   if (pos >= 0)
   {
     GtkTreeIter iter;

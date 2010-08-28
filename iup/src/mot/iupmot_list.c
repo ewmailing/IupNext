@@ -192,9 +192,9 @@ void iupdrvListRemoveAllItems(Ihandle* ih)
 /*********************************************************************************/
 
 
-static char* motListGetIdValueAttrib(Ihandle* ih, const char* name_id)
+static char* motListGetIdValueAttrib(Ihandle* ih, int id)
 {
-  int pos = iupListGetPos(ih, name_id);
+  int pos = iupListGetPos(ih, id);
   if (pos >= 0)
   {
     XmString* items;

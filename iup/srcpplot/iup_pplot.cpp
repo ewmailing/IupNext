@@ -2847,7 +2847,6 @@ static Iclass* iupPPlotGetClass(void)
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
-  ic->has_attrib_id = 1;  /* has attributes with IDs that must be parsed */
 
   /* Class functions */
   ic->Create  = iPPlotCreateMethod;
