@@ -4,7 +4,9 @@
  *               IUP TUIO multi-touch sample (MODELVIEW = Translate, Scale and Rotate)
  *               The texture is loaded using Drag/Drop operation and IUP IM function
  *      Remark : IUP must be linked to the IM library
- */
+ *  TODO: both TUIO+OpenGL examples need some work so they can be used in real applications.
+ *       Depending on the interaction device the movements, rotations and scales can be very noisy.
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
