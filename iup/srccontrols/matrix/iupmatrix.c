@@ -981,7 +981,7 @@ char* IupMatGetAttribute(Ihandle* ih, const char* name, int lin, int col)
   if (!value)
   {
     char attr[100];
-    sprintf(attr, "%s%d%d", name, lin, col);
+    sprintf(attr, "%s%d:%d", name, lin, col);
     value = iupAttribGet(ih, attr);
   }
 
