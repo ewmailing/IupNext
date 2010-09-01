@@ -38,6 +38,18 @@ InativeHandle* iupDialogGetNativeParent(Ihandle* ih)
     return (InativeHandle*)iupAttribGet(ih, "NATIVEPARENT");
 }
 
+int iupDialogSetClientSizeAttrib(Ihandle* ih, const char* value)
+{
+  int width = 0, height = 0;
+  int border = 0, caption = 0, menu = 0;
+  iupStrToIntInt(value, &width, &height, 'x');
+  iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+  if (width) width = width + 2*border;
+  if (height) height = height + 2*border + caption + menu;
+  IupSetfAttribute(ih, "RASTERSIZE", "%dx%d", width, height);
+  return 0;
+}
+
 static void iupDialogAdjustPos(Ihandle *ih, int *x, int *y)
 {
   int cursor_x = 0, cursor_y = 0;

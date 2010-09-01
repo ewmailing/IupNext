@@ -58,6 +58,10 @@ void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char 
  * \ingroup draw */
 void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
 
+/** Draws a rectangle inverting the color in the canvas.
+ * \ingroup draw */
+void iupDrawRectangleInvert(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
+
 /** Draws a filled/hollow arc.
  * \ingroup draw */
 void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style);

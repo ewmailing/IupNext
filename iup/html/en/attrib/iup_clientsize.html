@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<h2>CLIENTSIZE<span class="style1"> (read-only) (non inheritable) (since 3.0)</span></h2>
+<h2>CLIENTSIZE<span class="style1"> (read-only*) (non inheritable) (since 3.0)</span></h2>
 <p>Returns the container 
   <b>Current</b> size, in pixels, 
   excluding the decorations, i.e. the size of the <strong>Client</strong> area, 
@@ -28,6 +28,9 @@ mapped.</p>
   where <i>width</i> and <i>height</i> are integer values corresponding to the horizontal and vertical size, respectively, in pixels.</p>
 <h3>Affects</h3>
 <p>All elements that are containers, except menus.</p>
+<h3>Notes*</h3>
+<p>For <strong>IupDialog</strong> CLIENTSIZE is NOT read-only, and it will 
+define RASTERSIZE by adding the decorations to the Client size. (Since 3.3)</p>
 <h3>See Also</h3>
 <p><a href="iup_size.html">SIZE</a>, <a href="iup_rastersize.html">RASTERSIZE</a>,
 <a href="iup_clientoffset.html">CLIENTOFFSET</a></p>

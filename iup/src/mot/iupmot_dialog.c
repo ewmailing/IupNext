@@ -52,11 +52,6 @@ int iupdrvDialogIsVisible(Ihandle* ih)
   return iupdrvIsVisible(ih) || ih->data->show_state == IUP_MINIMIZE;
 }
 
-  //int border, caption, menu;
-  //iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
-  //ih->currentwidth = width + 2*border;
-  //ih->currentheight = height + 2*border + caption;  /* menu is inside the dialog_manager */
-
 void iupdrvDialogGetSize(Ihandle* ih, InativeHandle* handle, int *w, int *h)
 {
   Dimension width, height;
@@ -1098,7 +1093,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "Y", motDialogGetYAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", motDialogGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", motDialogGetClientSizeAttrib, iupDialogSetClientSizeAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);  /* dialog is the only not read-only */
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", motDialogGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Special */

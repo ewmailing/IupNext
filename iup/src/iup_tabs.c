@@ -177,45 +177,55 @@ static void iTabsGetDecorOffset(Ihandle* ih, int *dx, int *dy)
 {
   if (ih->data->type == ITABS_LEFT || ih->data->type == ITABS_RIGHT)
   {
-    if (ih->data->orientation == ITABS_HORIZONTAL)
+    if (ih->data->type == ITABS_LEFT)
     {
-      int max_width = iTabsGetMaxWidth(ih);
-      *dx = 4 + (3 + max_width + 3) + 2;
-      *dy = 4;
-    }
-    else
-    {
-      int max_height = iTabsGetMaxHeight(ih);
-      *dx = 4 + (3 + max_height + 3) + 2;
-      *dy = 4;
-
-      if (ih->handle && ih->data->is_multiline)
+      if (ih->data->orientation == ITABS_HORIZONTAL)
       {
-        int num_lin = iupdrvTabsGetLineCountAttrib(ih);
-        *dx += (num_lin-1)*(3 + max_height + 3 + 1);
+        int max_width = iTabsGetMaxWidth(ih);
+        *dx = 4 + (3 + max_width + 3) + 2;
+      }
+      else
+      {
+        int max_height = iTabsGetMaxHeight(ih);
+        *dx = 4 + (3 + max_height + 3) + 2;
+
+        if (ih->handle && ih->data->is_multiline)
+        {
+          int num_lin = iupdrvTabsGetLineCountAttrib(ih);
+          *dx += (num_lin-1)*(3 + max_height + 3 + 1);
+        }
       }
     }
+    else
+      *dx = 4;
+
+    *dy = 4;
   }
   else /* "BOTTOM" or "TOP" */
   {
-    if (ih->data->orientation == ITABS_HORIZONTAL)
+    if (ih->data->type == ITABS_TOP)
     {
-      int max_height = iTabsGetMaxHeight(ih);
-      *dx = 4;
-      *dy = 4 + (3 + max_height + 3) + 2;
-
-      if (ih->handle && ih->data->is_multiline)
+      if (ih->data->orientation == ITABS_HORIZONTAL)
       {
-        int num_lin = iupdrvTabsGetLineCountAttrib(ih);
-        *dy += (num_lin-1)*(3 + max_height + 3 + 1);
+        int max_height = iTabsGetMaxHeight(ih);
+        *dy = 4 + (3 + max_height + 3) + 2;
+
+        if (ih->handle && ih->data->is_multiline)
+        {
+          int num_lin = iupdrvTabsGetLineCountAttrib(ih);
+          *dy += (num_lin-1)*(3 + max_height + 3 + 1);
+        }
+      }
+      else
+      {
+        int max_width = iTabsGetMaxWidth(ih);
+        *dy = 4 + (3 + max_width + 3) + 2;
       }
     }
     else
-    {
-      int max_width = iTabsGetMaxWidth(ih);
-      *dx = 4;
-      *dy = 4 + (3 + max_width + 3) + 2;
-    }
+      *dy = 4;
+
+    *dx = 4;
   }
 
   *dx += ih->data->horiz_padding;

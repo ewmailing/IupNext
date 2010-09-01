@@ -437,15 +437,27 @@ void iupDrawParentBackground(IdrawCanvas* dc)
   iupDrawRectangle(dc, 0, 0, dc->w-1, dc->h-1, r, g, b, IUP_DRAW_FILL);
 }
 
+void iupDrawRectangleInvert(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+{
+  BitBlt(dc->hBitmapDC, x1, y1, x2-x1+1, y2-y1+1, dc->hBitmapDC, x1, y1, DSTINVERT);
+}
+
 void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
 {
-  RECT rect;
-  rect.left = x1; rect.top = y1; rect.right = x2+1; rect.bottom = y2+1;
   SetDCBrushColor(dc->hBitmapDC, RGB(r,g,b));
+
   if (style==IUP_DRAW_FILL)
+  {
+    RECT rect;
+    rect.left = x1; rect.top = y1; rect.right = x2+1; rect.bottom = y2+1;
     FillRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+  }
   else if (style==IUP_DRAW_STROKE)
+  {
+    RECT rect;
+    rect.left = x1; rect.top = y1; rect.right = x2+1; rect.bottom = y2+1;
     FrameRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+  }
   else
   {
     POINT line_poly[5];
@@ -472,12 +484,14 @@ void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char 
   POINT line_poly[2];
   HPEN hPen = CreatePen(style==IUP_DRAW_STROKE_DASH? PS_DASH: PS_SOLID, 1, RGB(r, g, b));
   HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
+
   line_poly[0].x = x1;
   line_poly[0].y = y1;
   line_poly[1].x = x2;
   line_poly[1].y = y2;
   Polyline(dc->hBitmapDC, line_poly, 2);
   SetPixelV(dc->hBitmapDC, x2, y2, RGB(r, g, b));
+
   SelectObject(dc->hBitmapDC, hPenOld);
   DeleteObject(hPen);
 }
@@ -563,7 +577,9 @@ void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsig
   HFONT hOldFont, hFont = (HFONT)iupwinGetHFont(font);
   SetTextColor(dc->hBitmapDC, RGB(r, g, b));
   hOldFont = SelectObject(dc->hBitmapDC, hFont);
+
   TextOut(dc->hBitmapDC, x, y, text, len);
+
   SelectObject(dc->hBitmapDC, hOldFont);
 }
 
