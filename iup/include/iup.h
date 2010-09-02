@@ -189,6 +189,7 @@ Ihandle*  IupTabs       (Ihandle* child, ...);
 Ihandle*  IupTabsv      (Ihandle* *children);
 Ihandle*  IupTree       (void);
 
+/* Deprecated controls use SPIN attribute of IupText */
 Ihandle*  IupSpin       (void);
 Ihandle*  IupSpinbox    (Ihandle* child);
 
@@ -208,7 +209,7 @@ int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);
 void* IupTreeGetUserId(Ihandle* ih, int id);
 int   IupTreeGetId(Ihandle* ih, void *userid);
 
-/* Old IupTree utilities, use Iup*AttributeId functions */
+/* Deprecated IupTree utilities, use Iup*AttributeId functions */
 void  IupTreeSetAttribute  (Ihandle* ih, const char* name, int id, const char* value);
 void  IupTreeStoreAttribute(Ihandle* ih, const char* name, int id, const char* value);
 char* IupTreeGetAttribute  (Ihandle* ih, const char* name, int id);

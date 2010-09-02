@@ -24,7 +24,7 @@
 
 typedef struct _iLayoutDialog {
   int destroy;
-  Ihandle *dialog, *tree, *timer;
+  Ihandle *dialog, *tree, *status, *timer;
 } iLayoutDialog;
 
 static int iLayoutDialogShow_CB(Ihandle* dlg, int state)
@@ -88,7 +88,7 @@ static char* iLayoutGetTitle(Ihandle* ih)
 
 static void iLayoutTreeSetNodeInfo(Ihandle* tree, int id, Ihandle* ih)
 {
-  IupTreeSetAttribute(tree, "TITLE", id, iLayoutGetTitle(ih));
+  IupSetAttributeId(tree, "TITLE", id, iLayoutGetTitle(ih));
   iupAttribSetInt(ih, "_IUP_LAYOUTTREE_ID", id);
   IupTreeSetUserId(tree, id, ih);
 }
@@ -104,12 +104,12 @@ static void iLayoutTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent
     {
       if (child == parent->firstchild)
       {
-        IupTreeSetAttribute(tree, "ADDBRANCH", last_child_id, "");
+        IupSetAttributeId(tree, "ADDBRANCH", last_child_id, "");
         last_child_id++;
       }
       else
       {
-        IupTreeSetAttribute(tree, "INSERTBRANCH", last_child_id, "");
+        IupSetAttributeId(tree, "INSERTBRANCH", last_child_id, "");
         last_child_id = IupGetInt(tree, "LASTADDNODE");
       }
 
@@ -119,12 +119,12 @@ static void iLayoutTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent
     {
       if (child == parent->firstchild)
       {
-        IupTreeSetAttribute(tree, "ADDLEAF", last_child_id, "");
+        IupSetAttributeId(tree, "ADDLEAF", last_child_id, "");
         last_child_id++;
       }
       else
       {
-        IupTreeSetAttribute(tree, "INSERTLEAF", last_child_id, "");
+        IupSetAttributeId(tree, "INSERTLEAF", last_child_id, "");
         last_child_id = IupGetInt(tree, "LASTADDNODE");
       }
     }
@@ -447,7 +447,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     {
       /* returns the image of the active tab */
       int pos = IupGetInt(ih, "VALUEPOS");
-      image = IupTreeGetAttribute(ih, "TABIMAGE", pos);
+      image = IupSetAttributeId(ih, "TABIMAGE", pos);
     }
     if (!image) 
       image = iupAttribGetLocal(ih, "IMAGE");
@@ -481,7 +481,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
       {
         /* returns the title of the active tab */
         int pos = IupGetInt(ih, "VALUEPOS");
-        title = IupTreeGetAttribute(ih, "TABTITLE", pos);
+        title = IupSetAttributeId(ih, "TABTITLE", pos);
       }
     }
     if (!title) 
@@ -730,6 +730,11 @@ static Ihandle* iLayoutFindDialogElement(iLayoutDialog* layoutdlg, int x, int y)
   return NULL;
 }
 
+static void iLayoutUpdateStatus(iLayoutDialog* layoutdlg, Ihandle* ih)
+{
+  IupSetfAttribute(layoutdlg->status, "TITLE", "[SZ] User:%4d,%4d | Natural:%4d,%4d | Current:%4d,%4d", ih->userwidth, ih->userheight, ih->naturalwidth, ih->naturalheight, ih->currentwidth, ih->currentheight);
+}
+
 static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, int y, char* status)
 {
   (void)status;
@@ -741,7 +746,10 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
     if (elem && elem != layoutdlg->dialog)
     {
       int id = IupTreeGetId(layoutdlg->tree, elem);
-      IupTreeSetAttribute(layoutdlg->tree, "MARKED", id, "Yes");
+      IupSetAttributeId(layoutdlg->tree, "COLOR", IupGetInt(layoutdlg->tree, "VALUE"), "0 0 0");
+      IupSetfAttribute(layoutdlg->tree, "VALUE", "%d", id);
+      IupSetAttributeId(layoutdlg->tree, "COLOR", id, "255 0 0");
+      iLayoutUpdateStatus(layoutdlg, elem);
       iupAttribSetStr(dlg, "_IUPLAYOUT_MARK", (char*)elem);
       IupUpdate(canvas);
     }
@@ -760,9 +768,14 @@ static int iLayoutTreeSelection_CB(Ihandle* tree, int id, int status)
   {
     Ihandle* dlg = IupGetDialog(tree);
     Ihandle* elem = (Ihandle*)IupTreeGetUserId(tree, id);
+    iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+    IupSetAttributeId(tree, "COLOR", id, "255 0 0");
+    iLayoutUpdateStatus(layoutdlg, elem);
     iupAttribSetStr(dlg, "_IUPLAYOUT_MARK", (char*)elem);
     IupUpdate(IupGetBrother(tree));
   }
+  else
+    IupSetAttributeId(tree, "COLOR", id, "0 0 0");
   return IUP_DEFAULT;
 }
 
@@ -801,7 +814,7 @@ static int iLayoutDialogKAny_CB(Ihandle* dlg, int key)
 
 Ihandle* IupLayoutDialog(Ihandle* dialog)
 {
-  Ihandle *tree, *canvas, *dlg, *menu;
+  Ihandle *tree, *canvas, *dlg, *menu, *status, *split;
   iLayoutDialog* layoutdlg;
 
   layoutdlg = calloc(1, sizeof(iLayoutDialog));
@@ -828,6 +841,15 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
   IupSetCallback(tree, "SELECTION_CB", (Icallback)iLayoutTreeSelection_CB);
 //  RIGHTCLICK_CB
 
+  status = IupLabel(NULL);
+  IupSetAttribute(status, "EXPAND", "HORIZONTAL");
+  IupSetAttribute(status, "FONT", "Courier, 11");
+  IupSetAttribute(status, "SIZE", "x12");
+  layoutdlg->status = status;
+
+  split = IupSplit(tree, canvas);
+  IupSetAttribute(split, "VALUE", "300");
+
   menu = IupMenu(
     IupSubmenu("&Dialog", IupMenu(
       IupSetCallbacks(IupItem("New", NULL), "ACTION", iLayoutMenuNew_CB, NULL),
@@ -849,7 +871,7 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
       NULL)),
     NULL);
 
-  dlg = IupDialog(IupSetAttributes(IupSplit(tree, canvas), "VALUE=300"));
+  dlg = IupDialog(IupVbox(split, status, NULL));
   IupSetAttribute(dlg,"TITLE", "Dialog Layout");
   IupSetAttribute(dlg,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));

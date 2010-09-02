@@ -8,7 +8,7 @@
 #ifndef __IUPDEF_H 
 #define __IUPDEF_H
 
-/* OLD definitions */
+/* Deprecated definitions */
 /* Avoid using these definitions. Use the strings instead. */
 /* Define __IUPDEF_H to avoid the inclusion of this header */
 

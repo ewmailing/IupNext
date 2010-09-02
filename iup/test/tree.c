@@ -426,86 +426,14 @@ static int next(Ihandle *ih)
 {
   Ihandle* tree = IupGetHandle("tree");
   IupSetAttribute(tree, "VALUE",  "NEXT");
-  //IupSetAttribute(tree, "TOPITEM",  "8");
   return IUP_DEFAULT;
 }
 
 static int prev(Ihandle *ih)
 {
   Ihandle* tree = IupGetHandle("tree");
-//  IupSetAttribute(tree, "VALUE",  "PREVIOUS");
-  IupSetAttribute(tree, "STATE2", "COLLAPSED");
+  IupSetAttribute(tree, "VALUE",  "PREVIOUS");
   return IUP_DEFAULT;
-}
-
-/* Initializes IupTree and registers callbacks */
-static void init_tree(void)
-{
-  Ihandle* tree = IupTree(); 
-
-  IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback) executeleaf_cb);
-  IupSetCallback(tree, "RENAME_CB",      (Icallback) rename_cb);
-  IupSetCallback(tree, "BRANCHCLOSE_CB", (Icallback) branchclose_cb);
-  IupSetCallback(tree, "BRANCHOPEN_CB",  (Icallback) branchopen_cb);
-  IupSetCallback(tree, "DRAGDROP_CB",    (Icallback) dragdrop_cb);
-  IupSetCallback(tree, "RIGHTCLICK_CB",  (Icallback) rightclick_cb);
-  IupSetCallback(tree, "K_ANY",          (Icallback) k_any_cb);
-  IupSetCallback(tree, "SHOWRENAME_CB", (Icallback) showrename_cb);
-  IupSetCallback(tree, "SELECTION_CB", (Icallback) selection_cb);
-  IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
-  IupSetCallback(tree, "MULTIUNSELECTION_CB", (Icallback) multiunselection_cb);
-  IupSetCallback(tree, "GETFOCUS_CB", (Icallback) getfocus_cb);
-  IupSetCallback(tree, "KILLFOCUS_CB", (Icallback) killfocus_cb);
-  //IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
-  //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
-  IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
-  //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
-  IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
-
-  IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
-
-//  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_14");
-//  IupSetAttribute(tree, "FGCOLOR", "255 0 0");
-//  IupSetAttribute(tree, "SPACING",   "10");
-//  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
-
-  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
-  IupSetAttribute(tree, "SHOWRENAME",   "YES");
-//  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-
-  IupSetAttribute(tree, "ADDEXPANDED",  "YES");
-//  IupSetAttribute(tree, "HIDELINES",    "YES");
-//  IupSetAttribute(tree, "HIDEBUTTONS",    "YES");
-//  IupSetAttribute(tree, "INDENTATION",   "40");
-//  IupSetAttribute(tree, "CANFOCUS", "NO");
-
-  IupSetHandle("tree", tree);
-}
-
-/* Initializes the dlg */
-static void init_dlg(void)
-{
-  Ihandle* butactv, *butnext, *butprev, *butmenu;
-  Ihandle* tree = IupGetHandle("tree");
-  Ihandle* box = IupHbox(tree, IupVbox(butactv = IupButton("Active", NULL), 
-                                       butnext = IupButton("Next", NULL), 
-                                       butprev = IupButton("Prev", NULL), 
-                                       butmenu = IupButton("Menu", NULL), 
-                                       NULL), NULL);
-  Ihandle* dlg = IupDialog(box) ;
-  IupSetAttribute(dlg,  "TITLE",   "IupTree");
-  IupSetAttribute(box,  "MARGIN",  "10x10");
-  IupSetAttribute(box,  "GAP",  "10");
-//  IupSetAttribute(box, "BGCOLOR", "92 92 255");
-//  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
-//  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
-//  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
-  IupSetCallback(butactv, "ACTION", active);
-  IupSetCallback(butnext, "ACTION", next);
-  IupSetCallback(butprev, "ACTION", prev);
-  IupSetCallback(butmenu, "ACTION", (Icallback)rightclick_cb);
-
-  IupSetHandle("dlg", dlg);
 }
 
 static void init_tree_nodes(void)  
@@ -552,6 +480,76 @@ static void init_tree_nodes(void)
   IupSetAttributeHandle(tree, "IMAGE8", load_image_LogoTecgraf());
   IupSetAttributeHandle(tree, "IMAGE7", load_image_TestImage());
   IupSetAttribute(tree, "IMAGE6", IupGetAttribute(tree, "IMAGE8"));
+}
+
+/* Initializes IupTree and registers callbacks */
+static void init_tree(void)
+{
+  Ihandle* tree = IupTree(); 
+
+  IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback) executeleaf_cb);
+  IupSetCallback(tree, "RENAME_CB",      (Icallback) rename_cb);
+  IupSetCallback(tree, "BRANCHCLOSE_CB", (Icallback) branchclose_cb);
+  IupSetCallback(tree, "BRANCHOPEN_CB",  (Icallback) branchopen_cb);
+  IupSetCallback(tree, "DRAGDROP_CB",    (Icallback) dragdrop_cb);
+  IupSetCallback(tree, "RIGHTCLICK_CB",  (Icallback) rightclick_cb);
+  IupSetCallback(tree, "K_ANY",          (Icallback) k_any_cb);
+  IupSetCallback(tree, "SHOWRENAME_CB", (Icallback) showrename_cb);
+  IupSetCallback(tree, "SELECTION_CB", (Icallback) selection_cb);
+  IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
+  IupSetCallback(tree, "MULTIUNSELECTION_CB", (Icallback) multiunselection_cb);
+  IupSetCallback(tree, "GETFOCUS_CB", (Icallback) getfocus_cb);
+  IupSetCallback(tree, "KILLFOCUS_CB", (Icallback) killfocus_cb);
+  //IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
+  //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+  IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
+  //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
+  IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
+
+  IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
+
+//  IupSetAttribute(tree, "FONT",         "COURIER_NORMAL_14");
+//  IupSetAttribute(tree, "FGCOLOR", "255 0 0");
+//  IupSetAttribute(tree, "SPACING",   "10");
+//  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
+
+//  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
+  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+//  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
+
+  IupSetAttribute(tree, "ADDEXPANDED",  "YES");
+//  IupSetAttribute(tree, "HIDELINES",    "YES");
+//  IupSetAttribute(tree, "HIDEBUTTONS",    "YES");
+//  IupSetAttribute(tree, "INDENTATION",   "40");
+//  IupSetAttribute(tree, "CANFOCUS", "NO");
+
+  IupSetHandle("tree", tree);
+}
+
+/* Initializes the dlg */
+static void init_dlg(void)
+{
+  Ihandle* butactv, *butnext, *butprev, *butmenu;
+  Ihandle* tree = IupGetHandle("tree");
+  Ihandle* box = IupHbox(tree, IupVbox(butactv = IupButton("Active", NULL), 
+                                       butnext = IupButton("Next", NULL), 
+                                       butprev = IupButton("Prev", NULL), 
+                                       butmenu = IupButton("Menu", NULL), 
+                                       NULL), NULL);
+  Ihandle* dlg = IupDialog(box) ;
+  IupSetAttribute(dlg,  "TITLE",   "IupTree");
+  IupSetAttribute(box,  "MARGIN",  "10x10");
+  IupSetAttribute(box,  "GAP",  "10");
+//  IupSetAttribute(box, "BGCOLOR", "92 92 255");
+//  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
+//  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
+//  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
+  IupSetCallback(butactv, "ACTION", active);
+  IupSetCallback(butnext, "ACTION", next);
+  IupSetCallback(butprev, "ACTION", prev);
+  IupSetCallback(butmenu, "ACTION", (Icallback)rightclick_cb);
+
+  IupSetHandle("dlg", dlg);
 }
 
 void TreeTest(void)

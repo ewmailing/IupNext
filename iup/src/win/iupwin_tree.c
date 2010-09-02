@@ -1572,6 +1572,10 @@ static int winTreeSetMarkedAttrib(Ihandle* ih, int id, const char* value)
   }
 
   winTreeSelectNode(ih, hItem, iupStrBoolean(value));
+
+  if (ih->data->mark_mode==ITREE_MARK_SINGLE)
+    winTreeSetFocusNode(ih, hItem);
+
   return 0;
 }
 
