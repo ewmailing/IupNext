@@ -1033,3 +1033,9 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
     SendInput(1, input, sizeof(INPUT));
   }
 }
+
+int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value)
+{
+  SendMessage(ih->handle, WM_SETREDRAW, (WPARAM)iupStrBoolean(value), 0);
+  return 1;
+}

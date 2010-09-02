@@ -85,9 +85,13 @@ ifdef DBG
       endif
     endif
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      USE_GDIPLUS=Yes
+      ifndef USE_GTK
+        USE_GDIPLUS=Yes
+      endif
     else
-  #    USE_XRENDER=Yes
+      ifdef USE_MOTIF
+        USE_XRENDER=Yes
+      endif
     endif
   else
     DEFINES += IUPLUA_NO_CD

@@ -94,6 +94,7 @@ int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 char* iupwinGetClipboardText(Ihandle* ih);
+int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value);
 
 int iupwinGetScreenRes(void);
 /* 1 point = 1/72 inch */

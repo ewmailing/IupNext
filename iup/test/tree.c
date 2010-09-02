@@ -512,6 +512,7 @@ static void init_tree_nodes(void)
 {
   Ihandle* tree = IupGetHandle("tree");
 
+//  IupSetAttribute(tree, "AUTOREDRAW", "No");
 #if 0
   /* create from bottom to top */
   /* the current node is the ROOT */
@@ -542,6 +543,7 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "INSERTLEAF6","2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
 #endif
+//  IupSetAttribute(tree, "AUTOREDRAW", "Yes");
 
   //IupSetAttribute(tree, "VALUE",        "6");
   IupSetAttribute(tree, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
