@@ -1039,3 +1039,8 @@ int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value)
   SendMessage(ih->handle, WM_SETREDRAW, (WPARAM)iupStrBoolean(value), 0);
   return 1;
 }
+
+void iupdrvSleep(int time)
+{
+  Sleep(time);
+}

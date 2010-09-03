@@ -554,7 +554,7 @@ void iupClassRegisterCallback(Iclass* ic, const char* name, const char* format)
 {
   /* Since attributes and callbacks do not conflict 
      we can use the same structure to store the callback format using the default_value. */
-  iupClassRegisterAttribute(ic, name, NULL, NULL, format, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, name, NULL, NULL, format, NULL, IUPAF_NO_INHERIT|IUPAF_CALLBACK);
 }
 
 char* iupClassCallbackGetFormat(Iclass* ic, const char* name)
@@ -570,6 +570,7 @@ int IupGetClassAttributes(const char* classname, char** names, int n)
   Iclass* ic;
   int i = 0;
   char* name;
+  IattribFunc* afunc;
 
   iupASSERT(classname!=NULL);
   if (!classname)
@@ -585,10 +586,52 @@ int IupGetClassAttributes(const char* classname, char** names, int n)
   name = iupTableFirst(ic->attrib_func);
   while (name)
   {
-    names[i] = name;
-    i++;
-    if (i == n)
-      break;
+    afunc = (IattribFunc*)iupTableGetCurr(ic->attrib_func);
+
+    if (!(afunc->flags&IUPAF_CALLBACK))
+    {
+      names[i] = name;
+      i++;
+      if (i == n)
+        break;
+    }
+
+    name = iupTableNext(ic->attrib_func);
+  }
+
+  return i;
+}
+
+int IupGetClassCallbacks(const char* classname, char** names, int n)
+{
+  Iclass* ic;
+  int i = 0;
+  char* name;
+  IattribFunc* afunc;
+
+  iupASSERT(classname!=NULL);
+  if (!classname)
+    return 0;
+
+  ic = iupRegisterFindClass(classname);
+  if (!ic)
+    return -1;
+
+  if (!names || !n)
+    return iupTableCount(ic->attrib_func);
+
+  name = iupTableFirst(ic->attrib_func);
+  while (name)
+  {
+    afunc = (IattribFunc*)iupTableGetCurr(ic->attrib_func);
+
+    if (afunc->flags&IUPAF_CALLBACK)
+    {
+      names[i] = name;
+      i++;
+      if (i == n)
+        break;
+    }
 
     name = iupTableNext(ic->attrib_func);
   }

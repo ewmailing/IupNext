@@ -20,11 +20,12 @@
 #include "iup_assert.h"
 #include "iup_draw.h"
 #include "iup_childtree.h"
+#include "iup_drv.h"
 
 
 typedef struct _iLayoutDialog {
   int destroy;
-  Ihandle *dialog, *tree, *status, *timer;
+  Ihandle *dialog, *tree, *status, *timer, *properties;
 } iLayoutDialog;
 
 static int iLayoutDialogShow_CB(Ihandle* dlg, int state)
@@ -48,6 +49,8 @@ static int iLayoutDialogDestroy_CB(Ihandle* dlg)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   IupDestroy(layoutdlg->timer);
+  if (iupObjectCheck(layoutdlg->properties))
+    IupDestroy(layoutdlg->properties);
   if (layoutdlg->destroy)
     IupDestroy(layoutdlg->dialog);
   free(layoutdlg);
@@ -331,11 +334,13 @@ static void iLayoutDialogLoad(Ihandle* parent_dlg, iLayoutDialog* layoutdlg, int
     {
       int pw = 0, ph = 0;
       int prop = IupGetInt(IupGetParent(layoutdlg->tree), "VALUE");
+      int status = IupGetInt2(IupGetBrother(IupGetParent(layoutdlg->tree)), "RASTERSIZE");
       w = (w*1000)/(1000-prop);
       IupGetIntInt(parent_dlg, "CLIENTSIZE", &pw, &ph);
+      ph -= status;
       if (w > pw || h > ph)
       {
-        IupSetfAttribute(parent_dlg, "CLIENTSIZE", "%dx%d", w+10, h+10);
+        IupSetfAttribute(parent_dlg, "CLIENTSIZE", "%dx%d", w+10, h+status+10);
         IupShow(parent_dlg);
       }
     }
@@ -447,7 +452,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     {
       /* returns the image of the active tab */
       int pos = IupGetInt(ih, "VALUEPOS");
-      image = IupSetAttributeId(ih, "TABIMAGE", pos);
+      image = IupGetAttributeId(ih, "TABIMAGE", pos);
     }
     if (!image) 
       image = iupAttribGetLocal(ih, "IMAGE");
@@ -481,7 +486,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
       {
         /* returns the title of the active tab */
         int pos = IupGetInt(ih, "VALUEPOS");
-        title = IupSetAttributeId(ih, "TABTITLE", pos);
+        title = IupGetAttributeId(ih, "TABTITLE", pos);
       }
     }
     if (!title) 
@@ -661,6 +666,202 @@ static int iLayoutCanvas_CB(Ihandle* canvas)
   return IUP_DEFAULT;
 }
 
+static void iLayoutUpdateProperties(Ihandle* properties, Ihandle* ih)
+{
+  int i, attr_count, cb_count, total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
+  char **attr_names = (char **) malloc(total_count * sizeof(char *));
+  Ihandle* list1 = (Ihandle*)iupAttribGet(properties, "_IUP_PROPLIST1");
+  Ihandle* list2 = (Ihandle*)iupAttribGet(properties, "_IUP_PROPLIST2");
+  Ihandle* list3 = (Ihandle*)iupAttribGet(properties, "_IUP_PROPLIST3");
+
+  attr_count = IupGetClassAttributes(ih->iclass->name, attr_names, total_count);
+  for (i=0; i<attr_count; i++)
+    IupSetAttributeId(list1,"",i+1, attr_names[i]);
+
+  cb_count = total_count-attr_count;
+  IupGetClassCallbacks(ih->iclass->name, attr_names, cb_count);
+  for (i=0; i<cb_count; i++)
+    IupSetAttributeId(list3,"",i+1, attr_names[i]);
+
+  attr_count = IupGetAllAttributes(ih, NULL, 0);
+  if (attr_count > total_count)
+    attr_names = (char **) realloc(attr_names, attr_count * sizeof(char *));
+
+  IupGetAllAttributes(ih, attr_names, attr_count);
+  for (i=0; i<attr_count; i++)
+    IupSetAttributeId(list2,"",i+1, attr_names[i]);
+
+  free(attr_names);
+}
+
+static int iLayoutPropertiesClose_CB (Ihandle* ih)
+{
+  IupHide(IupGetDialog(ih));
+  return IUP_CLOSE;
+}
+
+static int iLayoutPropertiesList_CB(Ihandle *ih, char *text, int item, int state)
+{
+  (void)text;
+  if (state)
+    iupAttribSetStrf(IupGetDialog(ih), "_IUP_LIST_NUMBER", "%d", item-1);
+  return IUP_DEFAULT;
+}
+
+static void iLayoutCreatePropertiesDialog(iLayoutDialog* layoutdlg, Ihandle* parent)
+{
+  Ihandle *list1, *list2, *list3, *close, *dlg, *dlg_box, *button_box,
+          *tabs, *box1, *box11, *box2, *box22, *box3, *text1, *text2;
+
+  close = IupButton("Close", NULL);
+  IupSetAttribute(close,"PADDING" ,"20x5");
+  IupSetCallback(close, "ACTION", (Icallback)iLayoutPropertiesClose_CB);
+
+  button_box = IupHbox(
+    IupFill(), 
+    close,
+    NULL);
+  IupSetAttribute(button_box,"MARGIN","0x0");
+  IupSetAttribute(button_box, "NORMALIZESIZE", "HORIZONTAL");
+
+  list1 = IupList(NULL);
+  IupSetCallback(list1, "ACTION", (Icallback)iLayoutPropertiesList_CB);
+  IupSetAttribute(list1, "VISIBLELINES", "15");
+  IupSetAttribute(list1, "VISIBLECOLUMNS", "11");
+  IupSetAttribute(list1, "SORT", "Yes");
+  IupSetAttribute(list1, "EXPAND", "VERTICAL");
+
+  list2 = IupList(NULL);
+//  IupSetCallback(list2, "ACTION", (Icallback)iLayoutPropertiesList_CB);
+  IupSetAttribute(list2, "VISIBLELINES", "15");
+  IupSetAttribute(list2, "VISIBLECOLUMNS", "11");
+  IupSetAttribute(list2, "SORT", "Yes");
+  IupSetAttribute(list2, "EXPAND", "VERTICAL");
+
+  list3 = IupList(NULL);
+  IupSetAttribute(list3, "VISIBLELINES", "15");
+  IupSetAttribute(list3, "VISIBLECOLUMNS", "16");
+  IupSetAttribute(list3, "SORT", "Yes");
+  IupSetAttribute(list3, "EXPAND", "VERTICAL");
+
+  text1 = IupText(NULL);
+  IupSetAttribute(text1, "MULTILINE", "Yes");
+  IupSetAttribute(text1, "EXPAND", "YES");
+
+  text2 = IupText(NULL);
+  IupSetAttribute(text2, "MULTILINE", "Yes");
+  IupSetAttribute(text2, "EXPAND", "YES");
+
+  box11 = IupVbox(
+            IupLabel("Value:"),
+            text1,
+            IupSetAttributes(IupFill(), "RASTERSIZE=10"), 
+            IupLabel("Default Value:"),
+            IupSetAttributes(IupText(NULL), "READONLY=Yes, EXPAND=HORIZONTAL"),
+            IupSetAttributes(IupFill(), "RASTERSIZE=10"), 
+            IupSetAttributes(IupLabel("Info:"), "SIZE=80x60, ALIGNMENT=ALEFT:ATOP"),
+            NULL);
+  IupSetAttribute(box11,"MARGIN","0x0");
+  IupSetAttribute(box11,"GAP","0");
+
+  box22 = IupVbox(
+            IupLabel("Value:"),
+            text2, 
+            IupSetAttributes(IupFill(), "SIZE=80"), 
+            NULL);
+  IupSetAttribute(box22,"MARGIN","0x0");
+  IupSetAttribute(box22,"GAP","0");
+
+  box1 = IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), list1, NULL), "MARGIN=0x0, GAP=0"), box11, NULL);
+  box2 = IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), list2, NULL), "MARGIN=0x0, GAP=0"), box22, NULL);
+  box3 = IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), list3, NULL), "MARGIN=0x0, GAP=0"), NULL);
+
+  tabs = IupTabs(box1, box2, box3, NULL);
+  IupSetAttribute(tabs, "TABTITLE0", "Registered Attributes");
+  IupSetAttribute(tabs, "TABTITLE1", "Hash Table Only");
+  IupSetAttribute(tabs, "TABTITLE2", "Callbacks");
+
+  dlg_box = IupVbox(
+    tabs,
+    button_box,
+    NULL);
+
+  IupSetAttribute(dlg_box,"MARGIN","10x10");
+  IupSetAttribute(dlg_box,"GAP","10");
+
+  dlg = IupDialog(dlg_box);
+  IupSetAttribute(dlg,"TITLE", "Element Properties");
+  IupSetAttribute(dlg,"MINBOX","NO");
+  IupSetAttribute(dlg,"MAXBOX","NO");
+  IupSetAttributeHandle(dlg,"DEFAULTENTER", close);
+  IupSetAttributeHandle(dlg,"DEFAULTESC", close);
+  IupSetAttributeHandle(dlg,"PARENTDIALOG", parent);
+  IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
+  iupAttribSetStr(dlg, "_IUP_PROPLIST1", (char*)list1);
+  iupAttribSetStr(dlg, "_IUP_PROPLIST2", (char*)list2);
+  iupAttribSetStr(dlg, "_IUP_PROPLIST3", (char*)list3);
+
+  layoutdlg->properties = dlg;
+}
+
+static int iLayoutMenuAttributes_CB(Ihandle* menu)
+{
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
+  Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
+
+  if (!layoutdlg->properties)
+    iLayoutCreatePropertiesDialog(layoutdlg, dlg);
+
+  iLayoutUpdateProperties(layoutdlg->properties, elem);
+
+  IupShow(layoutdlg->properties);
+
+  return IUP_DEFAULT;
+}
+
+static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* ih, Ihandle* dlg)
+{
+  Ihandle* menu;
+
+  menu = IupMenu(
+    IupSetCallbacks(IupItem("Attributes...", NULL), "ACTION", iLayoutMenuAttributes_CB, NULL),
+//    IupSetCallbacks(IupItem("Callbacks...", NULL), "ACTION", iLayoutMenuCallbacks_CB, NULL),
+//    IupSeparator(),
+//    IupSetCallbacks(IupItem("Add Brother...", NULL), "ACTION", iLayoutMenuAddBrother_CB, NULL),
+//    IupSetCallbacks(IupItem("Add Child...", NULL), "ACTION", iLayoutMenuAddChild_CB, NULL),
+//    IupSetCallbacks(IupItem("Remove...", NULL), "ACTION", iLayoutMenuRemove_CB, NULL),
+    NULL);
+
+  iupAttribSetStr(menu, "_IUP_LAYOUTELEMENT", (char*)ih);
+  iupAttribSetStr(menu, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
+  iupAttribSetStr(menu, "_IUP_LAYOUTDLG", (char*)dlg);
+
+  IupPopup(menu, IUP_MOUSEPOS, IUP_MOUSEPOS);
+}
+
+static void iLayoutBlink(Ihandle* ih)
+{
+  if (ih->iclass->nativetype!=IUP_TYPEVOID && IupGetInt(ih, "VISIBLE"))
+  {
+    int i;
+    for (i=0; i<3; i++)
+    {
+      IupSetAttribute(ih, "VISIBLE", "NO");
+      IupFlush();
+      iupdrvSleep(100);
+      IupSetAttribute(ih, "VISIBLE", "Yes");
+      IupFlush();
+      iupdrvSleep(100);
+    }
+  }
+}
+
+static void iLayoutUpdateStatus(iLayoutDialog* layoutdlg, Ihandle* ih)
+{
+  IupSetfAttribute(layoutdlg->status, "TITLE", "[SZ] User:%4d,%4d | Natural:%4d,%4d | Current:%4d,%4d", ih->userwidth, ih->userheight, ih->naturalwidth, ih->naturalheight, ih->currentwidth, ih->currentheight);
+}
+
 static Ihandle* iLayoutFindElement(Ihandle* ih, int native_parent_x, int native_parent_y, int x, int y)
 {
   Ihandle *child, *elem;
@@ -730,11 +931,6 @@ static Ihandle* iLayoutFindDialogElement(iLayoutDialog* layoutdlg, int x, int y)
   return NULL;
 }
 
-static void iLayoutUpdateStatus(iLayoutDialog* layoutdlg, Ihandle* ih)
-{
-  IupSetfAttribute(layoutdlg->status, "TITLE", "[SZ] User:%4d,%4d | Natural:%4d,%4d | Current:%4d,%4d", ih->userwidth, ih->userheight, ih->naturalwidth, ih->naturalheight, ih->currentwidth, ih->currentheight);
-}
-
 static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, int y, char* status)
 {
   (void)status;
@@ -745,13 +941,20 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
     Ihandle* elem = iLayoutFindDialogElement(layoutdlg, x, y);
     if (elem && elem != layoutdlg->dialog)
     {
-      int id = IupTreeGetId(layoutdlg->tree, elem);
-      IupSetAttributeId(layoutdlg->tree, "COLOR", IupGetInt(layoutdlg->tree, "VALUE"), "0 0 0");
-      IupSetfAttribute(layoutdlg->tree, "VALUE", "%d", id);
-      IupSetAttributeId(layoutdlg->tree, "COLOR", id, "255 0 0");
-      iLayoutUpdateStatus(layoutdlg, elem);
-      iupAttribSetStr(dlg, "_IUPLAYOUT_MARK", (char*)elem);
-      IupUpdate(canvas);
+      if (iup_isdouble(status))
+      {
+        iLayoutBlink(elem);
+      }
+      else
+      {
+        int id = IupTreeGetId(layoutdlg->tree, elem);
+        IupSetAttributeId(layoutdlg->tree, "COLOR", IupGetInt(layoutdlg->tree, "VALUE"), "0 0 0");
+        IupSetfAttribute(layoutdlg->tree, "VALUE", "%d", id);
+        IupSetAttributeId(layoutdlg->tree, "COLOR", id, "255 0 0");
+        iLayoutUpdateStatus(layoutdlg, elem);
+        iupAttribSetStr(dlg, "_IUPLAYOUT_MARK", (char*)elem);
+        IupUpdate(canvas);
+      }
     }
     else if (iupAttribGet(dlg, "_IUPLAYOUT_MARK"))
     {
@@ -759,6 +962,30 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
       IupUpdate(canvas);
     }
   }
+  else if (but==IUP_BUTTON3 && pressed)
+  {
+    Ihandle* dlg = IupGetDialog(canvas);
+    iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+    Ihandle* elem = iLayoutFindDialogElement(layoutdlg, x, y);
+    if (elem && elem != layoutdlg->dialog)
+      iLayoutContextMenu(layoutdlg, elem, dlg);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iLayoutTreeExecuteLeaf_CB(Ihandle *tree, int id)
+{
+  Ihandle* elem = (Ihandle*)IupTreeGetUserId(tree, id);
+  iLayoutBlink(elem);
+  return IUP_DEFAULT;
+}
+
+static int iLayoutTreeRightClick_CB(Ihandle *tree, int id)
+{
+  Ihandle* dlg = IupGetDialog(tree);
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+  Ihandle* elem = (Ihandle*)IupTreeGetUserId(tree, id);
+  iLayoutContextMenu(layoutdlg, elem, dlg);
   return IUP_DEFAULT;
 }
 
@@ -839,7 +1066,8 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
   layoutdlg->tree = tree;
   IupSetAttribute(tree, "RASTERSIZE", NULL);
   IupSetCallback(tree, "SELECTION_CB", (Icallback)iLayoutTreeSelection_CB);
-//  RIGHTCLICK_CB
+  IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback)iLayoutTreeExecuteLeaf_CB);
+  IupSetCallback(tree, "RIGHTCLICK_CB", (Icallback)iLayoutTreeRightClick_CB);
 
   status = IupLabel(NULL);
   IupSetAttribute(status, "EXPAND", "HORIZONTAL");

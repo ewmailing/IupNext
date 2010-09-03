@@ -36,10 +36,13 @@ int IupGetAllAttributes(Ihandle* ih, char** names, int n)
   name = iupTableFirst(ih->attrib);
   while (name)
   {
-    names[i] = name;
-    i++;
-    if (i == n)
-      break;
+    if (!iupATTRIB_ISINTERNAL(name))
+    {
+      names[i] = name;
+      i++;
+      if (i == n)
+        break;
+    }
 
     name = iupTableNext(ih->attrib);
   }

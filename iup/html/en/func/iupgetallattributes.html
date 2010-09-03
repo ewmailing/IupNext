@@ -18,8 +18,7 @@
 
 <h2>IupGetAllAttributes <span class="style1">(Since 3.0)</span></h2>
 <p>Returns the names of all attributes of an element that are defined in its 
-intenal hash table only.
-  The internal attributes are also returned (attributes prefixed with &quot;_IUP&quot;).</p>
+internal hash table only. </p>
 <h3>
 Parameters/Return</h3>
 <pre>int IupGetAllAttributes(Ihandle*<strong> ih, </strong>char**<strong> names</strong>, int <strong>max_n</strong>); [in C]
@@ -30,8 +29,8 @@ iup.GetAllAttributes(<strong>ih</strong>: ihandle<strong>, max_n</strong>: numbe
 names</b>: table receiving the names. Only the list of names need to be 
 	allocated. Each name will point to an internal string.<br>
 <b>max_n</b>: maximum number of names the table can receive.</p>
-<p><span class="style2">Returns:</span> the number of names loaded to the 
-  table. If names==NULL or max_n==0 then returns the actual number of names.</p>
+<p><span class="style2">Returns:</span> the actual number of names loaded to the 
+  table. If names==NULL or max_n==0 then returns the maximum number of names.</p>
 <h3>See Also</h3>
 <p><a href="iupgetattribute.html">IupGetAttribute</a>, 
 <a href="iupsetattribute.html">IupSetAttribute</a>, 

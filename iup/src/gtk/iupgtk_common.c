@@ -976,3 +976,8 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
     gdk_display_put_event(gdk_display_get_default(), (GdkEvent*)&evt);
   }
 }
+
+void iupdrvSleep(int time)
+{
+  g_usleep(time*1000);  /* mili to micro */
+}

@@ -95,6 +95,10 @@ void iupdrvSendKey(int key, int press);
  * \ingroup drv */
 void iupdrvSendMouse(int x, int y, int bt, int status);
 
+/** Supends execution for the specified number of miliseconds.
+ * \ingroup drv */
+void iupdrvSleep(int time);
+
 
 /* Called only from IupOpen/IupClose. */
 int iupdrvOpen(int *argc, char ***argv);

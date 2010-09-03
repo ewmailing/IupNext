@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 
 #include <Xm/Xm.h>
 #include <Xm/ScrollBar.h>
@@ -720,4 +721,10 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
 
     XSendEvent(iupmot_display, (Window)PointerWindow, False, (status==1)? ButtonPressMask: ButtonReleaseMask, (XEvent*)&evt);
   }
+}
+
+void iupdrvSleep(int time)
+{
+  clock_t goal = (clock_t)time + clock();
+  while(goal > clock());
 }

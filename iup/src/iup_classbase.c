@@ -120,6 +120,7 @@ int iupBaseSetRasterSizeAttrib(Ihandle* ih, const char* value)
 
 char* iupBaseGetClientOffsetAttrib(Ihandle* ih)
 {
+  (void)ih;
   return "0x0";
 }
 
@@ -472,12 +473,12 @@ void iupBaseRegisterVisualAttrib(Iclass* ic)
 
 void iupBaseRegisterCommonCallbacks(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic, "MAP_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "UNMAP_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "GETFOCUS_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "KILLFOCUS_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ENTERWINDOW_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LEAVEWINDOW_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HELP_CB", NULL, NULL, "", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "K_ANY", NULL, NULL, "i", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterCallback(ic, "MAP_CB", "");
+  iupClassRegisterCallback(ic, "UNMAP_CB", "");
+  iupClassRegisterCallback(ic, "GETFOCUS_CB", "");
+  iupClassRegisterCallback(ic, "KILLFOCUS_CB", "");
+  iupClassRegisterCallback(ic, "ENTERWINDOW_CB", "");
+  iupClassRegisterCallback(ic, "LEAVEWINDOW_CB", "");
+  iupClassRegisterCallback(ic, "HELP_CB", "");
+  iupClassRegisterCallback(ic, "K_ANY", "i");
 }

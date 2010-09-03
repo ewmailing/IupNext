@@ -256,7 +256,8 @@ typedef enum _IattribFlags{
   IUPAF_HAS_ID=16,     /**< can has an ID at the end of the name, automatically set by \ref iupClassRegisterAttributeId */
   IUPAF_READONLY=32,   /**< is read-only, can not be changed */
   IUPAF_WRITEONLY=64,  /**< is write-only, usually an action */
-  IUPAF_HAS_ID2=128    /**< can has two IDs at the end of the name, automatically set by \ref iupClassRegisterAttributeId2 */
+  IUPAF_HAS_ID2=128,   /**< can has two IDs at the end of the name, automatically set by \ref iupClassRegisterAttributeId2 */
+  IUPAF_CALLBACK=256   /**< it is a callback, not an attribute */
 } IattribFlags;
 
 #define IUPAF_SAMEASSYSTEM ((char*)-1)  /**< means that the default value is the same as the system default value, used only in \ref iupClassRegisterAttribute */
