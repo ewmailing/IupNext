@@ -12,6 +12,21 @@
 #include "iup_object.h"
 #include "iup_assert.h"
 
+  
+char* iupGetCallbackName(Ihandle *ih, const char *name)
+{
+  void* value;
+  Icallback func = (Icallback)iupTableGetFunc(ih->attrib, name, &value);
+
+  if (!func && value)
+  {
+    /* if not a IUPTABLE_FUNCPOINTER then it is an old fashion name */
+    func = IupGetFunction((const char*)value);
+    if (func)
+      return value;
+  }
+  return NULL;
+}
 
 Icallback IupGetCallback(Ihandle *ih, const char *name)
 {

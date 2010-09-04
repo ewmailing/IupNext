@@ -454,10 +454,19 @@ static char* iMatrixGetIdValueAttrib(Ihandle* ih, int lin, int col)
   return NULL;
 }
 
+static int iMatrixSetNeedRedraw(Ihandle* ih)
+{
+  ih->data->need_redraw = 1;
+  return 1;
+}
+
 static int iMatrixSetFlagsAttrib(Ihandle* ih, int lin, int col, const char* value, unsigned char attr)
 {
   if (lin > -1 || col > -1)
+  {
     iupMatrixCellSetFlag(ih, lin, col, attr, value!=NULL);
+    ih->data->need_redraw = 1;
+  }
   return 1;
 }
 
@@ -571,11 +580,10 @@ static int iMatrixRedraw_CB(Ihandle* ih)
   if (!ih->data->cddbuffer)
     return IUP_DEFAULT;
 
-  if (!ih->data->first_redraw)
-  {
-    ih->data->first_redraw = 1;
+  if (ih->data->callback_mode ||  /* in callback mode the values is not changed by attributes, so we can NOT wait for a REDRAW */
+      ih->data->need_redraw ||  /* if some of the attributes that do not automatically redraw were set */
+      ih->data->need_calcsize)   /* if something changed the matrix size */
     iupMatrixDraw(ih, 0);
-  }
 
   iupMatrixDrawUpdate(ih);
 
@@ -621,6 +629,7 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   ih->data->columns.num = 1;
   ih->data->lines.num = 1;
   ih->data->need_calcsize = 1;
+  ih->data->need_redraw = 1;
   ih->data->lines.first = 1;
   ih->data->columns.first = 1;
   ih->data->lines.focus_cell = 1;
@@ -850,8 +859,8 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttributeId2(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
 
   /* IupMatrix Attributes - COLUMN */
-  iupClassRegisterAttributeId(ic, "ALIGNMENT", iMatrixGetAlignmentAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "SORTSIGN", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ALIGNMENT", iMatrixGetAlignmentAttrib, (IattribSetIdFunc)iMatrixSetNeedRedraw, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "SORTSIGN", NULL, (IattribSetIdFunc)iMatrixSetNeedRedraw, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - SIZE */
   iupClassRegisterAttribute(ic, "NUMLIN", iMatrixGetNumLinAttrib, iupMatrixSetNumLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -897,7 +906,7 @@ Iclass* iupMatrixGetClass(void)
   iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDDENTEXTMARKS", iMatrixGetHiddenTextMarksAttrib, iMatrixSetHiddenTextMarksAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   
-  iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "READONLY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESIZEMATRIX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDEFOCUS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

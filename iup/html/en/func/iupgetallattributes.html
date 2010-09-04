@@ -22,13 +22,14 @@ internal hash table only. </p>
 <h3>
 Parameters/Return</h3>
 <pre>int IupGetAllAttributes(Ihandle*<strong> ih, </strong>char**<strong> names</strong>, int <strong>max_n</strong>); [in C]
-iup.GetAllAttributes(<strong>ih</strong>: ihandle<strong>, max_n</strong>: number) -&gt; (<strong>names</strong>: table<strong>, n</strong>: number) [in Lua]</pre>
+iup.GetAllAttributes(<strong>ih</strong>: ihandle[<strong>, max_n</strong>: number]) -&gt; (<strong>names</strong>: table<strong>, n</strong>: number) [in Lua]</pre>
 <p>
   <b>ih</b>: identifier of the interface element.
 <b><br>
 names</b>: table receiving the names. Only the list of names need to be 
 	allocated. Each name will point to an internal string.<br>
-<b>max_n</b>: maximum number of names the table can receive.</p>
+<b>max_n</b>: maximum number of names the table can receive. Can be omitted in 
+	Lua.</p>
 <p><span class="style2">Returns:</span> the actual number of names loaded to the 
   table. If names==NULL or max_n==0 then returns the maximum number of names.</p>
 <h3>See Also</h3>

@@ -47,6 +47,7 @@ void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value)
 
   ih->data->cells[lin][col].value = iupStrDup(value);
 
+  ih->data->need_redraw = 1;
   if (lin==0 || col==0)
     ih->data->need_calcsize = 1;
 }

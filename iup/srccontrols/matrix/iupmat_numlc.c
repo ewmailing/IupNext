@@ -255,7 +255,7 @@ static int iMatrixGetStartEnd(const char* value, int *base, int *count, int max,
   if (*count <= 0)
     return 0;
 
-  if (del)
+  if (del && max>0)
   {
     if (*base <= 0)  /* the first valid element is always 1 */
       *base = 1;

@@ -433,7 +433,7 @@ void iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_va
         partial_name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
                                       translate them into IDVALUE. */
       afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, partial_name);
-      if (afunc)
+      if (afunc && afunc->flags & IUPAF_HAS_ID)
       {
         *def_value = NULL;  /* id numbered attributes have default value NULL always */
         *inherit = 0;       /* id numbered attributes are NON inheritable always */
@@ -455,6 +455,37 @@ void iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_va
   }
 }
 
+void iupClassObjectGetAttribNameInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit, int *not_string, int *has_id, int *access)
+{
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  *def_value = NULL;
+  *inherit = 1; /* default is inheritable */
+  *has_id = 0;
+  *not_string = 0;
+  *access = 0; /* full */
+  if (afunc)
+  {
+    if (afunc->flags & IUPAF_HAS_ID)
+    {
+      *has_id = 1;
+      *inherit = 0;       /* id numbered attributes are NON inheritable always */
+    }
+    else
+      *inherit = !(afunc->flags & IUPAF_NO_INHERIT) &&  /* is inheritable */
+                 !(afunc->flags & IUPAF_NO_STRING);     /* is a string */
+
+    if (afunc->flags & IUPAF_NO_STRING)
+      *not_string = 1;
+
+    if (afunc->flags & IUPAF_READONLY)
+      *access = 1;
+    else if (afunc->flags & IUPAF_WRITEONLY)
+      *access = 2;
+
+    *def_value = iClassGetDefaultValue(afunc);
+  }
+}
+
 int iupClassObjectCurAttribIsInherit(Iclass* ic)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGetCurr(ic->attrib_func);
@@ -467,6 +498,14 @@ int iupClassObjectAttribIsNotString(Ihandle* ih, const char* name)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
   if (afunc && afunc->flags & IUPAF_NO_STRING)
+    return 1;
+  return 0;
+}
+
+int iupClassObjectAttribIsRegistered(Ihandle* ih, const char* name)
+{
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  if (afunc)
     return 1;
   return 0;
 }

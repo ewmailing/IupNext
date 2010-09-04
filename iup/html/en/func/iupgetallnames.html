@@ -20,10 +20,11 @@
 <h3>
 Parameters/Return</h3>
 <pre>int IupGetAllNames(char**<strong> names</strong>, int <strong>max_n</strong>); [in C]
-iup.GetAllNames(<strong>max_n</strong>: number) -&gt; (<strong>names</strong>: table<strong>, n</strong>: number) [in Lua]</pre>
+iup.GetAllNames(<strong>[max_n</strong>: number]) -&gt; (<strong>names</strong>: table<strong>, n</strong>: number) [in Lua]</pre>
 <p><b>names</b>: table receiving the names. Only the list of names need to be 
 allocated. Each name will point to an internal string.<br>
-<b>max_n</b>: maximum number of names the table can receive.</p>
+<b>max_n</b>: maximum number of names the table can receive. Can be omitted in 
+Lua.</p>
 <p><span class="style1">Returns:</span> the number of names loaded to the 
   table. If names==NULL or max_n==0 then returns the actual number of names.</p>
 <h3>Notes</h3>

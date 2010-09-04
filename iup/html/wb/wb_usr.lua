@@ -786,6 +786,10 @@ wb_usr.tree =
               link= "func/iupgetclassattributes.html"
             },
             {
+              name= {nl= "IupGetClassCallbacks"},
+              link= "func/iupgetclasscallbacks.html"
+            },
+            {
               name= {nl= "IupSaveClassAttributes"},
               link= "func/iupsaveclassattributes.html"
             },
