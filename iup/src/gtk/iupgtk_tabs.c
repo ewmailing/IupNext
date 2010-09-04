@@ -238,7 +238,8 @@ void gtkTabSwitchPage(GtkNotebook* notebook, GtkNotebookPage *page, int pos, Iha
 {
   IFnnn cb;
   Ihandle* child = IupGetChild(ih, pos);
-  Ihandle* prev_child = IupGetChild(ih, iupdrvTabsGetCurrentTab(ih));
+  int prev_pos = iupdrvTabsGetCurrentTab(ih);
+  Ihandle* prev_child = IupGetChild(ih, prev_pos);
   GtkWidget* tab_container = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
   GtkWidget* prev_tab_container = (GtkWidget*)iupAttribGet(prev_child, "_IUPTAB_CONTAINER");
   if (tab_container) gtk_widget_show(tab_container);
@@ -250,6 +251,12 @@ void gtkTabSwitchPage(GtkNotebook* notebook, GtkNotebookPage *page, int pos, Iha
   cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
   if (cb)
     cb(ih, child, prev_child);
+  else
+  {
+    IFnii cb2 = (IFnii)IupGetCallback(ih, "TABCHANGEPOS_CB");
+    if (cb2)
+      cb2(ih, pos, prev_pos);
+  }
 
   (void)notebook;
   (void)page;

@@ -321,6 +321,12 @@ void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct 
     cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
     if (cb)
       cb(ih, child, prev_child);
+    else
+    {
+      IFnii cb2 = (IFnii)IupGetCallback(ih, "TABCHANGEPOS_CB");
+      if (cb2)
+        cb2(ih, nptr->page_number, nptr->prev_page_number);
+    }
   }
   (void)w; 
 }

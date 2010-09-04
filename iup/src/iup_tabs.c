@@ -518,6 +518,7 @@ Iclass* iupTabsGetClass(void)
 
   /* IupTabs Callbacks */
   iupClassRegisterCallback(ic, "TABCHANGE_CB", "nn");
+  iupClassRegisterCallback(ic, "TABCHANGEPOS_CB", "ii");
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);

@@ -430,6 +430,12 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       if (prev_child)
         cb(ih, child, prev_child);
     }
+    else
+    {
+      IFnii cb2 = (IFnii)IupGetCallback(ih, "TABCHANGEPOS_CB");
+      if (cb2)
+        cb2(ih, pos, prev_pos);
+    }
   }
 
   return 0; /* result not used */

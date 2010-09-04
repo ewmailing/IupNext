@@ -7,6 +7,7 @@ local ctrl = {
   creation = "v",
   callback = {
     tabchange_cb = "ii",
+    tabchangepos_cb = "nn",
   },
   funcname = "Tabsv",
   createfunc = [[

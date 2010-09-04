@@ -754,7 +754,13 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     IupSetfAttribute(lbl3, "TITLE", "%s\n%s%s%s", inherit? "Inheritable": "Non Inheritable", 
                                                   not_string? "Not a String\n": "", 
                                                   has_id? "Has ID\n":"", 
-                                                  access==1? "Read-Only": (access==2? "Write-Only": ""));
+                                                  access==1? "Read-Only": (access==2? "Write-Only": (access==3? "NOT SUPPORTED": "")));
+
+    if (def_value && !not_string && access==0 &&
+        !iupStrEqualNoCase(def_value, value))
+      IupSetAttribute(lbl1, "FGCOLOR", "255 0 0");
+    else
+      IupSetAttribute(lbl1, "FGCOLOR", "0 0 0");
   }
   return IUP_DEFAULT;
 }
@@ -814,11 +820,10 @@ static int iLayoutPropertiesList3_CB(Ihandle *list3, char *text, int item, int s
   return IUP_DEFAULT;
 }
 
-static int iLayoutPropertiesTabChange_CB(Ihandle* ih, Ihandle* new_tab, Ihandle* old_tab)
+static int iLayoutPropertiesTabChangePos_CB(Ihandle* ih, int new_pos, int old_pos)
 {
-  (void)new_tab;
-  (void)old_tab;
-  switch (IupGetInt(ih, "VALUEPOS"))
+  (void)old_pos;
+  switch (new_pos)
   {
   case 0:
     IupSetAttribute(ih, "TIP", "All attributes that are known by the element.");
@@ -830,6 +835,38 @@ static int iLayoutPropertiesTabChange_CB(Ihandle* ih, Ihandle* new_tab, Ihandle*
     IupSetAttribute(ih, "TIP", "All callbacks that are known by the element.");
     break;
   }
+
+  /* In GTK the TIP appears for all children */
+  if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "GTK"))
+  {
+    char* tabtype = iupAttribGetLocal(ih, "TABTYPE");
+    int x = 0;
+    int y = 0;
+    int w = ih->currentwidth;
+    int h = ih->currentheight;
+    int cw = 0, ch = 0;
+
+    IupGetIntInt(ih, "CLIENTSIZE", &cw, &ch);
+
+    /* TABORIENTATION is ignored */
+    if (iupStrEqualNoCase(tabtype, "BOTTOM"))
+    {
+      y += ch;  /* position after the client area */
+      h -= ch;
+    }
+    else if (iupStrEqualNoCase(tabtype, "RIGHT"))
+    {
+      x += cw;  /* position after the client area */
+      w -= cw;
+    }
+    else if (iupStrEqualNoCase(tabtype, "LEFT"))
+      w -= cw;
+    else  /* TOP */
+      h -= ch;
+
+    IupSetfAttribute(ih, "TIPRECT", "%d %d %d %d", x, y, x+w, y+h);
+  }
+
   IupSetAttribute(ih, "TIPVISIBLE", "YES");
   return IUP_DEFAULT;
 }
@@ -909,8 +946,8 @@ static void iLayoutCreatePropertiesDialog(iLayoutDialog* layoutdlg, Ihandle* par
   IupSetAttribute(tabs, "TABTITLE0", "Registered Attributes");
   IupSetAttribute(tabs, "TABTITLE1", "Hash Table Only");
   IupSetAttribute(tabs, "TABTITLE2", "Callbacks");
-  IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)iLayoutPropertiesTabChange_CB);
-  iLayoutPropertiesTabChange_CB(tabs, box1, NULL);
+  IupSetCallback(tabs, "TABCHANGEPOS_CB", (Icallback)iLayoutPropertiesTabChangePos_CB);
+  iLayoutPropertiesTabChangePos_CB(tabs, 0, 0);
 
   dlg_box = IupVbox(
     IupSetAttributes(IupLabel(""), "EXPAND=HORIZONTAL, NAME=ELEMTITLE"),

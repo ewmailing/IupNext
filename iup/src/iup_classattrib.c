@@ -478,9 +478,9 @@ void iupClassObjectGetAttribNameInfo(Ihandle* ih, const char* name, char* *def_v
       *not_string = 1;
 
     if (afunc->flags & IUPAF_READONLY)
-      *access = 1;
-    else if (afunc->flags & IUPAF_WRITEONLY)
-      *access = 2;
+      *access |= 1;
+    if (afunc->flags & IUPAF_WRITEONLY)
+      *access |= 2;
 
     *def_value = iClassGetDefaultValue(afunc);
   }

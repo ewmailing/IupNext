@@ -14,6 +14,7 @@ iupDoNothing = function() end
 iupSetMethod = iupDoNothing
 iup.RegisterWidget = iupDoNothing
 
+-- TODO: This is different from iupClassRegisterCallback, must use the same standard
 c_types = {
   n = "int",
   s = "char *",
