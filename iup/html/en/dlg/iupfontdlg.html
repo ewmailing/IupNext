@@ -56,6 +56,8 @@ Help button is pressed.</p>
 <p>The <b>IupFontDlg</b> is a native pre-defined dialog not altered by <b>IupSetLanguage</b>.</p>
 <p>To show the dialog, use function <b>IupPopup</b>. In Lua, use the <b>popup</b> function.</p>
 <p>The dialog is mapped only inside <b>IupPopup</b>, <b>IupMap</b> does nothing.</p>
+<p>In Windows, the dialog will be modal relative only to its parent or to the 
+active dialog.</p>
 <h3><a name="Examples">Examples</a></h3>
 <pre>Ihandle* dlg = IupFontDlg();
 

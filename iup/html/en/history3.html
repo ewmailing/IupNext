@@ -74,7 +74,8 @@ version 3.x.<br>
 	<li><span class="hist_new">New:</span> AUTOREDRAW attribute for <strong>
 	IupTree</strong> and <strong>IupList</strong> so redraw can be disabled in 
 	Windows.</li>
-	<li><span class="hist_new">New:</span> function <strong>IupGetClassCallbacks</strong>.</li>
+	<li><span class="hist_new">New:</span> functions <strong>IupGetClassCallbacks</strong> 
+	and <strong>IupGetAllClasses</strong>.</li>
 	<li><span class="hist_new">New:</span> TABCHANGEPOS_CB callback in <strong>
 	IupTabs</strong>.</li>
 	<li><span class="hist_new">New:</span> functions <strong>Iup*AttributeId</strong> 
@@ -135,6 +136,9 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> line end converting when 
 	FORMATTING=Yes in <strong>IupText</strong> on Windows. Thanks to Nicolas 
 	Noble.</li>
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupMessageDlg</strong> 
+	modality in Windows, when PARENTDLG is not specified then it will be modal 
+	relative to all application dialogs.</li>
 
 </ul>
 

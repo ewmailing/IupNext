@@ -774,6 +774,10 @@ wb_usr.tree =
             },
             { link= "", name= {en= "" } },
             {
+              name= {nl= "IupGetAllClasses"},
+              link= "func/iupgetallclasses.html"
+            },
+            {
               name= {nl= "IupGetClassName"},
               link= "func/iupgetclassname.html"
             },
