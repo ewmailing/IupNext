@@ -559,36 +559,30 @@ void iupStrToUnix(char* str)
   *pstr = *str;
 }
 
-char* iupStrToMac(const char* str)
+void iupStrToMac(char* str)
 {
-  int at_start = 1;
-  char* pstr, *new_str;
+  char* pstr = str;
 
-  if (!str) return NULL;
-
-  if (iupStrLineCount(str) == 1)
-    return (char*)str;
-
-  new_str = iupStrDup(str);
-  str = new_str;
-  pstr = new_str;
+  if (!str) return;
   
   while (*str)
   {
-    if (*str == '\n')
+    if (*str == '\r')
     {
-      if (!at_start && *(str-1) != '\r')  /* UNIX line end */
-        *pstr++ = '\r';
+      if (*(++str) == '\n')  /* DOS line end */
+        str++;
+      *pstr++ = '\r';
+    }
+    else if (*str == '\n')  /* UNIX line end */
+    {
       str++;
+      *pstr++ = '\r';
     }
     else
       *pstr++ = *str++;
-    at_start = 0;
   }
   
   *pstr = *str;
-
-  return new_str;
 }
 
 char* iupStrToDos(const char* str)
