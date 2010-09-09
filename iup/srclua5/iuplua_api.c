@@ -204,6 +204,32 @@ static int GetAllAttributes(lua_State *L)
   return 2;
 }
 
+static int GetAllClasses(lua_State *L)
+{
+  int n, i, max_n = luaL_optinteger(L, 1, 0);
+  char **names;
+  if (!max_n) max_n = IupGetAllClasses(NULL, 0);
+  names = (char **) malloc (max_n * sizeof(char *));
+  n = IupGetAllClasses(names,max_n);
+
+  if (n == -1)
+  {
+    lua_pushnil(L);
+    return 1;
+  }
+
+  lua_createtable(L, n, 0);
+  for (i=0; i<n; i++)
+  {
+    lua_pushinteger(L,i+1);
+    lua_pushstring(L,names[i]);
+    lua_settable(L,-3);
+  }
+  lua_pushinteger(L,n);
+  free(names);
+  return 2;
+}
+
 static int GetClassAttributes(lua_State *L)
 {
   int n, i, max_n = luaL_optinteger(L, 1, 0);
@@ -897,6 +923,7 @@ void iupluaapi_open(lua_State * L)
     {"GetAttributes", GetAttributes},
     {"GetAllAttributes", GetAllAttributes},
     {"SetClassDefaultAttribute", SetClassDefaultAttribute},
+    {"GetAllClasses", GetAllClasses},
     {"GetClassAttributes", GetClassAttributes},
     {"GetClassCallbacks", GetClassCallbacks},
     {"GetAllDialogs", GetAllDialogs},

@@ -86,7 +86,8 @@ static int winColorDlgPopup(Ihandle* ih, int x, int y)
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
   if (!parent)
-    parent = GetActiveWindow();
+    parent = GetActiveWindow();  /* if NOT set will NOT be Modal */
+                                 /* anyway it will be modal only relative to its parent */
 
   iupStrToRGB(iupAttribGet(ih, "VALUE"), &r, &g, &b);
 

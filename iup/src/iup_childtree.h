@@ -35,6 +35,10 @@ InativeHandle* iupChildTreeGetNativeParentHandle(Ihandle* ih);
  * \ingroup childtree */
 void iupChildTreeAppend(Ihandle* parent, Ihandle* child);
 
+/** Checks if the child belongs to the parent tree.
+ * \ingroup childtree */
+int iupChildTreeIsChild(Ihandle* ih, Ihandle* child);
+
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupGetDialog

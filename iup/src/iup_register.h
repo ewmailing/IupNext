@@ -36,9 +36,6 @@ void iupRegisterInternalClasses(void);
 void iupRegisterInit(void);
 void iupRegisterFinish(void);
 
-/* Get the registered classes. Used in documentation tests. */
-int iupRegisterGetClasses(char *list[], int n);
-
 
 #ifdef __cplusplus
 }

@@ -9,16 +9,16 @@
 
 #define MAX_ITEMS 200
 
-char* callback_str[] = {"idle", "", "Ii", "ccc", "d", "iiiic",
+static char* callback_str[] = {"idle", "", "Ii", "ccc", "d", "iiiic",
                         "ff", "fiis", "i", "iff", "ii", "iic", 
                         "iiIII", "iii", "iiii", "iiiiii", "iiiiiis",
                         "iiiis", "iinsii", "iis", "is", "nii",
                         "nn", "s", "sii", "siii", "ss", "i=s", "ii=s",
                         "iiiiiiv"};
 
-char currentClassName[256];
+static char currentClassName[256];
 
-int compare(const void *a, const void *b)
+static int compare(const void *a, const void *b)
 {
   return strcmp( * ( char** ) a, * ( char** ) b );
 }
@@ -181,7 +181,7 @@ void PopulateListOfClasses(void)
   int i, n;
   char **list = (char **) malloc(MAX_ITEMS * sizeof(char *));
 
-  n = iupRegisterGetClasses(list, MAX_ITEMS);
+  n = IupGetAllClasses(list, MAX_ITEMS);
   
   qsort(list, n, sizeof(char*), compare);
 

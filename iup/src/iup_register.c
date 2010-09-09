@@ -38,7 +38,7 @@ void iupRegisterFinish(void)
   iregister_table = NULL;
 }
 
-int iupRegisterGetClasses(char *list[], int n)
+int IupGetAllClasses(char** list, int n)
 {
   int i = 0;
   char* name = iupTableFirst(iregister_table);

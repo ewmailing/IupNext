@@ -443,7 +443,8 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   }
 
   if (!parent)
-    parent = GetActiveWindow();
+    parent = GetActiveWindow();  /* if NOT set will NOT be Modal */
+                                 /* anyway it will be modal only relative to its parent */
 
   ZeroMemory(&openfilename, sizeof(OPENFILENAME));
   openfilename.lStructSize = sizeof(OPENFILENAME);

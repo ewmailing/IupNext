@@ -37,8 +37,9 @@ static int winMessageDlgPopup(Ihandle* ih, int x, int y)
   (void)x;
   (void)y;
 
-  if (!parent)
-    parent = GetActiveWindow();
+  /* if parent is used then it will be modal only relative to it */
+  /* if (!parent)
+       parent = GetActiveWindow(); */
 
   icon = iupAttribGetStr(ih, "DIALOGTYPE");
   if (iupStrEqualNoCase(icon, "ERROR"))

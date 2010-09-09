@@ -131,6 +131,7 @@ Ihandle*  IupGetAttributeHandle(Ihandle* ih, const char* name);
 
 char*     IupGetClassName(Ihandle* ih);
 char*     IupGetClassType(Ihandle* ih);
+int       IupGetAllClasses(char** names, int n);
 int       IupGetClassAttributes(const char* classname, char** names, int n);
 int       IupGetClassCallbacks(const char* classname, char** names, int n);
 void      IupSaveClassAttributes(Ihandle* ih);

@@ -440,6 +440,24 @@ Ihandle* IupGetParent(Ihandle *ih)
   return ih->parent;
 }
 
+int iupChildTreeIsChild(Ihandle* ih, Ihandle* child)
+{
+  Ihandle* parent;
+
+  if (ih == child)
+    return 1;
+
+  parent = child->parent;
+  while (parent)
+  {
+    if (parent == ih)
+      return 1;
+    parent = parent->parent;
+  }
+
+  return 0;
+}
+
 Ihandle* iupChildTreeGetNativeParent(Ihandle* ih)
 {
   Ihandle* parent = ih->parent;
