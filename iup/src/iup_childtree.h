@@ -39,6 +39,10 @@ void iupChildTreeAppend(Ihandle* parent, Ihandle* child);
  * \ingroup childtree */
 int iupChildTreeIsChild(Ihandle* ih, Ihandle* child);
 
+/** Returns the previous brother if any.
+ * \ingroup childtree */
+Ihandle* iupChildTreeGetPrevBrother(Ihandle* ih);
+
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupGetDialog

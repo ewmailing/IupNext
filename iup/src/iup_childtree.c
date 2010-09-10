@@ -395,6 +395,21 @@ int IupGetChildPos(Ihandle* ih, Ihandle* child)
   return -1;
 }
 
+Ihandle* iupChildTreeGetPrevBrother(Ihandle* ih)
+{
+  Ihandle *c, *prev = NULL;
+
+  for (c = ih->parent->firstchild; c; c = c->brother)
+  {
+    if (c == ih)
+      return prev;
+
+    prev = c;
+  }
+
+  return NULL;
+}
+
 int IupGetChildCount(Ihandle* ih)
 {
   int count = 0;
