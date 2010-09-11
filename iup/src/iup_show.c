@@ -63,6 +63,9 @@ int IupMap(Ihandle* ih)
   if (ih->iclass->nativetype == IUP_TYPEDIALOG)
     iupLayoutCompute(ih);
 
+  if (ih->parent && !(ih->parent->handle))
+    return IUP_ERROR;
+
   /* already mapped */
   if (ih->handle)
   {

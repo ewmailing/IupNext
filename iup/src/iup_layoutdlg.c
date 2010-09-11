@@ -720,6 +720,7 @@ static void iLayoutUpdateProperties(Ihandle* properties, Ihandle* ih)
   IupSetAttribute(IupGetDialogChild(properties, "VALUE2"), "TITLE", "");
   IupSetAttribute(IupGetDialogChild(properties, "VALUE3"), "TITLE", "");
   IupSetAttribute(IupGetDialogChild(properties, "SETBUT"), "ACTIVE", "No");
+  IupSetAttribute(IupGetDialogChild(properties, "SETCOLORBUT"), "VISIBLE", "No");
 
   attr_count = IupGetClassAttributes(ih->iclass->name, attr_names, total_count);
   for (i=0; i<attr_count; i++)
@@ -779,6 +780,39 @@ static int iLayoutPropertiesSet_CB(Ihandle* button)
   return IUP_DEFAULT;
 }
 
+static int iLayoutPropertiesSetColor_CB(Ihandle *button)
+{
+  Ihandle* color_dlg = IupColorDlg();
+  IupSetAttributeHandle(color_dlg, "PARENTDIALOG", IupGetDialog(button));
+  IupSetAttribute(color_dlg, "TITLE", "Choose Color");
+  IupSetAttribute(color_dlg, "VALUE", iupAttribGetLocal(button, "BGCOLOR"));
+
+  IupPopup(color_dlg, IUP_CENTER, IUP_CENTER);
+
+  if (IupGetInt(color_dlg, "STATUS")==1)
+  {
+    iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(button, "_IUP_LAYOUTDIALOG");
+    Ihandle* elem = (Ihandle*)iupAttribGetInherit(button, "_IUP_PROPELEMENT");
+    Ihandle* list1 = (Ihandle*)iupAttribGetInherit(button, "_IUP_PROPLIST1");
+    Ihandle* txt1 = IupGetDialogChild(button, "VALUE1A");
+    char* value = IupGetAttribute(color_dlg, "VALUE");
+    char* name = IupGetAttribute(list1, IupGetAttribute(list1, "VALUE"));
+    IupSetAttribute(txt1, "VALUE", value);
+    IupStoreAttribute(button, "BGCOLOR", value);
+
+    IupStoreAttribute(elem, name, value);
+
+    iupAttribSetStr(IupGetDialog(elem), "_IUPLAYOUT_CHANGED", "1");
+
+    /* redraw canvas */
+    IupUpdate(IupGetBrother(layoutdlg->tree));
+  }
+
+  IupDestroy(color_dlg);
+
+  return IUP_DEFAULT;
+}
+
 static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int state)
 {
   (void)item;
@@ -792,6 +826,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     Ihandle* lbl2 = IupGetDialogChild(list1, "VALUE1B");
     Ihandle* lbl3 = IupGetDialogChild(list1, "VALUE1C");
     Ihandle* setbut = IupGetDialogChild(list1, "SETBUT");
+    Ihandle* colorbut = IupGetDialogChild(list1, "SETCOLORBUT");
 
     iupClassObjectGetAttribNameInfo(elem, name, &def_value, &inherit, &not_string, &has_id, &access);
 
@@ -825,6 +860,14 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
       IupSetAttribute(setbut, "ACTIVE", "Yes");
     else
       IupSetAttribute(setbut, "ACTIVE", "No");
+
+    if (strstr(name, "COLOR")!=NULL)
+    {
+      IupSetAttribute(colorbut, "BGCOLOR", value);
+      IupSetAttribute(colorbut, "VISIBLE", "Yes");
+    }
+    else
+      IupSetAttribute(colorbut, "VISIBLE", "No");
   }
   return IUP_DEFAULT;
 }
@@ -938,7 +981,7 @@ static int iLayoutPropertiesTabChangePos_CB(Ihandle* ih, int new_pos, int old_po
 
 static void iLayoutCreatePropertiesDialog(iLayoutDialog* layoutdlg, Ihandle* parent)
 {
-  Ihandle *list1, *list2, *list3, *close, *dlg, *dlg_box, *button_box,
+  Ihandle *list1, *list2, *list3, *close, *dlg, *dlg_box, *button_box, *color, 
           *tabs, *box1, *box11, *box2, *box22, *box3, *box33, *set;
 
   close = IupButton("Close", NULL);
@@ -977,9 +1020,16 @@ static void iLayoutCreatePropertiesDialog(iLayoutDialog* layoutdlg, Ihandle* par
   IupSetAttribute(set, "PADDING", "5x5");
   IupSetAttribute(set, "NAME", "SETBUT");
 
+  color = IupButton(NULL, NULL);
+  IupSetAttribute(color, "SIZE", "20x10");
+  IupStoreAttribute(color, "BGCOLOR", "0 0 0");
+  IupSetCallback(color, "ACTION", (Icallback)iLayoutPropertiesSetColor_CB);
+  IupSetAttribute(color, "NAME", "SETCOLORBUT");
+  IupSetAttribute(color, "VISIBLE", "NO");
+
   box11 = IupVbox(
             IupLabel("Value:"),
-            IupHbox(IupSetAttributes(IupText(NULL), "ALIGNMENT=ALEFT:ATOP, EXPAND=YES, NAME=VALUE1A"), set, NULL),
+            IupHbox(IupSetAttributes(IupText(NULL), "ALIGNMENT=ALEFT:ATOP, EXPAND=YES, NAME=VALUE1A"), IupVbox(set, color, NULL), NULL),
             IupSetAttributes(IupFill(), "RASTERSIZE=10"), 
             IupLabel("Default Value:"),
             IupFrame(IupSetAttributes(IupLabel(NULL), "ALIGNMENT=ALEFT:ATOP, EXPAND=HORIZONTAL, NAME=VALUE1B")),
@@ -1146,12 +1196,26 @@ static int iLayoutMenuAdd_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
+static void iLayoutUpdateTreeColors(Ihandle* tree, Ihandle* ih)
+{
+  iLayoutTreeSetNodeColor(tree, IupTreeGetId(tree, ih), ih);
+
+  if (ih->iclass->childtype != IUP_CHILDNONE)
+  {
+    Ihandle *child;
+    for (child = ih->firstchild; child; child = child->brother)
+      iLayoutUpdateTreeColors(tree, child);
+  }
+}
+
 static int iLayoutMenuMap_CB(Ihandle* menu)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
 
   IupMap(elem);
+
+  iLayoutUpdateTreeColors(layoutdlg->tree, elem);
 
   /* make sure the dialog layout is updated */
   IupRefresh(layoutdlg->dialog);
@@ -1162,13 +1226,28 @@ static int iLayoutMenuMap_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
+static void iLayoutSaveAttributes(Ihandle* ih)
+{
+  IupSaveClassAttributes(ih);
+
+  if (ih->iclass->childtype != IUP_CHILDNONE)
+  {
+    Ihandle *child;
+    for (child = ih->firstchild; child; child = child->brother)
+      iLayoutSaveAttributes(child);
+  }
+}
+
 static int iLayoutMenuUnmap_CB(Ihandle* menu)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
 
-  IupSaveClassAttributes(elem);
+  iLayoutSaveAttributes(elem);
+
   IupUnmap(elem);
+
+  iLayoutUpdateTreeColors(layoutdlg->tree, elem);
 
   /* make sure the dialog layout is updated */
   IupRefresh(layoutdlg->dialog);
@@ -1232,7 +1311,8 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* ih, Ihandle* d
 {
   Ihandle* menu;
   int container = ih->iclass->childtype!=IUP_CHILDNONE;
-  int mapped = ih->handle!=NULL;
+  int can_map = (ih->handle==NULL)&&(ih->parent==NULL || ih->parent->handle!=NULL);
+  int can_unmap = ih->handle!=NULL;
 
   menu = IupMenu(
     IupSetCallbacks(IupItem("Properties...", NULL), "ACTION", iLayoutMenuProperties_CB, NULL),
@@ -1241,9 +1321,9 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* ih, Ihandle* d
     IupSetCallbacks(IupSetAttributes(IupItem("Add Brother After...", NULL), "_IUP_ADDACTION=2"), "ACTION", iLayoutMenuAdd_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Add Child First...", NULL), container? "ACTIVE=Yes, _IUP_ADDACTION=3": "ACTIVE=No, _IUP_ADDACTION=3"), "ACTION", iLayoutMenuAdd_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Add Child Last...", NULL), container? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutMenuAdd_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Map", NULL), mapped? "ACTIVE=No": "ACTIVE=Yes"), "ACTION", iLayoutMenuMap_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Map", NULL), can_map? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutMenuMap_CB, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupSetAttributes(IupItem("Unmap", NULL), mapped? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutMenuUnmap_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Unmap", NULL), can_unmap? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutMenuUnmap_CB, NULL),
     IupSetCallbacks(IupItem("Remove...\tDel", NULL), "ACTION", iLayoutMenuRemove_CB, NULL),
     NULL);
 

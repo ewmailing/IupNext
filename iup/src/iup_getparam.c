@@ -296,26 +296,25 @@ static int iParamColorButton_CB(Ihandle *self, int button, int pressed)
     Ihandle* dlg = IupGetDialog(self);
     Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
 
-    Ihandle* cdlg = IupColorDlg();
+    Ihandle* color_dlg = IupColorDlg();
+    IupSetAttributeHandle(color_dlg, "PARENTDIALOG", IupGetDialog(self));
+    IupSetAttribute(color_dlg, "TITLE", iupAttribGet(param, "TITLE"));
+    IupSetAttribute(color_dlg, "VALUE", iupAttribGet(param, "VALUE"));
 
-    IupSetAttributeHandle(cdlg, "PARENTDIALOG", IupGetDialog(self));
-    IupSetAttribute(cdlg, "TITLE", iupAttribGet(param, "TITLE"));
-    IupSetAttribute(cdlg, "VALUE", iupAttribGet(param, "VALUE"));
-
-    IupPopup(cdlg, IUP_CENTER, IUP_CENTER);
+    IupPopup(color_dlg, IUP_CENTER, IUP_CENTER);
 
     if (!cb || cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
     {
-      if (IupGetInt(cdlg, "STATUS")==1)
+      if (IupGetInt(color_dlg, "STATUS")==1)
       {
-        char* value = IupGetAttribute(cdlg, "VALUE");
+        char* value = IupGetAttribute(color_dlg, "VALUE");
         IupSetAttribute(textbox, "VALUE", value);
         iupAttribStoreStr(param, "VALUE", value);
         IupStoreAttribute(self, "BGCOLOR", value);
       }
     }
 
-    IupDestroy(cdlg);
+    IupDestroy(color_dlg);
   }
 
   return IUP_DEFAULT;
