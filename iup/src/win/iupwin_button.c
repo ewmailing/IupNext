@@ -462,6 +462,8 @@ static int winButtonSetBgColorAttrib(Ihandle* ih, const char* value)
     iupImageUpdateParent(ih);
     iupdrvRedrawNow(ih);
   }
+  else
+    iupdrvPostRedraw(ih);
   return 1;
 }
 

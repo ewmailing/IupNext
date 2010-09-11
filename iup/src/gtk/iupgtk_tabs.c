@@ -174,7 +174,7 @@ static int gtkTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
     if (tab_label)
     {
       GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_PAGE");
-      gtk_label_set_text((GtkLabel*)tab_label, iupgtkStrConvertToUTF8(value));
+      iupgtkSetMnemonicTitle(ih, (GtkLabel*)tab_label, value);
       gtk_notebook_set_menu_label_text((GtkNotebook*)ih->handle, tab_page, gtk_label_get_text((GtkLabel*)tab_label));
     }
   }
@@ -307,7 +307,8 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     if (tabtitle)
     {
-      tab_label = gtk_label_new(iupgtkStrConvertToUTF8(tabtitle));
+      tab_label = gtk_label_new(NULL);
+      iupgtkSetMnemonicTitle(ih, (GtkLabel*)tab_label, tabtitle);
 
 #if GTK_CHECK_VERSION(2, 6, 0)
       if (ih->data->orientation == ITABS_VERTICAL)

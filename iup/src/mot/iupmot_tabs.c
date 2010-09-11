@@ -280,7 +280,7 @@ static int motTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
     Ihandle* child = IupGetChild(ih, pos);
     Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
     if (tab_button)
-      iupmotSetString(tab_button, XmNlabelString, value);
+      iupmotSetMnemonicTitle(ih, tab_button, value);
   }
   return 1;
 }
@@ -432,7 +432,7 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     XtAddEventHandler(tab_button, KeyPressMask,    False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
 
     if (tabtitle)
-      iupmotSetString(tab_button, XmNlabelString, tabtitle);
+      iupmotSetMnemonicTitle(ih, tab_button, tabtitle);
     else
     {
       Pixmap pixmap = (Pixmap)iupImageGetImage(tabimage, ih, 0);

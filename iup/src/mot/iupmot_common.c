@@ -51,13 +51,17 @@ static int motActivateMnemonic(Ihandle *dialog, int c)
   ih = (Ihandle*)iupAttribGet(dialog, attrib);
   if (iupObjectCheck(ih))
   {
-    iupdrvActivate(ih);
+    Widget w = (Widget)iupAttribGet(ih, attrib);
+    if (w)
+      XtCallActionProc(w, "ArmAndActivate", 0, 0, 0 );
+    else
+      iupdrvActivate(ih);
     return IUP_IGNORE;
   }
   return IUP_CONTINUE;
 }
 
-void iupmotSetMnemonicTitle(Ihandle *ih, const char* value)
+void iupmotSetMnemonicTitle(Ihandle *ih, Widget w, const char* value)
 {
   char c;
   char* str;
@@ -65,11 +69,14 @@ void iupmotSetMnemonicTitle(Ihandle *ih, const char* value)
   if (!value) 
     value = "";
 
+  if (!w)
+    w = ih->handle;
+
   str = iupStrProcessMnemonic(value, &c, -1);  /* remove & and return in c */
   if (str != value)
   {
     KeySym keysym = iupmotKeyCharToKeySym(c);
-    XtVaSetValues(ih->handle, XmNmnemonic, keysym, NULL);   /* works only for menus, but underlines the letter */
+    XtVaSetValues(w, XmNmnemonic, keysym, NULL);   /* works only for menus, but underlines the letter */
 
     if (ih->iclass->nativetype != IUP_TYPEMENU)
     {
@@ -81,20 +88,25 @@ void iupmotSetMnemonicTitle(Ihandle *ih, const char* value)
       if (iupStrEqual(ih->iclass->name, "label"))
         iupAttribSetStr(dialog, attrib, (char*)iupFocusNextInteractive(ih));
       else
+      {
         iupAttribSetStr(dialog, attrib, (char*)ih);
+
+        if (ih->handle != w)
+          iupAttribSetStr(ih, attrib, (char*)w);
+      }
 
       /* used by iupmotKeyPressEvent */
       attrib[18] = '_';
       IupSetCallback(dialog, attrib, (Icallback)motActivateMnemonic);
     }
 
-    iupmotSetString(ih->handle, XmNlabelString, str);
+    iupmotSetString(w, XmNlabelString, str);
     free(str);
   }
   else
   {
-    XtVaSetValues (ih->handle, XmNmnemonic, NULL, NULL);
-    iupmotSetString(ih->handle, XmNlabelString, str);
+    XtVaSetValues (w, XmNmnemonic, NULL, NULL);
+    iupmotSetString(w, XmNlabelString, str);
   }
 }
 

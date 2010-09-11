@@ -262,11 +262,11 @@ static Ihandle* CreateTabs(int tab)
 
   IupSetAttribute(vboxA, "TABTITLE", "A");
   IupSetAttributeHandle(vboxA, "TABIMAGE", load_image_LogoTecgraf());
-  IupSetAttribute(vboxB, "TABTITLE", "BB");
+  IupSetAttribute(vboxB, "TABTITLE", "&BB");
 //  IupSetAttribute(vboxC, "TABTITLE", "CCC");
   IupStoreAttribute(vboxC, "TABIMAGE", IupGetAttribute(vboxA, "TABIMAGE"));
   IupSetAttribute(vboxD, "TABTITLE", "DDDD");
-  IupSetAttribute(vboxE, "TABTITLE", "EEEEE");
+  IupSetAttribute(vboxE, "TABTITLE", "&EEEEE");
   IupSetAttribute(vboxF, "TABTITLE", "FFFFFF");
   IupSetAttribute(vboxG, "TABTITLE", "GGGGGGG");
   IupSetAttribute(vboxH, "TABTITLE", "HHHHHHHH");

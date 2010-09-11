@@ -141,7 +141,7 @@ static int motToggleSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_TEXT)
   {
-    iupmotSetMnemonicTitle(ih, value);
+    iupmotSetMnemonicTitle(ih, NULL, value);
     return 1;
   }
 

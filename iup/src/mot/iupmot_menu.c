@@ -248,7 +248,7 @@ static int motItemSetTitleAttrib(Ihandle* ih, const char* value)
       char* new_value = iupStrDup(str);
       char* acc_value = new_value + offset + 1;
       new_value[offset] = 0;
-      iupmotSetMnemonicTitle(ih, new_value);
+      iupmotSetMnemonicTitle(ih, NULL, new_value);
       iupmotSetString(ih->handle, XmNacceleratorText, acc_value);
       free(new_value);
 
@@ -257,7 +257,7 @@ static int motItemSetTitleAttrib(Ihandle* ih, const char* value)
     }
   }
 
-  iupmotSetMnemonicTitle(ih, str);
+  iupmotSetMnemonicTitle(ih, NULL, str);
 
   if (str != value) free(str);
   return 1;

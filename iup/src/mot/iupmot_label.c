@@ -33,7 +33,7 @@ static int motLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_LABEL_TEXT)
   {
-    iupmotSetMnemonicTitle(ih, value);
+    iupmotSetMnemonicTitle(ih, NULL, value);
     return 1;
   }
 

@@ -311,6 +311,17 @@ static gboolean gtkButtonEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *ev
   return FALSE;
 }
 
+static void gtkButtonClicked(GtkButton *widget, Ihandle* ih)
+{
+  Icallback cb = IupGetCallback(ih, "ACTION");
+  if (cb)
+  {
+    if (cb(ih) == IUP_CLOSE) 
+      IupExitLoop();
+  }
+  (void)widget;
+}
+
 static gboolean gtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 {
   if (iupgtkButtonEvent(widget, evt, ih)==TRUE)
@@ -330,19 +341,20 @@ static gboolean gtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *
       }
     }
   }
+
+#ifdef WIN32
+  if (evt->type == GDK_BUTTON_RELEASE)
+  {
+    if (ih->data->type == IUP_BUTTON_TEXT && GTK_IS_COLOR_BUTTON(ih->handle))
+    {
+      /* Ugly solution, but there is no way how to NOT show the GTK dialog on click action */
+      gtkButtonClicked(NULL, ih);
+      return TRUE;
+    }
+  }
+#endif
    
   return FALSE;
-}
-
-static void gtkButtonClicked(GtkButton *widget, Ihandle* ih)
-{
-  Icallback cb = IupGetCallback(ih, "ACTION");
-  if (cb)
-  {
-    if (cb(ih) == IUP_CLOSE) 
-      IupExitLoop();
-  }
-  (void)widget;
 }
 
 static int gtkButtonMapMethod(Ihandle* ih)

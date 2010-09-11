@@ -55,7 +55,7 @@ void iupmotEnterLeaveWindowEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *co
 void iupmotHelpCallback(Widget w, Ihandle *ih, XtPointer call_data);
 void iupmotSetString(Widget w, const char *resource, const char* value);
 char* iupmotConvertString(XmString str);
-void iupmotSetMnemonicTitle(Ihandle *ih, const char* value);
+void iupmotSetMnemonicTitle(Ihandle *ih, Widget w, const char* value);
 void iupmotDisableDragSource(Widget w);
 void iupmotSetPixmap(Ihandle* ih, const char* name, const char* prop, int make_inactive);
 void iupmotSetGlobalColorAttrib(Widget w, const char* xmname, const char* name);
