@@ -47,8 +47,9 @@ void GetParamTest(void)
   float preal2 = 0.5f;
   float pangle = 90;
   char pstring[100] = "string text";
+  char pfont[100] = "Courier, 24";
   char pcolor[100] = "255 0 128";
-  int plist = 2;
+  int plist = 2, poptions = 1;
   char pstring2[200] = "second text\nsecond line";
   char file_name[500] = "test.jpg";
   
@@ -63,12 +64,14 @@ void GetParamTest(void)
                    "Sep2 %t\n"
                    "Angle: %a[0,360]\n"
                    "String: %s\n"
-                   "List: %l|item1|item2|item3|\n" 
+                   "Options: %o|item0|item1|item2|\n" 
+                   "List: %l|item0|item1|item2|item3|item4|item5|item6|\n" 
                    "File: %f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]\n"
                    "Color: %c{Color Tip}\n"
+                   "Font: %n\n"
                    "Sep3 %t\n"
                    "Multiline: %m\n",
-                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &plist, file_name, pcolor, pstring2, NULL))
+                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &poptions, &plist, file_name, pcolor, pfont, pstring2, NULL))
     return;
   
   IupMessagef("IupGetParam",
@@ -79,11 +82,13 @@ void GetParamTest(void)
               "Real 2: %g\n"
               "Angle: %g\n"
               "String: %s\n"
+              "Options Index: %d\n" 
               "List Index: %d\n" 
               "FileName: %s\n"
               "Color: %s\n"
+              "Font: %s\n"
               "Multiline: %s",
-              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, plist, file_name, pcolor, pstring2);
+              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, poptions, plist, file_name, pcolor, pfont, pstring2);
 }
 
 #ifndef BIG_TEST

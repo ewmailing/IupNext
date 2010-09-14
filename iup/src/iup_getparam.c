@@ -252,6 +252,29 @@ static int iParamListAction_CB(Ihandle *self, char *t, int i, int v)
   return IUP_DEFAULT;
 }
 
+static int iParamOptionsAction_CB(Ihandle *self, int v)
+{
+  if (v == 1)
+  {
+    Ihandle* param = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+    Ihandle* dlg = IupGetDialog(self);
+    Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
+    int old_v = iupAttribGetInt(param, "VALUE");
+    int new_v = iupAttribGetInt(self, "OPT");
+
+    iupAttribSetInt(param, "VALUE", new_v);
+
+    if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
+    {
+      /* there is no IUP_IGNORE for IupToggle, manually undo */
+      iupAttribSetInt(param, "VALUE", old_v);
+      IupSetAttribute(IupGetParent(IupGetParent(self)), "VALUE_HANDLE", (char*)IupGetChild(IupGetParent(self), old_v));
+    }
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int iParamFileButton_CB(Ihandle *self)
 {
   Ihandle* param   = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
@@ -316,6 +339,35 @@ static int iParamColorButton_CB(Ihandle *self, int button, int pressed)
 
     IupDestroy(color_dlg);
   }
+
+  return IUP_DEFAULT;
+}
+
+static int iParamFontButton_CB(Ihandle *self)
+{
+  Ihandle* param   = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+  Ihandle* textbox = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_TEXT");
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
+
+  Ihandle* font_dlg = IupFontDlg();
+  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(self));
+  IupSetAttribute(font_dlg, "TITLE", iupAttribGet(param, "TITLE"));
+  IupSetAttribute(font_dlg, "VALUE", iupAttribGet(param, "VALUE"));
+
+  IupPopup(font_dlg, IUP_CENTER, IUP_CENTER);
+
+  if (!cb || cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
+  {
+    if (IupGetInt(font_dlg, "STATUS")==1)
+    {
+      char* value = IupGetAttribute(font_dlg, "VALUE");
+      IupSetAttribute(textbox, "VALUE", value);
+      iupAttribStoreStr(param, "VALUE", value);
+    }
+  }
+
+  IupDestroy(font_dlg);
 
   return IUP_DEFAULT;
 }
@@ -457,8 +509,8 @@ static Ihandle* iParamCreateBox(Ihandle* param)
   }
   else if (iupStrEqual(type, "LIST"))
   {
-    char str[20] = "1";
-    int i = 1;
+    char str[20] = "0";
+    int i = 0;
     ctrl = IupList(NULL);
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamListAction_CB);
     IupSetAttribute(ctrl, "DROPDOWN", "YES");
@@ -466,13 +518,39 @@ static Ihandle* iParamCreateBox(Ihandle* param)
 
     while (*iupAttribGet(param, str) != 0)
     {
-      IupStoreAttribute(ctrl, str, iupAttribGet(param, str));
+      IupStoreAttributeId(ctrl, "", i+1, iupAttribGet(param, str));
       i++;
       sprintf(str, "%d", i);
     }
-    IupStoreAttribute(ctrl, str, NULL);
+    IupStoreAttributeId(ctrl, "", i+1, NULL);
 
     IupAppend(box, ctrl);
+  }
+  else if (iupStrEqual(type, "OPTIONS"))
+  {
+    Ihandle* tgl;
+    char str[20] = "0";
+    int i = 0;
+    ctrl = IupHbox(NULL);
+    IupSetAttribute(ctrl, "GAP", "5");
+
+    while (*iupAttribGet(param, str) != 0)
+    {
+      tgl = IupToggle(iupAttribGet(param, str), NULL);
+      IupStoreAttribute(tgl, "OPT", str);
+      IupSetCallback(tgl, "ACTION", (Icallback)iParamOptionsAction_CB);
+
+      IupAppend(ctrl, tgl);
+
+      i++;
+      sprintf(str, "%d", i);
+    }
+
+    IupAppend(box, IupRadio(ctrl));
+    tgl = IupGetChild(ctrl, iupAttribGetInt(param, "VALUE"));
+    /* RADIO initial value */
+    IupSetAttribute(IupGetParent(ctrl), "VALUE_HANDLE", (char*)tgl);
+    ctrl = tgl; /* allow TIP to go to the first toggle */
   }
   else if (iupStrEqual(type, "STRING"))
   {
@@ -548,11 +626,38 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       iupAttribSetStr(param, "EXPAND", "1");
       
       aux = IupCanvas(NULL);
-      IupSetAttribute(aux, "SIZE", "20x10");
+      IupSetAttribute(aux, "SIZE", "16x10");
       IupSetAttribute(aux, "EXPAND", "NO");
       IupStoreAttribute(aux, "BGCOLOR", iupAttribGet(param, "VALUE"));
 
       IupSetCallback(aux, "BUTTON_CB", (Icallback)iParamColorButton_CB);
+      iupAttribSetStr(param, "AUXCONTROL", (char*)aux);
+      iupAttribSetStr(aux, "_IUPGP_PARAM", (char*)param);
+      iupAttribSetStr(aux, "_IUPGP_TEXT", (char*)ctrl);
+      IupSetAttribute(aux, "EXPAND", "NO");
+
+      IupAppend(box, aux); 
+  }
+  else if (iupStrEqual(type, "FONT"))
+  {
+      Ihandle* aux;
+
+      ctrl = IupText(NULL);
+      IupSetAttribute(ctrl, "SIZE", "100x");
+      IupSetAttribute(ctrl, "EXPAND", "HORIZONTAL");
+      IupAppend(box, ctrl);
+
+      IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
+      IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
+
+      iupAttribSetStr(param, "EXPAND", "1");
+      
+      aux = IupButton("F", NULL);
+      IupSetAttribute(aux, "SIZE", "16x8");
+      IupSetAttribute(aux, "EXPAND", "NO");
+      IupStoreAttribute(aux, "FONT", "Times, Italic 14");
+
+      IupSetCallback(aux, "ACTION", (Icallback)iParamFontButton_CB);
       iupAttribSetStr(param, "AUXCONTROL", (char*)aux);
       iupAttribSetStr(aux, "_IUPGP_PARAM", (char*)param);
       iupAttribSetStr(aux, "_IUPGP_TEXT", (char*)ctrl);
@@ -973,7 +1078,7 @@ static void iParamSetButtonNames(char* extra, Ihandle* param)
 
 static void iParamSetListItems(char* extra, Ihandle* param)
 {
-  int d = 1, count;
+  int i = 0, count;
   char str[20], *item;
 
   if (!extra)
@@ -982,14 +1087,14 @@ static void iParamSetListItems(char* extra, Ihandle* param)
   item = iParamGetNextStrItem(extra, '|', &count);  extra += count;
   while (*item)
   {
-    sprintf(str, "%d", d);
+    sprintf(str, "%i", i);
     iupAttribStoreStr(param, str, item);
 
     item = iParamGetNextStrItem(extra, '|', &count);  extra += count;
-    d++;
+    i++;
   }
 
-  sprintf(str, "%d", d);
+  sprintf(str, "%i", i);
   iupAttribSetStr(param, str, "");
 }
 
@@ -1083,6 +1188,12 @@ static Ihandle *IupParamf(const char* format, int *line_size)
     extra = iParamGetStrExtra(line_ptr, '|', '|', &count);  line_ptr += count;
     iParamSetListItems(extra, param);
     break;
+  case 'o':
+    iupAttribSetStr(param, "TYPE", "OPTIONS");
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_INT);
+    extra = iParamGetStrExtra(line_ptr, '|', '|', &count);  line_ptr += count;
+    iParamSetListItems(extra, param);
+    break;
   case 'a':
     iupAttribSetStr(param, "TYPE", "REAL");
     iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_FLOAT);
@@ -1119,6 +1230,10 @@ static Ihandle *IupParamf(const char* format, int *line_size)
     iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_STR);
     extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamSetFileOptions(extra, param);
+    break;
+  case 'n':
+    iupAttribSetStr(param, "TYPE", "FONT");
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_STR);
     break;
   case 'c':
     iupAttribSetStr(param, "TYPE", "COLOR");
