@@ -1460,6 +1460,7 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
       if (iup_isdouble(status))
       {
         iLayoutBlink(elem);
+        IupUpdate(canvas);
       }
       else
       {

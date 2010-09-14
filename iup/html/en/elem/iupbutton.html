@@ -123,13 +123,12 @@ global attribute DLGFGCOLOR.</p>
   
 <p><strong>IMPRESS </strong>(<font size="3">non inheritable</font>): Image 
 	name of the pressed button. If IMPRESS and IMAGE are defined, the button 
-	borders are not shown, but the border size is always included in size 
-	computation. When the button has the focus, in Motif and GTK a small border 
-	is displayed. When the button is clicked the pressed image does not offset, 
-	except in GTK. (GTK 2.6)</p>
+	borders are not shown and not computed in size 
+	computation. When the button is clicked the pressed image does not offset. 
+In Motif the button will lose its focus feedback also. (GTK 2.6)</p>
 
 <p><strong>IMPRESSBORDER </strong>(<font size="3">non inheritable</font>): if 
-enabled the button borders will be shown even if IMPRESS is defined. Can be 
+enabled the button borders will be shown and computed even if IMPRESS is defined. Can be 
 &quot;YES&quot; or &quot;NO&quot;. Default: &quot;NO&quot;. </p>
 
 <p><strong>IMAGEPOSITION </strong>(<font size="3">non inheritable</font>): 

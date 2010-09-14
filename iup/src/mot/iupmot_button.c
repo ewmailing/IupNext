@@ -248,8 +248,12 @@ static int motButtonMapMethod(Ihandle* ih)
   }
   else
   {
-    if (value && !iupAttribGetStr(ih, "IMPRESSBORDER"))
+    if (value && !iupAttribGetBoolean(ih, "IMPRESSBORDER"))
+    {
+      /* In Motif the button will lose its focus feedback also */
+      XtVaSetValues(ih->handle, XmNhighlightThickness, 0, NULL);
       XtVaSetValues(ih->handle, XmNshadowThickness, 0, NULL);
+    }
     else
       XtVaSetValues(ih->handle, XmNshadowThickness, 2, NULL);
     XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);

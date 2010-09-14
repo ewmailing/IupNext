@@ -108,7 +108,7 @@ static HBITMAP winButtonGetBitmap(Ihandle* ih, UINT itemState, int *shift, int *
     name = iupAttribGet(ih, "IMPRESS");
     if (itemState & ODS_SELECTED && name)
     {
-      if (shift && !iupAttribGetStr(ih, "IMPRESSBORDER")) 
+      if (shift && !iupAttribGetBoolean(ih, "IMPRESSBORDER")) 
         *shift = 0;
     }
     else
@@ -334,7 +334,9 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   border = winButtonGetBorder();
 
-  if (ih->data->type & IUP_BUTTON_IMAGE && iupAttribGet(ih, "IMPRESS") && !iupAttribGetStr(ih, "IMPRESSBORDER"))
+  if ((ih->data->type & IUP_BUTTON_IMAGE) && 
+      iupAttribGet(ih, "IMPRESS") && 
+      !iupAttribGetBoolean(ih, "IMPRESSBORDER"))
     draw_border = 0;
   else
   {

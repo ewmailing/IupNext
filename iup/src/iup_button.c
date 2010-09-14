@@ -148,8 +148,11 @@ static void iButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ex
     if (str && str!=title) free(str);
   }
 
-  /* even when IMPRESS is set, must compute the borders space */
-  iupdrvButtonAddBorders(&natural_w, &natural_h);
+  /* if IMPRESS is set, do NOT compute the borders space */
+  if (!((type == IUP_BUTTON_IMAGE) &&
+        iupAttribGet(ih, "IMPRESS") && 
+        !iupAttribGetBoolean(ih, "IMPRESSBORDER")))
+    iupdrvButtonAddBorders(&natural_w, &natural_h);
 
   natural_w += 2*ih->data->horiz_padding;
   natural_h += 2*ih->data->vert_padding;
