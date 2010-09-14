@@ -269,9 +269,7 @@ void ButtonTest(void)
   IupAppend(box1, button);
 
   button = IupButton(NULL, NULL);
-  IupSetAttribute(button, "TITLE", "Text (згн)");
-//  IupSetAttribute(button, "TITLE", "Text");
-  //IupSetAttribute(button, "TITLE", "Text &Button\nSecond Line");
+  IupSetAttribute(button, "TITLE", "&Text (згн)");
   IupSetAttribute(button, "TIP", "Button Tip");
   //IupSetAttribute(button, "PADDING", "15x15");
   //IupSetAttribute(button, "BGCOLOR", "128 128 255");
@@ -386,11 +384,6 @@ void ButtonTest(void)
 
   label = IupLabel(NULL);
   IupSetAttribute(label, "SEPARATOR", "VERTICAL");
-  IupSetHandle("teste1", label);
-  IupSetHandle("xxxx", label);
-  IupSetHandle("teste2", label);
-  IupSetHandle("yyy", label);
-  IupSetHandle("dasdasdas", label);
   IupSetHandle("label", label);
 
   dlg = IupDialog(IupHbox(box1, label, box2, NULL));

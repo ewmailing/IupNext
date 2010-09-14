@@ -133,7 +133,7 @@ static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rec
   int x, y, width, height, 
       txt_x, txt_y, txt_width, txt_height, 
       img_x, img_y, img_width, img_height, 
-      bpp, shift = 0;
+      bpp, shift = 0, style = 0;
   HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
   HBITMAP hBitmap, hMask;
   COLORREF fgcolor;
@@ -166,6 +166,9 @@ static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rec
 
   if (itemState & ODS_SELECTED && !iupwin_comctl32ver6)
     shift = 1;
+
+  if (itemState & ODS_NOACCEL)
+    style = DT_HIDEPREFIX;
 
   x = winButtonCalcAlignPosX(ih->data->horiz_alignment, rect_width, width, xpad, shift);
   y = winButtonCalcAlignPosY(ih->data->vert_alignment, rect_height, height, ypad, shift);
@@ -231,7 +234,7 @@ static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rec
   }
 
   iupwinDrawBitmap(hDC, hBitmap, hMask, img_x, img_y, img_width, img_height, bpp);
-  iupwinDrawText(hDC, title, txt_x, txt_y, txt_width, txt_height, hFont, fgcolor, 0);
+  iupwinDrawText(hDC, title, txt_x, txt_y, txt_width, txt_height, hFont, fgcolor, style);
 
   if (hMask)
     DeleteObject(hMask);
@@ -270,6 +273,7 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
   char* title = iupdrvBaseGetTitleAttrib(ih);
   if (title)
   {
+    int style = 0;
     HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
     char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
     iupdrvFontGetMultiLineStringSize(ih, str, &width, &height);
@@ -283,10 +287,13 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
     if (itemState & ODS_SELECTED && !iupwin_comctl32ver6)
       shift = 1;
 
+    if (itemState & ODS_NOACCEL)
+      style = DT_HIDEPREFIX;
+
     x = winButtonCalcAlignPosX(ih->data->horiz_alignment, rect_width, width, xpad, shift);
     y = winButtonCalcAlignPosY(ih->data->vert_alignment, rect_height, height, ypad, shift);
 
-    iupwinDrawText(hDC, title, x, y, width, height, hFont, fgcolor, 0);
+    iupwinDrawText(hDC, title, x, y, width, height, hFont, fgcolor, style);
   }
   else
   {
@@ -353,6 +360,7 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
     winButtonDrawImageText(ih, hDC, width, height, border, drawitem->itemState);
 
   if (drawitem->itemState & ODS_FOCUS &&
+      !(drawitem->itemState & ODS_NOFOCUSRECT) &&
       iupAttribGetBoolean(ih, "CANFOCUS"))
   {
     border--;
@@ -634,8 +642,11 @@ static int winButtonWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       else if (customdraw->uItemState & CDIS_DEFAULT)
         drawitem.itemState |= ODS_DEFAULT;
 
-      if (customdraw->uItemState & CDIS_FOCUS && (customdraw->uItemState & CDIS_SHOWKEYBOARDCUES))
+      if (customdraw->uItemState & CDIS_FOCUS)
         drawitem.itemState |= ODS_FOCUS;
+
+      if (!(customdraw->uItemState & CDIS_SHOWKEYBOARDCUES))
+        drawitem.itemState |= ODS_NOFOCUSRECT | ODS_NOACCEL;
 
       drawitem.hDC = customdraw->hdc;
       drawitem.rcItem = customdraw->rc;
