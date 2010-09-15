@@ -134,8 +134,8 @@ static void gtkTreeCopyMoveNode(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *i
 
   int old_count = ih->data->node_count;
 
-  id_src = iupTreeFindNodeId(ih, iterItemSrc);
-  id_dst = iupTreeFindNodeId(ih, iterItemDst);
+  id_src = iupTreeFindNodeId(ih, iterItemSrc->user_data);
+  id_dst = iupTreeFindNodeId(ih, iterItemDst->user_data);
   id_new = id_dst+1; /* contains the position for a copy operation */
 
   gtk_tree_model_get(model, iterItemDst, IUPGTK_TREE_KIND, &kind, -1);
@@ -1810,7 +1810,7 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
     gtk_tree_model_get_iter(model, &iterDrag, pathDrag);
     gtk_tree_model_get_iter(model, &iterDrop, pathDrop);
 
-    if (gtk_tree_path_compare(pathDrop, pathDrag) == 0)
+    if (iterDrag.user_data == iterDrop.user_data)
     {
       if (iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
         equal_nodes = 1;
@@ -1873,7 +1873,6 @@ static gboolean gtkTreeDragDrop(GtkWidget *widget, GdkDragContext *context, gint
 {
   GtkTreePath* path;
   GtkTreeViewDropPosition pos;
-  GdkAtom target = GDK_NONE;
 
   /* unset any highlight row */
   gtk_tree_view_set_drag_dest_row (GTK_TREE_VIEW(widget), NULL, GTK_TREE_VIEW_DROP_BEFORE);
@@ -1882,7 +1881,7 @@ static gboolean gtkTreeDragDrop(GtkWidget *widget, GdkDragContext *context, gint
   {
     if (pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER)
     {
-      target = gtk_drag_dest_find_target(widget, context, gtk_drag_dest_get_target_list(widget));
+      GdkAtom target = gtk_drag_dest_find_target(widget, context, gtk_drag_dest_get_target_list(widget));
       if (target != GDK_NONE)
       {
         iupAttribSetStr(ih, "_IUPTREE_DROPITEM", (char*)path);
@@ -1933,7 +1932,7 @@ static void gtkTreeDragBegin(GtkWidget *widget, GdkDragContext *context, Ihandle
   GtkTreeViewDropPosition pos;
   if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
   {
-    if ((pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER))
+    if (pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER)
     {
       GdkPixmap* pixmap;
       iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", (char*)path);
