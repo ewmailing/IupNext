@@ -95,9 +95,13 @@ static IgtkFont* gtkFindFont(const char *standardfont)
       }
     }
 
+    /* Map standard names to native names */
     mapped_name = iupFontGetPangoName(typeface);
     if (mapped_name)
+    {
       strcpy(typeface, mapped_name);
+      is_pango = 0;
+    }
 
     if (is_pango && !is_underline && !is_strikeout && size>0)
       fontdesc = pango_font_description_from_string(standardfont);

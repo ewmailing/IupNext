@@ -717,7 +717,7 @@ static void iLayoutUpdateProperties(Ihandle* properties, Ihandle* ih)
   IupSetAttribute(IupGetDialogChild(properties, "VALUE1A"), "VALUE", "");
   IupSetAttribute(IupGetDialogChild(properties, "VALUE1B"), "TITLE", "");
   IupSetAttribute(IupGetDialogChild(properties, "VALUE1C"), "TITLE", "");
-  IupSetAttribute(IupGetDialogChild(properties, "VALUE2"), "TITLE", "");
+  IupSetAttribute(IupGetDialogChild(properties, "VALUE2"), "VALUE", "");
   IupSetAttribute(IupGetDialogChild(properties, "VALUE3"), "TITLE", "");
   IupSetAttribute(IupGetDialogChild(properties, "SETBUT"), "ACTIVE", "No");
   IupSetAttribute(IupGetDialogChild(properties, "SETCOLORBUT"), "VISIBLE", "No");
@@ -803,9 +803,9 @@ static int iLayoutPropertiesSetColor_CB(Ihandle *colorbut)
     Ihandle* txt1 = IupGetDialogChild(colorbut, "VALUE1A");
     char* value = IupGetAttribute(color_dlg, "VALUE");
     char* name = IupGetAttribute(list1, IupGetAttribute(list1, "VALUE"));
+
     IupSetAttribute(txt1, "VALUE", value);
     IupStoreAttribute(colorbut, "BGCOLOR", value);
-
     IupStoreAttribute(elem, name, value);
 
     iupAttribSetStr(IupGetDialog(elem), "_IUPLAYOUT_CHANGED", "1");
@@ -815,6 +815,36 @@ static int iLayoutPropertiesSetColor_CB(Ihandle *colorbut)
   }
 
   IupDestroy(color_dlg);
+
+  return IUP_DEFAULT;
+}
+
+static int iLayoutPropertiesSetFont_CB(Ihandle *fontbut)
+{
+  Ihandle* font_dlg = IupFontDlg();
+  Ihandle* txt1 = IupGetDialogChild(fontbut, "VALUE1A");
+  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(fontbut));
+  IupSetAttribute(font_dlg, "TITLE", "Choose Font");
+  IupSetAttribute(font_dlg, "VALUE", IupGetAttribute(txt1, "VALUE"));
+
+  IupPopup(font_dlg, IUP_CENTER, IUP_CENTER);
+
+  if (IupGetInt(font_dlg, "STATUS")==1)
+  {
+    iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(fontbut, "_IUP_LAYOUTDIALOG");
+    Ihandle* elem = (Ihandle*)iupAttribGetInherit(fontbut, "_IUP_PROPELEMENT");
+    char* value = IupGetAttribute(font_dlg, "VALUE");
+
+    IupSetAttribute(txt1, "VALUE", value);
+    IupStoreAttribute(elem, "FONT", value);
+
+    iupAttribSetStr(IupGetDialog(elem), "_IUPLAYOUT_CHANGED", "1");
+
+    /* redraw canvas */
+    IupUpdate(IupGetBrother(layoutdlg->tree));
+  }
+
+  IupDestroy(font_dlg);
 
   return IUP_DEFAULT;
 }
@@ -833,6 +863,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     Ihandle* lbl3 = IupGetDialogChild(list1, "VALUE1C");
     Ihandle* setbut = IupGetDialogChild(list1, "SETBUT");
     Ihandle* colorbut = IupGetDialogChild(list1, "SETCOLORBUT");
+    Ihandle* fontbut = IupGetDialogChild(list1, "SETFONTBUT");
 
     iupClassObjectGetAttribNameInfo(elem, name, &def_value, &inherit, &not_string, &has_id, &access);
 
@@ -874,6 +905,11 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     }
     else
       IupSetAttribute(colorbut, "VISIBLE", "No");
+
+    if (access!=1 && !not_string && iupStrEqual(name, "FONT"))
+      IupSetAttribute(fontbut, "VISIBLE", "Yes");
+    else
+      IupSetAttribute(fontbut, "VISIBLE", "No");
   }
   return IUP_DEFAULT;
 }
@@ -887,9 +923,9 @@ static int iLayoutPropertiesList2_CB(Ihandle *list2, char *name, int item, int s
     char* value = iupAttribGet(elem, name);
     Ihandle* lbl = IupGetDialogChild(list2, "VALUE2");
     if (value)
-      IupSetfAttribute(lbl, "TITLE", "%p", value);
+      IupSetfAttribute(lbl, "VALUE", "%p", value);
     else
-      IupSetAttribute(lbl, "TITLE", "NULL");
+      IupSetAttribute(lbl, "VALUE", "NULL");
   }
   return IUP_DEFAULT;
 }
@@ -904,9 +940,9 @@ static int iLayoutPropertiesGetAsString_CB(Ihandle *button)
     char* value = iupAttribGet(elem, IupGetAttribute(list2, item));
     Ihandle* lbl = IupGetDialogChild(button, "VALUE2");
     if (value)
-      IupSetAttribute(lbl, "TITLE", value);
+      IupSetAttribute(lbl, "VALUE", value);
     else
-      IupSetAttribute(lbl, "TITLE", "NULL");
+      IupSetAttribute(lbl, "VALUE", "NULL");
   }
   return IUP_DEFAULT;
 }
@@ -987,7 +1023,7 @@ static int iLayoutPropertiesTabChangePos_CB(Ihandle* ih, int new_pos, int old_po
 
 static void iLayoutCreatePropertiesDialog(iLayoutDialog* layoutdlg, Ihandle* parent)
 {
-  Ihandle *list1, *list2, *list3, *close, *dlg, *dlg_box, *button_box, *colorbut, 
+  Ihandle *list1, *list2, *list3, *close, *dlg, *dlg_box, *button_box, *colorbut, *fontbut,
           *tabs, *box1, *box11, *box2, *box22, *box3, *box33, *set;
 
   close = IupButton("Close", NULL);
@@ -1033,9 +1069,16 @@ static void iLayoutCreatePropertiesDialog(iLayoutDialog* layoutdlg, Ihandle* par
   IupSetAttribute(colorbut, "NAME", "SETCOLORBUT");
   IupSetAttribute(colorbut, "VISIBLE", "NO");
 
+  fontbut = IupButton("F", NULL);
+  IupSetAttribute(fontbut, "SIZE", "20x10");
+  IupStoreAttribute(fontbut, "FONT", "Times, Italic 14");
+  IupSetCallback(fontbut, "ACTION", (Icallback)iLayoutPropertiesSetFont_CB);
+  IupSetAttribute(fontbut, "NAME", "SETFONTBUT");
+  IupSetAttribute(fontbut, "VISIBLE", "NO");
+
   box11 = IupVbox(
             IupLabel("Value:"),
-            IupHbox(IupSetAttributes(IupText(NULL), "ALIGNMENT=ALEFT:ATOP, EXPAND=YES, NAME=VALUE1A"), IupVbox(set, colorbut, NULL), NULL),
+            IupHbox(IupSetAttributes(IupText(NULL), "MULTILINE=Yes, ALIGNMENT=ALEFT:ATOP, EXPAND=YES, NAME=VALUE1A"), IupVbox(set, colorbut, fontbut, NULL), NULL),
             IupSetAttributes(IupFill(), "RASTERSIZE=10"), 
             IupLabel("Default Value:"),
             IupFrame(IupSetAttributes(IupLabel(NULL), "ALIGNMENT=ALEFT:ATOP, EXPAND=HORIZONTAL, NAME=VALUE1B")),
@@ -1048,7 +1091,7 @@ static void iLayoutCreatePropertiesDialog(iLayoutDialog* layoutdlg, Ihandle* par
 
   box22 = IupVbox(
             IupLabel("Value:"),
-            IupFrame(IupSetAttributes(IupLabel(NULL), "ALIGNMENT=ALEFT:ATOP, EXPAND=YES, NAME=VALUE2")),
+            IupSetAttributes(IupText(NULL), "MULTILINE=Yes, ALIGNMENT=ALEFT:ATOP, EXPAND=YES, NAME=VALUE2, READONLY=Yes"),
             IupSetAttributes(IupFill(), "RASTERSIZE=10"), 
             IupSetCallbacks(IupSetAttributes(IupButton("Get as String", NULL), "PADDING=3x3"), "ACTION", iLayoutPropertiesGetAsString_CB, NULL),
             IupLabel("IMPORTANT: if the attribute is not a string\nthis can crash the application."),

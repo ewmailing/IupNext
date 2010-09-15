@@ -62,6 +62,7 @@ static IwinFont* winFindFont(const char *standardfont)
       return NULL;
   }
 
+  /* Map standard names to native names */
   mapped_name = iupFontGetWinName(typeface);
   if (mapped_name)
     strcpy(typeface, mapped_name);
