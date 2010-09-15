@@ -1819,7 +1819,7 @@ static LRESULT CALLBACK winTreeEditWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARA
     return CallWindowProc(oldProc, hwnd, msg, wp, lp);
 }
 
-static void winTreeBeginDrag(Ihandle* ih, int x, int y)
+static void winTreeDragBegin(Ihandle* ih, int x, int y)
 {
   HIMAGELIST  dragImageList;
 
@@ -1852,7 +1852,7 @@ static void winTreeBeginDrag(Ihandle* ih, int x, int y)
   SetCapture(ih->handle);  /* drag only inside the tree */
 }
 
-static void winTreeDrag(Ihandle* ih, int x, int y)
+static void winTreeDragMove(Ihandle* ih, int x, int y)
 {
   HTREEITEM	hItemDrop = winTreeFindNodeXY(ih, x, y);
   HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPTREE_DRAGIMAGELIST");
@@ -1883,7 +1883,7 @@ static void winTreeDrag(Ihandle* ih, int x, int y)
     iupAttribSetStr(ih, "_IUPTREE_DROPITEM", NULL);
 }
 
-static void winTreeDrop(Ihandle* ih)
+static void winTreeDragDrop(Ihandle* ih)
 {
   HTREEITEM	 hItemDrag     =  (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
   HTREEITEM	 hItemDrop     =  (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DROPITEM");
@@ -2183,9 +2183,9 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     if (ih->data->show_dragdrop && (wp & MK_LBUTTON))
     {
       if (!iupAttribGet(ih, "_IUPTREE_DRAGITEM"))
-        winTreeBeginDrag(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+        winTreeDragBegin(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
       else 
-        winTreeDrag(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+        winTreeDragMove(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
     }
     else if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
     {
@@ -2218,7 +2218,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     }
 
     if (ih->data->show_dragdrop && (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM") != NULL)
-      winTreeDrop(ih);
+      winTreeDragDrop(ih);
 
     break;
   case WM_CHAR:

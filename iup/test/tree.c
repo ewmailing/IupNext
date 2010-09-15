@@ -516,7 +516,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
 //  IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
+//  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
 
   IupSetAttribute(tree, "ADDEXPANDED",  "YES");
 //  IupSetAttribute(tree, "HIDELINES",    "YES");

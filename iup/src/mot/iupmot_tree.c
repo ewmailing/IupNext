@@ -2232,7 +2232,7 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
   }
 }
 
-static void motTreeTransferProc(Widget drop_context, XtPointer client_data, Atom *seltype, Atom *type, XtPointer value, unsigned long *length, int format)
+static void motTreeDragTransferProc(Widget drop_context, XtPointer client_data, Atom *seltype, Atom *type, XtPointer value, unsigned long *length, int format)
 {
   Atom atomTreeItem = XInternAtom(iupmot_display, "TREE_ITEM", False);
   Widget wItemDrop = (Widget)client_data;
@@ -2287,7 +2287,7 @@ static void motTreeTransferProc(Widget drop_context, XtPointer client_data, Atom
   (void)length;
 }
 
-static void motTreeDropProc(Widget w, XtPointer client_data, XmDropProcCallbackStruct* drop_data)
+static void motTreeDragDropProc(Widget w, XtPointer client_data, XmDropProcCallbackStruct* drop_data)
 {
   Atom atomTreeItem = XInternAtom(iupmot_display, "TREE_ITEM", False);
   XmDropTransferEntryRec transferList[2];
@@ -2332,7 +2332,7 @@ static void motTreeDropProc(Widget w, XtPointer client_data, XmDropProcCallbackS
     transferList[0].client_data = (XtPointer)wItemDrop;
     iupMOT_SETARG(args, num_args, XmNdropTransfers, transferList);
     iupMOT_SETARG(args, num_args, XmNnumDropTransfers, 1);
-    iupMOT_SETARG(args, num_args, XmNtransferProc, motTreeTransferProc);
+    iupMOT_SETARG(args, num_args, XmNtransferProc, motTreeDragTransferProc);
   }
 
   XmDropTransferStart(drop_context, args, num_args);
@@ -2392,7 +2392,7 @@ static Boolean motTreeConvertProc(Widget drop_context, Atom *selection, Atom *ta
   return True;
 }
 
-static void motTreeStartDrag(Widget w, XButtonEvent* evt, String* params, Cardinal* num_params)
+static void motTreeDragStart(Widget w, XButtonEvent* evt, String* params, Cardinal* num_params)
 {
   Atom atomTreeItem = XInternAtom(iupmot_display, "TREE_ITEM", False);
   Atom exportList[1];
@@ -2438,7 +2438,7 @@ static void motTreeStartDrag(Widget w, XButtonEvent* evt, String* params, Cardin
   (void)num_params;
 }
 
-static void motTreeEnableDragDrop(Widget w)
+static void motTreeDragDropEnable(Widget w)
 {
   Atom atomTreeItem = XInternAtom(iupmot_display, "TREE_ITEM", False);
   Atom importList[1];
@@ -2448,7 +2448,7 @@ static void motTreeEnableDragDrop(Widget w)
   static int do_rec = 0;
   if (!do_rec)
   {
-    XtActionsRec rec = {"StartDrag", (XtActionProc)motTreeStartDrag};
+    XtActionsRec rec = {"StartDrag", (XtActionProc)motTreeDragStart};
     XtAppAddActions(iupmot_appcontext, &rec, 1);
     do_rec = 1;
   }
@@ -2458,7 +2458,7 @@ static void motTreeEnableDragDrop(Widget w)
   iupMOT_SETARG(args, num_args, XmNimportTargets, importList);
   iupMOT_SETARG(args, num_args, XmNnumImportTargets, 1);
   iupMOT_SETARG(args, num_args, XmNdropSiteOperations, XmDROP_MOVE|XmDROP_COPY);
-  iupMOT_SETARG(args, num_args, XmNdropProc, motTreeDropProc);
+  iupMOT_SETARG(args, num_args, XmNdropProc, motTreeDragDropProc);
   XmDropSiteUpdate(w, args, num_args);
 
   XtVaSetValues(XmGetXmDisplay(iupmot_display), XmNenableDragIcon, True, NULL);
@@ -2562,8 +2562,8 @@ static int motTreeMapMethod(Ihandle* ih)
 
   if (ih->data->show_dragdrop)
   {
-    motTreeEnableDragDrop(ih->handle);
-    XtVaSetValues(ih->handle, XmNuserData, ih, NULL);  /* to be used in motTreeTransferProc */
+    motTreeDragDropEnable(ih->handle);
+    XtVaSetValues(ih->handle, XmNuserData, ih, NULL);  /* to be used in motTreeDragTransferProc */
   }
   else
     iupmotDisableDragSource(ih->handle);
