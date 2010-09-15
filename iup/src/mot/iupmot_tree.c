@@ -2238,15 +2238,22 @@ static void motTreeTransferProc(Widget drop_context, XtPointer client_data, Atom
   Widget wItemDrop = (Widget)client_data;
   Widget wItemDrag = (Widget)value;
 
-  if (*type == atomTreeItem)
+  if (wItemDrag && wItemDrop && *type == atomTreeItem)
   {
+    int equal_nodes = 0;
     Widget wParent;
     Ihandle* ih = NULL;
     int is_ctrl;
 
-    if (!wItemDrop || wItemDrag == wItemDrop)
-      return;
+    if (wItemDrag == wItemDrop)
+    {
+      if (iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
+        equal_nodes = 1;
+      else
+        return;
+    }
 
+    /* If Drag item is an ancestor of Drop item then return */
     wParent = wItemDrop;
     while(wParent)
     {
@@ -2257,7 +2264,7 @@ static void motTreeTransferProc(Widget drop_context, XtPointer client_data, Atom
 
     XtVaGetValues(XtParent(wItemDrag), XmNuserData, &ih, NULL);
 
-    if (motTreeCallDragDropCb(ih, wItemDrag, wItemDrop, &is_ctrl) == IUP_CONTINUE)
+    if (motTreeCallDragDropCb(ih, wItemDrag, wItemDrop, &is_ctrl) == IUP_CONTINUE && !equal_nodes)
     {
       /* Copy or move the dragged item to the new position. */
       Widget wItemNew = motTreeCopyMoveNode(ih, wItemDrag, wItemDrop, is_ctrl);

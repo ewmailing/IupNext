@@ -1803,12 +1803,22 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
 
   if (pathDrag && pathDrop)
   {
+    int equal_nodes = 0;
     GtkTreeIter iterDrag, iterDrop, iterParent, iterNextParent;
     GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
 
     gtk_tree_model_get_iter(model, &iterDrag, pathDrag);
     gtk_tree_model_get_iter(model, &iterDrop, pathDrop);
 
+    if (gtk_tree_path_compare(pathDrop, pathDrag) == 0)
+    {
+      if (iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
+        equal_nodes = 1;
+      else
+        goto gtkTreeDragDataReceived_FINISH;
+    }
+
+    /* If Drag item is an ancestor of Drop item then return */
     iterParent = iterDrop;
     while(gtk_tree_model_iter_parent(model, &iterNextParent, &iterParent))
     {
@@ -1819,7 +1829,7 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
 
     accepted = TRUE;
 
-    if (gtkTreeCallDragDropCb(ih, &iterDrag, &iterDrop, &is_ctrl) == IUP_CONTINUE)
+    if (gtkTreeCallDragDropCb(ih, &iterDrag, &iterDrop, &is_ctrl) == IUP_CONTINUE && !equal_nodes)
     {
       GtkTreeIter iterNewItem;
 
@@ -1870,8 +1880,7 @@ static gboolean gtkTreeDragDrop(GtkWidget *widget, GdkDragContext *context, gint
 
   if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
   {
-    if ((pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER) && 
-        (gtk_tree_path_compare(path, (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_DRAGITEM")) != 0))
+    if (pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER)
     {
       target = gtk_drag_dest_find_target(widget, context, gtk_drag_dest_get_target_list(widget));
       if (target != GDK_NONE)
@@ -1902,8 +1911,7 @@ static gboolean gtkTreeDragMotion(GtkWidget *widget, GdkDragContext *context, gi
   GtkTreePath* pathDrag = (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
   if (pathDrag && gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
   {
-    if ((pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER) && 
-        (gtk_tree_path_compare(path, pathDrag) != 0))
+    if (pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER)
     {
       gtk_tree_view_set_drag_dest_row(GTK_TREE_VIEW(widget), path, pos);
       gdk_drag_status(context, context->actions, time);

@@ -1855,7 +1855,6 @@ static void winTreeBeginDrag(Ihandle* ih, int x, int y)
 static void winTreeDrag(Ihandle* ih, int x, int y)
 {
   HTREEITEM	hItemDrop = winTreeFindNodeXY(ih, x, y);
-  HTREEITEM	 hItemDrag = (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
   HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPTREE_DRAGIMAGELIST");
 
   if (dragImageList)
@@ -1867,7 +1866,7 @@ static void winTreeDrag(Ihandle* ih, int x, int y)
     ImageList_DragMove(pt.x, pt.y);
   }
 
-  if (hItemDrop && hItemDrop!=hItemDrag)
+  if (hItemDrop)
   {
     if(dragImageList)
       ImageList_DragShowNolock(FALSE);
@@ -1890,6 +1889,7 @@ static void winTreeDrop(Ihandle* ih)
   HTREEITEM	 hItemDrop     =  (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DROPITEM");
   HIMAGELIST dragImageList = (HIMAGELIST)iupAttribGet(ih, "_IUPTREE_DRAGIMAGELIST");
   HTREEITEM  hParent;
+  int equal_nodes = 0;
   int is_ctrl;
 
   if (dragImageList)
@@ -1909,8 +1909,16 @@ static void winTreeDrop(Ihandle* ih)
   iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", NULL);
   iupAttribSetStr(ih, "_IUPTREE_DROPITEM", NULL);
 
-  if (!hItemDrop || hItemDrag == hItemDrop)
+  if (!hItemDrop || !hItemDrag)
     return;
+
+  if (hItemDrag == hItemDrop)
+  {
+    if (iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
+      equal_nodes = 1;
+    else
+      return;
+  }
 
   /* If Drag item is an ancestor of Drop item then return */
   hParent = hItemDrop;
@@ -1921,7 +1929,7 @@ static void winTreeDrop(Ihandle* ih)
       return;
   }
 
-  if (winTreeCallDragDropCb(ih, hItemDrag, hItemDrop, &is_ctrl) == IUP_CONTINUE)
+  if (winTreeCallDragDropCb(ih, hItemDrag, hItemDrop, &is_ctrl) == IUP_CONTINUE && !equal_nodes)
   {
     /* Copy or move the dragged item to the new position. */
     HTREEITEM  hItemNew = winTreeCopyMoveNode(ih, hItemDrag, hItemDrop, is_ctrl);
