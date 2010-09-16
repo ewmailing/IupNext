@@ -189,7 +189,7 @@ static Ihandle *create_mat(void)
   IupSetAttribute(mat,"FGCOLOR1:1","255 0 128");
   IupSetAttribute(mat,"BGCOLOR3:*","255 128 0");
   IupSetAttribute(mat,"BGCOLOR*:4","255 128 0");
-  //IupSetAttribute(mat,"FONT2:*", "Times New Roman:BOLD:8");
+  //IupSetAttribute(mat,"FONT2:*", "Times:BOLD:8");
   //IupSetAttribute(mat,"FONT*:2", "Courier::12");
   IupSetAttribute(mat,"SORTSIGN1","UP");
 //  IupSetAttribute(mat,"SORTSIGN2","DOWN");

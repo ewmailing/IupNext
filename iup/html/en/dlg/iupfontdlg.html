@@ -22,10 +22,10 @@
   </ul>
 </div>
 
-<h2>IupFontDlg<font size="4"> (Windows and GTK only) (since 3.0)</font></h2>
+<h2>IupFontDlg<font size="4"> (since 3.0)</font></h2>
 <p>Creates the Font Dialog element. It is a predefined dialog for 
   selecting a font. The dialog can be shown with the
-  IupPopup function only.</p>
+  <strong>IupPopup</strong> function only.</p>
 <h3><a name="Creation">Creation</a></h3>
 <pre>Ihandle* IupFontDlg(void); [in C]
 iup.fontdlg{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
@@ -34,11 +34,11 @@ fontdlg() [in LED]</pre>
   created element, or NULL if an error occurs.</p>
 
 <h3><a name="Attributes">Attributes</a></h3>
-<p><b>PREVIEWTEXT</b> [GTK only]: the text shown in the preview area. If not 
-defined GTK will provide a default text.</p>
+<p><b>PREVIEWTEXT</b> [GTK and Motif only]: the text shown in the preview area. If not 
+defined the system will provide a default text.</p>
 <p><b>COLOR</b> [Windows Only]: The initial color value and the returned 
 selected value if the user pressed the Ok button. In Windows the Choose Font 
-dialog allows hte user to select a color from a pre-defined list of colors.</p>
+dialog allows the user to select a color from a pre-defined list of colors.</p>
 <p><a href="../attrib/iup_parentdialog.html">PARENTDIALOG</a>
   (creation only): Name of a dialog to be used as parent. This dialog will 
   be always in front of the parent dialog. </p>

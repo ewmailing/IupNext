@@ -32,11 +32,14 @@ Iclass* iupFontDlgGetClass(void)
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
 
-  /* reset not used native dialog methods */
-  ic->parent->LayoutUpdate = NULL;
-  ic->parent->SetChildrenPosition = NULL;
-  ic->parent->Map = NULL;
-  ic->parent->UnMap = NULL;
+  if (!iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Motif"))
+  {
+    /* reset not used native dialog methods */
+    ic->parent->LayoutUpdate = NULL;
+    ic->parent->SetChildrenPosition = NULL;
+    ic->parent->Map = NULL;
+    ic->parent->UnMap = NULL;
+  }
 
   /* IupFontDialog only */
   iupClassRegisterAttribute(ic, "STATUS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT|IUPAF_READONLY);

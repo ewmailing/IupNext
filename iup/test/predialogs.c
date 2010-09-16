@@ -205,7 +205,7 @@ static void new_font(void)
 
   IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
   IupSetAttribute(dlg, "COLOR", "128 0 255");
-  IupSetAttribute(dlg, "VALUE", "Times New Roman, Bold 20");
+  IupSetAttribute(dlg, "VALUE", "Times, Bold 20");
   IupSetAttribute(dlg, "TITLE", "IupFontDlg Test");
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
 

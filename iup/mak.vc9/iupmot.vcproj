@@ -236,6 +236,10 @@
 				RelativePath="..\src\mot\iupmot_val.c"
 				>
 			</File>
+			<File
+				RelativePath="..\src\mot\xfontsel.c"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

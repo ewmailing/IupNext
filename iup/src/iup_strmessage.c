@@ -105,6 +105,10 @@ static IstdMessage iStdMessages[] =
   {"IUP_PALETTE", {"&Palette:", "&Paleta:", NULL}},
   {"IUP_TRUE", {"True", "Verdadeiro", NULL}},
   {"IUP_FALSE", {"False", "Falso", NULL}},
+  {"IUP_FAMILY", {"Family:", "Família:", NULL}},
+  {"IUP_STYLE", {"Style:", "Estilo:", NULL}},
+  {"IUP_SIZE", {"Size:", "Tamanho:", NULL}},
+  {"IUP_SAMPLE", {"Sample:", "Exemplo:", NULL}},
   {NULL, {NULL, NULL, NULL}}
 };
 

@@ -34,7 +34,7 @@ typedef struct _ImotFont
 
 static Iarray* mot_fonts = NULL;
 
-static int motGetFontSize(char* font_name)
+static int motGetFontSize(const char* font_name)
 {
   int i = 0;
   while (i < 8)
@@ -78,19 +78,26 @@ static XFontStruct* motLoadFont(const char* foundry, const char *typeface, int s
   sprintf(font_name,"-%s-%s-%s-%s-*-*-*-*-*-*-*-*-*-*", foundry, typeface, weight, slant);
 
   font_names_list = XListFonts(iupmot_display, font_name, 32767, &num_fonts);
-  if (!num_fonts)
+  if (!num_fonts && italic)
   {
     /* try changing 'i' to 'o', for italic */
-    if (italic)
-    {
-      slant = "o";
-      strstr(font_name, "-i-")[1] = 'o';
-      font_names_list = XListFonts(iupmot_display, font_name, 32767, &num_fonts);
-    }
-
-    if (!num_fonts)
-      return NULL;
+    if (font_names_list)
+      XFreeFontNames(font_names_list);
+    slant = "o";
+    strstr(font_name, "-i-")[1] = 'o';
+    font_names_list = XListFonts(iupmot_display, font_name, 32767, &num_fonts);
   }
+  if (!num_fonts && bold)
+  {
+    /* try removing bold */
+    if (font_names_list)
+      XFreeFontNames(font_names_list);
+    weight = "medium";
+    sprintf(font_name,"-%s-%s-%s-%s-*-*-*-*-*-*-*-*-*-*", foundry, typeface, weight, slant);
+    font_names_list = XListFonts(iupmot_display, font_name, 32767, &num_fonts);
+  }
+  if (!num_fonts)
+    return NULL;
 
   if (size < 0) /* if in pixels convert to points */
   {
@@ -195,7 +202,8 @@ static ImotFont* motFindFont(const char* foundry, const char *standardfont)
   if (standardfont[0] == '-')
   {
     fontstruct = XLoadQueryFont(iupmot_display, standardfont);
-    if (!fontstruct) return NULL;
+    if (!fontstruct)
+      return NULL;
     strcpy(xlfd, standardfont);
   }
   else
@@ -215,7 +223,8 @@ static ImotFont* motFindFont(const char* foundry, const char *standardfont)
       strcpy(typeface, mapped_name);
 
     fontstruct = motLoadFont(foundry, typeface, size, is_bold, is_italic, xlfd);
-    if (!fontstruct) return NULL;
+    if (!fontstruct) 
+      return NULL;
   }
 
   /* create room in the array */
