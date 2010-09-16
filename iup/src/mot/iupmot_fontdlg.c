@@ -24,7 +24,14 @@
 
 static int motFontDlgCompareStr(const void *a, const void *b)
 {
-  return strcmp( * ( char** ) a, * ( char** ) b );
+  /* skip foundry */
+  char* f1 = *(char**)a;
+  char* f2 = *(char**)b;
+  f1++; /* skip first '-' */
+  f1 = strchr(f1, '-')+1; /* skip second '-' */
+  f2++; /* skip first '-' */
+  f2 = strchr(f2, '-')+1; /* skip second '-' */
+  return strcmp(f1 , f2);
 }
 
 static void motFontGetFamily(const char* font_str, char* family)
@@ -109,7 +116,7 @@ static void motFontDlgInitSizeList(Ihandle* ih, const char* fontface, int size)
   for (i=0; i<count; i++)
   {
     sz = size_list[i];
-    if (sz != prev_sz)  /* avoid duplicates */
+    if (sz && sz != prev_sz)  /* avoid duplicates, and zero */
     {
       if (sz == size)
         selected = j;
@@ -121,49 +128,56 @@ static void motFontDlgInitSizeList(Ihandle* ih, const char* fontface, int size)
   IupSetAttributeId(list3, "", j, NULL);
 
   if (selected != -1)
+  {
     IupSetfAttribute(list3, "VALUE", "%d", selected);
+    IupSetfAttribute(list3, "TOPITEM", "%d", selected);
+  }
 
   XFreeFontNames(font_list_str);
 }
 
-static void motFontDlgSelectFontFace(Ihandle* ih, char* fontface)
+static void motFontDlgSelectFontFace(Ihandle* ih, char* fontface, int select)
 {
   Ihandle* sample = IupGetDialogChild(ih, "SAMPLE");
   char* style = IupGetAttribute(sample, "FONTSTYLE");
   int size = IupGetInt(sample, "FONTSIZE");
   Ihandle* list1 = IupGetDialogChild(ih, "LIST1");
   Ihandle* list2 = IupGetDialogChild(ih, "LIST2");
-  int i, count;
+  int i, count, is_bold, is_italic;
 
   motFontDlgInitSizeList(ih, fontface, size);
 
-  /* find the fontface in the list and select it */
-  count = IupGetInt(list1, "COUNT");
-  for (i=0; i<count; i++)
+  if (select)
   {
-    if (iupStrEqualNoCase(fontface, IupGetAttributeId(list1, "", i+1)))
+    /* find the fontface in the list and select it */
+    count = IupGetInt(list1, "COUNT");
+    for (i=0; i<count; i++)
     {
-      IupSetfAttribute(list1, "VALUE", "%d", i+1);
-      break;
+      if (iupStrEqualNoCase(fontface, IupGetAttributeId(list1, "", i+1)))
+      {
+        IupSetfAttribute(list1, "VALUE", "%d", i+1);
+        IupSetfAttribute(list1, "TOPITEM", "%d", i+1);
+        break;
+      }
     }
   }
 
-  /* find the style in the list and select it */
-  count = IupGetInt(list2, "COUNT");
-  for (i=0; i<count; i++)
-  {
-    if (iupStrEqualNoCase(style, IupGetAttributeId(list2, "", i+1)))
-    {
-      IupSetfAttribute(list2, "VALUE", "%d", i+1);
-      break;
-    }
-  }
+  is_bold = strstr(style, "Bold")!=NULL;
+  is_italic = strstr(style, "Italic")!=NULL;
+  if (is_bold && is_italic)
+    IupSetAttribute(list2, "VALUE", "4");
+  else if (is_italic)
+    IupSetAttribute(list2, "VALUE", "3");
+  else if (is_bold)
+    IupSetAttribute(list2, "VALUE", "2");
+  else 
+    IupSetAttribute(list2, "VALUE", "1");
 }
 
 static int motFontDlgButtonOK_CB(Ihandle* ih)
 {
   Ihandle* sample = IupGetDialogChild(ih, "SAMPLE");
-  iupAttribStoreStr(IupGetDialog(ih), "VALUE", IupGetAttribute(sample, "FONT"));
+  iupAttribStoreStr(IupGetDialog(ih), "TITLE", IupGetAttribute(sample, "FONT"));
   iupAttribSetStr(IupGetDialog(ih), "STATUS", "1");
   return IUP_CLOSE;
 }
@@ -192,7 +206,7 @@ static int motFontDlgShow_CB(Ihandle* ih, int state)
     Ihandle* sample = IupGetDialogChild(ih, "SAMPLE");
     char* value = iupAttribGet(ih, "PREVIEWTEXT");
     if (value)
-      IupStoreAttribute(sample, "VALUE", value);
+      IupStoreAttribute(sample, "TITLE", value);
 
     value = iupAttribGet(ih, "VALUE");
     if (value)
@@ -200,7 +214,7 @@ static int motFontDlgShow_CB(Ihandle* ih, int state)
       IupStoreAttribute(sample, "FONT", value);
       value = IupGetAttribute(sample, "FONTFACE");
 
-      motFontDlgSelectFontFace(ih, value);
+      motFontDlgSelectFontFace(ih, value, 1);
     }
 
     if (!IupGetCallback(ih, "HELP_CB"))
@@ -222,7 +236,7 @@ static int motFontDlgList1_CB(Ihandle *list1, char *name, int item, int state)
     char* size = IupGetAttribute(sample, "FONTSIZE");
     IupSetfAttribute(sample, "FONT", "%s, %s %s", name, style, size);
 
-    motFontDlgSelectFontFace(IupGetDialog(list1), name);
+    motFontDlgSelectFontFace(IupGetDialog(list1), name, 0);
   }
   return IUP_DEFAULT;
 }
@@ -319,7 +333,7 @@ static int motFontDlgCreateMethod(Ihandle* ih, void** params)
   iupChildTreeAppend(ih, IupSetAttributes(IupVbox(lin1, 
                       IupSetAttributes(IupVbox(
                         IupLabel(iupStrMessageGet("IUP_SAMPLE")), 
-                        IupSetAttributes(IupText(NULL), "NAME=SAMPLE, VALUE=\"abcdefghijk ABCDEFGHIJK\", EXPAND=HORIZONTAL, RASTERSIZE=x40"), 
+                        IupFrame(IupSetAttributes(IupLabel(NULL), "NAME=SAMPLE, TITLE=\"abcdefghijk ABCDEFGHIJK\", EXPAND=HORIZONTAL, RASTERSIZE=x40")), 
                         NULL), "MARGIN=0x0, GAP=0"),
                       IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"), 
                       lin2, 

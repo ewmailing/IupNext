@@ -107,13 +107,11 @@ void IupFlush(void)
 {
   int count = 0;
 
-  while (count<100 && XPending(iupmot_display) != 0)
+  while (count<100 && XtAppPending(iupmot_appcontext) != 0)
   {
     if (motLoopProcessEvent() == IUP_CLOSE)
       break;
 
     count++;
   }
-
-  XFlush(iupmot_display);
 }
