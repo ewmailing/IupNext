@@ -2245,21 +2245,20 @@ static void motTreeDragTransferProc(Widget drop_context, XtPointer client_data, 
     Ihandle* ih = NULL;
     int is_ctrl;
 
-    if (wItemDrag == wItemDrop)
-    {
-      if (iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
-        equal_nodes = 1;
-      else
-        return;
-    }
-
-    /* If Drag item is an ancestor of Drop item then return */
+    /* If Drag item is an ancestor or equal to Drop item then return */
     wParent = wItemDrop;
     while(wParent)
     {
-      XtVaGetValues(wParent, XmNentryParent, &wParent, NULL);
       if (wParent == wItemDrag)
-        return;
+      {
+        if (!iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
+          return;
+
+        equal_nodes = 1;
+        break;
+      }
+
+      XtVaGetValues(wParent, XmNentryParent, &wParent, NULL);
     }
 
     XtVaGetValues(XtParent(wItemDrag), XmNuserData, &ih, NULL);

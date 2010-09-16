@@ -1803,27 +1803,27 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
 
   if (pathDrag && pathDrop)
   {
-    int equal_nodes = 0;
+    int equal_nodes = 0, has_parent = 1;
     GtkTreeIter iterDrag, iterDrop, iterParent, iterNextParent;
     GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
 
     gtk_tree_model_get_iter(model, &iterDrag, pathDrag);
     gtk_tree_model_get_iter(model, &iterDrop, pathDrop);
 
-    if (iterDrag.user_data == iterDrop.user_data)
-    {
-      if (iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
-        equal_nodes = 1;
-      else
-        goto gtkTreeDragDataReceived_FINISH;
-    }
-
-    /* If Drag item is an ancestor of Drop item then return */
+    /* If Drag item is an ancestor or equal to Drop item then return */
     iterParent = iterDrop;
-    while(gtk_tree_model_iter_parent(model, &iterNextParent, &iterParent))
+    while (has_parent)
     {
-      if (iterNextParent.user_data == iterDrag.user_data)
-        goto gtkTreeDragDataReceived_FINISH;
+      if (iterParent.user_data == iterDrag.user_data)
+      {
+        if (!iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
+          goto gtkTreeDragDataReceived_FINISH;
+
+        equal_nodes = 1;
+        break;
+      }
+
+      has_parent = gtk_tree_model_iter_parent(model, &iterNextParent, &iterParent);
       iterParent = iterNextParent;
     }
 

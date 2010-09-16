@@ -1912,21 +1912,20 @@ static void winTreeDragDrop(Ihandle* ih)
   if (!hItemDrop || !hItemDrag)
     return;
 
-  if (hItemDrag == hItemDrop)
-  {
-    if (iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
-      equal_nodes = 1;
-    else
-      return;
-  }
-
-  /* If Drag item is an ancestor of Drop item then return */
+  /* If Drag item is an ancestor or equal to Drop item then return */
   hParent = hItemDrop;
   while(hParent)
   {
-    hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hParent);
     if (hParent == hItemDrag)
-      return;
+    {
+      if (!iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
+        return;
+
+      equal_nodes = 1;
+      break;
+    }
+
+    hParent = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hParent);
   }
 
   if (winTreeCallDragDropCb(ih, hItemDrag, hItemDrop, &is_ctrl) == IUP_CONTINUE && !equal_nodes)
