@@ -32,8 +32,14 @@ static void SaveImageAsText(void)
 
 static void Reparent(void)
 {
-  lua_pushnumber(IupReparent(iuplua_checkihandle(1),
-                             iuplua_checkihandle(2)));
+  if (lua_isnil(lua_getparam(3)))
+    lua_pushnumber(IupReparent(iuplua_checkihandle(1),
+                               iuplua_checkihandle(2),
+                               NULL));
+  else
+    lua_pushnumber(IupReparent(iuplua_checkihandle(1),
+                               iuplua_checkihandle(2),
+                               iuplua_checkihandle(3)));
 }
 
 static void PreviousField(void)

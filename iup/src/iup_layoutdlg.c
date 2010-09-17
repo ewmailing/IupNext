@@ -104,7 +104,6 @@ static void iLayoutTreeSetNodeInfo(Ihandle* tree, int id, Ihandle* ih)
 {
   IupSetAttributeId(tree, "TITLE", id, iLayoutGetTitle(ih));
   iLayoutTreeSetNodeColor(tree, id, ih);
-  iupAttribSetInt(ih, "_IUP_LAYOUTTREE_ID", id);
   IupTreeSetUserId(tree, id, ih);
 }
 
@@ -1532,20 +1531,64 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
   return IUP_DEFAULT;
 }
 
-static int iLayoutTreeExecuteLeaf_CB(Ihandle *tree, int id)
+static int iLayoutTreeExecuteLeaf_CB(Ihandle* tree, int id)
 {
   Ihandle* elem = (Ihandle*)IupTreeGetUserId(tree, id);
   iLayoutBlink(elem);
   return IUP_DEFAULT;
 }
 
-static int iLayoutTreeRightClick_CB(Ihandle *tree, int id)
+static int iLayoutTreeRightClick_CB(Ihandle* tree, int id)
 {
   Ihandle* dlg = IupGetDialog(tree);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   Ihandle* elem = (Ihandle*)IupTreeGetUserId(tree, id);
   iLayoutContextMenu(layoutdlg, elem, dlg);
   return IUP_DEFAULT;
+}
+
+static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int isshift, int iscontrol)
+{
+  Ihandle* dlg = IupGetDialog(tree);
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+  Ihandle* drag_elem = (Ihandle*)IupTreeGetUserId(tree, drag_id);
+  Ihandle* drop_elem = (Ihandle*)IupTreeGetUserId(tree, drop_id);
+
+  /* no support for copy */
+  if (iscontrol)
+    return IUP_IGNORE;
+
+  if (iupStrEqualNoCase(IupGetAttributeId(tree, "KIND", drop_id), "BRANCH") &&
+      iupStrEqualNoCase(IupGetAttributeId(tree, "STATE", drop_id), "EXPANDED"))
+  {
+    /* If the drop node is a branch and it is expanded, 
+       then the drag node is inserted as the first child of the node. */
+    IupReparent(drag_elem, drop_elem, drop_elem->firstchild);  /* add before the first child */
+  }
+  else
+  {
+    if (!drop_elem->parent)
+      return IUP_IGNORE;
+
+    /* If the branch is not expanded or the drop node is a leaf, 
+       then it is inserted as the next brother of the node. */
+    IupReparent(drag_elem, drop_elem->parent, drop_elem->brother);
+  }
+
+  iupAttribSetStr(layoutdlg->dialog, "_IUPLAYOUT_CHANGED", "1");
+
+  /* make sure the dialog layout is updated */
+  IupRefresh(layoutdlg->dialog);
+
+  /* since we are only moving existing nodes, 
+     title, map state, and user data was not changed.
+     there is no need to update the node info */
+
+  /* redraw canvas */
+  IupUpdate(IupGetBrother(tree));
+
+  (void)isshift;
+  return IUP_CONTINUE;
 }
 
 static int iLayoutTreeSelection_CB(Ihandle* tree, int id, int status)
@@ -1623,10 +1666,12 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
   tree = IupTree();
   layoutdlg->tree = tree;
   IupSetAttribute(tree, "RASTERSIZE", NULL);
+  IupSetAttribute(tree, "SHOWDRAGDROP", "Yes");
   IupSetCallback(tree, "SELECTION_CB", (Icallback)iLayoutTreeSelection_CB);
   IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback)iLayoutTreeExecuteLeaf_CB);
   IupSetCallback(tree, "RIGHTCLICK_CB", (Icallback)iLayoutTreeRightClick_CB);
-
+  IupSetCallback(tree, "DRAGDROP_CB", (Icallback)iLayoutTreeDragDrop_CB);
+  
   status = IupLabel(NULL);
   IupSetAttribute(status, "EXPAND", "HORIZONTAL");
   IupSetAttribute(status, "FONT", "Courier, 11");

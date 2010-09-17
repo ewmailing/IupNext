@@ -36,7 +36,8 @@ static int SaveImageAsText(lua_State *L)
 static int Reparent(lua_State *L)
 {
   lua_pushinteger(L, IupReparent(iuplua_checkihandle(L,1),
-                                 iuplua_checkihandle(L,2)));
+                                 iuplua_checkihandle(L,2),
+                                 iuplua_checkihandleornil(L,3)));
   return 1;
 }
 

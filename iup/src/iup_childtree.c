@@ -137,7 +137,7 @@ static int iChildFind(Ihandle* parent, Ihandle* child)
   return 0;
 }
 
-static void iChildInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
+static void iupChildTreeInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
 {
   Ihandle *c, 
           *c_prev = NULL;
@@ -157,6 +157,7 @@ static void iChildInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
         parent->firstchild = child;
       else
         c_prev->brother = child;
+
       return;
     }
 
@@ -203,7 +204,7 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
       iChildFind(parent, child))
   {
     iChildDetach(parent, child);
-    iChildInsert(parent, ref_child, child);
+    iupChildTreeInsert(parent, ref_child, child);
   }
   else
   {
@@ -211,7 +212,7 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
     if (child->handle)
       return NULL;
 
-    iChildInsert(parent, ref_child, child);
+    iupChildTreeInsert(parent, ref_child, child);
     iupClassObjectChildAdded(parent, child);
     if (top_parent != parent)
       iupClassObjectChildAdded(top_parent, child);
@@ -304,7 +305,7 @@ static void iChildReparent(Ihandle* child, Ihandle* new_parent)
   }
 }
 
-int IupReparent(Ihandle* child, Ihandle* parent)
+int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
 {
   Ihandle* top_parent = parent;
   Ihandle* old_parent;
@@ -317,6 +318,13 @@ int IupReparent(Ihandle* child, Ihandle* parent)
   if (!iupObjectCheck(child))
     return IUP_ERROR;
 
+  if (ref_child)
+  {
+    /* can be NULL, but if not NULL must be a valid object */
+    iupASSERT(iupObjectCheck(ref_child));
+    if (!iupObjectCheck(ref_child))
+      return IUP_ERROR;
+  }
 
   /* this will return the actual parent */
   parent = iupClassObjectGetInnerContainer(top_parent);
@@ -342,7 +350,10 @@ int IupReparent(Ihandle* child, Ihandle* parent)
 
  
   /* attach to new parent */
-  iupChildTreeAppend(parent, child);
+  if (ref_child)
+    iupChildTreeInsert(parent, ref_child, child);
+  else
+    iupChildTreeAppend(parent, child);
   iupClassObjectChildAdded(parent, child);
   if (top_parent != parent)
     iupClassObjectChildAdded(top_parent, child);
