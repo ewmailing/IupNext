@@ -877,7 +877,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   /* ======================================================================= */
   /* BUTTONS   ============================================================= */
   /* ======================================================================= */
-  ok_bt = IupButton("OK", NULL);                      /* Ok Button */
+  ok_bt = IupButton(iupStrMessageGet("IUP_OK"), NULL);                      /* Ok Button */
   IupSetAttribute(ok_bt, "PADDING", "20x0");
   IupSetCallback (ok_bt, "ACTION", (Icallback)iColorBrowserDlgButtonOK_CB);
   IupSetAttributeHandle(ih, "DEFAULTENTER", ok_bt);

@@ -452,6 +452,8 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
   else
     iupDrawRectangle(dc, x, y, x+w-1, y+h-1, fr, fg, fb, IUP_DRAW_STROKE);
 
+  iupDrawSetClipRect(dc, x, y, x+w-1, y+h-1);
+
   if (ih->iclass->childtype==IUP_CHILDNONE)
   {
     int pw, ph;
@@ -512,9 +514,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
       char* position;
       int img_w, img_h;
 
-      iupDrawSetClipRect(dc, x+1, y+1, x+w-2, y+h-2);
       iupDrawImage(dc, image, 0, x+1, y+1, &img_w, &img_h);
-      iupDrawResetClip(dc);
 
       position = iupAttribGetLocal(ih, "IMAGEPOSITION");  /* used only for buttons */
       if (position &&
@@ -546,11 +546,9 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     {
       int len;
       iupStrNextLine(title, &len);
-      iupDrawSetClipRect(dc, x+1, y+1, x+w-2, y+h-2);
       r = fr, g = fg, b = fb;
       iupStrToRGB(iupAttribGetLocal(ih, "FGCOLOR"), &r, &g, &b);
       iupDrawText(dc, title, len, x+1, y+1, r, g, b, IupGetAttribute(ih, "FONT"));
-      iupDrawResetClip(dc);
     }
 
     if (ih->iclass->childtype==IUP_CHILDNONE &&
@@ -594,6 +592,8 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
       }
     }
   }
+
+  iupDrawResetClip(dc);
 
   if (marked)
   {
@@ -1261,7 +1261,11 @@ static int iLayoutMenuMap_CB(Ihandle* menu)
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
 
-  IupMap(elem);
+  if (IupMap(elem) == IUP_ERROR)
+  {
+    IupMessage("Error", "IupMap failed.");
+    return IUP_DEFAULT;
+  }
 
   iLayoutUpdateTreeColors(layoutdlg->tree, elem);
 
@@ -1553,6 +1557,7 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   Ihandle* drag_elem = (Ihandle*)IupTreeGetUserId(tree, drag_id);
   Ihandle* drop_elem = (Ihandle*)IupTreeGetUserId(tree, drop_id);
+  int error;
 
   /* no support for copy */
   if (iscontrol)
@@ -1563,7 +1568,7 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
   {
     /* If the drop node is a branch and it is expanded, 
        then the drag node is inserted as the first child of the node. */
-    IupReparent(drag_elem, drop_elem, drop_elem->firstchild);  /* add before the first child */
+    error = IupReparent(drag_elem, drop_elem, drop_elem->firstchild);  /* add before the first child */
   }
   else
   {
@@ -1572,8 +1577,11 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
 
     /* If the branch is not expanded or the drop node is a leaf, 
        then it is inserted as the next brother of the node. */
-    IupReparent(drag_elem, drop_elem->parent, drop_elem->brother);
+    error = IupReparent(drag_elem, drop_elem->parent, drop_elem->brother);
   }
+
+  if (error == IUP_ERROR)
+    return IUP_IGNORE;
 
   iupAttribSetStr(layoutdlg->dialog, "_IUPLAYOUT_CHANGED", "1");
 

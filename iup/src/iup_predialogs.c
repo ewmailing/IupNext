@@ -69,7 +69,7 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
   IupSetAttribute(lst,attrib_str,NULL);
   IupSetAttribute(lst,"EXPAND","YES");
 
-  ok = IupButton("OK", NULL);
+  ok = IupButton(iupStrMessageGet("IUP_OK"), NULL);
   IupSetAttribute(ok,"PADDING" ,"20x5");
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
@@ -284,7 +284,7 @@ int  iupDataEntry(int    maxlin,
   lbl[i] = NULL;
   IupInsert(vb, NULL, IupNormalizerv(lbl));
 
-  ok = IupButton("OK", NULL);
+  ok = IupButton(iupStrMessageGet("IUP_OK"), NULL);
   IupSetAttribute(ok, "PADDING", "20x0");
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
@@ -412,7 +412,7 @@ int IupGetText(const char* title, char* text)
   IupSetAttribute(multi_text, "VISIBLELINES", "10");
   IupSetAttribute(multi_text, "VISIBLECOLUMNS", "50");
 
-  ok = IupButton("OK", NULL);
+  ok = IupButton(iupStrMessageGet("IUP_OK"), NULL);
   IupSetAttribute(ok, "PADDING", "20x5");
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
@@ -493,7 +493,7 @@ void iupVersionDlg(void)
                       IupLabel(IUP_VERSION_DATE),
                       IupLabel(IUP_COPYRIGHT),
                       NULL)), 
-                    IupButton("OK", NULL),
+                    IupButton(iupStrMessageGet("IUP_OK"), NULL),
                     NULL));
 
   IupSetAttribute(dlg,"TITLE","IUP Version");

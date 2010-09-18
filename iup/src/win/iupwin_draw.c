@@ -562,7 +562,7 @@ void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, un
 
 void iupDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
-  HRGN clip_hrgn = CreateRectRgn(x1, y1, x2, y2);
+  HRGN clip_hrgn = CreateRectRgn(x1, y1, x2+1, y2+1);
   SelectClipRgn(dc->hBitmapDC, clip_hrgn);
   DeleteObject(clip_hrgn);
 }

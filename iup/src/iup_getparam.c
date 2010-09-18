@@ -817,7 +817,7 @@ static Ihandle* IupParamDlgP(Ihandle** params)
           *dlg_box, *button_box, *param_box;
   int i, lbl_width, p, expand;
 
-  button_ok = IupButton("OK", NULL);
+  button_ok = IupButton(iupStrMessageGet("IUP_OK"), NULL);
   IupSetAttribute(button_ok, "PADDING", "20x0");
   IupSetCallback(button_ok, "ACTION", (Icallback)iParamButtonOK_CB);
 
@@ -885,8 +885,6 @@ static Ihandle* IupParamDlgP(Ihandle** params)
   IupSetAttribute(dlg, "TITLE", "ParamDlg");
   IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
-  iupAttribSetStr(dlg, "OK", (char*)button_ok);
-  iupAttribSetStr(dlg, "CANCEL", (char*)button_cancel);
 
   IupMap(dlg);
 
