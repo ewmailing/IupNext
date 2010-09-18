@@ -1797,9 +1797,11 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
                                     GtkSelectionData *selection_data, guint info, guint time, Ihandle* ih)
 {
   GtkTreePath* pathDrag = (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
-  GtkTreePath* pathDrop = (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_DROPITEM");
+  GtkTreePath* pathDrop = NULL;
   int accepted = FALSE;
   int is_ctrl;
+
+  gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &pathDrop, NULL);
 
   if (pathDrag && pathDrop)
   {
@@ -1853,74 +1855,37 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
     }
   }
 
+
 gtkTreeDragDataReceived_FINISH:
   if (pathDrag) gtk_tree_path_free(pathDrag);
   if (pathDrop) gtk_tree_path_free(pathDrop);
 
   iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", NULL);
-  iupAttribSetStr(ih, "_IUPTREE_DROPITEM", NULL);
-
-  gtk_drag_finish(context, accepted, (context->action == GDK_ACTION_MOVE), time);
 
   (void)widget;
   (void)info;
-  (void)x;
-  (void)y;
-  (void)selection_data;
-}
-
-static gboolean gtkTreeDragDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint time, Ihandle* ih)
-{
-  GtkTreePath* path;
-  GtkTreeViewDropPosition pos;
-
-  /* unset any highlight row */
-  gtk_tree_view_set_drag_dest_row (GTK_TREE_VIEW(widget), NULL, GTK_TREE_VIEW_DROP_BEFORE);
-
-  if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
-  {
-    if (pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER)
-    {
-      GdkAtom target = gtk_drag_dest_find_target(widget, context, gtk_drag_dest_get_target_list(widget));
-      if (target != GDK_NONE)
-      {
-        iupAttribSetStr(ih, "_IUPTREE_DROPITEM", (char*)path);
-        gtk_drag_get_data(widget, context, target, time);
-        return TRUE;
-      }
-    }
-  }
-
-  (void)widget;
-  return FALSE;
-}
-
-static void gtkTreeDragLeave(GtkWidget *widget, GdkDragContext *context, guint time)
-{
-  /* unset any highlight row */
-  gtk_tree_view_set_drag_dest_row(GTK_TREE_VIEW(widget), NULL, GTK_TREE_VIEW_DROP_BEFORE);
   (void)context;
   (void)time;
+  (void)selection_data;
 }
 
 static gboolean gtkTreeDragMotion(GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint time, Ihandle* ih)
 {
   GtkTreePath* path;
   GtkTreeViewDropPosition pos;
-  GtkTreePath* pathDrag = (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
-  if (pathDrag && gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
+  if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
   {
-    if (pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER)
-    {
-      gtk_tree_view_set_drag_dest_row(GTK_TREE_VIEW(widget), path, pos);
-      gdk_drag_status(context, context->actions, time);
-      return TRUE;
-    }
-
+    if (pos == GTK_TREE_VIEW_DROP_BEFORE) pos = GTK_TREE_VIEW_DROP_INTO_OR_BEFORE;
+    if (pos == GTK_TREE_VIEW_DROP_AFTER) pos = GTK_TREE_VIEW_DROP_INTO_OR_AFTER;
+    /* highlight row */
+    gtk_tree_view_set_drag_dest_row(GTK_TREE_VIEW(widget), path, pos);
     gtk_tree_path_free(path);
+
+    gdk_drag_status(context, context->suggested_action, time);
+
+    return TRUE;
   }
 
-  (void)widget;
   return FALSE;
 }
 
@@ -1929,20 +1894,8 @@ static void gtkTreeDragBegin(GtkWidget *widget, GdkDragContext *context, Ihandle
   int x = iupAttribGetInt(ih, "_IUPTREE_DRAG_X");
   int y = iupAttribGetInt(ih, "_IUPTREE_DRAG_Y");
   GtkTreePath* path;
-  GtkTreeViewDropPosition pos;
-  if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
-  {
-    if (pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE || pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER)
-    {
-      GdkPixmap* pixmap;
-      iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", (char*)path);
-
-      pixmap = gtk_tree_view_create_row_drag_icon(GTK_TREE_VIEW(ih->handle), path);
-      gtk_drag_source_set_icon(widget, gtk_widget_get_colormap(widget), pixmap, NULL);
-      g_object_unref(pixmap);
-      return;
-    }
-  }
+  if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, NULL))
+    iupAttribSetStr(ih, "_IUPTREE_DRAGITEM", (char*)path);
 
   (void)context;
   (void)widget;
@@ -2281,16 +2234,27 @@ static gboolean gtkTreeKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandl
 static void gtkTreeEnableDragDrop(Ihandle* ih)
 {
   const GtkTargetEntry row_targets[] = {
-    { "GTK_TREE_MODEL_ROW", GTK_TARGET_SAME_WIDGET, 0 }
+    /* use a custom target to avoid the internal gtkTreView DND */
+    { "IUP_TREE_TARGET", GTK_TARGET_SAME_WIDGET, 0 }
   };
 
-  gtk_drag_source_set(ih->handle, GDK_BUTTON1_MASK, row_targets, G_N_ELEMENTS(row_targets), GDK_ACTION_MOVE|GDK_ACTION_COPY);
-  gtk_drag_dest_set(ih->handle, GDK_BUTTON1_MASK, row_targets, G_N_ELEMENTS(row_targets), GDK_ACTION_MOVE|GDK_ACTION_COPY);
+  gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW(ih->handle),
+            GDK_BUTTON1_MASK,
+            row_targets,
+            G_N_ELEMENTS (row_targets),
+            GDK_ACTION_MOVE|GDK_ACTION_COPY);
+  gtk_tree_view_enable_model_drag_dest (GTK_TREE_VIEW(ih->handle),
+          row_targets,
+          G_N_ELEMENTS (row_targets),
+          GDK_ACTION_MOVE|GDK_ACTION_COPY);
 
-  g_signal_connect(G_OBJECT(ih->handle),  "drag-begin", G_CALLBACK(gtkTreeDragBegin), ih);
+  /* let gtkTreView begin the drag, then use the signal to save the drag start path */
+  g_signal_connect_after(G_OBJECT(ih->handle),  "drag-begin", G_CALLBACK(gtkTreeDragBegin), ih);
+
+  /* to avoid drop between nodes. */
   g_signal_connect(G_OBJECT(ih->handle), "drag-motion", G_CALLBACK(gtkTreeDragMotion), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "drag-leave", G_CALLBACK(gtkTreeDragLeave), NULL);
-  g_signal_connect(G_OBJECT(ih->handle),   "drag-drop", G_CALLBACK(gtkTreeDragDrop), ih);
+
+  /* to avoid the internal gtkTreView DND, we do the drop manually */
   g_signal_connect(G_OBJECT(ih->handle), "drag-data-received", G_CALLBACK(gtkTreeDragDataReceived), ih);
 }
 
@@ -2370,9 +2334,6 @@ static int gtkTreeMapMethod(Ihandle* ih)
     gtk_tree_view_set_show_expanders(GTK_TREE_VIEW(ih->handle), TRUE);
 #endif
 
-  if (ih->data->show_dragdrop)
-    gtkTreeEnableDragDrop(ih);
-
   gtk_container_add((GtkContainer*)scrolled_window, ih->handle);
   gtk_widget_show((GtkWidget*)scrolled_window);
   gtk_scrolled_window_set_shadow_type(scrolled_window, GTK_SHADOW_IN); 
@@ -2384,6 +2345,9 @@ static int gtkTreeMapMethod(Ihandle* ih)
   gtk_tree_selection_set_select_function(selection, (GtkTreeSelectionFunc)gtkTreeSelectionFunc, ih, NULL);
 
   gtk_tree_view_set_reorderable(GTK_TREE_VIEW(ih->handle), FALSE);
+
+  if (ih->data->show_dragdrop)
+    gtkTreeEnableDragDrop(ih);
 
   /* callbacks */
   g_signal_connect(selection,            "changed", G_CALLBACK(gtkTreeSelectionChanged), ih);
