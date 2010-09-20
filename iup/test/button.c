@@ -303,6 +303,13 @@ void ButtonTest(void)
   set_callbacks(button);
   IupAppend(box1, button);
 
+  button = IupButton(NULL, NULL);
+  IupSetAttribute(button, "RASTERSIZE", "30x30");
+  IupSetAttribute(button, "BGCOLOR", "255 128 92");
+  IupSetAttribute(button, "NAME", "color");
+  set_callbacks(button);
+  IupAppend(box1, button);
+
   box2 = IupVbox(NULL);
   IupSetAttribute(box2, "MARGIN", "5x5");
   IupSetAttribute(box2, "GAP", "5");
@@ -390,8 +397,9 @@ void ButtonTest(void)
   IupSetAttribute(dlg, "TITLE", "IupButton Test");
 //  IupSetAttribute(box1, "BGCOLOR", "128 0 0");
 //  IupSetAttribute(dlg, "BGCOLOR", "0 128 0");
-  IupSetAttribute(dlg, "BACKGROUND", "255 128 128");
+//  IupSetAttribute(dlg, "BACKGROUND", "255 128 128");
 //  IupSetAttributeHandle(dlg, "BACKGROUND", image2);
+//  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
 
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 

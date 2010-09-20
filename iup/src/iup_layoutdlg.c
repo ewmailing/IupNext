@@ -1070,7 +1070,7 @@ static void iLayoutCreatePropertiesDialog(iLayoutDialog* layoutdlg, Ihandle* par
 
   fontbut = IupButton("F", NULL);
   IupSetAttribute(fontbut, "SIZE", "20x10");
-  IupStoreAttribute(fontbut, "FONT", "Times, Italic 14");
+  IupStoreAttribute(fontbut, "FONT", "Times, Bold Italic 12");
   IupSetCallback(fontbut, "ACTION", (Icallback)iLayoutPropertiesSetFont_CB);
   IupSetAttribute(fontbut, "NAME", "SETFONTBUT");
   IupSetAttribute(fontbut, "VISIBLE", "NO");

@@ -310,35 +310,32 @@ static int iParamFileButton_CB(Ihandle *self)
   return IUP_DEFAULT;
 }
 
-static int iParamColorButton_CB(Ihandle *self, int button, int pressed)
+static int iParamColorButton_CB(Ihandle *self)
 {
-  if (button==IUP_BUTTON1 && pressed)
+  Ihandle* param   = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
+  Ihandle* textbox = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_TEXT");
+  Ihandle* dlg = IupGetDialog(self);
+  Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
+
+  Ihandle* color_dlg = IupColorDlg();
+  IupSetAttributeHandle(color_dlg, "PARENTDIALOG", IupGetDialog(self));
+  IupSetAttribute(color_dlg, "TITLE", iupAttribGet(param, "TITLE"));
+  IupSetAttribute(color_dlg, "VALUE", iupAttribGet(param, "VALUE"));
+
+  IupPopup(color_dlg, IUP_CENTER, IUP_CENTER);
+
+  if (!cb || cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
   {
-    Ihandle* param   = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_PARAM");
-    Ihandle* textbox = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_TEXT");
-    Ihandle* dlg = IupGetDialog(self);
-    Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
-
-    Ihandle* color_dlg = IupColorDlg();
-    IupSetAttributeHandle(color_dlg, "PARENTDIALOG", IupGetDialog(self));
-    IupSetAttribute(color_dlg, "TITLE", iupAttribGet(param, "TITLE"));
-    IupSetAttribute(color_dlg, "VALUE", iupAttribGet(param, "VALUE"));
-
-    IupPopup(color_dlg, IUP_CENTER, IUP_CENTER);
-
-    if (!cb || cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
+    if (IupGetInt(color_dlg, "STATUS")==1)
     {
-      if (IupGetInt(color_dlg, "STATUS")==1)
-      {
-        char* value = IupGetAttribute(color_dlg, "VALUE");
-        IupSetAttribute(textbox, "VALUE", value);
-        iupAttribStoreStr(param, "VALUE", value);
-        IupStoreAttribute(self, "BGCOLOR", value);
-      }
+      char* value = IupGetAttribute(color_dlg, "VALUE");
+      IupSetAttribute(textbox, "VALUE", value);
+      iupAttribStoreStr(param, "VALUE", value);
+      IupStoreAttribute(self, "BGCOLOR", value);
     }
-
-    IupDestroy(color_dlg);
   }
+
+  IupDestroy(color_dlg);
 
   return IUP_DEFAULT;
 }
@@ -625,12 +622,12 @@ static Ihandle* iParamCreateBox(Ihandle* param)
 
       iupAttribSetStr(param, "EXPAND", "1");
       
-      aux = IupCanvas(NULL);
+      aux = IupButton(NULL, NULL);
       IupSetAttribute(aux, "SIZE", "16x10");
       IupSetAttribute(aux, "EXPAND", "NO");
       IupStoreAttribute(aux, "BGCOLOR", iupAttribGet(param, "VALUE"));
 
-      IupSetCallback(aux, "BUTTON_CB", (Icallback)iParamColorButton_CB);
+      IupSetCallback(aux, "ACTION", (Icallback)iParamColorButton_CB);
       iupAttribSetStr(param, "AUXCONTROL", (char*)aux);
       iupAttribSetStr(aux, "_IUPGP_PARAM", (char*)param);
       iupAttribSetStr(aux, "_IUPGP_TEXT", (char*)ctrl);
@@ -653,9 +650,9 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       iupAttribSetStr(param, "EXPAND", "1");
       
       aux = IupButton("F", NULL);
-      IupSetAttribute(aux, "SIZE", "16x8");
       IupSetAttribute(aux, "EXPAND", "NO");
-      IupStoreAttribute(aux, "FONT", "Times, Italic 14");
+      IupStoreAttribute(aux, "FONT", "Times, Bold Italic 12");
+      IupSetAttribute(aux, "SIZE", "16x10");
 
       IupSetCallback(aux, "ACTION", (Icallback)iParamFontButton_CB);
       iupAttribSetStr(param, "AUXCONTROL", (char*)aux);
