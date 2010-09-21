@@ -40,9 +40,9 @@
 
   BUT if GTK change its implementation this must be changed also. See "gtk_tree_store.c".
 
+  -----------------------------------------------------------------------------------
   ABOUT SELECTIONS:
-
-  From the GTK documentation on GtkTreeSelection
+     From the GTK documentation on GtkTreeSelection
 
   "Additionally, you cannot change the selection of a row on the model 
    that is not currently displayed by the view without expanding its parents first."
@@ -147,7 +147,7 @@ static void gtkTreeCopyMoveNode(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *i
       position = 1;  /* insert as first child of iterItemDst */
     else
     {
-      int child_count = iupdrvTreeTotalChildCount(ih, iterItemDst);
+      int child_count = iupdrvTreeTotalChildCount(ih, iterItemDst->user_data);
       id_new += child_count;
     }
     gtk_tree_path_free(path);
@@ -638,7 +638,7 @@ static void gtkTreeRebuildNodeCache(Ihandle* ih, int id, GtkTreeIter iterItem)
 
 static void gtkTreeChildCountRec(GtkTreeModel *model, GtkTreeIter *iterItem, int *count)
 {
-  GtkTreeIter iterChild;
+  GtkTreeIter iterChild = {0,0,0,0};
   int hasItem = gtk_tree_model_iter_children(model, &iterChild, iterItem);  /* get the firstchild */
   while(hasItem)
   {

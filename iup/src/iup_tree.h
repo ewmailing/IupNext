@@ -30,7 +30,7 @@ void iupdrvTreeUpdateMarkMode(Ihandle *ih);
 char* iupTreeGetSpacingAttrib(Ihandle* ih);
 
 #if defined(GTK_MAJOR_VERSION)
-typedef void InodeHandle;
+typedef char InodeHandle;   /* should be void, but we use char to force compiler checks */
 #elif defined(XmVERSION)
 typedef struct _WidgetRec InodeHandle;
 #elif defined(WINVER)
