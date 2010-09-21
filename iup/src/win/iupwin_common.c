@@ -89,7 +89,9 @@ int iupdrvGetScrollbarSize(void)
 
 void iupdrvReparent(Ihandle* ih)
 {
-  SetParent(ih->handle, iupChildTreeGetNativeParentHandle(ih));
+  HWND oldParent = SetParent(ih->handle, iupChildTreeGetNativeParentHandle(ih));
+  if (!iupAttribGet(ih, "_IUPWIN_REPARENT"))
+    iupAttribSetStr(ih, "_IUPWIN_REPARENT", (char*)oldParent);
 }
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
@@ -361,6 +363,22 @@ static Ihandle* winContainerWmCommandGetIhandle(Ihandle *ih, WPARAM wp, LPARAM l
   return child;
 }
 
+static int winCheckParent(Ihandle* child, Ihandle* ih)
+{
+  Ihandle* parent = iupChildTreeGetNativeParent(child);
+  if (parent==ih)
+    return 1;
+  else
+  {
+    /* TODO: this is wierd... */
+    HWND oldParent = (HWND)iupAttribGet(child, "_IUPWIN_REPARENT");
+    if (oldParent && oldParent==ih->handle)
+      return 1;
+
+    return 0;
+  }
+}
+
 int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   /* All messages here are sent to the parent Window, 
@@ -387,7 +405,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_CTLCOLORSTATIC:
     {
       Ihandle* child = iupwinHandleGet((void*)lp);
-      if (child && iupChildTreeGetNativeParent(child)==ih)
+      if (child && winCheckParent(child, ih))
       {
         IFctlColor cb = (IFctlColor)IupGetCallback(child, "_IUPWIN_CTLCOLOR_CB");
         if (cb)
@@ -407,7 +425,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       else
       {
         child = iupwinHandleGet(drawitem->hwndItem); 
-        if (child && iupChildTreeGetNativeParent(child)!=ih)
+        if (child && !winCheckParent(child, ih))
           child = NULL;
       }
 
@@ -427,7 +445,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_VSCROLL:
     {
       Ihandle *child = iupwinHandleGet((void*)lp);
-      if (child && iupChildTreeGetNativeParent(child)==ih)
+      if (child && winCheckParent(child, ih))
       {
         IFni cb = (IFni)IupGetCallback(child, "_IUPWIN_CUSTOMSCROLL_CB");
         if (cb)
@@ -444,8 +462,8 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       if (!msg_info)
         break;
 
-      child = iupwinHandleGet(msg_info->hwndFrom); 
-      if (child && iupChildTreeGetNativeParent(child)==ih)
+      child = iupwinHandleGet(msg_info->hwndFrom);
+      if (child && winCheckParent(child, ih))
       {
         IFnotify cb = (IFnotify)IupGetCallback(child, "_IUPWIN_NOTIFY_CB");
         if (cb)

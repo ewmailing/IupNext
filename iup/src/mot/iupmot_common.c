@@ -170,7 +170,7 @@ char* iupmotConvertString(XmString str)
 void iupdrvReparent(Ihandle* ih)
 {
   Widget native_parent = iupChildTreeGetNativeParentHandle(ih);
-  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
+  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");  /* here is used as the native child because is the outmost component of the elemement */
   if (!widget) widget = ih->handle;
   XReparentWindow(iupmot_display, XtWindow(widget), XtWindow(native_parent), 0, 0);
 }

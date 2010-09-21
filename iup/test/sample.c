@@ -205,7 +205,8 @@ static int action2_cb(Ihandle* ih)
 
 static int action3_cb(Ihandle* ih)
 {
-  IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "BGCOLOR", "128 0 0");
+  printf("ACTION3\n");
+//  IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "BGCOLOR", "128 0 0");
   return IUP_DEFAULT;
 }
 
@@ -219,7 +220,7 @@ static Ihandle* set_callbacks(Ihandle* ih)
 //  IupSetCallback(ih, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
 //  IupSetCallback(ih, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
-//  IupSetCallback(ih, "K_ANY", (Icallback)k_any);
+  IupSetCallback(ih, "K_ANY", (Icallback)k_any);
 //  IupSetCallback(ih, "HELP_CB", (Icallback)help_cb);
 
   return ih;
@@ -264,6 +265,7 @@ void SampleTest(void)
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton("Text", NULL), "IMAGE=img1, PADDING=5x5")),"ACTION", action1_cb, NULL), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=img1")),"ACTION", action2_cb, NULL), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton("", NULL), "IMAGE=img1,IMPRESS=img2")),"ACTION", action3_cb, NULL), 
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "BGCOLOR=\"255 0 128\", SIZE=20x10")),"ACTION", action3_cb, NULL), 
       NULL));
   IupSetAttribute(_frm_1,"TITLE","IupButton");
 

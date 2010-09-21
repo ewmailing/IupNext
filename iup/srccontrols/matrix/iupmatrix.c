@@ -580,7 +580,7 @@ static int iMatrixRedraw_CB(Ihandle* ih)
   if (!ih->data->cddbuffer)
     return IUP_DEFAULT;
 
-  if (ih->data->callback_mode ||  /* in callback mode the values is not changed by attributes, so we can NOT wait for a REDRAW */
+  if (ih->data->callback_mode ||  /* in callback mode the values are not changed by attributes, so we can NOT wait for a REDRAW */
       ih->data->need_redraw ||  /* if some of the attributes that do not automatically redraw were set */
       ih->data->need_calcsize)   /* if something changed the matrix size */
     iupMatrixDraw(ih, 0);

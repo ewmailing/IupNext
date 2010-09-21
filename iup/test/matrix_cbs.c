@@ -246,12 +246,14 @@ static int redraw(Ihandle *self)
 static int removeline(Ihandle *self) 
 {
   IupSetAttribute(IupGetHandle("mat1"),"DELLIN","1"); 
+//  IupSetAttribute(IupGetHandle("mat1"),"NUMLIN","0"); 
   return IUP_DEFAULT;
 }
 
 static int addline(Ihandle *self) 
 {
   IupSetAttribute(IupGetHandle("mat1"),"ADDLIN","0"); 
+//  IupSetAttribute(IupGetHandle("mat1"),"ADDLIN","0-5"); 
   return IUP_DEFAULT;
 }
 
