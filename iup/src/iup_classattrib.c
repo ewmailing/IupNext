@@ -728,9 +728,10 @@ void IupSaveClassAttributes(Ihandle* ih)
   name = iupTableFirst(ic->attrib_func);
   while (name)
   {
-    IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+    IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
     if (afunc && !(afunc->flags & IUPAF_NO_STRING) &&   /* is a string */
-                 !(afunc->flags & IUPAF_HAS_ID))
+                 !(afunc->flags & IUPAF_HAS_ID) &&
+                 !(afunc->flags & IUPAF_CALLBACK))
     {
       int inherit;
       char *def_value;
@@ -739,6 +740,44 @@ void IupSaveClassAttributes(Ihandle* ih)
           !iupStrEqualNoCase(value, iupAttribGet(ih, name)) &&     /* NOT already stored */
           !iupStrEqualNoCase(value, def_value))    /* NOT equal to the default value */
         iupAttribStoreStr(ih, name, value);
+    }
+
+    name = iupTableNext(ic->attrib_func);
+  }
+}
+
+void IupCopyClassAttributes(Ihandle* src_ih, Ihandle* dst_ih)
+{
+  Iclass* ic;
+  char *name;
+
+  iupASSERT(iupObjectCheck(src_ih));
+  if (!iupObjectCheck(src_ih))
+    return;
+
+  iupASSERT(iupObjectCheck(dst_ih));
+  if (!iupObjectCheck(dst_ih))
+    return;
+
+  if (!iupStrEqualNoCase(src_ih->iclass->name, dst_ih->iclass->name))
+    return;
+
+  ic = src_ih->iclass;
+
+  name = iupTableFirst(ic->attrib_func);
+  while (name)
+  {
+    IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
+    if (afunc && !(afunc->flags & IUPAF_NO_STRING) &&   /* is a string */
+                 !(afunc->flags & IUPAF_READONLY) &&
+                 !(afunc->flags & IUPAF_WRITEONLY) &&
+                 !(afunc->flags & IUPAF_HAS_ID) &&
+                 !(afunc->flags & IUPAF_CALLBACK))
+    {
+      char *value = IupGetAttribute(src_ih, name);
+      if (value &&     /* NOT NULL */
+          !iupStrEqualNoCase(value, IupGetAttribute(dst_ih, name)))     /* NOT already stored */
+        IupStoreAttribute(dst_ih, name, value);
     }
 
     name = iupTableNext(ic->attrib_func);

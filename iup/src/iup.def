@@ -126,6 +126,7 @@ IupTabsv
 IupGetClassAttributes
 IupSetClassDefaultAttribute
 IupSaveClassAttributes
+IupCopyClassAttributes
 IupGetAllClasses
 IupGetColor
 IupGetParam

@@ -135,6 +135,7 @@ int       IupGetAllClasses(char** names, int n);
 int       IupGetClassAttributes(const char* classname, char** names, int n);
 int       IupGetClassCallbacks(const char* classname, char** names, int n);
 void      IupSaveClassAttributes(Ihandle* ih);
+void      IupCopyClassAttributes(Ihandle* src_ih, Ihandle* dst_ih);
 void      IupSetClassDefaultAttribute(const char* classname, const char *name, const char* value);
 
 Ihandle*  IupCreate (const char *classname);

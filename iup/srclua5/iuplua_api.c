@@ -289,6 +289,18 @@ static int SetClassDefaultAttribute(lua_State *L)
   return 0;
 }
 
+static int SaveClassAttributes(lua_State *L)
+{
+  IupSaveClassAttributes(iuplua_checkihandle(L,1));
+  return 0;
+}
+
+static int CopyClassAttributes(lua_State *L)
+{
+  IupCopyClassAttributes(iuplua_checkihandle(L,1), iuplua_checkihandle(L,2));
+  return 0;
+}
+
 static int GetDialog(lua_State *L)
 {
   iuplua_pushihandle(L, IupGetDialog(iuplua_checkihandle(L,1)));
@@ -924,6 +936,8 @@ void iupluaapi_open(lua_State * L)
     {"GetAttributes", GetAttributes},
     {"GetAllAttributes", GetAllAttributes},
     {"SetClassDefaultAttribute", SetClassDefaultAttribute},
+    {"SaveClassAttributes", SaveClassAttributes},
+    {"CopyClassAttributes", CopyClassAttributes},
     {"GetAllClasses", GetAllClasses},
     {"GetClassAttributes", GetClassAttributes},
     {"GetClassCallbacks", GetClassCallbacks},
