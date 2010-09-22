@@ -798,6 +798,10 @@ wb_usr.tree =
               link= "func/iupsaveclassattributes.html"
             },
             {
+              name= {nl= "IupCopyClassAttributes"},
+              link= "func/iupcopyclassattributes.html"
+            },
+            {
               name= {nl= "IupSetClassDefaultAttribute"},
               link= "func/iupsetclassdefaultattribute.html"
             },

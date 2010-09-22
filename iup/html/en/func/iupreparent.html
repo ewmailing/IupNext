@@ -1,8 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
-<title>IupAppend</title>
+<title>IupReparent</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
 <style type="text/css">
@@ -31,7 +31,7 @@ iup.Reparent(<strong>child, new_parent, ref_child</strong>: ihandle) -&gt; <stro
 <p><b>child</b>: Identifier of the element to be moved.<br>
 <b>new_parent</b>: Identifier of the new parent.<br>
 <strong>ref_child</strong>: Identifier of the element to be inserted before the 
-reference. (since 3.3)</p>
+reference. Can be NULL. (since 3.3)</p>
 <p><span class="style2">Returns:</span> IUP_NOERROR if successfully, IUP_ERROR if failed.</p>
 <h3>Notes</h3>
 <p>This function is faster and easier than doing the sequence <b>unmap</b>, <b>
