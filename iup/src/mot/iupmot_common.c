@@ -167,12 +167,31 @@ char* iupmotConvertString(XmString str)
 }
 #endif
 
+static void motSaveAttributesRec(Ihandle* ih)
+{
+  IupSaveClassAttributes(ih);
+
+  if (ih->iclass->childtype != IUP_CHILDNONE)
+  {
+    Ihandle *child;
+    for (child = ih->firstchild; child; child = child->brother)
+      motSaveAttributesRec(child);
+  }
+}
+
 void iupdrvReparent(Ihandle* ih)
 {
-  Widget native_parent = iupChildTreeGetNativeParentHandle(ih);
-  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");  /* here is used as the native child because is the outmost component of the elemement */
-  if (!widget) widget = ih->handle;
-  XReparentWindow(iupmot_display, XtWindow(widget), XtWindow(native_parent), 0, 0);
+  /* Intrinsics and Motif do NOT support reparent. 
+     XReparentWindow can NOT be used because will reparent only the X-Windows windows.
+     So must unmap and map again to obtain the same effect. */
+  int old_visible = IupGetInt(ih, "VISIBLE");
+  if (old_visible)
+    IupSetAttribute(ih, "VISIBLE", "NO");
+  motSaveAttributesRec(ih); /* this does not save everything... */
+  IupUnmap(ih);
+  IupMap(ih);
+  if (old_visible)
+    IupSetAttribute(ih, "VISIBLE", "Yes");
 }
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)

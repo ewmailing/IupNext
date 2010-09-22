@@ -39,6 +39,10 @@ detach</b>, <strong>append/insert</strong> and <b>map</b>.</p>
 <p>The elements are NOT immediately repositioned. Call
   <b>IupRefresh</b> for the container (or any other element in the dialog) to 
 update the dialog layout.</p>
+<p>Motif does not support the re-parent function, but we simulate a re-parent 
+doing a <strong>unmap</strong>/<strong>map</strong> sequence. But some 
+attributes may be lost during the operation, mostly attributes that are id 
+dependent.</p>
 <h3>See Also</h3>
 <p><a href="iupappend.html">IupAppend</a>, 
   <a href="iupinsert.html">IupInsert</a>, 
