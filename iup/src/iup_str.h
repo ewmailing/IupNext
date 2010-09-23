@@ -141,6 +141,10 @@ char* iupStrFileGetPath(const char *file_name);
  * \ingroup str */
 char* iupStrFileMakeFileName(const char* path, const char* title);
 
+/** Split the filename in path and title using pre-alocated strings.
+ * \ingroup str */
+void iupStrFileNameSplit(const char* filename, char* path, char* title);
+
 /** Replace a character in a string.
  * Returns the number of occurrences.
  * \ingroup str */

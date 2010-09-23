@@ -194,6 +194,115 @@ static int iLayoutMenuReload_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static void iLayoutExportDialogLED(FILE* file, Ihandle* ih)
+{
+  //iLayoutExportElement(file, ih);
+
+  //if (ih->iclass->childtype != IUP_CHILDNONE)
+  //{
+  //  Ihandle *child;
+  //  for (child = ih->firstchild; child; child = child->brother)
+  //  {
+  //    // TODO: how to avoid internal elements. ex: split
+  //    iLayoutExportLED(file, child);
+  //  }
+  //}
+}
+
+static void iLayoutExportDialogLua(FILE* file, Ihandle* ih, const char* filename)
+{
+}
+
+static void iLayoutExportDialogC(FILE* file, Ihandle* ih, const char* filename)
+{
+}
+
+static void iLayoutExportDialog(Ihandle* dialog, const char* filename, const char* format)
+{
+  FILE* file = fopen(filename, "wb");
+  if (!file)
+    return;
+
+  if (iupStrEqualNoCase(format, "LED"))
+    iLayoutExportDialogLED(file, dialog);
+  else if (iupStrEqualNoCase(format, "LUA"))
+    iLayoutExportDialogLua(file, dialog, filename);
+  else if (iupStrEqualNoCase(format, "C"))
+    iLayoutExportDialogC(file, dialog, filename);
+
+  fclose(file);
+}
+
+static int iLayoutGetExportFile(Ihandle* parent, char* filename)
+{
+  Ihandle *dlg = 0;
+  int ret;
+  char filter[4096] = "*.*";
+  static char dir[4096] = "";  /* static will make the dir persist from one call to another if not defined */
+
+  dlg = IupFileDlg();
+
+  iupStrFileNameSplit(filename, dir, filter);
+
+  IupSetAttribute(dlg, "FILTER", filter);
+  IupSetAttribute(dlg, "DIRECTORY", dir);
+  IupSetAttribute(dlg, "DIALOGTYPE", "SAVE");
+  IupSetAttribute(dlg, "ALLOWNEW", "YES");
+  IupSetAttribute(dlg, "NOCHANGEDIR", "YES");
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
+  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  ret = IupGetInt(dlg, "STATUS");
+  if (ret != -1)
+  {
+    char* value = IupGetAttribute(dlg, "VALUE");
+    if (value) 
+    {
+      strcpy(filename, value);
+      iupStrFileNameSplit(filename, dir, NULL);
+    }
+  }
+
+  IupDestroy(dlg);
+
+  return ret;
+}
+
+static int iLayoutMenuExportLED_CB(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+  char filename[4096] = "*.led";
+  int ret = iLayoutGetExportFile(dlg, filename);
+  if (ret != -1) /* ret==0 existing file. TODO: replace existing contents. */
+    iLayoutExportDialog(layoutdlg->dialog, filename, "LED");
+  return IUP_DEFAULT;
+}
+
+static int iLayoutMenuExportLua_CB(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+  char filename[4096] = "*.lua";
+  int ret = iLayoutGetExportFile(dlg, filename);
+  if (ret != -1) /* ret==0 existing file. TODO: replace existing contents. */
+    iLayoutExportDialog(layoutdlg->dialog, filename, "Lua");
+  return IUP_DEFAULT;
+}
+
+static int iLayoutMenuExportC_CB(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+  char filename[4096] = "*.c";
+  int ret = iLayoutGetExportFile(dlg, filename);
+  if (ret != -1) /* ret==0 existing file. TODO: replace existing contents. */
+    iLayoutExportDialog(layoutdlg->dialog, filename, "C");
+  return IUP_DEFAULT;
+}
+
 static int iLayoutMenuClose_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
@@ -1169,10 +1278,10 @@ static void iLayoutCreatePropertiesDialog(iLayoutDialog* layoutdlg, Ihandle* par
   layoutdlg->properties = dlg;
 }
 
-static int iLayoutMenuProperties_CB(Ihandle* menu)
+static int iLayoutContextMenuProperties_CB(Ihandle* menu)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
-  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
 
   if (!layoutdlg->properties)
@@ -1185,10 +1294,10 @@ static int iLayoutMenuProperties_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
-static int iLayoutMenuAdd_CB(Ihandle* menu)
+static int iLayoutContextMenuAdd_CB(Ihandle* menu)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
-  Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
+  Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
   int ret, count, i; 	
   char** class_list_str, **p_str;
@@ -1282,10 +1391,10 @@ static void iLayoutUpdateTreeColors(Ihandle* tree, Ihandle* ih)
   }
 }
 
-static int iLayoutMenuMap_CB(Ihandle* menu)
+static int iLayoutContextMenuMap_CB(Ihandle* menu)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
-  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
 
   if (IupMap(elem) == IUP_ERROR)
   {
@@ -1316,10 +1425,10 @@ static void iLayoutSaveAttributes(Ihandle* ih)
   }
 }
 
-static int iLayoutMenuUnmap_CB(Ihandle* menu)
+static int iLayoutContextMenuUnmap_CB(Ihandle* menu)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
-  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
 
   iLayoutSaveAttributes(elem);
 
@@ -1336,11 +1445,11 @@ static int iLayoutMenuUnmap_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
-static int iLayoutMenuRemove_CB(Ihandle* menu)
+static int iLayoutContextMenuRemove_CB(Ihandle* menu)
 {
   Ihandle* msg;
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
-  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   if (!elem)
     elem = (Ihandle*)IupTreeGetUserId(layoutdlg->tree, IupGetInt(layoutdlg->tree, "VALUE"));
   if (!elem)
@@ -1385,19 +1494,19 @@ static int iLayoutMenuRemove_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
-static int iLayoutMenuCopy_CB(Ihandle* menu)
+static int iLayoutContextMenuCopy_CB(Ihandle* menu)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
-  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   layoutdlg->copy = elem;
   return IUP_DEFAULT;
 }
 
-static int iLayoutMenuPaste_CB(Ihandle* menu)
+static int iLayoutContextMenuPaste_CB(Ihandle* menu)
 {
   Ihandle* new_ih, *ret_ih = NULL;
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
-  Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTELEMENT");
+  Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   int paste_child = IupGetInt(menu, "_IUP_PASTECHILD");
   int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
   if (!iupObjectCheck(layoutdlg->copy))
@@ -1461,21 +1570,20 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* ih, Ihandle* d
   int can_unmap = ih->handle!=NULL;
 
   menu = IupMenu(
-    IupSetCallbacks(IupItem("Properties...", NULL), "ACTION", iLayoutMenuProperties_CB, NULL),
+    IupSetCallbacks(IupItem("Properties...", NULL), "ACTION", iLayoutContextMenuProperties_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Map", NULL), can_map? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutContextMenuMap_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Unmap", NULL), can_unmap? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutContextMenuUnmap_CB, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupSetAttributes(IupItem("Copy", NULL), can_copy? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutMenuCopy_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Paste as Child", NULL), can_paste&&is_container? "ACTIVE=Yes, _IUP_PASTECHILD=1": "ACTIVE=No, _IUP_PASTECHILD=1"), "ACTION", iLayoutMenuPaste_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Paste as Brother", NULL), can_paste? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutMenuPaste_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Copy", NULL), can_copy? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutContextMenuCopy_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Paste Child", NULL), can_paste&&is_container? "ACTIVE=Yes, _IUP_PASTECHILD=1": "ACTIVE=No, _IUP_PASTECHILD=1"), "ACTION", iLayoutContextMenuPaste_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Paste Brother", NULL), can_paste? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutContextMenuPaste_CB, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupSetAttributes(IupItem("Add as Child...", NULL), is_container? "ACTIVE=Yes, _IUP_ADDCHILD=1": "ACTIVE=No, _IUP_ADDCHILD=1"), "ACTION", iLayoutMenuAdd_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Add as Brother...", NULL), "_IUP_ADDCHILD=0"), "ACTION", iLayoutMenuAdd_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Map", NULL), can_map? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutMenuMap_CB, NULL),
-    IupSeparator(),
-    IupSetCallbacks(IupSetAttributes(IupItem("Unmap", NULL), can_unmap? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutMenuUnmap_CB, NULL),
-    IupSetCallbacks(IupItem("Remove...\tDel", NULL), "ACTION", iLayoutMenuRemove_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Add Child...", NULL), is_container? "ACTIVE=Yes, _IUP_ADDCHILD=1": "ACTIVE=No, _IUP_ADDCHILD=1"), "ACTION", iLayoutContextMenuAdd_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Add Brother...", NULL), "_IUP_ADDCHILD=0"), "ACTION", iLayoutContextMenuAdd_CB, NULL),
+    IupSetCallbacks(IupItem("Remove...\tDel", NULL), "ACTION", iLayoutContextMenuRemove_CB, NULL),
     NULL);
 
-  iupAttribSetStr(menu, "_IUP_LAYOUTELEMENT", (char*)ih);
+  iupAttribSetStr(menu, "_IUP_LAYOUTCONTEXTELEMENT", (char*)ih);
   iupAttribSetStr(menu, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
   iupAttribSetStr(menu, "_IUP_LAYOUTDLG", (char*)dlg);
 
@@ -1720,7 +1828,7 @@ static int iLayoutDialogKAny_CB(Ihandle* dlg, int key)
   switch(key)
   {
   case K_DEL:
-    return iLayoutMenuRemove_CB(dlg);
+    return iLayoutContextMenuRemove_CB(dlg);
   case K_F5:
     return iLayoutMenuUpdate_CB(dlg);
   case K_ESC:
@@ -1797,6 +1905,11 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
       IupSetCallbacks(IupItem("Load...\tCtrl+O", NULL), "ACTION", iLayoutMenuLoad_CB, NULL),
       IupSetCallbacks(IupItem("Load Visible...", NULL), "ACTION", iLayoutMenuLoadVisible_CB, NULL),
       IupSetCallbacks(IupItem("Reload", NULL), "ACTION", iLayoutMenuReload_CB, NULL),
+      IupSubmenu("&Export", IupMenu(
+        IupSetCallbacks(IupItem("LED...", NULL), "ACTION", iLayoutMenuExportLED_CB, NULL),
+        IupSetCallbacks(IupItem("Lua...", NULL), "ACTION", iLayoutMenuExportLua_CB, NULL),
+        IupSetCallbacks(IupItem("C...", NULL), "ACTION", iLayoutMenuExportC_CB, NULL),
+        NULL)),
       IupSeparator(),
       IupSetCallbacks(IupItem("Refresh\tCtrl+F5", NULL), "ACTION", iLayoutMenuRefresh_CB, NULL),
       IupSetCallbacks(IupItem("Redraw", NULL), "ACTION", iLayoutMenuRedraw_CB, NULL),

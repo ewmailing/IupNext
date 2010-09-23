@@ -95,13 +95,14 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "8");
 
-  {
-    char* v;
-    IupSetAttribute(mat, "MTX_LINE_ACTIVE_FLAG3:4", "Teste1");
-    IupMatSetAttribute(mat, "MTX_LINE_ACTIVE_FLAG", 5, 7, "Teste2");
-    printf("Teste1=%s\n", IupGetAttribute(mat, "MTX_LINE_ACTIVE_FLAG3:4"));
-    printf("Teste2=%s\n", IupMatGetAttribute(mat, "MTX_LINE_ACTIVE_FLAG", 5, 7));
-  }
+  /* test for custom matrix attributes */
+  //{
+  //  char* v;
+  //  IupSetAttribute(mat, "MTX_LINE_ACTIVE_FLAG3:4", "Test1");
+  //  IupMatSetAttribute(mat, "MTX_LINE_ACTIVE_FLAG", 5, 7, "Test2");
+  //  printf("Test1=%s\n", IupGetAttribute(mat, "MTX_LINE_ACTIVE_FLAG3:4"));
+  //  printf("Test2=%s\n", IupMatGetAttribute(mat, "MTX_LINE_ACTIVE_FLAG", 5, 7));
+  //}
 
   IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
 //  IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);

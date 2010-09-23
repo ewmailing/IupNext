@@ -523,6 +523,32 @@ char* iupStrFileMakeFileName(const char* path, const char* title)
   return filename;
 }
 
+void iupStrFileNameSplit(const char* filename, char *path, char *title)
+{
+  int i, n = strlen(filename);
+
+  /* Look for last folder separator and split title from path */
+  for (i=n-1;i>=0; i--)
+  {
+    if (filename[i] == '\\' || filename[i] == '/') 
+    {
+      if (path)
+      {
+        strncpy(path, filename, i+1);
+        path[i+1] = 0;
+      }
+
+      if (title)
+      {
+        strcpy(title, filename+i+1);
+        title[n-i] = 0;
+      }
+
+      return;
+    }
+  }
+}
+
 int iupStrReplace(char* str, char src, char dst)
 {
   int i = 0;

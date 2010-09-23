@@ -570,7 +570,6 @@ static int iMatrixResize_CB(Ihandle* ih)
   iupMatrixEditForceHidden(ih);
 
   ih->data->need_calcsize = 1;
-  iupMatrixDraw(ih, 0);
 
   return IUP_DEFAULT;
 }

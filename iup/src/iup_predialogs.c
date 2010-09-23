@@ -336,32 +336,6 @@ int  iupDataEntry(int    maxlin,
   return bt;
 }
 
-static void iupStrSplitFileName(const char* filename, char *dir, char *filter)
-{
-  int i, n = strlen(filename);
-
-  /* Look for last folder separator and split filter from directory */
-  for (i=n-1;i>=0; i--)
-  {
-    if (filename[i] == '\\' || filename[i] == '/') 
-    {
-      if (dir)
-      {
-        strncpy(dir, filename, i+1);
-        dir[i+1] = 0;
-      }
-
-      if (filter)
-      {
-        strcpy(filter, filename+i+1);
-        filter[n-i] = 0;
-      }
-
-      return;
-    }
-  }
-}
-
 int IupGetFile(char* filename)
 {
   Ihandle *dlg = 0;
@@ -373,7 +347,7 @@ int IupGetFile(char* filename)
 
   dlg = IupFileDlg();
 
-  iupStrSplitFileName(filename, dir, filter);
+  iupStrFileNameSplit(filename, dir, filter);
 
   IupSetAttribute(dlg, "FILTER", filter);
   IupSetAttribute(dlg, "DIRECTORY", dir);
@@ -391,7 +365,7 @@ int IupGetFile(char* filename)
     if (value) 
     {
       strcpy(filename, value);
-      iupStrSplitFileName(filename, dir, NULL);
+      iupStrFileNameSplit(filename, dir, NULL);
     }
   }
 
