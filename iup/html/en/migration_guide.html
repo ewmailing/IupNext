@@ -41,7 +41,7 @@ was changed to include the main function arguments. The GTK and Motif
 toolkits use them. In IUP prior to version 2.7 they were ignored for
 Motif. In Windows they are always ignored. If for some reason you do
 not have access to the main function arguments you can use NULL in
-IupOpen. As a general rule the change is:</p>
+<strong>IupOpen</strong>. As a general rule the change is:</p>
 
 <pre>IupOpen()&nbsp;&nbsp;&gt;&gt;&nbsp;&nbsp; IupOpen(&amp;argc,&amp;argv)</pre>
 
@@ -63,7 +63,7 @@ and "iupluacd" </span>- Also you will have to change your
 makefile or IDE project because we changed some library names to solve
 the cross dependencies between IUP, CD and IM libraries.</p>
 
-<h3>Strategic Changes (from 2.7 to 3.0)</h3>
+<h3>Strategic Changes (from 2.7 to 3.x)</h3>
 
 <p>All the changes described here are backward compatible with
 2.7. So after doing them you will still be able to go back to 2.7.</p>
@@ -113,19 +113,19 @@ those parameters.</p>
 <p>The BGCOLOR attribute is now ignored in <strong>IupLabel</strong>,
 <strong>IupFrame</strong>, <strong>IupToggle</strong>
 (for the text background) and <strong>IupVal</strong>.
-They will use the background color of the native parent.</p>
+They will use the background color of the native parent. <strong>IupFrame</strong> 
+can has a color background when not using TITLE, and BGCOLOR is set before map.</p>
 <p><span class="style1">The <strong>IupItem</strong> in GTK must have its VALUE 
 attribute defined (ON or OFF) before mapping</span> - so it can have the check 
 mark, or define HIDEMARK=NO. If not done the item will not be checkable.</p>
     <p>
         The new <strong>IupTabs</strong> does not supports the inactive tab feedback. So the tabs will be
         always active, although its children will be sucessfully disabled. The return value
-        of the TABCHANGE_CB callback is not processed anymore.</p>
+        of the TABCHANGE_CB callback is not processed anymore.<span class="style1"> The most impacting feature is the TABORIENTATION attribute 
+that has limited support in the native controls.</span></p>
 
-<p>In <strong>IupMatrix</strong> if the last column is not completely visible, 
-then adjust the matrix size manually or let the natural size adjust it for you 
-using NUMCOL_VISIBLE_LAST=YES and NUMLIN_VISIBLE_LAST=YES. Since the selection 
-is made only using the mouse pressing a key will NOT clear the selection 
+<p>In <strong>IupMatrix</strong> the selection 
+is made only using the mouse, pressing a key will NOT clear the selection 
 anymore. You can still do that setting MARKED=NULL in the K_ANY callback.</p>
 
 <p><span class="style1">In <strong>IupTree</strong> DEPTH is now a read-only attribute, 
@@ -139,25 +139,12 @@ system.
 <h3>Deprecated Controls <span class="style2">(will be removed in a future 
 version)</span> </h3>
 
-<p>The controls <strong>IupGauge</strong>, <strong>IupTabs</strong> and <strong>
-IupVal</strong> based on the CD library were replaced by native controls in IUP 
-3.0. But not all features of the old controls are available in the new controls, 
-so the old ones are still available until the applications have the chance to 
-migrate them to the new ones. In a future version the old ones will be 
-completely removed from IUP.</p>
 <p>The <strong>IupGauge</strong> was superseded by <strong>IupProgressBar</strong>. 
 The new control does NOT supports the display of a text inside the progress bar 
 area. If you use the text in the <strong>IupGauge</strong> you will have to add 
 a label on top or bottom of the progress bar to obtain a similar result. A less 
 critical change is the DASHED attribute which has limited support in the <strong>
 IupProgressBar</strong>.</p>
-<p>The <strong>IupTabs</strong> was moved to the main library under the same 
-name because the new one almost have all the features of the old one.
-<span class="style1">The most impacting feature is the TABORIENTATION attribute 
-that has limited support in the native controls.</span></p>
-
-<p>The <strong>IupVal</strong> follows the same idea. The only feature that it 
-is not available is the use of a custom handler image.</p>
 
 </body>
 </html>

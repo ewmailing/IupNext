@@ -455,9 +455,9 @@ void iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_va
   }
 }
 
-void iupClassObjectGetAttribNameInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit, int *not_string, int *has_id, int *access)
+void iupClassGetAttribNameInfo(Iclass* ic, const char* name, char* *def_value, int *inherit, int *not_string, int *has_id, int *access)
 {
-  IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
   *def_value = NULL;
   *inherit = 1; /* default is inheritable */
   *has_id = 0;
@@ -502,9 +502,9 @@ int iupClassObjectAttribIsNotString(Ihandle* ih, const char* name)
   return 0;
 }
 
-int iupClassObjectAttribIsRegistered(Ihandle* ih, const char* name)
+int iupClassAttribIsRegistered(Iclass* ic, const char* name)
 {
-  IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
   if (afunc)
     return 1;
   return 0;
@@ -816,28 +816,4 @@ void iupClassObjectEnsureDefaultAttributes(Ihandle* ih)
 
     name = iupTableNext(ic->attrib_func);
   }
-}
-
-char* iupClassGetDefaultAttribute(const char* classname, const char *attrib_name)
-{
-  Iclass* ic;
-  IattribFunc* afunc;
-
-  iupASSERT(classname!=NULL);
-  if (!classname)
-    return NULL;
-
-  iupASSERT(attrib_name!=NULL);
-  if (!attrib_name)
-    return NULL;
-
-  ic = iupRegisterFindClass(classname);
-  if (!ic)
-    return NULL;
-
-  afunc = (IattribFunc*)iupTableGet(ic->attrib_func, attrib_name);
-  if (afunc)
-    return iClassGetDefaultValue(afunc);
-  else
-    return NULL;
 }

@@ -429,11 +429,8 @@ int   iupClassObjectCurAttribIsInherit(Iclass* ic);
 void iupClassObjectEnsureDefaultAttributes(Ihandle* ih);
 
 /* Used in IupLayoutDialog */
-int iupClassObjectAttribIsRegistered(Ihandle* ih, const char* name);
-void iupClassObjectGetAttribNameInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit, int *not_string, int *has_id, int *access);
-
-/* Used in documentation tests. */
-char* iupClassGetDefaultAttribute(const char* classname, const char *attrib_name);
+int iupClassAttribIsRegistered(Iclass* ic, const char* name);
+void iupClassGetAttribNameInfo(Iclass* ic, const char* name, char* *def_value, int *inherit, int *not_string, int *has_id, int *access);
 
 
 /* Other functions declared in <iup.h> and implemented here. 

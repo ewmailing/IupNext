@@ -58,7 +58,7 @@ void PreDialogsTest(void);
 void PPlotTest(void);
 #endif
 void GetParamTest(void);
-void ConfTest(void);
+void ClassInfo(void);
 void ZboxTest(void);
 void ScanfTest(void);
 void SboxTest(void);
@@ -85,7 +85,7 @@ static TestItems test_list[] = {
   {"CellsCheckboard", CellsCheckboardTest},
   {"CellsDegrade", CellsDegradeTest},
   {"CellsNumbering", CellsNumberingTest},
-  {"Class Conference", ConfTest},
+  {"Classes Info", ClassInfo},
   {"Clipboard", ClipboardTest},
   {"ColorBrowser", ColorBrowserTest},
   {"Colorbar", ColorbarTest},
