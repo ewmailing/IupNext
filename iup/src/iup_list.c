@@ -691,7 +691,7 @@ Iclass* iupListGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "list";
-  ic->format = "A"; /* one optional callback name */
+  ic->format = "a"; /* one ACTION callback name */
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

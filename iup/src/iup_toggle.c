@@ -107,7 +107,7 @@ Iclass* iupToggleGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "toggle";
-  ic->format = "SA"; /* one optional string and one optional callback name */
+  ic->format = "sa"; /* one string and one ACTION callback name */
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

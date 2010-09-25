@@ -169,14 +169,12 @@ char* iupmotConvertString(XmString str)
 
 static void motSaveAttributesRec(Ihandle* ih)
 {
+  Ihandle *child;
+
   IupSaveClassAttributes(ih);
 
-  if (ih->iclass->childtype != IUP_CHILDNONE)
-  {
-    Ihandle *child;
-    for (child = ih->firstchild; child; child = child->brother)
-      motSaveAttributesRec(child);
-  }
+  for (child = ih->firstchild; child; child = child->brother)
+    motSaveAttributesRec(child);
 }
 
 void iupdrvReparent(Ihandle* ih)

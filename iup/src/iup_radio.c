@@ -170,7 +170,7 @@ Iclass* iupRadioGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "radio";
-  ic->format = "H"; /* one optional ihandle */
+  ic->format = "h"; /* one ihandle */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILD_ONE;
   ic->is_interactive = 0;

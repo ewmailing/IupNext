@@ -46,30 +46,32 @@ struct Iclass_
 {
   /* Class configuration parameters. */
   char* name;     /**< class name. No default, must be initialized. */
-  char* format;   /**< Creation parameters format of the class when specified. \n
-                   * It can have none, one or more of the following.
+  char* format;   /**< Creation parameters format of the class. \n
+                   * Used only for LED parsing. \n
+                   * It can have none (NULL), one or more of the following.
                    * - "b" = (unsigned char) - byte
                    * - "c" = (unsigned char*) - array of byte
                    * - "i" = (int) - integer
                    * - "j" = (int*) - array of integer
                    * - "f" = (float) - real
                    * - "s" = (char*) - string 
-                   * - "a" = (char*) - name of an action
+                   * - "a" = (char*) - name of the ACTION callback
                    * - "h" = (Ihandle*) - element handle
-                   * - "g" = (Ihandle**) - array of element handle
-                   * If upper case then it is optional. Default is no parameters. */
+                   * - "g" = (Ihandle**) - array of element handle */
   InativeType nativetype; /**< native type. Default is IUP_TYPEVOID. */
-  IchildType childtype;   /**< children count enum: none, one, or many. Default is IUP_CHILDNONE. Used only by IupAppend and IupInsert to control the number of children. */
+  IchildType childtype;   /**< children count enum: none, one, or many. Default is IUP_CHILDNONE. \n
+                               Used only by IupReparent, IupAppend and IupInsert to control the number of children. \n
+                               The element can still have hidden children even if this is none. */
   int is_interactive;     /**< keyboard interactive boolean, 
                             * true if the class can have the keyboard input focus. Default is false. */
   int has_attrib_id;  /**< indicate if any attribute is numbered. Default is not. Can be 1 or 2. */
 
   Iclass* parent; /**< class parent to implement inheritance.
-                   * Class name must be different.
-                   * Creation parameters should be the same or repace the parents creation function.
-                   * Native type should be the same.
-                   * Child type should be a more restrictive or equal type (many->one->none).
-                   * Attribute functions will have only one common table.
+                   * Class name must be different. \n
+                   * Creation parameters should be the same or repace the parents creation function. \n
+                   * Native type should be the same.  \n
+                   * Child type should be a more restrictive or equal type (many->one->none). \n
+                   * Attribute functions will have only one common table. \n
                    * All methods can be changed, set to NULL, switched, etc. */
 
   Itable* attrib_func; /**< table of functions to handle attributes, only one per class tree */
@@ -302,8 +304,7 @@ void iupClassRegisterGetAttribute(Iclass* ic, const char* name,
                                            const char* *system_default, 
                                            int *flags);
 
-/** Register the parameters of a callback.
- * Used by language bindings.
+/** Register the parameters of a callback. \n
  * format follows the format specification of the class creation parameters format, 
  * but it adds the "double" option and remove array options.
  * It can have none, one or more of the following. \n

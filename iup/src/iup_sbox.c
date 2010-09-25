@@ -340,6 +340,7 @@ static int iSboxCreateMethod(Ihandle* ih, void** params)
   bar = IupCanvas(NULL);
   iupChildTreeAppend(ih, bar);  /* bar will always be the firstchild */
 
+  iupAttribSetStr(bar, "_IUP_INTERNALCTRL", "1");
   IupSetAttribute(bar, "BORDER", "YES");
   IupSetAttribute(bar, "EXPAND", "NO");
   IupSetAttribute(bar, "BGCOLOR", "192 192 192");
@@ -364,9 +365,9 @@ Iclass* iupSboxGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name   = "sbox";
-  ic->format = "H";   /* one optional ihandle */
+  ic->format = "h";   /* one ihandle */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype  = IUP_CHILDMANY;  /* should be IUP_CHILDONE but has the bar (a IupCanvas) as firstchild */
+  ic->childtype  = IUP_CHILDMANY; /* canvas+child */
   ic->is_interactive = 0;
 
   /* Class functions */

@@ -748,6 +748,7 @@ static int iSplitCreateMethod(Ihandle* ih, void** params)
   bar = IupCanvas(NULL);
   iupChildTreeAppend(ih, bar);  /* bar will always be the firstchild */
 
+  iupAttribSetStr(bar, "_IUP_INTERNALCTRL", "1");
   IupSetAttribute(bar, "CANFOCUS", "NO");
   IupSetAttribute(bar, "BORDER", "NO");
   IupSetAttribute(bar, "EXPAND", "NO");
@@ -774,9 +775,9 @@ Iclass* iupSplitGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name   = "split";
-  ic->format = "HH";   /* two optional ihandle */
+  ic->format = "hh";   /* two ihandle(s) */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype  = IUP_CHILDMANY;
+  ic->childtype  = IUP_CHILDMANY;  /* canvas+child+child */
   ic->is_interactive = 0;
 
   /* Class functions */

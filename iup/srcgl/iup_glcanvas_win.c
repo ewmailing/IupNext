@@ -254,7 +254,7 @@ static Iclass* wGlCanvasGetClass(void)
   Iclass* ic = iupClassNew(iupCanvasGetClass());
 
   ic->name = "glcanvas";
-  ic->format = "A"; /* one optional callback name */
+  ic->format = "a"; /* one ACTION callback name */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

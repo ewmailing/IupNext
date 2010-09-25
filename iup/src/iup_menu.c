@@ -227,7 +227,7 @@ Iclass* iupItemGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "item";
-  ic->format = "SA";  /* one optional string and one optional callback name */
+  ic->format = "sa";  /* one string and one ACTION callback name */
   ic->nativetype = IUP_TYPEMENU;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
@@ -261,7 +261,7 @@ Iclass* iupSubmenuGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "submenu";
-  ic->format = "SH"; /* one string and one Ihandle (both optional) */
+  ic->format = "sh"; /* one string and one Ihandle */
   ic->nativetype = IUP_TYPEMENU;
   ic->childtype = IUP_CHILD_ONE;
   ic->is_interactive = 1;

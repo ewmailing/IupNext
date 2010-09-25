@@ -16,13 +16,13 @@ iup.RegisterWidget = iupDoNothing
 
 -- TODO: This is different from iupClassRegisterCallback, must use the same standard
 c_types = {
-  n = "int",
+  n = "int",               -- should be i
   s = "char *",
-  i = "Ihandle *",
-  c = "unsigned char ",
+  i = "Ihandle *",         -- should be h
+  c = "unsigned char ",    -- should be b
   d = "double",
   f = "float",
-  v = "Ihandle **",
+  v = "Ihandle **",        -- should be g
 }
 
 -- Adjust the callbacks table
@@ -171,6 +171,7 @@ function write_initialization(o,t)
    
    for i,v in pairs(c) do
       local type = "NULL"
+      -- Handle callbacks that have same names but different parameters
       if i == "action" or 
          i == "action_cb" or 
          i == "edit_cb" or 

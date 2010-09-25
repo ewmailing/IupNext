@@ -150,10 +150,13 @@ static void iLayoutTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent
 
   for (child = parent->firstchild; child; child = child->brother)
   {
-    last_child_id = iLayoutTreeAddNode(tree, last_child_id, child);
+    if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+    {
+      last_child_id = iLayoutTreeAddNode(tree, last_child_id, child);
 
-    if (child->iclass->childtype != IUP_CHILDNONE)
-      iLayoutTreeAddChildren(tree, last_child_id, child);
+      if (child->iclass->childtype != IUP_CHILDNONE)
+        iLayoutTreeAddChildren(tree, last_child_id, child);
+    }
   }
 }
 
@@ -222,9 +225,11 @@ static void iLayoutCountContainersRec(Ihandle* ih, int *count)
   {
     if (child->iclass->childtype != IUP_CHILDNONE)
     {
-      // TODO: how to avoid internal elements. ex: split
-      (*count)++;
-      iLayoutCountContainersRec(child, count);
+      if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+      {
+        (*count)++;
+        iLayoutCountContainersRec(child, count);
+      }
     }
   }
 }
@@ -245,8 +250,8 @@ static void iLayoutExportDialogLED(FILE* file, Ihandle* ih)
   //  Ihandle *child;
   //  for (child = ih->firstchild; child; child = child->brother)
   //  {
-  //    // TODO: how to avoid internal elements. ex: split
-  //    iLayoutExportLED(file, child);
+  //    if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+  //      iLayoutExportLED(file, child);
   //  }
   //}
   (void)file;
@@ -272,8 +277,8 @@ static void iLayoutExportContainerC(FILE* file, Ihandle* ih, int *c)
     Ihandle *child;
     for (child = ih->firstchild; child; child = child->brother)
     {
-      // TODO: how to avoid internal elements. ex: split
-      iLayoutExportContainerC(file, child, c);
+      if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+        iLayoutExportContainerC(file, child, c);
     }
   }
 
@@ -857,7 +862,8 @@ static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisib
     /* draw its children */
     for (child = ih->firstchild; child; child = child->brother)
     {
-      iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, mark, child, native_parent_x, native_parent_y);
+      if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+        iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, mark, child, native_parent_x, native_parent_y);
     }
   }
 }
@@ -1474,7 +1480,10 @@ static void iLayoutUpdateTreeColors(Ihandle* tree, Ihandle* ih)
   {
     Ihandle *child;
     for (child = ih->firstchild; child; child = child->brother)
-      iLayoutUpdateTreeColors(tree, child);
+    {
+      if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+        iLayoutUpdateTreeColors(tree, child);
+    }
   }
 }
 
@@ -1508,7 +1517,10 @@ static void iLayoutSaveAttributes(Ihandle* ih)
   {
     Ihandle *child;
     for (child = ih->firstchild; child; child = child->brother)
-      iLayoutSaveAttributes(child);
+    {
+      if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+        iLayoutSaveAttributes(child);
+    }
   }
 }
 
@@ -1750,9 +1762,12 @@ static Ihandle* iLayoutFindElementByPos(Ihandle* ih, int native_parent_x, int na
       /* check its children */
       for (child = ih->firstchild; child; child = child->brother)
       {
-        elem = iLayoutFindElementByPos(child, native_parent_x, native_parent_y, x, y, dlgvisible, shownotmapped);
-        if (elem)
-          return elem;
+        if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+        {
+          elem = iLayoutFindElementByPos(child, native_parent_x, native_parent_y, x, y, dlgvisible, shownotmapped);
+          if (elem)
+            return elem;
+        }
       }
 
       return ih;

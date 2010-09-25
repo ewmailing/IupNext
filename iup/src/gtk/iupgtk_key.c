@@ -317,8 +317,9 @@ gboolean iupgtkKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
     return FALSE;
 
   /* Avoid duplicate calls if a child of a native container contains the focus.
-     GTK will call the callback for the child and for the container. */
-  if (ih->iclass->childtype != IUP_CHILDNONE && ih != IupGetFocus())
+     GTK will call the callback for the child and for the container.
+     Ignore the one send to the parent. */
+  if (ih->firstchild && ih != IupGetFocus())
     return FALSE;
 
   result = iupKeyCallKeyCb(ih, code);

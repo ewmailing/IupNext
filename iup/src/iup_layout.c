@@ -32,7 +32,7 @@ void IupRefreshChildren(Ihandle* ih)
     return;
 
   /* must have children */
-  if (!ih->firstchild || ih->iclass->childtype==IUP_CHILDNONE)
+  if (!ih->firstchild)
     return;
 
   /* NOT a dialog, but inside one */
@@ -219,7 +219,7 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
 
-  if (ih->iclass->childtype!=IUP_CHILDNONE || 
+  if (ih->iclass->childtype!=IUP_CHILDNONE || ih->firstchild ||
       ih->iclass->nativetype == IUP_TYPEDIALOG)  /* pre-defined dialogs can restrict the number of children */
   {
     int w=0, h=0, children_expand;
@@ -283,7 +283,7 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
   }
   else
   {
-    if (ih->iclass->childtype!=IUP_CHILDNONE)
+    if (ih->iclass->childtype!=IUP_CHILDNONE || ih->firstchild)
     {
       if (shrink)
       {

@@ -589,7 +589,7 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
     if ((int)(params[2])!=-1)
       memcpy(imgdata, params[2], count);
   }
-  else /* one param for each element */
+  else /* one param for each pixel/plane */
   {
     int i;
     for(i=0; i<count; i++)
@@ -667,7 +667,7 @@ static Iclass* iImageGetClassBase(char* name, int (*create_func)(Ihandle* ih, vo
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = name;
-  ic->format = "iiC"; /* (int,int,unsigned char*) */
+  ic->format = "iic"; /* (int,int,unsigned char*) */
   ic->nativetype = IUP_TYPEIMAGE;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;

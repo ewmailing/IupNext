@@ -187,7 +187,7 @@ static Ihandle* iParseControl(Iclass *ic)
 
     for (i = 0; i < num_arg; )
     {
-      char p_format = (char)tolower(format[i]); /* there is no optional parameters in LED */
+      char p_format = format[i];
 
       if (i > 0)
         IPARSE_RETURN_IF_ERRO2(iupLexMatch (IUPLEX_TK_COMMA), params);

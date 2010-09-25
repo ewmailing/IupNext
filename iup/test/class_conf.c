@@ -35,10 +35,12 @@ static char* getParameters(const char* format)
       case 'i': fstr = "int"; break;
       case 'j': fstr = "int*"; break;
       case 'f': fstr = "float"; break;
+      case 'd': fstr = "double"; break;
       case 's': fstr = "char*"; break;
       case 'a': fstr = "char*"; break;
       case 'h': fstr = "Ihandle*"; break;
       case 'g': fstr = "Ihandle**"; break;
+      case 'v': fstr = "void*"; break;
       }
 
       if (fstr)

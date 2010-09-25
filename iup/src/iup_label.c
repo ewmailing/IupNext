@@ -152,7 +152,7 @@ Iclass* iupLabelGetClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "label";
-  ic->format = "S"; /* one optional string */
+  ic->format = "s"; /* one string */
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;
