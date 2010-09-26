@@ -58,10 +58,13 @@ void iupdrvActivate(Ihandle* ih)
 
 void iupdrvReparent(Ihandle* ih)
 {
-  GtkFixed* fixed = gtkGetFixedParent(ih);
+  GtkWidget* old_parent;
+  GtkWidget* new_parent = (GtkWidget*)gtkGetFixedParent(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");  /* here is used as the native child because is the outmost component of the elemement */
   if (!widget) widget = ih->handle;
-  gtk_widget_reparent(widget, (GtkWidget*)fixed);
+  old_parent = gtk_widget_get_parent(widget);
+  if (old_parent != new_parent)
+    gtk_widget_reparent(widget, new_parent);
 }
 
 void iupgtkBaseAddToParent(Ihandle* ih)

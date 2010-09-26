@@ -89,9 +89,13 @@ int iupdrvGetScrollbarSize(void)
 
 void iupdrvReparent(Ihandle* ih)
 {
-  HWND oldParent = SetParent(ih->handle, iupChildTreeGetNativeParentHandle(ih));
-  if (!iupAttribGet(ih, "_IUPWIN_REPARENT"))
-    iupAttribSetStr(ih, "_IUPWIN_REPARENT", (char*)oldParent);
+  HWND newParent = iupChildTreeGetNativeParentHandle(ih);
+  if (GetParent(ih->handle) != newParent)
+  {
+    HWND oldParent = SetParent(ih->handle, newParent);
+    if (!iupAttribGet(ih, "_IUPWIN_REPARENT"))
+      iupAttribSetStr(ih, "_IUPWIN_REPARENT", (char*)oldParent);
+  }
 }
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
