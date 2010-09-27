@@ -167,31 +167,13 @@ static int iSpinCreateMethod(Ihandle* ih, void** params)
   bt_up->brother = bt_down;
   bt_down->parent = ih;
   
+  /* avoid inheritance from parent */
   IupSetAttribute(ih, "GAP",    "0");
   IupSetAttribute(ih, "MARGIN", "0x0");
 
   return IUP_NOERROR;
 }
 
-static int iSpinboxCreateMethod(Ihandle* ih, void** params)
-{
-  Ihandle *spin;
-
-  IupSetAttribute(ih, "GAP",       "0");
-  IupSetAttribute(ih, "MARGIN",    "0x0");
-  IupSetAttribute(ih, "ALIGNMENT", "ACENTER");
-
-  /* The given child is already a child of Spinbox because of the IupHbox Create method */
-  (void)params;
-
-  spin = IupSpin();
-  iupChildTreeAppend(ih, spin);
-
-  iupAttribSetStr(spin, "_IUP_INTERNALCTRL", "1");
-  iupAttribSetStr(spin, "_IUPSPIN_BOX", (char*)ih);
-
-  return IUP_NOERROR;
-}
 
 static void iSpinLoadImages(void)
 {
@@ -240,24 +222,6 @@ static void iSpinReleaseMethod(Iclass* ic)
   }
 }
 
-Iclass* iupSpinboxGetClass(void)
-{
-  Iclass* ic = iupClassNew(iupHboxGetClass());
-
-  ic->name = "spinbox";
-  ic->format = "h"; /* one Ihandle */
-  ic->nativetype = IUP_TYPEVOID;
-  ic->childtype = IUP_CHILDMANY;  /* spin+child */
-  ic->is_interactive = 0;
-
-  iupClassRegisterCallback(ic, "SPIN_CB", "i");
-
-  /* Class functions */
-  ic->Create = iSpinboxCreateMethod;
-
-  return ic;
-}
-
 Iclass* iupSpinGetClass(void)
 {
   Iclass* ic = iupClassNew(iupVboxGetClass());
@@ -290,10 +254,129 @@ Ihandle* IupSpin(void)
   return IupCreate("spin");
 }
 
+/**************************************************************************************
+                                      SPINBOX
+**************************************************************************************/
+
+static void iSpinboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+{
+  /* update spin natural size */
+  iupBaseComputeNaturalSize(ih->firstchild);
+
+  if (ih->firstchild->brother)
+  {
+    /* update child natural size */
+    iupBaseComputeNaturalSize(ih->firstchild->brother);
+
+    *expand = ih->firstchild->brother->expand;
+
+    *w = ih->firstchild->brother->naturalwidth + ih->firstchild->naturalwidth;
+    *h = iupMAX(ih->firstchild->brother->naturalheight, ih->firstchild->naturalheight);
+  }
+  else
+  {
+    *w = ih->firstchild->naturalwidth;
+    *h = ih->firstchild->naturalheight;
+  }
+}
+
+static void iSpinboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
+{
+  /* bar */                            
+  iupBaseSetCurrentSize(ih->firstchild, ih->firstchild->naturalwidth, ih->firstchild->naturalheight, shrink);
+
+  if (ih->firstchild->brother)
+  {
+    /* child */
+    iupBaseSetCurrentSize(ih->firstchild->brother, ih->currentwidth-ih->firstchild->naturalwidth, ih->currentheight, shrink);
+  }
+}
+
+static void iSpinboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
+{
+  if (ih->firstchild->brother)
+  { 
+    if (ih->firstchild->brother->currentheight < ih->firstchild->currentheight)
+    {
+      /* bar */
+      iupBaseSetPosition(ih->firstchild, x+ih->firstchild->brother->currentwidth, y);
+
+      y += (ih->firstchild->currentheight-ih->firstchild->brother->currentheight)/2;
+
+      /* child */
+      iupBaseSetPosition(ih->firstchild->brother, x, y);
+    }
+    else
+    {
+      /* child */
+      iupBaseSetPosition(ih->firstchild->brother, x, y);
+
+      y += (ih->firstchild->brother->currentheight-ih->firstchild->currentheight)/2;
+
+      /* bar */
+      iupBaseSetPosition(ih->firstchild, x+ih->firstchild->brother->currentwidth, y);
+    }
+  } 
+  else
+  {
+    /* bar */
+    iupBaseSetPosition(ih->firstchild, x, y);
+  }
+}
+
+static int iSpinboxCreateMethod(Ihandle* ih, void** params)
+{
+  Ihandle *spin = IupSpin();
+  iupChildTreeAppend(ih, spin);  /* spin will always be the firstchild */
+
+  iupAttribSetStr(spin, "_IUP_INTERNALCTRL", "1");
+  iupAttribSetStr(spin, "_IUPSPIN_BOX", (char*)ih);  /* will be used by the callback */
+
+  if (params)
+  {
+    Ihandle** iparams = (Ihandle**)params;
+    if (*iparams)
+      IupAppend(ih, *iparams);
+  }
+
+  return IUP_NOERROR;
+}
+
+Iclass* iupSpinboxGetClass(void)
+{
+  /* we don't inherit from a Hbox here to always position the spin at right */
+  Iclass* ic = iupClassNew(NULL);
+
+  ic->name = "spinbox";
+  ic->format = "h"; /* one Ihandle */
+  ic->nativetype = IUP_TYPEVOID;
+  ic->childtype = IUP_CHILDMANY;  /* spin+child */
+  ic->is_interactive = 0;
+
+  /* Class functions */
+  ic->Create = iSpinboxCreateMethod;
+  ic->ComputeNaturalSize = iSpinboxComputeNaturalSizeMethod;
+  ic->SetChildrenCurrentSize = iSpinboxSetChildrenCurrentSizeMethod;
+  ic->SetChildrenPosition = iSpinboxSetChildrenPositionMethod;
+  ic->Map = iupBaseTypeVoidMapMethod;
+
+  iupClassRegisterCallback(ic, "SPIN_CB", "i");
+
+  /* Common */
+  iupBaseRegisterCommonAttrib(ic);
+
+  /* Base Container */
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  return ic;
+}
+
 Ihandle* IupSpinbox(Ihandle* ctrl)
 {
   void *params[2];
   params[0] = (void*)ctrl;
-  params[1] = NULL; /* must add NULL because spinbox inherit from Hbox */
+  params[1] = NULL;
   return IupCreatev("spinbox", params);
 }
