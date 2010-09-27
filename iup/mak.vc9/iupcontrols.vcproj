@@ -186,10 +186,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srccontrols\matrix\iupmat_focus.c"
-				>
-			</File>
-			<File
 				RelativePath="..\srccontrols\matrix\iupmat_getset.c"
 				>
 			</File>
@@ -246,10 +242,6 @@
 				</File>
 				<File
 					RelativePath="..\srccontrols\matrix\iupmat_edit.h"
-					>
-				</File>
-				<File
-					RelativePath="..\srccontrols\matrix\iupmat_focus.h"
 					>
 				</File>
 				<File

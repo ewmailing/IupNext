@@ -15,7 +15,6 @@
 
 #include "iupmat_def.h"
 #include "iupmat_scroll.h"
-#include "iupmat_focus.h"
 #include "iupmat_aux.h"
 #include "iupmat_edit.h"
 #include "iupmat_draw.h"
@@ -114,7 +113,8 @@ static int iMatrixScrollGetPrevNonEmpty(Ihandle* ih, int m, int index)
 static void iMatrixScrollSetFocusScrollToVisible(Ihandle* ih, int lin, int col)
 {
   /* moving focus and eventually scrolling */
-  iupMatrixFocusSet(ih, lin, col);
+  ih->data->lines.focus_cell = lin;
+  ih->data->columns.focus_cell = col;
 
   /* set for both because focus maybe hidden */
   iMatrixScrollToVisible(&ih->data->columns, ih->data->columns.focus_cell);

@@ -555,17 +555,23 @@ int iupMatrixAuxGetLinColFromXY(Ihandle* ih, int x, int y, int* l, int* c)
 
 int iupMatrixAuxCallLeaveCellCb(Ihandle* ih)
 {
-  IFnii cb = (IFnii)IupGetCallback(ih, "LEAVEITEM_CB");
-  if(cb)
-    return cb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+  if (ih->data->columns.num > 1 && ih->data->lines.num > 1)
+  {
+    IFnii cb = (IFnii)IupGetCallback(ih, "LEAVEITEM_CB");
+    if(cb)
+      return cb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+  }
   return IUP_DEFAULT;
 }
 
 void iupMatrixAuxCallEnterCellCb(Ihandle* ih)
 {
-  IFnii cb = (IFnii)IupGetCallback(ih, "ENTERITEM_CB");
-  if (cb)
-    cb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+  if (ih->data->columns.num > 1 && ih->data->lines.num > 1)
+  {
+    IFnii cb = (IFnii)IupGetCallback(ih, "ENTERITEM_CB");
+    if (cb)
+      cb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+  }
 }
 
 int iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode, int update)

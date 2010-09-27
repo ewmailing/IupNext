@@ -23,7 +23,6 @@
 
 #include "iupmat_def.h"
 #include "iupmat_scroll.h"
-#include "iupmat_focus.h"
 #include "iupmat_aux.h"
 #include "iupmat_getset.h"
 #include "iupmat_key.h"
@@ -194,6 +193,10 @@ int iupMatrixKeyPress_CB(Ihandle* ih, int c, int press)
   IFniiiis cb;
 
   if (!iupMatrixIsValid(ih, 1))
+    return IUP_DEFAULT;
+
+  /* there are no cells that can get the focus */
+  if (ih->data->columns.num <= 1 || ih->data->lines.num <= 1)
     return IUP_DEFAULT;
 
   if (!press)

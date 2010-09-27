@@ -24,7 +24,6 @@
 #include "iupmat_def.h"
 #include "iupmat_colres.h"
 #include "iupmat_aux.h"
-#include "iupmat_focus.h"
 #include "iupmat_mouse.h"
 #include "iupmat_key.h"
 #include "iupmat_mark.h"
@@ -73,7 +72,8 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
       if (ih->data->has_focus && iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
         return;
 
-      iupMatrixFocusSet(ih, lin, col);
+      ih->data->lines.focus_cell = lin;
+      ih->data->columns.focus_cell = col;
 
       iupMatrixAuxCallEnterCellCb(ih);
     }
@@ -109,7 +109,8 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
         if (iupMatrixAuxCallLeaveCellCb(ih) == IUP_IGNORE)
           return;
 
-        iupMatrixFocusSet(ih, lin, col);
+        ih->data->lines.focus_cell = lin;
+        ih->data->columns.focus_cell = col;
 
         /* process mark before EnterCell */
         if (ih->data->mark_mode != IMAT_MARK_NO)

@@ -308,6 +308,9 @@ int iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value)
 
     /* move it to the same cell */
     ih->data->lines.focus_cell += count;
+
+    if (ih->data->lines.focus_cell >= lines_num+count)
+      ih->data->lines.focus_cell = lines_num+count-1;
   }
 
   iupMatrixMemReAllocLines(ih, lines_num, lines_num+count, base);
@@ -380,6 +383,9 @@ int iupMatrixSetAddColAttrib(Ihandle* ih, const char* value)
 
     /* move it to the same cell */
     ih->data->columns.focus_cell += count;
+
+    if (ih->data->columns.focus_cell >= columns_num+count)
+      ih->data->columns.focus_cell = columns_num+count-1;
   }
 
   iupMatrixMemReAllocColumns(ih, columns_num, columns_num+count, base);

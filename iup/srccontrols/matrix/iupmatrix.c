@@ -35,7 +35,6 @@
 #include "iupmat_aux.h"
 #include "iupmat_mem.h"
 #include "iupmat_mouse.h"
-#include "iupmat_focus.h"
 #include "iupmat_key.h"
 #include "iupmat_numlc.h"
 #include "iupmat_colres.h"
@@ -140,7 +139,8 @@ static int iMatrixSetFocusCellAttrib(Ihandle* ih, const char* value)
     if (lin >= ih->data->lines.num || col >= ih->data->columns.num)
       return 0;
 
-    iupMatrixFocusSet(ih, lin, col);
+    ih->data->lines.focus_cell = lin;
+    ih->data->columns.focus_cell = col;
 
     if (ih->data->cddbuffer)
       iupMatrixDrawUpdate(ih);
@@ -197,6 +197,8 @@ static char* iMatrixGetHiddenTextMarksAttrib(Ihandle* ih)
 
 static int iMatrixSetValueAttrib(Ihandle* ih, const char* value)
 {
+  if (ih->data->columns.num <= 1 || ih->data->lines.num <= 1)
+    return 0;
   if (IupGetInt(ih->data->datah, "VISIBLE"))
     IupStoreAttribute(ih->data->datah, "VALUE", value);
   else 
@@ -206,6 +208,8 @@ static int iMatrixSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* iMatrixGetValueAttrib(Ihandle* ih)
 {
+  if (ih->data->columns.num <= 1 || ih->data->lines.num <= 1)
+    return NULL;
   if (IupGetInt(ih->data->datah, "VISIBLE"))
     return iupMatrixEditGetValue(ih);
   else 
@@ -549,6 +553,31 @@ static char* iMatrixGetMaskDataAttrib(Ihandle* ih)
 /*****************************************************************************/
 
 
+static int iMatrixFocus_CB(Ihandle* ih, int focus)
+{
+  int rc = IUP_DEFAULT;
+
+  if (!iupMatrixIsValid(ih, 1))
+    return IUP_DEFAULT;
+
+  if (IupGetGlobal("MOTIFVERSION"))
+  {
+    if (iupAttribGet(ih, "_IUPMAT_DROPDOWN") ||  /* from iMatrixEditDropDown_CB, in Motif */
+        iupAttribGet(ih, "_IUPMAT_DOUBLECLICK"))  /* from iMatrixMouseLeftPress, in Motif */
+      return IUP_DEFAULT;
+  }
+
+  ih->data->has_focus = focus;
+  iupMatrixDrawUpdate(ih);
+
+  if (focus)
+    iupMatrixAuxCallEnterCellCb(ih);
+  else
+    iupMatrixAuxCallLeaveCellCb(ih);
+
+  return rc;
+}
+
 static int iMatrixResize_CB(Ihandle* ih)
 {
   if (!ih->data->cddbuffer)
@@ -613,10 +642,10 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION",      (Icallback)iMatrixRedraw_CB);
   IupSetCallback(ih, "RESIZE_CB",   (Icallback)iMatrixResize_CB);
+  IupSetCallback(ih, "FOCUS_CB",    (Icallback)iMatrixFocus_CB);
   IupSetCallback(ih, "BUTTON_CB",   (Icallback)iupMatrixMouseButton_CB);
   IupSetCallback(ih, "MOTION_CB",   (Icallback)iupMatrixMouseMove_CB);
   IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iupMatrixKeyPress_CB);
-  IupSetCallback(ih, "FOCUS_CB",    (Icallback)iupMatrixFocus_CB);
   IupSetCallback(ih, "SCROLL_CB",   (Icallback)iupMatrixScroll_CB);
 
   /* Create the edit fields */
