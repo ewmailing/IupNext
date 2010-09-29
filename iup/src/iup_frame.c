@@ -153,7 +153,7 @@ Iclass* iupFrameGetClass(void)
   ic->name = "frame";
   ic->format = "h"; /* one ihandle */
   ic->nativetype = IUP_TYPECONTROL;
-  ic->childtype = IUP_CHILD_ONE;
+  ic->childtype = IUP_CHILDMANY+1;   /* one child */
   ic->is_interactive = 0;
 
   /* Class functions */

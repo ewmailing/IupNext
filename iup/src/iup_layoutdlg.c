@@ -150,13 +150,10 @@ static void iLayoutTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent
 
   for (child = parent->firstchild; child; child = child->brother)
   {
-    if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
-    {
-      last_child_id = iLayoutTreeAddNode(tree, last_child_id, child);
+    last_child_id = iLayoutTreeAddNode(tree, last_child_id, child);
 
-      if (child->iclass->childtype != IUP_CHILDNONE)
-        iLayoutTreeAddChildren(tree, last_child_id, child);
-    }
+    if (child->iclass->childtype != IUP_CHILDNONE)
+      iLayoutTreeAddChildren(tree, last_child_id, child);
   }
 }
 
@@ -218,26 +215,26 @@ static void iLayoutRemoveExt(char* title, const char* ext)
   }
 }
 
-static void iLayoutCountContainersRec(Ihandle* ih, int *count)
+static void iLayoutExportCountContainersRec(Ihandle* ih, int *count)
 {
   Ihandle *child;
   for (child = ih->firstchild; child; child = child->brother)
   {
     if (child->iclass->childtype != IUP_CHILDNONE)
     {
-      if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+      if (!(child->flags & IUP_INTERNAL))
       {
         (*count)++;
-        iLayoutCountContainersRec(child, count);
+        iLayoutExportCountContainersRec(child, count);
       }
     }
   }
 }
 
-static int iLayoutCountContainers(Ihandle* dialog)
+static int iLayoutExportCountContainers(Ihandle* dialog)
 {
   int count = 1;
-  iLayoutCountContainersRec(dialog, &count);
+  iLayoutExportCountContainersRec(dialog, &count);
   return count;
 }
 
@@ -250,7 +247,7 @@ static void iLayoutExportDialogLED(FILE* file, Ihandle* ih)
   //  Ihandle *child;
   //  for (child = ih->firstchild; child; child = child->brother)
   //  {
-  //    if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+  //    if (!(child->flags & IUP_INTERNAL))
   //      iLayoutExportLED(file, child);
   //  }
   //}
@@ -277,7 +274,7 @@ static void iLayoutExportContainerC(FILE* file, Ihandle* ih, int *c)
     Ihandle *child;
     for (child = ih->firstchild; child; child = child->brother)
     {
-      if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
+      if (!(child->flags & IUP_INTERNAL))
         iLayoutExportContainerC(file, child, c);
     }
   }
@@ -289,7 +286,7 @@ static void iLayoutExportContainerC(FILE* file, Ihandle* ih, int *c)
 
 static void iLayoutExportDialogC(FILE* file, Ihandle* dialog, const char* filename)
 {
-  int count = iLayoutCountContainers(dialog);
+  int count = iLayoutExportCountContainers(dialog);
   char* title = iupStrFileGetTitle(filename);
   iLayoutRemoveExt(title, "led");
 
@@ -862,8 +859,7 @@ static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisib
     /* draw its children */
     for (child = ih->firstchild; child; child = child->brother)
     {
-      if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
-        iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, mark, child, native_parent_x, native_parent_y);
+      iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, mark, child, native_parent_x, native_parent_y);
     }
   }
 }
@@ -1430,8 +1426,19 @@ static int iLayoutContextMenuAdd_CB(Ihandle* menu)
 
     if (add_child)
     {
-      /* add as first child */
-      ret_ih = IupInsert(ref_elem, NULL, new_ih);
+      if (ref_elem->firstchild && (ref_elem->firstchild->flags & IUP_INTERNAL))
+      {
+        /* the first child is internal, so add after it */
+        if (ref_elem->firstchild->brother)
+          ret_ih = IupInsert(ref_elem, ref_elem->firstchild->brother, new_ih);
+        else
+          ret_ih = IupAppend(ref_elem, new_ih);
+      }
+      else
+      {
+        /* add as first child */
+        ret_ih = IupInsert(ref_elem, NULL, new_ih);
+      }
     }
     else
     {
@@ -1481,8 +1488,7 @@ static void iLayoutUpdateTreeColors(Ihandle* tree, Ihandle* ih)
     Ihandle *child;
     for (child = ih->firstchild; child; child = child->brother)
     {
-      if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
-        iLayoutUpdateTreeColors(tree, child);
+      iLayoutUpdateTreeColors(tree, child);
     }
   }
 }
@@ -1518,8 +1524,7 @@ static void iLayoutSaveAttributes(Ihandle* ih)
     Ihandle *child;
     for (child = ih->firstchild; child; child = child->brother)
     {
-      if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
-        iLayoutSaveAttributes(child);
+      iLayoutSaveAttributes(child);
     }
   }
 }
@@ -1549,10 +1554,16 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
   Ihandle* msg;
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
-  if (!elem)
+  if (!elem)  /* can be called from a key press */
     elem = (Ihandle*)IupTreeGetUserId(layoutdlg->tree, IupGetInt(layoutdlg->tree, "VALUE"));
   if (!elem)
     return IUP_DEFAULT;
+
+  if (elem->flags & IUP_INTERNAL)
+  {
+    IupMessage("Error", "Can NOT remove this child. It is an internal element of the container.");
+    return IUP_DEFAULT;
+  }
 
   msg = IupMessageDlg();
   IupSetAttribute(msg,"DIALOGTYPE", "QUESTION");
@@ -1762,12 +1773,9 @@ static Ihandle* iLayoutFindElementByPos(Ihandle* ih, int native_parent_x, int na
       /* check its children */
       for (child = ih->firstchild; child; child = child->brother)
       {
-        if (!iupAttribGet(child, "_IUP_INTERNALCTRL"))
-        {
-          elem = iLayoutFindElementByPos(child, native_parent_x, native_parent_y, x, y, dlgvisible, shownotmapped);
-          if (elem)
-            return elem;
-        }
+        elem = iLayoutFindElementByPos(child, native_parent_x, native_parent_y, x, y, dlgvisible, shownotmapped);
+        if (elem)
+          return elem;
       }
 
       return ih;

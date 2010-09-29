@@ -49,7 +49,7 @@ void iupNormalizeSizeBoxChild(Ihandle *ih, int normalize, int children_natural_m
   Ihandle* child;
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (!child->is_floating && (child->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(child->iclass->name, "fill")))
+    if (!(child->flags & IUP_FLOATING) && (child->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(child->iclass->name, "fill")))
     {
       if (normalize & NORMALIZE_WIDTH) 
         child->naturalwidth = children_natural_maxwidth;
@@ -83,7 +83,7 @@ static int iNormalizerSetNormalizeAttrib(Ihandle* ih, const char* value)
   for (i = 0; i < count; i++)
   {
     ih_control = ih_list[i];
-    if (!ih_control->is_floating && (ih_control->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(ih_control->iclass->name, "fill")))
+    if (!(ih_control->flags & IUP_FLOATING) && (ih_control->iclass->nativetype != IUP_TYPEVOID || !iupStrEqual(ih_control->iclass->name, "fill")))
     {
       if (normalize & NORMALIZE_WIDTH)
         ih_control->userwidth = natural_maxwidth;

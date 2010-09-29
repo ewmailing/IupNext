@@ -227,10 +227,10 @@ static void iZboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
   for (child = ih->firstchild; child; child = child->brother)
   {
     /* update child natural size first */
-    if (child->is_floating!=IUP_FLOATING_IGNORE)
+    if (!(child->flags & IUP_FLOATING_IGNORE))
       iupBaseComputeNaturalSize(child);
 
-    if (!child->is_floating)
+    if (!(child->flags & IUP_FLOATING))
     {
       children_expand |= child->expand;
       children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
@@ -248,7 +248,7 @@ static void iZboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   Ihandle* child;
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (!child->is_floating)
+    if (!(child->flags & IUP_FLOATING))
       iupBaseSetCurrentSize(child, ih->currentwidth, ih->currentheight, shrink);
   }
 }
@@ -260,7 +260,7 @@ static void iZboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (!child->is_floating)
+    if (!(child->flags & IUP_FLOATING))
     {
       switch (ih->data->alignment)
       {

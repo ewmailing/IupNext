@@ -95,10 +95,10 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
   for (child = ih->firstchild; child; child = child->brother)
   {
     /* update child natural size first */
-    if (child->is_floating!=IUP_FLOATING_IGNORE)
+    if (!(child->flags & IUP_FLOATING_IGNORE))
       iupBaseComputeNaturalSize(child);
 
-    if (!child->is_floating)
+    if (!(child->flags & IUP_FLOATING))
     {
       children_expand |= child->expand;
       children_natural_maxwidth = iupMAX(children_natural_maxwidth, child->naturalwidth);
@@ -113,7 +113,7 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (!child->is_floating)
+    if (!(child->flags & IUP_FLOATING))
       children_natural_totalwidth += child->naturalwidth;
   }
 
@@ -141,7 +141,7 @@ static int iHboxCalcHomogeneousWidth(Ihandle *ih)
   int children_count=0;
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (!child->is_floating)
+    if (!(child->flags & IUP_FLOATING))
       children_count++;
   }
   if (children_count == 0)
@@ -162,7 +162,7 @@ static int iHboxCalcEmptyWidth(Ihandle *ih, int expand)
   int expand_count=0;
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (!child->is_floating && child->expand & expand)
+    if (!(child->flags & IUP_FLOATING) && child->expand & expand)
       expand_count++;
   }
   if (expand_count == 0)
@@ -203,7 +203,7 @@ static void iHboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (!child->is_floating)
+    if (!(child->flags & IUP_FLOATING))
     {
       int old_expand = child->expand;
       if (ih->data->expand_children)
@@ -227,7 +227,7 @@ static void iHboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
       if (ih->data->expand_children)
         child->expand = old_expand;
     }
-    else if (child->is_floating!=IUP_FLOATING_IGNORE)
+    else if (!(child->flags & IUP_FLOATING_IGNORE))
     {
       /* update children to their own natural size */
       iupBaseSetCurrentSize(child, child->naturalwidth, child->naturalheight, shrink);
@@ -248,7 +248,7 @@ static void iHboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (!child->is_floating)
+    if (!(child->flags & IUP_FLOATING))
     {
       if (ih->data->alignment == IUP_ALIGN_ACENTER)
         dy = (client_height - child->currentheight)/2;

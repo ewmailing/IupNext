@@ -756,7 +756,7 @@ Iclass* iupDialogGetClass(void)
   ic->name = "dialog";
   ic->format = "h"; /* one ihandle */
   ic->nativetype = IUP_TYPEDIALOG;
-  ic->childtype = IUP_CHILD_ONE;
+  ic->childtype = IUP_CHILDMANY+1;  /* one child */
   ic->is_interactive = 1;
 
   /* Class functions */

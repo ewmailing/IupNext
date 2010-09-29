@@ -328,17 +328,19 @@ int iupBaseSetNameAttrib(Ihandle* ih, const char* value)
 static int iBaseSetFloatingAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "IGNORE"))
-    ih->is_floating = IUP_FLOATING_IGNORE;
+    ih->flags |= IUP_FLOATING_IGNORE;
+  else if (iupStrBoolean(value))
+    ih->flags |= IUP_FLOATING;
   else
-    ih->is_floating = iupStrBoolean(value);
+    ih->flags &= ~IUP_FLOATING;
   return 0;
 }
 
 static char* iBaseGetFloatingAttrib(Ihandle* ih)
 {
-  if (ih->is_floating)
+  if (ih->flags & IUP_FLOATING)
   {
-    if (ih->is_floating==IUP_FLOATING_IGNORE)
+    if (ih->flags & IUP_FLOATING_IGNORE)
       return "IGNORE";
     else
       return "YES";
@@ -350,18 +352,18 @@ static char* iBaseGetFloatingAttrib(Ihandle* ih)
 static int iBaseSetMaxSizeAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    ih->has_maxsize = 1;
+    ih->flags |= IUP_MAXSIZE;
   else
-    ih->has_maxsize = 0;
+    ih->flags &= ~IUP_MAXSIZE;
   return 1;
 }
 
 static int iBaseSetMinSizeAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    ih->has_minsize = 1;
+    ih->flags |= IUP_MINSIZE;
   else
-    ih->has_minsize = 0;
+    ih->flags &= ~IUP_MINSIZE;
   return 1;
 }
 

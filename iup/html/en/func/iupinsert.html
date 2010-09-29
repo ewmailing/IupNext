@@ -36,13 +36,12 @@ parent of the element.</p>
 <h3>Notes</h3>
 <p>This function can be used when elements that 
   will compose a container are not known <i>a priori</i> and should be dynamically constructed.</p>
-<p>The new child can NOT be mapped. It will NOT map the new child into the native system.</p>
+<p>The new child can NOT be mapped. It will NOT map the new child into the native system. If the parent is already mapped you must explicitly call <b>IupMap</b> for 
+the appended child.</p>
 <p>If the actual parent is a layout box (<strong>IupVbox</strong>, <strong>
 IupHbox</strong> or <strong>IupZbox</strong>) and you try to insert a child that 
 it is already at the parent child list, then the child is moved to the insert 
 position.</p>
-<p>If the parent is already mapped you must explicitly call <b>IupMap</b> for 
-the appended children or for the main container. </p>
 <p>The elements are NOT immediately repositioned. Call
   <b>IupRefresh</b> for the container* to update the dialog layout (* or any other element in the dialog).</p>
 <h3>See Also</h3>

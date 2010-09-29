@@ -165,6 +165,20 @@ static void iupChildTreeInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* chi
   }
 }
 
+static int iChildCount(Ihandle* ih)
+{
+  int num = 0;
+
+  ih = ih->firstchild;
+  while(ih)
+  {
+    num++;
+    ih = ih->brother;
+  }
+
+  return num;
+}
+
 Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
 {
   Ihandle* top_parent = parent;
@@ -195,7 +209,8 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
 
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return NULL;
-  if (parent->iclass->childtype == IUP_CHILD_ONE && parent->firstchild)
+  if (parent->iclass->childtype > IUP_CHILDMANY && 
+      iChildCount(parent) == parent->iclass->childtype-IUP_CHILDMANY)
     return NULL;
 
 
@@ -264,7 +279,8 @@ Ihandle* IupAppend(Ihandle* parent, Ihandle* child)
 
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return NULL;
-  if (parent->iclass->childtype == IUP_CHILD_ONE && parent->firstchild)
+  if (parent->iclass->childtype > IUP_CHILDMANY && 
+      iChildCount(parent) == parent->iclass->childtype-IUP_CHILDMANY)
     return NULL;
 
 
@@ -333,7 +349,8 @@ int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
 
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return IUP_ERROR;
-  if (parent->iclass->childtype == IUP_CHILD_ONE && parent->firstchild)
+  if (parent->iclass->childtype > IUP_CHILDMANY && 
+      iChildCount(parent) == parent->iclass->childtype-IUP_CHILDMANY)
     return IUP_ERROR;
 
 

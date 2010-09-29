@@ -263,7 +263,7 @@ Iclass* iupSubmenuGetClass(void)
   ic->name = "submenu";
   ic->format = "sh"; /* one string and one Ihandle */
   ic->nativetype = IUP_TYPEMENU;
-  ic->childtype = IUP_CHILD_ONE;
+  ic->childtype = IUP_CHILDMANY+1;  /* one child */
   ic->is_interactive = 1;
 
   /* Class functions */

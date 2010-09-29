@@ -122,10 +122,17 @@ static char* getNativeType(InativeType nativetype)
   return str[nativetype];
 }
 
-static char* getChildType(IchildType childtype)
+static char* getChildType(int childtype)
 {
-  char* str[] = {"NO CHILD", "ONE CHILD", "MANY CHILDREN"}; 
-  return str[childtype];
+  char* str[] = {"NO CHILD", "MANY CHILDREN"}; 
+  if (childtype > IUP_CHILDMANY)
+  {
+    static char buf[20];
+    sprintf(buf, "%d CHILDREN", childtype-IUP_CHILDMANY);
+    return buf;
+  }
+  else
+    return str[childtype];
 }
 
 static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int state)

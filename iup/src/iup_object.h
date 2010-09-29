@@ -78,6 +78,16 @@ typedef struct _IcontrolData IcontrolData;
  * \ingroup object */
 #define iupALLOCCTRLDATA() ((IcontrolData*)calloc(1, sizeof(IcontrolData)))
 
+/** General flags.
+ * \ingroup object */
+enum Iflags {
+  IUP_FLOATING         = 0x01,   /**< is a floating element. FLOATING=Yes */
+  IUP_FLOATING_IGNORE  = 0x03,   /**< is a floating element. FLOATING=Ignore. Do not compute layout. */
+  IUP_MAXSIZE     = 0x04,   /**< has the MAXSIZE attribute set */
+  IUP_MINSIZE     = 0x08,   /**< has the MAXSIZE attribute set */
+  IUP_INTERNAL    = 0x16    /**< it is an internal element of the container */
+};
+
 
 /** Structure used by all the elements.
  * \ingroup object */
@@ -89,12 +99,11 @@ struct Ihandle_
   int serial;            /**< serial number used for controls that need a numeric id, initialized with -1 */
   InativeHandle* handle; /**< native handle. initialized when mapped. InativeHandle definition is system dependent. */
   int expand;            /**< expand configuration, a combination of \ref Iexpand, for containers is a combination of the children expand's */
-  int is_floating;       /**< floating attribute */
+  int flags;             /**< flags configuration, a combination of \ref Iflags */
   int x, y;              /**< upper-left corner relative to the native parent. always 0 for the dialog. */
   int    userwidth,    userheight; /**< user defined size for the control using SIZE or RASTERSIZE */
   int naturalwidth, naturalheight; /**< the calculated size based in the control contents and the user size */
   int currentwidth, currentheight; /**< actual size of the control in pixels (window size, including decorations and margins). */
-  int has_maxsize, has_minsize;    /**< indicates that the control has the attributes MAXSIZE and/or MINSIZE */
   Ihandle* parent;       /**< previous control in the hierarchy tree */
   Ihandle* firstchild;   /**< first child control in the hierarchy tree */
   Ihandle* brother;      /**< next control inside parent */
@@ -102,7 +111,7 @@ struct Ihandle_
 };
 
 
-/* Creates an object. initializes iclass and nativetype.
+/* Creates an object initializes iclass and nativetype.
  * Called only from IupCreate and IupLoad. */
 Ihandle* iupObjectCreate(Iclass* ic, void** params);
 

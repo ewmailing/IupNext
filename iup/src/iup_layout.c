@@ -146,7 +146,7 @@ void iupLayoutUpdate(Ihandle* ih)
 {
   Ihandle* child;
 
-  if (ih->is_floating==IUP_FLOATING_IGNORE)
+  if (ih->flags & IUP_FLOATING_IGNORE)
     return;
 
   /* update size and position of the native control */
@@ -194,7 +194,7 @@ void iupLayoutCompute(Ihandle* ih)
 
 void iupLayoutSetMinMaxSize(Ihandle* ih, int *w, int *h)
 {
-  if (ih->has_minsize)
+  if (ih->flags & IUP_MINSIZE)
   {
     char* value = iupAttribGet(ih, "MINSIZE");
     int min_w = 0, min_h = 0;          /* MINSIZE default value */
@@ -203,7 +203,7 @@ void iupLayoutSetMinMaxSize(Ihandle* ih, int *w, int *h)
     if (h && *h < min_h) *h = min_h;
   }
 
-  if (ih->has_maxsize)
+  if (ih->flags & IUP_MAXSIZE)
   {
     char* value = iupAttribGet(ih, "MAXSIZE");
     int max_w = 65535, max_h = 65535;  /* MAXSIZE default value */

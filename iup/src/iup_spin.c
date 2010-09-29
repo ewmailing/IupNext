@@ -327,9 +327,9 @@ static void iSpinboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 static int iSpinboxCreateMethod(Ihandle* ih, void** params)
 {
   Ihandle *spin = IupSpin();
+  spin->flags |= IUP_INTERNAL;
   iupChildTreeAppend(ih, spin);  /* spin will always be the firstchild */
 
-  iupAttribSetStr(spin, "_IUP_INTERNALCTRL", "1");
   iupAttribSetStr(spin, "_IUPSPIN_BOX", (char*)ih);  /* will be used by the callback */
 
   if (params)
@@ -350,7 +350,7 @@ Iclass* iupSpinboxGetClass(void)
   ic->name = "spinbox";
   ic->format = "h"; /* one Ihandle */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype = IUP_CHILDMANY;  /* spin+child */
+  ic->childtype = IUP_CHILDMANY+2;  /* spin+child */
   ic->is_interactive = 0;
 
   /* Class functions */
