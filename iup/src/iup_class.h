@@ -123,7 +123,8 @@ struct Iclass_
     * Called from \ref iupChildTreeGetNativeParentHandle. \n
     * This allows native elements to have an internal container
     * that will be the actual native parent, or in other words allows native elements to be a combination of 
-    * other native elements in a single IUP element. The actual native parent may depend on the child tree (IupTabs).
+    * other native elements in a single IUP element. 
+    * The actual native parent may depend on the child tree (see IupTabs for an example).
    */
   void* (*GetInnerNativeContainerHandle)(Ihandle* ih, Ihandle* child);
 
