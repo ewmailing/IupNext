@@ -275,18 +275,20 @@ static void iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* ind
     char* def_value, *name = attr_names[i];
     int inherit, not_string, has_id, access;
     char* value = iupAttribGetLocal(ih, name);
-    if (value && !iupATTRIB_ISINTERNAL(value))
+    if (value)
     {
       iupClassGetAttribNameInfo(ih->iclass, name, &def_value, &inherit, &not_string, &has_id, &access);
 
-      if (!not_string && access==0)
+      if (!not_string && /* is a string */
+          access==0 &&   /* can read and write */
+          !iupATTRIB_ISINTERNAL(value))  /* not an internal name */
       {
         if (def_value)
         {
           if (!iupStrEqualNoCase(def_value, value))
             fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, value);
         }
-        else
+        else if (iupStrBoolean(value))  /* catch default=NULL and value=NO */
           fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, value);
       }
     }
@@ -310,16 +312,16 @@ static void iLayoutExportElementC(FILE* file, Ihandle* ih)
   char* indent = "    ";
   if (ih->iclass->childtype == IUP_CHILDNONE)
     indent = "        ";
-  if (!name || iupATTRIB_ISINTERNAL(name))
-    name = "NULL";            
+  if (name && iupATTRIB_ISINTERNAL(name))
+    name = NULL;
 
   if (ih->iclass->childtype == IUP_CHILDNONE)
-    fprintf(file, "      IupSetAtt(\"%s\", IupCreate(\"%s\"), \n", name, ih->iclass->name);
+    fprintf(file, "      IupSetAtt(%s%s%s, IupCreate(\"%s\"), \n", name?"\"":"", name?name: "NULL", name?"\"":"", ih->iclass->name);
   else
   {
     Ihandle *child;
 
-    fprintf(file, "  containers[%s] = IupSetAtt(%s, IupCreatep(\"%s\", \n", iupAttribGet(ih, "_IUP_CONTAINER_INDEX"), name, ih->iclass->name);
+    fprintf(file, "  containers[%s] = IupSetAtt(%s%s%s, IupCreatep(\"%s\", \n", iupAttribGet(ih, "_IUP_CONTAINER_INDEX"), name?"\"":"", name?name: "NULL", name?"\"":"", ih->iclass->name);
 
     for (child = ih->firstchild; child; child = child->brother)
     {
@@ -371,7 +373,7 @@ static void iLayoutExportDialogC(FILE* file, Ihandle* dialog, const char* filena
   fprintf(file, "#include <iup.h>\n\n");
   fprintf(file, "Ihandle* create_dialog_%s(void)\n", title);
   fprintf(file, "{\n");
-  fprintf(file, "  Ihandle containers[%d];\n\n", count);
+  fprintf(file, "  Ihandle* containers[%d];\n\n", count);
 
   iLayoutExportContainerC(file, dialog);
   iupAttribSetStr(dialog, "_IUP_CONTAINER_INDEX", NULL);  /* clear when last used */
@@ -380,7 +382,6 @@ static void iLayoutExportDialogC(FILE* file, Ihandle* dialog, const char* filena
   fprintf(file, "}\n");
   free(title);
 }
-
 
 static void iLayoutExportDialog(Ihandle* dialog, const char* filename, const char* format)
 {

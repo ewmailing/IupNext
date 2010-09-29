@@ -616,13 +616,6 @@
 			<File
 				RelativePath="..\html\examples\C\sample.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\html\examples\C\sbox1.c"
@@ -1171,6 +1164,10 @@
 		</Filter>
 		<File
 			RelativePath="..\test\iuptest.rc"
+			>
+		</File>
+		<File
+			RelativePath="..\teste.c"
 			>
 		</File>
 	</Files>
