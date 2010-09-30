@@ -264,6 +264,16 @@ static void iLayoutExportDialogLua(FILE* file, Ihandle* ih, const char* filename
   (void)filename;
 }
 
+static int iupStrFalse(const char* str)
+{
+  if (!str || str[0]==0) return 0;
+  if (iupStrEqualNoCase(str, "0")) return 1;
+  if (iupStrEqualNoCase(str, "NO")) return 1;
+  if (iupStrEqualNoCase(str, "OFF")) return 1;
+  if (iupStrEqualNoCase(str, "FALSE")) return 1;
+  return 0;
+}
+
 static void iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* indent)
 {
   int i, attr_count, cb_count, total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
@@ -288,7 +298,7 @@ static void iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* ind
           if (!iupStrEqualNoCase(def_value, value))
             fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, value);
         }
-        else if (iupStrBoolean(value))  /* catch default=NULL and value=NO */
+        else if (!iupStrFalse(value))  /* catch default=NULL and value=NO */
           fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, value);
       }
     }

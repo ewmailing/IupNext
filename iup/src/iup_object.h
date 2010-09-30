@@ -82,10 +82,10 @@ typedef struct _IcontrolData IcontrolData;
  * \ingroup object */
 enum Iflags {
   IUP_FLOATING         = 0x01,   /**< is a floating element. FLOATING=Yes */
-  IUP_FLOATING_IGNORE  = 0x03,   /**< is a floating element. FLOATING=Ignore. Do not compute layout. */
+  IUP_FLOATING_IGNORE  = 0x02,   /**< is a floating element. FLOATING=Ignore. Do not compute layout. */
   IUP_MAXSIZE     = 0x04,   /**< has the MAXSIZE attribute set */
   IUP_MINSIZE     = 0x08,   /**< has the MAXSIZE attribute set */
-  IUP_INTERNAL    = 0x16    /**< it is an internal element of the container */
+  IUP_INTERNAL    = 0x10    /**< it is an internal element of the container */
 };
 
 

@@ -237,7 +237,7 @@ Iclass* iupBoxClassBase(void)
 
   iupClassRegisterAttribute(ic, "EXPANDCHILDREN", iBoxGetExpandChildrenAttrib, iBoxSetExpandChildrenAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HOMOGENEOUS", iBoxGetHomogeneousAttrib, iBoxSetHomogeneousAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NORMALIZESIZE", iBoxGetNormalizeSizeAttrib, iBoxSetNormalizeSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NORMALIZESIZE", iBoxGetNormalizeSizeAttrib, iBoxSetNormalizeSizeAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }

@@ -328,23 +328,20 @@ int iupBaseSetNameAttrib(Ihandle* ih, const char* value)
 static int iBaseSetFloatingAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "IGNORE"))
-    ih->flags |= IUP_FLOATING_IGNORE;
+    ih->flags |= IUP_FLOATING_IGNORE|IUP_FLOATING;
   else if (iupStrBoolean(value))
     ih->flags |= IUP_FLOATING;
   else
-    ih->flags &= ~IUP_FLOATING;
+    ih->flags &= ~(IUP_FLOATING_IGNORE|IUP_FLOATING);  /* clear both flags */
   return 0;
 }
 
 static char* iBaseGetFloatingAttrib(Ihandle* ih)
 {
-  if (ih->flags & IUP_FLOATING)
-  {
-    if (ih->flags & IUP_FLOATING_IGNORE)
-      return "IGNORE";
-    else
-      return "YES";
-  }
+  if (ih->flags & IUP_FLOATING_IGNORE)
+    return "IGNORE";
+  else if (ih->flags & IUP_FLOATING)
+    return "YES";
   else
     return "NO";
 }
