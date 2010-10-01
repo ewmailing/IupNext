@@ -219,7 +219,7 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
 
-  if (ih->iclass->childtype!=IUP_CHILDNONE || ih->firstchild ||
+  if (ih->iclass->childtype!=IUP_CHILDNONE || 
       ih->iclass->nativetype == IUP_TYPEDIALOG)  /* pre-defined dialogs can restrict the number of children */
   {
     int w=0, h=0, children_expand;
@@ -277,13 +277,10 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
     /* after that the current size must follow the actual size of the dialog */
     if (!ih->currentwidth)  ih->currentwidth  = ih->naturalwidth;
     if (!ih->currentheight) ih->currentheight = ih->naturalheight;
-
-    if (ih->firstchild)
-      iupClassObjectSetChildrenCurrentSize(ih, shrink);
   }
   else
   {
-    if (ih->iclass->childtype!=IUP_CHILDNONE || ih->firstchild)
+    if (ih->iclass->childtype!=IUP_CHILDNONE)
     {
       if (shrink)
       {
@@ -299,9 +296,6 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
         ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)?  iupMAX(ih->naturalwidth, w):  ih->naturalwidth;
         ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? iupMAX(ih->naturalheight, h): ih->naturalheight;
       }
-
-      if (ih->firstchild)
-        iupClassObjectSetChildrenCurrentSize(ih, shrink);
     }
     else
     {
@@ -318,6 +312,9 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
     if (ih->expand & IUP_EXPAND_WIDTH || ih->expand & IUP_EXPAND_HEIGHT)
       iupLayoutSetMinMaxSize(ih, &(ih->currentwidth), &(ih->currentheight));
   }
+
+  if (ih->firstchild)
+    iupClassObjectSetChildrenCurrentSize(ih, shrink);
 }
 
 void iupBaseSetPosition(Ihandle* ih, int x, int y)
