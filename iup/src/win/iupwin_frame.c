@@ -52,6 +52,7 @@ static char* winFrameGetClientOffsetAttrib(Ihandle* ih)
   /* In Windows the position of the child is still 
      relative to the top-left corner of the frame.
      So we the decorations were already added. */
+  (void)ih;
   return "0x0";
 }
 
@@ -239,7 +240,7 @@ void iupdrvFrameInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", winFrameGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winFrameGetBgColorAttrib, winFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", winFrameGetBgColorAttrib, winFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE|IUPAF_DEFAULT);  
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NOT_MAPPED);

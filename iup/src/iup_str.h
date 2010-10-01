@@ -44,7 +44,7 @@ int iupStrEqualPartial(const char* str1, const char* str2);
  * \ingroup str */
 int iupStrBoolean(const char* str);
 
-/** Returns 1 if the string is "0", "NO", "OFF" or "FALSE". \n
+/** Returns 1 if the string is "NO", "OFF" or "FALSE". \n
  * Returns 0 otherwise.
  * \ingroup str */
 int iupStrFalse(const char* str);
@@ -164,12 +164,12 @@ void iupStrToUnix(char* str);
 void iupStrToMac(char* str);
 
 /** Convert line ends to DOS/Windows format (the sequence \r\n per line).
- * If returned pointer different than input it must be freed.
+ * If returned pointer different the input, it must be freed.
  * \ingroup str */
 char* iupStrToDos(const char* str);
 
-/** Convert string to C format. Process \n, \r, \t, \\, \", and \'.
- * If returned pointer different than input it must be freed.
+/** Convert string to C format. Process \n, \r and \t.
+ * If returned pointer different the input, it must be freed.
  * \ingroup str */
 char* iupStrConvertToC(const char* str);
 

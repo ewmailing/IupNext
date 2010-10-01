@@ -584,7 +584,7 @@ static char* iTreeGetFindUserDataAttrib(Ihandle* ih, int id)
 {
   char* str = (char*)(id+1); /* skip ':' */
   void* userdata = NULL;
-  if (sscanf(str, "%p", &userdata)!=1)
+  if (!str || sscanf(str, "%p", &userdata)!=1)
     return NULL;
   id = iTreeFindUserDataId(ih, userdata);
   if (id == -1)

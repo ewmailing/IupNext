@@ -264,14 +264,47 @@ static void iLayoutExportDialogLua(FILE* file, Ihandle* ih, const char* filename
   (void)filename;
 }
 
-static int iLayoutAttributeChanged(const char* value, const char* def_value, int flags)
+static int iupAttribNoSaveCheck(Ihandle* ih, const char* name)
+{
+  if (iupStrEqual(name, "BGCOLOR") ||
+      iupStrEqual(name, "SIZE"))
+  {
+    if (iupAttribGet(ih, name))
+      return 0;  /* must save the attribute */
+    else
+      return 1;
+  }
+  if (iupStrEqual(name, "RASTERSIZE"))
+  {
+    if (!iupAttribGet(ih, "SIZE") && 
+        ih->userwidth!=0 &&
+        ih->userheight!=0)
+      return 0;
+    else
+      return 1;
+  }
+  if (iupStrEqual(name, "POSITION"))
+  {
+    if (ih->flags&IUP_FLOATING &&
+        (ih->x != 0 || ih->y != 0))
+      return 0;
+    else
+      return 1;
+  }
+
+  return 1; /* default is can NOT be saved */
+}
+
+static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* value, const char* def_value, int flags)
 {
   if (!(flags&IUPAF_NO_STRING) && /* is a string */
       !(flags&IUPAF_HAS_ID) &&  /* no id */
       !(flags&(IUPAF_READONLY|IUPAF_WRITEONLY)) &&   /* can read and write */
       !iupATTRIB_ISINTERNAL(value))  /* not an internal name */
   {
-    if (def_value)
+    if ((flags&IUPAF_NO_SAVE) && iupAttribNoSaveCheck(ih, name))
+      return 0;
+    else if (def_value)
     {
       if (!iupStrEqualNoCase(def_value, value))  /* NOT equal to the default value */
         return 1;
@@ -298,7 +331,7 @@ static void iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* ind
       int flags;
       iupClassGetAttribNameInfo(ih->iclass, name, &def_value, &flags);
 
-      if (iLayoutAttributeChanged(value, def_value, flags))
+      if (iLayoutAttributeChanged(ih, name, value, def_value, flags))
       {
         char* str = iupStrConvertToC(value);
         fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, str);
@@ -1181,7 +1214,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
                                                   flags&IUPAF_HAS_ID? "Has ID\n":"", 
                                                   (flags&IUPAF_WRITEONLY)&&(flags&IUPAF_READONLY)? "NOT SUPPORTED": (flags&IUPAF_READONLY? "Read-Only": (flags&IUPAF_WRITEONLY? "Write-Only": "")));
 
-    if (iLayoutAttributeChanged(value, def_value, flags))
+    if (iLayoutAttributeChanged(elem, name, value, def_value, flags))
       IupSetAttribute(txt1, "FGCOLOR", "255 0 0");
     else
       IupSetAttribute(txt1, "FGCOLOR", "0 0 0");

@@ -263,7 +263,7 @@ void ButtonTest(void)
 //  IupSetAttribute(box1, "BGCOLOR", "75 150 170");
 //  IupSetAttribute(box1, "PADDING", "15x15");
 
-  button = IupButton("ACTIVE", NULL);
+  button = IupButton(NULL, NULL);
   IupSetAttribute(button, "TITLE", "Button Text");
   IupSetCallback(button, "ACTION", active_cb);
   IupAppend(box1, button);

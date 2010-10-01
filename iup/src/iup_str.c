@@ -50,7 +50,6 @@ int iupStrEqualPartial(const char* str1, const char* str2)
 int iupStrFalse(const char* str)
 {
   if (!str || str[0]==0) return 0;
-  if (iupStrEqualNoCase(str, "0")) return 1;
   if (iupStrEqualNoCase(str, "NO")) return 1;
   if (iupStrEqualNoCase(str, "OFF")) return 1;
   if (iupStrEqualNoCase(str, "FALSE")) return 1;
