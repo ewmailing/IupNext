@@ -100,13 +100,15 @@ static int attributesList_ActionCB (Ihandle *ih, char *attribName, int pos, int 
                                            "%s\n"
                                            "%s"
                                            "%s"
+                                           "%s"
                                            "%s",
                                            attribName,
                                            def_value==NULL? "NULL": def_value,
                                            flags&(IUPAF_NO_INHERIT|IUPAF_NO_STRING)? "Is Inheritable": "NON Inheritable",
                                            flags&IUPAF_NO_STRING? "NOT a String\n": "",
                                            flags&IUPAF_HAS_ID? "Has ID\n": "",
-                                           (flags&IUPAF_WRITEONLY)&&(flags&IUPAF_READONLY)? "NOT SUPPORTED": (flags&IUPAF_READONLY? "Read-Only": (flags&IUPAF_WRITEONLY? "Write-Only": "")));
+                                           flags&IUPAF_READONLY? "Read-Only\n": (flags&IUPAF_WRITEONLY? "Write-Only\n": ""),
+                                           flags&IUPAF_NOT_SUPPORTED? "NOT SUPPORTED in this driver": "");
     }
     else
       IupSetAttribute(labelInfo, "TITLE", "Custom Attribute");

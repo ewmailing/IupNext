@@ -261,7 +261,8 @@ typedef enum _IattribFlags{
   IUPAF_WRITEONLY=64,  /**< is write-only, usually an action */
   IUPAF_HAS_ID2=128,   /**< can has two IDs at the end of the name, automatically set by \ref iupClassRegisterAttributeId2 */
   IUPAF_CALLBACK=256,  /**< it is a callback, not an attribute */
-  IUPAF_NO_SAVE=512    /**< the attribute can NOT be directly saved, should have at least manual processing */
+  IUPAF_NO_SAVE=512,   /**< the attribute can NOT be directly saved, should have at least manual processing */
+  IUPAF_NOT_SUPPORTED=1024  /**< not supported in that driver */
 } IattribFlags;
 
 #define IUPAF_SAMEASSYSTEM ((char*)-1)  /**< means that the default value is the same as the system default value, used only in \ref iupClassRegisterAttribute */

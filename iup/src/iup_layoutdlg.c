@@ -264,13 +264,13 @@ static void iLayoutExportDialogLua(FILE* file, Ihandle* ih, const char* filename
   (void)filename;
 }
 
-static int iupAttribNoSaveCheck(Ihandle* ih, const char* name)
+static int iupBaseNoSaveCheck(Ihandle* ih, const char* name)
 {
   if (iupStrEqual(name, "BGCOLOR") ||
       iupStrEqual(name, "SIZE"))
   {
     if (iupAttribGet(ih, name))
-      return 0;  /* must save the attribute */
+      return 0;  /* save the attribute */
     else
       return 1;
   }
@@ -292,7 +292,7 @@ static int iupAttribNoSaveCheck(Ihandle* ih, const char* name)
       return 1;
   }
 
-  return 1; /* default is can NOT be saved */
+  return 1; /* default is NOT to save */
 }
 
 static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* value, const char* def_value, int flags)
@@ -302,7 +302,7 @@ static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* va
       !(flags&(IUPAF_READONLY|IUPAF_WRITEONLY)) &&   /* can read and write */
       !iupATTRIB_ISINTERNAL(value))  /* not an internal name */
   {
-    if ((flags&IUPAF_NO_SAVE) && iupAttribNoSaveCheck(ih, name))
+    if ((flags&IUPAF_NO_SAVE) && iupBaseNoSaveCheck(ih, name))
       return 0;
     else if (def_value)
     {
@@ -325,19 +325,17 @@ static void iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* ind
   {
     char *name = attr_names[i];
     char* value = iupAttribGetLocal(ih, name);
-    if (value)
-    {
-      char* def_value;
-      int flags;
-      iupClassGetAttribNameInfo(ih->iclass, name, &def_value, &flags);
+    char* def_value;
+    int flags;
 
-      if (iLayoutAttributeChanged(ih, name, value, def_value, flags))
-      {
-        char* str = iupStrConvertToC(value);
-        fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, str);
-        if (str != value)
-          free(str);
-      }
+    iupClassGetAttribNameInfo(ih->iclass, name, &def_value, &flags);
+
+    if (value && iLayoutAttributeChanged(ih, name, value, def_value, flags))
+    {
+      char* str = iupStrConvertToC(value);
+      fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, str);
+      if (str != value)
+        free(str);
     }
   }
 
@@ -1209,12 +1207,13 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     else
       IupSetAttribute(lbl2, "TITLE", "NULL");
 
-    IupSetfAttribute(lbl3, "TITLE", "%s\n%s%s%s", flags&(IUPAF_NO_INHERIT|IUPAF_NO_STRING)? "Inheritable": "NON Inheritable", 
-                                                  flags&IUPAF_NO_STRING? "NOT a String\n": "", 
-                                                  flags&IUPAF_HAS_ID? "Has ID\n":"", 
-                                                  (flags&IUPAF_WRITEONLY)&&(flags&IUPAF_READONLY)? "NOT SUPPORTED": (flags&IUPAF_READONLY? "Read-Only": (flags&IUPAF_WRITEONLY? "Write-Only": "")));
+    IupSetfAttribute(lbl3, "TITLE", "%s\n%s%s%s%s", flags&(IUPAF_NO_INHERIT|IUPAF_NO_STRING)? "Inheritable": "NON Inheritable", 
+                                                    flags&IUPAF_NO_STRING? "NOT a String\n": "", 
+                                                    flags&IUPAF_HAS_ID? "Has ID\n":"", 
+                                                    flags&IUPAF_READONLY? "Read-Only\n": (flags&IUPAF_WRITEONLY? "Write-Only\n": ""),
+                                                    flags&IUPAF_NOT_SUPPORTED? "NOT SUPPORTED in this driver": "");
 
-    if (iLayoutAttributeChanged(elem, name, value, def_value, flags))
+    if (value && iLayoutAttributeChanged(elem, name, value, def_value, flags))
       IupSetAttribute(txt1, "FGCOLOR", "255 0 0");
     else
       IupSetAttribute(txt1, "FGCOLOR", "0 0 0");

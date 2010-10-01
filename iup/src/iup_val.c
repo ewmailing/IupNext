@@ -95,19 +95,19 @@ static int iValSetOrientationAttrib(Ihandle* ih, const char *value)
   if (ih->handle)
     return 0;
 
-  iupdrvValGetMinSize(ih, &min_w, &min_h);
-
   if (iupStrEqualNoCase(value, "VERTICAL"))
   {
+    ih->data->orientation = IVAL_VERTICAL;
+    iupdrvValGetMinSize(ih, &min_w, &min_h);
     /* val natural vertical size is MinWx100 */
     IupSetfAttribute(ih, "RASTERSIZE", "%dx%d", min_w, 100);
-    ih->data->orientation = IVAL_VERTICAL;
   }
   else /* "HORIZONTAL" */
   {
+    ih->data->orientation = IVAL_HORIZONTAL;
+    iupdrvValGetMinSize(ih, &min_w, &min_h);
     /* val natural horizontal size is 100xMinH */
     IupSetfAttribute(ih, "RASTERSIZE", "%dx%d", 100, min_h);
-    ih->data->orientation = IVAL_HORIZONTAL;
   }
 
   return 0; /* do not store value in hash table */

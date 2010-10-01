@@ -214,4 +214,7 @@ void iupdrvProgressBarInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "VALUE",  iProgressBarGetValueAttrib,  motProgressBarSetValueAttrib,  NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, "HORIZONTAL", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARQUEE",     NULL, motProgressBarSetMarqueeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+
+  /* NOT supported */
+  iupClassRegisterAttribute(ic, "DASHED", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_DEFAULT);
 }
