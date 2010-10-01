@@ -40,9 +40,14 @@ int iupStrEqualNoCase(const char* str1, const char* str2);
 int iupStrEqualPartial(const char* str1, const char* str2);
 
 /** Returns 1 if the string is "1", "YES", "ON" or "TRUE". \n
- * Returns 0 if the string is "0", "NO", "OFF" or "FALSE", or the string is NULL or empty.
+ * Returns 0 otherwise.
  * \ingroup str */
 int iupStrBoolean(const char* str);
+
+/** Returns 1 if the string is "0", "NO", "OFF" or "FALSE". \n
+ * Returns 0 otherwise.
+ * \ingroup str */
+int iupStrFalse(const char* str);
 
 /** Returns the number of lines in a string.
  * It works for UNIX, DOS and MAC line ends.
@@ -162,6 +167,11 @@ void iupStrToMac(char* str);
  * If returned pointer different than input it must be freed.
  * \ingroup str */
 char* iupStrToDos(const char* str);
+
+/** Convert string to C format. Process \n, \r, \t, \\, \", and \'.
+ * If returned pointer different than input it must be freed.
+ * \ingroup str */
+char* iupStrConvertToC(const char* str);
 
 /** Remove the interval from the string. Done in place.
  * \ingroup str */

@@ -455,33 +455,14 @@ void iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_va
   }
 }
 
-void iupClassGetAttribNameInfo(Iclass* ic, const char* name, char* *def_value, int *inherit, int *not_string, int *has_id, int *access)
+void iupClassGetAttribNameInfo(Iclass* ic, const char* name, char* *def_value, int *flags)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
   *def_value = NULL;
-  *inherit = 1; /* default is inheritable */
-  *has_id = 0;
-  *not_string = 0;
-  *access = 0; /* full */
+  *flags = 0;
   if (afunc)
   {
-    if (afunc->flags & IUPAF_HAS_ID)
-    {
-      *has_id = 1;
-      *inherit = 0;       /* id numbered attributes are NON inheritable always */
-    }
-    else
-      *inherit = !(afunc->flags & IUPAF_NO_INHERIT) &&  /* is inheritable */
-                 !(afunc->flags & IUPAF_NO_STRING);     /* is a string */
-
-    if (afunc->flags & IUPAF_NO_STRING)
-      *not_string = 1;
-
-    if (afunc->flags & IUPAF_READONLY)
-      *access |= 1;
-    if (afunc->flags & IUPAF_WRITEONLY)
-      *access |= 2;
-
+    *flags = afunc->flags;
     *def_value = iClassGetDefaultValue(afunc);
   }
 }
@@ -729,17 +710,26 @@ void IupSaveClassAttributes(Ihandle* ih)
   while (name)
   {
     IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
-    if (afunc && !(afunc->flags & IUPAF_NO_STRING) &&   /* is a string */
-                 !(afunc->flags & IUPAF_HAS_ID) &&
-                 !(afunc->flags & IUPAF_CALLBACK))
+    if (afunc && !(afunc->flags & IUPAF_NO_STRING) &&  /* is a string */
+                 !(afunc->flags & IUPAF_HAS_ID) &&     /* no ID */
+                 !(afunc->flags & IUPAF_READONLY) &&   /* not read-only */
+                 !(afunc->flags & IUPAF_WRITEONLY) &&  /* not write-only */
+                 !(afunc->flags & IUPAF_CALLBACK))     /* not a callback */
     {
       int inherit;
       char *def_value;
       char *value = iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
       if (value &&     /* NOT NULL */
-          !iupStrEqualNoCase(value, iupAttribGet(ih, name)) &&     /* NOT already stored */
-          !iupStrEqualNoCase(value, def_value))    /* NOT equal to the default value */
-        iupAttribStoreStr(ih, name, value);
+          !iupStrEqualNoCase(value, iupAttribGet(ih, name)))     /* NOT already stored */
+      {
+        if (def_value)
+        {
+          if (!iupStrEqualNoCase(value, def_value))    /* NOT equal to the default value */
+            iupAttribStoreStr(ih, name, value);
+        }
+        else if (!iupStrFalse(value))  /* catch default=NULL and value=NO */
+          iupAttribStoreStr(ih, name, value);
+      }
     }
 
     name = iupTableNext(ic->attrib_func);

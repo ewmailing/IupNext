@@ -89,8 +89,8 @@ char* iupAttribGetStr(Ihandle* ih, const char* name);
 
 /** Returns the attribute from the hash table as a string, 
  * but if not defined then checks in the control implementation, 
- * if still not defined then returns the registered default value if any.
- * NO inheritance here.
+ * if still not defined then returns the registered default value if any. \n
+ * NO inheritance here. Used only in the IupLayoutDialog.
  * \ingroup attrib */
 char* iupAttribGetLocal(Ihandle* ih, const char* name);
 

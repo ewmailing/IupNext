@@ -252,6 +252,7 @@ iupStrCountChar
 iupStrCopyUntil
 iupStrCopyN
 iupStrBoolean
+iupStrFalse
 iupSetFontStyleAttrib
 iupSetFontSizeAttrib
 iupSetFontAttrib

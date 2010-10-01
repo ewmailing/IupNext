@@ -264,13 +264,21 @@ static void iLayoutExportDialogLua(FILE* file, Ihandle* ih, const char* filename
   (void)filename;
 }
 
-static int iupStrFalse(const char* str)
+static int iLayoutAttributeChanged(const char* value, const char* def_value, int flags)
 {
-  if (!str || str[0]==0) return 0;
-  if (iupStrEqualNoCase(str, "0")) return 1;
-  if (iupStrEqualNoCase(str, "NO")) return 1;
-  if (iupStrEqualNoCase(str, "OFF")) return 1;
-  if (iupStrEqualNoCase(str, "FALSE")) return 1;
+  if (!(flags&IUPAF_NO_STRING) && /* is a string */
+      !(flags&IUPAF_HAS_ID) &&  /* no id */
+      !(flags&(IUPAF_READONLY|IUPAF_WRITEONLY)) &&   /* can read and write */
+      !iupATTRIB_ISINTERNAL(value))  /* not an internal name */
+  {
+    if (def_value)
+    {
+      if (!iupStrEqualNoCase(def_value, value))  /* NOT equal to the default value */
+        return 1;
+    }
+    else if (!iupStrFalse(value))  /* catch default=NULL and value=NO */
+      return 1;
+  }
   return 0;
 }
 
@@ -282,24 +290,20 @@ static void iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* ind
   attr_count = IupGetClassAttributes(ih->iclass->name, attr_names, total_count);
   for (i=0; i<attr_count; i++)
   {
-    char* def_value, *name = attr_names[i];
-    int inherit, not_string, has_id, access;
+    char *name = attr_names[i];
     char* value = iupAttribGetLocal(ih, name);
     if (value)
     {
-      iupClassGetAttribNameInfo(ih->iclass, name, &def_value, &inherit, &not_string, &has_id, &access);
+      char* def_value;
+      int flags;
+      iupClassGetAttribNameInfo(ih->iclass, name, &def_value, &flags);
 
-      if (!not_string && /* is a string */
-          access==0 &&   /* can read and write */
-          !iupATTRIB_ISINTERNAL(value))  /* not an internal name */
+      if (iLayoutAttributeChanged(value, def_value, flags))
       {
-        if (def_value)
-        {
-          if (!iupStrEqualNoCase(def_value, value))
-            fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, value);
-        }
-        else if (!iupStrFalse(value))  /* catch default=NULL and value=NO */
-          fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, value);
+        char* str = iupStrConvertToC(value);
+        fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, str);
+        if (str != value)
+          free(str);
       }
     }
   }
@@ -1145,7 +1149,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
   if (state)
   {
     char* def_value;
-    int inherit, not_string, has_id, access;
+    int flags;
     Ihandle* elem = (Ihandle*)iupAttribGetInherit(list1, "_IUP_PROPELEMENT");
     char* value = iupAttribGetLocal(elem, name);
     Ihandle* txt1 = IupGetDialogChild(list1, "VALUE1A");
@@ -1155,11 +1159,11 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     Ihandle* colorbut = IupGetDialogChild(list1, "SETCOLORBUT");
     Ihandle* fontbut = IupGetDialogChild(list1, "SETFONTBUT");
 
-    iupClassGetAttribNameInfo(elem->iclass, name, &def_value, &inherit, &not_string, &has_id, &access);
+    iupClassGetAttribNameInfo(elem->iclass, name, &def_value, &flags);
 
     if (value)
     {
-      if (not_string)
+      if (flags&IUPAF_NO_STRING)
         IupSetfAttribute(txt1, "VALUE", "%p", value);
       else
         IupSetAttribute(txt1, "VALUE", value);
@@ -1172,34 +1176,39 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     else
       IupSetAttribute(lbl2, "TITLE", "NULL");
 
-    IupSetfAttribute(lbl3, "TITLE", "%s\n%s%s%s", inherit? "Inheritable": "NON Inheritable", 
-                                                  not_string? "NOT a String\n": "", 
-                                                  has_id? "Has ID\n":"", 
-                                                  access==1? "Read-Only": (access==2? "Write-Only": (access==3? "NOT SUPPORTED": "")));
+    IupSetfAttribute(lbl3, "TITLE", "%s\n%s%s%s", flags&(IUPAF_NO_INHERIT|IUPAF_NO_STRING)? "Inheritable": "NON Inheritable", 
+                                                  flags&IUPAF_NO_STRING? "NOT a String\n": "", 
+                                                  flags&IUPAF_HAS_ID? "Has ID\n":"", 
+                                                  (flags&IUPAF_WRITEONLY)&&(flags&IUPAF_READONLY)? "NOT SUPPORTED": (flags&IUPAF_READONLY? "Read-Only": (flags&IUPAF_WRITEONLY? "Write-Only": "")));
 
-    if (def_value && !not_string && access==0 &&
-        !iupStrEqualNoCase(def_value, value))
+    if (iLayoutAttributeChanged(value, def_value, flags))
       IupSetAttribute(txt1, "FGCOLOR", "255 0 0");
     else
       IupSetAttribute(txt1, "FGCOLOR", "0 0 0");
 
-    if (access!=1 && !not_string)
-      IupSetAttribute(setbut, "ACTIVE", "Yes");
-    else
-      IupSetAttribute(setbut, "ACTIVE", "No");
-
-    if (access!=1 && !not_string && strstr(name, "COLOR")!=NULL)
+    if (!(flags&IUPAF_READONLY) && !(flags&IUPAF_NO_STRING))
     {
-      IupSetAttribute(colorbut, "BGCOLOR", value);
-      IupSetAttribute(colorbut, "VISIBLE", "Yes");
+      IupSetAttribute(setbut, "ACTIVE", "Yes");
+
+      if (strstr(name, "COLOR")!=NULL)
+      {
+        IupSetAttribute(colorbut, "BGCOLOR", value);
+        IupSetAttribute(colorbut, "VISIBLE", "Yes");
+      }
+      else
+        IupSetAttribute(colorbut, "VISIBLE", "No");
+
+      if (iupStrEqual(name, "FONT"))
+        IupSetAttribute(fontbut, "VISIBLE", "Yes");
+      else
+        IupSetAttribute(fontbut, "VISIBLE", "No");
     }
     else
+    {
+      IupSetAttribute(setbut, "ACTIVE", "No");
       IupSetAttribute(colorbut, "VISIBLE", "No");
-
-    if (access!=1 && !not_string && iupStrEqual(name, "FONT"))
-      IupSetAttribute(fontbut, "VISIBLE", "Yes");
-    else
       IupSetAttribute(fontbut, "VISIBLE", "No");
+    }
   }
   return IUP_DEFAULT;
 }
@@ -1962,14 +1971,33 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
 
   /* no support for copy */
   if (iscontrol)
+  {
+    IupMessage("Error", "Copy not supported for drag&drop.");
     return IUP_IGNORE;
+  }
+
+  if (drag_elem->flags & IUP_INTERNAL)
+  {
+    IupMessage("Error", "Can NOT drag an internal element. This element exists only inside this container.");
+    return IUP_IGNORE;
+  }
 
   if (iupStrEqualNoCase(IupGetAttributeId(tree, "KIND", drop_id), "BRANCH") &&
       iupStrEqualNoCase(IupGetAttributeId(tree, "STATE", drop_id), "EXPANDED"))
   {
+    Ihandle* ref_child = drop_elem->firstchild;   /* the first child as reference */
+
+    /* if first element is internal, use the next one. */
+    if (drop_elem->firstchild && (drop_elem->firstchild->flags & IUP_INTERNAL))
+    {
+      /* the first child is internal, so use brother as reference */
+      if (drop_elem->firstchild->brother)
+        ref_child = drop_elem->firstchild->brother;
+    }
+
     /* If the drop node is a branch and it is expanded, 
     /* add as first child */
-    error = IupReparent(drag_elem, drop_elem, drop_elem->firstchild);  /* add before the first child */
+    error = IupReparent(drag_elem, drop_elem, ref_child);  /* add before the reference */
   }
   else
   {

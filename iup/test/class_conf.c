@@ -91,9 +91,9 @@ static int attributesList_ActionCB (Ihandle *ih, char *attribName, int pos, int 
 
     if (iupClassAttribIsRegistered(ic, attribName))
     {
-      char* def_value = NULL;
-      int inherit=1, not_string=0, has_id=0, access=0;
-      iupClassGetAttribNameInfo(ic, attribName, &def_value, &inherit, &not_string, &has_id, &access);
+      char* def_value;
+      int flags;
+      iupClassGetAttribNameInfo(ic, attribName, &def_value, &flags);
 
       IupSetfAttribute(labelInfo, "TITLE", "Attribute Name: %s\n"
                                            "Default Value: %s\n"
@@ -103,10 +103,10 @@ static int attributesList_ActionCB (Ihandle *ih, char *attribName, int pos, int 
                                            "%s",
                                            attribName,
                                            def_value==NULL? "NULL": def_value,
-                                           inherit? "Is Inheritable": "NON Inheritable",
-                                           not_string? "NOT a String\n": "",
-                                           has_id? "Has ID\n": "",
-                                           access==1? "Read-Only": (access==2? "Write-Only": (access==3? "NOT SUPPORTED": "")));
+                                           flags&(IUPAF_NO_INHERIT|IUPAF_NO_STRING)? "Is Inheritable": "NON Inheritable",
+                                           flags&IUPAF_NO_STRING? "NOT a String\n": "",
+                                           flags&IUPAF_HAS_ID? "Has ID\n": "",
+                                           (flags&IUPAF_WRITEONLY)&&(flags&IUPAF_READONLY)? "NOT SUPPORTED": (flags&IUPAF_READONLY? "Read-Only": (flags&IUPAF_WRITEONLY? "Write-Only": "")));
     }
     else
       IupSetAttribute(labelInfo, "TITLE", "Custom Attribute");

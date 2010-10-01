@@ -20,9 +20,9 @@
 <p>Moves an interface element from one position in the hierarchy tree to 
 another.</p>
 <p>Both <strong>new_parent</strong> and <strong>child</strong> must be mapped or unmapped at the same time.</p>
-<p>If <strong>ref_child</strong> is NULL, then it will append the <strong>child</strong> 
+<p>If <strong>ref_child</strong> is NULL, then it will <em>append</em> the <strong>child</strong> 
 to the <strong>new_parent</strong>. If <strong>ref_child</strong> is NOT NULL 
-then it will insert <strong>child</strong> before <strong>ref_child</strong> inside the <strong>
+then it will <em>insert</em> <strong>child</strong> before <strong>ref_child</strong> inside the <strong>
 new_parent</strong>.</p>
 <h3>
 Parameters/Return</h3>
@@ -30,8 +30,8 @@ Parameters/Return</h3>
 iup.Reparent(<strong>child, new_parent, ref_child</strong>: ihandle) -&gt; <strong>error</strong>: number [in Lua]</pre>
 <p><b>child</b>: Identifier of the element to be moved.<br>
 <b>new_parent</b>: Identifier of the new parent.<br>
-<strong>ref_child</strong>: Identifier of the element to be inserted before the 
-reference. Can be NULL. (since 3.3)</p>
+<strong>ref_child</strong>: Identifier of the element to be used as reference, 
+where the child will be inserted before it. Can be NULL. (since 3.3)</p>
 <p><span class="style2">Returns:</span> IUP_NOERROR if successfully, IUP_ERROR if failed.</p>
 <h3>Notes</h3>
 <p>This function is faster and easier than doing the sequence <b>unmap</b>, <b>

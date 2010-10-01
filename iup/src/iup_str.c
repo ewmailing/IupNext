@@ -47,6 +47,16 @@ int iupStrEqualPartial(const char* str1, const char* str2)
   return (strncmp(str1, str2, strlen(str2))==0)? 1: 0;
 }
 
+int iupStrFalse(const char* str)
+{
+  if (!str || str[0]==0) return 0;
+  if (iupStrEqualNoCase(str, "0")) return 1;
+  if (iupStrEqualNoCase(str, "NO")) return 1;
+  if (iupStrEqualNoCase(str, "OFF")) return 1;
+  if (iupStrEqualNoCase(str, "FALSE")) return 1;
+  return 0;
+}
+
 int iupStrBoolean(const char* str)
 {
   if (!str || str[0]==0) return 0;
@@ -647,6 +657,54 @@ char* iupStrToDos(const char* str)
 	*auxstr = 0;
 
 	return newstr;	
+}
+
+#define IUP_ISRESERVED(_c) (_c=='\n' || _c=='\r' || _c=='\t')
+
+char* iupStrConvertToC(const char* str)
+{
+  char* new_str, *pnstr;
+  const char* pstr = str;
+  int len, count=0;
+  while(*pstr)
+  {
+    if (IUP_ISRESERVED(*pstr))
+      count++;
+    pstr++;
+  }
+  if (!count)
+    return (char*)str;
+  len = pstr-str;
+  new_str = malloc(len+count+1);
+  pstr = str;
+  pnstr = new_str;
+  while(*pstr)
+  {
+    if (IUP_ISRESERVED(*pstr))
+    {
+      *pnstr = '\\';
+      pnstr++;
+
+      switch(*pstr)
+      {
+      case '\n':
+        *pnstr = 'n';
+        break;
+      case '\r':
+        *pnstr = 'r';
+        break;
+      case '\t':
+        *pnstr = 't';
+        break;
+      }
+    }
+    else
+      *pnstr = *pstr;
+
+    pnstr++;
+    pstr++;
+  }
+  return new_str;
 }
 
 void iupStrRemove(char* value, int start, int end, int dir)
