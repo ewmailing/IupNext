@@ -673,6 +673,7 @@ char* iupStrConvertToC(const char* str)
   }
   if (!count)
     return (char*)str;
+
   len = pstr-str;
   new_str = malloc(len+count+1);
   pstr = str;
@@ -703,6 +704,7 @@ char* iupStrConvertToC(const char* str)
     pnstr++;
     pstr++;
   }
+  *pnstr = 0;
   return new_str;
 }
 

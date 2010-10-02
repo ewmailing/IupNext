@@ -1166,10 +1166,6 @@
 			RelativePath="..\test\iuptest.rc"
 			>
 		</File>
-		<File
-			RelativePath="..\teste.c"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
