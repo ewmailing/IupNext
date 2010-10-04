@@ -60,10 +60,11 @@ struct Iclass_
                    * - "g" = (Ihandle**) - array of element handle */
   InativeType nativetype; /**< native type. Default is IUP_TYPEVOID. */
   int childtype;   /**< children count enum: none, many, or n, as described in \ref IchildType. Default is IUP_CHILDNONE. \n
-                        Used only by IupReparent, IupAppend and IupInsert to control the number of children. \n
-                        The element can still have hidden children even if this is none. */
-  int is_interactive;     /**< keyboard interactive boolean, 
-                            * true if the class can have the keyboard input focus. Default is false. */
+                    * This identifies a container that can be manipulated with IupReparent, IupAppend and IupInsert. \n
+                    * Used to control the allowed number of children and define its behavior in the layout processing. \n
+                    * The element can still have hidden children even if this is none. */
+  int is_interactive; /**< keyboard interactive boolean, 
+                       * true if the class can have the keyboard input focus. Default is false. */
   int has_attrib_id;  /**< indicate if any attribute is numbered. Default is not. Can be 1 or 2. */
 
   Iclass* parent; /**< class parent to implement inheritance.

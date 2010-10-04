@@ -485,9 +485,28 @@ int iupClassObjectAttribIsNotString(Ihandle* ih, const char* name)
 
 int iupClassAttribIsRegistered(Iclass* ic, const char* name)
 {
-  IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
+  IattribFunc* afunc = NULL;
+
+  if (ic->has_attrib_id!=0)
+  {
+    const char* name_id = iClassFindId(name);
+    if (name_id)
+    {
+      IattribFunc* afunc;
+      const char* partial_name = iClassCutNameId(name, name_id);
+      if (!partial_name)
+        partial_name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
+                                      translate them into IDVALUE. */
+      afunc = (IattribFunc*)iupTableGet(ic->attrib_func, partial_name);
+    }
+  }
+
+  if (!afunc)
+    afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
+
   if (afunc)
     return 1;
+
   return 0;
 }
 

@@ -838,7 +838,7 @@ Iclass* iupMatrixGetClass(void)
   Iclass* ic = iupClassNew(iupCanvasGetClass());
 
   ic->name = "matrix";
-  ic->format = "a"; /* one ACTION callback name */
+  ic->format = "a"; /* one ACTION_CB callback name */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

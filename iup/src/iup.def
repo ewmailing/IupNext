@@ -236,6 +236,8 @@ iupStrNextLine
 iupStrMessageShowError
 iupStrMessageGet
 iupStrLower
+iupStrUpper
+iupStrHasSpace
 iupStrLineCount
 iupStrInsert
 iupStrGetMemoryCopy

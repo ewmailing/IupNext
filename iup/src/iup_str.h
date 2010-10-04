@@ -84,9 +84,17 @@ char *iupStrGetMemory(int size);
  * \ingroup str */
 char *iupStrGetMemoryCopy(const char* str);
 
-/** Converts a string into lower case.
+/** Converts a string into lower case. Can be used in-place.
  * \ingroup str */
 void iupStrLower(char* dstr, const char* sstr);
+
+/** Converts a string into upper case. Can be used in-place.
+ * \ingroup str */
+void iupStrUpper(char* dstr, const char* sstr);
+
+/** Checks if the string has at least 1 space character.
+ * \ingroup str */
+int iupStrHasSpace(const char* str);
 
 /** Extract a RGB triple from the string. Returns 0 or 1.
  * \ingroup str */

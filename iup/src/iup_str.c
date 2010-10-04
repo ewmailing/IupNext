@@ -66,11 +66,29 @@ int iupStrBoolean(const char* str)
   return 0;
 }
 
+void iupStrUpper(char* dstr, const char* sstr)
+{
+  for (; *sstr; sstr++, dstr++)
+    *dstr = (char)toupper(*sstr);
+  *dstr = 0;
+}
+
 void iupStrLower(char* dstr, const char* sstr)
 {
   for (; *sstr; sstr++, dstr++)
     *dstr = (char)tolower(*sstr);
   *dstr = 0;
+}
+
+int iupStrHasSpace(const char* str)
+{
+  while(*str)
+  {
+    if (*str == ' ')
+      return 1;
+    str++;
+  }
+  return 0;
 }
 
 char *iupStrDup(const char *str)

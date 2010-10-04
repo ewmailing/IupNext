@@ -236,8 +236,7 @@ static Ihandle* iParseControl(Iclass *ic)
           format[i] == 'c')
         break;
 
-      if (format[i] == 'a' || format[i] == 's' ||
-          format[i] == 'A' || format[i] == 'S')
+      if (format[i] == 'a' || format[i] == 's')
         free(params[i]);   /* iupLexGetName returned a duplicated string */
     }
 
