@@ -291,9 +291,9 @@ static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* va
   return 0;
 }
 
-static void iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, int type)
+static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, int type)
 {
-  int i, attr_count, total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
+  int i, wcount = 0, attr_count, total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
   char **attr_names = (char **) malloc(total_count * sizeof(char *));
   char attribname[1024];
 
@@ -329,6 +329,8 @@ static void iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* ind
 
       if (str != value)
         free(str);
+
+      wcount++;
     }
   }
 
@@ -351,6 +353,8 @@ static void iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* ind
         }
         else
           fprintf(file, "%s\"%s\", \"%s\",\n", indent, attr_names[i], cb_name);
+
+        wcount++;
       }
     }
   }
@@ -358,10 +362,12 @@ static void iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* ind
   if (type==-1) /* LED */
   {
     /* remove last comma ',' and new line */
+    /* if wcount==0, it will remove '[' and new line */
     fseek(file, -2, SEEK_CUR);
   }
 
   free(attr_names);
+  return wcount;
 }
 
 static void iLayoutExportElementC(FILE* file, Ihandle* ih)
@@ -510,18 +516,30 @@ static void iLayoutExportDialogLua(FILE* file, Ihandle* dialog, const char* file
   free(title);
 }
 
-static void iLayoutExportElementLED(FILE* file, Ihandle* ih)
+static char* iLayoutGetName(Ihandle* ih)
 {
-  char* format = ih->iclass->format;
-  char classname[200];
   char* name = IupGetName(ih);
-  char* indent = "    ";
   if (name && iupATTRIB_ISINTERNAL(name))
     name = NULL;
   if (!name && ih->iclass->nativetype == IUP_TYPEDIALOG)
     name = iupAttribGet(ih, "_IUP_DIALOG_NAME");
-  if (!name)
-    indent = "        ";  //TODO
+  return name;
+}
+
+static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* name, int indent_level)
+{
+  int i, count, indent_count = 0;
+  char* format = ih->iclass->format;
+  char classname[100];
+  char indent[300] = "";
+
+  /* constructor identation */
+  if (indent_level)
+  {
+    indent_count = indent_level*4;
+    for (i=0; i<indent_count; i++)
+      indent[i] = ' ';
+  }
 
   iupStrUpper(classname, ih->iclass->name);
   if (name)
@@ -529,9 +547,13 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih)
   else
     fprintf(file, "%s%s[\n", indent, classname);
 
-  iLayoutExportElementAttribs(file, ih, indent, -1);  /* LED */
+  /* attributes identation */
+  for (i=indent_count; i<indent_count+2; i++)
+    indent[i] = ' ';
+  indent_count += 2;
 
-  fprintf(file, "]"); /* end of attributes (no new line) */
+  if (iLayoutExportElementAttribs(file, ih, indent, -1)!=0)  /* LED */
+    fprintf(file, "]"); /* end of attributes (no new line) */
 
   if (!format)
     fprintf(file, "()");
@@ -543,15 +565,20 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih)
 
       fprintf(file, "(\n");
 
+      /* children identation */
+      for (i=indent_count; i<indent_count+2; i++)
+        indent[i] = ' ';
+      indent_count += 2;
+
       for (child = ih->firstchild; child; child = child->brother)
       {
         if (!(child->flags & IUP_INTERNAL))
         {
-          char* childname = IupGetName(child);
-          if (!childname  || iupATTRIB_ISINTERNAL(childname))
-            iLayoutExportElementLED(file, child);
+          char* childname = iLayoutGetName(child);
+          if (!childname)
+            iLayoutExportElementLED(file, child, NULL, indent_level+1);   /* here process the ones that does NOT have names */
           else
-            fprintf(file, "%s", childname);
+            fprintf(file, "%s%s", indent, childname);
 
           if (child->brother)
             fprintf(file, ",\n");
@@ -562,7 +589,7 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih)
     }
     else
     {
-      int i, count = strlen(format);
+      count = strlen(format);
 
       fprintf(file, "(");
 
@@ -592,17 +619,21 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih)
     fprintf(file, "\n\n");
 }
 
-static void iLayoutExportContainerLED(FILE* file, Ihandle* ih)
+static void iLayoutExportChildrenLED(FILE* file, Ihandle* ih)
 {
   Ihandle *child;
+  char* name;
+
   /* export children first */
   for (child = ih->firstchild; child; child = child->brother)
   {
-    if (!(child->flags & IUP_INTERNAL) && child->iclass->childtype != IUP_CHILDNONE)
-      iLayoutExportContainerLED(file, child);
+    if (!(child->flags & IUP_INTERNAL))
+      iLayoutExportChildrenLED(file, child);
   }
 
-  iLayoutExportElementLED(file, ih);
+  name = iLayoutGetName(ih);
+  if (name)  /* here process only the ones that have names */
+    iLayoutExportElementLED(file, ih, name, 0);
 }
 
 static void iLayoutExportDialogLED(FILE* file, Ihandle* dialog, const char* filename)
@@ -618,7 +649,7 @@ static void iLayoutExportDialogLED(FILE* file, Ihandle* dialog, const char* file
 
   fprintf(file, "#   Generated by IupLayoutDialog export to LED.\n\n");
 
-  iLayoutExportContainerLED(file, dialog);
+  iLayoutExportChildrenLED(file, dialog);
 
   if (title)
     free(title);
@@ -2359,9 +2390,9 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
       IupSetCallbacks(IupItem("Load Visible...", NULL), "ACTION", iLayoutMenuLoadVisible_CB, NULL),
       IupSetCallbacks(IupItem("Reload", NULL), "ACTION", iLayoutMenuReload_CB, NULL),
       IupSubmenu("&Export", IupMenu(
+        IupSetCallbacks(IupItem("C...", NULL), "ACTION", iLayoutMenuExportC_CB, NULL),
         IupSetCallbacks(IupItem("LED...", NULL), "ACTION", iLayoutMenuExportLED_CB, NULL),
         IupSetCallbacks(IupItem("Lua...", NULL), "ACTION", iLayoutMenuExportLua_CB, NULL),
-        IupSetCallbacks(IupItem("C...", NULL), "ACTION", iLayoutMenuExportC_CB, NULL),
         NULL)),
       IupSeparator(),
       IupSetCallbacks(IupItem("Refresh\tCtrl+F5", NULL), "ACTION", iLayoutMenuRefresh_CB, NULL),

@@ -391,7 +391,7 @@ void ButtonTest(void)
 
   label = IupLabel(NULL);
   IupSetAttribute(label, "SEPARATOR", "VERTICAL");
-  IupSetHandle("label", label);
+  IupSetHandle("seplabel", label);
 
   dlg = IupDialog(IupHbox(box1, label, box2, NULL));
   IupSetAttribute(dlg, "TITLE", "IupButton Test");

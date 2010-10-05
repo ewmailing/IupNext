@@ -379,7 +379,7 @@ static int iBaseSetExpandAttrib(Ihandle* ih, const char* value)
 
 static char* iBaseGetExpandAttrib(Ihandle* ih)
 {
-  if (ih->expand & IUP_EXPAND_BOTH)
+  if ((ih->expand & IUP_EXPAND_WIDTH) && (ih->expand & IUP_EXPAND_HEIGHT))
     return "YES";
   else if (ih->expand & IUP_EXPAND_WIDTH)
     return "HORIZONTAL";
