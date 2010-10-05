@@ -66,14 +66,21 @@ static int iFillSetRasterSizeAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    int s = 0;
+    int s = 0, d = 0;
     if (iFillGetDir(ih) == IUP_FILL_NONE)  /* if Fill is not yet a child of a Vbox or Hbox */
     {
       iupAttribSetStr(ih, "SIZE", NULL);
       return 1;
     }
 
-    iupStrToInt(value, &s);
+    if (iFillGetDir(ih) == IUP_FILL_HORIZ)
+      iupStrToIntInt(value, &s, &d, 'x');  /* second value will be ignored, can NOT set height */
+    else
+    {
+      iupStrToIntInt(value, &s, &d, 'x');  /* first value will be ignored if second defined, can NOT set width */
+      if (d != 0) s = d;
+    }
+
     if (s > 0) 
     {
       if (iFillGetDir(ih) == IUP_FILL_HORIZ)
@@ -101,14 +108,21 @@ static int iFillSetSizeAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    int s = 0;
+    int s = 0, d = 0;
     if (iFillGetDir(ih) == IUP_FILL_NONE) /* if Fill is not yet a child of a Vbox or Hbox */
     {
       iupAttribSetStr(ih, "RASTERSIZE", NULL);
       return 1;
     }
 
-    iupStrToInt(value, &s);
+    if (iFillGetDir(ih) == IUP_FILL_HORIZ)
+      iupStrToIntInt(value, &s, &d, 'x');  /* second value will be ignored, can NOT set height */
+    else
+    {
+      iupStrToIntInt(value, &s, &d, 'x');  /* first value will be ignored if second defined, can NOT set width */
+      if (d != 0) s = d;
+    }
+
     if (s > 0) 
     {
       int charwidth, charheight;

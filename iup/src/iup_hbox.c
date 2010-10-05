@@ -29,8 +29,8 @@ static int iHboxSetRasterSizeAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    int s = 0;
-    iupStrToInt(value, &s);
+    int s = 0, d = 0;
+    iupStrToIntInt(value, &s, &d, 'x');  /* second value will be ignored, can NOT set height */
     if (s > 0) 
     {
       ih->userheight = 0;
@@ -50,8 +50,8 @@ static int iHboxSetSizeAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    int s = 0;
-    iupStrToInt(value, &s);
+    int s = 0, d = 0;
+    iupStrToIntInt(value, &s, &d, 'x');  /* second value will be ignored, can NOT set height */
     if (s > 0) 
     {
       int charwidth, charheight;

@@ -253,8 +253,7 @@ static int iupBaseNoSaveCheck(Ihandle* ih, const char* name)
   if (iupStrEqual(name, "RASTERSIZE"))
   {
     if (!iupAttribGet(ih, "SIZE") && 
-        ih->userwidth!=0 &&
-        ih->userheight!=0)
+        (ih->userwidth!=0 || ih->userheight!=0))
       return 0;
     else
       return 1;
@@ -273,22 +272,31 @@ static int iupBaseNoSaveCheck(Ihandle* ih, const char* name)
 
 static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* value, const char* def_value, int flags)
 {
-  if (!(flags&IUPAF_NO_STRING) && /* is a string */
-      !(flags&IUPAF_HAS_ID) &&  /* no id */
-      !(flags&(IUPAF_READONLY|IUPAF_WRITEONLY)) &&   /* can read and write */
-      !iupATTRIB_ISINTERNAL(value))  /* not an internal name */
+  if ((flags&IUPAF_NO_STRING) || /* not a string */
+      (flags&IUPAF_HAS_ID) ||  /* has id */
+      (flags&(IUPAF_READONLY|IUPAF_WRITEONLY)))  /* can only read or only write */
+    return 0;
+
+  if (!value || iupATTRIB_ISINTERNAL(value))
+    return 0;
+
+  if ((flags&IUPAF_NO_SAVE) && iupBaseNoSaveCheck(ih, name))  /* can not be saved */
+    return 0;
+
+  if (def_value && iupStrEqualNoCase(def_value, value))  /* equal to the default value */
+    return 0;
+
+  if (!def_value && iupStrFalse(value))  /* default=NULL and value=NO */
+    return 0;
+
+  if (!(flags&IUPAF_NO_INHERIT) && ih->parent) /* if inherit, check if the same value is defined at parent */
   {
-    if ((flags&IUPAF_NO_SAVE) && iupBaseNoSaveCheck(ih, name))
+    char* parent_value = iupAttribGetInherit(ih->parent, name);
+    if (parent_value && iupStrEqualNoCase(value, parent_value))
       return 0;
-    else if (def_value)
-    {
-      if (!iupStrEqualNoCase(def_value, value))  /* NOT equal to the default value */
-        return 1;
-    }
-    else if (!iupStrFalse(value))  /* catch default=NULL and value=NO */
-      return 1;
   }
-  return 0;
+  
+  return 1;
 }
 
 static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, int type)
@@ -307,7 +315,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
 
     iupClassGetAttribNameInfo(ih->iclass, name, &def_value, &flags);
 
-    if (value && iLayoutAttributeChanged(ih, name, value, def_value, flags))
+    if (iLayoutAttributeChanged(ih, name, value, def_value, flags))
     {
       char* str = iupStrConvertToC(value);
 
@@ -605,7 +613,7 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* name, i
           if (cb_name && !iupATTRIB_ISINTERNAL(cb_name))
             fprintf(file, "%s", cb_name);
           else
-            fprintf(file, "donothing");  /* dummy name */
+            fprintf(file, "do_nothing");  /* dummy name */
         }
         if (i!=count-1)
           fprintf(file, ", ");
@@ -1440,7 +1448,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
                                                     flags&IUPAF_READONLY? "Read-Only\n": (flags&IUPAF_WRITEONLY? "Write-Only\n": ""),
                                                     flags&IUPAF_NOT_SUPPORTED? "NOT SUPPORTED in this driver": "");
 
-    if (value && iLayoutAttributeChanged(elem, name, value, def_value, flags))
+    if (iLayoutAttributeChanged(elem, name, value, def_value, flags))
       IupSetAttribute(txt1, "FGCOLOR", "255 0 0");
     else
       IupSetAttribute(txt1, "FGCOLOR", "0 0 0");

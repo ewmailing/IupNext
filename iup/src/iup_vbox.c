@@ -29,8 +29,9 @@ static int iVboxSetRasterSizeAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    int s = 0;
-    iupStrToInt(value, &s);
+    int s = 0, d = 0;
+    iupStrToIntInt(value, &s, &d, 'x');  /* first value will be ignored if second defined, can NOT set width */
+    if (d != 0) s = d;
     if (s > 0) 
     {
       ih->userheight = s;
@@ -50,8 +51,9 @@ static int iVboxSetSizeAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    int s = 0;
-    iupStrToInt(value, &s);
+    int s = 0, d = 0;
+    iupStrToIntInt(value, &s, &d, 'x');  /* first value will be ignored if second defined, can NOT set width */
+    if (d != 0) s = d;
     if (s > 0) 
     {
       int charwidth, charheight;

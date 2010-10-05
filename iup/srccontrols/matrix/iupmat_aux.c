@@ -473,7 +473,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
   if (p->total_size)
     IupSetfAttribute(ih, D, "%g", (double)p->visible_size/(double)p->total_size);
   else
-    IupSetAttribute(ih, D, "1.0");
+    IupSetAttribute(ih, D, "1");
 }
 
 void iupMatrixAuxCalcSizes(Ihandle* ih)

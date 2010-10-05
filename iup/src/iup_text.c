@@ -290,9 +290,9 @@ static char* iTextGetScrollbarAttrib(Ihandle* ih)
 {
   if (ih->data->sb == (IUP_SB_HORIZ | IUP_SB_VERT))
     return "YES";
-  if (ih->data->sb &= IUP_SB_HORIZ)
+  if (ih->data->sb & IUP_SB_HORIZ)
     return "HORIZONTAL";
-  if (ih->data->sb == IUP_SB_VERT)
+  if (ih->data->sb & IUP_SB_VERT)
     return "VERTICAL";
   return "NO";   /* IUP_SB_NONE */
 }
@@ -323,7 +323,7 @@ static int iMultilineCreateMethod(Ihandle* ih, void** params)
 {
   iTextCreateMethod(ih, params);
   ih->data->is_multiline = 1;
-  ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
+  ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;  /* default is YES */
   return IUP_NOERROR;
 }
 
