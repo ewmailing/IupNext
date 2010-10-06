@@ -371,7 +371,7 @@ Iclass* iupZboxGetClass(void)
   iupClassRegisterAttribute(ic, "VALUE_HANDLE", NULL, iZboxSetValueHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 
   /* Intercept VISIBLE since ZBOX works by showing and hidding its children */
-  iupClassRegisterAttribute(ic, "VISIBLE", NULL, iZboxSetVisibleAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "VISIBLE", NULL, iZboxSetVisibleAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
 
   return ic;
 }

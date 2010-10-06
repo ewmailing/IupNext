@@ -589,6 +589,36 @@ void iupClassRegisterGetAttribute(Iclass* ic, const char* name,
   }
 }
 
+void iupClassRegisterReplaceAttribFunc(Iclass* ic, const char* name, IattribGetFunc _get, IattribSetFunc _set)
+{
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
+  if (afunc)
+  {
+    if (_get) afunc->get = _get;
+    if (_set) afunc->set = _set;
+  }
+}
+
+void iupClassRegisterReplaceAttribDef(Iclass* ic, const char* name, const char* _default_value, const char* _system_default)
+{
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
+  if (afunc)
+  {
+    if (_default_value == IUPAF_SAMEASSYSTEM)
+      afunc->default_value = _system_default;
+    else
+      afunc->default_value = _default_value;
+    afunc->system_default = _system_default;
+  }
+}
+
+void iupClassRegisterReplaceAttribFlags(Iclass* ic, const char* name, int _flags)
+{
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
+  if (afunc)
+    afunc->flags = _flags;
+}
+
 void iupClassRegisterCallback(Iclass* ic, const char* name, const char* format)
 {
   /* Since attributes and callbacks do not conflict 

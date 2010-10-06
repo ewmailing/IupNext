@@ -13,6 +13,7 @@
 #include <ctype.h>
 
 #include "iup.h"
+#include "iupcontrols.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -243,16 +244,17 @@ static int iLayoutExportCountContainers(Ihandle* dialog)
 static int iupBaseNoSaveCheck(Ihandle* ih, const char* name)
 {
   if (iupStrEqual(name, "BGCOLOR") ||
+      iupStrEqual(name, "VISIBLE") ||
       iupStrEqual(name, "SIZE"))
   {
-    if (iupAttribGet(ih, name))
+    if (iupAttribGet(ih, name))  /* save if stored at the hash table */
       return 0;  /* save the attribute */
     else
       return 1;
   }
   if (iupStrEqual(name, "RASTERSIZE"))
   {
-    if (!iupAttribGet(ih, "SIZE") && 
+    if (!iupAttribGet(ih, "SIZE") &&   /* save if SIZE is not set, and user size is set */
         (ih->userwidth!=0 || ih->userheight!=0))
       return 0;
     else
@@ -260,7 +262,7 @@ static int iupBaseNoSaveCheck(Ihandle* ih, const char* name)
   }
   if (iupStrEqual(name, "POSITION"))
   {
-    if (ih->flags&IUP_FLOATING &&
+    if (ih->flags&IUP_FLOATING &&   /* save only if floating is set */
         (ih->x != 0 || ih->y != 0))
       return 0;
     else
@@ -277,7 +279,7 @@ static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* va
       (flags&(IUPAF_READONLY|IUPAF_WRITEONLY)))  /* can only read or only write */
     return 0;
 
-  if (!value || iupATTRIB_ISINTERNAL(value))
+  if (!value || value[0]==0 || iupATTRIB_ISINTERNAL(value))
     return 0;
 
   if ((flags&IUPAF_NO_SAVE) && iupBaseNoSaveCheck(ih, name))  /* can not be saved */
@@ -299,13 +301,27 @@ static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* va
   return 1;
 }
 
+static int iLayoutHasDigit(const char* name)
+{
+  while(*name)
+  {
+    if (isdigit(*name))
+      return 1;
+    name++;
+  }
+  return 0;
+}
+
 static void iLayoutWriteAttrib(FILE* file, const char* name, const char* value, const char* indent, int type)
 {
   char attribname[1024];
   if (type==1)  /* Lua */
   {
     iupStrLower(attribname, name);
-    fprintf(file, "%s%s = \"%s\",\n", indent, attribname, value);
+    if (iLayoutHasDigit(attribname))
+      fprintf(file, "%s[\"%s\"] = \"%s\",\n", indent, attribname, value);
+    else
+      fprintf(file, "%s%s = \"%s\",\n", indent, attribname, value);
   }
   else if (type==-1) /* LED */
   {
@@ -354,20 +370,44 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
     if (has_attrib_id && flags&IUPAF_HAS_ID)
     {
       flags &= ~IUPAF_HAS_ID; /* clear flag so the next function call can work */
-      if (iLayoutAttributeChanged(ih, name, "", NULL, flags))
+      if (iLayoutAttributeChanged(ih, name, "X", NULL, flags))
       {
-        int id, count = IupGetInt(ih, "COUNT");
         if (iupStrEqual(name, "IDVALUE"))
           name = "";
-        for (id=0; id<count+1; id++) /* must include 0 and count, because some start at 0, some start at 1 */
+
+        if (flags&IUPAF_HAS_ID2)
         {
-          value = IupGetAttributeId(ih, name, id);
-          if (value && !iupATTRIB_ISINTERNAL(value))
+          int lin, col, 
+              numcol = IupGetInt(ih, "NUMCOL")+1,
+              numlin = IupGetInt(ih, "NUMLIN")+1;
+          for (lin=0; lin<numlin; lin++)
           {
-            char str[50];
-            sprintf(str, "%s%d", name, id);
-            iLayoutWriteAttrib(file, str, value, indent, type);
-            wcount++;
+            for (col=0; col<numcol; col++)
+            {
+              value = IupMatGetAttribute(ih, name, lin, col);
+              if (value && value[0] && !iupATTRIB_ISINTERNAL(value))
+              {
+                char str[50];
+                sprintf(str, "%s%d:%d", name, lin, col);
+                iLayoutWriteAttrib(file, str, value, indent, type);
+                wcount++;
+              }
+            }
+          }
+        }
+        else
+        {
+          int id, count = IupGetInt(ih, "COUNT");
+          for (id=0; id<count+1; id++) /* must include 0 and count, because some start at 0, some start at 1 */
+          {
+            value = IupGetAttributeId(ih, name, id);
+            if (value && value[0] && !iupATTRIB_ISINTERNAL(value))
+            {
+              char str[50];
+              sprintf(str, "%s%d", name, id);
+              iLayoutWriteAttrib(file, str, value, indent, type);
+              wcount++;
+            }
           }
         }
       }
@@ -381,7 +421,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
     for (i=0; i<cb_count; i++)
     {
       char* cb_name = iupGetCallbackName(ih, attr_names[i]);
-      if (cb_name && !iupATTRIB_ISINTERNAL(cb_name))
+      if (cb_name && cb_name[0] && !iupATTRIB_ISINTERNAL(cb_name))
       {
         iLayoutWriteAttrib(file, attr_names[i], cb_name, indent, type);
         wcount++;

@@ -269,7 +269,7 @@ typedef enum _IattribFlags{
 #define IUPAF_SAMEASSYSTEM ((char*)-1)  /**< means that the default value is the same as the system default value, used only in \ref iupClassRegisterAttribute */
 
 
-/** Register attribute handling functions. get, set and default_value can be NULL.
+/** Register attribute handling functions, defaults and flags. get, set and default_value can be NULL.
  * default_value should point to a constant string, it will not be duplicated internally. \n
  * Notice that when an attribute is not defined then default_value=NULL, 
  * is inheritable can has a default value and is a string. \n
@@ -299,7 +299,7 @@ void iupClassRegisterAttributeId2(Iclass* ic, const char* name,
                                            IattribSetId2Func set, 
                                            int flags);
 
-/** Returns the attribute handling functions.
+/** Returns the attribute handling functions, defaults and flags.
  * \ingroup iclass */
 void iupClassRegisterGetAttribute(Iclass* ic, const char* name, 
                                            IattribGetFunc *get, 
@@ -307,6 +307,19 @@ void iupClassRegisterGetAttribute(Iclass* ic, const char* name,
                                            const char* *default_value, 
                                            const char* *system_default, 
                                            int *flags);
+
+/** Replaces the attribute handling functions of an already registered attribute.
+ * \ingroup iclass */
+void iupClassRegisterReplaceAttribFunc(Iclass* ic, const char* name, IattribGetFunc _get, IattribSetFunc _set);
+
+/** Replaces the attribute handling default of an already registered attribute.
+ * \ingroup iclass */
+void iupClassRegisterReplaceAttribDef(Iclass* ic, const char* name, const char* _default_value, const char* _system_default);
+
+/** Replaces the attribute handling functions of an already registered attribute.
+ * \ingroup iclass */
+void iupClassRegisterReplaceAttribFlags(Iclass* ic, const char* name, int _flags);
+
 
 /** Register the parameters of a callback. \n
  * format follows the format specification of the class creation parameters format, 

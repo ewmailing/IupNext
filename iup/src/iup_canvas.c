@@ -141,13 +141,8 @@ Iclass* iupCanvasGetClass(void)
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 
-  {
-    /* Change the default to YES */
-    IattribGetFunc _get;
-    IattribSetFunc _set;
-    iupClassRegisterGetAttribute(ic, "EXPAND", &_get, &_set, NULL, NULL, NULL);
-    iupClassRegisterAttribute(ic, "EXPAND", _get, _set, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  }
+  /* Change the default to YES */
+  iupClassRegisterReplaceAttribDef(ic, "EXPAND", IUPAF_SAMEASSYSTEM, "YES");
 
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);

@@ -288,6 +288,8 @@ static int iTextSetScrollbarAttrib(Ihandle* ih, const char* value)
 
 static char* iTextGetScrollbarAttrib(Ihandle* ih)
 {
+  if (!ih->data->is_multiline)
+    return NULL;
   if (ih->data->sb == (IUP_SB_HORIZ | IUP_SB_VERT))
     return "YES";
   if (ih->data->sb & IUP_SB_HORIZ)
