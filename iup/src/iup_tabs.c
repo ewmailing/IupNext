@@ -291,6 +291,13 @@ static char* iTabsGetValueHandleAttrib(Ihandle* ih)
     return iupAttribGet(ih, "_IUPTABS_VALUE_HANDLE");
 }
 
+static char* iTabsGetCountAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(50);
+  sprintf(str, "%d", IupGetChildCount(ih));
+  return str;
+}
+
 static int iTabsSetValuePosAttrib(Ihandle* ih, const char* value)
 {
   Ihandle* child;
@@ -533,6 +540,7 @@ Iclass* iupTabsGetClass(void)
   iupClassRegisterAttribute(ic, "VALUE", iTabsGetValueAttrib, iTabsSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUEPOS", iTabsGetValuePosAttrib, iTabsSetValuePosAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE_HANDLE", iTabsGetValueHandleAttrib, iTabsSetValueHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "COUNT", iTabsGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iTabsGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

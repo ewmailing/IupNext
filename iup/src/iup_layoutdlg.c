@@ -299,11 +299,35 @@ static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* va
   return 1;
 }
 
+static void iLayoutWriteAttrib(FILE* file, const char* name, const char* value, const char* indent, int type)
+{
+  char attribname[1024];
+  if (type==1)  /* Lua */
+  {
+    iupStrLower(attribname, name);
+    fprintf(file, "%s%s = \"%s\",\n", indent, attribname, value);
+  }
+  else if (type==-1) /* LED */
+  {
+    iupStrUpper(attribname, name);
+    if (iupStrHasSpace(value))
+      fprintf(file, "%s%s = \"%s\",\n", indent, attribname, value);
+    else
+      fprintf(file, "%s%s = %s,\n", indent, attribname, value);
+  }
+  else
+    fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, value);
+}
+
 static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, int type)
 {
-  int i, wcount = 0, attr_count, total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
+  int i, wcount = 0, attr_count, has_attrib_id = ih->iclass->has_attrib_id,
+      total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
   char **attr_names = (char **) malloc(total_count * sizeof(char *));
-  char attribname[1024];
+
+  if (iupStrEqual(ih->iclass->name, "tree") || /* tree can only set id attributes after map, so they can not be saved */
+      iupStrEqual(ih->iclass->name, "cells")) /* cells does not have any saveable id attributes */
+    has_attrib_id = 0;  
 
   attr_count = IupGetClassAttributes(ih->iclass->name, attr_names, total_count);
   for (i=0; i<attr_count; i++)
@@ -319,26 +343,34 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
     {
       char* str = iupStrConvertToC(value);
 
-      if (type==1)  /* Lua */
-      {
-        iupStrLower(attribname, name);
-        fprintf(file, "%s%s = \"%s\",\n", indent, attribname, str);
-      }
-      else if (type==-1) /* LED */
-      {
-        iupStrUpper(attribname, name);
-        if (iupStrHasSpace(str))
-          fprintf(file, "%s%s = \"%s\",\n", indent, attribname, str);
-        else
-          fprintf(file, "%s%s = %s,\n", indent, attribname, str);
-      }
-      else
-        fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, str);
+      iLayoutWriteAttrib(file, name, str, indent, type);
 
       if (str != value)
         free(str);
 
       wcount++;
+    }
+
+    if (has_attrib_id && flags&IUPAF_HAS_ID)
+    {
+      flags &= ~IUPAF_HAS_ID; /* clear flag so the next function call can work */
+      if (iLayoutAttributeChanged(ih, name, "", NULL, flags))
+      {
+        int id, count = IupGetInt(ih, "COUNT");
+        if (iupStrEqual(name, "IDVALUE"))
+          name = "";
+        for (id=0; id<count+1; id++) /* must include 0 and count, because some start at 0, some start at 1 */
+        {
+          value = IupGetAttributeId(ih, name, id);
+          if (value && !iupATTRIB_ISINTERNAL(value))
+          {
+            char str[50];
+            sprintf(str, "%s%d", name, id);
+            iLayoutWriteAttrib(file, str, value, indent, type);
+            wcount++;
+          }
+        }
+      }
     }
   }
 
@@ -351,17 +383,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
       char* cb_name = iupGetCallbackName(ih, attr_names[i]);
       if (cb_name && !iupATTRIB_ISINTERNAL(cb_name))
       {
-        if (type==-1) /* LED */
-        {
-          iupStrUpper(attribname, attr_names[i]);
-          if (iupStrHasSpace(cb_name))
-            fprintf(file, "%s%s = \"%s\",\n", indent, attribname, cb_name);
-          else
-            fprintf(file, "%s%s = %s,\n", indent, attribname, cb_name);
-        }
-        else
-          fprintf(file, "%s\"%s\", \"%s\",\n", indent, attr_names[i], cb_name);
-
+        iLayoutWriteAttrib(file, attr_names[i], cb_name, indent, type);
         wcount++;
       }
     }
