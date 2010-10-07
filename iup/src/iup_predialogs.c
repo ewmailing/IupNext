@@ -326,9 +326,10 @@ int  iupDataEntry(int    maxlin,
 
   for (i=0; i<maxlin; i++)
   {
-    data[i] = (char *)iupStrDup(IupGetAttribute(txt[i], "VALUE"));
+    iupStrCopyN(data[i], maxcol[i], IupGetAttribute(txt[i], "VALUE"));
   }
 
+  free(lbl);
   free(txt);
 
   bt = IupGetInt(dlg, "STATUS");

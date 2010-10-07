@@ -249,7 +249,7 @@ void iupwinDrawText(HDC hDC, const char* text, int x, int y, int width, int heig
 void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, HBITMAP hMask, int x, int y, int width, int height, int bpp)
 {
   HDC hMemDC = CreateCompatibleDC(hDC);
-  SelectObject(hMemDC, hBitmap);
+  HBITMAP oldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
 
   if (bpp == 32 && winAlphaBlend)
   {
@@ -272,7 +272,7 @@ void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, HBITMAP hMask, int x, int y, int
            hMemDC, 0, 0, 
            SRCCOPY);
 
-
+  SelectObject(hMemDC, oldBitmap);
   DeleteDC(hMemDC);
 }
 

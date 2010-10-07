@@ -18,11 +18,6 @@ extern "C" {
  * See \ref iup_str.h
  * \ingroup util */
 
-/** Returns a copy of the given string.
- * If str is NULL it will return NULL.
- * \ingroup str */
-char* iupStrDup(const char* str); 
-
 /** Returns a non zero value if the two strings are equal.
  * str1 or str2 can be NULL.
  * \ingroup str */
@@ -63,6 +58,11 @@ const char* iupStrNextLine(const char* str, int *len);
 /** Returns the number of repetitions of the character occours in the string.
  * \ingroup str */
 int iupStrCountChar(const char *str, int c);
+
+/** Returns a copy of the given string.
+ * If str is NULL it will return NULL.
+ * \ingroup str */
+char* iupStrDup(const char* str); 
 
 /** Returns a new string containing a copy of the string up to the character.
  * The string is then incremented to after the position of the character.

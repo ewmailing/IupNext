@@ -331,6 +331,7 @@ void ButtonTest(void)
   IupSetAttribute(image1i, "3", "0 0 255"); 
   IupSetAttribute(image1i, "4", "255 255 255"); 
   IupSetAttribute(image1i, "5", "0 0 0"); 
+  IupSetHandle("image1i", image1i); /* so it will be destroyed even when not used */
 
   image1p = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8_pressed);
   IupSetAttribute(image1p, "0", "BGCOLOR");

@@ -379,7 +379,7 @@ void IupGLPalette(Ihandle* ih, int index, float r, float g, float b)
 
 void IupGLUseFont(Ihandle* ih, int first, int count, int list_base)
 {
-  HFONT old_font, font;
+  HFONT font;
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -396,7 +396,7 @@ void IupGLUseFont(Ihandle* ih, int first, int count, int list_base)
   font = (HFONT)IupGetAttribute(ih, "HFONT");
   if (font)
   {
-    old_font = SelectObject(ih->data->device, font);
+    HFONT old_font = SelectObject(ih->data->device, font);
     wglUseFontBitmaps(ih->data->device, first, count, list_base);
     SelectObject(ih->data->device, old_font);
   }

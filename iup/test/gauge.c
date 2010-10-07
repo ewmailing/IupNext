@@ -283,9 +283,11 @@ void GaugeTest(void)
   IupSetCallback(btn_show1, "ACTION", (Icallback) btn_show1_cb);
   IupSetCallback(btn_show2, "ACTION", (Icallback) btn_show2_cb);
   
-  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
-
   IupSetAttribute(timer, "RUN", "YES");
+
+  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+
+  IupDestroy(timer);
 }
 
 #ifndef BIG_TEST

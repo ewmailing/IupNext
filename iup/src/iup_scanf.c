@@ -186,13 +186,19 @@ cleanup:
   if (prompt)
   {
     for (i=0; i<fields_in_count; ++i)
-      if (prompt[i]) free(prompt[i]);
+    {
+      if (prompt[i]) 
+        free(prompt[i]);
+    }
     free(prompt);
   }
   if (text)
   {
     for (i=0; i<fields_in_count; ++i)
-      if (text[i]) free(text[i]);
+    {
+      if (text[i]) 
+        free(text[i]);
+    }
     free(text);
   }
 

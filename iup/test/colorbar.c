@@ -138,12 +138,9 @@ void ColorbarTest(void)
  
   cdcanvas = cdCreateCanvas(CD_IUP, canvas);
    
-  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
 
-  IupMainLoop();
-
-  IupDestroy(dlg);
-  IupClose();  
+  cdKillCanvas(cdcanvas);
 }
 
 #ifndef BIG_TEST
