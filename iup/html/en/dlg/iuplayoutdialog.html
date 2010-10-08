@@ -34,7 +34,9 @@ layout of another dialog in run time. It is a standard <strong>IupDialog</strong
 constructed with other IUP elements inside. The dialog can be shown with any of 
 the show functions <strong>IupShow</strong>, <strong>IupShowXY</strong> or
 <strong>IupPopup</strong>.</p>
-<p>The dialog is composed by two areas: one showing the given dialog children 
+<p>Any existent dialog can be selected. It does not need to be mapped on the 
+native system nor visible. It could have been created in C, LED or Lua.</p>
+<p>The layout dialog is composed by two areas: one showing the given dialog children 
 hierarchy tree, and one displaying its layout.</p>
 <h3><a name="Creation">Creation</a></h3>
 <pre>Ihandle* IupLayoutDialog(Ihandle*<strong> dialog</strong>); [in C]
@@ -46,42 +48,39 @@ iup.layoutdialog<span class="style3">{</span><strong>dialog</strong>: ihandle<sp
   created element, or NULL if an error occurs.</p>
 
 <h3><a name="Attributes">Attributes</a></h3>
-<p><strong>BACKCOLOR</strong>: The background color of the area where the layout 
-is drawn. 
-Default: &quot;255 255 255&quot;.</p>
-<p><strong>FORECOLOR</strong>: The color used to draw the lines that displays the 
-layout of each element that has a native representation. Default: &quot;0 0 0&quot;.</p>
-<p><strong>FORECOLORVOID</strong>: The color used to draw the lines that displays the 
-layout of each element that does not have a native representation, like <strong>
-IupVbox</strong> and <strong>IupFill</strong> for example. Default: &quot;100 100 
-100&quot;.</p>
 <p><strong>DESTROYWHENCLOSED</strong>: The dialog will be automatically 
 destroyed when closed. Default: Yes.</p>
-<p><strong>SHOWHIDDEN</strong>: Flag to display hidden elements in the layout. 
-Default: NO.</p>
 <p>Check the <a href="iupdialog.html#Attributes">IupDialog</a> attributes.</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 <p>Check the <a href="iupdialog.html#Callbacks">IupDialog</a> callbacks.</p>
 <h3><a name="Notes">Notes</a></h3>
-<p>The selected dialog does not need to be mapped on the system nor visible.</p>
 <h4>Menus</h4>
 <pre>Dialog
 	New  - creates a new empty dialog, it will be destroyed when the layout is destroyed.
 	Load - loads an existent dialog from the application.
 	Load Visible - lists only visible dialogs from the application to be loaded.
 	Reload - reloads the current dialog into the Layout Dialog.
+	Export - exports the current dialog to a text file in the specified language.
+		C
+		LED
+		Lua
 	Refresh - recalculates the dialog layout of the current dialog (IupRefresh).
 	Redraw - send a redraw to the current dialog (IupRedraw).
 	Show - shows the current dialog (IupShow) 
+	Hide - hides the current dialog (IupHide) 
 	Close - hides the Layout Dialog, optionally self destroy according to <strong>DESTROYWHENCLOSED</strong>.
 Layout
 	Hierarchy - shows or hides the layout hierarchy tree at left.
 	Update - redraw the layout.
 	Auto Update - periodically redraw the layout.
+	Show Hidden - show hidden elements in the layout.
 	Opacity - controls the Layout Dialog opacity so you can composite it on top of the selected dialog.</pre>
 <p>Use <strong>Reload</strong> when the dialog has been changed and the layout 
 was modified by the application. Use <strong>Update</strong> when attributes of 
 the dialog were changed by the application and the layout needs to be redrawn.</p>
+<p>The <strong>Export</strong> items will export only the dialog and its 
+children. Associated elements such as menus and images will not be exported. The 
+selected file will be overwritten if existent.</p>
 <h4>Display</h4>
 <p>The layout of an element is drawn with its Current size using its FONT, 
 TITLE, BGCOLOR and FGCOLOR if any. But inheritance is not used intentionally to 
@@ -93,7 +92,10 @@ in the tree) is used from the element TITLE.</p>
   <center>
   <table border="0" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1">
     <tr>
-      <td class="style2"><img border="0" src="images/layoutdialog.png"></td>
+      <td class="style2"><img border="0" src="images/layoutdlg1.png"></td>
+    </tr>
+    <tr>
+      <td class="style2"><img border="0" src="images/layoutdlg2.png"></td>
     </tr>
   </table>
   </center>

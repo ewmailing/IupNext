@@ -2294,8 +2294,12 @@ static Ihandle* iLayoutFindElementByPos(Ihandle* ih, int native_parent_x, int na
           {
             child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
             if (child)
-              return iLayoutFindElementByPos(child, native_parent_x, native_parent_y, x, y, dlgvisible, shownotmapped);
-            return NULL;
+            {
+              elem = iLayoutFindElementByPos(child, native_parent_x, native_parent_y, x, y, dlgvisible, shownotmapped);
+              if (elem)
+                return elem;
+            }
+            return ih;
           }
         }
       }
