@@ -1427,7 +1427,7 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   /* IupDialog only */
   iupClassRegisterAttribute(ic, "BACKGROUND", NULL, winDialogSetBackgroundAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ICON", NULL, winDialogSetIconAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ICON", NULL, winDialogSetIconAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FULLSCREEN", NULL, winDialogSetFullScreenAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SAVEUNDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MINSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "1x1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

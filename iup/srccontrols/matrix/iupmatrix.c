@@ -985,61 +985,17 @@ Ihandle* IupMatrix(const char* action)
 
 void IupMatSetAttribute(Ihandle* ih, const char* name, int lin, int col, const char* value)
 {
-  iupASSERT(name!=NULL);
-  if (!name)
-    return;
-
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return;
-
-  if (iupClassObjectSetAttributeId2(ih, name, lin, col, value)!=0) /* store strings and pointers */
-  {
-    char attr[100];
-    sprintf(attr, "%s%d:%d", name, lin, col);
-    iupAttribSetStr(ih, attr, value);
-  }
+  IupSetAttributeId2(ih, name, lin, col, value);
 }
 
 void IupMatStoreAttribute(Ihandle* ih, const char* name, int lin, int col, const char* value)
 {
-  iupASSERT(name!=NULL);
-  if (!name)
-    return;
-
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return;
-
-  if (iupClassObjectSetAttributeId2(ih, name, lin, col, value)==1) /* store only strings */
-  {
-    char attr[100];
-    sprintf(attr, "%s%d:%d", name, lin, col);
-    iupAttribStoreStr(ih, attr, value);
-  }
+  IupStoreAttributeId2(ih, name, lin, col, value);
 }
 
 char* IupMatGetAttribute(Ihandle* ih, const char* name, int lin, int col)
 {
-  char *value;
-
-  iupASSERT(name!=NULL);
-  if (!name)
-    return NULL;
-
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return NULL;
-
-  value = iupClassObjectGetAttributeId2(ih, name, lin, col);
-  if (!value)
-  {
-    char attr[100];
-    sprintf(attr, "%s%d:%d", name, lin, col);
-    value = iupAttribGet(ih, attr);
-  }
-
-  return value;
+  return IupGetAttributeId2(ih, name, lin, col);
 }
 
 int IupMatGetInt(Ihandle* ih, const char* name, int lin, int col)

@@ -13,7 +13,6 @@
 #include <ctype.h>
 
 #include "iup.h"
-#include "iupcontrols.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -241,37 +240,6 @@ static int iLayoutExportCountContainers(Ihandle* dialog)
   return index+1;
 }
 
-static int iupBaseNoSaveCheck(Ihandle* ih, const char* name)
-{
-  if (iupStrEqual(name, "BGCOLOR") ||
-      iupStrEqual(name, "VISIBLE") ||
-      iupStrEqual(name, "SIZE"))
-  {
-    if (iupAttribGet(ih, name))  /* save if stored at the hash table */
-      return 0;  /* save the attribute */
-    else
-      return 1;
-  }
-  if (iupStrEqual(name, "RASTERSIZE"))
-  {
-    if (!iupAttribGet(ih, "SIZE") &&   /* save if SIZE is not set, and user size is set */
-        (ih->userwidth!=0 || ih->userheight!=0))
-      return 0;
-    else
-      return 1;
-  }
-  if (iupStrEqual(name, "POSITION"))
-  {
-    if (ih->flags&IUP_FLOATING &&   /* save only if floating is set */
-        (ih->x != 0 || ih->y != 0))
-      return 0;
-    else
-      return 1;
-  }
-
-  return 1; /* default is NOT to save */
-}
-
 static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* value, const char* def_value, int flags)
 {
   if ((flags&IUPAF_NO_STRING) || /* not a string */
@@ -384,7 +352,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
           {
             for (col=0; col<numcol; col++)
             {
-              value = IupMatGetAttribute(ih, name, lin, col);
+              value = IupGetAttributeId2(ih, name, lin, col);
               if (value && value[0] && !iupATTRIB_ISINTERNAL(value))
               {
                 char str[50];

@@ -343,7 +343,7 @@ void iupdrvLabelInitClass(Iclass* ic)
 
   /* IupLabel only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", winLabelGetAlignmentAttrib, winLabelSetAlignmentAttrib, IUPAF_SAMEASSYSTEM, "ALEFT:ACENTER", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, winLabelSetUpdateAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, winLabelSetUpdateAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, winLabelSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 
   /* IupLabel Windows and GTK only */

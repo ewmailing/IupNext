@@ -250,11 +250,11 @@ void iupdrvLabelInitClass(Iclass* ic)
 
   /* IupLabel only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, motLabelSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NO_INHERIT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, motLabelSetImageAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, motLabelSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupLabelGetPaddingAttrib, motLabelSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 
   /* IupLabel GTK and Motif only */
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, motLabelSetImInactiveAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, motLabelSetImInactiveAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "WORDWRAP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);

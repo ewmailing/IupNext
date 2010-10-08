@@ -132,6 +132,7 @@ char* iupBaseNativeParentGetBgColorAttrib(Ihandle* ih);
 char* iupBaseContainerGetExpandAttrib(Ihandle* ih);
 int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value);
 char* iupdrvBaseGetClientSizeAttrib(Ihandle* ih);
+int iupBaseNoSaveCheck(Ihandle* ih, const char* name);
 
 /* Windows Only */
 char* iupdrvBaseGetTitleAttrib(Ihandle* ih);

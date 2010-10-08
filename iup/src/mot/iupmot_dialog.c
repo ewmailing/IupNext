@@ -1101,7 +1101,7 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   /* IupDialog only */
   iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motDialogSetBackgroundAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "ICON", NULL, motDialogSetIconAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ICON", NULL, motDialogSetIconAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FULLSCREEN", NULL, motDialogSetFullScreenAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MINSIZE", NULL, motDialogSetMinSizeAttrib, IUPAF_SAMEASSYSTEM, "1x1", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MAXSIZE", NULL, motDialogSetMaxSizeAttrib, IUPAF_SAMEASSYSTEM, "65535x65535", IUPAF_NO_INHERIT);

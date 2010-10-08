@@ -267,6 +267,65 @@ char* IupGetAttributeId(Ihandle *ih, const char* name, int id)
   return value;
 }
 
+void IupSetAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value)
+{
+  iupASSERT(name!=NULL);
+  if (!name)
+    return;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (iupClassObjectSetAttributeId2(ih, name, lin, col, value)!=0) /* store strings and pointers */
+  {
+    char attr[100];
+    sprintf(attr, "%s%d:%d", name, lin, col);
+    iupAttribSetStr(ih, attr, value);
+  }
+}
+
+void IupStoreAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value)
+{
+  iupASSERT(name!=NULL);
+  if (!name)
+    return;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (iupClassObjectSetAttributeId2(ih, name, lin, col, value)==1) /* store only strings */
+  {
+    char attr[100];
+    sprintf(attr, "%s%d:%d", name, lin, col);
+    iupAttribStoreStr(ih, attr, value);
+  }
+}
+
+char* IupGetAttributeId2(Ihandle* ih, const char* name, int lin, int col)
+{
+  char *value;
+
+  iupASSERT(name!=NULL);
+  if (!name)
+    return NULL;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return NULL;
+
+  value = iupClassObjectGetAttributeId2(ih, name, lin, col);
+  if (!value)
+  {
+    char attr[100];
+    sprintf(attr, "%s%d:%d", name, lin, col);
+    value = iupAttribGet(ih, attr);
+  }
+
+  return value;
+}
+
 float IupGetFloatId(Ihandle *ih, const char* name, int id)
 {
   float f = 0;

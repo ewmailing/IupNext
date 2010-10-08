@@ -746,6 +746,7 @@ void IupSetClassDefaultAttribute(const char* classname, const char *name, const 
 
 void IupSaveClassAttributes(Ihandle* ih)
 {
+  int has_attrib_id;
   Iclass* ic;
   char *name;
 
@@ -755,29 +756,82 @@ void IupSaveClassAttributes(Ihandle* ih)
 
   ic = ih->iclass;
 
+  has_attrib_id = ic->has_attrib_id;
+  if (iupStrEqual(ic->name, "tree") || /* tree can only set id attributes after map, so they can not be saved */
+      iupStrEqual(ic->name, "cells")) /* cells does not have any saveable id attributes */
+    has_attrib_id = 0;  
+
   name = iupTableFirst(ic->attrib_func);
   while (name)
   {
     IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
     if (afunc && !(afunc->flags & IUPAF_NO_STRING) &&  /* is a string */
-                 !(afunc->flags & IUPAF_HAS_ID) &&     /* no ID */
                  !(afunc->flags & IUPAF_READONLY) &&   /* not read-only */
                  !(afunc->flags & IUPAF_WRITEONLY) &&  /* not write-only */
                  !(afunc->flags & IUPAF_CALLBACK))     /* not a callback */
     {
-      int inherit;
-      char *def_value;
-      char *value = iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
-      if (value &&     /* NOT NULL */
-          !iupStrEqualNoCase(value, iupAttribGet(ih, name)))     /* NOT already stored */
+      if ((afunc->flags&IUPAF_NO_SAVE) && iupBaseNoSaveCheck(ih, name))  /* can not be saved */
+        continue;
+
+      if (!(afunc->flags & IUPAF_HAS_ID))     /* no ID */
       {
-        if (def_value)
+        int inherit;
+        char *def_value;
+        char *value = iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
+        if (value && value[0])    /* NOT NULL and not empty */
         {
-          if (!iupStrEqualNoCase(value, def_value))    /* NOT equal to the default value */
+          if (def_value && iupStrEqualNoCase(def_value, value))  /* equal to the default value */
+            continue;
+
+          if (!def_value && iupStrFalse(value))  /* default=NULL and value=NO */
+            continue;
+
+          if (!iupStrEqualNoCase(value, iupAttribGet(ih, name)))     /* NOT already stored */
             iupAttribStoreStr(ih, name, value);
         }
-        else if (!iupStrFalse(value))  /* catch default=NULL and value=NO */
-          iupAttribStoreStr(ih, name, value);
+      }
+      else if (has_attrib_id)
+      {
+        char *value;
+
+        if (iupStrEqual(name, "IDVALUE"))
+          name = "";
+
+        if (afunc->flags&IUPAF_HAS_ID2)
+        {
+          int lin, col, 
+              numcol = IupGetInt(ih, "NUMCOL")+1,
+              numlin = IupGetInt(ih, "NUMLIN")+1;
+          for (lin=0; lin<numlin; lin++)
+          {
+            for (col=0; col<numcol; col++)
+            {
+              value = iupClassObjectGetAttributeId2(ih, name, lin, col);
+              if (value && value[0])  /* NOT NULL and not empty */
+              {
+                char str[50];
+                sprintf(str, "%s%d:%d", name, lin, col);
+                if (!iupStrEqualNoCase(value, iupAttribGet(ih, str)))     /* NOT already stored */
+                  iupAttribStoreStr(ih, str, value);
+              }
+            }
+          }
+        }
+        else
+        {
+          int id, count = IupGetInt(ih, "COUNT");
+          for (id=0; id<count+1; id++) /* must include 0 and count, because some start at 0, some start at 1 */
+          {
+            value = iupClassObjectGetAttributeId(ih, name, id);
+            if (value && value[0])  /* NOT NULL and not empty */
+            {
+              char str[50];
+              sprintf(str, "%s%d", name, id);
+              if (!iupStrEqualNoCase(value, iupAttribGet(ih, str)))     /* NOT already stored */
+                iupAttribStoreStr(ih, str, value);
+            }
+          }
+        }
       }
     }
 

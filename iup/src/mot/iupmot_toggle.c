@@ -520,9 +520,9 @@ void iupdrvToggleInitClass(Iclass* ic)
 
   /* IupToggle only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, motToggleSetAlignmentAttrib, IUPAF_SAMEASSYSTEM, "ACENTER:ACENTER", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, motToggleSetImageAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, motToggleSetImInactiveAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMPRESS", NULL, motToggleSetImPressAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, motToggleSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, motToggleSetImInactiveAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMPRESS", NULL, motToggleSetImPressAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", motToggleGetValueAttrib, motToggleSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTCOLOR", motToggleGetSelectColorAttrib, motToggleSetSelectColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 

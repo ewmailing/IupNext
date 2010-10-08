@@ -797,7 +797,7 @@ Iclass* iupDialogGetClass(void)
 
   /* IupDialog only */
   iupClassRegisterAttribute(ic, "MENU", NULL, iDialogSetMenuAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, IUPAF_SAMEASSYSTEM, "ARROW", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, IUPAF_SAMEASSYSTEM, "ARROW", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDETASKBAR", NULL, iDialogSetHideTaskbarAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MAXBOX", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MENUBOX", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
@@ -805,10 +805,10 @@ Iclass* iupDialogGetClass(void)
   iupClassRegisterAttribute(ic, "RESIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   
-  iupClassRegisterAttribute(ic, "DEFAULTENTER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DEFAULTESC",   NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DEFAULTENTER", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DEFAULTESC",   NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DIALOGFRAME",  NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PARENTDIALOG", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PARENTDIALOG", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHRINK",       NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STARTFOCUS",   NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MODAL",        NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);

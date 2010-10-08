@@ -764,9 +764,9 @@ void iupdrvButtonInitClass(Iclass* ic)
 
   /* IupButton only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", winButtonGetAlignmentAttrib, winButtonSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, winButtonSetImageAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, winButtonSetImInactiveAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMPRESS", NULL, winButtonSetImPressAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, winButtonSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, winButtonSetImInactiveAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMPRESS", NULL, winButtonSetImPressAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "PADDING", iupButtonGetPaddingAttrib, winButtonSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 

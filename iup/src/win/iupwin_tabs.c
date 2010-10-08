@@ -693,7 +693,7 @@ void iupdrvTabsInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  /* can not be set, depends on TABTYPE in Windows */
   iupClassRegisterAttribute(ic, "MULTILINE", winTabsGetMultilineAttrib, winTabsSetMultilineAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABTITLE", NULL, winTabsSetTabTitleAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, winTabsSetTabImageAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, winTabsSetTabImageAttrib, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, winTabsSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* necessary because transparent background does not work when not using visual styles */

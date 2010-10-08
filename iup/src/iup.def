@@ -156,6 +156,15 @@ IupTreeGetId
 IupTreeGetUserId
 IupTreeSetUserId
 IupSaveImageAsText
+IupSetAttributeId
+IupStoreAttributeId
+IupGetAttributeId
+IupGetFloatId
+IupGetIntId
+IupSetfAttributeId
+IupSetAttributeId2
+IupStoreAttributeId2
+IupGetAttributeId2
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib

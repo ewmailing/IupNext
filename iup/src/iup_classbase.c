@@ -422,7 +422,7 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FLOATING", iBaseGetFloatingAttrib, iBaseSetFloatingAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iBaseGetExpandAttrib, iBaseSetExpandAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NORMALIZERGROUP", NULL, iBaseSetNormalizerGroupAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NORMALIZERGROUP", NULL, iBaseSetNormalizerGroupAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPANDWEIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* make sure everyone has the correct default value */
@@ -480,4 +480,35 @@ void iupBaseRegisterCommonCallbacks(Iclass* ic)
   iupClassRegisterCallback(ic, "LEAVEWINDOW_CB", "");
   iupClassRegisterCallback(ic, "HELP_CB", "");
   iupClassRegisterCallback(ic, "K_ANY", "i");
+}
+
+int iupBaseNoSaveCheck(Ihandle* ih, const char* name)
+{
+  if (iupStrEqual(name, "BGCOLOR") ||
+      iupStrEqual(name, "VISIBLE") ||
+      iupStrEqual(name, "SIZE"))
+  {
+    if (iupAttribGet(ih, name))  /* save if stored at the hash table */
+      return 0;  /* save the attribute */
+    else
+      return 1;
+  }
+  if (iupStrEqual(name, "RASTERSIZE"))
+  {
+    if (!iupAttribGet(ih, "SIZE") &&   /* save if SIZE is not set, and user size is set */
+        (ih->userwidth!=0 || ih->userheight!=0))
+      return 0;
+    else
+      return 1;
+  }
+  if (iupStrEqual(name, "POSITION"))
+  {
+    if (ih->flags&IUP_FLOATING &&   /* save only if floating is set */
+        (ih->x != 0 || ih->y != 0))
+      return 0;
+    else
+      return 1;
+  }
+
+  return 1; /* default is NOT to save */
 }
