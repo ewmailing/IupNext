@@ -348,7 +348,6 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
     const char* name_id = iClassFindId(name);
     if (name_id)
     {
-      IattribFunc* afunc;
       const char* partial_name = iClassCutNameId(name, name_id);
       if (!partial_name)
         partial_name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
@@ -427,7 +426,6 @@ void iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_va
     const char* name_id = iClassFindId(name);
     if (name_id)
     {
-      IattribFunc* afunc;
       const char* partial_name = iClassCutNameId(name, name_id);
       if (!partial_name)
         partial_name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
@@ -492,7 +490,6 @@ int iupClassAttribIsRegistered(Iclass* ic, const char* name)
     const char* name_id = iClassFindId(name);
     if (name_id)
     {
-      IattribFunc* afunc;
       const char* partial_name = iClassCutNameId(name, name_id);
       if (!partial_name)
         partial_name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
