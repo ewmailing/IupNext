@@ -127,7 +127,7 @@ static int iLayoutTreeAddNode(Ihandle* tree, int id, Ihandle* ih)
   }
   else
   {
-    if (ih == ih->parent->firstchild)
+    if (!ih->parent || ih == ih->parent->firstchild)
     {
       IupSetAttributeId(tree, "ADDLEAF", id, "");
       id++;
