@@ -1350,10 +1350,43 @@ static int iLayoutPropertiesClose_CB (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iLayoutPropertiesShowId_CB(Ihandle* showidlist, char *text, int item, int state)
+static int iLayoutPropertiesShowId_CB(Ihandle* showidlist, char *id, int item, int state)
 {
+  (void)item;
   if (state)
   {
+    char* def_value;
+    int flags;
+    char *value, name[100];
+    Ihandle* elem = (Ihandle*)iupAttribGetInherit(showidlist, "_IUP_PROPELEMENT");
+    Ihandle* txt1 = IupGetDialogChild(showidlist, "VALUE1A");
+    Ihandle* list1 = (Ihandle*)iupAttribGetInherit(showidlist, "_IUP_PROPLIST1");
+    char* itemlist1 = IupGetAttribute(list1, "VALUE");
+    if (!itemlist1)
+      return IUP_DEFAULT;
+
+    strcpy(name, IupGetAttribute(list1, itemlist1));
+
+    iupClassGetAttribNameInfo(elem->iclass, name, &def_value, &flags);
+
+    strcat(name, id);
+
+    value = IupGetAttribute(elem, name);
+    if (value)
+    {
+      if (flags&IUPAF_NO_STRING)
+        IupSetfAttribute(txt1, "VALUE", "%p", value);
+      else
+        IupSetAttribute(txt1, "VALUE", value);
+    }
+    else
+      IupSetAttribute(txt1, "VALUE", "NULL");
+
+    if (strstr(name, "COLOR")!=NULL)
+    {
+      Ihandle* colorbut = IupGetDialogChild(showidlist, "SETCOLORBUT");
+      IupSetAttribute(colorbut, "BGCOLOR", value);
+    }
   }
   return IUP_DEFAULT;
 }
@@ -1369,11 +1402,30 @@ static int iLayoutPropertiesSet_CB(Ihandle* button)
     Ihandle* txt1 = IupGetDialogChild(button, "VALUE1A");
     char* value = IupGetAttribute(txt1, "VALUE");
     char* name = IupGetAttribute(list1, item);
+    Ihandle* showidlist = IupGetDialogChild(button, "SHOWIDLIST");
 
-    if (!value || iupStrEqual(value, "NULL"))
-      IupSetAttribute(elem, name, NULL);
+    if (IupGetInt(showidlist, "VISIBLE"))
+    {
+      char* item = IupGetAttribute(showidlist, "VALUE");
+      if (item)
+      {
+        char* id = IupGetAttribute(showidlist, item);
+        char nameid[100];
+        sprintf(nameid, "%s%s", name, id);
+
+        if (!value || iupStrEqual(value, "NULL"))
+          IupSetAttribute(elem, nameid, NULL);
+        else
+          IupStoreAttribute(elem, nameid, value);
+      }
+    }
     else
-      IupStoreAttribute(elem, name, value);
+    {
+      if (!value || iupStrEqual(value, "NULL"))
+        IupSetAttribute(elem, name, NULL);
+      else
+        IupStoreAttribute(elem, name, value);
+    }
 
     layoutdlg->changed = 1;
 
@@ -1406,10 +1458,24 @@ static int iLayoutPropertiesSetColor_CB(Ihandle *colorbut)
     Ihandle* txt1 = IupGetDialogChild(colorbut, "VALUE1A");
     char* value = IupGetAttribute(color_dlg, "VALUE");
     char* name = IupGetAttribute(list1, IupGetAttribute(list1, "VALUE"));
+    Ihandle* showidlist = IupGetDialogChild(colorbut, "SHOWIDLIST");
 
     IupSetAttribute(txt1, "VALUE", value);
     IupStoreAttribute(colorbut, "BGCOLOR", value);
-    IupStoreAttribute(elem, name, value);
+
+    if (IupGetInt(showidlist, "VISIBLE"))
+    {
+      char* item = IupGetAttribute(showidlist, "VALUE");
+      if (item)
+      {
+        char* id = IupGetAttribute(showidlist, item);
+        char nameid[100];
+        sprintf(nameid, "%s%s", name, id);
+        IupStoreAttribute(elem, nameid, value);
+      }
+    }
+    else
+      IupStoreAttribute(elem, name, value);
 
     layoutdlg->changed = 1;
 
@@ -1439,6 +1505,7 @@ static int iLayoutPropertiesSetFont_CB(Ihandle *fontbut)
     char* value = IupGetAttribute(font_dlg, "VALUE");
 
     IupSetAttribute(txt1, "VALUE", value);
+
     IupStoreAttribute(elem, "FONT", value);
 
     layoutdlg->changed = 1;
@@ -1452,10 +1519,10 @@ static int iLayoutPropertiesSetFont_CB(Ihandle *fontbut)
   return IUP_DEFAULT;
 }
 
-static void iLayoutPropertiesUpdateIdList(Ihandle *showidlist, Ihandle *ih, const char* name, int has_id2)
+static void iLayoutPropertiesUpdateIdList(Ihandle *showidlist, Ihandle *ih, int has_id2)
 {
-  if (iupStrEqual(name, "IDVALUE"))
-    name = "";
+  IupSetAttribute(showidlist, "REMOVEITEM", NULL);
+  IupSetAttribute(showidlist, "VALUE", NULL);
 
   if (has_id2)
   {
@@ -1467,8 +1534,8 @@ static void iLayoutPropertiesUpdateIdList(Ihandle *showidlist, Ihandle *ih, cons
       for (col=0; col<numcol; col++)
       {
         char str[50];
-        sprintf(str, "%s%d:%d", name, lin, col);
-        IupSetAttributeId(showidlist, name, lin*numcol+col+1, str);
+        sprintf(str, "%d:%d", lin, col);
+        IupSetAttributeId(showidlist, "", lin*numcol+col+1, str);
       }
     }
   }
@@ -1483,8 +1550,8 @@ static void iLayoutPropertiesUpdateIdList(Ihandle *showidlist, Ihandle *ih, cons
     for (id=start_id ; id<count+start_id ; id++)
     {
       char str[50];
-      sprintf(str, "%s%d", name, id);
-      IupSetAttributeId(showidlist, name, id-start_id+1, str);
+      sprintf(str, "%d", id);
+      IupSetAttributeId(showidlist, "", id-start_id+1, str);
     }
   }
 }
@@ -1536,8 +1603,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
       IupSetAttribute(txt1, "FGCOLOR", "0 0 0");
 
     if (!(flags&IUPAF_READONLY) && 
-        !(flags&IUPAF_NO_STRING) &&
-        !(flags&IUPAF_HAS_ID))
+        !(flags&IUPAF_NO_STRING))
     {
       IupSetAttribute(setbut, "ACTIVE", "Yes");
       IupSetAttribute(txt1, "READONLY", "No");
@@ -1566,7 +1632,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     if (flags&IUPAF_HAS_ID)
     {
       IupSetAttribute(showidlist, "VISIBLE", "Yes");
-      iLayoutPropertiesUpdateIdList(showidlist, elem, name, flags&IUPAF_HAS_ID2);
+      iLayoutPropertiesUpdateIdList(showidlist, elem, flags&IUPAF_HAS_ID2);
     }
     else
       IupSetAttribute(showidlist, "VISIBLE", "No");
