@@ -746,7 +746,7 @@ void IupSetClassDefaultAttribute(const char* classname, const char *name, const 
 
 void IupSaveClassAttributes(Ihandle* ih)
 {
-  int has_attrib_id;
+  int has_attrib_id, start_id = 0;
   Iclass* ic;
   char *name;
 
@@ -760,6 +760,9 @@ void IupSaveClassAttributes(Ihandle* ih)
   if (iupStrEqual(ic->name, "tree") || /* tree can only set id attributes after map, so they can not be saved */
       iupStrEqual(ic->name, "cells")) /* cells does not have any saveable id attributes */
     has_attrib_id = 0;  
+
+  if (iupStrEqual(ic->name, "list"))
+    start_id = 1;
 
   name = iupTableFirst(ic->attrib_func);
   while (name)
@@ -824,7 +827,7 @@ void IupSaveClassAttributes(Ihandle* ih)
         else
         {
           int id, count = IupGetInt(ih, "COUNT");
-          for (id=0; id<count+1; id++) /* must include 0 and count, because some start at 0, some start at 1 */
+          for (id=start_id; id<count+start_id; id++)
           {
             value = iupClassObjectGetAttributeId(ih, name, id);
             if (value && value[0])  /* NOT NULL and not empty */
@@ -845,7 +848,7 @@ void IupSaveClassAttributes(Ihandle* ih)
 
 void IupCopyClassAttributes(Ihandle* src_ih, Ihandle* dst_ih)
 {
-  int has_attrib_id;
+  int has_attrib_id, start_id = 0;
   Iclass* ic;
   char *name;
 
@@ -866,6 +869,9 @@ void IupCopyClassAttributes(Ihandle* src_ih, Ihandle* dst_ih)
   if (iupStrEqual(ic->name, "tree") || /* tree can only set id attributes after map, so they can not be saved */
       iupStrEqual(ic->name, "cells")) /* cells does not have any saveable id attributes */
     has_attrib_id = 0;  
+
+  if (iupStrEqual(ic->name, "list"))
+    start_id = 1;
 
   name = iupTableFirst(ic->attrib_func);
   while (name)
@@ -919,7 +925,7 @@ void IupCopyClassAttributes(Ihandle* src_ih, Ihandle* dst_ih)
         else
         {
           int id, count = IupGetInt(src_ih, "COUNT");
-          for (id=0; id<count+1; id++) /* must include 0 and count, because some start at 0, some start at 1 */
+          for (id=start_id; id<count+start_id; id++)
           {
             value = IupGetAttributeId(src_ih, name, id);
             if (value && value[0])  /* NOT NULL and not empty */

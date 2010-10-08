@@ -305,13 +305,16 @@ static void iLayoutWriteAttrib(FILE* file, const char* name, const char* value, 
 
 static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, int type)
 {
-  int i, wcount = 0, attr_count, has_attrib_id = ih->iclass->has_attrib_id,
+  int i, wcount = 0, attr_count, has_attrib_id = ih->iclass->has_attrib_id, start_id = 0,
       total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
   char **attr_names = (char **) malloc(total_count * sizeof(char *));
 
   if (iupStrEqual(ih->iclass->name, "tree") || /* tree can only set id attributes after map, so they can not be saved */
       iupStrEqual(ih->iclass->name, "cells")) /* cells does not have any saveable id attributes */
     has_attrib_id = 0;  
+
+  if (iupStrEqual(ih->iclass->name, "list"))
+    start_id = 1;
 
   attr_count = IupGetClassAttributes(ih->iclass->name, attr_names, total_count);
   for (i=0; i<attr_count; i++)
@@ -366,7 +369,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
         else
         {
           int id, count = IupGetInt(ih, "COUNT");
-          for (id=0; id<count+1; id++) /* must include 0 and count, because some start at 0, some start at 1 */
+          for (id=start_id; id<count+start_id; id++)
           {
             value = IupGetAttributeId(ih, name, id);
             if (value && value[0] && !iupATTRIB_ISINTERNAL(value))
@@ -1308,6 +1311,8 @@ static void iLayoutPropertiesUpdate(Ihandle* properties, Ihandle* ih)
   IupSetAttribute(IupGetDialogChild(properties, "VALUE3"), "TITLE", "");
   IupSetAttribute(IupGetDialogChild(properties, "SETBUT"), "ACTIVE", "No");
   IupSetAttribute(IupGetDialogChild(properties, "SETCOLORBUT"), "VISIBLE", "No");
+  IupSetAttribute(IupGetDialogChild(properties, "SETFONTBUT"), "VISIBLE", "No");
+  IupSetAttribute(IupGetDialogChild(properties, "SHOWIDLIST"), "VISIBLE", "No");
 
   attr_count = IupGetClassAttributes(ih->iclass->name, attr_names, total_count);
   for (i=0; i<attr_count; i++)
@@ -1342,6 +1347,14 @@ static void iLayoutPropertiesUpdate(Ihandle* properties, Ihandle* ih)
 static int iLayoutPropertiesClose_CB (Ihandle* ih)
 {
   IupHide(IupGetDialog(ih));
+  return IUP_DEFAULT;
+}
+
+static int iLayoutPropertiesShowId_CB(Ihandle* showidlist, char *text, int item, int state)
+{
+  if (state)
+  {
+  }
   return IUP_DEFAULT;
 }
 
@@ -1439,6 +1452,43 @@ static int iLayoutPropertiesSetFont_CB(Ihandle *fontbut)
   return IUP_DEFAULT;
 }
 
+static void iLayoutPropertiesUpdateIdList(Ihandle *showidlist, Ihandle *ih, const char* name, int has_id2)
+{
+  if (iupStrEqual(name, "IDVALUE"))
+    name = "";
+
+  if (has_id2)
+  {
+    int lin, col, 
+        numcol = IupGetInt(ih, "NUMCOL")+1,
+        numlin = IupGetInt(ih, "NUMLIN")+1;
+    for (lin=0; lin<numlin; lin++)
+    {
+      for (col=0; col<numcol; col++)
+      {
+        char str[50];
+        sprintf(str, "%s%d:%d", name, lin, col);
+        IupSetAttributeId(showidlist, name, lin*numcol+col+1, str);
+      }
+    }
+  }
+  else
+  {
+    int id, start_id = 0,
+        count = IupGetInt(ih, "COUNT");
+
+    if (iupStrEqual(ih->iclass->name, "list"))
+      start_id = 1;
+
+    for (id=start_id ; id<count+start_id ; id++)
+    {
+      char str[50];
+      sprintf(str, "%s%d", name, id);
+      IupSetAttributeId(showidlist, name, id-start_id+1, str);
+    }
+  }
+}
+
 static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int state)
 {
   (void)item;
@@ -1454,6 +1504,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     Ihandle* setbut = IupGetDialogChild(list1, "SETBUT");
     Ihandle* colorbut = IupGetDialogChild(list1, "SETCOLORBUT");
     Ihandle* fontbut = IupGetDialogChild(list1, "SETFONTBUT");
+    Ihandle* showidlist = IupGetDialogChild(list1, "SHOWIDLIST");
 
     iupClassGetAttribNameInfo(elem->iclass, name, &def_value, &flags);
 
@@ -1472,20 +1523,24 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     else
       IupSetAttribute(lbl2, "TITLE", "NULL");
 
-    IupSetfAttribute(lbl3, "TITLE", "%s\n%s%s%s%s", flags&(IUPAF_NO_INHERIT|IUPAF_NO_STRING)? "Inheritable": "NON Inheritable", 
-                                                    flags&IUPAF_NO_STRING? "NOT a String\n": "", 
-                                                    flags&IUPAF_HAS_ID? "Has ID\n":"", 
-                                                    flags&IUPAF_READONLY? "Read-Only\n": (flags&IUPAF_WRITEONLY? "Write-Only\n": ""),
-                                                    flags&IUPAF_NOT_SUPPORTED? "NOT SUPPORTED in this driver": "");
+    IupSetfAttribute(lbl3, "TITLE", "%s\n%s%s%s%s%s", flags&(IUPAF_NO_INHERIT|IUPAF_NO_STRING)? "Inheritable": "NON Inheritable", 
+                                                      flags&IUPAF_NO_STRING? "NOT a String\n": "", 
+                                                      flags&IUPAF_HAS_ID? "Has ID\n":"", 
+                                                      flags&IUPAF_READONLY? "Read-Only\n": (flags&IUPAF_WRITEONLY? "Write-Only\n": ""),
+                                                      flags&IUPAF_IHANDLENAME? "Ihandle* name\n": "",
+                                                      flags&IUPAF_NOT_SUPPORTED? "NOT SUPPORTED in this driver": "");
 
     if (iLayoutAttributeChanged(elem, name, value, def_value, flags))
       IupSetAttribute(txt1, "FGCOLOR", "255 0 0");
     else
       IupSetAttribute(txt1, "FGCOLOR", "0 0 0");
 
-    if (!(flags&IUPAF_READONLY) && !(flags&IUPAF_NO_STRING))
+    if (!(flags&IUPAF_READONLY) && 
+        !(flags&IUPAF_NO_STRING) &&
+        !(flags&IUPAF_HAS_ID))
     {
       IupSetAttribute(setbut, "ACTIVE", "Yes");
+      IupSetAttribute(txt1, "READONLY", "No");
 
       if (strstr(name, "COLOR")!=NULL)
       {
@@ -1502,11 +1557,21 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     }
     else
     {
+      IupSetAttribute(txt1, "READONLY", "Yes");
       IupSetAttribute(setbut, "ACTIVE", "No");
       IupSetAttribute(colorbut, "VISIBLE", "No");
       IupSetAttribute(fontbut, "VISIBLE", "No");
     }
+
+    if (flags&IUPAF_HAS_ID)
+    {
+      IupSetAttribute(showidlist, "VISIBLE", "Yes");
+      iLayoutPropertiesUpdateIdList(showidlist, elem, name, flags&IUPAF_HAS_ID2);
+    }
+    else
+      IupSetAttribute(showidlist, "VISIBLE", "No");
   }
+
   return IUP_DEFAULT;
 }
 
@@ -1636,7 +1701,7 @@ static int iLayoutPropertiesTabChangePos_CB(Ihandle* ih, int new_pos, int old_po
 static void iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle* parent)
 {
   Ihandle *list1, *list2, *list3, *close, *dlg, *dlg_box, *button_box, *colorbut, *fontbut,
-          *tabs, *box1, *box11, *box2, *box22, *box3, *box33, *set;
+          *tabs, *box1, *box11, *box2, *box22, *box3, *box33, *set, *showidlist;
 
   close = IupButton("Close", NULL);
   IupSetAttribute(close,"PADDING" ,"20x5");
@@ -1674,6 +1739,12 @@ static void iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle* par
   IupSetAttribute(set, "PADDING", "5x5");
   IupSetAttribute(set, "NAME", "SETBUT");
 
+  showidlist = IupList(NULL);
+  IupSetCallback(showidlist, "ACTION", (Icallback)iLayoutPropertiesShowId_CB);
+  IupSetAttribute(showidlist, "DROPDOWN", "Yes");
+  IupSetAttribute(showidlist, "VISIBLECOLUMNS", "5");
+  IupSetAttribute(showidlist, "NAME", "SHOWIDLIST");
+
   colorbut = IupButton(NULL, NULL);
   IupSetAttribute(colorbut, "SIZE", "20x10");
   IupStoreAttribute(colorbut, "BGCOLOR", "0 0 0");
@@ -1690,7 +1761,7 @@ static void iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle* par
 
   box11 = IupVbox(
             IupLabel("Value:"),
-            IupHbox(IupSetAttributes(IupText(NULL), "MULTILINE=Yes, ALIGNMENT=ALEFT:ATOP, EXPAND=YES, NAME=VALUE1A"), IupVbox(set, colorbut, fontbut, NULL), NULL),
+            IupHbox(IupSetAttributes(IupText(NULL), "MULTILINE=Yes, ALIGNMENT=ALEFT:ATOP, EXPAND=YES, NAME=VALUE1A"), IupVbox(set, colorbut, fontbut, showidlist, NULL), NULL),
             IupSetAttributes(IupFill(), "RASTERSIZE=10"), 
             IupLabel("Default Value:"),
             IupFrame(IupSetAttributes(IupLabel(NULL), "ALIGNMENT=ALEFT:ATOP, EXPAND=HORIZONTAL, NAME=VALUE1B")),

@@ -101,6 +101,7 @@ static int attributesList_ActionCB (Ihandle *ih, char *attribName, int pos, int 
                                            "%s"
                                            "%s"
                                            "%s"
+                                           "%s"
                                            "%s",
                                            attribName,
                                            def_value==NULL? "NULL": def_value,
@@ -108,6 +109,7 @@ static int attributesList_ActionCB (Ihandle *ih, char *attribName, int pos, int 
                                            flags&IUPAF_NO_STRING? "NOT a String\n": "",
                                            flags&IUPAF_HAS_ID? "Has ID\n": "",
                                            flags&IUPAF_READONLY? "Read-Only\n": (flags&IUPAF_WRITEONLY? "Write-Only\n": ""),
+                                           flags&IUPAF_IHANDLENAME? "Ihandle* name\n": "",
                                            flags&IUPAF_NOT_SUPPORTED? "NOT SUPPORTED in this driver": "");
     }
     else
