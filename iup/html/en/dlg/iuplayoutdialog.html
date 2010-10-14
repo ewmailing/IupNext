@@ -42,7 +42,7 @@ children hierarchy tree, and one displaying its layout.</p>
 dialogs in other ways.</p>
 <h3><a name="Creation">Creation</a></h3>
 <pre>Ihandle* IupLayoutDialog(Ihandle*<strong> dialog</strong>); [in C]
-iup.layoutdialog<span class="style3">{</span><strong>dialog</strong>: ihandle<span class="style3">}</span> -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.LayoutDialog(<strong>dialog</strong>: ihandle<span class="style3">)</span> -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 [NOT available in LED]</pre>
 <div>
   <strong>dialog</strong>: identifier of the dialog to display the layout.</div>
@@ -129,7 +129,9 @@ handled carefully because they may be not strings. Registered attributes values
 are shown in red when they were changed by the application. </p>
 <h3><a name="Examples">Examples</a></h3>
 <p>This will create an empty layout with a new dialog.</p>
-<pre>IupShow(IupLayoutDialog(NULL));</pre>
+<pre>IupShow(IupLayoutDialog(NULL));   [in C]
+
+iup.Show(iup.LayoutDialog(nil))    [in Lua]</pre>
 <p>The following dialog layout is displayed next.</p>
 <div align="center">
   <center>

@@ -722,9 +722,9 @@ static int GetDialogChild(lua_State *L)
   return 1;
 }
 
-static int LayoutDlg(lua_State *L)
+static int LayoutDialog(lua_State *L)
 {
-  iuplua_pushihandle(L,IupLayoutDialog(iuplua_checkihandle(L,1)));
+  iuplua_pushihandle(L,IupLayoutDialog(iuplua_checkihandleornil(L,1)));
   return 1;
 }
 
@@ -990,7 +990,7 @@ void iupluaapi_open(lua_State * L)
     {"VersionNumber", VersionNumber},
     {"GetBrother", GetBrother},
     {"GetDialogChild", GetDialogChild},
-    {"LayoutDlg", LayoutDlg},
+    {"LayoutDialog", LayoutDialog},
     {"SetFocus", SetFocus},
     {"SetGlobal", SetGlobal},
     {"SetHandle", SetHandle},

@@ -50,6 +50,7 @@ static int gtkMessageDlgPopup(Ihandle* ih, int x, int y)
                                   0,
                                   type,
                                   GTK_BUTTONS_NONE,
+                                  "%s",
                                   iupgtkStrConvertToUTF8(iupAttribGet(ih, "VALUE")));
   if (!dialog)
     return IUP_ERROR;

@@ -138,14 +138,14 @@ iup_console.vbxConsole = iup.vbox
                               iup_console.butSaveFile,
                               iup_console.butSaveasFile,
                               iup_console.butClearCommands,
-                              iup_console.butExecute;
+                              iup_console.butExecute,
                               margin="0x0", gap="10"},
                      iup.vbox{iup_console.lblFileName,
                               iup_console.mlCode,
-                              iup_console.lblPosition;
-                              alignment = "ARIGHT"};
-                     alignment="ATOP"}; title="Commands"}
-   ;alignment="ACENTER", margin="5x5", gap="5"
+                              iup_console.lblPosition,
+                              alignment = "ARIGHT"},
+                     alignment="ATOP"}, title="Commands"},
+   alignment="ACENTER", margin="5x5", gap="5"
 }
 
 -- Main Menu Definition.
@@ -168,11 +168,12 @@ iup_console.mnuMain = iup.menu
 
 -- Main Dialog Definition.
 
-iup_console.dlgMain = iup.dialog{iup_console.vbxConsole;
+iup_console.dlgMain = iup.dialog{iup_console.vbxConsole,
                                  title="IupLua Console",
                                  menu=iup_console.mnuMain,
                                  dragdrop = "YES",
                                  defaultenter=iup_console.butExecute,
+                                 startfocus=iup_console.mlCode,
                                  close_cb = "return iup.CLOSE"}
 
 function iup_console.dlgMain:dropfiles_cb(filename, num, x, y)
@@ -208,7 +209,6 @@ iup_console.dlgAbout = iup.dialog
 -- Displays the Main Dialog
 
 iup_console.dlgMain:show()
-iup.SetFocus(iup_console.mlCode)
 
 if (iup.MainLoopLevel()==0) then
   iup.MainLoop()
