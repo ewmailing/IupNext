@@ -254,6 +254,11 @@ visible area then scrollbars will be displayed so the cells can be scrolled to
 be visible area. When dragging the scrollbar the position of cells is free, when 
 clicking on its buttons it will move in cell steps, aligning to the left border 
 of the cell.</p>
+<p>By default EXPAND=Yes, so matrix will be automatically resized when the 
+dialog is resized. So more columns and lines will be displayed. But the matrix 
+Natural size will be used as minimum size. So one possible approach is to set 
+NUMCOL_VISIBLE and NUMLIN_VISIBLE when it is shown for the first time, then set 
+both to 0. Then the matrix will be resized to smaller sizes.</p>
 <p>Any cell can have more than one text line, just use the \n control character. 
 Multiple text lines will be considered when calculating the title cell size 
 based on its contents. The contents of ordinary cells (not a title) do not 
