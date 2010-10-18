@@ -213,6 +213,39 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
   return TRUE;  /* stop other handlers */
 }
 
+static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
+{
+  iupdrvBaseLayoutUpdateMethod(ih);
+
+  if (iupAttribGetStr(ih, "_IUP_GTK_FIRST_RESIZE"))
+  {
+    /* GTK is nor calling gtkCanvasConfigureEvent on the first resize */
+    IFnii cb = (IFnii)IupGetCallback(ih,"RESIZE_CB");
+    iupAttribSetStr(ih, "_IUP_GTK_FIRST_RESIZE", NULL);
+    if (cb)
+    {
+      int sb_w = 0, sb_h = 0;
+
+      if (ih->data->sb)
+      {
+        int sb_size = iupdrvGetScrollbarSize();
+        if (ih->data->sb & IUP_SB_HORIZ)
+          sb_h += sb_size;  /* sb horizontal affects vertical size */
+        if (ih->data->sb & IUP_SB_VERT)
+          sb_w += sb_size;  /* sb vertical affects horizontal size */
+      }
+
+      if (iupAttribGetBoolean(ih, "BORDER"))
+      {
+        sb_w += 4;
+        sb_h += 4;
+      }
+
+      cb(ih, ih->currentwidth-sb_w, ih->currentheight-sb_h);
+    }
+  }
+}
+
 static gboolean gtkCanvasConfigureEvent(GtkWidget *widget, GdkEventConfigure *evt, Ihandle *ih)
 {
   IFnii cb = (IFnii)IupGetCallback(ih,"RESIZE_CB");
@@ -567,6 +600,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   /* must be connected after realize or a RESIZE_CB will happen before MAP_CB
     works only for the GtkDrawingArea. */
   g_signal_connect(G_OBJECT(ih->handle), "configure-event", G_CALLBACK(gtkCanvasConfigureEvent), ih);
+  iupAttribSetStr(ih, "_IUP_GTK_FIRST_RESIZE", "1");
 
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
@@ -598,6 +632,7 @@ void iupdrvCanvasInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
   ic->Map = gtkCanvasMapMethod;
+  ic->LayoutUpdate = gtkCanvasLayoutUpdateMethod;
 
   /* Driver Dependent Attribute functions */
 
