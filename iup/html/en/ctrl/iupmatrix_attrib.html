@@ -22,6 +22,11 @@ exceptions)</span></h2>
   Default cursor used by the matrix. The 
   default cursor is a symbol that looks like a cross. If you need to refer to this default cursor, use the name 
 &quot;IupMatrixCrossCursor&quot;.</p>
+<p><a name="FITTOSIZE"><strong>FITTOSIZE</strong></a> (write-only): force lines 
+and/or columns sizes so the matrix fit in its current size. NUMCOL_VISIBLE and 
+NUMLIN_VISIBLE are considered when fitting. If the matrix is resized then it 
+must be set again to obtain the same result. Can be LINES, COLUMNS or YES 
+(meaning both). (since 3.3)</p>
 <p><strong><a name="FOCUS_CELL">FOCUS_CELL</a></strong>:
   Defines the current cell. Two numbers in the &quot;<strong><em>L</em></strong>:<strong><em>C</em></strong>&quot; format, 
     &nbsp;(<strong><em>L</em></strong>&gt;0 and <strong><em>C</em></strong>&gt;0, a title cell can NOT be the current cell). Default: &quot;1:1&quot;.</p>
@@ -202,6 +207,31 @@ occupied by the frame lines.</p>
 <p><strong><a name="RASTERHEIGHTn">RASTERHEIGHTn</a></strong>: Same as HEIGHTn but in pixels. 
 Has lower priority than HEIGHTn.</p>
 <h3>Number of Cells Attributes</h3>
+<p><strong><a name="ADDCOL">ADDCOL</a></strong> (write-only):
+  Adds a new column to the matrix after the 
+  specified column. To insert a column at the top of the spreadsheet, value 0 
+must be used. To add more than one column, use format &quot;<strong><em>C-C</em></strong>&quot;, where the first number corresponds to the base column and the second number corresponds to 
+  the number of columns to be added. It is valid only in normal operation mode. 
+Can NOT add a title column. Ignored if set before map. </p>
+<p><strong><a name="ADDLIN">ADDLIN</a></strong> (write-only):
+  Adds a new line to the matrix after the 
+  specified line. To insert a line at the top of the spreadsheet, value 0 must be used. To add more than one line, use format &quot;<strong><em>L-L</em></strong>&quot;, 
+where the first number corresponds to the base line and the second number 
+corresponds to the number of lines to be added. It is valid only in normal 
+operation mode. Can NOT add a title line. Ignored if set before map. </p>
+<p><strong><a name="DELCOL">DELCOL</a></strong> (write-only):
+  Removes the given column from the matrix. To 
+  remove more than one column, use format &quot;<strong><em>C-C</em></strong>&quot;, where the 
+first number corresponds to the base column and the second number corresponds to 
+the number of columns to be removed. It is valid only in normal operation mode. 
+Can NOT remove a title column, <strong><em>C</em></strong>&gt;0. Ignored if set 
+before map. </p>
+<p><strong><a name="DELLIN">DELLIN</a></strong> (write-only):
+  Removes the given line from the matrix. To 
+  remove more than one line, use format &quot;<strong><em>L-L</em></strong>&quot;, where the first number corresponds to the base line and the second number corresponds to the 
+  number of lines to be removed. It is valid only in normal operation mode. Can 
+NOT remove a title line, <strong><em>L</em></strong>&gt;0. Ignored if set before 
+map. </p>
 <p><strong><a name="NUMCOL">NUMCOL</a></strong>:
   Defines the number of columns in the matrix. Must be an integer number. Default: &quot;0&quot;. 
 It does not include the title column. If changed after map will add empty cells 
@@ -231,7 +261,7 @@ then it will use the last lines. The remaining lines will be accessible only by 
 the scrollbar. IMPORTANT: When 
   retrieved returns the current number of visible lines. Default: &quot;3&quot;.</p>
 <h3>Mark Attributes</h3>
-<p><strong><a name="MARKAREA">AREA</a></strong>:
+<p><strong>MARK<a name="MARKAREA">AREA</a></strong>:
   Defines if the area to be <strong>interactively</strong> 
   marked by the user must be continuous or not, valid only if MARKMULTIPLE=YES. Possible values: &quot;CONTINUOUS&quot; or &quot;NOT_CONTINUOUS&quot;. Default: &quot;CONTINUOUS&quot;.</p>
 <p><strong><a name="MARKMODE">MARKMODE</a></strong>:
@@ -259,37 +289,12 @@ NUMCOL positions, each one corresponding to a
 change the other mark attributes the marked cells are cleared. When setting the 
 attribute the LIN and COL notation can be used even if MARKMODE=CELL. 
 MULTIPLE and AREA are NOT considered when setting MARKED or MARKL:C.</p>
-<p><strong><a name="MARKMULTIPLE">MULTIPLE</a></strong>:
+<p><strong>MARK<a name="MARKMULTIPLE">MULTIPLE</a></strong>:
   Defines if more than one entity defined by
   MARKMODE can be <strong>interactively</strong> 
   marked. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
     &quot;NO&quot;.</p>
 <h3>Action Attributes</h3>
-<p><strong><a name="ADDCOL">ADDCOL</a></strong> (write-only):
-  Adds a new column to the matrix after the 
-  specified column. To insert a column at the top of the spreadsheet, value 0 
-must be used. To add more than one column, use format &quot;<strong><em>C-C</em></strong>&quot;, where the first number corresponds to the base column and the second number corresponds to 
-  the number of columns to be added. It is valid only in normal operation mode. 
-Can NOT add a title column. Ignored if set before map. </p>
-<p><strong><a name="ADDLIN">ADDLIN</a></strong> (write-only):
-  Adds a new line to the matrix after the 
-  specified line. To insert a line at the top of the spreadsheet, value 0 must be used. To add more than one line, use format &quot;<strong><em>L-L</em></strong>&quot;, 
-where the first number corresponds to the base line and the second number 
-corresponds to the number of lines to be added. It is valid only in normal 
-operation mode. Can NOT add a title line. Ignored if set before map. </p>
-<p><strong><a name="DELCOL">DELCOL</a></strong> (write-only):
-  Removes the given column from the matrix. To 
-  remove more than one column, use format &quot;<strong><em>C-C</em></strong>&quot;, where the 
-first number corresponds to the base column and the second number corresponds to 
-the number of columns to be removed. It is valid only in normal operation mode. 
-Can NOT remove a title column, <strong><em>C</em></strong>&gt;0. Ignored if set 
-before map. </p>
-<p><strong><a name="DELLIN">DELLIN</a></strong> (write-only):
-  Removes the given line from the matrix. To 
-  remove more than one line, use format &quot;<strong><em>L-L</em></strong>&quot;, where the first number corresponds to the base line and the second number corresponds to the 
-  number of lines to be removed. It is valid only in normal operation mode. Can 
-NOT remove a title line, <strong><em>L</em></strong>&gt;0. Ignored if set before 
-map. </p>
 <p><strong><a name="EDIT_MODE">EDIT_MODE</a></strong>:
   When set to YES, programmatically puts the 
   current cell in edition mode, allowing the user to modify its value. When consulted informs if the the current cell is 
