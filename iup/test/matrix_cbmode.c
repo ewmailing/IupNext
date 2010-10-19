@@ -95,8 +95,8 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat,"MARKMULTIPLE","YES");
 //  IupSetAttribute(mat,"USETITLESIZE","YES");
 
-  IupSetAttribute(mat,"RASTERSIZE","x200");
-  IupSetAttribute(mat,"FITTOSIZE","LINES");
+//  IupSetAttribute(mat,"RASTERSIZE","x200");
+//  IupSetAttribute(mat,"FITTOSIZE","LINES");
 
   //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");
   //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");

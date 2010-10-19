@@ -95,8 +95,8 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "5");
 
-  IupSetAttribute(mat,"RASTERSIZE","x300");
-  IupSetAttribute(mat,"FITTOSIZE","LINES");
+//  IupSetAttribute(mat,"RASTERSIZE","x300");
+//  IupSetAttribute(mat,"FITTOSIZE","LINES");
 
   /* test for custom matrix attributes */
   //{

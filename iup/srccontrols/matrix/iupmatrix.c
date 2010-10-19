@@ -372,6 +372,22 @@ static int iMatrixSetActiveAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iMatrixHasTitleHeight(Ihandle* ih)
+{
+  char* value = iupAttribGet(ih, "HEIGHT0");
+  if(!value)
+    value = iupAttribGet(ih, "RASTERHEIGHT0");
+  return (value!=NULL);
+}
+
+static int iMatrixHasTitleWidth(Ihandle* ih)
+{
+  char* value = iupAttribGet(ih, "WIDTH0");
+  if(!value)
+    value = iupAttribGet(ih, "RASTERWIDTH0");
+  return (value!=NULL);
+}
+
 static void iupMatrixFitLines(Ihandle* ih, int height)
 {
   /* expand each line height to fit the matrix height */
@@ -388,15 +404,28 @@ static void iupMatrixFitLines(Ihandle* ih, int height)
   /* ignore the lines that already have HEIGHT or RASTERHEIGHT */
   for(lin = 0; lin < ih->data->lines.num; lin++)
   {
-    /* use text size and default size for titles when NOT in callback mode at line 0 */
+    /* use text size for titles when NOT in callback mode at line 0 */
     line_height = iupMatrixAuxGetLineHeight(ih, lin, (lin==0 && !callback_mode)? 1: 0);  
-    if (line_height)
+    if (lin==0 && line_height && !iMatrixHasTitleHeight(ih))
     {
+      /* this means that the line size was calculated from text, 
+         so it can be changed by this function */
+      if (lin < visible_num)
+        empty_lin_visible++;
+
+      empty_lines[empty_num] = lin;
+      empty_num++;
+    }
+    else if (line_height)
+    {
+      /* if there is a line size, then it is not free */
       if (lin < visible_num)
         height -= line_height;
     }
     else if (lin!=0 || !callback_mode)
     {
+      /* here line size is 0, and it is free, but
+         when lin=0 can use it only when NOT in callback mode */
       if (lin < visible_num)
         empty_lin_visible++;
 
@@ -438,15 +467,28 @@ static void iupMatrixFitColumns(Ihandle* ih, int width)
   /* ignore the columns that already have WIDTH or RASTERWIDTH */
   for(col = 0; col < ih->data->columns.num; col++)
   {
-    /* use text size and default size for titles when in callback mode */
+    /* use text size for titles when NOT in callback mode at col 0 */
     column_width = iupMatrixAuxGetColumnWidth(ih, col, (col==0 && callback_mode)? 1: 0);  
-    if (column_width)
+    if (col==0 && column_width && !iMatrixHasTitleWidth(ih))
     {
+      /* this means that the column size was calculated from text, 
+         so it can be changed by this function */
+      if (col < visible_num)
+        empty_col_visible++;
+
+      empty_columns[empty_num] = col;
+      empty_num++;
+    }
+    else if (column_width)
+    {
+      /* if there is a column size, then it is not free */
       if (col < visible_num)
         width -= column_width;
     }
     else if (col!=0 || !callback_mode)
     {
+      /* here column size is 0, and it is free, but
+         when col=0 can use it only when NOT in callback mode */
       if (col < visible_num)
         empty_col_visible++;
 
