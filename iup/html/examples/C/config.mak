@@ -42,12 +42,12 @@ DBG = Yes
 #SRC = lua_init.c
 #SRC = mask.c
 #SRC = menu.c
-SRC = message.c
+#SRC = message.c
 #SRC = multiline1.c
 #SRC = multiline2.c
 #SRC = progressbar.c
 #SRC = radio.c
-#SRC = sample.c
+SRC = sample.c
 #SRC = sbox1.c
 #SRC = sbox2.c
 #SRC = scanf.c
@@ -76,6 +76,16 @@ SRC = message.c
 
 #USE_OPENGL = Yes
 #SRC = glcanvas.c
+
+# IUPWEB SAMPLE
+# Currently, available only in the GTK driver in Linux
+#SRC = webbrowser.c
+#ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+#  LIBS += webkit-1.0 iupweb
+#else
+#  LIBS += webkit-1.0
+#  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupweb.a
+#endif
 
 #USE_IUPCONTROLS = Yes
 #SRC = canvas3.c

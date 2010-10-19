@@ -5,17 +5,18 @@ OPT = YES
 INCLUDES =  ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  
 LIBS = iup
+SRC = iup_webbrowser.c
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC = iupwin_webbrowser.cpp
   LIBS += iupole
 else
   ifdef GTK_DEFAULT
-    SRC = iupgtk_webbrowser.cpp
+    SRC  += iupgtk_webbrowser.c
     LIBS += webkit-1.0
-    INCLUDES += $(GTK)/include/webkit-1.0 $(GTK)/include/libsoup-2.4
+    INCLUDES += ../src/gtk $(GTK)/include/webkit-1.0 $(GTK)/include/libsoup-2.4
   else
-    SRC = iupmot_webbrowser.cpp
+    SRC = iupmot_webbrowser.c
     LIBS += XmHTML
   endif
 endif

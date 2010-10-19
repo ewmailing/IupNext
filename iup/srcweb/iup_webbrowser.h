@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-Iclass* iupWebBrowserGetClass(void)
+Iclass* iupWebBrowserGetClass(void);
 
 #ifdef __cplusplus
 }

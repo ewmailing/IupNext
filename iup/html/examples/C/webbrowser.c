@@ -88,8 +88,6 @@ void WebBrowserTest(void)
   IupShow(dlg);
 }
 
-
-#ifndef BIG_TEST
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
@@ -102,4 +100,3 @@ int main(int argc, char* argv[])
 
   return EXIT_SUCCESS;
 }
-#endif

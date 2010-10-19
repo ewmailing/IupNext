@@ -11,10 +11,13 @@
 extern "C" {
 #endif
 
-
-Ihandle *IupWebBrowser(const char* progid);
-
 int IupWebBrowserOpen(void);
+
+#ifndef WIN32
+Ihandle *IupWebBrowser(void);
+#else
+Ihandle *IupWebBrowser(const char *ProgID);
+#endif
 
 
 #ifdef __cplusplus

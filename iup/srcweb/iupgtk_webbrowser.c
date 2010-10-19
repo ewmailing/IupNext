@@ -25,8 +25,8 @@
 #include "iup_webbrowser.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
-#include "iup_array.h"
 #include "iup_key.h"
+#include "iup_register.h"
 
 #include "iupgtk_drv.h"
 
@@ -40,7 +40,7 @@ static char* gtkWebBrowserGetItemHistoryAttrib(Ihandle* ih, int id)
 {
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
   WebKitWebHistoryItem* item = webkit_web_back_forward_list_get_nth_item(back_forward_list, id);
-  char* str = iupStrGetMemory(30);
+  char* str = iupStrGetMemory(1024);
 
   sprintf(str, "%s", webkit_web_history_item_get_uri(item));
 
