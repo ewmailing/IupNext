@@ -24,8 +24,13 @@ exceptions)</span></h2>
 &quot;IupMatrixCrossCursor&quot;.</p>
 <p><a name="FITTOSIZE"><strong>FITTOSIZE</strong></a> (write-only): force lines 
 and/or columns sizes so the matrix visible size fit in its current size. 
-NUMCOL_VISIBLE and NUMLIN_VISIBLE are considered when fitting. If the matrix is 
-resized then it must be set again to obtain the same result. Can be LINES, 
+NUMCOL_VISIBLE and NUMLIN_VISIBLE are considered when fitting and they are not 
+changed, only the RASTERWIDTHn and RASTERHEIGHTn attributes are changed. But if 
+any of the RASTERWIDTHn and RASTERHEIGHTn attributes where already set, then 
+they will not be changed. If the matrix is 
+resized then it must be set again to obtain the same result, but before doing 
+that set to NULL all the RASTERWIDTHn and RASTERHEIGHTn attributes that you want 
+to be changed. Can be LINES, 
 COLUMNS or YES (meaning both). (since 3.3)</p>
 <p><strong><a name="FOCUS_CELL">FOCUS_CELL</a></strong>:
   Defines the current cell. Two numbers in the &quot;<strong><em>L</em></strong>:<strong><em>C</em></strong>&quot; format, 
