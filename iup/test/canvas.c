@@ -350,6 +350,9 @@ void CanvasTest(void)
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupCanvas Test");
 
+printf("IupMap\n");
+  IupMap(dlg);
+printf("IupShow\n");
   IupShow(dlg);
   IupSetAttribute(canvas, "RASTERSIZE", NULL);  /* release the minimum limitation */
 }

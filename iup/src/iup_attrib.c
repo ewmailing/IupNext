@@ -360,6 +360,40 @@ void IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* f, ..
   IupStoreAttributeId(ih, name, id, value);
 }
 
+int IupGetIntId2(Ihandle* ih, const char* name, int lin, int col)
+{
+  int i = 0;
+  char *value = IupGetAttributeId2(ih, name, lin, col);
+  if (value)
+  {
+    if (!iupStrToInt(value, &i))
+    {
+      if (iupStrBoolean(value))
+        i = 1;
+    }
+  }
+  return i;
+}
+
+float IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col)
+{
+  float f = 0;
+  char *value = IupGetAttributeId2(ih, name, lin, col);
+  if (value)
+    iupStrToFloat(value, &f);
+  return f;
+}
+
+void IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* f, ...)
+{
+  static char value[SHRT_MAX];
+  va_list arglist;
+  va_start(arglist, f);
+  vsprintf(value, f, arglist);
+  va_end(arglist);
+  IupStoreAttributeId2(ih, name, lin, col, value);
+}
+
 void IupSetAttribute(Ihandle *ih, const char* name, const char *value)
 {
   int inherit;

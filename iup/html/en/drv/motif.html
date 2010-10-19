@@ -26,8 +26,17 @@ Default Values  Resource Files</b>
 <p>The values used in the example above are the 
   ones used by IUP if these resources are not defined.</p>
 <p>Also a resource file named &quot;.Xdefaults&quot; will also affect the visual appearance of all 
-aplications that use Motif and Intrinsics.</p>
+applications that use Motif and Intrinsics.</p>
 <h3>Tips</h3>
+
+<h4>Dynamic Libraries in Linux</h4>
+
+<p>When using dynamic libraries in Linux, the &quot;libiup.so&quot; uses the GTK driver. So 
+applications that dynamically load IUP will always use the &quot;libiup.so&quot;, for 
+example Lua using require. To use the IUP Motif dynamic library in Linux you must rename the 
+&quot;libiupmot.so&quot; to &quot;libiup.so&quot;, so the Motif driver will be loaded instead of the 
+GTK 
+driver.</p>
 <h4>During linking in the Solaris 
   environment: Can not find <b>libresolv.so.2</b></h4>
 <p>This error occurs if the system does not 

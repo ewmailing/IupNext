@@ -102,9 +102,13 @@ char* IupGetAttributeId(Ihandle *ih, const char* name, int id);
 float IupGetFloatId(Ihandle *ih, const char* name, int id);
 int   IupGetIntId(Ihandle *ih, const char* name, int id);
 void  IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* format, ...);
+
 void  IupSetAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
 void  IupStoreAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
 char* IupGetAttributeId2(Ihandle* ih, const char* name, int lin, int col);
+int   IupGetIntId2(Ihandle* ih, const char* name, int lin, int col);
+float IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col);
+void  IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
 
 void      IupSetGlobal     (const char* name, const char* value);
 void      IupStoreGlobal   (const char* name, const char* value);

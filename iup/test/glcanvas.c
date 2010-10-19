@@ -11,6 +11,18 @@
 #include "iupgl.h"
 
 
+static int map_cb(Ihandle *ih)
+{
+  printf("MAP_CB()\n");
+  return IUP_DEFAULT;
+}
+
+static int resize_cb(Ihandle *ih, int w, int h)
+{
+  printf("RESIZE_CB(%d, %d) RASTERSIZE=%s CLIENTSIZE=%s\n", w, h, IupGetAttribute(ih, "RASTERSIZE"), IupGetAttribute(ih, "CLIENTSIZE"));
+  return IUP_DEFAULT;
+}
+
 static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
   printf("BUTTON_CB(but=%c (pressed=%d), x=%d, y=%d [%s])\n",(char)but,pressed,x,y, status);
@@ -52,17 +64,22 @@ void GLCanvasTest(void)
   IupSetAttribute(canvas, "BORDER", "NO");
   IupSetAttribute(canvas, "RASTERSIZE", "300x200");
   IupSetCallback(canvas, "BUTTON_CB",    (Icallback)button_cb);
+  IupSetCallback(canvas, "RESIZE_CB",    (Icallback)resize_cb);
+  IupSetCallback(canvas, "MAP_CB",       (Icallback)map_cb);
   IupAppend(box, canvas);
 
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupGLCanvas Test");
 
+printf("IupMap\n");
   IupMap(dlg);
   IupGLMakeCurrent(canvas);
   printf("Vendor: %s\n", glGetString(GL_VENDOR));
   printf("Renderer: %s\n", glGetString(GL_RENDERER));
   printf("Version: %s\n", glGetString(GL_VERSION));
+  IupMap(dlg);
 
+printf("IupShow\n");
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 }
 

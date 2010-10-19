@@ -42,7 +42,7 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
     "BGCOLOR%d:%d",
     "FGCOLOR%d:%d",
     "FONT%d:%d"};
-  char* attrib = iupStrGetMemory(100);
+  char attrib[100];
   int a, lin, col;
   char* value;
 
@@ -145,7 +145,7 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
     "BGCOLOR%d:%d",
     "FGCOLOR%d:%d",
     "FONT%d:%d"};
-  char* attrib = iupStrGetMemory(100);
+  char attrib[100];
   int a, col, lin;
   char* value;
 

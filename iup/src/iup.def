@@ -165,6 +165,9 @@ IupSetfAttributeId
 IupSetAttributeId2
 IupStoreAttributeId2
 IupGetAttributeId2
+IupGetIntId2
+IupGetFloatId2
+IupSetfAttributeId2
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib

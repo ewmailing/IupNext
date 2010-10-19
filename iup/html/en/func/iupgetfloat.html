@@ -18,12 +18,13 @@
   as a floating point number.</p>
 <h3>
 Parameters/Return</h3>
-<pre>float IupGetFloat(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>) [in C]
-float IupGetFloatId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>) [in C]
+<pre>float IupGetFloat(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>)  [in C]
+float IupGetFloatId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>)  [in C]
+float IupGetFloatId2(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>)  [in C]
 [There is no equivalent in Lua]</pre>
 <p><b>ih</b>: Identifier of the interface element.<br>
 <b>name</b>: name of the attribute.<br>
-<strong>id</strong>: used when the attribute has an additional id.</p>
+<strong>id, lin, col</strong>: used when the attribute has additional ids.</p>
 <p><span class="style1">Returns:</span> a float corresponding 
   to the attribute&#8217;s value.</p>
 <h3>See Also</h3>

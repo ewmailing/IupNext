@@ -24,8 +24,8 @@ void iupMatrixAuxAdjustFirstFromScrollPos(ImatLinColData* p, int scroll_pos);
 void  iupMatrixAuxUpdateScrollPos(Ihandle* ih, int m);
 void  iupMatrixAuxUpdateLast(ImatLinColData *p);
 
-int   iupMatrixAuxGetColumnWidth(Ihandle* ih, int col);
-int   iupMatrixAuxGetLineHeight (Ihandle* ih, int lin);
+int   iupMatrixAuxGetColumnWidth(Ihandle* ih, int col, int use_value);
+int   iupMatrixAuxGetLineHeight (Ihandle* ih, int lin, int use_value);
 
 int   iupMatrixAuxGetLinColFromXY    (Ihandle* ih, int x, int y, int* l, int* c);
 

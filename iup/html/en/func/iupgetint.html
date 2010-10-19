@@ -13,14 +13,15 @@
   as an integer.</p>
 <h3>
 Parameters/Return</h3>
-<pre>int IupGetInt(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>); [in C] - first integer found on string
-int IupGetInt2(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>); [in C] - second integer found on string
-int IupGetIntInt(Ihandle *<strong>ih</strong>, const char *<strong>name, int *i1, int *i2</strong>); [in C] - first and second integers found on string, returns the number of integers found
-int IupGetIntId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>); [in C]
+<pre>int IupGetInt(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>);   [in C] - first integer found on string
+int IupGetInt2(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>);  [in C] - second integer found on string
+int IupGetIntInt(Ihandle *<strong>ih</strong>, const char *<strong>name, int *i1, int *i2</strong>);  [in C] - first and second integers found on string, returns the number of integers found
+int IupGetIntId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>);             [in C]
+int IupGetIntId2(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>);  [in C]
 [There is no equivalent in Lua]</pre>
 <p><b>ih</b>: Identifier of the interface element.<br>
 <b>name</b>: name of the attribute.<br>
-<strong>id</strong>: used when the attribute has an additional id.</p>
+<strong>id, lin, col</strong>: used when the attribute has additional ids.</p>
 <h3>Notes</h3>
 <p>In the first form, if the attribute value is
   &quot;YES&quot;/&quot;NO&quot; or 

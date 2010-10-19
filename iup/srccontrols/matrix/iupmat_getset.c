@@ -329,11 +329,9 @@ char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels_unit)
     return NULL;
 
   if (m == IMAT_PROCESS_LIN)
-    size = iupMatrixAuxGetLineHeight(ih, index);
+    size = iupMatrixAuxGetLineHeight(ih, index, 1);
   else
-    size = iupMatrixAuxGetColumnWidth(ih, index);
-
-  str = iupStrGetMemory(100);
+    size = iupMatrixAuxGetColumnWidth(ih, index, 1);
 
   if (size)
   {
@@ -354,6 +352,7 @@ char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels_unit)
     }
   }
 
+  str = iupStrGetMemory(100);
   sprintf(str, "%d", size);
   return str;
 }

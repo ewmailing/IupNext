@@ -13,12 +13,13 @@
   element.</p>
 <h3>
 Parameters/Return</h3>
-<pre>void IupSetfAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, const char *<strong>format</strong>, ...); [in C]
-void IupSetfAttributeId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>, const char *<strong>format</strong>, ...); [in C]
+<pre>void IupSetfAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, const char *<strong>format</strong>, ...);  [in C]
+void IupSetfAttributeId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>, const char *<strong>format</strong>, ...);  [in C]
+void IupSetfAttributeId2(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>, const char* <strong>format</strong>, ...);  [in C]
 [There is no equivalent in Lua] </pre>
 <p><b>ih</b>: identifier of the interface element.<br>
   <strong>name</strong>: name of the attribute.<br>
-<strong>id</strong>: used when the attribute has an additional id.<br>
+<strong>id, lin, col</strong>: used when the attribute has additional ids.<br>
 <b>format</b>: format that describes the attribute. It follows the same standard as the 
 <b>sprintf</b> function in C<o:p> </o:p>
   .<br>

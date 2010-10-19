@@ -728,13 +728,6 @@ void IupTreeSetAttribute(Ihandle* ih, const char* a, int id, const char* v)
   IupSetAttributeId(ih, a, id, v);
 }
 
-void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
-{
-  char* attr = iupStrGetMemory(50);
-  sprintf(attr, "%s%d", a, id);
-  IupSetAttributeHandle(ih, attr, ih_named);
-}
-
 void IupTreeStoreAttribute(Ihandle* ih, const char* a, int id, const char* v)
 {
   IupStoreAttributeId(ih, a, id, v);
@@ -763,6 +756,13 @@ void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, const char* f, ...
   vsprintf(v, f, arglist);
   va_end(arglist);
   IupStoreAttributeId(ih, a, id, v);
+}
+
+void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
+{
+  char* attr = iupStrGetMemory(50);
+  sprintf(attr, "%s%d", a, id);
+  IupSetAttributeHandle(ih, attr, ih_named);
 }
 
 /************************************************************************************/
