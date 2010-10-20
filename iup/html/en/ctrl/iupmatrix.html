@@ -25,7 +25,7 @@
 <p>This is an additional control that depends on the CD library. It is included 
 in the 
 <a href="../iupcontrols.html">Controls Library</a>.</p>
-<p>It has two modes of operation: normal and callback mode. In normal mode string values are stored in attributes for 
+<p>It has two modes of operation: normal and callback mode. In normal mode, string values are stored in attributes for 
   each cell. In callback mode these attributes are ignored and the cells are filled with strings returned by the &quot;VALUE_CB&quot; 
   callback. So the existence of this callback defines the mode the matrix will operate.</p>
 <h3><a name="Creation">Creation</a></h3>
@@ -224,59 +224,11 @@ iup.MatGetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string,
 <p>Before mapped to the native system, all attributes are stored in the hash 
 table, independently from the size of the matrix or its operation mode. The 
 action attributes like ADDLIN and DELCOL will NOT work.</p>
-<p>When the matrix is mapped NOT in callback mode then the cell values and 
+<p>When the matrix is mapped, and it is NOT in callback mode, then the cell values and 
 mark state are moved from the hash table to an internal storage at the matrix. 
 Other cell attributes remains on the hash table. Cell values with indices 
-greater than (NUMLIN,NUMCOL) are ignored. When mapped in callback mode cell 
+greater than (NUMLIN,NUMCOL) are ignored. When in callback mode cell 
 values stored in the hash table are ignored.</p>
-<h4>Size</h4>
-<p>If you do not plan to use ADDLIN nor ADDCOL, and plan to set sparse cell 
-values, then you must set NUMLIN and 
-NUMCOL before mapping.</p>
-<p>If you do not plan to set SIZE or RASTERSIZE, then set NUMCOL_VISIBLE and 
-NUMLIN_VISIBLE so the Natural size will give better results. The Natural size is calculated using only the 
-title cells size plus the size of NUMCOL_VISIBLE and NUMLIN_VISIBLE cells, but it is also affected if SCROLBAR is 
-enabled. The natural height is the sum of the line heights from line 0 to 
-NUMLIN_VISIBLE (inclusive), or line 0 plus the sum from line 
-NUMLIN-NUMLIN_VISIBLE to NUMLIN if NUMLIN_VISIBLE_LAST is defined. The natural width is the sum of the column width 
-from column 0 to NUMCOL_VISIBLE (inclusive), or column 0 plus the sum from 
-column NUMCOL-NUMCOL_VISIBLE to NUMCOL if NUMCOL_VISIBLE_LAST is defined. Notice that since NUMCOL_VISIBLE 
-and NUMLIN_VISIBLE do not include the titles then NUMCOL_VISIBLE+1 columns and 
-NUMLIN_VISIBLE+1 lines are included in the sum.</p>
-<p>The height of a line L depends on several attributes, first it checks the 
-HEIGHT<em>L</em> attribute, then checks RASTERHEIGHT<em>L</em>, then when 
-USETITLESIZE=YES or not in callback mode the height 
-of the title text for the line or if L=0 it searches for the heighest column 
-title, if still could not define a height then if L!=0 it will use HEIGHTDEF, if 
-L=0 then height will be 0. A similar approach is valid for the column width. The 
-width of a column C first checks the WIDTH<em>C</em> attribute, then checks 
-RASTERWIDTH<em>C</em>, then when USETITLESIZE=YES or not in callback mode the width of the title text for the column or if C=0 
-it searches for the widest line title, if still could not define a width then if 
-C!=0 it will use WIDTHDEF, if C=0 then height will be 0.</p>
-<p>When the scrollbars are enabled if the matrix area is greater than the 
-visible area then scrollbars will be displayed so the cells can be scrolled to 
-be visible area. When dragging the scrollbar the position of cells is free, when 
-clicking on its buttons it will move in cell steps, aligning to the left border 
-of the cell.</p>
-<p>By default EXPAND=Yes, so matrix will be automatically resized when the 
-dialog is resized. So more columns and lines will be displayed. But the matrix 
-Natural size will be used as minimum size. So one possible approach is to set 
-NUMCOL_VISIBLE and NUMLIN_VISIBLE when it is shown for the first time, then set 
-both to 0. Then the matrix will be resized to smaller sizes.</p>
-<p>Any cell can have more than one text line, just use the \n control character. 
-Multiple text lines will be considered when calculating the title cell size 
-based on its contents. The contents of ordinary cells (not a title) do not 
-affect the cell size.</p>
-<h4>Titles</h4>
-<p>A matrix might have titles for lines and columns. Titles are not scrollable, 
-non editable and presented with a different default background color. A matrix 
-will have a line of titles if an attribute of the &quot;<em>L</em>:0&quot; type is defined, where L 
-is a line number. It will have a column of titles if an attribute of the 
-&quot;0:<em>C</em>&quot; type is defined, where C is a column number.</p>
-<p>When allowed the
-  width of a column can be changed holding and dragging its title right border, 
-see RESIZEMATRIX. 
-</p>
 <h4>Callback Mode</h4>
 <p>Very large matrices must use the callback 
   mode to set the values, and not the regular 
@@ -294,6 +246,53 @@ see RESIZEMATRIX.
 L:C again.</p>
 <p>If VALUE_CB is defined and VALUE_EDIT_CB is not defined when the matrix is 
 mapped then READONLY will be set to YES.</p>
+<h4>Number of Cells</h4>
+<p>If you do not plan to use ADDLIN nor ADDCOL, and plan to set sparse cell 
+values, then you must set NUMLIN and 
+NUMCOL before mapping.</p>
+<h4>Titles</h4>
+<p>A matrix might have titles for lines and columns. Titles are not scrollable, 
+non editable and presented with a different default background color. A matrix 
+will have a line of titles if an attribute of the &quot;<em>L</em>:0&quot; type is defined, where L 
+is a line number, or if the HEIGHT0 attribute is defined. It will have a column of titles if an attribute of the 
+&quot;0:<em>C</em>&quot; type is defined, where C is a column number, or if the 
+WIDTH0 attribute is defined.</p>
+<p>When allowed the
+  width of a column can be changed by holding and dragging its title right border, 
+see RESIZEMATRIX.</p>
+<p>Any cell can have more than one text line, just use the \n control character. 
+Multiple text lines will be considered when calculating the title cell size 
+based on its contents. The contents of ordinary cells (not a title) do not 
+affect the cell size.</p>
+<h4>Natural Size</h4>
+<p>The Natural size is calculated using only the 
+title cells size plus the size of NUMCOL_VISIBLE and NUMLIN_VISIBLE cells, but it is also affected if SCROLBAR is 
+enabled. The natural height is the sum of the line heights from line 0 to 
+NUMLIN_VISIBLE (inclusive). The natural width is the sum of the column width 
+from column 0 to NUMCOL_VISIBLE (inclusive). Notice that since NUMCOL_VISIBLE 
+and NUMLIN_VISIBLE do not include the titles then NUMCOL_VISIBLE+1 columns and 
+NUMLIN_VISIBLE+1 lines are included in the sum.</p>
+<p>The height of a line L depends on several attributes, first it checks the 
+HEIGHT<em>L</em> attribute, then checks RASTERHEIGHT<em>L</em>, then when 
+USETITLESIZE=YES or not in callback mode the height 
+of the title text for the line or if L=0 it searches for the highest column 
+title, if still could not define a height then if L!=0 it will use HEIGHTDEF, if 
+L=0 then height will be 0.</p>
+<p>A similar approach is valid for the column width. The 
+width of a column C first checks the WIDTH<em>C</em> attribute, then checks 
+RASTERWIDTH<em>C</em>, then when USETITLESIZE=YES or not in callback mode the width of the title text for the column or if C=0 
+it searches for the widest line title, if still could not define a width then if 
+C!=0 it will use WIDTHDEF, if C=0 then height will be 0.</p>
+<h4>Virtual Size</h4>
+<p>When the scrollbars are enabled if the matrix area is greater than the 
+visible area then scrollbars will be displayed so the cells can be scrolled to 
+be visible area. When dragging the scrollbar the position of cells is free, when 
+clicking on its buttons it will move in cell steps, aligning to the left border 
+of the cell.</p>
+<p>By default EXPAND=Yes, so matrix will be automatically resized when the 
+dialog is resized. So more columns and lines will be displayed. But the matrix 
+Natural size will be used as minimum size. To remove the minimum size limitation set 
+NUMCOL_VISIBLE and NUMLIN_VISIBLE to 0 after showing it for the first time.</p>
 <h4>Keyboard Navigation</h4>
 <p>Keyboard navigation through the matrix cells outside the edition 
   mode is done by using the following keys:</p>

@@ -1,0 +1,17 @@
+echo This script will install the Development files in the system
+echo from the pre-compiled binaries. It was tested only in Ubuntu.
+echo.
+echo Must unpack the downloaded package in the current directory.
+echo Do NOT unpack different packages in the same directory.
+echo For example:
+echo   mkdir iup
+echo   cd iup
+echo   tar -xpvzf ../iup-3.2_Linux26g4_lib.tar.gz
+echo .
+echo Must be run with "sudo", or install will fail,
+echo and must specify the library name in the command line, 
+echo for example:
+echo    sudo install_dev_download iup
+
+cp -fR include/* /usr/include/$1
+cp -f *.a /usr/lib
