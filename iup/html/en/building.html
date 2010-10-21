@@ -5,11 +5,6 @@
 <title>Guide</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <link rel="stylesheet" type="text/css" href="../style.css">
-<style type="text/css">
-.style1 {
-	background-color: #CEE7FF;
-}
-</style>
 </head>
 <body>
 
@@ -31,7 +26,8 @@ systems as well.</p>
 		<p>To build IM you will need:</p>
 			<pre>g++</pre>
 		<p>To build CD you will need:</p>
-<pre>libx11-dev
+<pre>libfreetype6-dev
+libx11-dev
 libxpm-dev
 libxmu-dev
   libxft-dev (for the XRender driver, OPTIONAL)
@@ -141,18 +137,21 @@ following examples if you are using the pre-compiled binaries.</p>
 
 <p>After building you can copy the libraries files to the system directory. If you are inside 
 the main directory, to install the run time libraries you can type, for example:</p>
-<pre>sudo cp -f iup/lib/Linux26g4/*.so /usr/lib             [script version: <a href="../../install_runtime_build">install_runtime_build</a>  or
-sudo cp -f cd/lib/Linux26g4/*.so /usr/lib                               <a href="../../install_runtime_download">install_runtime_download</a>]
+<pre>sudo cp -f iup/lib/Linux26g4/*.so /usr/lib               [script version: <a href="../download/install">install</a> ]
+sudo cp -f cd/lib/Linux26g4/*.so /usr/lib                               
 sudo cp -f im/lib/Linux26g4/*.so /usr/lib</pre>
 <p>To install the development files, 
 then do:</p>
-<pre>sudo cp -fR iup/include/* /usr/include/iup             [script version: <a href="../../install_dev_build">install_dev_build</a><span class="style1">  or</span>
-sudo cp -f iup/lib/Linux26g4/*.a /usr/lib                               <a href="../../install_dev_download">install_dev_download</a>]
+<pre>sudo mkdir -p /usr/include/iup                           [script version: <a href="../download/install_dev">install_dev</a> ]
+sudo cp -f iup/include/*.h /usr/include/iup             
+sudo cp -f iup/lib/Linux26g4/*.a /usr/lib                               
 
-sudo cp -fR cd/include/* /usr/include/cd
+sudo mkdir -p /usr/include/cd
+sudo cp -f cd/include/*.h /usr/include/cd
 sudo cp -f cd/lib/Linux26g4/*.a /usr/lib
 
-sudo cp -fR im/include/* /usr/include/im
+sudo mkdir -p /usr/include/im
+sudo cp -fR im/include/*.h /usr/include/im
 sudo cp -f im/lib/Linux26g4/*.a /usr/lib</pre>
 <p>Then in your makefile use -Iiup -Icd -Iim for includes. There is no need to 
 specify the libraries directory with -L. Development files are only necessary if 
@@ -172,7 +171,7 @@ when linking using -L/xxxx/iup/lib/Linux26g4, and for compiling use
 directory. So to 
 be able to use the Lua &quot;require&quot; with IUP, CD and IM you must create symbolic links inside 
 that directory.</p>
-<pre>sudo mkdir -p /usr/lib/lua/5.1                          [script version: <a href="../../config_lua_module">config_lua_module</a>]
+<pre>sudo mkdir -p /usr/lib/lua/5.1                          [script version: <a href="../download/config_lua_module">config_lua_module</a> ]
 cd /usr/lib/lua/5.1  
        
 sudo ln -fs /usr/lib/libiuplua51.so iuplua.so
