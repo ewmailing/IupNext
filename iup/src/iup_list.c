@@ -712,6 +712,8 @@ Iclass* iupListGetClass(void)
   iupClassRegisterCallback(ic, "DROPDOWN_CB", "i");
   iupClassRegisterCallback(ic, "DBLCLICK_CB", "is");
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
+  iupClassRegisterCallback(ic, "MOTION_CB", "iis");
+  iupClassRegisterCallback(ic, "BUTTON_CB", "iiiis");
 
   iupClassRegisterCallback(ic, "EDIT_CB", "is");
   iupClassRegisterCallback(ic, "CARET_CB", "iii");

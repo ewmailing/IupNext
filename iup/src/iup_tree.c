@@ -681,6 +681,11 @@ Iclass* iupTreeGetClass(void)
   iupClassRegisterCallback(ic, "RENAME_CB",         "is");
   iupClassRegisterCallback(ic, "DRAGDROP_CB",       "iiii");
   iupClassRegisterCallback(ic, "RIGHTCLICK_CB",     "i");
+  iupClassRegisterCallback(ic, "MOTION_CB", "iis");
+  iupClassRegisterCallback(ic, "BUTTON_CB", "iiiis");
+
+  /* Common Callbacks */
+  iupBaseRegisterCommonCallbacks(ic);
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

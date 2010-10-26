@@ -278,7 +278,16 @@ static int gtkLabelMapMethod(Ihandle* ih)
   /* add to the parent, all GTK controls must call this. */
   iupgtkBaseAddToParent(ih);
 
+  g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(iupgtkButtonEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(iupgtkButtonEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+
   gtk_widget_realize(label);
+
+  /* configure for DRAG&DROP of files */
+  if (IupGetCallback(ih, "DROPFILES_CB"))
+    iupAttribSetStr(ih, "DRAGDROP", "YES");
 
   return IUP_NOERROR;
 }
@@ -310,6 +319,7 @@ void iupdrvLabelInitClass(Iclass* ic)
 
   /* IupLabel GTK and Motif only */
   iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, gtkLabelSetImInactiveAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupLabel Windows and GTK only */
   iupClassRegisterAttribute(ic, "WORDWRAP", NULL, gtkLabelSetWordWrapAttrib, NULL, NULL, IUPAF_DEFAULT);

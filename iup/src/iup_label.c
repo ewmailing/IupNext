@@ -164,9 +164,14 @@ Iclass* iupLabelGetClass(void)
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;
 
-  /* Common Callbacks */
+  /* Manually register the Common Callbacks */
   iupClassRegisterCallback(ic, "MAP_CB", "");
   iupClassRegisterCallback(ic, "UNMAP_CB", "");
+
+  iupClassRegisterCallback(ic, "DROPFILES_CB", "siii");
+  iupClassRegisterCallback(ic, "BUTTON_CB", "iiiis");
+  iupClassRegisterCallback(ic, "ENTERWINDOW_CB", "");
+  iupClassRegisterCallback(ic, "LEAVEWINDOW_CB", "");
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

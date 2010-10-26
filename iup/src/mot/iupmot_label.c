@@ -220,6 +220,10 @@ static int motLabelMapMethod(Ihandle* ih)
 
   ih->serial = iupDialogGetChildId(ih); /* must be after using the string */
 
+  XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+  XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+  XtAddEventHandler(ih->handle, ButtonPressMask|ButtonReleaseMask, False, (XtEventHandler)iupmotButtonPressReleaseEvent, (XtPointer)ih);
+
   /* Drag Source is enabled by default in label */
   iupmotDisableDragSource(ih->handle);
 
