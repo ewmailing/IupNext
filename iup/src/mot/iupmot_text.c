@@ -911,6 +911,12 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
 
 /******************************************************************************/
 
+static void motDummyXtErrorHandler(String msg)
+{
+  /* does nothing */
+  (void)msg;
+}
+
 
 static void motTextLayoutUpdateMethod(Ihandle* ih)
 {
@@ -935,7 +941,12 @@ static void motTextLayoutUpdateMethod(Ihandle* ih)
       NULL);
   }
   else
+  {
+    /* to avoid the Scrollbar warning */
+    XtAppSetWarningHandler(iupmot_appcontext, motDummyXtErrorHandler);
     iupdrvBaseLayoutUpdateMethod(ih);
+    XtAppSetWarningHandler(iupmot_appcontext, NULL);
+  }
 }
 
 static int motTextMapMethod(Ihandle* ih)
