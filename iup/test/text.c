@@ -416,6 +416,7 @@ void TextTest(void)
 
   /* Shows dlg in the center of the screen */
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+  IupSetFocus(mltline);
 }
 
 #ifndef BIG_TEST

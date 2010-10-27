@@ -406,66 +406,111 @@ static void gtkTextScrollToVisible(Ihandle* ih)
 /*******************************************************************************************/
 
 
-static int gtkTextSetSelectionAttrib(Ihandle* ih, const char* value)
+static int gtkTextSelectionGetIter(Ihandle* ih, const char* value, GtkTextIter* start_iter, GtkTextIter* end_iter)
 {
-  if (!value)
-    return 0;
+  int lin_start=1, col_start=1, lin_end=1, col_end=1;
+  GtkTextBuffer *buffer;
 
+  /* Used only when MULTILINE=YES */
+
+  buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
   if (!value || iupStrEqualNoCase(value, "NONE"))
   {
-    if (ih->data->is_multiline)
-    {
-      GtkTextIter start_iter;
-      GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-      gtk_text_buffer_get_start_iter(buffer, &start_iter);
-      gtk_text_buffer_select_range(buffer, &start_iter, &start_iter);
-    }
-    else
-      gtk_editable_select_region(GTK_EDITABLE(ih->handle), 0, 0);
-    return 0;
+    gtk_text_buffer_get_start_iter(buffer, start_iter);
+    *end_iter = *start_iter;
+    return 1;
   }
 
   if (iupStrEqualNoCase(value, "ALL"))
   {
-    if (ih->data->is_multiline)
-    {
-      GtkTextIter start_iter;
-      GtkTextIter end_iter;
-      GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-      gtk_text_buffer_get_start_iter(buffer, &start_iter);
-      gtk_text_buffer_get_end_iter(buffer, &end_iter);
-      gtk_text_buffer_select_range(buffer, &start_iter, &end_iter);
-    }
-    else
-      gtk_editable_select_region(GTK_EDITABLE(ih->handle), 0, -1);
-    return 0;
+    gtk_text_buffer_get_start_iter(buffer, start_iter);
+    gtk_text_buffer_get_end_iter(buffer, end_iter);
+    return 1;
   }
 
+  if (sscanf(value, "%d,%d:%d,%d", &lin_start, &col_start, &lin_end, &col_end)!=4) 
+    return 0;
+
+  if (lin_start<1 || col_start<1 || lin_end<1 || col_end<1) 
+    return 0;
+
+  gtkTextMoveIterToLinCol(buffer, start_iter, lin_start, col_start);
+  gtkTextMoveIterToLinCol(buffer, end_iter, lin_end, col_end);
+
+  return 1;
+}
+
+static int gtkTextSelectionPosGetIter(Ihandle* ih, const char* value, GtkTextIter* start_iter, GtkTextIter* end_iter)
+{
+  int start=0, end=0;
+  GtkTextBuffer *buffer;
+
+  /* Used only when MULTILINE=YES */
+
+  buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+  if (!value || iupStrEqualNoCase(value, "NONE"))
+  {
+    gtk_text_buffer_get_start_iter(buffer, start_iter);
+    *end_iter = *start_iter;
+    return 1;
+  }
+
+  if (iupStrEqualNoCase(value, "ALL"))
+  {
+    gtk_text_buffer_get_start_iter(buffer, start_iter);
+    gtk_text_buffer_get_end_iter(buffer, end_iter);
+    return 1;
+  }
+
+  if (iupStrToIntInt(value, &start, &end, ':')!=2) 
+    return 0;
+
+  if(start<0 || end<0) 
+    return 0;
+
+  gtk_text_buffer_get_iter_at_offset(buffer, start_iter, start);
+  gtk_text_buffer_get_iter_at_offset(buffer, end_iter, end);
+
+  return 1;
+}
+
+static int gtkTextSetSelectionAttrib(Ihandle* ih, const char* value)
+{
   if (ih->data->is_multiline)
   {
-    int lin_start=1, col_start=1, lin_end=1, col_end=1;
-    GtkTextIter start_iter, end_iter;
-    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-
-    if (sscanf(value, "%d,%d:%d,%d", &lin_start, &col_start, &lin_end, &col_end)!=4) return 0;
-    if (lin_start<1 || col_start<1 || lin_end<1 || col_end<1) return 0;
-
-    gtkTextMoveIterToLinCol(buffer, &start_iter, lin_start, col_start);
-    gtkTextMoveIterToLinCol(buffer, &end_iter, lin_end, col_end);
-
-    gtk_text_buffer_select_range(buffer, &start_iter, &end_iter);
+     GtkTextIter start_iter, end_iter;
+     if (gtkTextSelectionGetIter(ih, value, &start_iter, &end_iter))
+     {
+       GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+       gtk_text_buffer_select_range(buffer, &start_iter, &end_iter);
+     }
   }
   else
   {
-    int start=1, end=1;
-    if (iupStrToIntInt(value, &start, &end, ':')!=2) 
-      return 0;
+    int start, end;
 
-    if(start<1 || end<1) 
-      return 0;
+    if (!value || iupStrEqualNoCase(value, "NONE"))
+    {
+      start = 0;
+      end = 0;
+    }
+    else if (iupStrEqualNoCase(value, "ALL"))
+    {
+      start = 0;
+      end = -1;  /* a negative value means all */
+    }
+    else
+    {
+      start=1, end=1;
+      if (iupStrToIntInt(value, &start, &end, ':')!=2) 
+        return 0;
 
-    start--; /* IUP starts at 1 */
-    end--;
+      if(start<1 || end<1) 
+        return 0;
+
+      start--; /* IUP starts at 1 */
+      end--;
+    }
 
     gtk_editable_select_region(GTK_EDITABLE(ih->handle), start, end);
   }
@@ -511,59 +556,41 @@ static char* gtkTextGetSelectionAttrib(Ihandle* ih)
 
 static int gtkTextSetSelectionPosAttrib(Ihandle* ih, const char* value)
 {
-  int start=0, end=0;
-
-  if (!value)
-    return 0;
-
-  if (!value || iupStrEqualNoCase(value, "NONE"))
-  {
-    if (ih->data->is_multiline)
-    {
-      GtkTextIter start_iter;
-      GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-      gtk_text_buffer_get_start_iter(buffer, &start_iter);
-      gtk_text_buffer_select_range(buffer, &start_iter, &start_iter);
-    }
-    else
-      gtk_editable_select_region(GTK_EDITABLE(ih->handle), 0, 0);
-    return 0;
-  }
-
-  if (iupStrEqualNoCase(value, "ALL"))
-  {
-    if (ih->data->is_multiline)
-    {
-      GtkTextIter start_iter;
-      GtkTextIter end_iter;
-      GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-      gtk_text_buffer_get_start_iter(buffer, &start_iter);
-      gtk_text_buffer_get_end_iter(buffer, &end_iter);
-      gtk_text_buffer_select_range(buffer, &start_iter, &end_iter);
-    }
-    else
-      gtk_editable_select_region(GTK_EDITABLE(ih->handle), 0, -1);
-    return 0;
-  }
-
-  if (iupStrToIntInt(value, &start, &end, ':')!=2) 
-    return 0;
-
-  if(start<0 || end<0) 
-    return 0;
-
   if (ih->data->is_multiline)
   {
     GtkTextIter start_iter, end_iter;
-    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-
-    gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, start);
-    gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, end);
-
-    gtk_text_buffer_select_range(buffer, &start_iter, &end_iter);
+    if (gtkTextSelectionPosGetIter(ih, value, &start_iter, &end_iter))
+    {
+      GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+      gtk_text_buffer_select_range(buffer, &start_iter, &end_iter);
+    }
   }
   else
+  {
+    int start, end;
+
+    if (!value || iupStrEqualNoCase(value, "NONE"))
+    {
+      start = 0;
+      end = 0;
+    }
+    else if (iupStrEqualNoCase(value, "ALL"))
+    {
+      start = 0;
+      end = -1;  /* a negative value means all */
+    }
+    else
+    {
+      start=0, end=0;
+      if (iupStrToIntInt(value, &start, &end, ':')!=2) 
+        return 0;
+
+      if(start<0 || end<0) 
+        return 0;
+    }
+
     gtk_editable_select_region(GTK_EDITABLE(ih->handle), start, end);
+  }
 
   return 0;
 }
@@ -1117,49 +1144,59 @@ static char* gtkTextGetOverwriteAttrib(Ihandle* ih)
     return "NO";
 }
 
-void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
+void* iupdrvTextAddFormatTagStartBulk(Ihandle* ih)
+{
+  GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+  gtk_text_buffer_begin_user_action(buffer);
+  return NULL;
+}
+
+void iupdrvTextAddFormatTagStopBulk(Ihandle* ih, void* state)
+{
+  GtkTextBuffer* buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+  gtk_text_buffer_end_user_action(buffer);
+  (void)state;
+}
+
+void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag, int bulk)
 {
   GtkTextBuffer *buffer;
   GtkTextIter start_iter, end_iter;
   GtkTextTag* tag;
   char *selection;
+  (void)bulk;
 
   if (!ih->data->is_multiline)
     return;
 
+  buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+
   selection = iupAttribGet(formattag, "SELECTION");
   if (selection)
   {
-    /* simulate Windows behavior and change the current selection */
-    gtkTextSetSelectionAttrib(ih, selection);
-    iupAttribSetStr(ih, "SELECTION", NULL);
+    if (!gtkTextSelectionGetIter(ih, selection, &start_iter, &end_iter))
+      return;
   }
   else
   {
     char* selectionpos = iupAttribGet(formattag, "SELECTIONPOS");
     if (selectionpos)
     {
-      /* simulate Windows behavior and change the current selection */
-      gtkTextSetSelectionPosAttrib(ih, selectionpos);
-      iupAttribSetStr(ih, "SELECTIONPOS", NULL);
+      if (!gtkTextSelectionPosGetIter(ih, selectionpos, &start_iter, &end_iter))
+        return;
+    } 
+    else 
+    {
+      GtkTextMark* mark = gtk_text_buffer_get_insert(buffer);
+      gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
+      gtk_text_buffer_get_iter_at_mark(buffer, &end_iter, mark);
     }
-  }
-
-  buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-  if (!gtk_text_buffer_get_selection_bounds(buffer, &start_iter, &end_iter))
-  {
-    GtkTextMark* mark = gtk_text_buffer_get_insert(buffer);
-    gtk_text_buffer_get_iter_at_mark(buffer, &start_iter, mark);
-    gtk_text_buffer_get_iter_at_mark(buffer, &end_iter, mark);
   }
 
   tag = gtk_text_buffer_create_tag(buffer, NULL, NULL);
   gtkTextParseParagraphFormat(formattag, tag);
   gtkTextParseCharacterFormat(formattag, tag);
   gtk_text_buffer_apply_tag(buffer, tag, &start_iter, &end_iter);
-
-  /* reset the selection */
-  gtkTextSetSelectionAttrib(ih, NULL);
 }
 
 static int gtkTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
@@ -1171,8 +1208,17 @@ static int gtkTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
     return 0;
 
   buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-  if (gtk_text_buffer_get_selection_bounds(buffer, &start_iter, &end_iter))
+  if (iupStrEqualNoCase(value, "ALL"))
+  {
+    gtk_text_buffer_get_start_iter(buffer, &start_iter);
+    gtk_text_buffer_get_end_iter(buffer, &end_iter);
     gtk_text_buffer_remove_all_tags(buffer, &start_iter, &end_iter);
+  }
+  else
+  {
+    if (gtk_text_buffer_get_selection_bounds(buffer, &start_iter, &end_iter))
+      gtk_text_buffer_remove_all_tags(buffer, &start_iter, &end_iter);
+  }
 
   (void)value;
   return 0;

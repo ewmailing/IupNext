@@ -43,11 +43,24 @@
 #define XmNwrap "Nwrap"
 #endif
 
-void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
+void* iupdrvTextAddFormatTagStartBulk(Ihandle* ih)
 {
   (void)ih;
-  (void)formattag;
+  return NULL;
 }
+
+void iupdrvTextAddFormatTagStopBulk(Ihandle* ih, void* state)
+{
+  (void)ih;
+  (void)state;
+}
+
+void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag, int bulk)
+ {
+   (void)ih;
+   (void)formattag;
+   (void)bulk;
+ }
 
 void iupdrvTextAddSpin(int *w, int h)
 {

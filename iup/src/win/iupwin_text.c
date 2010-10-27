@@ -1171,12 +1171,42 @@ static int winTextSetStandardFontAttrib(Ihandle* ih, const char* value)
   return iupdrvSetStandardFontAttrib(ih, value);
 }
 
-void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
+typedef struct
+{
+  int eventMask;
+  DWORD line;
+  CHARRANGE oldRange;
+} formatTagBulkState;
+
+void* iupdrvTextAddFormatTagStartBulk(Ihandle* ih)
+{
+  formatTagBulkState* state = (formatTagBulkState*) malloc(sizeof(formatTagBulkState));
+  state->line = SendMessage(ih->handle, EM_GETFIRSTVISIBLELINE, 0, 0);  /* save scrollbar */
+  SendMessage(ih->handle, EM_EXGETSEL, 0, (LPARAM)&state->oldRange);  /* save selection */
+  state->eventMask = SendMessage(ih->handle, EM_SETEVENTMASK, 0, 0);  /* disable events */
+  SendMessage(ih->handle, WM_SETREDRAW, FALSE, 0);  /* disable redraw */
+  return state;
+}
+
+void iupdrvTextAddFormatTagStopBulk(Ihandle* ih, void* stateOpaque)
+{
+  formatTagBulkState* state = (formatTagBulkState*) stateOpaque;
+  DWORD line = SendMessage(ih->handle, EM_GETFIRSTVISIBLELINE, 0, 0);
+  SendMessage(ih->handle, EM_EXSETSEL, 0, (LPARAM)&state->oldRange);
+  SendMessage(ih->handle, EM_LINESCROLL, 0, state->line - line);
+  SendMessage(ih->handle, WM_SETREDRAW, TRUE, 0);
+  SendMessage(ih->handle, EM_SETEVENTMASK, 0, state->eventMask);
+  free(state);
+  iupdrvRedrawNow(ih);
+}
+
+void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag, int bulk)
 {
   int convert2twips, pixel2twips;
   char *selection, *units;
   PARAFORMAT2 paraformat;
   CHARFORMAT2 charformat;
+  formatTagBulkState* state = NULL;
 
   /* one twip is 1/1440 inch */
   /* twip = (pixel*1440)/(pixel/inch) */
@@ -1194,12 +1224,15 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
       convert2twips = val;
   }
 
+  /* save state here if not applying a bulk */
+  if (!bulk) 
+    state = (formatTagBulkState*)iupdrvTextAddFormatTagStartBulk(ih);
+
   selection = iupAttribGet(formattag, "SELECTION");
   if (selection)
   {
     /* In Windows, the format message use the current selection */
     winTextSetSelectionAttrib(ih, selection);
-    iupAttribSetStr(ih, "SELECTION", NULL);
   }
   else
   {
@@ -1208,7 +1241,6 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
     {
       /* In Windows, the format message use the current selection */
       winTextSetSelectionPosAttrib(ih, selectionpos);
-      iupAttribSetStr(ih, "SELECTIONPOS", NULL);
     }
   }
 
@@ -1223,9 +1255,9 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
   if (charformat.dwMask != 0)
     SendMessage(ih->handle, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&charformat);
 
-  /* reset the selection, if changed here */
-  if (selection)
-    winTextSetSelectionAttrib(ih, NULL);
+  /* restore state here if not applying a bulk */
+  if (!bulk) 
+    iupdrvTextAddFormatTagStopBulk(ih, state);
 }
 
 static int winTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
@@ -1276,8 +1308,21 @@ static int winTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
       charformat.yHeight = val*20;
   }
 
-  SendMessage(ih->handle, EM_SETPARAFORMAT, 0, (LPARAM)&paraformat);
-  SendMessage(ih->handle, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&charformat);
+  if (iupStrEqualNoCase(value, "ALL"))
+  {
+    CHARRANGE oldRange;
+    SendMessage(ih->handle, EM_EXGETSEL, 0, (LPARAM)&oldRange);
+    SendMessage(ih->handle, EM_SETSEL, (WPARAM)-1, (LPARAM)0);
+    SendMessage(ih->handle, EM_SETPARAFORMAT, 0, (LPARAM)&paraformat);  /* always for the current selection */
+    SendMessage(ih->handle, EM_EXSETSEL, 0, (LPARAM)&oldRange);
+    SendMessage(ih->handle, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&charformat);
+  }
+  else
+  {
+    SendMessage(ih->handle, EM_SETPARAFORMAT, 0, (LPARAM)&paraformat);
+    SendMessage(ih->handle, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&charformat);
+  }
+
 
   (void)value;
   return 0;

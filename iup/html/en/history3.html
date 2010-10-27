@@ -129,6 +129,13 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_changed">Changed:</span>
     now <strong>IupSaveClassAttributes</strong> and <strong>IupCopyClassAttributes</strong> 
 	will save also id dependent attributes.</li>
+	<li><span class="hist_changed">Changed:</span>
+    Patch applied. Trying to improve the ADDFORMATTAG behavior in order to avoid 
+	scrolling physically and destroying the selection. Adds the concept of BULK 
+	format tags. The SELECTION and SELECTIONPOS attributes of the format tag 
+	will NOT change the <strong>IupText</strong> attributes anymore. 
+	Contribution of the Indentation library that adds syntax highlighting to a 
+	Lua code text. Thanks to Nicolas Noble.</li>
 
 	<li><span class="hist_fixed">Fixed:</span> callback not called in <strong>
 	IupGetParam</strong> when a file name or a color string are selected by the 

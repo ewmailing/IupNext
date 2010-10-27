@@ -83,7 +83,19 @@ void iupTextUpdateFormatTags(Ihandle* ih)
 
   for (i = 0; i < count; i++)
   {
-    iupdrvTextAddFormatTag(ih, tag_array[i]);
+    char* bulk = iupAttribGet(tag_array[i], "BULK");
+    if (bulk && iupStrBoolean(bulk))
+    {
+      Ihandle* child;
+      void* state = iupdrvTextAddFormatTagStartBulk(ih);
+
+      for (child = tag_array[i]->firstchild; child; child = child->brother)
+        iupdrvTextAddFormatTag(ih, child, 1);
+
+      iupdrvTextAddFormatTagStopBulk(ih, state);
+    }
+    else
+      iupdrvTextAddFormatTag(ih, tag_array[i], 0);
     IupDestroy(tag_array[i]);
   }
   iupArrayDestroy(ih->data->formattags);
@@ -98,10 +110,29 @@ int iupTextSetAddFormatTagHandleAttrib(Ihandle* ih, const char* value)
 
   if (ih->handle)
   {
+    char* bulk;
+
     /* must update VALUE before updating the format */
     iTextUpdateValueAttrib(ih);
 
-    iupdrvTextAddFormatTag(ih, formattag);
+    bulk = iupAttribGet(formattag, "BULK");
+    if (bulk && iupStrBoolean(bulk))
+    {
+      Ihandle* child;
+      void* state = iupdrvTextAddFormatTagStartBulk(ih);
+
+      char* cleanout = iupAttribGet(formattag, "CLEANOUT");
+      if (cleanout && iupStrBoolean(cleanout))
+        IupSetAttribute(ih, "REMOVEFORMATTING", "ALL");
+
+      for (child = formattag->firstchild; child; child = child->brother)
+        iupdrvTextAddFormatTag(ih, child, 1);
+
+      iupdrvTextAddFormatTagStopBulk(ih, state);
+    }
+    else
+      iupdrvTextAddFormatTag(ih, formattag, 0);
+
     IupDestroy(formattag);
   }
   else

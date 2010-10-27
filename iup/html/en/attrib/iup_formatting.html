@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -33,8 +33,8 @@ element will be automatically destroyed when the <b>IupText</b> is mapped. If
 the <b>IupText</b> is already mapped, the format tag is immediately destroyed 
 when the attribute is set. The format tag can NOT be reused.</p>
 <h4>REMOVEFORMATTING [write only] (non inheritable) </h4>
-<p>Removes the formatting of the current selection. The given value is ignored, 
-and can be NULL.</p>
+<p>Removes the formatting of the current selection if Yes or NULL, and from all 
+text if ALL is used.</p>
 <h3>Format Tag</h3>
 <p>The format tag element is a simple <a href="../elem/iupuser.html">IupUser</a> 
 element with some known attributes that will be interpreted when the tag is 
@@ -45,15 +45,21 @@ all formatting is lost. You must set it again for the new text.</p>
 format of all characters in the text.</p>
 <p>The default values can not be dynamically changed.</p>
 <h4>General Format Tag Attributes</h4>
-<p><b>SELECTION</b>: same as the IupText
-<a href="../elem/iuptext.html#SELECTION">SELECTION</a> attribute. If not defined 
+<p><b>BULK</b>: flag that means this tag is composed by several tags as its 
+children. Used to optimize format tag modifications. Default: NO. (since 3.3)</p>
+<p><strong>CLEANOUT</strong>: when BULK=Yes is used to clear all the formatting 
+at start. Default: NO. (since 3.3)</p>
+<p><b>SELECTION/</b><strong>SELECTIONPOS</strong>: same as the <strong>IupText</strong>
+<a href="../elem/iuptext.html#SELECTION">SELECTION/SELECTIONPOS</a> attributes. If not defined 
 the <b>IupText</b> attribute will be used. If the <b>IupText</b> attribute is 
 also not defined then the current position will receive the format, so new text 
 inserted or typed will be formatted with the tag (this is not working in GTK). Different tags that use the same selection 
-interval are combined.</p>
+interval are combined. Setting these attributes here will not change the current 
+setting in <strong>IupText</strong> (since 3.3).</p>
 <p><b>UNITS</b> [Windows Only]: By default all distance units are integers in 
 pixels, but in Windows you can also specify integer units in TWIPs (one twip is 
 1/1440 of an inch). Can be TWIP or PIXELS. Default: PIXELS.</p>
+<p>&nbsp;</p>
 <h4>Paragraph Format Tag Attributes</h4>
 <p><b>ALIGNMENT</b>: Can be JUSTIFY, RIGHT, CENTER and LEFT. Default: LEFT.</p>
 <p><b>INDENT</b>: paragraph indentation, the distance between the margin and the 
@@ -114,6 +120,42 @@ work always, depends on the font)</p>
 is supported only in Windows.</p>
 <p><b>WEIGHT</b>: Can be EXTRALIGHT, LIGHT, NORMAL, SEMIBOLD, BOLD, EXTRABOLD 
 and HEAVY. Default: NORMAL.</p>
+<h3>Examples</h3>
+<p>In C:</p>
+<pre>Ihandle* formattag;
+IupSetAttribute(text, "FORMATTING", "YES");
+
+formattag = IupUser();
+IupSetAttribute(formattag, "ALIGNMENT", "CENTER");
+IupSetAttribute(formattag, "SPACEAFTER", "10");
+IupSetAttribute(formattag, "FONTSIZE", "24");
+IupSetAttribute(formattag, "SELECTION", "3,1:3,50");
+IupSetAttribute(text, "ADDFORMATTAG_HANDLE", (char*)formattag);
+
+formattag = IupUser();
+IupSetAttribute(formattag, "BGCOLOR", "255 128 64");
+IupSetAttribute(formattag, "UNDERLINE", "SINGLE");
+IupSetAttribute(formattag, "WEIGHT", "BOLD");
+IupSetAttribute(formattag, "SELECTION", "3,7:3,11");
+IupSetAttribute(text, "ADDFORMATTAG_HANDLE", (char*)formattag);
+    
+formattag = IupUser();
+IupSetAttribute(formattag, "ITALIC", "YES");
+IupSetAttribute(formattag, "STRIKEOUT", "YES");
+IupSetAttribute(formattag, "SELECTION", "2,1:2,12");
+IupSetAttribute(text, "ADDFORMATTAG_HANDLE", (char*)formattag);
+</pre>
+<p>In Lua using BULK:</p>
+<pre>tags = iup.user { bulk = &quot;Yes&quot;, cleanout = &quot;Yes&quot; }
+iup.Append(tags, iup.user { selectionpos = &quot;0:3&quot;, fgcolor = &quot;255 0 0&quot;})
+iup.Append(tags, iup.user { selectionpos = &quot;5:10&quot;, fgcolor = &quot;0 0 255&quot;})
+text.addformattag = tags</pre>
+<p>Check the Indentation library created by Kristofer Karlsson and ported to IUP 
+by Nicolas Noble that adds syntax highlighting to a Lua code text in a <strong>
+IupText</strong> control. For example:</p>
+<pre>text = iup.text { multiline = &quot;Yes&quot;, font = &quot;Courier&quot;, expand = &quot;Yes&quot;, value = someluacode }
+IndentationLib.enable(text)</pre>
+<p>&nbsp;</p>
 </body>
 
 </html>

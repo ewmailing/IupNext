@@ -15,7 +15,9 @@ extern "C" {
 void iupdrvTextInitClass(Iclass* ic);
 void iupdrvTextAddBorders(int *w, int *h);
 void iupdrvTextAddSpin(int *w, int h);
-void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag);
+void* iupdrvTextAddFormatTagStartBulk(Ihandle* ih);
+void iupdrvTextAddFormatTagStopBulk(Ihandle* ih, void* state);
+void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag, int bulk);
 void iupdrvTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
 void iupdrvTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
 

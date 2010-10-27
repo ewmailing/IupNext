@@ -32,7 +32,7 @@ Iclass* iupUserGetClass(void)
   ic->name = "user";
   ic->format = NULL;  /* no parameters */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype = IUP_CHILDNONE;
+  ic->childtype = IUP_CHILDMANY;
   ic->is_interactive = 0;
 
   iupClassRegisterAttribute(ic, "CLEARATTRIBUTES", NULL, iUserSetClearAttributesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
