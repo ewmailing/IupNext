@@ -427,11 +427,14 @@ static void iuplua_openlibs (lua_State *L) {
 static void iuplua_input (lua_State *L) 
 {
 #ifdef IUPLUA_USELOH
+#include "indent.loh"
 #include "console5.loh"
 #else
 #ifdef IUPLUA_USELZH
+#include "indent.lzh"
 #include "console5.lzh"
 #else
+  luaL_dofile(L, "indent.lua");
   luaL_dofile(L, "console5.lua");
 #endif
 #endif

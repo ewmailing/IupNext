@@ -102,10 +102,10 @@ end
 function btn_image:button( b, e )
   if( b == iup.BUTTON1 ) then
     if( e == 1 ) then
-    -- botão pressionado
+      -- button released
       text.value = "Red button pressed"
     else           
-    -- botão solto 
+      -- button pressed 
       text.value = "Red button released"
     end
   end

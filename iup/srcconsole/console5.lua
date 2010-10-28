@@ -39,7 +39,7 @@ end
 -- Console Dialog
 
 iup_console.lastfilename = nil -- Last file open
-iup_console.mlCode = iup.multiline{expand="YES", size="200x120", font="Courier, 10"}
+iup_console.mlCode = iup.multiline{expand="YES", size="200x120", font="Courier, 11"}
 iup_console.lblPosition = iup.label{title="0:0", size="50x"}
 iup_console.lblFileName = iup.label{title="", size="50x", expand="HORIZONTAL"}
 
@@ -106,8 +106,13 @@ function iup_console.LoadFile(filename)
   if (newfile == nil) then
     error ("Cannot load file "..filename)
   else
-    iup_console.mlCode.value=newfile:read("*a")
+    iup_console.mlCode.value = newfile:read("*a")
     newfile:close (newfile)
+    
+    if IndentationLib then
+      IndentationLib.textboxRecolor(iup_console.mlCode)
+    end
+    
     iup_console.lastfilename = filename
     iup_console.lblFileName.title = iup_console.lastfilename
   end
@@ -205,6 +210,10 @@ iup_console.dlgAbout = iup.dialog
    }
    ;maxbox="NO", minbox="NO", resize="NO", title="About"
 }
+
+if IndentationLib then
+  IndentationLib.enable(iup_console.mlCode)
+end
 
 -- Displays the Main Dialog
 
