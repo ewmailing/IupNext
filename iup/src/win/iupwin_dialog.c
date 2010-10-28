@@ -314,9 +314,9 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
           if (ih->data->show_state != IUP_MINIMIZE)
           {
             IFni show_cb = (IFni)IupGetCallback(ih, "SHOW_CB");
+            ih->data->show_state = IUP_MINIMIZE;
             if (show_cb && show_cb(ih, IUP_MINIMIZE) == IUP_CLOSE)
               IupExitLoop();
-            ih->data->show_state = IUP_MINIMIZE;
           }
           break;
         }
@@ -325,9 +325,9 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
           if (ih->data->show_state != IUP_MAXIMIZE)
           {
             IFni show_cb = (IFni)IupGetCallback(ih, "SHOW_CB");
+            ih->data->show_state = IUP_MAXIMIZE;
             if (show_cb && show_cb(ih, IUP_MAXIMIZE) == IUP_CLOSE)
               IupExitLoop();
-            ih->data->show_state = IUP_MAXIMIZE;
           }
 
           winDialogResize(ih, LOWORD(lp), HIWORD(lp));
@@ -338,9 +338,9 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
           if (ih->data->show_state == IUP_MAXIMIZE || ih->data->show_state == IUP_MINIMIZE)
           {
             IFni show_cb = (IFni)IupGetCallback(ih, "SHOW_CB");
+            ih->data->show_state = IUP_RESTORE;
             if (show_cb && show_cb(ih, IUP_RESTORE) == IUP_CLOSE)
               IupExitLoop();
-            ih->data->show_state = IUP_RESTORE;
           }
 
           winDialogResize(ih, LOWORD(lp), HIWORD(lp));

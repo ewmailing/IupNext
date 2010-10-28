@@ -563,7 +563,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
           IupExitLoop();
       }
 
-      if (!iupwinIsVistaOrNew())
+      if (!iupwinIsVistaOrNew() && iupObjectCheck(ih))
       {
         /* TIPs desapear forever after a button click in XP,
            so we force an update. */
@@ -677,9 +677,12 @@ static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
         if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION"))  /* to avoid double calls when pressing enter and a dialog is displayed */
         {
           iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", "1");
+
           if (cb(ih) == IUP_CLOSE)
             IupExitLoop();
-          iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", NULL);
+
+          if (iupObjectCheck(ih))
+            iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", NULL);
         }
       }
     }

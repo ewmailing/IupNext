@@ -615,7 +615,8 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
           if (cb && cb (ih, 1) == IUP_CLOSE)
               IupExitLoop();
 
-          iupBaseCallValueChangedCb(ih);
+          if (iupObjectCheck(ih))
+            iupBaseCallValueChangedCb(ih);
         }
       }
       else
@@ -627,7 +628,8 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
         if (cb && cb (ih, check) == IUP_CLOSE)
             IupExitLoop();
 
-        iupBaseCallValueChangedCb(ih);
+        if (iupObjectCheck(ih))
+          iupBaseCallValueChangedCb(ih);
       }
     }
   }

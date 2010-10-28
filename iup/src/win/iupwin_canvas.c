@@ -448,7 +448,10 @@ static void winCanvasProcessMultiTouch(Ihandle* ih, int count, HTOUCHINPUT hTouc
               state = (ti[i].dwFlags & TOUCHEVENTF_DOWN)? "DOWN-PRIMARY": ((ti[i].dwFlags & TOUCHEVENTF_UP)? "UP-PRIMARY": "MOVE-PRIMARY");
 
             if (cb(ih, ti->dwID, x, y, state)==IUP_CLOSE)
+            {
               IupExitLoop();
+              return;
+            }
           }
 
           if (mcb)
