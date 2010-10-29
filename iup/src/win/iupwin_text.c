@@ -349,8 +349,13 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
   format = iupAttribGet(formattag, "FONTFACE");
   if (format)
   {
+    /* Map standard names to native names */
+    const char* mapped_name = iupFontGetWinName(format);
+    if (mapped_name)
+      strcpy(charformat->szFaceName, mapped_name);
+    else
+      strcpy(charformat->szFaceName, format);
     charformat->dwMask |= CFM_FACE;
-    strcpy(charformat->szFaceName, format);
   }
 
   format = iupAttribGet(formattag, "FGCOLOR");
@@ -423,6 +428,63 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
     }
   }
 }                      
+
+static void winTextUpdateFontFormat(CHARFORMAT2* charformat, const char* value)
+{
+  int size = 0;
+  int is_bold = 0,
+    is_italic = 0, 
+    is_underline = 0,
+    is_strikeout = 0;
+  char typeface[1024];
+  const char* mapped_name;
+
+  if (!iupGetFontInfo(value, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return;
+
+  /* Map standard names to native names */
+  mapped_name = iupFontGetWinName(typeface);
+  if (mapped_name)
+    strcpy(typeface, mapped_name);
+
+  charformat->dwMask |= CFM_FACE;
+  strcpy(charformat->szFaceName, typeface);
+
+  /* (1/1440 of an inch, or 1/20 of a printer's point) */
+  charformat->dwMask |= CFM_SIZE;
+  if (size < 0)  /* in pixels */
+  {
+    int pixel2twips = 1440/iupwinGetScreenRes();
+    charformat->yHeight = (-size)*pixel2twips;
+  }
+  else
+    charformat->yHeight = size*20;
+
+  charformat->dwMask |= CFM_WEIGHT|CFM_BOLD;
+  if (is_bold)
+  {
+    charformat->wWeight = FW_BOLD;
+    charformat->dwEffects |= CFE_BOLD;
+  }
+  else
+    charformat->wWeight = FW_NORMAL;
+
+  charformat->dwMask |= CFM_ITALIC;
+  if (is_italic)
+    charformat->dwEffects |= CFE_ITALIC;
+
+  charformat->dwMask |= CFM_UNDERLINETYPE;
+  if (is_underline)
+  {
+    charformat->bUnderlineType = CFU_UNDERLINE;
+    charformat->dwMask |= CFM_UNDERLINE;
+    charformat->dwEffects |= CFE_UNDERLINE;
+  }
+
+  charformat->dwMask |= CFM_STRIKEOUT;
+  if (is_strikeout)
+    charformat->dwEffects |= CFE_STRIKEOUT;
+}
 
 static int winTextSetLinColToPosition(Ihandle *ih, int lin, int col)
 {
@@ -1161,13 +1223,18 @@ static int winTextSetAlignmentAttrib(Ihandle* ih, const char* value)
 
 static int winTextSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
-  /* ignore the first call that is done in IupMap,
-     it is already done before calling iupTextUpdateFormatTags. */
-  if (ih->data->has_formatting && iupAttribGet(ih, "_IUPWIN_IGNORE_FONT"))
+  if (ih->data->has_formatting && ih->handle)
   {
-    iupAttribSetStr(ih, "_IUPWIN_IGNORE_FONT", NULL);
-    return 0;
+    if (!iupAttribGet(ih, "_IUPWIN_FONTUPDATECHECK"))
+    {
+      /* avoid setting the same font because this will clear the font formattags. */
+      char* cur_value = iupGetFontAttrib(ih);
+      if (iupStrEqual(value, cur_value))
+        return 0;
+    }
+    iupAttribSetStr(ih, "_IUPWIN_FONTUPDATECHECK", NULL);
   }
+
   return iupdrvSetStandardFontAttrib(ih, value);
 }
 
@@ -1181,10 +1248,12 @@ typedef struct
 void* iupdrvTextAddFormatTagStartBulk(Ihandle* ih)
 {
   formatTagBulkState* state = (formatTagBulkState*) malloc(sizeof(formatTagBulkState));
+
   state->line = SendMessage(ih->handle, EM_GETFIRSTVISIBLELINE, 0, 0);  /* save scrollbar */
   SendMessage(ih->handle, EM_EXGETSEL, 0, (LPARAM)&state->oldRange);  /* save selection */
   state->eventMask = SendMessage(ih->handle, EM_SETEVENTMASK, 0, 0);  /* disable events */
   SendMessage(ih->handle, WM_SETREDRAW, FALSE, 0);  /* disable redraw */
+
   return state;
 }
 
@@ -1192,11 +1261,14 @@ void iupdrvTextAddFormatTagStopBulk(Ihandle* ih, void* stateOpaque)
 {
   formatTagBulkState* state = (formatTagBulkState*) stateOpaque;
   DWORD line = SendMessage(ih->handle, EM_GETFIRSTVISIBLELINE, 0, 0);
+
   SendMessage(ih->handle, EM_EXSETSEL, 0, (LPARAM)&state->oldRange);
   SendMessage(ih->handle, EM_LINESCROLL, 0, state->line - line);
-  SendMessage(ih->handle, WM_SETREDRAW, TRUE, 0);
   SendMessage(ih->handle, EM_SETEVENTMASK, 0, state->eventMask);
+  SendMessage(ih->handle, WM_SETREDRAW, TRUE, 0);
+
   free(state);
+
   iupdrvRedrawNow(ih);
 }
 
@@ -1265,7 +1337,6 @@ static int winTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
   PARAFORMAT2 paraformat;
   CHARFORMAT2 charformat;
   COLORREF colorref;
-  int val;
 
   if (!ih->data->has_formatting)
     return 0;
@@ -1278,10 +1349,9 @@ static int winTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
 
   ZeroMemory(&charformat, sizeof(CHARFORMAT2));
   charformat.cbSize = sizeof(CHARFORMAT2);
-  charformat.dwMask = CFM_DISABLED|CFM_OFFSET|CFM_ITALIC|CFM_STRIKEOUT|CFM_PROTECTED|
-                      CFM_UNDERLINETYPE|CFM_UNDERLINE|CFM_WEIGHT|CFM_FACE;
-  charformat.wWeight = FW_NORMAL;
-  strcpy(charformat.szFaceName, iupGetFontFaceAttrib(ih));
+  charformat.dwMask = CFM_DISABLED|CFM_OFFSET|CFM_PROTECTED;
+
+  winTextUpdateFontFormat(&charformat, iupGetFontAttrib(ih));
 
   if (iupwinGetColorRef(ih, "FGCOLOR", &colorref))
   {
@@ -1295,19 +1365,6 @@ static int winTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
     charformat.crBackColor = colorref;
   }
 
-  if (iupStrToInt(iupGetFontSizeAttrib(ih), &val))
-  {
-    /* (1/1440 of an inch, or 1/20 of a printer's point) */
-    charformat.dwMask |= CFM_SIZE;
-    if (val < 0)  /* in pixels */
-    {
-      int pixel2twips = 1440/iupwinGetScreenRes();
-      charformat.yHeight = (-val)*pixel2twips;
-    }
-    else
-      charformat.yHeight = val*20;
-  }
-
   if (iupStrEqualNoCase(value, "ALL"))
   {
     CHARRANGE oldRange;
@@ -1315,6 +1372,7 @@ static int winTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
     SendMessage(ih->handle, EM_SETSEL, (WPARAM)-1, (LPARAM)0);
     SendMessage(ih->handle, EM_SETPARAFORMAT, 0, (LPARAM)&paraformat);  /* always for the current selection */
     SendMessage(ih->handle, EM_EXSETSEL, 0, (LPARAM)&oldRange);
+
     SendMessage(ih->handle, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&charformat);
   }
   else
@@ -1323,8 +1381,6 @@ static int winTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
     SendMessage(ih->handle, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&charformat);
   }
 
-
-  (void)value;
   return 0;
 }
 
@@ -1988,15 +2044,13 @@ static int winTextMapMethod(Ihandle* ih)
   {
     SendMessage(ih->handle, EM_SETTEXTMODE, (WPARAM)(TM_RICHTEXT|TM_MULTILEVELUNDO|TM_SINGLECODEPAGE), 0);
     SendMessage(ih->handle, EM_SETEVENTMASK, 0, ENM_CHANGE);
-  }
 
-  if (ih->data->formattags)
-  {
-    /* must update FONT before updating the format during map */
+    /* must update FONT before updating the formattags */
+    iupAttribSetStr(ih, "_IUPWIN_FONTUPDATECHECK", "1");
     iupUpdateStandardFontAttrib(ih);
-    iupAttribSetStr(ih, "_IUPWIN_IGNORE_FONT", "1");
 
-    iupTextUpdateFormatTags(ih);
+    if (ih->data->formattags)
+      iupTextUpdateFormatTags(ih);
   }
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)winTextConvertXYToPos);

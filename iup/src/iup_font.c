@@ -208,6 +208,28 @@ void iupUpdateStandardFontAttrib(Ihandle* ih)
   iupClassObjectSetAttribute(ih, "STANDARDFONT", iupGetFontAttrib(ih), &inherit);
 }
 
+int iupGetFontInfo(const char* standardfont, char *fontface, int *size, int *is_bold, int *is_italic, int *is_underline, int *is_strikeout)
+{
+  if (size) *size = 0;
+  if (is_bold) *is_bold = 0;
+  if (is_italic) *is_italic = 0; 
+  if (is_underline) *is_underline = 0;
+  if (is_strikeout) *is_strikeout = 0;
+  if (fontface) *fontface = 0;
+  
+  /* parse the old Windows format first */
+  if (!iupFontParseWin(standardfont, fontface, size, is_bold, is_italic, is_underline, is_strikeout))
+  {
+    if (!iupFontParseX(standardfont, fontface, size, is_bold, is_italic, is_underline, is_strikeout))
+    {
+      if (!iupFontParsePango(standardfont, fontface, size, is_bold, is_italic, is_underline, is_strikeout))
+        return 0;
+    }
+  }
+
+  return 1;
+}
+
 char* iupGetFontFaceAttrib(Ihandle* ih)
 {
   int size = 0;
@@ -221,15 +243,8 @@ char* iupGetFontFaceAttrib(Ihandle* ih)
   
   standardfont = iupGetFontAttrib(ih);
 
-  /* parse the old Windows format first */
-  if (!iupFontParseWin(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-  {
-    if (!iupFontParseX(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-    {
-      if (!iupFontParsePango(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-        return NULL;
-    }
-  }
+  if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return NULL;
 
   str = iupStrGetMemory(50);
   sprintf(str, "%s", typeface);
@@ -249,15 +264,8 @@ char* iupGetFontSizeAttrib(Ihandle* ih)
   
   standardfont = iupGetFontAttrib(ih);
 
-  /* parse the old Windows format first */
-  if (!iupFontParseWin(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-  {
-    if (!iupFontParseX(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-    {
-      if (!iupFontParsePango(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-        return NULL;
-    }
-  }
+  if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return NULL;
 
   str = iupStrGetMemory(50);
   sprintf(str, "%d", size);
@@ -280,15 +288,8 @@ int iupSetFontSizeAttrib(Ihandle* ih, const char* value)
   
   standardfont = iupGetFontAttrib(ih);
 
-  /* parse the old Windows format first */
-  if (!iupFontParseWin(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-  {
-    if (!iupFontParseX(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-    {
-      if (!iupFontParsePango(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-        return 0;
-    }
-  }
+  if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return 0;
 
   sprintf(new_standardfont, "%s, %s%s%s%s%s", typeface, is_bold?"Bold ":"", is_italic?"Italic ":"", is_underline?"Underline ":"", is_strikeout?"Strikeout ":"", value);
   IupStoreAttribute(ih, "STANDARDFONT", new_standardfont);
@@ -312,15 +313,8 @@ void iupSetDefaultFontSizeGlobalAttrib(const char* value)
   
   standardfont = IupGetGlobal("DEFAULTFONT");
 
-  /* parse the old Windows format first */
-  if (!iupFontParseWin(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-  {
-    if (!iupFontParseX(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-    {
-      if (!iupFontParsePango(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-        return;
-    }
-  }
+  if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return;
 
   sprintf(new_standardfont, "%s, %s%s%s%s%s", typeface, is_bold?"Bold ":"", is_italic?"Italic ":"", is_underline?"Underline ":"", is_strikeout?"Strikeout ":"", value);
   IupStoreGlobal("DEFAULTFONT", new_standardfont);
@@ -341,15 +335,8 @@ char* iupGetDefaultFontSizeGlobalAttrib(void)
   
   standardfont = IupGetGlobal("DEFAULTFONT");
 
-  /* parse the old Windows format first */
-  if (!iupFontParseWin(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-  {
-    if (!iupFontParseX(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-    {
-      if (!iupFontParsePango(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-        return NULL;
-    }
-  }
+  if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return NULL;
 
   str = iupStrGetMemory(50);
   sprintf(str, "%d", size);
@@ -369,15 +356,8 @@ char* iupGetFontStyleAttrib(Ihandle* ih)
   
   standardfont = iupGetFontAttrib(ih);
 
-  /* parse the old Windows format first */
-  if (!iupFontParseWin(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-  {
-    if (!iupFontParseX(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-    {
-      if (!iupFontParsePango(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-        return NULL;
-    }
-  }
+  if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return NULL;
 
   str = iupStrGetMemory(200);
   sprintf(str, "%s%s%s%s", is_bold?"Bold ":"", is_italic?"Italic ":"", is_underline?"Underline ":"", is_strikeout?"Strikeout ":"");
@@ -400,15 +380,8 @@ int iupSetFontStyleAttrib(Ihandle* ih, const char* value)
   
   standardfont = iupGetFontAttrib(ih);
 
-  /* parse the old Windows format first */
-  if (!iupFontParseWin(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-  {
-    if (!iupFontParseX(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-    {
-      if (!iupFontParsePango(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-        return 0;
-    }
-  }
+  if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return 0;
 
   sprintf(new_standardfont, "%s, %s %d", typeface, value, size);
   IupStoreAttribute(ih, "STANDARDFONT", new_standardfont);

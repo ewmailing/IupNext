@@ -248,7 +248,14 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
 
   format = iupAttribGet(formattag, "FONTFACE");
   if (format)
-    g_object_set(G_OBJECT(tag), "family", format, NULL);
+  {
+    /* Map standard names to native names */
+    const char* mapped_name = iupFontGetPangoName(format);
+    if (mapped_name)
+      g_object_set(G_OBJECT(tag), "family", mapped_name, NULL);
+    else
+      g_object_set(G_OBJECT(tag), "family", format, NULL);
+  }
 
   format = iupAttribGet(formattag, "FGCOLOR");
   if (format)

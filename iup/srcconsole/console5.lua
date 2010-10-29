@@ -64,7 +64,7 @@ function iup_console.butSaveFile:action()
   if (iup_console.lastfilename == nil) then
     iup_console.butSaveasFile:action()
   else
-    newfile = io.open(iup_console.lastfilename, "w+")
+    newfile = io.open(iup_console.lastfilename, "w+b")
     if (newfile) then
       newfile:write(iup_console.mlCode.value)
       newfile:close()

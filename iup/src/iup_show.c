@@ -83,7 +83,7 @@ int IupMap(Ihandle* ih)
     return IUP_ERROR;
   }
 
-  /* update FONT, must be the before several others, so we do it here */
+  /* update FONT, must be before several others, so we do it here */
   if (ih->iclass->nativetype != IUP_TYPEVOID &&
       ih->iclass->nativetype != IUP_TYPEIMAGE &&
       ih->iclass->nativetype != IUP_TYPEMENU)

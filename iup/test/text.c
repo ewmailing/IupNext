@@ -322,6 +322,10 @@ void TextTest(void)
   IupSetAttribute(mltline, "SIZE", "80x40");
   IupSetAttribute(mltline, "EXPAND", "YES");
 
+//  IupSetAttribute(mltline, "FONT", "Courier, 16");
+//  IupSetAttribute(mltline, "FONT", "Arial, 12");
+//    IupSetAttribute(mltline, "FORMATTING", "YES");
+
   formatting = 0;
   if (formatting)          /* just to make easier to comment this section */
   {

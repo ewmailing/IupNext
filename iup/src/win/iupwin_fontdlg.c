@@ -59,6 +59,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
     is_underline = 0,
     is_strikeout = 0;
   int res = iupwinGetScreenRes();
+  const char* mapped_name;
 
   iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
@@ -71,12 +72,13 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   if (!standardfont)
     standardfont = IupGetGlobal("DEFAULTFONT");
 
-  /* parse the old format first */
-  if (!iupFontParseWin(standardfont, typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))
-  {
-    if (!iupFontParsePango(standardfont, typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))
-      return IUP_ERROR;
-  }
+  if (!iupGetFontInfo(standardfont, typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return IUP_ERROR;
+
+  /* Map standard names to native names */
+  mapped_name = iupFontGetWinName(typeface);
+  if (mapped_name)
+    strcpy(typeface, mapped_name);
 
   /* get size in pixels */
   if (height < 0)

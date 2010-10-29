@@ -815,8 +815,6 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
         textbox.indenting = nil
     end
     
-    local defaultTimer = 800
-    
     function lib.enable(textbox, colorTable, tabWidth)
         if not colorTable then colorTable = defaultColorTable end
         if not tabWidth then tabWidth = defaultTabWidth end
@@ -825,15 +823,40 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
         textbox.tabWidth = tabWidth
         textbox.formatting = "Yes"
         textbox.multiline = "Yes"
-        textbox.timer = iup.timer { action_cb = function(timer) print "Action" timer.run = "No" lib.textboxRecolor(textbox) return IUP_DEFAULT end, run = "No" }
-        textbox.map_cb = function(textbox) lib.textboxRecolor(textbox) return IUP_DEFAULT end
-        textbox.valuechanged_cb = function(textbox) textbox.timer.run = "No" textbox.timer.run = "Yes" textbox.timer.time = defaultTimer return IUP_DEFAULT end
-        textbox.k_any = function(textbox, key) if key == iup.K_cF then lib.textboxReindent(textbox) return IUP_IGNORE end return IUP_CONTINUE end
+        
+        textbox.timer = iup.timer 
+        { 
+          action_cb = function(timer) 
+            timer.run = "No" 
+            -- TODO: optimize this to recolor only in the changed lines
+            lib.textboxRecolor(textbox) 
+          end, 
+          time = 800
+        }
+ 
+--  AVOID: redefinition of common callbacks
+--        textbox.map_cb = function(textbox) 
+--          lib.textboxRecolor(textbox) 
+--        end
+        
+        textbox.valuechanged_cb = function(textbox) 
+          textbox.timer.run = "No" -- stop to start again if already running
+          textbox.timer.run = "Yes" 
+        end
+          
+--  AVOID: redefinition of common callbacks
+--        textbox.k_any = function(textbox, key)
+--          if key == iup.K_cF then 
+--            lib.textboxReindent(textbox) 
+--            return IUP_IGNORE 
+--          end 
+--          return IUP_CONTINUE 
+--        end
     end
     
     defaultColorTable = {}
     lib.defaultColorTable = defaultColorTable
-    defaultColorTable[tokens.TOKEN_SPECIAL] = "0 0 128"
+    defaultColorTable[tokens.TOKEN_SPECIAL] = "0 0 192"
     defaultColorTable[tokens.TOKEN_KEYWORD] = "0 0 255"
     defaultColorTable[tokens.TOKEN_COMMENT_SHORT] = "0 128 0"
     defaultColorTable[tokens.TOKEN_COMMENT_LONG] = "0 128 0"
@@ -842,21 +865,21 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
     defaultColorTable[tokens.TOKEN_STRING] = stringColor
     defaultColorTable[".."] = "0 0 128"
     
-    local tableColor = "0 0 128"
+    local tableColor = "0 0 192"
     defaultColorTable["..."] = tableColor
     defaultColorTable["{"] = tableColor
     defaultColorTable["}"] = tableColor
     defaultColorTable["["] = tableColor
     defaultColorTable["]"] = tableColor
     
-    local arithmeticColor = "0 0 128"
-    defaultColorTable[tokens.TOKEN_NUMBER] = arithmeticColor
+    local arithmeticColor = "0 0 192"
+    defaultColorTable[tokens.TOKEN_NUMBER] = "255 128 0"
     defaultColorTable["+"] = arithmeticColor
     defaultColorTable["-"] = arithmeticColor
     defaultColorTable["/"] = arithmeticColor
     defaultColorTable["*"] = arithmeticColor
     
-    local logicColor1 = "0 0 128"
+    local logicColor1 = "0 0 192"
     defaultColorTable["=="] = logicColor1
     defaultColorTable["<"] = logicColor1
     defaultColorTable["<="] = logicColor1

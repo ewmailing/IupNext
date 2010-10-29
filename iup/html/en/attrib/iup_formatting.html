@@ -152,8 +152,10 @@ iup.Append(tags, iup.user { selectionpos = &quot;5:10&quot;, fgcolor = &quot;0 0
 text.addformattag = tags</pre>
 <p>Check the <a href="../../examples/Lua/indent.lua">Indentation library</a> created by Kristofer Karlsson and ported to IUP 
 by Nicolas Noble that adds syntax highlighting to a Lua code text in a <strong>
-IupText</strong> control. For example:</p>
-<pre>text = iup.text { multiline = &quot;Yes&quot;, font = &quot;Courier&quot;, expand = &quot;Yes&quot;, value = someluacode }
+IupText</strong> control. It is not fast because it process the entire text from 
+time to time. For example:</p>
+<pre>require&quot;indent&quot; -- indent.lua must be available
+text = iup.text { multiline = &quot;Yes&quot;, font = &quot;Courier&quot;, expand = &quot;Yes&quot;, value = someluacode }
 IndentationLib.enable(text)</pre>
 <p>&nbsp;</p>
 </body>

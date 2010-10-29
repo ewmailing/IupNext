@@ -89,6 +89,10 @@ void iupTextUpdateFormatTags(Ihandle* ih)
       Ihandle* child;
       void* state = iupdrvTextAddFormatTagStartBulk(ih);
 
+      char* cleanout = iupAttribGet(tag_array[i], "CLEANOUT");
+      if (cleanout && iupStrBoolean(cleanout))
+        IupSetAttribute(ih, "REMOVEFORMATTING", "ALL");
+
       for (child = tag_array[i]->firstchild; child; child = child->brother)
         iupdrvTextAddFormatTag(ih, child, 1);
 
