@@ -318,7 +318,8 @@ static void motToggleValueChangedCallback(Widget w, Ihandle* ih, XmToggleButtonC
         if (cb && cb(last_tg, 0) == IUP_CLOSE)
             IupExitLoop();
 
-        iupBaseCallValueChangedCb(last_tg);
+        if (iupObjectCheck(ih))
+          iupBaseCallValueChangedCb(last_tg);
       }
       iupAttribSetStr(radio, "_IUPMOT_LASTTOGGLE", (char*)ih);
 
@@ -328,7 +329,8 @@ static void motToggleValueChangedCallback(Widget w, Ihandle* ih, XmToggleButtonC
         if (cb && cb (ih, 1) == IUP_CLOSE)
             IupExitLoop();
 
-        iupBaseCallValueChangedCb(ih);
+        if (iupObjectCheck(ih))
+          iupBaseCallValueChangedCb(ih);
       }
     }
     else
@@ -349,7 +351,8 @@ static void motToggleValueChangedCallback(Widget w, Ihandle* ih, XmToggleButtonC
         IupExitLoop();
     }
 
-    iupBaseCallValueChangedCb(ih);
+    if (iupObjectCheck(ih))
+      iupBaseCallValueChangedCb(ih);
   }
 
   (void)w;

@@ -602,7 +602,8 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
           if (cb && cb(last_tg, 0) == IUP_CLOSE)
               IupExitLoop();
 
-          iupBaseCallValueChangedCb(last_tg);
+          if (iupObjectCheck(last_tg))
+            iupBaseCallValueChangedCb(last_tg);
         }
         iupAttribSetStr(radio, "_IUPWIN_LASTTOGGLE", (char*)ih);
 

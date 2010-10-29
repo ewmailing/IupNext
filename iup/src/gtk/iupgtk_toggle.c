@@ -317,7 +317,8 @@ static void gtkToggleToggled(GtkToggleButton *widget, Ihandle* ih)
   if (cb && cb(ih, check) == IUP_CLOSE)
     IupExitLoop();
 
-  iupBaseCallValueChangedCb(ih);
+  if (iupObjectCheck(ih))
+    iupBaseCallValueChangedCb(ih);
 
   (void)widget;
 }
