@@ -187,6 +187,12 @@ function iup_console.dlgMain:dropfiles_cb(filename, num, x, y)
   end
 end
 
+function iup_console.mlCode:dropfiles_cb(filename, num, x, y)
+  if (num == 0) then
+    iup_console.LoadFile(filename)
+  end
+end
+
 -- About Dialog Definition.
 
 iup_console.dlgAbout = iup.dialog
