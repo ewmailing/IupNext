@@ -61,6 +61,17 @@ static int value_edit_cb(Ihandle *self, int lin, int col, char* newvalue)
   return IUP_DEFAULT;
 }
 
+static int edition_cb(Ihandle *self, int lin, int col, int mode, int update)
+{
+  if (mode == 0)
+  {
+    char* value = IupGetAttribute(self, "VALUE");
+    if (value && strcmp(value, data[lin-1][col-1])!=0)
+      return IUP_IGNORE;
+  }
+  return IUP_DEFAULT;
+}
+
 static Ihandle* create_matrix(void)
 {
   Ihandle* mat = IupMatrix(NULL); 
@@ -84,6 +95,8 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat,"SCROLLBAR", "YES");
   IupSetCallback(mat,"VALUE_CB",(Icallback)value_cb);
 //  IupSetCallback(mat,"VALUE_EDIT_CB",(Icallback)value_edit_cb);
+//  IupSetCallback(mat,"EDITION_CB",(Icallback)edition_cb);
+  
 //  IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
 //  IupSetCallback(mat,"DROP_CB",(Icallback)drop);
 

@@ -376,7 +376,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
       break;
     case K_ESC:
       iMatrixEditCancel(ih_matrix, 1, 0, 0); /* set focus + NO update + NO ignore */
-      return IUP_IGNORE;
+      return IUP_IGNORE;  /* always ignore to avoid the defaultesc behavior from here */
     case K_CR:
       if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
       {
@@ -392,9 +392,8 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
           iupMatrixAuxCallEnterCellCb(ih_matrix);
         }
         iupMatrixDrawUpdate(ih_matrix);
-        return IUP_IGNORE;
       }
-      break;
+      return IUP_IGNORE;  /* always ignore to avoid the defaultenter behavior from here */
   }
 
   return IUP_CONTINUE;
