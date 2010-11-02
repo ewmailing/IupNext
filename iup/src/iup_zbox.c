@@ -52,7 +52,7 @@ static void iZboxChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
   if (!ih->data->value_handle)
   {
-    IupSetAttribute(child, "VISIBLE", "YES");
+    IupSetAttribute(child, "VISIBLE", IupGetAttribute(ih, "VISIBLE"));
     ih->data->value_handle = child;
   }
   else
@@ -65,7 +65,7 @@ static void iZboxChildRemovedMethod(Ihandle* ih, Ihandle* child)
   {
     /* reset to the first child, even if it is NULL */
     if (ih->firstchild)
-      IupSetAttribute(ih->firstchild, "VISIBLE", "YES");
+      IupSetAttribute(ih->firstchild, "VISIBLE", IupGetAttribute(ih, "VISIBLE"));
     ih->data->value_handle = ih->firstchild;
   }
 }
@@ -103,6 +103,7 @@ static char* iZboxGetAlignmentAttrib(Ihandle* ih)
 
 static int iZboxSetValueHandleAttrib(Ihandle* ih, const char* value)
 {
+  int visible;
   Ihandle* old_handle, *new_handle, *child;
 
   new_handle = (Ihandle*)value;
@@ -116,6 +117,8 @@ static int iZboxSetValueHandleAttrib(Ihandle* ih, const char* value)
   if (old_handle == new_handle)
     return 0;
 
+  visible = IupGetInt(ih, "VISIBLE");
+
   for (child = ih->firstchild; child; child = child->brother)
   {
     if (child == new_handle) /* found child */
@@ -123,7 +126,7 @@ static int iZboxSetValueHandleAttrib(Ihandle* ih, const char* value)
       if (old_handle && old_handle != new_handle)
         IupSetAttribute(old_handle, "VISIBLE", "NO");
 
-      IupSetAttribute(new_handle, "VISIBLE", "YES");
+      IupSetAttribute(new_handle, "VISIBLE", visible? "YES": "NO");
       ih->data->value_handle = new_handle;
       return 0;
     }
