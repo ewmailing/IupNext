@@ -4,6 +4,11 @@
 #include <vld.h>
 #endif
 
+/* When using valgrind in UNIX to check the GTK driver:
+export G_DEBUG=gc-friendly
+export G_SLICE=always-malloc
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"

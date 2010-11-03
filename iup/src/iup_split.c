@@ -138,7 +138,7 @@ static void iSplitShowHide(Ihandle* child, int hide)
   }
   else if (!IupGetInt(child, "VISIBLE"))
   {
-    IupSetAttribute(child, "FLOATING", "IGNORE");
+    IupSetAttribute(child, "FLOATING", "NO");
     IupSetAttribute(child, "VISIBLE", "YES");
   }
 }

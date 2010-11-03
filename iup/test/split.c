@@ -19,7 +19,7 @@ void SplitTest(void)
 //  IupSetAttribute(split, "ORIENTATION", "HORIZONTAL");
 //  IupSetAttribute(split, "COLOR", "127 127 255");
 //  IupSetAttribute(split, "LAYOUTDRAG", "NO");
-//  IupSetAttribute(split, "AUTOHIDE", "YES");
+  IupSetAttribute(split, "AUTOHIDE", "YES");
 //  IupSetAttribute(split, "SHOWGRIP", "NO");
 //  IupSetAttribute(split, "MINMAX", "100:800");
 
