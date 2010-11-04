@@ -800,7 +800,7 @@ static int iLayoutMenuClose_CB(Ihandle* ih)
 static int iLayoutMenuTree_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
-  Ihandle* split = IupGetChild(dlg, 0);
+  Ihandle* split = IupGetChild(IupGetChild(dlg, 0), 0);
   if (IupGetInt(split, "VALUE"))
     IupSetAttribute(split, "VALUE", "0");
   else
@@ -829,7 +829,7 @@ static int iLayoutTimerAutoUpdate_CB(Ihandle* ih)
 static int iLayoutMenuShowHidden_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
-  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(ih, "_IUP_LAYOUTDIALOG");
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   if (IupGetInt(dlg, "SHOWHIDDEN"))
     iupAttribSetStr(dlg, "SHOWHIDDEN", "No");
   else
