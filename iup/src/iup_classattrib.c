@@ -50,7 +50,7 @@ static int iClassIsGlobalDefault(const char* name)
 }
 
 /* '*' is used in IupMatrix to indicate a full line or column
-   ':' is the regular separator
+   ':' is the regular separator for Lin:Col specification
    '-' the minus sign, so we can specify negative values */
 #define IUP_CHECKIDSEP(_str) (*(_str) == '*' || *(_str) == ':' || *(_str) == '-')
 
@@ -201,7 +201,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
           {
             IattribSetId2Func id2_set = (IattribSetId2Func)afunc->set;
             int id1=-1, id2=-1;
-            iupStrToIntInt(name_id, &id1, &id2, ':');
+            iupStrToIntInt(name_id, &id1, &id2, ':');  /* ignore errors because of '*' ids */
             return id2_set(ih, id1, id2, value);
           }
           else

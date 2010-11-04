@@ -579,21 +579,6 @@ static char* iTreeGetTotalChildCountAttrib(Ihandle* ih, int id)
   return str;
 }
 
-
-static char* iTreeGetFindUserDataAttrib(Ihandle* ih, int id)
-{
-  char* str = (char*)(id+1); /* skip ':' */
-  void* userdata = NULL;
-  if (!str || sscanf(str, "%p", &userdata)!=1)
-    return NULL;
-  id = iTreeFindUserDataId(ih, userdata);
-  if (id == -1)
-    return NULL;
-  str = iupStrGetMemory(16);
-  sprintf(str, "%d", id);
-  return str;
-}
-
 static char* iTreeGetUserDataAttrib(Ihandle* ih, int id)
 {
   if (id >= 0 && id < ih->data->node_count)
@@ -715,7 +700,6 @@ Iclass* iupTreeGetClass(void)
 
   /* IupTree Attributes - NODES */
   iupClassRegisterAttributeId(ic, "TOTALCHILDCOUNT", iTreeGetTotalChildCountAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "FINDUSERDATA", iTreeGetFindUserDataAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "USERDATA", iTreeGetUserDataAttrib, iTreeSetUserDataAttrib, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
   
   /* Default node images */
