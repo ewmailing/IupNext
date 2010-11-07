@@ -76,7 +76,7 @@ static int motToggleSetBgColorAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    if (iupAttribGetBoolean(ih, "FLAT"))
+    if (ih->data->flat)
     {
       /* ignore given value, must use only from parent */
       value = iupBaseNativeParentGetBgColor(ih);
@@ -116,7 +116,7 @@ static int motToggleSetBackgroundAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    if (iupAttribGetBoolean(ih, "FLAT"))
+    if (ih->data->flat)
     {
       /* ignore given value, must use only from parent */
       value = iupAttribGetInheritNativeParent(ih, "BACKGROUND");
@@ -477,7 +477,7 @@ static int motToggleMapMethod(Ihandle* ih)
 
   XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
 
-  if (ih->data->type == IUP_TOGGLE_IMAGE && iupAttribGetBoolean(ih, "FLAT"))
+  if (ih->data->type == IUP_TOGGLE_IMAGE && ih->data->flat)
   {
     XtVaSetValues(ih->handle, XmNshadowThickness, 0, NULL);
     XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)motToggleEnterLeaveWindowEvent, (XtPointer)ih);

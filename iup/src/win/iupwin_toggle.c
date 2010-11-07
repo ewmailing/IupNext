@@ -41,13 +41,38 @@ void iupdrvToggleAddCheckBox(int *x, int *y)
   if ((*y) < 16) (*y) = 16; /* minimum height */
 }
 
+static int winToggleGetCheck(Ihandle* ih)
+{
+  if (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && ih->data->flat)
+    return iupAttribGet(ih, "_IUPWIN_TOGGLE_CHECK")!=NULL? BST_CHECKED: 0;
+  else
+    return (int)SendMessage(ih->handle, BM_GETCHECK, 0, 0L);
+}
+
+static void winToggleSetCheck(Ihandle* ih, int check)
+{
+  if (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && ih->data->flat)
+  {
+    if (check == BST_CHECKED)
+      iupAttribSetStr(ih, "_IUPWIN_TOGGLE_CHECK", "1");
+    else
+      iupAttribSetStr(ih, "_IUPWIN_TOGGLE_CHECK", NULL);
+
+    iupdrvRedrawNow(ih);
+  }
+  else
+    SendMessage(ih->handle, BM_SETCHECK, check, 0L);
+}
+
 static int winToggleIsActive(Ihandle* ih)
 {
+  /* called only when (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && !ih->data->flat) */
   return iupAttribGetInt(ih, "_IUPWIN_ACTIVE");
 }
 
 static void winToggleSetBitmap(Ihandle* ih, const char* name, int make_inactive)
 {
+  /* called only when (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && !ih->data->flat) */
   if (name)
   {
     HBITMAP bitmap = iupImageGetImage(name, ih, make_inactive);
@@ -59,7 +84,7 @@ static void winToggleSetBitmap(Ihandle* ih, const char* name, int make_inactive)
 
 static void winToggleUpdateImage(Ihandle* ih, int active, int check)
 {
-  /* called only when (ih->data->type == IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6) */
+  /* called only when (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && !ih->data->flat) */
   char* name;
 
   if (!active)
@@ -121,10 +146,11 @@ static void winToggleGetAlignment(Ihandle* ih, int *horiz_alignment, int *vert_a
 
 static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_height, int border, UINT itemState)
 {
+  /* called only when (ih->data->type==IUP_TOGGLE_IMAGE && (iupwin_comctl32ver6 || ih->data->flat)) */
   int xpad = ih->data->horiz_padding + border, 
       ypad = ih->data->vert_padding + border;
   int horiz_alignment, vert_alignment;
-  int x, y, width, height, bpp, shift = 1;
+  int x, y, width, height, bpp;
   HBITMAP hBitmap, hMask = NULL;
   char *name;
   int make_inactive = 0;
@@ -141,9 +167,7 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
   else
   {
     name = iupAttribGet(ih, "IMPRESS");
-    if (itemState & ODS_SELECTED && name)
-      shift = 0;
-    else
+    if (!(itemState & ODS_SELECTED && name))
       name = iupAttribGet(ih, "IMAGE");
   }
 
@@ -172,10 +196,14 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
   x += xpad;
   y += ypad;
 
-  if (itemState & ODS_SELECTED && !iupwin_comctl32ver6 && shift)
+  if (itemState & ODS_SELECTED && !iupwin_comctl32ver6)
   {
-    x++;
-    y++;
+    if (iupAttribGet(ih, "_IUPWIN_PRESSED"))
+    {
+      x++;
+      y++;
+      iupAttribSetStr(ih, "_IUPWIN_PRESSED", NULL);
+    }
   }
 
   if (bpp == 8)
@@ -189,6 +217,7 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
 
 static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 { 
+  /* called only when (ih->data->type==IUP_TOGGLE_IMAGE && (iupwin_comctl32ver6 || ih->data->flat)) */
   int width, height, border = 4, check, draw_border;
   HDC hDC;
   iupwinBitmapDC bmpDC;
@@ -200,13 +229,19 @@ static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   iupwinDrawParentBackground(ih, hDC, &drawitem->rcItem);
 
-  check = SendMessage(ih->handle, BM_GETCHECK, 0, 0L);
+  if (!iupwin_comctl32ver6)
+  {
+    if (drawitem->itemState&ODS_SELECTED)
+      iupAttribSetStr(ih, "_IUPWIN_PRESSED", "1");
+  }
+
+  check = winToggleGetCheck(ih);
   if (check)
     drawitem->itemState |= ODS_SELECTED;
   else
     drawitem->itemState |= ODS_DEFAULT;  /* use default mark for NOT checked */
 
-  if (!check && iupAttribGetBoolean(ih, "FLAT"))
+  if (!check && ih->data->flat)
   {
     if (drawitem->itemState & ODS_HOTLIGHT || iupAttribGet(ih, "_IUPWINTOG_ENTERWIN"))
       draw_border = 1;
@@ -214,7 +249,7 @@ static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
       draw_border = 0;
   }
   else
-    draw_border = 1;
+    draw_border = 1; /* when checked, even if flat thr border is drawn */
 
   if (draw_border)
     iupwinDrawButtonBorder(ih->handle, hDC, &drawitem->rcItem, drawitem->itemState);
@@ -236,12 +271,12 @@ static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
 static int winToggleSetImageAttrib(Ihandle* ih, const char* value)
 {
-  if (ih->data->type == IUP_TOGGLE_IMAGE)
+  if (ih->data->type==IUP_TOGGLE_IMAGE)
   {
     if (value != iupAttribGet(ih, "IMAGE"))
       iupAttribSetStr(ih, "IMAGE", (char*)value);
 
-    if (iupwin_comctl32ver6)
+    if (iupwin_comctl32ver6 || ih->data->flat)
       iupdrvRedrawNow(ih);
     else
     {
@@ -256,12 +291,12 @@ static int winToggleSetImageAttrib(Ihandle* ih, const char* value)
 
 static int winToggleSetImInactiveAttrib(Ihandle* ih, const char* value)
 {
-  if (ih->data->type == IUP_TOGGLE_IMAGE)
+  if (ih->data->type==IUP_TOGGLE_IMAGE)
   {
     if (value != iupAttribGet(ih, "IMINACTIVE"))
       iupAttribSetStr(ih, "IMINACTIVE", (char*)value);
 
-    if (iupwin_comctl32ver6)
+    if (iupwin_comctl32ver6 || ih->data->flat)
       iupdrvRedrawNow(ih);
     else
     {
@@ -276,12 +311,12 @@ static int winToggleSetImInactiveAttrib(Ihandle* ih, const char* value)
 
 static int winToggleSetImPressAttrib(Ihandle* ih, const char* value)
 {
-  if (ih->data->type == IUP_TOGGLE_IMAGE)
+  if (ih->data->type==IUP_TOGGLE_IMAGE)
   {
     if (value != iupAttribGet(ih, "IMPRESS"))
       iupAttribSetStr(ih, "IMPRESS", (char*)value);
 
-    if (iupwin_comctl32ver6)
+    if (iupwin_comctl32ver6 || ih->data->flat)
       iupdrvRedrawNow(ih);
     else
     {
@@ -311,23 +346,23 @@ static int winToggleSetValueAttrib(Ihandle* ih, const char* value)
   radio = iupRadioFindToggleParent(ih);
   if (radio)
   {
-    int oldcheck = (int)SendMessage(ih->handle, BM_GETCHECK, 0, 0L);
+    int oldcheck = winToggleGetCheck(ih);
 
     Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPWIN_LASTTOGGLE");
     if (check)
     {
       if (iupObjectCheck(last_tg) && last_tg != ih)
-          SendMessage(last_tg->handle, BM_SETCHECK, BST_UNCHECKED, 0L);
+          winToggleSetCheck(last_tg, BST_UNCHECKED);
       iupAttribSetStr(radio, "_IUPWIN_LASTTOGGLE", (char*)ih);
     }
 
     if (last_tg != ih && oldcheck != check)
-      SendMessage(ih->handle, BM_SETCHECK, check, 0L);
+      winToggleSetCheck(ih, check);
   }
   else
-    SendMessage(ih->handle, BM_SETCHECK, check, 0L);
+    winToggleSetCheck(ih, check);
 
-  if (ih->data->type == IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6)
+  if (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && !ih->data->flat)
     winToggleUpdateImage(ih, winToggleIsActive(ih), check);
 
   return 0;
@@ -335,7 +370,7 @@ static int winToggleSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* winToggleGetValueAttrib(Ihandle* ih)
 {
-  int check = (int)SendMessage(ih->handle, BM_GETCHECK, 0, 0L);
+  int check = winToggleGetCheck(ih);
   if (check == BST_INDETERMINATE)
     return "NOTDEF";
   else if (check == BST_CHECKED)
@@ -347,9 +382,9 @@ static char* winToggleGetValueAttrib(Ihandle* ih)
 static int winToggleSetActiveAttrib(Ihandle* ih, const char* value)
 {
   /* update the inactive image if necessary */
-  if (ih->data->type == IUP_TOGGLE_IMAGE)
+  if (ih->data->type==IUP_TOGGLE_IMAGE)
   {
-    if (iupwin_comctl32ver6)
+    if (iupwin_comctl32ver6 || ih->data->flat)
     {
       iupBaseSetActiveAttrib(ih, value);
       iupdrvRedrawNow(ih);
@@ -373,7 +408,7 @@ static int winToggleSetActiveAttrib(Ihandle* ih, const char* value)
 
 static char* winToggleGetActiveAttrib(Ihandle* ih)
 {
-  if (ih->data->type == IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6)
+  if (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && !ih->data->flat)
     return iupAttribGet(ih, "_IUPWIN_ACTIVE");
   else
     return iupBaseGetActiveAttrib(ih);
@@ -383,8 +418,7 @@ static int winToggleSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_TEXT)
   {
-    if (!value)
-      value = "";
+    if (!value) value = "";
     SetWindowText(ih->handle, value);
   }
   return 0;
@@ -394,7 +428,7 @@ static int winToggleSetPaddingAttrib(Ihandle* ih, const char* value)
 {
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
 
-  if (ih->handle && iupwin_comctl32ver6 && ih->data->type == IUP_TOGGLE_IMAGE)
+  if (ih->handle && iupwin_comctl32ver6 && ih->data->type==IUP_TOGGLE_IMAGE)
     iupdrvRedrawNow(ih);
 
   return 0;
@@ -403,17 +437,15 @@ static int winToggleSetPaddingAttrib(Ihandle* ih, const char* value)
 static int winToggleSetUpdateAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
-
   if (ih->handle)
     iupdrvPostRedraw(ih);  /* Post a redraw */
-
   return 1;
 }
 
 static int winToggleSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
-  if (ih->data->type == IUP_TOGGLE_IMAGE)
+  if (ih->data->type==IUP_TOGGLE_IMAGE)
   {
     /* update internal image cache for controls that have the IMAGE attribute */
     iupAttribSetStr(ih, "BGCOLOR", value);
@@ -427,7 +459,7 @@ static char* winToggleGetBgColorAttrib(Ihandle* ih)
 {
   /* the most important use of this is to provide
      the correct background for images */
-  if (iupwin_comctl32ver6 && ih->data->type == IUP_TOGGLE_IMAGE)
+  if (iupwin_comctl32ver6 && ih->data->type==IUP_TOGGLE_IMAGE)
   {
     COLORREF cr;
     if (iupwinDrawGetThemeButtonBgColor(ih->handle, &cr))
@@ -468,8 +500,7 @@ static int winToggleCtlColor(Ihandle* ih, HDC hdc, LRESULT *result)
 
 static int winToggleImageWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 {
-  /* called only when (ih->data->type==IUP_TOGGLE_IMAGE) and
-                       iupwin_comctl32ver6 */
+  /* called only when (ih->data->type==IUP_TOGGLE_IMAGE && iupwin_comctl32ver6) */
 
   if (msg_info->code == NM_CUSTOMDRAW)
   {
@@ -507,9 +538,7 @@ static int winToggleImageWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 
 static int winToggleImageFlatProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
-  /* Called only when (ih->data->type == IUP_TOGGLE_IMAGE) and 
-                      iupwin_comctl32ver6 and 
-                      FLAT=Yes */
+  /* Called only when (ih->data->type==IUP_TOGGLE_IMAGE && ih->data->flat) */
 
   switch (msg)
   {
@@ -529,10 +558,9 @@ static int winToggleImageFlatProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, L
   return iupwinBaseProc(ih, msg, wp, lp, result);
 }
 
-static int winToggleImageProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winToggleImageOldProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
-  /* Called only when (ih->data->type == IUP_TOGGLE_IMAGE) and 
-                      !iupwin_comctl32ver6 */
+  /* Called only when (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && !ih->data->flat) */
 
   switch (msg)
   {
@@ -574,9 +602,9 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
     {
       Ihandle *radio;
       IFni cb;
-      int check = SendMessage(ih->handle, BM_GETCHECK, 0, 0L);
+      int check = winToggleGetCheck(ih);
 
-      if (ih->data->type == IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6)
+      if (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && !ih->data->flat)
       {
         int active = winToggleIsActive(ih);
         winToggleUpdateImage(ih, active, check);
@@ -596,7 +624,7 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
         if (iupObjectCheck(last_tg) && last_tg != ih)
         {
           /* uncheck last toggle */
-          SendMessage(last_tg->handle, BM_SETCHECK, BST_UNCHECKED, 0L);
+          winToggleSetCheck(last_tg, BST_UNCHECKED);
 
           cb = (IFni) IupGetCallback(last_tg, "ACTION");
           if (cb && cb(last_tg, 0) == IUP_CLOSE)
@@ -610,7 +638,7 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
         if (last_tg != ih)
         {
           /* check new toggle */
-          SendMessage(ih->handle, BM_SETCHECK, BST_CHECKED, 0L);
+          winToggleSetCheck(ih, BST_CHECKED);
 
           cb = (IFni)IupGetCallback(ih, "ACTION");
           if (cb && cb (ih, 1) == IUP_CLOSE)
@@ -622,6 +650,13 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
       }
       else
       {
+        if (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && ih->data->flat)
+        {
+          /* toggle the value manually */
+          check = check? 0: BST_CHECKED;
+          winToggleSetCheck(ih, check);
+        }
+
         if (check == BST_INDETERMINATE)
           check = -1;
 
@@ -635,7 +670,6 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
     }
   }
 
-
   return 0; /* not used */
 }
 
@@ -643,6 +677,7 @@ static int winToggleMapMethod(Ihandle* ih)
 {
   Ihandle* radio = iupRadioFindToggleParent(ih);
   char* value;
+  int ownerdraw = 0;
   DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS |
                   BS_NOTIFY; /* necessary because of the base messages */
 
@@ -656,7 +691,13 @@ static int winToggleMapMethod(Ihandle* ih)
   if (value)
   {
     ih->data->type = IUP_TOGGLE_IMAGE;
-    dwStyle |= BS_BITMAP|BS_PUSHLIKE;
+    if (!iupwin_comctl32ver6 && ih->data->flat)
+    {
+      dwStyle |= BS_OWNERDRAW;
+      ownerdraw = 1;
+    }
+    else
+      dwStyle |= BS_BITMAP|BS_PUSHLIKE;
   }
   else
   {
@@ -672,15 +713,16 @@ static int winToggleMapMethod(Ihandle* ih)
 
   if (radio)
   {
-    dwStyle |= BS_RADIOBUTTON;
+    if (!ownerdraw)
+      dwStyle |= BS_RADIOBUTTON;
 
     if (!iupAttribGet(radio, "_IUPWIN_LASTTOGGLE"))
     {
-      /* this is the first toggle in the radio, and the last toggle with VALUE=ON */
+      /* this is the first toggle in the radio, and then set it with VALUE=ON */
       iupAttribSetStr(ih, "VALUE","ON");
     }
   }
-  else
+  else if (!ownerdraw)
   {
     if (ih->data->type == IUP_TOGGLE_TEXT && iupAttribGetBoolean(ih, "3STATE"))
       dwStyle |= BS_AUTO3STATE;
@@ -702,13 +744,22 @@ static int winToggleMapMethod(Ihandle* ih)
     if (iupwin_comctl32ver6)
     {
       IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winToggleImageWmNotify);  /* Process WM_NOTIFY */
-      if (iupAttribGetBoolean(ih, "FLAT"))
+      if (ih->data->flat)
         IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winToggleImageFlatProc);
     }
     else
     {
-      IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winToggleImageProc);
-      iupAttribSetStr(ih, "_IUPWIN_ACTIVE", "YES");
+      if (ih->data->flat)
+      {
+        iupAttribSetStr(ih, "FLAT_ALPHA", "NO");
+        IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winToggleDrawItem);  /* Process WM_DRAWITEM */
+        IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winToggleImageFlatProc);
+      }
+      else
+      {
+        IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winToggleImageOldProc);
+        iupAttribSetStr(ih, "_IUPWIN_ACTIVE", "YES");
+      }
     }
   }
 

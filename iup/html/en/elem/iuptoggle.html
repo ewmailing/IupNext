@@ -100,8 +100,9 @@ global attribute DLGFGCOLOR.</p>
 
   
 <p><b>FLAT</b> (creation only): Hides the toggle borders until the mouse enter the 
-  toggle area. Used only when IMAGE is defined. Can be YES or NO. In Windows is 
-ignored if Visual Styles are not used. (since 3.3)</p>
+  toggle area when the toggle is not checked. If the toggle is checked, then the 
+borders will be shown even if flat is enabled. Used only when IMAGE is defined. Can be YES or NO. 
+Default: NO. (since 3.3)</p>
 
   
 <p><strong>IMAGE</strong> (<font size="3">non inheritable</font>): Image name. When the IMAGE attribute is defined, the TITLE is not shown. 

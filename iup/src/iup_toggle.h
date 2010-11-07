@@ -26,6 +26,7 @@ struct _IcontrolData
 {
   int type,                         /* the 2 toggle possibilities */
       radio,
+      flat,
       horiz_padding, vert_padding;  /* toggle margin for images */
 };
 

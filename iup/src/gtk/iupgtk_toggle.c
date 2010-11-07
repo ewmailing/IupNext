@@ -483,7 +483,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
 
-  if (ih->data->type == IUP_TOGGLE_IMAGE && iupAttribGetBoolean(ih, "FLAT"))
+  if (ih->data->type == IUP_TOGGLE_IMAGE && ih->data->flat)
   {
     gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NONE);
 
