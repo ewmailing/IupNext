@@ -26,14 +26,14 @@ TECMAKE  = $(TECMAKE_HOME)/tecmakewin.mak
 # If tecmake.bat is not used, 
 # then at least define main system variables.
 
-WIN32NAMES = vc10 vc9 vc8 vc7 vc6 owc1 bc55 bc56 bc6 gcc3 gcc4 mingw3 mingw4 dllw4 dllg4 dll dll7 dll8 dll9 dll10
+WIN32UNAMES = vc10 vc9 vc8 vc7 vc6 owc1 bc55 bc56 bc6 gcc3 gcc4 mingw3 mingw4 dllw4 dllg4 dll dll7 dll8 dll9 dll10
 WIN64UNAMES = vc10_64 vc9_64 vc8_64 dll8_64 dll9_64 dll10_64
 
 ifdef TEC_UNAME
-  ifneq ($(findstring $(TEC_UNAME), $(WIN32NAMES)), )
+  ifneq ($(findstring $(TEC_UNAME), $(WIN32UNAMES)), )
     TEC_WIN32 = Yes
   else
-    ifneq ($(findstring $(TEC_UNAME), $(WIN64NAMES)), )
+    ifneq ($(findstring $(TEC_UNAME), $(WIN64UNAMES)), )
       TEC_WIN64 = Yes
     endif
   endif
@@ -64,7 +64,7 @@ sysinfo:
 #---------------------------------#
 # Known platforms
 
-UNAMES = $(WIN32NAMES) $(WIN64NAMES)
+UNAMES = $(WIN32UNAMES) $(WIN64UNAMES)
 
 
 #---------------------------------#

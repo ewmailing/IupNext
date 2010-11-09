@@ -154,15 +154,15 @@ trying to load them all. In Windows this is not a problem.</p>
 <p>The IUP secondary libraries can be easily dynamic loaded regardless of the 
 system.</p>
 <h3><a name="buildlib">Building The Library</a></h3>
-<p>In the Downloads you will ne able to find pre-compiled binaries for many 
+<p>In the Downloads you will be able to find pre-compiled binaries for many 
 platforms, all those binaries were built using Tecmake. Tecmake is a command 
 line multi compiler build tool based on GNU make, available at
   <a target="_blank" href="http://www.tecgraf.puc-rio.br/tecmake">
 http://www.tecgraf.puc-rio.br/tecmake</a>. Tecmake is used by all the Tecgraf 
 libraries and many applications.</p>
-<p>In UNIX, you do not need to install Tecmake, a compact version of Tecmake for 
-UNIX is already included in the source code package. Just type &quot;make&quot; in the 
-command line on the main IUP folder and all libraries and executables will be 
+<p>In UNIX, you do not need to install Tecmake, a version for 
+Posix systems is already included in the source code package. Just type &quot;make&quot; in the 
+command line on the main folder and all libraries and executables will be 
 build. Set the TECTOOLS_HOME environment variable to the folder were the CD, IM 
 and Lua libraries are installed, by default it will assume 
 &quot;TECTOOLS_HOME=../..&quot;.</p>
@@ -171,13 +171,20 @@ Linux</a>&quot; guide.</p>
 <p>In Windows, the easiest way to build everything is to install the Tecmake 
 tool into your system. It is easy and helps a lot. The Tecmake configuration 
 files (*.mak) available at the &quot;src*&quot; folders are very easy to understand also. 
-In IUP's<b> </b>main directory, and in each source directory, there are files 
+In the<b> </b>main folder, and in each source folder, there are files 
 named 
 <i>make_uname.bat</i> that build the libraries using <b>Tecmake</b>. To build 
-for Windows using Visual C 7.0 (2005) for example, just execute <i>&quot;make_uname 
-vc7&quot;</i> in the iup root folder, or the DLLs with Visual C++ 9 (2008) type <i>
+for Windows using Visual C 9.0 (2008) for example, just execute <i>&quot;make_uname 
+vc9&quot;</i> in the iup main folder, or for the DLLs type <i>
 &quot;make_uname dll9&quot;</i>. The Visual Studio workspaces with the respective projects 
 available in the source package is for debugging purposes only.</p>
+<p>If you don't want to install Tecmake you can use the version for Windows 
+systems that is included in the source code package. BUt is is more complicated 
+that its Posix counterpart. First the GNU make must be installed and in the PATH 
+before other makes. In the command line you must specify the compiler path and 
+the TEC_UNAME variable. For example:</p>
+<pre>make -f tecmakewin.mak TEC_UNAME=mingw4 MINGW4=c:/mingw 
+make -f tecmakewin.mak TEC_UNAME=gcc4 GCC4=c:/cygwin           (Cygwin building for Win32)</pre>
 <p><b>IUP</b> runs on many different systems and interact with many different 
 libraries such as
   <a href="http://www.opengroup.org/openmotif/" target="_blank">Motif</a>, 
@@ -249,12 +256,14 @@ source code structure:</p>
     srcim/       - IUP/IM utilities
     srcimglib/   - Image Libraries with Icons, Logos and Bitmaps
     srcledc/     - ledc executable
-    srclua3      - Lua3 binding, used at Tecgraf by some old applications
+    srclua3      - Lua3 binding, used internally at Tecgraf by some applications
     srclua5/     - Lua 5 binding
     srcole/      - IupOleControl
     srcpplot/    - IupPPlot
+    srctuio/     - IupTuioClient
+    srcweb/      - IupWebBrowser
     srcview/     - IupView executable</pre>
-<p>The Lua bindings for IUP, CD and IM (Makfiles and Pre-compiled binaries) 
+<p>The Lua bindings for IUP, CD and IM (Makefiles and Pre-compiled binaries) 
 depend on the <a href="http://luabinaries.luaforge.net/">LuaBinaries</a> 
 distribution. So if you are going to build all use the <strong>LuaBinaries</strong> 
 source package also, not the <strong>Lua.org</strong> original source package. 
