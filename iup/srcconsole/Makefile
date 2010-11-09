@@ -1,12 +1,17 @@
+ifeq ($(OS), Windows_NT)
+  TECMAKE_CMD = $(MAKE) --no-print-directory -f ../tecmakewin.mak TEC_UNAME=$(TEC_UNAME)
+else
+  TECMAKE_CMD = $(MAKE) --no-print-directory -f ../tecmake.mak
+endif
 
 .PHONY: do_all iuplua5 iuplua5gtk iuplua3
 do_all: iuplua5
 
 iuplua5:
-	@$(MAKE) --no-print-directory -f ../tecmake.mak 
+	@$(TECMAKE_CMD) 
 
 iuplua5gtk:
-	@$(MAKE) --no-print-directory -f ../tecmake.mak USE_GTK=Yes
+	@$(TECMAKE_CMD) USE_GTK=Yes
 
 iuplua3:
-	@$(MAKE) --no-print-directory -f ../tecmake.mak MF=iuplua3
+	@$(TECMAKE_CMD) MF=iuplua3
