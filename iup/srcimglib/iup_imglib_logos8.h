@@ -971,6 +971,7 @@ static Ihandle* load_image_LogoLua8(void)
   return image;
 }
 
+#ifdef IUP_IMGLIB_LARGE
 static Ihandle* load_image_LogoPetrobras8(void)
 {
   unsigned char imgdata[] = {
@@ -1284,7 +1285,9 @@ static Ihandle* load_image_LogoPetrobras8(void)
 
   return image;
 }
+#endif
 
+#ifdef IUP_IMGLIB_LARGE
 static Ihandle* load_image_LogoTecgrafPUC_Rio8(void)
 {
   unsigned char imgdata[] = {
@@ -1598,6 +1601,7 @@ static Ihandle* load_image_LogoTecgrafPUC_Rio8(void)
 
   return image;
 }
+#endif
 
 static Ihandle* load_image_LogoTecgraf8(void)
 {

@@ -158,6 +158,7 @@ static Ihandle* load_image_Lua(void)
   return image;
 }
 
+#ifdef IUP_IMGLIB_LARGE
 static Ihandle* load_image_TecgrafPUC_Rio(void)
 {
   unsigned char imgdata[] = {
@@ -197,7 +198,9 @@ static Ihandle* load_image_TecgrafPUC_Rio(void)
   Ihandle* image = IupImageRGBA(138, 32, imgdata);
   return image;
 }
+#endif
 
+#ifdef IUP_IMGLIB_LARGE
 static Ihandle* load_image_Petrobras(void)
 {
   unsigned char imgdata[] = {
@@ -237,4 +240,4 @@ static Ihandle* load_image_Petrobras(void)
   Ihandle* image = IupImageRGBA(158, 32, imgdata);
   return image;
 }
-
+#endif
