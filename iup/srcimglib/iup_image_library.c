@@ -61,6 +61,7 @@ void IupImageLibOpen(void)
 
   /***************** Logos *****************/
 
+#ifdef IUP_IMGLIB_LARGE
 #ifndef WIN32
   if (motif)
     iupImglibLogos8Open();
@@ -78,6 +79,7 @@ void IupImageLibOpen(void)
 
   if (gtk)
     iupImglibLogosGtkOpen();
+#endif  
 #endif  
 }
  
@@ -143,20 +145,17 @@ void iupImageLibLoadAll(void)
   iupImageStockLoad("IUP_PUC-Rio");
   iupImageStockLoad("IUP_BR");
   iupImageStockLoad("IUP_Lua");
-#ifdef IUP_IMGLIB_LARGE
   iupImageStockLoad("IUP_TecgrafPUC-Rio");
   iupImageStockLoad("IUP_Petrobras");
-#endif
 
   /* Logos */
+#ifdef IUP_IMGLIB_LARGE
   iupImageStockLoad("IUP_LogoTecgraf");
   iupImageStockLoad("IUP_LogoPUC-Rio");
   iupImageStockLoad("IUP_LogoBR");
   iupImageStockLoad("IUP_LogoLua");
-#ifdef IUP_IMGLIB_LARGE
   iupImageStockLoad("IUP_LogoTecgrafPUC-Rio");
   iupImageStockLoad("IUP_LogoPetrobras");
-#endif
 
 #ifdef WIN32
   /* Logos - Win32 Only */
@@ -180,5 +179,6 @@ void iupImageLibLoadAll(void)
   iupImageStockLoad("IUP_LogoMessageInfo");
   iupImageStockLoad("IUP_LogoMessageSecurity");
   iupImageStockLoad("IUP_LogoMessageWarning");
+#endif
 #endif  
 }

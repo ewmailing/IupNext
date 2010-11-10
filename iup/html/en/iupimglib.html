@@ -12,6 +12,10 @@
 .style2 {
 	text-align: left;
 }
+.style3 {
+	font-size: medium;
+	font-weight: normal;
+}
 </style>
 </head>
 <body>
@@ -22,11 +26,8 @@ IupImageLib</a> up to IUP 2.x.</p>
 <h3>Initialization</h3>
 <p>To generate an application that uses this function, the program must be 
 linked to the functions library (<strong>iupimglib</strong>.lib on Windows and 
-<strong>libiupimglib</strong>.a on Unix). 
+lib<strong>iupimglib</strong>.a on Unix). 
 </p>
-<p>The library is large and could increase the size of the executable. To avoid 
-linking with the library get the source code and extract only the image you 
-need.</p>
 <h3>Reference</h3>
 <pre>void IupImageLibOpen(void); [in C]
 iup.ImageLibOpen()  [in Lua]</pre>
@@ -577,7 +578,9 @@ when associated with a control.</p>
   </tr>
 </table>
 
-<h3>Logo Group</h3>
+<h3>Logo Group <span class="style3">(NOT included in the pre-compiled library, 
+since 3.3)
+  </span></h3>
     <p>These logos are 48x48 pixels size (or just 48 pixels height) images that 
 	can be used in Labels, usually inside dialogs.</p>
 <table align="center">
@@ -596,7 +599,7 @@ when associated with a control.</p>
     <tr>
       <td class="style2">&quot;IUP_LogoPUC-Rio&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoPUC-Rio.png" width="48" height="79"></td>
+      <img border="0" src="imglib/Logos/LogoPUC-Rio.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_LogoBR&quot;</td>
@@ -632,7 +635,9 @@ when associated with a control.</p>
   </tr>
 </table>
  
-<h3>Other</h3>
+<h3>Other<span class="style3">
+    (NOT included in the pre-compiled library, since 3.3)
+  </span></h3>
  
 <p>Here are other images available in the IUP stock library, commonly used by 
 the respective systems. All images are 48x48 pixels size and 32bpp.</p>
@@ -761,7 +766,7 @@ the respective systems. All images are 48x48 pixels size and 32bpp.</p>
 <p>All 8bpp images are from the old ImageLib and since Motif does not have any 
 stock images, we selected this set to be used in Motif. Although the IUP Motif 
 driver supports 32bpp images.</p>
-<p>Not available in AIX43.</p>
+<p>Not available in AIX.</p>
 
 <p>All &quot;Win32&quot; images copyright Microsoft and were extracted from the Visual 
 Studio 2005 Image Library. Their use <b>must</b> be used consistently with their 
@@ -777,7 +782,6 @@ reserved.</p>
 <h3><a name="SeeAlso">See Also</a></h3>
 
 <p><a href="elem/iupimage.html">IupImage</a></p>
-<p>&nbsp;</p>
 
 </body>
 

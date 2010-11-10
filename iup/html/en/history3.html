@@ -143,6 +143,11 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_changed">Changed:</span>
     removed FINDUSERDATA attribute from <strong>IupTree</strong>, use <strong>
 	IupTreeGetId</strong> always.</li>
+	<li><span class="hist_changed">Changed:</span>
+    removed images larger than 48x48 (inclusive) from the pre-compiled libraries 
+	of the IupImgLib, reducing its size and allowing more applications to use 
+	the pre-compiled binaries. The images are still available in the source 
+	code.</li>
 
 	<li><span class="hist_fixed">Fixed:</span> callback not called in <strong>
 	IupGetParam</strong> when a file name or a color string are selected by the 

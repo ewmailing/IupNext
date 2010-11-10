@@ -13,6 +13,7 @@
 
 #include "iup_imglib.h"
 
+#ifdef IUP_IMGLIB_LARGE
 /* source code, included only here */
 #include "iup_imglib_logosw32.h"
 
@@ -31,3 +32,4 @@ void iupImglibLogosWin32Open(void)
   iupImageStockSet("IUP_DeviceSound", load_image_DeviceSound, 0);
   iupImageStockSet("IUP_DeviceVideo", load_image_DeviceVideo, 0);
 }
+#endif

@@ -19,6 +19,7 @@ IupGetAllDialogs
 IupGetAllNames
 IupGetAttribute
 IupGetAttributes
+IupGetClassCallbacks
 IupGetDialog
 IupGetFile
 IupGetFloat
@@ -312,8 +313,11 @@ iupDataEntry
 iupClassRelease
 iupClassRegisterCallback
 iupClassRegisterAttributeId
+iupClassRegisterAttributeId2
 iupClassRegisterAttribute
 iupClassRegisterGetAttribute
+iupClassRegisterReplaceAttribDef
+iupClassRegisterReplaceAttribFlags
 iupClassObjectUnMap
 iupClassObjectSetChildrenPosition
 iupClassObjectSetChildrenCurrentSize

@@ -120,9 +120,53 @@
 				RelativePath="..\srcimglib\iup_imglib_logos8.h"
 				>
 			</File>
+			<File
+				RelativePath="..\srcimglib\iup_imglib_logosw32.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="src"
+			>
+			<File
+				RelativePath="..\srcimglib\iup_imglib_bitmaps.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srcimglib\iup_imglib_bitmaps8.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srcimglib\iup_imglib_bitmapsgtk.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srcimglib\iup_imglib_icons.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srcimglib\iup_imglib_icons8.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srcimglib\iup_imglib_logos.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srcimglib\iup_imglib_logos8.c"
+				>
+			</File>
+			<File
+				RelativePath="..\srcimglib\iup_imglib_logosw32.c"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="..\srcimglib\iup_image_library.c"
+			>
+		</File>
+		<File
+			RelativePath="..\srcimglib\iup_imglib.h"
 			>
 		</File>
 		<File

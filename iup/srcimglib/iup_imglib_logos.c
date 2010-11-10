@@ -13,6 +13,7 @@
 
 #include "iup_imglib.h"
 
+#ifdef IUP_IMGLIB_LARGE
 /* source code, included only here */
 #include "iup_imglib_logos.h"
 
@@ -22,10 +23,8 @@ void iupImglibLogosOpen(void)
   iupImageStockSet("IUP_LogoPUC-Rio", load_image_LogoPUC_Rio, 0);
   iupImageStockSet("IUP_LogoBR", load_image_LogoBR, 0);
   iupImageStockSet("IUP_LogoLua", load_image_LogoLua, 0);
-#ifdef IUP_IMGLIB_LARGE
   iupImageStockSet("IUP_LogoTecgrafPUC-Rio", load_image_LogoTecgrafPUC_Rio, 0);
   iupImageStockSet("IUP_LogoPetrobras", load_image_LogoPetrobras, 0);
-#endif
 }
 
 #ifdef WIN32
@@ -47,3 +46,4 @@ void iupImglibLogosGtkOpen(void)
   iupImageStockSet("IUP_LogoMessageSecurity", 0, "gtk-dialog-authentication");
   iupImageStockSet("IUP_LogoMessageWarning", 0, "gtk-dialog-warning");
 }
+#endif
