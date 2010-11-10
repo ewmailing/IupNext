@@ -40,10 +40,12 @@ ifdef TEC_UNAME
 endif
 
 ifdef TEC_WIN64
-  TEC_SYSNAME=Win64 TEC_SYSARCH=x64
+  TEC_SYSNAME=Win64
+  TEC_SYSARCH=x64
+  # This if is not working, because make from Cygwin returns x86 even when running in AMD64.
   ifeq ($(PROCESSOR_ARCHITECTURE), x86)
     # Define this if compiling for 64-bits in a 32bits environment
-    USE_X86_CL64=Yes
+    #USE_X86_CL64=XXX
   endif
 else
   TEC_SYSNAME=Win32
