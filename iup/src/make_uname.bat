@@ -59,12 +59,12 @@ goto fim
 
 :stub_dllw4
 call tecmake mingw4 "MF=iupstub" %2 %3 %4 %5 %6 %7
-move /y ..\lib\mingw4\iupstub.lib ..\lib\dllw4
+move /y ..\lib\mingw4\libiupstub.a ..\lib\dllw4
 goto fim
 
 :stub_dllg4
 call tecmake gcc4 "MF=iupstub" %2 %3 %4 %5 %6 %7
-move /y ..\lib\gcc4\iupstub.lib ..\lib\dllg4
+move /y ..\lib\gcc4\libiupstub.a ..\lib\dllg4
 goto fim
 
 :all_dll
