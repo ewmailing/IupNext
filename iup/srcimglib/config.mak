@@ -1,6 +1,6 @@
 PROJNAME = iup
 LIBNAME = iupimglib
-#OPT = YES
+OPT = YES
 
 INCLUDES = ../include ../src
 

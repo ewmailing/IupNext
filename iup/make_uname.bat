@@ -4,6 +4,7 @@ REM This builds all the libraries for 1 uname
 if defined TECGRAF_INTERNAL goto tec_internal
 goto tec_default
 
+REM Includes Lua3 and NOT imglib
 :tec_internal
 FOR %%u IN (src srccd srccontrols srcpplot srcgl srcim srcole srctuio srcledc srcview srclua3 srclua5 srcconsole) DO call make_uname_lib.bat %%u %1 %2 %3 %4 %5 %6 %7 %8 %9                                  
 goto end

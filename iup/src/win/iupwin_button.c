@@ -3,7 +3,6 @@
  *
  * See Copyright Notice in "iup.h"
  */
-
 #include <windows.h>
 #include <commctrl.h>
 
@@ -32,6 +31,17 @@
 
 #ifndef CDIS_SHOWKEYBOARDCUES
 #define CDIS_SHOWKEYBOARDCUES   0x0200    /* it is defined only when _WIN32_WINNT >= 0x0501 */
+#endif
+
+/* not defined in gcc (Cygwin or MingW) */
+#ifndef ODS_NOACCEL
+#define ODS_NOACCEL   0x0100
+#endif
+#ifndef DT_HIDEPREFIX
+#define DT_HIDEPREFIX   0x00100000
+#endif
+#ifndef ODS_NOFOCUSRECT
+#define ODS_NOFOCUSRECT   0x0200
 #endif
 
 
