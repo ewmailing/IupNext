@@ -132,10 +132,18 @@ static int gtkToggleSetValueAttrib(Ihandle* ih, const char* value)
     gtk_toggle_button_set_inconsistent((GtkToggleButton*)ih->handle, TRUE);
   else 
   {
+    Ihandle* last_ih = NULL;
+    Ihandle* radio = iupRadioFindToggleParent(ih);
     gtk_toggle_button_set_inconsistent((GtkToggleButton*)ih->handle, FALSE);
 
     /* This action causes the toggled signal to be emitted. */
     iupAttribSetStr(ih, "_IUPGTK_IGNORE_TOGGLE", "1");
+    if (radio)
+    {
+      last_ih = (Ihandle*)IupGetAttribute(radio, "VALUE_HANDLE");
+      if (last_ih)
+        iupAttribSetStr(last_ih, "_IUPGTK_IGNORE_TOGGLE", "1");
+    }
 
     if (iupStrBoolean(value))
       gtk_toggle_button_set_active((GtkToggleButton*)ih->handle, TRUE);
@@ -146,6 +154,8 @@ static int gtkToggleSetValueAttrib(Ihandle* ih, const char* value)
       gtkToggleUpdateImage(ih, iupdrvIsActive(ih), gtkToggleGetCheck(ih));
 
     iupAttribSetStr(ih, "_IUPGTK_IGNORE_TOGGLE", NULL);
+    if (last_ih)
+      iupAttribSetStr(last_ih, "_IUPGTK_IGNORE_TOGGLE", NULL);
   }
 
   return 0;

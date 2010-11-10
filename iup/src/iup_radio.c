@@ -84,7 +84,7 @@ static int iRadioSetValueHandleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iRadioGetValueHandleAttrib(Ihandle* ih)
+static char* iRadioGetValueHandleAttrib(Ihandle* ih)
 {
   return (char*)iRadioGetToggleChildOn(ih->firstchild);
 }
@@ -104,7 +104,7 @@ static int iRadioSetValueAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iRadioGetValueAttrib(Ihandle* ih)
+static char* iRadioGetValueAttrib(Ihandle* ih)
 {
   Ihandle *ih_toggle = (Ihandle*)iRadioGetValueHandleAttrib(ih);
   if (!ih_toggle)
