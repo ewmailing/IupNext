@@ -61,19 +61,19 @@ webbrowser() [in LED]
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p><strong>LOAD</strong> [GTK Only]: sets a specified URL to load into the webbrowser.</p>
-<p><strong>BACKFORWARD</strong> [GTK Only]: sets the number of steps away from the current 
+<p><strong>LOAD</strong>: sets a specified URL to load into the webbrowser.</p>
+<p><strong>BACKFORWARD</strong>: sets the number of steps away from the current 
 page and loads the history item. Negative values represent steps backward while 
 positive values represent steps forward.</p>
-<p><strong>STOP</strong> [GTK Only] (write only): stops any ongoing load in the webbrowser.</p>
-<p><strong>RELOAD</strong> [GTK Only] (write only): reloads any ongoing page in the 
+<p><strong>STOP </strong>(write only): stops any ongoing load in the webbrowser.</p>
+<p><strong>RELOAD</strong> (write only): reloads any ongoing page in the 
 webbrowser.</p>
 <p><strong>BACKCOUNT</strong> [GTK Only] (read only): gets the number of items that precede 
 the current page.</p>
 <p><strong>FORWARDCOUNT</strong> [GTK Only] (read only): gets the number of items that 
 succeed the current page.</p>
-<p><strong>ITEMHISTORYid</strong> [GTK Only] (read only): Returns the specified item 
-history. Negative &quot;id&quot; value represents a backward item while positive &quot;id&quot; 
+<p><strong>ITEMHISTORYid</strong> [GTK Only] (read only): Returns the URL 
+associated with a specific history item. Negative &quot;id&quot; value represents a backward item while positive &quot;id&quot; 
 value represents a forward item (&quot;0&quot; represents the current item).</p>
   <blockquote>
   <hr>
