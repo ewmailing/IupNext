@@ -60,7 +60,7 @@ static int iOleControlSetProgIdAttrib(Ihandle* ih, const char* value)
   CLSID clsid;
 
   if (!value || iupAttribGet(ih, "PROGID"))  /* can only be set once */
-    return 0;
+    return 1;
 
   size_t len = strlen(value)+1;
   wchar_t* wcProgId = (wchar_t*) malloc(len * sizeof(wchar_t));

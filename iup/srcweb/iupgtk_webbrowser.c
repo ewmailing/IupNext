@@ -41,12 +41,7 @@ static char* gtkWebBrowserGetItemHistoryAttrib(Ihandle* ih, int id)
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
   WebKitWebHistoryItem* item = webkit_web_back_forward_list_get_nth_item(back_forward_list, id);
   char* str = iupStrGetMemory(1024);
-
   sprintf(str, "%s", webkit_web_history_item_get_uri(item));
-
-  if(!str)
-    return NULL;
-
   return str;
 }
 
@@ -54,7 +49,6 @@ static char* gtkWebBrowserGetForwardCountAttrib(Ihandle* ih)
 {
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
   char* str = iupStrGetMemory(30);
-
   sprintf(str, "%d", webkit_web_back_forward_list_get_forward_length(back_forward_list));
   return str;
 }
@@ -63,7 +57,6 @@ static char* gtkWebBrowserGetBackCountAttrib(Ihandle* ih)
 {
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
   char* str = iupStrGetMemory(30);
-
   sprintf(str, "%d", webkit_web_back_forward_list_get_back_length(back_forward_list));
   return str;
 }
@@ -84,9 +77,12 @@ static int gtkWebBrowserSetStopAttrib(Ihandle* ih, const char* value)
 
 static int gtkWebBrowserSetBackForwardAttrib(Ihandle* ih, const char* value)
 {
-  int val = atoi(value);
-  /* Negative values represent steps backward while positive values represent steps forward. */
-  webkit_web_view_go_back_or_forward((WebKitWebView*)ih->handle, val);
+  int val;
+  if (iupStrToInt(value, &val))
+  {
+    /* Negative values represent steps backward while positive values represent steps forward. */
+    webkit_web_view_go_back_or_forward((WebKitWebView*)ih->handle, val);
+  }
   return 0; /* do not store value in hash table */
 }
 

@@ -11,6 +11,9 @@
 
 #include "iup.h"
 #include "iupweb.h"
+#ifdef WIN32
+#include "iupole.h"
+#endif
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -25,6 +28,10 @@
 
 int IupWebBrowserOpen(void)
 {
+#ifdef WIN32
+  IupOleControlOpen();
+#endif
+
   if (IupGetGlobal("_IUP_WEBBROWSER_OPEN"))
     return IUP_OPENED;
 

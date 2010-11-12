@@ -43,6 +43,7 @@ using namespace ATL;
 interface CSink:public IDispEventImpl<0, CSink, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 0>
 {
 public:
+  Ihandle* ih;
 
   BEGIN_SINK_MAP(CSink)
     SINK_ENTRY_EX(0, DIID_DWebBrowserEvents2, DISPID_BEFORENAVIGATE2, BeforeNavigate2)
@@ -52,8 +53,6 @@ public:
   void STDMETHODCALLTYPE BeforeNavigate2(IDispatch *pDisp, VARIANT *url, VARIANT *Flags, VARIANT *TargetFrameName,
                                          VARIANT *PostData, VARIANT *Headers, VARIANT_BOOL *Cancel)
   {
-    Ihandle* ih = IupGetHandle("_IUPWIN_WEBBROWSER_HANDLE");
-
     IFnss cbNavigate = (IFnss)IupGetCallback(ih, "NAVIGATE_CB");
     if (cbNavigate)
     {
@@ -73,9 +72,7 @@ public:
   void STDMETHODCALLTYPE NewWindow3(IDispatch **ppDisp, VARIANT_BOOL *Cancel, DWORD dwFlags,
                                     BSTR bstrUrlContext, BSTR bstrUrl)
   {
-    Ihandle* ih = IupGetHandle("_IUPWIN_WEBBROWSER_HANDLE");
     IFns cbNewWindow = (IFns)IupGetCallback(ih, "NEWWINDOW_CB");
-    
     if (cbNewWindow)
     {
       char* urlString = _com_util::ConvertBSTRToString(bstrUrl);
@@ -89,66 +86,81 @@ public:
   }
 };
 
-// CComModule implements a COM server module, allowing a client to access the module's components
-CComModule _Module;
-// CSink object to capture events
-CSink sink;
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-struct _IcontrolData
+static WCHAR* winWebBrowserChar2Wide(const char* str)
 {
-  iupCanvas canvas;  /* from IupCanvas (must reserve it) */
-};
-
-static void winWebBrowserConnectServerSink(Ihandle* ih)
-{
-  // Get the current IUnknown*
-  IUnknown *punk = (IUnknown*)IupGetAttribute(ih, "IUNKNOWN");
-
-  // Get handle to use in CSink Interface
-  IupSetHandle("_IUPWIN_WEBBROWSER_HANDLE", ih);
-
-  // Entering primary STA
-  CoInitialize(NULL);
-
-  // Initializing ATL Support
-  _Module.Init(NULL, GetModuleHandle(NULL));
-
-  // Connecting to the server's outgoing interface
-  sink.DispEventAdvise(punk);
+  int n = strlen(str)+1;
+  WCHAR* wstr = (WCHAR*)malloc(n * sizeof(WCHAR));
+  MultiByteToWideChar(CP_ACP, 0, str, -1, wstr, n);
+  return wstr;
 }
 
-static void winWebBrowserDisconnectServerSink(Ihandle* ih)
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+static int winWebBrowserSetLoadAttrib(Ihandle* ih, const char* value)
 {
-  // Get the current IUnknown*
-  IUnknown *punk = (IUnknown*)IupGetAttribute(ih, "IUNKNOWN");
-
-  // Disconnecting from the server's outgoing interface
-  sink.DispEventUnadvise(punk);
-
-  // Terminating ATL support
-  _Module.Term();
-
-  // Quitting primary STA
-  CoUninitialize();
+  if (value)
+  {
+    IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+    WCHAR* wvalue = winWebBrowserChar2Wide(value);
+    pweb->Navigate(wvalue, NULL, NULL, NULL, NULL);
+    free(wvalue);
+  }
+  return 0;
 }
 
 static int winWebBrowserCreateMethod(Ihandle* ih, void **params)
 {
   (void)params;
-  ih->data = iupALLOCCTRLDATA();
   IupSetAttribute(ih, "PROGID", "Shell.Explorer.2");
 
-  winWebBrowserConnectServerSink(ih);
+  // Get the current IUnknown*
+  IUnknown *punk = (IUnknown*)IupGetAttribute(ih, "IUNKNOWN");
+
+  IWebBrowser2 *pweb = NULL;
+  punk->QueryInterface(IID_IWebBrowser2, (void **)&pweb);
+  iupAttribSetStr(ih, "_IUPWEB_BROWSER", (char*)pweb);
+
+  //// CComModule implements a COM server module, allowing a client to access the module's components
+  //CComModule* module = new CComModule();
+
+  //// CSink object to capture events
+  //CSink* sink = new CSink();
+
+  //// Set handle to use in CSink Interface
+  //sink->ih = ih;
+
+  //// Initializing ATL Support
+  //module->Init(NULL, GetModuleHandle(NULL));
+
+  //// Connecting to the server's outgoing interface
+  //sink->DispEventAdvise(punk);
+
+  //iupAttribSetStr(ih, "_IUPWEB_MODULE", (char*)module);
+  //iupAttribSetStr(ih, "_IUPWEB_SINK", (char*)sink);
+  punk->Release();
 
   return IUP_NOERROR; 
 }
 
 static void winWebBrowserDestroyMethod(Ihandle* ih)
 {
-  winWebBrowserDisconnectServerSink(ih);
+  IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+  pweb->Release();
+
+  //CComModule* module = (CComModule*)iupAttribGet(ih, "_IUPWEB_MODULE");
+  //CSink* sink = (CSink*)iupAttribGet(ih, "_IUPWEB_SINK");
+
+  //// Get the current IUnknown*
+  //IUnknown *punk = (IUnknown*)IupGetAttribute(ih, "IUNKNOWN");
+
+  //// Disconnecting from the server's outgoing interface
+  //sink->DispEventUnadvise(punk);
+  //delete sink;
+
+  //// Terminating ATL support
+  //module->Term();
+  //delete module;
 }
 
 Iclass* iupWebBrowserGetClass(void)
@@ -163,19 +175,17 @@ Iclass* iupWebBrowserGetClass(void)
 
   /* Class functions */
   ic->Create = winWebBrowserCreateMethod;
-
-  ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
-  ic->UnMap = iupdrvBaseUnMapMethod;
+  ic->Destroy = winWebBrowserDestroyMethod;
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "NEWWINDOW_CB", "s");
   iupClassRegisterCallback(ic, "NAVIGATE_CB", "ss");
 
-  /* Common */
-  iupBaseRegisterCommonAttrib(ic);
-
-  /* Visual */
-  iupBaseRegisterVisualAttrib(ic);
+  /* Attributes */
+  iupClassRegisterAttribute(ic, "LOAD", NULL, winWebBrowserSetLoadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  //iupClassRegisterAttribute(ic, "BACKFORWARD", NULL, gtkWebBrowserSetBackForwardAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  //iupClassRegisterAttribute(ic, "STOP", NULL, gtkWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  //iupClassRegisterAttribute(ic, "RELOAD", NULL, gtkWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   return ic;
 }

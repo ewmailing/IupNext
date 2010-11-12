@@ -42,9 +42,9 @@ static int navigate_cb(Ihandle* self, char* reason, char* url)
   return IUP_DEFAULT;
 }
 
-static int newwindow_cb(Ihandle* self, char* title, char* url)
+static int newwindow_cb(Ihandle* self, char* url)
 {
-  printf("NEWWINDOW_CB: %s, %s\n", title, url);
+  printf("NEWWINDOW_CB: %s\n", url);
   return IUP_DEFAULT;
 }
 
@@ -70,8 +70,11 @@ void WebBrowserTest(void)
   IupSetAttribute(dlg, "TITLE", "IupWebBrowser");
   IupSetAttribute(dlg, "MY_TEXT", (char*)txt);
   IupSetAttribute(dlg, "RASTERSIZE", "800x600");
+  IupSetAttribute(dlg, "MARGIN", "10x10");
+  IupSetAttribute(dlg, "GAP", "10");
 
   IupSetAttribute(control, "LOAD", "http://www.tecgraf.puc-rio.br/iup");
+  IupSetAttribute(txt, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
   IupSetAttributeHandle(dlg, "DEFAULTENTER", bt);
 
   IupSetAttribute(txt, "EXPAND", "HORIZONTAL");
@@ -80,9 +83,6 @@ void WebBrowserTest(void)
 
   IupSetCallback(control, "NEWWINDOW_CB", (Icallback)newwindow_cb);
   IupSetCallback(control, "NAVIGATE_CB", (Icallback)navigate_cb);
-
-  // Maps the dialog to force the creation of the control
-  IupMap(dlg);
 
   // Shows dialog
   IupShow(dlg);
