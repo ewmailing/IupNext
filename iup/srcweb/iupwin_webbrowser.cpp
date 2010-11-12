@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <windows.h>
+#include <exdisp.h>
+
 #include "iup.h"
 #include "iupcbs.h"
 #include "iupole.h"
@@ -121,23 +124,23 @@ static int winWebBrowserCreateMethod(Ihandle* ih, void **params)
   punk->QueryInterface(IID_IWebBrowser2, (void **)&pweb);
   iupAttribSetStr(ih, "_IUPWEB_BROWSER", (char*)pweb);
 
-  //// CComModule implements a COM server module, allowing a client to access the module's components
-  //CComModule* module = new CComModule();
+  // CComModule implements a COM server module, allowing a client to access the module's components
+  CComModule* module = new CComModule();
 
-  //// CSink object to capture events
-  //CSink* sink = new CSink();
+  // CSink object to capture events
+  CSink* sink = new CSink();
 
-  //// Set handle to use in CSink Interface
-  //sink->ih = ih;
+  // Set handle to use in CSink Interface
+  sink->ih = ih;
 
-  //// Initializing ATL Support
-  //module->Init(NULL, GetModuleHandle(NULL));
+  // Initializing ATL Support
+  module->Init(NULL, GetModuleHandle(NULL));
 
-  //// Connecting to the server's outgoing interface
-  //sink->DispEventAdvise(punk);
+  // Connecting to the server's outgoing interface
+  sink->DispEventAdvise(punk);
 
-  //iupAttribSetStr(ih, "_IUPWEB_MODULE", (char*)module);
-  //iupAttribSetStr(ih, "_IUPWEB_SINK", (char*)sink);
+  iupAttribSetStr(ih, "_IUPWEB_MODULE", (char*)module);
+  iupAttribSetStr(ih, "_IUPWEB_SINK", (char*)sink);
   punk->Release();
 
   return IUP_NOERROR; 
@@ -148,24 +151,28 @@ static void winWebBrowserDestroyMethod(Ihandle* ih)
   IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
   pweb->Release();
 
-  //CComModule* module = (CComModule*)iupAttribGet(ih, "_IUPWEB_MODULE");
-  //CSink* sink = (CSink*)iupAttribGet(ih, "_IUPWEB_SINK");
+  CComModule* module = (CComModule*)iupAttribGet(ih, "_IUPWEB_MODULE");
+  CSink* sink = (CSink*)iupAttribGet(ih, "_IUPWEB_SINK");
 
-  //// Get the current IUnknown*
-  //IUnknown *punk = (IUnknown*)IupGetAttribute(ih, "IUNKNOWN");
+  // Get the current IUnknown*
+  IUnknown *punk = (IUnknown*)IupGetAttribute(ih, "IUNKNOWN");
 
-  //// Disconnecting from the server's outgoing interface
-  //sink->DispEventUnadvise(punk);
-  //delete sink;
+  // Disconnecting from the server's outgoing interface
+  sink->DispEventUnadvise(punk);
+  delete sink;
 
-  //// Terminating ATL support
-  //module->Term();
-  //delete module;
+  // Terminating ATL support
+  module->Term();
+  delete module;
+
+  punk->Release();
 }
+
+extern "C" Iclass* iupOleControlGetClass(void);
 
 Iclass* iupWebBrowserGetClass(void)
 {
-  Iclass* ic = iupClassNew(iupRegisterFindClass("olecontrol"));
+  Iclass* ic = iupClassNew(iupOleControlGetClass());
 
   ic->name = "webbrowser";
   ic->format = NULL; /* no parameters */

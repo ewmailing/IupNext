@@ -22,6 +22,8 @@
 #include "iup_layout.h"
 
 
+extern "C" Iclass* iupOleControlGetClass(void);
+
 struct _IcontrolData
 {
   iupCanvas canvas;  /* from IupCanvas (must reserve it) */
@@ -158,7 +160,7 @@ static void iOleControlRelease(Iclass* ic)
   OleUninitialize();
 }
 
-static Iclass* iOleControlGetClass(void)
+Iclass* iupOleControlGetClass(void)
 {
   Iclass* ic = iupClassNew(iupCanvasGetClass());
 
@@ -204,7 +206,7 @@ int IupOleControlOpen(void)
   if (retval != S_OK && retval != S_FALSE)
     return IUP_ERROR;
 
-  iupRegisterClass(iOleControlGetClass());
+  iupRegisterClass(iupOleControlGetClass());
 
   IupSetGlobal("_IUP_OLECONTROL_OPEN", "1");
   return IUP_NOERROR;

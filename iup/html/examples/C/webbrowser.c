@@ -8,33 +8,34 @@
 #include "iup.h"
 #include "iupweb.h"
 
-static Ihandle *control = NULL;
 
-static int history_cb(Ihandle* self)
+#ifndef WIN32
+static int history_cb(Ihandle* ih)
 {
   int i;
   char str[50];
-  int back = IupGetInt(control, "BACKCOUNT");
-  int fwrd = IupGetInt(control, "FORWARDCOUNT");
+  int back = IupGetInt(ih, "BACKCOUNT");
+  int fwrd = IupGetInt(ih, "FORWARDCOUNT");
 
   printf("HISTORY ITEMS\n");
   for(i = -(back); i < 0; i++)
   {
     sprintf(str, "ITEMHISTORY%d", i);
-    printf("Backward %02d: %s\n", i, IupGetAttribute(control, str));
+    printf("Backward %02d: %s\n", i, IupGetAttribute(ih, str));
   }
 
   sprintf(str, "ITEMHISTORY%d", 0);
-  printf("Current  %02d: %s\n", 0, IupGetAttribute(control, str));
+  printf("Current  %02d: %s\n", 0, IupGetAttribute(ih, str));
 
   for(i = 1; i <= fwrd; i++)
   {
     sprintf(str, "ITEMHISTORY%d", i);
-    printf("Forward  %02d: %s\n", i, IupGetAttribute(control, str));
+    printf("Forward  %02d: %s\n", i, IupGetAttribute(ih, str));
   }
 
   return IUP_DEFAULT;
 }
+#endif
 
 static int navigate_cb(Ihandle* self, char* reason, char* url)
 {
@@ -51,38 +52,47 @@ static int newwindow_cb(Ihandle* self, char* url)
 static int load_cb(Ihandle* self)
 {
   Ihandle* txt  = (Ihandle*)IupGetAttribute(self, "MY_TEXT");
-  IupSetAttribute(control, "LOAD", IupGetAttribute(txt, "VALUE"));
+  Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
+  IupSetAttribute(web, "LOAD", IupGetAttribute(txt, "VALUE"));
   return IUP_DEFAULT;
 }
 
 void WebBrowserTest(void)
 {
-  Ihandle *txt, *bt, *dlg, *history;
+  Ihandle *txt, *bt, *dlg, *history, *web;
   
-  IupWebBrowserOpen();
+  IupWebBrowserOpen();              
 
   // Creates an instance of the WebBrowser control
-  control = IupWebBrowser();
+  web = IupWebBrowser();
 
   // Creates a dialog containing the control
-  dlg = IupDialog(IupVbox(IupHbox(txt = IupText(""), bt = IupButton("Load", NULL),
-                                  history = IupButton("History", NULL), NULL), control, NULL));
+  dlg = IupDialog(IupVbox(IupHbox(txt = IupText(""), 
+                                  bt = IupButton("Load", NULL),
+#ifndef WIN32
+                                  history = IupButton("History", NULL), 
+#endif
+                                  NULL), 
+                                  web, NULL));
   IupSetAttribute(dlg, "TITLE", "IupWebBrowser");
   IupSetAttribute(dlg, "MY_TEXT", (char*)txt);
+  IupSetAttribute(dlg, "MY_WEB", (char*)web);
   IupSetAttribute(dlg, "RASTERSIZE", "800x600");
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "GAP", "10");
 
-  IupSetAttribute(control, "LOAD", "http://www.tecgraf.puc-rio.br/iup");
+  IupSetAttribute(web, "LOAD", "http://www.tecgraf.puc-rio.br/iup");
   IupSetAttribute(txt, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
   IupSetAttributeHandle(dlg, "DEFAULTENTER", bt);
 
   IupSetAttribute(txt, "EXPAND", "HORIZONTAL");
   IupSetCallback(bt, "ACTION", (Icallback)load_cb);
+#ifndef WIN32
   IupSetCallback(history, "ACTION", (Icallback)history_cb);
+#endif
 
-  IupSetCallback(control, "NEWWINDOW_CB", (Icallback)newwindow_cb);
-  IupSetCallback(control, "NAVIGATE_CB", (Icallback)navigate_cb);
+  IupSetCallback(web, "NEWWINDOW_CB", (Icallback)newwindow_cb);
+  IupSetCallback(web, "NAVIGATE_CB", (Icallback)navigate_cb);
 
   // Shows dialog
   IupShow(dlg);

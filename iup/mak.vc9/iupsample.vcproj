@@ -784,6 +784,13 @@
 			<File
 				RelativePath="..\html\examples\C\webbrowser.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\html\examples\C\zbox.c"
