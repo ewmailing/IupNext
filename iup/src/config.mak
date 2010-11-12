@@ -20,6 +20,7 @@ else
     ifeq ($(findstring Win, $(TEC_SYSNAME)), )
       # Force definition if not in Windows
       USE_MOTIF = Yes
+      USE_X11 = Yes
     endif
   endif
 endif

@@ -29,6 +29,4 @@ endif
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   LIBS:=
   USE_CDLUA:=
-  INCLUDES += ../include
-  LDIR = $(CD)/lib/$(TEC_UNAME)
 endif

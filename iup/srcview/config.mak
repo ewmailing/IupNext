@@ -8,7 +8,6 @@ IUP := ..
 
 LINKER = $(CPPC)
 
-USE_CD = Yes
 USE_IUPCONTROLS = Yes
 USE_IUP3 = Yes
 
@@ -25,7 +24,7 @@ else
 endif
 
 ifeq "$(TEC_UNAME)" "SunOS510x86"
-  DEFINES = USE_NO_OPENGL
+  DEFINES += USE_NO_OPENGL
 else  
   USE_OPENGL = Yes
 endif
@@ -52,11 +51,3 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 endif
 
 INCLUDES = ../src
-
-ifeq ($(TEC_UNAME), vc8)
-  ifdef DBG
-    #debug info not working for vc8 linker
-    define DBG
-    endef
-  endif
-endif         
