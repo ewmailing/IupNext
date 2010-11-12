@@ -34,7 +34,11 @@ the web browser content and forwarding of its events.</p>
 engine. More information about WebKit/GTK+ (building, dependencies, releases, 
 etc) can be seen in <a href="#Notes">Notes</a> section.</p>
 <p>In Windows, the implementation uses the <strong>IupOleControl</strong> to 
-embed an instance of the Internet Explorer WebBrowser control.</p>
+embed an instance of the Internet Explorer WebBrowser control. A listener 
+interface is used to capture and handle events using the Active Template Library 
+(<a target="_blank" href="http://msdn.microsoft.com/en-us/library/t9adwcde%28v=VS.80%29.aspx">ATL</a>) 
+classes. <span id="result_box1" class="" lang="en"><span style="" title="">More information 
+about ATL </span></span>can be seen in <a href="#Notes">Notes</a> section.</p>
 <h3>Initialization and usage</h3>
 <p>The <b>IupWebBrowserOpen</b> function must be called after <b>IupOpen</b>. 
   The iupweb.h file must also be included in the source code. The program must be linked to the controls 
