@@ -25,15 +25,16 @@
   </ul>
 </div>
 
-<h2>IupWebBrowser <span class="style2">[GTK only]</span></h2>
+<h2>IupWebBrowser <span class="style2">[GTK and Windows only]</span></h2>
 <p>Creates a web browser control. It is responsible for managing the drawing of 
 the web browser content and forwarding of its events.</p>
-<p>The implementation uses the 
+<p>In Linux, the implementation uses the 
 <a class="http" href="http://webkitgtk.org/" target="_blank">WebKit/GTK+</a>, the new GTK+ port of the
 <a class="http" href="http://webkit.org" target="_blank">WebKit</a>, an open-source web content 
 engine. More information about WebKit/GTK+ (building, dependencies, releases, 
 etc) can be seen in <a href="#Notes">Notes</a> section.</p>
-<p>Notice that this control works only on UNIX systems using GTK+ driver.</p>
+<p>In Windows, the implementation uses the <strong>IupOleControl</strong> to 
+embed an instance of the Internet Explorer WebBrowser control.</p>
 <h3>Initialization and usage</h3>
 <p>The <b>IupWebBrowserOpen</b> function must be called after <b>IupOpen</b>. 
   The iupweb.h file must also be included in the source code. The program must be linked to the controls 
@@ -63,7 +64,7 @@ positive values represent steps forward.</p>
 <p><strong>STOP </strong>(write only): stops any ongoing load in the webbrowser.</p>
 <p><strong>RELOAD </strong>(write only): reloads any ongoing page in the 
 webbrowser.</p>
-<p><strong>BACKCOUNT </strong>(read only): gets the number of items that preced 
+<p><strong>BACKCOUNT </strong>(read only): gets the number of items that precede 
 the current page.</p>
 <p><strong>FORWARDCOUNT </strong>(read only): gets the number of items that 
 succeed the current page.</p>
@@ -100,14 +101,12 @@ action that the browser is requesting for a navigation.</span></span><br>
 
 <p><strong>NEWWINDOW_CB</strong><tt>:</tt> action generated when the browser 
 requests a new window.</p>
-<pre>int function(Ihandle* <b>ih</b>, char* <b>title</b>, char* <b>url</b>);  [in C]<strong>
-elem</strong>:newwindow_cb(<b>title</b>, <b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle* <b>ih</b>, char* <b>url</b>);  [in C]<strong>
+elem</strong>:newwindow_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
-    <strong>title</strong>:
-    the document title of the new window.<br>
-<strong>url</strong>: the URL address that is opened in the new window.</p>
+    <strong>url</strong>: the URL address that is opened in the new window.</p>
 <blockquote>
   <hr>
 </blockquote>
@@ -128,6 +127,11 @@ supported.</p>
 <a target="_blank" href="http://webkitgtk.org/">The WebKitGTK+ web page</a><br>
 <a target="_blank" href="http://live.gnome.org/WebKitGtk">WebKitGTK+ wiki</a><br>
 <a target="_blank" href="http://trac.webkit.org/wiki/WebKitGTK">WebKitGTK+ tracker</a></p>
+<p>To learn more about Internet Explorer WebBrowser control and ATL:</p>
+<p class="info">
+<a target="_blank" href="http://msdn.microsoft.com/en-us/library/aa752044%28VS.85%29.aspx">WebBrowser Control from C/C++</a><br>
+<a target="_blank" href="http://support.microsoft.com/kb/194179/en-us/">Creating ATL sinks</a><br>
+<a target="_blank" href="http://homepage.eircom.net/~codexpert/sink/">Examples of sinking COM events</a></p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 

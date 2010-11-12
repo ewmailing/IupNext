@@ -1319,7 +1319,11 @@ wb_usr.tree =
             {
               name= {nl= "IupOleControl"},
               link= "ctrl/iupole.html"
-            }
+            },
+            {
+              name= {nl= "IupWebBrowser"},
+              link= "ctrl/iupweb.html"
+            },
           }
         }
       }

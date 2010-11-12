@@ -29,7 +29,8 @@
 <p>The IupOleControl hosts an windows OLE control (also named ActiveX control), allowing it to be 
   used inside IUP dialogs. There are many OLE controls available, like calendars, internet browsers, PDF readers etc.</p>
 <p>Notice that IupOleControl just takes care of the visualization of the control (size and 
-  positioning). It does not deal with properties, methods and events. The application must deal with them using the COM interfaces offered by the control. Nevertheless, using IupLua together with 
+  positioning), and map some callbacks (navigate and new window) using a 
+listener interface to sink events. It does not deal with properties, methods and events. The application must deal with them using the COM interfaces offered by the control. Nevertheless, using IupLua together with 
   <a target="_blank" href="http://luaforge.net/projects/luacom/">LuaCOM</a> makes it possible to use OLE 
   controls very easily in Lua, accessing their methods, properties and events similarly to the other IUP elements.</p>
 <p>Notice that this control works only on Windows.</p>
