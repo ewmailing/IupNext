@@ -21,6 +21,10 @@
 
 #include "TuioServer.h"
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
 using namespace TUIO;
 using namespace osc;
 

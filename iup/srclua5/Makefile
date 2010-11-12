@@ -1,11 +1,12 @@
 ifeq ($(OS), Windows_NT)
   TECMAKE_CMD = $(MAKE) --no-print-directory -f ../tecmakewin.mak TEC_UNAME=$(TEC_UNAME)
+  WINLIBS = iupole
 else
   TECMAKE_CMD = $(MAKE) --no-print-directory -f ../tecmake.mak
 endif
 
-.PHONY: do_all iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib iupluatuio
-do_all: iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib iupluatuio
+.PHONY: do_all iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib iupluatuio iupluaole iupluaweb
+do_all: iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib iupluatuio $(WINLIBS)
 
 iuplua:
 	@$(TECMAKE_CMD) 
@@ -30,3 +31,9 @@ iupluaimglib:
   
 iupluatuio:
 	@$(TECMAKE_CMD) MF=iuptuio
+  
+iupluaole:
+	@$(TECMAKE_CMD) MF=iupole
+  
+iupluaweb:
+	@$(TECMAKE_CMD) MF=iupweb
