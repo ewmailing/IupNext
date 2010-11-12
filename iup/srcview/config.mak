@@ -23,6 +23,8 @@ else
   endif
 endif
 
+USE_STATIC = Yes
+
 ifeq "$(TEC_UNAME)" "SunOS510x86"
   DEFINES += USE_NO_OPENGL
 else  
@@ -35,16 +37,18 @@ ifdef USE_IM
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     LIBS = iupim iupimglib
   else
-    ifdef DBG_DIR
-      IUPLIB = $(IUP)/lib/$(TEC_UNAME)d
+    ifdef USE_STATIC
+      ifdef DBG_DIR
+        IUPLIB = $(IUP)/lib/$(TEC_UNAME)d
+      else
+        IUPLIB = $(IUP)/lib/$(TEC_UNAME)
+      endif  
+      SLIB = $(IUPLIB)/libiupim.a $(IUPLIB)/libiupimglib.a
     else
-      IUPLIB = $(IUP)/lib/$(TEC_UNAME)
-    endif  
-    SLIB = $(IUPLIB)/libiupim.a $(IUPLIB)/libiupimglib.a
+      LIBS = iupim iupimglib
+    endif             
   endif             
 endif 
-
-USE_STATIC = Yes
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC += ../etc/iup.rc
