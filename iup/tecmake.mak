@@ -1123,10 +1123,10 @@ system-check:
   ifdef CHECK_GTK
     ifndef GTK_BASE
       ifdef UNIX_POSIX
-      @echo ''; echo 'Tecmake: check failed, GTK NOT available in this system.'; echo ''; exit 1;
+			@echo ''; echo 'Tecmake: check failed, GTK NOT available in this system.'; echo ''; exit 1;
       else
         ifneq ($(findstring Linux24, $(TEC_UNAME)), )
-          @echo ''; echo 'Tecmake: check failed, GTK too OLD in this system.'; echo ''; exit 1;
+					@echo ''; echo 'Tecmake: check failed, GTK too OLD in this system.'; echo ''; exit 1;
         endif
       endif
     endif

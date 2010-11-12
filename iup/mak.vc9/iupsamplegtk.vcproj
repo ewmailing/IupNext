@@ -617,7 +617,6 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -793,10 +792,6 @@
 				</FileConfiguration>
 			</File>
 		</Filter>
-		<File
-			RelativePath="..\..\..\Downloads\_Tecgraf\radio.cpp"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
