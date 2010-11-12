@@ -135,9 +135,9 @@ static int gtkWebBrowserNavigate(WebKitWebView *web_view, WebKitWebFrame *frame,
 
 static WebKitWebView* gtkWebBrowserNewWindow(WebKitWebView  *web_view, WebKitWebFrame *frame, Ihandle *ih)
 {
-  IFnss cbNewWindow = (IFnss)IupGetCallback(ih, "NEWWINDOW_CB");
+  IFns cbNewWindow = (IFns)IupGetCallback(ih, "NEWWINDOW_CB");
   if (cbNewWindow)
-    cbNewWindow(ih, (char*)webkit_web_frame_get_title(frame), (char*)webkit_web_frame_get_uri(frame));
+    cbNewWindow(ih, (char*)webkit_web_frame_get_uri(frame));
 
   return web_view;
 }
@@ -279,7 +279,7 @@ Iclass* iupWebBrowserGetClass(void)
   ic->UnMap = iupdrvBaseUnMapMethod;
 
   /* Callbacks */
-  iupClassRegisterCallback(ic, "NEWWINDOW_CB", "ss");
+  iupClassRegisterCallback(ic, "NEWWINDOW_CB", "s");
   iupClassRegisterCallback(ic, "NAVIGATE_CB", "ss");
 
   /* Common */
