@@ -100,6 +100,44 @@ static WCHAR* winWebBrowserChar2Wide(const char* str)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+static int winWebBrowserSetBackForwardAttrib(Ihandle* ih, const char* value)
+{
+  int i, val = atoi(value);
+  IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+
+  /* Negative values represent steps backward while positive values represent steps forward. */
+  if(val > 0)
+  {
+    for(i = 0; i < val; i++)
+      pweb->GoForward();
+  }
+  else if(val < 0)
+  {
+    for(i = 0; i < -(val); i++)
+      pweb->GoBack();
+  }
+
+  return 0; /* do not store value in hash table */
+}
+
+static int winWebBrowserSetReloadAttrib(Ihandle* ih, const char* value)
+{
+  IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+  pweb->Refresh();
+
+  (void)value;
+  return 0; /* do not store value in hash table */
+}
+
+static int winWebBrowserSetStopAttrib(Ihandle* ih, const char* value)
+{
+  IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+  pweb->Stop();
+
+  (void)value;
+  return 0; /* do not store value in hash table */
+}
+
 static int winWebBrowserSetLoadAttrib(Ihandle* ih, const char* value)
 {
   if (value)
@@ -190,9 +228,9 @@ Iclass* iupWebBrowserGetClass(void)
 
   /* Attributes */
   iupClassRegisterAttribute(ic, "LOAD", NULL, winWebBrowserSetLoadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "BACKFORWARD", NULL, gtkWebBrowserSetBackForwardAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "STOP", NULL, gtkWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "RELOAD", NULL, gtkWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKFORWARD", NULL, winWebBrowserSetBackForwardAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STOP", NULL, winWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RELOAD", NULL, winWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   return ic;
 }

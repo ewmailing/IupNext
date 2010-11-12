@@ -40,12 +40,42 @@ static int history_cb(Ihandle* ih)
 static int navigate_cb(Ihandle* self, char* reason, char* url)
 {
   printf("NAVIGATE_CB: %s, %s\n", reason, url);
+  (void)self;
   return IUP_DEFAULT;
 }
 
 static int newwindow_cb(Ihandle* self, char* url)
 {
   printf("NEWWINDOW_CB: %s\n", url);
+  (void)self;
+  return IUP_DEFAULT;
+}
+
+static int back_cb(Ihandle* self)
+{
+  Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
+  IupSetAttribute(web, "BACKFORWARD", "-1");
+  return IUP_DEFAULT;
+}
+
+static int forward_cb(Ihandle* self)
+{
+  Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
+  IupSetAttribute(web, "BACKFORWARD", "1");
+  return IUP_DEFAULT;
+}
+
+static int stop_cb(Ihandle* self)
+{
+  Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
+  IupSetAttribute(web, "STOP", NULL);
+  return IUP_DEFAULT;
+}
+
+static int reload_cb(Ihandle* self)
+{
+  Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
+  IupSetAttribute(web, "RELOAD", NULL);
   return IUP_DEFAULT;
 }
 
@@ -59,16 +89,24 @@ static int load_cb(Ihandle* self)
 
 void WebBrowserTest(void)
 {
-  Ihandle *txt, *bt, *dlg, *history, *web;
-  
+  Ihandle *txt, *dlg, *web;
+  Ihandle *btLoad, *btReload, *btBack, *btForward, *btStop;
+#ifndef WIN32
+  Ihandle *history;
+#endif
+
   IupWebBrowserOpen();              
 
   // Creates an instance of the WebBrowser control
   web = IupWebBrowser();
 
   // Creates a dialog containing the control
-  dlg = IupDialog(IupVbox(IupHbox(txt = IupText(""), 
-                                  bt = IupButton("Load", NULL),
+  dlg = IupDialog(IupVbox(IupHbox(btBack = IupButton("Back", NULL),
+                                  btForward = IupButton("Forward", NULL),
+                                  txt = IupText(""),
+                                  btLoad = IupButton("Load", NULL),
+                                  btReload = IupButton("Reload", NULL),
+                                  btStop = IupButton("Stop", NULL),
 #ifndef WIN32
                                   history = IupButton("History", NULL), 
 #endif
@@ -83,10 +121,14 @@ void WebBrowserTest(void)
 
   IupSetAttribute(web, "LOAD", "http://www.tecgraf.puc-rio.br/iup");
   IupSetAttribute(txt, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
-  IupSetAttributeHandle(dlg, "DEFAULTENTER", bt);
+  IupSetAttributeHandle(dlg, "DEFAULTENTER", btLoad);
 
   IupSetAttribute(txt, "EXPAND", "HORIZONTAL");
-  IupSetCallback(bt, "ACTION", (Icallback)load_cb);
+  IupSetCallback(btLoad, "ACTION", (Icallback)load_cb);
+  IupSetCallback(btReload, "ACTION", (Icallback)reload_cb);
+  IupSetCallback(btBack, "ACTION", (Icallback)back_cb);
+  IupSetCallback(btForward, "ACTION", (Icallback)forward_cb);
+  IupSetCallback(btStop, "ACTION", (Icallback)stop_cb);
 #ifndef WIN32
   IupSetCallback(history, "ACTION", (Icallback)history_cb);
 #endif
