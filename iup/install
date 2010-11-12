@@ -96,5 +96,3 @@ Install_RunTime()
 ComputeTecUname
 
 Install_RunTime iup
-#Install_RunTime cd
-#Install_RunTime im

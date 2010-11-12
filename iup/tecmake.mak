@@ -374,6 +374,14 @@ ifndef LINKER
   endif
 endif
 
+ifndef USE_STATIC
+  NO_OVERRIDE = Yes
+endif
+ifneq ($(findstring AIX, $(TEC_UNAME)), )
+  # No dynamic libraries in AIX, so must behave as USE_STATIC
+  NO_OVERRIDE :=
+endif
+
 ifdef NO_ECHO
   ECHO:=@
 endif
@@ -763,18 +771,23 @@ ifdef USE_IUP
       ifdef USE_MOTIF
         IUP_SUFFIX := mot
       else
-        override USE_GTK = Yes
-        override USE_GDK = Yes
+        ifndef NO_OVERRIDE
+          override USE_GTK = Yes
+        endif
       endif
     else
       ifdef USE_GTK
         IUP_SUFFIX := gtk
       else
-        override USE_MOTIF = Yes
+        ifndef NO_OVERRIDE
+          override USE_MOTIF = Yes
+        endif
       endif
     endif
   else
-    override USE_MOTIF = Yes
+    ifndef NO_OVERRIDE
+      override USE_MOTIF = Yes
+    endif
   endif
   ifdef USE_STATIC
     ifdef USE_CD
@@ -799,7 +812,9 @@ endif
 
 ifdef USE_CD
   CD_SUFFIX ?=
-  override USE_X11 = Yes
+  ifndef NO_OVERRIDE
+    override USE_X11 = Yes
+  endif
   ifndef USE_CD_OLD
     ifdef GTK_DEFAULT
       ifdef USE_MOTIF
@@ -844,10 +859,12 @@ ifdef USE_CD
     LDIR += $(CD)/lib/$(TEC_UNAME_LIB_DIR)
     ifndef USE_GTK
       # Freetype is already included in GTK
-      ifneq ($(findstring cygw, $(TEC_UNAME)), )
-        LIBS += freetype-6
-      else
-        LIBS += freetype
+      ifndef NO_OVERRIDE
+        ifneq ($(findstring cygw, $(TEC_UNAME)), )
+          LIBS += freetype-6
+        else
+          LIBS += freetype
+        endif
       endif
     endif
   endif
@@ -871,7 +888,9 @@ ifdef USE_GLUT
 endif
 
 ifdef USE_OPENGL
-  override USE_X11 = Yes
+  ifndef NO_OVERRIDE
+    override USE_X11 = Yes
+  endif
   ifdef USE_MOTIF
     ifndef USE_IUP3
       LIBS += $(MOTIFGL_LIB)
@@ -883,7 +902,9 @@ ifdef USE_OPENGL
 endif
 
 ifdef USE_MOTIF
-  override USE_X11 = Yes
+  ifndef NO_OVERRIDE
+    override USE_X11 = Yes
+  endif
   LIBS += Xm
   LDIR += $(MOTIF_LIB)
   STDINCS += $(MOTIF_INC)
@@ -905,7 +926,9 @@ ifdef USE_GTK
     ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   # Option 1 - Fink GTK port
       LDIR += $(GTK)/lib
-      override USE_X11 = Yes
+      ifndef NO_OVERRIDE
+        override USE_X11 = Yes
+      endif
       LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
   # Option 2 - Imendio Framework
   #   STDINCS += /Library/Frameworks/Gtk.framework/Headers
@@ -924,7 +947,9 @@ ifdef USE_GTK
       ifdef GTK_BASE
         LDIR += $(GTK)/lib
       endif
-      override USE_X11 = Yes
+      ifndef NO_OVERRIDE
+        override USE_X11 = Yes
+      endif
       LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
     endif
 
@@ -949,7 +974,9 @@ ifdef USE_GTK
 endif
 
 ifdef USE_QT
-  override USE_X11 = Yes
+  ifndef NO_OVERRIDE
+    override USE_X11 = Yes
+  endif
   LIBS += QtGui QtCore
   QT_BASE_INC := /usr/include/qt4
   STDINCS += $(QT_BASE_INC) $(QT_BASE_INC)/QtCore $(QT_BASE_INC)/QtGui

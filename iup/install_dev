@@ -98,5 +98,3 @@ Install_Dev()
 ComputeTecUname
 
 Install_Dev iup
-#Install_Dev cd
-#Install_Dev im

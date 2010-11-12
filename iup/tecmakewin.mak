@@ -10,7 +10,7 @@ VERSION = 4.3
 
 
 #---------------------------------#
-# First target 
+# First target
 .PHONY: build
 build: tecmake
 
@@ -23,7 +23,7 @@ TECMAKE  = $(TECMAKE_HOME)/tecmakewin.mak
 #---------------------------------#
 # System Variables Definitions
 
-# If tecmake.bat is not used, 
+# If tecmake.bat is not used,
 # then at least define main system variables.
 
 WIN32UNAMES = vc10 vc9 vc8 vc7 vc6 owc1 bc55 bc56 bc6 gcc3 gcc4 mingw3 mingw4 dllw4 dllg4 dll dll7 dll8 dll9 dll10
@@ -79,7 +79,7 @@ OBJROOT = $(PROJDIR)/obj
 
 # ---------------------------------------------------------
 # Byte Order and Word Size
-  
+
 ifneq ($(findstring x86, $(TEC_SYSARCH)), )
    TEC_BYTEORDER = TEC_LITTLEENDIAN
 else
@@ -117,7 +117,7 @@ LUAPRE = "$(TECMAKE_PATH)"/luapre.lua
 #---------------------------------#
 # Defaults
 APPTYPE = windows
-INCLUDES = 
+INCLUDES =
 LIBS =
 LIB =
 
@@ -129,7 +129,7 @@ MAKENAME = config.mak
 
 ifdef MF
   MAKENAME = $(MF).mak
-endif 
+endif
 
 ###################
 include $(MAKENAME)
@@ -137,7 +137,7 @@ include $(MAKENAME)
 
 
 #---------------------------------#
-# Definitions of public variables 
+# Definitions of public variables
 
 ifdef LIBNAME
   TARGETNAME = $(LIBNAME)
@@ -148,7 +148,7 @@ else
 endif
 
 ifndef TARGETNAME
-  $(error LIBNAME nor APPNAME defined in $(MAKENAME)) 
+  $(error LIBNAME nor APPNAME defined in $(MAKENAME))
 endif
 
 PROJNAME ?= $(TARGETNAME)
@@ -230,10 +230,10 @@ endif
 .PHONY: print-start
 print-start:
 	@echo ''; echo 'Tecmake: Starting [ $(TARGETNAME):$(TEC_UNAME) ]'
- 
-  
+
+
 #---------------------------------#
-# Definitions of public variables 
+# Definitions of public variables
 
 ifeq ($(MAKETYPE), APP)
   TARGETROOT ?= $(PROJDIR)/bin
@@ -414,7 +414,7 @@ ifeq "$(COMPILER)" "$(VC8)"
     GEN_MANIFEST ?= Yes
   else
     #there is no single thread RTL in VC8
-    USE_MT = Yes  
+    USE_MT = Yes
   endif
 endif
 
@@ -426,7 +426,7 @@ ifeq "$(COMPILER)" "$(VC9)"
     GEN_MANIFEST ?= Yes
   else
     #there is no single thread RTL in VC9
-    USE_MT = Yes  
+    USE_MT = Yes
   endif
   ifdef VC9SDK
     PLATSDK ?= $(VC9SDK)
@@ -448,7 +448,7 @@ ifeq "$(COMPILER)" "$(VC10)"
     GEN_MANIFEST ?= Yes
   else
     #there is no single thread RTL in VC10
-    USE_MT = Yes  
+    USE_MT = Yes
   endif
   ifdef VC10SDK
     PLATSDK ?= $(VC10SDK)
@@ -489,7 +489,7 @@ ifeq "$(TEC_CC)" "vc"
   RCC       = $(RESBIN)/rc -fo
   STDINCS   = $(PLATSDK)/include $(COMPILER)/include
   STDFLAGS  = -c -Fo$(OBJDIR)/ -W3
-  STDLFLAGS = 
+  STDLFLAGS =
   DEPDEFS   = -D_WIN32 -D_M_IX86 -D_STDCALL_SUPPORTED
   STDLIBDIR = -LIBPATH:$(COMPILER)/lib$(VCLIBBIN) -LIBPATH:$(PLATSDK)/lib$(SDKLIBBIN)
   OPTFLAGS := -O2
@@ -500,7 +500,7 @@ ifeq "$(TEC_CC)" "vc"
     ifndef CPP_NARROW_INLINES
       STDDEFS += -D_CPP_NARROW_INLINES_DEFINED
     endif
-    STDFLAGS += -EHsc  
+    STDFLAGS += -EHsc
   else                  # Exception Handling Model
     STDFLAGS += -GX
   endif
@@ -512,7 +512,7 @@ ifeq "$(TEC_CC)" "vc"
     endif
     ifdef DBG
       STDLFLAGS += -debug
-    endif 
+    endif
     ifdef NEW_VC_COMPILER
       ifndef GEN_MANIFEST
         STDLFLAGS += -MANIFEST:NO
@@ -570,11 +570,11 @@ ifeq "$(TEC_CC)" "vc"
     endif
   endif
 endif
-  
+
 ifeq "$(TEC_UNAME)" "owc1"
   COMPILER = $(OWC1)
   TEC_CC  = wc
-  STDLFLAGS = 
+  STDLFLAGS =
 endif
 
 ifeq "$(TEC_CC)" "wc"
@@ -729,7 +729,7 @@ ifeq "$(TEC_CC)" "gcc"
     STDLFLAGS = -Wl,-subsystem,$(APPTYPE)
   else
     ifeq ($(MAKETYPE), DLL)
-      STDLFLAGS = 
+      STDLFLAGS =
     else
       STDLFLAGS = r
     endif
@@ -770,7 +770,7 @@ system-check:
     endif
   endif
 
-  
+
 #---------------------------------#
 # Tecgraf Libraries Location
 TECTOOLS_HOME ?= ../..
@@ -835,28 +835,28 @@ endif
 
 ifdef USE_IUP3
   override USE_IUP = Yes
-# Inside Tecgraf only  
+# Inside Tecgraf only
 #  IUP := $(IUP)3
-endif 
+endif
 
 ifdef USE_IUPBETA
   IUP := $(IUP)/beta
-endif 
+endif
 
 ifdef USE_CDBETA
   CD := $(CD)/beta
-endif 
+endif
 
 ifdef USE_IMBETA
   IM := $(IM)/beta
-endif 
+endif
 
 ifdef USE_GLUT
   override USE_OPENGL = Yes
   LIBS += glut32
   LDIR += $(GLUT)/lib
   STDINCS += $(GLUT)/include
-endif 
+endif
 
 ifdef USE_GDK
   override USE_GTK = Yes
@@ -898,20 +898,20 @@ ifdef USE_LUA
     LIBS += lualib$(LUA_SUFFIX)
   endif
   LIBS += lua$(LUA_SUFFIX)
-  
+
   LUA_LIB ?= $(LUA)/lib/$(TEC_UNAME)
   LDIR += $(LUA_LIB)
-  
+
   LUA_INC   ?= $(LUA)/include
   INCLUDES += $(LUA_INC)
-  
+
   LUA_BIN ?= $(LUA)/bin/$(TEC_SYSNAME)
   BIN2C     := $(LUA_BIN)/bin2c$(LUA_SUFFIX)
   LUAC      := $(LUA_BIN)/luac$(LUA_SUFFIX)
   LUABIN    := $(LUA_BIN)/lua$(LUA_SUFFIX)
 endif
 
-ifdef USE_IUP 
+ifdef USE_IUP
   ifdef USE_CD
     LIBS += iupcd
   endif
@@ -960,11 +960,11 @@ endif
 
 ifdef USE_OPENGL
   ifdef OLD_OPENGL
-    LIBS += glaux glu32 opengl32 
+    LIBS += glaux glu32 opengl32
   else
     LIBS += glu32 opengl32
-  endif 
-endif 
+  endif
+endif
 
 ifdef USE_GTK
   STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0 $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
@@ -973,7 +973,7 @@ ifdef USE_GTK
   endif
   LDIR += $(GTK)/lib
   LIBS += gtk-win32-2.0 gdk-win32-2.0 gdk_pixbuf-2.0 pango-1.0 pangowin32-1.0 gobject-2.0 gmodule-2.0 glib-2.0
-endif 
+endif
 
 ifdef USE_QT
 	#STDFLAGS += -Zm200 -w34100 -w34189 -Zm200 -w34100 -w34189 -w34100 -w34189
@@ -1004,37 +1004,37 @@ ifneq ($(MAKETYPE), LIB)
   LIBS += $(STDLIB)
   LIBS := $(addsuffix .$(LIBEXT), $(LIBS))
 
-  ifeq ($(TEC_CC), vc) 
+  ifeq ($(TEC_CC), vc)
     ifdef LDIR
       LDIR  := $(addprefix -LIBPATH:, $(LDIR))
     endif
-    
+
     STDLFLAGS += $(LDIR) $(STDLIBDIR) $(LIBS)
   endif
 
-  ifeq ($(TEC_CC), bc) 
+  ifeq ($(TEC_CC), bc)
     ifdef LDIR
       LDIR  := $(addprefix -L, $(LDIR))
     endif
   endif
 
-  ifeq ($(TEC_CC), wc) 
+  ifeq ($(TEC_CC), wc)
     ifdef LDIR
       LDIR  := $(addprefix LIBP , $(LDIR))
     endif
-    
+
     LIBS := $(addprefix LIB , $(LIBS))
-    
+
     STDLFLAGS += $(LDIR) $(STDLIBDIR) $(LIBS)
   endif
 
-  ifeq ($(TEC_CC), gcc) 
+  ifeq ($(TEC_CC), gcc)
     LIBS := $(addprefix -l, $(LIBS))
     LIBS := $(LIBS:.a=)
     ifdef LDIR
       LDIR  := $(addprefix -L, $(LDIR))
     endif
-    
+
     STDLFLAGS += $(LDIR) $(STDLIBDIR) $(LIBS)
   endif
 
@@ -1104,30 +1104,30 @@ LIBFLAGS  := $(LCFLAGS) $(STDLFLAGS) $(OBJS) $(SLIB)
 
 ifeq ($(TEC_CC), bc)
   ifeq ($(MAKETYPE), APP)
-    LINKFLAGS = $(LFLAGS) $(STDLFLAGS) $(LDIR) $(STDLIBDIR) $(STARTUP) $(OBJS), $(TARGETEXE), , $(LIBS) $(SLIB), 
-  else          
-    LIBFLAGS  = $(LCFLAGS) $(subst /,\\, $(STDLFLAGS) $(addprefix +,$(OBJS) $(SLIB))) 
-  endif  
+    LINKFLAGS = $(LFLAGS) $(STDLFLAGS) $(LDIR) $(STDLIBDIR) $(STARTUP) $(OBJS), $(TARGETEXE), , $(LIBS) $(SLIB),
+  else
+    LIBFLAGS  = $(LCFLAGS) $(subst /,\\, $(STDLFLAGS) $(addprefix +,$(OBJS) $(SLIB)))
+  endif
 endif
 
-ifeq ($(TEC_CC), wc) 
+ifeq ($(TEC_CC), wc)
   ifeq ($(MAKETYPE), APP)
-    LINKFLAGS = $(LFLAGS) $(STDLFLAGS) $(addprefix F , $(OBJS) $(SLIB)) 
+    LINKFLAGS = $(LFLAGS) $(STDLFLAGS) $(addprefix F , $(OBJS) $(SLIB))
   else
     #wlib adds files using "+" as an option
-    LIBFLAGS  := $(LCFLAGS) $(STDLFLAGS) $(addprefix +, $(OBJS) $(SLIB)) 
+    LIBFLAGS  := $(LCFLAGS) $(STDLFLAGS) $(addprefix +, $(OBJS) $(SLIB))
   endif
 endif
 
-ifeq ($(TEC_CC), gcc) 
+ifeq ($(TEC_CC), gcc)
   ifeq ($(MAKETYPE), APP)
-    LINKFLAGS = -o $(TARGETEXE) $(OBJS) $(SLIB) $(LFLAGS) $(STDLFLAGS) 
+    LINKFLAGS = -o $(TARGETEXE) $(OBJS) $(SLIB) $(LFLAGS) $(STDLFLAGS)
   endif
   ifeq ($(MAKETYPE), DLL)
-    LINKFLAGS = -shared -o $(TARGETDLL) -Wl,--out-implib=$(TARGETLIB) $(OBJS) $(DEF_FILE) $(SLIB) $(LFLAGS) $(STDLFLAGS) 
+    LINKFLAGS = -shared -o $(TARGETDLL) -Wl,--out-implib=$(TARGETLIB) $(OBJS) $(DEF_FILE) $(SLIB) $(LFLAGS) $(STDLFLAGS)
   endif
 endif
-    
+
 #---------------------------------#
 # Dynamic Library Build
 
@@ -1139,7 +1139,7 @@ $(TARGETDLL) : $(LOHS) $(OBJS) $(EXTRADEPS) $(DEF_FILE)
 	$(ECHO)$(LINKER) $(LINKFLAGS)
 	@echo ''; echo 'Tecmake: Dynamic Library ($@) Done'; echo ''
 
-  
+
 #---------------------------------#
 # Static Library Build
 
@@ -1158,7 +1158,7 @@ $(TARGETDIR)/lib$(TARGETNAME).a : $(LOHS) $(OBJS) $(EXTRADEPS)
 	$(ECHO)-$(RANLIB) $@
 	@echo ''; echo 'Tecmake: Static Library ($@) Done'; echo ''
 
-  
+
 #---------------------------------#
 # Application Build
 
@@ -1170,13 +1170,13 @@ $(TARGETEXE) : $(LOHS) $(OBJS) $(EXTRADEPS)
 	$(ECHO)$(LINKER) $(LINKFLAGS)
 	@echo ''; echo 'Tecmake: Application ($@) Done.'; echo ''
 
-  
+
 #---------------------------------#
 #  Application Scripts
 
 # Nomes dos scripts
 SRELEASE = $(SRCDIR)/$(TARGETNAME).bat
-EXEC := $(subst /,\,$(TARGETEXE)) 
+EXEC := $(subst /,\,$(TARGETEXE))
 
 .PHONY: scripts
 ifdef NO_SCRIPTS
@@ -1184,14 +1184,14 @@ ifdef NO_SCRIPTS
 else
   scripts: $(SRELEASE) ;
 endif
-  
+
 $(SRELEASE): $(TARGETEXE)
 	@echo ''; echo 'Tecmake: generating script $(@F)'
 	@echo '@echo off' > $@
 	@echo 'REM Script generated automatically by tecmake v$(VERSION)' >> $@
 	@echo '$(EXEC) %*' >> $@
 
-  
+
 #---------------------------------#
 # Directories Creation
 
@@ -1286,11 +1286,11 @@ addmanifest:
     endif
   endif
 
-  
+
 #---------------------------------#
 # Dependencies
 
-.PHONY: depend 
+.PHONY: depend
 depend: $(DEPEND)
 
 $(DEPEND): $(MAKENAME)
@@ -1313,10 +1313,10 @@ $(DEPEND): $(MAKENAME)
 ifdef USE_NODEPEND
   NO_DEPEND:=Yes
 endif
-  
+
 ###################
 ifndef NO_DEPEND
-include $(DEPEND)   
+include $(DEPEND)
 endif
 ###################
 
@@ -1368,11 +1368,11 @@ clean: clean-target clean-obj
 .PHONY: clean-all
 clean-all: clean-extra clean-lohs clean-all-target clean-all-obj
 
-#   Rebuild target and object files 
+#   Rebuild target and object files
 .PHONY: rebuild
 rebuild: clean-extra clean-lohs clean-obj clean-target tecmake
 
-#   Rebuild target without rebuilding object files 
+#   Rebuild target without rebuilding object files
 .PHONY: relink
 relink: clean-target tecmake
 

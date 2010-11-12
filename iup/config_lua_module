@@ -14,26 +14,22 @@ echo -n Press Enter to continue or Ctrl+C to abort...
 read contscr
 echo ' '
 
-mkdir -p /usr/lib/lua/5.1
-cd /usr/lib/lua/5.1
+SYSTEM_LIB=/usr/lib
+LUA_LIB=$SYSTEM_LIB/lua/5.1
 
-ln -fsv /usr/lib/libiuplua51.so iuplua.so
-ln -fsv /usr/lib/libiupluacontrols51.so iupluacontrols.so
-ln -fsv /usr/lib/libiupluacd51.so iupluacd.so
-ln -fsv /usr/lib/libiupluagl51.so iupluagl.so
-ln -fsv /usr/lib/libiuplua_pplot51.so iuplua_pplot.so
-ln -fsv /usr/lib/libiupluaim51.so iupluaim.so
-ln -fsv /usr/lib/libiupluaimglib51.so iupluaimglib.so
-ln -fsv /usr/lib/libiupluatuio51.so iupluatuio.so
+Make_Lua_Link()
+{
+  ln -fsv $SYSTEM_LIB/lib$1'51'.so $1.so
+}
 
-# ln -fsv /usr/lib/libcdlua51.so cdlua51.so
-# ln -fsv /usr/lib/libcdluacontextplus51.so cdluacontextplus.so
-# ln -fsv /usr/lib/libcdluacairo51.so cdluacairo.so
-# ln -fsv /usr/lib/libcdluagl51.so cdluagl.so
-# ln -fsv /usr/lib/libcdluaim51.so cdluaim.so
-# ln -fsv /usr/lib/libcdluapdf51.so cdluapdf.so
+mkdir -p $LUA_LIB
+cd $LUA_LIB
 
-# ln -fsv /usr/lib/libimlua51.so imlua.so
-# ln -fsv /usr/lib/libimlua_process51.so imlua_process.so
-# ln -fsv /usr/lib/libimlua_jp251.so imlua_jp2.so
-# ln -fsv /usr/lib/libimlua_fftw51.so imlua_fftw.so
+Make_Lua_Link iuplua
+Make_Lua_Link iupluacontrols
+Make_Lua_Link iupluacd
+Make_Lua_Link iupluagl
+Make_Lua_Link iuplua_pplot
+Make_Lua_Link iupluaim
+Make_Lua_Link iupluaimglib
+Make_Lua_Link iupluatuio
