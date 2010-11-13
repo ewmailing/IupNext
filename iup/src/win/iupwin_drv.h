@@ -55,7 +55,10 @@ typedef void (*IFdrawItem)(Ihandle* ih, void* drawitem);
 
 /* Definition of a callback used to notify custom controls called "_IUPWIN_NOTIFY_CB". 
   msg_info is a pointer to a NMHDR struct. */
-typedef int (*IFnotify)(Ihandle* ih, void* msg_info, HRESULT *result);
+typedef int (*IFnotify)(Ihandle* ih, void* msg_info, int *result);
+
+/* Definition of a callback used to process WM_COMMAND messages called "_IUPWIN_COMMAND_CB". */
+typedef int (*IFwmCommand)(Ihandle* ih, WPARAM wp, LPARAM lp);
 
 /* Definition of callback used for custom WinProc. Can return 0 or 1.
    0 = do default processing. 

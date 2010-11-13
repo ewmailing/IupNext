@@ -71,7 +71,7 @@ WCHAR* iupwinStrChar2Wide(const char* str)
 {
   if (str)
   {
-    int len = strlen(str)+1;
+    int len = (int)strlen(str)+1;
     WCHAR* wstr = malloc(len * sizeof(WCHAR));
     MultiByteToWideChar(CP_ACP, 0, str, -1, wstr, len);
     return wstr;
@@ -84,7 +84,7 @@ char* iupwinStrWide2Char(const WCHAR* wstr)
 {
   if (wstr)
   {
-    int n = wcslen(wstr)+1;
+    int n = (int)wcslen(wstr)+1;
     char* str = iupStrGetMemory(n);
     WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, n, NULL, NULL);
     return str;
@@ -408,7 +408,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       Ihandle* child = winContainerWmCommandGetIhandle(ih, wp, lp);
       if (child)
       {
-        IFnii cb = (IFnii)IupGetCallback(child, "_IUPWIN_COMMAND_CB");
+        IFwmCommand cb = (IFwmCommand)IupGetCallback(child, "_IUPWIN_COMMAND_CB");
         if (cb)
           cb(child, wp, lp);
       }
@@ -485,8 +485,12 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         IFnotify cb = (IFnotify)IupGetCallback(child, "_IUPWIN_NOTIFY_CB");
         if (cb)
         {
-          if (cb(child, (void*)msg_info, result))
+          int ret;
+          if (cb(child, (void*)msg_info, &ret))
+          {
+            *result = (LRESULT)ret;
             return 1;
+          }
         }
       }
       break;
