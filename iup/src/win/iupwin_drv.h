@@ -90,6 +90,7 @@ void iupwinChangeProc(Ihandle *ih, WNDPROC new_proc);
 void iupwinMergeStyle(Ihandle* ih, DWORD old_mask, DWORD value);
 void iupwinSetStyle(Ihandle* ih, DWORD value, int set);
 WCHAR* iupwinStrChar2Wide(const char* str);
+char* iupwinStrWide2Char(const WCHAR* wstr);
 int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);

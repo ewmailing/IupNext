@@ -86,10 +86,17 @@ static int gtkWebBrowserSetBackForwardAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
-static int gtkWebBrowserSetLoadAttrib(Ihandle* ih, const char* value)
+static int gtkWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
 {
-  webkit_web_view_load_uri((WebKitWebView*)ih->handle, value);
+  if (value)
+    webkit_web_view_load_uri((WebKitWebView*)ih->handle, value);
   return 0; /* do not store value in hash table */
+}
+
+static char* gtkWebBrowserGetValueAttrib(Ihandle* ih)
+{
+  const gchar* value = webkit_web_view_get_uri((WebKitWebView*)ih->handle);
+  return iupStrGetMemoryCopy(value);
 }
 
 /*********************************************************************************************/
@@ -216,7 +223,7 @@ static void gtkWebBrowserInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT); 
 
   /* IupWebBrowser GTK only */
-  iupClassRegisterAttribute(ic, "LOAD", NULL, gtkWebBrowserSetLoadAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", gtkWebBrowserGetValueAttrib, gtkWebBrowserSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKFORWARD", NULL, gtkWebBrowserSetBackForwardAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STOP", NULL, gtkWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RELOAD", NULL, gtkWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

@@ -25,6 +25,7 @@
 #include "iup_drv.h"
 #include "iup_drvfont.h"
 
+
 ///////////////////////////////////////////////////////////////////////////////
 // Interface to get WebBrowserEvents
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,32 +90,32 @@ public:
   }
 };
 
-static WCHAR* winWebBrowserChar2Wide(const char* str)
-{
-  int n = strlen(str)+1;
-  WCHAR* wstr = (WCHAR*)malloc(n * sizeof(WCHAR));
-  MultiByteToWideChar(CP_ACP, 0, str, -1, wstr, n);
-  return wstr;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+extern "C" WCHAR* iupwinStrChar2Wide(const char* str);
+extern "C" char* iupwinStrWide2Char(const WCHAR* wstr);
+
 
 static int winWebBrowserSetBackForwardAttrib(Ihandle* ih, const char* value)
 {
-  int i, val = atoi(value);
-  IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+  int i, val;
+  if (iupStrToInt(value, &val))
+  {
+    IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
 
-  /* Negative values represent steps backward while positive values represent steps forward. */
-  if(val > 0)
-  {
-    for(i = 0; i < val; i++)
-      pweb->GoForward();
-  }
-  else if(val < 0)
-  {
-    for(i = 0; i < -(val); i++)
-      pweb->GoBack();
+    /* Negative values represent steps backward while positive values represent steps forward. */
+    if(val > 0)
+    {
+      for(i = 0; i < val; i++)
+        pweb->GoForward();
+    }
+    else if(val < 0)
+    {
+      for(i = 0; i < -(val); i++)
+        pweb->GoBack();
+    }
   }
 
   return 0; /* do not store value in hash table */
@@ -138,22 +139,36 @@ static int winWebBrowserSetStopAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
-static int winWebBrowserSetLoadAttrib(Ihandle* ih, const char* value)
+static int winWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (value)
   {
     IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
-    WCHAR* wvalue = winWebBrowserChar2Wide(value);
+    WCHAR* wvalue = iupwinStrChar2Wide(value);
     pweb->Navigate(wvalue, NULL, NULL, NULL, NULL);
     free(wvalue);
   }
   return 0;
 }
 
+static char* winWebBrowserGetValueAttrib(Ihandle* ih)
+{
+  IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+  BSTR pbstrLocationURL = NULL;
+  if (pweb->get_LocationURL(&pbstrLocationURL)==S_OK && pbstrLocationURL)
+  {
+    char* str = iupwinStrWide2Char(pbstrLocationURL);
+    SysFreeString(pbstrLocationURL);
+    return str;
+  }
+  return NULL;
+}
+
 static int winWebBrowserCreateMethod(Ihandle* ih, void **params)
 {
   (void)params;
   IupSetAttribute(ih, "PROGID", "Shell.Explorer.2");
+  IupSetAttribute(ih, "DESIGNMODE", "NO");
 
   // Get the current IUnknown*
   IUnknown *punk = (IUnknown*)IupGetAttribute(ih, "IUNKNOWN");
@@ -227,7 +242,7 @@ Iclass* iupWebBrowserGetClass(void)
   iupClassRegisterCallback(ic, "NAVIGATE_CB", "ss");
 
   /* Attributes */
-  iupClassRegisterAttribute(ic, "LOAD", NULL, winWebBrowserSetLoadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", winWebBrowserGetValueAttrib, winWebBrowserSetValueAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKFORWARD", NULL, winWebBrowserSetBackForwardAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STOP", NULL, winWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RELOAD", NULL, winWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

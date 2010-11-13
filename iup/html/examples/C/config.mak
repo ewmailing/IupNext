@@ -78,10 +78,9 @@ SRC = sample.c
 #SRC = glcanvas.c
 
 # IUPWEB SAMPLE
-# Currently, available only in the GTK driver in Linux
 #SRC = webbrowser.c
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-#  LIBS += webkit-1.0 iupweb
+#  LIBS += iupweb iupole
 #else
 #  LIBS += webkit-1.0
 #  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupweb.a

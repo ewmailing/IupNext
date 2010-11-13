@@ -14,9 +14,10 @@ else
   ifdef GTK_DEFAULT
     SRC  += iupgtk_webbrowser.c
     LIBS += webkit-1.0
+    USE_GTK = Yes
     INCLUDES += ../src/gtk $(GTK)/include/webkit-1.0 $(GTK)/include/libsoup-2.4
   else
-    SRC = iupmot_webbrowser.c
-    LIBS += XmHTML
+#    SRC = iupmot_webbrowser.c
+#    LIBS += XmHTML
   endif
 endif

@@ -83,7 +83,7 @@ static int load_cb(Ihandle* self)
 {
   Ihandle* txt  = (Ihandle*)IupGetAttribute(self, "MY_TEXT");
   Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
-  IupSetAttribute(web, "LOAD", IupGetAttribute(txt, "VALUE"));
+  IupSetAttribute(web, "VALUE", IupGetAttribute(txt, "VALUE"));
   return IUP_DEFAULT;
 }
 
@@ -119,7 +119,7 @@ void WebBrowserTest(void)
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "GAP", "10");
 
-  IupSetAttribute(web, "LOAD", "http://www.tecgraf.puc-rio.br/iup");
+  IupSetAttribute(web, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
   IupSetAttribute(txt, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
   IupSetAttributeHandle(dlg, "DEFAULTENTER", btLoad);
 

@@ -80,6 +80,19 @@ WCHAR* iupwinStrChar2Wide(const char* str)
   return NULL;
 }
 
+char* iupwinStrWide2Char(const WCHAR* wstr)
+{
+  if (wstr)
+  {
+    int n = wcslen(wstr)+1;
+    char* str = iupStrGetMemory(n);
+    WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, n, NULL, NULL);
+    return str;
+  }
+
+  return NULL;
+}
+
 int iupdrvGetScrollbarSize(void)
 {
   int xv = GetSystemMetrics(SM_CXVSCROLL);

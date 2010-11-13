@@ -61,13 +61,13 @@ webbrowser() [in LED]
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p><strong>LOAD</strong>: sets a specified URL to load into the webbrowser.</p>
-<p><strong>BACKFORWARD</strong>: sets the number of steps away from the current 
+<p><strong>VALUE</strong>: sets a specified URL to load into the webbrowser, or 
+retrieve the current URL.</p>
+<p><strong>BACKFORWARD </strong>(write only): sets the number of steps away from the current 
 page and loads the history item. Negative values represent steps backward while 
 positive values represent steps forward.</p>
 <p><strong>STOP </strong>(write only): stops any ongoing load in the webbrowser.</p>
-<p><strong>RELOAD</strong> (write only): reloads any ongoing page in the 
-webbrowser.</p>
+<p><strong>RELOAD</strong> (write only): reloads the page in the webbrowser.</p>
 <p><strong>BACKCOUNT</strong> [GTK Only] (read only): gets the number of items that precede 
 the current page.</p>
 <p><strong>FORWARDCOUNT</strong> [GTK Only] (read only): gets the number of items that 

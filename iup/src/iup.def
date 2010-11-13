@@ -398,3 +398,5 @@ iupDrawSetClipRect
 iupDrawText
 iupDrawUpdateSize
 iupDrawImage
+iupwinStrChar2Wide
+iupwinStrWide2Char
