@@ -26,21 +26,20 @@
 #include "iup_drvfont.h"
 
 
+extern "C" WCHAR* iupwinStrChar2Wide(const char* str);
+extern "C" char* iupwinStrWide2Char(const WCHAR* wstr);
+
+
 ///////////////////////////////////////////////////////////////////////////////
 // Interface to get WebBrowserEvents
 ///////////////////////////////////////////////////////////////////////////////
-
-#pragma once
 
 #include <atlbase.h>
 #include <atlcom.h>
 #include <atlctl.h>
 
 #include <shlguid.h>   // IID_IWebBrowser2, DIID_DWebBrowserEvents2
-#include <exdispid.h>  // DISPID_DOCUMENTCOMPLETE
-
-#include <comutil.h>   // ConvertBSTRToString
-#pragma comment(lib, "comsuppw.lib")  // ConvertBSTRToString
+#include <exdispid.h>  // DISPID_*
 
 using namespace ATL;
 
@@ -51,7 +50,9 @@ public:
 
   BEGIN_SINK_MAP(CSink)
     SINK_ENTRY_EX(0, DIID_DWebBrowserEvents2, DISPID_BEFORENAVIGATE2, BeforeNavigate2)
+#ifdef DISPID_NEWWINDOW3
     SINK_ENTRY_EX(0, DIID_DWebBrowserEvents2, DISPID_NEWWINDOW3, NewWindow3)
+#endif
   END_SINK_MAP()
 
   void STDMETHODCALLTYPE BeforeNavigate2(IDispatch *pDisp, VARIANT *url, VARIANT *Flags, VARIANT *TargetFrameName,
@@ -60,8 +61,9 @@ public:
     IFnss cbNavigate = (IFnss)IupGetCallback(ih, "NAVIGATE_CB");
     if (cbNavigate)
     {
-      char* resultString = _com_util::ConvertBSTRToString(url->bstrVal);
+      char* resultString = iupwinStrWide2Char(url->bstrVal);
       cbNavigate(ih, "NOREASON", resultString);
+      free(resultString);
       // TO DO: detect types of action, like "link_clicked", "refresh", "form submitted", "backward/forward"
     }
 
@@ -73,14 +75,16 @@ public:
     (void)pDisp;
   }
 
+#ifdef DISPID_NEWWINDOW3
   void STDMETHODCALLTYPE NewWindow3(IDispatch **ppDisp, VARIANT_BOOL *Cancel, DWORD dwFlags,
                                     BSTR bstrUrlContext, BSTR bstrUrl)
   {
     IFns cbNewWindow = (IFns)IupGetCallback(ih, "NEWWINDOW_CB");
     if (cbNewWindow)
     {
-      char* urlString = _com_util::ConvertBSTRToString(bstrUrl);
+      char* urlString = iupwinStrWide2Char(bstrUrl);
       cbNewWindow(ih, urlString);
+      free(urlString);
     }
 
     (void)bstrUrlContext;
@@ -88,14 +92,12 @@ public:
     (void)Cancel;
     (void)ppDisp;
   }
+#endif
 };
 
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
-extern "C" WCHAR* iupwinStrChar2Wide(const char* str);
-extern "C" char* iupwinStrWide2Char(const WCHAR* wstr);
 
 
 static int winWebBrowserSetBackForwardAttrib(Ihandle* ih, const char* value)

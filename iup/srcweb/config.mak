@@ -8,8 +8,10 @@ LIBS = iup
 SRC = iup_webbrowser.c
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  SRC = iupwin_webbrowser.cpp
-  LIBS += iupole
+  SRC += iupwin_webbrowser.cpp
+  LIBS += iupole comsuppw
+  USE_ATL = Yes
+  DEFINES = _MBCS
 else
   ifdef GTK_DEFAULT
     SRC  += iupgtk_webbrowser.c
