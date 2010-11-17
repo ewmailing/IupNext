@@ -84,9 +84,9 @@ char* iupwinStrWide2Char(const WCHAR* wstr)
 {
   if (wstr)
   {
-    int n = (int)wcslen(wstr)+1;
-    char* str = iupStrGetMemory(n);
-    WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, n, NULL, NULL);
+    int len = (int)wcslen(wstr)+1;
+    char* str = malloc(len * sizeof(char));
+    WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, len, NULL, NULL);
     return str;
   }
 
