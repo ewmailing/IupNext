@@ -191,9 +191,17 @@ static int winWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
   {
     IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
     WCHAR* wvalue = iupwinStrChar2Wide(value);
+
+    VARIANT var;
+    VariantInit(&var);  //Initialize our variant
+    var.vt = VT_ARRAY | VT_UI1;
+    var.bstrVal = iupwinStrChar2Wide("_top");
+    pweb->Navigate(wvalue, NULL, &var, NULL, NULL);
+
     //CComVariant var = CComVariant("_top");
     //pweb->Navigate(wvalue, NULL, &var, NULL, NULL);
-    pweb->Navigate(wvalue, NULL, NULL, NULL, NULL);
+    
+    //pweb->Navigate(wvalue, NULL, NULL, NULL, NULL);
     free(wvalue);
   }
   return 0;
