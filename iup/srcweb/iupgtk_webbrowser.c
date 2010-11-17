@@ -64,7 +64,7 @@ static char* gtkWebBrowserGetBackCountAttrib(Ihandle* ih)
 static int gtkWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    webkit_web_view_load_string((WebKitWebView*)ih->handle, value, "text/html", "UTF-8", "");
+    webkit_web_view_load_string((WebKitWebView*)ih->handle, iupgtkStrConvertToUTF8(value), "text/html", "UTF-8", "");
   return 0; /* do not store value in hash table */
 }
 

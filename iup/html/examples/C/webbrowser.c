@@ -47,7 +47,7 @@ static int navigate_cb(Ihandle* self, char* reason, char* url)
 static int newwindow_cb(Ihandle* self, char* url)
 {
   printf("NEWWINDOW_CB: %s\n", url);
-  (void)self;
+  IupSetAttribute(self, "VALUE", url);
   return IUP_DEFAULT;
 }
 
@@ -83,7 +83,11 @@ static int load_cb(Ihandle* self)
 {
   Ihandle* txt  = (Ihandle*)IupGetAttribute(self, "MY_TEXT");
   Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
-  IupSetAttribute(web, "VALUE", IupGetAttribute(txt, "VALUE"));
+//  IupSetAttribute(web, "VALUE", IupGetAttribute(txt, "VALUE"));
+//  IupSetAttribute(txt, "VALUE", IupGetAttribute(web, "VALUE"));
+
+  IupSetAttribute(web, "HTML", "<html><body><b>Hello</b>, World!</body></html>");
+
   return IUP_DEFAULT;
 }
 
@@ -122,6 +126,7 @@ void WebBrowserTest(void)
 //   IupSetAttribute(web, "HTML", "<html><body><b>Hello</b>World!</body></html>");
 //   IupSetAttribute(txt, "VALUE", "My HTML");
   IupSetAttribute(web, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
+//  IupSetAttribute(web, "VALUE", "http://www.microsoft.com");
   IupSetAttribute(txt, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
   IupSetAttributeHandle(dlg, "DEFAULTENTER", btLoad);
 

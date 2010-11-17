@@ -111,30 +111,36 @@ static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
     WCHAR* wvalue = iupwinStrChar2Wide("about:blank");
     HGLOBAL hHTMLText;
     int size = strlen(value)+1;
+    HRESULT hr;
 
     // Create the stream
     hHTMLText = GlobalAlloc(GPTR, size);
-    GlobalLock(hHTMLText);
+//    char* html_str = (char*)GlobalLock(hHTMLText);
     strcpy((char*)hHTMLText, value);
-    CreateStreamOnHGlobal(hHTMLText, TRUE, &pStream);
+//    strcpy(html_str, value);
+//    GlobalUnlock(hHTMLText);
+
+    hr = CreateStreamOnHGlobal(hHTMLText, TRUE, &pStream);
 
     // Retrieve the document object.
     pweb->Navigate(wvalue, NULL, NULL, NULL, NULL);
-    pweb->get_Document(&pHtmlDoc);
+//    pweb->Navigate(L"about:blank", NULL, NULL, NULL, NULL);
+    VARIANT_BOOL busy = VARIANT_FALSE;
+    //while (pweb->get_Busy(&busy) == S_OK && busy == VARIANT_TRUE);
+    hr = pweb->get_Document(&pHtmlDoc);
 
     // Query for IPersistStreamInit.
     pHtmlDoc->QueryInterface(IID_IPersistStreamInit, (void**)&pPersistStreamInit);
     //Initialize the document.
-    pPersistStreamInit->InitNew();
+    hr = pPersistStreamInit->InitNew();
     // Load the contents of the stream.
-    pPersistStreamInit->Load(pStream);
+    hr = pPersistStreamInit->Load(pStream);
 
     // Releases
-    pStream->Release();
     pPersistStreamInit->Release();
+    pStream->Release();
     pHtmlDoc->Release();
     free(wvalue);
-    GlobalUnlock(hHTMLText);
     GlobalFree(hHTMLText);
   }
   
@@ -188,6 +194,8 @@ static int winWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
   {
     IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
     WCHAR* wvalue = iupwinStrChar2Wide(value);
+    //CComVariant var = CComVariant("_top");
+    //pweb->Navigate(wvalue, NULL, &var, NULL, NULL);
     pweb->Navigate(wvalue, NULL, NULL, NULL, NULL);
     free(wvalue);
   }
@@ -202,7 +210,9 @@ static char* winWebBrowserGetValueAttrib(Ihandle* ih)
   {
     char* str = iupwinStrWide2Char(pbstrLocationURL);
     SysFreeString(pbstrLocationURL);
-    return str;
+    char* value = iupStrGetMemoryCopy(str);
+    free(str);
+    return value;
   }
   return NULL;
 }
