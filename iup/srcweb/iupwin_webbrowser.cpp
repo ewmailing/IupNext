@@ -100,6 +100,47 @@ public:
 ///////////////////////////////////////////////////////////////////////////////
 
 
+static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+  {
+    IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+    IDispatch* pHtmlDoc = NULL;
+    IPersistStreamInit* pPersistStreamInit = NULL;
+    IStream* pStream = NULL;
+    WCHAR* wvalue = iupwinStrChar2Wide("about:blank");
+    HGLOBAL hHTMLText;
+    int size = strlen(value)+1;
+
+    // Create the stream
+    hHTMLText = GlobalAlloc(GPTR, size);
+    GlobalLock(hHTMLText);
+    strcpy((char*)hHTMLText, value);
+    CreateStreamOnHGlobal(hHTMLText, TRUE, &pStream);
+
+    // Retrieve the document object.
+    pweb->Navigate(wvalue, NULL, NULL, NULL, NULL);
+    pweb->get_Document(&pHtmlDoc);
+
+    // Query for IPersistStreamInit.
+    pHtmlDoc->QueryInterface(IID_IPersistStreamInit, (void**)&pPersistStreamInit);
+    //Initialize the document.
+    pPersistStreamInit->InitNew();
+    // Load the contents of the stream.
+    pPersistStreamInit->Load(pStream);
+
+    // Releases
+    pStream->Release();
+    pPersistStreamInit->Release();
+    pHtmlDoc->Release();
+    free(wvalue);
+    GlobalUnlock(hHTMLText);
+    GlobalFree(hHTMLText);
+  }
+  
+  return 0; /* do not store value in hash table */
+}
+
 static int winWebBrowserSetBackForwardAttrib(Ihandle* ih, const char* value)
 {
   int i, val;
@@ -248,6 +289,7 @@ Iclass* iupWebBrowserGetClass(void)
   iupClassRegisterAttribute(ic, "BACKFORWARD", NULL, winWebBrowserSetBackForwardAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STOP", NULL, winWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RELOAD", NULL, winWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HTML", NULL, winWebBrowserSetHTMLAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   return ic;
 }

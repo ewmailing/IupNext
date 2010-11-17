@@ -108,7 +108,7 @@ void WebBrowserTest(void)
                                   btReload = IupButton("Reload", NULL),
                                   btStop = IupButton("Stop", NULL),
 #ifndef WIN32
-                                  history = IupButton("History", NULL), 
+                                  history = IupButton("History", NULL),
 #endif
                                   NULL), 
                                   web, NULL));
@@ -119,6 +119,8 @@ void WebBrowserTest(void)
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "GAP", "10");
 
+//   IupSetAttribute(web, "HTML", "<html><body><b>Hello</b>World!</body></html>");
+//   IupSetAttribute(txt, "VALUE", "My HTML");
   IupSetAttribute(web, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
   IupSetAttribute(txt, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
   IupSetAttributeHandle(dlg, "DEFAULTENTER", btLoad);

@@ -61,6 +61,13 @@ static char* gtkWebBrowserGetBackCountAttrib(Ihandle* ih)
   return str;
 }
 
+static int gtkWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+    webkit_web_view_load_string((WebKitWebView*)ih->handle, value, "text/html", "UTF-8", "");
+  return 0; /* do not store value in hash table */
+}
+
 static int gtkWebBrowserSetReloadAttrib(Ihandle* ih, const char* value)
 {
   webkit_web_view_reload((WebKitWebView*)ih->handle);
@@ -227,6 +234,7 @@ static void gtkWebBrowserInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "BACKFORWARD", NULL, gtkWebBrowserSetBackForwardAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STOP", NULL, gtkWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RELOAD", NULL, gtkWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HTML", NULL, gtkWebBrowserSetHTMLAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKCOUNT", gtkWebBrowserGetBackCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORWARDCOUNT", gtkWebBrowserGetForwardCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
