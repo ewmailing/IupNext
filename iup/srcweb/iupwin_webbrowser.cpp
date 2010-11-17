@@ -102,47 +102,44 @@ public:
 
 static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
 {
-  if (value)
+  if (!value)
+    return 0;
+
+  IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+  int size = strlen(value)+1;
+
+  // Create the memory for the stream
+  HGLOBAL hHTMLText = GlobalAlloc(GPTR, size);
+  strcpy((char*)hHTMLText, value); // weird but we follow the tutorial on MSDN
+
+  // Create the stream
+  IStream* pStream = NULL;
+  CreateStreamOnHGlobal(hHTMLText, TRUE, &pStream);
+
+  // Retrieve the document object.
+  IDispatch* pHtmlDoc = NULL;
+  pweb->get_Document(&pHtmlDoc);
+  if (!pHtmlDoc)
   {
-    IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
-    IDispatch* pHtmlDoc = NULL;
-    IPersistStreamInit* pPersistStreamInit = NULL;
-    IStream* pStream = NULL;
-    WCHAR* wvalue = iupwinStrChar2Wide("about:blank");
-    HGLOBAL hHTMLText;
-    int size = strlen(value)+1;
-    HRESULT hr;
+    pweb->Navigate(L"about:blank", NULL, NULL, NULL, NULL);
+    IupFlush();
 
-    // Create the stream
-    hHTMLText = GlobalAlloc(GPTR, size);
-//    char* html_str = (char*)GlobalLock(hHTMLText);
-    strcpy((char*)hHTMLText, value);
-//    strcpy(html_str, value);
-//    GlobalUnlock(hHTMLText);
-
-    hr = CreateStreamOnHGlobal(hHTMLText, TRUE, &pStream);
-
-    // Retrieve the document object.
-    pweb->Navigate(wvalue, NULL, NULL, NULL, NULL);
-//    pweb->Navigate(L"about:blank", NULL, NULL, NULL, NULL);
-    VARIANT_BOOL busy = VARIANT_FALSE;
-    //while (pweb->get_Busy(&busy) == S_OK && busy == VARIANT_TRUE);
-    hr = pweb->get_Document(&pHtmlDoc);
-
-    // Query for IPersistStreamInit.
-    pHtmlDoc->QueryInterface(IID_IPersistStreamInit, (void**)&pPersistStreamInit);
-    //Initialize the document.
-    hr = pPersistStreamInit->InitNew();
-    // Load the contents of the stream.
-    hr = pPersistStreamInit->Load(pStream);
-
-    // Releases
-    pPersistStreamInit->Release();
-    pStream->Release();
-    pHtmlDoc->Release();
-    free(wvalue);
-    GlobalFree(hHTMLText);
+    pweb->get_Document(&pHtmlDoc);
   }
+
+  // Query for IPersistStreamInit.
+  IPersistStreamInit* pPersistStreamInit = NULL;
+  pHtmlDoc->QueryInterface(IID_IPersistStreamInit, (void**)&pPersistStreamInit);
+  //Initialize the document.
+  pPersistStreamInit->InitNew();
+  // Load the contents of the stream.
+  pPersistStreamInit->Load(pStream);
+
+  // Releases
+  pPersistStreamInit->Release();
+  pStream->Release();
+  pHtmlDoc->Release();
+  GlobalFree(hHTMLText);
   
   return 0; /* do not store value in hash table */
 }
