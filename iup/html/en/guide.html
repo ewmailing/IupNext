@@ -236,6 +236,8 @@ iupluaole51 -&gt; iuplua51
 iuplua_pplot51 -&gt; iuplua51
                -&gt; iup_pplot
 iupole -&gt; iup
+iupweb -&gt; iupole (Windows)
+       -&gt; webkit-1.0 (Linux)
 
 (*) In Windows, &quot;<strong>iupwin</strong>&quot; is called &quot;<strong>iup</strong>&quot;. 
     In Linux and BSD &quot;<strong>iupgtk</strong>&quot; is called &quot;<strong>iup</strong>&quot;. 
@@ -272,9 +274,10 @@ LUA_LIB and LUA_BIN before using Tecmake.</p>
 <p>In Ubuntu you will need to install the following packages and their 
 dependencies (they are not installed by default):</p>
 <pre>libgtk2.0-dev (for the GTK driver)
-libmotif-dev and x11proto-print-dev (for the Motif driver, if used)
+    libmotif-dev and x11proto-print-dev (for the Motif driver, if used)
 libgl1-mesa-dev (for the IupGLCanvas)
 libglu1-mesa-dev (for the IupGLCanvas)
+libwebkit-dev (for the IupWebBrowser)
 </pre>
 <h3><a name="cpp">Using IUP in C++</a></h3>
 <p>IUP is a low level API, but at the same time a very simple and intuitive API. 
