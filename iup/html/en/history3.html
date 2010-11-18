@@ -50,10 +50,14 @@ version 3.x.<br>
 <ul>
 
 	<li><span class="hist_new">New:</span> HTML attribute in <strong>IupWebBrowser</strong> 
-	to load a string.</li>
+	to load a string. New COMPLETED_CB and ERROR_CB callbacks. New STATUS 
+	attribute.</li>
+	<li><span class="hist_changed">Changed:</span>
+    removed reason parameter from NAVIGATE_CB callback in <strong>IupWebBrowser</strong>.<strong> </strong>
+	VALUE attribute will load always on the top frame.</li>
 	<li><span class="hist_fixed">Fixed:</span> VALUE attribute of <strong>IupWebBrowser</strong> 
 	was write only in Windows. Memory allocation that affected NAVIGATE_CB and 
-	NEWWINDOW_CB in Windows.</li>
+	NEWWINDOW_CB in Windows. Added missing Lua binding pre-compiled libraries.</li>
 
 </ul>
 

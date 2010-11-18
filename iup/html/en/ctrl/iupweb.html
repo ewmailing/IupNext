@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -68,9 +68,11 @@ retrieve the current URL.</p>
 <p><strong>BACKFORWARD </strong>(write only): sets the number of steps away from the current 
 page and loads the history item. Negative values represent steps backward while 
 positive values represent steps forward.</p>
+<p><strong>STATUS</strong> (read only): returns the load status. Can be 
+&quot;LOADING&quot;, &quot;COMPLETED&quot; or &quot;FAILED&quot;. (since 3.3.1)</p>
 <p><strong>STOP </strong>(write only): stops any ongoing load in the webbrowser.</p>
 <p><strong>RELOAD</strong> (write only): reloads the page in the webbrowser.</p>
-<p><strong>HTML</strong> (write only): loads a given HTML content.</p>
+<p><strong>HTML</strong> (write only): loads a given HTML content. (since 3.3.1)</p>
 <p><strong>BACKCOUNT</strong> [GTK Only] (read only): gets the number of items that precede 
 the current page.</p>
 <p><strong>FORWARDCOUNT</strong> [GTK Only] (read only): gets the number of items that 
@@ -95,15 +97,34 @@ MAXSIZE</a>,
 also accepted.</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 
-<p><strong>NAVIGATE_CB</strong><tt>:</tt> action generated when the browser 
-requests a navigation to another page. It is called before navigation occurs<span>.</span></p>
-<pre>int function(Ihandle* <b>ih</b>, char* <b>reason</b>, char* <b>url</b>);  [in C]<strong>
-elem</strong>:navigate_cb(<b>reason</b>, <b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p><strong>COMPLETED_CB</strong><tt>:</tt> action generated when a page 
+successfully completed. <span>Can be called multiple times when a frame set 
+loads its frames, or when a page loads also other pages. </span>(since 3.3.1)</p>
+<pre>int function(Ihandle* <b>ih</b>, char* <b>url</b>);  [in C]<strong>
+elem</strong>:completed_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
-    <strong>reason</strong>: t<span id="result_box" class="" lang="en"><span style="" title="">he 
-action that the browser is requesting for a navigation.</span></span><br>
+    <strong>url</strong>: the URL address that completed.</p>
+
+<p><strong>ERROR_CB</strong><tt>:</tt> action generated when page load fail. 
+(since 3.3.1)</p>
+<pre>int function(Ihandle* <b>ih</b>, char* <b>url</b>);  [in C]<strong>
+elem</strong>:error_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+    <strong>url</strong>: the URL address that caused the error.</p>
+
+<p><strong>NAVIGATE_CB</strong><tt>:</tt> action generated when the browser 
+requests a navigation to another page. It is called before navigation occurs<span>. 
+Can be called multiple times when a frame set loads its frames, or when a page 
+loads also other pages.</span></p>
+<pre>int function(Ihandle* <b>ih</b>, char* <b>url</b>);  [in C]<strong>
+elem</strong>:navigate_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
 <strong>url</strong>: the URL address to navigate to.</p>
 
 <p><strong>NEWWINDOW_CB</strong><tt>:</tt> action generated when the browser 
