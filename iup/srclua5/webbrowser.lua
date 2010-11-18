@@ -20,7 +20,7 @@ int iupweblua_open(lua_State* L)
     IupWebBrowserOpen();
     
   iuplua_get_env(L);
-  iupwebcontrollua_open(L);
+  iupwebbrowserlua_open(L);
   return 0;
 }
 
