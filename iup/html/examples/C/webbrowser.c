@@ -37,9 +37,23 @@ static int history_cb(Ihandle* ih)
 }
 #endif
 
-static int navigate_cb(Ihandle* self, char* reason, char* url)
+static int navigate_cb(Ihandle* self, char* url)
 {
-  printf("NAVIGATE_CB: %s, %s\n", reason, url);
+  printf("NAVIGATE_CB: %s\n", url);
+  (void)self;
+  return IUP_DEFAULT;
+}
+                   
+static int error_cb(Ihandle* self, char* url)
+{
+  printf("ERROR_CB: %s\n", url);
+  (void)self;
+  return IUP_DEFAULT;
+}
+
+static int completed_cb(Ihandle* self, char* url)
+{
+  printf("COMPLETED_CB: %s\n", url);
   (void)self;
   return IUP_DEFAULT;
 }
@@ -76,6 +90,9 @@ static int reload_cb(Ihandle* self)
 {
   Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
   IupSetAttribute(web, "RELOAD", NULL);
+
+  //TEST:
+//  printf("STATUS=%s\n", IupGetAttribute(web, "STATUS"));
   return IUP_DEFAULT;
 }
 
@@ -85,8 +102,10 @@ static int load_cb(Ihandle* self)
   Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
   IupSetAttribute(web, "VALUE", IupGetAttribute(txt, "VALUE"));
 
+  //TEST:
 //  IupSetAttribute(txt, "VALUE", IupGetAttribute(web, "VALUE"));
 //  IupSetAttribute(web, "HTML", "<html><body><b>Hello</b>, World!</body></html>");
+//  IupSetAttribute(web, "VALUE", "http://www.microsoft.com");
 
   return IUP_DEFAULT;
 }
@@ -125,8 +144,9 @@ void WebBrowserTest(void)
 
 //   IupSetAttribute(web, "HTML", "<html><body><b>Hello</b>World!</body></html>");
 //   IupSetAttribute(txt, "VALUE", "My HTML");
-  IupSetAttribute(web, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
   IupSetAttribute(txt, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
+//  IupSetAttribute(txt, "VALUE", "file:///D:/tecgraf/iup/html/index.html");
+  IupSetAttribute(web, "VALUE", IupGetAttribute(txt, "VALUE"));
   IupSetAttributeHandle(dlg, "DEFAULTENTER", btLoad);
 
   IupSetAttribute(txt, "EXPAND", "HORIZONTAL");
@@ -141,6 +161,8 @@ void WebBrowserTest(void)
 
   IupSetCallback(web, "NEWWINDOW_CB", (Icallback)newwindow_cb);
   IupSetCallback(web, "NAVIGATE_CB", (Icallback)navigate_cb);
+  IupSetCallback(web, "ERROR_CB", (Icallback)error_cb);
+  IupSetCallback(web, "COMPLETED_CB", (Icallback)completed_cb);
 
   // Shows dialog
   IupShow(dlg);

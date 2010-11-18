@@ -21,7 +21,7 @@ endif
 
 NO_LUALINK = Yes
 USE_LOH_SUBDIR = Yes
-SRCLUA = webcontrol.lua
+SRCLUA = webbrowser.lua
 
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix il_, $(GC))

@@ -25,21 +25,17 @@
 #include "iup_drv.h"
 #include "iup_drvfont.h"
 
-
+/* to avoid the inclusion of iupwin_drv.h */
 extern "C" WCHAR* iupwinStrChar2Wide(const char* str);
 extern "C" char* iupwinStrWide2Char(const WCHAR* wstr);
 
-
-///////////////////////////////////////////////////////////////////////////////
-// Interface to get WebBrowserEvents
-///////////////////////////////////////////////////////////////////////////////
 
 #include <atlbase.h>
 #include <atlcom.h>
 #include <atlctl.h>
 
-#include <shlguid.h>   // IID_IWebBrowser2, DIID_DWebBrowserEvents2
-#include <exdispid.h>  // DISPID_*
+#include <shlguid.h>   /* IID_IWebBrowser2, DIID_DWebBrowserEvents2 */
+#include <exdispid.h>  /* DISPID_*   */
 
 using namespace ATL;
 
@@ -53,18 +49,19 @@ public:
 #ifdef DISPID_NEWWINDOW3
     SINK_ENTRY_EX(0, DIID_DWebBrowserEvents2, DISPID_NEWWINDOW3, NewWindow3)
 #endif
+    SINK_ENTRY_EX(0, DIID_DWebBrowserEvents2, DISPID_NAVIGATEERROR, NavigateError)
+    SINK_ENTRY_EX(0, DIID_DWebBrowserEvents2, DISPID_DOCUMENTCOMPLETE, DocumentComplete)
   END_SINK_MAP()
 
   void STDMETHODCALLTYPE BeforeNavigate2(IDispatch *pDisp, VARIANT *url, VARIANT *Flags, VARIANT *TargetFrameName,
                                          VARIANT *PostData, VARIANT *Headers, VARIANT_BOOL *Cancel)
   {
-    IFnss cbNavigate = (IFnss)IupGetCallback(ih, "NAVIGATE_CB");
-    if (cbNavigate)
+    IFns cb = (IFns)IupGetCallback(ih, "NAVIGATE_CB");
+    if (cb)
     {
-      char* resultString = iupwinStrWide2Char(url->bstrVal);
-      cbNavigate(ih, "NOREASON", resultString);
-      free(resultString);
-      // TO DO: detect types of action, like "link_clicked", "refresh", "form submitted", "backward/forward"
+      char* urlString = iupwinStrWide2Char(url->bstrVal);
+      cb(ih, urlString);
+      free(urlString);
     }
 
     (void)Cancel;
@@ -79,11 +76,11 @@ public:
   void STDMETHODCALLTYPE NewWindow3(IDispatch **ppDisp, VARIANT_BOOL *Cancel, DWORD dwFlags,
                                     BSTR bstrUrlContext, BSTR bstrUrl)
   {
-    IFns cbNewWindow = (IFns)IupGetCallback(ih, "NEWWINDOW_CB");
-    if (cbNewWindow)
+    IFns cb = (IFns)IupGetCallback(ih, "NEWWINDOW_CB");
+    if (cb)
     {
       char* urlString = iupwinStrWide2Char(bstrUrl);
-      cbNewWindow(ih, urlString);
+      cb(ih, urlString);
       free(urlString);
     }
 
@@ -93,11 +90,40 @@ public:
     (void)ppDisp;
   }
 #endif
+
+  void STDMETHODCALLTYPE NavigateError(IDispatch *pDisp, VARIANT *url, VARIANT *TargetFrameName, 
+                     VARIANT *StatusCode, VARIANT_BOOL *Cancel)
+  {
+    iupAttribSetStr(ih, "_IUPWEB_FAILED", "1");
+    IFns cb = (IFns)IupGetCallback(ih, "ERROR_CB");
+    if (cb)
+    {
+      char* urlString = iupwinStrWide2Char(url->bstrVal);
+      cb(ih, urlString);
+      free(urlString);
+    }
+
+    (void)TargetFrameName;
+    (void)StatusCode;
+    (void)Cancel;
+    (void)pDisp;
+  }
+
+  void STDMETHODCALLTYPE DocumentComplete(IDispatch *pDisp, VARIANT *url)
+  {
+    IFns cb = (IFns)IupGetCallback(ih, "COMPLETED_CB");
+    if (cb)
+    {
+      char* urlString = iupwinStrWide2Char(url->bstrVal);
+      cb(ih, urlString);
+      free(urlString);
+    }
+    (void)pDisp;
+  }
 };
 
 
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+/********************************************************************************/
 
 
 static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
@@ -108,34 +134,37 @@ static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
   int size = strlen(value)+1;
 
-  // Create the memory for the stream
+  /* Create the memory for the stream */
   HGLOBAL hHTMLText = GlobalAlloc(GPTR, size);
-  strcpy((char*)hHTMLText, value); // weird but we follow the tutorial on MSDN
+  strcpy((char*)hHTMLText, value); /* weird but we follow the tutorial on MSDN */
 
-  // Create the stream
+  /* Create the stream  */
   IStream* pStream = NULL;
   CreateStreamOnHGlobal(hHTMLText, TRUE, &pStream);
 
-  // Retrieve the document object.
+  /* Retrieve the document object. */
   IDispatch* pHtmlDoc = NULL;
   pweb->get_Document(&pHtmlDoc);
   if (!pHtmlDoc)
   {
+    iupAttribSetStr(ih, "_IUPWEB_FAILED", NULL);
+
     pweb->Navigate(L"about:blank", NULL, NULL, NULL, NULL);
     IupFlush();
 
     pweb->get_Document(&pHtmlDoc);
   }
 
-  // Query for IPersistStreamInit.
   IPersistStreamInit* pPersistStreamInit = NULL;
   pHtmlDoc->QueryInterface(IID_IPersistStreamInit, (void**)&pPersistStreamInit);
-  //Initialize the document.
+
+  /* Initialize the document. */
   pPersistStreamInit->InitNew();
-  // Load the contents of the stream.
+
+  /* Load the contents of the stream.  */
   pPersistStreamInit->Load(pStream);
 
-  // Releases
+  /* Releases */
   pPersistStreamInit->Release();
   pStream->Release();
   pHtmlDoc->Release();
@@ -185,6 +214,19 @@ static int winWebBrowserSetStopAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
+static char* winWebBrowserGetStatusAttrib(Ihandle* ih)
+{
+  IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+  READYSTATE plReadyState;
+  pweb->get_ReadyState(&plReadyState);
+  if (iupAttribGet(ih, "_IUPWEB_FAILED"))
+    return "FAILED";
+  else if (plReadyState == READYSTATE_COMPLETE)
+    return "COMPLETED";
+  else
+    return "LOADING";
+}
+
 static int winWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (value)
@@ -193,15 +235,13 @@ static int winWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
     WCHAR* wvalue = iupwinStrChar2Wide(value);
 
     VARIANT var;
-    VariantInit(&var);  //Initialize our variant
+    VariantInit(&var);  /* Initialize our variant */
     var.vt = VT_ARRAY | VT_UI1;
-    var.bstrVal = iupwinStrChar2Wide("_top");
-    pweb->Navigate(wvalue, NULL, &var, NULL, NULL);
+    var.bstrVal = L"_top";
 
-    //CComVariant var = CComVariant("_top");
-    //pweb->Navigate(wvalue, NULL, &var, NULL, NULL);
-    
-    //pweb->Navigate(wvalue, NULL, NULL, NULL, NULL);
+    iupAttribSetStr(ih, "_IUPWEB_FAILED", NULL);
+
+    pweb->Navigate(wvalue, NULL, &var, NULL, NULL);
     free(wvalue);
   }
   return 0;
@@ -228,26 +268,27 @@ static int winWebBrowserCreateMethod(Ihandle* ih, void **params)
   IupSetAttribute(ih, "PROGID", "Shell.Explorer.2");
   IupSetAttribute(ih, "DESIGNMODE", "NO");
 
-  // Get the current IUnknown*
+  /* Get the current IUnknown* */
   IUnknown *punk = (IUnknown*)IupGetAttribute(ih, "IUNKNOWN");
 
   IWebBrowser2 *pweb = NULL;
   punk->QueryInterface(IID_IWebBrowser2, (void **)&pweb);
   iupAttribSetStr(ih, "_IUPWEB_BROWSER", (char*)pweb);
 
-  // CComModule implements a COM server module, allowing a client to access the module's components
+  /* CComModule implements a COM server module, 
+     allowing a client to access the module's components  */
   CComModule* module = new CComModule();
 
-  // CSink object to capture events
+  /* CSink object to capture events */
   CSink* sink = new CSink();
 
-  // Set handle to use in CSink Interface
+  /* Set handle to use in CSink Interface */
   sink->ih = ih;
 
-  // Initializing ATL Support
+  /* Initializing ATL Support */
   module->Init(NULL, GetModuleHandle(NULL));
 
-  // Connecting to the server's outgoing interface
+  /* Connecting to the server's outgoing interface */
   sink->DispEventAdvise(punk);
 
   iupAttribSetStr(ih, "_IUPWEB_MODULE", (char*)module);
@@ -265,14 +306,14 @@ static void winWebBrowserDestroyMethod(Ihandle* ih)
   CComModule* module = (CComModule*)iupAttribGet(ih, "_IUPWEB_MODULE");
   CSink* sink = (CSink*)iupAttribGet(ih, "_IUPWEB_SINK");
 
-  // Get the current IUnknown*
+  /* Get the current IUnknown* */
   IUnknown *punk = (IUnknown*)IupGetAttribute(ih, "IUNKNOWN");
 
-  // Disconnecting from the server's outgoing interface
+  /* Disconnecting from the server's outgoing interface */
   sink->DispEventUnadvise(punk);
   delete sink;
 
-  // Terminating ATL support
+  /* Terminating ATL support */
   module->Term();
   delete module;
 
@@ -297,7 +338,8 @@ Iclass* iupWebBrowserGetClass(void)
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "NEWWINDOW_CB", "s");
-  iupClassRegisterCallback(ic, "NAVIGATE_CB", "ss");
+  iupClassRegisterCallback(ic, "NAVIGATE_CB", "s");
+  iupClassRegisterCallback(ic, "ERROR_CB", "s");
 
   /* Attributes */
   iupClassRegisterAttribute(ic, "VALUE", winWebBrowserGetValueAttrib, winWebBrowserSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
@@ -305,6 +347,7 @@ Iclass* iupWebBrowserGetClass(void)
   iupClassRegisterAttribute(ic, "STOP", NULL, winWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RELOAD", NULL, winWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HTML", NULL, winWebBrowserSetHTMLAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STATUS", winWebBrowserGetStatusAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   return ic;
 }

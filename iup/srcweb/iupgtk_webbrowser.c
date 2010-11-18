@@ -68,6 +68,17 @@ static int gtkWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
+static char* gtkWebBrowserGetStatusAttrib(Ihandle* ih)
+{
+  WebKitLoadStatus status = webkit_web_view_get_load_status((WebKitWebView*)ih->handle);
+  if (status == WEBKIT_LOAD_FAILED)
+    return "FAILED";
+  else if (status == WEBKIT_LOAD_FINISHED)
+    return "COMPLETED";
+  else
+    return "LOADING";
+}
+
 static int gtkWebBrowserSetReloadAttrib(Ihandle* ih, const char* value)
 {
   webkit_web_view_reload((WebKitWebView*)ih->handle);
@@ -108,9 +119,27 @@ static char* gtkWebBrowserGetValueAttrib(Ihandle* ih)
 
 /*********************************************************************************************/
 
+static void gtkWebBrowserDocumentLoadFinished(WebKitWebView *web_view, WebKitWebFrame *frame, Ihandle *ih)
+{
+  IFns cb = (IFns)IupGetCallback(ih, "COMPLETED_CB");
+  if (cb)
+    cb(ih, (char*)webkit_web_frame_get_uri(frame));
+}
+
+static gboolean gtkWebBrowserLoadError(WebKitWebView *web_view, WebKitWebFrame *frame,
+                                       gchar *uri, gpointer web_error, Ihandle *ih)
+{
+  IFns cb = (IFns)IupGetCallback(ih, "ERROR_CB");
+  if (cb)
+    cb(ih, uri);
+
+  return FALSE;
+}
+
 static int gtkWebBrowserNavigate(WebKitWebView *web_view, WebKitWebFrame *frame, WebKitNetworkRequest *request,
                                  WebKitWebNavigationAction *navigation_action, WebKitWebPolicyDecision *policy_decision, Ihandle *ih)
 {
+  /*
   char *strReason = iupStrGetMemory(50);
   WebKitWebNavigationReason reason = webkit_web_navigation_action_get_reason(navigation_action);
 
@@ -135,19 +164,20 @@ static int gtkWebBrowserNavigate(WebKitWebView *web_view, WebKitWebFrame *frame,
       sprintf(strReason, "%s", "OTHER");
       break;
   }
+  */
 
-  IFnss cbNavigate = (IFnss)IupGetCallback(ih, "NAVIGATE_CB");
-  if (cbNavigate)
-    cbNavigate(ih, strReason, (char*)webkit_network_request_get_uri(request));
+  IFns cb = (IFns)IupGetCallback(ih, "NAVIGATE_CB");
+  if (cb)
+    cb(ih, (char*)webkit_network_request_get_uri(request));
 
   return FALSE;
 }
 
 static WebKitWebView* gtkWebBrowserNewWindow(WebKitWebView  *web_view, WebKitWebFrame *frame, Ihandle *ih)
 {
-  IFns cbNewWindow = (IFns)IupGetCallback(ih, "NEWWINDOW_CB");
-  if (cbNewWindow)
-    cbNewWindow(ih, (char*)webkit_web_frame_get_uri(frame));
+  IFns cb = (IFns)IupGetCallback(ih, "NEWWINDOW_CB");
+  if (cb)
+    cb(ih, (char*)webkit_web_frame_get_uri(frame));
 
   return web_view;
 }
@@ -214,6 +244,8 @@ static int gtkWebBrowserMapMethod(Ihandle* ih)
 
   g_signal_connect(G_OBJECT(ih->handle), "create-web-view", G_CALLBACK(gtkWebBrowserNewWindow), ih);
   g_signal_connect(G_OBJECT(ih->handle), "navigation-policy-decision-requested", G_CALLBACK(gtkWebBrowserNavigate), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "load-error", G_CALLBACK(gtkWebBrowserLoadError), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "document-load-finished", G_CALLBACK(gtkWebBrowserDocumentLoadFinished), ih);
 
   gtk_widget_realize((GtkWidget*)scrolled_window);
   gtk_widget_realize(ih->handle);
@@ -235,6 +267,7 @@ static void gtkWebBrowserInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "STOP", NULL, gtkWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RELOAD", NULL, gtkWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HTML", NULL, gtkWebBrowserSetHTMLAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STATUS", gtkWebBrowserGetStatusAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKCOUNT", gtkWebBrowserGetBackCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORWARDCOUNT", gtkWebBrowserGetForwardCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
@@ -291,7 +324,8 @@ Iclass* iupWebBrowserGetClass(void)
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "NEWWINDOW_CB", "s");
-  iupClassRegisterCallback(ic, "NAVIGATE_CB", "ss");
+  iupClassRegisterCallback(ic, "NAVIGATE_CB", "s");
+  iupClassRegisterCallback(ic, "ERROR_CB", "s");
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

@@ -7,8 +7,10 @@ local ctrl = {
   creation = "",
   funcname = "WebBrowser",
   callback = {
-    navigate_cb = "ss",
+    navigate_cb = "s",
     newwindow_cb = "s",
+    error_cb = "s",
+    completed_cb = "s",
   },
   include = "iupweb.h",
   extracode = [[ 

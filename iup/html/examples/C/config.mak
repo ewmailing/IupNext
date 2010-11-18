@@ -77,14 +77,16 @@ SRC = sample.c
 #USE_OPENGL = Yes
 #SRC = glcanvas.c
 
-# IUPWEB SAMPLE
-#SRC = webbrowser.c
-#ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-#  LIBS += iupweb iupole
-#else
-#  LIBS += webkit-1.0
-#  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupweb.a
-#endif
+#IUPWEB_SAMPLE=Yes
+ifdef IUPWEB_SAMPLE
+  SRC = webbrowser.c
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    LIBS += iupweb iupole
+  else
+    LIBS += webkit-1.0
+    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupweb.a
+  endif
+endif
 
 #USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
@@ -100,14 +102,17 @@ SRC = sample.c
 #SRC = matrix.c
 #SRC = mdi.c
 
-#USE_IUPCONTROLS = Yes
-#LINKER = g++
-#SRC = pplot.cpp
-#ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-#  LIBS += iup_pplot cdpdflib
-#else
-#  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_pplot.a $(CD)/lib/$(TEC_UNAME)/libcdpdflib.a
-#endif
+#IUPPPLOT_SAMPLE=Yes
+ifdef IUPPPLOT_SAMPLE
+  USE_IUPCONTROLS = Yes
+  LINKER = g++
+  SRC = pplot.cpp
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    LIBS += iup_pplot cdpdflib
+  else
+    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_pplot.a $(CD)/lib/$(TEC_UNAME)/libcdpdflib.a
+  endif
+endif
 
 #USE_LUA51=Yes
 #USE_IUPLUA=Yes
