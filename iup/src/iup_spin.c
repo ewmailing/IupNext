@@ -375,8 +375,8 @@ Iclass* iupSpinboxGetClass(void)
 
 Ihandle* IupSpinbox(Ihandle* ctrl)
 {
-  void *params[2];
-  params[0] = (void*)ctrl;
-  params[1] = NULL;
-  return IupCreatev("spinbox", params);
+  void *children[2];
+  children[0] = (void*)ctrl;
+  children[1] = NULL;
+  return IupCreatev("spinbox", children);
 }

@@ -554,16 +554,16 @@ Iclass* iupTabsGetClass(void)
 
 Ihandle* IupTabs(Ihandle* first,...)
 {
-  Ihandle **params;
+  Ihandle **children;
   Ihandle *ih;
 
   va_list arglist;
   va_start(arglist, first);
-  params = (Ihandle**)iupObjectGetParamList(first, arglist);
+  children = (Ihandle**)iupObjectGetParamList(first, arglist);
   va_end(arglist);
 
-  ih = IupCreatev("tabs", (void**)params);
-  free(params);
+  ih = IupCreatev("tabs", (void**)children);
+  free(children);
 
   return ih;
 }

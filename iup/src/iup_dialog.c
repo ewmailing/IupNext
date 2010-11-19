@@ -743,10 +743,10 @@ static int iDialogSetMenuAttrib(Ihandle* ih, const char* value)
 
 Ihandle* IupDialog(Ihandle* child)
 {
-  void *params[2];
-  params[0] = child;
-  params[1] = NULL;
-  return IupCreatev("dialog", params);
+  void *children[2];
+  children[0] = child;
+  children[1] = NULL;
+  return IupCreatev("dialog", children);
 }
 
 Iclass* iupDialogGetClass(void)

@@ -140,10 +140,10 @@ static void iFrameSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
 Ihandle* IupFrame(Ihandle* child)
 {
-  void *params[2];
-  params[0] = (void*)child;
-  params[1] = NULL;
-  return IupCreatev("frame", params);
+  void *children[2];
+  children[0] = (void*)child;
+  children[1] = NULL;
+  return IupCreatev("frame", children);
 }
 
 Iclass* iupFrameGetClass(void)

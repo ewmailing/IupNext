@@ -239,7 +239,7 @@ int IupTuioListener::timer_action_cb(Ihandle *timer)
   if (!listener->locked)
     return IUP_DEFAULT;
 
-  int events_count = listener->cursor_events.size();
+  int events_count = (int)listener->cursor_events.size();
   int cursor_count = listener->client->CursorListCount();
   int total_count = events_count+cursor_count;
   if (!total_count)
@@ -377,8 +377,11 @@ static int iTuioCreateMethod(Ihandle* ih, void** params)
 {
   int port = 3333;
   if (params && params[0])
-    port = (int)(long)(params[0]); /* must cast to long first to avoid 64bit compiler error */
-  
+#if defined (WIN32) && defined (_M_X64)
+    port = (int)(long long)(params[0]);
+#else
+    port = (int)(long)(params[0]); /* must cast to long first to avoid 64bit C++ compiler error */
+#endif
   ih->data = iupALLOCCTRLDATA();
   
   ih->data->client = new TuioClient(port);

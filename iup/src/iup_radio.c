@@ -159,10 +159,10 @@ static void iRadioSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
 Ihandle* IupRadio(Ihandle* child)
 {
-  void *params[2];
-  params[0] = (void*)child;
-  params[1] = NULL;
-  return IupCreatev("radio", params);
+  void *children[2];
+  children[0] = (void*)child;
+  children[1] = NULL;
+  return IupCreatev("radio", children);
 }
 
 Iclass* iupRadioGetClass(void)
