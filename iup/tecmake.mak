@@ -842,6 +842,10 @@ ifdef USE_CD
     ifndef USE_GTK
       # Freetype is already included in GTK
       SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libfreetype.a
+    else
+      ifneq ($(findstring cygw, $(TEC_UNAME)), )
+        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libfreetype-6.a
+      endif
     endif
   else
     ifdef USE_XRENDER
@@ -858,8 +862,8 @@ ifdef USE_CD
     LIBS += cd$(CD_SUFFIX)
     LDIR += $(CD)/lib/$(TEC_UNAME_LIB_DIR)
     ifndef USE_GTK
-      # Freetype is already included in GTK
       ifndef NO_OVERRIDE
+        # Freetype is already included in GTK
         ifneq ($(findstring cygw, $(TEC_UNAME)), )
           LIBS += freetype-6
         else

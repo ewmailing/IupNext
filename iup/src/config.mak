@@ -30,6 +30,11 @@ ifdef DBG
 endif  
 
 INCLUDES = ../include .
+ifeq "$(TEC_SYSNAME)" "Win64"
+  WIN32VER = 0x0501
+else
+  WIN32VER = 0x0500
+endif
 
 SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font.c \
       iup_globalattrib.c iup_object.c iup_key.c iup_layout.c iup_ledlex.c iup_names.c iup_open.c \
@@ -56,7 +61,7 @@ ifdef USE_GTK
            gtk/iupgtk_tabs.c gtk/iupgtk_menu.c gtk/iupgtk_list.c gtk/iupgtk_tree.c
            
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-    DEFINES += _WIN32_WINNT=0x0500 _WIN32_IE=0x0500 WINVER=0x0500 NOTREEVIEW
+    DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=$(WIN32VER) WINVER=$(WIN32VER) NOTREEVIEW
     SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c
   else
     ifdef GTK_MAC
@@ -99,7 +104,7 @@ else
   SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c
 
   INCLUDES += win
-  DEFINES += _WIN32_WINNT=0x0500 _WIN32_IE=0x0500 WINVER=0x0500 NOTREEVIEW
+  DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=$(WIN32VER) WINVER=$(WIN32VER) NOTREEVIEW
 endif
 endif
 

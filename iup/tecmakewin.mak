@@ -27,7 +27,7 @@ TECMAKE  = $(TECMAKE_HOME)/tecmakewin.mak
 # then at least define main system variables.
 
 WIN32UNAMES = vc10 vc9 vc8 vc7 vc6 owc1 bc55 bc56 bc6 gcc3 gcc4 mingw3 mingw4 dllw4 dllg4 dll dll7 dll8 dll9 dll10
-WIN64UNAMES = vc10_64 vc9_64 vc8_64 dll8_64 dll9_64 dll10_64
+WIN64UNAMES = vc10_64 vc9_64 vc8_64 dll8_64 dll9_64 dll10_64 gcc4_64 mingw4_64 dllw4_64 dllg4_64
 
 ifdef TEC_UNAME
   ifneq ($(findstring $(TEC_UNAME), $(WIN32UNAMES)), )
@@ -42,7 +42,7 @@ endif
 ifdef TEC_WIN64
   TEC_SYSNAME=Win64
   TEC_SYSARCH=x64
-  # This if is not working, because make from Cygwin returns x86 even when running in AMD64.
+  # This is not working, because make from Cygwin returns x86 even when running in AMD64.
   ifeq ($(PROCESSOR_ARCHITECTURE), x86)
     # Define this if compiling for 64-bits in a 32bits environment
     #USE_X86_CL64=XXX
@@ -265,11 +265,11 @@ endif
 ifneq ($(findstring mingw, $(TEC_UNAME)), )
   TARGETLIB := $(TARGETDIR)/lib$(TARGETNAME).a
 endif
-ifneq ($(findstring dllg4, $(TEC_UNAME)), )
-  TARGETLIB := $(TARGETDIR)/$(TARGETNAME).a
+ifneq ($(findstring dllg, $(TEC_UNAME)), )
+  TARGETLIB := $(TARGETDIR)/lib$(TARGETNAME).dll.a
 endif
-ifneq ($(findstring dllw4, $(TEC_UNAME)), )
-  TARGETLIB := $(TARGETDIR)/$(TARGETNAME).a
+ifneq ($(findstring dllw, $(TEC_UNAME)), )
+  TARGETLIB := $(TARGETDIR)/lib$(TARGETNAME).a
 endif
 
 ifdef NO_ECHO
@@ -306,6 +306,16 @@ GLUT ?= x:/lng/glut
 OBJEXT = obj
 LIBEXT = lib
 
+ifneq ($(findstring _64, $(TEC_UNAME)), )
+  BUILD64 = Yes
+endif
+
+ifneq ($(findstring dll, $(TEC_UNAME)), )
+  USE_DLL = Yes
+endif
+
+##########################################################################
+
 ifeq "$(TEC_UNAME)" "vc6"
   COMPILER = $(VC6)
 endif
@@ -320,41 +330,27 @@ endif
 
 ifeq "$(TEC_UNAME)" "vc8_64"
   COMPILER = $(VC8)
-  BUILD64 = Yes
   SDKLIBBIN = /amd64
 endif
 
-ifeq "$(TEC_UNAME)" "vc9"
+ifneq ($(findstring vc9, $(TEC_UNAME)), )
   COMPILER = $(VC9)
 endif
 
-ifeq "$(TEC_UNAME)" "vc9_64"
-  COMPILER = $(VC9)
-  BUILD64 = Yes
-endif
-
-ifeq "$(TEC_UNAME)" "vc10"
+ifneq ($(findstring vc10, $(TEC_UNAME)), )
   COMPILER = $(VC10)
-endif
-
-ifeq "$(TEC_UNAME)" "vc10_64"
-  COMPILER = $(VC10)
-  BUILD64 = Yes
 endif
 
 ifeq "$(TEC_UNAME)" "dll"
   COMPILER = $(VC6)
-  USE_DLL = Yes
 endif
 
 ifeq "$(TEC_UNAME)" "dll7"
   COMPILER = $(VC7)
-  USE_DLL = Yes
 endif
 
 ifeq "$(TEC_UNAME)" "dll8"
   COMPILER = $(VC8)
-  USE_DLL = Yes
   ifdef DBG
     #debug info not working for dll8 linker
     define DBG
@@ -364,31 +360,15 @@ endif
 
 ifeq "$(TEC_UNAME)" "dll8_64"
   COMPILER = $(VC8)
-  USE_DLL = Yes
-  BUILD64 = Yes
   SDKLIBBIN = /amd64
 endif
 
-ifeq "$(TEC_UNAME)" "dll9"
+ifneq ($(findstring dll9, $(TEC_UNAME)), )
   COMPILER = $(VC9)
-  USE_DLL = Yes
 endif
 
-ifeq "$(TEC_UNAME)" "dll9_64"
-  COMPILER = $(VC9)
-  USE_DLL = Yes
-  BUILD64 = Yes
-endif
-
-ifeq "$(TEC_UNAME)" "dll10"
+ifneq ($(findstring dll10, $(TEC_UNAME)), )
   COMPILER = $(VC10)
-  USE_DLL = Yes
-endif
-
-ifeq "$(TEC_UNAME)" "dll10_64"
-  COMPILER = $(VC10)
-  USE_DLL = Yes
-  BUILD64 = Yes
 endif
 
 ifeq "$(COMPILER)" "$(VC6)"
@@ -560,20 +540,22 @@ ifeq "$(TEC_CC)" "vc"
     endif
   else
     ifdef USE_MT
-	    ifdef DBG
-	      STDFLAGS += -MTd
-	    else
-	      STDFLAGS += -MT
-	    endif
+      ifdef DBG
+        STDFLAGS += -MTd
+      else
+        STDFLAGS += -MT
+      endif
     else
-	    ifdef DBG
-	      STDFLAGS += -MLd
-	    else
-	      STDFLAGS += -ML
-	    endif
+      ifdef DBG
+        STDFLAGS += -MLd
+      else
+        STDFLAGS += -ML
+      endif
     endif
   endif
 endif
+
+##########################################################################
 
 ifeq "$(TEC_UNAME)" "owc1"
   COMPILER = $(OWC1)
@@ -606,6 +588,8 @@ ifeq "$(TEC_CC)" "wc"
     STDFLAGS += -bm -br
   endif
 endif
+
+##########################################################################
 
 ifeq "$(TEC_UNAME)" "bc55"
   COMPILER = $(BC55)
@@ -657,17 +641,18 @@ ifeq "$(TEC_CC)" "bc"
   endif
 endif
 
-ifeq "$(TEC_UNAME)" "gcc3"
-  COMPILER = $(GCC3)
-  TEC_CC  = gcc
-  ifdef USE_OPENGL
-    STDDEFS += -DUSE_OPENGL32
-  endif
+##########################################################################
+
+ifneq ($(findstring gcc, $(TEC_UNAME)), )
+  TEC_CC = gcc
 endif
 
-ifeq "$(TEC_UNAME)" "gcc4"
-  COMPILER = $(GCC4)
-  TEC_CC  = gcc
+ifneq ($(findstring mingw, $(TEC_UNAME)), )
+  TEC_CC = gcc
+endif
+
+ifeq "$(TEC_UNAME)" "gcc3"
+  COMPILER = $(GCC3)
   ifdef USE_OPENGL
     STDDEFS += -DUSE_OPENGL32
   endif
@@ -675,32 +660,33 @@ endif
 
 ifeq "$(TEC_UNAME)" "mingw3"
   COMPILER = $(MINGW3)
-  TEC_CC  = gcc
   OLD_OPENGL = Yes
 endif
 
-ifeq "$(TEC_UNAME)" "mingw4"
-  COMPILER = $(MINGW4)
-  TEC_CC  = gcc
-  OLD_OPENGL = Yes
-endif
-
-ifeq "$(TEC_UNAME)" "dllg4"
-  # USE_DLL is unused by gcc but we define it anyway
-  USE_DLL = Yes
+ifneq ($(findstring gcc4, $(TEC_UNAME)), )
   COMPILER = $(GCC4)
-  TEC_CC  = gcc
+endif
+
+ifneq ($(findstring mingw4, $(TEC_UNAME)), )
+  COMPILER = $(MINGW4)
+  OLD_OPENGL = Yes
+endif
+
+ifneq ($(findstring dllg4, $(TEC_UNAME)), )
+  COMPILER = $(GCC4)
+  TEC_CC = gcc
+endif
+
+ifneq ($(findstring dllw4, $(TEC_UNAME)), )
+  COMPILER = $(MINGW4)
+  TEC_CC = gcc
+  OLD_OPENGL = Yes
+endif
+
+ifeq "$(COMPILER)" "$(GCC4)"
   ifdef USE_OPENGL
     STDDEFS += -DUSE_OPENGL32
   endif
-endif
-
-ifeq "$(TEC_UNAME)" "dllw4"
-  # USE_DLL is unused by gcc but we define it anyway
-  USE_DLL = Yes
-  COMPILER = $(MINGW4)
-  TEC_CC  = gcc
-  OLD_OPENGL = Yes
 endif
 
 ifeq "$(TEC_CC)" "gcc"
@@ -739,6 +725,8 @@ ifeq "$(TEC_CC)" "gcc"
     endif
   endif
 endif
+
+##########################################################################
 
 ifdef DBG
   STDFLAGS += $(DEBUGFLAGS)
