@@ -31,7 +31,7 @@
 
 #include <iostream>
 #include <iomanip>
-#include <ctime>
+#include <time.h>
 
 
 namespace osc{
@@ -110,11 +110,11 @@ std::ostream& operator<<( std::ostream & os,
             {
                 os << "OSC-timetag:" << arg.AsTimeTagUnchecked();
 
-                std::time_t t =
+                time_t t =
                         (unsigned long)( arg.AsTimeTagUnchecked() >> 32 );
 
                 // strip trailing newline from string returned by ctime
-                const char *timeString = std::ctime( &t );
+                const char *timeString = ctime( &t );
                 size_t len = strlen( timeString );
                 char *s = new char[ len + 1 ];
                 strcpy( s, timeString );

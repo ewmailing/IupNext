@@ -354,9 +354,9 @@ static int iTuioSetConnectAttrib(Ihandle* ih, const char* value)
 static char* iTuioGetConnectAttrib(Ihandle *ih)
 {
   if (ih->data->client->isConnected())
-    return "Yes";
+    return (char*)"Yes";
   else
-    return "No";
+    return (char*)"No";
 }
 
 static int iTuioSetDebugAttrib(Ihandle* ih, const char* value)
@@ -368,9 +368,9 @@ static int iTuioSetDebugAttrib(Ihandle* ih, const char* value)
 static char* iTuioGetDebugAttrib(Ihandle *ih)
 {
   if (ih->data->listener->debug)
-    return "Yes";
+    return (char*)"Yes";
   else
-    return "No";
+    return (char*)"No";
 }
 
 static int iTuioCreateMethod(Ihandle* ih, void** params)
@@ -410,8 +410,8 @@ static Iclass* iTuioGetClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
-  ic->name = "tuioclient";
-  ic->format = "i";  /* (int) */
+  ic->name = (char*)"tuioclient";
+  ic->format = (char*)"i";  /* (int) */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;
