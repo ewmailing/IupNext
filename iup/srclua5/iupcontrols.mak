@@ -25,6 +25,8 @@ endif
 NO_LUALINK = Yes
 USE_LOH_SUBDIR = Yes
 SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua cells.lua
+USE_BIN2C_LUA=Yes
+
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix il_, $(GC))
 

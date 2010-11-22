@@ -28,6 +28,7 @@ endif
 DEFINES = IUPLUA_USELOH
 USE_LOH_SUBDIR = Yes
 SRCLUA = console5.lua indent.lua
+USE_BIN2C_LUA=Yes
 
 # Disable strip
 STRIP = 

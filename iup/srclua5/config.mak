@@ -16,6 +16,7 @@ endif
 
 NO_LUALINK = Yes
 USE_LOH_SUBDIR = Yes
+USE_BIN2C_LUA=Yes
 
 INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  

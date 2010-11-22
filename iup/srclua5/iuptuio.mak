@@ -24,6 +24,7 @@ IUP := ..
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
 NO_LUALINK = Yes
+USE_BIN2C_LUA=Yes
 
 ifdef USE_LUA52
   LOHDIR = loh52
