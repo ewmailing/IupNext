@@ -59,20 +59,32 @@ cd xxxx
 
 [copy the downloaded files, to the xxxx directory]
 
-tar -xpvzf iup-3.2_Sources.tar.gz
-tar -xpvzf cd-5.4_Sources.tar.gz
+tar -xpvzf lua5_1_4_Sources.tar.gz    [optional, see note bellow]
 tar -xpvzf im-3.6.2_Sources.tar.gz
-tar -xpvzf lua5_1_4_Sources.tar.gz    [optional, see note bellow]</pre>
+tar -xpvzf cd-5.4_Sources.tar.gz
+tar -xpvzf iup-3.2_Sources.tar.gz
+</pre>
 <p>If you are going to build all the libraries, the makefiles and projects 
 expect the following directory tree:</p>
 <pre>/xxxx/
-      cd/
+      lua5.1/    [optional, see note bellow]
       im/
-      iup/
-      lua5.1/    [optional, see note bellow]</pre>
+      cd/
+      iup/</pre>
 
 <p>If you unpack all the source packages in the same directory, that structure will 
 be automatically created.</p>
+<p>If you want to use some of these libraries that are installed on the system 
+(see Installation section bellow) you will have to define some environment 
+variables before building them. For example:</p>
+<pre class="example">export IM_INC=/usr/include/im
+export IM_LIB=/usr/lib           [not necessary, already included by gcc]
+
+export CD_INC=/usr/include/cd
+export CD_LIB=/usr/lib           [not necessary, already included by gcc]
+
+export IUP_INC=/usr/include/iup
+export IUP_LIB=/usr/lib          [not necessary, already included by gcc]</pre>
 <h3>Lua</h3>
 <p>Although we use Lua from LuaBinaries, any Lua installation can also be used. 
 In Ubuntu, the Lua run time package is:</p>
@@ -115,9 +127,9 @@ in <strong>Source Forge</strong>, with <strong>&quot;xxx-X.X_Linux26g4_lib</stro
 and <strong>&quot;xxx-X.X_Linux26g4_64_lib.tar.gz&quot;</strong> names.</p>
 <p>Do not extract different pre-compiled binaries in the same directory, create a 
 subdirectory for each one, for example:</p>
-<pre>mkdir iup
-cd iup
-tar -xpvzf ../iup-3.2_Linux26g4_lib.tar.gz
+<pre>mkdir im
+cd im
+tar -xpvzf ../im-3.6.2_Linux26g4_lib.tar.gz
 cd ..
 
 mkdir cd
@@ -125,11 +137,10 @@ cd cd
 tar -xpvzf ../cd-5.4_Linux26g4_lib.tar.gz
 cd ..
 
-mkdir im
-cd im
-tar -xpvzf ../im-3.6.2_Linux26g4_lib.tar.gz
+mkdir iup
+cd iup
+tar -xpvzf ../iup-3.2_Linux26g4_lib.tar.gz
 cd ..
-
 </pre>
 <p>For the installation instructions bellow, remove the &quot;lib/Linux26g4&quot; from the 
 following examples if you are using the pre-compiled binaries.</p>
@@ -137,23 +148,25 @@ following examples if you are using the pre-compiled binaries.</p>
 
 <p>After building you can copy the libraries files to the system directory. If you are inside 
 the main directory, to install the run time libraries you can type, for example:</p>
-<pre>sudo cp -f iup/lib/Linux26g4/*.so /usr/lib               [script version: <a href="../download/install">install</a> ]
-sudo cp -f cd/lib/Linux26g4/*.so /usr/lib                               
-sudo cp -f im/lib/Linux26g4/*.so /usr/lib</pre>
+<pre>sudo cp -f im/lib/Linux26g4/*.so /usr/lib               [script version: <a href="../download/install">install</a> ]
+sudo cp -f cd/lib/Linux26g4/*.so /usr/lib
+sudo cp -f iup/lib/Linux26g4/*.so /usr/lib
+</pre>
 <p>To install the development files, 
 then do:</p>
-<pre>sudo mkdir -p /usr/include/iup                           [script version: <a href="../download/install_dev">install_dev</a> ]
-sudo cp -f iup/include/*.h /usr/include/iup             
-sudo cp -f iup/lib/Linux26g4/*.a /usr/lib                               
+<pre>sudo mkdir -p /usr/include/im                           [script version: <a href="../download/install_dev">install_dev</a> ]
+sudo cp -fR im/include/*.h /usr/include/im
+sudo cp -f im/lib/Linux26g4/*.a /usr/lib
 
 sudo mkdir -p /usr/include/cd
 sudo cp -f cd/include/*.h /usr/include/cd
 sudo cp -f cd/lib/Linux26g4/*.a /usr/lib
 
-sudo mkdir -p /usr/include/im
-sudo cp -fR im/include/*.h /usr/include/im
-sudo cp -f im/lib/Linux26g4/*.a /usr/lib</pre>
-<p>Then in your makefile use -Iiup -Icd -Iim for includes. There is no need to 
+sudo mkdir -p /usr/include/iup
+sudo cp -f iup/include/*.h /usr/include/iup             
+sudo cp -f iup/lib/Linux26g4/*.a /usr/lib                               
+</pre>
+<p>Then in your makefile use -Iim -Icd -Iiup for includes. There is no need to 
 specify the libraries directory with -L. Development files are only necessary if 
 you are going to compile an application or library in C/C++ that uses there 
 libraries. To just run Lua scripts they are not necessary.</p>
@@ -162,7 +175,7 @@ libraries. To just run Lua scripts they are not necessary.</p>
 directory, you can use them from build directory. You will need to add the run time 
 libraries folders to 
 the LD_LIBRARY_PATH, for example:</p>
-<pre>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/xxxx/iup/lib/Linux26g4:/xxxx/cd/lib/Linux26g4:/xxxx/im/lib/Linux26g4</pre>
+<pre>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/xxxx/im/lib/Linux26g4:/xxxx/cd/lib/Linux26g4:/xxxx/iup/lib/Linux26g4</pre>
 <p>And in your makefile will will also need to specify those paths 
 when linking using -L/xxxx/iup/lib/Linux26g4, and for compiling use 
 -I/xxxx/iup/include.</p>

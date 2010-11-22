@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.3
+VERSION = 4.4
 
 
 #---------------------------------#
@@ -679,16 +679,19 @@ endif
 ifdef USE_IUPCONTROLS
   override USE_CD = Yes
   override USE_IUP = Yes
+  IUP_LIB ?= $(IUP)/lib/$(TEC_UNAME_LIB_DIR)
+  
   ifdef USE_IUPLUA
     ifdef USE_STATIC
-      SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupluacontrols$(LIBLUASUFX).a
+      SLIB += $(IUP_LIB)/libiupluacontrols$(LIBLUASUFX).a
     else
       LIBS += iupluacontrols$(LIBLUASUFX)
     endif
     override USE_CDLUA = Yes
   endif
+  
   ifdef USE_STATIC
-    SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupcontrols.a
+    SLIB += $(IUP_LIB)/libiupcontrols.a
   else
     LIBS += iupcontrols
   endif
@@ -696,8 +699,9 @@ endif
 
 ifdef USE_IMLUA
   override USE_IM = Yes
+  IM_LIB ?= $(IM)/lib/$(TEC_UNAME_LIB_DIR)
   ifdef USE_STATIC
-    SLIB += $(IM)/lib/$(TEC_UNAME_LIB_DIR)/libimlua$(LIBLUASUFX).a
+    SLIB += $(IM_LIB)/libimlua$(LIBLUASUFX).a
   else
     LIBS += imlua$(LIBLUASUFX)
   endif
@@ -705,8 +709,9 @@ endif
 
 ifdef USE_CDLUA
   override USE_CD = Yes
+  CD_LIB ?= $(CD)/lib/$(TEC_UNAME_LIB_DIR)
   ifdef USE_STATIC
-    SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdlua$(LIBLUASUFX).a
+    SLIB += $(CD_LIB)/libcdlua$(LIBLUASUFX).a
   else
     LIBS += cdlua$(LIBLUASUFX)
   endif
@@ -714,14 +719,16 @@ endif
 
 ifdef USE_IUPLUA
   override USE_IUP = Yes
+  IUP_LIB ?= $(IUP)/lib/$(TEC_UNAME_LIB_DIR)
+  
   ifdef USE_STATIC
     ifdef USE_CD
-      SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupluacd$(LIBLUASUFX).a
+      SLIB += $(IUP_LIB)/libiupluacd$(LIBLUASUFX).a
     endif
     ifdef USE_OPENGL
-      SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupluagl$(LIBLUASUFX).a
+      SLIB += $(IUP_LIB)/libiupluagl$(LIBLUASUFX).a
     endif
-    SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiuplua$(LIBLUASUFX).a
+    SLIB += $(IUP_LIB)/libiuplua$(LIBLUASUFX).a
   else
     ifdef USE_CD
       LIBS += iupluacd$(LIBLUASUFX)
@@ -755,13 +762,17 @@ ifdef USE_LUA
     endif
   endif
 
-  LUA_INC   ?= $(LUA)/include
+  LUA_INC ?= $(LUA)/include
   INCLUDES += $(LUA_INC)
 
   LUA_BIN ?= $(LUA)/bin/$(TEC_UNAME)
-  BIN2C     := $(LUA_BIN)/bin2c$(LUA_SUFFIX)
-  LUAC      := $(LUA_BIN)/luac$(LUA_SUFFIX)
-  LUABIN    := $(LUA_BIN)/lua$(LUA_SUFFIX)
+  ifdef USE_BIN2C_LUA
+    BIN2C := $(LUA_BIN)/lua$(LUA_SUFFIX) $(BIN2C_PATH)bin2c.lua
+  else
+    BIN2C := $(LUA_BIN)/bin2c$(LUA_SUFFIX)
+  endif
+  LUAC   := $(LUA_BIN)/luac$(LUA_SUFFIX)
+  LUABIN := $(LUA_BIN)/lua$(LUA_SUFFIX)
 endif
 
 ifdef USE_IUP
@@ -789,14 +800,17 @@ ifdef USE_IUP
       override USE_MOTIF = Yes
     endif
   endif
+  
+  IUP_LIB ?= $(IUP)/lib/$(TEC_UNAME_LIB_DIR)
+
   ifdef USE_STATIC
     ifdef USE_CD
-      SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupcd.a
+      SLIB += $(IUP_LIB)/libiupcd.a
     endif
     ifdef USE_OPENGL
-      SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiupgl.a
+      SLIB += $(IUP_LIB)/libiupgl.a
     endif
-    SLIB += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)/libiup$(IUP_SUFFIX).a
+    SLIB += $(IUP_LIB)/libiup$(IUP_SUFFIX).a
   else
     ifdef USE_CD
       LIBS += iupcd
@@ -805,9 +819,11 @@ ifdef USE_IUP
       LIBS += iupgl
     endif
     LIBS += iup$(IUP_SUFFIX)
-    LDIR += $(IUP)/lib/$(TEC_UNAME_LIB_DIR)
+    LDIR += $(IUP_LIB)
   endif
-  INCLUDES += $(IUP)/include
+
+  IUP_INC ?= $(IUP)/include
+  INCLUDES += $(IUP_INC)
 endif
 
 ifdef USE_CD
@@ -826,25 +842,28 @@ ifdef USE_CD
       endif
     endif
   endif
+  
+  CD_LIB ?= $(CD)/lib/$(TEC_UNAME_LIB_DIR)
+  
   ifdef USE_STATIC
     ifdef USE_XRENDER
       CHECK_XRENDER = Yes
-      SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdcontextplus.a
+      SLIB += $(CD_LIB)/libcdcontextplus.a
       LIBS += Xrender Xft
     endif
     ifdef USE_CAIRO
       # To use Cairo with X11 base driver (NOT for GDK)
       # Can NOT be used together with XRender
-      SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcdcairo.a
+      SLIB += $(CD_LIB)/libcdcairo.a
       LIBS += pangocairo-1.0 cairo
     endif
-    SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libcd$(CD_SUFFIX).a
+    SLIB += $(CD_LIB)/libcd$(CD_SUFFIX).a
     ifndef USE_GTK
       # Freetype is already included in GTK
-      SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libfreetype.a
+      SLIB += $(CD_LIB)/libfreetype.a
     else
       ifneq ($(findstring cygw, $(TEC_UNAME)), )
-        SLIB += $(CD)/lib/$(TEC_UNAME_LIB_DIR)/libfreetype-6.a
+        SLIB += $(CD_LIB)/libfreetype-6.a
       endif
     endif
   else
@@ -860,7 +879,7 @@ ifdef USE_CD
       LIBS += pangocairo-1.0 cairo
     endif
     LIBS += cd$(CD_SUFFIX)
-    LDIR += $(CD)/lib/$(TEC_UNAME_LIB_DIR)
+    LDIR += $(CD_LIB)
     ifndef USE_GTK
       ifndef NO_OVERRIDE
         # Freetype is already included in GTK
@@ -872,17 +891,22 @@ ifdef USE_CD
       endif
     endif
   endif
-  INCLUDES += $(CD)/include
+
+  CD_INC ?= $(CD)/include
+  INCLUDES += $(CD_INC)
 endif
 
 ifdef USE_IM
+  IM_LIB ?= $(IM)/lib/$(TEC_UNAME_LIB_DIR)
   ifdef USE_STATIC
-    SLIB += $(IM)/lib/$(TEC_UNAME_LIB_DIR)/libim.a
+    SLIB += $(IM_LIB)/libim.a
   else
     LIBS += im
-    LDIR += $(IM)/lib/$(TEC_UNAME_LIB_DIR)
+    LDIR += $(IM_LIB)
   endif
-  INCLUDES += $(IM)/include
+
+  IM_INC ?= $(IM)/include
+  INCLUDES += $(IM_INC)
 endif
 
 ifdef USE_GLUT

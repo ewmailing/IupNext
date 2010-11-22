@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.3
+VERSION = 4.4
 
 
 #---------------------------------#
@@ -691,6 +691,10 @@ endif
 
 ifeq "$(TEC_CC)" "gcc"
   WIN_OTHER = YES
+  ifdef BUILD64
+    STDDEFS += -DWIN64
+    GTK := $(GTK)_x64
+  endif
   ifneq "$(findstring mingw, $(COMPILER))" ""
     BIN   = $(COMPILER)/bin/
   endif
@@ -894,13 +898,17 @@ ifdef USE_LUA
   LUA_LIB ?= $(LUA)/lib/$(TEC_UNAME)
   LDIR += $(LUA_LIB)
 
-  LUA_INC   ?= $(LUA)/include
+  LUA_INC ?= $(LUA)/include
   INCLUDES += $(LUA_INC)
 
   LUA_BIN ?= $(LUA)/bin/$(TEC_SYSNAME)
-  BIN2C     := $(LUA_BIN)/bin2c$(LUA_SUFFIX)
-  LUAC      := $(LUA_BIN)/luac$(LUA_SUFFIX)
-  LUABIN    := $(LUA_BIN)/lua$(LUA_SUFFIX)
+  ifdef USE_BIN2C_LUA
+    BIN2C := $(LUA_BIN)/lua$(LUA_SUFFIX) $(BIN2C_PATH)bin2c.lua
+  else
+    BIN2C := $(LUA_BIN)/bin2c$(LUA_SUFFIX)
+  endif
+  LUAC   := $(LUA_BIN)/luac$(LUA_SUFFIX)
+  LUABIN := $(LUA_BIN)/lua$(LUA_SUFFIX)
 endif
 
 ifdef USE_IUP
@@ -912,16 +920,22 @@ ifdef USE_IUP
   else
     LIBS += iup
   endif
-  LDIR += $(IUP)/lib/$(TEC_UNAME)
+  
+  IUP_LIB ?= $(IUP)/lib/$(TEC_UNAME)
+  LDIR += $(IUP_LIB)
+  
   ifdef USE_OPENGL
     LIBS += iupgl
   endif
+  
   ifdef USE_DLL
     ifeq ($(MAKETYPE), APP)
       LIBS += iupstub
     endif
   endif
-  INCLUDES += $(IUP)/include
+
+  IUP_INC ?= $(IUP)/include
+  INCLUDES += $(IUP_INC)
 endif
 
 ifdef USE_CD
@@ -929,25 +943,36 @@ ifdef USE_CD
     CHECK_GDIPLUS = Yes
     LIBS += cdcontextplus gdiplus
   endif
+  
   ifdef USE_CAIRO
     # To use Cairo with Win32 base driver (NOT for GDK)
     # Can NOT be used together with GDI+
     LIBS += cdcairo pangocairo-1.0 cairo
   endif
+  
   ifdef USE_GDK
     LIBS += cdgdk
   else
     LIBS += cd
   endif
+  
   LIBS += freetype6
-  LDIR += $(CD)/lib/$(TEC_UNAME)
-  INCLUDES += $(CD)/include
+  
+  CD_LIB ?= $(CD)/lib/$(TEC_UNAME)
+  LDIR += $(CD_LIB)
+
+  CD_INC ?= $(CD)/include
+  INCLUDES += $(CD_INC)
 endif
 
 ifdef USE_IM
   LIBS += im
-  LDIR += $(IM)/lib/$(TEC_UNAME)
-  INCLUDES += $(IM)/include
+  
+  IM_LIB ?= $(IM)/lib/$(TEC_UNAME)
+  LDIR += $(IM_LIB)
+
+  IM_INC ?= $(IM)/include
+  INCLUDES += $(IM_INC)
 endif
 
 ifdef USE_OPENGL
