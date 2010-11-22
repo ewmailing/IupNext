@@ -118,6 +118,13 @@ ifneq ($(findstring dll, $(TEC_UNAME)), )
   INCLUDES += ../etc
   SRC += ../etc/iup.rc
   DEF_FILE = iup.def
+  ifndef USE_GTK
+    ifeq ($(findstring dllg, $(TEC_UNAME)), )
+      ifeq ($(findstring dllw, $(TEC_UNAME)), )
+        LFLAGS = /EXPORT:iupwinStrChar2Wide /EXPORT:iupwinStrWide2Char
+      endif
+    endif
+  endif
 endif
 
 ifeq "$(TEC_UNAME)" "vc6"

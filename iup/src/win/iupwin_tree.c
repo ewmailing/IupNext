@@ -167,6 +167,7 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
   itemData->image_expanded = -1;
   itemData->kind = (unsigned char)kind;
 
+  ZeroMemory(&item, sizeof(TVITEM));
   item.mask = TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT; 
   item.pszText = (char*)title;
   item.lParam = (LPARAM)itemData;
@@ -436,18 +437,6 @@ static int winTreeSelectedArrayFunc(Ihandle* ih, HTREEITEM hItem, int id, winTre
   }
 
   return 1;
-}
-
-static Iarray* winTreeGetSelectedArray(Ihandle* ih)
-{
-  Iarray* markedArray = iupArrayCreate(1, sizeof(HTREEITEM));
-  winTreeSelArray selarray;
-  selarray.markedArray = markedArray;
-  selarray.is_handle = 1;
-
-  iupTreeForEach(ih, (iupTreeNodeFunc)winTreeSelectedArrayFunc, &selarray);
-
-  return markedArray;
 }
 
 static Iarray* winTreeGetSelectedArrayId(Ihandle* ih)
