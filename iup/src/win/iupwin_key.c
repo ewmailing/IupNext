@@ -17,14 +17,6 @@
 #include "iupwin_drv.h"
                    
                    
-#ifndef VK_OEM_PLUS
-#define VK_OEM_PLUS       0xBB   /* '+' any country */
-#define VK_OEM_COMMA      0xBC   /* ',' any country */
-#define VK_OEM_MINUS      0xBD   /* '-' any country */
-#define VK_OEM_PERIOD     0xBE   /* '.' any country */
-#define VK_OEM_102        0xE2   /*  "<>" or "\|" on RT 102-key kbd. */
-#endif
-
 typedef struct _Iwin2iupkey
 {
   int wincode;

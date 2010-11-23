@@ -26,7 +26,8 @@
 #include "iupwin_handle.h"
 
 
-#ifndef PBS_MARQUEE             /* it is defined only when _WIN32_WINNT >= 0x0501 */
+/* Not defined in Cygwin and MingW */
+#ifndef PBS_MARQUEE            
 #define PBS_MARQUEE             0x08
 #define PBM_SETMARQUEE          (WM_USER+10)
 #endif

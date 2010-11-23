@@ -22,11 +22,12 @@
 #include "iupwin_drv.h"
 
 
+/* Not defined for Cygwin or MingW */
 #ifndef OFN_FORCESHOWHIDDEN
-#define OFN_FORCESHOWHIDDEN          0x10000000    /* Show All files including System and hidden files */
+#define OFN_FORCESHOWHIDDEN          0x10000000
 #endif
 
-#define MAX_FILENAME_SIZE 65000
+#define IUP_MAX_FILENAME_SIZE 65000
 #define IUP_PREVIEWCANVAS 3000
 
 enum {IUP_DIALOGOPEN, IUP_DIALOGSAVE, IUP_DIALOGDIR};
@@ -63,7 +64,7 @@ static INT CALLBACK winFileDlgBrowseCallback(HWND hWnd, UINT uMsg, LPARAM lParam
   }
   else if (uMsg == BFFM_SELCHANGED)
   {
-    char buffer[MAX_FILENAME_SIZE];
+    char buffer[IUP_MAX_FILENAME_SIZE];
     ITEMIDLIST* selecteditem = (ITEMIDLIST*)lParam;
     buffer[0] = 0;
     SHGetPathFromIDList(selecteditem, buffer);
@@ -114,7 +115,7 @@ static void winFileDlgGetFolder(Ihandle *ih)
 
 static int winFileDlgGetSelectedFile(Ihandle* ih, HWND hWnd, char* filename)
 {
-  int ret = CommDlg_OpenSave_GetFilePath(GetParent(hWnd), filename, MAX_FILENAME_SIZE);
+  int ret = CommDlg_OpenSave_GetFilePath(GetParent(hWnd), filename, IUP_MAX_FILENAME_SIZE);
   if (ret < 0)
     return 0;
 
@@ -183,7 +184,7 @@ static UINT_PTR CALLBACK winFileDlgSimpleHook(HWND hWnd, UINT uiMsg, WPARAM wPar
           IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
           if (cb)
           {
-            char filename[MAX_FILENAME_SIZE];
+            char filename[IUP_MAX_FILENAME_SIZE];
             if (winFileDlgGetSelectedFile(ih, hWnd, filename))
             {
               int ret;
@@ -298,7 +299,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
         Ihandle* ih = (Ihandle*)GetWindowLongPtr(hWnd, DWLP_USER);
         /* callback here always exists */
         IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-        char filename[MAX_FILENAME_SIZE];
+        char filename[IUP_MAX_FILENAME_SIZE];
         iupAttribSetStr(ih, "PREVIEWDC", (char*)lpDrawItem->hDC);
         if (winFileDlgGetSelectedFile(ih, hWnd, filename))
         {
@@ -357,7 +358,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
       case CDN_SELCHANGE:
         {
           HWND hWndPreview = GetDlgItem(hWnd, IUP_PREVIEWCANVAS);
-          char filename[MAX_FILENAME_SIZE];
+          char filename[IUP_MAX_FILENAME_SIZE];
           if (winFileDlgGetSelectedFile(ih, hWnd, filename))
           {
             int ret;
@@ -484,17 +485,17 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
     }
   }
 
-  openfilename.lpstrFile = (char*)malloc(MAX_FILENAME_SIZE+1);
+  openfilename.lpstrFile = (char*)malloc(IUP_MAX_FILENAME_SIZE+1);
   value = iupAttribGet(ih, "FILE");
   if (value)
   {
-    strncpy(openfilename.lpstrFile, value, MAX_FILENAME_SIZE);
+    strncpy(openfilename.lpstrFile, value, IUP_MAX_FILENAME_SIZE);
     winFileDlgStrReplacePathSlash(openfilename.lpstrFile);
   }
   else
     openfilename.lpstrFile[0] = 0;
 
-  openfilename.nMaxFile = MAX_FILENAME_SIZE;
+  openfilename.nMaxFile = IUP_MAX_FILENAME_SIZE;
 
   openfilename.lpstrInitialDir = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
   if (openfilename.lpstrInitialDir)

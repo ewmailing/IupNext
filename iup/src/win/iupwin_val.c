@@ -13,6 +13,7 @@
 #include <math.h>
 #include <memory.h>
 #include <stdarg.h>
+#include <limits.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -27,10 +28,6 @@
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
 
-
-#ifndef SHRT_MAX
-#define SHRT_MAX 32767
-#endif
 
 void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
 {

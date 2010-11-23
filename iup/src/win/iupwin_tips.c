@@ -19,7 +19,7 @@
 #include "iupwin_handle.h"
 
 
-#ifndef TTM_POPUP   /* it is defined only when _WIN32_WINNT >= 0x0501 */
+#ifndef TTM_POPUP   /* Not defined for MingW and Cygwin */
 #define TTM_POPUP  (WM_USER + 34)
 #endif
 

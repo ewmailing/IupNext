@@ -30,7 +30,8 @@
 #include "iupwin_draw.h"
 
 
-#ifndef EM_SETCUEBANNER      /* defined only if _WIN32_WINNT >= 0x501 */
+/* Not defined in Cygwin and MingW */
+#ifndef EM_SETCUEBANNER      
 #define ECM_FIRST               0x1500      /* Edit control messages */
 #define	EM_SETCUEBANNER	    (ECM_FIRST + 1)
 #endif

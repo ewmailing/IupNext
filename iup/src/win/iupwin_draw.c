@@ -4,8 +4,6 @@
  * See Copyright Notice in "iup.h"
  */
 
-#undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0501
 #include <windows.h>
 #include <uxtheme.h>
 #include <tmschema.h>
@@ -31,14 +29,7 @@
 
 
 #ifndef TABP_AEROWIZARDBODY
-#define TABP_AEROWIZARDBODY  11  /* manually added definition */
-#endif
-
-#ifndef TMT_FILLCOLORHINT
-#define TMT_FILLCOLORHINT 3821
-#endif
-#ifndef TMT_TEXTCOLOR
-#define TMT_TEXTCOLOR 3823
+#define TABP_AEROWIZARDBODY  11  /* Not defined for MingW and Cygwin */
 #endif
 
 

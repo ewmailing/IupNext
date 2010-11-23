@@ -19,11 +19,9 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 
-/* not defined for gcc */
-#ifndef WM_CHANGEUISTATE
-#define WM_CHANGEUISTATE                0x0127
-#endif
-#ifndef UIS_CLEAR
+
+/* Not defined for MingW and Cygwin */
+#ifndef UIS_CLEAR               
 #define UIS_CLEAR                       2
 #endif
 #ifndef UISF_HIDEFOCUS

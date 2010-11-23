@@ -31,8 +31,8 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 
-/* Cygwin and MingW Win32api does not define these */
 
+/* Not defined for Cygwin and MingW */
 #ifndef PFN_ARABIC
 #define PFN_ARABIC		2
 #define PFN_LCLETTER	3
@@ -68,12 +68,13 @@
 #define SES_UPPERCASE			512
 #define	SES_LOWERCASE			1024
 #endif
-/*   End Cygwin/MingW */
 
-#ifndef EM_SETCUEBANNER      /* defined only if _WIN32_WINNT >= 0x501 */
+#ifndef EM_SETCUEBANNER 
 #define ECM_FIRST               0x1500      /* Edit control messages */
 #define	EM_SETCUEBANNER	    (ECM_FIRST + 1)
 #endif
+/*   End Cygwin/MingW */
+
 
 #define WM_IUPCARET WM_APP+1   /* Custom IUP message */
 

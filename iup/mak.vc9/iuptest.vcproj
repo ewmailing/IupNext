@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\include;..\..\cd\include;D:\LNG\vld\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WIN32_WINNT=0x0500;_WIN32_IE=0x0500;_CRT_SECURE_NO_DEPRECATE;__IUPDEF_H;BIG_TEST;USE_OPENGL;PPLOT_TEST"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;__IUPDEF_H;BIG_TEST;USE_OPENGL;PPLOT_TEST"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"

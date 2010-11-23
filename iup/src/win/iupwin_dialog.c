@@ -34,7 +34,7 @@
 #include "iupwin_info.h"
 
 
-#define IWIN_TRAY_NOTIFICATION 102
+#define IUPWIN_TRAY_NOTIFICATION 102
 
 static int WM_HELPMSG;
 
@@ -350,7 +350,7 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
 
       break;
     }
-  case WM_USER+IWIN_TRAY_NOTIFICATION:
+  case WM_USER+IUPWIN_TRAY_NOTIFICATION:
     {
       int dclick  = 0;
       int button  = 0;
@@ -1056,15 +1056,6 @@ static char* winDialogGetMdiNextAttrib(Ihandle *ih)
   return NULL;
 }
 
-/* define this here, so we do not need to define _WIN32_WINNT=0x0500 */
-#ifndef WS_EX_LAYERED
-#define WS_EX_LAYERED           0x00080000
-#endif
-
-#ifndef LWA_ALPHA
-#define LWA_ALPHA               0x00000002
-#endif
-
 typedef BOOL (WINAPI*winSetLayeredWindowAttributes)(
   HWND hwnd,
   COLORREF crKey,
@@ -1181,7 +1172,7 @@ static void winDialogTrayMessage(HWND hWnd, DWORD dwMessage, HICON hIcon, PSTR p
   if (dwMessage == NIM_ADD)
   {
     tnd.uFlags = NIF_MESSAGE;
-    tnd.uCallbackMessage = WM_USER+IWIN_TRAY_NOTIFICATION;
+    tnd.uCallbackMessage = WM_USER+IUPWIN_TRAY_NOTIFICATION;
   }
   else if (dwMessage == NIM_MODIFY)
   {

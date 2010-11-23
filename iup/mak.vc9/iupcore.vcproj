@@ -345,38 +345,14 @@
 			<File
 				RelativePath="..\src\win\iupwindows_help.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="_WIN32_WINNT=0x0500;_WIN32_IE=0x0500"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\src\win\iupwindows_info.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="_WIN32_WINNT=0x0500;_WIN32_IE=0x0500"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\src\win\iupwindows_main.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="_WIN32_WINNT=0x0500;_WIN32_IE=0x0500"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter

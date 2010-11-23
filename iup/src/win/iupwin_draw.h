@@ -36,7 +36,7 @@ typedef struct _iupwinBitmapDC
 HDC iupwinDrawCreateBitmapDC(iupwinBitmapDC *bmpDC, HDC hDC, int w, int h);
 void iupwinDrawDestroyBitmapDC(iupwinBitmapDC *bmpDC);
 
-#ifndef ODS_HOTLIGHT     /* Only defined if WINVER >= 0x0500 */
+#ifndef ODS_HOTLIGHT     /* Not defined for MingW and Cygwin */
 #define ODS_HOTLIGHT        0x0040
 #endif
 

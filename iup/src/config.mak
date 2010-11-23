@@ -30,11 +30,7 @@ ifdef DBG
 endif  
 
 INCLUDES = ../include .
-ifeq "$(TEC_SYSNAME)" "Win64"
-  WIN32VER = 0x0501
-else
-  WIN32VER = 0x0500
-endif
+WIN32VER = 0x0501
 
 SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font.c \
       iup_globalattrib.c iup_object.c iup_key.c iup_layout.c iup_ledlex.c iup_names.c iup_open.c \
@@ -108,11 +104,6 @@ else
 endif
 endif
 
-ifeq "$(TEC_SYSNAME)" "SunOS"
-  # Necessary or the fileopen will not work in SunOS (needs to be retested)
-  #DEFINES += NO_PATH_MODE_RELATIVE
-endif
-
 ifneq ($(findstring dll, $(TEC_UNAME)), )
   DEFINES += IUP_DLL
   INCLUDES += ../etc
@@ -129,21 +120,22 @@ endif
 
 ifeq "$(TEC_UNAME)" "vc6"
   # Necessary because VC6 has an old WinSDK
-  #WINSDK = d:/lng/vc7/PlatformSDK
-  #INCLUDES += $(WINSDK)/include
-  #LDIR = $(WINSDK)/lib
+  PLATSDK = $(VC7)/PlatformSDK
 endif
 
 ifeq "$(TEC_UNAME)" "dll"
   # Necessary because VC6 has an old WinSDK
-  #WINSDK = d:/lng/vc7/PlatformSDK
-  #INCLUDES += $(WINSDK)/include
-  #LDIR = $(WINSDK)/lib
+  PLATSDK = $(VC7)/PlatformSDK
 endif
 
 ifeq "$(TEC_UNAME)" "owc1"
-  # Necessary or IUP 3 will not work in Open Watcom
+  # Necessary or IUP 3 will not work in Open Watcom (needs to be retested)
   DBG=Yes
+endif
+
+ifeq "$(TEC_SYSNAME)" "SunOS"
+  # Necessary or the fileopen will not work in SunOS (needs to be retested)
+  #DEFINES += NO_PATH_MODE_RELATIVE
 endif
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )

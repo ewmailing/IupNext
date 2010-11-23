@@ -12,11 +12,6 @@ extern "C" {
 #endif
 
 
-#ifndef WS_EX_COMPOSITED
-#define WS_EX_COMPOSITED        0x02000000L     /* it is defined only when _WIN32_WINNT >= 0x0501 */
-#endif
-
-
 /* global variables */
 /* declared where they are initialized */
 extern HINSTANCE iupwin_hinstance;      /* winopen.c */

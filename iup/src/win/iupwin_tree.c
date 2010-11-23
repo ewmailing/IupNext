@@ -31,17 +31,8 @@
 #include "iupwin_info.h"
 
 
-typedef struct _winTreeItemData
-{
-  COLORREF color;
-  unsigned char kind;
-  HFONT hFont;
-  short image;
-  short image_expanded;
-} winTreeItemData;
 
-/* Vista Only */
-
+/* Not defined for Cygwin and MingW */
 #ifndef TVN_ITEMCHANGING                          
 typedef struct tagNMTVITEMCHANGE {
     NMHDR hdr;
@@ -62,6 +53,17 @@ typedef struct tagNMTVITEMCHANGE {
 #ifndef TVM_SETEXTENDEDSTYLE
 #define TVM_SETEXTENDEDSTYLE      (TV_FIRST + 44)
 #endif
+/* End Cygwin/MingW */
+
+
+typedef struct _winTreeItemData
+{
+  COLORREF color;
+  unsigned char kind;
+  HFONT hFont;
+  short image;
+  short image_expanded;
+} winTreeItemData;
 
 
 static void winTreeSetFocusNode(Ihandle* ih, HTREEITEM hItem);

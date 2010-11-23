@@ -29,11 +29,7 @@
 #include "iupwin_info.h"
 
 
-#ifndef CDIS_SHOWKEYBOARDCUES
-#define CDIS_SHOWKEYBOARDCUES   0x0200    /* it is defined only when _WIN32_WINNT >= 0x0501 */
-#endif
-
-/* not defined in gcc (Cygwin or MingW) */
+/* Not defined in MingW and Cygwin */
 #ifndef ODS_NOACCEL
 #define ODS_NOACCEL   0x0100
 #endif
