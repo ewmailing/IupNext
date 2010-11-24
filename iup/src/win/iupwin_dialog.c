@@ -729,6 +729,7 @@ static int winDialogMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "DIALOGFRAME")) 
   {
     iupAttribSetStr(ih, "RESIZE", "NO");
+    iupAttribSetStr(ih, "MAXBOX", "NO");
     iupAttribSetStr(ih, "MINBOX", "NO");
   }
 
@@ -738,7 +739,12 @@ static int winDialogMapMethod(Ihandle* ih)
     has_border = 1;
   }
   else
-    iupAttribSetStr(ih, "MAXBOX", "NO");  /* Must also remove this to RESIZE=NO work */
+    iupAttribSetStr(ih, "MAXBOX", "NO");
+  if (iupAttribGetBoolean(ih, "MENUBOX"))
+  {
+    dwStyle |= WS_SYSMENU;
+    has_titlebar = 1;
+  }
   if (iupAttribGetBoolean(ih, "MAXBOX"))
   {
     dwStyle |= WS_MAXIMIZEBOX;
@@ -747,11 +753,6 @@ static int winDialogMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "MINBOX"))
   {
     dwStyle |= WS_MINIMIZEBOX;
-    has_titlebar = 1;
-  }
-  if (iupAttribGetBoolean(ih, "MENUBOX"))
-  {
-    dwStyle |= WS_SYSMENU;
     has_titlebar = 1;
   }
   if (iupAttribGetBoolean(ih, "BORDER") || has_titlebar)

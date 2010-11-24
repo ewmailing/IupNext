@@ -185,8 +185,8 @@ client area covers the screen area, menu and decorations will be there but out
 of the screen. In UNIX there is a chance that the placement won't work 
 correctly, that depends on the Window Manager.</p>
 <p><strong>RESIZE</strong> (creation only): Allows interactively changing the 
-dialog’s size. Default: YES. In Motif the decorations are controlled by the 
-Window Manager and may not be possible to be changed from IUP. </p>
+dialog’s size. Default: YES. If RESIZE=NO then MAXBOX will be set to NO. In Motif the decorations are controlled by the 
+Window Manager and may not be possible to be changed from IUP.</p>
 <p><strong>SAVEUNDER</strong> [Windows and Motif Only] (creation only): When 
 this attribute is true (YES), the dialog stores the original image of the 
 desktop region it occupies (if the system has enough memory to store the image). 

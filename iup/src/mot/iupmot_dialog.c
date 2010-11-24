@@ -896,14 +896,16 @@ static int motDialogMapMethod(Ihandle* ih)
 
   if (iupAttribGet(ih, "TITLE"))
     has_titlebar = 1;
+  if (iupAttribGetBoolean(ih, "RESIZE"))
+  {
+    mwm_decor |= MWM_DECOR_RESIZEH;
+    mwm_decor |= MWM_DECOR_BORDER;  /* has_border */
+  }
+  else
+    iupAttribSetStr(ih, "MAXBOX", "NO");
   if (iupAttribGetBoolean(ih, "MENUBOX"))
   {
     mwm_decor |= MWM_DECOR_MENU;
-    has_titlebar = 1;
-  }
-  if (iupAttribGetBoolean(ih, "MINBOX"))
-  {
-    mwm_decor |= MWM_DECOR_MINIMIZE;
     has_titlebar = 1;
   }
   if (iupAttribGetBoolean(ih, "MAXBOX"))
@@ -911,10 +913,10 @@ static int motDialogMapMethod(Ihandle* ih)
     mwm_decor |= MWM_DECOR_MAXIMIZE;
     has_titlebar = 1;
   }
-  if (iupAttribGetBoolean(ih, "RESIZE"))
+  if (iupAttribGetBoolean(ih, "MINBOX"))
   {
-    mwm_decor |= MWM_DECOR_RESIZEH;
-    mwm_decor |= MWM_DECOR_BORDER;  /* has_border */
+    mwm_decor |= MWM_DECOR_MINIMIZE;
+    has_titlebar = 1;
   }
   if (has_titlebar)
     mwm_decor |= MWM_DECOR_TITLE;

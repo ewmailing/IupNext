@@ -484,27 +484,28 @@ static int gtkDialogMapMethod(Ihandle* ih)
   /* initialize the widget */
   gtk_widget_realize(ih->handle);
 
-  if (iupAttribGetBoolean(ih, "DIALOGFRAME")) {
+  if (iupAttribGetBoolean(ih, "DIALOGFRAME"))
+  {
     iupAttribSetStr(ih, "RESIZE", "NO");
-  }
-
-  if (!iupAttribGetBoolean(ih, "RESIZE")) {
-    iupAttribSetStr(ih, "MAXBOX", "NO");  /* Must also remove these, so RESIZE=NO can work */
+    iupAttribSetStr(ih, "MAXBOX", "NO");
     iupAttribSetStr(ih, "MINBOX", "NO");
   }
 
   if (iupAttribGet(ih, "TITLE"))
     has_titlebar = 1;
+  if (iupAttribGetBoolean(ih, "RESIZE")) 
+  {
+    functions   |= GDK_FUNC_RESIZE;
+    decorations |= GDK_DECOR_RESIZEH;
+
+    decorations |= GDK_DECOR_BORDER;  /* has_border */
+  }
+  else
+    iupAttribSetStr(ih, "MAXBOX", "NO");
   if (iupAttribGetBoolean(ih, "MENUBOX")) 
   {
     functions   |= GDK_FUNC_CLOSE;
     decorations |= GDK_DECOR_MENU;
-    has_titlebar = 1;
-  }
-  if (iupAttribGetBoolean(ih, "MINBOX")) 
-  {
-    functions   |= GDK_FUNC_MINIMIZE;
-    decorations |= GDK_DECOR_MINIMIZE;
     has_titlebar = 1;
   }
   if (iupAttribGetBoolean(ih, "MAXBOX")) 
@@ -513,12 +514,11 @@ static int gtkDialogMapMethod(Ihandle* ih)
     decorations |= GDK_DECOR_MAXIMIZE;
     has_titlebar = 1;
   }
-  if (iupAttribGetBoolean(ih, "RESIZE")) 
+  if (iupAttribGetBoolean(ih, "MINBOX")) 
   {
-    functions   |= GDK_FUNC_RESIZE;
-    decorations |= GDK_DECOR_RESIZEH;
-
-    decorations |= GDK_DECOR_BORDER;  /* has_border */
+    functions   |= GDK_FUNC_MINIMIZE;
+    decorations |= GDK_DECOR_MINIMIZE;
+    has_titlebar = 1;
   }
   if (has_titlebar)
   {
