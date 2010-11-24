@@ -108,6 +108,7 @@ static void InitPlots(void)
 
   theFac = (float)2.0/100;
   IupPPlotBegin(plot[0], 0);
+#if 0
   for (theI=-100; theI<=100; theI++) 
   {
     x = (float)theI;
@@ -115,6 +116,22 @@ static void InitPlots(void)
     IupPPlotAdd(plot[0], x, y);
   }
   IupPPlotEnd(plot[0]);
+#else
+  {
+    int index = IupPPlotEnd(plot[0]); /* add an empty plot */
+    float px[210], py[210];
+    int count = 0;
+    for (theI=-100; theI<=100; theI++) 
+    {
+      x = (float)theI;
+      y = -theFac*theI;
+      px[theI+100] = x;
+      py[theI+100] = y;
+      count++;
+    }
+    IupPPlotAddPoints(plot[0], index, px, py, count);
+  }
+#endif
   IupSetAttribute(plot[0], "DS_LEGEND", "Curve 1");
 
   IupPPlotBegin(plot[0], 0);

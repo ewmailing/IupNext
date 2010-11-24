@@ -87,9 +87,9 @@ function write_creation(o, t)
       elseif p == "i" then io.write("iuplua_checkihandle(L, ",aux.n,")")
       elseif p == "I" then io.write("iuplua_checkihandleornil(L, ",aux.n,")")
       elseif p == "-" then io.write("NULL")
-      elseif p == "a" then io.write("iuplua_checkstring_array(L, ",aux.n,")")
-      elseif p == "t" then io.write("iuplua_checkint_array(L, ",aux.n,")")
-      elseif p == "v" then io.write("iuplua_checkihandle_array(L, ",aux.n,")")
+      elseif p == "a" then io.write("iuplua_checkstring_array(L, ",aux.n,",0)")
+      elseif p == "t" then io.write("iuplua_checkint_array(L, ",aux.n,",0)")
+      elseif p == "v" then io.write("iuplua_checkihandle_array(L, ",aux.n,",0)")
       else io.write("FORMAT '", p, "' NOT SUPPORTED\n")
       end
       if aux.n < max then io.write(", ") end

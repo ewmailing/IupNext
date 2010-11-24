@@ -4,6 +4,8 @@
  * See Copyright Notice in "iup.h"
  */
 
+#include <stdlib.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 
@@ -100,6 +102,56 @@ static int PPlotInsert(lua_State *L)
   return 0;
 }
 
+static int PPlotInsertPoints(lua_State *L)
+{
+  float *px, *py;
+  int count = luaL_checkinteger(L, 6);
+  px = iuplua_checkfloat_array(L, 4, count);
+  py = iuplua_checkfloat_array(L, 5, count);
+  IupPPlotInsertPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  free(px);
+  free(py);
+  return 0;
+}
+
+static int PPlotInsertStrPoints(lua_State *L)
+{
+  float *py;
+  char* *px;
+  int count = luaL_checkinteger(L, 6);
+  px = iuplua_checkstring_array(L, 4, count);
+  py = iuplua_checkfloat_array(L, 5, count);
+  IupPPlotInsertStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  free(px);
+  free(py);
+  return 0;
+}
+
+static int PPlotAddPoints(lua_State *L)
+{
+  float *px, *py;
+  int count = luaL_checkinteger(L, 5);
+  px = iuplua_checkfloat_array(L, 3, count);
+  py = iuplua_checkfloat_array(L, 4, count);
+  IupPPlotAddPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  free(px);
+  free(py);
+  return 0;
+}
+
+static int PPlotAddStrPoints(lua_State *L)
+{
+  float *py;
+  char* *px;
+  int count = luaL_checkinteger(L, 5);
+  px = iuplua_checkstring_array(L, 3, count);
+  py = iuplua_checkfloat_array(L, 4, count);
+  IupPPlotAddStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  free(px);
+  free(py);
+  return 0;
+}
+
 static int PPlotTransform(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -129,6 +181,11 @@ void iuplua_pplotfuncs_open (lua_State *L)
   iuplua_register(L, PPlotEnd         ,"PPlotEnd");
   iuplua_register(L, PPlotInsertStr   ,"PPlotInsertStr");
   iuplua_register(L, PPlotInsert      ,"PPlotInsert");
+  iuplua_register(L, PPlotInsertPoints    ,"PPlotInsertPoints");
+  iuplua_register(L, PPlotInsertStrPoints ,"PPlotInsertStrPoints");
+  iuplua_register(L, PPlotAddPoints       ,"PPlotAddPoints");
+  iuplua_register(L, PPlotAddStrPoints    ,"PPlotAddStrPoints");
+
   iuplua_register(L, PPlotTransform   ,"PPlotTransform");
   iuplua_register(L, PPlotPaintTo     ,"PPlotPaintTo");
 }

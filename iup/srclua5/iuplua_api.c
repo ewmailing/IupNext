@@ -479,12 +479,10 @@ static int ListDialog(lua_State *L)
 {
   int type = luaL_checkint(L,1);
   int size = luaL_checkint(L,3);
-  char** list = iuplua_checkstring_array(L, 4);
-  int* marks = lua_isnoneornil(L, 8)? NULL: iuplua_checkint_array(L,8);
+  char** list = iuplua_checkstring_array(L, 4, size);
+  int* marks = lua_isnoneornil(L, 8)? NULL: iuplua_checkint_array(L,8,0);
   int i, ret;
 
-  if (size != iuplua_getn(L, 4))
-    luaL_error(L, "invalid number of elements in the list.");
   if (!marks && type==2)
     luaL_error(L, "invalid marks, must not be nil.");
   if (marks && type==2 && size != iuplua_getn(L, 8))

@@ -124,29 +124,30 @@ void iuplua_register_cb(lua_State *L, const char* name, lua_CFunction func, cons
  */
 void iuplua_pushihandle_raw(lua_State *L, Ihandle *h);
 
-/** Returns an array of string stored in a Lua table.
- */
-char** iuplua_checkstring_array(lua_State *L, int pos);
+/** Returns an array of string stored in a Lua table. 
+ If count is 0, table size is used. Else table size must match count. */
+char** iuplua_checkstring_array(lua_State *L, int pos, int count);
 
 /** Returns an array of int stored in a Lua table.
- */
-int* iuplua_checkint_array(lua_State *L, int pos);
+ If count is 0, table size is used. Else table size must match count. */
+int* iuplua_checkint_array(lua_State *L, int pos, int count);
+
+/** Returns an array of float stored in a Lua table.
+ If count is 0, table size is used. Else table size must match count. */
+float* iuplua_checkfloat_array(lua_State *L, int pos, int count);
 
 /** Returns an array of unsigned char stored in a Lua table.
- * Must have count elements.
- */
+ If count is 0, table size is used. Else table size must match count. */
 unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int count);
 
 /** Returns an array of ihandle stored in a Lua table.
- */
-Ihandle** iuplua_checkihandle_array(lua_State *L, int pos);
+ If count is 0, table size is used. Else table size must match count. */
+Ihandle** iuplua_checkihandle_array(lua_State *L, int pos, int count);
 
-/** Same as iuplua_checkihandle but also accepts nil.
- */
+/** Same as iuplua_checkihandle but also accepts nil. */
 Ihandle *iuplua_checkihandleornil(lua_State *L, int pos);
 
-/** Removes the references in the Lua registry.
- */
+/** Removes the references in the Lua registry. */
 void iuplua_removeihandle(lua_State *L, Ihandle *ih);
 
 #if LUA_VERSION_NUM > 501

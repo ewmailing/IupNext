@@ -13,7 +13,7 @@ local ctrl = {
   createfunc = [[
 static int Tabsv(lua_State *L)
 {
-  Ihandle **hlist = iuplua_checkihandle_array(L, 1);
+  Ihandle **hlist = iuplua_checkihandle_array(L, 1, 0);
   Ihandle *h = IupTabsv(hlist);
   iuplua_plugstate(L, h);
   iuplua_pushihandle_raw(L, h);

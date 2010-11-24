@@ -123,7 +123,6 @@ void IupPPlotBegin(Ihandle* ih, int strXdata)
 
   iupAttribSetStr(ih, "_IUP_PPLOT_XDATA",    (char*)inXData);
   iupAttribSetStr(ih, "_IUP_PPLOT_YDATA",    (char*)inYData);
-  iupAttribSetStr(ih, "_IUP_PPLOT_STRXDATA", (char*)(strXdata? "1": "0"));
 }
 
 void IupPPlotAdd(Ihandle* ih, float x, float y)
@@ -138,9 +137,8 @@ void IupPPlotAdd(Ihandle* ih, float x, float y)
 
   PlotData* inXData = (PlotData*)iupAttribGet(ih, "_IUP_PPLOT_XDATA");
   PlotData* inYData = (PlotData*)iupAttribGet(ih, "_IUP_PPLOT_YDATA");
-  int strXdata = iupAttribGetInt(ih, "_IUP_PPLOT_STRXDATA");
 
-  if (!inYData || !inXData || strXdata)
+  if (!inYData || !inXData || inXData->IsString())
     return;
 
   inXData->push_back(x);
@@ -158,10 +156,9 @@ void IupPPlotAddStr(Ihandle* ih, const char* x, float y)
     return;
 
   StringPlotData *inXData = (StringPlotData*)iupAttribGet(ih, "_IUP_PPLOT_XDATA");
-  PlotData   *inYData = (PlotData*)iupAttribGet(ih, "_IUP_PPLOT_YDATA");
-  int strXdata = iupAttribGetInt(ih, "_IUP_PPLOT_STRXDATA");
+  PlotData *inYData = (PlotData*)iupAttribGet(ih, "_IUP_PPLOT_YDATA");
 
-  if (!inYData || !inXData || !strXdata)
+  if (!inYData || !inXData || !inXData->IsString())
     return;
 
   inXData->AddItem(x);
@@ -181,8 +178,9 @@ void IupPPlotInsertStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* 
   PlotDataBase* theXDataBase = ih->data->plt->_plot.mPlotDataContainer.GetXData(inIndex);
   PlotDataBase* theYDataBase = ih->data->plt->_plot.mPlotDataContainer.GetYData(inIndex);
   StringPlotData *theXData = (StringPlotData*)theXDataBase;
-  PlotData   *theYData = (PlotData*)theYDataBase;
-  if (!theYData || !theXData)
+  PlotData *theYData = (PlotData*)theYDataBase;
+
+  if (!theYData || !theXData || !theXData->IsString())
     return;
 
   theXData->InsertItem(inSampleIndex, inX);
@@ -203,11 +201,118 @@ void IupPPlotInsert(Ihandle* ih, int inIndex, int inSampleIndex, float inX, floa
   PlotDataBase* theYDataBase = ih->data->plt->_plot.mPlotDataContainer.GetYData(inIndex);
   PlotData* theXData = (PlotData*)theXDataBase;
   PlotData* theYData = (PlotData*)theYDataBase;
-  if (!theYData || !theXData)
+
+  if (!theYData || !theXData || theXData->IsString())
     return;
 
   theXData->insert(theXData->begin()+inSampleIndex, inX);
   theYData->insert(theYData->begin()+inSampleIndex, inY);
+}
+
+void IupPPlotAddPoints(Ihandle* ih, int inIndex, float *x, float *y, int count)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !iupStrEqual(ih->iclass->name, "pplot"))
+    return;
+
+  PlotDataBase* theXDataBase = ih->data->plt->_plot.mPlotDataContainer.GetXData(inIndex);
+  PlotDataBase* theYDataBase = ih->data->plt->_plot.mPlotDataContainer.GetYData(inIndex);
+  PlotData* inXData = (PlotData*)theXDataBase;
+  PlotData* inYData = (PlotData*)theYDataBase;
+
+  if (!inYData || !inXData || inXData->IsString())
+    return;
+
+  for (int i=0; i<count; i++)
+  {
+    inXData->push_back(x[i]);
+    inYData->push_back(y[i]);
+  }
+}
+
+void IupPPlotAddStrPoints(Ihandle* ih, int inIndex, const char** x, float* y, int count)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !iupStrEqual(ih->iclass->name, "pplot"))
+    return;
+
+  PlotDataBase* theXDataBase = ih->data->plt->_plot.mPlotDataContainer.GetXData(inIndex);
+  PlotDataBase* theYDataBase = ih->data->plt->_plot.mPlotDataContainer.GetYData(inIndex);
+  StringPlotData *inXData = (StringPlotData*)theXDataBase;
+  PlotData   *inYData = (PlotData*)theYDataBase;
+
+  if (!inYData || !inXData || !inXData->IsString())
+    return;
+
+  for (int i=0; i<count; i++)
+  {
+    inXData->AddItem(x[i]);
+    inYData->push_back(y[i]);
+  }
+}
+
+void IupPPlotInsertStrPoints(Ihandle* ih, int inIndex, int inSampleIndex, const char** inX, float* inY, int count)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !iupStrEqual(ih->iclass->name, "pplot"))
+    return;
+
+  PlotDataBase* theXDataBase = ih->data->plt->_plot.mPlotDataContainer.GetXData(inIndex);
+  PlotDataBase* theYDataBase = ih->data->plt->_plot.mPlotDataContainer.GetYData(inIndex);
+  StringPlotData *theXData = (StringPlotData*)theXDataBase;
+  PlotData   *theYData = (PlotData*)theYDataBase;
+
+  if (!theYData || !theXData || !theXData->IsString())
+    return;
+
+  PlotData::iterator iterY = theYData->begin()+inSampleIndex;
+  for (int i=0; i<count; i++)
+  {
+    theXData->InsertItem(inSampleIndex+i, inX[i]);
+    theYData->insert(iterY, inY[i]);
+    iterY++;
+  }
+}
+
+void IupPPlotInsertPoints(Ihandle* ih, int inIndex, int inSampleIndex, float *inX, float *inY, int count)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !iupStrEqual(ih->iclass->name, "pplot"))
+    return;
+
+  PlotDataBase* theXDataBase = ih->data->plt->_plot.mPlotDataContainer.GetXData(inIndex);
+  PlotDataBase* theYDataBase = ih->data->plt->_plot.mPlotDataContainer.GetYData(inIndex);
+  PlotData* theXData = (PlotData*)theXDataBase;
+  PlotData* theYData = (PlotData*)theYDataBase;
+
+  if (!theYData || !theXData || theXData->IsString())
+    return;
+
+  PlotData::iterator iterX = theXData->begin()+inSampleIndex;
+  PlotData::iterator iterY = theXData->begin()+inSampleIndex;
+  for (int i=0; i<count; i++)
+  {
+    theXData->insert(iterX, inX[i]);
+    theYData->insert(iterY, inY[i]);
+    iterX++;
+    iterY++;
+  }
 }
 
 int IupPPlotEnd(Ihandle* ih)

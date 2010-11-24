@@ -26,6 +26,11 @@ int IupPPlotEnd(Ihandle *ih);
 void IupPPlotInsertStr(Ihandle *ih, int index, int sample_index, const char* x, float y);
 void IupPPlotInsert(Ihandle *ih, int index, int sample_index, float x, float y);
 
+void IupPPlotInsertStrPoints(Ihandle* ih, int index, int sample_index, const char** x, float* y, int count);
+void IupPPlotInsertPoints(Ihandle* ih, int index, int sample_index, float *x, float *y, int count);
+void IupPPlotAddPoints(Ihandle* ih, int index, float *x, float *y, int count);
+void IupPPlotAddStrPoints(Ihandle* ih, int index, const char** x, float* y, int count);
+
 /* convert from plot coordinates to pixels */
 void IupPPlotTransform(Ihandle* ih, float x, float y, int *ix, int *iy);
 

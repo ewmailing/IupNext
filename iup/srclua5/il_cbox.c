@@ -14,7 +14,7 @@
 
 static int Cboxv(lua_State *L)
 {
-  Ihandle **hlist = iuplua_checkihandle_array(L, 1);
+  Ihandle **hlist = iuplua_checkihandle_array(L, 1, 0);
   Ihandle *h = IupCboxv(hlist);
   iuplua_plugstate(L, h);
   iuplua_pushihandle_raw(L, h);

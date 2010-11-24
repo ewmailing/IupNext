@@ -30,7 +30,7 @@ static int tabs_tabchange_cb(Ihandle *self, Ihandle * p0, Ihandle * p1)
 
 static int Tabsv(lua_State *L)
 {
-  Ihandle **hlist = iuplua_checkihandle_array(L, 1);
+  Ihandle **hlist = iuplua_checkihandle_array(L, 1, 0);
   Ihandle *h = IupTabsv(hlist);
   iuplua_plugstate(L, h);
   iuplua_pushihandle_raw(L, h);

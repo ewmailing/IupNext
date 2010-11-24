@@ -116,33 +116,58 @@ pplot() [in LED]</pre>
 <b>iup.PPlotBegin</b>(<b>ih</b>: ihandle, <b>strXdata</b>: number) [in Lua]</pre>
 <p>Prepares a dataset to receive samples. If strXdata is 1 then the X axis value 
 is a string.</p>
+<hr>
 <pre>void <b>IupPPlotAdd</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>); [in C]
 <b>iup.PPlotAdd</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>: number) [in Lua]</pre>
 <p>Adds a sample to the dataset. Can only be called if <b>IupPPlotBegin</b> was 
 called with strXdata=0.</p>
+<hr>
 <pre>void <b>IupPPlotAddStr</b>(Ihandle* <b>ih</b>, const char* <b>x</b>, float <b>y</b>); [in C]
 <b>iup.PPlotAddStr</b>(<b>ih</b>: ihandle, <b>x</b>: string, <b>y</b>: number) [in Lua]</pre>
 <p>Same as <b>IupPPlotAdd</b>, but allows to use a string as the X 
 axis value. Can only be called if <b>IupPPlotBegin</b> was called with 
 strXdata=1.</p>
+<hr>
 <pre>int <b>IupPPlotEnd</b>(Ihandle* <b>ih</b>); [in C]
 <b>iup.PPlotEnd</b>(<b>ih</b>: ihandle) -&gt; (<b>index</b>: number) [in Lua]</pre>
-<p>Adds a 2D dataset to the plot and returns the dataset index. Redraw is NOT 
+<p>Adds a 2D dataset to the plot and returns the dataset <strong>index</strong>. 
+The data set can be empty. Redraw is NOT 
 done until the REDRAW attribute is set. Also it will change the current dataset 
 index to the return value. You can only set attributes of a dataset AFTER you 
 added the dataset.&nbsp; Can only be called if <b>IupPPlotBegin</b> was called. 
 Whenever you create a dataset all its &quot;DS_*&quot; attributes will be set to the 
 default values. Notice that DS_MODE must be set before other &quot;DS_*&quot; attributes.</p>
+<hr>
 <pre>void <b>IupPPlotInsert</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, float <b>x</b>, float <b>y</b>); [in C]
 void <b>IupPPlotInsertStr</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, const char* <b>x</b>, float <b>y</b>);
 <b>iup.IupPPlotInsert</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: number) [in Lua]
 <b>iup.IupPPlotInsertStr</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: number)</pre>
-<p>Inserts a sample in a dataset. It is used after the dataset is added to the 
+<p>Inserts a sample in a dataset at the given <strong>sample_index</strong>. Can 
+be used only after the dataset is added to the 
 plot.</p>
+<hr>
+<pre>void <b>IupPPlotInsertPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, float* <b>x</b>, float* <b>y</b>, int <strong>count</strong>); [in C]
+void <b>IupPPlotInsertStrPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, const char** <b>x</b>, float* <b>y</b>, int <strong>count</strong>);
+<b>iup.IupPPlotInsertPoints</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: table of number) [in Lua]
+<b>iup.IupPPlotInsertStrPoints</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: table of number)</pre>
+<p>Inserts an array of samples in a dataset at the given <strong>sample_index</strong>. 
+Can be used only after the dataset is added to the 
+plot. (Since 3.4)</p>
+<hr>
+<pre>void <b>IupPPlotAddPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, float* <b>x</b>, float* <b>y</b>, int <strong>count</strong>); [in C]
+void <b>IupPPlotAddStrPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, const char** <b>x</b>, float* <b>y</b>, int <strong>count</strong>);
+<b>iup.IupPPlotAddPoints</b>(<b>ih</b>: ihandle, <b>index, x, y</b>: table of number) [in Lua]
+<b>iup.IupPPlotAddStrPoints</b>(<b>ih</b>: ihandle, <b>index, x, y</b>: table of number)</pre>
+<p>Adds an array of samples in a dataset at the end. Can be used only after the dataset is added to the 
+plot. (Since 3.4)</p>
+<hr>
 <pre>void <b>IupPPlotTransform</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>, int *<b>ix</b>, int *<b>iy</b>); [in C]
 <b>iup.PPlotTransform</b>(<b>ih</b>: ihandle, <b>x, y</b>: number) -&gt; (<b>ix</b>, <b>iy</b>: number) [in Lua]</pre>
 <p>Converts coordinates in plot units to pixels. It should be used in PREDRAW_CB 
-and POSTDRAW_CB callbacks only. Output variables can be NULL if not used.</p>
+and POSTDRAW_CB callbacks only. Output variables can be NULL if not used. It can 
+be used inside other callbacks, but make sure that the drawing after a resize is 
+done.</p>
+<hr>
 <pre>void <b>IupPPlotPaintTo</b>(Ihandle* <b>ih</b>, cdCanvas* <b>cnv</b>); [in C]
 <b>iup.PPlotPaintTo</b>(<b>ih</b>: ihandle, <b>cnv</b>: cdCanvas) [in Lua]</pre>
 <p>Plots to the given CD canvas instead of the display canvas.</p>
