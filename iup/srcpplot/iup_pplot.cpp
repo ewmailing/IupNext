@@ -65,7 +65,7 @@ typedef int (*IFniiffff)(Ihandle*, int, int, float, float, float*, float*); /* e
 /* callback: forward redraw request to PPlot object */
 static int iPPlotRedraw_CB(Ihandle* ih)
 {
-  ih->data->plt->Draw(0);  /* full redraw only if nothing changed */
+  ih->data->plt->Draw(0, 1);  /* full redraw only if nothing changed */
   return IUP_DEFAULT;
 }
 
@@ -806,7 +806,7 @@ static int iPPlotGetCDMarkStyle(const char* value)
 static int iPPlotSetRedrawAttrib(Ihandle* ih, const char* value)
 {
   (void)value;  /* not used */
-  ih->data->plt->Draw(1);   /* force a full redraw here */
+  ih->data->plt->Draw(1, 1);   /* force a full redraw here */
   return 0;
 }
 
@@ -2528,7 +2528,7 @@ void PPainterIup::MouseButton(int btn, int stat, int x, int y, char *r)
 
   if( _InteractionContainer->HandleMouseEvent(theEvent))
   {
-    this->Draw(1);
+    this->Draw(1, 1);
   } 
   else
   {
@@ -2564,7 +2564,7 @@ void PPainterIup::MouseMove(int x, int y)
 
   if(_InteractionContainer->HandleMouseEvent(theEvent))
   {
-    this->Draw(1);
+    this->Draw(1, 1);
   } 
   else
   {
@@ -2630,7 +2630,7 @@ void PPainterIup::KeyPress(int c, int press)
 
   if(_InteractionContainer->HandleKeyEvent(theEvent))
   {
-    this->Draw(1);
+    this->Draw(1, 1);
   } 
   else
   {
@@ -2639,7 +2639,7 @@ void PPainterIup::KeyPress(int c, int press)
 }
 
 /* Draw */
-void PPainterIup::Draw(int force)
+void PPainterIup::Draw(int force, int flush)
 {
   if (!_cddbuffer)
     return;
@@ -2653,7 +2653,8 @@ void PPainterIup::Draw(int force)
     _redraw = 0;
   }
 
-  cdCanvasFlush(_cddbuffer);
+  if (flush)
+    cdCanvasFlush(_cddbuffer);
 }
 
 /* Resize */
@@ -2693,7 +2694,7 @@ void PPainterIup::DrawTo(cdCanvas *usrCnv)
   if(!_cddbuffer)
     return;
 
-  Draw(1);
+  Draw(1, 0); // no flush here
 
   _cddbuffer = old_cddbuffer;
   _cdcanvas  = old_cdcanvas;

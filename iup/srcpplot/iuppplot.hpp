@@ -96,7 +96,7 @@ class PPainterIup: public Painter
     int _currentDataSetIndex;  /* dataset index used for DS_ attributes in SetAttribute and GetAttribute */
 
     // Called from C functions
-    void Draw(int force);   // paint the stuff
+    void Draw(int force, int flush);   // paint the stuff
     void Resize(); // called when resizing
     void MouseButton(int btn, int stat, int x, int y, char *r); // mouse event
     void MouseMove(int x, int y); // mouse event
