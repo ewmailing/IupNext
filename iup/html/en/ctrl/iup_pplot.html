@@ -71,6 +71,8 @@ is disabled, then it is positioned at the left-bottom. If values are only positi
 origin will be placed in left 
 bottom position. If values are negative and positive then origin will be placed 
 inside the plot. The ticks in the axis are also automatically distributed.</p>
+<p>PPlot implementation demands that the MARGIN* attributes must be set so the 
+plot is not cropped.</p>
 <h3>Interaction</h3>
 <h4>Zoom</h4>
 <p>Zoom in can be done selecting a region using the left mouse button. Zoom out 
@@ -196,7 +198,8 @@ values depends on the FONT attribute and the returned value is NULL. Set to
 NULL, to use the FONT attribute values. Style can be &quot;PLAIN&quot;, &quot;BOLD&quot;, &quot;ITALIC&quot; 
 or &quot;BOLDITALIC&quot;.</p>
 <p><b>MARGINLEFT, MARGINRIGHT, MARGINTOP, MARGINBOTTOM </b>(non inheritable): margin of the 
-dataset area. Default: &quot;15&quot;, &quot;15&quot;, &quot;30&quot;, &quot;15&quot;.</p>
+dataset area. PPlot implementation demands that margins must be set so the plot 
+is not cropped. Default: &quot;15&quot;, &quot;15&quot;, &quot;30&quot;, &quot;15&quot;.</p>
 <h4>Legend Configuration (non inheritable)</h4>
 <p><b>LEGENDSHOW</b>: shows or hides the legend box. Can be YES or NO. Default: 
 NO.</p>
