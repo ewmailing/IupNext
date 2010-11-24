@@ -42,18 +42,12 @@ static void iupStrRemoveChar(char* str, char c)
   *p = 0;
 }
 
-static void gtkFileDlgGetNextFilter(char** str, char** name, char** pattern)
+static char* gtkFileDlgGetNextStr(char* str)
 {
-  int len;
-  *name = *str;
-
-  len = strlen(*name);
-  *pattern = (*name)+len+1;
-
-  len = strlen(*pattern);
-  *str = (*pattern)+len+1;
-
-  iupStrReplace(*pattern, ';', 0);  /* remove other patterns */
+  /* after the 0 there is another string, 
+     must know a priori how many strings are before using this */
+  int len = (int)strlen(str);
+  return str+len+1;
 }
 
 static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
@@ -296,24 +290,33 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   value = iupAttribGet(ih, "EXTFILTER");
   if (value)
   {
-    char *name, *pattern, *filters = iupStrDup(value), *p;
+    char *name, *pattern, *filters = iupStrDup(value);
     char atrib[30];
-    int i;
+    int i, pattern_count, j;
     int filter_index = iupAttribGetInt(ih, "FILTERUSED");
     if (!filter_index)
       filter_index = 1;
 
     filter_count = iupStrReplace(filters, '|', 0) / 2;
 
-    p = filters;
-    for (i=0; i<filter_count; i++)
+    name = filters;
+    for (i=0; i<filter_count && name[0]; i++)
     {
       GtkFileFilter *filter = gtk_file_filter_new();
 
-      gtkFileDlgGetNextFilter(&p, &name, &pattern);
+      pattern = gtkFileDlgGetNextStr(name);
+
+      pattern_count = iupStrReplace(pattern, ';', 0)+1;
 
       gtk_file_filter_set_name(filter, iupgtkStrConvertToUTF8(name));
-      gtk_file_filter_add_pattern(filter, pattern);
+
+      for (j=0; j<pattern_count && pattern[0]; j++)
+      {
+        gtk_file_filter_add_pattern(filter, pattern);
+        if (j<pattern_count-1)
+          pattern = gtkFileDlgGetNextStr(pattern);
+      }
+
       gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
 
       sprintf(atrib, "_IUPDLG_FILTER%d", i+1);
@@ -321,6 +324,8 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
       if (i+1 == filter_index)
         gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+      name = gtkFileDlgGetNextStr(pattern);
     }
 
     free(filters);
@@ -330,14 +335,25 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     value = iupAttribGet(ih, "FILTER");
     if (value)
     {
+      char* filters = iupStrDup(value), *fstr;
+      int pattern_count, i;
       GtkFileFilter *filter = gtk_file_filter_new();
       char* info = iupAttribGet(ih, "FILTERINFO");
       if (!info)
         info = value;
 
+      pattern_count = iupStrReplace(filters, ';', 0)+1;
+
       gtk_file_filter_set_name(filter, iupgtkStrConvertToUTF8(info));
-      gtk_file_filter_add_pattern(filter, value);
+
+      fstr = filters;
+      for (i=0; i<pattern_count && fstr[0]; i++)
+      {
+        gtk_file_filter_add_pattern(filter, fstr);
+        fstr = gtkFileDlgGetNextStr(fstr);
+      }
       gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+      free(filters);
     }
   }
 
