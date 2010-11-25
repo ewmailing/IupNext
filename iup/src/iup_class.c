@@ -268,17 +268,18 @@ void iupClassRelease(Iclass* ic)
 {
   Iclass* parent;
 
-  /* must release only the actual class */
+  /* must call Release only for the actual class */
   if (ic->Release)
     ic->Release(ic);
 
-  /* must free all classes, since a new instance is created when we inherit */
+  /* must free the pointer for all classes, 
+     since a new instance is created when we inherit */
   parent = ic->parent;
   while (parent)
   {
-    Iclass* tmp = parent;
+    Iclass* ic_tmp = parent;
     parent = parent->parent;
-    free(tmp);
+    free(ic_tmp);
   }
 
   /* attributes functions table is released only once */

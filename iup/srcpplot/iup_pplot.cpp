@@ -20,12 +20,18 @@
 #include "iupcbs.h"
 #include "iup_pplot.h"
 #include "iupkey.h"
+#ifdef USE_OPENGL
+#include "iupgl.h"
+#endif
 
 #include <cd.h>
+#ifdef USE_OPENGL
+#include <cdgl.h>
+#else
 #include <cdiup.h>
 #include <cddbuf.h>
 #include <cdirgb.h>
-#include <cdgdiplus.h>
+#endif
 
 #include "iup_class.h"
 #include "iup_register.h"
