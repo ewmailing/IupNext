@@ -125,7 +125,7 @@ public:
 
 /********************************************************************************/
 
-
+#if 0
 static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
@@ -140,23 +140,23 @@ static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
 
   /* Create the stream  */
   IStream* pStream = NULL;
-  CreateStreamOnHGlobal(hHTMLText, TRUE, &pStream);
+  CreateStreamOnHGlobal(hHTMLText, FALSE, &pStream);
 
   /* Retrieve the document object. */
-  IDispatch* pHtmlDoc = NULL;
-  pweb->get_Document(&pHtmlDoc);
-  if (!pHtmlDoc)
+  IDispatch* lpDispatch = NULL;
+  pweb->get_Document(&lpDispatch);
+  if (!lpDispatch)
   {
     iupAttribSetStr(ih, "_IUPWEB_FAILED", NULL);
 
     pweb->Navigate(L"about:blank", NULL, NULL, NULL, NULL);
     IupFlush();
 
-    pweb->get_Document(&pHtmlDoc);
+    pweb->get_Document(&lpDispatch);
   }
 
   IPersistStreamInit* pPersistStreamInit = NULL;
-  pHtmlDoc->QueryInterface(IID_IPersistStreamInit, (void**)&pPersistStreamInit);
+  lpDispatch->QueryInterface(IID_IPersistStreamInit, (void**)&pPersistStreamInit);
 
   /* Initialize the document. */
   pPersistStreamInit->InitNew();
@@ -167,11 +167,59 @@ static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   /* Releases */
   pPersistStreamInit->Release();
   pStream->Release();
-  pHtmlDoc->Release();
+  lpDispatch->Release();
   GlobalFree(hHTMLText);
   
   return 0; /* do not store value in hash table */
 }
+
+#else
+
+static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    return 0;
+
+  IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+
+  /* Retrieve the document object. */
+  IDispatch* lpDispatch = NULL;
+  pweb->get_Document(&lpDispatch);
+  if (!lpDispatch)
+  {
+    iupAttribSetStr(ih, "_IUPWEB_FAILED", NULL);
+
+    pweb->Navigate(L"about:blank", NULL, NULL, NULL, NULL);
+    IupFlush();
+
+    pweb->get_Document(&lpDispatch);
+  }
+
+	IHTMLDocument2 *htmlDoc2;
+  lpDispatch->QueryInterface(IID_IHTMLDocument2, (void**)&htmlDoc2);
+
+  WCHAR* wvalue = iupwinStrChar2Wide(value);
+
+  VARIANT *param;
+  SAFEARRAY *sfArray;
+  sfArray = SafeArrayCreateVector(VT_VARIANT, 0, 1);
+  SafeArrayAccessData(sfArray,(LPVOID*) &param);
+  param->vt = VT_BSTR;
+	param->bstrVal = SysAllocString(wvalue);
+	SafeArrayUnaccessData(sfArray);
+
+	htmlDoc2->write(sfArray);
+	htmlDoc2->close();
+
+  /* Releases */
+  SafeArrayDestroy(sfArray);
+  htmlDoc2->Release();
+  lpDispatch->Release();
+  free(wvalue);
+  
+  return 0; /* do not store value in hash table */
+}
+#endif
 
 static int winWebBrowserSetBackForwardAttrib(Ihandle* ih, const char* value)
 {

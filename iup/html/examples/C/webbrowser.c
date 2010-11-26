@@ -102,7 +102,7 @@ static int load_cb(Ihandle* self)
   Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
   IupSetAttribute(web, "VALUE", IupGetAttribute(txt, "VALUE"));
 
-  //TEST:
+  //TESTS:
 //  IupSetAttribute(txt, "VALUE", IupGetAttribute(web, "VALUE"));
 //  IupSetAttribute(web, "HTML", "<html><body><b>Hello</b>, World!</body></html>");
 //  IupSetAttribute(web, "VALUE", "http://www.microsoft.com");
