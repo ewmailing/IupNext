@@ -17,6 +17,7 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_stdcontrols.h"
+#include "iup_register.h"
 
 
 Ihandle* IupFileDlg(void)
@@ -24,15 +25,17 @@ Ihandle* IupFileDlg(void)
   return IupCreate("filedlg");
 }
 
-Iclass* iupFileDlgGetClass(void)
+Iclass* iupFileDlgNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupDialogGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("dialog"));
 
   ic->name = "filedlg";
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
 
   iupClassRegisterCallback(ic, "FILE_CB", "ss");
+
+  ic->New = iupFileDlgNewClass;
 
   /* reset not used native dialog methods */
   ic->parent->LayoutUpdate = NULL;

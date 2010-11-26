@@ -1098,10 +1098,11 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-Iclass* iupColorBrowserDlgGetClass(void)
+Iclass* iupColorBrowserDlgNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupDialogGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("dialog"));
 
+  ic->New = iupColorBrowserDlgNewClass;
   ic->Create = iColorBrowserDlgCreateMethod;
   ic->Destroy = iColorBrowserDlgDestroyMethod;
   ic->Map = iColorBrowserDlgMapMethod;

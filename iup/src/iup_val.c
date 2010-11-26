@@ -162,7 +162,7 @@ static int iValCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR; 
 }
 
-Iclass* iupValGetClass(void)
+Iclass* iupValNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -173,6 +173,7 @@ Iclass* iupValGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupValNewClass;
   ic->Create  = iValCreateMethod;
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;

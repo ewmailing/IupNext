@@ -339,6 +339,13 @@ static int GetClassType(lua_State *L)
   return 1;
 }
 
+static int ClassMatch(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  lua_pushboolean(L, IupClassMatch(ih, luaL_checkstring(L, 2)));
+  return 1;
+}
+
 static int GetGlobal(lua_State *L)
 {
   const char *a = luaL_checkstring(L,1);
@@ -946,6 +953,7 @@ void iupluaapi_open(lua_State * L)
     {"GetFocus", GetFocus},
     {"GetClassName", GetClassName},
     {"GetClassType", GetClassType},
+    {"ClassMatch", ClassMatch},
     {"GetGlobal", GetGlobal},
     {"GetHandle", GetHandle},
     {"GetLanguage", GetLanguage},

@@ -25,7 +25,7 @@ Ihandle* IupUser(void)
   return IupCreate("user");
 }
 
-Iclass* iupUserGetClass(void)
+Iclass* iupUserNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -34,6 +34,8 @@ Iclass* iupUserGetClass(void)
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDMANY;
   ic->is_interactive = 0;
+
+  ic->New = iupUserNewClass;
 
   iupClassRegisterAttribute(ic, "CLEARATTRIBUTES", NULL, iUserSetClearAttributesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 

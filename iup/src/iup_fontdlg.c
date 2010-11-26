@@ -17,6 +17,7 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_stdcontrols.h"
+#include "iup_register.h"
 
 
 Ihandle* IupFontDlg(void)
@@ -24,13 +25,15 @@ Ihandle* IupFontDlg(void)
   return IupCreate("fontdlg");
 }
 
-Iclass* iupFontDlgGetClass(void)
+Iclass* iupFontDlgNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupDialogGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("dialog"));
 
   ic->name = "fontdlg";
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
+
+  ic->New = iupFontDlgNewClass;
 
   if (!iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Motif"))
   {

@@ -662,7 +662,7 @@ Ihandle* IupImageRGBA(int width, int height, const unsigned char *imgdata)
   return IupCreatev("imagergba", params);
 }
 
-static Iclass* iImageGetClassBase(char* name, int (*create_func)(Ihandle* ih, void** params))
+static Iclass* iImageNewClassBase(char* name)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -673,7 +673,6 @@ static Iclass* iImageGetClassBase(char* name, int (*create_func)(Ihandle* ih, vo
   ic->is_interactive = 0;
 
   /* Class functions */
-  ic->Create = create_func;
   ic->Destroy = iImageDestroyMethod;
   ic->Map = iupBaseTypeVoidMapMethod;
   ic->UnMap = iImageUnMapMethod;
@@ -693,19 +692,28 @@ static Iclass* iImageGetClassBase(char* name, int (*create_func)(Ihandle* ih, vo
   return ic;
 }
 
-Iclass* iupImageGetClass(void)
+Iclass* iupImageNewClass(void)
 {
-  return iImageGetClassBase("image", iImageCreateMethod);
+  Iclass* ic = iImageNewClassBase("image");
+  ic->New = iupImageNewClass;
+  ic->Create = iImageCreateMethod;
+  return ic;
 }
 
-Iclass* iupImageRGBGetClass(void)
+Iclass* iupImageRGBNewClass(void)
 {
-  return iImageGetClassBase("imagergb", iImageRGBCreateMethod);
+  Iclass* ic = iImageNewClassBase("imagergb");
+  ic->New = iupImageRGBNewClass;
+  ic->Create = iImageRGBCreateMethod;
+  return ic;
 }
 
-Iclass* iupImageRGBAGetClass(void)
+Iclass* iupImageRGBANewClass(void)
 {
-  return iImageGetClassBase("imagergba", iImageRGBACreateMethod);
+  Iclass* ic = iImageNewClassBase("imagergba");
+  ic->New = iupImageRGBANewClass;
+  ic->Create = iImageRGBACreateMethod;
+  return ic;
 }
 
 static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE* packfile)

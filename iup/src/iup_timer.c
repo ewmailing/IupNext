@@ -53,7 +53,7 @@ Ihandle* IupTimer(void)
   return IupCreate("timer");
 }
 
-Iclass* iupTimerGetClass(void)
+Iclass* iupTimerNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -64,6 +64,7 @@ Iclass* iupTimerGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupTimerNewClass;
   ic->Destroy = iTimerDestroyMethod;
 
   /* Callbacks */

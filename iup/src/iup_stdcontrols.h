@@ -12,48 +12,48 @@ extern "C" {
 #endif
 
 
-Iclass* iupDialogGetClass(void);
-Iclass* iupMessageDlgGetClass(void);
-Iclass* iupColorDlgGetClass(void);
-Iclass* iupFontDlgGetClass(void);
-Iclass* iupFileDlgGetClass(void);
+Iclass* iupDialogNewClass(void);
+Iclass* iupMessageDlgNewClass(void);
+Iclass* iupColorDlgNewClass(void);
+Iclass* iupFontDlgNewClass(void);
+Iclass* iupFileDlgNewClass(void);
 
-Iclass* iupLabelGetClass(void);
-Iclass* iupButtonGetClass(void);
-Iclass* iupToggleGetClass(void);
-Iclass* iupRadioGetClass(void);
-Iclass* iupCanvasGetClass(void);
-Iclass* iupFrameGetClass(void);
-Iclass* iupProgressBarGetClass(void);
-Iclass* iupTextGetClass(void);
-Iclass* iupMultilineGetClass(void);
-Iclass* iupValGetClass(void);
-Iclass* iupTabsGetClass(void);
-Iclass* iupSpinGetClass(void);
-Iclass* iupSpinboxGetClass(void);
-Iclass* iupListGetClass(void);
-Iclass* iupTreeGetClass(void);
+Iclass* iupLabelNewClass(void);
+Iclass* iupButtonNewClass(void);
+Iclass* iupToggleNewClass(void);
+Iclass* iupRadioNewClass(void);
+Iclass* iupCanvasNewClass(void);
+Iclass* iupFrameNewClass(void);
+Iclass* iupProgressBarNewClass(void);
+Iclass* iupTextNewClass(void);
+Iclass* iupMultilineNewClass(void);
+Iclass* iupValNewClass(void);
+Iclass* iupTabsNewClass(void);
+Iclass* iupSpinNewClass(void);
+Iclass* iupSpinboxNewClass(void);
+Iclass* iupListNewClass(void);
+Iclass* iupTreeNewClass(void);
 
-Iclass* iupMenuGetClass(void);
-Iclass* iupItemGetClass(void);
-Iclass* iupSeparatorGetClass(void);
-Iclass* iupSubmenuGetClass(void);
+Iclass* iupMenuNewClass(void);
+Iclass* iupItemNewClass(void);
+Iclass* iupSeparatorNewClass(void);
+Iclass* iupSubmenuNewClass(void);
 
-Iclass* iupFillGetClass(void);
-Iclass* iupHboxGetClass(void);
-Iclass* iupVboxGetClass(void);
-Iclass* iupZboxGetClass(void);
-Iclass* iupCboxGetClass(void);
-Iclass* iupSboxGetClass(void);
-Iclass* iupNormalizerGetClass(void);
-Iclass* iupSplitGetClass(void);
+Iclass* iupFillNewClass(void);
+Iclass* iupHboxNewClass(void);
+Iclass* iupVboxNewClass(void);
+Iclass* iupZboxNewClass(void);
+Iclass* iupCboxNewClass(void);
+Iclass* iupSboxNewClass(void);
+Iclass* iupNormalizerNewClass(void);
+Iclass* iupSplitNewClass(void);
 
-Iclass* iupTimerGetClass(void);
-Iclass* iupImageGetClass(void);
-Iclass* iupImageRGBGetClass(void);
-Iclass* iupImageRGBAGetClass(void);
-Iclass* iupUserGetClass(void);
-Iclass* iupClipboardGetClass(void);
+Iclass* iupTimerNewClass(void);
+Iclass* iupImageNewClass(void);
+Iclass* iupImageRGBNewClass(void);
+Iclass* iupImageRGBANewClass(void);
+Iclass* iupUserNewClass(void);
+Iclass* iupClipboardNewClass(void);
 
 /*************************************************/
 

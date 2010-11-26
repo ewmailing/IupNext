@@ -25,6 +25,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_controls.h"
 #include "iup_cdutil.h"
+#include "iup_register.h"
 
 
 #define ICELLS_OUT -999
@@ -894,7 +895,7 @@ static int iCellsCreateMethod(Ihandle* ih, void **params)
   (void)params;
 
   /* free the data allocated by IupCanvas */
-  if (ih->data) free(ih->data);
+  free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
@@ -915,9 +916,9 @@ static int iCellsCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
-Iclass* iupCellsGetClass(void)
+Iclass* iupCellsNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupCanvasGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "cells";
   ic->format = NULL; /* no parameters */
@@ -927,6 +928,7 @@ Iclass* iupCellsGetClass(void)
   ic->has_attrib_id = 2;  /* has attributes with two IDs that must be parsed */
 
   /* Class functions */
+  ic->New = iupCellsNewClass;
   ic->Create  = iCellsCreateMethod;
   ic->Map     = iCellsMapMethod;
   ic->UnMap   = iCellsUnMapMethod;

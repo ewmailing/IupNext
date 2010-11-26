@@ -5,6 +5,11 @@
 <title>IupGetHandle</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -17,6 +22,7 @@ Parameters/Return</h3>
 <pre>Ihandle *IupGetHandle(const char *<strong>name</strong>); [in C]
 iup.GetHandle(<strong>name</strong>: string) -&gt; <strong>ih</strong>: ihandle [in Lua]</pre>
 <p><b>name</b>: name of an interface element.</p>
+<p><span class="style1">Returns</span>: the element handle or NULL if not found.</p>
 <h3>Notes</h3>
 <p>This function is used for integrating IUP 
   and LED. To manipulate an interface element defined in LED, first capture its identifier using function 

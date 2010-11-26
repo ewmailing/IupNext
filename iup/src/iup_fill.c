@@ -37,9 +37,9 @@ static int iFillGetDir(Ihandle* ih)
   /* Its parent must be an IupHbox or an IupVbox. */
   if (ih->parent->iclass->nativetype == IUP_TYPEVOID)
   {
-    if (iupStrEqual(ih->parent->iclass->name, "hbox"))
+    if (IupClassMatch(ih->parent, "hbox"))
       ih->data->dir = IUP_FILL_HORIZ;
-    else if (iupStrEqual(ih->parent->iclass->name, "vbox"))
+    else if (IupClassMatch(ih->parent, "vbox"))
       ih->data->dir = IUP_FILL_VERT;
   }
 
@@ -226,7 +226,7 @@ Ihandle* IupFill(void)
   return IupCreate("fill");
 }
 
-Iclass* iupFillGetClass(void)
+Iclass* iupFillNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -237,6 +237,7 @@ Iclass* iupFillGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupFillNewClass;
   ic->Create = iFillCreateMethod;
   ic->Map = iFillMapMethod;
   ic->UnMap = iFillUnMapMethod;

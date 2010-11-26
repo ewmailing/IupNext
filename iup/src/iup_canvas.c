@@ -106,7 +106,7 @@ Ihandle* IupCanvas(const char* action)
   return IupCreatev("canvas", params);
 }
 
-Iclass* iupCanvasGetClass(void)
+Iclass* iupCanvasNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -117,6 +117,7 @@ Iclass* iupCanvasGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupCanvasNewClass;
   ic->Create = iCanvasCreateMethod;
   ic->ComputeNaturalSize = iCanvasComputeNaturalSizeMethod;
 

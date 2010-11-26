@@ -299,13 +299,14 @@ Ihandle *IupVbox(Ihandle* child, ...)
   return ih;
 }
 
-Iclass* iupVboxGetClass(void)
+Iclass* iupVboxNewClass(void)
 {
-  Iclass* ic = iupBoxClassBase();
+  Iclass* ic = iupBoxNewClassBase();
 
   ic->name = "vbox";
 
   /* Class functions */
+  ic->New = iupVboxNewClass;
   ic->ComputeNaturalSize = iVboxComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iVboxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iVboxSetChildrenPositionMethod;

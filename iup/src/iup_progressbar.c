@@ -81,7 +81,7 @@ static void iProgressBarDestroyMethod(Ihandle* ih)
     IupDestroy(ih->data->timer);
 }
 
-Iclass* iupProgressBarGetClass(void)
+Iclass* iupProgressBarNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -92,6 +92,7 @@ Iclass* iupProgressBarGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupProgressBarNewClass;
   ic->Create = iProgressBarCreateMethod;
   ic->Destroy = iProgressBarDestroyMethod;
 

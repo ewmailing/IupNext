@@ -174,7 +174,7 @@ Ihandle* IupButton(const char* title, const char* action)
   return IupCreatev("button", params);
 }
 
-Iclass* iupButtonGetClass(void)
+Iclass* iupButtonNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -185,6 +185,7 @@ Iclass* iupButtonGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupButtonNewClass;
   ic->Create = iButtonCreateMethod;
   ic->ComputeNaturalSize = iButtonComputeNaturalSizeMethod;
 

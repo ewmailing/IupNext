@@ -295,13 +295,14 @@ Ihandle *IupHbox(Ihandle* child, ...)
   return ih;
 }
 
-Iclass* iupHboxGetClass(void)
+Iclass* iupHboxNewClass(void)
 {
-  Iclass* ic = iupBoxClassBase();
+  Iclass* ic = iupBoxNewClassBase();
 
   ic->name = "hbox";
 
   /* Class functions */
+  ic->New = iupHboxNewClass;
   ic->ComputeNaturalSize = iHboxComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iHboxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iHboxSetChildrenPositionMethod;

@@ -639,7 +639,7 @@ Ihandle* IupTree(void)
   return IupCreate("tree");
 }
 
-Iclass* iupTreeGetClass(void)
+Iclass* iupTreeNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -651,6 +651,7 @@ Iclass* iupTreeGetClass(void)
   ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 
   /* Class functions */
+  ic->New = iupTreeNewClass;
   ic->Create = iTreeCreateMethod;
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
   ic->Destroy = iTreeDestroyMethod;

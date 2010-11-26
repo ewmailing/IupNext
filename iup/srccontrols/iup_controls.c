@@ -20,13 +20,13 @@ int IupControlsOpen(void)
   if (IupGetGlobal("_IUP_CONTROLS_OPEN"))
     return IUP_OPENED;
 
-  iupRegisterClass(iupDialGetClass());
-  iupRegisterClass(iupCellsGetClass());
-  iupRegisterClass(iupColorbarGetClass());
-  iupRegisterClass(iupColorBrowserGetClass());
-  iupRegisterClass(iupMatrixGetClass());
-  iupRegisterClass(iupGaugeGetClass());
-  iupRegisterClass(iupColorBrowserDlgGetClass());
+  iupRegisterClass(iupDialNewClass());
+  iupRegisterClass(iupCellsNewClass());
+  iupRegisterClass(iupColorbarNewClass());
+  iupRegisterClass(iupColorBrowserNewClass());
+  iupRegisterClass(iupMatrixNewClass());
+  iupRegisterClass(iupGaugeNewClass());
+  iupRegisterClass(iupColorBrowserDlgNewClass());
 
   IupSetGlobal("_IUP_CONTROLS_OPEN", "1");
 

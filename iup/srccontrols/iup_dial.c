@@ -24,6 +24,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_controls.h"
 #include "iup_cdutil.h"
+#include "iup_register.h"
 
 
 #ifndef M_PI
@@ -801,7 +802,7 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
     orientation = params[0];
 
   /* free the data allocated by IupCanvas */
-  if (ih->data) free(ih->data);
+  free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
@@ -826,9 +827,9 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
-Iclass* iupDialGetClass(void)
+Iclass* iupDialNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupCanvasGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "dial";
   ic->format = "s"; /* one string */
@@ -837,6 +838,7 @@ Iclass* iupDialGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupDialNewClass;
   ic->Create  = iDialCreateMethod;
   ic->Map     = iDialMapMethod;
   ic->UnMap   = iDialUnMapMethod;

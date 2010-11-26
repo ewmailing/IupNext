@@ -770,7 +770,7 @@ static int iSplitCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-Iclass* iupSplitGetClass(void)
+Iclass* iupSplitNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -781,6 +781,7 @@ Iclass* iupSplitGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupSplitNewClass;
   ic->Create  = iSplitCreateMethod;
   ic->Map     = iupBaseTypeVoidMapMethod;
 

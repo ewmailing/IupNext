@@ -5,11 +5,16 @@
 <title>IupGetChild</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
 <h2>IupGetChild</h2>
-<p>Returns the a child of the given control given its position.</p>
+<p>Returns the a child of the control given its position.</p>
 <h3>
 Parameters/Return</h3>
 <div>
@@ -18,7 +23,9 @@ iup.GetChild(<strong>ih: </strong>ihandle<strong>, pos</strong>: number) -&gt; <
 </div>
 <div>
   <b>ih</b>: identifier of the interface element.<br>
-	<strong>pos</strong>: position of the desire child.</div>
+	<strong>pos</strong>: position of the desire child.<br>
+<p><span class="style1">Returns:</span> the child or NULL if there is none.</p>
+</div>
 <h3>Notes</h3>
 <p>This function will return the children of the control in the exact same order in which they were assigned.</p>
 <h3>See Also</h3>

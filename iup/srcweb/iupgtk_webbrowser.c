@@ -304,7 +304,7 @@ static int gtkWebBrowserCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR; 
 }
 
-Iclass* iupWebBrowserGetClass(void)
+Iclass* iupWebBrowserNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -316,6 +316,7 @@ Iclass* iupWebBrowserGetClass(void)
   ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 
   /* Class functions */
+  ic->New = iupWebBrowserNewClass;
   ic->Create = gtkWebBrowserCreateMethod;
   ic->ComputeNaturalSize = gtkWebBrowserComputeNaturalSizeMethod;
 

@@ -501,7 +501,7 @@ static int iTabsCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
-Iclass* iupTabsGetClass(void)
+Iclass* iupTabsNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -513,6 +513,7 @@ Iclass* iupTabsGetClass(void)
   ic->has_attrib_id = 1;
 
   /* Class functions */
+  ic->New = iupTabsNewClass;
   ic->Create  = iTabsCreateMethod;
   ic->GetInnerNativeContainerHandle = iTabsGetInnerNativeContainerHandleMethod;
 

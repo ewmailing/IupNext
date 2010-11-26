@@ -749,7 +749,7 @@ Ihandle* IupDialog(Ihandle* child)
   return IupCreatev("dialog", children);
 }
 
-Iclass* iupDialogGetClass(void)
+Iclass* iupDialogNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -760,6 +760,7 @@ Iclass* iupDialogGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupDialogNewClass;
   ic->Create = iDialogCreateMethod;
   ic->Destroy = iDialogDestroyMethod;
   ic->ComputeNaturalSize = iDialogComputeNaturalSizeMethod;

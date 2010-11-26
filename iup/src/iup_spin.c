@@ -17,6 +17,7 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_stdcontrols.h"
+#include "iup_register.h"
 #include "iup_childtree.h"
 
 
@@ -222,9 +223,9 @@ static void iSpinReleaseMethod(Iclass* ic)
   }
 }
 
-Iclass* iupSpinGetClass(void)
+Iclass* iupSpinNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupVboxGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("vbox"));
 
   ic->name = "spin";
   ic->format = NULL;  /* no parameters */
@@ -233,6 +234,7 @@ Iclass* iupSpinGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupSpinNewClass;
   ic->Create = iSpinCreateMethod;
   ic->Release = iSpinReleaseMethod;
 
@@ -342,7 +344,7 @@ static int iSpinboxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-Iclass* iupSpinboxGetClass(void)
+Iclass* iupSpinboxNewClass(void)
 {
   /* we don't inherit from a Hbox here to always position the spin at right */
   Iclass* ic = iupClassNew(NULL);
@@ -354,6 +356,7 @@ Iclass* iupSpinboxGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupSpinboxNewClass;
   ic->Create = iSpinboxCreateMethod;
   ic->ComputeNaturalSize = iSpinboxComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iSpinboxSetChildrenCurrentSizeMethod;

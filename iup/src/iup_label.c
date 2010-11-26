@@ -147,7 +147,7 @@ Ihandle* IupLabel(const char* title)
   return IupCreatev("label", params);
 }
 
-Iclass* iupLabelGetClass(void)
+Iclass* iupLabelNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -158,6 +158,7 @@ Iclass* iupLabelGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupLabelNewClass;
   ic->Create = iLabelCreateMethod;
   ic->ComputeNaturalSize = iLabelComputeNaturalSizeMethod;
 

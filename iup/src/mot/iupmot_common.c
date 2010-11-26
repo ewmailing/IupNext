@@ -37,7 +37,7 @@
 
 void iupdrvActivate(Ihandle* ih)
 {
-  if (iupStrEqual(ih->iclass->name, "text") || iupStrEqual(ih->iclass->name, "multiline"))
+  if (IupClassMatch(ih, "text"))
     XmProcessTraversal(ih->handle, XmTRAVERSE_CURRENT);
   else
     XtCallActionProc(ih->handle, "ArmAndActivate", 0, 0, 0 );
@@ -85,7 +85,7 @@ void iupmotSetMnemonicTitle(Ihandle *ih, Widget w, const char* value)
       attrib[17] = (char)toupper(c);
 
       /* used by motActivateMnemonic */
-      if (iupStrEqual(ih->iclass->name, "label"))
+      if (IupClassMatch(ih, "label"))
         iupAttribSetStr(dialog, attrib, (char*)iupFocusNextInteractive(ih));
       else
       {

@@ -754,11 +754,11 @@ void IupSaveClassAttributes(Ihandle* ih)
   ic = ih->iclass;
 
   has_attrib_id = ic->has_attrib_id;
-  if (iupStrEqual(ic->name, "tree") || /* tree can only set id attributes after map, so they can not be saved */
-      iupStrEqual(ic->name, "cells")) /* cells does not have any saveable id attributes */
+  if (iupClassMatch(ic, "tree") || /* tree can only set id attributes after map, so they can not be saved */
+      iupClassMatch(ic, "cells")) /* cells does not have any saveable id attributes */
     has_attrib_id = 0;  
 
-  if (iupStrEqual(ic->name, "list"))
+  if (iupClassMatch(ic, "list"))
     start_id = 1;
 
   name = iupTableFirst(ic->attrib_func);
@@ -857,17 +857,17 @@ void IupCopyClassAttributes(Ihandle* src_ih, Ihandle* dst_ih)
   if (!iupObjectCheck(dst_ih))
     return;
 
-  if (!iupStrEqualNoCase(src_ih->iclass->name, dst_ih->iclass->name))
+  if (!IupClassMatch(dst_ih, src_ih->iclass->name))
     return;
 
   ic = src_ih->iclass;
 
   has_attrib_id = ic->has_attrib_id;
-  if (iupStrEqual(ic->name, "tree") || /* tree can only set id attributes after map, so they can not be saved */
-      iupStrEqual(ic->name, "cells")) /* cells does not have any saveable id attributes */
+  if (iupClassMatch(ic, "tree") || /* tree can only set id attributes after map, so they can not be saved */
+      iupClassMatch(ic, "cells")) /* cells does not have any saveable id attributes */
     has_attrib_id = 0;  
 
-  if (iupStrEqual(ic->name, "list"))
+  if (iupClassMatch(ic, "list"))
     start_id = 1;
 
   name = iupTableFirst(ic->attrib_func);

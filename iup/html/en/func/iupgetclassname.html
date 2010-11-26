@@ -9,6 +9,9 @@
 .style1 {
 	font-size: large;
 }
+.style2 {
+	text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -21,6 +24,7 @@ Parameters/Return</h3>
 <pre>char* IupGetClassName(Ihandle* <strong>ih</strong>); [in C]
 iup.GetClassName(<strong>ih</strong>: ihandle) -&gt; (<strong>name</strong>: string) [in Lua]</pre>
 <p><b>ih</b>: Identifier of the interface element.</p>
+<p><span class="style2">Returns:</span> the name of the class.</p>
 <h3>Notes</h3>
 <p>The following names are known:</p>
 <pre>&quot;image&quot;
@@ -62,6 +66,7 @@ iup.GetClassName(<strong>ih</strong>: ihandle) -&gt; (<strong>name</strong>: str
 
 <h3>See Also</h3>
 <p>
+<a href="iupclassmatch.html">IupClassMatch</a>,
 <a href="iupgetclasstype.html">IupGetClassType</a>,
 <a href="iupgetclassattributes.html">IupGetClassAttributes</a></p>
 

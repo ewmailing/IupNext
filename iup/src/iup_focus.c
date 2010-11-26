@@ -48,7 +48,7 @@ int iupFocusCanAccept(Ihandle *ih)
 
 static int iFocusCheckActiveRadio(Ihandle *ih)
 {
-  if (iupStrEqual(ih->iclass->name, "toggle") && 
+  if (IupClassMatch(ih, "toggle") && 
       IupGetInt(ih, "RADIO") &&
       !IupGetInt(ih, "VALUE"))
     return 0;

@@ -406,7 +406,7 @@ Ihandle* IupTuioClient(int port)
   return IupCreatev("tuioclient", params);
 }
 
-static Iclass* iTuioGetClass(void)
+static Iclass* iTuioNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -416,6 +416,7 @@ static Iclass* iTuioGetClass(void)
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;
   
+  ic->New = iTuioNewClass;
   ic->Create = iTuioCreateMethod;
   ic->Destroy = iTuioDestroyMethod;
 
@@ -433,7 +434,7 @@ int IupTuioOpen(void)
   if (IupGetGlobal("_IUP_TUIO_OPEN"))
     return IUP_OPENED;
 
-  iupRegisterClass(iTuioGetClass());
+  iupRegisterClass(iTuioNewClass());
 
   IupSetGlobal("_IUP_TUIO_OPEN", "1");
   return IUP_NOERROR;

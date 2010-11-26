@@ -815,7 +815,7 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   }
 
   /* free the data allocated by IupCanvas */
-  if (ih->data) free(ih->data);
+  free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
@@ -992,9 +992,9 @@ static void iMatrixCreateCursor(void)
   IupSetHandle("matrx_img_cur_excel",  imgcursor);  /* for backward compatibility */
 }
 
-Iclass* iupMatrixGetClass(void)
+Iclass* iupMatrixNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupCanvasGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "matrix";
   ic->format = "a"; /* one ACTION_CB callback name */
@@ -1004,6 +1004,7 @@ Iclass* iupMatrixGetClass(void)
   ic->has_attrib_id = 2;   /* has attributes with IDs that must be parsed */
 
   /* Class functions */
+  ic->New = iupMatrixNewClass;
   ic->Create  = iMatrixCreateMethod;
   ic->Map     = iMatrixMapMethod;
   ic->UnMap   = iMatrixUnMapMethod;

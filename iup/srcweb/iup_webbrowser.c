@@ -35,7 +35,7 @@ int IupWebBrowserOpen(void)
   if (IupGetGlobal("_IUP_WEBBROWSER_OPEN"))
     return IUP_OPENED;
 
-  iupRegisterClass(iupWebBrowserGetClass());
+  iupRegisterClass(iupWebBrowserNewClass());
 
   IupSetGlobal("_IUP_WEBBROWSER_OPEN", "1");
   return IUP_NOERROR;

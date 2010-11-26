@@ -117,7 +117,7 @@ Ihandle* IupToggle(const char* title, const char* action)
   return IupCreatev("toggle", params);
 }
 
-Iclass* iupToggleGetClass(void)
+Iclass* iupToggleNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -128,6 +128,7 @@ Iclass* iupToggleGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupToggleNewClass;
   ic->Create = iToggleCreateMethod;
   ic->ComputeNaturalSize = iToggleComputeNaturalSizeMethod;
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;

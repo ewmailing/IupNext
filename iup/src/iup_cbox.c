@@ -114,7 +114,7 @@ Ihandle *IupCbox (Ihandle * child,...)
   return ih;
 }
 
-Iclass* iupCboxGetClass(void)
+Iclass* iupCboxNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -125,6 +125,7 @@ Iclass* iupCboxGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupCboxNewClass;
   ic->Create = iCboxCreateMethod;
   ic->Map = iupBaseTypeVoidMapMethod;
 

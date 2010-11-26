@@ -206,8 +206,7 @@ int iupKeyProcessNavigation(Ihandle* ih, int key, int shift)
 
   if (key == K_cTAB)
   {
-    int is_multiline = (iupStrEqual(ih->iclass->name, "multiline") || 
-                        (iupStrEqual(ih->iclass->name, "text") && IupGetInt(ih, "MULTILINE")));
+    int is_multiline = (IupClassMatch(ih, "text") && IupGetInt(ih, "MULTILINE"));
     if (is_multiline)
     {
       if (shift)
@@ -219,8 +218,7 @@ int iupKeyProcessNavigation(Ihandle* ih, int key, int shift)
   }
   else if (key == K_TAB || key == K_sTAB)
   {
-    int is_multiline = (iupStrEqual(ih->iclass->name, "multiline") || 
-                        (iupStrEqual(ih->iclass->name, "text") && IupGetInt(ih, "MULTILINE")));
+    int is_multiline = (IupClassMatch(ih, "text") && IupGetInt(ih, "MULTILINE"));
     if (!is_multiline)
     {
       if (key == K_sTAB)
@@ -232,8 +230,8 @@ int iupKeyProcessNavigation(Ihandle* ih, int key, int shift)
   }
   else if (key == K_UP || key == K_DOWN)
   {
-    int is_button = (iupStrEqual(ih->iclass->name, "button") || 
-                     iupStrEqual(ih->iclass->name, "toggle"));
+    int is_button = (IupClassMatch(ih, "button") || 
+                     IupClassMatch(ih, "toggle"));
     if (is_button)
     {
       if (key == K_UP)
@@ -246,19 +244,17 @@ int iupKeyProcessNavigation(Ihandle* ih, int key, int shift)
   else if (key==K_ESC)
   {
     Ihandle* bt = IupGetAttributeHandle(IupGetDialog(ih), "DEFAULTESC");
-    if (iupObjectCheck(bt) && iupStrEqual(bt->iclass->name, "button"))
+    if (iupObjectCheck(bt) && IupClassMatch(bt, "button"))
       iupdrvActivate(bt);
     return 0;   /* abort default processing */
   }
   else if (key==K_CR || key==K_cCR)
   {
-    int is_multiline = (iupStrEqual(ih->iclass->name, "multiline") || 
-                        (iupStrEqual(ih->iclass->name, "text") && IupGetInt(ih, "MULTILINE")));
-
+    int is_multiline = (IupClassMatch(ih, "text") && IupGetInt(ih, "MULTILINE"));
     if ((key==K_CR && !is_multiline) || (key==K_cCR && is_multiline))
     {
       Ihandle* bt = IupGetAttributeHandle(IupGetDialog(ih), "DEFAULTENTER");
-      if (iupObjectCheck(bt) && iupStrEqual(bt->iclass->name, "button"))
+      if (iupObjectCheck(bt) && IupClassMatch(bt, "button"))
         iupdrvActivate(bt);
       return 0;   /* abort default processing */
     }

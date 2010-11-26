@@ -69,7 +69,7 @@ static int iBoxSetCGapAttrib(Ihandle* ih, const char* value)
 {
   int cgap;
   iupStrToInt(value, &cgap);
-  if (iupStrEqual(ih->iclass->name, "vbox"))
+  if (IupClassMatch(ih, "vbox"))
   {
     int charheight;
     iupdrvFontGetCharSize(ih, NULL, &charheight);
@@ -87,7 +87,7 @@ static int iBoxSetCGapAttrib(Ihandle* ih, const char* value)
 static char* iBoxGetCGapAttrib(Ihandle* ih)
 {
   char *str = iupStrGetMemory(50);
-  if (iupStrEqual(ih->iclass->name, "vbox"))
+  if (IupClassMatch(ih, "vbox"))
   {
     int charheight;
     iupdrvFontGetCharSize(ih, NULL, &charheight);
@@ -136,7 +136,7 @@ static int iBoxSetExpandChildrenAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
   {
-    if (iupStrEqual(ih->iclass->name, "vbox"))
+    if (IupClassMatch(ih, "vbox"))
       ih->data->expand_children = IUP_EXPAND_WIDTH;    /* in vert. box, expand horizontally */
     else
       ih->data->expand_children = IUP_EXPAND_HEIGHT;   /* in horiz. box, expand vertically */
@@ -204,7 +204,7 @@ static char* iBoxGetMarginAttrib(Ihandle* ih)
 /******************************************************************************/
 
 
-Iclass* iupBoxClassBase(void)
+Iclass* iupBoxNewClassBase(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -214,6 +214,7 @@ Iclass* iupBoxClassBase(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupBoxNewClassBase;
   ic->Create = iBoxCreateMethod;
   ic->Map = iupBaseTypeVoidMapMethod;
 

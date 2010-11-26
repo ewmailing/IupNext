@@ -146,7 +146,7 @@ Ihandle* IupFrame(Ihandle* child)
   return IupCreatev("frame", children);
 }
 
-Iclass* iupFrameGetClass(void)
+Iclass* iupFrameNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -157,6 +157,7 @@ Iclass* iupFrameGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupFrameNewClass;
   ic->Create = iFrameCreateMethod;
 
   ic->ComputeNaturalSize = iFrameComputeNaturalSizeMethod;

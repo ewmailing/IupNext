@@ -309,11 +309,11 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
       total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
   char **attr_names = (char **) malloc(total_count * sizeof(char *));
 
-  if (iupStrEqual(ih->iclass->name, "tree") || /* tree can only set id attributes after map, so they can not be saved */
-      iupStrEqual(ih->iclass->name, "cells")) /* cells does not have any saveable id attributes */
+  if (IupClassMatch(ih, "tree") || /* tree can only set id attributes after map, so they can not be saved */
+      IupClassMatch(ih, "cells")) /* cells does not have any saveable id attributes */
     has_attrib_id = 0;  
 
-  if (iupStrEqual(ih->iclass->name, "list"))
+  if (IupClassMatch(ih, "list"))
     start_id = 1;
 
   attr_count = IupGetClassAttributes(ih->iclass->name, attr_names, total_count);
@@ -1065,7 +1065,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
   else if (ih->iclass->nativetype!=IUP_TYPEVOID)
   {
     /* if ih is a Tabs, position the title accordingly */
-    if (iupStrEqualNoCase(ih->iclass->name, "tabs"))
+    if (IupClassMatch(ih, "tabs"))
     {
       /* TABORIENTATION is ignored */
       char* tabtype = iupAttribGetLocal(ih, "TABTYPE");
@@ -1145,7 +1145,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     if (ih->iclass->childtype==IUP_CHILDNONE &&
         !title && !image)
     {
-      if (iupStrEqualNoCase(ih->iclass->name, "progressbar"))
+      if (IupClassMatch(ih, "progressbar"))
       {
         float min = IupGetFloat(ih, "MIN");
         float max = IupGetFloat(ih, "MAX");
@@ -1163,7 +1163,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
           iupDrawRectangle(dc, x+2, y+2, x+pw, y+h-3, r, g, b, IUP_DRAW_FILL);
         }
       }
-      else if (iupStrEqualNoCase(ih->iclass->name, "val"))
+      else if (IupClassMatch(ih, "val"))
       {
         float min = IupGetFloat(ih, "MIN");
         float max = IupGetFloat(ih, "MAX");
@@ -1236,7 +1236,7 @@ static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisib
         native_parent_y += ih->y+dy;
 
         /* if ih is a Tabs, then draw only the active child */
-        if (iupStrEqualNoCase(ih->iclass->name, "tabs"))
+        if (IupClassMatch(ih, "tabs"))
         {
           child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
           if (child)
@@ -1544,7 +1544,7 @@ static void iLayoutPropertiesUpdateIdList(Ihandle *showidlist, Ihandle *ih, int 
     int id, start_id = 0,
         count = IupGetInt(ih, "COUNT");
 
-    if (iupStrEqual(ih->iclass->name, "list"))
+    if (IupClassMatch(ih, "list"))
       start_id = 1;
 
     for (id=start_id ; id<count+start_id ; id++)
@@ -2290,7 +2290,7 @@ static Ihandle* iLayoutFindElementByPos(Ihandle* ih, int native_parent_x, int na
           native_parent_y += ih->y+dy;
 
           /* if ih is a Tabs, then find only the active child */
-          if (iupStrEqualNoCase(ih->iclass->name, "tabs"))
+          if (IupClassMatch(ih, "tabs"))
           {
             child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
             if (child)

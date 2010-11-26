@@ -13,14 +13,14 @@ extern "C" {
 #endif
 
 
-Iclass* iupDialGetClass(void);
-Iclass* iupCellsGetClass(void);
-Iclass* iupColorbarGetClass(void);
-Iclass* iupColorBrowserGetClass(void);
-Iclass* iupMatrixGetClass(void);
-Iclass* iupGaugeGetClass(void);
-Iclass* iupTabsGetClass(void);
-Iclass* iupColorBrowserDlgGetClass(void);
+Iclass* iupDialNewClass(void);
+Iclass* iupCellsNewClass(void);
+Iclass* iupColorbarNewClass(void);
+Iclass* iupColorBrowserNewClass(void);
+Iclass* iupMatrixNewClass(void);
+Iclass* iupGaugeNewClass(void);
+Iclass* iupTabsNewClass(void);
+Iclass* iupColorBrowserDlgNewClass(void);
 
 char *iupControlBaseGetParentBgColor (Ihandle* ih);
 char *iupControlBaseGetBgColorAttrib(Ihandle* ih);

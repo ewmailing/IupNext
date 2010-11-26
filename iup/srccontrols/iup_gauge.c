@@ -24,6 +24,8 @@
 #include "iup_stdcontrols.h"
 #include "iup_controls.h"
 #include "iup_cdutil.h"
+#include "iup_register.h"
+
 
 #define IGAUGE_DEFAULTCOLOR "64 96 192"
 #define IGAUGE_DEFAULTSIZE  "120x14"
@@ -376,8 +378,7 @@ static int iGaugeCreateMethod(Ihandle* ih, void **params)
   (void)params;
 
   /* free the data allocated by IupCanvas */
-  if (ih->data)
-    free(ih->data);
+  free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
@@ -402,9 +403,9 @@ static int iGaugeCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
-Iclass* iupGaugeGetClass(void)
+Iclass* iupGaugeNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupCanvasGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "gauge";
   ic->format = NULL; /* no parameters */
@@ -413,6 +414,7 @@ Iclass* iupGaugeGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupGaugeNewClass;
   ic->Create  = iGaugeCreateMethod;
   ic->Map     = iGaugeMapMethod;
   ic->UnMap   = iGaugeUnMapMethod;

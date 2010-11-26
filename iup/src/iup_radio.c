@@ -25,7 +25,7 @@ Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle)
   for (p=ih_toggle; p->parent; p=p->parent)
   {
     if (p->iclass->nativetype == IUP_TYPEVOID &&
-        iupStrEqual(p->iclass->name, "radio"))
+        IupClassMatch(p, "radio"))
       return p;
   }
 
@@ -52,7 +52,7 @@ static Ihandle* iRadioGetToggleChildOn(Ihandle* ih)
 {
   Ihandle* child;
 
-  if (iupStrEqual(ih->iclass->name, "toggle") &&   /* found child that is a toggle and it is ON */
+  if (IupClassMatch(ih, "toggle") &&   /* found child that is a toggle and it is ON */
       IupGetInt(ih, "VALUE"))
     return ih;
 
@@ -75,7 +75,7 @@ static int iRadioSetValueHandleAttrib(Ihandle* ih, const char* value)
   if (!iupObjectCheck(ih_toggle))
     return 0;
 
-  if (!iupStrEqual(ih_toggle->iclass->name, "toggle"))
+  if (!IupClassMatch(ih_toggle, "toggle"))
     return 0;
 
   if (iRadioFindToggleChild(ih->firstchild, ih_toggle))
@@ -165,7 +165,7 @@ Ihandle* IupRadio(Ihandle* child)
   return IupCreatev("radio", children);
 }
 
-Iclass* iupRadioGetClass(void)
+Iclass* iupRadioNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -176,6 +176,7 @@ Iclass* iupRadioGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupRadioNewClass;
   ic->Create = iRadioCreateMethod;
   ic->Map = iupBaseTypeVoidMapMethod;
   ic->ComputeNaturalSize = iRadioComputeNaturalSizeMethod;

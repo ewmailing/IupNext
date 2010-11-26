@@ -24,17 +24,16 @@
 #include "iup_register.h"
 
 
-struct _IcontrolData 
+/* Do NOT use _IcontrolData to make inheritance easy
+   when parent class in glcanvas */
+typedef struct _IGlControlData
 {
-  iupCanvas canvas;  /* from IupCanvas (must reserve it) */
-
   Display* display;
   Drawable window;
-
   Colormap colormap;
   XVisualInfo *vinfo;
   GLXContext context;
-};
+} IGlControlData;
 
 static int xGLCanvasDefaultResize(Ihandle *ih, int width, int height)
 {
@@ -45,22 +44,27 @@ static int xGLCanvasDefaultResize(Ihandle *ih, int width, int height)
 
 static int xGLCanvasCreateMethod(Ihandle* ih, void** params)
 {
+  IGlControlData* gldata;
   (void)params;
-  free(ih->data); /* allocated by the iCanvasCreateMethod of IupCanvas */
-  ih->data = iupALLOCCTRLDATA();
+
+  gldata = (IGlControlData*)malloc(sizeof(IGlControlData));
+  memset(gldata, 0, sizeof(IGlControlData));
+  iupAttribSetStr(ih, "_IUP_GLCONTROLDATA", (char*)gldata);
+
   IupSetCallback(ih, "RESIZE_CB", (Icallback)xGLCanvasDefaultResize);
+
   return IUP_NOERROR;
 }
 
-static void xGLCanvasGetVisual(Ihandle* ih)
+static void xGLCanvasGetVisual(Ihandle* ih, IGlControlData* gldata)
 {
   int erb, evb, number;
   int n = 0;
   int alist[40];
 
-  if (!ih->data->display)
-    ih->data->display = (Display*)IupGetGlobal("XDISPLAY");  /* works for Motif and GTK, can be called before mapped */
-  if (!ih->data->display)
+  if (!gldata->display)
+    gldata->display = (Display*)IupGetGlobal("XDISPLAY");  /* works for Motif and GTK, can be called before mapped */
+  if (!gldata->display)
     return;
 
   /* double or single buffer */
@@ -166,34 +170,37 @@ static void xGLCanvasGetVisual(Ihandle* ih)
   alist[n++] = None;
 
   /* check out X extension */
-  if (!glXQueryExtension(ih->data->display, &erb, &evb))
+  if (!glXQueryExtension(gldata->display, &erb, &evb))
   {
     iupAttribSetStr(ih, "ERROR", "X server has no OpenGL GLX extension");
     return;
   }
 
   /* choose visual */
-  ih->data->vinfo = glXChooseVisual(ih->data->display, DefaultScreen(ih->data->display), alist);
-  if (!ih->data->vinfo)
+  gldata->vinfo = glXChooseVisual(gldata->display, DefaultScreen(gldata->display), alist);
+  if (!gldata->vinfo)
     iupAttribSetStr(ih, "ERROR", "No appropriate visual");
 }
 
 static char* xGLCanvasGetVisualAttrib(Ihandle *ih)
 {
+  IGlControlData* gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+
   /* This must be available before mapping, because IupCanvas uses it during map in GTK and Motif. */
-  if (ih->data->vinfo)
-    return (char*)ih->data->vinfo->visual;
+  if (gldata->vinfo)
+    return (char*)gldata->vinfo->visual;
 
-  xGLCanvasGetVisual(ih);
+  xGLCanvasGetVisual(ih, gldata);
 
-  if (ih->data->vinfo)
-    return (char*)ih->data->vinfo->visual;
+  if (gldata->vinfo)
+    return (char*)gldata->vinfo->visual;
 
   return NULL;
 }
 
 static int xGLCanvasMapMethod(Ihandle* ih)
 {
+  IGlControlData* gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
   GLXContext shared_context = NULL;
   Ihandle* ih_shared;
 
@@ -202,59 +209,73 @@ static int xGLCanvasMapMethod(Ihandle* ih)
   if (!xGLCanvasGetVisualAttrib(ih))
     return IUP_NOERROR; /* do not abort mapping */
 
-  ih->data->window = (XID)iupAttribGet(ih, "XWINDOW"); /* check first in the hash table, can be defined by the IupFileDlg */
-  if (!ih->data->window)
-    ih->data->window = (XID)IupGetAttribute(ih, "XWINDOW");  /* works for Motif and GTK, only after mapping the IupCanvas */
-  if (!ih->data->window)
+  gldata->window = (XID)iupAttribGet(ih, "XWINDOW"); /* check first in the hash table, can be defined by the IupFileDlg */
+  if (!gldata->window)
+    gldata->window = (XID)IupGetAttribute(ih, "XWINDOW");  /* works for Motif and GTK, only after mapping the IupCanvas */
+  if (!gldata->window)
     return IUP_NOERROR;
 
   ih_shared = IupGetAttributeHandle(ih, "SHAREDCONTEXT");
-  if (ih_shared && iupStrEqual(ih_shared->iclass->name, "glcanvas"))  /* must be an IupGLCanvas */
-    shared_context = ih_shared->data->context;
+  if (ih_shared && IupClassMatch(ih_shared, "glcanvas"))  /* must be an IupGLCanvas */
+  {
+    IGlControlData* shared_gldata = (IGlControlData*)iupAttribGet(ih_shared, "_IUP_GLCONTROLDATA");
+    shared_context = shared_gldata->context;
+  }
 
   /* create rendering context */
-  ih->data->context = glXCreateContext(ih->data->display, ih->data->vinfo, shared_context, GL_TRUE);
-  if (!ih->data->context)
+  gldata->context = glXCreateContext(gldata->display, gldata->vinfo, shared_context, GL_TRUE);
+  if (!gldata->context)
   {
     iupAttribSetStr(ih, "ERROR", "Could not create a rendering context");
     return IUP_NOERROR;
   }
-  iupAttribSetStr(ih, "CONTEXT", (char*)ih->data->context);
+  iupAttribSetStr(ih, "CONTEXT", (char*)gldata->context);
 
   /* create colormap for index mode */
   if (iupStrEqualNoCase(iupAttribGetStr(ih,"COLOR"), "INDEX") && 
-      ih->data->vinfo->class != StaticColor && ih->data->vinfo->class != StaticGray)
+      gldata->vinfo->class != StaticColor && gldata->vinfo->class != StaticGray)
   {
-    ih->data->colormap = XCreateColormap(ih->data->display, RootWindow(ih->data->display, DefaultScreen(ih->data->display)), ih->data->vinfo->visual, AllocAll);
-    iupAttribSetStr(ih, "COLORMAP", (char*)ih->data->colormap);
+    gldata->colormap = XCreateColormap(gldata->display, RootWindow(gldata->display, DefaultScreen(gldata->display)), gldata->vinfo->visual, AllocAll);
+    iupAttribSetStr(ih, "COLORMAP", (char*)gldata->colormap);
   }
 
-  if (ih->data->colormap != None)
+  if (gldata->colormap != None)
     IupGLPalette(ih,0,1,1,1);  /* set first color as white */
 
   return IUP_NOERROR;
 }
 
-static void xGLCanvasUnMapMethod(Ihandle* ih)
+static void xGLCanvasDestroy(Ihandle* ih)
 {
-  if (ih->data->context)
-  {
-    if (ih->data->context == glXGetCurrentContext())
-      glXMakeCurrent(ih->data->display, None, NULL);
-
-    glXDestroyContext(ih->data->display, ih->data->context);
-  }
-
-  if (ih->data->colormap != None)
-    XFreeColormap(ih->data->display, ih->data->colormap);
-
-  if (ih->data->vinfo)
-    XFree(ih->data->vinfo); 
+  IGlControlData* gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  free(gldata);
+  iupAttribSetStr(ih, "_IUP_GLCONTROLDATA", NULL);
 }
 
-static Iclass* xGlCanvasGetClass(void)
+static void xGLCanvasUnMapMethod(Ihandle* ih)
 {
-  Iclass* ic = iupClassNew(iupCanvasGetClass());
+  IGlControlData* gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+
+  if (gldata->context)
+  {
+    if (gldata->context == glXGetCurrentContext())
+      glXMakeCurrent(gldata->display, None, NULL);
+
+    glXDestroyContext(gldata->display, gldata->context);
+  }
+
+  if (gldata->colormap != None)
+    XFreeColormap(gldata->display, gldata->colormap);
+
+  if (gldata->vinfo)
+    XFree(gldata->vinfo); 
+
+  memset(gldata, 0, sizeof(IGlControlData));
+}
+
+static Iclass* xGlCanvasNewClass(void)
+{
+  Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "glcanvas";
   ic->format = "a"; /* one ACTION callback name */
@@ -262,7 +283,9 @@ static Iclass* xGlCanvasGetClass(void)
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
 
+  ic->New = xGlCanvasNewClass;
   ic->Create = xGLCanvasCreateMethod;
+  ic->Destroy = xGLCanvasDestroy;
   ic->Map = xGLCanvasMapMethod;
   ic->UnMap = xGLCanvasUnMapMethod;
 
@@ -283,7 +306,7 @@ void IupGLCanvasOpen(void)
 {
   if (!IupGetGlobal("_IUP_GLCANVAS_OPEN"))
   {
-    iupRegisterClass(xGlCanvasGetClass());
+    iupRegisterClass(xGlCanvasNewClass());
     IupSetGlobal("_IUP_GLCANVAS_OPEN", "1");
   }
 }
@@ -298,19 +321,23 @@ Ihandle* IupGLCanvas(const char *action)
 
 int IupGLIsCurrent(Ihandle* ih)
 {
+  IGlControlData* gldata;
+
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return 0;
 
   /* must be an IupGLCanvas */
-  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "glcanvas"))
     return 0;
 
   /* must be mapped */
-  if (!ih->data->window)
+  gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  if (!gldata->window)
     return 0;
 
-  if (ih->data->context == glXGetCurrentContext())
+  if (gldata->context == glXGetCurrentContext())
     return 1;
 
   return 0;
@@ -318,37 +345,45 @@ int IupGLIsCurrent(Ihandle* ih)
 
 void IupGLMakeCurrent(Ihandle* ih)
 {
+  IGlControlData* gldata;
+
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
 
   /* must be an IupGLCanvas */
-  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->data->window)
+  gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  if (!gldata->window)
     return;
 
-  glXMakeCurrent(ih->data->display, ih->data->window, ih->data->context);
+  glXMakeCurrent(gldata->display, gldata->window, gldata->context);
   glXWaitX();
 }
 
 void IupGLSwapBuffers(Ihandle* ih)
 {
+  IGlControlData* gldata;
+
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
 
   /* must be an IupGLCanvas */
-  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->data->window)
+  gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  if (!gldata->window)
     return;
 
-  glXSwapBuffers(ih->data->display, ih->data->window);
+  glXSwapBuffers(gldata->display, gldata->window);
 }
 
 static int xGLCanvasIgnoreError(Display *param1, XErrorEvent *param2)
@@ -360,6 +395,7 @@ static int xGLCanvasIgnoreError(Display *param1, XErrorEvent *param2)
 
 void IupGLPalette(Ihandle* ih, int index, float r, float g, float b)
 {
+  IGlControlData* gldata;
   XColor color;
   int rShift, gShift, bShift;
   XVisualInfo *vinfo;
@@ -370,21 +406,23 @@ void IupGLPalette(Ihandle* ih, int index, float r, float g, float b)
     return;
 
   /* must be an IupGLCanvas */
-  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->data->window)
+  gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  if (!gldata->window)
     return;
 
   /* must have a colormap */
-  if (ih->data->colormap == None)
+  if (gldata->colormap == None)
     return;
 
   /* code fragment based on the toolkit library provided with OpenGL */
   old_handler = XSetErrorHandler(xGLCanvasIgnoreError);
 
-  vinfo = ih->data->vinfo;
+  vinfo = gldata->vinfo;
   switch (vinfo->class) 
   {
   case DirectColor:
@@ -398,7 +436,7 @@ void IupGLPalette(Ihandle* ih, int index, float r, float g, float b)
     color.green = (unsigned short)(g * 65535.0 + 0.5);
     color.blue = (unsigned short)(b * 65535.0 + 0.5);
     color.flags = DoRed | DoGreen | DoBlue;
-    XStoreColor(ih->data->display, ih->data->colormap, &color);
+    XStoreColor(gldata->display, gldata->colormap, &color);
     break;
   case GrayScale:
   case PseudoColor:
@@ -409,17 +447,18 @@ void IupGLPalette(Ihandle* ih, int index, float r, float g, float b)
       color.green = (unsigned short)(g * 65535.0 + 0.5);
       color.blue = (unsigned short)(b * 65535.0 + 0.5);
       color.flags = DoRed | DoGreen | DoBlue;
-      XStoreColor(ih->data->display, ih->data->colormap, &color);
+      XStoreColor(gldata->display, gldata->colormap, &color);
     }
     break;
   }
 
-  XSync(ih->data->display, 0);
+  XSync(gldata->display, 0);
   XSetErrorHandler(old_handler);
 }
 
 void IupGLUseFont(Ihandle* ih, int first, int count, int list_base)
 {
+  IGlControlData* gldata;
   Font font;
 
   iupASSERT(iupObjectCheck(ih));
@@ -427,11 +466,13 @@ void IupGLUseFont(Ihandle* ih, int first, int count, int list_base)
     return;
 
   /* must be an IupGLCanvas */
-  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->data->window)
+  gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  if (!gldata->window)
     return;
 
   font = (Font)IupGetAttribute(ih, "XFONTID");

@@ -79,6 +79,12 @@ struct Iclass_
 
   /* Class methods. */
 
+  /** Method that allocates a new instance of the class. \n
+   * Used by inherited classes in \ref iupClassNew.
+   */
+  Iclass* (*New)(void);
+
+
   /** Method that release the memory allocated by the class.
    * Called only once at \ref iupClassRelease.
    */
@@ -187,7 +193,9 @@ struct Iclass_
 
 
 /** Allocates memory for the Iclass structure and 
- * initializes the attribute handling functions table.
+ * initializes the attribute handling functions table. \n
+ * If parent is spcified then a new instance of the parent class is created
+ * and set as the actual parent class.
  * \ingroup iclass */
 Iclass* iupClassNew(Iclass* ic_parent);
 
@@ -197,6 +205,10 @@ Iclass* iupClassNew(Iclass* ic_parent);
  * \ingroup iclass */
 void iupClassRelease(Iclass* ic);
 
+/** Check if the class name match the given name. \n
+ *  Parent classes are also checked.
+ * \ingroup iclass */
+int iupClassMatch(Iclass* ic, const char* classname);
 
 
 /** GetAttribute called for a specific attribute.
@@ -455,6 +467,7 @@ void iupClassGetAttribNameInfo(Iclass* ic, const char* name, char* *def_value, i
 /* Other functions declared in <iup.h> and implemented here. 
 IupGetClassType
 IupGetClassName
+IupClassMatch
 */
 
 

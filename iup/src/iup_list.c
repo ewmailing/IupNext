@@ -686,7 +686,7 @@ Ihandle* IupList(const char* action)
   return IupCreatev("list", params);
 }
 
-Iclass* iupListGetClass(void)
+Iclass* iupListNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -698,6 +698,7 @@ Iclass* iupListGetClass(void)
   ic->has_attrib_id = 1;
 
   /* Class functions */
+  ic->New = iupListNewClass;
   ic->Create = iListCreateMethod;
   ic->Destroy = iListDestroyMethod;
   ic->ComputeNaturalSize = iListComputeNaturalSizeMethod;

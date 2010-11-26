@@ -203,7 +203,7 @@ static int iMenuCreateMethod(Ihandle* ih, void** params)
 /******************************************************************************************/
 
 
-Iclass* iupSeparatorGetClass(void)
+Iclass* iupSeparatorNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -212,6 +212,8 @@ Iclass* iupSeparatorGetClass(void)
   ic->nativetype = IUP_TYPEMENU;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;
+
+  ic->New = iupSeparatorNewClass;
 
   /* Common */
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
@@ -222,7 +224,7 @@ Iclass* iupSeparatorGetClass(void)
   return ic;
 }
 
-Iclass* iupItemGetClass(void)
+Iclass* iupItemNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -233,6 +235,7 @@ Iclass* iupItemGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupItemNewClass;
   ic->Create = iItemCreateMethod;
 
   /* Callbacks */
@@ -256,7 +259,7 @@ Iclass* iupItemGetClass(void)
   return ic;
 }
 
-Iclass* iupSubmenuGetClass(void)
+Iclass* iupSubmenuNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -267,6 +270,7 @@ Iclass* iupSubmenuGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupSubmenuNewClass;
   ic->Create = iSubmenuCreateMethod;
 
   /* Callbacks */
@@ -287,7 +291,7 @@ Iclass* iupSubmenuGetClass(void)
   return ic;
 }
 
-Iclass* iupMenuGetClass(void)
+Iclass* iupMenuNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -298,6 +302,7 @@ Iclass* iupMenuGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupMenuNewClass;
   ic->Create = iMenuCreateMethod;
 
   /* Callbacks */

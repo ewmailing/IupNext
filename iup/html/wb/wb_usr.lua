@@ -786,6 +786,10 @@ wb_usr.tree =
               link= "func/iupgetclasstype.html"
             },
             {
+              name= {nl= "IupClassMatch"},
+              link= "func/iupclassmatch.html"
+            },
+            {
               name= {nl= "IupGetClassAttributes"},
               link= "func/iupgetclassattributes.html"
             },

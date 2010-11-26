@@ -23,16 +23,16 @@
 #include "iup_assert.h"
 #include "iup_register.h"
 
-
-struct _IcontrolData 
+/* Do NOT use _IcontrolData to make inheritance easy
+   when parent class in glcanvas */
+typedef struct _IGlControlData
 {
-  iupCanvas canvas;  /* from IupCanvas (must reserve it) */
   HWND window;
   HDC device;
   HGLRC context;
   HPALETTE palette;
   int is_owned_dc;
-};
+} IGlControlData;
 
 static int wGLCanvasDefaultResize_CB(Ihandle *ih, int width, int height)
 {
@@ -43,14 +43,19 @@ static int wGLCanvasDefaultResize_CB(Ihandle *ih, int width, int height)
 
 static int wGLCanvasCreateMethod(Ihandle* ih, void** params)
 {
+  IGlControlData* gldata;
   (void)params;
-  free(ih->data); /* allocated by the iCanvasCreateMethod of IupCanvas */
-  ih->data = iupALLOCCTRLDATA();
+
+  gldata = (IGlControlData*)malloc(sizeof(IGlControlData));
+  memset(gldata, 0, sizeof(IGlControlData));
+  iupAttribSetStr(ih, "_IUP_GLCONTROLDATA", (char*)gldata);
+
   IupSetCallback(ih, "RESIZE_CB", (Icallback)wGLCanvasDefaultResize_CB);
+
   return IUP_NOERROR;
 }
 
-static int wGLCreateContext(Ihandle* ih)
+static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
 {
   Ihandle* ih_shared;
   int number;
@@ -139,36 +144,39 @@ static int wGLCreateContext(Ihandle* ih)
 
   /* get a device context */
   {
-    LONG style = GetClassLong(ih->data->window, GCL_STYLE);
-    ih->data->is_owned_dc = (int) ((style & CS_OWNDC) || (style & CS_CLASSDC));
+    LONG style = GetClassLong(gldata->window, GCL_STYLE);
+    gldata->is_owned_dc = (int) ((style & CS_OWNDC) || (style & CS_CLASSDC));
   }
 
-  ih->data->device = GetDC(ih->data->window);
-  iupAttribSetStr(ih, "VISUAL", (char*)ih->data->device);
+  gldata->device = GetDC(gldata->window);
+  iupAttribSetStr(ih, "VISUAL", (char*)gldata->device);
 
   /* choose pixel format */
-  pixelFormat = ChoosePixelFormat(ih->data->device, &pfd);
+  pixelFormat = ChoosePixelFormat(gldata->device, &pfd);
   if (pixelFormat == 0)
   {
     iupAttribSetStr(ih, "ERROR", "No appropriate pixel format.");
     return IUP_NOERROR;
   } 
-  SetPixelFormat(ih->data->device,pixelFormat,&pfd);
+  SetPixelFormat(gldata->device,pixelFormat,&pfd);
 
   /* create rendering context */
-  ih->data->context = wglCreateContext(ih->data->device);
-  if (!ih->data->context)
+  gldata->context = wglCreateContext(gldata->device);
+  if (!gldata->context)
   {
     iupAttribSetStr(ih, "ERROR", "Could not create a rendering context.");
     return IUP_NOERROR;
   }
-  iupAttribSetStr(ih, "CONTEXT", (char*)ih->data->context);
+  iupAttribSetStr(ih, "CONTEXT", (char*)gldata->context);
 
   ih_shared = IupGetAttributeHandle(ih, "SHAREDCONTEXT");
-  if (ih_shared && iupStrEqual(ih_shared->iclass->name, "glcanvas"))  /* must be an IupGLCanvas */
-    wglShareLists(ih_shared->data->context, ih->data->context);
+  if (ih_shared && IupClassMatch(ih_shared, "glcanvas"))  /* must be an IupGLCanvas */
+  {
+    IGlControlData* shared_gldata = (IGlControlData*)iupAttribGet(ih_shared, "_IUP_GLCONTROLDATA");
+    wglShareLists(shared_gldata->context, gldata->context);
+  }
 
-  DescribePixelFormat(ih->data->device, pixelFormat, sizeof(PIXELFORMATDESCRIPTOR), &test_pfd);
+  DescribePixelFormat(gldata->device, pixelFormat, sizeof(PIXELFORMATDESCRIPTOR), &test_pfd);
   if ((pfd.dwFlags & PFD_STEREO) && !(test_pfd.dwFlags & PFD_STEREO))
   {
     iupAttribSetStr(ih, "ERROR", "Stereo not available.");
@@ -178,16 +186,16 @@ static int wGLCreateContext(Ihandle* ih)
   /* create colormap for index mode */
   if (isIndex)
   {
-    if (!ih->data->palette)
+    if (!gldata->palette)
     {
       LOGPALETTE lp = {0x300,1,{255,255,255,PC_NOCOLLAPSE}};  /* set first color as white */
-      ih->data->palette = CreatePalette(&lp);
-      ResizePalette(ih->data->palette,1<<pfd.cColorBits);
-      iupAttribSetStr(ih, "COLORMAP", (char*)ih->data->palette);
+      gldata->palette = CreatePalette(&lp);
+      ResizePalette(gldata->palette,1<<pfd.cColorBits);
+      iupAttribSetStr(ih, "COLORMAP", (char*)gldata->palette);
     }
 
-    SelectPalette(ih->data->device,ih->data->palette,FALSE);
-    RealizePalette(ih->data->device);
+    SelectPalette(gldata->device,gldata->palette,FALSE);
+    RealizePalette(gldata->device);
   }
 
   return IUP_NOERROR;
@@ -195,63 +203,78 @@ static int wGLCreateContext(Ihandle* ih)
 
 static int wGLCanvasMapMethod(Ihandle* ih)
 {
+  IGlControlData* gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+
   /* get a device context */
-  ih->data->window = (HWND)iupAttribGet(ih, "HWND"); /* check first in the hash table, can be defined by the IupFileDlg */
-  if (!ih->data->window)
-    ih->data->window = (HWND)IupGetAttribute(ih, "HWND");  /* works for Win32 and GTK, only after mapping the IupCanvas */
-  if (!ih->data->window)
+  gldata->window = (HWND)iupAttribGet(ih, "HWND"); /* check first in the hash table, can be defined by the IupFileDlg */
+  if (!gldata->window)
+    gldata->window = (HWND)IupGetAttribute(ih, "HWND");  /* works for Win32 and GTK, only after mapping the IupCanvas */
+  if (!gldata->window)
     return IUP_NOERROR;
 
   {
-    LONG style = GetClassLong(ih->data->window, GCL_STYLE);
-    ih->data->is_owned_dc = (int) ((style & CS_OWNDC) || (style & CS_CLASSDC));
+    LONG style = GetClassLong(gldata->window, GCL_STYLE);
+    gldata->is_owned_dc = (int) ((style & CS_OWNDC) || (style & CS_CLASSDC));
   }
 
-  return wGLCreateContext(ih);
+  return wGLCreateContext(ih, gldata);
 }
 
 static void wGLCanvasUnMapMethod(Ihandle* ih)
 {
-  if (ih->data->context)
+  IGlControlData* gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+
+  if (gldata->context)
   {
-    if (ih->data->context == wglGetCurrentContext())
+    if (gldata->context == wglGetCurrentContext())
       wglMakeCurrent(NULL, NULL);
 
-    wglDeleteContext(ih->data->context);
+    wglDeleteContext(gldata->context);
   }
 
-  if (ih->data->palette)
-    DeleteObject((HGDIOBJ)ih->data->palette);
+  if (gldata->palette)
+    DeleteObject((HGDIOBJ)gldata->palette);
 
-  if (ih->data->device)
-    ReleaseDC(ih->data->window, ih->data->device);
+  if (gldata->device)
+    ReleaseDC(gldata->window, gldata->device);
+
+  memset(gldata, 0, sizeof(IGlControlData));
+}
+
+static void wGLCanvasDestroy(Ihandle* ih)
+{
+  IGlControlData* gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  free(gldata);
+  iupAttribSetStr(ih, "_IUP_GLCONTROLDATA", NULL);
 }
 
 static int wGLCanvasSetRefreshContextAttrib(Ihandle* ih, const char* value)
 {
-  if (!ih->data->is_owned_dc)
+  IGlControlData* gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+
+  if (!gldata->is_owned_dc)
   {
-    if (ih->data->context)
+    if (gldata->context)
     {
-      if (ih->data->context == wglGetCurrentContext())
+      if (gldata->context == wglGetCurrentContext())
         wglMakeCurrent(NULL, NULL);
 
-      wglDeleteContext(ih->data->context);
+      wglDeleteContext(gldata->context);
     }
 
-    if (ih->data->device)
-      ReleaseDC(ih->data->window, ih->data->device);
+    if (gldata->device)
+      ReleaseDC(gldata->window, gldata->device);
 
-    wGLCreateContext(ih);
+    wGLCreateContext(ih, gldata);
   }
 
   (void)value;
   return 0;
 }
 
-static Iclass* wGlCanvasGetClass(void)
+static Iclass* wGlCanvasNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupCanvasGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "glcanvas";
   ic->format = "a"; /* one ACTION callback name */
@@ -259,7 +282,9 @@ static Iclass* wGlCanvasGetClass(void)
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
 
+  ic->New = wGlCanvasNewClass;
   ic->Create = wGLCanvasCreateMethod;
+  ic->Destroy = wGLCanvasDestroy;
   ic->Map = wGLCanvasMapMethod;
   ic->UnMap = wGLCanvasUnMapMethod;
 
@@ -281,7 +306,7 @@ void IupGLCanvasOpen(void)
 {
   if (!IupGetGlobal("_IUP_GLCANVAS_OPEN"))
   {
-    iupRegisterClass(wGlCanvasGetClass());
+    iupRegisterClass(wGlCanvasNewClass());
     IupSetGlobal("_IUP_GLCANVAS_OPEN", "1");
   }
 }
@@ -296,19 +321,23 @@ Ihandle* IupGLCanvas(const char *action)
 
 int IupGLIsCurrent(Ihandle* ih)
 {
+  IGlControlData* gldata;
+
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return 0;
 
   /* must be an IupGLCanvas */
-  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "glcanvas"))
     return 0;
 
   /* must be mapped */
-  if (!ih->data->window)
+  gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  if (!gldata->window)
     return 0;
 
-  if (ih->data->context == wglGetCurrentContext())
+  if (gldata->context == wglGetCurrentContext())
     return 1;
 
   return 0;
@@ -316,89 +345,104 @@ int IupGLIsCurrent(Ihandle* ih)
 
 void IupGLMakeCurrent(Ihandle* ih)
 {
+  IGlControlData* gldata;
+
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
 
   /* must be an IupGLCanvas */
-  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->data->window)
+  gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  if (!gldata->window)
     return;
 
-  wglMakeCurrent(ih->data->device, ih->data->context);
+  wglMakeCurrent(gldata->device, gldata->context);
 }
 
 void IupGLSwapBuffers(Ihandle* ih)
 {
+  IGlControlData* gldata;
+
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
 
   /* must be an IupGLCanvas */
-  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->data->window)
+  gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  if (!gldata->window)
     return;
 
-  SwapBuffers(ih->data->device);
+  SwapBuffers(gldata->device);
 }
 
 void IupGLPalette(Ihandle* ih, int index, float r, float g, float b)
 {
+  IGlControlData* gldata;
+
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
 
   /* must be an IupGLCanvas */
-  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->data->window)
+  gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  if (!gldata->window)
     return;
 
   /* must have a palette */
-  if (ih->data->palette)
+  if (gldata->palette)
   {
     PALETTEENTRY entry;
     entry.peRed    = (BYTE)(r*255);
     entry.peGreen  = (BYTE)(g*255);
     entry.peBlue   = (BYTE)(b*255);
     entry.peFlags  = PC_NOCOLLAPSE;
-    SetPaletteEntries(ih->data->palette,index,1,&entry);
-    UnrealizeObject(ih->data->device);
-    SelectPalette(ih->data->device,ih->data->palette,FALSE);
-    RealizePalette(ih->data->device);
+    SetPaletteEntries(gldata->palette,index,1,&entry);
+    UnrealizeObject(gldata->device);
+    SelectPalette(gldata->device,gldata->palette,FALSE);
+    RealizePalette(gldata->device);
   }
 }
 
 void IupGLUseFont(Ihandle* ih, int first, int count, int list_base)
 {
   HFONT font;
+  IGlControlData* gldata;
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
 
   /* must be an IupGLCanvas */
-  if (!iupStrEqual(ih->iclass->name, "glcanvas"))
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "glcanvas"))
     return;
 
   /* must be mapped */
-  if (!ih->data->window)
+  gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
+  if (!gldata->window)
     return;
 
   font = (HFONT)IupGetAttribute(ih, "HFONT");
   if (font)
   {
-    HFONT old_font = SelectObject(ih->data->device, font);
-    wglUseFontBitmaps(ih->data->device, first, count, list_base);
-    SelectObject(ih->data->device, old_font);
+    HFONT old_font = SelectObject(gldata->device, font);
+    wglUseFontBitmaps(gldata->device, first, count, list_base);
+    SelectObject(gldata->device, old_font);
   }
 }
 

@@ -138,6 +138,7 @@ IupNormalizer
 IupNormalizerv
 IupGetClassType
 IupGetClassName
+IupClassMatch
 IupInsert
 IupMainLoopLevel
 IupGetDialogChild
@@ -339,7 +340,6 @@ iupClassCallbackGetFormat
 iupChildTreeGetNativeParentHandle
 iupChildTreeGetNativeParent
 iupChildTreeAppend
-iupCanvasGetClass
 iupCallKillFocusCb
 iupCallGetFocusCb
 iupBaseSetVisibleAttrib

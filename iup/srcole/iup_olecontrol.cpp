@@ -22,8 +22,6 @@
 #include "iup_layout.h"
 
 
-extern "C" Iclass* iupOleControlGetClass(void);
-
 struct _IcontrolData
 {
   iupCanvas canvas;  /* from IupCanvas (must reserve it) */
@@ -128,7 +126,7 @@ static int iOleControlMapMethod(Ihandle* ih)
 static int iOleControlCreateMethod(Ihandle* ih, void **params)
 {
   /* free the data alocated by IupCanvas */
-  if (ih->data) free(ih->data);
+  free(ih->data);
   ih->data = iupALLOCCTRLDATA();
   ih->data->olehandler = new tOleHandler();
 
@@ -160,9 +158,9 @@ static void iOleControlRelease(Iclass* ic)
   OleUninitialize();
 }
 
-Iclass* iupOleControlGetClass(void)
+static Iclass* iOleControlNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupCanvasGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "olecontrol";
   ic->format = "s"; /* one string */
@@ -171,6 +169,7 @@ Iclass* iupOleControlGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iOleControlNewClass;
   ic->Create = iOleControlCreateMethod;
   ic->Destroy = iOleControlDestroyMethod;
   ic->Release = iOleControlRelease;
@@ -206,7 +205,7 @@ int IupOleControlOpen(void)
   if (retval != S_OK && retval != S_FALSE)
     return IUP_ERROR;
 
-  iupRegisterClass(iupOleControlGetClass());
+  iupRegisterClass(iOleControlNewClass());
 
   IupSetGlobal("_IUP_OLECONTROL_OPEN", "1");
   return IUP_NOERROR;

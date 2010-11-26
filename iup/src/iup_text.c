@@ -17,6 +17,7 @@
 #include "iup_drv.h"
 #include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
+#include "iup_register.h"
 #include "iup_layout.h"
 #include "iup_mask.h"
 #include "iup_array.h"
@@ -358,7 +359,7 @@ static int iTextCreateMethod(Ihandle* ih, void** params)
 
 static int iMultilineCreateMethod(Ihandle* ih, void** params)
 {
-  iTextCreateMethod(ih, params);
+  (void)params;
   ih->data->is_multiline = 1;
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;  /* default is YES */
   return IUP_NOERROR;
@@ -432,8 +433,7 @@ void IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
   if (!ih->handle)
     return;
     
-  if (iupStrEqual(ih->iclass->name, "text") ||
-      iupStrEqual(ih->iclass->name, "multiline"))
+  if (IupClassMatch(ih, "text"))
   {
     if (ih->data->is_multiline)
       iupdrvTextConvertLinColToPos(ih, lin, col, pos);
@@ -451,8 +451,7 @@ void IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
   if (!ih->handle)
     return;
     
-  if (iupStrEqual(ih->iclass->name, "text") ||
-      iupStrEqual(ih->iclass->name, "multiline"))
+  if (IupClassMatch(ih, "text"))
   {
     if (ih->data->is_multiline)
       iupdrvTextConvertPosToLinCol(ih, pos, lin, col);
@@ -480,7 +479,7 @@ Ihandle* IupMultiLine(const char* action)
   return IupCreatev("multiline", params);
 }
 
-Iclass* iupTextGetClass(void)
+Iclass* iupTextNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -491,6 +490,7 @@ Iclass* iupTextGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupTextNewClass;
   ic->Create = iTextCreateMethod;
   ic->Destroy = iTextDestroyMethod;
   ic->ComputeNaturalSize = iTextComputeNaturalSizeMethod;
@@ -541,10 +541,17 @@ Iclass* iupTextGetClass(void)
   return ic;
 }
 
-Iclass* iupMultilineGetClass(void)
+Iclass* iupMultilineNewClass(void)
 {
-  Iclass* ic = iupTextGetClass();
-  ic->Create = iMultilineCreateMethod;
+  Iclass* ic = iupClassNew(iupRegisterFindClass("text"));
+
   ic->name = "multiline";   /* register the multiline name, so LED will work */
+  ic->format = "a"; /* one ACTION callback name */
+  ic->nativetype = IUP_TYPECONTROL;
+  ic->childtype = IUP_CHILDNONE;
+  ic->is_interactive = 1;
+
+  ic->Create = iMultilineCreateMethod;
+
   return ic;
 }

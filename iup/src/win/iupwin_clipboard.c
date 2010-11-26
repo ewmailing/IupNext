@@ -325,7 +325,7 @@ Ihandle* IupClipboard(void)
   return IupCreate("clipboard");
 }
 
-Iclass* iupClipboardGetClass(void)
+Iclass* iupClipboardNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -334,6 +334,8 @@ Iclass* iupClipboardGetClass(void)
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;
+
+  ic->New = iupClipboardNewClass;
 
   /* Attribute functions */
   iupClassRegisterAttribute(ic, "TEXT", winClipboardGetTextAttrib, winClipboardSetTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

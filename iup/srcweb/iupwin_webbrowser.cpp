@@ -25,9 +25,32 @@
 #include "iup_drv.h"
 #include "iup_drvfont.h"
 
-/* to avoid the inclusion of iupwin_drv.h */
-extern "C" WCHAR* iupwinStrChar2Wide(const char* str);
-extern "C" char* iupwinStrWide2Char(const WCHAR* wstr);
+/* Duplicated from "iupwin_drv.c" */
+static WCHAR* iupwinStrChar2Wide(const char* str)
+{
+  if (str)
+  {
+    int len = (int)strlen(str)+1;
+    WCHAR* wstr = (WCHAR*)malloc(len * sizeof(WCHAR));
+    MultiByteToWideChar(CP_ACP, 0, str, -1, wstr, len);
+    return wstr;
+  }
+
+  return NULL;
+}
+
+static char* iupwinStrWide2Char(const WCHAR* wstr)
+{
+  if (wstr)
+  {
+    int len = (int)wcslen(wstr)+1;
+    char* str = (char*)malloc(len * sizeof(char));
+    WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, len, NULL, NULL);
+    return str;
+  }
+
+  return NULL;
+}
 
 
 #include <atlbase.h>
@@ -368,11 +391,9 @@ static void winWebBrowserDestroyMethod(Ihandle* ih)
   punk->Release();
 }
 
-extern "C" Iclass* iupOleControlGetClass(void);
-
-Iclass* iupWebBrowserGetClass(void)
+Iclass* iupWebBrowserNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupOleControlGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("olecontrol"));
 
   ic->name = "webbrowser";
   ic->format = NULL; /* no parameters */
@@ -381,6 +402,7 @@ Iclass* iupWebBrowserGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupWebBrowserNewClass;
   ic->Create = winWebBrowserCreateMethod;
   ic->Destroy = winWebBrowserDestroyMethod;
 

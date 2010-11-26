@@ -24,6 +24,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_controls.h"
 #include "iup_cdutil.h"
+#include "iup_register.h"
 
 #include "iup_colorhsi.h"
 
@@ -798,7 +799,7 @@ static int iColorBrowserCreateMethod(Ihandle* ih, void **params)
   (void)params;
 
   /* free the data allocated by IupCanvas */
-  if (ih->data) free(ih->data);
+  free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
@@ -818,9 +819,9 @@ static int iColorBrowserCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
-Iclass* iupColorBrowserGetClass(void)
+Iclass* iupColorBrowserNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupCanvasGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "colorbrowser";
   ic->format = NULL; /* no parameters */
@@ -829,6 +830,7 @@ Iclass* iupColorBrowserGetClass(void)
   ic->is_interactive = 1;
 
   /* Class functions */
+  ic->New = iupColorBrowserNewClass;
   ic->Create  = iColorBrowserCreateMethod;
   ic->Map     = iColorBrowserMapMethod;
   ic->UnMap   = iColorBrowserUnMapMethod;

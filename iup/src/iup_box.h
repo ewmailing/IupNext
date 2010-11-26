@@ -25,7 +25,7 @@ struct _IcontrolData
       homogeneous_size;       /* calculated in SetChildrenCurrentSize, used in SetChildrenPosition */
 };
 
-Iclass* iupBoxClassBase(void);
+Iclass* iupBoxNewClassBase(void);
 
 /* Implemented in iup_normalizer.c */
 void iupNormalizeSizeBoxChild(Ihandle *ih, int normalize, int children_natural_maxwidth, int children_natural_maxheight);

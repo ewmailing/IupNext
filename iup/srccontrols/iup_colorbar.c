@@ -25,6 +25,7 @@
 #include "iup_controls.h"
 #include "iup_image.h"
 #include "iup_cdutil.h"
+#include "iup_register.h"
 
 
 #define ICOLORBAR_DEFAULT_NUM_CELLS 16  /* default number of cells */
@@ -992,7 +993,7 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   (void)params;
 
   /* free the data allocated by IupCanvas */
-  if (ih->data) free(ih->data);
+  free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
@@ -1031,9 +1032,9 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
-Iclass* iupColorbarGetClass(void)
+Iclass* iupColorbarNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupCanvasGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "colorbar";
   ic->format = NULL; /* no parameters */
@@ -1043,6 +1044,7 @@ Iclass* iupColorbarGetClass(void)
   ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 
   /* Class functions */
+  ic->New = iupColorbarNewClass;
   ic->Create  = iColorbarCreateMethod;
   ic->Map     = iColorbarMapMethod;
   ic->UnMap   = iColorbarUnMapMethod;

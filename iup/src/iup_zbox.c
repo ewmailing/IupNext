@@ -339,7 +339,7 @@ Ihandle *IupZbox(Ihandle* child, ...)
   return ih;
 }
 
-Iclass* iupZboxGetClass(void)
+Iclass* iupZboxNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -350,6 +350,7 @@ Iclass* iupZboxGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupZboxNewClass;
   ic->Create = iZboxCreateMethod;
   ic->Map = iupBaseTypeVoidMapMethod;
   ic->ChildAdded = iZboxChildAddedMethod;

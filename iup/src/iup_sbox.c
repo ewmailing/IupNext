@@ -360,7 +360,7 @@ static int iSboxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-Iclass* iupSboxGetClass(void)
+Iclass* iupSboxNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
@@ -371,6 +371,7 @@ Iclass* iupSboxGetClass(void)
   ic->is_interactive = 0;
 
   /* Class functions */
+  ic->New = iupSboxNewClass;
   ic->Create  = iSboxCreateMethod;
   ic->Map     = iupBaseTypeVoidMapMethod;
 

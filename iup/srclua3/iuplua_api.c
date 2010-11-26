@@ -363,6 +363,11 @@ static void ClassName(void)
   lua_pushstring(IupGetClassName(iuplua_checkihandle(1)));
 }
 
+static void ClassMatch(void)
+{
+  lua_pushnumber(IupClassMatch(iuplua_checkihandle(1), luaL_check_string(2)));
+}
+
 static void ClassType(void)
 {
   lua_pushstring(IupGetClassType(iuplua_checkihandle(1)));
@@ -713,6 +718,7 @@ int iupluaapi_open(void)
     { "IupGetBrother", GetBrother },
     { "IupGetDialogChild", GetDialogChild },
     { "IupGetClassName", ClassName },
+    { "IupClassMatch", ClassMatch },
     { "IupGetClassType", ClassType },
     { "IupGetFocus", GetFocus },
     { "IupSetFocus", SetFocus },

@@ -15,6 +15,7 @@
 
 #include "iup_object.h"
 #include "iup_stdcontrols.h"
+#include "iup_register.h"
 
 
 Ihandle* IupMessageDlg(void)
@@ -22,13 +23,15 @@ Ihandle* IupMessageDlg(void)
   return IupCreate("messagedlg");
 }
 
-Iclass* iupMessageDlgGetClass(void)
+Iclass* iupMessageDlgNewClass(void)
 {
-  Iclass* ic = iupClassNew(iupDialogGetClass());
+  Iclass* ic = iupClassNew(iupRegisterFindClass("dialog"));
 
   ic->name = "messagedlg";
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
+
+  ic->New = iupMessageDlgNewClass;
 
   /* reset not used native dialog methods */
   ic->parent->LayoutUpdate = NULL;
