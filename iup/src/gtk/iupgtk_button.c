@@ -150,8 +150,9 @@ static int gtkButtonSetPaddingAttrib(Ihandle* ih, const char* value)
     else
     {
       GtkAlignment* alignment = (GtkAlignment*)gtk_bin_get_child((GtkBin*)ih->handle);
-      gtk_alignment_set_padding(alignment, ih->data->vert_padding, ih->data->vert_padding, 
-                                           ih->data->horiz_padding, ih->data->horiz_padding);
+      if (GTK_IS_ALIGNMENT(alignment))
+        gtk_alignment_set_padding(alignment, ih->data->vert_padding, ih->data->vert_padding, 
+                                             ih->data->horiz_padding, ih->data->horiz_padding);
     }
     return 0;
   }

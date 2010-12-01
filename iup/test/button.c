@@ -363,6 +363,7 @@ void ButtonTest(void)
   IupSetAttributeHandle(button, "IMPRESS", image1p);
   IupSetAttribute(button, "TIP", "Image Label");
   IupSetAttribute(button, "NAME", "button4");
+  IupSetAttribute(button, "PADDING", "5x5");
   set_callbacks(button);
   IupAppend(box2, button);
 
