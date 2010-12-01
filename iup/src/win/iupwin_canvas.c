@@ -529,7 +529,7 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
         RECT rect;
         GetClientRect(ih->handle, &rect);
         cb(ih, rect.right-rect.left, rect.bottom-rect.top);
-        /* w=LOWORD (lp), h=HIWORD(lp) can not be used because and invalid size 
+        /* w=LOWORD (lp), h=HIWORD(lp) can not be used because an invalid size 
            at the first time of WM_SIZE with scroolbars. */
       }
       *result = 0;

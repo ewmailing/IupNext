@@ -31,6 +31,10 @@
 #include "iupgtk_drv.h"
 
 
+#ifndef WEBKIT_LOAD_FAILED
+#define WEBKIT_LOAD_FAILED 4
+#endif
+
 struct _IcontrolData 
 {
   int sb;    /* scrollbar configuration, valid only after map, use iupBaseGetScrollbar before map */
