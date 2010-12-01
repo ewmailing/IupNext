@@ -318,7 +318,10 @@ static void gtkTreeGetLastVisibleNode(Ihandle* ih, GtkTreeModel* model, GtkTreeI
     }
   }
 
-  gtkTreeIterInit(ih, iterItem, ih->data->node_cache[0].node_handle);  /* root is always visible */
+  if (ih->data->node_count)
+    gtkTreeIterInit(ih, iterItem, ih->data->node_cache[0].node_handle);  /* root is always visible */
+  else
+    iterItem->user_data = NULL; /* invalid iter */
 }
 
 static void gtkTreeGetNextVisibleNode(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *iterItem, int count)
@@ -338,7 +341,10 @@ static void gtkTreeGetNextVisibleNode(Ihandle* ih, GtkTreeModel* model, GtkTreeI
     }
   }
 
-  gtkTreeIterInit(ih, iterItem, ih->data->node_cache[0].node_handle);  /* root is always visible */
+  if (ih->data->node_count)
+    gtkTreeIterInit(ih, iterItem, ih->data->node_cache[0].node_handle);  /* root is always visible */
+  else
+    iterItem->user_data = NULL; /* invalid iter */
 }
 
 static void gtkTreeGetPreviousVisibleNode(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *iterItem, int count)
@@ -1313,6 +1319,9 @@ static int gtkTreeSetValueAttrib(Ihandle* ih, const char* value)
     if (!gtkTreeFindNodeFromString(ih, value, &iterItem))
       return 0;
   }
+
+  if (!iterItem.user_data)
+    return 0;
 
   /* select */
   if (ih->data->mark_mode==ITREE_MARK_SINGLE)
