@@ -451,7 +451,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
   iupgtkBaseAddToParent(ih);
 
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-    GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
+    iupgtkSetCanFocus(ih->handle, 0);
 
   value = iupAttribGet(ih, "IMPRESS");
   impress = (ih->data->type & IUP_BUTTON_IMAGE && value)? 1: 0;

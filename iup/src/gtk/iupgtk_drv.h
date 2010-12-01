@@ -39,6 +39,7 @@ void iupgtkBaseSetFgGdkColor(InativeHandle* handle, GdkColor *color);
 
 /* focus */
 gboolean iupgtkFocusInOutEvent(GtkWidget *widget, GdkEventFocus *evt, Ihandle* ih);
+void iupgtkSetCanFocus(GtkWidget *widget, int can);
 
 
 /* key */

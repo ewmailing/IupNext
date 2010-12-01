@@ -234,7 +234,7 @@ static int gtkTabsSetBgColorAttrib(Ihandle* ih, const char* value)
 /* gtkTabs - Callbacks                                                       */
 /* ------------------------------------------------------------------------- */
 
-void gtkTabSwitchPage(GtkNotebook* notebook, GtkNotebookPage *page, int pos, Ihandle* ih)
+static void gtkTabSwitchPage(GtkNotebook* notebook, void* page, int pos, Ihandle* ih)
 {
   IFnnn cb;
   Ihandle* child = IupGetChild(ih, pos);

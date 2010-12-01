@@ -491,7 +491,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
   iupgtkBaseAddToParent(ih);
 
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-    GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
+    iupgtkSetCanFocus(ih->handle, 0);
 
   if (ih->data->type == IUP_TOGGLE_IMAGE && ih->data->flat)
   {

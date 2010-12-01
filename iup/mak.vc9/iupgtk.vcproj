@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\src;..\src\gtk;..\include;&quot;d:\lng\gtk\include\atk-1.0&quot;;d:\lng\gtk\include\cairo;&quot;d:\lng\gtk\include\glib-2.0&quot;;&quot;d:\lng\gtk\include\gtk-2.0&quot;;&quot;d:\lng\gtk\include\pango-1.0&quot;;&quot;d:\lng\gtk\lib\gtk-2.0\include&quot;;&quot;d:\lng\gtk\lib\glib-2.0\include&quot;"
+				AdditionalIncludeDirectories="..\src;..\src\gtk;..\include;&quot;d:\lng\gtk\include\atk-1.0&quot;;d:\lng\gtk\include\cairo;&quot;d:\lng\gtk\include\glib-2.0&quot;;&quot;d:\lng\gtk\include\gtk-2.0&quot;;&quot;d:\lng\gtk\include\pango-1.0&quot;;&quot;d:\lng\gtk\lib\gtk-2.0\include&quot;;&quot;d:\lng\gtk\lib\glib-2.0\include&quot;;&quot;D:\LNG\gtk\include\gdk-pixbuf-2.0&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;GTK_DISABLE_DEPRECATED"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"

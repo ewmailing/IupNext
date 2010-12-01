@@ -1244,7 +1244,7 @@ static int gtkListMapMethod(Ihandle* ih)
       g_signal_connect(G_OBJECT(entry), "button-release-event",G_CALLBACK(gtkListEditButtonEvent), ih);
 
       if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-        GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
+        iupgtkSetCanFocus(ih->handle, 0);
     }
     else
     {
@@ -1265,9 +1265,9 @@ static int gtkListMapMethod(Ihandle* ih)
       g_signal_connect(G_OBJECT(ih->handle), "show-help",       G_CALLBACK(iupgtkShowHelp), ih);
 
       if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-        GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
+        iupgtkSetCanFocus(ih->handle, 0);
       else
-        GTK_WIDGET_FLAGS(box) |= GTK_CAN_FOCUS;
+        iupgtkSetCanFocus(box, 1);
     }
 
     g_signal_connect(ih->handle, "changed", G_CALLBACK(gtkListComboBoxChanged), ih);
@@ -1309,9 +1309,9 @@ static int gtkListMapMethod(Ihandle* ih)
       iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)vbox);
       iupAttribSetStr(ih, "_IUPGTK_SCROLLED_WINDOW", (char*)scrolled_window);
 
-      GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS; /* focus goes only to the edit box */
+      iupgtkSetCanFocus(ih->handle, 0);  /* focus goes only to the edit box */
       if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-        GTK_WIDGET_FLAGS(entry) &= ~GTK_CAN_FOCUS;
+        iupgtkSetCanFocus(entry, 0);
 
       g_signal_connect(G_OBJECT(entry), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
       g_signal_connect(G_OBJECT(entry), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);
@@ -1333,7 +1333,7 @@ static int gtkListMapMethod(Ihandle* ih)
       iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
 
       if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-        GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
+        iupgtkSetCanFocus(ih->handle, 0);
 
       g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
       g_signal_connect(G_OBJECT(ih->handle), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);

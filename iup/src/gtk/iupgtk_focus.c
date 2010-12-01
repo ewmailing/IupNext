@@ -20,6 +20,18 @@
 #include "iupgtk_drv.h"
 
 
+void iupgtkSetCanFocus(GtkWidget *widget, int can)
+{
+#if GTK_CHECK_VERSION(2, 18, 0)
+  gtk_widget_set_can_focus(widget, can);
+#else
+  if (can)
+    GTK_WIDGET_FLAGS(widget) |= GTK_CAN_FOCUS;
+  else
+    GTK_WIDGET_FLAGS(widget) &= ~GTK_CAN_FOCUS;
+#endif
+}
+
 void iupdrvSetFocus(Ihandle *ih)
 {
   Ihandle* dialog = IupGetDialog(ih);

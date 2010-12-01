@@ -1684,7 +1684,7 @@ static int gtkTextMapMethod(Ihandle* ih)
   iupgtkBaseAddToParent(ih);
 
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-    GTK_WIDGET_FLAGS(ih->handle) &= ~GTK_CAN_FOCUS;
+    iupgtkSetCanFocus(ih->handle, 0);
 
   g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);

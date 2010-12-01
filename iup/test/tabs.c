@@ -186,6 +186,12 @@ static int cbTabChange(Ihandle* ih, Ihandle* new_tab, Ihandle* old_tab)
   return IUP_DEFAULT;
 }
 
+static int cbTabChangePos(Ihandle* ih, int new_tab, int old_tab)
+{
+  printf("new Tab: %d, old Tab: %d\n", new_tab, old_tab);
+  return IUP_DEFAULT;
+}
+
 static int cbInactive(Ihandle *ih, int state)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
@@ -280,7 +286,8 @@ static Ihandle* CreateTabs(int tab)
 
   tabs = IupTabs(vboxA, vboxB, vboxC, vboxD, vboxE, vboxF, vboxG, vboxH, vboxI, NULL);
 
-  IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)cbTabChange);
+//  IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)cbTabChange);
+  IupSetCallback(tabs, "TABCHANGEPOS_CB", (Icallback)cbTabChangePos);
 
   //IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_LogoTecgraf());
   IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_TestImage());
