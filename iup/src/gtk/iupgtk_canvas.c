@@ -529,7 +529,9 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 
 #ifdef WIN32
 #if GTK_CHECK_VERSION(2, 18, 0)
-    gtk_widget_set_has_window(ih->handle, TRUE);  /* CD will NOT work without this, but this is NOT working... */
+  /* CD-WIN32 will NOT work without this, but this is NOT working...
+     So the solution is to use the CD-GDK driver in Win32 also */
+  gtk_widget_set_has_window(ih->handle, TRUE);  
 #endif
 #endif
 

@@ -137,6 +137,16 @@ void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
   *y = p.y;
 }
 
+void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
+{
+  POINT p;
+  p.x = *x;
+  p.y = *y;
+  ClientToScreen(ih->handle, &p);
+  *x = p.x;
+  *y = p.y;
+}
+
 static void winTrackMouse(HWND hwnd, int enter)
 {
   TRACKMOUSEEVENT mouse;
@@ -635,24 +645,6 @@ int iupwinSetDragDropAttrib(Ihandle* ih, const char* value)
   else
     DragAcceptFiles(ih->handle, FALSE);
   return 1;
-}
-
-char *iupdrvBaseGetXAttrib(Ihandle *ih)
-{
-  char* str = iupStrGetMemory(20);
-  RECT rect;
-  GetWindowRect(ih->handle, &rect);
-  sprintf(str, "%d", (int)rect.left);
-  return str;
-}
-
-char *iupdrvBaseGetYAttrib(Ihandle *ih)
-{
-  char* str = iupStrGetMemory(20);
-  RECT rect;
-  GetWindowRect(ih->handle, &rect);
-  sprintf(str, "%d", (int)rect.top);
-  return str;
 }
 
 char* iupdrvBaseGetClientSizeAttrib(Ihandle* ih)

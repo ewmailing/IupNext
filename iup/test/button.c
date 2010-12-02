@@ -154,10 +154,36 @@ static char* get_name(Ihandle* ih)
   return IupGetAttribute(ih, "NAME");
 }
 
+static void show_menu(Ihandle* ih)
+{
+  int x, y;
+
+  Ihandle* menu_file = IupMenu(
+    IupSetAttributes(IupItem("Item with Image", "item_cb"), "IMAGE=image_tec"),
+    IupSetAttributes(IupItem("Toggle using VALUE", NULL), "VALUE=ON, KEY=K_V"), 
+    IupSetAttributes(IupItem("Auto &Toggle", "item_cb"), "AUTOTOGGLE=YES, VALUE=OFF, IMAGE=image_test, IMPRESS=image_test_pressed"), 
+    IupSeparator(), 
+    IupItem("E&xit (Close)", NULL), 
+    NULL);
+  Ihandle* menu = IupMenu(
+    IupSetAttributes(IupSubmenu("Submenu", menu_file), "KEY=K_S, IMAGE=image_tec"), 
+    IupItem("Item", "item_cb"), 
+    IupSetAttributes(IupItem("Item", "item_cb"), "VALUE=ON"), 
+    IupSetAttributes(IupItem("Item", "item_cb"), "KEY=K_I, IMAGE=image_tec"), 
+    NULL);
+
+  x = IupGetInt(ih, "X");
+  y = IupGetInt(ih, "Y") + IupGetInt2(ih, "RASTERSIZE");
+
+  IupPopup(menu, x, y);
+  IupDestroy(menu);
+}
+
 static int action_cb(Ihandle *ih)
 {
   static int count = 1;
   printf("ACTION(%s) - %d\n", get_name(ih), count); count++;
+  show_menu(ih);
   return IUP_DEFAULT;
 }
 

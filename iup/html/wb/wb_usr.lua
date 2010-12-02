@@ -525,12 +525,8 @@ wb_usr.tree =
               link= "attrib/iup_position.html"
             },
             {
-              name= {nl= "X"},
-              link= "attrib/iup_x.html"
-            },
-            {
-              name= {nl= "Y"},
-              link= "attrib/iup_y.html"
+              name= {nl= "SCREENPOSITION"},
+              link= "attrib/iup_screenposition.html"
             },
             { link= "", name= {en= "" } },
             {

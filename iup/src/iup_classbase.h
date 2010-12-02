@@ -120,8 +120,6 @@ int iupBaseSetVisibleAttrib(Ihandle* ih, const char* value);
 char* iupBaseGetActiveAttrib(Ihandle *ih);
 int iupBaseSetActiveAttrib(Ihandle* ih, const char* value);
 int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value);
-char *iupdrvBaseGetXAttrib(Ihandle *ih);
-char *iupdrvBaseGetYAttrib(Ihandle *ih);
 int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value);
 int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value);
 int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value);

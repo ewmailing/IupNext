@@ -110,14 +110,39 @@ void iupdrvRedrawNow(Ihandle *ih)
     gdk_window_process_updates(window, FALSE);
 }
 
+static GtkWidget* gtkGetWindowedParent(GtkWidget* widget)
+{
+#if GTK_CHECK_VERSION(2, 18, 0)
+  while (widget && !gtk_widget_get_has_window(widget))
+#else
+	while (widget && GTK_WIDGET_NO_WINDOW(widget))
+#endif
+    widget = gtk_widget_get_parent(widget);
+  return widget;
+}
+
 void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
 {
   gint win_x = 0, win_y = 0;
-  GdkWindow* window = ih->handle->window;
-  if (window)
-    gdk_window_get_origin(window, &win_x, &win_y);
-  *x = *x - win_x;
-  *y = *y - win_y;
+  gint dx = 0, dy = 0;
+  GtkWidget* wparent = gtkGetWindowedParent(ih->handle);
+  if (ih->handle != wparent)
+    gtk_widget_translate_coordinates(ih->handle, wparent, 0, 0, &dx, &dy); /* widget origin relative to GDK window */
+  gdk_window_get_origin(wparent->window, &win_x, &win_y);  /* GDK window origin relative to screen */
+  *x -= win_x + dx;
+  *y -= win_y + dy;
+}
+
+void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
+{
+  gint win_x = 0, win_y = 0;
+  gint dx = 0, dy = 0;
+  GtkWidget* wparent = gtkGetWindowedParent(ih->handle);
+  if (ih->handle != wparent)
+    gtk_widget_translate_coordinates(ih->handle, wparent, 0, 0, &dx, &dy); /* widget relative to GDK window */
+  gdk_window_get_origin(wparent->window, &win_x, &win_y);  /* GDK window relative to screen */
+  *x += win_x + dx;
+  *y += win_y + dy;
 }
 
 gboolean iupgtkShowHelp(GtkWidget *widget, GtkWidgetHelpType *arg1, Ihandle *ih)
@@ -248,44 +273,6 @@ void iupdrvSetActive(Ihandle* ih, int enable)
   GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (container) gtk_widget_set_sensitive(container, enable);
   gtk_widget_set_sensitive(ih->handle, enable);
-}
-
-char* iupdrvBaseGetXAttrib(Ihandle *ih)
-{
-  GdkWindow* window = ih->handle->window;
-  GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-  if (container) window = container->window;
-
-  if (window)
-  {
-    char* str = iupStrGetMemory(20);
-    int x, y;
-    gdk_window_get_origin(window, &x, &y);
-    x += ih->handle->allocation.x;
-    sprintf(str, "%d", x);
-    return str;
-  }
-  else
-    return NULL;
-}
-
-char* iupdrvBaseGetYAttrib(Ihandle *ih)
-{
-  GdkWindow* window = ih->handle->window;
-  GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-  if (container) window = container->window;
-
-  if (window)
-  {
-    char* str = iupStrGetMemory(20);
-    int x, y;
-    gdk_window_get_origin(window, &x, &y);
-    y += ih->handle->allocation.y;
-    sprintf(str, "%d", y);
-    return str;
-  }
-  else
-    return NULL;
 }
 
 char* iupdrvBaseGetClientSizeAttrib(Ihandle *ih)

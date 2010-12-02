@@ -175,6 +175,33 @@ static int iBaseSetPositionAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iBaseGetXAttrib(Ihandle *ih)
+{
+  int x = 0, y = 0;
+  char* str = iupStrGetMemory(20);
+  iupdrvClientToScreen(ih, &x, &y);
+  sprintf(str, "%d", x);
+  return str;
+}
+
+static char* iBaseGetYAttrib(Ihandle *ih)
+{
+  int x = 0, y = 0;
+  char* str = iupStrGetMemory(20);
+  iupdrvClientToScreen(ih, &x, &y);
+  sprintf(str, "%d", y);
+  return str;
+}
+
+static char* iBaseGetScreenPositionAttrib(Ihandle *ih)
+{
+  int x = 0, y = 0;
+  char* str = iupStrGetMemory(20);
+  iupdrvClientToScreen(ih, &x, &y);
+  sprintf(str, "%d,%d", x, y);
+  return str;
+}
+
 char* iupBaseGetActiveAttrib(Ihandle *ih)
 {
   if (iupdrvIsActive(ih))
@@ -460,8 +487,9 @@ void iupBaseRegisterVisualAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   iupClassRegisterAttribute(ic, "ZORDER", NULL, iupdrvBaseSetZorderAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "X", iupdrvBaseGetXAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "Y", iupdrvBaseGetYAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "X", iBaseGetXAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "Y", iBaseGetYAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCREENPOSITION", iBaseGetScreenPositionAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TIP", NULL, iupdrvBaseSetTipAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TIPVISIBLE", NULL, iupdrvBaseSetTipVisibleAttrib, NULL, NULL, IUPAF_NO_INHERIT);

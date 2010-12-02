@@ -279,6 +279,14 @@ void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
                                         *x, *y, x, y, &child);
 }
 
+void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
+{
+  Window child;
+  XTranslateCoordinates(iupmot_display, XtWindow(ih->handle),
+                                        RootWindow(iupmot_display, iupmot_screen),
+                                        *x, *y, x, y, &child);
+}
+
 void iupmotHelpCallback(Widget w, Ihandle *ih, XtPointer call_data)
 {
   Icallback cb = IupGetCallback(ih, "HELP_CB");
@@ -360,44 +368,6 @@ void iupdrvSetActive(Ihandle* ih, int enable)
 char* iupmotGetXWindowAttrib(Ihandle *ih)
 {
   return (char*)XtWindow(ih->handle);
-}
-
-char* iupdrvBaseGetXAttrib(Ihandle *ih)
-{
-  int x, y;
-  Window child;
-  char* str = iupStrGetMemory(20);
-  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-  if (!widget) widget = ih->handle;
-
-  /* Translating to absolute screen coordinates */
-                     /* source            destination */
-  XTranslateCoordinates(iupmot_display, 
-                        XtWindow(widget), RootWindow(iupmot_display, iupmot_screen), 
-                        0, 0,             &x, &y, 
-                        &child);
-
-  sprintf(str, "%d", x);
-  return str;
-}
-
-char* iupdrvBaseGetYAttrib(Ihandle *ih)
-{
-  int x, y;
-  Window child;
-  char* str = iupStrGetMemory(20);
-  Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-  if (!widget) widget = ih->handle;
-
-  /* Translating to absolute screen coordinates */
-                     /* source            destination */
-  XTranslateCoordinates(iupmot_display, 
-                        XtWindow(widget), RootWindow(iupmot_display, iupmot_screen), 
-                        0, 0,             &x, &y, 
-                        &child);
-
-  sprintf(str, "%d", y);
-  return str;
 }
 
 void iupmotSetBgColor(Widget w, Pixel color)

@@ -37,6 +37,10 @@ void iupdrvSetIdleFunction(Icallback func);
  * \ingroup drv */
 void iupdrvScreenToClient(Ihandle* ih, int *x, int *y);
 
+/** Convert the coordinates from relative client area to screen.
+ * \ingroup drv */
+void iupdrvClientToScreen(Ihandle* ih, int *x, int *y);
+
 /** Returns true if the element is visible.
  * \ingroup drv */
 int iupdrvIsVisible(Ihandle* ih);

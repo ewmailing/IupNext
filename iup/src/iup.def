@@ -176,6 +176,7 @@ iupdrvSetStandardFontAttrib
 iupdrvSetCurrentDirectory
 iupdrvSetActive
 iupdrvScreenToClient
+iupdrvClientToScreen
 iupdrvReparent
 iupdrvMakeDirectory
 iupdrvIsVisible
