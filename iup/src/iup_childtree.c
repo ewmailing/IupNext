@@ -144,6 +144,13 @@ static void iupChildTreeInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* chi
   Ihandle *c, 
           *c_prev = NULL;
 
+  if (parent->firstchild == NULL)
+  {
+    parent->firstchild = child;
+    child->parent = parent;
+    return;
+  }
+
   if (!ref_child)
     ref_child = parent->firstchild;
 
