@@ -984,7 +984,7 @@ ifdef USE_OPENGL
 endif
 
 ifdef USE_GTK
-  STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/gdk-pixbuf-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0 $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
+  STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0 $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
   ifeq "$(TEC_CC)" "gcc"
     STDFLAGS += -mms-bitfields
   endif
@@ -1004,8 +1004,10 @@ endif
 #---------------------------------#
 #  Building compilation flags that are sets
 
+DEPINCS := $(INCLUDES) $(EXTRAINCS)
+
 # INCLUDES for dependencies, remove references to "c:" and similars
-DEPINCS := $(patsubst c:%, /cygdrive/c%, $(INCLUDES))
+DEPINCS := $(patsubst c:%, /cygdrive/c%, $(DEPINCS))
 DEPINCS := $(patsubst d:%, /cygdrive/d%, $(DEPINCS))
 DEPINCS := $(patsubst x:%, /cygdrive/x%, $(DEPINCS))
 DEPINCS := $(patsubst t:%, /cygdrive/t%, $(DEPINCS))

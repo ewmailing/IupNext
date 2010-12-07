@@ -949,6 +949,8 @@ ifdef USE_GTK
     # get compile/link flags via pkg-config
     STDFLAGS += $(shell pkg-config --cflags gtk+-2.0 gdk-2.0)
     LIBS += $(shell pkg-config --libs gtk+-2.0 gdk-2.0)
+    GTK_BASE := $(shell pkg-config --variable=prefix gtk+-2.0)
+    GTK := $(GTK_BASE)    
   else
     CHECK_GTK = Yes
     ifneq ($(findstring MacOS, $(TEC_UNAME)), )
@@ -982,7 +984,7 @@ ifdef USE_GTK
     endif
 
     LIBS += gdk_pixbuf-2.0 pango-1.0 gobject-2.0 gmodule-2.0 glib-2.0
-    STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/gdk-pixbuf-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0
+    STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0
 
     ifeq ($(TEC_SYSARCH), x64)
       STDINCS += $(GTK)/lib64/glib-2.0/include $(GTK)/lib64/gtk-2.0/include
@@ -1022,8 +1024,10 @@ LIBS += m
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
   WIN_OTHER := Yes
 
+  DEPINCS := $(INCLUDES) $(EXTRAINCS)
+  
   # INCLUDES for dependencies, remove references to "c:" and similars
-  DEPINCS := $(patsubst c:%, /cygdrive/c%, $(INCLUDES))
+  DEPINCS := $(patsubst c:%, /cygdrive/c%, $(DEPINCS))
   DEPINCS := $(patsubst d:%, /cygdrive/d%, $(DEPINCS))
   DEPINCS := $(patsubst x:%, /cygdrive/x%, $(DEPINCS))
   DEPINCS := $(patsubst t:%, /cygdrive/t%, $(DEPINCS))
@@ -1039,7 +1043,7 @@ endif
 #---------------------------------#
 #  Building compilation flags that are sets
 
-DEPINCS ?= $(INCLUDES)
+DEPINCS ?= $(INCLUDES) $(EXTRAINCS)
 DEPINCS := $(addprefix -I, $(DEPINCS))
 
 INCLUDES := $(addprefix -I, $(INCLUDES))
