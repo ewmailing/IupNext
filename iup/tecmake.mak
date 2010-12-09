@@ -947,7 +947,7 @@ endif
 ifdef USE_GTK
   ifdef USE_PKGCONFIG
     # get compile/link flags via pkg-config
-    STDFLAGS += $(shell pkg-config --cflags gtk+-2.0 gdk-2.0)
+    EXTRAINCS += $(shell pkg-config --cflags gtk+-2.0 gdk-2.0)
     LIBS += $(shell pkg-config --libs gtk+-2.0 gdk-2.0)
     GTK_BASE := $(shell pkg-config --variable=prefix gtk+-2.0)
     GTK := $(GTK_BASE)    
