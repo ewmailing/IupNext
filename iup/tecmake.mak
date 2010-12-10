@@ -947,8 +947,8 @@ endif
 ifdef USE_GTK
   ifdef USE_PKGCONFIG
     # get compile/link flags via pkg-config
-    EXTRAINCS += $(shell pkg-config --cflags gtk+-2.0 gdk-2.0)
-    LIBS += $(shell pkg-config --libs gtk+-2.0 gdk-2.0)
+    PKGINCS += $(shell pkg-config --cflags gtk+-2.0 gdk-2.0)
+    PKGLIBS += $(shell pkg-config --libs gtk+-2.0 gdk-2.0)
     GTK_BASE := $(shell pkg-config --variable=prefix gtk+-2.0)
     GTK := $(GTK_BASE)    
   else
@@ -1061,11 +1061,11 @@ endif
 # Definitions of private variables
 
 # Library flags for application and dynamic library linker
-LFLAGS += $(LDIR) $(LIBS)
+LFLAGS += $(LDIR) $(LIBS) $(PKGLIBS)
 # C compiler flags
-CFLAGS   = $(FLAGS) $(STDFLAGS) $(INCLUDES) $(STDINCS) $(EXTRAINCS) $(DEFINES) $(STDDEFS)
+CFLAGS   = $(FLAGS) $(STDFLAGS) $(INCLUDES) $(STDINCS) $(PKGINCS) $(EXTRAINCS) $(DEFINES) $(STDDEFS)
 # C++ compiler flags
-CXXFLAGS = $(CPPFLAGS) $(STDFLAGS) $(INCLUDES) $(STDINCS) $(EXTRAINCS) $(DEFINES) $(STDDEFS)
+CXXFLAGS = $(CPPFLAGS) $(STDFLAGS) $(INCLUDES) $(STDINCS) $(PKGINCS) $(EXTRAINCS) $(DEFINES) $(STDDEFS)
 
 # Sources with relative path
 SOURCES := $(addprefix $(SRCDIR)/, $(SRC))
