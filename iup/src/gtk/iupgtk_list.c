@@ -208,6 +208,12 @@ static char* gtkListGetIdValueAttrib(Ihandle* ih, int id)
   return NULL;
 }
 
+static void gtkComboBoxChildrenCb(GtkWidget *widget, gpointer client_data)
+{
+  GdkColor* c = (GdkColor*)client_data;
+  iupgtkBaseSetBgColor(widget, (unsigned char)c->red, (unsigned char)c->green, (unsigned char)c->blue);
+}
+
 static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
@@ -246,6 +252,27 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
     iupgtkBaseSetBgColor(entry, r, g, b);
   }
 
+  if (ih->data->is_dropdown)
+  {
+    GdkColor c;
+    GtkContainer *container = (GtkContainer*)ih->handle;
+    c.blue = b;
+    c.green = g;
+    c.red = r;
+    gtk_container_foreach(container, gtkComboBoxChildrenCb, &c);
+
+    if (!ih->data->has_editbox)
+    {
+      GtkWidget* box = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
+      iupgtkBaseSetBgColor(box, r, g, b);
+    }
+  }
+
+  /* TODO: this test is not necessary, 
+     but for a dropdown the color is not set for the popup menu, 
+     and the result is very weird. So we avoid setting it for dropdown
+     util we figure out how to set for the popup menu. */
+  if (!ih->data->is_dropdown)
   {
     GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
     if (renderer)
@@ -273,6 +300,8 @@ static int gtkListSetFgColorAttrib(Ihandle* ih, const char* value)
     iupgtkBaseSetFgColor(entry, r, g, b);
   }
 
+  /* TODO: see comment in BGCOLOR */
+  if (!ih->data->is_dropdown)
   {
     GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
     if (renderer)
@@ -1261,8 +1290,12 @@ static int gtkListMapMethod(Ihandle* ih)
       g_signal_connect(G_OBJECT(box), "focus-out-event", G_CALLBACK(iupgtkFocusInOutEvent), ih);
       g_signal_connect(G_OBJECT(box), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
       g_signal_connect(G_OBJECT(box), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
-      g_signal_connect(G_OBJECT(ih->handle), "key-press-event", G_CALLBACK(iupgtkKeyPressEvent), ih);
-      g_signal_connect(G_OBJECT(ih->handle), "show-help",       G_CALLBACK(iupgtkShowHelp), ih);
+      g_signal_connect(G_OBJECT(box), "key-press-event", G_CALLBACK(iupgtkKeyPressEvent), ih);
+      g_signal_connect(G_OBJECT(box), "show-help",       G_CALLBACK(iupgtkShowHelp), ih);
+//      g_signal_connect(G_OBJECT(ih->handle), "key-press-event", G_CALLBACK(iupgtkKeyPressEvent), ih);
+//      g_signal_connect(G_OBJECT(ih->handle), "show-help",       G_CALLBACK(iupgtkShowHelp), ih);
+
+      //gtk_combo_box_set_focus_on_click ();
 
       if (!iupAttribGetBoolean(ih, "CANFOCUS"))
         iupgtkSetCanFocus(ih->handle, 0);

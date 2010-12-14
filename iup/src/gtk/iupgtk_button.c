@@ -54,7 +54,7 @@ void iupdrvButtonAddBorders(int *x, int *y)
   (*y) += border_size;
 }
 
-static void gtk_button_children_callback(GtkWidget *widget, gpointer client_data)
+static void gtkButtonChildrenCb(GtkWidget *widget, gpointer client_data)
 {
   if (GTK_IS_LABEL(widget))
   {
@@ -73,7 +73,7 @@ static GtkLabel* gtkButtonGetLabel(Ihandle* ih)
        that contains a GtkBox, that contains a label and an image */
     GtkContainer *container = (GtkContainer*)gtk_bin_get_child((GtkBin*)gtk_bin_get_child((GtkBin*)ih->handle));
     GtkLabel* label = NULL;
-    gtk_container_foreach(container, gtk_button_children_callback, &label);
+    gtk_container_foreach(container, gtkButtonChildrenCb, &label);
     return label;
   }
   return NULL;
