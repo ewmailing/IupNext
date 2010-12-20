@@ -208,7 +208,17 @@ static char* gtkListGetIdValueAttrib(Ihandle* ih, int id)
   return NULL;
 }
 
-static void gtkComboBoxChildrenCb(GtkWidget *widget, gpointer client_data)
+
+static void gtkComboBoxChildrenToggleCb(GtkWidget *widget, gpointer client_data)
+{
+  if (GTK_IS_TOGGLE_BUTTON(widget))
+  {
+    GtkWidget** toggle = (GtkWidget**)client_data;
+    *toggle = widget;
+  }
+}
+
+static void gtkComboBoxChildrenBgColorCb(GtkWidget *widget, gpointer client_data)
 {
   GdkColor* c = (GdkColor*)client_data;
   iupgtkBaseSetBgColor(widget, (unsigned char)c->red, (unsigned char)c->green, (unsigned char)c->blue);
@@ -259,19 +269,20 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
     c.blue = b;
     c.green = g;
     c.red = r;
-    gtk_container_foreach(container, gtkComboBoxChildrenCb, &c);
+    gtk_container_forall(container, gtkComboBoxChildrenBgColorCb, &c);
 
     if (!ih->data->has_editbox)
     {
       GtkWidget* box = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-      iupgtkBaseSetBgColor(box, r, g, b);
+      if (box)
+        iupgtkBaseSetBgColor(box, r, g, b);
     }
   }
 
   /* TODO: this test is not necessary, 
-     but for a dropdown the color is not set for the popup menu, 
-     and the result is very weird. So we avoid setting it for dropdown
-     util we figure out how to set for the popup menu. */
+     but when dropdown=yes the color is not set for the popup menu, 
+     and the result is very weird. So we avoid setting it when dropdown=yes
+     until we figure out how to set for the popup menu. */
   if (!ih->data->is_dropdown)
   {
     GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
@@ -1103,9 +1114,10 @@ static void gtkListEditChanged(void* dummy, Ihandle* ih)
   (void)dummy;
 }
 
-static void gtkListComboBoxPopupShownChanged(GtkComboBox* widget, GParamSpec *pspec, Ihandle* ih)
+static void gtkListComboBoxPopupShown(GtkComboBox* widget, GParamSpec *pspec, Ihandle* ih)
 {
   IFni cb = (IFni)IupGetCallback(ih, "DROPDOWN_CB");
+  iupAttribSetStr(ih, "_IUPDROPDOWN_POPUP", "1");
   if (cb)
   {
     gboolean popup_shown;
@@ -1219,6 +1231,29 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
     iupBaseCallValueChangedCb(ih);
 }
 
+static gboolean gtkListComboFocusInOutEvent(GtkWidget *widget, GdkEventFocus *evt, Ihandle *ih)
+{
+  /* Used only when DROPDOWN=YES and EDITBOX=NO */
+  if (iupAttribGetStr(ih, "_IUPDROPDOWN_POPUP"))
+  {
+    /* A dropdrop will generate leavewindow+killfocus, then enterwindow+getfocus,
+       so on a get focus we reset the flag. */
+    if (evt->in)
+      iupAttribSetStr(ih, "_IUPDROPDOWN_POPUP", NULL);
+    return FALSE;
+  }
+
+  return iupgtkFocusInOutEvent(widget, evt, ih);
+}
+
+static gboolean gtkListComboEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *evt, Ihandle *ih)
+{
+  /* Used only when DROPDOWN=YES and EDITBOX=NO */
+  if (iupAttribGetStr(ih, "_IUPDROPDOWN_POPUP"))
+    return FALSE;
+  return iupgtkEnterLeaveEvent(widget, evt, ih);
+}
+
 
 /*********************************************************************************/
 
@@ -1277,34 +1312,41 @@ static int gtkListMapMethod(Ihandle* ih)
     }
     else
     {
-      /* had to add an event box just to get get/killfocus,enter/leave events */
+      GtkWidget *toggle;
+
+      /* had to add an event box so it can be positioned in IupMatrix */
       GtkWidget *box = gtk_event_box_new();
       gtk_container_add((GtkContainer*)box, ih->handle);
       iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)box);
+
+      /* use the internal toggle for keyboard, focus and enter/leave */
+      gtk_container_forall((GtkContainer*)ih->handle, gtkComboBoxChildrenToggleCb, &toggle);
 
       renderer = gtk_cell_renderer_text_new();
       gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(ih->handle), renderer, TRUE);
       gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(ih->handle), renderer, "text", 0, NULL);
 
-      g_signal_connect(G_OBJECT(box), "focus-in-event",  G_CALLBACK(iupgtkFocusInOutEvent), ih);
-      g_signal_connect(G_OBJECT(box), "focus-out-event", G_CALLBACK(iupgtkFocusInOutEvent), ih);
-      g_signal_connect(G_OBJECT(box), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
-      g_signal_connect(G_OBJECT(box), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
-      g_signal_connect(G_OBJECT(box), "key-press-event", G_CALLBACK(iupgtkKeyPressEvent), ih);
-      g_signal_connect(G_OBJECT(box), "show-help",       G_CALLBACK(iupgtkShowHelp), ih);
-//      g_signal_connect(G_OBJECT(ih->handle), "key-press-event", G_CALLBACK(iupgtkKeyPressEvent), ih);
-//      g_signal_connect(G_OBJECT(ih->handle), "show-help",       G_CALLBACK(iupgtkShowHelp), ih);
-
-      //gtk_combo_box_set_focus_on_click ();
+      g_signal_connect(G_OBJECT(toggle), "focus-in-event",  G_CALLBACK(gtkListComboFocusInOutEvent), ih);
+      g_signal_connect(G_OBJECT(toggle), "focus-out-event", G_CALLBACK(gtkListComboFocusInOutEvent), ih);
+      g_signal_connect(G_OBJECT(toggle), "enter-notify-event", G_CALLBACK(gtkListComboEnterLeaveEvent), ih);
+      g_signal_connect(G_OBJECT(toggle), "leave-notify-event", G_CALLBACK(gtkListComboEnterLeaveEvent), ih);
+      g_signal_connect(G_OBJECT(toggle), "key-press-event", G_CALLBACK(iupgtkKeyPressEvent), ih);
+      g_signal_connect(G_OBJECT(toggle), "show-help",       G_CALLBACK(iupgtkShowHelp), ih);
 
       if (!iupAttribGetBoolean(ih, "CANFOCUS"))
+      {
         iupgtkSetCanFocus(ih->handle, 0);
+        gtk_combo_box_set_focus_on_click((GtkComboBox*)ih->handle, FALSE);
+      }
       else
-        iupgtkSetCanFocus(box, 1);
+      {
+        gtk_combo_box_set_focus_on_click((GtkComboBox*)ih->handle, TRUE);
+        iupgtkSetCanFocus(toggle, 1);
+      }
     }
 
     g_signal_connect(ih->handle, "changed", G_CALLBACK(gtkListComboBoxChanged), ih);
-    g_signal_connect(ih->handle, "notify::popup-shown", G_CALLBACK(gtkListComboBoxPopupShownChanged), ih);
+    g_signal_connect(ih->handle, "notify::popup-shown", G_CALLBACK(gtkListComboBoxPopupShown), ih);
 
     if (renderer)
     {

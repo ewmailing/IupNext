@@ -234,11 +234,11 @@ static void set_callbacks(Ihandle* list)
 //  IupSetCallback(list, "BUTTON_CB",    (Icallback)button_cb);
 //  IupSetCallback(list, "MOTION_CB",    (Icallback)motion_cb);
 
-  //IupSetCallback(list, "GETFOCUS_CB", getfocus_cb);
-  //IupSetCallback(list, "KILLFOCUS_CB", killfocus_cb);
+  IupSetCallback(list, "GETFOCUS_CB", getfocus_cb);
+  IupSetCallback(list, "KILLFOCUS_CB", killfocus_cb);
 
   IupSetCallback(list, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
-  //IupSetCallback(list, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+  IupSetCallback(list, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   IupSetCallback(list, "K_ANY", (Icallback)k_any);
   IupSetCallback(list, "HELP_CB", (Icallback)help_cb);

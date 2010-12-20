@@ -45,6 +45,12 @@ static GtkFixed* gtkGetFixedParent(Ihandle* ih)
   return (GtkFixed*)widget;
 }
 
+const char* iupgtkGetWidgetClassName(GtkWidget* widget)
+{
+  /* Used for debugging */
+  return g_type_name(G_TYPE_FROM_CLASS(GTK_WIDGET_GET_CLASS(widget)));
+}
+
 void iupgtkUpdateMnemonic(Ihandle* ih)
 {
   GtkLabel* label = (GtkLabel*)iupAttribGet(ih, "_IUPGTK_LABELMNEMONIC");
