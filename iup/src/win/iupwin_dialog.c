@@ -1255,6 +1255,17 @@ static int winDialogSetBringFrontAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
+static char* winDialogGetActiveWindowAttrib(Ihandle* ih)
+{
+  WINDOWINFO wininfo;
+  wininfo.cbSize = sizeof(WINDOWINFO);
+  GetWindowInfo(ih->handle, &wininfo);
+  if (wininfo.dwWindowStatus & WS_ACTIVECAPTION)
+    return "Yes";
+  else
+    return "No";
+}    
+
 static int winDialogSetTopMostAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
@@ -1446,6 +1457,8 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "MDICHILD", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupDialog Windows and GTK Only */
+  iupClassRegisterAttribute(ic, "ACTIVEWINDOW", winDialogGetActiveWindowAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOPMOST", NULL, winDialogSetTopMostAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOPMOST", NULL, winDialogSetTopMostAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAY", NULL, winDialogSetTrayAttrib, NULL, NULL, IUPAF_NO_INHERIT);

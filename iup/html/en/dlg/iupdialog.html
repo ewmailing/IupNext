@@ -207,6 +207,9 @@ read-only</font>): Returns the X-Windows Window (Drawable). Available in the
 Motif driver or in the GTK driver in UNIX.</p>
 
 <h4>Exclusive [Windows and GTK Only]</h4>
+<p><strong>ACTIVEWINDOW</strong> [Windows and GTK Only] (read-only): informs if 
+the dialog is the active window (the window with focus). Can be Yes or No. 
+(since 3.4)</p>
 <p><strong>HIDETASKBAR</strong> [Windows and GTK Only] (write-only): Action 
 attribute that when set to &quot;YES&quot;, hides the dialog, but does not decrement the 
 visible dialog count, does not call SHOW_CB and does not mark the dialog as 

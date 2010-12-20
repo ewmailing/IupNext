@@ -714,6 +714,14 @@ static int gtkDialogSetTitleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* gtkDialogGetActiveWindowAttrib(Ihandle* ih)
+{
+  if (gtk_window_is_active((GtkWindow*)ih->handle))
+    return "Yes";
+  else
+    return "No";
+}    
+
 static char* gtkDialogGetTitleAttrib(Ihandle* ih)
 {
   const char* title = gtk_window_get_title((GtkWindow*)ih->handle);
@@ -1028,6 +1036,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SAVEUNDER", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);  /* saveunder not supported in GTK */
 
   /* IupDialog Windows and GTK Only */
+  iupClassRegisterAttribute(ic, "ACTIVEWINDOW", gtkDialogGetActiveWindowAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOPMOST", NULL, gtkDialogSetTopMostAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DIALOGHINT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
