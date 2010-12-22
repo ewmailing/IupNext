@@ -542,7 +542,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       iupwinButtonDown(ih, msg, wp, lp);
 
       /* Feedback will NOT be done when not receiving the focus */
-      if (msg==WM_LBUTTONDOWN && !iupAttribGetBoolean(ih, "CANFOCUS"))
+      if ((msg==WM_LBUTTONDOWN || msg==WM_LBUTTONDBLCLK) && !iupAttribGetBoolean(ih, "CANFOCUS"))
       {
         iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", "1");
         iupdrvRedrawNow(ih);
