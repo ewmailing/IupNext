@@ -1169,6 +1169,11 @@ static Ihandle *IupParamf(const char* format, int *line_size)
   type = *line_ptr;
   line_ptr++;
 
+/**********************************************************************************
+  REMEMBER: if a new parameter type is added
+            then IupLua must be also updated.
+ **********************************************************************************/
+
   switch(type)
   {
   case 'b':
