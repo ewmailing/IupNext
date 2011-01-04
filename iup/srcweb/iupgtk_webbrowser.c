@@ -172,7 +172,10 @@ static int gtkWebBrowserNavigate(WebKitWebView *web_view, WebKitWebFrame *frame,
 
   IFns cb = (IFns)IupGetCallback(ih, "NAVIGATE_CB");
   if (cb)
-    cb(ih, (char*)webkit_network_request_get_uri(request));
+  {
+    if (cb(ih, (char*)webkit_network_request_get_uri(request)) == IUP_IGNORE)
+      return FALSE;
+  }
 
   return FALSE;
 }

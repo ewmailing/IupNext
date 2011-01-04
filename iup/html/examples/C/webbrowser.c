@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "iup.h"
 #include "iupweb.h"
@@ -41,6 +42,8 @@ static int navigate_cb(Ihandle* self, char* url)
 {
   printf("NAVIGATE_CB: %s\n", url);
   (void)self;
+  if (strstr(url, "download")!=NULL)
+    return IUP_IGNORE;
   return IUP_DEFAULT;
 }
                    

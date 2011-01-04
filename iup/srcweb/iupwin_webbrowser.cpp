@@ -83,8 +83,10 @@ public:
     if (cb)
     {
       char* urlString = iupwinStrWide2Char(url->bstrVal);
-      cb(ih, urlString);
+      int ret = cb(ih, urlString);
       free(urlString);
+      if (ret == IUP_IGNORE)
+        *Cancel = VARIANT_TRUE;
     }
 
     (void)Cancel;
