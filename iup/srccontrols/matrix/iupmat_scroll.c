@@ -376,6 +376,7 @@ void iupMatrixScrollPgRightDownFunc(Ihandle* ih, int mode, float pos, int m)
 
 void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, float unused_pos, int unused_m)
 {
+  int m;
   int oldlin = ih->data->lines.focus_cell;
   int oldcol = ih->data->columns.focus_cell;
   (void)unused_m;
@@ -384,14 +385,52 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, float unused_pos, int u
 
   /* called only for mode==IMAT_SCROLLKEY */
 
-  /* try the normal processing of next cell down */
-  iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN);
+  if (ih->data->editnext == IMAT_EDITNEXT_LIN || 
+      ih->data->editnext == IMAT_EDITNEXT_LINCR)
+    m = IMAT_PROCESS_LIN;
+  else
+    m = IMAT_PROCESS_COL;
+
+  /* try the normal processing of next cell down (next line/next column) */
+  iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, m);
 
   if(ih->data->lines.focus_cell == oldlin && ih->data->columns.focus_cell == oldcol)
   {
-    /* If focus was not changed, it was because it is in the last line of the column.
-       Go to the next column of the same line. */
-    iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_COL);
+    /* If focus was not changed, it was because it is in the last line of the column/last column of the line.
+       Go to the next column of the same line/next line of the same column. */
+    switch (ih->data->editnext)
+    {
+    case IMAT_EDITNEXT_LIN:
+      /* next col, same line (stay at the last line) */
+      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_COL);
+      break;
+    case IMAT_EDITNEXT_COL: 
+      /* next line, same col (stay at the last col) */
+      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN);
+      break;
+    case IMAT_EDITNEXT_LINCR: 
+      /* next col */
+      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_COL);
+
+      /* if sucessfully changed the col, then go to first line */
+      if (ih->data->columns.focus_cell != oldcol)
+      {
+        int lin = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_LIN, 1);
+        iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_LIN, lin);
+      }
+      break;
+    case IMAT_EDITNEXT_COLCR: 
+      /* next line */
+      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN);
+
+      /* if sucessfully changed the line, then go to first col */
+      if (ih->data->lines.focus_cell != oldlin)
+      {
+        int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, 1);
+        iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_COL, col);
+      }
+      break;
+    }
   }
 }
 

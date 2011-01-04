@@ -22,6 +22,16 @@ exceptions)</span></h2>
   Default cursor used by the matrix. The 
   default cursor is a symbol that looks like a cross. If you need to refer to this default cursor, use the name 
 &quot;IupMatrixCrossCursor&quot;.</p>
+<p><strong>EDITNEXT</strong>: controls how the next cell after editing is 
+chosen. Can be LIN, COL, LINCR, COLCR. Default: LIN. (since 3.4)</p>
+<p class="info">LIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - go to the next line, if at 
+last line then go to the next column at the same line;<br>
+LINCR&nbsp; - go to the next line, if at last line then go to the next column at 
+the first line;<br>
+COL&nbsp;&nbsp;&nbsp;&nbsp; - go to the next column, if at last column then go 
+to the next line at the same column;<br>
+COLCR - go to the next column, if at last column then go to the next line at the 
+first column;</p>
 <p><a name="FITTOSIZE"><strong>FITTOSIZE</strong></a> (write-only): force lines 
 and/or columns sizes so the matrix visible size fit in its current size. 
 NUMCOL_VISIBLE and NUMLIN_VISIBLE are considered when fitting and they are not 

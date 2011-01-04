@@ -24,12 +24,15 @@ extern "C" {
 #define IMAT_FRAME_H   2
 
 /* Cell flags */
-#define IUPMAT_FONT    1   /* Has FONTL:C attribute */
-#define IUPMAT_FGCOLOR 2   /* Has FGCOLORL:C attribute */
-#define IUPMAT_BGCOLOR 4   /* Has BGCOLORL:C attribute */
-#define IUPMAT_MARK    8   /* Is marked */
-#define IUPMAT_FRAMEHCOLOR 16   /* Has FRAMEHORIZCOLORL:C */
-#define IUPMAT_FRAMEVCOLOR 32   /* Has FRAMEVERTCOLORL:C */
+#define IMAT_HAS_FONT    1   /* Has FONTL:C attribute */
+#define IMAT_HAS_FGCOLOR 2   /* Has FGCOLORL:C attribute */
+#define IMAT_HAS_BGCOLOR 4   /* Has BGCOLORL:C attribute */
+#define IMAT_HAS_MARK    8   /* Is marked */
+#define IMAT_HAS_FRAMEHCOLOR 16   /* Has FRAMEHORIZCOLORL:C */
+#define IMAT_HAS_FRAMEVCOLOR 32   /* Has FRAMEVERTCOLORL:C */
+
+enum{IMAT_EDITNEXT_LIN, IMAT_EDITNEXT_COL, IMAT_EDITNEXT_LINCR, IMAT_EDITNEXT_COLCR};
+
 
 /***************************************************************************/
 /* Structures stored in each matrix                                        */
@@ -86,7 +89,7 @@ struct _IcontrolData
 
   /* attributes */
   int mark_continuous, mark_mode, mark_multiple;
-  int checkframecolor, hidden_text_marks;
+  int checkframecolor, hidden_text_marks, editnext;
 
   /* Mouse and Keyboard AUX */
   int leftpressed;  /* left mouse button is pressed */

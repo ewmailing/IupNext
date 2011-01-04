@@ -365,6 +365,30 @@ static char* iMatrixGetEditModeAttrib(Ihandle* ih)
     return "NO";
 }
 
+static int iMatrixSetEditNextAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "COL"))
+    ih->data->editnext = IMAT_EDITNEXT_COL;
+  else if (iupStrEqualNoCase(value, "COLCR"))
+    ih->data->editnext = IMAT_EDITNEXT_COLCR;
+  else if (iupStrEqualNoCase(value, "LINCR"))
+    ih->data->editnext = IMAT_EDITNEXT_LINCR;
+  else
+    ih->data->editnext = IMAT_EDITNEXT_LIN;
+  return 0;
+}
+
+static char* iMatrixGetEditNextAttrib(Ihandle* ih)
+{
+  switch (ih->data->editnext)
+  {
+  case IMAT_EDITNEXT_COL: return "COL";
+  case IMAT_EDITNEXT_LINCR: return "LINCR";
+  case IMAT_EDITNEXT_COLCR: return "COLCR";
+  default: return "LIN";
+  }
+}
+
 static int iMatrixSetActiveAttrib(Ihandle* ih, const char* value)
 {
   iupBaseSetActiveAttrib(ih, value);
@@ -660,29 +684,29 @@ static int iMatrixSetFlagsAttrib(Ihandle* ih, int lin, int col, const char* valu
 
 static int iMatrixSetBgColorAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IUPMAT_BGCOLOR);
+  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_BGCOLOR);
 }
 
 static int iMatrixSetFgColorAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IUPMAT_FGCOLOR);
+  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FGCOLOR);
 }
 
 static int iMatrixSetFontAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IUPMAT_FONT);
+  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FONT);
 }
 
 static int iMatrixSetFrameHorizColorAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
   ih->data->checkframecolor = value!=NULL;
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IUPMAT_FRAMEHCOLOR);
+  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FRAMEHCOLOR);
 }
 
 static int iMatrixSetFrameVertColorAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
   ih->data->checkframecolor = value!=NULL;
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IUPMAT_FRAMEVCOLOR);
+  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FRAMEVCOLOR);
 }
 
 static char* iMatrixGetFontAttrib(Ihandle* ih, int lin, int col)
@@ -1093,6 +1117,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "ORIGIN", iMatrixGetOriginAttrib, iMatrixSetOriginAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOW", NULL, iMatrixSetShowAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDIT_MODE", iMatrixGetEditModeAttrib, iMatrixSetEditModeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITNEXT", iMatrixGetEditNextAttrib, iMatrixSetEditNextAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iupMatrixDrawSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - EDITION */

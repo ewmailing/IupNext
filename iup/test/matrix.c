@@ -112,6 +112,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "0:8", "Column Title Test");
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "5");
+//  IupSetAttribute(mat,"EDITNEXT","COLCR");
 
 //  IupSetAttribute(mat,"RASTERSIZE","x300");
 //  IupSetAttribute(mat,"FITTOSIZE","LINES");
