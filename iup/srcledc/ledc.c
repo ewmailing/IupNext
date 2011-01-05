@@ -49,6 +49,7 @@ static struct {
   { "iupcontrols",0 },
   { "iupgl",      0 },
   { "iupole",     0 },
+  { "iupweb",     0 },
   { "iup_pplot",  0 }
 };
 #define nheaders (sizeof(headerfile)/sizeof(headerfile[0]))
@@ -58,6 +59,7 @@ enum headers {
   IUPCONTROLS_H, 
   IUPGL_H, 
   IUPOLE_H,
+  IUPWEB_H,
   IUPPPLOT_H
 };
 
@@ -69,6 +71,7 @@ static void check_string( Telem* elem );
 static void check_cb( Telem* elem );
 static void check_elem( Telem* elem );
 static void check_elemlist( Telem* elem );
+static void check_elemlist2( Telem* elem );
 static void check_string_cb( Telem* elem );
 static void check_string_elem( Telem* elem );
 static void check_iupCpi( Telem* elem );
@@ -80,6 +83,7 @@ static void code_string( Telem* elem );
 static void code_string_cb( Telem* elem );
 static void code_elem( Telem* elem );
 static void code_elemlist( Telem* elem );
+static void code_elemlist2( Telem* elem );
 static void code_string_elem( Telem* elem );
 
 typedef void(*function)(Telem*);
@@ -129,12 +133,15 @@ elems[] =
   { "Toggle",       code_string_cb,    check_string_cb,   0  },
   { "Vbox",         code_elemlist,     check_elemlist,    0  },
   { "Zbox",         code_elemlist,     check_elemlist,    0  },
+  { "Normalizer",   code_elemlist,     check_elemlist,    0  },
   { "OleControl",   code_string,       check_cb,          IUPOLE_H  },
   { "Cbox",         code_elemlist,     check_elemlist,    0  },
   { "Cells",        code_empty,        check_empty,       IUPCONTROLS_H  },
   { "Spin",         code_empty,        check_empty,       0  },
   { "Spinbox",      code_elem,         check_elem,        0  },
+  { "Split",        code_elemlist2,    check_elemlist2,   0  },
   { "PPlot",        code_empty,        check_empty,       IUPPPLOT_H  },
+  { "WebBrowser",   code_empty,        check_empty,       IUPWEB_H  },
   { "@@@",          code_iupCpi,       check_iupCpi,      0  }
 };
 #define nelems (sizeof(elems)/sizeof(elems[0]))
@@ -375,6 +382,14 @@ static void check_elemlist( Telem* elem )
 {
   int i;
   if (!verify_nparams( 1, -1, elem )) return;
+  for (i=0; i<elem->nparams; i++)
+    param_elem( elem->params, i+1 );
+}
+
+static void check_elemlist2( Telem* elem )
+{
+  int i;
+  if (!verify_nparams( 1, 2, elem )) return;
   for (i=0; i<elem->nparams; i++)
     param_elem( elem->params, i+1 );
 }
@@ -664,6 +679,26 @@ static void code_elemlist( Telem* elem )
   unindent();
   codeindent();
   fprintf( outfile, "NULL)" );
+}
+
+static void code_elemlist2( Telem* elem )
+{
+  int i=0;
+  fprintf( outfile, "(\n" );
+  indent();
+  for (i=0; i<2; i++)
+  {
+    if (i < elem->nparams)
+    {
+      codeelemparam( elem->params[i] );
+      fprintf( outfile, ",\n" ); 
+    }
+    else
+      fprintf( outfile, "NULL,\n" ); 
+  }
+  unindent();
+  codeindent();
+  fprintf( outfile, ")" );
 }
 
 static void code_string_elem( Telem* elem )
