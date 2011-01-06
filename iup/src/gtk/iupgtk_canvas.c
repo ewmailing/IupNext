@@ -346,6 +346,14 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
     else
       linex = iupAttribGetFloat(ih,"LINEX");
 
+#if GTK_CHECK_VERSION(2, 14, 0)
+    {
+      double page_size = dx;
+      double dvalue = gtk_adjustment_get_value(sb_horiz);
+      value_changed = gtkCanvasCheckScroll(xmin, xmax, &page_size, &dvalue);
+      gtk_adjustment_configure(sb_horiz, dvalue, xmin, xmax, linex, page_size, dx);
+    }
+#else
     sb_horiz->lower = xmin;
     sb_horiz->upper = xmax;
     sb_horiz->step_increment = linex;
@@ -355,6 +363,7 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
     sb_horiz->page_increment = sb_horiz->page_size;
 
     gtk_adjustment_changed(sb_horiz);
+#endif
 
     if (value_changed)
       gtk_adjustment_value_changed(sb_horiz);
@@ -387,6 +396,14 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
     else
       liney = iupAttribGetFloat(ih,"LINEY");
 
+#if GTK_CHECK_VERSION(2, 14, 0)
+    {
+      double page_size = dy;
+      double dvalue = gtk_adjustment_get_value(sb_vert);
+      value_changed = gtkCanvasCheckScroll(ymin, ymax, &page_size, &dvalue);
+      gtk_adjustment_configure(sb_vert, dvalue, ymin, ymax, liney, page_size, dy);
+    }
+#else
     sb_vert->lower = ymin;
     sb_vert->upper = ymax;
     sb_vert->step_increment = liney;
@@ -396,6 +413,7 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
     sb_vert->page_increment = sb_vert->page_size;
 
     gtk_adjustment_changed(sb_vert);
+#endif
 
     if (value_changed)
       gtk_adjustment_value_changed(sb_vert);
@@ -485,7 +503,7 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
     /* disable automatic double buffering */
     gtk_widget_set_double_buffered(ih->handle, FALSE);
     gtk_widget_set_double_buffered((GtkWidget*)scrolled_window, FALSE);
-    gdk_window_set_back_pixmap(ih->handle->window, NULL, FALSE);
+    gdk_window_set_back_pixmap(iupgtkGetWindow(ih->handle), NULL, FALSE);
     iupAttribSetStr(ih, "_IUPGTK_NO_BGCOLOR", "1");
     return 1;
   }
@@ -493,7 +511,7 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
 
 static char* gtkCanvasGetDrawableAttrib(Ihandle* ih)
 {
-  return (char*)ih->handle->window;
+  return (char*)iupgtkGetWindow(ih->handle);
 }
 
 static void gtkCanvasDummyLogFunc(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)

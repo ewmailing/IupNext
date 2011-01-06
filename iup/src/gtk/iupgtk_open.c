@@ -25,7 +25,7 @@
 
 char* iupgtkGetNativeWindowHandle(Ihandle* ih)
 {
-  GdkWindow* window = ih->handle->window;
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
   if (window)
     return (char*)window;
   else
@@ -34,7 +34,7 @@ char* iupgtkGetNativeWindowHandle(Ihandle* ih)
 
 void* iupgtkGetNativeGraphicsContext(GtkWidget* widget)
 {
-  return (void*)gdk_gc_new((GdkDrawable*)widget->window);
+  return (void*)gdk_gc_new((GdkDrawable*)iupgtkGetWindow(widget));
 }
 
 void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc)
@@ -71,7 +71,7 @@ static void gtkSetDrvGlobalAttrib(void)
 
 char* iupgtkGetNativeWindowHandle(Ihandle* ih)
 {
-  GdkWindow* window = ih->handle->window;
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
   if (window)
     return (char*)GDK_WINDOW_HWND(window);
   else
@@ -80,12 +80,12 @@ char* iupgtkGetNativeWindowHandle(Ihandle* ih)
 
 void* iupgtkGetNativeGraphicsContext(GtkWidget* widget)
 {
-  return GetDC(GDK_WINDOW_HWND(widget->window));
+  return GetDC(GDK_WINDOW_HWND(iupgtkGetWindow(widget)));
 }
 
 void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc)
 {
-  ReleaseDC(GDK_WINDOW_HWND(widget->window), (HDC)gc);
+  ReleaseDC(GDK_WINDOW_HWND(iupgtkGetWindow(widget)), (HDC)gc);
 }
 
 void* iupdrvGetDisplay(void)
@@ -108,7 +108,7 @@ static void gtkSetDrvGlobalAttrib(void)
 
 char* iupgtkGetNativeWindowHandle(Ihandle* ih)
 {
-  GdkWindow* window = ih->handle->window;
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
   if (window)
     return (char*)GDK_WINDOW_XID(window);
   else
@@ -118,7 +118,7 @@ char* iupgtkGetNativeWindowHandle(Ihandle* ih)
 void* iupgtkGetNativeGraphicsContext(GtkWidget* widget)
 {
   GdkDisplay* display = gdk_display_get_default();
-  return (void*)XCreateGC(GDK_DISPLAY_XDISPLAY(display), GDK_WINDOW_XID(widget->window), 0, NULL);
+  return (void*)XCreateGC(GDK_DISPLAY_XDISPLAY(display), GDK_WINDOW_XID(iupgtkGetWindow(widget)), 0, NULL);
 }
 
 void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc)

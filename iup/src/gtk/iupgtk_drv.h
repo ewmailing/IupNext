@@ -36,6 +36,7 @@ void iupgtkBaseSetBgColor(InativeHandle* handle, unsigned char r, unsigned char 
 void iupgtkBaseSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
 void iupgtkBaseSetFgGdkColor(InativeHandle* handle, GdkColor *color);
 const char* iupgtkGetWidgetClassName(GtkWidget* widget);
+GdkWindow* iupgtkGetWindow(GtkWidget *widget);
 
 
 /* focus */

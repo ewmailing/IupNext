@@ -1350,8 +1350,12 @@ static int gtkListMapMethod(Ihandle* ih)
 
     if (renderer)
     {
+#if GTK_CHECK_VERSION(2, 18, 0)
+      gtk_cell_renderer_set_padding(renderer, 0, 0);
+#else
       renderer->xpad = 0;
       renderer->ypad = 0;
+#endif
       iupAttribSetStr(ih, "_IUPGTK_RENDERER", (char*)renderer);
     }
   }

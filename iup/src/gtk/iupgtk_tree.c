@@ -1890,8 +1890,11 @@ static gboolean gtkTreeDragMotion(GtkWidget *widget, GdkDragContext *context, gi
     gtk_tree_view_set_drag_dest_row(GTK_TREE_VIEW(widget), path, pos);
     gtk_tree_path_free(path);
 
+#if GTK_CHECK_VERSION(2, 22, 0)
+    gdk_drag_status(context, gdk_drag_context_get_suggested_action(context), time);
+#else
     gdk_drag_status(context, context->suggested_action, time);
-
+#endif
     return TRUE;
   }
 

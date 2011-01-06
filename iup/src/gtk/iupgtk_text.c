@@ -1238,7 +1238,8 @@ static gboolean gtkTextSpinOutput(GtkSpinButton *spin, Ihandle* ih)
 {
   if (iupAttribGet(ih, "_IUPGTK_SPIN_NOAUTO"))
   {
-    iupAttribSetInt(ih, "_IUPGTK_SPIN_VALUE", (int)spin->adjustment->value);
+    GtkAdjustment* adjustment = gtk_spin_button_get_adjustment(spin);
+    iupAttribSetInt(ih, "_IUPGTK_SPIN_VALUE", (int)gtk_adjustment_get_value(adjustment));
     return TRUE; /* disable output update */
   }
   else

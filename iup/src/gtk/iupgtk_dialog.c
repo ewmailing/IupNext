@@ -98,8 +98,8 @@ static int gtkDialogGetMenuSize(Ihandle* ih)
 static void gtkDialogGetWindowDecor(Ihandle* ih, int *win_border, int *win_caption)
 {
   int x, y, frame_x, frame_y;
-  gdk_window_get_origin(ih->handle->window, &x, &y);
-  gdk_window_get_root_origin(ih->handle->window, &frame_x, &frame_y);
+  gdk_window_get_origin(iupgtkGetWindow(ih->handle), &x, &y);
+  gdk_window_get_root_origin(iupgtkGetWindow(ih->handle), &frame_x, &frame_y);
   *win_border = x-frame_x;
   *win_caption = y-frame_y-*win_border;
 }
@@ -533,7 +533,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
     gtk_window_set_decorated((GtkWindow*)ih->handle, FALSE);
   else
   {
-    GdkWindow* window = ih->handle->window;
+    GdkWindow* window = iupgtkGetWindow(ih->handle);
     if (window)
     {
       gdk_window_set_decorations(window, (GdkWMDecoration)decorations);

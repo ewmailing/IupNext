@@ -117,7 +117,7 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
 
   ret = iupStrToRGBA(iupAttribGet(ih, "VALUE"), &r, &g, &b, &a);
 
-  colorsel = (GtkColorSelection*)dialog->colorsel;
+  g_object_get(dialog, "color-selection", &colorsel, NULL);
   iupgdkColorSet(&color, r, g, b);
   gtk_color_selection_set_current_color(colorsel, &color);
 
@@ -153,7 +153,11 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
     gtk_color_selection_set_has_palette (colorsel, FALSE);
 
   if (IupGetCallback(ih, "HELP_CB"))
-    gtk_widget_show(dialog->help_button);
+  {
+    GtkWidget* help_button;
+    g_object_get(dialog, "help-button", &help_button, NULL);
+    gtk_widget_show(help_button);
+  }
   
   /* initialize the widget */
   gtk_widget_realize(GTK_WIDGET(dialog));

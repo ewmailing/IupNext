@@ -30,7 +30,7 @@
 
 
 /* WARNING: in GTK there are many controls that are not native windows, 
-   so "->window" will NOT return a native window exclusive of that control,
+   so it GdkWindow will NOT return a native window exclusive of that control,
    in fact it can return a base native window shared by many controls.
    IupCanvas is a special case that uses an exclusive native window. */
 
@@ -108,7 +108,7 @@ void iupdrvPostRedraw(Ihandle *ih)
 
 void iupdrvRedrawNow(Ihandle *ih)
 {
-  GdkWindow* window = ih->handle->window;
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
   /* Post a REDRAW */
   gtk_widget_queue_draw(ih->handle);
   /* Force a REDRAW */
@@ -134,7 +134,7 @@ void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
   GtkWidget* wparent = gtkGetWindowedParent(ih->handle);
   if (ih->handle != wparent)
     gtk_widget_translate_coordinates(ih->handle, wparent, 0, 0, &dx, &dy); /* widget origin relative to GDK window */
-  gdk_window_get_origin(wparent->window, &win_x, &win_y);  /* GDK window origin relative to screen */
+  gdk_window_get_origin(iupgtkGetWindow(wparent), &win_x, &win_y);  /* GDK window origin relative to screen */
   *x -= win_x + dx;
   *y -= win_y + dy;
 }
@@ -146,7 +146,7 @@ void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
   GtkWidget* wparent = gtkGetWindowedParent(ih->handle);
   if (ih->handle != wparent)
     gtk_widget_translate_coordinates(ih->handle, wparent, 0, 0, &dx, &dy); /* widget relative to GDK window */
-  gdk_window_get_origin(wparent->window, &win_x, &win_y);  /* GDK window relative to screen */
+  gdk_window_get_origin(iupgtkGetWindow(wparent), &win_x, &win_y);  /* GDK window relative to screen */
   *x += win_x + dx;
   *y += win_y + dy;
 }
@@ -209,7 +209,7 @@ int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
 {
   if (iupdrvIsVisible(ih))
   {
-    GdkWindow* window = ih->handle->window;
+    GdkWindow* window = iupgtkGetWindow(ih->handle);
     if (iupStrEqualNoCase(value, "TOP"))
       gdk_window_raise(window);
     else
@@ -285,7 +285,7 @@ char* iupdrvBaseGetClientSizeAttrib(Ihandle *ih)
 {
   char* str = iupStrGetMemory(20);
   int w, h;
-  GdkWindow* window = ih->handle->window;
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
 
   if (window)
     gdk_drawable_get_size(window, &w, &h);
@@ -396,7 +396,7 @@ static GdkCursor* gtkEmptyCursor(Ihandle* ih)
   GdkColor cursor_color = {0L,0,0,0};
   char bitsnull[1] = {0x00};
 
-  GdkWindow* window = ih->handle->window;
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
   GdkPixmap* pixmapnull = gdk_bitmap_create_from_data(
     (GdkDrawable*)window,
     bitsnull,
@@ -486,7 +486,7 @@ int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
   GdkCursor* cur = gtkGetCursor(ih, value);
   if (cur)
   {
-    GdkWindow* window = ih->handle->window;
+    GdkWindow* window = iupgtkGetWindow(ih->handle);
     if (window)
       gdk_window_set_cursor(window, cur);
     return 1;
@@ -512,7 +512,11 @@ static void gtkDragDataReceived(GtkWidget* w, GdkDragContext* context, int x, in
   if (!cb) return; 
 
 #if GTK_CHECK_VERSION(2, 6, 0)
+#if GTK_CHECK_VERSION(2, 14, 0)
+  uris = g_uri_list_extract_uris((char*)gtk_selection_data_get_data(seldata));
+#else
   uris = g_uri_list_extract_uris((char*)seldata->data);
+#endif
 #endif
 
   if (!uris)
@@ -579,7 +583,7 @@ int iupdrvGetScrollbarSize(void)
 
 void iupdrvDrawFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h)
 {
-  GdkWindow* window = ih->handle->window;
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
   GtkStyle *style = gtk_widget_get_style(ih->handle);
 #if GTK_CHECK_VERSION(2, 18, 0)
   GtkStateType state = gtk_widget_get_state(ih->handle);
@@ -811,7 +815,7 @@ gboolean iupgtkMotionNotifyEvent(GtkWidget *widget, GdkEventMotion *evt, Ihandle
   if (evt->is_hint)
   {
     int x, y;
-    gdk_window_get_pointer(widget->window, &x, &y, NULL);
+    gdk_window_get_pointer(iupgtkGetWindow(widget), &x, &y, NULL);
     evt->x = x;
     evt->y = y;
   }
@@ -885,7 +889,7 @@ void iupdrvSendKey(int key, int press)
   focus = IupGetFocus();
   if (!focus)
     return;
-  evt.window = focus->handle->window;
+  evt.window = iupgtkGetWindow(focus->handle);
 
   iupgtkKeyEncode(key, &evt.keyval, &evt.state);
   if (!evt.keyval)
@@ -932,7 +936,7 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
 
     grab_widget = gtk_grab_get_current();
     if (grab_widget) 
-      evt.window = grab_widget->window;
+      evt.window = iupgtkGetWindow(grab_widget);
     else
     {
       gint tx, ty;
@@ -976,4 +980,13 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
 void iupdrvSleep(int time)
 {
   g_usleep(time*1000);  /* mili to micro */
+}
+
+GdkWindow* iupgtkGetWindow(GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(2, 14, 0)
+  return gtk_widget_get_window(widget);
+#else
+  return widget->window;
+#endif
 }

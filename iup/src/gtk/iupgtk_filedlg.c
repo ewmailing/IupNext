@@ -130,9 +130,9 @@ static void gtkFileDlgPreviewRealize(GtkWidget *widget, Ihandle *ih)
 
 #ifndef GTK_MAC
   #ifdef WIN32                                 
-    iupAttribSetStr(ih, "HWND", (char*)GDK_WINDOW_HWND(widget->window));
+    iupAttribSetStr(ih, "HWND", (char*)GDK_WINDOW_HWND(iupgtkGetWindow(widget)));
   #else
-    iupAttribSetStr(ih, "XWINDOW", (char*)GDK_WINDOW_XID(widget->window));
+    iupAttribSetStr(ih, "XWINDOW", (char*)GDK_WINDOW_XID(iupgtkGetWindow(widget)));
     iupAttribSetStr(ih, "XDISPLAY", (char*)iupdrvGetDisplay());
   #endif
 #endif
