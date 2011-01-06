@@ -45,7 +45,7 @@ SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font
 
 ifdef USE_GTK
   CHECK_GTK = Yes
-  DEFINES += GTK_DISABLE_DEPRECATED
+  DEFINES += GTK_DISABLE_DEPRECATED GSEAL_ENABLE
   INCLUDES += gtk
     SRC += gtk/iupgtk_common.c gtk/iupgtk_focus.c gtk/iupgtk_font.c gtk/iupgtk_clipboard.c \
            gtk/iupgtk_globalattrib.c gtk/iupgtk_key.c gtk/iupgtk_tips.c \
