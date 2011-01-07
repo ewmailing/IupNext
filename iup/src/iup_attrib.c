@@ -488,9 +488,6 @@ void IupResetAttribute(Ihandle *ih, const char* name)
 
 char* IupGetAttribute(Ihandle *ih, const char* name)
 {
-  int inherit;
-  char *value, *def_value;
-
   iupASSERT(name!=NULL);
   if (!name)
     return NULL;
@@ -502,13 +499,19 @@ char* IupGetAttribute(Ihandle *ih, const char* name)
   if (!iupObjectCheck(ih))
     return NULL;
 
-  value = iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
-  if (!value)
-    value = iupAttribGet(ih, name);
-
-  if (!value && !iupATTRIB_ISINTERNAL(name))
+  if (iupATTRIB_ISINTERNAL(name))
+    return iupAttribGet(ih, name);
+  else
   {
-    if (inherit)
+    int inherit;
+    char *value, *def_value;
+
+    value = iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
+
+    if (!value)
+      value = iupAttribGet(ih, name);
+
+    if (!value && inherit)
     {
       while (!value)
       {
@@ -522,9 +525,9 @@ char* IupGetAttribute(Ihandle *ih, const char* name)
 
     if (!value)
       value = def_value;
-  }
 
-  return value;
+    return value;
+  }
 }
 
 float IupGetFloat(Ihandle *ih, const char* name)

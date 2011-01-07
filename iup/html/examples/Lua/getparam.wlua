@@ -1,10 +1,8 @@
 -- IupGetParam Example in IupLua 
--- Shows a dialog with all possible fields. 
+-- Shows a dialog with many possible fields. 
 
 require( "iuplua" )
 require( "iupluacontrols" )
-
-iup.SetLanguage("ENGLISH")
 
 function param_action(dialog, param_index)
   if (param_index == -1) then
@@ -46,7 +44,7 @@ ret, pboolean, pinteger, preal, pinteger2, preal2, pangle, pstring, plist, pstri
                   "Sep3 %t\n"..
                   "Multiline: %m\n",
                   pboolean, pinteger, preal, pinteger2, preal2, pangle, pstring, plist, pstring2)
-if (ret == 0) then
+if (not ret) then
   return
 end
 

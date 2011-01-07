@@ -15,6 +15,10 @@
 <strong>elem</strong>:destroy_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><strong>ih</strong>:
   identifier of the element that activated the event.</p>
+<h3>Notes</h3>
+<p>For language binding implementations use the callback name &quot;LDESTROY_CB&quot; to 
+release memory allocated by the binding for the element. This callback will be 
+called before &quot;DESTROY_CB&quot;.</p>
 <h3>Affects</h3>
 <p>All.</p>
 

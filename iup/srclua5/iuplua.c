@@ -241,22 +241,13 @@ void iuplua_pushihandle(lua_State *L, Ihandle *ih)
     lua_pushnil(L);
 }
 
-void iuplua_removeihandle(lua_State *L, Ihandle *ih)
+static int il_destroy_cb(Ihandle* ih)
 {
-  char* sref;
-
-  /* called from Destroy.
-     must also remove references from the children. */
-  Ihandle* child = IupGetNextChild(ih, NULL);
-  while(child)
-  {
-    iuplua_removeihandle(L, child);
-    child = IupGetNextChild(ih, child);
-  }
-
-  sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
+  /* called from IupDestroy. */
+  char* sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
   if (sref)
   {
+    lua_State *L = iuplua_getstate(ih);
     int ref = atoi(sref);
 
     /* removes the ihandle reference in the lua table */
@@ -270,7 +261,10 @@ void iuplua_removeihandle(lua_State *L, Ihandle *ih)
     /* removes the association of the ihandle with the lua table */
     lua_unref(L, ref);  /* this is the complement of SetWidget */
     IupSetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", NULL);
+    IupSetCallback(ih, "LDESTROY_CB", NULL);
   }
+
+  return IUP_DEFAULT;
 }
 
 char** iuplua_checkstring_array(lua_State *L, int pos, int n)
@@ -613,6 +607,7 @@ static int SetWidget(lua_State *L)
   {
     int ref = lua_ref(L, 1);
     IupSetfAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", "%d", ref);  /* this must be a non-inheritable attribute */
+    IupSetCallback(ih, "LDESTROY_CB", il_destroy_cb);
   }
   return 0;
 }

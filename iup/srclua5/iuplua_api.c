@@ -59,7 +59,6 @@ static int Append(lua_State *L)
 static int Destroy(lua_State *L)
 {
   Ihandle* ih = iuplua_checkihandle(L,1);
-  iuplua_removeihandle(L, ih);
   IupDestroy(ih);
   return 0;
 }

@@ -37,6 +37,7 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
   {
     lua_State *L = gp->L;
     lua_getref(L, gp->func_ref);
+    iuplua_plugstate(L, dialog);
     iuplua_pushihandle(L, dialog);
     lua_pushinteger(L, param_index);
     if (iuplua_call_raw(L, 2, 1) != 0)    /* 2 args, 1 return */
@@ -182,6 +183,7 @@ static int GetParamParam(lua_State *L)
   char param_str[50];
   sprintf(param_str, "PARAM%d", param_index);
   param = (Ihandle*)IupGetAttribute(dialog, param_str);
+  iuplua_plugstate(L, param);
   iuplua_pushihandle(L, param);
   return 1;
 }
