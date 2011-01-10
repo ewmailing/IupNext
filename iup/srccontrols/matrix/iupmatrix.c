@@ -575,9 +575,10 @@ static int iMatrixSetFitToSizeAttrib(Ihandle* ih, const char* value)
 
 static int iMatrixSetWidthAttrib(Ihandle* ih, int col, const char* value)
 {
-  (void)value;
-  (void)col;
+  char str[100];
+  sprintf(str, "WIDTH%d", col);
   ih->data->need_calcsize = 1;
+  iupAttribStoreStr(ih, str, value); /* must set before update */
   IupUpdate(ih);
   return 1;
 }
@@ -589,9 +590,10 @@ static char* iMatrixGetWidthAttrib(Ihandle* ih, int col)
 
 static int iMatrixSetHeightAttrib(Ihandle* ih, int lin, const char* value)
 {
-  (void)value;
-  (void)lin;
+  char str[100];
+  sprintf(str, "HEIGHT%d", lin);
   ih->data->need_calcsize = 1;
+  iupAttribStoreStr(ih, str, value); /* must set before update */
   IupUpdate(ih);
   return 1;
 }
@@ -603,9 +605,10 @@ static char* iMatrixGetHeightAttrib(Ihandle* ih, int lin)
 
 static int iMatrixSetRasterWidthAttrib(Ihandle* ih, int col, const char* value)
 {
-  (void)value;
-  (void)col;
+  char str[100];
+  sprintf(str, "RASTERWIDTH%d", col);
   ih->data->need_calcsize = 1;
+  iupAttribStoreStr(ih, str, value); /* must set before update */
   IupUpdate(ih);
   return 1;
 }
@@ -617,9 +620,10 @@ static char* iMatrixGetRasterWidthAttrib(Ihandle* ih, int col)
 
 static int iMatrixSetRasterHeightAttrib(Ihandle* ih, int lin, const char* value)
 {
-  (void)value;
-  (void)lin;
+  char str[100];
+  sprintf(str, "RASTERHEIGHT%d", lin);
   ih->data->need_calcsize = 1;
+  iupAttribStoreStr(ih, str, value); /* must set before update */
   IupUpdate(ih);
   return 1;
 }
@@ -632,7 +636,7 @@ static char* iMatrixGetRasterHeightAttrib(Ihandle* ih, int lin)
 static char* iMatrixGetAlignmentAttrib(Ihandle* ih, int col)
 {
   char* align;
-  char str[50];
+  char str[100];
   sprintf(str, "ALIGNMENT%d", col);
   align = iupAttribGet(ih, str);
   if (!align)
