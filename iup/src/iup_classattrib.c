@@ -138,7 +138,7 @@ int iupClassObjectSetAttributeId(Ihandle* ih, const char* name, int id, const ch
 {
   IattribFunc* afunc;
 
-  if (ih->iclass->has_attrib_id!=1)
+  if (ih->iclass->has_attrib_id==0)
     return 0;
 
   if (name[0]==0)
@@ -315,7 +315,7 @@ char* iupClassObjectGetAttributeId(Ihandle* ih, const char* name, int id)
 {
   IattribFunc* afunc;
 
-  if (ih->iclass->has_attrib_id!=1)
+  if (ih->iclass->has_attrib_id==0)
     return NULL;
 
   if (name[0]==0)
