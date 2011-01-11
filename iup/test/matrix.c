@@ -62,8 +62,9 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "2:2", "8.1");
   IupSetAttribute(mat, "3:1", "3.4");
   IupSetAttribute(mat, "3:3", "Font Test");
-//  IupSetAttribute(mat, "WIDTH2", "90");
 //  IupSetAttribute(mat, "HEIGHT2", "30");
+//  IupSetAttribute(mat, "WIDTH2", "190");
+//  IupSetAttributeId(mat, "WIDTH", 2, "190");
   IupSetAttribute(mat,"SORTSIGN2","DOWN");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
 //  IupSetAttribute(mat,"MULTILINE", "YES");

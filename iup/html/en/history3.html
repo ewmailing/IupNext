@@ -60,6 +60,8 @@ version 3.x.<br>
 	IupDialog</strong> in Windows and GTK.</li>
 	<li><span class="hist_new">New:</span> EDITNEXT attribute for <strong>
 	IupMatrix</strong> to control the next cell after editing.</li>
+	<li><span class="hist_new">New:</span> FITTOTEXT action attribute in <strong>
+	IupMatrix</strong>.</li>
 	<li><span class="hist_changed">Changed:</span>
     removed compatibility with old bc55, gcc3 and mingw3 compilers in Windows. 
 	Depending on the Cygwin installation gcc3 may still works.</li>
@@ -98,8 +100,9 @@ version 3.x.<br>
 	<li><span class="hist_fixed">Fixed:</span> added support for <strong>
 	IupSplit</strong>, <strong>IupNormalizer</strong> and <strong>IupWebBrowser</strong> 
 	in the ledc tool.</li>
-	<li><span class="hist_fixed">Fixed:</span> update of WIDTH*, HEIGHT*, 
-	RASTERWIDTH* and RASTERHEIGHT* attributes of <strong>IupMatrix</strong>.</li>
+	<li><span class="hist_fixed">Fixed:</span> support for WIDTH*, HEIGHT*, 
+	RASTERWIDTH* and RASTERHEIGHT* attributes of <strong>IupMatrix</strong> when 
+	the <strong>IupSetAttributeId</strong> functions are used.</li>
 
 </ul>
 

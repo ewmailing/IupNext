@@ -412,7 +412,7 @@ static int iMatrixHasTitleWidth(Ihandle* ih)
   return (value!=NULL);
 }
 
-static void iupMatrixFitLines(Ihandle* ih, int height)
+static void iMatrixFitLines(Ihandle* ih, int height)
 {
   /* expand each line height to fit the matrix height */
   int line_height, lin, callback_mode = ih->data->callback_mode,
@@ -475,7 +475,7 @@ static void iupMatrixFitLines(Ihandle* ih, int height)
   free(empty_lines);
 }
 
-static void iupMatrixFitColumns(Ihandle* ih, int width)
+static void iMatrixFitColumns(Ihandle* ih, int width)
 {
   /* expand each column width to fit the matrix width */
   int column_width, col, callback_mode = ih->data->callback_mode,
@@ -559,27 +559,93 @@ static int iMatrixSetFitToSizeAttrib(Ihandle* ih, const char* value)
   IupGetIntInt(ih, "RASTERSIZE", &w, &h);
 
   if (iupStrEqualNoCase(value, "LINES"))
-    iupMatrixFitLines(ih, h-sb_h);
+    iMatrixFitLines(ih, h-sb_h);
   else if (iupStrEqualNoCase(value, "COLUMNS"))
-    iupMatrixFitColumns(ih, w-sb_w);
+    iMatrixFitColumns(ih, w-sb_w);
   else
   {
-    iupMatrixFitLines(ih, h-sb_h);
-    iupMatrixFitColumns(ih, w-sb_w);
+    iMatrixFitLines(ih, h-sb_h);
+    iMatrixFitColumns(ih, w-sb_w);
   }
 
   ih->data->need_calcsize = 1;
-  IupUpdate(ih);
+  iupMatrixDraw(ih, 1);
   return 0;
 }
 
-static int iMatrixSetWidthAttrib(Ihandle* ih, int col, const char* value)
+static void iMatrixFitColText(Ihandle* ih, int col)
 {
+  /* find the largest cel in the col */
+  int lin, max_width = 0;
   char str[100];
-  sprintf(str, "WIDTH%d", col);
+
+  for(lin = 0; lin < ih->data->lines.num; lin++)
+  {
+    char* title_value = iupMatrixCellGetValue(ih, lin, col);
+    if (title_value && title_value[0])
+    {
+      int w;
+      iupdrvFontGetMultiLineStringSize(ih, title_value, &w, NULL);
+      if (w > max_width)
+        max_width = w;
+    }
+  }
+
+  sprintf(str, "RASTERWIDTH%d", col);
+  iupAttribSetInt(ih, str, max_width);
+}
+
+static void iMatrixFitLineText(Ihandle* ih, int line)
+{
+  /* find the highest cel in the line */
+  int col, max_height = 0;
+  char str[100];
+
+  for(col = 0; col < ih->data->columns.num; col++)
+  {
+    char* title_value = iupMatrixCellGetValue(ih, line, col);
+    if (title_value && title_value[0])
+    {
+      int h;
+      iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &h);
+      if (h > max_height)
+        max_height = h;
+    }
+  }
+
+  sprintf(str, "RASTERHEIGHT%d", line);
+  iupAttribSetInt(ih, str, max_height);
+}
+
+static int iMatrixSetFitToTextAttrib(Ihandle* ih, const char* value)
+{
+  if (!value || value[0]==0)
+    return 0;
+
+  if (value[0] == 'C')
+  {
+    int col;
+    if (iupStrToInt(value+1, &col))
+      iMatrixFitColText(ih, col);
+  }
+  else if (value[0] == 'L')
+  {
+    int line;
+    if (iupStrToInt(value+1, &line))
+      iMatrixFitLineText(ih, line);
+  }
+
   ih->data->need_calcsize = 1;
-  iupAttribStoreStr(ih, str, value); /* must set before update */
-  IupUpdate(ih);
+  iupMatrixDraw(ih, 1);
+  return 0;
+}
+
+static int iMatrixSetSizeAttrib(Ihandle* ih, int pos, const char* value)
+{
+  (void)pos;
+  (void)value;
+  ih->data->need_calcsize = 1;
+  IupUpdate(ih);  /* post a redraw */
   return 1;
 }
 
@@ -588,44 +654,14 @@ static char* iMatrixGetWidthAttrib(Ihandle* ih, int col)
   return iupMatrixGetSize(ih, col, IMAT_PROCESS_COL, 0);
 }
 
-static int iMatrixSetHeightAttrib(Ihandle* ih, int lin, const char* value)
-{
-  char str[100];
-  sprintf(str, "HEIGHT%d", lin);
-  ih->data->need_calcsize = 1;
-  iupAttribStoreStr(ih, str, value); /* must set before update */
-  IupUpdate(ih);
-  return 1;
-}
-
 static char* iMatrixGetHeightAttrib(Ihandle* ih, int lin)
 {
   return iupMatrixGetSize(ih, lin, IMAT_PROCESS_LIN, 0);
 }
 
-static int iMatrixSetRasterWidthAttrib(Ihandle* ih, int col, const char* value)
-{
-  char str[100];
-  sprintf(str, "RASTERWIDTH%d", col);
-  ih->data->need_calcsize = 1;
-  iupAttribStoreStr(ih, str, value); /* must set before update */
-  IupUpdate(ih);
-  return 1;
-}
-
 static char* iMatrixGetRasterWidthAttrib(Ihandle* ih, int col)
 {
   return iupMatrixGetSize(ih, col, IMAT_PROCESS_COL, 1);
-}
-
-static int iMatrixSetRasterHeightAttrib(Ihandle* ih, int lin, const char* value)
-{
-  char str[100];
-  sprintf(str, "RASTERHEIGHT%d", lin);
-  ih->data->need_calcsize = 1;
-  iupAttribStoreStr(ih, str, value); /* must set before update */
-  IupUpdate(ih);
-  return 1;
 }
 
 static char* iMatrixGetRasterHeightAttrib(Ihandle* ih, int lin)
@@ -1097,11 +1133,12 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "NUMCOL_VISIBLE_LAST", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WIDTHDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "80", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HEIGHTDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "WIDTH", iMatrixGetWidthAttrib, iMatrixSetWidthAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "HEIGHT", iMatrixGetHeightAttrib, iMatrixSetHeightAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "RASTERWIDTH", iMatrixGetRasterWidthAttrib, iMatrixSetRasterWidthAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "RASTERHEIGHT", iMatrixGetRasterHeightAttrib, iMatrixSetRasterHeightAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "WIDTH", iMatrixGetWidthAttrib, iMatrixSetSizeAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "HEIGHT", iMatrixGetHeightAttrib, iMatrixSetSizeAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "RASTERWIDTH", iMatrixGetRasterWidthAttrib, iMatrixSetSizeAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "RASTERHEIGHT", iMatrixGetRasterHeightAttrib, iMatrixSetSizeAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FITTOSIZE", NULL, iMatrixSetFitToSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FITTOTEXT", NULL, iMatrixSetFitToTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - MARK */
   iupClassRegisterAttribute(ic, "MARKED", iupMatrixGetMarkedAttrib, iupMatrixSetMarkedAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* noticed that MARKED must be mapped */
