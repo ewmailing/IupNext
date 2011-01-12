@@ -428,9 +428,10 @@ static void iMatrixFitLines(Ihandle* ih, int height)
   /* ignore the lines that already have HEIGHT or RASTERHEIGHT */
   for(lin = 0; lin < ih->data->lines.num; lin++)
   {
+    int has_title_height = (lin==0)? iMatrixHasTitleHeight(ih): 0;
     /* use text size for titles when NOT in callback mode at line 0 */
     line_height = iupMatrixAuxGetLineHeight(ih, lin, (lin==0 && !callback_mode)? 1: 0);  
-    if (lin==0 && line_height && !iMatrixHasTitleHeight(ih))
+    if (lin==0 && line_height && !has_title_height)
     {
       /* this means that the line size was calculated from text, 
          so it can be changed by this function */
@@ -446,7 +447,7 @@ static void iMatrixFitLines(Ihandle* ih, int height)
       if (lin < visible_num)
         height -= line_height;
     }
-    else if (lin!=0 || !callback_mode)
+    else if (lin!=0 || (lin==0 && !callback_mode && !has_title_height))
     {
       /* here line size is 0, and it is free, but
          when lin=0 can use it only when NOT in callback mode */
@@ -492,8 +493,9 @@ static void iMatrixFitColumns(Ihandle* ih, int width)
   for(col = 0; col < ih->data->columns.num; col++)
   {
     /* use text size for titles when NOT in callback mode at col 0 */
+    int has_title_width = (col==0)? iMatrixHasTitleWidth(ih): 0;
     column_width = iupMatrixAuxGetColumnWidth(ih, col, (col==0 && callback_mode)? 1: 0);  
-    if (col==0 && column_width && !iMatrixHasTitleWidth(ih))
+    if (col==0 && column_width && !has_title_width)
     {
       /* this means that the column size was calculated from text, 
          so it can be changed by this function */
@@ -509,9 +511,9 @@ static void iMatrixFitColumns(Ihandle* ih, int width)
       if (col < visible_num)
         width -= column_width;
     }
-    else if (col!=0 || !callback_mode)
+    else if (col!=0 || (col==0 && !callback_mode && !has_title_width))
     {
-      /* here column size is 0, and it is free, but
+      /* here column_width==0, and it is free, but
          when col=0 can use it only when NOT in callback mode */
       if (col < visible_num)
         empty_col_visible++;
