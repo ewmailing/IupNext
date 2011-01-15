@@ -396,30 +396,41 @@ static int iMatrixSetActiveAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iMatrixHasTitleHeight(Ihandle* ih)
+static int iMatrixHasColWidth(Ihandle* ih, int col)
 {
-  char* value = iupAttribGet(ih, "HEIGHT0");
-  if(!value)
-    value = iupAttribGet(ih, "RASTERHEIGHT0");
+  char str[100];
+  char* value;
+
+  sprintf(str, "WIDTH%d", col);
+  value = iupAttribGet(ih, str);
+  if (!value)
+  {
+    sprintf(str, "RASTERWIDTH%d", col);
+    value = iupAttribGet(ih, str);
+  }
   return (value!=NULL);
 }
 
-static int iMatrixHasTitleWidth(Ihandle* ih)
+static int iMatrixHasLineHeight(Ihandle* ih, int lin)
 {
-  char* value = iupAttribGet(ih, "WIDTH0");
-  if(!value)
-    value = iupAttribGet(ih, "RASTERWIDTH0");
+  char str[100];
+  char* value;
+
+  sprintf(str, "HEIGHT%d", lin);
+  value = iupAttribGet(ih, str);
+  if (!value)
+  {
+    sprintf(str, "RASTERHEIGHT%d", lin);
+    value = iupAttribGet(ih, str);
+  }
   return (value!=NULL);
 }
 
 static void iMatrixFitLines(Ihandle* ih, int height)
 {
   /* expand each line height to fit the matrix height */
-  int line_height, lin, callback_mode = ih->data->callback_mode,
+  int line_height, lin, empty, has_line_height,
       *empty_lines, empty_num=0, visible_num, empty_lin_visible = 0;
-
-  if (!ih->handle && IupGetCallback(ih, "VALUE_CB"))
-    callback_mode = 1;
 
   visible_num = iupAttribGetInt(ih, "NUMLIN_VISIBLE")+1;  /* include the title line */
 
@@ -428,29 +439,28 @@ static void iMatrixFitLines(Ihandle* ih, int height)
   /* ignore the lines that already have HEIGHT or RASTERHEIGHT */
   for(lin = 0; lin < ih->data->lines.num; lin++)
   {
-    int has_title_height = (lin==0)? iMatrixHasTitleHeight(ih): 0;
-    /* use text size for titles when NOT in callback mode at line 0 */
-    line_height = iupMatrixAuxGetLineHeight(ih, lin, (lin==0 && !callback_mode)? 1: 0);  
-    if (lin==0 && line_height && !has_title_height)
-    {
-      /* this means that the line size was calculated from text, 
-         so it can be changed by this function */
-      if (lin < visible_num)
-        empty_lin_visible++;
+    has_line_height = iMatrixHasLineHeight(ih, lin);
+    empty = 1;
 
-      empty_lines[empty_num] = lin;
-      empty_num++;
-    }
-    else if (line_height)
+    /* when lin==0 the line exists if size is defined, 
+       but also exists if some title text is defined in non callback mode. */
+    line_height = iupMatrixAuxGetLineHeight(ih, lin, lin==0? 1: 0);
+
+    /* the line does not exists */
+    if (lin==0 && !has_line_height && !line_height)
+      empty = 0;  /* don't resize this line */
+
+    /* if the height is defined to be 0, it can not be used */
+    if (has_line_height && !line_height)
+      empty = 0;  /* don't resize this line */
+
+    if (line_height)
     {
-      /* if there is a line size, then it is not free */
       if (lin < visible_num)
         height -= line_height;
     }
-    else if (lin!=0 || (lin==0 && !callback_mode && !has_title_height))
+    else if (empty)
     {
-      /* here line size is 0, and it is free, but
-         when lin=0 can use it only when NOT in callback mode */
       if (lin < visible_num)
         empty_lin_visible++;
 
@@ -479,11 +489,8 @@ static void iMatrixFitLines(Ihandle* ih, int height)
 static void iMatrixFitColumns(Ihandle* ih, int width)
 {
   /* expand each column width to fit the matrix width */
-  int column_width, col, callback_mode = ih->data->callback_mode,
+  int column_width, col, empty, has_col_width,
       *empty_columns, empty_num=0, visible_num, empty_col_visible = 0;
-
-  if (!ih->handle && IupGetCallback(ih, "VALUE_CB"))
-    callback_mode = 1;
 
   visible_num = iupAttribGetInt(ih, "NUMCOL_VISIBLE")+1;  /* include the title column */
 
@@ -492,29 +499,28 @@ static void iMatrixFitColumns(Ihandle* ih, int width)
   /* ignore the columns that already have WIDTH or RASTERWIDTH */
   for(col = 0; col < ih->data->columns.num; col++)
   {
-    /* use text size for titles when NOT in callback mode at col 0 */
-    int has_title_width = (col==0)? iMatrixHasTitleWidth(ih): 0;
-    column_width = iupMatrixAuxGetColumnWidth(ih, col, (col==0 && callback_mode)? 1: 0);  
-    if (col==0 && column_width && !has_title_width)
-    {
-      /* this means that the column size was calculated from text, 
-         so it can be changed by this function */
-      if (col < visible_num)
-        empty_col_visible++;
+    has_col_width = iMatrixHasColWidth(ih, col);
+    empty = 1;
 
-      empty_columns[empty_num] = col;
-      empty_num++;
-    }
-    else if (column_width)
+    /* when col==0 the col exists if size is defined, 
+       but also exists if some title text is defined in non callback mode. */
+    column_width = iupMatrixAuxGetColumnWidth(ih, col, col==0? 1: 0);
+
+    /* the col does not exists */
+    if (col==0 && !has_col_width && !column_width)
+      empty = 0;  /* don't resize this col */
+
+    /* if the width is defined to be 0, it can not be used */
+    if (has_col_width && !column_width)
+      empty = 0;  /* don't resize this col */
+
+    if (column_width)
     {
-      /* if there is a column size, then it is not free */
       if (col < visible_num)
         width -= column_width;
     }
-    else if (col!=0 || (col==0 && !callback_mode && !has_title_width))
+    else if (empty)
     {
-      /* here column_width==0, and it is free, but
-         when col=0 can use it only when NOT in callback mode */
       if (col < visible_num)
         empty_col_visible++;
 
@@ -571,14 +577,15 @@ static int iMatrixSetFitToSizeAttrib(Ihandle* ih, const char* value)
   }
 
   ih->data->need_calcsize = 1;
-  iupMatrixDraw(ih, 1);
+  if (ih->handle)
+    iupMatrixDraw(ih, 1);
   return 0;
 }
 
 static void iMatrixFitColText(Ihandle* ih, int col)
 {
   /* find the largest cel in the col */
-  int lin, max_width = 0;
+  int lin, max_width = 0, max;
   char str[100];
 
   for(lin = 0; lin < ih->data->lines.num; lin++)
@@ -593,6 +600,11 @@ static void iMatrixFitColText(Ihandle* ih, int col)
     }
   }
 
+  sprintf(str, "FITMAXWIDTH%d", col);
+  max = iupAttribGetInt(ih, str);
+  if (max && max > max_width)
+    max_width = max;
+
   sprintf(str, "RASTERWIDTH%d", col);
   iupAttribSetInt(ih, str, max_width);
 }
@@ -600,7 +612,7 @@ static void iMatrixFitColText(Ihandle* ih, int col)
 static void iMatrixFitLineText(Ihandle* ih, int line)
 {
   /* find the highest cel in the line */
-  int col, max_height = 0;
+  int col, max_height = 0, max;
   char str[100];
 
   for(col = 0; col < ih->data->columns.num; col++)
@@ -614,6 +626,11 @@ static void iMatrixFitLineText(Ihandle* ih, int line)
         max_height = h;
     }
   }
+
+  sprintf(str, "FITMAXHEIGHT%d", line);
+  max = iupAttribGetInt(ih, str);
+  if (max && max > max_height)
+    max_height = max;
 
   sprintf(str, "RASTERHEIGHT%d", line);
   iupAttribSetInt(ih, str, max_height);
@@ -638,7 +655,8 @@ static int iMatrixSetFitToTextAttrib(Ihandle* ih, const char* value)
   }
 
   ih->data->need_calcsize = 1;
-  iupMatrixDraw(ih, 1);
+  if (ih->handle)
+    iupMatrixDraw(ih, 1);
   return 0;
 }
 
@@ -1141,6 +1159,8 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId(ic, "RASTERHEIGHT", iMatrixGetRasterHeightAttrib, iMatrixSetSizeAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FITTOSIZE", NULL, iMatrixSetFitToSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FITTOTEXT", NULL, iMatrixSetFitToTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FITMAXHEIGHT", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FITMAXWIDTH", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - MARK */
   iupClassRegisterAttribute(ic, "MARKED", iupMatrixGetMarkedAttrib, iupMatrixSetMarkedAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* noticed that MARKED must be mapped */
