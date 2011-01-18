@@ -12,7 +12,7 @@ IUP := ..
 
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
-USE_IM = Yes
+USE_IMLUA = Yes
 NO_LUALINK = Yes
 
 ifdef USE_LUA52

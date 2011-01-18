@@ -984,7 +984,7 @@ ifdef USE_OPENGL
 endif
 
 ifdef USE_GTK
-  STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0 $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
+  STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/gdk-pixbuf-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0 $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
   ifeq "$(TEC_CC)" "gcc"
     STDFLAGS += -mms-bitfields
   endif

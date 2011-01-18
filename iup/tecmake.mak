@@ -240,6 +240,11 @@ ifndef NO_GTK_DEFAULT
   ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
     GTK_DEFAULT = Yes
   endif
+  ifneq ($(findstring SunOS, $(TEC_UNAME)), )
+    ifeq ($(TEC_SYSARCH), x86)
+      GTK_DEFAULT = Yes
+    endif
+  endif
 endif
 
 #---------------------------------#
@@ -947,7 +952,7 @@ endif
 ifdef USE_GTK
   ifdef USE_PKGCONFIG
     # get compile/link flags via pkg-config
-    PKGINCS += $(shell pkg-config --cflags gtk+-2.0 gdk-2.0)
+    PKGINCS += $(shell pkg-config --cflags gtk+-2.0 gdk-2.0 gtk+-unix-print-2.0)
     PKGLIBS += $(shell pkg-config --libs gtk+-2.0 gdk-2.0)
     GTK_BASE := $(shell pkg-config --variable=prefix gtk+-2.0)
     GTK := $(GTK_BASE)    
@@ -984,7 +989,7 @@ ifdef USE_GTK
     endif
 
     LIBS += gdk_pixbuf-2.0 pango-1.0 gobject-2.0 gmodule-2.0 glib-2.0
-    STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0
+    STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/gdk-pixbuf-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0
 
     ifeq ($(TEC_SYSARCH), x64)
       STDINCS += $(GTK)/lib64/glib-2.0/include $(GTK)/lib64/gtk-2.0/include

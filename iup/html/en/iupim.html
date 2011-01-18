@@ -60,9 +60,10 @@ iup.GetNativeHandleImage(<strong>handle</strong>: <span class="style2">userdata<
 </div>
 <p><strong>handle:</strong> image native handle. In Win32 is a <strong>HANDLE</strong> 
 of a DIB. In GTK is a <strong>GdkPixbuf*</strong>. In Motif is a <strong>Pixmap</strong>. 
-Its memory is released after the <strong>imImage</strong> is created.</p>
+Its memory is released after the <strong>imImage</strong> is created. In Lua is 
+a light user data.</p>
 <p><span class="style1">Returns:</span> the <strong>imImage</strong>* handle. 
-Usefull when pasting data from a <strong>IupClipboard</strong>.</p>
+Useful when pasting data from a <strong>IupClipboard</strong>.</p>
 <p>You must include the &quot;im_image.h&quot; header before the &quot;iupim.h&quot; to enable these 
 functions.</p>
 <h3>imImage to Native Handle</h3>
@@ -74,7 +75,8 @@ iup.GetImageNativeHandle(<strong>image</strong>: imImage) -&gt; (<strong>handle<
 bitmap image.</p>
 <p><span class="style1">Returns:</span> the image native handle. In Win32 is a <strong>
 HANDLE</strong> for a DIB. In GTK is a <strong>GdkPixbuf*</strong>. In Motif is 
-a <strong>Pixmap</strong>. Usefull when copying data to a <strong>IupClipboard</strong>.</p>
+a <strong>Pixmap</strong>. Usefull when copying data to a <strong>IupClipboard</strong>. 
+In Lua is a light user data.</p>
 <p>You must include the &quot;im_image.h&quot; header before the &quot;iupim.h&quot; to enable these 
 functions.</p>
 <h3><a name="SeeAlso">See Also</a></h3>
