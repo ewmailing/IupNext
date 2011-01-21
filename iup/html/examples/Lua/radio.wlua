@@ -5,8 +5,10 @@
 
 require( "iuplua" )
 
-male = iup.toggle{title="Male"}
-female = iup.toggle{title="Female"}
+male = iup.toggle{title="Male",
+  tip="Two state button - Exclusive - RADIO"}
+female = iup.toggle{title="Female",
+  tip="Two state button - Exclusive - RADIO"}
 exclusive = iup.radio
 {
   iup.vbox
@@ -15,7 +17,6 @@ exclusive = iup.radio
     female
   };
   value=female,
-  tip="Two state button - Exclusive - RADIO"
 }
 
 frame = iup.frame{exclusive; title="Gender"}
