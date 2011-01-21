@@ -659,6 +659,23 @@ static int winTextConvertXYToPos(Ihandle* ih, int x, int y)
   return pos;
 }
 
+static char* winTextStrConvert(Ihandle* ih, const char* str)
+{
+  if (ih->data->is_multiline)
+  {
+    if (ih->data->has_formatting)
+    {
+      if (strchr(str, '\n')!=NULL)
+      {
+        str = iupStrDup(str);
+        iupStrToMac((char*)str);
+      }
+    }
+    else
+      str = iupStrToDos(str);
+  }
+  return (char*)str;
+}
 
 /***********************************************************************************************/
 
@@ -667,14 +684,7 @@ static int winTextSetValueAttrib(Ihandle* ih, const char* value)
 {
   char* str;
   if (!value) value = "";
-  str = (char*)value;
-  if (ih->data->is_multiline)
-  {
-    if (ih->data->has_formatting)
-      iupStrToMac(str);
-    else
-      str = iupStrToDos(str);
-  }
+  str = winTextStrConvert(ih, value);
   iupAttribSetStr(ih, "IUPWIN_IGNORECHANGE", "1");
   SetWindowText(ih->handle, str);
   iupAttribSetStr(ih, "IUPWIN_IGNORECHANGE", NULL);
@@ -721,14 +731,7 @@ static int winTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
     if (start == end)
       return 0;
 
-    str = (char*)value;
-    if (ih->data->is_multiline)
-    {
-      if (ih->data->has_formatting)
-        iupStrToMac(str);
-      else
-        str = iupStrToDos(str);
-    }
+    str = winTextStrConvert(ih, value);
     SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)str);
     if (str != value) free(str);
   }
@@ -919,17 +922,8 @@ static int winTextSetInsertAttrib(Ihandle* ih, const char* value)
     return 0;
   if (value)
   {
-    char* str = (char*)value;
-    if (ih->data->is_multiline)
-    {
-      if (ih->data->has_formatting)
-        iupStrToMac(str);
-      else
-        str = iupStrToDos(str);
-    }
-
+    char* str = winTextStrConvert(ih, value);
     SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)str);
-
     if (str != value) free(str);
   }
   return 0;
@@ -942,14 +936,7 @@ static int winTextSetAppendAttrib(Ihandle* ih, const char* value)
   if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (!value) value = "";
-  str = (char*)value;
-  if (ih->data->is_multiline)
-  {
-    if (ih->data->has_formatting)
-      iupStrToMac(str);
-    else
-      str = iupStrToDos(str);
-  }
+  str = winTextStrConvert(ih, value);
   
   pos = GetWindowTextLength(ih->handle)+1;
   SendMessage(ih->handle, EM_SETSEL, (WPARAM)pos, (LPARAM)pos);

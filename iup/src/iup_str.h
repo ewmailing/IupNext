@@ -163,11 +163,11 @@ void iupStrFileNameSplit(const char* filename, char* path, char* title);
  * \ingroup str */
 int iupStrReplace(char* str, char src, char dst);
 
-/** Convert line ends to UNIX format in place (one \n per line).
+/** Convert line ends to UNIX format in-place (one \n per line).
  * \ingroup str */
 void iupStrToUnix(char* str);
 
-/** Convert line ends to MAC format in place (one \r per line).
+/** Convert line ends to MAC format in-place (one \r per line).
  * \ingroup str */
 void iupStrToMac(char* str);
 
@@ -181,7 +181,7 @@ char* iupStrToDos(const char* str);
  * \ingroup str */
 char* iupStrConvertToC(const char* str);
 
-/** Remove the interval from the string. Done in place.
+/** Remove the interval from the string. Done in-place.
  * \ingroup str */
 void iupStrRemove(char* value, int start, int end, int dir);
 

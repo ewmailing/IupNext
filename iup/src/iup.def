@@ -208,8 +208,6 @@ iupdrvBaseSetTipVisibleAttrib
 iupdrvBaseSetTipAttrib
 iupdrvBaseSetCursorAttrib
 iupdrvBaseLayoutUpdateMethod
-iupdrvBaseGetYAttrib
-iupdrvBaseGetXAttrib
 iupdrvBaseGetClientSizeAttrib
 iupdrvActivate
 iupdrvSendMouse
@@ -310,7 +308,6 @@ iupDlgListCount
 iupDlgListNext
 iupDlgListFirst
 iupDlgListAdd
-iupDialogGetClass
 iupDataEntry
 iupClassRelease
 iupClassRegisterCallback
