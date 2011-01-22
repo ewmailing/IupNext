@@ -1859,6 +1859,16 @@ static void winTreeDragMove(Ihandle* ih, int x, int y)
 
   if (hItemDrop)
   {
+    if (!iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
+    {
+      HTREEITEM hItemDrag = (HTREEITEM)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
+      if (hItemDrop == hItemDrag)
+      {
+        iupAttribSetStr(ih, "_IUPTREE_DROPITEM", NULL);
+        return;
+      }
+    }
+
     if(dragImageList)
       ImageList_DragShowNolock(FALSE);
 
