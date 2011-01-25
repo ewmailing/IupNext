@@ -9,6 +9,8 @@ echo '  Must be run with "sudo" at the library folder, or install will fail:'
 echo '     sudo ./install'
 echo ' '
 
+SYSTEM_LIB=/usr/lib
+
 EchoDownloadTip()
 {
   echo '  The downloaded package must already be unpacked in the current directory.'
@@ -61,15 +63,15 @@ ComputeTecUname()
 Copy_RunTime_Extra_CD()
 {
   # Do NOT overwrite for FreeType
-  cp -fn $1libfreetype.so /usr/lib
+  cp -fn $1libfreetype.so $SYSTEM_LIB
   
-  cp -fv $1libpdflib.so /usr/lib
-  cp -fv $1libftgl.so /usr/lib
+  cp -fv $1libpdflib.so $SYSTEM_LIB
+  cp -fv $1libftgl.so $SYSTEM_LIB
 }
 
 Copy_RunTime_To_System()
 {
-  cp -fv $2lib$1*.so /usr/lib
+  cp -fv $2lib$1*.so $SYSTEM_LIB
   
   if [ $1 == cd ]; then
     Copy_RunTime_Extra_CD $2
