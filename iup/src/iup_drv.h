@@ -95,9 +95,13 @@ int iupdrvMenuGetMenuBarSize(Ihandle* ih);
 void iupdrvSendKey(int key, int press);
 
 /** Sends a global mouse message.
- * status: 1=pressed, 0=released, -1=move
+ * status: 2=double pressed, 1=pressed, 0=released, -1=move
  * \ingroup drv */
 void iupdrvSendMouse(int x, int y, int bt, int status);
+
+/** Moves the cursor on screen.
+ * \ingroup drv */
+void iupdrvWarpPointer(int x, int y);
 
 /** Supends execution for the specified number of miliseconds.
  * \ingroup drv */

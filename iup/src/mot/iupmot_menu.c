@@ -342,6 +342,9 @@ static int motItemMapMethod(Ihandle* ih)
 
   XtAddCallback (ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
 
+  if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
+    XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
+
   pos = IupGetChildPos(ih->parent, ih);
   XtVaSetValues(ih->handle, XmNpositionIndex, pos, NULL);   /* RowColumn Constraint */
 
@@ -398,6 +401,9 @@ static int motSubmenuMapMethod(Ihandle* ih)
   XtVaSetValues(ih->handle, XmNpositionIndex, pos, NULL);   /* RowColumn Constraint */
 
   XtAddCallback(ih->handle, XmNcascadingCallback, (XtCallbackProc)motItemArmCallback, (XtPointer)ih);
+
+  if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
+    XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
 
   iupUpdateStandardFontAttrib(ih);
 

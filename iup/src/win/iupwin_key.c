@@ -219,7 +219,7 @@ static int winKeyMap2Iup(Iwin2iupkey* table, int i)
   return code;
 }
 
-static int winKeyDecode(int wincode)
+int iupwinKeyDecode(int wincode)
 {
   HKL k;
   int i, count;
@@ -252,7 +252,7 @@ int iupwinKeyEvent(Ihandle* ih, int wincode, int press)
   if (!ih->iclass->is_interactive)
     return 1;
 
-  code = winKeyDecode(wincode);
+  code = iupwinKeyDecode(wincode);
   if (code == 0)
     return 1;
 

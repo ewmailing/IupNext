@@ -494,6 +494,9 @@ static int motToggleMapMethod(Ihandle* ih)
 
   XtAddCallback(ih->handle, XmNvalueChangedCallback, (XtCallbackProc)motToggleValueChangedCallback, (XtPointer)ih);
 
+  if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
+    XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
+
   /* Disable Drag Source */
   iupmotDisableDragSource(ih->handle);
 

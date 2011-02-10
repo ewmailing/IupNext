@@ -266,6 +266,9 @@ static int motButtonMapMethod(Ihandle* ih)
   XtAddCallback(ih->handle, XmNactivateCallback, (XtCallbackProc)motButtonActivateCallback, (XtPointer)ih);
   XtAddEventHandler(ih->handle, ButtonPressMask|ButtonReleaseMask, False, (XtEventHandler)iupmotButtonPressReleaseEvent, (XtPointer)ih);
 
+  if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
+    XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
+
   /* Disable Drag Source */
   iupmotDisableDragSource(ih->handle);
 

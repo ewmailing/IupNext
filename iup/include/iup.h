@@ -19,11 +19,11 @@ extern "C" {
 
 
 #define IUP_NAME "IUP - Portable User Interface"
-#define IUP_COPYRIGHT  "Copyright (C) 1994-2010 Tecgraf, PUC-Rio."
+#define IUP_COPYRIGHT  "Copyright (C) 1994-2011 Tecgraf, PUC-Rio."
 #define IUP_DESCRIPTION	"Portable toolkit for building graphical user interfaces."
-#define IUP_VERSION "3.3"         /* bug fixes are reported only by IupVersion functions */
-#define IUP_VERSION_NUMBER 303000
-#define IUP_VERSION_DATE "2010/11/09"  /* does not include bug fix releases */
+#define IUP_VERSION "3.4"         /* bug fixes are reported only by IupVersion functions */
+#define IUP_VERSION_NUMBER 304000
+#define IUP_VERSION_DATE "2011/02/XX"  /* does not include bug fix releases */
 
 typedef struct Ihandle_ Ihandle;
 typedef int (*Icallback)(Ihandle*);
@@ -42,6 +42,9 @@ int       IupLoopStepWait  (void);
 int       IupMainLoopLevel (void);
 void      IupFlush         (void);
 void      IupExitLoop      (void);
+
+int       IupPlayInput(const char* filename);
+void      IupRecordInput(const char* filename);
 
 void      IupUpdate        (Ihandle* ih);
 void      IupUpdateChildren(Ihandle* ih);
@@ -364,7 +367,7 @@ int IupMain (int argc, char** argv); /* In C++ we have to declare the prototype 
 #endif
 
 /******************************************************************************
-* Copyright (C) 1994-2010 Tecgraf, PUC-Rio.
+* Copyright (C) 1994-2011 Tecgraf, PUC-Rio.
 *
 * Permission is hereby granted, free of charge, to any person obtaining
 * a copy of this software and associated documentation files (the

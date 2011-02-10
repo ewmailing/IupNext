@@ -212,6 +212,7 @@ iupdrvBaseGetClientSizeAttrib
 iupdrvActivate
 iupdrvSendMouse
 iupdrvSendKey
+iupdrvWarpPointer
 iupdrvImageCreateImageRaw
 iupdrvImageGetRawInfo
 iupdrvImageGetRawData

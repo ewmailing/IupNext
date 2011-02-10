@@ -50,7 +50,7 @@ int iupDialogSetClientSizeAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static void iupDialogAdjustPos(Ihandle *ih, int *x, int *y)
+static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
 {
   int cursor_x = 0, cursor_y = 0;
   int screen_width = 0, screen_height = 0;
@@ -73,7 +73,7 @@ static void iupDialogAdjustPos(Ihandle *ih, int *x, int *y)
       if (*y == IUP_CURRENT) *y = center;
     }
     else
-      iupdrvDialogGetPosition(ih->handle, &current_x, &current_y);
+      iupdrvDialogGetPosition(ih, NULL, &current_x, &current_y);
   }
 
   if (*x == IUP_CENTER || *y == IUP_CENTER ||
@@ -88,7 +88,7 @@ static void iupDialogAdjustPos(Ihandle *ih, int *x, int *y)
     {
       Ihandle* ih_parent = IupGetAttributeHandle(ih, "PARENTDIALOG");
 
-      iupdrvDialogGetPosition(parent, &parent_x, &parent_y);
+      iupdrvDialogGetPosition(ih_parent, parent, &parent_x, &parent_y);
 
       if (*x == IUP_CENTERPARENT && *y == IUP_CENTERPARENT)
         iupdrvDialogGetSize(ih_parent, parent, &screen_width, &screen_height);
@@ -367,7 +367,7 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
   /* Update the position and placement */
   if (!iupdrvDialogSetPlacement(ih))
   {
-    iupDialogAdjustPos(ih, &x, &y);
+    iDialogAdjustPos(ih, &x, &y);
     iupdrvDialogSetPosition(ih, x, y);
   }
 
@@ -435,7 +435,7 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
   /* Update the position and placement */
   if (!iupdrvDialogSetPlacement(ih))
   {
-    iupDialogAdjustPos(ih, &x, &y);
+    iDialogAdjustPos(ih, &x, &y);
     iupdrvDialogSetPosition(ih, x, y);
   }
 
@@ -663,13 +663,17 @@ static int iDialogSetVisibleAttrib(Ihandle* ih, const char* value)
 
 void iupDialogUpdatePosition(Ihandle* ih)
 {
-  /* Used by pre-defined popup native dialogs */
+  /* This funtion is used only by pre-defined popup native dialogs */
+
   int x = iupAttribGetInt(ih, "_IUPDLG_X");
   int y = iupAttribGetInt(ih, "_IUPDLG_Y");
+
   iupdrvDialogGetSize(ih, NULL, &(ih->currentwidth), &(ih->currentheight));
+
   /* handle always as visible for the first time */
   ih->data->first_show = 0;
-  iupDialogAdjustPos(ih, &x, &y);
+
+  iDialogAdjustPos(ih, &x, &y);
   iupdrvDialogSetPosition(ih, x, y);
 }
 
@@ -686,6 +690,33 @@ static int iDialogSetHideTaskbarAttrib(Ihandle *ih, const char *value)
 {
   iupdrvDialogSetVisible(ih, !iupStrBoolean(value));
   return 0;
+}
+
+static char* iDialogGetXAttrib(Ihandle *ih)
+{
+  char* str = iupStrGetMemory(20);
+  int x = 0;
+  iupdrvDialogGetPosition(ih, NULL, &x, NULL);
+  sprintf(str, "%d", x);
+  return str;
+}
+
+static char* iDialogGetYAttrib(Ihandle *ih)
+{
+  char* str = iupStrGetMemory(20);
+  int y = 0;
+  iupdrvDialogGetPosition(ih, NULL, NULL, &y);
+  sprintf(str, "%d", y);
+  return str;
+}
+
+static char* iDialogGetScreenPositionAttrib(Ihandle *ih)
+{
+  int x = 0, y = 0;
+  char* str = iupStrGetMemory(20);
+  iupdrvDialogGetPosition(ih, NULL, &x, &y);
+  sprintf(str, "%d,%d", x, y);
+  return str;
 }
 
 static int iDialogSetMenuAttrib(Ihandle* ih, const char* value)
@@ -795,6 +826,11 @@ Iclass* iupDialogNewClass(void)
   /* Overwrite Visual */
   /* the only case where VISIBLE default is NO, and must not be propagated to the dialog children */
   iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iDialogSetVisibleAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+
+  /* X and Y here are at the top left corner of the window, not the client area. */
+  iupClassRegisterAttribute(ic, "X", iDialogGetXAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "Y", iDialogGetYAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCREENPOSITION", iDialogGetScreenPositionAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* IupDialog only */
   iupClassRegisterAttribute(ic, "MENU", NULL, iDialogSetMenuAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

@@ -72,7 +72,7 @@ struct _IcontrolData
 
 void iupdrvDialogInitClass(Iclass* iclass);
 
-void iupdrvDialogGetPosition(InativeHandle* handle, int *x, int *y);
+void iupdrvDialogGetPosition(Ihandle* ih, InativeHandle* handle, int *x, int *y);
 void iupdrvDialogSetVisible(Ihandle* ih, int visible);
 int iupdrvDialogSetPlacement(Ihandle* ih);
 void iupdrvDialogSetPosition(Ihandle *ih, int x, int y);

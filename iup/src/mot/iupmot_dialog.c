@@ -103,18 +103,31 @@ void iupdrvDialogSetVisible(Ihandle* ih, int visible)
   }
 }
 
-void iupdrvDialogGetPosition(InativeHandle* handle, int *x, int *y)
+void iupdrvDialogGetPosition(Ihandle *ih, InativeHandle* handle, int *x, int *y)
 {
-  Dimension cur_x, cur_y;
+  Position cur_x, cur_y;
+  if (!handle)
+    handle = ih->handle;
   XtVaGetValues(handle, XmNx, &cur_x, 
                         XmNy, &cur_y, 
                         NULL);
+
+  if (ih)
+  {
+    int border, caption, menu;
+    iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+    /* compensate the decoration */
+    cur_x -= (Position)border;
+    cur_y -= (Position)(border+caption);
+  }
+
   if (x) *x = cur_x;
   if (y) *y = cur_y;
 }
 
 void iupdrvDialogSetPosition(Ihandle *ih, int x, int y)
 {
+  /* no need to compensate decoration when setting */
   XtVaSetValues(ih->handle,
     XmNx, (XtArgVal)x,
     XmNy, (XtArgVal)y,
@@ -131,10 +144,12 @@ static int motDialogGetMenuSize(Ihandle* ih)
 
 static int motDialogGetWindowDecor(Ihandle* ih, int *border, int *caption)
 {
+  /* Try to get the size of the window decoration. */
+  /* Use the dialog_manager instead of the handle, so it can use the client offset. */
   Widget dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");
   XWindowAttributes wa;
   wa.x = 0; wa.y = 0;
-  XGetWindowAttributes((Display*)iupdrvGetDisplay(), XtWindow(dialog_manager), &wa);
+  XGetWindowAttributes(iupmot_display, XtWindow(dialog_manager), &wa);
   if (wa.x > 0 && wa.y > 0 && wa.y >= wa.x)
   {
     *border = wa.x;
@@ -479,28 +494,6 @@ static int motDialogSetMaxSizeAttrib(Ihandle* ih, const char* value)
     XtVaSetValues(ih->handle, XmNmaxHeight, max_h-decorheight, NULL);  
 
   return 1;
-}
-
-static char* motDialogGetXAttrib(Ihandle *ih)
-{
-  char* str = iupStrGetMemory(20);
- 
-  int x;
-  iupdrvDialogGetPosition(ih->handle, &x, NULL);
-
-  sprintf(str, "%d", x);
-  return str;
-}
-
-static char* motDialogGetYAttrib(Ihandle *ih)
-{
-  char* str = iupStrGetMemory(20);
- 
-  int y;
-  iupdrvDialogGetPosition(ih->handle, &y, NULL);
-
-  sprintf(str, "%d", y);
-  return str;
 }
 
 static int motDialogSetTitleAttrib(Ihandle* ih, const char* value)
@@ -1000,6 +993,9 @@ static int motDialogMapMethod(Ihandle* ih)
     IupSetGlobal("_IUP_RESET_DLGBGCOLOR", NULL);
   }
 
+  if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
+    XtAddEventHandler(dialog_manager, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
+
   return IUP_NOERROR;
 }
 
@@ -1089,10 +1085,6 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motDialogSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
-
-  /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "X", motDialogGetXAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "Y", motDialogGetYAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", motDialogGetClientSizeAttrib, iupDialogSetClientSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);  /* dialog is the only not read-only */

@@ -285,7 +285,7 @@ static int gtkKeyMap2Iup(int state, int i)
   return code;
 }
 
-static int gtkKeyDecode(GdkEventKey *evt)
+int iupgtkKeyDecode(GdkEventKey *evt)
 {
   int i;
   int count = sizeof(gtkkey_map)/sizeof(gtkkey_map[0]);
@@ -321,7 +321,7 @@ static int iupObjectIsNativeContainer(Ihandle* ih)
 gboolean iupgtkKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
   int result;
-  int code = gtkKeyDecode(evt);
+  int code = iupgtkKeyDecode(evt);
   if (code == 0) 
     return FALSE;
 
@@ -387,7 +387,7 @@ gboolean iupgtkKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
   /* this is called only for canvas */
   int result;
-  int code = gtkKeyDecode(evt);
+  int code = iupgtkKeyDecode(evt);
   if (code == 0) 
     return FALSE;
 

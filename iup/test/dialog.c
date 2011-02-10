@@ -107,6 +107,7 @@ static int resize_cb(Ihandle *ih, int w, int h)
 static int move_cb(Ihandle *ih, int x, int y)
 {
   printf("MOVE_CB(%s, %d, %d)\n", IupGetAttribute(ih, "TESTTITLE"), x, y);
+    printf("  X,Y=%s,%s\n", IupGetAttribute(ih, "X"), IupGetAttribute(ih, "Y"));
   return IUP_DEFAULT;
 }
 
@@ -154,6 +155,12 @@ static int k_any(Ihandle *ih, int c)
 
   switch(c)
   {
+  case K_x:
+    printf("  X,Y=%s,%s\n", IupGetAttribute(ih, "X"), IupGetAttribute(ih, "Y"));
+    break;
+  case K_y:
+    IupShowXY(ih, 100, 100);
+    break;
   case K_r:
     IupSetAttribute(ih, "RASTERSIZE", "300x300");
     IupRefresh(ih);

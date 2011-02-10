@@ -49,6 +49,7 @@ gboolean iupgtkKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle* ih);
 gboolean iupgtkKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle* ih);
 void iupgtkButtonKeySetStatus(guint state, unsigned int but, char* status, int doubleclick);
 void iupgtkKeyEncode(int key, guint *keyval, guint *state);
+int iupgtkKeyDecode(GdkEventKey *evt);
 
 
 /* font */

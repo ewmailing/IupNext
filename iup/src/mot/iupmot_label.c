@@ -224,6 +224,9 @@ static int motLabelMapMethod(Ihandle* ih)
   XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
   XtAddEventHandler(ih->handle, ButtonPressMask|ButtonReleaseMask, False, (XtEventHandler)iupmotButtonPressReleaseEvent, (XtPointer)ih);
 
+  if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
+    XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
+
   /* Drag Source is enabled by default in label */
   iupmotDisableDragSource(ih->handle);
 

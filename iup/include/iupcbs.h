@@ -9,6 +9,11 @@
 
 typedef int (*IFidle)(void);  /* idle */
 
+typedef void (*IFii)(int, int); /* globalkeypress_cb */
+typedef void (*IFiis)(int, int, char*);  /* globalmotion_cb */
+typedef void (*IFiiiis)(int, int, int, int, char*);  /* globalbutton_cb */
+typedef void (*IFfiis)(float,int,int,char*);  /* globalwheel_cb */
+
 typedef int (*IFn)(Ihandle*);  /* default definition, same as Icallback (ncols_cb, nlines_cb)*/
 typedef int (*IFni)(Ihandle*, int);   /* k_any, show_cb, toggle_action, spin_cb, branchopen_cb, branchclose_cb, executeleaf_cb, showrename_cb, rightclick_cb, extended_cb, height_cb, width_cb */
 typedef int (*IFnii)(Ihandle*, int, int);  /* resize_cb, caret_cb, matrix_mousemove_cb, enteritem_cb, leaveitem_cb, scrolltop_cb, dropcheck_cb, selection_cb, select_cb, switch_cb, scrolling_cb, vspan_cb, hspan_cb */

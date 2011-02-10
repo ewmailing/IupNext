@@ -248,6 +248,9 @@ static int motFrameMapMethod(Ihandle* ih)
               XmNchildType, XmFRAME_WORKAREA_CHILD,
               NULL);
 
+  if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
+    XtAddEventHandler(child_manager, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
+
   /* initialize the widget */
   XtRealizeWidget(ih->handle);
 

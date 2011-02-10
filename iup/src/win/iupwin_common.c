@@ -1019,45 +1019,104 @@ void iupdrvSendKey(int key, int press)
   }
 }
 
-void iupdrvSendMouse(int x, int y, int bt, int status)
+void iupdrvWarpPointer(int x, int y)
 {
   SetCursorPos(x, y);
+}
 
-  if (status != -1)
+static int winGetButtonStatus(int bt, int status)
+{
+  switch(bt)
   {
-    INPUT input[1];
-    ZeroMemory(input, sizeof(INPUT));
+  case IUP_BUTTON1:
+    return (status==0)? MOUSEEVENTF_LEFTUP: MOUSEEVENTF_LEFTDOWN;
+  case IUP_BUTTON2:
+    return (status==0)? MOUSEEVENTF_MIDDLEUP: MOUSEEVENTF_MIDDLEDOWN;
+  case IUP_BUTTON3:
+    return (status==0)? MOUSEEVENTF_RIGHTUP: MOUSEEVENTF_RIGHTDOWN;
+  case IUP_BUTTON4:
+    return (status==0)? MOUSEEVENTF_XUP: MOUSEEVENTF_XDOWN;
+  case IUP_BUTTON5:
+    return (status==0)? MOUSEEVENTF_XUP: MOUSEEVENTF_XDOWN;
+  default:
+    return 0;
+  }
+}
 
-    input[0].type = INPUT_MOUSE;
-    input[0].mi.dx = x;
-    input[0].mi.dy = y;
-    input[0].mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+void iupdrvSendMouse(int x, int y, int bt, int status)
+{
+  INPUT input[4];
+  ZeroMemory(input, sizeof(INPUT));
 
+  input[0].type = INPUT_MOUSE;
+  input[0].mi.dx = x;
+  input[0].mi.dy = y;
+  input[0].mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+
+  if (status==-1)
+  {
+    input[0].mi.dwFlags |= MOUSEEVENTF_MOVE;
+  }
+  else
+  {
+//printf("SendMouse(x=%d, y=%d, bt=%d, status=%d)\n", x, y, bt, status);
     switch(bt)
     {
     case IUP_BUTTON1:
-      input[0].mi.dwFlags |= (status==1)? MOUSEEVENTF_LEFTDOWN: MOUSEEVENTF_LEFTUP;
+      input[0].mi.dwFlags |= (status==0)? MOUSEEVENTF_LEFTUP: MOUSEEVENTF_LEFTDOWN;
       break;
     case IUP_BUTTON2:
-      input[0].mi.dwFlags |= (status==1)? MOUSEEVENTF_MIDDLEDOWN: MOUSEEVENTF_MIDDLEUP;
+      input[0].mi.dwFlags |= (status==0)? MOUSEEVENTF_MIDDLEUP: MOUSEEVENTF_MIDDLEDOWN;
       break;
     case IUP_BUTTON3:
-      input[0].mi.dwFlags |= (status==1)? MOUSEEVENTF_RIGHTDOWN: MOUSEEVENTF_RIGHTUP;
+      input[0].mi.dwFlags |= (status==0)? MOUSEEVENTF_RIGHTUP: MOUSEEVENTF_RIGHTDOWN;
+      break;
+    case 'W':
+      input[0].mi.mouseData = status*120;
+      input[0].mi.dwFlags |= MOUSEEVENTF_WHEEL;
       break;
     case IUP_BUTTON4:
       input[0].mi.mouseData = XBUTTON1;
-      input[0].mi.dwFlags |= (status==1)? MOUSEEVENTF_XDOWN: MOUSEEVENTF_XUP;
+      input[0].mi.dwFlags |= (status==0)? MOUSEEVENTF_XUP: MOUSEEVENTF_XDOWN;
       break;
     case IUP_BUTTON5:
       input[0].mi.mouseData = XBUTTON2;
-      input[0].mi.dwFlags |= (status==1)? MOUSEEVENTF_XDOWN: MOUSEEVENTF_XUP;
+      input[0].mi.dwFlags |= (status==0)? MOUSEEVENTF_XUP: MOUSEEVENTF_XDOWN;
       break;
     default:
       return;
     }
-
-    SendInput(1, input, sizeof(INPUT));
   }
+
+  if (status == 2)
+  {
+//    SendInput(1, input, sizeof(INPUT));  /* press */
+
+    input[1] = input[0];
+    input[1].mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+    input[1].mi.dwFlags |= winGetButtonStatus(bt, 0);
+//    SendInput(1, input, sizeof(INPUT));  /* release */
+
+//    iupdrvSleep(100);
+
+    input[2] = input[0];
+    input[2].mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+    input[2].mi.dwFlags |= winGetButtonStatus(bt, 1);
+//    SendInput(1, input, sizeof(INPUT));  /* press */
+
+    input[3] = input[0];
+    input[3].mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+    input[3].mi.dwFlags |= winGetButtonStatus(bt, 0);
+//    SendInput(1, input, sizeof(INPUT));  /* release */
+
+    SendInput(4, input, sizeof(INPUT));  /* release */
+  }
+  else
+    SendInput(1, input, sizeof(INPUT));
+
+  /* always update cursor */
+  /* in Windows, update cursor after mouse messages */
+  iupdrvWarpPointer(x, y);
 }
 
 int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value)

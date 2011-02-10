@@ -225,7 +225,7 @@ static int motKeyMap2Iup(unsigned int state, int i)
   return code;
 }
 
-static int motKeyDecode(XKeyEvent *evt)
+int iupmotKeyDecode(XKeyEvent *evt)
 {
   int i;
   KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
@@ -307,7 +307,7 @@ void iupmotCanvasKeyReleaseEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *co
   else
   {
     int result;
-    int code = motKeyDecode((XKeyEvent*)evt);
+    int code = iupmotKeyDecode((XKeyEvent*)evt);
     if (code == 0) 
       return;
     result = iupKeyCallKeyPressCb(ih, code, 0);
@@ -327,7 +327,7 @@ void iupmotCanvasKeyReleaseEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *co
 void iupmotKeyPressEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
 {
   int result;
-  int code = motKeyDecode((XKeyEvent*)evt);
+  int code = iupmotKeyDecode((XKeyEvent*)evt);
   if (code == 0) 
       return;
 

@@ -10,19 +10,120 @@
 #include <gtk/gtk.h>
 
 #include "iup.h"
+#include "iupcbs.h"
 
 #include "iup_object.h"
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_drvinfo.h"
+#include "iup_key.h"
 
 #include "iupgtk_drv.h"
 
 
 int iupgtk_utf8autoconvert = 1;
 
+static void iGdkEventFunc(GdkEvent *evt, gpointer	data)
+{
+  switch(evt->type)
+  {
+  case GDK_BUTTON_PRESS:
+  case GDK_2BUTTON_PRESS:
+  case GDK_3BUTTON_PRESS:
+  case GDK_BUTTON_RELEASE:
+    {
+      IFiiiis cb = (IFiiiis)IupGetFunction("GLOBALBUTTON_CB");
+      if (cb)
+      {
+        GdkEventButton* evt_button = (GdkEventButton*)evt;
+        gint win_x = 0, win_y = 0;
+        int doubleclick = 0, press = 1;
+        int b = IUP_BUTTON1+(evt_button->button-1);
+        char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+        int x = (int)evt_button->x;
+        int y = (int)evt_button->y;
+
+        if (evt_button->type == GDK_BUTTON_RELEASE)
+          press = 0;
+
+        if (evt_button->type == GDK_2BUTTON_PRESS)
+          doubleclick = 1;
+
+        iupgtkButtonKeySetStatus(evt_button->state, evt_button->button, status, doubleclick);
+
+        gdk_window_get_origin(evt_button->window, &win_x, &win_y);  /* GDK window relative to screen */
+        x += win_x;
+        y += win_y;
+
+        if (doubleclick)
+        {
+          /* Must compensate the fact that in GTK there is an extra button press event 
+             when occours a double click, we compensate that completing the event 
+             with a button release before the double click. */
+          status[5] = ' '; /* clear double click */
+          cb(b, 0, x, y, status);  /* release */
+          status[5] = 'D'; /* restore double click */
+        }
+
+        cb(b, press, x, y, status);
+      }
+      break;
+    }
+  case GDK_MOTION_NOTIFY:
+    {
+      IFiis cb = (IFiis)IupGetFunction("GLOBALMOTION_CB");
+      if (cb)
+      {
+        GdkEventMotion* evt_motion = (GdkEventMotion*)evt;
+        gint win_x = 0, win_y = 0;
+        int x = (int)evt_motion->x;
+        int y = (int)evt_motion->y;
+        char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+
+        iupgtkButtonKeySetStatus(evt_motion->state, 0, status, 0);
+
+        if (evt_motion->is_hint)
+          gdk_window_get_pointer(evt_motion->window, &x, &y, NULL);
+
+        gdk_window_get_origin(evt_motion->window, &win_x, &win_y);  /* GDK window relative to screen */
+        x += win_x;
+        y += win_y;
+
+        cb(x, y, status);
+      }
+      break;
+    }
+  case GDK_KEY_PRESS:
+  case GDK_KEY_RELEASE:
+    {
+      IFii cb = (IFii)IupGetFunction("GLOBALKEYPRESS_CB");
+      if (cb)
+      {
+        int pressed = (evt->type==GDK_KEY_PRESS)? 1: 0;
+        int code = iupgtkKeyDecode((GdkEventKey*)evt);
+        if (code != 0)
+          cb(code, pressed);
+      }
+      break;
+    }
+  default:
+    break;
+  }
+
+  (void)data;
+  gtk_main_do_event(evt);
+}
+
 int iupdrvSetGlobal(const char *name, const char *value)
 {
+  if (iupStrEqual(name, "INPUTCALLBACKS"))
+  {
+    if (iupStrBoolean(value))
+      gdk_event_handler_set(iGdkEventFunc, NULL, NULL);
+    else 
+      gdk_event_handler_set((GdkEventFunc)gtk_main_do_event, NULL, NULL);
+    return 1;
+  }
   if (iupStrEqual(name, "UTF8AUTOCONVERT"))
   {
     if (!value || iupStrBoolean(value))

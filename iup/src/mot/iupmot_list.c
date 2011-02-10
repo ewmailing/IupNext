@@ -1320,6 +1320,9 @@ static int motListMapMethod(Ihandle* ih)
 
     XtAddCallback(ih->handle, XmNselectionCallback, (XtCallbackProc)motListComboBoxSelectionCallback, (XtPointer)ih);
 
+    if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
+      XtAddEventHandler(cbedit, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
+
     if (ih->data->has_editbox)
     {
       XtAddEventHandler(cbedit, KeyPressMask, False, (XtEventHandler)motListEditKeyPressEvent, (XtPointer)ih);

@@ -431,6 +431,12 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     XtAddEventHandler(tab_button, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent, (XtPointer)ih);
     XtAddEventHandler(tab_button, KeyPressMask,    False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
 
+    if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
+    {
+      XtAddEventHandler(tab_button, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
+      XtAddEventHandler(child_manager, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
+    }
+
     if (tabtitle)
       iupmotSetMnemonicTitle(ih, tab_button, tabtitle);
     else

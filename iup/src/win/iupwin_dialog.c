@@ -65,9 +65,11 @@ void iupdrvDialogSetVisible(Ihandle* ih, int visible)
   ShowWindow(ih->handle, visible? ih->data->cmd_show: SW_HIDE);
 }
 
-void iupdrvDialogGetPosition(InativeHandle* handle, int *x, int *y)
+void iupdrvDialogGetPosition(Ihandle *ih, InativeHandle* handle, int *x, int *y)
 {
   RECT rect;
+  if (!handle)
+    handle = ih->handle;
   GetWindowRect(handle, &rect);
   if (x) *x = rect.left;
   if (y) *y = rect.top;
@@ -297,9 +299,10 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
   case WM_MOVE:
     {
       IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
-      RECT rect;
-      GetWindowRect(ih->handle, &rect);  /* ignore LPARAM because they are the clientpos and not X/Y */
-      if (cb) cb(ih, rect.left, rect.top);
+      int x, y;
+      /* ignore LPARAM because they are the clientpos */
+      iupdrvDialogGetPosition(ih, NULL, &x, &y);
+      if (cb) cb(ih, x, y);
       break;
     }
   case WM_SIZE:

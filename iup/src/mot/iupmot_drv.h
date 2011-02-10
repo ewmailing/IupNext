@@ -33,6 +33,7 @@ void iupmotKeyPressEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont);
 KeySym iupmotKeyCharToKeySym(char c);
 void iupmotButtonKeySetStatus(unsigned int state, unsigned int but, char* status, int doubleclick);
 void iupmotKeyEncode(int key, unsigned int *keyval, unsigned int *state);
+int iupmotKeyDecode(XKeyEvent *evt);
 
 /* font */
 char* iupmotGetFontListAttrib(Ihandle *ih);
@@ -50,6 +51,7 @@ void iupmotTipsFinish(void);
 
 /* common */
 void iupmotPointerMotionEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont);
+void iupmotDummyPointerMotionEvent(Widget w, XtPointer *data, XEvent *evt, Boolean *cont);
 void iupmotButtonPressReleaseEvent(Widget w, Ihandle* ih, XEvent* evt, Boolean* cont);
 void iupmotEnterLeaveWindowEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont);
 void iupmotHelpCallback(Widget w, Ihandle *ih, XtPointer call_data);

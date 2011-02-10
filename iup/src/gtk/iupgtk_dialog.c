@@ -73,8 +73,10 @@ void iupdrvDialogSetVisible(Ihandle* ih, int visible)
     gtk_widget_hide(ih->handle);
 }
 
-void iupdrvDialogGetPosition(InativeHandle* handle, int *x, int *y)
+void iupdrvDialogGetPosition(Ihandle *ih, InativeHandle* handle, int *x, int *y)
 {
+  if (!handle)
+    handle = ih->handle;
   gtk_window_get_position((GtkWindow*)handle, x, y);
 }
 
@@ -320,7 +322,7 @@ static gboolean gtkDialogConfigureEvent(GtkWidget *widget, GdkEventConfigure *ev
 
   old_x = iupAttribGetInt(ih, "_IUPGTK_OLD_X");
   old_y = iupAttribGetInt(ih, "_IUPGTK_OLD_Y");
-  gtk_window_get_position((GtkWindow*)ih->handle, &x, &y);  /* ignore evt->x and evt->y because they are the clientpos and not X/Y */
+  iupdrvDialogGetPosition(ih, NULL, &x, &y);  /* ignore evt->x and evt->y because they are the clientpos and not X/Y */
 
   /* Check the position change, because configure is called also for size changes */
   if (x != old_x || y != old_y)
@@ -563,6 +565,9 @@ static int gtkDialogMapMethod(Ihandle* ih)
   /* Ignore VISIBLE before mapping */
   iupAttribSetStr(ih, "VISIBLE", NULL);
 
+  if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
+    gtk_widget_add_events(ih->handle, GDK_POINTER_MOTION_MASK|GDK_BUTTON_PRESS_MASK|GDK_BUTTON_RELEASE_MASK|GDK_BUTTON_MOTION_MASK);
+
   return IUP_NOERROR;
 }
 
@@ -682,28 +687,6 @@ static int gtkDialogSetMaxSizeAttrib(Ihandle* ih, const char* value)
 
   gtkDialogSetMinMax(ih, min_w, min_h, max_w, max_h);
   return 1;
-}
-
-static char* gtkDialogGetXAttrib(Ihandle *ih)
-{
-  char* str = iupStrGetMemory(20);
- 
-  gint x = 0;
-  gtk_window_get_position((GtkWindow*)ih->handle, &x, NULL);
-
-  sprintf(str, "%d", x);
-  return str;
-}
-
-static char* gtkDialogGetYAttrib(Ihandle *ih)
-{
-  char* str = iupStrGetMemory(20);
- 
-  gint y = 0;
-  gtk_window_get_position((GtkWindow*)ih->handle, NULL, &y);
-
-  sprintf(str, "%d", y);
-  return str;
 }
 
 static int gtkDialogSetTitleAttrib(Ihandle* ih, const char* value)
@@ -1015,10 +998,6 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);  /* force new default value */
-
-  /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "X", gtkDialogGetXAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "Y", gtkDialogGetYAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", gtkDialogGetClientSizeAttrib, iupDialogSetClientSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);  /* dialog is the only not read-only */
