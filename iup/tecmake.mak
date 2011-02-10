@@ -869,6 +869,9 @@ ifdef USE_CD
     else
       ifneq ($(findstring cygw, $(TEC_UNAME)), )
         SLIB += $(CD_LIB)/libfreetype-6.a
+      else
+        # Use freetype from the system
+        LIBS += freetype
       endif
     endif
   else

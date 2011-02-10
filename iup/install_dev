@@ -1,16 +1,24 @@
 #!/bin/bash
 
+# Include TEC_UNAME definitions
+source tec_uname
+
+# System paths
+if [ -d /usr/lib64 ]; then
+  SYSTEM_LIB=/usr/lib64
+else
+  SYSTEM_LIB=/usr/lib
+fi
+SYSTEM_INC=/usr/include
+
 echo ' '
 echo '  This script will install the >>Development<< files in the system'
 echo '  from the build directories or from the unpacked download.'
-echo '  It was tested only in Ubuntu.'
+echo '  It was tested in Ubuntu and in Fedora.'
 echo ' '
 echo '  Must be run with "sudo" at the library folder, or install will fail:'
 echo '     sudo ./install_dev'
 echo ' '
-
-SYSTEM_LIB=/usr/lib
-SYSTEM_INC=/usr/include
 
 EchoDownloadTip()
 {
@@ -21,44 +29,6 @@ EchoDownloadTip()
   echo '     cd iup'
   echo '     tar -xpvzf ../iup-3.2_Linux26g4_lib.tar.gz'
   echo ' '
-}
-
-Pause()
-{
-  echo -n Press Enter to continue or Ctrl+C to abort...
-  read contscr
-  echo ' '
-}
-
-ComputeTecUname()
-{
-  TEC_SYSNAME=`uname -s`
-  TEC_SYSVERSION=`uname -r|cut -f1 -d.`
-  TEC_SYSMINOR=`uname -r|cut -f2 -d.`
-  TEC_SYSARCH=`uname -m`
-  
-  TEC_UNAME=$TEC_SYSNAME$TEC_SYSVERSION$TEC_SYSMINOR
-
-  # Linux 2.4 and GCC 3.x
-  if [ $TEC_UNAME == Linux24 ]; then
-    GCCVER=`gcc -dumpversion|cut -f1 -d.`
-    if [ $GCCVER == 3 ]; then
-      TEC_UNAME=$TEC_UNAME'g3'
-    fi
-  fi
-
-  # Linux 2.6 and GCC 4.x
-  if [ $TEC_UNAME == Linux26 ]; then
-    GCCVER=`gcc -dumpversion|cut -f1 -d.`
-    if [ $GCCVER == 4 ]; then
-      TEC_UNAME=$TEC_UNAME'g4'
-    fi
-  fi
-
-  # 64-bits Linux
-  if [ $TEC_SYSARCH == x64 ]; then
-    TEC_UNAME=$TEC_UNAME'_64'
-  fi
 }
 
 Copy_Dev_Extra_CD()
