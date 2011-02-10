@@ -16,7 +16,7 @@
 <h2>IupPopup</h2>
 <p>Shows a dialog or menu and restricts user 
   interaction only to the specified element. It is equivalent of creating a 
-Modal dialog is some tooklits.</p>
+Modal dialog is some toolkits.</p>
 <p>If another dialog is shown after <b>IupPopup</b> using <b>IupShow</b>, then its interaction will not be inhibited. Every 
 <b>IupPopup</b> 
   call creates a new popup level that inhibits all previous dialogs interactions, but does not disable new ones. 
@@ -24,7 +24,7 @@ Modal dialog is some tooklits.</p>
 <p>For a dialog this function will only return the control 
   to the application after a callback returns IUP_CLOSE, <b>IupExitLoop</b> is 
 called, 
-  or when the popup dialog is hidden, for exemple using <b>IupHide</b>. 
+  or when the popup dialog is hidden, for example using <b>IupHide</b>. 
   For a menu it returns automatically after a menu item is selected. IMPORTANT:
   If a menu item callback returns IUP_CLOSE, 
   it will ends the current popup level dialog. </p>
@@ -34,10 +34,9 @@ Parameters/Return</h3>
 iup.Popup(<strong>ih</strong>: ihandle[, <strong>x</strong>, <strong>y</strong>: number]) -&gt; (<strong>ret</strong>: number) [in Lua]
 or <strong>ih</strong>:popup(<strong>[x</strong>, <strong>y</strong>: number]) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><b>ih</b>: Identifier of a dialog or a menu.<br>
-<b>x</b>: horizontal position of the dialog or menu relative to the origin of the 
+<b>x</b>: horizontal position of the top left corner of the window or menu, relative to the origin of the 
 main screen.
-    The following macros are 
-  valid:</p>
+    The following definitions can also be used:</p>
 <ul>
   <li>IUP_LEFT:
     Positions the element on the left corner of 
@@ -55,8 +54,8 @@ main screen.
     of the dialog. This is the default value 
   in Lua if the parameter is not defined. Not valid for menus. (Since 3.0)</li>
 </ul>
-<p><b>y</b>: vertical position of the dialog or menu relative to the origin of the
-    main screen. The following macros are valid:</p>
+<p><b>y</b>: vertical position of the top left corner of the window or menu, relative to the origin of the
+    main screen. The following definitions can also be used:</p>
 <ul>
   <li>IUP_TOP:
     Positions the element on the top of the 
@@ -77,11 +76,13 @@ main screen.
 	menus. (Since 3.0)</li>
 </ul>
 <p><span class="style1">Returns:</span> IUP_NOERROR if 
-  sucessful. Returns
+  successful. Returns
   IUP_INVALID if not a dialog or menu.&nbsp; If there was an error returns
   IUP_ERROR..</p>
 <h3>Notes</h3>
 <p>Will call <b>IupMap</b> for the element.</p>
+<p><strong>x</strong> and <strong>y</strong> positions are the same as returned 
+by the <a href="../attrib/iup_screenposition.html">SCREENPOSITION</a> attribute.</p>
 <p>See the <a href="../dlg/iupdialog.html#PLACEMENT">PLACEMENT</a> attribute for other position and show 
   options.</p>
 <p>When IUP_CENTERPARENT is used but PARENTDIALOG is not defined then it is 

@@ -568,6 +568,10 @@ wb_usr.tree =
               link= "attrib/iup_globals.html#Control"
             },
             {
+              name= {nl= "System Mouse and Keyboard"},
+              link= "attrib/iup_globals.html#Keyboard"
+            },
+            {
               name= {nl= "System Information"},
               link= "attrib/iup_globals.html#Information"
             },

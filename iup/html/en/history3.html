@@ -45,7 +45,7 @@ version 3.x.<br>
 
 </p>
 
-<h3>CVS (01/Dec/2010)</h3>
+<h3>CVS (31/Jan/2011)</h3>
 
 <ul>
 
@@ -63,6 +63,9 @@ version 3.x.<br>
 	<li><span class="hist_new">New:</span> FITTOTEXT action attribute, 
 	FITMAXHEIGHT and FITMAXWIDTH attributes in <strong>
 	IupMatrix</strong>.</li>
+	<li><span class="hist_new">New:</span> INPUTCALLBACKS global attribute and 
+	GLOBALKEYPRESS_CB, GLOBALMOTION_CB, GLOBALBUTTON_CB and GLOBALWHEEL_CB 
+	global callbacks.</li>
 	<li><span class="hist_changed">Changed:</span>
     removed compatibility with old bc55, gcc3 and mingw3 compilers in Windows. 
 	Depending on the Cygwin installation gcc3 may still works.</li>
@@ -88,7 +91,8 @@ version 3.x.<br>
 	<li><span class="hist_fixed">Fixed:</span> padding warning in GTK when using
 	<strong>IupButton</strong> with IMPRESS.</li>
 	<li><span class="hist_fixed">Fixed:</span> X and Y attributes in the GTK 
-	driver.</li>
+	driver for all controls. X and Y attributes in the Windows 
+	and Motif drivers for the <strong>IupDialog</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupInsert</strong> when 
 	adding the first element of a container.</li>
 	<li><span class="hist_fixed">Fixed:</span> set attribute in the properties 

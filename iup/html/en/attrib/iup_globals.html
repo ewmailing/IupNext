@@ -35,18 +35,34 @@
 <p>When the last visible dialog is closed the <b>IupExitLoop</b> function is called. To avoid that set 
 LOCKLOOP=YES before hiding the last dialog. Possible values: &quot;YES&quot; or &quot;NO&quot;. 
 Default: &quot;NO&quot;. </p>
+<h3><strong><a name="UTF8AUTOCONVERT">UTF8AUTOCONVERT</a></strong> [GTK Only]</h3>
+<p>GTK uses UTF-8 as its charset for all displayed text, so IUP will 
+automatically convert all strings to (SetAttribute) and from (GetAttribute) 
+UTF-8. Default: YES. If the default locale is already UTF-8, but the given 
+string is not UTF-8 then it will be assumed that the string uses the ISO8859-1 
+charset.</p>
+<h3><strong>SINGLEINSTANCE</strong> [Windows Only] (since 3.2)</h3>
+<p>Restricts the number of instances of the application by using a name to 
+identify it. The value must also be a partial match to the title of a dialog 
+that will receive the COPYDATA_CB callback with the command line of the second 
+instance. When consulted return NULL if inside the second instance. So usually 
+in the application initialization after <strong>IupOpen</strong>, set SINGLEINSTANCE 
+and then consult its value, if NULL abort the second instance by calling <strong>
+IupClose</strong> and returning from <em>main</em>.</p>
+<h2 style="text-align: center">System <a name="Keyboard">Mouse and Keyboard</a></h2>
 <h3><strong><a name="cursorpos">CURSORPOS</a></strong></h3>
-<p>The cursor position in absolute coordinates relative to the upper left corner 
+<p>Controls and returns the cursor position in absolute coordinates relative to the upper left corner 
 of the screen. Accept values in the format &quot;X<b>x</b>Y&quot; (in C &quot;%dx%d), example &quot;200x200&quot;. 
 (since GTK 2.8)</p>
 <h3><strong><a name="MOUSEBUTTON">MOUSEBUTTON</a> </strong>(write-only) (since 3.3)</h3>
-<p>Simulates a mouse button press or release at the given coordinates. The position 
+<p>Simulates a mouse button press, release or motion at the given coordinates. The position 
 is in absolute coordinates relative to the upper left corner 
 of the screen. Accept values in the format &quot;X<b>x</b>Y button state&quot; 
 (in C &quot;%dx%d %c %d&quot;), example &quot;200x200 1 1&quot;. 
 <strong>button</strong> can be one of the IUP_BUTTON1,... definitions. <strong>
-state</strong> can be 1=pressed, or 0=released. The cursor position is always 
-updated. (since GTK 2.8)</p>
+state</strong> can be 2=double pressed, 1=pressed, 0=released, or -1=motion. The cursor position 
+is always updated. In Windows button can be &#39;W&#39; and state=delta, so a wheel 
+button scroll is simulated.</p>
 <h3><a name="SHIFTKEY"><strong>SHIFTKEY</strong></a> (read-only) (since 3.0)</h3>
 <p>Returns the state of the Shit keys (left and right). Possible values: &quot;ON&quot; or &quot;OFF&quot;.</p>
 <h3><a name="CONTROLKEY"><strong>CONTROLKEY</strong></a> (read-only) (since 3.0)</h3>
@@ -76,22 +92,18 @@ The value is a key code. See the <a href="key.html">Keyboard Codes</a>
 </p>
 <h3><strong><a name="AUTOREPEAT">AUTOREPEAT</a></strong> [Motif Only]</h3>
 <p>Turns on/off&nbsp; (&quot;YES&quot; or 
-    &quot;NO&quot;) the autorepeat of keyboard keys in 
-    the whole system - may be used as an optimization in high performance applications.</p>
-<h3><strong><a name="UTF8AUTOCONVERT">UTF8AUTOCONVERT</a></strong> [GTK Only]</h3>
-<p>GTK uses UTF-8 as its charset for all displayed text, so IUP will 
-automatically convert all strings to (SetAttribute) and from (GetAttribute) 
-UTF-8. Default: YES. If the default locale is already UTF-8, but the given 
-string is not UTF-8 then it will be assumed that the string uses the ISO8859-1 
-charset.</p>
-<h3><strong>SINGLEINSTANCE</strong> [Windows Only] (since 3.2)</h3>
-<p>Restricts the number of instances of the application by using a name to 
-identify it. The value must also be a partial match to the title of a dialog 
-that will receive the COPYDATA_CB callback with the command line of the second 
-instance. When consulted return NULL if inside the second instance. So usually 
-in the application initialization after <strong>IupOpen</strong>, set SINGLEINSTANCE 
-and then consult its value, if NULL abort the second instance by calling <strong>
-IupClose</strong> and returning from <em>main</em>.</p>
+    &quot;NO&quot;) the auto-repeat of keyboard keys in 
+    the whole system. May be used as an optimization in high performance applications.</p>
+<h3>INPUTCALLBACKS (since 3.4)</h3>
+<p>Turns on/off&nbsp; (&quot;YES&quot; or 
+    &quot;NO&quot;) the global callbacks used to intercept global mouse and 
+keyboard events. The callbacks must be set using the
+<a href="../func/iupsetfunction.html">IupSetFunction</a> function using the 
+following names: GLOBAL<a href="../call/iup_keypress_cb.html">KEYPRESS_CB</a>, 
+GLOBAL<a href="../call/iup_motion_cb.html">MOTION_CB</a>, GLOBAL<a href="../call/iup_button_cb.html">BUTTON_CB</a> 
+and GLOBAL<a href="../call/iup_wheel_cb.html">WHEEL_CB</a> (Windows Only). Their parameters are 
+the same as the standard callbacks, but without the <strong>Ihandle</strong>* 
+parameter.</p>
 <h2 style="text-align: center">System <a name="Information">Information</a></h2>
 <h3><strong>SYSTEMLANGUAGE</strong> 
 (read-only)</h3>
