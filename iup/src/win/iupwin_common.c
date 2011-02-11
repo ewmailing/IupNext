@@ -1059,7 +1059,7 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
   }
   else
   {
-//printf("SendMouse(x=%d, y=%d, bt=%d, status=%d)\n", x, y, bt, status);
+printf("SendMouse(x=%d, y=%d, bt=%d, status=%d)\n", x, y, bt, status);
     switch(bt)
     {
     case IUP_BUTTON1:

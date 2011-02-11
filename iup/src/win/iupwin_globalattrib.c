@@ -113,6 +113,9 @@ static LRESULT CALLBACK winHookGetMessageProc(int hcode, WPARAM gm_wp, LPARAM gm
   WPARAM wp = gm_msg->wParam;
   LPARAM lp = gm_msg->lParam;
   POINT pt = gm_msg->pt;
+  static int last_button = 0;
+  static int last_pressed = 0;
+  char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
 
   switch (msg)
   {
@@ -121,7 +124,6 @@ static LRESULT CALLBACK winHookGetMessageProc(int hcode, WPARAM gm_wp, LPARAM gm
       IFfiis cb = (IFfiis)IupGetFunction("GLOBALWHEEL_CB");
       if (cb)
       {
-        char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
         short delta = (short)HIWORD(wp);
 
         iupwinButtonKeySetStatus(LOWORD(wp), status, 0);
@@ -147,8 +149,7 @@ static LRESULT CALLBACK winHookGetMessageProc(int hcode, WPARAM gm_wp, LPARAM gm
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
     {
-      char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
-      int doubleclick = 0, b = 0;
+      int doubleclick = 0, button = 0;
 
       IFiiiis cb = (IFiiiis) IupGetFunction("GLOBALBUTTON_CB");
       if (!cb)
@@ -167,34 +168,40 @@ static LRESULT CALLBACK winHookGetMessageProc(int hcode, WPARAM gm_wp, LPARAM gm
 
       if (msg==WM_LBUTTONDOWN || msg==WM_LBUTTONDBLCLK || msg==WM_NCLBUTTONDOWN || msg==WM_NCLBUTTONDBLCLK)
       {
-        b = IUP_BUTTON1;
+        button = IUP_BUTTON1;
         iupKEY_SETBUTTON1(status);  
       }
       else if (msg==WM_MBUTTONDOWN || msg==WM_MBUTTONDBLCLK || msg==WM_NCMBUTTONDOWN || msg==WM_NCMBUTTONDBLCLK)
       {
-        b = IUP_BUTTON2;
+        button = IUP_BUTTON2;
         iupKEY_SETBUTTON2(status);  
       }
       else if (msg==WM_RBUTTONDOWN || msg==WM_RBUTTONDBLCLK || msg==WM_NCRBUTTONDOWN || msg==WM_NCRBUTTONDBLCLK)
       {
-        b = IUP_BUTTON3;
+        button = IUP_BUTTON3;
         iupKEY_SETBUTTON3(status);  
       }
       else if (msg==WM_XBUTTONDOWN || msg==WM_XBUTTONDBLCLK || msg==WM_NCXBUTTONDOWN || msg==WM_NCXBUTTONDBLCLK)
       {
         if (HIWORD(wp) == XBUTTON1)
         {
-          b = IUP_BUTTON4;
+          button = IUP_BUTTON4;
           iupKEY_SETBUTTON4(status);  
         }
         else
         {
-          b = IUP_BUTTON5;
+          button = IUP_BUTTON5;
           iupKEY_SETBUTTON5(status);  
         }
       }
 
-      cb(b, 1, pt.x, pt.y, status);
+      if (last_button == button && last_pressed == 1)
+        break;  /* do nothing because last state was already pressed */
+
+      cb(button, 1, pt.x, pt.y, status);
+
+      last_button = button;
+      last_pressed = 1;
       break;
     }
   case WM_NCXBUTTONUP:
@@ -206,8 +213,7 @@ static LRESULT CALLBACK winHookGetMessageProc(int hcode, WPARAM gm_wp, LPARAM gm
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
     {
-      char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
-      int b=0;
+      int button=0;
       IFiiiis cb = (IFiiiis) IupGetFunction("GLOBALBUTTON_CB");
       if (!cb)
         break;
@@ -218,34 +224,40 @@ static LRESULT CALLBACK winHookGetMessageProc(int hcode, WPARAM gm_wp, LPARAM gm
       /* also updates the button status, since wp could not have the flag */
       if (msg==WM_LBUTTONUP || msg==WM_NCLBUTTONUP)
       {
-        b = IUP_BUTTON1;
+        button = IUP_BUTTON1;
         iupKEY_SETBUTTON1(status);  
       }
       else if (msg==WM_MBUTTONUP || msg==WM_NCMBUTTONUP)
       {
-        b = IUP_BUTTON2;
+        button = IUP_BUTTON2;
         iupKEY_SETBUTTON2(status);
       }
       else if (msg==WM_RBUTTONUP || msg==WM_NCRBUTTONUP)
       {
-        b = IUP_BUTTON3;
+        button = IUP_BUTTON3;
         iupKEY_SETBUTTON3(status);
       }
       else if (msg==WM_XBUTTONUP || msg==WM_NCXBUTTONUP)
       {
         if (HIWORD(wp) == XBUTTON1)
         {
-          b = IUP_BUTTON4;
+          button = IUP_BUTTON4;
           iupKEY_SETBUTTON4(status);
         }
         else
         {
-          b = IUP_BUTTON5;
+          button = IUP_BUTTON5;
           iupKEY_SETBUTTON5(status);
         }
       }
 
-      cb(b, 0, pt.x, pt.y, status);
+      if (last_button == button && last_pressed == 0)
+        break;  /* do nothing because last state was already released */
+
+      cb(button, 0, pt.x, pt.y, status);
+
+      last_button = button;
+      last_pressed = 0;
       break;
     }
   case WM_NCMOUSEMOVE:
@@ -254,9 +266,9 @@ static LRESULT CALLBACK winHookGetMessageProc(int hcode, WPARAM gm_wp, LPARAM gm
       IFiis cb = (IFiis)IupGetFunction("GLOBALMOTION_CB");
       if (cb)
       {
-        char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
         if (msg>=WM_MOUSEFIRST && msg<=WM_MOUSELAST)
           iupwinButtonKeySetStatus(LOWORD(wp), status, 0);
+
         cb(pt.x, pt.y, status);
       }
       break;
