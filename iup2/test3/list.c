@@ -257,7 +257,7 @@ void ListTest(void)
   IupSetAttributes(list1, "1=\"US$ 1000\", 2=\"US$ 2000\", 3=\"US$ 300.000.000\", 4=\"US$ 4000\","
                           "EDITBOX=YES, DROPDOWN=YES, TIP=Edit+Drop, VALUE=\"Edit Here\", NAME=list1");
   IupSetAttributes(list2, "1=\"R$ 1000\", 2=\"R$ 2000\", 3=\"R$ 123456789\", 4=\"R$ 4000\", 5=\"R$ 5000\","
-                          "DROPDOWN=YES, NAME=list2, TIP=Drop, VALUE=2");
+                          "DROPDOWN=YES, NAME=list2, TIP=Drop, XXX_VALUE=2");
   IupSetAttributes(list3, "1=\"Char A\", 2=\"Char B\", 3=\"Char CCCCC\", 4=\"Char D\", 5=\"Char E\", 6=\"Char F\","
                           "EDITBOX=YES, NAME=list3, TIP=Edit+List, VALUE=\"Edit Here\"");
   IupSetAttributes(list4, "1=\"Number 1\", 2=\"Number 2\", 3=\"Number 3\", 4=\"Number 4\", 5=\"Number 5\", 6=\"Number 6\", 7=\"Number 7\","

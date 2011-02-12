@@ -12,3 +12,7 @@ USE_CD=YES
 INCLUDES = ../include
 LIBS = iup
 LDIR = ../lib/$(TEC_UNAME)
+
+ifeq ($(findstring Win, $(TEC_SYSNAME)), )
+  CDSUFX := x11
+endif
