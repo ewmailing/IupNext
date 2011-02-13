@@ -52,7 +52,7 @@ static int hspan_cb(Ihandle* h, int i, int j)
   return 1;
 }
 
-static int draw_cb(Ihandle* h, int i, int j, int xmin, int xmax, int ymin, int ymax) 
+static int draw_cb(Ihandle* h, int i, int j, int xmin, int xmax, int ymin, int ymax, cdCanvas* canvas) 
 {
   int xm = (xmax + xmin) / 2;
   int ym = (ymax + ymin) / 2;
@@ -66,17 +66,17 @@ static int draw_cb(Ihandle* h, int i, int j, int xmin, int xmax, int ymin, int y
   if (i == 6 && j == 6) return IUP_DEFAULT;
 
   if (i == 1 && j == 1) 
-    cdForeground(CD_WHITE);
+    cdCanvasForeground(canvas, CD_WHITE);
   else
-    cdForeground(cdEncodeColor(
+    cdCanvasForeground(canvas, cdEncodeColor(
           (unsigned char)(i*20), 
           (unsigned char)(j*100), 
           (unsigned char)(i+100)));
-  cdBox(xmin, xmax, ymin, ymax);
-  cdTextAlignment(CD_CENTER);
-  cdForeground(CD_BLACK);
+  cdCanvasBox(canvas, xmin, xmax, ymin, ymax);
+  cdCanvasTextAlignment(canvas, CD_CENTER);
+  cdCanvasForeground(canvas, CD_BLACK);
   sprintf(buffer, "(%02d, %02d)", i, j);
-  cdText(xm, ym, buffer);
+  cdCanvasText(canvas, xm, ym, buffer);
 
   return IUP_DEFAULT;
 }

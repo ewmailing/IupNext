@@ -27,13 +27,13 @@ static int width_cb(Ihandle* h, int j)
    return 50;
 }
 
-static int draw_cb(Ihandle* h, int i, int j, int xmin, int xmax, int ymin, int ymax) 
+static int draw_cb(Ihandle* h, int i, int j, int xmin, int xmax, int ymin, int ymax, cdCanvas* canvas) 
 {
   if (((i%2) && (j%2)) || (((i+1)%2) && ((j+1)%2))) 
-    cdForeground(CD_WHITE);
+    cdCanvasForeground(canvas, CD_WHITE);
   else 
-    cdForeground(CD_BLACK);
-  cdBox(xmin, xmax, ymin, ymax);
+    cdCanvasForeground(canvas, CD_BLACK);
+  cdCanvasBox(canvas, xmin, xmax, ymin, ymax);
 
   return IUP_DEFAULT;
 }

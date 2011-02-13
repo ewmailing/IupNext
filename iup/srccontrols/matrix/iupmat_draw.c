@@ -47,8 +47,6 @@
 #define IMAT_COMBOBOX_W 16
 
 
-typedef int (*IFniiiiiiC)(Ihandle *h, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas* cnv);
-
 
 /**************************************************************************/
 /*  Private functions                                                     */

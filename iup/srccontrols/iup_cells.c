@@ -366,7 +366,7 @@ static void iCellsCallDrawCb(Ihandle* ih, int xmin, int xmax, int ymin, int ymax
   int oldxmin, oldxmax, oldymin, oldymax, oldclip;
   int w = ih->data->w;
   int h = ih->data->h;
-  IFniiiiii draw_cb;
+  IFniiiiiiC draw_cb;
   cdCanvas* old_cnv = cdActiveCanvas();
 
   /* Getting clipping area for post restore */
@@ -383,13 +383,13 @@ static void iCellsCallDrawCb(Ihandle* ih, int xmin, int xmax, int ymin, int ymax
      cdCanvasClipArea(ih->data->cddbuffer, xmin, xmax, ymin, ymax);
   }
 
-  draw_cb = (IFniiiiii)IupGetCallback(ih, "DRAW_CB");
+  draw_cb = (IFniiiiiiC)IupGetCallback(ih, "DRAW_CB");
   if (draw_cb)
   {
     if (old_cnv != ih->data->cddbuffer) /* backward compatibility code */
       cdActivate(ih->data->cddbuffer);
 
-    draw_cb(ih, i, j, xmin, xmax, ymin, ymax);
+    draw_cb(ih, i, j, xmin, xmax, ymin, ymax, ih->data->cddbuffer);
 
     if (old_cnv && old_cnv != ih->data->cddbuffer)
     {
