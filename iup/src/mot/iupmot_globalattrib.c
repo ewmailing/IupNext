@@ -130,12 +130,15 @@ int iupdrvSetGlobal(const char *name, const char *value)
   {
     if (iupStrBoolean(value))
     {
-      motKeyPressEventDispatchProc_OLD = XtSetEventDispatcher(iupmot_display, KeyPress, motKeyEventDispatchProc);
-      motKeyReleaseEventDispatchProc_OLD = XtSetEventDispatcher(iupmot_display, KeyRelease, motKeyEventDispatchProc);
-      motMotionNotifyEventDispatchProc_OLD = XtSetEventDispatcher(iupmot_display, MotionNotify, motMotionNotifyEventDispatchProc);
-      motButtonPressEventDispatchProc_OLD = XtSetEventDispatcher(iupmot_display, ButtonPress, motButtonEventDispatchProc);
-      motButtonReleaseEventDispatchProc_OLD = XtSetEventDispatcher(iupmot_display, ButtonRelease, motButtonEventDispatchProc);
-      mot_dispatchers_set = 1;
+      if (!mot_dispatchers_set)
+      {
+        motKeyPressEventDispatchProc_OLD = XtSetEventDispatcher(iupmot_display, KeyPress, motKeyEventDispatchProc);
+        motKeyReleaseEventDispatchProc_OLD = XtSetEventDispatcher(iupmot_display, KeyRelease, motKeyEventDispatchProc);
+        motMotionNotifyEventDispatchProc_OLD = XtSetEventDispatcher(iupmot_display, MotionNotify, motMotionNotifyEventDispatchProc);
+        motButtonPressEventDispatchProc_OLD = XtSetEventDispatcher(iupmot_display, ButtonPress, motButtonEventDispatchProc);
+        motButtonReleaseEventDispatchProc_OLD = XtSetEventDispatcher(iupmot_display, ButtonRelease, motButtonEventDispatchProc);
+        mot_dispatchers_set = 1;
+      }
     }
     else if (mot_dispatchers_set)
     {

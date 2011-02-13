@@ -77,7 +77,19 @@ void iupdrvDialogGetPosition(Ihandle *ih, InativeHandle* handle, int *x, int *y)
 {
   if (!handle)
     handle = ih->handle;
-  gtk_window_get_position((GtkWindow*)handle, x, y);
+
+#if GTK_CHECK_VERSION(2, 18, 0)
+  if (gtk_widget_get_visible(handle))
+#else
+  if (GTK_WIDGET_VISIBLE(handle))
+#endif
+    gtk_window_get_position((GtkWindow*)handle, x, y);
+  else if (ih)
+  {
+    /* gtk_window_get_position returns an outdated value if window is not visible */
+    *x = iupAttribGetInt(ih, "_IUPGTK_OLD_X");
+    *y = iupAttribGetInt(ih, "_IUPGTK_OLD_Y");
+  }
 }
 
 void iupdrvDialogSetPosition(Ihandle *ih, int x, int y)

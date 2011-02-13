@@ -663,7 +663,16 @@ wb_usr.tree =
             {
               name= {nl= "IupSetFunction"},
               link= "func/iupsetfunction.html"
-            }
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "IupRecordInput"},
+              link= "func/iuprecordinput.html"
+            },
+            {
+              name= {nl= "IupPlayInput"},
+              link= "func/iupplayinput.html"
+            },
           }
         },
         {

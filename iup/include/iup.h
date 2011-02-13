@@ -44,7 +44,7 @@ void      IupFlush         (void);
 void      IupExitLoop      (void);
 
 int       IupPlayInput(const char* filename);
-void      IupRecordInput(const char* filename);
+int       IupRecordInput(const char* filename);
 
 void      IupUpdate        (Ihandle* ih);
 void      IupUpdateChildren(Ihandle* ih);

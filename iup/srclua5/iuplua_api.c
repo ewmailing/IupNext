@@ -397,6 +397,18 @@ static int Hide(lua_State *L)
   return 1;
 }
 
+static int PlayInput(lua_State *L)
+{
+  lua_pushinteger(L, IupPlayInput(luaL_optstring(L,1,NULL)));
+  return 1;
+}
+
+static int RecordInput(lua_State *L)
+{
+  lua_pushinteger(L, IupRecordInput(luaL_optstring(L,1,NULL)));
+  return 1;
+}
+
 static int Load(lua_State *L)
 {
   const char *s = luaL_checkstring(L,1);
@@ -965,6 +977,8 @@ void iupluaapi_open(lua_State * L)
     {"Hide", Hide},
     {"Load", Load},
     {"LoadBuffer", LoadBuffer},
+    {"PlayInput", PlayInput},
+    {"RecordInput", RecordInput},
     {"LoopStep", LoopStep},
     {"LoopStepWait", LoopStepWait},
     {"ExitLoop", ExitLoop},

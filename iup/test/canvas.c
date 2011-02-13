@@ -245,16 +245,16 @@ static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
   printf("MOTION_CB(x=%d, y=%d [%s])\n",x,y, status);
 
-  {
-    static int count=0;
-#ifdef WIN32
-    Sleep(1000);
-#else
-    sleep(1); //or do anything that takes some time
-#endif
-    count++;
-    printf("count(%d)\n",count);
-  }
+//  {
+//    static int count=0;
+//#ifdef WIN32
+//    Sleep(1000);
+//#else
+//    sleep(1); //or do anything that takes some time
+//#endif
+//    count++;
+//    printf("count(%d)\n",count);
+//  }
 
   return IUP_DEFAULT;
 }
@@ -329,7 +329,7 @@ void CanvasTest(void)
   IupSetCallback(canvas, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   IupSetCallback(canvas, "BUTTON_CB",    (Icallback)button_cb);
-//  IupSetCallback(canvas, "MOTION_CB",    (Icallback)motion_cb);
+  IupSetCallback(canvas, "MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(canvas, "SCROLL_CB",  (Icallback)scroll_cb);
 //  IupSetCallback(canvas, "WHEEL_CB",    (Icallback)wheel_cb);
 

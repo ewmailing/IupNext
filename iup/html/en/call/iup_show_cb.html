@@ -9,8 +9,8 @@
 <body>
 
 <h2>SHOW_CB</h2>
-<p>Called right after the dialog is opened, 
-  minimized or restored from a minimization. This callback is called when those 
+<p>Called right after the dialog is showed, hidden, 
+  maximized, minimized or restored from minimized/maximized. This callback is called when those 
 actions were performed by the user or programmatically by the application.</p>
 <h3>Callback</h3>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>state</strong>); [in C]
@@ -19,10 +19,11 @@ actions were performed by the user or programmatically by the application.</p>
   identifier of the element that activated the event.<br>
 <b>state:</b> indicates which of the following situations generated the event:</p>
 <blockquote>
-<p>IUP_HIDE, IUP_SHOW, 
-    IUP_RESTORE (was minimized or maximized), IUP_MINIMIZE or
-    IUP_MAXIMIZE.&nbsp; (IUP_HIDE and IUP_MAXIMIZE since 3.0)</p>
-<p>IUP_MAXIMIZE is not received in Motif when activated from the maximize button.</p>
+<p>IUP_HIDE (since 3.0)<br>
+IUP_SHOW<br>
+    IUP_RESTORE (was minimized or maximized)<br>
+IUP_MINIMIZE<br>
+IUP_MAXIMIZE (since 3.0) (not received in Motif when activated from the maximize button)</p>
 </blockquote>
 <p><u>Returns</u>: IUP_CLOSE will be processed.</p>
 <h3>Affects</h3>

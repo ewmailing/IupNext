@@ -1045,77 +1045,63 @@ static int winGetButtonStatus(int bt, int status)
 
 void iupdrvSendMouse(int x, int y, int bt, int status)
 {
-  INPUT input[4];
-  ZeroMemory(input, sizeof(INPUT));
+  INPUT input;
+  ZeroMemory(&input, sizeof(INPUT));
 
-  input[0].type = INPUT_MOUSE;
-  input[0].mi.dx = x;
-  input[0].mi.dy = y;
-  input[0].mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+  input.type = INPUT_MOUSE;
+  input.mi.dx = x;
+  input.mi.dy = y;
+  input.mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+  input.mi.dwExtraInfo = GetMessageExtraInfo();
+
+  /* PROBLEMS:
+  */
 
   if (status==-1)
   {
-    input[0].mi.dwFlags |= MOUSEEVENTF_MOVE;
+    input.mi.dwFlags |= MOUSEEVENTF_MOVE;
   }
   else
   {
-printf("SendMouse(x=%d, y=%d, bt=%d, status=%d)\n", x, y, bt, status);
+    input.mi.dwFlags |= winGetButtonStatus(bt, status);
+
     switch(bt)
     {
-    case IUP_BUTTON1:
-      input[0].mi.dwFlags |= (status==0)? MOUSEEVENTF_LEFTUP: MOUSEEVENTF_LEFTDOWN;
-      break;
-    case IUP_BUTTON2:
-      input[0].mi.dwFlags |= (status==0)? MOUSEEVENTF_MIDDLEUP: MOUSEEVENTF_MIDDLEDOWN;
-      break;
-    case IUP_BUTTON3:
-      input[0].mi.dwFlags |= (status==0)? MOUSEEVENTF_RIGHTUP: MOUSEEVENTF_RIGHTDOWN;
-      break;
     case 'W':
-      input[0].mi.mouseData = status*120;
-      input[0].mi.dwFlags |= MOUSEEVENTF_WHEEL;
+      input.mi.mouseData = status*120;
+      input.mi.dwFlags |= MOUSEEVENTF_WHEEL;
       break;
     case IUP_BUTTON4:
-      input[0].mi.mouseData = XBUTTON1;
-      input[0].mi.dwFlags |= (status==0)? MOUSEEVENTF_XUP: MOUSEEVENTF_XDOWN;
+      input.mi.mouseData = XBUTTON1;
       break;
     case IUP_BUTTON5:
-      input[0].mi.mouseData = XBUTTON2;
-      input[0].mi.dwFlags |= (status==0)? MOUSEEVENTF_XUP: MOUSEEVENTF_XDOWN;
+      input.mi.mouseData = XBUTTON2;
       break;
-    default:
-      return;
     }
   }
 
-  if (status == 2)
+  if (status == 2)  /* double click */
   {
-//    SendInput(1, input, sizeof(INPUT));  /* press */
+    SendInput(1, &input, sizeof(INPUT));  /* press */
 
-    input[1] = input[0];
-    input[1].mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
-    input[1].mi.dwFlags |= winGetButtonStatus(bt, 0);
-//    SendInput(1, input, sizeof(INPUT));  /* release */
+    input.mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+    input.mi.dwFlags |= winGetButtonStatus(bt, 0);
+    SendInput(1, &input, sizeof(INPUT));  /* release */
 
-//    iupdrvSleep(100);
+    input.mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+    input.mi.dwFlags |= winGetButtonStatus(bt, 1);
+    SendInput(1, &input, sizeof(INPUT));  /* press */
 
-    input[2] = input[0];
-    input[2].mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
-    input[2].mi.dwFlags |= winGetButtonStatus(bt, 1);
-//    SendInput(1, input, sizeof(INPUT));  /* press */
-
-    input[3] = input[0];
-    input[3].mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
-    input[3].mi.dwFlags |= winGetButtonStatus(bt, 0);
-//    SendInput(1, input, sizeof(INPUT));  /* release */
-
-    SendInput(4, input, sizeof(INPUT));  /* release */
+    input.mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
+    input.mi.dwFlags |= winGetButtonStatus(bt, 0);
+    SendInput(1, &input, sizeof(INPUT));  /* release */
   }
   else
-    SendInput(1, input, sizeof(INPUT));
+    SendInput(1, &input, sizeof(INPUT));
 
   /* always update cursor */
   /* in Windows, update cursor after mouse messages */
+  /* this will NOT generate and extra motion event */
   iupdrvWarpPointer(x, y);
 }
 

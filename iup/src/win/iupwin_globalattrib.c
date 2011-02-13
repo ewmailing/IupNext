@@ -117,6 +117,9 @@ static LRESULT CALLBACK winHookGetMessageProc(int hcode, WPARAM gm_wp, LPARAM gm
   static int last_pressed = 0;
   char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
 
+  if (hcode!=HC_ACTION)
+    return CallNextHookEx(win_OldGetMessageHook, hcode, gm_wp, gm_lp);
+
   switch (msg)
   {
   case WM_MOUSEWHEEL:

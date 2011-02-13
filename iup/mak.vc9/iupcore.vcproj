@@ -186,6 +186,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\iup_recplay.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\iup_register.c"
 				>
 			</File>

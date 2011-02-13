@@ -27,7 +27,8 @@ int main(int argc, char **argv)
   IupSetHandle("male", male);
   IupSetHandle("female", female);
   IupSetAttribute(exclusive, "VALUE", "female");
-  IupSetAttribute(exclusive, "TIP",   "Two state button - Exclusive - RADIO");
+  IupSetAttribute(male, "TIP",   "Two state button - Exclusive - RADIO");
+  IupSetAttribute(female, "TIP",   "Two state button - Exclusive - RADIO");
 
   frame = IupFrame
   (

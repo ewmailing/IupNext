@@ -922,11 +922,15 @@ void iupdrvWarpPointer(int x, int y)
 void iupdrvSendMouse(int x, int y, int bt, int status)
 {
   /* always update cursor */
+  /* must be before sending the message because the cursor position will be used */
+  /* this will also send an extra motion event */
   iupdrvWarpPointer(x, y);
+
+  /* PROBLEMS:
+  */
 
   if (status != -1)
   {
-    /* Should we use gdk_event_new and gdk_event_free ???? */
     GtkWidget* grab_widget;
     gint origin_x, origin_y;
 
@@ -934,10 +938,8 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
     memset(&evt, 0, sizeof(GdkEventButton));
     evt.send_event = TRUE;
 
-    // check gdk_window_at_pointer
-
-    evt.x = x;
-    evt.y = y;
+    evt.x_root = x;
+    evt.y_root = y;
     evt.type = (status==0)? GDK_BUTTON_RELEASE: ((status==2)? GDK_2BUTTON_PRESS: GDK_BUTTON_PRESS);
     evt.device = gdk_device_get_core_pointer();
 
@@ -945,10 +947,7 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
     if (grab_widget) 
       evt.window = iupgtkGetWindow(grab_widget);
     else
-    {
-      gint tx, ty;
-      evt.window = gdk_window_at_pointer(&tx, &ty);
-    }
+      evt.window = gdk_window_at_pointer(NULL, NULL);
 
     switch(bt)
     {
@@ -977,11 +976,12 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
     }
 
     gdk_window_get_origin(evt.window, &origin_x, &origin_y);
-    evt.x_root = x + origin_x;
-    evt.y_root = y + origin_y;
+    evt.x = x - origin_x;
+    evt.y = y - origin_y;
 
     gdk_event_put((GdkEvent*)&evt);
   }
+#if 0 /* kept until code stabilizes */
   else
   {
     GtkWidget* grab_widget;
@@ -991,8 +991,8 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
     memset(&evt, 0, sizeof(GdkEventMotion));
     evt.send_event = TRUE;
 
-    evt.x = x;
-    evt.y = y;
+    evt.x_root = x;
+    evt.y_root = y;
     evt.type = GDK_MOTION_NOTIFY;
     evt.device = gdk_device_get_core_pointer();
 
@@ -1000,10 +1000,7 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
     if (grab_widget) 
       evt.window = iupgtkGetWindow(grab_widget);
     else
-    {
-      gint tx, ty;
-      evt.window = gdk_window_at_pointer(&tx, &ty);
-    }
+      evt.window = gdk_window_at_pointer(NULL, NULL);
 
     switch(bt)
     {
@@ -1027,11 +1024,12 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
     }
 
     gdk_window_get_origin(evt.window, &origin_x, &origin_y);
-    evt.x_root = x + origin_x;
-    evt.y_root = y + origin_y;
+    evt.x = x - origin_x;
+    evt.y = y - origin_y;
 
     gdk_event_put((GdkEvent*)&evt);
   }
+#endif
 }
 
 void iupdrvSleep(int time)

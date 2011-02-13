@@ -689,7 +689,12 @@ void iupdrvWarpPointer(int x, int y)
 void iupdrvSendMouse(int x, int y, int bt, int status)
 {
   /* always update cursor */
+  /* must be before sending the message because the cursor position will be used */
+  /* this will also send an extra motion event */
   iupdrvWarpPointer(x, y);
+
+  /* PROBLEMS:
+  */
 
   if (status != -1)
   {
@@ -741,8 +746,18 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
 
     XSendEvent(iupmot_display, (Window)PointerWindow, False, (status==0)? ButtonReleaseMask: ButtonPressMask, (XEvent*)&evt);
     if (status==2) /* double click */
+    {
+      evt.type = ButtonRelease;
+      XSendEvent(iupmot_display, (Window)PointerWindow, False, ButtonReleaseMask, (XEvent*)&evt);
+
+      evt.type = ButtonPress;
       XSendEvent(iupmot_display, (Window)PointerWindow, False, ButtonPressMask, (XEvent*)&evt);
+
+      evt.type = ButtonRelease;
+      XSendEvent(iupmot_display, (Window)PointerWindow, False, ButtonReleaseMask, (XEvent*)&evt);
+    }
   }
+#if 0 /* kept until code stabilizes */
   else
   {
     XMotionEvent evt;
@@ -788,6 +803,7 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
 
     XSendEvent(iupmot_display, (Window)PointerWindow, False, PointerMotionMask, (XEvent*)&evt);
   }
+#endif
 }
 
 void iupdrvSleep(int time)
