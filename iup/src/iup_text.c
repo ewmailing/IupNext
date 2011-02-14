@@ -174,6 +174,17 @@ static char* iTextGetMaskAttrib(Ihandle* ih)
     return NULL;
 }
 
+static int iTextSetValueMaskedAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+  {
+    if (ih->data->mask && iupMaskCheck(ih->data->mask, value)==0)
+      return 0; /* abort */
+    IupStoreAttribute(ih, "VALUE", value);
+  }
+  return 0;
+}
+
 static int iTextSetMaskAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
@@ -521,6 +532,7 @@ Iclass* iupTextNewClass(void)
   iupClassRegisterAttribute(ic, "MULTILINE", iTextGetMultilineAttrib, iTextSetMultilineAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "APPENDNEWLINE", iTextGetAppendNewlineAttrib, iTextSetAppendNewlineAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "VALUEMASKED", NULL, iTextSetValueMaskedAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKCASEI", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASK", iTextGetMaskAttrib, iTextSetMaskAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKINT", NULL, iTextSetMaskIntAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

@@ -69,6 +69,8 @@ version 3.x.<br>
 	<li><span class="hist_new">New:</span> <strong>IupRecordInput</strong> and
 	<strong>IupPlayInput</strong> functions to record and play back mouse and 
 	keyboard interaction. (play partially working)</li>
+	<li><b><span class="hist_new">New:</span> </b>VALUEMASKED attribute for
+	<strong>IupText</strong>.</li>
 	<li><span class="hist_changed">Changed:</span>
     removed compatibility with old bc55, gcc3 and mingw3 compilers in Windows. 
 	Depending on the Cygwin installation gcc3 may still works.</li>
@@ -124,6 +126,8 @@ version 3.x.<br>
 	branches in <strong>IupTree</strong> on Windows when SHOWDRAGDROP=YES.</li>
 	<li><span class="hist_fixed">Fixed:</span> DRAW_CB callback in <strong>
 	IupCells</strong> when using the last parameter canvas.</li>
+	<li><span class="hist_fixed">Fixed:</span> cell value when editing was 
+	stared with a character not valid by the current MASK in <strong>IupMatrix</strong>.</li>
 
 </ul>
 

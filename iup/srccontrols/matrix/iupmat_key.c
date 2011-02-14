@@ -167,7 +167,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
           {
             char value[2] = {0,0};
             value[0] = (char)c;
-            IupStoreAttribute(ih->data->datah, "VALUE", value);
+            IupStoreAttribute(ih->data->datah, "VALUEMASKED", value);
             IupSetAttribute(ih->data->datah, "CARET", "2");
           }
           return IUP_IGNORE; /* do not redraw */
