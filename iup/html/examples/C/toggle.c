@@ -1,18 +1,10 @@
 /*IupToggle Example in C 
-Creates 9 toggles: the first one has an image and an associated callback; 
-the second has an image and is deactivated; the third is regular; 
-the fourth has its foreground color changed; 
-the fifth has its background color changed; 
-the sixth has its foreground and background colors changed; 
-the seventh is deactivated; 
-the eight has its font changed; 
-the ninth has its size changed.. */
-
+*/
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "iup.h"          
-                           
+#include "iup.h"
+
 static unsigned char img_1[] = 
 {
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -67,46 +59,43 @@ void createimgs(void)
   IupSetAttribute (img2, "2", "0 192 0"); 
 }
 
-int toggle1cb(Ihandle *self, int v)
+int toggle_cb(Ihandle* ih, int state)
 {
-  if(v == 1)IupMessage("Toggle 1","pressed"); 
-    else IupMessage("Toggle 1","released"); 
-
+  int pos = IupGetChildPos(IupGetParent(ih), ih);
+  printf("toggle%d_cb(state=%d)\n", pos+1, state);
   return IUP_DEFAULT;
 }
 
 int main(int argc, char **argv)
 {
-  Ihandle *toggles, *dlg, *caixa;
-  Ihandle *toggle1, *toggle2, *toggle3, *toggle4, *toggle5, *toggle6, *toggle7, *toggle8, *toggle9;
+  Ihandle *toggles, *dlg, *box;
+  Ihandle *toggle1, *toggle2, *toggle3, *toggle4, *toggle5, *toggle6;
+
   IupOpen(&argc, &argv);
+
   createimgs();
 
   toggle1 = IupToggle("toggle with image", NULL);
   toggle2 = IupToggle("deactivated toggle with image", NULL);
   toggle3 = IupToggle("regular toggle", NULL);
-  toggle4 = IupToggle("toggle with blue foreground color", NULL);
-  toggle5 = IupToggle("toggle with red background color", NULL);
-  toggle6 = IupToggle("toggle with black background color and green foreground color", NULL);
-  toggle7 = IupToggle("deactivated toggle", NULL);
-  toggle8 = IupToggle("toggle with Courier 14 Bold font", NULL);
-  toggle9 = IupToggle("toggle with size EIGHTxEIGHT", NULL);
-	
-  IupSetCallback(toggle1, "ACTION", (Icallback) toggle1cb);
+  toggle4 = IupToggle("blue foreground color", NULL);
+  toggle5 = IupToggle("deactivated toggle", NULL);
+  toggle6 = IupToggle("toggle with Courier 14 Bold font", NULL);
+
+  IupSetCallback(toggle1, "ACTION", (Icallback) toggle_cb);
+  IupSetCallback(toggle3, "ACTION", (Icallback) toggle_cb);
+  IupSetCallback(toggle4, "ACTION", (Icallback) toggle_cb);
+  IupSetCallback(toggle6, "ACTION", (Icallback) toggle_cb);
   
   IupSetAttribute(toggle1, "IMAGE",   "img1");              /* Toggle 1 uses image                 */
   IupSetAttribute(toggle2, "IMAGE",   "img2");              /* Toggle 2 uses image                 */
   IupSetAttribute(toggle2, "ACTIVE",  "NO");              /* Toggle 2 inactive                   */
   IupSetAttribute(toggle4, "FGCOLOR", "0 0 255");           /* Toggle 4 has blue foreground color  */
-  IupSetAttribute(toggle5, "BGCOLOR", "255 0 0");           /* Toggle 5 has red background color   */
-  IupSetAttribute(toggle6, "FGCOLOR", "0 255 0");           /* Toggle 6 has green foreground color */
-  IupSetAttribute(toggle6, "BGCOLOR", "0 0 0");             /* Toggle 6 has black background color */
-  IupSetAttribute(toggle7, "ACTIVE",  "NO");              /* Toggle 7 inactive                   */
-  IupSetAttribute(toggle8, "FONT",    "COURIER_BOLD_14"); /* Toggle 8 has Courier 14 Bold font   */
-  IupSetAttribute(toggle9, "SIZE",    "EIGHTHxEIGHTH");     /* Toggle 9 has size EIGHTxEIGHT       */
+  IupSetAttribute(toggle5, "ACTIVE",  "NO");              /* Toggle 6 inactive                   */
+  IupSetAttribute(toggle6, "FONT",    "Courier, Bold 14"); /* Toggle 8 has Courier 14 Bold font   */
 
   /* Creating box that contains the toggles */
-  caixa = 
+  box = 
     IupVbox (
       toggle1, 
       toggle2, 
@@ -114,13 +103,10 @@ int main(int argc, char **argv)
       toggle4, 
       toggle5, 
       toggle6, 
-	  toggle7, 
-      toggle8, 
-      toggle9, 
       NULL  );
 
-  toggles = IupRadio( caixa ); /* Grouping toggles */
-  IupSetAttribute(toggles, "EXPAND", "YES");
+  toggles = IupRadio( box ); /* Grouping toggles */
+//  toggles = box;  /* No grouping */
 
   /* Dialog */
   dlg = IupDialog(toggles);
@@ -133,5 +119,4 @@ int main(int argc, char **argv)
   IupClose();
 
   return EXIT_SUCCESS;
-
 }
