@@ -68,7 +68,11 @@ of the screen. Accept values in the format &quot;X<b>x</b>Y button state&quot;
 state</strong> can be 2=double click, 1=pressed, 0=released, or -1=motion. The cursor position 
 is always updated. In Windows button can be &#39;W&#39; and state=delta, so a wheel 
 button scroll is simulated.</p>
-<p><strong>IMPORTANT</strong>: <span class="style1">not fully working</span>. </p>
+<p><strong>IMPORTANT</strong>: <span class="style1">not fully working</span>. In 
+Windows and GTK, menu items are not activated. Although submenus open, menu 
+items even in the menu bar are not activated. In Windows, inside the <strong>
+IupFileDlg</strong> dialog, clicks in the folder navigation list are not 
+correctly interpreted. In Motif click and drag operations are not performed.</p>
 <h3><a name="SHIFTKEY"><strong>SHIFTKEY</strong></a> (read-only) (since 3.0)</h3>
 <p>Returns the state of the Shit keys (left and right). Possible values: &quot;ON&quot; or &quot;OFF&quot;.</p>
 <h3><a name="CONTROLKEY"><strong>CONTROLKEY</strong></a> (read-only) (since 3.0)</h3>

@@ -5,6 +5,11 @@
 <title>IupPlayInput</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	color: #FF0000;
+}
+</style>
 </head>
 <body>
 
@@ -16,7 +21,7 @@ Parameters/Return</h3>
 iup.PlayInput(<strong>filename</strong>: string) -&gt; <strong>ret</strong>: number [in Lua]</pre>
 <p><strong>filename</strong>: name of the file to be played. NULL will stop 
 playing. &quot;&quot; will pause and restart a file already being played.</p>
-<p><span class="style1">Returns:</span> IUP_NOERROR if successful, IUP_ERROR if 
+<p>Returns: IUP_NOERROR if successful, IUP_ERROR if 
 failed to open the file for writing. If already playing</p>
 <h3>Notes</h3>
 <p>The file must had been saved using the <strong>IupRecordInput</strong> 
@@ -24,10 +29,10 @@ function. Record mode will be automatically detected.</p>
 <p>This function will start the play and return the control to the application. 
 If the file ends all internal memory used to play the file will be automatically 
 released.</p>
-<p>It uses the MOUSEBUTTON global attribute to reproduce the events. See the 
-documentation of this attribute for further details and current limitations. As 
-an attempt to workaround system limitations in MOUSEBUTTON record the file using 
-IUP_RECSYSTEM.</p>
+<p>It uses the MOUSEBUTTON global attribute to reproduce the events.
+<span class="style1"><strong>IMPORTANT</strong></span>: See the documentation of 
+the <a href="../attrib/iup_globals.html#MOUSEBUTTON">MOUSEBUTTON</a> attribute 
+for further details and current limitations.</p>
 <p>The file must had been generated in the same operating system. Screen size 
 differences can exist, but if different themes are used then mouse precision 
 will be affected.</p>

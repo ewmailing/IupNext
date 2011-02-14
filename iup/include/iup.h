@@ -355,7 +355,7 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 /************************************************************************/
 /*                   Record Input Modes                                 */
 /************************************************************************/
-enum {IUP_RECBINARY, IUP_RECTEXT, IUP_RECSYSTEM};
+enum {IUP_RECBINARY, IUP_RECTEXT};
 
 
 /************************************************************************/

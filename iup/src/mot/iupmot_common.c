@@ -683,6 +683,7 @@ void iupdrvSendKey(int key, int press)
 
 void iupdrvWarpPointer(int x, int y)
 {
+  /* VirtualBox does not reproduce the mouse move visually, but it is working. */
   XWarpPointer(iupmot_display,None,RootWindow(iupmot_display, iupmot_screen),0,0,0,0,x,y);
 }
 
@@ -692,9 +693,6 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
   /* must be before sending the message because the cursor position will be used */
   /* this will also send an extra motion event */
   iupdrvWarpPointer(x, y);
-
-  /* PROBLEMS:
-  */
 
   if (status != -1)
   {

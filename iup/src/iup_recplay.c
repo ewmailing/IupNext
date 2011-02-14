@@ -389,8 +389,6 @@ int IupPlayInput(const char* filename)
   mode = IUP_RECBINARY;
   if (iupStrEqual(mode_str, "TXT"))
     mode = IUP_RECTEXT;
-  else if (iupStrEqual(mode_str, "SYS"))
-    mode = IUP_RECSYSTEM;
 
   irec_lastclock = iRecClock();
 

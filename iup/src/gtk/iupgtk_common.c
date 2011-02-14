@@ -914,6 +914,7 @@ void iupdrvSendKey(int key, int press)
 
 void iupdrvWarpPointer(int x, int y)
 {
+  /* VirtualBox does not reproduce the mouse move visually, but it is working. */
 #if GTK_CHECK_VERSION(2, 8, 0)
   gdk_display_warp_pointer(gdk_display_get_default(), gdk_screen_get_default(), x, y);
 #endif
@@ -925,9 +926,6 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
   /* must be before sending the message because the cursor position will be used */
   /* this will also send an extra motion event */
   iupdrvWarpPointer(x, y);
-
-  /* PROBLEMS:
-  */
 
   if (status != -1)
   {

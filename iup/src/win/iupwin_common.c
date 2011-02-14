@@ -1055,6 +1055,8 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
   input.mi.dwExtraInfo = GetMessageExtraInfo();
 
   /* PROBLEMS:
+    Menu items are not activated. Although submenus open, menu items even in the menu bar are not activated.
+    Inside the FileOpen dialog, clicks in the folder navigation list are not correctly interpreted.
   */
 
   if (status==-1)
