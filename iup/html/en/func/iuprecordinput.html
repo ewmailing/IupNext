@@ -12,10 +12,12 @@
 <p>Records all mouse and keyboard input in a file for later reproduction.</p>
 <h3>
 Parameters/Return</h3>
-<pre>int IupRecordInput(const char *<strong>filename</strong>); [in C]
-iup.RecordInput(<strong>filename</strong>: string) -&gt; <strong>ret</strong>: number [in Lua]</pre>
+<pre>int IupRecordInput(const char *<strong>filename</strong>, int <strong>mode</strong>); [in C]
+iup.RecordInput(<strong>filename</strong>: string, <strong>mode</strong>: number) -&gt; <strong>ret</strong>: number [in Lua]</pre>
 <p><strong>filename</strong>: name of the file to be saved. NULL will stop 
-recording.</p>
+recording.<br>
+<strong>mode</strong>: flag for controlling the file generation. Can be: 
+IUP_RECBINARY, IUP_RECTEXT, or IUP_RECSYSTEM (Windows Only).</p>
 <p><span class="style1">Returns:</span> IUP_NOERROR if successful, IUP_ERROR if 
 failed to open the file for writing.</p>
 <h3>Notes</h3>

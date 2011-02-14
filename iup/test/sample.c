@@ -183,8 +183,8 @@ static int k_any(Ihandle *ih, int c)
     printf("K_ANY(%s, %d = %s \'%c\')\n", IupGetClassName(ih), c, iupKeyCodeToName(c), (char)c);
   else
     printf("K_ANY(%s, %d = %s)\n", IupGetClassName(ih), c, iupKeyCodeToName(c));
-  if (c==K_r) { IupRecordInput("inputtest.iup"); return IUP_IGNORE; }
-  if (c==K_s) { IupRecordInput(NULL); IupPlayInput(NULL); return IUP_IGNORE; }
+  if (c==K_r) { IupRecordInput("inputtest.iup", IUP_RECTEXT); return IUP_IGNORE; }  //IUP_RECBINARY, IUP_RECTEXT, IUP_RECSYSTEM 
+  if (c==K_s) { IupRecordInput(NULL, 0); IupPlayInput(NULL); return IUP_IGNORE; }
   if (c==K_p) { IupPlayInput("inputtest.iup"); return IUP_IGNORE; }
   return IUP_CONTINUE;
 }

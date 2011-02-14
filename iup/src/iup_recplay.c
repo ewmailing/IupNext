@@ -20,89 +20,122 @@
 
 static FILE* irec_file = NULL;
 static int irec_lastclock = 0;
+static int irec_mode = 0;
 
 static int iRecClock(void)
 {
   return (int)((clock()*1000)/CLOCKS_PER_SEC); /* time in miliseconds */
 }
 
-static void iRecInputWheelCB(float p1, int p2, int p3, char* p4)
+static void iRecWriteInt(FILE* file, int value, int mode)
 {
-  (void)p4;
+  if (mode == IUP_RECTEXT)
+    fprintf(file, "%d ", value);
+  else
+    fwrite(&value, sizeof(int), 1, file);
+}
+
+static void iRecWriteFloat(FILE* file, float value, int mode)
+{
+  if (mode == IUP_RECTEXT)
+    fprintf(file, "%g ", (double)value);
+  else
+    fwrite(&value, sizeof(float), 1, file);
+}
+
+static void iRecWriteChar(FILE* file, char value, int mode)
+{
+  if (mode == IUP_RECTEXT)
+    fprintf(file, "%c ", value);
+  else
+    fwrite(&value, 1, 1, file);
+}
+
+static void iRecWriteByte(FILE* file, char value, int mode)
+{
+  if (mode == IUP_RECTEXT)
+    fprintf(file, "%d ", (int)value);
+  else
+    fwrite(&value, 1, 1, file);
+}
+
+static void iRecWriteStr(FILE* file, char* value, int mode)
+{
+  fwrite(value, 1, strlen(value), file);
+
+  if (mode == IUP_RECTEXT)
+    fwrite(" ", 1, 1, file);
+}
+
+static void iRecInputWheelCB(float delta, int x, int y, char* status)
+{
+  (void)status;
   if (irec_file)
   {
     int time = iRecClock() - irec_lastclock;
-    fwrite("WHE", 1, 3, irec_file);
-    fwrite(&time, sizeof(int), 1, irec_file);
-    fwrite(&p1, sizeof(float), 1, irec_file);
-    fwrite(&p2, sizeof(int), 1, irec_file);
-    fwrite(&p3, sizeof(int), 1, irec_file);
-    /* fwrite(p4, 1, IUPKEY_STATUS_SIZE, irec_file); */
-    fwrite("\n", 1, 1, irec_file);
+    iRecWriteStr(irec_file, "WHE", irec_mode);
+    iRecWriteInt(irec_file, time, irec_mode);
+    iRecWriteFloat(irec_file, delta, irec_mode);
+    iRecWriteInt(irec_file, x, irec_mode);
+    iRecWriteInt(irec_file, y, irec_mode);
+    iRecWriteByte(irec_file, '\n', IUP_RECBINARY);  /* no space after */
     irec_lastclock = iRecClock();
   }
 }
 
-static void iRecInputButtonCB(int p1, int p2, int p3, int p4, char* p5)
+static void iRecInputButtonCB(int button, int pressed, int x, int y, char* status)
 {
-  (void)p5;
   if (irec_file)
   {
-    char p1c = (char)p1;
-    char p2c = (char)p2;
     int time = iRecClock() - irec_lastclock;
-    if (p2==1 && iup_isdouble(p5)) p2c = 2;
-    fwrite("BUT", 1, 3, irec_file);
-    fwrite(&time, sizeof(int), 1, irec_file);
-    fwrite(&p1c, 1, 1, irec_file);
-    fwrite(&p2c, 1, 1, irec_file);
-    fwrite(&p3, sizeof(int), 1, irec_file);
-    fwrite(&p4, sizeof(int), 1, irec_file);
-    /* fwrite(p5, 1, IUPKEY_STATUS_SIZE, irec_file); */
-    fwrite("\n", 1, 1, irec_file);
+    if (pressed && iup_isdouble(status)) pressed = 2;
+    iRecWriteStr(irec_file, "BUT", irec_mode);
+    iRecWriteInt(irec_file, time, irec_mode);
+    iRecWriteChar(irec_file, (char)button, irec_mode);
+    iRecWriteByte(irec_file, (char)pressed, irec_mode);
+    iRecWriteInt(irec_file, x, irec_mode);
+    iRecWriteInt(irec_file, y, irec_mode);
+    iRecWriteByte(irec_file, '\n', IUP_RECBINARY);  /* no space after */
     irec_lastclock = iRecClock();
   }
 }
 
-static void iRecInputMotionCB(int p1, int p2, char* p3)
+static void iRecInputMotionCB(int x, int y, char* status)
 {
-  (void)p3;
   if (irec_file)
   {
-    char p3c = 0;
+    char button = '0';
     int time = iRecClock() - irec_lastclock;
-    fwrite("MOV", 1, 3, irec_file);
-    fwrite(&time, sizeof(int), 1, irec_file);
-    fwrite(&p1, sizeof(int), 1, irec_file);
-    fwrite(&p2, sizeof(int), 1, irec_file);
-    /* fwrite(p3, 1, IUPKEY_STATUS_SIZE, irec_file); */
-    if (iup_isbutton1(p3)) p3c = '1';
-    if (iup_isbutton2(p3)) p3c = '2';
-    if (iup_isbutton3(p3)) p3c = '3';
-    if (iup_isbutton4(p3)) p3c = '4';
-    if (iup_isbutton5(p3)) p3c = '5';
-    fwrite(&p3c, 1, 1, irec_file);
-    fwrite("\n", 1, 1, irec_file);
+    iRecWriteStr(irec_file, "MOV", irec_mode);
+    iRecWriteInt(irec_file, time, irec_mode);
+    iRecWriteInt(irec_file, x, irec_mode);
+    iRecWriteInt(irec_file, y, irec_mode);
+    if (iup_isbutton1(status)) button = '1';
+    if (iup_isbutton2(status)) button = '2';
+    if (iup_isbutton3(status)) button = '3';
+    if (iup_isbutton4(status)) button = '4';
+    if (iup_isbutton5(status)) button = '5';
+    iRecWriteChar(irec_file, button, irec_mode);
+    iRecWriteByte(irec_file, '\n', IUP_RECBINARY);  /* no space after */
     irec_lastclock = iRecClock();
   }
 }
 
-static void iRecInputKeyPressCB(int p1, int p2)
+static void iRecInputKeyPressCB(int key, int pressed)
 {
   if (irec_file)
   {
-    char p2c = (char)p2;
     int time = iRecClock() - irec_lastclock;
-    fwrite("KEY", 1, 3, irec_file);
-    fwrite(&time, sizeof(int), 1, irec_file);
-    fwrite(&p1, sizeof(int), 1, irec_file);
-    fwrite(&p2c, 1, 1, irec_file);
-    fwrite("\n", 1, 1, irec_file);
+    iRecWriteStr(irec_file, "KEY", irec_mode);
+    iRecWriteInt(irec_file, time, irec_mode);
+    iRecWriteInt(irec_file, key, irec_mode);
+    iRecWriteByte(irec_file, (char)pressed, irec_mode);
+    iRecWriteByte(irec_file, '\n', IUP_RECBINARY);  /* no space after */
     irec_lastclock = iRecClock();
   }
 }
 
-int IupRecordInput(const char* filename)
+int IupRecordInput(const char* filename, int mode)
 {
   if (irec_file)
     fclose(irec_file);
@@ -112,13 +145,17 @@ int IupRecordInput(const char* filename)
     irec_file = fopen(filename, "wb");
     if (!irec_file)
       return IUP_ERROR;
+    irec_mode = mode;
   }
   else
     irec_file = NULL;
 
   if (irec_file)
   {
-    fwrite("IUPINPUT\n", 1, 9, irec_file);
+    char* mode_str[3] = {"BIN", "TXT", "SYS"};
+    iRecWriteStr(irec_file, "IUPINPUT", IUP_RECTEXT);  /* add space after, even for non text mode */
+    iRecWriteStr(irec_file, mode_str[irec_mode], IUP_RECBINARY); /* no space after */
+    iRecWriteByte(irec_file, '\n', IUP_RECBINARY);  /* no space after */
     irec_lastclock = iRecClock();
 
     IupSetGlobal("INPUTCALLBACKS", "Yes");
@@ -139,9 +176,61 @@ int IupRecordInput(const char* filename)
   return IUP_NOERROR;
 }
 
+
+/*************************************************************************************/
+
+
+static void iPlayReadInt(FILE* file, int *value, int mode)
+{
+  if (mode == IUP_RECTEXT)
+    fscanf(file, "%d ", value);
+  else
+    fread(value, sizeof(int), 1, file);
+}
+
+static void iPlayReadFloat(FILE* file, float *value, int mode)
+{
+  if (mode == IUP_RECTEXT)
+    fscanf(file, "%g ", value);
+  else
+    fread(value, sizeof(float), 1, file);
+}
+
+static void iPlayReadByte(FILE* file, char *value, int mode)
+{
+  if (mode == IUP_RECTEXT)
+  {
+    int ivalue;
+    fscanf(file, "%d ", &ivalue);
+    *value = (char)ivalue;
+  }
+  else
+    fread(value, 1, 1, file);
+}
+
+static void iPlayReadChar(FILE* file, char *value, int mode)
+{
+  if (mode == IUP_RECTEXT)
+    fscanf(file, "%c ", value);
+  else
+    fread(value, 1, 1, file);
+}
+
+static void iPlayReadStr(FILE* file, char* value, int len, int mode)
+{
+  fread(value, 1, len, file);
+  value[len] = 0;
+
+  if (mode == IUP_RECTEXT)
+  {
+    char spc;
+    fread(&spc, 1, 1, file); /* skip space */
+  }
+}
+
 static int iPlayTimer_CB(Ihandle* timer)
 {
-  FILE* file = (FILE*)IupGetAttribute(timer, "__IUP_PLAYFILE");
+  FILE* file = (FILE*)IupGetAttribute(timer, "_IUP_PLAYFILE");
   if(feof(file) || ferror(file))
   {
     fclose(file);
@@ -152,13 +241,13 @@ static int iPlayTimer_CB(Ihandle* timer)
   }
   else
   {
-    /* char status[IUPKEY_STATUS_SIZE]; */
-    char action[4] = "XXX";
+    int mode = IupGetInt(timer, "_IUP_PLAYMODE");
+    char action[4];
     char eol;
     int time;
 
-    fread(action, 1, 3, file);
-    fread(&time, sizeof(int), 1, file);
+    iPlayReadStr(file, action, 3, mode);
+    iPlayReadInt(file, &time, mode);
     if (ferror(file)) return IUP_DEFAULT;
 
     time -= iRecClock() - irec_lastclock;
@@ -172,12 +261,11 @@ static int iPlayTimer_CB(Ihandle* timer)
       {
         char button, status;
         int x, y;
-        fread(&button, 1, 1, file);
-        fread(&status, 1, 1, file);
-        fread(&x, sizeof(int), 1, file);
-        fread(&y, sizeof(int), 1, file);
-        /* fread(status, 1, IUPKEY_STATUS_SIZE, file); */
-        fread(&eol, 1, 1, file);
+        iPlayReadChar(file, &button, mode);
+        iPlayReadByte(file, &status, mode);
+        iPlayReadInt(file, &x, mode);
+        iPlayReadInt(file, &y, mode);
+        if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
         if (ferror(file)) return IUP_DEFAULT;
 
         /*IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, button, (int)status);*/
@@ -188,11 +276,10 @@ static int iPlayTimer_CB(Ihandle* timer)
       {
         char button;
         int x, y;
-        fread(&x, sizeof(int), 1, file);
-        fread(&y, sizeof(int), 1, file);
-        fread(&button, 1, 1, file);
-        /* fread(status, 1, IUPKEY_STATUS_SIZE, file); */
-        fread(&eol, 1, 1, file);
+        iPlayReadInt(file, &x, mode);
+        iPlayReadInt(file, &y, mode);
+        iPlayReadChar(file, &button, mode);
+        if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
         if (ferror(file)) return IUP_DEFAULT;
 
         /* IupSetfAttribute(NULL, "CURSORPOS", "%dx%d", x, y); */
@@ -203,9 +290,9 @@ static int iPlayTimer_CB(Ihandle* timer)
       {
         int key;
         char pressed;
-        fread(&key, sizeof(int), 1, file);
-        fread(&pressed, 1, 1, file);
-        fread(&eol, 1, 1, file);
+        iPlayReadInt(file, &key, mode);
+        iPlayReadByte(file, &pressed, mode);
+        if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
         if (ferror(file)) return IUP_DEFAULT;
 
         if (pressed)
@@ -220,11 +307,10 @@ static int iPlayTimer_CB(Ihandle* timer)
       {
         float delta;
         int x, y;
-        fread(&delta, sizeof(float), 1, file);
-        fread(&x, sizeof(int), 1, file);
-        fread(&y, sizeof(int), 1, file);
-        /* fread(status, 1, IUPKEY_STATUS_SIZE, file); */
-        fread(&eol, 1, 1, file);
+        iPlayReadFloat(file, &delta, mode);
+        iPlayReadInt(file, &x, mode);
+        iPlayReadInt(file, &y, mode);
+        if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
         if (ferror(file)) return IUP_DEFAULT;
 
         /*IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, 'W', (int)delta);*/
@@ -252,7 +338,8 @@ int IupPlayInput(const char* filename)
 {
   Ihandle* timer = (Ihandle*)IupGetGlobal("_IUP_PLAYTIMER");
   FILE* file;
-  char sig[10];
+  char sig[9], mode_str[4];
+  int mode;
 
   if (timer)
   {
@@ -265,7 +352,7 @@ int IupPlayInput(const char* filename)
       return IUP_NOERROR;
     }
 
-    file = (FILE*)IupGetAttribute(timer, "__IUP_PLAYFILE");
+    file = (FILE*)IupGetAttribute(timer, "_IUP_PLAYFILE");
 
     fclose(file);
     IupSetAttribute(timer, "RUN", "NO");
@@ -285,21 +372,33 @@ int IupPlayInput(const char* filename)
   if (!file)
     return IUP_ERROR;
 
-  fread(sig, 1, 9, file); sig[9] = 0;
-  if (ferror(file)) return IUP_ERROR;
-
-  if (!iupStrEqual(sig, "IUPINPUT\n"))
+  iPlayReadStr(file, sig, 8, IUP_RECTEXT);
+  iPlayReadStr(file, mode_str, 3, IUP_RECTEXT); /* read also the eol */
+  if (ferror(file))
   {
     fclose(file);
     return IUP_ERROR;
   }
+
+  if (!iupStrEqual(sig, "IUPINPUT"))
+  {
+    fclose(file);
+    return IUP_ERROR;
+  }
+
+  mode = IUP_RECBINARY;
+  if (iupStrEqual(mode_str, "TXT"))
+    mode = IUP_RECTEXT;
+  else if (iupStrEqual(mode_str, "SYS"))
+    mode = IUP_RECSYSTEM;
 
   irec_lastclock = iRecClock();
 
   timer = IupTimer();
   IupSetCallback(timer, "ACTION_CB", (Icallback)iPlayTimer_CB);
   IupSetAttribute(timer, "TIME", "20");
-  IupSetAttribute(timer, "__IUP_PLAYFILE", (char*)file);
+  IupSetAttribute(timer, "_IUP_PLAYFILE", (char*)file);
+  IupSetfAttribute(timer, "_IUP_PLAYMODE", "%d", mode);
   IupSetAttribute(timer, "RUN", "YES");
 
   IupSetGlobal("_IUP_PLAYTIMER", (char*)timer);

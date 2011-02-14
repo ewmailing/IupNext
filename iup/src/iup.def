@@ -170,6 +170,8 @@ IupGetAttributeId2
 IupGetIntId2
 IupGetFloatId2
 IupSetfAttributeId2
+IupRecordInput
+IupPlayInput
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib

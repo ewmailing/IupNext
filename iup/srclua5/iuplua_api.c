@@ -405,7 +405,7 @@ static int PlayInput(lua_State *L)
 
 static int RecordInput(lua_State *L)
 {
-  lua_pushinteger(L, IupRecordInput(luaL_optstring(L,1,NULL)));
+  lua_pushinteger(L, IupRecordInput(luaL_optstring(L,1,NULL), luaL_optinteger(L, 2, 0)));
   return 1;
 }
 

@@ -48,6 +48,10 @@ IUP_MINIMIZE  = 2           iup.MINIMIZE  = IUP_MINIMIZE
 IUP_MAXIMIZE  = 3           iup.MAXIMIZE  = IUP_MAXIMIZE
 IUP_HIDE      = 4           iup.HIDE      = IUP_HIDE
 
+IUP_RECBINARY = 0           iup.RECBINARY = IUP_RECBINARY
+IUP_RECTEXT = 1             iup.RECTEXT = IUP_RECTEXT
+IUP_RECSYSTEM = 2           iup.RECSYSTEM = IUP_RECSYSTEM
+
 RED    = IupRGB(1, 0, 0)    iup.RED    = RED    
 GREEN  = IupRGB(0, 1, 0)    iup.GREEN  = GREEN  
 BLUE   = IupRGB(0, 0, 1)    iup.BLUE   = BLUE   

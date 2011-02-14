@@ -43,8 +43,8 @@ int       IupMainLoopLevel (void);
 void      IupFlush         (void);
 void      IupExitLoop      (void);
 
+int       IupRecordInput(const char* filename, int mode);
 int       IupPlayInput(const char* filename);
-int       IupRecordInput(const char* filename);
 
 void      IupUpdate        (Ihandle* ih);
 void      IupUpdateChildren(Ihandle* ih);
@@ -350,6 +350,12 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 #define IUPMASK_EFLOAT    IUP_MASK_EFLOAT
 #define IUPMASK_INT	      IUP_MASK_INT
 #define IUPMASK_UINT      IUP_MASK_UINT
+
+
+/************************************************************************/
+/*                   Record Input Modes                                 */
+/************************************************************************/
+enum {IUP_RECBINARY, IUP_RECTEXT, IUP_RECSYSTEM};
 
 
 /************************************************************************/

@@ -216,7 +216,7 @@ static void PlayInput(void)
 
 static void RecordInput(void)
 {
-  lua_pushnumber(IupRecordInput(luaL_opt_string(1,NULL)));
+  lua_pushnumber(IupRecordInput(luaL_opt_string(1,NULL), luaL_opt_int(2,0)));
 }
 
 static void Load(void)

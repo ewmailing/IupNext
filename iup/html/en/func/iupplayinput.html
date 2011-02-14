@@ -20,12 +20,14 @@ playing. &quot;&quot; will pause and restart a file already being played.</p>
 failed to open the file for writing. If already playing</p>
 <h3>Notes</h3>
 <p>The file must had been saved using the <strong>IupRecordInput</strong> 
-function.</p>
+function. Record mode will be automatically detected.</p>
 <p>This function will start the play and return the control to the application. 
 If the file ends all internal memory used to play the file will be automatically 
 released.</p>
 <p>It uses the MOUSEBUTTON global attribute to reproduce the events. See the 
-documentation of this attribute for further details and current limitations.</p>
+documentation of this attribute for further details and current limitations. As 
+an attempt to workaround system limitations in MOUSEBUTTON record the file using 
+IUP_RECSYSTEM.</p>
 <p>The file must had been generated in the same operating system. Screen size 
 differences can exist, but if different themes are used then mouse precision 
 will be affected.</p>
