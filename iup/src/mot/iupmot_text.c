@@ -563,6 +563,15 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
+static int motTextSetAutoRedrawAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    XmTextEnableRedisplay(ih->handle);
+  else
+    XmTextDisableRedisplay(ih->handle);
+  return 0;
+}
+
 static int motTextSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   Widget sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
@@ -1175,6 +1184,7 @@ void iupdrvTextInitClass(Iclass* ic)
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "AUTOREDRAW", NULL, motTextSetAutoRedrawAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupText only */
   iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, motTextSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
