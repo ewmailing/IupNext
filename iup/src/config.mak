@@ -64,6 +64,7 @@ ifdef USE_GTK
     ifdef GTK_MAC
       SRC += gtk/iupmac_help.c gtk/iupmac_info.c
     else
+      USE_X11 = Yes
       SRC += gtk/iupgtk_help.c mot/iupunix_info.c
     endif
   endif
@@ -85,6 +86,7 @@ ifdef USE_MOTIF
          mot/iupmot_list.c mot/iupmot_tree.c
          
   SRC += mot/iupunix_help.c mot/iupunix_info.c
+  USE_X11 = Yes
 
   INCLUDES += mot
 else
