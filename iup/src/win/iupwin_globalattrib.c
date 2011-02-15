@@ -376,5 +376,13 @@ char *iupdrvGetGlobal(const char *name)
   {
     return (char*)iupwin_dll_hinstance;
   }
+  if (iupStrEqual(name, "SYSTEMCODEPAGE"))
+  {
+    CPINFOEX info;
+    char* str = iupStrGetMemory(20);
+    GetCPInfoEx(CP_ACP, 0, &info);
+    sprintf(str, "%d", info.CodePage);
+    return str;
+  }
   return NULL;
 }
