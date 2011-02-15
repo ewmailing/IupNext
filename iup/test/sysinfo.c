@@ -14,7 +14,7 @@ void SysInfoTest(void)
   printf("  System: %s\n", IupGetGlobal("SYSTEM"));
   printf("  System Version: %s\n", IupGetGlobal("SYSTEMVERSION"));
   printf("  System Language: %s\n", IupGetGlobal("SYSTEMLANGUAGE"));
-  printf("  System Code Page: %s\n\n", IupGetGlobal("SYSTEMLOCALE"));
+  printf("  System Locale: %s\n\n", IupGetGlobal("SYSTEMLOCALE"));
 
   sysver = IupGetGlobal("MOTIFVERSION");
   if (sysver) 
