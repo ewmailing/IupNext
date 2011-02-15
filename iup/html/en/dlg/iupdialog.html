@@ -158,7 +158,7 @@ IupSetHandle</a> or
 associate a menu to a name. See also <a href="../elem/iupmenu.html">IupMenu</a>.</p>
 <p><strong>MENUBOX</strong> (creation only): Requires a system menu box from the 
 window manager. If hidden will also remove the Close button. Default: YES. In 
-Motif the decorations are controled by the Window Manager and may not be 
+Motif the decorations are controlled by the Window Manager and may not be 
 possible to be changed from IUP. In Windows if hidden will hide also MAXBOX and 
 MINBOX.</p>
 <p><strong>MINBOX</strong> (creation only): Requires a minimize button from the 
@@ -167,9 +167,12 @@ Window Manager and may not be possible to be changed from IUP. In Windows MINBOX
 is hidden only if MAXBOX is hidden as well, or else it will be just disabled.</p>
 <p><strong>MINSIZE</strong>: Minimum size for the dialog in raster units 
 (pixels). The windowing system will not be able to change the size beyond this 
-limit. Default: 1x1. (since 3.0)</p>
+limit. Default: 1x1. Some systems define a very minimum size greatter than this. 
+Typically Windows has an horizontal minimum size that includes the window 
+decoration buttons. (since 3.0)</p>
 <p><strong>MODAL</strong> (read-only): Returns the popup state. It is &quot;YES&quot; if 
-the dialog was shown using IupPopup. It is &quot;NO&quot; if IupShow was used or it is not 
+the dialog was shown using <strong>IupPopup</strong>. It is &quot;NO&quot; if 
+<strong>IupShow</strong> was used or it is not 
 visible. (since 3.0)</p>
 <p><strong>NATIVEPARENT</strong> (creation only): Native handle of a dialog to 
 be used as parent. Used only if PARENTDIALOG is not defined.</p>

@@ -279,6 +279,7 @@ static void new_dialog(int test, char* tip)
     IupSetAttribute(dlg, "CURSOR", "DLG_CURSOR");
     IupSetAttribute(dlg, "ICON", "DLG_ICON");
     IupSetAttribute(dlg, "MINSIZE", "300x300");
+//    IupSetAttribute(dlg, "MINSIZE", "2x2");
     IupSetAttribute(dlg, "MAXSIZE", "600x600");
 //    IupSetAttribute(dlg, "FONTSIZE", "20");
 

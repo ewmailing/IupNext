@@ -101,6 +101,9 @@ also accepted.</p>
 The control inside the split will not be resized with a size lesser than its
 <strong>Natural</strong> size. See the <a href="../layout_guide.html">Layout Guide</a> for mode details 
   on sizes.</p>
+<p><strong>IupSplit</strong> is not capable of detecting a child minimum size, 
+so if a child has a minimum size, then manually set the <strong>MINMAX</strong> 
+attribute to avoid invalid positioning of the <strong>IupSplit</strong> bar.</p>
 <p>The <strong>IupCanvas</strong> bar handler is always the first child of the 
 split. It can be obtained using <strong>IupGetChild</strong> or <strong>
 IupGetNextChild</strong>.</p>
