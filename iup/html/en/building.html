@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
-<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:m="http://schemas.microsoft.com/office/2004/12/omml">
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <title>Guide</title>
@@ -116,7 +116,14 @@ make
 cd ..</pre>
 <p><strong>TIP</strong>: Instead of building all the libraries, try building only the libraries you 
 are going to use. The provided makefiles will build all the libraries, but take 
-a look inside them and you will figure out how to build just one library. </p>
+a look inside them and you will figure out how to build just one library.</p>
+<p><strong>TIP</strong>: If GTK headers or libraries are not being found, even 
+when the libgtk2.0-dev package is installed, then their installation folder is 
+not where our Makefiles expect. Build the GTK/GDK dependent libraries using 
+&quot;make
+<span style="font-size:12.0pt;font-family:&quot;Helvetica&quot;,&quot;sans-serif&quot;;
+mso-fareast-font-family:&quot;Times New Roman&quot;;color:black;mso-ansi-language:PT-BR;
+mso-fareast-language:PT-BR;mso-bidi-language:AR-SA">USE_PKGCONFIG=Yes&quot;.</span></p>
 <h3>Pre-compiled Binaries</h3>
 <p>Instead of building from sources you can try to use the pre-compiled 
 binaries. Usually they were build in the latest Ubuntu versions for 32 and 64 
