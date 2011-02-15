@@ -181,6 +181,7 @@ iupdrvScreenToClient
 iupdrvClientToScreen
 iupdrvReparent
 iupdrvMakeDirectory
+iupdrvLocaleInfo
 iupdrvIsVisible
 iupdrvIsFile
 iupdrvIsDirectory

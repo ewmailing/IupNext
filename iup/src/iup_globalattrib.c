@@ -210,6 +210,8 @@ char *IupGetGlobal(const char *name)
     sprintf(str, "%d", bpp);
     return str;
   }
+  if (iupStrEqual(name, "SYSTEMLOCALE"))
+    return iupdrvLocaleInfo();
 
   value = iupdrvGetGlobal(name);
 

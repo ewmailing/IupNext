@@ -21,10 +21,16 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <langinfo.h>
 
 #include "iup_str.h"
 #include "iup_drvinfo.h"
 
+
+char* iupdrvLocaleInfo(void)
+{
+  return iupStrGetMemoryCopy(nl_langinfo(CODESET));
+}
 
 int iupdrvMakeDirectory(const char* name) 
 {

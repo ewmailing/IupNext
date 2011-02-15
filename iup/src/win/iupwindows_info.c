@@ -16,6 +16,13 @@
 #include "iup_drvinfo.h"
 
 
+char* iupdrvLocaleInfo(void)
+{
+  CPINFOEX info;
+  GetCPInfoEx(CP_ACP, 0, &info);
+  return iupStrGetMemoryCopy(info.CodePageName);
+}
+
 int iupdrvMakeDirectory(const char* name) 
 {
   if (CreateDirectory(name, NULL))

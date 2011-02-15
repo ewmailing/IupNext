@@ -12,8 +12,9 @@ void SysInfoTest(void)
   printf("  Copyright: %s\n", IUP_COPYRIGHT);
   printf("  Driver: %s\n", IupGetGlobal("DRIVER"));
   printf("  System: %s\n", IupGetGlobal("SYSTEM"));
-  printf("  System Version: %s\n\n", IupGetGlobal("SYSTEMVERSION"));
-  printf("  System Language: %s\n\n", IupGetGlobal("SYSTEMLANGUAGE"));
+  printf("  System Version: %s\n", IupGetGlobal("SYSTEMVERSION"));
+  printf("  System Language: %s\n", IupGetGlobal("SYSTEMLANGUAGE"));
+  printf("  System Code Page: %s\n\n", IupGetGlobal("SYSTEMLOCALE"));
 
   sysver = IupGetGlobal("MOTIFVERSION");
   if (sysver) 
@@ -27,18 +28,17 @@ void SysInfoTest(void)
 
   sysver = IupGetGlobal("GTKVERSION");
   if (sysver) 
-    printf("  GTK Version: %s\n", sysver);
+    printf("  GTK Version: %s\n\n", sysver);
 
   printf("  Screen Depth: %s\n", IupGetGlobal("SCREENDEPTH"));
   printf("  Screen Size: %s\n", IupGetGlobal("SCREENSIZE"));
   printf("  Full Screen Size: %s\n", IupGetGlobal("FULLSIZE"));
-  printf("  True Color Canvas: %s\n\n", IupGetGlobal("TRUECOLORCANVAS"));
-
   if (!motif)
   {
     printf("  Virtual Screen: %s\n", IupGetGlobal("VIRTUALSCREEN"));
     printf("  Monitors Info: %s\n", IupGetGlobal("MONITORSINFO"));
   }
+  printf("  True Color Canvas: %s\n\n", IupGetGlobal("TRUECOLORCANVAS"));
 
   printf("  Computer Name: %s\n", IupGetGlobal("COMPUTERNAME"));
   printf("  User Name: %s\n", IupGetGlobal("USERNAME"));

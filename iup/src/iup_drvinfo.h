@@ -94,6 +94,10 @@ int iupdrvIsDirectory(const char* name);
  * \ingroup drvinfo */
 int iupdrvMakeDirectory(const char* name);
 
+/** Returns the current locale name.
+ * \ingroup drvinfo */
+char* iupdrvLocaleInfo(void);
+
 
 #ifdef __cplusplus
 }
