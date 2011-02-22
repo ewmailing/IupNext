@@ -1933,6 +1933,15 @@ static void winTextLayoutUpdateMethod(Ihandle* ih)
     iupdrvBaseLayoutUpdateMethod(ih);
 }
 
+static void winTextUnMapMethod(Ihandle* ih)
+{
+  HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
+  if (hSpin)
+    DestroyWindow(hSpin);
+
+  iupdrvBaseUnMapMethod(ih);
+}
+
 static int winTextMapMethod(Ihandle* ih)
 {
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, 
@@ -2051,6 +2060,7 @@ void iupdrvTextInitClass(Iclass* ic)
   /* Driver Dependent Class functions */
   ic->Map = winTextMapMethod;
   ic->LayoutUpdate = winTextLayoutUpdateMethod;
+  ic->UnMap = winTextUnMapMethod;
 
   /* Driver Dependent Attribute functions */
 

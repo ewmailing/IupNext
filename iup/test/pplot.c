@@ -567,7 +567,11 @@ static int dial2_btnup_cb(Ihandle *self, double angle)
 
 static int bt1_cb(Ihandle *self)
 {
-//  int ii = tabs_get_index();
+  int ii = tabs_get_index();
+  IupSetAttribute(plot[ii], "CLEAR", "Yes");
+//  IupSetAttribute(plot[ii], "REMOVE", "0");
+  IupSetAttribute(plot[ii], "REDRAW", NULL);
+
 //  cdCanvas* cnv = cdCreateCanvas(CD_PDF, "pplot.pdf -o");
 //  IupPPlotPaintTo(plot[ii], cnv);
 //  cdKillCanvas(cnv);
