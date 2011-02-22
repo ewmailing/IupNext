@@ -216,22 +216,29 @@ void iuplua_pushihandle(lua_State *L, Ihandle *ih)
 {
   if (ih) 
   {
-    /* not created in Lua? */
     char* sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
     if (!sref)
     {
+      /* was not created in Lua */
+
+      iuplua_plugstate(L, ih);
+
+      /* get the function iup.RegisterHandle */
       lua_getglobal(L, "iup");
       lua_pushstring(L,"RegisterHandle");
       lua_gettable(L, -2);
       lua_remove(L, -2);  /* remove "iup" from stack */
 
+      /* call the function iup.RegisterHandle */
       iuplua_pushihandle_raw(L, ih);
       lua_pushstring(L, IupGetClassName(ih));
       lua_call(L, 2, 1);  /* iup.RegisterHandle(ih, type) */
     }
     else
     {
+      /* already created in Lua */
       iuplua_pushihandle_raw(L, ih);
+
       lua_pushstring(L, "iup handle");
       lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iup handle"] */
       lua_setmetatable(L, -2);    /* metatable(ih) = t */

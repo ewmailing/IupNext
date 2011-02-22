@@ -804,8 +804,16 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
 #endif
 }
 
+#ifndef WIN32
+#include <unistd.h>
+void iupdrvSleep(int time)
+{
+  usleep(time*1000);  /* mili to micro */
+}
+#else
 void iupdrvSleep(int time)
 {
   clock_t goal = (clock_t)(time*CLOCKS_PER_SEC)/1000 + clock();
   while(goal > clock());     
 }
+#endif
