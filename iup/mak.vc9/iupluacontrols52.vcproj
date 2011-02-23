@@ -112,7 +112,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srclua5\il_mask.c"
+				RelativePath="..\srclua5\iuplua_mask.c"
 				>
 			</File>
 			<File
@@ -120,7 +120,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\srclua5\il_matrix_aux.c"
+				RelativePath="..\srclua5\iuplua_matrix_aux.c"
 				>
 			</File>
 			<File

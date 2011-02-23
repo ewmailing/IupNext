@@ -155,11 +155,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\il_getcolor.c"
+					RelativePath="..\srclua5\iuplua_getcolor.c"
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\il_getparam.c"
+					RelativePath="..\srclua5\iuplua_getparam.c"
 					>
 				</File>
 				<File
@@ -219,7 +219,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\il_scanf.c"
+					RelativePath="..\srclua5\iuplua_scanf.c"
 					>
 				</File>
 				<File
@@ -263,7 +263,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\il_tree_aux.c"
+					RelativePath="..\srclua5\iuplua_tree_aux.c"
 					>
 				</File>
 				<File
