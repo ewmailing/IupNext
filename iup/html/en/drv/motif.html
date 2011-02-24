@@ -8,8 +8,7 @@
 <body>
 
 <h2>Motif System Driver</h2>
-<p>Driver for the X-Windows/Motif 2.x 
-  environment. But it can run in Motif 1.x.</p>
+<p>Driver for the X-Windows/Motif 2.x environment.</p>
 <h3>Environment Variables</h3>
 <p><b>DEBUG</b></p>
 <p class="info">This variables existence makes the driver 
@@ -31,12 +30,15 @@ applications that use Motif and Intrinsics.</p>
 
 <h4>Dynamic Libraries in Linux</h4>
 
-<p>When using dynamic libraries in Linux, the &quot;libiup.so&quot; uses the GTK driver. So 
+<p>When using dynamic libraries in Linux, the &quot;libiup.so&quot; uses the GTK driver 
+for newer systems (Linux26g4). So 
 applications that dynamically load IUP will always use the &quot;libiup.so&quot;, for 
 example Lua using require. To use the IUP Motif dynamic library in Linux you must rename the 
 &quot;libiupmot.so&quot; to &quot;libiup.so&quot;, so the Motif driver will be loaded instead of the 
 GTK 
 driver.</p>
+<p>In older systems (&lt;=Linux26 with gcc 3) the &quot;libiup.so&quot; already contains the 
+Motif driver.</p>
 <h4>During linking in the Solaris 
   environment: Can not find <b>libresolv.so.2</b></h4>
 <p>This error occurs if the system does not 
@@ -93,10 +95,10 @@ driver.</p>
 <p>When a warning about XtAddCallback appears during the application initialization, and it aborts, this usually means 
   that you are using a Motif with a different version than the Motif used to build IUP. Reinstall Motif or rebuild IUP 
   using your Motif.</p>
-<h4>Some Control Sizes are wrong</h4>
+<h4>Some Control Sizes are wrong (IUP 2.x only)</h4>
 <p>Sometimes the control initialization is incomplete and its size is miscalculated. To solve this call IupMap(dialog) 
-  and set the dialog size to NULL &quot;IupSetAttribute(dlg, IUP_SIZE, NULL);&quot; before calling IupShow. This will fix the 
-  sizes. We hope to solve this problem in future versions.</p>
+  and set the dialog size to NULL &quot;IupSetAttribute(dlg, IUP_SIZE, NULL);&quot; before calling IupShow. 
+This will fix the sizes.</p>
 
 <h4><font SIZE="3">Indigo Magic look in Sgi</font></h4>
 <font SIZE="3">
