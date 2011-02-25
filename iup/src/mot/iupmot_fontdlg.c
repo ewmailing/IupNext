@@ -177,7 +177,7 @@ static void motFontDlgSelectFontFace(Ihandle* ih, char* fontface, int select)
 static int motFontDlgButtonOK_CB(Ihandle* ih)
 {
   Ihandle* sample = IupGetDialogChild(ih, "SAMPLE");
-  iupAttribStoreStr(IupGetDialog(ih), "TITLE", IupGetAttribute(sample, "FONT"));
+  iupAttribStoreStr(IupGetDialog(ih), "VALUE", IupGetAttribute(sample, "FONT"));
   iupAttribSetStr(IupGetDialog(ih), "STATUS", "1");
   return IUP_CLOSE;
 }
