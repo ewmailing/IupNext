@@ -228,9 +228,12 @@ static int motTextSetAppendAttrib(Ihandle* ih, const char* value)
   /* disable callbacks */
   iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
   if (ih->data->is_multiline && ih->data->append_newline && pos!=0)
+  {
     XmTextInsert(ih->handle, pos, "\n");
+    pos++;
+  }
 	if (value)
-    XmTextInsert(ih->handle, pos+1, (char*)value);
+    XmTextInsert(ih->handle, pos, (char*)value);
   iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   return 0;
 }
@@ -276,9 +279,6 @@ static int motTextSetSelectionAttrib(Ihandle* ih, const char* value)
     end--;
   }
 
-  /* end is inside the selection, in IUP is outside */
-  end--;
-
   XmTextSetSelection(ih->handle, (XmTextPosition)start, (XmTextPosition)end, CurrentTime);
 
   return 0;
@@ -293,9 +293,6 @@ static char* motTextGetSelectionAttrib(Ihandle* ih)
     return NULL;
 
   str = iupStrGetMemory(100);
-
-  /* end is inside the selection, in IUP is outside */
-  end++;
 
   if (ih->data->is_multiline)
   {
@@ -340,9 +337,6 @@ static int motTextSetSelectionPosAttrib(Ihandle* ih, const char* value)
   if(start<0 || end<0) 
     return 0;
 
-  /* end is inside the selection, in IUP is outside */
-  end--;
-
   XmTextSetSelection(ih->handle, (XmTextPosition)start, (XmTextPosition)end, CurrentTime);
 
   return 0;
@@ -357,12 +351,7 @@ static char* motTextGetSelectionPosAttrib(Ihandle* ih)
     return NULL;
 
   str = iupStrGetMemory(100);
-
-  /* end is inside the selection, in IUP is outside */
-  end++;
-
   sprintf(str, "%d:%d", (int)start, (int)end);
-
   return str;
 }
 
