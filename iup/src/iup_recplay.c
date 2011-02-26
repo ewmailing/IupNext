@@ -228,6 +228,99 @@ static void iPlayReadStr(FILE* file, char* value, int len, int mode)
   }
 }
 
+static int iPlayAction(FILE* file, int mode)
+{
+  char action[4];
+  char eol;
+  int time;
+  static int pressed = 0;
+
+  iPlayReadStr(file, action, 3, mode);
+  iPlayReadInt(file, &time, mode);
+  if (ferror(file)) return -1;
+
+  time -= iRecClock() - irec_lastclock;
+  if (time < 0) time = 0;
+  if (time)
+    iupdrvSleep(time);
+
+  switch (action[0])
+  {
+  case 'B':
+    {
+      char button, status;
+      int x, y;
+      iPlayReadChar(file, &button, mode);
+      iPlayReadByte(file, &status, mode);
+      iPlayReadInt(file, &x, mode);
+      iPlayReadInt(file, &y, mode);
+      if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
+      if (ferror(file)) return -1;
+
+      /*IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, button, (int)status);*/
+      iupdrvSendMouse(x, y, (int)button, (int)status);
+
+      /* Process all messages between button press and release without interruption.
+         This will not work if two butons are pressed together. */
+/*      if (status == 1 || status == 2)
+        pressed = 1;
+      else if (status == 0)
+        pressed = 0; */
+      break;
+    }
+  case 'M':
+    {
+      char button;
+      int x, y;
+      iPlayReadInt(file, &x, mode);
+      iPlayReadInt(file, &y, mode);
+      iPlayReadChar(file, &button, mode);
+      if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
+      if (ferror(file)) return -1;
+
+      /* IupSetfAttribute(NULL, "CURSORPOS", "%dx%d", x, y); */
+      iupdrvSendMouse(x, y, (int)button, -1);
+      break;
+    }
+  case 'K':
+    {
+      int key;
+      char pressed;
+      iPlayReadInt(file, &key, mode);
+      iPlayReadByte(file, &pressed, mode);
+      if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
+      if (ferror(file)) return -1;
+
+      if (pressed)
+        /* IupSetfAttribute(NULL, "KEYPRESS", "%d", key); */
+        iupdrvSendKey(key, 0x01);
+      else
+        /* IupSetfAttribute(NULL, "KEYRELEASE", "%d", key); */
+        iupdrvSendKey(key, 0x02);
+      break;
+    }
+  case 'W':
+    {
+      float delta;
+      int x, y;
+      iPlayReadFloat(file, &delta, mode);
+      iPlayReadInt(file, &x, mode);
+      iPlayReadInt(file, &y, mode);
+      if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
+      if (ferror(file)) return -1;
+
+      /*IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, 'W', (int)delta);*/
+      iupdrvSendMouse(x, y, 'W', (int)delta);
+      break;
+    }
+  default:
+      return -1;
+  }
+
+  irec_lastclock = iRecClock();
+  return pressed;
+}
+
 static int iPlayTimer_CB(Ihandle* timer)
 {
   FILE* file = (FILE*)IupGetAttribute(timer, "_IUP_PLAYFILE");
@@ -241,83 +334,14 @@ static int iPlayTimer_CB(Ihandle* timer)
   }
   else
   {
+    int cont = 1;
     int mode = IupGetInt(timer, "_IUP_PLAYMODE");
-    char action[4];
-    char eol;
-    int time;
 
-    iPlayReadStr(file, action, 3, mode);
-    iPlayReadInt(file, &time, mode);
-    if (ferror(file)) return IUP_DEFAULT;
-
-    time -= iRecClock() - irec_lastclock;
-    if (time < 0) time = 0;
-    if (time)
-      iupdrvSleep(time);
-
-    switch (action[0])
+/*    while (cont)    //did not work, menus do not receive the click, why? */
     {
-    case 'B':
-      {
-        char button, status;
-        int x, y;
-        iPlayReadChar(file, &button, mode);
-        iPlayReadByte(file, &status, mode);
-        iPlayReadInt(file, &x, mode);
-        iPlayReadInt(file, &y, mode);
-        if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
-        if (ferror(file)) return IUP_DEFAULT;
+      cont = iPlayAction(file, mode);
 
-        /*IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, button, (int)status);*/
-        iupdrvSendMouse(x, y, (int)button, (int)status);
-        break;
-      }
-    case 'M':
-      {
-        char button;
-        int x, y;
-        iPlayReadInt(file, &x, mode);
-        iPlayReadInt(file, &y, mode);
-        iPlayReadChar(file, &button, mode);
-        if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
-        if (ferror(file)) return IUP_DEFAULT;
-
-        /* IupSetfAttribute(NULL, "CURSORPOS", "%dx%d", x, y); */
-        iupdrvSendMouse(x, y, (int)button, -1);
-        break;
-      }
-    case 'K':
-      {
-        int key;
-        char pressed;
-        iPlayReadInt(file, &key, mode);
-        iPlayReadByte(file, &pressed, mode);
-        if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
-        if (ferror(file)) return IUP_DEFAULT;
-
-        if (pressed)
-          /* IupSetfAttribute(NULL, "KEYPRESS", "%d", key); */
-          iupdrvSendKey(key, 0x01);
-        else
-          /* IupSetfAttribute(NULL, "KEYRELEASE", "%d", key); */
-          iupdrvSendKey(key, 0x02);
-        break;
-      }
-    case 'W':
-      {
-        float delta;
-        int x, y;
-        iPlayReadFloat(file, &delta, mode);
-        iPlayReadInt(file, &x, mode);
-        iPlayReadInt(file, &y, mode);
-        if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
-        if (ferror(file)) return IUP_DEFAULT;
-
-        /*IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, 'W', (int)delta);*/
-        iupdrvSendMouse(x, y, 'W', (int)delta);
-        break;
-      }
-    default:
+      if (cont == -1)  /* error */
       {
         fclose(file);
         IupSetAttribute(timer, "RUN", "NO");
@@ -328,7 +352,6 @@ static int iPlayTimer_CB(Ihandle* timer)
     }
 
     IupFlush();
-    irec_lastclock = iRecClock();
   }
 
   return IUP_DEFAULT;
