@@ -124,14 +124,33 @@ ComputeTecUname()
       fi
     fi
   fi
-  
-  TU_DEBUG=1
-  if [ $TU_DEBUG == 1 ]; then
-    echo ' '
-    echo '  Info:'
-    echo 'TEC_SYSNAME='$TEC_SYSNAME
-    echo 'TEC_SYSVERSION='$TEC_SYSVERSION
-    echo 'TEC_SYSMINOR='$TEC_SYSMINOR
-    echo 'TEC_SYSARCH='$TEC_SYSARCH
+}
+
+ComputeSystemPaths()
+{
+  if [ $TEC_SYSARCH == x64 ]; then
+    if [ -d /usr/lib64 ]; then
+      TEC_SYSTEM_LIB=/usr/lib64
+    else
+      TEC_SYSTEM_LIB=/usr/lib
+    fi
+  else
+    TEC_SYSTEM_LIB=/usr/lib
   fi
+
+  TEC_SYSTEM_INC=/usr/include
+  
+  TEC_LUA_LIB=$TEC_SYSTEM_LIB/lua/5.1
+}
+
+PrintInfo()
+{
+  echo ' '
+  echo '  Info:'
+  echo 'TEC_SYSNAME='$TEC_SYSNAME
+  echo 'TEC_SYSVERSION='$TEC_SYSVERSION
+  echo 'TEC_SYSMINOR='$TEC_SYSMINOR
+  echo 'TEC_SYSARCH='$TEC_SYSARCH
+  echo 'TEC_SYSTEM_LIB='$TEC_SYSTEM_LIB
+  echo 'TEC_SYSTEM_INC='$TEC_SYSTEM_INC
 }

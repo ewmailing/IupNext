@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Include TEC_UNAME definitions
+source tec_uname
+
 echo ' '
 echo '  This script will configure the Tecgraf libraries in the system'
 echo '  to be used from Lua. It was tested in Ubuntu and in Fedora.'
@@ -11,24 +14,20 @@ echo '  Must be run with "sudo", or install will fail,'
 echo '  for example:'
 echo '     sudo ./config_lua_module'
 echo ' '
-echo -n Press Enter to continue or Ctrl+C to abort...
-read contscr
-echo ' '
-
-if [ -d /usr/lib64 ]; then
-  SYSTEM_LIB=/usr/lib64
-else
-  SYSTEM_LIB=/usr/lib
-fi
-LUA_LIB=$SYSTEM_LIB/lua/5.1
 
 Make_Lua_Link()
 {
-  ln -fsv $SYSTEM_LIB/lib$1'51'.so $1.so
+  ln -fsv $TEC_SYSTEM_LIB/lib$1'51'.so $1.so
 }
 
-mkdir -p $LUA_LIB
-cd $LUA_LIB
+# From tec_uname script
+ComputeTecUname
+ComputeSystemPaths
+#PrintInfo
+
+Pause
+mkdir -p $TEC_LUA_LIB
+cd $TEC_LUA_LIB
 
 Make_Lua_Link iuplua
 Make_Lua_Link iupluacontrols

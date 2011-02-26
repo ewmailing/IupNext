@@ -3,14 +3,6 @@
 # Include TEC_UNAME definitions
 source tec_uname
 
-# System paths
-if [ -d /usr/lib64 ]; then
-  SYSTEM_LIB=/usr/lib64
-else
-  SYSTEM_LIB=/usr/lib
-fi
-SYSTEM_INC=/usr/include
-
 echo ' '
 echo '  This script will install the >>Development<< files in the system'
 echo '  from the build directories or from the unpacked download.'
@@ -27,24 +19,24 @@ EchoDownloadTip()
   echo '  For example:'
   echo '     mkdir iup'
   echo '     cd iup'
-  echo '     tar -xpvzf ../iup-3.2_Linux26g4_lib.tar.gz'
+  echo '     tar -xpvzf ../iup-X.X_Linux26g4_lib.tar.gz'
   echo ' '
 }
 
 Copy_Dev_Extra_CD()
 {
   # Do NOT overwrite for FreeType
-  cp -fn $1libfreetype.a $SYSTEM_LIB
+  cp -fn $1libfreetype.a $TEC_SYSTEM_LIB
   
-  cp -fv $1libpdflib.a $SYSTEM_LIB
-  cp -fv $1libftgl.a $SYSTEM_LIB
+  cp -fv $1libpdflib.a $TEC_SYSTEM_LIB
+  cp -fv $1libftgl.a $TEC_SYSTEM_LIB
 }
 
 Copy_Dev_To_System()
 {
-  mkdir -p $SYSTEM_INC/$1
-  cp -fv include/*.h $SYSTEM_INC/$1
-  cp -fv $2lib$1*.a $SYSTEM_LIB
+  mkdir -p $TEC_SYSTEM_INC/$1
+  cp -fv include/*.h $TEC_SYSTEM_INC/$1
+  cp -fv $2lib$1*.a $TEC_SYSTEM_LIB
   
   if [ $1 == cd ]; then
     Copy_Dev_Extra_CD $2
@@ -68,6 +60,9 @@ Install_Dev()
   fi
 }
 
+# From tec_uname script
 ComputeTecUname
+ComputeSystemPaths
+#PrintInfo
 
 Install_Dev iup

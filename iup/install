@@ -3,13 +3,6 @@
 # Include TEC_UNAME definitions
 source tec_uname
 
-# System paths
-if [ -d /usr/lib64 ]; then
-  SYSTEM_LIB=/usr/lib64
-else
-  SYSTEM_LIB=/usr/lib
-fi
-
 echo ' '
 echo '  This script will install the >>Run Time<< libraries in the system'
 echo '  from the build directories or from the unpacked download.'
@@ -26,22 +19,22 @@ EchoDownloadTip()
   echo '  For example:'
   echo '     mkdir iup'
   echo '     cd iup'
-  echo '     tar -xpvzf ../iup-3.2_Linux26g4_lib.tar.gz'
+  echo '     tar -xpvzf ../iup-X.X_Linux26g4_lib.tar.gz'
   echo ' '
 }
 
 Copy_RunTime_Extra_CD()
 {
   # Do NOT overwrite for FreeType
-  cp -fn $1libfreetype.so $SYSTEM_LIB
+  cp -fn $1libfreetype.so $TEC_SYSTEM_LIB
   
-  cp -fv $1libpdflib.so $SYSTEM_LIB
-  cp -fv $1libftgl.so $SYSTEM_LIB
+  cp -fv $1libpdflib.so $TEC_SYSTEM_LIB
+  cp -fv $1libftgl.so $TEC_SYSTEM_LIB
 }
 
 Copy_RunTime_To_System()
 {
-  cp -fv $2lib$1*.so $SYSTEM_LIB
+  cp -fv $2lib$1*.so $TEC_SYSTEM_LIB
   
   if [ $1 == cd ]; then
     Copy_RunTime_Extra_CD $2
@@ -65,6 +58,9 @@ Install_RunTime()
   fi
 }
 
+# From tec_uname script
 ComputeTecUname
+ComputeSystemPaths
+#PrintInfo
 
 Install_RunTime iup
