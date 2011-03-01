@@ -567,11 +567,9 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   if (!ih->handle)
       return IUP_ERROR;
 
-#ifdef WIN32
 #if GTK_CHECK_VERSION(2, 18, 0)
-  /* CD will NOT work without this, must use always the CD-GDK driver, even in Win32 */
+  /* CD will NOT work properly without this, must use always the CD-GDK driver */
   gtk_widget_set_has_window(ih->handle, TRUE);  
-#endif
 #endif
 
   scrolled_window = (GtkScrolledWindow*)gtk_scrolled_window_new(NULL, NULL);
