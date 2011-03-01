@@ -296,7 +296,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
 {
   Ihandle* ih_matrix = ih->parent;
   IFniiiis cb = (IFniiiis) IupGetCallback(ih_matrix, "ACTION_CB");
-  if (cb && c==0) /* only for other characters */
+  if (cb && !iup_isprint(c)) /* only for other keys that are not characters */
   {
     int oldc = c;
     c = cb(ih_matrix, c, ih_matrix->data->lines.focus_cell, ih_matrix->data->columns.focus_cell, 1, IupGetAttribute(ih, "VALUE"));

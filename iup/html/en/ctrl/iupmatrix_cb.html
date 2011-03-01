@@ -4,6 +4,11 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupMatrix Callbacks</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -12,24 +17,27 @@
 <p><strong><a name="IUP_ACTION">ACTION_CB</a></strong>:
   Action generated when a keyboard event 
   occurs.</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>c</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>edition</strong>, char* <strong>after</strong>); [in C]
-<strong>elem</strong>:action_cb(<strong>c, lin, col</strong>, <strong>edition, after</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>key</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>edition</strong>, char* <strong>value</strong>); [in C]
+<strong>elem</strong>:action_cb(<strong>key, lin, col</strong>, <strong>edition</strong>: number<strong>, value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix where the user 
     typed something.<br>
-<strong>c</strong>:
+<strong>key</strong>:
     Identifier of the typed key. Please refer to 
     the <a href="../attrib/key.html">Keyboard Codes</a>
     table for a list of possible values.<br>
-    lin, <strong>col</strong>:
+    <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the selected cell.<br>
 <strong>edition</strong>:
     1 if the cell is in edition mode, and 0 if it is not.<br>
-<strong>after</strong>:
-    The new value of the text in case the key is 
-    validated (see return values). Notice that this value can be NULL if the 
+<strong>value</strong>:
+    When EDIT_MODE=NO is the cell current value, but if the type key is a valid 
+character then contains a string with that character. When EDIT_MODE=Yes depends 
+on the editing field type. If a dropdown, then it is an empty string (&quot;&quot;). If a 
+text, and the type key is a valid character then it is the future value of the 
+text field, if not a valid character then it is the cell current value. Notice that this value can be NULL if the 
 cell does not have a value and the key pressed is not a character.</p>
-<p class="info">Possible return values are:
+<p class="info"><span class="style1">Returns:</span>
     IUP_DEFAULT validates the key,
     IUP_IGNORE ignores the key,
     IUP_CONTINUE forwards the key to IUPs conventional 
@@ -38,7 +46,7 @@ cell does not have a value and the key pressed is not a character.</p>
   Action generated when any mouse button is 
   pressed over a cell. This callback is always called after other callbacks.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
-<strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>:string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
@@ -49,12 +57,12 @@ cell does not have a value and the key pressed is not a character.</p>
 <strong>status</strong>: Status of the mouse buttons and some keyboard keys at 
 the moment the event is generated. The same macros used for
 <a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status.</p>
-<p class="info">To avoid the display update return IUP_IGNORE.</p>
+<p class="info"><span class="style1">Returns:</span> To avoid the display update return IUP_IGNORE.</p>
 <p><strong><a name="RELEASE_CB">RELEASE_CB</a></strong>:
   Action generated when any mouse button is 
   released over a cell. This callback is always called after other callbacks.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
-<strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>:string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
@@ -65,7 +73,7 @@ the moment the event is generated. The same macros used for
 <strong>status</strong>: Status of the mouse buttons and some keyboard keys at 
 the moment the event is generated. The same macros used for
 <a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status. </p>
-<p class="info">To avoid the display update return IUP_IGNORE.</p>
+<p class="info"><span class="style1">Returns:</span> To avoid the display update return IUP_IGNORE.</p>
 <p><strong><a name="MOUSEMOVE_CB">MOUSEMOVE_CB</a></strong>:
   Action generated to notify the application 
   that the mouse has moved over the matrix.&nbsp;</p>
@@ -79,7 +87,7 @@ the moment the event is generated. The same macros used for
     cursor is currently on.</p>
 <p><strong><a name="ENTERITEM_CB">ENTERITEM_CB</a></strong>:
   Action generated when a matrix cell is 
-  selected, becoming the current cell.</p>
+  selected, becoming the current cell. Also called when matrix is getting focus.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:enteritem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -87,11 +95,9 @@ the moment the event is generated. The same macros used for
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the selected cell.</p>
-<p class="info">The user must return IUP_DEFAULT. 
-    This callback is also called when matrix is getting focus.</p>
 <p><strong><a name="LEAVEITEM_CB">LEAVEITEM_CB</a></strong>:
   Action generated when a cell is no longer 
-  the current cell.</p>
+  the current cell. Also called when the matrix is losing focus.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:leaveitem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -100,12 +106,10 @@ the moment the event is generated. The same macros used for
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell which is no longer 
     the current cell.</p>
-<p class="info">The user must return 
-    either IUP_DEFAULT or IUP_IGNORE. 
-    This callback is also called when the matrix is losing focus. Returning IUP_IGNORE prevents the current cell from changing, but this will not work when the 
+<p class="info"><span class="style1">Returns:</span> IUP_IGNORE prevents the current cell from changing, but this will not work when the 
     matrix is losing focus. 
-    &nbsp;If you try to move to beyond matrix borders the cell will lose focus and then get it again, so leaveitem and 
-    enteritem will be called.</p>
+    &nbsp;If you try to move to beyond matrix borders the cell will lose focus and then get it again, so leaveitem_cb and 
+    enteritem_cb will be called.</p>
 <p><strong><a name="SCROLLTOP_CB">SCROLLTOP_CB</a></strong>:
   Action generated when the matrix 
   is scrolled with the scrollbars or with the keyboard. Can be used together with the &quot;ORIGIN&quot; attribute to synchronize the movement of two or more matrices.</p>
@@ -117,7 +121,6 @@ the moment the event is generated. The same macros used for
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell currently in the 
     upper left corner of the matrix.</p>
-<p class="info">The user must return IUP_DEFAULT.</p>
 <h3>Drawing</h3>
 <p><a name="BGCOLOR_CB"><strong>BGCOLOR_CB</strong></a> -
   Action generated to retrieve the background 
@@ -127,13 +130,11 @@ the moment the event is generated. The same macros used for
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix where the user 
     typed something.<br>
-    lin, <strong>col</strong>:
+    <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.<br>
-    red, green,
-    blue:
+    <strong>red</strong>, <strong>green</strong>, <strong>blue</strong>:
     the cell background color.</p>
-<p class="info">If the function return
-    IUP_IGNORE, the return values are ignored and the attribute defined background color will be used. If returns
+<p class="info"><span class="style1">Returns:</span> If IUP_IGNORE, the values are ignored and the attribute defined background color will be used. If returns
     IUP_DEFAULT the returned values will be used as the
     background color.</p>
 <p><a name="FGCOLOR_CB"><strong>FGCOLOR_CB</strong></a> -
@@ -150,8 +151,7 @@ the moment the event is generated. The same macros used for
     blue:
     the cell 
     foreground color.</p>
-<p class="info">If the function return
-    IUP_IGNORE, the return values are ignored and the attribute defined
+<p class="info"><span class="style1">Returns:</span> If IUP_IGNORE, the values are ignored and the attribute defined
     foreground color will be used. If returns
     IUP_DEFAULT the returned values will be used as the
     foreground color.</p>
@@ -165,13 +165,16 @@ the moment the event is generated. The same macros used for
     the user.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
-<p class="info">Must return a font or NULL to use the the attribute defined 
+<p class="info"><span class="style1">Returns:</span> Must return a font or NULL to use the the attribute defined 
 font. </p>
 <p><strong><a name="DRAW_CB">DRAW_CB</a></strong>:
   Action generated before a cell is drawn. 
   Allows to draw a custom cell contents. You must use the 
 <a target="_blank" href="http://www.tecgraf.puc-rio.br/cd/">CD</a> 
-  library primitives.</p>
+  library primitives.&nbsp; The clipping is set for the bounding rectangle. The 
+callback is called after the cell background has been filled with the background 
+color. If HIDEFOCUS=NO (the default) the drawing area will not include the focus 
+area, if HIDEFOCUS=YES the complete cell is available.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>x1</strong>, int <strong>x2</strong>, int <strong>y1</strong>, int <strong>y2</strong>, cdCanvas* <strong>cnv</strong>); [in C]
 <strong>elem</strong>:draw_cb(<strong>lin, col, x1, x2, y1, y2</strong>: number, <strong>cnv</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -183,15 +186,12 @@ font. </p>
     Bounding rectangle of the current cell in 
     pixels.<br>
 <strong>cnv</strong>: internal canvas CD used to draw the matrix.</p>
-<p class="info">If this function return IUP_IGNORE the normal text drawing will take place. The clipping is set for the bounding 
-    rectangle. The callback is called after the cell background has been filled with the background color. If
-    HIDEFOCUS=NO (the default) the drawing area will not include the focus area, if
-    HIDEFOCUS=YES the complete cell is available.</p>
+<p class="info"><span class="style1">Returns:</span> If IUP_IGNORE the normal 
+text drawing will take place.</p>
 <p><strong><a name="DROPCHECK_CB">DROPCHECK_CB</a></strong>:
   Action generated before 
   the current cell is redrawn to determine if a dropdown 
-  feedback should be shown. If this action is not registered, no feedback will be shown. 
-</p>
+  feedback should be shown. If this action is not registered, no feedback will be shown.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:dropcheck_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -199,8 +199,8 @@ font. </p>
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
-<p class="info">This function must return IUP_DEFAULT to show a dropdown field feedback, 
-    or IUP_IGNORE to ignore the dropdown feedback.</p>
+<p class="info"><span class="style1">Returns:</span> IUP_DEFAULT will show a dropdown field feedback, 
+    or IUP_IGNORE to NOT draw the dropdown feedback.</p>
 <h3>Editing</h3>
 <p><strong><a name="DROP_CB">DROP_CB</a></strong>:
   Action generated before the current cell 
@@ -221,7 +221,7 @@ font. </p>
     be shown to the user.<br>
     lin, <strong>col</strong>:
     Coordinates of the current cell.</p>
-<p class="info">This function must return IUP_IGNORE to show a text-edition field, or IUP_DEFAULT to show a dropdown field.</p>
+<p class="info"><span class="style1">Returns:</span> IUP_IGNORE to show a text-edition field, or IUP_DEFAULT to show a dropdown field.</p>
 <p><strong><a name="DROPSELECT_CB">DROPSELECT_CB</a></strong>:
   Action generated when an element in the 
   dropdown list is selected. If returns
@@ -232,7 +232,7 @@ else the item is selected and editing remains.</p>
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
-    lin, <strong>col</strong>:
+    <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the current cell.<br>
 <strong>drop</strong>:
     Identifier of the dropdown list shown to the 
@@ -250,12 +250,14 @@ else the item is selected and editing remains.</p>
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
-    lin, <strong>col</strong>:
+    <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the current cell.<br>
 <strong>mode</strong>:
     1 if the cell has entered the edition mode, or 0 if the cell has left the edition mode.<br>
 <strong>update</strong>: used when mode=0 to identify if the value will be 
 updated whe the callback returns with IUP_DEFAULT. (since 3.0)</p>
+<p class="info"><span class="style1">Returns:</span> can be IUP_DEFAULT, 
+IUP_IGNORE or IUP_CONTINUE.</p>
 <p class="info">When <strong>mode</strong>=1 editing is allowed if the callback returns 
 IUP_DEFAULT, so to make the cell read-only return IUP_IGNORE.</p>
 <p class="info">When <strong>mode</strong>=0 the new value is accepted only if the callback returns
@@ -286,7 +288,7 @@ and it is always accepted.</p>
     the user.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
-<p class="info">Must return the string to be redrawn. </p>
+<p class="info"><span class="style1">Returns:</span> the string to be redrawn. </p>
 <p class="info"><b>IMPORTANT</b>:
     The existance of this callback defines the callback operation mode of the matrix 
 when it is mapped.</p>
@@ -300,7 +302,7 @@ when it is mapped.</p>
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
-    lin, <strong>col</strong>:
+    <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.<br>
 <strong>newval</strong>:
     String containing the new cell value</p>
@@ -316,7 +318,7 @@ not defined when the matrix is mapped it will be read-only.</p>
     the user.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
-<p class="info">Must return the selection state (marked=1, not marked 0). If not defined the 
+<p class="info"><span class="style1">Returns:</span> the selection state (marked=1, not marked 0). If not defined the 
     attribute &quot;<strong>MARK<i>L</i></strong><strong>:<i>C</i></strong>&quot; 
     will be returned.</p>
 <p><strong><a name="MARKEDIT_CB">MARKEDIT_CB</a></strong>:
