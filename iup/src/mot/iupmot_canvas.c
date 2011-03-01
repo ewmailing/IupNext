@@ -373,7 +373,7 @@ static char* motCanvasGetXWindowAttrib(Ihandle *ih)
   return (char*)XtWindow(ih->handle);
 }
 
-static char* motCanvasGetClientSizeAttrib(Ihandle *ih)
+static char* motCanvasGetDrawSizeAttrib(Ihandle *ih)
 {
   char* str = iupStrGetMemory(20);
  
@@ -625,7 +625,7 @@ void iupdrvCanvasInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motCanvasSetBgColorAttrib, "255 255 255", NULL, IUPAF_DEFAULT);  /* force new default value */
   
   /* IupCanvas only */
-  iupClassRegisterAttribute(ic, "DRAWSIZE", motCanvasGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWSIZE", motCanvasGetDrawSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, IUPAF_SAMEASSYSTEM, "ARROW", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DX", NULL, motCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */

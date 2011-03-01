@@ -410,6 +410,15 @@ static char* winCanvasGetTouchAttrib(Ihandle* ih)
     return "No";
 }
 
+static char* winCanvasGetDrawSizeAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(20);
+  RECT rect;
+  GetClientRect(ih->handle, &rect);
+  sprintf(str, "%dx%d", (int)(rect.right-rect.left), (int)(rect.bottom-rect.top));
+  return str;
+}
+
 static void winCanvasProcessMultiTouch(Ihandle* ih, int count, HTOUCHINPUT hTouchInput)
 {
   IFniIIII mcb = (IFniIIII)IupGetCallback(ih, "MULTITOUCH_CB");
@@ -849,7 +858,7 @@ void iupdrvCanvasInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winCanvasSetBgColorAttrib, "255 255 255", NULL, IUPAF_DEFAULT);   /* force new default value */
 
   /* IupCanvas only */
-  iupClassRegisterAttribute(ic, "DRAWSIZE", iupdrvBaseGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWSIZE", winCanvasGetDrawSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOUCH", winCanvasGetTouchAttrib, winCanvasSetTouchAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DX", NULL, winCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */

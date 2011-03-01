@@ -975,6 +975,15 @@ static char* winDialogGetClientOffsetAttrib(Ihandle *ih)
   return "0x0";
 }
 
+static char* winDialogGetClientSizeAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(20);
+  RECT rect;
+  GetClientRect(ih->handle, &rect);
+  sprintf(str, "%dx%d", (int)(rect.right-rect.left), (int)(rect.bottom-rect.top));
+  return str;
+}
+
 static int winDialogSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
@@ -1428,7 +1437,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupdrvBaseGetClientSizeAttrib, iupDialogSetClientSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);  /* dialog is the only not read-only */
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", winDialogGetClientSizeAttrib, iupDialogSetClientSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);  /* dialog is the only not read-only */
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", winDialogGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* IupDialog only */

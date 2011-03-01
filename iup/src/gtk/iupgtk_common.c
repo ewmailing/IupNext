@@ -281,21 +281,6 @@ void iupdrvSetActive(Ihandle* ih, int enable)
   gtk_widget_set_sensitive(ih->handle, enable);
 }
 
-char* iupdrvBaseGetClientSizeAttrib(Ihandle *ih)
-{
-  char* str = iupStrGetMemory(20);
-  int w, h;
-  GdkWindow* window = iupgtkGetWindow(ih->handle);
-
-  if (window)
-    gdk_drawable_get_size(window, &w, &h);
-  else
-    return NULL;
-
-  sprintf(str, "%dx%d", w, h);
-  return str;
-}
-
 static GdkColor gtkDarkerColor(GdkColor *color)
 {
   GdkColor dark_color = {0L,0,0,0};

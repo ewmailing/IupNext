@@ -647,15 +647,6 @@ int iupwinSetDragDropAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-char* iupdrvBaseGetClientSizeAttrib(Ihandle* ih)
-{
-  char* str = iupStrGetMemory(20);
-  RECT rect;
-  GetClientRect(ih->handle, &rect);
-  sprintf(str, "%dx%d", (int)(rect.right-rect.left), (int)(rect.bottom-rect.top));
-  return str;
-}
-
 #ifndef IDC_HAND
 #define IDC_HAND            MAKEINTRESOURCE(32649)
 #endif

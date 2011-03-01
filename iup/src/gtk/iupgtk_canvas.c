@@ -215,7 +215,14 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
 
 static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
 {
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
+
   iupdrvBaseLayoutUpdateMethod(ih);
+
+  /* Force GdkWindow size update when not visible,
+     so when mapped before show the function gdk_drawable_get_size returns the correct value. */
+  if (!iupdrvIsVisible(ih))
+    gdk_window_resize(window, ih->currentwidth, ih->currentheight);
 
   if (iupAttribGetStr(ih, "_IUP_GTK_FIRST_RESIZE"))
   {
@@ -509,6 +516,21 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
   }
 }
 
+static char* gtkCanvasGetDrawSizeAttrib(Ihandle *ih)
+{
+  char* str = iupStrGetMemory(20);
+  int w, h;
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
+
+  if (window)
+    gdk_drawable_get_size(window, &w, &h);
+  else
+    return NULL;
+
+  sprintf(str, "%dx%d", w, h);
+  return str;
+}
+
 static char* gtkCanvasGetDrawableAttrib(Ihandle* ih)
 {
   return (char*)iupgtkGetWindow(ih->handle);
@@ -547,8 +569,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 
 #ifdef WIN32
 #if GTK_CHECK_VERSION(2, 18, 0)
-  /* CD-WIN32 will NOT work without this, but this is NOT working...
-     So the solution is to use the CD-GDK driver in Win32 also */
+  /* CD will NOT work without this, must use always the CD-GDK driver, even in Win32 */
   gtk_widget_set_has_window(ih->handle, TRUE);  
 #endif
 #endif
@@ -662,7 +683,7 @@ void iupdrvCanvasInitClass(Iclass* ic)
   /* IupCanvas only */
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupgtkSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, IUPAF_SAMEASSYSTEM, "ARROW", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAWSIZE", iupdrvBaseGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWSIZE", gtkCanvasGetDrawSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DX", NULL, gtkCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "DY", NULL, gtkCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
