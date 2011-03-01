@@ -9,6 +9,9 @@
 .style1 {
 	color: #FF0000;
 }
+.style2 {
+	text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -308,7 +311,8 @@ dataset.
     x</strong>: X coordinate value of the sample<br>
     <strong>y</strong>: Y coordinate value of the sample</p>
     <p class="info">
-    If the return value is IUP_IGNORE then the sample is not deleted.</p>
+    <span class="style2">Returns:</span>
+    If IUP_IGNORE then the sample is not deleted.</p>
   
 <p><b>DELETEBEGIN_CB, DELETEEND_CB</b>: Actions generated when a delete operation 
 will begin or end. But they are called only if DELETE_CB is also defined.</p>
@@ -317,7 +321,8 @@ will begin or end. But they are called only if DELETE_CB is also defined.</p>
 <strong>elem</strong>:deletebegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
 <strong>elem</strong>:deleteend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info">
-    If the DELETEBEGIN_CB callback returns IUP_IGNORE the delete operation for 
+    <span class="style2">Returns:</span>
+    If DELETEBEGIN_CB returns IUP_IGNORE the delete operation for 
     all the selected samples are aborted.</p>
   
 <p><b>SELECT_CB</b>:
@@ -334,7 +339,8 @@ It is called only if the selection state of the sample is about to be changed.</
     <b>select</b>: boolean value that a non zero value indicates if the point is 
     to be selected.</p>
     <p class="info">
-    If the return value is IUP_IGNORE then the sample is not selected.</p>
+    <span class="style2">Returns:</span>
+    If IUP_IGNORE then the sample is not selected.</p>
   
 <p><b>SELECTBEGIN_CB, SELECTEND_CB</b>: Actions generated when a selection 
 operation will begin or end. But they are called only if SELECT_CB is also 
@@ -344,7 +350,8 @@ defined.</p>
 <strong>elem</strong>:selectbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
 <strong>elem</strong>:selectend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info">
-    If the SELECTBEGIN_CB callback returns IUP_IGNORE the selection operation is 
+    <span class="style2">Returns:</span>
+    If SELECTBEGIN_CB returns IUP_IGNORE the selection operation is 
     aborted.</p>
   
 <p><b>EDIT_CB</b>:
@@ -361,7 +368,8 @@ It is called only if the selection state of the sample is about to be changed.</
     <strong>new_x</strong>: the new X coordinate value of the sample<br>
     <strong>new_y</strong>: the new Y coordinate value of the sample</p>
     <p class="info">
-    If the return value is IUP_IGNORE then the sample is not edited. The 
+    <span class="style2">Returns:</span>
+    If IUP_IGNORE then the sample is not edited. The 
     application can changed the new value before it is edited.</p>
   
 <p><b>EDITBEGIN_CB, EDITEND_CB</b>: Actions generated when an editing 
@@ -372,7 +380,8 @@ defined.</p>
 <strong>elem</strong>:editbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
 <strong>elem</strong>:editend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info">
-    If the EDITBEGIN_CB callback returns IUP_IGNORE the editing operation is 
+    <span class="style2">Returns:</span>
+    If EDITBEGIN_CB returns IUP_IGNORE the editing operation is 
     aborted.</p>
   
 <p><b>PREDRAW_CB, POSTDRAW_CB</b>: Actions generated before and after the redraw 

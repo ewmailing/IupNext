@@ -53,7 +53,7 @@ charset.</p>
 <p>Restricts the number of instances of the application by using a name to 
 identify it. The value must also be a partial match to the title of a dialog 
 that will receive the COPYDATA_CB callback with the command line of the second 
-instance. When consulted return NULL if inside the second instance. So usually 
+instance. When consulted returns NULL if inside the second instance. So usually 
 in the application initialization after <strong>IupOpen</strong>, set SINGLEINSTANCE 
 and then consult its value, if NULL abort the second instance by calling <strong>
 IupClose</strong> and returning from <em>main</em>.</p>
@@ -153,10 +153,10 @@ names: </p>
 On MacOSX is system version.</p>
 <h3><strong>SYSTEMLANGUAGE</strong> 
 (read-only)</h3>
-<p>Return a text with a description of the system language.</p>
+<p>Returns a text with a description of the system language.</p>
 <h3><strong>SYSTEM</strong>LOCALE 
 (read-only)<span class="style2"> (since 3.4)</span></h3>
-<p>Return a text with a description of the system locale.</p>
+<p>Returns a text with a description of the system locale.</p>
 <h3><strong><a name="GTKVERSION">GTKVERSION</a></strong> (read-only) [GTK Only]</h3>
 <p>Returns the run time version of the GTK toolkit. This is the version being used at the time of the IupOpen function was called by the application.</p>
 <h3><strong><a name="GTKDEVVERSION">GTKDEVVERSION</a></strong> (read-only) [GTK 

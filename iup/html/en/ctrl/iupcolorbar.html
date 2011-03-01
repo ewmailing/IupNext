@@ -104,7 +104,7 @@ also accepted.&nbsp;</p>
   event.<br>
     <b>cell:</b> index of the selected cell. If the user double click a preview cell, the respective index is 
     returned.</p>
-<p class="info"><u>Return</u>: a new color or NULL (nil in Lua) to ignore the change. 
+<p class="info"><u>Returns</u>: a new color or NULL (nil in Lua) to ignore the change. 
 By default 
     nothing is changed.</p>
 <p><strong>EXTENDED_CB</strong><tt>:</tt> called when the user right click a cell with the Shift key pressed. It 
@@ -115,7 +115,7 @@ By default
   identifier of the element that activated the 
   event.<br>
     <b>cell:</b> index of the selected cell.</p>
-<p class="info"><u>Return</u>: If IUP_IGNORE the cell is not redrawn. By default 
+<p class="info"><u>Returns</u>: If IUP_IGNORE the cell is not redrawn. By default 
 the cell is always redrawn.</p>
 
 <p><strong>SELECT_CB</strong><tt>:</tt> called when a color is selected. The primary color is
@@ -129,7 +129,7 @@ elem</strong>:select_cb(<strong>cell, type</strong>: number) -&gt; (<strong>ret<
     <b>cell</b>: index of the selected cell.<br>
 <b>type</b>: indicates if the user selected a primary or secondary color. In can be: 
 <tt>IUP_PRIMARY(-1)</tt> or <tt>IUP_SECONDARY(-2).</tt></p>
-<p class="info"><u>Return</u>: If IUP_IGNORE the selection is not accepted. By 
+<p class="info"><u>Returns</u>: If IUP_IGNORE the selection is not accepted. By 
 default 
     the selection is always accepted.</p>
 <p><strong>SWITCH_CB</strong><tt>:</tt> called when the user double clicks the preview area outside the preview 
@@ -141,7 +141,7 @@ elem</strong>:switch_cb(<b>prim_cell</b>, <b>sec_cell</b>: number) -&gt; (<stron
   event.<br>
     <b>prim_cell</b>: index of the actual primary cell.<br>
 <b>sec_cell</b>: index of the actual secondary cell. </p>
-<p class="info"><u>Return</u>: If IUP_IGNORE the switch is not accepted. By 
+<p class="info"><u>Returns</u>: If IUP_IGNORE the switch is not accepted. By 
 default 
     the switch is always accepted.</p>
   <blockquote>
