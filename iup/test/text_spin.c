@@ -5,12 +5,20 @@
 #include "iupkey.h"
 
 
+static int valuechanged_cb(Ihandle* ih)
+{
+  printf("VALUECHANGED_CB(%s)\n", IupGetAttribute(ih, "SPINVALUE"));
+  return IUP_DEFAULT;
+}
+
 static int spin_cb(Ihandle* ih, int pos)
 {
   (void)ih;
   printf("SPIN_CB(%d)\n", pos);
   if (!IupGetInt(ih, "SPINAUTO"))
     IupSetfAttribute(ih, "VALUE", "%s(%d)", "Test", pos);
+  if (pos == 10)
+    return IUP_IGNORE;
   return IUP_DEFAULT;
 }
 
@@ -46,6 +54,7 @@ void TextSpinTest(void)
 
   IupSetCallback(text, "SPIN_CB", (Icallback)spin_cb);
   IupSetCallback(text, "ACTION", (Icallback)action_cb);
+  IupSetCallback(text, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
 
   dlg = IupDialog(IupVbox(text, IupButton("SPINVALUE", "setspinvalue"), NULL));
   IupSetAttribute(dlg, "GAP", "20");

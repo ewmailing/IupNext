@@ -93,6 +93,7 @@ static gboolean gtkValChangeValue(GtkRange *range, GtkScrollType scroll, double 
   else
   {
     IFnd cb_old;
+printf("Scroll: %d\n", scroll);
     if (scroll == GTK_SCROLL_JUMP) /* scroll == 1 */
       cb_old = (IFnd)IupGetCallback(ih, "MOUSEMOVE_CB");
     else if((scroll >= GTK_SCROLL_STEP_BACKWARD) && (scroll <= GTK_SCROLL_END))

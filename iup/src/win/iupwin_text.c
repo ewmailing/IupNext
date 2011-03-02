@@ -685,9 +685,9 @@ static int winTextSetValueAttrib(Ihandle* ih, const char* value)
   char* str;
   if (!value) value = "";
   str = winTextStrConvert(ih, value);
-  iupAttribSetStr(ih, "IUPWIN_IGNORECHANGE", "1");
+  ih->data->disable_callbacks = 1;
   SetWindowText(ih->handle, str);
-  iupAttribSetStr(ih, "IUPWIN_IGNORECHANGE", NULL);
+  ih->data->disable_callbacks = 0;
   if (str != value) free(str);
   return 0;
 }
@@ -1400,14 +1400,16 @@ static int winTextSetVisibleAttrib(Ihandle* ih, const char* value)
   return iupBaseSetVisibleAttrib(ih, value);
 }
 
-static void winTextCropSpinValue(HWND hSpin, int min, int max)
+static void winTextCropSpinValue(Ihandle* ih, HWND hSpin, int min, int max)
 {
   /* refresh if internally cropped, but text still shows an invalid value */
   int pos = SendMessage(hSpin, UDM_GETPOS32, 0, 0);
+  ih->data->disable_callbacks = 1;
   if (pos <= min)  
     SendMessage(hSpin, UDM_SETPOS32, 0, min);
   if (pos >= max)
     SendMessage(hSpin, UDM_SETPOS32, 0, max);
+  ih->data->disable_callbacks = 0;
 }
 
 static int winTextSetSpinMinAttrib(Ihandle* ih, const char* value)
@@ -1421,7 +1423,7 @@ static int winTextSetSpinMinAttrib(Ihandle* ih, const char* value)
       int max = iupAttribGetInt(ih, "SPINMAX");
       SendMessage(hSpin, UDM_SETRANGE32, min, max);
 
-      winTextCropSpinValue(hSpin, min, max);
+      winTextCropSpinValue(ih, hSpin, min, max);
     }
   }
   return 1;
@@ -1438,7 +1440,7 @@ static int winTextSetSpinMaxAttrib(Ihandle* ih, const char* value)
       int min = iupAttribGetInt(ih, "SPINMIN");
       SendMessage(hSpin, UDM_SETRANGE32, min, max);
 
-      winTextCropSpinValue(hSpin, min, max);
+      winTextCropSpinValue(ih, hSpin, min, max);
     }
   }
   return 1;
@@ -1472,7 +1474,11 @@ static int winTextSetSpinValueAttrib(Ihandle* ih, const char* value)
   {
     int pos;
     if (iupStrToInt(value, &pos))
+    {
+      ih->data->disable_callbacks = 1;
       SendMessage(hSpin, UDM_SETPOS32, 0, pos);
+      ih->data->disable_callbacks = 0;
+    }
   }
   return 1;
 }
@@ -1884,8 +1890,10 @@ static void winTextCreateSpin(Ihandle* ih)
   iupAttribSetStr(ih, "_IUPWIN_SPIN", (char*)hSpin);
 
   /* default values */
+  ih->data->disable_callbacks = 1;
   SendMessage(hSpin, UDM_SETRANGE32, 0, 100);
   SendMessage(hSpin, UDM_SETPOS32, 0, 0);
+  ih->data->disable_callbacks = 0;
 }
 
 static int winTextWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
@@ -1895,7 +1903,7 @@ static int winTextWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
   {
   case EN_CHANGE:
     {
-      if (iupAttribGetStr(ih, "IUPWIN_IGNORECHANGE"))
+      if (ih->data->disable_callbacks)
         return 0;
 
       iupBaseCallValueChangedCb(ih);

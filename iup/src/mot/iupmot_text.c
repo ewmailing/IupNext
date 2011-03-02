@@ -185,10 +185,10 @@ static int motTextSetInsertAttrib(Ihandle* ih, const char* value)
     return 0;
 
   /* disable callbacks */
-  iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+  ih->data->disable_callbacks = 1;
   XmTextRemove(ih->handle);
   XmTextInsert(ih->handle, XmTextGetInsertionPosition(ih->handle), (char*)value);
-  iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+  ih->data->disable_callbacks = 0;
 
   return 0;
 }
@@ -203,9 +203,9 @@ static int motTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
   if (XmTextGetSelectionPosition(ih->handle, &start, &end) && start!=end)
   {
     /* disable callbacks */
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+    ih->data->disable_callbacks = 1;
     XmTextReplace(ih->handle, start, end, (char*)value);
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    ih->data->disable_callbacks = 0;
   }
 
   return 0;
@@ -226,7 +226,7 @@ static int motTextSetAppendAttrib(Ihandle* ih, const char* value)
     return 0;
   pos = XmTextGetLastPosition(ih->handle);
   /* disable callbacks */
-  iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+  ih->data->disable_callbacks = 1;
   if (ih->data->is_multiline && ih->data->append_newline && pos!=0)
   {
     XmTextInsert(ih->handle, pos, "\n");
@@ -234,7 +234,7 @@ static int motTextSetAppendAttrib(Ihandle* ih, const char* value)
   }
 	if (value)
     XmTextInsert(ih->handle, pos, (char*)value);
-  iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+  ih->data->disable_callbacks = 0;
   return 0;
 }
 
@@ -513,7 +513,7 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
     if (!str) return 0;
 
     /* disable callbacks */
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+    ih->data->disable_callbacks = 1;
 
     XmTextCut(ih->handle, CurrentTime);
 
@@ -522,7 +522,7 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
     XtFree(str);
     XmTextRemove(ih->handle);
 
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    ih->data->disable_callbacks = 0;
   }
   else if (iupStrEqualNoCase(value, "PASTE"))
   {
@@ -531,7 +531,7 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
     if (!str) return 0;
 
     /* disable callbacks */
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+    ih->data->disable_callbacks = 1;
 
     XmTextPaste(ih->handle); /* TODO: this could force 2 pastes, check in CDE */
 
@@ -540,14 +540,14 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
     XmTextInsert(ih->handle, XmTextGetInsertionPosition(ih->handle), str);
     XFree(str);
 
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    ih->data->disable_callbacks = 0;
   }
   else if (iupStrEqualNoCase(value, "CLEAR"))
   {
     /* disable callbacks */
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+    ih->data->disable_callbacks = 1;
     XmTextRemove(ih->handle);
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    ih->data->disable_callbacks = 0;
   }
   return 0;
 }
@@ -597,9 +597,9 @@ static int motTextSetSpinMinAttrib(Ihandle* ih, const char* value)
     int min;
     if (iupStrToInt(value, &min))
     {
-      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+      ih->data->disable_callbacks = 1;
       XtVaSetValues(ih->handle, XmNminimumValue, min, NULL);
-      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+      ih->data->disable_callbacks = 0;
     }
   }
   return 1;
@@ -613,9 +613,9 @@ static int motTextSetSpinMaxAttrib(Ihandle* ih, const char* value)
     int max;
     if (iupStrToInt(value, &max))
     {
-      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+      ih->data->disable_callbacks = 1;
       XtVaSetValues(ih->handle, XmNmaximumValue, max, NULL);
-      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+      ih->data->disable_callbacks = 0;
     }
   }
   return 1;
@@ -629,9 +629,9 @@ static int motTextSetSpinIncAttrib(Ihandle* ih, const char* value)
     int inc;
     if (iupStrToInt(value, &inc))
     {
-      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+      ih->data->disable_callbacks = 1;
       XtVaSetValues(ih->handle, XmNincrementValue, inc, NULL);
-      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+      ih->data->disable_callbacks = 0;
     }
   }
   return 1;
@@ -647,7 +647,7 @@ static int motTextSetSpinValueAttrib(Ihandle* ih, const char* value)
     {
       char* value = NULL;
       int min, max;
-      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+      ih->data->disable_callbacks = 1;
       XtVaGetValues(ih->handle, XmNminimumValue, &min, 
                                 XmNmaximumValue, &max, NULL);
       if (pos < min) pos = min;
@@ -662,7 +662,7 @@ static int motTextSetSpinValueAttrib(Ihandle* ih, const char* value)
         XmTextSetString(ih->handle, (char*)value);
         XtFree(value);
       }
-      iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+      ih->data->disable_callbacks = 0;
       return 1;
     }
   }
@@ -688,9 +688,9 @@ static int motTextSetValueAttrib(Ihandle* ih, const char* value)
   if (!value) value = "";
   motTextSetSpinValueAttrib(ih, value);
   /* disable callbacks */
-  iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+  ih->data->disable_callbacks = 1;
   XmTextSetString(ih->handle, (char*)value);
-  iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+  ih->data->disable_callbacks = 0;
   return 0;
 }
 
@@ -730,7 +730,7 @@ static void motTextModifyVerifyCallback(Widget w, Ihandle *ih, XmTextVerifyPtr t
   KeySym motcode = 0;
   IFnis cb;
 
-  if (iupAttribGet(ih, "_IUPMOT_DISABLE_TEXT_CB"))
+  if (ih->data->disable_callbacks)
     return;
 
   if (iupAttribGet(ih, "_IUPMOT_SPIN_DISABLE_TEXT_CB"))
@@ -821,9 +821,9 @@ static void motTextModifyVerifyCallback(Widget w, Ihandle *ih, XmTextVerifyPtr t
       if (iupStrToInt(new_value, &pos))
       {
         XmTextPosition caret_pos = text->currInsert;
-        iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+        ih->data->disable_callbacks = 1;
         XtVaSetValues(ih->handle, XmNposition, pos, NULL);
-        iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+        ih->data->disable_callbacks = 0;
         /* do not handle all situations, but handle the basic ones */
         if (text->startPos == text->endPos) /* insert */
           caret_pos++;
@@ -873,7 +873,7 @@ static void motTextMotionVerifyCallback(Widget w, Ihandle* ih, XmTextVerifyCallb
 
 static void motTextValueChangedCallback(Widget w, Ihandle* ih, XmAnyCallbackStruct* valuechanged)
 {
-  if (iupAttribGet(ih, "_IUPMOT_DISABLE_TEXT_CB"))
+  if (ih->data->disable_callbacks)
     return;
 
   iupBaseCallValueChangedCb(ih);
