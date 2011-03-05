@@ -501,7 +501,9 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
     char *str = XmTextGetSelection(ih->handle);
     if (!str) return 0;
 
-    XmTextCopy(ih->handle, CurrentTime);
+    ih->data->disable_callbacks = 1;
+    XmTextCopy(ih->handle, CurrentTime);  /* this seems to be ignored when in Gnome, is it in CDE or MWM? */
+    ih->data->disable_callbacks = 0;
 
     /* do it also for the X clipboard */
     XStoreBytes(iupmot_display, str, strlen(str)+1);
@@ -515,12 +517,12 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
     /* disable callbacks */
     ih->data->disable_callbacks = 1;
 
-    XmTextCut(ih->handle, CurrentTime);
+    XmTextCut(ih->handle, CurrentTime);    /* this seems to be ignored when in Gnome, is it in CDE or MWM? */
+    XmTextRemove(ih->handle);
 
     /* do it also for the X clipboard */
     XStoreBytes(iupmot_display, str, strlen(str)+1);
     XtFree(str);
-    XmTextRemove(ih->handle);
 
     ih->data->disable_callbacks = 0;
   }
@@ -533,7 +535,7 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
     /* disable callbacks */
     ih->data->disable_callbacks = 1;
 
-    XmTextPaste(ih->handle); /* TODO: this could force 2 pastes, check in CDE */
+    XmTextPaste(ih->handle);      /* this seems to be ignored when in Gnome, is it in CDE or MWM? */
 
     /* do it also for the X clipboard */
     XmTextRemove(ih->handle);
@@ -894,14 +896,20 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
   if (evt->state & ControlMask)   /* Ctrl */
   {
     KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
-    if (motcode == XK_c)
-      motTextSetClipboardAttrib(ih, "COPY");
-    else if (motcode == XK_x)
-      motTextSetClipboardAttrib(ih, "CUT");
-    else if (motcode == XK_v)
-      motTextSetClipboardAttrib(ih, "PASTE");
-    else if (motcode == XK_a)
-      XmTextSetSelection(ih->handle, 0, XmTextGetLastPosition(ih->handle), CurrentTime);
+    if (motcode == XK_c || motcode == XK_x || motcode == XK_v || motcode == XK_a)
+    {
+      if (motcode == XK_c)
+        motTextSetClipboardAttrib(ih, "COPY");
+      else if (motcode == XK_x)
+        motTextSetClipboardAttrib(ih, "CUT");
+      else if (motcode == XK_v)
+        motTextSetClipboardAttrib(ih, "PASTE");
+      else if (motcode == XK_a)
+        XmTextSetSelection(ih->handle, 0, XmTextGetLastPosition(ih->handle), CurrentTime);
+
+      *cont = False; 
+      return;
+    }
   }
 
   spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
