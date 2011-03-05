@@ -227,7 +227,7 @@ static void winFontReleaseDC(Ihandle* ih, HDC hdc)
 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
-  int num_lin, max_w;
+  int max_w = 0;
 
   IwinFont* winfont = winFontGet(ih);
   if (!winfont)
@@ -244,8 +244,6 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
     return;
   }
 
-  max_w = 0;
-  num_lin = 1;
   if (str[0])
   {
     SIZE size;
@@ -259,12 +257,14 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
     do
     {
       nextstr = iupStrNextLine(curstr, &len);
-      GetTextExtentPoint32(hdc, curstr, len, &size);
-      max_w = iupMAX(max_w, size.cx);
+      if (len)
+      {
+        size.cx = 0;
+        GetTextExtentPoint32(hdc, curstr, len, &size);
+        max_w = iupMAX(max_w, size.cx);
+      }
 
       curstr = nextstr;
-      if (*nextstr)
-        num_lin++;
     } while(*nextstr);
 
     SelectObject(hdc, oldhfont);
@@ -272,7 +272,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
   }
 
   if (w) *w = max_w;
-  if (h) *h = winfont->charheight*num_lin;
+  if (h) *h = winfont->charheight * iupStrLineCount(str);
 }
 
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)

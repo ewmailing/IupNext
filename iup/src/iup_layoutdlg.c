@@ -72,7 +72,7 @@ static char* iLayoutGetTitle(Ihandle* ih)
   {
     char buffer[51];
     int len;
-    if (iupStrNextLine(title, &len)!=title ||
+    if (iupStrNextLine(title, &len)!=title ||  /* get the size of the first line */
         len > 50)
     {
       if (len > 50) len = 50;
@@ -1136,7 +1136,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     if (title)
     {
       int len;
-      iupStrNextLine(title, &len);
+      iupStrNextLine(title, &len);  /* get the size of the first line */
       r = fr, g = fg, b = fb;
       iupStrToRGB(iupAttribGetLocal(ih, "FGCOLOR"), &r, &g, &b);
       iupDrawText(dc, title, len, x+1, y+1, r, g, b, IupGetAttribute(ih, "FONT"));

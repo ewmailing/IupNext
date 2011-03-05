@@ -334,7 +334,7 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
-  int max_w;
+  int max_w = 0;
 
   IgtkFont* gtkfont = gtkFontGet(ih);
   if (!gtkfont)
@@ -351,7 +351,6 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
     return;
   }
 
-  max_w = 0;
   if (str[0])
   {
     int dummy_h;
