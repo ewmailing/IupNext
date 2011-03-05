@@ -232,6 +232,19 @@ static void iTabsGetDecorOffset(Ihandle* ih, int *dx, int *dy)
   *dy += ih->data->vert_padding;
 }
 
+static void iTabsSetTab(Ihandle* ih, Ihandle* child, int pos)
+{
+  if (ih->handle)
+  {
+    int cur_pos = iupdrvTabsGetCurrentTab(ih);
+    if (cur_pos != pos)
+      iupdrvTabsSetCurrentTab(ih, pos);
+  }
+  else
+    iupAttribSetStr(ih, "_IUPTABS_VALUE_HANDLE", (char*)child);
+}
+
+
 /* ------------------------------------------------------------------------- */
 /* TABS - Sets and Gets - Accessors                                          */
 /* ------------------------------------------------------------------------- */
@@ -242,17 +255,13 @@ static int iTabsSetValueHandleAttrib(Ihandle* ih, const char* value)
   Ihandle *child;
 
   child = (Ihandle*)value;
+
   if (!iupObjectCheck(child))
     return 0;
 
   pos = IupGetChildPos(ih, child);
   if (pos != -1) /* found child */
-  {
-    if (ih->handle)
-      iupdrvTabsSetCurrentTab(ih, pos);
-    else
-      iupAttribSetStr(ih, "_IUPTABS_VALUE_HANDLE", (char*)child);
-  }
+    iTabsSetTab(ih, child, pos);
  
   return 0;
 }
@@ -308,12 +317,7 @@ static int iTabsSetValuePosAttrib(Ihandle* ih, const char* value)
 
   child = IupGetChild(ih, pos);
   if (child) /* found child */
-  {
-    if (ih->handle)
-      iupdrvTabsSetCurrentTab(ih, pos);
-    else
-      iupAttribSetStr(ih, "_IUPTABS_VALUE_HANDLE", (char*)child);
-  }
+    iTabsSetTab(ih, child, pos);
  
   return 0;
 }
