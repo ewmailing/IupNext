@@ -666,6 +666,29 @@ static int gtkTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* gtkTextGetCountAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(50);
+  GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+  int count = gtk_text_buffer_get_char_count(buffer);
+  sprintf(str, "%d", count);
+  return str;
+}
+
+static char* gtkTextGetLineCountAttrib(Ihandle* ih)
+{
+  if (ih->data->is_multiline)
+  {
+    char* str = iupStrGetMemory(50);
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+    int linecount = gtk_text_buffer_get_line_count(buffer);
+    sprintf(str, "%d", linecount);
+    return str;
+  }
+  else
+    return "1";
+}
+
 static char* gtkTextGetSelectedTextAttrib(Ihandle* ih)
 {
   if (ih->data->is_multiline)
@@ -880,6 +903,24 @@ static char* gtkTextGetValueAttrib(Ihandle* ih)
   return value;
 }
                        
+static char* gtkTextGetLineValueAttrib(Ihandle* ih)
+{
+  if (ih->data->is_multiline)
+  {
+    GtkTextIter start_iter, end_iter, iter;
+    int lin;
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+    gtk_text_buffer_get_iter_at_mark(buffer, &iter, gtk_text_buffer_get_insert(buffer));
+    lin = gtk_text_iter_get_line(&iter);
+    gtk_text_buffer_get_iter_at_line(buffer, &start_iter, lin);
+    gtk_text_buffer_get_iter_at_line(buffer, &end_iter, lin);
+    gtk_text_iter_forward_to_line_end(&end_iter);
+    return iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, TRUE)));
+  }
+  else
+    return gtkTextGetValueAttrib(ih);
+}
+
 static int gtkTextSetInsertAttrib(Ihandle* ih, const char* value)
 {
   if (!ih->handle)  /* do not do the action before map */
@@ -1747,6 +1788,7 @@ void iupdrvTextInitClass(Iclass* ic)
   /* IupText only */
   iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, gtkTextSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "VALUE", gtkTextGetValueAttrib, gtkTextSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINEVALUE", gtkTextGetLineValueAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTEDTEXT", gtkTextGetSelectedTextAttrib, gtkTextSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", gtkTextGetSelectionAttrib, gtkTextSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTIONPOS", gtkTextGetSelectionPosAttrib, gtkTextSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -1763,6 +1805,8 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SPINMAX", NULL, gtkTextSetSpinMaxAttrib, IUPAF_SAMEASSYSTEM, "100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPININC", NULL, gtkTextSetSpinIncAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPINVALUE", gtkTextGetSpinValueAttrib, gtkTextSetSpinValueAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COUNT", gtkTextGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINECOUNT", gtkTextGetLineCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* IupText Windows and GTK only */
   iupClassRegisterAttribute(ic, "ADDFORMATTAG", NULL, iupTextSetAddFormatTagAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

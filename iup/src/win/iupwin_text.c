@@ -694,11 +694,11 @@ static int winTextSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* winTextGetValueAttrib(Ihandle* ih)
 {
-  int nc = GetWindowTextLength(ih->handle);
-  if (nc)
+  int count = GetWindowTextLength(ih->handle);
+  if (count)
   {
-    char* str = iupStrGetMemory(nc+1);
-    GetWindowText(ih->handle, str, nc+1);  /* notice that this function always returns in DOS format */
+    char* str = iupStrGetMemory(count+1);
+    GetWindowText(ih->handle, str, count+1);  /* notice that this function always returns in DOS format */
     if (ih->data->is_multiline)
       iupStrToUnix(str);
     return str;
@@ -740,8 +740,8 @@ static int winTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
 
 static char* winTextGetSelectedTextAttrib(Ihandle* ih)
 {
-  int nc = GetWindowTextLength(ih->handle);
-  if (nc)
+  int count = GetWindowTextLength(ih->handle);
+  if (count)
   {
     int start = 0, end = 0;
     char* str;
@@ -757,8 +757,8 @@ static char* winTextGetSelectedTextAttrib(Ihandle* ih)
     }
     else
     {
-      str = iupStrGetMemory(nc+1);
-      GetWindowText(ih->handle, str, nc+1);  /* notice that this function always returns in DOS format */
+      str = iupStrGetMemory(count+1);
+      GetWindowText(ih->handle, str, count+1);  /* notice that this function always returns in DOS format */
       /* returns only the selected text */
       str[end] = 0;
       str += start;
@@ -788,6 +788,50 @@ static int winTextSetNCAttrib(Ihandle* ih, const char* value)
   }
   else
     return 1; /* store until not mapped, when mapped will be set again */
+}
+
+static char* winTextGetCountAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(50);
+  int count = GetWindowTextLength(ih->handle);
+  if (ih->data->is_multiline)
+  {
+    int linecount = SendMessage(ih->handle, EM_GETLINECOUNT, 0, 0L);
+    count -= linecount-1;  /* ignore 1 character at each line */
+  }
+  sprintf(str, "%d", count);
+  return str;
+}
+
+static char* winTextGetLineCountAttrib(Ihandle* ih)
+{
+  if (ih->data->is_multiline)
+  {
+    char* str = iupStrGetMemory(50);
+    int linecount = SendMessage(ih->handle, EM_GETLINECOUNT, 0, 0L);
+    sprintf(str, "%d", linecount);
+    return str;
+  }
+  else
+    return "1";
+}
+
+static char* winTextGetLineValueAttrib(Ihandle* ih)
+{
+  if (ih->data->is_multiline)
+  {
+    int len, lin, col;
+    char* str = iupStrGetMemory(200);
+    WORD* wstr = (WORD*)str;
+    *wstr = 200;
+    winTextGetCaret(ih, &lin, &col); 
+    lin--; /* from IUP to Win */
+    len = SendMessage(ih->handle, EM_GETLINE, (WPARAM)lin, (LPARAM)str);
+    str[len]=0;
+    return str;
+  }
+  else
+    return winTextGetValueAttrib(ih);
 }
 
 static int winTextSetSelectionAttrib(Ihandle* ih, const char* value)
@@ -2085,6 +2129,7 @@ void iupdrvTextInitClass(Iclass* ic)
   /* IupText only */
   iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, winTextSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "VALUE", winTextGetValueAttrib, winTextSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINEVALUE", winTextGetLineValueAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTEDTEXT", winTextGetSelectedTextAttrib, winTextSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", winTextGetSelectionAttrib, winTextSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTIONPOS", winTextGetSelectionPosAttrib, winTextSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -2101,6 +2146,8 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SPINMAX", NULL, winTextSetSpinMaxAttrib, IUPAF_SAMEASSYSTEM, "100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPININC", NULL, winTextSetSpinIncAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPINVALUE", winTextGetSpinValueAttrib, winTextSetSpinValueAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COUNT", winTextGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINECOUNT", winTextGetLineCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* IupText Windows and GTK only */
   iupClassRegisterAttribute(ic, "ADDFORMATTAG", NULL, iupTextSetAddFormatTagAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

@@ -100,23 +100,30 @@ static void motTextGetLinColFromPosition(const char *str, int pos, int *lin, int
 
 static int motTextSetLinColToPosition(const char *str, int lin, int col)
 {
-  int pos=0, cur_lin=0, cur_col=0;
+  int pos=0, cur_lin, cur_col;
 
   lin--; /* IUP starts at 1 */
   col--;
 
-  while (*str)
+  /* find the line */
+  cur_lin=0;
+  while (*str && cur_lin<lin)
   {
-    if (lin<=cur_lin && col<=cur_col)
+    if (*str == '\n')
+      cur_lin++;
+
+    str++;
+    pos++;
+  }
+  
+  /* find the column */
+  cur_col=0;
+  while (*str && cur_col<col)
+  {
+    if (*str == '\n')
       break;
 
-    if (*str == '\n')
-    {
-      cur_lin++;
-      cur_col = 0;
-    }
-    else
-      cur_col++;
+    cur_col++;
 
     str++;
     pos++;
@@ -209,6 +216,28 @@ static int motTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
   }
 
   return 0;
+}
+
+static char* motTextGetCountAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(50);
+  int count = XmTextGetLastPosition(ih->handle);
+  sprintf(str, "%d", count);
+  return str;
+}
+
+static char* motTextGetLineCountAttrib(Ihandle* ih)
+{
+  if (ih->data->is_multiline)
+  {
+    int linecount;
+    char* str = iupStrGetMemory(50);
+    XtVaGetValues(ih->handle, XmNtotalLines, &linecount, NULL);
+    sprintf(str, "%d", linecount);
+    return str;
+  }
+  else
+    return "1";
 }
 
 static char* motTextGetSelectedTextAttrib(Ihandle* ih)
@@ -704,6 +733,25 @@ static char* motTextGetValueAttrib(Ihandle* ih)
   return str;
 }
                        
+static char* motTextGetLineValueAttrib(Ihandle* ih)
+{
+  if (ih->data->is_multiline)
+  {
+    int lin, col, start, end;
+    char* str = iupStrGetMemory(200);
+    char *value = XmTextGetString(ih->handle);
+    XmTextPosition pos = XmTextGetInsertionPosition(ih->handle);
+    motTextGetLinColFromPosition(value, pos, &lin, &col);
+    start = motTextSetLinColToPosition(value, lin, 1);
+    end = motTextSetLinColToPosition(value, lin, 20000);
+    XtFree(value);
+    XmTextGetSubstring(ih->handle, start, end-start, 200, str);  /* do not include the EOL */
+    return str;
+  }
+  else
+    return motTextGetValueAttrib(ih);
+}
+
 
 /******************************************************************************/
 
@@ -1186,6 +1234,7 @@ void iupdrvTextInitClass(Iclass* ic)
   /* IupText only */
   iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, motTextSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "VALUE", motTextGetValueAttrib, motTextSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINEVALUE", motTextGetLineValueAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTEDTEXT", motTextGetSelectedTextAttrib, motTextSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", motTextGetSelectionAttrib, motTextSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTIONPOS", motTextGetSelectionPosAttrib, motTextSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -1203,6 +1252,8 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SPINMAX", NULL, motTextSetSpinMaxAttrib, IUPAF_SAMEASSYSTEM, "100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPININC", NULL, motTextSetSpinIncAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPINVALUE", motTextGetSpinValueAttrib, motTextSetSpinValueAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COUNT", motTextGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINECOUNT", motTextGetLineCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);

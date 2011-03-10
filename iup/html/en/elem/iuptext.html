@@ -140,6 +140,8 @@ the text will be scrolled only when it receives the focus.</p>
 or from the clipboard. Values: "CLEAR", "CUT", "COPY" or "PASTE". 
 In Windows UNDO is also available, and REDO is available when FORMATTING=YES. 
 (since 3.0)</p>
+<p><strong>COUNT</strong> (read-only): returns the number of characters in the 
+text. (since 3.5)</p>
 
 <p><strong>CUEBANNER</strong> [Windows Only] (<font size="3">non inheritable</font>): 
 a text that is displayed when there is no text at the control. It works as a 
@@ -167,6 +169,12 @@ enabled, but only when MULTILINE=YES. Default: NO. (since 3.0)</p>
 <p><strong>INSERT</strong> (write-only): Inserts a text 
 	in the caret's position, also replaces the current selection if any. Ignored 
 if set before map.</p>
+<p><strong>LINECOUNT</strong> (read-only): returns the number of characters in 
+the line where the caret is. When MULTILINE=NO returns always &quot;1&quot;. (since 3.5)</p>
+
+<p><strong>LINEVALUE</strong> (read-only): returns the text of the line where 
+the caret is. It does not include the &quot;\n&quot; character. When MULTILINE=NO returns 
+the same as VALUE. (since 3.5)</p>
 
 <p><a href="../attrib/iup_mask.html">MASK</a> (<font size="3">non inheritable</font>): Defines a mask that will filter 
 interactive text input.</p>
