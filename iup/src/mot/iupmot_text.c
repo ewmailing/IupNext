@@ -552,8 +552,11 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
 
     XtFree(str);
 
-    /* disable callbacks */
-    ih->data->disable_callbacks = 1;
+    /* disable callbacks if not interactive */
+    if (ih->data->disable_callbacks == -1)
+      ih->data->disable_callbacks = 0;
+    else
+      ih->data->disable_callbacks = 1;
     XmTextRemove(ih->handle);
     ih->data->disable_callbacks = 0;
   }
@@ -566,15 +569,22 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
     str = IupGetAttribute(clipboard, "TEXT");
 
     /* disable callbacks */
-    ih->data->disable_callbacks = 1;
+    /* disable callbacks if not interactive */
+    if (ih->data->disable_callbacks == -1)
+      ih->data->disable_callbacks = 0;
+    else
+      ih->data->disable_callbacks = 1;
     XmTextRemove(ih->handle);
     XmTextInsert(ih->handle, XmTextGetInsertionPosition(ih->handle), str);
     ih->data->disable_callbacks = 0;
   }
   else if (iupStrEqualNoCase(value, "CLEAR"))
   {
-    /* disable callbacks */
-    ih->data->disable_callbacks = 1;
+    /* disable callbacks if not interactive */
+    if (ih->data->disable_callbacks == -1)
+      ih->data->disable_callbacks = 0;
+    else
+      ih->data->disable_callbacks = 1;
     XmTextRemove(ih->handle);
     ih->data->disable_callbacks = 0;
   }
@@ -944,6 +954,8 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
     KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
     if (motcode == XK_c || motcode == XK_x || motcode == XK_v || motcode == XK_a)
     {
+      ih->data->disable_callbacks = -1; /* let callbacks be processed in motTextSetClipboardAttrib */
+
       if (motcode == XK_c)
         motTextSetClipboardAttrib(ih, "COPY");
       else if (motcode == XK_x)
@@ -952,6 +964,8 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
         motTextSetClipboardAttrib(ih, "PASTE");
       else if (motcode == XK_a)
         XmTextSetSelection(ih->handle, 0, XmTextGetLastPosition(ih->handle), CurrentTime);
+
+      ih->data->disable_callbacks = 0;
 
       *cont = False; 
       return;
