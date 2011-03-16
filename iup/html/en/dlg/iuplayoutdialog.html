@@ -31,7 +31,7 @@
 <h2>IupLayoutDialog <span class="style1">(since 3.3)</span></h2>
 <p>Creates a Layout Dialog. It is a predefined dialog to visually edit the 
 layout of another dialog in run time. It is a standard <strong>IupDialog</strong> 
-constructed with other IUP elements inside. The dialog can be shown with any of 
+constructed with other IUP elements. The dialog can be shown with any of 
 the show functions <strong>IupShow</strong>, <strong>IupShowXY</strong> or
 <strong>IupPopup</strong>.</p>
 <p>Any existent dialog can be selected. It does not need to be mapped on the 
@@ -45,7 +45,8 @@ dialogs in other ways.</p>
 iup.LayoutDialog(<strong>dialog</strong>: ihandle<span class="style3">)</span> -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 [NOT available in LED]</pre>
 <div>
-  <strong>dialog</strong>: identifier of the dialog to display the layout.</div>
+  <strong>dialog</strong>: identifier of the dialog to display the layout. Can 
+	be NULL.</div>
 <p><u>Returns:</u> the identifier of the 
   created element, or NULL if an error occurs.</p>
 
@@ -126,7 +127,7 @@ attributes. It contains 3 Tab sections: one for the registered attributes of the
 element, one for custom attributes set at the hash table, and one for the 
 callbacks. The callbacks are just for inspection, and custom attribute should be 
 handled carefully because they may be not strings. Registered attributes values 
-are shown in red when they were changed by the application. </p>
+are shown in red when they were changed by the application. It uses the <a href="iupelementpropdialog.html">IupElementPropertiesDialog</a>.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p>This will create an empty layout with a new dialog.</p>
 <pre>IupShow(IupLayoutDialog(NULL));   [in C]
@@ -138,9 +139,6 @@ iup.Show(iup.LayoutDialog(nil))    [in Lua]</pre>
   <table border="0" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1">
     <tr>
       <td class="style2"><img border="0" src="images/layoutdlg1.png"></td>
-    </tr>
-    <tr>
-      <td class="style2"><img border="0" src="images/layoutdlg2.png"></td>
     </tr>
   </table>
   </center>

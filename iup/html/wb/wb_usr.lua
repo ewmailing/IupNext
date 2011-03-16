@@ -1094,6 +1094,10 @@ wb_usr.tree =
               name= {nl= "IupLayoutDialog"},
               link= "dlg/iuplayoutdialog.html"
             },
+            {
+              name= {nl= "IupElementPropertiesDialog"},
+              link= "dlg/iupelementpropdialog.html"
+            },
           }
         }
       }

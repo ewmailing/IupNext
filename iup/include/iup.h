@@ -257,6 +257,7 @@ int IupGetParam(const char* title, Iparamcb action, void* user_data, const char*
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
 
 Ihandle* IupLayoutDialog(Ihandle* dialog);
+Ihandle* IupElementPropertiesDialog(Ihandle* elem);
 
 
 #ifdef __cplusplus
