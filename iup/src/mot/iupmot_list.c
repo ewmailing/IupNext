@@ -889,45 +889,45 @@ static int motListSetClipboardAttrib(Ihandle *ih, const char *value)
 
   if (iupStrEqualNoCase(value, "COPY"))
   {
+    Ihandle* clipboard;
     char *str = XmTextFieldGetSelection(cbedit);
+    if (!str) return 0;
 
-    XmTextFieldCopy(cbedit, CurrentTime);
+    clipboard = IupClipboard();
+    IupSetAttribute(clipboard, "TEXT", str);
+    IupDestroy(clipboard);
 
-    /* do it also for the X clipboard */
-    XStoreBytes(iupmot_display, str, strlen(str)+1);
     XtFree(str);
   }
   else if (iupStrEqualNoCase(value, "CUT"))
   {
+    Ihandle* clipboard;
     char *str = XmTextFieldGetSelection(cbedit);
+    if (!str) return 0;
+
+    clipboard = IupClipboard();
+    IupSetAttribute(clipboard, "TEXT", str);
+    IupDestroy(clipboard);
+
+    XtFree(str);
 
     /* disable callbacks */
     iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
-
-    XmTextFieldCut(cbedit, CurrentTime);
-
-    /* do it also for the X clipboard */
-    XStoreBytes(iupmot_display, str, strlen(str)+1);
-    XtFree(str);
     XmTextFieldRemove(cbedit);
-
     iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   }
   else if (iupStrEqualNoCase(value, "PASTE"))
   {
-    int size;
-    char* str = XFetchBytes(iupmot_display, &size);
+    Ihandle* clipboard;
+    char *str;
+
+    clipboard = IupClipboard();
+    str = IupGetAttribute(clipboard, "TEXT");
 
     /* disable callbacks */
     iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
-
-    XmTextFieldPaste(cbedit); /* TODO: this could force 2 pastes, check in CDE */
-
-    /* do it also for the X clipboard */
     XmTextFieldRemove(cbedit);
     XmTextFieldInsert(cbedit, XmTextFieldGetInsertionPosition(cbedit), str);
-    XFree(str);
-
     iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   }
   else if (iupStrEqualNoCase(value, "CLEAR"))

@@ -525,52 +525,50 @@ static int motTextSetNCAttrib(Ihandle* ih, const char* value)
 
 static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
 {
+  /* NOTE: the functions XmTextCopy, XmTextPaste and XmTextCut did not work as expected.
+    But using IupClipboard does not catch selections made in a terminal. */
+
   if (iupStrEqualNoCase(value, "COPY"))
   {
+    Ihandle* clipboard;
     char *str = XmTextGetSelection(ih->handle);
     if (!str) return 0;
 
-    ih->data->disable_callbacks = 1;
-    XmTextCopy(ih->handle, CurrentTime);  /* this seems to be ignored when in Gnome, is it in CDE or MWM? */
-    ih->data->disable_callbacks = 0;
+    clipboard = IupClipboard();
+    IupSetAttribute(clipboard, "TEXT", str);
+    IupDestroy(clipboard);
 
-    /* do it also for the X clipboard */
-    XStoreBytes(iupmot_display, str, strlen(str)+1);
     XtFree(str);
   }
   else if (iupStrEqualNoCase(value, "CUT"))
   {
+    Ihandle* clipboard;
     char *str = XmTextGetSelection(ih->handle);
     if (!str) return 0;
 
-    /* disable callbacks */
-    ih->data->disable_callbacks = 1;
+    clipboard = IupClipboard();
+    IupSetAttribute(clipboard, "TEXT", str);
+    IupDestroy(clipboard);
 
-    XmTextCut(ih->handle, CurrentTime);    /* this seems to be ignored when in Gnome, is it in CDE or MWM? */
-    XmTextRemove(ih->handle);
-
-    /* do it also for the X clipboard */
-    XStoreBytes(iupmot_display, str, strlen(str)+1);
     XtFree(str);
 
+    /* disable callbacks */
+    ih->data->disable_callbacks = 1;
+    XmTextRemove(ih->handle);
     ih->data->disable_callbacks = 0;
   }
   else if (iupStrEqualNoCase(value, "PASTE"))
   {
-    int size;
-    char* str = XFetchBytes(iupmot_display, &size);
-    if (!str) return 0;
+    Ihandle* clipboard;
+    char *str;
+
+    clipboard = IupClipboard();
+    str = IupGetAttribute(clipboard, "TEXT");
 
     /* disable callbacks */
     ih->data->disable_callbacks = 1;
-
-    XmTextPaste(ih->handle);      /* this seems to be ignored when in Gnome, is it in CDE or MWM? */
-
-    /* do it also for the X clipboard */
     XmTextRemove(ih->handle);
     XmTextInsert(ih->handle, XmTextGetInsertionPosition(ih->handle), str);
-    XFree(str);
-
     ih->data->disable_callbacks = 0;
   }
   else if (iupStrEqualNoCase(value, "CLEAR"))
