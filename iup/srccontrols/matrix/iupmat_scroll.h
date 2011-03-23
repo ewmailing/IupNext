@@ -19,7 +19,7 @@ void iupMatrixScrollToVisible(Ihandle* ih, int lin, int col);
 typedef void (*iupMatrixScrollMoveFunc)(Ihandle* ih, int mode, float pos, int m);
 void  iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, float pos, int m);
 
-/* Used only by the macros bellow */
+/* Used only by the macros below */
 void iupMatrixScrollHomeFunc       (Ihandle* ih, int, float, int);
 void iupMatrixScrollEndFunc        (Ihandle* ih, int, float, int);
 void iupMatrixScrollLeftUpFunc     (Ihandle* ih, int, float, int);

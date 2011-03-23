@@ -218,9 +218,8 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
       *result = DLGC_WANTALLKEYS;
       return 1;
     }
-  case WM_NOTIFY: /* usually sent only to parent, 
-                     but TIPs are configured to be handled here */
-    {
+  case WM_NOTIFY: /* usually sent only to parent,               */
+    {             /* but TIPs are configured to be handled here */
       NMHDR* msg_info = (NMHDR*)lp;
       if (msg_info->code == TTN_GETDISPINFO)
         iupwinTipsGetDispInfo(lp);
@@ -515,12 +514,17 @@ void iupwinChangeProc(Ihandle *ih, WNDPROC new_proc)
 
 void iupdrvBaseUnMapMethod(Ihandle* ih)
 {
+  HWND tips_hwnd;
   WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDPROC_CB");
   if (oldProc)
   {
     SetWindowLongPtr(ih->handle, GWLP_WNDPROC, (LONG_PTR)oldProc);
     IupSetCallback(ih, "_IUPWIN_OLDPROC_CB",  NULL);
   }
+
+  tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");
+  if (tips_hwnd)
+    DestroyWindow(tips_hwnd);
 
   /* remove the association before destroying */
   iupwinHandleRemove(ih);

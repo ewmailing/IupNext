@@ -241,7 +241,7 @@ void iupgtkKeyEncode(int key, guint *keyval, guint *state)
       }
       return;
     }
-    else if (key_map->s_iupcode == key)   /* There are Shift keys bellow 256 */
+    else if (key_map->s_iupcode == key)   /* There are Shift keys below 256 */
     {
       *keyval = key_map->gtkcode;
       *state = GDK_SHIFT_MASK;

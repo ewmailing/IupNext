@@ -34,9 +34,10 @@ static HWND winTipsCreate(HWND hParent)
   return tips_hwnd;
 }
 
-static int winTipsSendMessage(Ihandle* ih, HWND tips_hwnd, UINT msg)
+static void winTipsSendMessage(Ihandle* ih, HWND tips_hwnd, UINT msg)
 {
   TOOLINFO ti;
+
   ZeroMemory(&ti, sizeof(TOOLINFO));
   ti.cbSize = sizeof(TOOLINFO); 
   ti.uFlags = TTF_SUBCLASS;
@@ -47,7 +48,7 @@ static int winTipsSendMessage(Ihandle* ih, HWND tips_hwnd, UINT msg)
   ti.rect.right = 3000;
   ti.rect.bottom = 3000;
 
-  return SendMessage(tips_hwnd, msg, 0, (LPARAM)&ti);
+  SendMessage(tips_hwnd, msg, 0, (LPARAM)&ti);
 }
 
 int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)

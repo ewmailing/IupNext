@@ -361,6 +361,7 @@ void SampleTest(void)
   IupSetAttribute(_list_1,"1","Item 1 Text");
   IupSetAttribute(_list_1,"2","Item 2 Text");
   IupSetAttribute(_list_1,"3","Item 3 Text");
+  IupSetAttribute(_list_1,"TIP","List 1");
 
   _list_2 = IupList( NULL);
   IupSetAttribute(_list_2,"DROPDOWN","YES");
@@ -369,6 +370,7 @@ void SampleTest(void)
   IupSetAttribute(_list_2,"1","Item 1 Text");
   IupSetAttribute(_list_2,"2","Item 2 Text");
   IupSetAttribute(_list_2,"3","Item 3 Text");
+  IupSetAttribute(_list_2,"TIP","List 2");
 
   _list_3 = IupList( NULL);
   IupSetAttribute(_list_3,"EDITBOX","YES");
@@ -377,6 +379,7 @@ void SampleTest(void)
   IupSetAttribute(_list_3,"1","Item 1 Text");
   IupSetAttribute(_list_3,"2","Item 2 Text");
   IupSetAttribute(_list_3,"3","Item 3 Text");
+  IupSetAttribute(_list_3,"TIP","List 3");
 
   _frm_5 =  IupFrame(IupVbox(
       set_callbacks(_list_1),

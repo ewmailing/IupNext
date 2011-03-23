@@ -183,7 +183,7 @@ void iupwinKeyEncode(int key, unsigned int *keyval, unsigned int *state)
       }
       return;
     }
-    else if (key_map->s_iupcode == key)   /* There are Shift keys bellow 256 */
+    else if (key_map->s_iupcode == key)   /* There are Shift keys below 256 */
     {
       *keyval = key_map->wincode;
       *state = VK_SHIFT;
