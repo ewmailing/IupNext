@@ -98,3 +98,31 @@ int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
+{
+  GtkWindow* tip_window;
+  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
+  if (!widget)
+    widget = ih->handle;
+
+  /* must use IupGetAttribute to use inheritance */
+  if (!IupGetAttribute(ih, "TIP"))
+    return NULL;
+
+#if GTK_CHECK_VERSION(2, 12, 0)
+  if (!gtk_widget_get_has_tooltip(widget))
+    return NULL;
+
+  tip_window = gtk_widget_get_tooltip_window(widget);
+#if GTK_CHECK_VERSION(2, 18, 0)
+  if (gtk_widget_get_visible((GtkWidget*)tip_window))
+#else
+  if (GTK_WIDGET_VISIBLE(tip_window))
+#endif
+    return "Yes";
+  else
+    return "No";
+#else
+  return NULL;
+#endif
+}

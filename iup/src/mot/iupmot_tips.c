@@ -166,6 +166,28 @@ int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int motIsVisible(Widget w)
+{
+  XWindowAttributes wa;
+  XGetWindowAttributes(iupmot_display, XtWindow(w), &wa);
+  return (wa.map_state == IsViewable);
+}
+
+char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
+{
+  /* must use IupGetAttribute to use inheritance */
+  if (!IupGetAttribute(ih, "TIP"))
+    return NULL;
+
+  if (mot_tips.ih != ih)
+    return NULL;
+
+  if (motIsVisible(mot_tips.Dialog))
+    return "Yes";
+  else
+    return "No";
+}
+
 void iupmotTipEnterNotify(Ihandle *ih)
 {
   iupmotTipLeaveNotify();

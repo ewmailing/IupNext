@@ -87,6 +87,22 @@ int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
+{
+  HWND tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");
+  if (!tips_hwnd)
+    return NULL;
+
+  /* must use IupGetAttribute to use inheritance */
+  if (!IupGetAttribute(ih, "TIP"))
+    return NULL;
+
+  if (IsWindowVisible(tips_hwnd))
+    return "Yes";
+  else
+    return "No";
+}
+
 void iupwinTipsGetDispInfo(LPARAM lp)
 {
   COLORREF color, tip_color;
