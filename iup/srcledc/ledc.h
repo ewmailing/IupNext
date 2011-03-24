@@ -2,7 +2,7 @@
  * \brief LEDC definitions.
  *
  * See Copyright Notice in iup.h
- * $Id: ledc.h,v 1.2 2009-06-22 15:47:16 scuri Exp $
+ * $Id: ledc.h,v 1.3 2011-03-24 17:30:41 scuri Exp $
  */
  
 #ifndef __LEDC_H 
@@ -39,7 +39,7 @@ struct _Telem {
   int     elemidx;
   char   *codename;
   union {
-    struct { int w, h; } image;
+    struct { int w, h, d; } image;
   } data;
 };
 

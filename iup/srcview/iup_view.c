@@ -59,6 +59,16 @@ static int imagebutton_cb(Ihandle* self)
   return IUP_DEFAULT;
 }
 
+static int is_image(const char* type)
+{
+  if (iupStrEqual(type, "image") ||
+      iupStrEqual(type, "imagergb") ||
+      iupStrEqual(type, "imagergba"))
+    return 1;
+  else
+    return 0;
+}
+
 static int showallimages_cb(void)
 {
   Ihandle *dialog, *box, *files, *tabs, *toggle, *label;
@@ -71,7 +81,7 @@ static int showallimages_cb(void)
     Ihandle* elem = IupGetHandle(names[i]);
     char* type = IupGetClassType(elem);
 
-    if (iupStrEqual(type, "image"))
+    if (is_image(type))
     {
       Ihandle *tbox, *lbox, *button;
 
@@ -216,7 +226,7 @@ static int saveallimages_cb(void)
     Ihandle* elem = IupGetHandle(names[i]);
     char* type = IupGetClassType(elem);
 
-    if (iupStrEqual(type, "image"))
+    if (is_image(type))
     {
       char file_name[1024] = "";
 
@@ -359,7 +369,7 @@ static int saveallimagesone_cb(void)
     Ihandle* elem = IupGetHandle(names[i]);
     char* type = IupGetClassType(elem);
 
-    if (iupStrEqual(type, "image"))
+    if (is_image(type))
     {
       /* save only loaded images */
       char* file_title = IupGetAttribute(elem, "_FILE_TITLE");
@@ -429,7 +439,7 @@ static int saveimage_cb(Ihandle* self)
     Ihandle* elem = IupGetHandle(name);
     char* type = IupGetClassType(elem);
 
-    if (iupStrEqual(type, "image"))
+    if (is_image(type))
     {
       char file_name[1024];
 
