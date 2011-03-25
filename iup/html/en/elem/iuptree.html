@@ -196,12 +196,14 @@ too much overhead. Then when the parent branch is closed the subtree can be
 removed. But the subtree must have at least 1 node so the branch can be opened 
 and closed, empty branches can NOT be opened.</p>
 <h4>User Data</h4>
-<p>The node Id does not always correspond to the same 
-  node as the tree is modified. For example, a id=2 will always refer to the third node in the tree. For that 
-  reason, there is also the <strong>USERDATAid</strong>, which allows identifying a specific node. The 
-<strong>USERDATAid </strong>always refers to the same node. The <strong>
-USERDATAid</strong> may contain a user-created structure with other information 
-for the node.</p>
+<p>The node id does not always correspond to the same 
+  node as the tree is modified. For example, an id=2 will always refer to the third node in the tree, 
+so if you add a node before the third node, the node with id=2 will now refer to 
+the new node, and the old node will now have id=3. For that 
+  reason, each node can store an user data pointer uniquely identifying the 
+node. To set or retrieve the user data of a node use the <strong>USERDATAid</strong> 
+attribute, or the <strong><a href="#Extra_Functions">Extra Functions</a></strong> 
+below to associate a user data to a node and to find a node given its user data.</p>
 <h4>Images</h4>
 <p>IupTree has three types of images: one associated to the leaf, one to the collapsed branch and 
   the other to the expanded branch. Each image can be changed, both globally and individually.</p>
@@ -274,11 +276,12 @@ simple K_ANY callback:</p>
    IupSetAttribute(ih,&quot;DELNODE&quot;,&quot;MARKED&quot;);
   return IUP_CONTINUE;
 }</pre>
-<h3>Extra Functions</h3>
+<h3><a name="Extra_Functions">Extra Functions</a></h3>
 <p>IupTree has functions that allow associating a pointer (or a user defined id) to 
   a node. In order to do that, you provide the id of the node and the pointer (userid); even 
   if the node's id changes later on, the userid will still be associated with the given node. In IupLua, instead of a 
-  pointer the same functions are defined for table and userdata.</p>
+  pointer the same functions are defined for table and userdata. These functions 
+use the <strong>USERDATAid</strong> attribute.</p>
 <hr>
 <pre>int IupTreeSetUserId(Ihandle *<strong>ih</strong>, int <strong>id</strong>, void *<strong>userid</strong>); [in C]
 iup.TreeSetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number, <strong>userid: </strong>userdata/table) [in Lua]</pre>
