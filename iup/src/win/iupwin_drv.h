@@ -31,6 +31,7 @@ int iupwinKeyDecode(int wincode);
 
 /* tips */
 void iupwinTipsGetDispInfo(LPARAM lp);
+void iupwinTipsUpdateInfo(Ihandle* ih, HWND tips_hwnd);
 
 /* font */
 char* iupwinGetHFontAttrib(Ihandle *ih);

@@ -75,12 +75,8 @@ int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
   if (!tips_hwnd)
     return 0;
 
-  /* must use IupGetAttribute to use inheritance */
-  if (!IupGetAttribute(ih, "TIP"))
-    return 0;
-
   if (iupStrBoolean(value))
-    SendMessage(tips_hwnd, TTM_POPUP, 0, 0);  /* XP Only */
+    SendMessage(tips_hwnd, TTM_POPUP, 0, 0);  /* Works in Visual Styles Only */
   else
     SendMessage(tips_hwnd, TTM_POP, 0, 0);
 
@@ -93,35 +89,16 @@ char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
   if (!tips_hwnd)
     return NULL;
 
-  /* must use IupGetAttribute to use inheritance */
-  if (!IupGetAttribute(ih, "TIP"))
-    return NULL;
-
   if (IsWindowVisible(tips_hwnd))
     return "Yes";
   else
     return "No";
 }
 
-void iupwinTipsGetDispInfo(LPARAM lp)
+void iupwinTipsUpdateInfo(Ihandle* ih, HWND tips_hwnd)
 {
   COLORREF color, tip_color;
-  NMTTDISPINFO* tips_info;
-  Ihandle* ih;
-  HWND tips_hwnd;
   char* value;
-
-  if (!lp) return;
-
-  tips_info = (NMTTDISPINFO*)lp;
-  ih = iupwinHandleGet(tips_info->hdr.hwndFrom);  /* hwndFrom is the tooltip window */
-  if (!ih) return;
-
-  tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");
-  if (tips_hwnd != tips_info->hdr.hwndFrom) return;
-
-  tips_info->hinst = NULL;
-  tips_info->lpszText = IupGetAttribute(ih, "TIP");  /* must use IupGetAttribute to use inheritance */
 
   {
     HFONT hfont;
@@ -205,4 +182,25 @@ void iupwinTipsGetDispInfo(LPARAM lp)
 
     SendMessage(tips_hwnd, TTM_NEWTOOLRECT, 0, (LPARAM)&ti);
   }
+}
+
+void iupwinTipsGetDispInfo(LPARAM lp)
+{
+  NMTTDISPINFO* tips_info;
+  Ihandle* ih;
+  HWND tips_hwnd;
+
+  if (!lp) return;
+
+  tips_info = (NMTTDISPINFO*)lp;
+  ih = iupwinHandleGet(tips_info->hdr.hwndFrom);  /* hwndFrom is the tooltip window */
+  if (!ih) return;
+
+  tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");
+  if (tips_hwnd != tips_info->hdr.hwndFrom) return;
+
+  tips_info->hinst = NULL;
+  tips_info->lpszText = IupGetAttribute(ih, "TIP");  /* must use IupGetAttribute to use inheritance */
+
+  iupwinTipsUpdateInfo(ih, tips_hwnd);
 }

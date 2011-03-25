@@ -523,6 +523,14 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "HIDEBUTTONS",    "YES");
 //  IupSetAttribute(tree, "INDENTATION",   "40");
 //  IupSetAttribute(tree, "CANFOCUS", "NO");
+  IupSetAttribute(tree, "TIP", "Tree Tip");
+//  IupSetAttribute(tree, "TIPBGCOLOR", "255 128 128");
+//  IupSetAttribute(tree, "TIPFGCOLOR", "0 92 255");
+
+  // Windows Only  
+//  IupSetAttribute(tree, "TIPBALLON", "YES");
+//  IupSetAttribute(tree, "TIPBALLONTITLE", "Tip Title");
+//  IupSetAttribute(tree, "TIPBALLONTITLEICON", "2");
 
   IupSetHandle("tree", tree);
 }
