@@ -792,6 +792,14 @@ static char* iMatrixGetBgColorAttrib(Ihandle* ih, int lin, int col)
   return NULL;
 }
 
+static int iMatrixConvertXYToPos(Ihandle* ih, int x, int y)
+{
+  int lin, col;
+  if (iupMatrixAuxGetLinColFromXY(ih, x, y, &lin, &col))
+    return lin*(ih->data->columns.num-1) + col;
+  return -1;
+}
+
 static char* iMatrixGetNumColVisibleAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(50);
@@ -956,6 +964,8 @@ static int iMatrixMapMethod(Ihandle* ih)
   }
 
   iupMatrixMemAlloc(ih);
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)iMatrixConvertXYToPos);
 
   return IUP_NOERROR;
 }

@@ -344,13 +344,16 @@ not defined when the matrix is mapped it will be read-only.</p>
 <p>The canvas callbacks 
 <a href="../call/iup_action.html">ACTION</a>, 
 <a href="../call/iup_scroll_cb.html">SCROLL_CB</a>, 
-  KEYPRESS_CB,
-  MOTION_CB,
-  MAP_CB,
-  RESIZE_CB 
+  <a href="../call/iup_keypress_cb.html">KEYPRESS_CB</a>,
+<a href="../call/iup_motion_cb.html">MOTION_CB</a>,
+  <a href="../call/iup_map_cb.html">MAP_CB</a>,
+<a href="../call/iup_resize_cb.html">RESIZE_CB</a> 
   and <a href="../call/iup_button_cb.html">BUTTON_CB</a> 
-  can be changed but you should save and call the original definitions or the matrix will not correctly work. This can 
-  not be done in Lua.</p>
+  can be changed but you should save and call the original definition from 
+inside your own callback, or the matrix will not correctly work. This can 
+  not be done in Lua. Use 
+<a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> to convert 
+	(x,y) coordinates in the cell position (pos=lin*numcol + col). </p>
 <p>See <a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
 
 </body>
