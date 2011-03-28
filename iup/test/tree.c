@@ -528,9 +528,9 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "TIPFGCOLOR", "0 92 255");
 
   // Windows Only  
-//  IupSetAttribute(tree, "TIPBALLON", "YES");
-//  IupSetAttribute(tree, "TIPBALLONTITLE", "Tip Title");
-//  IupSetAttribute(tree, "TIPBALLONTITLEICON", "2");
+//  IupSetAttribute(tree, "TIPBALLOON", "YES");
+//  IupSetAttribute(tree, "TIPBALLOONTITLE", "Tip Title");
+//  IupSetAttribute(tree, "TIPBALLOONTITLEICON", "2");
 
   IupSetHandle("tree", tree);
 }

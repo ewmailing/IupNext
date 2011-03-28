@@ -20,6 +20,7 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_drv.h"
+#include "iup_drvinfo.h"
 #include "iup_stdcontrols.h"
 #include "iup_tree.h"
 #include "iup_image.h"
@@ -2460,17 +2461,31 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   else if (msg_info->code == TVN_GETINFOTIP)
   {
     NMTVGETINFOTIP* tip_info = (NMTVGETINFOTIP*)msg_info;
-    char* value = IupGetAttribute(ih, "TIP");  /* must use IupGetAttribute to use inheritance */
-    if (value)
+    IFnii cb;
+    char* value;
+
+    HWND tips_hwnd = (HWND)SendMessage(ih->handle, TVM_GETTOOLTIPS, 0, 0);
+    if (!tips_hwnd)
+      return 0;
+
+    value = IupGetAttribute(ih, "TIP");  /* must use IupGetAttribute to use inheritance */
+    if (!value)
+      return 0;
+
+    cb = (IFnii)IupGetCallback(ih, "TIPS_CB");
+    if (cb)
     {
-      HWND tips_hwnd = (HWND)SendMessage(ih->handle, TVM_GETTOOLTIPS, 0, 0);
-      if (!tips_hwnd)
-        return 0;
+      int x, y;
+      iupdrvGetCursorPos(&x, &y);
+      iupdrvScreenToClient(ih, &x, &y);
+      cb(ih, x, y);
 
-      iupStrCopyN(tip_info->pszText, tip_info->cchTextMax, value);
-
-      iupwinTipsUpdateInfo(ih, tips_hwnd);
+      value = IupGetAttribute(ih, "TIP");  /* get again, because it could has been changed inside the callback */
     }
+
+    iupStrCopyN(tip_info->pszText, tip_info->cchTextMax, value);
+
+    iupwinTipsUpdateInfo(ih, tips_hwnd);
   }
 
   return 0;  /* allow the default processsing */

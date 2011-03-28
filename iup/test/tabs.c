@@ -321,9 +321,9 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "TIPFGCOLOR", "0 92 255");
 
   // Windows Only  
-  //IupSetAttribute(tabs, "TIPBALLON", "YES");
-  //IupSetAttribute(tabs, "TIPBALLONTITLE", "Tip Title");
-  //IupSetAttribute(tabs, "TIPBALLONTITLEICON", "2");
+  //IupSetAttribute(tabs, "TIPBALLOON", "YES");
+  //IupSetAttribute(tabs, "TIPBALLOONTITLE", "Tip Title");
+  //IupSetAttribute(tabs, "TIPBALLOONTITLEICON", "2");
   //IupSetAttribute(tabs, "TIPDELAY", "5000");
 
   //IupSetCallback(tabs, "K_ANY",        (Icallback)k_any);

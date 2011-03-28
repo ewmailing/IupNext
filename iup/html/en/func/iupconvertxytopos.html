@@ -23,8 +23,8 @@ Parameters/Return</h3>
 <pre>int IupConvertXYToPos(Ihandle *<strong>ih</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
 iup.ConvertXYToPos(<strong>ih</strong>: ihandle, <strong>x</strong>, <strong>y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><b>ih</b>: Identifier of the element.<br>
-<b>x</b>: X coordinate of the left corner of the interface element. <br>
-<b>y</b>: Y coordinate of the upper part of the interface element.</p>
+<b>x</b>: X coordinate relative to the left corner of the element. <br>
+<b>y</b>: Y coordinate relative to the top corner of the element.</p>
 <p><span class="style2">Returns:</span> the position starting at 0 (except for
 <strong>IupList</strong> that starts at 1). If fails 
 returns -1.</p>

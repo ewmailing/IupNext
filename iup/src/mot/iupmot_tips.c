@@ -10,6 +10,7 @@
 #include <stdio.h>
 
 #include "iup.h"
+#include "iupcbs.h"
 
 #include "iup_attrib.h"
 #include "iup_str.h"
@@ -43,8 +44,17 @@ static void motTipsShow(void)
 {
   char* value;
   int x, y;
+  IFnii cb;
 
   iupdrvGetCursorPos(&x, &y);
+
+  cb = (IFnii)IupGetCallback(mot_tips.ih, "TIPS_CB");
+  if (cb)
+  {
+    int wx = x, wy = y;
+    iupdrvScreenToClient(mot_tips.ih, &wx, &wy);
+    cb(mot_tips.ih, wx, wy);
+  }
 
   value = iupAttribGet(mot_tips.ih, "TIPRECT");
   if (value)
@@ -57,6 +67,53 @@ static void motTipsShow(void)
       iupmotTipLeaveNotify();
       return;
     }
+  }
+
+  value = iupAttribGetStr(mot_tips.ih, "TIPBGCOLOR");
+  if (value)
+    XtVaSetValues(mot_tips.Label, XmNbackground, iupmotColorGetPixelStr(value), NULL);
+
+  value = iupAttribGetStr(mot_tips.ih, "TIPFGCOLOR");
+  if (value)
+    XtVaSetValues(mot_tips.Label, XmNforeground, iupmotColorGetPixelStr(value), NULL);
+
+  /* set label font */
+  {
+    XmFontList fontlist = (XmFontList)iupmotGetFontListAttrib(mot_tips.ih);
+    value = iupAttribGetStr(mot_tips.ih, "TIPFONT");
+    if (value)
+    {
+      if (iupStrEqualNoCase(value, "SYSTEM"))
+        fontlist = NULL;
+      else
+        fontlist = iupmotGetFontList(iupAttribGet(mot_tips.ih, "TIPFOUNDRY"), value);
+    }
+
+    if (fontlist)
+      XtVaSetValues(mot_tips.Label, XmNfontList, fontlist, NULL);
+  }
+ 
+  /* set label contents */
+  value = iupAttribGet(mot_tips.ih, "TIP");
+  iupmotSetString(mot_tips.Label, XmNlabelString, value);
+
+  /* set label size */
+  {
+    int lw = 0, lh = 0;
+    iupdrvFontGetMultiLineStringSize(mot_tips.ih, value, &lw, &lh);
+
+    /* add room for margin */
+    lw += 2*(2);
+    lh += 2*(2);  
+
+    XtVaSetValues(mot_tips.Label,
+      XmNwidth, (XtArgVal)lw,
+      XmNheight, (XtArgVal)lh,
+      NULL);
+    XtVaSetValues(mot_tips.Dialog,
+      XmNwidth, (XtArgVal)lw,
+      XmNheight, (XtArgVal)lh,
+      NULL);
   }
   
   XtVaSetValues(mot_tips.Dialog, 
@@ -79,12 +136,8 @@ static void motTipsHide(void)
   iupmotTipLeaveNotify();
 }
 
-static int motTipsSet(Ihandle *ih)
+static void motTipsInit(Ihandle *ih)
 {
-  char* tipText = iupAttribGet(ih, "TIP");
-  if (!tipText)
-    return FALSE;
-
   if (!mot_tips.Dialog)
   {
     mot_tips.Dialog = XtVaAppCreateShell(" ", "tip",
@@ -93,52 +146,13 @@ static int motTipsSet(Ihandle *ih)
       NULL);
 
     mot_tips.Label = XtVaCreateManagedWidget("label tip",
-      xmLabelWidgetClass, mot_tips.Dialog,     /* must use IupGetAttribute to use inheritance */
-      XmNforeground, iupmotColorGetPixelStr(IupGetAttribute(ih, "TIPFGCOLOR")),
-      XmNbackground, iupmotColorGetPixelStr(IupGetAttribute(ih, "TIPBGCOLOR")),
+      xmLabelWidgetClass, mot_tips.Dialog,
       NULL);
 
     XtRealizeWidget(mot_tips.Dialog);
   }
 
-  /* set label font */
-  {
-    XmFontList fontlist = (XmFontList)iupmotGetFontListAttrib(ih);
-    char* value = iupAttribGetStr(ih, "TIPFONT");
-    if (value)
-    {
-      if (iupStrEqualNoCase(value, "SYSTEM"))
-        fontlist = NULL;
-      else
-        fontlist = iupmotGetFontList(iupAttribGet(ih, "TIPFOUNDRY"), value);
-    }
-
-    if (fontlist)
-      XtVaSetValues(mot_tips.Label, XmNfontList, fontlist, NULL);
-  }
- 
-  /* set label contents */
-  iupmotSetString(mot_tips.Label, XmNlabelString, tipText);
-
-  /* set label size */
-  {
-    int lw = 0, lh = 0;
-    iupdrvFontGetMultiLineStringSize(ih, tipText, &lw, &lh);
-
-    /* add room for margin */
-    lw += 2*(2);
-    lh += 2*(2);  
-
-    XtVaSetValues(mot_tips.Label,
-      XmNwidth, (XtArgVal)lw,
-      XmNheight, (XtArgVal)lh,
-      NULL);
-    XtVaSetValues(mot_tips.Dialog,
-      XmNwidth, (XtArgVal)lw,
-      XmNheight, (XtArgVal)lh,
-      NULL);
-  }
-
+  mot_tips.ih = ih;
   mot_tips.ShowTimerId  = (XtIntervalId) NULL;
   mot_tips.HideTimerId  = (XtIntervalId) NULL;
   mot_tips.Visible      = FALSE;
@@ -148,14 +162,11 @@ static int motTipsSet(Ihandle *ih)
     int delay = IupGetInt(ih, "TIPDELAY");  /* must use IupGetInt to use inheritance */
     mot_tips.HideInterval = delay + mot_tips.ShowInterval;
   }
-
-  return TRUE;
 }
 
 int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
 {
-  /* must use IupGetAttribute to use inheritance */
-  if (!IupGetAttribute(ih, "TIP"))
+  if (mot_tips.ih != ih)
     return 0;
 
   if (iupStrBoolean(value))
@@ -166,23 +177,12 @@ int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int motIsVisible(Widget w)
-{
-  XWindowAttributes wa;
-  XGetWindowAttributes(iupmot_display, XtWindow(w), &wa);
-  return (wa.map_state == IsViewable);
-}
-
 char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
 {
-  /* must use IupGetAttribute to use inheritance */
-  if (!IupGetAttribute(ih, "TIP"))
-    return NULL;
-
   if (mot_tips.ih != ih)
     return NULL;
 
-  if (motIsVisible(mot_tips.Dialog))
+  if (mot_tips.Visible)
     return "Yes";
   else
     return "No";
@@ -192,10 +192,10 @@ void iupmotTipEnterNotify(Ihandle *ih)
 {
   iupmotTipLeaveNotify();
 
-  if (motTipsSet(ih) == FALSE)
+  if (!iupAttribGet(ih, "TIP"))
     return;
 
-  mot_tips.ih = ih;
+  motTipsInit(ih);
 
   mot_tips.ShowTimerId = XtAppAddTimeOut( /* EnterWin to Show */
     iupmot_appcontext,

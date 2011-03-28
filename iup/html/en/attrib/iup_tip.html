@@ -18,14 +18,14 @@
   the element.</p>
 <h3>Value</h3>
 <p>Text.</p>
-<h3>Additional Tip Attributes (Windows and Motif Only)&nbsp; (since 3.0)</h3>
+<h3>Additional Tip Attributes (since 3.0)</h3>
 <p>These attributes affect the TIP display.</p>
-<p><strong>TIPBALLON</strong> [Windows Only]:
+<p><strong>TIPBALLOON</strong> [Windows Only]:
   The tip window will have the appearance of a cartoon &quot;balloon&quot; with rounded 
   corners and a stem pointing to the item.. Default: NO.</p>
-<p><strong>TIPBALLONTITLE</strong> [Windows Only]: When using the ballon format, the 
+<p><strong>TIPBALLOONTITLE</strong> [Windows Only]: When using the balloon format, the 
   tip can also has a title in a separate area.</p>
-<p><strong>TIPBALLONTITLEICON</strong> [Windows Only]: When using the ballon format, 
+<p><strong>TIPBALLOONTITLEICON</strong> [Windows Only]: When using the balloon format, 
   the tip can also has a pre-defined icon in the title area. Values can be:</p>
 <p class="info">&quot;0&quot; - No icon<br>
     &quot;1&quot; - Info icon <br>
@@ -35,7 +35,7 @@
   background color. Default: &quot;255 255 225&quot; (Light Yellow)</p>
 <p><strong>TIPDELAY </strong>[Windows and Motif Only]:
   Time the tip will remain visible. Default:
-  &quot;5000&quot;. In Windows the maximum value is 32767 miliseconds.</p>
+  &quot;5000&quot;. In Windows the maximum value is 32767 milliseconds.</p>
 <p><strong>TIPFGCOLOR </strong>[Windows and Motif Only]: The tip 
   text color. Default: &quot;0 0 0&quot; (Black)</p>
 <p><strong>TIPFONT</strong> [Windows and Motif Only]: The font for the tip text. 
@@ -55,6 +55,23 @@ element area. (GTK 2.12)</p>
 only trigger the tip state, the given value will be ignored. Returns the current 
 visible state. (GTK 
 2.12) (get since 3.5)</p>
+
+
+<h3>Additional Tip <a name="Callbacks">Callbacks</a> (since 3.5)</h3>
+
+
+<p><strong>TIPS_CB</strong>: Action before a tip is displayed.</p>
+
+  
+    
+<pre>int funcion(Ihandle*<strong> ih</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]<br><strong>elem</strong>:action(<strong>x</strong>, <strong>y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+<strong>x, y</strong>: cursor position relative to the top-left corner of the element</p>
+
 <h3>Affects</h3>
 <p>All except label, menu item and submenu item.</p>
 

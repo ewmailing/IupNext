@@ -111,6 +111,12 @@ static int move_cb(Ihandle *ih, int x, int y)
   return IUP_DEFAULT;
 }
 
+static int tips_cb(Ihandle *ih, int x, int y)
+{
+  printf("TIPS_CB(%s, %d, %d)\n", IupGetAttribute(ih, "TESTTITLE"), x, y);
+  return IUP_DEFAULT;
+}
+
 static int getfocus_cb(Ihandle *ih)
 {
   printf("GETFOCUS_CB(%s)\n", IupGetAttribute(ih, "TESTTITLE"));
@@ -294,9 +300,9 @@ static void new_dialog(int test, char* tip)
         IupSetAttribute(dlg, "TIPFGCOLOR", "0 92 255");
 
         // Windows Only  
-        IupSetAttribute(dlg, "TIPBALLON", "YES");
-        IupSetAttribute(dlg, "TIPBALLONTITLE", "Tip Title Test");
-        IupSetAttribute(dlg, "TIPBALLONTITLEICON", "2");
+        IupSetAttribute(dlg, "TIPBALLOON", "YES");
+        IupSetAttribute(dlg, "TIPBALLOONTITLE", "Tip Title Test");
+        IupSetAttribute(dlg, "TIPBALLOONTITLEICON", "2");
         //IupSetAttribute(dlg, "TIPDELAY", "5000");
       }
       if (count == 2)
@@ -345,6 +351,7 @@ static void new_dialog(int test, char* tip)
   IupSetCallback(dlg, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
   IupSetCallback(dlg, "RESIZE_CB", (Icallback)resize_cb);
   IupSetCallback(dlg, "MOVE_CB", (Icallback)move_cb);
+  IupSetCallback(dlg, "TIPS_CB", (Icallback)tips_cb);
                    
   // Windows and GTK Only  
   IupSetCallback(dlg, "DROPFILES_CB", (Icallback)dropfiles_cb);
