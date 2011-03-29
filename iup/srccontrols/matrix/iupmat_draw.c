@@ -516,7 +516,6 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
       ypos = (int)((y1 + y2) / 2.0 - 0.5);
       iupMATRIX_TEXT(ih, x2+IMAT_PADDING_W/2, ypos, "...");
     }
-
   }
 }
 

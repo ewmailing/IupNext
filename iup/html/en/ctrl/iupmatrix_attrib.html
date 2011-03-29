@@ -176,14 +176,17 @@ EDITION_CB callback when mode is 0, then the return value is the new value
   that will be updated in the cell. </p>
 <hr class="style3">
 <p><strong>CELLOFFSET<i>L</i>:<i>C</i></strong> (read-only): Returns the cell 
-computed offset in pixels from the top-left corner of the matrix. Returns NULL 
+computed offset in pixels from the top-left corner of the matrix, in the format 
+&quot;XxY&quot; or &quot;%dx%d&quot; in C. Returns NULL 
 if the cell does not exists, or it is not visible, or the element is not mapped. 
-It will only return a valid result if the cell has already been displayed. 
-(since 3.5)</p>
+It will only return a valid result if the cell has already been displayed. They 
+are similar to the parameters of the DRAW_CB callback but they do NOT include 
+the decorations. (since 3.5)</p>
 <p><strong>CELLSIZE<i>L</i>:<i>C</i></strong> (read-only): Returns the cell 
-computed size in pixels. Returns NULL if the cell does not exists, or the 
+computed size in pixels, in the format &quot;WxH&quot; or &quot;%dx%d&quot; in C. Returns NULL if the cell does not exists, or the 
 element is not mapped. It will only return a valid result if the cell has 
-already been displayed. (since 3.5)</p>
+already been displayed. They are similar to the parameters of the DRAW_CB 
+callback but they do NOT include the decorations. (since 3.5)</p>
 <h3>Column Attributes (no redraw)</h3>
 <p><a name="ALIGNMENTn"><strong>ALIGNMENT</strong><em><strong>C</strong></em></a>:
   Alignment of the cells in column 

@@ -173,8 +173,7 @@ font. </p>
 <a target="_blank" href="http://www.tecgraf.puc-rio.br/cd/">CD</a> 
   library primitives.&nbsp; The clipping is set for the bounding rectangle. The 
 callback is called after the cell background has been filled with the background 
-color. If HIDEFOCUS=NO (the default) the drawing area will not include the focus 
-area, if HIDEFOCUS=YES the complete cell is available.</p>
+color. The focus feedback area is not included in the decoration size.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>x1</strong>, int <strong>x2</strong>, int <strong>y1</strong>, int <strong>y2</strong>, cdCanvas* <strong>cnv</strong>); [in C]
 <strong>elem</strong>:draw_cb(<strong>lin, col, x1, x2, y1, y2</strong>: number, <strong>cnv</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -184,7 +183,7 @@ area, if HIDEFOCUS=YES the complete cell is available.</p>
     Coordinates of the current cell.<br>
 <strong>x1</strong>, <strong>x2</strong>, <strong>y1</strong>, <strong>y2</strong>:
     Bounding rectangle of the current cell in 
-    pixels.<br>
+    pixels, excluding the decorations.<br>
 <strong>cnv</strong>: internal canvas CD used to draw the matrix.</p>
 <p class="info"><span class="style1">Returns:</span> If IUP_IGNORE the normal 
 text drawing will take place.</p>
