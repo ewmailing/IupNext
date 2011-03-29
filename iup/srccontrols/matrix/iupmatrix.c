@@ -726,6 +726,32 @@ static char* iMatrixGetIdValueAttrib(Ihandle* ih, int lin, int col)
   return NULL;
 }
 
+static char* iMatrixGetCellOffsetAttrib(Ihandle* ih, int lin, int col)
+{
+  if (iupMatrixCheckCellPos(ih, lin, col))
+  {
+    int x, y;
+    if (iupMatrixGetCellOffset(ih, lin, col, &x, &y))
+    {
+      char* buffer = iupStrGetMemory(50);
+      sprintf(buffer, "%dx%d", x, y);
+      return buffer;
+    }
+  }
+  return NULL;
+}
+
+static char* iMatrixGetCellSizeAttrib(Ihandle* ih, int lin, int col)
+{
+  if (iupMatrixCheckCellPos(ih, lin, col))
+  {
+    char* buffer = iupStrGetMemory(50);
+    sprintf(buffer, "%dx%d", ih->data->columns.sizes[col], ih->data->lines.sizes[lin]);
+    return buffer;
+  }
+  return NULL;
+}
+
 static int iMatrixSetNeedRedraw(Ihandle* ih)
 {
   ih->data->need_redraw = 1;
@@ -1148,6 +1174,8 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId2(ic, "FONT", iMatrixGetFontAttrib, iMatrixSetFontAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttributeId2(ic, "CELLOFFSET", iMatrixGetCellOffsetAttrib, NULL, IUPAF_READONLY);
+  iupClassRegisterAttributeId2(ic, "CELLSIZE", iMatrixGetCellSizeAttrib, NULL, IUPAF_READONLY);
 
   /* IupMatrix Attributes - COLUMN */
   iupClassRegisterAttributeId(ic, "ALIGNMENT", iMatrixGetAlignmentAttrib, (IattribSetIdFunc)iMatrixSetNeedRedraw, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

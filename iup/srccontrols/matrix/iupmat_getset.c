@@ -356,3 +356,52 @@ char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels_unit)
   sprintf(str, "%d", size);
   return str;
 }
+
+int iupMatrixGetCellOffset(Ihandle* ih, int lin1, int col1, int *x, int *y)
+{
+  int x1, y1, col, lin;
+
+  if (col1 < ih->data->columns.first ||
+      col1 > ih->data->columns.last ||
+      lin1 < ih->data->lines.first ||
+      lin1 > ih->data->lines.last )
+    return 0;
+
+  if (col1 == 0)
+  {
+    if (!ih->data->columns.sizes[0])
+      return 0;
+
+    x1 = 0;
+  }
+  else
+  {
+    x1 = ih->data->columns.sizes[0];
+
+    /* Find the initial position of the column */
+    x1 -= ih->data->columns.first_offset;
+    for(col = ih->data->columns.first; col < col1; col++)
+      x1 += ih->data->columns.sizes[col];
+  }
+
+  if (lin1 == 0)
+  {
+    if (!ih->data->lines.sizes[0])
+      return 0;
+
+    y1 = 0;
+  }
+  else
+  {
+    y1 = ih->data->lines.sizes[0];
+
+    /* Find the initial position of the line */
+    y1 -= ih->data->lines.first_offset;
+    for(lin = ih->data->lines.first; lin < lin1; lin++)
+      y1 += ih->data->lines.sizes[lin];
+  }
+
+  *x = x1;
+  *y = y1;
+  return 1;
+}
