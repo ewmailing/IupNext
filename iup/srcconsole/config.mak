@@ -39,6 +39,10 @@ OPT = YES
 LINKER = $(CPPC)
 
 ifdef DBG
+  ALL_STATIC=Yes
+endif
+
+ifdef ALL_STATIC
   # Statically link everything only when debugging
   IUP := ..
   USE_IUPLUA = Yes
@@ -127,6 +131,7 @@ ifdef DBG
     DEFINES += IUPLUA_TUIO
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
       LIBS += iupluatuio$(LIBLUASUFX) iuptuio
+      LIBS += ws2_32 winmm
     else
       SLIB += $(IUPLIB)/libiupluatuio$(LIBLUASUFX).a $(IUPLIB)/libiuptuio.a
     endif

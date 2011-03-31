@@ -55,12 +55,26 @@ static int dialog_show_cb(Ihandle *self, int p0)
   return iuplua_call(L, 1);
 }
 
+static int dialog_tips_cb(Ihandle *self, int p0, int p1)
+{
+  lua_State *L = iuplua_call_start(self, "tips_cb");
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  return iuplua_call(L, 2);
+}
+
 static int dialog_copydata_cb(Ihandle *self, char * p0, int p1)
 {
   lua_State *L = iuplua_call_start(self, "copydata_cb");
   lua_pushstring(L, p0);
   lua_pushinteger(L, p1);
   return iuplua_call(L, 2);
+}
+
+static int dialog_map_cb(Ihandle *self)
+{
+  lua_State *L = iuplua_call_start(self, "map_cb");
+  return iuplua_call(L, 0);
 }
 
 static int dialog_trayclick_cb(Ihandle *self, int p0, int p1, int p2)
@@ -70,12 +84,6 @@ static int dialog_trayclick_cb(Ihandle *self, int p0, int p1, int p2)
   lua_pushinteger(L, p1);
   lua_pushinteger(L, p2);
   return iuplua_call(L, 3);
-}
-
-static int dialog_map_cb(Ihandle *self)
-{
-  lua_State *L = iuplua_call_start(self, "map_cb");
-  return iuplua_call(L, 0);
 }
 
 static int Dialog(lua_State *L)
@@ -96,9 +104,10 @@ int iupdialoglua_open(lua_State * L)
   iuplua_register_cb(L, "MOVE_CB", (lua_CFunction)dialog_move_cb, NULL);
   iuplua_register_cb(L, "DROPFILES_CB", (lua_CFunction)dialog_dropfiles_cb, NULL);
   iuplua_register_cb(L, "SHOW_CB", (lua_CFunction)dialog_show_cb, NULL);
+  iuplua_register_cb(L, "TIPS_CB", (lua_CFunction)dialog_tips_cb, NULL);
   iuplua_register_cb(L, "COPYDATA_CB", (lua_CFunction)dialog_copydata_cb, NULL);
-  iuplua_register_cb(L, "TRAYCLICK_CB", (lua_CFunction)dialog_trayclick_cb, NULL);
   iuplua_register_cb(L, "MAP_CB", (lua_CFunction)dialog_map_cb, NULL);
+  iuplua_register_cb(L, "TRAYCLICK_CB", (lua_CFunction)dialog_trayclick_cb, NULL);
 
 #ifdef IUPLUA_USELOH
 #include "dialog.loh"
