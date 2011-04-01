@@ -132,6 +132,7 @@ void iupImageLibLoadAll(void)
   iupImageStockLoad("IUP_ToolsSortAscend");
   iupImageStockLoad("IUP_ToolsSortDescend");
   iupImageStockLoad("IUP_ViewFullScreen");
+  iupImageStockLoad("IUP_Webcam");
   iupImageStockLoad("IUP_WindowsCascade");
   iupImageStockLoad("IUP_WindowsTile");
   iupImageStockLoad("IUP_Zoom");
