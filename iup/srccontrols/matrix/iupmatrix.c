@@ -178,6 +178,28 @@ static char* iMatrixGetUseTitleSizeAttrib(Ihandle* ih)
     return "NO";
 }
 
+static int iMatrixSetLimitExpandAttrib(Ihandle* ih, const char* value)
+{
+  /* can be set only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+    ih->data->limit_expand = 1;
+  else 
+    ih->data->limit_expand = 0;
+
+  return 0;
+}
+
+static char* iMatrixGetLimitExpandAttrib(Ihandle* ih)
+{
+  if (ih->data->limit_expand)
+    return "YES";
+  else
+    return "NO";
+}
+
 static int iMatrixSetHiddenTextMarksAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -1013,7 +1035,7 @@ static void iMatrixUnMapMethod(Ihandle* ih)
   iupMatrixMemRelease(ih);
 }
 
-static int iMatrixGetNaturalWidth(Ihandle* ih)
+static int iMatrixGetNaturalWidth(Ihandle* ih, int *full_width)
 {
   int width = 0, num, col;
 
@@ -1026,17 +1048,31 @@ static int iMatrixGetNaturalWidth(Ihandle* ih)
     width += iupMatrixAuxGetColumnWidth(ih, 0, 1); /* compute title */
     for(col = start; col < ih->data->columns.num; col++)
       width += iupMatrixAuxGetColumnWidth(ih, col, 1);
+
+    if (ih->data->limit_expand)
+    {
+      *full_width = width;
+      for(col = 0; col < start; col++)
+        (*full_width) += iupMatrixAuxGetColumnWidth(ih, col, 1);
+    }
   }
   else
   {
     for(col = 0; col < num; col++)  /* num can be > numcol */
       width += iupMatrixAuxGetColumnWidth(ih, col, 1);
+
+    if (ih->data->limit_expand)
+    {
+      *full_width = width;
+      for(col = num; col < ih->data->columns.num; col++)
+        (*full_width) += iupMatrixAuxGetColumnWidth(ih, col, 1);
+    }
   }
 
   return width;
 }
 
-static int iMatrixGetNaturalHeight(Ihandle* ih)
+static int iMatrixGetNaturalHeight(Ihandle* ih, int *full_height)
 {
   int height = 0, num, lin;
 
@@ -1049,11 +1085,25 @@ static int iMatrixGetNaturalHeight(Ihandle* ih)
     height += iupMatrixAuxGetLineHeight(ih, 0, 1);  /* compute title */
     for(lin = start; lin < ih->data->lines.num; lin++)
       height += iupMatrixAuxGetLineHeight(ih, lin, 1);
+
+    if (ih->data->limit_expand)
+    {
+      *full_height = height;
+      for(lin = 0; lin < start; lin++)
+        (*full_height) += iupMatrixAuxGetLineHeight(ih, lin, 1);
+    }
   }
   else
   {
     for(lin = 0; lin < num; lin++)  /* num can be > numlin */
       height += iupMatrixAuxGetLineHeight(ih, lin, 1);
+
+    if (ih->data->limit_expand)
+    {
+      *full_height = height;
+      for(lin = num; lin < ih->data->lines.num; lin++)
+        (*full_height) += iupMatrixAuxGetLineHeight(ih, lin, 1);
+    }
   }
 
   return height;
@@ -1061,7 +1111,7 @@ static int iMatrixGetNaturalHeight(Ihandle* ih)
 
 static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  int natural_w = 0, natural_h = 0;
+  int sb_w = 0, sb_h = 0, full_width, full_height;
   (void)expand; /* unset if not name container */
 
   if (!ih->handle)
@@ -1072,13 +1122,20 @@ static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ex
   {
     int sb_size = iupdrvGetScrollbarSize();
     if (ih->data->canvas.sb & IUP_SB_HORIZ)
-      natural_h += sb_size;  /* sb horizontal affects vertical size */
+      sb_h += sb_size;  /* sb horizontal affects vertical size */
     if (ih->data->canvas.sb & IUP_SB_VERT)
-      natural_w += sb_size;  /* sb vertical affects horizontal size */
+      sb_w += sb_size;  /* sb vertical affects horizontal size */
   }
 
-  *w = natural_w + iMatrixGetNaturalWidth(ih);
-  *h = natural_h + iMatrixGetNaturalHeight(ih);
+  *w = sb_w + iMatrixGetNaturalWidth(ih, &full_width);
+  *h = sb_h + iMatrixGetNaturalHeight(ih, &full_height);
+
+  if (ih->data->limit_expand)
+  {
+    full_width += sb_w;
+    full_height += sb_h;
+    IupSetfAttribute(ih, "MAXSIZE", "%dx%d", full_width, full_height);
+  }
 }
 
 static void iMatrixCreateCursor(void)
@@ -1229,6 +1286,7 @@ Iclass* iupMatrixNewClass(void)
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LIMITEXPAND", iMatrixGetLimitExpandAttrib, iMatrixSetLimitExpandAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDDENTEXTMARKS", iMatrixGetHiddenTextMarksAttrib, iMatrixSetHiddenTextMarksAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NO_INHERIT);

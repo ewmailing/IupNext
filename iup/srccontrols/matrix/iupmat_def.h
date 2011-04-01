@@ -79,10 +79,10 @@ struct _IcontrolData
   ImatLinColData lines;
   ImatLinColData columns;
 
+  /* State */
   int has_focus;
   int w, h;             /* canvas size */
   int callback_mode;
-  int use_title_size;   /* use title contents when calculating cell size */
   int need_calcsize;
   int need_redraw;
   int inside_markedit_cb;   /* avoid recursion */
@@ -90,6 +90,8 @@ struct _IcontrolData
   /* attributes */
   int mark_continuous, mark_mode, mark_multiple;
   int checkframecolor, hidden_text_marks, editnext;
+  int use_title_size;   /* use title contents when calculating cell size */
+  int limit_expand; /* limit expand to maximum size */
 
   /* Mouse and Keyboard AUX */
   int leftpressed;  /* left mouse button is pressed */
@@ -113,7 +115,8 @@ struct _IcontrolData
   IFniiIII bgcolor_cb;
   char *bgcolor, *bgcolor_parent, *fgcolor, *font;  /* not need to free */
 
-  int clip_x1, clip_x2, clip_y1, clip_y2;  /* aux for cell clipping */
+  /* Clipping AUX for cell  */
+  int clip_x1, clip_x2, clip_y1, clip_y2;
 };
 
 
