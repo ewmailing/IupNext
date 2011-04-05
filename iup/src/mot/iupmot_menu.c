@@ -223,7 +223,8 @@ void iupdrvMenuInitClass(Iclass* ic)
 
 static int motItemSetTitleImageAttrib(Ihandle* ih, const char* value)
 {
-  iupmotSetPixmap(ih, value, XmNlabelPixmap, 0);
+  if (XmIsToggleButton(ih->handle))
+    iupmotSetPixmap(ih, value, XmNlabelPixmap, 0);
   return 1;
 }
 
