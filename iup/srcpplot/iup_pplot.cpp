@@ -293,12 +293,10 @@ void IupPPlotInsertStrPoints(Ihandle* ih, int inIndex, int inSampleIndex, const 
   if (!theYData || !theXData || !theXData->IsString())
     return;
 
-  PlotData::iterator iterY = theYData->begin()+inSampleIndex;
   for (int i=0; i<count; i++)
   {
     theXData->InsertItem(inSampleIndex+i, inX[i]);
-    theYData->insert(iterY, inY[i]);
-    iterY++;
+    theYData->insert(theYData->begin()+(inSampleIndex+i), inY[i]);
   }
 }
 
@@ -320,14 +318,10 @@ void IupPPlotInsertPoints(Ihandle* ih, int inIndex, int inSampleIndex, float *in
   if (!theYData || !theXData || theXData->IsString())
     return;
 
-  PlotData::iterator iterX = theXData->begin()+inSampleIndex;
-  PlotData::iterator iterY = theXData->begin()+inSampleIndex;
   for (int i=0; i<count; i++)
   {
-    theXData->insert(iterX, inX[i]);
-    theYData->insert(iterY, inY[i]);
-    iterX++;
-    iterY++;
+    theXData->insert(theXData->begin()+(inSampleIndex+i), inX[i]);
+    theYData->insert(theYData->begin()+(inSampleIndex+i), inY[i]);
   }
 }
 
