@@ -210,6 +210,8 @@ int iupdrvOpen(int *argc, char ***argv)
   IupSetGlobal("_IUP_RESET_GLOBALCOLORS", "YES");  /* will update the global colors when the first dialog is mapped */
   g_object_unref(style);
 
+  IupSetGlobal("SHOWMENUIMAGES", "YES");
+
   return IUP_NOERROR;
 }
 

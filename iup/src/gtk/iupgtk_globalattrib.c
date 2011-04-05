@@ -132,6 +132,16 @@ int iupdrvSetGlobal(const char *name, const char *value)
       iupgtk_utf8autoconvert = 0;
     return 0;
   }
+  if (iupStrEqual(name, "SHOWMENUIMAGES"))
+  {
+    /* make sure the type is realized */
+    g_type_class_unref (g_type_class_ref (GTK_TYPE_IMAGE_MENU_ITEM));
+
+    if (iupStrBoolean(value))
+      g_object_set (gtk_settings_get_default (), "gtk-menu-images", TRUE, NULL);
+    else
+      g_object_set (gtk_settings_get_default (), "gtk-menu-images", FALSE, NULL);
+  }
   return 1;
 }
 
@@ -192,6 +202,15 @@ char *iupdrvGetGlobal(const char *name)
   if (iupStrEqual(name, "UTF8AUTOCONVERT"))
   {
     if (iupgtk_utf8autoconvert)
+      return "YES";
+    else
+      return "NO";
+  }
+  if (iupStrEqual(name, "SHOWMENUIMAGES"))
+  {
+    gboolean menu_images;
+    g_object_get (gtk_settings_get_default (), "gtk-menu-images", &menu_images, NULL);
+    if (menu_images)
       return "YES";
     else
       return "NO";
