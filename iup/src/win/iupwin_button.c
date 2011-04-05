@@ -682,12 +682,14 @@ static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
       {
         if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION"))  /* to avoid double calls when pressing enter and a dialog is displayed */
         {
+          int ret;
           iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", "1");
 
-          if (cb(ih) == IUP_CLOSE)
+          ret = cb(ih);
+          if (ret == IUP_CLOSE)
             IupExitLoop();
 
-          if (iupObjectCheck(ih))
+          if (ret!=IUP_IGNORE && iupObjectCheck(ih))
             iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", NULL);
         }
       }
