@@ -525,6 +525,9 @@ static int motTextSetNCAttrib(Ihandle* ih, const char* value)
 
 static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
 {
+  Boolean editable;
+  XtVaGetValues(ih->handle, XmNeditable, &editable, NULL);
+  
   /* NOTE: the functions XmTextCopy, XmTextPaste and XmTextCut did not work as expected.
     But using IupClipboard does not catch selections made in a terminal. */
 
@@ -532,7 +535,8 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
   {
     Ihandle* clipboard;
     char *str = XmTextGetSelection(ih->handle);
-    if (!str) return 0;
+    if (!str) 
+      return 0;
 
     clipboard = IupClipboard();
     IupSetAttribute(clipboard, "TEXT", str);
@@ -543,8 +547,14 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
   else if (iupStrEqualNoCase(value, "CUT"))
   {
     Ihandle* clipboard;
-    char *str = XmTextGetSelection(ih->handle);
-    if (!str) return 0;
+    char *str;
+
+    if (!editable)
+      return 0;
+
+    str = XmTextGetSelection(ih->handle);
+    if (!str) 
+      return 0;
 
     clipboard = IupClipboard();
     IupSetAttribute(clipboard, "TEXT", str);
@@ -565,6 +575,9 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
     Ihandle* clipboard;
     char *str;
 
+    if (!editable)
+      return 0;
+
     clipboard = IupClipboard();
     str = IupGetAttribute(clipboard, "TEXT");
 
@@ -580,6 +593,9 @@ static int motTextSetClipboardAttrib(Ihandle *ih, const char *value)
   }
   else if (iupStrEqualNoCase(value, "CLEAR"))
   {
+    if (!editable)
+      return 0;
+
     /* disable callbacks if not interactive */
     if (ih->data->disable_callbacks == -1)
       ih->data->disable_callbacks = 0;
