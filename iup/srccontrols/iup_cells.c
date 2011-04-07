@@ -618,18 +618,17 @@ static int iCellsScroll_CB(Ihandle* ih)
 {
   IFnii cb;
   int ret = IUP_DEFAULT;
-  int fline = -999;
-  int fcol  = -999;
-
-  fline = iCellsGetFirstLine(ih);
-  fcol  = iCellsGetFirstCol(ih);
 
   /* Checking the existence of a scroll bar callback. If the application
    * has set one, it will be called now. If the application returns
    * IUP_DEFAULT, the cells will be repainted. */
   cb = (IFnii)IupGetCallback(ih, "SCROLLING_CB");
   if (cb)
+  {
+    int fline = iCellsGetFirstLine(ih);
+    int fcol  = iCellsGetFirstCol(ih);
     ret = cb(ih, fline, fcol);
+  }
   
   if (ret == IUP_DEFAULT)
     iCellsRepaint(ih);
