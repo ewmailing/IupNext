@@ -178,7 +178,7 @@ static char* motTextGetReadOnlyAttrib(Ihandle* ih)
 {
   Boolean editable;
   XtVaGetValues(ih->handle, XmNeditable, &editable, NULL);
-  if (editable)
+  if (!editable)
     return "YES";
   else
     return "NO";
