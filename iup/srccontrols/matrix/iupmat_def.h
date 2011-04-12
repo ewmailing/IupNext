@@ -49,16 +49,18 @@ typedef struct _ImatLinColData
   int* sizes;         /* Width/height of the columns/lines  (allocated after map)   */
   unsigned char* flags;    /* Attribute flags for the columns/lines (allocated after map) */
 
-  int num;         /* Number of columns/lines in the matrix, default/minimum=1, always includes the title */
+  int num;         /* Number of columns/lines in the matrix, default/minimum=1, always includes the non scrollable cells */
   int num_alloc;   /* Number of columns/lines allocated, default=5 */
 
-  int first_offset; /* scroll offset of the first visible column/line from right to left (or the invisible part of the first cell) */
+  int first_offset; /* Scroll offset of the first visible column/line from right to left 
+                       (or the invisible part of the first visible cell) 
+                       This is how the scrollbar controls scrolling of cells. */
   int first;       /* First visible column/line */
   int last;        /* Last visible column/line  */
 
   /* used to configure the scrollbar */
-  int total_size;     /* Sum of the widths/heights of the columns/lines, not including the title */
-  int visible_size;   /* Width/height of the visible window, not including the title */
+  int total_size;     /* Sum of the widths/heights of the columns/lines, not including the non scrollable cells */
+  int visible_size;   /* Width/height of the visible window, not including the non scrollable cells */
 
   int focus_cell;  /* index of the current cell */
 } ImatLinColData;
