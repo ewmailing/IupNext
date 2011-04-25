@@ -29,6 +29,7 @@
 #include "iupmat_mark.h"
 #include "iupmat_edit.h"
 #include "iupmat_draw.h"
+#include "iupmat_getset.h"
 #include "iupmat_scroll.h"
 
 
@@ -146,7 +147,7 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r
     ih->data->has_focus = 1;
   }
 
-  iupMatrixAuxGetLinColFromXY(ih, x, y, &lin, &col);
+  iupMatrixGetCellFromOffset(ih, x, y, &lin, &col);
 
   if (b == IUP_BUTTON1)
   {
@@ -188,17 +189,17 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y)
 
   if (ih->data->leftpressed && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
   {
-    if ((x < ih->data->columns.sizes[0] || x < IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.first > 1))
+    if ((x < ih->data->columns.sizes[0] || x < IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.first > ih->data->columns.num_noscroll))
       iupMATRIX_ScrollLeft(ih);
     else if ((x > ih->data->w - IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.last < ih->data->columns.num-1))
       iupMATRIX_ScrollRight(ih);
 
-    if ((y < ih->data->lines.sizes[0] || y < IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.first > 1))
+    if ((y < ih->data->lines.sizes[0] || y < IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.first > ih->data->lines.num_noscroll))
       iupMATRIX_ScrollUp(ih);
     else if ((y > ih->data->h - IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.last < ih->data->lines.num-1))
       iupMATRIX_ScrollDown(ih);
 
-    if (iupMatrixAuxGetLinColFromXY(ih, x, y, &lin, &col))
+    if (iupMatrixGetCellFromOffset(ih, x, y, &lin, &col))
     {
       iupMatrixMarkMouseBlock(ih, lin, col);
       iupMatrixDrawUpdate(ih);
@@ -212,7 +213,7 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y)
   else /* Change cursor when it is passed on a join involving column titles */
     iupMatrixColResCheckChangeCursor(ih, x, y);
 
-  if (iupMatrixAuxGetLinColFromXY(ih, x, y, &lin, &col))
+  if (iupMatrixGetCellFromOffset(ih, x, y, &lin, &col))
     iMatrixMouseCallMoveCb(ih, lin, col);
 
   return IUP_DEFAULT;

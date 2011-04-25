@@ -45,9 +45,12 @@ matrix(<strong>action_cb</strong>) [in LED]</pre>
 <h4>General</h4>
 <dl>
   <dd><a href="iupmatrix_attrib.html#CURSOR">CURSOR</a><br>
-	<a href="iupmatrix_attrib.html#FITTOSIZE">FITTOSIZE</a></dd>
-  <dd><a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a></dd>
-  <dd><a href="iupmatrix_attrib.html#HIDEFOCUS">HIDEFOCUS</a></dd>
+	<a href="iupmatrix_attrib.html#EDIT_MODE">EDIT_MODE</a></dd>
+	<dd><a href="iupmatrix_attrib.html#EDITNEXT">EDITNEXT</a> <br>
+	<a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a></dd>
+  <dd><a href="iupmatrix_attrib.html#HIDEFOCUS">HIDEFOCUS</a><br>
+	<a href="iupmatrix_attrib.html#HIDDENTEXTMARKS">HIDDENTEXTMARKS</a> </dd>
+  <dd><a href="iupmatrix_attrib.html#ORIGIN">ORIGIN</a></dd>
   <dd><a href="iupmatrix_attrib.html#READONLY">READONLY</a></dd>
   <dd><a href="iupmatrix_attrib.html#RESIZEMATRIX">RESIZEMATRIX</a></dd>
   <dd><a href="iupmatrix_attrib.html#USETITLESIZE">USETITLESIZE</a></dd>
@@ -61,7 +64,9 @@ matrix(<strong>action_cb</strong>) [in LED]</pre>
   <dd><a href="iupmatrix_attrib.html#FGCOLOR">FGCOLOR</a></dd>
   <dd><a href="iupmatrix_attrib.html#FONT">FONT</a><br></dd>
   <dd><a href="iupmatrix_attrib.html#FRAMECOLOR">FRAMECOLOR</a></dd>
-  <dd><a href="iupmatrix_attrib.html#VALUE">VALUE</a></dd>
+  <dd><a href="iupmatrix_attrib.html#VALUE">VALUE</a><br>
+	<a href="iupmatrix_attrib.html#CELLOFFSET">CELLOFFSET</a> <br>
+	<a href="iupmatrix_attrib.html#CELLSIZE">CELLSIZE</a></dd>
 </dl>
 <h4>Column</h4>
 <dl>
@@ -87,9 +92,11 @@ matrix(<strong>action_cb</strong>) [in LED]</pre>
   <dd><a href="iupmatrix_attrib.html#DELCOL">DELCOL</a></dd>
   <dd><a href="iupmatrix_attrib.html#DELLIN">DELLIN</a></dd>
   <dd><a href="iupmatrix_attrib.html#NUMCOL">NUMCOL</a></dd>
-  <dd><a href="iupmatrix_attrib.html#NUMCOL_VISIBLE">NUMCOL_VISIBLE</a></dd>
+  <dd><a href="iupmatrix_attrib.html#NUMCOL_VISIBLE">NUMCOL_VISIBLE</a><br>
+	<a href="iupmatrix_attrib.html#NUMCOL_NOSCROLL">NUMCOL_NOSCROLL</a> </dd>
   <dd><a href="iupmatrix_attrib.html#NUMLIN">NUMLIN</a></dd>
-  <dd><a href="iupmatrix_attrib.html#NUMLIN_VISIBLE">NUMLIN_VISIBLE</a></dd>
+  <dd><a href="iupmatrix_attrib.html#NUMLIN_VISIBLE">NUMLIN_VISIBLE</a><br>
+	<a href="iupmatrix_attrib.html#NUMLIN_NOSCROLL">NUMLIN_NOSCROLL</a> </dd>
 </dl>
 <h4>Mark Attributes</h4>
 <dl>
@@ -101,12 +108,13 @@ matrix(<strong>action_cb</strong>) [in LED]</pre>
 </dl>
 <h4>Action Attributes</h4>
 <dl>
-  <dd><a href="iupmatrix_attrib.html#EDIT_MODE">EDIT_MODE</a></dd>
-  <dd><a href="iupmatrix_attrib.html#ORIGIN">ORIGIN</a></dd>
+  <dd>
+	<a href="iupmatrix_attrib.html#FITTOSIZE">FITTOSIZE</a></dd>
+  <dd><a href="iupmatrix_attrib.html#FITTOTEXT">FITTOTEXT</a></dd>
   <dd><a href="iupmatrix_attrib.html#SHOW">SHOW</a></dd>
   <dd><a href="iupmatrix_attrib.html#REDRAW">REDRAW</a></dd>
 </dl>
-<h4>Text Edition Attributes</h4>
+<h4>Text Editing Attributes</h4>
 <dl>
   <dd><a href="iupmatrix_attrib.html#CARET">CARET</a></dd>
   <dd><a href="iupmatrix_attrib.html#MASKL:C">MASKL:C</a><br>
@@ -250,7 +258,7 @@ mapped then READONLY will be set to YES.</p>
 values, then you must set NUMLIN and 
 NUMCOL before mapping.</p>
 <h4>Titles</h4>
-<p>A matrix might have titles for lines and columns. Titles are not scrollable, 
+<p>A matrix might have titles for lines and columns. Titles are always non scrollable, 
 non editable and presented with a different default background color. A matrix 
 will have a line of titles if an attribute of the &quot;<em>L</em>:0&quot; type is defined, where L 
 is a line number, or if the HEIGHT0 attribute is defined. It will have a column of titles if an attribute of the 

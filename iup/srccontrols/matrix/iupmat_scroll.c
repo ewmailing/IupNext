@@ -42,6 +42,8 @@ static void iMatrixScrollToVisible(ImatLinColData* p, int index)
   /* already visible, change nothing */
   if (index > p->first && index < p->last)
     return;
+  if (index < p->num_noscroll)
+    return;
 
   /* scroll to visible, means position the cell so the start at left is visible */
 
@@ -172,8 +174,8 @@ void iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, fl
 
   func(ih, mode, pos, m);
 
-  if ((ih->data->lines.first != old_lines_first || ih->data->lines.first_offset != old_lines_first_offset) ||
-      (ih->data->columns.first != old_columns_first || ih->data->columns.first_offset != old_columns_first_offset))
+  if (ih->data->lines.first != old_lines_first || ih->data->lines.first_offset != old_lines_first_offset ||
+      ih->data->columns.first != old_columns_first || ih->data->columns.first_offset != old_columns_first_offset)
   {
     /* when "first" is changed must update scroll pos */
     if (ih->data->columns.first != old_columns_first || ih->data->columns.first_offset != old_columns_first_offset)
@@ -207,7 +209,7 @@ void iupMatrixScrollHomeFunc(Ihandle* ih, int unused_mode, float unused_pos, int
 
   if(ih->data->homekeycount == 0)  /* go to the beginning of the line */
   {
-    int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, 1);
+    int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, ih->data->columns.num_noscroll);
     iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_COL, col);
   }
   else if(ih->data->homekeycount == 1)   /* go to the beginning of the visible page */
@@ -216,8 +218,8 @@ void iupMatrixScrollHomeFunc(Ihandle* ih, int unused_mode, float unused_pos, int
   }
   else if(ih->data->homekeycount == 2)   /* go to the beginning of the matrix 1:1 */
   {
-    int lin = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_LIN, 1);
-    int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, 1);
+    int lin = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_LIN, ih->data->lines.num_noscroll);
+    int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, ih->data->columns.num_noscroll);
     iMatrixScrollSetFocusScrollToVisible(ih, lin, col);
   }
 }
@@ -415,7 +417,7 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, float unused_pos, int u
       /* if sucessfully changed the col, then go to first line */
       if (ih->data->columns.focus_cell != oldcol)
       {
-        int lin = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_LIN, 1);
+        int lin = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_LIN, ih->data->lines.num_noscroll);
         iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_LIN, lin);
       }
       break;
@@ -426,7 +428,7 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, float unused_pos, int u
       /* if sucessfully changed the line, then go to first col */
       if (ih->data->lines.focus_cell != oldlin)
       {
-        int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, 1);
+        int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, ih->data->columns.num_noscroll);
         iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_COL, col);
       }
       break;
@@ -450,9 +452,9 @@ void iupMatrixScrollPosFunc(Ihandle* ih, int mode, float pos, int m)
   else
     p = &(ih->data->columns);
 
-  if (p->num == 1)
+  if (p->num == p->num_noscroll)
   {
-    p->first = 1;
+    p->first = p->num_noscroll;
     p->first_offset = 0;
     return;
   }

@@ -314,24 +314,168 @@ char* iupMatrixGetFont(Ihandle* ih, int lin, int col)
   return font;
 }
 
+int iupMatrixGetColumnWidth(Ihandle* ih, int col, int use_value)
+{
+  int width = 0, pixels = 0;
+  char str[100];
+  char* value;
+
+  /* can be called for invalid columns (col>numcol) */
+
+  sprintf(str, "WIDTH%d", col);
+  value = iupAttribGet(ih, str);
+  if (!value)
+  {
+    sprintf(str, "RASTERWIDTH%d", col);
+    value = iupAttribGet(ih, str);
+    if (value)
+      pixels = 1;
+  }
+
+  if (use_value && !value)
+  {
+    /* Use the titles to define the size */
+    if (col == 0)
+    {
+      if (!ih->data->callback_mode || ih->data->use_title_size)
+      {
+        /* find the largest title */
+        int lin, max_width = 0;
+        for(lin = 0; lin < ih->data->lines.num; lin++)
+        {
+          char* title_value = iupMatrixCellGetValue(ih, lin, 0);
+          if (title_value)
+          {
+            iupdrvFontGetMultiLineStringSize(ih, title_value, &width, NULL);
+            if (width > max_width)
+              max_width = width;
+          }
+        }
+        width = max_width;
+      }
+    }
+    else if (ih->data->use_title_size && (col>0 && col<ih->data->columns.num))
+    {
+      char* title_value = iupMatrixCellGetValue(ih, 0, col);
+      if (title_value)
+        iupdrvFontGetMultiLineStringSize(ih, title_value, &width, NULL);
+    }
+    if (width)
+      return width + IMAT_PADDING_W + IMAT_FRAME_W;
+
+    if (col != 0)
+      value = iupAttribGetStr(ih, "WIDTHDEF");
+  }
+
+  if (iupStrToInt(value, &width))
+  {
+    if (width <= 0)
+      return 0;
+    else
+    {
+      if (pixels)
+        return width + IMAT_PADDING_W + IMAT_FRAME_W;
+      else
+      {
+        int charwidth;
+        iupdrvFontGetCharSize(ih, &charwidth, NULL);
+        return iupWIDTH2RASTER(width, charwidth) + IMAT_PADDING_W + IMAT_FRAME_W;
+      }
+    }
+  }
+  return 0;
+}
+
+int iupMatrixGetLineHeight(Ihandle* ih, int lin, int use_value)
+{
+  int height = 0, pixels = 0;
+  char str[100];
+  char* value;
+
+  /* can be called for invalid lines (lin>numlin) */
+
+  sprintf(str, "HEIGHT%d", lin);
+  value = iupAttribGet(ih, str);
+  if(!value)
+  {
+    sprintf(str, "RASTERHEIGHT%d", lin);
+    value = iupAttribGet(ih, str);
+    if(value)
+      pixels = 1;
+  }
+
+  if (use_value && !value)
+  {
+    /* Use the titles to define the size */
+    if (lin == 0)
+    {
+      if (!ih->data->callback_mode || ih->data->use_title_size)
+      {
+        /* find the highest title */
+        int col, max_height = 0;
+        for(col = 0; col < ih->data->columns.num; col++)
+        {
+          char* title_value = iupMatrixCellGetValue(ih, 0, col);
+          if (title_value && title_value[0])
+          {
+            iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
+            if (height > max_height)
+              max_height = height;
+          }
+        }
+        height = max_height;
+      }
+    }
+    else if (ih->data->use_title_size && (lin>0 && lin<ih->data->lines.num))
+    {
+      char* title_value = iupMatrixCellGetValue(ih, lin, 0);
+      if (title_value && title_value[0])
+        iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
+    }
+    if (height)
+      return height + IMAT_PADDING_H + IMAT_FRAME_H;
+
+    if (lin != 0)
+      value = iupAttribGetStr(ih, "HEIGHTDEF");
+  }
+  
+  if (iupStrToInt(value, &height))
+  {
+    if (height <= 0)
+      return 0;
+    else
+    {
+      if (pixels)
+        return height + IMAT_PADDING_H + IMAT_FRAME_H;
+      else
+      {
+        int charheight;
+        iupdrvFontGetCharSize(ih, NULL, &charheight);
+        return iupHEIGHT2RASTER(height, charheight) + IMAT_PADDING_H + IMAT_FRAME_H;
+      }
+    }
+  }
+  return 0;
+}
+
 char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels_unit)
 {
   char* str;
   int size;
-  ImatLinColData *lincol_data;
+  ImatLinColData *p;
 
   if(m == IMAT_PROCESS_LIN)
-    lincol_data = &(ih->data->lines);
+    p = &(ih->data->lines);
   else
-    lincol_data = &(ih->data->columns);
+    p = &(ih->data->columns);
 
-  if (index < 0 || index > lincol_data->num-1)
+  if (index < 0 || index > p->num-1)
     return NULL;
 
   if (m == IMAT_PROCESS_LIN)
-    size = iupMatrixAuxGetLineHeight(ih, index, 1);
+    size = iupMatrixGetLineHeight(ih, index, 1);
   else
-    size = iupMatrixAuxGetColumnWidth(ih, index, 1);
+    size = iupMatrixGetColumnWidth(ih, index, 1);
 
   if (size)
   {
@@ -357,51 +501,128 @@ char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels_unit)
   return str;
 }
 
-int iupMatrixGetCellOffset(Ihandle* ih, int lin1, int col1, int *x, int *y)
+static int iMatrixGetOffset(int index, int *offset, ImatLinColData *p)
 {
-  int x1, y1, col, lin;
+  int i;
 
-  if (col1 < ih->data->columns.first ||
-      col1 > ih->data->columns.last ||
-      lin1 < ih->data->lines.first ||
-      lin1 > ih->data->lines.last )
+  *offset = 0;
+
+  /* check if the cell is not empty */
+  if (!p->sizes[index])
     return 0;
 
-  if (col1 == 0)
+  if (index < p->num_noscroll)
   {
-    if (!ih->data->columns.sizes[0])
-      return 0;
-
-    x1 = 0;
+    for(i = 0; i < index; i++)
+      *offset += p->sizes[i];
   }
   else
   {
-    x1 = ih->data->columns.sizes[0];
-
-    /* Find the initial position of the column */
-    x1 -= ih->data->columns.first_offset;
-    for(col = ih->data->columns.first; col < col1; col++)
-      x1 += ih->data->columns.sizes[col];
-  }
-
-  if (lin1 == 0)
-  {
-    if (!ih->data->lines.sizes[0])
+    if (index < p->first ||
+        index > p->last)
       return 0;
 
-    y1 = 0;
-  }
-  else
-  {
-    y1 = ih->data->lines.sizes[0];
+    for(i = 0; i < p->num_noscroll; i++)
+      *offset += p->sizes[i];
 
-    /* Find the initial position of the line */
-    y1 -= ih->data->lines.first_offset;
-    for(lin = ih->data->lines.first; lin < lin1; lin++)
-      y1 += ih->data->lines.sizes[lin];
+    /* Find the initial position */
+    *offset -= p->first_offset;  /* index is always greater or equal to first */
+    for(i = p->first; i < index; i++)
+      *offset += p->sizes[i];
   }
 
-  *x = x1;
-  *y = y1;
   return 1;
 }
+
+int iupMatrixGetCellOffset(Ihandle* ih, int lin, int col, int *x, int *y)
+{
+  if (!iMatrixGetOffset(col, x, &(ih->data->columns)))
+    return 0;
+
+  if (!iMatrixGetOffset(lin, y, &(ih->data->lines)))
+    return 0;
+
+  return 1;
+}
+
+static int iMatrixGetIndexFromOffset(int pos, ImatLinColData *p)
+{
+  int offset = 0, i;
+
+  if (pos < 0)
+    return -1;
+
+  for(i = 0; i < p->num_noscroll; i++)  /* for all non scrollable cells */
+  {
+    offset += p->sizes[i];
+
+    if (pos < offset)
+      break;
+  }
+
+  if (pos >= offset)
+  {
+    for(i = p->first; i <= p->last; i++)  /* for all visible cells */
+    {
+      offset += p->sizes[i];
+      if (i == p->first)
+        offset -= p->first_offset;
+
+      if (pos < offset)
+        break;
+    }
+
+    if (i > p->last)
+      i = -1;
+  }
+
+  return i;
+}
+
+int iupMatrixGetCellFromOffset(Ihandle* ih, int x, int y, int* l, int* c)
+{
+  int col = iMatrixGetIndexFromOffset(x, &(ih->data->columns));
+  int lin = iMatrixGetIndexFromOffset(y, &(ih->data->lines));
+
+  if (col == -1 || lin == -1)
+    return 0;
+
+  *l = lin;
+  *c = col;
+  return 1;
+}
+
+static void iMatrixGetCellDim(int index, int* offset, int* size, ImatLinColData *p)
+{
+  int i;
+
+  *offset = 0;
+  if (index < p->num_noscroll)
+  {
+    for(i = 0; i < index; i++)
+      *offset += p->sizes[i];
+  }
+  else
+  {
+    for(i = 0; i < p->num_noscroll; i++)
+      *offset += p->sizes[i];
+
+    for(i = p->first; i < index; i++)
+    {
+      *offset += p->sizes[i];
+      if (i == p->first)
+        *offset -= p->first_offset;  /* add only when index greater than first */
+    }
+  }
+
+  *size = p->sizes[index] - 1;
+  if (index == p->first)
+    *size -= p->first_offset;
+}
+
+void iupMatrixGetVisibleCellDim(Ihandle* ih, int lin, int col, int* x, int* y, int* w, int* h)
+{
+  iMatrixGetCellDim(col, x, w, &(ih->data->columns));
+  iMatrixGetCellDim(lin, y, h, &(ih->data->lines));
+}
+

@@ -28,6 +28,10 @@ void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
 void iupMatrixCellUpdateValue(Ihandle* ih);
 
 char* iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels_unit);
+void  iupMatrixGetVisibleCellDim   (Ihandle* ih, int lin, int col, int* x, int* y, int* w, int* h);
+int   iupMatrixGetColumnWidth(Ihandle* ih, int col, int use_value);
+int   iupMatrixGetLineHeight (Ihandle* ih, int lin, int use_value);
+int   iupMatrixGetCellFromOffset    (Ihandle* ih, int x, int y, int* l, int* c);
 
 int   iupMatrixCheckCellPos(Ihandle* ih, int lin, int col);
 

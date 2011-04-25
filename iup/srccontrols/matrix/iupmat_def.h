@@ -49,8 +49,9 @@ typedef struct _ImatLinColData
   int* sizes;         /* Width/height of the columns/lines  (allocated after map)   */
   unsigned char* flags;    /* Attribute flags for the columns/lines (allocated after map) */
 
-  int num;         /* Number of columns/lines in the matrix, default/minimum=1, always includes the non scrollable cells */
+  int num;         /* Number of columns/lines, default/minimum=1, always includes the non scrollable cells */
   int num_alloc;   /* Number of columns/lines allocated, default=5 */
+  int num_noscroll; /* Number of non scrollable columns/lines, default/minimum=1 */
 
   int first_offset; /* Scroll offset of the first visible column/line from right to left 
                        (or the invisible part of the first visible cell) 

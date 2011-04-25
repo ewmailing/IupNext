@@ -251,7 +251,7 @@ int iupMatrixEditShow(Ihandle* ih)
   }
 
   /* calc size */
-  iupMatrixAuxGetVisibleCellDim(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, &x, &y, &w, &h);
+  iupMatrixGetVisibleCellDim(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, &x, &y, &w, &h);
 
   ih->data->datah->x = x;
   ih->data->datah->y = y;

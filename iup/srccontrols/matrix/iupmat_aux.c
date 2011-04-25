@@ -28,9 +28,12 @@ int iupMatrixAuxIsFullVisibleLast(ImatLinColData *p)
 {
   int i, sum = 0;
 
-  sum -= p->first_offset;
   for(i = p->first; i <= p->last; i++)
-    sum  += p->sizes[i];
+  {
+    sum += p->sizes[i];
+    if (i==p->first)
+      sum -= p->first_offset;
+  }
 
   if (sum > p->visible_size)
     return 0;
@@ -40,10 +43,7 @@ int iupMatrixAuxIsFullVisibleLast(ImatLinColData *p)
 
 int iupMatrixAuxIsCellStartVisible(Ihandle* ih, int lin, int col)
 {
-  if(((lin >= ih->data->lines.first) &&
-      (lin <= ih->data->lines.last) &&
-      (col >= ih->data->columns.first) &&
-      (col <= ih->data->columns.last)))
+  if (iupMatrixAuxIsCellVisible(ih, lin, col))
   {
     if (col == ih->data->columns.first && ih->data->columns.first_offset!=0)
       return 0;
@@ -62,50 +62,21 @@ int iupMatrixAuxIsCellStartVisible(Ihandle* ih, int lin, int col)
 
 int iupMatrixAuxIsCellVisible(Ihandle* ih, int lin, int col)
 {
-  if(((lin >= ih->data->lines.first) &&
-      (lin <= ih->data->lines.last) &&
-      (col >= ih->data->columns.first) &&
-      (col <= ih->data->columns.last)))
+  if ((col < ih->data->columns.num_noscroll)  &&
+      (lin >= ih->data->lines.first) && (lin <= ih->data->lines.last))
+    return 1;
+
+  if ((lin < ih->data->lines.num_noscroll) &&
+      (col >= ih->data->columns.first) && (col <= ih->data->columns.last))
+    return 1;
+
+  if ((lin >= ih->data->lines.first) && (lin <= ih->data->lines.last) &&
+      (col >= ih->data->columns.first) && (col <= ih->data->columns.last))
   {
     return 1;
   }
 
   return 0;
-}
-
-void iupMatrixAuxGetVisibleCellDim(Ihandle* ih, int lin, int col, int* x, int* y, int* w, int* h)
-{
-  int i;
-
-  /* find the position where the column starts */
-  *x = ih->data->columns.sizes[0];
-  for(i = ih->data->columns.first; i < col; i++)
-  {
-    *x += ih->data->columns.sizes[i];
-
-    if (i == ih->data->columns.first)
-      *x -= ih->data->columns.first_offset;
-  }
-
-  /* get the column size */
-  *w = ih->data->columns.sizes[col] - 1;
-  if (col == ih->data->columns.first)
-    *w -= ih->data->columns.first_offset;
-
-  /* find the position where the line starts */
-  *y = ih->data->lines.sizes[0];
-  for(i = ih->data->lines.first; i < lin; i++)
-  {
-    *y += ih->data->lines.sizes[i];
-
-    if (i == ih->data->lines.first)
-      *y -= ih->data->lines.first_offset;
-  }
-
-  /* get the line size */
-  *h = ih->data->lines.sizes[lin] - 1;
-  if (lin == ih->data->lines.first)
-    *h -= ih->data->lines.first_offset;
 }
 
 void iupMatrixAuxAdjustFirstFromLast(ImatLinColData* p)
@@ -116,16 +87,16 @@ void iupMatrixAuxAdjustFirstFromLast(ImatLinColData* p)
 
   i = p->last;
   sum = p->sizes[i];
-  while (i>1 && sum < p->visible_size)
+  while (i>p->num_noscroll && sum < p->visible_size)
   {
     i--;
     sum += p->sizes[i];
   }
 
-  if (i==1 && sum < p->visible_size)
+  if (i==p->num_noscroll && sum < p->visible_size)
   {
     /* if there are room for everyone then position at start */
-    p->first = 1;
+    p->first = p->num_noscroll;
     p->first_offset = 0;
   }
   else
@@ -143,7 +114,7 @@ void iupMatrixAuxAdjustFirstFromScrollPos(ImatLinColData* p, int scroll_pos)
   int index, sp, offset = 0;
 
   sp = 0;
-  for(index = 1; index < p->num; index++)
+  for(index = p->num_noscroll; index < p->num; index++)
   {
     sp += p->sizes[index];
     if (sp > scroll_pos)
@@ -156,11 +127,11 @@ void iupMatrixAuxAdjustFirstFromScrollPos(ImatLinColData* p, int scroll_pos)
 
   if (index == p->num)
   {
-    if (p->num == 1)
+    if (p->num == p->num_noscroll)
     {
       /* did NOT go trough the "for" above */
       offset = scroll_pos;
-      index = 1;
+      index = p->num_noscroll;
     }
     else
     {
@@ -205,9 +176,9 @@ void iupMatrixAuxUpdateScrollPos(Ihandle* ih, int m)
   if (p->total_size <= p->visible_size)
   {
     /* the matrix is fully visible */
-    p->first = 1;
+    p->first = p->num_noscroll;
     p->first_offset = 0;
-    p->last = p->num==1? 1: p->num-1;
+    p->last = p->num==p->num_noscroll? p->num_noscroll: p->num-1;
 
     if (ih->data->canvas.sb & sb)
       IupSetAttribute(ih, POS, "0");
@@ -217,7 +188,7 @@ void iupMatrixAuxUpdateScrollPos(Ihandle* ih, int m)
 
   /* must check if it is a valid position */
   scroll_pos = 0;
-  for(i = 1; i < p->first; i++)
+  for(i = p->num_noscroll; i < p->first; i++)
     scroll_pos += p->sizes[i];
   scroll_pos += p->first_offset;
 
@@ -251,18 +222,20 @@ void iupMatrixAuxUpdateLast(ImatLinColData *p)
     /* Find which is the last column/line.
        Start in the first visible and continue adding the widths
        up to the visible size */
-    sum -= p->first_offset;
     for(i = p->first; i < p->num; i++)
     {
       sum += p->sizes[i];
+      if (i==p->first)
+        sum -= p->first_offset;
+
       if(sum >= p->visible_size)
         break;
     }
 
     if (i == p->num)
     {
-      if (p->num == 1)
-        p->last = 1;
+      if (p->num == p->num_noscroll)
+        p->last = p->num_noscroll;
       else
         p->last = p->num-1;
     }
@@ -274,150 +247,6 @@ void iupMatrixAuxUpdateLast(ImatLinColData *p)
     /* There is no space for any column, set the last column as 0 */
     p->last = 0;
   }
-}
-
-int iupMatrixAuxGetColumnWidth(Ihandle* ih, int col, int use_value)
-{
-  int width = 0, pixels = 0;
-  char str[100];
-  char* value;
-
-  /* can be called for invalid columns (col>numcol) */
-
-  sprintf(str, "WIDTH%d", col);
-  value = iupAttribGet(ih, str);
-  if (!value)
-  {
-    sprintf(str, "RASTERWIDTH%d", col);
-    value = iupAttribGet(ih, str);
-    if (value)
-      pixels = 1;
-  }
-
-  if (use_value && !value)
-  {
-    /* Use the titles to define the size */
-    if (col == 0)
-    {
-      if (!ih->data->callback_mode || ih->data->use_title_size)
-      {
-        /* find the largest title */
-        int lin, max_width = 0;
-        for(lin = 0; lin < ih->data->lines.num; lin++)
-        {
-          char* title_value = iupMatrixCellGetValue(ih, lin, 0);
-          if (title_value)
-          {
-            iupdrvFontGetMultiLineStringSize(ih, title_value, &width, NULL);
-            if (width > max_width)
-              max_width = width;
-          }
-        }
-        width = max_width;
-      }
-    }
-    else if (ih->data->use_title_size && (col>0 && col<ih->data->columns.num))
-    {
-      char* title_value = iupMatrixCellGetValue(ih, 0, col);
-      if (title_value)
-        iupdrvFontGetMultiLineStringSize(ih, title_value, &width, NULL);
-    }
-    if (width)
-      return width + IMAT_PADDING_W + IMAT_FRAME_W;
-
-    if (col != 0)
-      value = iupAttribGetStr(ih, "WIDTHDEF");
-  }
-
-  if (iupStrToInt(value, &width))
-  {
-    if (width <= 0)
-      return 0;
-    else
-    {
-      if (pixels)
-        return width + IMAT_PADDING_W + IMAT_FRAME_W;
-      else
-      {
-        int charwidth;
-        iupdrvFontGetCharSize(ih, &charwidth, NULL);
-        return iupWIDTH2RASTER(width, charwidth) + IMAT_PADDING_W + IMAT_FRAME_W;
-      }
-    }
-  }
-  return 0;
-}
-
-int iupMatrixAuxGetLineHeight(Ihandle* ih, int lin, int use_value)
-{
-  int height = 0, pixels = 0;
-  char str[100];
-  char* value;
-
-  /* can be called for invalid lines (lin>numlin) */
-
-  sprintf(str, "HEIGHT%d", lin);
-  value = iupAttribGet(ih, str);
-  if(!value)
-  {
-    sprintf(str, "RASTERHEIGHT%d", lin);
-    value = iupAttribGet(ih, str);
-    if(value)
-      pixels = 1;
-  }
-
-  if (use_value && !value)
-  {
-    /* Use the titles to define the size */
-    if (lin == 0)
-    {
-      if (!ih->data->callback_mode || ih->data->use_title_size)
-      {
-        /* find the highest title */
-        int col, max_height = 0;
-        for(col = 0; col < ih->data->columns.num; col++)
-        {
-          char* title_value = iupMatrixCellGetValue(ih, 0, col);
-          if (title_value && title_value[0])
-          {
-            iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
-            if (height > max_height)
-              max_height = height;
-          }
-        }
-        height = max_height;
-      }
-    }
-    else if (ih->data->use_title_size && (lin>0 && lin<ih->data->lines.num))
-    {
-      char* title_value = iupMatrixCellGetValue(ih, lin, 0);
-      if (title_value && title_value[0])
-        iupdrvFontGetMultiLineStringSize(ih, title_value, NULL, &height);
-    }
-    if (height)
-      return height + IMAT_PADDING_H + IMAT_FRAME_H;
-
-    if (lin != 0)
-      value = iupAttribGetStr(ih, "HEIGHTDEF");
-  }
-  
-  if (iupStrToInt(value, &height))
-  {
-    if (height <= 0)
-      return 0;
-    else
-    {
-      if (pixels)
-        return height + IMAT_PADDING_H + IMAT_FRAME_H;
-      else
-      {
-        int charheight;
-        iupdrvFontGetCharSize(ih, NULL, &charheight);
-        return iupHEIGHT2RASTER(height, charheight) + IMAT_PADDING_H + IMAT_FRAME_H;
-      }
-    }
-  }
-  return 0;
 }
 
 /* Fill the sizes vector with the width/heigh of all the columns/lines.
@@ -437,9 +266,9 @@ static void iMatrixAuxFillSizeVec(Ihandle* ih, int m)
   for(i = 0; i < p->num; i++)
   {
     if (m == IMAT_PROCESS_LIN)
-      p->sizes[i] = iupMatrixAuxGetLineHeight(ih, i, 1);
+      p->sizes[i] = iupMatrixGetLineHeight(ih, i, 1);
     else
-      p->sizes[i] = iupMatrixAuxGetColumnWidth(ih, i, 1);
+      p->sizes[i] = iupMatrixGetColumnWidth(ih, i, 1);
 
     if (i > 0)
       p->total_size += p->sizes[i];
@@ -488,16 +317,16 @@ void iupMatrixAuxCalcSizes(Ihandle* ih)
   if (ih->data->lines.first > ih->data->lines.num-1) 
   {
     ih->data->lines.first_offset = 0;
-    if (ih->data->lines.num==1)
-      ih->data->lines.first = 1;
+    if (ih->data->lines.num==ih->data->lines.num_noscroll)
+      ih->data->lines.first = ih->data->lines.num_noscroll;
     else
       ih->data->lines.first = ih->data->lines.num-1;
   }
   if (ih->data->columns.first > ih->data->columns.num-1) 
   {
     ih->data->columns.first_offset = 0;
-    if (ih->data->columns.num == 1)
-      ih->data->columns.first = 1;
+    if (ih->data->columns.num==ih->data->columns.num_noscroll)
+      ih->data->columns.first = ih->data->columns.num_noscroll;
     else
       ih->data->columns.first = ih->data->columns.num-1;
   }
@@ -507,50 +336,6 @@ void iupMatrixAuxCalcSizes(Ihandle* ih)
   iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_LIN);
 
   ih->data->need_calcsize = 0;
-}
-
-int iupMatrixAuxGetLinColFromXY(Ihandle* ih, int x, int y, int* l, int* c)
-{
-  int x_col, y_col, lin, col;
-
-  x_col = ih->data->columns.sizes[0]; /* always visible when non zero */
-  if (x < x_col)
-    col = 0;  /* It is in the column of titles */
-  else
-  {
-    x_col -= ih->data->columns.first_offset;
-    for(col = ih->data->columns.first; col <= ih->data->columns.last; col++)  /* for all visible columns */
-    {
-      x_col += ih->data->columns.sizes[col];
-      if (x < x_col)
-        break;
-    }
-    if (col > ih->data->columns.last)
-      col = -1;
-  }
-
-  y_col = ih->data->lines.sizes[0]; /* always visible when non zero */
-  if (y < y_col)
-    lin = 0;  /* It is in the line of titles */
-  else
-  {
-    y_col -= ih->data->lines.first_offset;
-    for(lin = ih->data->lines.first; lin <= ih->data->lines.last; lin++)  /* for all visible lines */
-    {
-      y_col += ih->data->lines.sizes[lin];
-      if (y < y_col)
-        break;
-    }
-    if(lin > ih->data->lines.last)
-      lin = -1;
-  }
-
-  if (col == -1 || lin == -1)
-    return 0;
-
-  *l = lin;
-  *c = col;
-  return 1;
 }
 
 int iupMatrixAuxCallLeaveCellCb(Ihandle* ih)

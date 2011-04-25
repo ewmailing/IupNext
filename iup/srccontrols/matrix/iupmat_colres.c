@@ -29,46 +29,52 @@
 #define IMAT_COLRES_TOL       3
 #define IMAT_RESIZE_COLOR  0x666666L
 
-
-/* Verify if the mouse is in the intersection between two of column titles,
-   if so the resize is started */
-int iupMatrixColResStart(Ihandle* ih, int x, int y)
+static int iMatrixGetColResCheck(Ihandle* ih, int x, int y)
 {
   if (ih->data->lines.sizes[0] && 
       y < ih->data->lines.sizes[0] && 
       iupAttribGetBoolean(ih, "RESIZEMATRIX"))
   {
-    int x_col, col;
+    int x_col = 0, col;
    
-    /* Check if is the column of titles */
-    x_col = ih->data->columns.sizes[0];
-    if (abs(x_col-x) < IMAT_COLRES_TOL)
+    /* Check if it is in the non scrollable columns */
+    for(col = 0; col < ih->data->columns.num_noscroll; col++)
     {
-      ih->data->colres_drag_col_start_x = x;
-      ih->data->colres_dragging =  1;
-      ih->data->colres_drag_col_last_x = -1;
-      ih->data->colres_drag_col = 0;
-      return 1;
+      x_col += ih->data->columns.sizes[col];
+      if (abs(x_col-x) < IMAT_COLRES_TOL)
+        return col;
     }
-    else
+
+    /* Check if it is in the visible columns */
+    for(col = ih->data->columns.first; col <= ih->data->columns.last; col++)
     {
-      /* find the column */
-      x_col -= ih->data->columns.first_offset;
-      for(col = ih->data->columns.first; col <= ih->data->columns.last; col++)
-      {
-        x_col += ih->data->columns.sizes[col];
-        if (abs(x_col-x) < IMAT_COLRES_TOL)
-        {
-          ih->data->colres_drag_col_start_x = x;
-          ih->data->colres_dragging =  1;
-          ih->data->colres_drag_col_last_x = -1;
-          ih->data->colres_drag_col = col;
-          return 1;
-        }
-      }
+      x_col += ih->data->columns.sizes[col];
+      if (col == ih->data->columns.first)
+        x_col -= ih->data->columns.first_offset;
+
+      if (abs(x_col-x) < IMAT_COLRES_TOL)
+        return col;
     }
   }
-  return 0;
+
+  return -1;
+}
+
+/* Verify if the mouse is in the intersection between two of column titles,
+   if so the resize is started */
+int iupMatrixColResStart(Ihandle* ih, int x, int y)
+{
+  int col = iMatrixGetColResCheck(ih, x, y);
+  if (col != -1)
+  {
+    ih->data->colres_drag_col_start_x = x;
+    ih->data->colres_dragging =  1;
+    ih->data->colres_drag_col_last_x = -1;
+    ih->data->colres_drag_col = col;
+    return 1;
+  }
+  else
+    return 0;
 }
 
 void iupMatrixColResFinish(Ihandle* ih, int x)
@@ -149,37 +155,14 @@ static void iMatrixColResResetMatrixCursor(Ihandle* ih)
 /* Change the cursor when it passes over a group of the column titles. */
 void iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y)
 {
-  if(ih->data->lines.sizes[0] && 
-     y < ih->data->lines.sizes[0] && 
-     iupAttribGetBoolean(ih, "RESIZEMATRIX"))
+  int col = iMatrixGetColResCheck(ih, x, y);
+  if (col != -1)
   {
-    /* It is in the column titles area and the resize mode is on */
-    int found = 0, x_col, col;
-
-    x_col = ih->data->columns.sizes[0];
-    if (abs(x_col - x) < IMAT_COLRES_TOL)
-      found = 1;    /* line titles */
-    else
-    {
-      x_col -= ih->data->columns.first_offset;
-      for(col = ih->data->columns.first; col <= ih->data->columns.last && !found; col++)
-      {
-        x_col += ih->data->columns.sizes[col];
-        if(abs(x_col - x) < IMAT_COLRES_TOL)
-          found = 1;
-      }
-    }
-
-    if (found)
-    {
-      if (!iupAttribGet(ih, "_IUPMAT_CURSOR"))
-        iupAttribStoreStr(ih, "_IUPMAT_CURSOR", IupGetAttribute(ih, "CURSOR"));
-      IupSetAttribute(ih, "CURSOR", "RESIZE_W");
-    }
-    else /* It is in the empty area after the last column, or inside a cell */
-      iMatrixColResResetMatrixCursor(ih); 
+    if (!iupAttribGet(ih, "_IUPMAT_CURSOR"))
+      iupAttribStoreStr(ih, "_IUPMAT_CURSOR", IupGetAttribute(ih, "CURSOR"));
+    IupSetAttribute(ih, "CURSOR", "RESIZE_W");
   }
-  else
+  else /* It is in the empty area after the last column, or inside a cell */
     iMatrixColResResetMatrixCursor(ih);
 }
 

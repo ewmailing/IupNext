@@ -521,16 +521,19 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
 
 static void iMatrixDrawTitleCorner(Ihandle* ih)
 {
-  char str[100];
-  long framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
-  int active = iupdrvIsActive(ih);
-  IFniiiiiiC draw_cb = (IFniiiiiiC)IupGetCallback(ih, "DRAW_CB");
+  if (ih->data->lines.sizes[0] && ih->data->columns.sizes[0])
+  {
+    char str[100];
+    long framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
+    int active = iupdrvIsActive(ih);
+    IFniiiiiiC draw_cb = (IFniiiiiiC)IupGetCallback(ih, "DRAW_CB");
 
-  iMatrixDrawBackground(ih, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], 0, active, 0, 0);
+    iMatrixDrawBackground(ih, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], 0, active, 0, 0);
 
-  iMatrixDrawFrameRectTitle(ih, 0, 0, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], framecolor, str);
+    iMatrixDrawFrameRectTitle(ih, 0, 0, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], framecolor, str);
 
-  iMatrixDrawCellValue(ih, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], IMAT_T_CENTER, 0, active, 0, 0, draw_cb);
+    iMatrixDrawCellValue(ih, 0, ih->data->columns.sizes[0], 0, ih->data->lines.sizes[0], IMAT_T_CENTER, 0, active, 0, 0, draw_cb);
+  }
 }
 
 static void iMatrixDrawMatrix(Ihandle* ih)
@@ -545,19 +548,27 @@ static void iMatrixDrawMatrix(Ihandle* ih)
   }
 
   /* Draw the corner between line and column titles, if necessary */
-  if (ih->data->lines.sizes[0] && ih->data->columns.sizes[0])
-    iMatrixDrawTitleCorner(ih);
+  iMatrixDrawTitleCorner(ih);
 
   /* If there are columns, then draw their titles */
+  if (ih->data->columns.num_noscroll>1)
+    iupMatrixDrawColumnTitle(ih, 1, ih->data->columns.num_noscroll);
   iupMatrixDrawColumnTitle(ih, ih->data->columns.first, ih->data->columns.last);
 
   /* If there are lines, then draw their titles */
+  if (ih->data->lines.num_noscroll>1)
+    iupMatrixDrawLineTitle(ih, 1, ih->data->lines.num_noscroll);
   iupMatrixDrawLineTitle(ih, ih->data->lines.first, ih->data->lines.last);
 
-  /* If there are cells in the matrix, then draw them */
-  if ((ih->data->lines.num > 1) && (ih->data->columns.num > 1))
-    iupMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first, 
-                           ih->data->lines.last, ih->data->columns.last);
+  /* If there are ordinary cells, then draw them */
+  if (ih->data->columns.num_noscroll>1)
+    iupMatrixDrawCells(ih, ih->data->lines.first, 1, 
+                           ih->data->lines.last, ih->data->columns.num_noscroll);
+  if (ih->data->lines.num_noscroll>1)
+    iupMatrixDrawCells(ih, 1, ih->data->columns.first, 
+                           ih->data->lines.num_noscroll, ih->data->columns.last);
+  iupMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first, 
+                         ih->data->lines.last, ih->data->columns.last);
 }
 
 static void iMatrixDrawFocus(Ihandle* ih)
@@ -574,7 +585,7 @@ static void iMatrixDrawFocus(Ihandle* ih)
   if (!iupMatrixAuxIsCellVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
     return;
 
-  iupMatrixAuxGetVisibleCellDim(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, &x1, &y1, &dx, &dy);
+  iupMatrixGetVisibleCellDim(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, &x1, &y1, &dx, &dy);
 
   x2 = x1 + dx - 1;
   y2 = y1 + dy - 1;
@@ -599,7 +610,7 @@ static void iMatrixDrawFocus(Ihandle* ih)
    -> lin2 - Last line to have its title drawn */
 void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
 {
-  int x1, y1, x2, y2;
+  int x1, y1, x2, y2, first_lin;
   int lin, alignment, active;
   char str[100];
   long framecolor;
@@ -608,26 +619,39 @@ void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
   if (!ih->data->columns.sizes[0])
     return;
 
-  if (lin1 > ih->data->lines.last ||
-      lin2 < ih->data->lines.first)
-    return;
+  if (ih->data->lines.num_noscroll>1 && lin1==1 && lin2==ih->data->lines.num_noscroll)
+  {
+    first_lin = 0;
+    y1 = 0;
+  }
+  else
+  {
+    if (lin1 > ih->data->lines.last ||
+        lin2 < ih->data->lines.first)
+      return;
 
-  if (lin1 < ih->data->lines.first)
-    lin1 = ih->data->lines.first;
-  if (lin2 > ih->data->lines.last)
-    lin2 = ih->data->lines.last;
+    if (lin1 < ih->data->lines.first)
+      lin1 = ih->data->lines.first;
+    if (lin2 > ih->data->lines.last)
+      lin2 = ih->data->lines.last;
+
+    first_lin = ih->data->lines.first;
+    y1 = 0;
+    for (lin = 0; lin< ih->data->lines.num_noscroll; lin++)
+      y1 += ih->data->lines.sizes[lin];
+  }
 
   /* Start the position of the line title */
   x1 = 0;
   x2 = ih->data->columns.sizes[0];
 
-  y1 = ih->data->lines.sizes[0];
-
   iupMATRIX_CLIPAREA(ih, x1, x2, y1, ih->data->h-1);
   cdCanvasClip(ih->data->cddbuffer, CD_CLIPAREA);
 
-  y1 -= ih->data->lines.first_offset;
-  for(lin = ih->data->lines.first; lin < lin1; lin++)
+  /* Find the initial position of the first line */
+  if (first_lin == ih->data->lines.first)
+    y1 -= ih->data->lines.first_offset;
+  for(lin = first_lin; lin < lin1; lin++)
     y1 += ih->data->lines.sizes[lin];
 
   framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
@@ -669,7 +693,7 @@ void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
    -> col2 - Last column to have its title drawn */
 void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
 {
-  int x1, y1, x2, y2;
+  int x1, y1, x2, y2, first_col;
   int col, active;
   char str[100];
   long framecolor;
@@ -678,26 +702,39 @@ void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
   if (!ih->data->lines.sizes[0])
     return;
 
-  if (col1 > ih->data->columns.last ||
-      col2 < ih->data->columns.first)
-    return;
+  if (ih->data->columns.num_noscroll>1 && col1==1 && col2==ih->data->columns.num_noscroll)
+  {
+    first_col = 0;
+    x1 = 0;
+  }
+  else
+  {
+    if (col1 > ih->data->columns.last ||
+        col2 < ih->data->columns.first)
+      return;
 
-  if (col1 < ih->data->columns.first)
-    col1 = ih->data->columns.first;
-  if (col2 > ih->data->columns.last)
-    col2 = ih->data->columns.last;
+    if (col1 < ih->data->columns.first)
+      col1 = ih->data->columns.first;
+    if (col2 > ih->data->columns.last)
+      col2 = ih->data->columns.last;
+
+    first_col = ih->data->columns.first;
+    x1 = 0;
+    for (col = 0; col< ih->data->columns.num_noscroll; col++)
+      x1 += ih->data->columns.sizes[col];
+  }
 
   /* Start the position of the first column title */
   y1 = 0;
   y2 = ih->data->lines.sizes[0];
 
-  x1 = ih->data->columns.sizes[0];
-
   iupMATRIX_CLIPAREA(ih, x1, ih->data->w-1, y1, y2);
   cdCanvasClip(ih->data->cddbuffer, CD_CLIPAREA);
 
-  x1 -= ih->data->columns.first_offset;
-  for(col = ih->data->columns.first; col < col1; col++)
+  /* Find the initial position of the first column */
+  if (first_col==ih->data->columns.first)
+    x1 -= ih->data->columns.first_offset;
+  for(col = first_col; col < col1; col++)
     x1 += ih->data->columns.sizes[col];
 
   framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
@@ -742,7 +779,7 @@ void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
 void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 {
   int x1, y1, x2, y2, old_x2, old_y1, old_y2;
-  int alignment, lin, col, active;
+  int alignment, lin, col, active, first_col, first_lin;
   long framecolor, emptyarea_color = -1;
   char str[100];
   IFnii mark_cb;
@@ -756,41 +793,73 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   old_y1 = 0;
   old_y2 = y2;
 
-  if (col1 > ih->data->columns.last ||
-      col2 < ih->data->columns.first ||
-      lin1 > ih->data->lines.last ||
-      lin2 < ih->data->lines.first)
+  if (ih->data->lines.num <= 1 ||
+      ih->data->columns.num <= 1)
     return;
 
-  if (col1 < ih->data->columns.first)
-    col1 = ih->data->columns.first;
-  if (col2 > ih->data->columns.last)
-    col2 = ih->data->columns.last;
-  if (lin1 < ih->data->lines.first)
-    lin1 = ih->data->lines.first;
-  if (lin2 > ih->data->lines.last)
-    lin2 = ih->data->lines.last;
+  if (ih->data->columns.num_noscroll>1 && col1==1 && col2==ih->data->columns.num_noscroll)
+  {
+    first_col = 0;
+    x1 = 0;
+  }
+  else
+  {
+    if (col1 > ih->data->columns.last ||
+        col2 < ih->data->columns.first)
+      return;
 
-  x1 = ih->data->columns.sizes[0];
-  y1 = ih->data->lines.sizes[0];
+    if (col1 < ih->data->columns.first)
+      col1 = ih->data->columns.first;
+    if (col2 > ih->data->columns.last)
+      col2 = ih->data->columns.last;
+
+    first_col = ih->data->columns.first;
+    x1 = 0;
+    for (col = 0; col< ih->data->columns.num_noscroll; col++)
+      x1 += ih->data->columns.sizes[col];
+  }
+
+  if (ih->data->lines.num_noscroll>1 && lin1==1 && lin2==ih->data->lines.num_noscroll)
+  {
+    first_lin = 0;
+    y1 = 0;
+  }
+  else
+  {
+    if (lin1 > ih->data->lines.last ||
+        lin2 < ih->data->lines.first)
+      return;
+
+    if (lin1 < ih->data->lines.first)
+      lin1 = ih->data->lines.first;
+    if (lin2 > ih->data->lines.last)
+      lin2 = ih->data->lines.last;
+
+    first_lin = ih->data->lines.first;
+    y1 = 0;
+    for (lin = 0; lin< ih->data->lines.num_noscroll; lin++)
+      y1 += ih->data->lines.sizes[lin];
+  }
 
   iupMATRIX_CLIPAREA(ih, x1, x2, y1, y2);
   cdCanvasClip(ih->data->cddbuffer, CD_CLIPOFF);  /* wait for background */
 
   /* Find the initial position of the first column */
-  x1 -= ih->data->columns.first_offset;
-  for(col = ih->data->columns.first; col < col1; col++)
+  if (first_col==ih->data->columns.first)
+    x1 -= ih->data->columns.first_offset;
+  for(col = first_col; col < col1; col++)
     x1 += ih->data->columns.sizes[col];
+
+  /* Find the initial position of the first line */
+  if (first_lin == ih->data->lines.first)
+    y1 -= ih->data->lines.first_offset;
+  for(lin = first_lin; lin < lin1; lin++)
+    y1 += ih->data->lines.sizes[lin];
 
   /* Find the final position of the last column */
   x2 = x1;
   for( ; col <= col2; col++)
     x2 += ih->data->columns.sizes[col];
-
-  /* Find the initial position of the first line */
-  y1 -= ih->data->lines.first_offset;
-  for(lin = ih->data->lines.first; lin < lin1; lin++)
-    y1 += ih->data->lines.sizes[lin];
 
   /* Find the final position of the last line */
   y2 = y1;
@@ -908,7 +977,7 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
   else
     type = 0;
 
-  if (type)
+  if (type)  /* lines or columns, inluding their titles */
   {
     int min = 0, max = 0;
     value++;
@@ -924,23 +993,30 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
     if (ih->data->need_calcsize)
       iupMatrixAuxCalcSizes(ih);
 
-    if (ih->data->lines.sizes[0] && ih->data->columns.sizes[0])
-      iMatrixDrawTitleCorner(ih);
+    /* ignore empty area, draw only cells */
+
+    iMatrixDrawTitleCorner(ih);
 
     if (type == IMAT_PROCESS_LIN)
     {
       iupMatrixDrawLineTitle(ih, min, max);
+      if (ih->data->columns.num_noscroll>1)
+        iupMatrixDrawCells(ih, min, 1, max, ih->data->columns.num_noscroll);
       iupMatrixDrawCells(ih, min, ih->data->columns.first, max, ih->data->columns.last);
     }
     else
     {
       iupMatrixDrawColumnTitle(ih, min, max);
+      if (ih->data->lines.num_noscroll>1)
+        iupMatrixDrawCells(ih, 1, min, ih->data->lines.num_noscroll, max);
       iupMatrixDrawCells(ih, ih->data->lines.first, min, ih->data->lines.last, max);
     }
   }
   else
   {
+    /* Force CalcSize */
     iupMatrixAuxCalcSizes(ih);
+
     iMatrixDrawMatrix(ih);
   }
 

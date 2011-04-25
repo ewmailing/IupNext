@@ -25,7 +25,11 @@ exceptions)</span></h2>
   Default cursor used by the matrix. The 
   default cursor is a symbol that looks like a cross. If you need to refer to this default cursor, use the name 
 &quot;IupMatrixCrossCursor&quot;.</p>
-<p><strong>EDITNEXT</strong>: controls how the next cell after editing is 
+<p><strong><a name="EDIT_MODE">EDIT_MODE</a></strong>:
+  When set to YES, programmatically puts the 
+  current cell in edition mode, allowing the user to modify its value. When consulted informs if the the current cell is 
+  being edited. Possible values: &quot;YES&quot; or &quot;NO&quot;.</p>
+<p><strong><a name="EDITNEXT">EDITNEXT</a></strong>: controls how the next cell after editing is 
 chosen. Can be LIN, COL, LINCR, COLCR. Default: LIN. (since 3.4)</p>
 <p class="info">LIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - go to the next line, if at 
 last line then go to the next column at the same line;<br>
@@ -35,33 +39,21 @@ COL&nbsp;&nbsp;&nbsp;&nbsp; - go to the next column, if at last column then go
 to the next line at the same column;<br>
 COLCR - go to the next column, if at last column then go to the next line at the 
 first column;</p>
-<p><a name="FITTOSIZE"><strong>FITTOSIZE</strong></a> (write-only): force lines 
-and/or columns sizes so the matrix visible size fit in its current size. 
-NUMCOL_VISIBLE and NUMLIN_VISIBLE are considered when fitting and they are not 
-changed, only the RASTERWIDTHn and RASTERHEIGHTn attributes are changed. But if 
-any of the RASTERWIDTHn and RASTERHEIGHTn attributes where already set, then 
-they will not be changed. If the matrix is 
-resized then it must be set again to obtain the same result, but before doing 
-that set to NULL all the RASTERWIDTHn and RASTERHEIGHTn attributes that you want 
-to be changed. Can be LINES, 
-COLUMNS or YES (meaning both). (since 3.3)</p>
-<p><a name="FITTOTEXT"><strong>FITTOTEXT</strong></a> (write-only): set the 
-RASTERWIDTHn or the RASTERHEIGHTn attribute for the given column or line, so 
-that it will fit the largest text in the column or the highest text in the line. 
-The number of the column or line must be preceded by a character identifying its 
-type, &quot;C&quot; for columns and &quot;L&quot; for lines. For example &quot;C5&quot;=column 5 or &quot;L3&quot;=line 
-3. If FITMAXWIDTHn or FITMAXHEIGHTn are set for the column or line they are used 
-as maximum limit for the size. (since 3.4)</p>
 <p><strong><a name="FOCUS_CELL">FOCUS_CELL</a></strong>:
   Defines the current cell. Two numbers in the &quot;<strong><em>L</em></strong>:<strong><em>C</em></strong>&quot; format, 
     &nbsp;(<strong><em>L</em></strong>&gt;0 and <strong><em>C</em></strong>&gt;0, a title cell can NOT be the current cell). Default: &quot;1:1&quot;.</p>
 <p><strong><a name="HIDEFOCUS">HIDEFOCUS</a></strong>: do not show the focus mark when 
   drawing the matrix. Default is NO.</p>
-<p><strong>HIDDENTEXTMARKS</strong>: when text is greater than cell space, it is 
+<p><strong><a name="HIDDENTEXTMARKS">HIDDENTEXTMARKS</a></strong>: when text is greater than cell space, it is 
 normally cropped, but when set to YES a &quot;...&quot; mark will be added at the crop 
 point to indicate that there is more text not visible. Default: NO. (since 3.1)</p>
 <p><strong>LIMITEXPAND</strong>: limit expansion to the maximum size that shows 
 all cells. (since 3.5)</p>
+<p><strong><a name="ORIGIN">ORIGIN</a></strong>: Scroll the visible area to the 
+given cell. Returns the cell at the upper left corner. To scroll to a line or a 
+column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*:<strong><em>C</em></strong>&quot; (where
+<em><strong>L</strong></em>&gt;0 and <strong><em>C</em></strong>&gt;0). L and C 
+can not be a non scrollable cell either.</p>
 <p><strong><a name="READONLY">READONLY</a></strong>: disables the editing of all cells. EDITION_CB and 
 VALUE_EDIT_CB will not be called anymore. The L:C attribute will still be able 
 to change the cell value. (since 3.0)</p>
@@ -177,14 +169,14 @@ updated or consulted instead of the matrix cell. When retrieved inside the
 EDITION_CB callback when mode is 0, then the return value is the new value 
   that will be updated in the cell. </p>
 <hr class="style3">
-<p><strong>CELLOFFSET<i>L</i>:<i>C</i></strong> (read-only): Returns the cell 
+<p><strong><a name="CELLOFFSET">CELLOFFSET</a><i>L</i>:<i>C</i></strong> (read-only): Returns the cell 
 computed offset in pixels from the top-left corner of the matrix, in the format 
 &quot;XxY&quot; or &quot;%dx%d&quot; in C. Returns NULL 
 if the cell does not exists, or it is not visible, or the element is not mapped. 
 It will only return a valid result if the cell has already been displayed. They 
 are similar to the parameters of the DRAW_CB callback but they do NOT include 
 the decorations. (since 3.5)</p>
-<p><strong>CELLSIZE<i>L</i>:<i>C</i></strong> (read-only): Returns the cell 
+<p><strong><a name="CELLSIZE">CELLSIZE</a><i>L</i>:<i>C</i></strong> (read-only): Returns the cell 
 computed size in pixels, in the format &quot;WxH&quot; or &quot;%dx%d&quot; in C. Returns NULL if the cell does not exists, or the 
 element is not mapped. It will only return a valid result if the cell has 
 already been displayed. They are similar to the parameters of the DRAW_CB 
@@ -283,9 +275,15 @@ size, not counting the title column. Not used elsewhere.
   The <strong>Natural</strong> size will always include the title column if any. 
 Can be greater than the actual number of columns, so room will be reserved for 
 adding new columns without the need to resize the matrix. Also it will always use the first columns of the matrix, except if 
-<strong>NUMCOL_VISIBLE_LAST</strong>=YES then it will use the last columns. The remaining columns will be accessible 
-  only by using the scrollbar. IMPORTANT: When retrieved returns the current number of 
-visible lines. Default: &quot;4&quot;.</p>
+<strong>NUMCOL_VISIBLE_LAST</strong>=YES then it will use the last columns. The 
+remaining columns will be accessible only by using the scrollbar. IMPORTANT: 
+When retrieved returns the current number of visible columns, not including the 
+non scrollable columns. Default: &quot;4&quot;.</p>
+<p><a name="NUMCOL_NOSCROLL"><strong>NUMCOL_NOSCROLL</strong></a>: Number of 
+columns that are non scrollable, not counting the title column. Default: &quot;0&quot;. It does not affect 
+the NUMCOL_VISIBLE attribute behavior nor Natural size computation. It will 
+always use the first columns of the matrix. The cells appearance will be the 
+same of ordinary cells, and they can also receive the focus and be edited. (since 3.5)</p>
 <p><strong><a name="NUMLIN">NUMLIN</a></strong>:
   Defines the number of lines in the matrix. Must be an integer number. Default: &quot;0&quot;. 
 It does not include the title line. If changed after map will add empty cells 
@@ -299,7 +297,13 @@ adding new lines without the need to resize the matrix. Also it will always use 
 first lines of the matrix, except if <strong>NUMLIN_VISIBLE_LAST</strong>=YES 
 then it will use the last lines. The remaining lines will be accessible only by using 
 the scrollbar. IMPORTANT: When 
-  retrieved returns the current number of visible lines. Default: &quot;3&quot;.</p>
+  retrieved returns the current number of visible lines, not including the non 
+scrollable lines. Default: &quot;3&quot;.</p>
+<p><a name="NUMLIN_NOSCROLL"><strong>NUMLIN_NOSCROLL</strong></a>: Number of 
+lines that are non scrollable, not counting the title line. Default: &quot;0&quot;. It does not affect the 
+NUMLIN_VISIBLE attribute behavior nor Natural size computation. It will always 
+use the first lines of the matrix. The cells appearance will be the same of 
+ordinary cells, and they can also receive the focus and be edited. (since 3.5)</p>
 <h3>Mark Attributes</h3>
 <p><strong>MARK<a name="MARKAREA">AREA</a></strong>:
   Defines if the area to be <strong>interactively</strong> 
@@ -335,14 +339,23 @@ MULTIPLE and AREA are NOT considered when setting MARKED or MARKL:C.</p>
   marked. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
     &quot;NO&quot;.</p>
 <h3>Action Attributes</h3>
-<p><strong><a name="EDIT_MODE">EDIT_MODE</a></strong>:
-  When set to YES, programmatically puts the 
-  current cell in edition mode, allowing the user to modify its value. When consulted informs if the the current cell is 
-  being edited. Possible values: &quot;YES&quot; or &quot;NO&quot;.</p>
-<p><strong><a name="ORIGIN">ORIGIN</a></strong>: Scroll the visible area to the 
-given cell. Returns the cell at the upper left corner. To scroll to a line or a 
-column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*:<strong><em>C</em></strong>&quot; (where
-<em><strong>L</strong></em>&gt;0 and <strong><em>C</em></strong>&gt;0).</p>
+<p><a name="FITTOSIZE"><strong>FITTOSIZE</strong></a> (write-only): force lines 
+and/or columns sizes so the matrix visible size fit in its current size. 
+NUMCOL_VISIBLE and NUMLIN_VISIBLE are considered when fitting and they are not 
+changed, only the RASTERWIDTHn and RASTERHEIGHTn attributes are changed. But if 
+any of the RASTERWIDTHn and RASTERHEIGHTn attributes where already set, then 
+they will not be changed. If the matrix is 
+resized then it must be set again to obtain the same result, but before doing 
+that set to NULL all the RASTERWIDTHn and RASTERHEIGHTn attributes that you want 
+to be changed. Can be LINES, 
+COLUMNS or YES (meaning both). (since 3.3)</p>
+<p><a name="FITTOTEXT"><strong>FITTOTEXT</strong></a> (write-only): set the 
+RASTERWIDTHn or the RASTERHEIGHTn attribute for the given column or line, so 
+that it will fit the largest text in the column or the highest text in the line. 
+The number of the column or line must be preceded by a character identifying its 
+type, &quot;C&quot; for columns and &quot;L&quot; for lines. For example &quot;C5&quot;=column 5 or &quot;L3&quot;=line 
+3. If FITMAXWIDTHn or FITMAXHEIGHTn are set for the column or line they are used 
+as maximum limit for the size. (since 3.4)</p>
 <p><strong><a name="SHOW">SHOW</a></strong> (write-only): If necessary scroll the visible area to 
 make the 
 given cell visible. To scroll to a line or a 
@@ -368,7 +381,7 @@ column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*
 L:C, 
 ALIGNMENTn, BGCOLOR*, FGCOLOR*, FONT*, VALUE, FRAME*COLOR. Global and size attributes always automatically redraw the 
     matrix.</p>
-<h3>Text Edition Attributes</h3>
+<h3>Text Editing Attributes</h3>
 <p><b><a name="CARET">CARET</a></b>:
   Allows specifying and verifying the caret 
   position of the text box in edition mode.</p>
