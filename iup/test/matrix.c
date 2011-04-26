@@ -99,6 +99,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat,"FRAMEHORIZCOLOR1:2","0 0 255");
   IupSetAttribute(mat,"FRAMEHORIZCOLOR1:3","0 255 0");
   IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 0");
+  IupSetAttribute(mat,"FRAMEVERTCOLOR*:4","0 255 0");
 
 //  IupSetAttribute(mat,"MARKMODE","LINCOL");
 

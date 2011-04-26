@@ -159,10 +159,14 @@ attribute DLGFGCOLOR for titles.</p>
 <strong>FRAMEVERTCOLOR<em>L:C</em></strong>: Color of the vertical right frame 
 of the cell. When not defined the FRAMECOLOR is used. For a title cell defines 
 right and left frames. If value is &quot;BGCOLOR&quot; the frame line is not drawn.<br>
+<strong>FRAMEVERTCOLOR<em>*:C</em></strong>: same as FRAMEVERTCOLOR<em>L:C</em> 
+but for all the cells of the column C. (since 3.5)<br>
 <strong>FRAMEHORIZCOLOR<em>L:C</em></strong>: Color of the horizontal bottom frame of the 
 cell. When not defined the 
 FRAMECOLOR is used. For a title cell defines bottom and top frames. If value is 
-&quot;BGCOLOR&quot; the frame line is not drawn.</p>
+&quot;BGCOLOR&quot; the frame line is not drawn.<br>
+<strong>FRAMEHORIZCOLOR<em>L:*</em></strong>:same as FRAMEHORIZCOLOR<em>L:C </em>
+but for all the cells of the line L. (since 3.5)</p>
 <p><strong><a name="VALUE">VALUE</a></strong>:
   Allows setting or verifying the value of the 
   current cell. Is the same as obtaining the current cell from 

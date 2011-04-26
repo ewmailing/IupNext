@@ -187,12 +187,19 @@ static unsigned long iMatrixDrawSetBgColor(Ihandle* ih, int lin, int col, int ma
 
 static void iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1, int x2, int y, long framecolor, char* str)
 {
-  if (ih->data->checkframecolor && (ih->data->callback_mode || ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEHCOLOR))
+  if (ih->data->checkframecolor && (ih->data->callback_mode || 
+                                    ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEHCOLOR ||
+                                    ih->data->lines.flags[col] & IMAT_HAS_FRAMEHCOLOR))
   {
     char* color;
     unsigned char r,g,b;
     sprintf(str, "FRAMEHORIZCOLOR%d:%d", lin, col);
     color = iupAttribGet(ih, str);
+    if (!color)
+    {
+      sprintf(str, "FRAMEHORIZCOLOR%d:*", lin);
+      color = iupAttribGet(ih, str);
+    }
     if (iupStrEqual(color, "BGCOLOR"))
       return;
     if (iupStrToRGB(color, &r, &g, &b))
@@ -205,12 +212,19 @@ static void iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1,
 
 static void iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, int y1, int y2, long framecolor, char* str)
 {
-  if (ih->data->checkframecolor && (ih->data->callback_mode || ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEVCOLOR))
+  if (ih->data->checkframecolor && (ih->data->callback_mode || 
+                                    ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEVCOLOR ||
+                                    ih->data->columns.flags[col] & IMAT_HAS_FRAMEVCOLOR))
   {
     char* color;
     unsigned char r,g,b;
     sprintf(str, "FRAMEVERTCOLOR%d:%d", lin, col);
     color = iupAttribGet(ih, str);
+    if (!color)
+    {
+      sprintf(str, "FRAMEVERTCOLOR*:%d", col);
+      color = iupAttribGet(ih, str);
+    }
     if (iupStrEqual(color, "BGCOLOR"))
       return;
     if (iupStrToRGB(color, &r, &g, &b))
