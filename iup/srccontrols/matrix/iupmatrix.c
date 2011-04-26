@@ -694,6 +694,14 @@ static int iMatrixSetNumColNoScrollAttrib(Ihandle* ih, const char* value)
     ih->data->columns.num_noscroll = num;
     if (ih->data->columns.num_noscroll > ih->data->columns.num)
       ih->data->columns.num_noscroll = ih->data->columns.num;
+    if (ih->data->columns.first < ih->data->columns.num_noscroll)
+    {
+      ih->data->columns.first = ih->data->columns.num_noscroll;
+      ih->data->columns.first_offset = 0;
+
+      /* when "first" is changed must update scroll pos */
+      iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_COL);
+    }
     ih->data->need_calcsize = 1;
 
     if (ih->handle)
@@ -715,6 +723,14 @@ static int iMatrixSetNumLinNoScrollAttrib(Ihandle* ih, const char* value)
     ih->data->lines.num_noscroll = num;
     if (ih->data->lines.num_noscroll > ih->data->lines.num)
       ih->data->lines.num_noscroll = ih->data->lines.num;
+    if (ih->data->lines.first < ih->data->lines.num_noscroll)
+    {
+      ih->data->lines.first = ih->data->lines.num_noscroll;
+      ih->data->lines.first_offset = 0;
+
+      /* when "first" is changed must update scroll pos */
+      iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_LIN);
+    }
     ih->data->need_calcsize = 1;
 
     if (ih->handle)

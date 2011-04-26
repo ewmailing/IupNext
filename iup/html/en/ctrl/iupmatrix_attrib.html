@@ -283,7 +283,8 @@ non scrollable columns. Default: &quot;4&quot;.</p>
 columns that are non scrollable, not counting the title column. Default: &quot;0&quot;. It does not affect 
 the NUMCOL_VISIBLE attribute behavior nor Natural size computation. It will 
 always use the first columns of the matrix. The cells appearance will be the 
-same of ordinary cells, and they can also receive the focus and be edited. (since 3.5)</p>
+same of ordinary cells, and they can also receive the focus and be edited. Must 
+be less than the total number of columns. (since 3.5)</p>
 <p><strong><a name="NUMLIN">NUMLIN</a></strong>:
   Defines the number of lines in the matrix. Must be an integer number. Default: &quot;0&quot;. 
 It does not include the title line. If changed after map will add empty cells 
@@ -303,7 +304,8 @@ scrollable lines. Default: &quot;3&quot;.</p>
 lines that are non scrollable, not counting the title line. Default: &quot;0&quot;. It does not affect the 
 NUMLIN_VISIBLE attribute behavior nor Natural size computation. It will always 
 use the first lines of the matrix. The cells appearance will be the same of 
-ordinary cells, and they can also receive the focus and be edited. (since 3.5)</p>
+ordinary cells, and they can also receive the focus and be edited.&nbsp; Must be 
+less than the total number of lines. (since 3.5)</p>
 <h3>Mark Attributes</h3>
 <p><strong>MARK<a name="MARKAREA">AREA</a></strong>:
   Defines if the area to be <strong>interactively</strong> 

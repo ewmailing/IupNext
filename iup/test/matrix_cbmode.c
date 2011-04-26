@@ -66,7 +66,12 @@ static int edition_cb(Ihandle *self, int lin, int col, int mode, int update)
   if (mode == 0)
   {
     char* value = IupGetAttribute(self, "VALUE");
+#ifndef BIG_MATRIX
     if (value && strcmp(value, data[lin-1][col-1])!=0)
+#else
+    char* cell = IupMatGetAttribute(self, "", lin, col);
+    if (value && cell && strcmp(value, cell)!=0)
+#endif
       return IUP_IGNORE;
   }
   return IUP_DEFAULT;
@@ -100,13 +105,16 @@ static Ihandle* create_matrix(void)
 //  IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
 //  IupSetCallback(mat,"DROP_CB",(Icallback)drop);
 
-//  IupSetAttribute(mat, "HEIGHT0", "10");
-//  IupSetAttribute(mat, "WIDTH0", "90");
+#ifdef BIG_MATRIX
+  IupSetAttribute(mat, "HEIGHT0", "10");
+  IupSetAttribute(mat, "WIDTH0", "90");
+#endif
 //  IupSetAttribute(mat,"MARKMODE","LIN");
 //  IupSetAttribute(mat,"MARKMULTIPLE","NO");
   IupSetAttribute(mat,"MARKMODE","CELL");
   IupSetAttribute(mat,"MARKMULTIPLE","YES");
 //  IupSetAttribute(mat,"USETITLESIZE","YES");
+//  IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
 
 //  IupSetAttribute(mat,"RASTERSIZE","x200");
 //  IupSetAttribute(mat,"FITTOSIZE","LINES");
@@ -120,7 +128,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","255 255 255");
 //  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:1","255 255 255");
 
-#ifdef BIG_MATRIX
+#ifdef XXXBIG_MATRIX
   for (lin = 0; lin < 3000; lin++)
   {
     for (col = 0; col < 20; col++)

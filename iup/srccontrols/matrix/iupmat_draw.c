@@ -552,21 +552,21 @@ static void iMatrixDrawMatrix(Ihandle* ih)
 
   /* If there are columns, then draw their titles */
   if (ih->data->columns.num_noscroll>1)
-    iupMatrixDrawColumnTitle(ih, 1, ih->data->columns.num_noscroll);
+    iupMatrixDrawColumnTitle(ih, 1, ih->data->columns.num_noscroll-1);
   iupMatrixDrawColumnTitle(ih, ih->data->columns.first, ih->data->columns.last);
 
   /* If there are lines, then draw their titles */
   if (ih->data->lines.num_noscroll>1)
-    iupMatrixDrawLineTitle(ih, 1, ih->data->lines.num_noscroll);
+    iupMatrixDrawLineTitle(ih, 1, ih->data->lines.num_noscroll-1);
   iupMatrixDrawLineTitle(ih, ih->data->lines.first, ih->data->lines.last);
 
   /* If there are ordinary cells, then draw them */
   if (ih->data->columns.num_noscroll>1)
     iupMatrixDrawCells(ih, ih->data->lines.first, 1, 
-                           ih->data->lines.last, ih->data->columns.num_noscroll);
+                           ih->data->lines.last, ih->data->columns.num_noscroll-1);
   if (ih->data->lines.num_noscroll>1)
     iupMatrixDrawCells(ih, 1, ih->data->columns.first, 
-                           ih->data->lines.num_noscroll, ih->data->columns.last);
+                           ih->data->lines.num_noscroll-1, ih->data->columns.last);
   iupMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first, 
                          ih->data->lines.last, ih->data->columns.last);
 }
@@ -619,7 +619,7 @@ void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
   if (!ih->data->columns.sizes[0])
     return;
 
-  if (ih->data->lines.num_noscroll>1 && lin1==1 && lin2==ih->data->lines.num_noscroll)
+  if (ih->data->lines.num_noscroll>1 && lin1==1 && lin2==ih->data->lines.num_noscroll-1)
   {
     first_lin = 0;
     y1 = 0;
@@ -702,7 +702,7 @@ void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
   if (!ih->data->lines.sizes[0])
     return;
 
-  if (ih->data->columns.num_noscroll>1 && col1==1 && col2==ih->data->columns.num_noscroll)
+  if (ih->data->columns.num_noscroll>1 && col1==1 && col2==ih->data->columns.num_noscroll-1)
   {
     first_col = 0;
     x1 = 0;
@@ -797,7 +797,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
       ih->data->columns.num <= 1)
     return;
 
-  if (ih->data->columns.num_noscroll>1 && col1==1 && col2==ih->data->columns.num_noscroll)
+  if (ih->data->columns.num_noscroll>1 && col1==1 && col2==ih->data->columns.num_noscroll-1)
   {
     first_col = 0;
     x1 = 0;
@@ -819,7 +819,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
       x1 += ih->data->columns.sizes[col];
   }
 
-  if (ih->data->lines.num_noscroll>1 && lin1==1 && lin2==ih->data->lines.num_noscroll)
+  if (ih->data->lines.num_noscroll>1 && lin1==1 && lin2==ih->data->lines.num_noscroll-1)
   {
     first_lin = 0;
     y1 = 0;
@@ -1001,14 +1001,14 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
     {
       iupMatrixDrawLineTitle(ih, min, max);
       if (ih->data->columns.num_noscroll>1)
-        iupMatrixDrawCells(ih, min, 1, max, ih->data->columns.num_noscroll);
+        iupMatrixDrawCells(ih, min, 1, max, ih->data->columns.num_noscroll-1);
       iupMatrixDrawCells(ih, min, ih->data->columns.first, max, ih->data->columns.last);
     }
     else
     {
       iupMatrixDrawColumnTitle(ih, min, max);
       if (ih->data->lines.num_noscroll>1)
-        iupMatrixDrawCells(ih, 1, min, ih->data->lines.num_noscroll, max);
+        iupMatrixDrawCells(ih, 1, min, ih->data->lines.num_noscroll-1, max);
       iupMatrixDrawCells(ih, ih->data->lines.first, min, ih->data->lines.last, max);
     }
   }
