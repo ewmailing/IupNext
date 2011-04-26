@@ -59,113 +59,113 @@ static int pplot_predraw_cb(Ihandle *self, cdCanvas* cnv)
   return iuplua_call(L, 1);
 }
 
-static int PPlotBegin(lua_State *L)
+static int PlotBegin(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPPlotBegin(ih, luaL_checkint(L,2));
+  IupPlotBegin(ih, luaL_checkint(L,2));
   return 0;
 }
 
-static int PPlotAdd(lua_State *L)
+static int PlotAdd(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPPlotAdd(ih, (float)luaL_checknumber(L,2), (float)luaL_checknumber(L,3));
+  IupPlotAdd(ih, (float)luaL_checknumber(L,2), (float)luaL_checknumber(L,3));
   return 0;
 }
 
-static int PPlotAddStr(lua_State *L)
+static int PlotAddStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPPlotAddStr(ih, luaL_checkstring(L,2), (float)luaL_checknumber(L,3));
+  IupPlotAddStr(ih, luaL_checkstring(L,2), (float)luaL_checknumber(L,3));
   return 0;
 }
 
-static int PPlotEnd(lua_State *L)
+static int PlotEnd(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  int ret = IupPPlotEnd(ih);
+  int ret = IupPlotEnd(ih);
   lua_pushinteger(L, ret);
   return 1;
 }
 
-static int PPlotInsertStr(lua_State *L)
+static int PlotInsertStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPPlotInsertStr(ih, luaL_checkint(L,2), luaL_checkint(L,3), luaL_checkstring(L,4), (float)luaL_checknumber(L,5));
+  IupPlotInsertStr(ih, luaL_checkint(L,2), luaL_checkint(L,3), luaL_checkstring(L,4), (float)luaL_checknumber(L,5));
   return 0;
 }
 
-static int PPlotInsert(lua_State *L)
+static int PlotInsert(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPPlotInsert(ih, luaL_checkint(L,2), luaL_checkint(L,3), (float)luaL_checknumber(L,4), (float)luaL_checknumber(L,5));
+  IupPlotInsert(ih, luaL_checkint(L,2), luaL_checkint(L,3), (float)luaL_checknumber(L,4), (float)luaL_checknumber(L,5));
   return 0;
 }
 
-static int PPlotInsertPoints(lua_State *L)
+static int PlotInsertPoints(lua_State *L)
 {
   float *px, *py;
   int count = luaL_checkinteger(L, 6);
   px = iuplua_checkfloat_array(L, 4, count);
   py = iuplua_checkfloat_array(L, 5, count);
-  IupPPlotInsertPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  IupPlotInsertPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
   free(px);
   free(py);
   return 0;
 }
 
-static int PPlotInsertStrPoints(lua_State *L)
+static int PlotInsertStrPoints(lua_State *L)
 {
   float *py;
   char* *px;
   int count = luaL_checkinteger(L, 6);
   px = iuplua_checkstring_array(L, 4, count);
   py = iuplua_checkfloat_array(L, 5, count);
-  IupPPlotInsertStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  IupPlotInsertStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
   free(px);
   free(py);
   return 0;
 }
 
-static int PPlotAddPoints(lua_State *L)
+static int PlotAddPoints(lua_State *L)
 {
   float *px, *py;
   int count = luaL_checkinteger(L, 5);
   px = iuplua_checkfloat_array(L, 3, count);
   py = iuplua_checkfloat_array(L, 4, count);
-  IupPPlotAddPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  IupPlotAddPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
   free(px);
   free(py);
   return 0;
 }
 
-static int PPlotAddStrPoints(lua_State *L)
+static int PlotAddStrPoints(lua_State *L)
 {
   float *py;
   char* *px;
   int count = luaL_checkinteger(L, 5);
   px = iuplua_checkstring_array(L, 3, count);
   py = iuplua_checkfloat_array(L, 4, count);
-  IupPPlotAddStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  IupPlotAddStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
   free(px);
   free(py);
   return 0;
 }
 
-static int PPlotTransform(lua_State *L)
+static int PlotTransform(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   int ix, iy;
-  IupPPlotTransform(ih, (float)luaL_checknumber(L,2), (float)luaL_checknumber(L,3), &ix, &iy);
+  IupPlotTransform(ih, (float)luaL_checknumber(L,2), (float)luaL_checknumber(L,3), &ix, &iy);
   lua_pushinteger(L, ix);
   lua_pushinteger(L, iy);
   return 2;
 }
 
-static int PPlotPaintTo(lua_State *L)
+static int PlotPaintTo(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPPlotPaintTo(ih, cdlua_checkcanvas(L,2));
+  IupPlotPaintTo(ih, cdlua_checkcanvas(L,2));
   return 0;
 }
 
@@ -175,19 +175,31 @@ void iuplua_pplotfuncs_open (lua_State *L)
   iuplua_register_cb(L, "PREDRAW_CB", (lua_CFunction)pplot_predraw_cb, NULL);
   iuplua_register_cb(L, "POSTDRAW_CB", (lua_CFunction)pplot_postdraw_cb, NULL);
 
-  iuplua_register(L, PPlotBegin       ,"PPlotBegin");
-  iuplua_register(L, PPlotAdd         ,"PPlotAdd");
-  iuplua_register(L, PPlotAddStr      ,"PPlotAddStr");
-  iuplua_register(L, PPlotEnd         ,"PPlotEnd");
-  iuplua_register(L, PPlotInsertStr   ,"PPlotInsertStr");
-  iuplua_register(L, PPlotInsert      ,"PPlotInsert");
-  iuplua_register(L, PPlotInsertPoints    ,"PPlotInsertPoints");
-  iuplua_register(L, PPlotInsertStrPoints ,"PPlotInsertStrPoints");
-  iuplua_register(L, PPlotAddPoints       ,"PPlotAddPoints");
-  iuplua_register(L, PPlotAddStrPoints    ,"PPlotAddStrPoints");
+  iuplua_register(L, PlotBegin       ,"PPlotBegin");
+  iuplua_register(L, PlotAdd         ,"PPlotAdd");
+  iuplua_register(L, PlotAddStr      ,"PPlotAddStr");
+  iuplua_register(L, PlotEnd         ,"PPlotEnd");
+  iuplua_register(L, PlotInsertStr   ,"PPlotInsertStr");
+  iuplua_register(L, PlotInsert      ,"PPlotInsert");
+  iuplua_register(L, PlotInsertPoints    ,"PPlotInsertPoints");
+  iuplua_register(L, PlotInsertStrPoints ,"PPlotInsertStrPoints");
+  iuplua_register(L, PlotAddPoints       ,"PPlotAddPoints");
+  iuplua_register(L, PlotAddStrPoints    ,"PPlotAddStrPoints");
+  iuplua_register(L, PlotTransform   ,"PPlotTransform");
+  iuplua_register(L, PlotPaintTo     ,"PPlotPaintTo");
 
-  iuplua_register(L, PPlotTransform   ,"PPlotTransform");
-  iuplua_register(L, PPlotPaintTo     ,"PPlotPaintTo");
+  iuplua_register(L, PlotBegin       ,"PlotBegin");
+  iuplua_register(L, PlotAdd         ,"PlotAdd");
+  iuplua_register(L, PlotAddStr      ,"PlotAddStr");
+  iuplua_register(L, PlotEnd         ,"PlotEnd");
+  iuplua_register(L, PlotInsertStr   ,"PlotInsertStr");
+  iuplua_register(L, PlotInsert      ,"PlotInsert");
+  iuplua_register(L, PlotInsertPoints    ,"PlotInsertPoints");
+  iuplua_register(L, PlotInsertStrPoints ,"PlotInsertStrPoints");
+  iuplua_register(L, PlotAddPoints       ,"PlotAddPoints");
+  iuplua_register(L, PlotAddStrPoints    ,"PlotAddStrPoints");
+  iuplua_register(L, PlotTransform   ,"PlotTransform");
+  iuplua_register(L, PlotPaintTo     ,"PlotPaintTo");
 }
 
 int iuppplotlua_open(lua_State * L);

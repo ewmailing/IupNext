@@ -1,5 +1,5 @@
 /*
- * IupPPlot test 2
+ * IupPlot test 2
  * Description : Create all built-in plots.
  *               It is organized as two side-by-side panels:
  *                 - left panel for current plot control
@@ -56,7 +56,7 @@ int edit_cb(Ihandle* ih, int index, int sample_index, float x, float y, float *n
 int postdraw_cb(Ihandle* ih, cdCanvas* cnv)
 {
   int ix, iy;
-  IupPPlotTransform(ih, 0.003f, 0.02f, &ix, &iy);
+  IupPlotTransform(ih, 0.003f, 0.02f, &ix, &iy);
   cdCanvasFont(cnv, NULL, CD_BOLD, 10);
   cdCanvasTextAlignment(cnv, CD_SOUTH);
   cdCanvasText(cnv, ix, iy, "My Inline Legend");
@@ -95,36 +95,36 @@ void InitPlots(void)
 //  IupSetAttribute(plot[0], "USE_GDI+", "YES");
 
   float theFac = (float)1.0/(100*100*100);
-  IupPPlotBegin(plot[0], 0);
+  IupPlotBegin(plot[0], 0);
   for (theI=-100; theI<=100; theI++) 
   {
     x = (float)(theI+50);
     y = theFac*theI*theI*theI;
-    IupPPlotAdd(plot[0], x, y);
+    IupPlotAdd(plot[0], x, y);
   }
-  IupPPlotEnd(plot[0]);
+  IupPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[0], "DS_LEGEND", "Line");
 
   theFac = (float)2.0/100;
-  IupPPlotBegin(plot[0], 0);
+  IupPlotBegin(plot[0], 0);
   for (theI=-100; theI<=100; theI++) 
   {
     x = (float)theI;
     y = -theFac*theI;
-    IupPPlotAdd(plot[0], x, y);
+    IupPlotAdd(plot[0], x, y);
   }
-  IupPPlotEnd(plot[0]);
+  IupPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LEGEND", "Curve 1");
 
-  IupPPlotBegin(plot[0], 0);
+  IupPlotBegin(plot[0], 0);
   for (theI=-100; theI<=100; theI++) 
   {
     x = (float)(0.01*theI*theI-30);
     y = (float)0.01*theI;
-    IupPPlotAdd(plot[0], x, y);
+    IupPlotAdd(plot[0], x, y);
   }
-  IupPPlotEnd(plot[0]);
+  IupPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LEGEND", "Curve 2");
 
   // PLOT 1 - MakeExamplePlot2
@@ -155,24 +155,24 @@ void InitPlots(void)
   IupSetAttribute(plot[1], "LEGENDSHOW", "YES");
 
   theFac = (float)1.0/(100*100*100);
-  IupPPlotBegin(plot[1], 0);
+  IupPlotBegin(plot[1], 0);
   for (theI=0; theI<=100; theI++) 
   {
     x = (float)(theI);
     y = theFac*theI*theI*theI;
-    IupPPlotAdd(plot[1], x, y);
+    IupPlotAdd(plot[1], x, y);
   }
-  IupPPlotEnd(plot[1]);
+  IupPlotEnd(plot[1]);
 
   theFac = (float)2.0/100;
-  IupPPlotBegin(plot[1], 0);
+  IupPlotBegin(plot[1], 0);
   for (theI=0; theI<=100; theI++) 
   {
     x = (float)(theI);
     y = -theFac*theI;
-    IupPPlotAdd(plot[1], x, y);
+    IupPlotAdd(plot[1], x, y);
   }
-  IupPPlotEnd(plot[1]);
+  IupPlotEnd(plot[1]);
 
   // PLOT 2 - MakeExamplePlot4
   IupSetAttribute(plot[2], "TITLE", "Log Scale");
@@ -189,14 +189,14 @@ void InitPlots(void)
   IupSetAttribute(plot[2], "AXS_YFONTSTYLE", "BOLD");
 
   theFac = (float)100.0/(100*100*100);
-  IupPPlotBegin(plot[2], 0);
+  IupPlotBegin(plot[2], 0);
   for (theI=0; theI<=100; theI++) 
   {
     x = (float)(0.0001+theI*0.001);
     y = (float)(0.01+theFac*theI*theI*theI);
-    IupPPlotAdd(plot[2], x, y);
+    IupPlotAdd(plot[2], x, y);
   }
-  IupPPlotEnd(plot[2]);
+  IupPlotEnd(plot[2]);
   IupSetAttribute(plot[2], "DS_COLOR", "100 100 200");
 
   //PLOT 3 - MakeExamplePlot5
@@ -208,10 +208,10 @@ void InitPlots(void)
   const char * kLables[12] = {"jan","feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
   const float kData[12] = {1,2,3,4,5,6,7,8,9,0,1,2};
 
-  IupPPlotBegin(plot[3], 1);
+  IupPlotBegin(plot[3], 1);
   for (theI=0;  theI<12; theI++) 
-    IupPPlotAddStr(plot[3], kLables[theI], kData[theI]);
-  IupPPlotEnd(plot[3]);
+    IupPlotAddStr(plot[3], kLables[theI], kData[theI]);
+  IupPlotEnd(plot[3]);
   IupSetAttribute(plot[3], "DS_COLOR", "100 100 200");
   IupSetAttribute(plot[3], "DS_MODE", "BAR");
 
@@ -236,25 +236,25 @@ void InitPlots(void)
   IupSetAttribute(plot[4], "LEGENDPOS", "BOTTOMRIGHT");
 
   theFac = (float)100.0/(100*100*100);
-  IupPPlotBegin(plot[4], 0);
+  IupPlotBegin(plot[4], 0);
   for (theI=0; theI<=10; theI++) 
   {
     x = (float)(0.0001+theI*0.001);
     y = (float)(0.01+theFac*theI*theI);
-    IupPPlotAdd(plot[4], x, y);
+    IupPlotAdd(plot[4], x, y);
   }
-  IupPPlotEnd(plot[4]);
+  IupPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARKLINE");
   IupSetAttribute(plot[4], "DS_SHOWVALUES", "YES");
 
-  IupPPlotBegin(plot[4], 0);
+  IupPlotBegin(plot[4], 0);
   for (theI=0; theI<=10; theI++) 
   {
     x = (float)(0.0001+theI*0.001);
     y = (float)(0.2-theFac*theI*theI);
-    IupPPlotAdd(plot[4], x, y);
+    IupPlotAdd(plot[4], x, y);
   }
-  IupPPlotEnd(plot[4]);
+  IupPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARK");
   IupSetAttribute(plot[4], "DS_MARKSTYLE", "HOLLOW_CIRCLE");
   
@@ -264,14 +264,14 @@ void InitPlots(void)
   IupSetAttribute(plot[5], "MARGINTOP", "40");
 
   theFac = (float)100.0/(100*100*100);
-  IupPPlotBegin(plot[5], 0);
+  IupPlotBegin(plot[5], 0);
   for (theI=-10; theI<=10; theI++) 
   {
     x = (float)(0.001*theI);
     y = (float)(0.01+theFac*theI*theI*theI);
-    IupPPlotAdd(plot[5], x, y);
+    IupPlotAdd(plot[5], x, y);
   }
-  IupPPlotEnd(plot[5]);
+  IupPlotEnd(plot[5]);
   IupSetAttribute(plot[5], "DS_COLOR", "100 100 200");
   IupSetAttribute(plot[5], "DS_EDIT", "YES");
   IupSetCallback(plot[5], "DELETE_CB", (Icallback)delete_cb);
@@ -549,7 +549,7 @@ int bt1_cb(Ihandle *self)
 {
   //int ii = tabs_get_index();
   //cdCanvas* cnv = cdCreateCanvas(CD_PDF, "pplot.pdf -o");
-  //IupPPlotPaintTo(plot[ii], cnv);
+  //IupPlotPaintTo(plot[ii], cnv);
   //cdKillCanvas(cnv);
   return IUP_DEFAULT;
 }
@@ -567,7 +567,7 @@ int main(int argc, char **argv)
 
   IupOpen(&argc, &argv);          // init IUP
   IupControlsOpen();  // init the addicional controls library (we use IupTabs)
-  IupPPlotOpen();     // init IupPPlot library
+  IupPPlotOpen();     // init IupPlot library
 
 //  cdInitGdiPlus();
 
@@ -675,7 +675,7 @@ int main(int argc, char **argv)
   
   dlg = IupDialog(hbox);
   IupSetAttributes(dlg, "SIZE=500x240" );
-  IupSetAttribute(dlg, "TITLE", "IupPPlot Example");
+  IupSetAttribute(dlg, "TITLE", "IupPlot Example");
 
   InitPlots(); // It must be able to be done independent of dialog Mapping
 

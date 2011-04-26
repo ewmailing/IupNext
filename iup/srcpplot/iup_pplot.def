@@ -13,3 +13,15 @@ EXPORTS
   IupPPlotInsertPoints
   IupPPlotAddPoints
   IupPPlotAddStrPoints
+  IupPlotBegin
+  IupPlotAdd
+  IupPlotAddStr
+  IupPlotEnd
+  IupPlotInsertStr
+  IupPlotInsert
+  IupPlotTransform
+  IupPlotPaintTo
+  IupPlotInsertStrPoints
+  IupPlotInsertPoints
+  IupPlotAddPoints
+  IupPlotAddStrPoints

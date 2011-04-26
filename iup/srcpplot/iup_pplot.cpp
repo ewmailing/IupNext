@@ -114,7 +114,7 @@ static int iPPlotKeyPress_CB(Ihandle* ih, int c, int press)
 } 
 
 /* user level call: add dataset to plot */
-void IupPPlotBegin(Ihandle* ih, int strXdata)
+void IupPlotBegin(Ihandle* ih, int strXdata)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -141,7 +141,7 @@ void IupPPlotBegin(Ihandle* ih, int strXdata)
   iupAttribSetStr(ih, "_IUP_PPLOT_YDATA",    (char*)inYData);
 }
 
-void IupPPlotAdd(Ihandle* ih, float x, float y)
+void IupPlotAdd(Ihandle* ih, float x, float y)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -161,7 +161,7 @@ void IupPPlotAdd(Ihandle* ih, float x, float y)
   inYData->push_back(y);
 }
 
-void IupPPlotAddStr(Ihandle* ih, const char* x, float y)
+void IupPlotAddStr(Ihandle* ih, const char* x, float y)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -181,7 +181,7 @@ void IupPPlotAddStr(Ihandle* ih, const char* x, float y)
   inYData->push_back(y);
 }
 
-void IupPPlotInsertStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* inX, float inY)
+void IupPlotInsertStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* inX, float inY)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -203,7 +203,7 @@ void IupPPlotInsertStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* 
   theYData->insert(theYData->begin()+inSampleIndex, inY);
 }
 
-void IupPPlotInsert(Ihandle* ih, int inIndex, int inSampleIndex, float inX, float inY)
+void IupPlotInsert(Ihandle* ih, int inIndex, int inSampleIndex, float inX, float inY)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -225,7 +225,7 @@ void IupPPlotInsert(Ihandle* ih, int inIndex, int inSampleIndex, float inX, floa
   theYData->insert(theYData->begin()+inSampleIndex, inY);
 }
 
-void IupPPlotAddPoints(Ihandle* ih, int inIndex, float *x, float *y, int count)
+void IupPlotAddPoints(Ihandle* ih, int inIndex, float *x, float *y, int count)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -250,7 +250,7 @@ void IupPPlotAddPoints(Ihandle* ih, int inIndex, float *x, float *y, int count)
   }
 }
 
-void IupPPlotAddStrPoints(Ihandle* ih, int inIndex, const char** x, float* y, int count)
+void IupPlotAddStrPoints(Ihandle* ih, int inIndex, const char** x, float* y, int count)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -275,7 +275,7 @@ void IupPPlotAddStrPoints(Ihandle* ih, int inIndex, const char** x, float* y, in
   }
 }
 
-void IupPPlotInsertStrPoints(Ihandle* ih, int inIndex, int inSampleIndex, const char** inX, float* inY, int count)
+void IupPlotInsertStrPoints(Ihandle* ih, int inIndex, int inSampleIndex, const char** inX, float* inY, int count)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -300,7 +300,7 @@ void IupPPlotInsertStrPoints(Ihandle* ih, int inIndex, int inSampleIndex, const 
   }
 }
 
-void IupPPlotInsertPoints(Ihandle* ih, int inIndex, int inSampleIndex, float *inX, float *inY, int count)
+void IupPlotInsertPoints(Ihandle* ih, int inIndex, int inSampleIndex, float *inX, float *inY, int count)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -325,7 +325,7 @@ void IupPPlotInsertPoints(Ihandle* ih, int inIndex, int inSampleIndex, float *in
   }
 }
 
-int IupPPlotEnd(Ihandle* ih)
+int IupPlotEnd(Ihandle* ih)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -354,7 +354,7 @@ int IupPPlotEnd(Ihandle* ih)
   return ih->data->plt->_currentDataSetIndex;
 }
 
-void IupPPlotTransform(Ihandle* ih, float x, float y, int *ix, int *iy)
+void IupPlotTransform(Ihandle* ih, float x, float y, int *ix, int *iy)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -369,7 +369,7 @@ void IupPPlotTransform(Ihandle* ih, float x, float y, int *ix, int *iy)
 }
 
 /* user level call: plot on the given device */
-void IupPPlotPaintTo(Ihandle* ih, void* _cnv)
+void IupPlotPaintTo(Ihandle* ih, void* _cnv)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -3145,4 +3145,67 @@ void IupPPlotOpen(void)
     iupRegisterClass(iPPlotNewClass());
     IupSetGlobal("_IUP_PPLOT_OPEN", "1");
   }
+}
+
+/**********************************************************************/
+/*******             Old Deprecated functions             *********/
+
+void IupPPlotBegin(Ihandle *ih, int strXdata)
+{
+  IupPlotBegin(ih, strXdata);
+}
+
+void IupPPlotAdd(Ihandle *ih, float x, float y)
+{
+  IupPlotAdd(ih, x, y);
+}
+
+void IupPPlotAddStr(Ihandle *ih, const char* x, float y)
+{
+  IupPlotAddStr(ih, x, y);
+}
+
+int  IupPPlotEnd(Ihandle *ih)
+{
+  return IupPlotEnd(ih);
+}
+
+void IupPPlotInsertStr(Ihandle *ih, int index, int sample_index, const char* x, float y)
+{
+  IupPlotInsertStr(ih, index, sample_index, x, y);
+}
+
+void IupPPlotInsert(Ihandle *ih, int index, int sample_index, float x, float y)
+{
+  IupPlotInsert(ih, index, sample_index, x, y);
+}
+
+void IupPPlotInsertStrPoints(Ihandle* ih, int index, int sample_index, const char** x, float* y, int count)
+{
+  IupPlotInsertStrPoints(ih, index, sample_index, x, y, count);
+}
+
+void IupPPlotInsertPoints(Ihandle* ih, int index, int sample_index, float *x, float *y, int count)
+{
+  IupPlotInsertPoints(ih, index, sample_index, x, y, count);
+}
+
+void IupPPlotAddPoints(Ihandle* ih, int index, float *x, float *y, int count)
+{
+  IupPlotAddPoints(ih, index, x, y, count);
+}
+
+void IupPPlotAddStrPoints(Ihandle* ih, int index, const char** x, float* y, int count)
+{
+  IupPlotAddStrPoints(ih, index, x, y, count);
+}
+
+void IupPPlotTransform(Ihandle* ih, float x, float y, int *ix, int *iy)
+{
+  IupPlotTransform(ih, x, y, ix, iy);
+}
+
+void IupPPlotPaintTo(Ihandle *ih, void *cnv)
+{
+  IupPlotPaintTo(ih, cnv);
 }

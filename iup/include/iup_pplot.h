@@ -17,25 +17,37 @@ void IupPPlotOpen(void);
 /* Create an PPlot widget instance */
 Ihandle* IupPPlot(void);
 
-/* Add dataset to plot */
+#ifndef IUP_PLOT_API
+#define IUP_PLOT_API
+void IupPlotBegin(Ihandle *ih, int strXdata);
+void IupPlotAdd(Ihandle *ih, float x, float y);
+void IupPlotAddStr(Ihandle *ih, const char* x, float y);
+int  IupPlotEnd(Ihandle *ih);
+void IupPlotInsertStr(Ihandle *ih, int index, int sample_index, const char* x, float y);
+void IupPlotInsert(Ihandle *ih, int index, int sample_index, float x, float y);
+void IupPlotInsertStrPoints(Ihandle* ih, int index, int sample_index, const char** x, float* y, int count);
+void IupPlotInsertPoints(Ihandle* ih, int index, int sample_index, float *x, float *y, int count);
+void IupPlotAddPoints(Ihandle* ih, int index, float *x, float *y, int count);
+void IupPlotAddStrPoints(Ihandle* ih, int index, const char** x, float* y, int count);
+void IupPlotTransform(Ihandle* ih, float x, float y, int *ix, int *iy);
+void IupPlotPaintTo(Ihandle *ih, void *cnv);
+#endif
+
+/***********************************************/
+/*              Deprecated                    */
 void IupPPlotBegin(Ihandle *ih, int strXdata);
 void IupPPlotAdd(Ihandle *ih, float x, float y);
 void IupPPlotAddStr(Ihandle *ih, const char* x, float y);
 int IupPPlotEnd(Ihandle *ih);
-
 void IupPPlotInsertStr(Ihandle *ih, int index, int sample_index, const char* x, float y);
 void IupPPlotInsert(Ihandle *ih, int index, int sample_index, float x, float y);
-
 void IupPPlotInsertStrPoints(Ihandle* ih, int index, int sample_index, const char** x, float* y, int count);
 void IupPPlotInsertPoints(Ihandle* ih, int index, int sample_index, float *x, float *y, int count);
 void IupPPlotAddPoints(Ihandle* ih, int index, float *x, float *y, int count);
 void IupPPlotAddStrPoints(Ihandle* ih, int index, const char** x, float* y, int count);
-
-/* convert from plot coordinates to pixels */
 void IupPPlotTransform(Ihandle* ih, float x, float y, int *ix, int *iy);
-
-/* Plot on the given device. Uses a "cdCanvas*". */
 void IupPPlotPaintTo(Ihandle *ih, void *cnv);
+/***********************************************/
 
 
 #ifdef __cplusplus

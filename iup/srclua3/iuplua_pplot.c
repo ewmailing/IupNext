@@ -137,56 +137,56 @@ static void PPlot(void)
   lua_pushusertag(IupPPlot(), tag);
 }
 
-static void PPlotBegin(void)
+static void PlotBegin(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPPlotBegin(ih, luaL_check_int(2));
+  IupPlotBegin(ih, luaL_check_int(2));
 }
 
-static void PPlotAdd(void)
+static void PlotAdd(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPPlotAdd(ih, (float)luaL_check_number(2), (float)luaL_check_number(3));
+  IupPlotAdd(ih, (float)luaL_check_number(2), (float)luaL_check_number(3));
 }
 
-static void PPlotAddStr(void)
+static void PlotAddStr(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPPlotAddStr(ih, luaL_check_string(2), (float)luaL_check_number(3));
+  IupPlotAddStr(ih, luaL_check_string(2), (float)luaL_check_number(3));
 }
 
-static void PPlotEnd(void)
+static void PlotEnd(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  int ret = IupPPlotEnd(ih);
+  int ret = IupPlotEnd(ih);
   lua_pushnumber(ret);
 }
 
-static void PPlotInsertStr(void)
+static void PlotInsertStr(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPPlotInsertStr(ih, luaL_check_int(2), luaL_check_int(3), luaL_check_string(4), (float)luaL_check_number(5));
+  IupPlotInsertStr(ih, luaL_check_int(2), luaL_check_int(3), luaL_check_string(4), (float)luaL_check_number(5));
 }
 
-static void PPlotInsert(void)
+static void PlotInsert(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPPlotInsert(ih, luaL_check_int(2), luaL_check_int(3), (float)luaL_check_number(4), (float)luaL_check_number(5));
+  IupPlotInsert(ih, luaL_check_int(2), luaL_check_int(3), (float)luaL_check_number(4), (float)luaL_check_number(5));
 }
 
-static void PPlotTransform(void)
+static void PlotTransform(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
   int ix, iy;
-  IupPPlotTransform(ih, (float)luaL_check_number(2), (float)luaL_check_number(3), &ix, &iy);
+  IupPlotTransform(ih, (float)luaL_check_number(2), (float)luaL_check_number(3), &ix, &iy);
   lua_pushnumber(ix);
   lua_pushnumber(iy);
 }
 
-static void PPlotPaintTo(void)
+static void PlotPaintTo(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPPlotPaintTo(ih, cdlua_checkcanvas(2));
+  IupPlotPaintTo(ih, cdlua_checkcanvas(2));
 }
 
 int iup_pplotlua_open(void)
@@ -205,14 +205,23 @@ int iup_pplotlua_open(void)
   lua_register("iup_pplot_predraw_cb", (lua_CFunction)pplot_predraw_cb);
   lua_register("iup_pplot_delete_cb", (lua_CFunction)pplot_delete_cb);
 
-  iuplua_register("IupPPlotBegin", PPlotBegin);
-  iuplua_register("IupPPlotAdd", PPlotAdd);
-  iuplua_register("IupPPlotAddStr", PPlotAddStr);
-  iuplua_register("IupPPlotEnd", PPlotEnd);
-  iuplua_register("IupPPlotInsertStr", PPlotInsertStr);
-  iuplua_register("IupPPlotInsert", PPlotInsert);
-  iuplua_register("IupPPlotTransform", PPlotTransform);
-  iuplua_register("IupPPlotPaintTo", PPlotPaintTo);
+  iuplua_register("IupPPlotBegin", PlotBegin);
+  iuplua_register("IupPPlotAdd", PlotAdd);
+  iuplua_register("IupPPlotAddStr", PlotAddStr);
+  iuplua_register("IupPPlotEnd", PlotEnd);
+  iuplua_register("IupPPlotInsertStr", PlotInsertStr);
+  iuplua_register("IupPPlotInsert", PlotInsert);
+  iuplua_register("IupPPlotTransform", PlotTransform);
+  iuplua_register("IupPPlotPaintTo", PlotPaintTo);
+
+  iuplua_register("IupPlotBegin", PlotBegin);
+  iuplua_register("IupPlotAdd", PlotAdd);
+  iuplua_register("IupPlotAddStr", PlotAddStr);
+  iuplua_register("IupPlotEnd", PlotEnd);
+  iuplua_register("IupPlotInsertStr", PlotInsertStr);
+  iuplua_register("IupPlotInsert", PlotInsert);
+  iuplua_register("IupPlotTransform", PlotTransform);
+  iuplua_register("IupPlotPaintTo", PlotPaintTo);
 
 #ifdef IUPLUA_USELOH
 #ifdef TEC_BIGENDIAN
