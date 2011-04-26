@@ -1,4 +1,5 @@
-@echo off  
+@echo off
+mkdir ..\bin\cygw17
 copy /y ..\lib\cygw17\*.dll ..\bin\cygw17
 copy /y ..\..\cd\lib\cygw17\*.dll ..\bin\cygw17
 copy /y ..\..\im\lib\cygw17\*.dll ..\bin\cygw17
