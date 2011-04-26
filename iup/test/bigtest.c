@@ -62,6 +62,9 @@ void PreDialogsTest(void);
 #ifdef PPLOT_TEST
 void PPlotTest(void);
 #endif
+#ifdef PLPLOT_TEST
+void PLPlotTest(void);
+#endif
 void GetParamTest(void);
 void ClassInfo(void);
 void ZboxTest(void);
@@ -117,6 +120,9 @@ static TestItems test_list[] = {
 #ifdef PPLOT_TEST
   {"PPlot", PPlotTest},
 #endif
+#ifdef PLPLOT_TEST
+  {"PLPlot", PLPlotTest},
+#endif
   {"PreDialogs", PreDialogsTest},
   {"Progressbar", ProgressbarTest},
   {"Sample", SampleTest},
@@ -166,6 +172,8 @@ int main(int argc, char* argv[])
 
   IupOpen(&argc, &argv);
   IupControlsOpen();
+
+//  IupSetGlobal("LANGUAGE", "PORTUGUESE");
 
   dlg = IupDialog(IupVbox(list = IupList(NULL), NULL));
   IupSetAttribute(dlg, "MARGIN", "10x10");

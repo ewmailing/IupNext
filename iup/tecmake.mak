@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.4
+VERSION = 4.5
 
 
 #---------------------------------#
@@ -486,7 +486,9 @@ endif
 
 ifneq ($(findstring IRIX, $(TEC_UNAME)), )
   UNIX_POSIX = Yes
-  LD = ld
+  ifndef NO_LOCAL_LD
+    LD = ld
+  endif
   STDLDFLAGS := -elf -shared -rdata_shared -soname lib$(TARGETNAME).so
   RANLIB := /bin/true
   X11_LIBS := Xmu Xt X11
@@ -533,7 +535,9 @@ endif
 
 ifneq ($(findstring SunOS, $(TEC_UNAME)), )
   UNIX_POSIX = Yes
-  LD = ld
+  ifndef NO_LOCAL_LD
+    LD = ld
+  endif
   STDLDFLAGS := -G
   X11_INC := /usr/openwin/share/include
   X11_LIB := /usr/openwin/lib
@@ -655,10 +659,11 @@ endif
 
 ifdef USE_IUP3
   override USE_IUP = Yes
-# Inside Tecgraf only
-  ifndef IUP3_BUILD
-#    IUP := $(IUP)3
-  endif
+endif
+
+ifdef USE_IUP2
+  override USE_IUP = Yes
+  IUP := $(IUP)2
 endif
 
 ifdef USE_IUPBETA
@@ -869,9 +874,6 @@ ifdef USE_CD
     else
       ifneq ($(findstring cygw, $(TEC_UNAME)), )
         SLIB += $(CD_LIB)/libfreetype-6.a
-      else
-        # Use freetype from the system
-        LIBS += freetype
       endif
     endif
   else

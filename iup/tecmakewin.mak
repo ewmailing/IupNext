@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.4
+VERSION = 4.5
 
 
 #---------------------------------#
@@ -831,8 +831,11 @@ endif
 
 ifdef USE_IUP3
   override USE_IUP = Yes
-# Inside Tecgraf only
-#  IUP := $(IUP)3
+endif
+
+ifdef USE_IUP2
+  override USE_IUP = Yes
+  IUP := $(IUP)2
 endif
 
 ifdef USE_IUPBETA
