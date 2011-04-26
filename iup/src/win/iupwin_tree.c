@@ -51,6 +51,10 @@ typedef struct tagNMTVITEMCHANGE {
 #define TVS_EX_DOUBLEBUFFER         0x0004
 #endif
 
+#ifndef TTM_POPUP
+#define TTM_POPUP               (WM_USER + 34)
+#endif
+
 #ifndef TVM_SETEXTENDEDSTYLE
 #define TVM_SETEXTENDEDSTYLE      (TV_FIRST + 44)
 #endif
