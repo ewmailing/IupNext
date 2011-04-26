@@ -112,7 +112,8 @@ the moment the event is generated. The same macros used for
     enteritem_cb will be called.</p>
 <p><strong><a name="SCROLLTOP_CB">SCROLLTOP_CB</a></strong>:
   Action generated when the matrix 
-  is scrolled with the scrollbars or with the keyboard. Can be used together with the &quot;ORIGIN&quot; attribute to synchronize the movement of two or more matrices.</p>
+  is scrolled with the scrollbars or with the keyboard. Can be used together with the 
+ORIGIN and ORIGINOFFSET attributes to synchronize the movement of two or more matrices.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:scrolltop_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:

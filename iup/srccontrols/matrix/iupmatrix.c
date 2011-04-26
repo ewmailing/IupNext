@@ -52,6 +52,20 @@ int iupMatrixIsValid(Ihandle* ih, int check_cells)
   return 1;
 }
 
+static char* iMatrixGetOriginAttrib(Ihandle* ih)
+{
+  char* val = iupStrGetMemory(100);
+  sprintf(val, "%d:%d", ih->data->lines.first, ih->data->columns.first);
+  return val;
+}
+
+static char* iMatrixGetOriginOffsetAttrib(Ihandle* ih)
+{
+  char* val = iupStrGetMemory(100);
+  sprintf(val, "%d:%d", ih->data->lines.first_offset, ih->data->columns.first_offset);
+  return val;
+}
+
 static int iMatrixSetOriginAttrib(Ihandle* ih, const char* value)
 {
   int lin = -1, col = -1;
@@ -80,6 +94,19 @@ static int iMatrixSetOriginAttrib(Ihandle* ih, const char* value)
   ih->data->columns.first_offset = 0;
   ih->data->lines.first = lin;
   ih->data->lines.first_offset = 0;
+
+  value = iupAttribGet(ih, "ORIGINOFFSET");
+  if (value)
+  {
+    int lin_offset, col_offset;
+    if (iupStrToIntInt(value, &lin_offset, &col_offset, ':') == 2)
+    {
+      if (col_offset < ih->data->columns.sizes[col])
+        ih->data->columns.first_offset = col_offset;
+      if (lin_offset < ih->data->lines.sizes[lin])
+        ih->data->lines.first_offset = lin_offset;
+    }
+  }
 
   /* when "first" is changed must update scroll pos */
   iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_COL);
@@ -117,13 +144,6 @@ static int iMatrixSetShowAttrib(Ihandle* ih, const char* value)
     iupMatrixScrollToVisible(ih, lin, col);
 
   return 0;
-}
-
-static char* iMatrixGetOriginAttrib(Ihandle* ih)
-{
-  char* val = iupStrGetMemory(100);
-  sprintf(val, "%d:%d", ih->data->lines.first, ih->data->columns.first);
-  return val;
 }
 
 static int iMatrixSetFocusCellAttrib(Ihandle* ih, const char* value)
@@ -1349,6 +1369,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "ADDCOL", NULL, iupMatrixSetAddColAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DELCOL", NULL, iupMatrixSetDelColAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ORIGIN", iMatrixGetOriginAttrib, iMatrixSetOriginAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ORIGINOFFSET", iMatrixGetOriginOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOW", NULL, iMatrixSetShowAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDIT_MODE", iMatrixGetEditModeAttrib, iMatrixSetEditModeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITNEXT", iMatrixGetEditNextAttrib, iMatrixSetEditNextAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NO_INHERIT);
