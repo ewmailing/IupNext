@@ -85,8 +85,8 @@ static int iMatrixScrollGetNextNonEmpty(Ihandle* ih, int m, int index)
 
   if (index > p->num-1)
   {
-    if (p->num == 1)
-      return 1;
+    if (p->num == p->num_noscroll)
+      return p->num_noscroll;
     else
       return p->num-1;
   }
@@ -106,8 +106,8 @@ static int iMatrixScrollGetPrevNonEmpty(Ihandle* ih, int m, int index)
   while(index > 0 && p->sizes[index] == 0)
     index--;
 
-  if (index < 1)
-    return 1;
+  if (index < p->num_noscroll)
+    return p->num_noscroll;
   else
     return index;
 }
