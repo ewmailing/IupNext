@@ -247,6 +247,8 @@ int iupMatrixEditShow(Ihandle* ih)
       mask = IupMatGetAttribute(ih,"MASKFLOAT", ih->data->lines.focus_cell, ih->data->columns.focus_cell);
       if (mask)
         IupSetAttribute(ih->data->datah, "MASKFLOAT", mask);
+      else
+        IupSetAttribute(ih->data->datah, "MASK", NULL);
     }
   }
 
