@@ -252,10 +252,10 @@ static int removeline(Ihandle *self)
 
 static int addline(Ihandle *self) 
 {
-//  IupSetAttribute(IupGetHandle("mat1"),"ADDLIN","0"); 
+  IupSetAttribute(IupGetHandle("mat1"),"ADDLIN","0"); 
 //  IupSetAttribute(IupGetHandle("mat1"),"ADDLIN","0-5"); 
-  IupSetAttribute(IupGetHandle("mat1"),"NUMCOL_NOSCROLL","2");
-  IupSetAttribute(IupGetHandle("mat1"),"NUMLIN_NOSCROLL","2");
+//  IupSetAttribute(IupGetHandle("mat1"),"NUMCOL_NOSCROLL","2");
+//  IupSetAttribute(IupGetHandle("mat1"),"NUMLIN_NOSCROLL","2");
   return IUP_DEFAULT;
 }
 
