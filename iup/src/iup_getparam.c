@@ -869,13 +869,15 @@ static Ihandle* IupParamDlgP(Ihandle** params)
 
   dlg = IupDialog(dlg_box);
 
-  IupSetAttribute(dlg, "MINBOX", "NO");
-  IupSetAttribute(dlg, "MAXBOX", "NO");
   if (!expand) 
   {
-    IupSetAttribute(dlg, "RESIZE", "NO");
     IupSetAttribute(dlg, "DIALOGFRAME", "YES");
     IupSetAttribute(dlg,"DIALOGHINT","YES");
+  }
+  else
+  {
+    IupSetAttribute(dlg, "MINBOX", "NO");
+    IupSetAttribute(dlg, "MAXBOX", "NO");
   }
   IupSetAttributeHandle(dlg, "DEFAULTENTER", button_ok);
   IupSetAttributeHandle(dlg, "DEFAULTESC", button_cancel);

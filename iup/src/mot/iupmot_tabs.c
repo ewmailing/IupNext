@@ -315,6 +315,7 @@ void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct 
     Ihandle* prev_child = IupGetChild(ih, nptr->prev_page_number);
     Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
     Widget prev_child_manager = (Widget)iupAttribGet(prev_child, "_IUPTAB_CONTAINER");
+
     XtMapWidget(child_manager);
     if (prev_child_manager) XtUnmapWidget(prev_child_manager);
 
