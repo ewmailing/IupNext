@@ -24,6 +24,10 @@ void iupMatrixDrawUpdate(Ihandle* ih);
 
 int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value);
 
+/* Color attenuation factor in a marked cell, 20% darker */
+#define IMAT_ATENUATION(_x)    ((unsigned char)(((_x)*8)/10))
+
+
 #ifdef __cplusplus
 }
 #endif

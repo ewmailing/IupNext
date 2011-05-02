@@ -19,6 +19,8 @@
 #include <cdiup.h>
 #include <cddbuf.h>
 
+#include "iup_cdutil.h"
+
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
@@ -932,6 +934,64 @@ static char* iMatrixGetBgColorAttrib(Ihandle* ih, int lin, int col)
   return NULL;
 }
 
+static char* iMatrixGetCellBgColorAttrib(Ihandle* ih, int lin, int col)
+{
+  if (iupMatrixCheckCellPos(ih, lin, col))
+  {
+    char* buffer;
+    unsigned char r = 255, g = 255, b = 255;
+    int active = iupdrvIsActive(ih);
+    char* mark = iupMatrixGetMarkAttrib(ih, lin, col);
+
+    iupMatrixGetBgRGB(ih, lin, col, &r, &g, &b);
+    
+    if (mark && mark[0]=='1')
+    {
+      r = IMAT_ATENUATION(r);
+      g = IMAT_ATENUATION(g);
+      b = IMAT_ATENUATION(b);
+    }
+
+    if (!active)
+    {
+      r = cdIupLIGTHER(r);
+      g = cdIupLIGTHER(g);
+      b = cdIupLIGTHER(b);
+    }
+
+    buffer = iupStrGetMemory(30);
+    sprintf(buffer, "%d %d %d", r, g, b);
+    return buffer;
+  }
+  else
+    return NULL;
+}
+
+static char* iMatrixGetCellFgColorAttrib(Ihandle* ih, int lin, int col)
+{
+  if (iupMatrixCheckCellPos(ih, lin, col))
+  {
+    char* buffer;
+    unsigned char r = 255, g = 255, b = 255;
+    char* mark = iupMatrixGetMarkAttrib(ih, lin, col);
+
+    iupMatrixGetFgRGB(ih, lin, col, &r, &g, &b);
+    
+    if (mark && mark[0]=='1')
+    {
+      r = IMAT_ATENUATION(r);
+      g = IMAT_ATENUATION(g);
+      b = IMAT_ATENUATION(b);
+    }
+
+    buffer = iupStrGetMemory(30);
+    sprintf(buffer, "%d %d %d", r, g, b);
+    return buffer;
+  }
+  else
+    return NULL;
+}
+
 static int iMatrixConvertXYToPos(Ihandle* ih, int x, int y)
 {
   int lin, col;
@@ -1321,12 +1381,15 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId2(ic, "IDVALUE", iMatrixGetIdValueAttrib, iMatrixSetIdValueAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FOCUS_CELL", iMatrixGetFocusCellAttrib, iMatrixSetFocusCellAttrib, IUPAF_SAMEASSYSTEM, "1:1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT); /* can be NOT mapped */
   iupClassRegisterAttribute(ic, "VALUE", iMatrixGetValueAttrib, iMatrixSetValueAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId2(ic, "BGCOLOR", iMatrixGetBgColorAttrib, iMatrixSetBgColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FGCOLOR", NULL, iMatrixSetFgColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FONT", iMatrixGetFontAttrib, iMatrixSetFontAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "CELLOFFSET", iMatrixGetCellOffsetAttrib, NULL, IUPAF_READONLY);
   iupClassRegisterAttributeId2(ic, "CELLSIZE", iMatrixGetCellSizeAttrib, NULL, IUPAF_READONLY);
+  iupClassRegisterAttributeId2(ic, "CELLBGCOLOR", iMatrixGetCellBgColorAttrib, NULL, IUPAF_READONLY);
+  iupClassRegisterAttributeId2(ic, "CELLFGCOLOR", iMatrixGetCellFgColorAttrib, NULL, IUPAF_READONLY);
 
   /* IupMatrix Attributes - COLUMN */
   iupClassRegisterAttributeId(ic, "ALIGNMENT", iMatrixGetAlignmentAttrib, (IattribSetIdFunc)iMatrixSetNeedRedraw, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -1393,7 +1456,6 @@ Iclass* iupMatrixNewClass(void)
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iMatrixSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
-  iupClassRegisterAttributeId2(ic, "BGCOLOR", iMatrixGetBgColorAttrib, iMatrixSetBgColorAttrib, IUPAF_NOT_MAPPED);
 
   /* IupMatrix Attributes - MASK */
   iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iMatrixGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

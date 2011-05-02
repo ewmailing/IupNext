@@ -176,6 +176,12 @@ updated or consulted instead of the matrix cell. When retrieved inside the
 EDITION_CB callback when mode is 0, then the return value is the new value 
   that will be updated in the cell. </p>
 <hr class="style3">
+<p><strong><a name="CELLBGCOLOR">CELLBGCOLOR</a><i>L</i>:<i>C</i></strong> 
+(read-only): Returns the actual cell BGCOLOR. Returns NULL if the cell does not 
+exists, or it is not visible, or the element is not mapped. (since 3.6)</p>
+<p><strong><a name="CELLFGCOLOR">CELLFGCOLOR</a><i>L</i>:<i>C</i></strong> 
+(read-only): Returns the actual cell FGCOLOR. Returns NULL if the cell does not 
+exists, or it is not visible, or the element is not mapped. (since 3.6)</p>
 <p><strong><a name="CELLOFFSET">CELLOFFSET</a><i>L</i>:<i>C</i></strong> (read-only): Returns the cell 
 computed offset in pixels from the top-left corner of the matrix, in the format 
 &quot;XxY&quot; or &quot;%dx%d&quot; in C. Returns NULL 

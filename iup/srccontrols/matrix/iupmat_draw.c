@@ -34,9 +34,6 @@
 #include "iupmat_mark.h"
 
 
-/* Color attenuation factor in a marked cell, 20% darker */
-#define IMAT_ATENUATION(_x)    ((unsigned char)(((_x)*8)/10))
-
 /* Text alignment that will be draw. Used by iMatrixDrawCellValue */
 #define IMAT_T_CENTER  1
 #define IMAT_T_LEFT    2
