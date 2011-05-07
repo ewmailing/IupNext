@@ -572,14 +572,17 @@ static void iMatrixDrawMatrix(Ihandle* ih)
   iupMatrixDrawLineTitle(ih, ih->data->lines.first, ih->data->lines.last);
 
   /* If there are ordinary cells, then draw them */
+  if (ih->data->columns.num_noscroll>1 && ih->data->lines.num_noscroll>1)
+    iupMatrixDrawCells(ih, 1,                              1, 
+                           ih->data->lines.num_noscroll-1, ih->data->columns.num_noscroll-1);
   if (ih->data->columns.num_noscroll>1)
     iupMatrixDrawCells(ih, ih->data->lines.first, 1, 
-                           ih->data->lines.last, ih->data->columns.num_noscroll-1);
+                           ih->data->lines.last,  ih->data->columns.num_noscroll-1);
   if (ih->data->lines.num_noscroll>1)
-    iupMatrixDrawCells(ih, 1, ih->data->columns.first, 
+    iupMatrixDrawCells(ih, 1,                              ih->data->columns.first, 
                            ih->data->lines.num_noscroll-1, ih->data->columns.last);
   iupMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first, 
-                         ih->data->lines.last, ih->data->columns.last);
+                         ih->data->lines.last,  ih->data->columns.last);
 }
 
 static void iMatrixDrawFocus(Ihandle* ih)

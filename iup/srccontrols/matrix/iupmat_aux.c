@@ -270,7 +270,7 @@ static void iMatrixAuxFillSizeVec(Ihandle* ih, int m)
     else
       p->sizes[i] = iupMatrixGetColumnWidth(ih, i, 1);
 
-    if (i > 0)
+    if (i >= p->num_noscroll)
       p->total_size += p->sizes[i];
   }
 }
@@ -279,7 +279,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
 {
   char* D;
   ImatLinColData *p;
-  int canvas_size;
+  int canvas_size, fixed_size, i;
 
   if (m == IMAT_PROCESS_LIN)
   {
@@ -294,8 +294,12 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
     canvas_size = ih->data->w;
   }
 
+  fixed_size = 0;
+  for (i=0; i<p->num_noscroll; i++)
+    fixed_size += p->sizes[i];
+
   /* Matrix useful area is the current size minus the title area */
-  p->visible_size = canvas_size - p->sizes[0];
+  p->visible_size = canvas_size - fixed_size;
   if (p->visible_size > p->total_size)
     p->visible_size = p->total_size;
 

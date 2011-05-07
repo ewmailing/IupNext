@@ -42,6 +42,10 @@ static void iStrMessageSet(const char* message, const char* str)
   iupTableSet(istrmessage_table, message, (char*)str, IUPTABLE_POINTER);
 }
 
+
+/**********************************************************************************/
+
+
 void iupStrMessageShowError(Ihandle* parent, const char* message)
 {
   Ihandle* dlg = IupMessageDlg();
@@ -70,10 +74,15 @@ void iupStrMessageShowError(Ihandle* parent, const char* message)
   IupDestroy(dlg);
 }
 
+
+/**********************************************************************************/
+
+#define ISRTMSG_NUM_LNG 3    /* 2+1 for expansion */
+
 typedef struct _IstdMessage
 {
   const char* code;
-  const char* lng_msg[3]; /* 2+1 for expansion */
+  const char* lng_msg[ISRTMSG_NUM_LNG];
 } IstdMessage;
 
 /* Edit this table to add support for more languages */
@@ -125,9 +134,13 @@ static void iStrRegisterInternalMessages(int lng)
 
 void iupStrMessageUpdateLanguage(const char* language)
 {
-  int lng = 0;
-  if (iupStrEqualNoCase(language, "PORTUGUESE"))
+  int lng;
+  if (iupStrEqualNoCase(language, "ENGLISH"))
+    lng = 0;
+  else if (iupStrEqualNoCase(language, "PORTUGUESE"))
     lng = 1;
+  else
+    lng = 0;  /* back to default */
   iStrRegisterInternalMessages(lng);
 }
 
