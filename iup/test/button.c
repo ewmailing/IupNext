@@ -183,7 +183,7 @@ static int action_cb(Ihandle *ih)
 {
   static int count = 1;
   printf("ACTION(%s) - %d\n", get_name(ih), count); count++;
-  show_menu(ih);
+//  show_menu(ih);
   return IUP_DEFAULT;
 }
 
