@@ -354,6 +354,15 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 
 
 /************************************************************************/
+/*                   IupGetParam Callback situations                    */
+/************************************************************************/
+#define IUP_GETPARAM_OK     -1
+#define IUP_GETPARAM_INIT   -2
+#define IUP_GETPARAM_CANCEL -3
+#define IUP_GETPARAM_HELP   -4
+
+
+/************************************************************************/
 /*                   Record Input Modes                                 */
 /************************************************************************/
 enum {IUP_RECBINARY, IUP_RECTEXT};

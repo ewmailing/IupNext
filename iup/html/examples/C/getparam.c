@@ -12,14 +12,17 @@ int param_action(Ihandle* dialog, int param_index, void* user_data)
 {                
   switch(param_index)
   {
-  case -1:
+  case IUP_GETPARAM_OK:
     printf("OK\n");
     break;
-  case -2:
+  case IUP_GETPARAM_INIT:
     printf("Map\n");
     break;
-  case -3:
+  case IUP_GETPARAM_CANCEL:
     printf("Cancel\n");
+    break;
+  case IUP_GETPARAM_HELP:
+    printf("Help\n");
     break;
   default:
     {

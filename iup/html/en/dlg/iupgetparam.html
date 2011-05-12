@@ -38,7 +38,8 @@ iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: strin
     and when the user pressed the OK button. It can be NULL.<br>
 	<b>user_data</b>: user pointer passed to the user callback.<br>
 	<b>format</b>: string describing the parameter<br>
-    ...: list of variables address with initial values for the parameters. </p>
+    ...: list of variables address with initial values for the parameters. The 
+	maximum number of parameters is 50.</p>
 	<p><span class="style1">Returns:</span> a <strong>status</strong> code 1 if the OK button is pressed, 0 if the user canceled or if an error occurred.</p>
 	<p>The function 
     will abort if there are errors in the format string as in the number of the expected parameters. 
@@ -53,13 +54,13 @@ iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: strin
   <p><b>dialog</b>: dialog handle<br>
   <b>param_index</b>: current parameter being 
     changed. Can have negative values to indicate specific situations: <br>
-&nbsp;&nbsp;&nbsp; -1 = if the user pressed the <b>OK</b> button;<br>
-&nbsp;&nbsp;&nbsp; -2 = after the dialog is 
+&nbsp;&nbsp;&nbsp; IUP_GETPARAM_OK (-1) = if the user pressed the <b>OK</b> button;<br>
+&nbsp;&nbsp;&nbsp; IUP_GETPARAM_INIT&nbsp;(-2)&nbsp; = after the dialog is 
   <b>mapped</b> and just before 
     it is shown;<br>
-&nbsp;&nbsp;&nbsp; -3 = if the user pressed the <b>Cancel</b> button;<br>
-&nbsp;&nbsp;&nbsp; -4 
-	= if the user pressed the <strong>Help</strong> button, if any;<br>
+&nbsp;&nbsp;&nbsp; IUP_GETPARAM_CANCEL (-3) = if the user pressed the <b>Cancel</b> button;<br>
+&nbsp;&nbsp;&nbsp; IUP_GETPARAM_HELP 
+	(-4) = if the user pressed the <strong>Help</strong> button, if any;<br>
   <b>user_data</b>: a user pointer that is passed in the function call.</p>
   <p><span class="style1">Returns:</span> You can reject the change or the OK action by returning 0 in the callback, otherwise you must return 1.</p>
   <p>You should not programmatically change the current parameter value during the callback. On the other hand you can 
@@ -114,7 +115,9 @@ VALUE attribute of the control still has the old value.</p>
 <p>&quot;<strong><em>text</em></strong>%<strong><em>x</em>[<em>extra</em>]{tip}</strong>\n&quot;, where:</p>
 <p><strong><em>text</em></strong>
       is a descriptive text, to be placed to the 
-      left of the entry field in a label.</p>
+      left of the entry field in a label. It can contains any string, but to 
+contain a &#39;%&#39; must use two characters &quot;%%&quot; to avoid conflict with the type 
+separator (since 3.6).</p>
 <p><strong><em>x</em></strong>
       is the type of the parameter. 
       The valid options are:</p>
@@ -172,27 +175,34 @@ mask</strong> is an optional mask for the
         and <u>multiline</u> types. The dialog uses the 
 <a href="../attrib/iup_mask.html">MASK</a> 
 attribute internally. In this case we 
-        do no use the brackets '<strong>[</strong>' and '<strong>]</strong>' to avoid confusion with the specified 
+        do no use the brackets '<strong>[</strong>' and '<strong>]</strong>' to avoid 
+conflict with the specified 
         mask.<br>
 <strong>|item0|item1|item2,...|</strong> are the items of the <u>list</u>. At least 
         one item must exist. Again the brackets are not used to increase the possibilities for the strings, instead you 
         must use '<strong>|</strong>'. Items index are zero based start.<br>
 <strong>[dialogtype|filter|directory|nochangedir|nooverwriteprompt]</strong> are 
 the respective attribute values passed to the <a href="iupfiledlg.html">
-IupFileDlg</a> control when activated. All commas must exist, but you can let 
+IupFileDlg</a> control when activated. All &#39;<strong>|</strong>&#39; must exist, but you can let 
 empty values to use the default values. No mask can be set.</p>
         <p><strong>tip</strong> is a string that is displayed in a TIP for the 
 		main control of the parameter. (since 3.0)</p>
-<p>There is no extra parameters for the color string. The mask is automatically 
-set to capture 3 or 4 unsigned integers from 0 to 255 (R G B) or (R G B A) 
-(alpha is optional).</p>
 <p>The number of lines in the format string (number of '\n') will determine the number of required parameters. But separators 
-  will not count as parameters.</p>
+  will not count as parameters. The maximum number of parameters is 50.</p>
 <p>A integer parameter always has a spin attached to the text to increment and 
 decrement the value. A real parameter only has a spin in a full interval is 
 defined (min and max), in this case the default step is (max-min)/20. When the 
 callback is called because a spin was activated then the attribute SPINNING of 
 the dialog will be defined to a non NULL and non zero value.</p>
+<p>The function does not allocate memory space to store the text entered by the 
+user. Therefore, the string parameter must be large enough to contain the user 
+input. If you want to set a maximum size for the string you can set the MAXSTR 
+attribute for a parameter Ihandle, inside the callback when param_index=IUP_GETPARAM_INIT 
+(since 3.6). Its default value is 10240 for multiline strings and file names, 
+and 512 for other strings.</p>
+<p>There is no extra parameters for the color string. The mask is automatically 
+set to capture 3 or 4 unsigned integers from 0 to 255 (R G B) or (R G B A) 
+(alpha is optional).</p>
 <p>The dialog is resizable if it contains a string, a multiline string or a 
   number with a valuator. All the multiline strings will increase size equally in both directions.</p>
 <p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 

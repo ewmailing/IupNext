@@ -22,6 +22,7 @@
 
 enum {IPARAM_TYPE_STR, IPARAM_TYPE_INT, IPARAM_TYPE_FLOAT, IPARAM_TYPE_NONE=-1};
 
+
 /*******************************************************************************************
                     Internal Callbacks
 *******************************************************************************************/
@@ -31,7 +32,7 @@ static int iParamButtonOK_CB(Ihandle* self)
   Ihandle* dlg = IupGetDialog(self);
   Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
   iupAttribSetStr(dlg, "STATUS", "1");
-  if (cb && !cb(dlg, -1, (void*)iupAttribGet(dlg, "USER_DATA")))
+  if (cb && !cb(dlg, IUP_GETPARAM_OK, (void*)iupAttribGet(dlg, "USER_DATA")))
     return IUP_DEFAULT;
   else
     return IUP_CLOSE;
@@ -42,7 +43,7 @@ static int iParamButtonCancel_CB(Ihandle* self)
   Ihandle* dlg = IupGetDialog(self);
   Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
   iupAttribSetStr(dlg, "STATUS", "0");
-  if (cb) cb(dlg, -3, (void*)iupAttribGet(dlg, "USER_DATA"));
+  if (cb) cb(dlg, IUP_GETPARAM_CANCEL, (void*)iupAttribGet(dlg, "USER_DATA"));
   return IUP_CLOSE;
 }
 
@@ -50,7 +51,7 @@ static int iParamButtonHelp_CB(Ihandle* self)
 {
   Ihandle* dlg = IupGetDialog(self);
   Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
-  if (cb) cb(dlg, -4, (void*)iupAttribGet(dlg, "USER_DATA"));
+  if (cb) cb(dlg, IUP_GETPARAM_HELP, (void*)iupAttribGet(dlg, "USER_DATA"));
   return IUP_DEFAULT;
 }
 
@@ -1142,41 +1143,78 @@ static int iParamCopyStrLine(char* line, const char* format)
   return i+1; 
 }
 
-/* Used in IupLua also */
-char iupGetParamType(const char* format, int *line_size)
+static char* iParmGetType(const char* format)
 {
   char* type = strchr(format, '%');
+  while (type && *(type+1)=='%')
+    type = strchr(type+2, '%');
+  return type;
+}
+
+/* Used in IupLua */
+char iupGetParamType(const char* format, int *line_size)
+{
+  char* type = iParmGetType(format);
   char* line_end = strchr(format, '\n');
   if (line_end)
-    *line_size = line_end-format+1;
+    *line_size = line_end-format+1;  /* include line separator */
   if (type)
-    return *(type+1);
+    return *(type+1);  /* skip separator */
   else
     return 0;
+}
+
+static char* iParamGetTitle(char* line_ptr, int count)
+{
+  int i, n;
+  char* title = line_ptr;
+  title[count] = 0;
+  n = -1;
+  for (i=0; i<count; i++)
+  {
+    if (title[i] != '%')
+      n++;
+    else /* if (title[i+1] == '%')  if equal to %, next is a %, because we are inside title only */
+    {
+      n++;
+      i++;  /* skip second % */
+    }
+
+    if (i != n)  /* copy only if there is a second % */
+      title[n] = title[i];
+  }
+  return title;
 }
 
 static Ihandle *IupParamf(const char* format, int *line_size)
 {
   Ihandle* param;
   char line[4096];
-  char* line_ptr = &line[0], *title, type, *tip, *extra, *mask;
+  char* line_ptr = &line[0], *title, *type, *tip, *extra, *mask;
   int count;
 
   *line_size = iParamCopyStrLine(line, format);
 
-  title = iParamGetNextStrItem(line_ptr, '%', &count);  line_ptr += count;
+  type = iParmGetType(line_ptr);
+  if (!type)
+    return NULL;
+
+  count = type-line_ptr;
+  title = iParamGetTitle(line_ptr, count);
+  line_ptr += count;
+
+  type++; /* skip separator */
+  line_ptr += 2;
+
   param = IupUser();
   iupAttribStoreStr(param, "TITLE", title);
   
-  type = *line_ptr;
-  line_ptr++;
-
 /**********************************************************************************
   REMEMBER: if a new parameter type is added
             then IupLua must be also updated.
  **********************************************************************************/
 
-  switch(type)
+  switch(*type)
   {
   case 'b':
     iupAttribSetStr(param, "TYPE", "BOOLEAN");
@@ -1252,6 +1290,7 @@ static Ihandle *IupParamf(const char* format, int *line_size)
     iParamSetButtonNames(extra, param);
     break;
   default:
+    IupDestroy(param);
     return NULL;
   }
 
@@ -1362,7 +1401,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   iupAttribSetStr(dlg, "USER_DATA", (char*)user_data);
 
   if (action) 
-    action(dlg, -2, user_data);
+    action(dlg, IUP_GETPARAM_INIT, user_data);
 
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
@@ -1393,7 +1432,15 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
       else if (data_type == IPARAM_TYPE_STR)
       {
         char *data_str = (char*)(param_data[p]);
-        strcpy(data_str, iupAttribGet(param, "VALUE"));
+        int max_str = iupAttribGetInt(param, "MAXSTR");
+        if (!max_str)
+        {
+          max_str = 512;
+          if (iupStrEqual(iupAttribGet(param, "TYPE"), "FILE") ||
+              (iupStrEqual(iupAttribGet(param, "TYPE"), "STRING") && iupAttribGetInt(param, "MULTILINE")))
+            max_str = 10240;
+        }
+        iupStrCopyN(data_str, max_str, iupAttribGet(param, "VALUE"));
         p++;
       }
     }

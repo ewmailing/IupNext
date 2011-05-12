@@ -149,3 +149,11 @@ iup.MASK_UFLOAT  = "(/d+/.?/d*|/./d+)"
 iup.MASK_EFLOAT  = "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
 iup.MASK_INT     = "[+/-]?/d+"
 iup.MASK_UINT    = "/d+"
+
+iup.RECBINARY = 0
+iup.RECTEXT = 1
+
+iup.GETPARAM_OK     = -1
+iup.GETPARAM_INIT   = -2
+iup.GETPARAM_CANCEL = -3
+iup.GETPARAM_HELP   = -4

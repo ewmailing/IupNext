@@ -11,16 +11,16 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
 {                
   switch(param_index)
   {
-  case -1:
+  case IUP_GETPARAM_OK:
     printf("IupGetParam - OK\n");
     break;
-  case -2:
+  case IUP_GETPARAM_INIT:
     printf("IupGetParam - Map\n");
     break;
-  case -3:
+  case IUP_GETPARAM_CANCEL:
     printf("IupGetParam - Cancel\n");
     break;
-  case -4:
+  case IUP_GETPARAM_HELP:
     printf("IupGetParam - Help\n");
     break;
 //  case 1:
@@ -55,7 +55,7 @@ void GetParamTest(void)
   
   if (!IupGetParam("Title", param_action, 0,
                    "Bt %u[, MyCancel, Help!]\n"
-                   "Boolean: %b[No,Yes]\n"
+                   "Boolean 100%%: %b[No,Yes]\n"
                    "Integer: %i\n"
                    "Real 1: %r\n"
                    "Sep1 %t\n"

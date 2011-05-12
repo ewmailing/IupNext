@@ -56,7 +56,7 @@ static int GetParam(lua_State *L)
   void* user_data = (void*)&gp;
   const char* format = luaL_checkstring(L, 3);
   int param_count, param_extra, i, size, ret,
-      line_size = 0, lua_param_start = 4;
+      line_size = 0, lua_param_start = 4, max_str;
   const char* f = format;
   const char* s;
   void* param_data[50];
@@ -105,14 +105,17 @@ static int GetParam(lua_State *L)
       *(float*)(param_data[i]) = (float)luaL_checknumber(L, lua_param_start); lua_param_start++;
       break;
     case 'f':
-    case 'n':
-    case 'c':
     case 's':
     case 'm':
+    case 'n':
+    case 'c':
+      max_str = 512;
+      if (t == 'f' || t == 'm')
+        max_str = 10240;
       s = luaL_checkstring(L, lua_param_start); lua_param_start++;
       size = strlen(s);
-      if (size < 512)
-        param_data[i] = malloc(512);
+      if (size < max_str)
+        param_data[i] = malloc(max_str);
       else
         param_data[i] = malloc(2*size);
       memcpy(param_data[i], s, size+1);
