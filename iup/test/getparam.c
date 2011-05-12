@@ -15,8 +15,13 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
     printf("IupGetParam - OK\n");
     break;
   case IUP_GETPARAM_INIT:
-    printf("IupGetParam - Map\n");
-    break;
+    {
+      Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", param_index);
+      IupSetfAttribute(param, "MAXSTR", "%d", 30);
+
+      printf("IupGetParam - Map\n");
+      break;
+    }
   case IUP_GETPARAM_CANCEL:
     printf("IupGetParam - Cancel\n");
     break;
@@ -27,11 +32,8 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
 //    return 0;
   default:
     {
-      Ihandle* param;
-      char param_str[50];
-      sprintf(param_str, "PARAM%d", param_index);
-      param = (Ihandle*)IupGetAttribute(dialog, param_str);
-      printf("%s = %s\n", param_str, IupGetAttribute(param, "VALUE"));
+      Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", param_index);
+      printf("PARAM%d = %s\n", param_index, IupGetAttribute(param, "VALUE"));
       break;
     }
   }

@@ -12,18 +12,17 @@
 #include "il.h"
 
 
-static int Cboxv(lua_State *L)
+static int Cbox(lua_State *L)
 {
-  Ihandle **hlist = iuplua_checkihandle_array(L, 1, 0);
-  Ihandle *h = IupCboxv(hlist);
-  iuplua_plugstate(L, h);
-  iuplua_pushihandle_raw(L, h);
-  free(hlist);
+  Ihandle *ih = IupCbox(NULL);
+  iuplua_plugstate(L, ih);
+  iuplua_pushihandle_raw(L, ih);
   return 1;
 }
-  int iupcboxlua_open(lua_State * L)
+
+int iupcboxlua_open(lua_State * L)
 {
-  iuplua_register(L, Cboxv, "Cboxv");
+  iuplua_register(L, Cbox, "Cbox");
 
 
 #ifdef IUPLUA_USELOH

@@ -4,7 +4,6 @@ EXPORTS
   iuplua_plugstate
   iuplua_getstate
   iuplua_checkihandle
-  iuplua_checkihandle_array 
   iuplua_call
   iuplua_call_rs
   iuplua_call_raw

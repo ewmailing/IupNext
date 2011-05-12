@@ -28,19 +28,17 @@ static int tabs_tabchange_cb(Ihandle *self, Ihandle * p0, Ihandle * p1)
   return iuplua_call(L, 2);
 }
 
-static int Tabsv(lua_State *L)
+static int Tabs(lua_State *L)
 {
-  Ihandle **hlist = iuplua_checkihandle_array(L, 1, 0);
-  Ihandle *h = IupTabsv(hlist);
-  iuplua_plugstate(L, h);
-  iuplua_pushihandle_raw(L, h);
-  free(hlist);
+  Ihandle *ih = IupTabs(NULL);
+  iuplua_plugstate(L, ih);
+  iuplua_pushihandle_raw(L, ih);
   return 1;
 }
 
 int iuptabslua_open(lua_State * L)
 {
-  iuplua_register(L, Tabsv, "Tabsv");
+  iuplua_register(L, Tabs, "Tabs");
 
   iuplua_register_cb(L, "TABCHANGEPOS_CB", (lua_CFunction)tabs_tabchangepos_cb, NULL);
   iuplua_register_cb(L, "TABCHANGE_CB", (lua_CFunction)tabs_tabchange_cb, NULL);
