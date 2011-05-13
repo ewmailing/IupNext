@@ -313,9 +313,9 @@ static int GetDialog(lua_State *L)
 static int GetFile (lua_State *L)
 {
   const char *fname = luaL_checkstring(L,1);
-  char returned_fname[10240];
+  char returned_fname[4096];
   int ret;
-  iupStrCopyN(returned_fname, 10240, fname);
+  iupStrCopyN(returned_fname, 4096, fname);
   ret = IupGetFile(returned_fname);
   lua_pushstring(L, returned_fname);
   lua_pushinteger(L, ret);

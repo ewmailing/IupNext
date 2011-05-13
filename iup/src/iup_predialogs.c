@@ -365,7 +365,7 @@ int IupGetFile(char* filename)
     char* value = IupGetAttribute(dlg, "VALUE");
     if (value) 
     {
-      strcpy(filename, value);
+      iupStrCopyN(filename, 4096, value);
       iupStrFileNameSplit(filename, dir, NULL);
     }
   }
@@ -430,7 +430,7 @@ int IupGetText(const char* title, char* text)
 
   bt = IupGetInt(dlg, "STATUS");
   if (bt==1)
-    strcpy(text, IupGetAttribute(multi_text, "VALUE"));
+    iupStrCopyN(text, 10240, IupGetAttribute(multi_text, "VALUE"));
   else
     bt = 0; /* return 0 instead of -1 */
 

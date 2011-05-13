@@ -198,7 +198,7 @@ the dialog will be defined to a non NULL and non zero value.</p>
 user. Therefore, the string parameter must be large enough to contain the user 
 input. If you want to set a maximum size for the string you can set the MAXSTR 
 attribute for a parameter Ihandle, inside the callback when param_index=IUP_GETPARAM_INIT 
-(since 3.6). Its default value is 10240 for multiline strings and file names, 
+(since 3.6). Its default value is 10240 for multiline strings, 4096 for file names, 
 and 512 for other strings.</p>
 <p>There is no extra parameters for the color string. The mask is automatically 
 set to capture 3 or 4 unsigned integers from 0 to 255 (R G B) or (R G B A) 

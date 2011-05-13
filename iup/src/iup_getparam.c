@@ -1436,8 +1436,9 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
         if (!max_str)
         {
           max_str = 512;
-          if (iupStrEqual(iupAttribGet(param, "TYPE"), "FILE") ||
-              (iupStrEqual(iupAttribGet(param, "TYPE"), "STRING") && iupAttribGetInt(param, "MULTILINE")))
+          if (iupStrEqual(iupAttribGet(param, "TYPE"), "FILE"))
+            max_str = 4096;
+          else if (iupStrEqual(iupAttribGet(param, "TYPE"), "STRING") && iupAttribGetInt(param, "MULTILINE"))
             max_str = 10240;
         }
         iupStrCopyN(data_str, max_str, iupAttribGet(param, "VALUE"));

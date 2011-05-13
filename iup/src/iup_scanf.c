@@ -169,7 +169,7 @@ int IupScanf (const char *format, ...)
     case 's':
       {
         char *s=(char *)va_arg(va,char *);
-        strcpy(s,text[i]);
+        iupStrCopyN(s, 4096, text[i]);
       }
       break;
     }

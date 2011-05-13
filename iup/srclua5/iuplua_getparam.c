@@ -110,7 +110,9 @@ static int GetParam(lua_State *L)
     case 'n':
     case 'c':
       max_str = 512;
-      if (t == 'f' || t == 'm')
+      if (t == 'f')
+        max_str = 4096;
+      else if (t == 'm')
         max_str = 10240;
       s = luaL_checkstring(L, lua_param_start); lua_param_start++;
       size = strlen(s);
