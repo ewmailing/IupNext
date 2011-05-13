@@ -36,13 +36,23 @@
 
 enum {IUP_DIALOGOPEN, IUP_DIALOGSAVE, IUP_DIALOGDIR};
 
+
+static void motFileDlgAskUserCBclose(Widget w, XtPointer client_data, XtPointer call_data)
+{
+  int *ret_code = (int*)client_data;
+  if (!ret_code) return;
+  (void)call_data;
+  (void)w;
+  *ret_code = -1;
+}
+
 static void motFileDlgAskUserCallback(Widget w, int* ret_code, XmSelectionBoxCallbackStruct* cbs)
 {
+  (void)w;
   if (cbs->reason == XmCR_OK)
     *ret_code = 1;
   else
     *ret_code = -1;
-  XtDestroyWidget(XtParent(w));
 }
 
 static int motFileDlgAskUser(Widget parent, const char* message)
@@ -60,6 +70,8 @@ static int motFileDlgAskUser(Widget parent, const char* message)
   XtVaGetValues(parent, XmNdialogTitle, &title, NULL);
   XtVaSetValues(questionbox, XmNdialogTitle, title, NULL);
 
+  XmAddWMProtocolCallback(XtParent(questionbox), iupmot_wm_deletewindow, motFileDlgAskUserCBclose, (XtPointer)&ret_code);
+
   XtAddCallback(questionbox, XmNokCallback, (XtCallbackProc)motFileDlgAskUserCallback, (XtPointer)&ret_code);
   XtAddCallback(questionbox, XmNcancelCallback, (XtCallbackProc)motFileDlgAskUserCallback, (XtPointer)&ret_code);
   XtUnmanageChild(XmMessageBoxGetChild(questionbox, XmDIALOG_HELP_BUTTON));
@@ -68,7 +80,7 @@ static int motFileDlgAskUser(Widget parent, const char* message)
   while (ret_code == 0)
     XtAppProcessEvent(iupmot_appcontext, XtIMAll);
 
-  XtUnmanageChild(questionbox);
+  XtDestroyWidget(XtParent(questionbox));
 
   if (ret_code == 1)
     return 1;
@@ -279,13 +291,20 @@ typedef struct _ImotPromt
   int ret_code;
 } ImotPromt;
 
+static void motFileDlgPromptCBclose(Widget w, ImotPromt* prompt, XtPointer call_data)
+{
+  (void)call_data;
+  (void)w;
+  prompt->ret_code = 1;
+}
+
 static void motFileDlgPromptCallback(Widget w, ImotPromt* prompt, XmSelectionBoxCallbackStruct* cbs)
 {
+  (void)w;
   if (cbs->reason == XmCR_OK)
     prompt->xm_dir = XmStringCopy(cbs->value);
 
   prompt->ret_code = 1;
-  XtDestroyWidget(XtParent(w));
 }
 
 static XmString motFileDlgPrompt(Widget parent, const char* message)
@@ -305,6 +324,8 @@ static XmString motFileDlgPrompt(Widget parent, const char* message)
   prompt.ret_code = 0;
   prompt.xm_dir = NULL;
 
+  XmAddWMProtocolCallback(XtParent(promptbox), iupmot_wm_deletewindow, (XtCallbackProc)motFileDlgPromptCBclose, (XtPointer)&prompt);
+
   XtAddCallback(promptbox, XmNokCallback, (XtCallbackProc)motFileDlgPromptCallback, (XtPointer)&prompt);
   XtAddCallback(promptbox, XmNcancelCallback, (XtCallbackProc)motFileDlgPromptCallback, (XtPointer)&prompt);
   XtUnmanageChild(XmSelectionBoxGetChild(promptbox, XmDIALOG_HELP_BUTTON));
@@ -313,7 +334,7 @@ static XmString motFileDlgPrompt(Widget parent, const char* message)
   while (prompt.ret_code == 0)
     XtAppProcessEvent(iupmot_appcontext, XtIMAll);
 
-  XtUnmanageChild(promptbox);
+  XtDestroyWidget(XtParent(promptbox));
 
   return prompt.xm_dir;
 }

@@ -252,7 +252,7 @@ static void new_file(char* dialogtype, int preview)
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"/tecgraf/iup\"");   // OK
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"\\tecgraf\\iup\"");  // OK
 //  IupSetAttribute(dlg, "NOCHANGEDIR", "NO");
-  IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
+//  IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
 //  IupSetAttribute(dlg, "RASTERSIZE", "800x600");
   IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
 
