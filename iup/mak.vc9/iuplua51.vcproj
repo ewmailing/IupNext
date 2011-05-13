@@ -155,14 +155,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\iuplua_getcolor.c"
-					>
-				</File>
-				<File
-					RelativePath="..\srclua5\iuplua_getparam.c"
-					>
-				</File>
-				<File
 					RelativePath="..\srclua5\il_hbox.c"
 					>
 				</File>
@@ -219,10 +211,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\iuplua_scanf.c"
-					>
-				</File>
-				<File
 					RelativePath="..\srclua5\il_separator.c"
 					>
 				</File>
@@ -263,10 +251,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\iuplua_tree_aux.c"
-					>
-				</File>
-				<File
 					RelativePath="..\srclua5\il_user.c"
 					>
 				</File>
@@ -280,6 +264,22 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\il_zbox.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\iuplua_getcolor.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\iuplua_getparam.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\iuplua_scanf.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\iuplua_tree_aux.c"
 					>
 				</File>
 			</Filter>
@@ -469,10 +469,6 @@
 			</File>
 			<File
 				RelativePath="..\include\iuplua.h"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua5\scanf.h"
 				>
 			</File>
 		</Filter>

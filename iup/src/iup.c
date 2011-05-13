@@ -38,7 +38,8 @@
  *    
  * \subsection def Defines
  *  - __IUPXXX_H   (for include file, same file name, upper case, "__" preffix and replace "." by "_")
- *  - IUP_XXX      (for enumerations)
+ *  - IUP_XXX      (for global enumerations)
+ *  - IXXX_YYY     (for local enumerations)
  *  - iupXXX       (for macros, complement with Function Names rules)
  *   
  * \subsection doc Documentation
