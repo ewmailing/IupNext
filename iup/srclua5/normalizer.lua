@@ -14,7 +14,7 @@ function ctrl.setAttributes(object, param)
   local n = #param
   for i = 1, n do
     if iup.GetClass(param[i]) == "iup handle" then 
-      object.addcontrol = param[i]
+      object.handle.addcontrol = param[i]
     end
   end
   iup.WIDGET.setAttributes(object, param)
