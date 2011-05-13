@@ -631,8 +631,8 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
   Arg args[30];
 
   /* the previous node is not necessary only
-     if adding the root in an empty tree. */
-  if (!wItemPrev && ih->data->node_count!=0)
+     if adding the root in an empty tree or before the root. */
+  if (!wItemPrev && (ih->data->node_count!=0 || id!=-1))
       return;
 
   if (!title)

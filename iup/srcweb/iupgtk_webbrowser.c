@@ -44,9 +44,14 @@ static char* gtkWebBrowserGetItemHistoryAttrib(Ihandle* ih, int id)
 {
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
   WebKitWebHistoryItem* item = webkit_web_back_forward_list_get_nth_item(back_forward_list, id);
-  char* str = iupStrGetMemory(1024);
-  sprintf(str, "%s", webkit_web_history_item_get_uri(item));
-  return str;
+  if (item)
+  {
+    char* str = iupStrGetMemory(1024);
+    sprintf(str, "%s", webkit_web_history_item_get_uri(item));
+    return str;
+  }
+  else
+    return NULL;
 }
 
 static char* gtkWebBrowserGetForwardCountAttrib(Ihandle* ih)

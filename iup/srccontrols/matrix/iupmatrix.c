@@ -70,15 +70,15 @@ static char* iMatrixGetOriginOffsetAttrib(Ihandle* ih)
 
 static int iMatrixSetOriginAttrib(Ihandle* ih, const char* value)
 {
-  int lin = -1, col = -1;
+  int lin = IUP_INVALID_ID, col = IUP_INVALID_ID;
 
  /* Get the parameters. The '*' indicates that want to keep the table in
     the same line or column */
   if (iupStrToIntInt(value, &lin, &col, ':') != 2)
   {
-    if (lin != -1)
+    if (lin != IUP_INVALID_ID)
       col = ih->data->columns.first;
-    else if (col != -1)
+    else if (col != IUP_INVALID_ID)
       lin = ih->data->lines.first;
     else
       return 0;
@@ -120,15 +120,15 @@ static int iMatrixSetOriginAttrib(Ihandle* ih, const char* value)
 
 static int iMatrixSetShowAttrib(Ihandle* ih, const char* value)
 {
-  int lin = -1, col = -1;
+  int lin = IUP_INVALID_ID, col = IUP_INVALID_ID;
 
  /* Get the parameters. The '*' indicates that want to keep the table in
     the same line or column */
   if (iupStrToIntInt(value, &lin, &col, ':') != 2)
   {
-    if (lin != -1)
+    if (lin != IUP_INVALID_ID)
       col = ih->data->columns.first;
-    else if (col != -1)
+    else if (col != IUP_INVALID_ID)
       lin = ih->data->lines.first;
     else
       return 0;
@@ -150,13 +150,13 @@ static int iMatrixSetShowAttrib(Ihandle* ih, const char* value)
 
 static int iMatrixSetFocusCellAttrib(Ihandle* ih, const char* value)
 {
-  int lin = 0, col = 0;
+  int lin = IUP_INVALID_ID, col = IUP_INVALID_ID;
   if (iupStrToIntInt(value, &lin, &col, ':') == 2)
   {
     if (!iupMatrixCheckCellPos(ih, lin, col))
       return 0;
 
-    if (lin <= 0 || col <= 0) /* title can NOT have the focus */
+    if (lin == 0 || col == 0) /* title can NOT have the focus */
       return 0;
     if (lin >= ih->data->lines.num || col >= ih->data->columns.num)
       return 0;
@@ -876,7 +876,7 @@ static int iMatrixSetNeedRedraw(Ihandle* ih)
 
 static int iMatrixSetFlagsAttrib(Ihandle* ih, int lin, int col, const char* value, unsigned char attr)
 {
-  if (lin > -1 || col > -1)
+  if (lin >= 0 || col >= 0)
   {
     iupMatrixCellSetFlag(ih, lin, col, attr, value!=NULL);
     ih->data->need_redraw = 1;
@@ -913,14 +913,14 @@ static int iMatrixSetFrameVertColorAttrib(Ihandle* ih, int lin, int col, const c
 
 static char* iMatrixGetFontAttrib(Ihandle* ih, int lin, int col)
 {
-  if (lin==-1 && col==-1)  /* empty id */
+  if (lin==IUP_INVALID_ID && col==IUP_INVALID_ID)  /* empty id */
     return iupGetFontAttrib(ih);
   return NULL;
 }
 
 static char* iMatrixGetBgColorAttrib(Ihandle* ih, int lin, int col)
 {
-  if (lin==-1 && col==-1) /* empty id */
+  if (lin==IUP_INVALID_ID && col==IUP_INVALID_ID) /* empty id */
   {
     /* check the hash table */
     char *color = iupAttribGet(ih, "BGCOLOR");

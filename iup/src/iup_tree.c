@@ -275,7 +275,7 @@ InodeHandle* iupTreeGetNode(Ihandle* ih, int id)
 {
   if (id >= 0 && id < ih->data->node_count)
     return ih->data->node_cache[id].node_handle;
-  else if (id == -1 && ih->data->node_count!=0)
+  else if (id == IUP_INVALID_ID && ih->data->node_count!=0)
     return iupdrvTreeGetFocusNode(ih);
   else
     return NULL;
@@ -283,7 +283,7 @@ InodeHandle* iupTreeGetNode(Ihandle* ih, int id)
 
 InodeHandle* iupTreeGetNodeFromString(Ihandle* ih, const char* name_id)
 {
-  int id = -1;
+  int id = IUP_INVALID_ID;
   iupStrToInt(name_id, &id);
   return iupTreeGetNode(ih, id);
 }
@@ -583,7 +583,7 @@ static char* iTreeGetUserDataAttrib(Ihandle* ih, int id)
 {
   if (id >= 0 && id < ih->data->node_count)
     return ih->data->node_cache[id].userdata;
-  else if (id == -1 && ih->data->node_count!=0)
+  else if (id == IUP_INVALID_ID && ih->data->node_count!=0)
   {
     InodeHandle* node_handle = iupdrvTreeGetFocusNode(ih);
     id = iupTreeFindNodeId(ih, node_handle);
@@ -597,7 +597,7 @@ static int iTreeSetUserDataAttrib(Ihandle* ih, int id, const char* value)
 {
   if (id >= 0 && id < ih->data->node_count)
     ih->data->node_cache[id].userdata = (void*)value;
-  else if (id == -1 && ih->data->node_count!=0)
+  else if (id == IUP_INVALID_ID && ih->data->node_count!=0)
   {
     InodeHandle* node_handle = iupdrvTreeGetFocusNode(ih);
     id = iupTreeFindNodeId(ih, node_handle);

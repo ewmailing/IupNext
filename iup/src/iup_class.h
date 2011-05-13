@@ -447,6 +447,8 @@ char* iupClassObjectGetAttributeId(Ihandle* ih, const char* name, int id);
 int   iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id2, const char* value);
 char* iupClassObjectGetAttributeId2(Ihandle* ih, const char* name, int id1, int id2);
 
+#define IUP_INVALID_ID -10
+
 /* Used only in iupAttribGetStr */
 void  iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit);
 

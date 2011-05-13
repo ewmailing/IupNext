@@ -200,14 +200,14 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
           if (afunc->flags & IUPAF_HAS_ID2)
           {
             IattribSetId2Func id2_set = (IattribSetId2Func)afunc->set;
-            int id1=-1, id2=-1;
+            int id1=IUP_INVALID_ID, id2=IUP_INVALID_ID;
             iupStrToIntInt(name_id, &id1, &id2, ':');  /* ignore errors because of '*' ids */
             return id2_set(ih, id1, id2, value);
           }
           else
           {
             IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
-            int id=-1;
+            int id=IUP_INVALID_ID;
             if (iupStrToInt(name_id, &id))
               return id_set(ih, id, value);
           }
@@ -253,12 +253,12 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
       if (afunc->flags & IUPAF_HAS_ID2)
       {
         IattribSetId2Func id2_set = (IattribSetId2Func)afunc->set;
-        return id2_set(ih, -1, -1, value);  /* empty Id */
+        return id2_set(ih, IUP_INVALID_ID, IUP_INVALID_ID, value);  /* empty Id */
       }
       else if (afunc->flags & IUPAF_HAS_ID)
       {
         IattribSetIdFunc id_set = (IattribSetIdFunc)afunc->set;
-        return id_set(ih, -1, value);  /* empty Id */
+        return id_set(ih, IUP_INVALID_ID, value);  /* empty Id */
       }
       else
         ret = afunc->set(ih, value);
@@ -366,14 +366,14 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
           if (afunc->flags & IUPAF_HAS_ID2)
           {
             IattribGetId2Func id2_get = (IattribGetId2Func)afunc->get;
-            int id1=-1, id2=-1;
+            int id1=IUP_INVALID_ID, id2=IUP_INVALID_ID;
             iupStrToIntInt(name_id, &id1, &id2, ':');
             return id2_get(ih, id1, id2);
           }
           else
           {
             IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
-            int id=-1;
+            int id=IUP_INVALID_ID;
             if (iupStrToInt(name_id, &id))
               return id_get(ih, id);
           }
@@ -403,12 +403,12 @@ char* iupClassObjectGetAttribute(Ihandle* ih, const char* name, char* *def_value
       if (afunc->flags & IUPAF_HAS_ID2)
       {
         IattribGetId2Func id2_get = (IattribGetId2Func)afunc->get;
-        return id2_get(ih, -1, -1);  /* empty Id */
+        return id2_get(ih, IUP_INVALID_ID, IUP_INVALID_ID);  /* empty Id */
       }
       else if (afunc->flags & IUPAF_HAS_ID)
       {
         IattribGetIdFunc id_get = (IattribGetIdFunc)afunc->get;
-        return id_get(ih, -1);  /* empty Id */
+        return id_get(ih, IUP_INVALID_ID);  /* empty Id */
       }
       else
         return afunc->get(ih);

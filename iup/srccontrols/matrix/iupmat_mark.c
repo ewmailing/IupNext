@@ -599,7 +599,7 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, int lin, int col, const char* value)
   if (ih->data->mark_mode == IMAT_MARK_NO)
     return 0;
 
-  if (lin > -1 && col > -1)  /* both are specified */
+  if (lin >= 0 && col >= 0)  /* both are specified */
   {
     if (!iupMatrixCheckCellPos(ih, lin, col))
       return 0;
@@ -689,7 +689,7 @@ char* iupMatrixGetMarkAttrib(Ihandle* ih, int lin, int col)
   if (ih->data->mark_mode == IMAT_MARK_NO)
     return "0";
 
-  if (lin > -1 && col > -1)  /* both are specified */
+  if (lin >= 0 && col >= 0)  /* both are specified */
   {
     if (!iupMatrixCheckCellPos(ih, lin, col))
       return NULL;

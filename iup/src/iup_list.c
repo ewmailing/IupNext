@@ -173,11 +173,15 @@ void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, in
 
 int iupListGetPos(Ihandle* ih, int pos)
 {
-  int count = iupdrvListGetCount(ih);
+  int count;
 
   pos--; /* IUP items start at 1 */
 
-  if (pos < 0) return -1;
+  if (pos < 0) 
+    return -1;
+
+  count = iupdrvListGetCount(ih);
+
   if (pos == count) return -2;
   if (pos > count) return -1;
 

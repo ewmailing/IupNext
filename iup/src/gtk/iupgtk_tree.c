@@ -532,8 +532,8 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
   int kindPrev = -1;
 
   /* the previous node is not necessary only
-     if adding the root in an empty tree. */
-  if (!gtkTreeFindNode(ih, id, &iterPrev) && ih->data->node_count!=0)
+     if adding the root in an empty tree or before the root. */
+  if (!gtkTreeFindNode(ih, id, &iterPrev) && (ih->data->node_count!=0 || id!=-1))
       return;
 
   if (id >= 0)
@@ -550,7 +550,10 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
   }
   else
   {
-    gtk_tree_store_append(store, &iterNewItem, NULL);  /* root node */
+    if (id == -1)
+      gtk_tree_store_prepend(store, &iterNewItem, NULL);  /* before the root node */
+    else
+      gtk_tree_store_append(store, &iterNewItem, NULL);  /* root node in an empty tree */
     iupTreeAddToCache(ih, 0, 0, NULL, iterNewItem.user_data);
 
     /* store the stamp for the tree */
@@ -691,7 +694,7 @@ static void gtkTreeOpenCloseEvent(Ihandle* ih)
   GtkTreePath* path;
   int kind;
 
-  if (!gtkTreeFindNode(ih, -1, &iterItem))
+  if (!gtkTreeFindNode(ih, IUP_INVALID_ID, &iterItem))  /* focus node */
     return;
 
   path = gtk_tree_model_get_path(model, &iterItem);
