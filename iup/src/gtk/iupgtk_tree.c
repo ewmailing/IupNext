@@ -59,6 +59,7 @@ enum
   IUPGTK_TREE_COLOR, /* "foreground-gdk" */
   IUPGTK_TREE_FONT,  /* "font-desc" */
   IUPGTK_TREE_SELECT,
+  IUPGTK_TREE_CHECK,
   IUPGTK_TREE_LAST_DATA /* used as a count */
 };
 
@@ -106,6 +107,7 @@ static void gtkTreeCopyItem(Ihandle* ih, GtkTreeModel* model, GtkTreeIter* iterI
                                           IUPGTK_TREE_COLOR, color, 
                                           IUPGTK_TREE_FONT, font,
                                           IUPGTK_TREE_SELECT, 0,
+                                          IUPGTK_TREE_CHECK, 0,
                                           -1);
 }
 
@@ -572,6 +574,7 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
                                           IUPGTK_TREE_KIND, kind,
                                           IUPGTK_TREE_COLOR, &color, 
                                           IUPGTK_TREE_SELECT, 0,
+                                          IUPGTK_TREE_CHECK, 0,
                                           -1);
 
   if (kind == ITREE_LEAF)
@@ -853,8 +856,10 @@ static int gtkTreeSetSpacingAttrib(Ihandle* ih, const char* value)
 
   if (ih->handle)
   {
+    GtkCellRenderer *renderer_chk = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_CHECK");
     GtkCellRenderer *renderer_img = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_IMG");
     GtkCellRenderer *renderer_txt = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_TEXT");
+    g_object_set(G_OBJECT(renderer_chk), "ypad", ih->data->spacing, NULL);
     g_object_set(G_OBJECT(renderer_img), "ypad", ih->data->spacing, NULL);
     g_object_set(G_OBJECT(renderer_txt), "ypad", ih->data->spacing, NULL);
     return 0;
@@ -1406,6 +1411,39 @@ static int gtkTreeSetMarkedAttrib(Ihandle* ih, int id, const char* value)
   return 0;
 }
 
+static char* gtkTreeGetCheckedAttrib(Ihandle* ih, int id)
+{
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  GtkTreeIter iterItem;
+  int isChecked;
+
+  if (!gtkTreeFindNode(ih, id, &iterItem))
+    return NULL;
+
+  gtk_tree_model_get(model, &iterItem, IUPGTK_TREE_CHECK, &isChecked, -1);
+
+  if(isChecked)
+    return "ON";
+  else
+    return "OFF";
+}
+
+static int gtkTreeSetCheckedAttrib(Ihandle* ih, int id, const char* value)
+{
+  GtkTreeStore* store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
+  GtkTreeIter iterItem;
+
+  if (!gtkTreeFindNode(ih, id, &iterItem))
+    return 0;
+
+  if(iupStrEqualNoCase(value, "ON"))
+    gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_CHECK, TRUE, -1);
+  else
+    gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_CHECK, FALSE, -1);
+
+  return 0;
+}
+
 static int gtkTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
 {
   if (!ih->handle)  /* do not do the action before map */
@@ -1614,10 +1652,12 @@ static int gtkTreeSetBgColorAttrib(Ihandle* ih, const char* value)
     return 0;
 
   {
+    GtkCellRenderer *renderer_chk = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_CHECK");
     GtkCellRenderer* renderer_txt = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_TEXT");
     GtkCellRenderer* renderer_img = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_IMG");
     GdkColor color;
     iupgdkColorSet(&color, r, g, b);
+    g_object_set(G_OBJECT(renderer_chk), "cell-background-gdk", &color, NULL);
     g_object_set(G_OBJECT(renderer_txt), "cell-background-gdk", &color, NULL);
     g_object_set(G_OBJECT(renderer_img), "cell-background-gdk", &color, NULL);
   }
@@ -2273,6 +2313,20 @@ static void gtkTreeEnableDragDrop(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "drag-data-received", G_CALLBACK(gtkTreeDragDataReceived), ih);
 }
 
+static void gtkTreeToggled(GtkCellRendererToggle *cell_renderer, gchar *path, Ihandle *ih)
+{
+  GtkTreeStore* store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
+  GtkTreeIter iterItem;
+
+  if(!gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(store), &iterItem, path))
+    return;
+
+  if (!gtk_cell_renderer_toggle_get_active(cell_renderer))
+    gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_CHECK, TRUE, -1);
+  else
+    gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_CHECK, FALSE, -1);
+}
+
 /*****************************************************************************/
 
 static int gtkTreeMapMethod(Ihandle* ih)
@@ -2292,7 +2346,8 @@ static int gtkTreeMapMethod(Ihandle* ih)
     G_TYPE_INT,                      /* IUPGTK_TREE_KIND */
     GDK_TYPE_COLOR,                  /* IUPGTK_TREE_COLOR */
     PANGO_TYPE_FONT_DESCRIPTION,     /* IUPGTK_TREE_FONT */
-    G_TYPE_BOOLEAN);                 /* IUPGTK_TREE_SELECT */
+    G_TYPE_BOOLEAN,                  /* IUPGTK_TREE_SELECT */
+    G_TYPE_BOOLEAN);                 /* IUPGTK_TREE_CHECK */
 
   ih->handle = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 
@@ -2307,6 +2362,15 @@ static int gtkTreeMapMethod(Ihandle* ih)
   /* Column and renderers */
   column = gtk_tree_view_column_new();
   iupAttribSetStr(ih, "_IUPGTK_COLUMN",   (char*)column);
+
+  if(ih->data->show_checkboxes)
+  {
+    GtkCellRenderer *renderer_chk = gtk_cell_renderer_toggle_new();
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(column), renderer_chk, FALSE);
+    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(column), renderer_chk, "active", IUPGTK_TREE_CHECK, NULL);
+    g_signal_connect(G_OBJECT(renderer_chk), "toggled", G_CALLBACK(gtkTreeToggled), ih);
+    iupAttribSetStr(ih, "_IUPGTK_RENDERER_CHECK", (char*)renderer_chk);
+  }
 
   renderer_img = gtk_cell_renderer_pixbuf_new();
   gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(column), renderer_img, FALSE);
@@ -2462,6 +2526,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "TITLEFONT", gtkTreeGetTitleFontAttrib, gtkTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
+  iupClassRegisterAttributeId(ic, "CHECKED",  gtkTreeGetCheckedAttrib,  gtkTreeSetCheckedAttrib,   IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARKED",   gtkTreeGetMarkedAttrib,   gtkTreeSetMarkedAttrib,   IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARK",    NULL,    gtkTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "STARTING", NULL, gtkTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

@@ -1601,6 +1601,42 @@ static int winTreeSetMarkedAttrib(Ihandle* ih, int id, const char* value)
   return 0;
 }
 
+static char* winTreeGetCheckedAttrib(Ihandle* ih, int id)
+{
+  int isChecked;
+  HTREEITEM hItem = iupTreeGetNode(ih, id);
+  if (!hItem)
+    return NULL;
+
+  isChecked = ((SendMessage(ih->handle, TVM_GETITEMSTATE, (WPARAM)hItem, TVIS_STATEIMAGEMASK)) >> 12);
+
+  if(isChecked > 1)
+    return "ON";
+  else
+    return "OFF";
+}
+
+static int winTreeSetCheckedAttrib(Ihandle* ih, int id, const char* value)
+{
+  TVITEM item;
+  HTREEITEM hItem = iupTreeGetNode(ih, id);
+  if (!hItem)
+    return 0;
+
+  item.mask = TVIF_STATE;
+  item.hItem = hItem;
+  item.stateMask = TVIS_STATEIMAGEMASK;
+
+  if(iupStrEqualNoCase(value, "ON"))
+    item.state = INDEXTOSTATEIMAGEMASK(2);  // checked
+  else
+    item.state = INDEXTOSTATEIMAGEMASK(1);  // unchecked
+
+  SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(TV_ITEM *)&item);
+
+  return 0;
+}
+
 static int winTreeSetMarkStartAttrib(Ihandle* ih, const char* value)
 {
   HTREEITEM hItem = iupTreeGetNodeFromString(ih, value);
@@ -2523,6 +2559,9 @@ static int winTreeMapMethod(Ihandle* ih)
   if (ih->data->show_rename)
     dwStyle |= TVS_EDITLABELS;
 
+  if (ih->data->show_checkboxes)
+    dwStyle |= TVS_CHECKBOXES;
+
   if (!iupAttribGetBoolean(ih, "HIDELINES"))
   {
     dwStyle |= TVS_HASLINES;
@@ -2644,6 +2683,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "TITLEFONT", winTreeGetTitleFontAttrib, winTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
+  iupClassRegisterAttributeId(ic, "CHECKED",  winTreeGetCheckedAttrib,  winTreeSetCheckedAttrib,   IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARKED",   winTreeGetMarkedAttrib,   winTreeSetMarkedAttrib,   IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARK",    NULL,    winTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "STARTING", NULL, winTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

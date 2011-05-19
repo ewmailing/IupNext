@@ -66,6 +66,7 @@ struct _IcontrolData
       add_expanded,
       show_dragdrop,
       show_rename,
+      show_checkboxes,
       stamp,    /* GTK only */
       spacing;
 

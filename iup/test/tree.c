@@ -470,6 +470,9 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "ADDLEAF7",     "diamond");
   IupSetAttribute(tree, "INSERTLEAF6","2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
+  IupSetAttribute(tree, "CHECKED2", "ON");
+  IupSetAttribute(tree, "CHECKED6", "ON");
+  IupSetAttribute(tree, "CHECKED2", "OFF");
 #endif
 //  IupSetAttribute(tree, "AUTOREDRAW", "Yes");
 
@@ -516,6 +519,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
+  IupSetAttribute(tree, "SHOWCHECKBOXES", "YES");
 //  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
 
   IupSetAttribute(tree, "ADDEXPANDED",  "YES");
