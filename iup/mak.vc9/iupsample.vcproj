@@ -1183,10 +1183,6 @@
 			</Filter>
 		</Filter>
 		<File
-			RelativePath="..\..\..\Downloads\dialog_size.c"
-			>
-		</File>
-		<File
 			RelativePath="..\test\iuptest.rc"
 			>
 		</File>
