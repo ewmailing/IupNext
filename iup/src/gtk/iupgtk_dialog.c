@@ -498,13 +498,6 @@ static int gtkDialogMapMethod(Ihandle* ih)
   /* initialize the widget */
   gtk_widget_realize(ih->handle);
 
-  if (iupAttribGetBoolean(ih, "DIALOGFRAME"))
-  {
-    iupAttribSetStr(ih, "RESIZE", "NO");
-    iupAttribSetStr(ih, "MAXBOX", "NO");
-    iupAttribSetStr(ih, "MINBOX", "NO");
-  }
-
   if (iupAttribGet(ih, "TITLE"))
     has_titlebar = 1;
   if (iupAttribGetBoolean(ih, "RESIZE")) 

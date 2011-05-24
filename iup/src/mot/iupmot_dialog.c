@@ -876,13 +876,6 @@ static int motDialogMapMethod(Ihandle* ih)
   int has_titlebar = 0;
   Arg args[20];
 
-  if (iupAttribGetBoolean(ih, "DIALOGFRAME")) 
-  {
-    iupAttribSetStr(ih, "RESIZE", "NO");
-    iupAttribSetStr(ih, "MAXBOX", "NO");
-    iupAttribSetStr(ih, "MINBOX", "NO");
-  }
-
   /****************************/
   /* Create the dialog shell  */
   /****************************/

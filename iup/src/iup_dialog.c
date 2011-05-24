@@ -692,6 +692,23 @@ static int iDialogSetHideTaskbarAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
+static int iDialogSetDialogFrameAttrib(Ihandle *ih, const char *value)
+{
+  if (iupStrBoolean(value))
+  {
+    iupAttribSetStr(ih, "RESIZE", "NO");
+    iupAttribSetStr(ih, "MAXBOX", "NO");
+    iupAttribSetStr(ih, "MINBOX", "NO");
+  }
+  else
+  {
+    iupAttribSetStr(ih, "RESIZE", NULL);
+    iupAttribSetStr(ih, "MAXBOX", NULL);
+    iupAttribSetStr(ih, "MINBOX", NULL);
+  }
+  return 1;
+}
+
 static char* iDialogGetXAttrib(Ihandle *ih)
 {
   char* str = iupStrGetMemory(20);
@@ -844,7 +861,7 @@ Iclass* iupDialogNewClass(void)
   
   iupClassRegisterAttribute(ic, "DEFAULTENTER", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DEFAULTESC",   NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DIALOGFRAME",  NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DIALOGFRAME",  NULL, iDialogSetDialogFrameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PARENTDIALOG", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHRINK",       NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STARTFOCUS",   NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

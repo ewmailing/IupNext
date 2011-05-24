@@ -729,13 +729,6 @@ static int winDialogMapMethod(Ihandle* ih)
   if (title)
     has_titlebar = 1;
 
-  if (iupAttribGetBoolean(ih, "DIALOGFRAME")) 
-  {
-    iupAttribSetStr(ih, "RESIZE", "NO");
-    iupAttribSetStr(ih, "MAXBOX", "NO");
-    iupAttribSetStr(ih, "MINBOX", "NO");
-  }
-
   if (iupAttribGetBoolean(ih, "RESIZE"))
   {
     dwStyle |= WS_THICKFRAME;
