@@ -29,7 +29,27 @@
 static void iTreeInitializeImages(void)
 {
   Ihandle *image_leaf, *image_blank, *image_paper;  
-  Ihandle *image_collapsed, *image_expanded;  
+  Ihandle *image_collapsed, *image_expanded, *image_3state;  
+
+  unsigned char img_3state[ITREE_IMG_WIDTH*ITREE_IMG_HEIGHT] = 
+  {
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0,
+    2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0,
+    2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 0, 0,
+    2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 0, 0,
+    2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 0, 0,
+    2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 0, 0,
+    2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 0, 0,
+    2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 0, 0,
+    2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 0, 0,
+    2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 0, 0,
+    2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 0, 0,
+    2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0,
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  };
 
   unsigned char img_leaf[ITREE_IMG_WIDTH*ITREE_IMG_HEIGHT] = 
   {
@@ -131,11 +151,16 @@ static void iTreeInitializeImages(void)
     0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0
   };
 
+  image_3state    = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_3state);
   image_leaf      = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_leaf);
   image_collapsed = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_collapsed);
   image_expanded  = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_expanded);
   image_blank     = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_blank);
   image_paper     = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_paper);
+
+  IupSetAttribute(image_3state, "0", "BGCOLOR");
+  IupSetAttribute(image_3state, "1", "FGCOLOR");
+  IupSetAttribute(image_3state, "2", "DLGBGCOLOR");
 
   IupSetAttribute(image_leaf, "0", "BGCOLOR");
   IupSetAttribute(image_leaf, "1", "192 192 192");
@@ -176,6 +201,7 @@ static void iTreeInitializeImages(void)
   IupSetAttribute(image_paper, "4", "136 136 136");
   IupSetAttribute(image_paper, "5", "187 187 187");
 
+  IupSetHandle("IMG3STATE",    image_3state);
   IupSetHandle("IMGLEAF",      image_leaf);
   IupSetHandle("IMGCOLLAPSED", image_collapsed);
   IupSetHandle("IMGEXPANDED",  image_expanded);
@@ -488,20 +514,20 @@ static int iTreeSetShowRenameAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static char* iTreeGetShowCheckBoxesAttrib(Ihandle* ih)
+static char* iTreeGetShowToggleAttrib(Ihandle* ih)
 {
-  if (ih->data->show_checkboxes)
+  if (ih->data->show_toggle)
     return "YES";
   else
     return "NO";
 }
 
-static int iTreeSetShowCheckBoxesAttrib(Ihandle* ih, const char* value)
+static int iTreeSetShowToggleAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
-    ih->data->show_checkboxes = 1;
+    ih->data->show_toggle = 1;
   else
-    ih->data->show_checkboxes = 0;
+    ih->data->show_toggle = 0;
 
   return 0;
 }
@@ -675,6 +701,7 @@ Iclass* iupTreeNewClass(void)
   ic->Destroy = iTreeDestroyMethod;
 
   /* Callbacks */
+  iupClassRegisterCallback(ic, "TOGGLEVALUE_CB",    "ii");
   iupClassRegisterCallback(ic, "SELECTION_CB",      "ii");
   iupClassRegisterCallback(ic, "MULTISELECTION_CB", "Ii");
   iupClassRegisterCallback(ic, "MULTIUNSELECTION_CB", "Ii");
@@ -698,14 +725,15 @@ Iclass* iupTreeNewClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* IupTree Attributes - GENERAL */
-  iupClassRegisterAttribute(ic, "SHOWDRAGDROP",   iTreeGetShowDragDropAttrib,   iTreeSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWRENAME",     iTreeGetShowRenameAttrib,     iTreeSetShowRenameAttrib,   NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWCHECKBOXES", iTreeGetShowCheckBoxesAttrib, iTreeSetShowCheckBoxesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ADDEXPANDED",    iTreeGetAddExpandedAttrib,    iTreeSetAddExpandedAttrib,  IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "COUNT",          iTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDRAGDROP", iTreeGetShowDragDropAttrib, iTreeSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWRENAME",   iTreeGetShowRenameAttrib,   iTreeSetShowRenameAttrib,   NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWTOGGLE",   iTreeGetShowToggleAttrib,   iTreeSetShowToggleAttrib,   NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ADDEXPANDED",  iTreeGetAddExpandedAttrib,  iTreeSetAddExpandedAttrib,  IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COUNT",        iTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LASTADDNODE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ADDROOT", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPEQUALDRAG", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOW3STATE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
                                                
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttribute(ic, "CTRL",  NULL, iTreeSetCtrlAttrib,  NULL, NULL, IUPAF_NOT_MAPPED);

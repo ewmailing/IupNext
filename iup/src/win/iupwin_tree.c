@@ -47,6 +47,11 @@ typedef struct tagNMTVITEMCHANGE {
 #define TVN_ITEMCHANGINGW        (TVN_FIRST-17)    
 #endif
 
+#ifndef TVN_ITEMCHANGED                         
+#define TVN_ITEMCHANGEDA        (TVN_FIRST-18)    
+#define TVN_ITEMCHANGEDW        (TVN_FIRST-19)    
+#endif
+
 #ifndef TVS_EX_DOUBLEBUFFER
 #define TVS_EX_DOUBLEBUFFER         0x0004
 #endif
@@ -643,7 +648,7 @@ static int winTreeGetImageIndex(Ihandle* ih, const char* name)
   if (!bmp)
     return -1;
 
-  /* the array is used to avoi adding the same bitmap twice */
+  /* the array is used to avoid adding the same bitmap twice */
   bmpArray = (Iarray*)iupAttribGet(ih, "_IUPWIN_BMPARRAY");
   if (!bmpArray)
   {
@@ -685,6 +690,22 @@ static int winTreeGetImageIndex(Ihandle* ih, const char* name)
 /*****************************************************************************/
 /* CALLBACKS                                                                 */
 /*****************************************************************************/
+static void winTreeCallToggleValueCb(Ihandle* ih, HTREEITEM hItem)
+{
+  IFnii cbToggle = (IFnii)IupGetCallback(ih, "TOGGLEVALUE_CB");
+
+  if (cbToggle)
+  {
+    int isChecked = ((SendMessage(ih->handle, TVM_GETITEMSTATE, (WPARAM)hItem, TVIS_STATEIMAGEMASK)) >> 12);
+
+    if(isChecked == 3)
+      cbToggle(ih, iupTreeFindNodeId(ih, hItem), -1);
+    else if(isChecked == 2)
+      cbToggle(ih, iupTreeFindNodeId(ih, hItem), 1);
+    else
+      cbToggle(ih, iupTreeFindNodeId(ih, hItem), 0);
+  }
+}
 
 static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem)
 {
@@ -1601,7 +1622,7 @@ static int winTreeSetMarkedAttrib(Ihandle* ih, int id, const char* value)
   return 0;
 }
 
-static char* winTreeGetCheckedAttrib(Ihandle* ih, int id)
+static char* winTreeGetToggleValueAttrib(Ihandle* ih, int id)
 {
   int isChecked;
   HTREEITEM hItem = iupTreeGetNode(ih, id);
@@ -1610,13 +1631,15 @@ static char* winTreeGetCheckedAttrib(Ihandle* ih, int id)
 
   isChecked = ((SendMessage(ih->handle, TVM_GETITEMSTATE, (WPARAM)hItem, TVIS_STATEIMAGEMASK)) >> 12);
 
-  if(isChecked > 1)
-    return "ON";
+  if(isChecked == 3)
+    return "NOTDEF";  // indeterminate, inconsistent
+  else if(isChecked == 2)
+    return "ON";  // checked
   else
-    return "OFF";
+    return "OFF";  // unchecked
 }
 
-static int winTreeSetCheckedAttrib(Ihandle* ih, int id, const char* value)
+static int winTreeSetToggleValueAttrib(Ihandle* ih, int id, const char* value)
 {
   TVITEM item;
   HTREEITEM hItem = iupTreeGetNode(ih, id);
@@ -1627,7 +1650,9 @@ static int winTreeSetCheckedAttrib(Ihandle* ih, int id, const char* value)
   item.hItem = hItem;
   item.stateMask = TVIS_STATEIMAGEMASK;
 
-  if(iupStrEqualNoCase(value, "ON"))
+  if(iupStrEqualNoCase(value, "NOTDEF") && iupAttribGetBoolean(ih, "SHOW3STATE"))
+    item.state = INDEXTOSTATEIMAGEMASK(3);  // indeterminate, inconsistent
+  else if(iupStrEqualNoCase(value, "ON"))
     item.state = INDEXTOSTATEIMAGEMASK(2);  // checked
   else
     item.state = INDEXTOSTATEIMAGEMASK(1);  // unchecked
@@ -2139,6 +2164,18 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       }
       break;
     }
+  case WM_KEYUP:
+  case WM_SYSKEYUP:
+    {
+      if (wp == VK_SPACE)
+      {
+        if(ih->data->show_toggle)
+        {
+          /* call togglevaluecb, independently of the current focus ... */
+          winTreeCallToggleValueCb(ih, iupdrvTreeGetFocusNode(ih));
+        }
+      }
+    }
   case WM_KEYDOWN:
   case WM_SYSKEYDOWN:
     {
@@ -2272,6 +2309,10 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       *result = 0;
       return 1;
     }
+    
+    /* call togglevaluecb, independently of the current focus ... */
+    if(ih->data->show_toggle)
+      winTreeCallToggleValueCb(ih, winTreeFindNodeXY(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp)));
 
     if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
     {
@@ -2315,6 +2356,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     {
       NMTVITEMCHANGE* info = (NMTVITEMCHANGE*)msg_info;
       HTREEITEM hItem = (HTREEITEM)iupAttribGet(ih, "_IUPTREE_ALLOW_CHANGE");
+
       if (hItem && hItem != info->hItem)  /* Workaround for Vista SetFocus */
       {
         *result = TRUE;  /* prevent the change */
@@ -2528,7 +2570,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     iupwinTipsUpdateInfo(ih, tips_hwnd);
   }
 
-  return 0;  /* allow the default processsing */
+  return 0;  /* allow the default processing */
 }
 
 static int winTreeConvertXYToPos(Ihandle* ih, int x, int y)
@@ -2559,7 +2601,7 @@ static int winTreeMapMethod(Ihandle* ih)
   if (ih->data->show_rename)
     dwStyle |= TVS_EDITLABELS;
 
-  if (ih->data->show_checkboxes)
+  if (ih->data->show_toggle)
     dwStyle |= TVS_CHECKBOXES;
 
   if (!iupAttribGetBoolean(ih, "HIDELINES"))
@@ -2607,6 +2649,13 @@ static int winTreeMapMethod(Ihandle* ih)
   ih->data->def_image_collapsed = (void*)winTreeGetImageIndex(ih, "IMGCOLLAPSED");
   ih->data->def_image_expanded = (void*)winTreeGetImageIndex(ih, "IMGEXPANDED");
 
+  if(ih->data->show_toggle && iupAttribGetBoolean(ih, "SHOW3STATE"))
+  {
+    HIMAGELIST image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_STATE, 0);
+    HBITMAP bmp = iupImageGetImage("IMG3STATE", ih, 0);
+    ImageList_Add(image_list, bmp, NULL);
+  }
+
   if (iupAttribGetInt(ih, "ADDROOT"))
     iupdrvTreeAddNode(ih, -1, ITREE_BRANCH, "", 0);
 
@@ -2631,6 +2680,10 @@ static void winTreeUnMapMethod(Ihandle* ih)
   ih->data->node_count = 0;
 
   image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_NORMAL, 0);
+  if (image_list)
+    ImageList_Destroy(image_list);
+
+  image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_STATE, 0);
   if (image_list)
     ImageList_Destroy(image_list);
 
@@ -2676,27 +2729,27 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "DEPTH",  winTreeGetDepthAttrib,  NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "KIND",   winTreeGetKindAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "PARENT", winTreeGetParentAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "NAME",   winTreeGetTitleAttrib,   winTreeSetTitleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TITLE",   winTreeGetTitleAttrib,   winTreeSetTitleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "CHILDCOUNT",   winTreeGetChildCountAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "COLOR",  winTreeGetColorAttrib,  winTreeSetColorAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NAME",   winTreeGetTitleAttrib,  winTreeSetTitleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TITLE",  winTreeGetTitleAttrib,  winTreeSetTitleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "CHILDCOUNT", winTreeGetChildCountAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "COLOR", winTreeGetColorAttrib, winTreeSetColorAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLEFONT", winTreeGetTitleFontAttrib, winTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
-  iupClassRegisterAttributeId(ic, "CHECKED",  winTreeGetCheckedAttrib,  winTreeSetCheckedAttrib,   IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKED",   winTreeGetMarkedAttrib,   winTreeSetMarkedAttrib,   IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute  (ic, "MARK",    NULL,    winTreeSetMarkAttrib,    NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute  (ic, "STARTING", NULL, winTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TOGGLEVALUE", winTreeGetToggleValueAttrib, winTreeSetToggleValueAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKED", winTreeGetMarkedAttrib, winTreeSetMarkedAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "MARK",      NULL, winTreeSetMarkAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "STARTING",  NULL, winTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARKSTART", NULL, winTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute  (ic, "MARKEDNODES",    winTreeGetMarkedNodesAttrib,    winTreeSetMarkedNodesAttrib,    NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "MARKEDNODES", winTreeGetMarkedNodesAttrib, winTreeSetMarkedNodesAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute  (ic, "VALUE",    winTreeGetValueAttrib,    winTreeSetValueAttrib,    NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute  (ic, "VALUE", winTreeGetValueAttrib, winTreeSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttributeId(ic, "DELNODE", NULL, winTreeSetDelNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RENAME",  NULL, winTreeSetRenameAttrib,  NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MOVENODE",  NULL, winTreeSetMoveNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "COPYNODE",  NULL, winTreeSetCopyNodeAttrib,  IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RENAME", NULL, winTreeSetRenameAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MOVENODE", NULL, winTreeSetMoveNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "COPYNODE", NULL, winTreeSetCopyNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* necessary because transparent background does not work when not using visual styles */
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */

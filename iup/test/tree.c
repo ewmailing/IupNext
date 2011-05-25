@@ -203,6 +203,13 @@ static int showrename_cb(Ihandle* ih, int id)
   return IUP_DEFAULT;
 }
 
+static int togglevalue_cb(Ihandle* ih, int id, int status)
+{
+  (void)ih;
+  printf("TOGGLEVALUE_CB(%d, %d)\n", id, status);
+  return IUP_DEFAULT;
+}
+
 static int selection_cb(Ihandle *ih, int id, int status)
 {
   (void)ih;
@@ -470,9 +477,10 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "ADDLEAF7",     "diamond");
   IupSetAttribute(tree, "INSERTLEAF6","2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
-  IupSetAttribute(tree, "CHECKED2", "ON");
-  IupSetAttribute(tree, "CHECKED6", "ON");
-  IupSetAttribute(tree, "CHECKED2", "OFF");
+  IupSetAttribute(tree, "TOGGLEVALUE2", "ON");
+  IupSetAttribute(tree, "TOGGLEVALUE6", "ON");
+  IupSetAttribute(tree, "TOGGLEVALUE9", "NOTDEF");
+  IupSetAttribute(tree, "TOGGLEVALUE2", "OFF");
 #endif
 //  IupSetAttribute(tree, "AUTOREDRAW", "Yes");
 
@@ -508,6 +516,7 @@ static void init_tree(void)
   IupSetCallback(tree, "BUTTON_CB",    (Icallback)button_cb);
   //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
+  IupSetCallback(tree, "TOGGLEVALUE_CB", (Icallback)togglevalue_cb);
 
   IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
 
@@ -519,7 +528,8 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-  IupSetAttribute(tree, "SHOWCHECKBOXES", "YES");
+  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
+  IupSetAttribute(tree, "SHOW3STATE",   "YES");
 //  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
 
   IupSetAttribute(tree, "ADDEXPANDED",  "YES");
