@@ -829,6 +829,9 @@ ifdef USE_LUA52
   NO_LUALIB := Yes
 endif
 
+ifdef USE_IUP
+  override USE_IUP3 = Yes
+endif
 ifdef USE_IUP3
   override USE_IUP = Yes
 endif
