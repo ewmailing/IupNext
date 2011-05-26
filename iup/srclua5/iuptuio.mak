@@ -37,6 +37,4 @@ endif
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   USE_IUPLUA:=
-  INCLUDES += ../include
-  LDIR = ../lib/$(TEC_UNAME)
 endif

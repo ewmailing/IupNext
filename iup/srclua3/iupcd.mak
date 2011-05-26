@@ -17,3 +17,9 @@ USE_CD = YES
 USE_IUP3 = YES
 USE_LUA = YES
 USE_CDLUA = YES
+
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  ifneq ($(TEC_SYSMINOR), 4)
+    BUILD_DYLIB=Yes
+  endif
+endif

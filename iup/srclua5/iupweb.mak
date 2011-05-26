@@ -7,6 +7,7 @@ IUP := ..
 
 DEFINES = IUPLUA_USELOH
 
+USE_IUP3 = Yes
 USE_IUPLUA = Yes
 LIBS = iupweb
 
@@ -31,3 +32,7 @@ $(GC) : il_%.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<
 
 SRC	= $(GC)
+
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  USE_IUPLUA:=
+endif

@@ -36,4 +36,8 @@ SRC	= iuplua_glcanvas.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   LIBS:=
+  ifdef USE_MACOS_OPENGL
+    LFLAGS = -framework OpenGL
+    USE_OPENGL :=
+  endif
 endif

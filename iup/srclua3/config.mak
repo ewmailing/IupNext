@@ -17,3 +17,8 @@ INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  
 LIBS = iup
 
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  ifneq ($(TEC_SYSMINOR), 4)
+    BUILD_DYLIB=Yes
+  endif
+endif
