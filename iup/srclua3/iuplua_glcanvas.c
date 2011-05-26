@@ -19,7 +19,11 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
+#if defined (__APPLE__) || defined (OSX)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 
 
 static void createglcanvas(void)
