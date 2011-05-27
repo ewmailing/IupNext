@@ -18,6 +18,7 @@
 #include <limits.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <langinfo.h>
 
 #include <gtk/gtk.h>
 
@@ -192,10 +193,13 @@ int iupdrvGetWindowDecor(void* wnd, int *border, int *caption)
   int minX, minY;
 
   CGDirectDisplayID mainDisplayID = CGMainDisplayID();
+#ifdef OLD_MAC_INFO
   GDHandle hGDev;
   DMGetGDeviceByDisplayID((DisplayIDType)mainDisplayID, &hGDev, false);
-
   GetAvailableWindowPositioningBounds(hGDev, &rect);
+#else
+  HIWindowGetAvailablePositioningBounds(mainDisplayID, kHICoordSpaceScreenPixel, &rect);
+#endif
 
   cg = CGRectMake(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
   
@@ -242,12 +246,15 @@ int iupdrvGetScreenDepth(void)
 
 void iupdrvGetCursorPos(int *x, int *y)
 {
-  Point pnt;
   CGPoint point;
-  
+#ifdef OLD_MAC_INFO
+  Point pnt;
   GetMouse(&pnt);
   point = CGPointMake(pnt.h, pnt.v);
-
+#else
+  HIGetMousePosition(kHICoordSpaceScreenPixel, NULL, &point);
+#endif
+  
   *x = (int)point.x;
   *y = (int)point.y;
 }
@@ -279,7 +286,7 @@ void iupdrvGetKeyState(char* key)
 
 char *iupdrvGetSystemName(void)
 {
-  long systemVersion;
+  SInt32 systemVersion;
 
   if (Gestalt(gestaltSystemVersion, &systemVersion) == noErr)
   {
@@ -305,7 +312,7 @@ char *iupdrvGetSystemName(void)
 char *iupdrvGetSystemVersion(void)
 {
   char* str = iupStrGetMemory(70);
-  long systemVersion, versionMajor, versionMinor, versionBugFix, systemArchitecture;
+  SInt32 systemVersion, versionMajor, versionMinor, versionBugFix, systemArchitecture;
 
   if (Gestalt(gestaltSystemVersion, &systemVersion) != noErr)
   {
@@ -316,8 +323,8 @@ char *iupdrvGetSystemVersion(void)
   if (systemVersion < 0x1040)
   {
     /* Major, Minor, Bug fix */
-    sprintf(str, "%ld.%ld.%ld", ((systemVersion & 0xF000) >> 12) * 10 + ((systemVersion & 0x0F00) >> 8),
-                                ((systemVersion & 0x00F0) >> 4), (systemVersion & 0x000F));
+    sprintf(str, "%ld.%ld.%ld", (((long)systemVersion & 0xF000) >> 12) * 10 + (((long)systemVersion & 0x0F00) >> 8),
+                                (((long)systemVersion & 0x00F0) >> 4), ((long)systemVersion & 0x000F));
   }
   else  /* MAC_OS_X_VERSION_10_4 or later */
   {
@@ -325,7 +332,7 @@ char *iupdrvGetSystemVersion(void)
     Gestalt(gestaltSystemVersionMinor,  &versionMinor);
     Gestalt(gestaltSystemVersionBugFix, &versionBugFix);
     
-    sprintf(str, "%ld.%ld.%ld", versionMajor, versionMinor, versionBugFix);
+    sprintf(str, "%ld.%ld.%ld", (long)versionMajor, (long)versionMinor, (long)versionBugFix);
   }
 
   if(Gestalt(gestaltSysArchitecture, &systemArchitecture) == noErr)
@@ -355,4 +362,9 @@ char *iupdrvGetUserName(void)
   CFStringRef userName = CSCopyUserName(TRUE);  /* TRUE = login name   FALSE = user name */
   CFStringGetCString(userName, str, 50, kCFStringEncodingUTF8);
   return str;
+}
+
+char* iupdrvLocaleInfo(void)
+{
+  return iupStrGetMemoryCopy(nl_langinfo(CODESET));
 }

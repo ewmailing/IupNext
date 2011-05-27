@@ -63,6 +63,7 @@ ifdef USE_GTK
   else
     ifdef GTK_MAC
       SRC += gtk/iupmac_help.c gtk/iupmac_info.c
+      DEFINES += GTK_MAC
     else
       USE_X11 = Yes
       SRC += gtk/iupgtk_help.c mot/iupunix_info.c

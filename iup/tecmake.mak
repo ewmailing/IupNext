@@ -458,10 +458,13 @@ ifdef GTK_BASE
   GTK := $(GTK_BASE)
 else
   ifneq ($(findstring MacOS, $(TEC_UNAME)), )
-  # Option 1 - Fink GTK port
+  # Prefer using GTK_BASE then changing this
+  # Fink GTK port
     GTK = /sw
-  # Option 3 - GTK-OSX Framework
-  #   GTK := /Users/cpts/gtk/inst
+  # Macport GTK port
+  #  GTK = /opt/local
+  # GTK-OSX Framework
+  #   GTK := /gtk/inst
   else
     GTK = /usr
   endif
@@ -981,7 +984,11 @@ ifdef USE_GTK
       ifndef NO_OVERRIDE
         override USE_X11 = Yes
       endif
-      LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
+      ifdef GTK_MAC
+        LIBS += gtk-quartz-2.0 gdk-quartz-2.0 pango-1.0
+      else
+        LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
+      endif
   # Option 2 - Imendio Framework
   #   STDINCS += /Library/Frameworks/Gtk.framework/Headers
   #   STDINCS += /Library/Frameworks/GLib.framework/Headers
