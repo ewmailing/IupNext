@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -65,7 +65,9 @@ HIDELINES</strong> <strong><br>
 HIDEBUTTONS</strong> <strong><br>
 INDENTATION</strong> <strong><br>
 RASTERSIZE<br>
-    SHOWDRAGDROP<br>
+SHOWDRAGDROP<br>
+SHOWTOGGLE<br>
+SHOW3STATE<br>
 SPACING<br>
 TOPITEM</strong></p>
 <h4><a href="iuptree_attrib.html#nodes">Nodes</a></h4>
@@ -90,7 +92,8 @@ USERDATA</strong></p>
 <p class="info"><strong>MARK<br>
 MARKED<br>
     MARKEDMODE<br>
-MARKSTART</strong></p>
+MARKSTART<br>
+TOGGLEVALUE</strong></p>
 <h4><a href="iuptree_attrib.html#tree">Hierarchy</a></h4>
 <p class="info"><strong>ADDLEAF<br>
     ADDBRANCH<br>
@@ -132,7 +135,11 @@ MOVENODE</strong></p>
   Action generated when a node is about to be removed.<br>
 <strong>RIGHTCLICK_CB</strong>:
   Action generated when the right mouse button 
-  is pressed over a node.</p>
+  is pressed over a node.<br>
+<strong>TOGGLEVALUE_CB</strong>:
+  Action generated when the toggle&#39;s state was changed. The callback also 
+receives the new toggle&#39;s state.<br>
+  </p>
 <h3><a name="Notes">Notes</a></h3>
 <h4>Hierarchy</h4>
 <p>Branches can contain other branches or leaves. When ADDROOT=Yes the tree has 

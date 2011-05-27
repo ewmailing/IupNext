@@ -176,6 +176,21 @@ the event. <br>
 
 
   
+<p><strong>TOGGLEVALUE_CB</strong>: Action generated when the toggle&#39;s state was 
+changed. The callback also receives the new toggle&#39;s state.</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>state</strong>); [in C]<strong>
+elem</strong>:togglevalue_cb(<strong>id:</strong> number:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+    <strong>state</strong>:
+    1 if the toggle's state was shifted to ON; 0 if it was shifted to OFF. If 
+SHOW3STATE=YES, &minus;1 if it was shifted to NOTDEF.</p>
+<hr>
+
+
+  
 <p><a href="../call/iup_button_cb.html">BUTTON_CB</a>:
   Action generated when any mouse button is 
   pressed or released inside the element. Use 
