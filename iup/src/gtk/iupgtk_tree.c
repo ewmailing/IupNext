@@ -2387,7 +2387,7 @@ static int gtkTreeToggleUpdate3StateCheck(Ihandle *ih, int x, int y, int keyb)
   else
     gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, NULL, NULL, NULL);
 
-  if(!gtk_tree_model_get_iter(GTK_TREE_MODEL(store), &iterItem, path))
+  if(!gtk_tree_model_get_iter(GTK_TREE_MODEL(store), &iterItem, path) || ((x == 0) && (y == 0)))
   {
     gtk_tree_path_free(path);
     return FALSE;
@@ -2419,11 +2419,16 @@ static int gtkTreeToggleUpdate3StateCheck(Ihandle *ih, int x, int y, int keyb)
 
 static gboolean gtkTreeToggleButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 {
+  gtk_tree_view_unset_rows_drag_source ((GtkTreeView*)ih->handle);
+  gtk_tree_view_unset_rows_drag_dest ((GtkTreeView*)ih->handle);
+
   if (evt->type == GDK_BUTTON_RELEASE)
   {
     if (gtkTreeToggleUpdate3StateCheck(ih, (gint)evt->x, (gint)evt->y, 0))
       return TRUE; /* ignore message to avoid change toggle state */
   }
+
+  gtkTreeEnableDragDrop(ih);
 
   (void)widget;
   return FALSE;
