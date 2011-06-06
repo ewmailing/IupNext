@@ -2925,11 +2925,6 @@ void PPainterIup::SetStyle(const PStyle &inStyle)
 
 static int iPPlotMapMethod(Ihandle* ih)
 {
-  int old_gdi = 0;
-
-  if (IupGetInt(ih, "USE_GDI+"))
-    old_gdi = cdUseContextPlus(1);
-
 #ifdef USE_OPENGL
   char StrData[100];
   int w, h;
@@ -2940,18 +2935,26 @@ static int iPPlotMapMethod(Ihandle* ih)
   if (!ih->data->plt->_cddbuffer)
     return IUP_ERROR;
 #else
-  ih->data->plt->_cdcanvas = cdCreateCanvas(CD_IUP, ih);
-  if (!ih->data->plt->_cdcanvas)
-    return IUP_ERROR;
-
-  /* this can fail if canvas size is zero */
-  if (IupGetInt(ih, "USE_IMAGERGB"))
-    ih->data->plt->_cddbuffer = cdCreateCanvas(CD_DBUFFERRGB, ih->data->plt->_cdcanvas);
-  else
-    ih->data->plt->_cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->plt->_cdcanvas);
+  int old_gdi = 0;
 
   if (IupGetInt(ih, "USE_GDI+"))
-    cdUseContextPlus(old_gdi);
+    old_gdi = cdUseContextPlus(1);
+
+  ih->data->plt->_cdcanvas = cdCreateCanvas(CD_IUP, ih);
+  if (ih->data->plt->_cdcanvas)
+  {
+    /* this can fail if canvas size is zero */
+    if (IupGetInt(ih, "USE_IMAGERGB"))
+      ih->data->plt->_cddbuffer = cdCreateCanvas(CD_DBUFFERRGB, ih->data->plt->_cdcanvas);
+    else
+      ih->data->plt->_cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->plt->_cdcanvas);
+
+    if (IupGetInt(ih, "USE_GDI+"))
+      cdUseContextPlus(old_gdi);
+  }
+
+  if (!ih->data->plt->_cdcanvas)
+    return IUP_ERROR;
 #endif
 
   ih->data->plt->_redraw = 1;
