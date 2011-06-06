@@ -1100,6 +1100,15 @@ static char* winTextGetCaretPosAttrib(Ihandle* ih)
   return str;
 }
 
+static void winTextScrollTo(Ihandle* ih, int lin, int col)
+{
+  DWORD old_lin = SendMessage(ih->handle, EM_GETFIRSTVISIBLELINE, 0, 0);
+  if (ih->data->has_formatting)
+    SendMessage(ih->handle, EM_LINESCROLL, (WPARAM)0, (LPARAM)(lin-old_lin));
+  else  /* How to get the current horizontal position?????  */
+    SendMessage(ih->handle, EM_LINESCROLL, (WPARAM)col, (LPARAM)(lin-old_lin));
+}
+
 static int winTextSetScrollToAttrib(Ihandle* ih, const char* value)
 {
   int lin = 1, col = 1;
@@ -1122,10 +1131,7 @@ static int winTextSetScrollToAttrib(Ihandle* ih, const char* value)
   lin--;  /* return to Windows referece */
   col--;
 
-  if (ih->data->has_formatting)
-    SendMessage(ih->handle, EM_LINESCROLL, (WPARAM)0, (LPARAM)lin);
-  else
-    SendMessage(ih->handle, EM_LINESCROLL, (WPARAM)col, (LPARAM)lin);
+  winTextScrollTo(ih, lin, col);
 
   return 0;
 }
@@ -1147,10 +1153,7 @@ static int winTextSetScrollToPosAttrib(Ihandle* ih, const char* value)
   lin--;  /* return to Windows referece */
   col--;
 
-  if (ih->data->has_formatting)
-    SendMessage(ih->handle, EM_LINESCROLL, (WPARAM)0, (LPARAM)lin);
-  else
-    SendMessage(ih->handle, EM_LINESCROLL, (WPARAM)col, (LPARAM)lin);
+  winTextScrollTo(ih, lin, col);
 
   return 0;
 }
