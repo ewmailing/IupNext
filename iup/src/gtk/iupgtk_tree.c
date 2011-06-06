@@ -552,7 +552,7 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
 
   /* the previous node is not necessary only
      if adding the root in an empty tree or before the root. */
-  if (!gtkTreeFindNode(ih, id, &iterPrev) && (ih->data->node_count!=0 || id!=-1))
+  if (!gtkTreeFindNode(ih, id, &iterPrev) && id!=-1)
       return;
 
   if (id >= 0)
