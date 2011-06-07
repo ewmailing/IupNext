@@ -71,7 +71,7 @@ static int gtkTreeToggleGetCheck(Ihandle* ih, GtkTreeStore* store, GtkTreeIter i
   int isChecked;
 
   gtk_tree_model_get(GTK_TREE_MODEL(store), &iterItem, IUPGTK_TREE_3STATE, &isChecked, -1);
-  if (isChecked && iupAttribGetBoolean(ih, "SHOW3STATE"))
+  if (isChecked && ih->data->show_toggle==2)
     return -1;
 
   gtk_tree_model_get(GTK_TREE_MODEL(store), &iterItem, IUPGTK_TREE_CHECK, &isChecked, -1);
@@ -1435,7 +1435,7 @@ static char* gtkTreeGetToggleValueAttrib(Ihandle* ih, int id)
   GtkTreeIter iterItem;
   int isChecked;
 
-  if (!gtkTreeFindNode(ih, id, &iterItem))
+  if (!ih->data->show_toggle || !gtkTreeFindNode(ih, id, &iterItem))
     return NULL;
 
   isChecked = gtkTreeToggleGetCheck(ih, store, iterItem);
@@ -1453,10 +1453,10 @@ static int gtkTreeSetToggleValueAttrib(Ihandle* ih, int id, const char* value)
   GtkTreeStore* store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
   GtkTreeIter iterItem;
 
-  if (!gtkTreeFindNode(ih, id, &iterItem))
+  if (!ih->data->show_toggle || !gtkTreeFindNode(ih, id, &iterItem))
     return 0;
 
-  if(iupStrEqualNoCase(value, "NOTDEF") && iupAttribGetBoolean(ih, "SHOW3STATE"))
+  if(ih->data->show_toggle==2 && iupStrEqualNoCase(value, "NOTDEF"))
   {
     gtk_tree_store_set(store, &iterItem, IUPGTK_TREE_3STATE, TRUE, -1);
   }
@@ -2356,6 +2356,8 @@ static void gtkTreeToggled(GtkCellRendererToggle *cell_renderer, gchar *path, Ih
   GtkTreeIter iterItem;
   int check;
 
+  /* called for two states only */
+
   if(!gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(store), &iterItem, path))
     return;
 
@@ -2417,7 +2419,7 @@ static int gtkTreeToggleUpdate3StateCheck(Ihandle *ih, int x, int y, int keyb)
   return TRUE; /* ignore message to avoid change toggle state */
 }
 
-static gboolean gtkTreeToggleButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
+static gboolean gtkTreeToggle3StateButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 {
   gtk_tree_view_unset_rows_drag_source ((GtkTreeView*)ih->handle);
   gtk_tree_view_unset_rows_drag_dest ((GtkTreeView*)ih->handle);
@@ -2434,7 +2436,7 @@ static gboolean gtkTreeToggleButtonEvent(GtkWidget *widget, GdkEventButton *evt,
   return FALSE;
 }
 
-static gboolean gtkTreeToggleKeyEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
+static gboolean gtkTreeToggle3StateKeyEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
   if (evt->type == GDK_KEY_PRESS)
   {
@@ -2496,13 +2498,14 @@ static int gtkTreeMapMethod(Ihandle* ih)
     GtkCellRenderer *renderer_chk = gtk_cell_renderer_toggle_new();
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(column), renderer_chk, FALSE);
 
-    if(iupAttribGetBoolean(ih, "SHOW3STATE"))
+    if(ih->data->show_toggle==2)
     {
-      gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(column), renderer_chk, "active", IUPGTK_TREE_CHECK, "inconsistent", IUPGTK_TREE_3STATE, NULL);
-      g_signal_connect(G_OBJECT(ih->handle), "button-press-event",  G_CALLBACK(gtkTreeToggleButtonEvent), ih);
-      g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkTreeToggleButtonEvent), ih);
-      g_signal_connect(G_OBJECT(ih->handle), "key-press-event",  G_CALLBACK(gtkTreeToggleKeyEvent), ih);
-      g_signal_connect(G_OBJECT(ih->handle), "key-release-event",  G_CALLBACK(gtkTreeToggleKeyEvent), ih);
+      gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(column), renderer_chk, "active", IUPGTK_TREE_CHECK, 
+                                                                            "inconsistent", IUPGTK_TREE_3STATE, NULL);
+      g_signal_connect(G_OBJECT(ih->handle), "button-press-event",  G_CALLBACK(gtkTreeToggle3StateButtonEvent), ih);
+      g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkTreeToggle3StateButtonEvent), ih);
+      g_signal_connect(G_OBJECT(ih->handle), "key-press-event",  G_CALLBACK(gtkTreeToggle3StateKeyEvent), ih);
+      g_signal_connect(G_OBJECT(ih->handle), "key-release-event",  G_CALLBACK(gtkTreeToggle3StateKeyEvent), ih);
     }
     else
     {

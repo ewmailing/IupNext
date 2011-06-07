@@ -1625,24 +1625,34 @@ static int winTreeSetMarkedAttrib(Ihandle* ih, int id, const char* value)
 static char* winTreeGetToggleValueAttrib(Ihandle* ih, int id)
 {
   int isChecked;
-  HTREEITEM hItem = iupTreeGetNode(ih, id);
+  HTREEITEM hItem;
+
+  if (!ih->data->show_toggle)
+    return NULL;
+
+  hItem = iupTreeGetNode(ih, id);
   if (!hItem)
     return NULL;
 
   isChecked = ((SendMessage(ih->handle, TVM_GETITEMSTATE, (WPARAM)hItem, TVIS_STATEIMAGEMASK)) >> 12);
 
   if(isChecked == 3)
-    return "NOTDEF";  // indeterminate, inconsistent
+    return "NOTDEF";  /* indeterminate, inconsistent */
   else if(isChecked == 2)
-    return "ON";  // checked
+    return "ON";  /* checked */
   else
-    return "OFF";  // unchecked
+    return "OFF";  /* unchecked */
 }
 
 static int winTreeSetToggleValueAttrib(Ihandle* ih, int id, const char* value)
 {
   TVITEM item;
-  HTREEITEM hItem = iupTreeGetNode(ih, id);
+  HTREEITEM hItem;
+
+  if (!ih->data->show_toggle)
+    return 0;
+
+  hItem = iupTreeGetNode(ih, id);
   if (!hItem)
     return 0;
 
@@ -1650,12 +1660,12 @@ static int winTreeSetToggleValueAttrib(Ihandle* ih, int id, const char* value)
   item.hItem = hItem;
   item.stateMask = TVIS_STATEIMAGEMASK;
 
-  if(iupStrEqualNoCase(value, "NOTDEF") && iupAttribGetBoolean(ih, "SHOW3STATE"))
-    item.state = INDEXTOSTATEIMAGEMASK(3);  // indeterminate, inconsistent
+  if(ih->data->show_toggle==2 && iupStrEqualNoCase(value, "NOTDEF"))
+    item.state = INDEXTOSTATEIMAGEMASK(3);  /* indeterminate, inconsistent */
   else if(iupStrEqualNoCase(value, "ON"))
-    item.state = INDEXTOSTATEIMAGEMASK(2);  // checked
+    item.state = INDEXTOSTATEIMAGEMASK(2);  /* checked */
   else
-    item.state = INDEXTOSTATEIMAGEMASK(1);  // unchecked
+    item.state = INDEXTOSTATEIMAGEMASK(1);  /* unchecked */
 
   SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(TV_ITEM *)&item);
 
@@ -2171,7 +2181,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       {
         if(ih->data->show_toggle)
         {
-          /* call togglevaluecb, independently of the current focus ... */
+          /* call togglevaluecb, using the current focus */
           winTreeCallToggleValueCb(ih, iupdrvTreeGetFocusNode(ih));
         }
       }
@@ -2627,7 +2637,7 @@ static int winTreeMapMethod(Ihandle* ih)
   if (!iupwin_comctl32ver6)  /* To improve drawing of items when TITLEFONT is set */
     SendMessage(ih->handle, CCM_SETVERSION, 5, 0); 
   else
-    SendMessage(ih->handle, TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER); 
+    SendMessage(ih->handle, TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
 
   IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winTreeProc);
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB",   (Icallback)winTreeWmNotify);
@@ -2649,11 +2659,24 @@ static int winTreeMapMethod(Ihandle* ih)
   ih->data->def_image_collapsed = (void*)winTreeGetImageIndex(ih, "IMGCOLLAPSED");
   ih->data->def_image_expanded = (void*)winTreeGetImageIndex(ih, "IMGEXPANDED");
 
-  if(ih->data->show_toggle && iupAttribGetBoolean(ih, "SHOW3STATE"))
+  if (ih->data->show_toggle==2)
   {
+    int w, h;
     HIMAGELIST image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_STATE, 0);
-    HBITMAP bmp = iupImageGetImage("IMG3STATE", ih, 0);
-    ImageList_Add(image_list, bmp, NULL);
+    ImageList_GetIconSize(image_list, &w, &h);
+    {
+      RECT rect = {0, 0, w, h};
+      HDC hScreenDC = GetDC(ih->handle);
+      HDC hBitmapDC = CreateCompatibleDC(hScreenDC);
+      HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, w, h);
+      HBITMAP hOldBitmap = SelectObject(hBitmapDC, hBitmap);
+      iupwinDraw3StateButton(ih->handle, hBitmapDC, &rect);
+      SelectObject(hBitmapDC, hOldBitmap);
+      DeleteDC(hBitmapDC);
+      ReleaseDC(ih->handle, hScreenDC);
+      ImageList_Add(image_list, hBitmap, NULL);
+      DeleteObject(hBitmap);
+    }
   }
 
   if (iupAttribGetInt(ih, "ADDROOT"))

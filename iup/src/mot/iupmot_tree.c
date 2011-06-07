@@ -41,9 +41,6 @@
 #include "iupmot_drv.h"
 #include "iupmot_color.h"
 
-#ifndef XmPIXMAP_AND_STRING  /* available from Motif 2.3 */
-#define XmPIXMAP_AND_STRING	 ((atoi(IupGetGlobal("MOTIFNUMBER")) < 2300) ? XmSTRING : XmPIXMAP_AND_STRING)
-#endif
 
 typedef struct _motTreeItemData
 {
@@ -751,9 +748,13 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
 
   if(ih->data->show_toggle)
   {
+#if XmVersion < 2003
+    iupMOT_SETARG(args, num_args, XmNlabelType, XmSTRING); 
+#else
     iupMOT_SETARG(args, num_args, XmNlabelType, XmPIXMAP_AND_STRING); 
+#endif
 
-    if (iupAttribGetBoolean(ih, "SHOW3STATE"))
+    if (ih->data->show_toggle==2)
       iupMOT_SETARG(args, num_args, XmNtoggleMode, XmTOGGLE_INDETERMINATE);
     else
       iupMOT_SETARG(args, num_args, XmNtoggleMode, XmTOGGLE_BOOLEAN);
@@ -1424,7 +1425,12 @@ static int motTreeSetMarkStartAttrib(Ihandle* ih, const char* value)
 static char* motTreeGetToggleValueAttrib(Ihandle* ih, int id)
 {
   unsigned char check = 0;
-  Widget wItem = iupTreeGetNode(ih, id);
+  Widget wItem;
+
+  if (!ih->data->show_toggle)  
+    return 0;
+  
+  wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return 0;
 
@@ -1440,8 +1446,13 @@ static char* motTreeGetToggleValueAttrib(Ihandle* ih, int id)
 
 static int motTreeSetToggleValueAttrib(Ihandle* ih, int id, const char* value)
 {
-  Widget wItem = iupTreeGetNode(ih, id);  
   unsigned char check;
+  Widget wItem;
+
+  if (!ih->data->show_toggle)  
+    return 0;
+  
+  wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return 0;
 
@@ -2168,7 +2179,7 @@ static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCal
       }
       else if (check == XmSET)  /* GOTO check == -1 OR check == 0*/
       {
-        if (iupAttribGetBoolean(ih, "SHOW3STATE"))
+        if (ih->data->show_toggle==2)
         {
           XtVaSetValues(wItemFocus, XmNset, XmINDETERMINATE, NULL);
           if (cbToggle)

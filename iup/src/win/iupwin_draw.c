@@ -117,6 +117,23 @@ static int winDrawThemeButtonBorder(HWND hWnd, HDC hDC, RECT *rect, UINT itemSta
   return 1;
 }
 
+static int winDrawTheme3StateButton(HWND hWnd, HDC hDC, RECT *rect)
+{
+  HTHEME hTheme;
+
+  if (!winDrawThemeEnabled()) 
+    return 0; 
+
+  hTheme = winThemeOpenData(hWnd, L"BUTTON");
+  if (!hTheme) 
+    return 0;
+
+  winThemeDrawBackground(hTheme, hDC, BP_CHECKBOX, CBS_MIXEDNORMAL, rect, NULL);
+
+  winThemeCloseData(hTheme);
+  return 1;
+}
+
 void iupwinDrawThemeFrameBorder(HWND hWnd, HDC hDC, RECT *rect, UINT itemState)
 {
   int iStateId = GBS_NORMAL;
@@ -287,6 +304,12 @@ void iupwinDrawButtonBorder(HWND hWnd, HDC hDC, RECT *rect, UINT itemState)
     if (itemState & ODS_DEFAULT)  /* if a button has the focus, must draw the default button frame */
       FrameRect(hDC, rect, (HBRUSH)GetStockObject(BLACK_BRUSH));
   }
+}
+
+void iupwinDraw3StateButton(HWND hWnd, HDC hDC, RECT *rect)
+{
+  if (!winDrawTheme3StateButton(hWnd, hDC, rect))
+    DrawFrameControl(hDC, rect, DFC_BUTTON, DFCS_BUTTON3STATE|DFCS_CHECKED|DFCS_FLAT);
 }
 
 void iupdrvDrawFocusRect(Ihandle* ih, void* gc, int x, int y, int w, int h)

@@ -528,8 +528,8 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
-  IupSetAttribute(tree, "SHOW3STATE",   "YES");
+//  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
+//  IupSetAttribute(tree, "SHOWTOGGLE",   "3STATE");
 //  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
 
   IupSetAttribute(tree, "ADDEXPANDED",  "YES");

@@ -19,6 +19,7 @@ void iupwinDrawText(HDC hDC, const char* text, int x, int y, int width, int heig
 
 void iupwinDrawParentBackground(Ihandle* ih, HDC hDC, RECT* rect);
 void iupwinDrawButtonBorder(HWND hWnd, HDC hDC, RECT *rect, UINT itemState);
+void iupwinDraw3StateButton(HWND hWnd, HDC hDC, RECT *rect);
 
 void iupwinDrawThemeFrameBorder(HWND hWnd, HDC hDC, RECT *rect, UINT itemState);
 int  iupwinDrawGetThemeTabsBgColor(HWND hWnd, COLORREF *color);
