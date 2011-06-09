@@ -392,7 +392,7 @@ static int iSplitSetOrientationAttrib(Ihandle* ih, const char* value)
   if (ih->handle) /* only before map */
     return 0;
 
-  if (iupStrEqual(value, "HORIZONTAL"))
+  if (iupStrEqualNoCase(value, "HORIZONTAL"))
     ih->data->orientation = ISPLIT_HORIZ;
   else  /* Default = VERTICAL */
     ih->data->orientation = ISPLIT_VERT;

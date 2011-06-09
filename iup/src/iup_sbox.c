@@ -197,11 +197,11 @@ static int iSboxSetDirectionAttrib(Ihandle* ih, const char* value)
   if (ih->handle) /* only before map */
     return 0;
 
-  if (iupStrEqual(value, "NORTH"))
+  if (iupStrEqualNoCase(value, "NORTH"))
     ih->data->direction = ISBOX_NORTH;
-  else if(iupStrEqual(value, "SOUTH"))
+  else if(iupStrEqualNoCase(value, "SOUTH"))
     ih->data->direction = ISBOX_SOUTH;
-  else if(iupStrEqual(value, "WEST"))
+  else if(iupStrEqualNoCase(value, "WEST"))
     ih->data->direction = ISBOX_WEST;
   else  /* Default = EAST */
     ih->data->direction = ISBOX_EAST;
