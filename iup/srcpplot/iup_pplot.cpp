@@ -1485,6 +1485,20 @@ static int iPPlotSetDSRemoveAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iPPlotGetDSCountAttrib(Ihandle* ih)
+{
+  if (ih->data->plt->_currentDataSetIndex < 0 ||
+      ih->data->plt->_currentDataSetIndex >= ih->data->plt->_plot.mPlotDataContainer.GetPlotCount())
+    return NULL;
+
+  {
+    char* att_buffer = iupStrGetMemory(30);
+    int count = ih->data->plt->_plot.mPlotDataContainer.GetCount(ih->data->plt->_currentDataSetIndex);
+    sprintf(att_buffer, "%d", count);
+    return att_buffer;
+  }
+}
+
 /* ========== */
 /* axis props */
 /* ========== */
@@ -3075,6 +3089,7 @@ static Iclass* iPPlotNewClass(void)
   iupClassRegisterAttribute(ic, "DS_MODE", iPPlotGetDSModeAttrib, iPPlotSetDSModeAttrib, IUPAF_SAMEASSYSTEM, "LINE", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_EDIT", iPPlotGetDSEditAttrib, iPPlotSetDSEditAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_REMOVE", NULL, iPPlotSetDSRemoveAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_COUNT", iPPlotGetDSCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "AXS_XLABEL", iPPlotGetAxisXLabelAttrib, iPPlotSetAxisXLabelAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YLABEL", iPPlotGetAxisYLabelAttrib, iPPlotSetAxisYLabelAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

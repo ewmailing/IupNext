@@ -286,6 +286,13 @@ PlotDataContainer::~PlotDataContainer (){
   ClearData ();
 }
 
+int PlotDataContainer::GetCount (int inIndex) {
+    if (inIndex < 0 || inIndex >= mXDataList.size ()) {
+        return 0;
+    }
+    return mXDataList[inIndex]->GetSize();
+}
+
 PlotDataBase * PlotDataContainer::GetXData (int inIndex) {
     if (inIndex < 0 || inIndex >= mXDataList.size ()) {
         return 0;

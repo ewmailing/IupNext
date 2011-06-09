@@ -327,6 +327,7 @@ class PlotDataContainer {
 
   int GetPlotCount () const {return mYDataList.size ();};
 
+  int GetCount (int inIndex);
   PlotDataBase * GetXData (int inIndex);
   PlotDataBase * GetYData (int inIndex);
   LegendData * GetLegendData (int inIndex);
