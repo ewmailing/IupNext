@@ -871,6 +871,7 @@ void iupdrvCanvasInitClass(Iclass* ic)
   /* IupCanvas Windows only */
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, iupwinSetDragDropAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HWND", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HDC_WMPAINT", NULL, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "BACKINGSTORE", NULL, NULL, "YES", NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
