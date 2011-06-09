@@ -61,6 +61,10 @@ void* iupArrayAdd(Iarray* iarray, int add_count);
  * \ingroup iarray */
 void* iupArrayInsert(Iarray* iarray, int index, int insert_count);
 
+/** Remove the number of elements from the array.
+ * \ingroup iarray */
+void iupArrayRemove(Iarray* iarray, int index, int remove_count);
+
 /** Returns the actual number of elements in the array.
  * \ingroup iarray */
 int iupArrayCount(Iarray* iarray);

@@ -112,6 +112,18 @@ void* iupArrayInsert(Iarray* iarray, int index, int insert_count)
   return iarray->data;
 }
 
+void iupArrayRemove(Iarray* iarray, int index, int remove_count)
+{
+  iupASSERT(iarray!=NULL);
+  if (!iarray)
+    return;
+  if (index < 0 || index > iarray->count || remove_count > iarray->count)
+    return;
+  memmove((unsigned char*)iarray->data + iarray->elem_size*index, (unsigned char*)iarray->data + iarray->elem_size*(index + remove_count), iarray->elem_size*(iarray->count - (index + remove_count)));
+  memset((unsigned char*)iarray->data + iarray->elem_size*(iarray->count - remove_count), 0, iarray->elem_size*remove_count);
+  iarray->count -= remove_count;
+}
+
 int iupArrayCount(Iarray* iarray)
 {
   iupASSERT(iarray!=NULL);
