@@ -833,7 +833,7 @@ static char* iPPlotGetCountAttrib(Ihandle* ih)
 /* legend box visibility */
 static int iPPlotSetLegendShowAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     ih->data->plt->_plot.mShowLegend = true;
   else 
     ih->data->plt->_plot.mShowLegend = false;
@@ -1376,7 +1376,7 @@ static int iPPlotSetDSShowValuesAttrib(Ihandle* ih, const char* value)
  
   DataDrawerBase* drawer = ih->data->plt->_plot.mPlotDataContainer.GetDataDrawer(ih->data->plt->_currentDataSetIndex);
     
-  if (iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     drawer->mShowValues = true;
   else 
     drawer->mShowValues = false;
@@ -1446,7 +1446,7 @@ static int iPPlotSetDSEditAttrib(Ihandle* ih, const char* value)
   
   PlotDataSelection* dataselect = ih->data->plt->_plot.mPlotDataContainer.GetPlotDataSelection(ih->data->plt->_currentDataSetIndex);
     
-  if (iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     dataselect->resize(ih->data->plt->_plot.mPlotDataContainer.GetConstYData(ih->data->plt->_currentDataSetIndex)->GetSize());
   else
     dataselect->clear();
@@ -1557,7 +1557,7 @@ static int iPPlotSetAxisXLabelCenteredAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if (iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mLabelCentered = true;
   else 
    axis->mLabelCentered = false;
@@ -1570,7 +1570,7 @@ static int iPPlotSetAxisYLabelCenteredAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if (iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mLabelCentered = true;
   else 
    axis->mLabelCentered = false;
@@ -1651,7 +1651,7 @@ static int iPPlotSetAxisXAutoMinAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mAutoScaleMin = true;
   else 
     axis->mAutoScaleMin = false;
@@ -1664,7 +1664,7 @@ static int iPPlotSetAxisYAutoMinAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mAutoScaleMin = true;
   else 
     axis->mAutoScaleMin = false;
@@ -1698,7 +1698,7 @@ static int iPPlotSetAxisXAutoMaxAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mAutoScaleMax = true;
   else 
     axis->mAutoScaleMax = false;
@@ -1711,7 +1711,7 @@ static int iPPlotSetAxisYAutoMaxAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mAutoScaleMax = true;
   else 
     axis->mAutoScaleMax = false;
@@ -1827,7 +1827,7 @@ static int iPPlotSetAxisXReverseAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mAscending = false; /* inverted for X */
   else 
     axis->mAscending = true;
@@ -1840,7 +1840,7 @@ static int iPPlotSetAxisYReverseAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mAscending = true; /* NOT inverted for Y  */
   else 
     axis->mAscending = false;
@@ -1874,7 +1874,7 @@ static int iPPlotSetAxisXCrossOriginAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mCrossOrigin = true;
   else 
     axis->mCrossOrigin = false;
@@ -1887,7 +1887,7 @@ static int iPPlotSetAxisYCrossOriginAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mCrossOrigin = true;
   else 
     axis->mCrossOrigin = false;
@@ -2092,7 +2092,7 @@ static int iPPlotSetAxisXAutoTickSizeAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mTickInfo.mAutoTickSize = true;
   else 
     axis->mTickInfo.mAutoTickSize = false;
@@ -2105,7 +2105,7 @@ static int iPPlotSetAxisYAutoTickSizeAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mTickInfo.mAutoTickSize = true;
   else 
     axis->mTickInfo.mAutoTickSize = false;
@@ -2344,7 +2344,7 @@ static int iPPlotSetAxisXTickAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mTickInfo.mTicksOn = true;
   else 
     axis->mTickInfo.mTicksOn = false;
@@ -2357,7 +2357,7 @@ static int iPPlotSetAxisYTickAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mTickInfo.mTicksOn = true;
   else 
     axis->mTickInfo.mTicksOn = false;
@@ -2473,7 +2473,7 @@ static int iPPlotSetAxisXAutoTickAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mTickInfo.mAutoTick = true;
   else 
     axis->mTickInfo.mAutoTick = false;
@@ -2486,7 +2486,7 @@ static int iPPlotSetAxisYAutoTickAttrib(Ihandle* ih, const char* value)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if(iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "ON"))
+  if (iupStrBoolean(value))
     axis->mTickInfo.mAutoTick = true;
   else 
     axis->mTickInfo.mAutoTick = false;
@@ -2748,10 +2748,8 @@ void PPainterIup::DrawTo(cdCanvas *usrCnv)
   _cdcanvas = usrCnv;
 #endif
 
-  if (!_cddbuffer)
-    return;
-
-  Draw(1, 0); /* no flush here */
+  if (_cddbuffer)
+    Draw(1, 0); /* no flush here */
 
   _cddbuffer = old_cddbuffer;
 #ifndef USE_OPENGL

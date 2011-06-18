@@ -62,8 +62,8 @@ void PreDialogsTest(void);
 #ifdef PPLOT_TEST
 void PPlotTest(void);
 #endif
-#ifdef PLPLOT_TEST
-void PLPlotTest(void);
+#ifdef MGLPLOT_TEST
+void MGLPlotTest(void);
 #endif
 void GetParamTest(void);
 void ClassInfo(void);
@@ -120,8 +120,8 @@ static TestItems test_list[] = {
 #ifdef PPLOT_TEST
   {"PPlot", PPlotTest},
 #endif
-#ifdef PLPLOT_TEST
-  {"PLPlot", PLPlotTest},
+#ifdef MGLPLOT_TEST
+  {"MGLPlot", MGLPlotTest},
 #endif
   {"PreDialogs", PreDialogsTest},
   {"Progressbar", ProgressbarTest},
