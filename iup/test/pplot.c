@@ -1,5 +1,5 @@
 /*
- * IupPlot Test
+ * IupPPlot Test
  * Description : Create all built-in plots.
  *               It is organised as two side-by-side panels:
  *                 - left panel for current plot control
@@ -57,7 +57,7 @@ static int postdraw_cb(Ihandle* ih, cdCanvas* cnv)
 {
   int ix, iy;
 
-  IupPlotTransform(ih, 0.003f, 0.02f, &ix, &iy);
+  IupPPlotTransform(ih, 0.003f, 0.02f, &ix, &iy);
   cdCanvasFont(cnv, NULL, CD_BOLD, 10);
   cdCanvasTextAlignment(cnv, CD_SOUTH);
   cdCanvasText(cnv, ix, iy, "My Inline Legend");
@@ -97,28 +97,28 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[0], "USE_GDI+", "YES");
 
   theFac = (float)1.0/(100*100*100);
-  IupPlotBegin(plot[0], 0);
+  IupPPlotBegin(plot[0], 0);
   for (theI=-100; theI<=100; theI++) 
   {
     x = (float)(theI+50);
     y = theFac*theI*theI*theI;
-    IupPlotAdd(plot[0], x, y);
+    IupPPlotAdd(plot[0], x, y);
   }
-  IupPlotEnd(plot[0]);
+  IupPPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[0], "DS_LEGEND", "Line");
 
   theFac = (float)2.0/100;
-  IupPlotBegin(plot[0], 0);
+  IupPPlotBegin(plot[0], 0);
   for (theI=-100; theI<0; theI++) 
   {
     x = (float)theI;
     y = -theFac*theI;
-    IupPlotAdd(plot[0], x, y);
+    IupPPlotAdd(plot[0], x, y);
   }
 
   {
-    int index = IupPlotEnd(plot[0]); /* add an empty plot */
+    int index = IupPPlotEnd(plot[0]); /* add an empty plot */
     float px[210], py[210];
     int count = 0;
     for (theI=0; theI<=100; theI++) 
@@ -129,20 +129,20 @@ static void InitPlots(void)
       py[theI] = y;
       count++;
     }
-    //IupPlotAddPoints(plot[0], index, px, py, count);
-    IupPlotInsertPoints(plot[0], index, 100, px, py, count);
+    //IupPPlotAddPoints(plot[0], index, px, py, count);
+    IupPPlotInsertPoints(plot[0], index, 100, px, py, count);
   }
 
   IupSetAttribute(plot[0], "DS_LEGEND", "Curve 1");
 
-  IupPlotBegin(plot[0], 0);
+  IupPPlotBegin(plot[0], 0);
   for (theI=-100; theI<=100; theI++) 
   {
     x = (float)(0.01*theI*theI-30);
     y = (float)0.01*theI;
-    IupPlotAdd(plot[0], x, y);
+    IupPPlotAdd(plot[0], x, y);
   }
-  IupPlotEnd(plot[0]);
+  IupPPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LEGEND", "Curve 2");
 
 
@@ -174,24 +174,24 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "LEGENDSHOW", "YES");
 
   theFac = (float)1.0/(100*100*100);
-  IupPlotBegin(plot[1], 0);
+  IupPPlotBegin(plot[1], 0);
   for (theI=0; theI<=100; theI++) 
   {
     x = (float)(theI);
     y = theFac*theI*theI*theI;
-    IupPlotAdd(plot[1], x, y);
+    IupPPlotAdd(plot[1], x, y);
   }
-  IupPlotEnd(plot[1]);
+  IupPPlotEnd(plot[1]);
 
   theFac = (float)2.0/100;
-  IupPlotBegin(plot[1], 0);
+  IupPPlotBegin(plot[1], 0);
   for (theI=0; theI<=100; theI++) 
   {
     x = (float)(theI);
     y = -theFac*theI;
-    IupPlotAdd(plot[1], x, y);
+    IupPPlotAdd(plot[1], x, y);
   }
-  IupPlotEnd(plot[1]);
+  IupPPlotEnd(plot[1]);
 
   /* PLOT 2 - MakeExamplePlot4 */
   IupSetAttribute(plot[2], "TITLE", "Log Scale");
@@ -208,14 +208,14 @@ static void InitPlots(void)
   IupSetAttribute(plot[2], "AXS_YFONTSTYLE", "BOLD");
 
   theFac = (float)100.0/(100*100*100);
-  IupPlotBegin(plot[2], 0);
+  IupPPlotBegin(plot[2], 0);
   for (theI=0; theI<=100; theI++) 
   {
     x = (float)(0.0001+theI*0.001);
     y = (float)(0.01+theFac*theI*theI*theI);
-    IupPlotAdd(plot[2], x, y);
+    IupPPlotAdd(plot[2], x, y);
   }
-  IupPlotEnd(plot[2]);
+  IupPPlotEnd(plot[2]);
   IupSetAttribute(plot[2], "DS_COLOR", "100 100 200");
   IupSetAttribute(plot[2], "DS_LINESTYLE", "DOTTED");
 
@@ -229,11 +229,11 @@ static void InitPlots(void)
   {
     const char * kLables[12] = {"jan","feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
     const float kData[12] = {1,2,3,4,5,6,7,8,9,0,1,2};
-    IupPlotBegin(plot[3], 1);
+    IupPPlotBegin(plot[3], 1);
     for (theI=0;  theI<12; theI++) 
-      IupPlotAddStr(plot[3], kLables[theI], kData[theI]);
+      IupPPlotAddStr(plot[3], kLables[theI], kData[theI]);
   }
-  IupPlotEnd(plot[3]);
+  IupPPlotEnd(plot[3]);
   IupSetAttribute(plot[3], "DS_COLOR", "100 100 200");
   IupSetAttribute(plot[3], "DS_MODE", "BAR");
 
@@ -258,25 +258,25 @@ static void InitPlots(void)
   IupSetAttribute(plot[4], "LEGENDPOS", "BOTTOMRIGHT");
 
   theFac = (float)100.0/(100*100*100);
-  IupPlotBegin(plot[4], 0);
+  IupPPlotBegin(plot[4], 0);
   for (theI=0; theI<=10; theI++) 
   {
     x = (float)(0.0001+theI*0.001);
     y = (float)(0.01+theFac*theI*theI);
-    IupPlotAdd(plot[4], x, y);
+    IupPPlotAdd(plot[4], x, y);
   }
-  IupPlotEnd(plot[4]);
+  IupPPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARKLINE");
   IupSetAttribute(plot[4], "DS_SHOWVALUES", "YES");
 
-  IupPlotBegin(plot[4], 0);
+  IupPPlotBegin(plot[4], 0);
   for (theI=0; theI<=10; theI++) 
   {
     x = (float)(0.0001+theI*0.001);
     y = (float)(0.2-theFac*theI*theI);
-    IupPlotAdd(plot[4], x, y);
+    IupPPlotAdd(plot[4], x, y);
   }
-  IupPlotEnd(plot[4]);
+  IupPPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARK");
   IupSetAttribute(plot[4], "DS_MARKSTYLE", "HOLLOW_CIRCLE");
   
@@ -286,14 +286,14 @@ static void InitPlots(void)
   IupSetAttribute(plot[5], "MARGINTOP", "40");
 
   theFac = (float)100.0/(100*100*100);
-  IupPlotBegin(plot[5], 0);
+  IupPPlotBegin(plot[5], 0);
   for (theI=-10; theI<=10; theI++) 
   {
     x = (float)(0.001*theI);
     y = (float)(0.01+theFac*theI*theI*theI);
-    IupPlotAdd(plot[5], x, y);
+    IupPPlotAdd(plot[5], x, y);
   }
-  IupPlotEnd(plot[5]);
+  IupPPlotEnd(plot[5]);
   IupSetAttribute(plot[5], "DS_COLOR", "100 100 200");
   IupSetAttribute(plot[5], "DS_EDIT", "YES");
   IupSetCallback(plot[5], "DELETE_CB", (Icallback)delete_cb);
@@ -574,7 +574,7 @@ static int bt1_cb(Ihandle *self)
   IupSetAttribute(plot[ii], "REDRAW", NULL);
 
 //  cdCanvas* cnv = cdCreateCanvas(CD_PDF, "pplot.pdf -o");
-//  IupPlotPaintTo(plot[ii], cnv);
+//  IupPPlotPaintTo(plot[ii], cnv);
 //  cdKillCanvas(cnv);
   return IUP_DEFAULT;
 }
@@ -586,7 +586,7 @@ void PPlotTest(void)
           *boxinfo, *boxdial1, *boxdial2, *f1, *f2;
   int ii;
 
-  IupPPlotOpen();     /* init IupPlot library */
+  IupPPlotOpen();     /* init IupPPlot library */
 
 //  cdInitGdiPlus();
 
@@ -696,7 +696,7 @@ void PPlotTest(void)
   
   dlg = IupDialog(hbox);
   IupSetAttribute(dlg, "SIZE", "170x");
-  IupSetAttribute(dlg, "TITLE", "IupPlot Example");
+  IupSetAttribute(dlg, "TITLE", "IupPPlot Example");
 
   InitPlots(); /* It must be able to be done independent of dlg Mapping */
 

@@ -53,7 +53,7 @@ Lua control
 <p>Each plot can contain 2 <b>axis</b> (X and Y), a <b>title</b>, a <b>
 legend</b> <b>box</b>, a <b>grid</b>, a <b>dataset</b> <b>area</b> and as many
 <b>datasets</b> you want. </p>
-<p>Each data set is added using the <b>IupPlotAdd </b>function. All other plot 
+<p>Each data set is added using the <b>IupPPlotAdd </b>function. All other plot 
 parameters are configured by attributes.</p>
 <p>If no attribute is set, the default values were selected to best display 
 the plot.</p>
@@ -117,64 +117,64 @@ pplot() [in LED]</pre>
 <p>This function returns the identifier of the 
   created plot, or NULL if an error occurs.</p>
 <h3>Auxiliary Functions</h3>
-<pre>void <b>IupPlotBegin</b>(Ihandle* <b>ih</b>, int <b>strXdata</b>); [in C]
-<b>iup.PlotBegin</b>(<b>ih</b>: ihandle, <b>strXdata</b>: number) [in Lua]</pre>
+<pre>void <b>IupPPlotBegin</b>(Ihandle* <b>ih</b>, int <b>strXdata</b>); [in C]
+<b>iup.PPlotBegin</b>(<b>ih</b>: ihandle, <b>strXdata</b>: number) [in Lua]</pre>
 <p>Prepares a dataset to receive samples. If strXdata is 1 then the X axis value 
 is a string.</p>
 <hr>
-<pre>void <b>IupPlotAdd</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>); [in C]
-<b>iup.PlotAdd</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>: number) [in Lua]</pre>
-<p>Adds a sample to the dataset. Can only be called if <b>IupPlotBegin</b> was 
+<pre>void <b>IupPPlotAdd</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>); [in C]
+<b>iup.PPlotAdd</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>: number) [in Lua]</pre>
+<p>Adds a sample to the dataset. Can only be called if <b>IupPPlotBegin</b> was 
 called with strXdata=0.</p>
 <hr>
-<pre>void <b>IupPlotAddStr</b>(Ihandle* <b>ih</b>, const char* <b>x</b>, float <b>y</b>); [in C]
-<b>iup.PlotAddStr</b>(<b>ih</b>: ihandle, <b>x</b>: string, <b>y</b>: number) [in Lua]</pre>
-<p>Same as <b>IupPlotAdd</b>, but allows to use a string as the X 
-axis value. Can only be called if <b>IupPlotBegin</b> was called with 
+<pre>void <b>IupPPlotAddStr</b>(Ihandle* <b>ih</b>, const char* <b>x</b>, float <b>y</b>); [in C]
+<b>iup.PPlotAddStr</b>(<b>ih</b>: ihandle, <b>x</b>: string, <b>y</b>: number) [in Lua]</pre>
+<p>Same as <b>IupPPlotAdd</b>, but allows to use a string as the X 
+axis value. Can only be called if <b>IupPPlotBegin</b> was called with 
 strXdata=1.</p>
 <hr>
-<pre>int <b>IupPlotEnd</b>(Ihandle* <b>ih</b>); [in C]
-<b>iup.PlotEnd</b>(<b>ih</b>: ihandle) -&gt; (<b>index</b>: number) [in Lua]</pre>
+<pre>int <b>IupPPlotEnd</b>(Ihandle* <b>ih</b>); [in C]
+<b>iup.PPlotEnd</b>(<b>ih</b>: ihandle) -&gt; (<b>index</b>: number) [in Lua]</pre>
 <p>Adds a 2D dataset to the plot and returns the dataset <strong>index</strong>. 
 The data set can be empty. Redraw is NOT 
 done until the REDRAW attribute is set. Also it will change the current dataset 
 index to the return value. You can only set attributes of a dataset AFTER you 
-added the dataset.&nbsp; Can only be called if <b>IupPlotBegin</b> was called. 
+added the dataset.&nbsp; Can only be called if <b>IupPPlotBegin</b> was called. 
 Whenever you create a dataset all its &quot;DS_*&quot; attributes will be set to the 
 default values. Notice that DS_MODE must be set before other &quot;DS_*&quot; attributes.</p>
 <hr>
-<pre>void <b>IupPlotInsert</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, float <b>x</b>, float <b>y</b>); [in C]
-void <b>IupPlotInsertStr</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, const char* <b>x</b>, float <b>y</b>);
-<b>iup.IupPlotInsert</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: number) [in Lua]
-<b>iup.IupPlotInsertStr</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: number)</pre>
+<pre>void <b>IupPPlotInsert</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, float <b>x</b>, float <b>y</b>); [in C]
+void <b>IupPPlotInsertStr</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, const char* <b>x</b>, float <b>y</b>);
+<b>iup.IupPPlotInsert</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: number) [in Lua]
+<b>iup.IupPPlotInsertStr</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: number)</pre>
 <p>Inserts a sample in a dataset at the given <strong>sample_index</strong>. Can 
 be used only after the dataset is added to the 
 plot.</p>
 <hr>
-<pre>void <b>IupPlotInsertPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, float* <b>x</b>, float* <b>y</b>, int <strong>count</strong>); [in C]
-void <b>IupPlotInsertStrPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, const char** <b>x</b>, float* <b>y</b>, int <strong>count</strong>);
-<b>iup.IupPlotInsertPoints</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: table of number) [in Lua]
-<b>iup.IupPlotInsertStrPoints</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: table of number)</pre>
+<pre>void <b>IupPPlotInsertPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, float* <b>x</b>, float* <b>y</b>, int <strong>count</strong>); [in C]
+void <b>IupPPlotInsertStrPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, const char** <b>x</b>, float* <b>y</b>, int <strong>count</strong>);
+<b>iup.IupPPlotInsertPoints</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: table of number) [in Lua]
+<b>iup.IupPPlotInsertStrPoints</b>(<b>ih</b>: ihandle, <b>index, sample_index, x, y</b>: table of number)</pre>
 <p>Inserts an array of samples in a dataset at the given <strong>sample_index</strong>. 
 Can be used only after the dataset is added to the 
 plot. (Since 3.4)</p>
 <hr>
-<pre>void <b>IupPlotAddPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, float* <b>x</b>, float* <b>y</b>, int <strong>count</strong>); [in C]
-void <b>IupPlotAddStrPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, const char** <b>x</b>, float* <b>y</b>, int <strong>count</strong>);
-<b>iup.IupPlotAddPoints</b>(<b>ih</b>: ihandle, <b>index, x, y</b>: table of number) [in Lua]
-<b>iup.IupPlotAddStrPoints</b>(<b>ih</b>: ihandle, <b>index, x, y</b>: table of number)</pre>
+<pre>void <b>IupPPlotAddPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, float* <b>x</b>, float* <b>y</b>, int <strong>count</strong>); [in C]
+void <b>IupPPlotAddStrPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, const char** <b>x</b>, float* <b>y</b>, int <strong>count</strong>);
+<b>iup.IupPPlotAddPoints</b>(<b>ih</b>: ihandle, <b>index, x, y</b>: table of number) [in Lua]
+<b>iup.IupPPlotAddStrPoints</b>(<b>ih</b>: ihandle, <b>index, x, y</b>: table of number)</pre>
 <p>Adds an array of samples in a dataset at the end. Can be used only after the dataset is added to the 
 plot. (Since 3.4)</p>
 <hr>
-<pre>void <b>IupPlotTransform</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>, int *<b>ix</b>, int *<b>iy</b>); [in C]
-<b>iup.PlotTransform</b>(<b>ih</b>: ihandle, <b>x, y</b>: number) -&gt; (<b>ix</b>, <b>iy</b>: number) [in Lua]</pre>
+<pre>void <b>IupPPlotTransform</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>, int *<b>ix</b>, int *<b>iy</b>); [in C]
+<b>iup.PPlotTransform</b>(<b>ih</b>: ihandle, <b>x, y</b>: number) -&gt; (<b>ix</b>, <b>iy</b>: number) [in Lua]</pre>
 <p>Converts coordinates in plot units to pixels. It should be used in PREDRAW_CB 
 and POSTDRAW_CB callbacks only. Output variables can be NULL if not used. It can 
 be used inside other callbacks, but make sure that the drawing after a resize is 
 done.</p>
 <hr>
-<pre>void <b>IupPlotPaintTo</b>(Ihandle* <b>ih</b>, cdCanvas* <b>cnv</b>); [in C]
-<b>iup.PlotPaintTo</b>(<b>ih</b>: ihandle, <b>cnv</b>: cdCanvas) [in Lua]</pre>
+<pre>void <b>IupPPlotPaintTo</b>(Ihandle* <b>ih</b>, cdCanvas* <b>cnv</b>); [in C]
+<b>iup.PPlotPaintTo</b>(<b>ih</b>: ihandle, <b>cnv</b>: cdCanvas) [in Lua]</pre>
 <p>Plots to the given CD canvas instead of the display canvas.</p>
 <h3><a name="Attributes">Attributes</a></h3>
 

@@ -34,6 +34,16 @@
   .style3 {
 	font-weight: normal;
 }
+  .style4 {
+	font-family: Tahoma;
+	text-decoration: line-through;
+}
+.style5 {
+	text-decoration: line-through;
+}
+.style6 {
+	font-family: Tahoma;
+}
   </style>
 </head>
 
@@ -69,6 +79,12 @@ version 3.x.<br>
 	<strong class="style3">ADDLEAF</strong>id<strong class="style3"> and ADDBRANCHid 
 	attributes in </strong><strong> IupTree</strong><strong class="style3"> now 
 	accepts -1 to insert a node before the root node.</strong></li>
+	<li><strong><span class="hist_changed">Undo:</span></strong> 
+	<span class="style4">removed &quot;P&quot; 
+	from <span class="style5"> <strong class="style3">IupPPlot</strong> additional API functions, because they will 
+	be used also for other plot controls. Old names still exists for 
+	compatibility.</span></span><span class="style6"> The new functions need 
+	more flexibility and they must co-exist.</span></li>
 	<li><span class="hist_fixed">Fixed:</span> NUMCOL_NOSCROLL and NUMLIN_NOSCROLL 
 	attributes for the <strong>IupMatrix</strong> when scrolling with the 
 	scrollbar arrows up to the top or to the left.</li>
