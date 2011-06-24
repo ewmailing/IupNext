@@ -503,8 +503,8 @@ int dial1_btnup_cb(Ihandle *self, double angle)
 
   if (x1<x2)
   {
-    IupSetfAttribute(plot[ii], "AXS_YMIN", "%f", x1);
-    IupSetfAttribute(plot[ii], "AXS_YMAX", "%f", x2);
+    IupSetfAttribute(plot[ii], "AXS_YMIN", "%g", x1);
+    IupSetfAttribute(plot[ii], "AXS_YMAX", "%g", x2);
   }
 
   IupSetAttribute(plot[ii], "REDRAW", NULL);
@@ -537,8 +537,8 @@ int dial2_btnup_cb(Ihandle *self, double angle)
   x1 = xm - (xm - x1)*(1.0-angle*1.0/3.141592); // one circle will zoom 2 times
   x2 = xm + (x2 - xm)*(1.0-angle*1.0/3.141592);
 
-  IupSetfAttribute(plot[ii], "AXS_XMIN", "%f", x1);
-  IupSetfAttribute(plot[ii], "AXS_XMAX", "%f", x2);
+  IupSetfAttribute(plot[ii], "AXS_XMIN", "%g", x1);
+  IupSetfAttribute(plot[ii], "AXS_XMAX", "%g", x2);
 
   IupSetAttribute(plot[ii], "REDRAW", NULL);
 

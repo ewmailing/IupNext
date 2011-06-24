@@ -163,7 +163,7 @@ static int time_cb(void)
   float value = IupGetFloat(progressbar2, "VALUE");
   value += increment*50;
   if (value > 50) value = 0; /* start over */
-  IupSetfAttribute(progressbar2, "VALUE", "%f", (double)value);
+  IupSetfAttribute(progressbar2, "VALUE", "%g", (double)value);
   return IUP_DEFAULT;
 }
 

@@ -23,11 +23,11 @@ typedef struct _Iarray Iarray;
 
 /** Creates an array with an initial room for elements, and the element size.
  * The array count starts at 0. And the maximum number of elements starts at the given count.
- * The maximum number of elements is increased by the start count, every time it needs more memory.
+ * The maximum number of elements is increased by the start_max_count, every time it needs more memory.
  * Data is always initialized with zeros.
  * Must call \ref iupArrayInc to proper allocates memory.
  * \ingroup iarray */
-Iarray* iupArrayCreate(int start_count, int elem_size);
+Iarray* iupArrayCreate(int start_max_count, int elem_size);
 
 /** Destroys the array.
  * \ingroup iarray */

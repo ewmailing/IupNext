@@ -162,7 +162,7 @@ static int time_cb(void)
   float value = IupGetFloat(gauge, "VALUE");
   value += increment;
   if (value > 1) value = 0; /* start over */
-  IupSetfAttribute(gauge, "VALUE", "%f", (double)value);
+  IupSetfAttribute(gauge, "VALUE", "%g", (double)value);
   return IUP_DEFAULT;
 }
 

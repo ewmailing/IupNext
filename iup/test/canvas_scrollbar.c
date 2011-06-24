@@ -31,8 +31,8 @@ static void update_scrollbar(Ihandle* ih, int canvas_w, int canvas_h)
     ww = canvas_w*abs(scale);
     wh = canvas_h*abs(scale);
   }
-  IupSetfAttribute(ih, "DX", "%f", ww);
-  IupSetfAttribute(ih, "DY", "%f", wh);
+  IupSetfAttribute(ih, "DX", "%g", ww);
+  IupSetfAttribute(ih, "DY", "%g", wh);
 }
 
 static void update_viewport(Ihandle* ih, cdCanvas *canvas, float posx, float posy)

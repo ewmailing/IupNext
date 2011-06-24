@@ -163,12 +163,12 @@ int time_cb(void)
   float value = IupGetFloat(progressbar1, "VALUE");
   value += increment;
   if (value > 1) value = 0; /* start over */
-  IupSetfAttribute(progressbar1, "VALUE", "%f", (double)value);
+  IupSetfAttribute(progressbar1, "VALUE", "%g", (double)value);
 
   value = IupGetFloat(progressbar2, "VALUE");
   value += increment*50;
   if (value > 50) value = 0; /* start over */
-  IupSetfAttribute(progressbar2, "VALUE", "%f", (double)value);
+  IupSetfAttribute(progressbar2, "VALUE", "%g", (double)value);
   return IUP_DEFAULT;
 }
 

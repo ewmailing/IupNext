@@ -31,7 +31,7 @@ int redraw(void)
   if (need_redraw)
   {
     cdCanvasBox(cdcanvas, 0, 300, 0, redraw_count/100);
-    IupSetfAttribute(gauge, "VALUE", "%f", (float)redraw_count/30000.0f);
+    IupSetfAttribute(gauge, "VALUE", "%g", (float)redraw_count/30000.0f);
 
     redraw_count++;
     if (redraw_count == 30000)

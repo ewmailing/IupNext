@@ -107,7 +107,8 @@ void* iupArrayInsert(Iarray* iarray, int index, int insert_count)
   if (index < 0 || index > iarray->count)
     return NULL;
   iupArrayAdd(iarray, insert_count);
-  memmove((unsigned char*)iarray->data + iarray->elem_size*(index + insert_count), (unsigned char*)iarray->data + iarray->elem_size*index, iarray->elem_size*insert_count);
+  if (index < iarray->count)  /* if equal, insert at the end, no need to move data */
+    memmove((unsigned char*)iarray->data + iarray->elem_size*(index + insert_count), (unsigned char*)iarray->data + iarray->elem_size*index, iarray->elem_size*insert_count);
   memset((unsigned char*)iarray->data + iarray->elem_size*index, 0, iarray->elem_size*insert_count);
   return iarray->data;
 }
@@ -117,9 +118,10 @@ void iupArrayRemove(Iarray* iarray, int index, int remove_count)
   iupASSERT(iarray!=NULL);
   if (!iarray)
     return;
-  if (index < 0 || index > iarray->count || remove_count > iarray->count)
+  if (index < 0 || index+remove_count > iarray->count)
     return;
-  memmove((unsigned char*)iarray->data + iarray->elem_size*index, (unsigned char*)iarray->data + iarray->elem_size*(index + remove_count), iarray->elem_size*(iarray->count - (index + remove_count)));
+  if (index+remove_count < iarray->count)  /* if equal, remove at the end, no need to move data */
+    memmove((unsigned char*)iarray->data + iarray->elem_size*index, (unsigned char*)iarray->data + iarray->elem_size*(index + remove_count), iarray->elem_size*(iarray->count - (index + remove_count)));
   memset((unsigned char*)iarray->data + iarray->elem_size*(iarray->count - remove_count), 0, iarray->elem_size*remove_count);
   iarray->count -= remove_count;
 }
