@@ -1334,6 +1334,10 @@ wb_usr.tree =
               link= "ctrl/iup_pplot.html"
             },
             {
+              name= {nl= "IupMglPlot"},
+              link= "ctrl/iup_mglplot.html"
+            },
+            {
               name= {nl= "IupOleControl"},
               link= "ctrl/iupole.html"
             },
