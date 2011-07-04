@@ -42,6 +42,10 @@ int iupdrvCheckMainScreen(int *width, int *height);
  * \ingroup drvinfo */
 int iupdrvGetScreenDepth(void);
 
+/** Retrieve the default desktop resolution in dpi (dots or pixels per inch).
+ * \ingroup drvinfo */
+float iupdrvGetScreenDpi(void);
+
 /** Returns a string with the system version number.
  * \ingroup drvinfo */
 char *iupdrvGetSystemVersion(void);

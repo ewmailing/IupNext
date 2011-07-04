@@ -94,6 +94,15 @@ int iupdrvGetScreenDepth(void)
   return bpp;
 }
 
+float iupdrvGetScreenDpi(void)
+{
+  float dpi;
+  HDC hDCDisplay = GetDC(NULL);
+  dpi = (float)GetDeviceCaps(hDCDisplay, LOGPIXELSY);
+  ReleaseDC(NULL, hDCDisplay);
+  return dpi;
+}
+
 void iupdrvGetCursorPos(int *x, int *y)
 {
   POINT CursorPoint;

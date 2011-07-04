@@ -210,18 +210,19 @@ NO.</p>
 &quot;BOTTOMLEFT&quot;, or &quot;BOTTOMRIGHT. Default: &quot;TOPRIGHT&quot;.</p>
 <p><b>LEGENDFONTSIZE, LEGENDFONTSTYLE</b>: the legend box text font size and style.</p>
 <h4>Grid Configuration (non inheritable)</h4>
+<p><b>GRID</b>: shows or hides the grid in both or a 
+specific axis. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>
 <p><b>GRIDLINESTYLE</b>: line style of the grid. Can be: &quot;CONTINUOUS&quot;, 
 &quot;DASHED&quot;, &quot;DOTTED&quot;, &quot;DASH_DOT&quot;, &quot;DASH_DOT_DOT&quot;. Default is &quot;CONTINUOUS&quot;.</p>
 <p><b>GRIDCOLOR</b>: grid color. Default: &quot;200 200 200&quot;.</p>
-<p><b>GRID</b>: shows or hides the grid in both or a 
-specific axis. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>
-<h4>Dataset Management (non inheritable)</h4>
+<h4>Dataset List Management (non inheritable)</h4>
 <p><b>REMOVE</b> (write-only): removes a dataset given its index.</p>
 <p><b>CLEAR</b> (write-only): removes all datasets. Value is ignored.</p>
 <p><b>COUNT</b> [read-only]: <font SIZE="3">total number of datasets.</font></p>
 <p><b>CURRENT</b>: <font SIZE="3">current  dataset index. Default is 
 -1. When a dataset is added it becomes the current dataset. The index starts at 
 0. All &quot;DS_*&quot; attributes are dependent on this value.</font></p>
+<h4>Dataset Configuration (non inheritable)</h4>
 <p><b>DS_LEGEND</b>: legend text of the current dataset. Default is dynamically 
 generated: &quot;plot 0&quot;, &quot;plot 1&quot;, &quot;plot 2&quot;, ...</p>
 <p><b>DS_COLOR</b>: color of the current dataset and it legend text. Default&nbsp; 
@@ -243,7 +244,7 @@ be set before other &quot;DS_*&quot; attributes.</p>
 <p><b>DS_SHOWVALUES</b>: enable or disable the display of the values near each 
 sample. Can be YES or NO. Default: NO.</p>
 <p><b>DS_REMOVE</b> (write-only): removes a sample from the current dataset given its index.</p>
-<p><b>DS_EDIT</b>: enable or disable the current dataset selection and editing. Can be 
+<p><b>DS_EDIT</b>: enable or disable the current dataset interactive selection and editing. Can be 
 YES or NO. Default: NO.</p>
 <h4>Axis Configuration (non inheritable) </h4>
 <p><b>AXS_XCOLOR, AXS_YCOLOR</b>: axis, ticks and label color. Default: &quot;0 0 0&quot;.</p>
@@ -265,6 +266,7 @@ Can be: LIN (liner), LOG10 (base 10), LOG2 (base 2) and LOGN (base e). Default:
 LIN.</p>
 <p><b>AXS_XFONTSIZE, AXS_YFONTSIZE, AXS_XFONTSTYLE, AXS_YFONTSTYLE</b>: axis 
 label text font size and style. See TITLEFONTSIZE and TITLEFONTSTYLE.</p>
+<h4>Axis Ticks Configuration (non inheritable)</h4>
 <p><b>AXS_XTICK, AXS_YTICK</b>: enable or disable the axis tick display. Can be 
 YES or NO. Default: YES.</p>
 <p><b>AXS_XTICKFORMAT, AXS_YTICKFORMAT</b>: axis tick number C format string. 
@@ -276,11 +278,12 @@ and TITLEFONTSTYLE.</p>
 spacing. Can be YES or NO. Default: YES.</p>
 <p><b>AXS_XTICKMAJORSPAN</b>, <b>AXS_YTICKMAJORSPAN</b>: The spacing between 
 major ticks. Default is 1 when AUTOTICK is disabled.</p>
-<p><b>AXS_XTICKDIVISION</b>, <b>AXS_YTICKDIVISION</b>: number of ticks between 
+<p><b>AXS_XTICKDIVISION</b>, <b>AXS_YTICKDIVISION</b>: number of minor ticks 
+intervals between 
 each major tick. Default is 5 when AUTOTICK is disabled.</p>
 <p><b>AXS_XAUTOTICKSIZE, AXS_YAUTOTICKSIZE</b>: configures <font SIZE="3">the 
 automatic tick size.</font> Can be YES or NO. Default: YES.</p>
-<p><b>AXS_XTICKSIZE, AXS_YTICKSIZE</b>: <font SIZE="3">size of ticks in pixels.
+<p><b>AXS_XTICKSIZE, AXS_YTICKSIZE</b>: <font SIZE="3">size of minor ticks in pixels.
 </font>Default is 5 when AUTOTICKSIZE is disabled.</p>
 <p><b>AXS_XTICKMAJORSIZE, AXS_YTICKMAJORSIZE</b>: <font SIZE="3">size of major 
 ticks in pixels. </font>Default is 8 when AUTOTICKSIZE is disabled.</p>
@@ -433,7 +436,8 @@ supported.</p>
 </div>
 <h3><a name="SeeAlso">See Also</a></h3>
 
-<p><a href="../elem/iupcanvas.html">IupCanvas</a></p>
+<p><a href="../elem/iupcanvas.html">IupCanvas</a>, <a href="iup_mglplot.html">
+IupMglPlot</a></p>
 
 </body>
 

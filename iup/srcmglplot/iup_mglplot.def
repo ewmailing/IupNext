@@ -1,0 +1,15 @@
+EXPORTS
+  IupMglPlotOpen
+  IupMglPlot
+  IupMglPlotBegin
+  IupMglPlotAdd
+  IupMglPlotAddStr
+  IupMglPlotEnd
+  IupMglPlotInsertStr
+  IupMglPlotInsert
+  IupMglPlotTransform
+  IupMglPlotPaintTo
+  IupMglPlotInsertStrPoints
+  IupMglPlotInsertPoints
+  IupMglPlotAddPoints
+  IupMglPlotAddStrPoints

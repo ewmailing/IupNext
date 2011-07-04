@@ -2671,6 +2671,8 @@ void PPainterIup::Draw(int force, int flush)
     return;
 
 #ifdef USE_OPENGL
+  if (!IupGLIsCurrent(_ih))
+    force = 1;
   IupGLMakeCurrent(_ih);
 #endif
   cdCanvasActivate(_cddbuffer);

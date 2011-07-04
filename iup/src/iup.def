@@ -194,6 +194,7 @@ iupdrvGetSystemFont
 iupdrvGetScrollbarSize
 iupdrvGetScreenSize
 iupdrvGetScreenDepth
+iupdrvGetScreenDpi
 iupdrvGetKeyState
 iupdrvGetFullSize
 iupdrvGetDisplay

@@ -210,6 +210,13 @@ char *IupGetGlobal(const char *name)
     sprintf(str, "%d", bpp);
     return str;
   }
+  if (iupStrEqual(name, "SCREENDPI"))
+  {
+    char *str = iupStrGetMemory(50);
+    float dpi = iupdrvGetScreenDpi();
+    sprintf(str, "%g", dpi);
+    return str;
+  }
   if (iupStrEqual(name, "SYSTEMLOCALE"))
     return iupdrvLocaleInfo();
 
