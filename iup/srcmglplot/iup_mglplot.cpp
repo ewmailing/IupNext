@@ -715,7 +715,7 @@ static float iMglPlotGetAttribFloatNAN(Ihandle* ih, const char* name)
 
 static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 {               
-  char style[64];
+  char style[64] = "";
   char* value;
 
   //TODO
@@ -728,8 +728,6 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   {
     if (iupAttribGetBoolean(ih, "DATAGRID"))   // Default false
       { style[0] = '#'; style[1] = 0; }        // Here means wire
-    else
-      style[0] = 0;
 
     value = iupAttribGet(ih, "ISOVALUE");
     if (value)
@@ -748,8 +746,6 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   {
     if (iupAttribGetBoolean(ih, "DATAGRID"))  // Default false
       { style[0] = '#'; style[1] = 0; }
-    else
-      style[0] = 0;
 
     char* slicedir = iupAttribGetStr(ih, "SLICEDIR"); //Default "XYZ"
     int project = iupAttribGetBoolean(ih, "PROJECT");  //Default false
@@ -776,8 +772,6 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   {
     if (iupAttribGetBoolean(ih, "DATAGRID"))
       { style[0] = '#'; style[1] = 0; }
-    else
-      style[0] = 0;
 
     int contourcount = iupAttribGetInt(ih, "CONTOURCOUNT");  //Default 7
     int countourfilled = iupAttribGetBoolean(ih, "CONTOURFILLED");  //Default false
@@ -823,8 +817,6 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_GRID"))
   {
-    style[0] = 0;
-
     char* slicedir = iupAttribGetStr(ih, "SLICEDIR"); //Default "XYZ"
 
     int slicex = iupAttribGetInt(ih, "SLICEX");  //Default -1 (central)
@@ -836,8 +828,6 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_CLOUD"))
   {
-    style[0] = 0;
-
     float alpha = iupAttribGetFloat(ih, "OVERALLALPHA");  //Default 1
     int cubes = iupAttribGetBoolean(ih, "CLOUDCUBES");  //Default true
     if (cubes)
@@ -849,7 +839,7 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 
 static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 {               
-  char style[64];
+  char style[64] = "";
 
   //TODO
   //gr->Light(true);
@@ -859,13 +849,10 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 
   if (iupStrEqualNoCase(ds->dsMode, "PLANAR_MESH"))
   {
-    style[0] = 0;
     gr->Mesh(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_FALL"))
   {
-    style[0] = 0;
-
     char* falldir = iupAttribGetStr(ih, "DIR"); //Default "Y"
     if (tolower(*falldir) == 'x')
       { style[0] = 'x'; style[1] = 0; }
@@ -874,8 +861,6 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_BELT"))
   {
-    style[0] = 0;
-
     char* beltdir = iupAttribGetStr(ih, "DIR"); //Default "Y"
     if (tolower(*beltdir) == 'x')
       { style[0] = 'x'; style[1] = 0; }
@@ -884,8 +869,6 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_SURFACE"))
   {
-    style[0] = 0;
-
     if (iupAttribGetBoolean(ih, "DATAGRID"))   // Default false
       { style[0] = '#'; style[1] = 0; }
 
@@ -893,8 +876,6 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_BOXES"))
   {
-    style[0] = 0;
-
     if (iupAttribGetBoolean(ih, "DATAGRID"))   // Default false
       { style[0] = '#'; style[1] = 0; }   // means box lines, as wire
 
@@ -902,12 +883,10 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_TILE"))
   {
-    style[0] = 0;
     gr->Tile(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_DENSITY"))
   {
-    style[0] = 0;
     float val = iMglPlotGetAttribFloatNAN(ih, "PLANARVALUE");   // Default NAN
     gr->Dens(*ds->dsX, style, val);
   }
@@ -941,7 +920,7 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 
 static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 {               
-  char style[64];
+  char style[64] = "";
 
   iMglPlotConfigColor(ih, gr, ds->dsColor);
   // Some 1D plots depend on this
@@ -961,12 +940,12 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (iupStrEqualNoCase(ds->dsMode, "MARK")) 
       style[0] = ' '; // No line
 
-    if (ds->dsDim == 1)
-      gr->Plot(*ds->dsX, style);
+    if (ds->dsDim == 3)
+      gr->Plot(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
       gr->Plot(*ds->dsX, *ds->dsY, style);
-    else if (ds->dsDim == 3)
-      gr->Plot(*ds->dsX, *ds->dsY, *ds->dsZ, style);
+    else
+      gr->Plot(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "RADAR"))
   {
@@ -976,73 +955,105 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       strcat(style, "#");
 
-    if (ds->dsDim == 1)
-      gr->Radar(*ds->dsX, style);
+    gr->Radar(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "AREA"))
   {
-    style[0] = 0;
-
-    if (ds->dsDim == 1)
-      gr->Area(*ds->dsX, style);
+    if (ds->dsDim == 3)
+      gr->Area(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
       gr->Area(*ds->dsX, *ds->dsY, style);
-    else if (ds->dsDim == 3)
-      gr->Area(*ds->dsX, *ds->dsY, *ds->dsZ, style);
+    else
+      gr->Area(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "BAR"))
   {
-    style[0] = 0;
+  //TODO
+  //BAR cropped at min and max
+    float barwidth = iupAttribGetFloat(ih, "BARWIDTH");   // Default 0.7
+    gr->SetBarWidth(barwidth);
 
-    if (ds->dsDim == 1)
-      gr->Bars(*ds->dsX, style);
+    if (ds->dsDim == 3)
+      gr->Bars(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
       gr->Bars(*ds->dsX, *ds->dsY, style);
-    else if (ds->dsDim == 3)
-      gr->Bars(*ds->dsX, *ds->dsY, *ds->dsZ, style);
+    else
+      gr->Bars(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "BARHORIZONTAL"))
   {
-    style[0] = 0;
+    float barwidth = iupAttribGetFloat(ih, "BARWIDTH");   // Default 0.7
+    gr->SetBarWidth(barwidth);
 
-    if (ds->dsDim == 1)
-      gr->Barh(*ds->dsX, style);
-    else if (ds->dsDim == 2)
+    if (ds->dsDim == 2)
       gr->Barh(*ds->dsX, *ds->dsY, style);
+    else
+      gr->Barh(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "STEP"))
   {
     int marks = iupAttribGetBoolean(ih, "MARKS");  //Default false
     iMglPlotConfigDataSetLineStyle(ds, gr, style, marks);
 
-    if (ds->dsDim == 1)
-      gr->Step(*ds->dsX, style);
+    if (ds->dsDim == 3)
+      gr->Step(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
       gr->Step(*ds->dsX, *ds->dsY, style);
-    else if (ds->dsDim == 3)
-      gr->Step(*ds->dsX, *ds->dsY, *ds->dsZ, style);
+    else
+      gr->Step(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "STEM"))
   {
     int marks = iupAttribGetBoolean(ih, "MARKS");  //Default false
     iMglPlotConfigDataSetLineStyle(ds, gr, style, marks);
 
-    if (ds->dsDim == 1)
-      gr->Stem(*ds->dsX, style);
+    if (ds->dsDim == 3)
+      gr->Stem(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
       gr->Stem(*ds->dsX, *ds->dsY, style);
-    else if (ds->dsDim == 3)
-      gr->Stem(*ds->dsX, *ds->dsY, *ds->dsZ, style);
+    else
+      gr->Stem(*ds->dsX, style);
   }
+  else if (iupStrEqualNoCase(ds->dsMode, "CHART"))
+  {
+    //TODO SetPal
 
-  //TODO
-  //  Chart
-  //  Crust
-  //  Dots
-  //  Dual Ploting...
-  //BARWIDTH/BAR min-max
+    if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
+      strcat(style, "#");
 
-  //TODO pots that need two datasets: region, tens, error, flow, pipe, ...
+    int piechart = iupAttribGetBoolean(ih, "PIECHART");  //Default false
+    if (piechart)
+    {
+      gr->SetFunc("(y+1)/2*cos(pi*x)", "(y+1)/2*sin(pi*x)");
+      gr->Chart(*ds->dsX, style);
+      gr->SetFunc(NULL, NULL);
+    }
+    else
+      gr->Chart(*ds->dsX, style);
+  }
+  else if (iupStrEqualNoCase(ds->dsMode, "BOXPLOT"))
+  {
+    int marks = iupAttribGetBoolean(ih, "MARKS");  //Default false
+    iMglPlotConfigDataSetLineStyle(ds, gr, style, marks);
+
+    float barwidth = iupAttribGetFloat(ih, "BARWIDTH");   // Default 0.7
+    gr->SetBarWidth(barwidth);
+
+    if (ds->dsDim == 2)
+      gr->BoxPlot(*ds->dsX, *ds->dsY, style);
+    else
+      gr->BoxPlot(*ds->dsX, style);
+  }
+  else if (iupStrEqualNoCase(ds->dsMode, "CRUST"))
+  {
+    if (ds->dsDim == 3)
+      gr->Crust(*ds->dsX, *ds->dsY, *ds->dsZ, style);
+  }
+  else if (iupStrEqualNoCase(ds->dsMode, "DOTS"))
+  {
+    if (ds->dsDim == 3)
+      gr->Dots(*ds->dsX, *ds->dsY, *ds->dsZ, style);
+  }
 }
 
 static void iMglPlotDrawData(Ihandle* ih, mglGraph *gr)
@@ -3873,6 +3884,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "PROJECTVALUEZ", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PROJECT", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ISOCOUNT", NULL, NULL, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BARWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "0.7", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BOX", iMglPlotGetBoxAttrib, iMglPlotSetBoxAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BOXTICKS", iMglPlotGetBoxTicksAttrib, iMglPlotSetBoxTicksAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -4012,6 +4024,12 @@ Rafael:
 	gr->Zoom(x1,y1,x2,y2);  2D and 3D 
 
 Depois:
+  Light/Rotate
+  Colorbar/Cmin-Cmax
+  TranspType/Transparent
+  reference datasets
+  Legend
+  ---------------------
   teste IupMglPlotLoadData e IupMglPlotSetFromFormula, 
   teste IupMglPlotPaintTo  SVG, EPS e RGB
   teste BOLD e ITALIC
@@ -4020,18 +4038,13 @@ Depois:
   exemplos com os recursos novos
   Binding Lua
   rever IupGraph
-  Light
-  Rotate
-  Colorbar/Cmin-Cmax
-  TranspType/Transparent
-  reference datasets
-  Legend
 
 Talvez:
   cutting
   curvilinear coordinates
   Ternary
   StickPlot
+  plots that need two datasets: region, tens, error, flow, pipe, ...
 
 MathGL:
   How to improve text quality?  native fonts?
