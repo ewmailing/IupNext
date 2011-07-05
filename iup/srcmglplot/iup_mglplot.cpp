@@ -172,7 +172,7 @@ static bool iMglPlotIsVolumetricData(IdataSet* ds)
   return (ds->dsDim == 1 && ds->dsX->nz>1);
 }
 
-static bool iMglPlotIsGraph3D(Ihandle* ih)
+static bool iMglPlotIsView3D(Ihandle* ih)
 {
   int i;
   for (i=0; i< ih->data->dataSetCount; i++)
@@ -591,7 +591,7 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
     iMglPlotDrawAxis(ih, gr, 'x', ih->data->xAxis);
   if(ih->data->yAxis.axShow)  
     iMglPlotDrawAxis(ih, gr, 'y', ih->data->yAxis);
-  if(ih->data->zAxis.axShow && iMglPlotIsGraph3D(ih))
+  if(ih->data->zAxis.axShow && iMglPlotIsView3D(ih))
     iMglPlotDrawAxis(ih, gr, 'z', ih->data->zAxis);
 
   // Reset to default
@@ -713,16 +713,23 @@ static float iMglPlotGetAttribFloatNAN(Ihandle* ih, const char* name)
   return val;
 }
 
+static void iMglPlotConfigView3D(Ihandle* ih, mglGraph *gr)
+{
+  //TODO
+  //gr->Light(true);
+  //gr->Light(1,mglPoint(0,1,0),’c’);
+
+  //TODO
+//	gr->View(tet,phi);   3D
+//	gr->Perspective(per);  3D
+//	gr->Zoom(x1,y1,x2,y2);  2D and 3D 
+//  gr->Rotate(40, 60);
+}
+
 static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 {               
   char style[64] = "";
   char* value;
-
-  //TODO
-  //gr->Light(true);
-  //gr->Light(1,mglPoint(0,1,0),’c’);
-  //gr->Rotate(40, 60);
-  //gr->Fog(1);
 
   if (iupStrEqualNoCase(ds->dsMode, "VOLUME_ISOSURFACE"))
   {
@@ -840,12 +847,6 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 {               
   char style[64] = "";
-
-  //TODO
-  //gr->Light(true);
-  //gr->Light(1,mglPoint(0,1,0),’c’);
-  //gr->Rotate(40, 60);
-  //gr->Fog(1);
 
   if (iupStrEqualNoCase(ds->dsMode, "PLANAR_MESH"))
   {
@@ -968,8 +969,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "BAR"))
   {
-  //TODO
-  //BAR cropped at min and max
+    //TODO improve bars cropped at min and max
     float barwidth = iupAttribGetFloat(ih, "BARWIDTH");   // Default 0.7
     gr->SetBarWidth(barwidth);
 
@@ -1059,6 +1059,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 static void iMglPlotDrawData(Ihandle* ih, mglGraph *gr)
 {
   int i;
+
+  if (iMglPlotIsView3D(ih))
+    iMglPlotConfigView3D(ih, gr);
 
   for(i = 0; i < ih->data->dataSetCount; i++)
   {
@@ -4015,20 +4018,21 @@ void IupMglPlotOpen(void)
 }
 
 /* TODO
+
 Rafael:
-  Callbacks
-  Interaction
-  DS_EDIT
-	gr->View(tet,phi);   3D
-	gr->Perspective(per);  3D
-	gr->Zoom(x1,y1,x2,y2);  2D and 3D 
+  Interaction + iMglPlotConfigView3D
+  DS_EDIT+Callbacks
 
 Depois:
-  Light/Rotate
+  //gr->Light(true);
+  //gr->Light(1,mglPoint(0,1,0),’c’);
   Colorbar/Cmin-Cmax
+  SetPal
+
+  Legend
+  ---------------------
   TranspType/Transparent
   reference datasets
-  Legend
   ---------------------
   teste IupMglPlotLoadData e IupMglPlotSetFromFormula, 
   teste IupMglPlotPaintTo  SVG, EPS e RGB
