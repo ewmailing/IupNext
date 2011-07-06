@@ -94,7 +94,8 @@ struct _IcontrolData
 
   int w, h;
   float dpi;
-  bool redraw, alpha;
+  bool redraw, transparent;
+  float alpha;
   mglColor bgColor, fgColor;
   char FontDef[32];     /* aux, obtained from FONT */
   float FontSize;
@@ -336,7 +337,7 @@ static void iMglPlotSetFunc(mglFormula* *func, const char* scale)
   *func = new mglFormula(scale);
 }
 
-static void iMglPlotConfigAxisTicks(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis, float min, float max)
+static void iMglPlotConfigAxisTicks(Ihandle* ih, mglGraph *gr, char dir, const Iaxis& axis, float min, float max)
 {
   if (!axis.axTickShow)
   {
@@ -494,6 +495,12 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
   iMglPlotConfigAxisTicks(ih, gr, 'y', ih->data->yAxis, gr->Min.y, gr->Max.y);
   iMglPlotConfigAxisTicks(ih, gr, 'z', ih->data->zAxis, gr->Min.z, gr->Max.z);
 
+  // By default set CMin-Max to Z Min-Max
+  gr->Cmin = gr->Min.z;	gr->Cmax = gr->Max.z;
+  char* value = iupAttribGetStr(ih, "COLORBARRANGE");
+  if (value)
+    iupStrToFloatFloat(value, &(gr->Cmin), &(gr->Cmax), ':');
+
   gr->SetOrigin(ih->data->xAxis.axOrigin, ih->data->yAxis.axOrigin, ih->data->zAxis.axOrigin);
 
   gr->RecalcBorder();
@@ -596,6 +603,16 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
 
   // Reset to default
   gr->SetFunc(NULL, NULL, NULL);
+
+  if (iupAttribGetBoolean(ih, "COLORBAR"))
+  {
+    int pos = 0; // RIGHT
+    char* value = iupAttribGetStr(ih, "COLORBARPOS");
+	  if (iupStrEqualNoCase(value,"LEFT"))	pos = 1;
+	  else if(iupStrEqualNoCase(value,"TOP"))	pos = 2;
+	  else if(iupStrEqualNoCase(value,"BOTTOM"))	pos = 3;
+	  gr->Colorbar(pos, 0, 0, 1, 1);
+  }
 }
 
 static void iMglPlotDrawGrid(Ihandle* ih, mglGraph *gr)
@@ -715,9 +732,10 @@ static float iMglPlotGetAttribFloatNAN(Ihandle* ih, const char* name)
 
 static void iMglPlotConfigView3D(Ihandle* ih, mglGraph *gr)
 {
-  //TODO
-  //gr->Light(true);
-  //gr->Light(1,mglPoint(0,1,0),’c’);
+  if (iupAttribGetBoolean(ih, "LIGHT"))   // Default false
+    gr->Light(true);
+  else
+    gr->Light(false);
 
   //TODO
 //	gr->View(tet,phi);   3D
@@ -746,7 +764,7 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     else
     {
       int isocount = iupAttribGetInt(ih, "ISOCOUNT");  //Default 3
-      gr->Surf3(*ds->dsX, style, isocount);
+      gr->Surf3(*ds->dsX, style, isocount); // plots N isosurfaces, from Cmin to Cmax
     }
   }
   else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_DENSITY"))
@@ -780,7 +798,7 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (iupAttribGetBoolean(ih, "DATAGRID"))
       { style[0] = '#'; style[1] = 0; }
 
-    int contourcount = iupAttribGetInt(ih, "CONTOURCOUNT");  //Default 7
+    int contourcount = iupAttribGetInt(ih, "CONTOURCOUNT");  //Default 7, plots N countours, from Cmin to Cmax
     int countourfilled = iupAttribGetBoolean(ih, "CONTOURFILLED");  //Default false
     char* slicedir = iupAttribGetStr(ih, "SLICEDIR"); //Default "XYZ"
     int project = iupAttribGetBoolean(ih, "PROJECT");  //Default false
@@ -835,12 +853,11 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_CLOUD"))
   {
-    float alpha = iupAttribGetFloat(ih, "OVERALLALPHA");  //Default 1
     int cubes = iupAttribGetBoolean(ih, "CLOUDCUBES");  //Default true
     if (cubes)
-      gr->Cloud(*ds->dsX, style, alpha);
+      gr->Cloud(*ds->dsX, style, -1);   // Use AlphaDef
     else
-      gr->CloudP(*ds->dsX, style, alpha);
+      gr->CloudP(*ds->dsX, style, -1);  // Use AlphaDef
   }
 }
 
@@ -893,7 +910,7 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_CONTOUR"))
   {
-    int contourcount = iupAttribGetInt(ih, "CONTOURCOUNT");  //Default 7
+    int contourcount = iupAttribGetInt(ih, "CONTOURCOUNT");  //Default 7, plots N countours, from Cmin to Cmax
     int countourfilled = iupAttribGetBoolean(ih, "CONTOURFILLED");  //Default false
     float val = iMglPlotGetAttribFloatNAN(ih, "PLANARVALUE");  // Default NAN
     if (countourfilled)
@@ -903,7 +920,7 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_AXIALCONTOUR"))
   {
-    int axialcount = iupAttribGetInt(ih, "AXIALCOUNT");  //Default 3
+    int axialcount = iupAttribGetInt(ih, "AXIALCOUNT");  //Default 3, plots N countours, from Cmin to Cmax
     gr->Axial(*ds->dsX, style, axialcount);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_GRADIENTLINES"))
@@ -924,7 +941,8 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   char style[64] = "";
 
   iMglPlotConfigColor(ih, gr, ds->dsColor);
-  // Some 1D plots depend on this
+
+  // Some 1D plots depend on this, we changed SetPal for this to work
   gr->SetPalNum(1);
   gr->SetPalColor(0, ds->dsColor.r, ds->dsColor.g, ds->dsColor.b);
 
@@ -1016,7 +1034,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "CHART"))
   {
-    //TODO SetPal
+    //TODO Chart does not use SetPalette
 
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       strcat(style, "#");
@@ -1111,18 +1129,27 @@ static void iMglPlotDrawTitle(Ihandle* ih, mglGraph *gr, const char* title)
 
 static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
 {
+  // Since this function will be used to draw on screen and
+  // on metafile and bitmaps, all mglGraph control must be done here
+  // and can NOT be done inside the attribute methods
+
+  // Only one plot using all viewport
   gr->SubPlot(1, 1, 0);
 
+  // Do NOT automatically set Org, we will set Origin
   gr->AutoOrg = false;
 
   // larger values, smaller plots
   // 1.0 show exactly the dataset area
   gr->PlotFactor = 1.4f;  // This zooms everything, except title   // TODO compare this to Zoom()
                           
-  if (ih->data->alpha)
-    gr->Alpha(true);
+  gr->Alpha(true);
+  gr->SetAlphaDef(ih->data->alpha);  // Will be used only if transparent is enabled
+
+  if (ih->data->transparent)
+    gr->SetTransparent(true);
   else
-    gr->Alpha(false);
+    gr->SetTransparent(false);
 
   iMglPlotConfigFontDef(ih, gr);
 
@@ -2902,16 +2929,26 @@ static char* iMglPlotGetAxisZOriginAttrib(Ihandle* ih)
 
 static int iMglPlotSetAlphaAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrBoolean(value))
-    ih->data->alpha = true;
-  else
-    ih->data->alpha = false;
-  return 0;
+  return iMglPlotSetFloat(ih, value, ih->data->alpha);
 }
 
 static char* iMglPlotGetAlphaAttrib(Ihandle* ih)
 {
-  if (ih->data->alpha)
+  return iMglPlotGetFloat(ih->data->alpha);
+}
+
+static int iMglPlotSetTransparentAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->transparent = true;
+  else
+    ih->data->transparent = false;
+  return 0;
+}
+
+static char* iMglPlotGetTransparentAttrib(Ihandle* ih)
+{
+  if (ih->data->transparent)
     return "1";
   else
     return "0";
@@ -3776,7 +3813,7 @@ static int iMglPlotCreateMethod(Ihandle* ih, void **params)
   ih->data->legendPosition = IUP_MGLPLOT_TOPRIGHT;
   ih->data->legendBox = true;
   ih->data->boxTicks = true;
-  ih->data->alpha = true;
+  ih->data->alpha = 0.5f;
 
   ih->data->legendFontSizeFactor = 0.8f;
   ih->data->titleFontSizeFactor = 1.6f;
@@ -3829,7 +3866,8 @@ static Iclass* iMglPlotNewClass(void)
 
   /* IupMglPlot only */
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iMglPlotSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ALPHA", iMglPlotGetAlphaAttrib, iMglPlotSetAlphaAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALPHA", iMglPlotGetAlphaAttrib, iMglPlotSetAlphaAttrib, IUPAF_SAMEASSYSTEM, "0.5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TRANSPARENT", iMglPlotGetTransparentAttrib, iMglPlotSetTransparentAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANTIALIAS", iMglPlotGetAntialiasAttrib, iMglPlotSetAntialiasAttrib, "Yes", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MGLFONT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
@@ -3877,7 +3915,6 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "CONTOURCOUNT", NULL, NULL, IUPAF_SAMEASSYSTEM, "7", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DIR", NULL, NULL, IUPAF_SAMEASSYSTEM, "Y", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOUDCUBES", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OVERALLALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SLICEX", NULL, NULL, IUPAF_SAMEASSYSTEM, "-1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SLICEY", NULL, NULL, IUPAF_SAMEASSYSTEM, "-1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SLICEZ", NULL, NULL, IUPAF_SAMEASSYSTEM, "-1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -3888,6 +3925,12 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "PROJECT", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ISOCOUNT", NULL, NULL, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BARWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "0.7", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "LIGHT", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "COLORBAR", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COLORBARPOS", NULL, NULL, IUPAF_SAMEASSYSTEM, "LEFT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COLORBARRANGE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BOX", iMglPlotGetBoxAttrib, iMglPlotSetBoxAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BOXTICKS", iMglPlotGetBoxTicksAttrib, iMglPlotSetBoxTicksAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -4024,30 +4067,25 @@ Rafael:
   DS_EDIT+Callbacks
 
 Depois:
-  //gr->Light(true);
-  //gr->Light(1,mglPoint(0,1,0),’c’);
-  Colorbar/Cmin-Cmax
   SetPal
+  SetScheme
 
   Legend
   ---------------------
-  TranspType/Transparent
   reference datasets
-  ---------------------
   teste IupMglPlotLoadData e IupMglPlotSetFromFormula, 
   teste IupMglPlotPaintTo  SVG, EPS e RGB
   teste BOLD e ITALIC
   explicar pixels x plot x normalized coordinates
   documentar suporte a Tek formulas nas strings
+  documentar DS_MODE Options
   exemplos com os recursos novos
   Binding Lua
   rever IupGraph
 
 Talvez:
-  cutting
   curvilinear coordinates
   Ternary
-  StickPlot
   plots that need two datasets: region, tens, error, flow, pipe, ...
 
 MathGL:

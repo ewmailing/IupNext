@@ -58,7 +58,7 @@ Lua control
   library (iuplua_mglplot).</p>
 <h3>Guide</h3>
 <p>Each plot can contain 2 or 3 <b>axes</b> (X and Y and/or Z), a <b>title</b>, a <b>
-legend</b> <b>box</b>, a <b>grid</b>, a <b>dataset</b> <b>area</b> and as many
+legend</b> <b>box</b>, a <strong>colorbar</strong>, a <b>grid</b>, a <b>dataset</b> <b>area</b> and as many
 <b>datasets</b> you want. </p>
 <p>Each dataset is added using the <b>IupMglPlotAdd*</b>, <b>IupMglPlotInsert*</b> 
 and<b> IupMglPlotSet* </b>functions. All other plot 
@@ -72,6 +72,8 @@ only plotted inside the dataset area.</p>
 <p>The <b>legend box</b> is a list of the dataset names, each one drawn with the 
 same color of the correspondent dataset. The box is located in one of the four 
 corners of the dataset area.</p>
+<p>The <strong>colorbar</strong> is an additional axis showing the the colors 
+used to pseudo color the data for some plot modes.</p>
 <p>The <b>grid</b> is automatically spaced accordingly the current axis 
 displayed values.</p>
 <p>The <b>title</b> is always centered in the top of the plot.</p>
@@ -282,10 +284,10 @@ pixels per inch. If <strong>dpi</strong> is 0 the screen resolution is used.</p>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p><b>ALPHA </b>(non inheritable): Enable or disable the transparency support. 
-Default: Yes.</p>
+<p><b>ALPHA </b>(non inheritable): Alpha value for overall tranaprency. 
+Used only when TRANSPARENT=Yes. Default: 0.5</p>
 <p><strong>ANTIALIAS</strong> (non inheritable): Enable or disable the 
-anti-aliasing support. For screen display only. Works only if ALPHA=Yes. Default: Yes.</p>
+anti-aliasing support. For screen display only. Default: Yes.</p>
 <p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b>:  the background color. 
 Default: &quot;255 255 
 255&quot;.</p>
@@ -296,8 +298,12 @@ used in all text elements of the plot: title, legend and labels. Default: &quot;
 <p><b>REDRAW</b> (write-only) (non inheritable): redraw the plot and update the display. Value is 
 ignored. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
 attributes without visual output. If the element is redraw by the system because 
-of a redraw event or by a call to <strong>IupUpdate</strong>, it will have the 
+of a redraw event or by a call to IupUpdate, it will have the 
 same effect as if REDRAW was set.</p>
+
+
+<p><b>TRANSPARENT </b>(non inheritable): Enable or disable the transparency support. 
+Default: No.</p>
 <h4>Title Configuration (non inheritable)</h4>
 <p><b>TITLE </b>(non inheritable): the  title. Located always at the top center area.</p>
 <p><b>TITLECOLOR</b>: title color. Default: FGCOLOR.</p>
@@ -319,6 +325,14 @@ If not defined the FONT attribute will be used instead. Set to NULL, to use the
 FONT attribute values. Style can be &quot;PLAIN&quot;, &quot;BOLD&quot;, &quot;ITALIC&quot; or &quot;BOLDITALIC&quot;.</p>
 <p><b>LEGENDPOS</b>: legend box position. Can be: &quot;TOPLEFT&quot;, &quot;TOPRIGHT&quot;, 
 &quot;BOTTOMLEFT&quot;, or &quot;BOTTOMRIGHT. Default: &quot;TOPRIGHT&quot;.</p>
+<h4>Colorbar Configuration (non inheritable)</h4>
+<p><strong>COLORBAR</strong>: shows or hides the colorbar. Can be YES or NO. 
+Default: NO. The displayed c</p>
+<p><strong>COLORBAR</strong><b>POS</b>: colorbar position. Can be: &quot;LEFT, &quot;TOP&quot;, &quot;RIGHT&quot;, 
+&quot;BOTTOM&quot;. Default: &quot;RIGHT&quot;.</p>
+<p><strong>COLORBARRANGE</strong>: interval of data values used for pseudo 
+coloring in some plot modes. Must be &quot;min:max&quot; (&quot;%g:%g in C). Default from 
+AXS_ZMIN to AXS_ZMAX.</p>
 <h4>Grid Configuration (non inheritable)</h4>
 <p><b>GRID</b>: shows or hides the grid in both or a 
 specific axis. Can be: XYZ (YES), X, Y, Z, XY, XZ, YZ or NO. Default: NO. The 
@@ -351,7 +365,7 @@ each dimension &quot;&lt;count_x&gt;x&lt;count_y&gt;x&lt;count_y&gt;&quot;, for 
 or &quot;512x512x512&quot; (volumetric). </p>
 <p><b>DS_EDIT</b>: enable or disable the current dataset interactive selection and editing. Can be 
 YES or NO. Default: NO. Planar and volumetric data can NOT be interactively 
-editted.</p>
+edited.</p>
 <p><b>DS_LEGEND</b>: legend text of the current dataset. Default is dynamically 
 generated: &quot;plot 0&quot;, &quot;plot 1&quot;, &quot;plot 2&quot;, ...</p>
 <p><b>DS_LINESTYLE</b>: line style of the current dataset. Can be: &quot;CONTINUOUS&quot;, 

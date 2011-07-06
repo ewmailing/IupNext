@@ -15,6 +15,7 @@ if "%1"=="dll10_64" goto stub_dll10_64
 if "%1"=="dllg4" goto stub_dllg4
 if "%1"=="dllw4" goto stub_dllw4
 if "%1"=="all" goto all_dll
+if "%1"=="all-dll" goto all_dll
 goto fim
 
 :stub_dll6
