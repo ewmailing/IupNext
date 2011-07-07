@@ -218,6 +218,7 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[3], "AXS_XTICKAUTO", "NO");   // Not supported when names are used
 //  IupSetAttribute(plot[3], "AXS_XTICKMAJORSPAN", "-5"); // idem
 //  IupSetAttribute(plot[3], "AXS_XTICKVALUESROTATION", "YES");  // NOT working
+  IupSetAttribute(plot[3], "AXS_XCROSSORIGIN", "NO");
   
 
   /* PLOT 4 - MakeExamplePlot6 */

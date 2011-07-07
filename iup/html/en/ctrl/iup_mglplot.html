@@ -327,12 +327,14 @@ FONT attribute values. Style can be &quot;PLAIN&quot;, &quot;BOLD&quot;, &quot;I
 &quot;BOTTOMLEFT&quot;, or &quot;BOTTOMRIGHT. Default: &quot;TOPRIGHT&quot;.</p>
 <h4>Colorbar Configuration (non inheritable)</h4>
 <p><strong>COLORBAR</strong>: shows or hides the colorbar. Can be YES or NO. 
-Default: NO. The displayed c</p>
+Default: NO.</p>
 <p><strong>COLORBAR</strong><b>POS</b>: colorbar position. Can be: &quot;LEFT, &quot;TOP&quot;, &quot;RIGHT&quot;, 
 &quot;BOTTOM&quot;. Default: &quot;RIGHT&quot;.</p>
 <p><strong>COLORBARRANGE</strong>: interval of data values used for pseudo 
 coloring in some plot modes. Must be &quot;min:max&quot; (&quot;%g:%g in C). Default from 
-AXS_ZMIN to AXS_ZMAX.</p>
+AXS_?MIN to AXS_?MAX according to COLORBARAXISTICKS.</p>
+<p><strong>COLORBARAXISTICKS</strong>: axis used as reference for colorbar 
+ticks. Default: Z</p>
 <h4>Grid Configuration (non inheritable)</h4>
 <p><b>GRID</b>: shows or hides the grid in both or a 
 specific axis. Can be: XYZ (YES), X, Y, Z, XY, XZ, YZ or NO. Default: NO. The 
@@ -620,7 +622,7 @@ supported.</p>
 data. New ALPHA, ANTIALIAS, DS_DIMENSION, LEGENDBOX, BOX, 
 BOXTICKS, 
 BOXCOLOR, AXS_*ORIGIN, AXS_?LABELPOSITION, AXS_?LABELROTATION, 
-AXS_?TICKVALUESROTATION, LEGENDCOLOR, TITLECOLOR attributes. Many new DS_MODE 
+AXS_?TICKVALUESROTATION, LEGENDCOLOR, TITLECOLOR, LIGHT, COLORBAR*, COLORSCHEME attributes. Many new DS_MODE 
 options.</p>
 <p>USE_IMAGERGB and USE_GDI+ attributes are NOT supported. MARGIN* attributes 
 are NOT supported. AXS_?SCALE attribute does NOT support the LOG2 and LOGN 

@@ -135,7 +135,7 @@ enum{	// Codes for warnings/messages
 #define MGL_DEF_PAL	"bgrcmyhlnqeupH"	// default palette
 #endif
 #ifndef MGL_DEF_COL
-#define MGL_DEF_COL "@wkrgbcymhRGBCYMHWlenuqpLENUQP"
+#define MGL_DEF_COL "wkrgbcymhRGBCYMHWlenuqpLENUQP"
 #endif
 //-----------------------------------------------------------------------------
 struct mglThread

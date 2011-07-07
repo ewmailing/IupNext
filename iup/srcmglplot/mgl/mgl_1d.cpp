@@ -1114,7 +1114,7 @@ void mglGraph::Chart(const mglData &a, const char *cols)
 	long nc=0;			// number of colors
 	for(i=0;i<long(strlen(cols));i++)
 	{
-		if(strchr(MGL_DEF_COL" ",cols[i]))  // Default colors and space
+		if(strchr(MGL_DEF_COL,cols[i]))  // OLD there was a space here
 		{	c[nc].Set(cols[i]);	nc++;	}
 		else if(cols[i]=='#')	wire = true;
 	}

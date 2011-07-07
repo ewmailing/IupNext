@@ -261,7 +261,7 @@ void mglGraph::SetScheme(const char *s, bool face)
 {
 	unsigned i;
 	mglColor c;
-	const char *col = "kwrgbcymhWRGBCYMHlenpquLENPQU";
+	const char *col = MGL_DEF_COL; // OLD why use a different order? "kwrgbcymhWRGBCYMHlenpquLENPQU";
 	if(!s || s[0]==0 || s[0]==':')		return;
 	if(face && s[0]=='|' && s[1]==0)	{	SmoothColorbar=false;	return;	}
 	for(;*s;s++)	if(strchr(col,*s))	break;
