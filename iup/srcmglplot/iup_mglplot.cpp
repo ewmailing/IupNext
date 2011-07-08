@@ -40,7 +40,7 @@ enum {IUP_MGLPLOT_BOTTOMLEFT, IUP_MGLPLOT_BOTTOMRIGHT, IUP_MGLPLOT_TOPLEFT, IUP_
 enum {IUP_MGLPLOT_INHERIT, IUP_MGLPLOT_PLAIN, IUP_MGLPLOT_BOLD, IUP_MGLPLOT_ITALIC, IUP_MGLPLOT_BOLD_ITALIC};
 
 //TODO dataset can be a pointer to the previous data, 
-//so the same data can be displayed using diferent modes using the same memory
+//so the same data can be displayed using different modes using the same memory
 typedef struct _IdataSet
 {
   char dsLineStyle;
@@ -108,6 +108,12 @@ struct _IcontrolData
 
   /* Axes */
   Iaxis xAxis, yAxis, zAxis;
+
+  /* Interaction */
+  float x1, x2, y1, y2;
+  float x0, xe, y0, ye;
+  float rotX, rotY;
+  float per;
 
   /* Box */
   bool Box, boxTicks;
@@ -766,9 +772,9 @@ static void iMglPlotConfigView3D(Ihandle* ih, mglGraph *gr)
     gr->Light(false);
 
   //TODO
-//	gr->View(tet,phi);   3D
-//	gr->Perspective(per);  3D
-//	gr->Zoom(x1,y1,x2,y2);  2D and 3D 
+	gr->View(ih->data->rotX, ih->data->rotY, 0);   // 3D
+	gr->Perspective(ih->data->per);  //3D
+	gr->Zoom(ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);  // 2D and 3D 
 //  gr->Rotate(40, 60);
 }
 
@@ -1267,6 +1273,8 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
     gr->SetTransparent(false);
     gr->SetAlphaDef(1.0f);
   }
+
+  iMglPlotConfigView3D(ih, gr);
 
   iMglPlotConfigFontDef(ih, gr);
 
@@ -3921,6 +3929,219 @@ static void iMglPlotSetAxisDefaults(Iaxis& axis)
   axis.axTickMajorSpan = -5;
 }
 
+static void iMglPlotRestore(Ihandle *ih)
+{
+  //SetPhi(0);	SetTet(0);	SetPer(0);
+  //zoom=rotate=false;
+
+  ih->data->x1 = 0;  ih->data->y1 = 0;
+  ih->data->x2 = 1;  ih->data->y2 = 1;
+
+  ih->data->x0 = 0;  ih->data->xe = 0;
+  ih->data->ye = 0;  ih->data->y0 = 0;
+
+  iMglPlotRepaint(ih, 1, 1);    /* force a full redraw here */
+}
+
+static void iMglPlotZoomIn(Ihandle *ih)
+{
+  float d;
+
+  d = (ih->data->y2 - ih->data->y1)/4;
+  ih->data->y1 += d;
+  ih->data->y2 -= d;
+
+  d = (ih->data->x2 - ih->data->x1)/4;
+  ih->data->x1 += d;
+  ih->data->x2 -= d;
+
+  iMglPlotRepaint(ih, 1, 1);
+}
+
+static void iMglPlotZoomOut(Ihandle *ih)
+{
+  float d;
+
+  d = (ih->data->y2 - ih->data->y1)/2;
+  ih->data->y1 -= d;
+  ih->data->y2 += d;
+
+  d = (ih->data->x2 - ih->data->x1)/2;
+  ih->data->x1 -= d;
+  ih->data->x2 += d;
+
+  iMglPlotRepaint(ih, 1, 1);
+}
+
+static void iMglPlotShiftDown(Ihandle *ih)
+{
+  float d = (ih->data->y2 - ih->data->y1)/3;
+  ih->data->y1 += d;
+  ih->data->y2 += d;
+  iMglPlotRepaint(ih, 1, 1);
+}
+
+static void iMglPlotShiftUp(Ihandle *ih)
+{
+  float d = (ih->data->y2 - ih->data->y1)/3;
+  ih->data->y1 -= d;
+  ih->data->y2 -= d;
+  iMglPlotRepaint(ih, 1, 1);
+}
+
+static void iMglPlotShiftRight(Ihandle *ih)
+{
+  float d = (ih->data->x2 - ih->data->x1)/3;
+  ih->data->x1 -= d;
+  ih->data->x2 -= d;
+  iMglPlotRepaint(ih, 1, 1);
+}
+
+static void iMglPlotShiftLeft(Ihandle *ih)
+{
+  float d = (ih->data->x2 - ih->data->x1)/3;
+  ih->data->x1 += d;
+  ih->data->x2 += d;
+  iMglPlotRepaint(ih, 1, 1);
+}
+
+static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
+{
+  if(!press)
+    return IUP_DEFAULT;
+
+  switch(c)
+  {
+  case K_cR:
+    iMglPlotRestore(ih);
+    break;
+  case K_UP:
+    iMglPlotShiftUp(ih);
+    break;
+  case K_DOWN:
+    iMglPlotShiftDown(ih);
+    break;
+  case K_LEFT:
+    iMglPlotShiftLeft(ih);
+    break;
+  case K_RIGHT:
+    iMglPlotShiftRight(ih);
+    break;
+  case K_PGUP:
+    iMglPlotZoomIn(ih);
+    break;
+  case K_PGDN:
+    iMglPlotZoomOut(ih);
+    break;
+  }
+
+  return IUP_DEFAULT;
+} 
+
+static int iMglPlotMouseButton_CB(Ihandle* ih, int b, int press, int x, int y)
+{
+  if(press)  /* Button pressed */
+  {
+    /* Initial (x,y) */
+    ih->data->x0 = (float)x;
+    ih->data->y0 = (float)y;
+  }
+
+  if(b == IUP_BUTTON1 && !press)
+  {
+    float _x1,_x2,_y1,_y2;
+
+    /* Current (x,y) */
+    ih->data->xe = (float)x;
+    ih->data->ye = (float)y;
+
+    /* PAN: new values */
+    _x1 = ih->data->x1 + (ih->data->x2 - ih->data->x1) * (ih->data->x0 - (float)ih->data->xe) / (float)ih->data->w;
+    _y1 = ih->data->y1 + (ih->data->y2 - ih->data->y1) * (ih->data->ye - (float)ih->data->y0) / (float)ih->data->h;
+
+    _x2 = ih->data->x2 - (ih->data->x2 - ih->data->x1) * (ih->data->xe - (float)ih->data->x0) / (float)ih->data->w;
+    _y2 = ih->data->y2 - (ih->data->y2 - ih->data->y1) * (ih->data->y0 - (float)ih->data->ye) / (float)ih->data->h;
+
+    ih->data->x1 = _x1;   ih->data->x2 = _x2;
+    ih->data->y1 = _y1;   ih->data->y2 = _y2;
+
+    if(ih->data->x1 > ih->data->x2)
+    {
+      _x1 = ih->data->x1;
+      ih->data->x1 = ih->data->x2;
+      ih->data->x2 = _x1;
+    }
+    if(ih->data->y1 > ih->data->y2)
+    {
+      _x1 = ih->data->y1;
+      ih->data->y1 = ih->data->y2;
+      ih->data->y2 = _x1;
+    }
+
+    iMglPlotRepaint(ih, 1, 1);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
+{
+//   ih->data->xe = (float)x;
+//   ih->data->ye = (float)y;
+
+  if(iup_isbutton3(status))  // Rotate
+  {
+//     float ff = 240 / sqrt(float(ih->data->w * ih->data->h));
+//     
+//     ih->data->rotY += (ih->data->x0 - ih->data->xe)*ff;
+//     
+//     ih->data->rotX += (ih->data->y0 - ih->data->ye)*ff;
+//     
+//     if(ih->data->rotY > 180)	ih->data->rotY-=360;		if(ih->data->rotY < -180)	ih->data->rotY+=360;
+//     if(ih->data->rotX > 180)	ih->data->rotX-=360;		if(ih->data->rotX < -180)	ih->data->rotX+=360;
+//     
+//     iMglPlotRepaint(ih, 1, 1);
+  }
+  else if(iup_isbutton2(status))  // Zoom & Perspective
+  {
+//     float ff = 2.0 * (ih->data->y0 - ih->data->ye)/(float)ih->data->w;
+//     float gg = 0.5 * (ih->data->xe - ih->data->x0)/(float)ih->data->h;
+//     float cx = (ih->data->x1 + ih->data->x2)/2;
+//     float cy = (ih->data->y1 + ih->data->y2)/2;
+//     
+//     ih->data->x1 = cx+(ih->data->x1-cx)*exp(-ff);
+//     ih->data->x2 = cx+(ih->data->x2-cx)*exp(-ff);
+//     ih->data->y1 = cy+(ih->data->y1-cy)*exp(-ff);
+//     ih->data->y2 = cy+(ih->data->y2-cy)*exp(-ff);
+//     
+//     ih->data->per = ih->data->per + gg;
+//     if(ih->data->per<0)	ih->data->per = 0;	if(ih->data->per>=1)	ih->data->per = 0.9999;
+//     
+//     iMglPlotRepaint(ih, 1, 1);
+  }
+  else if(iup_isbutton1(status))  // Pan
+  {
+//     float ff = 1 / sqrt(float(ih->data->w * ih->data->h));
+//     float dx = (ih->data->x0-ih->data->xe)*ff*(ih->data->x2-ih->data->x1);
+//     float dy = (ih->data->y0-ih->data->ye)*ff*(ih->data->y2-ih->data->y1);
+//     ih->data->x1 += dx;	ih->data->x2 += dx;	ih->data->y1 -= dy;	ih->data->y2 -= dy;
+//     
+//     iMglPlotRepaint(ih, 1, 1);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iMglPlotWheel_CB(Ihandle* ih, float delta)
+{
+  if(delta == 1)  /* Zoom In */
+    iMglPlotZoomIn(ih);
+  else if(delta == -1)  /* Zoom Out */
+    iMglPlotZoomOut(ih);
+
+  return IUP_DEFAULT;
+}
+
 static int iMglPlotCreateMethod(Ihandle* ih, void **params)
 {
   (void)params;
@@ -3936,12 +4157,12 @@ static int iMglPlotCreateMethod(Ihandle* ih, void **params)
   memset(ih->data->dataSet, 0, sizeof(IdataSet)*ih->data->dataSetMaxCount);
 
   /* IupCanvas callbacks */
-  IupSetCallback(ih, "RESIZE_CB", (Icallback)iMglPlotResize_CB);
-  IupSetCallback(ih, "ACTION",    (Icallback)iMglPlotRedraw_CB);
-// TODO
-//  IupSetCallback(ih, "BUTTON_CB",   (Icallback)iMglPlotMouseButton_CB);
-//  IupSetCallback(ih, "MOTION_CB",   (Icallback)iMglPlotMouseMove_CB);
-//  IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iMglPlotKeyPress_CB);
+  IupSetCallback(ih, "RESIZE_CB",   (Icallback)iMglPlotResize_CB);
+  IupSetCallback(ih, "ACTION",      (Icallback)iMglPlotRedraw_CB);
+  IupSetCallback(ih, "BUTTON_CB",   (Icallback)iMglPlotMouseButton_CB);
+  IupSetCallback(ih, "WHEEL_CB",    (Icallback)iMglPlotWheel_CB);
+  IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iMglPlotKeyPress_CB);
+  IupSetCallback(ih, "MOTION_CB",   (Icallback)iMglPlotMouseMove_CB);
 
   IupSetAttribute(ih, "BUFFER", "DOUBLE");
 
@@ -3965,6 +4186,15 @@ static int iMglPlotCreateMethod(Ihandle* ih, void **params)
   iMglPlotSetAxisDefaults(ih->data->xAxis);
   iMglPlotSetAxisDefaults(ih->data->yAxis);
   iMglPlotSetAxisDefaults(ih->data->zAxis);
+
+  /* Interaction defaults */
+  ih->data->x1 = 0;  ih->data->y1 = 0;
+  ih->data->x2 = 1;  ih->data->y2 = 1;
+
+  ih->data->x0 = 0;  ih->data->xe = 0;
+  ih->data->ye = 0;  ih->data->y0 = 0;
+
+  ih->data->rotX = ih->data->rotY = ih->data->per = 0;
 
   return IUP_NOERROR;
 }
