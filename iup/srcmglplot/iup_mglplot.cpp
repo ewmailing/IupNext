@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -771,11 +772,9 @@ static void iMglPlotConfigView3D(Ihandle* ih, mglGraph *gr)
   else
     gr->Light(false);
 
-  //TODO
 	gr->View(ih->data->rotX, ih->data->rotY, 0);   // 3D
 	gr->Perspective(ih->data->per);  //3D
-	gr->Zoom(ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);  // 2D and 3D 
-//  gr->Rotate(40, 60);
+  //TODO compare  gr->Rotate(40, 60);  to   gr->View
 }
 
 static void iMglPlotConfigDataGrid(mglGraph *gr, IdataSet* ds, char* style)
@@ -1087,11 +1086,10 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       gr->Bars(*ds->dsX, *ds->dsY, style);
     else
     {
+      //TODO should we do this aways?
 	    mglData x(ds->dsX->nx);
       x.Fill(0, (float)(ds->dsCount-1));
       gr->Bars(x, *ds->dsX, style);
-
-      //TODO
 //      gr->Bars(*ds->dsX, style);
     }
   }
@@ -1194,10 +1192,6 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 static void iMglPlotDrawData(Ihandle* ih, mglGraph *gr)
 {
   int i;
-
-  if (iMglPlotIsView3D(ih))
-    iMglPlotConfigView3D(ih, gr);
-
   for(i = 0; i < ih->data->dataSetCount; i++)
   {
     IdataSet* ds = &ih->data->dataSet[i];
@@ -1274,7 +1268,10 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
     gr->SetAlphaDef(1.0f);
   }
 
-  iMglPlotConfigView3D(ih, gr);
+	gr->Zoom(ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);  // 2D and 3D 
+
+  if (iMglPlotIsView3D(ih))
+    iMglPlotConfigView3D(ih, gr);
 
   iMglPlotConfigFontDef(ih, gr);
 
@@ -2093,7 +2090,7 @@ static char* iMglPlotGetDSDimAttrib(Ihandle* ih)
     if (iMglPlotIsPlanarOrVolumetricData(ds))
     {
       char* buffer = iupStrGetMemory(30);
-      sprintf(buffer, "%dx%dx%d", ds->dsX->nx, ds->dsX->ny, ds->dsX->nz);
+      sprintf(buffer, "%dx%dx%d", (int)ds->dsX->nx, (int)ds->dsX->ny, (int)ds->dsX->nz);
       return buffer;
     }
     else
@@ -4439,7 +4436,7 @@ Rafael:
 Depois:
   Legend
   LoadFont
-  ---------------------
+  min-max x Fill
   improve autoticks computation
   reference datasets
   teste IupMglPlotLoadData e IupMglPlotSetFromFormula, 
@@ -4458,37 +4455,35 @@ Maybe:
   plots that need two datasets: region, tens, error, flow, pipe, ...
 
 MathGL:
+  clipping very poor, evident in Bars
   AlphaDef is used in several places ignoring the Transparent flag
-  clipping very poor
+  data text file using ';' or '\t' also
+  legend is not been displayed in OpenGL.
+  documentation says negative len puts tic outside the bounding box, but it is NOT working
+  rotation along axis is only for Y axis?
+  position axis, acording to title, ticks and labels
   Min-Max controls the bounding box - ok, 
      but also affects how .Fill relates data inside plot functions
+
+  sometimes the label gets too close to the ticks
+     it can be manualy moved by changing the origin
+
   How to improve text quality?  native fonts?
-     lib adicional para carregar direto TTF e OTF via FreeType
-     outras typefaces?
-     "The font type (STIX, arial, courier, times and so on) can be selected by function SetFont"???
-     FontSize units?
-     too slow to load font, binary format
-     roman is not the same thing as regular
      bug in make_font
+     roman is not the same thing as regular
+     lib adicional para carregar direto TTF e OTF via FreeType
+     too slow to load font, binary format
      FTGL/Freetype?
      option to draw an opaque background for text
+
+     FontSize units?
      font size in [0-1]
      // for 72dpi, FontSize=6 --> 26pt
      void mglGraphAB::SetFontSizePT(mreal pt, int dpi)
      {  FontSize = 16.6154*pt/dpi;  }
      void mglGraph::SetFontSizePT(mreal pt, int dpi)
      {  FontSize = pt*27.f/dpi;  }
-  Driver CD?
-  data text file using ';' or '\t' also
-  Doc samples in a zip
-  legend is not been displayed in OpenGL.
-  mudanças no código da MathGL
-  API da MathGL
-  esticar o gráfico, mas não esticar as fontes, manter aspecto, também possibilidade para manter fixo tamanho
-  TicksVal should follow ticks spacing configuration
-  documentation says negative len puts tic outside the bounding box, but it is NOT working
-  somethimes the label gets too close to the ticks
-     it can be manualy moved by changing the origin
-  rotation along axis is only for Y axis?
-  position axis, acording to title, ticks and labels
+
+     esticar o gráfico, mas não esticar as fontes, manter aspecto, 
+     também possibilidade para manter fixo tamanho
 */

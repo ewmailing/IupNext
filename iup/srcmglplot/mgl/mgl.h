@@ -236,7 +236,7 @@ public:
 	inline void SetArrowkSize(mreal val)	{	ArrowSize=val;	};
 	/// Set PlotFactor
 	inline void SetPlotFactor(mreal val)
-	{	PlotFactor = val>0?val:1.55;	AutoPlotFactor=(val<=0);	};
+	{	PlotFactor = val>0?val:1.55f;	AutoPlotFactor=(val<=0);	};
 	/// Set cutting for points outside of bounding box
 	inline void SetCut(bool val)	{	Cut=val;	};
 	/// Set additional cutting box
