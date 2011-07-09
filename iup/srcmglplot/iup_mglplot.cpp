@@ -4430,22 +4430,29 @@ void IupMglPlotOpen(void)
 /* TODO
 
 Rafael:
-  Interaction + iMglPlotConfigView3D
-  DS_EDIT+Callbacks
+  Interaction  Zoom/Pan/Rotate  (disable Rotate if graph is not 3D)
+  compare  gr->Rotate(40, 60);  to   gr->View
+  compare  gr->PlotFactor to Zoom()
 
 Depois:
   Legend
   LoadFont
   min-max x Fill
   improve autoticks computation
+  labels
+  text anti-aliasing
+  DS_EDIT+Selection+Callbacks
   reference datasets
+  -------------------
   teste IupMglPlotLoadData e IupMglPlotSetFromFormula, 
   teste IupMglPlotPaintTo  SVG, EPS e RGB
   teste BOLD e ITALIC
+  -------------------
   explicar pixels x plot x normalized coordinates
   documentar suporte a Tek formulas nas strings
   documentar DS_MODE Options
   exemplos com os recursos novos
+  -------------------
   Binding Lua
   rever IupGraph
 
