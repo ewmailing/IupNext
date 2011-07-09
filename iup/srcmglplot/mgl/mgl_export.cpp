@@ -307,7 +307,8 @@ void mglGraph::CloseGIF()
 	gif = 0;
 }
 //-----------------------------------------------------------------------------
-int mglGraph::NewFrame()	{	CurFrameId++;	return CurFrameId;	}
+int mglGraph::NewFrame()
+{	Clf();	Identity();	CurFrameId++;	return CurFrameId;	}
 //-----------------------------------------------------------------------------
 void mglGraph::EndFrame()
 {

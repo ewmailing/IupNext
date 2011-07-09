@@ -14,7 +14,7 @@ LIBS = iup iupgl
 
 DEFINES = NO_PNG NO_GSL
 
-SRCMGLPLOT = mgl_1d.cpp mgl_crust.cpp mgl_evalc.cpp mgl_idtf.cpp \
+SRCMGLPLOT = mgl_1d.cpp mgl_crust.cpp mgl_evalc.cpp \
   mgl_2d.cpp mgl_data.cpp mgl_evalp.cpp mgl_main.cpp \
   mgl_3d.cpp mgl_data_cf.cpp mgl_exec.cpp mgl_parse.cpp \
   mgl_ab.cpp mgl_data_io.cpp mgl_export.cpp mgl_pde.cpp \

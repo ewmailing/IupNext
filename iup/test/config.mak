@@ -108,6 +108,14 @@ else
 #  SLIB += $(CDLIB)/libcdpdflib.a
 endif
 
+DEFINES += MGLPLOT_TEST
+SRC += mglplot.c
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  LIBS += iup_mglplot
+else
+  SLIB += $(IUPLIB)/libiup_mglplot.a
+endif
+
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC += iuptest.rc 
 else

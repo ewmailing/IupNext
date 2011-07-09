@@ -45,7 +45,7 @@ using mglGraph::Legend;
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ��������� ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //	virtual void WriteEPS(const char *fname,const char *descr=0);
 	virtual void WriteSVG(const char *fname,const char *descr=0);
-	virtual int NewFrame();
+//	virtual int NewFrame();
 //	virtual void EndFrame();
 
 	void SetFontSizePT(mreal pt, int dpi=72);

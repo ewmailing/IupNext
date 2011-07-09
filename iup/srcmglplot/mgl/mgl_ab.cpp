@@ -312,14 +312,6 @@ void mglGraphAB::Light(int n, mglPoint p, mglColor c, mreal br, bool inf, mreal 
 	cLight[3*n] = c.r;	cLight[3*n+1] = c.g;	cLight[3*n+2] = c.b;
 }
 //-----------------------------------------------------------------------------
-int mglGraphAB::NewFrame()
-{
-	Clf();
-	Identity();
-	CurFrameId++;
-	return CurFrameId-1;
-}
-//-----------------------------------------------------------------------------
 mreal mglGraphAB::Putsw(mglPoint p,mglPoint n,const wchar_t *str,char font,mreal size)
 {
 	static int cgid=1;	StartGroup("PutswL",cgid++);
@@ -499,11 +491,8 @@ void mglGraphAB::Legend(int n, wchar_t **text,char **style, mreal x, mreal y,
 	static int cgid=1;	StartGroup("Legend",cgid++);
 	mreal pp[15], r=GetRatio(), rh, rw, s3=PlotFactor;
 	if(size<=0)	size = -size*FontSize;
-//	if(!font || !(*font))	font="L";
-//	char *pA, *ff = new char[strlen(font)+1];	strcpy(ff,font);
-  char *pA, *ff;
-	if(font)	{	ff=new char[strlen(font)+2];	strcpy(ff,font);	}
-	else	{	ff=new char[strlen(FontDef)+2];	strcpy(ff,FontDef); strcat(ff, "L"); }
+	if(!font || !(*font))	font="L";
+	char *pA, *ff = new char[strlen(font)+1];	strcpy(ff,font);
 	llen *= 1.5;
 
 	rh=(r<1?r:1.)*size/6.;	rw=(r>1?1./r:1.)*size/8.;
@@ -536,7 +525,7 @@ void mglGraphAB::Legend(int n, wchar_t **text,char **style, mreal x, mreal y,
 		pp[2] = pp[5] = pp[8] = pp[11] = s3-0.01;
 		pp[0] = pp[6] = x;			pp[3] = pp[9] = x+w;
 		pp[1] = pp[4] = y-0.*h;		pp[7] = pp[10] = y+h*n;
-		DefColor(mglColor(1,1,1),1);   //TODO this should be the background color?
+		DefColor(mglColor(1,1,1),1);
 //		for(i=0;i<4;i++)	ScalePoint(pp[3*i],pp[3*i+1],pp[3*i+2]);
 		surf_plot(2,2,pp,0,0);		// white rectangle below it
 	}

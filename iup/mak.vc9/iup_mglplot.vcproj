@@ -247,6 +247,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\srcmglplot\mgl\mgl_c.h"
+					>
+				</File>
+				<File
 					RelativePath="..\srcmglplot\mgl\mgl_data.h"
 					>
 				</File>
@@ -264,6 +268,10 @@
 				</File>
 				<File
 					RelativePath="..\srcmglplot\mgl\mgl_evalc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\srcmglplot\mgl\mgl_f.h"
 					>
 				</File>
 				<File

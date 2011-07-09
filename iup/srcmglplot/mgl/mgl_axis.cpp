@@ -172,10 +172,11 @@ void mglGraph::Grid(const char *dir, const char *pen)
 		x0 = GetOrgX('x');	y0 = GetOrgY('x');	z0 = GetOrgZ('x');
 		x0 = isnan(OrgT.x) ? x0 : OrgT.x;
 		x0 = x0 - ddx*floor((x0-(Max.x>Min.x?Min.x:Max.x))/ddx);
+		float tmp=(Min.x<Max.x?Max.x:Min.x);
 		if(xnum)	for(int i=0;i<xnum;i++)
 			DrawXGridLine(xval[i],y0,z0);
-		else if(dx)	for(t=x0;t<=(Min.x<Max.x?Max.x:Min.x);t+=ddx)
-			DrawXGridLine(t,y0,z0);
+		else if(dx)
+		{	if(x0+ddx!=x0 && tmp+ddx!=tmp)	for(t=x0;t<=tmp;t+=ddx)	DrawXGridLine(t,y0,z0);	}
 		else if(Min.x>0)
 		{
 			x0 = exp(M_LN10*floor(0.1+log10(Min.x)));
@@ -192,10 +193,11 @@ void mglGraph::Grid(const char *dir, const char *pen)
 		x0 = GetOrgX('y');	y0 = GetOrgY('y');	z0 = GetOrgZ('y');
 		y0 = isnan(OrgT.y) ? y0 : OrgT.y;
 		y0 = y0 - ddy*floor((y0-(Max.y>Min.y?Min.y:Max.y))/ddy);
+		float tmp=(Max.y>Min.y?Max.y:Min.y);
 		if(ynum)	for(int i=0;i<ynum;i++)
 			DrawYGridLine(yval[i],x0,z0);
-		else if(dy)	for(t=y0;t<=(Max.y>Min.y?Max.y:Min.y);t+=ddy)
-			DrawYGridLine(t,x0,z0);
+		else if(dy)
+		{	if(y0+ddy!=y0 && tmp+ddy!=tmp)	for(t=y0;t<=tmp;t+=ddy)	DrawYGridLine(t,x0,z0);	}
 		else if(Min.y>0)
 		{
 			y0 = exp(M_LN10*floor(0.1+log10(Min.y)));
@@ -212,10 +214,11 @@ void mglGraph::Grid(const char *dir, const char *pen)
 		x0 = GetOrgX('z');	y0 = GetOrgY('z');	z0 = GetOrgZ('z');
 		z0 = isnan(OrgT.z) ? z0 : OrgT.z;
 		z0 = z0 - ddz*floor((z0-(Max.z>Min.z?Min.z:Max.z))/ddz);
+		float tmp=(Max.z>Min.z?Max.z:Min.z);
 		if(znum)	for(int i=0;i<znum;i++)
 			DrawZGridLine(zval[i],x0,y0);
-		else if(dz)	for(t=z0;t<=(Max.z>Min.z?Max.z:Min.z);t+=ddz)
-			DrawZGridLine(t,x0,y0);
+		else if(dz)
+		{	if(z0+ddz!=z0 && tmp+ddz!=tmp)	for(t=z0;t<=tmp;t+=ddz)	DrawZGridLine(t,x0,y0);	}
 		else if(Min.z>0)
 		{
 			z0 = exp(M_LN10*floor(0.1+log10(Min.z)));
@@ -232,8 +235,8 @@ void mglGraph::Grid(const char *dir, const char *pen)
 		z0 = isnan(OrgT.z) ? GetOrgZ('z') : OrgT.z;
 		z0 = z0 - ddz*floor((z0-Min.z)/ddz);
 		if(xnum)	for(int i=0;i<xnum;i++)		DrawTGridLine(xval[i],z0);
-		else if(dx)	for(t=Min.x;t<=Max.x;t+=ddx)	DrawTGridLine(t-Min.x,z0);
-		else if(dy)	for(t=Min.y;t<=Max.y;t+=ddy)	DrawTGridLine(t-Min.y,z0);
+		else if(dx && Max.x+ddx!=Max.x)	for(t=Min.x;t<=Max.x;t+=ddx)	DrawTGridLine(t-Min.x,z0);
+		else if(dy && Max.y+ddy!=Max.y)	for(t=Min.y;t<=Max.y;t+=ddy)	DrawTGridLine(t-Min.y,z0);
 	}
 	SelectPen("k-1");
 	EndGroup();
@@ -413,7 +416,7 @@ void mglGraph::AxisX(bool text, const char *stl)
 			x1 = Min.x-(Max.x-Min.x)*1e-6;
 			x0 = x0 - ddx*floor((x0-Max.x)/ddx+1e-3);
 		}
-		for(x=x0;x<=x1;x+=ddx)
+		if(x0+ddx!=x0 && x1+ddx!=x1)	for(x=x0;x<=x1;x+=ddx)
 		{
 			DrawXTick(x,y0,z0,ddy,ddz);
 			if(text)
@@ -434,7 +437,7 @@ void mglGraph::AxisX(bool text, const char *stl)
 			{	x1=Max.x;	x0 = x0 - ddx*floor((x0-Min.x)/ddx+1e-3);	}
 			else
 			{	x1=Min.x;	x0 = x0 - ddx*floor((x0-Max.x)/ddx+1e-3);	}
-			for(x=x0;x<=x1;x+=ddx)	DrawXTick(x,y0,z0,ddy,ddz,1);
+			if(x0+ddx!=x0 && x1+ddx!=x1)	for(x=x0;x<=x1;x+=ddx)	DrawXTick(x,y0,z0,ddy,ddz,1);
 		}
 	}
 	else if(Min.x>0)
@@ -538,7 +541,7 @@ void mglGraph::AxisY(bool text, const char *stl)
 			y1 = Min.y-(Max.y-Min.y)*1e-6;
 			y0 = y0 - ddy*floor((y0-Max.y)/ddy+1e-3);
 		}
-		for(y=y0;y<=y1;y+=ddy)
+		if(y0+ddy!=y0 && y1+ddy!=y1)	for(y=y0;y<=y1;y+=ddy)
 		{
 			DrawYTick(y,x0,z0,ddx,ddz);
 			if(text)
@@ -559,7 +562,7 @@ void mglGraph::AxisY(bool text, const char *stl)
 			{	y1=Max.y;	y0 = y0 - ddy*floor((y0-Min.y)/ddy+1e-3);	}
 			else
 			{	y1=Min.y;	y0 = y0 - ddy*floor((y0-Max.y)/ddy+1e-3);	}
-			for(y=y0;y<=y1;y+=ddy)	DrawYTick(y,x0,z0,ddx,ddz,1);
+			if(y0+ddy!=y0 && y1+ddy!=y1)	for(y=y0;y<=y1;y+=ddy)	DrawYTick(y,x0,z0,ddx,ddz,1);
 		}
 	}
 	else if(Min.y>0)
@@ -659,7 +662,7 @@ void mglGraph::AxisZ(bool text, const char *stl)
 			z1 = Min.z-(Max.z-Min.z)*1e-6;
 			z0 = z0 - ddz*floor((z0-Max.z)/ddz+1e-3);
 		}
-		for(z=z0;z<=z1;z+=ddz)
+		if(z0+ddz!=z0 && z1+ddz!=z1)	for(z=z0;z<=z1;z+=ddz)
 		{
 			DrawZTick(z,x0,y0,ddx,ddy);
 			if(text)
@@ -680,7 +683,7 @@ void mglGraph::AxisZ(bool text, const char *stl)
 			{	z1=Max.z;	z0 = z0 - ddz*floor((z0-Min.z)/ddz+1e-3);	}
 			else
 			{	z1=Min.z;	z0 = z0 - ddz*floor((z0-Max.z)/ddz+1e-3);	}
-			for(z=z0;z<=z1;z+=ddz)	DrawZTick(z,x0,y0,ddx,ddy,1);
+			if(z0+ddz!=z0 && z1+ddz!=z1)	for(z=z0;z<=z1;z+=ddz)	DrawZTick(z,x0,y0,ddx,ddy,1);
 		}
 	}
 	else if(Min.z>0)
@@ -774,7 +777,8 @@ void mglGraph::TickBox()
 	{
 		x0 = isnan(OrgT.x) ? x0 : OrgT.x;
 		x0 = x0 - ddx*floor((x0-(Max.x>Min.x?Min.x:Max.x))/ddx);
-		for(x=x0;x<(Max.x>Min.x?Max.x:Min.x);x+=ddx)
+		float tmp=(Max.x>Min.x?Max.x:Min.x);
+		if(x0+ddx!=x0 && tmp+ddx!=tmp)	for(x=x0;x<tmp;x+=ddx)
 		{
 			DrawXTick(x,Min.y,Min.z,ddy,ddz);
 			DrawXTick(x,Min.y,Max.z,ddy,-ddz);
@@ -819,7 +823,8 @@ void mglGraph::TickBox()
 	{
 		y0 = isnan(OrgT.y) ? y0 : OrgT.y;
 		y0 = y0 - ddy*floor((y0-(Max.y>Min.y?Min.y:Max.y))/ddy);
-		for(y=y0;y<(Max.y>Min.y?Max.y:Min.y);y+=ddy)
+		float tmp=(Max.y>Min.y?Max.y:Min.y);
+		if(y0+ddy!=y0 && tmp+ddy!=tmp)	for(y=y0;y<tmp;y+=ddy)
 		{
 			DrawYTick(y,Min.x,Min.z,ddx,ddz);
 			DrawYTick(y,Min.x,Max.z,ddx,-ddz);
@@ -864,7 +869,8 @@ void mglGraph::TickBox()
 	{
 		z0 = isnan(OrgT.z) ? z0 : OrgT.z;
 		z0 = z0 - ddz*floor((z0-(Max.z>Min.z?Min.z:Max.z))/ddz);
-		for(z=z0;z<(Max.z>Min.z?Max.z:Min.z);z+=ddz)
+		float tmp=(Max.z>Min.z?Max.z:Min.z);
+		if(z0+ddz!=z0 && tmp+ddz!=tmp)	for(z=z0;z<tmp;z+=ddz)
 		{
 			DrawZTick(z,Min.x,Min.y,ddx,ddy);
 			DrawZTick(z,Min.x,Max.y,ddx,-ddy);
@@ -1081,7 +1087,8 @@ void mglGraph::AxisT(bool text, const char *stl)
 	else	curv_plot(31,pp,0);
 
 	NSy = NSy<0 ? 0 : NSy;
-	for(y=Min.y;y<=Max.y+(Max.y-Min.y)*1e-6;y+=ddy)
+	float tmp=Max.y+(Max.y-Min.y)*1e-6;
+	if(Min.y+ddy!=Min.y && tmp+ddy!=tmp)	for(y=Min.y;y<=tmp;y+=ddy)
 	{
 		if(y>Min.y && y<Max.y)	DrawTTick(y,Max.x,z0,ddx,ddz);
 		mglprintf(str,64,L"%.2g",y);		wcstrim_mgl(str);
@@ -1096,7 +1103,7 @@ void mglGraph::AxisT(bool text, const char *stl)
 	if(NSy>0)
 	{
 		ddy /= (NSy+1);	// subticks drawing
-		for(y=Min.y;y<=Max.y;y+=ddy)
+		if(Min.y+ddy!=Min.y && Max.y+ddy!=Max.y)	for(y=Min.y;y<=Max.y;y+=ddy)
 		{
 			DrawTTick(y,Max.x,z0,ddx,ddz,1);
 			DrawYTick(Max.y+Min.y-y,Min.x,z0,ddx,ddz,1);

@@ -62,11 +62,11 @@ inline mglPoint operator|(const mglPoint &a, const mglPoint &b)
 inline mglPoint operator^(const mglPoint &a, const mglPoint &b)
 {	return mglPoint(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x);	};
 inline mglPoint operator!(const mglPoint &a)
-{	return (a.x==0 && a.y==0)?mglPoint(1,0,0):mglPoint(-a.y/(mreal)hypot(a.x,a.y), a.x/(mreal)hypot(a.x,a.y), 0);	};
+{	return (a.x==0 && a.y==0)?mglPoint(1,0,0):mglPoint(-a.y/hypot(a.x,a.y), a.x/hypot(a.x,a.y), 0);	};
 inline bool operator==(const mglPoint &a, const mglPoint &b)
-{	return !memcmp(&a, &b, sizeof(mglPoint))? true: false;	}
+{	return !memcmp(&a, &b, sizeof(mglPoint));	}
 inline bool operator!=(const mglPoint &a, const mglPoint &b)
-{	return memcmp(&a, &b, sizeof(mglPoint))? true: false;	}
+{	return memcmp(&a, &b, sizeof(mglPoint));	}
 inline mreal Norm(const mglPoint &p)
 {	return sqrt(p.x*p.x+p.y*p.y+p.z*p.z);	};
 //-----------------------------------------------------------------------------
