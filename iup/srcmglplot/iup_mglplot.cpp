@@ -4495,11 +4495,13 @@ Rafael:
   compare  gr->PlotFactor to Zoom()
 
 Depois:
+  improve autoticks computation
+  labels
+  rever testes
+  -------------------
   Legend
   LoadFont
   min-max x Fill
-  improve autoticks computation
-  labels
   text anti-aliasing
   DS_EDIT+Selection+Callbacks
   reference datasets
@@ -4542,7 +4544,8 @@ MathGL:
      too slow to load font, binary format
      FTGL/Freetype?
      option to draw an opaque background for text
-
+     esticar o gráfico, mas não esticar as fontes, manter aspecto, 
+     também possibilidade para manter fixo tamanho
      FontSize units?
      font size in [0-1]
      // for 72dpi, FontSize=6 --> 26pt
@@ -4550,7 +4553,4 @@ MathGL:
      {  FontSize = 16.6154*pt/dpi;  }
      void mglGraph::SetFontSizePT(mreal pt, int dpi)
      {  FontSize = pt*27.f/dpi;  }
-
-     esticar o gráfico, mas não esticar as fontes, manter aspecto, 
-     também possibilidade para manter fixo tamanho
 */
