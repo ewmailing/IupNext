@@ -640,7 +640,7 @@ void mglGraphAB::colorbar(const mglData &vv, const mglColor *cs, int where, mrea
 		else if(dc==0)
 		{
 			long kk=int(floor(0.1+log10(fabs(t))));
-			mglprintf(str,64,L"%.2g\\cdot 10^{%d}",t/pow(10.0,kk), kk);
+			mglprintf(str,64,L"%.2g\\cdot 10^{%d}",t/pow(10.,kk), kk);
 		}
 		else	_mgl_tick_text(t,v1,dv/100,v,kind,str);
 		wcstrim_mgl(str);	Putsw(p,str,a,FontSize);

@@ -688,9 +688,9 @@ void mglGraphAB::combine(unsigned char *c1,unsigned char *c2)
 	}
 	else if(TranspType==1)
 	{
-		c1[0] = (unsigned char)((255-a1*(255-c1[0])/256)*(255-a2*(255-c2[0])/256)/256);
-		c1[1] = (unsigned char)((255-a1*(255-c1[1])/256)*(255-a2*(255-c2[1])/256)/256);
-		c1[2] = (unsigned char)((255-a1*(255-c1[2])/256)*(255-a2*(255-c2[2])/256)/256);
+		c1[0] = (unsigned char)((255-(a1*(255-c1[0]))/256)*(255-(a2*(255-c2[0]))/256)/256);
+		c1[1] = (unsigned char)((255-(a1*(255-c1[1]))/256)*(255-(a2*(255-c2[1]))/256)/256);
+		c1[2] = (unsigned char)((255-(a1*(255-c1[2]))/256)*(255-(a2*(255-c2[2]))/256)/256);
 		c1[3] = 255;
 	}
 	else if(TranspType==2)

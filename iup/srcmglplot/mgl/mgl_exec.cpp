@@ -2806,9 +2806,9 @@ void mglc_norm(wchar_t out[1024], long , mglArg *a, int k[10])
 int mgls_hist(mglGraph *gr, long , mglArg *a, int k[10])
 {
 	if(k[0]==1 && k[1]==1 && k[2]==1 && k[3]==3 && k[4]==3 && k[5]==3)
-		*(a[0].d) = a[1].d->Hist(*(a[2].d), iint(a[3].v), a[4].v, a[5].v, k[6]==3?iint(a[6].v):0);
+		*(a[0].d) = a[1].d->Hist(*(a[2].d), int(a[3].v+0.5), a[4].v, a[5].v, k[6]==3?int(a[6].v+0.5):0);
 	else if(k[0]==1 && k[1]==1 && k[2]==3 && k[3]==3 && k[4]==3)
-		*(a[0].d) = a[1].d->Hist((int)iint(a[2].v), a[3].v, a[4].v, k[5]==3?(int)iint(a[5].v):0);
+		*(a[0].d) = a[1].d->Hist(int(a[2].v+0.5), a[3].v, a[4].v, k[5]==3?int(a[5].v+0.5):0);
 	else if(k[0]==1 && k[1]==1 && k[2]==1 && k[3]==1 && k[4]==1)
 		gr->Hist(*(a[0].d), *(a[1].d), *(a[2].d), *(a[3].d), *(a[4].d));
 	else if(k[0]==1 && k[1]==1 && k[2]==1 && k[3]==1)

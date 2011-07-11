@@ -49,6 +49,7 @@ using mglGraph::Legend;
 //	virtual void EndFrame();
 
 	void SetFontSizePT(mreal pt, int dpi=72);
+	void DefColor(mglColor c, mreal alpha=-1);
 	bool Alpha(bool enable);
 	bool Light(bool enable);
 	void Light(int n, bool enable);
@@ -174,8 +175,6 @@ protected:
 	virtual void LightScale();
 	/// Additionally scale normals \a s (array with length 3*n)
 	void NormScale(mreal *s,long n);
-	/// Set default color
-	void DefColor(mglColor c, mreal alpha=-1);
 	void colorbar(const mglData &v, const mglColor *s, int where, mreal x, mreal y, mreal w, mreal h);
 
 	/// Plot point \a p with color \a c

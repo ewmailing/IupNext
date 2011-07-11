@@ -23,7 +23,6 @@
 #ifndef _MSC_VER
 #include <stdint.h>
 #endif
-
 #include <mgl/config.h>
 
 #if(MGL_USE_DOUBLE==1)

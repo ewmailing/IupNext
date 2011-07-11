@@ -261,7 +261,7 @@ void mglGraph::SetScheme(const char *s, bool face)
 {
 	unsigned i;
 	mglColor c;
-	const char *col = MGL_DEF_COL;
+	const char *col = "kwrgbcymhWRGBCYMHlenpquLENPQU";
 	if(!s || s[0]==0 || s[0]==':')		return;
 	if(face && s[0]=='|' && s[1]==0)	{	SmoothColorbar=false;	return;	}
 	for(;*s;s++)	if(strchr(col,*s))	break;
@@ -447,7 +447,7 @@ char mglGraph::SelectPen(const char *p)
 	if(p && *p!=0)
 	{
 //		strcpy(last_style, p);
-		const char *col = MGL_DEF_COL;
+		const char *col = "wkrgbcymhRGBCYMHWlenuqpLENUQP";
 		const char *stl = " -|;:ji=";
 		const char *mrk = "*o+xsd.^v<>";
 		const char *wdh = "123456789";
@@ -492,24 +492,26 @@ char mglGraph::SelectPen(const char *p)
 //-----------------------------------------------------------------------------
 void mglGraph::SetPal(const char *colors)
 {
-	//if(!colors || !colors[0])	// restore default if only 1 color
-	//{	if(NumPal<2)	colors = DefPal;	else	return;	}
-	//memset(Pal,0,100*sizeof(mglColor));
-	//memset(PalNames,0,101*sizeof(char));
-	//int i,n = strlen(colors),k;
-	//n = n<100? n:100;
-	//for(i=k=0;i<n;i++)
-	//{
-	//	if(!strchr(MGL_DEF_COL,colors[i]))	continue;
-	//	PalNames[k] = colors[i];	Pal[k] = mglColor(colors[i]);	k++;
-	//}
-	//NumPal = k;	//	CurrPal = 0;
-	//if(k<1)	SetPal(0);	// if no colors then set default palette
+#if 0
+	if(!colors || !colors[0])	// restore default if only 1 color
+	{	if(NumPal<2)	colors = DefPal;	else	return;	}
+	memset(Pal,0,100*sizeof(mglColor));
+	memset(PalNames,0,101*sizeof(char));
+	int i,n = strlen(colors),k;
+	n = n<100? n:100;
+	for(i=k=0;i<n;i++)
+	{
+		if(!strchr("wkrgbcymhRGBCYMHWlenuqpLENUQP",colors[i]))	continue;
+		PalNames[k] = colors[i];	Pal[k] = mglColor(colors[i]);	k++;
+	}
+	NumPal = k;	//	CurrPal = 0;
+	if(k<1)	SetPal(0);	// if no colors then set default palette
+#endif  
 }
 //-----------------------------------------------------------------------------
 mglColor mglGraph::GetPal()
 {
-//	const char *col = MGL_DEF_COL;
+//	const char *col = "wkrgbcymhRGBCYMHWlenuqpLENUQP";
 	CurrPal = (CurrPal+1)%NumPal;
 //	if(*last_style==0)	{	last_style[0] = PalNames[CurrPal];	last_style[1]=0;	}
 //	else for
@@ -667,7 +669,7 @@ void mglGraph::SetTickStl(const char *stl, const char *sub)
 }
 //-----------------------------------------------------------------------------
 void mglGraph::SetTickLen(mreal tlen, mreal stt)
-{	TickLen=fabs(tlen)>0?tlen:0.1;	st_t=stt>0?stt:1;	}
+{	TickLen = tlen?tlen:0.1;	st_t=stt>0?stt:1;	}
 //-----------------------------------------------------------------------------
 void mglGraph::SimplePlot(const mglData &a, int type, const char *stl)
 {
