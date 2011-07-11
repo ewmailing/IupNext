@@ -88,7 +88,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "AXS_YLABELCENTERED", "NO");
   IupSetAttribute(plot[0], "AXS_YLABELROTATION", "NO");
   IupSetAttribute(plot[0], "AXS_YTICKVALUESROTATION", "NO");
-  IupSetAttribute(plot[0], "ZOOM", "YES");
+  IupSetAttribute(plot[0], "ROTATE", "YES");
   
   theFac = (float)1.0/(100*100*100);
   IupMglPlotBegin(plot[0], 2);
