@@ -111,11 +111,11 @@ struct _IcontrolData
   Iaxis xAxis, yAxis, zAxis;
 
   /* Interaction */
-  float x1, x2, y1, y2;
-  float x0, xe, y0, ye;
-  float rotX, rotZ, rotY;
+  float x0, xe, y0, ye;  // Aux
+  float x1, x2, y1, y2;  // Zoom+Pan
+  float rotX, rotZ, rotY;  // Rotate
   float perspective;
-  bool zoom, rotate;
+  bool interaction;
 
   /* Box */
   bool Box, boxTicks;
@@ -660,6 +660,14 @@ static void iMglPlotDrawGrid(Ihandle* ih, mglGraph *gr)
   gr->Grid(grid, pen);
 }
 
+static void iMglPlotDrawBox(Ihandle* ih, mglGraph *gr)
+{
+  char pen[10];
+  iMglPlotConfigColor(ih, gr, ih->data->boxColor);
+  iMglPlotConfigPen(gr, pen, '-', 1);
+  gr->Box(pen, ih->data->boxTicks);
+}
+
 static char* iMglPlotMakeFormatString(float inValue, float range) 
 {
   if (inValue<0)
@@ -766,25 +774,68 @@ static float iMglPlotGetAttribFloatNAN(Ihandle* ih, const char* name)
   return val;
 }
 
-static void iMglPlotConfigView3D(Ihandle* ih, mglGraph *gr)
+static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
 {
-  if (iupAttribGetBoolean(ih, "LIGHT"))  /* Default: FALSE */
-    gr->Light(true);
-  else
-    gr->Light(false);
+  // Only one plot using all viewport
+  gr->SubPlot(1, 1, 0);
 
-  if(ih->data->rotate)  /* 3D */
+  // Do NOT automatically set Org, we will set Origin
+  gr->AutoOrg = false;
+
+  // larger values, smaller plots
+  // 1.0 show exactly the dataset area
+  //TODO should the user be able to control this or only Zoom?
+  gr->PlotFactor = 1.4f;  // This zooms everything, except title
+                          
+  gr->Alpha(true);
+
+  if (ih->data->transparent)
   {
-    /* gr->Rotate() = rotates a further plotting relative to each axis (x, z, y) consecutively on angles TetX, TetZ e TetY.
-       gr->View() = sets angle of view independently from Rotate() but usually don’t rotate actually.
-       gr->SetPlotFactor() = Sets the factor of plot size. */
-    gr->SetPlotFactor(1.5);  /* Preserves the zoom during the rotation of the plot. */
-    gr->Rotate(ih->data->rotX, ih->data->rotZ, ih->data->rotY);
-    gr->Aspect(1, 1, 1);  /* Maintains the aspect ratio */
+    gr->SetTransparent(true);
+    gr->SetAlphaDef(ih->data->alpha);  // Should be used only if transparent is enabled
+  }
+  else
+  {
+    gr->SetTransparent(false);
+    gr->SetAlphaDef(1.0f);
+  }
 
-//    TODO: compare  gr->Rotate to gr->View
-//    gr->View(ih->data->rotX, ih->data->rotZ, ih->data->rotY);
-//    gr->Perspective(ih->data->perspective);
+  if (ih->data->interaction)
+    gr->Zoom(ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);  
+
+//TODO temporary, because our tests are all 2D
+//  if (iMglPlotIsView3D(ih))
+  {
+    if (iupAttribGetBoolean(ih, "LIGHT"))  /* Default: FALSE */
+      gr->Light(true);
+    else
+      gr->Light(false);
+
+    if (ih->data->interaction)
+    {
+      //REMOVER  Não faz isso. Acima eu já defino o PlotFactor
+      //REMOVER gr->SetPlotFactor(1.5);  /* Preserves the zoom during the rotation of the plot. */
+
+      //REMOVER  O estranho é o View ser usado em todos os widgets: fltk, qt, wx e glut. 
+      //REMOVER  Só que na classe mglGraphGL o método é sobrecarregado, ai na glut os parametros são diferenciados.
+      //REMOVER  Acho que deve usar a Rotate mesmo.
+      //REMOVER gr->View(ih->data->rotX, ih->data->rotZ, ih->data->rotY);
+      //REMOVER Veja que na implementação, um tem valor relativo e outro absoluto.
+#if 0 // REMOVER 
+void mglGraph::View(mreal tetx,mreal tetz,mreal tety)
+{	_tetx=tetx;	_tety=tety;	_tetz=tetz;	}
+void mglGraph::Rotate(mreal TetX,mreal TetZ,mreal TetY)
+{
+	RotateN(TetX+_tetx,1.,0.,0.);
+	RotateN(TetY+_tety,0.,1.,0.);
+	RotateN(TetZ+_tetz,0.,0.,1.);
+}
+#endif
+      gr->Rotate(ih->data->rotX, ih->data->rotZ, ih->data->rotY);
+
+      //REMOVER Se voce olhar o código da Aspect, essa chamada parece ser inutil
+      //REMOVER gr->Aspect(1, 1, 1);  /* Maintains the aspect ratio */
+    }
   }
 }
 
@@ -1097,7 +1148,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       gr->Bars(*ds->dsX, *ds->dsY, style);
     else
     {
-      //TODO should we do this aways?
+      //TODO should we do this always?
 	    mglData x(ds->dsX->nx);
       x.Fill(0, (float)(ds->dsCount-1));
       gr->Bars(x, *ds->dsX, style);
@@ -1256,52 +1307,10 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
   // on metafile and bitmaps, all mglGraph control must be done here
   // and can NOT be done inside the attribute methods
 
-  // Only one plot using all viewport
-  gr->SubPlot(1, 1, 0);
-
-  // Do NOT automatically set Org, we will set Origin
-  gr->AutoOrg = false;
-
-  // larger values, smaller plots
-  // 1.0 show exactly the dataset area
-  gr->PlotFactor = 1.4f;  // This zooms everything, except title   // TODO compare this to Zoom()
-                          
-  gr->Alpha(true);
-
-  if (ih->data->transparent)
-  {
-    gr->SetTransparent(true);
-    gr->SetAlphaDef(ih->data->alpha);  // Should be used only if transparent is enabled
-  }
-  else
-  {
-    gr->SetTransparent(false);
-    gr->SetAlphaDef(1.0f);
-  }
-
-  if (iMglPlotIsView3D(ih))
-    iMglPlotConfigView3D(ih, gr);
-
-  if(ih->data->rotate)  /* 3D */
-  {
-    /* gr->Rotate() = rotates a further plotting relative to each axis (x, z, y) consecutively on angles TetX, TetZ e TetY.
-       gr->View() = sets angle of view independently from Rotate() but usually don’t rotate actually.
-       gr->SetPlotFactor() = Sets the factor of plot size. */
-    gr->SetPlotFactor(1.5);  /* Preserves the zoom during the rotation of the plot. */
-    gr->Rotate(ih->data->rotX, ih->data->rotZ, ih->data->rotY);
-    gr->Aspect(1, 1, 1);  /* Maintains the aspect ratio */
-
-//    TODO: compare  gr->Rotate to gr->View
-//    gr->View(ih->data->rotX, ih->data->rotZ, ih->data->rotY);
-//    gr->Perspective(ih->data->perspective);
-  }
-
-  // TODO compare  gr->PlotFactor to Zoom()
-  gr->Zoom(ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);  
+  iMglPlotConfigView(ih, gr);
 
   iMglPlotConfigFontDef(ih, gr);
 
-  // Configure Min-Max
   iMglPlotConfigAxesRange(ih, gr);
 
   iupAttribSetStr(ih, "_IUP_MGLPLOT_GRAPH", (char*)gr);
@@ -1314,12 +1323,7 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
     iMglPlotDrawGrid(ih, gr);
 
   if (ih->data->Box)
-  {
-    char pen[10];
-    iMglPlotConfigColor(ih, gr, ih->data->boxColor);
-    iMglPlotConfigPen(gr, pen, '-', 1);
-    gr->Box(pen, ih->data->boxTicks);
-  }
+    iMglPlotDrawBox(ih, gr);
 
   iMglPlotDrawAxes(ih, gr);
 
@@ -3108,19 +3112,12 @@ static char* iMglPlotGetAlphaAttrib(Ihandle* ih)
 
 static int iMglPlotSetTransparentAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrBoolean(value))
-    ih->data->transparent = true;
-  else
-    ih->data->transparent = false;
-  return 0;
+  return iMglPlotSetBoolean(ih, value, ih->data->transparent);
 }
 
 static char* iMglPlotGetTransparentAttrib(Ihandle* ih)
 {
-  if (ih->data->transparent)
-    return "1";
-  else
-    return "0";
+  return iMglPlotGetBoolean(ih->data->transparent);
 }
 
 static int iMglPlotSetAntialiasAttrib(Ihandle* ih, const char* value)
@@ -3150,44 +3147,19 @@ static int iMglPlotSetAntialiasAttrib(Ihandle* ih, const char* value)
 static char* iMglPlotGetAntialiasAttrib(Ihandle* ih)
 {
   IupGLMakeCurrent(ih);
-
-  if (glIsEnabled(GL_LINE_SMOOTH))
-    return "1";
-  else
-    return "0";
+  return iMglPlotGetBoolean(glIsEnabled(GL_LINE_SMOOTH)==GL_TRUE);
 }
 
-static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
+static int iMglPlotSetInteractionAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrBoolean(value))
-    iMglPlotSetBoolean(ih, "0", ih->data->rotate);
-  
-  return iMglPlotSetBoolean(ih, value, ih->data->zoom);
+  return iMglPlotSetBoolean(ih, value, ih->data->interaction);
 }
 
-static char* iMglPlotGetZoomAttrib(Ihandle* ih)
+static char* iMglPlotGetInteractionAttrib(Ihandle* ih)
 {
-  if (ih->data->zoom)
-    return "1";
-  else
-    return "0";
+  return iMglPlotGetBoolean(ih->data->interaction);
 }
 
-static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
-{
-  if (iupStrBoolean(value))
-    iMglPlotSetBoolean(ih, "0", ih->data->zoom);
-
-  return iMglPlotSetBoolean(ih, value, ih->data->rotate);
-}
-
-static char* iMglPlotGetRotateAttrib(Ihandle* ih)
-{
-  if (ih->data->rotate)
-    return "1";
-  else
-    return "0";
-}
 
 /******************************************************************************
 Additional Functions
@@ -3918,14 +3890,14 @@ void IupMglPlotDrawText(Ihandle* ih, const char* text, float x, float y, float z
   gr->Puts(mglPoint(x, y, z), text, NULL, -1);
 }
 
+
 /******************************************************************************
  Canvas Callbacks
 ******************************************************************************/
+
+
 static void iMglPlotRestore(Ihandle *ih)
 {
-  //ih->data->zoom = false;
-  //ih->data->rotate = false;
-
   ih->data->rotX = 0;
   ih->data->rotZ = 0;
   ih->data->rotY = 0;
@@ -3936,70 +3908,34 @@ static void iMglPlotRestore(Ihandle *ih)
 
   ih->data->x0 = 0;  ih->data->xe = 0;
   ih->data->ye = 0;  ih->data->y0 = 0;
-
-  iMglPlotRepaint(ih, 1, 1);    /* force a full redraw here */
 }
 
-static void iMglPlotZoomIn(Ihandle *ih)
+static void iMglPlotZoom(Ihandle *ih, float factor)
 {
-  float d;
-
-  d = (ih->data->y2 - ih->data->y1)/4;
-  ih->data->y1 += d;
-  ih->data->y2 -= d;
-
-  d = (ih->data->x2 - ih->data->x1)/4;
-  ih->data->x1 += d;
-  ih->data->x2 -= d;
-
-  iMglPlotRepaint(ih, 1, 1);
+  float rh = ih->data->y2 - ih->data->y1;
+  float ry = (rh * factor) / (float)ih->data->h;
+  float rw = ih->data->x2 - ih->data->x1;
+  float rx = (rw * factor) / (float)ih->data->w;
+  ih->data->y1 += ry;
+  ih->data->y2 -= ry;
+  ih->data->x1 += rx;
+  ih->data->x2 -= rx;
 }
 
-static void iMglPlotZoomOut(Ihandle *ih)
+static void iMglPlotPanY(Ihandle *ih, float yoffset)
 {
-  float d;
-
-  d = (ih->data->y2 - ih->data->y1)/2;
-  ih->data->y1 -= d;
-  ih->data->y2 += d;
-
-  d = (ih->data->x2 - ih->data->x1)/2;
-  ih->data->x1 -= d;
-  ih->data->x2 += d;
-
-  iMglPlotRepaint(ih, 1, 1);
+  float rh = ih->data->y2 - ih->data->y1;
+  float ry = (rh * yoffset) / (float)ih->data->h;
+  ih->data->y1 += ry;
+  ih->data->y2 += ry;
 }
 
-static void iMglPlotShiftDown(Ihandle *ih)
+static void iMglPlotPanX(Ihandle *ih, float xoffset)
 {
-  float d = (ih->data->y2 - ih->data->y1)/3;
-  ih->data->y1 += d;
-  ih->data->y2 += d;
-  iMglPlotRepaint(ih, 1, 1);
-}
-
-static void iMglPlotShiftUp(Ihandle *ih)
-{
-  float d = (ih->data->y2 - ih->data->y1)/3;
-  ih->data->y1 -= d;
-  ih->data->y2 -= d;
-  iMglPlotRepaint(ih, 1, 1);
-}
-
-static void iMglPlotShiftRight(Ihandle *ih)
-{
-  float d = (ih->data->x2 - ih->data->x1)/3;
-  ih->data->x1 -= d;
-  ih->data->x2 -= d;
-  iMglPlotRepaint(ih, 1, 1);
-}
-
-static void iMglPlotShiftLeft(Ihandle *ih)
-{
-  float d = (ih->data->x2 - ih->data->x1)/3;
-  ih->data->x1 += d;
-  ih->data->x2 += d;
-  iMglPlotRepaint(ih, 1, 1);
+  float rw = ih->data->x2 - ih->data->x1;
+  float rx = (rw * xoffset) / (float)ih->data->w;
+  ih->data->x1 += rx;
+  ih->data->x2 += rx;
 }
 
 static int iMglPlotResize_CB(Ihandle* ih, int width, int height)
@@ -4023,93 +3959,62 @@ static int iMglPlotRedraw_CB(Ihandle* ih)
 
 static int iMglPlotMouseButton_CB(Ihandle* ih, int b, int press, int x, int y)
 {
-  if(press)  /* Button pressed */
+  if (ih->data->interaction && press)  /* Any Button pressed */
   {
     /* Initial (x,y) */
     ih->data->x0 = (float)x;
     ih->data->y0 = (float)y;
   }
-
-  if(b == IUP_BUTTON1 && !press && ih->data->zoom)  /* Button released */
-  {
-    float _x1,_x2,_y1,_y2;
-
-    /* Current (x,y) */
-    ih->data->xe = (float)x;
-    ih->data->ye = (float)y;
-
-    /* PAN: new values */
-    _x1 = ih->data->x1 + (ih->data->x2 - ih->data->x1) * (ih->data->x0 - (float)ih->data->xe) / (float)ih->data->w;
-    _y1 = ih->data->y1 + (ih->data->y2 - ih->data->y1) * (ih->data->ye - (float)ih->data->y0) / (float)ih->data->h;
-
-    _x2 = ih->data->x2 - (ih->data->x2 - ih->data->x1) * (ih->data->xe - (float)ih->data->x0) / (float)ih->data->w;
-    _y2 = ih->data->y2 - (ih->data->y2 - ih->data->y1) * (ih->data->y0 - (float)ih->data->ye) / (float)ih->data->h;
-
-    ih->data->x1 = _x1;   ih->data->x2 = _x2;
-    ih->data->y1 = _y1;   ih->data->y2 = _y2;
-
-    if(ih->data->x1 > ih->data->x2)
-    {
-      _x1 = ih->data->x1;
-      ih->data->x1 = ih->data->x2;
-      ih->data->x2 = _x1;
-    }
-    if(ih->data->y1 > ih->data->y2)
-    {
-      _x1 = ih->data->y1;
-      ih->data->y1 = ih->data->y2;
-      ih->data->y2 = _x1;
-    }
-
-    iMglPlotRepaint(ih, 1, 1);
-  }
-
+  (void)b;
   return IUP_DEFAULT;
 }
 
 static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 {
-  if(ih->data->rotate)
+  if (ih->data->interaction && 
+      (iup_isbutton1(status) ||
+       iup_isbutton2(status) ||
+       iup_isbutton3(status)))
   {
     ih->data->xe = (float)x;
     ih->data->ye = (float)y;
 
     if(iup_isbutton3(status))
     {
-      /* Rotate */
+      /* Rotate */   //TODO porque 240?
       float ff = 240 / sqrt(float(ih->data->w * ih->data->h));
 
-      ih->data->rotY += (ih->data->x0 - ih->data->xe) * ff;
+      ih->data->rotY += (ih->data->xe - ih->data->x0) * ff;
+      ih->data->rotX += (ih->data->ye - ih->data->y0) * ff;
 
-      ih->data->rotX += (ih->data->y0 - ih->data->ye) * ff;
+      // TODO Rotate Z (test for Ctrl ?)
 
       iMglPlotRepaint(ih, 1, 1);
     }
     else if(iup_isbutton2(status))  // Zoom & Perspective
     {
-      //     float ff = 2.0 * (ih->data->y0 - ih->data->ye)/(float)ih->data->w;
-      //     float gg = 0.5 * (ih->data->xe - ih->data->x0)/(float)ih->data->h;
-      //     float cx = (ih->data->x1 + ih->data->x2)/2;
-      //     float cy = (ih->data->y1 + ih->data->y2)/2;
-      //     
-      //     ih->data->x1 = cx+(ih->data->x1-cx)*exp(-ff);
-      //     ih->data->x2 = cx+(ih->data->x2-cx)*exp(-ff);
-      //     ih->data->y1 = cy+(ih->data->y1-cy)*exp(-ff);
-      //     ih->data->y2 = cy+(ih->data->y2-cy)*exp(-ff);
-      //     
-      //     ih->data->perspective = ih->data->perspective + gg;
-      //     if(ih->data->perspective<0)	ih->data->perspective = 0;	if(ih->data->perspective>=1)	ih->data->perspective = 0.9999;
-      //     
-      //     iMglPlotRepaint(ih, 1, 1);
+      // Zoom with vertical movement
+      float factor = 10.0f * (ih->data->y0 - ih->data->ye);
+      iMglPlotZoom(ih, factor);
+
+      //TODO should be vertical, or also Ctrl dependent?
+      //TODO be able to change it using keyboard and by attribute
+      // float gg = 0.5 * (ih->data->xe - ih->data->x0)/(float)ih->data->h;
+      // ih->data->perspective += gg;
+      // if(ih->data->perspective<0)	ih->data->perspective = 0;	
+      // if(ih->data->perspective>=1)	ih->data->perspective = 0.9999;
+           
+      iMglPlotRepaint(ih, 1, 1);
     }
     else if(iup_isbutton1(status))  // Pan
     {
-      //     float ff = 1 / sqrt(float(ih->data->w * ih->data->h));
-      //     float dx = (ih->data->x0-ih->data->xe)*ff*(ih->data->x2-ih->data->x1);
-      //     float dy = (ih->data->y0-ih->data->ye)*ff*(ih->data->y2-ih->data->y1);
-      //     ih->data->x1 += dx;	ih->data->x2 += dx;	ih->data->y1 -= dy;	ih->data->y2 -= dy;
-      //     
-      //     iMglPlotRepaint(ih, 1, 1);
+      float xoffset = ih->data->x0 - ih->data->xe;
+      float yoffset = ih->data->ye - ih->data->y0;  // Inverted because Y in IUP is top-down
+
+      iMglPlotPanX(ih, xoffset);
+      iMglPlotPanY(ih, yoffset);
+
+      iMglPlotRepaint(ih, 1, 1);
     }
     
     ih->data->x0 = ih->data->xe;
@@ -4121,12 +4026,18 @@ static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 
 static int iMglPlotWheel_CB(Ihandle* ih, float delta)
 {
-  if(ih->data->zoom)
+  if (ih->data->interaction)
   {
-    if(delta == 1)  /* Zoom In */
-      iMglPlotZoomIn(ih);
-    else if(delta == -1)  /* Zoom Out */
-      iMglPlotZoomOut(ih);
+    if(delta > 0)  /* Zoom In */
+    {
+      iMglPlotZoom(ih, 10.0f);
+      iMglPlotRepaint(ih, 1, 1);
+    }
+    else if(delta < 0)  /* Zoom Out */
+    {
+      iMglPlotZoom(ih, -10.0f);
+      iMglPlotRepaint(ih, 1, 1);
+    }
   }
 
   return IUP_DEFAULT;
@@ -4139,46 +4050,112 @@ static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
 
   switch(c)
   {
-  case K_cR:
+  case K_cR: case K_HOME:
     iMglPlotRestore(ih);
+    iMglPlotRepaint(ih, 1, 1);
     break;
+  // Pan
+  case K_cUP:
   case K_UP:
-    iMglPlotShiftUp(ih);
+    if (ih->data->interaction)
+    {
+      if (c == K_cUP)
+        iMglPlotPanY(ih, -10.0f);
+      else
+        iMglPlotPanY(ih, -1.0f);
+      iMglPlotRepaint(ih, 1, 1);
+    }
     break;
+  case K_cDOWN:
   case K_DOWN:
-    iMglPlotShiftDown(ih);
+    if (ih->data->interaction)
+    {
+      if (c == K_cDOWN)
+        iMglPlotPanY(ih, 10.0f);
+      else
+        iMglPlotPanY(ih, 1.0f);
+      iMglPlotRepaint(ih, 1, 1);
+    }
     break;
+  case K_cLEFT:
   case K_LEFT:
-    iMglPlotShiftLeft(ih);
+    if (ih->data->interaction)
+    {
+      if (c == K_cLEFT)
+        iMglPlotPanX(ih, 10.0f);
+      else
+        iMglPlotPanX(ih, 1.0f);
+      iMglPlotRepaint(ih, 1, 1);
+    }
     break;
+  case K_cRIGHT:
   case K_RIGHT:
-    iMglPlotShiftRight(ih);
+    if (ih->data->interaction)
+    {
+      if (c == K_cRIGHT)
+        iMglPlotPanX(ih, -10.0f);
+      else
+        iMglPlotPanX(ih, -1.0f);
+      iMglPlotRepaint(ih, 1, 1);
+    }
     break;
-  case K_PGUP:
-    iMglPlotZoomIn(ih);
+  // Zoom
+  case K_PGUP: case K_plus:
+    if (ih->data->interaction)
+    {
+      iMglPlotZoom(ih, 10.0f);
+      iMglPlotRepaint(ih, 1, 1);
+    }
     break;
-  case K_PGDN:
-    iMglPlotZoomOut(ih);
+  case K_PGDN: case K_minus:
+    if (ih->data->interaction)
+    {
+      iMglPlotZoom(ih, -10.0f);
+      iMglPlotRepaint(ih, 1, 1);
+    }
     break;
-  case K_A:
-  case K_a:
-    ih->data->rotX += 5;
-    iMglPlotRepaint(ih, 1, 1);
+  // Rotation
+  case K_A: case K_a:
+    if(ih->data->interaction)
+    {
+      ih->data->rotY -= 1.0f;
+      iMglPlotRepaint(ih, 1, 1);
+    }
     break;
-  case K_D:
-  case K_d:
-    ih->data->rotX -= 5;
-    iMglPlotRepaint(ih, 1, 1);
+  case K_D: case K_d:
+    if(ih->data->interaction)
+    {
+      ih->data->rotY += 1.0f;
+      iMglPlotRepaint(ih, 1, 1);
+    }
     break;
-  case K_W:
-  case K_w:
-    ih->data->rotY += 5;
-    iMglPlotRepaint(ih, 1, 1);
+  case K_W: case K_w:
+    if(ih->data->interaction)
+    {
+      ih->data->rotX += 1.0f;
+      iMglPlotRepaint(ih, 1, 1);
+    }
     break;
-  case K_S:
-  case K_s:
-    ih->data->rotY -= 5;
-    iMglPlotRepaint(ih, 1, 1);
+  case K_S: case K_s:
+    if(ih->data->interaction)
+    {
+      ih->data->rotX -= 1.0f;
+      iMglPlotRepaint(ih, 1, 1);
+    }
+    break;
+  case K_Q: case K_q:
+    if(ih->data->interaction)
+    {
+      ih->data->rotZ -= 1.0f;
+      iMglPlotRepaint(ih, 1, 1);
+    }
+    break;
+  case K_E: case K_e:
+    if(ih->data->interaction)
+    {
+      ih->data->rotZ += 1.0f;
+      iMglPlotRepaint(ih, 1, 1);
+    }
     break;
   }
 
@@ -4257,6 +4234,7 @@ static int iMglPlotCreateMethod(Ihandle* ih, void **params)
   ih->data->legendBox = true;
   ih->data->boxTicks = true;
   ih->data->alpha = 0.5f;
+  ih->data->interaction = true;
 
   ih->data->legendFontSizeFactor = 0.8f;
   ih->data->titleFontSizeFactor = 1.6f;
@@ -4496,8 +4474,13 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "DRAWFONTSTYLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWFONTSIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "ZOOM", iMglPlotGetZoomAttrib, iMglPlotSetZoomAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ROTATE", iMglPlotGetRotateAttrib, iMglPlotSetRotateAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INTERACTION", iMglPlotGetInteractionAttrib, iMglPlotSetInteractionAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  //TODO ZOOM = x1,y1:x2,y2
+  //iupClassRegisterAttribute(ic, "ZOOM", iMglPlotGetZoomAttrib, iMglPlotSetZoomAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  //TODO ROTATE = t1:t2:t3
+  //iupClassRegisterAttribute(ic, "ROTATE", iMglPlotGetRotateAttrib, iMglPlotSetRotateAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  //TODO PERSPECTIVE
+  //iupClassRegisterAttribute(ic, "PERSPECTIVE", iMglPlotGetPerspectiveAttrib, iMglPlotSetPerspectiveAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }
@@ -4521,9 +4504,7 @@ void IupMglPlotOpen(void)
 /* TODO
 
 Rafael:
-  Interaction  Zoom/Pan/Rotate  (disable Rotate if graph is not 3D)
-  compare  gr->Rotate(40, 60);  to   gr->View
-  compare  gr->PlotFactor to Zoom()
+  Interaction  Zoom/Pan/Rotate
 
 Depois:
   improve autoticks computation
@@ -4556,7 +4537,6 @@ Maybe:
 
 MathGL:
   clipping very poor, evident in Bars
-  AlphaDef is used in several places ignoring the Transparent flag
   data text file using ';' or '\t' also
   legend is not been displayed in OpenGL.
   documentation says negative len puts tic outside the bounding box, but it is NOT working
