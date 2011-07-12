@@ -40,8 +40,7 @@
 enum {IUP_MGLPLOT_BOTTOMLEFT, IUP_MGLPLOT_BOTTOMRIGHT, IUP_MGLPLOT_TOPLEFT, IUP_MGLPLOT_TOPRIGHT};
 enum {IUP_MGLPLOT_INHERIT, IUP_MGLPLOT_PLAIN, IUP_MGLPLOT_BOLD, IUP_MGLPLOT_ITALIC, IUP_MGLPLOT_BOLD_ITALIC};
 
-//TODO dataset can be a pointer to the previous data, 
-//so the same data can be displayed using different modes using the same memory
+
 typedef struct _IdataSet
 {
   char dsLineStyle;
@@ -139,7 +138,7 @@ struct _IcontrolData
   IdataSet* dataSet;
 };
 
-/* PPlot function pointer typedefs. */
+/* Callbacks function pointer typedefs. */
 // TODO
 // typedef int (*IFniiff)(Ihandle*, int, int, float, float); /* delete_cb */
 // typedef int (*IFniiffi)(Ihandle*, int, int, float, float, int); /* select_cb */
@@ -549,11 +548,14 @@ static void iMglPlotDrawAxisLabel(Ihandle* ih, mglGraph *gr, char dir, Iaxis& ax
   char* label = iupAttribGetStr(ih, attrib);
   if (label)
   {
-    // TODO Rotation is working only for Y axis
     gr->SetRotatedText(axis.axLabelRotation);
+
     iMglPlotConfigFont(ih, gr, axis.axLabelFontStyle, axis.axLabelFontSizeFactor);
+
     // TODO somethimes the label gets too close to the ticks
     gr->Label(dir, label, (mreal)axis.axLabelPos, -1);  
+
+    gr->SetRotatedText(false);
   }
 }
 
@@ -607,7 +609,6 @@ static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
     iMglPlotConfigAxisTicksVal(ih, gr, true);
 
   // Configure ticks values rotation along axis
-  // TODO Rotation is working only for Y axis
   gr->SetRotatedText(axis.axTickValuesRotation);
 
   // Draw the axis, ticks and ticks values
@@ -625,6 +626,8 @@ static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
   // Reset to default
   if (dir == 'x')
     iMglPlotConfigAxisTicksVal(ih, gr, false);
+
+  gr->SetRotatedText(false);
 }
 
 static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
@@ -1142,6 +1145,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
 
+    // To avoid hole bars clipping when touching the bounding box
+    gr->SetCut(false); 
+
     if (ds->dsDim == 3)
       gr->Bars(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
@@ -1154,6 +1160,8 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       gr->Bars(x, *ds->dsX, style);
 //      gr->Bars(*ds->dsX, style);
     }
+
+    gr->SetCut(true); 
   }
   else if (iupStrEqualNoCase(ds->dsMode, "BARHORIZONTAL"))
   {
@@ -4507,27 +4515,30 @@ Rafael:
   Interaction  Zoom/Pan/Rotate
 
 Depois:
+  min-max x Fill
   improve autoticks computation
   labels
   rever testes
   -------------------
   Legend
   LoadFont
-  min-max x Fill
   text anti-aliasing
-  DS_EDIT+Selection+Callbacks
-  reference datasets
   -------------------
+  exemplos com os recursos novos
   teste IupMglPlotLoadData e IupMglPlotSetFromFormula, 
   teste IupMglPlotPaintTo  SVG, EPS e RGB
   teste BOLD e ITALIC
   -------------------
-  explicar pixels x plot x normalized coordinates
+  documentar pixels x plot x normalized coordinates
   documentar suporte a Tek formulas nas strings
   documentar DS_MODE Options
-  exemplos com os recursos novos
   -------------------
   Binding Lua
+  -------------------
+  DS_EDIT+Selection+Callbacks
+  reference datasets
+     dataset can be a pointer to the previous data, 
+     so the same data can be displayed using different modes using the same memory
   rever IupGraph
 
 Maybe:
@@ -4536,15 +4547,7 @@ Maybe:
   plots that need two datasets: region, tens, error, flow, pipe, ...
 
 MathGL:
-  clipping very poor, evident in Bars
-  data text file using ';' or '\t' also
-  legend is not been displayed in OpenGL.
   documentation says negative len puts tic outside the bounding box, but it is NOT working
-  rotation along axis is only for Y axis?
-  position axis, acording to title, ticks and labels
-  Min-Max controls the bounding box - ok, 
-     but also affects how .Fill relates data inside plot functions
-
   sometimes the label gets too close to the ticks
      it can be manualy moved by changing the origin
 

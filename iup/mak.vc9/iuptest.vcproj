@@ -159,10 +159,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\ClassDiagram1.cd"
-			>
-		</File>
-		<File
 			RelativePath="..\test\clipboard.c"
 			>
 		</File>

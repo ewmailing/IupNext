@@ -418,8 +418,11 @@ center (YES) or at top/right (NO). Default: YES. Will set/get AXS_?LABELPOSITION
 to CENTER or MAX. Available for compatibility with IupPPlot.</p>
 <p><b>AXS_?LABELPOSITION</b>: text label position. Can be CENTER, MAX or MIN. 
 Default: CENTER.</p>
-<p><b>AXS_?LABELROTATION</b>: text label rotation along axis. Can be YES or NO. 
-Default: Yes.</p>
+<p><b>AXS_?LABELROTATION</b>: enable or disable the text label rotation along 
+the 3D axis. Can be YES or NO. 
+Default: Yes. This means that text will be aligned with the axis even when 
+rotating the graph. When NO text will be horizontal, always facing the camera, 
+independently from graph rotation. For 2D graphs is useful to the Y axis only.</p>
 <p><b>AXS_?MAX, AXS_?MIN</b>: minimum and maximum displayed 
 values of the respective axis in plot coordinates. Automatically calculated values when AUTOMIN or 
 AUTOMAX are enabled. Default: 1.0 and 0.0.</p>
@@ -463,7 +466,10 @@ AXS_?TICKSIZE is also accepted.</p>
 <p><b>AXS_?TICKVALUES</b>: enable or disable the axis tick values display. Can be 
 YES or NO. Default: YES.</p>
 <p><strong>AXS_?TICKVALUESROTATION</strong>: enable or disable the axis tick 
-values rotation along the axis. Can be YES or NO. Default: YES.</p>
+values rotation along the 3D axis. Can be YES or NO. Default: YES. This means 
+that text will be aligned with the axis even when rotating the graph. When NO 
+text will be horizontal, always facing the camera, independently from graph 
+rotation. For 2D graphs is useful to the Y axis only.</p>
 <blockquote>
   <hr>
 </blockquote>

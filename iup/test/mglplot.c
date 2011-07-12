@@ -87,7 +87,9 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "AXS_XLABELCENTERED", "NO");
   IupSetAttribute(plot[0], "AXS_YLABELCENTERED", "NO");
   IupSetAttribute(plot[0], "AXS_YLABELROTATION", "NO");
+//  IupSetAttribute(plot[0], "AXS_XLABELROTATION", "NO");
   IupSetAttribute(plot[0], "AXS_YTICKVALUESROTATION", "NO");
+//  IupSetAttribute(plot[0], "AXS_XTICKVALUESROTATION", "NO");
   
   theFac = (float)1.0/(100*100*100);
   IupMglPlotBegin(plot[0], 2);
@@ -199,8 +201,6 @@ static void InitPlots(void)
   IupMglPlotEnd(plot[2]);
   IupSetAttribute(plot[2], "DS_COLOR", "100 100 200");
   IupSetAttribute(plot[2], "DS_LINESTYLE", "DOTTED");
-//  IupSetAttribute(plot[2], "AXS_XTICKVALUESROTATION", "YES");    // NOT working
-//  IupSetAttribute(plot[2], "AXS_XLABELROTATION", "YES");    // NOT working
 
   /* PLOT 3 - MakeExamplePlot5 */
   IupSetAttribute(plot[3], "TITLE", "Bar Mode");
@@ -217,7 +217,6 @@ static void InitPlots(void)
   IupSetAttribute(plot[3], "DS_MODE", "BAR");
 //  IupSetAttribute(plot[3], "AXS_XTICKAUTO", "NO");   // Not supported when names are used
 //  IupSetAttribute(plot[3], "AXS_XTICKMAJORSPAN", "-5"); // idem
-//  IupSetAttribute(plot[3], "AXS_XTICKVALUESROTATION", "YES");  // NOT working
   IupSetAttribute(plot[3], "AXS_XCROSSORIGIN", "NO");
   
 
