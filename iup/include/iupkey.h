@@ -8,7 +8,7 @@
 #define __IUPKEY_H
 
 /* from 32 to 126, all character sets are equal,
-   the key code i the same as the character code. */
+   the key code is the same as the character code. */
 
 #define K_SP          ' '   /* 32 (0x20) */
 #define K_exclam      '!'   /* 33 */
@@ -121,15 +121,15 @@
 #define  K_quoteright  K_apostrophe
 #define  isxkey        iup_isXkey
 
-/* IUP Extended Key Codes, range start at 128 */
-/* Modifiers use 256 interval                 */
+/* IUP Extended Key Codes, range start at 128      */
+/* Modifiers use 256 intervals                     */
 /* These key code definitions are specific to IUP  */
 
-#define iup_isXkey(_c)      ((_c) > 128)
-#define iup_isShiftXkey(_c) (((_c) > 256) && ((_c) < 512))
-#define iup_isCtrlXkey(_c)  (((_c) > 512) && ((_c) < 768))
-#define iup_isAltXkey(_c)   (((_c) > 768) && ((_c) < 1024))
-#define iup_isSysXkey(_c)  (((_c) > 1024) && ((_c) < 1280))
+#define iup_isXkey(_c)       ((_c) > 128)
+#define iup_isShiftXkey(_c) (((_c) > 256)  && ((_c) < 512))
+#define iup_isCtrlXkey(_c)  (((_c) > 512)  && ((_c) < 768))
+#define iup_isAltXkey(_c)   (((_c) > 768)  && ((_c) < 1024))
+#define iup_isSysXkey(_c)   (((_c) > 1024) && ((_c) < 1280))
 
 #define IUPxCODE(_c)   ((_c) + 128)   /* Normal (must be above 128) */
 #define IUPsxCODE(_c)  ((_c) + 256)   /* Shift (must have range to include the standard keys and the normal extended keys, so must be above 256 */
