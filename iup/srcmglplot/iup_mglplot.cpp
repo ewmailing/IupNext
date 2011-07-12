@@ -303,7 +303,7 @@ static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, int fontstyle, float f
 
 static void iMglPlotConfigColor(Ihandle* ih, mglGraph *gr, mglColor color)
 {
-  if (color.r == NAN || color.g == NAN || color.b == NAN)
+  if (isnan(color.r) || isnan(color.g) || isnan(color.b))
     color = ih->data->fgColor;
 
   gr->DefColor(color, 1);
@@ -456,7 +456,7 @@ static void iMglPlotFindMinMaxValues(mglData& ds_data, bool add, float& min, flo
 
   for (i = 1; i < count; i++, data++)
   {
-    if (*data != *data) // test if NAN
+    if (isnan(*data))
       continue;
 
     if (!add)  // first valid found
@@ -3026,7 +3026,7 @@ static char* iMglPlotGetAxisXCrossOrigin(float origin)
 {
   if (origin==0)
     return "YES";
-  else if (origin==NAN)
+  else if (isnan(origin))
     return "NO";
   else
     return NULL;
@@ -3079,7 +3079,7 @@ static int iMglPlotSetAxisZOriginAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisOrigin(float Origin)
 {
-  if (Origin != NAN)
+  if (!isnan(Origin))
     return iMglPlotGetFloat(Origin);
   else
     return NULL;
