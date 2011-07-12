@@ -1,9 +1,9 @@
 /*
  * IupMglPlot Test
  * Description : Create all built-in plots.
- *               It is organised as two side-by-side panels:
+ *               It is organized as two side-by-side panels:
  *                 - left panel for current plot control
- *                 - right panel containg tabbed plots
+ *                 - right panel containing tabbed plots
  *      Remark : depend on libs IUP, CD, IUP_MGLPLOT
  */
 
@@ -25,7 +25,7 @@
 
 static Ihandle *plot[MAXPLOT] = {NULL}; /* PPlot controls */
 static Ihandle *dial1, *dial2,          /* dials for zooming */
-        *tgg1, *tgg2,            /* autoscale on|off toggles */
+        *tgg1, *tgg2,            /* auto scale on|off toggles */
         *tgg3, *tgg4,            /* grid show|hide toggles */
         *tgg5,                   /* legend show|hide toggle */
         *tgg6,                   /* box show|hide toggle */
@@ -297,7 +297,7 @@ static int tabs_tabchange_cb(Ihandle* self, Ihandle* new_tab)
   char *value = IupGetAttribute(new_tab, "TABTITLE");
   ii = atoi(value+5); /* Skip "Plot " */
 
-  /* autoscaling X axis */
+  /* auto scaling X axis */
   if (IupGetInt(plot[ii], "AXS_XAUTOMIN") && IupGetInt(plot[ii], "AXS_XAUTOMAX")) 
   {
     IupSetAttribute(tgg2, "VALUE", "ON");
@@ -308,7 +308,7 @@ static int tabs_tabchange_cb(Ihandle* self, Ihandle* new_tab)
     IupSetAttribute(tgg2, "VALUE", "OFF");
     IupSetAttribute(dial2, "ACTIVE", "YES");
   }
-  /* autoscaling Y axis */
+  /* auto scaling Y axis */
   if (IupGetInt(plot[ii], "AXS_YAUTOMIN") && IupGetInt(plot[ii], "AXS_YAUTOMAX")) 
   {
     IupSetAttribute(tgg1, "VALUE", "ON");
@@ -432,7 +432,7 @@ static int tgg5_cb(Ihandle *self, int v)
 }
 
 
-/* autoscale Y */
+/* auto scale Y */
 static int tgg1_cb(Ihandle *self, int v)
 {
   int ii = tabs_get_index();
@@ -454,7 +454,7 @@ static int tgg1_cb(Ihandle *self, int v)
 }
 
 
-/* autoscale X */
+/* auto scale X */
 static int tgg2_cb(Ihandle *self, int v)
 {
   int ii = tabs_get_index();
