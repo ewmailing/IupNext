@@ -371,7 +371,8 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   else 
     size = (int)((size*ih->data->dpi)/72.0f);   //from points to pixels
 
-  ih->data->FontSizeDef = ((float)size/(float)ih->data->h)*90;   //TODO Magic factor for acceptable size 
+  //TODO Magic factor for acceptable size 
+  ih->data->FontSizeDef = ((float)size/(float)ih->data->h)*90;   
 
   const char* name = iMglPlotGetFontName(typeface);
   if (!name)
@@ -4589,12 +4590,12 @@ Depois:
   Binding Lua
   -------------------
   DS_EDIT+Selection+Callbacks
-  reference datasets
-     dataset can be a pointer to the previous data, 
-     so the same data can be displayed using different modes using the same memory
   rever IupGraph
 
 Maybe:
+  reference datasets
+     dataset can be a pointer to the previous data, 
+     so the same data can be displayed using different modes using the same memory
   curvilinear coordinates
   Ternary
   plots that need two datasets: region, tens, error, flow, pipe, ...
