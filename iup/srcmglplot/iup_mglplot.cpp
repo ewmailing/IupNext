@@ -93,13 +93,20 @@ struct _IcontrolData
 
   mglGraphGL* mgl;
 
+  /* Control */
   int w, h;
   float dpi;
-  bool redraw, transparent;
+  bool redraw;
+
+  /* Obtained from FONT */
+  char FontDef[32];     
+  float FontSizeDef;
+  int FontStyleDef;
+
+  /* Global */
+  bool transparent;
   float alpha;
   mglColor bgColor, fgColor;
-  char FontDef[32];     /* aux, obtained from FONT */
-  float FontSize;
 
   /* Title */
   mglColor titleColor;
@@ -112,8 +119,7 @@ struct _IcontrolData
   /* Interaction */
   float x0, xe, y0, ye;  // Aux
   float x1, x2, y1, y2;  // Zoom+Pan
-  float rotX, rotZ, rotY;  // Rotate
-  float perspective;
+  float rotX, rotZ, rotY;  // Rotate (angle in degrees)
 
   /* Box */
   bool Box, boxTicks;
@@ -147,7 +153,6 @@ struct _IcontrolData
  Useful Functions
 ******************************************************************************/
 
-
 // Quantize 0-1 values into 0-255.
 inline unsigned char iQuant(const float& value)
 {
@@ -164,27 +169,109 @@ inline float iRecon(const unsigned char& value)
   return ((float)value + 0.5f)/256.0f;
 }
 
-/* Calculates the angle of this vector in grad in the trigonometric sense.
-   Source: touchlib (http://www.nuigroup.com/touchlib/) */
-#define GRAD_PI     57.2957787f  /* 180.0f / 3.1415927f */
-static float iMglPlotGetAngleTrig(float X, float Y)
+static char* iMglPlotDefaultLegend(int ds)
 {
-  if(X == 0.0f)
-    return Y < 0.0f ? 270.0f : 90.0f;
-  else
-    if(Y == 0)
-      return X < 0.0f ? 180.0f : 0.0f;
+  char legend[50];
+  sprintf(legend, "plot %d", ds);
+  return iupStrDup(legend);
+}
 
-  if(Y > 0.0f)
-    if(X > 0.0f)
-      return atan(Y/X) * GRAD_PI;
-    else
-      return 180.0f-atan(Y/-X) * GRAD_PI;
-  else
-    if(X > 0.0f)
-      return 360.0f-atan(-Y/X) * GRAD_PI;
-    else
-      return 180.0f+atan(-Y/-X) * GRAD_PI;
+static void iMglPlotResetDataSet(IdataSet* ds, int ds_index)
+{
+  // Can NOT use memset here
+
+  ds->dsLineStyle  = '-';  // SOLID/CONTINUOUS
+  ds->dsLineWidth  = 1;
+  ds->dsMarkStyle  = 'x';  // "X"
+  ds->dsMarkSize   = 0.02f;
+  ds->dsShowMarks = false;
+  ds->dsShowValues = false;
+  ds->dsMode = iupStrDup("LINE");
+  ds->dsLegend = iMglPlotDefaultLegend(ds_index);
+
+  switch(ds_index)
+  {
+    case 0: ds->dsColor.Set(1, 0, 0); break;
+    case 1: ds->dsColor.Set(0, 0, 1); break;
+    case 2: ds->dsColor.Set(0, 1, 0); break;
+    case 3: ds->dsColor.Set(0, 1, 1); break;
+    case 4: ds->dsColor.Set(1, 0, 1); break;
+    case 5: ds->dsColor.Set(1, 1, 0); break;
+    default: ds->dsColor.Set(0, 0, 0); break;
+  }
+}
+
+static void iMglPlotResetInteraction(Ihandle *ih)
+{
+  ih->data->x1 = 0.0f;  ih->data->y1 = 0.0f;
+  ih->data->x2 = 1.0f;  ih->data->y2 = 1.0f;
+
+  ih->data->x0 = 0.0f;  ih->data->xe = 0.0f;
+  ih->data->ye = 0.0f;  ih->data->y0 = 0.0f;
+
+  ih->data->rotX = 0.0f;   ih->data->rotZ = 0.0f;   ih->data->rotY = 0.0f;
+}
+
+static void iMglPlotResetAxis(Iaxis& axis)
+{
+  memset(&axis, 0, sizeof(Iaxis));
+
+  axis.axLabelFontSizeFactor = 1;
+  axis.axTickFontSizeFactor = 0.8f;
+
+  axis.axColor.Set(NAN, NAN, NAN);
+
+  axis.axAutoScaleMin = true;
+  axis.axAutoScaleMax = true;
+  axis.axMax = 1;
+  axis.axShow = true;
+  axis.axShowArrow = true;
+  axis.axLabelRotation = true;
+
+  axis.axTickShow = true;
+  axis.axTickShowValues = true;
+  axis.axTickValuesRotation = true;
+  axis.axTickAutoSpace = true;
+  axis.axTickAutoSize = true;
+  axis.axTickMinorSizeFactor = 0.6f;
+  axis.axTickMajorSize = 0.1f;
+  axis.axTickMinorDivision = 5;
+  axis.axTickMajorSpan = -5;
+}
+
+static void iMglPlotReset(Ihandle* ih)
+{
+  // Can NOT use memset here
+
+  ih->data->legendPosition = IUP_MGLPLOT_TOPRIGHT;
+  ih->data->legendBox = true;
+  ih->data->legendShow = false;
+  ih->data->Box = false;
+  ih->data->boxTicks = true;
+  ih->data->gridLineStyle = '-';
+  ih->data->gridShow = NULL;
+
+  ih->data->alpha = 0.5f;
+  ih->data->transparent = false;
+
+  ih->data->titleFontStyle = IUP_MGLPLOT_INHERIT;
+  ih->data->legendFontStyle = IUP_MGLPLOT_INHERIT;
+  ih->data->legendFontSizeFactor = 0.8f;
+  ih->data->titleFontSizeFactor = 1.6f;
+
+  ih->data->bgColor.Set(1, 1, 1);
+  ih->data->fgColor.Set(0, 0, 0);
+  ih->data->gridColor.Set(iRecon(200), iRecon(200), iRecon(200));
+  ih->data->titleColor.Set(NAN, NAN, NAN);
+  ih->data->legendColor.Set(NAN, NAN, NAN);
+  ih->data->boxColor.Set(NAN, NAN, NAN);
+
+  iMglPlotResetAxis(ih->data->xAxis);
+  iMglPlotResetAxis(ih->data->yAxis);
+  iMglPlotResetAxis(ih->data->zAxis);
+
+  /* Interaction default values */
+  iMglPlotResetInteraction(ih);
 }
 
 static bool iMglPlotIsPlanarOrVolumetricData(IdataSet* ds)
@@ -251,15 +338,25 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
 
   if (is_bold && is_italic)
   {
+    ih->data->FontStyleDef = IUP_MGLPLOT_BOLD_ITALIC;
     ih->data->FontDef[i++] = 'b';
     ih->data->FontDef[i++] = 'i';
   }
   else if (is_bold)
+  {
+    ih->data->FontStyleDef = IUP_MGLPLOT_BOLD;
     ih->data->FontDef[i++] = 'b';
+  }
   else if (is_italic)
+  {
+    ih->data->FontStyleDef = IUP_MGLPLOT_ITALIC;
     ih->data->FontDef[i++] = 'i';
+  }
   else
+  {
+    ih->data->FontStyleDef = IUP_MGLPLOT_PLAIN;
     ih->data->FontDef[i++] = 'r';
+  }
 
   if (is_underline)
     ih->data->FontDef[i++] = 'u';
@@ -274,7 +371,7 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   else 
     size = (int)((size*ih->data->dpi)/72.0f);   //from points to pixels
 
-  ih->data->FontSize = ((float)size/(float)ih->data->h)*90;   //TODO Magic factor for acceptable size 
+  ih->data->FontSizeDef = ((float)size/(float)ih->data->h)*90;   //TODO Magic factor for acceptable size 
 
   const char* name = iMglPlotGetFontName(typeface);
   if (!name)
@@ -299,6 +396,9 @@ static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, int fontstyle, float f
   int i=0;
   char fnt[32];
 
+  if (fontstyle==IUP_MGLPLOT_INHERIT)
+    fontstyle = ih->data->FontStyleDef;
+
   if (fontstyle==IUP_MGLPLOT_PLAIN)
     fnt[i++] = 'r';
   else if (fontstyle==IUP_MGLPLOT_BOLD)
@@ -318,7 +418,7 @@ static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, int fontstyle, float f
   else
     gr->SetFontDef(ih->data->FontDef);
 
-  gr->SetFontSize(fontsizefactor*ih->data->FontSize);
+  gr->SetFontSize(fontsizefactor*ih->data->FontSizeDef);
 }
 
 static void iMglPlotConfigColor(Ihandle* ih, mglGraph *gr, mglColor color)
@@ -573,7 +673,7 @@ static void iMglPlotDrawAxisLabel(Ihandle* ih, mglGraph *gr, char dir, Iaxis& ax
 
     iMglPlotConfigFont(ih, gr, axis.axLabelFontStyle, axis.axLabelFontSizeFactor);
 
-    // TODO somethimes the label gets too close to the ticks
+    // TODO sometimes the label gets too close to the ticks
     gr->Label(dir, label, (mreal)axis.axLabelPos, -1);  
 
     gr->SetRotatedText(false);
@@ -801,6 +901,7 @@ static float iMglPlotGetAttribFloatNAN(Ihandle* ih, const char* name)
 static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
 {
   // Only one plot using all viewport
+  //TODO improve this   , "");
   gr->SubPlot(1, 1, 0);
 
   // Do NOT automatically set Org, we will set Origin
@@ -833,7 +934,6 @@ static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
       gr->Light(false);
 
     gr->Rotate(ih->data->rotX, ih->data->rotZ, ih->data->rotY);
-    gr->Perspective(ih->data->perspective);
   }
 
   gr->Zoom(ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
@@ -1461,6 +1561,45 @@ static char* iMglPlotGetBoolean(bool num)
     return "NO";
 }
 
+static int iMglPlotSetResetAttrib(Ihandle* ih, const char* value)
+{
+  (void)value;  /* not used */
+  iMglPlotReset(ih);
+
+  // Some attributes are stored in the hash table
+  iupAttribSetStr(ih, "MGLFONT", NULL);
+  iupAttribSetStr(ih, "TITLE", NULL);
+
+  iupAttribSetStr(ih, "DATAGRID", NULL);
+  iupAttribSetStr(ih, "PLANARVALUE", NULL);
+  iupAttribSetStr(ih, "GRADLINESCOUNT", NULL);
+  iupAttribSetStr(ih, "AXIALCOUNT", NULL);
+  iupAttribSetStr(ih, "CONTOURFILLED", NULL);
+  iupAttribSetStr(ih, "CONTOURCOUNT", NULL);
+  iupAttribSetStr(ih, "DIR", NULL);
+  iupAttribSetStr(ih, "CLOUDCUBES", NULL);
+  iupAttribSetStr(ih, "SLICEX", NULL);
+  iupAttribSetStr(ih, "SLICEY", NULL);
+  iupAttribSetStr(ih, "SLICEZ", NULL);
+  iupAttribSetStr(ih, "SLICEDIR", NULL);
+  iupAttribSetStr(ih, "PROJECTVALUEX", NULL);
+  iupAttribSetStr(ih, "PROJECTVALUEY", NULL);
+  iupAttribSetStr(ih, "PROJECTVALUEZ", NULL);
+  iupAttribSetStr(ih, "PROJECT", NULL);
+  iupAttribSetStr(ih, "ISOCOUNT", NULL);
+  iupAttribSetStr(ih, "BARWIDTH", NULL);
+
+  iupAttribSetStr(ih, "AXS_XLABEL", NULL);
+  iupAttribSetStr(ih, "AXS_YLABEL", NULL);
+  iupAttribSetStr(ih, "AXS_ZLABEL", NULL);
+  iupAttribSetStr(ih, "AXS_XTICKFORMAT", NULL);
+  iupAttribSetStr(ih, "AXS_YTICKFORMAT", NULL);
+  iupAttribSetStr(ih, "AXS_ZTICKFORMAT", NULL);
+
+  ih->data->redraw = true;
+  return 0;
+}
+
 static int iMglPlotSetRedrawAttrib(Ihandle* ih, const char* value)
 {
   (void)value;  /* not used */
@@ -1796,6 +1935,10 @@ static int iMglPlotSetRemoveAttrib(Ihandle* ih, const char* value)
     memset(&ih->data->dataSet[ih->data->dataSetCount-1], 0, sizeof(IdataSet));
 
     ih->data->dataSetCount--;
+
+    if (ih->data->dataSetCurrent > ih->data->dataSetCount-1)
+      ih->data->dataSetCurrent = ih->data->dataSetCount-1;
+
     ih->data->redraw = true;
   }
   return 0;
@@ -1807,6 +1950,7 @@ static int iMglPlotSetClearAttrib(Ihandle* ih, const char* value)
   for(i = 0; i < ih->data->dataSetCount; i++)
     iMglPlotRemoveDataSet(&ih->data->dataSet[i]);
   ih->data->dataSetCount = 0;
+  ih->data->dataSetCurrent = -1;
   ih->data->redraw = true;
   (void)value;
   return 0;
@@ -1985,13 +2129,6 @@ static char* iMglPlotGetDSModeAttrib(Ihandle* ih)
   return ds->dsMode;
 }
 
-static char* iMglPlotDefaultLegend(int ds)
-{
-  char legend[50];
-  sprintf(legend, "plot %d", ds);
-  return iupStrDup(legend);
-}
-
 static int iMglPlotSetDSLegendAttrib(Ihandle* ih, const char* value)
 {
   IdataSet* ds;
@@ -2133,31 +2270,31 @@ static char* iMglPlotGetDSDimAttrib(Ihandle* ih)
   }
 }
 
-static int iMglPlotSetDSEditAttrib(Ihandle* ih, const char* value)
-{
-  IdataSet* ds;
-
-  if (ih->data->dataSetCurrent==-1)
-    return 0;
-
-  ds = &ih->data->dataSet[ih->data->dataSetCurrent];
-  if (iMglPlotIsPlanarOrVolumetricData(ds))
-    return 0;
-
-  // TODO
-  if (iupStrBoolean(value))
-    ;
-  else
-    ;
-
-  return 0;
-}
-
-static char* iMglPlotGetDSEditAttrib(Ihandle* ih)
-{
-  (void)ih;
-  return "NO";
-}
+// TODO
+//static int iMglPlotSetDSEditAttrib(Ihandle* ih, const char* value)
+//{
+//  IdataSet* ds;
+//
+//  if (ih->data->dataSetCurrent==-1)
+//    return 0;
+//
+//  ds = &ih->data->dataSet[ih->data->dataSetCurrent];
+//  if (iMglPlotIsPlanarOrVolumetricData(ds))
+//    return 0;
+//
+//  if (iupStrBoolean(value))
+//    ;
+//  else
+//    ;
+//
+//  return 0;
+//}
+//
+//static char* iMglPlotGetDSEditAttrib(Ihandle* ih)
+//{
+//  (void)ih;
+//  return "NO";
+//}
 
 static int iMglPlotSetBoxAttrib(Ihandle* ih, const char* value)
 {
@@ -3172,13 +3309,13 @@ static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
 static char* iMglPlotGetZoomAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(50);
-  sprintf(str, "%f,%f:%f,%f", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
+  sprintf(str, "%g,%g:%g,%g", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
   return str;
 }
 
 static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
 {
-  char value1[50]="", value2[50]="";
+  char value1[50]="", value2[100]="";
 
   iupStrToStrStr(value, value1, value2, ':');
   
@@ -3193,30 +3330,10 @@ static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
 static char* iMglPlotGetRotateAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(50);
-  sprintf(str, "%f:%f:%f", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
+  sprintf(str, "%g:%g:%g", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
   return str;
 }
 
-static int iMglPlotSetPerspectiveAttrib(Ihandle* ih, const char* value)
-{
-  if(iupStrToFloat(value, &ih->data->perspective))
-  {
-    if(ih->data->perspective < 0.0f)
-      ih->data->perspective = 0.0f;
-    else if(ih->data->perspective >= 1.0f)
-      ih->data->perspective = 0.9999f;
-
-    ih->data->redraw = true;
-  }
-  return 0;
-}
-
-static char* iMglPlotGetPerspectiveAttrib(Ihandle* ih)
-{
-  char* str = iupStrGetMemory(10);
-  sprintf(str, "%f", ih->data->perspective);
-  return str;
-}
 
 /******************************************************************************
 Additional Functions
@@ -3259,23 +3376,7 @@ int IupMglPlotNewDataSet(Ihandle *ih, int dim)
   ds->dsCount = 0;
 
   /* Initialize the default values */
-  ds->dsLineStyle  = '-';  // SOLID/CONTINUOUS
-  ds->dsLineWidth  = 1;
-  ds->dsMarkStyle  = 'x';  // "X"
-  ds->dsMarkSize   = 0.02f;
-  ds->dsMode = iupStrDup("LINE");
-  ds->dsLegend = iMglPlotDefaultLegend(ih->data->dataSetCurrent);
-
-  switch(ds_index)
-  {
-    case 0: ds->dsColor.Set(1, 0, 0); break;
-    case 1: ds->dsColor.Set(0, 0, 1); break;
-    case 2: ds->dsColor.Set(0, 1, 0); break;
-    case 3: ds->dsColor.Set(0, 1, 1); break;
-    case 4: ds->dsColor.Set(1, 0, 1); break;
-    case 5: ds->dsColor.Set(1, 1, 0); break;
-    default: ds->dsColor.Set(0, 0, 0); break;
-  }
+  iMglPlotResetDataSet(ds, ds_index);
 
   ih->data->redraw = true;
 
@@ -3953,19 +4054,6 @@ void IupMglPlotDrawText(Ihandle* ih, const char* text, float x, float y, float z
 ******************************************************************************/
 
 
-static void iMglPlotRestoreInteraction(Ihandle *ih)
-{
-  ih->data->x1 = 0.0f;  ih->data->y1 = 0.0f;
-  ih->data->x2 = 1.0f;  ih->data->y2 = 1.0f;
-
-  ih->data->x0 = 0.0f;  ih->data->xe = 0.0f;
-  ih->data->ye = 0.0f;  ih->data->y0 = 0.0f;
-
-  ih->data->rotX = 0.0f;   ih->data->rotZ = 0.0f;   ih->data->rotY = 0.0f;
-
-  ih->data->perspective = 0.0f;
-}
-
 static void iMglPlotZoom(Ihandle *ih, float factor)
 {
   float rh = ih->data->y2 - ih->data->y1;
@@ -3994,16 +4082,12 @@ static void iMglPlotPanX(Ihandle *ih, float xoffset)
   ih->data->x2 += rx;
 }
 
-static void iMglPlotClamp(Ihandle *ih)
+static void iMglPlotRotate(float &angle, float delta)
 {
-  if(ih->data->rotX > 360 || ih->data->rotX < -360)
-    ih->data->rotX = 0.0;
+  angle += delta;
 
-  if(ih->data->rotY > 360 || ih->data->rotY < -360)
-    ih->data->rotY = 0.0;
-
-  if(ih->data->rotZ > 360 || ih->data->rotZ < -360)
-    ih->data->rotZ = 0.0;
+  // Keep between -360:+360 just to return a nice value in the getattrib method
+  angle = fmod(angle, 360.0f);
 }
 
 static int iMglPlotResize_CB(Ihandle* ih, int width, int height)
@@ -4034,9 +4118,9 @@ static int iMglPlotMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, c
     ih->data->y0 = (float)y;
   }
 
-  if(iup_isdouble(status))  /* Double-click: restore interaction default values */
+  if (iup_isdouble(status))  /* Double-click: restore interaction default values */
   {
-    iMglPlotRestoreInteraction(ih);
+    iMglPlotResetInteraction(ih);
     iMglPlotRepaint(ih, 1, 1);
   }
 
@@ -4049,77 +4133,42 @@ static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
   ih->data->xe = (float)x;
   ih->data->ye = (float)y;
 
-  if(iup_isbutton3(status))
+  if (iup_isbutton3(status))
   {
     /* Rotate plot in (XYZ) */
     float ff = 360.0f / sqrt(float(ih->data->w * ih->data->h));  /* Factor */
 
     /* Distance between initial and final points * fator */
-    ih->data->rotX += (ih->data->ye - ih->data->y0) * ff;  /* Inverted because Y in IUP is top-down */
-    ih->data->rotY += (ih->data->x0 - ih->data->xe) * ff;
-
-    if(iup_iscontrol(status))  /* Enable rotate in Z-axis */
+    if(iup_iscontrol(status))
     {
-      float xy0Angle, xyeAngle;
-      float zX0, zY0, zXE, zYE;
-
-      /* Scale bounds to [0,0] - [2,2] */
-      zX0 = ih->data->x0 / (ih->data->w/2);
-      zY0 = ih->data->y0 / (ih->data->h/2);
-      zXE = ih->data->xe / (ih->data->w/2);
-      zYE = ih->data->ye / (ih->data->h/2);
-      
-      /* Translate 0,0 to the center */
-      zX0 = zX0 - 1;    zXE = zXE - 1;
-      
-      /* Flip so +Y is up instead of down */
-      zY0 = 1 - zY0;    zYE = 1 - zYE;
-
-      /* Find initial and current angles */
-      xy0Angle = iMglPlotGetAngleTrig(zX0, zY0);
-      xyeAngle = iMglPlotGetAngleTrig(zXE, zYE);
-
-      if((xyeAngle - xy0Angle) < 0)
-        ih->data->rotZ += ff;  /* Clockwise +Z */
-      else
-        ih->data->rotZ -= ff;  /* Counter-clockwise -Z */
+      /* Rotate in Z with vertical movement */
+      iMglPlotRotate(ih->data->rotZ, (ih->data->y0 - ih->data->ye) * ff);
+    }
+    else
+    {
+      iMglPlotRotate(ih->data->rotX, (ih->data->y0 - ih->data->ye) * ff);
+      iMglPlotRotate(ih->data->rotY, (ih->data->x0 - ih->data->xe) * ff);
     }
 
-    iMglPlotClamp(ih);
     iMglPlotRepaint(ih, 1, 1);
   }
-  else if(iup_isbutton2(status))
+  else if(iup_isbutton1(status))
   {
-    /* Zoom with vertical movement */
-    float factor = 10.0f * (ih->data->y0 - ih->data->ye);
-    iMglPlotZoom(ih, factor);
+    if (iup_iscontrol(status))
+    {
+      /* Zoom with vertical movement */
+      float factor = 10.0f * (ih->data->y0 - ih->data->ye);
+      iMglPlotZoom(ih, factor);
+    }
+    else
+    {
+      /* Pan */
+      float xoffset = ih->data->x0 - ih->data->xe;
+      float yoffset = ih->data->ye - ih->data->y0;  /* Inverted because Y in IUP is top-down */
 
-    iMglPlotRepaint(ih, 1, 1);
-  }
-  else if(iup_isbutton1(status) && iup_iscontrol(status))
-  {
-    //TODO should be vertical, or also Ctrl dependent?
-
-    /* Enable perspective control */
-    float gg = -0.5f * (ih->data->xe - ih->data->x0)/(float)ih->data->h;
-
-    ih->data->perspective += gg;
-
-    if(ih->data->perspective < 0.0f)
-      ih->data->perspective = 0.0f;
-    else if(ih->data->perspective >= 1.0f)
-      ih->data->perspective = 0.9999f;
-
-    iMglPlotRepaint(ih, 1, 1);
-  }
-  else if(iup_isbutton1(status) && !iup_iscontrol(status))
-  {
-    /* Pan (shift) */
-    float xoffset = ih->data->x0 - ih->data->xe;
-    float yoffset = ih->data->ye - ih->data->y0;  /* Inverted because Y in IUP is top-down */
-
-    iMglPlotPanX(ih, xoffset);
-    iMglPlotPanY(ih, yoffset);
+      iMglPlotPanX(ih, xoffset);
+      iMglPlotPanY(ih, yoffset);
+    }
 
     iMglPlotRepaint(ih, 1, 1);
   }
@@ -4154,8 +4203,8 @@ static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
   switch(c)
   {
   /* Restore interaction default values */
-  case K_cR: case K_HOME:
-    iMglPlotRestoreInteraction(ih);
+  case K_HOME:
+    iMglPlotResetInteraction(ih);
     iMglPlotRepaint(ih, 1, 1);
     break;
   /* Pan */
@@ -4192,50 +4241,37 @@ static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
     iMglPlotRepaint(ih, 1, 1);
     break;
   /* Zoom */
-  case K_PGUP: case K_plus:
+  case K_plus:
     iMglPlotZoom(ih, 10.0f);
     iMglPlotRepaint(ih, 1, 1);
     break;
-  case K_PGDN: case K_minus:
+  case K_minus:
     iMglPlotZoom(ih, -10.0f);
     iMglPlotRepaint(ih, 1, 1);
     break;
   /* Rotation */
   case K_A: case K_a:
-    ih->data->rotY -= 1.0f;
+    iMglPlotRotate(ih->data->rotY, +1.0f);     // 1 degree
     iMglPlotRepaint(ih, 1, 1);
     break;
   case K_D: case K_d:
-    ih->data->rotY += 1.0f;
+    iMglPlotRotate(ih->data->rotY, -1.0f);
     iMglPlotRepaint(ih, 1, 1);
     break;
   case K_W: case K_w:
-    ih->data->rotX += 1.0f;
+    iMglPlotRotate(ih->data->rotX, +1.0f);
     iMglPlotRepaint(ih, 1, 1);
     break;
   case K_S: case K_s:
-    ih->data->rotX -= 1.0f;
-    iMglPlotRepaint(ih, 1, 1);
-    break;
-  case K_Q: case K_q:
-    ih->data->rotZ -= 1.0f;
+    iMglPlotRotate(ih->data->rotX, -1.0f);
     iMglPlotRepaint(ih, 1, 1);
     break;
   case K_E: case K_e:
-    ih->data->rotZ += 1.0f;
+    iMglPlotRotate(ih->data->rotZ, +1.0f);
     iMglPlotRepaint(ih, 1, 1);
     break;
-  /* Perspective */
-  case K_F11:
-    ih->data->perspective -= 0.05f;
-    if(ih->data->perspective < 0.0f)
-      ih->data->perspective = 0.0f;
-    iMglPlotRepaint(ih, 1, 1);
-    break;
-  case K_F12:
-    ih->data->perspective += 0.05f;
-    if(ih->data->perspective >= 1.0f)
-      ih->data->perspective = 0.9999f;
+  case K_Q: case K_q:
+    iMglPlotRotate(ih->data->rotZ, -1.0f);
     iMglPlotRepaint(ih, 1, 1);
     break;
   }
@@ -4258,31 +4294,6 @@ static void iMglPlotDestroyMethod(Ihandle* ih)
   delete ih->data->mgl;
 }
 
-static void iMglPlotSetAxisDefaults(Iaxis& axis)
-{
-  axis.axLabelFontSizeFactor = 1;
-  axis.axTickFontSizeFactor = 0.8f;
-
-  axis.axColor.Set(NAN, NAN, NAN);
-
-  axis.axAutoScaleMin = true;
-  axis.axAutoScaleMax = true;
-  axis.axMax = 1;
-  axis.axShow = true;
-  axis.axShowArrow = true;
-  axis.axLabelRotation = true;
-
-  axis.axTickShow = true;
-  axis.axTickShowValues = true;
-  axis.axTickValuesRotation = true;
-  axis.axTickAutoSpace = true;
-  axis.axTickAutoSize = true;
-  axis.axTickMinorSizeFactor = 0.6f;
-  axis.axTickMajorSize = 0.1f;
-  axis.axTickMinorDivision = 5;
-  axis.axTickMajorSpan = -5;
-}
-
 static int iMglPlotCreateMethod(Ihandle* ih, void **params)
 {
   (void)params;
@@ -4296,6 +4307,7 @@ static int iMglPlotCreateMethod(Ihandle* ih, void **params)
   ih->data->dataSetMaxCount = 5;
   ih->data->dataSet = (IdataSet*)malloc(sizeof(IdataSet)*ih->data->dataSetMaxCount);
   memset(ih->data->dataSet, 0, sizeof(IdataSet)*ih->data->dataSetMaxCount);
+  ih->data->dataSetCurrent = -1;
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "RESIZE_CB",   (Icallback)iMglPlotResize_CB);
@@ -4308,28 +4320,9 @@ static int iMglPlotCreateMethod(Ihandle* ih, void **params)
   IupSetAttribute(ih, "BUFFER", "DOUBLE");
 
   // Default values
-  ih->data->dataSetCurrent = -1;
+  iMglPlotReset(ih);
+
   ih->data->redraw = true;
-  ih->data->legendPosition = IUP_MGLPLOT_TOPRIGHT;
-  ih->data->legendBox = true;
-  ih->data->boxTicks = true;
-  ih->data->alpha = 0.5f;
-
-  ih->data->legendFontSizeFactor = 0.8f;
-  ih->data->titleFontSizeFactor = 1.6f;
-
-  ih->data->bgColor.Set(1, 1, 1);
-  ih->data->gridColor.Set(iRecon(200), iRecon(200), iRecon(200));
-  ih->data->titleColor.Set(NAN, NAN, NAN);
-  ih->data->legendColor.Set(NAN, NAN, NAN);
-  ih->data->boxColor.Set(NAN, NAN, NAN);
-
-  iMglPlotSetAxisDefaults(ih->data->xAxis);
-  iMglPlotSetAxisDefaults(ih->data->yAxis);
-  iMglPlotSetAxisDefaults(ih->data->zAxis);
-
-  /* Interaction default values */
-  iMglPlotRestoreInteraction(ih);
 
   return IUP_NOERROR;
 }
@@ -4373,6 +4366,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "TRANSPARENT", iMglPlotGetTransparentAttrib, iMglPlotSetTransparentAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANTIALIAS", iMglPlotGetAntialiasAttrib, iMglPlotSetAntialiasAttrib, "Yes", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MGLFONT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RESET", NULL, iMglPlotSetResetAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLECOLOR", iMglPlotGetTitleColorAttrib, iMglPlotSetTitleColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
@@ -4405,7 +4399,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "DS_COLOR", iMglPlotGetDSColorAttrib, iMglPlotSetDSColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_SHOWVALUES", iMglPlotGetDSShowValuesAttrib, iMglPlotSetDSShowValuesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_MODE", iMglPlotGetDSModeAttrib, iMglPlotSetDSModeAttrib, IUPAF_SAMEASSYSTEM, "LINE", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_EDIT", iMglPlotGetDSEditAttrib, iMglPlotSetDSEditAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  //iupClassRegisterAttribute(ic, "DS_EDIT", iMglPlotGetDSEditAttrib, iMglPlotSetDSEditAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_REMOVE", NULL, iMglPlotSetDSRemoveAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_COUNT", iMglPlotGetDSCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_DIMENSION", iMglPlotGetDSDimAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -4548,7 +4542,6 @@ static Iclass* iMglPlotNewClass(void)
 
   iupClassRegisterAttribute(ic, "ZOOM", iMglPlotGetZoomAttrib, iMglPlotSetZoomAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ROTATE", iMglPlotGetRotateAttrib, iMglPlotSetRotateAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PERSPECTIVE", iMglPlotGetPerspectiveAttrib, iMglPlotSetPerspectiveAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }
@@ -4572,16 +4565,19 @@ void IupMglPlotOpen(void)
 /* TODO
 
 Depois:
+  SubPlot
+  SetTickLen
   min-max x Fill
   improve autoticks computation
   labels
-  rever testes
+  bars at 0 and n-1
+  PlotFactor
   -------------------
   Legend
   LoadFont
   text anti-aliasing
   -------------------
-  exemplos com os recursos novos
+  exemplo com os recursos novos
   teste IupMglPlotLoadData e IupMglPlotSetFromFormula, 
   teste IupMglPlotPaintTo  SVG, EPS e RGB
   teste BOLD e ITALIC
@@ -4610,13 +4606,12 @@ MathGL:
 
   How to improve text quality?  native fonts?
      bug in make_font
-     roman is not the same thing as regular
      lib adicional para carregar direto TTF e OTF via FreeType
      too slow to load font, binary format
-     FTGL/Freetype?
      option to draw an opaque background for text
      esticar o gráfico, mas não esticar as fontes, manter aspecto, 
      também possibilidade para manter fixo tamanho
+
      FontSize units?
      font size in [0-1]
      // for 72dpi, FontSize=6 --> 26pt
