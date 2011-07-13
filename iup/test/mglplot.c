@@ -90,7 +90,7 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[0], "AXS_XLABELROTATION", "NO");
   IupSetAttribute(plot[0], "AXS_YTICKVALUESROTATION", "NO");
 //  IupSetAttribute(plot[0], "AXS_XTICKVALUESROTATION", "NO");
-  
+
   theFac = (float)1.0/(100*100*100);
   IupMglPlotBegin(plot[0], 2);
   for (theI=-100; theI<=100; theI++) 

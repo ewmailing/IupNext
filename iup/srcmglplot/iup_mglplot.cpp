@@ -3155,6 +3155,69 @@ static char* iMglPlotGetAntialiasAttrib(Ihandle* ih)
   return iMglPlotGetBoolean(glIsEnabled(GL_LINE_SMOOTH)==GL_TRUE);
 }
 
+static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
+{
+  char value1[50]="", value2[50]="";
+
+  iupStrToStrStr(value, value1, value2, ':');
+
+  iupStrToFloatFloat(value1, &ih->data->x1, &ih->data->y1, ',');
+  iupStrToFloatFloat(value2, &ih->data->x2, &ih->data->y2, ',');
+
+  ih->data->redraw = true;
+
+  return 0;
+}
+
+static char* iMglPlotGetZoomAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(50);
+  sprintf(str, "%f,%f:%f,%f", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
+  return str;
+}
+
+static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
+{
+  char value1[50]="", value2[50]="";
+
+  iupStrToStrStr(value, value1, value2, ':');
+  
+  iupStrToFloat(value1, &ih->data->rotX);
+  iupStrToFloatFloat(value2, &ih->data->rotY, &ih->data->rotZ, ':');
+
+  ih->data->redraw = true;
+
+  return 0;
+}
+
+static char* iMglPlotGetRotateAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(50);
+  sprintf(str, "%f:%f:%f", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
+  return str;
+}
+
+static int iMglPlotSetPerspectiveAttrib(Ihandle* ih, const char* value)
+{
+  if(iupStrToFloat(value, &ih->data->perspective))
+  {
+    if(ih->data->perspective < 0.0f)
+      ih->data->perspective = 0.0f;
+    else if(ih->data->perspective >= 1.0f)
+      ih->data->perspective = 0.9999f;
+
+    ih->data->redraw = true;
+  }
+  return 0;
+}
+
+static char* iMglPlotGetPerspectiveAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(10);
+  sprintf(str, "%f", ih->data->perspective);
+  return str;
+}
+
 /******************************************************************************
 Additional Functions
 ******************************************************************************/
@@ -4483,12 +4546,9 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "DRAWFONTSTYLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWFONTSIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  //TODO ZOOM = x1,y1:x2,y2
-  //iupClassRegisterAttribute(ic, "ZOOM", iMglPlotGetZoomAttrib, iMglPlotSetZoomAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  //TODO ROTATE = r1:r2:r3
-  //iupClassRegisterAttribute(ic, "ROTATE", iMglPlotGetRotateAttrib, iMglPlotSetRotateAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  //TODO PERSPECTIVE
-  //iupClassRegisterAttribute(ic, "PERSPECTIVE", iMglPlotGetPerspectiveAttrib, iMglPlotSetPerspectiveAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ZOOM", iMglPlotGetZoomAttrib, iMglPlotSetZoomAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ROTATE", iMglPlotGetRotateAttrib, iMglPlotSetRotateAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PERSPECTIVE", iMglPlotGetPerspectiveAttrib, iMglPlotSetPerspectiveAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }
@@ -4510,9 +4570,6 @@ void IupMglPlotOpen(void)
 }
 
 /* TODO
-
-Rafael: set de Zoom/Rotate/Perspective via atributos
-// Create attributes to set Zoom (x1,y1:x2,y2), Rotate (r1:r2:r3) and Perspective (p)
 
 Depois:
   min-max x Fill
