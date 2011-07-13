@@ -87,9 +87,11 @@ combinations. First there are 3 major classes:</p>
 <p><strong>Linear</strong> sequential data are simply a sequence of points 
 whether in 1D, 2D or 3D coordinates.</p>
 <p><strong>Planar</strong> data is a bi-dimensional array of values, just like a 
-digital image (each value is f(x,y)).</p>
+digital image. Each value is f(x,y), where x belongs to [0, count_x-1] and y to 
+[0, count_y-1].</p>
 <p><strong>Volumetric</strong> data is a tri-dimensional array of values, that 
-represents a 3D volume (each value is f(x,y,z)).</p>
+represents a 3D volume. Each value is f(x,y,z), where x belongs to [0, 
+count_x-1], y to [0, count_y-1] and z to [0, count_z-1].</p>
 <p>Planar and volumetric data can be very memory consuming, so be careful when 
 using them. Linear data is the same representation accepted by IupPPlot, with 
 the exception that IupMglPlot has support for 3D coordinates. Also planar and 
@@ -137,7 +139,8 @@ mglplot() [in LED]</pre>
 <h3>Auxiliary Functions</h3>
 <pre>void <b>IupMglPlotBegin</b>(Ihandle* <b>ih</b>, int <b>dim</b>); [in C]
 <b>iup.MglPlotBegin</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]</pre>
-<p>Prepares a dataset to receive samples. The dimension of the data can be 1, 2 or 3.</p>
+<p>Prepares a dataset to receive samples. The dimension of the data can be 1, 2 or 3. 
+Linear data only.</p>
 <hr>
 <pre>void <b>IupMglPlotAdd1D</b>(Ihandle* <b>ih</b>, const char* <b>name</b>, float <b>y</b>); [in C]
 <b>iup.MglPlotAdd1D</b>(<b>ih</b>: ihandle, <b>name</b>: string, <b>y</b>: number) [in Lua]</pre>
@@ -145,17 +148,18 @@ mglplot() [in LED]</pre>
 called with dim=1. <strong>name</strong> is an optional string used for tick 
 labels in the X axis, and it can be NULL (nil in Lua). Names are allowed only 
 for the first dataset and when set ticks configuration for the X axis is 
-ignored, all the names are shown. The X axis data is automatically generated (0,1,2,3,...).</p>
+ignored, all the names are shown. The X axis data is automatically generated (0,1,2,3,...). 
+Linear data only.</p>
 <hr>
 <pre>void <b>IupMglPlotAdd2D</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>); [in C]
 <b>iup.MglPlotAdd2D</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>: number) [in Lua]</pre>
 <p>Adds a sample to the dataset. Can only be called if <b>IupMglPlotBegin</b> was 
-called with dim=2.</p>
+called with dim=2. Linear data only.</p>
 <hr>
 <pre>void <b>IupMglPlotAdd3D</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>, float <b>z</b>); [in C]
 <b>iup.MglPlotAdd3D</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]</pre>
 <p>Adds a sample to the dataset. Can only be called if <b>IupMglPlotBegin</b> was 
-called with dim=3.</p>
+called with dim=3. Linear data only.</p>
 <hr>
 <pre>int <b>IupMglPlotEnd</b>(Ihandle* <b>ih</b>); [in C]
 <b>iup.MglPlotEnd</b>(<b>ih</b>: ihandle) -&gt; (<b>index</b>: number) [in Lua]</pre>
@@ -165,7 +169,8 @@ done until the REDRAW attribute is set. Also it will change the current dataset
 index (CURRENT) to the return value. You can only set attributes of a dataset AFTER you 
 added the dataset.&nbsp;Can only be called if <b>IupMglPlotBegin</b> was called. 
 Whenever you create a dataset all its &quot;DS_*&quot; attributes will be set to the 
-default values. Notice that DS_MODE must be set before other &quot;DS_*&quot; attributes.</p>
+default values. Notice that DS_MODE must be set before other &quot;DS_*&quot; attributes. 
+Linear data only.</p>
 <hr>
 <pre>void <b>IupMglPlotNewDataSet</b>(Ihandle* <b>ih</b>, int <b>dim</b>); [in C]
 <b>iup.MglPlotNewDataSet</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]</pre>
@@ -184,7 +189,8 @@ can be after the last sample so data is appended to the array. Current data is
 shifted if necessary. <strong>names</strong> 
 are optional strings used for tick labels in the X axis, and it can be NULL (nil 
 in Lua). Names are allowed only for the first dataset and when set ticks 
-configuration for the X axis is ignored, all the names are shown. Also for the 1D version, the X axis data is automatically generated (0,1,2,3,...).</p>
+configuration for the X axis is ignored, all the names are shown. Also for the 1D version, the X axis data is automatically generated (0,1,2,3,...). 
+Linear data only.</p>
 <hr>
 <pre>void <b>IupMglPlotSet1D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, const char** <b>names</b>, float* <b>y</b>, int <strong>count</strong>); [in C]
 void <b>IupMglPlotSet2D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, float* <b>x</b>, float* <b>y</b>, int <strong>count</strong>);
@@ -197,7 +203,8 @@ void <b>IupMglPlotSet3D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, float* <b>x
 Existing data is removed. Can be used only after the dataset is added to the plot. <strong>names</strong> 
 is an optional array of strings used for tick labels in the X axis, and it can be NULL (nil 
 in Lua). Names are allowed only for the first dataset and when set ticks 
-configuration for the X axis is ignored, all the names are shown. Also for the 1D version, the X axis data is automatically generated (0,1,2,3,...).</p>
+configuration for the X axis is ignored, all the names are shown. Also for the 1D version, the X axis data is automatically generated (0,1,2,3,...). 
+Linear data only.</p>
 <hr>
 <pre>void <b>IupMglPlotSetData</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, float* <b>data</b>, int <strong>count_x</strong>, int <strong>count_y</strong>, int <strong>count_z</strong>); [in C]
 <b>iup.IupMglPlotSetData</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>data</b>: table of number) [in Lua]
@@ -207,21 +214,24 @@ All previous values are removed. Can be used only after a 1D dataset is added to
 the actual dimension will be defined by the <strong>count_</strong>* parameters. 
 If <strong>count_y</strong> is greater than 1 the data will be planar (like a 
 raster 2D image), if <strong>count_z</strong> is also greater than 1 the data 
-will be volumetric (a 3D volume). Notice that when <strong>count_y</strong> 
+will be volumetric (a 3D volume).</p>
+<p>Notice that when <strong>count_y</strong> 
 and/or <strong>count_z</strong> are greater than 0 a large amount of memory is 
 used. All previous functions create linear data (a sequence of points) even 
 though their coordinates can have 1, 2 or 3 dimensions. The data should be 
 arranged so the element (x0, y0, z0) is accessed using the position [x0 + count_x*y0 
-+ count_x*count_y*z0]. DS_COUNT is set to count_x*count_x*count_y. Existing data 
-is removed.</p>
++ count_x*count_y*z0]. </p>
+<p>DS_COUNT is set to count_x*count_x*count_y. Existing data 
+is removed. Linear data is limited to 1D coordinates.</p>
 <hr>
 <pre>void <b>IupMglPlotLoadData</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, const char* <b>filename</b>, int <strong>count_x</strong>, int <strong>count_y</strong>, int <strong>count_z</strong>); [in C]
 <b>iup.IupMglPlotLoadData</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>filename</b>: string[, <strong>count_x</strong>, <strong>count_y</strong>, <strong>count_z</strong>: number]) [in Lua]
 </pre>
 <p>Same as <strong>IupMglPlotSetData</strong> but loads the data from a file. 
 The file must contains space (&#39; &#39;) separated numeric data in text format. The text can contains 
-line comments starting with &#39;#&#39;. Existing data is removed. DS_COUNT is 
-set to count_x*count_x*count_y. </p>
+line comments starting with &#39;#&#39;.</p>
+<p>DS_COUNT is set to count_x*count_x*count_y. Existing data is removed. Linear 
+data is limited to 1D coordinates.</p>
 <p>If any <strong>count_*</strong> is 0 all their values are automatically 
 calculated. The number of elements in the first line defines <strong>count_x</strong>, 
 the number of lines before an empty line or before a form feed (&#39;\f&#39;) defines <strong>count_y</strong>, and the number of empty lines or the number of form 
@@ -233,8 +243,7 @@ feeds (&#39;\f&#39;) defines <strong>count_z</strong>.</p>
 <p>Same as <strong>IupMglPlotSetData</strong> but data is generated from a 
 formula. If all <strong>count_*</strong> are 0 the current size remains, and the 
 existing data is preserved but overwritten if the formula results that. If any <strong>count_*</strong> 
-is NOT zero then the existing data size is removed. DS_COUNT is set to count_x*count_x*count_y. 
-The variables of the formulas must be x, y and/or z. Coordinates are evaluated 
+is NOT zero then the existing data size is removed. The variables of the formulas must be x, y and/or z. Coordinates are evaluated 
 in the [0,1] interval. There is no difference between lower or upper case in 
 formulas. The operators and functions can be:</p>
 <pre>+ - * / ^      (^=integer power)
@@ -243,6 +252,8 @@ sqrt(a)  pow(a,b)  log(a,b)  ln(a)    lg(a)            (ln(a)=log(e,a)  lg(a)=lo
 abs(a)   sign(a)   mod(a,b)  step(a)  int(a)   rnd      pi
 sin(a)   cos(a)    tan(a)    asin(a)  acos(a)  atan(a)
 sinh(a)   cosh(a)  tanh(a)   asinh(a) acosh(a) atanh(a)</pre>
+<p>DS_COUNT is set to count_x*count_x*count_y. Linear data is limited to 1D 
+coordinates.</p>
 <hr>
 <pre>void <b>IupMglPlotTransform</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>, float <b>z</b>, int *<b>ix</b>, int *<b>iy</b>); [in C]
 <b>iup.MglPlotTransform</b>(<b>ih</b>: ihandle, <b>x, y, z</b>: number) -&gt; (<b>ix</b>, <b>iy</b>: number) [in Lua]</pre>
@@ -364,7 +375,7 @@ is dynamically generated for the 6 first datasets, others are default to black
 <p><strong>DS_COUNT</strong> (read-only): returns the number of samples of the current 
 dataset. For planar or volumetric datasets returns count_x * count_y * count_z.</p>
 <p><strong>DS_DIMENSION</strong> (read-only): returns the number of dimensions 
-of the data: 1, 2 or 3. For planar and volumetric datasets returns the size of 
+of the data: 1, 2 or 3. For planar and volumetric datasets returns the actual size of 
 each dimension &quot;&lt;count_x&gt;x&lt;count_y&gt;x&lt;count_y&gt;&quot;, for example &quot;600x400x1&quot; (planar) 
 or &quot;512x512x512&quot; (volumetric). </p>
 <p><b>DS_EDIT</b>: enable or disable the current dataset interactive selection and editing. Can be 

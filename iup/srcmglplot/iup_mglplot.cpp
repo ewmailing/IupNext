@@ -966,6 +966,14 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   // All plots here are affected by SetScheme
   iMglPlotConfigColorScheme(ih, style);
 
+  int nx = (int)ds->dsX->nx;
+  int ny = (int)ds->dsX->ny;
+  int nz = (int)ds->dsX->nz;
+  mglData xx(nx), yy(ny), zz(nz);
+  xx.Fill(0,(float)nx-1);
+  yy.Fill(0,(float)ny-1);
+  zz.Fill(0,(float)nz-1);
+
   if (iupStrEqualNoCase(ds->dsMode, "VOLUME_ISOSURFACE"))
   {
     if (iupAttribGetBoolean(ih, "DATAGRID"))   // Default false
@@ -976,12 +984,12 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     {
       float isovalue;
       if (iupStrToFloat(value, &isovalue))
-        gr->Surf3(isovalue, *ds->dsX, style);   // only 1 isosurface
+        gr->Surf3(isovalue, xx, yy, zz, *ds->dsX, style);   // only 1 isosurface
     }
     else
     {
       int isocount = iupAttribGetInt(ih, "ISOCOUNT");  //Default 3
-      gr->Surf3(*ds->dsX, style, isocount); // plots N isosurfaces, from Cmin to Cmax
+      gr->Surf3(xx, yy, zz, *ds->dsX, style, isocount); // plots N isosurfaces, from Cmin to Cmax
     }
   }
   else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_DENSITY"))
@@ -1005,9 +1013,9 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       int slicex = iupAttribGetInt(ih, "SLICEX");  //Default -1 (central)
       int slicey = iupAttribGetInt(ih, "SLICEY");  //Default -1 (central)
       int slicez = iupAttribGetInt(ih, "SLICEZ");  //Default -1 (central)
-      if (tolower(*slicedir)=='x') { gr->Dens3(*ds->dsX, 'x', slicex, style); slicedir++; }
-      if (tolower(*slicedir)=='y') { gr->Dens3(*ds->dsX, 'y', slicey, style); slicedir++; }
-      if (tolower(*slicedir)=='z') { gr->Dens3(*ds->dsX, 'z', slicez, style); slicedir++; }
+      if (tolower(*slicedir)=='x') { gr->Dens3(xx, yy, zz, *ds->dsX, 'x', slicex, style); slicedir++; }
+      if (tolower(*slicedir)=='y') { gr->Dens3(xx, yy, zz, *ds->dsX, 'y', slicey, style); slicedir++; }
+      if (tolower(*slicedir)=='z') { gr->Dens3(xx, yy, zz, *ds->dsX, 'z', slicez, style); slicedir++; }
     }
   }
   else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_CONTOUR"))
@@ -1045,18 +1053,18 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 
       if (countourfilled)
       {
-        if (tolower(*slicedir)=='x') { gr->ContF3(*ds->dsX, 'x', slicex, style, contourcount); slicedir++; }
-        if (tolower(*slicedir)=='y') { gr->ContF3(*ds->dsX, 'y', slicey, style, contourcount); slicedir++; }
-        if (tolower(*slicedir)=='z') { gr->ContF3(*ds->dsX, 'z', slicez, style, contourcount); slicedir++; }
+        if (tolower(*slicedir)=='x') { gr->ContF3(xx, yy, zz, *ds->dsX, 'x', slicex, style, contourcount); slicedir++; }
+        if (tolower(*slicedir)=='y') { gr->ContF3(xx, yy, zz, *ds->dsX, 'y', slicey, style, contourcount); slicedir++; }
+        if (tolower(*slicedir)=='z') { gr->ContF3(xx, yy, zz, *ds->dsX, 'z', slicez, style, contourcount); slicedir++; }
       }
       else
       {
         // Plot affected by SelectPen
         iMglPlotConfigDataSetLineMark(ds, gr, style);
 
-        if (tolower(*slicedir)=='x') { gr->Cont3(*ds->dsX, 'x', slicex, style, contourcount); slicedir++; }
-        if (tolower(*slicedir)=='y') { gr->Cont3(*ds->dsX, 'y', slicey, style, contourcount); slicedir++; }
-        if (tolower(*slicedir)=='z') { gr->Cont3(*ds->dsX, 'z', slicez, style, contourcount); slicedir++; }
+        if (tolower(*slicedir)=='x') { gr->Cont3(xx, yy, zz, *ds->dsX, 'x', slicex, style, contourcount); slicedir++; }
+        if (tolower(*slicedir)=='y') { gr->Cont3(xx, yy, zz, *ds->dsX, 'y', slicey, style, contourcount); slicedir++; }
+        if (tolower(*slicedir)=='z') { gr->Cont3(xx, yy, zz, *ds->dsX, 'z', slicez, style, contourcount); slicedir++; }
       }
     }
   }
@@ -1072,17 +1080,22 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     int slicex = iupAttribGetInt(ih, "SLICEX");  //Default -1 (central)
     int slicey = iupAttribGetInt(ih, "SLICEY");  //Default -1 (central)
     int slicez = iupAttribGetInt(ih, "SLICEZ");  //Default -1 (central)
-    if (tolower(*slicedir)=='x') { gr->Grid3(*ds->dsX, 'x', slicex, style); slicedir++; }
-    if (tolower(*slicedir)=='y') { gr->Grid3(*ds->dsX, 'y', slicey, style); slicedir++; }
-    if (tolower(*slicedir)=='z') { gr->Grid3(*ds->dsX, 'z', slicez, style); slicedir++; }
+    if (tolower(*slicedir)=='x') { gr->Grid3(xx, yy, zz, *ds->dsX, 'x', slicex, style); slicedir++; }
+    if (tolower(*slicedir)=='y') { gr->Grid3(xx, yy, zz, *ds->dsX, 'y', slicey, style); slicedir++; }
+    if (tolower(*slicedir)=='z') { gr->Grid3(xx, yy, zz, *ds->dsX, 'z', slicez, style); slicedir++; }
   }
   else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_CLOUD"))
   {
     int cubes = iupAttribGetBoolean(ih, "CLOUDCUBES");  //Default true
     if (cubes)
-      gr->Cloud(*ds->dsX, style, -1);   // Use AlphaDef
+      gr->Cloud(xx, yy, zz, *ds->dsX, style, -1);   // Use AlphaDef
     else
-      gr->CloudP(*ds->dsX, style, -1);  // Use AlphaDef
+      gr->CloudP(xx, yy, zz, *ds->dsX, style, -1);  // Use AlphaDef
+  }
+  else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_GRADIENTLINES"))
+  {
+    int gradlinescount = iupAttribGetInt(ih, "GRADLINESCOUNT");  //Default 5
+    gr->Grad(xx, yy, zz, *ds->dsX, style, gradlinescount);
   }
 }
 
@@ -1093,12 +1106,18 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   // All plots here are affected by SetScheme
   iMglPlotConfigColorScheme(ih, style);
 
+  int nx = (int)ds->dsX->nx;
+  int ny = (int)ds->dsX->ny;
+  mglData xx(nx), yy(ny);
+  xx.Fill(0,(float)nx-1);
+  yy.Fill(0,(float)ny-1);
+
   if (iupStrEqualNoCase(ds->dsMode, "PLANAR_MESH"))
   {
     // Plot affected by SelectPen
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
-    gr->Mesh(*ds->dsX, style);
+    gr->Mesh(xx, yy, *ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_FALL"))
   {
@@ -1109,7 +1128,7 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (tolower(*falldir) == 'x')
       { style[0] = 'x'; style[1] = 0; }
 
-    gr->Fall(*ds->dsX, style);
+    gr->Fall(xx, yy, *ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_BELT"))
   {
@@ -1117,30 +1136,30 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (tolower(*beltdir) == 'x')
       { style[0] = 'x'; style[1] = 0; }
 
-    gr->Belt(*ds->dsX, style);
+    gr->Belt(xx, yy, *ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_SURFACE"))
   {
     if (iupAttribGetBoolean(ih, "DATAGRID"))   // Default false
       iMglPlotConfigDataGrid(gr, ds, style);
 
-    gr->Surf(*ds->dsX, style);
+    gr->Surf(xx, yy, *ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_BOXES"))
   {
     if (iupAttribGetBoolean(ih, "DATAGRID"))   // Default false
       iMglPlotConfigDataGrid(gr, ds, style);  // Here means box lines
 
-    gr->Boxs(*ds->dsX, style);
+    gr->Boxs(xx, yy, *ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_TILE"))
   {
-    gr->Tile(*ds->dsX, style);
+    gr->Tile(xx, yy, *ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_DENSITY"))
   {
     float val = iMglPlotGetAttribFloatNAN(ih, "PLANARVALUE");   // Default NAN
-    gr->Dens(*ds->dsX, style, val);
+    gr->Dens(xx, yy, *ds->dsX, style, val);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_CONTOUR"))
   {
@@ -1148,25 +1167,25 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     int countourfilled = iupAttribGetBoolean(ih, "CONTOURFILLED");  //Default false
     float val = iMglPlotGetAttribFloatNAN(ih, "PLANARVALUE");  // Default NAN
     if (countourfilled)
-      gr->ContF(*ds->dsX, style, contourcount, val);
+      gr->ContF(xx, yy, *ds->dsX, style, contourcount, val);
     else
     {
       // Plot affected by SelectPen
       iMglPlotConfigDataSetLineMark(ds, gr, style);
 
-      gr->Cont(*ds->dsX, style, contourcount, val);
+      gr->Cont(xx, yy, *ds->dsX, style, contourcount, val);
     }
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_AXIALCONTOUR"))
   {
     int axialcount = iupAttribGetInt(ih, "AXIALCOUNT");  //Default 3, plots N countours, from Cmin to Cmax
-    gr->Axial(*ds->dsX, style, axialcount);
+    gr->Axial(xx, yy, *ds->dsX, style, axialcount);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_GRADIENTLINES"))
   {
     int gradlinescount = iupAttribGetInt(ih, "GRADLINESCOUNT");  //Default 5
     float val = iMglPlotGetAttribFloatNAN(ih, "PLANARVALUE");  // Default NAN
-    gr->Grad(*ds->dsX, style, gradlinescount, val);
+    gr->Grad(xx, yy, *ds->dsX, style, gradlinescount, val);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_GRID"))
   {
@@ -1177,7 +1196,7 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
     float val = iMglPlotGetAttribFloatNAN(ih, "PLANARVALUE");  // Default NAN
-    gr->Grid(*ds->dsX, style, val);
+    gr->Grid(xx, yy, *ds->dsX, style, val);
   }
 }
 
@@ -1186,6 +1205,10 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   char style[64] = "";
 
   iMglPlotConfigColor(ih, gr, ds->dsColor);
+
+  int nx = (int)ds->dsX->nx;
+  mglData xx(nx);
+  xx.Fill(0,(float)nx-1);
 
   // All plots here are affected by SelectPen
   // All plots here are affected by SetPalette
@@ -1209,9 +1232,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (ds->dsDim == 3)
       gr->Plot(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
-      gr->Plot(*ds->dsX, *ds->dsY, style);
+      gr->Plot(*ds->dsX, *ds->dsY, style, 0);
     else
-      gr->Plot(*ds->dsX, style);
+      gr->Plot(xx, *ds->dsX, style, 0);  // At Z=0
   }
   else if (iupStrEqualNoCase(ds->dsMode, "RADAR"))
   {
@@ -1230,9 +1253,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (ds->dsDim == 3)
       gr->Area(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
-      gr->Area(*ds->dsX, *ds->dsY, style);
+      gr->Area(*ds->dsX, *ds->dsY, style, 0);
     else
-      gr->Area(*ds->dsX, style);
+      gr->Area(xx, *ds->dsX, style, 0);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "BAR"))
   {
@@ -1243,21 +1266,15 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
 
-    // To avoid hole bars clipping when touching the bounding box
+    // To avoid hole bars clipped when touching the bounding box
     gr->SetCut(false); 
 
     if (ds->dsDim == 3)
       gr->Bars(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
-      gr->Bars(*ds->dsX, *ds->dsY, style);
+      gr->Bars(*ds->dsX, *ds->dsY, style, 0);
     else
-    {
-      //TODO should we do this always?
-	    mglData x(ds->dsX->nx);
-      x.Fill(0, (float)(ds->dsCount-1));
-      gr->Bars(x, *ds->dsX, style);
-//      gr->Bars(*ds->dsX, style);
-    }
+      gr->Bars(xx, *ds->dsX, style, 0);
 
     gr->SetCut(true); 
   }
@@ -1271,9 +1288,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       iMglPlotConfigDataGrid(gr, ds, style);
 
     if (ds->dsDim == 2)
-      gr->Barh(*ds->dsX, *ds->dsY, style);
+      gr->Barh(*ds->dsY, *ds->dsX, style, 0);
     else
-      gr->Barh(*ds->dsX, style);
+      gr->Barh(xx, *ds->dsX, style, 0);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "STEP"))
   {
@@ -1283,9 +1300,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (ds->dsDim == 3)
       gr->Step(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
-      gr->Step(*ds->dsX, *ds->dsY, style);
+      gr->Step(*ds->dsX, *ds->dsY, style, 0);
     else
-      gr->Step(*ds->dsX, style);
+      gr->Step(xx, *ds->dsX, style, 0);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "STEM"))
   {
@@ -1295,9 +1312,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (ds->dsDim == 3)
       gr->Stem(*ds->dsX, *ds->dsY, *ds->dsZ, style);
     else if (ds->dsDim == 2)
-      gr->Stem(*ds->dsX, *ds->dsY, style);
+      gr->Stem(*ds->dsX, *ds->dsY, style, 0);
     else
-      gr->Stem(*ds->dsX, style);
+      gr->Stem(xx, *ds->dsX, style, 0);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "CHART"))
   {
@@ -1329,9 +1346,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     gr->SetBarWidth(barwidth);
 
     if (ds->dsDim == 2)
-      gr->BoxPlot(*ds->dsX, *ds->dsY, style);
+      gr->BoxPlot(*ds->dsX, *ds->dsY, style, 0);
     else
-      gr->BoxPlot(*ds->dsX, style);
+      gr->BoxPlot(xx, *ds->dsX, style, 0);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "CRUST"))
   {
@@ -4565,10 +4582,7 @@ void IupMglPlotOpen(void)
 
 /* TODO
 
-Depois:
   SubPlot
-  SetTickLen
-  min-max x Fill
   improve autoticks computation
   labels
   bars at 0 and n-1
@@ -4601,23 +4615,13 @@ Maybe:
   plots that need two datasets: region, tens, error, flow, pipe, ...
 
 MathGL:
-  documentation says negative len puts tic outside the bounding box, but it is NOT working
+  SetTickLen - documentation says negative len puts tic outside the bounding box, but it is NOT working
   sometimes the label gets too close to the ticks
      it can be manualy moved by changing the origin
-
-  How to improve text quality?  native fonts?
+  Fonts
      bug in make_font
-     lib adicional para carregar direto TTF e OTF via FreeType
-     too slow to load font, binary format
+     additional library to load TTF and OTF using FreeType
+     vfm too slow to load font, need a binary format
      option to draw an opaque background for text
-     esticar o gráfico, mas não esticar as fontes, manter aspecto, 
-     também possibilidade para manter fixo tamanho
-
-     FontSize units?
-     font size in [0-1]
-     // for 72dpi, FontSize=6 --> 26pt
-     void mglGraphAB::SetFontSizePT(mreal pt, int dpi)
-     {  FontSize = 16.6154*pt/dpi;  }
-     void mglGraph::SetFontSizePT(mreal pt, int dpi)
-     {  FontSize = pt*27.f/dpi;  }
+     keep aspect ratio in OpenGL
 */
