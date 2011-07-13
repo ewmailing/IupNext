@@ -910,9 +910,10 @@ static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
 
   // larger values, smaller plots
   // 1.0 show exactly the dataset area
-  //TODO should the user be able to control this or only Zoom?
-  gr->PlotFactor = 1.4f;  // This zooms everything, except title
-                          
+  //TODO remove this after improving SubPlot
+  //gr->PlotFactor = 1.4f;  // This zooms everything, except title
+  //gr->AutoPlotFactor = false;
+
   gr->Alpha(true);
 
   if (ih->data->transparent)
@@ -926,6 +927,9 @@ static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
     gr->SetAlphaDef(1.0f);
   }
 
+  // Zoom and Pan
+  gr->Zoom(ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
+
 //TODO temporary, because our tests are all 2D
 //  if (iMglPlotIsView3D(ih))
   {
@@ -936,8 +940,6 @@ static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
 
     gr->Rotate(ih->data->rotX, ih->data->rotZ, ih->data->rotY);
   }
-
-  gr->Zoom(ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
 }
 
 static void iMglPlotConfigDataGrid(mglGraph *gr, IdataSet* ds, char* style)
@@ -4581,14 +4583,15 @@ void IupMglPlotOpen(void)
 }
 
 /* TODO
-
+  graph disapear during zoom in, probaly because Cut=true, but how to set it automaticaly?
+  by changing Zoom and PlotFactor Legend is displayed
+  bars at 0 and n-1
+  -------------------
   SubPlot
   improve autoticks computation
   labels
-  bars at 0 and n-1
-  PlotFactor
   -------------------
-  Legend
+  Legend  
   LoadFont
   text anti-aliasing
   -------------------

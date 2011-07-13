@@ -702,7 +702,7 @@ void mglGraph::SimplePlot(const mglData &a, int type, const char *stl)
 void mglGraph::Zoom(mreal x1, mreal y1, mreal x2, mreal y2)
 {
 	if(x1==x2 || y1==y2)	{	x1=y1=0;	x2=y2=1;	}
-	Clf();
+	//Clf();
 	if(x1<x2)	{	zoomx1=x1;	zoomx2=x2-x1;	}
 	else		{	zoomx1=x2;	zoomx2=x1-x2;	}
 	if(y1<y2)	{	zoomy1=y1;	zoomy2=y2-y1;	}
