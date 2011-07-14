@@ -90,6 +90,8 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[0], "AXS_XLABELROTATION", "NO");
   IupSetAttribute(plot[0], "AXS_YTICKVALUESROTATION", "NO");
 //  IupSetAttribute(plot[0], "AXS_XTICKVALUESROTATION", "NO");
+  IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[0], "AXS_YCROSSORIGIN", "Yes");
 
   theFac = (float)1.0/(100*100*100);
   IupMglPlotBegin(plot[0], 2);
@@ -142,8 +144,6 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "AXS_XMAX", "60");
   IupSetAttribute(plot[1], "AXS_YMIN", "-0.5");
   IupSetAttribute(plot[1], "AXS_YMAX", "0.5");
-  IupSetAttribute(plot[1], "AXS_XCROSSORIGIN", "NO");
-  IupSetAttribute(plot[1], "AXS_YCROSSORIGIN", "NO");
   IupSetAttribute(plot[1], "AXS_XFONTSTYLE", "BOLD");
   IupSetAttribute(plot[1], "AXS_YFONTSTYLE", "BOLD");
   IupSetAttribute(plot[1], "AXS_XREVERSE", "YES");
@@ -186,8 +186,6 @@ static void InitPlots(void)
   IupSetAttribute(plot[2], "AXS_YLABEL", "Tg (Y)");
   IupSetAttribute(plot[2], "AXS_XFONTSTYLE", "BOLD");
 //  IupSetAttribute(plot[2], "AXS_YFONTSTYLE", "BOLD");
-  IupSetAttribute(plot[2], "AXS_XCROSSORIGIN", "NO");
-  IupSetAttribute(plot[2], "AXS_YCROSSORIGIN", "NO");
   IupSetAttribute(plot[2], "AXS_YLABELROTATION", "NO");
 
   theFac = (float)100.0/(100*100*100);
@@ -217,7 +215,6 @@ static void InitPlots(void)
   IupSetAttribute(plot[3], "DS_MODE", "BAR");
 //  IupSetAttribute(plot[3], "AXS_XTICKAUTO", "NO");   // Not supported when names are used
 //  IupSetAttribute(plot[3], "AXS_XTICKMAJORSPAN", "-5"); // idem
-  IupSetAttribute(plot[3], "AXS_XCROSSORIGIN", "NO");
   
 
   /* PLOT 4 - MakeExamplePlot6 */
@@ -230,8 +227,6 @@ static void InitPlots(void)
   IupSetAttribute(plot[4], "AXS_XMAX", "0.011");
   IupSetAttribute(plot[4], "AXS_YMIN", "0");
   IupSetAttribute(plot[4], "AXS_YMAX", "0.22");
-  IupSetAttribute(plot[4], "AXS_XCROSSORIGIN", "NO");
-  IupSetAttribute(plot[4], "AXS_YCROSSORIGIN", "NO");
   IupSetAttribute(plot[4], "AXS_XTICKFORMAT", "%1.3f");
   IupSetAttribute(plot[4], "LEGEND", "YES");
   IupSetAttribute(plot[4], "LEGENDPOS", "BOTTOMRIGHT");
@@ -261,6 +256,8 @@ static void InitPlots(void)
   
   /* PLOT 5 - MakeExamplePlot8 */
   IupSetAttribute(plot[5], "TITLE", "Data Selection and Editing");
+  IupSetAttribute(plot[5], "AXS_XCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[5], "AXS_YCROSSORIGIN", "Yes");
 
   theFac = (float)100.0/(100*100*100);
   IupMglPlotBegin(plot[5], 2);

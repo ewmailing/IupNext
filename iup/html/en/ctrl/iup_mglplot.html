@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+ï»¿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -104,12 +104,12 @@ or IupMglPlotSetFromFormula functions only.</p>
 <p>Zoom and Pan operations can be done using keyboard or mouse actions in 2D and 
 3D plots.</p>
 <p>Zoom can be done using the mouse wheel (Zoom in: scroll up; Zoom out: scroll 
-down), the CTRL+Left mouse button pressed and vertical mouse movements (Zoom in: 
+down), the Ctrl+Left mouse button pressed and vertical mouse movements (Zoom in: 
 bottom-up; Zoom out: top-down) or the plus '+' (Zoom in) and minus '&minus;' 
 (Zoom out) keys. </p>
 <p>Pan is done using horizontal and vertical mouse movements with the left mouse 
-button pressed. By keyboard, the CTRL+arrow keys combinations can be used to 
-shift the window. Arrow keys can also be used without using the CTRL key to 
+button pressed. By keyboard, the Ctrl+arrow keys combinations can be used to 
+shift the window. Arrow keys can also be used without using the Ctrl key to 
 slower movements.</p>
 <h4>Rotation</h4>
 <p>Rotation operations can also be done using keyboard or mouse actions, but 
@@ -119,22 +119,17 @@ only for 3D plots.</p>
 	movements, or 'w' and 's' keys.</li>
 	<li>Rotation in Y axis: right mouse button pressed and horizontal mouse 
 	movements, or 'a' and 'd' keys. </li>
-	<li>Rotation in Z axis: CTRL+right mouse button pressed and circular mouse 
+	<li>Rotation in Z axis: Ctrl+right mouse button pressed and vertical mouse 
 	movements, or 'e' and 'q' keys. </li>
 </ul>
 <h4>Reseting</h4>
 <p>The interaction can be reset with a mouse double-click inside the plot area 
 or by pressing the HOME key. This action restores
-<span id="result_box" class="short_text" lang="en">
-<span class="hps" title="Clique para mostrar traduções alternativas">the plot to 
-the</span> <span class="hps" title="Clique para mostrar traduções alternativas">
-default</span>
-<span class="hps" title="Clique para mostrar traduções alternativas">view (no 
-zoom, no pan and no rotation</span></span>).</p>
+the plot to the default view (no zoom, no pan and no rotation).</p>
 <h4>Selection and Editing</h4>
 <p><span class="style5">Selection and editing of a dataset can be enabled using the 
 <span class="style6">DS_EDIT 
-attribute.</span></p>
+attribute.</span></span></p>
 <p class="style6">To select all the samples in the dataset press the Shift key while 
 clicking with the left mouse button near a sample in the dataset. To deselect 
 all samples press the Shift key while clicking with the left mouse button 
@@ -144,7 +139,7 @@ clicking with the left mouse button near the sample in the dataset.</p>
 <p><span class="style6">After selecting samples use the Del key to remove the selected 
 samples. Also use the arrow keys to move the Y coordinate of the selected 
 samples. Press the Ctrl key to increase the step size when moving the Y 
-coordinate.</span></span></p>
+coordinate.</span></p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupMglPlot(void); [in C]
@@ -312,7 +307,7 @@ pixels per inch. If <strong>dpi</strong> is 0 the screen resolution is used.</p>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p><b>ALPHA </b>(non inheritable): Alpha value for overall tranaprency. 
+<p><b>ALPHA </b>(non inheritable): Alpha value for overall transparency. 
 Used only when TRANSPARENT=Yes. Default: 0.5</p>
 <p><strong>ANTIALIAS</strong> (non inheritable): Enable or disable the 
 anti-aliasing support. For screen display only. Default: Yes.</p>
@@ -334,6 +329,20 @@ attributes to their default values. Value is ignored. </p>
 
 <p><b>TRANSPARENT </b>(non inheritable): Enable or disable the transparency support. 
 Default: No.</p>
+<h4>Interaction (non inheritable)</h4>
+<p><b>ROTATE </b>(non inheritable): define the angles of the axis rotation in 
+degrees for 3D plots. The format is &quot;angleX:angleY:angleZ&quot;. As example, the 
+&quot;0.0:90:0.0&quot; rotates the Y-axis plot in 90 degrees. Partial values are also 
+accepted, like &quot;60::&minus;45&quot; or &quot;::30&quot; or &quot;120&quot;. 
+Default: 0:0:0.</p>
+<p><b>ZOOM </b>(non inheritable): define the zoom to 2D and 3D plots. The 
+format is &quot;x1,y1:x2,y2&quot; in normalized coordinates, limited to the 
+interval [0-1]. As example, the &quot;0,0:1,1&quot; set a plot to default view (centered 
+in the drawing 
+area). Partial values are also accepted, like &quot;0.2,0.2&quot; or &quot;,0.3:,1.3&quot; or &quot;&minus;0.4&quot;. 
+If values are set only to x1 and/or x2 coordinates, the zoom is restricted to 
+the X axis. On the other hand, if values are set only to y1 and/or y2 
+coordinates, the zoom is restricted to the Y axis. Default: 0,0:1,1</p>
 <h4>Title Configuration (non inheritable)</h4>
 <p><b>TITLE </b>(non inheritable): the  title. Located always at the top center area.</p>
 <p><b>TITLECOLOR</b>: title color. Default: FGCOLOR.</p>
@@ -395,7 +404,7 @@ dataset. For planar or volumetric datasets returns count_x * count_y * count_z.<
 of the data: 1, 2 or 3. For planar and volumetric datasets returns the actual size of 
 each dimension &quot;&lt;count_x&gt;x&lt;count_y&gt;x&lt;count_y&gt;&quot;, for example &quot;600x400x1&quot; (planar) 
 or &quot;512x512x512&quot; (volumetric). </p>
-<p><b>DS_EDIT</b>: enable or disable the current dataset interactive selection and editing. Can be 
+<p class="style5">DS_EDIT: enable or disable the current dataset interactive selection and editing. Can be 
 YES or NO. Default: NO. Planar and volumetric data can NOT be interactively 
 edited.</p>
 <p><b>DS_LEGEND</b>: legend text of the current dataset. Default is dynamically 
@@ -435,8 +444,8 @@ Can be YES or NO. Default: YES.</p>
 YES or NO. Default: YES.</p>
 <p><b>AXS_?COLOR</b>: ticks values and label color. Default: &quot;0 0 0&quot;.</p>
 <p><b>AXS_?CROSSORIGIN</b>: same as setting AXS_?ORIGIN to 0 or NULL. Can be YES 
-or NO. Default: YES. Returns YES if AXS_?ORIGIN is 0 and returns NO if AXS_?ORIGIN 
-in NULL. Available for compatibility with IupPPlot.</p>
+or NO. Default: NO. Returns YES if AXS_?ORIGIN is 0 and returns NO if AXS_?ORIGIN 
+in NULL. Available for compatibility with IupPPlot, but the default is different.</p>
 <p><b>AXS_?FONTSIZE</b>: axis label font size factor. It is a multiple of the 
 FONT size. Default: 1.0</p>
 <p><b>AXS_?FONTSTYLE</b>: axis label font style. If 
@@ -457,8 +466,8 @@ independently from graph rotation. For 2D graphs is useful to the Y axis only.</
 values of the respective axis in plot coordinates. Automatically calculated values when AUTOMIN or 
 AUTOMAX are enabled. Default: 1.0 and 0.0.</p>
 <p><strong>AXS_?ORIGIN</strong>: position the origin of the axis in plot 
-coordinates (%g). Default: 0.0. But if set to NULL will automatically position 
-the origin at the bottom left corner of the dataset area.</p>
+coordinates (%g). But if set to NULL will automatically position 
+the origin at the bottom left corner of the dataset area. Default: not defined.</p>
 <p><b>AXS_?REVERSE</b>: reverse the axis direction. Can be YES or 
 NO. Default: NO. Default is Y oriented bottom to top, and X oriented from left 
 to right.</p>
@@ -500,20 +509,6 @@ values rotation along the 3D axis. Can be YES or NO. Default: YES. This means
 that text will be aligned with the axis even when rotating the graph. When NO 
 text will be horizontal, always facing the camera, independently from graph 
 rotation. For 2D graphs is useful to the Y axis only.</p>
-<h4>Interaction (non inheritable)</h4>
-<p><b>ZOOM </b>(non inheritable): define the zoom to 2D and 3D plots. The 
-default format is &quot;x1,y1:x2,y2&quot; coordinates, which the values changed from 0 to 
-1. As example, the &quot;0,0:1,1&quot; set a plot to default view (<span id="result_box0" class="short_text" lang="en"><span class="hps" title="Clique para mostrar traduções alternativas">centered 
-in the</span>
-<span class="hps" title="Clique para mostrar traduções alternativas">drawing 
-area). Partial values are also accepted, like &quot;0.2,0.2&quot; or &quot;,0.3:,1.3&quot; or &quot;&minus;0.4&quot;. 
-If values are set only to x1 and/or x2 coordinates, the zoom is restricted to 
-the X axis. On the other hand, if values are set only to y1 and/or y2 
-coordinates, the zoom is restricted to the Y axis.</span></span></p>
-<p><b>ROTATE </b>(non inheritable): define the angles of rotation, in degrees, 
-to 3D plots. The default format is &quot;rotX:rotY:rotZ&quot;. As example, the 
-&quot;0.0:90.0:0.0&quot; rotates the Y-axis plot in 90 degrees. Partial values are also 
-accepted, like &quot;60.0::&minus;45.0&quot; or &quot;::30&quot; or &quot;120.7&quot;.</p>
 <blockquote>
   <hr>
 </blockquote>
@@ -545,7 +540,8 @@ functions. For display output OpenGL primitives can also be used.</p>
 <p><b>DELETE_CB</b>:
   Action generated when the Del key is pressed to removed a sample from a 
 dataset.
-    If multiple points are selected it is called once for each selected point.</p>
+    If multiple points are selected it is called once for each selected point. 
+Called only when DS_EDIT=Yes.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y</strong>); [in C]
 <strong>elem</strong>:delete_cb(<b>index, sample_index, x, y</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -558,7 +554,8 @@ dataset.
     If IUP_IGNORE then the sample is not deleted.</p>
   
 <p><b>DELETEBEGIN_CB, DELETEEND_CB</b>: Actions generated when a delete operation 
-will begin or end. But they are called only if DELETE_CB is also defined.</p>
+will begin or end. But they are called only if DELETE_CB is also defined. Called 
+only when DS_EDIT=Yes.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
 <strong>elem</strong>:deletebegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
@@ -571,7 +568,8 @@ will begin or end. But they are called only if DELETE_CB is also defined.</p>
 <p><b>SELECT_CB</b>:
   Action generated when  a sample is selected.
     If multiple points are selected it is called once for each new selected point. 
-It is called only if the selection state of the sample is about to be changed.</p>
+It is called only if the selection state of the sample is about to be changed. 
+Called only when DS_EDIT=Yes.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y, </strong>int <strong>select</strong>); [in C]
 <strong>elem</strong>:select_cb(<b>index, sample_index, x, y, select</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -587,7 +585,7 @@ It is called only if the selection state of the sample is about to be changed.</
   
 <p><b>SELECTBEGIN_CB, SELECTEND_CB</b>: Actions generated when a selection 
 operation will begin or end. But they are called only if SELECT_CB is also 
-defined.</p>
+defined. Called only when DS_EDIT=Yes.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
 <strong>elem</strong>:selectbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
@@ -600,7 +598,8 @@ defined.</p>
 <p><b>EDIT_CB</b>:
   Action generated when  a sample is selected.
     If multiple points are selected it is called once for each new selected point. 
-It is called only if the selection state of the sample is about to be changed.</p>
+It is called only if the selection state of the sample is about to be changed. 
+Called only when DS_EDIT=Yes.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y, </strong>float <strong>*new_x</strong>, float <strong>*new_y</strong>); [in C]
 <strong>elem</strong>:edit_cb(<b>index, sample_index, x, y, </b><strong>new_x, new_y</strong>: number) -&gt; (<strong>new_x, new_y, ret</strong>: number) [in Lua]</pre>
@@ -617,7 +616,7 @@ It is called only if the selection state of the sample is about to be changed.</
   
 <p><b>EDITBEGIN_CB, EDITEND_CB</b>: Actions generated when an editing 
 operation will begin or end. But they are called only if EDIT_CB is also 
-defined.</p>
+defined. Called only when DS_EDIT=Yes.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
 <strong>elem</strong>:editbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]

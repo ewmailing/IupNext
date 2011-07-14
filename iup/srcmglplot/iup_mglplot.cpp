@@ -227,6 +227,7 @@ static void iMglPlotResetAxis(Iaxis& axis)
   axis.axShow = true;
   axis.axShowArrow = true;
   axis.axLabelRotation = true;
+  axis.axOrigin = NAN;
 
   axis.axTickShow = true;
   axis.axTickShowValues = true;
@@ -901,18 +902,32 @@ static float iMglPlotGetAttribFloatNAN(Ihandle* ih, const char* name)
 
 static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
 {
+  // This adds spaces at left, top, right and bottom
+  float x1=0, x2=1.0f, y1=0, y2=1.0f;
+
+  // Remove the spaces if not used
+  if (!isnan(ih->data->yAxis.axOrigin) || !iupAttribGetStr(ih, "AXS_YLABEL"))
+    x1=-0.15f;
+  if (!iupAttribGetBoolean(ih, "COLORBAR"))
+    x2=1.15f;
+  if (!isnan(ih->data->xAxis.axOrigin) || !iupAttribGetStr(ih, "AXS_XLABEL"))
+    y1=-0.15f;
+  if (!iupAttribGetStr(ih, "TITLE"))
+    y2=1.15f;
+
+  // Não aparece escala x10
+	//if(r && l)	{	x2=1.15;	x1=-0.15;	}
+	//else if(r)	{	x2=1.15;	x1=-0.05;	}
+	//else if(l)	{	x2=1.05;	x1=-0.15;	}
+	//if(a && u)	{	y2=1.15;	y1=-0.15;	}
+	//else if(a)	{	y2=1.15;	y1=-0.05;	}
+	//else if(u)	{	y2=1.05;	y1=-0.15;	}
+
   // Only one plot using all viewport
-  //TODO improve this   , "");
-  gr->SubPlot(1, 1, 0);
+	gr->InPlot(x1, x2, y1, y2, false);
 
   // Do NOT automatically set Org, we will set Origin
   gr->AutoOrg = false;
-
-  // larger values, smaller plots
-  // 1.0 show exactly the dataset area
-  //TODO remove this after improving SubPlot
-  //gr->PlotFactor = 1.4f;  // This zooms everything, except title
-  //gr->AutoPlotFactor = false;
 
   gr->Alpha(true);
 
@@ -3321,6 +3336,11 @@ static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
   iupStrToFloatFloat(value1, &ih->data->x1, &ih->data->y1, ',');
   iupStrToFloatFloat(value2, &ih->data->x2, &ih->data->y2, ',');
 
+  if (ih->data->x1 < 0) ih->data->x1 = 0;
+  if (ih->data->y1 < 0) ih->data->y1 = 0;
+  if (ih->data->x2 > 1.0f) ih->data->x2 = 1.0f;
+  if (ih->data->y2 > 1.0f) ih->data->y2 = 1.0f;
+
   ih->data->redraw = true;
 
   return 0;
@@ -4084,12 +4104,19 @@ static void iMglPlotZoom(Ihandle *ih, float factor)
   ih->data->y2 -= ry;
   ih->data->x1 += rx;
   ih->data->x2 -= rx;
+
+  if (ih->data->x1 < 0) ih->data->x1 = 0;
+  if (ih->data->y1 < 0) ih->data->y1 = 0;
+  if (ih->data->x2 > 1.0f) ih->data->x2 = 1.0f;
+  if (ih->data->y2 > 1.0f) ih->data->y2 = 1.0f;
 }
 
 static void iMglPlotPanY(Ihandle *ih, float yoffset)
 {
   float rh = ih->data->y2 - ih->data->y1;
   float ry = (rh * yoffset) / (float)ih->data->h;
+  if (ih->data->y1 + ry < 0) ry = -ih->data->y1;
+  if (ih->data->y2 + ry > 1.0f) ry = 1.0f - ih->data->y2;
   ih->data->y1 += ry;
   ih->data->y2 += ry;
 }
@@ -4098,6 +4125,8 @@ static void iMglPlotPanX(Ihandle *ih, float xoffset)
 {
   float rw = ih->data->x2 - ih->data->x1;
   float rx = (rw * xoffset) / (float)ih->data->w;
+  if (ih->data->x1 + rx < 0) rx = -ih->data->x1;
+  if (ih->data->x2 + rx > 1.0f) rx = 1.0f - ih->data->x2;
   ih->data->x1 += rx;
   ih->data->x2 += rx;
 }
@@ -4225,7 +4254,6 @@ static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
   /* Restore interaction default values */
   case K_HOME:
     iMglPlotResetInteraction(ih);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   /* Pan */
   case K_cUP:
@@ -4234,7 +4262,6 @@ static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
       iMglPlotPanY(ih, -10.0f);
     else
       iMglPlotPanY(ih, -1.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   case K_cDOWN:
   case K_DOWN:
@@ -4242,7 +4269,6 @@ static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
       iMglPlotPanY(ih, 10.0f);
     else
       iMglPlotPanY(ih, 1.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   case K_cLEFT:
   case K_LEFT:
@@ -4250,7 +4276,6 @@ static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
       iMglPlotPanX(ih, 10.0f);
     else
       iMglPlotPanX(ih, 1.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   case K_cRIGHT:
   case K_RIGHT:
@@ -4258,44 +4283,38 @@ static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
       iMglPlotPanX(ih, -10.0f);
     else
       iMglPlotPanX(ih, -1.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   /* Zoom */
   case K_plus:
     iMglPlotZoom(ih, 10.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   case K_minus:
     iMglPlotZoom(ih, -10.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   /* Rotation */
   case K_A: case K_a:
     iMglPlotRotate(ih->data->rotY, +1.0f);     // 1 degree
-    iMglPlotRepaint(ih, 1, 1);
     break;
   case K_D: case K_d:
     iMglPlotRotate(ih->data->rotY, -1.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   case K_W: case K_w:
     iMglPlotRotate(ih->data->rotX, +1.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   case K_S: case K_s:
     iMglPlotRotate(ih->data->rotX, -1.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   case K_E: case K_e:
     iMglPlotRotate(ih->data->rotZ, +1.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
   case K_Q: case K_q:
     iMglPlotRotate(ih->data->rotZ, -1.0f);
-    iMglPlotRepaint(ih, 1, 1);
     break;
+  default:
+    return IUP_DEFAULT;
   }
 
+  iMglPlotRepaint(ih, 1, 1);
   return IUP_DEFAULT;
 } 
 
@@ -4491,9 +4510,9 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "AXS_XARROW", iMglPlotGetAxisXShowArrowAttrib, iMglPlotSetAxisXShowArrowAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YARROW", iMglPlotGetAxisYShowArrowAttrib, iMglPlotSetAxisYShowArrowAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZARROW", iMglPlotGetAxisZShowArrowAttrib, iMglPlotSetAxisZShowArrowAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XCROSSORIGIN", iMglPlotGetAxisXCrossOriginAttrib, iMglPlotSetAxisXCrossOriginAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YCROSSORIGIN", iMglPlotGetAxisYCrossOriginAttrib, iMglPlotSetAxisYCrossOriginAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_ZCROSSORIGIN", iMglPlotGetAxisZCrossOriginAttrib, iMglPlotSetAxisZCrossOriginAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XCROSSORIGIN", iMglPlotGetAxisXCrossOriginAttrib, iMglPlotSetAxisXCrossOriginAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YCROSSORIGIN", iMglPlotGetAxisYCrossOriginAttrib, iMglPlotSetAxisYCrossOriginAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_ZCROSSORIGIN", iMglPlotGetAxisZCrossOriginAttrib, iMglPlotSetAxisZCrossOriginAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XORIGIN", iMglPlotGetAxisXOriginAttrib, iMglPlotSetAxisXOriginAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YORIGIN", iMglPlotGetAxisYOriginAttrib, iMglPlotSetAxisYOriginAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZORIGIN", iMglPlotGetAxisZOriginAttrib, iMglPlotSetAxisZOriginAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -4583,17 +4602,19 @@ void IupMglPlotOpen(void)
 }
 
 /* TODO
+
   graph disapear during zoom in, probaly because Cut=true, but how to set it automaticaly?
-  by changing Zoom and PlotFactor Legend is displayed
+  by changing Zoom and PlotFactor, Legend is displayed
   bars at 0 and n-1
+  Cls inside Zoom
   -------------------
   SubPlot
+  sometimes the label gets too close to the ticks
+     it can be manualy moved by changing the origin
   improve autoticks computation
-  labels
   -------------------
   Legend  
   LoadFont
-  text anti-aliasing
   -------------------
   exemplo com os recursos novos
   teste IupMglPlotLoadData e IupMglPlotSetFromFormula, 
@@ -4607,7 +4628,7 @@ void IupMglPlotOpen(void)
   Binding Lua
   -------------------
   DS_EDIT+Selection+Callbacks
-  rever IupGraph
+  Properties dialog (rever IupGraph)
 
 Maybe:
   reference datasets
@@ -4618,10 +4639,9 @@ Maybe:
   plots that need two datasets: region, tens, error, flow, pipe, ...
 
 MathGL:
-  SetTickLen - documentation says negative len puts tic outside the bounding box, but it is NOT working
-  sometimes the label gets too close to the ticks
-     it can be manualy moved by changing the origin
+  SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
   Fonts
+     text anti-aliasing
      bug in make_font
      additional library to load TTF and OTF using FreeType
      vfm too slow to load font, need a binary format
