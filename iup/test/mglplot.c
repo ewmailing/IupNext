@@ -74,7 +74,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "LEGEND", "YES");
 //  IupSetAttribute(plot[0], "ALPHA", "NO");
 //  IupSetAttribute(plot[0], "ANTIALIAS", "NO");
-  IupSetAttribute(plot[0], "MGLFONT", "Helvetica, 14");
+//  IupSetAttribute(plot[0], "MGLFONT", "Helvetica, 14");
 //  IupSetAttribute(plot[0], "MGLFONT", "Courier, 11");
 //  IupSetAttribute(plot[0], "MGLFONT", "Times, 8");
   
@@ -87,7 +87,6 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "AXS_XLABELCENTERED", "NO");
   IupSetAttribute(plot[0], "AXS_YLABELCENTERED", "NO");
   IupSetAttribute(plot[0], "AXS_YLABELROTATION", "NO");
-//  IupSetAttribute(plot[0], "AXS_XLABELROTATION", "NO");
   IupSetAttribute(plot[0], "AXS_YTICKVALUESROTATION", "NO");
 //  IupSetAttribute(plot[0], "AXS_XTICKVALUESROTATION", "NO");
   IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
@@ -132,7 +131,7 @@ static void InitPlots(void)
 
 
   /* PLOT 1 - MakeExamplePlot2 */
-  IupSetAttribute(plot[1], "TITLE", "No Autoscale+No CrossOrigin");
+//  IupSetAttribute(plot[1], "TITLE", "No Autoscale+No CrossOrigin");
   IupSetAttribute(plot[1], "BGCOLOR", "0 192 192");
   IupSetAttribute(plot[1], "AXS_XLABEL", "Tg (X)");
   IupSetAttribute(plot[1], "AXS_YLABEL", "Tg (Y)");
@@ -186,6 +185,8 @@ static void InitPlots(void)
   IupSetAttribute(plot[2], "AXS_YLABEL", "Tg (Y)");
   IupSetAttribute(plot[2], "AXS_XFONTSTYLE", "BOLD");
 //  IupSetAttribute(plot[2], "AXS_YFONTSTYLE", "BOLD");
+  IupSetAttribute(plot[2], "AXS_XLABELCENTERED", "NO");
+  IupSetAttribute(plot[2], "AXS_YLABELCENTERED", "NO");
   IupSetAttribute(plot[2], "AXS_YLABELROTATION", "NO");
 
   theFac = (float)100.0/(100*100*100);
@@ -230,6 +231,8 @@ static void InitPlots(void)
   IupSetAttribute(plot[4], "AXS_XTICKFORMAT", "%1.3f");
   IupSetAttribute(plot[4], "LEGEND", "YES");
   IupSetAttribute(plot[4], "LEGENDPOS", "BOTTOMRIGHT");
+  IupSetAttribute(plot[4], "AXS_YTICKVALUESROTATION", "NO");
+  
 
   theFac = (float)100.0/(100*100*100);
   IupMglPlotBegin(plot[4], 2);

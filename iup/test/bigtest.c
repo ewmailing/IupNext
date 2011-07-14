@@ -117,11 +117,11 @@ static TestItems test_list[] = {
   {"MatrixCbs", MatrixCbsTest},
   {"Mdi", MdiTest},
   {"Menu", MenuTest},
-#ifdef PPLOT_TEST
-  {"PPlot", PPlotTest},
-#endif
 #ifdef MGLPLOT_TEST
   {"MglPlot", MglPlotTest},
+#endif
+#ifdef PPLOT_TEST
+  {"PPlot", PPlotTest},
 #endif
   {"PreDialogs", PreDialogsTest},
   {"Progressbar", ProgressbarTest},

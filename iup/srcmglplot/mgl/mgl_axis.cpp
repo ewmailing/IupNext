@@ -291,13 +291,13 @@ int _mgl_tick_ext(mreal a, mreal b, wchar_t s[32], mreal &v)
 	{
 		kind = 1;
 		v = fabs(a-b);
-		if(v>100.f)
+		if(v>10000.f)
 		{
 			int k=int(log10(v)-0.01);
 			kind=3;		v=mgl_ipow(10,k);
 			mglprintf(s, 32, L"(@{\\times{}10^{%d}})", k);
 		}
-		if(v<1e-2f)
+		if(v<1e-4f)
 		{
 			int k=int(log10(v)-0.01)-1;
 			kind=3;		v=mgl_ipow(10,k);
@@ -307,14 +307,14 @@ int _mgl_tick_ext(mreal a, mreal b, wchar_t s[32], mreal &v)
 	else
 	{
 		v = fabs(b)>fabs(a)?fabs(b):fabs(a);
-		if(v>100.f)
+		if(v>10000.f)
 		{
 			kind = 2;
 			int k=int(log10(v)-0.01);
 			v=mgl_ipow(10,k);
 			mglprintf(s, 32, L"\\times 10^{%d}", k);
 		}
-		if(v<1e-2f)
+		if(v<1e-4f)
 		{
 			kind = 2;
 			int k=int(log10(v)-0.01)-1;
