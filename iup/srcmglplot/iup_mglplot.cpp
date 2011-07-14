@@ -258,7 +258,7 @@ static void iMglPlotReset(Ihandle* ih)
   ih->data->titleFontStyle = IUP_MGLPLOT_INHERIT;
   ih->data->legendFontStyle = IUP_MGLPLOT_INHERIT;
   ih->data->legendFontSizeFactor = 0.8f;
-  ih->data->titleFontSizeFactor = 1.6f;
+  ih->data->titleFontSizeFactor = 1.4f;
 
   ih->data->bgColor.Set(1, 1, 1);
   ih->data->fgColor.Set(0, 0, 0);
@@ -373,7 +373,7 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
     size = (int)((size*ih->data->dpi)/72.0f);   //from points to pixels
 
   //TODO Magic factor for acceptable size 
-  ih->data->FontSizeDef = ((float)size/(float)ih->data->h)*90;   
+  ih->data->FontSizeDef = ((float)size/(float)ih->data->h)*ih->data->dpi;
 
   const char* name = iMglPlotGetFontName(typeface);
   if (!name)
@@ -659,6 +659,8 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
   else if (value && tolower(*value) == 'y') iMglPlotConfigAxisTicks(ih, gr, 'c', ih->data->yAxis, gr->Cmin, gr->Cmax);
   else iMglPlotConfigAxisTicks(ih, gr, 'c', ih->data->zAxis, gr->Cmin, gr->Cmax);
 
+  // Do NOT automatically set Org, we will set Origin
+  gr->AutoOrg = false;
   gr->SetOrigin(ih->data->xAxis.axOrigin, ih->data->yAxis.axOrigin, ih->data->zAxis.axOrigin);
 
   gr->RecalcBorder();
@@ -900,37 +902,87 @@ static float iMglPlotGetAttribFloatNAN(Ihandle* ih, const char* name)
   return val;
 }
 
-static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
+static bool iMglPlotHasx10(float min, float max)
 {
-  // This adds spaces at left, top, right and bottom
+	if(fabs(max-min)<0.01*fabs(min))
+	{
+		float v = fabs(max-min);
+		if (v>10000.f || v<1e-4f)
+      return true;
+  }
+	else
+	{
+		float v = fabs(max)>fabs(min)?fabs(max):fabs(min);
+		if(v>10000.f || v<1e-4f)
+      return true;
+  }
+  return false;
+}
+
+static void iMglPlotConfigPlotArea(Ihandle* ih, mglGraph *gr)
+{
+  // The default adds spaces at left, top, right and bottom
   float x1=0, x2=1.0f, y1=0, y2=1.0f;
 
-  // Remove the spaces if not used
-  if (!isnan(ih->data->yAxis.axOrigin) || !iupAttribGetStr(ih, "AXS_YLABEL"))
-    x1=-0.15f;
-  if (!iupAttribGetBoolean(ih, "COLORBAR"))
-    x2=1.15f;
-  if (!isnan(ih->data->xAxis.axOrigin) || !iupAttribGetStr(ih, "AXS_XLABEL"))
-    y1=-0.15f;
-  if (!iupAttribGetStr(ih, "TITLE"))
-    y2=1.15f;
+  // So we remove the spaces if not used
 
-  // Não aparece escala x10
-	//if(r && l)	{	x2=1.15;	x1=-0.15;	}
-	//else if(r)	{	x2=1.15;	x1=-0.05;	}
-	//else if(l)	{	x2=1.05;	x1=-0.15;	}
-	//if(a && u)	{	y2=1.15;	y1=-0.15;	}
-	//else if(a)	{	y2=1.15;	y1=-0.05;	}
-	//else if(u)	{	y2=1.05;	y1=-0.15;	}
+  // Left
+  if (!isnan(ih->data->yAxis.axOrigin))
+    x1 = -0.16f;  // Axis is crossed
+  else if (!iupAttribGetStr(ih, "AXS_YLABEL"))  // no label
+  {
+    if (!ih->data->yAxis.axTickShowValues)
+      x1 = -0.20f;  // not crossed, no label, no ticks values
+    else if (ih->data->yAxis.axTickValuesRotation)
+      x1 = -0.15f;  // not crossed, no label, with vertical ticks values
+    else
+      x1 = -0.10f;  // not crossed, no label, with horizontal ticks values
+  }
+  else if (ih->data->yAxis.axLabelRotation)
+    x1 = -0.10f; // not crossed and with vertical label
+  else
+    x1 = -0.01f; // not crossed and with horizontal label
+
+  // Right
+  if (!iupAttribGetBoolean(ih, "COLORBAR"))
+  {
+    if (iMglPlotHasx10(ih->data->xAxis.axMin, ih->data->xAxis.axMax))  // X Axis Min-Max
+      x2 = 1.05f;  // no colorbar, with x10 notation
+    else
+      x2 = 1.15f;  // no colorbar, no notation
+  }
+  else
+    x2 = 1.05f;  // with colorbar (includes also space for notation)
+
+  // Bottom
+  if (!isnan(ih->data->xAxis.axOrigin))  
+    y1 = -0.20f;  // Axis is crossed
+  else if (!iupAttribGetStr(ih, "AXS_XLABEL"))  
+  {
+    if (!ih->data->xAxis.axTickShowValues)
+      y1 = -0.20f;  // not crossed, no label, no ticks values
+    else
+      y1 = -0.15f;  // not crossed, no label, with ticks values
+  }
+  else
+    y1 = -0.10f;  // not crossed and with label
+
+  // Top
+  if (!iupAttribGetStr(ih, "TITLE"))
+    y2 = 1.15f;  // no title
+  else
+    y2 = 1.05f;  // with title
 
   // Only one plot using all viewport
 	gr->InPlot(x1, x2, y1, y2, false);
+}
 
-  // Do NOT automatically set Org, we will set Origin
-  gr->AutoOrg = false;
+static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
+{
+  iMglPlotConfigPlotArea(ih, gr);
 
+  // Transparency
   gr->Alpha(true);
-
   if (ih->data->transparent)
   {
     gr->SetTransparent(true);
@@ -4232,12 +4284,12 @@ static int iMglPlotWheel_CB(Ihandle* ih, float delta)
 {
   if(delta > 0)  /* Zoom In */
   {
-    iMglPlotZoom(ih, 10.0f);
+    iMglPlotZoom(ih, 50.0f);
     iMglPlotRepaint(ih, 1, 1);
   }
   else if(delta < 0)  /* Zoom Out */
   {
-    iMglPlotZoom(ih, -10.0f);
+    iMglPlotZoom(ih, -50.0f);
     iMglPlotRepaint(ih, 1, 1);
   }
 
@@ -4603,12 +4655,6 @@ void IupMglPlotOpen(void)
 
 /* TODO
 
-  graph disapear during zoom in, probaly because Cut=true, but how to set it automaticaly?
-  by changing Zoom and PlotFactor, Legend is displayed
-  bars at 0 and n-1
-  Cls inside Zoom
-  -------------------
-  SubPlot
   sometimes the label gets too close to the ticks
      it can be manualy moved by changing the origin
   improve autoticks computation
@@ -4639,6 +4685,12 @@ Maybe:
   plots that need two datasets: region, tens, error, flow, pipe, ...
 
 MathGL:
+  graph disapear during zoom in
+  by changing Zoom and PlotFactor, Legend is displayed
+  bars at 0 and n-1
+  Cls inside Zoom
+  License
+  -------------------
   SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
   Fonts
      text anti-aliasing
