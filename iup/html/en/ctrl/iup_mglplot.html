@@ -277,17 +277,17 @@ and POSTDRAW_CB callbacks. Output variables can be NULL if not used.</p>
 <p>Converts coordinates from pixels to plot coordinates. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. Output variables can be NULL if not used.</p>
 <hr>
-<pre>void <b>IupMglDrawMark</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>, float <b>z</b>); [in C]
+<pre>void <b>IupMglPlotDrawMark</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>, float <b>z</b>); [in C]
 <b>iup.MglDrawMark</b>(<b>ih</b>: ihandle, <b>x, y, z</b>: number) [in Lua]</pre>
 <p>Draws a mark at given position in plot coordinates. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWMARKSTYLE and DRAWMARKSIZE can be used to control mark appearance. </p>
 <hr>
-<pre>void <b>IupMglDrawLine</b>(Ihandle* <b>ih</b>, float <b>x1</b>, float <b>y1</b>, float <b>z1</b>, float <b>x2</b>, float <b>y2</b>, float <b>z2</b>); [in C]
+<pre>void <b>IupMglPlotDrawLine</b>(Ihandle* <b>ih</b>, float <b>x1</b>, float <b>y1</b>, float <b>z1</b>, float <b>x2</b>, float <b>y2</b>, float <b>z2</b>); [in C]
 <b>iup.MglDrawLine</b>(<b>ih</b>: ihandle, <b>x1, y1, z1, x2, y2, z2</b>: number) [in Lua]</pre>
 <p>Draws a line from position 1 to position 2 in plot coordinates. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWLINESTYLE and DRAWLINEWIDTH can be used to control line appearance. </p>
 <hr>
-<pre>void <b>IupMglDrawText</b>(Ihandle* <b>ih</b>, const char* <b>text</b>, float <b>x</b>, float <b>y</b>, float <b>z</b>); [in C]
+<pre>void <b>IupMglPlotDrawText</b>(Ihandle* <b>ih</b>, const char* <b>text</b>, float <b>x</b>, float <b>y</b>, float <b>z</b>); [in C]
 <b>iup.MglDrawText</b>(<b>ih</b>: ihandle, <b>text</b>: string, <b>x, y, z</b>: number) [in Lua]</pre>
 <p>Draws a text at given position in plot coordinates. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWFONTSTYLE and DRAWFONTSIZE can be used to control 
