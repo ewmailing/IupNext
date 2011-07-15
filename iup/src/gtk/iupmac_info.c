@@ -244,6 +244,14 @@ int iupdrvGetScreenDepth(void)
   return CGDisplayBitsPerPixel(kCGDirectMainDisplay);  /* Deprecated in Mac OS X v10.6 */
 }
 
+float iupdrvGetScreenDpi(void)
+{
+  CGRect rect = CGDisplayBounds(kCGDirectMainDisplay);
+  int height = (int)CGRectGetHeight(rect);   /* pixels */
+  CGSize size = CGDisplayScreenSize(kCGDirectMainDisplay);  /* millimeters */
+  return ((float)height / size.height) * 25.4f;  /* mm to inch */
+}
+
 void iupdrvGetCursorPos(int *x, int *y)
 {
   CGPoint point;
