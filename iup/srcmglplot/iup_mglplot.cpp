@@ -31,10 +31,10 @@
 
 #include "mgl/mgl.h"
 #include "mgl/mgl_ab.h"
-#include "mgl/mgl_gl.h"
 #include "mgl/mgl_eps.h"
 #include "mgl/mgl_zb.h"
 #include "mgl/mgl_eval.h"
+#include "mgl/mgl_gl.h"
 
 
 enum {IUP_MGLPLOT_BOTTOMLEFT, IUP_MGLPLOT_BOTTOMRIGHT, IUP_MGLPLOT_TOPLEFT, IUP_MGLPLOT_TOPRIGHT};
@@ -91,12 +91,13 @@ struct _IcontrolData
 {
   iupCanvas canvas;     /* from IupCanvas (must reserve it)  */
 
-  mglGraphGL* mgl;
+  mglGraphAB* mgl;
 
   /* Control */
   int w, h;
   float dpi;
   bool redraw;
+  bool opengl;
 
   /* Obtained from FONT */
   char FontDef[32];     
@@ -1520,6 +1521,7 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
   // Since this function will be used to draw on screen and
   // on metafile and bitmaps, all mglGraph control must be done here
   // and can NOT be done inside the attribute methods
+  gr->DefaultPlotParam();
 
   iMglPlotConfigView(ih, gr);
 
@@ -1576,7 +1578,16 @@ static void iMglPlotRepaint(Ihandle* ih, int force, int flush)
   }
 
   if (flush)
+  {
+    if (!ih->data->opengl)
+    {
+	    const unsigned char *rgb = ih->data->mgl->GetBits();
+	    if (rgb)
+        glDrawPixels(ih->data->w, ih->data->h, GL_RGB, GL_UNSIGNED_BYTE, rgb);
+    }
+
     IupGLSwapBuffers(ih);
+  }
 }
 
 
@@ -3371,8 +3382,34 @@ static char* iMglPlotGetTransparentAttrib(Ihandle* ih)
   return iMglPlotGetBoolean(ih->data->transparent);
 }
 
+static int iMglPlotSetOpenGLAttrib(Ihandle* ih, const char* value)
+{
+  bool old_opengl = ih->data->opengl;
+  iMglPlotSetBoolean(ih, value, ih->data->opengl);
+
+  if (old_opengl != ih->data->opengl)
+  {
+    delete ih->data->mgl;
+
+    if (ih->data->opengl)
+      ih->data->mgl = new mglGraphGL();
+    else
+      ih->data->mgl = new mglGraphZB(ih->data->w, ih->data->h);
+  }
+
+  return 0;
+}
+
+static char* iMglPlotGetOpenGLAttrib(Ihandle* ih)
+{
+  return iMglPlotGetBoolean(ih->data->opengl);
+}
+
 static int iMglPlotSetAntialiasAttrib(Ihandle* ih, const char* value)
 {
+  if (!ih->data->opengl)
+    return 0;
+
   IupGLMakeCurrent(ih);
 
   if (iupStrBoolean(value))
@@ -3397,6 +3434,9 @@ static int iMglPlotSetAntialiasAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAntialiasAttrib(Ihandle* ih)
 {
+  if (!ih->data->opengl)
+    return NULL;
+
   IupGLMakeCurrent(ih);
   return iMglPlotGetBoolean(glIsEnabled(GL_LINE_SMOOTH)==GL_TRUE);
 }
@@ -4218,6 +4258,20 @@ static int iMglPlotResize_CB(Ihandle* ih, int width, int height)
   IupGLMakeCurrent(ih);
   glViewport(0, 0, width, height);
 
+  if (!ih->data->opengl)
+  {
+	  glMatrixMode(GL_MODELVIEW);
+	  glLoadIdentity();
+//	  glScalef(1.0f, 1.0f, 1.0f);
+	  glTranslatef(-1.0f, 0, 0);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  /* data alignment is 1 */
+    glPixelZoom(1.0f, -1.0f);  // vertical flip image
+    glRasterPos2f(0, 1.0f);
+
+    ih->data->mgl->SetSize(width, height);
+  }
+
   ih->data->redraw = true;
   ih->data->w = width;
   ih->data->h = height;
@@ -4415,8 +4469,6 @@ static int iMglPlotCreateMethod(Ihandle* ih, void **params)
   free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
-  ih->data->mgl = new mglGraphGL();
-
   ih->data->dataSetMaxCount = 5;
   ih->data->dataSet = (IdataSet*)malloc(sizeof(IdataSet)*ih->data->dataSetMaxCount);
   memset(ih->data->dataSet, 0, sizeof(IdataSet)*ih->data->dataSetMaxCount);
@@ -4432,10 +4484,14 @@ static int iMglPlotCreateMethod(Ihandle* ih, void **params)
 
   IupSetAttribute(ih, "BUFFER", "DOUBLE");
 
+  ih->data->redraw = true;
+  ih->data->opengl = true;
+  ih->data->w = 1;
+  ih->data->h = 1;
+  ih->data->mgl = new mglGraphGL();
+
   // Default values
   iMglPlotReset(ih);
-
-  ih->data->redraw = true;
 
   return IUP_NOERROR;
 }
@@ -4477,6 +4533,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iMglPlotSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ALPHA", iMglPlotGetAlphaAttrib, iMglPlotSetAlphaAttrib, IUPAF_SAMEASSYSTEM, "0.5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRANSPARENT", iMglPlotGetTransparentAttrib, iMglPlotSetTransparentAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OPENGL", iMglPlotGetOpenGLAttrib, iMglPlotSetOpenGLAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANTIALIAS", iMglPlotGetAntialiasAttrib, iMglPlotSetAntialiasAttrib, "Yes", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MGLFONT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESET", NULL, iMglPlotSetResetAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -4707,8 +4764,8 @@ Maybe:
   plots that need two datasets: region, tens, error, flow, pipe, ...
 
 MathGL:
-  graph disapear during zoom in
-  by changing Zoom and PlotFactor, Legend is displayed
+  graph disapear during zoom in, only in OpenGL
+  by changing Zoom and PlotFactor, Legend is displayed in OpenGL
   bars at 0 and n-1
   Cls inside Zoom
   License

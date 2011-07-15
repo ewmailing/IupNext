@@ -565,7 +565,8 @@ static int bt1_cb(Ihandle *self)
   int ii = tabs_get_index();
 //  IupSetAttribute(plot[ii], "CLEAR", "Yes");
 //  IupSetAttribute(plot[ii], "REMOVE", "0");
-  IupSetAttribute(plot[ii], "ANTIALIAS", !IupGetInt(plot[ii], "ANTIALIAS")? "Yes": "No");
+//  IupSetAttribute(plot[ii], "ANTIALIAS", !IupGetInt(plot[ii], "ANTIALIAS")? "Yes": "No");
+  IupSetAttribute(plot[ii], "OPENGL", !IupGetInt(plot[ii], "OPENGL")? "Yes": "No");
   IupSetAttribute(plot[ii], "REDRAW", NULL);
 
 //  cdCanvas* cnv = cdCreateCanvas(CD_PDF, "pplot.pdf -o");
