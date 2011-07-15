@@ -22,23 +22,18 @@ void JustResetClear(void)
 {
   IupSetAttribute(plot, "RESET", NULL);
   IupSetAttribute(plot, "CLEAR", NULL);
-  IupSetAttribute(plot, "REDRAW", NULL);
 }
 
 void SampleOne3D(void)
 {
   JustResetClear();
 
-  IupMglPlotBegin(plot, 3);
-
-  IupMglPlotNewDataSet(plot, 3);
+  IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "-2*((2*x-1)^2 + (2*y-1)^2 + (2*z-1)^4 - (2*z-1)^2 - 0.1)", 60, 50, 40);
 
-  IupMglPlotEnd(plot);
-
-  IupSetAttribute(plot, "ROTATE", "40.0:60.0:0.0");
+  IupSetAttribute(plot, "ROTATE", "40:60:0");
   IupSetAttribute(plot, "LIGHT", "YES");
-  IupSetAttribute(plot, "ALPHA", "YES");
+  IupSetAttribute(plot, "TRANSPARENT", "YES");
   IupSetAttribute(plot, "BOX", "YES");
   IupSetAttribute(plot, "DS_MODE", "VOLUME_ISOSURFACE");
 
@@ -49,14 +44,10 @@ void SampleOne2D(void)
 {
   JustResetClear();
 
-  IupMglPlotBegin(plot, 2);
-
-  IupMglPlotNewDataSet(plot, 2);
+  IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "0.6*sin(2*pi*x)*sin(3*pi*y) + 0.4*cos(3*pi*(x*y))", 50, 40, 1);
 
-  IupMglPlotEnd(plot);
-
-  IupSetAttribute(plot, "ROTATE", "40.0:60.0:0.0");
+  IupSetAttribute(plot, "ROTATE", "40:60:0");
   IupSetAttribute(plot, "LIGHT", "YES");
   IupSetAttribute(plot, "BOX", "YES");
   IupSetAttribute(plot, "DS_MODE", "PLANAR_SURFACE");
@@ -68,18 +59,14 @@ void SampleOne1D(void)
 {
   JustResetClear();
 
-  IupMglPlotBegin(plot, 1);
-  
   IupMglPlotNewDataSet(plot, 1);
-  IupMglPlotSetFromFormula(plot, 0, "0.7*sin(2*pi*x)+0.5*cos(3*pi*x)+0.2*sin(pi*x)", 50, 3, 1);
+  IupMglPlotSetFromFormula(plot, 0, "0.7*sin(2*pi*x)+0.5*cos(3*pi*x)+0.2*sin(pi*x)", 50, 1, 1);
 
   IupMglPlotNewDataSet(plot, 1);
-  IupMglPlotSetFromFormula(plot, 1, "sin(2*pi*x)", 50, 3, 1);
+  IupMglPlotSetFromFormula(plot, 1, "sin(2*pi*x)", 50, 1, 1);
   
   IupMglPlotNewDataSet(plot, 1);
-  IupMglPlotSetFromFormula(plot, 2, "cos(2*pi*x)", 50, 3, 1);
-
-  IupMglPlotEnd(plot);
+  IupMglPlotSetFromFormula(plot, 2, "cos(2*pi*x)", 50, 1, 1);
 
   IupSetAttribute(plot, "BOX", "YES");
   IupSetAttribute(plot, "REDRAW", NULL);
@@ -94,7 +81,6 @@ static TestItems test_list[] = {
   {"SampleOne1D", SampleOne1D},
   {"SampleOne2D", SampleOne2D},
   {"SampleOne3D", SampleOne3D},
-  {"JustResetClear", JustResetClear},
 };
 
 static int k_enter_cb(Ihandle*ih)
@@ -154,6 +140,8 @@ int main(int argc, char* argv[])
   }
 
   IupShowXY(dlg, 100, IUP_CENTER);
+
+  SampleOne1D();
 
   IupMainLoop();
 
