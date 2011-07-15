@@ -1709,6 +1709,9 @@ static int iMglPlotSetResetAttrib(Ihandle* ih, const char* value)
   iupAttribSetStr(ih, "ISOCOUNT", NULL);
   iupAttribSetStr(ih, "BARWIDTH", NULL);
 
+  iupAttribSetStr(ih, "LIGHT", NULL);
+  iupAttribSetStr(ih, "COLORSCHEME", NULL);
+
   iupAttribSetStr(ih, "AXS_XLABEL", NULL);
   iupAttribSetStr(ih, "AXS_YLABEL", NULL);
   iupAttribSetStr(ih, "AXS_ZLABEL", NULL);
