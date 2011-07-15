@@ -609,14 +609,36 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
 
       if (ds->dsDim == 1)
       {
-        /* the data will be plotted as Y, X will be 0,1,2,3,... */
-        if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin)
+        if (ds->dsX->ny>1 || ds->dsX->nz>1)
         {
-          gr->Min.x = 0;
-          gr->Max.x = (mreal)(ds->dsCount-1);
+          /* Planar or volumetric data */
+          if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin)
+          {
+            gr->Min.x = -1.0f;
+            gr->Max.x = +1.0f;
+          }
+          if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
+          {
+            gr->Min.y = -1.0f;
+            gr->Max.y = +1.0f;
+          }
+          if (ih->data->zAxis.axAutoScaleMax || ih->data->zAxis.axAutoScaleMin)
+          {
+            gr->Min.z = -1.0f;
+            gr->Max.z = +1.0f;
+          }
         }
-        if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
-          iMglPlotFindMinMaxValues(*ds->dsX, i==0? false: true, gr->Min.y, gr->Max.y);  
+        else
+        {
+          /* the data will be plotted as Y, X will be 0,1,2,3,... */
+          if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin)
+          {
+            gr->Min.x = 0;
+            gr->Max.x = (mreal)(ds->dsCount-1);
+          }
+          if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
+            iMglPlotFindMinMaxValues(*ds->dsX, i==0? false: true, gr->Min.y, gr->Max.y);
+        }
       }
       else if (ds->dsDim == 2)
       {
@@ -1039,9 +1061,9 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   int ny = (int)ds->dsX->ny;
   int nz = (int)ds->dsX->nz;
   mglData xx(nx), yy(ny), zz(nz);
-  xx.Fill(0,(float)nx-1);
-  yy.Fill(0,(float)ny-1);
-  zz.Fill(0,(float)nz-1);
+  xx.Fill(-1.0f, +1.0f);
+  yy.Fill(-1.0f, +1.0f);
+  zz.Fill(-1.0f, +1.0f);
 
   if (iupStrEqualNoCase(ds->dsMode, "VOLUME_ISOSURFACE"))
   {
@@ -1178,8 +1200,8 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   int nx = (int)ds->dsX->nx;
   int ny = (int)ds->dsX->ny;
   mglData xx(nx), yy(ny);
-  xx.Fill(0,(float)nx-1);
-  yy.Fill(0,(float)ny-1);
+  xx.Fill(-1.0f, +1.0f);
+  yy.Fill(-1.0f, +1.0f);
 
   if (iupStrEqualNoCase(ds->dsMode, "PLANAR_MESH"))
   {
