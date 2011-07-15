@@ -4293,6 +4293,8 @@ static int iMglPlotMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, c
     /* Initial (x,y) */
     ih->data->x0 = (float)x;
     ih->data->y0 = (float)y;
+
+printf("ROTATE=%s\n", IupGetAttribute(ih, "ROTATE"));
   }
 
   if (iup_isdouble(status))  /* Double-click: restore interaction default values */
@@ -4733,7 +4735,9 @@ void IupMglPlotOpen(void)
 }
 
 /* TODO
-
+  evaluate interval
+  tamanho do 3D tem que ser menor por causa do Rotate, PlotFactor?
+  melhorar rotação
   sometimes the label gets too close to the ticks
      it can be manualy moved by changing the origin
   improve autoticks computation
@@ -4764,7 +4768,7 @@ Maybe:
   plots that need two datasets: region, tens, error, flow, pipe, ...
 
 MathGL:
-  graph disapear during zoom in, only in OpenGL
+  graph disapear during zoom in, only in OpenGL, depth clipping
   by changing Zoom and PlotFactor, Legend is displayed in OpenGL
   bars at 0 and n-1
   Cls inside Zoom
