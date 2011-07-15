@@ -1707,7 +1707,8 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       }
       else if ((char)wp == '\n' || (char)wp == '\r')
       {
-        if (!ih->data->has_formatting && !(GetKeyState(VK_CONTROL) & 0x8000)) /* when formatting is processed in WM_KEYDOWN */
+        if (ih->data->is_multiline && 
+            !ih->data->has_formatting && !(GetKeyState(VK_CONTROL) & 0x8000)) /* when formatting is processed in WM_KEYDOWN */
         {
           char insert_value[2];
           insert_value[0] = '\n';
