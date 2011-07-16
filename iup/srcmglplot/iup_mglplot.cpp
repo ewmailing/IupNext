@@ -1744,9 +1744,15 @@ static int iMglPlotSetResetAttrib(Ihandle* ih, const char* value)
   iupAttribSetStr(ih, "ISOCOUNT", NULL);
   iupAttribSetStr(ih, "BARWIDTH", NULL);
   iupAttribSetStr(ih, "RADARSHIFT", NULL);
+  iupAttribSetStr(ih, "PIECHART", NULL);
 
   iupAttribSetStr(ih, "LIGHT", NULL);
   iupAttribSetStr(ih, "COLORSCHEME", NULL);
+
+  iupAttribSetStr(ih, "COLORBAR", NULL);
+  iupAttribSetStr(ih, "COLORBARPOS", NULL);
+  iupAttribSetStr(ih, "COLORBARRANGE", NULL);
+  iupAttribSetStr(ih, "COLORBARAXISTICKS", NULL);
 
   iupAttribSetStr(ih, "AXS_XLABEL", NULL);
   iupAttribSetStr(ih, "AXS_YLABEL", NULL);
@@ -4275,10 +4281,11 @@ static void iMglPlotZoom(Ihandle *ih, float factor)
   ih->data->x1 += rx;
   ih->data->x2 -= rx;
 
-  if (ih->data->x1 < 0) ih->data->x1 = 0;
-  if (ih->data->y1 < 0) ih->data->y1 = 0;
-  if (ih->data->x2 > 1.0f) ih->data->x2 = 1.0f;
-  if (ih->data->y2 > 1.0f) ih->data->y2 = 1.0f;
+  //TODO: temporary-commented while adjusting sizes
+  //if (ih->data->x1 < 0) ih->data->x1 = 0;
+  //if (ih->data->y1 < 0) ih->data->y1 = 0;
+  //if (ih->data->x2 > 1.0f) ih->data->x2 = 1.0f;
+  //if (ih->data->y2 > 1.0f) ih->data->y2 = 1.0f;
 }
 
 static void iMglPlotPanY(Ihandle *ih, float yoffset)
@@ -4649,6 +4656,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "ISOCOUNT", NULL, NULL, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BARWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "0.7", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RADARSHIFT", NULL, NULL, IUPAF_SAMEASSYSTEM, "-1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PIECHART", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "LIGHT", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COLORSCHEME", NULL, NULL, IUPAF_SAMEASSYSTEM, "BbcyrR", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

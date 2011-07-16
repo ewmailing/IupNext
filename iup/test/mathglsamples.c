@@ -498,10 +498,18 @@ int main(int argc, char* argv[])
 }
 
 /* TODO:
-  PieChart
+  Add toggles and dial, just like the other example
 
+  Profundidade do Box em OpenGL
+
+  PieChart
+  Crust
+  Dots
+
+  ->Axial está setando algo que afeta a cor em OpenGL
   ColorBar
   Grid
+  Density não aparece quando não é OpenGL
 
   ContourFilled
   ContourProject
