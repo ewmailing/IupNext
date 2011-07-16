@@ -170,6 +170,13 @@ inline float iRecon(const unsigned char& value)
   return ((float)value + 0.5f)/256.0f;
 }
 
+inline void iSwap(float& a, float& b)
+{
+  float tmp = a;
+  a = b;
+  b = tmp;
+}
+
 static char* iMglPlotDefaultLegend(int ds)
 {
   char legend[50];
@@ -565,11 +572,7 @@ static void iMglPlotConfigScale(Iaxis& axis, float& min, float& max)
   }
 
   if (axis.axReverse)
-  {
-    float t = max;
-    max = min;
-    min = t;
-  }
+    iSwap(min, max);
 }
 
 static void iMglPlotFindMinMaxValues(mglData& ds_data, bool add, float& min, float& max)
@@ -635,10 +638,31 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
           if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin)
           {
             gr->Min.x = 0;
-            gr->Max.x = (mreal)(ds->dsCount-1);
+            float ds_max = (mreal)(ds->dsCount-1);
+            gr->Max.x = i==0? ds_max: (ds_max>gr->Max.x? ds_max: gr->Max.x);
           }
           if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
             iMglPlotFindMinMaxValues(*ds->dsX, i==0? false: true, gr->Min.y, gr->Max.y);
+
+          if (iupStrEqualNoCase(ds->dsMode, "BARHORIZONTAL"))
+          {
+            iSwap(gr->Min.x, gr->Min.y);
+            iSwap(gr->Max.x, gr->Max.y);
+          }
+          else if (iupStrEqualNoCase(ds->dsMode, "RADAR"))
+          {
+            float r = iupAttribGetFloat(ih, "RADARSHIFT");   // Default -1
+          	if(r<0)	r = (gr->Min.y<0)? -gr->Min.y:0;
+            float rmax = fabs(gr->Max.y)>fabs(gr->Min.y)?fabs(gr->Max.y):fabs(gr->Min.y);
+            gr->Min.y = gr->Min.x = -(r + rmax);
+            gr->Max.y = gr->Max.x =  (r + rmax);
+          }
+          else if (iupStrEqualNoCase(ds->dsMode, "CHART") && iupAttribGetBoolean(ih, "PIECHART"))
+          {
+            float rmax = fabs(gr->Max.y)>fabs(gr->Min.y)?fabs(gr->Max.y):fabs(gr->Min.y);
+            gr->Min.y = gr->Min.x = -rmax;
+            gr->Max.y = gr->Max.x =  rmax;
+          }
         }
       }
       else if (ds->dsDim == 2)
@@ -1333,10 +1357,12 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     // Plot affected by SelectPen
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
+    float radarshift = iupAttribGetFloat(ih, "RADARSHIFT");   // Default -1
+
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
 
-    gr->Radar(*ds->dsX, style);
+    gr->Radar(*ds->dsX, style, radarshift);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "AREA"))
   {
@@ -1358,6 +1384,10 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
 
+    // Each bar could has a different color using a scheme
+    // But we can NOT use scheme here because we changed SetPal
+    //iMglPlotConfigColorScheme(ih, style);
+
     // To avoid hole bars clipped when touching the bounding box
     gr->SetCut(false); 
 
@@ -1376,13 +1406,22 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     float barwidth = iupAttribGetFloat(ih, "BARWIDTH");   // Default 0.7
     gr->SetBarWidth(barwidth);
 
+    // Each bar could has a different color using a scheme
+    // But we can NOT use scheme here because we changed SetPal
+    //iMglPlotConfigColorScheme(ih, style);
+
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
+
+    // To avoid hole bars clipped when touching the bounding box
+    gr->SetCut(false); 
 
     if (ds->dsDim == 2)
       gr->Barh(*ds->dsY, *ds->dsX, style, 0);
     else
       gr->Barh(xx, *ds->dsX, style, 0);
+
+    gr->SetCut(true); 
   }
   else if (iupStrEqualNoCase(ds->dsMode, "STEP"))
   {
@@ -1422,25 +1461,18 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     int piechart = iupAttribGetBoolean(ih, "PIECHART");  //Default false
     if (piechart)
     {
+      //TODO
       gr->SetFunc("(y+1)/2*cos(pi*x)", "(y+1)/2*sin(pi*x)");
+
+//TODO
+//      if (ih->data->Box)
+//        iMglPlotDrawBox(ih, gr);
+
       gr->Chart(*ds->dsX, style);
       gr->SetFunc(NULL, NULL);
     }
     else
       gr->Chart(*ds->dsX, style);
-  }
-  else if (iupStrEqualNoCase(ds->dsMode, "BOXPLOT"))
-  {
-    // Plot affected by SelectPen
-    iMglPlotConfigDataSetLineMark(ds, gr, style);
-
-    float barwidth = iupAttribGetFloat(ih, "BARWIDTH");   // Default 0.7
-    gr->SetBarWidth(barwidth);
-
-    if (ds->dsDim == 2)
-      gr->BoxPlot(*ds->dsX, *ds->dsY, style, 0);
-    else
-      gr->BoxPlot(xx, *ds->dsX, style, 0);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "CRUST"))
   {
@@ -1708,6 +1740,7 @@ static int iMglPlotSetResetAttrib(Ihandle* ih, const char* value)
   iupAttribSetStr(ih, "PROJECT", NULL);
   iupAttribSetStr(ih, "ISOCOUNT", NULL);
   iupAttribSetStr(ih, "BARWIDTH", NULL);
+  iupAttribSetStr(ih, "RADARSHIFT", NULL);
 
   iupAttribSetStr(ih, "LIGHT", NULL);
   iupAttribSetStr(ih, "COLORSCHEME", NULL);
@@ -4597,6 +4630,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "PROJECT", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ISOCOUNT", NULL, NULL, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BARWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "0.7", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RADARSHIFT", NULL, NULL, IUPAF_SAMEASSYSTEM, "-1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "LIGHT", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COLORSCHEME", NULL, NULL, IUPAF_SAMEASSYSTEM, "BbcyrR", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -4738,6 +4772,9 @@ void IupMglPlotOpen(void)
 }
 
 /* TODO
+Not working at samples:
+  PieChart
+  -------------------
   evaluate interval
   tamanho do 3D tem que ser menor por causa do Rotate, PlotFactor?
   melhorar rotação
@@ -4768,7 +4805,8 @@ Maybe:
      so the same data can be displayed using different modes using the same memory
   curvilinear coordinates
   Ternary
-  plots that need two datasets: region, tens, error, flow, pipe, ...
+  plots that need two datasets: BoxPlot, Region, Tens, Mark, Error, Flow, Pipe, Ring
+     chart and bars can be combined in one plot (bars then can include above and fall)
 
 MathGL:
   graph disapear during zoom in, only in OpenGL, depth clipping

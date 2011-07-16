@@ -231,7 +231,8 @@ void mglGraph::Radar(const mglData &a, const char *pen, mreal r)
 			x.Create(101);	y.Create(101);
 			for(i=0;i<101;i++)
 			{	x.a[i]=r*cos(2*i*M_PI/100);	y.a[i]=r*sin(2*i*M_PI/100);	}
-			Plot(x,y,"k");	SetPal(0);
+      SetPalColor(0, 0, 0, 0);
+			Plot(x,y,"k", -1);	SetPal(0);
 		}
 	}
 }
