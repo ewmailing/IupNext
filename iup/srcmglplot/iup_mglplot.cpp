@@ -1482,6 +1482,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     // Affected by SetScheme
     iMglPlotConfigColorScheme(ih, style);
 
+    if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
+      iMglPlotConfigDataGrid(gr, ds, style);
+
     if (ds->dsDim == 3)
       gr->Crust(*ds->dsX, *ds->dsY, *ds->dsZ, style);
   }
@@ -3479,17 +3482,27 @@ static char* iMglPlotGetAntialiasAttrib(Ihandle* ih)
 
 static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
 {
-  char value1[50]="", value2[50]="";
+  if (!value)
+  {
+    ih->data->x1 = 0;
+    ih->data->y1 = 0;
+    ih->data->x2 = 1.0f;
+    ih->data->y2 = 1.0f;
+  }
+  else
+  {
+    char value1[50]="", value2[50]="";
 
-  iupStrToStrStr(value, value1, value2, ':');
+    iupStrToStrStr(value, value1, value2, ':');
 
-  iupStrToFloatFloat(value1, &ih->data->x1, &ih->data->y1, ',');
-  iupStrToFloatFloat(value2, &ih->data->x2, &ih->data->y2, ',');
+    iupStrToFloatFloat(value1, &ih->data->x1, &ih->data->y1, ',');
+    iupStrToFloatFloat(value2, &ih->data->x2, &ih->data->y2, ',');
 
-  if (ih->data->x1 < 0) ih->data->x1 = 0;
-  if (ih->data->y1 < 0) ih->data->y1 = 0;
-  if (ih->data->x2 > 1.0f) ih->data->x2 = 1.0f;
-  if (ih->data->y2 > 1.0f) ih->data->y2 = 1.0f;
+    if (ih->data->x1 < 0) ih->data->x1 = 0;
+    if (ih->data->y1 < 0) ih->data->y1 = 0;
+    if (ih->data->x2 > 1.0f) ih->data->x2 = 1.0f;
+    if (ih->data->y2 > 1.0f) ih->data->y2 = 1.0f;
+  }
 
   ih->data->redraw = true;
 
@@ -3505,12 +3518,19 @@ static char* iMglPlotGetZoomAttrib(Ihandle* ih)
 
 static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
 {
-  char value1[50]="", value2[100]="";
-
-  iupStrToStrStr(value, value1, value2, ':');
-  
-  iupStrToFloat(value1, &ih->data->rotX);
-  iupStrToFloatFloat(value2, &ih->data->rotY, &ih->data->rotZ, ':');
+  if (!value)
+  {
+    ih->data->rotX = 0;
+    ih->data->rotY = 0;
+    ih->data->rotZ = 0;
+  }
+  else
+  {
+    char value1[50]="", value2[100]="";
+    iupStrToStrStr(value, value1, value2, ':');
+    iupStrToFloat(value1, &ih->data->rotX);
+    iupStrToFloatFloat(value2, &ih->data->rotY, &ih->data->rotZ, ':');
+  }
 
   ih->data->redraw = true;
 
@@ -4329,8 +4349,6 @@ static int iMglPlotMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, c
     /* Initial (x,y) */
     ih->data->x0 = (float)x;
     ih->data->y0 = (float)y;
-
-printf("ROTATE=%s\n", IupGetAttribute(ih, "ROTATE"));
   }
 
   if (iup_isdouble(status))  /* Double-click: restore interaction default values */
