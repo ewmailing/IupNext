@@ -822,7 +822,7 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
 	  if (iupStrEqualNoCase(value,"LEFT"))	pos = 1;
 	  else if(iupStrEqualNoCase(value,"TOP"))	pos = 2;
 	  else if(iupStrEqualNoCase(value,"BOTTOM"))	pos = 3;
-  	gr->Colorbar(pos, pos==0?1:0, pos==2?1:0, 1, 1);
+  	gr->Colorbar(pos, pos==0?1.0f:0, pos==2?1.0f:0, 1.0f, 1.0f);
   }
 }
 
@@ -1450,11 +1450,13 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     // Affected by SetScheme
     iMglPlotConfigColorScheme(ih, style);
 
+    float radius = iupAttribGetFloat(ih, "CRUSTRADIUS");   // Default 0
+
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
 
     if (ds->dsDim == 3)
-      gr->Crust(*ds->dsX, *ds->dsY, *ds->dsZ, style);
+      gr->Crust(*ds->dsX, *ds->dsY, *ds->dsZ, style, radius);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "DOTS"))
   {
@@ -1713,6 +1715,7 @@ static int iMglPlotSetResetAttrib(Ihandle* ih, const char* value)
   iupAttribSetStr(ih, "BARWIDTH", NULL);
   iupAttribSetStr(ih, "RADARSHIFT", NULL);
   iupAttribSetStr(ih, "PIECHART", NULL);
+  iupAttribSetStr(ih, "CRUSTRADIUS", NULL);
 
   iupAttribSetStr(ih, "LIGHT", NULL);
   iupAttribSetStr(ih, "COLORSCHEME", NULL);
@@ -4625,6 +4628,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "BARWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "0.7", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RADARSHIFT", NULL, NULL, IUPAF_SAMEASSYSTEM, "-1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PIECHART", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CRUSTRADIUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "LIGHT", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COLORSCHEME", NULL, NULL, IUPAF_SAMEASSYSTEM, "BbcyrR", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -4790,13 +4794,13 @@ void IupMglPlotOpen(void)
   IDTF
 
 Maybe:
+  curvilinear coordinates
+  plots that need two datasets: BoxPlot, Region, Tens, Mark, Error, Flow, Pipe, Ring
+     chart and bars can be combined in one plot (bars then can include above and fall)
   reference datasets
      dataset can be a pointer to the previous data, 
      so the same data can be displayed using different modes using the same memory
-  curvilinear coordinates
   Ternary
-  plots that need two datasets: BoxPlot, Region, Tens, Mark, Error, Flow, Pipe, Ring
-     chart and bars can be combined in one plot (bars then can include above and fall)
 
 MathGL:
   gr->Dens does not works when using mglGraphZB, works ok when using OpenGL.
