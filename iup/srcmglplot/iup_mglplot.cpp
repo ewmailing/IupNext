@@ -822,7 +822,7 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
 	  if (iupStrEqualNoCase(value,"LEFT"))	pos = 1;
 	  else if(iupStrEqualNoCase(value,"TOP"))	pos = 2;
 	  else if(iupStrEqualNoCase(value,"BOTTOM"))	pos = 3;
-	  gr->Colorbar(pos, 0, 0, 1, 1);
+  	gr->Colorbar(pos, pos==0?1:0, pos==2?1:0, 1, 1);
   }
 }
 
@@ -1184,22 +1184,6 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       }
     }
   }
-  else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_GRID"))
-  {
-    // NOT affected by SetScheme
-    style[0] = 0;
-
-    // Plot affected by SelectPen
-    iMglPlotConfigDataSetLineMark(ds, gr, style);
-
-    char* slicedir = iupAttribGetStr(ih, "SLICEDIR"); //Default "XYZ"
-    int slicex = iupAttribGetInt(ih, "SLICEX");  //Default -1 (central)
-    int slicey = iupAttribGetInt(ih, "SLICEY");  //Default -1 (central)
-    int slicez = iupAttribGetInt(ih, "SLICEZ");  //Default -1 (central)
-    if (tolower(*slicedir)=='x') { gr->Grid3(xx, yy, zz, *ds->dsX, 'x', slicex, style); slicedir++; }
-    if (tolower(*slicedir)=='y') { gr->Grid3(xx, yy, zz, *ds->dsX, 'y', slicey, style); slicedir++; }
-    if (tolower(*slicedir)=='z') { gr->Grid3(xx, yy, zz, *ds->dsX, 'z', slicez, style); slicedir++; }
-  }
   else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_CLOUD"))
   {
     int cubes = iupAttribGetBoolean(ih, "CLOUDCUBES");  //Default true
@@ -1207,11 +1191,6 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       gr->Cloud(xx, yy, zz, *ds->dsX, style, -1);   // Use AlphaDef
     else
       gr->CloudP(xx, yy, zz, *ds->dsX, style, -1);  // Use AlphaDef
-  }
-  else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_GRADIENTLINES"))
-  {
-    int gradlinescount = iupAttribGetInt(ih, "GRADLINESCOUNT");  //Default 5
-    gr->Grad(xx, yy, zz, *ds->dsX, style, gradlinescount);
   }
 }
 
@@ -1302,17 +1281,6 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     int gradlinescount = iupAttribGetInt(ih, "GRADLINESCOUNT");  //Default 5
     float val = iMglPlotGetAttribFloatNAN(ih, "PLANARVALUE");  // Default NAN
     gr->Grad(xx, yy, *ds->dsX, style, gradlinescount, val);
-  }
-  else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_GRID"))
-  {
-    // NOT affected by SetScheme
-    style[0] = 0;
-
-    // Plot affected by SelectPen
-    iMglPlotConfigDataSetLineMark(ds, gr, style);
-
-    float val = iMglPlotGetAttribFloatNAN(ih, "PLANARVALUE");  // Default NAN
-    gr->Grid(xx, yy, *ds->dsX, style, val);
   }
 }
 
@@ -1461,10 +1429,10 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     int piechart = iupAttribGetBoolean(ih, "PIECHART");  //Default false
     if (piechart)
     {
-      //TODO
+      //TODO: essa equacao so funciona se x entre -1 e 1 ???
       gr->SetFunc("(y+1)/2*cos(pi*x)", "(y+1)/2*sin(pi*x)");
 
-//TODO
+//TODO: Box tem que ficar depois nesse caso, para poder ser afetado pela transformacao acima
 //      if (ih->data->Box)
 //        iMglPlotDrawBox(ih, gr);
 
@@ -1570,13 +1538,13 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
   if (cb)
     cb(ih);
 
+  iMglPlotDrawAxes(ih, gr);
+
   if(ih->data->gridShow)
     iMglPlotDrawGrid(ih, gr);
 
   if (ih->data->Box)
     iMglPlotDrawBox(ih, gr);
-
-  iMglPlotDrawAxes(ih, gr);
 
   iMglPlotDrawData(ih, gr);
 
@@ -4662,7 +4630,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "COLORSCHEME", NULL, NULL, IUPAF_SAMEASSYSTEM, "BbcyrR", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "COLORBAR", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "COLORBARPOS", NULL, NULL, IUPAF_SAMEASSYSTEM, "LEFT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COLORBARPOS", NULL, NULL, IUPAF_SAMEASSYSTEM, "RIGHT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COLORBARRANGE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COLORBARAXISTICKS", NULL, NULL, IUPAF_SAMEASSYSTEM, "Z", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
@@ -4798,32 +4766,28 @@ void IupMglPlotOpen(void)
 }
 
 /* TODO
-Not working at samples:
-  PieChart
-  -------------------
+  espaco ocupado pelo Colorbar
   evaluate interval
   tamanho do 3D tem que ser menor por causa do Rotate, PlotFactor?
   melhorar rotação
   sometimes the label gets too close to the ticks
      it can be manualy moved by changing the origin
   improve autoticks computation
-  -------------------
-  Legend  
-  LoadFont
-  -------------------
-  exemplo com os recursos novos
-  teste IupMglPlotLoadData e IupMglPlotSetFromFormula, 
+  teste IupMglPlotLoadData
   teste IupMglPlotPaintTo  SVG, EPS e RGB
   teste BOLD e ITALIC
   -------------------
   documentar pixels x plot x normalized coordinates
-  documentar suporte a Tek formulas nas strings
+  documentar/exemplo suporte a Tek formulas nas strings
   documentar DS_MODE Options
-  -------------------
   Binding Lua
+  -------------------
+  Legend  
+  LoadFont
   -------------------
   DS_EDIT+Selection+Callbacks
   Properties dialog (rever IupGraph)
+  IDTF
 
 Maybe:
   reference datasets
@@ -4835,8 +4799,12 @@ Maybe:
      chart and bars can be combined in one plot (bars then can include above and fall)
 
 MathGL:
-  graph disapear during zoom in, only in OpenGL, depth clipping
-  by changing Zoom and PlotFactor, Legend is displayed in OpenGL
+  gr->Dens does not works when using mglGraphZB, works ok when using OpenGL.
+  gr->ContFA has a different result in OpenGL. It seems to have an invalid depth. Without OpenGL works fine.
+  gr->Axial is changing somethig that affects other graphs
+  gr->Box depth in OpenGL
+  graph disapear during zoom in, only in OpenGL, depth clipping?
+  observation: by changing Zoom and PlotFactor, Legend is displayed in OpenGL
   bars at 0 and n-1
   Cls inside Zoom
   License

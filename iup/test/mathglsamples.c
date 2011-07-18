@@ -59,6 +59,21 @@ static void SampleContourProjectVolume(void)
 {
   SampleVolume("VOLUME_CONTOUR");
   IupSetAttribute(plot, "PROJECT", "YES");
+  IupSetAttribute(plot, "PROJECTVALUEX", "-1");
+  IupSetAttribute(plot, "PROJECTVALUEY", "1");
+  IupSetAttribute(plot, "PROJECTVALUEZ", "-1");
+  IupSetAttribute(plot, "TRANSPARENT", "NO");
+  IupSetAttribute(plot, "LIGHT", "NO");
+}
+
+static void SampleContourFilledProjectVolume(void)
+{
+  SampleVolume("VOLUME_CONTOUR");
+  IupSetAttribute(plot, "PROJECT", "YES");
+  IupSetAttribute(plot, "PROJECTVALUEX", "-1");
+  IupSetAttribute(plot, "PROJECTVALUEY", "1");
+  IupSetAttribute(plot, "PROJECTVALUEZ", "-1");
+  IupSetAttribute(plot, "CONTOURFILLED", "YES");
   IupSetAttribute(plot, "TRANSPARENT", "NO");
   IupSetAttribute(plot, "LIGHT", "NO");
 }
@@ -87,11 +102,6 @@ static void SampleDensityVolume(void)
   IupSetAttribute(plot, "AXS_Y", "Yes");
   IupSetAttribute(plot, "AXS_Z", "Yes");
   IupSetAttribute(plot, "LIGHT", "NO");
-}
-
-static void SampleGradientLinesVolume(void)
-{
-  SampleVolume("VOLUME_GRADIENTLINES");
 }
 
 static void SampleCloudVolume(void)
@@ -125,11 +135,6 @@ static void SamplePlanar(const char* ds_mode)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SampleGridPlanar(void)
-{
-  SamplePlanar("PLANAR_GRID");
-}
-
 static void SampleGradientLinesPlanar(void)
 {
   SamplePlanar("PLANAR_GRADIENTLINES");
@@ -159,6 +164,7 @@ static void SampleDensityPlanar(void)
 {
   SamplePlanar("PLANAR_DENSITY");
   IupSetAttribute(plot, "COLORBAR", "Yes");
+//  IupSetAttribute(plot, "COLORBARPOS", "TOP");
   IupSetAttribute(plot, "ROTATE", NULL);
 }
 
@@ -397,7 +403,6 @@ static TestItems test_list[] = {
   {"Contour Filled (Planar)", SampleContourFilledPlanar},
   {"Axial Contour (Planar)", SampleAxialContourPlanar},
   {"GradientLines (Planar)", SampleGradientLinesPlanar},
-  {"Grid (Planar)", SampleGridPlanar},
 
   {"----------", Dummy},
 
@@ -408,8 +413,8 @@ static TestItems test_list[] = {
   {"Contour (Volume)", SampleContourVolume},
   {"ContourFilled (Volume)", SampleContourFilledVolume},
   {"ContourProject (Volume)", SampleContourProjectVolume},
+  {"ContourFilledProject (Volume)", SampleContourFilledProjectVolume},
   {"DensityProject (Volume)", SampleDensityProjectVolume},
-  {"GradientLines (Volume)", SampleGradientLinesVolume},
 };
 
 static int k_enter_cb(Ihandle*ih)
@@ -499,22 +504,9 @@ int main(int argc, char* argv[])
 
 /* TODO:
   Add toggles and dial, just like the other example
-
-  Profundidade do Box em OpenGL
-
-  PieChart
-  Crust
-  Dots
-
-  ->Axial está setando algo que afeta a cor em OpenGL
-  ColorBar
-  Grid
-  Density não aparece quando não é OpenGL
-
-  ContourFilled
-  ContourProject
-  GradientLines
-  Grid
-
   Plots do "Basic Features"
+  ---------------------------------------------------
+  PieChart - rever SetFunc e Box
+  Crust - depende de novo attributo para SPLITDATA
+  Dots - idem
 */
