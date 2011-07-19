@@ -212,8 +212,7 @@ static void SampleDotsLinear(void)
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotLoadData(plot, 0, "../test/hotdogs.pts", 0, 0, 0);
   IupSetAttribute(plot, "DS_MODE", "DOTS");
-
-  //TODO: rearrange data in linear form
+  IupSetAttribute(plot, "DS_REARRANGE", NULL);
 
   IupSetAttribute(plot, "ROTATE", "40:0:60");
   IupSetAttribute(plot, "LIGHT", "YES");
@@ -225,8 +224,7 @@ static void SampleCrustLinear(void)
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotLoadData(plot, 0, "../test/hotdogs.pts", 0, 0, 0);
   IupSetAttribute(plot, "DS_MODE", "CRUST");
-
-  //TODO: rearrange data in linear form
+  IupSetAttribute(plot, "DS_REARRANGE", NULL);
 
   IupSetAttribute(plot, "ROTATE", "40:0:60");
   IupSetAttribute(plot, "LIGHT", "YES");
@@ -343,12 +341,18 @@ static void SampleAreaLinear(void)
 
 static void SampleRadarLinear(void)
 {
-  //TODO: use original dimentions and rearrange data in linear form
-
   IupMglPlotNewDataSet(plot, 1);
-  IupMglPlotSetFromFormula(plot, 0, "0.4*sin(pi*(2*x+y/2))+0.1*rnd", 10, 1, 1);
+  IupMglPlotSetFromFormula(plot, 0, "0.4*sin(pi*(2*x+y/2))+0.1*rnd", 10, 3, 1);
+  IupSetAttribute(plot, "DS_MODE", "RADAR");
+  IupSetAttribute(plot, "DS_SPLIT", NULL);
+
+  IupSetAttribute(plot, "CURRENT", "1");
   IupSetAttribute(plot, "DS_MODE", "RADAR");
 
+  IupSetAttribute(plot, "CURRENT", "2");
+  IupSetAttribute(plot, "DS_MODE", "RADAR");
+
+  IupSetAttribute(plot, "RADARSHIFT", "0.4");  // So all datasets will use the same radarshift
   IupSetAttribute(plot, "DATAGRID", "Yes");
   IupSetAttribute(plot, "BOX", "YES");
 }
@@ -504,9 +508,4 @@ int main(int argc, char* argv[])
 
 /* TODO:
   Add toggles and dial, just like the other example
-  Plots do "Basic Features"
-  ---------------------------------------------------
-  PieChart - rever SetFunc e Box
-  Crust - depende de novo attributo para SPLITDATA
-  Dots - idem
 */

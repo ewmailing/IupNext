@@ -610,6 +610,12 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
     for(i = 0; i < ih->data->dataSetCount; i++)
     {
       IdataSet* ds = &ih->data->dataSet[i];
+      bool add = i==0;
+      mglPoint oldMin = gr->Min;
+      mglPoint oldMax = gr->Max;
+
+      if (iupStrEqualNoCase(ds->dsMode, "RADAR"))
+        add = false;
 
       if (ds->dsDim == 1)
       {
@@ -642,7 +648,7 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
             gr->Max.x = i==0? ds_max: (ds_max>gr->Max.x? ds_max: gr->Max.x);
           }
           if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
-            iMglPlotFindMinMaxValues(*ds->dsX, i==0? false: true, gr->Min.y, gr->Max.y);
+            iMglPlotFindMinMaxValues(*ds->dsX, add, gr->Min.y, gr->Max.y);
 
           if (iupStrEqualNoCase(ds->dsMode, "BARHORIZONTAL"))
           {
@@ -654,8 +660,26 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
             float r = iupAttribGetFloat(ih, "RADARSHIFT");   // Default -1
           	if(r<0)	r = (gr->Min.y<0)? -gr->Min.y:0;
             float rmax = fabs(gr->Max.y)>fabs(gr->Min.y)?fabs(gr->Max.y):fabs(gr->Min.y);
-            gr->Min.y = gr->Min.x = -(r + rmax);
-            gr->Max.y = gr->Max.x =  (r + rmax);
+            float min = -(r + rmax);
+            float max =  (r + rmax);
+            if (i==0)
+            {
+              gr->Min.y = gr->Min.x = min;
+              gr->Max.y = gr->Max.x = max;
+            }
+            else
+            {
+              if (min < oldMin.x)
+                gr->Min.y = gr->Min.x = min;
+              else
+                gr->Min.y = gr->Min.x = oldMin.x;
+              if (max > oldMax.x)
+                gr->Max.y = gr->Max.x = max;
+              else
+                gr->Max.y = gr->Max.x = oldMax.x;
+            }
+            oldMin = gr->Min;
+            oldMax = gr->Max;
           }
           else if (iupStrEqualNoCase(ds->dsMode, "CHART") && iupAttribGetBoolean(ih, "PIECHART"))
           {
@@ -668,18 +692,18 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
       else if (ds->dsDim == 2)
       {
         if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin)
-          iMglPlotFindMinMaxValues(*ds->dsX, i==0? false: true, gr->Min.x, gr->Max.x);
+          iMglPlotFindMinMaxValues(*ds->dsX, add, gr->Min.x, gr->Max.x);
         if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
-          iMglPlotFindMinMaxValues(*ds->dsY, i==0? false: true, gr->Min.y, gr->Max.y);
+          iMglPlotFindMinMaxValues(*ds->dsY, add, gr->Min.y, gr->Max.y);
       }
       else if (ds->dsDim == 3)
       {
         if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin)
-          iMglPlotFindMinMaxValues(*ds->dsX, i==0? false: true, gr->Min.x, gr->Max.x);
+          iMglPlotFindMinMaxValues(*ds->dsX, add, gr->Min.x, gr->Max.x);
         if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
-          iMglPlotFindMinMaxValues(*ds->dsY, i==0? false: true, gr->Min.y, gr->Max.y);
+          iMglPlotFindMinMaxValues(*ds->dsY, add, gr->Min.y, gr->Max.y);
         if (ih->data->zAxis.axAutoScaleMax || ih->data->zAxis.axAutoScaleMin)
-          iMglPlotFindMinMaxValues(*ds->dsZ, i==0? false: true, gr->Min.z, gr->Max.z);
+          iMglPlotFindMinMaxValues(*ds->dsZ, add, gr->Min.z, gr->Max.z);
       }
     }
   }
@@ -1044,8 +1068,7 @@ static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
   // Zoom and Pan
   gr->Zoom(ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
 
-//TODO temporary, because our tests are all 2D
-//  if (iMglPlotIsView3D(ih))
+  if (iMglPlotIsView3D(ih))
   {
     if (iupAttribGetBoolean(ih, "LIGHT"))  /* Default: FALSE */
       gr->Light(true);
@@ -1429,12 +1452,12 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     int piechart = iupAttribGetBoolean(ih, "PIECHART");  //Default false
     if (piechart)
     {
-      //TODO: essa equacao so funciona se x entre -1 e 1 ???
+      //TODO: this equation works only if x in the interval [-1, 1]
       gr->SetFunc("(y+1)/2*cos(pi*x)", "(y+1)/2*sin(pi*x)");
 
-//TODO: Box tem que ficar depois nesse caso, para poder ser afetado pela transformacao acima
-//      if (ih->data->Box)
-//        iMglPlotDrawBox(ih, gr);
+      //This box has to be here, so it will be affected by the transformation
+      if (ih->data->Box)
+        iMglPlotDrawBox(ih, gr);
 
       gr->Chart(*ds->dsX, style);
       gr->SetFunc(NULL, NULL);
@@ -1545,7 +1568,8 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
   if(ih->data->gridShow)
     iMglPlotDrawGrid(ih, gr);
 
-  if (ih->data->Box)
+  int piechart = iupAttribGetBoolean(ih, "PIECHART");  //Default false
+  if (ih->data->Box && !piechart)
     iMglPlotDrawBox(ih, gr);
 
   iMglPlotDrawData(ih, gr);
@@ -2088,6 +2112,134 @@ static int iMglPlotSetClearAttrib(Ihandle* ih, const char* value)
   ih->data->dataSetCount = 0;
   ih->data->dataSetCurrent = -1;
   ih->data->redraw = true;
+  (void)value;
+  return 0;
+}
+
+static int iMglPlotSetDSRearrangeAttrib(Ihandle* ih, const char* value)
+{
+  int i;
+  IdataSet* ds;
+
+  if (ih->data->dataSetCurrent==-1)
+    return 0;
+
+  ds = &ih->data->dataSet[ih->data->dataSetCurrent];
+  
+  if (ds->dsY || ds->dsZ || ds->dsX->nz != 1)
+    return 0;
+
+  if (ds->dsX->ny == 1)
+    return 0;
+
+  // Now nx!=1 and ny!=1, so rearrange data from ds->dsX to ds->dsY
+  if (ds->dsX->ny == 2 || ds->dsX->ny == 3)
+  {
+    ds->dsCount = ds->dsX->nx;
+    ds->dsDim = 2;
+    ds->dsY = new mglData(ds->dsCount);
+    mglData* dsX = new mglData(ds->dsCount);
+    float* ax = ds->dsX->a;
+    float* ay = ax + ds->dsCount;
+    float* az = NULL;
+    float* x = dsX->a;
+    float* y = ds->dsY->a;
+    float* z = NULL;
+    if (ds->dsX->ny == 3)
+    {
+      ds->dsZ = new mglData(ds->dsCount);
+      z = ds->dsZ->a;
+      az = ay + ds->dsCount;
+      ds->dsDim = 3;
+    }
+
+    memcpy(x, ax, ds->dsCount*sizeof(float));
+    memcpy(y, ay, ds->dsCount*sizeof(float));
+    if (z) memcpy(z, az, ds->dsCount*sizeof(float));
+
+    delete ds->dsX;
+    ds->dsX = dsX;
+  }
+  else if (ds->dsX->nx == 2 || ds->dsX->nx == 3)
+  {
+    ds->dsCount = ds->dsX->ny;
+    ds->dsDim = 2;
+    ds->dsY = new mglData(ds->dsCount);
+    mglData* dsX = new mglData(ds->dsCount);
+    float* a = ds->dsX->a;
+    float* x = dsX->a;
+    float* y = ds->dsY->a;
+    float* z = NULL;
+    if (ds->dsX->nx == 3)
+    {
+      ds->dsZ = new mglData(ds->dsCount);
+      z = ds->dsZ->a;
+      ds->dsDim = 3;
+    }
+
+    for (i=0; i<ds->dsCount; i++)
+    {
+      *x++ = *a++;
+      *y++ = *a++;
+      if (z) *z++ = *a++;
+    }
+
+    delete ds->dsX;
+    ds->dsX = dsX;
+  }
+  else if (ds->dsX->nx == 1)
+  {
+    ds->dsCount = ds->dsX->ny;
+    ds->dsX->nx = ds->dsCount;
+    ds->dsX->ny = 1;
+  }
+
+  (void)value;
+  return 0;
+}
+
+static int iMglPlotSetDSSplitAttrib(Ihandle* ih, const char* value)
+{
+  int old_current;
+  IdataSet* ds;
+
+  if (ih->data->dataSetCurrent==-1)
+    return 0;
+
+  ds = &ih->data->dataSet[ih->data->dataSetCurrent];
+  
+  if (ds->dsY || ds->dsZ || ds->dsX->nz != 1)
+    return 0;
+
+  if (ds->dsX->ny == 1)
+    return 0;
+
+  old_current = ih->data->dataSetCurrent;
+
+  // Now nx!=1 and ny!=1, so rearrange data from ds->dsX to ds->dsY
+  if (ds->dsX->ny == 2 || ds->dsX->ny == 3)
+  {
+    ds->dsCount = ds->dsX->nx;
+
+    float* ax = ds->dsX->a;
+    float* ay = ax + ds->dsCount;
+
+    int dsy = IupMglPlotNewDataSet(ih, 1);
+    IupMglPlotSet1D(ih, dsy, NULL, ay, ds->dsCount);
+
+    if (ds->dsX->ny == 3)
+    {
+      float* az = ay + ds->dsCount;
+      int dsz = IupMglPlotNewDataSet(ih, 1);
+      IupMglPlotSet1D(ih, dsz, NULL, az, ds->dsCount);
+    }
+
+    ds->dsDim = 1;
+    ds->dsX->ny = 1;
+  }
+
+  ih->data->dataSetCurrent = old_current;
+
   (void)value;
   return 0;
 }
@@ -4607,6 +4759,8 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "DS_REMOVE", NULL, iMglPlotSetDSRemoveAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_COUNT", iMglPlotGetDSCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_DIMENSION", iMglPlotGetDSDimAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_REARRANGE", NULL, iMglPlotSetDSRearrangeAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_SPLIT", NULL, iMglPlotSetDSSplitAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DATAGRID", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PLANARVALUE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

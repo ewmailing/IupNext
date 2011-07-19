@@ -432,6 +432,10 @@ VOLUME_CLOUD for volumetric datasets.</p>
 	only for the plot, and not for a specific dataset. See more at
 	<a href="#DS_MODE">DS_MODE Options</a>.</p>
 </blockquote>
+<p><strong>DS_REARRANGE</strong> (write-only): rearrange planar data as linear 
+data. Value is ignored. It can rearrange planar data with count_y=2 or count_y=3 
+into 2D or 3D linear data. Also planar data with count_y!=1 and count_x=2 or 
+count_x=3 into 2D or 3D linear data.</p>
 <p><b>DS_SHOWVALUES</b>: enable or disable the display of the values near each 
 sample. Can be YES or NO. Default: NO. Values are drawn with LEGENDFONTSIZE and LEGENDFONTSTYLE.</p>
 <p><b>DS_REMOVE</b> (write-only): removes a sample from the current dataset given its index. 
