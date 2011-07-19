@@ -4231,18 +4231,20 @@ void IupMglPlotPaintTo(Ihandle* ih, const char* format, int w, int h, float dpi,
     !IupClassMatch(ih, "mglplot"))
     return;
 
-  if (!format || !data || w<=0 || h<=0)
+  if (!format || !data)
     return;
 
   int old_w = ih->data->w;
   int old_h = ih->data->h;
   float old_dpi = ih->data->dpi;
+
+  if (dpi == 0) dpi = old_dpi;
+  if (w == 0) w = old_w;
+  if (h == 0) h = old_h;
+
   ih->data->w = w;
   ih->data->h = h;
   ih->data->dpi = dpi;
-
-  if (dpi == 0)
-    ih->data->dpi = old_dpi;
 
   if (*format == 'E') //EPS
   {
@@ -4931,9 +4933,6 @@ void IupMglPlotOpen(void)
   sometimes the label gets too close to the ticks
      it can be manualy moved by changing the origin
   improve autoticks computation
-  teste IupMglPlotLoadData
-  teste IupMglPlotPaintTo  SVG, EPS e RGB
-  teste BOLD e ITALIC
   -------------------
   documentar pixels x plot x normalized coordinates
   documentar/exemplo suporte a Tek formulas nas strings
@@ -4945,7 +4944,7 @@ void IupMglPlotOpen(void)
   -------------------
   DS_EDIT+Selection+Callbacks
   Properties dialog (rever IupGraph)
-  IDTF
+  IDTF+PDF 3D
 
 Maybe:
   curvilinear coordinates
@@ -4957,6 +4956,7 @@ Maybe:
   Ternary
 
 MathGL:
+  BOLD and ITALIC for FontDef not working
   gr->Dens does not works when using mglGraphZB, works ok when using OpenGL.
   gr->ContFA has a different result in OpenGL. It seems to have an invalid depth. Without OpenGL works fine.
   gr->Axial is changing somethig that affects other graphs

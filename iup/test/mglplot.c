@@ -143,7 +143,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "AXS_XMAX", "60");
   IupSetAttribute(plot[1], "AXS_YMIN", "-0.5");
   IupSetAttribute(plot[1], "AXS_YMAX", "0.5");
-  IupSetAttribute(plot[1], "AXS_XFONTSTYLE", "BOLD");
+  IupSetAttribute(plot[1], "AXS_XFONTSTYLE", "ITALIC");
   IupSetAttribute(plot[1], "AXS_YFONTSTYLE", "BOLD");
   IupSetAttribute(plot[1], "AXS_XREVERSE", "YES");
   IupSetAttribute(plot[1], "GRIDCOLOR", "128 255 128");
@@ -566,12 +566,11 @@ static int bt1_cb(Ihandle *self)
 //  IupSetAttribute(plot[ii], "CLEAR", "Yes");
 //  IupSetAttribute(plot[ii], "REMOVE", "0");
 //  IupSetAttribute(plot[ii], "ANTIALIAS", !IupGetInt(plot[ii], "ANTIALIAS")? "Yes": "No");
-  IupSetAttribute(plot[ii], "OPENGL", !IupGetInt(plot[ii], "OPENGL")? "Yes": "No");
-  IupSetAttribute(plot[ii], "REDRAW", NULL);
+//  IupSetAttribute(plot[ii], "OPENGL", !IupGetInt(plot[ii], "OPENGL")? "Yes": "No");
+//  IupSetAttribute(plot[ii], "REDRAW", NULL);
 
-//  cdCanvas* cnv = cdCreateCanvas(CD_PDF, "pplot.pdf -o");
-//  IupMglPlotPaintTo(plot[ii], cnv);
-//  cdKillCanvas(cnv);
+  IupMglPlotPaintTo(plot[ii], "EPS", 0, 0, 0, "../mglplot.eps");
+  IupMglPlotPaintTo(plot[ii], "SVG", 0, 0, 0, "../mglplot.svg");
   return IUP_DEFAULT;
 }
 
