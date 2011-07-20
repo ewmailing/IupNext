@@ -244,7 +244,6 @@ static void SampleDensityPlanar(void)
 {
   SamplePlanar("PLANAR_DENSITY");
   IupSetAttribute(plot, "COLORBAR", "Yes");
-//  IupSetAttribute(plot, "COLORBARPOS", "TOP");
   IupSetAttribute(plot, "ROTATE", NULL);
 }
 

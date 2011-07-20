@@ -115,7 +115,7 @@ struct _IcontrolData
   float titleFontSizeFactor;
 
   /* Axes */
-  Iaxis xAxis, yAxis, zAxis;
+  Iaxis axisX, axisY, axisZ;
 
   /* Interaction */
   float x0, xe, y0, ye;  // Aux
@@ -275,9 +275,9 @@ static void iMglPlotReset(Ihandle* ih)
   ih->data->legendColor.Set(NAN, NAN, NAN);
   ih->data->boxColor.Set(NAN, NAN, NAN);
 
-  iMglPlotResetAxis(ih->data->xAxis);
-  iMglPlotResetAxis(ih->data->yAxis);
-  iMglPlotResetAxis(ih->data->zAxis);
+  iMglPlotResetAxis(ih->data->axisX);
+  iMglPlotResetAxis(ih->data->axisY);
+  iMglPlotResetAxis(ih->data->axisZ);
 
   /* Interaction default values */
   iMglPlotResetInteraction(ih);
@@ -306,7 +306,11 @@ static bool iMglPlotIsView3D(Ihandle* ih)
     IdataSet* ds = &ih->data->dataSet[i];
     if ((ds->dsDim == 1 && (ds->dsX->ny>1 || ds->dsX->nz>1)) ||  // Planar or Volumetric
         ds->dsDim == 3)  // 3D data
-      return true;
+    {
+      if (!iupStrEqualNoCase(ds->dsMode, "PLANAR_DENSITY") &&
+          !iupStrEqualNoCase(ds->dsMode, "PLANAR_GRADIENTLINES"))
+        return true;
+    }
   }
 
   return false;
@@ -603,9 +607,9 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
 {
   int i;
 
-  if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin ||
-      ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin ||
-      ih->data->zAxis.axAutoScaleMax || ih->data->zAxis.axAutoScaleMin)
+  if (ih->data->axisX.axAutoScaleMax || ih->data->axisX.axAutoScaleMin ||
+      ih->data->axisY.axAutoScaleMax || ih->data->axisY.axAutoScaleMin ||
+      ih->data->axisZ.axAutoScaleMax || ih->data->axisZ.axAutoScaleMin)
   {
     for(i = 0; i < ih->data->dataSetCount; i++)
     {
@@ -622,17 +626,17 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
         if (ds->dsX->ny>1 || ds->dsX->nz>1)
         {
           /* Planar or volumetric data */
-          if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin)
+          if (ih->data->axisX.axAutoScaleMax || ih->data->axisX.axAutoScaleMin)
           {
             gr->Min.x = -1.0f;
             gr->Max.x = +1.0f;
           }
-          if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
+          if (ih->data->axisY.axAutoScaleMax || ih->data->axisY.axAutoScaleMin)
           {
             gr->Min.y = -1.0f;
             gr->Max.y = +1.0f;
           }
-          if (ih->data->zAxis.axAutoScaleMax || ih->data->zAxis.axAutoScaleMin)
+          if (ih->data->axisZ.axAutoScaleMax || ih->data->axisZ.axAutoScaleMin)
           {
             gr->Min.z = -1.0f;
             gr->Max.z = +1.0f;
@@ -641,13 +645,13 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
         else
         {
           /* the data will be plotted as Y, X will be 0,1,2,3,... */
-          if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin)
+          if (ih->data->axisX.axAutoScaleMax || ih->data->axisX.axAutoScaleMin)
           {
             gr->Min.x = 0;
             float ds_max = (mreal)(ds->dsCount-1);
             gr->Max.x = i==0? ds_max: (ds_max>gr->Max.x? ds_max: gr->Max.x);
           }
-          if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
+          if (ih->data->axisY.axAutoScaleMax || ih->data->axisY.axAutoScaleMin)
             iMglPlotFindMinMaxValues(*ds->dsX, add, gr->Min.y, gr->Max.y);
 
           if (iupStrEqualNoCase(ds->dsMode, "BARHORIZONTAL"))
@@ -691,30 +695,30 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
       }
       else if (ds->dsDim == 2)
       {
-        if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin)
+        if (ih->data->axisX.axAutoScaleMax || ih->data->axisX.axAutoScaleMin)
           iMglPlotFindMinMaxValues(*ds->dsX, add, gr->Min.x, gr->Max.x);
-        if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
+        if (ih->data->axisY.axAutoScaleMax || ih->data->axisY.axAutoScaleMin)
           iMglPlotFindMinMaxValues(*ds->dsY, add, gr->Min.y, gr->Max.y);
       }
       else if (ds->dsDim == 3)
       {
-        if (ih->data->xAxis.axAutoScaleMax || ih->data->xAxis.axAutoScaleMin)
+        if (ih->data->axisX.axAutoScaleMax || ih->data->axisX.axAutoScaleMin)
           iMglPlotFindMinMaxValues(*ds->dsX, add, gr->Min.x, gr->Max.x);
-        if (ih->data->yAxis.axAutoScaleMax || ih->data->yAxis.axAutoScaleMin)
+        if (ih->data->axisY.axAutoScaleMax || ih->data->axisY.axAutoScaleMin)
           iMglPlotFindMinMaxValues(*ds->dsY, add, gr->Min.y, gr->Max.y);
-        if (ih->data->zAxis.axAutoScaleMax || ih->data->zAxis.axAutoScaleMin)
+        if (ih->data->axisZ.axAutoScaleMax || ih->data->axisZ.axAutoScaleMin)
           iMglPlotFindMinMaxValues(*ds->dsZ, add, gr->Min.z, gr->Max.z);
       }
     }
   }
 
-  iMglPlotConfigScale(ih->data->xAxis, gr->Min.x, gr->Max.x);
-  iMglPlotConfigScale(ih->data->yAxis, gr->Min.y, gr->Max.y);
-  iMglPlotConfigScale(ih->data->zAxis, gr->Min.z, gr->Max.z);
+  iMglPlotConfigScale(ih->data->axisX, gr->Min.x, gr->Max.x);
+  iMglPlotConfigScale(ih->data->axisY, gr->Min.y, gr->Max.y);
+  iMglPlotConfigScale(ih->data->axisZ, gr->Min.z, gr->Max.z);
 
-  iMglPlotConfigAxisTicks(ih, gr, 'x', ih->data->xAxis, gr->Min.x, gr->Max.x);
-  iMglPlotConfigAxisTicks(ih, gr, 'y', ih->data->yAxis, gr->Min.y, gr->Max.y);
-  iMglPlotConfigAxisTicks(ih, gr, 'z', ih->data->zAxis, gr->Min.z, gr->Max.z);
+  iMglPlotConfigAxisTicks(ih, gr, 'x', ih->data->axisX, gr->Min.x, gr->Max.x);
+  iMglPlotConfigAxisTicks(ih, gr, 'y', ih->data->axisY, gr->Min.y, gr->Max.y);
+  iMglPlotConfigAxisTicks(ih, gr, 'z', ih->data->axisZ, gr->Min.z, gr->Max.z);
 
   // By default set CMin-Max to Z Min-Max
   char* value = iupAttribGetStr(ih, "COLORBARAXISTICKS");
@@ -726,13 +730,13 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
   if (value) iupStrToFloatFloat(value, &(gr->Cmin), &(gr->Cmax), ':');
 
   value = iupAttribGetStr(ih, "COLORBARAXISTICKS");
-  if (value && tolower(*value) == 'x') iMglPlotConfigAxisTicks(ih, gr, 'c', ih->data->xAxis, gr->Cmin, gr->Cmax);
-  else if (value && tolower(*value) == 'y') iMglPlotConfigAxisTicks(ih, gr, 'c', ih->data->yAxis, gr->Cmin, gr->Cmax);
-  else iMglPlotConfigAxisTicks(ih, gr, 'c', ih->data->zAxis, gr->Cmin, gr->Cmax);
+  if (value && tolower(*value) == 'x') iMglPlotConfigAxisTicks(ih, gr, 'c', ih->data->axisX, gr->Cmin, gr->Cmax);
+  else if (value && tolower(*value) == 'y') iMglPlotConfigAxisTicks(ih, gr, 'c', ih->data->axisY, gr->Cmin, gr->Cmax);
+  else iMglPlotConfigAxisTicks(ih, gr, 'c', ih->data->axisZ, gr->Cmin, gr->Cmax);
 
   // Do NOT automatically set Org, we will set Origin
   gr->AutoOrg = false;
-  gr->SetOrigin(ih->data->xAxis.axOrigin, ih->data->yAxis.axOrigin, ih->data->zAxis.axOrigin);
+  gr->SetOrigin(ih->data->axisX.axOrigin, ih->data->axisY.axOrigin, ih->data->axisZ.axOrigin);
 
   gr->RecalcBorder();
 }
@@ -829,12 +833,12 @@ static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
 static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
 {
   // Draw axes lines, ticks and ticks labels
-  if(ih->data->xAxis.axShow)  
-    iMglPlotDrawAxis(ih, gr, 'x', ih->data->xAxis);
-  if(ih->data->yAxis.axShow)  
-    iMglPlotDrawAxis(ih, gr, 'y', ih->data->yAxis);
-  if(ih->data->zAxis.axShow && iMglPlotIsView3D(ih))
-    iMglPlotDrawAxis(ih, gr, 'z', ih->data->zAxis);
+  if(ih->data->axisX.axShow)  
+    iMglPlotDrawAxis(ih, gr, 'x', ih->data->axisX);
+  if(ih->data->axisY.axShow)  
+    iMglPlotDrawAxis(ih, gr, 'y', ih->data->axisY);
+  if(ih->data->axisZ.axShow && iMglPlotIsView3D(ih))
+    iMglPlotDrawAxis(ih, gr, 'z', ih->data->axisZ);
 
   // Reset to default
   gr->SetFunc(NULL, NULL, NULL);
@@ -846,7 +850,26 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
 	  if (iupStrEqualNoCase(value,"LEFT"))	pos = 1;
 	  else if(iupStrEqualNoCase(value,"TOP"))	pos = 2;
 	  else if(iupStrEqualNoCase(value,"BOTTOM"))	pos = 3;
-  	gr->Colorbar(pos, pos==0?1.0f:0, pos==2?1.0f:0, 1.0f, 1.0f);
+
+    float w = 1.0f, h = 1.0f;
+    float x = pos==0?1.0f:0;
+    float y = pos==2?1.0f:0;
+    if (pos==1 || pos==0)
+    {
+      iMglPlotConfigColor(ih, gr, ih->data->axisX.axColor);
+      iMglPlotConfigFont(ih, gr, ih->data->axisX.axTickFontStyle, ih->data->axisX.axTickFontSizeFactor);
+      y = 0.15f;
+      h = 0.7f;
+    }
+    else
+    {
+      iMglPlotConfigColor(ih, gr, ih->data->axisY.axColor);
+      iMglPlotConfigFont(ih, gr, ih->data->axisY.axTickFontStyle, ih->data->axisY.axTickFontSizeFactor);
+      x = 0.15f;
+      w = 0.7f;
+    }
+
+    gr->Colorbar(pos, x, y, w, h);
   }
 }
 
@@ -998,39 +1021,34 @@ static void iMglPlotConfigPlotArea(Ihandle* ih, mglGraph *gr)
   // So we remove the spaces if not used
 
   // Left
-  if (!isnan(ih->data->yAxis.axOrigin))
+  if (!isnan(ih->data->axisY.axOrigin))
     x1 = -0.16f;  // Axis is crossed
   else if (!iupAttribGetStr(ih, "AXS_YLABEL"))  // no label
   {
-    if (!ih->data->yAxis.axTickShowValues)
+    if (!ih->data->axisY.axTickShowValues)
       x1 = -0.20f;  // not crossed, no label, no ticks values
-    else if (ih->data->yAxis.axTickValuesRotation)
+    else if (ih->data->axisY.axTickValuesRotation)
       x1 = -0.15f;  // not crossed, no label, with vertical ticks values
     else
       x1 = -0.10f;  // not crossed, no label, with horizontal ticks values
   }
-  else if (ih->data->yAxis.axLabelRotation)
+  else if (ih->data->axisY.axLabelRotation)
     x1 = -0.10f; // not crossed and with vertical label
   else
     x1 = -0.01f; // not crossed and with horizontal label
 
   // Right
-  if (!iupAttribGetBoolean(ih, "COLORBAR"))
-  {
-    if (iMglPlotHasx10(ih->data->xAxis.axMin, ih->data->xAxis.axMax))  // X Axis Min-Max
-      x2 = 1.05f;  // no colorbar, with x10 notation
-    else
-      x2 = 1.15f;  // no colorbar, no notation
-  }
+  if (iMglPlotHasx10(ih->data->axisX.axMin, ih->data->axisX.axMax))  // X Axis Min-Max
+    x2 = 1.05f;  // with x10 notation
   else
-    x2 = 1.05f;  // with colorbar (includes also space for notation)
+    x2 = 1.15f;  // no notation
 
   // Bottom
-  if (!isnan(ih->data->xAxis.axOrigin))  
+  if (!isnan(ih->data->axisX.axOrigin))  
     y1 = -0.20f;  // Axis is crossed
   else if (!iupAttribGetStr(ih, "AXS_XLABEL"))  
   {
-    if (!ih->data->xAxis.axTickShowValues)
+    if (!ih->data->axisX.axTickShowValues)
       y1 = -0.20f;  // not crossed, no label, no ticks values
     else
       y1 = -0.15f;  // not crossed, no label, with ticks values
@@ -1043,6 +1061,20 @@ static void iMglPlotConfigPlotArea(Ihandle* ih, mglGraph *gr)
     y2 = 1.15f;  // no title
   else
     y2 = 1.05f;  // with title
+
+  // Colorbar
+  if (iupAttribGetBoolean(ih, "COLORBAR"))
+  {
+    char* value = iupAttribGetStr(ih, "COLORBARPOS");
+    if (iupStrEqualNoCase(value,"LEFT"))
+      x1 = 0.05f;  // includes also space for axis
+    else if(iupStrEqualNoCase(value,"TOP"))
+      y2 = 0.9f;   // includes also space for title
+    else if(iupStrEqualNoCase(value,"BOTTOM"))
+      y1 = 0.05f;  // includes also space for axis
+    else // RIGHT
+      x2 = 0.9f;   // includes also space for notation
+  }
 
   // Only one plot using all viewport
 	gr->InPlot(x1, x2, y1, y2, false);
@@ -2634,341 +2666,341 @@ static char* iMglPlotGetAxisLabelPosition(int pos)
 
 static int iMglPlotSetAxisXLabelPositionAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisLabelPosition(ih, value, ih->data->xAxis.axLabelPos);
+  return iMglPlotSetAxisLabelPosition(ih, value, ih->data->axisX.axLabelPos);
 }
 
 static int iMglPlotSetAxisYLabelPositionAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisLabelPosition(ih, value, ih->data->yAxis.axLabelPos);
+  return iMglPlotSetAxisLabelPosition(ih, value, ih->data->axisY.axLabelPos);
 }
 
 static int iMglPlotSetAxisZLabelPositionAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisLabelPosition(ih, value, ih->data->zAxis.axLabelPos);
+  return iMglPlotSetAxisLabelPosition(ih, value, ih->data->axisZ.axLabelPos);
 }
 
 static char* iMglPlotGetAxisXLabelPositionAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisLabelPosition(ih->data->xAxis.axLabelPos);
+  return iMglPlotGetAxisLabelPosition(ih->data->axisX.axLabelPos);
 }
 
 static char* iMglPlotGetAxisYLabelPositionAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisLabelPosition(ih->data->yAxis.axLabelPos);
+  return iMglPlotGetAxisLabelPosition(ih->data->axisY.axLabelPos);
 }
 
 static char* iMglPlotGetAxisZLabelPositionAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisLabelPosition(ih->data->zAxis.axLabelPos);
+  return iMglPlotGetAxisLabelPosition(ih->data->axisZ.axLabelPos);
 }
 
 static int iMglPlotSetAxisXLabelRotationAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axLabelRotation);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axLabelRotation);
 }
 
 static int iMglPlotSetAxisYLabelRotationAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axLabelRotation);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axLabelRotation);
 }
 
 static int iMglPlotSetAxisZLabelRotationAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axLabelRotation);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axLabelRotation);
 }
 
 static char* iMglPlotGetAxisXLabelRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axLabelRotation);
+  return iMglPlotGetBoolean(ih->data->axisX.axLabelRotation);
 }
 
 static char* iMglPlotGetAxisYLabelRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axLabelRotation);
+  return iMglPlotGetBoolean(ih->data->axisY.axLabelRotation);
 }
 
 static char* iMglPlotGetAxisZLabelRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axLabelRotation);
+  return iMglPlotGetBoolean(ih->data->axisZ.axLabelRotation);
 }
 
 static int iMglPlotSetAxisXLabelCenteredAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
-    return iMglPlotSetAxisLabelPosition(ih, "CENTER", ih->data->xAxis.axLabelPos);
+    return iMglPlotSetAxisLabelPosition(ih, "CENTER", ih->data->axisX.axLabelPos);
   else 
-    return iMglPlotSetAxisLabelPosition(ih, "MAX", ih->data->xAxis.axLabelPos);
+    return iMglPlotSetAxisLabelPosition(ih, "MAX", ih->data->axisX.axLabelPos);
 }
 
 static int iMglPlotSetAxisYLabelCenteredAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
-    return iMglPlotSetAxisLabelPosition(ih, "CENTER", ih->data->yAxis.axLabelPos);
+    return iMglPlotSetAxisLabelPosition(ih, "CENTER", ih->data->axisY.axLabelPos);
   else 
-    return iMglPlotSetAxisLabelPosition(ih, "MAX", ih->data->yAxis.axLabelPos);
+    return iMglPlotSetAxisLabelPosition(ih, "MAX", ih->data->axisY.axLabelPos);
 }
 
 static int iMglPlotSetAxisZLabelCenteredAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
-    return iMglPlotSetAxisLabelPosition(ih, "CENTER", ih->data->zAxis.axLabelPos);
+    return iMglPlotSetAxisLabelPosition(ih, "CENTER", ih->data->axisZ.axLabelPos);
   else 
-    return iMglPlotSetAxisLabelPosition(ih, "MAX", ih->data->zAxis.axLabelPos);
+    return iMglPlotSetAxisLabelPosition(ih, "MAX", ih->data->axisZ.axLabelPos);
 }
 
 static char* iMglPlotGetAxisXLabelCenteredAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axLabelPos==0? true: false);
+  return iMglPlotGetBoolean(ih->data->axisX.axLabelPos==0? true: false);
 }
 
 static char* iMglPlotGetAxisYLabelCenteredAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axLabelPos==0? true: false);
+  return iMglPlotGetBoolean(ih->data->axisY.axLabelPos==0? true: false);
 }
 
 static char* iMglPlotGetAxisZLabelCenteredAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axLabelPos==0? true: false);
+  return iMglPlotGetBoolean(ih->data->axisZ.axLabelPos==0? true: false);
 }
 
 static int iMglPlotSetAxisXColorAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetColor(ih, value, ih->data->xAxis.axColor);
+  return iMglPlotSetColor(ih, value, ih->data->axisX.axColor);
 }
 
 static int iMglPlotSetAxisYColorAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetColor(ih, value, ih->data->yAxis.axColor);
+  return iMglPlotSetColor(ih, value, ih->data->axisY.axColor);
 }
 
 static int iMglPlotSetAxisZColorAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetColor(ih, value, ih->data->zAxis.axColor);
+  return iMglPlotSetColor(ih, value, ih->data->axisZ.axColor);
 }
 
 static char* iMglPlotGetAxisXColorAttrib(Ihandle* ih)
 {
-  return iMglPlotGetColorAttrib(ih->data->xAxis.axColor);
+  return iMglPlotGetColorAttrib(ih->data->axisX.axColor);
 }
 
 static char* iMglPlotGetAxisYColorAttrib(Ihandle* ih)
 {
-  return iMglPlotGetColorAttrib(ih->data->yAxis.axColor);
+  return iMglPlotGetColorAttrib(ih->data->axisY.axColor);
 }
 
 static char* iMglPlotGetAxisZColorAttrib(Ihandle* ih)
 {
-  return iMglPlotGetColorAttrib(ih->data->zAxis.axColor);
+  return iMglPlotGetColorAttrib(ih->data->axisZ.axColor);
 }
 
 static int iMglPlotSetAxisXFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->xAxis.axLabelFontSizeFactor);
+  return iMglPlotSetFloat(ih, value, ih->data->axisX.axLabelFontSizeFactor);
 }
 
 static int iMglPlotSetAxisYFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->yAxis.axLabelFontSizeFactor);
+  return iMglPlotSetFloat(ih, value, ih->data->axisY.axLabelFontSizeFactor);
 }
 
 static int iMglPlotSetAxisZFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->zAxis.axLabelFontSizeFactor);
+  return iMglPlotSetFloat(ih, value, ih->data->axisZ.axLabelFontSizeFactor);
 }
 
 static char* iMglPlotGetAxisXFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->xAxis.axLabelFontSizeFactor);
+  return iMglPlotGetFloat(ih->data->axisX.axLabelFontSizeFactor);
 }
 
 static char* iMglPlotGetAxisYFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->yAxis.axLabelFontSizeFactor);
+  return iMglPlotGetFloat(ih->data->axisY.axLabelFontSizeFactor);
 }
 
 static char* iMglPlotGetAxisZFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->zAxis.axLabelFontSizeFactor);
+  return iMglPlotGetFloat(ih->data->axisZ.axLabelFontSizeFactor);
 }
 
 static int iMglPlotSetAxisXFontStyleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFontStyle(ih, value, ih->data->xAxis.axLabelFontStyle);
+  return iMglPlotSetFontStyle(ih, value, ih->data->axisX.axLabelFontStyle);
 }
 
 static int iMglPlotSetAxisYFontStyleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFontStyle(ih, value, ih->data->yAxis.axLabelFontStyle);
+  return iMglPlotSetFontStyle(ih, value, ih->data->axisY.axLabelFontStyle);
 }
 
 static int iMglPlotSetAxisZFontStyleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFontStyle(ih, value, ih->data->zAxis.axLabelFontStyle);
+  return iMglPlotSetFontStyle(ih, value, ih->data->axisZ.axLabelFontStyle);
 }
 
 static char* iMglPlotGetAxisXFontStyleAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFontStyle(ih->data->xAxis.axLabelFontStyle);
+  return iMglPlotGetFontStyle(ih->data->axisX.axLabelFontStyle);
 }
 
 static char* iMglPlotGetAxisYFontStyleAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFontStyle(ih->data->yAxis.axLabelFontStyle);
+  return iMglPlotGetFontStyle(ih->data->axisY.axLabelFontStyle);
 }
 
 static char* iMglPlotGetAxisZFontStyleAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFontStyle(ih->data->zAxis.axLabelFontStyle);
+  return iMglPlotGetFontStyle(ih->data->axisZ.axLabelFontStyle);
 }
 
 static int iMglPlotSetAxisXTickFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->xAxis.axTickFontSizeFactor);
+  return iMglPlotSetFloat(ih, value, ih->data->axisX.axTickFontSizeFactor);
 }
 
 static int iMglPlotSetAxisYTickFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->yAxis.axTickFontSizeFactor);
+  return iMglPlotSetFloat(ih, value, ih->data->axisY.axTickFontSizeFactor);
 }
 
 static int iMglPlotSetAxisZTickFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->zAxis.axTickFontSizeFactor);
+  return iMglPlotSetFloat(ih, value, ih->data->axisZ.axTickFontSizeFactor);
 }
 
 static char* iMglPlotGetAxisXTickFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->xAxis.axTickFontSizeFactor);
+  return iMglPlotGetFloat(ih->data->axisX.axTickFontSizeFactor);
 }
 
 static char* iMglPlotGetAxisYTickFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->yAxis.axTickFontSizeFactor);
+  return iMglPlotGetFloat(ih->data->axisY.axTickFontSizeFactor);
 }
 
 static char* iMglPlotGetAxisZTickFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->zAxis.axTickFontSizeFactor);
+  return iMglPlotGetFloat(ih->data->axisZ.axTickFontSizeFactor);
 }
 
 static int iMglPlotSetAxisXTickFontStyleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFontStyle(ih, value, ih->data->xAxis.axTickFontStyle);
+  return iMglPlotSetFontStyle(ih, value, ih->data->axisX.axTickFontStyle);
 }
 
 static int iMglPlotSetAxisYTickFontStyleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFontStyle(ih, value, ih->data->yAxis.axTickFontStyle);
+  return iMglPlotSetFontStyle(ih, value, ih->data->axisY.axTickFontStyle);
 }
 
 static int iMglPlotSetAxisZTickFontStyleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFontStyle(ih, value, ih->data->zAxis.axTickFontStyle);
+  return iMglPlotSetFontStyle(ih, value, ih->data->axisZ.axTickFontStyle);
 }
 
 static char* iMglPlotGetAxisXTickFontStyleAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFontStyle(ih->data->xAxis.axTickFontStyle);
+  return iMglPlotGetFontStyle(ih->data->axisX.axTickFontStyle);
 }
 
 static char* iMglPlotGetAxisYTickFontStyleAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFontStyle(ih->data->yAxis.axTickFontStyle);
+  return iMglPlotGetFontStyle(ih->data->axisY.axTickFontStyle);
 }
 
 static char* iMglPlotGetAxisZTickFontStyleAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFontStyle(ih->data->zAxis.axTickFontStyle);
+  return iMglPlotGetFontStyle(ih->data->axisZ.axTickFontStyle);
 }
 
 static int iMglPlotSetAxisXTickMinorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->xAxis.axTickMinorSizeFactor);
+  return iMglPlotSetFloat(ih, value, ih->data->axisX.axTickMinorSizeFactor);
 }
 
 static int iMglPlotSetAxisYTickMinorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->yAxis.axTickMinorSizeFactor);
+  return iMglPlotSetFloat(ih, value, ih->data->axisY.axTickMinorSizeFactor);
 }
 
 static int iMglPlotSetAxisZTickMinorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->zAxis.axTickMinorSizeFactor);
+  return iMglPlotSetFloat(ih, value, ih->data->axisZ.axTickMinorSizeFactor);
 }
 
 static char* iMglPlotGetAxisXTickMinorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->xAxis.axTickMinorSizeFactor);
+  return iMglPlotGetFloat(ih->data->axisX.axTickMinorSizeFactor);
 }
 
 static char* iMglPlotGetAxisYTickMinorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->yAxis.axTickMinorSizeFactor);
+  return iMglPlotGetFloat(ih->data->axisY.axTickMinorSizeFactor);
 }
 
 static char* iMglPlotGetAxisZTickMinorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->zAxis.axTickMinorSizeFactor);
+  return iMglPlotGetFloat(ih->data->axisZ.axTickMinorSizeFactor);
 }
 
 static int iMglPlotSetAxisXTickMajorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->xAxis.axTickMajorSize);
+  return iMglPlotSetFloat(ih, value, ih->data->axisX.axTickMajorSize);
 }
 
 static int iMglPlotSetAxisYTickMajorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->yAxis.axTickMajorSize);
+  return iMglPlotSetFloat(ih, value, ih->data->axisY.axTickMajorSize);
 }
 
 static int iMglPlotSetAxisZTickMajorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->zAxis.axTickMajorSize);
+  return iMglPlotSetFloat(ih, value, ih->data->axisZ.axTickMajorSize);
 }
 
 static char* iMglPlotGetAxisXTickMajorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->xAxis.axTickMajorSize);
+  return iMglPlotGetFloat(ih->data->axisX.axTickMajorSize);
 }
 
 static char* iMglPlotGetAxisYTickMajorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->yAxis.axTickMajorSize);
+  return iMglPlotGetFloat(ih->data->axisY.axTickMajorSize);
 }
 
 static char* iMglPlotGetAxisZTickMajorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->zAxis.axTickMajorSize);
+  return iMglPlotGetFloat(ih->data->axisZ.axTickMajorSize);
 }
 
 static int iMglPlotSetAxisXTickMajorSpanAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->xAxis.axTickMajorSpan);
+  return iMglPlotSetFloat(ih, value, ih->data->axisX.axTickMajorSpan);
 }
 
 static int iMglPlotSetAxisYTickMajorSpanAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->yAxis.axTickMajorSpan);
+  return iMglPlotSetFloat(ih, value, ih->data->axisY.axTickMajorSpan);
 }
 
 static int iMglPlotSetAxisZTickMajorSpanAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->zAxis.axTickMajorSpan);
+  return iMglPlotSetFloat(ih, value, ih->data->axisZ.axTickMajorSpan);
 }
 
 static char* iMglPlotGetAxisXTickMajorSpanAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->xAxis.axTickMajorSpan);
+  return iMglPlotGetFloat(ih->data->axisX.axTickMajorSpan);
 }
 
 static char* iMglPlotGetAxisYTickMajorSpanAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->yAxis.axTickMajorSpan);
+  return iMglPlotGetFloat(ih->data->axisY.axTickMajorSpan);
 }
 
 static char* iMglPlotGetAxisZTickMajorSpanAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->zAxis.axTickMajorSpan);
+  return iMglPlotGetFloat(ih->data->axisZ.axTickMajorSpan);
 }
 
 static int iMglPlotSetAxisScale(Ihandle* ih, const char* value, const char** scale, char dir)
@@ -2988,17 +3020,17 @@ static int iMglPlotSetAxisScale(Ihandle* ih, const char* value, const char** sca
 
 static int iMglPlotSetAxisXScaleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisScale(ih, value, &(ih->data->xAxis.axScale), 'x');
+  return iMglPlotSetAxisScale(ih, value, &(ih->data->axisX.axScale), 'x');
 }
 
 static int iMglPlotSetAxisYScaleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisScale(ih, value, &(ih->data->yAxis.axScale), 'y');
+  return iMglPlotSetAxisScale(ih, value, &(ih->data->axisY.axScale), 'y');
 }
 
 static int iMglPlotSetAxisZScaleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisScale(ih, value, &(ih->data->zAxis.axScale), 'z');
+  return iMglPlotSetAxisScale(ih, value, &(ih->data->axisZ.axScale), 'z');
 }
 
 static char* iMglPlotGetAxisScale(const char* scale)
@@ -3016,410 +3048,410 @@ static char* iMglPlotGetAxisScale(const char* scale)
 
 static char* iMglPlotGetAxisXScaleAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisScale(ih->data->xAxis.axScale);
+  return iMglPlotGetAxisScale(ih->data->axisX.axScale);
 }
 
 static char* iMglPlotGetAxisYScaleAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisScale(ih->data->yAxis.axScale);
+  return iMglPlotGetAxisScale(ih->data->axisY.axScale);
 }
 
 static char* iMglPlotGetAxisZScaleAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisScale(ih->data->zAxis.axScale);
+  return iMglPlotGetAxisScale(ih->data->axisZ.axScale);
 }
 
 static int iMglPlotSetAxisXReverseAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axReverse);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axReverse);
 }
 
 static int iMglPlotSetAxisYReverseAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axReverse);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axReverse);
 }
 
 static int iMglPlotSetAxisZReverseAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axReverse);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axReverse);
 }
 
 static char* iMglPlotGetAxisXReverseAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axReverse);
+  return iMglPlotGetBoolean(ih->data->axisX.axReverse);
 }
 
 static char* iMglPlotGetAxisYReverseAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axReverse);
+  return iMglPlotGetBoolean(ih->data->axisY.axReverse);
 }
 
 static char* iMglPlotGetAxisZReverseAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axReverse);
+  return iMglPlotGetBoolean(ih->data->axisZ.axReverse);
 }
 
 static int iMglPlotSetAxisXShowAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axShow);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axShow);
 }
 
 static int iMglPlotSetAxisYShowAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axShow);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axShow);
 }
 
 static int iMglPlotSetAxisZShowAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axShow);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axShow);
 }
 
 static char* iMglPlotGetAxisXShowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axShow);
+  return iMglPlotGetBoolean(ih->data->axisX.axShow);
 }
 
 static char* iMglPlotGetAxisYShowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axShow);
+  return iMglPlotGetBoolean(ih->data->axisY.axShow);
 }
 
 static char* iMglPlotGetAxisZShowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axShow);
+  return iMglPlotGetBoolean(ih->data->axisZ.axShow);
 }
 
 static int iMglPlotSetAxisXShowArrowAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axShowArrow);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axShowArrow);
 }
 
 static int iMglPlotSetAxisYShowArrowAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axShowArrow);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axShowArrow);
 }
 
 static int iMglPlotSetAxisZShowArrowAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axShowArrow);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axShowArrow);
 }
 
 static char* iMglPlotGetAxisXShowArrowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axShowArrow);
+  return iMglPlotGetBoolean(ih->data->axisX.axShowArrow);
 }
 
 static char* iMglPlotGetAxisYShowArrowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axShowArrow);
+  return iMglPlotGetBoolean(ih->data->axisY.axShowArrow);
 }
 
 static char* iMglPlotGetAxisZShowArrowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axShowArrow);
+  return iMglPlotGetBoolean(ih->data->axisZ.axShowArrow);
 }
 
 static int iMglPlotSetAxisXTickShowValuesAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axTickShowValues);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axTickShowValues);
 }
 
 static int iMglPlotSetAxisYTickShowValuesAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axTickShowValues);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axTickShowValues);
 }
 
 static int iMglPlotSetAxisZTickShowValuesAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axTickShowValues);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axTickShowValues);
 }
 
 static char* iMglPlotGetAxisXTickShowValuesAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axTickShowValues);
+  return iMglPlotGetBoolean(ih->data->axisX.axTickShowValues);
 }
 
 static char* iMglPlotGetAxisYTickShowValuesAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axTickShowValues);
+  return iMglPlotGetBoolean(ih->data->axisY.axTickShowValues);
 }
 
 static char* iMglPlotGetAxisZTickShowValuesAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axTickShowValues);
+  return iMglPlotGetBoolean(ih->data->axisZ.axTickShowValues);
 }
 
 static int iMglPlotSetAxisXTickAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axTickShow);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axTickShow);
 }
 
 static int iMglPlotSetAxisYTickAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axTickShow);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axTickShow);
 }
 
 static int iMglPlotSetAxisZTickAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axTickShow);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axTickShow);
 }
 
 static char* iMglPlotGetAxisXTickAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axTickShow);
+  return iMglPlotGetBoolean(ih->data->axisX.axTickShow);
 }
 
 static char* iMglPlotGetAxisYTickAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axTickShow);
+  return iMglPlotGetBoolean(ih->data->axisY.axTickShow);
 }
 
 static char* iMglPlotGetAxisZTickAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axTickShow);
+  return iMglPlotGetBoolean(ih->data->axisZ.axTickShow);
 }
 
 static int iMglPlotSetAxisXTickAutoSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axTickAutoSize);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axTickAutoSize);
 }
 
 static int iMglPlotSetAxisYTickAutoSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axTickAutoSize);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axTickAutoSize);
 }
 
 static int iMglPlotSetAxisZTickAutoSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axTickAutoSize);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axTickAutoSize);
 }
 
 static char* iMglPlotGetAxisXTickAutoSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axTickAutoSize);
+  return iMglPlotGetBoolean(ih->data->axisX.axTickAutoSize);
 }
 
 static char* iMglPlotGetAxisYTickAutoSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axTickAutoSize);
+  return iMglPlotGetBoolean(ih->data->axisY.axTickAutoSize);
 }
 
 static char* iMglPlotGetAxisZTickAutoSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axTickAutoSize);
+  return iMglPlotGetBoolean(ih->data->axisZ.axTickAutoSize);
 }
 
 static int iMglPlotSetAxisXTickAutoAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axTickAutoSpace);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axTickAutoSpace);
 }
 
 static int iMglPlotSetAxisYTickAutoAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axTickAutoSpace);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axTickAutoSpace);
 }
 
 static int iMglPlotSetAxisZTickAutoAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axTickAutoSpace);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axTickAutoSpace);
 }
 
 static char* iMglPlotGetAxisXTickAutoAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axTickAutoSpace);
+  return iMglPlotGetBoolean(ih->data->axisX.axTickAutoSpace);
 }
 
 static char* iMglPlotGetAxisYTickAutoAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axTickAutoSpace);
+  return iMglPlotGetBoolean(ih->data->axisY.axTickAutoSpace);
 }
 
 static char* iMglPlotGetAxisZTickAutoAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axTickAutoSpace);
+  return iMglPlotGetBoolean(ih->data->axisZ.axTickAutoSpace);
 }
 
 //////////////////////////
 static int iMglPlotSetAxisXTickValuesRotationAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axTickValuesRotation);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axTickValuesRotation);
 }
 
 static int iMglPlotSetAxisYTickValuesRotationAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axTickValuesRotation);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axTickValuesRotation);
 }
 
 static int iMglPlotSetAxisZTickValuesRotationAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axTickValuesRotation);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axTickValuesRotation);
 }
 
 static char* iMglPlotGetAxisXTickValuesRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axTickValuesRotation);
+  return iMglPlotGetBoolean(ih->data->axisX.axTickValuesRotation);
 }
 
 static char* iMglPlotGetAxisYTickValuesRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axTickValuesRotation);
+  return iMglPlotGetBoolean(ih->data->axisY.axTickValuesRotation);
 }
 
 static char* iMglPlotGetAxisZTickValuesRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axTickValuesRotation);
+  return iMglPlotGetBoolean(ih->data->axisZ.axTickValuesRotation);
 }
 
 
 static int iMglPlotSetAxisXTickMinorDivisionAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetInt(ih, value, ih->data->xAxis.axTickMinorDivision);
+  return iMglPlotSetInt(ih, value, ih->data->axisX.axTickMinorDivision);
 }
 
 static int iMglPlotSetAxisYTickMinorDivisionAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetInt(ih, value, ih->data->yAxis.axTickMinorDivision);
+  return iMglPlotSetInt(ih, value, ih->data->axisY.axTickMinorDivision);
 }
 
 static int iMglPlotSetAxisZTickMinorDivisionAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetInt(ih, value, ih->data->zAxis.axTickMinorDivision);
+  return iMglPlotSetInt(ih, value, ih->data->axisZ.axTickMinorDivision);
 }
 
 static char* iMglPlotGetAxisXTickMinorDivisionAttrib(Ihandle* ih)
 {
-  return iMglPlotGetInt(ih->data->xAxis.axTickMinorDivision);
+  return iMglPlotGetInt(ih->data->axisX.axTickMinorDivision);
 }
 
 static char* iMglPlotGetAxisYTickMinorDivisionAttrib(Ihandle* ih)
 {
-  return iMglPlotGetInt(ih->data->yAxis.axTickMinorDivision);
+  return iMglPlotGetInt(ih->data->axisY.axTickMinorDivision);
 }
 
 static char* iMglPlotGetAxisZTickMinorDivisionAttrib(Ihandle* ih)
 {
-  return iMglPlotGetInt(ih->data->zAxis.axTickMinorDivision);
+  return iMglPlotGetInt(ih->data->axisZ.axTickMinorDivision);
 }
 
 
 static int iMglPlotSetAxisXAutoMinAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axAutoScaleMin);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axAutoScaleMin);
 }
 
 static int iMglPlotSetAxisYAutoMinAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axAutoScaleMin);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axAutoScaleMin);
 }
 
 static int iMglPlotSetAxisZAutoMinAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axAutoScaleMin);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axAutoScaleMin);
 }
 
 static char* iMglPlotGetAxisXAutoMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axAutoScaleMin);
+  return iMglPlotGetBoolean(ih->data->axisX.axAutoScaleMin);
 }
 
 static char* iMglPlotGetAxisYAutoMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axAutoScaleMin);
+  return iMglPlotGetBoolean(ih->data->axisY.axAutoScaleMin);
 }
 
 static char* iMglPlotGetAxisZAutoMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axAutoScaleMin);
+  return iMglPlotGetBoolean(ih->data->axisZ.axAutoScaleMin);
 }
 
 static int iMglPlotSetAxisXAutoMaxAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->xAxis.axAutoScaleMax);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisX.axAutoScaleMax);
 }
 
 static int iMglPlotSetAxisYAutoMaxAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->yAxis.axAutoScaleMax);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisY.axAutoScaleMax);
 }
 
 static int iMglPlotSetAxisZAutoMaxAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetBoolean(ih, value, ih->data->zAxis.axAutoScaleMax);
+  return iMglPlotSetBoolean(ih, value, ih->data->axisZ.axAutoScaleMax);
 }
 
 static char* iMglPlotGetAxisXAutoMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->xAxis.axAutoScaleMax);
+  return iMglPlotGetBoolean(ih->data->axisX.axAutoScaleMax);
 }
 
 static char* iMglPlotGetAxisYAutoMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->yAxis.axAutoScaleMax);
+  return iMglPlotGetBoolean(ih->data->axisY.axAutoScaleMax);
 }
 
 static char* iMglPlotGetAxisZAutoMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->zAxis.axAutoScaleMax);
+  return iMglPlotGetBoolean(ih->data->axisZ.axAutoScaleMax);
 }
 
 static int iMglPlotSetAxisXMinAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->xAxis.axMin);
+  return iMglPlotSetFloat(ih, value, ih->data->axisX.axMin);
 }
 
 static int iMglPlotSetAxisYMinAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->yAxis.axMin);
+  return iMglPlotSetFloat(ih, value, ih->data->axisY.axMin);
 }
 
 static int iMglPlotSetAxisZMinAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->zAxis.axMin);
+  return iMglPlotSetFloat(ih, value, ih->data->axisZ.axMin);
 }
 
 static char* iMglPlotGetAxisXMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->xAxis.axMin);
+  return iMglPlotGetFloat(ih->data->axisX.axMin);
 }
 
 static char* iMglPlotGetAxisYMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->yAxis.axMin);
+  return iMglPlotGetFloat(ih->data->axisY.axMin);
 }
 
 static char* iMglPlotGetAxisZMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->zAxis.axMin);
+  return iMglPlotGetFloat(ih->data->axisZ.axMin);
 }
 
 static int iMglPlotSetAxisXMaxAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->xAxis.axMax);
+  return iMglPlotSetFloat(ih, value, ih->data->axisX.axMax);
 }
 
 static int iMglPlotSetAxisYMaxAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->yAxis.axMax);
+  return iMglPlotSetFloat(ih, value, ih->data->axisY.axMax);
 }
 
 static int iMglPlotSetAxisZMaxAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetFloat(ih, value, ih->data->zAxis.axMax);
+  return iMglPlotSetFloat(ih, value, ih->data->axisZ.axMax);
 }
 
 static char* iMglPlotGetAxisXMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->xAxis.axMax);
+  return iMglPlotGetFloat(ih->data->axisX.axMax);
 }
 
 static char* iMglPlotGetAxisYMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->yAxis.axMax);
+  return iMglPlotGetFloat(ih->data->axisY.axMax);
 }
 
 static char* iMglPlotGetAxisZMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->zAxis.axMax);
+  return iMglPlotGetFloat(ih->data->axisZ.axMax);
 }
 
 static int iMglPlotSetAxisCrossOrigin(Ihandle* ih, const char* value, float& origin)
@@ -3439,17 +3471,17 @@ static int iMglPlotSetAxisCrossOrigin(Ihandle* ih, const char* value, float& ori
 
 static int iMglPlotSetAxisXCrossOriginAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisCrossOrigin(ih, value, ih->data->xAxis.axOrigin);
+  return iMglPlotSetAxisCrossOrigin(ih, value, ih->data->axisX.axOrigin);
 }
 
 static int iMglPlotSetAxisYCrossOriginAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisCrossOrigin(ih, value, ih->data->yAxis.axOrigin);
+  return iMglPlotSetAxisCrossOrigin(ih, value, ih->data->axisY.axOrigin);
 }
 
 static int iMglPlotSetAxisZCrossOriginAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisCrossOrigin(ih, value, ih->data->zAxis.axOrigin);
+  return iMglPlotSetAxisCrossOrigin(ih, value, ih->data->axisZ.axOrigin);
 }
 
 static char* iMglPlotGetAxisXCrossOrigin(float origin)
@@ -3464,17 +3496,17 @@ static char* iMglPlotGetAxisXCrossOrigin(float origin)
 
 static char* iMglPlotGetAxisXCrossOriginAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisXCrossOrigin(ih->data->xAxis.axOrigin);
+  return iMglPlotGetAxisXCrossOrigin(ih->data->axisX.axOrigin);
 }
 
 static char* iMglPlotGetAxisYCrossOriginAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisXCrossOrigin(ih->data->yAxis.axOrigin);
+  return iMglPlotGetAxisXCrossOrigin(ih->data->axisY.axOrigin);
 }
 
 static char* iMglPlotGetAxisZCrossOriginAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisXCrossOrigin(ih->data->zAxis.axOrigin);
+  return iMglPlotGetAxisXCrossOrigin(ih->data->axisZ.axOrigin);
 }
 
 static int iMglPlotSetAxisOrigin(Ihandle* ih, const char* value, float& num)
@@ -3494,17 +3526,17 @@ static int iMglPlotSetAxisOrigin(Ihandle* ih, const char* value, float& num)
 
 static int iMglPlotSetAxisXOriginAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisOrigin(ih, value, ih->data->xAxis.axOrigin);
+  return iMglPlotSetAxisOrigin(ih, value, ih->data->axisX.axOrigin);
 }
 
 static int iMglPlotSetAxisYOriginAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisOrigin(ih, value, ih->data->yAxis.axOrigin);
+  return iMglPlotSetAxisOrigin(ih, value, ih->data->axisY.axOrigin);
 }
 
 static int iMglPlotSetAxisZOriginAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisOrigin(ih, value, ih->data->zAxis.axOrigin);
+  return iMglPlotSetAxisOrigin(ih, value, ih->data->axisZ.axOrigin);
 }
 
 static char* iMglPlotGetAxisOrigin(float Origin)
@@ -3517,17 +3549,17 @@ static char* iMglPlotGetAxisOrigin(float Origin)
 
 static char* iMglPlotGetAxisXOriginAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisOrigin(ih->data->xAxis.axOrigin);
+  return iMglPlotGetAxisOrigin(ih->data->axisX.axOrigin);
 }
 
 static char* iMglPlotGetAxisYOriginAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisOrigin(ih->data->yAxis.axOrigin);
+  return iMglPlotGetAxisOrigin(ih->data->axisY.axOrigin);
 }
 
 static char* iMglPlotGetAxisZOriginAttrib(Ihandle* ih)
 {
-  return iMglPlotGetAxisOrigin(ih->data->zAxis.axOrigin);
+  return iMglPlotGetAxisOrigin(ih->data->axisZ.axOrigin);
 }
 
 static int iMglPlotSetAlphaAttrib(Ihandle* ih, const char* value)
@@ -4981,7 +5013,6 @@ void IupMglPlotOpen(void)
 }
 
 /* TODO
-  espaco ocupado pelo Colorbar
   evaluate interval
   tamanho do 3D tem que ser menor por causa do Rotate, PlotFactor?
   melhorar rotação
