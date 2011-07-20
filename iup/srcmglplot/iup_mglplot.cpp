@@ -610,7 +610,7 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
     for(i = 0; i < ih->data->dataSetCount; i++)
     {
       IdataSet* ds = &ih->data->dataSet[i];
-      bool add = i==0;
+      bool add = i==0? false: true;
       mglPoint oldMin = gr->Min;
       mglPoint oldMax = gr->Max;
 
@@ -4386,7 +4386,7 @@ void IupMglPlotDrawText(Ihandle* ih, const char* text, float x, float y, float z
   iMglPlotConfigColor(ih, gr, color);
   iMglPlotConfigFont(ih, gr, fontstyle, fontsize);
 
-  gr->Puts(mglPoint(x, y, z), text, NULL, -1);
+  gr->Puts(mglPoint(x, y, z), text, "L", -1);
 }
 
 

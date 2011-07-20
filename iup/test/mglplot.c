@@ -417,14 +417,10 @@ static int tgg5_cb(Ihandle *self, int v)
 {
   int ii = tabs_get_index();
 
-  //if (v)
-  //  IupSetAttribute(plot[ii], "LEGEND", "YES");
-  //else
-  //  IupSetAttribute(plot[ii], "LEGEND", "NO");
   if (v)
-    IupSetAttribute(plot[ii], "ANTIALIAS", "YES");
+    IupSetAttribute(plot[ii], "LEGEND", "YES");
   else
-    IupSetAttribute(plot[ii], "ANTIALIAS", "NO");
+    IupSetAttribute(plot[ii], "LEGEND", "NO");
 
   IupSetAttribute(plot[ii], "REDRAW", NULL);
 
