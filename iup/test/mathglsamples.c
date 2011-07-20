@@ -386,6 +386,17 @@ static void SampleBarhLinear1D(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
+static void SampleBarsLinear3D(void)
+{
+  IupMglPlotNewDataSet(plot, 3);
+  IupMglPlotSetFormula(plot, 0, "cos(pi*2*x-pi)", "sin(pi*(2*x-1))", "2*x-1", 50);
+  IupSetAttribute(plot, "DS_MODE", "BAR");
+  IupSetAttribute(plot, "DS_LINESTYLE", "SMALLDASH_DOT");
+
+  IupSetAttribute(plot, "ROTATE", "40:0:60");
+  IupSetAttribute(plot, "BOX", "YES");
+}
+
 static void SampleBarsLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
@@ -437,6 +448,16 @@ static void SampleRadarLinear1D(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
+static void SamplePlotLinear3D(void)
+{
+  IupMglPlotNewDataSet(plot, 3);
+  IupMglPlotSetFormula(plot, 0, "cos(pi*2*x-pi)", "sin(pi*(2*x-1))", "2*x-1", 50);
+  IupSetAttribute(plot, "DS_MODE", "LINE");
+
+  IupSetAttribute(plot, "ROTATE", "40:0:60");
+  IupSetAttribute(plot, "BOX", "YES");
+}
+
 static void SamplePlotLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
@@ -451,22 +472,6 @@ static void SamplePlotLinear1D(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-/*
-mglData y0(50); y0.Modify("sin(pi*(2*x-1))");
-mglData x(50); x.Modify("cos(pi*2*x-pi)");
-
-gr->SubPlot(2,2,2); gr->Rotate(60,40);
-mglData z(50); z.Modify("2*x-1");
-gr->Plot(x,y0,z); gr->Box();
-mglData y2(10,3); y2.Modify("cos(pi*(2*x-1-y))");
-y2.Modify("2*x-1",2);
-gr->Plot(y2.SubData(-1,0),y2.SubData(-1,1),y2.SubData(-1,2),"bo ");
-
-
-gr->SubPlot(2,2,3); gr->Rotate(60,40);
-gr->Bars(x,y0,z,"ri"); gr->Box();
-*/
-
 static void Dummy(void)
 {
 }
@@ -478,9 +483,11 @@ typedef struct _TestItems{
 
 static TestItems test_list[] = {
   {"Plot (Linear 1D)", SamplePlotLinear1D},
+  {"Plot (Linear 3D)", SamplePlotLinear3D},
   {"Radar (Linear 1D)", SampleRadarLinear1D},
   {"Area (Linear 1D)", SampleAreaLinear1D},
   {"Bars (Linear 1D)", SampleBarsLinear1D}, 
+  {"Bars (Linear 3D)", SampleBarsLinear3D}, 
   {"Barh (Linear 1D)", SampleBarhLinear1D}, 
   {"Step (Linear 1D)", SampleStepLinear1D}, 
   {"Stem (Linear 1D)", SampleStemLinear1D}, 

@@ -4178,6 +4178,42 @@ void IupMglPlotLoadData(Ihandle* ih, int inIndex, const char* filename, int coun
   ih->data->redraw = true;
 }
 
+void IupMglPlotSetFormula(Ihandle* ih, int inIndex, const char* formulaX, const char* formulaY, const char* formulaZ, int count)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+    !IupClassMatch(ih, "mglplot"))
+    return;
+
+  if(inIndex > (ih->data->dataSetCount-1) || inIndex < 0 || !formulaX)
+    return;
+
+  IdataSet* ds = &ih->data->dataSet[inIndex];
+
+  if (ds->dsDim >= 2 && !formulaY)
+    return;
+  if (ds->dsDim == 3 && !formulaZ)
+    return;
+
+  count = count>0? count: ds->dsCount;
+  if (count != ds->dsCount)
+  {
+    ds->dsCount = count;
+    ds->dsX->Create(count);
+    if (ds->dsY) ds->dsY->Create(count);
+    if (ds->dsZ) ds->dsZ->Create(count);
+  }
+
+  ds->dsX->Modify(formulaX);
+  if (ds->dsY) ds->dsY->Modify(formulaY);
+  if (ds->dsZ) ds->dsZ->Modify(formulaZ);
+
+  ih->data->redraw = true;
+}
+
 void IupMglPlotSetFromFormula(Ihandle* ih, int inIndex, const char* formula, int count_x, int count_y, int count_z)
 {
   iupASSERT(iupObjectCheck(ih));
@@ -4397,10 +4433,23 @@ void IupMglPlotDrawText(Ihandle* ih, const char* text, float x, float y, float z
   float fontsize = 1.0f;
   iMglPlotSetFloat(ih, value, fontsize);
 
+  char* style = iupAttribGetStr(ih, "DRAWTEXTALIGN");
+  if (style)
+  {
+    if (iupStrEqualNoCase(style, "LEFT"))
+      style = "L";
+    else if (iupStrEqualNoCase(style, "CENTER"))
+      style = "C";
+    else if (iupStrEqualNoCase(style, "RIGHT"))
+      style = "R";
+    else
+      style = NULL;
+  }
+
   iMglPlotConfigColor(ih, gr, color);
   iMglPlotConfigFont(ih, gr, fontstyle, fontsize);
 
-  gr->Puts(mglPoint(x, y, z), text, "L", -1);
+  gr->Puts(mglPoint(x, y, z), text, style, -1);
 }
 
 

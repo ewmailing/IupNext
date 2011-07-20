@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -218,6 +218,23 @@ in Lua). Names are allowed only for the first dataset and when set ticks
 configuration for the X axis is ignored, all the names are shown. Also for the 1D version, the X axis data is automatically generated (0,1,2,3,...). 
 Linear data only.</p>
 <hr>
+<pre>
+void <strong>IupMglPlotSetFormula</strong>(Ihandle* <strong>ih</strong>, int <strong>ds_index</strong>, const char* <strong>formulaX</strong>, const char* <strong>formulaY</strong>, const char* <strong>formulaZ</strong>, int <strong>count</strong>);
+<strong>iup.MglPlotSetFormula</strong>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <strong>formulaX</strong>, <strong>formulaY</strong>, <strong>formulaZ</strong>: string, <strong>count</strong>: number);
+</pre>
+<p>Same as IupMglPlotSet* but data is generated from a formula. If <strong>count</strong> 
+is 0 the current size is used.&nbsp; Linear data only. If 2D data then <strong>
+formulaY</strong> must be non NULL. If 3D data then <strong>formulaZ</strong> 
+must be non NULL. The variables of the formulas must be x, y and/or z. Coordinates are evaluated 
+in the [0,1] interval. There is no difference between lower or upper case in 
+formulas. The operators and functions can be:</p>
+<pre>+ - * / ^      (^=integer power)
+&lt; &gt; = &amp; |      (logical operators, &amp;=true if a and b both nonzero, |=true if x or y nonzero)
+sqrt(a)  pow(a,b)  log(a,b)  ln(a)    lg(a)            (ln(a)=log(e,a)  lg(a)=log(10,a)
+abs(a)   sign(a)   mod(a,b)  step(a)  int(a)   rnd      pi
+sin(a)   cos(a)    tan(a)    asin(a)  acos(a)  atan(a)
+sinh(a)   cosh(a)  tanh(a)   asinh(a) acosh(a) atanh(a)</pre>
+<hr>
 <pre>void <b>IupMglPlotSetData</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, float* <b>data</b>, int <strong>count_x</strong>, int <strong>count_y</strong>, int <strong>count_z</strong>); [in C]
 <b>iup.IupMglPlotSetData</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>data</b>: table of number) [in Lua]
 </pre>
@@ -290,8 +307,8 @@ and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWLINESTYLE and DRAWLINEW
 <pre>void <b>IupMglPlotDrawText</b>(Ihandle* <b>ih</b>, const char* <b>text</b>, float <b>x</b>, float <b>y</b>, float <b>z</b>); [in C]
 <b>iup.MglDrawText</b>(<b>ih</b>: ihandle, <b>text</b>: string, <b>x, y, z</b>: number) [in Lua]</pre>
 <p>Draws a text at given position in plot coordinates. It can be used only inside PREDRAW_CB 
-and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWFONTSTYLE and DRAWFONTSIZE can be used to control 
-text appearance.</p>
+and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWTEXTALIGN,&nbsp; DRAWFONTSTYLE and DRAWFONTSIZE can be used to control 
+text appearance. DRAWTEXTALIGN can be LEFT, CENTER or RIGHT.</p>
 <hr>
 <pre>void <b>IupMglPlotPaintTo</b>(Ihandle* <b>ih</b>, const char* <b>format</b>, int <strong>w</strong>, int <strong>h</strong>, float <strong>dpi</strong>, void* <strong>data</strong>); [in C]
 <b>iup.MglPlotPaintTo</b>(<b>ih</b>: ihandle, <b>format</b>: string, <strong>w</strong>, <strong>h</strong>, <strong>dpi</strong>:number, <strong>data</strong>: string or lightuserdata) [in Lua]</pre>
@@ -302,8 +319,9 @@ or &quot;RGBA&quot;. When <strong>format</strong> is EPS or SVG, <strong>data</s
 <strong>filename</strong> string. When format 
 is RGB or RGBA data is the image <strong>buffer</strong> where the pixels will 
 be copied, must be already allocated. <strong>w</strong> and <strong>h</strong> 
-is the size in pixels, and <strong>dpi</strong> is the resolution in dot or 
-pixels per inch. If <strong>dpi</strong> is 0 the screen resolution is used.</p>
+is the size in pixels, and <strong>dpi</strong> is the resolution in dots or 
+pixels per inch. If <strong>w, h </strong> or <strong>dpi</strong> are 0 the screen 
+equivalent is used.</p>
 <h3><a name="Attributes">Attributes</a></h3>
 
 

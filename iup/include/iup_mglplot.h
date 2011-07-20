@@ -34,6 +34,7 @@ void IupMglPlotInsert3D(Ihandle* ih, int ds_index, int sample_index, const float
 void IupMglPlotSet1D(Ihandle* ih, int ds_index, const char** names, const float* y, int count);
 void IupMglPlotSet2D(Ihandle* ih, int ds_index, const float* x, const float* y, int count);
 void IupMglPlotSet3D(Ihandle* ih, int ds_index, const float* x, const float* y, const float* z, int count);
+void IupMglPlotSetFormula(Ihandle* ih, int ds_index, const char* formulaX, const char* formulaY, const char* formulaZ, int count);
 
 void IupMglPlotSetData(Ihandle* ih, int ds_index, const float* data, int count_x, int count_y, int count_z);
 void IupMglPlotLoadData(Ihandle* ih, int ds_index, const char* filename, int count_x, int count_y, int count_z);
