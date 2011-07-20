@@ -3550,6 +3550,17 @@ static char* iMglPlotGetTransparentAttrib(Ihandle* ih)
   return iMglPlotGetBoolean(ih->data->transparent);
 }
 
+static void iMglPlotInitOpenGL2D(void)
+{
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glTranslatef(-1.0f, 0, 0);
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  /* data alignment is 1 */
+  glPixelZoom(1.0f, -1.0f);  // vertical flip image
+  glRasterPos2f(0, 1.0f);
+}
+
 static int iMglPlotSetOpenGLAttrib(Ihandle* ih, const char* value)
 {
   bool old_opengl = ih->data->opengl;
@@ -3562,7 +3573,10 @@ static int iMglPlotSetOpenGLAttrib(Ihandle* ih, const char* value)
     if (ih->data->opengl)
       ih->data->mgl = new mglGraphGL();
     else
+    {
+      iMglPlotInitOpenGL2D();
       ih->data->mgl = new mglGraphZB(ih->data->w, ih->data->h);
+    }
   }
 
   return 0;
@@ -4448,15 +4462,7 @@ static int iMglPlotResize_CB(Ihandle* ih, int width, int height)
 
   if (!ih->data->opengl)
   {
-	  glMatrixMode(GL_MODELVIEW);
-	  glLoadIdentity();
-//	  glScalef(1.0f, 1.0f, 1.0f);
-	  glTranslatef(-1.0f, 0, 0);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  /* data alignment is 1 */
-    glPixelZoom(1.0f, -1.0f);  // vertical flip image
-    glRasterPos2f(0, 1.0f);
-
+    iMglPlotInitOpenGL2D();
     ih->data->mgl->SetSize(width, height);
   }
 

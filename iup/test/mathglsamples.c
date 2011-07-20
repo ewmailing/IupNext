@@ -17,17 +17,17 @@ Based on: MathGL documentation (v. 1.10), Cap. 9
 #include <cdiup.h>
 
 static Ihandle *plot,           /* plot */
-               *dial1, *dial2,  /* dials for zooming */
-               *tgg1, *tgg2,    /* auto scale on|off toggles */
-               *tgg3, *tgg4,    /* grid show|hide toggles */
-               *tgg5,           /* legend show|hide toggle */
-               *tgg6,           /* box show|hide toggle */
-               *tgg7,           /* antialias enable|disable toggle */
-               *tgg8,           /* transparent enable|disable toggle */
-               *tgg9,           /* light enable|disable toggle */
-               *tgg10;          /* opengl enable|disable toggle */
+               *minmaxY_dial, *minmaxX_dial,  /* dials for zooming */
+               *autoscaleY_tgg, *autoscaleX_tgg,    /* auto scale on|off toggles */
+               *grid_tgg,           /* grid show|hide toggles */
+               *legend_tgg,           /* legend show|hide toggle */
+               *box_tgg,           /* box show|hide toggle */
+               *aa_tgg,           /* antialias enable|disable toggle */
+               *transp_tgg,           /* transparent enable|disable toggle */
+               *light_tgg,           /* light enable|disable toggle */
+               *opengl_tgg;          /* opengl enable|disable toggle */
 
-static char filenameSVG[100], filenameEPS[100];
+static char filenameSVG[300], filenameEPS[300];
 
 static void ResetClear(void)
 {
@@ -38,6 +38,78 @@ static void ResetClear(void)
   IupSetAttribute(plot, "AXS_X", "NO");
   IupSetAttribute(plot, "AXS_Y", "NO");
   IupSetAttribute(plot, "AXS_Z", "NO");
+}
+
+static void UpdateFlags(void)
+{
+  char *value;
+
+  /* auto scaling Y axis */
+  if (IupGetInt(plot, "AXS_YAUTOMIN") && IupGetInt(plot, "AXS_YAUTOMAX")) 
+  {
+    IupSetAttribute(autoscaleY_tgg, "VALUE", "ON");
+    IupSetAttribute(minmaxY_dial, "ACTIVE", "NO");
+  }
+  else 
+  {
+    IupSetAttribute(autoscaleY_tgg, "VALUE", "OFF");
+    IupSetAttribute(minmaxY_dial, "ACTIVE", "YES");
+  }
+
+  /* auto scaling X axis */
+  if (IupGetInt(plot, "AXS_XAUTOMIN") && IupGetInt(plot, "AXS_XAUTOMAX")) 
+  {
+    IupSetAttribute(autoscaleX_tgg, "VALUE", "ON");
+    IupSetAttribute(minmaxX_dial, "ACTIVE", "NO");
+  }
+  else 
+  {
+    IupSetAttribute(autoscaleX_tgg, "VALUE", "OFF");
+    IupSetAttribute(minmaxX_dial, "ACTIVE", "YES");
+  }
+
+  /* grid */
+  value = IupGetAttribute(plot, "GRID");
+  if (value && strstr(value, "XYZ"))
+    IupSetAttribute(grid_tgg, "VALUE", "ON");
+  else
+    IupSetAttribute(grid_tgg, "VALUE", "OFF");
+
+  /* legend */
+  if (IupGetInt(plot, "LEGEND"))
+    IupSetAttribute(legend_tgg, "VALUE", "ON");
+  else
+    IupSetAttribute(legend_tgg, "VALUE", "OFF");
+
+  /* box */
+  if (IupGetInt(plot, "BOX"))
+    IupSetAttribute(box_tgg, "VALUE", "ON");
+  else
+    IupSetAttribute(box_tgg, "VALUE", "OFF");
+
+  /* antialias */
+  if (IupGetInt(plot, "ANTIALIAS"))
+    IupSetAttribute(aa_tgg, "VALUE", "ON");
+  else
+    IupSetAttribute(aa_tgg, "VALUE", "OFF");
+
+  /* transparent */
+  if (IupGetInt(plot, "TRANSPARENT"))
+    IupSetAttribute(transp_tgg, "VALUE", "ON");
+  else
+    IupSetAttribute(transp_tgg, "VALUE", "OFF");
+
+  /* light */
+  if (IupGetInt(plot, "LIGHT"))
+    IupSetAttribute(light_tgg, "VALUE", "ON");
+  else
+    IupSetAttribute(light_tgg, "VALUE", "OFF");
+
+  /* opengl */
+  if (IupGetInt(plot, "OPENGL"))
+    IupSetAttribute(opengl_tgg, "VALUE", "ON");
+   else
+    IupSetAttribute(opengl_tgg, "VALUE", "OFF");
 }
 
 static void SampleVolume(const char* ds_mode)
@@ -61,9 +133,6 @@ static void SampleDensityProjectVolume(void)
   IupSetAttribute(plot, "PROJECTVALUEZ", "-1");
   IupSetAttribute(plot, "TRANSPARENT", "NO");
   IupSetAttribute(plot, "LIGHT", "NO");
-  //IupSetAttribute(plot, "AXS_XORIGIN", "0");
-  //IupSetAttribute(plot, "AXS_YORIGIN", "0");
-  //IupSetAttribute(plot, "AXS_ZORIGIN", "0");
 }
 
 static void SampleContourProjectVolume(void)
@@ -218,7 +287,7 @@ static void SampleSurfacePlanar(void)
   SamplePlanar("PLANAR_SURFACE");
 }
 
-static void SampleDotsLinear(void)
+static void SampleDotsLinear3D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotLoadData(plot, 0, "../test/hotdogs.pts", 0, 0, 0);
@@ -230,7 +299,7 @@ static void SampleDotsLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SampleCrustLinear(void)
+static void SampleCrustLinear3D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotLoadData(plot, 0, "../test/hotdogs.pts", 0, 0, 0);
@@ -242,7 +311,7 @@ static void SampleCrustLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SamplePieLinear(void)
+static void SamplePieLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "rnd+0.1", 7, 1, 1);
@@ -254,7 +323,7 @@ static void SamplePieLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SampleChartLinear(void)
+static void SampleChartLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "rnd+0.1", 7, 1, 1);
@@ -264,7 +333,7 @@ static void SampleChartLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SampleStemLinear(void)
+static void SampleStemLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "0.7*sin(2*pi*x) + 0.5*cos(3*pi*x) + 0.2*sin(pi*x)", 50, 1, 1);
@@ -289,7 +358,7 @@ static void SampleStemLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SampleStepLinear(void)
+static void SampleStepLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "0.7*sin(2*pi*x) + 0.5*cos(3*pi*x) + 0.2*sin(pi*x)", 50, 1, 1);
@@ -306,7 +375,7 @@ static void SampleStepLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SampleBarhLinear(void)
+static void SampleBarhLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "0.8*sin(pi*(2*x+y/2))+0.2*rnd", 10, 1, 1);
@@ -317,7 +386,7 @@ static void SampleBarhLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SampleBarsLinear(void)
+static void SampleBarsLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "0.8*sin(pi*(2*x+y/2))+0.2*rnd", 10, 1, 1);
@@ -331,7 +400,7 @@ static void SampleBarsLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SampleAreaLinear(void)
+static void SampleAreaLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "0.7*sin(2*pi*x) + 0.5*cos(3*pi*x) + 0.2*sin(pi*x)", 50, 1, 1);
@@ -350,7 +419,7 @@ static void SampleAreaLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SampleRadarLinear(void)
+static void SampleRadarLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "0.4*sin(pi*(2*x+y/2))+0.1*rnd", 10, 3, 1);
@@ -368,7 +437,7 @@ static void SampleRadarLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static void SamplePlotLinear(void)
+static void SamplePlotLinear1D(void)
 {
   IupMglPlotNewDataSet(plot, 1);
   IupMglPlotSetFromFormula(plot, 0, "0.7*sin(2*pi*x)+0.5*cos(3*pi*x)+0.2*sin(pi*x)", 50, 1, 1);
@@ -382,6 +451,22 @@ static void SamplePlotLinear(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
+/*
+mglData y0(50); y0.Modify("sin(pi*(2*x-1))");
+mglData x(50); x.Modify("cos(pi*2*x-pi)");
+
+gr->SubPlot(2,2,2); gr->Rotate(60,40);
+mglData z(50); z.Modify("2*x-1");
+gr->Plot(x,y0,z); gr->Box();
+mglData y2(10,3); y2.Modify("cos(pi*(2*x-1-y))");
+y2.Modify("2*x-1",2);
+gr->Plot(y2.SubData(-1,0),y2.SubData(-1,1),y2.SubData(-1,2),"bo ");
+
+
+gr->SubPlot(2,2,3); gr->Rotate(60,40);
+gr->Bars(x,y0,z,"ri"); gr->Box();
+*/
+
 static void Dummy(void)
 {
 }
@@ -392,17 +477,17 @@ typedef struct _TestItems{
 }TestItems;
 
 static TestItems test_list[] = {
-  {"Plot (Linear)", SamplePlotLinear},
-  {"Radar (Linear)", SampleRadarLinear},
-  {"Area (Linear)", SampleAreaLinear},
-  {"Bars (Linear)", SampleBarsLinear}, 
-  {"Barh (Linear)", SampleBarhLinear}, 
-  {"Step (Linear)", SampleStepLinear}, 
-  {"Stem (Linear)", SampleStemLinear}, 
-  {"Chart (Linear)", SampleChartLinear}, 
-  {"Pie (Linear)", SamplePieLinear}, 
-  {"Dots (Linear)", SampleDotsLinear}, 
-  {"Crust (Linear)", SampleCrustLinear},
+  {"Plot (Linear 1D)", SamplePlotLinear1D},
+  {"Radar (Linear 1D)", SampleRadarLinear1D},
+  {"Area (Linear 1D)", SampleAreaLinear1D},
+  {"Bars (Linear 1D)", SampleBarsLinear1D}, 
+  {"Barh (Linear 1D)", SampleBarhLinear1D}, 
+  {"Step (Linear 1D)", SampleStepLinear1D}, 
+  {"Stem (Linear 1D)", SampleStemLinear1D}, 
+  {"Chart (Linear 1D)", SampleChartLinear1D}, 
+  {"Pie (Linear 1D)", SamplePieLinear1D}, 
+  {"Dots (Linear 3D)", SampleDotsLinear3D}, 
+  {"Crust (Linear 3D)", SampleCrustLinear3D},
 
   {"----------", Dummy},
                  
@@ -432,95 +517,21 @@ static TestItems test_list[] = {
   {"DensityProject (Volume)", SampleDensityProjectVolume},
 };
 
+static void ChangePlot(int item)
+{
+  ResetClear();
+  test_list[item].func();
+  UpdateFlags();
+  sprintf(filenameSVG, "../%s.svg", test_list[item].title);
+  sprintf(filenameEPS, "../%s.eps", test_list[item].title);
+  IupSetAttribute(plot, "REDRAW", NULL);
+}
+
 static int k_enter_cb(Ihandle*ih)
 {
   int pos = IupGetInt(ih, "VALUE");
   if (pos > 0)
-  {
-    ResetClear();
-    test_list[pos-1].func();
-    IupSetAttribute(plot, "REDRAW", NULL);
-  }
-  return IUP_DEFAULT;
-}
-
-static int changed_cb(Ihandle *ih)
-{
-  char *value;
-  (void)ih;
-
-  /* auto scaling Y axis */
-  if (IupGetInt(plot, "AXS_YAUTOMIN") && IupGetInt(plot, "AXS_YAUTOMAX")) 
-  {
-    IupSetAttribute(tgg1, "VALUE", "ON");
-    IupSetAttribute(dial1, "ACTIVE", "NO");
-  }
-  else 
-  {
-    IupSetAttribute(tgg1, "VALUE", "OFF");
-    IupSetAttribute(dial1, "ACTIVE", "YES");
-  }
-
-  /* auto scaling X axis */
-  if (IupGetInt(plot, "AXS_XAUTOMIN") && IupGetInt(plot, "AXS_XAUTOMAX")) 
-  {
-    IupSetAttribute(tgg2, "VALUE", "ON");
-    IupSetAttribute(dial2, "ACTIVE", "NO");
-  }
-  else 
-  {
-    IupSetAttribute(tgg2, "VALUE", "OFF");
-    IupSetAttribute(dial2, "ACTIVE", "YES");
-  }
-
-  /* grid */
-  value = IupGetAttribute(plot, "GRID");
-  if (value && strstr(value, "X"))
-    IupSetAttribute(tgg3, "VALUE", "ON");
-  else
-    IupSetAttribute(tgg3, "VALUE", "OFF");
-
-  if (value && strstr(value, "Y"))
-    IupSetAttribute(tgg4, "VALUE", "ON");
-  else
-    IupSetAttribute(tgg4, "VALUE", "OFF");
-
-  /* legend */
-  if (IupGetInt(plot, "LEGEND"))
-    IupSetAttribute(tgg5, "VALUE", "ON");
-  else
-    IupSetAttribute(tgg5, "VALUE", "OFF");
-
-  /* box */
-  if (IupGetInt(plot, "BOX"))
-    IupSetAttribute(tgg6, "VALUE", "ON");
-  else
-    IupSetAttribute(tgg6, "VALUE", "OFF");
-
-  /* antialias */
-  if (IupGetInt(plot, "ANTIALIAS"))
-    IupSetAttribute(tgg7, "VALUE", "ON");
-  else
-    IupSetAttribute(tgg7, "VALUE", "OFF");
-
-  /* transparent */
-  if (IupGetInt(plot, "TRANSPARENT"))
-    IupSetAttribute(tgg8, "VALUE", "ON");
-  else
-    IupSetAttribute(tgg8, "VALUE", "OFF");
-
-  /* light */
-  if (IupGetInt(plot, "LIGHT"))
-    IupSetAttribute(tgg9, "VALUE", "ON");
-  else
-    IupSetAttribute(tgg9, "VALUE", "OFF");
-
-  /* opengl */
-  if (IupGetInt(plot, "OPENGL"))
-    IupSetAttribute(tgg10, "VALUE", "ON");
-//   else
-//     IupSetAttribute(tgg10, "VALUE", "OFF");
-
+    ChangePlot(pos-1);
   return IUP_DEFAULT;
 }
 
@@ -530,13 +541,7 @@ static int action_cb(Ihandle *ih, char *text, int item, int state)
   (void)ih;
 
   if (state==1)
-  {
-    ResetClear();
-    test_list[item-1].func();
-    sprintf(filenameSVG, "../%s.svg", test_list[item-1].title);
-    sprintf(filenameEPS, "../%s.eps", test_list[item-1].title);
-    IupSetAttribute(plot, "REDRAW", NULL);
-  }
+    ChangePlot(item-1);
 
   return IUP_DEFAULT;
 }
@@ -548,7 +553,7 @@ static int close_cb(Ihandle *ih)
 }
 
 /* Y zoom */
-static int dial1_btndown_cb(Ihandle *self, double angle)
+static int minmaxY_dial_btndown_cb(Ihandle *self, double angle)
 {
   (void)angle;
   (void)self;
@@ -559,7 +564,7 @@ static int dial1_btndown_cb(Ihandle *self, double angle)
   return IUP_DEFAULT;
 }
 
-static int dial1_btnup_cb(Ihandle *self, double angle)
+static int minmaxY_dial_btnup_cb(Ihandle *self, double angle)
 {
   double x1, x2, xm;
   char *ss;
@@ -604,7 +609,7 @@ static int dial1_btnup_cb(Ihandle *self, double angle)
 }
 
 /* X zoom */
-static int dial2_btndown_cb(Ihandle *self, double angle)
+static int minmaxX_dial_btndown_cb(Ihandle *self, double angle)
 {
   (void)angle;
   (void)self;
@@ -615,7 +620,7 @@ static int dial2_btndown_cb(Ihandle *self, double angle)
   return IUP_DEFAULT;
 }
 
-static int dial2_btnup_cb(Ihandle *self, double angle)
+static int minmaxX_dial_btnup_cb(Ihandle *self, double angle)
 {
   double x1, x2, xm;
   (void)self;
@@ -637,19 +642,19 @@ static int dial2_btnup_cb(Ihandle *self, double angle)
 }
 
 /* auto scale Y */
-static int tgg1_cb(Ihandle *self, int v)
+static int autoscaleY_tgg_cb(Ihandle *self, int v)
 {
   (void)self;
 
   if (v)
   {
-    IupSetAttribute(dial1, "ACTIVE", "NO");
+    IupSetAttribute(minmaxY_dial, "ACTIVE", "NO");
     IupSetAttribute(plot, "AXS_YAUTOMIN", "YES");
     IupSetAttribute(plot, "AXS_YAUTOMAX", "YES");
   }
   else
   {
-    IupSetAttribute(dial1, "ACTIVE", "YES");
+    IupSetAttribute(minmaxY_dial, "ACTIVE", "YES");
     IupSetAttribute(plot, "AXS_YAUTOMIN", "NO");
     IupSetAttribute(plot, "AXS_YAUTOMAX", "NO");
   }
@@ -660,19 +665,19 @@ static int tgg1_cb(Ihandle *self, int v)
 }
 
 /* auto scale X */
-static int tgg2_cb(Ihandle *self, int v)
+static int autoscaleX_tgg_cb(Ihandle *self, int v)
 {
   (void)self;
 
   if (v)
   {
-    IupSetAttribute(dial2, "ACTIVE", "NO");
+    IupSetAttribute(minmaxX_dial, "ACTIVE", "NO");
     IupSetAttribute(plot, "AXS_XAUTOMIN", "YES");
     IupSetAttribute(plot, "AXS_XAUTOMAX", "YES");
   }
   else
   {
-    IupSetAttribute(dial2, "ACTIVE", "YES");
+    IupSetAttribute(minmaxX_dial, "ACTIVE", "YES");
     IupSetAttribute(plot, "AXS_XAUTOMIN", "NO");
     IupSetAttribute(plot, "AXS_XAUTOMAX", "NO");
   }
@@ -682,50 +687,15 @@ static int tgg2_cb(Ihandle *self, int v)
   return IUP_DEFAULT;
 }
 
-/* show/hide V grid */
-static int tgg3_cb(Ihandle *self, int v)
+/* show/hide grid */
+static int grid_tgg_cb(Ihandle *self, int v)
 {
   (void)self;
 
   if (v)
-  {
-    if (IupGetInt(tgg4, "VALUE"))
-      IupSetAttribute(plot, "GRID", "YES");
-    else
-      IupSetAttribute(plot, "GRID", "VERTICAL");
-  }
+    IupSetAttribute(plot, "GRID", "YES");
   else
-  {
-    if (!IupGetInt(tgg4, "VALUE"))
-      IupSetAttribute(plot, "GRID", "NO");
-    else
-      IupSetAttribute(plot, "GRID", "HORIZONTAL");
-  }
-
-  IupSetAttribute(plot, "REDRAW", NULL);
-
-  return IUP_DEFAULT;
-}
-
-/* show/hide H grid */
-static int tgg4_cb(Ihandle *self, int v)
-{
-  (void)self;
-
-  if (v)
-  {
-    if (IupGetInt(tgg3, "VALUE"))
-      IupSetAttribute(plot, "GRID", "YES");
-    else
-      IupSetAttribute(plot, "GRID", "HORIZONTAL");
-  }
-  else
-  {
-    if (!IupGetInt(tgg3, "VALUE"))
-      IupSetAttribute(plot, "GRID", "NO");
-    else
-      IupSetAttribute(plot, "GRID", "VERTICAL");
-  }
+    IupSetAttribute(plot, "GRID", "NO");
 
   IupSetAttribute(plot, "REDRAW", NULL);
 
@@ -733,7 +703,7 @@ static int tgg4_cb(Ihandle *self, int v)
 }
 
 /* show/hide legend */
-static int tgg5_cb(Ihandle *self, int v)
+static int legend_tgg_cb(Ihandle *self, int v)
 {
   (void)self;
 
@@ -748,7 +718,7 @@ static int tgg5_cb(Ihandle *self, int v)
 }
 
 /* show/hide box */
-static int tgg6_cb(Ihandle *self, int v)
+static int box_tgg_cb(Ihandle *self, int v)
 {
   (void)self;
 
@@ -763,7 +733,7 @@ static int tgg6_cb(Ihandle *self, int v)
 }
 
 /* enable/disable antialias */
-static int tgg7_cb(Ihandle *self, int v)
+static int aa_tgg_cb(Ihandle *self, int v)
 {
   (void)self;
 
@@ -778,7 +748,7 @@ static int tgg7_cb(Ihandle *self, int v)
 }
 
 /* enable/disable transparent */
-static int tgg8_cb(Ihandle *self, int v)
+static int transp_tgg_cb(Ihandle *self, int v)
 {
   (void)self;
 
@@ -793,7 +763,7 @@ static int tgg8_cb(Ihandle *self, int v)
 }
 
 /* enable/disable light */
-static int tgg9_cb(Ihandle *self, int v)
+static int light_tgg_cb(Ihandle *self, int v)
 {
   (void)self;
 
@@ -808,14 +778,14 @@ static int tgg9_cb(Ihandle *self, int v)
 }
 
 /* enable/disable opengl */
-static int tgg10_cb(Ihandle *self, int v)
+static int opengl_tgg_cb(Ihandle *self, int v)
 {
   (void)self;
 
   if (v)
     IupSetAttribute(plot, "OPENGL", "YES");
-//   else
-//     IupSetAttribute(plot, "OPENGL", "NO");
+  else
+    IupSetAttribute(plot, "OPENGL", "NO");
 
   IupSetAttribute(plot, "REDRAW", NULL);
 
@@ -841,17 +811,17 @@ static int bt2_cb(Ihandle *self)
 Ihandle* controlPanel(void)
 {
   Ihandle *vboxl, *lbl1, *lbl2, *lbl3, *lbl4, *bt1, *bt2,
-    *boxinfo, *boxdial1, *boxdial2, *f1, *f2;
+    *boxinfo, *boxminmaxY_dial, *boxminmaxX_dial, *f1, *f2;
 
   /* left panel: plot control
      Y zooming               */
-  dial1 = IupDial("VERTICAL");
+  minmaxY_dial = IupDial("VERTICAL");
   lbl1 = IupLabel("+");
   lbl2 = IupLabel("-");
   boxinfo = IupVbox(lbl1, IupFill(), lbl2, NULL);
-  boxdial1 = IupHbox(boxinfo, dial1, NULL);
+  boxminmaxY_dial = IupHbox(boxinfo, minmaxY_dial, NULL);
 
-  IupSetAttribute(boxdial1, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(boxminmaxY_dial, "ALIGNMENT", "ACENTER");
   IupSetAttribute(boxinfo, "ALIGNMENT", "ACENTER");
   IupSetAttribute(boxinfo, "SIZE", "20x52");
   IupSetAttribute(boxinfo, "GAP", "2");
@@ -860,27 +830,29 @@ Ihandle* controlPanel(void)
   IupSetAttribute(lbl1, "EXPAND", "NO");
   IupSetAttribute(lbl2, "EXPAND", "NO");
 
-  IupSetAttribute(dial1, "ACTIVE", "NO");
-  IupSetAttribute(dial1, "SIZE", "20x52");
-  IupSetCallback(dial1, "BUTTON_PRESS_CB", (Icallback)dial1_btndown_cb);
-  IupSetCallback(dial1, "MOUSEMOVE_CB", (Icallback)dial1_btnup_cb);
-  IupSetCallback(dial1, "BUTTON_RELEASE_CB", (Icallback)dial1_btnup_cb);
+  IupSetAttribute(minmaxY_dial, "ACTIVE", "NO");
+  IupSetAttribute(minmaxY_dial, "SIZE", "20x52");
+  IupSetCallback(minmaxY_dial, "BUTTON_PRESS_CB", (Icallback)minmaxY_dial_btndown_cb);
+  IupSetCallback(minmaxY_dial, "MOUSEMOVE_CB", (Icallback)minmaxY_dial_btnup_cb);
+  IupSetCallback(minmaxY_dial, "BUTTON_RELEASE_CB", (Icallback)minmaxY_dial_btnup_cb);
 
-  tgg1 = IupToggle("Y Autoscale", NULL);
-   IupSetCallback(tgg1, "ACTION", (Icallback)tgg1_cb);
-  IupSetAttribute(tgg1, "VALUE", "ON");
+  autoscaleY_tgg = IupToggle("Y Autoscale", NULL);
+   IupSetCallback(autoscaleY_tgg, "ACTION", (Icallback)autoscaleY_tgg_cb);
+  IupSetAttribute(autoscaleY_tgg, "VALUE", "ON");
 
-  f1 = IupFrame( IupVbox(boxdial1, tgg1, NULL) );
+  f1 = IupFrame( IupVbox(boxminmaxY_dial, autoscaleY_tgg, NULL) );
   IupSetAttribute(f1, "TITLE", "Y Zoom");
+  IupSetAttribute(f1, "GAP", "0");
+  IupSetAttribute(f1, "MARGIN", "5x5");
 
   /* X zooming */
-  dial2 = IupDial("HORIZONTAL");
+  minmaxX_dial = IupDial("HORIZONTAL");
   lbl1 = IupLabel("-");
   lbl2 = IupLabel("+");
   boxinfo = IupHbox(lbl1, IupFill(), lbl2, NULL);
-  boxdial2 = IupVbox(dial2, boxinfo, NULL);
+  boxminmaxX_dial = IupVbox(minmaxX_dial, boxinfo, NULL);
 
-  IupSetAttribute(boxdial2, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(boxminmaxX_dial, "ALIGNMENT", "ACENTER");
   IupSetAttribute(boxinfo, "ALIGNMENT", "ACENTER");
   IupSetAttribute(boxinfo, "SIZE", "64x16");
   IupSetAttribute(boxinfo, "GAP", "2");
@@ -890,49 +862,49 @@ Ihandle* controlPanel(void)
   IupSetAttribute(lbl1, "EXPAND", "NO");
   IupSetAttribute(lbl2, "EXPAND", "NO");
 
-  IupSetAttribute(dial2, "ACTIVE", "NO");
-  IupSetAttribute(dial2, "SIZE", "64x16");
-  IupSetCallback(dial2, "BUTTON_PRESS_CB", (Icallback)dial2_btndown_cb);
-  IupSetCallback(dial2, "MOUSEMOVE_CB", (Icallback)dial2_btnup_cb);
-  IupSetCallback(dial2, "BUTTON_RELEASE_CB", (Icallback)dial2_btnup_cb);
+  IupSetAttribute(minmaxX_dial, "ACTIVE", "NO");
+  IupSetAttribute(minmaxX_dial, "SIZE", "64x16");
+  IupSetCallback(minmaxX_dial, "BUTTON_PRESS_CB", (Icallback)minmaxX_dial_btndown_cb);
+  IupSetCallback(minmaxX_dial, "MOUSEMOVE_CB", (Icallback)minmaxX_dial_btnup_cb);
+  IupSetCallback(minmaxX_dial, "BUTTON_RELEASE_CB", (Icallback)minmaxX_dial_btnup_cb);
 
-  tgg2 = IupToggle("X Autoscale", NULL);
-  IupSetCallback(tgg2, "ACTION", (Icallback)tgg2_cb);
+  autoscaleX_tgg = IupToggle("X Autoscale", NULL);
+  IupSetCallback(autoscaleX_tgg, "ACTION", (Icallback)autoscaleX_tgg_cb);
 
-  f2 = IupFrame( IupVbox(boxdial2, tgg2, NULL) );
+  f2 = IupFrame( IupVbox(boxminmaxX_dial, autoscaleX_tgg, NULL) );
   IupSetAttribute(f2, "TITLE", "X Zoom");
+  IupSetAttribute(f2, "GAP", "0");
+  IupSetAttribute(f2, "MARGIN", "5x5");
 
   lbl1 = IupLabel("");
   IupSetAttribute(lbl1, "SEPARATOR", "HORIZONTAL");
 
-  tgg3 = IupToggle("Vertical Grid", NULL);
-  IupSetCallback(tgg3, "ACTION", (Icallback)tgg3_cb);
-  tgg4 = IupToggle("Horizontal Grid", NULL);
-  IupSetCallback(tgg4, "ACTION", (Icallback)tgg4_cb);
+  grid_tgg = IupToggle("Grid", NULL);
+  IupSetCallback(grid_tgg, "ACTION", (Icallback)grid_tgg_cb);
 
-  tgg6 = IupToggle("Box", NULL);
-  IupSetCallback(tgg6, "ACTION", (Icallback)tgg6_cb);
+  box_tgg = IupToggle("Box", NULL);
+  IupSetCallback(box_tgg, "ACTION", (Icallback)box_tgg_cb);
 
   lbl2 = IupLabel("");
   IupSetAttribute(lbl2, "SEPARATOR", "HORIZONTAL");
 
-  tgg5 = IupToggle("Legend", NULL);
-  IupSetCallback(tgg5, "ACTION", (Icallback)tgg5_cb);
+  legend_tgg = IupToggle("Legend", NULL);
+  IupSetCallback(legend_tgg, "ACTION", (Icallback)legend_tgg_cb);
 
   lbl3 = IupLabel("");
   IupSetAttribute(lbl3, "SEPARATOR", "HORIZONTAL");
 
-  tgg7 = IupToggle("Antialias", NULL);
-  IupSetCallback(tgg7, "ACTION", (Icallback)tgg7_cb);
+  aa_tgg = IupToggle("Antialias", NULL);
+  IupSetCallback(aa_tgg, "ACTION", (Icallback)aa_tgg_cb);
 
-  tgg8 = IupToggle("Transparent", NULL);
-  IupSetCallback(tgg8, "ACTION", (Icallback)tgg8_cb);
+  transp_tgg = IupToggle("Transparent", NULL);
+  IupSetCallback(transp_tgg, "ACTION", (Icallback)transp_tgg_cb);
 
-  tgg9 = IupToggle("Light", NULL);
-  IupSetCallback(tgg9, "ACTION", (Icallback)tgg9_cb);
+  light_tgg = IupToggle("Light", NULL);
+  IupSetCallback(light_tgg, "ACTION", (Icallback)light_tgg_cb);
 
-  tgg10 = IupToggle("OpenGL", NULL);
-  IupSetCallback(tgg10, "ACTION", (Icallback)tgg10_cb);
+  opengl_tgg = IupToggle("OpenGL", NULL);
+  IupSetCallback(opengl_tgg, "ACTION", (Icallback)opengl_tgg_cb);
 
   lbl4 = IupLabel("");
   IupSetAttribute(lbl4, "SEPARATOR", "HORIZONTAL");
@@ -943,8 +915,9 @@ Ihandle* controlPanel(void)
   bt2 = IupButton("Export EPS", NULL);
   IupSetCallback(bt2, "ACTION", (Icallback)bt2_cb);
 
-  vboxl = IupVbox(f1, f2, lbl1, tgg3, tgg4, tgg6, lbl2, tgg5, lbl3, tgg7, tgg8, tgg9, tgg10, lbl4, IupHbox(bt1, bt2, NULL), NULL);
+  vboxl = IupVbox(f1, f2, lbl1, grid_tgg, box_tgg, lbl2, legend_tgg, lbl3, aa_tgg, transp_tgg, light_tgg, opengl_tgg, lbl4, IupHbox(bt1, bt2, NULL), NULL);
   IupSetAttribute(vboxl, "GAP", "4");
+  IupSetAttribute(vboxl, "MARGIN", "5x0");
   IupSetAttribute(vboxl, "EXPAND", "NO");
 
   return vboxl;
@@ -968,17 +941,16 @@ int main(int argc, char* argv[])
 
   dlg = IupDialog(IupHbox(list, panel, plot, NULL));
   IupSetAttribute(dlg, "MARGIN", "10x10");
-  IupSetAttribute(dlg, "GAP", "10");
+  IupSetAttribute(dlg, "GAP", "5");
   IupSetAttribute(dlg, "TITLE", "MathGL samples w/ IupMglPlot");
   IupSetCallback(dlg, "CLOSE_CB", close_cb);
 
-  IupSetAttribute(plot, "RASTERSIZE", "500x500");
+  IupSetAttribute(plot, "RASTERSIZE", "700x500");  // Minimum initial size
 
   IupSetAttribute(list, "EXPAND", "VERTICAL");
-  IupSetAttribute(list, "VISIBLELINES", "35");
+  IupSetAttribute(list, "VISIBLELINES", "15");  // Not all, because the dialog will be too big
   IupSetAttribute(list, "VISIBLECOLUMNS", "15");
   IupSetCallback(list, "ACTION", (Icallback)action_cb);
-  IupSetCallback(list, "VALUECHANGED_CB", (Icallback)changed_cb);
 
   for (i=0; i<count; i++)
   {
@@ -990,12 +962,9 @@ int main(int argc, char* argv[])
 
   IupShowXY(dlg, 100, IUP_CENTER);
 
-  IupSetAttribute(plot, "RASTERSIZE", NULL);
+  IupSetAttribute(plot, "RASTERSIZE", NULL);  // Clear initial size
 
-  ResetClear();
-  SamplePlotLinear();
-  IupSetAttribute(plot, "REDRAW", NULL);
-  changed_cb(plot);
+  ChangePlot(0);
 
   IupMainLoop();
 
