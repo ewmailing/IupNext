@@ -5,8 +5,8 @@ else
   TECMAKE_CMD = $(MAKE) --no-print-directory -f ../tecmake.mak
 endif
 
-.PHONY: do_all iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib iupluatuio iupluaole iupluaweb
-do_all: iuplua iupluacd iupluacontrols iuplua_pplot iupluagl iupluaim iupluaimglib iupluatuio $(WINLIBS)
+.PHONY: do_all iuplua iupluacd iupluacontrols iupluagl iuplua_pplot iuplua_mglplot iupluaim iupluaimglib iupluatuio iupluaole iupluaweb
+do_all: iuplua iupluacd iupluacontrols iupluagl iuplua_pplot iuplua_mglplot iupluaim iupluaimglib iupluatuio $(WINLIBS)
 
 iuplua:
 	@$(TECMAKE_CMD) 
@@ -17,11 +17,14 @@ iupluacd:
 iupluacontrols:
 	@$(TECMAKE_CMD) MF=iupcontrols
 
+iupluagl:
+	@$(TECMAKE_CMD) MF=iupgl
+
 iuplua_pplot:
 	@$(TECMAKE_CMD) MF=iup_pplot
 
-iupluagl:
-	@$(TECMAKE_CMD) MF=iupgl
+iuplua_mglplot:
+	@$(TECMAKE_CMD) MF=iup_mglplot
 
 iupluaim:
 	@$(TECMAKE_CMD) MF=iupim
