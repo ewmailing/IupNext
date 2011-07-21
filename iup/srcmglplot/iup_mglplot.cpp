@@ -1107,7 +1107,10 @@ static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
     else
       gr->Light(false);
 
-    gr->Rotate(ih->data->rotX, ih->data->rotZ, ih->data->rotY);
+    gr->Rotate(ih->data->rotX, ih->data->rotZ, ih->data->rotY);  // Notice that rotZ is the second parameter
+
+    if (ih->data->rotX!=0 || ih->data->rotY!=0 || ih->data->rotZ)
+      gr->PlotFactor += 0.3f;  // Add more space when rotating a 3D graph
   }
 }
 
@@ -5014,7 +5017,6 @@ void IupMglPlotOpen(void)
 
 /* TODO
   evaluate interval
-  tamanho do 3D tem que ser menor por causa do Rotate, PlotFactor?
   melhorar rotação
   sometimes the label gets too close to the ticks
      it can be manualy moved by changing the origin
