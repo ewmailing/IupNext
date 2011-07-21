@@ -5018,8 +5018,6 @@ void IupMglPlotOpen(void)
 /* TODO
   evaluate interval
   melhorar rotação
-  sometimes the label gets too close to the ticks
-     it can be manualy moved by changing the origin
   improve autoticks computation
   -------------------
   documentar pixels x plot x normalized coordinates
