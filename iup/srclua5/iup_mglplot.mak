@@ -1,7 +1,7 @@
 PROJNAME = iup
-LIBNAME = iuplua_pplot
+LIBNAME = iuplua_mglplot
 OPT = YES
-DEF_FILE = iuplua_pplot.def
+DEF_FILE = iuplua_mglplot.def
 
 IUP := ..
 
@@ -9,8 +9,7 @@ DEFINES = IUPLUA_USELOH
 
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
-USE_CDLUA = Yes
-LIBS = iup_pplot
+LIBS = iup_mglplot
 
 ifdef USE_LUA52
   LOHDIR = loh52
@@ -23,7 +22,7 @@ endif
 
 NO_LUALINK = Yes
 USE_LOH_SUBDIR = Yes
-SRCLUA = pplot.lua
+SRCLUA = mglplot.lua
 USE_BIN2C_LUA=Yes
 
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
@@ -32,10 +31,8 @@ GC := $(addprefix il_, $(GC))
 $(GC) : il_%.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC := iuplua_pplot.c $(GC)
+SRC := iuplua_mglplot.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   USE_IUPLUA:=
-  USE_CDLUA:=
-  USE_CD = Yes
 endif
