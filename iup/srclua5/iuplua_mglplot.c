@@ -83,7 +83,7 @@ static int PlotInsert1D(lua_State *L)
 {
   float *py;
   char* *px;
-  int count = luaL_checkinteger(L, 6);
+  int count = luaL_checkint(L, 6);
   px = iuplua_checkstring_array(L, 4, count);
   py = iuplua_checkfloat_array(L, 5, count);
   IupMglPlotInsert1D(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
@@ -95,7 +95,7 @@ static int PlotInsert1D(lua_State *L)
 static int PlotInsert2D(lua_State *L)
 {
   float *px, *py;
-  int count = luaL_checkinteger(L, 6);
+  int count = luaL_checkint(L, 6);
   px = iuplua_checkfloat_array(L, 4, count);
   py = iuplua_checkfloat_array(L, 5, count);
   IupMglPlotInsert2D(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
@@ -107,13 +107,82 @@ static int PlotInsert2D(lua_State *L)
 static int PlotInsert3D(lua_State *L)
 {
   float *px, *py, *pz;
-  int count = luaL_checkinteger(L, 6);
+  int count = luaL_checkint(L, 7);
   px = iuplua_checkfloat_array(L, 4, count);
   py = iuplua_checkfloat_array(L, 5, count);
   pz = iuplua_checkfloat_array(L, 6, count);
   IupMglPlotInsert3D(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, pz, count);
   free(px);
   free(py);
+  free(pz);
+  return 0;
+}
+
+static int PlotSet1D(lua_State *L)
+{
+  float *py;
+  char* *px;
+  int count = luaL_checkint(L, 5);
+  px = iuplua_checkstring_array(L, 3, count);
+  py = iuplua_checkfloat_array(L, 4, count);
+  IupMglPlotSet1D(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  free(px);
+  free(py);
+  return 0;
+}
+
+static int PlotSet2D(lua_State *L)
+{
+  float *px, *py;
+  int count = luaL_checkint(L, 5);
+  px = iuplua_checkfloat_array(L, 3, count);
+  py = iuplua_checkfloat_array(L, 4, count);
+  IupMglPlotSet2D(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  free(px);
+  free(py);
+  return 0;
+}
+
+static int PlotSet3D(lua_State *L)
+{
+  float *px, *py, *pz;
+  int count = luaL_checkint(L, 6);
+  px = iuplua_checkfloat_array(L, 3, count);
+  py = iuplua_checkfloat_array(L, 4, count);
+  pz = iuplua_checkfloat_array(L, 5, count);
+  IupMglPlotSet3D(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, pz, count);
+  free(px);
+  free(py);
+  free(pz);
+  return 0;
+}
+
+static int PlotSetFormula(lua_State *L)
+{
+  IupMglPlotSetFormula(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkstring(L,3), luaL_checkstring(L,4), luaL_checkstring(L,5), luaL_checkint(L,6));
+  return 0;
+}
+
+static int PlotLoadData(lua_State *L)
+{
+  IupMglPlotLoadData(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkstring(L,3), luaL_checkint(L,4), luaL_checkint(L,5), luaL_checkint(L,6));
+  return 0;
+}
+
+static int PlotSetFromFormula(lua_State *L)
+{
+  IupMglPlotSetFromFormula(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkstring(L,3), luaL_checkint(L,4), luaL_checkint(L,5), luaL_checkint(L,6));
+  return 0;
+}
+
+static int PlotSetData(lua_State *L)
+{
+  int count_x = luaL_checkint(L,4), 
+      count_y = luaL_checkint(L,5), 
+      count_z = luaL_checkint(L,6);
+  float* data = iuplua_checkfloat_array(L, 3, count_x*count_y*count_z);
+  IupMglPlotSetData(iuplua_checkihandle(L,1), luaL_checkint(L,2), data, count_x, count_y, count_z);
+  free(data);
   return 0;
 }
 
@@ -138,6 +207,14 @@ static int PlotTransformXYZ(lua_State *L)
   return 3;
 }
 
+static int PlotNewDataSet(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  int ret = IupMglPlotNewDataSet(ih, luaL_checkint(L,2));
+  lua_pushinteger(L, ret);
+  return 1;
+}
+
 static int PlotPaintTo(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -159,22 +236,27 @@ static int PlotPaintTo(lua_State *L)
   return 0;
 }
 
-#if 0
-int IupMglPlotNewDataSet(Ihandle *ih, int dim);
+static int PlotDrawMark(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  IupMglPlotDrawMark(ih, (float)luaL_checknumber(L,2), (float)luaL_checknumber(L,3), (float)luaL_checknumber(L,4));
+  return 0;
+}
 
-void IupMglPlotSet1D(Ihandle* ih, int ds_index, const char** names, const float* y, int count);
-void IupMglPlotSet2D(Ihandle* ih, int ds_index, const float* x, const float* y, int count);
-void IupMglPlotSet3D(Ihandle* ih, int ds_index, const float* x, const float* y, const float* z, int count);
-void IupMglPlotSetFormula(Ihandle* ih, int ds_index, const char* formulaX, const char* formulaY, const char* formulaZ, int count);
+static int PlotDrawLine(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  IupMglPlotDrawLine(ih, (float)luaL_checknumber(L,2), (float)luaL_checknumber(L,3), (float)luaL_checknumber(L,4),
+                         (float)luaL_checknumber(L,5), (float)luaL_checknumber(L,6), (float)luaL_checknumber(L,7));
+  return 0;
+}
 
-void IupMglPlotSetData(Ihandle* ih, int ds_index, const float* data, int count_x, int count_y, int count_z);
-void IupMglPlotLoadData(Ihandle* ih, int ds_index, const char* filename, int count_x, int count_y, int count_z);
-void IupMglPlotSetFromFormula(Ihandle* ih, int ds_index, const char* formula, int count_x, int count_y, int count_z);
-
-void IupMglPlotDrawMark(Ihandle* ih, float x, float y, float z);
-void IupMglPlotDrawLine(Ihandle* ih, float x1, float y1, float z1, float x2, float y2, float z2);
-void IupMglPlotDrawText(Ihandle* ih, const char* text, float x, float y, float z);
-#endif
+static int PlotDrawText(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  IupMglPlotDrawText(ih, luaL_checkstring(L,2), (float)luaL_checknumber(L,3), (float)luaL_checknumber(L,4), (float)luaL_checknumber(L,5));
+  return 0;
+}
 
 void iuplua_mglplotfuncs_open (lua_State *L)
 {
@@ -182,15 +264,26 @@ void iuplua_mglplotfuncs_open (lua_State *L)
 
   iuplua_register(L, PlotBegin       ,"MglPlotBegin");
   iuplua_register(L, PlotAdd1D       ,"MglPlotAdd1D");
-  iuplua_register(L, PlotAdd2D      ,"MglPlotAdd2D");
-  iuplua_register(L, PlotAdd3D      ,"MglPlotAdd3D");
+  iuplua_register(L, PlotAdd2D       ,"MglPlotAdd2D");
+  iuplua_register(L, PlotAdd3D       ,"MglPlotAdd3D");
   iuplua_register(L, PlotEnd         ,"MglPlotEnd");
-  iuplua_register(L, PlotInsert1D   ,"MglPlotInsert1D");
-  iuplua_register(L, PlotInsert2D   ,"MglPlotInsert2D");
-  iuplua_register(L, PlotInsert3D   ,"MglPlotInsert3D");
+  iuplua_register(L, PlotNewDataSet  ,"MglPlotNewDataSet");
+  iuplua_register(L, PlotInsert1D    ,"MglPlotInsert1D");
+  iuplua_register(L, PlotInsert2D    ,"MglPlotInsert2D");
+  iuplua_register(L, PlotInsert3D    ,"MglPlotInsert3D");
+  iuplua_register(L, PlotSet1D       ,"MglPlotSet1D");
+  iuplua_register(L, PlotSet2D       ,"MglPlotSet2D");
+  iuplua_register(L, PlotSet3D       ,"MglPlotSet3D");
+  iuplua_register(L, PlotSetFormula  ,"MglPlotSetFormula");
+  iuplua_register(L, PlotLoadData    ,"MglPlotLoadData");
+  iuplua_register(L, PlotSetFromFormula  ,"MglPlotSetFromFormula");
+  iuplua_register(L, PlotSetData      ,"MglPlotSetData");
   iuplua_register(L, PlotTransform    ,"MglPlotTransform");
   iuplua_register(L, PlotTransformXYZ ,"MglPlotTransformXYZ");
   iuplua_register(L, PlotPaintTo      ,"MglPlotPaintTo");
+  iuplua_register(L, PlotDrawText     ,"MglPlotDrawText");
+  iuplua_register(L, PlotDrawLine     ,"MglPlotDrawLine");
+  iuplua_register(L, PlotDrawMark     ,"MglPlotDrawMark");
 }
 
 int iupmglplotlua_open(lua_State * L);
