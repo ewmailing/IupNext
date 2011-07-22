@@ -5023,7 +5023,6 @@ void IupMglPlotOpen(void)
   documentar pixels x plot x normalized coordinates
   documentar/exemplo suporte a Tek formulas nas strings
   documentar DS_MODE Options
-  Binding Lua
   -------------------
   Legend  
   LoadFont
