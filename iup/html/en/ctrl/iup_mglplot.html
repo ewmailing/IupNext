@@ -22,6 +22,9 @@
 .style6 {
 	text-decoration: line-through;
 }
+.style7 {
+	text-align: center;
+}
 </style>
 </head>
 <body>
@@ -68,7 +71,10 @@ the plot.</p>
 <p><strong>IMPORTANT</strong>: When setting attributes the plot is NOT redrawn until the REDRAW attribute is 
 set or a redraw event occurs.</p>
 <p>The <b>dataset area</b> is delimited by the min/max axis attributes. Data is 
-only plotted inside the dataset area.</p>
+only plotted inside the dataset area. This area defines the 2D or 3D plot 
+coordinate space. The screen area is a 2D pixels coordinate space. And finally 
+the dataset are also defines a normalized space, that means min/max is converted 
+to 0-1.</p>
 <p>The <b>legend box</b> is a list of the dataset names, each one drawn with the 
 same color of the correspondent dataset. The box is located in one of the four 
 corners of the dataset area.</p>
@@ -77,10 +83,11 @@ used to pseudo color the data for some plot modes.</p>
 <p>The <b>grid</b> is automatically spaced accordingly the current axis 
 displayed values.</p>
 <p>The <b>title</b> is always centered in the top of the plot.</p>
-<p>The <b>axes</b> are positioned at the origin (0,0), but can be automatically positioned at the left-bottom. If values are only positive then the 
+<p>The <b>axes</b> are positioned at the origin (0,0,0), but can be automatically positioned at the left-bottom. If values are only positive then the 
 origin will be placed in left 
 bottom position. If values are negative and positive then origin will be placed 
 inside the plot. The ticks in the axis are also automatically distributed.</p>
+<p>&nbsp;</p>
 <h3>Data</h3>
 <p>MathGL supports several kinds of data. IupMglPlot restricts this to a few 
 combinations. First there are 3 major classes:</p>
@@ -140,6 +147,21 @@ clicking with the left mouse button near the sample in the dataset.</p>
 samples. Also use the arrow keys to move the Y coordinate of the selected 
 samples. Press the Ctrl key to increase the step size when moving the Y 
 coordinate.</span></p>
+<h3>Text and Fonts</h3>
+<p>MathGL provides support for parsing LaTeX-like syntax. So all labels and 
+title can contain formatting commands and equation symbols. For example: \b 
+(bold), \i (italic), \u (underline), \big (bigger size), @ (smaller size), ^ 
+(upper), _ (lower),&nbsp; etc. The full list contain approximately 2000 
+commands. Multiline text is accepted. </p>
+<p>For example:</p>
+<pre>&quot;It can be \\wire{wire}, \\big{big} or #r{colored}&quot; 
+&quot;One can change style in string: &quot; &quot;\\b{bold}, \\i{italic, \\b{both}}&quot;
+&quot;Easy to \\a{overline} or \\u{underline}&quot; 
+&quot;Easy to change indexes ^{up} _{down} @{center}&quot;
+&quot;It parse TeX: \\int \\alpha \\cdot \\sqrt3{sin(\\pi x)^2 + \\gamma_{i_k}} dx&quot;
+&quot;\\sqrt{\\frac{\\alpha^{\\gamma^2}+&quot; &quot;\\overset 1{\\big\\infty}}{\\sqrt3{2+b}}}&quot;</pre>
+<p class="style7">
+<img src="images/iup_mglplot_text.png" width="540" height="244"></p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupMglPlot(void); [in C]

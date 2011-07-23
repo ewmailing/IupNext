@@ -1326,6 +1326,12 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       // Plot affected by SelectPen
       iMglPlotConfigDataSetLineMark(ds, gr, style);
 
+      char* countourlabels = iupAttribGetStr(ih, "CONTOURLABELS");  //Default NULL
+      if (iupStrEqualNoCase(countourlabels, "BELLOW"))
+        strcat(style, "t");
+      else if (iupStrEqualNoCase(countourlabels, "ABOVE"))
+        strcat(style, "T");
+
       gr->Cont(xx, yy, *ds->dsX, style, contourcount, val);
     }
   }
@@ -1759,6 +1765,7 @@ static int iMglPlotSetResetAttrib(Ihandle* ih, const char* value)
   iupAttribSetStr(ih, "GRADLINESCOUNT", NULL);
   iupAttribSetStr(ih, "AXIALCOUNT", NULL);
   iupAttribSetStr(ih, "CONTOURFILLED", NULL);
+  iupAttribSetStr(ih, "CONTOURLABELS", NULL);
   iupAttribSetStr(ih, "CONTOURCOUNT", NULL);
   iupAttribSetStr(ih, "DIR", NULL);
   iupAttribSetStr(ih, "CLOUDCUBES", NULL);
@@ -4859,6 +4866,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "GRADLINESCOUNT", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXIALCOUNT", NULL, NULL, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CONTOURFILLED", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CONTOURLABELS", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CONTOURCOUNT", NULL, NULL, IUPAF_SAMEASSYSTEM, "7", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DIR", NULL, NULL, IUPAF_SAMEASSYSTEM, "Y", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOUDCUBES", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -5020,8 +5028,6 @@ void IupMglPlotOpen(void)
   melhorar rotação
   improve autoticks computation
   -------------------
-  documentar pixels x plot x normalized coordinates
-  documentar/exemplo suporte a Tek formulas nas strings
   documentar DS_MODE Options
   -------------------
   Legend  
@@ -5041,7 +5047,7 @@ Maybe:
   Ternary
 
 MathGL:
-  BOLD and ITALIC for FontDef not working
+  BOLD and ITALIC not working for the default font, only for loaded fonts. Some TeX feature too.
   gr->Dens does not works when using mglGraphZB, works ok when using OpenGL.
   gr->ContFA has a different result in OpenGL. It seems to have an invalid depth. Without OpenGL works fine.
   gr->Axial is changing somethig that affects other graphs

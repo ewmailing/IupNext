@@ -38,6 +38,8 @@ static void ResetClear(void)
   IupSetAttribute(plot, "AXS_X", "NO");
   IupSetAttribute(plot, "AXS_Y", "NO");
   IupSetAttribute(plot, "AXS_Z", "NO");
+
+  IupSetCallback(plot, "POSTDRAW_CB", NULL);
 }
 
 static void UpdateFlags(void)
@@ -238,6 +240,7 @@ static void SampleContourFilledPlanar(void)
 static void SampleContourPlanar(void)
 {
   SamplePlanar("PLANAR_CONTOUR");
+  IupSetAttribute(plot, "CONTOURLABELS", "BELLOW");
 }
 
 static void SampleDensityPlanar(void)
@@ -284,6 +287,12 @@ static void SampleSurfaceColorsPlanar(void)
 static void SampleSurfacePlanar(void)
 {
   SamplePlanar("PLANAR_SURFACE");
+}
+
+static void SampleSurfaceContourPlanar(void)
+{
+  SamplePlanar("PLANAR_SURFACE");
+  SamplePlanar("PLANAR_CONTOUR");
 }
 
 static void SampleDotsLinear3D(void)
@@ -471,6 +480,92 @@ static void SamplePlotLinear1D(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
+static int postdraw_cb(Ihandle* ih)
+{
+  IupMglPlotDrawText(ih, "It can be \\wire{wire}, \\big{big} or #r{colored}", 0, 1.0f, 0);
+  IupMglPlotDrawText(ih, "One can change style in string: " "\\b{bold}, \\i{italic, \\b{both}}", 0, 0.6f, 0);
+  IupMglPlotDrawText(ih, "Easy to \\a{overline} or \\u{underline}", 0, 0.2f, 0);
+  IupMglPlotDrawText(ih, "Easy to change indexes ^{up} _{down} @{center}", 0, -0.2f, 0);
+  IupMglPlotDrawText(ih, "It parse TeX: \\int \\alpha \\cdot \\sqrt3{sin(\\pi x)^2 + \\gamma_{i_k}} dx", 0, -0.6f, 0);
+  IupMglPlotDrawText(ih, "And more TeX: \\sqrt{\\frac{\\alpha^{\\gamma^2}+" "\\overset 1{\\big\\infty}}{\\sqrt3{2+b}}}", 0, -1.0f, 0);
+  return IUP_DEFAULT;
+}
+
+static void SampleText(void)
+{
+  IupSetAttribute(plot, "MGLFONT", "Helvetica, 10");
+  IupSetCallback(plot, "POSTDRAW_CB", (Icallback)postdraw_cb);
+}
+
+static void SampleLegend(void)
+{
+  IupSetAttribute(plot, "MGLFONT", "Helvetica, 10");
+
+  IupMglPlotNewDataSet(plot, 1);
+  IupSetAttribute(plot, "DS_LEGEND", "sin(\\pi {x^2})");
+  IupMglPlotSetFromFormula(plot, 0, "sin(2*pi*x*x)", 50, 1, 1);
+
+  IupMglPlotNewDataSet(plot, 1);
+  IupSetAttribute(plot, "DS_LEGEND", "sin(\\pi x)");
+  IupMglPlotSetFromFormula(plot, 1, "sin(2*pi*x)", 50, 1, 1);
+  
+  IupMglPlotNewDataSet(plot, 1);
+  IupSetAttribute(plot, "DS_LEGEND", "sin(\\pi \\sqrt{\\a x})");
+  IupMglPlotSetFromFormula(plot, 2, "sin(2*pi*sqrt(x))", 50, 1, 1);
+
+  IupSetAttribute(plot, "LEGEND", "YES");
+  IupSetAttribute(plot, "AXS_X", "Yes");
+  IupSetAttribute(plot, "AXS_Y", "Yes");
+  IupSetAttribute(plot, "BOX", "YES");
+}
+
+static void SampleSemiLog(void)
+{
+  IupMglPlotNewDataSet(plot, 2);
+  IupMglPlotSetFormula(plot, 0, "0.01/(x+10^(-5))", "sin(1/x)", NULL, 2000);
+  IupSetAttribute(plot, "DS_COLOR", "0 0 255");
+  IupSetAttribute(plot, "DS_LINEWIDTH", "2");
+
+  IupSetAttribute(plot, "AXS_XSCALE", "LOG10");
+  IupSetAttribute(plot, "AXS_X", "Yes");
+  IupSetAttribute(plot, "AXS_Y", "Yes");
+  IupSetAttribute(plot, "AXS_XLABEL", "x");
+  IupSetAttribute(plot, "AXS_YLABEL", "y = sin 1/x");
+  IupSetAttribute(plot, "BOX", "YES");
+  IupSetAttribute(plot, "GRID", "YES");
+  IupSetAttribute(plot, "GRIDCOLOR", "0 255 0");
+}
+
+static void SampleLogLog(void)
+{
+  IupSetAttribute(plot, "MGLFONT", "Helvetica, 10");
+
+  IupMglPlotNewDataSet(plot, 2);
+  IupMglPlotSetFormula(plot, 0, "pow(10,6*x-3)", "sqrt(1+x^2)", NULL, 100);
+  IupSetAttribute(plot, "DS_COLOR", "0 0 255");
+  IupSetAttribute(plot, "DS_LINEWIDTH", "2");
+
+  IupSetAttribute(plot, "AXS_XSCALE", "LOG10");
+  IupSetAttribute(plot, "AXS_YSCALE", "LOG10");
+  IupSetAttribute(plot, "AXS_X", "Yes");
+  IupSetAttribute(plot, "AXS_Y", "Yes");
+  IupSetAttribute(plot, "AXS_XLABEL", "x");
+  IupSetAttribute(plot, "AXS_YLABEL", "y=\\sqrt{1+x^2}");
+  IupSetAttribute(plot, "BOX", "YES");
+  IupSetAttribute(plot, "GRID", "YES");
+  IupSetAttribute(plot, "GRIDCOLOR", "0 255 0");
+  IupSetAttribute(plot, "GRIDLINESTYLE", "DASHED");
+}
+#if 0
+Semi-Log
+gr->Axis(mglPoint(0.01,-1),mglPoint(1000,1),mglPoint(0.01,-1));
+Modify Y is relative to V and uses X
+
+Log-Log
+gr->Axis(mglPoint(0.001,0.1),mglPoint(1000,1000),mglPoint(0.001,0.1));
+Modify Y is relative to V and uses X
+#endif
+
 static void Dummy(void)
 {
 }
@@ -494,11 +589,10 @@ static TestItems test_list[] = {
   {"Pie (Linear 1D)", SamplePieLinear1D}, 
   {"Dots (Linear 3D)", SampleDotsLinear3D}, 
   {"Crust (Linear 3D)", SampleCrustLinear3D},
-
   {"----------", Dummy},
-                 
   {"Surface (Planar)", SampleSurfacePlanar},
   {"Surface Colors (Planar)", SampleSurfaceColorsPlanar},
+  {"Surface Contour (Planar)", SampleSurfaceContourPlanar},
   {"Mesh (Planar)", SampleMeshPlanar},
   {"Fall (Planar)", SampleFallPlanar},
   {"Belt (Planar)", SampleBeltPlanar},
@@ -509,9 +603,7 @@ static TestItems test_list[] = {
   {"Contour Filled (Planar)", SampleContourFilledPlanar},
   {"Axial Contour (Planar)", SampleAxialContourPlanar},
   {"GradientLines (Planar)", SampleGradientLinesPlanar},
-
   {"----------", Dummy},
-
   {"Iso Surface (Volume)", SampleIsoSurfaceVolume},
   {"CloudCubes (Volume)", SampleCloudCubesVolume},
   {"Cloud (Volume)", SampleCloudVolume},
@@ -521,6 +613,11 @@ static TestItems test_list[] = {
   {"ContourProject (Volume)", SampleContourProjectVolume},
   {"ContourFilledProject (Volume)", SampleContourFilledProjectVolume},
   {"DensityProject (Volume)", SampleDensityProjectVolume},
+  {"----------", Dummy},
+  {"Text Styles", SampleText},
+  {"Legend", SampleLegend},
+  {"Semi-log", SampleSemiLog},
+  {"Log-log", SampleLogLog},
 };
 
 static void ChangePlot(int item)
