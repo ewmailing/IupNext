@@ -36,7 +36,6 @@
 #include "mgl/mgl_eval.h"
 #include "mgl/mgl_gl.h"
 
-
 enum {IUP_MGLPLOT_BOTTOMLEFT, IUP_MGLPLOT_BOTTOMRIGHT, IUP_MGLPLOT_TOPLEFT, IUP_MGLPLOT_TOPRIGHT};
 enum {IUP_MGLPLOT_INHERIT, IUP_MGLPLOT_PLAIN, IUP_MGLPLOT_BOLD, IUP_MGLPLOT_ITALIC, IUP_MGLPLOT_BOLD_ITALIC};
 
@@ -4590,6 +4589,41 @@ static int iMglPlotMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, c
   return IUP_DEFAULT;
 }
 
+/* Calculates the angle of this vector in grad in the trigonometric sense.
+   Source: touchlib (http://www.nuigroup.com/touchlib/) */
+#define GRAD_PI     57.2957787f  /* 180.0f / 3.1415927f */
+static float iMglPlotGetZAngleTrig(float X, float Y)
+{
+  if(X == 0.0f)
+    return Y < 0.0f ? 270.0f : 90.0f;
+  else
+    if(Y == 0)
+      return X < 0.0f ? 180.0f : 0.0f;
+
+  if(Y > 0.0f)
+    if(X > 0.0f)
+      return atan(Y/X) * GRAD_PI;
+    else
+      return 180.0f-atan(Y/-X) * GRAD_PI;
+  else
+    if(X > 0.0f)
+      return 360.0f-atan(-Y/X) * GRAD_PI;
+    else
+      return 180.0f+atan(-Y/-X) * GRAD_PI;
+}
+
+static void iMglPlotClamp(Ihandle *ih)
+{
+  if(ih->data->rotX > 360 || ih->data->rotX < -360)
+    ih->data->rotX = 0.0;
+
+  if(ih->data->rotY > 360 || ih->data->rotY < -360)
+    ih->data->rotY = 0.0;
+
+  if(ih->data->rotZ > 360 || ih->data->rotZ < -360)
+    ih->data->rotZ = 0.0;
+}
+
 static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 {
   ih->data->xe = (float)x;
@@ -4600,18 +4634,58 @@ static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
     /* Rotate plot in (XYZ) */
     float ff = 360.0f / sqrt(float(ih->data->w * ih->data->h));  /* Factor */
 
-    /* Distance between initial and final points * fator */
-    if(iup_iscontrol(status))
+//     /* Distance between initial and final points * fator */
+//     if(iup_iscontrol(status))
+//     {
+//       /* Rotate in Z with vertical movement */
+//       iMglPlotRotate(ih->data->rotZ, (ih->data->y0 - ih->data->ye) * ff);
+//     }
+//     else
+//     {
+//       iMglPlotRotate(ih->data->rotX, (ih->data->y0 - ih->data->ye) * ff);
+//       iMglPlotRotate(ih->data->rotY, (ih->data->x0 - ih->data->xe) * ff);
+//     }
+
+    if(iup_iscontrol(status))  /* Enable rotate in Z-axis */
     {
-      /* Rotate in Z with vertical movement */
-      iMglPlotRotate(ih->data->rotZ, (ih->data->y0 - ih->data->ye) * ff);
+      float initAngle, currAngle;
+      float diffX, diffY;
+      float zX0, zY0, zXE, zYE;
+
+      /* Scale bounds to [0,0] - [2,2] */
+      zX0 = ih->data->x0 / (ih->data->w/2);
+      zY0 = ih->data->y0 / (ih->data->h/2);
+      zXE = ih->data->xe / (ih->data->w/2);
+      zYE = ih->data->ye / (ih->data->h/2);
+
+      /* Translate 0,0 to the center */
+      zX0 = zX0 - 1;    zXE = zXE - 1;
+
+      /* Flip so +Y is up instead of down */
+      zY0 = 1 - zY0;    zYE = 1 - zYE;
+
+      /* Difference between initial and final points */
+      diffX = ih->data->x0 - ih->data->xe;
+      diffY = ih->data->y0 - ih->data->ye;
+
+      /* Find initial and current angles */
+      initAngle = iMglPlotGetZAngleTrig(zX0, zY0);
+      currAngle = iMglPlotGetZAngleTrig(zXE, zYE);
+
+      /* Define rotation direction */
+      if((currAngle - initAngle) < 0)
+        ih->data->rotZ += sqrt(diffX*diffX + diffY*diffY) * ff;  /* Clockwise +Z and distance between points */
+      else
+        ih->data->rotZ -= sqrt(diffX*diffX + diffY*diffY) * ff;  /* Counter-clockwise -Z and distance between points */
     }
     else
     {
-      iMglPlotRotate(ih->data->rotX, (ih->data->y0 - ih->data->ye) * ff);
-      iMglPlotRotate(ih->data->rotY, (ih->data->x0 - ih->data->xe) * ff);
+      /* Distance between initial and final points * fator */
+      ih->data->rotX += (ih->data->y0 - ih->data->ye) * ff;
+      ih->data->rotY += (ih->data->x0 - ih->data->xe) * ff;
     }
 
+    iMglPlotClamp(ih);
     iMglPlotRepaint(ih, 1, 1);
   }
   else if(iup_isbutton1(status))
