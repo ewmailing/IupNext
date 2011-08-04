@@ -75,15 +75,13 @@ static int GetParam(lua_State *L)
   {
     char t = iupGetParamType(f, &line_size);
 
-    if (t == 't') /* if separator */
-    {
-      f += line_size;
-      i--; /* compensate next increment */
-      continue;
-    }
-
     switch(t)
     {
+    case 'u':
+    case 't':
+      f += line_size;
+      i--; /* compensate next increment */
+      continue; /* notice this will go to the next i */
     case 'b':
 /*  TO DO: add this code some day:
       if (lua_isboolean(L, lua_param_start))
@@ -91,8 +89,8 @@ static int GetParam(lua_State *L)
         param_data[i] = malloc(sizeof(int));
         *(int*)(param_data[i]) = lua_toboolean(L, lua_param_start); lua_param_start++;
         break;
-      }  */
-      /* else continuous and get an integer */
+      }  
+      else continue and get an integer  */
     case 'i':
     case 'o':
     case 'l':
