@@ -138,6 +138,7 @@ void ValTest(void)
   IupSetCallback(val_v, "K_ANY", (Icallback)k_any);
 //  IupSetAttribute(val_v, "INVERTED", "NO");
   IupSetAttribute(val_v, "EXPAND", "VERTICAL");
+  IupSetAttribute(val_v, "TIP", "Val Tip");
 
   val_h = IupVal("HORIZONTAL");
   IupSetAttribute(val_h, "MAX", "100.0");

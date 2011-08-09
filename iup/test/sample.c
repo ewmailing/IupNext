@@ -312,7 +312,7 @@ void SampleTest(void)
 
   _frm_1 = IupFrame(
     IupVbox(
-      set_callbacks(IupSetAttributes(IupButton("Button Text", NULL), "PADDING=5x5")), 
+      set_callbacks(IupSetAttributes(IupButton("Button Text", NULL), "PADDING=5x5, TIP=\"Button TIP\"")), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton("Text", NULL), "IMAGE=img1, PADDING=5x5")),"ACTION", action1_cb, NULL), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=img1")),"ACTION", action2_cb, NULL), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton("", NULL), "IMAGE=img1,IMPRESS=img2")),"ACTION", action3_cb, NULL), 
@@ -322,7 +322,7 @@ void SampleTest(void)
 
   _frm_2 = IupFrame(
     IupVbox(
-      IupLabel("Label Text"), 
+      IupSetAttributes(IupLabel("Label Text"), "TIP=\"Label TIP\""),
       IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL, MAXSIZE=150, NAME=SAMP_SEP"),
       IupSetAttributes(IupLabel(NULL), "IMAGE=img1"),
       NULL));
@@ -330,7 +330,7 @@ void SampleTest(void)
 
   _frm_3 = IupFrame(
     IupVbox(
-      set_callbacks(IupSetAttributes(IupToggle("Toggle Text", NULL), "VALUE=ON")),
+      set_callbacks(IupSetAttributes(IupToggle("Toggle Text", NULL), "VALUE=ON, TIP=\"Toggle TIP\"")),
       set_callbacks(IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1,IMPRESS=img2")),
       set_callbacks(IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1")),
       IupSetAttributes(IupFrame(IupRadio(IupVbox(
@@ -343,11 +343,13 @@ void SampleTest(void)
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");
   IupSetAttribute(_text_1,"SIZE","80x");
+  IupSetAttribute(_text_1,"TIP","Text TIP");
 
   _ml_1 = IupMultiLine( NULL);
   IupSetAttribute(_ml_1,"VALUE","Multiline Text\nSecond Line\nThird Line");
   IupSetAttribute(_ml_1,"EXPAND","YES");
   IupSetAttribute(_ml_1,"SIZE","80x40");
+  IupSetAttribute(_ml_1,"TIP","Multiline TIP");
 
   _frm_4 = IupFrame(IupVbox(
     set_callbacks(_text_1),
@@ -397,10 +399,12 @@ void SampleTest(void)
     NULL);
 
   val = IupVal(NULL);
+  IupSetAttribute(val,"TIP","Valuator TIP");
   set_callbacks(val);
   
   pbar = IupProgressBar();
   IupSetAttribute(pbar, "VALUE", "0.5");
+  IupSetAttribute(pbar,"TIP","ProgressBar TIP");
   set_callbacks(pbar);
 
   tabs = IupTabs(IupVbox(IupLabel(""), NULL), IupVbox(IupFill(), NULL), IupVbox(IupFill(), NULL), NULL);
@@ -409,12 +413,14 @@ void SampleTest(void)
   IupSetAttributeHandle(tabs,"TABIMAGE1", load_image_LogoTecgraf());
   IupSetAttribute(tabs,"TABTITLE2","Tab Title 2");
   IupSetAttribute(tabs,"RASTERSIZE","300x50");
+  IupSetAttribute(tabs,"TIP","Tabs TIP");
 //  IupSetAttribute(tabs,"PADDING","5x5");
   set_callbacks(tabs);
 
   tree = IupTree();
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree,"RASTERSIZE","100x150");
+  IupSetAttribute(tree,"TIP","Treee TIP");
   set_callbacks(tree);
 
   _cnv_1 = IupCanvas(NULL);
@@ -422,6 +428,7 @@ void SampleTest(void)
   IupSetAttribute(_cnv_1,"SCROLLBAR","YES");
   IupSetAttribute(_cnv_1,"EXPAND","HORIZONTAL");
   IupSetAttribute(_cnv_1,"RASTERSIZE","x100");
+  IupSetAttribute(_cnv_1,"TIP","Canvas TIP");
 //  IupSetAttribute(_cnv_1,"CANFOCUS","NO");
   set_callbacks(_cnv_1);
 
