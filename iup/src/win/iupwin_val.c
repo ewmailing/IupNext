@@ -239,6 +239,17 @@ static int winValProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
   return iupwinBaseProc(ih, msg, wp, lp, result);
 }
 
+static int winValBaseSetTipAttrib(Ihandle* ih, const char* value)
+{
+  HWND tips_hwnd;
+
+  iupdrvBaseSetTipAttrib(ih, value);
+
+  tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");
+  SendMessage(ih->handle, TBM_SETTOOLTIPS, (WPARAM)tips_hwnd, 0);
+  return 1;
+}
+
 
 /*********************************************************************************************/
 
@@ -309,6 +320,8 @@ void iupdrvValInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
   ic->Map = winValMapMethod;
+
+  iupClassRegisterAttribute(ic, "TIP", NULL, winValBaseSetTipAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupVal only */
   iupClassRegisterAttribute(ic, "VALUE", iupValGetValueAttrib, winValSetValueAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);  
