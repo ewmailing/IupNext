@@ -190,6 +190,9 @@ static int motProgressBarMapMethod(Ihandle* ih)
 
   ih->serial = iupDialogGetChildId(ih); /* must be after using the string */
 
+  XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+  XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
+
   /* initialize the widget */
   XtRealizeWidget(ih->handle);
 
