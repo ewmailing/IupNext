@@ -114,7 +114,7 @@ static int iSpinButtonCB(Ihandle* ih, int but, int pressed, int x, int y, char* 
   (void)x;
   (void)y;
  
-  if (pressed && but == IUP_BUTTON1)
+  if (pressed && but == IUP_BUTTON1 && !iup_isdouble(status))
   {
     int dir = iupAttribGetInt(ih, "_IUPSPIN_DIR");
     
