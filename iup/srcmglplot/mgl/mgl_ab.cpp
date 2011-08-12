@@ -386,7 +386,7 @@ void mglGraphAB::Putsw(mglPoint p, const wchar_t *wcs, const char *font, mreal s
 	if(font)	{	font1=new char[strlen(font)+2];	strcpy(font1,font);	}
 	else	{	font1=new char[strlen(FontDef)+2];	strcpy(font1,FontDef);	}
 	char col=TranspType!=2 ? 'k':'w';
-	f = strchr(font1,':');	if(f)	{	f[0]=0;	col=f[1];	}
+	f = (char*)strchr(font1,':');	if(f)	{	f[0]=0;	col=f[1];	}
 //	stl[1] = col;	SelectPen(stl);
 
 	if(size<0)	size = -size*FontSize;
@@ -508,7 +508,7 @@ void mglGraphAB::Legend(int n, wchar_t **text,char **style, mreal x, mreal y,
 	w = (w + llen*1.1f);	// add space for lines
 
 	bool rel = true;
-	if((pA=strchr(ff,'A')))
+	if((pA=(char*)strchr(ff,'A')))
 	{
 		*pA = 'L';
 		rel = false;

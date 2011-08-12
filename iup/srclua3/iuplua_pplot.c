@@ -140,45 +140,45 @@ static void PPlot(void)
 static void PlotBegin(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPlotBegin(ih, luaL_check_int(2));
+  IupPPlotBegin(ih, luaL_check_int(2));
 }
 
 static void PlotAdd(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPlotAdd(ih, (float)luaL_check_number(2), (float)luaL_check_number(3));
+  IupPPlotAdd(ih, (float)luaL_check_number(2), (float)luaL_check_number(3));
 }
 
 static void PlotAddStr(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPlotAddStr(ih, luaL_check_string(2), (float)luaL_check_number(3));
+  IupPPlotAddStr(ih, luaL_check_string(2), (float)luaL_check_number(3));
 }
 
 static void PlotEnd(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  int ret = IupPlotEnd(ih);
+  int ret = IupPPlotEnd(ih);
   lua_pushnumber(ret);
 }
 
 static void PlotInsertStr(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPlotInsertStr(ih, luaL_check_int(2), luaL_check_int(3), luaL_check_string(4), (float)luaL_check_number(5));
+  IupPPlotInsertStr(ih, luaL_check_int(2), luaL_check_int(3), luaL_check_string(4), (float)luaL_check_number(5));
 }
 
 static void PlotInsert(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPlotInsert(ih, luaL_check_int(2), luaL_check_int(3), (float)luaL_check_number(4), (float)luaL_check_number(5));
+  IupPPlotInsert(ih, luaL_check_int(2), luaL_check_int(3), (float)luaL_check_number(4), (float)luaL_check_number(5));
 }
 
 static void PlotTransform(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
   int ix, iy;
-  IupPlotTransform(ih, (float)luaL_check_number(2), (float)luaL_check_number(3), &ix, &iy);
+  IupPPlotTransform(ih, (float)luaL_check_number(2), (float)luaL_check_number(3), &ix, &iy);
   lua_pushnumber(ix);
   lua_pushnumber(iy);
 }
@@ -186,7 +186,7 @@ static void PlotTransform(void)
 static void PlotPaintTo(void)
 {
   Ihandle *ih = iuplua_checkihandle(1);
-  IupPlotPaintTo(ih, cdlua_checkcanvas(2));
+  IupPPlotPaintTo(ih, cdlua_checkcanvas(2));
 }
 
 int iup_pplotlua_open(void)
@@ -213,15 +213,6 @@ int iup_pplotlua_open(void)
   iuplua_register("IupPPlotInsert", PlotInsert);
   iuplua_register("IupPPlotTransform", PlotTransform);
   iuplua_register("IupPPlotPaintTo", PlotPaintTo);
-
-  iuplua_register("IupPlotBegin", PlotBegin);
-  iuplua_register("IupPlotAdd", PlotAdd);
-  iuplua_register("IupPlotAddStr", PlotAddStr);
-  iuplua_register("IupPlotEnd", PlotEnd);
-  iuplua_register("IupPlotInsertStr", PlotInsertStr);
-  iuplua_register("IupPlotInsert", PlotInsert);
-  iuplua_register("IupPlotTransform", PlotTransform);
-  iuplua_register("IupPlotPaintTo", PlotPaintTo);
 
 #ifdef IUPLUA_USELOH
 #ifdef TEC_BIGENDIAN
