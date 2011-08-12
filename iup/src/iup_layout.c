@@ -245,9 +245,6 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
       ih->expand &= children_expand; /* combine but only expand where the element can expand */
       ih->naturalwidth = iupMAX(ih->naturalwidth, w);
       ih->naturalheight = iupMAX(ih->naturalheight, h);
-
-      /* crop the natural size */
-      iupLayoutSetMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
     }
   }
   else 
@@ -261,10 +258,10 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
       if (ih->naturalwidth <= 0) ih->naturalwidth = w;
       if (ih->naturalheight <= 0) ih->naturalheight = h;
     }
-
-    /* crop the natural size */
-    iupLayoutSetMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
   }
+
+  /* crop the natural size */
+  iupLayoutSetMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
 }
 
 void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
@@ -307,11 +304,11 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
       ih->currentwidth = (ih->expand & IUP_EXPAND_WIDTH)? w: ih->naturalwidth;
       ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? h: ih->naturalheight;
     }
-
-    /* crop the current size if expanded */
-    if (ih->expand & IUP_EXPAND_WIDTH || ih->expand & IUP_EXPAND_HEIGHT)
-      iupLayoutSetMinMaxSize(ih, &(ih->currentwidth), &(ih->currentheight));
   }
+
+  /* crop also the current size if expanded */
+  if (ih->expand & IUP_EXPAND_WIDTH || ih->expand & IUP_EXPAND_HEIGHT)
+    iupLayoutSetMinMaxSize(ih, &(ih->currentwidth), &(ih->currentheight));
 
   if (ih->firstchild)
     iupClassObjectSetChildrenCurrentSize(ih, shrink);

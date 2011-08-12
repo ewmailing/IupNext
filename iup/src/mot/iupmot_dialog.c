@@ -457,6 +457,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
   return 1;
 }
 
+
 /****************************************************************************
                                    Attributes
 ****************************************************************************/
@@ -476,7 +477,7 @@ static int motDialogSetMinSizeAttrib(Ihandle* ih, const char* value)
   if (min_h > decorheight)
     XtVaSetValues(ih->handle, XmNminHeight, min_h-decorheight, NULL);  
 
-  return 1;
+  return iupBaseSetMinSizeAttrib(ih, value);
 }
 
 static int motDialogSetMaxSizeAttrib(Ihandle* ih, const char* value)
@@ -493,7 +494,7 @@ static int motDialogSetMaxSizeAttrib(Ihandle* ih, const char* value)
   if (max_h > decorheight)
     XtVaSetValues(ih->handle, XmNmaxHeight, max_h-decorheight, NULL);  
 
-  return 1;
+  return iupBaseSetMaxSizeAttrib(ih, value);
 }
 
 static int motDialogSetTitleAttrib(Ihandle* ih, const char* value)

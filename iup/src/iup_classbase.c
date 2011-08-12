@@ -162,6 +162,13 @@ char* iupBaseGetCharSizeAttrib(Ihandle* ih)
   return str;
 }
 
+static char* iBaseGetNaturalSizeAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(50);
+  sprintf(str, "%dx%d", ih->naturalwidth, ih->naturalheight);
+  return str;
+}
+
 static char* iBaseGetPositionAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(50);
@@ -373,7 +380,7 @@ static char* iBaseGetFloatingAttrib(Ihandle* ih)
     return "NO";
 }
 
-static int iBaseSetMaxSizeAttrib(Ihandle* ih, const char* value)
+int iupBaseSetMaxSizeAttrib(Ihandle* ih, const char* value)
 {
   if (value)
     ih->flags |= IUP_MAXSIZE;
@@ -382,7 +389,7 @@ static int iBaseSetMaxSizeAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static int iBaseSetMinSizeAttrib(Ihandle* ih, const char* value)
+int iupBaseSetMinSizeAttrib(Ihandle* ih, const char* value)
 {
   if (value)
     ih->flags |= IUP_MINSIZE;
@@ -466,10 +473,11 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iupBaseSetSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iupBaseSetRasterSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHARSIZE", iupBaseGetCharSizeAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NATURALSIZE", iBaseGetNaturalSizeAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "POSITION", iBaseGetPositionAttrib, iBaseSetPositionAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MAXSIZE", NULL, iBaseSetMaxSizeAttrib, IUPAF_SAMEASSYSTEM, "65535x65535", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MINSIZE", NULL, iBaseSetMinSizeAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MINSIZE", NULL, iupBaseSetMinSizeAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAXSIZE", NULL, iupBaseSetMaxSizeAttrib, IUPAF_SAMEASSYSTEM, "65535x65535", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupdrvSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);  /* use inheritance to retrieve standard fonts */
   iupClassRegisterAttribute(ic, "FONT", iupGetFontAttrib, iupSetFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

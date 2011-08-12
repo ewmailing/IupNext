@@ -100,6 +100,10 @@ OpenWatcom C++</a>,
   <a href="ide_guide/msvc8.html">Visual C++ 8 (Visual Studio 2005)</a>,
 <a href="ide_guide/codeblocks.html">Code Blocks</a> and <a href="ide_guide/eclipse.html">
 Eclipse for C++</a>.</p>
+<p>In Windows, when using Gcc to link an application the libraries order are as 
+important as in UNIX. Always put the less dependent library at the end, for 
+example:</p>
+<pre>-liup -lgdi32 -lcomdlg32 -lcomctl32 -lole32</pre>
 <h4>Motif</h4>
 <p>In Motif, IUP uses the Motif (Xm), the Xtoolkit (Xt) and the Xlib (X11) 
 libraries. To link an application to IUP, use the following options in the 

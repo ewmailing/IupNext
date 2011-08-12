@@ -35,6 +35,8 @@ but this is equivalent of setting the other value to 0. For example: &quot;x40&q
 <p>When this attribute is set, it resets the <a href="iup_size.html">SIZE</a>
   attribute. So changes to the <a href="iup_font.html">FONT</a> attribute will 
 not affect the <strong>User</strong> size of the element.</p>
+<p>To obtain the last computed <strong>Natural</strong> size of the control in pixels, use the read-only 
+attribute <strong>NATURALSIZE</strong>.</p>
 <hr class="style1">
 <p>A <b>User</b> size of &quot;0x0&quot; can be set, it can also be set using NULL.</p>
 <p>If you wish to use the <b>User</b> size only as an initial size, change this attribute to NULL after the control is mapped, the returned size in 
