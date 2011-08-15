@@ -5099,6 +5099,8 @@ void IupMglPlotOpen(void)
 }
 
 /* TODO
+
+To Release:
   improve rotation
   LoadFont
   -------------------
@@ -5106,6 +5108,8 @@ void IupMglPlotOpen(void)
   improve autoticks computation
   document DS_MODE Options
   Legend  
+  -------------------
+  Some of the ***
 
 Next Version:
   DS_EDIT+Selection+Callbacks
@@ -5124,21 +5128,19 @@ Maybe:
 MathGL:
   BOLD and ITALIC not working for the default font, only for loaded fonts. Some TeX feature too.
   gr->Dens does not works when using mglGraphZB, works ok when using OpenGL.
-  gr->ContFA has a different result in OpenGL. It seems to have an invalid depth. Without OpenGL works fine.
-  gr->Axial is changing somethig that affects other graphs
-  gr->Box depth in OpenGL
-  graph disapear during zoom in, only in OpenGL, depth clipping?
-  bars at 0 and n-1
-  Cls inside Zoom
-  License
+  ***gr->ContFA has a different result in OpenGL. It seems to have an invalid depth. Without OpenGL works fine.
+  gr->Axial is changing somethig that affects other graphs in OpenGL. Without OpenGL works fine.
+  ***gr->Box depth in OpenGL
+  ***graph disapear during zoom in, only in OpenGL, depth clipping?
+  ***bars at 0 and n-1
   -------------------
   Ticks
      SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
      TicksVal should follow ticks spacing configuration 
   Fonts
-     text anti-aliasing
-     additional library to load TTF and OTF using FreeType
+     ***text anti-aliasing
+     ***additional library to load TTF and OTF using FreeType
         vfm too slow to load font, need a binary format
-     option to draw an opaque background for text
+     ***option to draw an opaque background for text
      keep aspect ratio in OpenGL
 */
