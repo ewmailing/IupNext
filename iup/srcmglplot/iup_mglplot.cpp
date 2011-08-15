@@ -383,7 +383,8 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   else 
     size = (int)((size*ih->data->dpi)/72.0f);   //from points to pixels
 
-  //TODO Magic factor for acceptable size 
+  //TODO Magic factor for acceptable size. 
+  //     Don't know why it works, but we obtain good results.
   ih->data->FontSizeDef = ((float)size/(float)ih->data->h)*ih->data->dpi;
 
   const char* name = iMglPlotGetFontName(typeface);
@@ -1495,7 +1496,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       //TODO: this equation works only if x in the interval [-1, 1]
       gr->SetFunc("(y+1)/2*cos(pi*x)", "(y+1)/2*sin(pi*x)");
 
-      //This box has to be here, so it will be affected by the transformation
+      // This box has to be here, so it will be affected by the transformation
       if (ih->data->Box)
         iMglPlotDrawBox(ih, gr);
 
@@ -5098,17 +5099,17 @@ void IupMglPlotOpen(void)
 }
 
 /* TODO
-  evaluate interval
-  melhorar rotação
-  improve autoticks computation
-  -------------------
-  documentar DS_MODE Options
-  -------------------
-  Legend  
+  improve rotation
   LoadFont
   -------------------
+  evaluate interval
+  improve autoticks computation
+  document DS_MODE Options
+  Legend  
+
+Next Version:
   DS_EDIT+Selection+Callbacks
-  Properties dialog (rever IupGraph)
+  Properties dialog (see IupGraph)
   IDTF+PDF 3D
 
 Maybe:
@@ -5127,17 +5128,17 @@ MathGL:
   gr->Axial is changing somethig that affects other graphs
   gr->Box depth in OpenGL
   graph disapear during zoom in, only in OpenGL, depth clipping?
-  observation: by changing Zoom and PlotFactor, Legend is displayed in OpenGL
   bars at 0 and n-1
   Cls inside Zoom
   License
   -------------------
-  SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
+  Ticks
+     SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
+     TicksVal should follow ticks spacing configuration 
   Fonts
      text anti-aliasing
-     bug in make_font
      additional library to load TTF and OTF using FreeType
-     vfm too slow to load font, need a binary format
+        vfm too slow to load font, need a binary format
      option to draw an opaque background for text
      keep aspect ratio in OpenGL
 */
