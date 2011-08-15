@@ -35,6 +35,10 @@ ifndef TEC_UNAME
   ifeq ($(TEC_SYSNAME), FreeBSD)
     TEC_SYSMINOR:=$(shell uname -r|cut -f2 -d.|cut -f1 -d-)
   endif
+  ifeq ($(TEC_SYSNAME), GNU/kFreeBSD)
+    TEC_SYSNAME:=kFreeBSD
+    TEC_SYSMINOR:=$(shell uname -r|cut -f2 -d.|cut -f1 -d-)
+  endif
   ifeq ($(TEC_SYSNAME), AIX)
     TEC_SYSVERSION:=$(shell uname -v)
     TEC_SYSMINOR:=$(shell uname -r)
@@ -461,7 +465,7 @@ else
   # Prefer using GTK_BASE then changing this
   # Fink GTK port
     GTK = /sw
-  # Macport GTK port
+  # MacPorts GTK
   #  GTK = /opt/local
   # GTK-OSX Framework
   #   GTK := /gtk/inst
