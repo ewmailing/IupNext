@@ -17,7 +17,6 @@
 #include "iupgl.h"
 
 #include "iup_mglplot.h"
-#include "makefont/iup_mglmakefont.h"
 
 #include "iup_assert.h"
 #include "iup_class.h"
@@ -98,6 +97,7 @@ struct _IcontrolData
   float dpi;
   bool redraw;
   bool opengl;
+  char ErrorMessage[1024];
 
   /* Obtained from FONT */
   char FontDef[32];     
@@ -384,8 +384,9 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   else 
     size = (int)((size*ih->data->dpi)/72.0f);   //from points to pixels
 
-  //TODO Magic factor for acceptable size. 
-  //     Don't know why it works, but we obtain good results.
+  //IMPORTANT: 
+  //  Magic factor for acceptable size. 
+  //  Don't know why it works, but we obtain good results.
   ih->data->FontSizeDef = ((float)size/(float)ih->data->h)*ih->data->dpi;
 
   const char* name = iMglPlotGetFontName(typeface);
@@ -405,6 +406,10 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
     iupAttribStoreStr(ih, "_IUP_MGL_FONTNAME", name);
     iupAttribStoreStr(ih, "_IUP_MGL_FONTPATH", path);
   }
+
+  //IMPORTANT:
+  //  BOLD and ITALIC does not work for the internal font, only for loaded fonts. 
+  //  Some TeX features too.
 }
 
 static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, int fontstyle, float fontsizefactor)
@@ -644,7 +649,7 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
             gr->Max.z = +1.0f;
           }
         }
-        else
+        else /* 1D Linear data */
         {
           /* the data will be plotted as Y, X will be 0,1,2,3,... */
           if (ih->data->axisX.axAutoScaleMax || ih->data->axisX.axAutoScaleMin)
@@ -1087,7 +1092,7 @@ static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
   iMglPlotConfigPlotArea(ih, gr);
 
   // Transparency
-  gr->Alpha(true);
+  gr->Alpha(true);  // Necessary so Anti-alias can work.
   if (ih->data->transparent)
   {
     gr->SetTransparent(true);
@@ -1593,6 +1598,9 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
   // on metafile and bitmaps, all mglGraph control must be done here
   // and can NOT be done inside the attribute methods
   gr->DefaultPlotParam();
+
+  gr->Message = &(ih->data->ErrorMessage[0]);
+  ih->data->ErrorMessage[0] = 0;
 
   iMglPlotConfigView(ih, gr);
 
@@ -2169,10 +2177,10 @@ static int iMglPlotSetDSRearrangeAttrib(Ihandle* ih, const char* value)
     return 0;
 
   ds = &ih->data->dataSet[ih->data->dataSetCurrent];
-  
+
+  // Must be Planar data
   if (ds->dsY || ds->dsZ || ds->dsX->nz != 1)
     return 0;
-
   if (ds->dsX->ny == 1)
     return 0;
 
@@ -2252,9 +2260,9 @@ static int iMglPlotSetDSSplitAttrib(Ihandle* ih, const char* value)
 
   ds = &ih->data->dataSet[ih->data->dataSetCurrent];
   
+  // Must be Planar data
   if (ds->dsY || ds->dsZ || ds->dsX->nz != 1)
     return 0;
-
   if (ds->dsX->ny == 1)
     return 0;
 
@@ -3658,6 +3666,14 @@ static int iMglPlotSetAntialiasAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iMglPlotGetErrorMessageAttrib(Ihandle* ih)
+{
+  if (ih->data->ErrorMessage[0])
+    return ih->data->ErrorMessage;
+  else
+    return NULL;
+}
+
 static char* iMglPlotGetAntialiasAttrib(Ihandle* ih)
 {
   if (!ih->data->opengl)
@@ -4846,6 +4862,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "ANTIALIAS", iMglPlotGetAntialiasAttrib, iMglPlotSetAntialiasAttrib, "Yes", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MGLFONT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESET", NULL, iMglPlotSetResetAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ERRORMESSAGE", iMglPlotGetErrorMessageAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLECOLOR", iMglPlotGetTitleColorAttrib, iMglPlotSetTitleColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
@@ -5058,7 +5075,7 @@ To Release:
   document DS_MODE Options
   Legend  
   -------------------
-  Some of the ***
+  Some of the *** bellow
 
 Next Version:
   DS_EDIT+Selection+Callbacks
@@ -5075,11 +5092,9 @@ Maybe:
   Ternary
 
 MathGL:
-  BOLD and ITALIC not working for the default font, only for loaded fonts. Some TeX feature too.
-  gr->Dens does not works when using mglGraphZB, works ok when using OpenGL.
   ***gr->ContFA has a different result in OpenGL. It seems to have an invalid depth. Without OpenGL works fine.
-  gr->Axial is changing somethig that affects other graphs in OpenGL. Without OpenGL works fine.
   ***gr->Box depth in OpenGL
+  gr->Axial is changing something that affects other graphs in OpenGL. Without OpenGL works fine.
   ***graph disapear during zoom in, only in OpenGL, depth clipping?
   ***bars at 0 and n-1
   -------------------
@@ -5087,6 +5102,7 @@ MathGL:
      SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
      TicksVal should follow ticks spacing configuration 
   Fonts
+     ***font size in OpenGL is very different
      ***text anti-aliasing
      ***additional library to load TTF and OTF using FreeType
         vfm too slow to load font, need a binary format
