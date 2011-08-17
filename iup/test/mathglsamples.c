@@ -628,6 +628,12 @@ static void ChangePlot(int item)
   sprintf(filenameSVG, "../%s.svg", test_list[item].title);
   sprintf(filenameEPS, "../%s.eps", test_list[item].title);
   IupSetAttribute(plot, "REDRAW", NULL);
+
+  {
+    char* errmsg = IupGetAttribute(plot, "ERRORMESSAGE");
+    if (errmsg)
+      IupMessage("Error", errmsg);
+  }
 }
 
 static int k_enter_cb(Ihandle*ih)
@@ -913,7 +919,7 @@ static int bt2_cb(Ihandle *self)
 
 Ihandle* controlPanel(void)
 {
-  Ihandle *vboxl, *lbl1, *lbl2, *lbl3, *lbl4, *bt1, *bt2,
+  Ihandle *vbox1, *vbox2, *vbox3, *lbl1, *lbl2, *lbl3, *lbl4, *bt1, *bt2,
     *boxinfo, *boxminmaxY_dial, *boxminmaxX_dial, *f1, *f2;
 
   /* left panel: plot control
@@ -997,20 +1003,20 @@ Ihandle* controlPanel(void)
   lbl3 = IupLabel("");
   IupSetAttribute(lbl3, "SEPARATOR", "HORIZONTAL");
 
-  aa_tgg = IupToggle("Antialias", NULL);
-  IupSetCallback(aa_tgg, "ACTION", (Icallback)aa_tgg_cb);
-
   transp_tgg = IupToggle("Transparent", NULL);
   IupSetCallback(transp_tgg, "ACTION", (Icallback)transp_tgg_cb);
 
   light_tgg = IupToggle("Light", NULL);
   IupSetCallback(light_tgg, "ACTION", (Icallback)light_tgg_cb);
 
-  opengl_tgg = IupToggle("OpenGL", NULL);
-  IupSetCallback(opengl_tgg, "ACTION", (Icallback)opengl_tgg_cb);
-
   lbl4 = IupLabel("");
   IupSetAttribute(lbl4, "SEPARATOR", "HORIZONTAL");
+
+  aa_tgg = IupToggle("Antialias", NULL);
+  IupSetCallback(aa_tgg, "ACTION", (Icallback)aa_tgg_cb);
+
+  opengl_tgg = IupToggle("OpenGL", NULL);
+  IupSetCallback(opengl_tgg, "ACTION", (Icallback)opengl_tgg_cb);
 
   bt1 = IupButton("Export SVG", NULL);
   IupSetCallback(bt1, "ACTION", (Icallback)bt1_cb);
@@ -1018,12 +1024,24 @@ Ihandle* controlPanel(void)
   bt2 = IupButton("Export EPS", NULL);
   IupSetCallback(bt2, "ACTION", (Icallback)bt2_cb);
 
-  vboxl = IupVbox(f1, f2, lbl1, grid_tgg, box_tgg, lbl2, legend_tgg, lbl3, aa_tgg, transp_tgg, light_tgg, opengl_tgg, lbl4, IupHbox(bt1, bt2, NULL), NULL);
-  IupSetAttribute(vboxl, "GAP", "4");
-  IupSetAttribute(vboxl, "MARGIN", "5x0");
-  IupSetAttribute(vboxl, "EXPAND", "NO");
+  vbox1 = IupFrame(IupVbox(f1, f2, lbl1, grid_tgg, box_tgg, 
+                          lbl2, legend_tgg, 
+                          lbl3, transp_tgg, light_tgg, 
+                          NULL));
+  IupSetAttribute(vbox1, "GAP", "4");
+  IupSetAttribute(vbox1, "MARGIN", "5x5");
 
-  return vboxl;
+  vbox2 = IupVbox(aa_tgg, opengl_tgg, 
+                  lbl4, IupHbox(bt1, bt2, NULL), 
+                  NULL);
+  IupSetAttribute(vbox2, "GAP", "4");
+  IupSetAttribute(vbox2, "MARGIN", "5x0");
+
+  vbox3 = IupVbox(vbox1, vbox2, NULL);
+  IupSetAttribute(vbox3, "GAP", "7");
+  IupSetAttribute(vbox3, "MARGIN", "0x0");
+
+  return vbox3;
 }
 
 int main(int argc, char* argv[])

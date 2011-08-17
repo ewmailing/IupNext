@@ -451,7 +451,7 @@ void mglGraphGL::Glyph(mreal x, mreal y, mreal f, int s, long j, char col)
 	mglColor cc = mglColor(col);
 	if(!cc.Valid())	cc = mglColor(CDef[0],CDef[1],CDef[2]);
 	glColor4f(cc.r,cc.g,cc.b,CDef[3]);
-	if(s&8)
+/*	if(s&8)
 	{
 		mreal dy = 0.004;
 		if(s&4)	glBegin(GL_LINE_LOOP);
@@ -507,35 +507,77 @@ void mglGraphGL::Glyph(mreal x, mreal y, mreal f, int s, long j, char col)
 		}
 		glEnd();
 	}
+*/
+	if((s&4)==0)
+	{
+		if(s&8)
+		{
+			mreal dy = 0.004;
+			glBegin(GL_QUADS);
+			p[2]=p[5]=p[8]=p[11]=0;
+			p[0]=p[6]=x;			p[1]=p[4] =y+dy;
+			p[3]=p[9]=fabs(f)+x;	p[7]=p[10]=y-dy;
+			PostScale(p,4);
+			glVertex3f(p[0],p[1],p[2]);		glVertex3f(p[3],p[4],p[5]);
+			glVertex3f(p[9],p[10],p[11]);	glVertex3f(p[6],p[7],p[8]);
+			glEnd();
+		}
+		else
+		{
+			const short *trig = fnt->GetTr(ss,j);
+			register long ik,ii, nt=fnt->GetNt(ss,j);
+			if(!trig || nt<=0)	return;
+			glBegin(GL_TRIANGLES);
+			for(ik=0;ik<nt;ik++)
+			{
+				ii = 6*ik;	p[0]=f*trig[ii]+x;	p[1]=f*trig[ii+1]+y;	p[2]=0;
+				ii+=2;		p[3]=f*trig[ii]+x;	p[4]=f*trig[ii+1]+y;	p[5]=0;
+				ii+=2;		p[6]=f*trig[ii]+x;	p[7]=f*trig[ii+1]+y;	p[8]=0;
+				PostScale(p,3);
+				glVertex3f(p[0],p[1],p[2]);	glVertex3f(p[3],p[4],p[5]);
+				glVertex3f(p[6],p[7],p[8]);
+			}
+			glEnd();
+		}
 
-  //TODO Draw a line countour if anti-aliasing is ON
-  // Proof of concept, because the outline is larger than the actual font
-  // so the result is a font that looks bolder
-  if (glIsEnabled(GL_LINE_SMOOTH))
-  {
+	}
+	if(s&8)		// duplicate wire  manually
+	{
+		mreal dy = 0.004;
+		glBegin(GL_QUADS);
+		p[2]=p[5]=p[8]=p[11]=0;
+		p[0]=p[6]=x;			p[1]=p[4] =y+dy;
+		p[3]=p[9]=fabs(f)+x;	p[7]=p[10]=y-dy;
+		PostScale(p,4);
+		glVertex3f(p[0],p[1],p[2]);		glVertex3f(p[3],p[4],p[5]);
+		glVertex3f(p[9],p[10],p[11]);	glVertex3f(p[6],p[7],p[8]);
+		glEnd();
+	}
+	else
+	{
 		const short *line = fnt->GetLn(ss,j);
-    long ik,ii,il=0, nl=fnt->GetNl(ss,j);
-    glBegin(GL_LINES);
-    for(ik=0;ik<nl;ik++)
-    {
-	    ii = 2*ik;
+		long ik,ii,il=0, nl=fnt->GetNl(ss,j);
+		if(!line || nl<=0)	return;
+		glBegin(GL_LINES);
+		for(ik=0;ik<nl;ik++)
+		{
+			ii = 2*ik;
 			if(line[ii]==0x3fff && line[ii+1]==0x3fff)	// line breakthrough
 			{	il = ik+1;	continue;	}
 			else if(ik==nl-1 || (line[ii+2]==0x3fff && line[ii+3]==0x3fff))
-	    {	// enclose the circle. May be in future this block should be commented
-		    p[0]=f*line[ii]+x;	p[1]=f*line[ii+1]+y;	p[2]=0;	ii=2*il;
-		    p[3]=f*line[ii]+x;	p[4]=f*line[ii+1]+y;	p[5]=0;
-	    }
-	    else
-	    {	// normal line
-		    p[0]=f*line[ii]+x;	p[1]=f*line[ii+1]+y;	p[2]=0;	ii+=2;
-		    p[3]=f*line[ii]+x;	p[4]=f*line[ii+1]+y;	p[5]=0;
-	    }
-	    PostScale(p,2);
-	    glVertex3f(p[0],p[1],p[2]);	glVertex3f(p[3],p[4],p[5]);
-    }
-    glEnd();
-  }
-
+			{	// enclose the circle. May be in future this block should be commented
+				p[0]=f*line[ii]+x;	p[1]=f*line[ii+1]+y;	p[2]=0;	ii=2*il;
+				p[3]=f*line[ii]+x;	p[4]=f*line[ii+1]+y;	p[5]=0;
+			}
+			else
+			{	// normal line
+				p[0]=f*line[ii]+x;	p[1]=f*line[ii+1]+y;	p[2]=0;	ii+=2;
+				p[3]=f*line[ii]+x;	p[4]=f*line[ii+1]+y;	p[5]=0;
+			}
+			PostScale(p,2);
+			glVertex3f(p[0],p[1],p[2]);	glVertex3f(p[3],p[4],p[5]);
+		}
+		glEnd();
+	}
 }
 //-----------------------------------------------------------------------------

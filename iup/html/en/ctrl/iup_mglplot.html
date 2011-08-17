@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -174,7 +174,7 @@ mglplot() [in LED]</pre>
 <pre>void <b>IupMglPlotBegin</b>(Ihandle* <b>ih</b>, int <b>dim</b>); [in C]
 <b>iup.MglPlotBegin</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]</pre>
 <p>Prepares a dataset to receive samples. The dimension of the data can be 1, 2 or 3. 
-Linear data only.</p>
+<em>Linear data only.</em></p>
 <hr>
 <pre>void <b>IupMglPlotAdd1D</b>(Ihandle* <b>ih</b>, const char* <b>name</b>, float <b>y</b>); [in C]
 <b>iup.MglPlotAdd1D</b>(<b>ih</b>: ihandle, <b>name</b>: string, <b>y</b>: number) [in Lua]</pre>
@@ -183,17 +183,17 @@ called with dim=1. <strong>name</strong> is an optional string used for tick
 labels in the X axis, and it can be NULL (nil in Lua). Names are allowed only 
 for the first dataset and when set ticks configuration for the X axis is 
 ignored, all the names are shown. The X axis data is automatically generated (0,1,2,3,...). 
-Linear data only.</p>
+<em>Linear data only.</em></p>
 <hr>
 <pre>void <b>IupMglPlotAdd2D</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>); [in C]
 <b>iup.MglPlotAdd2D</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>: number) [in Lua]</pre>
 <p>Adds a sample to the dataset. Can only be called if <b>IupMglPlotBegin</b> was 
-called with dim=2. Linear data only.</p>
+called with dim=2. <em>Linear data only.</em></p>
 <hr>
 <pre>void <b>IupMglPlotAdd3D</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>, float <b>z</b>); [in C]
 <b>iup.MglPlotAdd3D</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]</pre>
 <p>Adds a sample to the dataset. Can only be called if <b>IupMglPlotBegin</b> was 
-called with dim=3. Linear data only.</p>
+called with dim=3. <em>Linear data only.</em></p>
 <hr>
 <pre>int <b>IupMglPlotEnd</b>(Ihandle* <b>ih</b>); [in C]
 <b>iup.MglPlotEnd</b>(<b>ih</b>: ihandle) -&gt; (<b>index</b>: number) [in Lua]</pre>
@@ -204,11 +204,17 @@ index (CURRENT) to the return value. You can only set attributes of a dataset AF
 added the dataset.&nbsp;Can only be called if <b>IupMglPlotBegin</b> was called. 
 Whenever you create a dataset all its &quot;DS_*&quot; attributes will be set to the 
 default values. Notice that DS_MODE must be set before other &quot;DS_*&quot; attributes. 
-Linear data only.</p>
+<em>Linear data only.</em></p>
 <hr>
 <pre>void <b>IupMglPlotNewDataSet</b>(Ihandle* <b>ih</b>, int <b>dim</b>); [in C]
 <b>iup.MglPlotNewDataSet</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]</pre>
-<p>Creates an empty dataset to receive samples. The dimension of the data can be 1, 2 or 3.</p>
+<p>Creates an empty dataset to receive samples. The dimension of the data can be 1, 2 or 3. 
+Linear data can have 1, 2 or 3 dimensions. Planar data has 2 dimensions, but use 
+dim=1. Volumetric data has 3 dimensions, but use dim=1.</p>
+<p>Planar and volumetric data distribute their data in 2D and 3D continuous 
+arrays, so the number of dimensions is given only when the array is set in <b>IupMglPlotSetData</b>, <b>IupMglPlotLoadData</b> 
+or <b>IupMglPlotSetFromFormula</b>. You can convert planar data into linear data 
+using the DS_REARRANGE and DS_SPLIT attributes.</p>
 <hr>
 <pre>void <b>IupMglPlotInsert1D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, const char** <b>names</b>, float* <b>y</b>, int <strong>count</strong>); [in C]
 void <b>IupMglPlotInsert2D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, float* <b>x</b>, float* <b>y</b>, int <strong>count</strong>);
@@ -224,7 +230,7 @@ shifted if necessary. <strong>names</strong>
 are optional strings used for tick labels in the X axis, and it can be NULL (nil 
 in Lua). Names are allowed only for the first dataset and when set ticks 
 configuration for the X axis is ignored, all the names are shown. Also for the 1D version, the X axis data is automatically generated (0,1,2,3,...). 
-Linear data only.</p>
+<em>Linear data only.</em></p>
 <hr>
 <pre>void <b>IupMglPlotSet1D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, const char** <b>names</b>, float* <b>y</b>, int <strong>count</strong>); [in C]
 void <b>IupMglPlotSet2D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, float* <b>x</b>, float* <b>y</b>, int <strong>count</strong>);
@@ -238,18 +244,19 @@ Existing data is removed. Can be used only after the dataset is added to the plo
 is an optional array of strings used for tick labels in the X axis, and it can be NULL (nil 
 in Lua). Names are allowed only for the first dataset and when set ticks 
 configuration for the X axis is ignored, all the names are shown. Also for the 1D version, the X axis data is automatically generated (0,1,2,3,...). 
-Linear data only.</p>
+<em>Linear data only.</em></p>
 <hr>
 <pre>
 void <strong>IupMglPlotSetFormula</strong>(Ihandle* <strong>ih</strong>, int <strong>ds_index</strong>, const char* <strong>formulaX</strong>, const char* <strong>formulaY</strong>, const char* <strong>formulaZ</strong>, int <strong>count</strong>);
 <strong>iup.MglPlotSetFormula</strong>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <strong>formulaX</strong>, <strong>formulaY</strong>, <strong>formulaZ</strong>: string, <strong>count</strong>: number);
 </pre>
 <p>Same as IupMglPlotSet* but data is generated from a formula. If <strong>count</strong> 
-is 0 the current size is used.&nbsp; Linear data only. If 2D data then <strong>
+is 0 the current size is used.&nbsp;If 2D data then <strong>
 formulaY</strong> must be non NULL. If 3D data then <strong>formulaZ</strong> 
 must be non NULL. The variables of the formulas must be x, y and/or z. Coordinates are evaluated 
 in the [0,1] interval. There is no difference between lower or upper case in 
-formulas. The operators and functions can be:</p>
+formulas.<em> Linear data only.</em> </p>
+<p>The operators and functions can be:</p>
 <pre>+ - * / ^      (^=integer power)
 &lt; &gt; = &amp; |      (logical operators, &amp;=true if a and b both nonzero, |=true if x or y nonzero)
 sqrt(a)  pow(a,b)  log(a,b)  ln(a)    lg(a)            (ln(a)=log(e,a)  lg(a)=log(10,a)
@@ -258,7 +265,7 @@ sin(a)   cos(a)    tan(a)    asin(a)  acos(a)  atan(a)
 sinh(a)   cosh(a)  tanh(a)   asinh(a) acosh(a) atanh(a)</pre>
 <hr>
 <pre>void <b>IupMglPlotSetData</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, float* <b>data</b>, int <strong>count_x</strong>, int <strong>count_y</strong>, int <strong>count_z</strong>); [in C]
-<b>iup.IupMglPlotSetData</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>data</b>: table of number) [in Lua]
+<b>iup.MglPlotSetData</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>data</b>: table of number) [in Lua]
 </pre>
 <p>Sets an array of samples in the dataset <strong>ds_index</strong>. 
 All previous values are removed. Can be used only after a 1D dataset is added to the plot, 
@@ -273,10 +280,13 @@ though their coordinates can have 1, 2 or 3 dimensions. The data should be
 arranged so the element (x0, y0, z0) is accessed using the position [x0 + count_x*y0 
 + count_x*count_y*z0]. </p>
 <p>DS_COUNT is set to count_x*count_x*count_y. Existing data 
-is removed. Linear data is limited to 1D coordinates.</p>
+is removed.</p>
+<p><em>Can be used for linear, planar or volumetric data, but linear data is 
+limited to 1D coordinates. You can convert planar data into linear data using 
+the DS_REARRANGE and DS_SPLIT attributes.</em></p>
 <hr>
 <pre>void <b>IupMglPlotLoadData</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, const char* <b>filename</b>, int <strong>count_x</strong>, int <strong>count_y</strong>, int <strong>count_z</strong>); [in C]
-<b>iup.IupMglPlotLoadData</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>filename</b>: string[, <strong>count_x</strong>, <strong>count_y</strong>, <strong>count_z</strong>: number]) [in Lua]
+<b>iup.MglPlotLoadData</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>filename</b>: string[, <strong>count_x</strong>, <strong>count_y</strong>, <strong>count_z</strong>: number]) [in Lua]
 </pre>
 <p>Same as <strong>IupMglPlotSetData</strong> but loads the data from a file. 
 The file must contains space (&#39; &#39;) separated numeric data in text format. The text can contains 
@@ -287,9 +297,12 @@ data is limited to 1D coordinates.</p>
 calculated. The number of elements in the first line defines <strong>count_x</strong>, 
 the number of lines before an empty line or before a form feed (&#39;\f&#39;) defines <strong>count_y</strong>, and the number of empty lines or the number of form 
 feeds (&#39;\f&#39;) defines <strong>count_z</strong>.</p>
+<p><em>Can be used for linear, planar or volumetric data, but linear data is 
+limited to 1D coordinates.</em>&nbsp;<em>You can convert planar data into linear 
+data using the DS_REARRANGE and DS_SPLIT attributes.</em></p>
 <hr>
 <pre>void <b>IupMglPlotSetFromFormula</b>(Ihandle *<b>ih</b>, nt <b>ds_index</b>,, const char* <b>formula</b>, int <strong>count_x</strong>, int <strong>count_y</strong>, int <strong>count_z</strong>)); [in C]
-<b>iup.IupMglPlotSetFromFormula</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>formula</b>: string[, <strong>count_x</strong>, <strong>count_y</strong>, <strong>count_z</strong>: number]) [in Lua]
+<b>iup.MglPlotSetFromFormula</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>formula</b>: string[, <strong>count_x</strong>, <strong>count_y</strong>, <strong>count_z</strong>: number]) [in Lua]
 </pre>
 <p>Same as <strong>IupMglPlotSetData</strong> but data is generated from a 
 formula. If all <strong>count_*</strong> are 0 the current size remains, and the 
@@ -303,8 +316,10 @@ sqrt(a)  pow(a,b)  log(a,b)  ln(a)    lg(a)            (ln(a)=log(e,a)  lg(a)=lo
 abs(a)   sign(a)   mod(a,b)  step(a)  int(a)   rnd      pi
 sin(a)   cos(a)    tan(a)    asin(a)  acos(a)  atan(a)
 sinh(a)   cosh(a)  tanh(a)   asinh(a) acosh(a) atanh(a)</pre>
-<p>DS_COUNT is set to count_x*count_x*count_y. Linear data is limited to 1D 
-coordinates.</p>
+<p>DS_COUNT is set to count_x*count_x*count_y.</p>
+<p><em>Can be used for linear, planar or volumetric data, but linear data is limited to 1D coordinates. 
+You can convert planar data into linear data using the DS_REARRANGE and DS_SPLIT 
+attributes.</em></p>
 <hr>
 <pre>void <b>IupMglPlotTransform</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>, float <b>z</b>, int *<b>ix</b>, int *<b>iy</b>); [in C]
 <b>iup.MglPlotTransform</b>(<b>ih</b>: ihandle, <b>x, y, z</b>: number) -&gt; (<b>ix</b>, <b>iy</b>: number) [in Lua]</pre>
@@ -354,13 +369,15 @@ anti-aliasing support. For screen display only. Default: Yes.</p>
 <p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b>:  the background color. 
 Default: &quot;255 255 
 255&quot;.</p>
+<p><strong>ERRORMESSAGE</strong> (read-only)(non inheritable): If not NULL 
+returns the last error message reported by MathGL.</p>
 <p><strong><a href="../attrib/iup_font.html">FONT</a></strong>:
   the default font used in all text elements of the plot: title, legend and labels.</p>
 <p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b>:  the default color 
 used in all text elements of the plot: title, legend and labels. Default: &quot;0 0 0&quot;.</p>
 <p><strong>OPENGL</strong> (non inheritable): Enable or disable the rendering in 
 OpenGL. Default: Yes. When NO the rendering is slower and done in a RGB image.</p>
-<p><b>REDRAW</b> (write-only) (non inheritable): redraw the plot and update the display. Value is 
+<p><b>REDRAW</b> (write-only)(non inheritable): redraw the plot and update the display. Value is 
 ignored. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
 attributes without visual output. If the element is redraw by the system because 
 of a redraw event or by a call to IupUpdate, it will have the 
@@ -472,10 +489,14 @@ VOLUME_CLOUD for volumetric datasets.</p>
 	only for the plot, and not for a specific dataset. See more at
 	<a href="#DS_MODE">DS_MODE Options</a>.</p>
 </blockquote>
-<p><strong>DS_REARRANGE</strong> (write-only): rearrange planar data as linear 
-data. Value is ignored. It can rearrange planar data with count_y=2 or count_y=3 
-into 2D or 3D linear data. Also planar data with count_y!=1 and count_x=2 or 
-count_x=3 into 2D or 3D linear data.</p>
+<p><strong>DS_REARRANGE</strong> (write-only): rearrange planar data into linear 
+data. Value is ignored. It can rearrange planar data with count_y=2 or count_y=3, 
+into 2D or 3D linear data accordingly. It can also rearrange planar data with count_y!=1 and count_x=2 or 
+count_x=3 into 2D or 3D linear data accordingly.</p>
+<p><strong>DS_SPLIT</strong> (write-only): rearrange planar data into linear 
+data, but spliting into different datasets. It can rearrange planar data with count_y=2 or count_y=3, 
+into 2 or 3 datasets of 1D linear data accordingly. The current dataset is 
+modified and 1 or 2 new datasets are created accordingly.</p>
 <p><b>DS_SHOWVALUES</b>: enable or disable the display of the values near each 
 sample. Can be YES or NO. Default: NO. Values are drawn with LEGENDFONTSIZE and LEGENDFONTSTYLE.</p>
 <p><b>DS_REMOVE</b> (write-only): removes a sample from the current dataset given its index. 
