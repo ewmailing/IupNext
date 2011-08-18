@@ -36,6 +36,13 @@
 #include "mgl/mgl_eval.h"
 #include "mgl/mgl_gl.h"
 
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else
+#include <GL/glu.h>
+#endif
+
+
 enum {IUP_MGLPLOT_BOTTOMLEFT, IUP_MGLPLOT_BOTTOMRIGHT, IUP_MGLPLOT_TOPLEFT, IUP_MGLPLOT_TOPRIGHT};
 enum {IUP_MGLPLOT_INHERIT, IUP_MGLPLOT_PLAIN, IUP_MGLPLOT_BOLD, IUP_MGLPLOT_ITALIC, IUP_MGLPLOT_BOLD_ITALIC};
 
@@ -118,7 +125,7 @@ struct _IcontrolData
   Iaxis axisX, axisY, axisZ;
 
   /* Interaction */
-  float x0, xe, y0, ye;  // Aux
+  float last_x, last_y;  // Last Mouse Position
   float x1, x2, y1, y2;  // Zoom+Pan
   float rotX, rotZ, rotY;  // Rotate (angle in degrees)
 
@@ -214,8 +221,8 @@ static void iMglPlotResetInteraction(Ihandle *ih)
   ih->data->x1 = 0.0f;  ih->data->y1 = 0.0f;
   ih->data->x2 = 1.0f;  ih->data->y2 = 1.0f;
 
-  ih->data->x0 = 0.0f;  ih->data->xe = 0.0f;
-  ih->data->ye = 0.0f;  ih->data->y0 = 0.0f;
+  ih->data->last_x = 0.0f;
+  ih->data->last_y = 0.0f;
 
   ih->data->rotX = 0.0f;   ih->data->rotZ = 0.0f;   ih->data->rotY = 0.0f;
 }
@@ -4594,8 +4601,8 @@ static int iMglPlotMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, c
   if (press)  /* Any Button pressed */
   {
     /* Initial (x,y) */
-    ih->data->x0 = (float)x;
-    ih->data->y0 = (float)y;
+    ih->data->last_x = (float)x;
+    ih->data->last_y = (float)y;
   }
 
   if (iup_isdouble(status))  /* Double-click: restore interaction default values */
@@ -4608,49 +4615,20 @@ static int iMglPlotMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, c
   return IUP_DEFAULT;
 }
 
-/***** Testing IMLAB solution *****/
-#include "gl/GLU.H"
-static void iMglPlotTriDimUnproject(double x2, double y2, double *x3, double *y3, double *z3)
-{
-  double mv[16];
-  double pm[16];
-  int    vp[4];
-
-  glGetDoublev(GL_MODELVIEW_MATRIX,  mv);
-  glGetDoublev(GL_PROJECTION_MATRIX, pm);
-  glGetIntegerv(GL_VIEWPORT, vp);
-  gluUnProject(x2, y2, 0.0, mv, pm, vp, x3, y3, z3);
-}
-
 static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 {
-  ih->data->xe = (float)x;
-  ih->data->ye = (float)y;
+  float cur_x = (float)x;
+  float cur_y = (float)y;
 
   if (iup_isbutton3(status))
   {
-    /***** Testing IMLAB solution *****/
-    double dif_x, dif_y;
-    double x1, y1, z1;
-    double x2, y2, z2;
-    float norma, deltaRotX, deltaRotZ, deltaRotY;
+    // This is the same computation done in MathGL widgets
+    float ff = 240.0f / sqrt(float(ih->data->w * ih->data->h));
+    float deltaZ = (ih->data->last_x - cur_x) * ff;
+    float deltaX = (ih->data->last_y - cur_y) * ff;
 
-    dif_x = ih->data->xe - ih->data->x0;
-    dif_y = (ih->data->h - 1 - ih->data->ye) - (ih->data->h - 1 - ih->data->y0);
-
-    iMglPlotTriDimUnproject (ih->data->xe, ih->data->ye, &x1, &y1, &z1);
-    iMglPlotTriDimUnproject ((double)(-dif_y+ih->data->xe), (double)(dif_x+ih->data->ye), &x2, &y2, &z2);
-    
-    /* Rotates in mglPlot 3D is (X, Z, Y) - X horizontal, Z vertical, Y diagonal */
-    deltaRotX = (float)x2-(float)x1;
-    deltaRotZ = (float)y2-(float)y1;
-    deltaRotY = (float)z2-(float)z1;  /* Always ZERO */
-
-    norma = (float)sqrt(deltaRotX*deltaRotX + deltaRotZ*deltaRotZ + deltaRotY*deltaRotY);
-
-    ih->data->rotX -= deltaRotX / norma;
-    ih->data->rotZ -= deltaRotZ / norma;
-    ih->data->rotY -= deltaRotY / norma;
+    iMglPlotRotate(ih->data->rotX, deltaX);
+    iMglPlotRotate(ih->data->rotZ, deltaZ);
 
     iMglPlotRepaint(ih, 1, 1);
   }
@@ -4659,14 +4637,14 @@ static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
     if (iup_iscontrol(status))
     {
       /* Zoom with vertical movement */
-      float factor = 10.0f * (ih->data->y0 - ih->data->ye);
+      float factor = 10.0f * (ih->data->last_y - cur_y);
       iMglPlotZoom(ih, factor);
     }
     else
     {
       /* Pan */
-      float xoffset = ih->data->x0 - ih->data->xe;
-      float yoffset = ih->data->ye - ih->data->y0;  /* Inverted because Y in IUP is top-down */
+      float xoffset = ih->data->last_x - cur_x;
+      float yoffset = cur_y - ih->data->last_y;  /* Inverted because Y in IUP is top-down */
 
       iMglPlotPanX(ih, xoffset);
       iMglPlotPanY(ih, yoffset);
@@ -4675,8 +4653,8 @@ static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
     iMglPlotRepaint(ih, 1, 1);
   }
 
-  ih->data->x0 = ih->data->xe;
-  ih->data->y0 = ih->data->ye;
+  ih->data->last_x = cur_x;
+  ih->data->last_y = cur_y;
 
   return IUP_DEFAULT;
 }
