@@ -47,7 +47,7 @@ DBG = Yes
 #SRC = multiline2.c
 #SRC = progressbar.c
 #SRC = radio.c
-SRC = sample.c
+#SRC = sample.c
 #SRC = sbox1.c
 #SRC = sbox2.c
 #SRC = scanf.c
@@ -111,6 +111,19 @@ ifdef IUPPPLOT_SAMPLE
     LIBS += iup_pplot cdpdflib
   else
     SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_pplot.a $(CD)/lib/$(TEC_UNAME)/libcdpdflib.a
+  endif
+endif
+
+IUPMGLPLOT_SAMPLE=Yes
+ifdef IUPMGLPLOT_SAMPLE
+  USE_OPENGL = Yes
+  USE_IUPCONTROLS = Yes
+  LINKER = g++
+  SRC = mathglsamples.c
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    LIBS += iup_mglplot
+  else
+    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_mglplot.a
   endif
 endif
 

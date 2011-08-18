@@ -494,7 +494,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\test\mathglsamples.c"
+				RelativePath="..\html\examples\C\mathglsamples.c"
 				>
 			</File>
 			<File
@@ -571,18 +571,6 @@
 			</File>
 			<File
 				RelativePath="..\html\examples\C\ole_browser.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\test\plot.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"

@@ -13,9 +13,6 @@ Based on: MathGL documentation (v. 1.10), Cap. 9
 #include "iup_mglplot.h"
 #include "iupkey.h"
 
-#include <cd.h>
-#include <cdiup.h>
-
 static Ihandle *plot,           /* plot */
                *minmaxY_dial, *minmaxX_dial,  /* dials for zooming */
                *autoscaleY_tgg, *autoscaleX_tgg,    /* auto scale on|off toggles */
@@ -920,33 +917,27 @@ static int bt2_cb(Ihandle *self)
 Ihandle* controlPanel(void)
 {
   Ihandle *vbox1, *vbox2, *vbox3, *lbl1, *lbl2, *lbl3, *lbl4, *bt1, *bt2,
-    *boxinfo, *boxminmaxY_dial, *boxminmaxX_dial, *f1, *f2;
+    *boxminmaxY_dial, *boxminmaxX_dial, *f1, *f2;
 
   /* left panel: plot control
      Y zooming               */
-  minmaxY_dial = IupDial("VERTICAL");
   lbl1 = IupLabel("+");
   lbl2 = IupLabel("-");
-  boxinfo = IupVbox(lbl1, IupFill(), lbl2, NULL);
-  boxminmaxY_dial = IupHbox(boxinfo, minmaxY_dial, NULL);
 
-  IupSetAttribute(boxminmaxY_dial, "ALIGNMENT", "ACENTER");
-  IupSetAttribute(boxinfo, "ALIGNMENT", "ACENTER");
-  IupSetAttribute(boxinfo, "SIZE", "20x52");
-  IupSetAttribute(boxinfo, "GAP", "2");
-  IupSetAttribute(boxinfo, "MARGIN", "2");
-  IupSetAttribute(boxinfo, "EXPAND", "YES");
-  IupSetAttribute(lbl1, "EXPAND", "NO");
-  IupSetAttribute(lbl2, "EXPAND", "NO");
-
+  minmaxY_dial = IupDial("VERTICAL");
   IupSetAttribute(minmaxY_dial, "ACTIVE", "NO");
   IupSetAttribute(minmaxY_dial, "SIZE", "20x52");
   IupSetCallback(minmaxY_dial, "BUTTON_PRESS_CB", (Icallback)minmaxY_dial_btndown_cb);
   IupSetCallback(minmaxY_dial, "MOUSEMOVE_CB", (Icallback)minmaxY_dial_btnup_cb);
   IupSetCallback(minmaxY_dial, "BUTTON_RELEASE_CB", (Icallback)minmaxY_dial_btnup_cb);
 
+  boxminmaxY_dial = IupVbox(lbl1, minmaxY_dial, lbl2, NULL);
+  IupSetAttribute(boxminmaxY_dial, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(boxminmaxY_dial, "GAP", "2");
+  IupSetAttribute(boxminmaxY_dial, "MARGIN", "2");
+
   autoscaleY_tgg = IupToggle("Y Autoscale", NULL);
-   IupSetCallback(autoscaleY_tgg, "ACTION", (Icallback)autoscaleY_tgg_cb);
+  IupSetCallback(autoscaleY_tgg, "ACTION", (Icallback)autoscaleY_tgg_cb);
   IupSetAttribute(autoscaleY_tgg, "VALUE", "ON");
 
   f1 = IupFrame( IupVbox(boxminmaxY_dial, autoscaleY_tgg, NULL) );
@@ -955,27 +946,20 @@ Ihandle* controlPanel(void)
   IupSetAttribute(f1, "MARGIN", "5x5");
 
   /* X zooming */
-  minmaxX_dial = IupDial("HORIZONTAL");
   lbl1 = IupLabel("-");
   lbl2 = IupLabel("+");
-  boxinfo = IupHbox(lbl1, IupFill(), lbl2, NULL);
-  boxminmaxX_dial = IupVbox(minmaxX_dial, boxinfo, NULL);
 
-  IupSetAttribute(boxminmaxX_dial, "ALIGNMENT", "ACENTER");
-  IupSetAttribute(boxinfo, "ALIGNMENT", "ACENTER");
-  IupSetAttribute(boxinfo, "SIZE", "64x16");
-  IupSetAttribute(boxinfo, "GAP", "2");
-  IupSetAttribute(boxinfo, "MARGIN", "2");
-  IupSetAttribute(boxinfo, "EXPAND", "HORIZONTAL");
-
-  IupSetAttribute(lbl1, "EXPAND", "NO");
-  IupSetAttribute(lbl2, "EXPAND", "NO");
-
+  minmaxX_dial = IupDial("HORIZONTAL");
   IupSetAttribute(minmaxX_dial, "ACTIVE", "NO");
   IupSetAttribute(minmaxX_dial, "SIZE", "64x16");
   IupSetCallback(minmaxX_dial, "BUTTON_PRESS_CB", (Icallback)minmaxX_dial_btndown_cb);
   IupSetCallback(minmaxX_dial, "MOUSEMOVE_CB", (Icallback)minmaxX_dial_btnup_cb);
   IupSetCallback(minmaxX_dial, "BUTTON_RELEASE_CB", (Icallback)minmaxX_dial_btnup_cb);
+
+  boxminmaxX_dial = IupHbox(lbl1, minmaxX_dial, lbl2, NULL);
+  IupSetAttribute(boxminmaxX_dial, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(boxminmaxX_dial, "GAP", "2");
+  IupSetAttribute(boxminmaxX_dial, "MARGIN", "2");
 
   autoscaleX_tgg = IupToggle("X Autoscale", NULL);
   IupSetCallback(autoscaleX_tgg, "ACTION", (Icallback)autoscaleX_tgg_cb);
@@ -985,23 +969,19 @@ Ihandle* controlPanel(void)
   IupSetAttribute(f2, "GAP", "0");
   IupSetAttribute(f2, "MARGIN", "5x5");
 
-  lbl1 = IupLabel("");
-  IupSetAttribute(lbl1, "SEPARATOR", "HORIZONTAL");
-
   grid_tgg = IupToggle("Grid", NULL);
   IupSetCallback(grid_tgg, "ACTION", (Icallback)grid_tgg_cb);
 
   box_tgg = IupToggle("Box", NULL);
   IupSetCallback(box_tgg, "ACTION", (Icallback)box_tgg_cb);
 
-  lbl2 = IupLabel("");
-  IupSetAttribute(lbl2, "SEPARATOR", "HORIZONTAL");
-
   legend_tgg = IupToggle("Legend", NULL);
   IupSetCallback(legend_tgg, "ACTION", (Icallback)legend_tgg_cb);
 
   lbl3 = IupLabel("");
   IupSetAttribute(lbl3, "SEPARATOR", "HORIZONTAL");
+  IupSetAttribute(lbl3, "EXPAND", "NO");
+  IupSetAttribute(lbl3, "RASTERSIZE", "160x2");
 
   transp_tgg = IupToggle("Transparent", NULL);
   IupSetCallback(transp_tgg, "ACTION", (Icallback)transp_tgg_cb);
@@ -1011,6 +991,8 @@ Ihandle* controlPanel(void)
 
   lbl4 = IupLabel("");
   IupSetAttribute(lbl4, "SEPARATOR", "HORIZONTAL");
+  IupSetAttribute(lbl4, "EXPAND", "NO");
+  IupSetAttribute(lbl4, "RASTERSIZE", "160x2");
 
   aa_tgg = IupToggle("Antialias", NULL);
   IupSetCallback(aa_tgg, "ACTION", (Icallback)aa_tgg_cb);
@@ -1024,10 +1006,15 @@ Ihandle* controlPanel(void)
   bt2 = IupButton("Export EPS", NULL);
   IupSetCallback(bt2, "ACTION", (Icallback)bt2_cb);
 
-  vbox1 = IupFrame(IupVbox(f1, f2, lbl1, grid_tgg, box_tgg, 
-                          lbl2, legend_tgg, 
-                          lbl3, transp_tgg, light_tgg, 
-                          NULL));
+  vbox1 = IupFrame(IupVbox(f1, 
+                           f2, 
+                           grid_tgg, 
+                           box_tgg, 
+                           legend_tgg, 
+                           lbl3, 
+                           transp_tgg, 
+                           light_tgg, 
+                           NULL));
   IupSetAttribute(vbox1, "GAP", "4");
   IupSetAttribute(vbox1, "MARGIN", "5x5");
 
