@@ -963,10 +963,14 @@ void mgl_error_print(int line, int r, mglGraph *gr)
 	if(r==4)	printf("Unbalanced ' in line %d\n", line);
 	if(gr->Message)	gr->Message[0]=0;
 }
+#include <string>
 void mglParse::Execute(mglGraph *gr, FILE *fp, bool print)
 {
 	if(gr==0 || fp==0)	return;
-	fseek(fp,0,SEEK_END);	// get file size
+	std::wstring str;
+	while(!feof(fp))	str.push_back(fgetwc(fp));
+	Execute(gr,str.c_str(),print?mgl_error_print:NULL);
+/*	fseek(fp,0,SEEK_END);	// get file size
 	long len=ftell(fp),cur=0;
 	fseek(fp,0,SEEK_SET);	// restore back
 	wchar_t *str=new wchar_t[len+1];
@@ -977,7 +981,7 @@ void mglParse::Execute(mglGraph *gr, FILE *fp, bool print)
 	}
 	str[len]=0;
 	Execute(gr,str,print?mgl_error_print:NULL);
-	delete []str;
+	delete []str;*/
 }
 //-----------------------------------------------------------------------------
 void mglParse::Execute(mglGraph *gr, int n, const wchar_t **text, void (*error)(int line, int kind, mglGraph *gr))

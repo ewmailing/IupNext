@@ -42,8 +42,10 @@ bool mglGraphGL::Alpha(bool enable)
 	if(enable)
 	{
 		UseAlpha = true;
-		glDisable(GL_DEPTH_TEST);
-//		glEnable(GL_DEPTH_TEST);
+    if (glIsEnabled(GL_LINE_SMOOTH))
+      glDisable(GL_DEPTH_TEST);
+    else
+      glEnable(GL_DEPTH_TEST);
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_BLEND);
 		if(TranspType==1)	glBlendFunc(GL_DST_COLOR, GL_ZERO);

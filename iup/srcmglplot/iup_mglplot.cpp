@@ -5045,7 +5045,6 @@ void IupMglPlotOpen(void)
 /* TODO
 
 To Release:
-  improve rotation
   LoadFont
   -------------------
   evaluate interval
@@ -5070,8 +5069,9 @@ Maybe:
   Ternary
 
 MathGL:
-  ***gr->ContFA has a different result in OpenGL. It seems to have an invalid depth. Without OpenGL works fine.
-  ***gr->Box depth in OpenGL
+  ***gr->Box AND gr->ContFA have different results in OpenGL. 
+     It seems to have an invalid depth. Without OpenGL works fine.
+     SOLVED BY CALLING glEnable(GL_DEPTH_TEST), but this affected anti-aliasing.
   gr->Axial is changing something that affects other graphs in OpenGL. Without OpenGL works fine.
   ***graph disapear during zoom in, only in OpenGL, depth clipping?
   ***bars at 0 and n-1
@@ -5080,10 +5080,10 @@ MathGL:
      SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
      TicksVal should follow ticks spacing configuration 
   Fonts
-     ***font size in OpenGL is very different
+     ***font size in OpenGL is a bit different, wider than expected
+        maybe this is related to aspect ratio not being mantained
      ***text anti-aliasing
      ***additional library to load TTF and OTF using FreeType
         vfm too slow to load font, need a binary format
      ***option to draw an opaque background for text
-     keep aspect ratio in OpenGL
 */
