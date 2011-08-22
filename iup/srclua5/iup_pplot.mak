@@ -5,7 +5,9 @@ DEF_FILE = iuplua_pplot.def
 
 IUP := ..
 
-DEFINES = IUPLUA_USELOH
+ifndef IUPLUA_NO_LOH
+  DEFINES = IUPLUA_USELOH
+endif
 
 USE_IUP3 = Yes
 USE_IUPLUA = Yes

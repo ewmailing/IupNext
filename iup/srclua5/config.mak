@@ -3,7 +3,9 @@ LIBNAME  = iuplua
 OPT = YES
 DEF_FILE = iuplua.def
 
-DEFINES = IUPLUA_USELOH
+ifndef IUPLUA_NO_LOH
+  DEFINES = IUPLUA_USELOH
+endif
 
 ifdef USE_LUA52
   LOHDIR = loh52

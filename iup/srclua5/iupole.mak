@@ -5,7 +5,9 @@ DEF_FILE = iupluaole.def
 
 IUP := ..
 
-DEFINES = IUPLUA_USELOH
+ifndef IUPLUA_NO_LOH
+  DEFINES = IUPLUA_USELOH
+endif
 
 USE_IUPLUA = Yes
 LIBS = iupole

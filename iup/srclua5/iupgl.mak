@@ -3,7 +3,10 @@ LIBNAME = iupluagl
 OPT = YES
 
 DEF_FILE = iupluagl.def
-DEFINES = IUPLUA_USELOH
+
+ifndef IUPLUA_NO_LOH
+  DEFINES = IUPLUA_USELOH
+endif
 
 IUP := ..
 

@@ -13,8 +13,9 @@ $(GC) : il_%.c : %.lua generator.lua
 
 SRC	= $(GC)
 
-DEFINES = IUPLUA_USELOH
-USE_LOH_SUBDIR = Yes
+ifndef IUPLUA_NO_LOH
+  DEFINES = IUPLUA_USELOH
+endif
 
 INCLUDES = ../src
 LIBS = iuptuio
@@ -24,6 +25,7 @@ IUP := ..
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
 NO_LUALINK = Yes
+USE_LOH_SUBDIR = Yes
 USE_BIN2C_LUA=Yes
 
 ifdef USE_LUA52

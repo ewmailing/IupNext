@@ -5,7 +5,9 @@ DEF_FILE = iupluacontrols.def
 
 IUP := ..
 
-DEFINES = IUPLUA_USELOH
+ifndef IUPLUA_NO_LOH
+  DEFINES = IUPLUA_USELOH
+endif
 
 INCLUDES = ../src
 USE_IUP3 = Yes
