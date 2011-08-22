@@ -127,6 +127,10 @@ bin2c5.1 myfile.lo &gt; myfile.loh</pre>
 #include "myfile.loh"
 #endif</pre>
 
+<p>This does not work when using LuaJIT. Also to use IupLua with
+<a href="http://luajit.org/">LuaJIT</a> you must recompile the pre-compiled 
+binaries with the IUPLUA_NO_LOH definition set. Can be set on the environment or 
+as a parameter in the command line, for example: &quot;make IUPLUA_NO_LOH=1&quot;. </p>
 <h3>More Information</h3>
 <p>Steve Donovan wrote a very nice &quot;<a href="basic/index.html">A Basic Guide to 
 using IupLua</a>&quot; that was included in

@@ -775,6 +775,13 @@ the respective systems. All images are 48x48 pixels size and 32bpp.</p>
 <p>All 8bpp images are from the old ImageLib and since Motif does not have any 
 stock images, we selected this set to be used in Motif. Although the IUP Motif 
 driver supports 32bpp images.</p>
+<p>The pre-compiled library does not include images larger than 48x48 
+(inclusive). If you want to use them you must include their source code, or 
+re-compile the library defining
+<span style="font-size:12.0pt;font-family:&quot;Helvetica&quot;,&quot;sans-serif&quot;;
+mso-fareast-font-family:&quot;Times New Roman&quot;;color:black;mso-ansi-language:PT-BR;
+mso-fareast-language:PT-BR;mso-bidi-language:AR-SA">USE_IUP_IMGLIB_LARGE during 
+compilation, for example: &quot;make USE_IUP_IMGLIB_LARGE=1&quot;.</span></p>
 <p>Not available in AIX.</p>
 
 <p>All &quot;Win32&quot; images copyright Microsoft and were extracted from the Visual 
