@@ -187,7 +187,7 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[2], "AXS_YFONTSTYLE", "BOLD");
   IupSetAttribute(plot[2], "AXS_XLABELCENTERED", "NO");
   IupSetAttribute(plot[2], "AXS_YLABELCENTERED", "NO");
-  IupSetAttribute(plot[2], "AXS_YLABELROTATION", "NO");
+//  IupSetAttribute(plot[2], "AXS_YLABELROTATION", "NO");
 
   theFac = (float)100.0/(100*100*100);
   IupMglPlotBegin(plot[2], 2);

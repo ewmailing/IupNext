@@ -1335,7 +1335,14 @@ wb_usr.tree =
             },
             {
               name= {nl= "IupMglPlot"},
-              link= "ctrl/iup_mglplot.html"
+              link= "ctrl/iup_mglplot.html",
+              folder=
+              {
+                {
+                  name= {nl= "DS_MODE"},
+                  link= "ctrl/iup_mglplot_modes.html"
+                }
+              }
             },
             {
               name= {nl= "IupOleControl"},

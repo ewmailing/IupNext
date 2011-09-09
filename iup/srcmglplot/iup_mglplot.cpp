@@ -525,6 +525,7 @@ static void iMglPlotConfigAxisTicks(Ihandle* ih, mglGraph *gr, char dir, const I
     if (axis.axTickAutoSpace)
     {
       // Copied from MathGL AdjustTicks internal function
+      // TODO: improve autoticks computation
       mreal n, d = fabs(max-min);
       n = floor(log10(d));  
       d = floor(d*pow(10,-n));
@@ -637,9 +638,8 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
 
       if (ds->dsDim == 1)
       {
-        if (ds->dsX->ny>1 || ds->dsX->nz>1)
+        if (ds->dsX->ny>1 || ds->dsX->nz>1)  /* Planar or Volumetric data */
         {
-          /* Planar or volumetric data */
           if (ih->data->axisX.axAutoScaleMax || ih->data->axisX.axAutoScaleMin)
           {
             gr->Min.x = -1.0f;
@@ -707,14 +707,14 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
           }
         }
       }
-      else if (ds->dsDim == 2)
+      else if (ds->dsDim == 2)  /* 2D Linear data */
       {
         if (ih->data->axisX.axAutoScaleMax || ih->data->axisX.axAutoScaleMin)
           iMglPlotFindMinMaxValues(*ds->dsX, add, gr->Min.x, gr->Max.x);
         if (ih->data->axisY.axAutoScaleMax || ih->data->axisY.axAutoScaleMin)
           iMglPlotFindMinMaxValues(*ds->dsY, add, gr->Min.y, gr->Max.y);
       }
-      else if (ds->dsDim == 3)
+      else if (ds->dsDim == 3)  /* 2D Linear data */
       {
         if (ih->data->axisX.axAutoScaleMax || ih->data->axisX.axAutoScaleMin)
           iMglPlotFindMinMaxValues(*ds->dsX, add, gr->Min.x, gr->Max.x);
@@ -5047,8 +5047,6 @@ void IupMglPlotOpen(void)
 To Release:
   LoadFont
   -------------------
-  evaluate interval
-  improve autoticks computation
   document DS_MODE Options
   Legend  
   -------------------
@@ -5069,6 +5067,8 @@ Maybe:
   Ternary
 
 MathGL:
+  improve autoticks computation
+  evaluate interval, [-1,1] x [0,1] x [0,n-1]
   ***gr->Box AND gr->ContFA have different results in OpenGL. 
      It seems to have an invalid depth. Without OpenGL works fine.
      SOLVED BY CALLING glEnable(GL_DEPTH_TEST), but this affected anti-aliasing.

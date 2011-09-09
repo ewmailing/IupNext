@@ -25,6 +25,9 @@
 .style7 {
 	text-align: center;
 }
+.style8 {
+	font-family: Tahoma;
+}
 </style>
 </head>
 <body>
@@ -73,7 +76,7 @@ set or a redraw event occurs.</p>
 <p>The <b>dataset area</b> is delimited by the min/max axis attributes. Data is 
 only plotted inside the dataset area. This area defines the 2D or 3D plot 
 coordinate space. The screen area is a 2D pixels coordinate space. And finally 
-the dataset are also defines a normalized space, that means min/max is converted 
+the dataset also defines a normalized space, that means min/max is converted 
 to 0-1.</p>
 <p>The <b>legend box</b> is a list of the dataset names, each one drawn with the 
 same color of the correspondent dataset. The box is located in one of the four 
@@ -86,19 +89,18 @@ displayed values.</p>
 <p>The <b>axes</b> are positioned at the origin (0,0,0), but can be automatically positioned at the left-bottom. If values are only positive then the 
 origin will be placed in left 
 bottom position. If values are negative and positive then origin will be placed 
-inside the plot. The ticks in the axis are also automatically distributed.</p>
-<p>&nbsp;</p>
+inside the plot. The ticks in the axis are also automatically distributed.&nbsp;</p>
 <h3>Data</h3>
 <p>MathGL supports several kinds of data. IupMglPlot restricts this to a few 
 combinations. First there are 3 major classes:</p>
 <p><strong>Linear</strong> sequential data are simply a sequence of points 
 whether in 1D, 2D or 3D coordinates.</p>
 <p><strong>Planar</strong> data is a bi-dimensional array of values, just like a 
-digital image. Each value is f(x,y), where x belongs to [0, count_x-1] and y to 
-[0, count_y-1].</p>
+digital image. Each value is f(x,y), where x belongs to [-1, 1] and y to 
+[-1, 1].</p>
 <p><strong>Volumetric</strong> data is a tri-dimensional array of values, that 
-represents a 3D volume. Each value is f(x,y,z), where x belongs to [0, 
-count_x-1], y to [0, count_y-1] and z to [0, count_z-1].</p>
+represents a 3D volume. Each value is f(x,y,z), where x belongs to [-1, 1], y to [-1, 
+1] and z to [-1, 1].</p>
 <p>Planar and volumetric data can be very memory consuming, so be careful when 
 using them. Linear data is the same representation accepted by IupPPlot, with 
 the exception that IupMglPlot has support for 3D coordinates. Also planar and 
@@ -133,7 +135,7 @@ only for 3D plots.</p>
 <p>The interaction can be reset with a mouse double-click inside the plot area 
 or by pressing the HOME key. This action restores
 the plot to the default view (no zoom, no pan and no rotation).</p>
-<h4>Selection and Editing</h4>
+<h4>Selection and Editing<span class="style1"> (NOT IMPLEMENTED)</span></h4>
 <p><span class="style5">Selection and editing of a dataset can be enabled using the 
 <span class="style6">DS_EDIT 
 attribute.</span></span></p>
@@ -463,9 +465,9 @@ dataset. For planar or volumetric datasets returns count_x * count_y * count_z.<
 of the data: 1, 2 or 3. For planar and volumetric datasets returns the actual size of 
 each dimension &quot;&lt;count_x&gt;x&lt;count_y&gt;x&lt;count_y&gt;&quot;, for example &quot;600x400x1&quot; (planar) 
 or &quot;512x512x512&quot; (volumetric). </p>
-<p class="style5">DS_EDIT: enable or disable the current dataset interactive selection and editing. Can be 
+<p class="style8"><span class="style6"><strong>DS_EDIT</strong>: enable or disable the current dataset interactive selection and editing. Can be 
 YES or NO. Default: NO. Planar and volumetric data can NOT be interactively 
-edited.</p>
+edited.</span><span class="style1"> (NOT IMPLEMENTED)</span></p>
 <p><b>DS_LEGEND</b>: legend text of the current dataset. Default is dynamically 
 generated: &quot;plot 0&quot;, &quot;plot 1&quot;, &quot;plot 2&quot;, ...</p>
 <p><b>DS_LINESTYLE</b>: line style of the current dataset. Can be: &quot;CONTINUOUS&quot;, 
@@ -712,23 +714,20 @@ supported.</p>
   <center>
   <table border="0" cellpadding="6" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
     <tr>
-      <td><img border="0" src="images/iup_mglplot0.gif"></td>
-      <td><img border="0" src="images/iup_mglplot1.gif"></td>
+      <td><img border="0" src="images/iup_mglplot0.png"></td>
+      <td><img border="0" src="images/iup_mglplot1.png"></td>
     </tr>
     <tr>
-      <td><img border="0" src="images/iup_mglplot2.gif"></td>
-      <td><img border="0" src="images/iup_mglplot3.gif"></td>
+      <td><img border="0" src="images/iup_mglplot2.png"></td>
+      <td><img border="0" src="images/iup_mglplot3.png"></td>
     </tr>
     <tr>
-      <td><img border="0" src="images/iup_mglplot4.gif"></td>
-      <td><img border="0" src="images/iup_mglplot5.gif"></td>
+      <td><img border="0" src="images/iup_mglplot4.png"></td>
+      <td></td>
     </tr>
   </table>
   </center>
 </div>
-
-<h3><a name="DS_MODE">DS_MODE</a> Options</h3>
-<p>xxxx</p>
 
 <h3>Differences from IupPPlot</h3>
 
@@ -779,6 +778,9 @@ IupPPlotTransform       -&gt; IupMglPlotTransform  (now includes z coordinate)
    (cdCanvasLine)       -&gt; IupMglPlotDrawLine
    (cdCanvasText)       -&gt; IupMglPlotDrawText
 IupPPlotPaintTo         -&gt; IupMglPlotPaintTo    (parameters are different)</pre>
+
+<h3>Known Issues</h3>
+<p>xxxx</p>
 
 <h3><a name="SeeAlso">See Also</a></h3>
 
