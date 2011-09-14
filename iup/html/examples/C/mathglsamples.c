@@ -7,8 +7,18 @@ Based on: MathGL documentation (v. 1.10), Cap. 9
 #include <string.h>
 #include <math.h>
 
+#define USE_IM 1
+#ifdef USE_IM
+#include "im.h"
+#include "im_image.h"
+#include "im_convert.h"
+#include "im_process.h"
+#endif
 
 #include "iup.h"
+#ifdef USE_IM
+#include "iupim.h"
+#endif
 #include "iupcontrols.h"
 #include "iup_mglplot.h"
 #include "iupkey.h"
@@ -24,7 +34,7 @@ static Ihandle *plot,           /* plot */
                *light_tgg,           /* light enable|disable toggle */
                *opengl_tgg;          /* opengl enable|disable toggle */
 
-static char filenameSVG[300], filenameEPS[300];
+static char filenameSVG[300], filenameEPS[300], filenamePNG[300];
 
 static void ResetClear(void)
 {
@@ -142,7 +152,7 @@ static void SampleContourProjectVolume(void)
   IupSetAttribute(plot, "PROJECTVALUEY", "1");
   IupSetAttribute(plot, "PROJECTVALUEZ", "-1");
   IupSetAttribute(plot, "TRANSPARENT", "NO");
-  IupSetAttribute(plot, "LIGHT", "NO");
+//  IupSetAttribute(plot, "LIGHT", "NO");
 }
 
 static void SampleContourFilledProjectVolume(void)
@@ -154,7 +164,7 @@ static void SampleContourFilledProjectVolume(void)
   IupSetAttribute(plot, "PROJECTVALUEZ", "-1");
   IupSetAttribute(plot, "CONTOURFILLED", "YES");
   IupSetAttribute(plot, "TRANSPARENT", "NO");
-  IupSetAttribute(plot, "LIGHT", "NO");
+//  IupSetAttribute(plot, "LIGHT", "NO");
 }
 
 static void SampleContourFilledVolume(void)
@@ -168,7 +178,7 @@ static void SampleContourVolume(void)
 {
   SampleVolume("VOLUME_CONTOUR");
   IupSetAttribute(plot, "TRANSPARENT", "NO");
-  IupSetAttribute(plot, "LIGHT", "NO");
+//  IupSetAttribute(plot, "LIGHT", "NO");
 }
 
 static void SampleDensityVolume(void)
@@ -624,6 +634,9 @@ static void ChangePlot(int item)
   UpdateFlags();
   sprintf(filenameSVG, "../%s.svg", test_list[item].title);
   sprintf(filenameEPS, "../%s.eps", test_list[item].title);
+  sprintf(filenamePNG, "../%s.png", test_list[item].title);
+//  sprintf(filenamePNG, "../html/en/ctrl/images/iupmglplot_%s.png", IupGetAttribute(plot, "DS_MODE"));
+//  iupStrLower(filenamePNG, filenamePNG);
   IupSetAttribute(plot, "REDRAW", NULL);
 
   {
@@ -891,7 +904,11 @@ static int opengl_tgg_cb(Ihandle *self, int v)
   if (v)
     IupSetAttribute(plot, "OPENGL", "YES");
   else
+  {
+    IupSetAttribute(aa_tgg, "VALUE", "OFF");
+    IupSetAttribute(plot, "ANTIALIAS", "NO");
     IupSetAttribute(plot, "OPENGL", "NO");
+  }
 
   IupSetAttribute(plot, "REDRAW", NULL);
 
@@ -901,7 +918,6 @@ static int opengl_tgg_cb(Ihandle *self, int v)
 static int bt1_cb(Ihandle *self)
 {
   (void)self;
-
   IupMglPlotPaintTo(plot, "SVG", 0, 0, 0, filenameSVG);
   return IUP_DEFAULT;
 }
@@ -909,14 +925,54 @@ static int bt1_cb(Ihandle *self)
 static int bt2_cb(Ihandle *self)
 {
   (void)self;
-
   IupMglPlotPaintTo(plot, "EPS", 0, 0, 0, filenameEPS);
   return IUP_DEFAULT;
 }
 
+#ifdef USE_IM
+static int bt3_cb(Ihandle* self)
+{
+  imImage* image;
+  Ihandle* clipboard = IupClipboard();
+  int w, h;
+  void* gldata;
+  IupGetIntInt(plot, "DRAWSIZE", &w, &h);
+  gldata = malloc(w*h*3);
+  image = imImageCreate(w, h, IM_RGB, IM_BYTE);
+  IupMglPlotPaintTo(plot, "RGB", w, h, 0, gldata);
+  imConvertPacking(gldata, image->data[0], w, h, 3, 3, IM_BYTE, 1);
+  imProcessFlip(image, image);
+  IupSetAttribute(clipboard, "NATIVEIMAGE", IupGetImageNativeHandle(image));
+  IupDestroy(clipboard);
+  free(gldata);
+  imImageDestroy(image);
+  (void)self;
+  return IUP_DEFAULT;
+}
+
+static int bt4_cb(Ihandle* self)
+{
+  imImage* image;
+  int w, h;
+  void* gldata;
+  IupGetIntInt(plot, "DRAWSIZE", &w, &h);
+  gldata = malloc(w*h*3);
+  image = imImageCreate(w, h, IM_RGB, IM_BYTE);
+  IupMglPlotPaintTo(plot, "RGB", w, h, 0, gldata);
+  imConvertPacking(gldata, image->data[0], w, h, 3, 3, IM_BYTE, 1);
+  imProcessFlip(image, image);
+  imFileImageSave(filenamePNG, "PNG", image);
+  free(gldata);
+  imImageDestroy(image);
+  (void)self;
+  return IUP_DEFAULT;
+}
+#endif
+
 Ihandle* controlPanel(void)
 {
-  Ihandle *vbox1, *vbox2, *vbox3, *lbl1, *lbl2, *lbl3, *lbl4, *bt1, *bt2,
+  Ihandle *vbox1, *vbox2, *vbox3, *lbl1, *lbl2, *lbl3, *lbl4, 
+    *bt1, *bt2, *bt3=NULL, *bt4=NULL,
     *boxminmaxY_dial, *boxminmaxX_dial, *f1, *f2;
 
   /* left panel: plot control
@@ -1006,6 +1062,14 @@ Ihandle* controlPanel(void)
   bt2 = IupButton("Export EPS", NULL);
   IupSetCallback(bt2, "ACTION", (Icallback)bt2_cb);
 
+#ifdef USE_IM
+  bt3 = IupButton("Copy RGB", NULL);
+  IupSetCallback(bt3, "ACTION", (Icallback)bt3_cb);
+
+  bt4 = IupButton("Save RGB", NULL);
+  IupSetCallback(bt4, "ACTION", (Icallback)bt4_cb);
+#endif
+
   vbox1 = IupFrame(IupVbox(f1, 
                            f2, 
                            grid_tgg, 
@@ -1019,7 +1083,11 @@ Ihandle* controlPanel(void)
   IupSetAttribute(vbox1, "MARGIN", "5x5");
 
   vbox2 = IupVbox(aa_tgg, opengl_tgg, 
-                  lbl4, IupHbox(bt1, bt2, NULL), 
+                  lbl4, IupVbox(bt1, bt2, 
+#ifdef USE_IM
+                  bt3, bt4, 
+#endif
+                  NULL), 
                   NULL);
   IupSetAttribute(vbox2, "GAP", "4");
   IupSetAttribute(vbox2, "MARGIN", "5x0");
@@ -1047,13 +1115,15 @@ int main(int argc, char* argv[])
   plot = IupMglPlot();
   panel = controlPanel();
 
-  dlg = IupDialog(IupHbox(list, panel, plot, NULL));
+  dlg = IupDialog(IupHbox(list, panel, IupVbox(IupFill(), plot, IupFill(), NULL), NULL));
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "GAP", "5");
   IupSetAttribute(dlg, "TITLE", "MathGL samples w/ IupMglPlot");
   IupSetCallback(dlg, "CLOSE_CB", close_cb);
 
   IupSetAttribute(plot, "RASTERSIZE", "700x500");  // Minimum initial size
+//  IupSetAttribute(plot, "RASTERSIZE", "350x250");
+//  IupSetAttribute(plot, "EXPAND", "NO");
 
   IupSetAttribute(list, "EXPAND", "VERTICAL");
   IupSetAttribute(list, "VISIBLELINES", "15");  // Not all, because the dialog will be too big

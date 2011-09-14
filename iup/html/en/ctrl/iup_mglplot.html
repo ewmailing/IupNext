@@ -15,18 +15,8 @@
 .style4 {
 	font-size: large;
 }
-.style5 {
-	font-family: Tahoma;
-	text-decoration: line-through;
-}
-.style6 {
-	text-decoration: line-through;
-}
 .style7 {
 	text-align: center;
-}
-.style8 {
-	font-family: Tahoma;
 }
 </style>
 </head>
@@ -135,20 +125,6 @@ only for 3D plots.</p>
 <p>The interaction can be reset with a mouse double-click inside the plot area 
 or by pressing the HOME key. This action restores
 the plot to the default view (no zoom, no pan and no rotation).</p>
-<h4>Selection and Editing<span class="style1"> (NOT IMPLEMENTED)</span></h4>
-<p><span class="style5">Selection and editing of a dataset can be enabled using the 
-<span class="style6">DS_EDIT 
-attribute.</span></span></p>
-<p class="style6">To select all the samples in the dataset press the Shift key while 
-clicking with the left mouse button near a sample in the dataset. To deselect 
-all samples press the Shift key while clicking with the left mouse button 
-in the background.</p>
-<p class="style6">To select or deselect individual samples press the Ctrl key while 
-clicking with the left mouse button near the sample in the dataset.</p>
-<p><span class="style6">After selecting samples use the Del key to remove the selected 
-samples. Also use the arrow keys to move the Y coordinate of the selected 
-samples. Press the Ctrl key to increase the step size when moving the Y 
-coordinate.</span></p>
 <h3>Text and Fonts</h3>
 <p>MathGL provides support for parsing LaTeX-like syntax. So all labels and 
 title can contain formatting commands and equation symbols. For example: \b 
@@ -367,7 +343,10 @@ equivalent is used.</p>
 <p><b>ALPHA </b>(non inheritable): Alpha value for overall transparency. 
 Used only when TRANSPARENT=Yes. Default: 0.5</p>
 <p><strong>ANTIALIAS</strong> (non inheritable): Enable or disable the 
-anti-aliasing support. For screen display only. Default: Yes.</p>
+anti-aliasing support. For screen display only, ignored when OPENGL=NO. Default: 
+Yes. <font SIZE="3">When enabled text has a much better rendering, but 3D graphs 
+will not process depth properly.</p>
+</font>
 <p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b>:  the background color. 
 Default: &quot;255 255 
 255&quot;.</p>
@@ -465,9 +444,6 @@ dataset. For planar or volumetric datasets returns count_x * count_y * count_z.<
 of the data: 1, 2 or 3. For planar and volumetric datasets returns the actual size of 
 each dimension &quot;&lt;count_x&gt;x&lt;count_y&gt;x&lt;count_y&gt;&quot;, for example &quot;600x400x1&quot; (planar) 
 or &quot;512x512x512&quot; (volumetric). </p>
-<p class="style8"><span class="style6"><strong>DS_EDIT</strong>: enable or disable the current dataset interactive selection and editing. Can be 
-YES or NO. Default: NO. Planar and volumetric data can NOT be interactively 
-edited.</span><span class="style1"> (NOT IMPLEMENTED)</span></p>
 <p><b>DS_LEGEND</b>: legend text of the current dataset. Default is dynamically 
 generated: &quot;plot 0&quot;, &quot;plot 1&quot;, &quot;plot 2&quot;, ...</p>
 <p><b>DS_LINESTYLE</b>: line style of the current dataset. Can be: &quot;CONTINUOUS&quot;, 
@@ -483,13 +459,13 @@ coordinates. Default: 0.02.</p>
 	<p>Can be: LINE, BAR, MARK, MARKLINE, RADAR, AREA, BARHORIZONTAL, CHART, STEP or 
 	STEM for linear datasets.</p>
 <p>Can be: PLANAR_MESH, PLANAR_FALL, PLANAR_BELT, PLANAR_SURFACE, PLANAR_BOXES, 
-PLANAR_TILE, PLANAR_DENSITY, PLANAR_CONTOUR, PLANAR_AXIALCONTOUR, 
-PLANAR_GRADIENTLINES, PLANAR_GRID for planar datasets.</p>
-<p>Can be: VOLUME_ISOSURFACE, VOLUME_DENSITY, VOLUME_CONTOUR, VOLUME_GRID or 
+PLANAR_TILE, PLANAR_DENSITY, PLANAR_CONTOUR, PLANAR_AXIALCONTOUR or 
+PLANAR_GRADIENTLINES for planar datasets.</p>
+<p>Can be: VOLUME_ISOSURFACE, VOLUME_DENSITY, VOLUME_CONTOUR or 
 VOLUME_CLOUD for volumetric datasets.</p>
 	<p>Each of these modes can have secondary attributes, that can be configured 
 	only for the plot, and not for a specific dataset. See more at
-	<a href="#DS_MODE">DS_MODE Options</a>.</p>
+	<a href="iup_mglplot_modes.html">DS_MODE Options</a>.</p>
 </blockquote>
 <p><strong>DS_REARRANGE</strong> (write-only): rearrange planar data into linear 
 data. Value is ignored. It can rearrange planar data with count_y=2 or count_y=3, 
@@ -780,7 +756,23 @@ IupPPlotTransform       -&gt; IupMglPlotTransform  (now includes z coordinate)
 IupPPlotPaintTo         -&gt; IupMglPlotPaintTo    (parameters are different)</pre>
 
 <h3>Known Issues</h3>
-<p>xxxx</p>
+<ul>
+	<li>Selection and editing of a dataset using the DS_EDIT attribute are not 
+	implemented.</li>
+	<li>Automatic ticks computation needs to be improved.</li>
+	<li>There is still lots of MathGL features not available in IupMglPlot.</li>
+	<li><font SIZE="3">When OPENGL=Yes and ANTIALIAS=Yes 3D graphs will not 
+	process depth properly. (OpenGL configuration)</font></li>
+	<li>Graph is disappearing during zoom in, <font SIZE="3">when OPENGL=Yes</font>, 
+	after a zoom factor. Maybe a depth clipping.<font SIZE="3"> (OpenGL 
+	configuration)</font></li>
+	<li>The control of ticks being oriented inside or outside the graph is not 
+	working. (MathGL)</li>
+	<li>Bar graph is clipped at 0 and n-1. (MathGL)</li>
+	<li>When tick labels are specified all ticks are displayed. (MathGL)</li>
+	<li><font SIZE="3">When OPENGL=Yes aspect ratio of text and marks are not 
+	respected.(MathGL)</font></li>
+</ul>
 
 <h3><a name="SeeAlso">See Also</a></h3>
 

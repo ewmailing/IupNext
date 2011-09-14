@@ -3628,6 +3628,7 @@ static int iMglPlotSetOpenGLAttrib(Ihandle* ih, const char* value)
   if (old_opengl != ih->data->opengl)
   {
     delete ih->data->mgl;
+    ih->data->redraw = 1;
 
     if (ih->data->opengl)
       ih->data->mgl = new mglGraphGL();
@@ -3673,21 +3674,21 @@ static int iMglPlotSetAntialiasAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iMglPlotGetAntialiasAttrib(Ihandle* ih)
+{
+  if (!ih->data->opengl)
+    return "NO";
+
+  IupGLMakeCurrent(ih);
+  return iMglPlotGetBoolean(glIsEnabled(GL_LINE_SMOOTH)==GL_TRUE);
+}
+
 static char* iMglPlotGetErrorMessageAttrib(Ihandle* ih)
 {
   if (ih->data->ErrorMessage[0])
     return ih->data->ErrorMessage;
   else
     return NULL;
-}
-
-static char* iMglPlotGetAntialiasAttrib(Ihandle* ih)
-{
-  if (!ih->data->opengl)
-    return NULL;
-
-  IupGLMakeCurrent(ih);
-  return iMglPlotGetBoolean(glIsEnabled(GL_LINE_SMOOTH)==GL_TRUE);
 }
 
 static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
@@ -5046,11 +5047,8 @@ void IupMglPlotOpen(void)
 
 To Release:
   LoadFont
-  -------------------
   document DS_MODE Options
   Legend  
-  -------------------
-  Some of the *** bellow
 
 Next Version:
   DS_EDIT+Selection+Callbacks
@@ -5067,7 +5065,7 @@ Maybe:
   Ternary
 
 MathGL:
-  improve autoticks computation
+  ***improve autoticks computation
   evaluate interval, [-1,1] x [0,1] x [0,n-1]
   ***gr->Box AND gr->ContFA have different results in OpenGL. 
      It seems to have an invalid depth. Without OpenGL works fine.
@@ -5075,14 +5073,11 @@ MathGL:
   gr->Axial is changing something that affects other graphs in OpenGL. Without OpenGL works fine.
   ***graph disapear during zoom in, only in OpenGL, depth clipping?
   ***bars at 0 and n-1
-  -------------------
   Ticks
      SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
-     TicksVal should follow ticks spacing configuration 
+     ***TicksVal should follow ticks spacing configuration 
   Fonts
-     ***font size in OpenGL is a bit different, wider than expected
-        maybe this is related to aspect ratio not being mantained
-     ***text anti-aliasing
+     ***font aspect ratio not being mantained
      ***additional library to load TTF and OTF using FreeType
         vfm too slow to load font, need a binary format
      ***option to draw an opaque background for text
