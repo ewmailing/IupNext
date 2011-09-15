@@ -17,8 +17,13 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
 #include <GL/gl.h>
-//#include <GL/glu.h>
+#include <GL/glu.h>
+#endif
 #endif
 
 #include <stdio.h>
@@ -2716,15 +2721,14 @@ void PPainterIup::Resize(int w, int h)
 
 #ifdef USE_OPENGL
   IupGLMakeCurrent(_ih);
+  glViewport(0, 0, w, h);
 
-//  glViewport(0, 0, w, h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluOrtho2D(0, w, 0, h);
 
-  //glMatrixMode(GL_PROJECTION);
-  //glLoadIdentity();
-  //gluOrtho2D(0, w, 0, h);
-
-  //glMatrixMode(GL_MODELVIEW);
-  //glLoadIdentity();
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
 
   char StrData[100];
   sprintf(StrData, "%dx%d", w, h);
