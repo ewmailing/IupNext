@@ -5104,6 +5104,7 @@ Maybe:
      dataset can be a pointer to the previous data, 
      so the same data can be displayed using different modes using the same memory
   Ternary
+  IupMglPlotDrawCurve and IupMglPlotDrawFace
 
 MathGL:
   evaluate interval, [-1,1] x [0,1] x [0,n-1]
