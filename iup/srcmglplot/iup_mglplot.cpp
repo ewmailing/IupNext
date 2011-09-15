@@ -468,6 +468,44 @@ static char* iMglPlotConfigPen(mglGraph *gr, char* pen, char line_style, float l
   return pen;
 }
 
+static char iMglPlotFindColor(const mglColor& c1)
+{
+  int i;
+  char id = 0;
+  mreal old_diff = -1, diff, rr, bb, gg;
+
+	for(i=0; mglColorIds[i].id; i++)
+  {
+    const mglColor& c2 = mglColorIds[i].col;
+    rr = c1.r-c2.r;
+    gg = c1.g-c2.g;
+    bb = c1.b-c2.b;
+    diff = rr*rr + gg*gg + bb*bb;
+    if (old_diff==-1 ||
+        diff < old_diff)
+    {
+      id = mglColorIds[i].id;
+      old_diff = diff;
+    }
+  }
+
+  //if (diff > XXX)
+  //  return 'k';
+  //else
+    return id;
+}
+
+static void iMglPlotConfigDataSetColor(IdataSet* ds, char* style)
+{
+  style += strlen(style); // Skip previous configuration
+
+  char id = iMglPlotFindColor(ds->dsColor);
+  if (id)
+    *style++ = id;
+
+  *style = 0;
+}
+
 static void iMglPlotConfigDataSetLineMark(IdataSet* ds, mglGraph *gr, char* style)
 {
   style += strlen(style); // Skip previous configuration
@@ -1579,8 +1617,9 @@ static void iMglPlotDrawLegend(Ihandle* ih, mglGraph *gr)
   {
     IdataSet* ds = &ih->data->dataSet[i];
 
-    //TODO
-    //iMglPlotConfigDataSetLineMark(ds, gr, style);
+    style[0] = 0;
+    iMglPlotConfigDataSetLineMark(ds, gr, style);
+    iMglPlotConfigDataSetColor(ds, style);
     gr->AddLegend(ds->dsLegend, style);
   }
 
@@ -1604,10 +1643,13 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
   // Since this function will be used to draw on screen and
   // on metafile and bitmaps, all mglGraph control must be done here
   // and can NOT be done inside the attribute methods
-  gr->DefaultPlotParam();
 
   gr->Message = &(ih->data->ErrorMessage[0]);
   ih->data->ErrorMessage[0] = 0;
+
+  gr->DefaultPlotParam();
+
+  gr->Clf(ih->data->bgColor); /* Clear */
 
   iMglPlotConfigView(ih, gr);
 
@@ -1655,8 +1697,6 @@ static void iMglPlotRepaint(Ihandle* ih, int force, int flush)
 
   if (force || ih->data->redraw)
   {
-    ih->data->mgl->Clf(ih->data->bgColor); /* Clear */
-
     /* update render */
     iMglPlotDrawPlot(ih, ih->data->mgl);  /* Draw the graphics plot */
 
@@ -3634,7 +3674,11 @@ static int iMglPlotSetOpenGLAttrib(Ihandle* ih, const char* value)
       ih->data->mgl = new mglGraphGL();
     else
     {
-      iMglPlotInitOpenGL2D();
+      if (ih->handle)
+      {
+        IupGLMakeCurrent(ih);
+        iMglPlotInitOpenGL2D();
+      }
       ih->data->mgl = new mglGraphZB(ih->data->w, ih->data->h);
     }
   }
@@ -4789,10 +4833,9 @@ static int iMglPlotCreateMethod(Ihandle* ih, void **params)
   IupSetAttribute(ih, "BUFFER", "DOUBLE");
 
   ih->data->redraw = true;
-  ih->data->opengl = true;
   ih->data->w = 1;
   ih->data->h = 1;
-  ih->data->mgl = new mglGraphGL();
+  ih->data->mgl = new mglGraphZB(ih->data->w, ih->data->h);
 
   // Default values
   iMglPlotReset(ih);
@@ -4837,7 +4880,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iMglPlotSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ALPHA", iMglPlotGetAlphaAttrib, iMglPlotSetAlphaAttrib, IUPAF_SAMEASSYSTEM, "0.5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRANSPARENT", iMglPlotGetTransparentAttrib, iMglPlotSetTransparentAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OPENGL", iMglPlotGetOpenGLAttrib, iMglPlotSetOpenGLAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OPENGL", iMglPlotGetOpenGLAttrib, iMglPlotSetOpenGLAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANTIALIAS", iMglPlotGetAntialiasAttrib, iMglPlotSetAntialiasAttrib, "Yes", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MGLFONT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESET", NULL, iMglPlotSetResetAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -5047,7 +5090,6 @@ void IupMglPlotOpen(void)
 
 To Release:
   LoadFont
-  Legend  
 
 Next Version:
   DS_EDIT+Selection+Callbacks
@@ -5064,8 +5106,10 @@ Maybe:
   Ternary
 
 MathGL:
-  ***improve autoticks computation
   evaluate interval, [-1,1] x [0,1] x [0,n-1]
+  ***improve autoticks computation
+  ***Legend does not work in OpenGL
+  ***Legend background is always white regardless of plot background
   ***gr->Box AND gr->ContFA have different results in OpenGL. 
      It seems to have an invalid depth. Without OpenGL works fine.
      SOLVED BY CALLING glEnable(GL_DEPTH_TEST), but this affected anti-aliasing.
@@ -5076,8 +5120,8 @@ MathGL:
      SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
      ***TicksVal should follow ticks spacing configuration 
   Fonts
-     ***font aspect ratio not being mantained
+     ***font aspect ratio not being mantained in OpenGL
      ***additional library to load TTF and OTF using FreeType
         vfm too slow to load font, need a binary format
-     ***option to draw an opaque background for text
+     option or function to draw an opaque background for text
 */

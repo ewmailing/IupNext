@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;..\..\cd\include;D:\LNG\vld\include"
+				AdditionalIncludeDirectories="..\include;..\..\cd\include;..\..\im\include;D:\LNG\vld\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;__IUPDEF_H;BIG_TEST;USE_OPENGL;MGLPLOT_TEST;PPLOT_TEST"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
@@ -68,10 +68,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="comctl32.lib ole32.lib opengl32.lib glu32.lib iup.lib iupgl.lib iupcontrols.lib iupimglib.lib cd.lib freetype6.lib iupcd.lib iup_pplot.lib iup_mglplot.lib vld.lib cdgl.lib ftgl.lib"
+				AdditionalDependencies="comctl32.lib ole32.lib opengl32.lib glu32.lib iup.lib iupgl.lib iupcontrols.lib iupimglib.lib cd.lib freetype6.lib iupcd.lib iup_pplot.lib iup_mglplot.lib vld.lib cdgl.lib ftgl.lib iupim.lib im.lib im_process.lib"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\lib;..\..\cd\lib;d:\lng\SpeechSDK\Lib\i386;D:\LNG\vld\lib"
+				AdditionalLibraryDirectories="..\lib;..\..\cd\lib;..\..\im\lib;D:\LNG\vld\lib"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"

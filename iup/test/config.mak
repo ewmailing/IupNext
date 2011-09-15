@@ -115,6 +115,13 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 else
   SLIB += $(IUPLIB)/libiup_mglplot.a
 endif
+USE_IM = Yes
+ifdef USE_IM
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  LIBS += iupim im_process
+else
+  SLIB += $(IUPLIB)/libiupim.a $(IMLIB)/libim_process.a
+endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC += iuptest.rc 

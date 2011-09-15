@@ -357,7 +357,8 @@ returns the last error message reported by MathGL.</p>
 <p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b>:  the default color 
 used in all text elements of the plot: title, legend and labels. Default: &quot;0 0 0&quot;.</p>
 <p><strong>OPENGL</strong> (non inheritable): Enable or disable the rendering in 
-OpenGL. Default: Yes. When NO the rendering is slower and done in a RGB image.</p>
+OpenGL. Default: No. When NO the rendering is slower, but when Yes some features 
+does not behave as expected. See <a href="#KnownIssues">Known Issues</a>.</p>
 <p><b>REDRAW</b> (write-only)(non inheritable): redraw the plot and update the display. Value is 
 ignored. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
 attributes without visual output. If the element is redraw by the system because 
@@ -755,23 +756,26 @@ IupPPlotTransform       -&gt; IupMglPlotTransform  (now includes z coordinate)
    (cdCanvasText)       -&gt; IupMglPlotDrawText
 IupPPlotPaintTo         -&gt; IupMglPlotPaintTo    (parameters are different)</pre>
 
-<h3>Known Issues</h3>
+<h3><a name="KnownIssues">Known Issues</a></h3>
 <ul>
 	<li>Selection and editing of a dataset using the DS_EDIT attribute are not 
 	implemented.</li>
 	<li>Automatic ticks computation needs to be improved.</li>
 	<li>There is still lots of MathGL features not available in IupMglPlot.</li>
-	<li><font SIZE="3">When OPENGL=Yes and ANTIALIAS=Yes 3D graphs will not 
-	process depth properly. (OpenGL configuration)</font></li>
-	<li>Graph is disappearing during zoom in, <font SIZE="3">when OPENGL=Yes</font>, 
-	after a zoom factor. Maybe a depth clipping.<font SIZE="3"> (OpenGL 
-	configuration)</font></li>
-	<li>The control of ticks being oriented inside or outside the graph is not 
-	working. (MathGL)</li>
-	<li>Bar graph is clipped at 0 and n-1. (MathGL)</li>
-	<li>When tick labels are specified all ticks are displayed. (MathGL)</li>
+	<li><font SIZE="3">When OPENGL=Yes and ANTIALIAS=Yes, 3D graphs will not 
+	process depth properly. (OpenGL configuration?)</font></li>
+	<li><font SIZE="3">When OPENGL=Yes</font>, Graph is disappearing during zoom in, after a zoom factor. Maybe a depth clipping 
+	problem.<font SIZE="3"> (OpenGL 
+	configuration?)</font></li>
+	<li><font SIZE="3">When OPENGL=Yes</font>, Legend box is not being 
+	displayed. (MathGL)</li>
 	<li><font SIZE="3">When OPENGL=Yes aspect ratio of text and marks are not 
 	respected.(MathGL)</font></li>
+	<li>The control of ticks being oriented inside or outside the graph is not 
+	working. (MathGL)</li>
+	<li>Bar graph is clipped at 0 and at n-1. (MathGL)</li>
+	<li>When tick labels are specified all ticks are displayed regardless of 
+	tick spacing configuration. (MathGL)</li>
 </ul>
 
 <h3><a name="SeeAlso">See Also</a></h3>

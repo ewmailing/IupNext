@@ -12,8 +12,18 @@
 #include <string.h>
 #include <math.h>
 
+#define USE_IM 1
+#ifdef USE_IM
+#include "im.h"
+#include "im_image.h"
+#include "im_convert.h"
+#include "im_process.h"
+#endif
 
 #include "iup.h"
+#ifdef USE_IM
+#include "iupim.h"
+#endif
 #include "iupcontrols.h"
 #include "iup_mglplot.h"
 
@@ -556,19 +566,40 @@ static int dial2_btnup_cb(Ihandle *self, double angle)
   return IUP_DEFAULT;
 }
 
+#ifdef USE_IM
+static int bt1_cb(Ihandle* self)
+{
+  imImage* image;
+  int w, h;
+  void* gldata;
+  int ii = tabs_get_index();
+  IupGetIntInt(plot[ii], "DRAWSIZE", &w, &h);
+  gldata = malloc(w*h*3);
+  image = imImageCreate(w, h, IM_RGB, IM_BYTE);
+  IupMglPlotPaintTo(plot[ii], "RGB", w, h, 0, gldata);
+  imConvertPacking(gldata, image->data[0], w, h, 3, 3, IM_BYTE, 1);
+  imProcessFlip(image, image);
+  imFileImageSave("../mglplot.png", "PNG", image);
+  free(gldata);
+  imImageDestroy(image);
+  (void)self;
+  return IUP_DEFAULT;
+}
+#else
 static int bt1_cb(Ihandle *self)
 {
   int ii = tabs_get_index();
 //  IupSetAttribute(plot[ii], "CLEAR", "Yes");
 //  IupSetAttribute(plot[ii], "REMOVE", "0");
 //  IupSetAttribute(plot[ii], "ANTIALIAS", !IupGetInt(plot[ii], "ANTIALIAS")? "Yes": "No");
-//  IupSetAttribute(plot[ii], "OPENGL", !IupGetInt(plot[ii], "OPENGL")? "Yes": "No");
-//  IupSetAttribute(plot[ii], "REDRAW", NULL);
+  IupSetAttribute(plot[ii], "OPENGL", !IupGetInt(plot[ii], "OPENGL")? "Yes": "No");
+  IupSetAttribute(plot[ii], "REDRAW", NULL);
 
-  IupMglPlotPaintTo(plot[ii], "EPS", 0, 0, 0, "../mglplot.eps");
-  IupMglPlotPaintTo(plot[ii], "SVG", 0, 0, 0, "../mglplot.svg");
+//  IupMglPlotPaintTo(plot[ii], "EPS", 0, 0, 0, "../mglplot.eps");
+//  IupMglPlotPaintTo(plot[ii], "SVG", 0, 0, 0, "../mglplot.svg");
   return IUP_DEFAULT;
 }
+#endif
 
 void MglPlotTest(void)
 {
