@@ -12,6 +12,7 @@
 #endif
 
 //#define USE_OPENGL 1
+// Not fully working, needs improvements in CD_GL
 
 #ifdef USE_OPENGL
 #ifdef WIN32
