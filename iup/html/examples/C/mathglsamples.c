@@ -46,7 +46,7 @@ static void ResetClear(void)
   IupSetAttribute(plot, "AXS_Y", "NO");
   IupSetAttribute(plot, "AXS_Z", "NO");
 
-//  IupSetAttribute(plot, "MGLFONT", "Helvetica, 10");
+  IupSetAttribute(plot, "MGLFONT", "Helvetica, 8");
 //  IupSetAttribute(plot, "MGLFONT", "Courier, 10");
 //  IupSetAttribute(plot, "MGLFONT", "Heros, 10");
 //  IupSetAttribute(plot, "MGLFONT", "Termes, 12");
@@ -498,8 +498,10 @@ static int postdraw_cb(Ihandle* ih)
   IupMglPlotDrawText(ih, "One can change style in string: " "\\b{bold}, \\i{italic, \\b{both}}", 0, 0.6f, 0);
   IupMglPlotDrawText(ih, "Easy to \\a{overline} or \\u{underline}", 0, 0.2f, 0);
   IupMglPlotDrawText(ih, "Easy to change indexes ^{up} _{down} @{center}", 0, -0.2f, 0);
-  IupMglPlotDrawText(ih, "It parse TeX: \\int \\alpha \\cdot \\sqrt3{sin(\\pi x)^2 + \\gamma_{i_k}} dx", 0, -0.6f, 0);
-  IupMglPlotDrawText(ih, "And more TeX: \\sqrt{\\frac{\\alpha^{\\gamma^2}+" "\\overset 1{\\big\\infty}}{\\sqrt3{2+b}}}", 0, -1.0f, 0);
+  IupMglPlotDrawText(ih, "It parse TeX: \\int \\alpha \\sqrt{sin(\\pi x)^2 + \\gamma_{i_k}} dx", 0, -0.6f, 0);
+//  IupMglPlotDrawText(ih, "It parse TeX: \\int \\alpha \\cdot \\sqrt3{sin(\\pi x)^2 + \\gamma_{i_k}} dx", 0, -0.6f, 0);
+  IupMglPlotDrawText(ih, "And more TeX: \\sqrt{\\frac{\\alpha^{\\gamma^2}+" "\\overset 1{\\big\\infty}}{\\sqrt{2+b}}}", 0, -1.0f, 0);
+//  IupMglPlotDrawText(ih, "And more TeX: \\sqrt{\\frac{\\alpha^{\\gamma^2}+" "\\overset 1{\\big\\infty}}{\\sqrt3{2+b}}}", 0, -1.0f, 0);
   return IUP_DEFAULT;
 }
 
@@ -1121,9 +1123,10 @@ int main(int argc, char* argv[])
   IupSetAttribute(dlg, "TITLE", "MathGL samples w/ IupMglPlot");
   IupSetCallback(dlg, "CLOSE_CB", close_cb);
 
-  IupSetAttribute(plot, "RASTERSIZE", "700x500");  // Minimum initial size
+//  IupSetAttribute(plot, "RASTERSIZE", "700x500");  // Minimum initial size
 //  IupSetAttribute(plot, "RASTERSIZE", "350x250");
-//  IupSetAttribute(plot, "EXPAND", "NO");
+  IupSetAttribute(plot, "RASTERSIZE", "460x280");
+  IupSetAttribute(plot, "EXPAND", "NO");
 
   IupSetAttribute(list, "EXPAND", "VERTICAL");
   IupSetAttribute(list, "VISIBLELINES", "15");  // Not all, because the dialog will be too big
@@ -1140,7 +1143,7 @@ int main(int argc, char* argv[])
 
   IupShowXY(dlg, 100, IUP_CENTER);
 
-  IupSetAttribute(plot, "RASTERSIZE", NULL);  // Clear initial size
+//  IupSetAttribute(plot, "RASTERSIZE", NULL);  // Clear initial size
 
   ChangePlot(0);
 
