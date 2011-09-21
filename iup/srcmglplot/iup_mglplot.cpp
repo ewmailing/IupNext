@@ -546,7 +546,7 @@ static int sysGetFontFileName(const char *font_name, int is_bold, int is_italic,
 #endif
 #endif
 
-static int iupGetFontFileName(const char* path, const char* typeface, char* filename, const char* ext)
+static int iupGetFontFileName(const char* path, const char* typeface, const char* ext, char* filename)
 {
   FILE *file;
 
@@ -639,7 +639,7 @@ static int iMglPlotGetFontNameOTF(const char* path, const char* typeface, char* 
   else
     strcat(fontname, "regular");
 
-  return iupGetFontFileName(path, fontname, filename, "otf");
+  return iupGetFontFileName(path, fontname, "otf", filename);
 }
 
 static int iMglPlotGetFontNameTTF(const char* path, const char* typeface, char* filename, int is_bold, int is_italic)
@@ -658,7 +658,7 @@ static int iMglPlotGetFontNameTTF(const char* path, const char* typeface, char* 
   else if (is_bold)
     strcat(fontname, "bd");
 
-  return iupGetFontFileName(path, fontname, filename, "ttf");
+  return iupGetFontFileName(path, fontname, "ttf", filename);
 }
 
 static void iMglPlotGetFontFilename(char* filename, const char* path, const char *typeface, int is_bold, int is_italic)
@@ -670,9 +670,9 @@ static void iMglPlotGetFontFilename(char* filename, const char* path, const char
 
   /* try typeface as a file title, compose with path to get a filename */
   // "arial" "courbd" "texgyrecursor-bold"
-  if (iupGetFontFileName(path, typeface, filename, "ttf"))
+  if (iupGetFontFileName(path, typeface, "ttf", filename))
     return;
-  if (iupGetFontFileName(path, typeface, filename, "otf"))
+  if (iupGetFontFileName(path, typeface, "otf", filename))
     return;
 
   /* check for the pre-defined names, and use style to compose the filename */
@@ -695,10 +695,7 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
     is_strikeout = 0;
   char typeface[1024];
   
-  const char* font = iupAttribGetStr(ih, "MGLFONT");
-  if (!font)
-    font = iupGetFontAttrib(ih);
-
+  const char* font = iupGetFontAttrib(ih);
   if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return;
 
@@ -2189,7 +2186,6 @@ static int iMglPlotSetResetAttrib(Ihandle* ih, const char* value)
   iMglPlotReset(ih);
 
   // Some attributes are stored in the hash table
-  iupAttribSetStr(ih, "MGLFONT", NULL);
   iupAttribSetStr(ih, "TITLE", NULL);
 
   iupAttribSetStr(ih, "DATAGRID", NULL);
@@ -5266,7 +5262,6 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "TRANSPARENT", iMglPlotGetTransparentAttrib, iMglPlotSetTransparentAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPENGL", iMglPlotGetOpenGLAttrib, iMglPlotSetOpenGLAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANTIALIAS", iMglPlotGetAntialiasAttrib, iMglPlotSetAntialiasAttrib, "Yes", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MGLFONT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESET", NULL, iMglPlotSetResetAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ERRORMESSAGE", iMglPlotGetErrorMessageAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 

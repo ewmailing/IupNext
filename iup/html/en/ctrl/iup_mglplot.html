@@ -353,7 +353,13 @@ Default: &quot;255 255
 <p><strong>ERRORMESSAGE</strong> (read-only)(non inheritable): If not NULL 
 returns the last error message reported by MathGL.</p>
 <p><strong><a href="../attrib/iup_font.html">FONT</a></strong>:
-  the default font used in all text elements of the plot: title, legend and labels.</p>
+  the default font used in all text elements of the plot: title, legend and labels. 
+Font support is done using the libraries Freetype and FTGL, so TrueType (*.ttf) 
+and OpenType (*.otf) font files can be loaded. If the font is not located in the 
+system, then it will try to find the font file in the current directory, in the 
+path from the &quot;IUP_MGLFONTS&quot; environment variable, in the path from the 
+&quot;MGLFONTS&quot; global attribute, in a system folder. The font name will be combined 
+in different ways to compose a file name. A full path can also be used.</p>
 <p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b>:  the default color 
 used in all text elements of the plot: title, legend and labels. Default: &quot;0 0 0&quot;.</p>
 <p><strong>OPENGL</strong> (non inheritable): Enable or disable the rendering in 

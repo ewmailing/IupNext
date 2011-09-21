@@ -84,12 +84,12 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "LEGEND", "YES");
 //  IupSetAttribute(plot[0], "ALPHA", "NO");
 //  IupSetAttribute(plot[0], "ANTIALIAS", "NO");
-//  IupSetAttribute(plot[0], "MGLFONT", "Helvetica, 14");
-//  IupSetAttribute(plot[0], "MGLFONT", "Courier, 11");
-//  IupSetAttribute(plot[0], "MGLFONT", "Times, 8");
-//  IupSetAttribute(plot[0], "MGLFONT", "courbd, 8");
-//  IupSetAttribute(plot[0], "MGLFONT", "texgyrecursor-bold, 8");
-//  IupSetAttribute(plot[0], "MGLFONT", "cursor, Bold 8");
+//  IupSetAttribute(plot[0], "FONT", "Helvetica, 14");
+//  IupSetAttribute(plot[0], "FONT", "Courier, 11");
+//  IupSetAttribute(plot[0], "FONT", "Times, 8");
+//  IupSetAttribute(plot[0], "FONT", "courbd, 8");
+  IupSetAttribute(plot[0], "FONT", "texgyrecursor-bold, 8");
+//  IupSetAttribute(plot[0], "FONT", "cursor, Bold 8");
 
   IupSetAttribute(plot[0], "AXS_XLABEL", "gnu (Foo)");
   IupSetAttribute(plot[0], "AXS_YLABEL", "Space (m^3)");

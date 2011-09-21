@@ -46,10 +46,10 @@ static void ResetClear(void)
   IupSetAttribute(plot, "AXS_Y", "NO");
   IupSetAttribute(plot, "AXS_Z", "NO");
 
-  IupSetAttribute(plot, "MGLFONT", "Helvetica, 8");
-//  IupSetAttribute(plot, "MGLFONT", "Courier, 10");
-//  IupSetAttribute(plot, "MGLFONT", "Heros, 10");
-//  IupSetAttribute(plot, "MGLFONT", "Termes, 12");
+  IupSetAttribute(plot, "FONT", "Helvetica, 8");
+//  IupSetAttribute(plot, "FONT", "Courier, 10");
+//  IupSetAttribute(plot, "FONT", "Heros, 10");
+//  IupSetAttribute(plot, "FONT", "Termes, 12");
 
   IupSetCallback(plot, "POSTDRAW_CB", NULL);
 }
