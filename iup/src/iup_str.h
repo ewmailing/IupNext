@@ -34,6 +34,12 @@ int iupStrEqualNoCase(const char* str1, const char* str2);
  * \ingroup str */
 int iupStrEqualPartial(const char* str1, const char* str2);
 
+/** Returns a non zero value if the two strings are equal but ignores case 
+ * up to a number of characters defined by the strlen of the second string.
+ * str1 or str2 can be NULL.
+ * \ingroup str */
+int iupStrEqualNoCasePartial(const char* str1, const char* str2);
+
 /** Returns 1 if the string is "1", "YES", "ON" or "TRUE". \n
  * Returns 0 otherwise.
  * \ingroup str */

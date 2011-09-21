@@ -58,6 +58,9 @@ public:
 	mglFont(const char *name=0, const char *path=0);
 	virtual ~mglFont();
 	bool parse;		///< Parse LaTeX symbols
+  
+  // Direct Loader for OTF and TTF fonts
+  friend class mglMakeFont;
 
 	/// Load font data to memory. Normally used by constructor.
 	bool Load(const char *base, const char *path=0);

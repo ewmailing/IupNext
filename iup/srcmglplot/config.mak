@@ -10,7 +10,13 @@ endif
 
 INCLUDES = ../include ../src .
 LDIR = ../lib/$(TEC_UNAME)  
-LIBS = iup iupgl
+LIBS = iup iupgl ftgl
+
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  ifeq ($(findstring dll, $(TEC_UNAME)), )
+    DEFINES += FTGL_LIBRARY_STATIC
+  endif
+endif
 
 DEFINES = NO_PNG NO_GSL
 
@@ -24,9 +30,13 @@ SRCMGLPLOT = mgl_1d.cpp mgl_crust.cpp mgl_evalc.cpp \
   mgl_cont.cpp mgl_eval.cpp mgl_gl.cpp mgl_zb2.cpp
 SRCMGLPLOT := $(addprefix mgl/, $(SRCMGLPLOT))
 
-SRC = iup_mglplot.cpp $(SRCMGLPLOT)
+SRC = iup_mglplot.cpp mgl_makefont.cpp $(SRCMGLPLOT)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  ifdef USE_MACOS_OPENGL
+    LFLAGS = -framework OpenGL
+    USE_OPENGL :=
+  endif
   ifneq ($(TEC_SYSMINOR), 4)
     BUILD_DYLIB=Yes
   endif

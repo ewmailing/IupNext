@@ -87,7 +87,10 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[0], "MGLFONT", "Helvetica, 14");
 //  IupSetAttribute(plot[0], "MGLFONT", "Courier, 11");
 //  IupSetAttribute(plot[0], "MGLFONT", "Times, 8");
-  
+//  IupSetAttribute(plot[0], "MGLFONT", "courbd, 8");
+//  IupSetAttribute(plot[0], "MGLFONT", "texgyrecursor-bold, 8");
+//  IupSetAttribute(plot[0], "MGLFONT", "cursor, Bold 8");
+
   IupSetAttribute(plot[0], "AXS_XLABEL", "gnu (Foo)");
   IupSetAttribute(plot[0], "AXS_YLABEL", "Space (m^3)");
 //   IupSetAttribute(plot[0], "AXS_XTICKFONTSIZE", "8");

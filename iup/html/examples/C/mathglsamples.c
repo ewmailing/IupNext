@@ -46,6 +46,11 @@ static void ResetClear(void)
   IupSetAttribute(plot, "AXS_Y", "NO");
   IupSetAttribute(plot, "AXS_Z", "NO");
 
+//  IupSetAttribute(plot, "MGLFONT", "Helvetica, 10");
+//  IupSetAttribute(plot, "MGLFONT", "Courier, 10");
+//  IupSetAttribute(plot, "MGLFONT", "Heros, 10");
+//  IupSetAttribute(plot, "MGLFONT", "Termes, 12");
+
   IupSetCallback(plot, "POSTDRAW_CB", NULL);
 }
 
@@ -500,14 +505,11 @@ static int postdraw_cb(Ihandle* ih)
 
 static void SampleText(void)
 {
-  IupSetAttribute(plot, "MGLFONT", "Helvetica, 10");
   IupSetCallback(plot, "POSTDRAW_CB", (Icallback)postdraw_cb);
 }
 
 static void SampleLegend(void)
 {
-  IupSetAttribute(plot, "MGLFONT", "Helvetica, 10");
-
   IupMglPlotNewDataSet(plot, 1);
   IupSetAttribute(plot, "DS_LEGEND", "sin(\\pi {x^2})");
   IupMglPlotSetFromFormula(plot, 0, "sin(2*pi*x*x)", 50, 1, 1);
@@ -545,8 +547,6 @@ static void SampleSemiLog(void)
 
 static void SampleLogLog(void)
 {
-  IupSetAttribute(plot, "MGLFONT", "Helvetica, 10");
-
   IupMglPlotNewDataSet(plot, 2);
   IupMglPlotSetFormula(plot, 0, "pow(10,6*x-3)", "sqrt(1+x^2)", NULL, 100);
   IupSetAttribute(plot, "DS_COLOR", "0 0 255");

@@ -68,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="comctl32.lib ws2_32.lib winmm.lib ole32.lib opengl32.lib glu32.lib iup.lib iupgl.lib iupcontrols.lib iupimglib.lib cd.lib freetype6.lib iupcd.lib iup_pplot.lib iuptuio.lib iupim.lib im.lib im_process.lib iupole.lib iupweb.lib"
+				AdditionalDependencies="comctl32.lib ws2_32.lib winmm.lib ole32.lib opengl32.lib glu32.lib iup.lib iupgl.lib iupcontrols.lib iupimglib.lib cd.lib freetype6.lib ftgl.lib iupcd.lib iup_pplot.lib iuptuio.lib iupim.lib im.lib im_process.lib iupole.lib iupweb.lib"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib;..\..\cd\lib;..\..\im\lib;"

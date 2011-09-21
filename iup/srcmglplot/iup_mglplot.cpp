@@ -36,6 +36,8 @@
 #include "mgl/mgl_eval.h"
 #include "mgl/mgl_gl.h"
 
+#include "mgl_makefont.h"
+
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
 #else
@@ -110,6 +112,9 @@ struct _IcontrolData
   char FontDef[32];     
   float FontSizeDef;
   int FontStyleDef;
+  
+  bool useMakeFont;
+  mglMakeFont* makeFont;
 
   /* Global */
   bool transparent;
@@ -323,7 +328,266 @@ static bool iMglPlotIsView3D(Ihandle* ih)
   return false;
 }
 
-static char* iMglPlotGetFontName(const char* typeface)
+#ifdef WIN32
+static LONG winGetNextNameValue(HKEY key, LPCTSTR subkey, LPTSTR szName, LPTSTR szData)
+{
+  static HKEY hkey = NULL;
+  static DWORD dwIndex = 0;
+  LONG retval;
+
+  if (subkey == NULL && szName == NULL && szData == NULL)
+  {
+    if (hkey)
+      RegCloseKey(hkey);
+  
+    hkey = NULL;
+    dwIndex = 0;
+    return ERROR_SUCCESS;
+  }
+
+  if (subkey && subkey[0] != 0)
+  {
+    retval = RegOpenKeyEx(key, subkey, 0, KEY_READ, &hkey);
+    if (retval != ERROR_SUCCESS)
+      return retval;
+
+    dwIndex = 0;
+  }
+  else
+    dwIndex++;
+
+  *szName = 0;
+  *szData = 0;
+
+  {
+    char szValueName[MAX_PATH];
+    DWORD dwValueNameSize = sizeof(szValueName)-1;
+    BYTE szValueData[MAX_PATH];
+    DWORD dwValueDataSize = sizeof(szValueData)-1;
+    DWORD dwType = 0;
+
+    retval = RegEnumValue(hkey, dwIndex, szValueName, &dwValueNameSize, NULL, &dwType, szValueData, &dwValueDataSize);
+    if (retval == ERROR_SUCCESS)
+    {
+      lstrcpy(szName, (char *)szValueName);
+      lstrcpy(szData, (char *)szValueData);
+    }
+  }
+
+  return retval;
+}
+
+static int winReadStringKey(HKEY base_key, char* key_name, char* value_name, char* value)
+{
+	HKEY key;
+	DWORD max_size = 512;
+
+	if (RegOpenKeyEx(base_key, key_name, 0, KEY_READ, &key) != ERROR_SUCCESS)
+		return 0;
+
+  if (RegQueryValueEx(key, value_name, NULL, NULL, (LPBYTE)value, &max_size) != ERROR_SUCCESS)
+  {
+    RegCloseKey(key);
+		return 0;
+  }
+
+	RegCloseKey(key);
+	return 1;
+}
+
+static char* winGetFontDir(void)
+{
+  static char font_dir[1024];
+  if (!winReadStringKey(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", "Fonts", font_dir))
+    return "";
+  else
+    return font_dir;
+}
+
+static int sysGetFontFileName(const char *font_name, int is_bold, int is_italic, char* fileName)
+{
+  TCHAR szName[2 * MAX_PATH];
+  TCHAR szData[2 * MAX_PATH];
+  LPCTSTR strFont = "Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
+  char localFontName[256];
+  int bResult = 0;
+
+  if (iupStrEqualNoCase(font_name, "Courier") || iupStrEqualNoCase(font_name, "Monospace"))
+    font_name = "Courier New";
+  else if (iupStrEqualNoCase(font_name, "Times") || iupStrEqualNoCase(font_name, "Serif"))
+    font_name = "Times New Roman";
+  else if (iupStrEqualNoCase(font_name, "Helvetica") || iupStrEqualNoCase(font_name, "Sans"))
+    font_name = "Arial";
+
+  strcpy(localFontName, font_name);
+
+  if (is_bold)
+    strcat(localFontName, " Bold");
+
+  if (is_italic)
+    strcat(localFontName, " Italic");
+
+  while (winGetNextNameValue(HKEY_LOCAL_MACHINE, strFont, szName, szData) == ERROR_SUCCESS)
+  {
+    if (iupStrEqualNoCasePartial(szName, localFontName))
+    {
+      sprintf(fileName, "%s\\%s", winGetFontDir(), szData);  // szData already includes file extension
+      bResult = 1;
+      break;
+    }
+    strFont = NULL;
+  }
+
+  /* close the registry key */
+  winGetNextNameValue(HKEY_LOCAL_MACHINE, NULL, NULL, NULL);
+
+  return bResult;
+}
+#else
+#ifndef NO_FONTCONFIG
+#include <fontconfig/fontconfig.h>
+
+static int sysGetFontFileName(const char *font_name, int is_bold, int is_italic, char* fileName)
+{
+  char styles[4][20];
+  int style_size;
+  FcObjectSet *os = 0;
+  FcFontSet *fs;
+  FcPattern *pat;
+  int bResult = 0;
+
+  if (iupStrEqualNoCase(font_name, "Courier") || iupStrEqualNoCase(font_name, "Courier New") || iupStrEqualNoCase(font_name, "Monospace"))
+    font_name = "freemono";
+  else if (iupStrEqualNoCase(font_name, "Times") || iupStrEqualNoCase(font_name, "Times New Roman")|| iupStrEqualNoCase(font_name, "Serif"))
+    font_name = "freeserif";
+  else if (iupStrEqualNoCase(font_name, "Helvetica") || iupStrEqualNoCase(font_name, "Arial") || iupStrEqualNoCase(font_name, "Sans"))
+    font_name = "freesans";
+
+  if( is_bold && is_italic )
+  {
+    strcpy(styles[0], "BoldItalic");
+    strcpy(styles[1], "Bold Italic");
+    strcpy(styles[2], "Bold Oblique");
+    strcpy(styles[3], "BoldOblique");
+    style_size = 4;
+  }
+  else if( is_bold )
+  {
+    strcpy(styles[0], "Bold");
+    style_size = 1;
+  }
+  else if( is_italic )
+  {
+    strcpy(styles[0], "Italic");
+    strcpy(styles[1], "Oblique");
+    style_size = 2;
+  }
+  else
+  {
+    strcpy(styles[0], "Regular");
+    strcpy(styles[1], "Normal");
+    strcpy(styles[2], "Medium");
+    style_size = 3;
+  }
+
+  pat = FcPatternCreate();
+  os = FcObjectSetBuild(FC_FAMILY, FC_FILE, FC_STYLE, NULL);
+  fs = FcFontList(NULL, pat, os);
+  if (pat)
+    FcPatternDestroy(pat);
+
+  if(fs)
+  {
+    int j, s;
+
+    for (j = 0; j < fs->nfont; j++)
+    {
+      FcChar8 *file;
+      FcChar8 *style;
+      FcChar8 *family;
+
+      FcPatternGetString(fs->fonts[j], FC_FILE, 0, &file); 
+      FcPatternGetString(fs->fonts[j], FC_STYLE, 0, &style );
+      FcPatternGetString(fs->fonts[j], FC_FAMILY, 0, &family );
+
+      if (iupStrEqualNoCasePartial((char*)family, font_name))
+      {
+        /* check if the font is of the correct type. */
+        for(s = 0; s < style_size; s++ )
+        {
+          if (iupStrEqualNoCase(styles[s], (char*)style))
+          {
+            strcpy(fileName, (char*)file);
+            bResult = 1;
+            FcFontSetDestroy (fs);
+            return bResult;
+          }
+
+          /* set value to use if no more correct font of same family is found. */
+          strcpy(fileName, (char*)file);
+          bResult = 1;
+        }
+      }
+    }
+    FcFontSetDestroy (fs);
+  }
+
+  return bResult;
+}
+#else
+static int sysGetFontFileName(const char *font_name, int is_bold, int is_italic, char* fileName)
+{
+  (void)font_name;
+  (void)is_bold;
+  (void)is_italic;
+  (void)fileName;
+  return 0;
+}
+#endif
+#endif
+
+static int iupGetFontFileName(const char* path, const char* typeface, char* filename, const char* ext)
+{
+  FILE *file;
+
+  /* current directory */
+  sprintf(filename, "%s.%s", typeface, ext);
+  file = fopen(filename, "r");
+
+  if (file)
+    fclose(file);
+  else
+  {
+    /* path from the environment */
+    if (path)
+    {
+      sprintf(filename, "%s/%s.%s", path, typeface, ext);
+      file = fopen(filename, "r");
+    }
+
+    if (file)
+      fclose(file);
+    else
+    {
+#ifdef WIN32
+      /* Windows Font folder */
+      sprintf(filename, "%s\\%s.%s", winGetFontDir(), typeface, ext);
+      file = fopen(filename, "r");
+
+      if (file)
+        fclose(file);
+      else
+        return 0;
+#else
+      return 0;
+#endif
+    }
+  }
+
+  return 1;
+}
+
+static char* iMglPlotGetTexFontName(const char* typeface)
 {
   if (iupStrEqualNoCase(typeface, "sans") ||
       iupStrEqualNoCase(typeface, "helvetica") ||
@@ -338,6 +602,88 @@ static char* iMglPlotGetFontName(const char* typeface)
       iupStrEqualNoCase(typeface, "times new roman"))
     return "termes";
   return NULL;
+}
+
+static char* iMglPlotGetTTFFontName(const char* typeface)
+{
+  if (iupStrEqualNoCase(typeface, "sans") ||
+      iupStrEqualNoCase(typeface, "helvetica") ||
+      iupStrEqualNoCase(typeface, "arial"))
+    return "arial";
+  if (iupStrEqualNoCase(typeface, "monospace") ||
+      iupStrEqualNoCase(typeface, "courier") ||
+      iupStrEqualNoCase(typeface, "courier new"))
+    return "cour";
+  if (iupStrEqualNoCase(typeface, "serif") ||
+      iupStrEqualNoCase(typeface, "times") ||
+      iupStrEqualNoCase(typeface, "times new roman"))
+    return "times";
+  return NULL;
+}
+
+static int iMglPlotGetFontNameOTF(const char* path, const char* typeface, char* filename, int is_bold, int is_italic)
+{
+  char fontname[100];
+  char* face = iMglPlotGetTexFontName(typeface);
+  if (face)
+    sprintf(fontname, "texgyre%s-", face);
+  else
+    sprintf(fontname, "texgyre%s-", typeface);
+
+  if (is_bold && is_italic)
+    strcat(fontname, "bolditalic");
+  else if (is_italic)
+    strcat(fontname, "italic");
+  else if (is_bold)
+    strcat(fontname, "bold");
+  else
+    strcat(fontname, "regular");
+
+  return iupGetFontFileName(path, fontname, filename, "otf");
+}
+
+static int iMglPlotGetFontNameTTF(const char* path, const char* typeface, char* filename, int is_bold, int is_italic)
+{
+  char fontname[100];
+  char* face = iMglPlotGetTTFFontName(typeface);
+  if (face)
+    strcpy(fontname, face);
+  else
+    strcpy(fontname, typeface);
+
+  if (is_bold && is_italic)
+    strcat(fontname, "bi");
+  else if (is_italic)
+    strcat(fontname, "i");
+  else if (is_bold)
+    strcat(fontname, "bd");
+
+  return iupGetFontFileName(path, fontname, filename, "ttf");
+}
+
+static void iMglPlotGetFontFilename(char* filename, const char* path, const char *typeface, int is_bold, int is_italic)
+{
+  /* search for the font in the system */
+  // "Helvetica" "Courier" "Times" "Segoe UI" "Tahoma" etc
+  if (sysGetFontFileName(typeface, is_bold, is_italic, filename))
+    return;
+
+  /* try typeface as a file title, compose with path to get a filename */
+  // "arial" "courbd" "texgyrecursor-bold"
+  if (iupGetFontFileName(path, typeface, filename, "ttf"))
+    return;
+  if (iupGetFontFileName(path, typeface, filename, "otf"))
+    return;
+
+  /* check for the pre-defined names, and use style to compose the filename */
+  // "cursor"
+  if (iMglPlotGetFontNameTTF(path, typeface, filename, is_bold, is_italic))
+    return;
+  if (iMglPlotGetFontNameOTF(path, typeface, filename, is_bold, is_italic))
+    return;
+
+  /* try the typeface as file name */
+  strcpy(filename, typeface);
 }
 
 static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
@@ -396,21 +742,27 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   //  Don't know why it works, but we obtain good results.
   ih->data->FontSizeDef = ((float)size/(float)ih->data->h)*ih->data->dpi;
 
-  const char* name = iMglPlotGetFontName(typeface);
-  if (!name)
-    name = typeface;
-
   char *path = getenv("IUP_MGLFONTS");
   if (!path) 
     path = IupGetGlobal("MGLFONTS");
 
-  if (!iupStrEqualNoCase(name, iupAttribGetStr(ih, "_IUP_MGL_FONTNAME")) ||
+  if (!iupStrEqualNoCase(typeface, iupAttribGetStr(ih, "_IUP_MGL_FONTNAME")) ||
       !iupStrEqualNoCase(path, iupAttribGetStr(ih, "_IUP_MGL_FONTPATH")))
   {
-    gr->LoadFont(name, path);
-    //LoadFontFreeType(gr, "texgyrecursor-italic.otf", NULL);
+    // Try to Load OTF and TTF fonts using Freetype and FTGL
+    char filename[10240];
+    iMglPlotGetFontFilename(filename, path, typeface, is_bold, is_italic);
+    ih->data->useMakeFont = true;
+    if (!ih->data->makeFont->mglMakeLoadFontFT(gr, filename, size)) 
+    {
+      ih->data->useMakeFont = false;
+      const char* fontname = iMglPlotGetTexFontName(typeface);
+      if (!fontname)
+        fontname = typeface;
+      gr->LoadFont(fontname, path);  // Load MathGL VFM fonts
+    }
 
-    iupAttribStoreStr(ih, "_IUP_MGL_FONTNAME", name);
+    iupAttribStoreStr(ih, "_IUP_MGL_FONTNAME", typeface);
     iupAttribStoreStr(ih, "_IUP_MGL_FONTPATH", path);
   }
 
@@ -803,6 +1155,10 @@ static void iMglPlotDrawAxisLabel(Ihandle* ih, mglGraph *gr, char dir, Iaxis& ax
     gr->SetRotatedText(axis.axLabelRotation);
 
     iMglPlotConfigFont(ih, gr, axis.axLabelFontStyle, axis.axLabelFontSizeFactor);
+    
+    // Check if all characters are loaded
+    if (ih->data->useMakeFont)
+      ih->data->makeFont->mglMakeFontSearchGlyph(gr, label);
 
     // TODO sometimes the label gets too close to the ticks
     gr->Label(dir, label, (mreal)axis.axLabelPos, -1);  
@@ -1009,6 +1365,10 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
     {
       sprintf(text, format, dsXPoints[i], dsYPoints[i], dsZPoints[i]);
       p = mglPoint(dsXPoints[i], dsYPoints[i], dsZPoints[i]);
+      
+      // Check if all characters are loaded
+      if (ih->data->useMakeFont)
+        ih->data->makeFont->mglMakeFontSearchGlyph(gr, text);
 
       gr->Puts(p, d, text, 0, -1);
     }
@@ -1024,6 +1384,11 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
     {
       sprintf(text, format, dsXPoints[i], dsYPoints[i]);
       p = mglPoint(dsXPoints[i], dsYPoints[i]);
+      
+      // Check if all characters are loaded
+      if (ih->data->useMakeFont)
+        ih->data->makeFont->mglMakeFontSearchGlyph(gr, text);
+      
       gr->Puts(p, d, text, 0, -1);
     }
   }
@@ -1036,6 +1401,11 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
     {
       sprintf(text, format, i, dsXPoints[i]);
       p = mglPoint((float)i, dsXPoints[i]);
+      
+      // Check if all characters are loaded
+      if (ih->data->useMakeFont)
+        ih->data->makeFont->mglMakeFontSearchGlyph(gr, text);
+      
       gr->Puts(p, d, text, 0, -1);
     }
   }
@@ -1635,6 +2005,11 @@ static void iMglPlotDrawTitle(Ihandle* ih, mglGraph *gr, const char* title)
 {
   iMglPlotConfigColor(ih, gr, ih->data->titleColor);
   iMglPlotConfigFont(ih, gr, ih->data->titleFontStyle, ih->data->titleFontSizeFactor);
+      
+  // Check if all characters are loaded
+  if (ih->data->useMakeFont)
+    ih->data->makeFont->mglMakeFontSearchGlyph(gr, title);
+  
   gr->Title(title, NULL, -1);
 }
 
@@ -4560,6 +4935,10 @@ void IupMglPlotDrawText(Ihandle* ih, const char* text, float x, float y, float z
 
   iMglPlotConfigColor(ih, gr, color);
   iMglPlotConfigFont(ih, gr, fontstyle, fontsize);
+  
+  // Check if all characters are loaded
+  if (ih->data->useMakeFont)
+    ih->data->makeFont->mglMakeFontSearchGlyph(gr, text);
 
   gr->Puts(mglPoint(x, y, z), text, style, -1);
 }
@@ -4801,6 +5180,9 @@ static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
 static void iMglPlotDestroyMethod(Ihandle* ih)
 {
   int i;
+  
+  if(ih->data->makeFont)
+    free(ih->data->makeFont);
 
   /* PLOT End for the current stream */
   for(i = 0; i < ih->data->dataSetCount; i++)
@@ -4837,6 +5219,8 @@ static int iMglPlotCreateMethod(Ihandle* ih, void **params)
   ih->data->h = 1;
   ih->data->mgl = new mglGraphZB(ih->data->w, ih->data->h);
 
+  ih->data->makeFont = (mglMakeFont*)malloc(sizeof(mglMakeFont));
+  
   // Default values
   iMglPlotReset(ih);
 

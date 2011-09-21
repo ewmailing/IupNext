@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;..\src;..\srcmglplot;..\srcmglplot\zlib;"
-				PreprocessorDefinitions="WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;IUP_ASSERT;NO_PNG;NO_GSL"
+				AdditionalIncludeDirectories="..\include;..\src;..\srcmglplot;..\..\cd\src\freetype2;..\..\cd\src\ftgl"
+				PreprocessorDefinitions="WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;IUP_ASSERT;NO_PNG;NO_GSL;FTGL_LIBRARY_STATIC"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -298,6 +298,14 @@
 		</File>
 		<File
 			RelativePath="..\srcmglplot\iup_mglplot.def"
+			>
+		</File>
+		<File
+			RelativePath="..\srcmglplot\mgl_makefont.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\srcmglplot\mgl_makefont.h"
 			>
 		</File>
 	</Files>
