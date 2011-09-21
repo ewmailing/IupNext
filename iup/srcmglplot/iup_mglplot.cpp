@@ -5472,9 +5472,6 @@ void IupMglPlotOpen(void)
 
 /* TODO
 
-To Release:
-  LoadFont
-
 Next Version:
   DS_EDIT+Selection+Callbacks
   Properties dialog (see IupGraph)
@@ -5506,7 +5503,5 @@ MathGL:
      ***TicksVal should follow ticks spacing configuration 
   Fonts
      ***font aspect ratio not being mantained in OpenGL
-     ***additional library to load TTF and OTF using FreeType
-        vfm too slow to load font, need a binary format
      option or function to draw an opaque background for text
 */
