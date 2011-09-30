@@ -12,7 +12,7 @@
 #include <string.h>
 #include <math.h>
 
-#define USE_IM 1
+//#define USE_IM 1
 #ifdef USE_IM
 #include "im.h"
 #include "im_image.h"

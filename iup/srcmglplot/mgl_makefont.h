@@ -10,10 +10,15 @@ private:
   mglFont *fontMGL;
   double   ww;  /* maximal width */
 
-  void mglMakeFontMemAlloc();
-  void mglMakeFontMainCopy();
   void mglMakeFontSort();
-  void mglMakeFontPrepareFont(mglGraph *mgl);
+  double mglMakeFontCalcFactorDX();
+  void mglMakeFontMainCopy(int style);
+
+  void mglMakeFontPrepareSolidFont(unsigned int k, double dx, unsigned long *cur, unsigned *post, short *numt, short *buf);
+  void mglMakeFontPrepareWireFont(unsigned int k, double dx, unsigned long *cur, unsigned *ids, unsigned *posl, short *wdt, short *numl, short *buf);
+  void mglMakeFontPrepareFont(int style);
+  void mglMakeSetFontFT(mglGraph *mgl);
+
   void mglMakeFontAddGlyph(wchar_t chr);
   bool mglMakeFontSearchSymbols(const wchar_t *str, int size);
 
