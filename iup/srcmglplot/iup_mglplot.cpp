@@ -669,7 +669,7 @@ static void iMglPlotGetFontFilename(char* filename, const char* path, const char
     return;
 
   /* try typeface as a file title, compose with path to get a filename */
-  // "arial" "courbd" "texgyrecursor-bold"
+  // "ariali" "courbd" "texgyrecursor-bold"
   if (iupGetFontFileName(path, typeface, "ttf", filename))
     return;
   if (iupGetFontFileName(path, typeface, "otf", filename))
@@ -766,6 +766,7 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   //IMPORTANT:
   //  BOLD and ITALIC does not work for the internal font, only for loaded fonts. 
   //  Some TeX features too.
+  //  BOLD and ITALIC inside TeX formatting does not work for TTF or OTF fonts.
 }
 
 static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, int fontstyle, float fontsizefactor)
@@ -5468,6 +5469,7 @@ void IupMglPlotOpen(void)
 /* TODO
 
 Next Version:
+  Binary internal fonts
   DS_EDIT+Selection+Callbacks
   Properties dialog (see IupGraph)
   IDTF+PDF 3D
@@ -5499,4 +5501,5 @@ MathGL:
   Fonts
      ***font aspect ratio not being mantained in OpenGL
      option or function to draw an opaque background for text
+     BOLD and ITALIC inside TeX formatting does not work for TTF or OTF fonts.
 */

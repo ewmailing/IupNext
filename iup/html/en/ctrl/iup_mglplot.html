@@ -359,7 +359,8 @@ and OpenType (*.otf) font files can be loaded. If the font is not located in the
 system, then it will try to find the font file in the current directory, or in 
 the path from the &quot;IUP_MGLFONTS&quot; environment variable, or in the path from the 
 &quot;MGLFONTS&quot; global attribute, or in a system folder. The font name will be 
-combined with the path to compose a file name. A full path can also be used.</p>
+combined with the path to compose a file name. A full path can also be used. If 
+the font load fail, an internal MathGL font is used.</p>
 <p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b>:  the default color 
 used in all text elements of the plot: title, legend and labels. Default: &quot;0 0 0&quot;.</p>
 <p><strong>OPENGL</strong> (non inheritable): Enable or disable the rendering in 
@@ -767,6 +768,7 @@ IupPPlotPaintTo         -&gt; IupMglPlotPaintTo    (parameters are different)</p
 	<li>Selection and editing of a dataset using the DS_EDIT attribute are not 
 	implemented.</li>
 	<li>Automatic ticks computation needs to be improved.</li>
+	<li>BOLD and ITALIC styles are not working inside TeX formatting.</li>
 	<li>There is still lots of MathGL features not available in IupMglPlot.</li>
 	<li><font SIZE="3">When OPENGL=Yes and ANTIALIAS=Yes, 3D graphs will not 
 	process depth properly. (OpenGL configuration?)</font></li>

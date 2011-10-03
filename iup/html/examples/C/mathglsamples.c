@@ -50,6 +50,7 @@ static void ResetClear(void)
 //  IupSetAttribute(plot, "FONT", "Courier, 10");
 //  IupSetAttribute(plot, "FONT", "Heros, 10");
 //  IupSetAttribute(plot, "FONT", "Termes, 12");
+//  IupSetAttribute(plot, "FONT", "XXXX, 10");
 
   IupSetCallback(plot, "POSTDRAW_CB", NULL);
 }
@@ -1123,10 +1124,10 @@ int main(int argc, char* argv[])
   IupSetAttribute(dlg, "TITLE", "MathGL samples w/ IupMglPlot");
   IupSetCallback(dlg, "CLOSE_CB", close_cb);
 
-//  IupSetAttribute(plot, "RASTERSIZE", "700x500");  // Minimum initial size
+  IupSetAttribute(plot, "RASTERSIZE", "700x500");  // Minimum initial size
 //  IupSetAttribute(plot, "RASTERSIZE", "350x250");
-  IupSetAttribute(plot, "RASTERSIZE", "460x280");
-  IupSetAttribute(plot, "EXPAND", "NO");
+//  IupSetAttribute(plot, "RASTERSIZE", "460x280");
+//  IupSetAttribute(plot, "EXPAND", "NO");
 
   IupSetAttribute(list, "EXPAND", "VERTICAL");
   IupSetAttribute(list, "VISIBLELINES", "15");  // Not all, because the dialog will be too big
@@ -1143,7 +1144,7 @@ int main(int argc, char* argv[])
 
   IupShowXY(dlg, 100, IUP_CENTER);
 
-//  IupSetAttribute(plot, "RASTERSIZE", NULL);  // Clear initial size
+  IupSetAttribute(plot, "RASTERSIZE", NULL);  // Clear initial size
 
   ChangePlot(0);
 
