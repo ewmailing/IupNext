@@ -294,11 +294,11 @@ static Ihandle* CreateTabs(int tab)
  
 
   // In Windows, must be set before map
+//  IupSetAttribute(tabs, "MULTILINE", "YES");
 //  IupSetAttribute(tabs, "TABTYPE", "LEFT");
 //  IupSetAttribute(tabs, "TABTYPE", "RIGHT");
 //  IupSetAttribute(tabs, "TABTYPE", "BOTTOM");
 //  IupSetAttribute(tabs, "TABORIENTATION", "VERTICAL");
-//  IupSetAttribute(tabs, "MULTILINE", "YES");
 
   IupSetAttribute(tabs, "MARGIN", "0x0");  /* for children */
 //  IupSetAttribute(tabs, "EXPAND", "YES");

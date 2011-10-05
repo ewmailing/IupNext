@@ -88,7 +88,9 @@ inheritable</font>): internal margin of the tab title. Works just like the
 <p><strong>TABORIENTATION </strong>(<font SIZE="3">non inheritable</font>): 
 Indicates the orientation of tab text, which can be &quot;HORIZONTAL&quot; or &quot;VERTICAL&quot;. 
 Default is &quot;HORIZONTAL&quot;. VERTICAL is supported only in GTK and in Windows. In 
-Windows, VERTICAL is only supported when TABTYPE=LEFT or TABTYPE=RIGHT. (GTK 
+Windows, it can NOT be set, it is dependent on the TABTYPE attribute, if 
+TABTYPE=LEFT or TABTYPE=RIGHT then TABORIENTATION=VERTICAL, if TABTYPE=TOP or 
+TABTYPE=BOTTOM then TABORIENTATION=HORIZONTAL. (GTK 
 2.6)</p>
 <p><strong>TABTITLEn </strong>(<font SIZE="3">non inheritable</font>): Contains 
 the text to be shown in the respective tab title. n starts at 0. If this value is NULL, it will 
@@ -102,8 +104,10 @@ Works only before the child is added to the tabs. Deprecated, use <strong>
 TABTITLEn</strong>.</p>
 <p><strong>TABTYPE </strong>(<font SIZE="3">non inheritable</font>) (creation 
 only in Windows): Indicates the type of tab, which can be &quot;TOP&quot;, &quot;BOTTOM&quot;, 
-&quot;LEFT&quot; or &quot;RIGHT&quot;. Default is &quot;TOP&quot;. In Windows, if LEFT or RIGHT, then 
-MULTILINE=YES and TABORIENTATION<strong>=</strong>VERTICAL always. In Windows, 
+&quot;LEFT&quot; or &quot;RIGHT&quot;. Default is &quot;TOP&quot;. In Windows, if LEFT or RIGHT then 
+MULTILINE=YES and TABORIENTATION<strong>=</strong>VERTICAL are set, if TOP or 
+BOTTOM then 
+TABORIENTATION<strong>=</strong>HORIZONTAL is set. In Windows, 
 when not TOP, then visual style is removed from tabs.</p>
 <p><strong>VALUE </strong>(<font SIZE="3">non inheritable</font>): Changes the 
 active tab by its name. The value passed must be the name of one of the elements 

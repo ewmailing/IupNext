@@ -291,27 +291,25 @@ static int winTabsSetTabTypeAttrib(Ihandle* ih, const char* value)
 
   if(iupStrEqualNoCase(value, "BOTTOM"))
   {
-    ih->data->is_multiline = 0;
     ih->data->type = ITABS_BOTTOM;
-    ih->data->orientation = ITABS_HORIZONTAL;
+    ih->data->orientation = ITABS_HORIZONTAL;  /* TABTYPE controls TABORIENTATION in Windows */
   }
   else if(iupStrEqualNoCase(value, "LEFT"))
   {
     ih->data->type = ITABS_LEFT;
-    ih->data->orientation = ITABS_VERTICAL;
+    ih->data->orientation = ITABS_VERTICAL;  /* TABTYPE controls TABORIENTATION in Windows */
     ih->data->is_multiline = 1; /* VERTICAL works only with MULTILINE */
   }
   else if(iupStrEqualNoCase(value, "RIGHT"))
   {
-    ih->data->is_multiline = 1; /* VERTICAL works only with MULTILINE */
     ih->data->type = ITABS_RIGHT;
-    ih->data->orientation = ITABS_VERTICAL;
+    ih->data->orientation = ITABS_VERTICAL;  /* TABTYPE controls TABORIENTATION in Windows */
+    ih->data->is_multiline = 1; /* VERTICAL works only with MULTILINE */
   }
   else /* "TOP" */
   {
-    ih->data->is_multiline = 0;
     ih->data->type = ITABS_TOP;
-    ih->data->orientation = ITABS_HORIZONTAL;
+    ih->data->orientation = ITABS_HORIZONTAL;  /* TABTYPE controls TABORIENTATION in Windows */
   }
 
   return 0;
