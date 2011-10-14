@@ -20,8 +20,8 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_mask.h"
+#include "iup_image.h"
 #include "iup_list.h"
-
 
 void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos)
 {
@@ -556,6 +556,38 @@ static int iListSetMaskFloatAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iListSetShowImageAttrib(Ihandle* ih, const char* value)
+{
+  /* valid only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+    ih->data->showimage = 1;
+  else
+    ih->data->showimage = 0;
+
+  return 0;
+}
+
+static char* iListGetShowImageAttrib(Ihandle* ih)
+{
+  if (ih->data->showimage)
+    return "YES";
+  else
+    return "NO";
+}
+
+static int iListSetImageListAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->def_image = iupImageGetImage(value, ih, 0);
+
+  /* Update all images */
+  if(ih->data->showimage)
+    iupdrvListUpdateImages(ih);
+
+  return 1;
+}
 
 /*****************************************************************************************/
 
@@ -648,6 +680,9 @@ static void iListComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
   {
     /* add room for dropdown box */
     natural_w += sb_size;
+
+    if(ih->data->showimage)
+      iupdrvListGetIconSize(ih, &natural_w);  /* compute the entry icon width */
 
     if (natural_h < sb_size)
       natural_h = sb_size;
@@ -751,6 +786,9 @@ Iclass* iupListNewClass(void)
 
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "SHOWIMAGE", iListGetShowImageAttrib, iListSetShowImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGELIST", NULL, iListSetImageListAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
 
   iupdrvListInitClass(ic);
 

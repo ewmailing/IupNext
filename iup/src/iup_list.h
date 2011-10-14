@@ -20,6 +20,8 @@ void iupdrvListAppendItem(Ihandle* ih, const char* value);
 void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value);
 void iupdrvListRemoveItem(Ihandle* ih, int pos);
 void iupdrvListRemoveAllItems(Ihandle* ih);
+void iupdrvListUpdateImages(Ihandle* ih);
+void iupdrvListGetIconSize(Ihandle* ih, int *w);
 
 int iupListGetPos(Ihandle* ih, int id);
 int iupListSetIdValueAttrib(Ihandle* ih, int id, const char* value);
@@ -42,7 +44,9 @@ struct _IcontrolData
       last_caret_pos,
       is_multiple,
       is_dropdown,
-      has_editbox;
+      has_editbox,
+      showimage;
+  void* def_image;  /* Default image */
   Imask* mask;
 };
 
