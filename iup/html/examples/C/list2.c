@@ -134,11 +134,11 @@ int main(int argc, char **argv)
 
   IupSetAttributes(list1, "1=\"US$ 1000\", 2=\"US$ 2000\", 3=\"US$ 30000000\", 4=\"US$ 4000\", 5=\"US$ 5000\", 6=\"US$ 6000\", 7=\"US$ 7000\","
                           "EXPAND=HORIZONTAL, EDITBOX=YES, DROPDOWN=YES, VISIBLE_ITEMS=5, SHOWIMAGE=YES");
-  IupSetAttributeHandle(list1, "IMAGELIST", load_image_LogoTecgraf());
+  IupSetAttributeHandle(list1, "DEFAULTIMAGE", load_image_LogoTecgraf());
 
   IupSetAttributes(list2, "1=\"R$ 1000\", 2=\"R$ 2000\", 3=\"R$ 3000\", 4=\"R$ 4000\", 5=\"R$ 5000\", 6=\"R$ 6000\", 7=\"R$ 7000\","
                           "EXPAND=HORIZONTAL, DROPDOWN=YES, VISIBLE_ITEMS=5, SHOWIMAGE=YES");
-  IupSetAttributeHandle(list2, "IMAGELIST", load_image_Test());
+  IupSetAttributeHandle(list2, "DEFAULTIMAGE", load_image_Test());
 
   IupSetAttributes(list3, "1=\"Char A\", 2=\"Char B\", 3=\"Char CCCCC\", 4=\"Char D\", 5=\"Char F\", 6=\"Char G\", 7=\"Char H\","
                           "EXPAND=YES, EDITBOX=YES, SHOWIMAGE=YES");

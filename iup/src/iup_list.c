@@ -682,7 +682,7 @@ static void iListComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
     natural_w += sb_size;
 
     if(ih->data->showimage)
-      iupdrvListGetIconSize(ih, &natural_w);  /* compute the entry icon width */
+      natural_w  += iupdrvListGetIconSize(ih);
 
     if (natural_h < sb_size)
       natural_h = sb_size;
@@ -788,7 +788,7 @@ Iclass* iupListNewClass(void)
   iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWIMAGE", iListGetShowImageAttrib, iListSetShowImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGELIST", NULL, iListSetImageListAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DEFAULTIMAGE", NULL, iListSetImageListAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
 
   iupdrvListInitClass(ic);
 

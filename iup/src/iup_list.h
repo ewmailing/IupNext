@@ -21,7 +21,7 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value);
 void iupdrvListRemoveItem(Ihandle* ih, int pos);
 void iupdrvListRemoveAllItems(Ihandle* ih);
 void iupdrvListUpdateImages(Ihandle* ih);
-void iupdrvListGetIconSize(Ihandle* ih, int *w);
+int iupdrvListGetIconSize(Ihandle* ih);
 
 int iupListGetPos(Ihandle* ih, int id);
 int iupListSetIdValueAttrib(Ihandle* ih, int id, const char* value);

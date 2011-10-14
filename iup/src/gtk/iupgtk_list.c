@@ -41,10 +41,20 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih);
 static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih);
 
 
-void iupdrvListGetIconSize(Ihandle* ih, int *w)
+int iupdrvListGetIconSize(Ihandle* ih)
 {
+  GtkWidget* entry = gtk_entry_new();
+  GtkSettings* settings = gtk_widget_get_settings(entry);
+  char* str;
   (void)ih;
-  (*w) += 16;  /* default icon size (16x16 pixels) */
+
+  g_object_get(settings, "gtk-icon-sizes", &str, NULL);
+  gtk_widget_destroy(entry);
+
+  // TO DO: how to define the largest icon size?
+  // "str" contains: gtk-menu=13,13:gtk-small-toolbar=16,16:gtk-large-toolbar=24,24:gtk-dnd=32,32
+
+  return 16;  /* default icon size (16x16 pixels) */
 }
 
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
@@ -1366,15 +1376,12 @@ static int gtkListMapMethod(Ihandle* ih)
 {
   GtkScrolledWindow* scrolled_window = NULL;
   GtkListStore *store;
-  GtkCellRenderer *renderer, *renderer_img;
+  GtkCellRenderer *renderer, *renderer_img = NULL;
 
   store = gtk_list_store_new(IUPGTK_LIST_LAST_DATA, GDK_TYPE_PIXBUF, G_TYPE_STRING);
 
   if (ih->data->is_dropdown)
   {
-    renderer = NULL;
-    renderer_img = NULL;
-
     if (ih->data->has_editbox)
       ih->handle = gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL(store), IUPGTK_LIST_TEXT);
     else
@@ -1387,10 +1394,13 @@ static int gtkListMapMethod(Ihandle* ih)
 
     g_object_set(G_OBJECT(ih->handle), "has-frame", TRUE, NULL);
 
-    renderer_img = gtk_cell_renderer_pixbuf_new();
-    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(ih->handle), renderer_img, FALSE);
-    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(ih->handle), renderer_img, "pixbuf", IUPGTK_LIST_IMAGE, NULL);
-    iupAttribSetStr(ih, "_IUPGTK_RENDERER_IMG", (char*)renderer_img);
+    if(ih->data->showimage)
+    {
+      renderer_img = gtk_cell_renderer_pixbuf_new();
+      gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(ih->handle), renderer_img, FALSE);
+      gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(ih->handle), renderer_img, "pixbuf", IUPGTK_LIST_IMAGE, NULL);
+      iupAttribSetStr(ih, "_IUPGTK_RENDERER_IMG", (char*)renderer_img);
+    }
 
     if (ih->data->has_editbox)
     {
@@ -1420,6 +1430,9 @@ static int gtkListMapMethod(Ihandle* ih)
 
       if (!iupAttribGetBoolean(ih, "CANFOCUS"))
         iupgtkSetCanFocus(ih->handle, 0);
+
+      if(ih->data->showimage)
+        gtk_cell_layout_reorder(GTK_CELL_LAYOUT(ih->handle), renderer_img, IUPGTK_LIST_IMAGE);
     }
     else
     {
@@ -1469,9 +1482,6 @@ static int gtkListMapMethod(Ihandle* ih)
 #endif
       iupAttribSetStr(ih, "_IUPGTK_RENDERER", (char*)renderer);
     }
-
-    if(ih->data->has_editbox)
-      gtk_cell_layout_reorder(GTK_CELL_LAYOUT(ih->handle), renderer_img, IUPGTK_LIST_IMAGE);
   }
   else
   {
@@ -1537,10 +1547,13 @@ static int gtkListMapMethod(Ihandle* ih)
 
     column = gtk_tree_view_column_new();
 
-    renderer_img = gtk_cell_renderer_pixbuf_new();
-    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(column), renderer_img, FALSE);
-    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(column), renderer_img, "pixbuf", IUPGTK_LIST_IMAGE, NULL);
-    iupAttribSetStr(ih, "_IUPGTK_RENDERER_IMG", (char*)renderer_img);
+    if(ih->data->showimage)
+    {
+      renderer_img = gtk_cell_renderer_pixbuf_new();
+      gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(column), renderer_img, FALSE);
+      gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(column), renderer_img, "pixbuf", IUPGTK_LIST_IMAGE, NULL);
+      iupAttribSetStr(ih, "_IUPGTK_RENDERER_IMG", (char*)renderer_img);
+    }
 
     renderer = gtk_cell_renderer_text_new();
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(column), renderer, TRUE);
