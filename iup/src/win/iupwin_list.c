@@ -54,6 +54,12 @@
 #define WIN_SETITEMHEIGHT(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETITEMHEIGHT: LB_SETITEMHEIGHT)
 
 
+int iupdrvListGetIconSize(Ihandle* ih)
+{
+  (void)ih;
+  return 0;
+}
+
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 {
   (void)ih;
@@ -189,6 +195,11 @@ void iupdrvListRemoveAllItems(Ihandle* ih)
     SendMessage(ih->handle, CB_SETDROPPEDWIDTH, 0, 0);
   else
     SendMessage(ih->handle, WIN_SETHORIZONTALEXTENT(ih), 0, 0);
+}
+
+void iupdrvListUpdateImages(Ihandle* ih)
+{
+  (void)ih;
 }
 
 static int winListGetCaretPos(HWND cbedit)
