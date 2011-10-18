@@ -317,6 +317,7 @@ void TextTest(void)
 //  IupSetAttribute(mltline, "FILTER", "UPPERCASE");
 //  IupSetAttribute(mltline, "ALIGNMENT", "ACENTER");
 //  IupSetAttribute(mltline, "CANFOCUS", "NO");
+  IupSetAttribute(mltline, "SCROLLBAR", "NO");
 
   /* Turns on multiline expand and text horizontal expand */
   IupSetAttribute(mltline, "SIZE", "80x40");

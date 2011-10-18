@@ -717,6 +717,15 @@ static int GetNextChild(lua_State *L)
   return 1;
 }
 
+static int GetChild(lua_State *L)
+{
+  Ihandle* ih = iuplua_checkihandle(L,1);
+  int pos = luaL_checkint(L,2);
+  Ihandle* child = IupGetChild(ih, pos);
+  iuplua_pushihandle(L, child);
+  return 1;
+}
+
 static int GetChildPos(lua_State *L)
 {
   Ihandle* ih = iuplua_checkihandle(L,1);
@@ -1016,6 +1025,7 @@ void iupluaapi_open(lua_State * L)
     {"isbutton5", cf_isbutton5},
     {"GetParent", GetParent},
     {"GetNextChild", GetNextChild},
+    {"GetChild", GetChild},
     {"GetChildPos", GetChildPos},
     {"VersionNumber", VersionNumber},
     {"GetBrother", GetBrother},
@@ -1059,3 +1069,6 @@ void iupluaapi_open(lua_State * L)
   /* "iup" table is at the top of the stack */
   luaL_register(L, NULL, funcs);
 }
+
+
+Ihandle*  IupGetChild     (Ihandle* ih, int pos);
