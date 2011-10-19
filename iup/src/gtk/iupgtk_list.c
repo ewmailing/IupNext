@@ -938,8 +938,9 @@ static int gtkListSetImageAttrib(Ihandle* ih, int id, const char* value)
   GtkTreeModel* model = gtkListGetModel(ih);
   GdkPixbuf* pixImage = iupImageGetImage(value, ih, 0);
   GtkTreeIter iter;
+  int pos = iupListGetPos(ih, id);
 
-  if (!ih->data->showimage || !gtk_tree_model_iter_nth_child(model, &iter, NULL, id))
+  if (!ih->data->showimage || !gtk_tree_model_iter_nth_child(model, &iter, NULL, pos))
     return 0;
 
   if (pixImage)

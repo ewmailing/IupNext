@@ -139,9 +139,9 @@ int main(int argc, char **argv)
   IupSetAttributes (list, "1=Gold, 2=Silver, 3=Bronze, 4=None,"
                           "SHOWIMAGE=YES, VALUE=4, SIZE=EIGHTHxEIGHTH");
   load_medal_images();
-  IupSetAttribute(list, "IMAGE0", "IMGGOLD");
-  IupSetAttribute(list, "IMAGE1", "IMGSILVER");
-  IupSetAttribute(list, "IMAGE2", "IMGBRONZE");
+  IupSetAttribute(list, "IMAGE1", "IMGGOLD");
+  IupSetAttribute(list, "IMAGE2", "IMGSILVER");
+  IupSetAttribute(list, "IMAGE3", "IMGBRONZE");
 
   frm_medal = IupFrame (list);
   IupSetAttribute (frm_medal, "TITLE", "Best medal");
