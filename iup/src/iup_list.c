@@ -641,7 +641,7 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
       *w = iupdrvFontGetStringWidth(ih, "WWWWW");
   }
 
-  /* compute height for multiple lines, drodown is just 1 line */
+  /* compute height for multiple lines, dropdown is just 1 line */
   if (!ih->data->is_dropdown)
   {
     int visiblelines, num_lines, line_size = *h;
@@ -665,6 +665,62 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
   }
 }
 
+void iupListGetNaturalImageItemsSize(Ihandle *ih, int *w, int *h)
+{
+  char *value;
+  char str[20];
+  int count = iListGetCount(ih);
+  int img_w, img_h, i;
+
+  *w = 0;
+  *h = 0;
+
+  for (i=1; i<=count; i++)
+  {
+    sprintf(str, "IMAGE%d", i);
+    value = IupGetAttribute(ih, str);  /* must use IupGetAttribute to check the native system */
+
+    if(!value)
+      value = IupGetAttribute(ih, "DEFAULTIMAGE");
+
+    iupImageGetInfo(value, &img_w, &img_h, NULL);
+
+    if (img_w > *w)
+      *w = img_w;
+
+    if (*w == 0) /* Default icon size: 32px */
+      *w = 32;
+
+    if (img_h > *h)
+      *h = img_h;
+
+    if (*h == 0) /* Default icon size: 32px */
+      *h = 32;      
+  }
+
+  /* compute height for multiple lines, dropdown is just 1 line */
+  if (!ih->data->is_dropdown)
+  {
+    int visiblelines, num_lines, line_size = *h;
+
+    iupdrvListAddItemSpace(ih, h);  /* this is no depends from spacing */
+    *h += 2*ih->data->spacing;  /* this will be multiplied by the number of lines */
+
+    num_lines = count;
+    if (num_lines == 0)
+      num_lines = 1;
+
+    visiblelines = iupAttribGetInt(ih, "VISIBLELINES");
+    if (visiblelines)
+      num_lines = visiblelines;   
+
+    *h = *h * num_lines;
+
+    if (ih->data->has_editbox) 
+      *h += line_size;
+  }
+}
+
 static void iListComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
   int natural_w, natural_h;
@@ -673,6 +729,15 @@ static void iListComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
 
   iListGetNaturalItemsSize(ih, &natural_w, &natural_h);
 
+  if (ih->data->showimage)
+  {
+    int img_w, img_h;
+    iupListGetNaturalImageItemsSize(ih, &img_w, &img_h);
+
+    natural_w += img_w;
+    natural_h  = iupMAX(natural_h, img_h);
+  }
+
   /* compute the borders space */
   iupdrvListAddBorders(ih, &natural_w, &natural_h);
 
@@ -680,9 +745,6 @@ static void iListComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
   {
     /* add room for dropdown box */
     natural_w += sb_size;
-
-    if(ih->data->showimage)
-      natural_w  += iupdrvListGetIconSize(ih);
 
     if (natural_h < sb_size)
       natural_h = sb_size;

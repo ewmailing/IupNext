@@ -41,22 +41,6 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih);
 static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih);
 
 
-int iupdrvListGetIconSize(Ihandle* ih)
-{
-  GtkWidget* entry = gtk_entry_new();
-  GtkSettings* settings = gtk_widget_get_settings(entry);
-  char* str;
-  (void)ih;
-
-  g_object_get(settings, "gtk-icon-sizes", &str, NULL);
-  gtk_widget_destroy(entry);
-
-  // TO DO: how to define the largest icon size?
-  // "str" contains: gtk-menu=13,13:gtk-small-toolbar=16,16:gtk-large-toolbar=24,24:gtk-dnd=32,32
-
-  return 16;  /* default icon size (16x16 pixels) */
-}
-
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 {
   (void)ih;

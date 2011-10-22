@@ -39,12 +39,6 @@
 static void motListComboBoxSelectionCallback(Widget w, Ihandle* ih, XmComboBoxCallbackStruct* call_data);
 
 
-int iupdrvListGetIconSize(Ihandle* ih)
-{
-  (void)ih;
-  return 0;
-}
-
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 {
   if (ih->data->has_editbox)

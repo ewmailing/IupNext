@@ -23,6 +23,7 @@
 #include "iup_drvfont.h"
 #include "iup_mask.h"
 #include "iup_focus.h"
+#include "iup_image.h"
 #include "iup_list.h"
 
 #include "iupwin_drv.h"
@@ -57,7 +58,7 @@
 int iupdrvListGetIconSize(Ihandle* ih)
 {
   (void)ih;
-  return 0;
+  return 16;
 }
 
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
@@ -149,6 +150,10 @@ void iupdrvListAppendItem(Ihandle* ih, const char* value)
 {
   int pos = SendMessage(ih->handle, WIN_ADDSTRING(ih), 0, (LPARAM)value);
   SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)iupdrvFontGetStringWidth(ih, value));
+
+  if(ih->data->showimage)
+    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)ih->data->def_image);
+
   winListUpdateScrollWidth(ih);
 }
 
@@ -156,6 +161,10 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
 {
   SendMessage(ih->handle, WIN_INSERTSTRING(ih), pos, (LPARAM)value);
   SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)iupdrvFontGetStringWidth(ih, value));
+
+  if(ih->data->showimage)
+    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)ih->data->def_image);
+
   winListUpdateScrollWidth(ih);
 
   iupListUpdateOldValue(ih, pos, 0);
@@ -199,7 +208,10 @@ void iupdrvListRemoveAllItems(Ihandle* ih)
 
 void iupdrvListUpdateImages(Ihandle* ih)
 {
-  (void)ih;
+  int pos, count = iupdrvListGetCount(ih);
+
+  for (pos = 0; pos < count; pos++)
+    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)ih->data->def_image);
 }
 
 static int winListGetCaretPos(HWND cbedit)
@@ -791,7 +803,7 @@ static int winListSetScrollToAttrib(Ihandle* ih, const char* value)
   sscanf(value,"%i",&pos);
   if (pos < 1) pos = 1;
 
-  pos--;  /* return to Windows referece */
+  pos--;  /* return to Windows reference */
 
   cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   SendMessage(cbedit, EM_LINESCROLL, (WPARAM)pos, (LPARAM)0);
@@ -818,6 +830,21 @@ static int winListSetScrollToPosAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int winListSetImageAttrib(Ihandle* ih, int id, const char* value)
+{
+  HBITMAP hBitmap = iupImageGetImage(value, ih, 0);
+  int pos = iupListGetPos(ih, id);
+
+  if (!ih->data->showimage || pos < 0)
+    return 0;
+
+  if (hBitmap)
+    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)hBitmap);
+  else
+    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)ih->data->def_image);
+
+  return 1;
+}
 
 /*********************************************************************************/
 
@@ -1309,6 +1336,49 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   return iupwinBaseProc(ih, msg, wp, lp, result);
 }
 
+static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
+{
+  char text[256];
+  int len, xPos, yPos, bpp, img_w, img_h;
+  TEXTMETRIC tm;
+  HBITMAP hbmpPicture;
+  COLORREF clrBackground, clrForeground;
+
+  /* If there are no list box items, skip this message */
+  if (drawitem->itemID == -1)
+    return;
+
+  /* The colors depend on whether the item is selected */
+  clrForeground = SetTextColor(drawitem->hDC, GetSysColor(drawitem->itemState & ODS_SELECTED ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT));
+  clrBackground = SetBkColor(drawitem->hDC, GetSysColor(drawitem->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW));
+
+  /* Get the bitmap associated with the item */
+  hbmpPicture = (HBITMAP)SendMessage(drawitem->hwndItem, WIN_GETITEMDATA(ih), drawitem->itemID, 0);
+  iupdrvImageGetInfo(hbmpPicture, &img_w, &img_h, &bpp);
+  
+  if(img_w == 0 || img_h == 0)
+    iupListGetNaturalImageItemsSize(ih, &img_w, &img_h);
+
+  /* Get and draw the string associated with the item */
+  SendMessage(drawitem->hwndItem, WIN_GETTEXT(ih), drawitem->itemID, (LPARAM)text);
+  GetTextMetrics(drawitem->hDC, &tm);
+  xPos = img_w + 5;
+  yPos = (drawitem->rcItem.bottom + drawitem->rcItem.top - tm.tmHeight) / 2;
+  len = strlen(text);
+  ExtTextOut(drawitem->hDC, xPos, yPos, ETO_CLIPPED | ETO_OPAQUE, &drawitem->rcItem, text, len, NULL);
+
+  /* Draw the bitmap associated with the item */
+  iupwinDrawBitmap(drawitem->hDC, hbmpPicture, NULL, drawitem->rcItem.left, drawitem->rcItem.top,
+    drawitem->rcItem.right - drawitem->rcItem.left, drawitem->rcItem.bottom - drawitem->rcItem.top, bpp);
+
+  /* Restore the previous colors */
+  SetTextColor(drawitem->hDC, clrForeground);
+  SetBkColor(drawitem->hDC, clrBackground);
+
+  /* If the item has the focus, draw the focus rectangle */
+  if (drawitem->itemState & ODS_FOCUS)
+    DrawFocusRect(drawitem->hDC, &drawitem->rcItem);
+}
 
 /*********************************************************************************/
 
@@ -1358,6 +1428,9 @@ static int winListMapMethod(Ihandle* ih)
 
     dwStyle |= CBS_NOINTEGRALHEIGHT;
 
+    if (ih->data->showimage)
+      dwStyle |= CBS_OWNERDRAWFIXED|CBS_HASSTRINGS;
+
     if (ih->data->is_dropdown)
       dwStyle |= WS_VSCROLL|WS_HSCROLL;
     else if (ih->data->sb)
@@ -1391,6 +1464,9 @@ static int winListMapMethod(Ihandle* ih)
 
     if (ih->data->is_multiple)
       dwStyle |= LBS_EXTENDEDSEL;
+
+    if (ih->data->showimage)
+      dwStyle |= LBS_OWNERDRAWFIXED|LBS_HASSTRINGS;
 
     if (ih->data->sb)
     {
@@ -1449,6 +1525,9 @@ static int winListMapMethod(Ihandle* ih)
     }
   }
 
+  if(ih->data->showimage)
+      IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winListDrawItem);  /* Process WM_DRAWITEM */
+
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DRAGDROP", "YES");
@@ -1500,6 +1579,8 @@ void iupdrvListInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, winListSetClipboardAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTO", NULL, winListSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, winListSetScrollToPosAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttributeId(ic, "IMAGE", NULL, winListSetImageAttrib, IUPAF_IHANDLENAME|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winListSetCueBannerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTER", NULL, winListSetFilterAttrib, NULL, NULL, IUPAF_NO_INHERIT);

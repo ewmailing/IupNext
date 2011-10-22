@@ -21,7 +21,6 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value);
 void iupdrvListRemoveItem(Ihandle* ih, int pos);
 void iupdrvListRemoveAllItems(Ihandle* ih);
 void iupdrvListUpdateImages(Ihandle* ih);
-int iupdrvListGetIconSize(Ihandle* ih);
 
 int iupListGetPos(Ihandle* ih, int id);
 int iupListSetIdValueAttrib(Ihandle* ih, int id, const char* value);
@@ -33,6 +32,7 @@ char* iupListGetPaddingAttrib(Ihandle* ih);
 char* iupListGetSpacingAttrib(Ihandle* ih);
 void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos);
 void iupListUpdateOldValue(Ihandle* ih, int pos, int removed);
+void iupListGetNaturalImageItemsSize(Ihandle *ih, int *w, int *h);
 
 struct _IcontrolData 
 {
