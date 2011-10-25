@@ -55,6 +55,24 @@
 #define WIN_SETITEMHEIGHT(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETITEMHEIGHT: LB_SETITEMHEIGHT)
 
 
+static void winListDrawEditBoxIcon(Ihandle* ih)
+{
+  if(ih->data->showimage)
+  {
+    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
+    HDC dc = GetDC(cbedit);
+    int pos = SendMessage(ih->handle, CB_GETCURSEL, 0, 0);
+    HBITMAP hbmpPicture = (HBITMAP)SendMessage(ih->handle, WIN_GETITEMDATA(ih), pos, 0);
+
+    if(hbmpPicture)
+    {
+      int img_w, img_h, img_bpp;
+      iupdrvImageGetInfo(hbmpPicture, &img_w, &img_h, &img_bpp);
+      iupwinDrawBitmap(dc, hbmpPicture, NULL, 0, 0, img_w, img_h, img_bpp);
+    }
+  }
+}
+
 int iupdrvListGetIconSize(Ihandle* ih)
 {
   (void)ih;
@@ -1053,6 +1071,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
   if (msg==WM_KEYDOWN) /* process K_ANY before text callbacks */
   {
     ret = iupwinBaseProc(ih, msg, wp, lp, result);
+
     if (ret) 
     {
       iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", "1");
@@ -1116,6 +1135,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       }
 
       PostMessage(cbedit, WM_IUPCARET, 0, 0L);
+
       break;
     }
   case WM_CLEAR:
@@ -1124,6 +1144,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
         ret = 1;
 
       PostMessage(cbedit, WM_IUPCARET, 0, 0L);
+
       break;
     }
   case WM_CUT:
@@ -1132,6 +1153,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
         ret = 1;
 
       PostMessage(cbedit, WM_IUPCARET, 0, 0L);
+
       break;
     }
   case WM_PASTE:
@@ -1148,6 +1170,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       }
 
       PostMessage(cbedit, WM_IUPCARET, 0, 0L);
+
       break;
     }
   case WM_UNDO:
@@ -1166,6 +1189,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       }
 
       PostMessage(cbedit, WM_IUPCARET, 0, 0L);
+
       break;
     }
   case WM_KEYUP:
@@ -1212,6 +1236,8 @@ static LRESULT CALLBACK winListEditWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARA
 
   /* retrieve the control previous procedure for subclassing */
   oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDPROC_CB");
+
+  winListDrawEditBoxIcon(ih);
 
   ret = winListEditProc(ih, hwnd, msg, wp, lp, &result);
 
@@ -1329,7 +1355,10 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   case WM_MOUSELEAVE:
   case WM_MOUSEMOVE:
     if (ih->data->has_editbox)
+    {
+      winListDrawEditBoxIcon(ih);
       return 0;  /* do not call base procedure to avoid duplicate messages */
+    }
     break;
   }
 
@@ -1378,6 +1407,9 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   /* If the item has the focus, draw the focus rectangle */
   if (drawitem->itemState & ODS_FOCUS)
     DrawFocusRect(drawitem->hDC, &drawitem->rcItem);
+
+  if(ih->data->has_editbox)
+    SendMessage((HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX"), EM_SETMARGINS, EC_LEFTMARGIN, xPos);
 }
 
 /*********************************************************************************/
