@@ -54,6 +54,43 @@
 #define WIN_SETTOPINDEX(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETTOPINDEX: LB_SETTOPINDEX)
 #define WIN_SETITEMHEIGHT(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETITEMHEIGHT: LB_SETITEMHEIGHT)
 
+typedef struct _winListItemData
+{
+  int text_width;
+  HBITMAP hBitmap;
+} winListItemData;
+
+static winListItemData* winListGetItemData(Ihandle* ih, int pos)
+{
+  LRESULT ret = SendMessage(ih->handle, WIN_GETITEMDATA(ih), pos, 0);
+  if (ret == CB_ERR)
+    return NULL;
+  else
+    return (winListItemData*)ret;
+}
+
+static void winListRemoveItemData(Ihandle* ih, int pos)
+{
+  winListItemData* itemdata = winListGetItemData(ih, pos);
+  if (itemdata)
+  {
+    free(itemdata);
+    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)NULL);
+  }
+}
+
+static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hBitmap)
+{
+  winListItemData* itemdata = winListGetItemData(ih, pos);
+  if (!itemdata)
+  {
+    itemdata = malloc(sizeof(winListItemData));
+    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)itemdata);
+  }
+
+  itemdata->hBitmap = hBitmap;
+  itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
+}
 
 static void winListDrawBitmap(HDC hDC, HBITMAP hBitmap, int x, int y, int w, int h, int bpp)
 {
@@ -76,26 +113,20 @@ static void winListDrawBitmap(HDC hDC, HBITMAP hBitmap, int x, int y, int w, int
 
 static void winListDrawEditBoxIcon(Ihandle* ih)
 {
-  if(ih->data->showimage)
+  if(ih->data->show_image)
   {
     HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
     HDC dc = GetDC(cbedit);
     int pos = SendMessage(ih->handle, CB_GETCURSEL, 0, 0);
-    HBITMAP hbmpPicture = (HBITMAP)SendMessage(ih->handle, WIN_GETITEMDATA(ih), pos, 0);
+    winListItemData* itemdata = winListGetItemData(ih, pos);
 
-    if(hbmpPicture)
+    if (itemdata && itemdata->hBitmap)
     {
       int img_w, img_h, img_bpp;
-      iupdrvImageGetInfo(hbmpPicture, &img_w, &img_h, &img_bpp);
-      winListDrawBitmap(dc, hbmpPicture, 0, 0, img_w, img_h, img_bpp);
+      iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, &img_bpp);
+      winListDrawBitmap(dc, itemdata->hBitmap, 0, 0, img_w, img_h, img_bpp);
     }
   }
-}
-
-int iupdrvListGetIconSize(Ihandle* ih)
-{
-  (void)ih;
-  return 16;
 }
 
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
@@ -164,7 +195,8 @@ static int winListGetMaxWidth(Ihandle* ih)
 
   for (i=0; i<count; i++)
   { 
-    item_w = SendMessage(ih->handle, WIN_GETITEMDATA(ih), i, 0);
+    winListItemData* itemdata = winListGetItemData(ih, i);
+    item_w = itemdata->text_width;
     if (item_w > max_w)
       max_w = item_w;
   }
@@ -186,24 +218,15 @@ static void winListUpdateScrollWidth(Ihandle* ih)
 void iupdrvListAppendItem(Ihandle* ih, const char* value)
 {
   int pos = SendMessage(ih->handle, WIN_ADDSTRING(ih), 0, (LPARAM)value);
-  SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)iupdrvFontGetStringWidth(ih, value));
-
-  if(ih->data->showimage)
-    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)ih->data->def_image);
-
+  winListSetItemData(ih, pos, value, NULL);
   winListUpdateScrollWidth(ih);
 }
 
 void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
 {
   SendMessage(ih->handle, WIN_INSERTSTRING(ih), pos, (LPARAM)value);
-  SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)iupdrvFontGetStringWidth(ih, value));
-
-  if(ih->data->showimage)
-    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)ih->data->def_image);
-
+  winListSetItemData(ih, pos, value, NULL);
   winListUpdateScrollWidth(ih);
-
   iupListUpdateOldValue(ih, pos, 0);
 }
 
@@ -228,27 +251,28 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
     }
   }
 
+  winListRemoveItemData(ih, pos);
   SendMessage(ih->handle, WIN_DELETESTRING(ih), pos, 0L);
   winListUpdateScrollWidth(ih);
 
   iupListUpdateOldValue(ih, pos, 1);
 }
 
+static void winListRemoveAllItemData(Ihandle* ih)
+{
+  int pos, count = iupdrvListGetCount(ih);
+  for (pos = 0; pos < count; pos++)
+    winListRemoveItemData(ih, pos);
+}
+
 void iupdrvListRemoveAllItems(Ihandle* ih)
 {
+  winListRemoveAllItemData(ih);
   SendMessage(ih->handle, WIN_RESETCONTENT(ih), 0, 0L);
   if (ih->data->is_dropdown && iupAttribGetBoolean(ih, "DROPEXPAND"))
     SendMessage(ih->handle, CB_SETDROPPEDWIDTH, 0, 0);
   else
     SendMessage(ih->handle, WIN_SETHORIZONTALEXTENT(ih), 0, 0);
-}
-
-void iupdrvListUpdateImages(Ihandle* ih)
-{
-  int pos, count = iupdrvListGetCount(ih);
-
-  for (pos = 0; pos < count; pos++)
-    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)ih->data->def_image);
 }
 
 static int winListGetCaretPos(HWND cbedit)
@@ -280,10 +304,11 @@ static void winListUpdateItemWidth(Ihandle* ih)
   int i, count = SendMessage(ih->handle, WIN_GETCOUNT(ih), 0, 0);
   for (i=0; i<count; i++)
   { 
+    winListItemData* itemdata = winListGetItemData(ih, i);
     int len = SendMessage(ih->handle, WIN_GETTEXTLEN(ih), (WPARAM)i, 0);
     char* str = iupStrGetMemory(len+1);
     SendMessage(ih->handle, WIN_GETTEXT(ih), (WPARAM)i, (LPARAM)str);
-    SendMessage(ih->handle, WIN_SETITEMDATA(ih), i, (LPARAM)iupdrvFontGetStringWidth(ih, str));
+    itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
   }
 }
 
@@ -869,16 +894,15 @@ static int winListSetScrollToPosAttrib(Ihandle* ih, const char* value)
 
 static int winListSetImageAttrib(Ihandle* ih, int id, const char* value)
 {
+  winListItemData* itemdata;
   HBITMAP hBitmap = iupImageGetImage(value, ih, 0);
   int pos = iupListGetPos(ih, id);
 
-  if (!ih->data->showimage || pos < 0)
+  if (!ih->data->show_image || pos < 0)
     return 0;
 
-  if (hBitmap)
-    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)hBitmap);
-  else
-    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)ih->data->def_image);
+  itemdata = winListGetItemData(ih, pos);
+  itemdata->hBitmap = hBitmap;
 
   return 1;
 }
@@ -1389,8 +1413,8 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   char text[256];
   int len, xPos, yPos, bpp, img_w, img_h;
   TEXTMETRIC tm;
-  HBITMAP hbmpPicture;
   COLORREF clrBackground, clrForeground;
+  winListItemData* itemdata;
 
   /* If there are no list box items, skip this message */
   if (drawitem->itemID == -1)
@@ -1401,8 +1425,8 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   clrBackground = SetBkColor(drawitem->hDC, GetSysColor(drawitem->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW));
 
   /* Get the bitmap associated with the item */
-  hbmpPicture = (HBITMAP)SendMessage(drawitem->hwndItem, WIN_GETITEMDATA(ih), drawitem->itemID, 0);
-  iupdrvImageGetInfo(hbmpPicture, &img_w, &img_h, &bpp);
+  itemdata = winListGetItemData(ih, drawitem->itemID);
+  iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, &bpp);
   
   if(img_w == 0 || img_h == 0)
     iupListGetNaturalImageItemsSize(ih, &img_w, &img_h);
@@ -1416,7 +1440,7 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   ExtTextOut(drawitem->hDC, xPos, yPos, ETO_CLIPPED | ETO_OPAQUE, &drawitem->rcItem, text, len, NULL);
 
   /* Draw the bitmap associated with the item */
-  winListDrawBitmap(drawitem->hDC, hbmpPicture, drawitem->rcItem.left, drawitem->rcItem.top,
+  winListDrawBitmap(drawitem->hDC, itemdata->hBitmap, drawitem->rcItem.left, drawitem->rcItem.top,
     drawitem->rcItem.right - drawitem->rcItem.left, drawitem->rcItem.bottom - drawitem->rcItem.top, bpp);
 
   /* Restore the previous colors */
@@ -1464,6 +1488,11 @@ static void winListLayoutUpdateMethod(Ihandle *ih)
     iupdrvBaseLayoutUpdateMethod(ih);
 }
 
+static void winListUnMapMethod(Ihandle* ih)
+{
+  winListRemoveAllItemData(ih);
+}
+
 static int winListMapMethod(Ihandle* ih)
 {
   char* class_name;
@@ -1479,7 +1508,7 @@ static int winListMapMethod(Ihandle* ih)
 
     dwStyle |= CBS_NOINTEGRALHEIGHT;
 
-    if (ih->data->showimage)
+    if (ih->data->show_image)
       dwStyle |= CBS_OWNERDRAWFIXED|CBS_HASSTRINGS;
 
     if (ih->data->is_dropdown)
@@ -1516,7 +1545,7 @@ static int winListMapMethod(Ihandle* ih)
     if (ih->data->is_multiple)
       dwStyle |= LBS_EXTENDEDSEL;
 
-    if (ih->data->showimage)
+    if (ih->data->show_image)
       dwStyle |= LBS_OWNERDRAWFIXED|LBS_HASSTRINGS;
 
     if (ih->data->sb)
@@ -1576,7 +1605,7 @@ static int winListMapMethod(Ihandle* ih)
     }
   }
 
-  if(ih->data->showimage)
+  if(ih->data->show_image)
       IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winListDrawItem);  /* Process WM_DRAWITEM */
 
   /* configure for DRAG&DROP */
@@ -1595,6 +1624,7 @@ void iupdrvListInitClass(Iclass* ic)
   /* Driver Dependent Class functions */
   ic->Map = winListMapMethod;
   ic->LayoutUpdate = winListLayoutUpdateMethod;
+  ic->UnMap = winListUnMapMethod;
 
   /* Driver Dependent Attribute functions */
 

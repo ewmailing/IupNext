@@ -113,10 +113,8 @@ void iupdrvListAppendItem(Ihandle* ih, const char* value)
   GtkTreeIter iter;
   gtk_list_store_append(GTK_LIST_STORE(model), &iter);
 
-  if(ih->data->showimage)
-    gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, ih->data->def_image, -1);
-
   gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_TEXT, iupgtkStrConvertToUTF8(value), -1);
+  gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, NULL, -1);
 }
 
 void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
@@ -125,10 +123,8 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
   GtkTreeIter iter;
   gtk_list_store_insert(GTK_LIST_STORE(model), &iter, pos);
 
-  if(ih->data->showimage)
-    gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, ih->data->def_image, -1);
-
   gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_TEXT, iupgtkStrConvertToUTF8(value), -1);
+  gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, NULL, -1);
 
   iupListUpdateOldValue(ih, pos, 0);
 }
@@ -172,18 +168,6 @@ void iupdrvListRemoveAllItems(Ihandle* ih)
   gtk_list_store_clear(GTK_LIST_STORE(model));
 }
 
-void iupdrvListUpdateImages(Ihandle* ih)
-{
-  GtkTreeModel* model = gtkListGetModel(ih);
-  GtkTreeIter iter;
-  int i, count = iupdrvListGetCount(ih);
-
-  for (i = 0; i < count; i++)
-  {
-    if (gtk_tree_model_iter_nth_child(model, &iter, NULL, i))
-      gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, ih->data->def_image, -1);
-  }
-}
 
 /*********************************************************************************/
 
@@ -924,14 +908,10 @@ static int gtkListSetImageAttrib(Ihandle* ih, int id, const char* value)
   GtkTreeIter iter;
   int pos = iupListGetPos(ih, id);
 
-  if (!ih->data->showimage || !gtk_tree_model_iter_nth_child(model, &iter, NULL, pos))
+  if (!ih->data->show_image || !gtk_tree_model_iter_nth_child(model, &iter, NULL, pos))
     return 0;
 
-  if (pixImage)
-    gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, pixImage, -1);
-  else
-    gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, ih->data->def_image, -1);
-
+  gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, pixImage, -1);
   return 1;
 }
 
@@ -1027,19 +1007,19 @@ static gboolean gtkListEditKeyPressEvent(GtkWidget* entry, GdkEventKey *evt, Iha
           g_free(text);
         }
 
-        if(ih->data->showimage)
+        if (ih->data->show_image)
         {
           GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
           GdkPixbuf* img = NULL;
 
           gtk_tree_model_get(model, &iter, IUPGTK_LIST_IMAGE, &img, -1);
-          if(img)
+          if (img)
           {
             gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, img);
             g_object_unref(img);
           }
           else
-            gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, ih->data->def_image);
+            gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, NULL);
         }
       }
     }
@@ -1200,7 +1180,7 @@ static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih)
     iupBaseCallValueChangedCb(ih);
   else
   {
-    if(ih->data->showimage)
+    if(ih->data->show_image)
     {
       GtkTreeIter iter;
       GtkTreeModel* model = gtkListGetModel(ih);
@@ -1211,13 +1191,13 @@ static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih)
         GdkPixbuf* img = NULL;
 
         gtk_tree_model_get(model, &iter, IUPGTK_LIST_IMAGE, &img, -1);
-        if(img)
+        if (img)
         {
           gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, img);
           g_object_unref(img);
         }
         else
-          gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, ih->data->def_image);
+          gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, NULL);
       }
     }
   }
@@ -1267,7 +1247,7 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
         g_free(value);
       }
       
-      if(ih->data->showimage)
+      if(ih->data->show_image)
       {
         GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
         GdkPixbuf* img = NULL;
@@ -1279,7 +1259,7 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
           g_object_unref(img);
         }
         else
-          gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, ih->data->def_image);
+          gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, NULL);
       }
 
       gtk_tree_path_free(path);
@@ -1379,7 +1359,7 @@ static int gtkListMapMethod(Ihandle* ih)
 
     g_object_set(G_OBJECT(ih->handle), "has-frame", TRUE, NULL);
 
-    if(ih->data->showimage)
+    if(ih->data->show_image)
     {
       renderer_img = gtk_cell_renderer_pixbuf_new();
       gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(ih->handle), renderer_img, FALSE);
@@ -1416,7 +1396,7 @@ static int gtkListMapMethod(Ihandle* ih)
       if (!iupAttribGetBoolean(ih, "CANFOCUS"))
         iupgtkSetCanFocus(ih->handle, 0);
 
-      if(ih->data->showimage)
+      if(ih->data->show_image)
         gtk_cell_layout_reorder(GTK_CELL_LAYOUT(ih->handle), renderer_img, IUPGTK_LIST_IMAGE);
     }
     else
@@ -1532,7 +1512,7 @@ static int gtkListMapMethod(Ihandle* ih)
 
     column = gtk_tree_view_column_new();
 
-    if(ih->data->showimage)
+    if (ih->data->show_image)
     {
       renderer_img = gtk_cell_renderer_pixbuf_new();
       gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(column), renderer_img, FALSE);
@@ -1600,9 +1580,6 @@ static int gtkListMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "DRAGDROP", "YES");
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)gtkListConvertXYToPos);
-
-  /* Initialize the default image (none) */
-  ih->data->def_image = 0;
 
   iupListSetInitialItems(ih);
 

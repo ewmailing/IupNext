@@ -188,11 +188,6 @@ void iupdrvListRemoveAllItems(Ihandle* ih)
     XmListDeleteAllItems(ih->handle);
 }
 
-void iupdrvListUpdateImages(Ihandle* ih)
-{
-  (void)ih;
-}
-
 
 /*********************************************************************************/
 
@@ -1434,6 +1429,8 @@ void iupdrvListInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, motListSetScrollToPosAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* Not Supported */
+  iupClassRegisterAttributeId(ic, "IMAGE", NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWIMAGE", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPEXPAND", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AUTOREDRAW", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);

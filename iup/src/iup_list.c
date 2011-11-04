@@ -563,31 +563,21 @@ static int iListSetShowImageAttrib(Ihandle* ih, const char* value)
     return 0;
 
   if (iupStrBoolean(value))
-    ih->data->showimage = 1;
+    ih->data->show_image = 1;
   else
-    ih->data->showimage = 0;
+    ih->data->show_image = 0;
 
   return 0;
 }
 
 static char* iListGetShowImageAttrib(Ihandle* ih)
 {
-  if (ih->data->showimage)
+  if (ih->data->show_image)
     return "YES";
   else
     return "NO";
 }
 
-static int iListSetImageListAttrib(Ihandle* ih, const char* value)
-{
-  ih->data->def_image = iupImageGetImage(value, ih, 0);
-
-  /* Update all images */
-  if(ih->data->showimage)
-    iupdrvListUpdateImages(ih);
-
-  return 1;
-}
 
 /*****************************************************************************************/
 
@@ -601,6 +591,20 @@ static int iListCreateMethod(Ihandle* ih, void** params)
   ih->data->sb = 1;
 
   return IUP_NOERROR;
+}
+
+static void iListGetItemImageInfo(Ihandle *ih, int id, int *img_w, int *img_h)
+{
+  char str[20];
+  char *value;
+
+  *img_w = 0;
+  *img_h = 0;
+
+  sprintf(str, "IMAGE%d", id);
+  value = iupAttribGet(ih, str);
+  if (value)
+    iupImageGetInfo(value, img_w, img_h, NULL);
 }
 
 static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
@@ -627,14 +631,22 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 
     for (i=1; i<=count; i++)
     {
+      item_w = 0;
+
       sprintf(str, "%d", i);
       value = IupGetAttribute(ih, str);  /* must use IupGetAttribute to check the native system */
       if (value)
-      {
         item_w = iupdrvFontGetStringWidth(ih, value);
-        if (item_w > *w)
-          *w = item_w;
+
+      if (ih->data->show_image)
+      {
+        int img_w, img_h;
+        iListGetItemImageInfo(ih, i, &img_w, &img_h);
+        item_w += img_w;
       }
+
+      if (item_w > *w)
+        *w = item_w;
     }
 
     if (*w == 0) /* default is 5 characters in 1 item */
@@ -678,10 +690,7 @@ void iupListGetNaturalImageItemsSize(Ihandle *ih, int *w, int *h)
   for (i=1; i<=count; i++)
   {
     sprintf(str, "IMAGE%d", i);
-    value = IupGetAttribute(ih, str);  /* must use IupGetAttribute to check the native system */
-
-    if(!value)
-      value = IupGetAttribute(ih, "DEFAULTIMAGE");
+    value = iupAttribGet(ih, str);
 
     iupImageGetInfo(value, &img_w, &img_h, NULL);
 
@@ -728,15 +737,6 @@ static void iListComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
   (void)expand; /* unset if not a container */
 
   iListGetNaturalItemsSize(ih, &natural_w, &natural_h);
-
-  if (ih->data->showimage)
-  {
-    int img_w, img_h;
-    iupListGetNaturalImageItemsSize(ih, &img_w, &img_h);
-
-    natural_w += img_w;
-    natural_h  = iupMAX(natural_h, img_h);
-  }
 
   /* compute the borders space */
   iupdrvListAddBorders(ih, &natural_w, &natural_h);
@@ -850,7 +850,6 @@ Iclass* iupListNewClass(void)
   iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWIMAGE", iListGetShowImageAttrib, iListSetShowImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DEFAULTIMAGE", NULL, iListSetImageListAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
 
   iupdrvListInitClass(ic);
 

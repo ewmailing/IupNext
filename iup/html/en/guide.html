@@ -54,11 +54,10 @@ Lua files. But keep in mind that you
 <u>can</u> use IUP without using LED or Lua, using only the C API.</p>
 <h3><a name="apl">Building Applications</a></h3>
 <p>To compile programs in C, simply include file <b>iup.h</b>. If the 
-application only uses functions from IUP and other portable languages such as C 
-or Lua, with the same prototype for all platforms, then the application 
-immediately becomes platform independent, at least concerning user interface, 
-because the implementation of the IUP functions is different in each platform. 
-The linker is in charge of solving the IUP functions using the library specified 
+application only uses functions from IUP and other cross-platform libraries that 
+have the same API in all platforms, then the application 
+immediately becomes platform independent. The implementation of the IUP functions is different in each platform 
+and the linker is in charge of solving the IUP functions using the library specified 
 in the project/makefile. For further information on how to link your 
 application, please refer to the specific driver documentation.<u1:p>
 </u1:p>
