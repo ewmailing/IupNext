@@ -25,6 +25,10 @@ ComputeTecUname()
   if [ $TEC_SYSNAME == FreeBSD ]; then
     TEC_SYSMINOR=`uname -r|cut -f2 -d.|cut -f1 -d-`
   fi
+  if [ $TEC_SYSNAME == GNU/kFreeBSD ]; then
+    TEC_SYSNAME=kFreeBSD
+    TEC_SYSMINOR=`uname -r|cut -f2 -d.|cut -f1 -d-`
+  fi
   if [ $TEC_SYSNAME == AIX ]; then
     TEC_SYSVERSION=`uname -v`
     TEC_SYSMINOR=`uname -r`
