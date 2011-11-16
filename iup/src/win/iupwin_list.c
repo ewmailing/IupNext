@@ -94,18 +94,18 @@ static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hB
 
 static void winListDrawBitmap(HDC hDC, HBITMAP hBitmap, int x, int y, int w, int h, int bpp)
 {
-  if(bpp == 32)
-  {
-    HDC hMemDC = CreateCompatibleDC(hDC);
-    HBITMAP oldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
+  //if(bpp == 32)
+  //{
+  //  HDC hMemDC = CreateCompatibleDC(hDC);
+  //  HBITMAP oldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
 
-    SetBkMode(hDC, TRANSPARENT);
-    BitBlt(hDC, x, y, w, h, hMemDC, 0, 0, SRCCOPY);
+  //  SetBkMode(hDC, TRANSPARENT);
+  //  BitBlt(hDC, x, y, w, h, hMemDC, 0, 0, SRCCOPY);
 
-    SelectObject(hMemDC, oldBitmap);
-    DeleteDC(hMemDC);
-  }
-  else
+  //  SelectObject(hMemDC, oldBitmap);
+  //  DeleteDC(hMemDC);
+  //}
+  //else
   {
     iupwinDrawBitmap(hDC, hBitmap, NULL, x, y, w, h, bpp);
   }
@@ -1666,5 +1666,7 @@ void iupdrvListInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winListSetCueBannerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTER", NULL, winListSetFilterAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  /* necessary because transparent background does not work when not using visual styles */
+//  if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
+//    iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
