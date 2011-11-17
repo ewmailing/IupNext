@@ -263,6 +263,9 @@ int main(int argc, char **argv)
   IupSetAttribute(dlg, "_LABEL", (char*)lbl);
   IupSetAttribute(dlg, "DEFAULTENTER", "btok");
   IupSetAttribute(dlg, "DEFAULTESC", "btcancel");
+//  IupSetAttribute(IupGetChild(dlg, 0), "BGCOLOR", "92 92 255");
+//  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
+//  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 

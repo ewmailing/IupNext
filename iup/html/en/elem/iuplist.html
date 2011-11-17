@@ -87,12 +87,12 @@
 
   <b>...</b><br>
 
-  <strong>"n"</strong>:
-  n<sup>th</sup> item in the list.</p>
+  <strong>"id"</strong>:
+  id<sup>th</sup> item in the list.</p>
 
   
     
-<p class="info">&nbsp;(<font size="3">non inheritable</font>) The values can be any text. Items before "1" are ignored. 
+<p class="info">(<font size="3">non inheritable</font>) The values can be any text. Items before "1" are ignored. 
 	Before map the first item with a NULL is considered the end of the list and 
 	items can be set in any order. After map, there are a few rules:</p>
 
@@ -102,15 +102,15 @@
 
 		<li>if "1" is set to NULL, all items are removed.</li>
 
-		<li>if "n" is set to NULL, all items after n are removed.</li>
+		<li>if "id" is set to NULL, all items after id are removed.</li>
 
-		<li>if "n" is between the first and the last item, the current n<sup>th</sup> 
+		<li>if "id" is between the first and the last item, the current id<sup>th</sup> 
 		item is replaced. The effect is the same as removing the old item and 
 		inserting a new one at the old position.</li>
 
-		<li>if "n+1" is set then it is appended after the last item.</li>
+		<li>if "id+1" is set then it is appended after the last item.</li>
 
-		<li>Items after "n+1" are ignored. (since 3.0)</li>
+		<li>Items after "id+1" are ignored. (since 3.0)</li>
 
 	
 </ul>
@@ -164,10 +164,18 @@ button, which displays all items in the list. Can be "YES" or "NO". Default
   
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
 global attribute TXTFGCOLOR.</p>
+<p><strong>IMAGEid</strong> (<font size="3">non inheritable</font>):
+  image name to be used in the specified item, where id is the specified item 
+starting at 1. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
+The image is always displayed at the left of the text and only when 
+SHOWIMAGE=Yes. When EDITBOX=Yes the image is not display at the edit box. (since 
+3.6)</p>
 
   
-<p><strong>INSERTITEMn</strong> (write-only): inserts an item before the 
-	given n position. n starts at 1. If n=COUNT+1 then it will append after the 
+<p><strong>INSERTITEMid</strong> (write-only): inserts an item before the 
+	given id position. id starts at 1. If id=COUNT+1 then it will append after the 
 last item. Ignored if out of bounds. Ignored if set 
 before map. (since 3.0)</p>
 
@@ -204,6 +212,12 @@ horizontal scrollbar is never shown.</p>
   "YES" or
   "NO". Valid only when
   DROPDOWN=YES. Ignored if set before map. </p>
+
+  
+<p><b>
+  SHOWIMAGE</b> (creation only): enables the use of an image for each item. Can be
+  "YES" or
+  "NO". Ignored if set before map. (since 3.6) </p>
 
   
 <p><a href="../attrib/iup_size.html">SIZE</a>:

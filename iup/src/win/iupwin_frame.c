@@ -94,8 +94,8 @@ static void winFrameDrawText(HDC hDC, const char* text, int x, int y, COLORREF f
 static void winFrameDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 { 
   iupwinBitmapDC bmpDC;
-  HDC hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, drawitem->rcItem.right-drawitem->rcItem.left, 
-                                                            drawitem->rcItem.bottom-drawitem->rcItem.top);
+  HDC hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, 0, 0, drawitem->rcItem.right-drawitem->rcItem.left, 
+                                                                  drawitem->rcItem.bottom-drawitem->rcItem.top);
 
   iupwinDrawParentBackground(ih, hDC, &drawitem->rcItem);
 

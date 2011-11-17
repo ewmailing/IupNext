@@ -137,7 +137,7 @@ static void winLabelDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   width = drawitem->rcItem.right - drawitem->rcItem.left;
   height = drawitem->rcItem.bottom - drawitem->rcItem.top;
 
-  hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, width, height);
+  hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, 0, 0, width, height);
 
   iupwinDrawParentBackground(ih, hDC, &drawitem->rcItem);
 

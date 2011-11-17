@@ -311,10 +311,7 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
       unsigned char r=0, g=0, b=0;
       iupStrToRGB(bgcolor, &r, &g, &b);
       SetDCBrushColor(hDC, RGB(r,g,b));
-      rect.left = xpad;
-      rect.top = ypad;
-      rect.right = rect_width - xpad;
-      rect.bottom = rect_height - ypad;
+      SetRect(&rect, xpad, ypad, rect_width - xpad, rect_height - ypad);
       FillRect(hDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
     }
   }
@@ -328,7 +325,7 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   int width = drawitem->rcItem.right - drawitem->rcItem.left;
   int height = drawitem->rcItem.bottom - drawitem->rcItem.top;
 
-  hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, width, height);
+  hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, 0, 0, width, height);
 
   iupwinDrawParentBackground(ih, hDC, &drawitem->rcItem);
 

@@ -246,6 +246,9 @@ int main(int argc, char **argv)
   dlg = IupDialog (IupHbox (frm_medal, frm_sport, frm_prize, NULL));
   IupSetAttribute (dlg, "TITLE", "IupList Example");
   IupShowXY (dlg, IUP_CENTER, IUP_CENTER);
+//  IupSetAttribute(IupGetChild(dlg, 0), "BGCOLOR", "92 92 255");
+//  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
+//  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
 
   IupMainLoop ();
   IupClose ();

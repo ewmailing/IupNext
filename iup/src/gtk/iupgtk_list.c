@@ -1006,21 +1006,6 @@ static gboolean gtkListEditKeyPressEvent(GtkWidget* entry, GdkEventKey *evt, Iha
           gtk_entry_set_text((GtkEntry*)entry, text);
           g_free(text);
         }
-
-        if (ih->data->show_image)
-        {
-          GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
-          GdkPixbuf* img = NULL;
-
-          gtk_tree_model_get(model, &iter, IUPGTK_LIST_IMAGE, &img, -1);
-          if (img)
-          {
-            gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, img);
-            g_object_unref(img);
-          }
-          else
-            gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, NULL);
-        }
       }
     }
   }
@@ -1178,29 +1163,6 @@ static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih)
 
   if (!ih->data->has_editbox)
     iupBaseCallValueChangedCb(ih);
-  else
-  {
-    if(ih->data->show_image)
-    {
-      GtkTreeIter iter;
-      GtkTreeModel* model = gtkListGetModel(ih);
-
-      if (gtk_combo_box_get_active_iter(widget, &iter))
-      {
-        GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
-        GdkPixbuf* img = NULL;
-
-        gtk_tree_model_get(model, &iter, IUPGTK_LIST_IMAGE, &img, -1);
-        if (img)
-        {
-          gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, img);
-          g_object_unref(img);
-        }
-        else
-          gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, NULL);
-      }
-    }
-  }
 
   (void)widget;
 }
@@ -1245,21 +1207,6 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
         GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
         gtk_entry_set_text(entry, value);        
         g_free(value);
-      }
-      
-      if(ih->data->show_image)
-      {
-        GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
-        GdkPixbuf* img = NULL;
-
-        gtk_tree_model_get(tree_model, &iter, IUPGTK_LIST_IMAGE, &img, -1);
-        if(img)
-        {
-          gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, img);
-          g_object_unref(img);
-        }
-        else
-          gtk_entry_set_icon_from_pixbuf(entry, GTK_ENTRY_ICON_PRIMARY, NULL);
       }
 
       gtk_tree_path_free(path);

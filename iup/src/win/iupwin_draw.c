@@ -335,8 +335,10 @@ void iupwinDrawParentBackground(Ihandle* ih, HDC hDC, RECT* rect)
   FillRect(hDC, rect, (HBRUSH)GetStockObject(DC_BRUSH));
 }
 
-HDC iupwinDrawCreateBitmapDC(iupwinBitmapDC *bmpDC, HDC hDC, int w, int h)
+HDC iupwinDrawCreateBitmapDC(iupwinBitmapDC *bmpDC, HDC hDC, int x, int y, int w, int h)
 {
+  bmpDC->x = x;
+  bmpDC->y = y;
   bmpDC->w = w;
   bmpDC->h = h;
   bmpDC->hDC = hDC;
@@ -349,7 +351,7 @@ HDC iupwinDrawCreateBitmapDC(iupwinBitmapDC *bmpDC, HDC hDC, int w, int h)
 
 void iupwinDrawDestroyBitmapDC(iupwinBitmapDC *bmpDC)
 {
-  BitBlt(bmpDC->hDC, 0, 0, bmpDC->w, bmpDC->h, bmpDC->hBitmapDC, 0, 0, SRCCOPY);
+  BitBlt(bmpDC->hDC, bmpDC->x, bmpDC->y, bmpDC->w, bmpDC->h, bmpDC->hBitmapDC, 0, 0, SRCCOPY);
   SelectObject(bmpDC->hBitmapDC, bmpDC->hOldBitmap);
   DeleteObject(bmpDC->hBitmap);
   DeleteDC(bmpDC->hBitmapDC);
@@ -463,13 +465,13 @@ void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned 
   if (style==IUP_DRAW_FILL)
   {
     RECT rect;
-    rect.left = x1; rect.top = y1; rect.right = x2+1; rect.bottom = y2+1;
+    SetRect(&rect, x1, y1, x2+1, y2+1);
     FillRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
   }
   else if (style==IUP_DRAW_STROKE)
   {
     RECT rect;
-    rect.left = x1; rect.top = y1; rect.right = x2+1; rect.bottom = y2+1;
+    SetRect(&rect, x1, y1, x2+1, y2+1);
     FrameRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
   }
   else

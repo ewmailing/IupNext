@@ -92,24 +92,6 @@ static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hB
   itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
 }
 
-static void winListDrawEditBoxIcon(Ihandle* ih)
-{
-  if(ih->data->show_image)
-  {
-    HWND cbedit = (HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX");
-    HDC dc = GetDC(cbedit);
-    int pos = SendMessage(ih->handle, CB_GETCURSEL, 0, 0);
-    winListItemData* itemdata = winListGetItemData(ih, pos);
-
-    if (itemdata && itemdata->hBitmap)
-    {
-      int img_w, img_h, img_bpp;
-      iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, &img_bpp);
-      iupwinDrawBitmap(dc, itemdata->hBitmap, NULL, 0, 0, img_w, img_h, img_bpp);
-    }
-  }
-}
-
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 {
   (void)ih;
@@ -1269,8 +1251,6 @@ static LRESULT CALLBACK winListEditWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARA
   /* retrieve the control previous procedure for subclassing */
   oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDPROC_CB");
 
-  winListDrawEditBoxIcon(ih);
-
   ret = winListEditProc(ih, hwnd, msg, wp, lp, &result);
 
   if (ret)
@@ -1387,10 +1367,7 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   case WM_MOUSELEAVE:
   case WM_MOUSEMOVE:
     if (ih->data->has_editbox)
-    {
-      winListDrawEditBoxIcon(ih);
       return 0;  /* do not call base procedure to avoid duplicate messages */
-    }
     break;
   case WM_MEASUREITEM: 
     if (ih->data->show_image)
@@ -1424,30 +1401,32 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
 static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 {
   char* text;
-  int x, y, bpp,  
-    img_w = 0, img_h = 0, 
-    txt_w, txt_h;
+  int txt_w, txt_h;
   winListItemData* itemdata;
   HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
-//  iupwinBitmapDC bmpDC;
+  iupwinBitmapDC bmpDC;
   HDC hDC;
+  RECT rect;
+  COLORREF fgcolor, bgcolor;
+
+  int x = drawitem->rcItem.left;
+  int y = drawitem->rcItem.top;
   int width = drawitem->rcItem.right - drawitem->rcItem.left;
   int height = drawitem->rcItem.bottom - drawitem->rcItem.top;
-  COLORREF fgcolor, bgcolor;
 
   /* If there are no list box items, skip this message */
   if (drawitem->itemID == -1)
     return;
 
-  hDC = drawitem->hDC;
-//  hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, width, height);
+  hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, x, y, width, height);
 
   if (drawitem->itemState & ODS_SELECTED)
     bgcolor = GetSysColor(COLOR_HIGHLIGHT);
   else if (!iupwinGetColorRef(ih, "BGCOLOR", &bgcolor))
     bgcolor = GetSysColor(COLOR_WINDOW);
   SetDCBrushColor(hDC, bgcolor);
-  FillRect(hDC, &(drawitem->rcItem), (HBRUSH)GetStockObject(DC_BRUSH));
+  SetRect(&rect, 0, 0, width, height);
+  FillRect(hDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
 
   if (iupdrvIsActive(ih))
   {
@@ -1466,32 +1445,39 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   text = winListGetText(ih, drawitem->itemID);
   iupdrvFontGetMultiLineStringSize(ih, text, &txt_w, &txt_h);
 
-  x = drawitem->rcItem.left + ih->data->maximg_w + 5;
-  y = drawitem->rcItem.top + (height - txt_h)/2;  /* vertically centered */
+  x = ih->data->maximg_w + 3; /* spacing between text and image */
+  y = (height - txt_h)/2;  /* vertically centered */
   iupwinDrawText(hDC, text, x, y, txt_w, txt_h, hFont, fgcolor, 0);
 
   /* Draw the bitmap associated with the item */
   if (itemdata->hBitmap)
   {
+    int bpp, img_w, img_h;
+    HBITMAP hMask;
+
     iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, &bpp);
-    x = drawitem->rcItem.left;
-    y = drawitem->rcItem.top + (height - img_h)/2;  /* vertically centered */
-    iupwinDrawBitmap(hDC, itemdata->hBitmap, NULL, x, y, img_w, img_h, bpp);
+
+    if (bpp == 8)
+    {
+      char name[50];
+      sprintf(name, "IMAGE%d", (int)drawitem->itemID+1);
+      hMask = iupdrvImageCreateMask(IupGetAttributeHandle(ih, name));
+    }
+
+    x = 0;
+    y = (height - img_h)/2;  /* vertically centered */
+    iupwinDrawBitmap(hDC, itemdata->hBitmap, hMask, x, y, img_w, img_h, bpp);
+
+    if (hMask)
+      DeleteObject(hMask);
   }
 
   /* If the item has the focus, draw the focus rectangle */
   if (drawitem->itemState & ODS_FOCUS)
-  {
-    x = drawitem->rcItem.left;
-    y = drawitem->rcItem.top;
-    iupdrvDrawFocusRect(ih, hDC, x, y, width, height);
-  }
-
-//  if(ih->data->has_editbox)
-//    SendMessage((HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX"), EM_SETMARGINS, EC_LEFTMARGIN, xPos);
+    iupdrvDrawFocusRect(ih, hDC, 0, 0, width, height);
 
   free(text);
-//  iupwinDrawDestroyBitmapDC(&bmpDC);
+  iupwinDrawDestroyBitmapDC(&bmpDC);
 }
 
 
