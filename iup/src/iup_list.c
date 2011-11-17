@@ -611,7 +611,8 @@ static void iListGetItemImageInfo(Ihandle *ih, int id, int *img_w, int *img_h)
 static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 {
   char *value;
-  int visiblecolumns, i,
+  int max_w = 0, max_h = 0;
+  int visiblecolumns, i, 
       count = iListGetCount(ih);
 
   *w = 0;
@@ -647,7 +648,6 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 
   if (ih->data->show_image)
   {
-    int max_w = 0, max_h = 0;
     for (i=1; i<=count; i++)
     {
       int img_w, img_h;
@@ -658,16 +658,21 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
         max_h = img_h;
     }
 
+    /* Used only in Windows */
     ih->data->maximg_w = max_w;
+    ih->data->maximg_h = max_h;
+
     *w += max_w;
-    if (max_h > *h)  /* use the heighest image to compute the natural size */
-      *h = max_h;
   }
 
   /* compute height for multiple lines, dropdown is just 1 line */
   if (!ih->data->is_dropdown)
   {
-    int visiblelines, num_lines, line_size = *h;
+    int visiblelines, num_lines, 
+        edit_line_size = *h;  /* don't include the highest image */
+
+    if (ih->data->show_image && max_h > *h)  /* use the highest image to compute the natural size */
+      *h = max_h;
 
     iupdrvListAddItemSpace(ih, h);  /* this independs from spacing */
 
@@ -684,7 +689,15 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
     *h = *h * num_lines;
 
     if (ih->data->has_editbox) 
-      *h += line_size;
+      *h += edit_line_size;
+  }
+  else
+  {
+    if (!ih->data->has_editbox)
+    {
+      if (ih->data->show_image && max_h > *h)  /* use the highest image to compute the natural size */
+        *h = max_h;
+    }
   }
 }
 

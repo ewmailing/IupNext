@@ -166,11 +166,12 @@ button, which displays all items in the list. Can be "YES" or "NO". Default
 global attribute TXTFGCOLOR.</p>
 <p><strong>IMAGEid</strong> (<font size="3">non inheritable</font>):
   image name to be used in the specified item, where id is the specified item 
-starting at 1. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
+starting at 1. The item must already exist. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
 The image is always displayed at the left of the text and only when 
-SHOWIMAGE=Yes. When EDITBOX=Yes the image is not display at the edit box. (since 
+SHOWIMAGE=Yes. When EDITBOX=Yes the image is not display at the edit box. Images 
+don't need to have the same size. (since 
 3.6)</p>
 
   

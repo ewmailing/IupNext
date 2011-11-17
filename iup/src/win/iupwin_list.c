@@ -54,6 +54,7 @@
 #define WIN_SETTOPINDEX(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETTOPINDEX: LB_SETTOPINDEX)
 #define WIN_SETITEMHEIGHT(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETITEMHEIGHT: LB_SETITEMHEIGHT)
 
+
 typedef struct _winListItemData
 {
   int text_width;
@@ -441,7 +442,30 @@ static int winListSetSpacingAttrib(Ihandle* ih, const char* value)
     txt_h += 2*ih->data->spacing;
 
     /* set for all items */
-    SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), 0, txt_h);
+    if (!ih->data->show_image)
+      SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), 0, txt_h);
+    else
+    {
+      /* must manually set for each item */
+      int img_h, i, count = SendMessage(ih->handle, WIN_GETCOUNT(ih), 0, 0);
+
+      for (i=0; i<count; i++)
+      { 
+        winListItemData* itemdata = winListGetItemData(ih, i);
+        if (itemdata->hBitmap)
+        {
+          iupdrvImageGetInfo(itemdata->hBitmap, NULL, &img_h, NULL);
+          img_h += 2*ih->data->spacing;
+
+          if (img_h > txt_h)
+            SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), i, img_h);
+          else
+            SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), i, txt_h);
+        }
+        else
+          SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), i, txt_h);
+      }
+    }
     return 0;
   }
   else
@@ -874,6 +898,28 @@ static int winListSetImageAttrib(Ihandle* ih, int id, const char* value)
 
   itemdata = winListGetItemData(ih, pos);
   itemdata->hBitmap = hBitmap;
+
+  if (itemdata->hBitmap)
+  {
+    int txt_h, img_w, img_h;
+    iupdrvFontGetCharSize(ih, NULL, &txt_h);
+    iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, NULL);
+
+    if (img_h > txt_h)
+    {
+      if (ih->data->is_dropdown && !ih->data->has_editbox && img_h >= ih->data->maximg_h)
+        SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), (WPARAM)-1, img_h);  /* set also for the selection box */
+
+      if (!ih->data->is_dropdown)
+        img_h += 2*ih->data->spacing;
+      SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), pos, img_h);
+    }
+
+    if (img_w > ih->data->maximg_w)
+      ih->data->maximg_w = img_w;
+    if (img_h > ih->data->maximg_h)
+      ih->data->maximg_h = img_h;
+  }
 
   return 1;
 }
@@ -1369,30 +1415,6 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     if (ih->data->has_editbox)
       return 0;  /* do not call base procedure to avoid duplicate messages */
     break;
-  case WM_MEASUREITEM: 
-    if (ih->data->show_image)
-    {
-      int txt_h;
-      MEASUREITEMSTRUCT* pmis = (MEASUREITEMSTRUCT*)lp; 
-      winListItemData* itemdata = (winListItemData*)(pmis->itemData);
-
-      iupdrvFontGetCharSize(ih, NULL, &txt_h);
-      if (!ih->data->is_dropdown)
-        txt_h += 2*ih->data->spacing;
-
-      if (itemdata->hBitmap)
-      {
-        int img_h;
-        iupdrvImageGetInfo(itemdata->hBitmap, NULL, &img_h, NULL);
-        if (img_h > txt_h)
-        {
-          pmis->itemHeight = img_h;
-          *result = 0;
-          return 1;
-        }
-      }
-    }
-    break;
   }
 
   return iupwinBaseProc(ih, msg, wp, lp, result);
@@ -1535,7 +1557,7 @@ static int winListMapMethod(Ihandle* ih)
     dwStyle |= CBS_NOINTEGRALHEIGHT;
 
     if (ih->data->show_image)
-      dwStyle |= CBS_OWNERDRAWFIXED|CBS_HASSTRINGS;
+      dwStyle |= CBS_OWNERDRAWVARIABLE|CBS_HASSTRINGS;
 
     if (ih->data->is_dropdown)
       dwStyle |= WS_VSCROLL|WS_HSCROLL;
@@ -1572,7 +1594,7 @@ static int winListMapMethod(Ihandle* ih)
       dwStyle |= LBS_EXTENDEDSEL;
 
     if (ih->data->show_image)
-      dwStyle |= LBS_OWNERDRAWFIXED|LBS_HASSTRINGS;
+      dwStyle |= LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS;
 
     if (ih->data->sb)
     {

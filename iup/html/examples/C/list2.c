@@ -199,7 +199,7 @@ int main(int argc, char **argv)
   IupSetAttributeHandle(list2, "IMAGE4", load_image_LogoTecgraf());
 
   IupSetAttributes(list3, "1=\"Char A\", 2=\"Char B\", 3=\"Char CCCCC\", 4=\"Char D\", 5=\"Char F\", 6=\"Char G\", 7=\"Char H\","
-                          "EXPAND=YES, EDITBOX=YES, SHOWIMAGE=YES");
+                          "EXPAND=YES, EDITBOX=YES, XXX_SPACING=4, SHOWIMAGE=YES");
   IupSetAttributeHandle(list3, "IMAGE1", load_image_Test());
   //IupSetAttributeHandle(list3, "IMAGE3", load_image_Test());
   IupSetAttributeHandle(list3, "IMAGE5", load_image_Test());
