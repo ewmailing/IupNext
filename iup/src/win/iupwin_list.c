@@ -92,25 +92,6 @@ static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hB
   itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
 }
 
-static void winListDrawBitmap(HDC hDC, HBITMAP hBitmap, int x, int y, int w, int h, int bpp)
-{
-  //if(bpp == 32)
-  //{
-  //  HDC hMemDC = CreateCompatibleDC(hDC);
-  //  HBITMAP oldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
-
-  //  SetBkMode(hDC, TRANSPARENT);
-  //  BitBlt(hDC, x, y, w, h, hMemDC, 0, 0, SRCCOPY);
-
-  //  SelectObject(hMemDC, oldBitmap);
-  //  DeleteDC(hMemDC);
-  //}
-  //else
-  {
-    iupwinDrawBitmap(hDC, hBitmap, NULL, x, y, w, h, bpp);
-  }
-}
-
 static void winListDrawEditBoxIcon(Ihandle* ih)
 {
   if(ih->data->show_image)
@@ -124,7 +105,7 @@ static void winListDrawEditBoxIcon(Ihandle* ih)
     {
       int img_w, img_h, img_bpp;
       iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, &img_bpp);
-      winListDrawBitmap(dc, itemdata->hBitmap, 0, 0, img_w, img_h, img_bpp);
+      iupwinDrawBitmap(dc, itemdata->hBitmap, NULL, 0, 0, img_w, img_h, img_bpp);
     }
   }
 }
@@ -295,6 +276,13 @@ static int winListGetCaretPos(HWND cbedit)
   return pos;
 }
 
+static char* winListGetText(Ihandle* ih, int pos)
+{
+  int len = SendMessage(ih->handle, WIN_GETTEXTLEN(ih), (WPARAM)pos, 0);
+  char* str = calloc(len+1, 1);
+  SendMessage(ih->handle, WIN_GETTEXT(ih), (WPARAM)pos, (LPARAM)str);
+  return str;
+}
 
 /*********************************************************************************/
 
@@ -305,10 +293,9 @@ static void winListUpdateItemWidth(Ihandle* ih)
   for (i=0; i<count; i++)
   { 
     winListItemData* itemdata = winListGetItemData(ih, i);
-    int len = SendMessage(ih->handle, WIN_GETTEXTLEN(ih), (WPARAM)i, 0);
-    char* str = iupStrGetMemory(len+1);
-    SendMessage(ih->handle, WIN_GETTEXT(ih), (WPARAM)i, (LPARAM)str);
+    char* str = winListGetText(ih, i);
     itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
+    free(str);
   }
 }
 
@@ -336,10 +323,10 @@ static char* winListGetIdValueAttrib(Ihandle* ih, int id)
   int pos = iupListGetPos(ih, id);
   if (pos >= 0)
   {
-    int len = SendMessage(ih->handle, WIN_GETTEXTLEN(ih), (WPARAM)pos, 0);
-    char* str = iupStrGetMemory(len+1);
-    SendMessage(ih->handle, WIN_GETTEXT(ih), (WPARAM)pos, (LPARAM)str);
-    return str;
+    char* str = winListGetText(ih, pos);
+    char* value = iupStrGetMemoryCopy(str);
+    free(str);
+    return value;
   }
   return NULL;
 }
@@ -467,10 +454,12 @@ static int winListSetSpacingAttrib(Ihandle* ih, const char* value)
 
   if (ih->handle)
   {
-    int height;
-    iupdrvFontGetCharSize(ih, NULL, &height);
-    height += 2*ih->data->spacing;
-    SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), 0, height);
+    int txt_h;
+    iupdrvFontGetCharSize(ih, NULL, &txt_h);
+    txt_h += 2*ih->data->spacing;
+
+    /* set for all items */
+    SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), 0, txt_h);
     return 0;
   }
   else
@@ -1403,6 +1392,30 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       return 0;  /* do not call base procedure to avoid duplicate messages */
     }
     break;
+  case WM_MEASUREITEM: 
+    if (ih->data->show_image)
+    {
+      int txt_h;
+      MEASUREITEMSTRUCT* pmis = (MEASUREITEMSTRUCT*)lp; 
+      winListItemData* itemdata = (winListItemData*)(pmis->itemData);
+
+      iupdrvFontGetCharSize(ih, NULL, &txt_h);
+      if (!ih->data->is_dropdown)
+        txt_h += 2*ih->data->spacing;
+
+      if (itemdata->hBitmap)
+      {
+        int img_h;
+        iupdrvImageGetInfo(itemdata->hBitmap, NULL, &img_h, NULL);
+        if (img_h > txt_h)
+        {
+          pmis->itemHeight = img_h;
+          *result = 0;
+          return 1;
+        }
+      }
+    }
+    break;
   }
 
   return iupwinBaseProc(ih, msg, wp, lp, result);
@@ -1410,50 +1423,77 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
 
 static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 {
-  char text[256];
-  int len, xPos, yPos, bpp, img_w, img_h;
-  TEXTMETRIC tm;
-  COLORREF clrBackground, clrForeground;
+  char* text;
+  int x, y, bpp,  
+    img_w = 0, img_h = 0, 
+    txt_w, txt_h;
   winListItemData* itemdata;
+  HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
+//  iupwinBitmapDC bmpDC;
+  HDC hDC;
+  int width = drawitem->rcItem.right - drawitem->rcItem.left;
+  int height = drawitem->rcItem.bottom - drawitem->rcItem.top;
+  COLORREF fgcolor, bgcolor;
 
   /* If there are no list box items, skip this message */
   if (drawitem->itemID == -1)
     return;
 
-  /* The colors depend on whether the item is selected */
-  clrForeground = SetTextColor(drawitem->hDC, GetSysColor(drawitem->itemState & ODS_SELECTED ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT));
-  clrBackground = SetBkColor(drawitem->hDC, GetSysColor(drawitem->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW));
+  hDC = drawitem->hDC;
+//  hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, width, height);
+
+  if (drawitem->itemState & ODS_SELECTED)
+    bgcolor = GetSysColor(COLOR_HIGHLIGHT);
+  else if (!iupwinGetColorRef(ih, "BGCOLOR", &bgcolor))
+    bgcolor = GetSysColor(COLOR_WINDOW);
+  SetDCBrushColor(hDC, bgcolor);
+  FillRect(hDC, &(drawitem->rcItem), (HBRUSH)GetStockObject(DC_BRUSH));
+
+  if (iupdrvIsActive(ih))
+  {
+    if (drawitem->itemState & ODS_SELECTED)
+      fgcolor = GetSysColor(COLOR_HIGHLIGHTTEXT);
+    else if (!iupwinGetColorRef(ih, "FGCOLOR", &fgcolor))
+      fgcolor = GetSysColor(COLOR_WINDOWTEXT);
+  }
+  else
+    fgcolor = GetSysColor(COLOR_GRAYTEXT);
 
   /* Get the bitmap associated with the item */
   itemdata = winListGetItemData(ih, drawitem->itemID);
-  iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, &bpp);
-  
-  if(img_w == 0 || img_h == 0)
-    iupListGetNaturalImageItemsSize(ih, &img_w, &img_h);
 
   /* Get and draw the string associated with the item */
-  SendMessage(drawitem->hwndItem, WIN_GETTEXT(ih), drawitem->itemID, (LPARAM)text);
-  GetTextMetrics(drawitem->hDC, &tm);
-  xPos = img_w + 5;
-  yPos = (drawitem->rcItem.bottom + drawitem->rcItem.top - tm.tmHeight) / 2;
-  len = strlen(text);
-  ExtTextOut(drawitem->hDC, xPos, yPos, ETO_CLIPPED | ETO_OPAQUE, &drawitem->rcItem, text, len, NULL);
+  text = winListGetText(ih, drawitem->itemID);
+  iupdrvFontGetMultiLineStringSize(ih, text, &txt_w, &txt_h);
+
+  x = drawitem->rcItem.left + ih->data->maximg_w + 5;
+  y = drawitem->rcItem.top + (height - txt_h)/2;  /* vertically centered */
+  iupwinDrawText(hDC, text, x, y, txt_w, txt_h, hFont, fgcolor, 0);
 
   /* Draw the bitmap associated with the item */
-  winListDrawBitmap(drawitem->hDC, itemdata->hBitmap, drawitem->rcItem.left, drawitem->rcItem.top,
-    drawitem->rcItem.right - drawitem->rcItem.left, drawitem->rcItem.bottom - drawitem->rcItem.top, bpp);
-
-  /* Restore the previous colors */
-  SetTextColor(drawitem->hDC, clrForeground);
-  SetBkColor(drawitem->hDC, clrBackground);
+  if (itemdata->hBitmap)
+  {
+    iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, &bpp);
+    x = drawitem->rcItem.left;
+    y = drawitem->rcItem.top + (height - img_h)/2;  /* vertically centered */
+    iupwinDrawBitmap(hDC, itemdata->hBitmap, NULL, x, y, img_w, img_h, bpp);
+  }
 
   /* If the item has the focus, draw the focus rectangle */
   if (drawitem->itemState & ODS_FOCUS)
-    DrawFocusRect(drawitem->hDC, &drawitem->rcItem);
+  {
+    x = drawitem->rcItem.left;
+    y = drawitem->rcItem.top;
+    iupdrvDrawFocusRect(ih, hDC, x, y, width, height);
+  }
 
-  if(ih->data->has_editbox)
-    SendMessage((HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX"), EM_SETMARGINS, EC_LEFTMARGIN, xPos);
+//  if(ih->data->has_editbox)
+//    SendMessage((HWND)iupAttribGetStr(ih, "_IUPWIN_EDITBOX"), EM_SETMARGINS, EC_LEFTMARGIN, xPos);
+
+  free(text);
+//  iupwinDrawDestroyBitmapDC(&bmpDC);
 }
+
 
 /*********************************************************************************/
 
@@ -1606,7 +1646,7 @@ static int winListMapMethod(Ihandle* ih)
   }
 
   if(ih->data->show_image)
-      IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winListDrawItem);  /* Process WM_DRAWITEM */
+    IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winListDrawItem);  /* Process WM_DRAWITEM */
 
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
@@ -1665,8 +1705,4 @@ void iupdrvListInitClass(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winListSetCueBannerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTER", NULL, winListSetFilterAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-
-  /* necessary because transparent background does not work when not using visual styles */
-//  if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
-//    iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }

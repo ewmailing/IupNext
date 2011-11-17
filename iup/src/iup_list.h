@@ -31,7 +31,6 @@ char* iupListGetPaddingAttrib(Ihandle* ih);
 char* iupListGetSpacingAttrib(Ihandle* ih);
 void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos);
 void iupListUpdateOldValue(Ihandle* ih, int pos, int removed);
-void iupListGetNaturalImageItemsSize(Ihandle *ih, int *w, int *h);
 
 struct _IcontrolData 
 {
@@ -44,6 +43,7 @@ struct _IcontrolData
       is_multiple,
       is_dropdown,
       has_editbox,
+      maximg_w,  /* used only in Windows */
       show_image;
   Imask* mask;
 };

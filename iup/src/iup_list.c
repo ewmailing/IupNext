@@ -23,6 +23,7 @@
 #include "iup_image.h"
 #include "iup_list.h"
 
+
 void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos)
 {
   char *text;
@@ -610,7 +611,7 @@ static void iListGetItemImageInfo(Ihandle *ih, int id, int *img_w, int *img_h)
 static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 {
   char *value;
-  int visiblecolumns, 
+  int visiblecolumns, i,
       count = iListGetCount(ih);
 
   *w = 0;
@@ -626,24 +627,15 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
   }
   else
   {
-    int item_w, i;
-    char str[20];
+    int item_w;
 
     for (i=1; i<=count; i++)
     {
       item_w = 0;
 
-      sprintf(str, "%d", i);
-      value = IupGetAttribute(ih, str);  /* must use IupGetAttribute to check the native system */
+      value = IupGetAttributeId(ih, "", i);  /* must use IupGetAttribute to check the native system */
       if (value)
         item_w = iupdrvFontGetStringWidth(ih, value);
-
-      if (ih->data->show_image)
-      {
-        int img_w, img_h;
-        iListGetItemImageInfo(ih, i, &img_w, &img_h);
-        item_w += img_w;
-      }
 
       if (item_w > *w)
         *w = item_w;
@@ -651,6 +643,25 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 
     if (*w == 0) /* default is 5 characters in 1 item */
       *w = iupdrvFontGetStringWidth(ih, "WWWWW");
+  }
+
+  if (ih->data->show_image)
+  {
+    int max_w = 0, max_h = 0;
+    for (i=1; i<=count; i++)
+    {
+      int img_w, img_h;
+      iListGetItemImageInfo(ih, i, &img_w, &img_h);
+      if (img_w > max_w)
+        max_w = img_w;
+      if (img_h > max_h)
+        max_h = img_h;
+    }
+
+    ih->data->maximg_w = max_w;
+    *w += max_w;
+    if (max_h > *h)  /* use the heighest image to compute the natural size */
+      *h = max_h;
   }
 
   /* compute height for multiple lines, dropdown is just 1 line */
@@ -665,59 +676,6 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 
     num_lines = count;
     if (num_lines == 0) num_lines = 1;
-
-    visiblelines = iupAttribGetInt(ih, "VISIBLELINES");
-    if (visiblelines)
-      num_lines = visiblelines;   
-
-    *h = *h * num_lines;
-
-    if (ih->data->has_editbox) 
-      *h += line_size;
-  }
-}
-
-void iupListGetNaturalImageItemsSize(Ihandle *ih, int *w, int *h)
-{
-  char *value;
-  char str[20];
-  int count = iListGetCount(ih);
-  int img_w, img_h, i;
-
-  *w = 0;
-  *h = 0;
-
-  for (i=1; i<=count; i++)
-  {
-    sprintf(str, "IMAGE%d", i);
-    value = iupAttribGet(ih, str);
-
-    iupImageGetInfo(value, &img_w, &img_h, NULL);
-
-    if (img_w > *w)
-      *w = img_w;
-
-    if (*w == 0) /* Default icon size: 32px */
-      *w = 32;
-
-    if (img_h > *h)
-      *h = img_h;
-
-    if (*h == 0) /* Default icon size: 32px */
-      *h = 32;      
-  }
-
-  /* compute height for multiple lines, dropdown is just 1 line */
-  if (!ih->data->is_dropdown)
-  {
-    int visiblelines, num_lines, line_size = *h;
-
-    iupdrvListAddItemSpace(ih, h);  /* this is no depends from spacing */
-    *h += 2*ih->data->spacing;  /* this will be multiplied by the number of lines */
-
-    num_lines = count;
-    if (num_lines == 0)
-      num_lines = 1;
 
     visiblelines = iupAttribGetInt(ih, "VISIBLELINES");
     if (visiblelines)

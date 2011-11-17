@@ -218,7 +218,7 @@ int main(int argc, char **argv)
   IupSetAttribute(list, "IMAGE1", "IMGGOLD");
   IupSetAttribute(list, "IMAGE2", "IMGSILVER");
   IupSetAttribute(list, "IMAGE3", "IMGBRONZE");
-//  IupSetAttributeHandle(list, "IMAGE4", load_image_Tecgraf());
+  IupSetAttributeHandle(list, "IMAGE4", load_image_Tecgraf());
 
   frm_medal = IupFrame (list);
   IupSetAttribute (frm_medal, "TITLE", "Best medal");

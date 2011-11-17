@@ -491,20 +491,14 @@ static int motListSetSpacingAttrib(Ihandle* ih, const char* value)
 
   if (ih->handle)
   {
+    Widget list = ih->handle;
     if (ih->data->has_editbox)
-    {
-      Widget cblist;
-      XtVaGetValues(ih->handle, XmNlist, &cblist, NULL);
-      XtVaSetValues(cblist, XmNlistSpacing, ih->data->spacing*2, 
-                            XmNlistMarginWidth, ih->data->spacing, 
-                            XmNlistMarginHeight, ih->data->spacing, 
-                            NULL);
-    }
-    else
-      XtVaSetValues(ih->handle, XmNlistSpacing, ih->data->spacing*2, 
-                                XmNlistMarginWidth, ih->data->spacing, 
-                                XmNlistMarginHeight, ih->data->spacing, 
-                                NULL);
+      XtVaGetValues(ih->handle, XmNlist, &list, NULL);
+
+    XtVaSetValues(list, XmNlistSpacing, ih->data->spacing*2, 
+                        XmNlistMarginWidth, ih->data->spacing, 
+                        XmNlistMarginHeight, ih->data->spacing, 
+                        NULL);
     return 0;
   }
   else
