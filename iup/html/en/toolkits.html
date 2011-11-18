@@ -10,11 +10,13 @@
 <h2 align="center" style="text-align:center">Comparing IUP with Other Interface Toolkits</h2>
 <h3>Why to still maintain IUP if today we have so many other popular toolkits?</h3>
 <p>This is a question we always ask to ourselves before going on for another year.</p>
-<p>To answer that question we must first define the characteristics of the &quot;ideal&quot; toolkit, list the available 
-  toolkits and compare them with the &quot;ideal&quot; and with IUP.</p>
+<p>To answer that question we must first define the characteristics of the 
+reference toolkit, list the available 
+  toolkits and compare them with the reference and with IUP.</p>
 <p>We would like a toolkit that has:</p>
 <ul>
-  <li><b>Portability.</b> That provides an abstraction for User Interface in Windows, UNIX and Macintosh.</li>
+  <li><b>Portability.</b> That provides an abstraction for Graphical User Interface in Windows, UNIX and Macintosh. 
+  Also called Cross platform and multi-platform GUI toolikit.</li>
   <li><b>Free License and Open Source.</b> This means that we can also produce commercial applications. The pure GPL 
     license can not be used but the LGPL can but must contain an exception stating that derived works in binary form may 
     be distributed on the user's own terms. This is a solution that satisfies those who wish to produce GPL'ed software 
@@ -47,9 +49,9 @@
   <tr>
     <td>
     <p align="center" style="text-align:center"><a href="http://www.fox-toolkit.org/">FOX</a></td>
-    <td>LGPL</td>
-    <td>1997-2009/03</td>
-    <td>1.6.36</td>
+    <td>LGPL*</td>
+    <td>1997-2011/09</td>
+    <td>1.6.44</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X</td>
@@ -62,8 +64,8 @@
     <td>
     <p align="center" style="text-align:center"><a href="http://www.fltk.org/">FLTK</a></td>
     <td>LGPL*</td>
-    <td>1998-2008/04</td>
-    <td>1.1.9</td>
+    <td>1998-2011/10</td>
+    <td>1.3.1</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
@@ -76,48 +78,48 @@
     <td>
     <p align="center" style="text-align:center"><a href="http://www.gtk.org/">GTK+</a></td>
     <td>LGPL*</td>
-    <td>1997-2009/06</td>
-    <td>2.16.2</td>
+    <td>1997-2011/07</td>
+    <td>3.0.12</td>
     <td>
     <o:p>C</o:p></td>
     <td>Win, X, Mac</td>
     <td>
     <o:p>own</o:p></td>
-    <td>10</td>
+    <td>12</td>
     <td>target for<o:p> X-Windows, basis of GNOME, Windows is apart, Mac using X</o:p></td>
   </tr>
   <tr>
     <td>
     <p align="center" style="text-align:center"><a href="http://www.trolltech.com">Qt</a></td>
     <td>GPL</td>
-    <td>1994-2009/03</td>
-    <td>4.5.1</td>
+    <td>1994-2011/09</td>
+    <td>4.7.4</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
     <td>own</td>
     <td>(many)</td>
-    <td>Is free for Non Commercial, basis of KDE, Emulates the native look and feel</td>
+    <td>Is free for Non Commercial, a dual-licensing model, basis of KDE, Emulates the native look and feel</td>
   </tr>
   <tr>
     <td>
     <p align="center" style="text-align:center"><a href="http://www.wxwidgets.org/">wxWidgets</a></td>
     <td>LGPL*</td>
-    <td>1992-2009/03</td>
-    <td>2.8.10</td>
+    <td>1992-2011/07</td>
+    <td>2.9.2</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
     <td>native</td>
     <td>6</td>
-    <td>X can use Motif or GTK</td>
+    <td>X can use Motif or GTK, has many contributors</td>
   </tr>
   <tr>
     <td>
     <p align="center"><a href="http://www.tecgraf.puc-rio.br/iup/">IUP</a></td>
     <td>MIT</td>
-    <td>1994-2008/12</td>
-    <td>2.7.1</td>
+    <td>1994-2011/04</td>
+    <td>3.5</td>
     <td>C</td>
     <td>Win, X, Mac</td>
     <td>native</td>
@@ -126,12 +128,22 @@
     <o:p>X can use Motif or GTK, Mac using X</o:p></td>
   </tr>
 </table>
-<p>Table Last Update: June 2009</p>
+<p>Table Last Update: November 2011</p>
 <p>More toolkits can be found here:
-  <a href="http://www.geocities.com/SiliconValley/Vista/7184/guitool.html" ADD_DATE="851377089" LAST_VISIT="857454078" LAST_MODIFIED="851377011">The GUI Toolkit, Framework Page</a>.<br>
-  An interesting article can be found here: 
-<a href="http://freshmeat.net/articles/view/928/">GUI Toolkits for The X 
-  Window System</a>.</p>
+  <a ADD_DATE="851377089" href="http://www.atai.org/guitool/" LAST_MODIFIED="851377011" LAST_VISIT="857454078">The GUI Toolkit, Framework Page</a> 
+and <a href="http://en.wikipedia.org/wiki/List_of_widget_toolkits">List of 
+widget toolkits</a>.<br>
+  Interesting articles can be found here: </p>
+<ul>
+	<li><a href="http://freshmeat.net/articles/view/928/">GUI Toolkits for The X 
+  Window System</a> </li>
+	<li><a href="http://www.informit.com/articles/article.aspx?p=787261">Bad UI 
+	of the Week: The Cross-Platform User Interface</a> </li>
+	<li>
+	<a href="http://www.cs.up.ac.za/cs/jbishop/Homepage/Pubs/Pubs2006/Bishop-ICSE-2006.pdf">
+	Multi-platform User Interface Construction – a Challenge for Software 
+	Engineering-in-the-Small</a> </li>
+</ul>
 <h3>Discussion</h3>
 <p>FOX has a great look but the license can be restrictive in some cases. </p>
 <p>FLTK promises a new version with a better look and new features, but there 
@@ -143,7 +155,8 @@ it is was originally target for
   File Selection, specially in Windows. The Windows port has a look and feel 
 very similar to the 
 Windows native look and feel, but it is different from a native application. A MacOS X port without using X-Windows is on 
-the way, so the future is promising.</p>
+the way, but very slowly. Unfortunately the Windows port has been orphan for 
+some time and there is no release of new binaries for a while.</p>
 <p>Qt had several license limitations, but since mid 2009 a new license model 
 take place and it became more attractive. It is a very stable and powerful 
 toolkit. </p>
@@ -165,7 +178,8 @@ User Interface Toolkit. They are
 <p><b>Why Not Mac? </b>The first Mac driver was developed for MacOS 9 and had several memory limitations so it was 
   abandoned. With Mac OS X we have the opportunity to do something better. Today IUP runs on Mac OS X using X11 
 with 
-  Motif or GTK. We plan for the future to build a native Carbon driver.</p>
+  Motif or GTK. We plan for the future to build a native driver, but it is not a 
+Tecgraf priority.</p>
 <p><b>Why Still Motif? </b>Motif is very important for non Linux systems, some Tecgraf applications run on 
 old AIX, SGI 
   and Sun systems, that only have Motif installed and we can not force the installation of other toolkits like GTK. 

@@ -12,7 +12,7 @@ wb_usr = {
 
 wb_usr.messages = {
   en = {
-     title = "IUP - Cross-platform GUI Toolkit",
+     title = "IUP - Portable User Interface",
      bar_title = "IUP - Version 3"
   }
 }
