@@ -265,7 +265,7 @@ RCC      := $(TEC_TOOLCHAIN)windres
 # Remote build script
 REMOTE  = $(TECMAKE_HOME)/remote
 
-# Packed LOHs script
+# Packed Lua script
 LUAPRE = $(TECMAKE_HOME)/luapre.lua
 
 
@@ -396,10 +396,14 @@ ifdef NO_ECHO
 endif
 
 #---------------------------------#
-# LO and LOH Suffix
+# LO, LOH and LH folders
 
 SRCLUADIR ?= $(SRCDIR)
-LOHDIR ?= $(SRCLUADIR)
+ifdef NO_LUAOBJECT
+  LHDIR  ?= $(SRCLUADIR)
+else
+  LOHDIR ?= $(SRCLUADIR)
+endif
 
 ifdef USE_LOH_SUBDIR
   ifeq ($(TEC_BYTEORDER), TEC_BIGENDIAN)
@@ -415,6 +419,7 @@ ifdef USE_LOH_SUBDIR
       LOH_SUBDIR ?= le32
     endif
   endif
+  
   LOHDIR := $(LOHDIR)/$(LOH_SUBDIR)
   INCLUDES += $(LOHDIR)
 else
@@ -433,6 +438,9 @@ else
   endif
 endif
 
+ifdef USE_LH_SUBDIR
+  INCLUDES += $(LHDIR)
+endif
 
 
 #---------------------------------#
@@ -489,6 +497,10 @@ ifneq ($(findstring Linux, $(TEC_UNAME)), )
   endif
   X11_INC := /usr/X11R6/include
   MOTIFGL_LIB :=
+  ifdef USE_OPENMP
+    STDFLAGS += -fopenmp
+    LIBS += gomp
+  endif
 endif
 
 ifneq ($(findstring IRIX, $(TEC_UNAME)), )
@@ -592,6 +604,10 @@ ifneq ($(findstring MacOS, $(TEC_UNAME)), )
       #   ld: cycle in dylib re-exports with /usr/X11R6/lib/libGL.dylib
       LFLAGS += -dylib_file /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib
     endif
+  endif
+  ifdef USE_OPENMP
+    STDFLAGS += -fopenmp
+    LIBS += gomp
   endif
 endif
 
@@ -1144,15 +1160,23 @@ ifdef LOHPACK
   LOHS := $(LOHDIR)/$(LOHPACK)
   LOHDIRS :=
 else
-  # LOH: list of .loh, without path
-  # LOHS: list of .loh, with relative path
-  LO = $(notdir $(SRCLUA))
-  LO := $(LO:.lua=$(LO_SUFFIX).lo)
-  LOS = $(addprefix $(OBJROOT)/, $(LO))
+  ifdef NO_LUAOBJECT
+    LH = $(notdir $(SRCLUA))
+    LH := $(LH:.lua=.lh)
+    LHS = $(addprefix $(LHDIR)/, $(LH))
+    LUAS := $(LHS)
+  else
+    # LOH: list of .loh, without path
+    # LOHS: list of .loh, with relative path
+    LO = $(notdir $(SRCLUA))
+    LO := $(LO:.lua=$(LO_SUFFIX).lo)
+    LOS = $(addprefix $(OBJROOT)/, $(LO))
 
-  LOH = $(notdir $(SRCLUA))
-  LOH := $(LOH:.lua=$(LO_SUFFIX).loh)
-  LOHS = $(addprefix $(LOHDIR)/, $(LOH))
+    LOH = $(notdir $(SRCLUA))
+    LOH := $(LOH:.lua=$(LO_SUFFIX).loh)
+    LOHS = $(addprefix $(LOHDIR)/, $(LOH))
+    LUAS := $(LOHS)
+  endif
 endif
 
 # Construct VPATH variable
@@ -1213,7 +1237,7 @@ system-check:
 .PHONY: dynamic-lib
 dynamic-lib: $(TARGETDIR)/$(TARGETDLIBNAME)
 
-$(TARGETDIR)/$(TARGETDLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
+$(TARGETDIR)/$(TARGETDLIBNAME) : $(LUAS) $(OBJS) $(EXTRADEPS)
 	@echo ''; echo Tecmake: linking $(@F) ...
 	$(ECHO)$(LD) $(STDLDFLAGS) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
 	@echo ''; echo 'Tecmake: Dynamic Library ($@) Done.'; echo ''
@@ -1225,7 +1249,7 @@ $(TARGETDIR)/$(TARGETDLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
 .PHONY: static-lib
 static-lib: $(TARGETDIR)/$(TARGETSLIBNAME)
 
-$(TARGETDIR)/$(TARGETSLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
+$(TARGETDIR)/$(TARGETSLIBNAME) : $(LUAS) $(OBJS) $(EXTRADEPS)
 	@echo ''; echo Tecmake: librarian $(@F) ...
 	$(ECHO)$(AR) $(STDLFLAGS) $@ $(OBJS) $(SLIB) $(LCFLAGS)
 	@echo ''; echo Tecmake: updating lib TOC $(@F) ...
@@ -1239,7 +1263,7 @@ $(TARGETDIR)/$(TARGETSLIBNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
 .PHONY: application
 application: $(TARGETDIR)/$(TARGETAPPNAME)
 
-$(TARGETDIR)/$(TARGETAPPNAME) : $(LOHS) $(OBJS) $(EXTRADEPS)
+$(TARGETDIR)/$(TARGETAPPNAME) : $(LUAS) $(OBJS) $(EXTRADEPS)
 	@echo ''; echo Tecmake: linking $(@F) ...
 	$(ECHO)$(LINKER) -o $@ $(OBJS) $(SLIB) $(LFLAGS)
 	@if [ ! -z "$(STRIP)" ]; then \
@@ -1277,7 +1301,7 @@ $(SRELEASE): $(MAKENAME)
 # Directories Creation
 
 .PHONY: directories
-directories: $(OBJDIR) $(TARGETDIR) $(EXTRADIR) $(LOHDIR)
+directories: $(OBJDIR) $(TARGETDIR) $(EXTRADIR) $(LOHDIR) $(LHDIR)
 
 $(OBJDIR) $(TARGETDIR):
 	if [ ! -d $@ ] ; then mkdir -p $@ ; fi
@@ -1294,6 +1318,13 @@ ifdef LOHDIR
 	  if [ ! -d $@ ] ; then mkdir -p $@ ; fi
 else
   $(LOHDIR): ;
+endif
+
+ifdef LHDIR
+  $(LHDIR):
+	  if [ ! -d $@ ] ; then mkdir -p $@ ; fi
+else
+  $(LHDIR): ;
 endif
 
 
@@ -1327,6 +1358,10 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.for
 $(OBJDIR)/%.ro:  $(SRCDIR)/%.rc
 	@echo ''; echo Tecmake: compiling $(<F) ...
 	$(ECHO)$(RCC) $(RCFLAGS) -O coff -o $@ $<
+
+$(LHDIR)/%.lh:  $(SRCLUADIR)/%.lua
+	@echo ''; echo Tecmake: generating $(<F) ...
+	$(ECHO)$(BIN2C) $< > $@
 
 $(LOHDIR)/%.loh:  $(OBJROOT)/%.lo
 	@echo ''; echo Tecmake: generating $(<F) ...
@@ -1391,6 +1426,11 @@ clean-extra:
 clean-lohs:
 	rm -f $(LOS) $(LOHS)
 
+#   Remove Lua inclusion files
+.PHONY: clean-lhs
+clean-lhs:
+	rm -f $(LHS)
+
 #   Remove object files
 .PHONY: clean-obj
 clean-obj:
@@ -1416,7 +1456,7 @@ strip:
 
 #   Rebuild target and object files
 .PHONY: rebuild
-rebuild: clean-extra clean-lohs clean-obj clean-target tecmake
+rebuild: clean-extra clean-lohs clean-lhs clean-obj clean-target tecmake
 
 #   Rebuild target without rebuilding object files
 .PHONY: relink

@@ -110,7 +110,7 @@ endif
 SHELL      = bash
 SLASH      = slash_parser
 
-# Packed LOHs script
+# Packed Lua script
 LUAPRE = "$(TECMAKE_PATH)"/luapre.lua
 
 
@@ -173,10 +173,14 @@ endif
 
 
 # ---------------------------------------------------------
-# LO and LOH Suffix
+# LO, LOH and LH folders
 
 SRCLUADIR ?= $(SRCDIR)
-LOHDIR ?= $(SRCLUADIR)
+ifdef NO_LUAOBJECT
+  LHDIR  ?= $(SRCLUADIR)
+else
+  LOHDIR ?= $(SRCLUADIR)
+endif
 
 ifdef USE_LOH_SUBDIR
   ifeq ($(TEC_BYTEORDER), TEC_BIGENDIAN)
@@ -193,6 +197,7 @@ ifdef USE_LOH_SUBDIR
       LOH_SUBDIR ?= le32
     endif
   endif
+  
   LOHDIR := $(LOHDIR)/$(LOH_SUBDIR)
   INCLUDES += $(LOHDIR)
 else
@@ -210,6 +215,10 @@ else
       LO_SUFFIX ?=
     endif
   endif
+endif
+
+ifdef USE_LH_SUBDIR
+  INCLUDES += $(LHDIR)
 endif
 
 
@@ -294,6 +303,7 @@ BC56 ?= x:/lng/cbuilderx
 BC6  ?= x:/lng/bc6
 MINGW3 ?= x:/lng/mingw3
 MINGW4 ?= x:/lng/mingw4
+MINGW4_64 ?= x:/lng/mingw4_64
 # The default location is in the PATH
 #GCC3 ?= x:/lng/cygw15
 #GCC4 ?= x:/lng/cygw17
@@ -301,7 +311,10 @@ MINGW4 ?= x:/lng/mingw4
 #Tools
 QT ?= x:/lng/qt
 GTK ?= x:/lng/gtk
+
 GLUT ?= x:/lng/glut
+GLUT_LIB ?= $(GLUT)/lib
+GLUT_INC ?= $(GLUT)/include
 
 OBJEXT = obj
 LIBEXT = lib
@@ -485,6 +498,10 @@ ifeq "$(TEC_CC)" "vc"
       STDDEFS += -D_CPP_NARROW_INLINES_DEFINED
     endif
     STDFLAGS += -EHsc
+    ifdef USE_OPENMP
+      STDFLAGS += -openmp
+      LIBS += vcomp
+    endif
   else                  # Exception Handling Model
     STDFLAGS += -GX
   endif
@@ -667,9 +684,15 @@ ifneq ($(findstring gcc4, $(TEC_UNAME)), )
   COMPILER = $(GCC4)
 endif
 
-ifneq ($(findstring mingw4, $(TEC_UNAME)), )
+ifeq "$(TEC_UNAME)" "mingw4"
   COMPILER = $(MINGW4)
   OLD_OPENGL = Yes
+endif
+
+ifeq "$(TEC_UNAME)" "mingw4_64"
+  COMPILER = $(MINGW4_64)
+  OLD_OPENGL = Yes
+  BUILD64 = Yes
 endif
 
 ifneq ($(findstring dllg4, $(TEC_UNAME)), )
@@ -677,10 +700,17 @@ ifneq ($(findstring dllg4, $(TEC_UNAME)), )
   TEC_CC = gcc
 endif
 
-ifneq ($(findstring dllw4, $(TEC_UNAME)), )
+ifeq "$(TEC_UNAME)" "dllw4"
   COMPILER = $(MINGW4)
   TEC_CC = gcc
   OLD_OPENGL = Yes
+endif
+
+ifeq "$(TEC_UNAME)" "dllw4_64"
+  COMPILER = $(MINGW4_64)
+  TEC_CC = gcc
+  OLD_OPENGL = Yes
+  BUILD64 = Yes
 endif
 
 ifeq "$(COMPILER)" "$(GCC4)"
@@ -691,6 +721,9 @@ endif
 
 ifeq "$(TEC_CC)" "gcc"
   WIN_OTHER = YES
+  ifneq ($(findstring w4, $(TEC_UNAME)), )
+    WIN_OTHER :=
+  endif
   ifdef BUILD64
     STDDEFS += -DWIN64
     GTK := $(GTK)_x64
@@ -719,6 +752,10 @@ ifeq "$(TEC_CC)" "gcc"
   OPTFLAGS := -O2
   OBJEXT=o
   LIBEXT=a
+  ifdef USE_OPENMP
+    STDFLAGS += -fopenmp
+    LIBS += gomp
+  endif
   ifeq ($(MAKETYPE), APP)
     STDLFLAGS = -Wl,-subsystem,$(APPTYPE)
   else
@@ -856,8 +893,8 @@ endif
 ifdef USE_GLUT
   override USE_OPENGL = Yes
   LIBS += glut32
-  LDIR += $(GLUT)/lib
-  STDINCS += $(GLUT)/include
+  LDIR += $(GLUT_INC)
+  STDINCS += $(GLUT_LIB)
 endif
 
 ifdef USE_GDK
@@ -1109,15 +1146,23 @@ ifdef LOHPACK
   LOHS := $(LOHDIR)/$(LOHPACK)
   LOHDIRS :=
 else
-  # LOH: lista dos arquivos .loh, sem path
-  # LOHS: lista dos arquivos .loh, com path relativo
-  LO = $(notdir $(SRCLUA))
-  LO := $(LO:.lua=$(LO_SUFFIX).lo)
-  LOS = $(addprefix $(OBJROOT)/, $(LO))
+  ifdef NO_LUAOBJECT
+    LH = $(notdir $(SRCLUA))
+    LH := $(LH:.lua=.lh)
+    LHS = $(addprefix $(LHDIR)/, $(LH))
+    LUAS := $(LHS)
+  else
+    # LOH: lista dos arquivos .loh, sem path
+    # LOHS: lista dos arquivos .loh, com path relativo
+    LO = $(notdir $(SRCLUA))
+    LO := $(LO:.lua=$(LO_SUFFIX).lo)
+    LOS = $(addprefix $(OBJROOT)/, $(LO))
 
-  LOH = $(notdir $(SRCLUA))
-  LOH := $(LOH:.lua=$(LO_SUFFIX).loh)
-  LOHS = $(addprefix $(LOHDIR)/, $(LOH))
+    LOH = $(notdir $(SRCLUA))
+    LOH := $(LOH:.lua=$(LO_SUFFIX).loh)
+    LOHS = $(addprefix $(LOHDIR)/, $(LOH))
+    LUAS := $(LOHS)
+  endif
 endif
 
 #---------------------------------#
@@ -1159,7 +1204,7 @@ endif
 .PHONY: dynamic-lib
 dynamic-lib: $(TARGETDLL) addmanifest
 
-$(TARGETDLL) : $(LOHS) $(OBJS) $(EXTRADEPS) $(DEF_FILE)
+$(TARGETDLL) : $(LUAS) $(OBJS) $(EXTRADEPS) $(DEF_FILE)
 	@echo ''; echo Tecmake: linking $(@F) ...
 	$(ECHO)$(LINKER) $(LINKFLAGS)
 	@echo ''; echo 'Tecmake: Dynamic Library ($@) Done'; echo ''
@@ -1171,12 +1216,12 @@ $(TARGETDLL) : $(LOHS) $(OBJS) $(EXTRADEPS) $(DEF_FILE)
 .PHONY: static-lib
 static-lib: $(TARGETLIB)
 
-$(TARGETDIR)/$(TARGETNAME).lib : $(LOHS) $(OBJS) $(EXTRADEPS)
+$(TARGETDIR)/$(TARGETNAME).lib : $(LUAS) $(OBJS) $(EXTRADEPS)
 	@echo ''; echo Tecmake: librarian $(@F) ...
 	$(ECHO)$(LIBC) $(LIBFLAGS)
 	@echo ''; echo 'Tecmake: Static Library ($@) Done'; echo ''
 	
-$(TARGETDIR)/lib$(TARGETNAME).a : $(LOHS) $(OBJS) $(EXTRADEPS)
+$(TARGETDIR)/lib$(TARGETNAME).a : $(LUAS) $(OBJS) $(EXTRADEPS)
 	@echo ''; echo Tecmake: librarian $(@F) ...
 	$(ECHO)$(LIBC) $(ARFLAGS) $@ $(OBJS) $(SLIB)
 	@echo ''; echo Tecmake: updating lib TOC $(@F) ...
@@ -1190,7 +1235,7 @@ $(TARGETDIR)/lib$(TARGETNAME).a : $(LOHS) $(OBJS) $(EXTRADEPS)
 .PHONY: application
 application: $(TARGETEXE) addmanifest
 
-$(TARGETEXE) : $(LOHS) $(OBJS) $(EXTRADEPS)
+$(TARGETEXE) : $(LUAS) $(OBJS) $(EXTRADEPS)
 	@echo ''; echo Tecmake: linking $(@F) ...
 	$(ECHO)$(LINKER) $(LINKFLAGS)
 	@echo ''; echo 'Tecmake: Application ($@) Done.'; echo ''
@@ -1221,7 +1266,7 @@ $(SRELEASE): $(TARGETEXE)
 # Directories Creation
 
 .PHONY: directories
-directories: $(OBJDIR) $(TARGETDIR) $(EXTRADIR) $(LOHDIR)
+directories: $(OBJDIR) $(TARGETDIR) $(EXTRADIR) $(LOHDIR) $(LHDIR)
 
 $(OBJDIR) $(TARGETDIR):
 	if [ ! -d $@ ] ; then mkdir -p $@ ; fi
@@ -1238,6 +1283,13 @@ ifdef LOHDIR
 	  if [ ! -d $@ ] ; then mkdir -p $@ ; fi
 else
   $(LOHDIR): ;
+endif
+
+ifdef LHDIR
+  $(LHDIR):
+	  if [ ! -d $@ ] ; then mkdir -p $@ ; fi
+else
+  $(LHDIR): ;
 endif
 
 
@@ -1279,6 +1331,10 @@ $(OBJDIR)/%.obj:  $(SRCDIR)/%.cc
 $(OBJDIR)/%.res:  $(SRCDIR)/%.rc
 	@echo ''; echo Tecmake: compiling $(<F) ...
 	$(ECHO)$(RCC) $@ $(RCFLAGS) $<
+
+$(LHDIR)/%.lh:  $(SRCLUADIR)/%.lua
+	@echo ''; echo Tecmake: generating $(<F) ...
+	$(ECHO)$(BIN2C) $< > $@
 
 $(LOHDIR)/%.loh:  $(OBJROOT)/%.lo
 	@echo ''; echo Tecmake: generating $(<F) ...
@@ -1363,6 +1419,11 @@ clean-extra:
 clean-lohs:
 	rm -f $(LOS) $(LOHS)
 	
+#   Remove Lua inclusion files
+.PHONY: clean-lhs
+clean-lhs:
+	rm -f $(LHS)
+	
 #   Remove object files
 .PHONY: clean-obj
 clean-obj:
@@ -1391,11 +1452,11 @@ clean-all-target:
 clean: clean-target clean-obj
 
 .PHONY: clean-all
-clean-all: clean-extra clean-lohs clean-all-target clean-all-obj
+clean-all: clean-extra clean-lohs clean-lhs clean-all-target clean-all-obj
 
 #   Rebuild target and object files
 .PHONY: rebuild
-rebuild: clean-extra clean-lohs clean-obj clean-target tecmake
+rebuild: clean-extra clean-lohs clean-lhs clean-obj clean-target tecmake
 
 #   Rebuild target without rebuilding object files
 .PHONY: relink
