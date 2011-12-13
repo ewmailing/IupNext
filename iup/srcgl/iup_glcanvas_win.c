@@ -23,6 +23,20 @@
 #include "iup_assert.h"
 #include "iup_register.h"
 
+typedef HGLRC (WINAPI *wglCreateContextAttribsARB_PROC) (HDC hDC, HGLRC hShareContext, const int *attribList);
+
+#ifndef WGL_CONTEXT_MAJOR_VERSION_ARB
+#define WGL_CONTEXT_MAJOR_VERSION_ARB  0x2091
+#define WGL_CONTEXT_MINOR_VERSION_ARB  0x2092
+#define WGL_CONTEXT_FLAGS_ARB          0x2094
+#define WGL_CONTEXT_PROFILE_MASK_ARB   0x9126
+#define WGL_CONTEXT_DEBUG_BIT_ARB      0x0001
+#define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002
+#define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
+#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
+#endif
+
+
 /* Do NOT use _IcontrolData to make inheritance easy
    when parent class in glcanvas */
 typedef struct _IGlControlData
@@ -58,6 +72,7 @@ static int wGLCanvasCreateMethod(Ihandle* ih, void** params)
 static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
 {
   Ihandle* ih_shared;
+  HGLRC shared_context = NULL;
   int number;
   int isIndex = 0;
   int pixelFormat;
@@ -160,8 +175,79 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
   } 
   SetPixelFormat(gldata->device,pixelFormat,&pfd);
 
+  ih_shared = IupGetAttributeHandle(ih, "SHAREDCONTEXT");
+  if (ih_shared && IupClassMatch(ih_shared, "glcanvas"))  /* must be an IupGLCanvas */
+  {
+    IGlControlData* shared_gldata = (IGlControlData*)iupAttribGet(ih_shared, "_IUP_GLCONTROLDATA");
+    shared_context = shared_gldata->context;
+  }
+
   /* create rendering context */
-  gldata->context = wglCreateContext(gldata->device);
+  if (iupAttribGetBoolean(ih, "ARBCONTEXT"))
+  {
+    wglCreateContextAttribsARB_PROC CreateContextAttribsARB = (wglCreateContextAttribsARB_PROC)wglGetProcAddress("wglCreateContextAttribsARB");
+    if (CreateContextAttribsARB)
+    {
+      int attribs[9], a = 0;
+      char* value;
+
+      value = iupAttribGetStr(ih, "CONTEXTVERSION");
+      if (value)
+      {
+        int major, minor;
+        if (iupStrToIntInt(value, &major, &minor, '.') == 2)
+        {
+          attribs[a++] = WGL_CONTEXT_MAJOR_VERSION_ARB;
+          attribs[a++] = major;
+          attribs[a++] = WGL_CONTEXT_MINOR_VERSION_ARB;
+          attribs[a++] = minor;
+        }
+      }
+
+      value = iupAttribGetStr(ih, "CONTEXTFLAGS");
+      if (value)
+      {
+        int flags = 0;
+        if (iupStrEqualNoCase(value, "DEBUG"))
+          flags = WGL_CONTEXT_DEBUG_BIT_ARB;
+        else if (iupStrEqualNoCase(value, "FORWARDCOMPATIBLE"))
+          flags = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+        else if (iupStrEqualNoCase(value, "DEBUGFORWARDCOMPATIBLE"))
+          flags = WGL_CONTEXT_DEBUG_BIT_ARB|WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+        if (flags)
+        {
+          attribs[a++] = WGL_CONTEXT_FLAGS_ARB;
+          attribs[a++] = flags;
+        }
+      }
+
+      value = iupAttribGetStr(ih, "CONTEXTPROFILE");
+      if (value)
+      {
+        int profile = 0;
+        if (iupStrEqualNoCase(value, "CORE"))
+          profile = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
+        else if (iupStrEqualNoCase(value, "COMPATIBILITY"))
+          profile = WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+        else if (iupStrEqualNoCase(value, "CORECOMPATIBILITY"))
+          profile = WGL_CONTEXT_CORE_PROFILE_BIT_ARB|WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+        if (profile)
+        {
+          attribs[a++] = WGL_CONTEXT_PROFILE_MASK_ARB;
+          attribs[a++] = profile;
+        }
+      }
+
+      CreateContextAttribsARB(gldata->device, shared_context, attribs);
+    }
+    else
+    {
+      gldata->context = wglCreateContext(gldata->device);
+      iupAttribSetStr(ih, "ARBCONTEXT", "NO");
+    }
+  }
+  else
+    gldata->context = wglCreateContext(gldata->device);
   if (!gldata->context)
   {
     iupAttribSetStr(ih, "ERROR", "Could not create a rendering context.");
@@ -169,12 +255,8 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
   }
   iupAttribSetStr(ih, "CONTEXT", (char*)gldata->context);
 
-  ih_shared = IupGetAttributeHandle(ih, "SHAREDCONTEXT");
-  if (ih_shared && IupClassMatch(ih_shared, "glcanvas"))  /* must be an IupGLCanvas */
-  {
-    IGlControlData* shared_gldata = (IGlControlData*)iupAttribGet(ih_shared, "_IUP_GLCONTROLDATA");
-    wglShareLists(shared_gldata->context, gldata->context);
-  }
+  if (shared_context)
+    wglShareLists(shared_context, gldata->context);
 
   DescribePixelFormat(gldata->device, pixelFormat, sizeof(PIXELFORMATDESCRIPTOR), &test_pfd);
   if ((pfd.dwFlags & PFD_STEREO) && !(test_pfd.dwFlags & PFD_STEREO))
@@ -294,6 +376,11 @@ static Iclass* wGlCanvasNewClass(void)
   iupClassRegisterAttribute(ic, "CONTEXT", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "VISUAL", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "COLORMAP", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
+
+  iupClassRegisterAttribute(ic, "CONTEXTFLAGS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CONTEXTPROFILE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CONTEXTVERSION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ARBCONTEXT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "REFRESHCONTEXT", NULL, wGLCanvasSetRefreshContextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 

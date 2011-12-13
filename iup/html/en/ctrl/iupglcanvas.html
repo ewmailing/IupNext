@@ -77,6 +77,10 @@ on the native system. After the mapping, specifying these special
 <p><strong>ALPHA_SIZE</strong>:
   Indicates the number of bits for 
   representing each colors alpha component (valid only for RGBA and for hardware that store the alpha component). Default is &quot;0&quot;.</p>
+<p><strong>ARBCONTEXT</strong> (<font size="3">non inheritable</font>): enable 
+the usage of ARB extension contexts. If during map the ARB extensions could not 
+be loaded the attribute will be set to NO and the standard context creation will 
+be used. Default: NO. (since 3.6)</p>
 <p><strong>BUFFER</strong>:
   Indicates if the buffer will be single
   &quot;SINGLE&quot; or double 
@@ -91,6 +95,15 @@ on the native system. After the mapping, specifying these special
 in UNIX and &quot;HPALETTE&quot; in Win32, if COLOR=INDEX.</p>
 <p><strong>CONTEXT</strong> (read-only)<strong>:</strong> Returns &quot;GLXContext&quot; in UNIX 
 and &quot;HGLRC&quot; in Win32.</p>
+<p><strong>CONTEXTFLAGS</strong> (<font size="3">non inheritable</font>): 
+Context flags. Can be DEBUG, FORWARDCOMPATIBLE or DEBUGFORWARDCOMPATIBLE. Used 
+only when ARBCONTEXT=Yes. (since 3.6)</p>
+<p><strong>CONTEXTPROFILE</strong> (<font size="3">non inheritable</font>): 
+Context profile mask. Can be CORE, COMPATIBILITY or CORECOMPATIBILITY. Used only 
+when ARBCONTEXT=Yes. (since 3.6)</p>
+<p><strong>CONTEXTVERSION</strong> (<font size="3">non inheritable</font>): 
+Context version number in the format &quot;major.minor&quot;. Used only when 
+ARBCONTEXT=Yes. (since 3.6)</p>
 <p><strong>DEPTH_SIZE</strong>:
   Indicates the number of bits for 
   representing the <i>z</i> coordinate in the z-buffer. Value 0 means the z-buffer is not necessary.&nbsp;</p>

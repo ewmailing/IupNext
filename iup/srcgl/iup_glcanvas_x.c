@@ -24,6 +24,22 @@
 #include "iup_register.h"
 
 
+typedef GLXContext (*glXCreateContextAttribsARB_PROC)(Display *dpy, GLXFBConfig config,
+					       GLXContext share_list, Bool direct,
+					       const int *attrib_list);
+
+#ifndef GLX_CONTEXT_MAJOR_VERSION_ARB
+#define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
+#define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
+#define GLX_CONTEXT_FLAGS_ARB 0x2094
+#define GLX_CONTEXT_PROFILE_MASK_ARB 0x9126
+#define GLX_CONTEXT_DEBUG_BIT_ARB 0x0001
+#define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002
+#define GLX_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
+#define GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
+#endif
+
+
 /* Do NOT use _IcontrolData to make inheritance easy
    when parent class in glcanvas */
 typedef struct _IGlControlData
@@ -34,6 +50,7 @@ typedef struct _IGlControlData
   XVisualInfo *vinfo;
   GLXContext context;
 } IGlControlData;
+
 
 static int xGLCanvasDefaultResize(Ihandle *ih, int width, int height)
 {
@@ -223,7 +240,75 @@ static int xGLCanvasMapMethod(Ihandle* ih)
   }
 
   /* create rendering context */
-  gldata->context = glXCreateContext(gldata->display, gldata->vinfo, shared_context, GL_TRUE);
+  if (iupAttribGetBoolean(ih, "ARBCONTEXT"))
+  {
+    glXCreateContextAttribsARB_PROC CreateContextAttribsARB = NULL;
+    CreateContextAttribsARB = (glXCreateContextAttribsARB_PROC)glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
+    if (CreateContextAttribsARB)
+    {
+      int attribs[9], a = 0;
+      char* value;
+
+	    int nelements;
+	    GLXFBConfig *config = glXChooseFBConfig(gldata->display, DefaultScreen(gldata->display), 0, &nelements);
+
+      value = iupAttribGetStr(ih, "CONTEXTVERSION");
+      if (value)
+      {
+        int major, minor;
+        if (iupStrToIntInt(value, &major, &minor, '.') == 2)
+        {
+          attribs[a++] = GLX_CONTEXT_MAJOR_VERSION_ARB;
+          attribs[a++] = major;
+          attribs[a++] = GLX_CONTEXT_MINOR_VERSION_ARB;
+          attribs[a++] = minor;
+        }
+      }
+
+      value = iupAttribGetStr(ih, "CONTEXTFLAGS");
+      if (value)
+      {
+        int flags = 0;
+        if (iupStrEqualNoCase(value, "DEBUG"))
+          flags = GLX_CONTEXT_DEBUG_BIT_ARB;
+        else if (iupStrEqualNoCase(value, "FORWARDCOMPATIBLE"))
+          flags = GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+        else if (iupStrEqualNoCase(value, "DEBUGFORWARDCOMPATIBLE"))
+          flags = GLX_CONTEXT_DEBUG_BIT_ARB|GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+        if (flags)
+        {
+          attribs[a++] = GLX_CONTEXT_FLAGS_ARB;
+          attribs[a++] = flags;
+        }
+      }
+
+      value = iupAttribGetStr(ih, "CONTEXTPROFILE");
+      if (value)
+      {
+        int profile = 0;
+        if (iupStrEqualNoCase(value, "CORE"))
+          profile = GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
+        else if (iupStrEqualNoCase(value, "COMPATIBILITY"))
+          profile = GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+        else if (iupStrEqualNoCase(value, "CORECOMPATIBILITY"))
+          profile = GLX_CONTEXT_CORE_PROFILE_BIT_ARB|GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+        if (profile)
+        {
+          attribs[a++] = GLX_CONTEXT_PROFILE_MASK_ARB;
+          attribs[a++] = profile;
+        }
+      }
+
+      gldata->context = CreateContextAttribsARB(gldata->display, *config, shared_context, GL_TRUE, attribs);
+    }
+    else
+    {
+      gldata->context = glXCreateContext(gldata->display, gldata->vinfo, shared_context, GL_TRUE);
+      iupAttribSetStr(ih, "ARBCONTEXT", "NO");
+    }
+  }
+  else
+    gldata->context = glXCreateContext(gldata->display, gldata->vinfo, shared_context, GL_TRUE);
   if (!gldata->context)
   {
     iupAttribSetStr(ih, "ERROR", "Could not create a rendering context");
@@ -295,6 +380,11 @@ static Iclass* xGlCanvasNewClass(void)
   iupClassRegisterAttribute(ic, "CONTEXT", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "VISUAL", xGLCanvasGetVisualAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING|IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "COLORMAP", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
+
+  iupClassRegisterAttribute(ic, "CONTEXTFLAGS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CONTEXTPROFILE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CONTEXTVERSION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ARBCONTEXT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }
