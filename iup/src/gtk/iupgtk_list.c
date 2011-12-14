@@ -1295,7 +1295,14 @@ static int gtkListMapMethod(Ihandle* ih)
   if (ih->data->is_dropdown)
   {
     if (ih->data->has_editbox)
+    {
+#if GTK_CHECK_VERSION(2, 24, 0)
+      ih->handle = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(store));
+      gtk_combo_box_set_entry_text_column ((GtkComboBox*)ih->handle, IUPGTK_LIST_TEXT);
+#else
       ih->handle = gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL(store), IUPGTK_LIST_TEXT);
+#endif
+    }
     else
       ih->handle = gtk_combo_box_new_with_model(GTK_TREE_MODEL(store));
 
