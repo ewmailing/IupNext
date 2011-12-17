@@ -29,8 +29,8 @@ int iupgaugelua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "gauge.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "gauge.lzh"
+#ifdef IUPLUA_USELH
+#include "gauge.lh"
 #else
   iuplua_dofile(L, "gauge.lua");
 #endif

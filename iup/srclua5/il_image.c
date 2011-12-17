@@ -95,8 +95,8 @@ int iupimagelua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "image.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "image.lzh"
+#ifdef IUPLUA_USELH
+#include "image.lh"
 #else
   iuplua_dofile(L, "image.lua");
 #endif

@@ -223,8 +223,8 @@ int iupmatrixlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "matrix.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "matrix.lzh"
+#ifdef IUPLUA_USELH
+#include "matrix.lh"
 #else
   iuplua_dofile(L, "matrix.lua");
 #endif

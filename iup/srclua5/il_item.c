@@ -42,8 +42,8 @@ int iupitemlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "item.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "item.lzh"
+#ifdef IUPLUA_USELH
+#include "item.lh"
 #else
   iuplua_dofile(L, "item.lua");
 #endif

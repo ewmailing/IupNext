@@ -883,9 +883,9 @@ int iuplua_open(lua_State * L)
 #include "iuplua.loh"
 #include "constants.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "iuplua.lzh"
-#include "constants.lzh"
+#ifdef IUPLUA_USELH
+#include "iuplua.lh"
+#include "constants.lh"
 #else
   iuplua_dofile(L, "iuplua.lua");
   iuplua_dofile(L, "constants.lua");

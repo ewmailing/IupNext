@@ -112,8 +112,8 @@ int iupcellslua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "cells.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "cells.lzh"
+#ifdef IUPLUA_USELH
+#include "cells.lh"
 #else
   iuplua_dofile(L, "cells.lua");
 #endif

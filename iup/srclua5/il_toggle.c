@@ -36,8 +36,8 @@ int iuptogglelua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "toggle.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "toggle.lzh"
+#ifdef IUPLUA_USELH
+#include "toggle.lh"
 #else
   iuplua_dofile(L, "toggle.lua");
 #endif

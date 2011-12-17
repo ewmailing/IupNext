@@ -135,8 +135,8 @@ int iupcanvaslua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "canvas.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "canvas.lzh"
+#ifdef IUPLUA_USELH
+#include "canvas.lh"
 #else
   iuplua_dofile(L, "canvas.lua");
 #endif

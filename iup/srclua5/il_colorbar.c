@@ -63,8 +63,8 @@ int iupcolorbarlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "colorbar.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "colorbar.lzh"
+#ifdef IUPLUA_USELH
+#include "colorbar.lh"
 #else
   iuplua_dofile(L, "colorbar.lua");
 #endif

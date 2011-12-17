@@ -42,8 +42,8 @@ int iupmenulua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "menu.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "menu.lzh"
+#ifdef IUPLUA_USELH
+#include "menu.lh"
 #else
   iuplua_dofile(L, "menu.lua");
 #endif

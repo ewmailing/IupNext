@@ -127,8 +127,8 @@ int iuppplotlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "pplot.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "pplot.lzh"
+#ifdef IUPLUA_USELH
+#include "pplot.lh"
 #else
   iuplua_dofile(L, "pplot.lua");
 #endif

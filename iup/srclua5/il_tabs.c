@@ -46,8 +46,8 @@ int iuptabslua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "tabs.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "tabs.lzh"
+#ifdef IUPLUA_USELH
+#include "tabs.lh"
 #else
   iuplua_dofile(L, "tabs.lua");
 #endif

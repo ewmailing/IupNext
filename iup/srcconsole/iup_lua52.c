@@ -1,5 +1,5 @@
 /*
-** $Id: iup_lua52.c,v 1.3 2010-10-28 03:53:47 scuri Exp $
+** $Id: iup_lua52.c,v 1.4 2011-12-17 18:32:43 scuri Exp $
 ** Lua stand-alone interpreter
 ** See Copyright Notice in lua.h
 */
@@ -500,9 +500,9 @@ static void iuplua_input (lua_State *L)
 #include "indent.loh"
 #include "console5.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "indent.lzh"
-#include "console5.lzh"
+#ifdef IUPLUA_USELH
+#include "indent.lh"
+#include "console5.lh"
 #else
   luaL_dofile(L, "indent.lua");
   luaL_dofile(L, "console5.lua");

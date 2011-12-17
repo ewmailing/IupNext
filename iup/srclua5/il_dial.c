@@ -37,8 +37,8 @@ int iupdiallua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "dial.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "dial.lzh"
+#ifdef IUPLUA_USELH
+#include "dial.lh"
 #else
   iuplua_dofile(L, "dial.lua");
 #endif

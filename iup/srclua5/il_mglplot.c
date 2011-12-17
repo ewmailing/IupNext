@@ -47,8 +47,8 @@ int iupmglplotlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "mglplot.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "mglplot.lzh"
+#ifdef IUPLUA_USELH
+#include "mglplot.lh"
 #else
   iuplua_dofile(L, "mglplot.lua");
 #endif

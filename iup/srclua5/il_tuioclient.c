@@ -40,8 +40,8 @@ int iuptuioclientlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "tuioclient.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "tuioclient.lzh"
+#ifdef IUPLUA_USELH
+#include "tuioclient.lh"
 #else
   iuplua_dofile(L, "tuioclient.lua");
 #endif

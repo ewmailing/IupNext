@@ -28,8 +28,8 @@ int iuplabellua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "label.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "label.lzh"
+#ifdef IUPLUA_USELH
+#include "label.lh"
 #else
   iuplua_dofile(L, "label.lua");
 #endif

@@ -1,15 +1,25 @@
 EXPORTS
-  IupMglPlotOpen
-  IupMglPlot
-  IupMglPlotBegin
-  IupMglPlotAdd
-  IupMglPlotAddStr
-  IupMglPlotEnd
-  IupMglPlotInsertStr
-  IupMglPlotInsert
-  IupMglPlotTransform
-  IupMglPlotPaintTo
-  IupMglPlotInsertStrPoints
-  IupMglPlotInsertPoints
-  IupMglPlotAddPoints
-  IupMglPlotAddStrPoints
+IupMglPlotOpen
+IupMglPlot
+IupMglPlotBegin
+IupMglPlotAdd1D
+IupMglPlotAdd2D
+IupMglPlotAdd3D
+IupMglPlotEnd
+IupMglPlotNewDataSet
+IupMglPlotInsert1D
+IupMglPlotInsert2D
+IupMglPlotInsert3D
+IupMglPlotSet1D
+IupMglPlotSet2D
+IupMglPlotSet3D
+IupMglPlotSetFormula
+IupMglPlotSetData
+IupMglPlotLoadData
+IupMglPlotSetFromFormula
+IupMglPlotTransform
+IupMglPlotTransformXYZ
+IupMglPlotDrawMark
+IupMglPlotDrawLine
+IupMglPlotDrawText
+IupMglPlotPaintTo

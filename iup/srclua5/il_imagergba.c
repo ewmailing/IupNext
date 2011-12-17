@@ -33,8 +33,8 @@ int iupimagergbalua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "imagergba.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "imagergba.lzh"
+#ifdef IUPLUA_USELH
+#include "imagergba.lh"
 #else
   iuplua_dofile(L, "imagergba.lua");
 #endif

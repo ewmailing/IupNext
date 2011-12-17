@@ -28,8 +28,8 @@ int iupnormalizerlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "normalizer.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "normalizer.lzh"
+#ifdef IUPLUA_USELH
+#include "normalizer.lh"
 #else
   iuplua_dofile(L, "normalizer.lua");
 #endif

@@ -1,30 +1,31 @@
 PROJNAME = iup
 LIBNAME = iupluacd
-OPT = YES
 
-DEFINES = CD_NO_OLD_INTERFACE
-SRC = iuplua_cd.c
-DEF_FILE = iupluacd.def
+IUP := ..
+
+OPT = YES
+NO_LUALINK = Yes
 
 # Can not use USE_IUPLUA because Tecmake will include "iupluacd51" in linker
+USE_CD = YES
+USE_CDLUA = YES
+USE_IUP3 = YES
 
 INCLUDES = ../include
 LIBS = iuplua$(LIBLUASUFX)
 LDIR = ../lib/$(TEC_UNAME)
-
-IUP := ..
-
-USE_CD = YES
-USE_IUP3 = YES
-NO_LUALINK = Yes
-USE_CDLUA = YES
+DEFINES = CD_NO_OLD_INTERFACE
+SRC = iuplua_cd.c
+DEF_FILE = iupluacd.def
 
 ifdef USE_LUA52
-  LIBNAME := $(LIBNAME)52
+  LUASFX = 52
 else
   USE_LUA51 = Yes
-  LIBNAME := $(LIBNAME)51
+  LUASFX = 51
 endif
+
+LIBNAME := $(LIBNAME)$(LUASFX)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   LIBS:=

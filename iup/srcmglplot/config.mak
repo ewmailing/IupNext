@@ -8,8 +8,12 @@ ifdef DBG
   DEFINES += IUP_ASSERT
 endif  
 
-INCLUDES = ../include ../src .
-LDIR = ../lib/$(TEC_UNAME)  
+FTGL_INC = $(CD)/src/ftgl
+FTGL_LIB = $(CD)/lib/$(TEC_UNAME)
+FREETYPE_INC = $(CD)/src/freetype2
+
+INCLUDES = ../include ../src . $(FTGL_INC) $(FREETYPE_INC)
+LDIR = ../lib/$(TEC_UNAME) $(FTGL_LIB)
 LIBS = iup iupgl ftgl
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )

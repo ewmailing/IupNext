@@ -29,8 +29,8 @@ int iupolecontrollua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "olecontrol.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "olecontrol.lzh"
+#ifdef IUPLUA_USELH
+#include "olecontrol.lh"
 #else
   iuplua_dofile(L, "olecontrol.lua");
 #endif

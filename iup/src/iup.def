@@ -404,3 +404,5 @@ iupDrawSetClipRect
 iupDrawText
 iupDrawUpdateSize
 iupDrawImage
+iupGetFontInfo
+

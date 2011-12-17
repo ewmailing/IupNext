@@ -28,8 +28,8 @@ int iuphboxlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "hbox.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "hbox.lzh"
+#ifdef IUPLUA_USELH
+#include "hbox.lh"
 #else
   iuplua_dofile(L, "hbox.lua");
 #endif

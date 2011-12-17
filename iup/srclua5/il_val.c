@@ -52,8 +52,8 @@ int iupvallua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "val.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "val.lzh"
+#ifdef IUPLUA_USELH
+#include "val.lh"
 #else
   iuplua_dofile(L, "val.lua");
 #endif

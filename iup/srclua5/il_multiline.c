@@ -37,8 +37,8 @@ int iupmultilinelua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "multiline.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "multiline.lzh"
+#ifdef IUPLUA_USELH
+#include "multiline.lh"
 #else
   iuplua_dofile(L, "multiline.lua");
 #endif

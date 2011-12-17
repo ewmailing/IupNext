@@ -35,8 +35,8 @@ int iupbuttonlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "button.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "button.lzh"
+#ifdef IUPLUA_USELH
+#include "button.lh"
 #else
   iuplua_dofile(L, "button.lua");
 #endif

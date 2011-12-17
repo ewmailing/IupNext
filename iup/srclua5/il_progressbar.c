@@ -28,8 +28,8 @@ int iupprogressbarlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "progressbar.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "progressbar.lzh"
+#ifdef IUPLUA_USELH
+#include "progressbar.lh"
 #else
   iuplua_dofile(L, "progressbar.lua");
 #endif

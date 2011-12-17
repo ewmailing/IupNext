@@ -112,8 +112,8 @@ int iupdialoglua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "dialog.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "dialog.lzh"
+#ifdef IUPLUA_USELH
+#include "dialog.lh"
 #else
   iuplua_dofile(L, "dialog.lua");
 #endif

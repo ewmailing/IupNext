@@ -28,8 +28,8 @@ int iupclipboardlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "clipboard.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "clipboard.lzh"
+#ifdef IUPLUA_USELH
+#include "clipboard.lh"
 #else
   iuplua_dofile(L, "clipboard.lua");
 #endif

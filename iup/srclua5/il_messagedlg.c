@@ -28,8 +28,8 @@ int iupmessagedlglua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "messagedlg.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "messagedlg.lzh"
+#ifdef IUPLUA_USELH
+#include "messagedlg.lh"
 #else
   iuplua_dofile(L, "messagedlg.lua");
 #endif

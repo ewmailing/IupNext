@@ -54,8 +54,8 @@ int iuptextlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "text.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "text.lzh"
+#ifdef IUPLUA_USELH
+#include "text.lh"
 #else
   iuplua_dofile(L, "text.lua");
 #endif

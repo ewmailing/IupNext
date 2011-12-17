@@ -61,8 +61,8 @@ int iupwebbrowserlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "webbrowser.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "webbrowser.lzh"
+#ifdef IUPLUA_USELH
+#include "webbrowser.lh"
 #else
   iuplua_dofile(L, "webbrowser.lua");
 #endif

@@ -2,15 +2,32 @@ PROJNAME = iup
 APPNAME := iuplua
 APPTYPE = CONSOLE
 
+STRIP = 
+OPT = YES      
+# IM and IupPPlot uses C++
+LINKER = $(CPPC)
+
+NO_LUAOBJECT = Yes
+USE_BIN2C_LUA=Yes
+
 ifdef USE_LUA52
-  LOHDIR = loh52
-  SRC = iup_lua52.c
-  APPNAME := $(APPNAME)52
+  LUASFX = 52
 else
   USE_LUA51 = Yes
-  LOHDIR = loh51
-  SRC = iup_lua51.c
-  APPNAME := $(APPNAME)51
+  LUASFX = 51
+endif
+
+APPNAME := $(APPNAME)$(LUASFX)
+SRC = iup_lua$(LUASFX).c
+
+ifdef NO_LUAOBJECT
+  DEFINES += IUPLUA_USELH
+  USE_LH_SUBDIR = Yes
+  LHDIR = lh
+else
+  DEFINES += IUPLUA_USELOH
+  USE_LOH_SUBDIR = Yes
+  LOHDIR = loh$(LUASFX)
 endif
 
 ifdef GTK_DEFAULT
@@ -25,18 +42,7 @@ else
   endif
 endif
 
-DEFINES = IUPLUA_USELOH
-USE_LOH_SUBDIR = Yes
 SRCLUA = console5.lua indent.lua
-USE_BIN2C_LUA=Yes
-
-# Disable strip
-STRIP = 
-# Optimize
-OPT = YES      
-
-# IM and IupPPlot uses C++
-LINKER = $(CPPC)
 
 ifdef DBG
   ALL_STATIC=Yes
@@ -109,7 +115,7 @@ ifdef ALL_STATIC
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
       LIBS += imlua_process$(LIBLUASUFX) iupluaim$(LIBLUASUFX) im_process iupim
     else
-      SLIB +=  $(IMLIB)/libimlua_process$(LIBLUASUFX).a $(IUPLIB)/libiupluaim$(LIBLUASUFX).a $(IMLIB)/libim_process.a $(IUPLIB)/libiupim.a
+      SLIB += $(IMLIB)/libimlua_process$(LIBLUASUFX).a $(IUPLIB)/libiupluaim$(LIBLUASUFX).a $(IMLIB)/libim_process.a $(IUPLIB)/libiupim.a
     endif
     
   else

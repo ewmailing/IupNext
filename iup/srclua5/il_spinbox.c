@@ -36,8 +36,8 @@ int iupspinboxlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "spinbox.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "spinbox.lzh"
+#ifdef IUPLUA_USELH
+#include "spinbox.lh"
 #else
   iuplua_dofile(L, "spinbox.lua");
 #endif

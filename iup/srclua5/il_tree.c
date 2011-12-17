@@ -127,8 +127,8 @@ int iuptreelua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "tree.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "tree.lzh"
+#ifdef IUPLUA_USELH
+#include "tree.lh"
 #else
   iuplua_dofile(L, "tree.lua");
 #endif

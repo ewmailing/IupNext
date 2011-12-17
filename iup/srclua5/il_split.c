@@ -28,8 +28,8 @@ int iupsplitlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "split.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "split.lzh"
+#ifdef IUPLUA_USELH
+#include "split.lh"
 #else
   iuplua_dofile(L, "split.lua");
 #endif

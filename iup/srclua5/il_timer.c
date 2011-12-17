@@ -35,8 +35,8 @@ int iuptimerlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "timer.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "timer.lzh"
+#ifdef IUPLUA_USELH
+#include "timer.lh"
 #else
   iuplua_dofile(L, "timer.lua");
 #endif

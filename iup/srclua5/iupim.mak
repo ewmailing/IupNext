@@ -1,26 +1,28 @@
 PROJNAME = iup
 LIBNAME  = iupluaim
-OPT = YES
-                     
-DEF_FILE = iupluaim.def
-SRC = iuplua_im.c
-
-INCLUDES = ../src
-LIBS = iupim
 
 IUP := ..
+
+OPT = YES
+NO_LUALINK = Yes
 
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
 USE_IMLUA = Yes
-NO_LUALINK = Yes
+
+SRC = iuplua_im.c
+DEF_FILE = iupluaim.def
+INCLUDES = ../src
+LIBS = iupim
 
 ifdef USE_LUA52
-  LIBNAME := $(LIBNAME)52
+  LUASFX = 52
 else
   USE_LUA51 = Yes
-  LIBNAME := $(LIBNAME)51
+  LUASFX = 51
 endif
+
+LIBNAME := $(LIBNAME)$(LUASFX)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   USE_IUPLUA:=

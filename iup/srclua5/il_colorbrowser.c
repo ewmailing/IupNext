@@ -49,8 +49,8 @@ int iupcolorbrowserlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "colorbrowser.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "colorbrowser.lzh"
+#ifdef IUPLUA_USELH
+#include "colorbrowser.lh"
 #else
   iuplua_dofile(L, "colorbrowser.lua");
 #endif

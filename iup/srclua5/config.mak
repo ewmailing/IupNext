@@ -1,28 +1,33 @@
 PROJNAME = iup
 LIBNAME  = iuplua
+
 OPT = YES
-DEF_FILE = iuplua.def
-
-ifndef IUPLUA_NO_LOH
-  DEFINES = IUPLUA_USELOH
-endif
-
-ifdef USE_LUA52
-  LOHDIR = loh52
-  LIBNAME := $(LIBNAME)52
-else
-  USE_LUA51 = Yes
-  LOHDIR = loh51
-  LIBNAME := $(LIBNAME)51
-endif
-
+NO_LUAOBJECT = Yes
 NO_LUALINK = Yes
-USE_LOH_SUBDIR = Yes
-USE_BIN2C_LUA=Yes
+USE_BIN2C_LUA = Yes
 
+DEF_FILE = iuplua.def
 INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  
 LIBS = iup
+
+ifdef USE_LUA52
+  LUASFX = 52
+else
+  USE_LUA51 = Yes
+  LUASFX = 51
+endif
+
+LIBNAME := $(LIBNAME)$(LUASFX)
+ifdef NO_LUAOBJECT
+  DEFINES += IUPLUA_USELH
+  USE_LH_SUBDIR = Yes
+  LHDIR = lh
+else
+  DEFINES += IUPLUA_USELOH
+  USE_LOH_SUBDIR = Yes
+  LOHDIR = loh$(LUASFX)
+endif
 
 CTRLUA = button.lua canvas.lua dialog.lua colordlg.lua clipboard.lua \
        filedlg.lua fill.lua frame.lua hbox.lua normalizer.lua \

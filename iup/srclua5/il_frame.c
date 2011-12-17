@@ -28,8 +28,8 @@ int iupframelua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "frame.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "frame.lzh"
+#ifdef IUPLUA_USELH
+#include "frame.lh"
 #else
   iuplua_dofile(L, "frame.lua");
 #endif

@@ -28,8 +28,8 @@ int iupcolordlglua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "colordlg.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "colordlg.lzh"
+#ifdef IUPLUA_USELH
+#include "colordlg.lh"
 #else
   iuplua_dofile(L, "colordlg.lua");
 #endif

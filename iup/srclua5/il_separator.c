@@ -28,8 +28,8 @@ int iupseparatorlua_open(lua_State * L)
 #ifdef IUPLUA_USELOH
 #include "separator.loh"
 #else
-#ifdef IUPLUA_USELZH
-#include "separator.lzh"
+#ifdef IUPLUA_USELH
+#include "separator.lh"
 #else
   iuplua_dofile(L, "separator.lua");
 #endif
