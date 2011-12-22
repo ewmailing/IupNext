@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\srclua5\lh;..\..\lua52\include"
-				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELH,_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;_DEBUG;IUPLUA_USELH;_CRT_SECURE_NO_DEPRECATE;LUA_COMPAT_MODULE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
@@ -155,14 +155,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\iuplua_getcolor.c"
-					>
-				</File>
-				<File
-					RelativePath="..\srclua5\iuplua_getparam.c"
-					>
-				</File>
-				<File
 					RelativePath="..\srclua5\il_hbox.c"
 					>
 				</File>
@@ -219,10 +211,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\iuplua_scanf.c"
-					>
-				</File>
-				<File
 					RelativePath="..\srclua5\il_separator.c"
 					>
 				</File>
@@ -263,10 +251,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\srclua5\iuplua_tree_aux.c"
-					>
-				</File>
-				<File
 					RelativePath="..\srclua5\il_user.c"
 					>
 				</File>
@@ -280,6 +264,22 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\il_zbox.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\iuplua_getcolor.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\iuplua_getparam.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\iuplua_scanf.c"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\iuplua_tree_aux.c"
 					>
 				</File>
 			</Filter>

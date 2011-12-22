@@ -259,14 +259,14 @@ static int il_destroy_cb(Ihandle* ih)
 
     /* removes the ihandle reference in the lua table */
     /* object.handle = nil */
-    lua_getref(L, ref);  /* push object */
+    lua_rawgeti(L, LUA_REGISTRYINDEX, ref);  /* push object */
     lua_pushstring(L, "handle");
     lua_pushnil(L);
     lua_settable(L, -3);
     lua_pop(L,1);
 
     /* removes the association of the ihandle with the lua table */
-    lua_unref(L, ref);  /* this is the complement of SetWidget */
+    luaL_unref(L, LUA_REGISTRYINDEX, ref);  /* this is the complement of SetWidget */
     IupSetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", NULL);
     IupSetCallback(ih, "LDESTROY_CB", NULL);
   }
@@ -598,7 +598,7 @@ static int GetWidget(lua_State *L)
   if (!sref)
     lua_pushnil(L);
   else
-    lua_getref(L, atoi(sref));
+    lua_rawgeti(L, LUA_REGISTRYINDEX, atoi(sref));
   return 1;
 }
 
@@ -612,7 +612,7 @@ static int SetWidget(lua_State *L)
   char* sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
   if (!sref)
   {
-    int ref = lua_ref(L, 1);
+    int ref = luaL_ref(L, LUA_REGISTRYINDEX);
     IupSetfAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", "%d", ref);  /* this must be a non-inheritable attribute */
     IupSetCallback(ih, "LDESTROY_CB", il_destroy_cb);
   }
@@ -839,7 +839,7 @@ int iuplua_open(lua_State * L)
 {
   int ret;
 
-  struct luaL_reg funcs[] = {
+  struct luaL_Reg funcs[] = {
     {"key_open", iupkey_open},
     {"Open", il_open},
     {"Close", iuplua_close},

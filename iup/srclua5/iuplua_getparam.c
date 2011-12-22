@@ -36,7 +36,7 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
   if (gp->has_func)
   {
     lua_State *L = gp->L;
-    lua_getref(L, gp->func_ref);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, gp->func_ref);
     iuplua_plugstate(L, dialog);
     iuplua_pushihandle(L, dialog);
     lua_pushinteger(L, param_index);
@@ -129,7 +129,7 @@ static int GetParam(lua_State *L)
   if (lua_isfunction(L, 2))
   {
     lua_pushvalue(L, 2);
-    gp.func_ref = lua_ref(L, 1);
+    gp.func_ref = luaL_ref(L, LUA_REGISTRYINDEX);
     gp.has_func = 1;
   }
 
@@ -170,7 +170,7 @@ static int GetParam(lua_State *L)
   }
 
   if (gp.has_func)
-    lua_unref(L, gp.func_ref);
+    luaL_unref(L, LUA_REGISTRYINDEX, gp.func_ref);
 
   if (ret)
     return param_count+1;

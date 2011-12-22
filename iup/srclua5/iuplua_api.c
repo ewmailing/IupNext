@@ -959,7 +959,7 @@ static int UnMapFont (lua_State *L)
 
 void iupluaapi_open(lua_State * L)
 {
-  struct luaL_reg funcs[] = {
+  struct luaL_Reg funcs[] = {
     {"Append", Append},
     {"Insert", Insert},
     {"Reparent", Reparent},
