@@ -8,21 +8,27 @@ ifdef DBG
   DEFINES += IUP_ASSERT
 endif  
 
-FTGL_INC = $(CD)/src/ftgl
-FTGL_LIB = $(CD)/lib/$(TEC_UNAME)
-FREETYPE_INC = $(CD)/src/freetype2
-
-INCLUDES = ../include ../src . $(FTGL_INC) $(FREETYPE_INC)
-LDIR = ../lib/$(TEC_UNAME) $(FTGL_LIB)
-LIBS = iup iupgl ftgl
+INCLUDES = ../include ../src . ../srcmglplot/ftgl ../srcmglplot/freetype
+LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
+LIBS = freetype
+DEFINES += FTGL_LIBRARY_STATIC
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  ifeq ($(findstring dll, $(TEC_UNAME)), )
-    DEFINES += FTGL_LIBRARY_STATIC
-  endif
+  LIBS = freetype6
 endif
 
-DEFINES = NO_PNG NO_GSL
+ifneq ($(findstring cygw, $(TEC_UNAME)), )
+  LIBS = freetype-6
+endif
+
+LIBS := iup iupgl $(LIBS)
+
+SRCFTGL = ftgl/FTGlyph/FTGlyph.cpp ftgl/FTFont/FTFont.cpp \
+    ftgl/FTCharmap.cpp ftgl/FTContour.cpp ftgl/FTFace.cpp \
+    ftgl/FTGlyphContainer.cpp ftgl/FTLibrary.cpp \
+    ftgl/FTPoint.cpp ftgl/FTSize.cpp ftgl/FTVectoriser.cpp
+
+DEFINES += NO_PNG NO_GSL
 
 SRCMGLPLOT = mgl_1d.cpp mgl_crust.cpp mgl_evalc.cpp \
   mgl_2d.cpp mgl_data.cpp mgl_evalp.cpp mgl_main.cpp \
@@ -34,7 +40,7 @@ SRCMGLPLOT = mgl_1d.cpp mgl_crust.cpp mgl_evalc.cpp \
   mgl_cont.cpp mgl_eval.cpp mgl_gl.cpp mgl_zb2.cpp
 SRCMGLPLOT := $(addprefix mgl/, $(SRCMGLPLOT))
 
-SRC = iup_mglplot.cpp mgl_makefont.cpp $(SRCMGLPLOT)
+SRC = iup_mglplot.cpp mgl_makefont.cpp $(SRCMGLPLOT) $(SRCFTGL)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   ifdef USE_MACOS_OPENGL
