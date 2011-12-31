@@ -19,11 +19,11 @@ extern "C" {
 
 
 #define IUP_NAME "IUP - Portable User Interface"
-#define IUP_COPYRIGHT  "Copyright (C) 1994-2011 Tecgraf, PUC-Rio."
+#define IUP_COPYRIGHT  "Copyright (C) 1994-2012 Tecgraf, PUC-Rio."
 #define IUP_DESCRIPTION	"Multi-platform toolkit for building graphical user interfaces."
-#define IUP_VERSION "3.5"         /* bug fixes are reported only by IupVersion functions */
-#define IUP_VERSION_NUMBER 305000
-#define IUP_VERSION_DATE "2011/04/26"  /* does not include bug fix releases */
+#define IUP_VERSION "3.6"         /* bug fixes are reported only by IupVersion functions */
+#define IUP_VERSION_NUMBER 306000
+#define IUP_VERSION_DATE "2012/01/XX"  /* does not include bug fix releases */
 
 typedef struct Ihandle_ Ihandle;
 typedef int (*Icallback)(Ihandle*);
@@ -383,7 +383,7 @@ int IupMain (int argc, char** argv); /* In C++ we have to declare the prototype 
 #endif
 
 /******************************************************************************
-* Copyright (C) 1994-2011 Tecgraf, PUC-Rio.
+* Copyright (C) 1994-2012 Tecgraf, PUC-Rio.
 *
 * Permission is hereby granted, free of charge, to any person obtaining
 * a copy of this software and associated documentation files (the

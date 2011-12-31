@@ -691,7 +691,7 @@ endif
 
 ifeq "$(TEC_UNAME)" "mingw4_64"
   COMPILER = $(MINGW4_64)
-  OLD_OPENGL = Yes
+#  OLD_OPENGL = Yes
   BUILD64 = Yes
 endif
 
@@ -709,7 +709,7 @@ endif
 ifeq "$(TEC_UNAME)" "dllw4_64"
   COMPILER = $(MINGW4_64)
   TEC_CC = gcc
-  OLD_OPENGL = Yes
+#  OLD_OPENGL = Yes
   BUILD64 = Yes
 endif
 
