@@ -3,6 +3,7 @@ LIBNAME  = iup_mglplot
 OPT = YES
 
 USE_OPENGL = Yes
+USE_MACOS_OPENGL = Yes
 
 ifdef DBG
   DEFINES += IUP_ASSERT

@@ -11,6 +11,7 @@ USE_BIN2C_LUA = Yes
 # Can not use USE_IUPLUA because Tecmake will include "iupluagl51" in linker
 USE_IUP3 = Yes
 USE_OPENGL = Yes
+USE_MACOS_OPENGL = Yes
 
 DEF_FILE = iupluagl.def
 

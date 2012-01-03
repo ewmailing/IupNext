@@ -11,6 +11,7 @@ LDIR = ../lib/$(TEC_UNAME)
 LIBS = iup
 
 USE_OPENGL = Yes
+USE_MACOS_OPENGL = Yes
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC = iup_glcanvas_win.c
