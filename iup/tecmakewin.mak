@@ -438,7 +438,7 @@ ifeq "$(COMPILER)" "$(VC10)"
   TEC_CC = vc
   STDDEFS += -DMSVC10
   ifdef USE_DLL
-    GEN_MANIFEST ?= Yes
+#    GEN_MANIFEST ?= Yes
   else
     #there is no single thread RTL in VC10
     USE_MT = Yes
@@ -1008,8 +1008,22 @@ ifdef USE_CD
   INCLUDES += $(CD_INC)
 endif
 
+ifndef ZLIB
+  ZLIB = zlib1
+  
+  ifneq ($(findstring gcc, $(TEC_UNAME)), )
+    ZLIB = z
+  endif
+  ifneq ($(findstring mingw, $(TEC_UNAME)), )
+    ZLIB = z
+  endif
+  ifneq ($(findstring cygw, $(TEC_UNAME)), )
+    ZLIB = z
+  endif
+endif
+
 ifdef USE_IM
-  LIBS += im
+  LIBS += im $(ZLIB)
   
   IM_LIB ?= $(IM)/lib/$(TEC_UNAME)
   LDIR += $(IM_LIB)

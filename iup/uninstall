@@ -14,8 +14,7 @@ echo ' '
 
 Remove_Lua_Links()
 {
-  LUA_LIB=$TEC_SYSTEM_LIB/lua/5.1
-  rm -fv $LUA_LIB/$1lua*.so
+  rm -fv $TEC_LUA_LIB/$1lua*.so
 }
 
 Remove_Extra_CD()

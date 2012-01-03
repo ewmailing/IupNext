@@ -943,10 +943,11 @@ endif
 
 ifdef USE_IM
   IM_LIB ?= $(IM)/lib/$(TEC_UNAME_LIB_DIR)
+  
   ifdef USE_STATIC
-    SLIB += $(IM_LIB)/libim.a
+    SLIB += $(IM_LIB)/libim.a $(IM_LIB)/libz.a
   else
-    LIBS += im
+    LIBS += im z
     LDIR += $(IM_LIB)
   endif
 

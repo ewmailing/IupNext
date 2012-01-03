@@ -144,7 +144,7 @@ ComputeSystemPaths()
 
   TEC_SYSTEM_INC=/usr/include
   
-  TEC_LUA_LIB=$TEC_SYSTEM_LIB/lua/5.1
+  TEC_LUA_LIB=$TEC_SYSTEM_LIB/lua/$LUA_VER
 }
 
 PrintInfo()
