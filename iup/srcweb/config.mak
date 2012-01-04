@@ -15,9 +15,15 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 else
   ifdef GTK_DEFAULT
     SRC  += iupgtk_webbrowser.c
-    LIBS += webkit-1.0
     USE_GTK = Yes
-    INCLUDES += ../src/gtk $(GTK)/include/webkit-1.0 $(GTK)/include/libsoup-2.4
+    INCLUDES += ../src/gtk
+    INCLUDES += $(GTK)/include/webkit-1.0 $(GTK)/include/libsoup-2.4
+    
+    ifneq ($(findstring Linux3, $(TEC_UNAME)), )
+      LIBS += webkitgtk-1.0
+    else
+      LIBS += webkit-1.0
+    endif
   else
 #    SRC = iupmot_webbrowser.c
 #    LIBS += XmHTML
