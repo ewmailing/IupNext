@@ -78,6 +78,10 @@ least the
 <b>cd</b>.</p>
 <p>Other controls are available in secondary libraries, they also may have other 
 external dependencies, check the documentation of the control.</p>
+<p>If you are using IUP libraries in Windows DLLs or in Posix SOs dynamic 
+libraries, then it is not necessary to worry about secondary dependencies, only 
+specify the libraries you directly use. If you link to the static libraries then 
+you must include all the secondary dependencies.</p>
 <p>To use the Lua Binding, you need to link the program with the <b>iuplua</b> 
 library and with the <b>lua </b>library. The other secondary libraries also have 
 their Lua binding libraries that must be linked to use the control in Lua.</p>
@@ -85,10 +89,10 @@ their Lua binding libraries that must be linked to use the control in Lua.</p>
 Tecgraf/PUC-Rio Library Download Tips</a> 
   document, with a description of all the available binaries.</p>
 <h4>Windows</h4>
-<p>In Windows, you must link also with the libraries 
+<p>In Windows, if you statically link the application with IUP you must link also with the libraries 
   <b>ole32.lib</b>
   and <b>comctl32.lib</b> (provided with the compilers). The <b>iup.rc</b> 
-resource file must be included in the application's project/makefile so that 
+resource file (or a custom version) should be included in the application's project/makefile so that 
 some icons and cursors can be used when not using the DLLs and to enable Windows 
 Visual Styles. <b>iup.rc</b> is located in &quot;/etc&quot; folder of the distribution.</p>
 <p>There is also guides for using some IDEs: <a href="ide_guide/cppbx.html">C++ 
@@ -105,7 +109,7 @@ example:</p>
 <pre>-liup -lgdi32 -lcomdlg32 -lcomctl32 -lole32</pre>
 <h4>Motif</h4>
 <p>In Motif, IUP uses the Motif (Xm), the Xtoolkit (Xt) and the Xlib (X11) 
-libraries. To link an application to IUP, use the following options in the 
+libraries. To statically link an application with IUP, use the following options in the 
 linker call (in the same order): </p>
 <pre>-liup -lXm -lXmu -lXt -lX11 -lm</pre>
 <p>Though these are the minimum requirements, depending on the platform other 
