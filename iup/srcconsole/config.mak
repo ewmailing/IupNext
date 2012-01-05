@@ -8,7 +8,7 @@ OPT = YES
 LINKER = $(CPPC)
 
 NO_LUAOBJECT = Yes
-USE_BIN2C_LUA=Yes
+USE_BIN2C_LUA = Yes
 
 ifdef USE_LUA52
   LUASFX = 52
@@ -150,11 +150,11 @@ else
     GEN_MANIFEST = No
   else
     # In UNIX Lua is always statically linked, late binding is used.
-    # Except in Cygwin and MacOSX
+    USE_STATIC = Yes
+    
+    # Except in Cygwin
     ifeq ($(findstring cygw, $(TEC_UNAME)), )
-      ifeq ($(findstring MacOS, $(TEC_UNAME)), )
-        USE_STATIC = Yes
-      endif
+      USE_STATIC:=
     endif
   endif
 endif
