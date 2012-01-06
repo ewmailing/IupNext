@@ -307,7 +307,7 @@ static int iListSetRemoveItemAttrib(Ihandle* ih, const char* value)
 {
   if (!ih->handle)  /* do not do the action before map */
     return 0;
-  if (!value)
+  if (!value || iupStrEqualNoCase(value, "ALL"))
   {
     iupdrvListRemoveAllItems(ih);
     iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", NULL);
