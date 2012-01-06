@@ -30,6 +30,9 @@
 #define IUP_MAX_FILENAME_SIZE 65000
 #define IUP_PREVIEWCANVAS 3000
 
+#define IUP_EDIT        0x0480
+
+
 enum {IUP_DIALOGOPEN, IUP_DIALOGSAVE, IUP_DIALOGDIR};
 
 
@@ -144,6 +147,93 @@ static int winFileDlgGetSelectedFile(Ihandle* ih, HWND hWnd, char* filename)
   return 1;
 }
 
+static int winFileDlgWmNotify(HWND hWnd, LPOFNOTIFY pofn)
+{
+  Ihandle* ih = (Ihandle*)pofn->lpOFN->lCustData;
+  switch (pofn->hdr.code)
+  {
+  case CDN_INITDONE:
+    {
+      HWND hWndPreview;
+
+      IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
+      if (cb) cb(ih, NULL, "INIT");
+
+      hWndPreview = GetDlgItem(hWnd, IUP_PREVIEWCANVAS);
+      if (hWndPreview) 
+        RedrawWindow(hWndPreview, NULL, NULL, RDW_INVALIDATE|RDW_UPDATENOW);
+      break;
+    }
+  case CDN_FILEOK:
+  case CDN_SELCHANGE:
+    {
+      HWND hWndPreview;
+
+      IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
+      if (cb)
+      {
+        char filename[IUP_MAX_FILENAME_SIZE];
+        if (winFileDlgGetSelectedFile(ih, hWnd, filename))
+        {
+          int ret;
+          char* file_msg;
+
+          if (!iupdrvIsFile(filename))
+            file_msg = "OTHER";
+          else if (pofn->hdr.code == CDN_FILEOK)
+            file_msg = "OK";
+          else 
+            file_msg = "SELECT";
+
+          ret = cb(ih, filename, file_msg);
+          if (pofn->hdr.code == CDN_FILEOK && ret == IUP_IGNORE) 
+          {
+            SetWindowLongPtr(hWnd, DWLP_MSGRESULT, 1L);
+            return 1; /* will refuse the file */
+          }
+        }
+      }
+
+      hWndPreview = GetDlgItem(hWnd, IUP_PREVIEWCANVAS);
+      if (pofn->hdr.code == CDN_SELCHANGE && hWndPreview) 
+        RedrawWindow(hWndPreview, NULL, NULL, RDW_INVALIDATE|RDW_UPDATENOW);
+      break;
+    }
+  case CDN_TYPECHANGE:
+    {
+      IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
+      if (cb)
+      {
+        char filename[IUP_MAX_FILENAME_SIZE];
+        if (winFileDlgGetSelectedFile(ih, hWnd, filename))
+        {
+          iupAttribSetInt(ih, "FILTERUSED", (int)pofn->lpOFN->nFilterIndex);
+          if (cb(ih, filename, "FILTER") == IUP_CONTINUE)
+          {
+            char* value = iupAttribGet(ih, "FILE");
+            if (value)
+            {
+              strncpy(filename, value, IUP_MAX_FILENAME_SIZE);
+              winFileDlgStrReplacePathSlash(filename);
+              SendMessage(GetParent(hWnd), CDM_SETCONTROLTEXT, (WPARAM)IUP_EDIT, (LPARAM)filename);
+            }
+          }
+        }
+      }
+      break;
+    }
+  case CDN_HELP:
+    {
+      Icallback cb = (Icallback) IupGetCallback(ih, "HELP_CB");
+      if (cb && cb(ih) == IUP_CLOSE) 
+        EndDialog(GetParent(hWnd), IDCANCEL);
+      break;
+    }
+  }
+
+  return 0;
+}
+
 static UINT_PTR CALLBACK winFileDlgSimpleHook(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
   (void)wParam;
@@ -167,56 +257,7 @@ static UINT_PTR CALLBACK winFileDlgSimpleHook(HWND hWnd, UINT uiMsg, WPARAM wPar
       break;
     }
   case WM_NOTIFY:
-    {
-      LPOFNOTIFY pofn = (LPOFNOTIFY)lParam;
-      Ihandle* ih = (Ihandle*)pofn->lpOFN->lCustData;
-      switch (pofn->hdr.code)
-      {
-      case CDN_INITDONE:
-        {
-          IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-          if (cb) cb(ih, NULL, "INIT");
-          break;
-        }
-      case CDN_FILEOK:
-      case CDN_SELCHANGE:
-        {
-          IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-          if (cb)
-          {
-            char filename[IUP_MAX_FILENAME_SIZE];
-            if (winFileDlgGetSelectedFile(ih, hWnd, filename))
-            {
-              int ret;
-              char* file_msg;
-
-              if (!iupdrvIsFile(filename))
-                file_msg = "OTHER";
-              else if (pofn->hdr.code == CDN_FILEOK)
-                file_msg = "OK";
-              else 
-                file_msg = "SELECT";
-
-              ret = cb(ih, filename, file_msg);
-              if (pofn->hdr.code == CDN_FILEOK && ret == IUP_IGNORE) 
-              {
-                SetWindowLongPtr(hWnd, DWLP_MSGRESULT, 1L);
-                return 1; /* will refuse the file */
-              }
-            }
-          }
-          break;
-        }
-      case CDN_HELP:
-        {
-          Icallback cb = (Icallback) IupGetCallback(ih, "HELP_CB");
-          if (cb && cb(ih) == IUP_CLOSE) 
-            EndDialog(GetParent(hWnd), IDCANCEL);
-          break;
-        }
-      }
-      break;
-    }
+    return winFileDlgWmNotify(hWnd, (LPOFNOTIFY)lParam);
   }
   return 0;
 }
@@ -340,58 +381,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
       break;
     }
   case WM_NOTIFY:
-    {
-      LPOFNOTIFY pofn = (LPOFNOTIFY)lParam;
-      Ihandle* ih = (Ihandle*)pofn->lpOFN->lCustData;
-      /* callback here always exists */
-      IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-      switch (pofn->hdr.code)
-      {
-      case CDN_INITDONE:
-        {
-          HWND hWndPreview = GetDlgItem(hWnd, IUP_PREVIEWCANVAS);
-          cb(ih, NULL, "INIT");
-          if (hWndPreview) RedrawWindow(hWndPreview, NULL, NULL, RDW_INVALIDATE|RDW_UPDATENOW);
-          break;
-        }
-      case CDN_FILEOK:
-      case CDN_SELCHANGE:
-        {
-          HWND hWndPreview = GetDlgItem(hWnd, IUP_PREVIEWCANVAS);
-          char filename[IUP_MAX_FILENAME_SIZE];
-          if (winFileDlgGetSelectedFile(ih, hWnd, filename))
-          {
-            int ret;
-            char* file_msg;
-
-            if (!iupdrvIsFile(filename))
-              file_msg = "OTHER";
-            else if (pofn->hdr.code == CDN_FILEOK)
-              file_msg = "OK";
-            else
-              file_msg = "SELECT";
-
-            ret = cb(ih, filename, file_msg);
-            if (pofn->hdr.code == CDN_FILEOK && ret == IUP_IGNORE) 
-            {
-              SetWindowLongPtr(hWnd, DWLP_MSGRESULT, 1L);
-              return 1; /* will refuse the file */
-            }
-          }
-          if (pofn->hdr.code == CDN_SELCHANGE && hWndPreview) 
-            RedrawWindow(hWndPreview, NULL, NULL, RDW_INVALIDATE|RDW_UPDATENOW);
-          break;
-        }
-      case CDN_HELP:
-        {
-          Icallback cb = (Icallback) IupGetCallback(ih, "HELP_CB");
-          if (cb && cb(ih) == IUP_CLOSE) 
-            EndDialog(GetParent(hWnd), IDCANCEL);
-          break;
-        }
-      }
-      break;
-    }
+      return winFileDlgWmNotify(hWnd, (LPOFNOTIFY)lParam);
   }
   return 0;
 }

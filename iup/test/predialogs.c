@@ -146,6 +146,12 @@ static int file_cb(Ihandle* ih, const char* filename, const char* status)
     drawTest(ih);
 #endif
   }
+  else if (strcmp(status, "FILTER")==0)
+  {
+    //IupSetAttribute(ih, "FILE", "test");
+    //return IUP_CONTINUE; 
+  }
+
   return IUP_DEFAULT; 
 }
 
