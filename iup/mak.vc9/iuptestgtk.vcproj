@@ -69,7 +69,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="comctl32.lib ole32.lib opengl32.lib glu32.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib pango-1.0.lib pangowin32-1.0.lib gobject-2.0.lib gmodule-2.0.lib glib-2.0.lib iupgtk.lib iupgl.lib iupcontrols.lib iupimglib.lib iup_pplot.lib iup_mglplot.lib cdgdk.lib ftgl.lib freetype6.lib iupcd.lib"
+				AdditionalDependencies="comctl32.lib ole32.lib opengl32.lib glu32.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib pango-1.0.lib pangowin32-1.0.lib gobject-2.0.lib gmodule-2.0.lib glib-2.0.lib iupgtk.lib iupgl.lib iupcontrols.lib iupimglib.lib iup_pplot.lib iup_mglplot.lib cdgdk.lib ftgl.lib freetype6.lib zlib1.lib iupcd.lib"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib;d:\lng\gtk\lib;..\..\cd\lib;D:\LNG\vld\lib"
