@@ -267,7 +267,7 @@ static void new_dialog(int test, char* tip)
   }
   else
   {
-    IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
+//    IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
     IupSetAttribute(dlg, "CURSOR", "CROSS");
   }
 
@@ -320,10 +320,10 @@ static void new_dialog(int test, char* tip)
   {
     IupSetAttribute(dlg, "BGCOLOR", "255 0 255");
     IupSetAttribute(dlg, "RESIZE", "NO");
-//    IupSetAttribute(dlg, "MENUBOX", "NO");
-    //IupSetAttribute(dlg, "MAXBOX", "NO");
-//    IupSetAttribute(dlg, "MINBOX", "NO");
-//    IupSetAttribute(dlg, "BORDER", "NO");
+    IupSetAttribute(dlg, "MENUBOX", "NO");
+    IupSetAttribute(dlg, "MAXBOX", "NO");
+    IupSetAttribute(dlg, "MINBOX", "NO");
+    IupSetAttribute(dlg, "BORDER", "NO");
 
     IupSetAttribute(dlg, "RASTERSIZE", "500x500");
   }
