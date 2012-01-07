@@ -370,11 +370,10 @@ void* iupdrvImageLoad(const char* name, int type)
 #endif
   else
   {
-    GtkIconTheme *icon_theme;
     GdkPixbuf *pixbuf = NULL;
 
-    icon_theme = gtk_icon_theme_get_default();
-    if (gtk_icon_theme_has_icon(icon_theme, name))
+    GtkIconTheme* icon_theme = gtk_icon_theme_get_default();
+    if (icon_theme)
     {
       GError *error = NULL;
       pixbuf = gtk_icon_theme_load_icon(icon_theme, name,
@@ -383,6 +382,18 @@ void* iupdrvImageLoad(const char* name, int type)
                                         &error);
       if (error)
         g_error_free(error);
+    }
+
+    if (!pixbuf)
+    {
+      GtkIconSet* icon_set = gtk_icon_factory_lookup_default(name);
+      if (icon_set)
+      {
+        GtkStyle* style = gtk_style_new();
+        pixbuf = gtk_icon_set_render_icon(icon_set, style, GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL,
+                                          GTK_ICON_SIZE_LARGE_TOOLBAR, NULL, NULL);
+        g_object_unref(style);
+      }
     }
 
     if (!pixbuf)
