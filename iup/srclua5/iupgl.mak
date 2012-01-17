@@ -46,7 +46,7 @@ $(GC) : il_%.c : %.lua generator.lua
 SRC	= iuplua_glcanvas.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
-  LIBS:=
+  LIBS:=iupgl
   ifdef USE_MACOS_OPENGL
     LFLAGS = -framework OpenGL
     USE_OPENGL :=
