@@ -182,7 +182,7 @@ libraries. To just run Lua scripts they are not necessary.</p>
 <p>If you <strong>don't</strong> want to copy the run time libraries to your system 
 directory, you can use them from build directory. You will need to add the run time 
 libraries folders to 
-the LD_LIBRARY_PATH, for example:</p>
+the LD_LIBRARY_PATH (DYLD_LIBRARY_PATH in MacOSX), for example:</p>
 <pre>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/xxxx/im/lib/Linux26g4:/xxxx/cd/lib/Linux26g4:/xxxx/iup/lib/Linux26g4</pre>
 <p>And in your makefile will will also need to specify those paths 
 when linking using -L/xxxx/iup/lib/Linux26g4, and for compiling use 

@@ -4,6 +4,7 @@ APPTYPE = CONSOLE
 
 STRIP = 
 OPT = YES      
+NO_SCRIPTS = Yes
 # IM and IupPPlot uses C++
 LINKER = $(CPPC)
 
@@ -153,7 +154,7 @@ else
     USE_STATIC = Yes
     
     # Except in Cygwin
-    ifeq ($(findstring cygw, $(TEC_UNAME)), )
+    ifneq ($(findstring cygw, $(TEC_UNAME)), )
       USE_STATIC:=
     endif
   endif

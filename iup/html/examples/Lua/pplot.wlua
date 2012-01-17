@@ -1,3 +1,6 @@
+require( "iuplua" )
+require( "iuplua_pplot" )
+
 plot = iup.pplot{
   TITLE = "Simple Line",
   MARGINBOTTOM="65",
@@ -15,3 +18,7 @@ iup.PPlotEnd(plot)
 
 d = iup.dialog{plot, size="200x100", title="PPlot"}
 d:show()
+
+if (iup.MainLoopLevel()==0) then
+  iup.MainLoop()
+end
