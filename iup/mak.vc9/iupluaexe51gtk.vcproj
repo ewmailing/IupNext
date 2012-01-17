@@ -70,7 +70,7 @@
 				OutputFile="$(OutDir)/iuplua51gtk.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\im\lib;d:\lng\gtk\lib;..\..\cd\lib;..\lib;..\..\lua5.1\lib\vc9"
+				AdditionalLibraryDirectories="..\..\im\lib;d:\lng\gtk2\lib;..\..\cd\lib;..\lib;..\..\lua5.1\lib\vc9"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="1"

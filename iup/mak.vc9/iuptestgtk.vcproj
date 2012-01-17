@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;&quot;d:\lng\gtk\include\atk-1.0&quot;;d:\lng\gtk\include\cairo;&quot;d:\lng\gtk\include\glib-2.0&quot;;&quot;d:\lng\gtk\include\gtk-2.0&quot;;&quot;d:\lng\gtk\include\gdk-pixbuf-2.0&quot;;&quot;d:\lng\gtk\include\pango-1.0&quot;;&quot;d:\lng\gtk\lib\gtk-2.0\include&quot;;&quot;d:\lng\gtk\lib\glib-2.0\include&quot;;..\..\cd\include;D:\LNG\vld\include"
+				AdditionalIncludeDirectories="..\include;&quot;d:\lng\gtk2\include\atk-1.0&quot;;d:\lng\gtk2\include\cairo;&quot;d:\lng\gtk2\include\glib-2.0&quot;;&quot;d:\lng\gtk2\include\gtk-2.0&quot;;&quot;d:\lng\gtk2\include\gdk-pixbuf-2.0&quot;;&quot;d:\lng\gtk2\include\pango-1.0&quot;;&quot;d:\lng\gtk2\lib\gtk-2.0\include&quot;;&quot;d:\lng\gtk2\lib\glib-2.0\include&quot;;..\..\cd\include;d:\lng\vld\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BIG_TEST;USE_OPENGL;PPLOT_TEST;MGLPLOT_TEST;USE_GDK"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
@@ -72,7 +72,7 @@
 				AdditionalDependencies="comctl32.lib ole32.lib opengl32.lib glu32.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib pango-1.0.lib pangowin32-1.0.lib gobject-2.0.lib gmodule-2.0.lib glib-2.0.lib iupgtk.lib iupgl.lib iupcontrols.lib iupimglib.lib iup_pplot.lib iup_mglplot.lib cdgdk.lib ftgl.lib freetype6.lib zlib1.lib iupcd.lib"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\lib;d:\lng\gtk\lib;..\..\cd\lib;D:\LNG\vld\lib"
+				AdditionalLibraryDirectories="..\lib;d:\lng\gtk2\lib;..\..\cd\lib;d:\lng\vld\lib"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
