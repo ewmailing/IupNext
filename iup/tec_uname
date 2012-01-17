@@ -123,9 +123,13 @@ ComputeTecUname()
     if [ $TEC_SYSMINOR == 6 ]; then
       TEC_SYSARCH=x64
     else
+    if [ $TEC_SYSMINOR == 7 ]; then
+      TEC_SYSARCH=x64
+    else
       if [ $TEC_SYSARCH == x86 ]; then
         TEC_UNAME=$TEC_UNAME'x86'
       fi
+    fi
     fi
   fi
 }

@@ -999,7 +999,7 @@ ifdef USE_CD
     LIBS += cd
   endif
   
-  LIBS += freetype6
+  LINK_FREETYPE = Yes
   
   CD_LIB ?= $(CD)/lib/$(TEC_UNAME)
   LDIR += $(CD_LIB)
@@ -1008,28 +1008,44 @@ ifdef USE_CD
   INCLUDES += $(CD_INC)
 endif
 
-ifndef ZLIB
-  ZLIB = zlib1
+ifdef LINK_FREETYPE
+  LIBS += freetype6
   
-  ifneq ($(findstring gcc, $(TEC_UNAME)), )
-    ZLIB = z
-  endif
-  ifneq ($(findstring mingw, $(TEC_UNAME)), )
-    ZLIB = z
-  endif
-  ifneq ($(findstring cygw, $(TEC_UNAME)), )
-    ZLIB = z
+  ifndef NO_ZLIB
+    LINK_ZLIB = Yes
   endif
 endif
 
 ifdef USE_IM
-  LIBS += im $(ZLIB)
+  LIBS += im
+  
+  ifndef NO_ZLIB
+    LINK_ZLIB = Yes
+  endif
   
   IM_LIB ?= $(IM)/lib/$(TEC_UNAME)
   LDIR += $(IM_LIB)
 
   IM_INC ?= $(IM)/include
   INCLUDES += $(IM_INC)
+endif
+
+ifdef LINK_ZLIB
+  ifndef ZLIB
+    ZLIB = zlib1
+    
+    ifneq ($(findstring gcc, $(TEC_UNAME)), )
+      ZLIB = z
+    endif
+    ifneq ($(findstring mingw, $(TEC_UNAME)), )
+      ZLIB = z
+    endif
+    ifneq ($(findstring cygw, $(TEC_UNAME)), )
+      ZLIB = z
+    endif
+  endif
+
+  LIBS += $(ZLIB)
 endif
 
 ifdef USE_OPENGL
@@ -1470,7 +1486,7 @@ clean-all: clean-extra clean-lohs clean-lhs clean-all-target clean-all-obj
 
 #   Rebuild target and object files
 .PHONY: rebuild
-rebuild: clean-extra clean-lohs clean-lhs clean-obj clean-target tecmake
+rebuild: clean-obj clean-target tecmake
 
 #   Rebuild target without rebuilding object files
 .PHONY: relink

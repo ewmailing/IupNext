@@ -133,9 +133,13 @@ ifndef TEC_UNAME
     ifeq ($(TEC_SYSMINOR), 6)
       TEC_SYSARCH:=x64
     else
+    ifeq ($(TEC_SYSMINOR), 7)
+      TEC_SYSARCH:=x64
+    else
       ifeq ($(TEC_SYSARCH), x86)
         TEC_UNAME:=$(TEC_UNAME)x86
       endif
+    endif
     endif
   endif
 endif
@@ -896,19 +900,22 @@ ifdef USE_CD
       SLIB += $(CD_LIB)/libcdcontextplus.a
       LIBS += Xrender Xft
     endif
+    
     ifdef USE_CAIRO
       # To use Cairo with X11 base driver (NOT for GDK)
       # Can NOT be used together with XRender
       SLIB += $(CD_LIB)/libcdcairo.a
       LIBS += pangocairo-1.0 cairo
     endif
+    
     SLIB += $(CD_LIB)/libcd$(CD_SUFFIX).a
+    
+    # Freetype is already included in GTK
     ifndef USE_GTK
-      # Freetype is already included in GTK
-      SLIB += $(CD_LIB)/libfreetype.a
+      LINK_FREETYPE = Yes
     else
       ifneq ($(findstring cygw, $(TEC_UNAME)), )
-        SLIB += $(CD_LIB)/libfreetype-6.a
+        LINK_FREETYPE = Yes
       endif
     endif
   else
@@ -917,22 +924,21 @@ ifdef USE_CD
       LIBS += cdcontextplus
       LIBS += Xrender Xft
     endif
+    
     ifdef USE_CAIRO
       # To use Cairo with X11 base driver (NOT for GDK)
       # Can NOT be used together with XRender
       LIBS += cdcairo
       LIBS += pangocairo-1.0 cairo
     endif
+    
     LIBS += cd$(CD_SUFFIX)
     LDIR += $(CD_LIB)
-    ifndef USE_GTK
-      ifndef NO_OVERRIDE
-        # Freetype is already included in GTK
-        ifneq ($(findstring cygw, $(TEC_UNAME)), )
-          LIBS += freetype-6
-        else
-          LIBS += freetype
-        endif
+    
+    ifndef NO_OVERRIDE
+      # Freetype is already included in GTK
+      ifndef USE_GTK
+        LINK_FREETYPE = Yes
       endif
     endif
   endif
@@ -944,15 +950,55 @@ endif
 ifdef USE_IM
   IM_LIB ?= $(IM)/lib/$(TEC_UNAME_LIB_DIR)
   
+  ifndef NO_ZLIB
+    LINK_ZLIB = Yes
+  endif
+  
   ifdef USE_STATIC
-    SLIB += $(IM_LIB)/libim.a $(IM_LIB)/libz.a
+    SLIB += $(IM_LIB)/libim.a
   else
-    LIBS += im z
+    LIBS += im
     LDIR += $(IM_LIB)
   endif
 
   IM_INC ?= $(IM)/include
   INCLUDES += $(IM_INC)
+endif
+
+ifdef LINK_FREETYPE
+  FREETYPE = freetype
+  ifneq ($(findstring cygw, $(TEC_UNAME)), )
+    FREETYPE = freetype-6
+  endif
+  
+  ifndef NO_ZLIB
+    LINK_ZLIB = Yes
+  endif
+  
+  ifdef USE_STATIC
+    FREETYPE_LIB = $(CD_LIB)
+    SLIB += $(FREETYPE_LIB)/lib$(FREETYPE).a
+  else
+    LIBS += $(FREETYPE)
+  endif
+endif
+
+ifdef LINK_ZLIB
+  ifndef ZLIB
+    ZLIB = z
+  endif
+  
+  ifdef USE_STATIC
+    ifdef USE_IM
+      ZLIB_LIB = $(IM_LIB)
+    else
+      ZLIB_LIB = $(CD_LIB)
+    endif
+    
+    SLIB += $(ZLIB_LIB)/lib$(ZLIB).a
+  else
+    LIBS += $(ZLIB)
+  endif
 endif
 
 ifdef USE_GLUT
@@ -1464,7 +1510,7 @@ strip:
 
 #   Rebuild target and object files
 .PHONY: rebuild
-rebuild: clean-extra clean-lohs clean-lhs clean-obj clean-target tecmake
+rebuild: clean-obj clean-target tecmake
 
 #   Rebuild target without rebuilding object files
 .PHONY: relink
