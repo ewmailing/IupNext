@@ -60,25 +60,25 @@ img_cursor = iup.image{
 }
 
 -- Creates a button and associates image img_x to it
-btn = iup.button{ image = img_x }
+btn = iup.button{ image = img_x, title = "btn" }
 
 -- Creates a label and associates image img_x to it
-lbl = iup.label{ image = img_x }
+lbl = iup.label{ image = img_x, title = "lbl" }
 
 -- Creates toggle and associates image img_x to it
-tgl = iup.toggle{ image = img_x }
+tgl = iup.toggle{ image = img_x, title = "tgl" }
 
 -- Creates two toggles and associates image img_x to them
-tgl_radio_1 = iup.toggle{ image = img_x }
-tgl_radio_2 = iup.toggle{ image = img_x }
+tgl_radio_1 = iup.toggle{ image = img_x, title = "tgl_radio_1" }
+tgl_radio_2 = iup.toggle{ image = img_x, title = "tgl_radio_2" }
 
 -- Creates label showing image size
 lbl_size = iup.label{ title = '"X" image width = '..img_x.width..'; "X" image height = '..img_x.height } 
   
 -- Creates frames around the elements 
-frm_btn = iup.frame{btn; title="button", size="EIGHTHxEIGHTH"}
-frm_lbl = iup.frame{lbl; title="label" , size="EIGHTHxEIGHTH"}
-frm_tgl = iup.frame{tgl; title="toggle", size="EIGHTHxEIGHTH"}
+frm_btn = iup.frame{btn; title="button"}
+frm_lbl = iup.frame{lbl; title="label" }
+frm_tgl = iup.frame{tgl; title="toggle"}
 
 frm_tgl_radio = iup.frame{ 
                             iup.radio{ 

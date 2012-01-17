@@ -431,7 +431,7 @@ static GdkCursor* gtkGetCursor(Ihandle* ih, const char* name)
   };
 
   GdkCursor* cur;
-  char str[50];
+  char str[200];
   int i, count = sizeof(table)/sizeof(table[0]);
 
   /* check the cursor cache first (per control)*/
