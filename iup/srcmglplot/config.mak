@@ -44,6 +44,7 @@ SRCMGLPLOT := $(addprefix mgl/, $(SRCMGLPLOT))
 SRC = iup_mglplot.cpp mgl_makefont.cpp $(SRCMGLPLOT) $(SRCFTGL)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  INCLUDES += $(X11_INC)
   ifdef USE_MACOS_OPENGL
     LFLAGS = -framework OpenGL
     USE_OPENGL :=
