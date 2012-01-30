@@ -49,6 +49,7 @@
 #define WIN_SETCURSEL(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETCURSEL: LB_SETCURSEL)
 #define WIN_GETCURSEL(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_GETCURSEL: LB_GETCURSEL)
 #define WIN_SETHORIZONTALEXTENT(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETHORIZONTALEXTENT: LB_SETHORIZONTALEXTENT)
+#define WIN_GETHORIZONTALEXTENT(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_GETHORIZONTALEXTENT: LB_GETHORIZONTALEXTENT)
 #define WIN_SETITEMDATA(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETITEMDATA: LB_SETITEMDATA)
 #define WIN_GETITEMDATA(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_GETITEMDATA: LB_GETITEMDATA)
 #define WIN_SETTOPINDEX(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETTOPINDEX: LB_SETTOPINDEX)
@@ -70,15 +71,20 @@ static winListItemData* winListGetItemData(Ihandle* ih, int pos)
     return (winListItemData*)ret;
 }
 
-static void winListRemoveItemData(Ihandle* ih, int pos)
+static int winListRemoveItemData(Ihandle* ih, int pos)
 {
   winListItemData* itemdata = winListGetItemData(ih, pos);
   if (itemdata)
   {
+    int text_width = itemdata->text_width;
     free(itemdata);
     SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)NULL);
+    return text_width;
   }
+  return 0;
 }
+
+static void winListUpdateScrollWidthItem(Ihandle* ih, int item_width, int add);
 
 static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hBitmap)
 {
@@ -91,6 +97,7 @@ static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hB
 
   itemdata->hBitmap = hBitmap;
   itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
+  winListUpdateScrollWidthItem(ih, itemdata->text_width, 1);
 }
 
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
@@ -179,23 +186,55 @@ static void winListUpdateScrollWidth(Ihandle* ih)
     SendMessage(ih->handle, WIN_SETHORIZONTALEXTENT(ih), winListGetMaxWidth(ih), 0);
 }
 
+static void winListUpdateScrollWidthItem(Ihandle* ih, int item_width, int add)
+{
+  int max_w;
+
+  if (ih->data->is_dropdown && iupAttribGetBoolean(ih, "DROPEXPAND"))
+  {
+    max_w = (int)SendMessage(ih->handle, CB_GETDROPPEDWIDTH, 0, 0);
+    max_w = max_w -3 -3 -iupdrvGetScrollbarSize();
+  }
+  else
+    max_w = (int)SendMessage(ih->handle, WIN_GETHORIZONTALEXTENT(ih), 0, 0);
+
+  if (add)
+  {
+    if (item_width > max_w)
+    {
+      if (ih->data->is_dropdown && iupAttribGetBoolean(ih, "DROPEXPAND"))
+      {
+        int w = 3+item_width+iupdrvGetScrollbarSize()+3;
+        SendMessage(ih->handle, CB_SETDROPPEDWIDTH, w, 0);
+      }
+      else
+        SendMessage(ih->handle, WIN_SETHORIZONTALEXTENT(ih), item_width, 0);
+    }
+  }
+  else
+  {
+    if (item_width >= max_w)
+      winListUpdateScrollWidth(ih);
+  }
+}
+
 void iupdrvListAppendItem(Ihandle* ih, const char* value)
 {
   int pos = SendMessage(ih->handle, WIN_ADDSTRING(ih), 0, (LPARAM)value);
   winListSetItemData(ih, pos, value, NULL);
-  winListUpdateScrollWidth(ih);
 }
 
 void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
 {
   SendMessage(ih->handle, WIN_INSERTSTRING(ih), pos, (LPARAM)value);
   winListSetItemData(ih, pos, value, NULL);
-  winListUpdateScrollWidth(ih);
   iupListUpdateOldValue(ih, pos, 0);
 }
 
 void iupdrvListRemoveItem(Ihandle* ih, int pos)
 {
+  int text_width;
+
   if (ih->data->is_dropdown && !ih->data->has_editbox)
   {
     /* must check if removing the current item */
@@ -215,9 +254,9 @@ void iupdrvListRemoveItem(Ihandle* ih, int pos)
     }
   }
 
-  winListRemoveItemData(ih, pos);
+  text_width = winListRemoveItemData(ih, pos);
   SendMessage(ih->handle, WIN_DELETESTRING(ih), pos, 0L);
-  winListUpdateScrollWidth(ih);
+  winListUpdateScrollWidthItem(ih, text_width, 0);
 
   iupListUpdateOldValue(ih, pos, 1);
 }

@@ -12,7 +12,7 @@
 #include "cd.h"
 #include "cdiup.h"
 
-#define USE_TUIO
+//#define USE_TUIO
 #ifdef USE_TUIO
 #include "iuptuio.h"
 #endif
@@ -112,6 +112,14 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
   }
   return IUP_DEFAULT;
 }
+#else
+#ifdef WIN32
+int touch_cb(Ihandle *self, int id, int x, int y, char* state)
+{
+  printf("touch_cb(id=%d x=%d y=%d state=%s)\n", id, x, y, state);
+  return IUP_DEFAULT;
+}
+#endif
 #endif
 
 int main(int argc, char **argv)
@@ -138,10 +146,17 @@ int main(int argc, char **argv)
     IupSetCallback(cnvs, "TOUCH_CB",(Icallback)touch_cb);
     IupSetCallback(cnvs, "MULTITOUCH_CB",(Icallback)multitouch_cb);
   }
+#else
+#ifdef WIN32
+  IupSetAttribute(cnvs, "TOUCH", "YES");
+  IupSetCallback(cnvs, "TOUCH_CB",(Icallback)touch_cb);
+//  IupSetCallback(cnvs, "MULTITOUCH_CB",(Icallback)multitouch_cb);
 #endif
-  
+#endif
+
+
   dlg = IupDialog( IupVbox( cnvs, NULL ) );
-  IupSetAttribute( dlg, "TITLE", "IupCanvas + Canvas Draw" );
+  IupSetAttribute(dlg, "TITLE", "IupCanvas + Canvas Draw" );
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupMap( dlg );
   
