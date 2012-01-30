@@ -8,6 +8,7 @@
 /* Includes ANSI C libraries */
 #include <stdlib.h> 
 #include <stdio.h>
+#include <string.h>
 
 /* Includes IUP libraries */
 #include <iup.h>
@@ -171,6 +172,12 @@ int btn_image_button_cb( Ihandle *self,int b, int e )
   return IUP_DEFAULT;
 }
 
+int btn_big_button_cb(Ihandle *self, int button, int press)
+{
+  printf("BUTTON_CB(button=%c, press=%d)\n", button, press);
+  return IUP_DEFAULT;
+}
+
 /******************************************************************************
  * Function:                                                                  *
  * Exit button callback                                                       *
@@ -302,6 +309,10 @@ int main(int argc, char **argv)
   IupSetCallback( btn_exit, "ACTION", (Icallback) btn_exit_cb );
   IupSetCallback( btn_on_off, "ACTION", (Icallback) btn_on_off_cb );     
   IupSetCallback( btn_image, "ACTION", (Icallback) btn_image_button_cb );
+
+  IupSetAttribute(btn_big, "BUTTON_CB", "bigtest");
+  IupSetFunction("bigtest", (Icallback)btn_big_button_cb);
+//  IupSetCallback(btn_big, "BUTTON_CB", (Icallback)btn_big_button_cb);
   
   /* Shows dialog on the center of the screen */
   IupShowXY( dlg, IUP_CENTER, IUP_CENTER );
