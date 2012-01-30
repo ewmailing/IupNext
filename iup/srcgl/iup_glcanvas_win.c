@@ -185,7 +185,13 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
   /* create rendering context */
   if (iupAttribGetBoolean(ih, "ARBCONTEXT"))
   {
-    wglCreateContextAttribsARB_PROC CreateContextAttribsARB = (wglCreateContextAttribsARB_PROC)wglGetProcAddress("wglCreateContextAttribsARB");
+    wglCreateContextAttribsARB_PROC CreateContextAttribsARB;
+    HGLRC tempContext = wglCreateContext(gldata->device);
+    HGLRC oldContext = wglGetCurrentContext();
+    HDC oldDC = wglGetCurrentDC();
+    wglMakeCurrent(gldata->device, tempContext);
+
+    CreateContextAttribsARB = (wglCreateContextAttribsARB_PROC)wglGetProcAddress("wglCreateContextAttribsARB");
     if (CreateContextAttribsARB)
     {
       int attribs[9], a = 0;
@@ -240,7 +246,12 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
 
       CreateContextAttribsARB(gldata->device, shared_context, attribs);
     }
-    else
+
+    wglMakeCurrent(oldDC, oldContext);
+    wglDeleteContext(tempContext);
+
+
+    if (!CreateContextAttribsARB)
     {
       gldata->context = wglCreateContext(gldata->device);
       iupAttribSetStr(ih, "ARBCONTEXT", "NO");
@@ -248,11 +259,13 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
   }
   else
     gldata->context = wglCreateContext(gldata->device);
+
   if (!gldata->context)
   {
     iupAttribSetStr(ih, "ERROR", "Could not create a rendering context.");
     return IUP_NOERROR;
   }
+
   iupAttribSetStr(ih, "CONTEXT", (char*)gldata->context);
 
   if (shared_context)

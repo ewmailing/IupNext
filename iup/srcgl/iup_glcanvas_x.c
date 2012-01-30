@@ -243,6 +243,13 @@ static int xGLCanvasMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "ARBCONTEXT"))
   {
     glXCreateContextAttribsARB_PROC CreateContextAttribsARB = NULL;
+
+    GLXContext tempContext = glXCreateContext(gldata->display, gldata->vinfo, NULL, GL_TRUE);
+    GLXContext oldContext = glXGetCurrentContext();
+    Display* oldDisplay = glXGetCurrentDisplay();
+    GLXDrawable oldDrawable = glXGetCurrentDrawable();
+    glXMakeCurrent(gldata->display, gldata->window, tempContext);
+
     CreateContextAttribsARB = (glXCreateContextAttribsARB_PROC)glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
     if (CreateContextAttribsARB)
     {
@@ -301,7 +308,11 @@ static int xGLCanvasMapMethod(Ihandle* ih)
 
       gldata->context = CreateContextAttribsARB(gldata->display, *config, shared_context, GL_TRUE, attribs);
     }
-    else
+
+    glXMakeCurrent(oldDisplay, oldDrawable, oldContext);
+    glXDestroyContext(gldata->display, tempContext);
+
+    if (!CreateContextAttribsARB)
     {
       gldata->context = glXCreateContext(gldata->display, gldata->vinfo, shared_context, GL_TRUE);
       iupAttribSetStr(ih, "ARBCONTEXT", "NO");
@@ -309,11 +320,13 @@ static int xGLCanvasMapMethod(Ihandle* ih)
   }
   else
     gldata->context = glXCreateContext(gldata->display, gldata->vinfo, shared_context, GL_TRUE);
+
   if (!gldata->context)
   {
     iupAttribSetStr(ih, "ERROR", "Could not create a rendering context");
     return IUP_NOERROR;
   }
+
   iupAttribSetStr(ih, "CONTEXT", (char*)gldata->context);
 
   /* create colormap for index mode */
