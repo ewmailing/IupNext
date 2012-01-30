@@ -715,6 +715,7 @@ static void winDialogRegisterClass(int mdi)
                      dialog class functions
 ****************************************************************/
 
+static void winInitTouch(void);
 
 static int winDialogMapMethod(Ihandle* ih)
 {
@@ -898,6 +899,9 @@ static int winDialogMapMethod(Ihandle* ih)
 
   /* Set the default CmdShow for ShowWindow */
   ih->data->cmd_show = SW_SHOWNORMAL;
+
+  if (iupwinIs7OrNew())
+    winInitTouch();
 
   return IUP_NOERROR;
 }
@@ -1396,6 +1400,44 @@ static int winDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+#ifndef WM_TOUCH
+DECLARE_HANDLE(HTOUCHINPUT);
+#endif
+
+static int win_touch_loaded = 0;
+static BOOL (WINAPI *winRegisterTouchWindow)(HWND hwnd, ULONG ulFlags) = NULL;
+static BOOL (WINAPI *winUnregisterTouchWindow)(HWND hwnd) = NULL;
+static BOOL (WINAPI *winIsTouchWindow)(HWND hwnd, PULONG pulFlags) = NULL;
+
+static void winInitTouch(void)
+{
+  HINSTANCE lib = LoadLibrary("user32");
+  win_touch_loaded = 1;
+  winRegisterTouchWindow = (BOOL (WINAPI *)(HWND,ULONG))GetProcAddress(lib, "RegisterTouchWindow");
+  winUnregisterTouchWindow = (BOOL (WINAPI *)(HWND))GetProcAddress(lib, "UnregisterTouchWindow");
+  winIsTouchWindow = (BOOL (WINAPI *)(HWND,PULONG))GetProcAddress(lib, "IsTouchWindow");
+}
+
+static int winSetTouchAttrib(Ihandle *ih, const char *value)
+{
+  if (win_touch_loaded)
+  {
+    if (iupStrBoolean(value))
+      winRegisterTouchWindow(ih->handle, 0);
+    else
+      winUnregisterTouchWindow(ih->handle);
+  }
+  return 0;
+}
+
+static char* winGetTouchAttrib(Ihandle* ih)
+{
+  ULONG pulFlags = 0;
+  if (win_touch_loaded && winIsTouchWindow(ih->handle, &pulFlags))
+    return "Yes";
+  else
+    return "No";
+}
 
 void iupdrvDialogInitClass(Iclass* ic)
 {
@@ -1460,6 +1502,8 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "MDICLIENT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MDIMENU", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MDICHILD", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "TOUCH", winGetTouchAttrib, winSetTouchAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupDialog Windows and GTK Only */
   iupClassRegisterAttribute(ic, "ACTIVEWINDOW", winDialogGetActiveWindowAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);

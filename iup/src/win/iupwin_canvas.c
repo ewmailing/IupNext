@@ -44,7 +44,7 @@ typedef struct tagTOUCHINPUT {
 #define TOUCHEVENTF_PRIMARY         0x0010
 #endif
 
-static int has_touch = 0;
+static int win_touch_loaded = 0;
 static BOOL (WINAPI *winGetTouchInputInfo)(HTOUCHINPUT hTouchInput, UINT cInputs, TOUCHINPUT* pInputs, int cbSize) = NULL;
 static BOOL (WINAPI *winCloseTouchInputHandle)(HTOUCHINPUT hTouchInput) = NULL;
 static BOOL (WINAPI *winRegisterTouchWindow)(HWND hwnd, ULONG ulFlags) = NULL;
@@ -381,7 +381,7 @@ static void winCanvasUpdateVerScroll(Ihandle* ih, WORD winop)
 static void winCanvasInitTouch(void)
 {
   HINSTANCE lib = LoadLibrary("user32");
-  has_touch = 1;
+  win_touch_loaded = 1;
   winGetTouchInputInfo = (BOOL (WINAPI *)(HTOUCHINPUT,UINT,TOUCHINPUT *,int))GetProcAddress(lib, "GetTouchInputInfo");
   winCloseTouchInputHandle = (BOOL (WINAPI *)(HTOUCHINPUT))GetProcAddress(lib, "CloseTouchInputHandle");
   winRegisterTouchWindow = (BOOL (WINAPI *)(HWND,ULONG))GetProcAddress(lib, "RegisterTouchWindow");
@@ -391,7 +391,7 @@ static void winCanvasInitTouch(void)
 
 static int winCanvasSetTouchAttrib(Ihandle *ih, const char *value)
 {
-  if (has_touch)
+  if (win_touch_loaded)
   {
     if (iupStrBoolean(value))
       winRegisterTouchWindow(ih->handle, 0);
@@ -404,7 +404,7 @@ static int winCanvasSetTouchAttrib(Ihandle *ih, const char *value)
 static char* winCanvasGetTouchAttrib(Ihandle* ih)
 {
   ULONG pulFlags = 0;
-  if (has_touch && winIsTouchWindow(ih->handle, &pulFlags))
+  if (win_touch_loaded && winIsTouchWindow(ih->handle, &pulFlags))
     return "Yes";
   else
     return "No";
@@ -671,7 +671,7 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     *result = 0;
     return 1;
   case WM_TOUCH:
-    if (has_touch && LOWORD(wp))
+    if (win_touch_loaded && LOWORD(wp))
       winCanvasProcessMultiTouch(ih, (int)LOWORD(wp), (HTOUCHINPUT)lp);
     break;
   case WM_SETFOCUS:
