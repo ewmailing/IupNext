@@ -565,7 +565,15 @@ static int winTextGetCaretPos(Ihandle* ih)
   else
   {
     if (ih->data->has_formatting)
+    {
       pos = SendMessage(ih->handle, EM_CHARFROMPOS, 0, (LPARAM)&point);
+    }
+    else if(point.x < 0 && point.y < 0)
+    {
+    /* if the caret position is located outside the visible client area,
+       then use the selection start position */
+      SendMessage(ih->handle, EM_GETSEL, (WPARAM)&pos, 0);
+    }
     else
     {
       LRESULT ret;
