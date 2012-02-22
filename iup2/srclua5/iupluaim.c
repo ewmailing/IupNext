@@ -2,7 +2,7 @@
  * \brief IULUA core - Bindig of iup to Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: iupluaim.c,v 1.2 2012-02-22 14:55:34 scuri Exp $
+ * $Id: iupluaim.c,v 1.3 2012-02-22 19:09:19 scuri Exp $
  */
  
 #include "iup.h"
@@ -35,10 +35,9 @@ static int LoadImage(lua_State *L)
 
 int iupimlua_open(lua_State *L)
 {
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
   iuplua_register(L, LoadImage, "LoadImage");
   iuplua_register(L, SaveImage, "SaveImage");
-  iuplua_returnEnv(L);
   return 0; /* nothing in stack */
 }
 

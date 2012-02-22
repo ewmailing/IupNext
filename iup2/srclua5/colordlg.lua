@@ -3,24 +3,24 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "colordlg",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "",
   funcname = "ColorDlg",
   callback = {}
 } 
 
 function ctrl.popup(handle, x, y)
-  Popup(handle,x,y)
+  iup.Popup(handle,x,y)
 end
 
 function ctrl.destroy(handle)
-  return Destroy(handle)
+  return iup.Destroy(handle)
 end
 
 function ctrl.createElement(class, arg)
-   return ColorDlg()
+   return iup.ColorDlg()
 end
    
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")
 

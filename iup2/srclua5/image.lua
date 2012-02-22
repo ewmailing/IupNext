@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "image",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "nns", -- fake definition
   callback = {},
   createfunc = [[ 
@@ -60,8 +60,8 @@ static int Image (lua_State * L)
 }
 
 function ctrl.createElement(class, arg)
-   return Image(arg, arg.colors)
+   return iup.Image(arg, arg.colors)
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

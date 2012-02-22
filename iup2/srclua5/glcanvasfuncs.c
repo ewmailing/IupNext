@@ -2,7 +2,7 @@
  * \brief iupgl binding for Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: glcanvasfuncs.c,v 1.1 2008-10-17 06:21:23 scuri Exp $
+ * $Id: glcanvasfuncs.c,v 1.2 2012-02-22 19:09:19 scuri Exp $
  */
 
 #include <lua.h>
@@ -30,11 +30,10 @@ static int GLMakeCurrent(lua_State *L)
 {  
    IupGLMakeCurrent(iuplua_checkihandle(L,1));
 
-   iuplua_changeEnv(L);
+   iuplua_get_env(L);
    iuplua_regstring(L, (const char*)glGetString(GL_VENDOR), "GL_VENDOR");
    iuplua_regstring(L, (const char*)glGetString(GL_RENDERER), "GL_RENDERER");
    iuplua_regstring(L, (const char*)glGetString(GL_VERSION), "GL_VERSION");
-   iuplua_returnEnv(L);
 
    return 0;
 }

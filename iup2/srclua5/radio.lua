@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "radio",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "i",
   callback = {}
 } 
@@ -19,15 +19,15 @@ function ctrl.CreateChildrenNames(obj)
     elseif obj.parent == IUPFRAME then
       ctrl.CreateChildrenNames (obj[1])
     else
-      ihandle_setname(obj)
+      iup.SetNameHandle(obj)
     end
   end
 end
 
 function ctrl.createElement(class, arg)
    ctrl.CreateChildrenNames(arg[1])
-   return Radio(arg[1])
+   return iup.Radio(arg[1])
 end
    
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

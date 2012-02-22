@@ -3,18 +3,18 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "hbox",
-  parent = BOX,
+  parent = iup.BOX,
   creation = "-",
   callback = {}
 }
 
 function ctrl.append(handle, elem)
-  Append(handle, elem)
+  iup.Append(handle, elem)
 end
 
 function ctrl.createElement(class, arg)
-   return Hbox()
+   return iup.Hbox()
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

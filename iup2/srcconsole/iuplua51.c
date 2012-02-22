@@ -1,5 +1,5 @@
 /*
-** $Id: iuplua51.c,v 1.1 2008-10-17 06:19:56 scuri Exp $
+** $Id: iuplua51.c,v 1.2 2012-02-22 19:09:19 scuri Exp $
 ** Lua stand-alone interpreter
 ** See Copyright Notice in lua.h
 */
@@ -428,22 +428,10 @@ static void iuplua_openlibs (lua_State *L) {
 }
 
 static void iuplua_input (lua_State *L) {
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/console5_be64.loh"
+#ifdef IUPLUA_USELH
+#include "console5.lh"
 #else
-#include "loh/console5_be32.loh"
-#endif  
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/console5_le64w.loh"
-#else
-#include "loh/console5_le64.loh"
-#endif  
-#else
-#include "loh/console5.loh"
-#endif  
+  luaL_dofile(L, "console5.lua");
 #endif  
 }
 /******************* IUP *********************/

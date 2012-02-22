@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "colorbar",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "",
   callback = {
     select_cb = "nn",
@@ -15,12 +15,12 @@ local ctrl = {
   include = "iupcolorbar.h",
 }
 
-PRIMARY = -1
-SECONDARY = -2
+iup.PRIMARY = -1
+iup.SECONDARY = -2
 
 function ctrl.createElement(class, arg)
-   return Colorbar(arg.action)
+   return iup.Colorbar(arg.action)
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

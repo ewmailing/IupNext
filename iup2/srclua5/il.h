@@ -2,7 +2,7 @@
  * \brief IUPLua5 internal Functions
  *
  * See Copyright Notice in iup.h
- * $Id: il.h,v 1.4 2012-02-22 14:55:34 scuri Exp $
+ * $Id: il.h,v 1.5 2012-02-22 19:09:19 scuri Exp $
  */
  
 #ifndef __IL_H 
@@ -44,15 +44,10 @@ int iupluaapi_open(lua_State * L);
 
             /*     Registration    */
 
-/** Sets the global index as the table "iup".
- * Used to simplify the registration of functions and constants in the "iup" namespace.
+/** Gets the global enviroment "iup".
+    Used by secondary iuplua modules.
  */
-void iuplua_changeEnv(lua_State *L);
-
-/** Resets the global index. 
- * Must match a iuplua_changeEnv call.
- */
-void iuplua_returnEnv(lua_State *L);
+void iuplua_get_env(lua_State *L);
 
 /** Returns true if IupOpen was called from inside the IupLua initialization function (iuplua_open).
  * All the other C intialization functions are called from the respective IupLua initialization functions.

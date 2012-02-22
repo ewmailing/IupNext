@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua.c,v 1.9 2012-02-22 14:55:34 scuri Exp $
+* $Id: iuplua.c,v 1.10 2012-02-22 19:09:19 scuri Exp $
 */
 
 #include <stdio.h>
@@ -328,9 +328,9 @@ lua_State* iuplua_call_start(Ihandle *ih, const char* name)
 {
   lua_State *L = iuplua_getstate(ih);
 
-  /* prepare to call iupCallMethod(name, handle, ...) */
+  /* prepare to call iup.CallMethod(name, handle, ...) */
   lua_getglobal(L,"iup");
-  lua_pushstring(L,"iupCallMethod");
+  lua_pushstring(L,"CallMethod");
   lua_gettable(L, -2);
   lua_remove(L, -2);
 
@@ -378,14 +378,18 @@ int iuplua_call_raw(lua_State* L, int nargs, int nresults)
 
 void iuplua_register_cb(lua_State *L, const char* name, lua_CFunction func, const char* type)
 {
-  lua_getglobal(L, "RegisterCallback");
+  lua_getglobal(L, "iup");
+  lua_pushstring(L,"RegisterCallback");
+  lua_gettable(L, -2);
+  lua_remove(L, -2);  /* remove "iup" from stack */
+
   lua_pushstring(L, name);
   lua_pushcfunction(L, func);
   lua_pushstring(L, type);
   lua_call(L, 3, 0); 
 }
 
-/* iupSetCallback(handle, name, func, value) */
+/* iup.SetCallback(handle, name, func, value) */
 static int SetCallback(lua_State *L)
 {
   Icallback func;
@@ -413,10 +417,10 @@ static int SetCallback(lua_State *L)
              /*************************************/
              /*        metatable                  */
 
-/* iupNewClass(class_name) 
+/* iup.NewClass(class_name) 
   Calls:
-    iupNewClass("iup handle")
-    iupNewClass("iup widget")
+    iup.NewClass("iup handle")
+    iup.NewClass("iup widget")
 */
 static int NewClass(lua_State *L)
 {
@@ -428,10 +432,10 @@ static int NewClass(lua_State *L)
   return 0;
 }
 
-/* iupSetClass(t, class_name) 
+/* iup.SetClass(t, class_name) 
   Calls:
-    iupSetClass(handle, "iup handle")  --Used only in RegisterHandle and WIDGET.constructor
-    iupSetClass(object, "iup widget")  --Used whenever a new control class is created.
+    iup.SetClass(handle, "iup handle")  --Used only in RegisterHandle and WIDGET.constructor
+    iup.SetClass(object, "iup widget")  --Used whenever a new control class is created.
 */
 static int SetClass(lua_State *L)
 {
@@ -445,7 +449,7 @@ static int SetClass(lua_State *L)
   return 0;
 }
 
-/* class_name = iupGetClass(t) */
+/* class_name = iup.GetClass(t) */
 static int GetClass(lua_State *L)
 {
   if (lua_istable(L, 1) || lua_isuserdata(L, 1)) 
@@ -462,9 +466,9 @@ static int GetClass(lua_State *L)
   return 1;
 }
 
-/* iupSetMethod(class_name, method, function)
+/* iup.SetMethod(class_name, method, function)
    For ex:
-     iupSetMethod("iup handle", "__index", ihandle_gettable)
+     iup.SetMethod("iup handle", "__index", ihandle_gettable)
 */
 static int SetMethod(lua_State *L)
 {
@@ -505,7 +509,7 @@ static int ihandle_compare(lua_State *L)
              /*************************************/
              /*       table <-> ihandle           */
 
-/* local object = iupGetWidget(handle) */
+/* local object = iup.GetWidget(handle) */
 static int GetWidget(lua_State *L)
 {
   /* Pushes a table that is associanted with an ihandle */
@@ -519,7 +523,7 @@ static int GetWidget(lua_State *L)
   return 1;
 }
 
-/* iupSetWidget(handle, object) */
+/* iup.SetWidget(handle, object) */
 static int SetWidget(lua_State *L)
 {
   /* Saves the object table reference as an attribute, 
@@ -538,18 +542,9 @@ static int SetWidget(lua_State *L)
              /*************************************/
              /*          registration             */
 
-void iuplua_changeEnv(lua_State *L)
+void iuplua_get_env(lua_State *L)
 {
-  /* Replaces global environment */
-  lua_pushvalue(L, LUA_GLOBALSINDEX);
   lua_getglobal(L, "iup");
-  lua_replace(L, LUA_GLOBALSINDEX); 
-}
-
-void iuplua_returnEnv(lua_State *L)
-{
-  /* reestablishes global environment */
-  lua_replace(L, LUA_GLOBALSINDEX);
 }
 
 int iuplua_opencall_internal(lua_State * L)
@@ -566,16 +561,18 @@ int iuplua_opencall_internal(lua_State * L)
   return ret;
 }
 
+/* iup[name] = func */ 
 void iuplua_register(lua_State *L, lua_CFunction func, const char* name)
 {
   lua_pushcfunction(L, func);
-  lua_setglobal(L, name);
+  lua_setfield(L, -2, name);
 }
 
+/* iup[name] = s */ 
 void iuplua_regstring(lua_State *L, const char* s, const char* name)
 {
   lua_pushstring(L, s); 
-  lua_setglobal(L, name);
+  lua_setfield(L, -2, name);
 }
 
 /*****************************************************************************
@@ -643,7 +640,7 @@ static int GetFromC(lua_State *L)
   const char *a;
   if (!lua_istable(L, -1)) 
   {
-    lua_pushstring(L, "IupGetFromC: wrong arguments to function"); 
+    lua_pushstring(L, "iup.GetFromC: wrong arguments to function"); 
     lua_error(L);
     return 0;
   }
@@ -651,7 +648,7 @@ static int GetFromC(lua_State *L)
   lua_gettable(L, -2);
   if (!lua_isstring(L, -1)) 
   {
-    lua_pushstring(L, "IupGetFromC: wrong arguments to function"); 
+    lua_pushstring(L, "iup.GetFromC: wrong arguments to function"); 
     lua_error(L);
     return 0;
   }
@@ -673,7 +670,8 @@ static int GetFromC(lua_State *L)
 static void register_key(char *name, int code, void* user_data)
 {
   lua_State *L = (lua_State*)user_data;
-  lua_pushnumber(L, code); lua_setglobal(L, name);
+  lua_pushinteger(L, code); 
+  lua_setfield(L, -2, name);
 }
 
 /* from iupkey.c */
@@ -681,9 +679,8 @@ void iupKeyForEach(void (*func)(char *name, int code, void* user_data), void* us
 
 int iupkey_open(lua_State *L)
 {
-  iuplua_changeEnv(L);
-  iupKeyForEach(register_key, (void*)L);
-  iuplua_returnEnv(L);
+  (void)L;
+  /* does nothing, kept for backward compatibility */
   return 0;
 }
 
@@ -739,29 +736,23 @@ static void setinfo (lua_State *L)
 {
   /* table "iup" is at the stack */
 
-  lua_pushliteral (L, "_COPYRIGHT");
   lua_pushliteral (L, IUP_COPYRIGHT);
-  lua_settable (L, -3);
+  lua_setfield(L, -2, "_COPYRIGHT");
 
-  lua_pushliteral (L, "_DESCRIPTION");
   lua_pushliteral (L, IUP_DESCRIPTION);
-  lua_settable (L, -3);
+  lua_setfield(L, -2, "_DESCRIPTION");
 
-  lua_pushliteral (L, "_NAME");
   lua_pushliteral (L, IUP_NAME);
-  lua_settable (L, -3);
+  lua_setfield(L, -2, "_NAME");
 
-  lua_pushliteral (L, "_VERSION");
   lua_pushstring (L, IupVersion());
-  lua_settable (L, -3);
+  lua_setfield(L, -2, "_VERSION");
 
-  lua_pushliteral (L, "_VERSION_DATE");
   lua_pushliteral (L, IUP_VERSION_DATE);
-  lua_settable (L, -3);
+  lua_setfield(L, -2, "_VERSION_DATE");
 
-  lua_pushliteral (L, "_VERSION_NUMBER");
   lua_pushinteger (L, IupVersionNumber());
-  lua_settable (L, -3);
+  lua_setfield(L, -2, "_VERSION_NUMBER");
 }
 
 int iuplua_open(lua_State * L)
@@ -774,13 +765,13 @@ int iuplua_open(lua_State * L)
     {"Close", iuplua_close},
     {"SetIdle", SetIdle},
     {"GetFromC", GetFromC},
-    {"iupGetWidget", GetWidget},
-    {"iupSetWidget", SetWidget},
-    {"iupNewClass", NewClass},
-    {"iupSetClass", SetClass},
-    {"iupGetClass", GetClass},
-    {"iupSetMethod", SetMethod},
-    {"iupSetCallback", SetCallback},
+    {"GetWidget", GetWidget},
+    {"SetWidget", SetWidget},
+    {"NewClass", NewClass},
+    {"SetClass", SetClass},
+    {"GetClass", GetClass},
+    {"SetMethod", SetMethod},
+    {"SetCallback", SetCallback},
     {"ihandle_compare", ihandle_compare},
     {"ihandle_tostring", ihandle_tostring},
     {NULL, NULL},
@@ -792,34 +783,21 @@ int iuplua_open(lua_State * L)
   ret = lua_tointeger(L, -1); /* retrieve IupOpen return value */
   lua_pop(L, -1);
 
-  /* Creating global namespace iup */
-  lua_newtable(L);
-  lua_setglobal(L, "iup");
-
   /* Registers functions in iup namespace */
-  luaL_register(L, "iup", funcs);
+  luaL_register(L, "iup", funcs);   /* leave "iup" table at the top of the stack */
   iupluaapi_open(L);
 
   /* set version info */
   setinfo(L);
 
   /* register if IupOpen was called here or from outside IupLua */
-  lua_pushliteral (L, "_IUPOPEN_CALL");
+  /* iup._IUPOPEN_CALL = EXTERNAL|INTERNAL                      */
   if (ret == IUP_OPENED) lua_pushliteral (L, "EXTERNAL");
   else                   lua_pushliteral (L, "INTERNAL");
-  lua_settable (L, -3);
+  lua_setfield(L, -2, "_IUPOPEN_CALL");
 
   /* used by Idle */
   IupSetGlobal("_IUP_LUA_DEFAULT_STATE", (char *) L);  
-
-  /* Creating new environment with metamethod __index 
-   * (so that normal Lua functions will be found while GLOBALSINDEX is the "iup" environment) */
-  iuplua_dostring(L, "iup._G = _G\
-                     setmetatable(iup, {__index = iup._G})", "iuplua_setmetatable_global");
-
-  /* Changing environment to iup 
-   * (all created variables and functions from now on will be put in "iup" environment) */
-  iuplua_changeEnv(L);
 
 #ifdef IUPLUA_USELH
 #include "iuplua.lh"
@@ -834,6 +812,9 @@ int iuplua_open(lua_State * L)
   iuplua_register_cb(L, "GETFOCUS_CB", (lua_CFunction)getfocus_cb, NULL);
   iuplua_register_cb(L, "K_ANY", (lua_CFunction)k_any, NULL);
   iuplua_register_cb(L, "KILLFOCUS_CB", (lua_CFunction)killfocus_cb, NULL);
+
+  /* Register Keys */
+  iupKeyForEach(register_key, (void*)L);
 
   /* Iup Modules initialization */
   iupbuttonlua_open(L);
@@ -861,8 +842,6 @@ int iuplua_open(lua_State * L)
   iupspinlua_open(L);
   iupspinboxlua_open(L);
   iupcboxlua_open(L);
-
-  iuplua_returnEnv(L);
 
   return 0; /* nothing in stack */
 }

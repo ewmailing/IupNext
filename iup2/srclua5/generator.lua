@@ -4,14 +4,16 @@ function dofile(f)
 end
 
 -- compatibility functions (with iuplua.lua)
-function iupSetClass(ctrl, name)
+iup = {}
+
+function iup.SetClass(ctrl, name)
   element = ctrl
 end
 
 -- dummy functions
 iupluaNewClass = function() end
-iupSetMethod = iupluaNewClass
-iupRegisterWidget = iupluaNewClass
+iup.SetMethod = iupluaNewClass
+iup.RegisterWidget = iupluaNewClass
 
 c_types = {
   n = "int",

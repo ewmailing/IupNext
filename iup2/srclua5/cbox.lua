@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "cbox",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "v",
   callback = {},
   include = "iupcbox.h",
@@ -22,8 +22,8 @@ static int Cboxv(lua_State *L)
 }
 
 function ctrl.createElement(class, arg)
-  return Cboxv(arg)
+  return iup.Cboxv(arg)
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

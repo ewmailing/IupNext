@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "tree",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "",
   callback = {
     selection_cb = "nn",
@@ -21,34 +21,34 @@ local ctrl = {
   extrafuncs = 1,
 }
 
-function TreeSetValueRec(handle, t, id)
+function iup.TreeSetValueRec(handle, t, id)
   if t == nil then return end
   local cont = table.getn(t)
   while cont >= 0 do
     if type (t[cont]) == "table" then
       if t[cont].branchname ~= nil then
-        SetAttribute(handle, "ADDBRANCH"..id, t[cont].branchname)
-        TreeSetValueRec(handle, t[cont], id+1)
+        iup.SetAttribute(handle, "ADDBRANCH"..id, t[cont].branchname)
+        iup.TreeSetValueRec(handle, t[cont], id+1)
       end
     else
       if t[cont] then
-        SetAttribute(handle, "ADDLEAF"..id, t[cont])
+        iup.SetAttribute(handle, "ADDLEAF"..id, t[cont])
       end
     end
     cont = cont - 1
    end
 end
 
-function TreeSetValue(handle, t)
+function iup.TreeSetValue(handle, t)
   if t.branchname ~= nil then
-    SetAttribute(handle, "NAME", t.branchname)
+    iup.SetAttribute(handle, "NAME", t.branchname)
   end
-  TreeSetValueRec(handle, t, 0)
+  iup.TreeSetValueRec(handle, t, 0)
 end
 
 function ctrl.createElement(class, arg)
-  return Tree()
+  return iup.Tree()
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

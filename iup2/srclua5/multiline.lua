@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "multiline",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "-",
   callback = {
     action = "ns", 
@@ -12,8 +12,8 @@ local ctrl = {
 } 
 
 function ctrl.createElement(class, arg)
-   return MultiLine()
+   return iup.MultiLine()
 end
    
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

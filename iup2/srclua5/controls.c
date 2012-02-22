@@ -2,7 +2,7 @@
  * \brief Bindig of iupcontrols to Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: controls.c,v 1.4 2012-02-22 14:55:34 scuri Exp $
+ * $Id: controls.c,v 1.5 2012-02-22 19:09:19 scuri Exp $
  */
  
 #include <lua.h>
@@ -21,7 +21,7 @@ int iupcontrolslua_open(lua_State * L)
   if (iuplua_opencall_internal(L))
     IupControlsOpen();
 
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
 
   iupgaugelua_open(L);
   iuptreelua_open(L);
@@ -36,8 +36,6 @@ int iupcontrolslua_open(lua_State * L)
   iupgetparamlua_open(L);
   iupvallua_open(L);
   iuptabslua_open(L);
-
-  iuplua_returnEnv(L);
 
   return 0;
 }

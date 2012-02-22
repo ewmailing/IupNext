@@ -34,10 +34,9 @@ static int iupluaimglib_open (lua_State *L)
 {
   IupImageLibOpen();
   
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
   iuplua_register(L, imagelibopen, "ImageLibOpen");
   iuplua_register(L, imagelibclose, "ImageLibClose");
-  iuplua_returnEnv(L);
   return 0; /* nothing in stack */
 }
 

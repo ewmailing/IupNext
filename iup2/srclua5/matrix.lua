@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "matrix",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "-",
   callback = {
     action_cb = "nnnns",
@@ -30,16 +30,16 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, arg)
-   return Matrix(arg.action)
+   return iup.Matrix(arg.action)
 end
 
 function ctrl.setcell(handle, l, c, val)
-  SetAttribute(handle,l..":"..c,val)
+  iup.SetAttribute(handle,l..":"..c,val)
 end
 
 function ctrl.getcell(handle, l, c)
-  return GetAttribute(handle,l..":"..c)
+  return iup.GetAttribute(handle,l..":"..c)
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

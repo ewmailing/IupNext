@@ -1,18 +1,31 @@
 PROJNAME = iup
-APPNAME = iuplua51
+APPNAME = iuplua
 APPTYPE = console
 
-LOHDIR = loh
 SRCLUA = console5.lua
-SRC = iuplua51.c
 
-# Disable strip
 STRIP = 
-# Optimize
 OPT = YES      
-
+NO_SCRIPTS = Yes
 # IM and IupPPlot uses C++
 LINKER = $(CPPC)
+
+NO_LUAOBJECT = Yes
+USE_BIN2C_LUA = Yes
+
+ifdef USE_LUA52
+  LUASFX = 52
+else
+  USE_LUA51 = Yes
+  LUASFX = 51
+endif
+
+APPNAME := $(APPNAME)$(LUASFX)
+SRC = iuplua$(LUASFX).c
+
+DEFINES += IUPLUA_USELH
+USE_LH_SUBDIR = Yes
+LHDIR = lh
 
 ifdef DBG
   # Statically link everything only when debugging

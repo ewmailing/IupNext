@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "val",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "s",
   callback = {
     mousemove_cb = "d",
@@ -14,8 +14,8 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, arg)
-   return Val(arg[1])
+   return iup.Val(arg[1])
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

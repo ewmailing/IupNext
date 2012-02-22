@@ -54,20 +54,13 @@ int iupgllua_open(lua_State * L)
   if (iuplua_opencall_internal(L))
     IupGLCanvasOpen();
 
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
   iupglcanvaslua_open(L);
-  iuplua_returnEnv(L);
   return 0;
 }
 
 /* obligatory to use require"iupluagl" */
 int luaopen_iupluagl(lua_State* L)
-{
-  return iupgllua_open(L);
-}
-
-/* obligatory to use require"iupluagl51" */
-int luaopen_iupluagl51(lua_State* L)
 {
   return iupgllua_open(L);
 }

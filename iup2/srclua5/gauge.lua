@@ -3,15 +3,15 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "gauge",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "",
   callback = {},
   include = "iupgauge.h",
 }
 
 function ctrl.createElement(class, arg)
-   return Gauge(arg.action)
+   return iup.Gauge(arg.action)
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

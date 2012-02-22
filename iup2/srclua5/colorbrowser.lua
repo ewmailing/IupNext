@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "colorbrowser",
-  parent = WIDGET,
+  parent = iup.WIDGET,
   creation = "",
   callback = {
     drag_cb = "ccc",
@@ -14,8 +14,8 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, arg)
-   return ColorBrowser(arg.action)
+   return iup.ColorBrowser(arg.action)
 end
 
-iupRegisterWidget(ctrl)
-iupSetClass(ctrl, "iup widget")
+iup.RegisterWidget(ctrl)
+iup.SetClass(ctrl, "iup widget")

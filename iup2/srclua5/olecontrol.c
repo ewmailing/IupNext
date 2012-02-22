@@ -41,20 +41,13 @@ int iupolelua_open(lua_State* L)
   if (iuplua_opencall_internal(L))
     IupOleControlOpen();
     
-  iuplua_changeEnv(L);
+  iuplua_get_env(L);
   iupolecontrollua_open(L);
-  iuplua_returnEnv(L);
   return 0;
 }
 
 /* obligatory to use require"iupluaole" */
 int luaopen_iupluaole(lua_State* L)
-{
-  return iupolelua_open(L);
-}
-
-/* obligatory to use require"iupluaole51" */
-int luaopen_iupluaole51(lua_State* L)
 {
   return iupolelua_open(L);
 }

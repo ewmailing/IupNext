@@ -2,7 +2,7 @@
  * \brief IupGetColor bindig to Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: gc.c,v 1.3 2012-02-22 14:55:34 scuri Exp $
+ * $Id: gc.c,v 1.4 2012-02-22 19:09:19 scuri Exp $
  */
  
 #include <stdlib.h>
@@ -39,10 +39,9 @@ static int GetColor(lua_State *L)
     return 1;
   }
 }
+
 int iupgclua_open(lua_State * L)
 {
-  lua_pushcfunction(L, GetColor);
-  lua_setglobal(L, "GetColor");
+  iuplua_register(L, GetColor, "GetColor");
   return 0;
 }
-
