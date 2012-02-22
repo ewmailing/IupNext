@@ -1,17 +1,31 @@
 PROJNAME = iup
-LIBNAME = iupluaole51
+LIBNAME = iupluaole
+
 OPT = YES
+NO_LUALINK = Yes
+USE_BIN2C_LUA = Yes
+NO_LUAOBJECT = Yes
+
 DEF_FILE = iupluaole5.def
 
 IUP := ..
 
-DEFINES = IUPLUA_USELOH
-
 USE_IUPLUA = Yes
 LIBS = iupole
-USE_LUA51 = Yes
 
-LOHDIR = loh
+ifdef USE_LUA52
+  LUASFX = 52
+  DEFINES += LUA_COMPAT_MODULE
+else
+  USE_LUA51 = Yes
+  LUASFX = 51
+endif
+LIBNAME := $(LIBNAME)$(LUASFX)
+
+DEFINES += IUPLUA_USELH
+USE_LH_SUBDIR = Yes
+LHDIR = lh
+
 SRCLUA = olecontrol.lua
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
 

@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="iupluacd5"
-	ProjectGUID="{B4823266-DF8C-4EFB-91C0-C7688C234EAC}"
+	Name="iupluaim51"
+	ProjectGUID="{1EBC7A53-4677-ADF1-8D4A-49D301F17D85}"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -17,7 +17,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\lib"
-			IntermediateDirectory="..\obj\iupluacd5"
+			IntermediateDirectory="..\obj\$(ProjectName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -41,13 +41,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;..\..\lua5.1\include;..\..\cd\include"
-				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,CD_NO_OLD_INTERFACE,_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\srclua5\lh;..\..\lua5.1\include"
+				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELH,_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="1"
-				PrecompiledHeaderFile=""
-				AssemblerListingLocation="..\obj\iupluacd5/"
-				ObjectFile="..\obj\iupluacd5/"
-				ProgramDataBaseFileName="..\obj\iupluacd5/"
+				UsePrecompiledHeader="0"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="1"
@@ -58,13 +55,14 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				Culture="1046"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\lib\iupluacd51.lib"
+				OutputFile="$(OutDir)/iupluaim51.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -87,10 +85,19 @@
 	<References>
 	</References>
 	<Files>
-		<File
-			RelativePath="..\srclua5\iupluacd.c"
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
-		</File>
+			<File
+				RelativePath="..\srclua5\iupluaim.c"
+				>
+			</File>
+			<File
+				RelativePath="..\include\iupluaim.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

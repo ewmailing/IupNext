@@ -1,21 +1,35 @@
 PROJNAME = iup
-LIBNAME = iupluagl51
+LIBNAME = iupluagl
+
 OPT = YES
+NO_LUALINK = Yes
+USE_BIN2C_LUA = Yes
+NO_LUAOBJECT = Yes
 
 DEF_FILE = iupluagl5.def
-DEFINES = IUPLUA_USELOH
 
 IUP := ..
 
-# Can not use USE_IUPLUA because Tecmake will include "iupluagl51" in linker
+# Can not use USE_IUPLUA because Tecmake will include "iupluagl5X" in linker
 
 USE_IUP = Yes
 USE_OPENGL = Yes
-LIBS = iuplua51
 
-USE_LUA51 = Yes
+ifdef USE_LUA52
+  LUASFX = 52
+  DEFINES += LUA_COMPAT_MODULE
+else
+  USE_LUA51 = Yes
+  LUASFX = 51
+endif
+LIBNAME := $(LIBNAME)$(LUASFX)
 
-LOHDIR = loh
+DEFINES += IUPLUA_USELH
+USE_LH_SUBDIR = Yes
+LHDIR = lh
+
+LIBS = iuplua$(LUASFX)
+
 SRCLUA = glcanvas.lua
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
 

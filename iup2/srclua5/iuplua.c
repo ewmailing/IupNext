@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua.c,v 1.8 2009-04-27 20:05:09 scuri Exp $
+* $Id: iuplua.c,v 1.9 2012-02-22 14:55:34 scuri Exp $
 */
 
 #include <stdio.h>
@@ -54,8 +54,6 @@ static int report (lua_State *L, int status, int concat_traceback)
   {
     const char *msg = lua_tostring(L, -2);
 
-
-
     const char *traceback;
     if (msg == NULL) {
       msg = "(error with no message)";
@@ -76,7 +74,7 @@ static int report (lua_State *L, int status, int concat_traceback)
 }
 
 static int traceback (lua_State *L) {
-  lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+  lua_getglobal(L, "debug");
   if (!lua_istable(L, -1)) {
     lua_pop(L, 1);
     return 1;
@@ -161,7 +159,7 @@ Ihandle *iuplua_checkihandle(lua_State *L, int pos)
   lua_getmetatable(L, pos);   /* t2 = metatable(stack(pos)) */
   lua_pushstring(L, "iup handle");
   lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iup handle"] */
-  if (lua_equal(L, -2, -1))   /* check (t2==t)? */
+  if (lua_rawequal(L, -2, -1))   /* check (t2==t)? */
   {
     lua_pop (L, 2);
     return *(Ihandle**)lua_touserdata(L, pos);
@@ -232,14 +230,14 @@ void iuplua_removeihandle(lua_State *L, Ihandle *ih)
 
     /* removes the ihandle reference in the lua table */
     /* object.handle = nil */
-    lua_getref(L, ref);  /* push object */
+    lua_rawgeti(L, LUA_REGISTRYINDEX, ref);  /* push object */
     lua_pushstring(L, "handle");
     lua_pushnil(L);
     lua_settable(L, -3);
     lua_pop(L,1);
 
     /* removes the association of the ihandle with the lua table */
-    lua_unref(L, ref);  /* this is the complement of SetWidget */
+    luaL_unref(L, LUA_REGISTRYINDEX, ref);  /* this is the complement of SetWidget */
     IupSetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", NULL);
   }
 }
@@ -248,7 +246,7 @@ char ** iuplua_checkstring_array(lua_State *L, int pos)
 {
   int i,n;
   char **v;
-  n = luaL_getn(L,pos);
+  n = iuplua_getn(L,pos);
   v = (char **) malloc (n*sizeof(char *));
   for(i=1; i<=n; i++)
   {
@@ -264,7 +262,7 @@ int * iuplua_checkint_array(lua_State *L, int pos)
 {
   int i,n;
   int *v;
-  n = luaL_getn(L,pos);
+  n = iuplua_getn(L,pos);
   v = (int *) malloc (n*sizeof(int));
   for(i=1; i<=n; i++)
   {
@@ -280,7 +278,7 @@ unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int count)
 {
   int i,n;
   unsigned char *v;
-  n = luaL_getn(L,pos);
+  n = iuplua_getn(L,pos);
   if (n != count)
   {
     lua_pushstring(L, "invalid number of elements in array");
@@ -300,7 +298,7 @@ unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int count)
 Ihandle ** iuplua_checkihandle_array(lua_State *L, int pos)
 {
   Ihandle **v;
-  int i, n = luaL_getn(L, pos);
+  int i, n = iuplua_getn(L, pos);
   v = (Ihandle **) malloc ((n+1)*sizeof(Ihandle *));
   for (i=1; i<=n; i++)
   {
@@ -517,7 +515,7 @@ static int GetWidget(lua_State *L)
   if (!sref)
     lua_pushnil(L);
   else
-    lua_getref(L, atoi(sref));
+    lua_rawgeti(L, LUA_REGISTRYINDEX, atoi(sref));
   return 1;
 }
 
@@ -531,7 +529,7 @@ static int SetWidget(lua_State *L)
   char* sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
   if (!sref)
   {
-    int ref = lua_ref(L, 1);
+    int ref = luaL_ref(L, LUA_REGISTRYINDEX);
     IupSetfAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", "%d", ref);  /* this must be a non-inheritable attribute */
   }
   return 0;
@@ -704,7 +702,7 @@ static int il_open(lua_State * L)
   if (lua_istable(L, -1))
   {
     int i;
-    argc = luaL_getn(L, -1);
+    argc = iuplua_getn(L, -1);
     argv = malloc(sizeof(char*)*argc);
     for(i=1; i<=argc; i++)
     {
@@ -770,7 +768,7 @@ int iuplua_open(lua_State * L)
 {
   int ret;
 
-  struct luaL_reg funcs[] = {
+  struct luaL_Reg funcs[] = {
     {"key_open", iupkey_open},
     {"Open", il_open},
     {"Close", iuplua_close},
@@ -799,7 +797,7 @@ int iuplua_open(lua_State * L)
   lua_setglobal(L, "iup");
 
   /* Registers functions in iup namespace */
-  luaL_openlib(L, "iup", funcs, 0);
+  luaL_register(L, "iup", funcs);
   iupluaapi_open(L);
 
   /* set version info */
@@ -823,29 +821,9 @@ int iuplua_open(lua_State * L)
    * (all created variables and functions from now on will be put in "iup" environment) */
   iuplua_changeEnv(L);
 
-#ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/iuplua_be64.loh"
-#include "loh/constants_be64.loh"
-#else
-#include "loh/iuplua_be32.loh"
-#include "loh/constants_be32.loh"
-#endif  
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/iuplua_le64w.loh"
-#include "loh/constants_le64w.loh"
-#else
-#include "loh/iuplua_le64.loh"
-#include "loh/constants_le64.loh"
-#endif  
-#else
-#include "loh/iuplua.loh"
-#include "loh/constants.loh"
-#endif  
-#endif  
+#ifdef IUPLUA_USELH
+#include "iuplua.lh"
+#include "constants.lh"
 #else
   iuplua_dofile(L, "iuplua.lua");
   iuplua_dofile(L, "constants.lua");
@@ -884,13 +862,6 @@ int iuplua_open(lua_State * L)
   iupspinboxlua_open(L);
   iupcboxlua_open(L);
 
-#if (IUP_VERSION_NUMBER >= 300000)
-  iupgclua_open(L);
-  iupgetparamlua_open(L);
-  iupvallua_open(L);
-  iuptabslua_open(L);
-#endif
-
   iuplua_returnEnv(L);
 
   return 0; /* nothing in stack */
@@ -902,8 +873,3 @@ int luaopen_iuplua(lua_State* L)
   return iuplua_open(L);
 }
 
-/* obligatory to use require"iuplua51" */
-int luaopen_iuplua51(lua_State* L)
-{
-  return iuplua_open(L);
-}

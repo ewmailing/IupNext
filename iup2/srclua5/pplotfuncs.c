@@ -152,8 +152,3 @@ int luaopen_iuplua_pplot(lua_State* L)
   return iup_pplotlua_open(L);
 }
 
-/* obligatory to use require"iuplua_pplot51" */
-int luaopen_iuplua_pplot51(lua_State* L)
-{
-  return iup_pplotlua_open(L);
-}

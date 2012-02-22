@@ -2,7 +2,7 @@
  * \brief IUPLua5 Controls internal Functions
  *
  * See Copyright Notice in iup.h
- * $Id: il_controls.h,v 1.3 2008-11-21 04:21:25 scuri Exp $
+ * $Id: il_controls.h,v 1.4 2012-02-22 14:55:34 scuri Exp $
  */
  
 #ifndef __IL_CONTROLS_H 
@@ -21,12 +21,10 @@ int iupcellslua_open (lua_State * L);
 int iuptreelua_open (lua_State * L);
 int iupmatrixlua_open (lua_State * L);
 
-#if (IUP_VERSION_NUMBER < 300000)
 void iupgetparamlua_open (lua_State * L);
 int iupgclua_open (lua_State * L);
 int iupvallua_open (lua_State * L);
 int iuptabslua_open (lua_State * L);
-#endif
 
 #ifdef __cplusplus
 }

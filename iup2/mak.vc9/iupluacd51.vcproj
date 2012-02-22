@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="iupluagl5"
-	ProjectGUID="{1EBC7A53-4677-4C3A-8D4A-49D301157985}"
+	Name="iupluacd51"
+	ProjectGUID="{B4823266-DF8C-4EFB-91C0-C7688C234EAC}"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -41,10 +41,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\..\lua5.1\include"
-				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELOH,_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\include;..\..\lua5.1\include;..\..\cd\include"
+				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,CD_NO_OLD_INTERFACE,_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=""
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="1"
@@ -55,14 +55,13 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				Culture="1046"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/iupluagl51.lib"
+				OutputFile="..\lib\iupluacd51.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -85,31 +84,10 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
+		<File
+			RelativePath="..\srclua5\iupluacd.c"
 			>
-			<File
-				RelativePath="..\srclua5\glcanvas.c"
-				>
-			</File>
-			<File
-				RelativePath="..\srclua5\glcanvasfuncs.c"
-				>
-			</File>
-			<File
-				RelativePath="..\include\iupluagl.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Lua"
-			>
-			<File
-				RelativePath="..\srclua5\glcanvas.lua"
-				>
-			</File>
-		</Filter>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

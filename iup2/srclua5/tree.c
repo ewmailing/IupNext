@@ -117,24 +117,8 @@ int iuptreelua_open(lua_State * L)
 
   iuplua_treefuncs_open(L);
 
-#ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/tree_be64.loh"
-#else
-#include "loh/tree_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/tree_le64w.loh"
-#else
-#include "loh/tree_le64.loh"
-#endif
-#else
-#include "loh/tree.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELH
+#include "tree.lh"
 #else
   iuplua_dofile(L, "tree.lua");
 #endif

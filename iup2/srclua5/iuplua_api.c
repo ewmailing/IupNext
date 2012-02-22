@@ -2,7 +2,7 @@
 * \brief IUP binding for Lua 5.
 *
 * See Copyright Notice in iup.h
-* $Id: iuplua_api.c,v 1.6 2009-04-27 20:05:09 scuri Exp $
+* $Id: iuplua_api.c,v 1.7 2012-02-22 14:55:34 scuri Exp $
 */
 
 #include <stdio.h>
@@ -19,21 +19,8 @@
 #include "il.h"
 
 
-#if (IUP_VERSION_NUMBER >= 300000)
-#include "iup_attrib.h"
-static int Reparent(lua_State *L)
-{
-  lua_pushnumber(L, IupReparent(iuplua_checkihandle(L,1),
-                                iuplua_checkihandle(L,2)));
-  return 1;
-}
-#define iupIsPointer iupAttribIsPointer
-#define iupIsInternal iupAttribIsInternal
-#define xCODE IUPxCODE
-#else
 int iupIsPointer(const char *attr); /* re-declared here to avoid inclusion of iglobal.h */
 int iupIsInternal(const char* name);
-#endif
 
 static int Append(lua_State *L)
 {
@@ -256,15 +243,6 @@ static int Map(lua_State *L)
   return 1;
 }
 
-#if (IUP_VERSION_NUMBER >= 300000)
-static int Unmap(lua_State *L)
-{
-  Ihandle *ih = iuplua_checkihandle(L,1);
-  IupUnmap(ih);
-  return 0;
-}
-#endif
-
 static int MapFont(lua_State *L)
 {
   char *font = (char *) luaL_checkstring(L,1);
@@ -300,11 +278,11 @@ static int ListDialog(lua_State *L)
   int* marks = lua_isnoneornil(L, 8)? NULL: iuplua_checkint_array(L,8);
   int i, ret;
 
-  if (size != luaL_getn(L, 4))
+  if (size != iuplua_getn(L, 4))
     luaL_error(L, "invalid number of elements in the list.");
   if (!marks && type==2)
     luaL_error(L, "invalid marks, must not be nil.");
-  if (marks && type==2 && size != luaL_getn(L, 8))
+  if (marks && type==2 && size != iuplua_getn(L, 8))
     luaL_error(L, "invalid number of elements in the marks.");
 
   ret = IupListDialog(type, luaL_checkstring(L, 2), 
@@ -618,11 +596,8 @@ static int UnMapFont (lua_State *L)
 
 int iupluaapi_open(lua_State * L)
 {
-  struct luaL_reg funcs[] = {
+  struct luaL_Reg funcs[] = {
     {"Append", Append},
-#if (IUP_VERSION_NUMBER >= 300000)
-    {"Reparent", Reparent},
-#endif
     {"Destroy", Destroy},
     {"Detach", Detach},
     {"Flush", Flush},
@@ -647,9 +622,6 @@ int iupluaapi_open(lua_State * L)
     {"ExitLoop", ExitLoop},
     {"MainLoop", MainLoop},
     {"Map", Map},
-#if (IUP_VERSION_NUMBER >= 300000)
-    {"Unmap", Unmap},
-#endif
     {"MapFont", MapFont},
     {"Message", Message},
     {"Alarm", Alarm},  
@@ -693,7 +665,7 @@ int iupluaapi_open(lua_State * L)
   };
 
   /* Registers functions in iup namespace */
-  luaL_openlib(L, NULL, funcs, 0);
+  luaL_register(L, NULL, funcs);
 
   return 0; /* nothing in stack */
 }

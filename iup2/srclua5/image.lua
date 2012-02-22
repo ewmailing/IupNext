@@ -11,16 +11,16 @@ local ctrl = {
 static int Image (lua_State * L)
 {
   int w, h, i, j;
-  char *img;
+  unsigned char *img;
   Ihandle *image;
   
-  h = luaL_getn(L, 1);
+  h = iuplua_getn(L, 1);
   lua_pushnumber(L, 1);
   lua_gettable(L, 1);
-  w = luaL_getn(L, -1);
+  w = iuplua_getn(L, -1);
   lua_pop(L, 1);
   
-  img = (char *) malloc (h*w);
+  img = (unsigned char *) malloc (h*w);
 
   for (i=1; i<=h; i++)
   {
@@ -31,7 +31,7 @@ static int Image (lua_State * L)
       int idx = (i-1)*w+(j-1);
       lua_pushnumber(L, j);
       lua_gettable(L, -2);
-      img[idx] = (char)lua_tonumber(L, -1);
+      img[idx] = (unsigned char)lua_tonumber(L, -1);
       lua_pop(L, 1);
     }
     lua_pop(L, 1);
@@ -40,7 +40,7 @@ static int Image (lua_State * L)
   image = IupImage(w,h,img);  
   free(img);
 
-  w = luaL_getn(L, 2);
+  w = iuplua_getn(L, 2);
 
   for(i=1; i<=w; i++)
   {

@@ -2,7 +2,7 @@
  * \brief iuptree binding for Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: treefuncs.c,v 1.1 2008-10-17 06:21:23 scuri Exp $
+ * $Id: treefuncs.c,v 1.2 2012-02-22 14:55:35 scuri Exp $
  */
 
 #include <lua.h>
@@ -89,7 +89,7 @@ static int TreeGetUserId(lua_State *L)
    Ihandle *h = iuplua_checkihandle(L,1);
    int id = (int)luaL_checknumber(L,2);
    ref = (int) IupTreeGetUserId(h, id);
-   lua_getref(L, ref-1);
+   lua_rawgeti(L, LUA_REGISTRYINDEX, ref-1);
    return 1;
 }
 
@@ -100,9 +100,9 @@ static int TreeSetUserId(lua_State *L)
    if(lua_isnil(L, 3))
    {
      int ref = (int) IupTreeGetUserId(h, id);
-     lua_getref(L, ref-1);
+     lua_rawgeti(L, LUA_REGISTRYINDEX, ref-1);
      settableref(L, 4, 0);
-     lua_unref(L, ref-1);
+     luaL_unref(L, LUA_REGISTRYINDEX, ref-1);
      IupTreeSetUserId(h, id, NULL);
      lua_pop(L, 1);
    }
@@ -110,7 +110,7 @@ static int TreeSetUserId(lua_State *L)
    {
      int ref;
      lua_pushvalue(L, 3);
-     ref = lua_ref(L, 1);
+     ref = luaL_ref(L, LUA_REGISTRYINDEX);
      IupTreeSetUserId(h, id, (char*) ref+1);
      settableref(L, 3, ref+1);
    }

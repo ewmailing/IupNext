@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="iupluaimglib5"
-	ProjectGUID="{1EBC7A53-4677-FFFF-1234-49D301F17D85}"
+	Name="iuplua52exe"
+	ProjectGUID="{A60D658D-1AEC-4023-BA5F-5DEB884D86FB}"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -16,12 +16,13 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\lib"
+			OutputDirectory="..\bin"
 			IntermediateDirectory="..\obj\$(ProjectName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -37,12 +38,14 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				TypeLibraryName="..\bin\iuplua5.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\..\lua5.1\include"
-				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELOH,_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\include;..\srclua5;..\srclua5\lh;..\..\lua52\include;..\..\cd\include;..\..\im\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUPLUA_IMGLIB;USE_STATIC;LUA_COMPAT_MODULE"
+				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
@@ -55,18 +58,29 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
 				Culture="1046"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/iupluaimglib51.lib"
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="iup.lib comctl32.lib iupcontrols.lib iupimglib.lib iup_pplot.lib iupgl.lib cd.lib iupcd.lib freetype6.lib zlib1.lib cdcontextplus.lib lua52.lib iuplua52.lib iupluaim52.lib iupluaimglib52.lib iupluagl52.lib iupluacontrols52.lib iuplua_pplot52.lib iupim.lib opengl32.lib glu32.lib gdiplus.lib im.lib cdlua52.lib iupluacd52.lib imlua52.lib imlua_process52.lib cdluaim52.lib im_process.lib"
+				OutputFile="$(OutDir)/iuplua52.exe"
+				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\im\lib;..\..\cd\lib;..\lib;..\..\lua52\lib\vc9"
+				GenerateManifest="false"
+				GenerateDebugInformation="true"
+				SubSystem="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -78,6 +92,9 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -87,10 +104,18 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="..\srclua5\iupluaimglib.c"
+				RelativePath="..\srcconsole\console5.lua"
+				>
+			</File>
+			<File
+				RelativePath="..\srcconsole\iuplua5.rc"
+				>
+			</File>
+			<File
+				RelativePath="..\srcconsole\iuplua52.c"
 				>
 			</File>
 		</Filter>

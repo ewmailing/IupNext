@@ -1,19 +1,32 @@
 PROJNAME = iup
-LIBNAME = iuplua_pplot51
+LIBNAME = iuplua_pplot
+
 OPT = YES
+NO_LUAOBJECT = Yes
+NO_LUALINK = Yes
+USE_BIN2C_LUA = Yes
+
 DEF_FILE = iuplua_pplot5.def
 
 IUP := ..
-
-DEFINES = IUPLUA_USELOH
 
 USE_IUPLUA = Yes
 USE_CDLUA = Yes
 LIBS = iup_pplot
 
-USE_LUA51 = Yes
+ifdef USE_LUA52
+  LUASFX = 52
+  DEFINES += LUA_COMPAT_MODULE
+else
+  USE_LUA51 = Yes
+  LUASFX = 51
+endif
+LIBNAME := $(LIBNAME)$(LUASFX)
 
-LOHDIR = loh
+DEFINES += IUPLUA_USELH
+USE_LH_SUBDIR = Yes
+LHDIR = lh
+
 SRCLUA = pplot.lua
 EC = pplotfuncs.c
 GC := $(addsuffix .c, $(basename $(SRCLUA)))

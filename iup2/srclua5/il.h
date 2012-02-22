@@ -2,7 +2,7 @@
  * \brief IUPLua5 internal Functions
  *
  * See Copyright Notice in iup.h
- * $Id: il.h,v 1.3 2008-11-21 04:21:25 scuri Exp $
+ * $Id: il.h,v 1.4 2012-02-22 14:55:34 scuri Exp $
  */
  
 #ifndef __IL_H 
@@ -37,13 +37,6 @@ int iupcboxlua_open (lua_State * L);
 int iupspinboxlua_open (lua_State * L);
 int iupspinlua_open (lua_State * L);
 int iupsboxlua_open (lua_State * L);
-
-#if (IUP_VERSION_NUMBER >= 300000)
-void iupgetparamlua_open (lua_State * L);
-int iupgclua_open (lua_State * L);
-int iupvallua_open (lua_State * L);
-int iuptabslua_open (lua_State * L);
-#endif
 
 int iupluaScanf(lua_State *L);
 int iupluaapi_open(lua_State * L);
@@ -145,6 +138,14 @@ Ihandle *iuplua_checkihandleornil(lua_State *L, int pos);
 /** Removes the references in the Lua registry.
  */
 void iuplua_removeihandle(lua_State *L, Ihandle *ih);
+
+
+#if LUA_VERSION_NUM > 501
+#define iuplua_getn(L,i)          ((int)lua_rawlen(L, i))
+#else
+#define LUA_OK		0
+#define iuplua_getn(L,i)          ((int)lua_objlen(L, i))
+#endif
 
 
 #ifdef __cplusplus

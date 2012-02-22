@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="iupluaole5"
-	ProjectGUID="{1EBC7A53-4677-5555-2222-49D301157985}"
+	Name="iupluagl51"
+	ProjectGUID="{1EBC7A53-4677-4C3A-8D4A-49D301157985}"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\..\lua5.1\include"
-				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELOH,_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\srclua5\lh;..\..\lua5.1\include"
+				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELH,_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/iupluaole51.lib"
+				OutputFile="$(OutDir)/iupluagl51.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -90,11 +90,15 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
-				RelativePath="..\include\iupluaole.h"
+				RelativePath="..\srclua5\glcanvas.c"
 				>
 			</File>
 			<File
-				RelativePath="..\srclua5\olecontrol.c"
+				RelativePath="..\srclua5\glcanvasfuncs.c"
+				>
+			</File>
+			<File
+				RelativePath="..\include\iupluagl.h"
 				>
 			</File>
 		</Filter>
@@ -102,7 +106,7 @@
 			Name="Lua"
 			>
 			<File
-				RelativePath="..\srclua5\olecontrol.lua"
+				RelativePath="..\srclua5\glcanvas.lua"
 				>
 			</File>
 		</Filter>

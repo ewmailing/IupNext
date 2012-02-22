@@ -25,24 +25,8 @@ int iuplabellua_open(lua_State * L)
   iuplua_register(L, Label, "Label");
 
 
-#ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/label_be64.loh"
-#else
-#include "loh/label_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/label_le64w.loh"
-#else
-#include "loh/label_le64.loh"
-#endif
-#else
-#include "loh/label.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELH
+#include "label.lh"
 #else
   iuplua_dofile(L, "label.lua");
 #endif

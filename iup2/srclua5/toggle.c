@@ -33,24 +33,8 @@ int iuptogglelua_open(lua_State * L)
 
   iuplua_register_cb(L, "ACTION", (lua_CFunction)toggle_action, "toggle");
 
-#ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/toggle_be64.loh"
-#else
-#include "loh/toggle_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/toggle_le64w.loh"
-#else
-#include "loh/toggle_le64.loh"
-#endif
-#else
-#include "loh/toggle.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELH
+#include "toggle.lh"
 #else
   iuplua_dofile(L, "toggle.lua");
 #endif

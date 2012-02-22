@@ -37,24 +37,8 @@ int iuptabslua_open(lua_State * L)
 
   iuplua_register_cb(L, "TABCHANGE_CB", (lua_CFunction)tabs_tabchange_cb, NULL);
 
-#ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/tabs_be64.loh"
-#else
-#include "loh/tabs_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/tabs_le64w.loh"
-#else
-#include "loh/tabs_le64.loh"
-#endif
-#else
-#include "loh/tabs.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELH
+#include "tabs.lh"
 #else
   iuplua_dofile(L, "tabs.lua");
 #endif

@@ -1,13 +1,21 @@
-#BUILD_IUP3 = Yes
-
 PROJNAME = iup
-LIBNAME  = iuplua51
+LIBNAME  = iuplua
+
 OPT = YES
+NO_LUALINK = Yes
+USE_BIN2C_LUA = Yes
+NO_LUAOBJECT = Yes
+
 DEF_FILE = iuplua5.def
 
-DEFINES = IUPLUA_USELOH
-
-USE_LUA51 = Yes
+ifdef USE_LUA52
+  LUASFX = 52
+  DEFINES += LUA_COMPAT_MODULE
+else
+  USE_LUA51 = Yes
+  LUASFX = 51
+endif
+LIBNAME := $(LIBNAME)$(LUASFX)
 
 INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  
@@ -20,17 +28,13 @@ CTRLUA = button.lua canvas.lua dialog.lua \
        submenu.lua text.lua toggle.lua vbox.lua zbox.lua timer.lua \
        sbox.lua spin.lua spinbox.lua cbox.lua
        
-ifdef BUILD_IUP3
-  CTRLUA += val.lua tabs.lua
-endif
-
 GC = $(addsuffix .c, $(basename $(CTRLUA)))
 EC = iuplua.c scanf.c iuplua_api.c
-ifdef BUILD_IUP3
-  EC += getparam.c gc.c
-endif
 SRCLUA = iuplua.lua constants.lua $(CTRLUA)
-LOHDIR = loh
+
+DEFINES += IUPLUA_USELH
+USE_LH_SUBDIR = Yes
+LHDIR = lh
 
 $(GC) : %.c : %.lua generator.lua
 	$(LUABIN) generator.lua $<

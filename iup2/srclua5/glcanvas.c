@@ -39,24 +39,8 @@ int iupglcanvaslua_open(lua_State * L)
 
   iuplua_glcanvasfuncs_open(L);
 
-#ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/glcanvas_be64.loh"
-#else
-#include "loh/glcanvas_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/glcanvas_le64w.loh"
-#else
-#include "loh/glcanvas_le64.loh"
-#endif
-#else
-#include "loh/glcanvas.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELH
+#include "glcanvas.lh"
 #else
   iuplua_dofile(L, "glcanvas.lua");
 #endif

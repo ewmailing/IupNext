@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="iuplua5"
-	ProjectGUID="{1EBC7A53-4677-4C3A-8D4A-49D301F17D85}"
+	Name="iuplua52"
+	ProjectGUID="{1EBC7A53-4A17-1B5D-8D4A-5FD601FFFD85}"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\..\lua5.1\include"
-				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELOH,_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\src;..\include;..\srclua5;..\srclua5\lh;..\..\lua52\include"
+				PreprocessorDefinitions="WIN32,_DEBUG,IUPLUA_USELH,_CRT_SECURE_NO_DEPRECATE,LUA_COMPAT_MODULE"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/iuplua51.lib"
+				OutputFile="$(OutDir)/iuplua52.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool

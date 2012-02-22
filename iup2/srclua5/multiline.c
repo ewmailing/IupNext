@@ -34,24 +34,8 @@ int iupmultilinelua_open(lua_State * L)
 
   iuplua_register_cb(L, "ACTION", (lua_CFunction)multiline_action, "multiline");
 
-#ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/multiline_be64.loh"
-#else
-#include "loh/multiline_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/multiline_le64w.loh"
-#else
-#include "loh/multiline_le64.loh"
-#endif
-#else
-#include "loh/multiline.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELH
+#include "multiline.lh"
 #else
   iuplua_dofile(L, "multiline.lua");
 #endif

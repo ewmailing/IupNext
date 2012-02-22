@@ -1,29 +1,34 @@
-#BUILD_IUP3 = Yes
-
 PROJNAME = iup
-LIBNAME = iupluacontrols51
-OPT = YES
-DEF_FILE = iupluacontrols5.def
+LIBNAME = iupluacontrols
 
 IUP := ..
 
-DEFINES = IUPLUA_USELOH
+OPT = YES
+NO_LUAOBJECT = Yes
+NO_LUALINK = Yes
+USE_BIN2C_LUA = Yes
 
 USE_IUPLUA = Yes
 USE_CDLUA = Yes
+
 LIBS = iupcontrols
+DEF_FILE = iupluacontrols5.def
 
-USE_LUA51 = Yes
+ifdef USE_LUA52
+  LUASFX = 52
+  DEFINES += LUA_COMPAT_MODULE
+else
+  USE_LUA51 = Yes
+  LUASFX = 51
+endif
+LIBNAME := $(LIBNAME)$(LUASFX)
 
-LOHDIR = loh
-SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua tree.lua cells.lua
-ifndef BUILD_IUP3
-  SRCLUA += val.lua tabs.lua
-endif
-EC = mask.c controls.c treefuncs.c matrixfuncs.c
-ifndef BUILD_IUP3
-  EC += getparam.c gc.c
-endif
+DEFINES += IUPLUA_USELH
+USE_LH_SUBDIR = Yes
+LHDIR = lh
+
+SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua tree.lua cells.lua val.lua tabs.lua
+EC = mask.c controls.c treefuncs.c matrixfuncs.c getparam.c gc.c
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
 
 $(GC) : %.c : %.lua generator.lua

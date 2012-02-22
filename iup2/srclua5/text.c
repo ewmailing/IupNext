@@ -43,24 +43,8 @@ int iuptextlua_open(lua_State * L)
   iuplua_register_cb(L, "ACTION", (lua_CFunction)text_action, "text");
   iuplua_register_cb(L, "CARET_CB", (lua_CFunction)text_caret_cb, NULL);
 
-#ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/text_be64.loh"
-#else
-#include "loh/text_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/text_le64w.loh"
-#else
-#include "loh/text_le64.loh"
-#endif
-#else
-#include "loh/text.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELH
+#include "text.lh"
 #else
   iuplua_dofile(L, "text.lua");
 #endif

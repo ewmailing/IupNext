@@ -6,7 +6,7 @@ IUP := ..
 OPT = YES
 NO_LUALINK = Yes
 
-# Can not use USE_IUPLUA because Tecmake will include "iupluacd51" in linker
+# Can not use USE_IUPLUA because Tecmake will include "iupluacd5X" in linker
 USE_CD = YES
 USE_CDLUA = YES
 USE_IUP3 = YES

@@ -39,24 +39,8 @@ int iupitemlua_open(lua_State * L)
   iuplua_register_cb(L, "ACTION", (lua_CFunction)item_action, "item");
   iuplua_register_cb(L, "HIGHLIGHT_CB", (lua_CFunction)item_highlight_cb, NULL);
 
-#ifdef IUPLUA_USELOH
-#ifdef TEC_BIGENDIAN
-#ifdef TEC_64
-#include "loh/item_be64.loh"
-#else
-#include "loh/item_be32.loh"
-#endif
-#else
-#ifdef TEC_64
-#ifdef WIN64
-#include "loh/item_le64w.loh"
-#else
-#include "loh/item_le64.loh"
-#endif
-#else
-#include "loh/item.loh"
-#endif
-#endif
+#ifdef IUPLUA_USELH
+#include "item.lh"
 #else
   iuplua_dofile(L, "item.lua");
 #endif

@@ -2,7 +2,7 @@
  * \brief IULUA core - Bindig of iup to Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: iupluaim.c,v 1.1 2008-10-17 06:21:23 scuri Exp $
+ * $Id: iupluaim.c,v 1.2 2012-02-22 14:55:34 scuri Exp $
  */
  
 #include "iup.h"
@@ -48,8 +48,3 @@ int luaopen_iupluaim(lua_State* L)
   return iupimlua_open(L);
 }
 
-/* obligatory to use require"iupluaim51" */
-int luaopen_iupluaim51(lua_State* L)
-{
-  return iupimlua_open(L);
-}

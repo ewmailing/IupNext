@@ -1,7 +1,9 @@
 PROJNAME = iup
-LIBNAME  = iupluaim51
+LIBNAME  = iupluaim
+
 OPT = YES
-                     
+NO_LUALINK = Yes
+
 DEF_FILE = iupluaim5.def
 SRC = iupluaim.c
 
@@ -12,4 +14,12 @@ IUP := ..
 
 USE_IUPLUA = Yes
 USE_IM = Yes
-USE_LUA51 = Yes
+
+ifdef USE_LUA52
+  LUASFX = 52
+  DEFINES += LUA_COMPAT_MODULE
+else
+  USE_LUA51 = Yes
+  LUASFX = 51
+endif
+LIBNAME := $(LIBNAME)$(LUASFX)
