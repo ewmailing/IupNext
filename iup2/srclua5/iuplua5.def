@@ -13,8 +13,7 @@ EXPORTS
   iuplua_dofile
   iuplua_dostring
   iupkey_open
-  iuplua_returnEnv
-  iuplua_changeEnv
+  iuplua_get_env
   iuplua_opencall_internal
   luaopen_iuplua
   iuplua_register
