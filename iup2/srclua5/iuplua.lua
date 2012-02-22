@@ -1,4 +1,3 @@
--- This file is executed with the "iup" table already as the globalindex
 
 ------------------------------------------------------------------------------
 -- Callback handler  
@@ -7,14 +6,14 @@
 iup.callbacks = {}
 
 function iup.CallMethod(name, ...)
-  local handle = arg[1] -- always the handle
+  local handle = ... -- the first argument is always the handle
   local func = handle[name]
   if (not func) then
     return
   end
   
   if type(func) == "function" then
-    return func(unpack(arg))
+    return func(...)
   elseif type(func) == "string" then  
     local temp = self
     self = handle
@@ -130,8 +129,8 @@ function iup.SetNameHandle(v)  -- used also by radio and zbox
 end
 
 function iup.RegisterWidget(ctrl) -- called by all the controls initialization functions
-  iup[ctrl.nick] = function(arg)
-    return ctrl:constructor(arg)
+  iup[ctrl.nick] = function(param)
+    return ctrl:constructor(param)
   end
 end
 
@@ -175,8 +174,8 @@ function iup.WIDGET.map(object)
   iup.Map(object.handle)
 end
 
-function iup.WIDGET.constructor(class, arg)
-  local handle = class:createElement(arg)
+function iup.WIDGET.constructor(class, param)
+  local handle = class:createElement(param)
   local object = { 
     parent = class,
     handle = handle
@@ -184,13 +183,13 @@ function iup.WIDGET.constructor(class, arg)
   iup.SetClass(handle, "iup handle")
   iup.SetClass(object, "iup widget")
   iup.SetWidget(handle, object)
-  object:setAttributes(arg)
+  object:setAttributes(param)
   return handle
 end
 
-function iup.WIDGET.setAttributes(object, arg)
+function iup.WIDGET.setAttributes(object, param)
   local handle = object.handle
-  for i,v in pairs(arg) do 
+  for i,v in pairs(param) do 
     if type(i) == "number" and iup.GetClass(v) == "iup handle" then
       -- We should not set this or other elements (such as iuptext)
       -- will erroneosly inherit it
@@ -215,15 +214,15 @@ iup.BOX = {
   parent = iup.WIDGET
 }
 
-function iup.BOX.setAttributes(object, arg)
+function iup.BOX.setAttributes(object, param)
   local handle = rawget(object, "handle")
-  local n = table.getn(arg)
+  local n = #param
   for i = 1, n do
-    if iup.GetClass(arg[i]) == "iup handle" then 
-      iup.Append(handle, arg[i]) 
+    if iup.GetClass(param[i]) == "iup handle" then 
+      iup.Append(handle, param[i]) 
     end
   end
-  iup.WIDGET.setAttributes(object, arg)
+  iup.WIDGET.setAttributes(object, param)
 end
 
 iup.SetClass(iup.BOX, "iup widget")
@@ -251,7 +250,7 @@ function iup._ERRORMESSAGE(err,traceback)
   end
 end
 
-iup.pack = function (...) return arg end
+iup.pack = function (...) return {...} end
 
 function iup.protectedcall(f, err)
   if not f then 

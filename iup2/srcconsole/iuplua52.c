@@ -1,5 +1,5 @@
 /*
-** $Id: iuplua52.c,v 1.1 2012-02-22 19:19:21 scuri Exp $
+** $Id: iuplua52.c,v 1.2 2012-02-22 19:45:30 scuri Exp $
 ** Lua stand-alone interpreter
 ** See Copyright Notice in lua.h
 */
@@ -478,6 +478,11 @@ static int handle_luainit (lua_State *L) {
 
 /******************* IUP *********************/
 #ifdef USE_STATIC
+static int dummy_require (lua_State *L) {
+  (void)L;
+  return 0;
+}
+
 #ifdef IUPLUA_IMGLIB
 int luaopen_iupluaimglib(lua_State* L);
 #endif
@@ -488,6 +493,10 @@ static void iuplua_openlibs (lua_State *L) {
   lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
 
 #ifdef USE_STATIC
+  lua_pushglobaltable(L);   /* disable require if statically linking */
+  lua_pushcfunction(L, dummy_require);
+  lua_setfield(L, -2, "require");
+
   /* iuplua initialization */
   iuplua_open(L);
 
@@ -523,7 +532,8 @@ static void iuplua_openlibs (lua_State *L) {
 static void iuplua_input (lua_State *L) 
 {
 #ifdef IUPLUA_USELH
-#include "console5.lh"
+//#include "console5.lh"
+  dofile(L, "console5.lua");
 #else
   luaL_dofile(L, "console5.lua");
 #endif

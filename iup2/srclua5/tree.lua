@@ -23,7 +23,7 @@ local ctrl = {
 
 function iup.TreeSetValueRec(handle, t, id)
   if t == nil then return end
-  local cont = table.getn(t)
+  local cont = #t
   while cont >= 0 do
     if type (t[cont]) == "table" then
       if t[cont].branchname ~= nil then

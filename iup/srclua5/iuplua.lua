@@ -1,4 +1,3 @@
--- This file is executed with the "iup" table already as the globalindex
 
 ------------------------------------------------------------------------------
 -- Callback handler  
