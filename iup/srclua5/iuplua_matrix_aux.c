@@ -53,7 +53,7 @@ static int matrix_bgcolor_cb(Ihandle *self, int p0, int p1, unsigned int *p2, un
   *p2 = (unsigned int)lua_tointeger(L, -4); 
   *p3 = (unsigned int)lua_tointeger(L, -3); 
   *p4 = (unsigned int)lua_tointeger(L, -2); 
-  lua_pop(L, 1);
+  lua_pop(L, 4);
   return IUP_DEFAULT;
 }
 
@@ -77,7 +77,7 @@ static int matrix_fgcolor_cb(Ihandle *self, int p0, int p1, unsigned int *p2, un
   *p2 = (unsigned int)lua_tointeger(L, -4); 
   *p3 = (unsigned int)lua_tointeger(L, -3); 
   *p4 = (unsigned int)lua_tointeger(L, -2); 
-  lua_pop(L, 1);
+  lua_pop(L, 4);
   return IUP_DEFAULT;
 }
 
