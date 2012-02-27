@@ -33,7 +33,6 @@ ifdef DBG
   USE_IUPLUA = Yes
   USE_IUP = Yes
   USE_STATIC = Yes
-  USE_LUA51 = Yes
   
   DEFINES = USE_STATIC
 
@@ -106,13 +105,11 @@ else
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     # Dinamically link in Windows, when not debugging
     # Must call "tecmake dll8"
-    USE_LUA51 = Yes
     USE_DLL = Yes
     GEN_MANIFEST = No
   else
     # In UNIX Lua is always statically linked, late binding is used.
     USE_STATIC = Yes
-    USE_LUA51 = Yes
   endif
 endif
 

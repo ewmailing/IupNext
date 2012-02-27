@@ -1,5 +1,5 @@
 /*
-** $Id: iuplua52.c,v 1.2 2012-02-22 19:45:30 scuri Exp $
+** $Id: iuplua52.c,v 1.3 2012-02-27 19:03:32 scuri Exp $
 ** Lua stand-alone interpreter
 ** See Copyright Notice in lua.h
 */
@@ -532,8 +532,7 @@ static void iuplua_openlibs (lua_State *L) {
 static void iuplua_input (lua_State *L) 
 {
 #ifdef IUPLUA_USELH
-//#include "console5.lh"
-  dofile(L, "console5.lua");
+#include "console5.lh"
 #else
   luaL_dofile(L, "console5.lua");
 #endif
