@@ -2,7 +2,7 @@
  * \brief iuptree binding for Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: treefuncs.c,v 1.2 2012-02-22 14:55:35 scuri Exp $
+ * $Id: treefuncs.c,v 1.3 2012-02-28 17:16:45 scuri Exp $
  */
 
 #include <lua.h>
@@ -20,15 +20,15 @@
    Given an ID, to retreive a Lua object is quite simple.
 
    But given a user_id to obtain the ID is more complicated.
-   The IUPTREEREFTABLE is used to do this mapping.
+   The table iup.TREEREFTABLE is used to do this mapping.
    We use the object as the index to this table.
 */
 
-/* iup.IUPTREEREFTABLE[object at pos] = ref */
+/* iup.TREEREFTABLE[object at pos] = ref */
 static void settableref(lua_State *L, int pos, int ref)
 {
   lua_getglobal(L, "iup");
-  lua_pushstring(L, "IUPTREEREFTABLE");
+  lua_pushstring(L, "TREEREFTABLE");
   lua_gettable(L, -2);
   lua_remove(L, -2);
   lua_pushvalue(L, pos);
@@ -40,12 +40,12 @@ static void settableref(lua_State *L, int pos, int ref)
   lua_pop(L, 1);
 }
 
-/* ref = iup.IUPTREEREFTABLE[object at pos] */
+/* ref = iup.TREEREFTABLE[object at pos] */
 static int gettableref(lua_State *L, int pos)
 {
   int ref = 0;
   lua_getglobal(L, "iup");
-  lua_pushstring(L, "IUPTREEREFTABLE");
+  lua_pushstring(L, "TREEREFTABLE");
   lua_gettable(L, -2);
   lua_remove(L, -2);
   lua_pushvalue(L, pos);
@@ -134,7 +134,7 @@ static int tree_multiselection_cb(Ihandle *self, int* ids, int p1)
 
 void iuplua_treefuncs_open (lua_State *L)
 {
-  iuplua_dostring(L, "IUPTREEREFTABLE={}", "");
+  iuplua_dostring(L, "iup.TREEREFTABLE={}", "");
 
   iuplua_register_cb(L, "MULTISELECTION_CB", (lua_CFunction)tree_multiselection_cb, NULL);
 
