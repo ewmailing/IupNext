@@ -384,5 +384,19 @@ char *iupdrvGetGlobal(const char *name)
     sprintf(str, "%d", info.CodePage);
     return str;
   }
+  if (iupStrEqual(name, "LASTERROR"))
+  {
+    int error = GetLastError();
+    if (error)
+    {
+      char* str;
+      LPVOID lpMsgBuf;
+      FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,
+                    NULL, error, 0, (LPTSTR)&lpMsgBuf, 0, NULL);
+      str = iupStrGetMemoryCopy((const char*)lpMsgBuf);
+      LocalFree(lpMsgBuf);
+      return str;
+    }
+  }
   return NULL;
 }

@@ -196,7 +196,12 @@ static void xGLCanvasGetVisual(Ihandle* ih, IGlControlData* gldata)
   /* choose visual */
   gldata->vinfo = glXChooseVisual(gldata->display, DefaultScreen(gldata->display), alist);
   if (!gldata->vinfo)
+  {
     iupAttribSetStr(ih, "ERROR", "No appropriate visual");
+    return;
+  }
+
+  iupAttribSetStr(ih, "ERROR", NULL);
 }
 
 static char* xGLCanvasGetVisualAttrib(Ihandle *ih)
@@ -248,7 +253,7 @@ static int xGLCanvasMapMethod(Ihandle* ih)
     GLXContext oldContext = glXGetCurrentContext();
     Display* oldDisplay = glXGetCurrentDisplay();
     GLXDrawable oldDrawable = glXGetCurrentDrawable();
-    glXMakeCurrent(gldata->display, gldata->window, tempContext);
+    glXMakeCurrent(gldata->display, gldata->window, tempContext);   /* glXGetProcAddress only works with an active context */
 
     CreateContextAttribsARB = (glXCreateContextAttribsARB_PROC)glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
     if (CreateContextAttribsARB)
@@ -340,6 +345,7 @@ static int xGLCanvasMapMethod(Ihandle* ih)
   if (gldata->colormap != None)
     IupGLPalette(ih,0,1,1,1);  /* set first color as white */
 
+  iupAttribSetStr(ih, "ERROR", NULL);
   return IUP_NOERROR;
 }
 
@@ -389,6 +395,7 @@ static Iclass* xGlCanvasNewClass(void)
 
   iupClassRegisterAttribute(ic, "BUFFER", NULL, NULL, IUPAF_SAMEASSYSTEM, "SINGLE", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "RGBA", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "ERROR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CONTEXT", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "VISUAL", xGLCanvasGetVisualAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING|IUPAF_NOT_MAPPED);
@@ -464,8 +471,13 @@ void IupGLMakeCurrent(Ihandle* ih)
   if (!gldata->window)
     return;
 
-  glXMakeCurrent(gldata->display, gldata->window, gldata->context);
-  glXWaitX();
+  if (glXMakeCurrent(gldata->display, gldata->window, gldata->context)==False)
+    iupAttribSetStr(ih, "ERROR", "Failed to set new current context");
+  else
+  {
+    iupAttribSetStr(ih, "ERROR", NULL);
+    glXWaitX();
+  }
 }
 
 void IupGLSwapBuffers(Ihandle* ih)

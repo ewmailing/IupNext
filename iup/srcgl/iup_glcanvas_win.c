@@ -171,6 +171,7 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
   if (pixelFormat == 0)
   {
     iupAttribSetStr(ih, "ERROR", "No appropriate pixel format.");
+    iupAttribStoreStr(ih, "LASTERROR", IupGetGlobal("LASTERROR"));
     return IUP_NOERROR;
   } 
   SetPixelFormat(gldata->device,pixelFormat,&pfd);
@@ -189,7 +190,7 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
     HGLRC tempContext = wglCreateContext(gldata->device);
     HGLRC oldContext = wglGetCurrentContext();
     HDC oldDC = wglGetCurrentDC();
-    wglMakeCurrent(gldata->device, tempContext);
+    wglMakeCurrent(gldata->device, tempContext);   /* wglGetProcAddress only works with an active context */
 
     CreateContextAttribsARB = (wglCreateContextAttribsARB_PROC)wglGetProcAddress("wglCreateContextAttribsARB");
     if (CreateContextAttribsARB)
@@ -263,6 +264,7 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
   if (!gldata->context)
   {
     iupAttribSetStr(ih, "ERROR", "Could not create a rendering context.");
+    iupAttribStoreStr(ih, "LASTERROR", IupGetGlobal("LASTERROR"));
     return IUP_NOERROR;
   }
 
@@ -293,6 +295,7 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
     RealizePalette(gldata->device);
   }
 
+  iupAttribSetStr(ih, "ERROR", NULL);
   return IUP_NOERROR;
 }
 
@@ -385,6 +388,7 @@ static Iclass* wGlCanvasNewClass(void)
 
   iupClassRegisterAttribute(ic, "BUFFER", NULL, NULL, IUPAF_SAMEASSYSTEM, "SINGLE", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "RGBA", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "ERROR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CONTEXT", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "VISUAL", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
@@ -461,7 +465,16 @@ void IupGLMakeCurrent(Ihandle* ih)
   if (!gldata->window)
     return;
 
-  wglMakeCurrent(gldata->device, gldata->context);
+  if (wglMakeCurrent(gldata->device, gldata->context)==FALSE)
+  {
+    iupAttribSetStr(ih, "ERROR", "Failed to set new current context");
+    iupAttribStoreStr(ih, "LASTERROR", IupGetGlobal("LASTERROR"));
+  }
+  else
+  {
+    iupAttribSetStr(ih, "ERROR", NULL);
+    iupAttribSetStr(ih, "LASTERROR", NULL);
+  }
 }
 
 void IupGLSwapBuffers(Ihandle* ih)
