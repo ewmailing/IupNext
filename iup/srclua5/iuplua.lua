@@ -175,6 +175,14 @@ function iup.WIDGET.map(object)
   iup.Map(object.handle)
 end
 
+function iup.WIDGET.unmap(object)
+  iup.Unmap(object.handle)
+end
+
+function iup.WIDGET.destroy(object)
+  iup.Destroy(object.handle)
+end
+
 function iup.WIDGET.constructor(class, param)
   local handle = class:createElement(param)
   local object = { 

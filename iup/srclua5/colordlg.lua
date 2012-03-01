@@ -13,10 +13,6 @@ function ctrl.popup(handle, x, y)
   iup.Popup(handle,x,y)
 end
 
-function ctrl.destroy(handle)
-  return iup.Destroy(handle)
-end
-
 function ctrl.createElement(class, param)
    return iup.ColorDlg()
 end

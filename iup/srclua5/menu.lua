@@ -60,9 +60,5 @@ function ctrl.showxy(handle, x, y)
   return iup.ShowXY(handle, x, y)
 end
 
-function ctrl.destroy(handle)
-  return iup.Destroy(handle)
-end
-
 iup.RegisterWidget(ctrl)
 iup.SetClass(ctrl, "iup widget")

@@ -15,12 +15,13 @@
 
 <h2>IupUnmap <span class="style1">(since 3.0)</span></h2>
 <p><b>Unmap</b> the element from the native system. It will also unmap all its children.</p>
-<p>It will NOT <b>detach</b> the element from its parent, , and it will NOT <b>destroy</b> 
+<p>It will NOT <b>detach</b> the element from its parent, and it will NOT <b>destroy</b> 
 the IUP element.</p>
 <h3>
 Parameters/Return</h3>
 <pre>void IupUnmap(Ihandle* <strong>ih</strong>); [in C]
-iup.Unmap(<strong>ih</strong>: ihandle) [in Lua]</pre>
+iup.Unmap(<strong>ih</strong>: ihandle) [in Lua]
+or <strong>ih</strong>:unmap() [in Lua]</pre>
 <p><b>ih</b>: Identifier of an interface element.</p>
 <h3>Notes</h3>
 <p>When the element is mapped some attributes are stored only in the native 
