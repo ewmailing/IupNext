@@ -396,8 +396,6 @@ static void new_dialog(int test, char* tip)
     IupSetAttribute(dlg, "FULLSCREEN", "YES");
     IupShow(dlg);
   }
-
-
 }
 
 static void create_images(void)

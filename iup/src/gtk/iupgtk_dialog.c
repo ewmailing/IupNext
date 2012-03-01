@@ -84,12 +84,17 @@ void iupdrvDialogGetPosition(Ihandle *ih, InativeHandle* handle, int *x, int *y)
 #else
   if (GTK_WIDGET_VISIBLE(handle))
 #endif
-    gtk_window_get_position((GtkWindow*)handle, x, y);
+  {
+    gint gx, gy;
+    gtk_window_get_position((GtkWindow*)handle, &gx, &gy);
+    if (x) *x = gx;
+    if (y) *y = gy;
+  }
   else if (ih)
   {
     /* gtk_window_get_position returns an outdated value if window is not visible */
-    *x = iupAttribGetInt(ih, "_IUPGTK_OLD_X");
-    *y = iupAttribGetInt(ih, "_IUPGTK_OLD_Y");
+    if (x) *x = iupAttribGetInt(ih, "_IUPGTK_OLD_X");
+    if (y) *y = iupAttribGetInt(ih, "_IUPGTK_OLD_Y");
   }
 }
 
