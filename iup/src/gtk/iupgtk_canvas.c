@@ -86,8 +86,6 @@ static gboolean gtkCanvasHChangeValue(GtkRange *range, GtkScrollType scroll, dou
   ih->data->posx = (float)posx;
   posy = ih->data->posy;
 
-printf("gtkCanvasHChangeValue\n");
-
   cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
   if (cb)
   {
@@ -118,8 +116,6 @@ static gboolean gtkCanvasVChangeValue(GtkRange *range, GtkScrollType scroll, dou
   double dy = iupAttribGetFloat(ih, "DY");
   if (value < ymin) value = ymin;
   if (value > ymax-dy) value = ymax-dy;
-
-printf("gtkCanvasVChangeValue\n");
 
   posy = value;
   ih->data->posy = (float)posy;
@@ -613,10 +609,6 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "scroll-event",G_CALLBACK(gtkCanvasScrollEvent), ih);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
-//  hadjustment = gtk_range_get_adjustment(GTK_RANGE(gtk_scrolled_window_get_hscrollbar(scrolled_window)));
-//  vadjustment = gtk_range_get_adjustment(GTK_RANGE(gtk_scrolled_window_get_vscrollbar(scrolled_window)));
-//  g_signal_connect(G_OBJECT(hadjustment), "value-changed",G_CALLBACK(gtkCanvasHChangeValue), ih);
-//  g_signal_connect(G_OBJECT(vadjustment), "value-changed",G_CALLBACK(gtkCanvasVChangeValue), ih);
   g_signal_connect(G_OBJECT(gtk_scrolled_window_get_hscrollbar(scrolled_window)), "change-value",G_CALLBACK(gtkCanvasHChangeValue), ih);
   g_signal_connect(G_OBJECT(gtk_scrolled_window_get_vscrollbar(scrolled_window)), "change-value",G_CALLBACK(gtkCanvasVChangeValue), ih);
 #endif

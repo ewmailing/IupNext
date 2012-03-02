@@ -38,8 +38,7 @@
 #include "iupgtk_drv.h"
 
 
-static void gtkDialogSetMinSize(Ihandle* ih, int min_w, int min_h);
-static void gtkDialogSetMaxSize(Ihandle* ih, int max_w, int max_h);
+static void gtkDialogSetMinMax(Ihandle* ih, int min_w, int min_h, int max_w, int max_h);
 
 /****************************************************************
                      Utilities
@@ -571,8 +570,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
   }
 
   /* configure the size range */
-  gtkDialogSetMinSize(ih, 1, 1);  /* MINSIZE and MAXSIZE default values */
-  gtkDialogSetMaxSize(ih, 65535, 65535);
+  gtkDialogSetMinMax(ih, 1, 1, 65535, 65535);  /* MINSIZE and MAXSIZE default values */
 
   /* Ignore VISIBLE before mapping */
   iupAttribSetStr(ih, "VISIBLE", NULL);
@@ -648,9 +646,9 @@ static void gtkDialogLayoutUpdateMethod(Ihandle *ih)
                                    Attributes
 ****************************************************************************/
 
-static void gtkDialogSetMinSize(Ihandle* ih, int min_w, int min_h)
+static void gtkDialogSetMinMax(Ihandle* ih, int min_w, int min_h, int max_w, int max_h)
 {
-  /* The min size restricts the client area */
+  /* The minmax size restricts the client area */
   GdkGeometry geometry;
   int decorwidth = 0, decorheight = 0;
   iupDialogGetDecorSize(ih, &decorwidth, &decorheight);
@@ -663,43 +661,43 @@ static void gtkDialogSetMinSize(Ihandle* ih, int min_w, int min_h)
   if (min_h > decorheight)
     geometry.min_height = min_h-decorheight;
 
-  gtk_window_set_geometry_hints((GtkWindow*)ih->handle, ih->handle, &geometry, (GdkWindowHints)(GDK_HINT_MIN_SIZE));
-}
-
-static void gtkDialogSetMaxSize(Ihandle* ih, int max_w, int max_h)
-{
-  /* The max size restricts the client area */
-  GdkGeometry geometry;
-  int decorwidth = 0, decorheight = 0;
-  iupDialogGetDecorSize(ih, &decorwidth, &decorheight);
-
   geometry.max_width = 65535;
-  if (max_w > decorwidth)
+  if (max_w > decorwidth && max_w > geometry.min_width)
     geometry.max_width = max_w-decorwidth;
 
   geometry.max_height = 65535;
-  if (max_h > decorheight)
+  if (max_h > decorheight && max_w > geometry.min_height)
     geometry.max_height = max_h-decorheight;
 
-  gtk_window_set_geometry_hints((GtkWindow*)ih->handle, ih->handle, &geometry, (GdkWindowHints)(GDK_HINT_MAX_SIZE));
+  /* must set both at the same time, or GTK will assume its default */
+  gtk_window_set_geometry_hints((GtkWindow*)ih->handle, ih->handle,
+                                &geometry, (GdkWindowHints)(GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE));
 }
 
 static int gtkDialogSetMinSizeAttrib(Ihandle* ih, const char* value)
 {
   int min_w = 1, min_h = 1;          /* MINSIZE default value */
+  int max_w = 65535, max_h = 65535;  /* MAXSIZE default value */
   iupStrToIntInt(value, &min_w, &min_h, 'x');
 
-  gtkDialogSetMinSize(ih, min_w, min_h);
+  /* if MAXSIZE also set, must be also updated here */
+  iupStrToIntInt(iupAttribGet(ih, "MAXSIZE"), &max_w, &max_h, 'x');
+
+  gtkDialogSetMinMax(ih, min_w, min_h, max_w, max_h);
 
   return iupBaseSetMinSizeAttrib(ih, value);
 }
 
 static int gtkDialogSetMaxSizeAttrib(Ihandle* ih, const char* value)
 {
+  int min_w = 1, min_h = 1;          /* MINSIZE default value */
   int max_w = 65535, max_h = 65535;  /* MAXSIZE default value */
   iupStrToIntInt(value, &max_w, &max_h, 'x');
 
-  gtkDialogSetMaxSize(ih, max_w, max_h);
+  /* if MINSIZE also set, must be also updated here */
+  iupStrToIntInt(iupAttribGet(ih, "MINSIZE"), &min_w, &min_h, 'x');
+
+  gtkDialogSetMinMax(ih, min_w, min_h, max_w, max_h);
 
   return iupBaseSetMaxSizeAttrib(ih, value);
 }
