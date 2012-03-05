@@ -305,8 +305,8 @@ MINGW3 ?= x:/lng/mingw3
 MINGW4 ?= x:/lng/mingw4
 MINGW4_64 ?= x:/lng/mingw4_64
 # The default location is in the PATH
-#GCC3 ?= x:/lng/cygw15
-#GCC4 ?= x:/lng/cygw17
+#GCC3 ?= x:/lng/gcc3
+#GCC4 ?= x:/lng/gcc4
 
 #Tools
 QT ?= x:/lng/qt
@@ -1038,9 +1038,6 @@ ifdef LINK_ZLIB
       ZLIB = z
     endif
     ifneq ($(findstring mingw, $(TEC_UNAME)), )
-      ZLIB = z
-    endif
-    ifneq ($(findstring cygw, $(TEC_UNAME)), )
       ZLIB = z
     endif
   endif

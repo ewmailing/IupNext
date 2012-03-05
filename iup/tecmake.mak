@@ -304,10 +304,14 @@ endif
 
 PROJNAME ?= $(TARGETNAME)
 
-DEPEND := $(TARGETNAME).dep
+DEPEXT := dep
+ifneq ($(findstring cygw, $(TEC_UNAME)), )
+  DEPEXT := cdep
+endif
 
+DEPEND := $(TARGETNAME).$(DEPEXT)
 ifdef DEPENDDIR
-  DEPEND := $(DEPENDDIR)/$(TARGETNAME).dep.$(TEC_UNAME)
+  DEPEND := $(DEPENDDIR)/$(TARGETNAME).$(DEPEXT).$(TEC_UNAME)
 endif
 
 ifeq ($(MAKETYPE), APP)
