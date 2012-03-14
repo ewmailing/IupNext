@@ -2001,7 +2001,10 @@ static void winTextUnMapMethod(Ihandle* ih)
 {
   HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
   if (hSpin)
+  {
+    iupwinHandleRemove(hSpin);
     DestroyWindow(hSpin);
+  }
 
   iupdrvBaseUnMapMethod(ih);
 }
