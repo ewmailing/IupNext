@@ -294,7 +294,7 @@ iupKeyCallKeyPressCb
 iupKeyCallKeyCb
 iupKeyProcessNavigation
 iupImageStockSet
-iupImageStockLoad
+iupImageStockLoadAll
 iupImageColorMakeInactive
 iupGetFontStyleAttrib
 iupGetFontSizeAttrib

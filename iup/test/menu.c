@@ -259,7 +259,7 @@ static void show_popup(void)
     IupSetCallbacks(IupSetAttributes(IupSubmenu("Submenu", menu_file), "KEY=K_S, IMAGE=image_tec"), "HIGHLIGHT_CB", highlight_cb, NULL),
     IupSetCallbacks(IupItem("Item", "item_cb"), "HIGHLIGHT_CB", highlight_cb, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Item", "item_cb"), "VALUE=ON"), "HIGHLIGHT_CB", highlight_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Item", "item_cb"), "KEY=K_I, IMAGE=image_tec"), "HIGHLIGHT_CB", highlight_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Item Test", "item_cb"), "KEY=K_I, IMAGE=image_tec"), "HIGHLIGHT_CB", highlight_cb, NULL),
     NULL);
   IupSetCallbacks(menu_file, "OPEN_CB", open_cb, "MENUCLOSE_CB", menuclose_cb, NULL);
   IupSetCallbacks(menu, "OPEN_CB", open_cb, "MENUCLOSE_CB", menuclose_cb, NULL);
@@ -339,7 +339,7 @@ void MenuTest(void)
     IupSetCallbacks(IupItem("Active Next", NULL), "ACTION", item_active_cb, NULL),
     IupSetCallbacks(IupItem("Rename Next", NULL), "ACTION", item_rename_cb, NULL),
     IupSetCallbacks(IupItem("Set Next Image", NULL), "ACTION", item_image_cb, NULL),
-    IupSetAttributes(IupItem("Item w/ Acc\tCtrl+A", "item_cb"), "IMAGE=dummy"), 
+    IupSetAttributes(IupItem("Item && Acc\tCtrl+A", "item_cb"), "IMAGE=dummy"), 
     IupSeparator(), 
     IupSetAttributes(IupSubmenu("Create", menu_create), "IMAGE=image_tec"), 
     NULL);

@@ -96,6 +96,7 @@ int iupMaskParse(const char *text, ImaskParsed ** fsm)
   if ((vars.fsm = (ImaskParsed *) malloc (STATE_BLOCK * sizeof (ImaskParsed))) == NULL)
     return IMASK_MEM_ERROR;
 
+  memset(vars.fsm, 0, STATE_BLOCK*sizeof (ImaskParsed));
   vars.num_states = STATE_BLOCK;
 
   /* a principio, nao ha captura. Se ocorrer uma, ele e setado
@@ -531,6 +532,7 @@ static void iMaskParseNewState (ImaskParseVars * vars)
   if (vars->state >= vars->num_states - 1)
   {
     ImaskParsed *new_fsm = (ImaskParsed*) realloc (vars->fsm, (vars->num_states + STATE_BLOCK) * sizeof (ImaskParsed));
+    memset(new_fsm + vars->num_states, 0, STATE_BLOCK*sizeof(ImaskParsed));
     vars->fsm = new_fsm;
     vars->num_states += STATE_BLOCK;
   }

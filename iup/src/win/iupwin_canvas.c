@@ -763,7 +763,7 @@ static int winCanvasMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* associate HWND with Ihandle*, all Win32 controls must call this. */
-  iupwinHandleSet(ih);
+  iupwinHandleAdd(ih, ih->handle);
 
   IupSetCallback(ih, "_IUPWIN_OLDPROC_CB", (Icallback)DefWindowProc);
   IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winCanvasProc);
@@ -809,8 +809,10 @@ static void winCanvasUnMapMethod(Ihandle* ih)
     return;
   }
 
+  iupwinTipsDestroy(ih);
+
   /* remove the association before destroying */
-  iupwinHandleRemove(ih);
+  iupwinHandleRemove(ih->handle);
 
   /* remove from parent and destroys window */
   SetParent(ih->handle, NULL);

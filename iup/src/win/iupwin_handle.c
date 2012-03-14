@@ -18,7 +18,7 @@
 
 static Itable* winhandle_table; /* table indexed by HWND containing Ihandle* address */
 
-Ihandle* iupwinHandleGet(void* handle)
+Ihandle* iupwinHandleGet(InativeHandle* handle)
 {
   Ihandle* ih;
   if (!handle)
@@ -29,19 +29,14 @@ Ihandle* iupwinHandleGet(void* handle)
   return ih;
 }
 
-void iupwinHandleSet(Ihandle *ih)
+void iupwinHandleAdd(Ihandle *ih, InativeHandle* handle)
 {
-  iupTableSet(winhandle_table, (char*)ih->handle, ih, IUPTABLE_POINTER);
+  iupTableSet(winhandle_table, (char*)handle, ih, IUPTABLE_POINTER);
 }
 
-void iupwinHandleAdd(Ihandle *ih, InativeHandle* hWnd)
+void iupwinHandleRemove(InativeHandle* handle)
 {
-  iupTableSet(winhandle_table, (char*)hWnd, ih, IUPTABLE_POINTER);
-}
-
-void iupwinHandleRemove(Ihandle *ih)
-{
-  iupTableRemove(winhandle_table, (char*)ih->handle);
+  iupTableRemove(winhandle_table, (char*)handle);
 }
 
 void iupwinHandleInit(void)

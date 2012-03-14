@@ -60,8 +60,9 @@ int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
   if (!tips_hwnd)
   {
     tips_hwnd = winTipsCreate(ih->handle);
-    iupAttribSetStr(ih, "_IUPWIN_TIPSWIN", (char*)tips_hwnd);
+
     iupwinHandleAdd(ih, tips_hwnd);
+    iupAttribSetStr(ih, "_IUPWIN_TIPSWIN", (char*)tips_hwnd);
   }
 
   if (value)
@@ -70,6 +71,20 @@ int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
     winTipsSendMessage(ih, tips_hwnd, TTM_DELTOOL);
 
   return 1;
+}
+
+void iupwinTipsDestroy(Ihandle* ih)
+{
+  HWND tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");
+  if (tips_hwnd)
+  {
+    winTipsSendMessage(ih, tips_hwnd, TTM_DELTOOL);
+
+    iupAttribSetStr(ih, "_IUPWIN_TIPSWIN", NULL);
+
+    iupwinHandleRemove(tips_hwnd);
+    DestroyWindow(tips_hwnd);
+  }
 }
 
 int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)

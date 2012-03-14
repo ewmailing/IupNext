@@ -63,13 +63,12 @@ struct _IcontrolData
   cdCanvas *cdcanvas;
 };
 
-
 static void iGaugeDrawText(Ihandle* ih, int xmid)
 {
   int x, y, xmin, xmax, ymin, ymax;
   char* text = ih->data->text;
 
-  cdCanvasNativeFont(ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
+  cdIupSetFont(ih, ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
   cdCanvasTextAlignment(ih->data->cddbuffer, CD_CENTER);
   cdCanvasBackOpacity(ih->data->cddbuffer, CD_TRANSPARENT);
 

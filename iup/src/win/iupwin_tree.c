@@ -2446,7 +2446,12 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     IFnis cbRename;
     NMTVDISPINFO* info = (NMTVDISPINFO*)msg_info;
 
-    iupAttribSetStr(ih, "_IUPWIN_EDITBOX", NULL);
+    HWND hEdit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
+    if (hEdit)
+    {
+      iupwinHandleRemove(hEdit);
+      iupAttribSetStr(ih, "_IUPWIN_EDITBOX", NULL);
+    }
 
     if (!info->item.pszText)  /* cancel, so abort */
       return 0;
@@ -2665,11 +2670,12 @@ static int winTreeMapMethod(Ihandle* ih)
     HIMAGELIST image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_STATE, 0);
     ImageList_GetIconSize(image_list, &w, &h);
     {
-      RECT rect = {0, 0, w, h};
+      RECT rect;
       HDC hScreenDC = GetDC(ih->handle);
       HDC hBitmapDC = CreateCompatibleDC(hScreenDC);
       HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, w, h);
       HBITMAP hOldBitmap = SelectObject(hBitmapDC, hBitmap);
+      SetRect(&rect, 0, 0, w, h);
       iupwinDraw3StateButton(ih->handle, hBitmapDC, &rect);
       SelectObject(hBitmapDC, hOldBitmap);
       DeleteDC(hBitmapDC);
@@ -2697,10 +2703,15 @@ static void winTreeUnMapMethod(Ihandle* ih)
 {
   Iarray* bmp_array;
   HIMAGELIST image_list;
+  HWND hEdit;
 
   winTreeRemoveAllNodeData(ih, 0);
 
   ih->data->node_count = 0;
+
+  hEdit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
+  if (hEdit)
+    iupwinHandleRemove(hEdit);
 
   image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_NORMAL, 0);
   if (image_list)

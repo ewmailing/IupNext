@@ -881,7 +881,7 @@ static int winDialogMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* associate HWND with Ihandle*, all Win32 controls must call this. */
-  iupwinHandleSet(ih);
+  iupwinHandleAdd(ih, ih->handle);
 
   if (iupStrEqual(classname, "IupDialogMDIChild")) /* hides the mdi child */
     ShowWindow(ih->handle, SW_HIDE);
@@ -917,8 +917,10 @@ static void winDialogUnMapMethod(Ihandle* ih)
   if (iupAttribGet(ih, "_IUPDLG_HASTRAY"))
     winDialogSetTrayAttrib(ih, NULL);
 
+  iupwinTipsDestroy(ih);
+
   /* remove the association before destroying */
-  iupwinHandleRemove(ih);
+  iupwinHandleRemove(ih->handle);
 
   /* Destroys the window, so we can destroy the class */
   if (iupAttribGetBoolean(ih, "MDICHILD")) 

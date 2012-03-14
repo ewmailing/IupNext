@@ -236,7 +236,7 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
       if (help_info->iContextType == HELPINFO_MENUITEM)
         child = iupwinMenuGetItemHandle((HMENU)help_info->hItemHandle, (int)help_info->iCtrlId);
       else
-        child = iupwinHandleGet(help_info->hItemHandle);
+        child = iupwinHandleGet((HWND)help_info->hItemHandle);
 
       if (child)
       {
@@ -377,9 +377,9 @@ static Ihandle* winContainerWmCommandGetIhandle(Ihandle *ih, WPARAM wp, LPARAM l
       child = ih;                              /* native parent */
     else
     {
-      child = iupwinHandleGet((void*)lp);       /* control */
+      child = iupwinHandleGet((HWND)lp);       /* control */
       if (!child)
-        child = iupwinHandleGet((void*)GetParent((HWND)lp));       /* control */
+        child = iupwinHandleGet(GetParent((HWND)lp));       /* control */
     }
   }
 
@@ -427,7 +427,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_CTLCOLORSCROLLBAR:
   case WM_CTLCOLORSTATIC:
     {
-      Ihandle* child = iupwinHandleGet((void*)lp);
+      Ihandle* child = iupwinHandleGet((HWND)lp);
       if (child && winCheckParent(child, ih))
       {
         IFctlColor cb = (IFctlColor)IupGetCallback(child, "_IUPWIN_CTLCOLOR_CB");
@@ -467,7 +467,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_HSCROLL:
   case WM_VSCROLL:
     {
-      Ihandle *child = iupwinHandleGet((void*)lp);
+      Ihandle *child = iupwinHandleGet((HWND)lp);
       if (child && winCheckParent(child, ih))
       {
         IFni cb = (IFni)IupGetCallback(child, "_IUPWIN_CUSTOMSCROLL_CB");
@@ -514,7 +514,6 @@ void iupwinChangeProc(Ihandle *ih, WNDPROC new_proc)
 
 void iupdrvBaseUnMapMethod(Ihandle* ih)
 {
-  HWND tips_hwnd;
   WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDPROC_CB");
   if (oldProc)
   {
@@ -522,12 +521,10 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
     IupSetCallback(ih, "_IUPWIN_OLDPROC_CB",  NULL);
   }
 
-  tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");
-  if (tips_hwnd)
-    DestroyWindow(tips_hwnd);
+  iupwinTipsDestroy(ih);
 
   /* remove the association before destroying */
-  iupwinHandleRemove(ih);
+  iupwinHandleRemove(ih->handle);
 
   /* destroys window (it will remove from parent) */
   DestroyWindow(ih->handle);
@@ -899,7 +896,7 @@ int iupwinCreateWindowEx(Ihandle* ih, LPCSTR lpClassName, DWORD dwExStyle, DWORD
     return 0;
 
   /* associate HWND with Ihandle*, all Win32 controls must call this. */
-  iupwinHandleSet(ih);
+  iupwinHandleAdd(ih, ih->handle);
 
   /* replace the WinProc to handle base callbacks */
   iupwinChangeProc(ih, iupwinBaseWinProc);

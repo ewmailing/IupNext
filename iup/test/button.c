@@ -295,8 +295,8 @@ void ButtonTest(void)
   IupAppend(box1, button);
 
   button = IupButton(NULL, NULL);
-  IupSetAttribute(button, "TITLE", "&Text (згн)");
-  IupSetAttribute(button, "TIP", "Button Tip");
+  IupSetAttribute(button, "TITLE", "&Text && Test(згн)");
+  IupSetAttribute(button, "TIP", "Button & Tip");
   //IupSetAttribute(button, "PADDING", "15x15");
   //IupSetAttribute(button, "BGCOLOR", "128 128 255");
   IupSetAttribute(button, "SIZE", "40");

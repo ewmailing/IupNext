@@ -41,6 +41,7 @@ void iupImageStockFinish(void)
     IimageStock* istock = (IimageStock*)iupTableGetCurr(istock_table);
     if (iupObjectCheck(istock->image))
       IupDestroy(istock->image);
+    memset(istock, 0, sizeof(IimageStock));
     free(istock);
     name = iupTableNext(istock_table);
   }
@@ -80,14 +81,23 @@ static void iImageStockGet(const char* name, Ihandle* *ih, const char* *native_n
   }
 }
 
-void iupImageStockLoad(const char *name)
+static void iImageStockUnload(const char* name)
 {
-  /* Used only in iupImageLibLoadAll */
+  IimageStock* istock = (IimageStock*)iupTableGet(istock_table, name);
+  if (istock)
+    istock->image = NULL;
+}
+
+static void iImageStockLoad(const char *name)
+{
   const char* native_name = NULL;
   Ihandle* ih = NULL;
   iImageStockGet(name, &ih, &native_name);
   if (ih)
+  {
     IupSetHandle(name, ih);
+    iupAttribStoreStr(ih, "_IUPSTOCKLOAD", name);
+  }
   else if (native_name)
   {
     /* dummy image to save the GTK stock name */
@@ -104,6 +114,18 @@ void iupImageStockLoad(const char *name)
     }
   }
 }
+
+void iupImageStockLoadAll(void)
+{
+  /* Used only in IupView */
+  char* name = iupTableFirst(istock_table);
+  while (name)
+  {
+    iImageStockLoad(name);
+    name = iupTableNext(istock_table);
+  }
+}
+
 
 
 /**************************************************************************************************/
@@ -622,12 +644,17 @@ static int iImageRGBACreateMethod(Ihandle* ih, void** params)
 
 static void iImageDestroyMethod(Ihandle* ih)
 {
+  char* stock_name;
   unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   if (imgdata)
   {
     iupAttribSetStr(ih, "WID", NULL);
     free(imgdata);
   }
+
+  stock_name = iupAttribGet(ih, "_IUPSTOCKLOAD");
+  if (stock_name)
+    iImageStockUnload(stock_name);
 }
 
 /******************************************************************************/

@@ -13,10 +13,9 @@ extern "C" {
 
 /* Returns the IUP handle given the Windows handle. */
 
-Ihandle* iupwinHandleGet(void* handle);
-void iupwinHandleSet(Ihandle *ih);
-void iupwinHandleAdd(Ihandle *ih, InativeHandle* hWnd);
-void iupwinHandleRemove(Ihandle *ih);
+Ihandle* iupwinHandleGet(InativeHandle* handle);
+void iupwinHandleAdd(Ihandle *ih, InativeHandle* handle);
+void iupwinHandleRemove(InativeHandle* handle);
 void iupwinHandleInit(void);
 void iupwinHandleFinish(void);
 

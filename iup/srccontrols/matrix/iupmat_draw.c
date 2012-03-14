@@ -460,7 +460,7 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
     else
       iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
 
-    cdCanvasNativeFont(ih->data->cddbuffer, iupMatrixGetFont(ih, lin, col));
+    cdIupSetFont(ih, ih->data->cddbuffer, iupMatrixGetFont(ih, lin, col));
 
     /* Create an space between text and cell frame */
     x1 += IMAT_PADDING_W/2;       x2 -= IMAT_PADDING_W/2;

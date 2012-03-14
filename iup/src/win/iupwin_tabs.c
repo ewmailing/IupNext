@@ -558,6 +558,7 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       iupTabsTestRemoveTab(ih, pos);
 
       SendMessage(ih->handle, TCM_DELETEITEM, pos, 0);
+      iupwinHandleRemove(tab_page);
       DestroyWindow(tab_page);
 
       iupAttribSetStr(child, "_IUPTAB_CONTAINER", NULL);

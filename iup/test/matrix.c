@@ -78,7 +78,7 @@ static Ihandle* create_matrix(void)
   //IupSetAttribute(mat, "FGCOLOR1:2", "255 0 0");
   //IupSetAttribute(mat, "FGCOLOR2:*", "0 128 0");
   //IupSetAttribute(mat, "FGCOLOR*:3", "0 0 255");
-  //IupSetAttribute(mat, "FONT1:2", "Helvetica, 24");
+  IupSetAttribute(mat, "FONT3:3", "Helvetica, 24");
   //IupSetAttribute(mat, "FONT2:*", "Courier, 14");
   //IupSetAttribute(mat, "FONT*:3", "Times, Bold 14");
   //IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");

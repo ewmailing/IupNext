@@ -1577,7 +1577,25 @@ static void winListLayoutUpdateMethod(Ihandle *ih)
 
 static void winListUnMapMethod(Ihandle* ih)
 {
+  HWND handle;
+
   winListRemoveAllItemData(ih);
+
+  handle = (HWND)iupAttribGet(ih, "_IUPWIN_LISTBOX");
+  if (handle)
+  {
+    iupwinHandleRemove(handle);
+    iupAttribSetStr(ih, "_IUPWIN_LISTBOX", NULL);
+  }
+
+  handle = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
+  if (handle)
+  {
+    iupwinHandleRemove(handle);
+    iupAttribSetStr(ih, "_IUPWIN_EDITBOX", NULL);
+  }
+
+  iupdrvBaseUnMapMethod(ih);
 }
 
 static int winListMapMethod(Ihandle* ih)

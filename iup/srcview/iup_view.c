@@ -1,3 +1,9 @@
+#if 1
+/* To check for memory leaks */
+#define VLD_MAX_DATA_DUMP 80
+#include <vld.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -21,8 +27,8 @@
 /* IupImage internal function, used only here */
 int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const char* name);
 
-/* IupImageLib internal function, used only here */
-void iupImageLibLoadAll(void);
+/* IupImage internal function, used only here */
+void iupImageStockLoadAll(void);
 
 static int close_cb(void)
 {
@@ -690,7 +696,7 @@ static int loadimagelib_cb(Ihandle* self)
 {
   mainUpdateInternals();
 
-  iupImageLibLoadAll();
+  iupImageStockLoadAll();
 
   mainUpdateList(self, "ImageLib");
 
@@ -778,7 +784,7 @@ static void LoadImageFile(Ihandle* self, const char* file_name)
   }
 }
 
-static int GetOpenFileName(char* file)
+static int getOpenFileName(char* file)
 {
   Ihandle *gf;
   int ret;
@@ -804,7 +810,7 @@ static int loadimage_cb(Ihandle* self)
   char FileName[2000] = "*.*";
 
   /* Retrieve a file name */
-  if (GetOpenFileName(FileName) == -1)
+  if (getOpenFileName(FileName) == -1)
    return IUP_DEFAULT;
 
   mainUpdateInternals();
