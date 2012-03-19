@@ -186,7 +186,7 @@ static void iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1,
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || 
                                     ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEHCOLOR ||
-                                    ih->data->lines.flags[col] & IMAT_HAS_FRAMEHCOLOR))
+                                    ih->data->lines.flags[lin] & IMAT_HAS_FRAMEHCOLOR))
   {
     char* color;
     unsigned char r,g,b;
