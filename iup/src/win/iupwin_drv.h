@@ -34,6 +34,11 @@ void iupwinTipsGetDispInfo(LPARAM lp);
 void iupwinTipsUpdateInfo(Ihandle* ih, HWND tips_hwnd);
 void iupwinTipsDestroy(Ihandle* ih);
 
+/* touch */
+void iupwinTouchInit(void);
+void iupwinTouchRegisterAttrib(Iclass* ic);
+void iupwinTouchProcessInput(Ihandle* ih, int count, void* lp);
+
 /* font */
 char* iupwinGetHFontAttrib(Ihandle *ih);
 HFONT iupwinGetHFont(const char* value);

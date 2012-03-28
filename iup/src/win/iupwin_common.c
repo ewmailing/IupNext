@@ -29,11 +29,15 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 #include "iupwin_brush.h"
+#include "iupwin_info.h"
 
 
 /* Not defined in compilers older than VC9 or WinSDK older than 6.0 */
 #ifndef MAPVK_VK_TO_VSC
 #define MAPVK_VK_TO_VSC     (0)
+#endif
+#ifndef WM_TOUCH
+#define WM_TOUCH            0x0240
 #endif
 
 int iupwinClassExist(const char* name)
@@ -303,6 +307,15 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
     break;
   case WM_KILLFOCUS:
     iupCallKillFocusCb(ih);
+    break;
+  case WM_TOUCH:
+    /* TODO: 
+     - considering touch messages are greedy, one window got it all?
+     - how this work? only for the dialog, or also for the children?
+     - should a container forward to its children?
+    */
+    if (LOWORD(wp))
+      iupwinTouchProcessInput(ih, (int)LOWORD(wp), (void*)lp);
     break;
   case WOM_CLOSE:
   case WOM_DONE:
@@ -761,6 +774,9 @@ int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "HFONT", iupwinGetHFontAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+
+  if (iupwinIs7OrNew())
+    iupwinTouchRegisterAttrib(ic);
 }
 
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)

@@ -105,6 +105,9 @@ int iupdrvOpen(int *argc, char ***argv)
   iupwinBrushInit();
   iupwinDrawInit();
 
+  if (iupwinIs7OrNew())
+    iupwinTouchInit();
+
 #ifdef __WATCOMC__ 
   {
     /* this is used to force Watcom to link the winmain.c module. */

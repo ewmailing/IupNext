@@ -98,7 +98,7 @@ else
          win/iupwin_image.c win/iupwin_label.c win/iupwin_canvas.c win/iupwin_frame.c \
          win/iupwin_colordlg.c win/iupwin_fontdlg.c win/iupwin_filedlg.c \
          win/iupwin_button.c win/iupwin_draw.c win/iupwin_toggle.c win/iupwin_clipboard.c \
-         win/iupwin_progressbar.c win/iupwin_text.c win/iupwin_val.c \
+         win/iupwin_progressbar.c win/iupwin_text.c win/iupwin_val.c win/iupwin_touch.c \
          win/iupwin_tabs.c win/iupwin_menu.c win/iupwin_list.c win/iupwin_tree.c
          
   SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c

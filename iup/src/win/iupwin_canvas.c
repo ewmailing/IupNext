@@ -31,25 +31,6 @@
 #include "iupwin_info.h"
 
 
-#ifndef WM_TOUCH
-#define WM_TOUCH                        0x0240
-DECLARE_HANDLE(HTOUCHINPUT);
-typedef struct tagTOUCHINPUT {
-    LONG x; LONG y; HANDLE hSource; DWORD dwID; DWORD dwFlags; DWORD dwMask;
-    DWORD dwTime; ULONG_PTR dwExtraInfo; DWORD cxContact; DWORD cyContact;
-} TOUCHINPUT;
-#define TOUCHEVENTF_MOVE            0x0001
-#define TOUCHEVENTF_DOWN            0x0002
-#define TOUCHEVENTF_UP              0x0004
-#define TOUCHEVENTF_PRIMARY         0x0010
-#endif
-
-static int win_touch_loaded = 0;
-static BOOL (WINAPI *winGetTouchInputInfo)(HTOUCHINPUT hTouchInput, UINT cInputs, TOUCHINPUT* pInputs, int cbSize) = NULL;
-static BOOL (WINAPI *winCloseTouchInputHandle)(HTOUCHINPUT hTouchInput) = NULL;
-static BOOL (WINAPI *winRegisterTouchWindow)(HWND hwnd, ULONG ulFlags) = NULL;
-static BOOL (WINAPI *winUnregisterTouchWindow)(HWND hwnd) = NULL;
-static BOOL (WINAPI *winIsTouchWindow)(HWND hwnd, PULONG pulFlags) = NULL;
 
 static void winCanvasSetScrollInfo(HWND hWnd, int imin, int imax, int ipos, int ipage, int flag)
 {
@@ -378,38 +359,6 @@ static void winCanvasUpdateVerScroll(Ihandle* ih, WORD winop)
   }
 }
 
-static void winCanvasInitTouch(void)
-{
-  HINSTANCE lib = LoadLibrary("user32");
-  win_touch_loaded = 1;
-  winGetTouchInputInfo = (BOOL (WINAPI *)(HTOUCHINPUT,UINT,TOUCHINPUT *,int))GetProcAddress(lib, "GetTouchInputInfo");
-  winCloseTouchInputHandle = (BOOL (WINAPI *)(HTOUCHINPUT))GetProcAddress(lib, "CloseTouchInputHandle");
-  winRegisterTouchWindow = (BOOL (WINAPI *)(HWND,ULONG))GetProcAddress(lib, "RegisterTouchWindow");
-  winUnregisterTouchWindow = (BOOL (WINAPI *)(HWND))GetProcAddress(lib, "UnregisterTouchWindow");
-  winIsTouchWindow = (BOOL (WINAPI *)(HWND,PULONG))GetProcAddress(lib, "IsTouchWindow");
-}
-
-static int winCanvasSetTouchAttrib(Ihandle *ih, const char *value)
-{
-  if (win_touch_loaded)
-  {
-    if (iupStrBoolean(value))
-      winRegisterTouchWindow(ih->handle, 0);
-    else
-      winUnregisterTouchWindow(ih->handle);
-  }
-  return 0;
-}
-
-static char* winCanvasGetTouchAttrib(Ihandle* ih)
-{
-  ULONG pulFlags = 0;
-  if (win_touch_loaded && winIsTouchWindow(ih->handle, &pulFlags))
-    return "Yes";
-  else
-    return "No";
-}
-
 static char* winCanvasGetDrawSizeAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(20);
@@ -417,77 +366,6 @@ static char* winCanvasGetDrawSizeAttrib(Ihandle* ih)
   GetClientRect(ih->handle, &rect);
   sprintf(str, "%dx%d", (int)(rect.right-rect.left), (int)(rect.bottom-rect.top));
   return str;
-}
-
-static void winCanvasProcessMultiTouch(Ihandle* ih, int count, HTOUCHINPUT hTouchInput)
-{
-  IFniIIII mcb = (IFniIIII)IupGetCallback(ih, "MULTITOUCH_CB");
-  IFniiis cb = (IFniiis)IupGetCallback(ih, "TOUCH_CB");
-
-  if (mcb || cb)
-  {
-    int *px=NULL, *py=NULL, *pid=NULL, *pstate=NULL;
-    TOUCHINPUT* ti = malloc(count*sizeof(TOUCHINPUT));
-
-    if (mcb)
-    {
-      px = malloc(sizeof(int)*(count));
-      py = malloc(sizeof(int)*(count));
-      pid = malloc(sizeof(int)*(count));
-      pstate = malloc(sizeof(int)*(count));
-    }
-
-    if (winGetTouchInputInfo(hTouchInput, count, ti, sizeof(TOUCHINPUT)))
-    {
-      int i, x, y;
-      for (i = 0; i < count; i++)
-      {
-        x = ti[i].x / 100;
-        y = ti[i].y / 100;
-        iupdrvScreenToClient(ih, &x, &y);
-
-        if (ti[i].dwFlags & TOUCHEVENTF_DOWN ||
-            ti[i].dwFlags & TOUCHEVENTF_MOVE ||
-            ti[i].dwFlags & TOUCHEVENTF_UP)
-        {
-          char* state = (ti[i].dwFlags & TOUCHEVENTF_DOWN)? "DOWN": ((ti[i].dwFlags & TOUCHEVENTF_UP)? "UP": "MOVE");
-          if (cb)
-          {
-            if (ti[i].dwFlags & TOUCHEVENTF_PRIMARY)
-              state = (ti[i].dwFlags & TOUCHEVENTF_DOWN)? "DOWN-PRIMARY": ((ti[i].dwFlags & TOUCHEVENTF_UP)? "UP-PRIMARY": "MOVE-PRIMARY");
-
-            if (cb(ih, ti->dwID, x, y, state)==IUP_CLOSE)
-            {
-              IupExitLoop();
-              return;
-            }
-          }
-
-          if (mcb)
-          {
-            px[i] = x;
-            py[i] = y;
-            pid[i] = ti[i].dwID;
-            pstate[i] = state[0];
-          }
-        }
-      }
-    }
-
-    if (mcb)
-    {
-      if (mcb(ih, count, pid, px, py, pstate)==IUP_CLOSE)
-        IupExitLoop();
-
-      free(px);
-      free(py);
-      free(pid);
-      free(pstate);
-    }
-
-    winCloseTouchInputHandle(hTouchInput);
-    free(ti);
-  }
 }
 
 static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
@@ -670,10 +548,6 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     winCanvasUpdateHorScroll(ih, LOWORD(wp));
     *result = 0;
     return 1;
-  case WM_TOUCH:
-    if (win_touch_loaded && LOWORD(wp))
-      winCanvasProcessMultiTouch(ih, (int)LOWORD(wp), (HTOUCHINPUT)lp);
-    break;
   case WM_SETFOCUS:
     if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     {
@@ -772,9 +646,6 @@ static int winCanvasMapMethod(Ihandle* ih)
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DRAGDROP", "YES");
 
-  if (iupwinIs7OrNew())
-    winCanvasInitTouch();
-
   return IUP_NOERROR;
 }
 
@@ -846,9 +717,6 @@ void iupdrvCanvasInitClass(Iclass* ic)
   if (!iupwinClassExist("IupCanvas"))
     winCanvasRegisterClass();
 
-  iupClassRegisterCallback(ic, "TOUCH_CB", "iiis");
-  iupClassRegisterCallback(ic, "MULTITOUCH_CB", "iIII");
-
   /* Driver Dependent Class functions */
   ic->Map = winCanvasMapMethod;
   ic->UnMap = winCanvasUnMapMethod;
@@ -861,7 +729,6 @@ void iupdrvCanvasInitClass(Iclass* ic)
 
   /* IupCanvas only */
   iupClassRegisterAttribute(ic, "DRAWSIZE", winCanvasGetDrawSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TOUCH", winCanvasGetTouchAttrib, winCanvasSetTouchAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DX", NULL, winCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "DY", NULL, winCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */

@@ -15,6 +15,7 @@
 #include "iup_drv.h"
 #include "iup_drvinfo.h"
 #include "iup_key.h"
+#include "iup_class.h"
 
 #include "iupwin_drv.h"
 

@@ -163,6 +163,10 @@
 				RelativePath="..\src\win\iupwin_tips.c"
 				>
 			</File>
+			<File
+				RelativePath="..\src\win\iupwin_touch.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="src_controls"
