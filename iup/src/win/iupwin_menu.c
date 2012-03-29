@@ -288,11 +288,6 @@ static int winMenuSetBgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static void winMenuChildUnMapMethod(Ihandle* ih)
-{
-  RemoveMenu((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND);
-}
-
 static int winMenuAddParentSubmenu(Ihandle* ih)
 {
   int pos;
@@ -323,6 +318,28 @@ static int winMenuAddParentSubmenu(Ihandle* ih)
   return IUP_NOERROR;
 }
 
+static void winMenuChildUnMapMethod(Ihandle* ih)
+{
+  RemoveMenu((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND);
+}
+
+static void winMenuUnMapMethod(Ihandle* ih)
+{
+  if (iupMenuIsMenuBar(ih))
+  {
+    SetMenu(ih->parent->handle, NULL);
+    ih->parent = NULL;
+  }
+
+  if (!iupMenuIsMenuBar(ih) && ih->parent)
+  {
+    /* parent is a submenu, it is destroyed here */
+    RemoveMenu((HMENU)ih->parent->handle, (UINT)ih->parent->serial, MF_BYCOMMAND);
+  }
+
+  DestroyMenu((HMENU)ih->handle);   /* DestroyMenu is recursive */
+}
+
 static int winMenuMapMethod(Ihandle* ih)
 {
   MENUINFO menuinfo;
@@ -341,7 +358,7 @@ static int winMenuMapMethod(Ihandle* ih)
   {
     if (ih->parent)
     {
-      /* parent is a submenu */
+      /* parent is a submenu, it is created here */
 
       ih->handle = (InativeHandle*)CreatePopupMenu();
       if (!ih->handle)
@@ -380,17 +397,6 @@ static int winMenuMapMethod(Ihandle* ih)
   winMenuUpdateBar(ih);
 
   return IUP_NOERROR;
-}
-
-static void winMenuUnMapMethod(Ihandle* ih)
-{
-  if (iupMenuIsMenuBar(ih))
-  {
-    SetMenu(ih->parent->handle, NULL);
-    ih->parent = NULL;
-  }
-
-  DestroyMenu((HMENU)ih->handle);   /* DestroyMenu is recursive */
 }
 
 void iupdrvMenuInitClass(Iclass* ic)
