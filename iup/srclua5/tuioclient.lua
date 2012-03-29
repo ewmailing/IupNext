@@ -7,51 +7,9 @@ local ctrl = {
   creation = "N",  -- optional integer
   funcname = "TuioClient",
   callback = {
-    touch_cb = "nnns",
   },
   include = "iuptuio.h",
   extracode = [[ 
-static int tuio_multitouch_cb(Ihandle *ih, int count, int* id, int* px, int* py, int* pstate)
-{
-  int i;
-  lua_State *L = iuplua_call_start(ih, "multitouch_cb");
-  lua_pushinteger(L, count);
-  
-  lua_createtable(L, count, 0);
-  for (i = 0; i < count; i++)
-  {
-    lua_pushinteger(L,i+1);
-    lua_pushinteger(L,id[i]);
-    lua_settable(L,-3);
-  }
-  
-  lua_createtable(L, count, 0);
-  for (i = 0; i < count; i++)
-  {
-    lua_pushinteger(L,i+1);
-    lua_pushinteger(L,px[i]);
-    lua_settable(L,-3);
-  }
-  
-  lua_createtable(L, count, 0);
-  for (i = 0; i < count; i++)
-  {
-    lua_pushinteger(L,i+1);
-    lua_pushinteger(L,py[i]);
-    lua_settable(L,-3);
-  }
-  
-  
-  lua_createtable(L, count, 0);
-  for (i = 0; i < count; i++)
-  {
-    lua_pushinteger(L,i+1);
-    lua_pushinteger(L,pstate[i]);
-    lua_settable(L,-3);
-  }
-  
-  return iuplua_call(L, 5);
-}
 
 int iuptuiolua_open(lua_State* L)
 {
@@ -60,8 +18,6 @@ int iuptuiolua_open(lua_State* L)
     
   iuplua_get_env(L);
   iuptuioclientlua_open(L);
-  
-  iuplua_register_cb(L, "MULTITOUCH_CB", (lua_CFunction)tuio_multitouch_cb, NULL);
   
   return 0;
 }

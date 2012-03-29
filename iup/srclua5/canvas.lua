@@ -17,6 +17,7 @@ local ctrl = {
     wom_cb = "n",
     wheel_cb = "fnns",
     mdiactivate_cb = "",
+    touch_cb = "nnns",
     focus_cb = "n",
   }
 }

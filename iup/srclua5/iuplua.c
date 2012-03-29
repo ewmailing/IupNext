@@ -684,6 +684,48 @@ static int killfocus_cb(Ihandle *self)
   return iuplua_call(L, 0);
 }
 
+static int multitouch_cb(Ihandle *ih, int count, int* pid, int* px, int* py, int* pstate)
+{
+  int i;
+  lua_State *L = iuplua_call_start(ih, "multitouch_cb");
+  lua_pushinteger(L, count);
+  
+  lua_createtable(L, count, 0);
+  for (i = 0; i < count; i++)
+  {
+    lua_pushinteger(L,i+1);
+    lua_pushinteger(L,pid[i]);
+    lua_settable(L,-3);
+  }
+  
+  lua_createtable(L, count, 0);
+  for (i = 0; i < count; i++)
+  {
+    lua_pushinteger(L,i+1);
+    lua_pushinteger(L,px[i]);
+    lua_settable(L,-3);
+  }
+  
+  lua_createtable(L, count, 0);
+  for (i = 0; i < count; i++)
+  {
+    lua_pushinteger(L,i+1);
+    lua_pushinteger(L,py[i]);
+    lua_settable(L,-3);
+  }
+  
+  
+  lua_createtable(L, count, 0);
+  for (i = 0; i < count; i++)
+  {
+    lua_pushinteger(L,i+1);
+    lua_pushinteger(L,pstate[i]);
+    lua_settable(L,-3);
+  }
+  
+  return iuplua_call(L, 5);
+}
+
 static int Idlecall(void)
 {
   int ret = 0;
@@ -897,6 +939,7 @@ int iuplua_open(lua_State * L)
   iuplua_register_cb(L, "GETFOCUS_CB", (lua_CFunction)getfocus_cb, NULL);
   iuplua_register_cb(L, "K_ANY", (lua_CFunction)k_any, NULL);
   iuplua_register_cb(L, "KILLFOCUS_CB", (lua_CFunction)killfocus_cb, NULL);
+  iuplua_register_cb(L, "MULTITOUCH_CB", (lua_CFunction)multitouch_cb, NULL);
 
   /* Register Keys */
   iupKeyForEach(register_key, (void*)L);
