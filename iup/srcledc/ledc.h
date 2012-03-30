@@ -2,7 +2,7 @@
  * \brief LEDC definitions.
  *
  * See Copyright Notice in iup.h
- * $Id: ledc.h,v 1.3 2011-03-24 17:30:41 scuri Exp $
+ * $Id: ledc.h,v 1.4 2012-03-30 16:26:20 scuri Exp $
  */
  
 #ifndef __LEDC_H 
@@ -62,7 +62,7 @@ void    cleanlist( Tlist* l );
 
 void decl( Telem* e );
 
-void use( char* name );
+void checkused( char* name );
 void named( char* name );
 
 void init(void);
@@ -76,6 +76,7 @@ extern char* filename;
 extern char* outname;
 extern char* funcname;
 extern int   nocode;
+extern int   static_image;
 
 #ifdef __cplusplus
 }

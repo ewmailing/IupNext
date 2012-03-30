@@ -166,6 +166,7 @@ static int usage(void)
     "ledc [-v] [-c] [-f funcname] [-o file] files\n"
     "  -v            print the version number\n"
     "  -c            only perform checking, do not generate code\n"
+    "  -s            declarate image data as static\n"
     "  -f funcname   generate exported function <funcname> (default: led_load)\n"
     "  -o file       place output in file <file> (default: led.c)\n"
   );
@@ -211,6 +212,9 @@ int main(int argc, char *argv[])
         break;
       case 'c':
         nocode = 1;
+        break;
+      case 's':
+        static_image = 1;
         break;
       default:
         return usage();
@@ -317,7 +321,7 @@ yyloop:
     goto yynewerror;
 #endif
 yynewerror:
-    yyerror("syntax error");
+    yyerror("invalid syntax");
 #ifdef lint
     goto yyerrlab;
 #endif
@@ -426,7 +430,7 @@ case 14:
 break;
 case 15:
 #line 70 "ledc.y"
-{ yyval.fParam = param( ELEM_PARAM, yyvsp[0].fElem ); use(yyvsp[0].fElem->name); }
+{ yyval.fParam = param( ELEM_PARAM, yyvsp[0].fElem ); checkused(yyvsp[0].fElem->name); }
 break;
 case 16:
 #line 74 "ledc.y"

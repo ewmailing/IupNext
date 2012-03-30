@@ -23,6 +23,7 @@ char *filename;
 char *outname = 0;
 char *funcname = 0;
 int   nocode = 0;
+int   static_image = 0;
 
 typedef struct {
   char* name;
@@ -47,7 +48,8 @@ static struct {
   { "iupgl",      0 },
   { "iupole",     0 },
   { "iupweb",     0 },
-  { "iup_pplot",  0 }
+  { "iup_pplot",  0 },
+  { "iup_mglplot",  0 }
 };
 #define nheaders (sizeof(headerfile)/sizeof(headerfile[0]))
 
@@ -57,7 +59,8 @@ enum headers {
   IUPGL_H, 
   IUPOLE_H,
   IUPWEB_H,
-  IUPPPLOT_H
+  IUPPPLOT_H,
+  IUPMGLPLOT_H
 };
 
 static void check_empty( Telem* elem );
@@ -69,6 +72,7 @@ static void check_cb( Telem* elem );
 static void check_elem( Telem* elem );
 static void check_elemlist( Telem* elem );
 static void check_elemlist2( Telem* elem );
+static void check_elemlist_rep( Telem* elem );
 static void check_string_cb( Telem* elem );
 static void check_string_elem( Telem* elem );
 static void check_iupCpi( Telem* elem );
@@ -134,7 +138,7 @@ elems[] =
   { "Toggle",       code_string_cb,    check_string_cb,   0  },
   { "Vbox",         code_elemlist,     check_elemlist,    0  },
   { "Zbox",         code_elemlist,     check_elemlist,    0  },
-  { "Normalizer",   code_elemlist,     check_elemlist,    0  },
+  { "Normalizer",   code_elemlist,     check_elemlist_rep,    0  },
   { "OleControl",   code_string,       check_cb,          IUPOLE_H  },
   { "Cbox",         code_elemlist,     check_elemlist,    0  },
   { "Cells",        code_empty,        check_empty,       IUPCONTROLS_H  },
@@ -142,6 +146,7 @@ elems[] =
   { "Spinbox",      code_elem,         check_elem,        0  },
   { "Split",        code_elemlist2,    check_elemlist2,   0  },
   { "PPlot",        code_empty,        check_empty,       IUPPPLOT_H  },
+  { "MglPlot",      code_empty,        check_empty,       IUPMGLPLOT_H  },
   { "WebBrowser",   code_empty,        check_empty,       IUPWEB_H  },
   { "@@@",          code_iupCpi,       check_iupCpi,      0  }
 };
@@ -160,7 +165,7 @@ static int mystricmp(char *s1, char *s2)
 void error( char* fmt, ... )
 {
   va_list args;
-  fprintf(stderr, "%s:%d: ", filename, yylineno );
+  fprintf(stderr, "%s:%d: error: ", filename, yylineno );
   va_start(args, fmt);
   vfprintf(stderr, fmt, args);
   va_end(args);
@@ -187,8 +192,8 @@ void named( char* name )
   addlist( all_names, n );
 }
 
-/* used in y.tab.c */
-void use( char* name )
+/* used also in y.tab.c */
+void checkused( char* name )
 {
   Telemlist* p = all_names->first;
   if (!name) return;
@@ -198,8 +203,10 @@ void use( char* name )
 
     if (!strcmp(name,n->name)) 
     {
-      if (n->used) error("element '%s' already used in line %d", name, n->used );
-      else n->used = yylineno;
+      if (n->used) 
+        error("element '%s' already used in line %d", name, n->used );
+      else 
+        n->used = yylineno;
       break;  
     }
     p = p->next;
@@ -233,7 +240,7 @@ static int verify_nparams( int min, int max, Telem* elem )
   return 1;
 }
 
-static void param_elem( Tparam* p[], int n )
+static void param_elem( Tparam* p[], int n, int rep )
 {
   switch (p[n-1]->tag)
   {
@@ -245,13 +252,9 @@ static void param_elem( Tparam* p[], int n )
       break;
     case NAME_PARAM:
       if (!iselem(p[n-1]->data.name))
-      {
         warning( "undeclared control '%s' (argument #%d)", p[n-1]->data.name, n );
-      }
-      else
-      {
-        use( p[n-1]->data.name );
-      }
+      else if (!rep)
+        checkused( p[n-1]->data.name );
       break;
     case STRING_PARAM:
       error( "control expected (argument #%d)", n );
@@ -380,7 +383,7 @@ static void check_cb( Telem* elem )
 static void check_elem( Telem* elem )
 {
   if (!verify_nparams( 1, 1, elem )) return;
-  param_elem( elem->params, 1 );
+  param_elem( elem->params, 1, 0 );
 }
 
 static void check_elemlist( Telem* elem )
@@ -388,7 +391,15 @@ static void check_elemlist( Telem* elem )
   int i;
   if (!verify_nparams( 1, -1, elem )) return;
   for (i=0; i<elem->nparams; i++)
-    param_elem( elem->params, i+1 );
+    param_elem( elem->params, i+1, 0 );
+}
+
+static void check_elemlist_rep( Telem* elem )
+{
+  int i;
+  if (!verify_nparams( 1, -1, elem )) return;
+  for (i=0; i<elem->nparams; i++)
+    param_elem( elem->params, i+1, 1);
 }
 
 static void check_elemlist2( Telem* elem )
@@ -396,7 +407,7 @@ static void check_elemlist2( Telem* elem )
   int i;
   if (!verify_nparams( 1, 2, elem )) return;
   for (i=0; i<elem->nparams; i++)
-    param_elem( elem->params, i+1 );
+    param_elem( elem->params, i+1, 0 );
 }
 
 static void check_string_cb( Telem* elem )
@@ -410,7 +421,7 @@ static void check_string_elem( Telem* elem )
 {
   if (!verify_nparams( 2, 2, elem )) return;
   param_string( elem->params, 1 );
-  param_elem( elem->params, 2 );
+  param_elem( elem->params, 2, 0 );
 }
 
 static void check_iupCpi( Telem* elem )
@@ -632,7 +643,7 @@ static void code_image( Telem* elem )
   fprintf( outfile,
     " (void)\n"
     "{\n"
-    "  unsigned char map[] = {" );
+    "  %sunsigned char map[] = {", static_image? "static ": "" );
 
   for (i=0; i<w*h*d; i++)
   {
@@ -642,7 +653,7 @@ static void code_image( Telem* elem )
 
   fprintf( outfile,
     "\n"
-    "  -1 };\n\n" );
+    "  0 };\n\n" );
   indent();
   code_start( elem );
   fprintf( outfile, "( %d, %d, map )", elem->data.image.w, elem->data.image.h );
