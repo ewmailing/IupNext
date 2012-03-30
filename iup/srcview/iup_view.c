@@ -1,4 +1,4 @@
-#if 1
+#if 0
 /* To check for memory leaks */
 #define VLD_MAX_DATA_DUMP 80
 #include <vld.h>
