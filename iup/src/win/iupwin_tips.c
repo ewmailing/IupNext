@@ -29,7 +29,7 @@
 static HWND winTipsCreate(HWND hParent)
 {
   RECT rect = {1,1,1,1};
-  HWND tips_hwnd = CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, (LPSTR) NULL, TTS_ALWAYSTIP, 
+  HWND tips_hwnd = CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, (LPSTR) NULL, TTS_ALWAYSTIP|TTS_NOPREFIX, 
                                   CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 
                                   hParent, (HMENU)NULL, iupwin_hinstance, NULL); 
   SendMessage(tips_hwnd, TTM_SETMAXTIPWIDTH, 0, (LPARAM)(INT)3000); 
