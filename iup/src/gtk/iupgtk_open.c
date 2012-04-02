@@ -212,6 +212,8 @@ int iupdrvOpen(int *argc, char ***argv)
 
   IupSetGlobal("SHOWMENUIMAGES", "YES");
 
+  IupSetGlobal("UBUNTU_MENUPROXY", getenv("UBUNTU_MENUPROXY"));
+
   return IUP_NOERROR;
 }
 

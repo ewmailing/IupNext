@@ -107,7 +107,7 @@ static int gtkDialogGetMenuSize(Ihandle* ih)
 #ifdef HILDON
   return 0;
 #else
-  if (ih->data->menu)
+  if (ih->data->menu && !iupStrEqualNoCase(IupGetGlobal("UBUNTU_MENUPROXY"), "libappmenu.so"))
     return iupdrvMenuGetMenuBarSize(ih->data->menu);
   else
     return 0;
