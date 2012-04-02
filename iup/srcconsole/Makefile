@@ -6,9 +6,10 @@ endif
 
 .PHONY: do_all iuplua5 iuplua5gtk iuplua3
 do_all: iuplua5
-
+ 
 iuplua5:
-	@$(TECMAKE_CMD) 
+	@$(TECMAKE_CMD) USE_LUA51=Yes
+	@$(TECMAKE_CMD) USE_LUA52=Yes
 
 iuplua5gtk:
 	@$(TECMAKE_CMD) USE_GTK=Yes
