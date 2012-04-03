@@ -186,6 +186,7 @@ void iupgtkUpdateGlobalColors(GtkStyle* style)
 
 int iupdrvOpen(int *argc, char ***argv)
 {
+  char* value;
   GtkStyle* style;
 
   if (!gtk_init_check(argc, argv))
@@ -212,8 +213,10 @@ int iupdrvOpen(int *argc, char ***argv)
 
   IupSetGlobal("SHOWMENUIMAGES", "YES");
 
-  IupSetGlobal("UBUNTU_MENUPROXY", getenv("UBUNTU_MENUPROXY"));
-
+  value = getenv("UBUNTU_MENUPROXY");  /* for now only in Ubuntu */
+  if (value && iupStrEqualNoCase(value, "libappmenu.so"))
+    iupgtk_globalmenu = 1;
+  
   return IUP_NOERROR;
 }
 

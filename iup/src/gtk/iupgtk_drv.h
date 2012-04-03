@@ -14,6 +14,7 @@ extern "C" {
 
 /* global variables, declared in iupgtk_globalattrib.c */
 extern int iupgtk_utf8autoconvert;         
+extern int iupgtk_globalmenu;
 
 
 /* common */

@@ -22,6 +22,8 @@
 
 
 int iupgtk_utf8autoconvert = 1;
+int iupgtk_globalmenu = 0;
+
 
 static void iGdkEventFunc(GdkEvent *evt, gpointer	data)
 {
@@ -142,6 +144,14 @@ int iupdrvSetGlobal(const char *name, const char *value)
     else
       g_object_set (gtk_settings_get_default (), "gtk-menu-images", FALSE, NULL);
   }
+  if (iupStrEqual(name, "GLOBALMENU"))
+  {
+    if (iupStrBoolean(value))
+      iupgtk_globalmenu = 1;
+    else
+      iupgtk_globalmenu = 0;
+    return 0;
+  }
   return 1;
 }
 
@@ -211,6 +221,13 @@ char *iupdrvGetGlobal(const char *name)
     gboolean menu_images;
     g_object_get (gtk_settings_get_default (), "gtk-menu-images", &menu_images, NULL);
     if (menu_images)
+      return "YES";
+    else
+      return "NO";
+  }
+  if (iupStrEqual(name, "GLOBALMENU"))
+  {
+    if (iupgtk_globalmenu)
       return "YES";
     else
       return "NO";
