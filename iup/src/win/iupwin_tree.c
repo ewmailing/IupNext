@@ -248,6 +248,9 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
       /* MarkStart node */
       iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)hItemNew);
 
+      /* Select the first node */
+      SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNew);
+
       /* Set the default VALUE */
       winTreeSetFocusNode(ih, hItemNew);
     }
