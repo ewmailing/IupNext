@@ -799,12 +799,14 @@ static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, int fontstyle, float f
   gr->SetFontSize(fontsizefactor*ih->data->FontSizeDef);
 }
 
-static void iMglPlotConfigColor(Ihandle* ih, mglGraph *gr, mglColor color)
+static mglColor iMglPlotConfigColor(Ihandle* ih, mglGraph *gr, mglColor color)
 {
   if (isnan(color.r) || isnan(color.g) || isnan(color.b))
     color = ih->data->fgColor;
 
   gr->DefColor(color, 1);
+
+  return color;
 }
 
 static char* iMglPlotConfigPen(mglGraph *gr, char* pen, char line_style, float line_width)
@@ -1204,7 +1206,7 @@ static void iMglPlotConfigAxisTicksLen(mglGraph *gr, Iaxis& axis)
 
 static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
 {
-  iMglPlotConfigColor(ih, gr, axis.axColor);
+  axis.axColor = iMglPlotConfigColor(ih, gr, axis.axColor);
   iMglPlotConfigFont(ih, gr, axis.axTickFontStyle, axis.axTickFontSizeFactor);
 
   // Must be set here, because there is only one for all the axis.
@@ -1262,14 +1264,14 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
     float y = pos==2?1.0f:0;
     if (pos==1 || pos==0)
     {
-      iMglPlotConfigColor(ih, gr, ih->data->axisX.axColor);
+      ih->data->axisX.axColor = iMglPlotConfigColor(ih, gr, ih->data->axisX.axColor);
       iMglPlotConfigFont(ih, gr, ih->data->axisX.axTickFontStyle, ih->data->axisX.axTickFontSizeFactor);
       y = 0.15f;
       h = 0.7f;
     }
     else
     {
-      iMglPlotConfigColor(ih, gr, ih->data->axisY.axColor);
+      ih->data->axisY.axColor = iMglPlotConfigColor(ih, gr, ih->data->axisY.axColor);
       iMglPlotConfigFont(ih, gr, ih->data->axisY.axTickFontStyle, ih->data->axisY.axTickFontSizeFactor);
       x = 0.15f;
       w = 0.7f;
@@ -1282,7 +1284,7 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
 static void iMglPlotDrawGrid(Ihandle* ih, mglGraph *gr)
 {
   char pen[10], grid[10];
-  iMglPlotConfigColor(ih, gr, ih->data->gridColor);
+  ih->data->gridColor = iMglPlotConfigColor(ih, gr, ih->data->gridColor);
   iMglPlotConfigPen(gr, pen, ih->data->gridLineStyle, 1);
   iupStrLower(grid, ih->data->gridShow);
   gr->Grid(grid, pen);
@@ -1290,10 +1292,8 @@ static void iMglPlotDrawGrid(Ihandle* ih, mglGraph *gr)
 
 static void iMglPlotDrawBox(Ihandle* ih, mglGraph *gr)
 {
-  char pen[10];
-  iMglPlotConfigColor(ih, gr, ih->data->boxColor);
-  iMglPlotConfigPen(gr, pen, '-', 1);
-  gr->Box(pen, ih->data->boxTicks);
+  ih->data->boxColor = iMglPlotConfigColor(ih, gr, ih->data->boxColor);
+  gr->Box(ih->data->boxColor, ih->data->boxTicks);
 }
 
 static char* iMglPlotMakeFormatString(float inValue, float range) 
@@ -1347,7 +1347,7 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
   if (!yformat) yformat = iMglPlotMakeFormatString(gr->dy, gr->Max.y-gr->Min.y);
   if (!zformat) zformat = iMglPlotMakeFormatString(gr->dz, gr->Max.z-gr->Min.z);
 
-  iMglPlotConfigColor(ih, gr, ds->dsColor);
+  ds->dsColor = iMglPlotConfigColor(ih, gr, ds->dsColor);
   iMglPlotConfigFont(ih, gr, ih->data->legendFontStyle, ih->data->legendFontSizeFactor);
 
   float* dsXPoints = ds->dsX->a;
@@ -1772,7 +1772,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 {               
   char style[64] = "";
 
-  iMglPlotConfigColor(ih, gr, ds->dsColor);
+  ds->dsColor = iMglPlotConfigColor(ih, gr, ds->dsColor);
 
   int nx = (int)ds->dsX->nx;
   mglData xx(nx);
@@ -1994,14 +1994,14 @@ static void iMglPlotDrawLegend(Ihandle* ih, mglGraph *gr)
   gr->SetLegendBox(ih->data->legendBox);
 
   // Draw legend of accumulated strings
-  iMglPlotConfigColor(ih, gr, ih->data->legendColor);
+  ih->data->legendColor = iMglPlotConfigColor(ih, gr, ih->data->legendColor);
   iMglPlotConfigFont(ih, gr, ih->data->legendFontStyle, ih->data->legendFontSizeFactor);
   gr->Legend(ih->data->legendPosition, NULL, -1, 0.08f);
 }
 
 static void iMglPlotDrawTitle(Ihandle* ih, mglGraph *gr, const char* title)
 {
-  iMglPlotConfigColor(ih, gr, ih->data->titleColor);
+  ih->data->titleColor = iMglPlotConfigColor(ih, gr, ih->data->titleColor);
   iMglPlotConfigFont(ih, gr, ih->data->titleFontStyle, ih->data->titleFontSizeFactor);
       
   // Check if all characters are loaded
@@ -4842,7 +4842,7 @@ void IupMglPlotDrawMark(Ihandle* ih, float x, float y, float z)
   mglColor color;
   if (!value) color = ih->data->fgColor;
   else iMglPlotSetColor(ih, value, color);
-  iMglPlotConfigColor(ih, gr, color);
+  color = iMglPlotConfigColor(ih, gr, color);
 
   value = iupAttribGetStr(ih, "DRAWMARKSTYLE");
   char markstyle = 'x';
@@ -4885,7 +4885,7 @@ void IupMglPlotDrawLine(Ihandle* ih, float x1, float y1, float z1, float x2, flo
   if (linewidth<=0) linewidth = 1.0f;
 
   char pen[10];
-  iMglPlotConfigColor(ih, gr, color);
+  color = iMglPlotConfigColor(ih, gr, color);
   iMglPlotConfigPen(gr, pen, linestyle, linewidth);
   gr->Line(mglPoint(x1, y1, z1), mglPoint(x2, y2, z2), pen);
 }
@@ -4930,7 +4930,7 @@ void IupMglPlotDrawText(Ihandle* ih, const char* text, float x, float y, float z
       style = NULL;
   }
 
-  iMglPlotConfigColor(ih, gr, color);
+  color = iMglPlotConfigColor(ih, gr, color);
   iMglPlotConfigFont(ih, gr, fontstyle, fontsize);
   
   // Check if all characters are loaded
