@@ -18,8 +18,8 @@
 .style4 {
 	text-decoration: underline;
 }
-.style5 {
-	margin-left: 40px;
+.style6 {
+	text-align: center;
 }
 </style>
 </head>
@@ -170,17 +170,15 @@ line multi compiler build tool based on GNU make, available at
   <a target="_blank" href="http://www.tecgraf.puc-rio.br/tecmake">
 http://www.tecgraf.puc-rio.br/tecmake</a>. Tecmake is used by all the Tecgraf 
 libraries and many applications.</p>
-<p>In UNIX, you do not need to install Tecmake, a version for 
-Posix systems is already included in the source code package. Just type &quot;make&quot; in the 
-command line on the main folder and all libraries and executables will be 
-build. Set the TECTOOLS_HOME environment variable to the folder were the CD, IM 
-and Lua libraries are installed, by default it will assume 
-&quot;TECTOOLS_HOME=../..&quot;.</p>
+<p>You do not need to install Tecmake, scripts for Posix and Windows systems are already included in the source code package. Just type &quot;make&quot; 
+in the command line on the main folder and all libraries and executables will be 
+build.</p>
 <p>In Linux, check the &quot;<a href="building.html">Building Lua, IM, CD and IUP in 
 Linux</a>&quot; guide.</p>
-<p>In Windows, the easiest way to build everything is to install the Tecmake 
-tool into your system. It is easy and helps a lot. The Tecmake configuration 
-files (*.mak) available at the &quot;src*&quot; folders are very easy to understand also. 
+<p>In Windows, check the &quot;<a href="buildwin.html">Building Lua, IM, CD and IUP in 
+Window</a>&quot; guide.</p>
+<p>If you decide to install Tecmake, the Tecmake configuration 
+files (*.mak) are available at the &quot;src*&quot; folders, and are very easy to understand. 
 In the<b> </b>main folder, and in each source folder, there are files 
 named 
 <i>make_uname.bat</i> that build the libraries using <b>Tecmake</b>. To build 
@@ -188,13 +186,6 @@ for Windows using Visual C 9.0 (2008) for example, just execute <i>&quot;make_un
 vc9&quot;</i> in the iup main folder, or for the DLLs type <i>
 &quot;make_uname dll9&quot;</i>. The Visual Studio workspaces with the respective projects 
 available in the source package is for debugging purposes only.</p>
-<p>If you don't want to install Tecmake you can use the version for Windows 
-systems that is included in the source code package. BUt is is more complicated 
-that its Posix counterpart. First the GNU make must be installed and in the PATH 
-before other makes. In the command line you must specify the compiler path and 
-the TEC_UNAME variable. For example:</p>
-<pre>make -f tecmakewin.mak TEC_UNAME=mingw4 MINGW4=c:/mingw 
-make -f tecmakewin.mak TEC_UNAME=gcc4 GCC4=c:/cygwin           (Cygwin building for Win32)</pre>
 <p><b>IUP</b> runs on many different systems and interact with many different 
 libraries such as
   <a href="http://www.opengroup.org/openmotif/" target="_blank">Motif</a>, 
@@ -211,6 +202,8 @@ expect the following directory tree:</p>
         cd/
         im/
         lua5.1/</pre>
+<p>To control that location set the TECTOOLS_HOME environment variable to the 
+folder were the CD, IM and Lua libraries are installed.</p>
 <p>IUP_ASSERT can be defined to enable some runtime checks for the main API.</p>
 <h4>Libraries Dependencies</h4>
 <pre><em>iupwin*</em> -&gt; <strong><span class="style1">gdi32</span></strong> <strong><span class="style1">user32</span></strong> <strong><span class="style1">comdlg32</span></strong> <strong><span class="style1">comctl32</span></strong> <strong><span class="style1">ole32</span></strong> (system - Windows)
@@ -277,14 +270,10 @@ source code structure:</p>
     srcview/     - IupView executable</pre>
 <p>The Lua bindings for IUP, CD and IM (Makefiles and Pre-compiled binaries) 
 depend on the <a href="http://luabinaries.luaforge.net/">LuaBinaries</a> 
-distribution. So if you are going to build all use the <strong>LuaBinaries</strong> 
+distribution. So if you are going to build from source, then use the <strong>LuaBinaries</strong> 
 source package also, not the <strong>Lua.org</strong> original source package. 
 If you like to use another location for the Lua files define LUA_SUFFIX, LUA_INC, 
 LUA_LIB and LUA_BIN before using Tecmake.</p>
-<p>To use IupLua with <a href="http://luajit.org/">LuaJIT</a> you must recompile 
-the pre-compiled binaries with the IUPLUA_NO_LOH definition set. Can be set on 
-the environment or as a parameter in the command line, for example: &quot;make 
-IUPLUA_NO_LOH=1&quot;. </p>
 <p>In Ubuntu you will need to install the following packages and their 
 dependencies (they are not installed by default):</p>
 <pre>libgtk2.0-dev (for the GTK driver)
@@ -347,8 +336,8 @@ functions. Some users contributed with C++ wrappers, see next on <strong>
 Contributions</strong>.</p>
 <h3><a name="contrib">Contributions</a></h3>
 <p>All the contributions use the same license terms of the IUP license.</p>
-<h4>
-<p class="style5">C++ Wrappers</p>
+<h4 class="style6">
+C++ Wrappers
 </h4>
 <h4><a href="../download/rss_gui.html">RSSGui</a> by Danny Reinhold. (<a href="../download/RSS_GUI_0_5.zip">RSS_GUI_0_5.zip</a>)</h4>
 <blockquote>
@@ -383,8 +372,8 @@ forwards the call to a C++ object and method.&nbsp;</p>
 
 </blockquote>
 
-<h4>
-<p class="style5">Tools</p>
+<h4 class="style6">
+Tools
 </h4>
 <h4><a href="http://www.cheshireeng.com/free/index.html">IupAsync</a> by Ross 
 Berteig</h4>
@@ -402,8 +391,8 @@ Windows platform only. It is intended that it be ported to the other platforms
 supported by IUP (GTK and Motif for Linux and OSX).</em></p>
 </blockquote>
 
-<h4>
-<p class="style5">Drivers</p>
+<h4 class="style6">
+Drivers
 </h4>
 
 <h4><a href="http://github.com/phasis68/iup_mac">IUP 3 MacOSX Driver</a> by Heesob Park</h4>
@@ -411,8 +400,8 @@ supported by IUP (GTK and Motif for Linux and OSX).</em></p>
 	<p>A native driver for MacOSX using Cocoa. On going work. Help needed!</p>
 </blockquote>
 
-<h4>
-<p class="style5">Language Bindings</p>
+<h4 class="style6">
+Language Bindings
 </h4>
 
 <h4><a href="basic/index.html">A Basic Guide to using IupLua</a> by Steve 

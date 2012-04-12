@@ -158,6 +158,10 @@ wb_usr.tree =
           link= "building.html"
         },
         {
+          name= {en= "Building in Windows"},
+          link= "buildwin.html"
+        },
+        {
           name= {en= "IDEs"},
 
           folder=
