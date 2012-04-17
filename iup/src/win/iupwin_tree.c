@@ -753,6 +753,7 @@ static void winTreeCallMultiUnSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTIUNSELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
+
   if (cbSelec || cbMulti)
   {
     Iarray* markedArray = winTreeGetSelectedArrayId(ih);
@@ -777,6 +778,7 @@ static void winTreeCallMultiUnSelectionCb(Ihandle* ih)
 static void winTreeCallMultiSelectionCb(Ihandle* ih)
 {
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
+
   if(cbMulti)
   {
     Iarray* markedArray = winTreeGetSelectedArrayId(ih);
@@ -829,6 +831,7 @@ static int winTreeCallDragDropCb(Ihandle* ih, HTREEITEM	hItemDrag, HTREEITEM hIt
 {
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
   int is_shift = 0;
+
   if ((GetKeyState(VK_SHIFT) & 0x8000))
     is_shift = 1;
   if ((GetKeyState(VK_CONTROL) & 0x8000))
@@ -1847,12 +1850,16 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
 
   if (hItem)
   {
-    if (ih->data->mark_mode==ITREE_MARK_SINGLE)
-    {
-      winTreeSelectNode(ih, hItemFocus, 0);
-      winTreeSelectNode(ih, hItem, 1);
-    }
+    winTreeSelectNode(ih, hItemFocus, 0);
+    winTreeSelectNode(ih, hItem, 1);
     winTreeSetFocusNode(ih, hItem);
+
+//     if (ih->data->mark_mode==ITREE_MARK_SINGLE)
+//     {
+//       winTreeSelectNode(ih, hItemFocus, 0);
+//       winTreeSelectNode(ih, hItem, 1);
+//     }
+//     winTreeSetFocusNode(ih, hItem);
   }
 
   return 0;
@@ -2121,6 +2128,7 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
 static void winTreeCallRightClickCb(Ihandle* ih, int x, int y)
 {
   HTREEITEM hItem = winTreeFindNodeXY(ih, x, y);
+
   if (hItem)
   {
     IFni cbRightClick = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
