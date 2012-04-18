@@ -1023,6 +1023,16 @@ static char* iMatrixGetMaskDataAttrib(Ihandle* ih)
     return NULL;
 }
 
+static int iMatrixSetVisibleAttrib(Ihandle* ih, const char* value)
+{
+  if (!iupStrBoolean(value))
+  {
+    if (iupMatrixEditIsVisible(ih))
+      iupMatrixEditForceHidden(ih);
+  }
+
+  return iupBaseSetVisibleAttrib(ih, value);
+}
 
 /*****************************************************************************/
 /*   Callbacks registered to the Canvas                                      */
@@ -1367,6 +1377,8 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterCallback(ic, "VALUE_EDIT_CB", "iis");
   iupClassRegisterCallback(ic, "MARK_CB", "ii");
   iupClassRegisterCallback(ic, "MARKEDIT_CB", "iii");
+
+  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iMatrixSetVisibleAttrib, "YES", "NO", IUPAF_NO_SAVE|IUPAF_DEFAULT);
 
   /* Change the Canvas default */
   iupClassRegisterReplaceAttribDef(ic, "CURSOR", "IupMatrixCrossCursor", "ARROW");
