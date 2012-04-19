@@ -62,7 +62,7 @@ void ZboxTest(void)
       list = IupList(NULL),
       NULL
     )
-  ),
+  );
 
   /* Creates dialog */
   dlg = IupDialog

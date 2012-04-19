@@ -83,6 +83,16 @@ USE_OPENGL = Yes
 DEFINES += USE_OPENGL
 SRC += glcanvas.c
 SRC += glcanvas_cube.c
+SRC += charac.c
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  LIBS += cdgl
+  LDIR += $(CD)/lib/$(TEC_UNAME)
+else
+  SLIB += $(CDLIB)/libcdgl.a $(CDLIB)/libftgl.a 
+  ifdef USE_MOTIF
+    LIBS += fontconfig
+  endif  
+endif
 
 USE_IUPCONTROLS = Yes
 SRC += colorbrowser.c

@@ -72,6 +72,7 @@ void ScanfTest(void);
 void SboxTest(void);
 void SplitTest(void);
 void ClipboardTest(void);
+void CharacTest(void);
 
 void HelpTest(void)
 {
@@ -93,6 +94,7 @@ static TestItems test_list[] = {
   {"CellsCheckboard", CellsCheckboardTest},
   {"CellsDegrade", CellsDegradeTest},
   {"CellsNumbering", CellsNumberingTest},
+  {"CharacTest", CharacTest},
   {"Classes Info", ClassInfo},
   {"Clipboard", ClipboardTest},
   {"ColorBrowser", ColorBrowserTest},
