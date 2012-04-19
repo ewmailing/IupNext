@@ -337,6 +337,8 @@ static int nodeinfo(Ihandle* ih)
   int branch = 0, id = IupGetInt(tree, "VALUE");
   printf("\nTree Info:\n");
   printf("  TOTALCOUNT=%s\n", IupGetAttribute(tree, "COUNT"));
+  if (id == -1)
+    return IUP_DEFAULT;
   printf("Node Info:\n");
   printf("  ID=%d\n", id);
   printf("  TITLE=%s\n", IupGetAttribute(tree, "TITLE"));
@@ -546,6 +548,8 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "TIPBALLOON", "YES");
 //  IupSetAttribute(tree, "TIPBALLOONTITLE", "Tip Title");
 //  IupSetAttribute(tree, "TIPBALLOONTITLEICON", "2");
+
+  //IupSetAttribute(tree, "ADDROOT", "NO");
 
   IupSetHandle("tree", tree);
 }

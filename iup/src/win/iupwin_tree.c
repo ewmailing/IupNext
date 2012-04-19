@@ -1847,16 +1847,13 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
 
   if (hItem)
   {
-    winTreeSelectNode(ih, hItemFocus, 0);
-    winTreeSelectNode(ih, hItem, 1);
-    winTreeSetFocusNode(ih, hItem);
-
+      //TODO check
 //     if (ih->data->mark_mode==ITREE_MARK_SINGLE)
 //     {
-//       winTreeSelectNode(ih, hItemFocus, 0);
-//       winTreeSelectNode(ih, hItem, 1);
+    winTreeSelectNode(ih, hItemFocus, 0);
+    winTreeSelectNode(ih, hItem, 1);
 //     }
-//     winTreeSetFocusNode(ih, hItem);
+    winTreeSetFocusNode(ih, hItem);
   }
 
   return 0;
