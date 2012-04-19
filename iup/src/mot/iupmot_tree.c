@@ -2710,11 +2710,11 @@ static void motTreeDragDropEnable(Widget w)
   Atom importList[1];
   Arg args[40];
   int num_args = 0;
-  char dragTranslations[] = "#override <Btn2Down>: StartDrag()";
+  char dragTranslations[] = "#override <Btn2Down>: iupTreeStartDrag()";
   static int do_rec = 0;
   if (!do_rec)
   {
-    XtActionsRec rec = {"StartDrag", (XtActionProc)motTreeDragStart};
+    XtActionsRec rec = {"iupTreeStartDrag", (XtActionProc)motTreeDragStart};
     XtAppAddActions(iupmot_appcontext, &rec, 1);
     do_rec = 1;
   }
@@ -2950,7 +2950,4 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "RENAME", NULL, motTreeSetRenameAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVENODE", NULL, motTreeSetMoveNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYNODE", NULL, motTreeSetCopyNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-
-  /* Not Supported */
-  iupClassRegisterAttribute(ic, "DRAGDROP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
 }

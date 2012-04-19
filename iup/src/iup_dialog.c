@@ -840,6 +840,9 @@ Iclass* iupDialogNewClass(void)
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
 
+  /* Drag&Drop */
+  iupdrvRegisterDragDropAttrib(ic);
+
   /* Overwrite Visual */
   /* the only case where VISIBLE default is NO, and must not be propagated to the dialog children */
   iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iDialogSetVisibleAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_SAVE|IUPAF_NO_INHERIT);

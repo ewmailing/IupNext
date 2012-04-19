@@ -125,7 +125,6 @@ Iclass* iupCanvasNewClass(void)
   ic->UnMap = iupdrvBaseUnMapMethod;
 
   /* Callbacks */
-  iupClassRegisterCallback(ic, "DROPFILES_CB", "siii");
   iupClassRegisterCallback(ic, "RESIZE_CB", "ii");
   iupClassRegisterCallback(ic, "FOCUS_CB", "i");
   iupClassRegisterCallback(ic, "WOM_CB", "i");
@@ -147,6 +146,9 @@ Iclass* iupCanvasNewClass(void)
 
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
+
+  /* Drag&Drop */
+  iupdrvRegisterDragDropAttrib(ic);
 
   /* IupCanvas only */
   iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, IUPAF_SAMEASSYSTEM, "ARROW", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);

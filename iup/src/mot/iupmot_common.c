@@ -541,27 +541,6 @@ void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "XFONTID", iupmotGetFontIdAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 }
 
-static void motDoNothing(Widget w, XEvent*  evt, String* params, Cardinal* num_params)
-{
-  (void)w;
-  (void)evt;
-  (void)params;
-  (void)num_params;
-}
-
-void iupmotDisableDragSource(Widget w)
-{
-  char dragTranslations[] = "#override <Btn2Down>: iupDoNothing()";
-  static int do_nothing_rec = 0;
-  if (!do_nothing_rec)
-  {
-    XtActionsRec rec = {"iupDoNothing", (XtActionProc)motDoNothing};
-    XtAppAddActions(iupmot_appcontext, &rec, 1);
-    do_nothing_rec = 1;
-  }
-  XtOverrideTranslations(w, XtParseTranslationTable(dragTranslations));
-}
-
 int iupdrvGetScrollbarSize(void)
 {
   return 15;

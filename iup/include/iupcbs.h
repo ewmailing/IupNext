@@ -26,6 +26,9 @@ typedef int (*IFnff)(Ihandle*, float, float);    /* canvas_action */
 typedef int (*IFniff)(Ihandle*,int,float,float);  /* scroll_cb */
 typedef int (*IFnfiis)(Ihandle*,float,int,int,char*);  /* wheel_cb */
 
+typedef int (*IFnnsi)(Ihandle*, Ihandle*, char*, int); /* dragsource_cb */
+typedef int (*IFnnsii)(Ihandle*, Ihandle*, char*, int, int); /* droptarget_cb */
+
 typedef int (*IFnnii)(Ihandle*, Ihandle*, int, int); /* drop_cb */
 typedef int (*IFnnn)(Ihandle*, Ihandle*, Ihandle*); /* tabchange_cb */
 typedef int (*IFnss)(Ihandle*, char *, char *);  /* file_cb */

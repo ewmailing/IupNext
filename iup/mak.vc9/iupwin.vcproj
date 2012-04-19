@@ -124,6 +124,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\win\iupwin_dragdrop.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\win\iupwin_draw.c"
 				>
 			</File>

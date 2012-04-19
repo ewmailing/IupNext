@@ -134,6 +134,9 @@ char* iupBaseContainerGetExpandAttrib(Ihandle* ih);
 int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value);
 int iupBaseNoSaveCheck(Ihandle* ih, const char* name);
 
+/* drag&drop */
+void iupdrvRegisterDragDropAttrib(Iclass* ic);
+
 /* Windows Only */
 char* iupdrvBaseGetTitleAttrib(Ihandle* ih);
 int iupdrvBaseSetTitleAttrib(Ihandle* ih, const char* value);

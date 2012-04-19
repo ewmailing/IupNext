@@ -91,7 +91,7 @@ int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr);
 void iupwinDropFiles(HDROP hDrop, Ihandle *ih);
 Ihandle* iupwinMenuGetItemHandle(HMENU hmenu, int menuId);
 Ihandle* iupwinMenuGetHandle(HMENU hMenu);
-int iupwinSetDragDropAttrib(Ihandle* ih, const char* value);
+int iupwinSetDropFilesTargetAttrib(Ihandle* ih, const char* value);
 void iupwinChangeProc(Ihandle *ih, WNDPROC new_proc);
 void iupwinMergeStyle(Ihandle* ih, DWORD old_mask, DWORD value);
 void iupwinSetStyle(Ihandle* ih, DWORD value, int set);

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <iup.h>
 #include <iupkey.h>
+#include <iupole.h>
 
 static Ihandle* load_image_Tecgraf(void)
 {
@@ -162,7 +163,7 @@ int main(int argc, char **argv)
 {
   Ihandle *dlg, *list1, *list2, *list3, *list4, 
                 *box1, *box2, *box3, *box4, *lbl,
-                *bt1, *bt2, *bt3, *bt4, *btok, *btcancel;
+                *bt1, *bt2, *bt3, *bt4, *btok, *btcancel, *txt1, *txt2;
 
   IupOpen(&argc, &argv);
 
@@ -209,6 +210,34 @@ int main(int argc, char **argv)
   IupSetAttributes(list4, "1=\"Number 1\", 2=\"Number 2\", 3=\"Number 3\", 4=\"Number 4\", 5=\"Number 5\", 6=\"Number 6\", 7=\"Number 7\","
                           "EXPAND=YES");
 
+  /* DRAG AND DROP TESTS ////////////////////////////////////*/
+#ifdef WIN32
+#ifndef USE_GTK
+  IupOleControlOpen();
+#endif
+#endif
+  IupSetAttribute(list3, "DROPTYPES", "STRING,IMAGE");
+  IupSetAttribute(list3, "DROPTARGET", "YES");
+
+  IupSetAttribute(list4, "DRAGTYPES", "STRING,TEXT,DRAWABLE");
+  IupSetAttribute(list4, "DRAGSOURCE", "YES");
+  IupSetAttribute(list4, "IUP_DRAG_DATA", "VALUE");
+
+  txt1 = IupText(NULL);
+  IupSetAttribute(txt1, "MULTILINE", "YES");
+  IupSetAttribute(txt1, "RASTERSIZE", "150x50");
+  IupSetAttribute(txt1, "DROPTYPES", "STRING,TEXT");
+  IupSetAttribute(txt1, "DROPTARGET", "YES");
+
+  txt2 = IupText(NULL);
+  IupSetAttribute(txt2, "MULTILINE", "YES");
+  IupSetAttribute(txt2, "RASTERSIZE", "150x50");
+  IupSetAttribute(txt2, "DRAGTYPES", "TEXT");
+  IupSetAttribute(txt2, "DRAGSOURCE", "YES");
+  IupSetAttribute(txt2, "IUP_DRAG_DATA", "SELECTEDTEXT");
+
+  /*////////////////////////////////////////////////////////*/
+
   IupSetAttribute(bt1, "_LIST", (char*)list1);
   IupSetAttribute(bt2, "_LIST", (char*)list2);
   IupSetAttribute(bt3, "_LIST", (char*)list3);
@@ -238,7 +267,7 @@ int main(int argc, char **argv)
 
 /*  IupSetAttribute(list3, "READONLY", "YES"); */
 
-  box1 = IupVbox(list1, bt1, NULL);
+  box1 = IupVbox(list1, txt1, txt2, /*bt1,*/ NULL);  /* com Bt1, dá segmentation fault no Motif! */
   box2 = IupVbox(list2, bt2, NULL);
   box3 = IupVbox(list3, bt3, NULL);
   box4 = IupVbox(list4, bt4, NULL);

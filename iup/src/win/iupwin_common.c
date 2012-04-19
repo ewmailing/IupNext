@@ -543,36 +543,6 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
   DestroyWindow(ih->handle);
 }
 
-void iupwinDropFiles(HDROP hDrop, Ihandle *ih)
-{
-  char *filename;
-  int i, numFiles, numchar, ret;
-  POINT point;
-
-  IFnsiii cb = (IFnsiii)IupGetCallback(ih, "DROPFILES_CB");
-  if (!cb) return; 
-
-  numFiles = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
-  DragQueryPoint(hDrop, &point);  
-  for (i = 0; i < numFiles; i++)
-  {
-    numchar = DragQueryFile(hDrop, i, NULL, 0);
-    filename = malloc(numchar+1); 
-    if (!filename)
-      break;
-
-    DragQueryFile(hDrop, i, filename, numchar+1);
-
-    ret = cb(ih, filename, numFiles-i-1, (int) point.x, (int) point.y); 
-
-    free(filename);
-
-    if (ret == IUP_IGNORE)
-      break;
-  }
-  DragFinish(hDrop);
-}
-
 int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color)
 {
   unsigned char r, g, b;
@@ -650,15 +620,6 @@ char* iupdrvBaseGetTitleAttrib(Ihandle* ih)
   }
   else
     return NULL;
-}
-
-int iupwinSetDragDropAttrib(Ihandle* ih, const char* value)
-{
-  if (iupStrBoolean(value))
-    DragAcceptFiles(ih->handle, TRUE);
-  else
-    DragAcceptFiles(ih->handle, FALSE);
-  return 1;
 }
 
 #ifndef IDC_HAND

@@ -52,7 +52,7 @@ ifdef USE_GTK
            gtk/iupgtk_globalattrib.c gtk/iupgtk_key.c gtk/iupgtk_tips.c \
            gtk/iupgtk_loop.c gtk/iupgtk_open.c gtk/iupgtk_messagedlg.c gtk/iupgtk_draw.c \
            gtk/iupgtk_dialog.c gtk/iupgtk_timer.c gtk/iupgtk_image.c gtk/iupgtk_label.c \
-           gtk/iupgtk_colordlg.c gtk/iupgtk_fontdlg.c gtk/iupgtk_filedlg.c  \
+           gtk/iupgtk_colordlg.c gtk/iupgtk_fontdlg.c gtk/iupgtk_filedlg.c gtk/iupgtk_dragdrop.c \
            gtk/iupgtk_button.c gtk/iupgtk_toggle.c gtk/iupgtk_progressbar.c \
            gtk/iupgtk_text.c gtk/iupgtk_val.c gtk/iupgtk_frame.c gtk/iupgtk_canvas.c \
            gtk/iupgtk_tabs.c gtk/iupgtk_menu.c gtk/iupgtk_list.c gtk/iupgtk_tree.c
@@ -84,7 +84,7 @@ ifdef USE_MOTIF
          mot/iupmot_colordlg.c mot/iupmot_fontdlg.c mot/iupmot_filedlg.c mot/iupmot_frame.c \
          mot/iupmot_button.c mot/iupmot_toggle.c mot/iupmot_progressbar.c mot/iupmot_clipboard.c \
          mot/iupmot_text.c mot/iupmot_val.c mot/iupmot_tabs.c mot/iupmot_menu.c \
-         mot/iupmot_list.c mot/iupmot_tree.c
+         mot/iupmot_list.c mot/iupmot_tree.c mot/iupmot_dragdrop.c
          
   SRC += mot/iupunix_help.c mot/iupunix_info.c
   USE_X11 = Yes
@@ -96,7 +96,7 @@ else
          win/iupwin_loop.c win/iupwin_open.c win/iupwin_tips.c win/iupwin_info.c \
          win/iupwin_dialog.c win/iupwin_messagedlg.c win/iupwin_timer.c \
          win/iupwin_image.c win/iupwin_label.c win/iupwin_canvas.c win/iupwin_frame.c \
-         win/iupwin_colordlg.c win/iupwin_fontdlg.c win/iupwin_filedlg.c \
+         win/iupwin_colordlg.c win/iupwin_fontdlg.c win/iupwin_filedlg.c win/iupwin_dragdrop.c \
          win/iupwin_button.c win/iupwin_draw.c win/iupwin_toggle.c win/iupwin_clipboard.c \
          win/iupwin_progressbar.c win/iupwin_text.c win/iupwin_val.c win/iupwin_touch.c \
          win/iupwin_tabs.c win/iupwin_menu.c win/iupwin_list.c win/iupwin_tree.c

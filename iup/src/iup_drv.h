@@ -103,7 +103,7 @@ void iupdrvSendMouse(int x, int y, int bt, int status);
  * \ingroup drv */
 void iupdrvWarpPointer(int x, int y);
 
-/** Supends execution for the specified number of miliseconds.
+/** Suspends execution for the specified number of milliseconds.
  * \ingroup drv */
 void iupdrvSleep(int time);
 

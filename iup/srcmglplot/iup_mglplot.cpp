@@ -5509,6 +5509,7 @@ MathGL:
   gr->Axial is changing something that affects other graphs in OpenGL. Without OpenGL works fine.
   ***graph disapear during zoom in, only in OpenGL, depth clipping?
   ***bars at 0 and n-1
+  ***Axis color is fixed in black
   Ticks
      SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
      ***TicksVal should follow ticks spacing configuration 

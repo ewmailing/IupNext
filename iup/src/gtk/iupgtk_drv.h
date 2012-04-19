@@ -23,7 +23,6 @@ gboolean iupgtkShowHelp(GtkWidget *widget, GtkWidgetHelpType *arg1, Ihandle* ih)
 GtkFixed* iupgtkBaseGetFixed(Ihandle* ih);
 void iupgtkBaseAddToParent(Ihandle* ih);
 void iupgdkColorSet(GdkColor* color, unsigned char r, unsigned char g, unsigned char b);
-int iupgtkSetDragDropAttrib(Ihandle* ih, const char* value);
 int iupgtkSetMnemonicTitle(Ihandle* ih, GtkLabel* label, const char* value);
 char* iupgtkStrConvertToUTF8(const char* str);
 char* iupgtkStrConvertFromUTF8(const char* str);

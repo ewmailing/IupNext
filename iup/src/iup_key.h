@@ -7,6 +7,9 @@
 #ifndef __IUP_KEY_H 
 #define __IUP_KEY_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** \defgroup key Key Coding and Key Callbacks
  * \par
