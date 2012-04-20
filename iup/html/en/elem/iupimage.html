@@ -164,10 +164,10 @@ many others. The Motif driver supports the X-Windows bitmap. For example:</p>
 <a href="../iupim.html">IUP-IM Functions</a>.</p>
 <h4>Colors</h4>
   <p>
-  In Motif, the alpha channel in RGBA images is composed with the control 
+  In Motif, the alpha channel in RGBA images is always composed with the control 
 	BGCOLOR by IUP prior to setting the image at the control. In Windows and in 
 	GTK, the alpha channel is composed internally by the system. But in Windows 
-	for some controls the alpha must be composed prior also, it includes: <strong>
+	for some controls the alpha must be composed a priori also, it includes: <strong>
 	IupItem</strong> and <strong>IupSubmenu</strong> always; and <strong>
 	IupToggle</strong> when NOT using Visual Styles. This implies that if the 
 	control background is not uniform then probably there will be a visible 

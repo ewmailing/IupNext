@@ -253,6 +253,7 @@ static void new_file(char* dialogtype, int preview)
     IupSetAttribute(dlg, "EXTFILTER", "IMAGEFILES|*.bmp;*.jpg|TEXT|*.txt|");
   }
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
+  IupSetAttribute(dlg, "FILE", "test.bmp");
 //  IupSetAttributes(dlg, "FILE = \"\\tecgraf\\iup\\test.bmp\""); // OK
 //  IupSetAttributes(dlg, "FILE = \"/tecgraf/iup/test.bmp\""); // OK
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"/tecgraf/iup\"");   // OK
