@@ -311,15 +311,17 @@ void* iupImageGetIcon(const char* name)
   if (!name)
     return NULL;
 
-  /* Check first in the system resources. */
-  icon = iupdrvImageLoad(name, IUPIMAGE_ICON);
-  if (icon) 
-    return icon;
-
   /* get handle from name */
   ih = IupGetHandle(name);
   if (!ih)
+  {
+    /* Check in the system resources. */
+    icon = iupdrvImageLoad(name, IUPIMAGE_ICON);
+    if (icon) 
+      return icon;
+
     return NULL;
+  }
   
   /* Check for an already created icon */
   icon = iupAttribGet(ih, "_IUPIMAGE_ICON");
@@ -343,15 +345,17 @@ void* iupImageGetCursor(const char* name)
   if (!name)
     return NULL;
 
-  /* Check first in the system resources. */
-  cursor = iupdrvImageLoad(name, IUPIMAGE_CURSOR);
-  if (cursor) 
-    return cursor;
-
   /* get handle from name */
   ih = IupGetHandle(name);
   if (!ih)
+  {
+    /* Check in the system resources. */
+    cursor = iupdrvImageLoad(name, IUPIMAGE_CURSOR);
+    if (cursor) 
+      return cursor;
+
     return NULL;
+  }
   
   /* Check for an already created cursor */
   cursor = iupAttribGet(ih, "_IUPIMAGE_CURSOR");
@@ -375,22 +379,22 @@ void iupImageGetInfo(const char* name, int *w, int *h, int *bpp)
   if (!name)
     return;
 
-  /* Check first in the system resources. */
-  handle = iupdrvImageLoad(name, IUPIMAGE_IMAGE);
-  if (handle)
-  {
-    iupdrvImageGetInfo(handle, w, h, bpp);
-    return;
-  }
-
   /* get handle from name */
   ih = IupGetHandle(name);
   if (!ih)
   {
-    /* Check in the stock images. */
     const char* native_name = NULL;
-    iImageStockGet(name, &ih, &native_name);
 
+    /* Check in the system resources. */
+    handle = iupdrvImageLoad(name, IUPIMAGE_IMAGE);
+    if (handle)
+    {
+      iupdrvImageGetInfo(handle, w, h, bpp);
+      return;
+    }
+
+    /* Check in the stock images. */
+    iImageStockGet(name, &ih, &native_name);
     if (native_name) 
     {
       handle = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
@@ -421,19 +425,19 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
   if (!name)
     return NULL;
 
-  /* Check first in the system resources. */
-  handle = iupdrvImageLoad(name, IUPIMAGE_IMAGE);
-  if (handle) 
-    return handle;
-
   /* get handle from name */
   ih = IupGetHandle(name);
   if (!ih)
   {
-    /* Check in the stock images. */
     const char* native_name = NULL;
-    iImageStockGet(name, &ih, &native_name);
 
+    /* Check in the system resources. */
+    handle = iupdrvImageLoad(name, IUPIMAGE_IMAGE);
+    if (handle) 
+      return handle;
+
+    /* Check in the stock images. */
+    iImageStockGet(name, &ih, &native_name);
     if (native_name) 
     {
       handle = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
