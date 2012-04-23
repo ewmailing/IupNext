@@ -1,6 +1,8 @@
 PROJNAME = iup
 LIBNAME = iupimglib
-OPT = YES
+
+#Turn off optimization to speed up compilation
+#OPT = YES
 
 INCLUDES = ../include ../src
 
