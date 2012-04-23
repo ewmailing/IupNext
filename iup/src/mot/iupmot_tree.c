@@ -823,6 +823,8 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
 
       /* Set the default VALUE */
       motTreeSetFocusNode(ih, wItemNew);
+
+      /* this node will be automatically selected */
     }
   }
 
@@ -1882,6 +1884,7 @@ static Iarray* motTreeGetSelectedArrayId(Ihandle* ih, WidgetList wSelectedItemLi
 
 static void motTreeCallMultiUnSelectionCb(Ihandle* ih)
 {
+  /* called when several items are unselected at once */
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTIUNSELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
   if (cbSelec || cbMulti)
@@ -1912,6 +1915,8 @@ static void motTreeCallMultiUnSelectionCb(Ihandle* ih)
 
 static void motTreeCallMultiSelectionCb(Ihandle* ih)
 {
+  /* called when several items are selected at once
+     using the Shift key pressed, or dragging the mouse. */
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
   WidgetList wSelectedItemList = NULL;
@@ -2234,14 +2239,18 @@ static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCal
     Widget wItemFocus = iupdrvTreeGetFocusNode(ih);
     int curpos = iupTreeFindNodeId(ih, wItemFocus);
 
-    if (is_ctrl) 
+    if (is_ctrl)
+    {
       cbSelec(ih, curpos, motTreeIsNodeSelected(wItemFocus));
+      iupAttribSetInt(ih, "_IUPTREE_OLDVALUE", -2); /* invalid value signalizing that its state was toggled */
+    }
     else
     {
       int oldpos = iupAttribGetInt(ih, "_IUPTREE_OLDVALUE");
       if (oldpos != curpos)
       {
-        cbSelec(ih, oldpos, 0);  /* unselected */
+        if (oldpos >= 0)
+          cbSelec(ih, oldpos, 0);  /* unselected */
         cbSelec(ih, curpos, 1);  /*   selected */
 
         iupAttribSetInt(ih, "_IUPTREE_OLDVALUE", curpos);

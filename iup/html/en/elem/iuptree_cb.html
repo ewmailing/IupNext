@@ -16,7 +16,8 @@
 <h3>IupTree Callbacks</h3>
 <p><strong>SELECTION_CB</strong>: Action generated when a node is selected 
   or deselected. This action occurs when the user clicks with the mouse or uses the keyboard with the appropriate 
-  combination of keys. </p>
+  combination of keys. It may be called more than once for the same node with 
+the same status.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id, int </strong>status) [in C]
 <strong>elem</strong>:selection_cb(<strong>id, status:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 

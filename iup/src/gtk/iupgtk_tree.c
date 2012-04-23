@@ -632,6 +632,8 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
       path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iterNewItem);
       gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE);
       gtk_tree_path_free(path);
+
+      /* this node will be automatically selected */
     }
   }
 }
@@ -756,6 +758,8 @@ static gboolean gtkTreeSelected_Foreach_Func(GtkTreeModel *model, GtkTreePath *p
 /*****************************************************************************/
 static void gtkTreeCallMultiSelectionCb(Ihandle* ih)
 {
+  /* called when several items are selected at once
+     using the Shift key pressed, or dragging the mouse. */
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTISELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
   if (cbMulti || cbSelec)
@@ -2042,13 +2046,17 @@ static void gtkTreeSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
       return;
 
     if (is_ctrl) 
+    {
       cbSelec(ih, curpos, is_selected);
+      iupAttribSetInt(ih, "_IUPTREE_OLDVALUE", -2); /* invalid value signalizing that its state was toggled */
+    }
     else
     {
       int oldpos = iupAttribGetInt(ih, "_IUPTREE_OLDVALUE");
       if(oldpos != curpos)
       {
-        cbSelec(ih, oldpos, 0);  /* unselected */
+        if (oldpos >= 0)
+          cbSelec(ih, oldpos, 0);  /* unselected */
         cbSelec(ih, curpos, 1);  /*   selected */
 
         iupAttribSetInt(ih, "_IUPTREE_OLDVALUE", curpos);
@@ -2186,6 +2194,7 @@ static Iarray* gtkTreeGetSelectedArrayId(Ihandle* ih)
 
 static void gtkTreeCallMultiUnSelectionCb(Ihandle* ih)
 {
+  /* called when several items are unselected at once */
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTIUNSELECTION_CB");
   IFnii cbSelec = (IFnii)IupGetCallback(ih, "SELECTION_CB");
   if (cbSelec || cbMulti)
