@@ -479,14 +479,17 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "ADDLEAF7",     "diamond");
   IupSetAttribute(tree, "INSERTLEAF6","2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
+#endif
   IupSetAttribute(tree, "TOGGLEVALUE2", "ON");
   IupSetAttribute(tree, "TOGGLEVALUE6", "ON");
   IupSetAttribute(tree, "TOGGLEVALUE9", "NOTDEF");
   IupSetAttribute(tree, "TOGGLEVALUE2", "OFF");
-#endif
 //  IupSetAttribute(tree, "AUTOREDRAW", "Yes");
 
-  //IupSetAttribute(tree, "VALUE",        "6");
+  IupSetAttribute(tree, "MARKED1", "Yes");
+  IupSetAttribute(tree, "MARKED8", "Yes");
+//  IupSetAttribute(tree, "VALUE",        "6");
+
   IupSetAttribute(tree, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
   IupSetAttribute(tree, "COLOR8", "92 92 255");
 //  IupSetAttribute(tree, "TITLEFONT8", "Courier, 14");

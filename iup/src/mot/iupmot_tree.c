@@ -821,10 +821,11 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
       /* MarkStart node */
       iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)wItemNew);
 
-      /* Set the default VALUE */
-      motTreeSetFocusNode(ih, wItemNew);
+      /* Selected the node */
+      XtVaSetValues(wItemNew, XmNvisualEmphasis, XmSELECTED, NULL);
 
-      /* this node will be automatically selected */
+      /* Set the default VALUE (focus) */
+      motTreeSetFocusNode(ih, wItemNew);
     }
   }
 

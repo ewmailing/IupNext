@@ -2074,6 +2074,7 @@ static void winTreeExtendSelect(Ihandle* ih, int x, int y)
 
 static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
 {
+  int old_select;
   TVHITTESTINFO info;
   HTREEITEM hItem;
   info.pt.x = x;
@@ -2111,6 +2112,8 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
     }
   }
 
+  old_select = winTreeIsNodeSelected(ih, hItem);
+
   /* here mark_mode==ITREE_MARK_MULTIPLE and !Shift and !Ctrl */
   winTreeCallMultiUnSelectionCb(ih);
 
@@ -2121,7 +2124,8 @@ static int winTreeMouseMultiSelect(Ihandle* ih, int x, int y)
   iupAttribSetStr(ih, "_IUPTREE_FIRSTSELITEM", (char*)hItem);
   iupAttribSetStr(ih, "_IUPTREE_EXTENDSELECT", "1");
 
-  winTreeCallSelectionCb(ih, 1, hItem);
+  if (!old_select)
+    winTreeCallSelectionCb(ih, 1, hItem);
   winTreeSetFocusNode(ih, hItem);
 
   return 1;
