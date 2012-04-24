@@ -488,7 +488,7 @@ static void init_tree_nodes(void)
 
   IupSetAttribute(tree, "MARKED1", "Yes");
   IupSetAttribute(tree, "MARKED8", "Yes");
-//  IupSetAttribute(tree, "VALUE",        "6");
+  IupSetAttribute(tree, "VALUE",        "6");
 
   IupSetAttribute(tree, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
   IupSetAttribute(tree, "COLOR8", "92 92 255");
@@ -532,7 +532,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "BGCOLOR", "128 0 255");
 
   IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
-  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+//  IupSetAttribute(tree, "SHOWRENAME",   "YES");
 //  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
 //  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
 //  IupSetAttribute(tree, "SHOWTOGGLE",   "3STATE");
