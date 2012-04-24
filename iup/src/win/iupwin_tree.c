@@ -248,10 +248,8 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
       /* MarkStart node */
       iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)hItemNew);
 
-      /* Select and focus the first node */
-      iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
-      SendMessage(ih->handle, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItemNew);
-      iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
+      /* Set the default VALUE (focus) */
+      winTreeSetFocusNode(ih, hItemNew);
     }
   }
 }
@@ -2044,6 +2042,8 @@ static void winTreeDragDrop(Ihandle* ih)
     /* Set focus and selection */
     if (hItemNew)
     {
+      /* unselect all, select new node */
+      winTreeClearSelection(ih, NULL);
       winTreeSelectNode(ih, hItemNew, 1);
       winTreeSetFocusNode(ih, hItemNew);
     }

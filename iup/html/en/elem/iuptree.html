@@ -154,7 +154,7 @@ in a tree.</p>
 <p>Since you have to add each node the creation of this tree can be done in 
 several ways because the action attributes ADD* and INSERT* use an existent node 
 to position the new node. The following pseudo code initializes the tree from top to 
-bottom sequencially:</p>
+bottom sequentially:</p>
 <pre>
 TITLE0 = "Figures"
   ADDLEAF0 = "Other"    // Use the previous node as reference
@@ -185,11 +185,12 @@ ADDLEAF1 = "equilateral"
 ADDLEAF = "Other"
 </pre>
 <p>Notice that in both cases the initialization of the tree is highly dependent 
-on the order of the operations. Currently we can NOT garantie the order before 
+on the order of the operations. Currently we can NOT guarantee the order before 
 mapping to the native system, so the initialization must be performed after the 
 tree is mapped.</p>
 <p>Scrollbars are automatically displayed if the tree is greater than its 
 display area.</p>
+<p>The first node added to an empty tree will always be the focus node.</p>
 <p>Branches may be added in IupLua using a Lua Table, see 
 <a href="#TreeAddNodes">iup.TreeAddNodes</a>.&nbsp; </p>
 <h4>Manipulation</h4>

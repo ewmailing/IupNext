@@ -472,6 +472,76 @@ static gboolean gtkTreeFindNode(Ihandle* ih, int id, GtkTreeIter *iterItem)
   return TRUE;
 }
 
+static Iarray* gtkTreeGetSelectedArrayId(Ihandle* ih)
+{
+  Iarray* selarray = iupArrayCreate(1, sizeof(int));
+  int i;
+  GtkTreeIter iterItem;
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+
+  for (i = 0; i < ih->data->node_count; i++)
+  {
+    gtkTreeIterInit(ih, &iterItem, ih->data->node_cache[i].node_handle);
+    if (gtkTreeIsNodeSelected(model, &iterItem))
+    {
+      int* id_hitem = (int*)iupArrayInc(selarray);
+      int j = iupArrayCount(selarray);
+      id_hitem[j-1] = i;
+    }
+  }
+
+  return selarray;
+}
+
+static void gtkTreeSetFocus(Ihandle* ih, GtkTreePath* pathFocus, GtkTreeIter* iterItemFocus, gboolean edit)
+{
+  int old_select = 0;
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+
+  /* in a multiselection set_cursor will unselect all other nodes
+     so must save and restore selection */
+  Iarray* markedArray = NULL;
+  if (ih->data->mark_mode==ITREE_MARK_MULTIPLE)
+    markedArray = gtkTreeGetSelectedArrayId(ih);
+
+  if (gtkTreeIsNodeSelected(model, iterItemFocus))
+    old_select = 1;
+
+  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
+  gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), pathFocus, NULL, edit);
+  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
+
+  if (!old_select)
+  {
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
+    gtkTreeSelectNode(model, selection, iterItemFocus, 0);
+    iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
+  }
+
+  if (markedArray)
+  {
+    int count = iupArrayCount(markedArray);
+    if (count > 0)
+    {
+      GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
+      int i, *id_hitem = (int*)iupArrayGetData(markedArray);
+      GtkTreeIter iterItem;
+
+      iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
+      for (i=0; i<count; i++)
+      {
+        gtkTreeIterInit(ih, &iterItem, ih->data->node_cache[id_hitem[i]].node_handle);
+        gtkTreeSelectNode(model, selection, &iterItem, 1);
+      }
+      iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
+    }
+
+    iupArrayDestroy(markedArray);
+  }
+}
+
+
 /*****************************************************************************/
 /* MANIPULATING IMAGES                                                       */
 /*****************************************************************************/
@@ -628,12 +698,13 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
       /* MarkStart node */
       iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)iterNewItem.user_data);
 
-      /* Set the default VALUE */
+      /* Set the default VALUE (focus) */
       path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iterNewItem);
       gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE);
       gtk_tree_path_free(path);
 
-      /* this node will be automatically selected */
+      /* set_cursor will also select the node, so unselect it here */
+      gtkTreeSelectNode(GTK_TREE_MODEL(store), gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle)), &iterNewItem, 0);
     }
   }
 }
@@ -779,12 +850,11 @@ static void gtkTreeCallMultiSelectionCb(Ihandle* ih)
       return;
 
     /* interactive selection of several nodes will NOT select hidden nodes,
-       so make sure that they are selected. */
+       so make sure that their selection state is stored. */
     for(i = minmax.id1; i <= minmax.id2; i++)
     {
       gtkTreeIterInit(ih, &iterItem, ih->data->node_cache[i].node_handle);
-      if (!gtkTreeIsNodeSelected(model, &iterItem))
-        gtkTreeSelectNodeRaw(model, &iterItem, 1);
+      gtkTreeSelectNodeRaw(model, &iterItem, 1);
     }
 
     /* if last selected item is a branch, then select its children */
@@ -1375,9 +1445,8 @@ static int gtkTreeSetValueAttrib(Ihandle* ih, const char* value)
   }
 
   gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE, 0, 0); /* scroll to visible */
-  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
-  gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE);  /* set focus */
-  iupAttribSetStr(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
+
+  gtkTreeSetFocus(ih, path, &iterItem, FALSE);
 
   gtk_tree_path_free(path);
 
@@ -1423,6 +1492,7 @@ static int gtkTreeSetMarkedAttrib(Ihandle* ih, int id, const char* value)
 
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+
   if (iupStrBoolean(value))
     gtkTreeSelectNode(model, selection, &iterItem, 1);
   else
@@ -1561,8 +1631,10 @@ static int gtkTreeSetRenameAttrib(Ihandle* ih, const char* value)
   {
     GtkTreePath* path;
     GtkTreeViewColumn *focus_column;
+    GtkTreeIter iterItem;
     gtk_tree_view_get_cursor(GTK_TREE_VIEW(ih->handle), &path, &focus_column);
-    gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), path, focus_column, TRUE);
+    gtk_tree_model_get_iter(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)), &iterItem, path);
+    gtkTreeSetFocus(ih, path, &iterItem, TRUE); /* start editing */
     gtk_tree_path_free(path);
   }
 
@@ -1933,6 +2005,8 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
         gtkTreeSelectNode(model, selection, &iterNewItem, 1);
 
         gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), pathNew, NULL, FALSE, 0, 0);
+
+        /* unselect all, select new node and focus */
         gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), pathNew, NULL, FALSE);
 
         gtk_tree_path_free(pathNew);
@@ -1989,11 +2063,13 @@ static void gtkTreeDragBegin(GtkWidget *widget, GdkDragContext *context, Ihandle
   (void)widget;
 }
 
-static gboolean gtkTreeSelectionFunc(GtkTreeSelection *selection, GtkTreeModel *model, GtkTreePath *path, gboolean selected, Ihandle* ih)
+static gboolean gtkTreeSelectionFunc(GtkTreeSelection *selection, GtkTreeModel *model, GtkTreePath *path, gboolean old_selected, Ihandle* ih)
 {
+  /* every change to the selection state will call this function,
+     so we use it to keep our storage updated */
   GtkTreeIter iterItem;
   gtk_tree_model_get_iter(model, &iterItem, path);
-  gtkTreeSelectNodeRaw(model, &iterItem, !selected);
+  gtkTreeSelectNodeRaw(model, &iterItem, !old_selected);
   (void)ih;
   (void)selection;
   return TRUE;
@@ -2171,27 +2247,6 @@ static int gtkTreeConvertXYToPos(Ihandle* ih, int x, int y)
   return -1;
 }
 
-static Iarray* gtkTreeGetSelectedArrayId(Ihandle* ih)
-{
-  Iarray* selarray = iupArrayCreate(1, sizeof(int));
-  int i;
-  GtkTreeIter iterItem;
-  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
-
-  for (i = 0; i < ih->data->node_count; i++)
-  {
-    gtkTreeIterInit(ih, &iterItem, ih->data->node_cache[i].node_handle);
-    if (gtkTreeIsNodeSelected(model, &iterItem))
-    {
-      int* id_hitem = (int*)iupArrayInc(selarray);
-      int j = iupArrayCount(selarray);
-      id_hitem[j-1] = i;
-    }
-  }
-
-  return selarray;
-}
-
 static void gtkTreeCallMultiUnSelectionCb(Ihandle* ih)
 {
   /* called when several items are unselected at once */
@@ -2206,7 +2261,7 @@ static void gtkTreeCallMultiUnSelectionCb(Ihandle* ih)
     if (count > 1)
     {
       if (cbMulti)
-        cbMulti(ih, id_hitem, iupArrayCount(markedArray));
+        cbMulti(ih, id_hitem, count);
       else
       {
         for (i=0; i<count; i++)

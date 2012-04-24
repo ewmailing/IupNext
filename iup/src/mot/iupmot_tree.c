@@ -821,9 +821,6 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
       /* MarkStart node */
       iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)wItemNew);
 
-      /* Selected the node */
-      XtVaSetValues(wItemNew, XmNvisualEmphasis, XmSELECTED, NULL);
-
       /* Set the default VALUE (focus) */
       motTreeSetFocusNode(ih, wItemNew);
     }
@@ -2535,6 +2532,7 @@ static void motTreeDragTransferProc(Widget drop_context, XtPointer client_data, 
       /* Set focus and selection */
       if (wItemNew)
       {
+        /* unselect all, select new node */
         XtVaSetValues(ih->handle, XmNselectedObjects,  NULL, NULL);
         XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
         XtVaSetValues(wItemNew, XmNvisualEmphasis, XmSELECTED, NULL);

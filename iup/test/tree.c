@@ -532,7 +532,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "BGCOLOR", "128 0 255");
 
   IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
-//  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+  IupSetAttribute(tree, "SHOWRENAME",   "YES");
 //  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
 //  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
 //  IupSetAttribute(tree, "SHOWTOGGLE",   "3STATE");
@@ -552,7 +552,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "TIPBALLOONTITLE", "Tip Title");
 //  IupSetAttribute(tree, "TIPBALLOONTITLEICON", "2");
 
-  //IupSetAttribute(tree, "ADDROOT", "NO");
+//  IupSetAttribute(tree, "ADDROOT", "NO");
 
   IupSetHandle("tree", tree);
 }
