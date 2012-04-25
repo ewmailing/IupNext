@@ -1288,7 +1288,7 @@ static int gtkListMapMethod(Ihandle* ih)
 {
   GtkScrolledWindow* scrolled_window = NULL;
   GtkListStore *store;
-  GtkCellRenderer *renderer, *renderer_img = NULL;
+  GtkCellRenderer *renderer = NULL, *renderer_img = NULL;
 
   store = gtk_list_store_new(IUPGTK_LIST_LAST_DATA, GDK_TYPE_PIXBUF, G_TYPE_STRING);
 
