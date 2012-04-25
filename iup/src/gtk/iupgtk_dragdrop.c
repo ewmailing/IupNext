@@ -23,7 +23,7 @@
 #include "iupgtk_drv.h"
 
 
-
+#if 0
 static gboolean gtkDragMotion(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, guint time, Ihandle* ih)
 {
   GdkModifierType mask;
@@ -209,7 +209,7 @@ static int gtkSetDragSourceAttrib(Ihandle* ih, const char* value)
 
   return 1;
 }
-
+#endif
 
 static void gtkDropFileDragDataReceived(GtkWidget* w, GdkDragContext* context, int x, int y,
                                         GtkSelectionData* seldata, guint info, guint time, Ihandle* ih)
@@ -275,13 +275,13 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
 {
   iupClassRegisterCallback(ic, "DROPFILES_CB", "siii");
 
-  iupClassRegisterCallback(ic, "DRAGSOURCE_CB", "hsi");
-  iupClassRegisterCallback(ic, "DROPTARGET_CB", "hsii");
+  // iupClassRegisterCallback(ic, "DRAGSOURCE_CB", "hsi");
+  // iupClassRegisterCallback(ic, "DROPTARGET_CB", "hsii");
 
-  iupClassRegisterAttribute(ic, "DRAGTYPES",  NULL, gtkSetDragTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DROPTYPES",  NULL, gtkSetDropTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAGSOURCE", NULL, gtkSetDragSourceAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DROPTARGET", NULL, gtkSetDropTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  // iupClassRegisterAttribute(ic, "DRAGTYPES",  NULL, gtkSetDragTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  // iupClassRegisterAttribute(ic, "DROPTYPES",  NULL, gtkSetDropTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  // iupClassRegisterAttribute(ic, "DRAGSOURCE", NULL, gtkSetDragSourceAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  // iupClassRegisterAttribute(ic, "DROPTARGET", NULL, gtkSetDropTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, gtkSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPFILESTARGET", NULL, gtkSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
