@@ -969,7 +969,10 @@ static int gtkDialogSetTrayTipAttrib(Ihandle *ih, const char *value)
   if (value)
   {
     gtk_status_icon_set_has_tooltip(status_icon, TRUE);
-    gtk_status_icon_set_tooltip_text(status_icon, value);
+    if (iupAttribGetBoolean(ih, "TIPMARKUP"))
+      gtk_status_icon_set_tooltip_markup(status_icon, value);
+    else
+      gtk_status_icon_set_tooltip_text(status_icon, value);
   }
   else
     gtk_status_icon_set_has_tooltip(status_icon, FALSE);
@@ -1038,6 +1041,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAY", NULL, gtkDialogSetTrayAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYIMAGE", NULL, gtkDialogSetTrayImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIP", NULL, gtkDialogSetTrayTipAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TRAYTIPMARKUP", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
 #endif
 
   /* Not Supported */

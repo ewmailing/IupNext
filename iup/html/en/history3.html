@@ -85,13 +85,16 @@ version 3.x.<br>
 	at the SB
 	<a href="http://www.scriptbasic.org/forum/index.php/board,48.0.html">Forum</a>.</li>
 	<li><span class="hist_new">New:</span> FILTER status in FILE_CB callback for
-	<strong>IupFileDlg</strong> in Windows.</li>
+	<strong>IupFileDlg</strong> on Windows.</li>
 	<li><span class="hist_new">New:</span> TOUCH attribute for <strong>IupDialog</strong> 
-	in Windows.</li>
+	on Windows.</li>
 	<li><span class="hist_new">New:</span> LASTERROR global attribute 
-	in Windows.</li>
+	on Windows.</li>
 	<li><span class="hist_new">New:</span> parameter in LEDC &quot;-s&quot; to declare 
 	image data as static.</li>
+	<li><span class="hist_new">New:</span> TRAYTIPBALLOON, TRAYTIPBALLOONDELAY, 
+	TRAYTIPBALLOONTITLE and TRAYTIPBALLOONTITLEICON <strong>IupDialog</strong> 
+	attributes on Windows. And TRAYTIPMARKUP on GTK.</li>
 	<li>
 		<span class="hist_changed">Changed:</span> optimized <strong>IupImage</strong> 
 	internal cache.</li>
@@ -147,7 +150,7 @@ version 3.x.<br>
 	<li><span class="hist_fixed">Fixed:</span> TIP attribute in <strong>
 	IupVal</strong> on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> TABTYPE was setting MULTILINE=NO 
-	when TOP or BOTTOM where set in Windows.</li>
+	when TOP or BOTTOM where set on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> implemented missing iup.<strong>GetChild</strong> 
 	in Lua.</li>
 	<li><span class="hist_fixed">Fixed:</span> some images from <strong>
@@ -172,7 +175,7 @@ version 3.x.<br>
 	<li><span class="hist_fixed">Fixed:</span> VALUE=OFF display update in
 	<strong>IupToggle</strong> on GTK when using an image in the toggle.</li>
 	<li><span class="hist_fixed">Fixed:</span> dialog layout now considers the 
-	global menu usage in the new Ubuntu Unity desktop.</li>
+	global menu usage on the new Ubuntu Unity desktop.</li>
 	<li><span class="hist_fixed">Fixed:</span> SELECTION_CB in <strong>IupTree</strong> 
 	not being called for the last unselected node in a multi-selection tree, 
 	when that node is re-selected. In Windows that node was also not being 

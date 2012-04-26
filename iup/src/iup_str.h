@@ -76,7 +76,7 @@ char* iupStrDup(const char* str);
 char *iupStrCopyUntil(char **str, int c);
 
 /** Copy the string to the buffer, but limited to the max_size of the buffer.
- * buffer is always porperly ended.
+ * buffer is always properly ended.
  * \ingroup str */
 void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str);
 

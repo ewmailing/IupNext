@@ -211,6 +211,14 @@ Motif driver or in the GTK driver in UNIX.</p>
 <p><strong>ACTIVEWINDOW</strong> [Windows and GTK Only] (read-only): informs if 
 the dialog is the active window (the window with focus). Can be Yes or No. 
 (since 3.4)</p>
+<p><strong>OPACITY</strong> [Windows and GTK Only]: sets the dialog transparency 
+alpha value. Valid values range from 0 (completely transparent) to 255 (opaque). 
+In Windows set to NULL to remove the LAYERED style bit. (GTK 2.12)</p>
+
+<p><strong>TOPMOST</strong> [Windows and GTK Only]:&nbsp; puts the dialog always 
+in front of all other dialogs in all applications. Default: NO.</p>
+
+<h4>Exclusive Taskbar and Tray/Status Area [Windows and GTK Only]</h4>
 <p><strong>HIDETASKBAR</strong> [Windows and GTK Only] (write-only): Action 
 attribute that when set to &quot;YES&quot;, hides the dialog, but does not decrement the 
 visible dialog count, does not call SHOW_CB and does not mark the dialog as 
@@ -219,18 +227,33 @@ working without closing the main loop. It has the same effect as setting
 LOCKLOOP=Yes and normally hiding the dialog. IMPORTANT:
 <font SIZE="3">when you hide using HIDETASKBAR, you must show using HIDETASKBAR 
 also. </font>Possible values: YES, NO. </p>
-<p><strong>OPACITY</strong> [Windows and GTK Only]: sets the dialog transparency 
-alpha value. Valid values range from 0 (completely transparent) to 255 (opaque). 
-In Windows set to NULL to remove the LAYERED style bit. (GTK 2.12)</p>
-
-<p><strong>TOPMOST</strong> [Windows and GTK Only]:&nbsp; puts the dialog always 
-in front of all other dialogs in all applications. Default: NO.</p>
 
 <p><b>TRAY</b> [Windows and GTK Only]: When set to &quot;YES&quot;, displays an icon on 
 the system tray. (GTK 2.10)</p>
 <p><b>TRAYIMAGE</b> [Windows and GTK Only]: Name of a IUP image to be used as 
 the tray icon. (GTK 2.10)</p>
-<p><b>TRAYTIP</b> [Windows and GTK Only] :Tray icon's tooltip text. (GTK 2.10)</p>
+<p><b>TRAYTIP</b> [Windows and GTK Only]: Tray icon's tooltip text. (GTK 2.10)</p>
+<p><b>TRAYTIPMARKUP</b> [GTK Only]: allows the tip string to contains Pango markup 
+commands. Can be &quot;YES&quot; or &quot;NO&quot;. Default: &quot;NO&quot;. 
+Must be set before setting the TRAYTIP attribute. (GTK 2.16) (since 3.6)</p>
+<p><strong><b>TRAY</b>TIPBALLOON</strong> [Windows Only]:
+  The tip window will have the appearance of a cartoon &quot;balloon&quot; with rounded 
+  corners and a stem pointing to the item. Default: NO. Must be set before 
+setting the TRAYTIP attribute. (since 3.6)</p>
+<p><strong><b>TRAY</b>TIPBALLOONDELAY </strong>[Windows Only]: Time the tip will 
+remain visible. Default is system dependent. The minimum and maximum values are 
+10000 and 30000 milliseconds. Must be set before setting the TRAYTIP attribute. 
+(since 3.6)</p>
+<p><strong><b>TRAY</b>TIPBALLOONTITLE</strong> [Windows Only]: When using the balloon format, the 
+  tip can also has a title in a separate area. Must be set before setting the 
+TRAYTIP attribute. (since 3.6)</p>
+<p><strong><b>TRAY</b>TIPBALLOONTITLEICON</strong> [Windows Only]: When using the balloon format, 
+  the tip can also has a pre-defined icon in the title area. Must be set before 
+setting the TRAYTIP attribute. (since 3.6) </p>
+<p class="info">Values can be:<br>&quot;0&quot; - No icon (default)<br>
+    &quot;1&quot; - Info icon <br>
+    &quot;2&quot; - Warning icon<br>
+    &quot;3&quot; - Error Icon</p>
       
 <h4>Exclusive [GTK Only]</h4>
 <p><strong>DIALOGHINT</strong> (creation-only): if enabled sets the window type 

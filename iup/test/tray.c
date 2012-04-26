@@ -90,6 +90,9 @@ void TrayTest(void)
 
   IupSetAttribute(dlg, "TITLE", "Tray Test");
   IupSetAttribute(dlg, "TRAY", "YES");
+//  IupSetAttribute(dlg, "TRAYTIPBALLOON", "Yes");
+//  IupSetAttribute(dlg, "TRAYTIPBALLOONTITLE", "Test Title");
+//  IupSetAttribute(dlg, "TRAYTIPBALLOONTITLEICON", "1");
   IupSetAttribute(dlg, "TRAYTIP", "Tip at Tray");
   IupSetAttribute(dlg, "TRAYIMAGE", "img");
   IupSetAttribute(dlg, "SIZE", "100x100");

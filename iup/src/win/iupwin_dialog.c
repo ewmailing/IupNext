@@ -1167,14 +1167,14 @@ static int winDialogSetMdiCloseAllAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-static void winDialogTrayMessage(HWND hWnd, DWORD dwMessage, HICON hIcon, PSTR pszTip)
+static void winDialogTrayMessage(HWND hWnd, DWORD dwMessage, HICON hIcon, const char* value)
 {
   NOTIFYICONDATA tnd;
   memset(&tnd, 0, sizeof(NOTIFYICONDATA));
 
   tnd.cbSize  = sizeof(NOTIFYICONDATA);
   tnd.hWnd    = hWnd;
-  tnd.uID      = 1000;
+  tnd.uID     = 1000;
 
   if (dwMessage == NIM_ADD)
   {
@@ -1189,14 +1189,43 @@ static void winDialogTrayMessage(HWND hWnd, DWORD dwMessage, HICON hIcon, PSTR p
       tnd.hIcon = hIcon;
     }
 
-    if (pszTip) 
+    if (value) 
     {
       tnd.uFlags |= NIF_TIP;
-      lstrcpyn(tnd.szTip, pszTip, sizeof(tnd.szTip));
+      iupStrCopyN((char*)tnd.szTip, sizeof(tnd.szTip), value);
     }
   }
 
   Shell_NotifyIcon(dwMessage, &tnd);
+}
+
+static void winDialogTrayBalloonMessage(Ihandle *ih, const char* value)
+{
+  NOTIFYICONDATA tnd;
+  memset(&tnd, 0, sizeof(NOTIFYICONDATA));
+
+  tnd.cbSize  = sizeof(NOTIFYICONDATA);
+  tnd.hWnd    = ih->handle;
+  tnd.uID     = 1000;
+  tnd.uFlags |= NIF_INFO;
+
+  /* set to NULL to remove the tooltip */
+  if (value) 
+  {
+    char* balloon_title;
+
+    iupStrCopyN((char*)tnd.szInfo, sizeof(tnd.szInfo), value);
+
+    tnd.uTimeout = IupGetInt(ih, "TRAYTIPBALLOONDELAY"); /* must use IupGetInt to use inheritance */
+
+    balloon_title = IupGetAttribute(ih, "TRAYTIPBALLOONTITLE");
+    if (balloon_title)
+      iupStrCopyN((char*)tnd.szInfoTitle, sizeof(tnd.szInfoTitle), balloon_title);
+
+    tnd.dwInfoFlags = IupGetInt(ih, "TRAYTIPBALLOONTITLEICON");
+  }
+
+  Shell_NotifyIcon(NIM_MODIFY, &tnd);
 }
 
 static int winDialogCheckTray(Ihandle *ih)
@@ -1239,7 +1268,13 @@ static int winDialogSetTrayAttrib(Ihandle *ih, const char *value)
 static int winDialogSetTrayTipAttrib(Ihandle *ih, const char *value)
 {
   if (winDialogCheckTray(ih))
-    winDialogTrayMessage(ih->handle, NIM_MODIFY, NULL, (PSTR)value);
+  {
+    int balloon = IupGetInt(ih, "TRAYTIPBALLOON");  /* must use IupGetInt to use inheritance */
+    if (balloon)
+      winDialogTrayBalloonMessage(ih, value);
+    else
+      winDialogTrayMessage(ih->handle, NIM_MODIFY, NULL, value);
+  }
   return 1;
 }
 
@@ -1468,6 +1503,12 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAY", NULL, winDialogSetTrayAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYIMAGE", NULL, winDialogSetTrayImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIP", NULL, winDialogSetTrayTipAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+
+  /* IupDialog Windows Only */
+  iupClassRegisterAttribute(ic, "TRAYTIPDELAY", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TRAYTIPBALLOON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "DIALOGHINT", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
