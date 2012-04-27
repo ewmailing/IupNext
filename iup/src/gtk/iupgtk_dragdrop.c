@@ -52,7 +52,7 @@ static void gtkDragDataGet(GtkWidget *widget, GdkDragContext *drag_context, GtkS
   if(!source)
     return;
 
-  //TODO: pegar type, data e lenght da callback
+  //TODO: pegar type, data e lenght da callback?
 
   //TODO: data is copied internally?
   gtk_selection_data_set(data, gtk_selection_data_get_target(data), 8, (guchar*)source, sizeof(source)/sizeof(source[0]));
