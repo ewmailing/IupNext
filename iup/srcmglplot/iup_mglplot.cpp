@@ -5473,10 +5473,10 @@ void IupMglPlotOpen(void)
 {
   IupGLCanvasOpen();
 
-  if (!IupGetGlobal("_IUP_IUP_MGLPLOT_OPEN"))
+  if (!IupGetGlobal("_IUP_MGLPLOT_OPEN"))
   {
     iupRegisterClass(iMglPlotNewClass());
-    IupSetGlobal("_IUP_IUP_MGLPLOT_OPEN", "1");
+    IupSetGlobal("_IUP_MGLPLOT_OPEN", "1");
   }
 }
 

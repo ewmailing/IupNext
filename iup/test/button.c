@@ -299,7 +299,8 @@ void ButtonTest(void)
   IupSetAttribute(button, "TIP", "Button & Tip");
   //IupSetAttribute(button, "PADDING", "15x15");
   //IupSetAttribute(button, "BGCOLOR", "128 128 255");
-  IupSetAttribute(button, "SIZE", "40");
+//  IupSetAttribute(button, "SIZE", "40");
+//  IupSetAttribute(button, "EXPAND", "Yes");
 //  IupSetAttribute(button, "FGCOLOR", "0 0 255");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
   IupSetAttribute(button, "ALIGNMENT", "ACENTER:ACENTER");
