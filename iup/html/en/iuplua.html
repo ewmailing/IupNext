@@ -49,7 +49,7 @@
     </p>
     <p>
         The distribution files include an executable called <b>iuplua51</b>, that you can
-        use to test your Lua code. It has support for all the addicional controls, for IM,
+        use to test your Lua code. It has support for all the additional controls, for IM,
         CD and OpenGL calls. It is
         <u1:p></u1:p>
         available at the <a href="download.html">Download</a>.</p>
@@ -111,26 +111,32 @@ void main(void)
         <strong>IupControlsOpen</strong> and others, are not necessary.
         The initialization is automatically done inside the respective <strong>IupLua</strong> initialization
         function.</p>
+<p>
+        To use IUP inside coroutines, define the global attribute 
+		&quot;IUPLUA_THREADED&quot;.</p>
     <h3>
         Embedding Lua files in the Application Executable</h3>
     <p>
         The Lua files are dynamically loaded and must be sent together with the application’s
         executable. However, this often becomes an inconvenience. To deal with it, there
         is the <b>LuaC</b> compiler that creates a C module from the Lua contents. For example:</p>
-    <pre>luac5.1 -o myfile.lo myfile.lua
-bin2c5.1 myfile.lo &gt; myfile.loh</pre>
+    <pre>luac -o myfile.lo myfile.lua
+lua bin2c.lua myfile.lo &gt; myfile.loh</pre>
     <p>
-        In C, you can used a define to interchanged the use of .LOH files:</p>
+        In C, you can use a define to interchanged the use of .LOH files:</p>
     <pre>#ifdef _DEBUG
   ret_val = iuplua_dofile("myfile.lua");
 #else
 #include "myfile.loh"
 #endif</pre>
 
-<p>This does not work when using LuaJIT. Also to use IupLua with
-<a href="http://luajit.org/">LuaJIT</a> you must recompile the pre-compiled 
-binaries with the IUPLUA_NO_LOH definition set. Can be set on the environment or 
-as a parameter in the command line, for example: &quot;make IUPLUA_NO_LOH=1&quot;. </p>
+<p>This does not work when using LuaJIT. To be able to do that, use Lua files 
+directly as strings:</p>
+    <pre>lua bin2c.lua myfile.lua &gt; myfile.lh</pre>
+    <p>
+        In C, simply include the .LH files:</p>
+    <pre>#include "myfile.lh"</pre>
+
 <h3>More Information</h3>
 <p>Steve Donovan wrote a very nice &quot;<a href="basic/index.html">A Basic Guide to 
 using IupLua</a>&quot; that was included in

@@ -268,6 +268,15 @@ static int il_destroy_cb(Ihandle* ih)
     /* removes the association of the ihandle with the lua table */
     luaL_unref(L, LUA_REGISTRYINDEX, ref);  /* this is the complement of SetWidget */
     IupSetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", NULL);
+
+    sref = IupGetAttribute(ih, "_IUPLUA_STATE_THREAD");
+    if (sref)
+    {
+      ref = atoi(sref);
+      luaL_unref(L, LUA_REGISTRYINDEX, ref);
+      IupSetAttribute(ih, "_IUPLUA_STATE_THREAD", NULL);
+    }
+
     IupSetCallback(ih, "LDESTROY_CB", NULL);
   }
 
@@ -396,6 +405,14 @@ Ihandle ** iuplua_checkihandle_array(lua_State *L, int pos, int n)
 void iuplua_plugstate(lua_State *L, Ihandle *ih)
 {
   IupSetAttribute(ih, "_IUPLUA_STATE_CONTEXT",(char *) L);
+
+  if (IupGetGlobal("IUPLUA_THREADED"))
+  {
+    int ref;
+    lua_pushthread(L);
+    ref = luaL_ref(L, LUA_REGISTRYINDEX);   /* keep ref for L, L maybe a thread */
+    IupSetfAttribute(ih, "_IUPLUA_STATE_THREAD", "%d", ref);
+  }
 }
 
 lua_State* iuplua_getstate(Ihandle *ih)
@@ -613,7 +630,7 @@ static int SetWidget(lua_State *L)
   if (!sref)
   {
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);
-    IupSetfAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", "%d", ref);  /* this must be a non-inheritable attribute */
+    IupSetfAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", "%d", ref);
     IupSetCallback(ih, "LDESTROY_CB", il_destroy_cb);
   }
   return 0;
