@@ -119,8 +119,13 @@ version 3.x.<br>
 	improved performance of APPENDITEM and INSERTITEM in <strong>IupList</strong> 
 	on Windows.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
-	improved dropdown interaction in <strong>IupMatrix</strong>, specially for 
-	GTK.</li>
+	improved mouse edition interaction in <strong>IupMatrix</strong>. Now the 
+	edition is started only when left button is released after a double click. 
+	Also if DROPCHECK_CB is defined and return IUP_DEFAULT for a cell, to show 
+	the dropdown list or the new popup menu the user can simply do a single 
+	click in the drop feedback area of that cell.</li>
+	<li>
+		<span class="hist_changed">Changed:</span> </li>
 	<li><strong><span class="hist_changed">Undo:</span></strong> 
 	<span class="style4">removed &quot;P&quot; 
 	from <span class="style5"> <strong class="style3">IupPPlot</strong> additional API functions, because they will 

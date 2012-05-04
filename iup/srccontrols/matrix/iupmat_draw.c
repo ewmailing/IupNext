@@ -41,7 +41,7 @@
 
 #define IMAT_CD_INACTIVE_FGCOLOR  0x666666L
 
-#define IMAT_COMBOBOX_W 16
+#define IMAT_DROPBOX_W 16
 
 
 
@@ -340,15 +340,20 @@ static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int
   return 1;
 }
 
-static void iMatrixDrawComboFeedback(Ihandle* ih, int x2, int y1, int y2, int active, long framecolor)
+void iupMatrixDrawSetDropFeedbackArea(int *x1, int *y1, int *x2, int *y2)
+{
+  *x2 -= IMAT_PADDING_W/2 + IMAT_FRAME_W/2;
+  *x1  = *x2 - IMAT_DROPBOX_W; 
+  *y1 += IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
+  *y2 -= IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
+}
+
+static void iMatrixDrawDropFeedback(Ihandle* ih, int x2, int y1, int y2, int active, long framecolor)
 {
   int xh2, yh2, x1;
 
   /* feedback area */
-  x2 -= IMAT_PADDING_W/2 + IMAT_FRAME_W/2;
-  x1  = x2 - IMAT_COMBOBOX_W; 
-  y1 += IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
-  y2 -= IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
+  iupMatrixDrawSetDropFeedbackArea(&x1, &y1, &x2, &y2);
 
   /* feedback background */
   iMatrixDrawSetBgColor(ih, 0, 0, 0, active);
@@ -359,7 +364,7 @@ static void iMatrixDrawComboFeedback(Ihandle* ih, int x2, int y1, int y2, int ac
   iupMATRIX_RECT(ih, x1, x2, y1, y2);
 
   /* feedback arrow */
-  xh2 = x2 - IMAT_COMBOBOX_W / 2;
+  xh2 = x2 - IMAT_DROPBOX_W / 2;
   yh2 = y2 - (y2 - y1) / 2;
 
   cdCanvasBegin(ih->data->cddbuffer, CD_FILL);
@@ -775,7 +780,7 @@ void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
       iMatrixDrawFrameRectTitle(ih, 0, col, x1, x2, y1, y2, framecolor, str);
 
       if (iMatrixDrawSortSign(ih, x2, y1, y2, col, active, str))
-        sort = IMAT_COMBOBOX_W; /* same space is used by the sort sign */
+        sort = IMAT_DROPBOX_W; /* same space is used by the sort sign */
 
       iMatrixDrawCellValue(ih, x1, x2-sort, y1, y2, IMAT_T_CENTER, marked, active, 0, col, draw_cb);
     }
@@ -941,8 +946,8 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 
       if (dropcheck_cb && dropcheck_cb(ih, lin, col) == IUP_DEFAULT)
       {
-        drop = IMAT_COMBOBOX_W+IMAT_PADDING_W/2;
-        iMatrixDrawComboFeedback(ih, x2, y1, y2, active, framecolor);
+        drop = IMAT_DROPBOX_W+IMAT_PADDING_W/2;
+        iMatrixDrawDropFeedback(ih, x2, y1, y2, active, framecolor);
       }
         
       /* draw the cell contents */
