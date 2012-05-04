@@ -98,6 +98,7 @@ struct _IcontrolData
 
   /* Mouse and Keyboard AUX */
   int leftpressed;  /* left mouse button is pressed */
+  int dclick;   /* left mouse button was double clicked */
   int homekeycount, endkeycount;  /* numbers of times that key was pressed */
 
   /* ColRes AUX */

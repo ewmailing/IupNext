@@ -79,21 +79,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
       iupMatrixAuxCallEnterCellCb(ih);
     }
     
-    if (iupMatrixEditShow(ih))
-    {
-      if (ih->data->datah == ih->data->droph)
-        IupSetAttribute(ih->data->datah, "SHOWDROPDOWN", "YES");
-
-      if (IupGetGlobal("MOTIFVERSION"))
-      {
-        /* Sequece of focus_cb in Motif from here:
-              Matrix-Focus(0) - ok
-              Edit-KillFocus - weird, must avoid using _IUPMAT_DOUBLECLICK
-           Since OpenMotif version 2.2.3 this is not necessary anymore. */
-        if (atoi(IupGetGlobal("MOTIFNUMBER")) < 2203) 
-          iupAttribSetStr(ih, "_IUPMAT_DOUBLECLICK", "1");
-      }
-    }
+    ih->data->dclick = 1; /* prepare for double click action */
   }
   else /* single click */
   {
@@ -141,6 +127,8 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r
 
   if (press)
   {
+    ih->data->dclick = 0;
+
     /* The edit Focus callback is not called when the user clicks in the parent canvas. 
        so we have to compensate that. */
     iupMatrixEditForceHidden(ih);
@@ -165,6 +153,27 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r
     {
       if (iupMatrixColResIsResizing(ih))  /* If it was made a column resize, finish it */
         iupMatrixColResFinish(ih, x);
+
+      if (ih->data->dclick)  /* when releasing the button from a double click */
+      {
+        if (iupMatrixEditShow(ih))
+        {
+          if (ih->data->datah == ih->data->droph)
+            IupSetAttribute(ih->data->datah, "SHOWDROPDOWN", "YES");
+
+          if (IupGetGlobal("MOTIFVERSION"))
+          {
+            /* Sequece of focus_cb in Motif from here:
+                  Matrix-Focus(0) - ok
+                  Edit-KillFocus - weird, must avoid using _IUPMAT_DOUBLECLICK
+               Since OpenMotif version 2.2.3 this is not necessary anymore. */
+            if (atoi(IupGetGlobal("MOTIFNUMBER")) < 2203) 
+              iupAttribSetStr(ih, "_IUPMAT_DOUBLECLICK", "1");
+          }
+        }
+
+        ih->data->dclick = 0;
+      }
     }
   }
   else
