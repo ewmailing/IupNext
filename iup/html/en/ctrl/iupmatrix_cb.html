@@ -204,7 +204,7 @@ text drawing will take place.</p>
 <h3>Editing</h3>
 <p><strong><a name="DROP_CB">DROP_CB</a></strong>:
   Action generated before the current cell 
-  enters edition mode to determine if a text field or a dropdown will be shown. It is called after 
+  enters edition mode to determine if a text field or a dropdown list will be shown. It is called after 
   EDITION_CB. If this action is not registered, a text 
   field will be shown. Its return determines what type of element will be used in the edition mode. If the selected type 
   is a dropdown, the values appearing in the dropdown must be fulfilled in this callback, just like elements are added 
@@ -219,14 +219,37 @@ text drawing will take place.</p>
 <strong>drop</strong>:
     Identifier of the dropdown list which will 
     be shown to the user.<br>
-    lin, <strong>col</strong>:
+    <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the current cell.</p>
 <p class="info"><span class="style1">Returns:</span> IUP_IGNORE to show a text-edition field, or IUP_DEFAULT to show a dropdown field.</p>
+<p><strong>MENUDROP_CB</strong>:
+  Action generated before the current cell 
+  enters edition mode to determine if a popup 
+menu will be shown instead of a text field or a dropdown. If this action is 
+registered the DROP_CB callback is not called, and the popup menu is shown. Like 
+DROP_CB, it is called after EDITION_CB. The values appearing as menu items in the 
+popup menu must be fulfilled in this callback, like elements are added 
+  to a list (the drop parameter is the handle of the popup menu to be shown, but 
+the actual items will be added later by the internal processing). You could also set the &quot;VALUE&quot; 
+attribute that will add a mark to the menu item with the same number. If IMAGEid 
+is set then an IMAGE attribute will be set at the correspondent menu item. The previously cell value can be verified from the given
+  drop Ihandle via the &quot;PREVIOUSVALUE&quot; attribute. (since 3.6)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, Ihandle *<strong>drop</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<strong>elem</strong>:drop_cb(<strong>drop: </strong>ihandle, <strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+    Identifier of the matrix interacting with 
+    the user.<br>
+<strong>drop</strong>:
+    Identifier of the popup menu which will 
+    be shown to the user.<br>
+    <strong>lin</strong>, <strong>col</strong>:
+    Coordinates of the current cell.</p>
 <p><strong><a name="DROPSELECT_CB">DROPSELECT_CB</a></strong>:
   Action generated when an element in the 
-  dropdown list is selected. If returns
+  dropdown list or the popup menu is selected. For the dropdown, if returns
   IUP_CONTINUE the value is accepted as a new value and the matrix leaves edition mode, 
-else the item is selected and editing remains.</p>
+else the item is selected and editing remains. For the popup menu the returned 
+value is ignored.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, Ihandle *<strong>drop</strong>, char *<strong>t</strong>, int <strong>i, </strong>int <strong>v</strong>); [in C]
 <strong>elem</strong>:dropselect_cb(<strong>lin, col</strong>: number, <strong>drop: </strong>ihandle,<strong> t</strong>: string, <strong>i, v</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua] </pre>
 <p class="info"><strong>ih</strong>:
@@ -235,13 +258,14 @@ else the item is selected and editing remains.</p>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the current cell.<br>
 <strong>drop</strong>:
-    Identifier of the dropdown list shown to the 
+    Identifier of the dropdown list or the popup menu shown to the 
     user.<br>
 <strong>t</strong>:
     Text of the item whose state was changed.<br>
 <strong>i</strong>:
     Number of the item whose state was changed.<br>
-<b>v</b>: Indicates if item was selected or unselected (1 or 0).</p>
+<b>v</b>: Indicates if item was selected or unselected (1 or 0). Always 1 for 
+the popup menu.</p>
 <p><strong><a name="EDITION_CB">EDITION_CB</a></strong>:
   Action generated when the current cell 
   enters or leaves the edition mode. Not called if READONLY=YES.</p>

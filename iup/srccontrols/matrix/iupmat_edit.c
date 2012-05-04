@@ -29,6 +29,108 @@
 #include "iupmat_draw.h"
 
 
+static int iMatrixEditCallEditionCb(Ihandle* ih, int mode, int update)
+{
+  int ret = iupMatrixAuxCallEditionCbLinCol(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, mode, update);
+
+  if (update && ret == IUP_DEFAULT && mode == 0)  /* leaving edition mode */
+    iupMatrixCellUpdateValue(ih);
+
+  return ret;
+}
+
+static int iMatrixMenuItemAction(Ihandle* ih)
+{
+  Ihandle* ih_menu = ih->parent;
+  Ihandle* ih_matrix = (Ihandle*)iupAttribGet(ih_menu, "_IUP_MATRIX");
+  char* t = IupGetAttribute(ih, "TITLE"); 
+  IFniinsii cb = (IFniinsii)IupGetCallback(ih_matrix, "DROPSELECT_CB");
+  if(cb)
+  {
+    int i = IupGetChildPos(ih_menu, ih) + 1;
+    cb(ih_matrix, ih_matrix->data->lines.focus_cell, ih_matrix->data->columns.focus_cell, ih_menu, t, i, 1);
+  }
+
+  IupStoreAttribute(ih_menu, "VALUE", t);
+
+  iMatrixEditCallEditionCb(ih_matrix, 0, 1);  /* always update */
+  iupMatrixDrawUpdate(ih_matrix);
+
+  return IUP_DEFAULT;
+}
+
+static void iMatrixEditInitMenu(Ihandle* menu)
+{
+  char *value;
+  int i = 1;
+  int v = IupGetInt(menu, "VALUE");
+
+  do 
+  {
+    value = IupGetAttributeId(menu, "", i);
+    if (value)
+    {
+      Ihandle* item = IupItem(value, NULL);
+
+      char* img = IupGetAttributeId(menu, "IMAGE", i);
+      if (img)
+        IupSetAttribute(item, "IMAGE", img);
+
+      IupSetCallback(item, "ACTION", (Icallback)iMatrixMenuItemAction);
+
+      if (v == i)   /* if v==0 no mark will be shown */
+        IupSetAttribute(item, "VALUE", "On");
+
+      IupAppend(menu, item);
+    }
+    i++;
+  } while (value);
+}
+
+static int iMatrixEditCallMenuDropCb(Ihandle* ih, int lin, int col)
+{
+  IFnnii cb = (IFnnii)IupGetCallback(ih, "MENUDROP_CB");
+  if(cb)
+  {
+    Ihandle* menu = IupMenu(NULL);
+    int ret;
+    char* value = iupMatrixCellGetValue(ih, lin, col);
+    if (!value) value = "";
+
+    iupAttribSetStr(menu, "PREVIOUSVALUE", value);
+    iupAttribSetStr(menu, "_IUP_MATRIX", (char*)ih);
+
+    ret = cb(ih, menu, lin, col);
+    if (ret == IUP_DEFAULT)
+    {
+      int x, y, w, h;
+
+      ih->data->datah = menu;
+
+      /* process menu to create items and set common callback */
+      iMatrixEditInitMenu(menu);
+
+      /* calc menu position */
+      iupMatrixGetVisibleCellDim(ih, lin, col, &x, &y, &w, &h);
+
+      x += IupGetInt(ih, "X");
+      y += IupGetInt(ih, "Y");
+
+      IupPopup(menu, x, y+h);
+      IupDestroy(menu);
+
+      /* restore a valid handle */
+      ih->data->datah = ih->data->texth;
+
+      return 1;
+    }
+
+    IupDestroy(menu);
+  }
+
+  return 0;
+}
+
 static int iMatrixEditCallDropdownCb(Ihandle* ih, int lin, int col)
 {
   IFnnii cb = (IFnnii)IupGetCallback(ih, "DROP_CB");
@@ -38,7 +140,7 @@ static int iMatrixEditCallDropdownCb(Ihandle* ih, int lin, int col)
     char* value = iupMatrixCellGetValue(ih, lin, col);
     if (!value) value = "";
 
-    iupAttribSetStr(ih->data->droph, "PREVIOUSVALUE", value);
+    IupStoreAttribute(ih->data->droph, "PREVIOUSVALUE", value);
     IupSetAttribute(ih->data->droph, "VALUE", "1");
 
     ret = cb(ih, ih->data->droph, lin, col);
@@ -89,18 +191,9 @@ static void iMatrixEditChooseElement(Ihandle* ih)
     text value is set here from cell contents. */
     value = iupMatrixCellGetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
     if (!value) value = "";
-    IupSetAttribute(ih->data->texth, "VALUE", value);
+    IupStoreAttribute(ih->data->texth, "VALUE", value);
+    IupStoreAttribute(ih->data->texth, "PREVIOUSVALUE", value);
   }
-}
-
-static int iMatrixEditCallEditionCb(Ihandle* ih, int mode, int update)
-{
-  int ret = iupMatrixAuxCallEditionCbLinCol(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, mode, update);
-
-  if (update && ret == IUP_DEFAULT && mode == 0)  /* leaving edition mode */
-    iupMatrixCellUpdateValue(ih);
-
-  return ret;
 }
 
 static int iMatrixEditCancel(Ihandle* ih, int focus, int update, int ignore)
@@ -215,6 +308,9 @@ int iupMatrixEditShow(Ihandle* ih)
 
   /* notify application */
   if (iMatrixEditCallEditionCb(ih, 1, 0) == IUP_IGNORE)
+    return 0;
+
+  if (iMatrixEditCallMenuDropCb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
     return 0;
 
   /* select edit control */
@@ -440,9 +536,9 @@ static int iMatrixEditDropDownKeyAny_CB(Ihandle* ih, int c)
 char* iupMatrixEditGetValue(Ihandle* ih)
 {
   if (ih->data->datah == ih->data->droph)
-    return IupGetAttribute(ih->data->droph, IupGetAttribute(ih->data->droph, "VALUE"));
+    return IupGetAttribute(ih->data->datah, IupGetAttribute(ih->data->droph, "VALUE"));
   else
-    return IupGetAttribute(ih->data->texth, "VALUE");
+    return IupGetAttribute(ih->data->datah, "VALUE");
 }
 
 void iupMatrixEditCreate(Ihandle* ih)
