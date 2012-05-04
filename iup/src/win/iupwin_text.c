@@ -1220,6 +1220,13 @@ static int winTextSetClipboardAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
+static int winTextSetFgColorAttrib(Ihandle *ih, const char *value)
+{
+  (void)value;
+  iupdrvPostRedraw(ih);
+  return 1;
+}
+
 static int winTextSetBgColorAttrib(Ihandle *ih, const char *value)
 {
   if (ih->data->has_formatting)
@@ -2138,7 +2145,7 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, winTextSetVisibleAttrib, "YES", "NO", IUPAF_NO_SAVE|IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_NOT_MAPPED);  /* usually black */    
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winTextSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_NOT_MAPPED);  /* usually black */    
   iupClassRegisterAttribute(ic, "AUTOREDRAW", NULL, iupwinSetAutoRedrawAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupText only */
