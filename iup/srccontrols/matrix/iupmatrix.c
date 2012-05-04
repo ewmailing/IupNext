@@ -1369,6 +1369,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterCallback(ic, "DRAW_CB", "iiiiiiv");
   iupClassRegisterCallback(ic, "DROPCHECK_CB", "ii");
   /* --- Editing --- */
+  iupClassRegisterCallback(ic, "MENUDROP_CB", "nii");
   iupClassRegisterCallback(ic, "DROP_CB", "nii");
   iupClassRegisterCallback(ic, "DROPSELECT_CB", "iinsii");
   iupClassRegisterCallback(ic, "EDITION_CB", "iii");

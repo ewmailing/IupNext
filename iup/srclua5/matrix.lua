@@ -10,6 +10,7 @@ local ctrl = {
     click_cb = "nns",
     release_cb = "nns",
     drop_cb = "inn",
+    menudrop_cb = "inn",
     dropcheck_cb = "nn",
     draw_cb = "nnnnnnn",  -- fake definitions to be replaced by matrixfuncs module
     dropselect_cb = "nnisnn",
