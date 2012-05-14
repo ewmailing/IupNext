@@ -245,12 +245,11 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
         }
       }
 
-      CreateContextAttribsARB(gldata->device, shared_context, attribs);
+      gldata->context = CreateContextAttribsARB(gldata->device, shared_context, attribs);
     }
 
     wglMakeCurrent(oldDC, oldContext);
     wglDeleteContext(tempContext);
-
 
     if (!CreateContextAttribsARB)
     {
