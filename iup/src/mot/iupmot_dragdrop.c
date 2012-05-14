@@ -183,7 +183,7 @@ static void motDragDropFinishCallback(Widget dropContext, XtPointer clientData, 
   (void)callData;
 }
 
-static Boolean motConvertProc(Widget drop_context, Atom *selection, Atom *target, Atom *typeReturn,
+static Boolean motDragConvertProc(Widget drop_context, Atom *selection, Atom *target, Atom *typeReturn,
                           XtPointer *valueReturn, unsigned long *lengthReturn, int *formatReturn)
 {
   Atom atomMotifDrop = XInternAtom(iupmot_display, "_MOTIF_DROP", False);
@@ -269,7 +269,7 @@ static void motDragStart(Widget dragSource, XButtonEvent* evt, String* params, C
   iupMOT_SETARG(args, num_args, XmNexportTargets, exportList);
   iupMOT_SETARG(args, num_args, XmNnumExportTargets, numExportList);
   iupMOT_SETARG(args, num_args, XmNdragOperations, XmDROP_MOVE|XmDROP_COPY);
-  iupMOT_SETARG(args, num_args, XmNconvertProc, motConvertProc);
+  iupMOT_SETARG(args, num_args, XmNconvertProc, motDragConvertProc);
   iupMOT_SETARG(args, num_args, XmNclientData, dragSource);
 
   /* start the drag and register a callback to clean up when done */
@@ -433,3 +433,9 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPFILESTARGET", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
 }
+
+/* TODO: 
+Estudar se devemos usar
+extern void XmDragCancel(Widget dragContext) ;
+extern Boolean XmTargetsAreCompatible( 
+*/

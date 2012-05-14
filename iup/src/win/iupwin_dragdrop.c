@@ -985,6 +985,7 @@ bool CIDropTarget::OnDrop(FORMATETC* pFmtEtc, STGMEDIUM& medium, DWORD *pdwEffec
 
   for(i = 0; i < count; i++)
   {
+    // Acho que não precisa fazer isso, o sistema já está escolhendo para nós, não? 
     if(iupStrEqualNoCase(type, iupList[i]))
     {
       IFnnsii cbDrop = (IFnnsii)IupGetCallback(ih, "DROPTARGET_CB");

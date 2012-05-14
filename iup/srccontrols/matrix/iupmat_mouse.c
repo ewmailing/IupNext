@@ -73,11 +73,11 @@ static void iMatrixMouseEdit(Ihandle* ih)
       if (atoi(IupGetGlobal("MOTIFNUMBER")) < 2203) 
         iupAttribSetStr(ih, "_IUPMAT_DOUBLECLICK", "1");
     }
-
-    /* reset mouse flags */
-    ih->data->dclick = 0;
-    ih->data->leftpressed = 0;
   }
+
+  /* reset mouse flags */
+  ih->data->dclick = 0;
+  ih->data->leftpressed = 0;
 }
 
 static int iMatrixIsDropArea(Ihandle* ih, int lin, int col, int x, int y)
