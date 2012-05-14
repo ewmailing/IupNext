@@ -26,7 +26,6 @@ void iupwinWmSetFocus(Ihandle *ih);
 /* key */
 int iupwinKeyEvent(Ihandle* ih, int wincode, int press);
 void iupwinButtonKeySetStatus(WORD keys, char* status, int doubleclick);
-void iupwinKeyEncode(int key, unsigned int *keyval, unsigned int *state);
 int iupwinKeyDecode(int wincode);
 
 /* tips */

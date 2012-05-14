@@ -921,7 +921,7 @@ void iupdrvSendKey(int key, int press)
   WORD state_scan = 0, key_scan;
   ZeroMemory(input, 2*sizeof(INPUT));
 
-  iupwinKeyEncode(key, &keyval, &state);
+  iupdrvKeyEncode(key, &keyval, &state);
   if (!keyval)
     return;
 

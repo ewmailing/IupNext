@@ -217,6 +217,7 @@ iupdrvActivate
 iupdrvSendMouse
 iupdrvSendKey
 iupdrvWarpPointer
+iupdrvKeyEncode
 iupdrvImageCreateImageRaw
 iupdrvImageGetRawInfo
 iupdrvImageGetRawData

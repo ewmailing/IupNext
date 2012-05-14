@@ -643,7 +643,7 @@ void iupdrvSendKey(int key, int press)
 	XGetInputFocus(iupmot_display, &focus, &revert_to);
   evt.window = focus;
 
-  iupmotKeyEncode(key, &evt.keycode, &evt.state);
+  iupdrvKeyEncode(key, &evt.keycode, &evt.state);
   if (!evt.keycode)
     return;
 

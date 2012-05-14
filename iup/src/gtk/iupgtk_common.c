@@ -818,7 +818,7 @@ void iupdrvSendKey(int key, int press)
     return;
   evt.window = iupgtkGetWindow(focus->handle);
 
-  iupgtkKeyEncode(key, &evt.keyval, &evt.state);
+  iupdrvKeyEncode(key, &evt.keyval, &evt.state);
   if (!evt.keyval)
     return;
 

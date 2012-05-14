@@ -17,6 +17,7 @@
 #include "iup_object.h"
 #include "iup_key.h"
 
+#include "iup_drv.h"
 #include "iupgtk_drv.h"
 
 
@@ -216,7 +217,7 @@ static Igtk2iupkey gtkkey_map[] = {
 
 };
 
-void iupgtkKeyEncode(int key, guint *keyval, guint *state)
+void iupdrvKeyEncode(int key, unsigned int *keyval, unsigned int *state)
 {
   int i, iupcode = key & 0xFF; /* 0-255 interval */
   int count = sizeof(gtkkey_map)/sizeof(gtkkey_map[0]);

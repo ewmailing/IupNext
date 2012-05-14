@@ -103,6 +103,10 @@ void iupdrvSendMouse(int x, int y, int bt, int status);
  * \ingroup drv */
 void iupdrvWarpPointer(int x, int y);
 
+/** Translates an IUP key definition into a system definition.
+ * \ingroup drv */
+void iupdrvKeyEncode(int key, unsigned int *keyval, unsigned int *state);
+
 /** Suspends execution for the specified number of milliseconds.
  * \ingroup drv */
 void iupdrvSleep(int time);

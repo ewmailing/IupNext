@@ -14,6 +14,7 @@
 #include "iup_object.h"
 #include "iup_key.h"
 
+#include "iup_drv.h"
 #include "iupwin_drv.h"
                    
                    
@@ -158,7 +159,7 @@ static Iwin2iupkey keytable_abnt[] = {
 };
 
 
-void iupwinKeyEncode(int key, unsigned int *keyval, unsigned int *state)
+void iupdrvKeyEncode(int key, unsigned int *keyval, unsigned int *state)
 {
   int i, iupcode = key & 0xFF; /* 0-255 interval */
   int count = sizeof(winkey_map)/sizeof(winkey_map[0]);
