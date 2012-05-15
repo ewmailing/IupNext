@@ -141,6 +141,7 @@ static Imot2iupkey motkey_map[] = {
 { XK_dead_tilde,   K_tilde, K_circum, 0, 0, 0 },
 { XK_dead_acute,   K_acute, K_grave,  0, 0, 0 },
 { XK_dead_grave,   K_grave, K_tilde,  0, 0, 0 },
+{ XK_dead_circumflex, K_tilde, K_circum, 0, 0, 0 },
 
 { XK_KP_F1,  K_F1,  K_sF1,  K_cF1,  K_mF1,  K_yF1 },
 { XK_KP_F2,  K_F2,  K_sF2,  K_cF2,  K_mF2,  K_yF2 },
