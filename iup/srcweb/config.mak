@@ -21,6 +21,7 @@ else
     
     ifneq ($(findstring Linux3, $(TEC_UNAME)), )
       LIBS += webkitgtk-1.0
+      INCLUDES += $(GTK)/include/webkitgtk-1.0
     else
       LIBS += webkit-1.0
     endif
