@@ -244,18 +244,6 @@ static int wheel_cb(Ihandle *ih,float delta,int x,int y,char* status)
 static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
   printf("MOTION_CB(x=%d, y=%d [%s])\n",x,y, status);
-
-//  {
-//    static int count=0;
-//#ifdef WIN32
-//    Sleep(1000);
-//#else
-//    sleep(1); //or do anything that takes some time
-//#endif
-//    count++;
-//    printf("count(%d)\n",count);
-//  }
-
   return IUP_DEFAULT;
 }
 
@@ -263,13 +251,14 @@ char *iupKeyCodeToName(int code);
 
 static int k_any(Ihandle *ih, int c)
 {
-  if (c == K_a)
-    IupSetAttribute(ih, "POSX", "100");
+  //if (c == K_a)
+  //  IupSetAttribute(ih, "POSX", "100");
 
   if (iup_isprint(c))
     printf("K_ANY(%d = %s \'%c\')\n", c, iupKeyCodeToName(c), (char)c);
   else
     printf("K_ANY(%d = %s)\n", c, iupKeyCodeToName(c));
+
   printf("  MODKEYSTATE(%s)\n", IupGetGlobal("MODKEYSTATE"));
   return IUP_DEFAULT;
 }
@@ -318,8 +307,8 @@ void CanvasTest(void)
 
   IupSetCallback(canvas, "MAP_CB",       (Icallback)map_cb);
 
-  IupSetCallback(canvas, "KEYPRESS_CB",  (Icallback)keypress_cb);
-//  IupSetCallback(canvas, "K_ANY",        (Icallback)k_any);
+//  IupSetCallback(canvas, "KEYPRESS_CB",  (Icallback)keypress_cb);
+  IupSetCallback(canvas, "K_ANY",        (Icallback)k_any);
   IupSetCallback(canvas, "HELP_CB",      (Icallback)help_cb);
 
   IupSetCallback(canvas, "GETFOCUS_CB",  (Icallback)getfocus_cb); 

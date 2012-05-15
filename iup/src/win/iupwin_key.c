@@ -268,7 +268,7 @@ int iupwinKeyDecode(int wincode)
         return winKeyMap2Iup(keytable_abnt, i);
     }
   }
-  if ((int)HIWORD(k) & 0x000C) /* AZERTY (French) */
+  else if (((int)HIWORD(k) & 0x00FF) == 0x000C) /* AZERTY (French) */
   {
     count = sizeof(keytable_azerty)/sizeof(keytable_azerty[0]);
     for (i = 0; i < count; i++)
