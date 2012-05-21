@@ -31,7 +31,8 @@
 int iupMatrixCheckCellPos(Ihandle* ih, int lin, int col)
 {
   /* Check if the cell exists */
-  if ((lin < 0) || (col < 0) || (lin > ih->data->lines.num-1) || (col > ih->data->columns.num-1))
+  if (!iupMATRIX_CHECK_COL(ih, col) ||
+      !iupMATRIX_CHECK_LIN(ih, lin))
     return 0;
 
   return 1;
@@ -79,7 +80,7 @@ void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int
 
   if (lin==IUP_INVALID_ID)
   {
-    if ((col < 0) || (col > ih->data->columns.num-1))
+    if (!iupMATRIX_CHECK_COL(ih, col))
       return;
 
     if (set)
@@ -89,7 +90,7 @@ void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int
   }
   else if (col==IUP_INVALID_ID)
   {
-    if ((lin < 0) || (lin > ih->data->lines.num-1))
+    if (!iupMATRIX_CHECK_LIN(ih, lin))
       return;
 
     if (set)
@@ -101,7 +102,8 @@ void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int
   {
     if (!ih->data->callback_mode)
     {
-      if ((lin < 0) || (col < 0) || (lin > ih->data->lines.num-1) || (col > ih->data->columns.num-1))
+      if (!iupMATRIX_CHECK_COL(ih, col) ||
+          !iupMATRIX_CHECK_LIN(ih, lin))
         return;
 
       if (set)

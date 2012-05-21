@@ -273,6 +273,12 @@ static int bt_cb(Ihandle *self)
 {
   printf("DEFAULTENTER\n"); 
 //  IupHide(IupGetHandle("mat1")); 
+//  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE*:2","1-10"); 
+//  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE2:*","1-10"); 
+  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE2:2","10-10"); 
+//  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE","ALL"); 
+//  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE","CONTENTS"); 
+  IupSetAttribute(IupGetHandle("mat1"),"REDRAW","ALL");
   return IUP_DEFAULT;
 }
 

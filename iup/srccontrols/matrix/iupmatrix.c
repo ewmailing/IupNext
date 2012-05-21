@@ -874,6 +874,102 @@ static int iMatrixSetNeedRedraw(Ihandle* ih)
   return 1;
 }
 
+static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char* value)
+{
+  if (ih->data->callback_mode)
+    return 0;
+
+  if (lin < 0 && col < 0)
+  {
+    if (iupStrEqualNoCase(value, "ALL"))
+    {
+      for (lin=0; lin<ih->data->lines.num; lin++)
+      {
+        for (col=0; col<ih->data->columns.num; col++)
+        {
+          if (ih->data->cells[lin][col].value)
+            free(ih->data->cells[lin][col].value);
+          ih->data->cells[lin][col].value = NULL;
+        }
+      }
+    }
+    else if (iupStrEqualNoCase(value, "CONTENTS"))
+    {
+      for (lin=1; lin<ih->data->lines.num; lin++)
+      {
+        for (col=1; col<ih->data->columns.num; col++)
+        {
+          if (ih->data->cells[lin][col].value)
+            free(ih->data->cells[lin][col].value);
+          ih->data->cells[lin][col].value = NULL;
+        }
+      }
+    }
+  }
+  else
+  {
+    if (lin==IUP_INVALID_ID)
+    {
+      int lin1 = 0, lin2 = ih->data->lines.num-1;
+      iupStrToIntInt(value, &lin1, &lin2, '-');
+
+      if (!iupMATRIX_CHECK_COL(ih, col)  ||
+          !iupMATRIX_CHECK_LIN(ih, lin1) ||
+          !iupMATRIX_CHECK_LIN(ih, lin2))
+        return 0;
+
+      for (lin=lin1; lin<=lin2; lin++)
+      {
+        if (ih->data->cells[lin][col].value)
+          free(ih->data->cells[lin][col].value);
+        ih->data->cells[lin][col].value = NULL;
+      }
+    }
+    else if (col==IUP_INVALID_ID)
+    {
+      int col1 = 0, col2 = ih->data->columns.num-1;
+      iupStrToIntInt(value, &col1, &col2, '-');
+
+      if (!iupMATRIX_CHECK_LIN(ih, lin)  ||
+          !iupMATRIX_CHECK_COL(ih, col1) ||
+          !iupMATRIX_CHECK_COL(ih, col2))
+        return 0;
+
+      for (col=col1; col<=col2; col++)
+      {
+        if (ih->data->cells[lin][col].value)
+          free(ih->data->cells[lin][col].value);
+        ih->data->cells[lin][col].value = NULL;
+      }
+    }
+    else
+    {
+      int lin1 = lin, lin2 = ih->data->lines.num-1;
+      int col1 = col, col2 = ih->data->columns.num-1;
+      iupStrToIntInt(value, &lin2, &col2, ':');
+
+      if (!iupMATRIX_CHECK_LIN(ih, lin1) ||
+          !iupMATRIX_CHECK_LIN(ih, lin2) ||
+          !iupMATRIX_CHECK_COL(ih, col1) ||
+          !iupMATRIX_CHECK_COL(ih, col2))
+        return 0;
+
+      for (lin=lin1; lin<=lin2; lin++)
+      {
+        for (col=col1; col<=col2; col++)
+        {
+          if (ih->data->cells[lin][col].value)
+            free(ih->data->cells[lin][col].value);
+          ih->data->cells[lin][col].value = NULL;
+        }
+      }
+    }
+
+    ih->data->need_redraw = 1;
+  }
+  return 0;
+}
+
 static int iMatrixSetFlagsAttrib(Ihandle* ih, int lin, int col, const char* value, unsigned char attr)
 {
   if (lin >= 0 || col >= 0)
@@ -1450,6 +1546,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "EDIT_MODE", iMatrixGetEditModeAttrib, iMatrixSetEditModeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITNEXT", iMatrixGetEditNextAttrib, iMatrixSetEditNextAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iupMatrixDrawSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId2(ic, "CLEARVALUE", NULL, iMatrixSetClearValueAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - EDITION */
   iupClassRegisterAttribute(ic, "CARET", iMatrixGetCaretAttrib, iMatrixSetCaretAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

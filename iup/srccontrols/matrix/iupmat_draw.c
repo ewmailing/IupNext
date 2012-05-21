@@ -1001,8 +1001,17 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
     int min = 0, max = 0;
     value++;
 
-    if(iupStrToIntInt(value, &min, &max, ':') != 2)
-      max = min;
+    /* compatibility code */
+    if (strchr(value, ':')!=NULL)
+    {
+      if(iupStrToIntInt(value, &min, &max, ':') != 2)
+        max = min;
+    }
+    else
+    {
+      if(iupStrToIntInt(value, &min, &max, '-') != 2)
+        max = min;
+    }
 
     if (min > max)
       return 0;
