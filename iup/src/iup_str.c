@@ -797,10 +797,12 @@ char* iupStrProcessMnemonic(const char* str, char *c, int action)
     {
       if (*(str+1) == '&') /* remove & from the string, add next & to the string */
       {
+        found = -1;
+
         str++;
         new_str[i++] = *str;
       }
-      else if (!found) /* mnemonic found */
+      else if (found!=1) /* mnemonic found */
       {
         found = 1;
 
@@ -820,7 +822,7 @@ char* iupStrProcessMnemonic(const char* str, char *c, int action)
   }
   new_str[i] = 0;
 
-  if (!found)
+  if (found==0)
   {
     free(new_str);
     return orig_str;
