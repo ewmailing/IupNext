@@ -195,7 +195,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
   IupAppend(button_box, IupFill()); /* to center the buttons */
 
   button = IupButton(b1, NULL);
-  iupAttribSetStrf(button, "_IUP_BUTTON_NUMBER", "1");
+  iupAttribSetStr(button, "_IUP_BUTTON_NUMBER", "1");
   IupSetAttribute(button, "PADDING", padding);
   IupAppend(button_box, button);
   IupSetCallback (button, "ACTION", (Icallback)iAlarmButtonAction_CB);
