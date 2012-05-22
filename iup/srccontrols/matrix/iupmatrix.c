@@ -1617,10 +1617,11 @@ float IupMatGetFloat(Ihandle* ih, const char* name, int lin, int col)
 
 void IupMatSetfAttribute(Ihandle* ih, const char* name, int lin, int col, const char* f, ...)
 {
-  static char value[SHRT_MAX];
+  int size;
+  char* value = iupStrGetLargeMem(&size);
   va_list arglist;
   va_start(arglist, f);
-  vsprintf(value, f, arglist);
+  vsnprintf(value, size, f, arglist);
   va_end(arglist);
   IupStoreAttributeId2(ih, name, lin, col, value);
 }

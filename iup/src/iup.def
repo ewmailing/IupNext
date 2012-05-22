@@ -261,6 +261,7 @@ iupStrLineCount
 iupStrInsert
 iupStrGetMemoryCopy
 iupStrGetMemory
+iupStrGetLargeMem
 iupStrFileMakeFileName
 iupStrFileGetTitle
 iupStrFileGetPath

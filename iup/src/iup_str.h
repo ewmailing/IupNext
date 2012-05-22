@@ -90,6 +90,11 @@ char *iupStrGetMemory(int size);
  * \ingroup str */
 char *iupStrGetMemoryCopy(const char* str);
 
+/** Returns a very large buffer to be used in unknown size string construction.
+ * Use snprintf or vsnprintf with the given size.
+ * \ingroup str */
+char *iupStrGetLargeMem(int *size);
+
 /** Converts a string into lower case. Can be used in-place.
  * \ingroup str */
 void iupStrLower(char* dstr, const char* sstr);

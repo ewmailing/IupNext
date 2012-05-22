@@ -227,22 +227,22 @@ void iupgtkFontUpdateObjectPangoLayout(Ihandle* ih, gpointer object)
 
 char* iupdrvGetSystemFont(void)
 {
-  static char systemfont[200] = "";
+  static char str[200]; /* must return a static string, because it will be used as the default value for the FONT attribute */
   GtkStyle* style;
   GtkWidget* widget = gtk_invisible_new();
   gtk_widget_realize(widget);
   style = gtk_widget_get_style(widget);
   if (!style || !style->font_desc)
-    strcpy(systemfont, "Sans, 10");
+    strcpy(str, "Sans, 10");
   else
   {
     char* desc = pango_font_description_to_string(style->font_desc);
-    strcpy(systemfont, desc);
+    strcpy(str, desc);
     g_free(desc);
   }
   gtk_widget_unrealize(widget);
   gtk_widget_destroy(widget);
-  return systemfont;
+  return str;
 }
 
 char* iupgtkFindPangoFontDesc(PangoFontDescription* fontdesc)

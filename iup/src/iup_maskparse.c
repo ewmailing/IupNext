@@ -17,7 +17,7 @@
  * Table of characters (customizaveis atraves de iupMaskSetChar)
  */
 
-static char *imask_parse_chars = "|*+()[]-^/.?^${}~";
+static char* imask_parse_chars = "|*+()[]-^/.?^${}~";
 /*                                01234567890123456     */
 
 #define OR_CH        imask_parse_chars[0]  /* OR CHaracter      */

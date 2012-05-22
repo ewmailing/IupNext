@@ -770,10 +770,11 @@ float IupTreeGetFloat(Ihandle* ih, const char* a, int id)
 
 void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, const char* f, ...)
 {
-  static char v[SHRT_MAX];
+  int size;
+  char* v = iupStrGetLargeMem(&size);
   va_list arglist;
   va_start(arglist, f);
-  vsprintf(v, f, arglist);
+  vsnprintf(v, size, f, arglist);
   va_end(arglist);
   IupStoreAttributeId(ih, a, id, v);
 }

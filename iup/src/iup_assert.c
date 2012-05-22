@@ -23,16 +23,17 @@ int iupIsOpened(void);
 
 void iupError(const char* format, ...)
 {
-  static char msg[SHRT_MAX];
+  int size;
+  char* msg = iupStrGetLargeMem(&size);
   va_list arglist;
   va_start(arglist, format);
-  vsprintf(msg, format, arglist);
+  vsnprintf(msg, size, format, arglist);
   va_end(arglist);
 #if IUP_ASSERT_CONSOLE 
   fprintf(stderr, msg);
 #else
   if (iupIsOpened())
-    iupStrMessageShowError(NULL, msg);
+    iupStrMessageShowError(NULL, iupStrGetMemoryCopy(msg));
   else
     fprintf(stderr, msg);
 #endif

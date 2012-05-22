@@ -21,7 +21,6 @@ int   iupwinIs7OrNew(void);
 
 /* color */
 void iupwinGetSysColor(char* color, int wincolor);
-char* iupwinGetSystemFgColor(void);
 
 #ifdef __cplusplus
 }

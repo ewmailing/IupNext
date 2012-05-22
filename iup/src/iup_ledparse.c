@@ -273,15 +273,17 @@ static Ihandle* iParseFunction(Iclass *ic)
 
 static int iParseError(int err, char *s)
 {
-  static char msg[256];
+  char msg[256] = "";
+
   switch (err)
   {
   case IPARSE_SYMBEXIST:
-    sprintf(msg, "symbol '%s' %s",s,"already exists");
+    sprintf(msg, "symbol '%s' already exists", s);
     break;
   case IUPLEX_NOTMATCH:
-    sprintf(msg, "symbol '%s' %s",s,"not defined");
+    sprintf(msg, "symbol '%s' not defined", s);
     break;
   }
-  return iupLexError(IUPLEX_PARSEERROR,msg);
+
+  return iupLexError(IUPLEX_PARSEERROR, msg);
 }

@@ -242,7 +242,7 @@ static ImotFont* motFindFont(const char* foundry, const char *standardfont)
 
 char* iupdrvGetSystemFont(void)
 {
-  static char systemfont[200] = "";
+  static char str[200]; /* must return a static string, because it will be used as the default value for the FONT attribute */
   ImotFont* motfont = NULL;
   char* font = XGetDefault(iupmot_display, "Iup", "fontList");
   if (font)
@@ -254,8 +254,8 @@ char* iupdrvGetSystemFont(void)
     motfont = motFindFont("misc", font);
   }
 
-  strcpy(systemfont, font);
-  return systemfont;
+  strcpy(str, font);
+  return str;
 }
 
 char* iupmotFindFontList(XmFontList fontlist)

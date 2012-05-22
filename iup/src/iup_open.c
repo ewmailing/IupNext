@@ -28,7 +28,7 @@
 
 static int iup_opened = 0;
 static int iup_dummy_argc = 0;
-static char ** iup_dummy_argv = {0};
+static char** iup_dummy_argv = {0};
 
 int iupIsOpened(void)
 {

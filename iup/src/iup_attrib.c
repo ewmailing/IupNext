@@ -352,10 +352,11 @@ int IupGetIntId(Ihandle *ih, const char* name, int id)
 
 void IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* f, ...)
 {
-  static char value[SHRT_MAX];
+  int size;
+  char* value = iupStrGetLargeMem(&size);
   va_list arglist;
   va_start(arglist, f);
-  vsprintf(value, f, arglist);
+  vsnprintf(value, size, f, arglist);
   va_end(arglist);
   IupStoreAttributeId(ih, name, id, value);
 }
@@ -386,10 +387,11 @@ float IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col)
 
 void IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* f, ...)
 {
-  static char value[SHRT_MAX];
+  int size;
+  char* value = iupStrGetLargeMem(&size);
   va_list arglist;
   va_start(arglist, f);
-  vsprintf(value, f, arglist);
+  vsnprintf(value, size, f, arglist);
   va_end(arglist);
   IupStoreAttributeId2(ih, name, lin, col, value);
 }
@@ -583,10 +585,11 @@ int IupGetIntInt(Ihandle *ih, const char* name, int *i1, int *i2)
 
 void IupSetfAttribute(Ihandle *ih, const char* name, const char* f, ...)
 {
-  static char value[SHRT_MAX];
+  int size;
+  char* value = iupStrGetLargeMem(&size);
   va_list arglist;
   va_start(arglist, f);
-  vsprintf(value, f, arglist);
+  vsnprintf(value, size, f, arglist);
   va_end(arglist);
   IupStoreAttribute(ih, name, value);
 }
@@ -680,10 +683,11 @@ void iupAttribStoreStr(Ihandle* ih, const char* name, const char* value)
 
 void iupAttribSetStrf(Ihandle *ih, const char* name, const char* f, ...)
 {
-  static char value[SHRT_MAX];
+  int size;
+  char* value = iupStrGetLargeMem(&size);
   va_list arglist;
   va_start(arglist, f);
-  vsprintf(value, f, arglist);
+  vsnprintf(value, size, f, arglist);
   va_end(arglist);
   iupAttribStoreStr(ih, name, value);
 }

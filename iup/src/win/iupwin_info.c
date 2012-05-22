@@ -265,13 +265,6 @@ void iupwinGetSysColor(char* color, int wincolor)
    sprintf(color, "%d %d %d", (int)GetRValue(syscolor), (int)GetGValue(syscolor), (int)GetBValue(syscolor));
 }
 
-char* iupwinGetSystemFgColor(void)
-{
-  static char def_fgcolor[50];
-  iupwinGetSysColor(def_fgcolor, COLOR_WINDOWTEXT);
-  return def_fgcolor;
-}
-
 int iupwinIsAppThemed(void)
 {
   typedef BOOL (STDAPICALLTYPE *winIsAppThemed)(void);

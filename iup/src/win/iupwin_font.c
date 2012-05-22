@@ -128,14 +128,14 @@ static void winFontFromLogFont(LOGFONT* logfont, char * font)
 
 char* iupdrvGetSystemFont(void)
 {
-  static char systemfont[200] = "";
+  static char str[200]; /* must return a static string, because it will be used as the default value for the FONT attribute */
   NONCLIENTMETRICS ncm;
   ncm.cbSize = sizeof(NONCLIENTMETRICS);
   if (SystemParametersInfo(SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, FALSE))
-    winFontFromLogFont(&ncm.lfMessageFont, systemfont);
+    winFontFromLogFont(&ncm.lfMessageFont, str);
   else
-    strcpy(systemfont, "Tahoma, 10");
-  return systemfont;
+    strcpy(str, "Tahoma, 10");
+  return str;
 }
 
 char* iupwinFindHFont(HFONT hFont)
