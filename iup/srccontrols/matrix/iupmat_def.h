@@ -24,14 +24,17 @@ extern "C" {
 #define IMAT_FRAME_H   2
 
 /* Cell flags */
-#define IMAT_HAS_FONT    1   /* Has FONTL:C attribute */
-#define IMAT_HAS_FGCOLOR 2   /* Has FGCOLORL:C attribute */
-#define IMAT_HAS_BGCOLOR 4   /* Has BGCOLORL:C attribute */
-#define IMAT_HAS_MARK    8   /* Is marked */
-#define IMAT_HAS_FRAMEHCOLOR 16   /* Has FRAMEHORIZCOLORL:C */
-#define IMAT_HAS_FRAMEVCOLOR 32   /* Has FRAMEVERTCOLORL:C */
+#define IMAT_HAS_FONT    1     /* Has FONTL:C attribute */
+#define IMAT_HAS_FGCOLOR 2     /* Has FGCOLORL:C attribute */
+#define IMAT_HAS_BGCOLOR 4     /* Has BGCOLORL:C attribute */
+#define IMAT_IS_MARKED   8     /* Is marked */
+#define IMAT_HAS_FRAMEHORIZCOLOR 16  /* Has FRAMEHORIZCOLORL:C */
+#define IMAT_HAS_FRAMEVERTCOLOR  32  /* Has FRAMEVERTCOLORL:C */
 
-enum{IMAT_EDITNEXT_LIN, IMAT_EDITNEXT_COL, IMAT_EDITNEXT_LINCR, IMAT_EDITNEXT_COLCR};
+enum{IMAT_EDITNEXT_LIN, 
+     IMAT_EDITNEXT_COL, 
+     IMAT_EDITNEXT_LINCR, 
+     IMAT_EDITNEXT_COLCR};
 
 
 /***************************************************************************/
@@ -39,42 +42,42 @@ enum{IMAT_EDITNEXT_LIN, IMAT_EDITNEXT_COL, IMAT_EDITNEXT_LINCR, IMAT_EDITNEXT_CO
 /***************************************************************************/
 typedef struct _ImatCell
 {
-  char *value;           /* Cell value                              */
+  char *value;      /* Cell value                              */
   unsigned char flags;  
 } ImatCell;
 
 
 typedef struct _ImatLinColData
 {
-  int* sizes;         /* Width/height of the columns/lines  (allocated after map)   */
-  unsigned char* flags;    /* Attribute flags for the columns/lines (allocated after map) */
+  int* sizes;            /* Width/height of the columns/lines  (allocated after map)   */
+  unsigned char* flags;  /* Attribute flags for the columns/lines (allocated after map) */
 
-  int num;         /* Number of columns/lines, default/minimum=1, always includes the non scrollable cells */
-  int num_alloc;   /* Number of columns/lines allocated, default=5 */
+  int num;          /* Number of columns/lines, default/minimum=1, always includes the non scrollable cells */
+  int num_alloc;    /* Number of columns/lines allocated, default=5 */
   int num_noscroll; /* Number of non scrollable columns/lines, default/minimum=1 */
 
   int first_offset; /* Scroll offset of the first visible column/line from right to left 
                        (or the invisible part of the first visible cell) 
                        This is how the scrollbar controls scrolling of cells. */
-  int first;       /* First visible column/line */
-  int last;        /* Last visible column/line  */
+  int first;        /* First visible column/line */
+  int last;         /* Last visible column/line  */
 
   /* used to configure the scrollbar */
-  int total_size;     /* Sum of the widths/heights of the columns/lines, not including the non scrollable cells */
-  int visible_size;   /* Width/height of the visible window, not including the non scrollable cells */
+  int total_size;   /* Sum of the widths/heights of the columns/lines, not including the non scrollable cells */
+  int visible_size; /* Width/height of the visible window, not including the non scrollable cells */
 
-  int focus_cell;  /* index of the current cell */
+  int focus_cell;   /* index of the current cell */
 } ImatLinColData;
 
 struct _IcontrolData
 {
-  iupCanvas canvas;  /* from IupCanvas (must reserve it) */
+  iupCanvas canvas; /* from IupCanvas (must reserve it) */
 
-  ImatCell** cells;  /* Cell value, this will be NULL if in callback mode (allocated after map) */
+  ImatCell** cells; /* Cell value, this will be NULL if in callback mode (allocated after map) */
 
-  Ihandle* texth;     /* Text handle                    */
-  Ihandle* droph;     /* Dropdown handle                */
-  Ihandle* datah;     /* Current active edition element, may be equal to texth or droph */
+  Ihandle* texth;   /* Text handle                    */
+  Ihandle* droph;   /* Dropdown handle                */
+  Ihandle* datah;   /* Current active edition element, may be equal to texth or droph */
 
   cdCanvas* cddbuffer;
   cdCanvas* cdcanvas;
@@ -84,7 +87,7 @@ struct _IcontrolData
 
   /* State */
   int has_focus;
-  int w, h;             /* canvas size */
+  int w, h;         /* canvas size */
   int callback_mode;
   int need_calcsize;
   int need_redraw;
@@ -98,7 +101,7 @@ struct _IcontrolData
 
   /* Mouse and Keyboard AUX */
   int leftpressed;  /* left mouse button is pressed */
-  int dclick;   /* left mouse button was double clicked */
+  int dclick;       /* left mouse button was double clicked */
   int homekeycount, endkeycount;  /* numbers of times that key was pressed */
 
   /* ColRes AUX */

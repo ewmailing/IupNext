@@ -272,7 +272,7 @@ char *iupStrGetLargeMem(int *size)
 
 char *iupStrGetMemory(int size)
 {
-#define MAX_BUFFERS 100
+#define MAX_BUFFERS 50
   static char* buffers[MAX_BUFFERS];
   static int buffers_sizes[MAX_BUFFERS];
   static int buffers_index = -1;

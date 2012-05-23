@@ -185,8 +185,8 @@ static unsigned long iMatrixDrawSetBgColor(Ihandle* ih, int lin, int col, int ma
 static void iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1, int x2, int y, long framecolor, char* str)
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || 
-                                    ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEHCOLOR ||
-                                    ih->data->lines.flags[lin] & IMAT_HAS_FRAMEHCOLOR))
+                                    ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEHORIZCOLOR ||
+                                    ih->data->lines.flags[lin] & IMAT_HAS_FRAMEHORIZCOLOR))
   {
     char* color;
     unsigned char r,g,b;
@@ -210,8 +210,8 @@ static void iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1,
 static void iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, int y1, int y2, long framecolor, char* str)
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || 
-                                    ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEVCOLOR ||
-                                    ih->data->columns.flags[col] & IMAT_HAS_FRAMEVCOLOR))
+                                    ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEVERTCOLOR ||
+                                    ih->data->columns.flags[col] & IMAT_HAS_FRAMEVERTCOLOR))
   {
     char* color;
     unsigned char r,g,b;

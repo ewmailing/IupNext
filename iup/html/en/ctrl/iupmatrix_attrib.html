@@ -356,16 +356,37 @@ MULTIPLE and AREA are NOT considered when setting MARKED or MARKL:C.</p>
     &quot;NO&quot;.</p>
 <h3>Action Attributes</h3>
 <p>
+<strong>CLEARATTRIB</strong> (write-only):
+  Clear all cell attributes if ALL, and all attributes except titles if CONTENTS. 
+When ALL is specified, all lines and column attributes are also cleared. (since 3.6)<br><strong><a name="CLEARVALUE">CLEARVALUE</a></strong><strong><i>L</i>:<i>C</i></strong> (write-only): Clear all 
+cell attributes in an interval starting at the specified cell. Its value defines the end 
+cell in the &quot;L:C&quot; format, the default is the last cell. (since 3.6)<br>
+<strong>CLEARATTRIB<i>L</i>:*</strong> (write-only):
+  the cell attributes in line L. Its value defines a column inclusive interval in the 
+&quot;C1-C2&quot; format. The default is 0 and the last column. When a full line 
+is specified, all line attributes are also cleared. (since 3.6)<br>
+<strong>CLEARATTRIB*:<i>C </i></strong><i>(write-only)</i>:
+  the cell attributes in column C. Its value defines a line inclusive interval in the 
+&quot;L1-L2&quot; format. The default is 0 and the last line. When a full column 
+is specified, all column attributes are also cleared, including ALIGNMENT and 
+SORTSIGN. (since 3.6)</p>
+<p class="info">In all cases, attributes are set to NULL. Only the attributes 
+FONT*, BGCOLOR*, FGCOLOR*, FRAMEHORIZCOLOR*, FRAMEHORIZCOLOR*,&nbsp; ALIGNMENT* 
+and SORTSIGN* are affected. Action only works if the matrix is mapped and NOT in 
+callback mode.</p>
+<p>
 <strong>CLEARVALUE</strong> (write-only):
   Clear all values if ALL, and all values except titles if CONTENTS. (since 3.6)<br><strong><a name="CLEARVALUE">CLEARVALUE</a></strong><strong><i>L</i>:<i>C</i></strong> (write-only): Clear all 
-values in an interval starting at the specified cell. The value defines the end 
+values in an interval starting at the specified cell. Its value defines the end 
 cell in the &quot;L:C&quot; format, the default is the last cell. (since 3.6)<br>
 <strong>CLEARVALUE<i>L</i>:*</strong> (write-only):
-  the cells in line L. The value defines a column inclusive interval in the 
+  the values in line L. Its value defines a column inclusive interval in the 
 &quot;C1-C2&quot; format. The default is 0 and the last column. (since 3.6)<br>
 <strong>CLEARVALUE*:<i>C </i></strong><i>(write-only)</i>:
-  the cells in column C. The value defines a line inclusive interval in the 
+  the values in column C. Its value defines a line inclusive interval in the 
 &quot;L1-L2&quot; format. The default is 0 and the last line. (since 3.6)</p>
+<p class="info">In all cases, values are set to NULL. Action only works if the 
+matrix is mapped and NOT in callback mode.</p>
 <p><a name="FITTOSIZE"><strong>FITTOSIZE</strong></a> (write-only): Force lines 
 and/or columns sizes so the matrix visible size fit in its current size. 
 NUMCOL_VISIBLE and NUMLIN_VISIBLE are considered when fitting and they are not 
@@ -413,7 +434,7 @@ ALIGNMENTc, BGCOLOR*, FGCOLOR*, FONT*, VALUE, FRAME*COLOR. Global and size attri
   position of the text box in edition mode.</p>
 <p><strong><a name="MASKL:C">MASK<em>L:C</em></a></strong>: Defines a mask that will filter text input. The
 <a href="../attrib/iup_mask.html">MASK</a> auxiliary attributes are also available 
-adding the line and column at the end of the attribute name.</p>
+by adding the line and column at the end of the attribute name.</p>
 <p><strong><a name="MULTILINE">MULTILINE</a></strong>: allows the edition of 
 multiple lines.&nbsp;Use Shift+Enter to add lines. Enter will end the editing.</p>
 <p><b><a name="SELECTION">SELECTION</a></b>:

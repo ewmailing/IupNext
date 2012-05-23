@@ -106,7 +106,7 @@ static int edition(Ihandle *self, int lin, int col, int mode)
 
 static int drawcb(Ihandle *h, int lin, int col,int x1, int x2, int y1, int y2)
 {
-  if (lin < 4)
+  if (lin < 5 || lin > 12 || col < 2 || col > 8)
     return IUP_IGNORE;
 
   cdForeground(CD_RED);
@@ -272,13 +272,17 @@ static int addcol(Ihandle *self)
 static int bt_cb(Ihandle *self) 
 {
   printf("DEFAULTENTER\n"); 
+
 //  IupHide(IupGetHandle("mat1")); 
+
 //  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE*:2","1-10"); 
 //  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE2:*","1-10"); 
-  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE2:2","10-10"); 
+//  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE2:2","10-10"); 
 //  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE","ALL"); 
 //  IupSetAttribute(IupGetHandle("mat1"),"CLEARVALUE","CONTENTS"); 
-  IupSetAttribute(IupGetHandle("mat1"),"REDRAW","ALL");
+
+//  IupSetAttribute(IupGetHandle("mat1"),"CLEARATTRIB2:*","ALL"); 
+//  IupSetAttribute(IupGetHandle("mat1"),"CLEARATTRIB3:*","ALL"); 
   return IUP_DEFAULT;
 }
 
