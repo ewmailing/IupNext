@@ -36,6 +36,11 @@ typedef HGLRC (WINAPI *wglCreateContextAttribsARB_PROC) (HDC hDC, HGLRC hShareCo
 #define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
 #endif
 
+#ifndef ERROR_INVALID_VERSION_ARB
+#define ERROR_INVALID_VERSION_ARB		0x2095
+#define ERROR_INVALID_PROFILE_ARB		0x2096
+#endif
+
 
 /* Do NOT use _IcontrolData to make inheritance easy
    when parent class in glcanvas */
@@ -245,7 +250,26 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
         }
       }
 
+      attribs[a] = 0; /* terminator */
+
       gldata->context = CreateContextAttribsARB(gldata->device, shared_context, attribs);
+      if (!gldata->context)
+      {
+        DWORD error = GetLastError();
+        if (error == ERROR_INVALID_VERSION_ARB)
+          iupAttribStoreStr(ih, "LASTERROR", "Invalid ARB Version");
+        else if (error == ERROR_INVALID_PROFILE_ARB)
+          iupAttribStoreStr(ih, "LASTERROR", "Invalid ARGB Profile");
+        else
+          iupAttribStoreStr(ih, "LASTERROR", IupGetGlobal("LASTERROR"));
+
+        iupAttribSetStr(ih, "ERROR", "Could not create a rendering context.");
+
+        wglMakeCurrent(oldDC, oldContext);
+        wglDeleteContext(tempContext);
+
+        return IUP_NOERROR;
+      }
     }
 
     wglMakeCurrent(oldDC, oldContext);

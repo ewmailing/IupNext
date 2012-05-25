@@ -36,14 +36,22 @@ void* iupdrvGetDisplay(void)
 
 void iupwinShowLastError(void)
 {
-  int error = GetLastError();
+  DWORD error = GetLastError();
   if (error)
   {
-    LPVOID lpMsgBuf;
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,
-                  NULL, error, 0, (LPTSTR)&lpMsgBuf, 0, NULL);
-    MessageBox(NULL, (LPCTSTR)lpMsgBuf, "GetLastError:", MB_OK|MB_ICONERROR);
-    LocalFree(lpMsgBuf);
+    LPVOID lpMsgBuf = NULL;
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|
+                  FORMAT_MESSAGE_FROM_SYSTEM|
+                  FORMAT_MESSAGE_IGNORE_INSERTS,
+                  NULL, error, 0, 
+                  (LPTSTR)&lpMsgBuf, 0, NULL);
+    if (lpMsgBuf)
+    {
+      MessageBox(NULL, (LPCTSTR)lpMsgBuf, "GetLastError:", MB_OK|MB_ICONERROR);
+      LocalFree(lpMsgBuf);
+    }
+    else
+      MessageBox(NULL, "Unknown Error", "GetLastError:", MB_OK|MB_ICONERROR);
   }
 }
 

@@ -314,6 +314,8 @@ static int xGLCanvasMapMethod(Ihandle* ih)
         }
       }
 
+      attribs[a] = 0; /* terminator */
+      
       gldata->context = CreateContextAttribsARB(gldata->display, *config, shared_context, GL_TRUE, attribs);
     }
 
