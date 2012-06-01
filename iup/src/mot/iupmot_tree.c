@@ -2563,9 +2563,9 @@ static void motTreeDragDropProc(Widget w, XtPointer client_data, XmDropProcCallb
   drop_context = drop_data->dragContext;
 
   /* retrieve the data targets */
-  iupMOT_SETARG(args, num_args, XmNexportTargets, &exportTargets);
-  iupMOT_SETARG(args, num_args, XmNnumExportTargets, &numExportTargets);
-  XtGetValues(drop_context, args, num_args);
+  XtVaGetValues(drop_context, XmNexportTargets, &exportTargets,
+                              XmNnumExportTargets, &numExportTargets, 
+                              NULL);
 
   for (i = 0; i < (int)numExportTargets; i++) 
   {
@@ -2667,10 +2667,10 @@ static void motTreeDragStart(Widget w, XButtonEvent* evt, String* params, Cardin
   if (!wItemDrag)
     return;
 
-  XtVaGetValues(wItemDrag,   XmNviewType, &typeWidget,
+  XtVaGetValues(wItemDrag, XmNviewType, &typeWidget,
                            XmNbackground, &bg,
                            XmNforeground, &fg,
-                                          NULL);
+                           NULL);
 
   if(typeWidget != XmSMALL_ICON)  /* It's a ToggleButtonGadget! */
   {
@@ -2734,8 +2734,6 @@ static void motTreeDragDropEnable(Widget w)
   iupMOT_SETARG(args, num_args, XmNdropSiteOperations, XmDROP_MOVE|XmDROP_COPY);
   iupMOT_SETARG(args, num_args, XmNdropProc, motTreeDragDropProc);
   XmDropSiteUpdate(w, args, num_args);
-
-  XtVaSetValues(XmGetXmDisplay(iupmot_display), XmNenableDragIcon, True, NULL);
 }
 
 static int motTreeMapMethod(Ihandle* ih)
@@ -2801,7 +2799,7 @@ static int motTreeMapMethod(Ihandle* ih)
     iupMOT_SETARG(args, num_args, XmNoutlineLineStyle, XmSINGLE);
 
   if (iupAttribGetBoolean(ih, "HIDEBUTTONS"))
-    iupMOT_SETARG(args, num_args, XmNoutlineButtonPolicy,  XmOUTLINE_BUTTON_ABSENT);
+    iupMOT_SETARG(args, num_args, XmNoutlineButtonPolicy, XmOUTLINE_BUTTON_ABSENT);
   else
     iupMOT_SETARG(args, num_args, XmNoutlineButtonPolicy, XmOUTLINE_BUTTON_PRESENT);
 

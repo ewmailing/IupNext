@@ -56,50 +56,31 @@ void iupmotDisableDragSource(Widget w)
   XtOverrideTranslations(w, XtParseTranslationTable(dragTranslations));
 }
 
-static void motDropTransferProc(Widget dropContext, XtPointer clientData, Atom *seltype, Atom *type,
-                            XtPointer value, unsigned long *length, int format)
+static void motDropTransferProc(Widget dropTransfer, Ihandle* ih, Atom *selType, Atom *typeAtom,
+                                XtPointer targetData, unsigned long *length, int format)
 {
-  Widget dropTarget = (Widget)clientData;
-  Atom *dropTypesList = NULL;
-  Cardinal numDropTypes = 0;
-  Arg args[20];
-  int i, num_args = 0;
-  Ihandle *ih = NULL;
+  IFnsCiii cbDropData;
 
-  if(!value)
+  if(!targetData)
     return;
 
-  iupMOT_SETARG(args, num_args, XmNimportTargets, &dropTypesList);
-  iupMOT_SETARG(args, num_args, XmNnumImportTargets, &numDropTypes);
-  XmDropSiteRetrieve (dropTarget, args, num_args);
-
-  XtVaGetValues(dropTarget, XmNuserData, &ih, NULL);
-
-  for(i = 0; i < (int)numDropTypes; i++)
+  cbDropData = (IFnsCiii)IupGetCallback(ih, "DROPDATA_CB");
+  if(cbDropData)
   {
-    if (*type == dropTypesList[i])
-    {
-      IFnnsii cbDrop = (IFnnsii)IupGetCallback(ih, "DROPTARGET_CB");
-      char* type = XGetAtomName(iupmot_display, dropTypesList[i]);
-      int x = iupAttribGetInt(ih, "_IUPMOT_DROP_X");
-      int y = iupAttribGetInt(ih, "_IUPMOT_DROP_Y");
+    //TODO should we check for incompatible targets here?
+    char* type = XGetAtomName(iupmot_display, *typeAtom);
+    int x = iupAttribGetInt(ih, "_IUPMOT_DROP_X");
+    int y = iupAttribGetInt(ih, "_IUPMOT_DROP_Y");
+    
+    cbDropData(ih, type, (void*)targetData, (int)*length, x, y);
 
-      if(cbDrop)
-        cbDrop(ih, (Ihandle*)value, type, x, y);
-
-      /* Testing... */
-      printf("DROPTARGET_CB ==> Ihandle*: ih, Ihandle*: target, Type: %s, X: %d, Y: %d\n", type, x, y);
-
-      iupAttribSetInt(ih, "_IUPMOT_DROP_X", 0);
-      iupAttribSetInt(ih, "_IUPMOT_DROP_Y", 0);
-    }
+    iupAttribSetStr(ih, "_IUPMOT_DROP_X", NULL);
+    iupAttribSetStr(ih, "_IUPMOT_DROP_Y", NULL);
   }
 
-  (void)dropContext;
+  (void)dropTransfer;
   (void)format;
-  (void)type;
-  (void)length;
-  (void)seltype;
+  (void)selType;
 }
 
 static void motDropProc(Widget dropTarget, XtPointer clientData, XmDropProcCallbackStruct* dropData)
@@ -107,30 +88,29 @@ static void motDropProc(Widget dropTarget, XtPointer clientData, XmDropProcCallb
   XmDropTransferEntryRec transferList[2];
   Arg args[20];
   int i, j, num_args;
-  Widget dropContext;
+  Widget dragContext, dropTransfer;
   Cardinal numDragTypes, numDropTypes;
   Atom *dragTypesList, *dropTypesList;
   Atom atomItem;
   Boolean found = False;
   Ihandle *ih = NULL;
 
-  dropContext = dropData->dragContext;
+  /* this is called before drag data is processed */ 
+
+  dragContext = dropData->dragContext;
 
   /* Getting drop types */
   num_args = 0;
   iupMOT_SETARG(args, num_args, XmNimportTargets, &dropTypesList);
   iupMOT_SETARG(args, num_args, XmNnumImportTargets, &numDropTypes);
   XmDropSiteRetrieve (dropTarget, args, num_args);
-
   if(!numDropTypes)  /* no type registered */
     return;
 
   /* Getting drag types */
-  num_args = 0;
-  iupMOT_SETARG(args, num_args, XmNexportTargets, &dragTypesList);
-  iupMOT_SETARG(args, num_args, XmNnumExportTargets, &numDragTypes);
-  XtGetValues(dropContext, args, num_args);
-
+  XtVaGetValues(dragContext, XmNexportTargets, &dragTypesList,
+                             XmNnumExportTargets, &numDragTypes,
+                             NULL);
   if(!numDragTypes)  /* no type registered */
     return;
 
@@ -139,20 +119,22 @@ static void motDropProc(Widget dropTarget, XtPointer clientData, XmDropProcCallb
   {
     for (j = 0; j < (int)numDropTypes; j++) 
     {
-      if (dragTypesList[i] == dropTypesList[j])  // TODO: improve this
+      if(iupStrEqualNoCase(XGetAtomName(iupmot_display, dragTypesList[i]),
+                           XGetAtomName(iupmot_display, dropTypesList[j])))
       {
         atomItem = dropTypesList[j];
         found = True;
         break;
       }
     }
-
     if(found == True)
       break;
   }
 
   num_args = 0;
-  if ((!found) || (dropData->dropAction != XmDROP) ||  (dropData->operation != XmDROP_COPY && dropData->operation != XmDROP_MOVE)) 
+  if ((!found) || 
+      (dropData->dropAction != XmDROP) ||  
+      (dropData->operation != XmDROP_COPY && dropData->operation != XmDROP_MOVE)) 
   {
     iupMOT_SETARG(args, num_args, XmNtransferStatus, XmTRANSFER_FAILURE);
     iupMOT_SETARG(args, num_args, XmNnumDropTransfers, 0);
@@ -165,116 +147,122 @@ static void motDropProc(Widget dropTarget, XtPointer clientData, XmDropProcCallb
 
     /* set up transfer requests for drop site */
     transferList[0].target = atomItem;
-    transferList[0].client_data = (XtPointer)dropTarget;
+    transferList[0].client_data = (XtPointer)ih;
+
     iupMOT_SETARG(args, num_args, XmNdropTransfers, transferList);
     iupMOT_SETARG(args, num_args, XmNnumDropTransfers, 1);
     iupMOT_SETARG(args, num_args, XmNtransferProc, motDropTransferProc);
   }
 
-  XmDropTransferStart(dropContext, args, num_args);
+  /* creates a XmDropTransfer (not used here) */
+  dropTransfer = XmDropTransferStart(dragContext, args, num_args);
   
   (void)clientData;
 }
 
-static void motDragDropFinishCallback(Widget dropContext, XtPointer clientData, XtPointer callData)
-{
-  (void)dropContext;
-  (void)clientData;
-  (void)callData;
-}
-
-static Boolean motDragConvertProc(Widget drop_context, Atom *selection, Atom *target, Atom *typeReturn,
-                          XtPointer *valueReturn, unsigned long *lengthReturn, int *formatReturn)
+static Boolean motDragConvertProc(Widget dragContext, Atom *selection, Atom *target, Atom *typeReturn,
+                                  XtPointer *valueReturn, unsigned long *lengthReturn, int *formatReturn)
 {
   Atom atomMotifDrop = XInternAtom(iupmot_display, "_MOTIF_DROP", False);
-  Atom *dragTypesList;
-  Cardinal numDragTypes;
-  Arg args[20];
-  int i, num_args = 0;
   Ihandle *ih = NULL;
-  Widget w = NULL;
-
-  iupMOT_SETARG(args, num_args, XmNclientData, &w);
-  iupMOT_SETARG(args, num_args, XmNexportTargets, &dragTypesList);
-  iupMOT_SETARG(args, num_args, XmNnumExportTargets, &numDragTypes);
-  XtGetValues(drop_context, args, num_args);
-
-  num_args = 0;
-  iupMOT_SETARG(args, num_args, XmNuserData, &ih);
-  XtGetValues(w, args, num_args);
+  IFnsCi cbDragData;
+  IFns cbDragDataSize;
 
   /* check if we are dealing with a drop */
   if (*selection != atomMotifDrop)
     return False;
 
-  for(i = 0; i < (int)numDragTypes; i++)
+  XtVaGetValues(dragContext, XmNclientData, &ih, NULL);
+
+  cbDragData = (IFnsCi)IupGetCallback(ih, "DRAGDATA_CB");
+  cbDragDataSize = (IFns)IupGetCallback(ih, "DRAGDATASIZE_CB");
+  if(cbDragData && cbDragDataSize)
   {
-    if (*target == dragTypesList[i])
-    {
-      IFnnsi cbDrag = (IFnnsi)IupGetCallback(ih, "DRAGSOURCE_CB");
-      char* source = iupAttribGet(ih, "IUP_DRAG_DATA");
-      char* type = XGetAtomName(iupmot_display, dragTypesList[i]);
-      char key[5];
-      int is_ctrl;
+    void* sourceData;
+    //TODO should we check for incompatible targets here?
+    char* type = XGetAtomName(iupmot_display, *target);
+    int size = cbDragDataSize(ih, type);
+    if (size <= 0)
+      return False;
 
-      if(!source)
-        return False;
+    sourceData = XtMalloc(size);  /* data will be released by the system */
+    
+    /* fill data */
+    cbDragData(ih, type, sourceData, size);
 
-      iupdrvGetKeyState(key);
-      if (key[1] == 'C')
-        is_ctrl = 1;  /* COPY */
-      else
-        is_ctrl = 0;  /* MOVE */
+    /* format the value for transfer */
+    *typeReturn = *target;
+    *valueReturn = (XtPointer)sourceData;
+    *lengthReturn = size;
+    *formatReturn = 8;
 
-      /* format the value for transfer */
-      *typeReturn = dragTypesList[i];
-      *valueReturn = (XtPointer)source;
-      *lengthReturn = 1;
-      *formatReturn = 8;
-
-      if (cbDrag)
-        cbDrag(ih, (Ihandle*)source, type, is_ctrl);
-
-      /* Testing... */
-      printf("DRAGSOURCE_CB ==> Ihandle* ih, Ihandle* source, Type: %s, 0=Move/1=Copy: %d\n", type, is_ctrl);
-
-      return True;
-    }
+    return True;
   }
 
   return False;
 }
 
+static void motDropFinishCallback(Widget dragContext, Ihandle *ih, XmDropFinishCallbackStruct *callData)
+{
+  IFni cbDrag = (IFni)IupGetCallback(ih, "DRAGEND_CB");
+  if(cbDrag)
+  {
+    int remove = -1;
+    if (callData->dropAction==XmDROP && 
+        callData->completionStatus==XmDROP_SUCCESS)
+    {
+      if (callData->operation==XmDROP_MOVE)
+        remove = 1;
+      else if (callData->operation==XmDROP_COPY)
+        remove = 0;
+    }
+    cbDrag(ih, remove);
+  }
+
+  (void)dragContext;
+}
+
 static void motDragStart(Widget dragSource, XButtonEvent* evt, String* params, Cardinal* num_params)
 {
-  Widget drop_context;
+  Widget dragContext;
   Arg args[20];
   int num_args = 0;
-  Pixel fg, bg;
-  Atom *exportList;
-  Cardinal numExportList;
+  Atom *dragTypesList;
+  Cardinal dragTypesListCount;
   Ihandle* ih = NULL;
 
-  XtVaGetValues(dragSource, XmNbackground, &bg, XmNforeground, &fg, XmNuserData, &ih, NULL);
+  XtVaGetValues(dragSource, XmNuserData, &ih, NULL);
 
-  exportList = (Atom*)iupAttribGet(ih, "_IUPMOT_DRAG_TARGETLIST");
-  numExportList =  (Cardinal)iupAttribGetInt(ih, "_IUPMOT_DRAG_TARGETLIST_COUNT");
-  if (!exportList)
+  dragTypesList = (Atom*)iupAttribGet(ih, "_IUPMOT_DRAG_TARGETLIST");
+  dragTypesListCount =  (Cardinal)iupAttribGetInt(ih, "_IUPMOT_DRAG_TARGETLIST_COUNT");
+  if (!dragTypesList)
     return;
 
   /* specify resources for DragContext for the transfer */
   num_args = 0;
-  iupMOT_SETARG(args, num_args, XmNcursorBackground, bg);  // TODO: are these colors necessary?
-  iupMOT_SETARG(args, num_args, XmNcursorForeground, fg);
-  iupMOT_SETARG(args, num_args, XmNexportTargets, exportList);
-  iupMOT_SETARG(args, num_args, XmNnumExportTargets, numExportList);
-  iupMOT_SETARG(args, num_args, XmNdragOperations, XmDROP_MOVE|XmDROP_COPY);
+  iupMOT_SETARG(args, num_args, XmNexportTargets, dragTypesList);
+  iupMOT_SETARG(args, num_args, XmNnumExportTargets, dragTypesListCount);
+  iupMOT_SETARG(args, num_args, XmNdragOperations, iupAttribGetBoolean(ih, "DRAGSOURCEMOVE")? XmDROP_MOVE|XmDROP_COPY: XmDROP_COPY);
   iupMOT_SETARG(args, num_args, XmNconvertProc, motDragConvertProc);
-  iupMOT_SETARG(args, num_args, XmNclientData, dragSource);
+  iupMOT_SETARG(args, num_args, XmNinvalidCursorForeground, iupmotColorGetPixel(255, 0, 0));
+  iupMOT_SETARG(args, num_args, XmNclientData, ih);
 
-  /* start the drag and register a callback to clean up when done */
-  drop_context = XmDragStart(dragSource, (XEvent*)evt, args, num_args);
-  XtAddCallback(drop_context, XmNdragDropFinishCallback, (XtCallbackProc)motDragDropFinishCallback, NULL);
+  /* creates a XmDragContext */
+  dragContext = XmDragStart(dragSource, (XEvent*)evt, args, num_args);
+
+  if(dragContext)
+  {
+    IFnii cbDragBegin;
+
+    XtAddCallback(dragContext, XmNdropFinishCallback, (XtCallbackProc)motDropFinishCallback, (XtPointer)ih);
+
+    cbDragBegin = (IFnii)IupGetCallback(ih, "DRAGBEGIN_CB");
+    if(cbDragBegin)
+    {
+      if (cbDragBegin(ih, evt->x, evt->y) == IUP_IGNORE)
+        XmDragCancel(dragContext);
+    }
+  }
 
   (void)params;
   (void)num_params;
@@ -314,6 +302,10 @@ static Atom* motCreateTargetList(const char *value, int *count)
   return targetlist;
 }
 
+
+/******************************************************************************************/
+
+
 static int motSetDropTypesAttrib(Ihandle* ih, const char* value)
 {
   int count = 0;
@@ -334,6 +326,38 @@ static int motSetDropTypesAttrib(Ihandle* ih, const char* value)
     iupAttribSetStr(ih, "_IUPMOT_DROP_TARGETLIST", (char*)targetlist);
     iupAttribSetInt(ih, "_IUPMOT_DROP_TARGETLIST_COUNT", count);
   }
+
+  return 1;
+}
+
+static int motSetDropTargetAttrib(Ihandle* ih, const char* value)
+{
+  Widget w;
+
+  /* Are there defined drop types? */
+  if(!iupAttribGet(ih, "_IUPMOT_DROP_TARGETLIST"))
+    return 0;
+
+  w = (Widget)iupAttribGet(ih, "_IUPMOT_DND_WIDGET");
+  if (!w)
+    w = ih->handle;
+
+  if(iupStrBoolean(value))
+  {
+    Atom *dropTypesList = (Atom*)iupAttribGet(ih, "_IUPMOT_DROP_TARGETLIST");
+    Cardinal numDropTypes = (Cardinal)iupAttribGetInt(ih, "_IUPMOT_DROP_TARGETLIST_COUNT");
+    Arg args[20];
+    int num_args = 0;
+
+    iupMOT_SETARG(args, num_args, XmNimportTargets, dropTypesList);
+    iupMOT_SETARG(args, num_args, XmNnumImportTargets, numDropTypes);
+    iupMOT_SETARG(args, num_args, XmNdropProc, motDropProc);
+    XmDropSiteUpdate(w, args, num_args);
+
+    XtVaSetValues(w, XmNuserData, ih, NULL);  /* Warning: always check if this affects other controls */
+  }
+  else
+    XmDropSiteUnregister(w);
 
   return 1;
 }
@@ -362,38 +386,17 @@ static int motSetDragTypesAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static int motSetDropTargetAttrib(Ihandle* ih, const char* value)
-{
-  /* Are there defined drop types? */
-  if(!iupAttribGet(ih, "_IUPMOT_DROP_TARGETLIST"))
-    return 0;
-
-  if(iupStrBoolean(value))
-  {
-    Atom *importList = (Atom*)iupAttribGet(ih, "_IUPMOT_DROP_TARGETLIST");
-    Cardinal numimportList = (Cardinal)iupAttribGetInt(ih, "_IUPMOT_DROP_TARGETLIST_COUNT");
-    Arg args[20];
-    int num_args = 0;
-
-    iupMOT_SETARG(args, num_args, XmNimportTargets, importList);
-    iupMOT_SETARG(args, num_args, XmNnumImportTargets, numimportList);
-    iupMOT_SETARG(args, num_args, XmNdropSiteOperations, XmDROP_MOVE|XmDROP_COPY);
-    iupMOT_SETARG(args, num_args, XmNdropProc, motDropProc);
-    XmDropSiteUpdate(ih->handle, args, num_args);
-
-    XtVaSetValues(ih->handle, XmNuserData, ih, NULL);
-  }
-  else
-    XmDropSiteUnregister(ih->handle);
-
-  return 1;
-}
-
 static int motSetDragSourceAttrib(Ihandle* ih, const char* value)
 {
+  Widget w;
+
   /* Are there defined drag types? */
   if(!iupAttribGet(ih, "_IUPMOT_DRAG_TARGETLIST"))
     return 0;
+
+  w = (Widget)iupAttribGet(ih, "_IUPMOT_DND_WIDGET");
+  if (!w)
+    w = ih->handle;
 
   if(iupStrBoolean(value))
   {
@@ -406,36 +409,42 @@ static int motSetDragSourceAttrib(Ihandle* ih, const char* value)
       XtAppAddActions(iupmot_appcontext, &rec, 1);
       do_rec = 1;
     }
-    XtOverrideTranslations(ih->handle, XtParseTranslationTable(dragTranslations));
+    XtOverrideTranslations(w, XtParseTranslationTable(dragTranslations));
 
-    XtVaSetValues(ih->handle, XmNuserData, ih, NULL);
+    XtVaSetValues(w, XmNuserData, ih, NULL);  /* Warning: always check if this affects other controls */
   }
   else
-    iupmotDisableDragSource(ih->handle);
+    iupmotDisableDragSource(w);
 
   return 1;
 }
+
+
+/******************************************************************************************/
+
 
 void iupdrvRegisterDragDropAttrib(Iclass* ic)
 {
   /* Not Supported */
   /* iupClassRegisterCallback(ic, "DROPFILES_CB", "siii"); */
 
-  iupClassRegisterCallback(ic, "DRAGSOURCE_CB", "hsi");
-  iupClassRegisterCallback(ic, "DROPTARGET_CB", "hsii");
+  iupClassRegisterCallback(ic, "DRAGBEGIN_CB", "sii");
+  iupClassRegisterCallback(ic, "DRAGDATASIZE_CB", "s");
+  iupClassRegisterCallback(ic, "DRAGDATA_CB",  "sCi");
+  iupClassRegisterCallback(ic, "DRAGEND_CB",   "i");
+  iupClassRegisterCallback(ic, "DROPDATA_CB",  "sCiii");
 
   iupClassRegisterAttribute(ic, "DRAGTYPES",  NULL, motSetDragTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPTYPES",  NULL, motSetDropTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGSOURCE", NULL, motSetDragSourceAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPTARGET", NULL, motSetDropTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGSOURCEMOVE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPFILESTARGET", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
 }
 
-/* TODO: 
-Estudar se devemos usar
-extern void XmDragCancel(Widget dragContext) ;
-extern Boolean XmTargetsAreCompatible( 
+/*TODO:
+  Drop on IupList with Edit box, only works on edit box
 */

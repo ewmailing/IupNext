@@ -26,8 +26,9 @@ typedef int (*IFnff)(Ihandle*, float, float);    /* canvas_action */
 typedef int (*IFniff)(Ihandle*,int,float,float);  /* scroll_cb */
 typedef int (*IFnfiis)(Ihandle*,float,int,int,char*);  /* wheel_cb */
 
-typedef int (*IFnnsi)(Ihandle*, Ihandle*, char*, int); /* dragsource_cb */
-typedef int (*IFnnsii)(Ihandle*, Ihandle*, char*, int, int); /* droptarget_cb */
+typedef int (*IFnsCi)(Ihandle*, char*, void*, int);  /* dragdata_cb */
+typedef int (*IFnsCiii)(Ihandle*, char*, void*, int, int, int);  /* dropdata_cb */
+typedef int (*IFnsiii)(Ihandle*, char*, int, int, int);  /* dropfiles_cb */
 
 typedef int (*IFnnii)(Ihandle*, Ihandle*, int, int); /* drop_cb */
 typedef int (*IFnnn)(Ihandle*, Ihandle*, Ihandle*); /* tabchange_cb */
@@ -36,7 +37,6 @@ typedef int (*IFns)(Ihandle*, char *);  /* multiselect_cb */
 typedef int (*IFnsi)(Ihandle*, char *, int);  /* copydata_cb */
 typedef int (*IFnis)(Ihandle*, int, char *);  /* text_action, multiline_action, edit_cb, rename_cb */
 typedef int (*IFnsii)(Ihandle*, char*, int, int);  /* list_action */
-typedef int (*IFnsiii)(Ihandle*, char*, int, int, int); /* dropfiles_cb */
 typedef int (*IFniis)(Ihandle*, int, int, char*);  /* motion_cb, click_cb, value_edit_cb */
 typedef int (*IFniiis)(Ihandle*, int, int, int, char*);  /* touch_cb */
 typedef int (*IFniiiis)(Ihandle*, int, int, int, int, char*);  /* button_cb, matrix_action, mousemotion_cb */

@@ -159,6 +159,39 @@ int killfocus_cb(Ihandle *self)
   return IUP_DEFAULT;
 }
 
+int testDropData_cb(Ihandle *self, char* type, void* data, int len, int x, int y)
+{
+  // Data is a text for this sample, so we can print it
+  printf("\n  DROPDATA_CB(ih=%s, type=%s, data=%s, size=%d, x=%d, y=%d)\n\n", IupGetAttribute(self, "NAME"), type, (char*)data, len, x, y);
+  return IUP_DEFAULT;
+}
+
+int testDragEnd_cb(Ihandle *self, int del)
+{
+  printf("DRAGEND_CB(ih=%s, remove=%d)\n", IupGetAttribute(self, "NAME"), del);  // finishing...
+  return IUP_DEFAULT;
+}
+
+int testDragData_cb(Ihandle *self, char* type, void *data, int len)
+{
+  printf("  DRAGDATA_CB(ih=%s, type=%s, len=%d)\n", IupGetAttribute(self, "NAME"), type, len);
+  // fill data with something
+  sprintf(data, "Drag Text Test Sample");
+  return IUP_DEFAULT;
+}
+
+int testDragDataSize_cb(Ihandle *self, char* type)
+{
+  printf("  DRAGDATASIZE_CB(ih=%s, type=%s)\n", IupGetAttribute(self, "NAME"), type);
+  return 22;  // return the size of the data to be dragged
+}
+
+int testDragBegin_cb(Ihandle *self, int x, int y)
+{
+  printf("DRAGBEGIN_CB(ih=%s, x=%d, y=%d)\n", IupGetAttribute(self, "NAME"), x, y);
+  return IUP_DEFAULT;
+}
+
 int main(int argc, char **argv) 
 {
   Ihandle *dlg, *list1, *list2, *list3, *list4, 
@@ -167,13 +200,13 @@ int main(int argc, char **argv)
 
   IupOpen(&argc, &argv);
 
-  bt1 = IupButton("Drop+Edit", NULL);
+  bt1 = IupButton("(1)Drop+Edit", NULL);
   IupSetCallback(bt1, "ACTION", (Icallback)bt_cb);
-  bt2 = IupButton("Drop", NULL);
+  bt2 = IupButton("(2)Drop", NULL);
   IupSetCallback(bt2, "ACTION", (Icallback)bt_cb);
-  bt3 = IupButton("List+Edit", NULL);
+  bt3 = IupButton("(3)List+Edit", NULL);
   IupSetCallback(bt3, "ACTION", (Icallback)bt_cb);
-  bt4 = IupButton("List", NULL);
+  bt4 = IupButton("(4)List", NULL);
   IupSetCallback(bt4, "ACTION", (Icallback)bt_cb);
 
   list1 = IupList(NULL);
@@ -211,30 +244,50 @@ int main(int argc, char **argv)
                           "EXPAND=YES");
 
   /* DRAG AND DROP TESTS ////////////////////////////////////*/
-#ifdef WIN32
-#ifndef USE_GTK
-  IupOleControlOpen();
-#endif
-#endif
-  IupSetAttribute(list3, "DROPTYPES", "STRING,IMAGE");
-  IupSetAttribute(list3, "DROPTARGET", "YES");
+  IupSetAttribute(list1, "DROPTARGET", "YES");
+  IupSetAttribute(list1, "DROPTYPES", "TEXT");
+  IupSetCallback (list1, "DROPDATA_CB", (Icallback)testDropData_cb);
+  IupSetAttribute(list1, "NAME", "list1");
 
-  IupSetAttribute(list4, "DRAGTYPES", "STRING,TEXT,DRAWABLE");
+  IupSetAttribute(list2, "DROPTARGET", "YES");
+  IupSetAttribute(list2, "DROPTYPES", "TEXT");
+  IupSetCallback (list2, "DROPDATA_CB", (Icallback)testDropData_cb);
+  IupSetAttribute(list2, "NAME", "list2");
+
+  IupSetAttribute(list3, "DROPTARGET", "YES");
+  IupSetAttribute(list3, "DROPTYPES", "TEXT");
+  IupSetCallback (list3, "DROPDATA_CB", (Icallback)testDropData_cb);
+  IupSetAttribute(list3, "NAME", "list3");
+
   IupSetAttribute(list4, "DRAGSOURCE", "YES");
-  IupSetAttribute(list4, "IUP_DRAG_DATA", "VALUE");
+  IupSetAttribute(list4, "DRAGTYPES", "TEXT");
+  IupSetCallback (list4, "DRAGBEGIN_CB", (Icallback)testDragBegin_cb);
+  IupSetCallback (list4, "DRAGDATASIZE_CB",  (Icallback)testDragDataSize_cb);
+  IupSetCallback (list4, "DRAGDATA_CB",  (Icallback)testDragData_cb);
+  IupSetCallback (list4, "DRAGEND_CB",   (Icallback)testDragEnd_cb);
+  IupSetAttribute(list4, "NAME", "list4");
 
   txt1 = IupText(NULL);
   IupSetAttribute(txt1, "MULTILINE", "YES");
-  IupSetAttribute(txt1, "RASTERSIZE", "150x50");
-  IupSetAttribute(txt1, "DROPTYPES", "STRING,TEXT");
+  IupSetAttribute(txt1, "RASTERSIZE", "150x90");
+  IupSetAttribute(txt1, "VALUE", "Drop Text Here");
   IupSetAttribute(txt1, "DROPTARGET", "YES");
+  IupSetAttribute(txt1, "DROPTYPES", "TEXT");
+  IupSetCallback (txt1, "DROPDATA_CB", (Icallback)testDropData_cb);
+  IupSetAttribute(txt1, "NAME", "txt1");
 
   txt2 = IupText(NULL);
   IupSetAttribute(txt2, "MULTILINE", "YES");
-  IupSetAttribute(txt2, "RASTERSIZE", "150x50");
-  IupSetAttribute(txt2, "DRAGTYPES", "TEXT");
+  IupSetAttribute(txt2, "RASTERSIZE", "150x90");
+  IupSetAttribute(txt2, "VALUE", "Drag Text From Here");
   IupSetAttribute(txt2, "DRAGSOURCE", "YES");
-  IupSetAttribute(txt2, "IUP_DRAG_DATA", "SELECTEDTEXT");
+  IupSetAttribute(txt2, "DRAGTYPES", "TEXT");
+  IupSetAttribute(txt2, "DRAGSOURCEMOVE", "Yes");
+  IupSetCallback (txt2, "DRAGBEGIN_CB", (Icallback)testDragBegin_cb);
+  IupSetCallback (txt2, "DRAGDATASIZE_CB",  (Icallback)testDragDataSize_cb);
+  IupSetCallback (txt2, "DRAGDATA_CB",  (Icallback)testDragData_cb);
+  IupSetCallback (txt2, "DRAGEND_CB",   (Icallback)testDragEnd_cb);
+  IupSetAttribute(txt2, "NAME", "txt2");
 
   /*////////////////////////////////////////////////////////*/
 
@@ -267,7 +320,7 @@ int main(int argc, char **argv)
 
 /*  IupSetAttribute(list3, "READONLY", "YES"); */
 
-  box1 = IupVbox(list1, txt1, txt2, /*bt1,*/ NULL);  /* com Bt1, dá segmentation fault no Motif! */
+  box1 = IupVbox(list1, bt1, txt1, txt2, NULL);
   box2 = IupVbox(list2, bt2, NULL);
   box3 = IupVbox(list3, bt3, NULL);
   box4 = IupVbox(list4, bt4, NULL);
@@ -301,5 +354,10 @@ int main(int argc, char **argv)
   IupMainLoop();
   IupClose();
   return EXIT_SUCCESS;
-
 }
+
+/* DnD tests:
+  (4) From list4/txt2 to list3/txt1
+  (4) From/To another instance of the same aplication
+  (4) From/To another application
+*/

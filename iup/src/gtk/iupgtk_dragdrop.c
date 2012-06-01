@@ -23,82 +23,144 @@
 #include "iupgtk_drv.h"
 
 
-#if 0
-static gboolean gtkDragMotion(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, guint time, Ihandle* ih)
-{
-  GdkModifierType mask;
-  (void)ih;
-  (void)x;
-  (void)y;
-
-  gdk_window_get_pointer(gtk_widget_get_window(widget), NULL, NULL, &mask);
-  
-  if (mask & GDK_CONTROL_MASK)
-    gdk_drag_status(drag_context, GDK_ACTION_COPY, time);
-  else
-    gdk_drag_status(drag_context, GDK_ACTION_MOVE, time);
-
-  return 0;
-}
-
-static void gtkDragDataGet(GtkWidget *widget, GdkDragContext *drag_context, GtkSelectionData *data, guint info, guint time, Ihandle* ih)
-{
-  IFnnsi cbDrag = (IFnnsi)IupGetCallback(ih, "DRAGSOURCE_CB");
-  char* type = gdk_atom_name(gtk_selection_data_get_target(data));
-  char* source = iupAttribGet(ih, "IUP_DRAG_DATA");
-  int is_ctrl;
-  GdkModifierType mask;
-
-  if(!source)
-    return;
-
-  //TODO: pegar type, data e lenght da callback?
-
-  //TODO: data is copied internally?
-  gtk_selection_data_set(data, gtk_selection_data_get_target(data), 8, (guchar*)source, sizeof(source)/sizeof(source[0]));
-
-  gdk_window_get_pointer(gtk_widget_get_window(widget), NULL, NULL, &mask);   // TODO: usar x e y?
-
-  if (mask & GDK_CONTROL_MASK)
-    is_ctrl = 1;  /* COPY */
-  else
-    is_ctrl = 0;  /* MOVE */
-
-  if (cbDrag)
-    cbDrag(ih, (Ihandle*)source, type, is_ctrl);
-
-  /* Testing... */
-  printf("DRAGSOURCE_CB ==> Ihandle* ih, Ihandle* source, Type: %s, 0=Move/1=Copy: %d\n", type, is_ctrl);
-
-  (void)info;
-  (void)drag_context;
-  (void)time;
-}
-
 static void gtkDragDataReceived(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y,
-                            GtkSelectionData *data, guint info, guint time, Ihandle *ih)
+                            GtkSelectionData *seldata, guint info, guint time, Ihandle *ih)
 {
-  IFnnsii cbDrop = (IFnnsii)IupGetCallback(ih, "DROPTARGET_CB");
-  Ihandle* target;
-  char* type = gdk_atom_name(gtk_selection_data_get_target(data));
+  IFnsCiii cbDrop = (IFnsCiii)IupGetCallback(ih, "DROPDATA_CB");
+  void* targetData = NULL;
+  char* type;
+  int size, format, res;
 
-  if(gtk_selection_data_get_length(data) <= 0 || gtk_selection_data_get_format(data) != 8)
+#if GTK_CHECK_VERSION(2, 14, 0)
+  type = gdk_atom_name(gtk_selection_data_get_target(seldata));
+  targetData = (void*)gtk_selection_data_get_data(seldata);
+  size = gtk_selection_data_get_length(seldata);
+  format = gtk_selection_data_get_format(seldata);
+#else
+  type = gdk_atom_name(seldata->type);
+  targetData = (void*)seldata->data;
+  size = seldata->length;
+  format = seldata->format;
+#endif
+
+  if(size <= 0 || format != 8)
   {
     gtk_drag_finish(drag_context, FALSE, FALSE, time);
     return;
   }
 
-  target = (Ihandle*)gtk_selection_data_get_data(data);
-
   if(cbDrop)
-    cbDrop(ih, target, type, x, y);   //TODO: raw data, lenght, type
-                                      //TODO: opçoes para tipos pre-definidos?
-  /* Testing... */
-  printf("DROPTARGET_CB ==> Ihandle*: ih, Ihandle*: target, Type: %s, X: %d, Y: %d\n", type, x, y);
+    res = cbDrop(ih, type, targetData, size, x, y);
 
   (void)info;
   (void)widget;
   (void)time;
+}
+
+static void gtkDragDataGet(GtkWidget *widget, GdkDragContext *drag_context, GtkSelectionData *seldata, guint info, guint time, Ihandle* ih)
+{
+  IFnsCi cbDragData = (IFnsCi)IupGetCallback(ih, "DRAGDATA_CB");
+  IFns cbDragDataSize = (IFns)IupGetCallback(ih, "DRAGDATASIZE_CB");
+  if(cbDragData && cbDragDataSize)
+  {
+    void* sourceData;
+    char *type;
+    int size;
+
+#if GTK_CHECK_VERSION(2, 14, 0)
+    type = gdk_atom_name(gtk_selection_data_get_target(seldata));
+#else
+    type = seldata->type;
+#endif
+
+    size = cbDragDataSize(ih, type);
+    if (size <= 0)
+      return;
+
+    sourceData = malloc(size+1);
+
+    /* fill data */
+    cbDragData(ih, type, sourceData, size);
+
+    /* Zero-terminates the stored data. */
+    ((guchar*)sourceData)[size] = 0;
+
+    gtk_selection_data_set(seldata, gdk_atom_intern(type, 0), 8, (guchar*)sourceData, size+1);
+
+    /* gtk_selection_data_set will copy the data */
+    free(sourceData);
+  }
+
+  (void)widget;
+  (void)drag_context;
+  (void)time;
+  (void)info;
+}
+
+static gboolean gtkDragMotion(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, guint time, Ihandle* ih)
+{
+  GdkAtom targetAtom;
+
+  //TODO: do we need this callback???? Isn't this the default behavior?
+
+  /* The third argument must be NULL. Internally, GTK will use the list returned
+     by the call gtk_drag_dest_get_target_list(widget), which is the list of targets
+     that be destination widget can accept (defined in the gtkSetDropTargetAttrib IUP) */
+  targetAtom = gtk_drag_dest_find_target(widget, drag_context, NULL);
+
+  if(targetAtom != GDK_NONE)
+  {
+#if GTK_CHECK_VERSION(2, 22, 0)   
+    gdk_drag_status(drag_context, gdk_drag_context_get_suggested_action(drag_context), time);
+#else
+    gdk_drag_status(drag_context, drag_context->suggested_action, time);
+#endif
+    return TRUE;
+  }
+  (void)ih;
+  (void)x;
+  (void)y;
+
+  gdk_drag_status(drag_context, 0, time);
+  return FALSE;
+}
+
+static void gtkDragEnd(GtkWidget *widget, GdkDragContext *drag_context, Ihandle *ih)
+{
+  IFni cbDrag = (IFni)IupGetCallback(ih, "DRAGEND_CB");
+  if(cbDrag)
+  {
+    GdkDragAction action;
+    int remove = -1;
+
+#if GTK_CHECK_VERSION(2, 22, 0)
+    action = gdk_drag_context_get_selected_action(drag_context);
+#else
+    action = drag_context->action;
+#endif
+
+    if (action == GDK_ACTION_MOVE)
+      remove = 1;
+    else if (action == GDK_ACTION_COPY)
+      remove = 0;
+
+    cbDrag(ih, remove);
+  }
+
+  (void)widget;
+}
+
+static void gtkDragBegin(GtkWidget *widget, GdkDragContext *drag_context, Ihandle *ih)
+{
+  IFnii cbDragBegin = (IFnii)IupGetCallback(ih, "DRAGBEGIN_CB");
+  if(cbDragBegin)
+  {
+    int x, y;
+    gdk_window_get_pointer(gtk_widget_get_window(widget), &x, &y, NULL);
+
+    if (cbDragBegin(ih, x, y) == IUP_IGNORE)
+      gdk_drag_abort(drag_context, 0);
+  }
 }
 
 static GtkTargetList* gtkCreateTargetList(const char* value)
@@ -106,11 +168,12 @@ static GtkTargetList* gtkCreateTargetList(const char* value)
   GtkTargetList* targetlist = gtk_target_list_new((GtkTargetEntry*)NULL, 0);
   char valueCopy[256];
   char valueTemp[256];
+  int info = 0;
 
   sprintf(valueCopy, "%s", value);
   while(iupStrToStrStr(valueCopy, valueTemp, valueCopy, ',') > 0)
   {
-    gtk_target_list_add(targetlist, gdk_atom_intern(valueTemp, 0), 0, 0);
+    gtk_target_list_add(targetlist, gdk_atom_intern(valueTemp, 0), 0, info++);
 
     if(iupStrEqualNoCase(valueCopy, valueTemp))
       break;
@@ -124,6 +187,10 @@ static GtkTargetList* gtkCreateTargetList(const char* value)
 
   return targetlist;
 }
+
+
+/******************************************************************************************/
+
 
 static int gtkSetDropTypesAttrib(Ihandle* ih, const char* value)
 {
@@ -148,19 +215,18 @@ static int gtkSetDropTargetAttrib(Ihandle* ih, const char* value)
   {
     GtkTargetList *targetlist = (GtkTargetList*)iupAttribGet(ih, "_IUPGTK_DROP_TARGETLIST");
     GtkTargetEntry *drop_types_entry;
-    int size;
+    int targetlist_count;
 
     if(!targetlist)
       return 0;
 
-    drop_types_entry = gtk_target_table_new_from_list(targetlist, &size);
+    drop_types_entry = gtk_target_table_new_from_list(targetlist, &targetlist_count);
 
-    gtk_drag_dest_set(ih->handle, GTK_DEST_DEFAULT_ALL, drop_types_entry, size, GDK_ACTION_MOVE|GDK_ACTION_COPY);
+    gtk_drag_dest_set(ih->handle, GTK_DEST_DEFAULT_ALL, drop_types_entry, targetlist_count, GDK_ACTION_MOVE|GDK_ACTION_COPY);
 
-    g_signal_connect(ih->handle, "drag_motion", G_CALLBACK(gtkDragMotion), ih);
     g_signal_connect(ih->handle, "drag_data_received", G_CALLBACK(gtkDragDataReceived), ih);
 
-    //TODO: release drop_types_entry?
+    gtk_target_table_free(drop_types_entry, targetlist_count);
   }
   else
     gtk_drag_dest_unset(ih->handle);
@@ -191,25 +257,32 @@ static int gtkSetDragSourceAttrib(Ihandle* ih, const char* value)
   {
     GtkTargetList *targetlist = (GtkTargetList*)iupAttribGet(ih, "_IUPGTK_DRAG_TARGETLIST");
     GtkTargetEntry *drag_types_entry;
-    int size;
+    int targetlist_count;
 
     if(!targetlist)
       return 0;
 
-    drag_types_entry = gtk_target_table_new_from_list(targetlist, &size);
+    drag_types_entry = gtk_target_table_new_from_list(targetlist, &targetlist_count);
 
-    gtk_drag_source_set(ih->handle, GDK_BUTTON1_MASK, drag_types_entry, size, GDK_ACTION_MOVE|GDK_ACTION_COPY);
+    gtk_drag_source_set(ih->handle, GDK_BUTTON1_MASK, drag_types_entry, targetlist_count, 
+                        iupAttribGetBoolean(ih, "DRAGSOURCEMOVE")? GDK_ACTION_MOVE|GDK_ACTION_COPY: GDK_ACTION_COPY);
 
+    g_signal_connect(ih->handle, "drag_begin", G_CALLBACK(gtkDragBegin), ih);
     g_signal_connect(ih->handle, "drag_data_get", G_CALLBACK(gtkDragDataGet), ih);
+    g_signal_connect(ih->handle, "drag_end", G_CALLBACK(gtkDragEnd), ih);
+    g_signal_connect(ih->handle, "drag_motion", G_CALLBACK(gtkDragMotion), ih);
 
-    //TODO: release drag_types_entry?
+    gtk_target_table_free(drag_types_entry, targetlist_count);
   }
   else
     gtk_drag_source_unset(ih->handle);
 
   return 1;
 }
-#endif
+
+
+/******************************************************************************************/
+
 
 static void gtkDropFileDragDataReceived(GtkWidget* w, GdkDragContext* context, int x, int y,
                                         GtkSelectionData* seldata, guint info, guint time, Ihandle* ih)
@@ -242,7 +315,7 @@ static void gtkDropFileDragDataReceived(GtkWidget* w, GdkDragContext* context, i
     if (iupStrEqualPartial(filename, "file://"))
     {
       filename += strlen("file://");
-      if (filename[2] == ':') /* in Windows there is an extra '/' at the beginning. */
+      if (filename[2] == ':')  /* in Windows there is an extra '/' at the beginning. */
         filename++;
     }
     if (cb(ih, filename, count-i-1, x, y) == IUP_IGNORE)
@@ -271,24 +344,26 @@ static int gtkSetDropFilesTargetAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+
+/******************************************************************************************/
+
+
 void iupdrvRegisterDragDropAttrib(Iclass* ic)
 {
   iupClassRegisterCallback(ic, "DROPFILES_CB", "siii");
 
-  // iupClassRegisterCallback(ic, "DRAGSOURCE_CB", "hsi");
-  // iupClassRegisterCallback(ic, "DROPTARGET_CB", "hsii");
+  iupClassRegisterCallback(ic, "DRAGBEGIN_CB", "ii");
+  iupClassRegisterCallback(ic, "DRAGDATASIZE_CB", "s");
+  iupClassRegisterCallback(ic, "DRAGDATA_CB",  "sCi");
+  iupClassRegisterCallback(ic, "DRAGEND_CB",   "i");
+  iupClassRegisterCallback(ic, "DROPDATA_CB",  "sCiii");
 
-  // iupClassRegisterAttribute(ic, "DRAGTYPES",  NULL, gtkSetDragTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  // iupClassRegisterAttribute(ic, "DROPTYPES",  NULL, gtkSetDropTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  // iupClassRegisterAttribute(ic, "DRAGSOURCE", NULL, gtkSetDragSourceAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  // iupClassRegisterAttribute(ic, "DROPTARGET", NULL, gtkSetDropTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGTYPES",  NULL, gtkSetDragTypesAttrib,  NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DROPTYPES",  NULL, gtkSetDropTypesAttrib,  NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGSOURCE", NULL, gtkSetDragSourceAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DROPTARGET", NULL, gtkSetDropTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGSOURCEMOVE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, gtkSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPFILESTARGET", NULL, gtkSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
-
-/* TODO:
-   controle de copy/move
-   default target types: text, image, uri
-   dragicon
-*/

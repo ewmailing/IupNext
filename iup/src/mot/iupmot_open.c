@@ -122,6 +122,9 @@ int iupdrvOpen(int *argc, char ***argv)
     IupSetGlobal("_IUP_RESET_TXTCOLORS", "YES");   /* will update the TXTCOLORS when the first text or list is mapped */
   }
 
+  /* enable alternative DnD icons as default */
+  XtVaSetValues(XmGetXmDisplay(iupmot_display), XmNenableDragIcon, True, NULL);
+
   if (getenv("IUP_DEBUG"))
     XSynchronize(iupmot_display, 1);
 

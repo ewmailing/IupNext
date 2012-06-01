@@ -21,7 +21,7 @@ extern "C" {
  * Some native elements need an extra parent, the ih->handle points to the main element itself, 
  * NOT to the extra parent. This extra parent is stored as "_IUP_EXTRAPARENT". 
  * In this case the native parent of ih->handle is the extra parent, 
- * and the extra parent is added as child to the element native parent.
+ * and the extra parent is added as child to the element actual native parent.
  * \par
  * See \ref iup_childtree.h
  * \ingroup object */

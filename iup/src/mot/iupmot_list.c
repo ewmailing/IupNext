@@ -1225,6 +1225,9 @@ static int motListMapMethod(Ihandle* ih)
     else
       iupMOT_SETARG(args, num_args, XmNcomboBoxType, XmDROP_DOWN_LIST);   /* hidden-list */
 
+    /* XmComboBoxWidget inherits from XmManager, 
+       so it is a container with the actual list inside */
+
     ih->handle = XtCreateManagedWidget(
       child_id,  /* child identifier */
       xmComboBoxWidgetClass, /* widget class */
@@ -1326,6 +1329,7 @@ static int motListMapMethod(Ihandle* ih)
 
       /* Disable Drag Source */
       iupmotDisableDragSource(cbedit);
+      iupAttribSetStr(ih, "_IUPMOT_DND_WIDGET", (char*)cbedit);
     }
     else
       XtAddEventHandler(cbedit, KeyPressMask, False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);

@@ -37,7 +37,7 @@ DBG = Yes
 #SRC = item.c
 #SRC = label.c
 #SRC = list1.c
-#SRC = list2.c
+SRC = list2.c
 #SRC = listdialog.c
 #SRC = lua_init.c
 #SRC = mask.c
@@ -114,7 +114,7 @@ ifdef IUPPPLOT_SAMPLE
   endif
 endif
 
-IUPMGLPLOT_SAMPLE=Yes
+#IUPMGLPLOT_SAMPLE=Yes
 ifdef IUPMGLPLOT_SAMPLE
   USE_OPENGL = Yes
   USE_IUPCONTROLS = Yes
@@ -128,10 +128,11 @@ ifdef IUPMGLPLOT_SAMPLE
   
   USE_IM = Yes
   ifdef USE_IM
-  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-    LIBS += iupim im_process
-  else
-    SLIB += $(IUPLIB)/libiupim.a $(IMLIB)/libim_process.a
+    ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+      LIBS += iupim im_process
+    else
+      SLIB += $(IUPLIB)/libiupim.a $(IMLIB)/libim_process.a
+    endif
   endif
 endif
 
