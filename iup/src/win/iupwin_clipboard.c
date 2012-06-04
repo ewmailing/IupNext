@@ -154,12 +154,13 @@ static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
 {
   HANDLE hHandle;
   void* clip_str;
-  int size = strlen(value)+1;
+  int size;
   (void)ih;
 
   if (!OpenClipboard(NULL))
     return 0;
 
+  size = strlen(value)+1;
   hHandle = GlobalAlloc(GMEM_MOVEABLE, size); 
   if (!hHandle)
     return 0;
@@ -205,6 +206,13 @@ static int winClipboardSetImageAttrib(Ihandle *ih, const char *value)
   if (!OpenClipboard(NULL))
     return 0;
 
+  if (!value)
+  {
+    EmptyClipboard();
+    CloseClipboard();
+    return 0;
+  }
+
   hBitmap = (HBITMAP)iupImageGetImage(value, ih, 0);
   iupImageClearCache(ih, hBitmap);
 
@@ -221,7 +229,8 @@ static int winClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
     return 0;
 
   EmptyClipboard();
-  SetClipboardData(CF_DIB, (HANDLE)value);
+  if (value)
+    SetClipboardData(CF_DIB, (HANDLE)value);
   CloseClipboard();
 
   (void)ih;

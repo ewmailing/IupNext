@@ -40,6 +40,12 @@ static int motClipboardSetTextAttrib(Ihandle *ih, const char *value)
   XmString clip_label = XmStringCreateLocalized ("IupClipboard");
   (void)ih;
 
+  if (!value)
+  {
+    XmClipboardUndoCopy(iupmot_display, window);
+    return 0;
+  }
+
   if (XmClipboardStartCopy(iupmot_display, window, clip_label, CurrentTime, NULL, NULL, &item_id)!=ClipboardSuccess)
   {
     XmStringFree(clip_label);
@@ -78,6 +84,12 @@ static int motClipboardSetImageAttrib(Ihandle *ih, const char *value)
   Window window = motClipboardGetWindow();
   XmString clip_label = XmStringCreateLocalized ("IupClipboard");
 
+  if (!value)
+  {
+    XmClipboardUndoCopy(iupmot_display, window);
+    return 0;
+  }
+
   if (XmClipboardStartCopy(iupmot_display, window, clip_label, CurrentTime, NULL, NULL, &item_id)!=ClipboardSuccess)
   {
     XmStringFree(clip_label);
@@ -101,6 +113,12 @@ static int motClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
   Window window = motClipboardGetWindow();
   XmString clip_label = XmStringCreateLocalized ("IupClipboard");
   Pixmap pixmap = (Pixmap)value;
+
+  if (!value)
+  {
+    XmClipboardUndoCopy(iupmot_display, window);
+    return 0;
+  }
 
   if (XmClipboardStartCopy(iupmot_display, window, clip_label, CurrentTime, NULL, NULL, &item_id)!=ClipboardSuccess)
   {
