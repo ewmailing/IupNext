@@ -267,7 +267,7 @@ void ListTest(void)
   IupSetAttributes(list2, "1=\"Banana\", 2=\"Apple\", 3=\"Orange\", 4=\"Strawberry\", 5=\"Grape\","
                           "DROPDOWN=YES, NAME=list2, TIP=Drop, XXX_VALUE=2, XXX_SORT=YES, XXX_BGCOLOR=\"192 64 192\"");
   IupSetAttributes(list3, "1=\"Char A\", 2=\"Char B\", 3=\"Char CCCCC\", 4=\"Char D\", 5=\"Char E\", 6=\"Char F\","
-                          "XXX_EDITBOX=YES, NAME=list3, TIP=Edit+List, VALUE=\"Edit Here\"");
+                          "EDITBOX=YES, NAME=list3, TIP=Edit+List, VALUE=\"Edit Here\"");
 //  IupSetAttributes(list4, "1=\"Number 1\", 2=\"Number 2\", 3=\"Number 3\", 4=\"Number 4\", 5=\"Number 5\", 6=\"Number 6\", 7=\"Number 7\","
 //                          "MULTIPLE=YES, NAME=list4, TIP=List, VALUE=+--++--");
   IupSetAttributes(list4, "1=\"Number 3\", 2=\"Number 4\", 3=\"Number 2\", 4=\"Number 1\", 5=\"Number 6\", 6=\"Number 5\", 7=\"Number 7\","

@@ -1327,8 +1327,6 @@ static int motListMapMethod(Ihandle* ih)
       XtAddCallback(cbedit, XmNmotionVerifyCallback, (XtCallbackProc)motListEditMotionVerifyCallback, (XtPointer)ih);
       XtAddCallback(cbedit, XmNvalueChangedCallback, (XtCallbackProc)motListEditValueChangedCallback, (XtPointer)ih);
 
-      /* Disable Drag Source */
-      iupmotDisableDragSource(cbedit);
       iupAttribSetStr(ih, "_IUPMOT_DND_WIDGET", (char*)cbedit);
     }
     else

@@ -30,6 +30,13 @@ static void gtkDragDataReceived(GtkWidget *widget, GdkDragContext *drag_context,
   void* targetData = NULL;
   char* type;
   int size, format, res;
+  GdkDragAction action;
+
+#if GTK_CHECK_VERSION(2, 22, 0)
+  action = gdk_drag_context_get_selected_action(drag_context);
+#else
+  action = drag_context->action;
+#endif
 
 #if GTK_CHECK_VERSION(2, 14, 0)
   type = gdk_atom_name(gtk_selection_data_get_target(seldata));
@@ -43,7 +50,8 @@ static void gtkDragDataReceived(GtkWidget *widget, GdkDragContext *drag_context,
   format = seldata->format;
 #endif
 
-  if(size <= 0 || format != 8)
+  if(size <= 0 || format != 8 ||
+    (action != GDK_ACTION_MOVE && action != GDK_ACTION_COPY))
   {
     gtk_drag_finish(drag_context, FALSE, FALSE, time);
     return;
@@ -51,6 +59,8 @@ static void gtkDragDataReceived(GtkWidget *widget, GdkDragContext *drag_context,
 
   if(cbDrop)
     res = cbDrop(ih, type, targetData, size, x, y);
+
+  gtk_drag_finish(drag_context, TRUE, FALSE, time);
 
   (void)info;
   (void)widget;
@@ -66,12 +76,21 @@ static void gtkDragDataGet(GtkWidget *widget, GdkDragContext *drag_context, GtkS
     void* sourceData;
     char *type;
     int size;
+    GdkDragAction action;
+
+#if GTK_CHECK_VERSION(2, 22, 0)
+    action = gdk_drag_context_get_selected_action(drag_context);
+#else
+    action = drag_context->action;
+#endif
 
 #if GTK_CHECK_VERSION(2, 14, 0)
     type = gdk_atom_name(gtk_selection_data_get_target(seldata));
 #else
     type = seldata->type;
 #endif
+    if (action != GDK_ACTION_MOVE && action != GDK_ACTION_COPY)
+      return;
 
     size = cbDragDataSize(ih, type);
     if (size <= 0)
@@ -367,3 +386,11 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, gtkSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPFILESTARGET", NULL, gtkSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
+
+/* TODO:
+  Could not find a way to disable the internal DND support 
+  in IupText(GtkTextView or GtkEntry).
+  Mixing the generic support from here and the internal gives weird results.
+  So the application should use only the internal in this case.
+  The edit box in a IupList has the same problem.
+*/

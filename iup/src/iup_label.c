@@ -180,9 +180,6 @@ Iclass* iupLabelNewClass(void)
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
 
-  /* Drag&Drop */
-  iupdrvRegisterDragDropAttrib(ic);
-
   /* IupLabel only */
   iupClassRegisterAttribute(ic, "SEPARATOR", iLabelGetSeparatorAttrib, iLabelSetSeparatorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 

@@ -1223,9 +1223,6 @@ static int motTextMapMethod(Ihandle* ih)
   XtAddCallback(ih->handle, XmNmotionVerifyCallback, (XtCallbackProc)motTextMotionVerifyCallback, (XtPointer)ih);
   XtAddCallback(ih->handle, XmNvalueChangedCallback, (XtCallbackProc)motTextValueChangedCallback, (XtPointer)ih);
 
-  /* Disable Drag Source */
-  iupmotDisableDragSource(ih->handle);
-
   /* initialize the widget */
   if (ih->data->is_multiline || spin)
     XtRealizeWidget(parent);

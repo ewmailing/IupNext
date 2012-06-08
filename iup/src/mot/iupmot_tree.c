@@ -2124,9 +2124,6 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
     sb_win,
     args, num_args);
 
-  /* Disable Drag Source */
-  iupmotDisableDragSource(cbEdit);
-
   XtAddEventHandler(cbEdit, EnterWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
   XtAddEventHandler(cbEdit, LeaveWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
   XtAddEventHandler(cbEdit, FocusChangeMask, False, (XtEventHandler)motTreeEditFocusChangeEvent, (XtPointer)ih);
