@@ -311,7 +311,7 @@ void ButtonTest(void)
   IupAppend(box1, button);
 
   button = IupButton(NULL, NULL);
-  IupSetAttribute(button, "TITLE", "Text Button\nSecond Line");
+  IupSetAttribute(button, "TITLE", "Text\nSecond Line");
   IupSetAttribute(button, "RASTERSIZE", "200x100");
   IupSetAttribute(button, "ALIGNMENT", "ACENTER:ACENTER");
   IupSetAttribute(button, "FONT", "Helvetica, 14");
@@ -321,7 +321,7 @@ void ButtonTest(void)
   IupAppend(box1, button);
 
   button = IupButton(NULL, NULL);
-  IupSetAttribute(button, "TITLE", "Text Button\n<b>Second Line</b>");
+  IupSetAttribute(button, "TITLE", "Text\n<b>Second Line</b>");
   IupSetAttribute(button, "RASTERSIZE", "200x100");
   IupSetAttribute(button, "ALIGNMENT", "ARIGHT:ABOTTOM");
   IupSetAttribute(button, "MARKUP", "YES");

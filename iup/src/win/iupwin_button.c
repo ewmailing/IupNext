@@ -239,6 +239,11 @@ static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rec
     break;
   }
 
+  if (ih->data->horiz_alignment == IUP_ALIGN_ACENTER)
+    style |= DT_CENTER;  /* let DrawText do the internal horizontal alignment, usefull for multiple lines */
+  else if (ih->data->horiz_alignment == IUP_ALIGN_ARIGHT)
+    style |= DT_RIGHT;
+
   iupwinDrawBitmap(hDC, hBitmap, hMask, img_x, img_y, img_width, img_height, bpp);
   iupwinDrawText(hDC, title, txt_x, txt_y, txt_width, txt_height, hFont, fgcolor, style);
 
@@ -298,6 +303,11 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
 
     x = winButtonCalcAlignPosX(ih->data->horiz_alignment, rect_width, width, xpad, shift);
     y = winButtonCalcAlignPosY(ih->data->vert_alignment, rect_height, height, ypad, shift);
+
+    if (ih->data->horiz_alignment == IUP_ALIGN_ACENTER)
+      style |= DT_CENTER;  /* let DrawText do the internal horizontal alignment, usefull for multiple lines */
+    else if (ih->data->horiz_alignment == IUP_ALIGN_ARIGHT)
+      style |= DT_RIGHT;
 
     iupwinDrawText(hDC, title, x, y, width, height, hFont, fgcolor, style);
   }
