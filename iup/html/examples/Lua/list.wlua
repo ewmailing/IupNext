@@ -6,6 +6,8 @@ require( "iuplua" )
 -- Creates a list and sets items, initial item and size
 list = iup.list {"Gold", "Silver", "Bronze", "None"
        ; value = 4, size = "EIGHTHxEIGHTH"}
+       
+list[5] = "test"
 
 -- Creates frame with simple list and sets its title
 frm_medal = iup.frame {list ; title = "Best medal"}
