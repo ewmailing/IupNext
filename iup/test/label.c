@@ -120,16 +120,17 @@ void LabelTest(void)
   IupAppend(box1, label);
 
   label = IupLabel(NULL);
-  IupSetAttribute(label, "TITLE", "Text Label\nSecond Line");
+  IupSetAttribute(label, "TITLE", "Text\nSecond Line");
   IupSetAttribute(label, "RASTERSIZE", "150x70");
   IupSetAttribute(label, "ALIGNMENT", "ACENTER:ACENTER");
   IupSetAttribute(label, "FONT", "Helvetica, 14");
 //  IupSetAttribute(label, "FONTSIZE", "14");
 //  IupSetAttribute(label, "FONTSTYLE", "Italic");
+//  IupSetAttribute(label, "FONTSTYLE", "Bold");
   IupAppend(box1, label);
 
   label = IupLabel(NULL);
-  IupSetAttribute(label, "TITLE", "Text Label\n<b>Second Line</b>");
+  IupSetAttribute(label, "TITLE", "Text\n<b>Second Line</b>");
   IupSetAttribute(label, "RASTERSIZE", "150x70");
   IupSetAttribute(label, "ALIGNMENT", "ARIGHT:ABOTTOM");
   IupSetAttribute(label, "MARKUP", "YES");

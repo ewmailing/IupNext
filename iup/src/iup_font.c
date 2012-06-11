@@ -439,6 +439,7 @@ static int iFontFindStyleName(const char *name, int len, int *style)
   int i;
   for (i = 0; i < STYLE_NUM_NAMES; i++)
   {
+    /* iupStrEqualPartial(cd_style_names[i].name, name) */
     if (strncmp(cd_style_names[i].name, name, len)==0)
     {
       *style = cd_style_names[i].style;

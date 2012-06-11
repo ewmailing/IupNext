@@ -58,7 +58,7 @@ GTK. So the font family can be reduced to <u>font face</u>.</p>
 Underline</b> and 
 <b>Strikeout</b>. The Pango format include many other definitions not supported 
 by the common format, they are supported only by the GTK driver. Unsupported 
-values are simply ignored.</p>
+values are simply ignored. The names must be in the same case describe here.</p>
 <p><u>Font size</u> is in points (1/72 inch) or in pixels (using negative 
 values).</p>
 <p>The old <a href="iup_font.html#Font_Names">Font Names</a> are still 
@@ -155,7 +155,8 @@ This means that if the attribute was set in X-Windows format or in the old
 Windows and IUP formats, the previous value will be replaced by a new value in 
 the common format definition. Pango additional styles will also be removed.</p>
 <h4>FONTSTYLE (non inheritable) </h4>
-<p>Replaces or returns the style of the current FONT attribute.</p>
+<p>Replaces or returns the style of the current FONT attribute. Since font 
+styles are case sensitive, this attribute is also case sensitive.</p>
 <h4>FONTSIZE (non inheritable) </h4>
 <p>Replaces or returns the size of the current FONT attribute.</p>
 <h4>FONTFACE (read-only, non inheritable) </h4>
