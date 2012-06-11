@@ -61,7 +61,7 @@ static void motDropTransferProc(Widget dropTransfer, Ihandle* ih, Atom *selType,
 {
   IFnsCiii cbDropData;
 
-  if(!targetData)
+  if(!targetData || !(*length))
     return;
 
   cbDropData = (IFnsCiii)IupGetCallback(ih, "DROPDATA_CB");
@@ -332,13 +332,7 @@ static int motSetDropTypesAttrib(Ihandle* ih, const char* value)
 
 static int motSetDropTargetAttrib(Ihandle* ih, const char* value)
 {
-  Widget w;
-
-  /* Are there defined drop types? */
-  if(!iupAttribGet(ih, "_IUPMOT_DROP_TARGETLIST"))
-    return 0;
-
-  w = (Widget)iupAttribGet(ih, "_IUPMOT_DND_WIDGET");
+  Widget w = (Widget)iupAttribGet(ih, "_IUPMOT_DND_WIDGET");
   if (!w)
     w = ih->handle;
 
@@ -348,6 +342,9 @@ static int motSetDropTargetAttrib(Ihandle* ih, const char* value)
     Cardinal numDropTypes = (Cardinal)iupAttribGetInt(ih, "_IUPMOT_DROP_TARGETLIST_COUNT");
     Arg args[20];
     int num_args = 0;
+
+    if (!dropTypesList)
+      return 0;
 
     iupMOT_SETARG(args, num_args, XmNimportTargets, dropTypesList);
     iupMOT_SETARG(args, num_args, XmNnumImportTargets, numDropTypes);
@@ -388,13 +385,7 @@ static int motSetDragTypesAttrib(Ihandle* ih, const char* value)
 
 static int motSetDragSourceAttrib(Ihandle* ih, const char* value)
 {
-  Widget w;
-
-  /* Are there defined drag types? */
-  if(!iupAttribGet(ih, "_IUPMOT_DRAG_TARGETLIST"))
-    return 0;
-
-  w = (Widget)iupAttribGet(ih, "_IUPMOT_DND_WIDGET");
+  Widget w = (Widget)iupAttribGet(ih, "_IUPMOT_DND_WIDGET");
   if (!w)
     w = ih->handle;
 
@@ -428,7 +419,7 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
   /* Not Supported */
   /* iupClassRegisterCallback(ic, "DROPFILES_CB", "siii"); */
 
-  iupClassRegisterCallback(ic, "DRAGBEGIN_CB", "sii");
+  iupClassRegisterCallback(ic, "DRAGBEGIN_CB", "ii");
   iupClassRegisterCallback(ic, "DRAGDATASIZE_CB", "s");
   iupClassRegisterCallback(ic, "DRAGDATA_CB",  "sCi");
   iupClassRegisterCallback(ic, "DRAGEND_CB",   "i");

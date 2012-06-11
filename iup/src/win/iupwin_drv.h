@@ -43,8 +43,14 @@ char* iupwinGetHFontAttrib(Ihandle *ih);
 HFONT iupwinGetHFont(const char* value);
 char* iupwinFindHFont(HFONT hFont);
 
+/* DnD */
+int iupwinDragStart(Ihandle* ih);
+void iupwinDropFiles(HDROP hDrop, Ihandle *ih);
+
 /* menu */
 void iupwinMenuDialogProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
+Ihandle* iupwinMenuGetItemHandle(HMENU hmenu, int menuId);
+Ihandle* iupwinMenuGetHandle(HMENU hMenu);
 
 /* common */
 
@@ -79,26 +85,28 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
    Handle messages that are sent to the parent Window.  */
 int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result);
 
+void iupwinChangeProc(Ihandle *ih, WNDPROC new_proc);
+
 /* Creates the Window with native parent and child ID, associate HWND with Ihandle*, 
    and replace the WinProc by iupwinBaseWinProc */
 int iupwinCreateWindowEx(Ihandle* ih, LPCSTR lpClassName, DWORD dwExStyle, DWORD dwStyle);
-void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle);
 
-int iupwinClassExist(const char* name);
-int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color);
-int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr);
-void iupwinDropFiles(HDROP hDrop, Ihandle *ih);
-Ihandle* iupwinMenuGetItemHandle(HMENU hmenu, int menuId);
-Ihandle* iupwinMenuGetHandle(HMENU hMenu);
-int iupwinSetDropFilesTargetAttrib(Ihandle* ih, const char* value);
-void iupwinChangeProc(Ihandle *ih, WNDPROC new_proc);
+void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle);
 void iupwinMergeStyle(Ihandle* ih, DWORD old_mask, DWORD value);
 void iupwinSetStyle(Ihandle* ih, DWORD value, int set);
+
+int iupwinClassExist(const char* name);
+
+int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color);
+int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr);
+
 WCHAR* iupwinStrChar2Wide(const char* str);
 char* iupwinStrWide2Char(const WCHAR* wstr);
+
 int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
+
 char* iupwinGetClipboardText(Ihandle* ih);
 int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value);
 

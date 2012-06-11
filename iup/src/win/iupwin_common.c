@@ -232,6 +232,16 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
   case WM_DROPFILES:
     iupwinDropFiles((HDROP)wp, ih);
     break;
+  case WM_LBUTTONDOWN:
+    if(iupAttribGetBoolean(ih, "DRAGSOURCE"))
+    {
+      if (iupwinDragStart(ih))
+      {
+        *result = 0;
+        return 1;  /* abort default processing */
+      }
+    }
+    break;
   case WM_HELP:
     {
       Ihandle* child;

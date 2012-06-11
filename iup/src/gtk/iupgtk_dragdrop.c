@@ -387,7 +387,7 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "DROPFILESTARGET", NULL, gtkSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
 
-/* TODO:
+/* // TODO:
   Could not find a way to disable the internal DND support 
   in IupText(GtkTextView or GtkEntry).
   Mixing the generic support from here and the internal gives weird results.

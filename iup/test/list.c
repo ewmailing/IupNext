@@ -247,7 +247,7 @@ static void set_callbacks(Ihandle* list)
 //  IupSetAttribute(list, "AUTOHIDE", "NO");
 //  IupSetAttribute(list, "SCROLLBAR", "NO");
 
-  IupSetAttribute(list, "VISIBLE_ITEMS", "3");
+  IupSetAttribute(list, "VISIBLE_ITEMS", "20");
 //  IupSetAttribute(list, "VISIBLECOLUMNS", "7");
   IupSetAttribute(list, "VISIBLELINES", "4");
 }
@@ -272,6 +272,12 @@ void ListTest(void)
 //                          "MULTIPLE=YES, NAME=list4, TIP=List, VALUE=+--++--");
   IupSetAttributes(list4, "1=\"Number 3\", 2=\"Number 4\", 3=\"Number 2\", 4=\"Number 1\", 5=\"Number 6\", 6=\"Number 5\", 7=\"Number 7\","
                           "MULTIPLE=YES, NAME=list4, TIP=List, XXX_SORT=YES, VALUE=+--++--, XXX_CANFOCUS=NO");
+
+  //IupSetAttributes(list1, "5=\"US$ 1000\", 6=\"US$ 2000\", 7=\"US$ 300.000.000\", 8=\"US$ 4000\"");
+  //IupSetAttributes(list1, "9=\"US$ 1000\", 10=\"US$ 2000\", 11=\"US$ 300.000.000\", 12=\"US$ 4000\"");
+  //IupSetAttributes(list1, "13=\"US$ 1000\", 14=\"US$ 2000\", 15=\"US$ 300.000.000\", 16=\"US$ 4000\"");
+  //IupSetAttributes(list1, "17=\"US$ 1000\", 18=\"US$ 2000\", 19=\"US$ 300.000.000\", 20=\"US$ 4000\"");
+  //IupSetAttributes(list1, "21=\"US$ 1000\", 22=\"US$ 2000\", 23=\"US$ 300.000.000\", 24=\"US$ 4000\"");
 
   set_callbacks(list1);
   set_callbacks(list2);
