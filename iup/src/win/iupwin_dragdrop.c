@@ -38,16 +38,16 @@
 
 typedef struct tagIUPWINDROPSOURCE *PIUPWINDROPSOURCE;
 typedef struct tagIUPWINDROPTARGET *PIUPWINDROPTARGET;
-typedef DWORD (*IUPWINDDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
+typedef void (*IUPWINDDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, POINTL pt, void *pUserData);
 
 static PIUPWINDROPSOURCE winCreateDropSourceData(CLIPFORMAT *pFormat, HGLOBAL *phData, ULONG lFmt);
 static PIUPWINDROPSOURCE winFreeDropSource(PIUPWINDROPSOURCE pDropSrc);
-static PIUPWINDROPTARGET winRegisterDropTarget(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, IUPWINDDCALLBACK, void *pUserData);
-static PIUPWINDROPTARGET winRevokeDropTarget(PIUPWINDROPTARGET pTarget);
+static PIUPWINDROPTARGET winRegisterDropTarget(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, IUPWINDDCALLBACK pDropProc, void *pUserData);
+static PIUPWINDROPTARGET winRevokeDropTarget(PIUPWINDROPTARGET pTarget, HWND hWnd);
 
 static IDataObject *winCreateDataObject(CLIPFORMAT *pFormat, HGLOBAL *phData, ULONG lFmt);
 static IDropSource *winCreateDropSource(void);
-static IDropTarget *winCreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, IUPWINDDCALLBACK pDropProc, void *pUserData);
+static IDropTarget *winCreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, IUPWINDDCALLBACK pDropProc, void *pUserData);
 
 typedef struct tagIUPWINIDATAOBJECT
 {
@@ -70,8 +70,6 @@ typedef struct tagIUPWINIDROPTARGET
   LONG lRefCount;
   ULONG lNumFormats;
   CLIPFORMAT *pFormat;
-  HWND hWnd;
-  DWORD dwKeyState;
   IDataObject *pDataObject;
   void *pUserData;
   IUPWINDDCALLBACK pDropProc;
@@ -214,7 +212,7 @@ static PIUPWINDROPTARGET winRegisterDropTarget(HWND hWnd, CLIPFORMAT *pFormat, U
   IDropTarget *pTarget;
 
   /* First, create the target. */
-  if((pTarget = winCreateDropTarget(pFormat, lFmt, hWnd, pDropProc, pUserData)) == NULL)
+  if((pTarget = winCreateDropTarget(pFormat, lFmt, pDropProc, pUserData)) == NULL)
     return NULL;
 
   /* Now, register for drop. If this fails, free my target the old-fashioned way, as none knows about it anyway. */
@@ -227,17 +225,17 @@ static PIUPWINDROPTARGET winRegisterDropTarget(HWND hWnd, CLIPFORMAT *pFormat, U
   return (PIUPWINDROPTARGET) pTarget;
 }
 
-static PIUPWINDROPTARGET winRevokeDropTarget(PIUPWINDROPTARGET pTarget)
+static PIUPWINDROPTARGET winRevokeDropTarget(PIUPWINDROPTARGET pTarget, HWND hWnd)
 {
   if(pTarget == NULL)
     return NULL;
 
   /* If there is a HWND, then revoke it as a drop object. */
-  if(((PIUPWINIDROPTARGET) pTarget)->hWnd != NULL)
+  if(hWnd != NULL)
   {
     /* Now, this is a little precaution to know that this is an OK PMIIDROPTARGET object. */
-    if(GetWindowLong(((PIUPWINIDROPTARGET) pTarget)->hWnd, GWL_WNDPROC) != 0)
-      RevokeDragDrop(((PIUPWINIDROPTARGET) pTarget)->hWnd);
+    if(GetWindowLong(hWnd, GWL_WNDPROC) != 0)
+      RevokeDragDrop(hWnd);
   }
 
   /* Now, release the target. */
@@ -309,9 +307,7 @@ static IDataObject *winCreateDataObject(CLIPFORMAT *pFormat, HGLOBAL *phData, UL
   return (IDataObject *) pRet;
 }
 
-static IDropTarget *winCreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, 
-                                 DWORD (*pDropProc)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData),
-                                 void *pUserData)
+static IDropTarget *winCreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, IUPWINDDCALLBACK pDropProc, void *pUserData)
 {
   PIUPWINIDROPTARGET pRet;
   static IUPWINIDROPTARGET_VTBL idt_vtbl = {
@@ -332,8 +328,6 @@ static IDropTarget *winCreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hW
   /* Set up the struct members. */
   pRet->idt.lpVtbl = (IDropTargetVtbl*)&idt_vtbl;
   pRet->lRefCount = 1;
-  pRet->hWnd = hWnd;
-  pRet->dwKeyState = 0;
   pRet->lNumFormats = lFmt;
   pRet->pDropProc = pDropProc;
   pRet->pUserData = pUserData;
@@ -567,7 +561,7 @@ static BOOL winQueryDataObject(PIUPWINIDROPTARGET pDropTarget, IDataObject *pDat
   return FALSE;
 }
 
-static DWORD IUPWINIDROPTARGET_DropEffect(DWORD dwKeyState, POINTL pt, DWORD dwAllowed)
+static DWORD winGetDropEffect(DWORD dwKeyState, DWORD dwAllowed)
 {
   DWORD dwEffect = 0;
 
@@ -584,8 +578,13 @@ static DWORD IUPWINIDROPTARGET_DropEffect(DWORD dwKeyState, POINTL pt, DWORD dwA
       dwEffect = DROPEFFECT_MOVE;
   }
 
-  (void)pt;
   return dwEffect;
+}
+
+static DWORD IUPWINIDROPTARGET_DropEffect(DWORD dwKeyState, POINTL pt, DWORD dwAllowed)
+{
+  (void)pt;
+  return winGetDropEffect(dwKeyState, dwAllowed);
 }
 
 static HRESULT STDMETHODCALLTYPE IUPWINIDROPTARGET_QueryInterface(PIUPWINIDROPTARGET pThis, REFIID riid, LPVOID *ppvObject)
@@ -627,19 +626,15 @@ static ULONG STDMETHODCALLTYPE IUPWINIDROPTARGET_Release(PIUPWINIDROPTARGET pThi
 static HRESULT STDMETHODCALLTYPE IUPWINIDROPTARGET_DragEnter(PIUPWINIDROPTARGET pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
 {
   if(winQueryDataObject(pThis, pDataObject))
-  {
     *pdwEffect = IUPWINIDROPTARGET_DropEffect(dwKeyState, pt, *pdwEffect);
-    SetFocus(pThis->hWnd);  // TODO: let this here?
-  }
   else
     *pdwEffect = DROPEFFECT_NONE;
-
   return S_OK;
 }
 
 static HRESULT STDMETHODCALLTYPE IUPWINIDROPTARGET_DragOver(PIUPWINIDROPTARGET pThis, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
 {
-  pThis->dwKeyState = dwKeyState;  // TODO: why keystate from drag over and not from drop?
+  (void)pThis;
   *pdwEffect = IUPWINIDROPTARGET_DropEffect(dwKeyState, pt, *pdwEffect);
   return S_OK;
 }
@@ -669,17 +664,17 @@ static HRESULT STDMETHODCALLTYPE IUPWINIDROPTARGET_Drop(PIUPWINIDROPTARGET pThis
   {
     /* Get the data being dragged. */
     pDataObject->lpVtbl->GetData(pDataObject, &fmtetc, &medium);
-    *pdwEffect = DROPEFFECT_NONE;
 
-    /* If a callback procedure is defined, then use that. */
-    *pdwEffect = pThis->pDropProc(pThis->pFormat[lFmt], medium.hGlobal, pThis->hWnd, pThis->dwKeyState, pt, pThis->pUserData);
+    *pdwEffect = winGetDropEffect(dwKeyState, *pdwEffect);
+
+    /* Call the callback */
+    pThis->pDropProc(pThis->pFormat[lFmt], medium.hGlobal, pt, pThis->pUserData);
 
     /* Release the medium, if it was used. */
     if(*pdwEffect != DROPEFFECT_NONE)
       ReleaseStgMedium(&medium);
   }
 
-  (void)dwKeyState;
   return S_OK;
 }
 
@@ -687,7 +682,7 @@ static HRESULT STDMETHODCALLTYPE IUPWINIDROPTARGET_Drop(PIUPWINIDROPTARGET pThis
 /******************************************************************************************/
 
 
-static DWORD winDropProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *ih)
+static void winDropProc(CLIPFORMAT cf, HGLOBAL hData, POINTL pt, Ihandle* ih)
 {
   IFnsCiii cbDrop = (IFnsCiii)IupGetCallback((Ihandle*)ih, "DROPDATA_CB");
   if(cbDrop)
@@ -695,33 +690,22 @@ static DWORD winDropProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeySta
     void* targetData = NULL;
     char type[256];
     SIZE_T size;
-    DWORD dwEffect = 0;
     int x = (int)pt.x;
     int y = (int)pt.y;
 
     iupdrvScreenToClient(ih, &x, &y);
 
-    if(dwKeyState & MK_SHIFT)
-      dwEffect = DROPEFFECT_MOVE;
-    else
-      dwEffect = DROPEFFECT_COPY;
-
     targetData = GlobalLock(hData);
     size = GlobalSize(hData);
     if(size <= 0 || !targetData)
-      return DROPEFFECT_NONE;
+      return;
 
     GetClipboardFormatName(cf, type, 256);
 
     cbDrop(ih, type, targetData, size, x, y);
 
     GlobalUnlock(hData);
-
-    return dwEffect;
   }
-
-  (void)hWnd;
-  return DROPEFFECT_NONE;
 }
 
 static void winRegisterDrop(Ihandle *ih)
@@ -787,7 +771,7 @@ static void winRegisterProcessDrag(Ihandle *ih)
         continue;
 
       cf[j] = f;
-      hData[j] = GlobalAlloc(GMEM_FIXED, size);  // TODO GMEM_MOVEABLE ???
+      hData[j] = GlobalAlloc(GMEM_FIXED, size);
       sourceData = GlobalLock(hData[j]);
 
       /* fill data */
@@ -923,7 +907,7 @@ static int winSetDropTargetAttrib(Ihandle* ih, const char* value)
   {
     PIUPWINDROPTARGET pTarget = (PIUPWINDROPTARGET)iupAttribGet(ih, "_IUPWIN_DROPTARGET");
     if (pTarget)
-      winRevokeDropTarget(pTarget);
+      winRevokeDropTarget(pTarget, ih->handle);
   }
 
   return 1;
