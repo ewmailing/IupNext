@@ -281,6 +281,7 @@ void TextTest(void)
   IupSetAttribute(text, "CUEBANNER", "Enter Attribute Value Here");
   IupSetAttribute(text, "NAME", "text");
   IupSetAttribute(text, "TIP", "Attribute Value");
+//  IupSetAttribute(text, "FORMATTING", "YES");
 
   opt = IupToggle("Set/Get", NULL);
   IupSetAttribute (opt, "VALUE", "ON");
@@ -328,6 +329,7 @@ void TextTest(void)
 //    IupSetAttribute(mltline, "FORMATTING", "YES");
 
   formatting = 0;
+//  formatting = 1;
   if (formatting)          /* just to make easier to comment this section */
   {
     /* formatting before Map */
