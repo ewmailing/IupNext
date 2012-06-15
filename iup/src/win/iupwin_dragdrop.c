@@ -359,6 +359,8 @@ static ULONG STDMETHODCALLTYPE IwinDataObject_Release(IwinDataObject* pThis)
   return nCount;
 }
 
+static void winGetClipboardFormatName(CLIPFORMAT cf, char* name, int len);
+
 static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pStgMedium)
 {
   IFns cbDragDataSize;
@@ -374,7 +376,7 @@ static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, L
   pStgMedium->tymed = TYMED_HGLOBAL;
   pStgMedium->pUnkForRelease  = NULL;
 
-  GetClipboardFormatName(pFormatEtc->cfFormat, type, 256);
+  winGetClipboardFormatName(pFormatEtc->cfFormat, type, 256);
 
   cbDragDataSize = (IFns)IupGetCallback(pThis->ih, "DRAGDATASIZE_CB");
   size = cbDragDataSize(pThis->ih, type);
@@ -654,7 +656,7 @@ static void winCallDropDataCB(Ihandle* ih, CLIPFORMAT cf, HGLOBAL hData, int x, 
     if(size <= 0 || !targetData)
       return;
 
-    GetClipboardFormatName(cf, type, 256);
+    winGetClipboardFormatName(cf, type, 256);
 
     cbDrop(ih, type, targetData, size, x, y);
 
@@ -728,6 +730,50 @@ static IwinDropTarget* winCreateDropTarget(CLIPFORMAT *pClipFormat, ULONG nNumFo
 
 /******************************************************************************************/
 
+static void winGetClipboardFormatName(CLIPFORMAT cf, char* name, int len)
+{
+  if (cf == CF_TEXT)
+    strcpy(name, "TEXT");
+  else if (cf == CF_BITMAP)
+    strcpy(name, "BITMAP");
+  else if (cf == CF_METAFILEPICT)
+    strcpy(name, "METAFILEPICT");
+  else if (cf == CF_TIFF)
+    strcpy(name, "TIFF");
+  else if (cf == CF_TIFF)
+    strcpy(name, "TIFF");
+  else if (cf == CF_DIB)
+    strcpy(name, "DIB");
+  else if (cf == CF_WAVE)
+    strcpy(name, "WAVE");
+  else if (cf == CF_UNICODETEXT)
+    strcpy(name, "UNICODETEXT");
+  else if (cf == CF_ENHMETAFILE)
+    strcpy(name, "ENHMETAFILE");
+  else 
+    GetClipboardFormatName(cf, name, len);
+}
+
+static CLIPFORMAT winRegisterClipboardFormat(const char* name)
+{
+  if (iupStrEqual(name, "TEXT"))
+    return CF_TEXT;
+  if (iupStrEqual(name, "BITMAP"))
+    return CF_BITMAP;
+  if (iupStrEqual(name, "METAFILEPICT"))
+    return CF_METAFILEPICT;
+  if (iupStrEqual(name, "TIFF"))
+    return CF_TIFF;
+  if (iupStrEqual(name, "DIB"))
+    return CF_DIB;
+  if (iupStrEqual(name, "WAVE"))
+    return CF_WAVE;
+  if (iupStrEqual(name, "UNICODETEXT"))
+    return CF_UNICODETEXT;
+  if (iupStrEqual(name, "ENHMETAFILE"))
+    return CF_ENHMETAFILE;
+  return (CLIPFORMAT)RegisterClipboardFormat(name);
+}
 
 static IwinDropTarget* winRegisterDrop(Ihandle *ih)
 {
@@ -740,7 +786,7 @@ static IwinDropTarget* winRegisterDrop(Ihandle *ih)
   j = 0;
   for(i = 0; i < count; i++)
   {
-    CLIPFORMAT f = (CLIPFORMAT)RegisterClipboardFormat(dropListData[i]);
+    CLIPFORMAT f = (CLIPFORMAT)winRegisterClipboardFormat(dropListData[i]);
     if (f)
     {
       cfList[j] = f;
@@ -779,7 +825,7 @@ static int winRegisterProcessDrag(Ihandle *ih)
   j = 0;
   for(i = 0; i < dragListCount; i++)
   {
-    CLIPFORMAT f = (CLIPFORMAT)RegisterClipboardFormat(dragListData[i]);
+    CLIPFORMAT f = (CLIPFORMAT)winRegisterClipboardFormat(dragListData[i]);
     if (f)
     {
       cfList[j] = f;
