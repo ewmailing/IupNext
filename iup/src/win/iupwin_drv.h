@@ -46,6 +46,7 @@ char* iupwinFindHFont(HFONT hFont);
 /* DnD */
 int iupwinDragStart(Ihandle* ih);
 void iupwinDropFiles(HDROP hDrop, Ihandle *ih);
+void iupwinDestroyDragDrop(Ihandle* ih);
 
 /* menu */
 void iupwinMenuDialogProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);

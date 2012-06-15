@@ -1514,7 +1514,7 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   if (itemdata->hBitmap)
   {
     int bpp, img_w, img_h;
-    HBITMAP hMask;
+    HBITMAP hMask = NULL;
 
     iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, &bpp);
 

@@ -681,6 +681,7 @@ static void winCanvasUnMapMethod(Ihandle* ih)
   }
 
   iupwinTipsDestroy(ih);
+  iupwinDestroyDragDrop(ih);
 
   /* remove the association before destroying */
   iupwinHandleRemove(ih->handle);

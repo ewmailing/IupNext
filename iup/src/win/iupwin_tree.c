@@ -2180,7 +2180,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
 
         while(hItemChild != NULL)
         {
-          *(HTREEITEM*)&rect = hItemChild;
+          *(HTREEITEM*)&rect = hItemChild;  /* weird, but done as described in MSDN */
           if (SendMessage(ih->handle, TVM_GETITEMRECT, TRUE, (LPARAM)&rect))
             InvalidateRect(ih->handle, &rect, FALSE);
 
