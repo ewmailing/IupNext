@@ -1,0 +1,170 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>DRAG AND DROP</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style9 {
+	font-size: large;
+}
+.auto-style1 {
+	font-weight: normal;
+}
+</style>
+</head>
+<body>
+
+<h2>DRAG AND DROP<span class="style9"> (since 3.0)</span></h2>
+<p>When enabled allow the use of callbacks for controlling the drag and drop 
+handling.</p>
+<p><span id="result_box4" class="short_text" lang="en">The user starts a drag 
+and drop transfer by pressing the mouse button over the data </span>
+<span id="result_box5" class="short_text" lang="en">(Windows and GTK: left 
+button; Motif: middle button) </span>
+<span id="result_box6" class="short_text" lang="en">which is referred to as the 
+drag source. The data can be dropped in any location that has been registered as 
+a drop target. The drop occurs when the user releases the mouse button.</span></p>
+<p>In IUP, a drag and drop transfer can result in the data being moved or 
+copied. By default, a copy operation is enabled (with or without CTRL key 
+pressed). A move operation will be enabled if the attribute DRAGSOURCEMOVE is 
+actived and if the SHIFT key is pressed during the dragging. The user can cancel 
+a drag at any time by pressing the ESCAPE key.</p>
+<p><span id="result_box3" class="short_text" lang="en"><span class="hps">Steps</span>
+<span class="hps">to use</span> <span class="hps">this resource in the IUP 
+application</span><span>:</span></span></p>
+<ul>
+	<li><strong>AT SOURCE:</strong><ul>
+		<li>Enable the element as source using the attribute DRAGSOURCE=YES;</li>
+		<li>Define the data types supported by the element for the drag 
+		operation using the DRAGTYPES attribute;</li>
+		<li>Register the required callbacks DRAGBEGIN_CB, DRAGDATASIZE_CB and 
+		DRAGDATA_CB for drag handling. DRAGEND_CB is opcional.</li>
+	</ul>
+	</li>
+	<li><strong>AT TARGET:</strong><ul>
+		<li>Enable the element as target using the attribute DROPTARGET=YES;</li>
+		<li>Define the data types supported by the element for the drop using 
+		the DROPTYPES attribute;</li>
+		<li>Register the required callback DROPDATA_CB for handling the data 
+		received.</li>
+	</ul>
+	</li>
+</ul>
+<h3>Affects</h3>
+<p><a href="../elem/iuptext.html">IupText</a>, <a href="../elem/iuplist.html">IupList</a>,
+<a href="../elem/iuptree.html">IupTree</a>, <a href="../ctrl/iupmatrix.html">IupMatrix</a>,
+<a href="../elem/iupcanvas.html">IupCanvas</a> and
+<a href="../dlg/iupdialog.html">IupDialog</a>. </p>
+<h3>Attributes</h3>
+<h4>DRAGSOURCE<span class="auto-style1"> (non inheritable) </span> </h4>
+<p>Set up a control as a source for drag operations. Default: NO.</p>
+<h4>DROPTARGET<span class="auto-style1"> (non inheritable) </span> </h4>
+<p>Set up a control as a destination for drop operations. Default: NO.</p>
+<h4>DRAGTYPES<span class="auto-style1"> (non inheritable)</span></h4>
+<p>A list of data types that are supported when SENDING data is performed during 
+drag and drop. <span id="result_box" class="" lang="en"><span><span class="hps">
+Accepts a</span> <span class="hps">string</span> <span class="hps">with one or 
+more </span>names <span class="hps">separated by commas.</span></span></span></p>
+<p><span id="result_box2" class="" lang="en"><span class="hps">Clipboards formats</span>
+<span class="hps">commonly</span> <span class="hps">used by applications that 
+supports drag and drop:</span></span></p>
+<ul>
+	<li>Windows: CF_TEXT, CF_UNICODETEXT, CF_BITMAP and CF_DIB<span id="result_box2" class="" lang="en"><span class="hps">.</span></span></li>
+	<li>GTK/ Motif:<span id="result_box2" class="" lang="en"><span class="hps">
+	</span><span><span class="hps">TEXT, UTF8_STRING and content MIME types, like "text/uri-list", 
+"text/html", "image/png", "image/jpeg", "image/bmp" and "image/gif".</span></span></span></li>
+</ul>
+<h4>DROPTYPES<span class="auto-style1"> (non inheritable)</span></h4>
+<p>A list of data types that are supported when RECEIVING data is performed 
+during drag and drop. <span id="result_box1" class="" lang="en"><span>
+<span class="hps">Accepts a</span> <span class="hps">string</span>
+<span class="hps">with one or more </span>names <span class="hps">separated by 
+commas.</span></span></span></p>
+<p><span id="result_box1" class="" lang="en"><span><span class="hps">The same 
+formats cited above can be used here.</span></span></span></p>
+<h4>DRAGSOURCEMOVE<span class="auto-style1"> (non inheritable)</span></h4>
+<p>Enables the move actions (the source has to delete the original data). 
+Default: NO (copying drag data).</p>
+<h3>Callbacks</h3>
+
+
+<p><b>DRAGBEGIN_CB</b>: notifies source that drag started.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>x</strong>, int <strong>y</strong>) [in C]<br><strong>elem</strong>:action(<strong>x</strong>, <strong>y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>x, y</strong>: cursor position relative to the top-left 
+corner of the element.</p>
+
+<p class="info"><u>Returns</u>: If IUP_IGNORE is returned the dragging is 
+aborted (without dropping).</p>
+
+  
+<p><b>DRAGDATASIZE_CB</b>: request for size of drag data from source.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>) [in C]<br><strong>elem</strong>:action(<strong>type</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>type</strong>: data type of the selection.</p>
+
+<p class="info"><u>Returns</u>: the data length in drag handling, which will 
+allocate the buffer size for the data in transfer.</p>
+
+  
+<p><b>DRAGDATA_CB</b>: request for drag data from source.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>, void* <strong>data</strong>, int <strong>len</strong>) [in C]<br><strong>elem</strong>:action(<strong>type</strong>: string, <strong>data</strong>: userdata, <strong>len</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>type</strong>: data type of the selection.<br><strong>data</strong>: 
+content data passed by the user in the function call.<br><strong>len</strong>: data length.</p>
+
+  
+<p><b>DRAGEND_CB</b>: notifies source that drag is done.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>move</strong>) [in C]<br><strong>elem</strong>:action(<strong>move</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>move</strong>: action chosen by the drag destination (move = 
+1, copy = 0, drag failed = &minus;1)</p>
+
+  
+<p><b>DROPDATA_CB</b>: source has sent target the requested data.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>, void* <strong>data</strong>, int <strong>len</strong>, int <strong>x</strong>, int <strong>y</strong>) [in C]<br><strong>elem</strong>:action(<strong>type</strong>: string, <strong>data</strong>: userdata, <strong>len, x, y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+<strong>type</strong>: type of content data.<br>
+<strong>data</strong>: content data received in the drop operation.<br>
+<strong>len</strong>: data length.<br><strong>x, y</strong>: cursor position relative to the top-left 
+corner of the element.</p>
+
+  
+<h3>Examples</h3>
+<p><a href="../../examples/C/list2.c">list2.c</a></p>
+</body>
+
+</html>
