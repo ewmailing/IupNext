@@ -36,13 +36,12 @@
 #include "iupwin_info.h"
 
 
-/* From OLE Drag and Drop Tutorial at Catch22
-   Many thanks to James Brown and Davide Chiodi.
+/* From the OLE Drag and Drop Tutorial at Catch22
+   Thanks to James Brown and Davide Chiodi.
    http://www.catch22.net/tuts/ole-drag-and-drop
 */
 
 #ifndef __GNUC__
-//#if 0
 #define USE_SHCREATESTDENUMFMTETC
 #endif
 
@@ -293,7 +292,7 @@ typedef struct _IwinDataObject
   LONG lRefCount;
   ULONG nNumFormats;
   FORMATETC* pFormatEtc;
-  HGLOBAL* phDataList;
+  Ihandle* ih;
 } IwinDataObject;
 
 typedef struct _IwinDataObjectVtbl
@@ -354,7 +353,6 @@ static ULONG STDMETHODCALLTYPE IwinDataObject_Release(IwinDataObject* pThis)
   if(nCount == 0)
   {
     free(pThis->pFormatEtc);
-    free(pThis->phDataList);
     free(pThis);
     return 0;
   }
@@ -363,8 +361,11 @@ static ULONG STDMETHODCALLTYPE IwinDataObject_Release(IwinDataObject* pThis)
 
 static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pStgMedium)
 {
-  SIZE_T sSize;
-  void *pDataSrc, *pDataDst;
+  IFns cbDragDataSize;
+  IFnsCi cbDragData;
+  int size;
+  void *pData;
+  char type[256];
 
   ULONG nIndex = winDataObjectLookupFormatEtc(pThis, pFormatEtc);
   if(nIndex == (ULONG)-1)
@@ -373,20 +374,23 @@ static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, L
   pStgMedium->tymed = TYMED_HGLOBAL;
   pStgMedium->pUnkForRelease  = NULL;
 
-  sSize = GlobalSize(pThis->phDataList[nIndex]);
-  if(!sSize)
+  GetClipboardFormatName(pFormatEtc->cfFormat, type, 256);
+
+  cbDragDataSize = (IFns)IupGetCallback(pThis->ih, "DRAGDATASIZE_CB");
+  size = cbDragDataSize(pThis->ih, type);
+  if (size <= 0)
     return STG_E_MEDIUMFULL;
 
-  pStgMedium->hGlobal = GlobalAlloc(GMEM_MOVEABLE, sSize);
+  pStgMedium->hGlobal = GlobalAlloc(GMEM_MOVEABLE, size);
   if(!pStgMedium->hGlobal)
     return STG_E_MEDIUMFULL;
 
-  pDataSrc = GlobalLock(pThis->phDataList[nIndex]);
-  pDataDst = GlobalLock(pStgMedium->hGlobal);
+  pData = GlobalLock(pStgMedium->hGlobal);
 
-  memcpy(pDataDst, pDataSrc, sSize);
+  /* fill data */
+  cbDragData = (IFnsCi)IupGetCallback(pThis->ih, "DRAGDATA_CB");
+  cbDragData(pThis->ih, type, pData, size);
 
-  GlobalUnlock(pThis->phDataList[nIndex]);
   GlobalUnlock(pStgMedium->hGlobal);
 
   return S_OK;
@@ -461,7 +465,7 @@ static HRESULT STDMETHODCALLTYPE IwinDataObject_EnumDAdvise(IwinDataObject* pThi
   return OLE_E_ADVISENOTSUPPORTED;
 }
 
-static IwinDataObject* winCreateDataObject(CLIPFORMAT *pClipFormat, HGLOBAL *phDataList, ULONG nNumFormats)
+static IwinDataObject* winCreateDataObject(CLIPFORMAT *pClipFormat, ULONG nNumFormats, Ihandle* ih)
 {
   IwinDataObject* pDataObject;
   ULONG i;
@@ -486,7 +490,7 @@ static IwinDataObject* winCreateDataObject(CLIPFORMAT *pClipFormat, HGLOBAL *phD
 
   pDataObject->nNumFormats = nNumFormats;
   pDataObject->pFormatEtc = malloc(nNumFormats*sizeof(FORMATETC));
-  pDataObject->phDataList = malloc(nNumFormats*sizeof(HGLOBAL));
+  pDataObject->ih = ih;
 
   for(i = 0; i < nNumFormats; i++)
   {
@@ -495,7 +499,6 @@ static IwinDataObject* winCreateDataObject(CLIPFORMAT *pClipFormat, HGLOBAL *phD
     pDataObject->pFormatEtc[i].ptd = NULL;
     pDataObject->pFormatEtc[i].lindex = -1;
     pDataObject->pFormatEtc[i].tymed = TYMED_HGLOBAL;
-    pDataObject->phDataList[i] = phDataList[i];
   }
 
   return pDataObject;
@@ -760,7 +763,6 @@ static int winRegisterProcessDrag(Ihandle *ih)
   int i, j, dragListCount;
   char **dragListData;
   CLIPFORMAT *cfList;
-  HGLOBAL* hDataList;
   DWORD dwEffect = 0, dwOKEffect;
   IFns cbDragDataSize = (IFns)IupGetCallback(ih, "DRAGDATASIZE_CB");
   IFnsCi cbDragData = (IFnsCi)IupGetCallback(ih, "DRAGDATA_CB");
@@ -772,7 +774,6 @@ static int winRegisterProcessDrag(Ihandle *ih)
   dragListData = (char**)iupArrayGetData(dragList);
 
   cfList = malloc(dragListCount * sizeof(CLIPFORMAT));
-  hDataList = malloc(dragListCount * sizeof(HGLOBAL));
 
   /* Register all the drag types. */
   j = 0;
@@ -781,26 +782,13 @@ static int winRegisterProcessDrag(Ihandle *ih)
     CLIPFORMAT f = (CLIPFORMAT)RegisterClipboardFormat(dragListData[i]);
     if (f)
     {
-      void *sourceData;
-
-      int size = cbDragDataSize(ih, dragListData[i]);
-      if (size <= 0)
-        continue;
-
       cfList[j] = f;
-      hDataList[j] = GlobalAlloc(GMEM_MOVEABLE, size);
-      sourceData = GlobalLock(hDataList[j]);
-
-      /* fill data */
-      cbDragData(ih, dragListData[i], sourceData, size);
-
-      GlobalUnlock(hDataList[j]);
       j++;
     }
   }
 
   pSrc = (IDropSource*)winCreateDropSource();
-  pObj = (IDataObject*)winCreateDataObject(cfList, hDataList, (ULONG)j);
+  pObj = (IDataObject*)winCreateDataObject(cfList, (ULONG)j, ih);
 
   /* Process drag, this will stop util drag is done or canceled. */
   dwOKEffect = iupAttribGetBoolean(ih, "DRAGSOURCEMOVE")? DROPEFFECT_MOVE|DROPEFFECT_COPY: DROPEFFECT_COPY;
@@ -808,9 +796,6 @@ static int winRegisterProcessDrag(Ihandle *ih)
 
   pSrc->lpVtbl->Release(pSrc);
   pObj->lpVtbl->Release(pObj);
-  for(i = 0; i < j; i++)
-    GlobalFree(hDataList[i]);
-  free(hDataList);
   free(cfList);
 
   if (dwEffect == DROPEFFECT_MOVE)
