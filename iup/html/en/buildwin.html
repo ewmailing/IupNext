@@ -23,17 +23,21 @@ PATH before other makes. <a href="http://www.mingw.org/">MingW</a>,
 <strong>make</strong> binaries ready for download. Some utilities are also 
 necessary, specially to build the dependencies file: <strong>mkdir</strong>,
 <strong>rm </strong>(both in CoreUtils)<strong> [</strong>, <strong>which, sed</strong> and <strong>g++]</strong>. If 
-you don't need the dependencies or some other options just ignore them.</p>
+you don't need the dependencies or some other options just ignore them. Also 
+some features will work best if <strong>bash</strong> is installed.</p>
 <p>When installing <strong>Cygwin</strong> unmark all pre-selected items. This is easier to do in 
 &quot;Partial&quot; mode view. Then select only &quot;<strong>make</strong>&quot;, it will 
 automatically select other packages that &quot;<strong>make</strong>&quot; depends on. And 
 select the <strong>mkdir</strong>, <strong>rm</strong>, <strong>which, sed</strong> 
-and <strong>g++</strong> packages. Change PATH in Control Panel/System/Advanced/Environment 
-Variables, and add &quot;c:\cygwin\bin;&quot;.</p>
-<p><strong>MingW</strong> does not have the additional utilities, so you will need to download 
-them from GnuWin32, for instance.</p>
+and <strong>g++</strong> packages. Change PATH in &quot;Control Panel/System/Advanced/Environment 
+Variables&quot; and add &quot;<a href="file:///c:/cygwin/bin;">c:\cygwin\bin;</a>&quot;.</p>
+<p>When installing <strong>MingW</strong> mark C Compiler, C++ Compiler, MSYS 
+Basic System, and MinGW Developer Toolkit. Change PATH in &quot;Control 
+Panel/System/Advanced/Environment Variables&quot; and add &quot;<a href="file:///C:/mingw4/msys/1.0/bin;C:/mingw4/bin;">C:\mingw4\msys\1.0\bin;C:\mingw4\bin;</a>&quot;.</p>
 <p>For <strong>GnuWin32</strong> it is faster to manually download and install the selected tools 
-packages. But GnuWin32 does not includes a compiler.</p>
+packages. But it does not include a compiler and does not include bash.</p>
+<p><a href="http://win-bash.sourceforge.net/">Win-Bash</a> contains a &quot;<a href="http://sourceforge.net/projects/win-bash/files/shell-complete/latest/shell.w32-ix86.zip/download">Shell-Complete</a>&quot; 
+distribution and can also be used. It contains all the tools and bash. It does not include a compiler.</p>
 <p>Then install the compiler of your choice, among the following supported 
 compilers:</p>
 <font face="verdana, helvetica" size="3">
@@ -78,6 +82,17 @@ TEC_UNAME=gcc4      (Cygwin Win32 gcc 4, static library, 32bits)
 TEC_UNAME=cygw17    (Cygwin Posix gcc 4, both static and dynamic libraries, 32bits)
 TEC_UNAME=owc1      (Open Watcom C++ 1, static library, 32bits)
 TEC_UNAME=bc6       (Embarcadero C++ 6, static library, 32bits) </pre>
+<p>Here is an example for MingW:</p>
+<pre>Download MingW installation tool:
+  <a href="http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/">http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/</a>
+Install MingW:
+  Select C and C++ Compiles, MSYS Basic System, and MinGW Developer Toolkit.
+Configure Environment (Minimum):
+  set path=C:\mingw4\msys\1.0\bin;C:\mingw4\bin;C:\Windows\system32;C:\Windows;
+  set MINGW4=c:/mingw4
+  set TEC_UNAME=mingw4
+Start Building:
+  make</pre>
 <h3>Source Download</h3>
 <p>Download the &quot;xxx-X.X_Sources.tar.gz&quot; package from the &quot;<strong>Docs and Sources</strong>&quot; 
 directory for the version you want to build. Here are links for the <strong>Files</strong> section 
