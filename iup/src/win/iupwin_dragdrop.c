@@ -36,6 +36,166 @@
 #include "iupwin_info.h"
 
 
+/* From OLE Drag and Drop Tutorial at Catch22
+   Many thanks to James Brown and Davide Chiodi.
+   http://www.catch22.net/tuts/ole-drag-and-drop
+*/
+
+#ifndef __GNUC__
+//#if 0
+#define USE_SHCREATESTDENUMFMTETC
+#endif
+
+#ifndef USE_SHCREATESTDENUMFMTETC
+
+typedef struct _IwinEnumFORMATETC
+{
+  IEnumFORMATETC ief;
+  LONG lRefCount;
+  ULONG nIndex;
+  ULONG nNumFormats;
+  FORMATETC* pFormatEtc;
+} IwinEnumFORMATETC;
+
+typedef struct _IwinEnumFORMATETCVtbl
+{
+  BEGIN_INTERFACE
+  HRESULT (STDMETHODCALLTYPE *QueryInterface)(IwinEnumFORMATETC* pThis, REFIID riid, void **ppvObject);
+  ULONG   (STDMETHODCALLTYPE *AddRef)(IwinEnumFORMATETC* pThis);
+  ULONG   (STDMETHODCALLTYPE *Release)(IwinEnumFORMATETC* pThis);
+  HRESULT (STDMETHODCALLTYPE *Next)(IwinEnumFORMATETC* pThis, ULONG nCelt, FORMATETC *rgelt, ULONG *pCeltFetched);
+  HRESULT (STDMETHODCALLTYPE *Skip)(IwinEnumFORMATETC* pThis, ULONG nCelt);
+  HRESULT (STDMETHODCALLTYPE *Reset)(IwinEnumFORMATETC* pThis);
+  HRESULT (STDMETHODCALLTYPE *Clone)(IwinEnumFORMATETC* pThis, IwinEnumFORMATETC **ppenum);
+  END_INTERFACE
+} IwinEnumFORMATETCVtbl;
+
+static void winFormatEtcCopy(FORMATETC *dest, FORMATETC *source)
+{
+  /* copy the source FORMATETC into dest */
+  *dest = *source;
+  
+  if(source->ptd)
+  {
+    /* allocate memory for the DVTARGETDEVICE if necessary */
+    dest->ptd = (DVTARGETDEVICE*)CoTaskMemAlloc(sizeof(DVTARGETDEVICE));
+
+    /* copy the contents of the source DVTARGETDEVICE into dest->ptd */
+    *(dest->ptd) = *(source->ptd);
+  }
+}
+
+static HRESULT STDMETHODCALLTYPE IwinEnumFORMATETC_QueryInterface(IwinEnumFORMATETC *pThis, REFIID riid, LPVOID *ppvObject)
+{
+  if(IsEqualGUID (riid, &IID_IUnknown) ||
+     IsEqualGUID (riid, &IID_IEnumFORMATETC))
+  {
+    InterlockedIncrement(&pThis->lRefCount);
+    *ppvObject = pThis;
+    return S_OK;
+  }
+
+  *ppvObject = NULL;
+  return E_NOINTERFACE;
+}
+
+static ULONG STDMETHODCALLTYPE IwinEnumFORMATETC_AddRef (IwinEnumFORMATETC* pThis)
+{
+  return (ULONG)InterlockedIncrement(&pThis->lRefCount);
+}
+
+static ULONG STDMETHODCALLTYPE IwinEnumFORMATETC_Release (IwinEnumFORMATETC* pThis)
+{
+  ULONG nCount = (ULONG)InterlockedDecrement(&pThis->lRefCount);
+  if(nCount == 0)
+  {
+    ULONG i;
+    for(i = 0; i < pThis->nNumFormats; i++)
+    {
+      if (pThis->pFormatEtc[i].ptd)
+        CoTaskMemFree(pThis->pFormatEtc[i].ptd);
+    }
+    free(pThis->pFormatEtc);
+    free(pThis);
+    return 0;
+  }
+  return nCount;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinEnumFORMATETC_Next (IwinEnumFORMATETC* pThis, ULONG nCelt, LPFORMATETC pFormatEtc, ULONG *pCeltFetched)
+{
+  ULONG nCeltCopied  = 0;
+
+  if(nCelt == 0 || pFormatEtc == 0)
+    return E_INVALIDARG;
+
+  while(pThis->nIndex < pThis->nNumFormats && nCeltCopied < nCelt)
+  {
+    winFormatEtcCopy((struct tagFORMATETC*)&pFormatEtc[nCeltCopied], &pThis->pFormatEtc[pThis->nIndex]);
+    nCeltCopied++;
+    pThis->nIndex++;
+  }
+
+  if (pCeltFetched != 0) 
+    *pCeltFetched = nCeltCopied;
+
+  return (nCeltCopied == nCelt) ? S_OK : S_FALSE;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinEnumFORMATETC_Skip (IwinEnumFORMATETC *pThis, ULONG nCelt)
+{
+  pThis->nIndex += nCelt;
+  return (pThis->nIndex <= pThis->nNumFormats) ? S_OK : S_FALSE;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinEnumFORMATETC_Reset (IwinEnumFORMATETC* pThis)
+{
+  pThis->nIndex = 0;
+  return S_OK;
+}
+
+static IwinEnumFORMATETC* winCreateEnumFORMATETC(ULONG nNumFormats, FORMATETC *pFormatEtc);
+
+static HRESULT STDMETHODCALLTYPE IwinEnumFORMATETC_Clone (IwinEnumFORMATETC*  pThis, IwinEnumFORMATETC **ppEnumFormatEtc)
+{
+  *ppEnumFormatEtc = winCreateEnumFORMATETC(pThis->nNumFormats, pThis->pFormatEtc);
+  (*ppEnumFormatEtc)->nIndex = pThis->nIndex;
+  return S_OK;
+}
+
+static IwinEnumFORMATETC* winCreateEnumFORMATETC(ULONG nNumFormats, FORMATETC *pFormatEtc)
+{
+  ULONG i;
+  IwinEnumFORMATETC *pEnumFormatEtc;
+  static IwinEnumFORMATETCVtbl ief_vtbl = {
+    IwinEnumFORMATETC_QueryInterface,
+    IwinEnumFORMATETC_AddRef,
+    IwinEnumFORMATETC_Release,
+    IwinEnumFORMATETC_Next,
+    IwinEnumFORMATETC_Skip,
+    IwinEnumFORMATETC_Reset,
+    IwinEnumFORMATETC_Clone
+  };
+
+  pEnumFormatEtc = malloc(sizeof(IwinEnumFORMATETC));
+
+  pEnumFormatEtc->ief.lpVtbl = (IEnumFORMATETCVtbl*)&ief_vtbl;
+  pEnumFormatEtc->lRefCount = 1;
+
+  pEnumFormatEtc->nIndex = 0;
+  pEnumFormatEtc->nNumFormats = nNumFormats;
+  pEnumFormatEtc->pFormatEtc = malloc(sizeof(FORMATETC)*nNumFormats);
+  
+  for(i = 0; i < nNumFormats; i++)
+    winFormatEtcCopy(&pEnumFormatEtc->pFormatEtc[i], &pFormatEtc[i]);
+
+  return pEnumFormatEtc;
+}
+#endif
+
+
+/******************************************************************************/
+
 
 typedef struct _IwinDropSource
 {
@@ -54,11 +214,57 @@ typedef struct _IwinDropSourceVtbl
   END_INTERFACE
 } IwinDropSourceVtbl;
 
-static HRESULT STDMETHODCALLTYPE IwinDropSource_QueryInterface(IwinDropSource* pThis, REFIID riid, LPVOID *ppvObject);
-static ULONG   STDMETHODCALLTYPE IwinDropSource_AddRef(IwinDropSource* pThis);
-static ULONG   STDMETHODCALLTYPE IwinDropSource_Release(IwinDropSource* pThis);
-static HRESULT STDMETHODCALLTYPE IwinDropSource_QueryContinueDrag(IwinDropSource* pThis, BOOL fEscapePressed, DWORD grfKeyState);
-static HRESULT STDMETHODCALLTYPE IwinDropSource_GiveFeedback(IwinDropSource* pThis, DWORD dwEffect);
+static HRESULT STDMETHODCALLTYPE IwinDropSource_QueryInterface(IwinDropSource* pThis, REFIID riid, LPVOID *ppvObject)
+{
+  if(IsEqualGUID(riid, &IID_IUnknown) ||
+     IsEqualGUID(riid, &IID_IDropSource))
+  {
+    InterlockedIncrement(&pThis->lRefCount);
+    *ppvObject = pThis;
+    return S_OK;
+  }
+
+  *ppvObject = NULL;
+  return E_NOINTERFACE;
+}
+
+static ULONG STDMETHODCALLTYPE IwinDropSource_AddRef(IwinDropSource* pThis)
+{
+  return (ULONG)InterlockedIncrement(&pThis->lRefCount);
+}
+
+static ULONG STDMETHODCALLTYPE IwinDropSource_Release(IwinDropSource* pThis)
+{
+  ULONG nCount = (ULONG)InterlockedDecrement(&pThis->lRefCount);
+  if(nCount == 0)
+  {
+    free(pThis);
+    return 0;
+  }
+  return nCount;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDropSource_QueryContinueDrag(IwinDropSource* pThis, BOOL fEscapePressed, DWORD dwKeyState)
+{
+  /* if the Escape key has been pressed since the last call, cancel the drop */
+  if (fEscapePressed)
+    return DRAGDROP_S_CANCEL;
+
+  /* if the LeftMouse button has been released, then do the drop! */
+  if (!(dwKeyState & MK_LBUTTON))
+    return DRAGDROP_S_DROP;
+
+  (void)pThis;
+  /* continue with the drag-drop */
+  return S_OK;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDropSource_GiveFeedback(IwinDropSource* pThis, DWORD dwEffect)
+{
+  (void)pThis;
+  (void)dwEffect;
+  return DRAGDROP_S_USEDEFAULTCURSORS;
+}
 
 static IwinDropSource* winCreateDropSource(void)
 {
@@ -85,9 +291,9 @@ typedef struct _IwinDataObject
 {
   IDataObject ido;
   LONG lRefCount;
+  ULONG nNumFormats;
   FORMATETC* pFormatEtc;
   HGLOBAL* phDataList;
-  ULONG lNumFormats;
 } IwinDataObject;
 
 typedef struct _IwinDataObjectVtbl
@@ -96,35 +302,169 @@ typedef struct _IwinDataObjectVtbl
   HRESULT (STDMETHODCALLTYPE *QueryInterface)(IwinDataObject* pThis, REFIID riid, void **ppvObject);
   ULONG   (STDMETHODCALLTYPE *AddRef)(IwinDataObject* pThis);
   ULONG   (STDMETHODCALLTYPE *Release)(IwinDataObject* pThis);
-  HRESULT (STDMETHODCALLTYPE *GetData)(IwinDataObject* pThis, FORMATETC *pFormatEtcIn, STGMEDIUM *pMedium);
-  HRESULT (STDMETHODCALLTYPE *GetDataHere)(IwinDataObject* pThis, FORMATETC *pFormatEtc, STGMEDIUM *pMedium);
+  HRESULT (STDMETHODCALLTYPE *GetData)(IwinDataObject* pThis, FORMATETC *pFormatEtcIn, STGMEDIUM *pStgMedium);
+  HRESULT (STDMETHODCALLTYPE *GetDataHere)(IwinDataObject* pThis, FORMATETC *pFormatEtc, STGMEDIUM *pStgMedium);
   HRESULT (STDMETHODCALLTYPE *QueryGetData)(IwinDataObject* pThis, FORMATETC *pFormatEtc);
   HRESULT (STDMETHODCALLTYPE *GetCanonicalFormatEtc)(IwinDataObject* pThis, FORMATETC *pFormatEtcIn, FORMATETC *pFormatEtcOut);
-  HRESULT (STDMETHODCALLTYPE *SetData)(IwinDataObject* pThis, FORMATETC *pFormatEtc, STGMEDIUM *pMedium, BOOL fRelease);
-  HRESULT (STDMETHODCALLTYPE *EnumFormatEtc)(IwinDataObject* pThis, DWORD dwDirection, IEnumFORMATETC **ppenumFormatEtc);
+  HRESULT (STDMETHODCALLTYPE *SetData)(IwinDataObject* pThis, FORMATETC *pFormatEtc, STGMEDIUM *pStgMedium, BOOL fRelease);
+  HRESULT (STDMETHODCALLTYPE *EnumFormatEtc)(IwinDataObject* pThis, DWORD dwDirection, IEnumFORMATETC **ppEnumFormatEtc);
   HRESULT (STDMETHODCALLTYPE *DAdvise)(IwinDataObject* pThis, FORMATETC *pFormatEtc, DWORD advf, IAdviseSink *pAdvSink, DWORD *pdwConnection);
   HRESULT (STDMETHODCALLTYPE *DUnadvise)(IwinDataObject* pThis, DWORD dwConnection);
   HRESULT (STDMETHODCALLTYPE *EnumDAdvise)(IwinDataObject* pThis, IEnumSTATDATA **ppEnumAdvise);
   END_INTERFACE
 } IwinDataObjectVtbl;
 
-static HRESULT STDMETHODCALLTYPE IwinDataObject_QueryInterface(IwinDataObject* pThis, REFIID riid, LPVOID *ppvObject);
-static ULONG   STDMETHODCALLTYPE IwinDataObject_AddRef(IwinDataObject* pThis);
-static ULONG   STDMETHODCALLTYPE IwinDataObject_Release(IwinDataObject* pThis);
-static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pMedium);
-static HRESULT STDMETHODCALLTYPE IwinDataObject_GetDataHere(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pMedium);
-static HRESULT STDMETHODCALLTYPE IwinDataObject_QueryGetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc);
-static HRESULT STDMETHODCALLTYPE IwinDataObject_GetCanonicalFormatEtc(IwinDataObject* pThis, LPFORMATETC pFormatEtcIn, LPFORMATETC pFormatEtcOut);
-static HRESULT STDMETHODCALLTYPE IwinDataObject_SetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pMedium, BOOL fRelease);
-static HRESULT STDMETHODCALLTYPE IwinDataObject_EnumFormatEtc(IwinDataObject* pThis, DWORD dwDirection, LPENUMFORMATETC *ppEnumFormatEtc);
-static HRESULT STDMETHODCALLTYPE IwinDataObject_DAdvise(IwinDataObject* pThis, LPFORMATETC pFormatetc, DWORD advf, LPADVISESINK pAdvSink, DWORD *pdwConnection);
-static HRESULT STDMETHODCALLTYPE IwinDataObject_Dunadvise(IwinDataObject* pThis, DWORD dwConnection);
-static HRESULT STDMETHODCALLTYPE IwinDataObject_EnumDAdvise(IwinDataObject* pThis, LPENUMSTATDATA *ppEnumAdvise);
+static ULONG winDataObjectLookupFormatEtc(IwinDataObject* pThis, FORMATETC *pFormatEtc)
+{
+  ULONG i;
+  
+  for(i = 0; i < pThis->nNumFormats; i++)
+  {
+    if((pFormatEtc->tymed & pThis->pFormatEtc[i].tymed) && 
+       pFormatEtc->cfFormat == pThis->pFormatEtc[i].cfFormat &&
+       pFormatEtc->dwAspect == pThis->pFormatEtc[i].dwAspect)
+      return (int)i;
+  }
 
-static IwinDataObject* winCreateDataObject(CLIPFORMAT *pFormatList, HGLOBAL *phDataList, int lNumFormats)
+  return (ULONG)-1;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDataObject_QueryInterface(IwinDataObject* pThis, REFIID riid, LPVOID *ppvObject)
+{
+  if(IsEqualGUID(riid, &IID_IUnknown) ||
+     IsEqualGUID(riid, &IID_IDataObject))
+  {
+    InterlockedIncrement(&pThis->lRefCount);
+    *ppvObject = pThis;
+    return S_OK;
+  }
+
+  *ppvObject = NULL;
+  return E_NOINTERFACE;
+}
+
+static ULONG STDMETHODCALLTYPE IwinDataObject_AddRef(IwinDataObject* pThis)
+{
+  return (ULONG)InterlockedIncrement(&pThis->lRefCount);
+}
+
+static ULONG STDMETHODCALLTYPE IwinDataObject_Release(IwinDataObject* pThis)
+{
+  ULONG nCount = (ULONG)InterlockedDecrement(&pThis->lRefCount);
+  if(nCount == 0)
+  {
+    free(pThis->pFormatEtc);
+    free(pThis->phDataList);
+    free(pThis);
+    return 0;
+  }
+  return nCount;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pStgMedium)
+{
+  SIZE_T sSize;
+  void *pDataSrc, *pDataDst;
+
+  ULONG nIndex = winDataObjectLookupFormatEtc(pThis, pFormatEtc);
+  if(nIndex == (ULONG)-1)
+    return DV_E_FORMATETC;
+
+  pStgMedium->tymed = TYMED_HGLOBAL;
+  pStgMedium->pUnkForRelease  = NULL;
+
+  sSize = GlobalSize(pThis->phDataList[nIndex]);
+  if(!sSize)
+    return STG_E_MEDIUMFULL;
+
+  pStgMedium->hGlobal = GlobalAlloc(GMEM_MOVEABLE, sSize);
+  if(!pStgMedium->hGlobal)
+    return STG_E_MEDIUMFULL;
+
+  pDataSrc = GlobalLock(pThis->phDataList[nIndex]);
+  pDataDst = GlobalLock(pStgMedium->hGlobal);
+
+  memcpy(pDataDst, pDataSrc, sSize);
+
+  GlobalUnlock(pThis->phDataList[nIndex]);
+  GlobalUnlock(pStgMedium->hGlobal);
+
+  return S_OK;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDataObject_GetDataHere(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pStgMedium)
+{
+  (void)pThis;
+  (void)pFormatEtc;
+  (void)pStgMedium;
+  return DV_E_FORMATETC;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDataObject_QueryGetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc)
+{
+  /*  Called to see if the IDataObject supports the specified format of data */
+  return winDataObjectLookupFormatEtc(pThis, pFormatEtc) == -1? DV_E_FORMATETC: S_OK;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDataObject_GetCanonicalFormatEtc(IwinDataObject* pThis, LPFORMATETC pFormatEtcIn, LPFORMATETC pFormatEtcOut)
+{
+  (void)pThis;
+  (void)pFormatEtcIn;
+  /* Apparently we have to set this field to NULL even though we don't do anything else */
+  pFormatEtcOut->ptd = NULL;
+  return E_NOTIMPL;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDataObject_SetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pStgMedium, BOOL fRelease)
+{
+  (void)pThis;
+  (void)pFormatEtc;
+  (void)pStgMedium;
+  (void)fRelease;
+  return E_NOTIMPL;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDataObject_EnumFormatEtc(IwinDataObject* pThis, DWORD dwDirection, LPENUMFORMATETC *ppEnumFormatEtc)
+{
+  if(dwDirection != DATADIR_GET)
+    return E_NOTIMPL;
+
+#ifdef USE_SHCREATESTDENUMFMTETC
+  SHCreateStdEnumFmtEtc(pThis->nNumFormats, pThis->pFormatEtc, ppEnumFormatEtc);
+#else
+  *ppEnumFormatEtc = (LPENUMFORMATETC)winCreateEnumFORMATETC(pThis->nNumFormats, pThis->pFormatEtc);
+#endif
+  return S_OK;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDataObject_DAdvise(IwinDataObject* pThis, LPFORMATETC pFormatetc, DWORD advf, LPADVISESINK pAdvSink, DWORD *pdwConnection)
+{
+  (void)pThis;
+  (void)pFormatetc;
+  (void)advf;
+  (void)pAdvSink;
+  (void)pdwConnection;
+  return OLE_E_ADVISENOTSUPPORTED;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDataObject_Dunadvise(IwinDataObject* pThis, DWORD dwConnection)
+{
+  (void)pThis;
+  (void)dwConnection;
+  return OLE_E_ADVISENOTSUPPORTED;
+}
+
+static HRESULT STDMETHODCALLTYPE IwinDataObject_EnumDAdvise(IwinDataObject* pThis, LPENUMSTATDATA *ppEnumAdvise)
+{
+  (void)pThis;
+  (void)ppEnumAdvise;
+  return OLE_E_ADVISENOTSUPPORTED;
+}
+
+static IwinDataObject* winCreateDataObject(CLIPFORMAT *pClipFormat, HGLOBAL *phDataList, ULONG nNumFormats)
 {
   IwinDataObject* pDataObject;
-  int i, size1, size2, size3;
+  ULONG i;
   static IwinDataObjectVtbl ido_vtbl = {
     IwinDataObject_QueryInterface,
     IwinDataObject_AddRef,
@@ -139,21 +479,18 @@ static IwinDataObject* winCreateDataObject(CLIPFORMAT *pFormatList, HGLOBAL *phD
     IwinDataObject_Dunadvise,
     IwinDataObject_EnumDAdvise};
 
-  size1 = sizeof(IwinDataObject);
-  size2 = lNumFormats*sizeof(FORMATETC);
-  size3 = lNumFormats*sizeof(HGLOBAL);
+  pDataObject = malloc(sizeof(IwinDataObject));
 
-  pDataObject = malloc(size1 + size2 + size3);
-  pDataObject->pFormatEtc = (FORMATETC *)(((unsigned char*)pDataObject) + size1);
-  pDataObject->phDataList = (HGLOBAL*)   (((unsigned char*)pDataObject) + size1 + size2);
-
-  pDataObject->lRefCount  = 1;
-  pDataObject->lNumFormats = lNumFormats;
   pDataObject->ido.lpVtbl = (IDataObjectVtbl*)&ido_vtbl;
+  pDataObject->lRefCount  = 1;
 
-  for(i = 0; i < lNumFormats; i++)
+  pDataObject->nNumFormats = nNumFormats;
+  pDataObject->pFormatEtc = malloc(nNumFormats*sizeof(FORMATETC));
+  pDataObject->phDataList = malloc(nNumFormats*sizeof(HGLOBAL));
+
+  for(i = 0; i < nNumFormats; i++)
   {
-    pDataObject->pFormatEtc[i].cfFormat = pFormatList[i];
+    pDataObject->pFormatEtc[i].cfFormat = pClipFormat[i];
     pDataObject->pFormatEtc[i].dwAspect = DVASPECT_CONTENT;
     pDataObject->pFormatEtc[i].ptd = NULL;
     pDataObject->pFormatEtc[i].lindex = -1;
@@ -168,17 +505,14 @@ static IwinDataObject* winCreateDataObject(CLIPFORMAT *pFormatList, HGLOBAL *phD
 /**********************************************************************************/
 
 
-typedef void (*IwinDropCallback)(CLIPFORMAT cf, HGLOBAL hData, POINTL pt, void *pUserData);
-
 typedef struct _IwinDropTarget
 {
   IDropTarget idt;
   LONG lRefCount;
-  ULONG lNumFormats;
-  CLIPFORMAT *pFormatList;
-  IDataObject *pDataObject;
-  void *pUserData;
-  IwinDropCallback pDropCallback;
+  BOOL fAllowDrop;
+  ULONG nNumFormats;
+  CLIPFORMAT* pClipFormat;
+  Ihandle* ih;
 } IwinDropTarget;
 
 typedef struct _IwinDropTargetVtbl
@@ -194,308 +528,17 @@ typedef struct _IwinDropTargetVtbl
   END_INTERFACE
 } IwinDropTargetVtbl;
 
-static HRESULT STDMETHODCALLTYPE IwinDropTarget_QueryInterface(IwinDropTarget* pThis, REFIID riid, LPVOID *ppvObject);
-static ULONG   STDMETHODCALLTYPE IwinDropTarget_AddRef(IwinDropTarget* pThis);
-static ULONG   STDMETHODCALLTYPE IwinDropTarget_Release(IwinDropTarget* pThis);
-static HRESULT STDMETHODCALLTYPE IwinDropTarget_DragEnter(IwinDropTarget* pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
-static HRESULT STDMETHODCALLTYPE IwinDropTarget_DragOver(IwinDropTarget* pThis, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
-static HRESULT STDMETHODCALLTYPE IwinDropTarget_DragLeave(IwinDropTarget* pThis);
-static HRESULT STDMETHODCALLTYPE IwinDropTarget_Drop(IwinDropTarget* pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
-
-static IwinDropTarget* winCreateDropTarget(CLIPFORMAT *pFormatList, int lNumFormats, IwinDropCallback pDropCallback, void *pUserData)
-{
-  int i;
-  static IwinDropTargetVtbl idt_vtbl = {
-    IwinDropTarget_QueryInterface,
-    IwinDropTarget_AddRef,
-    IwinDropTarget_Release,
-    IwinDropTarget_DragEnter,
-    IwinDropTarget_DragOver,
-    IwinDropTarget_DragLeave,
-    IwinDropTarget_Drop};
-
-  IwinDropTarget* pDropTarget = malloc(sizeof(IwinDropTarget) + lNumFormats * sizeof(CLIPFORMAT));
-
-  pDropTarget->pFormatList = (CLIPFORMAT *) (((unsigned char*) pDropTarget) + sizeof(IwinDropTarget));
-
-  pDropTarget->idt.lpVtbl = (IDropTargetVtbl*)&idt_vtbl;
-  pDropTarget->lRefCount = 1;
-  pDropTarget->lNumFormats = (ULONG)lNumFormats;
-  pDropTarget->pDropCallback = pDropCallback;
-  pDropTarget->pUserData = pUserData;
-
-  for(i = 0; i < lNumFormats; i++)
-    pDropTarget->pFormatList[i] = pFormatList[i];
-
-  return pDropTarget;
-}
-
-
-/**********************************************************************************/
-
-
-typedef struct _IwinDropSourceData
-{
-  IDataObject *pObj;
-  IDropSource *pSrc;
-  HANDLE hData;
-} IwinDropSourceData;
-
-static IwinDropSourceData* winCreateDropSourceData(CLIPFORMAT *pFormatList, HGLOBAL *phDataList, int lNumFormats)
-{
-  IwinDropSourceData* pDropSourceData = malloc(sizeof(IwinDropSourceData));
-
-  pDropSourceData->pSrc = (IDropSource*)winCreateDropSource();
-  pDropSourceData->pObj = (IDataObject*)winCreateDataObject(pFormatList, phDataList, lNumFormats);
-  pDropSourceData->hData = NULL;
-
-  return pDropSourceData;
-}
-
-static void winDestroyDropSourceData(IwinDropSourceData* pDropSourceData)
-{
-  pDropSourceData->pSrc->lpVtbl->Release(pDropSourceData->pSrc);
-  pDropSourceData->pObj->lpVtbl->Release(pDropSourceData->pObj);
-
-  if (pDropSourceData->hData)
-    GlobalFree(pDropSourceData->hData);
-
-  free(pDropSourceData);
-}
-
-
-/**********************************************************************************/
-
-
-static IwinDropTarget* winRegisterDropTarget(HWND hWnd, CLIPFORMAT *pFormatList, ULONG lNumFormats, IwinDropCallback pDropCallback, void *pUserData)
-{
-  IwinDropTarget* pTarget = winCreateDropTarget(pFormatList, lNumFormats, pDropCallback, pUserData);
-
-  if (RegisterDragDrop(hWnd, (IDropTarget*)pTarget) != S_OK)
-  {
-    free(pTarget);
-    return NULL;
-  }
-
-  return pTarget;
-}
-
-static void winRevokeDropTarget(IwinDropTarget* pTarget, HWND hWnd)
-{
-  RevokeDragDrop(hWnd);
-  ((IDropTarget*)pTarget)->lpVtbl->Release((IDropTarget*)pTarget);
-  free(pTarget);
-}
-
-
-/**********************************************************************************/
-
-
-static int winFindFormatEtc(IwinDataObject* pThis, FORMATETC *pFormatEtc)
-{
-  ULONG i;
-  
-  for(i = 0; i < pThis->lNumFormats; i++)
-  {
-    if((pFormatEtc->tymed & pThis->pFormatEtc[i].tymed)
-      && pFormatEtc->cfFormat == pThis->pFormatEtc[i].cfFormat
-      && pFormatEtc->dwAspect == pThis->pFormatEtc[i].dwAspect)
-      return i;
-  }
-
-  return -1;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDropSource_QueryInterface(IwinDropSource* pThis, REFIID riid, LPVOID *ppvObject)
-{
-  *ppvObject = NULL;
-
-  if(IsEqualGUID(riid, &IID_IUnknown))
-  {
-    IwinDropSource_AddRef(pThis);
-    *ppvObject = pThis;
-    return S_OK;
-  }
-  else if(IsEqualGUID(riid, &IID_IDropSource))
-  {
-    IwinDropSource_AddRef(pThis);
-    *ppvObject = pThis;
-    return S_OK;
-  }
-
-  return E_NOINTERFACE;
-}
-
-static ULONG STDMETHODCALLTYPE IwinDropSource_AddRef(IwinDropSource* pThis)
-{
-  return InterlockedIncrement(&pThis->lRefCount);
-}
-
-static ULONG STDMETHODCALLTYPE IwinDropSource_Release(IwinDropSource* pThis)
-{
-  LONG nCount = InterlockedDecrement(&pThis->lRefCount);
-  if(nCount == 0)
-  {
-    free(pThis);
-    return 0;
-  }
-  return nCount;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDropSource_QueryContinueDrag(IwinDropSource* pThis, BOOL fEscapePressed, DWORD dwKeyState)
-{
-  (void)pThis;
-  if(fEscapePressed)
-    return DRAGDROP_S_CANCEL;
-  else if((dwKeyState & MK_LBUTTON) == 0)
-    return DRAGDROP_S_DROP;
-  return S_OK;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDropSource_GiveFeedback(IwinDropSource* pThis, DWORD dwEffect)
-{
-  (void)pThis;
-  (void)dwEffect;
-  return DRAGDROP_S_USEDEFAULTCURSORS;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDataObject_QueryInterface(IwinDataObject* pThis, REFIID riid, LPVOID *ppvObject)
-{
-  *ppvObject = NULL;
-
-  if(IsEqualGUID(riid, &IID_IUnknown))
-  {
-    IwinDataObject_AddRef(pThis);
-    *ppvObject = pThis;
-    return S_OK;
-  }
-  else if(IsEqualGUID(riid, &IID_IDataObject))
-  {
-    IwinDataObject_AddRef(pThis);
-    *ppvObject = pThis;
-    return S_OK;
-  }
-
-  return E_NOINTERFACE;
-}
-
-static ULONG STDMETHODCALLTYPE IwinDataObject_AddRef(IwinDataObject* pThis)
-{
-  return InterlockedIncrement(&pThis->lRefCount);
-}
-
-static ULONG STDMETHODCALLTYPE IwinDataObject_Release(IwinDataObject* pThis)
-{
-  LONG nCount = InterlockedDecrement(&pThis->lRefCount);
-  if(nCount == 0)
-  {
-    free(pThis);
-    return 0;
-  }
-  return nCount;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pMedium)
-{
-  SIZE_T sSize;
-  void *pData;
-
-  int nIndex = winFindFormatEtc(pThis, pFormatEtc);
-  if(nIndex == -1)
-    return DV_E_FORMATETC;
-
-  pMedium->tymed = TYMED_HGLOBAL;
-  pMedium->pUnkForRelease  = 0;
-
-  sSize = GlobalSize(pThis->phDataList[nIndex]);
-  if(!sSize)
-    return STG_E_MEDIUMFULL;
-
-  pMedium->hGlobal = GlobalAlloc(GMEM_FIXED, sSize);
-  if(!pMedium->hGlobal)
-    return STG_E_MEDIUMFULL;
-
-  pData = GlobalLock(pThis->phDataList[nIndex]);
-
-  memcpy(pMedium->hGlobal, pData, sSize);
-
-  GlobalUnlock(pThis->phDataList[nIndex]);
-
-  return S_OK;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDataObject_GetDataHere(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pMedium)
-{
-  (void)pThis;
-  (void)pFormatEtc;
-  (void)pMedium;
-  return DATA_E_FORMATETC;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDataObject_QueryGetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc)
-{
-  return winFindFormatEtc(pThis, pFormatEtc) == -1 ? DV_E_FORMATETC : S_OK;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDataObject_GetCanonicalFormatEtc(IwinDataObject* pThis, LPFORMATETC pFormatEtcIn, LPFORMATETC pFormatEtcOut)
-{
-  (void)pThis;
-  (void)pFormatEtcIn;
-  pFormatEtcOut->ptd = NULL;
-  return E_NOTIMPL;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDataObject_SetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pMedium, BOOL fRelease)
-{
-  (void)pThis;
-  (void)pFormatEtc;
-  (void)pMedium;
-  (void)fRelease;
-  return E_UNEXPECTED;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDataObject_EnumFormatEtc(IwinDataObject* pThis, DWORD dwDirection, LPENUMFORMATETC *ppEnumFormatEtc)
-{
-  if(dwDirection != DATADIR_GET)
-    return E_NOTIMPL;
-
-  SHCreateStdEnumFmtEtc(pThis->lNumFormats, pThis->pFormatEtc, ppEnumFormatEtc);
-
-  return S_OK;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDataObject_DAdvise(IwinDataObject* pThis, LPFORMATETC pFormatetc, DWORD advf, LPADVISESINK pAdvSink, DWORD *pdwConnection)
-{
-  (void)pThis;
-  (void)pFormatetc;
-  (void)advf;
-  (void)pAdvSink;
-  (void)pdwConnection;
-  return E_FAIL;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDataObject_Dunadvise(IwinDataObject* pThis, DWORD dwConnection)
-{
-  (void)pThis;
-  (void)dwConnection;
-  return E_FAIL;
-}
-
-static HRESULT STDMETHODCALLTYPE IwinDataObject_EnumDAdvise(IwinDataObject* pThis, LPENUMSTATDATA *ppEnumAdvise)
-{
-  (void)pThis;
-  (void)ppEnumAdvise;
-  return E_FAIL;
-}
-
 static BOOL winQueryDataObject(IwinDropTarget* pDropTarget, IDataObject *pDataObject)
 {
   ULONG i;
-  FORMATETC fmtetc = {CF_TEXT, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL};
+  FORMATETC fmtetc = {0, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL};
   
-  for(i = 0; i < pDropTarget->lNumFormats; i++)
+  /* If there are more than one format, 
+     the first one accepted will be used */
+  for(i = 0; i < pDropTarget->nNumFormats; i++)
   {
-    fmtetc.cfFormat = pDropTarget->pFormatList[i];
+    fmtetc.cfFormat = pDropTarget->pClipFormat[i];
+
     if(pDataObject->lpVtbl->QueryGetData(pDataObject, &fmtetc) == S_OK)
       return TRUE;
   }
@@ -503,62 +546,61 @@ static BOOL winQueryDataObject(IwinDropTarget* pDropTarget, IDataObject *pDataOb
   return FALSE;
 }
 
-static DWORD winGetDropEffect(DWORD dwKeyState, DWORD dwAllowed)
+static DWORD winGetDropEffect(DWORD dwKeyState, DWORD dwOKEffect)
 {
-  DWORD dwEffect = 0;
+  DWORD dwEffect = DROPEFFECT_NONE;
 
-  if(dwKeyState & MK_CONTROL)
-    dwEffect = dwAllowed & DROPEFFECT_COPY;
+  /* the standard interpretation:
+     no modifier -- Default Drop
+     CTRL        -- DROPEFFECT_COPY
+     SHIFT       -- DROPEFFECT_MOVE
+     CTRL-SHIFT  -- DROPEFFECT_LINK (unsuported, defaults to copy) */
+
+  if (dwKeyState & MK_CONTROL)
+    dwEffect = DROPEFFECT_COPY;
   else if(dwKeyState & MK_SHIFT)
-    dwEffect = dwAllowed & DROPEFFECT_MOVE;
+    dwEffect = DROPEFFECT_MOVE;
 
-  if(dwEffect == 0)
+  if (dwEffect == DROPEFFECT_NONE)  /* no modifier */
   {
-    if(dwAllowed & DROPEFFECT_COPY)
-      dwEffect = DROPEFFECT_COPY;
-    if(dwAllowed & DROPEFFECT_MOVE)
+    /* Try in order: MOVE, COPY */
+    if(dwOKEffect & DROPEFFECT_MOVE)
       dwEffect = DROPEFFECT_MOVE;
+    else if(dwOKEffect & DROPEFFECT_COPY)
+      dwEffect = DROPEFFECT_COPY;
   }
+
+  if (!(dwEffect & dwOKEffect))
+    return DROPEFFECT_NONE;
 
   return dwEffect;
 }
 
-static DWORD IwinDropTarget_DropEffect(DWORD dwKeyState, POINTL pt, DWORD dwAllowed)
-{
-  (void)pt;
-  return winGetDropEffect(dwKeyState, dwAllowed);
-}
-
 static HRESULT STDMETHODCALLTYPE IwinDropTarget_QueryInterface(IwinDropTarget* pThis, REFIID riid, LPVOID *ppvObject)
 {
+  if(IsEqualGUID(riid, &IID_IUnknown) ||
+     IsEqualGUID(riid, &IID_IDropTarget))
+  {
+    InterlockedIncrement(&pThis->lRefCount);
+    *ppvObject = pThis;
+    return S_OK;
+  }
+
   *ppvObject = NULL;
-
-  if(IsEqualGUID(riid, &IID_IUnknown))
-  {
-    IwinDropTarget_AddRef(pThis);
-    *ppvObject = pThis;
-    return S_OK;
-  }
-  else if(IsEqualGUID(riid, &IID_IDropTarget))
-  {
-    IwinDropTarget_AddRef(pThis);
-    *ppvObject = pThis;
-    return S_OK;
-  }
-
   return E_NOINTERFACE;
 }
 
 static ULONG STDMETHODCALLTYPE IwinDropTarget_AddRef(IwinDropTarget* pThis)
 {
-  return InterlockedIncrement(&pThis->lRefCount);
+  return (ULONG)InterlockedIncrement(&pThis->lRefCount);
 }
 
 static ULONG STDMETHODCALLTYPE IwinDropTarget_Release(IwinDropTarget* pThis)
 {
-  LONG nCount = InterlockedDecrement(&pThis->lRefCount);
+  ULONG nCount = (ULONG)InterlockedDecrement(&pThis->lRefCount);
   if(nCount == 0)
   {
+    free(pThis->pClipFormat);
     free(pThis);
     return 0;
   }
@@ -567,17 +609,23 @@ static ULONG STDMETHODCALLTYPE IwinDropTarget_Release(IwinDropTarget* pThis)
 
 static HRESULT STDMETHODCALLTYPE IwinDropTarget_DragEnter(IwinDropTarget* pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
 {
-  if (winQueryDataObject(pThis, pDataObject))
-    *pdwEffect = IwinDropTarget_DropEffect(dwKeyState, pt, *pdwEffect);
+  pThis->fAllowDrop = winQueryDataObject(pThis, pDataObject);
+  if (pThis->fAllowDrop)
+    *pdwEffect = winGetDropEffect(dwKeyState, *pdwEffect);
   else
     *pdwEffect = DROPEFFECT_NONE;
+  (void)pt;
   return S_OK;
 }
 
 static HRESULT STDMETHODCALLTYPE IwinDropTarget_DragOver(IwinDropTarget* pThis, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
 {
+  (void)pt;
   (void)pThis;
-  *pdwEffect = IwinDropTarget_DropEffect(dwKeyState, pt, *pdwEffect);
+  if (pThis->fAllowDrop)
+    *pdwEffect = winGetDropEffect(dwKeyState, *pdwEffect);
+  else
+    *pdwEffect = DROPEFFECT_NONE;
   return S_OK;
 }
 
@@ -587,41 +635,7 @@ static HRESULT STDMETHODCALLTYPE IwinDropTarget_DragLeave(IwinDropTarget* pThis)
   return S_OK;
 }
 
-static HRESULT STDMETHODCALLTYPE IwinDropTarget_Drop(IwinDropTarget* pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
-{
-  FORMATETC fmtetc = {CF_TEXT, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL};
-  ULONG i;
-
-  /* If there are more than one format, 
-     the first one accepted will be used */
-  for(i = 0; i < pThis->lNumFormats; i++)
-  {
-    fmtetc.cfFormat = pThis->pFormatList[i];
-
-    if (pDataObject->lpVtbl->QueryGetData(pDataObject, &fmtetc) == S_OK)
-    {
-      STGMEDIUM medium;
-
-      pDataObject->lpVtbl->GetData(pDataObject, &fmtetc, &medium);
-
-      *pdwEffect = winGetDropEffect(dwKeyState, *pdwEffect);
-
-      pThis->pDropCallback(fmtetc.cfFormat, medium.hGlobal, pt, pThis->pUserData);
-
-      ReleaseStgMedium(&medium);
-
-      return S_OK;
-    }
-  }
-
-  return S_OK;
-}
-
-
-/******************************************************************************************/
-
-
-static void winDropCallback(CLIPFORMAT cf, HGLOBAL hData, POINTL pt, Ihandle* ih)
+static void winCallDropDataCB(Ihandle* ih, CLIPFORMAT cf, HGLOBAL hData, int x, int y)
 {
   IFnsCiii cbDrop = (IFnsCiii)IupGetCallback((Ihandle*)ih, "DROPDATA_CB");
   if(cbDrop)
@@ -629,8 +643,6 @@ static void winDropCallback(CLIPFORMAT cf, HGLOBAL hData, POINTL pt, Ihandle* ih
     void* targetData = NULL;
     char type[256];
     SIZE_T size;
-    int x = (int)pt.x;
-    int y = (int)pt.y;
 
     iupdrvScreenToClient(ih, &x, &y);
 
@@ -647,17 +659,85 @@ static void winDropCallback(CLIPFORMAT cf, HGLOBAL hData, POINTL pt, Ihandle* ih
   }
 }
 
-static void winRegisterDrop(Ihandle *ih)
+static HRESULT STDMETHODCALLTYPE IwinDropTarget_Drop(IwinDropTarget* pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
+{
+  FORMATETC fmtetc = {0, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL};
+  ULONG i;
+
+  if (!pThis->fAllowDrop)
+    return S_OK;
+
+  *pdwEffect = winGetDropEffect(dwKeyState, *pdwEffect);
+  if (*pdwEffect == DROPEFFECT_NONE)
+    return S_OK;
+
+  /* If there are more than one format, 
+     the first one accepted will be used */
+  for(i = 0; i < pThis->nNumFormats; i++)
+  {
+    fmtetc.cfFormat = pThis->pClipFormat[i];
+
+    if (pDataObject->lpVtbl->QueryGetData(pDataObject, &fmtetc) == S_OK)
+    {
+      STGMEDIUM medium;
+
+      pDataObject->lpVtbl->GetData(pDataObject, &fmtetc, &medium);
+
+      winCallDropDataCB(pThis->ih, fmtetc.cfFormat, medium.hGlobal, (int)pt.x, (int)pt.y);
+
+      ReleaseStgMedium(&medium);
+
+      return S_OK;
+    }
+  }
+
+  return S_OK;
+}
+
+static IwinDropTarget* winCreateDropTarget(CLIPFORMAT *pClipFormat, ULONG nNumFormats, Ihandle* ih)
+{
+  ULONG i;
+  static IwinDropTargetVtbl idt_vtbl = {
+    IwinDropTarget_QueryInterface,
+    IwinDropTarget_AddRef,
+    IwinDropTarget_Release,
+    IwinDropTarget_DragEnter,
+    IwinDropTarget_DragOver,
+    IwinDropTarget_DragLeave,
+    IwinDropTarget_Drop};
+
+  IwinDropTarget* pDropTarget = malloc(sizeof(IwinDropTarget));
+
+  pDropTarget->idt.lpVtbl = (IDropTargetVtbl*)&idt_vtbl;
+  pDropTarget->lRefCount = 1;
+
+  pDropTarget->fAllowDrop = FALSE;
+  pDropTarget->nNumFormats = nNumFormats;
+  pDropTarget->pClipFormat = malloc(nNumFormats*sizeof(CLIPFORMAT));
+  pDropTarget->ih = ih;
+
+  for(i = 0; i < nNumFormats; i++)
+    pDropTarget->pClipFormat[i] = pClipFormat[i];
+
+  return pDropTarget;
+}
+
+
+/******************************************************************************************/
+
+
+static IwinDropTarget* winRegisterDrop(Ihandle *ih)
 {
   Iarray* dropList = (Iarray*)iupAttribGet(ih, "_IUPWIN_DROP_TYPES");
   int i, j, count = iupArrayCount(dropList);
-  char** iupList = (char**)iupArrayGetData(dropList);
+  char** dropListData = (char**)iupArrayGetData(dropList);
   CLIPFORMAT* cfList = malloc(count * sizeof(CLIPFORMAT));
+  IwinDropTarget* pDropTarget = NULL;
 
   j = 0;
   for(i = 0; i < count; i++)
   {
-    CLIPFORMAT f = (CLIPFORMAT)RegisterClipboardFormat(iupList[i]);
+    CLIPFORMAT f = (CLIPFORMAT)RegisterClipboardFormat(dropListData[i]);
     if (f)
     {
       cfList[j] = f;
@@ -666,32 +746,30 @@ static void winRegisterDrop(Ihandle *ih)
   }
 
   if (j)
-  {
-    IwinDropTarget* pTarget = winRegisterDropTarget(ih->handle, cfList, (ULONG)j, winDropCallback, (void*)ih);
-    iupAttribSetStr(ih, "_IUPWIN_DROPTARGET", (char*)pTarget);
-  }
+    pDropTarget = winCreateDropTarget(cfList, (ULONG)j, ih);
 
   free(cfList);
+  return pDropTarget;
 }
 
-static void winRegisterProcessDrag(Ihandle *ih)
+static int winRegisterProcessDrag(Ihandle *ih)
 {
-  IwinDropSourceData* pSrc;
-  char *dragList = iupAttribGet(ih, "_IUPWIN_DRAG_TYPES");
+  IDataObject *pObj;
+  IDropSource *pSrc;
+  Iarray* dragList = (Iarray*)iupAttribGet(ih, "_IUPWIN_DRAG_TYPES");
   int i, j, dragListCount;
-  char **iupList;
+  char **dragListData;
   CLIPFORMAT *cfList;
   HGLOBAL* hDataList;
-  DWORD dwEffect = 0;
+  DWORD dwEffect = 0, dwOKEffect;
   IFns cbDragDataSize = (IFns)IupGetCallback(ih, "DRAGDATASIZE_CB");
   IFnsCi cbDragData = (IFnsCi)IupGetCallback(ih, "DRAGDATA_CB");
-  IFni cbDragEnd;
 
-  if(!dragList || !cbDragDataSize || !cbDragData)
-    return;
+  if (!dragList || !cbDragDataSize || !cbDragData)
+    return -1;
 
-  dragListCount = iupArrayCount((Iarray*)dragList);
-  iupList = (char**)iupArrayGetData((Iarray*)dragList);
+  dragListCount = iupArrayCount(dragList);
+  dragListData = (char**)iupArrayGetData(dragList);
 
   cfList = malloc(dragListCount * sizeof(CLIPFORMAT));
   hDataList = malloc(dragListCount * sizeof(HGLOBAL));
@@ -700,51 +778,47 @@ static void winRegisterProcessDrag(Ihandle *ih)
   j = 0;
   for(i = 0; i < dragListCount; i++)
   {
-    CLIPFORMAT f = (CLIPFORMAT)RegisterClipboardFormat(iupList[i]);
+    CLIPFORMAT f = (CLIPFORMAT)RegisterClipboardFormat(dragListData[i]);
     if (f)
     {
       void *sourceData;
 
-      int size = cbDragDataSize(ih, iupList[i]);
+      int size = cbDragDataSize(ih, dragListData[i]);
       if (size <= 0)
         continue;
 
       cfList[j] = f;
-      hDataList[j] = GlobalAlloc(GMEM_FIXED, size);
+      hDataList[j] = GlobalAlloc(GMEM_MOVEABLE, size);
       sourceData = GlobalLock(hDataList[j]);
 
       /* fill data */
-      cbDragData(ih, iupList[i], sourceData, size);
+      cbDragData(ih, dragListData[i], sourceData, size);
 
       GlobalUnlock(hDataList[j]);
       j++;
     }
   }
 
-  pSrc = winCreateDropSourceData(cfList, hDataList, j);
+  pSrc = (IDropSource*)winCreateDropSource();
+  pObj = (IDataObject*)winCreateDataObject(cfList, hDataList, (ULONG)j);
 
   /* Process drag, this will stop util drag is done or canceled. */
-  DoDragDrop(pSrc->pObj, pSrc->pSrc, iupAttribGetBoolean(ih, "DRAGSOURCEMOVE") ? DROPEFFECT_MOVE|DROPEFFECT_COPY: DROPEFFECT_COPY, &dwEffect);
+  dwOKEffect = iupAttribGetBoolean(ih, "DRAGSOURCEMOVE")? DROPEFFECT_MOVE|DROPEFFECT_COPY: DROPEFFECT_COPY;
+  DoDragDrop(pObj, pSrc, dwOKEffect, &dwEffect);
 
-  winDestroyDropSourceData(pSrc);
-
+  pSrc->lpVtbl->Release(pSrc);
+  pObj->lpVtbl->Release(pObj);
   for(i = 0; i < j; i++)
     GlobalFree(hDataList[i]);
   free(hDataList);
-
-  cbDragEnd = (IFni)IupGetCallback(ih, "DRAGEND_CB");
-  if(cbDragEnd)
-  {
-    int remove = -1;
-    if (dwEffect == DROPEFFECT_MOVE)
-      remove = 1;
-    else if (dwEffect == DROPEFFECT_COPY)
-      remove = 0;
-
-    cbDragEnd(ih, remove);
-  }
-
   free(cfList);
+
+  if (dwEffect == DROPEFFECT_MOVE)
+    return 1;
+  else if (dwEffect == DROPEFFECT_COPY)
+    return 0;
+  else 
+    return -1;
 }
 
 int iupwinDragStart(Ihandle* ih)
@@ -757,12 +831,19 @@ int iupwinDragStart(Ihandle* ih)
     IFnii cbDragBegin = (IFnii)IupGetCallback(ih, "DRAGBEGIN_CB");
     if(cbDragBegin)
     {
+      IFni cbDragEnd;
+      int remove;
       int x = pt.x, y = pt.y;
       iupdrvScreenToClient(ih, &x, &y);
       if (cbDragBegin(ih, x, y) == IUP_IGNORE)
         return 0;
 
-      winRegisterProcessDrag(ih);
+      remove = winRegisterProcessDrag(ih);
+
+      cbDragEnd = (IFni)IupGetCallback(ih, "DRAGEND_CB");
+      if(cbDragEnd)
+        cbDragEnd(ih, remove);
+
       return 1;
     }
   }
@@ -837,20 +918,28 @@ static void winInitOle(void)
 
 static int winSetDropTargetAttrib(Ihandle* ih, const char* value)
 {
+  IwinDropTarget* pDropTarget;
   Iarray* dropList = (Iarray*)iupAttribGet(ih, "_IUPWIN_DROP_TYPES");
   if (!dropList)
     return 0;
 
+  winInitOle();
+
+  pDropTarget = (IwinDropTarget*)iupAttribGet(ih, "_IUPWIN_DROPTARGET");
+  if (pDropTarget)
+  {
+    RevokeDragDrop(ih->handle);
+    CoLockObjectExternal((LPUNKNOWN)pDropTarget, FALSE, TRUE);
+    ((IDropTarget*)pDropTarget)->lpVtbl->Release((IDropTarget*)pDropTarget);
+    iupAttribSetStr(ih, "_IUPWIN_DROPTARGET", NULL);
+  }
+
   if (iupStrBoolean(value))
   {
-    winInitOle();
-    winRegisterDrop(ih);
-  }
-  else
-  {
-    IwinDropTarget* pTarget = (IwinDropTarget*)iupAttribGet(ih, "_IUPWIN_DROPTARGET");
-    if (pTarget)
-      winRevokeDropTarget(pTarget, ih->handle);
+    pDropTarget = winRegisterDrop(ih);
+    CoLockObjectExternal((LPUNKNOWN)pDropTarget, TRUE, FALSE);
+    RegisterDragDrop(ih->handle, (IDropTarget*)pDropTarget);
+    iupAttribSetStr(ih, "_IUPWIN_DROPTARGET", (char*)pDropTarget);
   }
 
   return 1;
@@ -930,6 +1019,26 @@ void iupwinDropFiles(HDROP hDrop, Ihandle *ih)
 
 /******************************************************************************************/
 
+void iupwinDestroyDragDrop(Ihandle* ih)
+{
+  IwinDropTarget* pDropTarget;
+
+  Iarray* list = (Iarray*)iupAttribGet(ih, "_IUPWIN_DRAG_TYPES");
+  if (list)
+    winDestroyTypesList(list);
+
+  list = (Iarray*)iupAttribGet(ih, "_IUPWIN_DROP_TYPES");
+  if (list)
+    winDestroyTypesList(list);
+
+  pDropTarget = (IwinDropTarget*)iupAttribGet(ih, "_IUPWIN_DROPTARGET");
+  if (pDropTarget)
+  {
+    CoLockObjectExternal((LPUNKNOWN)pDropTarget, TRUE, FALSE);
+    ((IDropTarget*)pDropTarget)->lpVtbl->Release((IDropTarget*)pDropTarget);
+    iupAttribSetStr(ih, "_IUPWIN_DROPTARGET", NULL);
+  }
+}
 
 void iupdrvRegisterDragDropAttrib(Iclass* ic)
 {
