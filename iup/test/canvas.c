@@ -151,6 +151,13 @@ static void drawTest(Ihandle *ih, int posx)
 #endif
 #endif
 
+static int testDropData_cb(Ihandle *self, char* type, void* data, int len, int x, int y)
+{
+  // Data is a text for this sample, so we can print it
+  printf("\n  DROPDATA_CB(type=%s, data=%s, size=%d, x=%d, y=%d)\n\n", type, (char*)data, len, x, y);
+  return IUP_DEFAULT;
+}
+
 static int map_cb(Ihandle *ih)
 {
   printf("MAP_CB()\n");
@@ -301,6 +308,9 @@ void CanvasTest(void)
                                            so when the canvas is larger than 600 
                                            it will hide the scrollbar */
   IupSetAttributeHandle(canvas, "CURSOR", image);
+  IupSetAttribute(canvas, "DROPTARGET", "YES");
+  IupSetAttribute(canvas, "DROPTYPES", "TEXT");
+  IupSetCallback (canvas, "DROPDATA_CB", (Icallback)testDropData_cb);
 
 //  IupSetAttribute(canvas, "BORDER", "NO");
 //  IupSetAttribute(canvas, "CURSOR", "CROSS");

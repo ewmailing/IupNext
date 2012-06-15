@@ -1346,7 +1346,7 @@ static int motListMapMethod(Ihandle* ih)
 
       /* Disable Drag Source */
       iupmotDisableDragSource(cblist);
-    }
+  }
   }
   else
   {

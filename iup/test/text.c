@@ -176,6 +176,12 @@ static int k_any(Ihandle *ih, int c)
   return IUP_CONTINUE;
 }
 
+static int valuechanged_cb(Ihandle *ih)
+{
+  printf("VALUECHANGED_CB()=%s\n", IupGetAttribute(ih, "VALUE"));
+  return IUP_DEFAULT;
+}
+
 static int action(Ihandle *ih, int c, char* after)
 {
   if (iup_isprint(c))
@@ -301,9 +307,10 @@ void TextTest(void)
   IupSetCallback(mltline, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
   IupSetCallback(mltline, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
   //IupSetCallback(mltline, "ACTION", (Icallback)action);
-  IupSetCallback(mltline, "K_ANY", (Icallback)k_any);
+  IupSetCallback(mltline, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
+//  IupSetCallback(mltline, "K_ANY", (Icallback)k_any);
   IupSetCallback(mltline, "K_F2", (Icallback)k_f2);
-  IupSetCallback(mltline, "CARET_CB", (Icallback)caret_cb);
+//  IupSetCallback(mltline, "CARET_CB", (Icallback)caret_cb);
 //  IupSetAttribute(mltline, "WORDWRAP", "YES");
 //  IupSetAttribute(mltline, "BORDER", "NO");
 //  IupSetAttribute(mltline, "AUTOHIDE", "YES");
@@ -328,8 +335,8 @@ void TextTest(void)
 //  IupSetAttribute(mltline, "FONT", "Arial, 12");
 //    IupSetAttribute(mltline, "FORMATTING", "YES");
 
-  formatting = 0;
-//  formatting = 1;
+//  formatting = 0;
+  formatting = 1;
   if (formatting)          /* just to make easier to comment this section */
   {
     /* formatting before Map */

@@ -245,17 +245,17 @@ int main(int argc, char **argv)
 
   /* DRAG AND DROP TESTS ////////////////////////////////////*/
   IupSetAttribute(list1, "DROPTARGET", "YES");
-  IupSetAttribute(list1, "DROPTYPES", "TEXT");
+  IupSetAttribute(list1, "DROPTYPES", "TEXT,STRING");
   IupSetCallback (list1, "DROPDATA_CB", (Icallback)testDropData_cb);
   IupSetAttribute(list1, "NAME", "list1");
 
   IupSetAttribute(list2, "DROPTARGET", "YES");
-  IupSetAttribute(list2, "DROPTYPES", "TEXT");
+  IupSetAttribute(list2, "DROPTYPES", "TEXT,STRING");
   IupSetCallback (list2, "DROPDATA_CB", (Icallback)testDropData_cb);
   IupSetAttribute(list2, "NAME", "list2");
 
   IupSetAttribute(list3, "DROPTARGET", "YES");
-  IupSetAttribute(list3, "DROPTYPES", "TEXT");
+  IupSetAttribute(list3, "DROPTYPES", "STRING");
   IupSetCallback (list3, "DROPDATA_CB", (Icallback)testDropData_cb);
   IupSetAttribute(list3, "NAME", "list3");
 
@@ -281,7 +281,7 @@ int main(int argc, char **argv)
   IupSetAttribute(txt2, "RASTERSIZE", "150x90");
   IupSetAttribute(txt2, "VALUE", "Drag Text From Here");
   IupSetAttribute(txt2, "DRAGSOURCE", "YES");
-  IupSetAttribute(txt2, "DRAGTYPES", "TEXT");
+  IupSetAttribute(txt2, "DRAGTYPES", "TEXT,STRING");
   IupSetAttribute(txt2, "DRAGSOURCEMOVE", "Yes");
   IupSetCallback (txt2, "DRAGBEGIN_CB", (Icallback)testDragBegin_cb);
   IupSetCallback (txt2, "DRAGDATASIZE_CB",  (Icallback)testDragDataSize_cb);
