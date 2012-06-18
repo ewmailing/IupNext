@@ -9,9 +9,6 @@
 .style1 {
 	font-size: large;
 }
-.style2 {
-	margin-left: 40px;
-}
 </style>
 </head>
 <body>
@@ -58,9 +55,11 @@ directly.</p>
 <p><b>ADDCONTROL_HANDLE</b> (<font SIZE="3">non inheritable</font>): Adds a 
 control to the normalizer. The value passed must be a 
 handle of an element.</p>
-<hr class="style2">
+
+<h3>Attributes (at Children)</h3>
+
 <p><strong>NORMALIZERGROUP</strong> (<font SIZE="3">non inheritable</font>)
-	<strong>(for contained controls use)</strong>: name of a IupNormalizer 
+	<strong>(at children only)</strong>: name of a normalizer 
 element to 
 automatically add the control. If an element with that name does not exists 
 then one is created. In Lua you can also use the element reference directly.</p>
