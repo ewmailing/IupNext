@@ -83,7 +83,8 @@ set.</p>
 <h3>Callbacks at Drag Source <span class="style10">(Must be set when DRAGSOURCE<span class="auto-style1">=Yes</span>)</span></h3>
 
 
-<p><b>DRAGBEGIN_CB</b>: notifies source that drag started.</p>
+<p><b>DRAGBEGIN_CB</b>: notifies source that drag started. It is called when the 
+mouse starts a drag operation.</p>
 
   
     
@@ -99,7 +100,8 @@ corner of the element.</p>
 aborted.</p>
 
   
-<p><b>DRAGDATASIZE_CB</b>: request for size of drag data from source.</p>
+<p><b>DRAGDATASIZE_CB</b>: request for size of drag data from source. It is 
+called when the data is dropped, before the <b>DRAGDATA_CB</b> callback.</p>
 
   
     
@@ -116,7 +118,8 @@ to
 allocate the buffer size for the data in transfer.</p>
 
   
-<p><b>DRAGDATA_CB</b>: request for drag data from source.</p>
+<p><b>DRAGDATA_CB</b>: request for drag data from source. It is called when the 
+data is dropped.</p>
 
   
     
@@ -133,7 +136,7 @@ The same value returned by <b>DRAGDATASIZE_CB.</b></p>
 
   
 <p><b>DRAGEND_CB</b>: notifies source that drag is done. The only callback that 
-is <strong>optional</strong>.</p>
+is <strong>optional</strong>. It is called after the data has been dropped.</p>
 
   
     
@@ -151,7 +154,9 @@ the data from source.</p>
 <h3>Callbacks at Drop Target <span class="style10">(Must be set when DROPTARGET=Yes)</span></h3>
 
 
-<p><b>DROPDATA_CB</b>: source has sent target the requested data.</p>
+<p><b>DROPDATA_CB</b>: source has sent target the requested data. It is called 
+when the data is dropped. If both drag and drop would be in the same application 
+it would be called after the <b>DRAGDATA_CB</b> callback.</p>
 
   
     
@@ -170,15 +175,18 @@ corner of the element.</p>
   
 <h3><a name="Notes">Notes</a></h3>
 
-<p>opcoes</p>
-<p>Callback order</p>
-<p>Clipboards formats
-commonly used by applications that 
-supports drag and drop:</p>
+<p>Drag and Drop support can be set independently. A control can have drop 
+without drag support and vice-versa.</p>
+<p>Here are some common Drag&amp;Drop types defined by existing applications:</p>
 <ul>
-	<li>Windows: CF_TEXT, CF_UNICODETEXT, CF_BITMAP and CF_DIB.</li>
-	<li>GTK/ Motif: TEXT, UTF8_STRING and content MIME types, like "text/uri-list", 
+	<li>&quot;TEXT&quot; used for regular ANSI text without formatting. Automatically 
+	translated to CF_TEXT in Windows.</li>
+	<li>content MIME types, like &quot;text/uri-list", 
 "text/html", "image/png", "image/jpeg", "image/bmp" and "image/gif".</li>
+	<li>&quot;UTF8_STRING&quot; in GTK and &quot;UNICODETEXT&quot; in Windows.</li>
+	<li>&quot;COMPOUND_TEXT&quot; in GTK and &quot;Rich Text Format&quot; in Windows.</li>
+	<li>&quot;BITMAP&quot; and &quot;DIB&quot; in Windows. Automatically translated to CF_BITMAP and 
+	CF_DIB.</li>
 </ul>
 
   

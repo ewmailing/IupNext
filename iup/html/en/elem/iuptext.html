@@ -348,6 +348,9 @@ MAXSIZE</a>,
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a>,
     <a href="../attrib/iup_zorder.html">ZORDER</a>, <a href="../attrib/iup_visible.html">VISIBLE</a>: 
 also accepted.</p>
+<p>
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes and callbacks 
+are supported.</p>
 
 
 
@@ -465,6 +468,9 @@ The VALUE attribute can be changed during this callback only if SPINAUTO=NO. (si
 <a href="../call/iup_k_any.html">K_ANY</a>,
   <a href="../call/iup_help_cb.html">HELP_CB</a>: All common callbacks are 
 supported.</p>
+<p>
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes and callbacks 
+are supported.</p>
 
 
 
@@ -498,7 +504,12 @@ control, then a beep is sound.</p>
 characters, NOT by byte index, because some characters in UTF-8 can use more 
 than one byte. This also applies to Windows if FORMATTING=YES depending on the 
 Windows codepage (for example East Asian codepage where some characters take two 
-bytes). </p>
+bytes).</p>
+<p>Internal Drag&amp;Drop support is enabled by default. But in Windows the internal 
+Drag&amp;Drop is enabled only if FORMATTING=YES. In GTK the internal Drag&amp;Drop 
+can not be disabled, so it will conflict with the
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes and 
+callbacks.</p>
 
 <h4>Navigation, Selection and Clipboard Keys</h4>
 
