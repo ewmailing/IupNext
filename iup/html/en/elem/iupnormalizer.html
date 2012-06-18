@@ -9,6 +9,9 @@
 .style1 {
 	font-size: large;
 }
+.style2 {
+	margin-left: 40px;
+}
 </style>
 </head>
 <body>
@@ -47,10 +50,6 @@ normalizer(<strong>ih_first</strong>, ...) [in LED]</pre>
 <p><strong>NORMALIZE</strong> (<font SIZE="3">non inheritable</font>): normalization direction. Can be HORIZONTAL, VERTICAL 
 or BOTH. These are the same values of the NORMALIZESIZE attribute. Default: 
 HORIZONTAL. </p>
-<p><strong>NORMALIZERGROUP</strong> (<font SIZE="3">non inheritable</font>)
-	<strong>(for contained controls use)</strong>: name of a normalizer to 
-automatically add the control. If a normalizer with that name does not exists 
-then one is created.</p>
 <p><b>ADDCONTROL</b> (<font SIZE="3">non inheritable</font>): Adds a control to 
 the normalizer. The value passed must be the name of an element. Use <a href="../func/iupsethandle.html">IupSetHandle</a> 
 or <a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
@@ -59,6 +58,12 @@ directly.</p>
 <p><b>ADDCONTROL_HANDLE</b> (<font SIZE="3">non inheritable</font>): Adds a 
 control to the normalizer. The value passed must be a 
 handle of an element.</p>
+<hr class="style2">
+<p><strong>NORMALIZERGROUP</strong> (<font SIZE="3">non inheritable</font>)
+	<strong>(for contained controls use)</strong>: name of a IupNormalizer 
+element to 
+automatically add the control. If an element with that name does not exists 
+then one is created. In Lua you can also use the element reference directly.</p>
 <h3>Notes</h3>
 <p>It is NOT necessary to add the normalizer to a dialog hierarchy. Every time 
 the NORMALIZE attribute is set a normalization occurs. If the normalizer is added to a dialog hierarchy, then 
@@ -70,6 +75,9 @@ mapped, and do NOT need to be in a complete hierarchy of a dialog.</p>
 <p>The elements are NOT children of the normalizer. To 
 remove or add other elements, the normalizer must be destroyed and created a new 
 one.</p>
+<p>Notice that the NORMALIZERGROUP attribute can simplify a lot the process of 
+creating a normalizer, so you do not need to list several elements from 
+different parts of the dialog. </p>
 <p>Has the same effect of the NORMALIZESIZE attribute of the <strong>IupVbox</strong> 
 and <strong>IupHbox</strong> controls, but it can be used for elements with 
 different parents, it changes the <strong>User</strong> size of the elements.</p>
