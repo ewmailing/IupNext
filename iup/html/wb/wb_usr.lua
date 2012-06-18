@@ -556,7 +556,12 @@ wb_usr.tree =
             {
               name= {nl= "ZORDER"},
               link= "attrib/iup_zorder.html"
-            }
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "Drag & Drop"},
+              link= "attrib/iup_dragdrop.html"
+            },
           }
         },
         {
