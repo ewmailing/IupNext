@@ -120,8 +120,6 @@ static gboolean gtkDragMotion(GtkWidget *widget, GdkDragContext *drag_context, g
 {
   GdkAtom targetAtom;
 
-  //TODO: do we need this callback???? Isn't this the default behavior?
-
   /* The third argument must be NULL. Internally, GTK will use the list returned
      by the call gtk_drag_dest_get_target_list(widget), which is the list of targets
      that be destination widget can accept (defined in the gtkSetDropTargetAttrib IUP) */
@@ -387,7 +385,7 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "DROPFILESTARGET", NULL, gtkSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
 
-/* // TODO:
+/* TODO:
   Could not find a way to disable the internal DND support 
   in IupText(GtkTextView or GtkEntry).
   Mixing the generic support from here and the internal gives weird results.

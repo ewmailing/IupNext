@@ -67,7 +67,7 @@ static void motDropTransferProc(Widget dropTransfer, Ihandle* ih, Atom *selType,
   cbDropData = (IFnsCiii)IupGetCallback(ih, "DROPDATA_CB");
   if(cbDropData)
   {
-    //TODO should we check for incompatible targets here?
+    /* TODO should we check for incompatible targets here? */
     char* type = XGetAtomName(iupmot_display, *typeAtom);
     int x = iupAttribGetInt(ih, "_IUPMOT_DROP_X");
     int y = iupAttribGetInt(ih, "_IUPMOT_DROP_Y");
@@ -179,7 +179,7 @@ static Boolean motDragConvertProc(Widget dragContext, Atom *selection, Atom *tar
   if(cbDragData && cbDragDataSize)
   {
     void* sourceData;
-    //TODO should we check for incompatible targets here?
+    /* TODO should we check for incompatible targets here? */
     char* type = XGetAtomName(iupmot_display, *target);
     int size = cbDragDataSize(ih, type);
     if (size <= 0)
