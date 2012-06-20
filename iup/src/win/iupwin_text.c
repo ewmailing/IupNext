@@ -2107,7 +2107,7 @@ static int winTextMapMethod(Ihandle* ih)
   if (!ih->data->is_multiline && iupAttribGetBoolean(ih, "SPIN"))
     winTextCreateSpin(ih);
 
-  /* configure for DRAG&DROP */
+  /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
 

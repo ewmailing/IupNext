@@ -1713,7 +1713,7 @@ static int winListMapMethod(Ihandle* ih)
   if(ih->data->show_image)
     IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winListDrawItem);  /* Process WM_DRAWITEM */
 
-  /* configure for DRAG&DROP */
+  /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
 

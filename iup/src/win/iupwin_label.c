@@ -343,7 +343,7 @@ static int winLabelMapMethod(Ihandle* ih)
     IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winLabelDrawItem);
   }
 
-  /* configure for DRAG&DROP of files */
+  /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
 

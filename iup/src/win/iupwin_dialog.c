@@ -351,7 +351,13 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
         }
       }
 
-      break;
+      if (iupAttribGet(ih, "MDIFRAME"))
+      {
+        *result = 0;
+        return 1;
+      }
+      else
+        break;
     }
   case WM_USER+IUPWIN_TRAY_NOTIFICATION:
     {
@@ -660,7 +666,6 @@ static LRESULT CALLBACK winDialogMDIFrameProc(HWND hwnd, UINT msg, WPARAM wp, LP
     }
   }
 
-
   return DefFrameProc(hwnd, hWndClient, msg, wp, lp);
 }
 
@@ -822,7 +827,13 @@ static int winDialogMapMethod(Ihandle* ih)
     }
 
     if (iupAttribGet(ih, "MDIFRAME"))
+    {
+      COLORREF color = GetSysColor(COLOR_BTNFACE);
+      iupAttribSetStrf(ih, "_IUPWIN_BACKGROUND_COLOR", "%d %d %d", (int)GetRValue(color), 
+                                                                   (int)GetGValue(color), 
+                                                                   (int)GetBValue(color));
       classname = "IupDialogMDIFrame";
+    }
   }
 
   if (iupAttribGetBoolean(ih, "TOOLBOX") && native_parent)
@@ -884,7 +895,7 @@ static int winDialogMapMethod(Ihandle* ih)
   if (iupStrEqual(classname, "IupDialogMDIChild")) /* hides the mdi child */
     ShowWindow(ih->handle, SW_HIDE);
 
-  /* configure for DRAG&DROP */
+  /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
 

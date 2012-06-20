@@ -51,15 +51,23 @@ static int mdi_activate(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int button_cb(Ihandle* ih)
+{
+  printf("button_cb()\n");
+  return IUP_DEFAULT;
+}
+
 static int mdi_new(Ihandle* ih)
 {
   static int id = 0;
-  Ihandle *box, *cnv, *dlg;
+  Ihandle *box, *txt, *dlg, *bt;
 
-  cnv = IupCanvas(NULL);
-  IupSetAttribute(cnv,"BGCOLOR","128 255 0");
+  txt = IupText(NULL);
 
-  box = IupVbox(cnv, NULL);
+  bt = IupButton("Test", NULL);
+  IupSetCallback(bt,"ACTION", button_cb);
+
+  box = IupVbox(IupHbox(bt, NULL), txt, NULL);
   IupSetAttribute(box,"MARGIN","5x5");
 
   dlg = IupDialog(box);
@@ -71,6 +79,8 @@ static int mdi_new(Ihandle* ih)
 //  IupSetAttribute(dlg, "PLACEMENT", "MAXIMIZED");
 
   IupShow(dlg);
+
+  IupSetAttribute(dlg,"RASTERSIZE",NULL);
 
   return IUP_DEFAULT;
 }
@@ -108,12 +118,20 @@ static void createMenu(void)
 
 static Ihandle* createFrame(void)
 {
-  Ihandle *dlg, *cnv;
+  Ihandle *dlg, *cnv, *box, *bt;
+
   cnv = IupCanvas( NULL);
   IupSetAttribute(cnv,"MDICLIENT","YES");
   IupSetAttribute(cnv,"MDIMENU","mdiMenu");
+  IupSetAttribute(cnv,"BGCOLOR","128 255 0");
 
-  dlg = IupDialog(cnv);
+  bt = IupButton("Test", NULL);
+  IupSetCallback(bt,"ACTION", button_cb);
+
+  box = IupHbox(bt, NULL);
+  IupSetAttribute(box,"MARGIN","5x5");
+
+  dlg = IupDialog(IupVbox(box, cnv, NULL));
   IupSetAttribute(dlg,"TITLE","MDI Frame");
   IupSetAttribute(dlg,"MDIFRAME","YES");
   IupSetAttribute(dlg,"RASTERSIZE","800x600");
@@ -131,7 +149,10 @@ void MdiTest(void)
 
   dlg = createFrame();
 //  IupSetAttribute(dlg, "PLACEMENT", "MAXIMIZED");
+
   IupShow(dlg);
+
+  IupSetAttribute(dlg,"RASTERSIZE", NULL);
 }
 
 #ifndef BIG_TEST

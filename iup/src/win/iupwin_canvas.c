@@ -584,6 +584,15 @@ static int winCanvasMapMethod(Ihandle* ih)
                            
   if (ih->firstchild) /* can be a container */
     iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
+
+  if (iupAttribGetBoolean(ih, "BORDER"))
+    dwStyle |= WS_BORDER;
+
+  ih->data->sb = iupBaseGetScrollbar(ih);
+  if (ih->data->sb & IUP_SB_HORIZ)
+    dwStyle |= WS_HSCROLL;
+  if (ih->data->sb & IUP_SB_VERT)
+    dwStyle |= WS_VSCROLL;
                            
   if (iupAttribGetBoolean(ih, "MDICLIENT"))  
   {
@@ -592,6 +601,7 @@ static int winCanvasMapMethod(Ihandle* ih)
     Ihandle *winmenu = IupGetAttributeHandle(ih, "MDIMENU");
 
     classname = "mdiclient";
+    dwStyle = WS_CHILD|WS_CLIPCHILDREN|WS_VSCROLL|WS_HSCROLL|MDIS_ALLCHILDSTYLES; 
 
     iupAttribSetStr(ih, "BORDER", "NO");
 
@@ -608,15 +618,6 @@ static int winCanvasMapMethod(Ihandle* ih)
   }
   else 
     classname = "IupCanvas";
-
-  if (iupAttribGetBoolean(ih, "BORDER"))
-    dwStyle |= WS_BORDER;
-
-  ih->data->sb = iupBaseGetScrollbar(ih);
-  if (ih->data->sb & IUP_SB_HORIZ)
-    dwStyle |= WS_HSCROLL;
-  if (ih->data->sb & IUP_SB_VERT)
-    dwStyle |= WS_VSCROLL;
 
   ih->serial = iupDialogGetChildId(ih);
 
@@ -639,10 +640,14 @@ static int winCanvasMapMethod(Ihandle* ih)
   /* associate HWND with Ihandle*, all Win32 controls must call this. */
   iupwinHandleAdd(ih, ih->handle);
 
-  IupSetCallback(ih, "_IUPWIN_OLDPROC_CB", (Icallback)DefWindowProc);
+  if (iupAttribGetBoolean(ih, "MDICLIENT"))  
+    iupwinChangeProc(ih, iupwinBaseWinProc);
+  else
+    IupSetCallback(ih, "_IUPWIN_OLDPROC_CB", (Icallback)DefWindowProc);
+
   IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winCanvasProc);
 
-  /* configure for DRAG&DROP */
+  /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
 
