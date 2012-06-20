@@ -34,7 +34,8 @@ extern "C" {
 enum{IMAT_EDITNEXT_LIN, 
      IMAT_EDITNEXT_COL, 
      IMAT_EDITNEXT_LINCR, 
-     IMAT_EDITNEXT_COLCR};
+     IMAT_EDITNEXT_COLCR,
+     IMAT_EDITNEXT_NONE};
 
 
 /***************************************************************************/

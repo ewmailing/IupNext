@@ -432,6 +432,9 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, float unused_pos, int u
         iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_COL, col);
       }
       break;
+    case IMAT_EDITNEXT_NONE: 
+    default:
+      break;
     }
   }
 }

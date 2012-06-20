@@ -411,7 +411,9 @@ static char* iMatrixGetEditModeAttrib(Ihandle* ih)
 
 static int iMatrixSetEditNextAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "COL"))
+  if (iupStrEqualNoCase(value, "NONE"))
+    ih->data->editnext = IMAT_EDITNEXT_NONE;
+  else if (iupStrEqualNoCase(value, "COL"))
     ih->data->editnext = IMAT_EDITNEXT_COL;
   else if (iupStrEqualNoCase(value, "COLCR"))
     ih->data->editnext = IMAT_EDITNEXT_COLCR;
@@ -426,6 +428,7 @@ static char* iMatrixGetEditNextAttrib(Ihandle* ih)
 {
   switch (ih->data->editnext)
   {
+  case IMAT_EDITNEXT_NONE: return "NONE";
   case IMAT_EDITNEXT_COL: return "COL";
   case IMAT_EDITNEXT_LINCR: return "LINCR";
   case IMAT_EDITNEXT_COLCR: return "COLCR";
