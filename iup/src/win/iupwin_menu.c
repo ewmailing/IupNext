@@ -102,12 +102,6 @@ static void winItemCheckToggle(Ihandle* ih)
   }
 }
 
-typedef struct _IchildId
-{
-  int id, menuid;
-  Ihandle* child;
-} IchildId;
-
 void iupwinMenuDialogProc(Ihandle* ih_dialog, UINT msg, WPARAM wp, LPARAM lp)
 {
   /* called only from winDialogBaseProc */
@@ -172,7 +166,7 @@ void iupwinMenuDialogProc(Ihandle* ih_dialog, UINT msg, WPARAM wp, LPARAM lp)
       Icallback cb;
       Ihandle* ih;
         
-      if (menuId >= IUP_MDICHILD_START)
+      if (menuId >= IUP_MDI_FIRSTCHILD)
         break;
         
       ih  = iupwinMenuGetItemHandle((HMENU)lp, menuId);

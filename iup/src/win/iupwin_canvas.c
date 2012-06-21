@@ -419,8 +419,14 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
         /* w=LOWORD (lp), h=HIWORD(lp) can not be used because an invalid size 
            at the first time of WM_SIZE with scroolbars. */
       }
-      *result = 0;
-      return 1;
+
+      if (!iupAttribGetBoolean(ih, "MDICLIENT"))
+      {
+        /* If a MDI client, let the DefMDIChildProc do its work. */
+        *result = 0;
+        return 1;
+      }
+      break;
     }
   case WM_GETDLGCODE:
     /* avoid beeps when keys are pressed */
@@ -541,13 +547,21 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     ReleaseCapture();
     break;
   case WM_VSCROLL:
-    winCanvasUpdateVerScroll(ih, LOWORD(wp));
-    *result = 0;
-    return 1;
+    if (!iupAttribGetBoolean(ih, "MDICLIENT"))
+    {
+      /* only update the scrollbar is not a MDI client */
+      winCanvasUpdateVerScroll(ih, LOWORD(wp));
+      *result = 0;
+      return 1;
+    }
   case WM_HSCROLL:
-    winCanvasUpdateHorScroll(ih, LOWORD(wp));
-    *result = 0;
-    return 1;
+    if (!iupAttribGetBoolean(ih, "MDICLIENT"))
+    {
+      /* only update the scrollbar is not a MDI client */
+      winCanvasUpdateHorScroll(ih, LOWORD(wp));
+      *result = 0;
+      return 1;
+    }
   case WM_SETFOCUS:
     if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     {
@@ -601,7 +615,8 @@ static int winCanvasMapMethod(Ihandle* ih)
     Ihandle *winmenu = IupGetAttributeHandle(ih, "MDIMENU");
 
     classname = "mdiclient";
-    dwStyle = WS_CHILD|WS_CLIPCHILDREN|WS_VSCROLL|WS_HSCROLL|MDIS_ALLCHILDSTYLES; 
+    dwStyle = WS_CHILD|WS_CLIPCHILDREN|WS_VSCROLL|WS_HSCROLL|MDIS_ALLCHILDSTYLES;
+    dwExStyle = WS_EX_CLIENTEDGE;
 
     iupAttribSetStr(ih, "BORDER", "NO");
 
@@ -614,7 +629,7 @@ static int winCanvasMapMethod(Ihandle* ih)
        for each additional MDI child window the application creates, 
        and reassigns identifiers when the application 
        destroys a window to keep the range of identifiers contiguous. */
-    clientstruct.idFirstChild = IUP_MDICHILD_START;
+    clientstruct.idFirstChild = IUP_MDI_FIRSTCHILD;
   }
   else 
     classname = "IupCanvas";

@@ -204,6 +204,13 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
   return 1;
 }
 
+static void winDialogMDIRefreshMenu(Ihandle* ih)
+{
+  /* We manually update the menu when a MDI child is added or removed. */
+  Ihandle* client = (Ihandle*)iupAttribGet(ih, "MDICLIENT_HANDLE");
+  PostMessage(client->handle, WM_MDIREFRESHMENU, 0, 0);
+}
+
 static int winDialogMDICloseChildren(Ihandle* ih)
 {
   Ihandle* client = (Ihandle*)iupAttribGet(ih, "MDICLIENT_HANDLE");
@@ -334,6 +341,17 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
           }
 
           winDialogResize(ih, LOWORD(lp), HIWORD(lp));
+
+          if (iupAttribGetBoolean(ih, "MDICHILD"))
+          {
+            /* WORKAROUND: when a child MDI dialog is maximized, 
+               its title is displayed inside the MDI client area.
+               So we force a MDI client size update */
+            RECT rect;
+            Ihandle* client = (Ihandle*)iupAttribGet(ih, "MDICLIENT_HANDLE");
+            GetClientRect(client->handle, &rect);
+            PostMessage(client->handle, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rect.right-rect.left, rect.bottom-rect.top));
+          }
           break;
         }
       case SIZE_RESTORED:
@@ -351,8 +369,10 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
         }
       }
 
-      if (iupAttribGet(ih, "MDIFRAME"))
+      if (iupAttribGetBoolean(ih, "MDIFRAME"))
       {
+        /* We are going to manually position the MDI client, 
+           so abort MDI frame processing. */
         *result = 0;
         return 1;
       }
@@ -583,17 +603,13 @@ static LRESULT CALLBACK winDialogMDIChildProc(HWND hwnd, UINT msg, WPARAM wp, LP
     return DefMDIChildProc(hwnd, msg, wp, lp);
   }
 
-  switch (msg)
+  if (msg == WM_MDIACTIVATE)
   {
-  case WM_MDIACTIVATE:
+    HWND hNewActive = (HWND)lp;
+    if (hNewActive == ih->handle)
     {
-      HWND hNewActive = (HWND)lp;
-      if (hNewActive == ih->handle)
-      {
-        Icallback cb = (Icallback)IupGetCallback(ih, "MDIACTIVATE_CB");
-        if (cb) cb(ih);
-      }
-      break;
+      Icallback cb = (Icallback)IupGetCallback(ih, "MDIACTIVATE_CB");
+      if (cb) cb(ih);
     }
   }
 
@@ -601,29 +617,6 @@ static LRESULT CALLBACK winDialogMDIChildProc(HWND hwnd, UINT msg, WPARAM wp, LP
     return result;
 
   return DefMDIChildProc(hwnd, msg, wp, lp);
-}
-
-static Ihandle* winDialogGetMdiChildId(Ihandle* ih, int mdi_child_id)
-{
-  int id, max_child_id, real_id = -1;
-  char name[50];
-  Ihandle* child;
-
-  max_child_id = iupAttribGetInt(ih, "_IUPWIN_MAX_MDI_ID");
-
-  for (id = 0; id < max_child_id; id++)
-  {
-    sprintf(name, "_IUPWIN_MDI_ID_[%d]", id);
-    child = (Ihandle*)iupAttribGet(ih, name);
-    if (iupObjectCheck(child))
-    {
-      real_id++;
-      if (real_id == mdi_child_id)
-        return child;
-    }
-  }
-
-  return NULL;
 }
 
 static LRESULT CALLBACK winDialogMDIFrameProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
@@ -651,18 +644,22 @@ static LRESULT CALLBACK winDialogMDIFrameProc(HWND hwnd, UINT msg, WPARAM wp, LP
   if (winDialogBaseProc(ih, msg, wp, lp, &result))
     return result;
 
-  switch (msg)
+  if (msg == WM_MENUCOMMAND)
   {
-  case WM_MENUCOMMAND:
+    int menuId = GetMenuItemID((HMENU)lp, (int)wp);
+    if (menuId >= IUP_MDI_FIRSTCHILD && hWndClient)
     {
-      int menuId = GetMenuItemID((HMENU)lp, (int)wp);
-      if (menuId >= IUP_MDICHILD_START && hWndClient)
-      {
-        Ihandle* child = winDialogGetMdiChildId(ih, menuId-IUP_MDICHILD_START);
-        if (child)
-          SendMessage(hWndClient, WM_MDIACTIVATE, (WPARAM)child->handle, 0);
-        break;
-      }
+      /* we manually activate the MDI child when its menu item is selected. */
+      HWND hChild = GetDlgItem(hWndClient, menuId);
+      if (hChild)
+        SendMessage(hWndClient, WM_MDIACTIVATE, (WPARAM)hChild, 0);
+    }
+    else if (menuId >= SC_SIZE && menuId <= SC_CONTEXTHELP)
+    {
+      /* we manually forward the message to the MDI child */
+      HWND hChild = (HWND)SendMessage(hWndClient, WM_MDIGETACTIVE, 0, 0);
+      if (hChild)
+        SendMessage(hChild, WM_SYSCOMMAND, (WPARAM)menuId, 0);
     }
   }
 
@@ -760,9 +757,7 @@ static int winDialogMapMethod(Ihandle* ih)
 
   if (iupAttribGetBoolean(ih, "MDICHILD"))
   {
-    static int mdi_child_id = 0;
     Ihandle *client;
-    char name[50];
 
     /* must have a parent dialog (the mdi frame) */
     Ihandle* parent = IupGetAttributeHandle(ih, "PARENTDIALOG");
@@ -776,11 +771,6 @@ static int winDialogMapMethod(Ihandle* ih)
 
     /* store the mdi client handle in each mdi child also */
     iupAttribSetStr(ih, "MDICLIENT_HANDLE", (char*)client);
-
-    sprintf(name, "_IUPWIN_MDI_ID_[%d]", mdi_child_id);
-    iupAttribSetStr(parent, name, (char*)ih);
-    mdi_child_id++;
-    iupAttribSetInt(parent, "_IUPWIN_MAX_MDI_ID", mdi_child_id);
 
     classname = "IupDialogMDIChild";
 
@@ -826,7 +816,7 @@ static int winDialogMapMethod(Ihandle* ih)
       }
     }
 
-    if (iupAttribGet(ih, "MDIFRAME"))
+    if (iupAttribGetBoolean(ih, "MDIFRAME"))
     {
       COLORREF color = GetSysColor(COLOR_BTNFACE);
       iupAttribSetStrf(ih, "_IUPWIN_BACKGROUND_COLOR", "%d %d %d", (int)GetRValue(color), 
@@ -909,6 +899,9 @@ static int winDialogMapMethod(Ihandle* ih)
   /* Set the default CmdShow for ShowWindow */
   ih->data->cmd_show = SW_SHOWNORMAL;
 
+  if (iupAttribGetBoolean(ih, "MDICHILD"))
+    winDialogMDIRefreshMenu(ih);
+
   return IUP_NOERROR;
 }
 
@@ -935,6 +928,8 @@ static void winDialogUnMapMethod(Ihandle* ih)
     /* for MDICHILDs must send WM_MDIDESTROY, instead of calling DestroyWindow */
     Ihandle* client = (Ihandle*)iupAttribGet(ih, "MDICLIENT_HANDLE");
     SendMessage(client->handle, WM_MDIDESTROY, (WPARAM)ih->handle, 0);
+
+    winDialogMDIRefreshMenu(ih);
   }
   else
     DestroyWindow(ih->handle); /* this will destroy the Windows children also. */

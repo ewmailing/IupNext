@@ -120,7 +120,7 @@ int iupwinGetScreenRes(void);
 
 /* child window identifier of the first MDI child window created,
    should not conflict with any other command identifiers. */
-#define IUP_MDICHILD_START 100000000
+#define IUP_MDI_FIRSTCHILD 100000000
 
 
 #ifdef __cplusplus
