@@ -105,7 +105,7 @@ called when the data is dropped, before the <b>DRAGDATA_CB</b> callback.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>) [in C]<br><strong>elem</strong>:action(<strong>type</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>) [in C]<br><strong>elem</strong>:dragdatasize_cb(<strong>type</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -123,7 +123,7 @@ data is dropped.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>, void* <strong>data</strong>, int <strong>size</strong>) [in C]<br><strong>elem</strong>:action(<strong>type</strong>: string, <strong>data</strong>: userdata, <strong>size</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>, void* <strong>data</strong>, int <strong>size</strong>) [in C]<br><strong>elem</strong>:dragdata_cb(<strong>type</strong>: string, <strong>data</strong>: userdata, <strong>size</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -140,7 +140,7 @@ is <strong>optional</strong>. It is called after the data has been dropped.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, int <strong>action</strong>) [in C]<br><strong>elem</strong>:action(<strong>action</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>action</strong>) [in C]<br><strong>elem</strong>:dragend_cb(<strong>action</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -160,7 +160,7 @@ it would be called after the <b>DRAGDATA_CB</b> callback.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>, void* <strong>data</strong>, int <strong>size</strong>, int <strong>x</strong>, int <strong>y</strong>) [in C]<br><strong>elem</strong>:action(<strong>type</strong>: string, <strong>data</strong>: userdata, <strong>size, x, y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>, void* <strong>data</strong>, int <strong>size</strong>, int <strong>x</strong>, int <strong>y</strong>) [in C]<br><strong>elem</strong>:dropdata_cb(<strong>type</strong>: string, <strong>data</strong>: userdata, <strong>size, x, y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
