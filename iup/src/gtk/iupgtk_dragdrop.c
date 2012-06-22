@@ -173,7 +173,7 @@ static void gtkDragBegin(GtkWidget *widget, GdkDragContext *drag_context, Ihandl
   if(cbDragBegin)
   {
     int x, y;
-    gdk_window_get_pointer(gtk_widget_get_window(widget), &x, &y, NULL);
+    gdk_window_get_pointer(iupgtkGetWindow(widget), &x, &y, NULL);
 
     if (cbDragBegin(ih, x, y) == IUP_IGNORE)
       gdk_drag_abort(drag_context, 0);
