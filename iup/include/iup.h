@@ -23,7 +23,7 @@ extern "C" {
 #define IUP_DESCRIPTION	"Multi-platform toolkit for building graphical user interfaces."
 #define IUP_VERSION "3.6"         /* bug fixes are reported only by IupVersion functions */
 #define IUP_VERSION_NUMBER 306000
-#define IUP_VERSION_DATE "2012/06/XX"  /* does not include bug fix releases */
+#define IUP_VERSION_DATE "2012/06/23"  /* does not include bug fix releases */
 
 typedef struct Ihandle_ Ihandle;
 typedef int (*Icallback)(Ihandle*);
