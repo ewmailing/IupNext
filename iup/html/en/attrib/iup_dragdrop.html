@@ -45,7 +45,7 @@ application:</p>
 		<li>Define the data types supported by the element for the drag 
 		operation using the DRAGTYPES attribute;</li>
 		<li>Register the required callbacks DRAGBEGIN_CB, DRAGDATASIZE_CB and 
-		DRAGDATA_CB for drag handling. DRAGEND_CB is the only optional callback, 
+		DRAGDATA_CB for drag handling. DRAGEND_CB is the only optional drag callback, 
 		all other callbacks and attributes must be set.</li>
 	</ul>
 	</li>
@@ -55,7 +55,7 @@ application:</p>
 		the DROPTYPES attribute;</li>
 		<li>Register the required callback DROPDATA_CB for handling the data 
 		received. This callback and all the drop target attributes must be set 
-		too. DROPMOTION_CB is a optional callback.</li>
+		too. DROPMOTION_CB is the only optional drop callback.</li>
 	</ul>
 	</li>
 </ul>
@@ -136,7 +136,7 @@ bytes.
 The same value returned by <b>DRAGDATASIZE_CB.</b></p>
 
   
-<p><b>DRAGEND_CB</b>: notifies source that drag is done. The only callback that 
+<p><b>DRAGEND_CB</b>: notifies source that drag is done. The only drag callback that 
 is <strong>optional</strong>. It is called after the data has been dropped.</p>
 
   
@@ -175,8 +175,9 @@ is a light userdata.<br>
 corner of the element.</p>
 
 
-<p><b>DROPMOTION_CB</b>: notifies destination about drag pointer motion. This 
-callback is <strong>optional</strong>. It is called when the mouse moves over 
+<p><b>DROPMOTION_CB</b>: notifies destination about drag pointer motion. The 
+only drop 
+callback that is <strong>optional</strong>. It is called when the mouse moves over 
 any valid drop site.</p>
 
   

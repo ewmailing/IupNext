@@ -134,7 +134,7 @@ static gboolean gtkDragMotion(GtkWidget *widget, GdkDragContext *drag_context, g
     {
       char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
       GdkModifierType mask;
-      gdk_window_get_pointer(gtk_widget_get_window (widget), NULL, NULL, &mask);
+      gdk_window_get_pointer(iupgtkGetWindow(widget), NULL, NULL, &mask);
 
       iupgtkButtonKeySetStatus(mask, 0, status, 0);
       cbDropMotion(ih, x, y, status);
