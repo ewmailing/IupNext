@@ -166,6 +166,12 @@ int testDropData_cb(Ihandle *self, char* type, void* data, int len, int x, int y
   return IUP_DEFAULT;
 }
 
+int testDropMotion_cb(Ihandle *self, int x, int y, char* status)
+{
+  printf("  DROPMOTION_CB(ih=%s, X=%d, Y=%d, status=%s)\n", IupGetAttribute(self, "NAME"), x, y, status);
+  return IUP_DEFAULT;
+}
+
 int testDragEnd_cb(Ihandle *self, int del)
 {
   printf("DRAGEND_CB(ih=%s, remove=%d)\n", IupGetAttribute(self, "NAME"), del);  // finishing...
@@ -247,16 +253,19 @@ int main(int argc, char **argv)
   IupSetAttribute(list1, "DROPTARGET", "YES");
   IupSetAttribute(list1, "DROPTYPES", "TEXT,STRING");
   IupSetCallback (list1, "DROPDATA_CB", (Icallback)testDropData_cb);
+  IupSetCallback (list1, "DROPMOTION_CB", (Icallback)testDropMotion_cb);
   IupSetAttribute(list1, "NAME", "list1");
 
   IupSetAttribute(list2, "DROPTARGET", "YES");
   IupSetAttribute(list2, "DROPTYPES", "TEXT,STRING");
   IupSetCallback (list2, "DROPDATA_CB", (Icallback)testDropData_cb);
+  IupSetCallback (list2, "DROPMOTION_CB", (Icallback)testDropMotion_cb);
   IupSetAttribute(list2, "NAME", "list2");
 
   IupSetAttribute(list3, "DROPTARGET", "YES");
   IupSetAttribute(list3, "DROPTYPES", "STRING");
   IupSetCallback (list3, "DROPDATA_CB", (Icallback)testDropData_cb);
+  IupSetCallback (list3, "DROPMOTION_CB", (Icallback)testDropMotion_cb);
   IupSetAttribute(list3, "NAME", "list3");
 
   IupSetAttribute(list4, "DRAGSOURCE", "YES");
@@ -274,6 +283,7 @@ int main(int argc, char **argv)
   IupSetAttribute(txt1, "DROPTARGET", "YES");
   IupSetAttribute(txt1, "DROPTYPES", "TEXT");
   IupSetCallback (txt1, "DROPDATA_CB", (Icallback)testDropData_cb);
+  IupSetCallback (txt1, "DROPMOTION_CB", (Icallback)testDropMotion_cb);
   IupSetAttribute(txt1, "NAME", "txt1");
 
   txt2 = IupText(NULL);

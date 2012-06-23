@@ -19,6 +19,7 @@
 #include "iup_class.h"
 #include "iup_attrib.h"
 #include "iup_drv.h"
+#include "iup_key.h"
 
 #include "iupgtk_drv.h"
 
@@ -127,6 +128,18 @@ static gboolean gtkDragMotion(GtkWidget *widget, GdkDragContext *drag_context, g
 
   if(targetAtom != GDK_NONE)
   {
+    IFniis cbDropMotion = (IFniis)IupGetCallback(ih, "DROPMOTION_CB");
+
+    if(cbDropMotion)
+    {
+      char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+      GdkModifierType mask;
+      gdk_window_get_pointer(gtk_widget_get_window (widget), NULL, NULL, &mask);
+
+      iupgtkButtonKeySetStatus(mask, 0, status, 0);
+      cbDropMotion(ih, x, y, status);
+    }
+
 #if GTK_CHECK_VERSION(2, 22, 0)   
     gdk_drag_status(drag_context, gdk_drag_context_get_suggested_action(drag_context), time);
 #else
@@ -241,6 +254,7 @@ static int gtkSetDropTargetAttrib(Ihandle* ih, const char* value)
 
     gtk_drag_dest_set(ih->handle, GTK_DEST_DEFAULT_ALL, drop_types_entry, targetlist_count, GDK_ACTION_MOVE|GDK_ACTION_COPY);
 
+    g_signal_connect(ih->handle, "drag_motion", G_CALLBACK(gtkDragMotion), ih);
     g_signal_connect(ih->handle, "drag_data_received", G_CALLBACK(gtkDragDataReceived), ih);
 
     gtk_target_table_free(drop_types_entry, targetlist_count);
@@ -287,7 +301,6 @@ static int gtkSetDragSourceAttrib(Ihandle* ih, const char* value)
     g_signal_connect(ih->handle, "drag_begin", G_CALLBACK(gtkDragBegin), ih);
     g_signal_connect(ih->handle, "drag_data_get", G_CALLBACK(gtkDragDataGet), ih);
     g_signal_connect(ih->handle, "drag_end", G_CALLBACK(gtkDragEnd), ih);
-    g_signal_connect(ih->handle, "drag_motion", G_CALLBACK(gtkDragMotion), ih);
 
     gtk_target_table_free(drag_types_entry, targetlist_count);
   }
@@ -371,9 +384,10 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
 
   iupClassRegisterCallback(ic, "DRAGBEGIN_CB", "ii");
   iupClassRegisterCallback(ic, "DRAGDATASIZE_CB", "s");
-  iupClassRegisterCallback(ic, "DRAGDATA_CB",  "sCi");
-  iupClassRegisterCallback(ic, "DRAGEND_CB",   "i");
-  iupClassRegisterCallback(ic, "DROPDATA_CB",  "sCiii");
+  iupClassRegisterCallback(ic, "DRAGDATA_CB", "sCi");
+  iupClassRegisterCallback(ic, "DRAGEND_CB", "i");
+  iupClassRegisterCallback(ic, "DROPDATA_CB", "sCiii");
+  iupClassRegisterCallback(ic, "DROPMOTION_CB", "iis");
 
   iupClassRegisterAttribute(ic, "DRAGTYPES",  NULL, gtkSetDragTypesAttrib,  NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPTYPES",  NULL, gtkSetDropTypesAttrib,  NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

@@ -83,6 +83,34 @@ static void motDropTransferProc(Widget dropTransfer, Ihandle* ih, Atom *selType,
   (void)selType;
 }
 
+static void motDragProc(Widget dropTarget, XtPointer clientData, XmDragProcCallbackStruct* cbs)
+{
+  if(cbs->reason == XmCR_DROP_SITE_MOTION_MESSAGE)
+  {
+    Ihandle* ih = NULL;
+    int x = cbs->x;
+    int y = cbs->y;
+    IFniis cbDropMotion;
+
+    XtVaGetValues(dropTarget, XmNuserData, &ih, NULL);  
+
+    cbDropMotion = (IFniis)IupGetCallback(ih, "DROPMOTION_CB");
+
+    if(cbDropMotion)
+    {
+      int z;
+      Window window;
+      unsigned int state;
+      char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+
+      XQueryPointer(iupmot_display, DefaultRootWindow(iupmot_display), &window, &window, &z, &z, &z, &z, &state);
+      iupmotButtonKeySetStatus(state, 0, status, 0);
+
+      cbDropMotion(ih, x, y, status);
+    }
+  }
+}
+
 static void motDropProc(Widget dropTarget, XtPointer clientData, XmDropProcCallbackStruct* dropData)
 {
   XmDropTransferEntryRec transferList[2];
@@ -96,7 +124,6 @@ static void motDropProc(Widget dropTarget, XtPointer clientData, XmDropProcCallb
   Ihandle *ih = NULL;
 
   /* this is called before drag data is processed */ 
-
   dragContext = dropData->dragContext;
 
   /* Getting drop types */
@@ -142,6 +169,7 @@ static void motDropProc(Widget dropTarget, XtPointer clientData, XmDropProcCallb
   else 
   {
     XtVaGetValues(dropTarget, XmNuserData, &ih, NULL);
+
     iupAttribSetInt(ih, "_IUPMOT_DROP_X", (int)dropData->x);
     iupAttribSetInt(ih, "_IUPMOT_DROP_Y", (int)dropData->y);
 
@@ -156,7 +184,7 @@ static void motDropProc(Widget dropTarget, XtPointer clientData, XmDropProcCallb
 
   /* creates a XmDropTransfer (not used here) */
   dropTransfer = XmDropTransferStart(dragContext, args, num_args);
-  
+
   (void)clientData;
 }
 
@@ -349,6 +377,7 @@ static int motSetDropTargetAttrib(Ihandle* ih, const char* value)
     iupMOT_SETARG(args, num_args, XmNimportTargets, dropTypesList);
     iupMOT_SETARG(args, num_args, XmNnumImportTargets, numDropTypes);
     iupMOT_SETARG(args, num_args, XmNdropProc, motDropProc);
+    iupMOT_SETARG(args, num_args, XmNdragProc, motDragProc);
     XmDropSiteUpdate(w, args, num_args);
 
     XtVaSetValues(w, XmNuserData, ih, NULL);  /* Warning: always check if this affects other controls */
@@ -421,9 +450,10 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
 
   iupClassRegisterCallback(ic, "DRAGBEGIN_CB", "ii");
   iupClassRegisterCallback(ic, "DRAGDATASIZE_CB", "s");
-  iupClassRegisterCallback(ic, "DRAGDATA_CB",  "sCi");
-  iupClassRegisterCallback(ic, "DRAGEND_CB",   "i");
-  iupClassRegisterCallback(ic, "DROPDATA_CB",  "sCiii");
+  iupClassRegisterCallback(ic, "DRAGDATA_CB", "sCi");
+  iupClassRegisterCallback(ic, "DRAGEND_CB", "i");
+  iupClassRegisterCallback(ic, "DROPDATA_CB", "sCiii");
+  iupClassRegisterCallback(ic, "DROPMOTION_CB", "iis");
 
   iupClassRegisterAttribute(ic, "DRAGTYPES",  NULL, motSetDragTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPTYPES",  NULL, motSetDropTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

@@ -559,7 +559,7 @@ static DWORD winGetDropEffect(DWORD dwKeyState, DWORD dwOKEffect)
      no modifier -- Default Drop
      CTRL        -- DROPEFFECT_COPY
      SHIFT       -- DROPEFFECT_MOVE
-     CTRL-SHIFT  -- DROPEFFECT_LINK (unsuported, defaults to copy) */
+     CTRL-SHIFT  -- DROPEFFECT_LINK (unsupported, defaults to copy) */
 
   if (dwKeyState & MK_CONTROL)
     dwEffect = DROPEFFECT_COPY;
@@ -625,10 +625,22 @@ static HRESULT STDMETHODCALLTYPE IwinDropTarget_DragEnter(IwinDropTarget* pThis,
 
 static HRESULT STDMETHODCALLTYPE IwinDropTarget_DragOver(IwinDropTarget* pThis, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
 {
-  (void)pt;
-  (void)pThis;
   if (pThis->fAllowDrop)
+  {
+    IFniis cbDropMotion = (IFniis)IupGetCallback(pThis->ih, "DROPMOTION_CB");
+
     *pdwEffect = winGetDropEffect(dwKeyState, *pdwEffect);
+
+    if(cbDropMotion)
+    {
+      char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+      int x = pt.x, y = pt.y;
+      iupdrvScreenToClient(pThis->ih, &x, &y);
+      iupwinButtonKeySetStatus((WORD)dwKeyState, status, 0);
+
+      cbDropMotion(pThis->ih, x, y, status);
+    }
+  }
   else
     *pdwEffect = DROPEFFECT_NONE;
   return S_OK;
@@ -1077,9 +1089,10 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
 
   iupClassRegisterCallback(ic, "DRAGBEGIN_CB", "ii");
   iupClassRegisterCallback(ic, "DRAGDATASIZE_CB", "s");
-  iupClassRegisterCallback(ic, "DRAGDATA_CB",  "sCi");
-  iupClassRegisterCallback(ic, "DRAGEND_CB",   "i");
-  iupClassRegisterCallback(ic, "DROPDATA_CB",  "sCiii");
+  iupClassRegisterCallback(ic, "DRAGDATA_CB", "sCi");
+  iupClassRegisterCallback(ic, "DRAGEND_CB", "i");
+  iupClassRegisterCallback(ic, "DROPDATA_CB", "sCiii");
+  iupClassRegisterCallback(ic, "DROPMOTION_CB", "iis");
 
   iupClassRegisterAttribute(ic, "DRAGTYPES",  NULL, winSetDragTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPTYPES",  NULL, winSetDropTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
