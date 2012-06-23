@@ -30,11 +30,13 @@
 #define MGL_VERSION	11.2
 
 //#ifdef WIN32
+#if defined(__BORLANDC__) || defined(_MSC_VER)
 #ifdef _MSC_VER
 #define hypot _hypot
 #define getcwd _getcwd
 #define isfinite _finite
 #define chdir	_chdir // BORLAND has chdir
+#endif
 #include <float.h>
 const unsigned long mgl_nan[2] = {0xffffffff, 0x7fffffff};
 #define NANd	(*(double*)mgl_nan)
@@ -50,7 +52,8 @@ const unsigned long mgl_nan[2] = {0xffffffff, 0x7fffffff};
 #define M_PI	3.14159265358979323846  /* pi */
 #endif
 //-----------------------------------------------------------------------------
-#ifdef WIN32
+//#ifdef WIN32
+#ifdef _MSC_VER
 #define mglprintf    _snwprintf
 #else
 #define mglprintf    swprintf

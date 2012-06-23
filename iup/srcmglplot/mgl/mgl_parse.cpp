@@ -27,8 +27,12 @@
 
 #ifdef WIN32
 #include <io.h>
+#ifdef __CYGWIN__
+#include <unistd.h>
+#else
 wchar_t *wcstokw32(wchar_t *wcs, const wchar_t *delim)	{	return wcstok(wcs,delim);	}
 #define wcstok(a,b,c) wcstokw32(a,b)
+#endif
 #else
 #include <unistd.h>
 #endif

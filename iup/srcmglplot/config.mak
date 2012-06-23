@@ -19,7 +19,7 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 endif
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
-  LIBS = freetype-6
+  LIBS = freetype-6 fontconfig
 endif
 
 LIBS := iup iupgl $(LIBS)

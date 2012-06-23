@@ -20,7 +20,12 @@
 #include <wchar.h>
 #ifdef WIN32
 #include <io.h>
+#ifdef _MSC_VER
 #include <direct.h>
+#endif
+#ifdef __CYGWIN__
+#include <unistd.h>
+#endif
 #else
 #include <unistd.h>
 #endif
