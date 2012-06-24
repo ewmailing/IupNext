@@ -1,18 +1,44 @@
 #!/bin/tcsh
-cp -f ../lib/dll8/*.dll ../bin/Win32
-cp -f ../../cd/lib/dll8/*.dll ../bin/Win32
-cp -f ../../im/lib/dll8/*.dll ../bin/Win32
-cp -f ../../lua5.1/lib/dll8/*.dll ../bin/Win32
-cp -f ../../luagl/lib/dll8/*.dll ../bin/Win32
-cp -f ../../lfs/lib/dll8/*.dll ../bin/Win32
-cp -fr ../../lua5.1/bin/Win32/Microsoft.VC80.CRT ../bin/Win32
-rm -f ../bin/Win32/*3.dll
+cp -f ../lib/dll8/*.dll ../bin/Win32/Lua5.1
+cp -f ../../cd/lib/dll8/*.dll ../bin/Win32/Lua5.1
+cp -f ../../im/lib/dll8/*.dll ../bin/Win32/Lua5.1
+cp -f ../../lua5.1/lib/dll8/*.dll ../bin/Win32/Lua5.1
+cp -f ../../luagl/lib5.1/dll8/*.dll ../bin/Win32/Lua5.1
+cp -f ../../lfs/lib5.1/dll8/*.dll ../bin/Win32/Lua5.1
+cp -fr ../../lua5.1/bin/Win32/Microsoft.VC80.CRT ../bin/Win32/Lua5.1
+rm -f ../bin/Win32/Lua5.1/*3.dll
+rm -f ../bin/Win32/Lua5.1/*52.dll
+mv ../bin/Win32/iuplua51.exe ../bin/Win32/Lua5.1/iuplua51.exe
 
-cp -f ../lib/dll8_64/*.dll ../bin/Win64
-cp -f ../../cd/lib/dll8_64/*.dll ../bin/Win64
-cp -f ../../im/lib/dll8_64/*.dll ../bin/Win64
-cp -f ../../lua5.1/lib/dll8_64/*.dll ../bin/Win64
-cp -f ../../luagl/lib/dll8_64/*.dll ../bin/Win64
-cp -f ../../lfs/lib/dll8_64/*.dll ../bin/Win64
-cp -fr ../../lua5.1/bin/Win64/Microsoft.VC80.CRT ../bin/Win64
-rm -f ../bin/Win64/*3.dll
+cp -f ../lib/dll8_64/*.dll ../bin/Win64/Lua5.1
+cp -f ../../cd/lib/dll8_64/*.dll ../bin/Win64/Lua5.1
+cp -f ../../im/lib/dll8_64/*.dll ../bin/Win64/Lua5.1
+cp -f ../../lua5.1/lib/dll8_64/*.dll ../bin/Win64/Lua5.1
+cp -f ../../luagl/lib5.1/dll8_64/*.dll ../bin/Win64/Lua5.1
+cp -f ../../lfs/lib5.1/dll8_64/*.dll ../bin/Win64/Lua5.1
+cp -fr ../../lua5.1/bin/Win64/Microsoft.VC80.CRT ../bin/Win64/Lua5.1
+rm -f ../bin/Win64/Lua5.1/*3.dll
+rm -f ../bin/Win64/Lua5.1/*52.dll
+mv ../bin/Win64/iuplua51.exe ../bin/Win64/Lua5.1/iuplua51.exe
+
+cp -f ../lib/dll10/*.dll ../bin/Win32/Lua52
+cp -f ../../cd/lib/dll10/*.dll ../bin/Win32/Lua52
+cp -f ../../im/lib/dll10/*.dll ../bin/Win32/Lua52
+cp -f ../../lua52/lib/dll10/*.dll ../bin/Win32/Lua52
+cp -f ../../luagl/lib52/dll10/*.dll ../bin/Win32/Lua52
+cp -f ../../lfs/lib52/dll10/*.dll ../bin/Win32/Lua52
+cp -f ../dist/Microsoft.VC100.CRT/dll10/* ../bin/Win32/Lua52
+rm -f ../bin/Win32/Lua52/*3.dll
+rm -f ../bin/Win32/Lua52/*51.dll
+mv ../bin/Win32/iuplua52.exe ../bin/Win32/Lua52/iuplua52.exe
+
+cp -f ../lib/dll10_64/*.dll ../bin/Win64/Lua52
+cp -f ../../cd/lib/dll10_64/*.dll ../bin/Win64/Lua52
+cp -f ../../im/lib/dll10_64/*.dll ../bin/Win64/Lua52
+cp -f ../../lua52/lib/dll10_64/*.dll ../bin/Win64/Lua52
+cp -f ../../luagl/lib52/dll10_64/*.dll ../bin/Win64/Lua52
+cp -f ../../lfs/lib52/dll10_64/*.dll ../bin/Win64/Lua52
+cp -f ../dist/Microsoft.VC100.CRT/dll10_64/* ../bin/Win64/Lua52
+rm -f ../bin/Win64/Lua52/*3.dll
+rm -f ../bin/Win64/Lua52/*51.dll
+mv ../bin/Win64/iuplua52.exe ../bin/Win64/Lua52/iuplua52.exe
