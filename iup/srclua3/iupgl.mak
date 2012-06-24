@@ -4,7 +4,8 @@ OPT = YES
 
 USE_LUA  = Yes
 USE_OPENGL = Yes
-                     
+USE_MACOS_OPENGL = Yes
+
 SRC = iuplua_glcanvas.c
 
 INCLUDES = ../include
