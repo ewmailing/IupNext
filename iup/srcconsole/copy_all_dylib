@@ -1,7 +1,6 @@
 #!/bin/tcsh
 
-#foreach plat ( MacOS106 MacOS105x86 MacOS104x86 )
-foreach plat ( MacOS106 )
+foreach plat ( MacOS107 )
   echo $plat
   cp -f ../lib/$plat/*.so ../lib/$plat/*.dylib ../bin/$plat
   cp -f ../../cd/lib/$plat/*.so ../../cd/lib/$plat/*.dylib ../bin/$plat

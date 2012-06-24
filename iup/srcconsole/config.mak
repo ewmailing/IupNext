@@ -15,11 +15,11 @@ ifdef USE_LUA52
   LUASFX = 52
 else
   USE_LUA51 = Yes
-  LUASFX = 51
+  LUASFX = 5.1
 endif
 
 APPNAME := $(APPNAME)$(LUASFX)
-SRC = iup_lua$(LUASFX).c
+SRC = iup_lua$(LIBLUASUFX).c
 
 ifdef NO_LUAOBJECT
   DEFINES += IUPLUA_USELH
@@ -28,7 +28,7 @@ ifdef NO_LUAOBJECT
 else
   DEFINES += IUPLUA_USELOH
   USE_LOH_SUBDIR = Yes
-  LOHDIR = loh$(LUASFX)
+  LOHDIR = loh$(LIBLUASUFX)
 endif
 
 ifdef GTK_DEFAULT

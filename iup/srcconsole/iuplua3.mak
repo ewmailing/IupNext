@@ -80,6 +80,10 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC += iuplua3.rc
 endif
 
+ifneq ($(findstring cygw, $(TEC_UNAME)), )
+  LIBS += fontconfig
+endif
+
 ifeq ($(TEC_UNAME), vc8)
   ifdef DBG
     #debug info not working for vc8 linker

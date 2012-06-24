@@ -1,44 +1,45 @@
-#!/bin/tcsh
-cp -f ../lib/dll8/*.dll ../bin/Win32/Lua5.1
-cp -f ../../cd/lib/dll8/*.dll ../bin/Win32/Lua5.1
-cp -f ../../im/lib/dll8/*.dll ../bin/Win32/Lua5.1
-cp -f ../../lua5.1/lib/dll8/*.dll ../bin/Win32/Lua5.1
-cp -f ../../luagl/lib5.1/dll8/*.dll ../bin/Win32/Lua5.1
-cp -f ../../lfs/lib5.1/dll8/*.dll ../bin/Win32/Lua5.1
-cp -fr ../../lua5.1/bin/Win32/Microsoft.VC80.CRT ../bin/Win32/Lua5.1
-rm -f ../bin/Win32/Lua5.1/*3.dll
-rm -f ../bin/Win32/Lua5.1/*52.dll
-mv ../bin/Win32/iuplua51.exe ../bin/Win32/Lua5.1/iuplua51.exe
+#!/bin/bash
 
-cp -f ../lib/dll8_64/*.dll ../bin/Win64/Lua5.1
-cp -f ../../cd/lib/dll8_64/*.dll ../bin/Win64/Lua5.1
-cp -f ../../im/lib/dll8_64/*.dll ../bin/Win64/Lua5.1
-cp -f ../../lua5.1/lib/dll8_64/*.dll ../bin/Win64/Lua5.1
-cp -f ../../luagl/lib5.1/dll8_64/*.dll ../bin/Win64/Lua5.1
-cp -f ../../lfs/lib5.1/dll8_64/*.dll ../bin/Win64/Lua5.1
-cp -fr ../../lua5.1/bin/Win64/Microsoft.VC80.CRT ../bin/Win64/Lua5.1
-rm -f ../bin/Win64/Lua5.1/*3.dll
-rm -f ../bin/Win64/Lua5.1/*52.dll
-mv ../bin/Win64/iuplua51.exe ../bin/Win64/Lua5.1/iuplua51.exe
+Copy_DLLs()
+{
+  PLAT=$1
+  SYS=$2
+  LUA_SFX=$3
+  
+  if [ $SYS == Win64 ]; then
+    SFX=_64
+    PLAT=$PLAT$SFX
+  fi
+  
+  mkdir -v ../bin/$SYS/Lua$LUA_SFX
+  cp -fv ../lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -fv ../../cd/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -fv ../../im/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -fv ../../lua$LUA_SFX/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -fv ../../luagl/lib$LUA_SFX/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -fv ../../lfs/lib$LUA_SFX/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  
+  if [ $1 == dll8 ]; then
+    cp -frv ../../lua$LUA_SFX/bin/$SYS/Microsoft.VC80.CRT ../bin/$SYS/Lua$LUA_SFX
+  fi
+  if [ $1 == dll10 ]; then
+    cp -fv ../dist/Microsoft.VC100.CRT/$PLAT/* ../bin/$SYS/Lua$LUA_SFX
+  fi
+  
+  rm -fv ../bin/$SYS/Lua$LUA_SFX/*3.dll
+  if [ $LUA_SFX == 5.1 ]; then
+    rm -fv ../bin/$SYS/Lua$LUA_SFX/*52.dll
+  else
+    rm -fv ../bin/$SYS/Lua$LUA_SFX/*51.dll
+  fi
+  
+  mv -fv ../bin/$SYS/iuplua$LUA_SFX.exe ../bin/$SYS/Lua$LUA_SFX/iuplua$LUA_SFX.exe
+}
 
-cp -f ../lib/dll10/*.dll ../bin/Win32/Lua52
-cp -f ../../cd/lib/dll10/*.dll ../bin/Win32/Lua52
-cp -f ../../im/lib/dll10/*.dll ../bin/Win32/Lua52
-cp -f ../../lua52/lib/dll10/*.dll ../bin/Win32/Lua52
-cp -f ../../luagl/lib52/dll10/*.dll ../bin/Win32/Lua52
-cp -f ../../lfs/lib52/dll10/*.dll ../bin/Win32/Lua52
-cp -f ../dist/Microsoft.VC100.CRT/dll10/* ../bin/Win32/Lua52
-rm -f ../bin/Win32/Lua52/*3.dll
-rm -f ../bin/Win32/Lua52/*51.dll
-mv ../bin/Win32/iuplua52.exe ../bin/Win32/Lua52/iuplua52.exe
+Copy_DLLs dll8 Win32 5.1
+Copy_DLLs dll8 Win64 5.1
+Copy_DLLs dll10 Win32 52
+Copy_DLLs dll10 Win64 52
 
-cp -f ../lib/dll10_64/*.dll ../bin/Win64/Lua52
-cp -f ../../cd/lib/dll10_64/*.dll ../bin/Win64/Lua52
-cp -f ../../im/lib/dll10_64/*.dll ../bin/Win64/Lua52
-cp -f ../../lua52/lib/dll10_64/*.dll ../bin/Win64/Lua52
-cp -f ../../luagl/lib52/dll10_64/*.dll ../bin/Win64/Lua52
-cp -f ../../lfs/lib52/dll10_64/*.dll ../bin/Win64/Lua52
-cp -f ../dist/Microsoft.VC100.CRT/dll10_64/* ../bin/Win64/Lua52
-rm -f ../bin/Win64/Lua52/*3.dll
-rm -f ../bin/Win64/Lua52/*51.dll
-mv ../bin/Win64/iuplua52.exe ../bin/Win64/Lua52/iuplua52.exe
+Copy_DLLs cygw17 cygw17 5.1
+Copy_DLLs cygw17 cygw17 52
