@@ -11,29 +11,30 @@ Copy_DLLs()
     PLAT=$PLAT$SFX
   fi
   
-  mkdir -v ../bin/$SYS/Lua$LUA_SFX
-  cp -fv ../lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
-  cp -fv ../../cd/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
-  cp -fv ../../im/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
-  cp -fv ../../lua$LUA_SFX/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
-  cp -fv ../../luagl/lib$LUA_SFX/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
-  cp -fv ../../lfs/lib$LUA_SFX/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  echo $PLAT/$SYS/Lua$LUA_SFX
+  mkdir ../bin/$SYS/Lua$LUA_SFX
+  cp -f ../lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -f ../../cd/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -f ../../im/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -f ../../lua$LUA_SFX/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -f ../../luagl/lib$LUA_SFX/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -f ../../lfs/lib$LUA_SFX/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   
   if [ $1 == dll8 ]; then
     cp -frv ../../lua$LUA_SFX/bin/$SYS/Microsoft.VC80.CRT ../bin/$SYS/Lua$LUA_SFX
   fi
   if [ $1 == dll10 ]; then
-    cp -fv ../dist/Microsoft.VC100.CRT/$PLAT/* ../bin/$SYS/Lua$LUA_SFX
+    cp -f ../dist/Microsoft.VC100.CRT/$PLAT/* ../bin/$SYS/Lua$LUA_SFX
   fi
   
-  rm -fv ../bin/$SYS/Lua$LUA_SFX/*3.dll
+  rm -f ../bin/$SYS/Lua$LUA_SFX/*3.dll
   if [ $LUA_SFX == 5.1 ]; then
-    rm -fv ../bin/$SYS/Lua$LUA_SFX/*52.dll
+    rm -f ../bin/$SYS/Lua$LUA_SFX/*52.dll
   else
-    rm -fv ../bin/$SYS/Lua$LUA_SFX/*51.dll
+    rm -f ../bin/$SYS/Lua$LUA_SFX/*51.dll
   fi
   
-  mv -fv ../bin/$SYS/iuplua$LUA_SFX.exe ../bin/$SYS/Lua$LUA_SFX/iuplua$LUA_SFX.exe
+  mv -f ../bin/$SYS/iuplua$LUA_SFX.exe ../bin/$SYS/Lua$LUA_SFX/iuplua$LUA_SFX.exe
 }
 
 Copy_DLLs dll8 Win32 5.1
