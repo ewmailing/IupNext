@@ -17,7 +17,7 @@ Copy_DLLs()
   cp -f ../../cd/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f ../../im/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f ../../lua$LUA_SFX/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
-  cp -f ../../luagl/lib$LUA_SFX/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -f ../../luagl/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f ../../lfs/lib$LUA_SFX/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   
   if [ $1 == dll8 ]; then
