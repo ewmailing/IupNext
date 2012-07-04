@@ -343,13 +343,6 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
       }
       break;
     }
-  default:
-    /* Process drag list box messages */
-    if(msg == (UINT)WM_DRAGLISTMSG)
-    {
-      *result = iupwinListProcessDND(ih, lp);
-      return 1;  /* abort default processing */
-    }
   }
 
   return 0;

@@ -55,6 +55,7 @@
 #define WIN_SETTOPINDEX(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETTOPINDEX: LB_SETTOPINDEX)
 #define WIN_SETITEMHEIGHT(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETITEMHEIGHT: LB_SETITEMHEIGHT)
 
+static UINT WM_DRAGLISTMSG = 0;
 
 typedef struct _winListItemData
 {
@@ -1040,7 +1041,9 @@ int iupwinListProcessDND(Ihandle *ih, LPARAM lp)
 
 static void winListEnableDragDrop(Ihandle* ih)
 {
-  WM_DRAGLISTMSG = RegisterWindowMessage(DRAGLISTMSGSTRING);
+  if (!WM_DRAGLISTMSG)
+    WM_DRAGLISTMSG = RegisterWindowMessage(DRAGLISTMSGSTRING);
+
   MakeDragList(ih->handle);
 }
 
@@ -1516,6 +1519,16 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     case WM_MOUSEMOVE:
       iupwinMouseMove(ih, msg, wp, lp);
       break;
+    }
+  }
+
+  if (ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple)
+  {
+    /* Process drag list box messages */
+    if(msg == WM_DRAGLISTMSG)
+    {
+      *result = iupwinListProcessDND(ih, lp);
+      return 1;  /* abort default processing */
     }
   }
 

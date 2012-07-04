@@ -48,10 +48,6 @@ int iupwinDragStart(Ihandle* ih);
 void iupwinDropFiles(HDROP hDrop, Ihandle *ih);
 void iupwinDestroyDragDrop(Ihandle* ih);
 
-/* DnD List Box*/
-int WM_DRAGLISTMSG;
-int iupwinListProcessDND(Ihandle *ih, LPARAM lp);
-
 /* menu */
 void iupwinMenuDialogProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 Ihandle* iupwinMenuGetItemHandle(HMENU hmenu, int menuId);
