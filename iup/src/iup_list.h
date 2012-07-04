@@ -31,6 +31,7 @@ char* iupListGetPaddingAttrib(Ihandle* ih);
 char* iupListGetSpacingAttrib(Ihandle* ih);
 void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos);
 void iupListUpdateOldValue(Ihandle* ih, int pos, int removed);
+int iupListCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int *is_ctrl);
 
 struct _IcontrolData 
 {
@@ -44,7 +45,8 @@ struct _IcontrolData
       is_dropdown,
       has_editbox,
       maximg_w, maximg_h, /* used only in Windows */
-      show_image;
+      show_image,
+      show_dragdrop;
   Imask* mask;
 };
 

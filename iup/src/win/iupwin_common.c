@@ -213,8 +213,6 @@ void iupwinSetStyle(Ihandle* ih, DWORD value, int set)
 
 int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 { 
-  (void)lp;
-
   switch (msg)
   {
   case WM_GETDLGCODE:
@@ -344,6 +342,13 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
         cb(ih, v);
       }
       break;
+    }
+  default:
+    /* Process drag list box messages */
+    if(msg == (UINT)WM_DRAGLISTMSG)
+    {
+      *result = iupwinListProcessDND(ih, lp);
+      return 1;  /* abort default processing */
     }
   }
 

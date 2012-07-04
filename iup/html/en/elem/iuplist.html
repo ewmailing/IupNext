@@ -208,6 +208,9 @@ never shown. In Windows, if DROPEXPAND=YES then the
 horizontal scrollbar is never shown.</p>
 
   
+<p><strong>SHOWDRAGDROP</strong> (creation only) (<font size="3">non inheritable</font>): Enables the 
+internal drag and drop of items, and enables the <strong>DRAGDROP_CB</strong> callback. Default:
+  &quot;NO&quot;. Works only if DROPDOWN=NO and MULTIPLE=NO.&nbsp; (since 3.6)</p>
 <p><b>
   SHOWDROPDOWN</b> (write-only): opens or closes the dropdown list. Can be
   "YES" or
@@ -398,6 +401,30 @@ Called only when DROPDOWN=NO. (since 3.0)</p>
 <strong>text</strong>: Text of the selected item.</p>
 
   
+<p><strong>DRAGDROP_CB</strong>:
+  Action generated when 
+  an internal drag and drop is executed. Only active if <strong>SHOWDRAGDROP=YES.</strong> 
+(since 3.6)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <b>drag_id</b>, int <b>drop_id</b>, int <b>isshift</b>, int <b>iscontrol</b>); [in C] 
+<strong>elem</strong>:dragdrop_cb(<b>drag_id</b>, <b>drop_id</b>, <b>isshift</b>, <b>iscontrol</b><strong>:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
+<strong>drag_id</strong>:
+    Identifier of the clicked item where the 
+    drag start. <br>
+<strong>drop_id</strong>:
+    Identifier of the clicked item where the 
+    drop were executed.<br>
+<strong>isshift</strong>: Boolean flag indicating the shift key state. <br>
+<strong>iscontrol</strong>: Boolean flag indicating the control key state.</p>
+<p class="info">Returns: if returns IUP_CONTINUE, or 
+if the callback is not defined and <strong>SHOWDRAGDROP=YES</strong>, then the 
+item 
+is moved to the new position. If Ctrl is pressed then the item is copied instead 
+of moved.</p>
+
+    
+    
 <p><b>DROPDOWN_CB</b>: Action generated when the list of a dropdown is shown or 
 hidden. 
 Called only when DROPDOWN=YES. (since 3.0)</p>
@@ -517,8 +544,8 @@ supported.</p>
 
 
 <p>
-<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes and callbacks 
-are supported.</p>
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes and 
+callbacks are supported, but SHOWDRAGDROP must be set to NO.&nbsp;</p>
 
 
 
@@ -565,6 +592,12 @@ just right to include the borders and the text. So the <strong>User</strong>
 height from RASTERSIZE or SIZE will be always ignored.</p>
 <p> In GTK older than 2.12, the editbox of a dropdown will not follow the list 
 attributes: FONT, BGCOLOR, FGCOLOR and SPACING.</p>
+<p> <strong>Clicking and dragging a item</strong>: if SHOWDRAGDROP=Yes 
+	starts a drag. When mouse is released, the DRAGDROP_CB callback is called. 
+	If the callback does not exist or if it returns IUP_CONTINUE then the item is moved 
+	to the new position. If Ctrl is pressed then the node is copied instead of 
+	moved. In Windows and GTK, drag is performed with the left mouse button. In Motif, the middle mouse 
+	button is used to drag. (since 3.6)</p>
 
 
 <h3>Utility Functions </h3>

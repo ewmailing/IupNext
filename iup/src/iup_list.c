@@ -17,6 +17,7 @@
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
+#include "iup_drvinfo.h"
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_mask.h"
@@ -579,6 +580,47 @@ static char* iListGetShowImageAttrib(Ihandle* ih)
     return "NO";
 }
 
+int iupListCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int *is_ctrl)
+{
+  IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
+  int is_shift = 0;
+  char key[5];
+  iupdrvGetKeyState(key);
+  if (key[0] == 'S')
+    is_shift = 1;
+  if (key[1] == 'C')
+    *is_ctrl = 1;
+  else
+    *is_ctrl = 0;
+
+  if (cbDragDrop)
+    return cbDragDrop(ih, drag_id, drop_id, is_shift, *is_ctrl);
+
+  return IUP_CONTINUE; /* allow to move by default if callback not defined */
+}
+
+static char* iListGetShowDragDropAttrib(Ihandle* ih)
+{
+  if (ih->data->show_dragdrop)
+    return "YES";
+  else
+    return "NO";
+}
+
+static int iListSetShowDragDropAttrib(Ihandle* ih, const char* value)
+{
+  /* valid only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+    ih->data->show_dragdrop = 1;
+  else
+    ih->data->show_dragdrop = 0;
+
+  return 0;
+}
+
 
 /*****************************************************************************************/
 
@@ -787,6 +829,7 @@ Iclass* iupListNewClass(void)
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
   iupClassRegisterCallback(ic, "MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "BUTTON_CB", "iiiis");
+  iupClassRegisterCallback(ic, "DRAGDROP_CB", "iiii");
 
   iupClassRegisterCallback(ic, "EDIT_CB", "is");
   iupClassRegisterCallback(ic, "CARET_CB", "iii");
@@ -824,6 +867,7 @@ Iclass* iupListNewClass(void)
   iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWIMAGE", iListGetShowImageAttrib, iListSetShowImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDRAGDROP", iListGetShowDragDropAttrib, iListSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvListInitClass(ic);
 

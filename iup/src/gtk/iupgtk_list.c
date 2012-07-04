@@ -915,6 +915,134 @@ static int gtkListSetImageAttrib(Ihandle* ih, int id, const char* value)
   return 1;
 }
 
+
+/*********************************************************************************/
+
+static void gtkListDragDataReceived(GtkWidget *widget, GdkDragContext *context, gint x, gint y, 
+                                    GtkSelectionData *selection_data, guint info, guint time, Ihandle* ih)
+{
+  int idDrag = iupAttribGetInt(ih, "_IUPLIST_DRAGITEM");
+  int idDrop = gtkListConvertXYToPos(ih, x, y);
+
+  if (idDrag && idDrop)
+  {
+    int is_ctrl;
+
+    if (iupListCallDragDropCb(ih, idDrag, idDrop, &is_ctrl) == IUP_CONTINUE)
+    {
+      GtkTreeModel *model = gtkListGetModel(ih);
+      GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
+      GtkTreePath* path;
+      GtkTreeIter iterDrag;
+      int posDrag = iupListGetPos(ih, idDrag);
+      int posDrop = iupListGetPos(ih, idDrop);
+      gchar *text = NULL;
+      GdkPixbuf *image = NULL;
+      gboolean child;
+
+      /* Copy text and image of the dragged item */
+      child = gtk_tree_model_iter_nth_child(model, &iterDrag, NULL, posDrag);
+      gtk_tree_model_get(model, &iterDrag, IUPGTK_LIST_TEXT, &text, IUPGTK_LIST_IMAGE, &image, -1);
+
+      /* Dragged item must be removed if CTRL is not pressed */
+      if (child && !is_ctrl)
+        gtk_list_store_remove(GTK_LIST_STORE(model), &iterDrag);
+
+      /* Copy or move the text value to the new item position */
+      if(posDrop >= 0)
+      {
+        iupdrvListInsertItem(ih, posDrop, iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(text)));
+      }
+      else
+      {
+        iupdrvListAppendItem(ih, iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(text)));
+        posDrop = iupdrvListGetCount(ih) - 1;  /* posDrop is at the end of the list */
+      }
+
+      g_free(text);
+
+      /* Copy or move the image value (if exists) to the new item position */
+      if(image)
+      {
+        GtkTreeIter iterDrop;
+        gtk_tree_model_iter_nth_child(model, &iterDrop, NULL, posDrop);
+        gtk_list_store_set(GTK_LIST_STORE(model), &iterDrop, IUPGTK_LIST_IMAGE, image, -1);
+        g_object_unref(image);
+      }
+
+      /* select new item */
+      path = gtk_tree_path_new_from_indices(posDrop, -1);
+      gtk_tree_selection_select_path(selection, path);
+      gtk_tree_path_free(path);
+    }
+  }
+
+  iupAttribSetStr(ih, "_IUPLIST_DRAGITEM", NULL);
+
+  (void)widget;
+  (void)info;
+  (void)context;
+  (void)time;
+  (void)selection_data;
+}
+
+static gboolean gtkListDragMotion(GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint time, Ihandle* ih)
+{
+  GtkTreePath* path;
+  GtkTreeViewDropPosition pos;
+  if (gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &path, &pos))
+  {
+    if (pos == GTK_TREE_VIEW_DROP_BEFORE) pos = GTK_TREE_VIEW_DROP_INTO_OR_BEFORE;
+    if (pos == GTK_TREE_VIEW_DROP_AFTER) pos = GTK_TREE_VIEW_DROP_INTO_OR_AFTER;
+    /* highlight row */
+    gtk_tree_view_set_drag_dest_row(GTK_TREE_VIEW(widget), path, pos);
+    gtk_tree_path_free(path);
+
+#if GTK_CHECK_VERSION(2, 22, 0)
+    gdk_drag_status(context, gdk_drag_context_get_suggested_action(context), time);
+#else
+    gdk_drag_status(context, context->suggested_action, time);
+#endif
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+static void gtkListDragBegin(GtkWidget *widget, GdkDragContext *context, Ihandle* ih)
+{
+  iupAttribSetStr(ih, "_IUPLIST_DRAGITEM", gtkListGetValueAttrib(ih));
+  (void)context;
+  (void)widget;
+}
+
+static void gtkListEnableDragDrop(Ihandle* ih)
+{
+  const GtkTargetEntry row_targets[] = {
+    /* use a custom target to avoid the internal gtkTreView DND */
+    { "IUP_LIST_TARGET", GTK_TARGET_SAME_WIDGET, 0 }
+  };
+
+  gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW(ih->handle),
+    GDK_BUTTON1_MASK,
+    row_targets,
+    G_N_ELEMENTS (row_targets),
+    GDK_ACTION_MOVE|GDK_ACTION_COPY);
+  gtk_tree_view_enable_model_drag_dest (GTK_TREE_VIEW(ih->handle),
+    row_targets,
+    G_N_ELEMENTS (row_targets),
+    GDK_ACTION_MOVE|GDK_ACTION_COPY);
+
+  /* let gtkTreView begin the drag, then use the signal to save the drag start path */
+  g_signal_connect_after(G_OBJECT(ih->handle),  "drag-begin", G_CALLBACK(gtkListDragBegin), ih);
+
+  /* to avoid drop between nodes. */
+  g_signal_connect(G_OBJECT(ih->handle), "drag-motion", G_CALLBACK(gtkListDragMotion), ih);
+
+  /* to avoid the internal gtkTreView DND, we do the drop manually */
+  g_signal_connect(G_OBJECT(ih->handle), "drag-data-received", G_CALLBACK(gtkListDragDataReceived), ih);
+}
+
 /*********************************************************************************/
 
 
@@ -1510,7 +1638,13 @@ static int gtkListMapMethod(Ihandle* ih)
   #endif
     }
     else
+    {
       gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);
+
+      /* Enable drag and drop support to the list box */
+      if(ih->data->show_dragdrop)
+        gtkListEnableDragDrop(ih);
+    }
 
     g_signal_connect(G_OBJECT(selection), "changed",  G_CALLBACK(gtkListSelectionChanged), ih);
     g_signal_connect(G_OBJECT(ih->handle), "row-activated", G_CALLBACK(gtkListRowActivated), ih);

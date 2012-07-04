@@ -963,6 +963,87 @@ static int winListSetImageAttrib(Ihandle* ih, int id, const char* value)
   return 1;
 }
 
+
+/*********************************************************************************/
+
+int iupwinListProcessDND(Ihandle *ih, LPARAM lp)
+{
+  static int iItemStart = -1;
+  LPDRAGLISTINFO lpDrag = (LPDRAGLISTINFO) lp;
+  Ihandle *ihList = iupwinHandleGet(lpDrag->hWnd);
+
+  switch(lpDrag->uNotification)
+  {
+  case DL_BEGINDRAG:
+    {
+      iItemStart = LBItemFromPt(lpDrag->hWnd, lpDrag->ptCursor, TRUE);
+      SetWindowLongPtr(ih->handle, DWLP_MSGRESULT, TRUE);
+      return 1;
+    }
+  case DL_DRAGGING:
+    {
+      int iItem = LBItemFromPt(lpDrag->hWnd, lpDrag->ptCursor, TRUE);
+      DrawInsert(ih->handle, lpDrag->hWnd, iItem);
+      SendMessage(lpDrag->hWnd, WIN_SETCURSEL(ihList), iItem, 0);
+      SetWindowLongPtr(ih->handle, DWLP_MSGRESULT, DL_MOVECURSOR);
+      return 1;
+    }
+  case DL_DROPPED:
+    {
+      int iItem = LBItemFromPt(lpDrag->hWnd, lpDrag->ptCursor, TRUE);
+      if (iItem != iItemStart)
+      {
+        int is_ctrl;
+        int idDrag = iItemStart+1;
+        int idDrop = iItem;
+
+        if (iupListCallDragDropCb(ihList, idDrag, idDrop, &is_ctrl) == IUP_CONTINUE)
+        {
+          winListItemData *itemdata = winListGetItemData(ihList, iItemStart);
+          HBITMAP image = NULL;
+          char* text = iupStrGetMemoryCopy(winListGetText(ihList, iItemStart));
+          char* spacing = iupListGetSpacingAttrib(ihList);
+
+          if(itemdata->hBitmap)
+            image = itemdata->hBitmap;
+
+          if (!is_ctrl)
+          {
+            int text_width = winListRemoveItemData(ihList, iItemStart);
+            SendMessage(lpDrag->hWnd, WIN_DELETESTRING(ihList), iItemStart, 0L);
+            winListUpdateScrollWidthItem(ihList, text_width, 0);
+          }
+
+          if(iItem >= 0)
+            SendMessage(lpDrag->hWnd, WIN_INSERTSTRING(ihList), iItem, (LPARAM)text);
+          else
+            iItem = SendMessage(lpDrag->hWnd, WIN_ADDSTRING(ihList), 0, (LPARAM)text);
+
+          winListSetItemData(ihList, iItem, text, image);
+          winListSetSpacingAttrib(ihList, spacing);  /* Spacing adjust between items */
+          SendMessage(lpDrag->hWnd, WIN_SETCURSEL(ihList), iItem, 0);  /* Select the new item */
+        }
+
+        iupdrvRedrawNow(ihList);  /* Redraw the list */
+      }
+      return 1;
+    }
+  case DL_CANCELDRAG:
+    {
+      iItemStart = -1;
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
+static void winListEnableDragDrop(Ihandle* ih)
+{
+  WM_DRAGLISTMSG = RegisterWindowMessage(DRAGLISTMSGSTRING);
+  MakeDragList(ih->handle);
+}
+
 /*********************************************************************************/
 
 
@@ -1541,10 +1622,6 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   iupwinDrawDestroyBitmapDC(&bmpDC);
 }
 
-
-/*********************************************************************************/
-
-
 static void winListLayoutUpdateMethod(Ihandle *ih)
 {
   if (ih->data->is_dropdown)
@@ -1709,6 +1786,10 @@ static int winListMapMethod(Ihandle* ih)
       SendMessage(ih->handle, CB_LIMITTEXT, 0, 0L);
     }
   }
+
+  /* Enable drag and drop support to the list box */
+  if(ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple)
+    winListEnableDragDrop(ih);
 
   if(ih->data->show_image)
     IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winListDrawItem);  /* Process WM_DRAWITEM */
