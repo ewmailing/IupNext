@@ -203,6 +203,13 @@ int list_multiple_cb (Ihandle *self, char *t, int i, int v)
   return IUP_DEFAULT;
 }
 
+static int dragdrop_cb(Ihandle* ih, int drag_id, int drop_id, int shift, int control)
+{
+  printf("DRAGDROP_CB (%d)->(%d) shift=%d ctrl=%d\n", drag_id, drop_id, shift, control);
+  return IUP_CONTINUE;
+//  return IUP_DEFAULT;
+}
+
 int main(int argc, char **argv) 
 {
   Ihandle *dlg;
@@ -219,6 +226,7 @@ int main(int argc, char **argv)
   IupSetAttribute(list, "IMAGE2", "IMGSILVER");
   IupSetAttribute(list, "IMAGE3", "IMGBRONZE");
   IupSetAttributeHandle(list, "IMAGE4", load_image_Tecgraf());
+  IupSetCallback(list, "DRAGDROP_CB", (Icallback)dragdrop_cb);
 
   frm_medal = IupFrame (list);
   IupSetAttribute (frm_medal, "TITLE", "Best medal");

@@ -1691,7 +1691,7 @@ static int gtkTreeSetImageAttrib(Ihandle* ih, int id, const char* value)
                                            IUPGTK_TREE_HAS_IMAGE, FALSE, -1);
   }
 
-  return 1;
+  return 0;
 }
 
 static int gtkTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)

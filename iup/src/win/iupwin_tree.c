@@ -947,7 +947,7 @@ static int winTreeSetImageAttrib(Ihandle* ih, int id, const char* value)
     SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
   }
 
-  return 1;
+  return 0;
 }
 
 static int winTreeSetTopItemAttrib(Ihandle* ih, const char* value)

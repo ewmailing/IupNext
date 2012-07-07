@@ -108,6 +108,8 @@ int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 
+int iupwinListProcessDND(Ihandle *ih, UINT uNotification, POINT pt);
+
 char* iupwinGetClipboardText(Ihandle* ih);
 int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value);
 

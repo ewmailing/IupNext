@@ -164,7 +164,8 @@ button, which displays all items in the list. Can be "YES" or "NO". Default
   
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
 global attribute TXTFGCOLOR.</p>
-<p><strong>IMAGEid</strong> (<font size="3">non inheritable</font>):
+<p><strong>IMAGEid</strong> (<font size="3">non inheritable</font>) (write only) [Windows and 
+GTK Only]:
   image name to be used in the specified item, where id is the specified item 
 starting at 1. The item must already exist. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
@@ -219,7 +220,7 @@ internal drag and drop of items, and enables the <strong>DRAGDROP_CB</strong> ca
 
   
 <p><b>
-  SHOWIMAGE</b> (creation only): enables the use of an image for each item. Can be
+  SHOWIMAGE</b> (creation only)<b> </b>[Windows and GTK Only]: enables the use of an image for each item. Can be
   "YES" or
   "NO". Ignored if set before map. (since 3.6) </p>
 
@@ -414,7 +415,7 @@ the event. <br>
     drag start. <br>
 <strong>drop_id</strong>:
     Identifier of the clicked item where the 
-    drop were executed.<br>
+    drop were executed. -1 indicates a drop in a blank area.<br>
 <strong>isshift</strong>: Boolean flag indicating the shift key state. <br>
 <strong>iscontrol</strong>: Boolean flag indicating the control key state.</p>
 <p class="info">Returns: if returns IUP_CONTINUE, or 

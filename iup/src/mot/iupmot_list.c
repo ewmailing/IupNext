@@ -41,6 +41,13 @@
 static void motListComboBoxSelectionCallback(Widget w, Ihandle* ih, XmComboBoxCallbackStruct* call_data);
 
 
+void* iupdrvListGetImageHandle(Ihandle* ih, int id)
+{
+  (void)ih;
+  (void)id;
+  return NULL;
+}
+
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 {
   if (ih->data->has_editbox)
@@ -76,15 +83,26 @@ void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
 
 static int motListConvertXYToPos(Ihandle* ih, int x, int y)
 {
+  int count, pos;
   (void)x;
+
+  if (ih->data->is_dropdown)
+    return -1;
+
   if (ih->data->has_editbox)
   {
     Widget cblist;
     XtVaGetValues(ih->handle, XmNlist, &cblist, NULL);
-    return XmListYToPos(cblist, (Position)y);   /* XmListYToPos returns start at 1 */
+    pos = XmListYToPos(cblist, (Position)y);   /* XmListYToPos returns start at 1 */
   }
   else
-    return XmListYToPos(ih->handle, (Position)y);
+    pos = XmListYToPos(ih->handle, (Position)y);
+
+  XtVaGetValues(ih->handle, XmNitemCount, &count, NULL);
+  if (pos <= 0 || pos >= count)
+    return -1;
+  else
+    return pos;
 }
 
 int iupdrvListGetCount(Ihandle* ih)
@@ -196,11 +214,11 @@ void iupdrvListRemoveAllItems(Ihandle* ih)
 
 static char* motListGetIdValueAttrib(Ihandle* ih, int id)
 {
-  int pos = iupListGetPos(ih, id);
+  int pos = iupListGetPosAttrib(ih, id);
   if (pos >= 0)
   {
     XmString* items;
-    XtVaGetValues(ih->handle, XmNitems, &items, NULL);
+    XtVaGetValues(ih->handle, XmNitems, &items, NULL);  /* returns the actual list, not a copy */
     return iupmotConvertString(items[pos]);
   }
   return NULL;
@@ -939,38 +957,48 @@ static int motListSetClipboardAttrib(Ihandle *ih, const char *value)
 
 /*********************************************************************************/
 
-static void motListDragTransferProc(Widget drop_context, XtPointer client_data, Atom *seltype, Atom *type, XtPointer value, unsigned long *length, int format)
+static void motListDragTransferProc(Widget drop_context, Ihandle* ih, Atom *seltype, Atom *type, XtPointer value, unsigned long *length, int format)
 {
   Atom atomListItem = XInternAtom(iupmot_display, "LIST_ITEM", False);
-  int idDrop, idDrag = (int)value;
-  Ihandle* ih = (Ihandle*)client_data;
+  int idDrag = (int)value;  /* starts at 1 */
+  int idDrop = iupAttribGetInt(ih, "_IUPLIST_DROPITEM");  /* starts at 1 */
 
-  idDrop = iupAttribGetInt(ih, "_IUPLIST_DROPITEM");
+  if (idDrop==0)
+    return;
 
-  if (idDrag && idDrop && *type == atomListItem)
+  /* shift to start at 0 */
+  idDrag--;
+  idDrop--;
+
+  if (*type == atomListItem)
   {
     int is_ctrl;
 
-    if (iupListCallDragDropCb(ih, idDrag, idDrop, &is_ctrl) == IUP_CONTINUE)
+    if (iupListCallDragDropCb(ih, idDrag, idDrop, &is_ctrl) == IUP_CONTINUE)  /* starts at 0 */
     {
-      char* text = motListGetIdValueAttrib(ih, idDrag);
+      char* text = motListGetIdValueAttrib(ih, idDrag+1); /* starts at 1 */
+      int count = iupdrvListGetCount(ih);
         
-      if (!is_ctrl)
-        XmListDeletePos(ih->handle, idDrag);
-
-      /* Copy or move the text value to the new item position */
-      if(idDrop > 0 && idDrop <= iupdrvListGetCount(ih))
+      /* Copy the item to the idDrop position */
+      if (idDrop >= 0 && idDrop < count) /* starts at 0 */
       {
-        iupdrvListInsertItem(ih, idDrop-1, text);
-        /* Set focus and selection */
-        XmListSelectPos(ih->handle, idDrop, FALSE);
+        iupdrvListInsertItem(ih, idDrop, text);   /* starts at 0, insert before */
+        if (idDrag > idDrop)
+          idDrag++;
       }
-      else
+      else  /* idDrop = -1 */
       {
         iupdrvListAppendItem(ih, text);
-        /* Set focus and selection */
-        XmListSelectPos(ih->handle, iupdrvListGetCount(ih), FALSE);
+        idDrop = count;  /* new item is the previous count */
       }
+
+      /* Selects the drop item */
+      XmListSelectPos(ih->handle, idDrop+1, FALSE);    /* starts at 1 */
+      iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", idDrop+1);  /* starts at 1 */
+
+      /* Remove the Drag item if moving */
+      if (!is_ctrl)
+        iupdrvListRemoveItem(ih, idDrag);   /* starts at 0 */
     }
   }
 
@@ -1045,6 +1073,7 @@ static void motListDragDropFinishCallback(Widget drop_context, XtPointer client_
 
 static void motListDragMotionCallback(Widget drop_context, Ihandle *ih, XmDragMotionCallbackStruct* drag_motion)
 {
+  (void)drop_context;
   if (!iupAttribGet(ih, "NODRAGFEEDBACK"))
   {
     int idDrop;
@@ -1052,11 +1081,10 @@ static void motListDragMotionCallback(Widget drop_context, Ihandle *ih, XmDragMo
     int y = drag_motion->y;
     iupdrvScreenToClient(ih, &x, &y);
     
-    idDrop = motListConvertXYToPos(ih, x, y);
-    iupAttribSetInt(ih, "_IUPLIST_DROPITEM", idDrop);
+    idDrop = motListConvertXYToPos(ih, x, y);  /* starts at 1 */
+    iupAttribSetInt(ih, "_IUPLIST_DROPITEM", idDrop);  /* starts at 1 */
 
-    XmListDeselectAllItems(ih->handle);
-    XmListSelectPos(ih->handle, idDrop, FALSE);
+    XmListSelectPos(ih->handle, idDrop, FALSE);  /* starts at 1 */
   }
 }
 
@@ -1071,13 +1099,13 @@ static Boolean motListConvertProc(Widget drop_context, Atom *selection, Atom *ta
   if (*selection != atomMotifDrop || *target != atomTreeItem)
     return False;
 
-  XtVaGetValues(drop_context, XmNclientData, &idDrag, NULL);
+  XtVaGetValues(drop_context, XmNclientData, &idDrag, NULL);  /* starts at 1 */
   if (!idDrag)
     return False;
 
   /* format the value for transfer */
   *type_return = atomTreeItem;
-  *value_return = (XtPointer)idDrag;
+  *value_return = (XtPointer)idDrag;  /* starts at 1 */
   *length_return = 1;
   *format_return = 32;
   return True;
@@ -1097,7 +1125,7 @@ static void motListDragStart(Widget w, XButtonEvent* evt, String* params, Cardin
     return;
 
   exportList[0] = atomListItem;
-  idDrag = motListConvertXYToPos(ih, evt->x, evt->y);
+  idDrag = motListConvertXYToPos(ih, evt->x, evt->y);  /* starts at 1 */
 
   /* specify resources for DragContext for the transfer */
   num_args = 0;
@@ -1112,6 +1140,8 @@ static void motListDragStart(Widget w, XButtonEvent* evt, String* params, Cardin
 
   XtAddCallback(drop_context, XmNdragDropFinishCallback, (XtCallbackProc)motListDragDropFinishCallback, NULL);
   XtAddCallback(drop_context, XmNdragMotionCallback, (XtCallbackProc)motListDragMotionCallback, (XtPointer)ih);
+
+  iupAttribSetStr(ih, "_IUPLIST_DROPITEM", NULL);
 
   (void)params;
   (void)num_params;
@@ -1578,15 +1608,14 @@ static int motListMapMethod(Ihandle* ih)
   else
     XtRealizeWidget(parent);
 
-  /* Enable drag and drop support to the list box */
-  if (ih->data->show_dragdrop && !ih->data->is_multiple)
+  /* Enable internal drag and drop support */
+  if(ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple)
   {   
     motListEnableDragDrop(ih->handle);
     XtVaSetValues(ih->handle, XmNuserData, ih, NULL);  /* to be used in motListDragStart and motListDragTransferProc */
   }
   else
     iupmotDisableDragSource(ih->handle);  /* Disable Drag Source */
-
 
   if (IupGetGlobal("_IUP_RESET_TXTCOLORS"))
   {

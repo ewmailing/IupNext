@@ -173,7 +173,7 @@ void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, in
   free(str);
 }
 
-int iupListGetPos(Ihandle* ih, int pos)
+int iupListGetPosAttrib(Ihandle* ih, int pos)
 {
   int count;
 
@@ -277,7 +277,7 @@ int iupListSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
     else if (pos == count)
       iupdrvListAppendItem(ih, value);
   }
-  return 1;
+  return 0;
 }
 
 static int iListSetAppendItemAttrib(Ihandle* ih, const char* value)
@@ -295,7 +295,7 @@ static int iListSetInsertItemAttrib(Ihandle* ih, int id, const char* value)
     return 0;
   if (value)
   {
-    int pos = iupListGetPos(ih, id);
+    int pos = iupListGetPosAttrib(ih, id);
     if (pos >= 0)
       iupdrvListInsertItem(ih, pos, value);
     else if (pos == -2)
@@ -318,7 +318,7 @@ static int iListSetRemoveItemAttrib(Ihandle* ih, const char* value)
     int id;
     if (iupStrToInt(value, &id))
     {
-      int pos = iupListGetPos(ih, id);
+      int pos = iupListGetPosAttrib(ih, id);
       if (pos >= 0)
         iupdrvListRemoveItem(ih, pos);
     }
@@ -593,10 +593,22 @@ int iupListCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int *is_ctrl)
   else
     *is_ctrl = 0;
 
-  if (cbDragDrop)
-    return cbDragDrop(ih, drag_id, drop_id, is_shift, *is_ctrl);
+  /* ignore a drop that will do nothing */
+  if ((*is_ctrl)==0 && (drag_id+1 == drop_id || drag_id == drop_id))
+    return IUP_DEFAULT;
+  if ((*is_ctrl)!=0 && drag_id == drop_id)
+    return IUP_DEFAULT;
 
-  return IUP_CONTINUE; /* allow to move by default if callback not defined */
+  drag_id++;
+  if (drop_id < 0)
+    drop_id = -1;
+  else
+    drop_id++;
+
+  if (cbDragDrop)
+    return cbDragDrop(ih, drag_id, drop_id, is_shift, *is_ctrl);  /* starts at 1 */
+
+  return IUP_CONTINUE; /* allow to move/copy by default if callback not defined */
 }
 
 static char* iListGetShowDragDropAttrib(Ihandle* ih)
@@ -638,16 +650,27 @@ static int iListCreateMethod(Ihandle* ih, void** params)
 
 static void iListGetItemImageInfo(Ihandle *ih, int id, int *img_w, int *img_h)
 {
-  char str[20];
-  char *value;
-
   *img_w = 0;
   *img_h = 0;
 
-  sprintf(str, "IMAGE%d", id);
-  value = iupAttribGet(ih, str);
-  if (value)
-    iupImageGetInfo(value, img_w, img_h, NULL);
+  if (!ih->handle)
+  {
+    char *value;
+    char str[20];
+    sprintf(str, "IMAGE%d", id);
+    value = iupAttribGet(ih, str);
+    if (value)
+      iupImageGetInfo(value, img_w, img_h, NULL);
+  }
+  else
+  {
+    void* handle = iupdrvListGetImageHandle(ih, id);
+    if (handle)
+    {
+      int bpp;
+      iupdrvImageGetInfo(handle, img_w, img_h, &bpp);
+    }
+  }
 }
 
 static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)

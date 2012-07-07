@@ -200,7 +200,7 @@ static int gtkListSetStandardFontAttrib(Ihandle* ih, const char* value)
 
 static char* gtkListGetIdValueAttrib(Ihandle* ih, int id)
 {
-  int pos = iupListGetPos(ih, id);
+  int pos = iupListGetPosAttrib(ih, id);
   if (pos >= 0)
   {
     GtkTreeIter iter;
@@ -906,75 +906,85 @@ static int gtkListSetImageAttrib(Ihandle* ih, int id, const char* value)
   GtkTreeModel* model = gtkListGetModel(ih);
   GdkPixbuf* pixImage = iupImageGetImage(value, ih, 0);
   GtkTreeIter iter;
-  int pos = iupListGetPos(ih, id);
+  int pos = iupListGetPosAttrib(ih, id);
 
   if (!ih->data->show_image || !gtk_tree_model_iter_nth_child(model, &iter, NULL, pos))
     return 0;
 
   gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, pixImage, -1);
-  return 1;
+  return 0;
 }
 
+void* iupdrvListGetImageHandle(Ihandle* ih, int id)
+{
+  GdkPixbuf* pixImage;
+  GtkTreeModel* model = gtkListGetModel(ih);
+  GtkTreeIter iter;
+
+  if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, id-1))
+    return NULL;
+
+  gtk_tree_model_get(model, &iter, IUPGTK_LIST_IMAGE, &pixImage, -1);
+
+  return pixImage;
+}
 
 /*********************************************************************************/
 
 static void gtkListDragDataReceived(GtkWidget *widget, GdkDragContext *context, gint x, gint y, 
                                     GtkSelectionData *selection_data, guint info, guint time, Ihandle* ih)
 {
-  int idDrag = iupAttribGetInt(ih, "_IUPLIST_DRAGITEM");
-  int idDrop = gtkListConvertXYToPos(ih, x, y);
+  int is_ctrl;
+  int idDrag = iupAttribGetInt(ih, "_IUPLIST_DRAGITEM");  /* starts at 1 */
+  int idDrop = gtkListConvertXYToPos(ih, x, y); /* starts at 1 */
 
-  if (idDrag && idDrop)
+  /* shift to start at 0 */
+  idDrag--;
+  idDrop--;
+
+  if (iupListCallDragDropCb(ih, idDrag, idDrop, &is_ctrl) == IUP_CONTINUE)  /* starts at 0 */
   {
-    int is_ctrl;
+    GtkTreePath* path;
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
+    int count = iupdrvListGetCount(ih);
+    GtkTreeModel *model = gtkListGetModel(ih);
+    GtkTreeIter iterDrag, iterDrop;
+    gchar *text = NULL;
+    GdkPixbuf *pixImage = NULL;
 
-    if (iupListCallDragDropCb(ih, idDrag, idDrop, &is_ctrl) == IUP_CONTINUE)
+    /* Copy text and image of the dragged item */
+    gtk_tree_model_iter_nth_child(model, &iterDrag, NULL, idDrag);  /* starts at 0 */
+    gtk_tree_model_get(model, &iterDrag, IUPGTK_LIST_TEXT, &text, 
+                                         IUPGTK_LIST_IMAGE, &pixImage, -1);
+
+    /* Copy the item to the idDrop position */
+    if (idDrop >= 0 && idDrop < count) /* starts at 0 */
     {
-      GtkTreeModel *model = gtkListGetModel(ih);
-      GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
-      GtkTreePath* path;
-      GtkTreeIter iterDrag;
-      int posDrag = iupListGetPos(ih, idDrag);
-      int posDrop = iupListGetPos(ih, idDrop);
-      gchar *text = NULL;
-      GdkPixbuf *image = NULL;
-      gboolean child;
-
-      /* Copy text and image of the dragged item */
-      child = gtk_tree_model_iter_nth_child(model, &iterDrag, NULL, posDrag);
-      gtk_tree_model_get(model, &iterDrag, IUPGTK_LIST_TEXT, &text, IUPGTK_LIST_IMAGE, &image, -1);
-
-      /* Dragged item must be removed if CTRL is not pressed */
-      if (child && !is_ctrl)
-        gtk_list_store_remove(GTK_LIST_STORE(model), &iterDrag);
-
-      /* Copy or move the text value to the new item position */
-      if(posDrop >= 0)
-      {
-        iupdrvListInsertItem(ih, posDrop, iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(text)));
-      }
-      else
-      {
-        iupdrvListAppendItem(ih, iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(text)));
-        posDrop = iupdrvListGetCount(ih) - 1;  /* posDrop is at the end of the list */
-      }
-
-      g_free(text);
-
-      /* Copy or move the image value (if exists) to the new item position */
-      if(image)
-      {
-        GtkTreeIter iterDrop;
-        gtk_tree_model_iter_nth_child(model, &iterDrop, NULL, posDrop);
-        gtk_list_store_set(GTK_LIST_STORE(model), &iterDrop, IUPGTK_LIST_IMAGE, image, -1);
-        g_object_unref(image);
-      }
-
-      /* select new item */
-      path = gtk_tree_path_new_from_indices(posDrop, -1);
-      gtk_tree_selection_select_path(selection, path);
-      gtk_tree_path_free(path);
+      iupdrvListInsertItem(ih, idDrop, "");   /* starts at 0, insert before */
+      if (idDrag > idDrop)
+        idDrag++;
     }
+    else  /* idDrop = -1 */
+    {
+      iupdrvListAppendItem(ih, "");
+      idDrop = count;  /* new item is the previous count */
+    }
+
+    gtk_tree_model_iter_nth_child(model, &iterDrop, NULL, idDrop);  /* starts at 0 */
+    gtk_list_store_set(GTK_LIST_STORE(model), &iterDrop, IUPGTK_LIST_TEXT, text, -1);
+    gtk_list_store_set(GTK_LIST_STORE(model), &iterDrop, IUPGTK_LIST_IMAGE, pixImage, -1);
+    g_free(text);
+    if (pixImage) g_object_unref(pixImage);
+
+    /* Selects the drop item */
+    path = gtk_tree_path_new_from_indices(idDrop, -1);  /* starts at 0 */
+    gtk_tree_selection_select_path(selection, path);
+    gtk_tree_path_free(path);
+    iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", idDrop+1);  /* starts at 1 */
+
+    /* Remove the Drag item if moving */
+    if (!is_ctrl)
+      iupdrvListRemoveItem(ih, idDrag);   /* starts at 0 */
   }
 
   iupAttribSetStr(ih, "_IUPLIST_DRAGITEM", NULL);
@@ -1011,9 +1021,26 @@ static gboolean gtkListDragMotion(GtkWidget *widget, GdkDragContext *context, gi
 
 static void gtkListDragBegin(GtkWidget *widget, GdkDragContext *context, Ihandle* ih)
 {
-  iupAttribSetStr(ih, "_IUPLIST_DRAGITEM", gtkListGetValueAttrib(ih));
+  int x = iupAttribGetInt(ih, "_IUPLIST_DRAG_X");
+  int y = iupAttribGetInt(ih, "_IUPLIST_DRAG_Y");
+  int idDrag = gtkListConvertXYToPos(ih, x, y);   /* starts at 1 */
+  iupAttribSetInt(ih, "_IUPLIST_DRAGITEM", idDrag);
   (void)context;
   (void)widget;
+}
+
+static gboolean gtkListDragButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
+{
+  if (iupgtkButtonEvent(widget, evt, ih) == TRUE)
+    return TRUE;
+
+  if (evt->type == GDK_BUTTON_PRESS && evt->button == 1)  /* left single press */
+  {
+    iupAttribSetInt(ih, "_IUPLIST_DRAG_X", (int)evt->x);
+    iupAttribSetInt(ih, "_IUPLIST_DRAG_Y", (int)evt->y);
+  }
+
+  return FALSE;
 }
 
 static void gtkListEnableDragDrop(Ihandle* ih)
@@ -1041,6 +1068,9 @@ static void gtkListEnableDragDrop(Ihandle* ih)
 
   /* to avoid the internal gtkTreView DND, we do the drop manually */
   g_signal_connect(G_OBJECT(ih->handle), "drag-data-received", G_CALLBACK(gtkListDragDataReceived), ih);
+
+  /* to save X,Y position */
+  g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkListDragButtonEvent), ih);
 }
 
 /*********************************************************************************/
@@ -1121,7 +1151,7 @@ static gboolean gtkListEditKeyPressEvent(GtkWidget* entry, GdkEventKey *evt, Iha
       gtk_tree_selection_select_path(selection, path);
       g_signal_handlers_unblock_by_func(G_OBJECT(selection), G_CALLBACK(gtkListSelectionChanged), ih);
       gtk_tree_path_free(path);
-      iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos);
+      iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos+1); /* starts at 1 */
 
       if (!model) model = gtkListGetModel(ih);
 
@@ -1638,13 +1668,7 @@ static int gtkListMapMethod(Ihandle* ih)
   #endif
     }
     else
-    {
       gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);
-
-      /* Enable drag and drop support to the list box */
-      if(ih->data->show_dragdrop)
-        gtkListEnableDragDrop(ih);
-    }
 
     g_signal_connect(G_OBJECT(selection), "changed",  G_CALLBACK(gtkListSelectionChanged), ih);
     g_signal_connect(G_OBJECT(ih->handle), "row-activated", G_CALLBACK(gtkListRowActivated), ih);
@@ -1652,6 +1676,10 @@ static int gtkListMapMethod(Ihandle* ih)
     g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(iupgtkButtonEvent), ih);
     g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(iupgtkButtonEvent), ih);
   }
+
+  /* Enable internal drag and drop support */
+  if(ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple)
+    gtkListEnableDragDrop(ih);
 
   if (iupAttribGetBoolean(ih, "SORT"))
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), IUPGTK_LIST_TEXT, GTK_SORT_ASCENDING);

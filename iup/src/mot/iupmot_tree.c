@@ -969,7 +969,7 @@ static int motTreeSetImageAttrib(Ihandle* ih, int id, const char* value)
     }
   }
 
-  return 1;
+  return 0;
 }
 
 static int motTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)

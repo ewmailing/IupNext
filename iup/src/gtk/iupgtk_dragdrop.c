@@ -185,8 +185,8 @@ static void gtkDragBegin(GtkWidget *widget, GdkDragContext *drag_context, Ihandl
   IFnii cbDragBegin = (IFnii)IupGetCallback(ih, "DRAGBEGIN_CB");
   if(cbDragBegin)
   {
-    int x, y;
-    gdk_window_get_pointer(iupgtkGetWindow(widget), &x, &y, NULL);
+    int x, y;  /* the returned position is not exactly the start position. */
+    gdk_window_get_pointer(iupgtkGetWindow(ih->handle), &x, &y, NULL);
 
     if (cbDragBegin(ih, x, y) == IUP_IGNORE)
       gdk_drag_abort(drag_context, 0);

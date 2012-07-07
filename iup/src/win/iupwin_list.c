@@ -34,7 +34,7 @@
 /* Not defined in Cygwin and MingW */
 #ifndef EM_SETCUEBANNER      
 #define ECM_FIRST               0x1500      /* Edit control messages */
-#define	EM_SETCUEBANNER	    (ECM_FIRST + 1)
+#define  EM_SETCUEBANNER      (ECM_FIRST + 1)
 #endif
 
 #define WM_IUPCARET WM_APP+1   /* Custom IUP message */
@@ -55,7 +55,6 @@
 #define WIN_SETTOPINDEX(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETTOPINDEX: LB_SETTOPINDEX)
 #define WIN_SETITEMHEIGHT(_ih) ((_ih->data->is_dropdown || _ih->data->has_editbox)? CB_SETITEMHEIGHT: LB_SETITEMHEIGHT)
 
-static UINT WM_DRAGLISTMSG = 0;
 
 typedef struct _winListItemData
 {
@@ -96,9 +95,36 @@ static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hB
     SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)itemdata);
   }
 
+  if (str)
+  {
+    itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
+    winListUpdateScrollWidthItem(ih, itemdata->text_width, 1);
+  }
+  else
+    itemdata->text_width = 0;
+
   itemdata->hBitmap = hBitmap;
-  itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
-  winListUpdateScrollWidthItem(ih, itemdata->text_width, 1);
+  if (itemdata->hBitmap)
+  {
+    int txt_h, img_w, img_h;
+    iupdrvFontGetCharSize(ih, NULL, &txt_h);
+    iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, NULL);
+
+    if (img_h > txt_h)
+    {
+      if (ih->data->is_dropdown && !ih->data->has_editbox && img_h >= ih->data->maximg_h)
+        SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), (WPARAM)-1, img_h);  /* set also for the selection box */
+
+      if (!ih->data->is_dropdown)
+        img_h += 2*ih->data->spacing;
+      SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), pos, img_h);
+    }
+
+    if (img_w > ih->data->maximg_w)
+      ih->data->maximg_w = img_w;
+    if (img_h > ih->data->maximg_h)
+      ih->data->maximg_h = img_h;
+  }
 }
 
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
@@ -135,29 +161,26 @@ int iupdrvListGetCount(Ihandle* ih)
 
 static int winListConvertXYToPos(Ihandle* ih, int x, int y)
 {
-  int pos;
+  DWORD ret;
 
-  if (ih->data->has_editbox)
-  {
-    HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
-
-    pos = SendMessage(cbedit, EM_CHARFROMPOS, 0, MAKELPARAM(x, y));
-    pos = LOWORD(pos);
-  }
+  if (ih->data->is_dropdown)
+    return -1;
 
   if (ih->data->has_editbox)
   {
     HWND cblist = (HWND)iupAttribGet(ih, "_IUPWIN_LISTBOX");
-    pos = SendMessage(cblist, LB_ITEMFROMPOINT, 0, MAKELPARAM(x, y))+1;  /* IUP Starts at 1 */
-    pos = LOWORD(pos);
+    ret = SendMessage(cblist, LB_ITEMFROMPOINT, 0, MAKELPARAM(x, y));
   }
   else
-  {
-    pos = SendMessage(ih->handle, LB_ITEMFROMPOINT, 0, MAKELPARAM(x, y))+1;
-    pos = LOWORD(pos);
-  }
+    ret = SendMessage(ih->handle, LB_ITEMFROMPOINT, 0, MAKELPARAM(x, y));
 
-  return pos;
+  if (HIWORD(ret))
+    return -1;
+  else
+  {
+    int pos = LOWORD(ret);
+    return pos+1; /* IUP Starts at 1 */
+  }
 }
 
 static int winListGetMaxWidth(Ihandle* ih)
@@ -343,7 +366,7 @@ static int winListSetStandardFontAttrib(Ihandle* ih, const char* value)
 
 static char* winListGetIdValueAttrib(Ihandle* ih, int id)
 {
-  int pos = iupListGetPos(ih, id);
+  int pos = iupListGetPosAttrib(ih, id);
   if (pos >= 0)
   {
     char* str = winListGetText(ih, pos);
@@ -419,7 +442,7 @@ static int winListSetValueAttrib(Ihandle* ih, const char* value)
     else
     {
       /* User has changed a multiple selection on a simple list. */
-	    int i, len, count;
+      int i, len, count;
 
       /* Clear all selections */
       SendMessage(ih->handle, LB_SETSEL, FALSE, -1);
@@ -929,110 +952,163 @@ static int winListSetScrollToPosAttrib(Ihandle* ih, const char* value)
 
 static int winListSetImageAttrib(Ihandle* ih, int id, const char* value)
 {
-  winListItemData* itemdata;
   HBITMAP hBitmap = iupImageGetImage(value, ih, 0);
-  int pos = iupListGetPos(ih, id);
+  int pos = iupListGetPosAttrib(ih, id);
 
   if (!ih->data->show_image || pos < 0)
     return 0;
 
-  itemdata = winListGetItemData(ih, pos);
-  itemdata->hBitmap = hBitmap;
+  winListSetItemData(ih, pos, NULL, hBitmap);
 
-  if (itemdata->hBitmap)
-  {
-    int txt_h, img_w, img_h;
-    iupdrvFontGetCharSize(ih, NULL, &txt_h);
-    iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, NULL);
+  iupdrvRedrawNow(ih);
+  return 0;
+}
 
-    if (img_h > txt_h)
-    {
-      if (ih->data->is_dropdown && !ih->data->has_editbox && img_h >= ih->data->maximg_h)
-        SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), (WPARAM)-1, img_h);  /* set also for the selection box */
-
-      if (!ih->data->is_dropdown)
-        img_h += 2*ih->data->spacing;
-      SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), pos, img_h);
-    }
-
-    if (img_w > ih->data->maximg_w)
-      ih->data->maximg_w = img_w;
-    if (img_h > ih->data->maximg_h)
-      ih->data->maximg_h = img_h;
-  }
-
-  return 1;
+void* iupdrvListGetImageHandle(Ihandle* ih, int id)
+{
+  winListItemData *itemdata = winListGetItemData(ih, id-1);
+  return itemdata->hBitmap;
 }
 
 
 /*********************************************************************************/
 
-int iupwinListProcessDND(Ihandle *ih, LPARAM lp)
+static void winListDrawRect(HWND hWnd, HDC hDC, int nIndex)
 {
-  static int iItemStart = -1;
-  LPDRAGLISTINFO lpDrag = (LPDRAGLISTINFO) lp;
-  Ihandle *ihList = iupwinHandleGet(lpDrag->hWnd);
+  RECT rect;
 
-  switch(lpDrag->uNotification)
+  if (nIndex == -2)
+    return;
+
+  if (nIndex == -1)
+  {
+    int h;
+    nIndex = SendMessage(hWnd, LB_GETCOUNT, 0, 0)-1;
+    SendMessage(hWnd, LB_GETITEMRECT, (WPARAM)nIndex, (LPARAM)&rect);
+
+    h = rect.bottom-rect.top;
+    rect.top += h;
+    rect.bottom += h/2;
+  }
+  else
+    SendMessage(hWnd, LB_GETITEMRECT, (WPARAM)nIndex, (LPARAM)&rect);
+
+	PatBlt(hDC, rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top, PATINVERT);
+}
+
+static void winListDrawDropFeedback(Ihandle *ih, int nIndex)
+{
+  int nLastIndex = iupAttribGetInt(ih, "_IUPLIST_LASTITEM");
+  if (nLastIndex != nIndex)
+  {
+    RECT rect;
+    HRGN rgn;
+    HDC hDC;
+    HWND hWnd = ih->handle;
+
+    GetClientRect(hWnd, &rect);
+    rgn = CreateRectRgnIndirect(&rect);
+
+    hDC = GetDC(hWnd);
+
+    /* Prevent drawing outside of listbox.
+       This can happen at the top of the listbox since 
+       the listbox's DC is the parent's DC */
+    SelectClipRgn(hDC, rgn);
+
+    winListDrawRect(hWnd, hDC, nLastIndex);
+    winListDrawRect(hWnd, hDC, nIndex);
+    iupAttribSetInt(ih, "_IUPLIST_LASTITEM", nIndex);
+
+    ReleaseDC(hWnd, hDC);
+  }
+}
+
+static int winInClient(HWND hWnd, POINT pt)
+{
+  RECT rect;
+  GetWindowRect(hWnd, &rect);
+  return PtInRect(&rect, pt);
+}
+
+int iupwinListProcessDND(Ihandle *ih, UINT uNotification, POINT pt)
+{
+  switch(uNotification)
   {
   case DL_BEGINDRAG:
     {
-      iItemStart = LBItemFromPt(lpDrag->hWnd, lpDrag->ptCursor, TRUE);
-      SetWindowLongPtr(ih->handle, DWLP_MSGRESULT, TRUE);
-      return 1;
+      int idDrag = LBItemFromPt(ih->handle, pt, TRUE);  /* starts at 0 */
+      if (idDrag != -1)
+      {
+        iupAttribSetInt(ih, "_IUPLIST_DRAGITEM", idDrag);
+        iupAttribSetInt(ih, "_IUPLIST_LASTITEM", -2);
+        return TRUE;
+      }
+      iupAttribSetStr(ih, "_IUPLIST_DRAGITEM", NULL);
+      break;
     }
   case DL_DRAGGING:
     {
-      int iItem = LBItemFromPt(lpDrag->hWnd, lpDrag->ptCursor, TRUE);
-      DrawInsert(ih->handle, lpDrag->hWnd, iItem);
-      SendMessage(lpDrag->hWnd, WIN_SETCURSEL(ihList), iItem, 0);
-      SetWindowLongPtr(ih->handle, DWLP_MSGRESULT, DL_MOVECURSOR);
-      return 1;
+      int idDrop = LBItemFromPt(ih->handle, pt, TRUE);  /* starts at 0 */
+      if (idDrop!=-1 || winInClient(ih->handle, pt))
+        winListDrawDropFeedback(ih, idDrop);
+
+      if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
+        return DL_COPYCURSOR;
+      else
+        return DL_MOVECURSOR;
     }
   case DL_DROPPED:
     {
-      int iItem = LBItemFromPt(lpDrag->hWnd, lpDrag->ptCursor, TRUE);
-      if (iItem != iItemStart)
+      int is_ctrl;
+      int idDrop = LBItemFromPt(ih->handle, pt, TRUE);   /* starts at 0 */
+      int idDrag = iupAttribGetInt(ih, "_IUPLIST_DRAGITEM");
+
+      winListDrawDropFeedback(ih, -2);
+
+      if (iupListCallDragDropCb(ih, idDrag, idDrop, &is_ctrl) == IUP_CONTINUE)  /* starts at 0 */
       {
-        int is_ctrl;
-        int idDrag = iItemStart+1;
-        int idDrop = iItem;
+        winListItemData *itemdata = winListGetItemData(ih, idDrag);  /* starts at 0 */
+        HBITMAP hBitmap = itemdata->hBitmap;
+        char* text = winListGetText(ih, idDrag);  /* starts at 0 */
+        int count = iupdrvListGetCount(ih);
 
-        if (iupListCallDragDropCb(ihList, idDrag, idDrop, &is_ctrl) == IUP_CONTINUE)
+        /* Copy the item to the idDrop position */
+        if (idDrop >= 0 && idDrop < count)  /* starts at 0 */
         {
-          winListItemData *itemdata = winListGetItemData(ihList, iItemStart);
-          HBITMAP image = NULL;
-          char* text = iupStrGetMemoryCopy(winListGetText(ihList, iItemStart));
-          char* spacing = iupListGetSpacingAttrib(ihList);
-
-          if(itemdata->hBitmap)
-            image = itemdata->hBitmap;
-
-          if (!is_ctrl)
-          {
-            int text_width = winListRemoveItemData(ihList, iItemStart);
-            SendMessage(lpDrag->hWnd, WIN_DELETESTRING(ihList), iItemStart, 0L);
-            winListUpdateScrollWidthItem(ihList, text_width, 0);
-          }
-
-          if(iItem >= 0)
-            SendMessage(lpDrag->hWnd, WIN_INSERTSTRING(ihList), iItem, (LPARAM)text);
-          else
-            iItem = SendMessage(lpDrag->hWnd, WIN_ADDSTRING(ihList), 0, (LPARAM)text);
-
-          winListSetItemData(ihList, iItem, text, image);
-          winListSetSpacingAttrib(ihList, spacing);  /* Spacing adjust between items */
-          SendMessage(lpDrag->hWnd, WIN_SETCURSEL(ihList), iItem, 0);  /* Select the new item */
+          iupdrvListInsertItem(ih, idDrop, text);   /* starts at 0, insert before */
+          if (idDrag > idDrop)
+            idDrag++;
+        }
+        else  /* idDrop = -1 */
+        {
+          iupdrvListAppendItem(ih, text);
+          idDrop = count;  /* new item is the previous count */
         }
 
-        iupdrvRedrawNow(ihList);  /* Redraw the list */
+        if (hBitmap)
+          winListSetItemData(ih, idDrop, NULL, hBitmap);  /* starts at 0 */
+
+        /* Selects the drop item */
+        SendMessage(ih->handle, WIN_SETCURSEL(ih), idDrop, 0);  /* starts at 0 */
+        iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", idDrop+1);  /* starts at 1 */
+
+        /* Remove the Drag item if moving */
+        if (!is_ctrl)
+          iupdrvListRemoveItem(ih, idDrag);  /* starts at 0 */
+
+        free(text);
       }
-      return 1;
+
+      iupdrvRedrawNow(ih);  /* Redraw the list */
+      iupAttribSetStr(ih, "_IUPLIST_DRAGITEM", NULL);
+      break;
     }
   case DL_CANCELDRAG:
     {
-      iItemStart = -1;
-      return 1;
+      winListDrawDropFeedback(ih, -2);
+      iupAttribSetStr(ih, "_IUPLIST_DRAGITEM", NULL);
+      break;
     }
   }
 
@@ -1041,9 +1117,6 @@ int iupwinListProcessDND(Ihandle *ih, LPARAM lp)
 
 static void winListEnableDragDrop(Ihandle* ih)
 {
-  if (!WM_DRAGLISTMSG)
-    WM_DRAGLISTMSG = RegisterWindowMessage(DRAGLISTMSGSTRING);
-
   MakeDragList(ih->handle);
 }
 
@@ -1522,16 +1595,6 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     }
   }
 
-  if (ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple)
-  {
-    /* Process drag list box messages */
-    if(msg == WM_DRAGLISTMSG)
-    {
-      *result = iupwinListProcessDND(ih, lp);
-      return 1;  /* abort default processing */
-    }
-  }
-
   switch (msg)
   {
   case WM_CHAR:
@@ -1800,7 +1863,7 @@ static int winListMapMethod(Ihandle* ih)
     }
   }
 
-  /* Enable drag and drop support to the list box */
+  /* Enable internal drag and drop support */
   if(ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple)
     winListEnableDragDrop(ih);
 

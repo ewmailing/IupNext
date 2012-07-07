@@ -32,6 +32,8 @@
 #include "iupwin_info.h"
 
 
+static UINT WM_DRAGLISTMSG = 0;
+
 /* Not defined in compilers older than VC9 or WinSDK older than 6.0 */
 #ifndef MAPVK_VK_TO_VSC
 #define MAPVK_VK_TO_VSC     (0)
@@ -353,15 +355,11 @@ LRESULT CALLBACK iupwinBaseWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
   int ret = 0;
   LRESULT result = 0;
   IwinProc winProc;
-  WNDPROC oldProc;
   Ihandle *ih;
 
   ih = iupwinHandleGet(hwnd); 
   if (!ih)
     return DefWindowProc(hwnd, msg, wp, lp);  /* should never happen */
-
-  /* retrieve the control previous procedure for subclassing */
-  oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDPROC_CB");
 
   /* check if the element defines a custom procedure */
   winProc = (IwinProc)IupGetCallback(ih, "_IUPWIN_CTRLPROC_CB");
@@ -373,7 +371,11 @@ LRESULT CALLBACK iupwinBaseWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
   if (ret)
     return result;
   else
+  {
+    /* retrieve the control previous procedure for subclassing */
+    WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDPROC_CB");
     return CallWindowProc(oldProc, hwnd, msg, wp, lp);
+  }
 }
 
 static Ihandle* winContainerWmCommandGetIhandle(Ihandle *ih, WPARAM wp, LPARAM lp)
@@ -518,6 +520,21 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
             *result = (LRESULT)ret;
             return 1;
           }
+        }
+      }
+      break;
+    }
+  default:
+    {
+      /* sent to the list parent */
+      if (msg == WM_DRAGLISTMSG)
+      {
+        DRAGLISTINFO* lpDrag = (DRAGLISTINFO*) lp;
+        Ihandle *child = iupwinHandleGet(lpDrag->hWnd);
+        if (child && winCheckParent(child, ih))
+        {
+          *result = iupwinListProcessDND(child, lpDrag->uNotification, lpDrag->ptCursor);
+          return 1;
         }
       }
       break;
@@ -751,6 +768,9 @@ void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "TIPBALLOON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TIPBALLOONTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+
+  if (!WM_DRAGLISTMSG)
+    WM_DRAGLISTMSG = RegisterWindowMessage(DRAGLISTMSGSTRING);
 }
 
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)

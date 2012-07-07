@@ -277,7 +277,7 @@ static int noderemoved_cb(Ihandle* ih, void* data)
 
 static int dragdrop_cb(Ihandle* ih, int drag_id, int drop_id, int shift, int control)
 {
-  printf("DRAGDROP_CB (%d)->(%d)\n", drag_id, drop_id);
+  printf("DRAGDROP_CB (%d)->(%d) shift=%d ctrl=%d\n", drag_id, drop_id, shift, control);
   return IUP_CONTINUE;
 //  return IUP_DEFAULT;
 }
