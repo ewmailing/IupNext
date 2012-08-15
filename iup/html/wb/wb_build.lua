@@ -66,10 +66,11 @@ function writeTitleFile()
   
   wb_title = string.gsub(wb_title, "WB_BAR_TITLE", wb_usr.messages[lngIndex].bar_title)
   wb_title = string.gsub(wb_title, "WB_TITLE_BGCOLOR", wb_usr.title_bgcolor)
-  wb_title = string.gsub(wb_title, "WB_SEARCH_LINK", wb_usr.search_link)
   wb_title = string.gsub(wb_title, "WB_COPYRIGHT_LINK", wb_usr.copyright_link)
   wb_title = string.gsub(wb_title, "WB_COPYRIGHT_NAME", wb_usr.copyright_name)
   wb_title = string.gsub(wb_title, "WB_CONTACT", wb_usr.contact)
+  wb_title = string.gsub(wb_title, "WB_SSEARCH_TITLE", lngMessages.search[lngIndex])
+  wb_title = string.gsub(wb_title, "WB_GSEARCH_TITLE", lngMessages.google[lngIndex])
   
   if (lngCount > 1) then
     wb_title = string.gsub(wb_title, "WB_LNG", lngSuffix)
@@ -226,11 +227,26 @@ end
 -- #####################################################################
 
 lngMessages =
-{               
+{         
+  google= {
+    en= "Google Search",
+    pt= "Buscar com Google", 
+    es= "Buscar con Google",
+  },
+  google_tip= {
+    en= "This feature will search in the documentation files using Google. It works only when online (it requires an Internet connection).",
+    pt= "Este recurso irá procurar nos arquivos da documentação usando o Google. Ele só funciona quando online (requer uma conexão à Internet).",
+    es= "Esta función buscará en los archivos de documentación utilizando el Google. Esto sólo funciona cuando en línea (se requiere una conexión a Internet).",
+  },
   search= {
     en= "Simple Search",
     pt= "Busca Simples", 
     es= "Busca Simples",
+  },
+  search_tip= {
+    en= "This feature will search in the documentation files in a very simple way. But it also works offline in case you download the HTML files of the documentation. It requires Java enabled for the page.",
+    pt= "Este recurso irá procurar nos arquivos de documentação de uma forma muito simples. Mas ele também funciona off-line no caso de você baixar os arquivos HTML da documentação. Ele requer o Java habilitado para a página.",
+    es= "Esta función buscará en los archivos de documentación de una manera muy sencilla. Pero también funciona fuera de línea en caso de que descargue los archivos HTML de la documentación. Se requiere Java habilitado para la página.",
   },
   exp_all= {
     en= "Expand All Nodes",
@@ -291,6 +307,36 @@ end
 
 -- #####################################################################
 
+function writeGoogleFile()
+  print("Writing \"../gSearch"..lngSuffix..".html\".")
+  
+  local file = io.open("../gSearch"..lngSuffix..".html", "w")
+   
+  local wb_search = readFile("template_gSearch.html")
+  
+  wb_search = string.gsub(wb_search, "WB_GSEARCH_TITLE", lngMessages.google[lngIndex])
+  wb_search = string.gsub(wb_search, "WB_GSEARCH_TIP", lngMessages.google_tip[lngIndex])
+  wb_search = string.gsub(wb_search, "WB_SEARCH_LINK", wb_usr.search_link)
+  
+  file:write(wb_search)
+  file:close()
+end
+              
+function writeGoogleCSEFile()
+  print("Writing \"../gSearch"..lngSuffix..".html\".")
+  
+  local file = io.open("../gSearch"..lngSuffix..".html", "w")
+   
+  local wb_search = readFile("template_gSearch_cse.html")
+  
+  wb_search = string.gsub(wb_search, "WB_GSEARCH_ID", wb_usr.google_id)
+  wb_search = string.gsub(wb_search, "WB_GSEARCH_TITLE", lngMessages.google[lngIndex])
+  wb_search = string.gsub(wb_search, "WB_GSEARCH_TIP", lngMessages.google_tip[lngIndex])
+  
+  file:write(wb_search)
+  file:close()
+end
+              
 function writeSearchFile()
   print("Writing \"../ssSearch"..lngSuffix..".html\".")
   
@@ -298,7 +344,8 @@ function writeSearchFile()
    
   local wb_search = readFile("template_ssSearch.html")
   
-  wb_search = string.gsub(wb_search, "WB_SEARCH", lngMessages.search[lngIndex])
+  wb_search = string.gsub(wb_search, "WB_SSEARCH_TITLE", lngMessages.search[lngIndex])
+  wb_search = string.gsub(wb_search, "WB_SSEARCH_TIP", lngMessages.search_tip[lngIndex])
   
   if (lngCount > 1) then                
     wb_search = string.gsub(wb_search, "WB_LNG", lngSuffix)
@@ -359,6 +406,11 @@ for name, elem in pairs(wb_usr.messages) do
   writeTreeFile()
   writeSearchFile()            
   writeSearchIndexFile()
+  if (wb_usr.google_id) then
+    writeGoogleCSEFile()
+  else
+    writeGoogleFile()
+  end
 end
 
 print("Done.")
