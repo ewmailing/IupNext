@@ -1,20 +1,20 @@
 wb_usr = {
-   contact = "iup@tecgraf.puc-rio.br",
-   search_link = "http://www.tecgraf.puc-rio.br/iup",
-   copyright_link = "http://www.tecgraf.puc-rio.br",
-   copyright_name = "Tecgraf/PUC-Rio",
-   title_bgcolor = "#3366CC",
-   langs = {"en"},
-   start_size = "180",
-   file_title = "iup",
-   start_open = "1",
-   google_id = "002391225506879547725:WMX-11556368",
+  contact = "iup@tecgraf.puc-rio.br",
+  search_link = "http://www.tecgraf.puc-rio.br/iup",
+  copyright_link = "http://www.tecgraf.puc-rio.br",
+  copyright_name = "Tecgraf/PUC-Rio",
+  title_bgcolor = "#3366CC",
+  langs = {"en"},
+  start_size = "180",
+  file_title = "iup",
+  start_open = "1",
+  google_id = "002391225506879547725:WMX-11556368",
 }
 
 wb_usr.messages = {
   en = {
-     title = "IUP - Portable User Interface",
-     bar_title = "IUP - Version 3"
+    title = "IUP - Portable User Interface",
+    bar_title = "IUP - Version 3"
   }
 }
 

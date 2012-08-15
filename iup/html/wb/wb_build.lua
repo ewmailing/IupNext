@@ -48,6 +48,7 @@ function writeIndexFile()
   wb_index = string.gsub(wb_index, "WB_TITLE", wb_usr.messages[lngIndex].title)
   wb_index = string.gsub(wb_index, "WB_START_SIZE", wb_usr.start_size)
   wb_index = string.gsub(wb_index, "WB_START_PAGE", lngIndex.."/"..wb_usr.tree.link)
+  
   if (lngCount > 1) then
     wb_index = string.gsub(wb_index, "WB_LNG", lngSuffix)
   else
