@@ -89,6 +89,8 @@ static void winListUpdateScrollWidthItem(Ihandle* ih, int item_width, int add);
 static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hBitmap)
 {
   winListItemData* itemdata = winListGetItemData(ih, pos);
+  int txt_h;
+
   if (!itemdata)
   {
     itemdata = malloc(sizeof(winListItemData));
@@ -103,13 +105,22 @@ static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hB
   else
     itemdata->text_width = 0;
 
+  /* Define the item height */
+  iupdrvFontGetCharSize(ih, NULL, &txt_h);
+  SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), pos, txt_h);
+
   itemdata->hBitmap = hBitmap;
   if (itemdata->hBitmap)
   {
-    int txt_h, img_w, img_h;
-    iupdrvFontGetCharSize(ih, NULL, &txt_h);
+    int img_w, img_h;
     iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, NULL);
 
+    /* LB_SETITEMHEIGHT and CB_SETITEMHEIGHT messages set the height, in pixels, of items in a list box.
+       According by the documentation, the maximum height is 255 pixels. */
+    if(img_h > 255)
+      img_h = 255;
+
+    /* Update the item height */
     if (img_h > txt_h)
     {
       if (ih->data->is_dropdown && !ih->data->has_editbox && img_h >= ih->data->maximg_h)
@@ -517,7 +528,11 @@ static int winListSetSpacingAttrib(Ihandle* ih, const char* value)
         winListItemData* itemdata = winListGetItemData(ih, i);
         if (itemdata->hBitmap)
         {
-          iupdrvImageGetInfo(itemdata->hBitmap, NULL, &img_h, NULL);
+          iupdrvImageGetInfo(itemdata->hBitmap, NULL, &img_h, NULL);        
+          /* LB_SETITEMHEIGHT and CB_SETITEMHEIGHT messages set the height, in pixels, of items in a list box.
+             According by the documentation, the maximum height is 255 pixels. */
+          if(img_h > 255)
+            img_h = 255;
           img_h += 2*ih->data->spacing;
 
           if (img_h > txt_h)
