@@ -118,7 +118,10 @@ static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hB
     /* LB_SETITEMHEIGHT and CB_SETITEMHEIGHT messages set the height, in pixels, of items in a list box.
        According by the documentation, the maximum height is 255 pixels. */
     if(img_h > 255)
+    {
+      img_w = (int)((img_w * 255) / img_h);  /* width is reduced proportionally */
       img_h = 255;
+    }
 
     /* Update the item height */
     if (img_h > txt_h)
