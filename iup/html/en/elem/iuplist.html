@@ -172,9 +172,8 @@ starting at 1. The item must already exist. Use <a href="../func/iupsethandle.ht
 	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
 The image is always displayed at the left of the text and only when 
 SHOWIMAGE=Yes. When EDITBOX=Yes the image is not display at the edit box. Images 
-don't need to have the same size. In Windows, images with height larger than 255 
-pixels (the maximum height supported by driver) has its size reduced 
-proportionally to this value (since 
+don't need to have the same size. In Windows, list items are limited to 255 
+pixels height. (since 
 3.6)</p>
 
   
@@ -593,6 +592,7 @@ only useful in Windows if the list has the focus.</p>
 DROPDOWN=Yes the vertical size is controlled by the system, and has the height 
 just right to include the borders and the text. So the <strong>User</strong> 
 height from RASTERSIZE or SIZE will be always ignored.</p>
+<p> In Windows, list items are limited to 255 pixels height. </p>
 <p> In GTK older than 2.12, the editbox of a dropdown will not follow the list 
 attributes: FONT, BGCOLOR, FGCOLOR and SPACING.</p>
 <p> <strong>Clicking and dragging a item</strong>: if SHOWDRAGDROP=Yes 

@@ -116,12 +116,10 @@ static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hB
     iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, NULL);
 
     /* LB_SETITEMHEIGHT and CB_SETITEMHEIGHT messages set the height, in pixels, of items in a list box.
-       According by the documentation, the maximum height is 255 pixels. */
+       According by the documentation, the maximum height is 255 pixels. 
+       http://msdn.microsoft.com/en-us/library/ms997541.aspx */
     if(img_h > 255)
-    {
-      img_w = (int)((img_w * 255) / img_h);  /* width is reduced proportionally */
       img_h = 255;
-    }
 
     /* Update the item height */
     if (img_h > txt_h)
@@ -531,11 +529,14 @@ static int winListSetSpacingAttrib(Ihandle* ih, const char* value)
         winListItemData* itemdata = winListGetItemData(ih, i);
         if (itemdata->hBitmap)
         {
-          iupdrvImageGetInfo(itemdata->hBitmap, NULL, &img_h, NULL);        
+          iupdrvImageGetInfo(itemdata->hBitmap, NULL, &img_h, NULL);  
+
           /* LB_SETITEMHEIGHT and CB_SETITEMHEIGHT messages set the height, in pixels, of items in a list box.
-             According by the documentation, the maximum height is 255 pixels. */
+             According by the documentation, the maximum height is 255 pixels. 
+             http://msdn.microsoft.com/en-us/library/ms997541.aspx */
           if(img_h > 255)
             img_h = 255;
+
           img_h += 2*ih->data->spacing;
 
           if (img_h > txt_h)
