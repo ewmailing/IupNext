@@ -86,10 +86,51 @@ static int winListRemoveItemData(Ihandle* ih, int pos)
 
 static void winListUpdateScrollWidthItem(Ihandle* ih, int item_width, int add);
 
+static void winListUpdateShowImageItemHeight(Ihandle* ih, winListItemData* itemdata, int pos)
+{
+  int txt_h, height;
+  iupdrvFontGetCharSize(ih, NULL, &txt_h);
+
+  height = txt_h;
+
+  if (itemdata->hBitmap)
+  {
+    int img_w, img_h;
+    iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, NULL);
+
+    if (img_h > txt_h)
+    {
+      height = img_h;
+
+      if (ih->data->is_dropdown && 
+          !ih->data->has_editbox && 
+          img_h >= ih->data->maximg_h)
+      {
+        /* set also for the selection box of the dropdown */
+        SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), (WPARAM)-1, img_h);  
+      }
+    }
+
+    if (img_w > ih->data->maximg_w)
+      ih->data->maximg_w = img_w;
+    if (img_h > ih->data->maximg_h)
+      ih->data->maximg_h = img_h;
+  }
+
+  if (!ih->data->is_dropdown)
+    height += 2*ih->data->spacing;
+
+  /* According to this documentation, the maximum height is 255 pixels. 
+     http://msdn.microsoft.com/en-us/library/ms997541.aspx */
+  if (height > 255)
+    height = 255;
+
+  SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), pos, height);
+}
+
 static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hBitmap)
 {
   winListItemData* itemdata = winListGetItemData(ih, pos);
-  int txt_h;
 
   if (!itemdata)
   {
@@ -105,37 +146,11 @@ static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hB
   else
     itemdata->text_width = 0;
 
-  /* Define the item height */
-  iupdrvFontGetCharSize(ih, NULL, &txt_h);
-  SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), pos, txt_h);
-
-  itemdata->hBitmap = hBitmap;
-  if (itemdata->hBitmap)
+  if (ih->data->show_image)
   {
-    int img_w, img_h;
-    iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, NULL);
+    itemdata->hBitmap = hBitmap;
 
-    /* LB_SETITEMHEIGHT and CB_SETITEMHEIGHT messages set the height, in pixels, of items in a list box.
-       According by the documentation, the maximum height is 255 pixels. 
-       http://msdn.microsoft.com/en-us/library/ms997541.aspx */
-    if(img_h > 255)
-      img_h = 255;
-
-    /* Update the item height */
-    if (img_h > txt_h)
-    {
-      if (ih->data->is_dropdown && !ih->data->has_editbox && img_h >= ih->data->maximg_h)
-        SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), (WPARAM)-1, img_h);  /* set also for the selection box */
-
-      if (!ih->data->is_dropdown)
-        img_h += 2*ih->data->spacing;
-      SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), pos, img_h);
-    }
-
-    if (img_w > ih->data->maximg_w)
-      ih->data->maximg_w = img_w;
-    if (img_h > ih->data->maximg_h)
-      ih->data->maximg_h = img_h;
+    winListUpdateShowImageItemHeight(ih, itemdata, pos);
   }
 }
 
@@ -512,40 +527,26 @@ static int winListSetSpacingAttrib(Ihandle* ih, const char* value)
 
   if (ih->handle)
   {
-    int txt_h;
-    iupdrvFontGetCharSize(ih, NULL, &txt_h);
-    txt_h += 2*ih->data->spacing;
-
     /* set for all items */
     if (!ih->data->show_image)
+    {
+      /* since this is done once and affects all items, there is no need to do this 
+         every time a new item is added */
+      int txt_h;
+      iupdrvFontGetCharSize(ih, NULL, &txt_h);
+      txt_h += 2*ih->data->spacing;
+
       SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), 0, txt_h);
+    }
     else
     {
       /* must manually set for each item */
-      int img_h, i, count = SendMessage(ih->handle, WIN_GETCOUNT(ih), 0, 0);
+      int i, count = SendMessage(ih->handle, WIN_GETCOUNT(ih), 0, 0);
 
       for (i=0; i<count; i++)
       { 
         winListItemData* itemdata = winListGetItemData(ih, i);
-        if (itemdata->hBitmap)
-        {
-          iupdrvImageGetInfo(itemdata->hBitmap, NULL, &img_h, NULL);  
-
-          /* LB_SETITEMHEIGHT and CB_SETITEMHEIGHT messages set the height, in pixels, of items in a list box.
-             According by the documentation, the maximum height is 255 pixels. 
-             http://msdn.microsoft.com/en-us/library/ms997541.aspx */
-          if(img_h > 255)
-            img_h = 255;
-
-          img_h += 2*ih->data->spacing;
-
-          if (img_h > txt_h)
-            SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), i, img_h);
-          else
-            SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), i, txt_h);
-        }
-        else
-          SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), i, txt_h);
+        winListUpdateShowImageItemHeight(ih, itemdata, i);
       }
     }
     return 0;
@@ -1682,7 +1683,7 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   text = winListGetText(ih, drawitem->itemID);
   iupdrvFontGetMultiLineStringSize(ih, text, &txt_w, &txt_h);
 
-  x = ih->data->maximg_w + 3; /* spacing between text and image */
+  x = ih->data->maximg_w + 3; /* align text + spacing between text and image */
   y = (height - txt_h)/2;  /* vertically centered */
   iupwinDrawText(hDC, text, x, y, txt_w, txt_h, hFont, fgcolor, 0);
 
