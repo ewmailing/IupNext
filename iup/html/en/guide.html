@@ -109,7 +109,7 @@ Eclipse for C++</a>.</p>
 <p>In Windows, when using Gcc to link an application the libraries order are as 
 important as in UNIX. Always put the less dependent library at the end, for 
 example:</p>
-<pre>-liup -lgdi32 -lcomdlg32 -lcomctl32 -lole32</pre>
+<pre>-liup -lgdi32 -lcomdlg32 -lcomctl32 -luuid -lole32</pre>
 <h4>Motif</h4>
 <p>In Motif, IUP uses the Motif (Xm), the Xtoolkit (Xt) and the Xlib (X11) 
 libraries. To statically link an application with IUP, use the following options in the 
@@ -206,7 +206,7 @@ expect the following directory tree:</p>
 folder were the CD, IM and Lua libraries are installed.</p>
 <p>IUP_ASSERT can be defined to enable some runtime checks for the main API.</p>
 <h4>Libraries Dependencies</h4>
-<pre><em>iupwin*</em> -&gt; <strong><span class="style1">gdi32</span></strong> <strong><span class="style1">user32</span></strong> <strong><span class="style1">comdlg32</span></strong> <strong><span class="style1">comctl32</span></strong> <strong><span class="style1">ole32</span></strong> (system - Windows)
+<pre><em>iupwin*</em> -&gt; <strong><span class="style1">gdi32</span></strong> <strong><span class="style1">user32</span></strong> <strong><span class="style1">comdlg32</span></strong> <strong><span class="style1">comctl32</span></strong> <strong><span class="style1">uuid ole32</span></strong> (system - Windows)
 <em>iupmot*</em> -&gt; [<strong><span class="style1">Xpm</span></strong> <strong><span class="style1">Xmu</span></strong> <strong><span class="style1">Xext</span></strong>] <strong><span class="style1">Xt</span></strong> <strong><span class="style1">X11</span></strong> (system - UNIX)
 <em>iupgtk*</em> -&gt; <strong><span class="style1">gtk-win32-2.0 gdk-win32-2.0 pangowin32-1.0</span></strong>(system - Windows)
         -&gt; <strong><span class="style1">gtk-x11-2.0 gdk-x11-2.0 pangox-1.0</span></strong> (system - UNIX)
