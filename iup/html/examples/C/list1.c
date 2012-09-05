@@ -220,13 +220,15 @@ int main(int argc, char **argv)
 
   list = IupList ("list_act");
   IupSetAttributes (list, "1=Gold, 2=Silver, 3=Bronze, 4=Tecgraf, 5=None,"
-                          "SHOWIMAGE=YES, SHOWDRAGDROP=YES, XXX_SPACING=4, VALUE=4, SIZE=EIGHTHxEIGHTH");
+                          "SHOWIMAGE=YES, SHOWDRAGDROP=YES, XXX_SPACING=4, VALUE=4");
   load_medal_images();
   IupSetAttribute(list, "IMAGE1", "IMGGOLD");
   IupSetAttribute(list, "IMAGE2", "IMGSILVER");
   IupSetAttribute(list, "IMAGE3", "IMGBRONZE");
   IupSetAttributeHandle(list, "IMAGE4", load_image_Tecgraf());
   IupSetCallback(list, "DRAGDROP_CB", (Icallback)dragdrop_cb);
+//  IupSetAttribute(list, "FONT", "Helvetica, Bold 40");
+//  IupSetAttribute(list, "AUTOHIDE", "NO");
 
   frm_medal = IupFrame (list);
   IupSetAttribute (frm_medal, "TITLE", "Best medal");

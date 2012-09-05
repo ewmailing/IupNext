@@ -53,7 +53,7 @@ const unsigned long mgl_nan[2] = {0xffffffff, 0x7fffffff};
 #endif
 //-----------------------------------------------------------------------------
 //#ifdef WIN32
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR)
 #define mglprintf    _snwprintf
 #else
 #define mglprintf    swprintf
