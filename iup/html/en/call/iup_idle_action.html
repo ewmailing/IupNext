@@ -26,14 +26,16 @@ before another mouse move message is schedule to processing.</p>
 important that you set it to NULL when not using 
 it. Or the application will be consuming CPU even if the callback is doing 
 nothing.</p>
-<p>It can only be set using <b>IupSetFunction</b>.</p>
+<p>It can only be set using <b>IupSetFunction(</b>name, func<b>)</b>.</p>
 <h4>Lua Binding&nbsp;</h4>
 <p>To modify this action use the 
-  function <b>iup</b>.<b>SetIdle</b><b>(</b>myfunction<b>)</b> 
+  function <b>iup</b>.<b>SetIdle</b><b>(</b>func<b>)</b> 
   in Lua. 
   Using 
   nil 
   as a parameter to remove the association. </p>
+<p>Or use the iup.<strong>SetGlobalCallback</strong>(name, func) function. 
+(since 3.7)</p>
 <h4>Long Time Operations</h4>
 <p>If you create a loop or an operation that takes a long time to complete inside a callback 
 of your 

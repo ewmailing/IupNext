@@ -38,7 +38,7 @@ static int mglplot_edit_cb(Ihandle *self, int p0, int p1, float p2, float p3, fl
 
   *p4 = (float)lua_tonumber(L, -3); 
   *p5 = (float)lua_tonumber(L, -2); 
-  lua_pop(L, 2);
+  lua_pop(L, 3);
   return IUP_DEFAULT;
 }
 #endif

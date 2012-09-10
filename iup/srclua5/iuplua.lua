@@ -3,21 +3,21 @@
 -- Callback handler  
 ------------------------------------------------------------------------------
 
-iup.callbacks = {}
+iup.callbacks = {} -- storage for the C callbacks
 
 function iup.CallMethod(name, ...)
   local handle = ... -- the first argument is always the handle
-  local func = handle[name]
-  if (not func) then
+  local lua_func = handle[name] -- use "gettable" to retrieve the Lua callback
+  if (not lua_func) then
     return
   end
   
-  if type(func) == "function" then
-    return func(...)
-  elseif type(func) == "string" then  
+  if type(lua_func) == "function" then
+    return lua_func(...)
+  elseif type(lua_func) == "string" then  
     local temp = self
     self = handle
-    local result = iup.dostring(func)
+    local result = iup.dostring(lua_func)
     self = temp
     return result
   else
@@ -25,15 +25,48 @@ function iup.CallMethod(name, ...)
   end
 end
 
-function iup.RegisterCallback(name, func, type)
+function iup.RegisterCallback(name, c_func, type)
+  -- Store a C callback for future use
   if not iup.callbacks[name] then iup.callbacks[name] = {} end
   local cb = iup.callbacks[name]
   if type then
-    cb[type] = func
+    cb[type] = c_func
   else
-    cb[1] = func
+    cb[1] = c_func
   end
 end
+
+function iup.CallGlobalMethod(name, ...)
+  local INDEX = string.upper(name)
+  local cb = iup.callbacks[INDEX]
+  if (not cb) then 
+    return
+  end
+
+  local lua_func = cb[2]
+  if type(lua_func) == "function" then
+    return lua_func(...)
+  elseif type(lua_func) == "string" then  
+    return iup.dostring(lua_func)
+  else
+    return iup.ERROR
+  end
+end
+
+function iup.SetGlobalCallback(name, lua_func)
+  local INDEX = string.upper(name)
+  local cb = iup.callbacks[INDEX]
+  if (cb) then -- if a callback name
+    if (lua_func) then
+      local c_func = cb[1]
+      iup.SetFunction(INDEX, c_func) -- set the pre-defined C callback
+    else
+      iup.SetFunction(INDEX, nil)
+    end
+    cb[2] = lua_func -- store also the Lua callback
+  end
+end
+
 
 ------------------------------------------------------------------------------
 -- Meta Methods 
@@ -86,11 +119,11 @@ local ihandle_settable = function(handle, index, value)
     local INDEX = string.upper(index)
     local cb = iup.callbacks[INDEX]
     if (cb) then -- if a callback name
-      local func = cb[1]
-      if (not func) then
-        func = cb[iup.GetClassName(handle)]
+      local c_func = cb[1]
+      if (not c_func) then
+        c_func = cb[iup.GetClassName(handle)]
       end
-      iup.SetCallback(handle, INDEX, func, value) -- register the pre-defined C callback
+      iup.SetCallback(handle, INDEX, c_func, value) -- set the pre-defined C callback
       object[index] = value -- store also in Lua
     elseif iup.GetClass(value) == "iup handle" then -- if a iup handle
       local name = iup.SetHandleName(value)

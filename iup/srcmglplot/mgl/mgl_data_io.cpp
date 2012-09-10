@@ -33,6 +33,9 @@
 
 #ifndef WIN32
 #include <glob.h>
+#ifndef GLOB_TILDE
+#define GLOB_TILDE 0
+#endif
 #endif
 
 #include "mgl/mgl_eval.h"

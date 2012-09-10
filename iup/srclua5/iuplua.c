@@ -292,8 +292,8 @@ char** iuplua_checkstring_array(lua_State *L, int pos, int n)
   if (n==0) 
     n = iuplua_getn(L, pos);
   else if (n != iuplua_getn(L, pos))
-    luaL_error(L, "Invalid number of elements (n!=count).");
-  if (n<=0) luaL_error(L, "Invalid number of elements.");
+    luaL_argerror(L, pos, "Invalid number of elements (n!=count).");
+  if (n<=0) luaL_argerror(L, pos, "Invalid number of elements (n<=0).");
 
   v = (char **) malloc (n*sizeof(char *));
   for(i=1; i<=n; i++)
@@ -315,8 +315,8 @@ int* iuplua_checkint_array(lua_State *L, int pos, int n)
   if (n==0) 
     n = iuplua_getn(L, pos);
   else if (n != iuplua_getn(L, pos))
-    luaL_error(L, "Invalid number of elements (n!=count).");
-  if (n<=0) luaL_error(L, "Invalid number of elements.");
+    luaL_argerror(L, pos, "Invalid number of elements (n!=count).");
+  if (n<=0) luaL_argerror(L, pos, "Invalid number of elements (n<=0).");
 
   v = (int *) malloc (n*sizeof(int));
   for(i=1; i<=n; i++)
@@ -338,8 +338,8 @@ float* iuplua_checkfloat_array(lua_State *L, int pos, int n)
   if (n==0) 
     n = iuplua_getn(L, pos);
   else if (n != iuplua_getn(L, pos))
-    luaL_error(L, "Invalid number of elements (n!=count).");
-  if (n<=0) luaL_error(L, "Invalid number of elements (n>0).");
+    luaL_argerror(L, pos, "Invalid number of elements (n!=count).");
+  if (n<=0) luaL_argerror(L, pos, "Invalid number of elements (n<=0).");
     
   v = (float *) malloc (n*sizeof(float));
   for(i=1; i<=n; i++)
@@ -361,8 +361,8 @@ unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int n)
   if (n==0) 
     n = iuplua_getn(L, pos);
   else if (n != iuplua_getn(L, pos))
-    luaL_error(L, "Invalid number of elements (n!=count).");
-  if (n<=0) luaL_error(L, "Invalid number of elements (n>0).");
+    luaL_argerror(L, pos, "Invalid number of elements (n!=count).");
+  if (n<=0) luaL_argerror(L, pos, "Invalid number of elements (n<=0).");
 
   v = (unsigned char *) malloc (n*sizeof(unsigned char));
   for(i=1; i<=n; i++)
@@ -384,8 +384,8 @@ Ihandle ** iuplua_checkihandle_array(lua_State *L, int pos, int n)
   if (n==0) 
     n = iuplua_getn(L, pos);
   else if (n != iuplua_getn(L, pos))
-    luaL_error(L, "Invalid number of elements (n!=count).");
-  if (n<=0) luaL_error(L, "Invalid number of elements (n>0).");
+    luaL_argerror(L, pos, "Invalid number of elements (n!=count).");
+  if (n<=0) luaL_argerror(L, pos, "Invalid number of elements (n<=0).");
 
   v = (Ihandle **) malloc ((n+1)*sizeof(Ihandle *));
   for (i=1; i<=n; i++)
@@ -435,6 +435,20 @@ lua_State* iuplua_call_start(Ihandle *ih, const char* name)
   return L;
 }
 
+static lua_State* iuplua_call_global_start(const char* name)
+{
+  lua_State *L = (lua_State *) IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
+
+  /* prepare to call iup.CallGlobalMethod(name, ...) */
+  lua_getglobal(L, "iup");
+  lua_pushstring(L,"CallGlobalMethod");
+  lua_gettable(L, -2);
+  lua_remove(L, -2);  /* remove "iup" from stack */
+
+  lua_pushstring(L, name);
+  return L;
+}
+
 int iuplua_call(lua_State* L, int nargs)
 {
   int status = docall(L, nargs+2, 1);
@@ -448,6 +462,11 @@ int iuplua_call(lua_State* L, int nargs)
     lua_pop(L, 1);
     return tmp;    
   }
+}
+
+int iuplua_call_global(lua_State* L, int nargs)
+{
+  return iuplua_call(L, nargs-1); /* remove the handle from the parameter count */
 }
 
 char* iuplua_call_rs(lua_State *L, int nargs)
@@ -485,10 +504,10 @@ void iuplua_register_cb(lua_State *L, const char* name, lua_CFunction func, cons
   lua_call(L, 3, 0);  /* iup.RegisterCallback(name, func, type) */
 }
 
-/* iup.SetCallback(handle, name, func, value) */
+/* iup.SetCallback(handle, name, c_func, lua_func) */
 static int SetCallback(lua_State *L)
 {
-  Icallback func;
+  Icallback c_func;
 
   Ihandle* ih = iuplua_checkihandle(L, 1);
   const char* name = luaL_checkstring(L, 2);
@@ -498,14 +517,34 @@ static int SetCallback(lua_State *L)
     lua_pushstring(L, "invalid function when set callback");
     lua_error(L);
   }
-  func = (Icallback)lua_tocfunction(L, 3);
+  c_func = (Icallback)lua_tocfunction(L, 3);
 
-  if (lua_isnil(L, 4))  /* value is only used here to remove the callback */
+  if (lua_isnil(L, 4))  /* lua_func is only used here to remove the callback */
     IupSetCallback(ih, name, (Icallback)NULL);
   else
-    IupSetCallback(ih, name, func);
+    IupSetCallback(ih, name, c_func);
 
-  /* value, when not nil, is always the same name of a C callback in lowercase */
+  /* lua_func, when not nil, has always the same name of a C callback in lowercase */
+
+  return 0;
+}
+
+static int SetFunction(lua_State *L)
+{
+  const char* name = luaL_checkstring(L, 1);
+
+  if (lua_isnil(L, 2))
+    IupSetFunction(name, NULL);
+  else
+  {
+    Icallback func;
+
+    if (!lua_iscfunction(L, 2))
+      luaL_argerror(L, 2, "must be a C function");
+
+    func = (Icallback)lua_tocfunction(L, 2);
+    IupSetFunction(name, func);
+  }
 
   return 0;
 }
@@ -743,7 +782,51 @@ static int multitouch_cb(Ihandle *ih, int count, int* pid, int* px, int* py, int
   return iuplua_call(L, 5);
 }
 
-static int Idlecall(void)
+static void globalwheel_cb(float delta, int x, int y, char* status)
+{
+  lua_State *L = iuplua_call_global_start("globalwheel_cb");
+  lua_pushnumber(L, delta);
+  lua_pushinteger(L, x);
+  lua_pushinteger(L, y);
+  lua_pushstring(L, status);
+  iuplua_call_global(L, 4);
+}
+
+static void globalbutton_cb(int button, int pressed, int x, int y, char* status)
+{
+  lua_State *L = iuplua_call_global_start("globalbutton_cb");
+  lua_pushinteger(L, button);
+  lua_pushinteger(L, pressed);
+  lua_pushinteger(L, x);
+  lua_pushinteger(L, y);
+  lua_pushstring(L, status);
+  iuplua_call_global(L, 5);
+}
+
+static void globalmotion_cb(int x, int y, char* status)
+{
+  lua_State *L = iuplua_call_global_start("globalmotion_cb");
+  lua_pushinteger(L, x);
+  lua_pushinteger(L, y);
+  lua_pushstring(L, status);
+  iuplua_call_global(L, 3);
+}
+
+static void globalkeypress_cb(int key, int pressed)
+{
+  lua_State *L = iuplua_call_global_start("globalkeypress_cb");
+  lua_pushinteger(L, key);
+  lua_pushinteger(L, pressed);
+  iuplua_call_global(L, 2);
+}
+
+static int globalidle_cb(void)
+{
+  lua_State *L = iuplua_call_global_start("idle_action");
+  return iuplua_call_global(L, 0);
+}
+
+static int idle_cb(void)
 {
   int ret = 0;
   lua_State *L = (lua_State *) IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
@@ -756,17 +839,18 @@ static int Idlecall(void)
 
 static int SetIdle(lua_State *L)
 {
-  if lua_isnoneornil(L,1)
+  if (lua_isnoneornil(L,1))
     IupSetFunction("IDLE_ACTION", NULL);
   else
   {
     luaL_checktype(L, 1, LUA_TFUNCTION);
     lua_pushvalue(L,1);
     lua_setglobal(L, "_IUP_LUA_IDLE_FUNC_");
-    IupSetFunction("IDLE_ACTION", (Icallback) Idlecall);
+    IupSetFunction("IDLE_ACTION", (Icallback)idle_cb);
   }
   return 0;
 }
+
 
 /*****************************************************************************
 * Iuplua bind functions                                                     *
@@ -911,6 +995,7 @@ int iuplua_open(lua_State * L)
     {"GetClass", GetClass},
     {"SetMethod", SetMethod},
     {"SetCallback", SetCallback},
+    {"SetFunction", SetFunction},
     {"ihandle_compare", ihandle_compare},
     {"ihandle_tostring", ihandle_tostring},
     {NULL, NULL},
@@ -957,6 +1042,13 @@ int iuplua_open(lua_State * L)
   iuplua_register_cb(L, "K_ANY", (lua_CFunction)k_any, NULL);
   iuplua_register_cb(L, "KILLFOCUS_CB", (lua_CFunction)killfocus_cb, NULL);
   iuplua_register_cb(L, "MULTITOUCH_CB", (lua_CFunction)multitouch_cb, NULL);
+
+  /* Register global callbacks */
+  iuplua_register_cb(L, "GLOBALWHEEL_CB", (lua_CFunction)globalwheel_cb, NULL);
+  iuplua_register_cb(L, "GLOBALBUTTON_CB", (lua_CFunction)globalbutton_cb, NULL);
+  iuplua_register_cb(L, "GLOBALMOTION_CB", (lua_CFunction)globalmotion_cb, NULL);
+  iuplua_register_cb(L, "GLOBALKEYPRESS_CB", (lua_CFunction)globalkeypress_cb, NULL);
+  iuplua_register_cb(L, "IDLE_ACTION", (lua_CFunction)globalidle_cb, NULL);
 
   /* Register Keys */
   iupKeyForEach(register_key, (void*)L);

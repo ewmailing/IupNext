@@ -506,9 +506,9 @@ static int ListDialog(lua_State *L)
   int i, ret;
 
   if (!marks && type==2)
-    luaL_error(L, "invalid marks, must not be nil.");
+    luaL_argerror(L, 9, "invalid marks, must not be nil.");
   if (marks && type==2 && size != iuplua_getn(L, 8))
-    luaL_error(L, "invalid number of elements in the marks.");
+    luaL_argerror(L, 9, "invalid number of elements in the marks.");
 
   ret = IupListDialog(type, luaL_checkstring(L, 2), 
                             size, 

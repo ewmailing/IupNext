@@ -30,7 +30,7 @@
 #define MGL_VERSION	11.2
 
 //#ifdef WIN32
-#if defined(__BORLANDC__) || defined(_MSC_VER)
+#if defined(__BORLANDC__) || defined(_MSC_VER) || defined(__sun__)
 #ifdef _MSC_VER
 #define hypot _hypot
 #define getcwd _getcwd
