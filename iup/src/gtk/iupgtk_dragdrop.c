@@ -105,7 +105,7 @@ static void gtkDragDataGet(GtkWidget *widget, GdkDragContext *drag_context, GtkS
     /* Zero-terminates the stored data. */
     ((guchar*)sourceData)[size] = 0;
 
-    gtk_selection_data_set(seldata, gdk_atom_intern(type, 0), 8, (guchar*)sourceData, size+1);
+    gtk_selection_data_set(seldata, gdk_atom_intern(type, FALSE), 8, (guchar*)sourceData, size+1);
 
     /* gtk_selection_data_set will copy the data */
     free(sourceData);
@@ -203,7 +203,7 @@ static GtkTargetList* gtkCreateTargetList(const char* value)
   sprintf(valueCopy, "%s", value);
   while(iupStrToStrStr(valueCopy, valueTemp, valueCopy, ',') > 0)
   {
-    gtk_target_list_add(targetlist, gdk_atom_intern(valueTemp, 0), 0, info++);
+    gtk_target_list_add(targetlist, gdk_atom_intern(valueTemp, FALSE), 0, info++);
 
     if(iupStrEqualNoCase(valueCopy, valueTemp))
       break;
