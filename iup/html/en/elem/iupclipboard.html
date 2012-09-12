@@ -44,8 +44,25 @@ clipboard() [in LED]</pre>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
+<p><strong>ADDFORMAT</strong> (write-only): register a custom format for 
+clipboard data given its name. The registration remains valid even after the 
+element is destroyed. (since 3.7)</p>
+
+
 <p><strong>EMFAVAILABLE</strong> (read-only) [Windows Only]: informs if there is a 
 Windows Enhanced Metafile available at the clipboard. (Since 3.2)</p>
+<p><strong>FORMAT</strong>: set the current format to be used by the 
+FORMATAVAILABLE and FORMATDATA attributes. (since 3.7)</p>
+<p><strong>FORMATAVAILABLE</strong> (read-only): informs if there is a data in 
+the FORMAT available at the clipboard. If FORMAT is not set returns NULL. (since 
+3.7)</p>
+<p><strong>FORMATDATA</strong>: sets or retrieves the data from the clipboard in 
+the format defined by the FORMAT attribute. If FORMAT is not set returns NULL. 
+When set the FORMATDATASIZE attribute must be set before with the data size. 
+When retrieved FORMATDATASIZE will be set and available after data is retrieved. 
+(since 3.7)</p>
+<p><strong>FORMATDATASIZE</strong>: size of the data on the clipboard. Used by 
+the FORMATDATA attribute processing. (since 3.7)</p>
 
 
   <p><strong>IMAGE</strong> (write-only): name of an image to copy (set) or 

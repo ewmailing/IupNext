@@ -20,6 +20,12 @@
 #include "iupwin_drv.h"
 
 
+/* ATTENTION:
+  If an application calls OpenClipboard with hwnd set to NULL, 
+  EmptyClipboard sets the clipboard owner to NULL; 
+  this causes SetClipboardData to fail. 
+  Because of this we use GetForegroundWindow() */
+
 typedef struct _APMFILEHEADER
 {
   WORD  key1,
@@ -84,7 +90,7 @@ static int winClipboardSetSaveEMFAttrib(Ihandle *ih, const char *value)
   HANDLE hFile;
   (void)ih;
   
-  OpenClipboard(NULL);
+  OpenClipboard(GetForegroundWindow());
   Handle = (HENHMETAFILE)GetClipboardData(CF_ENHMETAFILE);
   if (Handle == NULL)
   {
@@ -120,7 +126,7 @@ static int winClipboardSetSaveWMFAttrib(Ihandle *ih, const char *value)
   HANDLE hFile;
   (void)ih;
   
-  OpenClipboard(NULL);
+  OpenClipboard(GetForegroundWindow());
   Handle = (HENHMETAFILE)GetClipboardData(CF_METAFILEPICT);
   if (Handle == NULL)
   {
@@ -157,7 +163,7 @@ static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
   int size;
   (void)ih;
 
-  if (!OpenClipboard(NULL))
+  if (!OpenClipboard(GetForegroundWindow()))
     return 0;
 
   size = strlen(value)+1;
@@ -182,7 +188,7 @@ static char* winClipboardGetTextAttrib(Ihandle *ih)
   char* str;
   (void)ih;
 
-  if (!OpenClipboard(NULL))
+  if (!OpenClipboard(GetForegroundWindow()))
     return NULL;
 
   hHandle = GetClipboardData(CF_TEXT);
@@ -203,7 +209,7 @@ static int winClipboardSetImageAttrib(Ihandle *ih, const char *value)
 {
   HBITMAP hBitmap;
 
-  if (!OpenClipboard(NULL))
+  if (!OpenClipboard(GetForegroundWindow()))
     return 0;
 
   if (!value)
@@ -225,7 +231,7 @@ static int winClipboardSetImageAttrib(Ihandle *ih, const char *value)
 
 static int winClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
 {
-  if (!OpenClipboard(NULL))
+  if (!OpenClipboard(GetForegroundWindow()))
     return 0;
 
   EmptyClipboard();
@@ -258,7 +264,7 @@ static char* winClipboardGetNativeImageAttrib(Ihandle *ih)
 {
   HANDLE hHandle;
 
-  if (!OpenClipboard(NULL))
+  if (!OpenClipboard(GetForegroundWindow()))
     return 0;
 
   hHandle = GetClipboardData(CF_DIB);
@@ -275,14 +281,99 @@ static char* winClipboardGetNativeImageAttrib(Ihandle *ih)
   return (char*)hHandle;
 }
 
-static char* winClipboardGetTextAvailableAttrib(Ihandle *ih)
+static int winClipboardGetFormatId(Ihandle *ih)
+{
+  char* format = iupAttribGetStr(ih, "FORMAT");
+  if (!format)
+    return 0;
+  return RegisterClipboardFormat(format);
+}
+
+static int winClipboardSetFormatDataAttrib(Ihandle *ih, const char *value)
+{
+  HANDLE hHandle;
+  void* data;
+  int size;
+  UINT format_id;
+
+  if (!OpenClipboard(GetForegroundWindow()))
+    return 0;
+
+  size = iupAttribGetInt(ih, "FORMATDATASIZE");
+  if (!size)
+    return 0;
+
+  format_id = winClipboardGetFormatId(ih);
+  if (format_id==0)
+    return 0;
+
+  hHandle = GlobalAlloc(GMEM_MOVEABLE, size); 
+  if (!hHandle)
+    return 0;
+
+  data = GlobalLock(hHandle);
+  CopyMemory(data, value, size);
+  GlobalUnlock(hHandle);
+
+  EmptyClipboard();
+  SetClipboardData(format_id, hHandle);
+  CloseClipboard();
+
+  return 0;
+}
+
+static char* winClipboardGetFormatDataAttrib(Ihandle *ih)
+{
+  HANDLE hHandle;
+  char* data;
+  UINT format_id;
+  int size;
+
+  if (!OpenClipboard(GetForegroundWindow()))
+    return NULL;
+
+  format_id = winClipboardGetFormatId(ih);
+  if (format_id==0)
+    return NULL;
+
+  hHandle = GetClipboardData(format_id);
+  if (!hHandle)
+  {
+    CloseClipboard();
+    return NULL;
+  }
+  
+  size = (int)GlobalSize(hHandle);
+  if (size <= 0)
+  {
+    CloseClipboard();
+    return NULL;
+  }
+  data = iupStrGetMemory(size);
+
+  CopyMemory(data, (char*)GlobalLock(hHandle), size);
+  GlobalUnlock(hHandle);
+ 
+  GlobalUnlock(hHandle);
+  CloseClipboard();
+
+  iupAttribSetStrf(ih, "FORMATDATASIZE", "%d", size);
+  return data;
+}
+
+static int winClipboardIsAvailable(UINT format_id)
 {
   int check;
-  (void)ih;
-  OpenClipboard(NULL);
-  check = IsClipboardFormatAvailable(CF_TEXT);
+  OpenClipboard(GetForegroundWindow());
+  check = IsClipboardFormatAvailable(format_id);
   CloseClipboard();
-  if (check)
+  return check;
+}
+
+static char* winClipboardGetTextAvailableAttrib(Ihandle *ih)
+{
+  (void)ih;
+  if (winClipboardIsAvailable(CF_TEXT))
     return "YES";
   else
     return "NO";
@@ -290,12 +381,8 @@ static char* winClipboardGetTextAvailableAttrib(Ihandle *ih)
 
 static char* winClipboardGetImageAvailableAttrib(Ihandle *ih)
 {
-  int check;
   (void)ih;
-  OpenClipboard(NULL);
-  check = IsClipboardFormatAvailable(CF_DIB);
-  CloseClipboard();
-  if (check)
+  if (winClipboardIsAvailable(CF_DIB))
     return "YES";
   else
     return "NO";
@@ -303,12 +390,8 @@ static char* winClipboardGetImageAvailableAttrib(Ihandle *ih)
 
 static char* winClipboardGetWMFAvailableAttrib(Ihandle *ih)
 {
-  int check;
   (void)ih;
-  OpenClipboard(NULL);
-  check = IsClipboardFormatAvailable(CF_METAFILEPICT);
-  CloseClipboard();
-  if (check)
+  if (winClipboardIsAvailable(CF_METAFILEPICT))
     return "YES";
   else
     return "NO";
@@ -316,15 +399,32 @@ static char* winClipboardGetWMFAvailableAttrib(Ihandle *ih)
 
 static char* winClipboardGetEMFAvailableAttrib(Ihandle *ih)
 {
-  int check;
   (void)ih;
-  OpenClipboard(NULL);
-  check = IsClipboardFormatAvailable(CF_ENHMETAFILE);
-  CloseClipboard();
-  if (check)
+  if (winClipboardIsAvailable(CF_ENHMETAFILE))
     return "YES";
   else
     return "NO";
+}
+
+static char* winClipboardGetFormatAvailableAttrib(Ihandle *ih)
+{
+  UINT format_id = winClipboardGetFormatId(ih);
+  if (format_id==0)
+    return NULL;
+
+  if (winClipboardIsAvailable(format_id))
+    return "YES";
+  else
+    return "NO";
+}
+
+static int winClipboardSetAddFormatAttrib(Ihandle *ih, const char *value)
+{
+  if (value)
+    RegisterClipboardFormat(value);
+
+  (void)ih;
+  return 0;
 }
 
 /******************************************************************************/
@@ -348,14 +448,22 @@ Iclass* iupClipboardNewClass(void)
 
   /* Attribute functions */
   iupClassRegisterAttribute(ic, "TEXT", winClipboardGetTextAttrib, winClipboardSetTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTAVAILABLE", winClipboardGetTextAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "NATIVEIMAGE", winClipboardGetNativeImageAttrib, winClipboardSetNativeImageAttrib, NULL, NULL, IUPAF_NO_STRING|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGE", NULL, winClipboardSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TEXTAVAILABLE", winClipboardGetTextAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEAVAILABLE", winClipboardGetImageAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "WMFAVAILABLE", winClipboardGetWMFAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EMFAVAILABLE", winClipboardGetEMFAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SAVEEMF", NULL, winClipboardSetSaveEMFAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SAVEWMF", NULL, winClipboardSetSaveWMFAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "ADDFORMAT", NULL, winClipboardSetAddFormatAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMAT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATAVAILABLE", winClipboardGetFormatAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATDATA", winClipboardGetFormatDataAttrib, winClipboardSetFormatDataAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATDATASIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }

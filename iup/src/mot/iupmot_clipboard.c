@@ -37,7 +37,7 @@ static int motClipboardSetTextAttrib(Ihandle *ih, const char *value)
 {
   long item_id = 0;
   Window window = motClipboardGetWindow();
-  XmString clip_label = XmStringCreateLocalized ("IupClipboard");
+  XmString clip_label;
   (void)ih;
 
   if (!value)
@@ -46,16 +46,18 @@ static int motClipboardSetTextAttrib(Ihandle *ih, const char *value)
     return 0;
   }
 
+  clip_label = XmStringCreateLocalized ("IupClipboard");
+
   if (XmClipboardStartCopy(iupmot_display, window, clip_label, CurrentTime, NULL, NULL, &item_id)!=ClipboardSuccess)
   {
     XmStringFree(clip_label);
     return 0;
   }
 
-  XmStringFree(clip_label);
-
   XmClipboardCopy(iupmot_display, window, item_id, "STRING", (char*)value, (long)strlen(value)+1, 0, NULL);
   XmClipboardEndCopy(iupmot_display, window, item_id);
+
+  XmStringFree(clip_label);
   return 0;
 }
 
@@ -82,7 +84,7 @@ static int motClipboardSetImageAttrib(Ihandle *ih, const char *value)
   Pixmap pixmap;
   long item_id = 0;
   Window window = motClipboardGetWindow();
-  XmString clip_label = XmStringCreateLocalized ("IupClipboard");
+  XmString clip_label;
 
   if (!value)
   {
@@ -90,18 +92,20 @@ static int motClipboardSetImageAttrib(Ihandle *ih, const char *value)
     return 0;
   }
 
+  clip_label = XmStringCreateLocalized ("IupClipboard");
+
   if (XmClipboardStartCopy(iupmot_display, window, clip_label, CurrentTime, NULL, NULL, &item_id)!=ClipboardSuccess)
   {
     XmStringFree(clip_label);
     return 0;
   }
 
-  XmStringFree(clip_label);
-
   pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
 
   XmClipboardCopy(iupmot_display, window, item_id, "PIXMAP", (char*)&pixmap, sizeof(Pixmap), 0, NULL);
   XmClipboardEndCopy(iupmot_display, window, item_id);
+
+  XmStringFree(clip_label);
 
   (void)ih;
   return 0;
@@ -111,7 +115,7 @@ static int motClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
 {
   long item_id = 0;
   Window window = motClipboardGetWindow();
-  XmString clip_label = XmStringCreateLocalized ("IupClipboard");
+  XmString clip_label;
   Pixmap pixmap = (Pixmap)value;
 
   if (!value)
@@ -120,16 +124,18 @@ static int motClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
     return 0;
   }
 
+  clip_label = XmStringCreateLocalized ("IupClipboard");
+
   if (XmClipboardStartCopy(iupmot_display, window, clip_label, CurrentTime, NULL, NULL, &item_id)!=ClipboardSuccess)
   {
     XmStringFree(clip_label);
     return 0;
   }
 
-  XmStringFree(clip_label);
-
   XmClipboardCopy(iupmot_display, window, item_id, "PIXMAP", (char*)&pixmap, sizeof(Pixmap), 0, NULL);
   XmClipboardEndCopy(iupmot_display, window, item_id);
+
+  XmStringFree(clip_label);
 
   (void)ih;
   return 0;
@@ -156,13 +162,74 @@ static char* motClipboardGetNativeImageAttrib(Ihandle *ih)
   return (char*)pixmap;
 }
 
+static int motClipboardSetFormatDataAttrib(Ihandle *ih, const char *value)
+{
+  int size;
+  long item_id = 0;
+  Window window = motClipboardGetWindow();
+  XmString clip_label;
+  char* format;
+
+  if (!value)
+  {
+    XmClipboardUndoCopy(iupmot_display, window);
+    return 0;
+  }
+
+  size = iupAttribGetInt(ih, "FORMATDATASIZE");
+  if (!size)
+    return 0;
+
+  format = iupAttribGetStr(ih, "FORMAT");
+  if (!format)
+    return 0;
+
+  clip_label = XmStringCreateLocalized ("IupClipboard");
+
+  if (XmClipboardStartCopy(iupmot_display, window, clip_label, CurrentTime, NULL, NULL, &item_id)!=ClipboardSuccess)
+  {
+    XmStringFree(clip_label);
+    return 0;
+  }
+
+  XmClipboardCopy(iupmot_display, window, item_id, format, (char*)value, (long)size, 0, NULL);
+  XmClipboardEndCopy(iupmot_display, window, item_id);
+
+  XmStringFree(clip_label);
+  return 0;
+}
+
+static char* motClipboardGetFormatDataAttrib(Ihandle *ih)
+{
+  unsigned long size;
+  void* data;
+  Window window = motClipboardGetWindow();
+
+  char* format = iupAttribGetStr(ih, "FORMAT");
+  if (!format)
+    return 0;
+  
+  /*  number of bytes of data */
+  if (XmClipboardInquireLength(iupmot_display, window, format, &size)!=ClipboardSuccess)
+    return NULL;
+
+  data = iupStrGetMemory(size);
+
+  if (XmClipboardRetrieve(iupmot_display, window, format, data, size, NULL, NULL)!=ClipboardSuccess)
+    return NULL;
+
+  iupAttribSetStrf(ih, "FORMATDATASIZE", "%d", size);
+  return data;
+}
+
 static int motClipboardIsAvailable(const char* format_name)
 {
   Window window = motClipboardGetWindow();
   int count, i;
   unsigned long max_length, length;
   char* str;
-
+                          
+  /*  number of targets that exists on the clipboard */
 	if (XmClipboardInquireCount(iupmot_display, window, &count, &max_length) != ClipboardSuccess)
     return 0;
 
@@ -198,7 +265,30 @@ static char* motClipboardGetImageAvailableAttrib(Ihandle *ih)
     return "NO";
 }
 
+static char* motClipboardGetFormatAvailableAttrib(Ihandle *ih)
+{
+  char* format = iupAttribGetStr(ih, "FORMAT");
+  if (!format)
+    return NULL;
+
+  if (motClipboardIsAvailable(format))
+    return "YES";
+  else
+    return "NO";
+}
+
+static int motClipboardSetAddFormatAttrib(Ihandle *ih, const char *value)
+{
+  if (value)
+    XmClipboardRegisterFormat(iupmot_display, (char*)value, 8);
+
+  (void)ih;
+  return 0;
+}
+
+
 /******************************************************************************/
+
 
 Ihandle* IupClipboard(void)
 {
@@ -219,10 +309,17 @@ Iclass* iupClipboardNewClass(void)
 
   /* Attribute functions */
   iupClassRegisterAttribute(ic, "TEXT", motClipboardGetTextAttrib, motClipboardSetTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTAVAILABLE", motClipboardGetTextAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "NATIVEIMAGE", motClipboardGetNativeImageAttrib, motClipboardSetNativeImageAttrib, NULL, NULL, IUPAF_NO_STRING|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGE", NULL, motClipboardSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TEXTAVAILABLE", motClipboardGetTextAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEAVAILABLE", motClipboardGetImageAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "ADDFORMAT", NULL, motClipboardSetAddFormatAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMAT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATAVAILABLE", motClipboardGetFormatAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATDATA", motClipboardGetFormatDataAttrib, motClipboardSetFormatDataAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATDATASIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }
