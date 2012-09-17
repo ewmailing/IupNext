@@ -510,7 +510,9 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
     /* disable automatic double buffering */
     gtk_widget_set_double_buffered(ih->handle, FALSE);
     gtk_widget_set_double_buffered((GtkWidget*)scrolled_window, FALSE);
+#if !GTK_CHECK_VERSION(3, 0, 0)
     gdk_window_set_back_pixmap(iupgtkGetWindow(ih->handle), NULL, FALSE);
+#endif
     iupAttribSetStr(ih, "_IUPGTK_NO_BGCOLOR", "1");
     return 1;
   }
@@ -523,7 +525,14 @@ static char* gtkCanvasGetDrawSizeAttrib(Ihandle *ih)
   GdkWindow* window = iupgtkGetWindow(ih->handle);
 
   if (window)
+  {
+#if GTK_CHECK_VERSION(3, 0, 0)
+    w = gdk_window_get_width(window);
+    h = gdk_window_get_height(window);
+#else
     gdk_drawable_get_size(window, &w, &h);
+#endif
+  }
   else
     return NULL;
 
@@ -548,21 +557,27 @@ static void gtkCanvasDummyLogFunc(const gchar *log_domain, GLogLevelFlags log_le
 static int gtkCanvasMapMethod(Ihandle* ih)
 {
   GtkScrolledWindow* scrolled_window;
+#if !GTK_CHECK_VERSION(3, 0, 0)
   void* visual;
+#endif
 
   if (!ih->parent)
     return IUP_ERROR;
 
   ih->data->sb = iupBaseGetScrollbar(ih);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
   visual = (void*)IupGetAttribute(ih, "VISUAL");   /* defined by the OpenGL Canvas in X11 or NULL */
   if (visual)
     iupgtkPushVisualAndColormap(visual, (void*)iupAttribGet(ih, "COLORMAP"));
+#endif
 
   ih->handle = gtk_drawing_area_new();
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
   if (visual)
     gtk_widget_pop_colormap();
+#endif
 
   if (!ih->handle)
       return IUP_ERROR;

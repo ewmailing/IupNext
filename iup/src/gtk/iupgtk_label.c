@@ -247,12 +247,20 @@ static int gtkLabelMapMethod(Ihandle* ih)
     if (iupStrEqualNoCase(value, "HORIZONTAL"))
     {
       ih->data->type = IUP_LABEL_SEP_HORIZ;
+#if GTK_CHECK_VERSION(3, 0, 0)
+      label = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+#else
       label = gtk_hseparator_new();
+#endif
     }
     else /* "VERTICAL" */
     {
       ih->data->type = IUP_LABEL_SEP_VERT;
+#if GTK_CHECK_VERSION(3, 0, 0)
+      label = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+#else
       label = gtk_vseparator_new();
+#endif
     }
   }
   else

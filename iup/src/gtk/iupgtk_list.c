@@ -6,6 +6,9 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+#if GTK_CHECK_VERSION(3, 0, 0)
+#include <gdk/gdkkeysyms-compat.h>
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -1576,7 +1579,11 @@ static int gtkListMapMethod(Ihandle* ih)
 
     if (ih->data->has_editbox)
     {
+#if GTK_CHECK_VERSION(3, 0, 0)
+      GtkBox* vbox = (GtkBox*)gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+#else
       GtkBox* vbox = (GtkBox*)gtk_vbox_new(FALSE, 0);
+#endif
 
       GtkWidget *entry = gtk_entry_new();
       gtk_widget_show(entry);

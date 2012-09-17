@@ -36,7 +36,9 @@ void iupgtkBaseSetBgColor(InativeHandle* handle, unsigned char r, unsigned char 
 void iupgtkBaseSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
 void iupgtkBaseSetFgGdkColor(InativeHandle* handle, GdkColor *color);
 const char* iupgtkGetWidgetClassName(GtkWidget* widget);
+
 GdkWindow* iupgtkGetWindow(GtkWidget *widget);
+void iupgtkWindowGetPointer(GdkWindow *window, int *x, int *y, GdkModifierType *mask);
 
 
 /* focus */
@@ -73,7 +75,6 @@ char* iupgtkGetNativeWindowHandle(Ihandle* ih);
 void iupgtkPushVisualAndColormap(void* visual, void* colormap);
 void* iupgtkGetNativeGraphicsContext(GtkWidget* widget);
 void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc);
-void iupgtkUpdateGlobalColors(GtkStyle* style);
 
 
 /* dialog */

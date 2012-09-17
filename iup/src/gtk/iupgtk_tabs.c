@@ -281,7 +281,11 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     pos = IupGetChildPos(ih, child);
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+    tab_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+#else
     tab_page = gtk_vbox_new(FALSE, 0);
+#endif
     gtk_widget_show(tab_page);
 
     tab_container = gtk_fixed_new();
@@ -331,10 +335,17 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     if (tabimage && tabtitle)
     {
       GtkWidget* box;
+#if GTK_CHECK_VERSION(3, 0, 0)
+      if (ih->data->orientation == ITABS_VERTICAL)
+        box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
+      else
+        box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+#else
       if (ih->data->orientation == ITABS_VERTICAL)
         box = gtk_vbox_new(FALSE, 2);
       else
         box = gtk_hbox_new(FALSE, 2);
+#endif
       gtk_widget_show(box);
 
       gtk_container_add((GtkContainer*)box, tab_image);

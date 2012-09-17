@@ -6,6 +6,9 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+#if GTK_CHECK_VERSION(3, 0, 0)
+#include <gdk/gdkkeysyms-compat.h>
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -159,18 +162,23 @@ static gboolean gtkValKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle
 
 static int gtkValMapMethod(Ihandle* ih)
 {
-  GtkObject *adjustment;
-
   /* value, lower, upper, step_increment, page_increment, page_size */
   /* page_size value only makes a difference for scrollbar widgets  */
-  adjustment = gtk_adjustment_new (0, 0, 1.0, 0.01, 0.1, 0);
+  GtkAdjustment* adjustment = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 1.0, 0.01, 0.1, 0));
   if (!adjustment)
     return IUP_ERROR;
 
+#if GTK_CHECK_VERSION(3, 0, 0)
   if (ih->data->orientation == IVAL_HORIZONTAL)
-    ih->handle = gtk_hscale_new(GTK_ADJUSTMENT(adjustment));
+    ih->handle = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, adjustment);
   else
-    ih->handle = gtk_vscale_new(GTK_ADJUSTMENT(adjustment));
+    ih->handle = gtk_scale_new(GTK_ORIENTATION_VERTICAL, adjustment);
+#else
+  if (ih->data->orientation == IVAL_HORIZONTAL)
+    ih->handle = gtk_hscale_new(adjustment);
+  else
+    ih->handle = gtk_vscale_new(adjustment);
+#endif
 
   if (!ih->handle)
     return IUP_ERROR;

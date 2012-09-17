@@ -302,13 +302,19 @@ char* iupgtkGetPangoLayoutAttrib(Ihandle *ih)
 
 char* iupgtkGetFontIdAttrib(Ihandle *ih)
 {
+  /* Used by IupGLCanvas for IupGLUseFont */
   IgtkFont* gtkfont = gtkFontGet(ih);
   if (!gtkfont)
     return NULL;
   else
   {
+#if GTK_CHECK_VERSION(3, 0, 0)
+    return NULL;  /* TODO: check gtkglarea for GTK3 support, not available yet. */
+#else
     GdkFont* gdk_font = gdk_font_from_description(gtkfont->fontdesc);
-    return (char*)gdk_font_id(gdk_font);  /* In UNIX will return an X Font ID, in Win32 will return an HFONT */
+    return (char*)gdk_font_id(gdk_font);  /* In UNIX will return an X Font ID, 
+                                             in Win32 will return an HFONT */
+#endif
   }
 }
 

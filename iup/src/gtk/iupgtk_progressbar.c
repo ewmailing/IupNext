@@ -64,6 +64,7 @@ static int gtkProgressBarSetValueAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
 static int gtkProgressBarSetDashedAttrib(Ihandle* ih, const char* value)
 {
   GtkProgressBar* pbar = (GtkProgressBar*)ih->handle;
@@ -71,7 +72,7 @@ static int gtkProgressBarSetDashedAttrib(Ihandle* ih, const char* value)
   if (ih->data->marquee)
     return 0;
 
-  /* gtk_progress_bar_set_bar_style is deprecated */
+  /* gtk_progress_bar_set_bar_style is deprecated, but we still use it in GTK2 */
   if (iupStrBoolean(value))
   {
     ih->data->dashed = 1;
@@ -85,6 +86,7 @@ static int gtkProgressBarSetDashedAttrib(Ihandle* ih, const char* value)
 
   return 0;
 }
+#endif
 
 static int gtkProgressBarMapMethod(Ihandle* ih)
 {
@@ -99,7 +101,12 @@ static int gtkProgressBarMapMethod(Ihandle* ih)
 
   if (iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "VERTICAL"))
   {
-    gtk_progress_bar_set_orientation((GtkProgressBar*)ih->handle, GTK_PROGRESS_BOTTOM_TO_TOP);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_orientable_set_orientation(GTK_ORIENTABLE(ih->handle), GTK_ORIENTATION_VERTICAL);
+    gtk_progress_bar_set_inverted(GTK_PROGRESS_BAR(ih->handle), TRUE);
+#else
+    gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(ih->handle), GTK_PROGRESS_BOTTOM_TO_TOP);
+#endif
 
     if (ih->currentheight < ih->currentwidth)
     {
@@ -109,23 +116,33 @@ static int gtkProgressBarMapMethod(Ihandle* ih)
     }
   }
   else
+  {
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_orientable_set_orientation(GTK_ORIENTABLE(ih->handle), GTK_ORIENTATION_HORIZONTAL);
+#else
     gtk_progress_bar_set_orientation((GtkProgressBar*)ih->handle, GTK_PROGRESS_LEFT_TO_RIGHT);
+#endif
+  }
 
   if (iupAttribGetBoolean(ih, "MARQUEE"))
   {
-    ih->data->marquee = 1;
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_progress_bar_pulse(GTK_PROGRESS_BAR(ih->handle));
+#else
     gtk_progress_set_activity_mode((GtkProgress*)ih->handle, TRUE);
+#endif
+
+    ih->data->marquee = 1;
+
     ih->data->timer = IupTimer();
     IupSetCallback(ih->data->timer, "ACTION_CB", (Icallback)gtkProgressBarTimeCb);
     IupSetAttribute(ih->data->timer, "TIME", "100");
     iupAttribSetStr(ih->data->timer, "_IUP_PROGRESSBAR", (char*)ih);
+
     gtk_progress_bar_set_pulse_step((GtkProgressBar*)ih->handle, 0.02);
   }
   else
-  {
-    gtk_progress_set_activity_mode((GtkProgress*)ih->handle, FALSE);
     ih->data->marquee = 0;
-  }
 
   return IUP_NOERROR;
 }
@@ -145,7 +162,9 @@ void iupdrvProgressBarInitClass(Iclass* ic)
 
   /* IupProgressBar only */
   iupClassRegisterAttribute(ic, "VALUE",  iProgressBarGetValueAttrib,  gtkProgressBarSetValueAttrib,  NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+#if !GTK_CHECK_VERSION(3, 0, 0)
   iupClassRegisterAttribute(ic, "DASHED", iProgressBarGetDashedAttrib, gtkProgressBarSetDashedAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+#endif
   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARQUEE",     NULL, gtkProgressBarSetMarqueeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DASHED",      NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

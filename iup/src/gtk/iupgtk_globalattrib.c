@@ -85,7 +85,7 @@ static void iGdkEventFunc(GdkEvent *evt, gpointer	data)
         iupgtkButtonKeySetStatus(evt_motion->state, 0, status, 0);
 
         if (evt_motion->is_hint)
-          gdk_window_get_pointer(evt_motion->window, &x, &y, NULL);
+          iupgtkWindowGetPointer(evt_motion->window, &x, &y, NULL);
 
         gdk_window_get_origin(evt_motion->window, &win_x, &win_y);  /* GDK window relative to screen */
         x += win_x;

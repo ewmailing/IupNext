@@ -743,7 +743,7 @@ gboolean iupgtkMotionNotifyEvent(GtkWidget *widget, GdkEventMotion *evt, Ihandle
   if (evt->is_hint)
   {
     int x, y;
-    gdk_window_get_pointer(iupgtkGetWindow(widget), &x, &y, NULL);
+    iupgtkWindowGetPointer(iupgtkGetWindow(widget), &x, &y, NULL);
     evt->x = x;
     evt->y = y;
   }
@@ -971,3 +971,20 @@ GdkWindow* iupgtkGetWindow(GtkWidget *widget)
   return widget->window;
 #endif
 }
+
+void iupgtkWindowGetPointer(GdkWindow *window, int *x, int *y, GdkModifierType *mask)
+{
+#if GTK_CHECK_VERSION(3, 0, 0)
+  GdkDisplay *display = gdk_window_get_display(window);
+  GdkDeviceManager* device_manager = gdk_display_get_device_manager(display);
+  GdkDevice* device = gdk_device_manager_get_client_pointer(device_manager);
+  gdk_window_get_device_position(window, , x, y, mask);
+#else
+  gdk_window_get_pointer(window, x, y, mask);
+#endif
+}
+
+//   gdk_window_set_background_rgba (window, color);
+//void                gtk_widget_override_background_color(GtkWidget *widget, GtkStateFlags state, const GdkRGBA *color);
+//void                gtk_widget_override_color           (GtkWidget *widget, GtkStateFlags state, const GdkRGBA *color);
+//void                gtk_widget_override_font            (GtkWidget *widget, const PangoFontDescription *font_desc);

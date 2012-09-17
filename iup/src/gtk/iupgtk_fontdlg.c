@@ -22,28 +22,48 @@
 static int gtkFontDlgPopup(Ihandle* ih, int x, int y)
 {
   InativeHandle* parent = iupDialogGetNativeParent(ih);
-  GtkFontSelectionDialog* dialog;
+  GtkWidget* dialog;
   int response;
   char* preview_text, *standardfont;
 
   iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
-  dialog = (GtkFontSelectionDialog*)gtk_font_selection_dialog_new(iupgtkStrConvertToUTF8(iupAttribGet(ih, "TITLE")));
+#if GTK_CHECK_VERSION(3, 2, 0)
+  dialog = gtk_font_chooser_dialog_new(iupgtkStrConvertToUTF8(iupAttribGet(ih, "TITLE")), GTK_WINDOW(parent));
+#else
+  dialog = gtk_font_selection_dialog_new(iupgtkStrConvertToUTF8(iupAttribGet(ih, "TITLE")));
+#endif
   if (!dialog)
     return IUP_ERROR;
 
+#if !GTK_CHECK_VERSION(3, 2, 0)
   if (parent)
-    gtk_window_set_transient_for((GtkWindow*)dialog, (GtkWindow*)parent);
+    gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(parent));
+#endif
 
   standardfont = iupAttribGet(ih, "VALUE");
   if (!standardfont)
     standardfont = IupGetGlobal("DEFAULTFONT");
-  gtk_font_selection_dialog_set_font_name(dialog, standardfont);
+#if GTK_CHECK_VERSION(3, 2, 0)
+  gtk_font_chooser_set_font(GTK_FONT_CHOOSER(dialog), standardfont);
+#else
+  gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(dialog), standardfont);
+#endif
 
   preview_text = iupAttribGet(ih, "PREVIEWTEXT");
   if (preview_text)
-    gtk_font_selection_dialog_set_preview_text(dialog, preview_text);
+  {
+    preview_text = iupgtkStrConvertToUTF8(preview_text);
+#if GTK_CHECK_VERSION(3, 2, 0)
+    if (iupStrEqualNoCase(preview_text, "NONE"))
+      gtk_font_chooser_set_show_preview_entry(GTK_FONT_CHOOSER(dialog), FALSE);
+    else
+      gtk_font_chooser_set_preview_text(GTK_FONT_CHOOSER(dialog), preview_text);
+#else
+    gtk_font_selection_dialog_set_preview_text(GTK_FONT_SELECTION_DIALOG(dialog), preview_text);
+#endif
+  }
 
   if (IupGetCallback(ih, "HELP_CB"))
     gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_HELP, GTK_RESPONSE_HELP);
@@ -69,7 +89,11 @@ static int gtkFontDlgPopup(Ihandle* ih, int x, int y)
 
   if (response == GTK_RESPONSE_OK)
   {
-    char* fontname = gtk_font_selection_dialog_get_font_name(dialog);
+#if GTK_CHECK_VERSION(3, 2, 0)
+    char* fontname = gtk_font_chooser_get_font(GTK_FONT_CHOOSER(dialog));
+#else
+    char* fontname = gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dialog));
+#endif
     iupAttribStoreStr(ih, "VALUE", fontname);
     g_free(fontname);
     iupAttribSetStr(ih, "STATUS", "1");

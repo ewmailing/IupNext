@@ -297,7 +297,7 @@ void* iupImageGetMask(const char* name)
   /* Not created, tries to create the mask */
   mask = iupdrvImageCreateMask(ih);
 
-  /* save the pixbuf */
+  /* save the mask */
   iupAttribSetStr(ih, "_IUPIMAGE_MASK", (char*)mask);
 
   return mask;
@@ -331,7 +331,7 @@ void* iupImageGetIcon(const char* name)
   /* Not created, tries to create the icon */
   icon = iupdrvImageCreateIcon(ih);
 
-  /* save the pixbuf */
+  /* save the icon */
   iupAttribSetStr(ih, "_IUPIMAGE_ICON", (char*)icon);
 
   return icon;
@@ -365,7 +365,7 @@ void* iupImageGetCursor(const char* name)
   /* Not created, tries to create the cursor */
   cursor = iupdrvImageCreateCursor(ih);
 
-  /* save the pixbuf */
+  /* save the cursor */
   iupAttribSetStr(ih, "_IUPIMAGE_CURSOR", (char*)cursor);
 
   return cursor;

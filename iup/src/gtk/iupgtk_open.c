@@ -51,6 +51,10 @@ void* iupdrvGetDisplay(void)
 
 void iupgtkPushVisualAndColormap(void* visual, void* colormap)
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
+  (void)visual;
+  (void)colormap;
+#else
   GdkColormap* gdk_colormap;
   GdkVisual *gdk_visual = gdk_visual_get_best();
 
@@ -59,9 +63,10 @@ void iupgtkPushVisualAndColormap(void* visual, void* colormap)
   gtk_widget_push_colormap(gdk_colormap);
 
   /* gtk_widget_push_visual is now deprecated */
+#endif
 }
 
-static void gtkSetDrvGlobalAttrib(void)
+static void gtkSetGlobalAttrib(void)
 {
 }
 
@@ -99,7 +104,7 @@ void iupgtkPushVisualAndColormap(void* visual, void* colormap)
   (void)colormap;
 }
 
-static void gtkSetDrvGlobalAttrib(void)
+static void gtkSetGlobalAttrib(void)
 {
 }
 
@@ -136,6 +141,10 @@ void* iupdrvGetDisplay(void)
 
 void iupgtkPushVisualAndColormap(void* visual, void* colormap)
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
+  (void)visual;
+  (void)colormap;
+#else
   GdkColormap* gdk_colormap;
   GdkVisual *gdk_visual = gdkx_visual_get(XVisualIDFromVisual((Visual*)visual));
   if (colormap)
@@ -146,9 +155,10 @@ void iupgtkPushVisualAndColormap(void* visual, void* colormap)
   gtk_widget_push_colormap(gdk_colormap);
 
   /* gtk_widget_push_visual is now deprecated */
+#endif
 }
 
-static void gtkSetDrvGlobalAttrib(void)
+static void gtkSetGlobalAttrib(void)
 {
   GdkDisplay* display = gdk_display_get_default();
   Display* xdisplay = GDK_DISPLAY_XDISPLAY(display);
@@ -162,32 +172,76 @@ static void gtkSetDrvGlobalAttrib(void)
 
 #endif
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+static void gtkSetGlobalColorAttrib(const char* name, GdkRGBA *color)
+{
+  iupGlobalSetDefaultColorAttrib(name, (int)iupCOLORDoubleTO8(color->red), 
+                                       (int)iupCOLORDoubleTO8(color->green), 
+                                       (int)iupCOLORDoubleTO8(color->blue));
+}
+#else
 static void gtkSetGlobalColorAttrib(const char* name, GdkColor *color)
 {
   iupGlobalSetDefaultColorAttrib(name, (int)iupCOLOR16TO8(color->red), 
                                        (int)iupCOLOR16TO8(color->green), 
                                        (int)iupCOLOR16TO8(color->blue));
 }
+#endif
 
-void iupgtkUpdateGlobalColors(GtkStyle* style)
+static void gtkUpdateGlobalColors(GtkWidget* dialog, GtkWidget* text)
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
+  GdkRGBA color;
+  GtkStyleContext* context = gtk_widget_get_style_context(dialog);
+
+  gtk_style_context_get_background_color(context, GTK_STATE_NORMAL, &color);
+  gtkSetGlobalColorAttrib("DLGBGCOLOR", &color);
+
+  gtk_style_context_get_color(context, GTK_STATE_NORMAL, &color);
+  gtkSetGlobalColorAttrib("DLGFGCOLOR", &color);
+
+  context = gtk_widget_get_style_context(text);
+
+  gtk_style_context_get_background_color(context, GTK_STATE_NORMAL, &color);
+  gtkSetGlobalColorAttrib("TXTBGCOLOR", &color);
+
+  gtk_style_context_get_color(context, GTK_STATE_NORMAL, &color);
+  gtkSetGlobalColorAttrib("TXTFGCOLOR", &color);
+#else
+  GtkStyle* style = gtk_widget_get_style(dialog);
+
   GdkColor color = style->bg[GTK_STATE_NORMAL];
   gtkSetGlobalColorAttrib("DLGBGCOLOR", &color);
 
   color = style->fg[GTK_STATE_NORMAL];
   gtkSetGlobalColorAttrib("DLGFGCOLOR", &color);
 
+  style = gtk_widget_get_style(text);
+
   color = style->base[GTK_STATE_NORMAL];
   gtkSetGlobalColorAttrib("TXTBGCOLOR", &color);
 
   color = style->text[GTK_STATE_NORMAL];
   gtkSetGlobalColorAttrib("TXTFGCOLOR", &color);
+#endif
+}
+
+static void gtkSetGlobalColors(void)
+{
+  GtkWidget* dialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  GtkWidget* text = gtk_entry_new();
+  gtk_container_add((GtkContainer*)dialog, text);
+  gtk_widget_show(text);
+  gtk_widget_realize(text);
+  gtk_widget_realize(dialog);
+  gtkUpdateGlobalColors(dialog, text);
+  gtk_widget_unrealize(dialog);
+  gtk_widget_destroy(dialog);
 }
 
 int iupdrvOpen(int *argc, char ***argv)
 {
   char* value;
-  GtkStyle* style;
 
   if (!gtk_init_check(argc, argv))
     return IUP_ERROR;
@@ -204,12 +258,9 @@ int iupdrvOpen(int *argc, char ***argv)
                                                       GTK_MINOR_VERSION, 
                                                       GTK_MICRO_VERSION);
 
-  gtkSetDrvGlobalAttrib();
+  gtkSetGlobalAttrib();
 
-  style = gtk_style_new();
-  iupgtkUpdateGlobalColors(style);
-  IupSetGlobal("_IUP_RESET_GLOBALCOLORS", "YES");  /* will update the global colors when the first dialog is mapped */
-  g_object_unref(style);
+  gtkSetGlobalColors();
 
   IupSetGlobal("SHOWMENUIMAGES", "YES");
 

@@ -249,14 +249,12 @@ void* iupdrvImageCreateIcon(Ihandle *ih)
 void* iupdrvImageCreateCursor(Ihandle *ih)
 {
   GdkCursor *cursor;
-  int hx, hy, bpp;
 
-  hx=0; hy=0;
+  int hx=0, hy=0;
   iupStrToIntInt(iupAttribGet(ih, "HOTSPOT"), &hx, &hy, ':');
 
-  bpp = iupAttribGetInt(ih, "BPP");
-
-  if (bpp == 8 && !iupAttribGet(ih, "3"))
+#if !GTK_CHECK_VERSION(3, 0, 0)  /* not supported in GTK3 */
+  if (iupAttribGetInt(ih, "BPP") == 8 && !iupAttribGet(ih, "3"))
   {
     GdkPixmap *source, *mask;
     GdkColor fg, bg;
@@ -309,6 +307,7 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
     free(sbits);
   }
   else
+#endif
   {
     GdkPixbuf* pixbuf = iupdrvImageCreateImage(ih, NULL, 0);
     cursor = gdk_cursor_new_from_pixbuf(gdk_display_get_default(), pixbuf, hx, hy);
@@ -320,6 +319,9 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
 
 void* iupdrvImageCreateMask(Ihandle *ih)
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
+  return NULL;  /* not supported in GTK3 */
+#else
   int bpp;
   GdkPixmap *mask;
   char *bits, *sb;
@@ -358,6 +360,7 @@ void* iupdrvImageCreateMask(Ihandle *ih)
   free(bits);
 
   return mask;
+#endif
 }
 
 void* iupdrvImageLoad(const char* name, int type)
@@ -389,10 +392,16 @@ void* iupdrvImageLoad(const char* name, int type)
       GtkIconSet* icon_set = gtk_icon_factory_lookup_default(name);
       if (icon_set)
       {
+#if GTK_CHECK_VERSION(3, 0, 0)
+        GtkStyleContext* style_context = gtk_style_context_new();
+        pixbuf = gtk_icon_set_render_icon_pixbuf(icon_set, style_context, (GtkIconSize)-1);
+        g_object_unref(style_context);
+#else
         GtkStyle* style = gtk_style_new();
         pixbuf = gtk_icon_set_render_icon(icon_set, style, GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL,
                                           GTK_ICON_SIZE_LARGE_TOOLBAR, NULL, NULL);
         g_object_unref(style);
+#endif
       }
     }
 
@@ -434,8 +443,10 @@ int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colo
 
 void iupdrvImageDestroy(void* handle, int type)
 {
+#if !GTK_CHECK_VERSION(3, 0, 0)
   if (type == IUPIMAGE_CURSOR)
     gdk_cursor_unref((GdkCursor*)handle);
   else
+#endif
     g_object_unref(handle);
 }

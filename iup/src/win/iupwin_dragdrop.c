@@ -653,8 +653,8 @@ static HRESULT STDMETHODCALLTYPE IwinDropTarget_DragLeave(IwinDropTarget* pThis)
 
 static void winCallDropDataCB(Ihandle* ih, CLIPFORMAT cf, HGLOBAL hData, int x, int y)
 {
-  IFnsCiii cbDrop = (IFnsCiii)IupGetCallback((Ihandle*)ih, "DROPDATA_CB");
-  if(cbDrop)
+  IFnsCiii cbDropData = (IFnsCiii)IupGetCallback((Ihandle*)ih, "DROPDATA_CB");
+  if(cbDropData)
   {
     void* targetData = NULL;
     char type[256];
@@ -669,7 +669,7 @@ static void winCallDropDataCB(Ihandle* ih, CLIPFORMAT cf, HGLOBAL hData, int x, 
 
     winGetClipboardFormatName(cf, type, 256);
 
-    cbDrop(ih, type, targetData, size, x, y);
+    cbDropData(ih, type, targetData, size, x, y);
 
     GlobalUnlock(hData);
   }

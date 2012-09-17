@@ -92,7 +92,7 @@ static int gtkClipboardSetFormatDataAttrib(Ihandle *ih, const char *value)
 
   gtk_clipboard_set_with_data (clipboard, 
 			       targets, n_targets,
-			       gtkClipboardDataGetFunc, gtkClipboardDataClearFunc,
+			       (GtkClipboardGetFunc)gtkClipboardDataGetFunc, (GtkClipboardClearFunc)gtkClipboardDataClearFunc,
 			       clip_info);
   gtk_clipboard_store(clipboard);
 
