@@ -831,32 +831,6 @@ static int gtkDialogSetIconAttrib(Ihandle* ih, const char *value)
   return 1;
 }
 
-#if 0
-void gtk_style_context_set_background (GtkStyleContext *context, GdkWindow       *window)
-{
-  GtkStateFlags state;
-  cairo_pattern_t *pattern;
-  GdkRGBA *color;
-
-  state = gtk_style_context_get_state (context);
-
-  gtk_style_context_get (context, state, "background-image", &pattern, NULL);
-  if (pattern)
-    {
-      gdk_window_set_background_pattern (window, pattern);
-      cairo_pattern_destroy (pattern);
-      return;
-    }
-
-  gtk_style_context_get (context, state, "background-color", &color, NULL);
-  if (color)
-    {
-      gdk_window_set_background_rgba (window, color);
-      gdk_rgba_free (color);
-    }
-}
-#endif
-
 static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
 {
   if (iupdrvBaseSetBgColorAttrib(ih, value))
@@ -885,11 +859,23 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     GdkWindow* window = iupgtkGetWindow(ih->handle);
     if (window)
     {
-      //cairo_surface_t *surface
-      //gdk_cairo_set_source_pixbuf(cairo_t *cr, pixbuf, 0, 0);
-      //cairo_pattern_t* pattern = cairo_pattern_create_for_surface(surface);
-      //gdk_window_set_background_pattern(window, pattern);
-      //cairo_surface_destroy(pattern_surface);
+      cairo_pattern_t* pattern;
+      cairo_surface_t* surface;
+      cairo_t* cr;
+
+      int width = gdk_pixbuf_get_width(pixbuf);
+      int height = gdk_pixbuf_get_height(pixbuf);
+
+      surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR_ALPHA, width, height);
+      cr = cairo_create(surface);
+      gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
+      cairo_fill (cr);
+      cairo_destroy(cr);
+
+      pattern = cairo_pattern_create_for_surface(surface);
+      gdk_window_set_background_pattern(window, pattern);
+      cairo_surface_destroy(surface);
+      cairo_pattern_destroy (pattern);
     }
 #else
       GdkPixmap* pixmap;

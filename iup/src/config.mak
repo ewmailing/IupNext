@@ -44,9 +44,8 @@ SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font
       iup_sbox.c iup_normalizer.c iup_tree.c iup_split.c iup_layoutdlg.c iup_recplay.c
 
 ifdef USE_GTK3
-     # temporary for tests
-     LIBNAME := $(LIBNAME)gtk3
-  #DEFINES +=   USE_GTK3
+    # temporary util stabilize
+    LIBNAME := $(LIBNAME)gtk3
 endif
       
 ifdef USE_GTK
@@ -62,12 +61,9 @@ ifdef USE_GTK
            gtk/iupgtk_button.c gtk/iupgtk_toggle.c gtk/iupgtk_dragdrop.c \
            gtk/iupgtk_text.c gtk/iupgtk_frame.c gtk/iupgtk_progressbar.c \
            gtk/iupgtk_tabs.c gtk/iupgtk_menu.c gtk/iupgtk_list.c gtk/iupgtk_tree.c \
-           gtk/iupgtk_canvas.c gtk/iupgtk_image.c
-           
-    SRC += gtk/iupgtk_dialog.c
-    SRC += gtk/iupgtk_draw.c
-    SRC += gtk/iupgtk_common.c
-           
+           gtk/iupgtk_canvas.c gtk/iupgtk_image.c gtk/iupgtk_dialog.c \
+           gtk/iupgtk_common.c gtk/iupgtk_draw.c
+
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=$(WIN32VER) WINVER=$(WIN32VER) NOTREEVIEW
     SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c

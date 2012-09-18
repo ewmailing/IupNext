@@ -1958,7 +1958,6 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
 {
   GtkTreePath* pathDrag = (GtkTreePath*)iupAttribGet(ih, "_IUPTREE_DRAGITEM");
   GtkTreePath* pathDrop = NULL;
-  int accepted = FALSE;
   int is_ctrl;
 
   gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(ih->handle), x, y, &pathDrop, NULL);
@@ -1988,8 +1987,6 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
       has_parent = gtk_tree_model_iter_parent(model, &iterNextParent, &iterParent);
       iterParent = iterNextParent;
     }
-
-    accepted = TRUE;
 
     if (gtkTreeCallDragDropCb(ih, &iterDrag, &iterDrop, &is_ctrl) == IUP_CONTINUE && !equal_nodes)
     {

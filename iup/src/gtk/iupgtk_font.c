@@ -331,7 +331,11 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
     so the font is enable for size calculation. */
   if (ih->handle && (ih->iclass->nativetype != IUP_TYPEVOID))
   {
-    gtk_widget_modify_font(ih->handle, gtkfont->fontdesc);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_widget_override_font(ih->handle, gtkfont->fontdesc); 
+#else
+    gtk_widget_modify_font(ih->handle, gtkfont->fontdesc); 
+#endif
     iupgtkFontUpdatePangoLayout(ih, gtkFontGetWidgetPangoLayout(ih));
   }
 
