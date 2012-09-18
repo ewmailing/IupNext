@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.5
+VERSION = 4.6
 
 
 #---------------------------------#
@@ -262,6 +262,16 @@ ifdef DBG
   endif
 endif
 
+ifdef LUAMOD_DIR
+  ifdef USE_LUA52
+    LUAMODSFX = 52
+  endif
+  ifdef USE_LUA51
+    LUAMODSFX = 51
+  endif
+  TEC_UNAME_DIR := $(TEC_UNAME_DIR)/Lua$(LUAMODSFX)
+endif
+
 OBJDIR := $(OBJROOT)/$(TEC_UNAME_DIR)
 TARGETDIR := $(TARGETROOT)/$(TEC_UNAME_DIR)
 
@@ -310,7 +320,14 @@ MINGW4_64 ?= x:/lng/mingw4_64
 
 #Tools
 QT ?= x:/lng/qt
-GTK ?= x:/lng/gtk
+ifdef USE_GTK3
+  GTKSFX:=3
+  GTK3 ?= x:/lng/gtk3
+  GTK := $(GTK3)
+else
+  GTKSFX:=2
+  GTK ?= x:/lng/gtk
+endif
 
 GLUT ?= x:/lng/glut
 GLUT_LIB ?= $(GLUT)/lib
@@ -900,6 +917,9 @@ endif
 ifdef USE_GDK
   override USE_GTK = Yes
 endif
+ifdef USE_GTK3
+  override USE_GTK = Yes
+endif
 
 ifdef USE_IUPCONTROLS
   override USE_CD = Yes
@@ -1054,12 +1074,18 @@ ifdef USE_OPENGL
 endif
 
 ifdef USE_GTK
-  STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/gdk-pixbuf-2.0 $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0 $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
+  STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-$(GTKSFX).0 $(GTK)/include/gdk-pixbuf-2.0 
+  STDINCS += $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0 
+  STDINCS += $(GTK)/lib/glib-2.0/include 
+  ifndef USE_GTK3
+    STDINCS += $(GTK)/lib/gtk-2.0/include
+  endif
   ifeq "$(TEC_CC)" "gcc"
     STDFLAGS += -mms-bitfields
   endif
   LDIR += $(GTK)/lib
-  LIBS += gtk-win32-2.0 gdk-win32-2.0 gdk_pixbuf-2.0 pango-1.0 pangowin32-1.0 gobject-2.0 gmodule-2.0 glib-2.0
+  LIBS += gtk-win32-$(GTKSFX).0 gdk-win32-$(GTKSFX).0 gdk_pixbuf-2.0 pango-1.0 pangowin32-1.0 
+  LIBS += gobject-2.0 gmodule-2.0 glib-2.0
 endif
 
 ifdef USE_QT
@@ -1408,7 +1434,8 @@ $(DEPEND): $(MAKENAME)
 	  if [ $$? -eq 0 ]; then \
 	    echo "Tecmake: Building Dependencies ... (can be slow)" ;\
 	    g++ $(DEPINCS) $(DEFINES) $(STDDEFS) $(DEPDEFS) -MM $(SOURCES) | \
-	    sed -e '1,$$s/^\([^ ]*\)\.o/$$(OBJDIR)\/\1.$(OBJEXT)/' > $(DEPEND) ;\
+	    sed -e '1,$$s/^\([^ ]*\)\.o/$$(OBJDIR)\/\1.$(OBJEXT)/' | \
+	    sed -e 's/\([ \t][ \t]*\)\([a-zA-Z]\):/\1\/cygdrive\/\2/g' > $(DEPEND) ;\
 	  else \
 	    echo "" ;\
 	    echo "Tecmake: error, g++ not found. Dependencies can not be built." ;\

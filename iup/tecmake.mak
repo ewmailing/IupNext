@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.5
+VERSION = 4.6
 
 
 #---------------------------------#
@@ -368,12 +368,27 @@ endif
 
 TEC_UNAME_DIR ?= $(TEC_UNAME)
 TEC_UNAME_LIB_DIR ?= $(TEC_UNAME)
+
 ifdef DBG
   ifdef DBG_LIB_DIR
     TEC_UNAME_LIB_DIR := $(TEC_UNAME_DIR)d
   endif
   ifdef DBG_DIR
     TEC_UNAME_DIR := $(TEC_UNAME_DIR)d
+  endif
+endif
+
+ifdef LUAMOD_DIR
+  ifdef USE_LUA52
+    LUAMODSFX = 52
+  endif
+  ifdef USE_LUA51
+    LUAMODSFX = 51
+  endif
+  ifdef LUAMOD_LIB_DIR
+    TEC_UNAME_LIB_DIR := $(TEC_UNAME_LIB_DIR)/Lua$(LUAMODSFX)
+  else
+    TEC_UNAME_DIR := $(TEC_UNAME_DIR)/Lua$(LUAMODSFX)
   endif
 endif
 
@@ -561,7 +576,9 @@ ifneq ($(findstring HP-UX, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring SunOS, $(TEC_UNAME)), )
-  UNIX_POSIX = Yes
+  ifneq ($(TEC_SYSARCH), x86)
+    UNIX_POSIX = Yes
+  endif
   ifndef NO_LOCAL_LD
     LD = ld
   endif
@@ -573,6 +590,10 @@ ifneq ($(findstring SunOS, $(TEC_UNAME)), )
   OPENGL_INC := /usr/openwin/share/include/X11
   GLUT_LIB := /usr/local/glut-3.7/lib/glut
   GLUT_INC := /usr/local/glut-3.7/include
+  ifeq ($(TEC_SYSARCH), x86)
+    STDINCS += /usr/X11/include
+    GTK := /usr
+  endif
   ifdef BUILD_64
     ifdef USE_CC
       STDFLAGS += -xarch=v9 -KPIC
@@ -726,6 +747,9 @@ ifdef USE_GLUT
 endif
 
 ifdef USE_GDK
+  override USE_GTK = Yes
+endif
+ifdef USE_GTK3
   override USE_GTK = Yes
 endif
 
@@ -1041,11 +1065,17 @@ ifdef USE_MOTIF
 endif
 
 ifdef USE_GTK
+  ifdef USE_GTK3
+    GTKSFX:=3
+  else
+    GTKSFX:=2
+  endif
+  
   ifdef USE_PKGCONFIG
     # get compile/link flags via pkg-config
-    PKGINCS += $(shell pkg-config --cflags gtk+-2.0 gdk-2.0 gtk+-unix-print-2.0)
-    PKGLIBS += $(shell pkg-config --libs gtk+-2.0 gdk-2.0)
-    GTK_BASE := $(shell pkg-config --variable=prefix gtk+-2.0)
+    PKGINCS += $(shell pkg-config --cflags gtk+-$(GTKSFX).0 gdk-$(GTKSFX).0)
+    PKGLIBS += $(shell pkg-config --libs gtk+-$(GTKSFX).0 gdk-$(GTKSFX).0)
+    GTK_BASE := $(shell pkg-config --variable=prefix gtk+-$(GTKSFX).0)
     GTK := $(GTK_BASE)    
   else
     CHECK_GTK = Yes
@@ -1056,9 +1086,9 @@ ifdef USE_GTK
         override USE_X11 = Yes
       endif
       ifdef GTK_MAC
-        LIBS += gtk-quartz-2.0 gdk-quartz-2.0 pango-1.0
+        LIBS += gtk-quartz-$(GTKSFX).0 gdk-quartz-$(GTKSFX).0 pango-1.0
       else
-        LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
+        LIBS += gtk-x11-$(GTKSFX).0 gdk-x11-$(GTKSFX).0 pangox-1.0
       endif
   # Option 2 - Imendio Framework
   #   STDINCS += /Library/Frameworks/Gtk.framework/Headers
@@ -1068,7 +1098,7 @@ ifdef USE_GTK
   # Option 3 - GTK-OSX Framework
   #   LDIR += $(GTK)/lib
   #   LFLAGS += -framework Carbon
-  #   LIBS += gtk-quartz-2.0 gdk-quartz-2.0 pangoft2-1.0
+  #   LIBS += gtk-quartz-$(GTKSFX).0 gdk-quartz-$(GTKSFX).0 pangoft2-1.0
 
       LIBS += freetype
     else
@@ -1080,35 +1110,49 @@ ifdef USE_GTK
       ifndef NO_OVERRIDE
         override USE_X11 = Yes
       endif
-      LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
+      LIBS += gtk-x11-$(GTKSFX).0 gdk-x11-$(GTKSFX).0 pangox-1.0
     endif
 
     LIBS += gdk_pixbuf-2.0 pango-1.0 gobject-2.0 gmodule-2.0 glib-2.0
     
-    STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-2.0 $(GTK)/include/gdk-pixbuf-2.0 
+    STDINCS += $(GTK)/include/atk-1.0 $(GTK)/include/gtk-$(GTKSFX).0 $(GTK)/include/gdk-pixbuf-2.0 
     STDINCS += $(GTK)/include/cairo $(GTK)/include/pango-1.0 $(GTK)/include/glib-2.0
-#    STDINCS += $(GTK)/include/gtk-unix-print-2.0
 
     ifeq ($(TEC_SYSARCH), x64)
-      STDINCS += $(GTK)/lib64/glib-2.0/include $(GTK)/lib64/gtk-2.0/include
+      STDINCS += $(GTK)/lib64/glib-2.0/include 
+      ifndef USE_GTK3
+        STDINCS += $(GTK)/lib64/gtk-2.0/include
+      endif
       
       # Add also these to avoid errors in systems that lib64 does not exists
-      STDINCS += $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
+      STDINCS += $(GTK)/lib/glib-2.0/include 
+      ifndef USE_GTK3
+        STDINCS += $(GTK)/lib/gtk-2.0/include
+      endif
       
       # Add also support for newer instalations
       STDINCS += $(GTK)/lib/x86_64-linux-gnu/glib-2.0/include
-      STDINCS += $(GTK)/lib/x86_64-linux-gnu/gtk-2.0/include
+      ifndef USE_GTK3
+        STDINCS += $(GTK)/lib/x86_64-linux-gnu/gtk-2.0/include
+      endif
+    else ifeq ($(TEC_SYSARCH), ia64)
+      STDINCS += $(GTK)/lib64/glib-2.0/include 
+      ifndef USE_GTK3
+        STDINCS += $(GTK)/lib64/gtk-2.0/include
+      endif
     else
-    ifeq ($(TEC_SYSARCH), ia64)
-      STDINCS += $(GTK)/lib64/glib-2.0/include $(GTK)/lib64/gtk-2.0/include
-    else
-      STDINCS += $(GTK)/lib/glib-2.0/include $(GTK)/lib/gtk-2.0/include
+      STDINCS += $(GTK)/lib/glib-2.0/include 
+      ifndef USE_GTK3
+        STDINCS += $(GTK)/lib/gtk-2.0/include
+      endif
       
       # Add also support for newer instalations
       STDINCS += $(GTK)/lib/i386-linux-gnu/glib-2.0/include
-      STDINCS += $(GTK)/lib/i386-linux-gnu/gtk-2.0/include
+      ifndef USE_GTK3
+        STDINCS += $(GTK)/lib/i386-linux-gnu/gtk-2.0/include
+      endif
     endif
-    endif
+    
     ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
       STDINCS += /lib/X11R6/include/gtk-2.0
     endif
