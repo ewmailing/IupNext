@@ -58,10 +58,6 @@ void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char 
  * \ingroup draw */
 void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
 
-/** Draws a rectangle inverting the color in the canvas.
- * \ingroup draw */
-void iupDrawRectangleInvert(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
-
 /** Draws a filled/hollow arc.
  * \ingroup draw */
 void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style);
@@ -89,6 +85,14 @@ void iupDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 /** Removes clipping.
  * \ingroup draw */
 void iupDrawResetClip(IdrawCanvas* dc);
+
+/** Draws a focus rectangle
+ * \ingroup draw */
+void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h);
+
+/** Draws a selection rectangle.
+ * \ingroup draw */
+void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h);
 
 /*
 TO DO:

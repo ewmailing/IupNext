@@ -105,14 +105,6 @@ void iupDrawParentBackground(IdrawCanvas* dc)
   iupDrawRectangle(dc, 0, 0, dc->w-1, dc->h-1, r, g, b, IUP_DRAW_FILL);
 }
 
-void iupDrawRectangleInvert(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
-{
-  XSetFunction(iupmot_display, dc->pixmap_gc, GXxor);
-  XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(255, 255, 255));
-  XFillRectangle(iupmot_display, dc->pixmap, dc->pixmap_gc, x1, y1, x2-x1+1, y2-y1+1);
-  XSetFunction(iupmot_display, dc->pixmap_gc, GXcopy);
-}
-
 void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
 {
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(r, g, b));
@@ -232,4 +224,20 @@ void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, i
   iupdrvImageGetInfo((void*)pixmap, img_w, img_h, &bpp);
 
   XCopyArea(iupmot_display, pixmap, dc->pixmap, dc->pixmap_gc, 0, 0, *img_w, *img_h, x, y);
+}
+
+#include <Xm/XmP.h>
+#include <Xm/DrawP.h>
+
+void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
+{
+  XmeDrawHighlight(iupmot_display, dc->pixmap, dc->pixmap_gc, x, y, w, h, 1);
+}
+
+void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
+{
+  XSetFunction(iupmot_display, dc->pixmap_gc, GXxor);
+  XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(255, 255, 255));
+  XFillRectangle(iupmot_display, dc->pixmap, dc->pixmap_gc, x, y, w, h);
+  XSetFunction(iupmot_display, dc->pixmap_gc, GXcopy);
 }

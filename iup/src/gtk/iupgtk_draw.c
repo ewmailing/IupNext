@@ -91,16 +91,6 @@ void iupDrawParentBackground(IdrawCanvas* dc)
   iupDrawRectangle(dc, 0, 0, dc->w-1, dc->h-1, r, g, b, IUP_DRAW_FILL);
 }
 
-void iupDrawRectangleInvert(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
-{
-  GdkColor color;
-  iupgdkColorSet(&color, 255, 255, 255);
-  gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
-  gdk_gc_set_function(dc->pixmap_gc, GDK_XOR);
-  gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, TRUE, x1, y1, x2-x1+1, y2-y1+1);
-  gdk_gc_set_function(dc->pixmap_gc, GDK_COPY);
-}
-
 void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
 {
   GdkColor color;
@@ -212,4 +202,20 @@ void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, i
   iupdrvImageGetInfo(pixbuf, img_w, img_h, &bpp);
 
   gdk_draw_pixbuf(dc->pixmap, dc->pixmap_gc, pixbuf, 0, 0, x, y, *img_w, *img_h, GDK_RGB_DITHER_NORMAL, 0, 0);
+}
+
+void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
+{
+  GtkStyle *style = gtk_widget_get_style(dc->ih->handle);
+  gtk_paint_focus(style, dc->pixmap, GTK_STATE_NORMAL, NULL, NULL, NULL, x, y, w, h);
+}
+
+void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
+{
+  GdkColor color;
+  iupgdkColorSet(&color, 255, 255, 255);
+  gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
+  gdk_gc_set_function(dc->pixmap_gc, GDK_XOR);
+  gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, TRUE, x, y, w, h);
+  gdk_gc_set_function(dc->pixmap_gc, GDK_COPY);
 }

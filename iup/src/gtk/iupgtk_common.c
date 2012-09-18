@@ -1092,3 +1092,9 @@ void iupgtkWindowGetPointer(GdkWindow *window, int *x, int *y, GdkModifierType *
   gdk_window_get_pointer(window, x, y, mask);
 #endif
 }
+
+/* Deprecated but still used for GTK2:
+  gdk_bitmap_create_from_data  (since 2.22)
+  gdk_font_id
+  gdk_font_from_description
+*/

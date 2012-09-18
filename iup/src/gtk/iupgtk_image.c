@@ -302,8 +302,8 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
 
     cursor = gdk_cursor_new_from_pixmap(source, mask, &fg, &bg, hx, hy);
 
-    gdk_pixmap_unref(source);
-    gdk_pixmap_unref(mask);
+    g_object_unref(source);
+    g_object_unref(mask);
     free(sbits);
   }
   else

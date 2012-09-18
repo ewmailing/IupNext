@@ -220,7 +220,7 @@ static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
   iupdrvBaseLayoutUpdateMethod(ih);
 
   /* Force GdkWindow size update when not visible,
-     so when mapped before show the function gdk_drawable_get_size returns the correct value. */
+     so when mapped before show GDK returns the correct value. */
   if (!iupdrvIsVisible(ih))
     gdk_window_resize(window, ih->currentwidth, ih->currentheight);
 
@@ -526,7 +526,7 @@ static char* gtkCanvasGetDrawSizeAttrib(Ihandle *ih)
 
   if (window)
   {
-#if GTK_CHECK_VERSION(3, 0, 0)
+#if GTK_CHECK_VERSION(2, 24, 0)
     w = gdk_window_get_width(window);
     h = gdk_window_get_height(window);
 #else

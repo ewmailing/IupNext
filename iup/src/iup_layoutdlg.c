@@ -1191,7 +1191,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     if (w<=0) w=1;
     if (h<=0) h=1;
 
-    iupDrawRectangleInvert(dc, x, y, x+w-1, y+h-1);
+    iupDrawSelectRect(dc, x, y, w, h);
   }
 }
 
