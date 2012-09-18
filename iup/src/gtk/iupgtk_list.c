@@ -194,7 +194,11 @@ static int gtkListSetStandardFontAttrib(Ihandle* ih, const char* value)
     if (ih->data->has_editbox)
     {
       GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
+#if GTK_CHECK_VERSION(3, 0, 0)
+      gtk_widget_override_font((GtkWidget*)entry, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
+#else
       gtk_widget_modify_font((GtkWidget*)entry, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
+#endif
       iupgtkFontUpdatePangoLayout(ih, gtk_entry_get_layout(entry));
     }
   }

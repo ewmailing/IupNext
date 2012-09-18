@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#define iupCOLORDoubleTO8(_x) ((unsigned char)(_x*255))  /* 1.0*255 = 255 */
+#define iupCOLOR8ToDouble(_x) ((unsigned char)((double)_x/255.0))
+
 
 /* global variables, declared in iupgtk_globalattrib.c */
 extern int iupgtk_utf8autoconvert;         
@@ -34,7 +37,6 @@ gboolean iupgtkMotionNotifyEvent(GtkWidget *widget, GdkEventMotion *evt, Ihandle
 gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih);
 void iupgtkBaseSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
 void iupgtkBaseSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
-void iupgtkBaseSetFgGdkColor(InativeHandle* handle, GdkColor *color);
 const char* iupgtkGetWidgetClassName(GtkWidget* widget);
 
 GdkWindow* iupgtkGetWindow(GtkWidget *widget);

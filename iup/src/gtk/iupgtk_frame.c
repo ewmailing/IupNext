@@ -96,7 +96,12 @@ static int gtkFrameSetStandardFontAttrib(Ihandle* ih, const char* value)
     GtkWidget* label = gtk_frame_get_label_widget((GtkFrame*)ih->handle);
     if (!label) return 1;
 
-    gtk_widget_modify_font(label, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_widget_override_font((GtkWidget*)label, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
+#else
+    gtk_widget_modify_font((GtkWidget*)label, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
+#endif
+
     iupgtkFontUpdatePangoLayout(ih, gtk_label_get_layout((GtkLabel*)label));
   }
   return 1;

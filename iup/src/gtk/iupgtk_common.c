@@ -281,6 +281,43 @@ void iupdrvSetActive(Ihandle* ih, int enable)
   gtk_widget_set_sensitive(ih->handle, enable);
 }
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+static void iupgdkRGBASet(GdkRGBA* rgba, unsigned char r, unsigned char g, unsigned char b)
+{
+  rgba->red = iupCOLOR8ToDouble(r);
+  rgba->green = iupCOLOR8ToDouble(g);
+  rgba->blue = iupCOLOR8ToDouble(b);
+  rgba->alpha = 1.0;
+}
+
+static GdkRGBA gtkDarkerRGBA(GdkRGBA *rgba)
+{
+  GdkRGBA dark_rgba = {0,0,0,1.0};
+
+  dark_rgba.red = (rgba->red*9)/10;
+  dark_rgba.green = (rgba->green*9)/10;
+  dark_rgba.blue = (rgba->blue*9)/10;
+
+  return dark_rgba;
+}
+
+static gdouble gtkCROPDouble(gdouble x)
+{
+  if (x > 1.0) return 1.0;
+  return x;
+}
+
+static GdkRGBA gtkLighterRGBA(GdkRGBA *rgba)
+{
+  GdkRGBA light_rgba = {0,0,0,1.0};
+
+  light_rgba.red = gtkCROPDouble((rgba->red*11)/10);
+  light_rgba.green = gtkCROPDouble((rgba->green*11)/10);
+  light_rgba.blue = gtkCROPDouble((rgba->blue*11)/10);
+
+  return light_rgba;
+}
+#else
 static GdkColor gtkDarkerColor(GdkColor *color)
 {
   GdkColor dark_color = {0L,0,0,0};
@@ -308,17 +345,42 @@ static GdkColor gtkLighterColor(GdkColor *color)
 
   return light_color;
 }
+#endif
 
 void iupgtkBaseSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
+  GdkRGBA rgba, light_rgba, dark_rgba;
+  int is_txt = 0;
+
+  if (GTK_IS_TREE_VIEW(handle) ||
+      GTK_IS_TEXT_VIEW(handle) ||
+      GTK_IS_ENTRY(handle) ||
+      GTK_IS_COMBO_BOX(handle))
+    is_txt = 1;
+
+  iupgdkRGBASet(&rgba, r, g, b);
+  dark_rgba = gtkDarkerRGBA(&rgba);
+  light_rgba = gtkLighterRGBA(&rgba);
+
+  gtk_widget_override_background_color(handle, GTK_STATE_FLAG_NORMAL, &rgba);
+  gtk_widget_override_background_color(handle, GTK_STATE_ACTIVE, &dark_rgba);
+  gtk_widget_override_background_color(handle, GTK_STATE_PRELIGHT, &light_rgba);
+
+  if (is_txt)
+    gtk_widget_override_background_color(handle, GTK_STATE_INSENSITIVE, &light_rgba);
+  else
+    gtk_widget_override_background_color(handle, GTK_STATE_INSENSITIVE, &rgba);
+#else
   GtkRcStyle *rc_style;  
   GdkColor color;
 
   iupgdkColorSet(&color, r, g, b);
 
   rc_style = gtk_widget_get_modifier_style(handle);
-  rc_style->base[GTK_STATE_NORMAL] = rc_style->bg[GTK_STATE_NORMAL]   = rc_style->bg[GTK_STATE_INSENSITIVE] = color;
-  rc_style->bg[GTK_STATE_ACTIVE]   = rc_style->base[GTK_STATE_ACTIVE] = gtkDarkerColor(&color);
+
+  rc_style->base[GTK_STATE_NORMAL]   = rc_style->bg[GTK_STATE_NORMAL] = rc_style->bg[GTK_STATE_INSENSITIVE] = color;
+  rc_style->base[GTK_STATE_ACTIVE]   = rc_style->bg[GTK_STATE_ACTIVE] = gtkDarkerColor(&color);
   rc_style->base[GTK_STATE_PRELIGHT] = rc_style->bg[GTK_STATE_PRELIGHT] = rc_style->base[GTK_STATE_INSENSITIVE] = gtkLighterColor(&color);
 
   rc_style->color_flags[GTK_STATE_NORMAL] |= GTK_RC_BASE | GTK_RC_BG;
@@ -327,6 +389,37 @@ void iupgtkBaseSetBgColor(InativeHandle* handle, unsigned char r, unsigned char 
   rc_style->color_flags[GTK_STATE_INSENSITIVE] |= GTK_RC_BASE | GTK_RC_BG;
 
   gtk_widget_modify_style(handle, rc_style);
+#endif
+}
+
+void iupgtkBaseSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
+{
+#if GTK_CHECK_VERSION(3, 0, 0)
+  GdkRGBA rgba;
+
+  iupgdkRGBASet(&rgba, r, g, b);
+
+  gtk_widget_override_color(handle, GTK_STATE_FLAG_NORMAL, &rgba);
+  gtk_widget_override_color(handle, GTK_STATE_ACTIVE, &rgba);
+  gtk_widget_override_color(handle, GTK_STATE_PRELIGHT, &rgba);
+#else
+  GtkRcStyle *rc_style;  
+  GdkColor color;
+
+  iupgdkColorSet(&color, r, g, b);
+
+  rc_style = gtk_widget_get_modifier_style(handle);  
+
+  rc_style->fg[GTK_STATE_ACTIVE] = rc_style->fg[GTK_STATE_NORMAL] = rc_style->fg[GTK_STATE_PRELIGHT] = color;
+  rc_style->text[GTK_STATE_ACTIVE] = rc_style->text[GTK_STATE_NORMAL] = rc_style->text[GTK_STATE_PRELIGHT] = color;
+
+  rc_style->color_flags[GTK_STATE_NORMAL] |= GTK_RC_TEXT | GTK_RC_FG;
+  rc_style->color_flags[GTK_STATE_ACTIVE] |= GTK_RC_TEXT | GTK_RC_FG;
+  rc_style->color_flags[GTK_STATE_PRELIGHT] |= GTK_RC_TEXT | GTK_RC_FG;
+
+  /* do not set at CHILD_CONTAINER */
+  gtk_widget_modify_style(handle, rc_style);
+#endif
 }
 
 int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
@@ -342,28 +435,6 @@ int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-void iupgtkBaseSetFgGdkColor(InativeHandle* handle, GdkColor *color)
-{
-  GtkRcStyle *rc_style;  
-
-  rc_style = gtk_widget_get_modifier_style(handle);  
-  rc_style->fg[GTK_STATE_ACTIVE] = rc_style->fg[GTK_STATE_NORMAL] = rc_style->fg[GTK_STATE_PRELIGHT] = *color;
-  rc_style->text[GTK_STATE_ACTIVE] = rc_style->text[GTK_STATE_NORMAL] = rc_style->text[GTK_STATE_PRELIGHT] = *color;
-  rc_style->color_flags[GTK_STATE_NORMAL] |= GTK_RC_TEXT | GTK_RC_FG;
-  rc_style->color_flags[GTK_STATE_ACTIVE] |= GTK_RC_TEXT | GTK_RC_FG;
-  rc_style->color_flags[GTK_STATE_PRELIGHT] |= GTK_RC_TEXT | GTK_RC_FG;
-
-  /* do not set at CHILD_CONTAINER */
-  gtk_widget_modify_style(handle, rc_style);
-}
-
-void iupgtkBaseSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
-{
-  GdkColor color;
-  iupgdkColorSet(&color, r, g, b);
-  iupgtkBaseSetFgGdkColor(handle, &color);
-}
-
 int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
@@ -377,6 +448,10 @@ int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
 
 static GdkCursor* gtkEmptyCursor(Ihandle* ih)
 {
+#if GTK_CHECK_VERSION(2, 16, 0)
+  (void)ih;
+  return gdk_cursor_new(GDK_BLANK_CURSOR);
+#else  
   /* creates an empty cursor */
   GdkColor cursor_color = {0L,0,0,0};
   char bitsnull[1] = {0x00};
@@ -396,6 +471,7 @@ static GdkCursor* gtkEmptyCursor(Ihandle* ih)
   g_object_unref(pixmapnull);
 
   return cur;
+#endif
 }
 
 static GdkCursor* gtkGetCursor(Ihandle* ih, const char* name)
@@ -495,11 +571,19 @@ int iupdrvGetScrollbarSize(void)
   {
     GtkRequisition requisition;
     GtkWidget* win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    GtkWidget* sb = gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, NULL);
+#else
     GtkWidget* sb = gtk_vscrollbar_new(NULL);
+#endif
     gtk_container_add((GtkContainer*)win, sb);
     gtk_widget_realize(win);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_widget_get_preferred_size(sb, NULL, &requisition);
+#else
     gtk_widget_size_request(sb, &requisition);
     size = requisition.width+1;
+#endif
     gtk_widget_destroy(win);
   }
 
@@ -508,6 +592,11 @@ int iupdrvGetScrollbarSize(void)
 
 void iupdrvDrawFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h)
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
+  cairo_t* cr = (cairo_t*)_gc;
+  GtkStyleContext* context = gtk_widget_get_style_context(ih->handle);
+  gtk_render_focus(context, cr, x, y, w, h);
+#else
   GdkWindow* window = iupgtkGetWindow(ih->handle);
   GtkStyle *style = gtk_widget_get_style(ih->handle);
 #if GTK_CHECK_VERSION(2, 18, 0)
@@ -516,6 +605,7 @@ void iupdrvDrawFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h)
   GtkStateType state = GTK_WIDGET_STATE(ih->handle);
 #endif
   gtk_paint_focus(style, window, state, NULL, ih->handle, NULL, x, y, w, h);
+#endif
   (void)_gc;
 }
 
@@ -843,7 +933,11 @@ void iupdrvSendKey(int key, int press)
 void iupdrvWarpPointer(int x, int y)
 {
   /* VirtualBox does not reproduce the mouse move visually, but it is working. */
-#if GTK_CHECK_VERSION(2, 8, 0)
+#if GTK_CHECK_VERSION(3, 0, 0)
+  GdkDeviceManager* device_manager = gdk_display_get_device_manager(gdk_display_get_default());
+  GdkDevice* device = gdk_device_manager_get_client_pointer(device_manager);
+  gdk_device_warp(device, gdk_screen_get_default(), x, y);
+#elif GTK_CHECK_VERSION(2, 8, 0)
   gdk_display_warp_pointer(gdk_display_get_default(), gdk_screen_get_default(), x, y);
 #endif
 }
@@ -860,6 +954,11 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
     GtkWidget* grab_widget;
     gint origin_x, origin_y;
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+    GdkDeviceManager* device_manager = gdk_display_get_device_manager(gdk_display_get_default());
+    GdkDevice* device = gdk_device_manager_get_client_pointer(device_manager);
+#endif
+
     GdkEventButton evt;
     memset(&evt, 0, sizeof(GdkEventButton));
     evt.send_event = TRUE;
@@ -867,13 +966,23 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
     evt.x_root = x;
     evt.y_root = y;
     evt.type = (status==0)? GDK_BUTTON_RELEASE: ((status==2)? GDK_2BUTTON_PRESS: GDK_BUTTON_PRESS);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    evt.device = device;
+#else
     evt.device = gdk_device_get_core_pointer();
+#endif
 
     grab_widget = gtk_grab_get_current();
     if (grab_widget) 
       evt.window = iupgtkGetWindow(grab_widget);
     else
+    {
+#if GTK_CHECK_VERSION(3, 0, 0)
+      evt.window = gdk_device_get_window_at_position(device, NULL, NULL);
+#else
       evt.window = gdk_window_at_pointer(NULL, NULL);
+#endif
+    }
 
     switch(bt)
     {
@@ -983,7 +1092,3 @@ void iupgtkWindowGetPointer(GdkWindow *window, int *x, int *y, GdkModifierType *
   gdk_window_get_pointer(window, x, y, mask);
 #endif
 }
-
-//   gdk_window_set_background_rgba (window, color);
-//void                gtk_widget_override_background_color(GtkWidget *widget, GtkStateFlags state, const GdkRGBA *color);
-//void                gtk_widget_override_color           (GtkWidget *widget, GtkStateFlags state, const GdkRGBA *color);

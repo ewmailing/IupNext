@@ -1895,11 +1895,19 @@ static void gtkTreeCellTextEditingStarted(GtkCellRenderer *cell, GtkCellEditable
 
   gtk_tree_model_get(model, &iterItem, IUPGTK_TREE_FONT, &fontdesc, -1);
   if (fontdesc)
+  {
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_widget_override_font(GTK_WIDGET(editable), fontdesc);
+#else
     gtk_widget_modify_font(GTK_WIDGET(editable), fontdesc);
+#endif
+  }
 
   gtk_tree_model_get(model, &iterItem, IUPGTK_TREE_COLOR, &color, -1);
   if (color)
-    iupgtkBaseSetFgGdkColor(GTK_WIDGET(editable), color);
+    iupgtkBaseSetFgColor(GTK_WIDGET(editable), iupCOLORDoubleTO8(color->red), 
+                                               iupCOLORDoubleTO8(color->green), 
+                                               iupCOLORDoubleTO8(color->blue));
 
   (void)cell;
 }

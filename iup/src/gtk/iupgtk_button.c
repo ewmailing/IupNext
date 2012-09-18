@@ -202,7 +202,12 @@ static int gtkButtonSetStandardFontAttrib(Ihandle* ih, const char* value)
     GtkLabel* label = gtkButtonGetLabel(ih);
     if (!label) return 1;
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_widget_override_font((GtkWidget*)label, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
+#else
     gtk_widget_modify_font((GtkWidget*)label, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
+#endif
+
     if (ih->data->type == IUP_BUTTON_TEXT && !GTK_IS_COLOR_BUTTON(ih->handle))   /* text only */
       iupgtkFontUpdatePangoLayout(ih, gtk_label_get_layout(label));
   }

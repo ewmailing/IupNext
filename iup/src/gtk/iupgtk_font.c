@@ -228,15 +228,27 @@ void iupgtkFontUpdateObjectPangoLayout(Ihandle* ih, gpointer object)
 char* iupdrvGetSystemFont(void)
 {
   static char str[200]; /* must return a static string, because it will be used as the default value for the FONT attribute */
-  GtkStyle* style;
+  const PangoFontDescription* font_desc = NULL;
   GtkWidget* widget = gtk_invisible_new();
   gtk_widget_realize(widget);
-  style = gtk_widget_get_style(widget);
-  if (!style || !style->font_desc)
+#if GTK_CHECK_VERSION(3, 0, 0)
+  {
+    GtkStyleContext* context = gtk_widget_get_style_context(widget);
+    if (context)
+      font_desc = gtk_style_context_get_font(context, GTK_STATE_FLAG_NORMAL);
+  }
+#else
+  {
+    GtkStyle* style = gtk_widget_get_style(widget);
+    if (style)
+       font_desc = style->font_desc;
+  }
+#endif
+  if (!font_desc)
     strcpy(str, "Sans, 10");
   else
   {
-    char* desc = pango_font_description_to_string(style->font_desc);
+    char* desc = pango_font_description_to_string(font_desc);
     strcpy(str, desc);
     g_free(desc);
   }

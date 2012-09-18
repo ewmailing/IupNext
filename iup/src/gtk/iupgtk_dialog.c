@@ -879,11 +879,10 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     }
 #else
       GdkPixmap* pixmap;
-      GtkStyle *style;
+      GtkStyle *style = gtk_style_copy(gtk_widget_get_style(ih->handle));
 
       gdk_pixbuf_render_pixmap_and_mask(pixbuf, &pixmap, NULL, 255);
 
-      style = gtk_style_copy(gtk_widget_get_style(ih->handle));
       style->bg_pixmap[GTK_STATE_NORMAL] = pixmap;
       gtk_widget_set_style(ih->handle, style);
 #endif
