@@ -415,12 +415,16 @@ void iupDrawUpdateSize(IdrawCanvas* dc)
 {
   int w, h;
   RECT rect;
+
   GetClientRect(dc->ih->handle, &rect);
   w = rect.right - rect.left;
   h = rect.bottom - rect.top;
 
   if (w != dc->w || h != dc->h)
   {
+    dc->w = w;
+    dc->h = h;
+
     SelectObject(dc->hBitmapDC, dc->hOldBitmap);
     DeleteObject(dc->hBitmap);
     DeleteDC(dc->hBitmapDC);
@@ -614,6 +618,11 @@ void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, i
     DeleteObject(hMask);
 }
 
+void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
+{
+  BitBlt(dc->hBitmapDC, x, y, w, h, dc->hBitmapDC, x, y, DSTINVERT);
+}
+
 void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
 {
   RECT rect;
@@ -623,10 +632,5 @@ void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
   rect.right = x+w;  
   rect.bottom = y+h;
 
-  DrawFocusRect(dc->hBitmapDC, &rect);
-}
-
-void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
-{
-  BitBlt(dc->hBitmapDC, x, y, w, h, dc->hBitmapDC, x, y, DSTINVERT);
+  DrawFocusRect(dc->hDC, &rect);
 }

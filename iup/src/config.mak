@@ -45,7 +45,7 @@ SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font
 
 ifdef USE_GTK3
     # temporary util stabilize
-    LIBNAME := $(LIBNAME)gtk3
+    #LIBNAME := $(LIBNAME)gtk3
 endif
       
 ifdef USE_GTK

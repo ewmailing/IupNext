@@ -64,6 +64,9 @@ void iupDrawUpdateSize(IdrawCanvas* dc)
 
   if (w != dc->w || h != dc->h)
   {
+    dc->w = w;
+    dc->h = h;
+
     g_object_unref(dc->pixmap_gc); 
     g_object_unref(dc->pixmap); 
 
@@ -204,12 +207,6 @@ void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, i
   gdk_draw_pixbuf(dc->pixmap, dc->pixmap_gc, pixbuf, 0, 0, x, y, *img_w, *img_h, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
-void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
-{
-  GtkStyle *style = gtk_widget_get_style(dc->ih->handle);
-  gtk_paint_focus(style, dc->pixmap, GTK_STATE_NORMAL, NULL, NULL, NULL, x, y, w, h);
-}
-
 void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
 {
   GdkColor color;
@@ -218,4 +215,10 @@ void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
   gdk_gc_set_function(dc->pixmap_gc, GDK_XOR);
   gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, TRUE, x, y, w, h);
   gdk_gc_set_function(dc->pixmap_gc, GDK_COPY);
+}
+
+void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
+{
+  GtkStyle *style = gtk_widget_get_style(dc->ih->handle);
+  gtk_paint_focus(style, dc->wnd, GTK_STATE_NORMAL, NULL, NULL, NULL, x, y, w, h);
 }

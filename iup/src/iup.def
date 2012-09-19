@@ -406,5 +406,7 @@ iupDrawSetClipRect
 iupDrawText
 iupDrawUpdateSize
 iupDrawImage
+iupDrawSelectRect
+iupDrawFocusRect
 iupGetFontInfo
 
