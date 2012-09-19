@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 #define iupCOLORDoubleTO8(_x) ((unsigned char)(_x*255))  /* 1.0*255 = 255 */
-#define iupCOLOR8ToDouble(_x) ((unsigned char)((double)_x/255.0))
+#define iupCOLOR8ToDouble(_x) ((double)_x/255.0)
 
 
 /* global variables, declared in iupgtk_globalattrib.c */

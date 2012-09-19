@@ -196,7 +196,11 @@ static gboolean gtkCanvasButtonEvent(GtkWidget *widget, GdkEventButton *evt, Iha
 
 static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value);
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+static gboolean gtkCanvasDraw(GtkWidget *widget, cairo_t* cr, Ihandle *ih)
+#else
 static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Ihandle *ih)
+#endif
 {
   IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
   if (cb)
@@ -204,7 +208,10 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
     if (!iupAttribGet(ih, "_IUPGTK_NO_BGCOLOR"))
       gtkCanvasSetBgColorAttrib(ih, iupAttribGetStr(ih, "BGCOLOR"));  /* reset to update window attributes */
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+#else
     iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", evt->area.x, evt->area.y, evt->area.x+evt->area.width-1, evt->area.y+evt->area.height-1);
+#endif
     cb(ih,ih->data->posx,ih->data->posy);
     iupAttribSetStr(ih, "CLIPRECT", NULL);
   }
@@ -617,7 +624,11 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "show-help",          G_CALLBACK(iupgtkShowHelp), ih);
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+  g_signal_connect(G_OBJECT(ih->handle), "draw",       G_CALLBACK(gtkCanvasDraw), ih);
+#else
   g_signal_connect(G_OBJECT(ih->handle), "expose-event",       G_CALLBACK(gtkCanvasExposeEvent), ih);
+#endif
   g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkCanvasButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkCanvasButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event",G_CALLBACK(iupgtkMotionNotifyEvent), ih);

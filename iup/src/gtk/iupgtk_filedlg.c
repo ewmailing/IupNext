@@ -157,7 +157,11 @@ static gboolean gtkFileDlgPreviewConfigureEvent(GtkWidget *widget, GdkEventConfi
   return FALSE;
 }
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+static gboolean gtkFileDlgPreviewDraw(GtkWidget *widget, cairo_t *evt, Ihandle *ih)
+#else
 static gboolean gtkFileDlgPreviewExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Ihandle *ih)
+#endif
 {
   GtkFileChooser *file_chooser = (GtkFileChooser*)iupAttribGet(ih, "_IUPDLG_FILE_CHOOSER");
   char *filename = gtk_file_chooser_get_preview_filename(file_chooser);
@@ -375,7 +379,11 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       gtk_widget_show(preview_canvas);
 
       g_signal_connect(preview_canvas, "configure-event", G_CALLBACK(gtkFileDlgPreviewConfigureEvent), ih);
+#if GTK_CHECK_VERSION(3, 0, 0)
+      g_signal_connect(preview_canvas, "draw", G_CALLBACK(gtkFileDlgPreviewDraw), ih);
+#else
       g_signal_connect(preview_canvas, "expose-event", G_CALLBACK(gtkFileDlgPreviewExposeEvent), ih);
+#endif
       g_signal_connect(preview_canvas, "realize", G_CALLBACK(gtkFileDlgPreviewRealize), ih);
 
       iupAttribSetStr(ih, "_IUPDLG_FILE_CHOOSER", (char*)dialog);
