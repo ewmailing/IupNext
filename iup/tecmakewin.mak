@@ -1084,8 +1084,12 @@ ifdef USE_GTK
     STDFLAGS += -mms-bitfields
   endif
   LDIR += $(GTK)/lib
-  LIBS += gtk-win32-$(GTKSFX).0 gdk-win32-$(GTKSFX).0 gdk_pixbuf-2.0 pango-1.0 pangowin32-1.0 
-  LIBS += gobject-2.0 gmodule-2.0 glib-2.0
+  ifdef USE_GTK3
+    LIBS += gtk-3 gdk-3
+  else
+    LIBS += gtk-win32-2.0 gdk-win32-2.0 
+  endif
+  LIBS += gdk_pixbuf-2.0 pango-1.0 pangowin32-1.0 gobject-2.0 gmodule-2.0 glib-2.0
 endif
 
 ifdef USE_QT

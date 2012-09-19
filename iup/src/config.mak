@@ -44,7 +44,7 @@ SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font
       iup_sbox.c iup_normalizer.c iup_tree.c iup_split.c iup_layoutdlg.c iup_recplay.c
 
 ifdef USE_GTK3
-    # temporary util stabilize
+    # temporary for tests
     #LIBNAME := $(LIBNAME)gtk3
 endif
       

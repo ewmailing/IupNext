@@ -1110,7 +1110,12 @@ ifdef USE_GTK
       ifndef NO_OVERRIDE
         override USE_X11 = Yes
       endif
-      LIBS += gtk-x11-$(GTKSFX).0 gdk-x11-$(GTKSFX).0 pangox-1.0
+      ifdef USE_GTK3
+        LIBS += gtk-3 gdk-3
+      else
+        LIBS += gtk-x11-2.0 gdk-x11-2.0
+      endif
+      LIBS += pangox-1.0
     endif
 
     LIBS += gdk_pixbuf-2.0 pango-1.0 gobject-2.0 gmodule-2.0 glib-2.0
