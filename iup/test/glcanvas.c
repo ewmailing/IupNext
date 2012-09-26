@@ -19,7 +19,7 @@ static int map_cb(Ihandle *ih)
 
 static int resize_cb(Ihandle *ih, int w, int h)
 {
-  printf("RESIZE_CB(%d, %d) RASTERSIZE=%s CLIENTSIZE=%s\n", w, h, IupGetAttribute(ih, "RASTERSIZE"), IupGetAttribute(ih, "CLIENTSIZE"));
+  printf("RESIZE_CB(%d, %d) RASTERSIZE=%s DRAWSIZE=%s\n", w, h, IupGetAttribute(ih, "RASTERSIZE"), IupGetAttribute(ih, "DRAWSIZE"));
   return IUP_DEFAULT;
 }
 

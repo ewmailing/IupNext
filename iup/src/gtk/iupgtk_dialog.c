@@ -303,7 +303,8 @@ static gboolean gtkDialogConfigureEvent(GtkWidget *widget, GdkEventConfigure *ev
     gtk_widget_set_size_request(ih->data->menu->handle, evt->width, -1);
 #endif
 
-  if (ih->data->ignore_resize) return FALSE; 
+  if (ih->data->ignore_resize) 
+    return FALSE; 
 
   old_width = iupAttribGetInt(ih, "_IUPGTK_OLD_WIDTH");
   old_height = iupAttribGetInt(ih, "_IUPGTK_OLD_HEIGHT");

@@ -166,20 +166,28 @@ static int motion_cb(Ihandle *ih,int x,int y,char* status)
 
     draw_cube();
   
-    IupGLSwapBuffers(ih); 
+    //IupGLSwapBuffers(ih); 
   }
   return IUP_DEFAULT;
 }
 
 static int action(Ihandle *ih)
 {
+  static int first = 1;
   IupGLMakeCurrent(ih);
+
+  if (first)
+  {
+    init();
+    first = 0;
+  }
 
   glClear (GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
   draw_cube();
 
-  IupGLSwapBuffers(ih); 
+  //IupGLSwapBuffers(ih); 
+  glFlush();
 
   return IUP_DEFAULT;
 }
@@ -197,7 +205,7 @@ void GLCanvasCubeTest(void)
   IupSetCallback(canvas, "ACTION", action);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)button_cb);
   IupSetCallback(canvas, "MOTION_CB", (Icallback)motion_cb);
-  IupSetAttribute(canvas, "BUFFER", "DOUBLE");
+//  IupSetAttribute(canvas, "BUFFER", "DOUBLE");
   IupSetAttribute(canvas, "RASTERSIZE", "300x300");
   IupAppend(box, canvas);
 
@@ -208,7 +216,7 @@ void GLCanvasCubeTest(void)
   IupMap(dlg);
 
   IupGLMakeCurrent(canvas);
-  init();
+//  init();
   printf("Vendor: %s\n", glGetString(GL_VENDOR));
   printf("Renderer: %s\n", glGetString(GL_RENDERER));
   printf("Version: %s\n", glGetString(GL_VERSION));

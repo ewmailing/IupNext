@@ -70,7 +70,7 @@ static void update_viewport(Ihandle* ih, cdCanvas *canvas, float posx, float pos
 static int action(Ihandle *ih)
 {
   cdCanvas *canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
-  
+
   cdCanvasClear(canvas);
 
   cdCanvasForeground(canvas, CD_RED);

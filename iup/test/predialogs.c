@@ -12,8 +12,8 @@
 #include <gtk/gtk.h>
 static void drawTest(Ihandle *ih)
 {
-  GtkWidget* widget = (GtkWidget*)IupGetAttribute(ih, "WID");
-  GdkGC* gc = widget->style->fg_gc[GTK_WIDGET_STATE(widget)];
+  GdkWindow* wnd = (GdkWindow*)IupGetAttribute(ih, "DRAWABLE");
+  GdkGC* gc = gdk_gc_new(wnd);
   int w = IupGetInt(ih, "PREVIEWWIDTH");
   int h = IupGetInt(ih, "PREVIEWHEIGHT");
   GdkColor color;
@@ -21,8 +21,10 @@ static void drawTest(Ihandle *ih)
   color.red = 65535;  color.green = 0;  color.blue  = 0;
   gdk_gc_set_rgb_fg_color(gc, &color);
 
-  gdk_draw_line(widget->window, gc, 0, 0, w-1, h-1);
-  gdk_draw_line(widget->window, gc, 0, h-1, w-1, 0);
+  gdk_draw_line(wnd, gc, 0, 0, w-1, h-1);
+  gdk_draw_line(wnd, gc, 0, h-1, w-1, 0);
+
+  g_object_unref(gc); 
 }
 #else
 #ifdef WIN32

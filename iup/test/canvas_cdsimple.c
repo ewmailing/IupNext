@@ -18,6 +18,7 @@ static int redraw_cb(Ihandle *ih)
   cdCanvasGetSize(cdcanvas, &width, &height, NULL, NULL);
   cdCanvasLine(cdcanvas, 0, 0, width-1, height-1);
   cdCanvasLine(cdcanvas, 0, height-1, width-1, 0);
+
   return IUP_DEFAULT;
 }
 

@@ -4,6 +4,7 @@
  * See Copyright Notice in "iup.h"
  */
 
+#undef GSEAL_ENABLE
 #include <gtk/gtk.h>
 
 #include <stdlib.h>
@@ -29,6 +30,255 @@
 
 #include "iupgtk_drv.h"
 
+
+#define GTK_TYPE_IUPDRAWING_AREA            (iup_gtk_drawing_area_get_type ())
+#define GTK_IUPDRAWING_AREA(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_IUPDRAWING_AREA, GtkIupDrawingArea))
+
+enum {
+   PROP_0,
+   PROP_HADJUSTMENT,
+   PROP_VADJUSTMENT,
+   PROP_HSCROLL_POLICY,
+   PROP_VSCROLL_POLICY
+};
+
+typedef struct _GtkIupDrawingArea
+{
+  GtkWidget widget;
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+  GtkAdjustment *hadjustment;
+  GtkAdjustment *vadjustment;
+
+  guint hscroll_policy : 1;
+  guint vscroll_policy : 1;
+#endif
+} GtkIupDrawingArea;
+
+typedef struct _GtkIupDrawingAreaClass
+{
+  GtkWidgetClass parent_class;
+
+#if !GTK_CHECK_VERSION(3, 0, 0)
+  void  (*set_scroll_adjustments)   (GtkLayout	    *layout,
+				     GtkAdjustment  *hadjustment,
+				     GtkAdjustment  *vadjustment);
+#endif
+} GtkIupDrawingAreaClass;
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+G_DEFINE_TYPE_WITH_CODE (GtkIupDrawingArea, iup_gtk_drawing_area, GTK_TYPE_WIDGET, G_IMPLEMENT_INTERFACE (GTK_TYPE_SCROLLABLE, NULL))
+#else
+G_DEFINE_TYPE (GtkIupDrawingArea, iup_gtk_drawing_area, GTK_TYPE_WIDGET)
+#endif
+
+static void iup_gtk_drawing_area_init (GtkIupDrawingArea *darea)
+{
+  (void)darea;
+}
+
+static void iup_gtk_drawing_area_realize (GtkWidget *widget)
+{
+  if (!gtk_widget_get_has_window (widget))
+  {
+    GTK_WIDGET_CLASS (iup_gtk_drawing_area_parent_class)->realize (widget);
+  }
+  else
+  {
+    GtkIupDrawingArea *darea = GTK_IUPDRAWING_AREA (widget);
+    GtkAllocation allocation;
+    GdkWindow *window;
+    GdkWindowAttr attributes;
+    gint attributes_mask;
+
+    gtk_widget_set_realized (widget, TRUE);
+
+#if GTK_CHECK_VERSION(2, 18, 0)
+    gtk_widget_get_allocation (widget, &allocation);
+#else
+    allocation = widget->allocation;
+#endif
+
+    attributes.window_type = GDK_WINDOW_CHILD;
+    attributes.x = allocation.x;
+    attributes.y = allocation.y;
+    attributes.width = allocation.width;
+    attributes.height = allocation.height;
+    attributes.wclass = GDK_INPUT_OUTPUT;
+    attributes.visual = gtk_widget_get_visual (widget);
+    attributes.event_mask = gtk_widget_get_events (widget) | GDK_EXPOSURE_MASK;
+    attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
+#if !GTK_CHECK_VERSION(3, 0, 0)
+    attributes.colormap = gtk_widget_get_colormap (widget);
+    attributes_mask |= GDK_WA_COLORMAP;
+#endif
+
+    window = gdk_window_new (gtk_widget_get_parent_window (widget), &attributes, attributes_mask);
+    gdk_window_set_user_data (window, darea);
+#if GTK_CHECK_VERSION(2, 18, 0)
+    gtk_widget_set_window (widget, window);
+#else
+    widget->window = window;
+#endif
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_style_context_set_background (gtk_widget_get_style_context (widget), window);
+#else
+    widget->style = gtk_style_attach (widget->style, widget->window);
+    gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
+#endif
+  }
+}
+
+static void iup_gtk_drawing_area_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
+{
+#if GTK_CHECK_VERSION(2, 18, 0)
+  gtk_widget_set_allocation (widget, allocation);
+#else
+  widget->allocation = *allocation;
+#endif
+
+  if (gtk_widget_get_realized (widget))
+  {
+    if (gtk_widget_get_has_window (widget))
+    {
+#if GTK_CHECK_VERSION(2, 14, 0)
+      GdkWindow* window = gtk_widget_get_window (widget);
+#else
+      GdkWindow* window = widget->window;
+#endif
+      gdk_window_move_resize (window, allocation->x, allocation->y, allocation->width, allocation->height);
+    }
+  }
+}
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+static void iup_gtk_drawing_area_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec  *pspec)
+{
+  GtkIupDrawingArea *darea = GTK_IUPDRAWING_AREA(object);
+
+  switch (prop_id)
+    {
+    case PROP_HADJUSTMENT:
+      g_value_set_object (value, darea->hadjustment);
+      break;
+    case PROP_VADJUSTMENT:
+      g_value_set_object (value, darea->vadjustment);
+      break;
+    case PROP_HSCROLL_POLICY:
+      g_value_set_enum (value, darea->hscroll_policy);
+      break;
+    case PROP_VSCROLL_POLICY:
+      g_value_set_enum (value, darea->vscroll_policy);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static void iup_gtk_drawing_area_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+{
+  GtkIupDrawingArea *darea = GTK_IUPDRAWING_AREA(object);
+
+  switch (prop_id)
+    {
+    case PROP_HADJUSTMENT:
+      darea->hadjustment = (GtkAdjustment*)g_value_get_object(value);
+      break;
+    case PROP_VADJUSTMENT:
+      darea->vadjustment = (GtkAdjustment*)g_value_get_object(value);
+      break;
+    case PROP_HSCROLL_POLICY:
+      darea->hscroll_policy = g_value_get_enum (value);
+      gtk_widget_queue_resize (GTK_WIDGET (object));
+      break;
+    case PROP_VSCROLL_POLICY:
+      darea->vscroll_policy = g_value_get_enum (value);
+      gtk_widget_queue_resize (GTK_WIDGET (object));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+#else
+static void iup_gtk_drawing_area_set_adjustments(GtkLayout *layout, GtkAdjustment *hadj, GtkAdjustment *vadj)
+{
+  (void)layout;
+  (void)hadj;
+  (void)vadj;
+}
+
+static void iup_gtk_marshal_VOID__OBJECT_OBJECT (GClosure *closure, GValue *return_value, guint n_param_values, const GValue *param_values, gpointer invocation_hint, gpointer marshal_data)
+{
+  typedef void (*GMarshalFunc_VOID__OBJECT_OBJECT) (gpointer data1, gpointer arg_1, gpointer arg_2, gpointer data2);
+  register GMarshalFunc_VOID__OBJECT_OBJECT callback;
+  register GCClosure *cc = (GCClosure*) closure;
+  register gpointer data1, data2;
+  (void)invocation_hint;
+  (void)return_value;
+
+  g_return_if_fail (n_param_values == 3);
+
+  if (G_CCLOSURE_SWAP_DATA (closure))
+  {
+    data1 = closure->data;
+    data2 = g_value_peek_pointer (param_values + 0);
+  }
+  else
+  {
+    data1 = g_value_peek_pointer (param_values + 0);
+    data2 = closure->data;
+  }
+  callback = (GMarshalFunc_VOID__OBJECT_OBJECT) (marshal_data ? marshal_data : cc->callback);
+
+  callback (data1,
+            g_value_get_object (param_values + 1),
+            g_value_get_object (param_values + 2),
+            data2);
+}
+#endif
+
+static void iup_gtk_drawing_area_class_init (GtkIupDrawingAreaClass *_class)
+{
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (_class);
+  GObjectClass *gobject_class = (GObjectClass*)_class;
+
+  widget_class->realize = iup_gtk_drawing_area_realize;
+  widget_class->size_allocate = iup_gtk_drawing_area_size_allocate;
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+  gobject_class->set_property = iup_gtk_drawing_area_set_property;
+  gobject_class->get_property = iup_gtk_drawing_area_get_property;
+
+  /* Scrollable interface */
+  g_object_class_override_property (gobject_class, PROP_HADJUSTMENT,    "hadjustment");
+  g_object_class_override_property (gobject_class, PROP_VADJUSTMENT,    "vadjustment");
+  g_object_class_override_property (gobject_class, PROP_HSCROLL_POLICY, "hscroll-policy");
+  g_object_class_override_property (gobject_class, PROP_VSCROLL_POLICY, "vscroll-policy");
+#else
+  _class->set_scroll_adjustments = iup_gtk_drawing_area_set_adjustments;
+
+  widget_class->set_scroll_adjustments_signal =
+    g_signal_new (g_intern_static_string("set-scroll-adjustments"),
+	    G_OBJECT_CLASS_TYPE (gobject_class),
+	    G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+	    G_STRUCT_OFFSET (GtkIupDrawingAreaClass, set_scroll_adjustments),
+	    NULL, NULL,
+	    iup_gtk_marshal_VOID__OBJECT_OBJECT,
+	    G_TYPE_NONE, 2,
+	    GTK_TYPE_ADJUSTMENT,
+	    GTK_TYPE_ADJUSTMENT);
+#endif
+}
+
+static GtkWidget* iup_gtk_drawing_area_new (void)
+{
+  return g_object_new (GTK_TYPE_IUPDRAWING_AREA, NULL);
+}
+
+/******************************************************************************/
 
 static int gtkCanvasScroll2Iup(GtkScrollType scroll, int vert)
 {
@@ -209,6 +459,11 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
       gtkCanvasSetBgColorAttrib(ih, iupAttribGetStr(ih, "BGCOLOR"));  /* reset to update window attributes */
 
 #if GTK_CHECK_VERSION(3, 0, 0)
+    {
+      GdkRectangle rect;
+      gdk_cairo_get_clip_rectangle(cr, &rect);
+      iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", rect.x, rect.y, rect.x+rect.width-1, rect.y+rect.height-1);
+    }
 #else
     iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", evt->area.x, evt->area.y, evt->area.x+evt->area.width-1, evt->area.y+evt->area.height-1);
 #endif
@@ -230,44 +485,15 @@ static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
      so when mapped before show GDK returns the correct value. */
   if (!iupdrvIsVisible(ih))
     gdk_window_resize(window, ih->currentwidth, ih->currentheight);
-
-  if (iupAttribGetStr(ih, "_IUP_GTK_FIRST_RESIZE"))
-  {
-    /* GTK is nor calling gtkCanvasConfigureEvent on the first resize */
-    IFnii cb = (IFnii)IupGetCallback(ih,"RESIZE_CB");
-    iupAttribSetStr(ih, "_IUP_GTK_FIRST_RESIZE", NULL);
-    if (cb)
-    {
-      int sb_w = 0, sb_h = 0;
-
-      if (ih->data->sb)
-      {
-        int sb_size = iupdrvGetScrollbarSize();
-        if (ih->data->sb & IUP_SB_HORIZ)
-          sb_h += sb_size;  /* sb horizontal affects vertical size */
-        if (ih->data->sb & IUP_SB_VERT)
-          sb_w += sb_size;  /* sb vertical affects horizontal size */
-      }
-
-      if (iupAttribGetBoolean(ih, "BORDER"))
-      {
-        sb_w += 4;
-        sb_h += 4;
-      }
-
-      cb(ih, ih->currentwidth-sb_w, ih->currentheight-sb_h);
-    }
-  }
 }
 
-static gboolean gtkCanvasConfigureEvent(GtkWidget *widget, GdkEventConfigure *evt, Ihandle *ih)
+static void gtkCanvasSizeAllocate(GtkWidget* widget, GdkRectangle *allocation, Ihandle *ih)
 {
-  IFnii cb = (IFnii)IupGetCallback(ih,"RESIZE_CB");
+  IFnii cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
   if (cb)
-    cb(ih,evt->width,evt->height);
+    cb(ih, allocation->width, allocation->height);
 
   (void)widget;
-  return FALSE;
 }
 
 static GtkScrolledWindow* gtkCanvasGetScrolledWindow(Ihandle* ih)
@@ -579,7 +805,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
     iupgtkPushVisualAndColormap(visual, (void*)iupAttribGet(ih, "COLORMAP"));
 #endif
 
-  ih->handle = gtk_drawing_area_new();
+  ih->handle = iup_gtk_drawing_area_new();
 
 #if !GTK_CHECK_VERSION(3, 0, 0)
   if (visual)
@@ -598,17 +824,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   if (!scrolled_window)
     return IUP_ERROR;
 
-  {
-    /* to avoid the "cannot add non scrollable widget" warning */
-#if GTK_CHECK_VERSION(2, 6, 0)
-    GLogFunc def_func = g_log_set_default_handler(gtkCanvasDummyLogFunc, NULL);
-#endif
-    gtk_container_add((GtkContainer*)scrolled_window, ih->handle);
-#if GTK_CHECK_VERSION(2, 6, 0)
-    g_log_set_default_handler(def_func, NULL);
-#endif
-  }
-
+  gtk_container_add((GtkContainer*)scrolled_window, ih->handle);
   gtk_widget_show((GtkWidget*)scrolled_window);
 
   iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
@@ -625,7 +841,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "show-help",          G_CALLBACK(iupgtkShowHelp), ih);
 
 #if GTK_CHECK_VERSION(3, 0, 0)
-  g_signal_connect(G_OBJECT(ih->handle), "draw",       G_CALLBACK(gtkCanvasDraw), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "draw",               G_CALLBACK(gtkCanvasDraw), ih);
 #else
   g_signal_connect(G_OBJECT(ih->handle), "expose-event",       G_CALLBACK(gtkCanvasExposeEvent), ih);
 #endif
@@ -633,6 +849,8 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkCanvasButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event",G_CALLBACK(iupgtkMotionNotifyEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "scroll-event",G_CALLBACK(gtkCanvasScrollEvent), ih);
+
+  g_signal_connect(G_OBJECT(ih->handle), "size-allocate", G_CALLBACK(gtkCanvasSizeAllocate), ih);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
   g_signal_connect(G_OBJECT(gtk_scrolled_window_get_hscrollbar(scrolled_window)), "change-value",G_CALLBACK(gtkCanvasHChangeValue), ih);
@@ -662,11 +880,6 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   gtk_widget_realize((GtkWidget*)scrolled_window);
   gtk_widget_realize(ih->handle);
 
-  /* must be connected after realize or a RESIZE_CB will happen before MAP_CB
-    works only for the GtkDrawingArea. */
-  g_signal_connect(G_OBJECT(ih->handle), "configure-event", G_CALLBACK(gtkCanvasConfigureEvent), ih);
-  iupAttribSetStr(ih, "_IUP_GTK_FIRST_RESIZE", "1");
-
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
@@ -677,7 +890,8 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   /* configure scrollbar */
   if (ih->data->sb)
   {
-    GtkPolicyType hscrollbar_policy = GTK_POLICY_NEVER, vscrollbar_policy = GTK_POLICY_NEVER;
+    GtkPolicyType hscrollbar_policy = GTK_POLICY_NEVER, 
+                  vscrollbar_policy = GTK_POLICY_NEVER;
     if (ih->data->sb & IUP_SB_HORIZ)
       hscrollbar_policy = GTK_POLICY_AUTOMATIC;
     if (ih->data->sb & IUP_SB_VERT)
