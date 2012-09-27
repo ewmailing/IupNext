@@ -166,7 +166,8 @@ static int motion_cb(Ihandle *ih,int x,int y,char* status)
 
     draw_cube();
   
-    //IupGLSwapBuffers(ih); 
+    glFlush();
+    IupGLSwapBuffers(ih); 
   }
   return IUP_DEFAULT;
 }
@@ -186,8 +187,8 @@ static int action(Ihandle *ih)
 
   draw_cube();
 
-  //IupGLSwapBuffers(ih); 
   glFlush();
+  IupGLSwapBuffers(ih); 
 
   return IUP_DEFAULT;
 }
@@ -209,7 +210,7 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(canvas, "RASTERSIZE", "300x300");
   IupAppend(box, canvas);
 
-  dlg = IupDialog(IupSetAttributes(IupFrame(box), "TITLE=Teste"));
+  dlg = IupDialog(IupSetAttributes(IupFrame(box), "TITLE=Test"));
   IupSetAttribute(dlg, "TITLE", "IupGLCanvas Test");
 //  IupSetAttribute(dlg, "COMPOSITED", "YES");
 

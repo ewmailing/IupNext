@@ -66,7 +66,13 @@ static void gtkButtonChildrenCb(GtkWidget *widget, gpointer client_data)
 static GtkLabel* gtkButtonGetLabel(Ihandle* ih)
 {
   if (ih->data->type == IUP_BUTTON_TEXT)  /* text only */
-    return (GtkLabel*)gtk_bin_get_child((GtkBin*)ih->handle);
+  {
+    GtkWidget* child = gtk_bin_get_child((GtkBin*)ih->handle);
+    if (GTK_IS_LABEL(child))
+      return (GtkLabel*)child;
+    else
+      return NULL;
+  }
   else if (ih->data->type == IUP_BUTTON_BOTH) /* both */
   {
     /* when both is set, button contains an GtkAlignment, 
@@ -76,7 +82,8 @@ static GtkLabel* gtkButtonGetLabel(Ihandle* ih)
     gtk_container_foreach(container, gtkButtonChildrenCb, &label);
     return label;
   }
-  return NULL;
+  else
+    return NULL;
 }
 
 static int gtkButtonSetTitleAttrib(Ihandle* ih, const char* value)
@@ -84,8 +91,11 @@ static int gtkButtonSetTitleAttrib(Ihandle* ih, const char* value)
   if (ih->data->type & IUP_BUTTON_TEXT)  /* text or both */
   {
     GtkLabel* label = gtkButtonGetLabel(ih);
-    iupgtkSetMnemonicTitle(ih, label, value);
-    return 1;
+    if (label)
+    {
+      iupgtkSetMnemonicTitle(ih, label, value);
+      return 1;
+    }
   }
 
   return 0;
@@ -128,10 +138,15 @@ static int gtkButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
 
   gtk_button_set_alignment(button, xalign, yalign);
 
-  if (ih->data->type == IUP_BUTTON_TEXT && !GTK_IS_COLOR_BUTTON(ih->handle))   /* text only */
+  if (ih->data->type == IUP_BUTTON_TEXT)   /* text only */
   {
-    PangoLayout* layout = gtk_label_get_layout(gtkButtonGetLabel(ih));
-    if (layout) pango_layout_set_alignment(layout, alignment);
+    GtkLabel* label = gtkButtonGetLabel(ih);
+    if (label)
+    {
+      PangoLayout* layout = gtk_label_get_layout(label);
+      if (layout) 
+        pango_layout_set_alignment(layout, alignment);
+    }
   }
 
   return 1;
@@ -160,24 +175,24 @@ static int gtkButtonSetPaddingAttrib(Ihandle* ih, const char* value)
     return 1; /* store until not mapped, when mapped will be set again */
 }
 
-#ifdef WIN32
 static int gtkButtonSetBgColorAttrib(Ihandle* ih, const char* value)
 {
-  if (ih->data->type == IUP_BUTTON_TEXT && GTK_IS_COLOR_BUTTON(ih->handle))
+  if (ih->data->type == IUP_BUTTON_TEXT)
   {
-    GdkColor color;
-    unsigned char r, g, b;
-    if (!iupStrToRGB(value, &r, &g, &b))
-      return 0;
+    GtkWidget* frame = gtk_button_get_image(GTK_BUTTON(ih->handle));
+    if (frame && GTK_IS_FRAME(frame))
+    {
+      unsigned char r, g, b;
+      if (!iupStrToRGB(value, &r, &g, &b))
+        return 0;
 
-    iupgdkColorSet(&color, r, g, b);
-    gtk_color_button_set_color((GtkColorButton*)ih->handle, &color);
-    return 1;
+      iupgtkBaseSetBgColor(gtk_bin_get_child(GTK_BIN(frame)), r, g, b);
+      return 1;
+    }
   }
 
   return iupdrvBaseSetBgColorAttrib(ih, value);
 }
-#endif
 
 static int gtkButtonSetFgColorAttrib(Ihandle* ih, const char* value)
 {
@@ -208,7 +223,7 @@ static int gtkButtonSetStandardFontAttrib(Ihandle* ih, const char* value)
     gtk_widget_modify_font((GtkWidget*)label, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
 #endif
 
-    if (ih->data->type == IUP_BUTTON_TEXT && !GTK_IS_COLOR_BUTTON(ih->handle))   /* text only */
+    if (ih->data->type == IUP_BUTTON_TEXT)   /* text only */
       iupgtkFontUpdatePangoLayout(ih, gtk_label_get_layout(label));
   }
   return 1;
@@ -365,18 +380,6 @@ static gboolean gtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *
     }
   }
 
-#ifdef WIN32
-  if (evt->type == GDK_BUTTON_RELEASE)
-  {
-    if (ih->data->type == IUP_BUTTON_TEXT && GTK_IS_COLOR_BUTTON(ih->handle))
-    {
-      /* Ugly solution, but there is no way how to NOT show the GTK dialog on click action */
-      gtkButtonClicked(NULL, ih);
-      return TRUE;
-    }
-  }
-#endif
-   
   return FALSE;
 }
 
@@ -437,17 +440,26 @@ static int gtkButtonMapMethod(Ihandle* ih)
     char* title = iupAttribGet(ih, "TITLE");
     if (!title) 
     {
-#ifdef WIN32
       if (iupAttribGet(ih, "BGCOLOR"))
       {
-        gtk_widget_destroy(ih->handle);
-        ih->handle = gtk_color_button_new();
+        int x=0, y=0;
+        GtkWidget* fixed = gtk_fixed_new();
+        GtkWidget* frame = gtk_frame_new(NULL);
+        gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
+        iupdrvButtonAddBorders(&x, &y);
+        gtk_widget_set_size_request (frame, ih->currentwidth-x, ih->currentheight-y);
+#if GTK_CHECK_VERSION(2, 18, 0)
+        gtk_widget_set_has_window(fixed, TRUE);
+#else
+        gtk_fixed_set_has_window((GtkFixed*)fixed, TRUE);
+#endif
+        gtk_container_add(GTK_CONTAINER(frame), fixed);
+        gtk_widget_show(fixed);
+
+        gtk_button_set_image((GtkButton*)ih->handle, frame);
       }
       else
         gtk_button_set_label((GtkButton*)ih->handle, "");
-#else
-      gtk_button_set_label((GtkButton*)ih->handle, "");
-#endif
     }
     else
       gtk_button_set_label((GtkButton*)ih->handle, iupgtkStrConvertToUTF8(title));
@@ -512,11 +524,7 @@ void iupdrvButtonInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkButtonSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* Visual */
-#ifdef WIN32
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkButtonSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
-#else
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
-#endif
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkButtonSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);
