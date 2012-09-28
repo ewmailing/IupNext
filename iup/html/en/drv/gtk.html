@@ -45,6 +45,23 @@ driver.</p>
 to the &quot;MS-Windows&quot; theme. Edit the &quot;gtk\etc\gtk-2.0\gtkrc&quot; file and change its 
 contents to:</p>
 <pre>gtk-theme-name = &quot;MS-Windows&quot;</pre>
+<h4>Ubuntu Unity</h4>
+<p>Since Ubuntu version 11 there is a new desktop called&nbsp; Unity. This 
+desktop introduces some changes that affect all applications. Two of these 
+changes directly affect IUP applications.</p>
+<p>First the global menu forces all dialog menus to be displayed in the top of 
+the desktop, like in MacOSX. This affected the size of the IUP dialog. It is 
+fixed since IUP version 3.6. If you don&#39;t like the global menu you can remove it 
+using:</p>
+<pre style="border-color: inherit; vertical-align: baseline; outline: none; font-variant: normal; orphans: 2; text-align: start; text-indent: 0px; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">sudo apt-get remove appmenu-gtk3 appmenu-gtk appmenu-qt</pre>
+<p>Second, the scrollbars are reduced to a very tiny line and handlers are 
+displayed only when the mouse moves over the right or bottom side of the 
+element. All the controls, except the <strong>IupCanvas</strong>, will work with 
+the new scrollbar. If you need IupCanvas or <strong>IupCanvas</strong> based 
+controls like <strong>IupMatrix</strong> you can remove the new scrollbar at the
+<strong>Synaptic Package Manager</strong> or at the <strong>Ubuntu Software 
+Center</strong> searching for &quot;liboverlay-scrollbar&quot; and removing the installed 
+packages.</p>
 <h4>MacOSX-Quartz</h4>
 <p>The GTK driver also compiles in MacOSX with the new GTK port available at
 <a href="http://gtk-osx.sourceforge.net/">http://gtk-osx.sourceforge.net/</a> 
