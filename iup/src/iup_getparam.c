@@ -596,10 +596,12 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
       iupAttribSetStr(param, "EXPAND", "1");
-
+      IupSetAttribute(box,"NORMALIZESIZE","VERTICAL");
       
       aux = IupButton("...", "");
       IupSetAttribute(aux, "EXPAND", "NO");
+      IupStoreAttribute(aux, "FONT", "Times, Bold 10");
+      IupSetAttribute(aux, "SIZE", "16x");
 
       IupSetCallback(aux, "ACTION", (Icallback)iParamFileButton_CB);
       iupAttribSetStr(aux, "_IUPGP_PARAM", (char*)param);
@@ -622,10 +624,12 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
       iupAttribSetStr(param, "EXPAND", "1");
-      
+      IupSetAttribute(box,"NORMALIZESIZE","VERTICAL");
+
       aux = IupButton(NULL, NULL);
-      IupSetAttribute(aux, "SIZE", "16x10");
       IupSetAttribute(aux, "EXPAND", "NO");
+      IupStoreAttribute(aux, "FONT", "Times, Bold Italic 11");
+      IupSetAttribute(aux, "SIZE", "16x");
       IupStoreAttribute(aux, "BGCOLOR", iupAttribGet(param, "VALUE"));
 
       IupSetCallback(aux, "ACTION", (Icallback)iParamColorButton_CB);
@@ -649,11 +653,12 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
       iupAttribSetStr(param, "EXPAND", "1");
+      IupSetAttribute(box,"NORMALIZESIZE","VERTICAL");
       
       aux = IupButton("F", NULL);
       IupSetAttribute(aux, "EXPAND", "NO");
-      IupStoreAttribute(aux, "FONT", "Times, Bold Italic 12");
-      IupSetAttribute(aux, "SIZE", "16x10");
+      IupStoreAttribute(aux, "FONT", "Times, Bold Italic 11");
+      IupSetAttribute(aux, "SIZE", "16x");
 
       IupSetCallback(aux, "ACTION", (Icallback)iParamFontButton_CB);
       iupAttribSetStr(param, "AUXCONTROL", (char*)aux);
