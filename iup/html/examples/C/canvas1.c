@@ -53,7 +53,13 @@ int redraw_cb( Ihandle *self, float x, float y )
   cdCanvasActivate(cdcanvas);
   cdCanvasClear(cdcanvas);
   cdCanvasForeground(cdcanvas, CD_BLUE);
-  cdCanvasBox(cdcanvas, 0, 100, 0, 100);
+  cdCanvasBox(cdcanvas, 10, 100, 10, 100);
+  cdCanvasForeground(cdcanvas, CD_RED);
+  cdCanvasRect(cdcanvas, 10, 100, 10, 100);
+//  cdCanvasLine(cdcanvas, 10,10,10,100);
+//  cdCanvasLine(cdcanvas, 100,10,100,100);
+//  cdCanvasLine(cdcanvas, 10,10,100,10);
+//  cdCanvasLine(cdcanvas, 10,100,100,100);
   return IUP_DEFAULT;
 }
 
@@ -160,8 +166,12 @@ int main(int argc, char **argv)
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupMap( dlg );
   
+  cdInitContextPlus();
+  cdUseContextPlus(1);
+
   cdcanvas = cdCreateCanvas( CD_IUP, cnvs );
   cdCanvasForeground(cdcanvas, CD_BLUE);
+  cdCanvasSetAttribute(cdcanvas, "ANTIALIAS", "0");
   
   IupShowXY( dlg, IUP_CENTER, IUP_CENTER );
   IupMainLoop();

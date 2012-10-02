@@ -4,13 +4,14 @@
 
 #include "iup.h"
 #include "iupcontrols.h"
+#include "cd.h"
 
 Ihandle *create_mat(void)
 {
   Ihandle *mat = IupMatrix(NULL); 
   
-  IupSetAttribute(mat,"NUMCOL","20"); 
-  IupSetAttribute(mat,"NUMLIN","30"); 
+  IupSetAttribute(mat,"NUMCOL","5"); 
+  IupSetAttribute(mat,"NUMLIN","10"); 
   
   IupSetAttribute(mat,"NUMCOL_VISIBLE","2");
   IupSetAttribute(mat,"NUMLIN_VISIBLE","3");
@@ -43,6 +44,9 @@ int main(int argc, char **argv)
   Ihandle *dlg;
   IupOpen(&argc, &argv);       
   IupControlsOpen ();
+
+  cdInitContextPlus();
+  cdUseContextPlus(1);
 
   dlg = IupDialog(create_mat());
   IupSetAttribute(dlg, "TITLE", "IupMatrix");
