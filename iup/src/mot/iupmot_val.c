@@ -250,7 +250,7 @@ static void motValKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *
   if (*cont == False)
     return;
 
-  motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
+  motcode = iupmotKeycodeToKeysym(evt->keycode);
 
   /* add missing support for numeric keyboard */
   /* add missing support for left/right in vertical

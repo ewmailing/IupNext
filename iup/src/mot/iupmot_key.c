@@ -228,10 +228,19 @@ static int motKeyMap2Iup(unsigned int state, int i)
   return code;
 }
 
+KeySym iupmotKeycodeToKeysym(unsigned int keycode)
+{
+#ifdef TODO_X_DEPRECATED  /* TODO: how to detect that XKeycodeToKeysym is deprecated? Can we alsways use XkbKeycodeToKeysym? */
+  return XkbKeycodeToKeysym(iupmot_display, keycode, 0, 0);
+#else
+  return XKeycodeToKeysym(iupmot_display, keycode, 0);
+#endif
+}
+
 int iupmotKeyDecode(XKeyEvent *evt)
 {
   int i;
-  KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
+  KeySym motcode = iupmotKeycodeToKeysym(evt->keycode);
   int count = sizeof(motkey_map)/sizeof(motkey_map[0]);
 
   if ((evt->state & Mod2Mask) && /* NumLock */
@@ -336,7 +345,7 @@ void iupmotKeyPressEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
 
   if ((((XKeyEvent*)evt)->state & Mod1Mask || ((XKeyEvent*)evt)->state & Mod5Mask))  /* Alt */
   {
-    KeySym motcode = XKeycodeToKeysym(iupmot_display, ((XKeyEvent*)evt)->keycode, 0);
+    KeySym motcode = iupmotKeycodeToKeysym(((XKeyEvent*)evt)->keycode);
     if (motcode < 128)
     {
       IFni cb;

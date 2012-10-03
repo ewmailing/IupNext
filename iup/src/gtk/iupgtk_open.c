@@ -244,11 +244,40 @@ static void gtkSetGlobalColors(void)
   gtk_widget_destroy(dialog);
 }
 
+/* #define IUPGTK_DEBUG */
+
 #if defined(IUPGTK_DEBUG)
 static void iupgtk_log(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
+  const char* log_lvl = "";
   (void)user_data;
-  IupMessage("IUPGTK Log", message);
+
+  if (!log_domain)
+    log_domain = "";
+
+  switch (log_level & G_LOG_LEVEL_MASK)
+  {
+  case G_LOG_LEVEL_ERROR:
+    log_lvl = "ERROR";
+    break;
+  case G_LOG_LEVEL_CRITICAL:
+    log_lvl = "CRITICAL";
+    break;
+  case G_LOG_LEVEL_WARNING:
+    log_lvl = "WARNING";
+    break;
+  case G_LOG_LEVEL_MESSAGE:
+    log_lvl = "MESSAGE";
+    break;
+  case G_LOG_LEVEL_INFO:
+    log_lvl = "INFO";
+    break;
+  case G_LOG_LEVEL_DEBUG:
+    log_lvl = "DEBUG";
+    break;
+  }
+
+  IupMessagef("IUPGTK Log", "%s [%s] %s", log_domain, log_lvl, message);
 }
 #endif
 

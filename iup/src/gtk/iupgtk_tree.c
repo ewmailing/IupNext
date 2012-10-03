@@ -954,7 +954,7 @@ static int gtkTreeSetSpacingAttrib(Ihandle* ih, const char* value)
     GtkCellRenderer *renderer_chk = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_CHECK");
     GtkCellRenderer *renderer_img = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_IMG");
     GtkCellRenderer *renderer_txt = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_TEXT");
-    g_object_set(G_OBJECT(renderer_chk), "ypad", ih->data->spacing, NULL);
+    if (renderer_chk) g_object_set(G_OBJECT(renderer_chk), "ypad", ih->data->spacing, NULL);
     g_object_set(G_OBJECT(renderer_img), "ypad", ih->data->spacing, NULL);
     g_object_set(G_OBJECT(renderer_txt), "ypad", ih->data->spacing, NULL);
     return 0;
@@ -1765,7 +1765,7 @@ static int gtkTreeSetBgColorAttrib(Ihandle* ih, const char* value)
     GtkCellRenderer* renderer_img = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_IMG");
     GdkColor color;
     iupgdkColorSet(&color, r, g, b);
-    g_object_set(G_OBJECT(renderer_chk), "cell-background-gdk", &color, NULL);
+    if (renderer_chk) g_object_set(G_OBJECT(renderer_chk), "cell-background-gdk", &color, NULL);
     g_object_set(G_OBJECT(renderer_txt), "cell-background-gdk", &color, NULL);
     g_object_set(G_OBJECT(renderer_img), "cell-background-gdk", &color, NULL);
   }

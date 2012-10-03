@@ -372,9 +372,11 @@ char* iupmotGetXWindowAttrib(Ihandle *ih)
 
 void iupmotSetBgColor(Widget w, Pixel color)
 {
-  Pixel fgcolor;
+  Pixel fgcolor = (Pixel)-1;
   XtVaGetValues(w, XmNforeground, &fgcolor, NULL);
+
   XmChangeColor(w, color);
+
   /* XmChangeColor also sets the XmNforeground color, so we must reset to the previous one. */
   XtVaSetValues(w, XmNforeground, fgcolor, NULL);
   XtVaSetValues(w, XmNbackgroundPixmap, XmUNSPECIFIED_PIXMAP, NULL);

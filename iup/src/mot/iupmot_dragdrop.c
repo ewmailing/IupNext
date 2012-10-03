@@ -185,6 +185,7 @@ static void motDropProc(Widget dropTarget, XtPointer clientData, XmDropProcCallb
   /* creates a XmDropTransfer (not used here) */
   dropTransfer = XmDropTransferStart(dragContext, args, num_args);
 
+  (void)dropTransfer;
   (void)clientData;
 }
 

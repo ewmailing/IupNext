@@ -290,12 +290,8 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
     c.red = r;
     gtk_container_forall(container, gtkComboBoxChildrenBgColorCb, &c);
 
-    if (!ih->data->has_editbox)
-    {
-      GtkWidget* box = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-      if (box)
-        iupgtkBaseSetBgColor(box, r, g, b);
-    }
+    /* do not set for the event_box or 
+       there will be an invalid background outside the dropdown */
   }
 
   /* TODO: this test is not necessary, 

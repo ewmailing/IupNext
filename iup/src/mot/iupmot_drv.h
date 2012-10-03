@@ -33,6 +33,7 @@ void iupmotKeyPressEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont);
 KeySym iupmotKeyCharToKeySym(char c);
 void iupmotButtonKeySetStatus(unsigned int state, unsigned int but, char* status, int doubleclick);
 int iupmotKeyDecode(XKeyEvent *evt);
+KeySym iupmotKeycodeToKeysym(unsigned int keycode);
 
 /* font */
 char* iupmotGetFontListAttrib(Ihandle *ih);

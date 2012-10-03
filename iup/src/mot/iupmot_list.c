@@ -1197,7 +1197,7 @@ static void motListEditModifyVerifyCallback(Widget cbedit, Ihandle *ih, XmTextVe
         state & Mod4Mask) /* Apple/Win */
       return;
 
-    motcode = XKeycodeToKeysym(iupmot_display, ((XKeyEvent*)text->event)->keycode, 0);
+    motcode = iupmotKeycodeToKeysym(((XKeyEvent*)text->event)->keycode);
   }
 
   value = XmTextFieldGetString(cbedit);
@@ -1284,7 +1284,7 @@ static void motListEditKeyPressEvent(Widget cbedit, Ihandle *ih, XKeyEvent *evt,
 
   if (evt->state & ControlMask)   /* Ctrl */
   {
-    KeySym motcode = XKeycodeToKeysym(iupmot_display, evt->keycode, 0);
+    KeySym motcode = iupmotKeycodeToKeysym(evt->keycode);
     if (motcode == XK_c)
     {
       motListSetClipboardAttrib(ih, "COPY");
