@@ -45,9 +45,6 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);       
   IupControlsOpen ();
 
-  cdInitContextPlus();
-  cdUseContextPlus(1);
-
   dlg = IupDialog(create_mat());
   IupSetAttribute(dlg, "TITLE", "IupMatrix");
   IupShowXY (dlg,IUP_CENTER,IUP_CENTER);

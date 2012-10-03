@@ -749,9 +749,6 @@ endif
 ifdef USE_GDK
   override USE_GTK = Yes
 endif
-ifdef USE_GTK3
-  override USE_GTK = Yes
-endif
 
 ifdef USE_IUPCONTROLS
   override USE_CD = Yes

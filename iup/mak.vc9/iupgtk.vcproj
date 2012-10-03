@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\src;..\src\gtk;..\include;&quot;d:\lng\gtk2\include\atk-1.0&quot;;d:\lng\gtk2\include\cairo;&quot;d:\lng\gtk2\include\glib-2.0&quot;;&quot;d:\lng\gtk2\include\gtk-2.0&quot;;&quot;d:\lng\gtk2\include\pango-1.0&quot;;&quot;d:\lng\gtk2\lib\gtk-2.0\include&quot;;&quot;d:\lng\gtk2\lib\glib-2.0\include&quot;;&quot;d:\lng\gtk2\include\gdk-pixbuf-2.0&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;GTK_DISABLE_DEPRECATED;GSEAL_ENABLE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;GTK_DISABLE_DEPRECATED;GSEAL_ENABLE;DEBUG"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"

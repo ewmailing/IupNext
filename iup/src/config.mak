@@ -43,11 +43,6 @@ SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font
       iup_mask.c iup_maskparse.c iup_tabs.c iup_spin.c iup_list.c iup_getparam.c \
       iup_sbox.c iup_normalizer.c iup_tree.c iup_split.c iup_layoutdlg.c iup_recplay.c
 
-ifdef USE_GTK3
-    # temporary for tests
-    #LIBNAME := $(LIBNAME)gtk3
-endif
-      
 ifdef USE_GTK
   CHECK_GTK = Yes
   DEFINES += GTK_DISABLE_DEPRECATED 

@@ -454,7 +454,7 @@ void SampleTest(void)
   IupSetAttribute(dlg, "RESIZE", "NO");
 
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
-//  IupSetAttribute(_vbox_1, "BGCOLOR", "92 92 255");
+  IupSetAttribute(_vbox_1, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
 

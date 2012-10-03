@@ -244,13 +244,25 @@ static void gtkSetGlobalColors(void)
   gtk_widget_destroy(dialog);
 }
 
+#if defined(IUPGTK_DEBUG)
+static void iupgtk_log(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
+{
+  (void)user_data;
+  IupMessage("IUPGTK Log", message);
+}
+#endif
+
 int iupdrvOpen(int *argc, char ***argv)
 {
   char* value;
 
   if (!gtk_init_check(argc, argv))
     return IUP_ERROR;
-  
+
+#if defined(IUPGTK_DEBUG)
+  g_log_set_default_handler(iupgtk_log, NULL);
+#endif
+
   IupSetGlobal("DRIVER", "GTK");
 
   IupStoreGlobal("SYSTEMLANGUAGE", pango_language_to_string(gtk_get_default_language()));
