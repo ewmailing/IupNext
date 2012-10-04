@@ -355,7 +355,7 @@ int iupMatrixEditShow(Ihandle* ih)
   ih->data->datah->y = y;
   if (IupGetGlobal("GTKVERSION"))
   {
-    /* In GTK, IupCanvas is NOT the actual container of the IupText/IupList */
+    /* In GTK, IupCanvas handle is NOT the actual container of the IupText/IupList native handle */
     ih->data->datah->x += ih->x;
     ih->data->datah->y += ih->y;
   }

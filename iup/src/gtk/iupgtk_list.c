@@ -1518,10 +1518,13 @@ static int gtkListMapMethod(Ihandle* ih)
     {
       GtkWidget *toggle;
 
-      /* had to add an event box so it can be positioned in IupMatrix */
-      GtkWidget *box = gtk_event_box_new();
-      gtk_container_add((GtkContainer*)box, ih->handle);
-      iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)box);
+      /* had to add an event box so it can be positioned in an IupCanvas based control */
+      if (ih->parent->iclass->nativetype == IUP_TYPECANVAS)
+      {
+        GtkWidget *box = gtk_event_box_new();
+        gtk_container_add((GtkContainer*)box, ih->handle);
+        iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)box);
+      }
 
       /* use the internal toggle for keyboard, focus and enter/leave */
       gtk_container_forall((GtkContainer*)ih->handle, gtkComboBoxChildrenToggleCb, &toggle);
