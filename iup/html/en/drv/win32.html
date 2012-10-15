@@ -4,6 +4,13 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>Win32</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	font-size: medium;
+	letter-spacing: normal;
+	background-color: #FFFFFF;
+}
+</style>
 </head>
 <body>
 
@@ -19,6 +26,37 @@
 <p>For the program to work, IUP.dll must be inside a PATH directory. Usually the program does not need to be re-linked when 
   the DLL is updated.</p>
 <h3>Tips</h3>
+<h4>LINK : warning defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library </h4>
+<p>This is a message displayed by Visual C++ compilers when one or more 
+libraries included for linking is not using the same C Run Time Library as the 
+application. In the same Visual C++ compiler there are 4 different libraries 
+resulting from the combination of 2 options: <strong>debug</strong>/<strong>release</strong> 
+x <strong>dll</strong>/<strong>static</strong>.</p>
+<p>
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none; ">
+The default configuration when a new project is created uses the C Run Time 
+Library in a DLL, options named &quot;Multi-threaded Debug DLL (/MDd)&quot; for the
+<strong>Debug</strong> configuration and &quot;Multi-threaded DLL (/MD)&quot; for the
+<strong>Release</strong> configuration. The IUP package that matches that 
+configuration is the &quot;dll*&quot; packages.</span></p>
+<p><span class="style1">If you want to use static libraries then use the options 
+&quot;Multi-threaded Debug (/MTd)&quot;
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">
+for the <strong>Debug</strong> configuration </span>and &quot;Multi-threaded (/MT)&quot;
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">
+for the <strong>Release</strong> configuration. Then use the IUP packages named 
+&quot;vc*&quot;.</span></span></p>
+<p><span class="style1">The IUP pre-compiled packages do not have
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">
+debug information, so even selecting the correct <strong>dll</strong>/<strong>static</strong> 
+combination, the warning will also be displayed. In this case the warning is 
+harmless. But if you really want to avoid the 
+warning simply use the same option without the Debug information for Release and 
+Debug configurations.</span></span></p>
+<p><span class="style1">Finally one thing that is <strong>NOT</strong> recommended is to do what the 
+linker warning suggests, to ignore the default libraries using the /NODEFAULTLIB 
+parameter. Only use that parameter if you really know what you are doing, 
+because using it you can create other linking problems.</span></p>
 <h4>Visual C++ 6</h4>
 <p>Since 3.0 Visual C++6 is not supported, although we still provide 
 pre-compiled binaries. To compile the IUP 3 code 
@@ -54,14 +92,15 @@ Styles from the RC file won't work.</p>
 <p>If your Windows is using the Windows Classic theme or any other theme, IUP 
 controls appearance will follow the system appearance only if you are using the 
 manifest. If not using the manifest, then it will always look like Windows Classic.</p>
-<h4><b>Black Canvas</b></h4>
-<p>The <strong>IupGLCanvas</strong> does not work when inside an <strong>IupFrame</strong>, the result is a black canvas with no drawing. 
-(Only in IUP 2.x)</p>
 
 <h4><b>Help in CHM format fail to open</b></h4>
 <p>When you download a CHM file from the Internet Windows blocks your access to 
 the file. You must unblock it manually. Right click the file in Explorer and 
 select&nbsp; &quot;Unblock&quot; at the bottom of the dialog.</p>
+
+<h4><b>Black Canvas (Only in IUP 2.x)</b></h4>
+<p>The <strong>IupGLCanvas</strong> does not work when inside an <strong>IupFrame</strong>, 
+the result is a black canvas with no drawing.</p>
 
 </body>
 

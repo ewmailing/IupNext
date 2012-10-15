@@ -508,13 +508,6 @@
 			<File
 				RelativePath="..\html\examples\C\matrix.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\html\examples\C\mdi.c"
