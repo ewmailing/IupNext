@@ -25,16 +25,23 @@
 |* Canvas Callbacks                                                          *|
 \*****************************************************************************/
 
-static void iScrollBoxUpdatePosition(Ihandle* ih, int posx, int posy)
+static void iScrollBoxUpdatePosition(Ihandle* ih, float posx, float posy)
 {
-  iupBaseSetPosition(ih->firstchild, -posx, -posy);
+  if (IupGetGlobal("GTKVERSION"))
+  {
+    /* In GTK, IupCanvas handle is NOT the actual container of the child native handle */
+    posx -= (float)ih->x;
+    posy -= (float)ih->y;
+  }
+
+  iupBaseSetPosition(ih->firstchild, -(int)posx, -(int)posy);
 }
 
 static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
 {
   if (ih->firstchild)
   {
-    iScrollBoxUpdatePosition(ih->firstchild, (int)posx, (int)posy);
+    iScrollBoxUpdatePosition(ih, posx, posy);
     iupLayoutUpdate(ih->firstchild);
   }
   (void)op;
@@ -56,7 +63,7 @@ static void iScrollBoxLayoutUpdate(Ihandle* ih)
 
   if (ih->firstchild)
   {
-    iScrollBoxUpdatePosition(ih->firstchild, (int)IupGetFloat(ih, "POSX"), (int)IupGetFloat(ih, "POSY"));
+    iScrollBoxUpdatePosition(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
     iupLayoutUpdate(ih->firstchild);
   }
 }
@@ -89,7 +96,7 @@ static void iScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   if (ih->firstchild)
   {
-    iScrollBoxUpdatePosition(ih->firstchild, (int)IupGetFloat(ih, "POSX"), (int)IupGetFloat(ih, "POSY"));
+    iScrollBoxUpdatePosition(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
 
     /* because ScrollBox is a native container, 
        child position is restarted at (0,0) */

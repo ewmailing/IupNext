@@ -64,6 +64,7 @@ SRC += tree.c
 SRC += zbox.c
 SRC += scanf.c
 SRC += sbox.c
+SRC += scrollbox.c
 SRC += clipboard.c
 SRC += split.c
 
