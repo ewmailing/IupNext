@@ -1,6 +1,6 @@
 IUPSPIN = {parent = WIDGET}
 
-function IUPSPIN:CreateIUPelement (obj)
+function IUPSPIN:CreateIUPelement ()
   return iupCreateSpin ()
 end
 

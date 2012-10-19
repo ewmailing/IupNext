@@ -211,6 +211,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\srclua5\il_scrollbox.c"
+					>
+				</File>
+				<File
 					RelativePath="..\srclua5\il_separator.c"
 					>
 				</File>
@@ -400,6 +404,10 @@
 				</File>
 				<File
 					RelativePath="..\srclua5\sbox.lua"
+					>
+				</File>
+				<File
+					RelativePath="..\srclua5\scrollbox.lua"
 					>
 				</File>
 				<File

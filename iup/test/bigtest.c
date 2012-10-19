@@ -70,9 +70,11 @@ void ClassInfo(void);
 void ZboxTest(void);
 void ScanfTest(void);
 void SboxTest(void);
+void ScrollBoxTest(void);
 void SplitTest(void);
 void ClipboardTest(void);
 void CharacTest(void);
+
 
 void HelpTest(void)
 {
@@ -129,6 +131,7 @@ static TestItems test_list[] = {
   {"Progressbar", ProgressbarTest},
   {"Sample", SampleTest},
   {"Sbox", SboxTest},
+  {"ScrollBox", ScrollBoxTest},
   {"Split", SplitTest},
   {"Scanf", ScanfTest},
   {"Spin", SpinTest},

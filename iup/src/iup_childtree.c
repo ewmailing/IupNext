@@ -280,7 +280,6 @@ Ihandle* IupAppend(Ihandle* parent, Ihandle* child)
   }
 #endif
 
-
   /* this will return the actual parent */
   parent = iupClassObjectGetInnerContainer(top_parent);
   if (!parent)

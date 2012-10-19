@@ -1,7 +1,13 @@
 IUPTABS = {parent = WIDGET}
 
 function IUPTABS:CreateIUPelement (obj)
-  return iupCreateTabs (obj, getn(obj))
+  local handle = iupCreateTabs (obj, getn(obj))
+  local i = 1
+  while obj[i] do
+    obj[i].IUP_parent = handle
+    i = i + 1
+  end
+  return handle
 end
 
 function iuptabs (o)

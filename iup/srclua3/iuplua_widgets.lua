@@ -184,7 +184,7 @@ end
 -- ###############
 IUPTIMER = {parent = WIDGET}
 
-function IUPTIMER:CreateIUPelement (obj)
+function IUPTIMER:CreateIUPelement ()
   return iupCreateTimer()
 end
 
@@ -197,7 +197,7 @@ iup.timer = iuptimer
 -- ###############
 IUPCLIPBOARD = {parent = WIDGET}
 
-function IUPCLIPBOARD:CreateIUPelement (obj)
+function IUPCLIPBOARD:CreateIUPelement ()
   return iupCreateClipboard()
 end
 
@@ -212,7 +212,7 @@ IUPDIALOG = {parent = WIDGET, type = {type_widget}}
 
 function IUPDIALOG:CreateIUPelement (obj)
   local handle = iupCreateDialog(obj[1])
-  obj[1].IUP_parent = handle
+  if (obj[1]) then obj[1].IUP_parent = handle end
   return handle
 end
 
@@ -239,7 +239,7 @@ IUPRADIO = {parent = WIDGET, type = {type_widget}}
 
 function IUPRADIO:CreateIUPelement (obj)
   local handle = iupCreateRadio (obj[1])
-  obj[1].IUP_parent = handle
+  if (obj[1]) then obj[1].IUP_parent = handle end
   return handle
 end
 
@@ -476,7 +476,7 @@ iup.zbox = iupzbox
 -- ###############
 IUPFILL = {parent = WIDGET}
 
-function IUPFILL:CreateIUPelement (obj)
+function IUPFILL:CreateIUPelement ()
   return iupCreateFill ()
 end
 
@@ -505,7 +505,7 @@ iup.button = iupbutton
 -- ###############
 IUPTEXT = {parent = WIDGET}
 
-function IUPTEXT:CreateIUPelement (obj)
+function IUPTEXT:CreateIUPelement ()
   return iupCreateText()
 end
 
@@ -518,7 +518,7 @@ iup.text = iuptext
 -- ###############
 IUPMULTILINE = {parent = IUPTEXT}
 
-function IUPMULTILINE:CreateIUPelement (obj)
+function IUPMULTILINE:CreateIUPelement ()
   return iupCreateMultiLine()
 end
 
@@ -588,7 +588,7 @@ iup.submenu = iupsubmenu
 -- ###############
 IUPSEPARATOR = {parent = WIDGET}
 
-function IUPSEPARATOR:CreateIUPelement (obj)
+function IUPSEPARATOR:CreateIUPelement ()
   return iupCreateSeparator ()
 end
 
@@ -713,7 +713,7 @@ IUPFRAME = {parent = WIDGET, type = {type_widget}}
 
 function IUPFRAME:CreateIUPelement (obj)
   local h = iupCreateFrame (obj[1])
-  obj[1].IUP_parent = h
+  if (obj[1]) then obj[1].IUP_parent = h end
   return h
 end
 
@@ -726,7 +726,7 @@ iup.frame = iupframe
 -- ###############
 IUPCANVAS = {parent = WIDGET}
 
-function IUPCANVAS:CreateIUPelement (obj)
+function IUPCANVAS:CreateIUPelement ()
   return iupCreateCanvas ()
 end
 
@@ -739,7 +739,7 @@ iup.canvas = iupcanvas
 -- ###############
 IUPLIST = {parent = WIDGET}
 
-function IUPLIST:CreateIUPelement (obj)
+function IUPLIST:CreateIUPelement ()
   return iupCreateList ()
 end
 

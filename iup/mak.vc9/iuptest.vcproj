@@ -275,6 +275,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\test\scrollbox.c"
+			>
+		</File>
+		<File
 			RelativePath="..\test\spin.c"
 			>
 		</File>

@@ -112,6 +112,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\srclua3\il_scrollbox.c"
+				>
+			</File>
+			<File
 				RelativePath="..\srclua3\il_spin.c"
 				>
 			</File>
@@ -161,6 +165,10 @@
 			</File>
 			<File
 				RelativePath="..\srclua3\sbox.lua"
+				>
+			</File>
+			<File
+				RelativePath="..\srclua3\scrollbox.lua"
 				>
 			</File>
 			<File

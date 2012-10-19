@@ -1,7 +1,7 @@
 IUPTREE = {parent = WIDGET}
 IUPTREEREFERENCETABLE = {} -- Used in C, see luatree.c
 
-function IUPTREE:CreateIUPelement (obj)
+function IUPTREE:CreateIUPelement ()
   return iupCreateTree ()
 end
 

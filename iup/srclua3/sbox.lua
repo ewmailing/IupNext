@@ -1,7 +1,9 @@
 IUPSBOX = {parent = WIDGET}
 
 function IUPSBOX:CreateIUPelement (obj)
-  return iupCreateSbox(obj[1])
+  local handle = iupCreateSbox(obj[1])
+  if (obj[1]) then obj[1].IUP_parent = handle end
+  return handle
 end
 
 function iupsbox (o)

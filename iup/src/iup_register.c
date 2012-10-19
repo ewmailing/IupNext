@@ -121,4 +121,5 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupSpinNewClass());
   iupRegisterClass(iupSpinboxNewClass());
   iupRegisterClass(iupTreeNewClass());
+  iupRegisterClass(iupScrollBoxNewClass());
 }
