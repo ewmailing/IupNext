@@ -107,10 +107,6 @@ static void iScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
 static int iScrollBoxCreateMethod(Ihandle* ih, void** params)
 {
-  /* change the IupCanvas default values */
-  iupAttribSetStr(ih, "BORDER", "NO");
-  iupAttribSetStr(ih, "SCROLLBAR", "YES");
-  
   /* Setting callbacks */
   IupSetCallback(ih, "SCROLL_CB",    (Icallback)iScrollBoxScroll_CB);
 
@@ -145,7 +141,6 @@ Iclass* iupScrollBoxNewClass(void)
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
-
   {
     IattribGetFunc drawsize_get = NULL;
     iupClassRegisterGetAttribute(ic, "DRAWSIZE", &drawsize_get, NULL, NULL, NULL, NULL);
@@ -155,19 +150,12 @@ Iclass* iupScrollBoxNewClass(void)
   /* replace IupCanvas behavior */
   iupClassRegisterReplaceAttribFunc(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL);
   iupClassRegisterReplaceAttribDef(ic, "BGCOLOR", "DLGBGCOLOR", NULL);
+  iupClassRegisterReplaceAttribDef(ic, "BORDER", "NO", NULL);
+  iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribDef(ic, "SCROLLBAR", "YES", NULL);
 
   return ic;
 }
-static int motLabelSetBgColorAttrib(Ihandle* ih, const char* value)
-{
-  /* ignore given value, must use only from parent */
-  value = iupBaseNativeParentGetBgColor(ih);
-
-  if (iupdrvBaseSetBgColorAttrib(ih, value))
-    return 1;
-  return 0; 
-}
-
 
 Ihandle* IupScrollBox(Ihandle* child)
 {

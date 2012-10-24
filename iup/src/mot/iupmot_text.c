@@ -1019,21 +1019,21 @@ static void motTextLayoutUpdateMethod(Ihandle* ih)
   if (spinbox && XmIsSpinBox(spinbox))
   {
     /* avoid abort in X */
-    if (ih->currentwidth == 0) ih->currentwidth = 1;
+    if (ih->currentwidth == 0) ih->currentwidth = 2;
     if (ih->currentheight == 0) ih->currentheight = 1;
+
+    XtVaSetValues(spinbox,
+      XmNwidth, (XtArgVal)ih->currentwidth,
+      XmNheight, (XtArgVal)ih->currentheight,
+      XmNarrowSize, ih->currentheight/2,
+      NULL);
 
     XtVaSetValues(ih->handle,
       XmNwidth, (XtArgVal)ih->currentwidth-ih->currentheight/2,
       XmNheight, (XtArgVal)ih->currentheight,
       NULL);
 
-    XtVaSetValues(spinbox,
-      XmNx, (XtArgVal)ih->x,
-      XmNy, (XtArgVal)ih->y,
-      XmNwidth, (XtArgVal)ih->currentwidth,
-      XmNheight, (XtArgVal)ih->currentheight,
-      XmNarrowSize, ih->currentheight/2,
-      NULL);
+    iupmotSetPosition(spinbox, ih->x, ih->y);
   }
   else
   {

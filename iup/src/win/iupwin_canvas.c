@@ -50,8 +50,8 @@ static int winCanvasSetBgColorAttrib(Ihandle *ih, const char *value)
   iupdrvPostRedraw(ih);
   return 1;
 }
-
-static int winCanvasSetDXAttrib(Ihandle *ih, const char *value)
+              
+static int winCanvasSetDXAttrib(Ihandle* ih, const char *value)
 {
   if (ih->data->sb & IUP_SB_HORIZ)
   {
@@ -75,6 +75,7 @@ static int winCanvasSetDXAttrib(Ihandle *ih, const char *value)
         ShowScrollBar(ih->handle, SB_HORZ, FALSE);
       else
         EnableScrollBar(ih->handle, SB_HORZ, ESB_DISABLE_BOTH);
+      ih->data->posx = 0;
       return 1;
     }
     else
@@ -121,7 +122,7 @@ static int winCanvasSetPosXAttrib(Ihandle *ih, const char *value)
   return 1;
 }
 
-static int winCanvasSetDYAttrib(Ihandle *ih, const char *value)
+static int winCanvasSetDYAttrib(Ihandle* ih, const char *value)
 {
   if (ih->data->sb & IUP_SB_VERT)
   {
@@ -145,6 +146,7 @@ static int winCanvasSetDYAttrib(Ihandle *ih, const char *value)
         ShowScrollBar(ih->handle, SB_VERT, FALSE);
       else
         EnableScrollBar(ih->handle, SB_VERT, ESB_DISABLE_BOTH);
+      ih->data->posy = 0;
       return 1;
     }
     else
@@ -755,8 +757,8 @@ void iupdrvCanvasInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "DY", NULL, winCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, winCanvasSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, winCanvasSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupCanvas Windows only */
   iupClassRegisterAttribute(ic, "HWND", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_NO_INHERIT);

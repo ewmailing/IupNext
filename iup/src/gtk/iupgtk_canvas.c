@@ -586,6 +586,9 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
     else
       linex = iupAttribGetFloat(ih,"LINEX");
 
+    if (dx >= (xmax-xmin))
+      ih->data->posx = 0;
+
 #if GTK_CHECK_VERSION(2, 14, 0)
     {
       double page_size = dx;
@@ -635,6 +638,9 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
     }
     else
       liney = iupAttribGetFloat(ih,"LINEY");
+
+    if (dy >= (ymax-ymin))
+      ih->data->posy = 0;
 
 #if GTK_CHECK_VERSION(2, 14, 0)
     {
@@ -917,8 +923,8 @@ void iupdrvCanvasInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "DY", NULL, gtkCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, gtkCanvasSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, gtkCanvasSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, gtkCanvasSetXAutoHideAttrib, "YES", NULL, IUPAF_DEFAULT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, gtkCanvasSetYAutoHideAttrib, "YES", NULL, IUPAF_DEFAULT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, gtkCanvasSetXAutoHideAttrib, "YES", NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, gtkCanvasSetYAutoHideAttrib, "YES", NULL, IUPAF_NO_INHERIT);  /* force new default value */
 
   iupClassRegisterAttribute(ic, "DRAWABLE", gtkCanvasGetDrawableAttrib, NULL, NULL, NULL, IUPAF_NO_STRING);
 

@@ -451,7 +451,7 @@ void SampleTest(void)
   IupSetAttribute(dlg,"TITLE","IupDialog Title");
 //  IupSetAttribute(dlg,"COMPOSITED","YES");   /* Windows Only */
 //  IupSetAttribute(dlg, "OPACITY", "192");
-  IupSetAttribute(dlg, "RESIZE", "NO");
+//  IupSetAttribute(dlg, "RESIZE", "NO");
 
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
 //  IupSetAttribute(_vbox_1, "BGCOLOR", "92 92 255");
@@ -468,7 +468,7 @@ void SampleTest(void)
 //  IupSetAttribute(box, "FGCOLOR", "255 0 0");
 
 //  IupSetAttribute(dlg,"RASTERSIZE","1000x800");
-//  IupSetAttribute(dlg,"RASTERSIZE","800x600");
+//  IupSetAttribute(dlg,"RASTERSIZE","600x500");
 
   IupSetCallback(dlg, "COPYDATA_CB", (Icallback)copydata_cb);
 

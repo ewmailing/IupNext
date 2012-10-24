@@ -606,8 +606,12 @@ static int bt1_cb(Ihandle *self)
 
 void MglPlotTest(void)
 {
+  static Ihandle *dlg = NULL;
+  if (!dlg)
+  {
+
   Ihandle *vboxr[MAXPLOT+1];       /* tabs containing the plots */
-  Ihandle *dlg, *vboxl, *hbox, *lbl1, *lbl2, *lbl3, *bt1,
+  Ihandle *vboxl, *hbox, *lbl1, *lbl2, *lbl3, *bt1,
           *boxinfo, *boxdial1, *boxdial2, *f1, *f2;
   int ii;
 
@@ -618,7 +622,10 @@ void MglPlotTest(void)
 
   /* create plots */
   for (ii=0; ii<MAXPLOT; ii++)
+  {
     plot[ii] = IupMglPlot();
+    IupSetAttribute(plot[ii], "OPENGL", "Yes");
+  }
 
   /* left panel: plot control
      Y zooming               */
@@ -722,13 +729,15 @@ void MglPlotTest(void)
   IupSetAttribute(hbox, "GAP", "10");
   
   dlg = IupDialog(hbox);
-  IupSetAttribute(dlg, "SIZE", "170x");
   IupSetAttribute(dlg, "TITLE", "IupMglPlot Example");
 
   InitPlots(); /* It must be able to be done independent of dlg Mapping */
 
   tabs_tabchange_cb(tabs, vboxr[0]);
 
+  }
+
+  IupSetAttribute(dlg, "SIZE", "300x");
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
   IupSetAttribute(dlg, "SIZE", NULL);
 }

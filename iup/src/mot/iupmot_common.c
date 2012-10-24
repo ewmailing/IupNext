@@ -198,6 +198,31 @@ void iupdrvReparent(Ihandle* ih)
   }
 }
 
+extern void XtMoveWidget(Widget, _XtPosition, _XtPosition);
+
+void iupmotSetPosition(Widget widget, int x, int y)
+{
+  /* avoid setting both at the same time,
+     so if one is invalid all will fail */
+  XtVaSetValues(widget,
+    XmNx, (XtArgVal)x,
+    NULL);
+  XtVaSetValues(widget,
+    XmNy, (XtArgVal)y,
+    NULL);
+
+  /* to position ouside parent area */
+  {
+    int new_x, new_y;
+    XtVaGetValues(widget,
+      XmNx, &new_x,
+      XmNy, &new_y,
+      NULL);
+    if (x!=new_x || y!=new_y)
+      XtMoveWidget(widget, x, y);
+  }
+}
+
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
   Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
@@ -208,11 +233,11 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
   if (ih->currentheight == 0) ih->currentheight = 1;
 
   XtVaSetValues(widget,
-    XmNx, (XtArgVal)ih->x,
-    XmNy, (XtArgVal)ih->y,
     XmNwidth, (XtArgVal)ih->currentwidth,
     XmNheight, (XtArgVal)ih->currentheight,
     NULL);
+
+  iupmotSetPosition(widget, ih->x, ih->y);
 }
 
 void iupdrvBaseUnMapMethod(Ihandle* ih)
