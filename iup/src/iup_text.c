@@ -511,12 +511,10 @@ Iclass* iupTextNewClass(void)
   /* Callbacks */
   iupClassRegisterCallback(ic, "CARET_CB", "iii");
   iupClassRegisterCallback(ic, "ACTION", "is");
-  iupClassRegisterCallback(ic, "DROPFILES_CB", "siii");
   iupClassRegisterCallback(ic, "BUTTON_CB", "iiiis");
   iupClassRegisterCallback(ic, "MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "SPIN_CB", "i");
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
-  
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);

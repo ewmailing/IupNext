@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
@@ -64,6 +64,11 @@ label(<strong>title</strong>) [in LED]</pre>
 systems. Will use the background color of the native parent.</p>
 
 
+<p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drop of 
+files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
+then it will be automatically enabled. (since 3.0)</p>
+
+  
   <p><b>ELLIPSIS</b> [Windows and GTK only]: add an ellipsis: &quot;...&quot; to the text 
   if there is not enough space to render the entire string. Can be &quot;YES&quot; or 
   &quot;NO&quot;. Default: &quot;NO&quot;. (since 3.0) (GTK 2.6)</p>
@@ -127,6 +132,9 @@ MAXSIZE</a>,
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a>,
     <a href="../attrib/iup_zorder.html">ZORDER</a>, <a href="../attrib/iup_visible.html">VISIBLE</a>: 
 also accepted.</p>
+<p>
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes and callbacks 
+are supported.&nbsp;&nbsp;</p>
 
 <h3><a name="Callbacks">Callbacks</a></h3>
 

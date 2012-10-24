@@ -169,7 +169,6 @@ Iclass* iupLabelNewClass(void)
   iupClassRegisterCallback(ic, "MAP_CB", "");
   iupClassRegisterCallback(ic, "UNMAP_CB", "");
 
-  iupClassRegisterCallback(ic, "DROPFILES_CB", "siii");
   iupClassRegisterCallback(ic, "BUTTON_CB", "iiiis");
   iupClassRegisterCallback(ic, "ENTERWINDOW_CB", "");
   iupClassRegisterCallback(ic, "LEAVEWINDOW_CB", "");
@@ -179,6 +178,9 @@ Iclass* iupLabelNewClass(void)
 
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
+
+  /* Drag&Drop */
+  iupdrvRegisterDragDropAttrib(ic);
 
   /* IupLabel only */
   iupClassRegisterAttribute(ic, "SEPARATOR", iLabelGetSeparatorAttrib, iLabelSetSeparatorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

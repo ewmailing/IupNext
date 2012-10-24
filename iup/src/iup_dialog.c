@@ -817,7 +817,6 @@ Iclass* iupDialogNewClass(void)
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "SHOW_CB", "i");
-  iupClassRegisterCallback(ic, "DROPFILES_CB", "siii");
   iupClassRegisterCallback(ic, "RESIZE_CB", "ii");
   iupClassRegisterCallback(ic, "CLOSE_CB", "");
 

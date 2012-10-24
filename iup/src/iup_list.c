@@ -846,7 +846,6 @@ Iclass* iupListNewClass(void)
   /* Callbacks */
   iupClassRegisterCallback(ic, "ACTION", "sii");
   iupClassRegisterCallback(ic, "MULTISELECT_CB", "s");
-  iupClassRegisterCallback(ic, "DROPFILES_CB", "siii");
   iupClassRegisterCallback(ic, "DROPDOWN_CB", "i");
   iupClassRegisterCallback(ic, "DBLCLICK_CB", "is");
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
