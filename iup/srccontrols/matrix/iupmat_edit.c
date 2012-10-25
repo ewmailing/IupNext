@@ -213,6 +213,8 @@ static int iMatrixEditCancel(Ihandle* ih, int focus, int update, int ignore)
     if (ret == IUP_IGNORE && ignore)
       return IUP_IGNORE;
 
+    iupAttribSetStr(ih, "_IUPMAT_IGNOREFOCUS", "1");
+
     IupSetAttribute(ih->data->datah, "VISIBLE", "NO");
     IupSetAttribute(ih->data->datah, "ACTIVE",  "NO");
 
@@ -221,6 +223,9 @@ static int iMatrixEditCancel(Ihandle* ih, int focus, int update, int ignore)
       IupSetFocus(ih);
       ih->data->has_focus = 1; /* set this so even if getfocus_cb is not called the focus is drawn */
     }
+
+    iupAttribSetStr(ih, "_IUPMAT_IGNOREFOCUS", NULL);
+
 #ifdef SunOS
     /* Usually when the edit control is hidden the matrix is automatically repainted by the system, except in SunOS. */
     iupMatrixDrawUpdate(ih);
@@ -246,6 +251,7 @@ static int iMatrixEditDropDown_CB(Ihandle* ih, int state)
 static int iMatrixEditKillFocus_CB(Ihandle* ih)
 {
   Ihandle* ih_matrix = ih->parent;
+
   if (IupGetGlobal("MOTIFVERSION"))
   {
     if (iupAttribGet(ih_matrix, "_IUPMAT_DROPDOWN") ||  /* from iMatrixEditDropDown_CB, in Motif */
@@ -256,6 +262,9 @@ static int iMatrixEditKillFocus_CB(Ihandle* ih)
       return IUP_DEFAULT;
     }
   }
+
+  if (iupAttribGet(ih_matrix, "_IUPMAT_IGNOREFOCUS"))
+    return IUP_DEFAULT;
 
   iupMatrixEditForceHidden(ih_matrix);
   return IUP_DEFAULT;
@@ -353,12 +362,6 @@ int iupMatrixEditShow(Ihandle* ih)
 
   ih->data->datah->x = x;
   ih->data->datah->y = y;
-  if (IupGetGlobal("GTKVERSION"))
-  {
-    /* In GTK, IupCanvas handle is NOT the actual container of the IupText/IupList native handle */
-    ih->data->datah->x += ih->x;
-    ih->data->datah->y += ih->y;
-  }
 
   ih->data->datah->currentwidth  = w;
   ih->data->datah->currentheight = h;

@@ -869,6 +869,10 @@ wb_usr.tree =
               link= "elem/iupsbox.html"
             },
             {
+              name= {nl= "IupScrollBox"},
+              link= "elem/iupscrollbox.html"
+            },
+            {
               name= {nl= "IupSplit"},
               link= "elem/iupsplit.html"
             }

@@ -1343,10 +1343,16 @@ static int iMatrixResize_CB(Ihandle* ih)
     return IUP_DEFAULT;
 
   /* update size */
-  cdCanvasActivate(ih->data->cddbuffer);
-  cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
+  {
+    int old_w = ih->data->w, 
+        old_h = ih->data->h;
 
-  iupMatrixEditForceHidden(ih);
+    cdCanvasActivate(ih->data->cddbuffer);
+    cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
+
+    if (old_w != ih->data->w || old_h != ih->data->h)
+      iupMatrixEditForceHidden(ih);
+  }
 
   ih->data->need_calcsize = 1;
 

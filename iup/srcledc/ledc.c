@@ -126,6 +126,7 @@ elems[] =
   { "List",         code_string,       check_cb,          0  },
   { "Matrix",       code_string,       check_cb,          IUPCONTROLS_H  },
   { "Sbox",         code_elem,         check_elem,        0  },
+  { "ScrollBox",    code_elem,         check_elem,        0  },
   { "Menu",         code_elemlist,     check_elemlist,    0  },
   { "MultiLine",    code_string,       check_cb,          0  },
   { "Radio",        code_elem,         check_elem,        0  },

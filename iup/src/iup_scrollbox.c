@@ -27,13 +27,6 @@
 
 static void iScrollBoxUpdatePosition(Ihandle* ih, float posx, float posy)
 {
-  if (IupGetGlobal("GTKVERSION"))
-  {
-    /* In GTK, IupCanvas handle is NOT the actual container of the child native handle */
-    posx -= (float)ih->x;
-    posy -= (float)ih->y;
-  }
-
   iupBaseSetPosition(ih->firstchild, -(int)posx, -(int)posy);
 }
 
@@ -49,10 +42,10 @@ static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
 }
 
 
-
 /*****************************************************************************\
 |* Methods                                                                   *|
 \*****************************************************************************/
+
 
 static void iScrollBoxLayoutUpdate(Ihandle* ih)
 {

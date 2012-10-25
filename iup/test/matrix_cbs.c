@@ -39,7 +39,7 @@ static int enter(Ihandle *self, int lin, int col)
 static int dropselect(Ihandle *self, int lin, int col, Ihandle *drop, char *t, int i, int v)
 {
   printf("dropselect_cb(%d, %d)\n", lin, col);
-  return IUP_DEFAULT;
+  return IUP_CONTINUE;
 }
 
 int mdrop = 1;
