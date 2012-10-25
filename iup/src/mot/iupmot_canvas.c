@@ -155,8 +155,8 @@ static void motCanvasResizeCallback(Widget w, Ihandle *ih, XtPointer call_data)
     Dimension width, height;
     Widget sb_horiz = (Widget)iupAttribGet(ih, "_IUPMOT_SBHORIZ");
     Widget sb_vert = (Widget)iupAttribGet(ih, "_IUPMOT_SBVERT");
-    int sb_vert_managed = XtIsManaged(sb_vert);
-    int sb_horiz_managed = XtIsManaged(sb_horiz);
+    int sb_vert_managed = sb_vert && XtIsManaged(sb_vert);
+    int sb_horiz_managed = sb_horiz && XtIsManaged(sb_horiz);
 
     iupAttribSetStr(ih, "_IUPMOT_CANVASRESIZE", "1");
 
@@ -170,8 +170,8 @@ static void motCanvasResizeCallback(Widget w, Ihandle *ih, XtPointer call_data)
     iupAttribSetStr(ih, "_IUPMOT_CANVASRESIZE", NULL);
 
     /* chek if the application changed the scrollbars layout */
-    if (sb_vert_managed != XtIsManaged(sb_vert) ||
-        sb_horiz_managed != XtIsManaged(sb_horiz))
+    if (sb_vert_managed != (sb_vert && XtIsManaged(sb_vert)) ||
+        sb_horiz_managed != (sb_horiz && XtIsManaged(sb_horiz)))
       motCanvasUpdateScrollLayout(ih);
   }
 }
@@ -707,8 +707,6 @@ void iupdrvCanvasInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "DY", NULL, motCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, motCanvasSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, motCanvasSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupCanvas X only */
   iupClassRegisterAttribute(ic, "XWINDOW", motCanvasGetXWindowAttrib, NULL, NULL, NULL, IUPAF_NO_INHERIT|IUPAF_NO_STRING);

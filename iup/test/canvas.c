@@ -305,13 +305,14 @@ void CanvasTest(void)
   IupSetAttribute(canvas, "RASTERSIZE", "300x200");
   IupSetAttribute(canvas, "TIP", "Canvas Tip");
   IupSetAttribute(canvas, "SCROLLBAR", "HORIZONTAL");
+  //IupSetAttribute(canvas, "BGCOLOR", "0 255 0");
 //  IupSetAttribute(canvas, "SCROLLBAR", "NO");
 //  IupSetAttribute(canvas, "XAUTOHIDE", "NO");
   IupSetAttribute(canvas, "XMAX", "600");
   IupSetAttribute(canvas, "DX", "300");  /* use a 1x1 scale, this value is updated in RESIZE_CB,
                                            so when the canvas is larger than 600 
                                            it will hide the scrollbar */
-  IupSetAttributeHandle(canvas, "CURSOR", image);
+  //IupSetAttributeHandle(canvas, "CURSOR", image);
   IupSetAttribute(canvas, "DROPTARGET", "YES");
   IupSetAttribute(canvas, "DROPTYPES", "TEXT");
   IupSetCallback (canvas, "DROPDATA_CB", (Icallback)testDropData_cb);
