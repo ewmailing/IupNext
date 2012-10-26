@@ -82,14 +82,19 @@ void iupgtkBaseAddToParent(Ihandle* ih)
   gtk_fixed_put(fixed, widget, 0, 0);
 }
 
+void iupgtkSetPosSize(GtkFixed* fixed, GtkWidget* widget, int x, int y, int width, int height)
+{
+  gtk_fixed_move(fixed, widget, x, y);
+  gtk_widget_set_size_request(widget, width, height);
+}
+
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
   GtkFixed* fixed = gtkGetFixedParent(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
-  gtk_fixed_move(fixed, widget, ih->x, ih->y);
-  gtk_widget_set_size_request(widget, ih->currentwidth, ih->currentheight);
+  iupgtkSetPosSize(fixed, widget, ih->x, ih->y, ih->currentwidth, ih->currentheight);
 }
 
 void iupdrvBaseUnMapMethod(Ihandle* ih)

@@ -38,7 +38,7 @@ gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih);
 void iupgtkBaseSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
 void iupgtkBaseSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
 const char* iupgtkGetWidgetClassName(GtkWidget* widget);
-
+void iupgtkSetPosSize(GtkFixed* fixed, GtkWidget* widget, int x, int y, int width, int height);
 GdkWindow* iupgtkGetWindow(GtkWidget *widget);
 void iupgtkWindowGetPointer(GdkWindow *window, int *x, int *y, GdkModifierType *mask);
 
