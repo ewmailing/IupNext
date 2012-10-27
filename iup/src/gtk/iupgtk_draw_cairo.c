@@ -100,7 +100,6 @@ void iupDrawFlush(IdrawCanvas* dc)
   /* creates a pattern from the image and sets it as source in the canvas. */
   cairo_set_source_surface(dc->cr, cairo_get_target(dc->image_cr), 0, 0);
 
-//  cairo_pattern_set_extend(cairo_get_source(dc->cr), CAIRO_EXTEND_NONE); 
   cairo_set_operator(dc->cr, CAIRO_OPERATOR_SOURCE);
   cairo_paint(dc->cr);  /* paints the current source everywhere within the current clip region. */
 }
@@ -305,7 +304,7 @@ void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, i
 
 void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
 {
-  cairo_set_source_rgba(dc->image_cr, 0, 0, 1, 0.80);
+  cairo_set_source_rgba(dc->image_cr, 0, 0, 1, 0.60);
   cairo_rectangle(dc->image_cr, x, y, w, h);
   cairo_fill(dc->image_cr);
 }

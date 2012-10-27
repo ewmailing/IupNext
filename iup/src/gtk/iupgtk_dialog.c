@@ -860,6 +860,7 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     GdkWindow* window = iupgtkGetWindow(ih->handle);
     if (window)
     {
+      /* TODO: this is NOT working!!!! */
       cairo_pattern_t* pattern;
       cairo_surface_t* surface;
       cairo_t* cr;
@@ -869,17 +870,15 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
 
       surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR_ALPHA, width, height);
       cr = cairo_create(surface);
-      gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
+      gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
+      cairo_paint (cr);
+      cairo_destroy (cr);
 
-      pattern = cairo_get_source(cr);
-      //pattern = cairo_pattern_create_for_surface(surface);
-      //cairo_fill (cr);
-      cairo_destroy(cr);
-      cairo_surface_destroy(surface);
-
+      pattern = cairo_pattern_create_for_surface(surface);
       gdk_window_set_background_pattern(window, pattern);
-
       cairo_pattern_destroy (pattern);
+
+      cairo_surface_destroy(surface);
     }
 #else
       GdkPixmap* pixmap;

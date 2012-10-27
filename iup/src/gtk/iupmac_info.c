@@ -54,7 +54,7 @@ int iupdrvMakeDirectory(const char* name)
                     
   iupMacStrToUniChar(name, &nameDir, strlen(name), &lenDir);
   
-  if(FSMakeFSRefUnicode(&refParent, lenDir, &nameDir, kTextEncodingUnknown, &refNew) != fnfErr)  // fnfErr => Directory does not exists
+  if(FSMakeFSRefUnicode(&refParent, lenDir, &nameDir, kTextEncodingUnknown, &refNew) != fnfErr)  /* fnfErr => Directory does not exists */
     return 0;
     
   if(FSCreateDirectoryUnicode(&refParent, lenDir, &nameDir, kFSCatInfoNone, NULL, &refNew, NULL, NULL) != noErr)
@@ -71,10 +71,10 @@ char* iupdrvGetCurrentDirectory(void)
   size_t size = 256;
   char *buffer = (char *)malloc(size);
 
-  if(HGetVol(NULL, &vRefNum, &dirID) != noErr)  // Deprecated in Mac OS X v10.4
+  if(HGetVol(NULL, &vRefNum, &dirID) != noErr)  /* Deprecated in Mac OS X v10.4 */
     return 0;
 
-  if(FSMakeFSRef(vRefNum, dirID, NULL, &refDir) != noErr)  // Deprecated in Mac OS X v10.5
+  if(FSMakeFSRef(vRefNum, dirID, NULL, &refDir) != noErr)  /* Deprecated in Mac OS X v10.5 */
     return 0;
 
   FSRefMakePath (&refDir, (UInt8*)buffer, size);
@@ -97,7 +97,7 @@ int iupdrvSetCurrentDirectory(const char* dir)
   if(FSGetCatalogInfo(refDir, kFSCatInfoVolume + kFSCatInfoNodeID, &catalogInfo, NULL, NULL, NULL) != noErr)
     return 0;
 
-  if(HSetVol(NULL, catalogInfo.volume, catalogInfo.nodeID) != noErr)  // Deprecated in Mac OS X v10.4
+  if(HSetVol(NULL, catalogInfo.volume, catalogInfo.nodeID) != noErr)  /* Deprecated in Mac OS X v10.4 */
     return 0;
 
   return 1;
