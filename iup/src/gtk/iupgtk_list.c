@@ -200,6 +200,8 @@ static int gtkListSetStandardFontAttrib(Ihandle* ih, const char* value)
       gtk_widget_modify_font((GtkWidget*)entry, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
 #endif
       iupgtkFontUpdatePangoLayout(ih, gtk_entry_get_layout(entry));
+
+      gtk_entry_set_width_chars(entry, 1);  /* minimum size */
     }
   }
   return 1;

@@ -1695,6 +1695,7 @@ static int gtkTextMapMethod(Ihandle* ih)
     ih->data->has_formatting = 0;
 
     gtk_entry_set_has_frame((GtkEntry*)ih->handle, IupGetInt(ih, "BORDER"));
+    gtk_entry_set_width_chars((GtkEntry*)ih->handle, 1);  /* minimum size */
 
     if (iupAttribGetBoolean(ih, "PASSWORD"))
       gtk_entry_set_visibility((GtkEntry*)ih->handle, FALSE);
