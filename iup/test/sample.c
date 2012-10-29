@@ -230,6 +230,9 @@ static int action1_cb(Ihandle* ih)
 static int action2_cb(Ihandle* ih)
 {
   IupSetAttribute(IupGetDialog(ih), "BGCOLOR", "0 128 0");
+//  IupSetAttribute(IupGetDialog(ih), "RASTERSIZE", "600x300");
+//  IupRefresh(IupGetDialog(ih));
+//  IupFlush();
   return IUP_DEFAULT;
 }
 
