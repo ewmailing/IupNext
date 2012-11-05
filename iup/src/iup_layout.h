@@ -15,7 +15,7 @@ extern "C" {
 void iupLayoutCompute(Ihandle* ih);  /* can be called before map */
 void iupLayoutUpdate(Ihandle* ih);   /* called only after map */
 
-void iupLayoutSetMinMaxSize(Ihandle* ih, int *w, int *h);
+void iupLayoutApplyMinMaxSize(Ihandle* ih, int *w, int *h);
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupRefresh

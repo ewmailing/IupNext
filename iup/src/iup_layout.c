@@ -192,7 +192,7 @@ void iupLayoutCompute(Ihandle* ih)
   iupBaseSetPosition(ih, 0, 0);
 }
 
-void iupLayoutSetMinMaxSize(Ihandle* ih, int *w, int *h)
+void iupLayoutApplyMinMaxSize(Ihandle* ih, int *w, int *h)
 {
   if (ih->flags & IUP_MINSIZE)
   {
@@ -261,7 +261,7 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
   }
 
   /* crop the natural size */
-  iupLayoutSetMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
+  iupLayoutApplyMinMaxSize(ih, &(ih->naturalwidth), &(ih->naturalheight));
 }
 
 void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
@@ -308,7 +308,7 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
 
   /* crop also the current size if expanded */
   if (ih->expand & IUP_EXPAND_WIDTH || ih->expand & IUP_EXPAND_HEIGHT)
-    iupLayoutSetMinMaxSize(ih, &(ih->currentwidth), &(ih->currentheight));
+    iupLayoutApplyMinMaxSize(ih, &(ih->currentwidth), &(ih->currentheight));
 
   if (ih->firstchild)
     iupClassObjectSetChildrenCurrentSize(ih, shrink);

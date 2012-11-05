@@ -57,7 +57,7 @@ static void iSboxSaveDimension(Ihandle* ih, int w, int h)
 {
   ih->data->w = w;
   ih->data->h = h;
-  iupLayoutSetMinMaxSize(ih, &(ih->data->w), &(ih->data->h));
+  iupLayoutApplyMinMaxSize(ih, &(ih->data->w), &(ih->data->h));
 }
 
 static void iSboxAddDecorOffset(Ihandle* ih, int *x, int *y)

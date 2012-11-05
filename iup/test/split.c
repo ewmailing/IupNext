@@ -7,19 +7,22 @@ void SplitTest(void)
 
   bt = IupButton("Button", NULL);
   IupSetAttribute(bt, "EXPAND", "YES");
-//  IupSetAttribute(bt, "MINSIZE", "30x");
+  IupSetAttribute(bt, "MINSIZE", "30x");
+//  IupSetAttribute(bt, "RASTERSIZE", "30x");
 
   ml = IupMultiLine(NULL);
   IupSetAttribute(ml, "EXPAND", "YES");
   IupSetAttribute(ml, "VISIBLELINES", "5");
   IupSetAttribute(ml, "VISIBLECOLUMNS", "10");
+  IupSetAttribute(ml, "VALUE", "Multiline");
+  IupSetAttribute(ml, "MINSIZE", "30x");
   
   split = IupSplit(bt, ml);
 //  IupSetAttribute(split, "ORIENTATION", "VERTICAL");
 //  IupSetAttribute(split, "ORIENTATION", "HORIZONTAL");
-//  IupSetAttribute(split, "COLOR", "127 127 255");
+//  IupSetAttribute(split, "COLOR", "0 255 0");
 //  IupSetAttribute(split, "LAYOUTDRAG", "NO");
-  IupSetAttribute(split, "AUTOHIDE", "YES");
+//  IupSetAttribute(split, "AUTOHIDE", "YES");
 //  IupSetAttribute(split, "SHOWGRIP", "NO");
 //  IupSetAttribute(split, "MINMAX", "100:800");
 
