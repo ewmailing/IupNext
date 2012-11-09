@@ -694,6 +694,8 @@ static void iSplitSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
         width2 = child2->currentwidth;
         width1 = (ih->currentwidth-ih->data->barsize) - width2;
         ih->data->val = iSplitCalcVal(ih, width1);
+        if (child1)
+          iupBaseSetCurrentSize(child1, width1, ih->currentheight, shrink);
       }
     }
   }
@@ -730,6 +732,8 @@ static void iSplitSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
         height2 = child2->currentheight;
         height1 = (ih->currentheight-ih->data->barsize) - height2;
         ih->data->val = iSplitCalcVal(ih, height1);
+        if (child1)
+          iupBaseSetCurrentSize(child1, ih->currentwidth, height1, shrink);
       }
     }
   }
