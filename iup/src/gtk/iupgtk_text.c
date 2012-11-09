@@ -1137,14 +1137,14 @@ static int gtkTextSetBgColorAttrib(Ihandle* ih, const char* value)
     {
       GtkWidget* sb;
 
-      iupgtkBaseSetBgColor((GtkWidget*)scrolled_window, r, g, b);
+      iupgtkSetBgColor((GtkWidget*)scrolled_window, r, g, b);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
       sb = gtk_scrolled_window_get_hscrollbar(scrolled_window);
-      if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+      if (sb) iupgtkSetBgColor(sb, r, g, b);
 
       sb = gtk_scrolled_window_get_vscrollbar(scrolled_window);
-      if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+      if (sb) iupgtkSetBgColor(sb, r, g, b);
 #endif
     }
   }
@@ -1719,7 +1719,7 @@ static int gtkTextMapMethod(Ihandle* ih)
   }
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     iupgtkSetCanFocus(ih->handle, 0);

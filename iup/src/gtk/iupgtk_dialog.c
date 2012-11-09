@@ -446,7 +446,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
   int decorations = 0;
   int functions = 0;
   InativeHandle* parent;
-  GtkWidget* fixed;
+  GtkWidget* inner_parent;
   int has_titlebar = 0;
 
 #ifdef HILDON
@@ -497,9 +497,9 @@ static int gtkDialogMapMethod(Ihandle* ih)
     gtk_window_set_type_hint(GTK_WINDOW(ih->handle), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   /* the container that will receive the child element. */
-  fixed = gtk_fixed_new();
-  gtk_container_add((GtkContainer*)ih->handle, fixed);
-  gtk_widget_show(fixed);
+  inner_parent = iupgtkNativeContainerNew(1);
+  gtk_container_add((GtkContainer*)ih->handle, inner_parent);
+  gtk_widget_show(inner_parent);
 
   /* initialize the widget */
   gtk_widget_realize(ih->handle);
@@ -572,7 +572,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
 
 static void gtkDialogUnMapMethod(Ihandle* ih)
 {
-  GtkWidget* fixed;
+  GtkWidget* inner_parent;
 #if GTK_CHECK_VERSION(2, 10, 0)
   GtkStatusIcon* status_icon;
 #endif
@@ -589,9 +589,9 @@ static void gtkDialogUnMapMethod(Ihandle* ih)
     g_object_unref(status_icon);
 #endif
 
-  fixed = gtk_bin_get_child((GtkBin*)ih->handle);
-  gtk_widget_unrealize(fixed);
-  gtk_widget_destroy(fixed);  
+  inner_parent = gtk_bin_get_child((GtkBin*)ih->handle);
+  gtk_widget_unrealize(inner_parent);
+  gtk_widget_destroy(inner_parent);  
 
   gtk_widget_unrealize(ih->handle); /* To match the call to gtk_widget_realize */
   gtk_widget_destroy(ih->handle);   /* To match the call to gtk_window_new     */

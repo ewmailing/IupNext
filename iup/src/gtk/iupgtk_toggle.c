@@ -246,7 +246,7 @@ static int gtkToggleSetFgColorAttrib(Ihandle* ih, const char* value)
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  iupgtkBaseSetFgColor(label, r, g, b);
+  iupgtkSetFgColor(label, r, g, b);
 
   return 1;
 }
@@ -500,7 +500,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
   }
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     iupgtkSetCanFocus(ih->handle, 0);

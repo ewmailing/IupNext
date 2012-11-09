@@ -242,7 +242,7 @@ static void gtkComboBoxChildrenToggleCb(GtkWidget *widget, gpointer client_data)
 static void gtkComboBoxChildrenBgColorCb(GtkWidget *widget, gpointer client_data)
 {
   GdkColor* c = (GdkColor*)client_data;
-  iupgtkBaseSetBgColor(widget, (unsigned char)c->red, (unsigned char)c->green, (unsigned char)c->blue);
+  iupgtkSetBgColor(widget, (unsigned char)c->red, (unsigned char)c->green, (unsigned char)c->blue);
 }
 
 static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
@@ -262,14 +262,14 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
       if (!GTK_IS_SCROLLED_WINDOW(scrolled_window))
         scrolled_window = (GtkScrolledWindow*)iupAttribGet(ih, "_IUPGTK_SCROLLED_WINDOW");
 
-      iupgtkBaseSetBgColor((GtkWidget*)scrolled_window, r, g, b);
+      iupgtkSetBgColor((GtkWidget*)scrolled_window, r, g, b);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
       sb = gtk_scrolled_window_get_hscrollbar(scrolled_window);
-      if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+      if (sb) iupgtkSetBgColor(sb, r, g, b);
 
       sb = gtk_scrolled_window_get_vscrollbar(scrolled_window);
-      if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+      if (sb) iupgtkSetBgColor(sb, r, g, b);
 #endif
     }
   }
@@ -280,7 +280,7 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
   if (ih->data->has_editbox)
   {
     GtkWidget* entry = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_ENTRY");
-    iupgtkBaseSetBgColor(entry, r, g, b);
+    iupgtkSetBgColor(entry, r, g, b);
   }
 
   if (ih->data->is_dropdown)
@@ -320,12 +320,12 @@ static int gtkListSetFgColorAttrib(Ihandle* ih, const char* value)
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  iupgtkBaseSetFgColor(ih->handle, r, g, b);
+  iupgtkSetFgColor(ih->handle, r, g, b);
 
   if (ih->data->has_editbox)
   {
     GtkWidget* entry = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_ENTRY");
-    iupgtkBaseSetFgColor(entry, r, g, b);
+    iupgtkSetFgColor(entry, r, g, b);
   }
 
   /* TODO: see comment in BGCOLOR */
@@ -1697,7 +1697,7 @@ static int gtkListMapMethod(Ihandle* ih)
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), IUPGTK_LIST_TEXT, GTK_SORT_ASCENDING);
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   if (scrolled_window)
     gtk_widget_realize((GtkWidget*)scrolled_window);

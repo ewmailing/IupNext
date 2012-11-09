@@ -33,7 +33,7 @@
 
 static void gtkCanvasUpdateChildLayout(Ihandle *ih)
 {
-  GtkFixed* sb_win = (GtkFixed*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
+  GtkContainer* sb_win = (GtkContainer*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   GtkWidget* sb_horiz = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBHORIZ");
   GtkWidget* sb_vert = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBVERT");
   int sb_vert_width=0, sb_horiz_height=0;
@@ -312,7 +312,7 @@ static void gtkCanvasSizeAllocate(GtkWidget* widget, GdkRectangle *allocation, I
 
     iupAttribSetStr(ih, "_IUPMOT_CANVASRESIZE", NULL);
 
-    /* chek if the application changed the scrollbars layout */
+    /* check if the application changed the scrollbars layout */
     if (sb_vert_visible != (sb_vert && gtk_widget_get_visible(sb_vert)) ||
         sb_horiz_visible != (sb_horiz && gtk_widget_get_visible(sb_horiz)))
       gtkCanvasUpdateScrollLayout(ih);
@@ -555,12 +555,12 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
   {
     GtkWidget* sb;
 
-    iupgtkBaseSetBgColor(sb_win, r, g, b);
+    iupgtkSetBgColor(sb_win, r, g, b);
 
     sb = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBHORIZ");
-    if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+    if (sb) iupgtkSetBgColor(sb, r, g, b);
     sb = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBVERT");
-    if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+    if (sb) iupgtkSetBgColor(sb, r, g, b);
   }
 
   if (!IupGetCallback(ih, "ACTION")) 
@@ -628,7 +628,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
     iupgtkPushVisualAndColormap(visual, (void*)iupAttribGet(ih, "COLORMAP"));
 #endif
 
-  ih->handle = gtk_fixed_new();
+  ih->handle = iupgtkNativeContainerNew(0);  /* canvas is also a container */
 
 #if !GTK_CHECK_VERSION(3, 0, 0)
   if (visual)
@@ -638,22 +638,20 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   if (!ih->handle)
       return IUP_ERROR;
 
-#if GTK_CHECK_VERSION(2, 18, 0)
   /* CD will NOT work properly without this, must use always the CD-GDK driver */
-  gtk_widget_set_has_window(ih->handle, TRUE);  
-#endif
+  iupgtkNativeContainerSetHasWindow(ih->handle, TRUE);  
 
-  sb_win = gtk_fixed_new();
+  sb_win = iupgtkNativeContainerNew(0);
   if (!sb_win)
     return IUP_ERROR;
 
-  gtk_fixed_put(GTK_FIXED(sb_win), ih->handle, 0, 0);
+  iupgtkNativeContainerAdd(sb_win, ih->handle);
   gtk_widget_show(sb_win);
 
   iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)sb_win);
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);
@@ -709,7 +707,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 #else
     GtkWidget* sb_horiz = gtk_hscrollbar_new(NULL);
 #endif
-    gtk_fixed_put(GTK_FIXED(sb_win), sb_horiz, 0, 0);
+    iupgtkNativeContainerAdd(sb_win, sb_horiz);
     gtk_widget_show(sb_horiz);
     gtk_widget_realize(sb_horiz);
 
@@ -724,7 +722,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 #else
     GtkWidget* sb_vert = gtk_vscrollbar_new(NULL);
 #endif
-    gtk_fixed_put(GTK_FIXED(sb_win), sb_vert, 0, 0);
+    iupgtkNativeContainerAdd(sb_win, sb_vert);
     gtk_widget_show(sb_vert);
     gtk_widget_realize(sb_vert);
 

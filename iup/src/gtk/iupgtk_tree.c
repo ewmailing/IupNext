@@ -1744,14 +1744,14 @@ static int gtkTreeSetBgColorAttrib(Ihandle* ih, const char* value)
       if (!GTK_IS_SCROLLED_WINDOW(scrolled_window))
         scrolled_window = (GtkScrolledWindow*)iupAttribGet(ih, "_IUPGTK_SCROLLED_WINDOW");
 
-      iupgtkBaseSetBgColor((GtkWidget*)scrolled_window, r, g, b);
+      iupgtkSetBgColor((GtkWidget*)scrolled_window, r, g, b);
 
 #if GTK_CHECK_VERSION(2, 8, 0)
       sb = gtk_scrolled_window_get_hscrollbar(scrolled_window);
-      if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+      if (sb) iupgtkSetBgColor(sb, r, g, b);
 
       sb = gtk_scrolled_window_get_vscrollbar(scrolled_window);
-      if (sb) iupgtkBaseSetBgColor(sb, r, g, b);
+      if (sb) iupgtkSetBgColor(sb, r, g, b);
 #endif
     }
   }
@@ -1783,7 +1783,7 @@ static int gtkTreeSetFgColorAttrib(Ihandle* ih, const char* value)
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  iupgtkBaseSetFgColor(ih->handle, r, g, b);
+  iupgtkSetFgColor(ih->handle, r, g, b);
 
   {
     GtkCellRenderer* renderer_txt = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_TEXT");
@@ -1905,7 +1905,7 @@ static void gtkTreeCellTextEditingStarted(GtkCellRenderer *cell, GtkCellEditable
 
   gtk_tree_model_get(model, &iterItem, IUPGTK_TREE_COLOR, &color, -1);
   if (color)
-    iupgtkBaseSetFgColor(GTK_WIDGET(editable), iupCOLORDoubleTO8(color->red), 
+    iupgtkSetFgColor(GTK_WIDGET(editable), iupCOLORDoubleTO8(color->red), 
                                                iupCOLORDoubleTO8(color->green), 
                                                iupCOLORDoubleTO8(color->blue));
 
@@ -2667,7 +2667,7 @@ static int gtkTreeMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkTreeButtonEvent), ih);
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     iupgtkSetCanFocus(ih->handle, 0);

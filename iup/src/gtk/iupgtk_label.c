@@ -284,7 +284,7 @@ static int gtkLabelMapMethod(Ihandle* ih)
   ih->handle = label;
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(iupgtkButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(iupgtkButtonEvent), ih);

@@ -34,15 +34,53 @@
    in fact it can return a base native window shared by many controls.
    IupCanvas is a special case that uses an exclusive native window. */
 
-/* GTK only has absolute positioning using a GtkFixed container,
-   so all elements returned by iupChildTreeGetNativeParentHandle should be a GtkFixed. 
+/* GTK only has absolute positioning using a native container,
+   so all elements returned by iupChildTreeGetNativeParentHandle should be a native container. 
    If not looks in the native parent. */
-static GtkFixed* gtkGetFixedParent(Ihandle* ih)
+static GtkWidget* gtkGetNativeContainer(Ihandle* ih)
 {
   GtkWidget* widget = iupChildTreeGetNativeParentHandle(ih);
-  while (widget && !GTK_IS_FIXED(widget))
+  while (widget && !GTK_IS_FIXED(widget) && !GTK_IS_LAYOUT(widget))
     widget = gtk_widget_get_parent(widget);
-  return (GtkFixed*)widget;
+  return widget;
+}
+
+GtkWidget* iupgtkNativeContainerNew(int is_dialog)
+{
+#if GTK_CHECK_VERSION(3, 0, 0)
+  if (is_dialog)
+    return gtk_layout_new(NULL, NULL);
+  else
+    return gtk_fixed_new();
+#else
+  (void)is_dialog;
+  return gtk_fixed_new();
+#endif
+}
+
+void iupgtkNativeContainerAdd(GtkWidget* container, GtkWidget* widget)
+{
+  if (GTK_IS_LAYOUT(container))
+    gtk_layout_put(GTK_LAYOUT(container), widget, 0, 0);
+  else
+    gtk_fixed_put(GTK_FIXED(container), widget, 0, 0);
+}
+
+void iupgtkNativeContainerMove(GtkWidget* container, GtkWidget* widget, int x, int y)
+{
+  if (GTK_IS_LAYOUT(container))
+    gtk_layout_move(GTK_LAYOUT(container), widget, x, y);
+  else
+    gtk_fixed_move(GTK_FIXED(container), widget, x, y);
+}
+
+void iupgtkNativeContainerSetHasWindow(GtkWidget* container, int has_window)
+{
+#if GTK_CHECK_VERSION(2, 18, 0)
+  gtk_widget_set_has_window(container, has_window);
+#else
+  gtk_fixed_set_has_window(GTK_FIXED(container), has_window);
+#endif
 }
 
 const char* iupgtkGetWidgetClassName(GtkWidget* widget)
@@ -65,36 +103,36 @@ void iupdrvActivate(Ihandle* ih)
 void iupdrvReparent(Ihandle* ih)
 {
   GtkWidget* old_parent;
-  GtkWidget* new_parent = (GtkWidget*)gtkGetFixedParent(ih);
-  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");  /* here is used as the native child because is the outmost component of the elemement */
+  GtkWidget* new_parent = gtkGetNativeContainer(ih);
+  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");  /* here is used as the native child because is the outermost component of the elemement */
   if (!widget) widget = ih->handle;
   old_parent = gtk_widget_get_parent(widget);
   if (old_parent != new_parent)
     gtk_widget_reparent(widget, new_parent);
 }
 
-void iupgtkBaseAddToParent(Ihandle* ih)
+void iupgtkAddToParent(Ihandle* ih)
 {
-  GtkFixed* fixed = gtkGetFixedParent(ih);
-  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT"); /* here is used as the native child because is the outmost component of the elemement */
+  GtkWidget* parent = gtkGetNativeContainer(ih);
+  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT"); /* here is used as the native child because is the outermost component of the elemement */
   if (!widget) widget = ih->handle;
 
-  gtk_fixed_put(fixed, widget, 0, 0);
+  iupgtkNativeContainerAdd(parent, widget);
 }
 
-void iupgtkSetPosSize(GtkFixed* fixed, GtkWidget* widget, int x, int y, int width, int height)
+void iupgtkSetPosSize(GtkContainer* parent, GtkWidget* widget, int x, int y, int width, int height)
 {
-  gtk_fixed_move(fixed, widget, x, y);
+  iupgtkNativeContainerMove((GtkWidget*)parent, widget, x, y);
   gtk_widget_set_size_request(widget, width, height);
 }
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
-  GtkFixed* fixed = gtkGetFixedParent(ih);
+  GtkWidget* parent = gtkGetNativeContainer(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
-  iupgtkSetPosSize(fixed, widget, ih->x, ih->y, ih->currentwidth, ih->currentheight);
+  iupgtkSetPosSize(GTK_CONTAINER(parent), widget, ih->x, ih->y, ih->currentwidth, ih->currentheight);
 }
 
 void iupdrvBaseUnMapMethod(Ihandle* ih)
@@ -352,7 +390,7 @@ static GdkColor gtkLighterColor(GdkColor *color)
 }
 #endif
 
-void iupgtkBaseSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
+void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
   GdkRGBA rgba, light_rgba, dark_rgba;
@@ -397,7 +435,7 @@ void iupgtkBaseSetBgColor(InativeHandle* handle, unsigned char r, unsigned char 
 #endif
 }
 
-void iupgtkBaseSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
+void iupgtkSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
   GdkRGBA rgba;
@@ -433,7 +471,7 @@ int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  iupgtkBaseSetBgColor(ih->handle, r, g, b);
+  iupgtkSetBgColor(ih->handle, r, g, b);
 
   /* DO NOT NEED TO UPDATE GTK IMAGES SINCE THEY DO NOT DEPEND ON BGCOLOR */
 
@@ -446,7 +484,7 @@ int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  iupgtkBaseSetFgColor(ih->handle, r, g, b);
+  iupgtkSetFgColor(ih->handle, r, g, b);
 
   return 1;
 }

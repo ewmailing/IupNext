@@ -184,7 +184,7 @@ static int gtkValMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     iupgtkSetCanFocus(ih->handle, 0);

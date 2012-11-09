@@ -212,7 +212,7 @@ static int gtkMenuMapMethod(Ihandle* ih)
     if (!ih->handle)
       return IUP_ERROR;
 
-    iupgtkBaseAddToParent(ih);
+    iupgtkAddToParent(ih);
 #endif
   }
   else

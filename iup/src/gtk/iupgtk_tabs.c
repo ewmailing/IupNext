@@ -85,8 +85,8 @@ static void gtkTabsUpdatePageBgColor(Ihandle* ih, unsigned char r, unsigned char
     {
       GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
       if (tab_label)
-        iupgtkBaseSetBgColor(tab_label, r, g, b);
-      iupgtkBaseSetBgColor(tab_container, r, g, b);
+        iupgtkSetBgColor(tab_label, r, g, b);
+      iupgtkSetBgColor(tab_container, r, g, b);
     }
   }
 }
@@ -99,7 +99,7 @@ static void gtkTabsUpdatePageFgColor(Ihandle* ih, unsigned char r, unsigned char
   {
     GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
     if (tab_label)
-      iupgtkBaseSetFgColor(tab_label, r, g, b);
+      iupgtkSetFgColor(tab_label, r, g, b);
   }
 }
 
@@ -215,7 +215,7 @@ static int gtkTabsSetFgColorAttrib(Ihandle* ih, const char* value)
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  iupgtkBaseSetFgColor(ih->handle, r, g, b);
+  iupgtkSetFgColor(ih->handle, r, g, b);
   gtkTabsUpdatePageFgColor(ih, r, g, b);
 
   return 1;
@@ -227,7 +227,7 @@ static int gtkTabsSetBgColorAttrib(Ihandle* ih, const char* value)
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  iupgtkBaseSetBgColor(ih->handle, r, g, b);
+  iupgtkSetBgColor(ih->handle, r, g, b);
   gtkTabsUpdatePageBgColor(ih, r, g, b);
 
   return 1;
@@ -292,7 +292,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 #endif
     gtk_widget_show(tab_page);
 
-    tab_container = gtk_fixed_new();
+    tab_container = iupgtkNativeContainerNew(0);
     gtk_widget_show(tab_container);
     gtk_container_add((GtkContainer*)tab_page, tab_container);
 
@@ -370,7 +370,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     iupAttribSetStr(child, "_IUPTAB_CONTAINER", (char*)tab_container);
     iupAttribSetStr(child, "_IUPTAB_PAGE", (char*)tab_page);
     iupStrToRGB(IupGetAttribute(ih, "BGCOLOR"), &r, &g, &b);
-    iupgtkBaseSetBgColor(tab_container, r, g, b);
+    iupgtkSetBgColor(tab_container, r, g, b);
 
     if (tabtitle)
     {
@@ -382,10 +382,10 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 #endif
       iupgtkFontUpdatePangoLayout(ih, gtk_label_get_layout((GtkLabel*)tab_label));
 
-      iupgtkBaseSetBgColor(tab_label, r, g, b);
+      iupgtkSetBgColor(tab_label, r, g, b);
 
       iupStrToRGB(IupGetAttribute(ih, "FGCOLOR"), &r, &g, &b);
-      iupgtkBaseSetFgColor(tab_label, r, g, b);
+      iupgtkSetFgColor(tab_label, r, g, b);
 
       gtk_widget_show(tab_label);
       gtk_widget_realize(tab_label);
@@ -438,7 +438,7 @@ static int gtkTabsMapMethod(Ihandle* ih)
   gtkTabsUpdateTabType(ih);
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   gtk_widget_add_events(ih->handle, GDK_ENTER_NOTIFY_MASK|GDK_LEAVE_NOTIFY_MASK);
 

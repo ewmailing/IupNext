@@ -186,7 +186,7 @@ static int gtkButtonSetBgColorAttrib(Ihandle* ih, const char* value)
       if (!iupStrToRGB(value, &r, &g, &b))
         return 0;
 
-      iupgtkBaseSetBgColor(gtk_bin_get_child(GTK_BIN(frame)), r, g, b);
+      iupgtkSetBgColor(gtk_bin_get_child(GTK_BIN(frame)), r, g, b);
       return 1;
     }
   }
@@ -203,7 +203,7 @@ static int gtkButtonSetFgColorAttrib(Ihandle* ih, const char* value)
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  iupgtkBaseSetFgColor((GtkWidget*)label, r, g, b);
+  iupgtkSetFgColor((GtkWidget*)label, r, g, b);
 
   return 1;
 }
@@ -443,18 +443,22 @@ static int gtkButtonMapMethod(Ihandle* ih)
       if (iupAttribGet(ih, "BGCOLOR"))
       {
         int x=0, y=0;
-        GtkWidget* fixed = gtk_fixed_new();
+#if GTK_CHECK_VERSION(2, 18, 0)
+        GtkWidget* drawarea = gtk_drawing_area_new();
+#else
+        GtkWidget* drawarea = gtk_fixed_new();
+#endif
         GtkWidget* frame = gtk_frame_new(NULL);
         gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
         iupdrvButtonAddBorders(&x, &y);
         gtk_widget_set_size_request (frame, ih->currentwidth-x, ih->currentheight-y);
 #if GTK_CHECK_VERSION(2, 18, 0)
-        gtk_widget_set_has_window(fixed, TRUE);
+        gtk_widget_set_has_window(drawarea, TRUE);
 #else
-        gtk_fixed_set_has_window((GtkFixed*)fixed, TRUE);
+        gtk_fixed_set_has_window(GTK_FIXED(drawarea), TRUE);
 #endif
-        gtk_container_add(GTK_CONTAINER(frame), fixed);
-        gtk_widget_show(fixed);
+        gtk_container_add(GTK_CONTAINER(frame), drawarea);
+        gtk_widget_show(drawarea);
 
         gtk_button_set_image((GtkButton*)ih->handle, frame);
       }
@@ -466,7 +470,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
   }
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     iupgtkSetCanFocus(ih->handle, 0);

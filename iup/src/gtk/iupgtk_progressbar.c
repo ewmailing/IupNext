@@ -95,7 +95,7 @@ static int gtkProgressBarMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   gtk_widget_realize(ih->handle);
 
