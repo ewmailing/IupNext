@@ -53,9 +53,11 @@ static INT CALLBACK winFileDlgBrowseCallback(HWND hWnd, UINT uMsg, LPARAM lParam
   {
     char* value;
     Ihandle* ih = (Ihandle*)lpData;
+
     ih->handle = hWnd;
     iupDialogUpdatePosition(ih);
     ih->handle = NULL;  /* reset handle */
+
     value = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
     if (value)
     {
@@ -242,9 +244,11 @@ static UINT_PTR CALLBACK winFileDlgSimpleHook(HWND hWnd, UINT uiMsg, WPARAM wPar
     {
       OPENFILENAME* openfilename = (OPENFILENAME*)lParam;
       Ihandle* ih = (Ihandle*)openfilename->lCustData;
+
       ih->handle = GetParent(hWnd);
       iupDialogUpdatePosition(ih);
       ih->handle = NULL;  /* reset handle */
+
       SetWindowLongPtr(hWnd, DWLP_USER, (LONG_PTR)ih);
       break;
     }

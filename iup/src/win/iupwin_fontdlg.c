@@ -17,6 +17,7 @@
 #include "iup_drvfont.h"
 
 #include "iupwin_drv.h"
+#include "iupwin_info.h"
 
 
 #define IUP_FONTFAMILYCOMBOBOX        0x0470
@@ -37,6 +38,7 @@ static UINT_PTR winFontDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM 
     ih->handle = hWnd;
     iupDialogUpdatePosition(ih);
     ih->handle = NULL;  /* reset handle */
+
     iupAttribSetStr(ih, "HWND", (char*)hWnd);  /* used by HELP_CB in winDialogBaseProc */
 
     hWndItem = GetDlgItem(hWnd, IUP_FONTFAMILYCOMBOBOX);
