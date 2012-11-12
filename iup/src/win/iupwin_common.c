@@ -3,13 +3,12 @@
  *
  * See Copyright Notice in "iup.h"
  */
+#include <windows.h>
+#include <commctrl.h>
 
 #include <stdio.h>              
 #include <stdlib.h>
 #include <string.h>             
-
-#include <windows.h>
-#include <commctrl.h>
 
 #include "iup.h"
 #include "iupcbs.h"
