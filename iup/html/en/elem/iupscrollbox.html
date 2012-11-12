@@ -5,6 +5,11 @@
 <title>IupScrollBox</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	font-size: large;
+}
+</style>
 </head>
 <body>
 <div id="navigation">
@@ -18,7 +23,7 @@
   </ul>
 </div>
 
-<h2>IupScrollBox</h2>
+<h2>IupScrollBox<span class="style1"> (since 3.7)</span></h2>
 <p>Creates a native container that allows its child to be scrolled. It inherits from
   <a href="../elem/iupcanvas.html">IupCanvas</a>. </p>
 
@@ -62,8 +67,10 @@ also accepted.</p>
 <h3>Notes</h3>
 <p>The box allows the application to create a virtual space for the dialog that 
 is actually larger than the visible area. The current size of the box defines 
-the visible area. The natural size of the child (and its own children) defines 
+the visible area. The natural size of the child (and its children) defines 
 the virtual space size.</p>
+<p>The user can move the box contents by dragging the background. Also the mouse 
+wheel scrolls the contents vertically.</p>
 
 <p>The box can be created with no elements and be dynamic filled using
   <a href="../func/iupappend.html">IupAppend</a> or

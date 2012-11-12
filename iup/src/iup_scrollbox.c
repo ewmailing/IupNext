@@ -41,6 +41,40 @@ static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
   return IUP_DEFAULT;
 }
 
+static int iScrollBoxButton_CB(Ihandle *ih, int but, int pressed, int x, int y, char* status)
+{
+  if (but==IUP_BUTTON1 && pressed)
+  {
+    iupAttribSetInt(ih, "_IUP_START_X", x);
+    iupAttribSetInt(ih, "_IUP_START_Y", y);
+    iupAttribSetInt(ih, "_IUP_START_POSX", (int)IupGetFloat(ih, "POSX"));
+    iupAttribSetInt(ih, "_IUP_START_POSY", (int)IupGetFloat(ih, "POSY"));
+    iupAttribSetStr(ih, "_IUP_DRAG_SB", "1");
+  }
+  if (but==IUP_BUTTON1 && !pressed)
+    iupAttribSetStr(ih, "_IUP_DRAG_SB", NULL);
+  (void)status;
+  return IUP_DEFAULT;
+}
+
+static int iScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
+{
+  if (iup_isbutton1(status) &&
+      iupAttribGet(ih, "_IUP_DRAG_SB"))
+  {
+    int start_x = iupAttribGetInt(ih, "_IUP_START_X");
+    int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
+    int dx = x - start_x;
+    int dy = y - start_y;
+    int posx = iupAttribGetInt(ih, "_IUP_START_POSX");
+    int posy = iupAttribGetInt(ih, "_IUP_START_POSY");
+    IupSetfAttribute(ih, "POSX", "%d", posx-dx);  /* drag direction is oposite to scrollbar */
+    IupSetfAttribute(ih, "POSY", "%d", posy-dy);
+    iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+  }
+  return IUP_DEFAULT;
+}
+
 
 /*****************************************************************************\
 |* Methods                                                                   *|
@@ -102,6 +136,8 @@ static int iScrollBoxCreateMethod(Ihandle* ih, void** params)
 {
   /* Setting callbacks */
   IupSetCallback(ih, "SCROLL_CB",    (Icallback)iScrollBoxScroll_CB);
+  IupSetCallback(ih, "BUTTON_CB",    (Icallback)iScrollBoxButton_CB);
+  IupSetCallback(ih, "MOTION_CB",    (Icallback)iScrollBoxMotion_CB);
 
   if (params)
   {
