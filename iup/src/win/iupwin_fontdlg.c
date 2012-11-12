@@ -98,9 +98,14 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   
   choosefont.hwndOwner = parent;
   choosefont.lpLogFont = &logfont;
-  choosefont.Flags = CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT | CF_ENABLEHOOK;
+  choosefont.Flags = CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT;
   choosefont.lCustData = (LPARAM)ih;
-  choosefont.lpfnHook = (LPCFHOOKPROC)winFontDlgHookProc;
+
+  if (!iupwinIs8OrNew() || iupAttribGetBoolean(ih, "WIN8_FONT_HOOK"))
+  {
+    choosefont.lpfnHook = (LPCFHOOKPROC)winFontDlgHookProc;
+    choosefont.Flags |= CF_ENABLEHOOK;
+  }
 
   if (IupGetCallback(ih, "HELP_CB"))
     choosefont.Flags |= CF_SHOWHELP;
