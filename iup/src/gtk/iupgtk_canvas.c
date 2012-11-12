@@ -261,7 +261,7 @@ static gboolean gtkCanvasBorderExposeEvent(GtkWidget *widget, GdkEventExpose *ev
   gtk_widget_get_allocation(widget, &allocation);  
   gtk_style_context_save (context);
   gtk_style_context_add_class(context, GTK_STYLE_CLASS_FRAME);
-  gtk_render_frame (context, cr, allocation.x, allocation.y, allocation.width, allocation.height);
+  gtk_render_frame (context, cr, 0, 0, allocation.width, allocation.height);
   gtk_style_context_restore (context);
 #else
   GdkWindow* window = iupgtkGetWindow(widget);
@@ -278,21 +278,22 @@ static gboolean gtkCanvasBorderExposeEvent(GtkWidget *widget, GdkEventExpose *ev
 
 static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
 {
-  GdkWindow* window = iupgtkGetWindow(ih->handle);
-
   iupdrvBaseLayoutUpdateMethod(ih);
 
   /* Force GdkWindow size update when not visible,
      so when mapped before show GDK returns the correct value. */
   if (!iupdrvIsVisible(ih))
+  {
+    GdkWindow* window = iupgtkGetWindow(ih->handle);
     gdk_window_resize(window, ih->currentwidth, ih->currentheight);
+  }
 
   gtkCanvasUpdateChildLayout(ih);
 }
 
 static void gtkCanvasUpdateScrollLayout(Ihandle *ih)
 {
-  if (!iupAttribGet(ih, "_IUPMOT_CANVASRESIZE"))
+  if (!iupAttribGet(ih, "_IUPGTK_CANVASRESIZE"))
     gtkCanvasUpdateChildLayout(ih);
 }
 
@@ -306,11 +307,11 @@ static void gtkCanvasSizeAllocate(GtkWidget* widget, GdkRectangle *allocation, I
     int sb_vert_visible = sb_vert && gtk_widget_get_visible(sb_vert);
     int sb_horiz_visible = sb_horiz && gtk_widget_get_visible(sb_horiz);
 
-    iupAttribSetStr(ih, "_IUPMOT_CANVASRESIZE", "1");
+    iupAttribSetStr(ih, "_IUPGTK_CANVASRESIZE", "1");
 
     cb(ih, allocation->width, allocation->height);
 
-    iupAttribSetStr(ih, "_IUPMOT_CANVASRESIZE", NULL);
+    iupAttribSetStr(ih, "_IUPGTK_CANVASRESIZE", NULL);
 
     /* check if the application changed the scrollbars layout */
     if (sb_vert_visible != (sb_vert && gtk_widget_get_visible(sb_vert)) ||

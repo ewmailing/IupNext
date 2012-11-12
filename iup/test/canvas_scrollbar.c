@@ -90,6 +90,8 @@ static int resize_cb(Ihandle *ih, int canvas_w, int canvas_h)
  
   update_scrollbar(ih, canvas_w, canvas_h);
   update_viewport(ih, canvas, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+
+  printf("RESIZE_CB(%d, %d) RASTERSIZE=%s DRAWSIZE=%s \n", canvas_w, canvas_h, IupGetAttribute(ih, "RASTERSIZE"), IupGetAttribute(ih, "DRAWSIZE"));
   return IUP_DEFAULT;
 }
 
@@ -157,6 +159,7 @@ void CanvasScrollbarTest(void)
   cnv = IupCanvas(NULL);
   IupSetAttribute(cnv, "RASTERSIZE", "300x200"); /* initial size */
   IupSetAttribute(cnv, "SCROLLBAR", "YES");
+//  IupSetAttribute(cnv, "EXPAND", "NO");
 
   IupSetCallback(cnv, "RESIZE_CB",  (Icallback)resize_cb);
   IupSetCallback(cnv, "ACTION",  (Icallback)action);

@@ -625,8 +625,8 @@ int iupdrvGetScrollbarSize(void)
     gtk_widget_get_preferred_size(sb, NULL, &requisition);
 #else
     gtk_widget_size_request(sb, &requisition);
-    size = requisition.width+1;
 #endif
+    size = requisition.width+1;
     gtk_widget_destroy(win);
   }
 

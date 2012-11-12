@@ -211,10 +211,6 @@ static void iSplitSetBarPosition(Ihandle* ih)
      used only when LAYOUTDRAG=NO */
   int x = ih->x, 
       y = ih->y;
-  Ihandle *child1, *child2 = NULL;
-  child1 = ih->firstchild->brother;
-  if (child1)
-    child2 = child1->brother;
 
   if (ih->data->orientation == ISPLIT_VERT)
   {
