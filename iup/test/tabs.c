@@ -4,6 +4,11 @@
 #include "iup.h"
 #include "iupkey.h"
 
+// Teste: definição do foco para um controle filho que é filho de uma tab
+// Para o teste, foram escolhidos elementos que não são o nextElementFocusable logo após o focus da própria tab
+// (não são os primeiros filhos da hierarquia do controle de Tab)
+Ihandle *campoTextoAbaA, *botaoMeioAbaE;
+
 static Ihandle* load_image_LogoTecgraf(void)
 {
   unsigned char imgdata[] = {
@@ -180,14 +185,38 @@ static int cbRemoveTab(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static void myTestFocusInChild(Ihandle* new_tab)
+{
+  char *info = NULL, *element = NULL;
+  if(iupStrEqualNoCase("A", IupGetAttribute(new_tab, "TABTITLE")))
+  {
+    IupSetFocus(campoTextoAbaA);
+    info = IupGetAttribute(IupGetFocus(), "VALUE");
+  }
+  else if(iupStrEqualNoCase("&EEEEE", IupGetAttribute(new_tab, "TABTITLE")))
+  {
+    IupSetFocus(botaoMeioAbaE);
+    info = IupGetAttribute(IupGetFocus(), "TITLE");
+  }
+  // SE O FOCO NÃO É EXPLICITAMENTE DEFINIDO PARA UM FILHO:
+  // No GTK, o foco padrão é a Tab
+  // No Win, o foco fica para o primeiro elemento "focável" da Tab
+  // No Motif, independente de definir o foco ou não, é sempre a Tab
+  element = IupGetClassName(IupGetFocus());
+
+  printf("\nClass: %s, Title: %s\n", element, info);
+}
+
 static int cbTabChange(Ihandle* ih, Ihandle* new_tab, Ihandle* old_tab)
 {
+  myTestFocusInChild(new_tab);
   printf("new Tab: %s, old Tab: %s\n", IupGetAttribute(new_tab, "TABTITLE"), IupGetAttribute(old_tab, "TABTITLE"));
   return IUP_DEFAULT;
 }
 
 static int cbTabChangePos(Ihandle* ih, int new_tab, int old_tab)
 {
+  myTestFocusInChild(new_tab);
   printf("new Tab: %d, old Tab: %d\n", new_tab, old_tab);
   return IUP_DEFAULT;
 }
@@ -250,17 +279,22 @@ static Ihandle* CreateTabs(int tab)
           *vboxC, *vboxD,*vboxE, *vboxF, *vboxH, *vboxI,
           *tabs;
 
+  campoTextoAbaA = IupText(NULL);
+  botaoMeioAbaE  = IupButton("Button EEEFOCUS", "cbChildButton");
+  //IupSetAttribute(campoTextoAbaA, "CANFOCUS", "YES");
+  //IupSetAttribute(botaoMeioAbaE,  "CANFOCUS", "YES");
+
 //  if (tab)  // to test Tabs inside Tabs
   //  vboxA = IupVbox(CreateTabs(0), NULL);
 //  else
     vboxA = IupFrame(IupVbox(IupFill(), IupLabel("Label AAA"), IupButton("Button AAA", "cbChildButton"), //NULL));
-                     IupText(NULL), IupToggle("Button TTTT", "cbChildButton"), 
+                     campoTextoAbaA, IupToggle("Button TTTT", "cbChildButton"), 
                      IupVal(NULL), IupSetAttributes(IupProgressBar(), "VALUE=0.5"), NULL));
   vboxB = IupFrame(IupVbox(IupLabel("Label BBB"), IupButton("Button BBB", "cbChildButton"), NULL));
   vboxC = IupFrame(IupVbox(IupLabel("Label CCC"), IupButton("Button CCC", "cbChildButton"), NULL));
   vboxD = IupFrame(IupVbox(IupLabel("Label DDD"), IupButton("Button DDD", "cbChildButton"), NULL));
   vboxE = IupVbox(IupFill(), IupLabel("Label EEE"), IupButton("Button EEE", "cbChildButton"), 
-                  IupButton("Button EEE", "cbChildButton"), IupButton("Button EEE", "cbChildButton"), NULL);
+                  botaoMeioAbaE, IupButton("Button EEE", "cbChildButton"), NULL);
   vboxF = IupVbox(IupLabel("Label FFF"), IupButton("Button FFF", "cbChildButton"), NULL);
   vboxG = IupVbox(IupLabel("Label GGG"), IupButton("Button GGG", "cbChildButton"), NULL);
   vboxH = IupVbox(IupLabel("Label HHH"), IupButton("Button HHH", "cbChildButton"), NULL);
@@ -286,8 +320,8 @@ static Ihandle* CreateTabs(int tab)
 
   tabs = IupTabs(vboxA, vboxB, vboxC, vboxD, vboxE, vboxF, vboxG, vboxH, vboxI, NULL);
 
-//  IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)cbTabChange);
-  IupSetCallback(tabs, "TABCHANGEPOS_CB", (Icallback)cbTabChangePos);
+  IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)cbTabChange);
+  //IupSetCallback(tabs, "TABCHANGEPOS_CB", (Icallback)cbTabChangePos);
 
   //IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_LogoTecgraf());
   IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_TestImage());

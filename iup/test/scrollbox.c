@@ -250,6 +250,12 @@ static Ihandle* set_callbacks(Ihandle* ih)
   return ih;
 }
 
+static int resize_cb(Ihandle *ih, int w, int h)
+{
+  printf("RESIZE_CB(%d, %d) RASTERSIZE=%s CLIENTSIZE=%s\n", w, h, IupGetAttribute(ih, "RASTERSIZE"), IupGetAttribute(ih, "CLIENTSIZE"));
+  return IUP_DEFAULT;
+}
+
 void ScrollBoxTest(void)
 {
   Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, *_vbox_2,
@@ -394,7 +400,7 @@ void ScrollBoxTest(void)
   tree = IupTree();
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree,"RASTERSIZE","100x150");
-  IupSetAttribute(tree,"TIP","Treee TIP");
+  IupSetAttribute(tree,"TIP","Tree TIP");
   set_callbacks(tree);
 
   _cnv_1 = IupCanvas(NULL);
@@ -418,8 +424,9 @@ void ScrollBoxTest(void)
     NULL);
   IupSetAttribute(_vbox_1,"MARGIN","5x5");
   IupSetAttribute(_vbox_1,"GAP","5");
+  IupSetAttribute(_vbox_1,"EXPAND","Yes");
 
-  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "RASTERSIZE=400x300"), NULL);
+  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "RASTERSIZE=400x300, EXPAND=NO"), NULL);
   IupSetAttribute(_vbox_2,"MARGIN","20x20");
 
   dlg = IupDialog(_vbox_2);
@@ -444,14 +451,9 @@ void ScrollBoxTest(void)
   
 //  IupSetAttribute(box, "FGCOLOR", "255 0 0");
 
-//  IupSetAttribute(dlg,"RASTERSIZE","1000x800");
-//  IupSetAttribute(dlg,"RASTERSIZE","800x600");
-
-  //IupSetGlobal("INPUTCALLBACKS", "Yes");
-  //IupSetFunction("GLOBALKEYPRESS_CB", (Icallback)globalkeypress_cb);
-  //IupSetFunction("GLOBALMOTION_CB", (Icallback)globalmotion_cb);
-  //IupSetFunction("GLOBALBUTTON_CB", (Icallback)globalbutton_cb);
-  //IupSetFunction("GLOBALWHEEL_CB", (Icallback)globalwheel_cb);
+  //IupSetAttribute(dlg,"RASTERSIZE","1000x800");
+  IupSetAttribute(dlg,"RASTERSIZE","800x600");
+  IupSetCallback(dlg, "RESIZE_CB", (Icallback)resize_cb);
 
   IupMap(dlg);
 
@@ -464,7 +466,7 @@ void ScrollBoxTest(void)
 
   IupShow(dlg);
 
-//  IupSetAttribute(dlg,"RASTERSIZE", NULL);
+  IupSetAttribute(dlg,"RASTERSIZE", NULL);
 }
 
 #ifndef BIG_TEST
