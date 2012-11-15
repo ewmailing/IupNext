@@ -28,6 +28,48 @@
 
 #include "iupgtk_drv.h"
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+typedef struct _iupGtkFixed
+{
+  GtkFixed fixed;
+} iupGtkFixed;
+
+typedef struct _iupGtkFixedClass
+{
+  GtkFixedClass parent_class;
+} iupGtkFixedClass;
+
+static GType iup_gtk_fixed_get_type (void) G_GNUC_CONST;
+static void iup_gtk_fixed_class_init (iupGtkFixedClass *_class);
+static void iup_gtk_fixed_init (iupGtkFixed *fixed);
+static void iup_gtk_fixed_get_preferred_size (GtkWidget *widget, gint *minimum, gint *natural);
+
+G_DEFINE_TYPE (iupGtkFixed, iup_gtk_fixed, GTK_TYPE_FIXED)
+
+static void iup_gtk_fixed_class_init (iupGtkFixedClass *_class)
+{
+  GtkWidgetClass *widget_class = (GtkWidgetClass*) _class;
+  widget_class->get_preferred_width = iup_gtk_fixed_get_preferred_size;
+  widget_class->get_preferred_height = iup_gtk_fixed_get_preferred_size;
+}
+
+static void iup_gtk_fixed_init (iupGtkFixed *fixed)
+{
+  (void)fixed;
+}
+
+static void iup_gtk_fixed_get_preferred_size (GtkWidget *widget, gint *minimum, gint *natural)
+{
+  /* all this is just to replace this method, so it will behave like GtkLayout. */
+  *minimum = 0;
+  *natural = 0;
+}
+
+static GtkWidget* iup_gtk_fixed_new(void)
+{
+  return g_object_new (iup_gtk_fixed_get_type(), NULL);
+}
+#endif
 
 /* WARNING: in GTK there are many controls that are not native windows, 
    so it GdkWindow will NOT return a native window exclusive of that control,
@@ -40,38 +82,28 @@
 static GtkWidget* gtkGetNativeContainer(Ihandle* ih)
 {
   GtkWidget* widget = iupChildTreeGetNativeParentHandle(ih);
-  while (widget && !GTK_IS_FIXED(widget) && !GTK_IS_LAYOUT(widget))
+  while (widget && !GTK_IS_FIXED(widget))
     widget = gtk_widget_get_parent(widget);
   return widget;
 }
 
-GtkWidget* iupgtkNativeContainerNew(int is_dialog)
+GtkWidget* iupgtkNativeContainerNew(void)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
-  if (is_dialog)
-    return gtk_layout_new(NULL, NULL);
-  else
-    return gtk_fixed_new();
+  return iup_gtk_fixed_new();
 #else
-  (void)is_dialog;
   return gtk_fixed_new();
 #endif
 }
 
 void iupgtkNativeContainerAdd(GtkWidget* container, GtkWidget* widget)
 {
-  if (GTK_IS_LAYOUT(container))
-    gtk_layout_put(GTK_LAYOUT(container), widget, 0, 0);
-  else
-    gtk_fixed_put(GTK_FIXED(container), widget, 0, 0);
+  gtk_fixed_put(GTK_FIXED(container), widget, 0, 0);
 }
 
 void iupgtkNativeContainerMove(GtkWidget* container, GtkWidget* widget, int x, int y)
 {
-  if (GTK_IS_LAYOUT(container))
-    gtk_layout_move(GTK_LAYOUT(container), widget, x, y);
-  else
-    gtk_fixed_move(GTK_FIXED(container), widget, x, y);
+  gtk_fixed_move(GTK_FIXED(container), widget, x, y);
 }
 
 void iupgtkNativeContainerSetHasWindow(GtkWidget* container, int has_window)
@@ -277,13 +309,18 @@ void iupdrvSetVisible(Ihandle* ih, int visible)
   }
 }
 
-int iupdrvIsVisible(Ihandle* ih)
+int iupgtkIsVisible(GtkWidget* widget)
 {
 #if GTK_CHECK_VERSION(2, 18, 0)
-  if (gtk_widget_get_visible(ih->handle))
+  return gtk_widget_get_visible(widget);
 #else
-  if (GTK_WIDGET_VISIBLE(ih->handle))
+  return GTK_WIDGET_VISIBLE(widget);
 #endif
+}
+
+int iupdrvIsVisible(Ihandle* ih)
+{
+  if (iupgtkIsVisible(ih->handle))
   {
     /* if marked as visible, since we use gtk_widget_hide and NOT gtk_widget_hide_all
        must check its parents. */
@@ -292,11 +329,7 @@ int iupdrvIsVisible(Ihandle* ih)
     {
       if (parent->iclass->nativetype != IUP_TYPEVOID)
       {
-#if GTK_CHECK_VERSION(2, 18, 0)
-        if (!gtk_widget_get_visible(parent->handle))
-#else
-        if (!GTK_WIDGET_VISIBLE(parent->handle))
-#endif
+        if (!iupgtkIsVisible(parent->handle))
           return 0;
       }
 

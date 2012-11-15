@@ -426,7 +426,7 @@ void ScrollBoxTest(void)
   IupSetAttribute(_vbox_1,"GAP","5");
   IupSetAttribute(_vbox_1,"EXPAND","Yes");
 
-  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "RASTERSIZE=400x300, EXPAND=NO"), NULL);
+  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "RASTERSIZE=400x300, XEXPAND=NO"), NULL);
   IupSetAttribute(_vbox_2,"MARGIN","20x20");
 
   dlg = IupDialog(_vbox_2);
@@ -452,7 +452,7 @@ void ScrollBoxTest(void)
 //  IupSetAttribute(box, "FGCOLOR", "255 0 0");
 
   //IupSetAttribute(dlg,"RASTERSIZE","1000x800");
-  IupSetAttribute(dlg,"RASTERSIZE","800x600");
+//  IupSetAttribute(dlg,"RASTERSIZE","800x600");
   IupSetCallback(dlg, "RESIZE_CB", (Icallback)resize_cb);
 
   IupMap(dlg);
@@ -466,7 +466,7 @@ void ScrollBoxTest(void)
 
   IupShow(dlg);
 
-  IupSetAttribute(dlg,"RASTERSIZE", NULL);
+//  IupSetAttribute(dlg,"RASTERSIZE", NULL);
 }
 
 #ifndef BIG_TEST

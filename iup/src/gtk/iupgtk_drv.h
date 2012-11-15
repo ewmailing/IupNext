@@ -22,9 +22,10 @@ extern int iupgtk_globalmenu;
 
 /* common */
 gboolean iupgtkEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *evt, Ihandle* ih);
+gboolean iupgtkMotionNotifyEvent(GtkWidget *widget, GdkEventMotion *evt, Ihandle *ih);
+gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih);
 gboolean iupgtkShowHelp(GtkWidget *widget, GtkWidgetHelpType *arg1, Ihandle* ih);
-void iupgtkAddToParent(Ihandle* ih);
-void iupgdkColorSet(GdkColor* color, unsigned char r, unsigned char g, unsigned char b);
+
 int iupgtkSetMnemonicTitle(Ihandle* ih, GtkLabel* label, const char* value);
 char* iupgtkStrConvertToUTF8(const char* str);
 char* iupgtkStrConvertFromUTF8(const char* str);
@@ -32,15 +33,19 @@ void iupgtkReleaseConvertUTF8(void);
 char* iupgtkStrConvertFromFilename(const char* str);
 char* iupgtkStrConvertToFilename(const char* str);
 void iupgtkUpdateMnemonic(Ihandle* ih);
-gboolean iupgtkMotionNotifyEvent(GtkWidget *widget, GdkEventMotion *evt, Ihandle *ih);
-gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih);
+
+void iupgdkColorSet(GdkColor* color, unsigned char r, unsigned char g, unsigned char b);
 void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
 void iupgtkSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
+
+void iupgtkAddToParent(Ihandle* ih);
 const char* iupgtkGetWidgetClassName(GtkWidget* widget);
 void iupgtkSetPosSize(GtkContainer* parent, GtkWidget* widget, int x, int y, int width, int height);
 GdkWindow* iupgtkGetWindow(GtkWidget *widget);
 void iupgtkWindowGetPointer(GdkWindow *window, int *x, int *y, GdkModifierType *mask);
-GtkWidget* iupgtkNativeContainerNew(int is_dialog);
+int iupgtkIsVisible(GtkWidget* widget);
+
+GtkWidget* iupgtkNativeContainerNew(void);
 void iupgtkNativeContainerAdd(GtkWidget* container, GtkWidget* widget);
 void iupgtkNativeContainerMove(GtkWidget* container, GtkWidget* widget, int x, int y);
 void iupgtkNativeContainerSetHasWindow(GtkWidget* container, int has_window);

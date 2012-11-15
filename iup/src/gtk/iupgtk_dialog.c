@@ -78,11 +78,7 @@ void iupdrvDialogGetPosition(Ihandle *ih, InativeHandle* handle, int *x, int *y)
   if (!handle)
     handle = ih->handle;
 
-#if GTK_CHECK_VERSION(2, 18, 0)
-  if (gtk_widget_get_visible(handle))
-#else
-  if (GTK_WIDGET_VISIBLE(handle))
-#endif
+  if (iupgtkIsVisible(handle))
   {
     gint gx, gy;
     gtk_window_get_position((GtkWindow*)handle, &gx, &gy);
@@ -497,7 +493,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
     gtk_window_set_type_hint(GTK_WINDOW(ih->handle), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   /* the container that will receive the child element. */
-  inner_parent = iupgtkNativeContainerNew(1);
+  inner_parent = iupgtkNativeContainerNew();
   gtk_container_add((GtkContainer*)ih->handle, inner_parent);
   gtk_widget_show(inner_parent);
 

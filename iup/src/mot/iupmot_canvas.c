@@ -109,14 +109,14 @@ static void motCanvasSetSize(Ihandle *ih, Widget sb_win, int setsize)
   if (sb_horiz && XtIsManaged(sb_horiz))
     sb_horiz_height = iupdrvGetScrollbarSize();
 
-  if (sb_vert && XtIsManaged(sb_vert))
+  if (sb_vert_width)
     XtVaSetValues(sb_vert,
       XmNx, (XtArgVal)width-sb_vert_width,
       XmNy, (XtArgVal)0,
       XmNwidth, (XtArgVal)sb_vert_width,
       XmNheight, (XtArgVal)height-sb_horiz_height,
       NULL);
-  if (sb_horiz && XtIsManaged(sb_horiz))
+  if (sb_horiz_height)
     XtVaSetValues(sb_horiz,
       XmNx, (XtArgVal)0,
       XmNy, (XtArgVal)height-sb_horiz_height,
@@ -134,11 +134,8 @@ static void motCanvasSetSize(Ihandle *ih, Widget sb_win, int setsize)
 
 static void motCanvasUpdateScrollLayout(Ihandle *ih)
 {
-  if (!iupAttribGet(ih, "_IUPMOT_CANVASRESIZE"))
-  {
-    Widget sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-    motCanvasSetSize(ih, sb_win, 0);
-  }
+  Widget sb_win = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
+  motCanvasSetSize(ih, sb_win, 0);
 }
 
 static void motCanvasResizeCallback(Widget w, Ihandle *ih, XtPointer call_data)
@@ -150,29 +147,18 @@ static void motCanvasResizeCallback(Widget w, Ihandle *ih, XtPointer call_data)
     return;
 
   cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
-  if (cb)
+  if (cb && !(ih->data->inside_resize))
   {
-    Dimension width, height;
-    Widget sb_horiz = (Widget)iupAttribGet(ih, "_IUPMOT_SBHORIZ");
-    Widget sb_vert = (Widget)iupAttribGet(ih, "_IUPMOT_SBVERT");
-    int sb_vert_managed = sb_vert && XtIsManaged(sb_vert);
-    int sb_horiz_managed = sb_horiz && XtIsManaged(sb_horiz);
-
-    iupAttribSetStr(ih, "_IUPMOT_CANVASRESIZE", "1");
-
     /* client size */
+    Dimension width, height;
     XtVaGetValues(w, XmNwidth, &width,
                      XmNheight, &height,
                      NULL);
 
+    ih->data->inside_resize = 1;  /* avoid recursion */
     cb(ih,width,height);
+    ih->data->inside_resize = 0;
 
-    iupAttribSetStr(ih, "_IUPMOT_CANVASRESIZE", NULL);
-
-    /* chek if the application changed the scrollbars layout */
-    if (sb_vert_managed != (sb_vert && XtIsManaged(sb_vert)) ||
-        sb_horiz_managed != (sb_horiz && XtIsManaged(sb_horiz)))
-      motCanvasUpdateScrollLayout(ih);
   }
 }
 
@@ -187,7 +173,7 @@ static void motCanvasExposeCallback(Widget w, Ihandle *ih, XtPointer call_data)
     return;
 
   cb = (IFnff)IupGetCallback(ih,"ACTION");
-  if (cb)
+  if (cb && !(ih->data->inside_resize))
   {
     if (!iupAttribGet(ih, "_IUPMOT_NO_BGCOLOR"))
       motCanvasSetBgColorAttrib(ih, iupAttribGetStr(ih, "BGCOLOR"));  /* reset to update window attributes */
@@ -295,12 +281,17 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
     {
       if (iupAttribGetBoolean(ih, "XAUTOHIDE"))
       {
-        XtUnmanageChild(sb_horiz);
-        motCanvasUpdateScrollLayout(ih);
+        if (XtIsManaged(sb_horiz))
+        {
+          XtUnmanageChild(sb_horiz);
+          motCanvasUpdateScrollLayout(ih);
+        }
       }
       else
         XtSetSensitive(sb_horiz, False);
-      ih->data->posx = 0;
+
+      ih->data->posx = (float)xmin;
+      XtVaSetValues(sb_horiz, XmNvalue, IUP_SB_MIN, NULL);
       return 1;
     }
     else
@@ -391,12 +382,17 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
     {
       if (iupAttribGetBoolean(ih, "YAUTOHIDE"))
       {
-        XtUnmanageChild(sb_vert);
-        motCanvasUpdateScrollLayout(ih);
+        if (XtIsManaged(sb_vert))
+        {
+          XtUnmanageChild(sb_vert);
+          motCanvasUpdateScrollLayout(ih);
+        }
       }
       else
         XtSetSensitive(sb_vert, False);
-      ih->data->posy = 0;
+
+      ih->data->posy = (float)ymin;
+      XtVaSetValues(sb_vert, XmNvalue, IUP_SB_MIN, NULL);
       return 1;
     }
     else

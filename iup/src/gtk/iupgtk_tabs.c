@@ -292,7 +292,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 #endif
     gtk_widget_show(tab_page);
 
-    tab_container = iupgtkNativeContainerNew(0);
+    tab_container = iupgtkNativeContainerNew();
     gtk_widget_show(tab_container);
     gtk_container_add((GtkContainer*)tab_page, tab_container);
 

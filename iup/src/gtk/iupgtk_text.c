@@ -36,7 +36,11 @@
 
 void iupdrvTextAddSpin(int *w, int h)
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
+  int spin_size = 2*22;
+#else
   int spin_size = 16;
+#endif
   *w += spin_size;
   (void)h;
 }

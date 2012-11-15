@@ -71,6 +71,7 @@ static int action(Ihandle *ih)
 {
   cdCanvas *canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
 
+printf("ACTION\n");
   cdCanvasClear(canvas);
 
   cdCanvasForeground(canvas, CD_RED);
@@ -85,13 +86,16 @@ static int resize_cb(Ihandle *ih, int canvas_w, int canvas_h)
 {
   cdCanvas *canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
 
-  /* update CD canvas */
+printf("RESIZE_CB(%d, %d) RASTERSIZE=%s DRAWSIZE=%s \n", canvas_w, canvas_h, IupGetAttribute(ih, "RASTERSIZE"), IupGetAttribute(ih, "DRAWSIZE"));
+  /* this can hide a scrollbar and so change the canvas drawsize,
+     then another RESIZE_CB call will occour */
+  update_scrollbar(ih, canvas_w, canvas_h);  
+printf("                                DRAWSIZE=%s \n", IupGetAttribute(ih, "DRAWSIZE"));
+
+  /* update canvas size */
   cdCanvasActivate(canvas);
- 
-  update_scrollbar(ih, canvas_w, canvas_h);
   update_viewport(ih, canvas, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
 
-  printf("RESIZE_CB(%d, %d) RASTERSIZE=%s DRAWSIZE=%s \n", canvas_w, canvas_h, IupGetAttribute(ih, "RASTERSIZE"), IupGetAttribute(ih, "DRAWSIZE"));
   return IUP_DEFAULT;
 }
 

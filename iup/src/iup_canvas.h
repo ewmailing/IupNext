@@ -23,10 +23,12 @@ char* iupCanvasGetPosYAttrib(Ihandle* ih);
 #define IUP_SB_MIN 0
 #define IUP_SB_MAX INT_MAX-1
 
+/* this must match the iupCanvas public definition in "iup_stdcontrols.h" */
 struct _IcontrolData 
 {
   int sb;    /* scrollbar configuration, valid only after map, use iupBaseGetScrollbar before map */
   float posx, posy;
+  int inside_resize;
 };
 
 

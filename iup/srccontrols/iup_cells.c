@@ -344,7 +344,7 @@ static void iCellsAdjustOrigin(Ihandle* ih, int lin, int col)
 
 /* Function used for the scrollbar's update; usually needed when the
  * object has modified its size or the cells sizes has changed.   */
-static void iCellsAdjustScrolls(Ihandle* ih)
+static void iCellsAdjustScrolls(Ihandle* ih, int w, int h)
 { 
   int virtual_height, virtual_width;
 
@@ -355,8 +355,8 @@ static void iCellsAdjustScrolls(Ihandle* ih)
   IupSetfAttribute(ih, "XMAX", "%d", virtual_width-1);
 
   /* Setting the object scrollbar position */
-  IupSetfAttribute(ih, "DY",   "%d", ih->data->h);
-  IupSetfAttribute(ih, "DX",   "%d", ih->data->w);
+  IupSetfAttribute(ih, "DY",   "%d", h);
+  IupSetfAttribute(ih, "DX",   "%d", w);
 }
 
 /* Function used to call the client; is used when a cell must be repainted. */
@@ -652,8 +652,11 @@ static int iCellsMotion_CB(Ihandle* ih, int x, int y, char* r)
   return cb(ih, i, j, x, y, r);
 }
 
-static int iCellsResize_CB(Ihandle* ih)
+static int iCellsResize_CB(Ihandle* ih, int w, int h)
 {
+  /* recalculate scrollbars limits */
+  iCellsAdjustScrolls(ih, w, h);  
+
   if (!ih->data->cddbuffer)
   {
     /* update canvas size */
@@ -669,9 +672,6 @@ static int iCellsResize_CB(Ihandle* ih)
   /* update canvas size */
   cdCanvasActivate(ih->data->cddbuffer);
   cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
-
-  /* recalculate scrollbars positions and size */
-  iCellsAdjustScrolls(ih);  
 
   /* update render */
   iCellsRenderCells(ih);
@@ -734,7 +734,7 @@ static int iCellsSetBufferizeAttrib(Ihandle* ih, const char* value)
   if (value == NULL || iupStrEqualNoCase(value, "NO"))
   { 
     ih->data->bufferize = 0;
-    iCellsAdjustScrolls(ih);
+    iCellsAdjustScrolls(ih, ih->data->w, ih->data->h);
     iCellsRepaint(ih);
   }
   else
@@ -755,7 +755,7 @@ static int iCellsSetRepaintAttrib(Ihandle* ih, const char* value)
 {
   (void)value;  /* not used */
   ih->data->bufferize = 0;
-  iCellsAdjustScrolls(ih);
+  iCellsAdjustScrolls(ih, ih->data->w, ih->data->h);
   iCellsRepaint(ih);
   return 0;  /* do not store value in hash table */
 }

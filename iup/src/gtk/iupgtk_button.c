@@ -443,20 +443,17 @@ static int gtkButtonMapMethod(Ihandle* ih)
       if (iupAttribGet(ih, "BGCOLOR"))
       {
         int x=0, y=0;
+        GtkWidget* frame = gtk_frame_new(NULL);
 #if GTK_CHECK_VERSION(2, 18, 0)
         GtkWidget* drawarea = gtk_drawing_area_new();
+        gtk_widget_set_has_window(drawarea, TRUE);
 #else
         GtkWidget* drawarea = gtk_fixed_new();
+        gtk_fixed_set_has_window(GTK_FIXED(drawarea), TRUE);
 #endif
-        GtkWidget* frame = gtk_frame_new(NULL);
         gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
         iupdrvButtonAddBorders(&x, &y);
         gtk_widget_set_size_request (frame, ih->currentwidth-x, ih->currentheight-y);
-#if GTK_CHECK_VERSION(2, 18, 0)
-        gtk_widget_set_has_window(drawarea, TRUE);
-#else
-        gtk_fixed_set_has_window(GTK_FIXED(drawarea), TRUE);
-#endif
         gtk_container_add(GTK_CONTAINER(frame), drawarea);
         gtk_widget_show(drawarea);
 
