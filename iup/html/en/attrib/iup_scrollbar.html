@@ -47,6 +47,10 @@ YMAX-DY-POSY</strong>.</p>
 Important: the LINE*, *MAX and *MIN are only updated in the scrollbar when the 
 respective D* is updated.</p>
 <p>
+Changes in the scrollbar parameters do NOT generate ACTION nor SCROLL_CB 
+callback events. If you need to update the canvas contents call your own action 
+callback or call call <b>IupUpdate</b>.</p>
+<p>
 If you have to change the properties of the scrollbar (XMIN, XMAX and DX) but 
 you want to keep the thumb still (if possible) in the same relative position, 
 then you have to also recalculate its position (POSX) using the old position as 
@@ -55,7 +59,7 @@ then scale to the new limits:</p>
 <pre>old_posx_relative = (old_posx - old_xmin)/(old_xmax - old_xmin)
 posx = (xmax - xmin)*old_posx_relative + xmin</pre>
 <p>
-<strong>IupList</strong> and <strong>IupMultiline</strong> scrollbars are 
+<strong>IupList,</strong> <strong>IupTree</strong>, and <strong>IupText/IupMultiline</strong> scrollbars are 
 automatically managed and do NOT have the POS, MIN, MAX and D attributes.</p>
 <h3>Affects</h3>
 <p><a href="../elem/iuplist.html">IupList</a>,

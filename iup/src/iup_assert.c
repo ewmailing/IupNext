@@ -37,6 +37,8 @@ void iupError(const char* format, ...)
   else
     fprintf(stderr, "%s", msg);
 #endif
+  /* set the breakpoint here, just after the assert dialog */
+  size = 0;
 }
 
 void iupAssert(const char* expr, const char* file, int line, const char* func)

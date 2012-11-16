@@ -202,9 +202,9 @@ static void myTestFocusInChild(Ihandle* new_tab)
   // No GTK, o foco padrão é a Tab
   // No Win, o foco fica para o primeiro elemento "focável" da Tab
   // No Motif, independente de definir o foco ou não, é sempre a Tab
-  element = IupGetClassName(IupGetFocus());
+//  element = IupGetClassName(IupGetFocus());
 
-  printf("\nClass: %s, Title: %s\n", element, info);
+//  printf("\nClass: %s, Title: %s\n", element, info);
 }
 
 static int cbTabChange(Ihandle* ih, Ihandle* new_tab, Ihandle* old_tab)

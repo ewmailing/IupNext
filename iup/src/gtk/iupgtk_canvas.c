@@ -97,8 +97,19 @@ static int gtkCanvasScroll2Iup(GtkScrollType scroll, int vert)
 
 static gboolean gtkCanvasScrollHorizChangeValue(GtkRange *range, GtkScrollType scroll, double value, Ihandle *ih)
 {
+  int op = gtkCanvasScroll2Iup(scroll, 0);
+  iupAttribSetInt(ih, "_IUPGTK_SBOP", op);
+  (void)range;
+  (void)value;
+  return FALSE;
+}
+
+static void gtkCanvasAdjustHorizValueChanged(GtkAdjustment *adjustment, Ihandle *ih)
+{
   double posx, posy;
   IFniff cb;
+
+  double value = gtk_adjustment_get_value(adjustment);
 
   double xmin = iupAttribGetFloat(ih, "XMIN");
   double xmax = iupAttribGetFloat(ih, "XMAX");
@@ -110,12 +121,15 @@ static gboolean gtkCanvasScrollHorizChangeValue(GtkRange *range, GtkScrollType s
   ih->data->posx = (float)posx;
   posy = ih->data->posy;
 
+  if (iupAttribGet(ih, "_IUPGTK_SETSBPOS"))
+    return;
+
   cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
   if (cb)
   {
-    int op = gtkCanvasScroll2Iup(scroll, 0);
+    int op = iupAttribGetInt(ih, "_IUPGTK_SBOP");
     if (op == -1)
-      return FALSE;
+      return;
 
     cb(ih, op, (float)posx, (float)posy);
   }
@@ -125,15 +139,23 @@ static gboolean gtkCanvasScrollHorizChangeValue(GtkRange *range, GtkScrollType s
     if (cb)
       cb (ih, (float)posx, (float)posy);
   }
-
-  (void)range;
-  return FALSE;
 }
 
 static gboolean gtkCanvasScrollVertChangeValue(GtkRange *range, GtkScrollType scroll, double value, Ihandle *ih)
 {
+  int op = gtkCanvasScroll2Iup(scroll, 1);
+  iupAttribSetInt(ih, "_IUPGTK_SBOP", op);
+  (void)range;
+  (void)value;
+  return FALSE;
+}
+
+static void gtkCanvasAdjustVertValueChanged(GtkAdjustment *adjustment, Ihandle *ih)
+{
   double posx, posy;
   IFniff cb;
+
+  double value = gtk_adjustment_get_value(adjustment);
 
   double ymin = iupAttribGetFloat(ih, "YMIN");
   double ymax = iupAttribGetFloat(ih, "YMAX");
@@ -145,12 +167,15 @@ static gboolean gtkCanvasScrollVertChangeValue(GtkRange *range, GtkScrollType sc
   ih->data->posy = (float)posy;
   posx = ih->data->posx;
 
+  if (iupAttribGet(ih, "_IUPGTK_SETSBPOS"))
+    return;
+
   cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
   if (cb)
   {
-    int op = gtkCanvasScroll2Iup(scroll, 1);
+    int op = iupAttribGetInt(ih, "_IUPGTK_SBOP");
     if (op == -1)
-      return FALSE;
+      return;
 
     cb(ih, op, (float)posx, (float)posy);
   }
@@ -160,9 +185,6 @@ static gboolean gtkCanvasScrollVertChangeValue(GtkRange *range, GtkScrollType sc
     if (cb)
       cb (ih, (float)posx, (float)posy);
   }
-
-  (void)range;
-  return FALSE;
 }
 
 static gboolean gtkCanvasScrollEvent(GtkWidget *widget, GdkEventScroll *evt, Ihandle *ih)
@@ -305,6 +327,13 @@ static void gtkCanvasSizeAllocate(GtkWidget* widget, GdkRectangle *allocation, I
   (void)widget;
 }
 
+static void gtkCanvasAdjustmentSetValue(Ihandle *ih, GtkAdjustment *adjustment, double value)
+{
+  iupAttribSetStr(ih, "_IUPGTK_SETSBPOS", "1");
+  gtk_adjustment_set_value(adjustment, value);
+  iupAttribSetStr(ih, "_IUPGTK_SETSBPOS", NULL);
+}
+
 static int gtkCanvasCheckScroll(double min, double max, double *page, double *pos)
 {
   double old_pos = *pos;
@@ -363,7 +392,7 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
         gtk_widget_set_sensitive(sb_horiz, FALSE);
 
       ih->data->posx = (float)xmin;
-      gtk_adjustment_set_value(sb_horiz_adjust, xmin);
+      gtkCanvasAdjustmentSetValue(ih, sb_horiz_adjust, xmin);
       return 1;
     }
     else
@@ -445,7 +474,7 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
         gtk_widget_set_sensitive(sb_vert, FALSE);
 
       ih->data->posy = (float)ymin;
-      gtk_adjustment_set_value(sb_vert_adjust, ymin);
+      gtkCanvasAdjustmentSetValue(ih, sb_vert_adjust, ymin);
       return 1;
     }
     else
@@ -506,7 +535,7 @@ static int gtkCanvasSetPosXAttrib(Ihandle* ih, const char *value)
     ih->data->posx = posx;
 
     sb_horiz_adjust = gtk_range_get_adjustment(GTK_RANGE(sb_horiz));
-    gtk_adjustment_set_value(sb_horiz_adjust, posx);
+    gtkCanvasAdjustmentSetValue(ih, sb_horiz_adjust, posx);
   }
   return 1;
 }
@@ -532,7 +561,7 @@ static int gtkCanvasSetPosYAttrib(Ihandle* ih, const char *value)
     ih->data->posy = posy;
 
     sb_vert_adjust = gtk_range_get_adjustment(GTK_RANGE(sb_vert));
-    gtk_adjustment_set_value(sb_vert_adjust, posy);
+    gtkCanvasAdjustmentSetValue(ih, sb_vert_adjust, posy);
   }
   return 1;
 }
@@ -706,6 +735,8 @@ static int gtkCanvasMapMethod(Ihandle* ih)
     gtk_widget_realize(sb_horiz);
 
     g_signal_connect(G_OBJECT(sb_horiz), "change-value",G_CALLBACK(gtkCanvasScrollHorizChangeValue), ih);
+    g_signal_connect(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(sb_horiz))), "value-changed",G_CALLBACK(gtkCanvasAdjustHorizValueChanged), ih);
+
     iupAttribSetStr(ih, "_IUPGTK_SBHORIZ", (char*)sb_horiz);
   }
 
@@ -721,6 +752,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
     gtk_widget_realize(sb_vert);
 
     g_signal_connect(G_OBJECT(sb_vert), "change-value",G_CALLBACK(gtkCanvasScrollVertChangeValue), ih);
+    g_signal_connect(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(sb_vert))), "value-changed",G_CALLBACK(gtkCanvasAdjustVertValueChanged), ih);
     iupAttribSetStr(ih, "_IUPGTK_SBVERT", (char*)sb_vert);
   }
 

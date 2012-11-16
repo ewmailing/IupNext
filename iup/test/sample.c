@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iup.h>
+#include <iupcontrols.h>
 
 static Ihandle* load_image_Tecgraf(void)
 {
@@ -279,6 +280,88 @@ static void globalwheel_cb(float delta,int x, int y, char* status)
   printf("GLOBALWHEEL_CB(delta=%g, x=%d, y=%d, status=%s)\n", delta, x, y, status);
 }
 
+static Ihandle* create_matrix(void)
+{
+  Ihandle* mat = IupMatrix(NULL); 
+  
+//  IupSetAttribute(mat, "NUMCOL", "15"); 
+  IupSetAttribute(mat, "NUMLIN", "20"); 
+  IupSetAttribute(mat, "NUMCOL", "8"); 
+//  IupSetAttribute(mat, "NUMCOL", "2"); 
+//  IupSetAttribute(mat, "NUMLIN", "3"); 
+  
+  IupSetAttribute(mat, "0:0", "Inflation");
+  IupSetAttribute(mat, "1:0", "Medicine\nPharma");
+  IupSetAttribute(mat, "2:0", "Food"); 
+  IupSetAttribute(mat, "3:0", "Energy"); 
+  IupSetAttribute(mat, "0:1", "January 2000"); 
+  IupSetAttribute(mat, "0:2", "February 2000"); 
+  IupSetAttribute(mat, "1:1", "5.6\n3.33");
+  IupSetAttribute(mat, "2:1", "2.2");
+  IupSetAttribute(mat, "3:2", "Very Very Very Very Very Large Text");
+  IupSetAttribute(mat, "1:2", "4.5");
+  IupSetAttribute(mat, "2:2", "8.1");
+  IupSetAttribute(mat, "3:1", "3.4");
+  IupSetAttribute(mat, "3:3", "Font Test");
+//  IupSetAttribute(mat, "HEIGHT2", "30");
+//  IupSetAttribute(mat, "WIDTH2", "190");
+//  IupSetAttributeId(mat, "WIDTH", 2, "190");
+  IupSetAttribute(mat,"SORTSIGN2","DOWN");
+//  IupSetAttribute(mat, "WIDTHDEF", "34");
+//  IupSetAttribute(mat,"MULTILINE", "YES");
+//  IupSetAttribute(mat,"RESIZEMATRIX", "YES");
+//  IupSetAttribute(mat,"HIDDENTEXTMARKS", "YES");
+//  IupSetAttribute(mat,"USETITLESIZE", "YES");
+  //IupSetAttribute(mat,"SCROLLBAR", "NO");
+  //IupSetAttribute(mat, "BGCOLOR1:2", "255 92 255");
+  //IupSetAttribute(mat, "BGCOLOR2:*", "92 92 255");
+  //IupSetAttribute(mat, "BGCOLOR*:3", "255 92 92");
+  //IupSetAttribute(mat, "FGCOLOR1:2", "255 0 0");
+  //IupSetAttribute(mat, "FGCOLOR2:*", "0 128 0");
+  //IupSetAttribute(mat, "FGCOLOR*:3", "0 0 255");
+  IupSetAttribute(mat, "FONT3:3", "Helvetica, 24");
+  //IupSetAttribute(mat, "FONT2:*", "Courier, 14");
+  //IupSetAttribute(mat, "FONT*:3", "Times, Bold 14");
+  //IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");
+//  IupSetAttribute(mat, "ACTIVE", "NO");
+//  IupSetAttribute(mat, "EXPAND", "NO");
+//  IupSetAttribute(mat, "ALIGNMENT", "ALEFT");
+
+  IupSetAttribute(mat,"MARKMODE","CELL");
+//  IupSetAttribute(mat,"MARKMODE","LIN");
+//  IupSetAttribute(mat,"MARKMULTIPLE","NO");
+  IupSetAttribute(mat,"MARKMULTIPLE","YES");
+//  IupSetAttribute(mat,"MARKAREA","NOT_CONTINUOUS");
+  IupSetAttribute(mat,"MARK2:2","YES");
+  IupSetAttribute(mat,"MARK2:3","YES");
+  IupSetAttribute(mat,"MARK3:3","YES");
+
+  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","BGCOLOR");
+  IupSetAttribute(mat,"FRAMEHORIZCOLOR1:2","0 0 255");
+  IupSetAttribute(mat,"FRAMEHORIZCOLOR1:3","0 255 0");
+  IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 0");
+  IupSetAttribute(mat,"FRAMEVERTCOLOR*:4","0 255 0");
+
+//  IupSetAttribute(mat,"MARKMODE","LINCOL");
+
+  //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");
+  //IupSetAttribute(mat, "NUMLIN_VISIBLE_LAST", "YES");
+//  IupSetAttribute(mat, "WIDTHDEF", "15");
+  IupSetAttribute(mat, "20:8", "The End");
+  IupSetAttribute(mat, "10:0", "Middle Line");
+  IupSetAttribute(mat, "15:0", "Middle Line");
+  IupSetAttribute(mat, "0:4", "Middle Column");
+  IupSetAttribute(mat, "20:0", "Line Title Test");
+  IupSetAttribute(mat, "0:8", "Column Title Test");
+  IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
+  IupSetAttribute(mat, "NUMLIN_VISIBLE", "5");
+//  IupSetAttribute(mat,"EDITNEXT","COLCR");
+//  IupSetAttribute(mat, "LIMITEXPAND", "Yes");
+  IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
+
+  return mat;
+}
+
 void SampleTest(void)
 {
   Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, 
@@ -410,7 +493,7 @@ void SampleTest(void)
   IupSetAttribute(pbar,"TIP","ProgressBar TIP");
   set_callbacks(pbar);
 
-  tabs = IupTabs(IupVbox(IupLabel(""), NULL), IupVbox(IupFill(), NULL), IupVbox(IupFill(), NULL), NULL);
+  tabs = IupTabs(IupVbox(IupLabel("Tab0"), NULL), IupVbox(IupLabel("Tab1"), NULL), IupVbox(IupLabel("Tab2"), NULL), NULL);
   IupSetAttribute(tabs,"TABTITLE0","Tab Title 0");
   IupSetAttribute(tabs,"TABTITLE1","Tab Title 1");
   IupSetAttributeHandle(tabs,"TABIMAGE1", load_image_LogoTecgraf());
@@ -440,6 +523,8 @@ void SampleTest(void)
     IupHbox(IupSetAttributes(IupFrame(IupHbox(val, NULL)), "TITLE=IupVal"),
             IupSetAttributes(IupFrame(IupHbox(pbar, NULL)), "TITLE=IupProgressBar"),
             IupSetAttributes(IupFrame(IupHbox(tabs, NULL)), "TITLE=IupTabs"),
+            NULL),
+    IupHbox(IupSetAttributes(IupFrame(IupHbox(create_matrix(), NULL)), "TITLE=IupMatrix"),
             NULL),
     IupHbox(IupSetAttributes(IupFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
             IupSetAttributes(IupFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
@@ -499,6 +584,7 @@ void SampleTest(void)
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
+  IupControlsOpen();
 
   IupSetGlobal("SINGLEINSTANCE", "Iup Sample");
   if (!IupGetGlobal("SINGLEINSTANCE"))

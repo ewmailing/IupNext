@@ -285,6 +285,9 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     pos = IupGetChildPos(ih, child);
 
+    /* Can not hide the tab_page, 
+       or the tab will be automatically hidden.
+       So create a secondary container to be hidden. */
 #if GTK_CHECK_VERSION(3, 0, 0)
     tab_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 #else
@@ -292,7 +295,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 #endif
     gtk_widget_show(tab_page);
 
-    tab_container = iupgtkNativeContainerNew();
+    tab_container = gtk_fixed_new(); /* can not use iupgtkNativeContainerNew in GTK3 */
     gtk_widget_show(tab_container);
     gtk_container_add((GtkContainer*)tab_page, tab_container);
 
