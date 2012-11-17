@@ -14,7 +14,7 @@
 
 <h2>GTK System Driver<span class="style1"> (since 3.0)</span></h2>
 <p>This driver was designed for the GTK+ 
-  version 2. It can be compiled in Windows or UNIX.</p>
+  version 2 and 3. It can be compiled in Windows or UNIX.</p>
 <p>Although GTK has layout elements they are not used. IUP fill, vbox, hbox and 
 zbox containers are implemented independent from the native system.</p>
 <p>The oldest GTK version that can be used is 2.4, oldest versions will not 
@@ -23,6 +23,18 @@ Critical features need at least version 2.8.</p>
 <p>Currently it is not available for IRIX, AIX and SunOS. But is it available 
 for SunOS10 and it is not available for Linux24.</p>
 <h3>Tips</h3>
+<h4>GTK 3.x (since 3.7)</h4>
+<p>GTK 3.x is supported. But the pre-compiled binaries are still build with GTK 
+2.x. This is because GTK 3 implies in a big change for drawing applications, and 
+most Tecgraf applications are heavily graphics dependent. The main change is 
+that GDK does not have drawing primitives anymore, and all drawing is performed 
+by Cairo. Cairo does not have support for XOR used by many drawing applications 
+to perform a selection rubber band. Also Cairo could have a different behavior 
+for some primitives. So while the applications are adapted to the new situation 
+the pre-compiled files will remain with GTK 2.x</p>
+<p>To build the driver with GTK 3.x support define USE_GTK3=Yes before calling 
+make in the &quot;iup/src&quot; folder. Just the main library must be rebuilt. Also, if CD 
+is used, the CD main library must be rebuilt with the same parameter.</p>
 <h4>Dependencies</h4>
 <p>GTK is in fact composed of several libraries. The GTK package contains the 
 GDK library and depends on the ATK, Cairo, Glib and Pango libraries.</p>
