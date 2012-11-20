@@ -200,7 +200,7 @@ int btn_exit_cb( Ihandle *self )
 /******************************************************************************
  * Main function                                                              *
  ******************************************************************************/
-int main(int argc, char **argv)
+int main1(int argc, char **argv)
 {
   /* IUP handles */
   Ihandle *dlg;
