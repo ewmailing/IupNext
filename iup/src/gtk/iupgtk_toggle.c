@@ -539,6 +539,9 @@ static int gtkToggleMapMethod(Ihandle* ih)
 
   gtk_widget_realize(ih->handle);
 
+  /* update a mnemonic in a label if necessary */
+  iupgtkUpdateMnemonic(ih);
+
   return IUP_NOERROR;
 }
 

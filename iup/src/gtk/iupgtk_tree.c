@@ -2691,6 +2691,9 @@ static int gtkTreeMapMethod(Ihandle* ih)
 
   iupdrvTreeUpdateMarkMode(ih);
 
+  /* update a mnemonic in a label if necessary */
+  iupgtkUpdateMnemonic(ih);
+
   return IUP_NOERROR;
 }
 

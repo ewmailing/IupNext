@@ -1184,21 +1184,23 @@ static void motListEditModifyVerifyCallback(Widget cbedit, Ihandle *ih, XmTextVe
   if (iupAttribGet(ih, "_IUPMOT_DISABLE_TEXT_CB"))
     return;
 
-  cb = (IFnis)IupGetCallback(ih, "EDIT_CB");
-  if (!cb && !ih->data->mask)
-    return;
-
   if (text->event && text->event->type == KeyPress)
   {
     unsigned int state = ((XKeyEvent*)text->event)->state;
     if (state & ControlMask ||  /* Ctrl */
-        state & Mod1Mask || 
-        state & Mod5Mask ||  /* Alt */
+        state & Mod1Mask || state & Mod5Mask ||  /* Alt */
         state & Mod4Mask) /* Apple/Win */
+    {
+      text->doit = False;     /* abort processing */
       return;
+    }
 
     motcode = iupmotKeycodeToKeysym(((XKeyEvent*)text->event)->keycode);
   }
+
+  cb = (IFnis)IupGetCallback(ih, "EDIT_CB");
+  if (!cb && !ih->data->mask)
+    return;
 
   value = XmTextFieldGetString(cbedit);
   start = text->startPos;

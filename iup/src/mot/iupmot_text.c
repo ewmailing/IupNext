@@ -816,21 +816,23 @@ static void motTextModifyVerifyCallback(Widget w, Ihandle *ih, XmTextVerifyPtr t
     return;
   }
 
-  cb = (IFnis)IupGetCallback(ih, "ACTION");
-  if (!cb && !ih->data->mask)
-    return;
-
   if (text->event && text->event->type == KeyPress)
   {
     unsigned int state = ((XKeyEvent*)text->event)->state;
     if (state & ControlMask ||  /* Ctrl */
-        state & Mod1Mask || 
-        state & Mod5Mask ||  /* Alt */
+        state & Mod1Mask || state & Mod5Mask ||  /* Alt */
         state & Mod4Mask) /* Apple/Win */
+    {
+      text->doit = False;     /* abort processing */
       return;
+    }
 
     motcode = iupmotKeycodeToKeysym(((XKeyEvent*)text->event)->keycode);
   }
+
+  cb = (IFnis)IupGetCallback(ih, "ACTION");
+  if (!cb && !ih->data->mask)
+    return;
 
   value = XmTextGetString(ih->handle);
   start = text->startPos;

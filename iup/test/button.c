@@ -254,7 +254,7 @@ static void set_callbacks(Ihandle* button)
   IupSetCallback(button, "ACTION",       action_cb);
 //  IupSetCallback(button, "BUTTON_CB",    (Icallback)button_cb);
 
-  IupSetCallback(button, "K_ANY",        (Icallback)k_any);
+  //IupSetCallback(button, "K_ANY",        (Icallback)k_any);
   IupSetCallback(button, "HELP_CB",      (Icallback)help_cb);
 
 //  IupSetCallback(button, "GETFOCUS_CB",  (Icallback)getfocus_cb); 

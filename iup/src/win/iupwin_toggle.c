@@ -412,10 +412,7 @@ static char* winToggleGetActiveAttrib(Ihandle* ih)
 static int winToggleSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_TEXT)
-  {
-    if (!value) value = "";
-    SetWindowText(ih->handle, value);
-  }
+    iupdrvBaseSetTitleAttrib(ih, value);
   return 0;
 }
 

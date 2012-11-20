@@ -205,8 +205,7 @@ static int motKeyMap2Iup(unsigned int state, int i)
   int code = 0;
   if (state & ControlMask)   /* Ctrl */
     code = motkey_map[i].c_iupcode;
-  else if (state & Mod1Mask || 
-           state & Mod5Mask) /* Alt */
+  else if (state & Mod1Mask || state & Mod5Mask) /* Alt */
     code = motkey_map[i].m_iupcode;
   else if (state & Mod4Mask) /* Apple/Win */
     code = motkey_map[i].y_iupcode;
