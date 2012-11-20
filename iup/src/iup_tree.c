@@ -355,12 +355,19 @@ void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeHandle* prevNode
 
 void iupTreeDelFromCache(Ihandle* ih, int id, int count)
 {
-  int remain_count;
+  int remain_count, last_add_node;
 
   /* id can be the last node, actually==node_count becase node_count is already updated */
   iupASSERT(id >= 0 && id <= ih->data->node_count);  
   if (id < 0 || id > ih->data->node_count)
     return;
+
+  /* minimum sanity check for LASTADDNODE */
+  last_add_node = iupAttribGetInt(ih, "LASTADDNODE");
+  if (last_add_node >= id && last_add_node < id+count)
+    iupAttribSetStr(ih, "LASTADDNODE", NULL);
+  else if (last_add_node >= id+count)
+    iupAttribSetInt(ih, "LASTADDNODE", last_add_node-count);
 
   /* node_count here already contains the final count */
 
@@ -418,6 +425,8 @@ void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is
     /* clear the remaining space */
     memset(ih->data->node_cache+ih->data->node_count-count, 0, count*sizeof(InodeData));
   }
+
+  iupAttribSetStr(ih, "LASTADDNODE", NULL);
 }
 
 
