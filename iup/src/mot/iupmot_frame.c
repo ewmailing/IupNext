@@ -55,24 +55,21 @@ static int motFrameSetBgColorAttrib(Ihandle* ih, const char* value)
   color = iupmotColorGetPixelStr(value);
   if (color != (Pixel)-1)
   {
-    Widget title_label, child_manager;
+    Widget child_manager = (Widget)iupAttribGet(ih, "_IUPMOT_FRAMECONTAINER");
 
     if (!iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
     {
-      iupmotSetBgColor(ih->handle, color);
+      Widget title_label;
 
-      child_manager = XtNameToWidget(ih->handle, "*child_manager");
+      iupmotSetBgColor(ih->handle, color);
       iupmotSetBgColor(child_manager, color);
 
-      title_label = XtNameToWidget(ih->handle, "*title_label");
-      if (!title_label) return 1;
-      iupmotSetBgColor(title_label, color);
+      title_label = (Widget)iupAttribGet(ih, "_IUPMOT_FRAMELABEL");
+      if (title_label) 
+        iupmotSetBgColor(title_label, color);
     }
     else
-    {
-      child_manager = XtNameToWidget(ih->handle, "*child_manager");
       iupmotSetBgColor(child_manager, color);
-    }
 
     return 1;
   }
@@ -93,10 +90,10 @@ static int motFrameSetBackgroundAttrib(Ihandle* ih, const char* value)
 
     iupmotSetBgColor(ih->handle, color);
 
-    child_manager = XtNameToWidget(ih->handle, "*child_manager");
+    child_manager = (Widget)iupAttribGet(ih, "_IUPMOT_FRAMECONTAINER");
     iupmotSetBgColor(child_manager, color);
 
-    title_label = XtNameToWidget(ih->handle, "*title_label");
+    title_label = (Widget)iupAttribGet(ih, "_IUPMOT_FRAMELABEL");
     if (!title_label) return 1;
     iupmotSetBgColor(title_label, color);
 
@@ -107,8 +104,8 @@ static int motFrameSetBackgroundAttrib(Ihandle* ih, const char* value)
     Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
     if (pixmap)
     {
-      Widget child_manager = XtNameToWidget(ih->handle, "*child_manager");
-      Widget title_label = XtNameToWidget(ih->handle, "*title_label");
+      Widget child_manager = (Widget)iupAttribGet(ih, "_IUPMOT_FRAMECONTAINER");
+      Widget title_label = (Widget)iupAttribGet(ih, "_IUPMOT_FRAMELABEL");
 
       XtVaSetValues(child_manager, XmNbackgroundPixmap, pixmap, NULL);
       if (title_label)
@@ -125,7 +122,7 @@ static int motFrameSetFgColorAttrib(Ihandle* ih, const char* value)
   Pixel color = iupmotColorGetPixelStr(value);
   if (color != (Pixel)-1)
   {
-    Widget title_label = XtNameToWidget(ih->handle, "*title_label");
+    Widget title_label = (Widget)iupAttribGet(ih, "_IUPMOT_FRAMELABEL");
     if (!title_label) return 0;
     XtVaSetValues(title_label, XmNforeground, color, NULL);
     return 1;
@@ -140,7 +137,7 @@ static int motFrameSetStandardFontAttrib(Ihandle* ih, const char* value)
   if (ih->handle)
   {
     XmFontList fontlist;
-    Widget title_label = XtNameToWidget(ih->handle, "*title_label");
+    Widget title_label = (Widget)iupAttribGet(ih, "_IUPMOT_FRAMELABEL");
     if (!title_label) return 1;
 
     fontlist = (XmFontList)iupmotGetFontListAttrib(ih);
@@ -152,7 +149,7 @@ static int motFrameSetStandardFontAttrib(Ihandle* ih, const char* value)
 
 static int motFrameSetTitleAttrib(Ihandle* ih, const char* value)
 {
-  Widget title_label = XtNameToWidget(ih->handle, "*title_label");
+  Widget title_label = (Widget)iupAttribGet(ih, "_IUPMOT_FRAMELABEL");
   if (title_label)
   {
     if (!value) value = "";
@@ -165,7 +162,7 @@ static int motFrameSetTitleAttrib(Ihandle* ih, const char* value)
 static void* motFrameGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
 {
   (void)child;
-  return XtNameToWidget(ih->handle, "*child_manager");
+  return (Widget)iupAttribGet(ih, "_IUPMOT_FRAMECONTAINER");
 }
 
 static int motFrameMapMethod(Ihandle* ih)
@@ -229,6 +226,7 @@ static int motFrameMapMethod(Ihandle* ih)
     iupMOT_SETARG(args, num_args, XmNchildType, XmFRAME_TITLE_CHILD);
     title_label = XtCreateManagedWidget("title_label", xmLabelWidgetClass, ih->handle, args, num_args);
     iupmotSetString(title_label, XmNlabelString, title);
+    iupAttribSetStr(ih, "_IUPMOT_FRAMELABEL", (char*)title_label);
   }
 
   child_manager = XtVaCreateManagedWidget(
@@ -247,6 +245,8 @@ static int motFrameMapMethod(Ihandle* ih)
               /* Frame Constraint */
               XmNchildType, XmFRAME_WORKAREA_CHILD,
               NULL);
+
+  iupAttribSetStr(ih, "_IUPMOT_FRAMECONTAINER", (char*)child_manager);
 
   if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
     XtAddEventHandler(child_manager, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);

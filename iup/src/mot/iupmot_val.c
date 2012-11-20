@@ -140,8 +140,9 @@ static int motValSetBgColorAttrib(Ihandle* ih, const char* value)
   color = iupmotColorGetPixel(r, g, b);
   if (color != (Pixel)-1)
   {
-    Widget w = XtNameToWidget(ih->handle, "*Scrollbar");
-    XtVaSetValues(w, XmNtroughColor, color, NULL);
+    Widget sb = XtNameToWidget(ih->handle, "*Scrollbar");
+    if (sb)
+      XtVaSetValues(sb, XmNtroughColor, color, NULL);
   }
 
   return iupdrvBaseSetBgColorAttrib(ih, value);
@@ -442,7 +443,7 @@ static int motValMapMethod(Ihandle* ih)
   XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
 
   {
-    Widget sb = XtNameToWidget(ih->handle, "Scrollbar");  /* TODO: Test this in other Motifs */
+    Widget sb = XtNameToWidget(ih->handle, "*Scrollbar");  /* TODO: Test this in other Motifs */
     if (sb)
     {
       XtAddEventHandler(sb, FocusChangeMask, False, (XtEventHandler)motValFocusChangeEvent, (XtPointer)ih);

@@ -501,10 +501,10 @@ void ScrollBoxTest(void)
             IupSetAttributes(IupFrame(IupHbox(pbar, NULL)), "TITLE=IupProgressBar"),
             IupSetAttributes(IupFrame(IupHbox(tabs, NULL)), "TITLE=IupTabs"),
             NULL),
-    IupHbox(IupSetAttributes(IupFrame(IupHbox(create_matrix(), NULL)), "TITLE=IupMatrix"),
-            NULL),
     IupHbox(IupSetAttributes(IupFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
             IupSetAttributes(IupFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
+            NULL),
+    IupHbox(IupSetAttributes(IupFrame(IupHbox(create_matrix(), NULL)), "TITLE=IupMatrix"),
             NULL),
     NULL);
   IupSetAttribute(_vbox_1,"MARGIN","5x5");

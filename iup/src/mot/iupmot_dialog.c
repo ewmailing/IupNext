@@ -146,7 +146,7 @@ static int motDialogGetWindowDecor(Ihandle* ih, int *border, int *caption)
 {
   /* Try to get the size of the window decoration. */
   /* Use the dialog_manager instead of the handle, so it can use the client offset. */
-  Widget dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");
+  Widget dialog_manager = (Widget)iupAttribGet(ih, "_IUPMOT_DLGCONTAINER");
   XWindowAttributes wa;
   wa.x = 0; wa.y = 0;
   XGetWindowAttributes(iupmot_display, XtWindow(dialog_manager), &wa);
@@ -528,7 +528,7 @@ static char* motDialogGetClientSizeAttrib(Ihandle *ih)
   char* str = iupStrGetMemory(20);
  
   Dimension manager_width, manager_height;
-  Widget dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");
+  Widget dialog_manager = (Widget)iupAttribGet(ih, "_IUPMOT_DLGCONTAINER");
   XtVaGetValues(dialog_manager, XmNwidth,  &manager_width,
                                 XmNheight, &manager_height, 
                                 NULL);
@@ -553,7 +553,7 @@ static int motDialogSetBgColorAttrib(Ihandle* ih, const char* value)
   Pixel color = iupmotColorGetPixelStr(value);
   if (color != (Pixel)-1)
   {
-    Widget dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");
+    Widget dialog_manager = (Widget)iupAttribGet(ih, "_IUPMOT_DLGCONTAINER");
     XtVaSetValues(dialog_manager, XmNbackground, color, NULL);
     XtVaSetValues(dialog_manager, XmNbackgroundPixmap, XmUNSPECIFIED_PIXMAP, NULL);
     return 1;
@@ -570,7 +570,7 @@ static int motDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
     if (pixmap)
     {
-      Widget dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");
+      Widget dialog_manager = (Widget)iupAttribGet(ih, "_IUPMOT_DLGCONTAINER");
       XtVaSetValues(dialog_manager, XmNbackgroundPixmap, pixmap, NULL);
       return 1;
     }
@@ -865,7 +865,7 @@ static void motDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 static void* motDialogGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
 {
   (void)child;
-  return XtNameToWidget(ih->handle, "*dialog_manager");
+  return iupAttribGet(ih, "_IUPMOT_DLGCONTAINER");
 }
 
 static int motDialogMapMethod(Ihandle* ih)
@@ -963,6 +963,8 @@ static int motDialogMapMethod(Ihandle* ih)
               XmNnavigationType, XmTAB_GROUP,
               NULL);
 
+  iupAttribSetStr(ih, "_IUPMOT_DLGCONTAINER", (char*)dialog_manager);
+
   XtOverrideTranslations(dialog_manager, XtParseTranslationTable("<Configure>: iupDialogConfigure()"));
   XtAddCallback(dialog_manager, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);
   XtAddEventHandler(dialog_manager, KeyPressMask, False,(XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
@@ -1002,7 +1004,7 @@ static void motDialogUnMapMethod(Ihandle* ih)
     IupDestroy(ih->data->menu);  
   }
 
-  dialog_manager = XtNameToWidget(ih->handle, "*dialog_manager");
+  dialog_manager = (Widget)iupAttribGet(ih, "_IUPMOT_DLGCONTAINER");
   XtVaSetValues(dialog_manager, XmNuserData, NULL, NULL);
 
   XtRemoveEventHandler(ih->handle, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent, (XtPointer)ih);
