@@ -412,7 +412,10 @@ static char* winToggleGetActiveAttrib(Ihandle* ih)
 static int winToggleSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_TOGGLE_TEXT)
-    iupdrvBaseSetTitleAttrib(ih, value);
+  {
+    iupwinSetMnemonicTitle(ih, 0, value);
+    return iupdrvBaseSetTitleAttrib(ih, value);
+  }
   return 0;
 }
 

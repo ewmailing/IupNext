@@ -151,6 +151,12 @@ static void winLabelDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
 /************************************************************************************************/
 
+static int winLabelSetTitleAttrib(Ihandle* ih, const char* value)
+{
+  iupwinSetMnemonicTitle(ih, 0, value);
+  return iupdrvBaseSetTitleAttrib(ih, value);
+}
+
 static int winLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
@@ -363,7 +369,7 @@ void iupdrvLabelInitClass(Iclass* ic)
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winLabelSetFgColorAttrib, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);    /* force new default value */
-  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, winLabelSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupLabel only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", winLabelGetAlignmentAttrib, winLabelSetAlignmentAttrib, IUPAF_SAMEASSYSTEM, "ALEFT:ACENTER", IUPAF_NO_INHERIT);

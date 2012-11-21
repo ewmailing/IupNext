@@ -252,6 +252,7 @@ iupStrToDos
 iupStrReplace
 iupStrRemove
 iupStrProcessMnemonic
+iupStrFindMnemonic
 iupStrNextLine
 iupStrMessageShowError
 iupStrMessageGet
@@ -296,6 +297,8 @@ iupKeyCanCaps
 iupKeyCallKeyPressCb
 iupKeyCallKeyCb
 iupKeyProcessNavigation
+iupKeyProcessMnemonic
+iupKeySetMnemonic
 iupImageStockSet
 iupImageStockLoadAll
 iupImageColorMakeInactive

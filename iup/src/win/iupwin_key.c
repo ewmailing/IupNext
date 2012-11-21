@@ -15,6 +15,8 @@
 #include "iup_key.h"
 
 #include "iup_drv.h"
+#include "iup_focus.h"
+#include "iup_attrib.h"
 #include "iupwin_drv.h"
                    
                    
@@ -327,7 +329,13 @@ int iupwinKeyEvent(Ihandle* ih, int wincode, int press)
       }
     }
 
-    if (!iupKeyProcessNavigation(ih, code, (GetKeyState(VK_SHIFT) & 0x8000)))
+    if ((GetKeyState(VK_MENU) & 0x8000) && wincode < 128) /* Alt + mnemonic */
+    {
+      if (iupKeyProcessMnemonic(ih, wincode))
+        return 0;
+    }
+
+    if (iupKeyProcessNavigation(ih, code, (GetKeyState(VK_SHIFT) & 0x8000)))
       return 0;
   }
   else

@@ -208,6 +208,11 @@ char* iupStrInsert(const char* value, const char* insert_value, int start, int e
  * \ingroup str */
 char* iupStrProcessMnemonic(const char* str, char *c, int action);
 
+/** Returns the Mnemonic if found. Zero otherwise.
+ * \ingroup str */
+int iupStrFindMnemonic(const char* str);
+
+
 #ifdef __cplusplus
 }
 #endif

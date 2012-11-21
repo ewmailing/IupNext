@@ -58,7 +58,7 @@ void GetParamTest(void)
   if (!IupGetParam("Title", param_action, 0,
                    "Bt %u[, MyCancel, Help!]\n"
                    "&Boolean 100%%: %b[No,Yes]\n"
-                   "Integer: %i\n"
+                   "&Integer: %i\n"
                    "Real 1: %r\n"
                    "Sep1 %t\n"
                    "Integer: %i[0,255]\n"

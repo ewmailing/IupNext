@@ -819,7 +819,8 @@ char* iupStrProcessMnemonic(const char* str, char *c, int action)
   int i = 0, found = 0;
   char* new_str, *orig_str = (char*)str;
 
-  if (!str) return NULL;
+  if (!str) 
+    return NULL;
 
   if (!strchr(str, '&'))
     return (char*)str;
@@ -863,4 +864,39 @@ char* iupStrProcessMnemonic(const char* str, char *c, int action)
   }
 
   return new_str;
+}
+
+int iupStrFindMnemonic(const char* str)
+{
+  int c = 0, found = 0;
+
+  if (!str) 
+    return 0;
+
+  if (!strchr(str, '&'))
+    return 0;
+
+  while (*str)
+  {
+    if (*str == '&')
+    {
+      if (*(str+1) == '&')
+      {
+        found = -1;
+        str++;
+      }
+      else if (found!=1) /* mnemonic found */
+      {
+        found = 1;
+        c = *(str+1);  /* next is mnemonic */
+      }
+    }
+
+    str++;
+  }
+
+  if (found==0)
+    return 0;
+  else
+    return c;
 }

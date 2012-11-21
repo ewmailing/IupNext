@@ -40,7 +40,7 @@ static int motButtonSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_BUTTON_TEXT)
   {
-    iupmotSetMnemonicTitle(ih, NULL, value);
+    iupmotSetMnemonicTitle(ih, NULL, 0, value);
     return 1;
   }
 

@@ -325,6 +325,8 @@ static int winTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
     tie.pszText = (char*)value;
     tie.cchTextMax = strlen(value);
 
+    iupwinSetMnemonicTitle(ih, pos, value);
+
     SendMessage(ih->handle, TCM_SETITEM, pos, (LPARAM)&tie);
   }
   return 1;
@@ -506,6 +508,8 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
       tie.mask |= TCIF_TEXT;
       tie.pszText = tabtitle;
       tie.cchTextMax = strlen(tabtitle);
+
+      iupwinSetMnemonicTitle(ih, pos, tabtitle);
     }
 
     if (tabimage)

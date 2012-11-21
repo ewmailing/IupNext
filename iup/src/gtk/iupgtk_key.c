@@ -367,7 +367,7 @@ gboolean iupgtkKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
         return TRUE;
     }
 
-    if (!iupKeyProcessNavigation(ih, code, evt->state & GDK_SHIFT_MASK))
+    if (iupKeyProcessNavigation(ih, code, evt->state & GDK_SHIFT_MASK))
       return TRUE;
 
     /* compensate the show-help limitation. 

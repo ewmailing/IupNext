@@ -45,9 +45,17 @@ int iupKeyCallKeyPressCb(Ihandle *ih, int code, int press);
 
 /** Process Tab, DEFAULTENTER and DEFAULTESC in key press events.
  * \ingroup key */
-int iupKeyProcessNavigation(Ihandle* ih, int key, int shift);
+int iupKeyProcessNavigation(Ihandle* ih, int code, int shift);
                              
-                             
+/** Process mnemonics (Used only in Windows and Motif).
+ * \ingroup key */
+int iupKeyProcessMnemonic(Ihandle* ih, int code);
+                    
+/** Set a mnemonic (Used only in Windows and Motif).
+ * \ingroup key */
+void iupKeySetMnemonic(Ihandle* ih, int code, int pos);
+
+
 /* Called only from IupOpen. */
 void iupKeyInit(void);
                         

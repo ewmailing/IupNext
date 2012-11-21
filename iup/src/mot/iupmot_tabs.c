@@ -280,7 +280,7 @@ static int motTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
     Ihandle* child = IupGetChild(ih, pos);
     Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
     if (tab_button)
-      iupmotSetMnemonicTitle(ih, tab_button, value);
+      iupmotSetMnemonicTitle(ih, tab_button, pos, value);
   }
   return 1;
 }
@@ -439,7 +439,7 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     }
 
     if (tabtitle)
-      iupmotSetMnemonicTitle(ih, tab_button, tabtitle);
+      iupmotSetMnemonicTitle(ih, tab_button, pos, tabtitle);
     else
     {
       Pixmap pixmap = (Pixmap)iupImageGetImage(tabimage, ih, 0);

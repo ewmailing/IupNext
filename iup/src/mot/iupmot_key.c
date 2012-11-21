@@ -342,24 +342,6 @@ void iupmotKeyPressEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
   if (code == 0) 
       return;
 
-  if ((((XKeyEvent*)evt)->state & Mod1Mask || ((XKeyEvent*)evt)->state & Mod5Mask))  /* Alt */
-  {
-    KeySym motcode = iupmotKeycodeToKeysym(((XKeyEvent*)evt)->keycode);
-    if (motcode < 128)
-    {
-      IFni cb;
-      Ihandle* dialog = IupGetDialog(ih);
-      char attrib[22] = "_IUPMOT_MNEMONIC_ _CB";
-      attrib[17] = (char)toupper(motcode);
-      cb = (IFni)IupGetCallback(dialog, attrib);
-      if (cb) 
-      {
-        cb(dialog, attrib[17]);
-        return;
-      }
-    }
-  }
-
   result = iupKeyCallKeyCb(ih, code);
   if (result == IUP_CLOSE)
   {
@@ -391,7 +373,20 @@ void iupmotKeyPressEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont)
       }
     }
 
-    if (!iupKeyProcessNavigation(ih, code, ((XKeyEvent*)evt)->state & ShiftMask))
+    if ((((XKeyEvent*)evt)->state & Mod1Mask || ((XKeyEvent*)evt)->state & Mod5Mask))   /* Alt + mnemonic */
+    {
+      KeySym motcode = iupmotKeycodeToKeysym(((XKeyEvent*)evt)->keycode);
+      if (motcode < 128)
+      {
+        if (iupKeyProcessMnemonic(ih, motcode))
+        {
+          *cont = False;
+          return;
+        }
+      }
+    }
+
+    if (iupKeyProcessNavigation(ih, code, ((XKeyEvent*)evt)->state & ShiftMask))
     {
       *cont = False;
       return;

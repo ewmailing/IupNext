@@ -6,6 +6,7 @@
 
 #include <memory.h>
 #include <stdio.h> 
+#include <ctype.h>   
 
 #include "iup.h"
 #include "iupkey.h"
@@ -199,12 +200,12 @@ int iupKeyCallKeyPressCb(Ihandle *ih, int code, int press)
   return IUP_DEFAULT;
 }
 
-int iupKeyProcessNavigation(Ihandle* ih, int key, int shift)
+int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
 {
   /* this is called after K_ANY is processed, 
      so the user may change its behavior */
 
-  if (key == K_cTAB)
+  if (code == K_cTAB)
   {
     int is_multiline = (IupClassMatch(ih, "text") && IupGetInt(ih, "MULTILINE"));
     if (is_multiline)
@@ -213,53 +214,93 @@ int iupKeyProcessNavigation(Ihandle* ih, int key, int shift)
         IupPreviousField(ih);
       else
         IupNextField(ih);
-      return 0;   /* abort default processing */
+      return 1;
     }
   }
-  else if (key == K_TAB || key == K_sTAB)
+  else if (code == K_TAB || code == K_sTAB)
   {
     int is_multiline = (IupClassMatch(ih, "text") && IupGetInt(ih, "MULTILINE"));
     if (!is_multiline)
     {
-      if (key == K_sTAB)
+      if (code == K_sTAB)
         IupPreviousField(ih);
       else
         IupNextField(ih);
-      return 0;   /* abort default processing */
+      return 1;
     }
   }
-  else if (key == K_UP || key == K_DOWN)
+  else if (code == K_UP || code == K_DOWN)
   {
     int is_button = (IupClassMatch(ih, "button") || 
                      IupClassMatch(ih, "toggle"));
     if (is_button)
     {
-      if (key == K_UP)
+      if (code == K_UP)
         iupFocusPrevious(ih);
       else
         iupFocusNext(ih);
-      return 0;   /* abort default processing */
+      return 1;
     }
   }
-  else if (key==K_ESC)
+  else if (code==K_ESC)
   {
     Ihandle* bt = IupGetAttributeHandle(IupGetDialog(ih), "DEFAULTESC");
     if (iupObjectCheck(bt) && IupClassMatch(bt, "button"))
       iupdrvActivate(bt);
-    return 0;   /* abort default processing */
+    return 1;
   }
-  else if (key==K_CR || key==K_cCR)
+  else if (code==K_CR || code==K_cCR)
   {
     int is_multiline = (IupClassMatch(ih, "text") && IupGetInt(ih, "MULTILINE"));
-    if ((key==K_CR && !is_multiline) || (key==K_cCR && is_multiline))
+    if ((code==K_CR && !is_multiline) || (code==K_cCR && is_multiline))
     {
       Ihandle* bt = IupGetAttributeHandle(IupGetDialog(ih), "DEFAULTENTER");
       if (iupObjectCheck(bt) && IupClassMatch(bt, "button"))
         iupdrvActivate(bt);
-      return 0;   /* abort default processing */
+      return 1;
     }
   }
 
-  return 1;
+  return 0;
 }
 
+int iupKeyProcessMnemonic(Ihandle* ih, int code)
+{
+  Ihandle *ih_mnemonic, *dialog = IupGetDialog(ih);
+  char attrib[16] = "_IUP_MNEMONIC_ ";
+  attrib[14] = (char)toupper(code);
+  ih_mnemonic = (Ihandle*)IupGetAttribute(dialog, attrib);
+  if (iupObjectCheck(ih_mnemonic))
+  {
+    if (IupClassMatch(ih_mnemonic, "label"))
+    {
+      Ihandle* ih_next = iupFocusNextInteractive(ih_mnemonic);
+      if (ih_next)
+      {
+        if (IupClassMatch(ih_next, "button") || IupClassMatch(ih_next, "toggle"))
+          iupdrvActivate(ih_next);
+        else
+          IupSetFocus(ih_next);
+      }
+    }
+    else if (IupClassMatch(ih_mnemonic, "tabs"))
+      IupSetAttribute(ih_mnemonic, "VALUEPOS", IupGetAttribute(ih_mnemonic, attrib));
+    else if (ih_mnemonic->handle)  /* button or toggle */
+      iupdrvActivate(ih_mnemonic);
+
+    return 1;
+  }
+
+  return 0;
+}
+
+void iupKeySetMnemonic(Ihandle* ih, int code, int pos)
+{
+  Ihandle* ih_dialog = IupGetDialog(ih);
+  char attrib[16] = "_IUP_MNEMONIC_ ";
+  attrib[14] = (char)toupper(code);
+
+  IupSetAttribute(ih_dialog, attrib, (char*)ih);
+  if (IupClassMatch(ih, "tabs"))
+    IupSetfAttribute(ih, attrib, "%d", pos);
+}

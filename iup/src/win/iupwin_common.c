@@ -634,6 +634,21 @@ int iupdrvBaseSetTitleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+void iupwinSetMnemonicTitle(Ihandle *ih, int pos, const char* value)
+{
+  int c;
+
+  if (!value) 
+    value = "";
+
+  c = iupStrFindMnemonic(value);
+  if (c != 0)
+  {
+    if (ih->iclass->nativetype != IUP_TYPEMENU)
+      iupKeySetMnemonic(ih, c, pos);
+  }
+}
+
 char* iupdrvBaseGetTitleAttrib(Ihandle* ih)
 {
   int nc = GetWindowTextLength(ih->handle);

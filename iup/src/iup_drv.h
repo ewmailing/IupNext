@@ -82,7 +82,7 @@ void iupdrvDrawFocusRect(Ihandle* ih, void* gc, int x, int y, int w, int h);
  * \ingroup drv */
 int iupdrvGetScrollbarSize(void);
 
-/** Activates a control.
+/** Activates a button or toggle.
  * \ingroup drv */
 void iupdrvActivate(Ihandle* ih);
 

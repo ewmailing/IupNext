@@ -33,7 +33,7 @@
    Before a key is pressed if you click in a control the focus feedback will be hidden.
 
    We manually send WM_CHANGEUISTATE because we do not use IsDialogMessage anymore,
-   and the focus feedback was not shown even after the used press a key.
+   and the focus feedback was not shown even after the user pressed a key.
 
    TODO: I would like a form to always show the feedback, but could not understand how WM_CHANGEUISTATE works.
          Neither SystemParametersInfo(SPI_SETKEYBOARDCUES, TRUE) or SystemParametersInfo(SPI_SETKEYBOARDPREF, TRUE) worked.

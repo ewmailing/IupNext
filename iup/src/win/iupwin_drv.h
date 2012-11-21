@@ -112,6 +112,7 @@ int iupwinListProcessDND(Ihandle *ih, UINT uNotification, POINT pt);
 
 char* iupwinGetClipboardText(Ihandle* ih);
 int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value);
+void iupwinSetMnemonicTitle(Ihandle *ih, int pos, const char* value);
 
 int iupwinGetScreenRes(void);
 /* 1 point = 1/72 inch */

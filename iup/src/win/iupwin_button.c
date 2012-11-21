@@ -476,6 +476,12 @@ static int winButtonSetPaddingAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int winButtonSetTitleAttrib(Ihandle* ih, const char* value)
+{
+  iupwinSetMnemonicTitle(ih, 0, value);
+  return iupdrvBaseSetTitleAttrib(ih, value);
+}
+
 static int winButtonSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   /* update internal image cache for controls that have the IMAGE attribute */
@@ -778,7 +784,7 @@ void iupdrvButtonInitClass(Iclass* ic)
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winButtonSetFgColorAttrib, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */  
-  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, winButtonSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupButton only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", winButtonGetAlignmentAttrib, winButtonSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);

@@ -37,31 +37,10 @@
 
 void iupdrvActivate(Ihandle* ih)
 {
-  if (IupClassMatch(ih, "text"))
-    XmProcessTraversal(ih->handle, XmTRAVERSE_CURRENT);
-  else
-    XtCallActionProc(ih->handle, "ArmAndActivate", 0, 0, 0 );
+  XtCallActionProc(ih->handle, "ArmAndActivate", 0, 0, 0 );
 }
 
-static int motActivateMnemonic(Ihandle *dialog, int c)
-{
-  Ihandle *ih;
-  char attrib[19] = "_IUPMOT_MNEMONIC_ ";
-  attrib[17] = (char)c;
-  ih = (Ihandle*)iupAttribGet(dialog, attrib);
-  if (iupObjectCheck(ih))
-  {
-    Widget w = (Widget)iupAttribGet(ih, attrib);
-    if (w)
-      XtCallActionProc(w, "ArmAndActivate", 0, 0, 0 );
-    else
-      iupdrvActivate(ih);
-    return IUP_IGNORE;
-  }
-  return IUP_CONTINUE;
-}
-
-void iupmotSetMnemonicTitle(Ihandle *ih, Widget w, const char* value)
+void iupmotSetMnemonicTitle(Ihandle *ih, Widget w, int pos, const char* value)
 {
   char c;
   char* str;
@@ -79,26 +58,7 @@ void iupmotSetMnemonicTitle(Ihandle *ih, Widget w, const char* value)
     XtVaSetValues(w, XmNmnemonic, keysym, NULL);   /* works only for menus, but underlines the letter */
 
     if (ih->iclass->nativetype != IUP_TYPEMENU)
-    {
-      Ihandle* dialog = IupGetDialog(ih);
-      char attrib[22] = "_IUPMOT_MNEMONIC_ \0CB";
-      attrib[17] = (char)toupper(c);
-
-      /* used by motActivateMnemonic */
-      if (IupClassMatch(ih, "label"))
-        iupAttribSetStr(dialog, attrib, (char*)iupFocusNextInteractive(ih));
-      else
-      {
-        iupAttribSetStr(dialog, attrib, (char*)ih);
-
-        if (ih->handle != w)
-          iupAttribSetStr(ih, attrib, (char*)w);
-      }
-
-      /* used by iupmotKeyPressEvent */
-      attrib[18] = '_';
-      IupSetCallback(dialog, attrib, (Icallback)motActivateMnemonic);
-    }
+      iupKeySetMnemonic(ih, c, pos);
 
     iupmotSetString(w, XmNlabelString, str);
     free(str);
