@@ -329,7 +329,9 @@ static int winToggleSetValueAttrib(Ihandle* ih, const char* value)
   Ihandle *radio;
   int check;
 
-  if (iupStrEqualNoCase(value,"NOTDEF"))
+  if (iupStrEqualNoCase(value,"TOGGLE"))
+    check = -1;
+  else if (iupStrEqualNoCase(value,"NOTDEF"))
     check = BST_INDETERMINATE;
   else if (iupStrBoolean(value))
     check = BST_CHECKED;
@@ -341,9 +343,13 @@ static int winToggleSetValueAttrib(Ihandle* ih, const char* value)
   radio = iupRadioFindToggleParent(ih);
   if (radio)
   {
-    int oldcheck = winToggleGetCheck(ih);
+    Ihandle* last_tg;
 
-    Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPWIN_LASTTOGGLE");
+    int oldcheck = winToggleGetCheck(ih);
+    if (check == -1)
+      check = BST_CHECKED;
+
+    last_tg = (Ihandle*)iupAttribGet(radio, "_IUPWIN_LASTTOGGLE");
     if (check)
     {
       if (iupObjectCheck(last_tg) && last_tg != ih)
@@ -355,7 +361,18 @@ static int winToggleSetValueAttrib(Ihandle* ih, const char* value)
       winToggleSetCheck(ih, check);
   }
   else
+  {
+    if (check == -1)
+    {
+      int oldcheck = winToggleGetCheck(ih);
+      if (oldcheck)
+        check = BST_UNCHECKED;
+      else
+        check = BST_CHECKED;
+    }
+
     winToggleSetCheck(ih, check);
+  }
 
   if (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && !ih->data->flat)
     winToggleUpdateImage(ih, winToggleIsActive(ih), check);

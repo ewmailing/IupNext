@@ -208,9 +208,9 @@ void ToggleTest(void)
 
   toggle1 = IupToggle(NULL, NULL);
   toggle2 = IupToggle(NULL, NULL);
-  toggle3 = IupToggle("Text Toggle", NULL);
+  toggle3 = IupToggle("&Text Toggle", NULL);
 //  toggle4 = IupToggle("blue foreground color", NULL);
-  toggle4 = IupToggle("Radio &Text", NULL);
+  toggle4 = IupToggle("&Radio Text", NULL);
   toggle5 = IupToggle("red background color", NULL);
   toggle6 = IupToggle("multiple lines\nsecond line", NULL);
   toggle7 = IupToggle("INACTIVE", NULL);

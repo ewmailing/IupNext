@@ -62,10 +62,19 @@ void iupdrvActivate(Ihandle* ih)
 {
   /* do not use BM_CLICK because it changes the focus 
      and does not animates the button press */
+
+  /* draw highlight */
   SendMessage(ih->handle, BM_SETSTATE, TRUE, 0);
   IupFlush();
   Sleep(150);
+
+  if (IupClassMatch(ih, "toggle"))
+    IupSetAttribute(ih, "VALUE", "TOGGLE");
+
+  /* notify */
   SendMessage(GetParent(ih->handle), WM_COMMAND, MAKEWPARAM(0, BN_CLICKED), (LPARAM)ih->handle);
+
+  /* remove highlight */
   SendMessage(ih->handle, BM_SETSTATE, FALSE, 0);
 }
 
