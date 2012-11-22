@@ -60,6 +60,7 @@ static void iup_gtk_fixed_init (iupGtkFixed *fixed)
 
 static void iup_gtk_fixed_get_preferred_size (GtkWidget *widget, gint *minimum, gint *natural)
 {
+  (void)widget;
   /* all this is just to replace this method, so it will behave like GtkLayout. */
   *minimum = 0;
   *natural = 0;

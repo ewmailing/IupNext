@@ -1021,8 +1021,8 @@ static int gtkTextSetPaddingAttrib(Ihandle* ih, const char* value)
     {
 #if GTK_CHECK_VERSION(2, 10, 0)
       GtkBorder border;
-      border.bottom = border.top = ih->data->vert_padding;
-      border.left = border.right = ih->data->horiz_padding;
+      border.bottom = border.top = (gint16)ih->data->vert_padding;
+      border.left = border.right = (gint16)ih->data->horiz_padding;
       gtk_entry_set_inner_border(GTK_ENTRY(ih->handle), &border);
 #endif
     }
