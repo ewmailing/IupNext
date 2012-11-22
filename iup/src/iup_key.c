@@ -222,7 +222,7 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
     int is_multiline = (IupClassMatch(ih, "text") && IupGetInt(ih, "MULTILINE"));
     if (!is_multiline)
     {
-      if (code == K_sTAB)
+      if (code == K_sTAB || shift)
         IupPreviousField(ih);
       else
         IupNextField(ih);
