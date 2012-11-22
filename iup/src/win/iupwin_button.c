@@ -339,9 +339,11 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   iupwinDrawParentBackground(ih, hDC, &drawitem->rcItem);
 
+  /* force default when in focus but not highlighted */
   if ((drawitem->itemState & ODS_FOCUS) && !(drawitem->itemState & ODS_HOTLIGHT))
     drawitem->itemState |= ODS_DEFAULT;
 
+  /* force selected state */
   if (iupAttribGet(ih, "_IUPWINBUT_SELECTED"))
     drawitem->itemState |= ODS_SELECTED;
 
@@ -350,7 +352,9 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   if ((ih->data->type & IUP_BUTTON_IMAGE) && 
       iupAttribGet(ih, "IMPRESS") && 
       !iupAttribGetBoolean(ih, "IMPRESSBORDER"))
+  {
     draw_border = 0;
+  }
   else
   {
     if (iupAttribGetBoolean(ih, "FLAT"))
@@ -363,6 +367,8 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
     else
       draw_border = 1;
   }
+
+printf("ODS_SELECTED=%d\n", drawitem->itemState&ODS_SELECTED? 1: 0);
 
   if (draw_border)
     iupwinDrawButtonBorder(ih->handle, hDC, &drawitem->rcItem, drawitem->itemState);
@@ -554,8 +560,9 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     {
       iupwinButtonDown(ih, msg, wp, lp);
 
-      /* Feedback will NOT be done when not receiving the focus */
-      if ((msg==WM_LBUTTONDOWN || msg==WM_LBUTTONDBLCLK) && !iupAttribGetBoolean(ih, "CANFOCUS"))
+      /* Feedback will NOT be done when not receiving the focus or when in double click */
+      if ((msg==WM_LBUTTONDOWN && !iupAttribGetBoolean(ih, "CANFOCUS")) ||
+          msg==WM_LBUTTONDBLCLK)
       {
         iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", "1");
         iupdrvRedrawNow(ih);
@@ -569,17 +576,21 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     {
       iupwinButtonUp(ih, msg, wp, lp);
 
-      /* BN_CLICKED will NOT be notified when not receiving the focus */
-      if (msg==WM_LBUTTONUP && !iupAttribGetBoolean(ih, "CANFOCUS"))
+      if (msg==WM_LBUTTONUP)
       {
-        Icallback cb;
+        if (iupAttribGet(ih, "_IUPWINBUT_SELECTED"))
+        {
+          iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", NULL);
+          iupdrvRedrawNow(ih);
+        }
 
-        iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", NULL);
-        iupdrvRedrawNow(ih);
-
-        cb = IupGetCallback(ih, "ACTION");
-        if (cb && cb(ih) == IUP_CLOSE)
-          IupExitLoop();
+        /* BN_CLICKED will NOT be notified when not receiving the focus */
+        if (!iupAttribGetBoolean(ih, "CANFOCUS"))
+        {
+          Icallback cb = IupGetCallback(ih, "ACTION");
+          if (cb && cb(ih) == IUP_CLOSE)
+            IupExitLoop();
+        }
       }
 
       if (!iupwinIsVistaOrNew() && iupObjectCheck(ih))
@@ -610,7 +621,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       iupAttribSetStr(ih, "_IUPWINBUT_ENTERWIN", NULL);
       iupdrvRedrawNow(ih);
     }
-    if (!iupAttribGetBoolean(ih, "CANFOCUS"))
+    if (iupAttribGet(ih, "_IUPWINBUT_SELECTED"))
     {
       iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", NULL);
       iupdrvRedrawNow(ih);
@@ -724,13 +735,13 @@ static int winButtonMapMethod(Ihandle* ih)
 
  /* Buttons with the BS_PUSHBUTTON style do NOT use the returned brush in WM_CTLCOLORBTN. 
     Buttons with these styles are always drawn with the default system colors.
-    So FGCOLOR and BGCOLOR do NOT work.
+      So FGCOLOR and BGCOLOR do NOT work.
     The BS_FLAT style does NOT completely remove the borders. With XP styles is ignored. 
-    So FLAT do NOT work.
-    BCM_SETTEXTMARGIN is not working. 
+      So FLAT do NOT work.
+    BCM_SETTEXTMARGIN is not working either. 
     Buttons with images and with XP styles do NOT draw the focus feedback.
     Can NOT remove the borders when using IMPRESS.
-    So IUP will draw its own button,
+    >>>> So IUP will draw its own button,
     but uses the Windows functions to draw text and images in native format. */
   if (iupwin_comctl32ver6)
     dwStyle |= BS_PUSHBUTTON; /* it will be an ownerdraw because we use NM_CUSTOMDRAW */
