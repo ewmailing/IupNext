@@ -662,7 +662,8 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
       }
       else
       {
-        if (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && ih->data->flat)
+        if ((ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && ih->data->flat) ||
+            (HIWORD(wp)==BN_DOUBLECLICKED))
         {
           /* toggle the value manually */
           check = check? 0: BST_CHECKED;

@@ -131,8 +131,10 @@ static void createimgs(void)
 
 static int togglecb(Ihandle *self, int v)
 {
-  if (v == 1) printf("Toggle %s - ON\n", IupGetAttribute(self, "NAME")); 
-  else printf("Toggle %s - OFF\n", IupGetAttribute(self, "NAME")); 
+  if (v == 1) 
+    printf("Toggle %s - ON\n", IupGetAttribute(self, "NAME")); 
+  else 
+    printf("Toggle %s - OFF\n", IupGetAttribute(self, "NAME")); 
   return IUP_DEFAULT;
 }
 

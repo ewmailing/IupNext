@@ -558,6 +558,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
     {
+      /* Process BUTTON_CB */
       iupwinButtonDown(ih, msg, wp, lp);
 
       /* Feedback will NOT be done when not receiving the focus or when in double click */
@@ -574,6 +575,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
     {
+      /* Process BUTTON_CB */
       iupwinButtonUp(ih, msg, wp, lp);
 
       if (msg==WM_LBUTTONUP)
@@ -769,7 +771,7 @@ static int winButtonMapMethod(Ihandle* ih)
   /* Process WM_COMMAND */
   IupSetCallback(ih, "_IUPWIN_COMMAND_CB", (Icallback)winButtonWmCommand);
 
-  /* Process BUTTON_CB */
+  /* Process BUTTON_CB and others */
   IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winButtonProc);
 
   if (iupwin_comctl32ver6)
