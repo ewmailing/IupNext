@@ -135,6 +135,7 @@ static int gtkToggleSetValueAttrib(Ihandle* ih, const char* value)
     gtk_toggle_button_set_inconsistent((GtkToggleButton*)ih->handle, TRUE);
   else 
   {
+    int check;
     Ihandle* last_ih = NULL;
     Ihandle* radio = iupRadioFindToggleParent(ih);
     gtk_toggle_button_set_inconsistent((GtkToggleButton*)ih->handle, FALSE);
@@ -148,7 +149,17 @@ static int gtkToggleSetValueAttrib(Ihandle* ih, const char* value)
         iupAttribSetStr(last_ih, "_IUPGTK_IGNORE_TOGGLE", "1");
     }
 
-    if (iupStrBoolean(value))
+    if (iupStrEqualNoCase(value,"TOGGLE"))
+    {
+      if (gtk_toggle_button_get_active((GtkToggleButton*)ih->handle))
+        check = 0;
+      else
+        check = 1;
+    }
+    else
+      check = iupStrBoolean(value);
+
+    if (check)
       gtk_toggle_button_set_active((GtkToggleButton*)ih->handle, TRUE);
     else
     {

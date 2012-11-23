@@ -214,7 +214,9 @@ static int motToggleSetValueAttrib(Ihandle* ih, const char* value)
   Ihandle *radio;
   unsigned char check;
 
-  if (iupStrEqualNoCase(value,"NOTDEF"))
+  if (iupStrEqualNoCase(value,"TOGGLE"))
+    check = (unsigned char)-1;
+  else if (iupStrEqualNoCase(value,"NOTDEF"))
     check = XmINDETERMINATE;
   else if (iupStrBoolean(value))
     check = XmSET;
@@ -228,6 +230,9 @@ static int motToggleSetValueAttrib(Ihandle* ih, const char* value)
   {
     Ihandle* last_tg;
     unsigned char oldcheck;
+
+    if (check == (unsigned char)-1)
+      check = XmSET;
 
     XtVaGetValues(ih->handle, XmNset, &oldcheck, NULL);
 
@@ -243,7 +248,20 @@ static int motToggleSetValueAttrib(Ihandle* ih, const char* value)
       XtVaSetValues(ih->handle, XmNset, check, NULL);
   }
   else
+  {
+    if (check == (unsigned char)-1)
+    {
+      unsigned char oldcheck;
+      XtVaGetValues(ih->handle, XmNset, &oldcheck, NULL);
+
+      if (oldcheck == XmSET)
+        check = XmUNSET;
+      else
+        check = XmSET;
+    }
+
     XtVaSetValues(ih->handle, XmNset, check, NULL);
+  }
 
   return 0;
 }
