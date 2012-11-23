@@ -368,8 +368,6 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
       draw_border = 1;
   }
 
-printf("ODS_SELECTED=%d\n", drawitem->itemState&ODS_SELECTED? 1: 0);
-
   if (draw_border)
     iupwinDrawButtonBorder(ih->handle, hDC, &drawitem->rcItem, drawitem->itemState);
 
