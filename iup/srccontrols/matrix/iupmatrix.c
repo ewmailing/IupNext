@@ -1545,7 +1545,7 @@ static int iMatrixGetNaturalHeight(Ihandle* ih, int *full_height)
 
 static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  int sb_w = 0, sb_h = 0, full_width, full_height;
+  int sb_w = 0, sb_h = 0, full_width, full_height, border = 0;
   (void)expand; /* unset if not name container */
 
   if (!ih->handle)
@@ -1561,8 +1561,11 @@ static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ex
       sb_w += sb_size;  /* sb vertical affects horizontal size */
   }
 
-  *w = sb_w + iMatrixGetNaturalWidth(ih, &full_width);
-  *h = sb_h + iMatrixGetNaturalHeight(ih, &full_height);
+  if (iupAttribGetBoolean(ih, "BORDER"))
+    border = 1;
+
+  *w = sb_w + iMatrixGetNaturalWidth(ih, &full_width) + 2*border;
+  *h = sb_h + iMatrixGetNaturalHeight(ih, &full_height) + 2*border;
 
   if (ih->data->limit_expand)
   {
