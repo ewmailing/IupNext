@@ -196,6 +196,30 @@ static void gtkSetGlobalColorAttrib(const char* name, GdkColor *color)
 static void gtkUpdateGlobalColors(GtkWidget* dialog, GtkWidget* text)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
+#ifdef WIN32  /* TODO: Workaround for GTK3 on Win32, should remove this code in the future */
+#define gtkColorToRGBA(color, color3) {color3.red = color.red/65535.0; color3.green = color.green/65535.0; color3.blue = color.blue/65535.0; color3.alpha = 1.0;}
+
+  GdkRGBA color3;
+  GtkStyle* style = gtk_widget_get_style(dialog);
+
+  GdkColor color = style->bg[GTK_STATE_NORMAL];
+  gtkColorToRGBA(color, color3);
+  gtkSetGlobalColorAttrib("DLGBGCOLOR", &color3);
+
+  color = style->fg[GTK_STATE_NORMAL];
+  gtkColorToRGBA(color, color3);
+  gtkSetGlobalColorAttrib("DLGFGCOLOR", &color3);
+
+  style = gtk_widget_get_style(text);
+
+  color = style->base[GTK_STATE_NORMAL];
+  gtkColorToRGBA(color, color3);
+  gtkSetGlobalColorAttrib("TXTBGCOLOR", &color3);
+
+  color = style->text[GTK_STATE_NORMAL];
+  gtkColorToRGBA(color, color3);
+  gtkSetGlobalColorAttrib("TXTFGCOLOR", &color3);
+#else
   GdkRGBA color;
   GtkStyleContext* context = gtk_widget_get_style_context(dialog);
 
@@ -212,6 +236,7 @@ static void gtkUpdateGlobalColors(GtkWidget* dialog, GtkWidget* text)
 
   gtk_style_context_get_color(context, GTK_STATE_NORMAL, &color);
   gtkSetGlobalColorAttrib("TXTFGCOLOR", &color);
+#endif
 #else
   GtkStyle* style = gtk_widget_get_style(dialog);
 
