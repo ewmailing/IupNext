@@ -84,6 +84,10 @@ the first redraw will be lost. Default: "255 255 255".</p>
 <p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the control. In Windows the canvas will respect CANFOCUS in 
 opposite to the other controls. Default: YES. (since 3.0)</p>
 
+<p><b>CAIRO_CR</b> [GTK Only] (<font size="3">non inheritable</font>): 
+Contains the &quot;cairo_t*&quot; parameter of the internal GTK callback. Valid 
+only during the ACTION callback and onyl when using GTK version 3. (since 3.7)</p>
+
 <p><strong>CLIPRECT</strong> [Windows and GTK Only] (only during ACTION): 
 Specifies a rectangle that has its region invalidated for painting, it could be 
 used for clipping. Format: "%d %d %d %d"="x1 y1 x2 y2".</p>
@@ -109,8 +113,9 @@ then it will be automatically enabled.</p>
 The SCROLLBAR and BORDER attributes affect the size of the drawing area.</p>
 
   
-<p><b>HDC_WMPAINT</b> [Windows Only] (<font size="3">non inheritable</font>): Contains the HDC created with the BeginPaint 
-  inside the WM_PAINT message. Valid only during the ACTION callback.</p>
+<p><b>HDC_WMPAINT</b> [Windows Only] (<font size="3">non inheritable</font>): 
+Contains the HDC created with the BeginPaint inside the WM_PAINT message. Valid 
+only during the ACTION callback.</p>
 
 <p><strong>HWND</strong> [Windows Only] (<font size="3">non inheritable, 
 read-only</font>): Returns the Windows Window handle. Available in the Windows 

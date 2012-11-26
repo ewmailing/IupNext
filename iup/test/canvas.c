@@ -59,11 +59,38 @@ static unsigned char pixmap_cursor [ ] =
 } ;
 
 //#define USE_GDK
-#undef USE_GDK
+//#undef USE_GDK
 
 /* draw a rectangle that has w=600 always, white background and a red X */
 #ifdef USE_GDK
 #include <gtk/gtk.h>
+#ifdef USE_GTK3
+static void drawTest(Ihandle *ih, int posx)
+{
+  int w, h;
+  GdkWindow* wnd = (GdkWindow*)IupGetAttribute(ih, "DRAWABLE");
+  cairo_t* cr = (cairo_t*)IupGetAttribute(ih, "CAIRO_CR");
+
+  w = gdk_window_get_width(wnd);
+  h = gdk_window_get_height(wnd);
+
+  /* white background */
+  cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0);
+  cairo_rectangle(cr, 0, 0, w, h);
+  cairo_fill(cr);
+
+  /* virtual size */
+  w = 600; 
+
+  /* red X */
+  cairo_set_source_rgba(cr, 1.0, 0, 0, 1.0);
+  cairo_move_to(cr, -posx, 0);
+  cairo_line_to(cr, w-posx, h);
+  cairo_move_to(cr, -posx, h);
+  cairo_line_to(cr, w-posx, 0);
+  cairo_stroke(cr);
+}
+#else
 static void drawTest(Ihandle *ih, int posx)
 {
   GdkWindow* wnd = (GdkWindow*)IupGetAttribute(ih, "DRAWABLE");
@@ -78,8 +105,9 @@ static void drawTest(Ihandle *ih, int posx)
   gdk_gc_set_rgb_fg_color(gc, &color);
   gdk_draw_rectangle(wnd, gc, TRUE, 0, 0, w, h);
 
-  /* red X */
   w = 600; /* virtual size */
+
+  /* red X */
   color.red = 65535;  color.green = 0;  color.blue  = 0;
   gdk_gc_set_rgb_fg_color(gc, &color);
   gdk_draw_line(wnd, gc, -posx, 0, w-posx, h);
@@ -87,6 +115,7 @@ static void drawTest(Ihandle *ih, int posx)
 
   g_object_unref(gc); 
 }
+#endif
 #else
 #ifdef WIN32
 #undef _WIN32_WINNT

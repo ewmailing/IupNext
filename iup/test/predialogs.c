@@ -10,6 +10,21 @@
 
 #ifdef USE_GDK
 #include <gtk/gtk.h>
+#ifdef USE_GTK3
+static void drawTest(Ihandle *ih)
+{
+  cairo_t* cr = (cairo_t*)IupGetAttribute(ih, "CAIRO_CR");
+  int w = IupGetInt(ih, "PREVIEWWIDTH");
+  int h = IupGetInt(ih, "PREVIEWHEIGHT");
+ 
+  cairo_set_source_rgba(cr, 1.0, 0, 0, 1.0);
+  cairo_move_to(cr, 0, 0);
+  cairo_line_to(cr, w-1, h-1);
+  cairo_move_to(cr, 0, h-1);
+  cairo_line_to(cr, w-1, 0);
+  cairo_stroke(cr);
+}
+#else
 static void drawTest(Ihandle *ih)
 {
   GdkWindow* wnd = (GdkWindow*)IupGetAttribute(ih, "DRAWABLE");
@@ -26,6 +41,7 @@ static void drawTest(Ihandle *ih)
 
   g_object_unref(gc); 
 }
+#endif
 #else
 #ifdef WIN32
 #undef _WIN32_WINNT

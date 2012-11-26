@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="iupgtk"
-	ProjectGUID="{2C7E83B9-7FE8-5555-97BA-FCF4D0728408}"
+	Name="iupgtk3"
+	ProjectGUID="{2C7E83B9-12E8-ABC5-97BA-A5D8D0728408}"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\src;..\src\gtk;..\include;&quot;d:\lng\gtk2\include\atk-1.0&quot;;d:\lng\gtk2\include\cairo;&quot;d:\lng\gtk2\include\glib-2.0&quot;;&quot;d:\lng\gtk2\include\gtk-2.0&quot;;&quot;d:\lng\gtk2\include\pango-1.0&quot;;&quot;d:\lng\gtk2\lib\gtk-2.0\include&quot;;&quot;d:\lng\gtk2\lib\glib-2.0\include&quot;;&quot;d:\lng\gtk2\include\gdk-pixbuf-2.0&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;GTK_DISABLE_DEPRECATED;GSEAL_ENABLE;DEBUG"
+				AdditionalIncludeDirectories="..\src;..\src\gtk;..\include;&quot;d:\lng\gtk3\include\atk-1.0&quot;;d:\lng\gtk3\include\cairo;&quot;d:\lng\gtk3\include\glib-2.0&quot;;&quot;d:\lng\gtk3\include\gtk-3.0&quot;;&quot;d:\lng\gtk3\include\pango-1.0&quot;;&quot;d:\lng\gtk3\include\gdk-pixbuf-2.0&quot;;&quot;d:\lng\gtk3\lib\glib-2.0\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;GTK_DISABLE_DEPRECATED;GDK_DISABLE_DEPRECATED;GSEAL_ENABLE;DEBUG;inline="
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -99,8 +99,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\gtk\iupgtk_draw.c"
+				RelativePath="..\src\gtk\iupgtk_draw_cairo.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\src\gtk\iupgtk_focus.c"
@@ -221,34 +228,6 @@
 			<File
 				RelativePath="..\src\gtk\iupgtk_val.c"
 				>
-			</File>
-		</Filter>
-		<Filter
-			Name="mac"
-			>
-			<File
-				RelativePath="..\src\gtk\iupmac_help.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\src\gtk\iupmac_info.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>

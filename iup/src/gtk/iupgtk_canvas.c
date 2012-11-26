@@ -260,12 +260,16 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
       GdkRectangle rect;
       gdk_cairo_get_clip_rectangle(cr, &rect);
       iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", rect.x, rect.y, rect.x+rect.width-1, rect.y+rect.height-1);
+      iupAttribSetStr(ih, "CAIRO_CR", (char*)cr);
     }
 #else
     iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", evt->area.x, evt->area.y, evt->area.x+evt->area.width-1, evt->area.y+evt->area.height-1);
 #endif
+
     cb(ih,ih->data->posx,ih->data->posy);
+
     iupAttribSetStr(ih, "CLIPRECT", NULL);
+    iupAttribSetStr(ih, "CAIRO_CR", NULL);
   }
 
   (void)widget;
