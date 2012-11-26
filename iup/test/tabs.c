@@ -184,10 +184,11 @@ static int cbRemoveTab(Ihandle* ih)
 
 static void TestFocusInChild(Ihandle* ih, int pos)
 {
+  /* Works only in Windows, GTK will set the focus to the first child always */
   if(pos==0)
   {
     Ihandle* text = IupGetDialogChild(ih, "ATEXT");
-    IupSetFocus(text);
+    IupSetFocus(text);  
   }
   else if(pos==4)
   {
@@ -313,7 +314,6 @@ static Ihandle* CreateTabs(int tab)
 
   //IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_LogoTecgraf());
   IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_TestImage());
- 
 
   // In Windows, must be set before map
 //  IupSetAttribute(tabs, "MULTILINE", "YES");

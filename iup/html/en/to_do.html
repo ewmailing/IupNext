@@ -38,12 +38,6 @@
 
 <h3>Roadmap for the Next Versions</h3>
 
-<h4>For 3.7 (November 2012)</h4>
-
-<ul>
-	<li>Fix better focus 
-	control when changing the current tab in <strong>IupTabs</strong>.</li>
-</ul>
 <h4>Other Priorities</h4>
 <ul>
 	<li>IupMatrix improvements</li>
@@ -59,8 +53,6 @@
 
 <ul>
 
-	<li><strong><span class="style6">Priority:</span></strong> better focus 
-	control when changing the current tab in <strong>IupTabs</strong>.</li>
 	<li><strong><span class="style6">Priority:</span></strong> RPM, Debian and 
 	LuaRocks distribution packages.</li>
 
@@ -126,6 +118,10 @@
 <h3>GTK</h3>
 
 <ul>
+
+	<li><span class="style1">Known Issue:</span> can not set focus to a child 
+	inside TABCHANGE_CB or TABCHANGEPOS_CB in <strong>IupTabs</strong>, because 
+	internally GTK will always set the focus to the first child.</li>
 
 	<li><span class="style1">Known Issue:</span> in Ubuntu 11.10 the canvas 
 	scrollbar is not notifying IUP that the user dragged the control. To solve 

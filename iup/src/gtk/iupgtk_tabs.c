@@ -287,7 +287,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     /* Can not hide the tab_page, 
        or the tab will be automatically hidden.
-       So create a secondary container to be hidden. */
+       So create a secondary container to hide its child instead. */
 #if GTK_CHECK_VERSION(3, 0, 0)
     tab_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 #else
