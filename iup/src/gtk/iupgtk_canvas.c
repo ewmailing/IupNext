@@ -294,7 +294,11 @@ static gboolean gtkCanvasBorderExposeEvent(GtkWidget *widget, GdkEventExpose *ev
   GdkWindow* window = iupgtkGetWindow(widget);
   GtkStyle *style = gtk_widget_get_style(widget);
   GtkAllocation allocation;
-  gtk_widget_get_allocation(widget, &allocation);  
+#if GTK_CHECK_VERSION(2, 18, 0)
+  gtk_widget_get_allocation(widget, &allocation);
+#else
+  allocation = widget->allocation;
+#endif
   gtk_paint_shadow(style, window, GTK_STATE_NORMAL, GTK_SHADOW_IN,
 	                  &evt->area, widget, "scrolled_window",
 	                  allocation.x, allocation.y, allocation.width, allocation.height);
