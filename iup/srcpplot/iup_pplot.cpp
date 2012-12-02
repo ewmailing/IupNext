@@ -2956,7 +2956,7 @@ static int iPPlotMapMethod(Ihandle* ih)
 #else
   int old_gdi = 0;
 
-  if (IupGetInt(ih, "USE_GDI+"))
+  if (IupGetInt(ih, "USE_GDI+") || IupGetInt(ih, "USE_CONTEXTPLUS"))
     old_gdi = cdUseContextPlus(1);
 
   ih->data->plt->_cdcanvas = cdCreateCanvas(CD_IUP, ih);
@@ -2968,7 +2968,7 @@ static int iPPlotMapMethod(Ihandle* ih)
     else
       ih->data->plt->_cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->plt->_cdcanvas);
 
-    if (IupGetInt(ih, "USE_GDI+"))
+    if (IupGetInt(ih, "USE_GDI+") || IupGetInt(ih, "USE_CONTEXTPLUS"))
       cdUseContextPlus(old_gdi);
   }
 

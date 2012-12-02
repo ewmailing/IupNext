@@ -179,11 +179,13 @@ the event. <br>
   
 <p><strong>TOGGLEVALUE_CB</strong>: Action generated when the toggle&#39;s state was 
 changed. The callback also receives the new toggle&#39;s state. (since 3.6)</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>state</strong>); [in C]<strong>
-elem</strong>:togglevalue_cb(<strong>id:</strong> number:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>, int <strong>state</strong>); [in C]<strong>
+elem</strong>:togglevalue_cb(<strong>id, state:</strong> number:<strong> </strong>string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
+<strong>id</strong>:
+    node identifier. <br>
 
     <strong>state</strong>:
     1 if the toggle's state was shifted to ON; 0 if it was shifted to OFF. If 

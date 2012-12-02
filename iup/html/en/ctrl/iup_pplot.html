@@ -185,9 +185,13 @@ attributes without visual output.</p>
 <p><b>USE_IMAGERGB </b>(non inheritable): defines if the double buffer will use standard driver 
 image (NO - faster) or an RGB image (YES - slower). Default: NO. The IMAGERGB 
 driver has anti-aliasing which can improve the line drawing.</p>
-<p><b>USE_GDI</b>+ [Windows Only] (non inheritable): defines if the double buffer will use GDI+ 
-(YES) for drawing or standard GDI (NO). Default: NO. The GDI+ driver has 
-anti-aliasing which can improve the line drawing.</p>
+<p><b>USE_CONTEXTPLUS</b> (non inheritable): defines if the CD canvas will use 
+ContextPlus drivers 
+(YES) for drawing or standard drivers (NO). Default: NO. The 
+<font SIZE="3">
+ContextPlus</font>
+drivers has 
+anti-aliasing which can improve the line drawing. (renamed from USE_GDI+ in 3.8)</p>
 </font>
 <p><strong><a href="../attrib/iup_font.html">FONT</a></strong>:
   the default font used in all text elements of the plot: title, legend and labels.</p>

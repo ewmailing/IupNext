@@ -27,13 +27,15 @@ void VboxTest(void)
   );
 
   IupSetAttribute(fr1, "TITLE", "ALIGNMENT=ALEFT");
-  IupSetAttribute(btn_11, "SIZE", "20x10");
-//  IupSetAttribute(btn_12, "SIZE", "30x20");
-  IupSetAttribute(btn_12, "EXPAND", "VERTICAL");
-  IupSetAttribute(btn_12, "EXPANDWEIGHT", "1.3");
-//  IupSetAttribute(btn_13, "SIZE", "40x30");
-  IupSetAttribute(btn_13, "EXPAND", "VERTICAL");
-  IupSetAttribute(btn_13, "EXPANDWEIGHT", "0.7");
+  IupSetAttribute(btn_11, "SIZE", "20x30");
+  IupSetAttribute(btn_12, "SIZE", "30x20");
+//  IupSetAttribute(btn_12, "SIZE", "30x");
+//  IupSetAttribute(btn_12, "EXPAND", "VERTICAL");
+//  IupSetAttribute(btn_12, "EXPANDWEIGHT", "1.3");
+  IupSetAttribute(btn_13, "SIZE", "40x30");
+//  IupSetAttribute(btn_13, "EXPAND", "VERTICAL");
+//  IupSetAttribute(btn_13, "SIZE", "40x");
+//  IupSetAttribute(btn_13, "EXPANDWEIGHT", "0.7");
   IupSetAttribute(vbox_1, "ALIGNMENT", "ALEFT");
 //  IupSetAttribute(vbox_1, "MARGIN", "20x20");
 //  IupSetAttribute(vbox_1, "GAP", "10");
@@ -41,6 +43,8 @@ void VboxTest(void)
 //  IupSetAttribute(vbox_1, "EXPANDCHILDREN", "YES");
 //  IupSetAttribute(btn_12, "VISIBLE", "NO");
 //  IupSetAttribute(btn_12, "FLOATING", "YES");
+//  IupSetAttribute(vbox_1, "NORMALIZESIZE", "BOTH");
+
 
   /* Creates frame 2 */
   fr2 = IupFrame
@@ -59,8 +63,10 @@ void VboxTest(void)
   IupSetAttribute(fr2, "TITLE", "ALIGNMENT=ACENTER");
   IupSetAttribute(btn_21, "SIZE", "20x30");
   IupSetAttribute(btn_22, "SIZE", "30x30");
+  IupSetAttribute(btn_22, "EXPAND", "VERTICAL");
   IupSetAttribute(btn_23, "SIZE", "40x30");
-  IupSetAttribute(vbox_2, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(btn_23, "EXPAND", "VERTICAL");
+//  IupSetAttribute(vbox_2, "ALIGNMENT", "ACENTER");
 
   /* Creates frame 3 */
   fr3 = IupFrame
