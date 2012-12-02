@@ -17,6 +17,7 @@ local ctrl = {
     showrename_cb = "n",
     rightclick_cb = "n",
     dragdrop_cb = "nnnn",
+    togglevalue_cb = "nn",
   },
   extrafuncs = 1,
 }
