@@ -78,7 +78,7 @@ static HWND winGlobalFindWindow(const char* name)
   return win_findwindow;
 }
 
-static void winGlobalFindInstance(const char* name)
+static void winGlobalFindFirstInstance(const char* name)
 {
   HWND hWnd = winGlobalFindWindow(name);
   if (hWnd)
@@ -331,7 +331,7 @@ int iupdrvSetGlobal(const char *name, const char *value)
   {
     if (winGlobalSetMutex(value))
     {
-      winGlobalFindInstance(value);
+      winGlobalFindFirstInstance(value);
       return 0;  /* don't save the attribute, mutex already exist */
     }
     else

@@ -153,8 +153,11 @@ char *iupdrvGetSystemName(void)
     if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0)
       return "Vista";
 
-    if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 0)
+    if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1)
       return "Win7";
+
+    if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 1)
+      return "Win8";
   }
 
   return "Windows";
