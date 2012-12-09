@@ -299,6 +299,13 @@ static int winClipboardSetFormatDataAttrib(Ihandle *ih, const char *value)
   if (!OpenClipboard(GetForegroundWindow()))
     return 0;
 
+  if (!value)
+  {
+    EmptyClipboard();
+    CloseClipboard();
+    return 0;
+  }
+
   size = iupAttribGetInt(ih, "FORMATDATASIZE");
   if (!size)
     return 0;
