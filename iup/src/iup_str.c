@@ -128,7 +128,7 @@ const char* iupStrNextLine(const char* str, int *len)
     str++;
   }
 
-  if (*str=='\r' && *(str+1)=='n')   /* DOS line end */
+  if (*str=='\r' && *(str+1)=='\n')   /* DOS line end */
     return str+2;
   else if (*str=='\n' || *str=='\r')   /* UNIX or MAC line end */
     return str+1;
@@ -148,7 +148,7 @@ int iupStrLineCount(const char* str)
     while(*str!=0 && *str!='\n' && *str!='\r')
       str++;
 
-    if (*str=='\r' && *(str+1)=='n')   /* DOS line end */
+    if (*str=='\r' && *(str+1)=='\n')   /* DOS line end */
     {
       num_lin++;
       str+=2;
