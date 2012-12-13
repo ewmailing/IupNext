@@ -34,6 +34,7 @@ listener interface to sink events. It does not deal with properties, methods and
   <a target="_blank" href="http://luaforge.net/projects/luacom/">LuaCOM</a> makes it possible to use OLE 
   controls very easily in Lua, accessing their methods, properties and events similarly to the other IUP elements.</p>
 <p>Notice that this control works only on Windows.</p>
+<p>When linking with GCC add the &quot;<span>oleaut32&quot; to the list of libraries.</span></p>
 <h3>Initialization and usage</h3>
 <p>The <b>IupOleControlOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The iupole.h file must also be included in the source code. The program must be linked to the controls 

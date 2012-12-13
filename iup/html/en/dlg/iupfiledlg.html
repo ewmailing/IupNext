@@ -241,7 +241,7 @@ IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
 
 IupPopup(dlg, IUP_CURRENT, IUP_CURRENT); 
 
-if (IupGetInt(dlg, "STATUS"))
+if (IupGetInt(dlg, "STATUS") != -1)
 {
   printf("OK\n");
   printf("  VALUE(%s)\n", IupGetAttribute(dlg, "VALUE")); 

@@ -99,22 +99,33 @@ static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
 {
   if (ih->firstchild)
   {
-    /* update child natural size */
+    /* update child natural size first */
     iupBaseComputeNaturalSize(ih->firstchild);
+
+    *expand = ih->firstchild->expand;
   }
 
-  /* ScrollBox size does not depends on the child size */
+  /* ScrollBox size does not depends on the child size,
+     its natural size must be 0 to be free of restrictions. */
   (void)w;
   (void)h;
-  (void)expand;
 }
 
 static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  /* update child to its own natural size */
   if (ih->firstchild)
   {
-    iupBaseSetCurrentSize(ih->firstchild, ih->firstchild->naturalwidth, ih->firstchild->naturalheight, shrink);
+    int w, h;
+    IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+
+    /* if child is greater than scrollbox area, use child natural size,
+       else use current scrollbox size */
+    if (ih->firstchild->naturalwidth > w)
+      w = ih->firstchild->naturalwidth;
+    if (ih->firstchild->naturalheight > h)
+      h = ih->firstchild->naturalheight;
+
+    iupBaseSetCurrentSize(ih->firstchild, w, h, shrink);
 
     IupSetfAttribute(ih, "XMAX", "%d", ih->firstchild->currentwidth);
     IupSetfAttribute(ih, "YMAX", "%d", ih->firstchild->currentheight);

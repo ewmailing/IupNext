@@ -6,7 +6,9 @@
 #include "iupkey.h"
 #include "iupcontrols.h"
 
+#define USE_CD
 //#define USE_GDK
+#undef USE_OPENGL
 
 #ifdef USE_GDK
 #include <gtk/gtk.h>
@@ -134,7 +136,25 @@ static void drawTestGL(Ihandle* ih)
   else
     drawTest(ih);
 }
+#endif
 
+#ifdef USE_CD
+#include <cd.h>
+#include <cdiup.h>
+
+static void drawTestCD(Ihandle* ih)
+{
+  cdCanvas* canvas = cdCreateCanvas(CD_IUP, ih);
+  int w = IupGetInt(ih, "PREVIEWWIDTH");
+  int h = IupGetInt(ih, "PREVIEWHEIGHT");
+
+  cdCanvasClear(canvas);
+  cdCanvasForeground(canvas, cdEncodeColor(255, 0 , 0));
+
+  cdCanvasLine(canvas, 0, 0, w-1, h-1);
+  cdCanvasLine(canvas, 0, h-1, w-1, 0);
+  cdKillCanvas(canvas);
+}
 #endif
 
 static int close_cb(Ihandle *ih)
@@ -158,10 +178,14 @@ static int file_cb(Ihandle* ih, const char* filename, const char* status)
   if (strcmp(status, "PAINT")==0)
   {
     printf("  SIZE(%s x %s)\n", IupGetAttribute(ih, "PREVIEWWIDTH"), IupGetAttribute(ih, "PREVIEWHEIGHT"));
+#ifdef USE_CD
+    drawTestCD(ih);
+#else
 #ifdef USE_OPENGL
     drawTestGL(ih);
 #else
     drawTest(ih);
+#endif
 #endif
   }
   else if (strcmp(status, "FILTER")==0)

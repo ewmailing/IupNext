@@ -386,12 +386,12 @@ void SampleTest(void)
 
   mnu = IupMenu(
     IupSubmenu("IupSubmenu 1", IupMenu(
-      IupSetAttributes(IupItem("IupItem 1 Checked", NULL), "VALUE=ON"),
+      IupSetCallbacks(IupSetAttributes(IupItem("IupItem 1 Checked", NULL), "VALUE=ON"),"ACTION", action3_cb, NULL),
       IupSeparator(),
 
       IupSetAttributes(IupItem("IupItem 2 Disabled", NULL), "ACTIVE=NO"),
       NULL)),
-    IupItem("IupItem 3", NULL),
+    IupSetCallbacks(IupItem("IupItem 3", NULL),"ACTION", action3_cb, NULL),
     IupItem("IupItem 4", NULL), 
     NULL);
   IupSetHandle("mnu",mnu);
