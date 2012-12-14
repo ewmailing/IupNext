@@ -196,7 +196,12 @@ Also <strong>IupTabs</strong> does NOT depends on the VISIBLE attribute.</p>
 <p>When you change the active tab the focus is usually not changed. If you want 
 to control the focus behavior call 
 <strong>IupSetFocus</strong> 
-  in the TABCHANGE_CB callback.</p>
+  in the TABCHANGE_CB callback. Unfortunately this does not works in GTK and in 
+Motif, because in both systems the focus will be set by the system after the 
+callback is called.</p>
+<p>Notice that there is no attribute to disable a single tab. This is a design 
+decision of all native toolkits, not a IUP decision. It is so because a disabled 
+tab is a confusing interface situation.</p>
 <h3>Utility Functions </h3>
 <p>These functions can be used to set and get attributes from the element:</p>
 <pre>void  IupSetAttributeId(Ihandle *ih, const char* name, int id, const char* value);

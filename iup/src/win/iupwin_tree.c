@@ -63,6 +63,11 @@ typedef struct tagNMTVITEMCHANGE {
 #ifndef TVM_SETEXTENDEDSTYLE
 #define TVM_SETEXTENDEDSTYLE      (TV_FIRST + 44)
 #endif
+
+//#define TVS_EX_PARTIALCHECKBOXES    0x0080
+//#define TVS_EX_EXCLUSIONCHECKBOXES  0x0100
+//#define TVS_EX_DIMMEDCHECKBOXES     0x0200
+
 /* End Cygwin/MingW */
 
 
@@ -2660,6 +2665,7 @@ static int winTreeMapMethod(Ihandle* ih)
     SendMessage(ih->handle, CCM_SETVERSION, 5, 0); 
   else
     SendMessage(ih->handle, TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
+//    SendMessage(ih->handle, TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER|TVS_EX_DIMMEDCHECKBOXES, TVS_EX_DOUBLEBUFFER|TVS_EX_DIMMEDCHECKBOXES);
 
   IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winTreeProc);
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB",   (Icallback)winTreeWmNotify);
