@@ -21,9 +21,9 @@
 
 
 /* ATTENTION:
-  If an application calls OpenClipboard with hwnd set to NULL, 
-  EmptyClipboard sets the clipboard owner to NULL; 
-  this causes SetClipboardData to fail. 
+  "If an application calls OpenClipboard with hwnd set to NULL, 
+   EmptyClipboard sets the clipboard owner to NULL; 
+   this causes SetClipboardData to fail." 
   Because of this we use GetForegroundWindow() */
 
 typedef struct _APMFILEHEADER
@@ -166,6 +166,13 @@ static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
   if (!OpenClipboard(GetForegroundWindow()))
     return 0;
 
+  if (!value)
+  {
+    EmptyClipboard();
+    CloseClipboard();
+    return 0;
+  }
+
   size = strlen(value)+1;
   hHandle = GlobalAlloc(GMEM_MOVEABLE, size); 
   if (!hHandle)
@@ -175,7 +182,6 @@ static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
   CopyMemory(clip_str, value, size);
   GlobalUnlock(hHandle);
 
-  EmptyClipboard();
   SetClipboardData(CF_TEXT, hHandle);
   CloseClipboard();
 
@@ -222,7 +228,6 @@ static int winClipboardSetImageAttrib(Ihandle *ih, const char *value)
   hBitmap = (HBITMAP)iupImageGetImage(value, ih, 0);
   iupImageClearCache(ih, hBitmap);
 
-  EmptyClipboard();
   SetClipboardData(CF_BITMAP, (HANDLE)hBitmap);
   CloseClipboard();
 
@@ -234,9 +239,14 @@ static int winClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
   if (!OpenClipboard(GetForegroundWindow()))
     return 0;
 
-  EmptyClipboard();
-  if (value)
-    SetClipboardData(CF_DIB, (HANDLE)value);
+  if (!value)
+  {
+    EmptyClipboard();
+    CloseClipboard();
+    return 0;
+  }
+
+  SetClipboardData(CF_DIB, (HANDLE)value);
   CloseClipboard();
 
   (void)ih;
@@ -322,7 +332,6 @@ static int winClipboardSetFormatDataAttrib(Ihandle *ih, const char *value)
   CopyMemory(data, value, size);
   GlobalUnlock(hHandle);
 
-  EmptyClipboard();
   SetClipboardData(format_id, hHandle);
   CloseClipboard();
 

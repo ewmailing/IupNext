@@ -29,8 +29,8 @@
   Creates an element that allows access to the clipboard. Each clipboard should 
 	be destroyed using
   <a href="../func/iupdestroy.html">IupDestroy</a>, but you can use only one for 
-	entire application because it does not store any data inside. Or you can 
-	simply create and destroy everytime you need to copy or paste.</p>
+	the entire application because it does not store any data inside. Or you can 
+	simply create and destroy every time you need to copy or paste.</p>
 
 <h3><a name="Creation">Creation</a></h3>
 
@@ -58,7 +58,7 @@ the FORMAT available at the clipboard. If FORMAT is not set returns NULL. (since
 3.7)</p>
 <p><strong>FORMATDATA</strong>: sets or retrieves the data from the clipboard in 
 the format defined by the FORMAT attribute. If FORMAT is not set returns NULL. 
-When set the FORMATDATASIZE attribute must be set before with the data size. 
+If set to NULL clears the clipboard data. When set the FORMATDATASIZE attribute must be set before with the data size. 
 When retrieved FORMATDATASIZE will be set and available after data is retrieved. 
 (since 3.7)</p>
 <p><strong>FORMATDATASIZE</strong>: size of the data on the clipboard. Used by 
