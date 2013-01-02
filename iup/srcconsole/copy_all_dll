@@ -28,12 +28,10 @@ Copy_DLLs()
   if [ $1 == dll10 ]; then
     cp -f ../dist/Microsoft.VC100/$PLAT/* ../bin/$SYS/Lua$LUA_SFX
   fi
-  if [ $1 == dll11 ]; then
-    cp -f ../dist/Microsoft.VC110/$PLAT/* ../bin/$SYS/Lua$LUA_SFX
-  fi
   
   #Remove Lua3 files if any
   rm -f ../bin/$SYS/Lua$LUA_SFX/*3.dll
+  
   #Remove Lua5.x from .Y folder
   if [ $LUA_SFX == 5.1 ]; then
     rm -f ../bin/$SYS/Lua$LUA_SFX/*52.dll
@@ -47,8 +45,8 @@ Copy_DLLs()
 
 Copy_DLLs dll8 Win32 5.1
 Copy_DLLs dll8 Win64 5.1
-Copy_DLLs dll11 Win32 52
-Copy_DLLs dll11 Win64 52
+Copy_DLLs dll10 Win32 52
+Copy_DLLs dll10 Win64 52
 
 Copy_DLLs cygw17 cygw17 5.1
 Copy_DLLs cygw17 cygw17 52
