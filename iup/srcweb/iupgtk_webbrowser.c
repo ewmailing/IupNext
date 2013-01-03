@@ -246,7 +246,7 @@ static int gtkWebBrowserMapMethod(Ihandle* ih)
   iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
 
   /* add to the parent, all GTK controls must call this. */
-  iupgtkBaseAddToParent(ih);
+  iupgtkAddToParent(ih);
 
   g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
