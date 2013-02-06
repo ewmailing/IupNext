@@ -15,6 +15,7 @@ static int copy_cb(Ihandle* ih)
   Ihandle* text = IupGetDialogChild(ih, "text");
   Ihandle* clipboard = IupClipboard();
 #ifndef CUSTOM_FORMAT
+  IupSetAttribute(clipboard, "TEXT", NULL);
   IupSetAttribute(clipboard, "TEXT", IupGetAttribute(text, "VALUE"));
 #else
   IupSetAttribute(clipboard, "FORMAT", "TESTFORMAT");

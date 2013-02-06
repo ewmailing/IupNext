@@ -95,6 +95,16 @@ NULL clears the clipboard data.</p>
 <p><strong>WMFAVAILABLE</strong> (read-only) [Windows Only]: informs if there is a 
 Windows Metafile available at the clipboard. (Since 3.2)</p>
 
+<h3><a name="Notes">Notes</a></h3>
+
+
+<p>In Windows when &quot;TEXT&quot; format data is copied to the clipboard, the system 
+will automatically store other text formats too if those formats are not already 
+stored. This means that when copying &quot;TEXT&quot; Windows will also store &quot;Unicode 
+Text&quot; and &quot;OEM Text&quot;, but only if those format were not copied before. So to 
+make sure the system will copy all the other text formats clear the clipboard 
+before copying you own data (you can simply set TEXT=NULL before setting the 
+actual value).</p>
 
 <h3><a name="Examples">Examples</a></h3>
 <pre>Ihandle* clipboard = IupClipboard();
