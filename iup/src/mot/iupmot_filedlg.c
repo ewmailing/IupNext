@@ -236,12 +236,15 @@ static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallback
       if (file_cb && file_cb(ih, filename, "OK") == IUP_IGNORE)
         return;
 
-      if (iupdrvIsFile(filename))  /* check if file exists */
+      /* store the DIRECTORY */
       {
         char* dir = iupStrFileGetPath(filename);
         iupAttribStoreStr(ih, "DIRECTORY", dir);
         free(dir);
+      }
 
+      if (iupdrvIsFile(filename))  /* check if file exists */
+      {
         iupAttribSetStr(ih, "FILEEXIST", "YES");
         iupAttribSetStr(ih, "STATUS", "0");
       }

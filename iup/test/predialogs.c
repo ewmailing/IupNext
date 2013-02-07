@@ -326,10 +326,12 @@ static void new_file(char* dialogtype, int preview)
     case 1: 
       printf("OK\n");
       printf("  New file - VALUE(%s)\n", IupGetAttribute(dlg, "VALUE")); 
+      printf("  DIRECTORY(%s)\n", IupGetAttribute(dlg, "DIRECTORY")); 
       break; 
     case 0 : 
       printf("OK\n");
       printf("  File exists - VALUE(%s)\n", IupGetAttribute(dlg, "VALUE"));
+      printf("  DIRECTORY(%s)\n", IupGetAttribute(dlg, "DIRECTORY")); 
       break; 
     case -1 : 
       printf("CANCEL\n");

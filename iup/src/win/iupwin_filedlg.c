@@ -544,14 +544,14 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 
   if (result)
   {
+    char* dir = iupStrFileGetPath(openfilename.lpstrFile);
+    iupAttribStoreStr(ih, "DIRECTORY", dir);
+    free(dir);
+
     if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
     {
       int i = 0;
 
-      char* dir = iupStrFileGetPath(openfilename.lpstrFile);  /* the first part is the directory already */
-      iupAttribStoreStr(ih, "DIRECTORY", dir);
-      free(dir);
-    
       /* If there is more than one file, replace terminator by the separator */
       if (openfilename.lpstrFile[openfilename.nFileOffset-1] == 0 && 
           openfilename.nFileOffset>0) 
@@ -572,10 +572,6 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
     {
       if (iupdrvIsFile(openfilename.lpstrFile))  /* check if file exists */
       {
-        char* dir = iupStrFileGetPath(openfilename.lpstrFile);
-        iupAttribStoreStr(ih, "DIRECTORY", dir);
-        free(dir);
-
         iupAttribSetStr(ih, "FILEEXIST", "YES");
         iupAttribSetStr(ih, "STATUS", "0");
       }
@@ -593,6 +589,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   {
     iupAttribSetStr(ih, "FILTERUSED", NULL);
     iupAttribSetStr(ih, "VALUE", NULL);
+    iupAttribSetStr(ih, "DIRECTORY", NULL);
     iupAttribSetStr(ih, "FILEEXIST", NULL);
     iupAttribSetStr(ih, "STATUS", "-1");
   }

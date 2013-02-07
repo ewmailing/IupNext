@@ -526,7 +526,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       file_exist = iupdrvIsFile(filename);
       dir_exist = iupdrvIsDirectory(filename);
 
-      if (file_exist)
+      /* store the DIRECTORY */
       {
         char* dir = iupStrFileGetPath(filename);
         iupAttribStoreStr(ih, "DIRECTORY", dir);
