@@ -92,7 +92,7 @@ typedef POINTL * PPOINTL;
 #endif  //PPOINTL
 
 
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(__CYGWIN__)
 #ifndef OLECHAR
 typedef char OLECHAR;
 typedef OLECHAR FAR* LPOLESTR;
