@@ -23,7 +23,7 @@ static int multilist_cb (Ihandle *ih, char *s)
 
 static int list_cb (Ihandle *ih, char *t, int i, int v)
 {
-  printf("ACTION(%s - %d %d)\n", t, i, v);
+  printf("ACTION[%p](%s - %d %d)\n", ih, t, i, v);
   return IUP_DEFAULT;
 }
 
@@ -224,9 +224,16 @@ static int help_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int valuechanged_cb(Ihandle *ih)
+{
+  printf("VALUECHANGED_CB(%p)=%s\n", ih, IupGetAttribute(ih, "VALUE"));
+  return IUP_DEFAULT;
+}
+
 static void set_callbacks(Ihandle* list)
 {
   IupSetCallback(list, "ACTION", (Icallback)list_cb);
+  IupSetCallback(list, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
   IupSetCallback(list, "DBLCLICK_CB", (Icallback)dblclick_cb);
   IupSetCallback(list, "DROPDOWN_CB", (Icallback)dropdown_cb);
   IupSetCallback(list, "EDIT_CB", (Icallback)edit_cb);
@@ -288,7 +295,7 @@ void ListTest(void)
   //IupSetAttributes(list2, "11=\"R$ 1000\", 12=\"R$ 2000\", 13=\"R$ 123456789\", 14=\"R$ 4000\", 15=\"R$ 5000\",");
   //IupSetAttributes(list2, "16=\"R$ 1000\", 17=\"R$ 2000\", 18=\"R$ 123456789\", 19=\"R$ 4000\", 20=\"R$ 5000\",");
   
-  IupSetCallback(list4, "MULTISELECT_CB", (Icallback)multilist_cb);
+  //IupSetCallback(list4, "MULTISELECT_CB", (Icallback)multilist_cb);
 
 //  IupSetAttribute(list1, "READONLY", "YES");
 //  IupSetAttribute(list3, "READONLY", "YES");

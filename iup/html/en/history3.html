@@ -58,7 +58,7 @@ version 3.x.<br>
 
 </p>
 
-<h3>CVS (03/Jan/2013)</h3>
+<h3>CVS (21/Feb/2013)</h3>
 
 <ul>
 
@@ -74,6 +74,10 @@ version 3.x.<br>
 	GTK was using an old function call of the internal SDK.</li>
 	<li><span class="hist_fixed">Fixed:</span> the DIRECTORY attribute was not 
 	being updated when a new file filename was selected in <strong>IupFileDlg</strong>.</li>
+	<li><span class="hist_fixed">Fixed:</span> in a multi-selection <strong>
+	IupTree</strong> the selection callbacks were being called with status=0 
+	when a single item was selected. In GTK the callback were also called when a 
+	branch were simply expanded or contracted.</li>
 
 </ul>
 
