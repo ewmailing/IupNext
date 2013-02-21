@@ -1880,7 +1880,7 @@ static Iarray* motTreeGetSelectedArrayId(Ihandle* ih, WidgetList wSelectedItemLi
   return selarray;
 }
 
-static void motTreeCallMultiUnSelectionCb(Ihandle* ih)
+static void motTreeCallMultiUnSelectionCb(Ihandle* ih, int new_select_id)
 {
   /* called when several items are unselected at once */
   IFnIi cbMulti = (IFnIi)IupGetCallback(ih, "MULTIUNSELECTION_CB");
@@ -1892,18 +1892,33 @@ static void motTreeCallMultiUnSelectionCb(Ihandle* ih)
 
     XtVaGetValues(ih->handle, XmNselectedObjects, &wSelectedItemList,
                           XmNselectedObjectCount, &countItems, NULL);
-    if (countItems > 1)
+    if (countItems > 0)
     {
       Iarray* markedArray = motTreeGetSelectedArrayId(ih, wSelectedItemList, countItems);
       int* id_hitem = (int*)iupArrayGetData(markedArray);
       int i, count = iupArrayCount(markedArray);
 
       if (cbMulti)
-        cbMulti(ih, id_hitem, iupArrayCount(markedArray));
+      {
+        for (i=0; i<count; i++)
+        {
+          if (id_hitem[i] == new_select_id)
+          {
+            memcpy(id_hitem + i, id_hitem + i+1, (count-i-1)*sizeof(int));
+            count--;
+            break;
+          }
+        }
+
+        cbMulti(ih, id_hitem, count);
+      }
       else
       {
         for (i=0; i<count; i++)
-          cbSelec(ih, id_hitem[i], 0);
+        {
+          if (id_hitem[i] != new_select_id)
+            cbSelec(ih, id_hitem[i], 0);
+        }
       }
 
       iupArrayDestroy(markedArray);
@@ -2461,7 +2476,7 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
       int elapsed = (int)(evt->time - last);
       last = evt->time;
 
-      /* stay away from double click and leave some room for clicks */
+      /* stay away from double click and leave some room for single clicks */
       if (elapsed > (3*doubleclicktime)/2 && elapsed <= 3*doubleclicktime)
         clicktwice = 1;
     
@@ -2475,7 +2490,17 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
       if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && 
           !(evt->state & ShiftMask) &&
           !(evt->state & ControlMask))
-        motTreeCallMultiUnSelectionCb(ih);
+      {
+        /* simple click with mark_mode==ITREE_MARK_MULTIPLE and !Shift and !Ctrl */
+        /* do not call the callback for the new selected item */
+        Widget wItem = XmObjectAtPoint(ih->handle, (Position)evt->x, (Position)evt->y);
+        if (wItem)
+        {
+          int new_select_id = iupTreeFindNodeId(ih, wItem);
+          if (new_select_id != -1)
+            motTreeCallMultiUnSelectionCb(ih, new_select_id);
+        }
+      }
     }
     else if (evt->button==Button3)
       motTreeCallRightClickCb(ih, evt->x, evt->y);
