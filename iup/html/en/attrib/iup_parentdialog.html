@@ -26,15 +26,16 @@
 
 <p>This dialog will be always in front of the parent dialog. If the parent is 
 minimized, this dialog is automatically minimized. The parent dialog must be 
-mapped before mapping the child dialog. If PARENTDIALOG is not defined then the 
+mapped before mapping the child dialog.</p>
+<p>If PARENTDIALOG is not defined then the 
 NATIVEPARENT attribute is consulted. This one must be a native handle of an 
 existing dialog.</p>
 <p>Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 associate a dialog to a name.</p>
 <p><span class="style1"><strong>IMPORTANT</strong></span>: When the parent is destroyed the child dialog is 
-      also destroyed, then the CLOSE_CB callback of the child dialog is NOT called. The application must take care of 
-      destroying the children dialogs before destroying the parent. This is usually done when CLOSE_CB of the parent 
+      also destroyed, BUT the CLOSE_CB callback of the child dialog is NOT called. The application must take care of 
+      destroying the child dialogs before destroying the parent. This is usually done when CLOSE_CB of the parent 
       dialog is called.</p>
 
 <h3>Affects</h3>
