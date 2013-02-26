@@ -761,6 +761,10 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
 
     iupMOT_SETARG(args, num_args, XmNindicatorType, XmN_OF_MANY);
     iupMOT_SETARG(args, num_args, XmNindicatorOn, XmINDICATOR_CHECK_BOX);
+    iupMOT_SETARG(args, num_args, XmNindicatorSize, 15);
+    iupMOT_SETARG(args, num_args, XmNalignment, XmALIGNMENT_BEGINNING);
+    iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
+    iupMOT_SETARG(args, num_args, XmNdetailShadowThickness, 2);
 
     if (kind == ITREE_BRANCH)
     {
@@ -2163,58 +2167,48 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
      so we must avoid their processing if _IUPTREE_EDITFIELD is defined. */
 }
 
+static void motTreeProcessToggle(Ihandle* ih, Widget wItem, int pos)
+{
+  unsigned char check;
+  IFnii cbToggle = (IFnii)IupGetCallback(ih, "TOGGLEVALUE_CB");
+
+  XtVaGetValues(wItem, XmNset, &check, NULL);
+
+  if(check == XmINDETERMINATE)  /* GOTO check == 0 */
+  {
+    XtVaSetValues(wItem, XmNset, XmUNSET, NULL);
+    if (cbToggle)
+      cbToggle(ih, pos, 0);
+  }
+  else if (check == XmSET)  /* GOTO check == -1 OR check == 0*/
+  {
+    if (ih->data->show_toggle==2)
+    {
+      XtVaSetValues(wItem, XmNset, XmINDETERMINATE, NULL);
+      if (cbToggle)
+        cbToggle(ih, pos, -1);
+    }
+    else
+    {
+      XtVaSetValues(wItem, XmNset, XmUNSET, NULL);
+      if (cbToggle)
+        cbToggle(ih, pos, 0);
+    }
+  }
+  else  /* (check == 0)  GOTO check == 1 */
+  {
+    XtVaSetValues(wItem, XmNset, XmSET, NULL);
+    if (cbToggle)
+      cbToggle(ih, pos, 1);
+  }
+}
+
 static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCallbackStruct *nptr)
 {
   IFnii cbSelec;
   int is_ctrl = 0;
   (void)w;
   (void)nptr;
-
-  if(ih->data->show_toggle)
-  {
-    Widget wItemFocus = iupdrvTreeGetFocusNode(ih);
-    int curpos = iupTreeFindNodeId(ih, wItemFocus);
-    int oldpos = iupAttribGetInt(ih, "_IUPTREE_OLDVALUE");
-    IFnii cbToggle = (IFnii)IupGetCallback(ih, "TOGGLEVALUE_CB");
-
-    /* Must manually hide the tip if the toggle is pressed. */
-    iupmotTipLeaveNotify();
-
-    /* The toggle can be checked using button click only when the item is selected. */
-    if(curpos == oldpos)
-    {
-      unsigned char check;
-      XtVaGetValues(wItemFocus, XmNset, &check, NULL);
-
-      if(check == XmINDETERMINATE)  /* GOTO check == 0 */
-      {
-        XtVaSetValues(wItemFocus, XmNset, XmUNSET, NULL);
-        if (cbToggle)
-          cbToggle(ih, curpos, 0);
-      }
-      else if (check == XmSET)  /* GOTO check == -1 OR check == 0*/
-      {
-        if (ih->data->show_toggle==2)
-        {
-          XtVaSetValues(wItemFocus, XmNset, XmINDETERMINATE, NULL);
-          if (cbToggle)
-            cbToggle(ih, curpos, -1);
-        }
-        else
-        {
-          XtVaSetValues(wItemFocus, XmNset, XmUNSET, NULL);
-          if (cbToggle)
-            cbToggle(ih, curpos, 0);
-        }
-      }
-      else  /* (check == 0)  GOTO check == 1 */
-      {
-        XtVaSetValues(wItemFocus, XmNset, XmSET, NULL);
-        if (cbToggle)
-          cbToggle(ih, curpos, 1);
-      }
-    }
-  }
 
   if (ih->data->mark_mode == ITREE_MARK_MULTIPLE)
   {
@@ -2469,7 +2463,7 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
 
     if (evt->button==Button1)
     {
-      Widget wItemFocus = iupdrvTreeGetFocusNode(ih);
+      Widget wItem = XmObjectAtPoint(ih->handle, (Position)evt->x, (Position)evt->y);
       static Widget wLastItem = NULL;
       static Time last = 0;
       int clicktwice = 0, doubleclicktime = XtGetMultiClickTime(iupmot_display);
@@ -2480,26 +2474,32 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
       if (elapsed > (3*doubleclicktime)/2 && elapsed <= 3*doubleclicktime)
         clicktwice = 1;
     
-      if (clicktwice && wLastItem && wLastItem==wItemFocus)
+      if (clicktwice && wLastItem && wLastItem==wItem)
       {
         motTreeSetRenameAttrib(ih, NULL);
         *cont = False;
       }
-      wLastItem = wItemFocus;
+      wLastItem = wItem;
 
-      if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && 
+      if(ih->data->show_toggle && wItem)
+      {
+        int curpos = iupTreeFindNodeId(ih, wItem);
+
+        /* Must manually hide the tip if the toggle is pressed. */
+        iupmotTipLeaveNotify();
+
+        motTreeProcessToggle(ih, wItem, curpos);
+      }
+
+      if (wItem && ih->data->mark_mode==ITREE_MARK_MULTIPLE && 
           !(evt->state & ShiftMask) &&
           !(evt->state & ControlMask))
       {
         /* simple click with mark_mode==ITREE_MARK_MULTIPLE and !Shift and !Ctrl */
         /* do not call the callback for the new selected item */
-        Widget wItem = XmObjectAtPoint(ih->handle, (Position)evt->x, (Position)evt->y);
-        if (wItem)
-        {
-          int new_select_id = iupTreeFindNodeId(ih, wItem);
-          if (new_select_id != -1)
-            motTreeCallMultiUnSelectionCb(ih, new_select_id);
-        }
+        int new_select_id = iupTreeFindNodeId(ih, wItem);
+        if (new_select_id != -1)
+          motTreeCallMultiUnSelectionCb(ih, new_select_id);
       }
     }
     else if (evt->button==Button3)
