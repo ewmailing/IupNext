@@ -2,7 +2,6 @@
 #include <Xm/Form.h>
 #include <Xm/Container.h>
 #include <Xm/IconG.h>
-#include <Xm/ToggleBG.h>
 #include <Xm/ScrolledW.h>
 #include <Xm/XmosP.h>
 #include <Xm/Text.h>
@@ -67,7 +66,7 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
   int num_args = 0;
   Arg args[30];
   Pixmap image = XmUNSPECIFIED_PIXMAP, mask = XmUNSPECIFIED_PIXMAP;
-  unsigned char state, mode, type, indType, indOn;
+  unsigned char state;
 
   iupMOT_SETARG(args, num_args,  XmNentryParent, wParent);
   iupMOT_SETARG(args, num_args, XmNmarginHeight, ih->data->spacing);
@@ -83,22 +82,9 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
                                        NULL);
 
   /* Get values to copy */
-  if(ih->data->show_toggle)
-  {
-    XtVaGetValues(wItem, XmNlabelPixmap, &image, 
-              XmNlabelInsensitivePixmap, &mask,
-                           XmNlabelType, &type,
-                          XmNtoggleMode, &mode,
-                       XmNindicatorType, &indType,
-                         XmNindicatorOn, &indOn,
-                                         NULL);
-  }
-  else
-  {
-    XtVaGetValues(wItem, XmNsmallIconPixmap, &image, 
-                           XmNsmallIconMask, &mask,
-                                             NULL);
-  }
+  XtVaGetValues(wItem, XmNsmallIconPixmap, &image, 
+                          XmNsmallIconMask, &mask,
+                                            NULL);
 
   if (is_copy) /* during a copy the itemdata reference is not reused */
   {
@@ -113,21 +99,9 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
   iupMOT_SETARG(args, num_args,   XmNforeground, fgcolor);
   iupMOT_SETARG(args, num_args, XmNoutlineState, state);
 
-  if(ih->data->show_toggle)
-  {
-    iupMOT_SETARG(args, num_args, XmNlabelPixmap, image);
-    iupMOT_SETARG(args, num_args, XmNlabelInsensitivePixmap, mask);
-    iupMOT_SETARG(args, num_args, XmNlabelType, type);
-    iupMOT_SETARG(args, num_args, XmNtoggleMode, mode);
-    iupMOT_SETARG(args, num_args, XmNindicatorType, indType);
-    iupMOT_SETARG(args, num_args, XmNindicatorOn, indOn);
-  }
-  else
-  {
-    iupMOT_SETARG(args, num_args, XmNviewType, XmSMALL_ICON);
-    iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, image);
-    iupMOT_SETARG(args, num_args, XmNsmallIconMask, mask);
-  }
+  iupMOT_SETARG(args, num_args, XmNviewType, XmSMALL_ICON);
+  iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, image);
+  iupMOT_SETARG(args, num_args, XmNsmallIconMask, mask);
 
   iupMOT_SETARG(args, num_args,  XmNentryParent, wParent);
   iupMOT_SETARG(args, num_args, XmNpositionIndex, pos);
@@ -136,10 +110,7 @@ static Widget motTreeCopyItem(Ihandle* ih, Widget wItem, Widget wParent, int pos
   iupMOT_SETARG(args, num_args,   XmNbackground, bgcolor);
 
   /* Add the new node */
-  if(ih->data->show_toggle)
-    wItemNew = XtCreateManagedWidget("icon", xmToggleButtonGadgetClass, ih->handle, args, num_args);
-  else
-    wItemNew = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
+  wItemNew = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
 
   ih->data->node_count++;
 
@@ -422,32 +393,16 @@ static void motTreeUpdateImages(Ihandle* ih, int mode)
       {
         if (mode == ITREE_UPDATEIMAGE_EXPANDED)
         {
-          if(ih->data->show_toggle)
-          {
-            XtVaSetValues(wItem, XmNlabelPixmap, (itemData->image_expanded!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded: (Pixmap)ih->data->def_image_expanded, NULL);
-            XtVaSetValues(wItem, XmNlabelInsensitivePixmap, (itemData->image_expanded_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded_mask: (Pixmap)ih->data->def_image_expanded_mask, NULL);
-          }
-          else
-          {
-            XtVaSetValues(wItem, XmNsmallIconPixmap, (itemData->image_expanded!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded: (Pixmap)ih->data->def_image_expanded, NULL);
-            XtVaSetValues(wItem, XmNsmallIconMask, (itemData->image_expanded_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded_mask: (Pixmap)ih->data->def_image_expanded_mask, NULL);
-          }
+          XtVaSetValues(wItem, XmNsmallIconPixmap, (itemData->image_expanded!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded: (Pixmap)ih->data->def_image_expanded, NULL);
+          XtVaSetValues(wItem, XmNsmallIconMask, (itemData->image_expanded_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded_mask: (Pixmap)ih->data->def_image_expanded_mask, NULL);
         }
       }
       else 
       {
         if (mode == ITREE_UPDATEIMAGE_COLLAPSED)
         {
-          if(ih->data->show_toggle)
-          {
-            XtVaSetValues(wItem, XmNlabelPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_collapsed, NULL);
-            XtVaSetValues(wItem, XmNlabelInsensitivePixmap, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_collapsed_mask, NULL);
-          }
-          else
-          {
-            XtVaSetValues(wItem, XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_collapsed, NULL);
-            XtVaSetValues(wItem, XmNsmallIconMask, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_collapsed_mask, NULL);
-          }
+          XtVaSetValues(wItem, XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_collapsed, NULL);
+          XtVaSetValues(wItem, XmNsmallIconMask, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_collapsed_mask, NULL);
         }
       }
     }
@@ -455,16 +410,8 @@ static void motTreeUpdateImages(Ihandle* ih, int mode)
     {
       if (mode == ITREE_UPDATEIMAGE_LEAF)
       {
-        if(ih->data->show_toggle)
-        {
-          XtVaSetValues(wItem, XmNlabelPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_leaf, NULL);
-          XtVaSetValues(wItem, XmNlabelInsensitivePixmap, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_leaf_mask, NULL);
-        }
-        else
-        {
-          XtVaSetValues(wItem, XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_leaf, NULL);
-          XtVaSetValues(wItem, XmNsmallIconMask, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_leaf_mask, NULL);
-        }
+        XtVaSetValues(wItem, XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_leaf, NULL);
+        XtVaSetValues(wItem, XmNsmallIconMask, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_leaf_mask, NULL);
       }
     }
   }
@@ -746,73 +693,29 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
   iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
   iupMOT_SETARG(args, num_args, XmNlabelString, itemTitle);
 
-  if(ih->data->show_toggle)
+  iupMOT_SETARG(args, num_args, XmNviewType, XmSMALL_ICON);
+
+  if (kind == ITREE_BRANCH)
   {
-#if XmVersion < 2003
-    iupMOT_SETARG(args, num_args, XmNlabelType, XmSTRING); 
-#else
-    iupMOT_SETARG(args, num_args, XmNlabelType, XmPIXMAP_AND_STRING); 
-#endif
-
-    if (ih->data->show_toggle==2)
-      iupMOT_SETARG(args, num_args, XmNtoggleMode, XmTOGGLE_INDETERMINATE);
-    else
-      iupMOT_SETARG(args, num_args, XmNtoggleMode, XmTOGGLE_BOOLEAN);
-
-    iupMOT_SETARG(args, num_args, XmNindicatorType, XmN_OF_MANY);
-    iupMOT_SETARG(args, num_args, XmNindicatorOn, XmINDICATOR_CHECK_BOX);
-    iupMOT_SETARG(args, num_args, XmNindicatorSize, 15);
-    iupMOT_SETARG(args, num_args, XmNalignment, XmALIGNMENT_BEGINNING);
-    iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
-    iupMOT_SETARG(args, num_args, XmNdetailShadowThickness, 2);
-
-    if (kind == ITREE_BRANCH)
+    if (ih->data->add_expanded)
     {
-      if (ih->data->add_expanded)
-      {
-        iupMOT_SETARG(args, num_args, XmNlabelPixmap, ih->data->def_image_expanded);
-        iupMOT_SETARG(args, num_args, XmNlabelInsensitivePixmap, ih->data->def_image_expanded_mask);
-      }
-      else
-      {
-        iupMOT_SETARG(args, num_args, XmNlabelPixmap, ih->data->def_image_collapsed);
-        iupMOT_SETARG(args, num_args, XmNlabelInsensitivePixmap, ih->data->def_image_collapsed_mask);
-      }
+      iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, ih->data->def_image_expanded);
+      iupMOT_SETARG(args, num_args, XmNsmallIconMask, ih->data->def_image_expanded_mask);
     }
     else
     {
-      iupMOT_SETARG(args, num_args, XmNlabelPixmap, ih->data->def_image_leaf);
-      iupMOT_SETARG(args, num_args, XmNlabelInsensitivePixmap, ih->data->def_image_leaf_mask);
+      iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, ih->data->def_image_collapsed);
+      iupMOT_SETARG(args, num_args, XmNsmallIconMask, ih->data->def_image_collapsed_mask);
     }
-
-    /* Add the new node */
-    wItemNew = XtCreateManagedWidget("icon", xmToggleButtonGadgetClass, ih->handle, args, num_args);
   }
   else
   {
-    iupMOT_SETARG(args, num_args, XmNviewType, XmSMALL_ICON);
-
-    if (kind == ITREE_BRANCH)
-    {
-      if (ih->data->add_expanded)
-      {
-        iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, ih->data->def_image_expanded);
-        iupMOT_SETARG(args, num_args, XmNsmallIconMask, ih->data->def_image_expanded_mask);
-      }
-      else
-      {
-        iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, ih->data->def_image_collapsed);
-        iupMOT_SETARG(args, num_args, XmNsmallIconMask, ih->data->def_image_collapsed_mask);
-      }
-    }
-    else
-    {
-      iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, ih->data->def_image_leaf);
-      iupMOT_SETARG(args, num_args, XmNsmallIconMask, ih->data->def_image_leaf_mask);
-    }
-    /* Add the new node */
-    wItemNew = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
+    iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, ih->data->def_image_leaf);
+    iupMOT_SETARG(args, num_args, XmNsmallIconMask, ih->data->def_image_leaf_mask);
   }
+
+  /* Add the new node */
+  wItemNew = XtCreateManagedWidget("icon", xmIconGadgetClass, ih->handle, args, num_args);
 
   if (wItemPrev)
     iupTreeAddToCache(ih, add, kindPrev, wItemPrev, wItemNew);
@@ -872,25 +775,15 @@ static int motTreeSetImageExpandedAttrib(Ihandle* ih, int id, const char* value)
   {
     if (itemData->image_expanded == XmUNSPECIFIED_PIXMAP)
     {
-      if(ih->data->show_toggle)
-        XtVaSetValues(wItem, XmNlabelPixmap, (Pixmap)ih->data->def_image_expanded, 
-                             XmNlabelInsensitivePixmap, (Pixmap)ih->data->def_image_expanded_mask, 
-                             NULL);
-      else
-        XtVaSetValues(wItem, XmNsmallIconPixmap, (Pixmap)ih->data->def_image_expanded, 
-                             XmNsmallIconMask, (Pixmap)ih->data->def_image_expanded_mask, 
-                             NULL);        
+      XtVaSetValues(wItem, XmNsmallIconPixmap, (Pixmap)ih->data->def_image_expanded, 
+                            XmNsmallIconMask, (Pixmap)ih->data->def_image_expanded_mask, 
+                            NULL);        
     }
     else
     {
-      if(ih->data->show_toggle)
-        XtVaSetValues(wItem, XmNlabelPixmap, itemData->image_expanded, 
-                             XmNlabelInsensitivePixmap, itemData->image_expanded_mask, 
-                             NULL);
-      else
-        XtVaSetValues(wItem, XmNsmallIconPixmap, itemData->image_expanded, 
-                             XmNsmallIconMask, itemData->image_expanded_mask, 
-                             NULL);
+      XtVaSetValues(wItem, XmNsmallIconPixmap, itemData->image_expanded, 
+                            XmNsmallIconMask, itemData->image_expanded_mask, 
+                            NULL);
     }
   }
 
@@ -925,25 +818,15 @@ static int motTreeSetImageAttrib(Ihandle* ih, int id, const char* value)
     {
       if (itemData->image == XmUNSPECIFIED_PIXMAP)
       {
-        if(ih->data->show_toggle)
-          XtVaSetValues(wItem, XmNlabelPixmap, (Pixmap)ih->data->def_image_collapsed, 
-                               XmNlabelInsensitivePixmap, (Pixmap)ih->data->def_image_collapsed_mask, 
-                               NULL);
-        else
-          XtVaSetValues(wItem, XmNsmallIconPixmap, (Pixmap)ih->data->def_image_collapsed, 
-                               XmNsmallIconMask, (Pixmap)ih->data->def_image_collapsed_mask, 
-                               NULL);
+        XtVaSetValues(wItem, XmNsmallIconPixmap, (Pixmap)ih->data->def_image_collapsed, 
+                              XmNsmallIconMask, (Pixmap)ih->data->def_image_collapsed_mask, 
+                              NULL);
       }
       else
       {
-        if(ih->data->show_toggle)
-          XtVaSetValues(wItem, XmNlabelPixmap, itemData->image, 
-                               XmNlabelInsensitivePixmap, itemData->image_mask, 
-                               NULL);
-        else
-          XtVaSetValues(wItem, XmNsmallIconPixmap, itemData->image, 
-                               XmNsmallIconMask, itemData->image_mask, 
-                               NULL);
+        XtVaSetValues(wItem, XmNsmallIconPixmap, itemData->image, 
+                              XmNsmallIconMask, itemData->image_mask, 
+                              NULL);
       }
     }
   }
@@ -951,25 +834,15 @@ static int motTreeSetImageAttrib(Ihandle* ih, int id, const char* value)
   {
     if (itemData->image == XmUNSPECIFIED_PIXMAP)
     {
-      if(ih->data->show_toggle)
-        XtVaSetValues(wItem, XmNlabelPixmap, (Pixmap)ih->data->def_image_leaf, 
-                             XmNlabelInsensitivePixmap, (Pixmap)ih->data->def_image_leaf_mask, 
-                             NULL);
-      else
-        XtVaSetValues(wItem, XmNsmallIconPixmap, (Pixmap)ih->data->def_image_leaf, 
-                             XmNsmallIconMask, (Pixmap)ih->data->def_image_leaf_mask, 
-                             NULL);
+      XtVaSetValues(wItem, XmNsmallIconPixmap, (Pixmap)ih->data->def_image_leaf, 
+                            XmNsmallIconMask, (Pixmap)ih->data->def_image_leaf_mask, 
+                            NULL);
     }
     else
     {
-      if(ih->data->show_toggle)
-        XtVaSetValues(wItem, XmNlabelPixmap, itemData->image, 
-                             XmNlabelInsensitivePixmap, itemData->image_mask, 
-                             NULL);
-      else
-        XtVaSetValues(wItem, XmNsmallIconPixmap, itemData->image, 
-                             XmNsmallIconMask, itemData->image_mask, 
-                             NULL);
+      XtVaSetValues(wItem, XmNsmallIconPixmap, itemData->image, 
+                            XmNsmallIconMask, itemData->image_mask, 
+                            NULL);
     }
   }
 
@@ -1424,52 +1297,6 @@ static int motTreeSetMarkStartAttrib(Ihandle* ih, const char* value)
   iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)wItem);
 
   return 1;
-}
-
-static char* motTreeGetToggleValueAttrib(Ihandle* ih, int id)
-{
-  unsigned char check = 0;
-  Widget wItem;
-
-  if (!ih->data->show_toggle)  
-    return 0;
-  
-  wItem = iupTreeGetNode(ih, id);
-  if (!wItem)  
-    return 0;
-
-  XtVaGetValues(wItem, XmNset, &check, NULL);
-
-  if (check == XmINDETERMINATE)
-    return "NOTDEF";
-  else if (check == XmSET)
-    return "ON";
-  else
-    return "OFF";
-}
-
-static int motTreeSetToggleValueAttrib(Ihandle* ih, int id, const char* value)
-{
-  unsigned char check;
-  Widget wItem;
-
-  if (!ih->data->show_toggle)  
-    return 0;
-  
-  wItem = iupTreeGetNode(ih, id);
-  if (!wItem)  
-    return 0;
-
-  if (iupStrEqualNoCase(value,"NOTDEF"))
-    check = XmINDETERMINATE;
-  else if (iupStrBoolean(value))
-    check = XmSET;
-  else
-    check = XmUNSET;
-
-  XtVaSetValues(wItem, XmNset, check, NULL);
-
-  return 0;
 }
 
 static char* motTreeGetMarkedAttrib(Ihandle* ih, int id)
@@ -2117,10 +1944,7 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
                        XmNrenderTable, &fontlist,
                        NULL);
 
-  if(ih->data->show_toggle)
-    XtVaGetValues(wItem, XmNlabelPixmap, &image, NULL);
-  else
-    XtVaGetValues(wItem, XmNsmallIconPixmap, &image, NULL);
+  XtVaGetValues(wItem, XmNsmallIconPixmap, &image, NULL);
 
   motTreeScrollbarOffset(sb_win, &x, &y);
   iupdrvImageGetInfo((void*)image, &w_img, NULL, NULL);
@@ -2165,42 +1989,6 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
 
   /* the parents callbacks can be called while editing 
      so we must avoid their processing if _IUPTREE_EDITFIELD is defined. */
-}
-
-static void motTreeProcessToggle(Ihandle* ih, Widget wItem, int pos)
-{
-  unsigned char check;
-  IFnii cbToggle = (IFnii)IupGetCallback(ih, "TOGGLEVALUE_CB");
-
-  XtVaGetValues(wItem, XmNset, &check, NULL);
-
-  if(check == XmINDETERMINATE)  /* GOTO check == 0 */
-  {
-    XtVaSetValues(wItem, XmNset, XmUNSET, NULL);
-    if (cbToggle)
-      cbToggle(ih, pos, 0);
-  }
-  else if (check == XmSET)  /* GOTO check == -1 OR check == 0*/
-  {
-    if (ih->data->show_toggle==2)
-    {
-      XtVaSetValues(wItem, XmNset, XmINDETERMINATE, NULL);
-      if (cbToggle)
-        cbToggle(ih, pos, -1);
-    }
-    else
-    {
-      XtVaSetValues(wItem, XmNset, XmUNSET, NULL);
-      if (cbToggle)
-        cbToggle(ih, pos, 0);
-    }
-  }
-  else  /* (check == 0)  GOTO check == 1 */
-  {
-    XtVaSetValues(wItem, XmNset, XmSET, NULL);
-    if (cbToggle)
-      cbToggle(ih, pos, 1);
-  }
 }
 
 static void motTreeSelectionCallback(Widget w, Ihandle* ih, XmContainerSelectCallbackStruct *nptr)
@@ -2310,16 +2098,8 @@ static void motTreeOutlineChangedCallback(Widget w, Ihandle* ih, XmContainerOutl
       nptr->new_outline_state = XmCOLLAPSED; /* prevent the change */
     else
     {
-      if(ih->data->show_toggle)
-      {
-        XtVaSetValues(nptr->item, XmNlabelPixmap, (itemData->image_expanded!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded: (Pixmap)ih->data->def_image_expanded, NULL);
-        XtVaSetValues(nptr->item, XmNlabelInsensitivePixmap, (itemData->image_expanded_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded_mask: (Pixmap)ih->data->def_image_expanded_mask, NULL);
-      }
-      else
-      {
-        XtVaSetValues(nptr->item, XmNsmallIconPixmap, (itemData->image_expanded!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded: (Pixmap)ih->data->def_image_expanded, NULL);
-        XtVaSetValues(nptr->item, XmNsmallIconMask, (itemData->image_expanded_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded_mask: (Pixmap)ih->data->def_image_expanded_mask, NULL);
-      }
+      XtVaSetValues(nptr->item, XmNsmallIconPixmap, (itemData->image_expanded!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded: (Pixmap)ih->data->def_image_expanded, NULL);
+      XtVaSetValues(nptr->item, XmNsmallIconMask, (itemData->image_expanded_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_expanded_mask: (Pixmap)ih->data->def_image_expanded_mask, NULL);
     }
   }
   else if (nptr->reason == XmCR_COLLAPSED)
@@ -2328,16 +2108,8 @@ static void motTreeOutlineChangedCallback(Widget w, Ihandle* ih, XmContainerOutl
       nptr->new_outline_state = XmEXPANDED;  /* prevent the change */
     else
     {
-      if(ih->data->show_toggle)
-      {
-        XtVaSetValues(nptr->item, XmNlabelPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_collapsed, NULL);
-        XtVaSetValues(nptr->item, XmNlabelInsensitivePixmap, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_collapsed_mask, NULL);
-      }
-      else
-      {
-        XtVaSetValues(nptr->item, XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_collapsed, NULL);
-        XtVaSetValues(nptr->item, XmNsmallIconMask, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_collapsed_mask, NULL);
-      }
+      XtVaSetValues(nptr->item, XmNsmallIconPixmap, (itemData->image!=XmUNSPECIFIED_PIXMAP)? itemData->image: (Pixmap)ih->data->def_image_collapsed, NULL);
+      XtVaSetValues(nptr->item, XmNsmallIconMask, (itemData->image_mask!=XmUNSPECIFIED_PIXMAP)? itemData->image_mask: (Pixmap)ih->data->def_image_collapsed_mask, NULL);
     }
   }
 
@@ -2480,16 +2252,6 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
         *cont = False;
       }
       wLastItem = wItem;
-
-      if(ih->data->show_toggle && wItem)
-      {
-        int curpos = iupTreeFindNodeId(ih, wItem);
-
-        /* Must manually hide the tip if the toggle is pressed. */
-        iupmotTipLeaveNotify();
-
-        motTreeProcessToggle(ih, wItem, curpos);
-      }
 
       if (wItem && ih->data->mark_mode==ITREE_MARK_MULTIPLE && 
           !(evt->state & ShiftMask) &&
@@ -2692,20 +2454,9 @@ static void motTreeDragStart(Widget w, XButtonEvent* evt, String* params, Cardin
   XtVaGetValues(wItemDrag, XmNviewType, &typeWidget,
                            XmNbackground, &bg,
                            XmNforeground, &fg,
+                           XmNsmallIconPixmap, &pixmap, 
+                           XmNsmallIconMask, &mask, 
                            NULL);
-
-  if(typeWidget != XmSMALL_ICON)  /* It's a ToggleButtonGadget! */
-  {
-    XtVaGetValues(wItemDrag, XmNlabelPixmap, &pixmap, 
-                             XmNlabelInsensitivePixmap, &mask, 
-                             NULL);
-  }
-  else /* It's a IconGadget! */
-  {
-    XtVaGetValues(wItemDrag, XmNsmallIconPixmap, &pixmap, 
-                             XmNsmallIconMask, &mask, 
-                             NULL);
-  }
 
   iupMOT_SETARG(args, num_args, XmNpixmap, pixmap);
   iupMOT_SETARG(args, num_args, XmNmask, mask);
@@ -2964,7 +2715,6 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "TITLEFONT", motTreeGetTitleFontAttrib, motTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
-  iupClassRegisterAttributeId(ic, "TOGGLEVALUE", motTreeGetToggleValueAttrib, motTreeSetToggleValueAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARKED", motTreeGetMarkedAttrib,  motTreeSetMarkedAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARK",      NULL, motTreeSetMarkAttrib,      NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "STARTING",  NULL, motTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
@@ -2978,4 +2728,8 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "RENAME", NULL, motTreeSetRenameAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVENODE", NULL, motTreeSetMoveNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYNODE", NULL, motTreeSetCopyNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+
+  /* not supported in Motif */
+  iupClassRegisterAttributeId(ic, "TOGGLEVALUE", NULL, NULL, IUPAF_NOT_SUPPORTED);
+  iupClassRegisterAttributeId(ic, "SHOWTOGGLE", NULL, NULL, IUPAF_NOT_SUPPORTED);
 }

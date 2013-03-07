@@ -62,6 +62,8 @@ version 3.x.<br>
 
 <ul>
 
+	<li><span class="hist_new">New:</span> attribute TOGGLEVISIBLEid para
+	<strong>IupTree</strong> quando SHOWTOGGLE=Yes.</li>
 	<li><span class="hist_fixed">Fixed:</span> line detection on strings using 
 	DOS line breaks (\r+\n).</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupScrollBox</strong> 
@@ -78,9 +80,9 @@ version 3.x.<br>
 	IupTree</strong> the selection callbacks were being called with status=0 
 	when a single item was selected. In GTK the callback were also called when a 
 	branch were simply expanded or contracted. </li>
-	<li><span class="hist_fixed">Fixed:</span> toggle processing in Windows and 
-	Motif when SHOWTOGGLE=Yes in <strong>
-	IupTree</strong>. Fixed spacing from toggle to image in Windows. </li>
+	<li><span class="hist_fixed">Fixed:</span> toggle processing in Windows when SHOWTOGGLE=Yes in <strong>
+	IupTree</strong>. Fixed spacing from toggle to image in Windows. Removed 
+	support for SHOWTOGGLE=Yes in Motif.</li>
 
 </ul>
 

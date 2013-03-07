@@ -167,6 +167,12 @@ only if the parent is expanded. Possible values: </p>
 <p><strong>TITLEFONTid</strong>: the text font of the specified node. The format 
 is the same as the <a href="../attrib/iup_font.html">FONT</a> attribute. (since 
 3.0)</p>
+<p><strong>TOGGLEVALUEid</strong> (<font size="3">non inheritable</font>): 
+defines the toggle state. Values can be &quot;ON&quot; or &quot;OFF&quot;. If 
+SHOW3STATE=YES then can 
+also be &quot;NOTDEF&quot;. Default: &quot;OFF&quot;. (Since 3.6)</p>
+<p><strong>TOGGLEVISIBLEid</strong> (<font size="3">non inheritable</font>): 
+defines the toggle visible state. Values can be &quot;Yes&quot; or &quot;No&quot;. Default: &quot;Yes&quot;. (Since 3.7)</p>
 <p><strong>TOTALCHILDCOUNTid</strong> (read only): returns the total children 
 	count of the specified branch. It 
 	counts all grandchildren. (since 3.0)</p>
@@ -251,10 +257,6 @@ SINGLE or MULTIPLE. Default: SINGLE.</p>
   marking, used when MARK=BLOCK. The value must be the node identifier.
     Default:
     0 (first node).</p>
-<p><strong>TOGGLEVALUEid</strong> (<font size="3">non inheritable</font>): 
-defines the toggle's state. Values can be &quot;ON&quot; or &quot;OFF&quot;. If 
-SHOW3STATE=YES then can 
-also be &quot;NOTDEF&quot;. Default: &quot;OFF&quot;. (Since 3.6)</p>
 <h3><a name="tree">Hierarchy</a>&nbsp; (<font size="3">non inheritable</font>)</h3>
     <p>For these attributes &quot;id&quot; is the specified node identifier. If 
 	&quot;id&quot; is 
