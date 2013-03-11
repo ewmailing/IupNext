@@ -52,6 +52,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\srclua5\il_scrollbox.c" />
     <ClCompile Include="..\srclua5\iuplua.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level4</WarningLevel>
     </ClCompile>
@@ -129,6 +130,7 @@
     <None Include="..\srclua5\progressbar.lua" />
     <None Include="..\srclua5\radio.lua" />
     <None Include="..\srclua5\sbox.lua" />
+    <None Include="..\srclua5\scrollbox.lua" />
     <None Include="..\srclua5\separator.lua" />
     <None Include="..\srclua5\spin.lua" />
     <None Include="..\srclua5\spinbox.lua" />
