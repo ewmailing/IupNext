@@ -301,7 +301,7 @@ static Ihandle* create_matrix(void)
   //IupSetAttribute(mat, "FONT*:3", "Times, Bold 14");
   //IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");
 //  IupSetAttribute(mat, "ACTIVE", "NO");
-//  IupSetAttribute(mat, "EXPAND", "NO");
+  IupSetAttribute(mat, "EXPAND", "NO");
 //  IupSetAttribute(mat, "ALIGNMENT", "ALEFT");
 
   IupSetAttribute(mat,"MARKMODE","CELL");
@@ -331,7 +331,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "20:0", "Line Title Test");
   IupSetAttribute(mat, "0:8", "Column Title Test");
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
-  IupSetAttribute(mat, "NUMLIN_VISIBLE", "5");
+  IupSetAttribute(mat, "NUMLIN_VISIBLE", "3");
 //  IupSetAttribute(mat,"EDITNEXT","COLCR");
 //  IupSetAttribute(mat, "LIMITEXPAND", "Yes");
   IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
@@ -482,15 +482,17 @@ void ScrollBoxTest(void)
 
   tree = IupTree();
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
-  IupSetAttribute(tree,"RASTERSIZE","100x150");
+  IupSetAttribute(tree,"RASTERSIZE","300x150");
   IupSetAttribute(tree,"TIP","Tree TIP");
+  IupSetAttribute(tree,"EXPAND","NO");
   set_callbacks(tree);
 
   _cnv_1 = IupCanvas(NULL);
   IupSetAttribute(_cnv_1,"BGCOLOR","128 255 0");
   IupSetAttribute(_cnv_1,"SCROLLBAR","YES");
-  IupSetAttribute(_cnv_1,"EXPAND","HORIZONTAL");
-  IupSetAttribute(_cnv_1,"RASTERSIZE","x100");
+//  IupSetAttribute(_cnv_1,"EXPAND","HORIZONTAL");
+  IupSetAttribute(_cnv_1,"EXPAND","NO");
+  IupSetAttribute(_cnv_1,"RASTERSIZE","200x100");
   IupSetAttribute(_cnv_1,"TIP","Canvas TIP");
 //  IupSetAttribute(_cnv_1,"CANFOCUS","NO");
   set_callbacks(_cnv_1);
@@ -509,9 +511,8 @@ void ScrollBoxTest(void)
     NULL);
   IupSetAttribute(_vbox_1,"MARGIN","5x5");
   IupSetAttribute(_vbox_1,"GAP","5");
-  IupSetAttribute(_vbox_1,"EXPAND","Yes");
 
-  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "RASTERSIZE=400x300, XEXPAND=NO"), NULL);
+  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "RASTERSIZE=400x300"), NULL);
   IupSetAttribute(_vbox_2,"MARGIN","20x20");
 
   dlg = IupDialog(_vbox_2);
