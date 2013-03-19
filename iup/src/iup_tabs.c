@@ -392,7 +392,7 @@ static char* iTabsGetClientOffsetAttrib(Ihandle* ih)
   return str;
 }
 
-void iupTabsTestRemoveTab(Ihandle* ih, int pos)
+void iupTabsCheckCurrentTab(Ihandle* ih, int pos)
 {
   int cur_pos = iupdrvTabsGetCurrentTab(ih);
   if (cur_pos == pos)

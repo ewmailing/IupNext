@@ -71,12 +71,16 @@ static int cbChildButton(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int cbValuePos(Ihandle* ih)
+static int cbTest(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
-  IupSetAttribute(tabs, "VALUEPOS", "0");
+//  IupSetAttribute(tabs, "VALUEPOS", "0");
 //  IupSetAttribute(tabs, "TABTITLE0", "1asdasd");
 //  printf("VALUE=%s\n", IupGetAttribute(tabs, "VALUE"));
+  if (IupGetInt(tabs, "TABVISIBLE2"))
+    IupSetAttribute(tabs, "TABVISIBLE2", "No");
+  else
+    IupSetAttribute(tabs, "TABVISIBLE2", "Yes");
   return IUP_DEFAULT;
 }
 
@@ -303,7 +307,7 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(vboxA, "TITLE", "TABS A");
   IupSetAttribute(vboxB, "TITLE", "TABS BB");
   IupSetAttribute(vboxC, "TITLE", "TABS CCC");
-  IupSetAttribute(vboxC, "ACTIVE", "NO");
+//  IupSetAttribute(vboxC, "ACTIVE", "NO");
   IupSetAttribute(vboxF, "TABSIZE", "100");
   IupSetAttribute(vboxI, "BGCOLOR", "32 192 32");
 
@@ -314,6 +318,8 @@ static Ihandle* CreateTabs(int tab)
 
   //IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_LogoTecgraf());
   IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_TestImage());
+
+  IupSetAttribute(tabs, "TABVISIBLE2", "NO");
 
   // In Windows, must be set before map
 //  IupSetAttribute(tabs, "MULTILINE", "YES");
@@ -378,7 +384,7 @@ void TabsTest(void)
                         IupButton("Insert Tab", "cbInsertTab"),
                         IupButton("Remove Tab", "cbRemoveTab"),
                         IupToggle("Inactive", "cbInactive"),
-                        IupButton("VALUEPOS=0", "cbValuePos"),
+                        IupButton("Test", "cbTest"),
                         NULL), 
                 NULL);
 
@@ -414,7 +420,7 @@ void TabsTest(void)
   IupSetFunction("cbRemoveTab", (Icallback)cbRemoveTab);
   IupSetFunction("cbInactive", (Icallback)cbInactive);
   IupSetFunction("cbChildButton", (Icallback)cbChildButton);
-  IupSetFunction("cbValuePos", (Icallback)cbValuePos);
+  IupSetFunction("cbTest", (Icallback)cbTest);
 }
 
 #ifndef BIG_TEST

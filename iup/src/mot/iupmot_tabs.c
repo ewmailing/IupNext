@@ -80,8 +80,18 @@ static void motTabsUpdatePageNumber(Ihandle* ih)
       if (pos != old_pos)
       {
         Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
-        XtVaSetValues(child_manager, XmNpageNumber, pos, NULL);
-        XtVaSetValues(tab_button, XmNpageNumber, pos, NULL);
+        XWindowAttributes wa;
+        XGetWindowAttributes(iupmot_display, XtWindow(tab_button), &wa);
+        if (wa.map_state == IsViewable)
+        {
+          XtVaSetValues(child_manager, XmNpageNumber, pos, NULL);
+          XtVaSetValues(tab_button, XmNpageNumber, pos, NULL);
+        }
+        else
+        {
+          XtVaSetValues(child_manager, XmNpageNumber, XmUNSPECIFIED_PAGE_NUMBER, NULL);
+          XtVaSetValues(tab_button, XmNpageNumber, XmUNSPECIFIED_PAGE_NUMBER, NULL);
+        }
         iupAttribSetInt(child, "_IUPMOT_TABNUMBER", pos);
       }
     }
@@ -301,6 +311,45 @@ static int motTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
   return 1;
 }
 
+static int motTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
+{
+  Ihandle* child = IupGetChild(ih, pos);
+  Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
+  Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
+  if (iupStrBoolean(value))
+  {
+    XtVaSetValues(child_manager, XmNpageNumber, pos, NULL);
+    XtVaSetValues(tab_button, XmNpageNumber, pos, NULL);
+
+    XtMapWidget(tab_button);
+    XtMapWidget(child_manager);
+  }
+  else
+  {
+    iupTabsCheckCurrentTab(ih, pos);
+
+    XtVaSetValues(child_manager, XmNpageNumber, XmUNSPECIFIED_PAGE_NUMBER, NULL);
+    XtVaSetValues(tab_button, XmNpageNumber, XmUNSPECIFIED_PAGE_NUMBER, NULL);
+
+    XtUnmapWidget(tab_button);
+    XtUnmapWidget(child_manager);
+  }
+  return 0;
+}
+
+static char* motTabsGetTabVisibleAttrib(Ihandle* ih, int pos)
+{
+  Ihandle* child = IupGetChild(ih, pos);
+  Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
+  XWindowAttributes wa;
+  XGetWindowAttributes(iupmot_display, XtWindow(tab_button), &wa);
+  if (wa.map_state == IsViewable)
+    return "YES";
+  else
+    return "NO";
+}
+
+
 
 /* ------------------------------------------------------------------------- */
 /* motTabs - Callback                                                        */
@@ -491,7 +540,8 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
 
       pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaGetValues(child_manager, XmNpageNumber) */
-      iupTabsTestRemoveTab(ih, pos);
+
+      iupTabsCheckCurrentTab(ih, pos);
 
       XtDestroyWidget(tab_button);
       XtDestroyWidget(child_manager);
@@ -603,6 +653,7 @@ void iupdrvTabsInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  /* can not be set, always HORIZONTAL in Motif */
   iupClassRegisterAttributeId(ic, "TABTITLE", NULL, motTabsSetTabTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, motTabsSetTabImageAttrib, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABVISIBLE", motTabsGetTabVisibleAttrib, motTabsSetTabVisibleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, motTabsSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* NOT supported */

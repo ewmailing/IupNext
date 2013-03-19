@@ -284,7 +284,6 @@ static void winDialogResize(Ihandle* ih, int width, int height)
   IFnii cb;
 
   iupdrvDialogGetSize(ih, NULL, &(ih->currentwidth), &(ih->currentheight));
-
   cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
   if (!cb || cb(ih, width, height)!=IUP_IGNORE)  /* width and height here are for the client area */
   {

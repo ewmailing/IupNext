@@ -17,7 +17,7 @@ char* iupTabsGetTabTypeAttrib(Ihandle* ih);
 char* iupTabsAttribGetStrId(Ihandle* ih, const char* name, int pos);
 void iupTabsAttribSetStrId(Ihandle* ih, const char* name, int pos, const char* value);
 char* iupTabsGetPaddingAttrib(Ihandle* ih);
-void iupTabsTestRemoveTab(Ihandle* ih, int pos);
+void iupTabsCheckCurrentTab(Ihandle* ih, int pos);
 
 int iupdrvTabsExtraDecor(Ihandle* ih);
 int iupdrvTabsGetLineCountAttrib(Ihandle* ih);
@@ -41,7 +41,8 @@ struct _IcontrolData
   ItabsType type;
   ItabsOrientation orientation;
   int horiz_padding, vert_padding;  /* tab title margin */
-  int is_multiline; /* used only in Windows */
+  int is_multiline;   /* used only in Windows */
+  int has_invisible;  /* used only in Windows */
 };
 
 
