@@ -52,9 +52,39 @@ static char* iLabelGetSeparatorAttrib(Ihandle* ih)
   return NULL;
 }
 
+int iupLabelGetTypeBeforeMap(Ihandle* ih)
+{
+  int type = ih->data->type;
+
+  if (!ih->handle)
+  {
+    /* if not mapped must initialize the internal values */
+    char* value = iupAttribGet(ih, "SEPARATOR");
+    if (value)
+    {
+      if (iupStrEqualNoCase(value, "HORIZONTAL"))
+        type = IUP_LABEL_SEP_HORIZ;
+      else /* "VERTICAL" */
+        type = IUP_LABEL_SEP_VERT;
+    }
+    else
+    {
+      value = iupAttribGet(ih, "IMAGE");
+      if (value)
+        type = IUP_LABEL_IMAGE;
+      else
+        type = IUP_LABEL_TEXT;
+    }
+  }
+
+  return type;
+}
+
 char* iupLabelGetPaddingAttrib(Ihandle* ih)
 {
-  if (ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
+  /* this method can be called before map */
+  int type = iupLabelGetTypeBeforeMap(ih);
+  if (type != IUP_LABEL_SEP_HORIZ && type != IUP_LABEL_SEP_VERT)
   {
     char *str = iupStrGetMemory(50);
     sprintf(str, "%dx%d", ih->data->horiz_padding, ih->data->vert_padding);
@@ -84,29 +114,8 @@ static void iLabelComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *exp
 {
   int natural_w = 0, 
       natural_h = 0, 
-      type = ih->data->type;
+      type = iupLabelGetTypeBeforeMap(ih);
   (void)expand; /* unset if not a container */
-
-  if (!ih->handle)
-  {
-    /* if not mapped must initialize the internal values */
-    char* value = iupAttribGet(ih, "SEPARATOR");
-    if (value)
-    {
-      if (iupStrEqualNoCase(value, "HORIZONTAL"))
-        type = IUP_LABEL_SEP_HORIZ;
-      else /* "VERTICAL" */
-        type = IUP_LABEL_SEP_VERT;
-    }
-    else
-    {
-      value = iupAttribGet(ih, "IMAGE");
-      if (value)
-        type = IUP_LABEL_IMAGE;
-      else
-        type = IUP_LABEL_TEXT;
-    }
-  }
 
   if (type == IUP_LABEL_SEP_HORIZ)
     natural_h = 2;

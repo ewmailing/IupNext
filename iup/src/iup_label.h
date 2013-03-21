@@ -15,6 +15,7 @@ extern "C" {
 void iupdrvLabelInitClass(Iclass* ic);
 
 char* iupLabelGetPaddingAttrib(Ihandle* ih);
+int iupLabelGetTypeBeforeMap(Ihandle* ih);
 
 enum{IUP_LABEL_SEP_HORIZ, IUP_LABEL_SEP_VERT, IUP_LABEL_IMAGE, IUP_LABEL_TEXT};
 

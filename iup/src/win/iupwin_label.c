@@ -240,7 +240,9 @@ static int winLabelSetEllipsisAttrib(Ihandle* ih, const char* value)
 
 static int winLabelSetFgColorAttrib(Ihandle* ih, const char* value)
 {
-  if (ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
+  /* this method can be called before map */
+  int type = iupLabelGetTypeBeforeMap(ih);
+  if (type != IUP_LABEL_SEP_HORIZ && type != IUP_LABEL_SEP_VERT)
   {
     unsigned char r, g, b;
     if (iupStrToRGB(value, &r, &g, &b))
