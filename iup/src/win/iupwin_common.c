@@ -326,6 +326,26 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
   case WM_KILLFOCUS:
     iupCallKillFocusCb(ih);
     break;
+  case WM_SETCURSOR: 
+    { 
+      if (ih->handle == (HWND)wp && LOWORD(lp)==HTCLIENT)
+      {
+        HCURSOR hCur = (HCURSOR)iupAttribGet(ih, "_IUPWIN_HCURSOR");
+        if (hCur)
+        {
+          SetCursor(hCur); 
+          *result = 1;
+          return 1;
+        }
+        else if (iupAttribGet(ih, "CURSOR"))
+        {
+          SetCursor(NULL); 
+          *result = 1;
+          return 1;
+        }
+      }
+      break; 
+    } 
   case WM_TOUCH:
     /* TODO: 
      - considering touch messages are greedy, one window got it all?
@@ -908,11 +928,40 @@ void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle)
     *dwExStyle |= WS_EX_COMPOSITED;
 }
 
+int iupwinWCreateWindowEx(Ihandle* ih, LPCWSTR lpClassName, DWORD dwExStyle, DWORD dwStyle)
+{
+  ih->serial = iupDialogGetChildId(ih);
+
+  ih->handle = CreateWindowExW(dwExStyle,  /* extended window style */
+    lpClassName,                  /* window class */
+    NULL,                         /* title */
+    dwStyle,                      /* window style */
+    0,                            /* x-position */
+    0,                            /* y-position */
+    10,                           /* default width to avoid 0 */
+    10,                           /* default height to avoid 0 */
+    iupChildTreeGetNativeParentHandle(ih),     /* window parent */
+    (HMENU)ih->serial,            /* child identifier */
+    iupwin_hinstance,             /* instance of app. */
+    NULL);
+
+  if (!ih->handle)
+    return 0;
+
+  /* associate HWND with Ihandle*, all Win32 controls must call this. */
+  iupwinHandleAdd(ih, ih->handle);
+
+  /* replace the WinProc to handle base callbacks */
+  iupwinChangeProc(ih, iupwinBaseWinProc);
+
+  return 1;
+}
+
 int iupwinCreateWindowEx(Ihandle* ih, LPCSTR lpClassName, DWORD dwExStyle, DWORD dwStyle)
 {
   ih->serial = iupDialogGetChildId(ih);
 
-  ih->handle = CreateWindowEx(dwExStyle,  /* extended window style */
+  ih->handle = CreateWindowExA(dwExStyle,  /* extended window style */
     lpClassName,                  /* window class */
     NULL,                         /* title */
     dwStyle,                      /* window style */

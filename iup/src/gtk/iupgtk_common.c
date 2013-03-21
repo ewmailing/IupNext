@@ -626,7 +626,10 @@ int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
   {
     GdkWindow* window = iupgtkGetWindow(ih->handle);
     if (window)
+    {
       gdk_window_set_cursor(window, cur);
+      gdk_display_flush(gdk_display_get_default());
+    }
     return 1;
   }
   return 0;

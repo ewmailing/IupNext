@@ -33,6 +33,7 @@ Iclass* iupSpinNewClass(void);
 Iclass* iupSpinboxNewClass(void);
 Iclass* iupListNewClass(void);
 Iclass* iupTreeNewClass(void);
+Iclass* iupLinkNewClass(void);
 
 Iclass* iupMenuNewClass(void);
 Iclass* iupItemNewClass(void);

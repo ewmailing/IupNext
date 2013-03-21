@@ -97,6 +97,7 @@
     <ClCompile Include="..\test\hbox.c" />
     <ClCompile Include="..\test\idle.c" />
     <ClCompile Include="..\test\label.c" />
+    <ClCompile Include="..\test\link.c" />
     <ClCompile Include="..\test\list.c" />
     <ClCompile Include="..\test\matrix.c" />
     <ClCompile Include="..\test\matrix_cbmode.c" />

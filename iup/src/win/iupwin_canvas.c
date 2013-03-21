@@ -534,26 +534,6 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
         ReleaseCapture();
       break;
     }
-  case WM_SETCURSOR: 
-    { 
-      if (ih->handle == (HWND)wp && LOWORD(lp)==HTCLIENT)
-      {
-        HCURSOR hCur = (HCURSOR)iupAttribGet(ih, "_IUPWIN_HCURSOR");
-        if (hCur)
-        {
-          SetCursor(hCur); 
-          *result = 1;
-          return 1;
-        }
-        else if (iupAttribGet(ih, "CURSOR"))
-        {
-          SetCursor(NULL); 
-          *result = 1;
-          return 1;
-        }
-      }
-      break; 
-    } 
   case WM_INITMENU:
     /* abort capture if a menu is opened */
     ReleaseCapture();

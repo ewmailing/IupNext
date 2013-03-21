@@ -120,6 +120,8 @@ int iupdrvOpen(int *argc, char ***argv)
     iupGlobalSetDefaultColorAttrib("TXTBGCOLOR", 255, 255, 255);
     iupGlobalSetDefaultColorAttrib("TXTFGCOLOR", 0, 0, 0);
     IupSetGlobal("_IUP_RESET_TXTCOLORS", "YES");   /* will update the TXTCOLORS when the first text or list is mapped */
+
+    iupGlobalSetDefaultColorAttrib("LINKFGCOLOR", 0, 0, 238);
   }
 
   /* enable alternative DnD icons as default */

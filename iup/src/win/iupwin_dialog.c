@@ -478,26 +478,6 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
       if (cb) cb(ih, cds->lpData, cds->cbData);
       break; 
     }
-  case WM_SETCURSOR: 
-    { 
-      if (ih->handle == (HWND)wp && LOWORD(lp)==HTCLIENT)
-      {
-        HCURSOR hCur = (HCURSOR)iupAttribGet(ih, "_IUPWIN_HCURSOR");
-        if (hCur)
-        {
-          SetCursor(hCur); 
-          *result = 1;
-          return 1;
-        }
-        else if (iupAttribGet(ih, "CURSOR"))
-        {
-          SetCursor(NULL); 
-          *result = 1;
-          return 1;
-        }
-      }
-      break; 
-    } 
   case WM_ERASEBKGND:
     {
       HBITMAP hBitmap = (HBITMAP)iupAttribGet(ih, "_IUPWIN_BACKGROUND_BITMAP");

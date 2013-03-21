@@ -55,7 +55,7 @@ static XFontStruct* motLoadFont(const char* foundry, const char *typeface, int s
   char *weight, *slant;
   int i, num_fonts, font_size, near_size;
               
-  /* no underline or strikeout support */
+  /* no underline or strikeout parsing here */
 
   if (iupStrEqualNoCase(typeface, "System"))
     typeface = "fixed";

@@ -74,6 +74,7 @@ void ScrollBoxTest(void);
 void SplitTest(void);
 void ClipboardTest(void);
 void CharacTest(void);
+void LinkTest(void);
 
 
 void HelpTest(void)
@@ -115,6 +116,7 @@ static TestItems test_list[] = {
   {"Hbox", HboxTest},
   {"Idle", IdleTest},
   {"Label", LabelTest},
+  {"Link", LinkTest},
   {"List", ListTest},
   {"Matrix", MatrixTest},
   {"MatrixCbMode", MatrixCbModeTest},

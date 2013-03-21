@@ -91,7 +91,7 @@ int iupdrvOpen(int *argc, char ***argv)
   {
     INITCOMMONCONTROLSEX InitCtrls;
     InitCtrls.dwSize = sizeof(INITCOMMONCONTROLSEX);
-    InitCtrls.dwICC = ICC_WIN95_CLASSES;  /* trackbar, tooltips, updown, tab, progress */
+    InitCtrls.dwICC = ICC_WIN95_CLASSES|ICC_LINK_CLASS;  /* trackbar, tooltips, updown, tab, progress */
     InitCommonControlsEx(&InitCtrls);  
   }
 
@@ -108,6 +108,7 @@ int iupdrvOpen(int *argc, char ***argv)
   winSetGlobalColor(COLOR_WINDOWTEXT, "TXTFGCOLOR");
   winSetGlobalColor(COLOR_MENU,     "MENUBGCOLOR");
   winSetGlobalColor(COLOR_MENUTEXT, "MENUFGCOLOR");
+  winSetGlobalColor(COLOR_HOTLIGHT, "LINKFGCOLOR");
 
   iupwinHandleInit();
   iupwinBrushInit();

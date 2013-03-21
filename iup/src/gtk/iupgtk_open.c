@@ -254,6 +254,8 @@ static void gtkUpdateGlobalColors(GtkWidget* dialog, GtkWidget* text)
   color = style->text[GTK_STATE_NORMAL];
   gtkSetGlobalColorAttrib("TXTFGCOLOR", &color);
 #endif
+
+  iupGlobalSetDefaultColorAttrib("LINKFGCOLOR", 0, 0, 238);
 }
 
 static void gtkSetGlobalColors(void)

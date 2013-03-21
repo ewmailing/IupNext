@@ -67,6 +67,7 @@
     <ClCompile Include="..\src\iup_layout.c" />
     <ClCompile Include="..\src\iup_ledlex.c" />
     <ClCompile Include="..\src\iup_ledparse.c" />
+    <ClCompile Include="..\src\iup_link.c" />
     <ClCompile Include="..\src\iup_mask.c" />
     <ClCompile Include="..\src\iup_maskmatch.c" />
     <ClCompile Include="..\src\iup_maskparse.c" />

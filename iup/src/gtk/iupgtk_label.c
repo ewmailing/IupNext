@@ -28,6 +28,21 @@
 #include "iupgtk_drv.h"
 
 
+static int gtkLabelSetBgColorAttrib(Ihandle* ih, const char* value)
+{
+  GtkWidget* eventbox = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
+  unsigned char r, g, b;
+
+  /* ignore given value, must use only from parent for the scrollbars */
+  char* parent_value = iupBaseNativeParentGetBgColor(ih);
+
+  if (iupStrToRGB(parent_value, &r, &g, &b))
+    iupgtkSetBgColor(eventbox, r, g, b);
+
+  (void)value;
+  return iupdrvBaseSetBgColorAttrib(ih, parent_value);
+}
+
 static int gtkLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_LABEL_TEXT)
@@ -283,13 +298,25 @@ static int gtkLabelMapMethod(Ihandle* ih)
 
   ih->handle = label;
 
+  /* interactive callbacks will not work without the eventbox */
+  {
+    GtkWidget *box = gtk_event_box_new();
+    gtk_container_add((GtkContainer*)box, ih->handle);
+    iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)box);
+
+    gtk_widget_add_events(box, 
+      GDK_POINTER_MOTION_MASK| GDK_POINTER_MOTION_HINT_MASK|
+      GDK_BUTTON_PRESS_MASK|GDK_BUTTON_RELEASE_MASK|GDK_BUTTON_MOTION_MASK|
+      GDK_ENTER_NOTIFY_MASK|GDK_LEAVE_NOTIFY_MASK);
+
+    g_signal_connect(G_OBJECT(box), "button-press-event", G_CALLBACK(iupgtkButtonEvent), ih);
+    g_signal_connect(G_OBJECT(box), "button-release-event",G_CALLBACK(iupgtkButtonEvent), ih);
+    g_signal_connect(G_OBJECT(box), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+    g_signal_connect(G_OBJECT(box), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+  }
+
   /* add to the parent, all GTK controls must call this. */
   iupgtkAddToParent(ih);
-
-  g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(iupgtkButtonEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(iupgtkButtonEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
 
   gtk_widget_realize(label);
 
@@ -314,7 +341,7 @@ void iupdrvLabelInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkLabelSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, gtkLabelSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);

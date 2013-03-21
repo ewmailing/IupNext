@@ -67,6 +67,7 @@ SRC += sbox.c
 SRC += scrollbox.c
 SRC += clipboard.c
 SRC += split.c
+SRC += link.c
 
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )

@@ -69,5 +69,6 @@
     <ClCompile Include="..\test\val.c" />
     <ClCompile Include="..\test\vbox.c" />
     <ClCompile Include="..\test\zbox.c" />
+    <ClCompile Include="..\test\link.c" />
   </ItemGroup>
 </Project>

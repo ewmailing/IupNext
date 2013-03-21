@@ -203,6 +203,8 @@ Ihandle*  IupVal        (const char *type);
 Ihandle*  IupTabs       (Ihandle* child, ...);
 Ihandle*  IupTabsv      (Ihandle* *children);
 Ihandle*  IupTree       (void);
+Ihandle*  IupLink       (const char* url, const char* title);
+
 
 /* Deprecated controls use SPIN attribute of IupText */
 Ihandle*  IupSpin       (void);
