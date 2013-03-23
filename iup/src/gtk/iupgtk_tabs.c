@@ -57,20 +57,11 @@ int iupdrvTabsGetCurrentTab(Ihandle* ih)
 static void gtkTabsUpdatePageFont(Ihandle* ih)
 {
   Ihandle* child;
-  PangoFontDescription* fontdesc = (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih);
-
   for (child = ih->firstchild; child; child = child->brother)
   {
     GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
     if (tab_label)
-    {
-#if GTK_CHECK_VERSION(3, 0, 0)
-      gtk_widget_override_font(tab_label, fontdesc);
-#else
-      gtk_widget_modify_font(tab_label, fontdesc);
-#endif
-      iupgtkFontUpdatePangoLayout(ih, gtk_label_get_layout((GtkLabel*)tab_label));
-    }
+      iupgtkUpdateWidgetFont(ih, tab_label);
   }
 }
 
@@ -398,13 +389,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     if (tabtitle)
     {
-      PangoFontDescription* fontdesc = (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih);
-#if GTK_CHECK_VERSION(3, 0, 0)
-      gtk_widget_override_font(tab_label, fontdesc);
-#else
-      gtk_widget_modify_font(tab_label, fontdesc);
-#endif
-      iupgtkFontUpdatePangoLayout(ih, gtk_label_get_layout((GtkLabel*)tab_label));
+      iupgtkUpdateWidgetFont(ih, tab_label);
 
       iupgtkSetBgColor(tab_label, r, g, b);
 

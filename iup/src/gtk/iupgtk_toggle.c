@@ -269,16 +269,8 @@ static int gtkToggleSetStandardFontAttrib(Ihandle* ih, const char* value)
   if (ih->handle)
   {
     GtkWidget* label = gtk_button_get_image((GtkButton*)ih->handle);
-    if (!label) return 1;
-
-#if GTK_CHECK_VERSION(3, 0, 0)
-    gtk_widget_override_font((GtkWidget*)label, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
-#else
-    gtk_widget_modify_font((GtkWidget*)label, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
-#endif
-
-    if (ih->data->type == IUP_TOGGLE_TEXT)
-      iupgtkFontUpdatePangoLayout(ih, gtk_label_get_layout((GtkLabel*)label));
+    if (label)
+      iupgtkUpdateWidgetFont(ih, label);
   }
   return 1;
 }

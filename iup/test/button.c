@@ -314,7 +314,7 @@ void ButtonTest(void)
   IupSetAttribute(button, "TITLE", "Text\nSecond Line");
   IupSetAttribute(button, "RASTERSIZE", "200x100");
   IupSetAttribute(button, "ALIGNMENT", "ACENTER:ACENTER");
-  IupSetAttribute(button, "FONT", "Helvetica, 14");
+  IupSetAttribute(button, "FONT", "Helvetica, Underline 14");
   IupSetAttribute(button, "FLAT", "YES");
   IupSetAttribute(button, "NAME", "button2");
   set_callbacks(button);

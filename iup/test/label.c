@@ -124,7 +124,7 @@ void LabelTest(void)
   IupSetAttribute(label, "TITLE", "Text\nSecond Line");
   IupSetAttribute(label, "RASTERSIZE", "150x70");
   IupSetAttribute(label, "ALIGNMENT", "ACENTER:ACENTER");
-  IupSetAttribute(label, "FONT", "Helvetica, 14");
+  IupSetAttribute(label, "FONT", "Helvetica, Underline 14");
 //  IupSetAttribute(label, "FONTSIZE", "14");
 //  IupSetAttribute(label, "FONTSTYLE", "Italic");
 //  IupSetAttribute(label, "FONTSTYLE", "Bold");

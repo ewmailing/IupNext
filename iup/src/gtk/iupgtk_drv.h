@@ -63,14 +63,13 @@ int iupgtkKeyDecode(GdkEventKey *evt);
 
 
 /* font */
+PangoFontDescription* iupgtkGetPangoFontDesc(const char* value);
 char* iupgtkGetPangoFontDescAttrib(Ihandle *ih);
 char* iupgtkGetPangoLayoutAttrib(Ihandle *ih);
 char* iupgtkGetFontIdAttrib(Ihandle *ih);
-PangoFontDescription* iupgtkGetPangoFontDesc(const char* value);
+void iupgtkUpdateObjectFont(Ihandle* ih, gpointer object);
+void iupgtkUpdateWidgetFont(Ihandle *ih, GtkWidget* widget);
 PangoLayout* iupgtkGetPangoLayout(const char* value);
-char* iupgtkFindPangoFontDesc(PangoFontDescription* fontdesc);
-void iupgtkFontUpdatePangoLayout(Ihandle* ih, PangoLayout* layout);
-void iupgtkFontUpdateObjectPangoLayout(Ihandle* ih, gpointer object);
 
 /* There are PANGO_SCALE Pango units in one device unit. 
   For an output backend where a device unit is a pixel, 

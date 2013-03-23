@@ -36,19 +36,19 @@ typedef struct _IgtkFont
 static Iarray* gtk_fonts = NULL;
 static PangoContext *gtk_fonts_context = NULL;
 
-static void gtkFontUpdate(IgtkFont* gtkfont)
+static void gtkFontUpdateLayout(IgtkFont* gtkfont, PangoLayout* layout)
 {
   PangoAttrList *attrs;
 
-  pango_layout_set_font_description(gtkfont->layout, gtkfont->fontdesc);
+  pango_layout_set_font_description(layout, gtkfont->fontdesc);
 
-  attrs = pango_layout_get_attributes(gtkfont->layout);
+  attrs = pango_layout_get_attributes(layout);
   if (!attrs) 
   {
     attrs = pango_attr_list_new();
     pango_attr_list_insert(attrs, pango_attribute_copy(gtkfont->strikethrough));
     pango_attr_list_insert(attrs, pango_attribute_copy(gtkfont->underline));
-    pango_layout_set_attributes(gtkfont->layout, attrs);
+    pango_layout_set_attributes(layout, attrs);
   }
   else
   {
@@ -89,7 +89,10 @@ static IgtkFont* gtkFindFont(const char *standardfont)
       if (!iupFontParseX(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
       {
         if (!iupFontParsePango(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+        {
+          iupERROR1("Failed to create Font: %s", standardfont); 
           return NULL;
+        }
         else
           is_pango = 1;
       }
@@ -123,7 +126,10 @@ static IgtkFont* gtkFindFont(const char *standardfont)
   }
 
   if (!fontdesc) 
+  {
+    iupERROR1("Failed to create Font: %s", standardfont); 
     return NULL;
+  }
 
   /* create room in the array */
   fonts = (IgtkFont*)iupArrayInc(gtk_fonts);
@@ -141,74 +147,77 @@ static IgtkFont* gtkFindFont(const char *standardfont)
   fonts[i].charwidth = iupGTK_PANGOUNITS2PIXELS(fonts[i].charwidth);
   pango_font_metrics_unref(metrics); 
 
-  gtkFontUpdate(&(fonts[i]));
+  gtkFontUpdateLayout(&(fonts[i]), fonts[i].layout);
 
   return &fonts[i];
 }
 
-static PangoLayout* gtkFontGetWidgetPangoLayout(Ihandle *ih)
-{
-  int inherit;
-  char *def_value;
-  /* only check the  native implementation */
-  return (PangoLayout*)iupClassObjectGetAttribute(ih, "WIDGETPANGOLAYOUT", &def_value, &inherit);
-}
-
-static IgtkFont* gtkFontCreateNativeFont(Ihandle* ih, const char* value)
+static IgtkFont* gtkFontSet(Ihandle* ih, const char* value)
 {
   IgtkFont *gtkfont = gtkFindFont(value);
-  if (!gtkfont)
+  if (gtkfont)
   {
-    iupERROR1("Failed to create Font: %s", value); 
-    return NULL;
+    iupAttribSetStr(ih, "_IUP_GTKFONT", (char*)gtkfont);
+    return gtkfont;
   }
-
-  iupAttribSetStr(ih, "_IUP_GTKFONT", (char*)gtkfont);
-  return gtkfont;
+  else
+    return NULL;
 }
 
 static IgtkFont* gtkFontGet(Ihandle *ih)
 {
   IgtkFont* gtkfont = (IgtkFont*)iupAttribGet(ih, "_IUP_GTKFONT");
   if (!gtkfont)
-    gtkfont = gtkFontCreateNativeFont(ih, iupGetFontAttrib(ih));
+    gtkfont = gtkFontSet(ih, iupGetFontAttrib(ih));
   return gtkfont;
 }
 
-void iupgtkFontUpdatePangoLayout(Ihandle* ih, PangoLayout* layout)
+static void gtkFontUpdateWidget(Ihandle* ih, GtkWidget* widget, PangoFontDescription* fontdesc)
 {
   IgtkFont* gtkfont;
-  PangoAttrList *attrs;
 
-  if (!layout)
-    return;
+#if GTK_CHECK_VERSION(3, 0, 0)
+  gtk_widget_override_font(widget, fontdesc);
+#else
+  gtk_widget_modify_font(widget, fontdesc);
+#endif
 
   gtkfont = gtkFontGet(ih);
   if (!gtkfont)
     return;
 
-  attrs = pango_layout_get_attributes(layout);
-  if (!attrs) 
+  if (GTK_IS_LABEL(widget))
   {
-    attrs = pango_attr_list_new();
+    PangoAttrList *attrs = pango_attr_list_new();
     pango_attr_list_insert(attrs, pango_attribute_copy(gtkfont->strikethrough));
     pango_attr_list_insert(attrs, pango_attribute_copy(gtkfont->underline));
-    pango_layout_set_attributes(layout, attrs);
+    gtk_label_set_attributes (GTK_LABEL(widget), attrs);
+    pango_attr_list_unref(attrs);
   }
-  else
+
+  if (GTK_IS_ENTRY(widget))
   {
-    pango_attr_list_change(attrs, pango_attribute_copy(gtkfont->strikethrough));
-    pango_attr_list_change(attrs, pango_attribute_copy(gtkfont->underline));
+    /* TODO: This is NOT working. */
+    PangoLayout* layout = gtk_entry_get_layout(GTK_ENTRY(widget));
+    gtkFontUpdateLayout(gtkfont, layout);
   }
 }
 
-void iupgtkFontUpdateObjectPangoLayout(Ihandle* ih, gpointer object)
+void iupgtkUpdateWidgetFont(Ihandle *ih, GtkWidget* widget)
+{
+  PangoFontDescription* fontdesc = (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih);
+  gtkFontUpdateWidget(ih, widget, fontdesc);
+}
+
+void iupgtkUpdateObjectFont(Ihandle* ih, gpointer object)
 {
   PangoAttrList *attrs;
 
   IgtkFont* gtkfont = gtkFontGet(ih);
   if (!gtkfont)
     return;
+
+  g_object_set(object, "font-desc", gtkfont->fontdesc, NULL);
 
   g_object_get(object, "attributes", &attrs, NULL);
   if (!attrs) 
@@ -257,59 +266,40 @@ char* iupdrvGetSystemFont(void)
   return str;
 }
 
-char* iupgtkFindPangoFontDesc(PangoFontDescription* fontdesc)
-{
-  int i, count = iupArrayCount(gtk_fonts);
-  IgtkFont* fonts = (IgtkFont*)iupArrayGetData(gtk_fonts);
-
-  /* Check if the standardfont already exists in cache */
-  for (i = 0; i < count; i++)
-  {
-    if (pango_font_description_equal(fontdesc, fonts[i].fontdesc))
-      return fonts[i].standardfont;
-  }
-
-  return NULL;
-}
-
-PangoFontDescription* iupgtkGetPangoFontDesc(const char* value)
-{
-  IgtkFont *gtkfont = gtkFindFont(value);
-  if (!gtkfont)
-  {
-    iupERROR1("Failed to create Font: %s", value); 
-    return NULL;
-  }
-  return gtkfont->fontdesc;
-}
-
 PangoLayout* iupgtkGetPangoLayout(const char* value)
 {
   IgtkFont *gtkfont = gtkFindFont(value);
-  if (!gtkfont)
-  {
-    iupERROR1("Failed to create Font: %s", value); 
-    return NULL;
-  }
-  return gtkfont->layout;
-}
-
-char* iupgtkGetPangoFontDescAttrib(Ihandle *ih)
-{
-  IgtkFont* gtkfont = gtkFontGet(ih);
-  if (!gtkfont)
-    return NULL;
+  if (gtkfont)
+    return gtkfont->layout;
   else
-    return (char*)gtkfont->fontdesc;
+    return NULL;
 }
 
 char* iupgtkGetPangoLayoutAttrib(Ihandle *ih)
 {
   IgtkFont* gtkfont = gtkFontGet(ih);
-  if (!gtkfont)
-    return NULL;
-  else
+  if (gtkfont)
     return (char*)gtkfont->layout;
+  else
+    return NULL;
+}
+
+PangoFontDescription* iupgtkGetPangoFontDesc(const char* value)
+{
+  IgtkFont *gtkfont = gtkFindFont(value);
+  if (gtkfont)
+    return gtkfont->fontdesc;
+  else
+    return NULL;
+}
+
+char* iupgtkGetPangoFontDescAttrib(Ihandle *ih)
+{
+  IgtkFont* gtkfont = gtkFontGet(ih);
+  if (gtkfont)
+    return (char*)gtkfont->fontdesc;
+  else
+    return NULL;
 }
 
 char* iupgtkGetFontIdAttrib(Ihandle *ih)
@@ -333,7 +323,7 @@ char* iupgtkGetFontIdAttrib(Ihandle *ih)
 
 int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
-  IgtkFont* gtkfont = gtkFontCreateNativeFont(ih, value);
+  IgtkFont* gtkfont = gtkFontSet(ih, value);
   if (!gtkfont)
     return 1;
 
@@ -343,14 +333,7 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
   /* FONT attribute must be able to be set before mapping, 
     so the font is enable for size calculation. */
   if (ih->handle && (ih->iclass->nativetype != IUP_TYPEVOID))
-  {
-#if GTK_CHECK_VERSION(3, 0, 0)
-    gtk_widget_override_font(ih->handle, gtkfont->fontdesc); 
-#else
-    gtk_widget_modify_font(ih->handle, gtkfont->fontdesc); 
-#endif
-    iupgtkFontUpdatePangoLayout(ih, gtkFontGetWidgetPangoLayout(ih));
-  }
+    gtkFontUpdateWidget(ih, ih->handle, gtkfont->fontdesc);
 
   return 1;
 }
@@ -378,10 +361,11 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
   {
     int dummy_h;
 
-    pango_layout_set_attributes(gtkfont->layout, NULL);
-
     if (iupAttribGetBoolean(ih, "MARKUP"))
+    {
+      pango_layout_set_attributes(gtkfont->layout, NULL);
       pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToUTF8(str), -1);
+    }
     else
       pango_layout_set_text(gtkfont->layout, iupgtkStrConvertToUTF8(str), -1);
 
@@ -412,7 +396,10 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
     len = strlen(str);
 
   if (iupAttribGetBoolean(ih, "MARKUP"))
+  {
+    pango_layout_set_attributes(gtkfont->layout, NULL);
     pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToUTF8(str), len);
+  }
   else
     pango_layout_set_text(gtkfont->layout, iupgtkStrConvertToUTF8(str), len);
 

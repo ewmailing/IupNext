@@ -16,7 +16,7 @@ void SpinTest(void)
 {
   Ihandle *dlg, *spinbox;
 
-  spinbox = IupSpinbox(IupSetAttributes(IupText(NULL), "SIZE=50x, EXPAND=HORIZONTAL"));
+  spinbox = IupSpinbox(IupSetAttributes(IupText(NULL), "SIZE=50x, EXPAND=HORIZONTAL, FONT=\"Times, 24\""));
 
   IupSetCallback(spinbox, "SPIN_CB", (Icallback)spin_cb);
 

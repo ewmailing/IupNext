@@ -154,14 +154,6 @@ static int gtkLabelSetPaddingAttrib(Ihandle* ih, const char* value)
     return 1; /* store until not mapped, when mapped will be set again */
 }
 
-static char* gtkLabelGetWidgetPangoLayoutAttrib(Ihandle* ih)
-{
-  if (ih->data->type == IUP_LABEL_TEXT)
-    return (char*)gtk_label_get_layout((GtkLabel*)ih->handle);
-  else
-    return NULL;
-}
-
 static void gtkLabelSetPixbuf(Ihandle* ih, const char* name, int make_inactive)
 {
   GtkImage* image_label = (GtkImage*)ih->handle;
@@ -333,9 +325,6 @@ void iupdrvLabelInitClass(Iclass* ic)
   ic->Map = gtkLabelMapMethod;
 
   /* Driver Dependent Attribute functions */
-
-  /* Common GTK only (when text is in a secondary element) */
-  iupClassRegisterAttribute(ic, "WIDGETPANGOLAYOUT", gtkLabelGetWidgetPangoLayoutAttrib, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Overwrite Visual */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkLabelSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);

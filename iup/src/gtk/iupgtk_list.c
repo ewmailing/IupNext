@@ -185,21 +185,14 @@ static int gtkListSetStandardFontAttrib(Ihandle* ih, const char* value)
     {
       GtkCellRenderer* renderer = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER");
       if (renderer)
-      {
-        g_object_set(G_OBJECT(renderer), "font-desc", (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih), NULL);
-        iupgtkFontUpdateObjectPangoLayout(ih, G_OBJECT(renderer));
-      }
+        iupgtkUpdateObjectFont(ih, G_OBJECT(renderer));
     }
 
     if (ih->data->has_editbox)
     {
       GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
-#if GTK_CHECK_VERSION(3, 0, 0)
-      gtk_widget_override_font((GtkWidget*)entry, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
-#else
-      gtk_widget_modify_font((GtkWidget*)entry, (PangoFontDescription*)iupgtkGetPangoFontDescAttrib(ih));
-#endif
-      iupgtkFontUpdatePangoLayout(ih, gtk_entry_get_layout(entry));
+      if (entry)
+        iupgtkUpdateWidgetFont(ih, (GtkWidget*)entry);
 
       gtk_entry_set_width_chars(entry, 1);  /* minimum size */
     }
