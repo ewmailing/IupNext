@@ -25,15 +25,17 @@ static int iLinkButton_CB(Ihandle* ih, int button, int pressed, int x, int y, ch
   if (button==IUP_BUTTON1 && pressed)
   {
     IFns cb = (IFns)IupGetCallback(ih, "ACTION");
+    char* url = iupAttribGetStr(ih, "URL");
     if (cb)
     {
-      char* url = iupAttribGetStr(ih, "URL");
       int ret = cb(ih, url);
       if (ret == IUP_CLOSE) 
         IupExitLoop();
       else if (ret == IUP_DEFAULT && url)
         IupHelp(url);
     }
+    else
+      IupHelp(url);
   }
 
   (void)x;

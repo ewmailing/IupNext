@@ -11,7 +11,7 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-   return iup.Link(param[1], param[2])
+   return iup.Link(param.url, param.title)
 end
 
 iup.RegisterWidget(ctrl)
