@@ -52,6 +52,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\srclua5\il_link.c" />
     <ClCompile Include="..\srclua5\iuplua.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level4</WarningLevel>
     </ClCompile>
@@ -122,6 +123,7 @@
     <None Include="..\srclua5\imagergba.lua" />
     <None Include="..\srclua5\item.lua" />
     <None Include="..\srclua5\label.lua" />
+    <None Include="..\srclua5\link.lua" />
     <None Include="..\srclua5\list.lua" />
     <None Include="..\srclua5\menu.lua" />
     <None Include="..\srclua5\messagedlg.lua" />

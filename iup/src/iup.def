@@ -75,6 +75,7 @@ IupStoreGlobal
 IupSubmenu
 IupSplit
 IupScrollBox
+IupLink
 IupText
 IupToggle
 IupUnMapFont
