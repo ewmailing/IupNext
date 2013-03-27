@@ -38,6 +38,9 @@
 	font-family: "Times New Roman", Times, serif;
 	font-size: 14pt;
 }
+.style14 {
+	text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -50,10 +53,11 @@ is defined only on elements that have a native representation.</p>
 <p>Font description containing typeface, style and size. Default: the global 
 attribute DEFAULTFONT.</p>
 <p>The common format definition is similar to the the <a href="http://www.pango.org/">
-Pango</a> library Font Description, used by GTK+2. It is defined as having 3 
-parts: &quot;&lt;font family&gt;<strong><span class="style9">,</span></strong> &lt;font styles&gt; &lt;font size&gt;&quot;.  </p>
-<p>Font family can be a list of fonts face names, but this is only accepted in 
-GTK. So the font family can be reduced to a <u>font face</u>.</p>
+Pango</a> library Font Description, used by GTK+. It is defined as having 3 
+parts: &quot;&lt;font face&gt;<strong><span class="style9">,</span></strong> &lt;font styles&gt; &lt;font size&gt;&quot;.  </p>
+<p><span class="style14">Font face</span> is the font face name, and can be any 
+name. Although only names recognized by the system will be actually used. The 
+names Helvetica, Courier and Times are always accepted in all systems.</p>
 <p>The supported <u>font style</u> is a combination of: <b>Bold</b>, <b>Italic</b>, <b>
 Underline</b> and 
 <b>Strikeout</b>. The Pango format include many other definitions not supported 
@@ -98,6 +102,8 @@ failed &quot;Sans, 10&quot; is assumed.</p>
 <p>The X-Windows Logical Font Description format (XLFD) is also supported.</p>
 <p>The native handle can be obtained using the &quot;<strong>PANGOFONTDESC</strong>&quot; 
 attribute.</p>
+<p>Font face can be a list of fonts face names in GTK. For example &quot;Arial,Helvetica, 
+12&quot;. Not accepted in the other drivers.</p>
 <p>Style can also be a combination of: Small-Caps, 
 [Ultra-Light|Light|Medium|Semi-Bold|Bold|Ultra-Bold|Heavy], 
 [Ultra-Condensed|Extra-Condensed|Condensed|Semi-Condensed|Semi-Expanded|Expanded|Extra-Expanded|Ultra-Expanded]. 
@@ -107,7 +113,7 @@ i.e. no underline, no strikeout and size&gt;0.</p>
 change the Applications Font to affect the default font.</p>
 <h4>Examples: </h4>
 <pre>&quot;Times, Bold 18&quot;
-&quot;Arial,Helvetica, 24&quot; (list of fonts for GTK)
+&quot;Arial, 24&quot; (no style)
 &quot;Courier New, Italic Underline -30&quot; (size in pixels)</pre>
 <h3>Affects</h3>
 <p>All elements, since the SIZE attribute depends on the FONT attribute, except 
