@@ -51,9 +51,9 @@ is defined only on elements that have a native representation.</p>
 attribute DEFAULTFONT.</p>
 <p>The common format definition is similar to the the <a href="http://www.pango.org/">
 Pango</a> library Font Description, used by GTK+2. It is defined as having 3 
-parts: &quot;&lt;font family&gt;, &lt;font styles&gt; &lt;font size&gt;&quot;.  </p>
+parts: &quot;&lt;font family&gt;<strong><span class="style9">,</span></strong> &lt;font styles&gt; &lt;font size&gt;&quot;.  </p>
 <p>Font family can be a list of fonts face names, but this is only accepted in 
-GTK. So the font family can be reduced to <u>font face</u>.</p>
+GTK. So the font family can be reduced to a <u>font face</u>.</p>
 <p>The supported <u>font style</u> is a combination of: <b>Bold</b>, <b>Italic</b>, <b>
 Underline</b> and 
 <b>Strikeout</b>. The Pango format include many other definitions not supported 
@@ -61,8 +61,9 @@ by the common format, they are supported only by the GTK driver. Unsupported
 values are simply ignored. The names must be in the same case describe here.</p>
 <p><u>Font size</u> is in points (1/72 inch) or in pixels (using negative 
 values).</p>
-<p>The old <a href="iup_font.html#Font_Names">Font Names</a> are still 
-supported. The old Windows <a href="iup_font.html">FONT</a> format is still 
+<p>The old <a href="iup_font2.html#Font_Names">Font Names</a> are still 
+supported. The old Windows <a href="iup_font2.html">
+FONT</a> format is still 
 supported in the Windows driver.</p>
 <p>Returned values will be the same value when changing the attribute, except 
 for the old font names that will be converted to the new common format 

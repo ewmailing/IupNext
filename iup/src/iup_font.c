@@ -399,8 +399,6 @@ Style can be a free combination of some names separated by spaces.
 Font name can be a list of font family names separated by comma.
 */
 
-#define isspace(_x) (_x == ' ')
-
 enum {                          /* style */
  FONT_PLAIN  = 0,
  FONT_BOLD   = 1,
@@ -450,15 +448,17 @@ static int iFontFindStyleName(const char *name, int len, int *style)
   return 0;
 }
 
-static const char * iFontGetWord(const char *str, const char *last, int *wordlen)
+#define is_style_sep(_x) (_x == ' ' || _x == ',')
+
+static const char * iFontGetStyleWord(const char *str, const char *last, int *wordlen)
 {
   const char *result;
   
-  while (last > str && isspace(*(last - 1)))
+  while (last > str && is_style_sep(*(last - 1)))
     last--;
 
   result = last;
-  while (result > str && !isspace(*(result - 1)))
+  while (result > str && !is_style_sep(*(result - 1)))
     result--;
 
   *wordlen = last - result;
@@ -476,7 +476,7 @@ int iupFontParsePango(const char *standardfont, char *typeface, int *size, int *
 
   len = (int)strlen(standardfont);
   last = standardfont + len;
-  p = iFontGetWord(standardfont, last, &wordlen);
+  p = iFontGetStyleWord(standardfont, last, &wordlen);
 
   /* Look for a size at the end of the string */
   if (wordlen != 0)
@@ -490,7 +490,7 @@ int iupFontParsePango(const char *standardfont, char *typeface, int *size, int *
   }
 
   /* Now parse style words */
-  p = iFontGetWord(standardfont, last, &wordlen);
+  p = iFontGetStyleWord(standardfont, last, &wordlen);
   while (wordlen != 0)
   {
     int new_style = 0;
@@ -502,7 +502,7 @@ int iupFontParsePango(const char *standardfont, char *typeface, int *size, int *
       style |= new_style;
 
       last = p;
-      p = iFontGetWord(standardfont, last, &wordlen);
+      p = iFontGetStyleWord(standardfont, last, &wordlen);
     }
   }
 
@@ -522,20 +522,12 @@ int iupFontParsePango(const char *standardfont, char *typeface, int *size, int *
 
   /* Remainder is font family list. */
 
-  /* Trim off trailing white space */
-  while (last > standardfont && isspace(*(last - 1)))
+  /* Trim off trailing separators */
+  while (last > standardfont && is_style_sep(*(last - 1)))
     last--;
 
-  /* Trim off trailing commas */
-  if (last > standardfont && *(last - 1) == ',')
-    last--;
-
-  /* Again, trim off trailing white space */
-  while (last > standardfont && isspace(*(last - 1)))
-    last--;
-
-  /* Trim off leading white space */
-  while (last > standardfont && isspace(*standardfont))
+  /* Trim off leading separators */
+  while (last > standardfont && is_style_sep(*standardfont))
     standardfont++;
 
   if (standardfont != last)
