@@ -94,7 +94,10 @@ the minimum size, if you do not want that, then after showing the dialog reset
 this size to NULL so the dialog can be resized to smaller values. But notice 
 that its contents will still be limited by the <strong>Natural</strong> size, to 
 also remove that limitation set SHRINK=YES.</p>
-<p class="info">For more information see <a href="../layout_guide.html">Layout 
+<p class="info">Notice that the dialog size includes its decoration (it is the
+<strong>Window</strong> size), the area available for controls are returned by 
+the dialog
+    <a href="../attrib/iup_clientsize.html">CLIENTSIZE</a>. For more information see <a href="../layout_guide.html">Layout 
 Guide</a>.</p>
 <p><a href="../attrib/iup_title.html">TITLE</a> (<font SIZE="3">non inheritable</font>): 
 Dialog’s title. Default: NULL. If you want to remove the title bar you must also 
