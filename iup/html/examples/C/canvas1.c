@@ -1,7 +1,9 @@
 /*
  * IupCanvas example
  * Description : Creates a IUP canvas and uses CD to draw on it
- *      Remark : IUP must be linked to the CD library                      
+ *      Remark : IUP must be linked to the CD library      
+ * libraries for static linking: cdcontextplus gdiplus iupcd iup cd freetype6 zlib1
+ * libraries for dynamic linking: cdcontextplus iup cd
  */
 
 #include <stdio.h>

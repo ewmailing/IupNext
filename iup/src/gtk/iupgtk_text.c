@@ -1258,7 +1258,6 @@ static int gtkTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
       gtk_text_buffer_remove_all_tags(buffer, &start_iter, &end_iter);
   }
 
-  (void)value;
   return 0;
 }
 

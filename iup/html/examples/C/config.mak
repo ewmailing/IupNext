@@ -20,7 +20,7 @@ USE_IUP3 = Yes
 USE_STATIC = Yes
 IUP = ../../..
 
-DBG = Yes
+#DBG = Yes
 
 #SRC = alarm.c
 #SRC = button.c
@@ -36,7 +36,7 @@ DBG = Yes
 #SRC = image.c
 #SRC = item.c
 #SRC = label.c
-SRC = list1.c
+#SRC = list1.c
 #SRC = list2.c
 #SRC = listdialog.c
 #SRC = lua_init.c
@@ -68,11 +68,13 @@ SRC = list1.c
 #  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupimglib.a
 #endif
 
-#USE_CD = Yes
-#SRC = canvas1.c
+USE_CD = Yes
+SRC = canvas1.c
 #SRC = canvas2.c
 #SRC = canvas3.c
 #SRC = scrollbar.c
+
+LIBS = cdcontextplus gdiplus
 
 #USE_OPENGL = Yes
 #SRC = glcanvas.c

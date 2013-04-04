@@ -20,7 +20,9 @@ static char* getParameters(const char* format)
   static char str[100], *pstr;
   pstr = &str[0];
 
-  if (format)
+  pstr += sprintf(pstr, "Ihandle*");
+
+  if (format && format[0]!=0)
   {
     int i, count = strlen(format);
 
@@ -45,15 +47,11 @@ static char* getParameters(const char* format)
 
       if (fstr)
       {
+        pstr += sprintf(pstr, ", ");
         pstr += sprintf(pstr, fstr);
-        if (i != count-1 && count>1)
-          pstr += sprintf(pstr, ", ");
       }
     }
-    
   }
-  else
-    pstr += sprintf(pstr, "void");
 
   return str;
 }
