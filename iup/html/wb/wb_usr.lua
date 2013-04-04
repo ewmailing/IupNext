@@ -513,6 +513,10 @@ wb_usr.tree =
               link= "attrib/iup_minsize.html"
             },
             {
+              name= {nl= "NATURALSIZE"},
+              link= "attrib/iup_naturalsize.html"
+            },
+            {
               name= {nl= "RASTERSIZE"},
               link= "attrib/iup_rastersize.html"
             },
