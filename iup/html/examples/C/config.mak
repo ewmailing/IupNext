@@ -138,6 +138,22 @@ ifdef IUPMGLPLOT_SAMPLE
   endif
 endif
 
+#IUPSCINTILLA_SAMPLE=Yes
+ifdef IUPSCINTILLA_SAMPLE
+  USE_IUPCONTROLS = Yes
+  LINKER = g++  
+  SRC = scintilla.c
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    LIBS += iup_scintilla
+  else
+    ifdef USE_GTK3
+      SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_scintillagtk3.a
+	else
+      SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_scintillagtk.a
+	endif
+  endif
+endif
+
 #USE_LUA51=Yes
 #USE_IUPLUA=Yes
 #SRC = lua_init.c

@@ -27,10 +27,11 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\lib\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\obj\Debug\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\obj\Debug\iup_scintilla\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">iup_scintilla</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -53,6 +54,18 @@
   <ItemGroup>
     <CustomBuildStep Include="..\include\iup_scintilla.h" />
     <ClInclude Include="..\include\iup_scintilla.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_clipboard.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_folding.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_lexer.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_margin.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_markers.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_overtype.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_scrolling.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_selection.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_style.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_tab.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_text.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_wordwrap.h" />
     <ClInclude Include="..\srcscintilla\src\AutoComplete.h" />
     <ClInclude Include="..\srcscintilla\src\CallTip.h" />
     <ClInclude Include="..\srcscintilla\src\Catalogue.h" />
@@ -95,6 +108,18 @@
     <ClInclude Include="..\srcscintilla\win32\PlatWin.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\srcscintilla\iupsci_clipboard.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_folding.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_lexer.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_margin.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_markers.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_overtype.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_scrolling.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_selection.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_style.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_tab.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_text.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_wordwrap.c" />
     <ClCompile Include="..\srcscintilla\src\AutoComplete.cxx" />
     <ClCompile Include="..\srcscintilla\src\CallTip.cxx" />
     <ClCompile Include="..\srcscintilla\src\Catalogue.cxx" />

@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "iup.h"
-#include "iup_scintilla.h"
+#include <iup.h>
+#include <iup_scintilla.h>
 
 const char* sampleCode = {
   "#include<stdio.h>\n#include<iup.h>\n\nvoid SampleTest() {\n  printf(\"Printing float: %f\\n\", 12.5);\n}\n\n"
@@ -21,15 +21,15 @@ const char* sampleCode = {
   "  SampleTest();\n"
   "  printf(\"Printing an integer: %d\\n\", 37);\n\n"
   "  IupMainLoop();\n"
-  "  IupClose();\n\n"
+  "  IupClose();\n"
   "  return EXIT_SUCCESS;\n}\n"
 };
 
-int margin_click_cb(Ihandle *self, int margin, int line)
+int marginclick_cb(Ihandle *self, int margin, int line)
 {
   char buffer[100], str[100];
-  
-  _itoa (line, buffer, 10);
+
+  sprintf(buffer, "%d", line);
   sprintf(str, "FOLDLEVEL%d", line);
 
   printf("MARGINCLICK_CB = Margin: %d, Line: %d\n", margin, line);
@@ -40,14 +40,14 @@ int margin_click_cb(Ihandle *self, int margin, int line)
   return IUP_DEFAULT;
 }
 
-int double_click_cb(Ihandle *self, int mod, int line)
+int doubleclick_cb(Ihandle *self, int mod, int line)
 {
   char buffer[100]; 
-  _itoa (line, buffer, 10);
+  sprintf(buffer, "%d", line);
 
   IupSetAttribute(self, "TOGGLEFOLD", buffer);
 
-  printf("DOUBLECLICK_CB = Modifier: %d, Line: %d\n", mod, line);
+  printf("DBLCLICK_CB = Modifier: %d, Line: %d\n", mod, line);
   if(mod == 1) printf("SHIFT pressed\n\n");
   else if(mod == 2) printf("CTRL pressed\n\n");
   else if(mod == 4) printf("ALT pressed\n\n");
@@ -58,12 +58,12 @@ int double_click_cb(Ihandle *self, int mod, int line)
   return IUP_DEFAULT;
 }
 
-int hotspot_click_cb(Ihandle *self, int mod, int line)
+int hotspotclick_cb(Ihandle *self, int mod, int line)
 {
   char buffer[100], str[100];
   char *text;
   
-  _itoa (line, buffer, 10);
+  sprintf(buffer, "%d", line);
   sprintf(str, "LINE%d", line);
   
   text = IupGetAttribute(self, str);
@@ -74,18 +74,39 @@ int hotspot_click_cb(Ihandle *self, int mod, int line)
   return IUP_DEFAULT;
 }
 
-int dwell_start_cb(Ihandle *self, int x, int y, int line)
+int button_cb(Ihandle* self, int button, int pressed, int x, int y, char* status)
 {
-  printf("DWELLSTART_CB = x: %d, y: %d, line: %d\n", x, y, line);
+  printf("BUTTON_CB = button: %d, pressed: %d, x: %d, y: %d, status: %s\n", button, pressed, x, y, status);
   (void)self;
   return IUP_DEFAULT;
 }
 
-int dwell_end_cb(Ihandle *self, int x, int y, int line)
+int motion_cb(Ihandle *self, int x, int y, char *status)
 {
-  printf("DWELLEND_CB = x: %d, y: %d, line: %d\n", x, y, line);
+  printf("MOTION_CB = x: %d, y: %d, status: %s\n", x, y, status);
   (void)self;
   return IUP_DEFAULT;
+}
+
+int caret_cb(Ihandle *self, int lin, int col, int pos)
+{
+  printf("CARET_CB = lin: %d, col: %d, pos: %d\n", lin, col, pos);
+  (void)self;
+  return IUP_DEFAULT;
+}
+
+int valuechanged_cb(Ihandle *self)
+{
+  printf("VALUECHANGED_CB\n");
+  (void)self;
+  return IUP_DEFAULT;
+}
+
+int action_cb(Ihandle *self, int key, char *txt)
+{
+  printf("ACTION = key: %d, text: %s\n", key, txt);
+  (void)self;
+  return IUP_IGNORE;
 }
 
 void set_attribs (Ihandle *sci)
@@ -95,21 +116,22 @@ void set_attribs (Ihandle *sci)
 
   IupSetAttribute(sci, "KEYWORDS0", "int char double float");
 
-  IupSetAttribute(sci, "FGCOLORSTYLE1", "0 255 0");
-  IupSetAttribute(sci, "FGCOLORSTYLE2", "0 255 0");
-  IupSetAttribute(sci, "FGCOLORSTYLE4", "255 255 0");
-  IupSetAttribute(sci, "FGCOLORSTYLE5", "255 0 0");
-  IupSetAttribute(sci, "FGCOLORSTYLE6", "255 0 255");
+  IupSetAttribute(sci, "STYLEFGCOLOR", "0 255 0");
+  IupSetAttribute(sci, "STYLEFGCOLOR2", "0 255 0");
+  IupSetAttribute(sci, "STYLEFGCOLOR4", "255 255 0");
+  IupSetAttribute(sci, "STYLEFGCOLOR5", "255 0 0");
+  IupSetAttribute(sci, "STYLEFGCOLOR6", "255 0 255");
 
-  IupSetAttribute(sci, "BOLDSTYLE10", "YES");
-  IupSetAttribute(sci, "HOTSPOT6", "YES");
-  IupSetAttribute(sci, "INSERTTEXT0", sampleCode);
-  IupSetAttribute(sci, "FONT32", "Courier New");
-  IupSetAttribute(sci, "FONTSIZE32", "12");
+  IupSetAttribute(sci, "STYLEBOLD10", "YES");
+  IupSetAttribute(sci, "STYLEHOTSPOT6", "YES");
+  IupSetAttribute(sci, "STYLEFONT32", "Courier New");
+  IupSetAttribute(sci, "STYLEFONTSIZE32", "12");
+
+  IupSetAttribute(sci, "INSERT0", sampleCode);
 
   IupSetAttribute(sci, "MARGINWIDTHN0", "50");
 
-  if (0)
+  if (1)
   {
     IupSetAttribute(sci, "PROPERTY", "fold,1");
     IupSetAttribute(sci, "PROPERTY", "fold.compact,0");
@@ -133,6 +155,10 @@ void set_attribs (Ihandle *sci)
 
     IupSetAttribute(sci, "MARGINSENSITIVEN1", "YES");
   }
+
+  printf("Number of chars in this text: %s\n", IupGetAttribute(sci, "COUNT"));
+  printf("Number of lines in this text: %s\n", IupGetAttribute(sci, "LINECOUNT"));
+  printf("%s\n", IupGetAttribute(sci, "LINEVALUE"));
 }
 
 void ScintillaTest(void)
@@ -143,20 +169,24 @@ void ScintillaTest(void)
 
   // Creates an instance of the Scintilla control
   sci = IupScintilla();
-  IupSetAttribute(sci, "VISIBLECOLUMNS", "580");
-  IupSetAttribute(sci, "VISIBLELINES", "400");
+  IupSetAttribute(sci, "VISIBLECOLUMNS", "80");
+  IupSetAttribute(sci, "VISIBLELINES", "40");
   //IupSetAttribute(sci, "SCROLLBAR", "NO");
+  IupSetAttribute(sci, "BORDER", "NO");
 
-  IupSetCallback(sci, "MARGINCLICK_CB", (Icallback)margin_click_cb);
-  IupSetCallback(sci, "DOUBLECLICK_CB", (Icallback)double_click_cb);
-  IupSetCallback(sci, "HOTSPOTCLICK_CB", (Icallback)hotspot_click_cb);
-  IupSetCallback(sci, "DWELLSTART_CB", (Icallback)dwell_start_cb);
-  IupSetCallback(sci, "DWELLEND_CB", (Icallback)dwell_end_cb);
+  IupSetCallback(sci, "MARGINCLICK_CB", (Icallback)marginclick_cb);
+  IupSetCallback(sci, "DBLCLICK_CB", (Icallback)doubleclick_cb);
+  IupSetCallback(sci, "HOTSPOTCLICK_CB", (Icallback)hotspotclick_cb);
+  IupSetCallback(sci, "BUTTON_CB", (Icallback)button_cb);
+  IupSetCallback(sci, "MOTION_CB", (Icallback)motion_cb);
+  IupSetCallback(sci, "CARET_CB", (Icallback)caret_cb);
+  IupSetCallback(sci, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
+  IupSetCallback(sci, "ACTION", (Icallback)action_cb);
 
   // Creates a dialog containing the control
   dlg = IupDialog(IupVbox(sci, NULL));
   IupSetAttribute(dlg, "TITLE", "IupScintilla");
-  IupSetAttribute(dlg, "RASTERSIZE", "640x480");
+  IupSetAttribute(dlg, "RASTERSIZE", "680x510");
   IupSetAttribute(dlg, "MARGIN", "10x10");
 
   // Shows dialog

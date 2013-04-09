@@ -36,8 +36,8 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\src;..\src\gtk;..\include;d:\lng\gtk2\include\atk-1.0;d:\lng\gtk2\include\cairo;d:\lng\gtk2\include\glib-2.0;d:\lng\gtk2\include\gtk-2.0;d:\lng\gtk2\include\pango-1.0;d:\lng\gtk2\lib\gtk-2.0\include;d:\lng\gtk2\lib\glib-2.0\include;d:\lng\gtk2\include\gdk-pixbuf-2.0;..\srcscintilla\include;..\srcscintilla\lexlib;..\srcscintilla\src;..\srcscintilla\gtk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;GTK;_USE_MATH_DEFINES;STATIC_BUILD;SCI_LEXER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src;..\src\gtk;..\include;..\..\lng\gtk2\include\atk-1.0;..\..\lng\gtk2\include\cairo;..\..\lng\gtk2\include\glib-2.0;..\..\lng\gtk2\include\gtk-2.0;..\..\lng\gtk2\include\pango-1.0;..\..\lng\gtk2\lib\gtk-2.0\include;..\..\lng\gtk2\lib\glib-2.0\include;..\..\lng\gtk2\include\gdk-pixbuf-2.0;..\srcscintilla\include;..\srcscintilla\lexlib;..\srcscintilla\src;..\srcscintilla\gtk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;GTK;_USE_MATH_DEFINES;STATIC_BUILD;SCI_LEXER;GTK_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -53,6 +53,18 @@
   <ItemGroup>
     <CustomBuildStep Include="..\include\iup_scintilla.h" />
     <ClInclude Include="..\include\iup_scintilla.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_clipboard.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_folding.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_lexer.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_margin.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_markers.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_overtype.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_scrolling.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_selection.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_style.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_tab.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_text.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_wordwrap.h" />
     <ClInclude Include="..\srcscintilla\src\AutoComplete.h" />
     <ClInclude Include="..\srcscintilla\src\CallTip.h" />
     <ClInclude Include="..\srcscintilla\src\Catalogue.h" />
@@ -96,6 +108,18 @@
     <ClInclude Include="..\srcscintilla\gtk\scintilla-marshal.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\srcscintilla\iupsci_clipboard.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_folding.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_lexer.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_margin.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_markers.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_overtype.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_scrolling.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_selection.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_style.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_tab.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_text.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_wordwrap.c" />
     <ClCompile Include="..\srcscintilla\src\AutoComplete.cxx" />
     <ClCompile Include="..\srcscintilla\src\CallTip.cxx" />
     <ClCompile Include="..\srcscintilla\src\Catalogue.cxx" />
