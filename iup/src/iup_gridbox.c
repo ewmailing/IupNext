@@ -953,7 +953,7 @@ Iclass* iupGridBoxNewClass(void)
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iGridBoxGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  /* boxes only */
+  /* boxes */
   iupClassRegisterAttribute(ic, "MARGIN", iGridBoxGetMarginAttrib, iGridBoxSetMarginAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CMARGIN", iGridBoxGetCMarginAttrib, iGridBoxSetCMarginAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "NMARGIN", iGridBoxGetMarginAttrib, iGridBoxSetMarginAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -973,6 +973,7 @@ Iclass* iupGridBoxNewClass(void)
   iupClassRegisterAttribute(ic, "NCGAPLIN", iGridBoxGetCGapLinAttrib, iGridBoxSetCGapLinAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NGAPCOL", iGridBoxGetGapColAttrib, iGridBoxSetGapColAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NCGAPCOL", iGridBoxGetCGapColAttrib, iGridBoxSetCGapColAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "ALIGNMENTLIN", iGridBoxGetAlignmentLinAttrib, iGridBoxSetAlignmentLinAttrib, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ALIGNMENTCOL", iGridBoxGetAlignmentColAttrib, iGridBoxSetAlignmentColAttrib, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ORIENTATION", iGridBoxGetOrientationAttrib, iGridBoxSetOrientationAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
