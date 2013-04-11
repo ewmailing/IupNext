@@ -123,6 +123,8 @@ IupSpin
 IupSpinbox
 IupCboxv
 IupCbox
+IupGridBox 
+IupGridBoxv
 IupVal
 IupProgressBar
 IupTabs

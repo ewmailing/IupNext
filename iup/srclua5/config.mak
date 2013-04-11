@@ -31,7 +31,7 @@ else
 endif
 
 CTRLUA = button.lua canvas.lua dialog.lua colordlg.lua clipboard.lua \
-       filedlg.lua fill.lua frame.lua hbox.lua normalizer.lua \
+       filedlg.lua fill.lua frame.lua hbox.lua normalizer.lua gridbox.lua \
        item.lua image.lua imagergb.lua imagergba.lua label.lua \
        link.lua menu.lua multiline.lua list.lua separator.lua user.lua \
        submenu.lua text.lua toggle.lua vbox.lua zbox.lua timer.lua \

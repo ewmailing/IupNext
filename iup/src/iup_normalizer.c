@@ -14,6 +14,7 @@
 #include "iup_str.h"
 #include "iup_array.h"
 #include "iup_stdcontrols.h"
+#include "iup_normalizer.h"
 
 
 enum {NORMALIZE_NONE, NORMALIZE_WIDTH, NORMALIZE_HEIGHT};

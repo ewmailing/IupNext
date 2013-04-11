@@ -18,6 +18,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_box.h"
+#include "iup_normalizer.h"
 
 
 static int iHboxSetRasterSizeAttrib(Ihandle* ih, const char* value)
@@ -83,12 +84,12 @@ static char* iHboxGetAlignmentAttrib(Ihandle* ih)
 static void iHboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
   Ihandle* child;
-  int children_naturalwidth, children_naturalheight;
+  int total_natural_width, total_natural_height;
 
   /* calculate total children natural size */
   int children_expand = 0;
   int children_count = 0;
-  int children_natural_totalwidth = 0;
+  int children_natural_width = 0;
   int children_natural_maxwidth = 0;
   int children_natural_maxheight = 0;
 
@@ -114,23 +115,23 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
   for (child = ih->firstchild; child; child = child->brother)
   {
     if (!(child->flags & IUP_FLOATING))
-      children_natural_totalwidth += child->naturalwidth;
+      children_natural_width += child->naturalwidth;
   }
 
   /* leave room at the element for the maximum natural size of the children when is_homogeneous */
   if (ih->data->is_homogeneous)
-    children_natural_totalwidth = children_natural_maxwidth*children_count;
+    children_natural_width = children_natural_maxwidth*children_count;
 
   /* compute the Hbox contents natural size */
-  children_naturalwidth  = children_natural_totalwidth + (children_count-1)*ih->data->gap + 2*ih->data->margin_x;
-  children_naturalheight = children_natural_maxheight + 2*ih->data->margin_y;
+  total_natural_width  = children_natural_width + (children_count-1)*ih->data->gap + 2*ih->data->margin_x;
+  total_natural_height = children_natural_maxheight + 2*ih->data->margin_y;
 
   /* Store to be used in iHboxCalcEmptyWidth */
-  ih->data->children_naturalsize = children_naturalwidth;
+  ih->data->total_natural_size = total_natural_width;
 
   *expand = children_expand;
-  *w = children_naturalwidth;
-  *h = children_naturalheight;
+  *w = total_natural_width;
+  *h = total_natural_height;
 }
 
 static int iHboxCalcHomogeneousWidth(Ihandle *ih)
@@ -169,7 +170,7 @@ static int iHboxCalcEmptyWidth(Ihandle *ih, int expand)
     return 0;
 
   /* equal spaces for all expandable elements */
-  empty_width = (ih->currentwidth - ih->data->children_naturalsize)/expand_count;
+  empty_width = (ih->currentwidth - ih->data->total_natural_size)/expand_count;
   if (empty_width < 0) empty_width = 0;
   return empty_width;
 }

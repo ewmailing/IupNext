@@ -97,6 +97,7 @@
     <ClCompile Include="..\test\getparam.c" />
     <ClCompile Include="..\test\glcanvas.c" />
     <ClCompile Include="..\test\glcanvas_cube.c" />
+    <ClCompile Include="..\test\gridbox.c" />
     <ClCompile Include="..\test\hbox.c" />
     <ClCompile Include="..\test\idle.c" />
     <ClCompile Include="..\test\label.c" />

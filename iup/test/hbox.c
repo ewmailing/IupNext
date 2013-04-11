@@ -30,8 +30,8 @@ void HboxTest(void)
   IupSetAttribute(b12, "SIZE", "20x16");
   IupSetAttribute(b13, "SIZE", "30x20");
   IupSetAttributes(h1, "ALIGNMENT=ATOP"); /* Sets hbox's alignment, gap and size */
-  IupSetAttribute(h1, "HOMOGENEOUS", "YES");
-  IupSetAttribute(h1, "EXPANDCHILDREN", "YES");
+//  IupSetAttribute(h1, "HOMOGENEOUS", "YES");
+//  IupSetAttribute(h1, "EXPANDCHILDREN", "YES");
 //  IupSetAttribute(b12, "VISIBLE", "NO");
 //  IupSetAttribute(b12, "FLOATING", "YES");
 

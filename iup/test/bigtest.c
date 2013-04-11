@@ -40,6 +40,7 @@ void MatrixCbModeTest(void);
 void MatrixCbsTest(void);
 void MdiTest(void);
 void VboxTest(void);
+void GridBoxTest(void);
 void MenuTest(void);
 void ColorBrowserTest(void);
 void ColorbarTest(void);
@@ -112,6 +113,7 @@ static TestItems test_list[] = {
   {"Gauge", GaugeTest},
   {"GetColor", GetColorTest},
   {"GetParam", GetParamTest},
+  {"GridBox", GridBoxTest},
   {"Help", HelpTest},
   {"Hbox", HboxTest},
   {"Idle", IdleTest},

@@ -36,7 +36,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\src;..\src\gtk;..\include;..\..\lng\gtk2\include\atk-1.0;..\..\lng\gtk2\include\cairo;..\..\lng\gtk2\include\glib-2.0;..\..\lng\gtk2\include\gtk-2.0;..\..\lng\gtk2\include\pango-1.0;..\..\lng\gtk2\lib\gtk-2.0\include;..\..\lng\gtk2\lib\glib-2.0\include;..\..\lng\gtk2\include\gdk-pixbuf-2.0;..\srcscintilla\include;..\srcscintilla\lexlib;..\srcscintilla\src;..\srcscintilla\gtk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src;..\src\gtk;..\include;d:\lng\gtk2\include\atk-1.0;d:\lng\gtk2\include\cairo;d:\lng\gtk2\include\glib-2.0;d:\lng\gtk2\include\gtk-2.0;d:\lng\gtk2\include\pango-1.0;d:\lng\gtk2\lib\gtk-2.0\include;d:\lng\gtk2\lib\glib-2.0\include;d:\lng\gtk2\include\gdk-pixbuf-2.0;..\srcscintilla\include;..\srcscintilla\lexlib;..\srcscintilla\src;..\srcscintilla\gtk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;GTK;_USE_MATH_DEFINES;STATIC_BUILD;SCI_LEXER;GTK_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

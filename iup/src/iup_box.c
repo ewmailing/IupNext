@@ -18,6 +18,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_box.h"
+#include "iup_normalizer.h"
 
 
 static int iBoxCreateMethod(Ihandle* ih, void** params)

@@ -232,6 +232,9 @@
     <ClCompile Include="..\src\iup_link.c">
       <Filter>src_controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\iup_gridbox.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\iup_array.h">
@@ -379,6 +382,9 @@
       <Filter>inc_controls</Filter>
     </ClInclude>
     <ClInclude Include="..\src\iup_val.h">
+      <Filter>inc_controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\iup_normalizer.h">
       <Filter>inc_controls</Filter>
     </ClInclude>
   </ItemGroup>

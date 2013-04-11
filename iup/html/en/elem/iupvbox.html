@@ -52,8 +52,8 @@ vbox(<strong>child</strong>, ...) [in LED]</pre>
 	for EXPAND inheritance.</p>
 <p><strong>EXPANDCHILDREN</strong> (<font SIZE="3">non inheritable</font>): 
 forces all children to expand horizontally. Default: &quot;NO&quot;. This has 
-the same effect as setting EXPAND=HORIZONTAL on each child, but their vertical expansion will be 
-preserved. (since 3.0)</p>
+the same effect as setting EXPAND=HORIZONTAL on each child, but the box expansion will 
+not be affected. (since 3.0)</p>
 
   <p><b>GAP, CGAP</b>: Defines a vertical space in pixels between the children,
 	<strong>CGAP</strong> is in the same units of the <strong>SIZE</strong> 
@@ -61,7 +61,7 @@ preserved. (since 3.0)</p>
 <p><b>NGAP, NCGAP</b> (<font SIZE="3">non inheritable</font>): Same as <strong>
 GAP</strong> but are non inheritable. (since 3.0)</p>
 <p><strong>HOMOGENEOUS</strong> (<font SIZE="3">non inheritable</font>): forces 
-all children to get equal vertical space. The natural size height will be&nbsp; based on the highest child. Default: &quot;NO&quot;. 
+all children to get equal vertical space. The space height will be&nbsp; based on the highest child. Default: &quot;NO&quot;. 
 Notice that this does not changes the children size, only the available space for 
 each one of them to expand. (since 3.0)</p>
   <p><b>MARGIN, CMARGIN</b>:
@@ -79,7 +79,8 @@ each one of them to expand. (since 3.0)</p>
 normalizes all children natural size to be the biggest natural size among them. 
 All natural width will be set to the biggest width, and all natural height will 
 be set to the biggest height according to is value. Can be NO, HORIZONTAL, 
-VERTICAL or BOTH. Default: &quot;NO&quot;. (since 3.0)</p>
+VERTICAL or BOTH. Default: &quot;NO&quot;. Same as using
+<a href="iupnormalizer.html">IupNormalizer</a>. (since 3.0)</p>
 
 
 <p><a href="../attrib/iup_size.html">SIZE</a> /

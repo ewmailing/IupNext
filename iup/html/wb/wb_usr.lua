@@ -843,6 +843,10 @@ wb_usr.tree =
               link= "elem/iupfill.html"
             },
             {
+              name= {nl= "IupGridBox"},
+              link= "elem/iupgridbox.html"
+            },
+            {
               name= {nl= "IupHbox"},
               link= "elem/iuphbox.html"
             },

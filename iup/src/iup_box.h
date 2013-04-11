@@ -21,16 +21,11 @@ struct _IcontrolData
       margin_x,
       margin_y,
       gap;
-  int children_naturalsize,   /* calculated in ComputeNaturalSize, used in SetChildrenCurrentSize */
+  int total_natural_size,   /* calculated in ComputeNaturalSize, used in SetChildrenCurrentSize */
       homogeneous_size;       /* calculated in SetChildrenCurrentSize, used in SetChildrenPosition */
 };
 
 Iclass* iupBoxNewClassBase(void);
-
-/* Implemented in iup_normalizer.c */
-void iupNormalizeSizeBoxChild(Ihandle *ih, int normalize, int children_natural_maxwidth, int children_natural_maxheight);
-int iupNormalizeGetNormalizeSize(const char* value);
-char* iupNormalizeGetNormalizeSizeStr(int normalize);
 
 
 #ifdef __cplusplus

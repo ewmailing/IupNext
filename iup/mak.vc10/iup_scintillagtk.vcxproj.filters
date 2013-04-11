@@ -371,6 +371,18 @@
       <Filter>Scintilla</Filter>
     </ClCompile>
     <ClCompile Include="..\srcscintilla\iup_scintilla.cpp" />
+    <ClCompile Include="..\srcscintilla\iupsci_clipboard.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_folding.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_lexer.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_margin.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_markers.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_overtype.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_scrolling.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_selection.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_style.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_tab.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_text.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_wordwrap.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\src\XPM.h">
@@ -497,6 +509,18 @@
       <Filter>Scintilla</Filter>
     </ClInclude>
     <ClInclude Include="..\include\iup_scintilla.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_clipboard.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_folding.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_lexer.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_margin.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_markers.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_overtype.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_scrolling.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_selection.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_style.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_tab.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_text.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_wordwrap.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scintilla">

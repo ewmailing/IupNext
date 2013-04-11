@@ -49,6 +49,7 @@ Iclass* iupSboxNewClass(void);
 Iclass* iupNormalizerNewClass(void);
 Iclass* iupSplitNewClass(void);
 Iclass* iupScrollBoxNewClass(void);
+Iclass* iupGridBoxNewClass(void);
 
 Iclass* iupTimerNewClass(void);
 Iclass* iupImageNewClass(void);

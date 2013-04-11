@@ -63,6 +63,7 @@
     <ClCompile Include="..\src\iup_font.c" />
     <ClCompile Include="..\src\iup_func.c" />
     <ClCompile Include="..\src\iup_globalattrib.c" />
+    <ClCompile Include="..\src\iup_gridbox.c" />
     <ClCompile Include="..\src\iup_key.c" />
     <ClCompile Include="..\src\iup_layout.c" />
     <ClCompile Include="..\src\iup_ledlex.c" />
@@ -142,6 +143,7 @@
     <ClInclude Include="..\src\iup_maskmatch.h" />
     <ClInclude Include="..\src\iup_maskparse.h" />
     <ClInclude Include="..\src\iup_names.h" />
+    <ClInclude Include="..\src\iup_normalizer.h" />
     <ClInclude Include="..\src\iup_object.h" />
     <ClInclude Include="..\src\iup_predial.h" />
     <ClInclude Include="..\src\iup_register.h" />
