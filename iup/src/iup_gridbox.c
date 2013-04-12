@@ -526,7 +526,16 @@ static void iGridBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *e
 
   /* reset to max natural width and/or height if NORMALIZESIZE is defined */
   if (ih->data->normalize_size)  /* this directly affects the vhild natural size */
+  {
     iupNormalizeSizeBoxChild(ih, ih->data->normalize_size, children_natural_maxwidth, children_natural_maxheight);
+
+    /* must update the children natural size because
+       normalize was done after its calculation */
+    if (ih->data->normalize_size & 1) 
+      children_natural_width = children_natural_maxwidth*num_col;
+    if (ih->data->normalize_size & 2)
+      children_natural_height = children_natural_maxheight*num_lin;
+  }
 
   /* leave room at the element for the maximum natural size of the children when is_homogeneous */
   /* this affects only the space left for the child to expand */

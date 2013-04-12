@@ -116,6 +116,7 @@ static void iVboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
   if (ih->data->normalize_size)
     iupNormalizeSizeBoxChild(ih, ih->data->normalize_size, children_natural_maxwidth, children_natural_maxheight);
 
+  /* must be done after normalize */
   for (child = ih->firstchild; child; child = child->brother)
   {
     if (!(child->flags & IUP_FLOATING))
@@ -140,7 +141,6 @@ static void iVboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
 
 static int iHboxCalcHomogeneousHeight(Ihandle *ih)
 {
-  /* This is the space that the child can be expanded. */
   Ihandle* child;
   int homogeneous_height;
 
