@@ -486,12 +486,16 @@ static void iGridBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *e
   if (ih->data->orientation==IGBOX_HORIZONTAL)
   {
     num_lin = child_count / num_div;
+    if (child_count % num_div)
+      num_lin++;
     num_col = num_div;
   }
   else
   {
     num_lin = num_div;
     num_col = child_count / num_div;
+    if (child_count % num_div)
+      num_col++;
   }
 
   /* read only, computed only here */

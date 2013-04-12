@@ -40,9 +40,15 @@ void GridBoxTest(void)
 //  IupSetAttribute(gbox, "NORMALIZESIZE", "HORIZONTAL");
 
   IupSetAttribute(gbox, "NUMDIV", "3");
-//  IupSetAttribute(gbox, "ORIENTATION", "VERTICAL");
 //  IupSetAttribute(gbox, "NUMDIV", "2");
+
+//  IupSetAttribute(gbox, "ORIENTATION", "VERTICAL");
+//  IupSetAttribute(gbox, "SIZECOL", "3");
+//  IupSetAttribute(gbox, "SIZELIN", "2");
+
+//  IupSetAttribute(gbox, "SIZE", "70x");
 //  IupSetAttribute(gbox, "NUMDIV", "AUTO");
+//  IupSetAttribute(gbox, "NORMALIZESIZE", "BOTH");
 
   IupSetAttribute(gbox, "ALIGNMENTLIN", "ACENTER");
   IupSetAttribute(gbox, "MARGIN", "10x10");
