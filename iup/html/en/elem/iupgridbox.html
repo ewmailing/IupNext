@@ -30,9 +30,29 @@
 	from top 
 	to bottom and from left to right, but can distribute the elements in lines 
   or in columns.</p>
-
-  <p>
-  It does not have a native representation.</p>
+<p>
+  The child elements are added to the control just like a vbox and hbox, 
+  sequentially. Then they are distributed accordingly the attributes ORIENTATION 
+  and NUMDIV. When ORIENTATION=HORIZONTAL children are distributed from left to 
+  right on the first line until NUMDIV, then on the second line, and so on. When 
+  ORIENTATION=VERTICAL children are distributed from top to bottom on the first 
+  column until NUMDIV, then on the second column, and so on. The number of 
+  lines and the number of columns can be easily obtained from the combination of 
+  these attributes:</p>
+<pre>
+  if (orientation==IGBOX_HORIZONTAL)
+    num_lin = child_count / num_div
+    num_col = num_div
+  else
+    num_lin = num_div
+    num_col = child_count / num_div
+</pre>
+<p>Notice that the total number of spaces can be larger than the number of 
+actual children, the last line or column can be incomplete.</p>
+<p>The column sizes will be based only on the width of the children of the 
+reference line, usually line 0. The line sizes will be based only on the height 
+of the children of the reference column, usually column 0.</p>
+<p>It does not have a native representation.</p>
 
 <h3><a name="Creation">Creation</a></h3>
 <pre>Ihandle* IupGridBox(Ihandle *<strong>child</strong>, ...); [in C]
@@ -50,7 +70,7 @@ gridbox(<strong>child</strong>, ...) [in LED]</pre>
 
 
 <p><b>ALIGNMENTLIN</b> (<font SIZE="3">non inheritable</font>):
-  Aligns the elements vertically within each line. Possible 
+  Vertically aligns the elements within each line. Possible 
   values: &quot;ATOP&quot;, &quot;ACENTER&quot;, &quot;ABOTTOM&quot;. Default: &quot;ATOP&quot;. 
 The alignment of a single line can also be set using <b>&quot;ALIGNMENTLIN</b><em>L</em><strong>&quot;</strong>, 
 where &quot;L&quot; is the line index, starting at 0 from top to bottom.</p>
@@ -66,8 +86,10 @@ where &quot;C&quot; is the column index, starting at 0 from left to right.</p>
   The default value is &quot;YES&quot;. See the documentation of the attribute 
 	for EXPAND inheritance.</p>
 <p><strong>EXPANDCHILDREN</strong> (<font SIZE="3">non inheritable</font>): 
-forces all children to expand horizontally. Default: &quot;NO&quot;. This has the same 
-effect as setting EXPAND=HORIZONTAL on each child, but the box expansion will 
+forces all children to expand in the given direction and to fully occupy its 
+space available inside the box. Can be YES (both directions),
+  HORIZONTAL, VERTICAL or NO. Default: &quot;NO&quot;. This has the same 
+effect as setting EXPAND on each child, but the box expansion will 
 not be affected.</p>
 
   <p><b>GAPLIN, CGAPLIN</b>: Defines a vertical space in pixels between lines,
@@ -80,9 +102,13 @@ not be affected.</p>
 	attribute for the height. Default: &quot;0&quot;.</p>
 <p><b>NGAPLIN, NCGAPLIN, NGAPCOL, NCGAPCOL</b> (<font SIZE="3">non inheritable</font>): Same as <strong>
 *GAP*</strong> but are non inheritable.</p>
-<p><strong>HOMOGENEOUS</strong> (<font SIZE="3">non inheritable</font>): forces 
-all children to get equal vertical space. The space height will be&nbsp; based 
-on the highest child. Default: &quot;NO&quot;. Notice that this does not changes the 
+<p><strong>HOMOGENEOUSLIN</strong> (<font SIZE="3">non inheritable</font>): 
+forces all lines to have the same vertical space, or height. The line height will be&nbsp; based 
+on the highest child of the reference line (See <strong>SIZELIN</strong>). Default: &quot;NO&quot;. Notice that this does not changes the 
+children size, only the available space for each one of them to expand.</p>
+<p><strong>HOMOGENEOUSCOL</strong> (<font SIZE="3">non inheritable</font>): 
+forces all columns to have the same horizontal space, or width. The column width will be&nbsp; based 
+on the largest child of the reference column (See <strong>SIZECOL</strong>). Default: &quot;NO&quot;. Notice that this does not changes the 
 children size, only the available space for each one of them to expand.</p>
   <p><b>MARGIN, CMARGIN</b>:
   Defines a margin in pixels, <b>CMARGIN </b>is in the same units of the <strong>

@@ -12,19 +12,33 @@ void GridBoxTest(void)
   (
     gbox = IupGridBox
     (
+      IupSetAttributes(IupLabel(""), ""),
+      IupSetAttributes(IupLabel("col1"), "FONTSTYLE=Bold"),
+      IupSetAttributes(IupLabel("col2"), "FONTSTYLE=Bold"),
+
+      IupSetAttributes(IupLabel("lin1"), "FONTSTYLE=Bold"),
       IupSetAttributes(IupLabel("lbl"), "XSIZE=50x12"),
       IupSetAttributes(IupButton("but", NULL), "XSIZE=50"),
+
+      IupSetAttributes(IupLabel("lin2"), "FONTSTYLE=Bold"),
       IupSetAttributes(IupLabel("label"), "XSIZE=x12"),
       IupSetAttributes(IupButton("button", NULL), "XEXPAND=Horizontal"),
+
+      IupSetAttributes(IupLabel("lin3"), "FONTSTYLE=Bold"),
       IupSetAttributes(IupLabel("label large"), "XSIZE=x12"),
       IupSetAttributes(IupButton("button large", NULL), ""),
       NULL
     )
   );
   
-  IupSetAttribute(gbox, "SIZECOL", "1");
-  IupSetAttribute(gbox, "SIZELIN", "2");
-  IupSetAttribute(gbox, "NUMDIV", "2");
+  IupSetAttribute(gbox, "SIZECOL", "2");
+  IupSetAttribute(gbox, "SIZELIN", "3");
+//  IupSetAttribute(gbox, "HOMOGENEOUSLIN", "Yes");
+//  IupSetAttribute(gbox, "HOMOGENEOUSCOL", "Yes");
+//  IupSetAttribute(gbox, "EXPANDCHILDREN", "HORIZONTAL");
+//  IupSetAttribute(gbox, "NORMALIZESIZE", "BOTH");
+
+  IupSetAttribute(gbox, "NUMDIV", "3");
 //  IupSetAttribute(gbox, "ORIENTATION", "VERTICAL");
 //  IupSetAttribute(gbox, "NUMDIV", "2");
 //  IupSetAttribute(gbox, "NUMDIV", "AUTO");
@@ -33,10 +47,6 @@ void GridBoxTest(void)
   IupSetAttribute(gbox, "MARGIN", "10x10");
   IupSetAttribute(gbox, "GAPLIN", "5");
   IupSetAttribute(gbox, "GAPCOL", "5");
-
-//  IupSetAttribute(gbox, "HOMOGENEOUSLIN", "YES");  /* same space in the normal direction */
-//  IupSetAttribute(gbox, "EXPANDCHILDREN", "YES");  /* expand size in the oposite direction */
-//  IupSetAttribute(gbox, "NORMALIZESIZE", "BOTH");  /* same size, hor and/or vert */
 
   dlg = IupDialog
   (
