@@ -136,6 +136,8 @@ static void iMatrixMarkItem(Ihandle* ih, int lin1, int col1, int mark, IFniii ma
     {
       iMatrixMarkLinSet(ih, lin1, mark);
       iupMatrixDrawLineTitle(ih, lin1, lin1);
+      if (ih->data->columns.num_noscroll>1)
+        iupMatrixDrawCells(ih, lin1, 1, lin1, ih->data->columns.num_noscroll-1);
     }
 
     iupMatrixDrawCells(ih, lin1, 1, lin1, ih->data->columns.num-1);
@@ -151,6 +153,8 @@ static void iMatrixMarkItem(Ihandle* ih, int lin1, int col1, int mark, IFniii ma
     {
       iMatrixMarkColSet(ih, col1, mark);
       iupMatrixDrawColumnTitle(ih, col1, col1);
+      if (ih->data->lines.num_noscroll>1)
+        iupMatrixDrawCells(ih, 1, col1, ih->data->lines.num_noscroll-1, col1);
     }
 
     iupMatrixDrawCells(ih, 1, col1, ih->data->lines.num-1, col1);
