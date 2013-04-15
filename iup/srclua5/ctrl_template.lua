@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------
 -- Template to create control classes for IupLua5
--- The Lua module is used by the "generator.lua" to build a C module,
+-- The Lualua module is used by the "generator.lua" to build a C module,
 -- and loaded during iuplua_open to initialize the control.
 ------------------------------------------------------------------------------
 local ctrl = {
@@ -54,7 +54,7 @@ local ctrl = {
  -- generator.lua must be edited to include the callback in the list of conflicting callbacks
  -- "action" is a common callback that conflicts
  -- In the callback list, just declare the callback with the parameters used in that control.
-  }
+  },
   
   include = "iupmycontrol.h", -- [optional] header to be included, it is where the creation function is declared.
   extrafuncs = 1, -- [optional] additional module in C called by the initialization function
@@ -69,10 +69,10 @@ static int myControl (lua_State * L)
   yyyy;
   return 1;
 } 
-]]
+]],
 
   extracode = [[        -- [optional] extra fucntions to be defined in C.
-]]
+]],
 
 }
 
