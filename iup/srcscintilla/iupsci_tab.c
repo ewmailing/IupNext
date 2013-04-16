@@ -10,24 +10,15 @@
 #include <math.h>
 
 #include <Scintilla.h>
-#include <SciLexer.h>
-
-#ifdef GTK
-#include <gtk/gtk.h>
-#include <ScintillaWidget.h>
-#else
-#include <windows.h>
-#endif
 
 #include "iup.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
-#include "iup_stdcontrols.h"
 
 #include "iupsci_tab.h"
-#include "iup_scintilla.h"
+#include "iupsci.h"
 
 /***** TABS AND INDENTATION GUIDES ****
 Attributes not implement yet:
@@ -53,7 +44,7 @@ char* iupScintillaGetTabSizeAttrib(Ihandle *ih)
   int widthInChars;
   char* str = iupStrGetMemory(100);
 
-  widthInChars = IUP_SSM(ih->handle, SCI_GETTABWIDTH, 0, 0);
+  widthInChars = iupScintillaSendMessage(ih, SCI_GETTABWIDTH, 0, 0);
   sprintf(str, "%d", widthInChars);
 
   return str;
@@ -67,7 +58,7 @@ int iupScintillaSetTabSizeAttrib(Ihandle *ih, const char *value)
   if(widthInChars < 2)
     widthInChars = 2;
 
-  IUP_SSM(ih->handle, SCI_SETTABWIDTH, widthInChars, 0);
+  iupScintillaSendMessage(ih, SCI_SETTABWIDTH, widthInChars, 0);
 
   return 0;
 }

@@ -1,4 +1,5 @@
 PROJNAME = iup
+LIBNAME = iup_scintilla
 OPT = YES
 
 ifdef DBG
@@ -7,11 +8,22 @@ endif
 
 INCLUDES =  ../include ../src .
 LDIR = ../lib/$(TEC_UNAME)
+LIBS = iup
+
 DEFINES += STATIC_BUILD SCI_LEXER
+
+# Supported only in Windows and GTK
 
 ifeq ($(findstring Win, $(TEC_SYSNAME)), )
   # Force definition if not in Windows
   USE_GTK = Yes
+endif
+
+ifndef GTK_DEFAULT
+  ifdef USE_GTK
+    # Build GTK version in IRIX,SunOS,AIX,Win32
+    LIBNAME := $(LIBNAME)gtk
+  endif
 endif
 
 ifdef USE_GTK
@@ -19,16 +31,13 @@ ifdef USE_GTK
   DEFINES += GTK GTK_DISABLE_DEPRECATED 
   ifdef USE_GTK3
     DEFINES += GDK_DISABLE_DEPRECATED GSEAL_ENABLE G_HAVE_ISO_VARARGS
-	LIBNAME  = iup_scintillagtk3
-  else
-    LIBNAME  = iup_scintillagtk
   endif
   INCLUDES += ../src/gtk ../srcscintilla/lexlib ../srcscintilla/src ../srcscintilla/include ../srcscintilla/gtk
   INCLUDES += gtk
 else
   INCLUDES += ../src/win ../srcscintilla/lexlib ../srcscintilla/src ../srcscintilla/include ../srcscintilla/win32
   INCLUDES += win
-  LIBNAME = iup_scintilla
+  LIBS += imm32
 endif
 
 SRCSCINTILLA = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBuffer.cxx src/CharClassify.cxx \

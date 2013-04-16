@@ -1,7 +1,8 @@
 /*
 * IupScintilla component
 *
-* Description : A source code editing component, derived from Scintilla (http://www.scintilla.org/)
+* Description : A source code editing component, 
+* derived from Scintilla (http://www.scintilla.org/)
 */
 
 #include <stdio.h>
@@ -20,6 +21,7 @@
 #endif
 
 #include "iup.h"
+#include "iup_scintilla.h"
 #include "iupcbs.h"
 #include "iup_mask.h"
 
@@ -52,26 +54,23 @@
 #include "iupsci_scrolling.h"
 #include "iupsci_tab.h"
 #include "iupsci_wordwrap.h"
+#include "iupsci.h"
 
-#include "iup_scintilla.h"
 
 #define WM_IUPCARET WM_APP+1   /* Custom IUP message */
 
 
-/***** AUXILIARY FUNCTIONS *****/
-long IupScintillaEncodeColor(unsigned char r, unsigned char g, unsigned char b)
+sptr_t iupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam, sptr_t lParam)
 {
-  return (((unsigned long)r) << 16) |
-         (((unsigned long)g) <<  8) |
-         (((unsigned long)b) <<  0);
+#ifdef GTK
+  return scintilla_send_message(SCINTILLA(ih->handle), iMessage, wParam, lParam);
+#else
+  return SendMessage(ih->handle, iMessage, wParam, lParam);
+#endif
 }
 
-void IupScintillaDecodeColor(long color, unsigned char *r, unsigned char *g, unsigned char *b)
-{
-  *r = (unsigned char)(((color) >> 16) & 0xFF);
-  *g = (unsigned char)(((color) >>  8) & 0xFF);
-  *b = (unsigned char)(((color) >>  0) & 0xFF);
-}
+
+/***** AUXILIARY ATTRIBUTES *****/
 
 void IupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
@@ -84,11 +83,11 @@ void IupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
     
   if (IupClassMatch(ih, "scintilla"))
   {
-    *pos = IUP_SSM(ih->handle, SCI_POSITIONFROMLINE, lin, 0);
+    *pos = iupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
     
     if(*pos != -1)
     {
-      int line_length = IUP_SSM(ih->handle, SCI_GETLINEENDPOSITION, lin, 0) - IUP_SSM(ih->handle, SCI_POSITIONFROMLINE, lin, 0);
+      int line_length = iupScintillaSendMessage(ih, SCI_GETLINEENDPOSITION, lin, 0) - iupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
       if(col <= line_length)
         *pos += col;
       else
@@ -97,7 +96,7 @@ void IupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
     else
     {
       /* "lin" is greater than the lines in the document */
-      *pos = IUP_SSM(ih->handle, SCI_GETLINECOUNT, 0, 0);
+      *pos = iupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
     }
   }
 }
@@ -113,10 +112,16 @@ void IupScintillaConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
     
   if (IupClassMatch(ih, "scintilla"))
   {
-    *lin = IUP_SSM(ih->handle, SCI_LINEFROMPOSITION, pos, 0);
-    *col = IUP_SSM(ih->handle, SCI_GETCOLUMN, pos, 0);
+    *lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pos, 0);
+    *col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, pos, 0);
   }
 }
+
+static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
+{
+  return iupScintillaSendMessage(ih, SCI_POSITIONFROMPOINT, x, y);
+}
+
 
 /***** GENERAL FUNCTIONS *****/
 static char* iScintillaGetMaskDataAttrib(Ihandle* ih)
@@ -302,7 +307,7 @@ SCN_AUTOCCHARDELETED
 */
 static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
 {
-  int lineClick = IUP_SSM(ih->handle, SCI_LINEFROMPOSITION, pMsg->position, 0);
+  int lineClick = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pMsg->position, 0);
 
   switch(pMsg->nmhdr.code)
   {
@@ -487,36 +492,35 @@ static int winScintillaWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
 static int iScintillaMapMethod(Ihandle* ih)
 {
 #ifdef GTK
-  ih->data->editor = scintilla_new();
-  if (!ih->data->editor)
+  ih->handle = scintilla_new();
+  if (!ih->handle)
     return IUP_ERROR;
 
-  ih->handle = (InativeHandle*)SCINTILLA(ih->data->editor);
-  scintilla_set_id((ScintillaObject*)ih->handle, 0);
+  //TODO: why????
+//  scintilla_set_id(SCINTILLA(ih->handle), 0);
 
-  gtk_widget_show(ih->data->editor);
-  //gtk_widget_grab_focus(ih->data->editor);
+  gtk_widget_show(ih->handle);
 
   /* add to the parent, all GTK controls must call this. */
   iupgtkAddToParent(ih);
 
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-    iupgtkSetCanFocus(ih->data->editor, 0);
+    iupgtkSetCanFocus(ih->handle, 0);
 
-  g_signal_connect(G_OBJECT(ih->data->editor), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
-  g_signal_connect(G_OBJECT(ih->data->editor), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
-  g_signal_connect(G_OBJECT(ih->data->editor), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
-  g_signal_connect(G_OBJECT(ih->data->editor), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);
-  g_signal_connect(G_OBJECT(ih->data->editor), "show-help",          G_CALLBACK(iupgtkShowHelp), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "show-help",          G_CALLBACK(iupgtkShowHelp), ih);
 
-  g_signal_connect_after(G_OBJECT(ih->data->editor), "move-cursor", G_CALLBACK(gtkScintillaMoveCursor), ih);  /* only report some caret movements */
-  g_signal_connect(G_OBJECT(ih->data->editor), "button-press-event", G_CALLBACK(gtkScintillaButtonEvent), ih);  /* if connected "after" then it is ignored */
-  g_signal_connect(G_OBJECT(ih->data->editor), "button-release-event", G_CALLBACK(gtkScintillaButtonEvent), ih);
-  g_signal_connect(G_OBJECT(ih->data->editor), "motion-notify-event", G_CALLBACK(iupgtkMotionNotifyEvent), ih);
+  g_signal_connect_after(G_OBJECT(ih->handle), "move-cursor", G_CALLBACK(gtkScintillaMoveCursor), ih);  /* only report some caret movements */
+  g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkScintillaButtonEvent), ih);  /* if connected "after" then it is ignored */
+  g_signal_connect(G_OBJECT(ih->handle), "button-release-event", G_CALLBACK(gtkScintillaButtonEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event", G_CALLBACK(iupgtkMotionNotifyEvent), ih);
 
-  g_signal_connect(ih->data->editor, "sci-notify", G_CALLBACK(gtkScintillaNotify), ih);
+  g_signal_connect(ih->handle, "sci-notify", G_CALLBACK(gtkScintillaNotify), ih);
 
-  gtk_widget_realize(ih->data->editor);
+  gtk_widget_realize(ih->handle);
 #else
   DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS;
   DWORD dwExStyle = 0;
@@ -548,14 +552,17 @@ static int iScintillaMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
 
   /* add scrollbar */
-  IUP_SSM(ih->handle, SCI_SETHSCROLLBAR, 0, 0);
-  IUP_SSM(ih->handle, SCI_SETVSCROLLBAR, 0, 0);
-
   if (ih->data->sb & IUP_SB_HORIZ)
-    IUP_SSM(ih->handle, SCI_SETHSCROLLBAR, 1, 0);
+    iupScintillaSendMessage(ih, SCI_SETHSCROLLBAR, 1, 0);
+  else
+    iupScintillaSendMessage(ih, SCI_SETHSCROLLBAR, 0, 0);
 
   if (ih->data->sb & IUP_SB_VERT)
-    IUP_SSM(ih->handle, SCI_SETVSCROLLBAR, 1, 0);
+    iupScintillaSendMessage(ih, SCI_SETVSCROLLBAR, 1, 0);
+  else
+    iupScintillaSendMessage(ih, SCI_SETVSCROLLBAR, 0, 0);
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)iScintillaConvertXYToPos);
 
   return IUP_NOERROR;
 }
@@ -658,6 +665,7 @@ static Iclass* iupScintillaNewClass(void)
   iupdrvRegisterDragDropAttrib(ic);
 
   /* Text retrieval and modification */
+  iupClassRegisterAttribute(ic, "APPENDNEWLINE", iScintillaGetAppendNewlineAttrib, iScintillaSetAppendNewlineAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "APPEND", NULL, iupScintillaSetAppendTextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "PREPEND", NULL, iupScintillaSetPrependTextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "VALUE", iupScintillaGetValueAttrib, iupScintillaSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -710,39 +718,42 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttributeId(ic, "STYLEHOTSPOT", iupScintillaGetHotSpotStyleAttrib, iupScintillaSetHotSpotStyleAttrib, IUPAF_NO_INHERIT);
 
   /* Lexer Attributes */
-  iupClassRegisterAttribute(ic,   "LEXER", iupScintillaGetLexerAttrib, iupScintillaSetLexerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "LEXERLANGUAGE", iupScintillaGetLexerLanguageAttrib, iupScintillaSetLexerLanguageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "PROPERTYNAME", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "PROPERTY", iupScintillaGetPropertyAttrib, iupScintillaSetPropertyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "KEYWORDS", NULL, iupScintillaSetKeyWordsAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* Folding Attributes */
   iupClassRegisterAttribute(ic,   "FOLDFLAGS", NULL, iupScintillaSetFoldFlagsAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "TOGGLEFOLD", NULL, iupScintillaSetToggleFoldAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "FOLDTOGGLE", NULL, iupScintillaSetFoldToggleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FOLDLEVEL", iupScintillaGetFoldLevelAttrib, iupScintillaSetFoldLevelAttrib, IUPAF_NO_INHERIT);
 
   /* Margin Attributes */
-  iupClassRegisterAttributeId(ic, "MARGINTYPEN", iupScintillaGetMarginTypeNAttrib, iupScintillaSetMarginTypeNAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARGINWIDTHN", iupScintillaGetMarginWidthNAttrib, iupScintillaSetMarginWidthNAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARGINMASKN", iupScintillaGetMarginMaskNAttrib, iupScintillaSetMarginMaskNAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARGINSENSITIVEN", iupScintillaGetMarginSensitiveNAttrib, iupScintillaSetMarginSensitiveNAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARGINTYPE", iupScintillaGetMarginTypeAttribId, iupScintillaSetMarginTypeAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARGINWIDTH", iupScintillaGetMarginWidthAttribId, iupScintillaSetMarginWidthAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARGINMASK", iupScintillaGetMarginMaskAttribId, iupScintillaSetMarginMaskAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARGINSENSITIVE", iupScintillaGetMarginSensitiveAttribId, iupScintillaSetMarginSensitiveAttribId, IUPAF_NO_INHERIT);
 
   /* Marker Attributes */
   iupClassRegisterAttribute(ic, "MARKERDEFINE", NULL, iupScintillaSetMarkerDefineAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* Scrolling and automatic scrolling */
+  iupClassRegisterAttribute(ic, "SCROLLBAR", iScintillaGetScrollbarAttrib, iScintillaSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTO", NULL, iupScintillaSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, iupScintillaSetScrollToPosAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* General */
-  iupClassRegisterAttribute(ic, "SCROLLBAR", iScintillaGetScrollbarAttrib, iScintillaSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "APPENDNEWLINE", iScintillaGetAppendNewlineAttrib, iScintillaSetAppendNewlineAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLELINES",   NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, IUPAF_SAMEASSYSTEM, "30", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLELINES",   NULL, NULL, IUPAF_SAMEASSYSTEM, "10", IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "VALUEMASKED", NULL, iScintillaSetValueMaskedAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKCASEI", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASK", iScintillaGetMaskAttrib, iScintillaSetMaskAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKINT", NULL, iScintillaSetMaskIntAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iScintillaSetMaskFloatAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iScintillaGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   return ic;
 }
@@ -755,7 +766,7 @@ void IupScintillaOpen(void)
     IupSetGlobal("_IUP_SCINTILLA_OPEN", "1");
 
 #ifndef GTK
-    Scintilla_RegisterClasses(iupwin_hinstance);
+    Scintilla_RegisterClasses(IupGetGlobal("HINSTANCE"));
 #endif
   }
 }

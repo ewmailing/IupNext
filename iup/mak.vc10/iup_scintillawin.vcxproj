@@ -54,6 +54,7 @@
   <ItemGroup>
     <CustomBuildStep Include="..\include\iup_scintilla.h" />
     <ClInclude Include="..\include\iup_scintilla.h" />
+    <ClInclude Include="..\srcscintilla\iupsci.h" />
     <ClInclude Include="..\srcscintilla\iupsci_clipboard.h" />
     <ClInclude Include="..\srcscintilla\iupsci_folding.h" />
     <ClInclude Include="..\srcscintilla\iupsci_lexer.h" />

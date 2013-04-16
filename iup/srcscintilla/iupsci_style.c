@@ -10,30 +10,35 @@
 #include <math.h>
 
 #include <Scintilla.h>
-#include <SciLexer.h>
-
-#ifdef GTK
-#include <gtk/gtk.h>
-#include <ScintillaWidget.h>
-#else
-#include <windows.h>
-#endif
 
 #include "iup.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
-#include "iup_stdcontrols.h"
 
 #include "iupsci_style.h"
-#include "iup_scintilla.h"
+#include "iupsci.h"
 
 /***** STYLE DEFINITION *****
 Attributes not implement yet:
 SCI_STYLESETCHANGEABLE(int styleNumber, bool changeable)
 SCI_STYLEGETCHANGEABLE(int styleNumber)  
 */
+
+static long iupScintillaEncodeColor(unsigned char r, unsigned char g, unsigned char b)
+{
+  return (((unsigned long)r) << 16) |
+         (((unsigned long)g) <<  8) |
+         (((unsigned long)b) <<  0);
+}
+
+static void iupScintillaDecodeColor(long color, unsigned char *r, unsigned char *g, unsigned char *b)
+{
+  *r = (unsigned char)(((color) >> 16) & 0xFF);
+  *g = (unsigned char)(((color) >>  8) & 0xFF);
+  *b = (unsigned char)(((color) >>  0) & 0xFF);
+}
 
 char* iupScintillaGetCaseStyleAttrib(Ihandle* ih, int style)
 {
@@ -42,7 +47,7 @@ char* iupScintillaGetCaseStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
   
-  caseSty = IUP_SSM(ih->handle, SCI_STYLEGETCASE, style, 0);
+  caseSty = iupScintillaSendMessage(ih, SCI_STYLEGETCASE, style, 0);
   
   if(caseSty == SC_CASE_UPPER)
     return "UPPERCASE";
@@ -58,11 +63,11 @@ int iupScintillaSetCaseStyleAttrib(Ihandle* ih, int style, const char* value)
     style = 0;  /* Lexer style default */
   
   if (iupStrEqualNoCase(value, "UPPERCASE"))
-    IUP_SSM(ih->handle, SCI_STYLESETCASE, style, SC_CASE_UPPER);
+    iupScintillaSendMessage(ih, SCI_STYLESETCASE, style, SC_CASE_UPPER);
   else if (iupStrEqualNoCase(value, "LOWERCASE"))
-    IUP_SSM(ih->handle, SCI_STYLESETCASE, style, SC_CASE_LOWER);
+    iupScintillaSendMessage(ih, SCI_STYLESETCASE, style, SC_CASE_LOWER);
   else
-    IUP_SSM(ih->handle, SCI_STYLESETCASE, style, SC_CASE_MIXED);  /* default */
+    iupScintillaSendMessage(ih, SCI_STYLESETCASE, style, SC_CASE_MIXED);  /* default */
 
   return 0;
 }
@@ -72,7 +77,7 @@ char* iupScintillaGetVisibleStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(IUP_SSM(ih->handle, SCI_STYLEGETVISIBLE, style, 0))
+  if(iupScintillaSendMessage(ih, SCI_STYLEGETVISIBLE, style, 0))
     return "YES";
   else
     return "NO";
@@ -84,9 +89,9 @@ int iupScintillaSetVisibleStyleAttrib(Ihandle* ih, int style, const char* value)
     style = 0;  /* Lexer style default */
 
   if (iupStrEqualNoCase(value, "YES"))
-    IUP_SSM(ih->handle, SCI_STYLESETVISIBLE, style, 1);
+    iupScintillaSendMessage(ih, SCI_STYLESETVISIBLE, style, 1);
   else
-    IUP_SSM(ih->handle, SCI_STYLESETVISIBLE, style, 0);
+    iupScintillaSendMessage(ih, SCI_STYLESETVISIBLE, style, 0);
 
   return 0;
 }
@@ -96,7 +101,7 @@ char* iupScintillaGetHotSpotStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(IUP_SSM(ih->handle, SCI_STYLEGETHOTSPOT, style, 0))
+  if(iupScintillaSendMessage(ih, SCI_STYLEGETHOTSPOT, style, 0))
     return "YES";
   else
     return "NO";
@@ -108,9 +113,9 @@ int iupScintillaSetHotSpotStyleAttrib(Ihandle* ih, int style, const char* value)
     style = 0;  /* Lexer style default */
 
   if (iupStrEqualNoCase(value, "YES"))
-    IUP_SSM(ih->handle, SCI_STYLESETHOTSPOT, style, 1);
+    iupScintillaSendMessage(ih, SCI_STYLESETHOTSPOT, style, 1);
   else
-    IUP_SSM(ih->handle, SCI_STYLESETHOTSPOT, style, 0);
+    iupScintillaSendMessage(ih, SCI_STYLESETHOTSPOT, style, 0);
 
   return 0;
 }
@@ -122,7 +127,7 @@ char* iupScintillaGetCharSetStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
   
-  charset = IUP_SSM(ih->handle, SCI_STYLEGETCHARACTERSET, style, 0);
+  charset = iupScintillaSendMessage(ih, SCI_STYLEGETCHARACTERSET, style, 0);
 
   if(charset == SC_CHARSET_EASTEUROPE)
     return "EASTEUROPE";
@@ -145,17 +150,17 @@ int iupScintillaSetCharSetStyleAttrib(Ihandle* ih, int style, const char* value)
 
   /* These character sets are supported both on Windows as on GTK */
   if (iupStrEqualNoCase(value, "EASTEUROPE"))
-    IUP_SSM(ih->handle, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_EASTEUROPE);
+    iupScintillaSendMessage(ih, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_EASTEUROPE);
   else if (iupStrEqualNoCase(value, "RUSSIAN"))
-    IUP_SSM(ih->handle, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_RUSSIAN);
+    iupScintillaSendMessage(ih, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_RUSSIAN);
   else if (iupStrEqualNoCase(value, "GB2312"))  /* Chinese charset */
-    IUP_SSM(ih->handle, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_GB2312);
+    iupScintillaSendMessage(ih, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_GB2312);
   else if (iupStrEqualNoCase(value, "HANGUL"))  /* Korean charset */
-    IUP_SSM(ih->handle, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_HANGUL);
+    iupScintillaSendMessage(ih, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_HANGUL);
   else if (iupStrEqualNoCase(value, "SHIFTJIS"))  /* Japanese charset */
-    IUP_SSM(ih->handle, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_SHIFTJIS);
+    iupScintillaSendMessage(ih, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_SHIFTJIS);
   else
-    IUP_SSM(ih->handle, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_ANSI);  /* default */
+    iupScintillaSendMessage(ih, SCI_STYLESETCHARACTERSET, style, SC_CHARSET_ANSI);  /* default */
 
   return 0;
 }
@@ -165,7 +170,7 @@ char* iupScintillaGetEolFilledStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(IUP_SSM(ih->handle, SCI_STYLEGETEOLFILLED, style, 0))
+  if(iupScintillaSendMessage(ih, SCI_STYLEGETEOLFILLED, style, 0))
     return "YES";
   else
     return "NO";
@@ -177,9 +182,9 @@ int iupScintillaSetEolFilledStyleAttrib(Ihandle* ih, int style, const char* valu
     style = 0;  /* Lexer style default */
 
   if (iupStrEqualNoCase(value, "YES"))
-    IUP_SSM(ih->handle, SCI_STYLESETEOLFILLED, style, 1);
+    iupScintillaSendMessage(ih, SCI_STYLESETEOLFILLED, style, 1);
   else
-    IUP_SSM(ih->handle, SCI_STYLESETEOLFILLED, style, 0);
+    iupScintillaSendMessage(ih, SCI_STYLESETEOLFILLED, style, 0);
 
   return 0;
 }
@@ -192,7 +197,7 @@ char* iupScintillaGetFontSizeFracStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  size = IUP_SSM(ih->handle, SCI_STYLESETSIZEFRACTIONAL, style, 0);
+  size = iupScintillaSendMessage(ih, SCI_STYLESETSIZEFRACTIONAL, style, 0);
 
   sprintf(str, "%f", (double)(size / SC_FONT_SIZE_MULTIPLIER));
 
@@ -208,7 +213,7 @@ int iupScintillaSetFontSizeFracStyleAttrib(Ihandle* ih, int style, const char* v
 
   iupStrToFloat(value, &size);
 
-  IUP_SSM(ih->handle, SCI_STYLESETSIZEFRACTIONAL, style, (int)(size*SC_FONT_SIZE_MULTIPLIER));
+  iupScintillaSendMessage(ih, SCI_STYLESETSIZEFRACTIONAL, style, (int)(size*SC_FONT_SIZE_MULTIPLIER));
 
   return 0;
 }
@@ -221,7 +226,7 @@ char* iupScintillaGetFontSizeStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  size = IUP_SSM(ih->handle, SCI_STYLEGETSIZE, style, 0);
+  size = iupScintillaSendMessage(ih, SCI_STYLEGETSIZE, style, 0);
 
   sprintf(str, "%d", size);
 
@@ -237,7 +242,7 @@ int iupScintillaSetFontSizeStyleAttrib(Ihandle* ih, int style, const char* value
 
   iupStrToInt(value, &size);
 
-  IUP_SSM(ih->handle, SCI_STYLESETSIZE, style, size);
+  iupScintillaSendMessage(ih, SCI_STYLESETSIZE, style, size);
 
   return 0;
 }
@@ -249,7 +254,7 @@ char* iupScintillaGetFontStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  IUP_SSM(ih->handle, SCI_STYLEGETFONT, style, (sptr_t)str);
+  iupScintillaSendMessage(ih, SCI_STYLEGETFONT, style, (sptr_t)str);
 
   return str;
 }
@@ -259,20 +264,20 @@ int iupScintillaSetFontStyleAttrib(Ihandle* ih, int style, const char* value)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  IUP_SSM(ih->handle, SCI_STYLESETFONT, style, (sptr_t)value);
+  iupScintillaSendMessage(ih, SCI_STYLESETFONT, style, (sptr_t)value);
 
   return 0;
 }
 
 char* iupScintillaGetWeightStyleAttrib(Ihandle* ih, int style)
 {
-  int weight = IUP_SSM(ih->handle, SCI_STYLEGETWEIGHT, style, 0);
+  int weight = iupScintillaSendMessage(ih, SCI_STYLEGETWEIGHT, style, 0);
   char* str = iupStrGetMemory(15);
 
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  weight = IUP_SSM(ih->handle, SCI_STYLEGETWEIGHT, style, 0);
+  weight = iupScintillaSendMessage(ih, SCI_STYLEGETWEIGHT, style, 0);
 
   sprintf(str, "%d", weight);
 
@@ -301,7 +306,7 @@ int iupScintillaSetWeightStyleAttrib(Ihandle* ih, int style, const char* value)
       weight = 999;
   }
 
-  IUP_SSM(ih->handle, SCI_STYLESETWEIGHT, style, 0);
+  iupScintillaSendMessage(ih, SCI_STYLESETWEIGHT, style, 0);
 
   return 0;
 }
@@ -311,7 +316,7 @@ char* iupScintillaGetUnderlineStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(IUP_SSM(ih->handle, SCI_STYLEGETUNDERLINE, style, 0))
+  if(iupScintillaSendMessage(ih, SCI_STYLEGETUNDERLINE, style, 0))
     return "YES";
   else
     return "NO";
@@ -323,9 +328,9 @@ int iupScintillaSetUnderlineStyleAttrib(Ihandle* ih, int style, const char* valu
     style = 0;  /* Lexer style default */
 
   if (iupStrEqualNoCase(value, "YES"))
-    IUP_SSM(ih->handle, SCI_STYLESETUNDERLINE, style, 1);
+    iupScintillaSendMessage(ih, SCI_STYLESETUNDERLINE, style, 1);
   else
-    IUP_SSM(ih->handle, SCI_STYLESETITALIC, style, 0);
+    iupScintillaSendMessage(ih, SCI_STYLESETITALIC, style, 0);
 
   return 0;
 }
@@ -335,7 +340,7 @@ char* iupScintillaGetItalicStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(IUP_SSM(ih->handle, SCI_STYLEGETITALIC, style, 0))
+  if(iupScintillaSendMessage(ih, SCI_STYLEGETITALIC, style, 0))
     return "YES";
   else
     return "NO";
@@ -347,9 +352,9 @@ int iupScintillaSetItalicStyleAttrib(Ihandle* ih, int style, const char* value)
     style = 0;  /* Lexer style default */
 
   if (iupStrEqualNoCase(value, "YES"))
-    IUP_SSM(ih->handle, SCI_STYLESETITALIC, style, 1);
+    iupScintillaSendMessage(ih, SCI_STYLESETITALIC, style, 1);
   else
-    IUP_SSM(ih->handle, SCI_STYLESETITALIC, style, 0);
+    iupScintillaSendMessage(ih, SCI_STYLESETITALIC, style, 0);
 
   return 0;
 }
@@ -359,7 +364,7 @@ char* iupScintillaGetBoldStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(IUP_SSM(ih->handle, SCI_STYLEGETBOLD, style, 0))
+  if(iupScintillaSendMessage(ih, SCI_STYLEGETBOLD, style, 0))
     return "YES";
   else
     return "NO";
@@ -371,9 +376,9 @@ int iupScintillaSetBoldStyleAttrib(Ihandle* ih, int style, const char* value)
     style = 0;  /* Lexer style default */
 
   if (iupStrEqualNoCase(value, "YES"))
-    IUP_SSM(ih->handle, SCI_STYLESETBOLD, style, 1);
+    iupScintillaSendMessage(ih, SCI_STYLESETBOLD, style, 1);
   else
-    IUP_SSM(ih->handle, SCI_STYLESETBOLD, style, 0);
+    iupScintillaSendMessage(ih, SCI_STYLESETBOLD, style, 0);
 
   return 0;
 }
@@ -387,8 +392,8 @@ char* iupScintillaGetFgColorStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  color = IUP_SSM(ih->handle, SCI_STYLEGETFORE, style, 0);
-  IupScintillaDecodeColor(color, &r, &g, &b);
+  color = iupScintillaSendMessage(ih, SCI_STYLEGETFORE, style, 0);
+  iupScintillaDecodeColor(color, &r, &g, &b);
   sprintf(str, "%d %d %d", r, g, b);
 
   return str;
@@ -404,7 +409,7 @@ int iupScintillaSetFgColorStyleAttrib(Ihandle* ih, int style, const char* value)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  IUP_SSM(ih->handle, SCI_STYLESETFORE, style, IupScintillaEncodeColor(r, g, b));
+  iupScintillaSendMessage(ih, SCI_STYLESETFORE, style, iupScintillaEncodeColor(r, g, b));
 
   return 0;
 }
@@ -418,8 +423,8 @@ char* iupScintillaGetBgColorStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  color = IUP_SSM(ih->handle, SCI_STYLEGETBACK, style, 0);
-  IupScintillaDecodeColor(color, &r, &g, &b);
+  color = iupScintillaSendMessage(ih, SCI_STYLEGETBACK, style, 0);
+  iupScintillaDecodeColor(color, &r, &g, &b);
   sprintf(str, "%d %d %d", r, g, b);
 
   return str;
@@ -435,7 +440,7 @@ int iupScintillaSetBgColorStyleAttrib(Ihandle* ih, int style, const char* value)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  IUP_SSM(ih->handle, SCI_STYLESETBACK, style, IupScintillaEncodeColor(r, g, b));
+  iupScintillaSendMessage(ih, SCI_STYLESETBACK, style, iupScintillaEncodeColor(r, g, b));
 
   return 0;
 }
@@ -444,7 +449,7 @@ int iupScintillaSetClearAllStyleAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
 
-  IUP_SSM(ih->handle, SCI_STYLECLEARALL, 0, 0);
+  iupScintillaSendMessage(ih, SCI_STYLECLEARALL, 0, 0);
   return 0;
 }
 
@@ -452,6 +457,6 @@ int iupScintillaSetResetDefaultStyleAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
 
-  IUP_SSM(ih->handle, SCI_STYLERESETDEFAULT, 0, 0);
+  iupScintillaSendMessage(ih, SCI_STYLERESETDEFAULT, 0, 0);
   return 0;
 }

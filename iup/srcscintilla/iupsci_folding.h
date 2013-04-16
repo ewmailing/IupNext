@@ -15,7 +15,7 @@ extern "C" {
 int iupScintillaSetFoldFlagsAttrib(Ihandle* ih, const char* value);
 char* iupScintillaGetFoldLevelAttrib(Ihandle* ih, int line);
 int iupScintillaSetFoldLevelAttrib(Ihandle* ih, int line, const char* value);
-int iupScintillaSetToggleFoldAttrib(Ihandle* ih, const char* value);
+int iupScintillaSetFoldToggleAttrib(Ihandle* ih, const char* value);
 
 
 #ifdef __cplusplus

@@ -12,8 +12,8 @@ extern "C" {
 #endif
 
 
-char* iupScintillaGetLexerAttrib(Ihandle* ih);
-int iupScintillaSetLexerAttrib(Ihandle* ih, const char* value);
+char* iupScintillaGetLexerLanguageAttrib(Ihandle* ih);
+int iupScintillaSetLexerLanguageAttrib(Ihandle* ih, const char* value);
 int iupScintillaSetKeyWordsAttrib(Ihandle* ih, int keyWordSet, const char* value);
 char* iupScintillaGetPropertyAttrib(Ihandle* ih);
 int iupScintillaSetPropertyAttrib(Ihandle* ih, const char* value);

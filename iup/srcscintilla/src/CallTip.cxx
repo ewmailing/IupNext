@@ -176,12 +176,12 @@ int CallTip::PaintContents(Surface *surfaceWindow, bool draw) {
 	// Draw the definition in three parts: before highlight, highlighted, after highlight
 	int ytext = rcClient.top + ascent + 1;
 	rcClient.bottom = ytext + surfaceWindow->Descent(font) + 1;
-	char *chunkVal = val;
+	const char *chunkVal = val;
 	bool moreChunks = true;
 	int maxWidth = 0;
 
 	while (moreChunks) {
-		char *chunkEnd = strchr(chunkVal, '\n');
+		const char *chunkEnd = strchr(chunkVal, '\n');
 		if (chunkEnd == NULL) {
 			chunkEnd = chunkVal + strlen(chunkVal);
 			moreChunks = false;

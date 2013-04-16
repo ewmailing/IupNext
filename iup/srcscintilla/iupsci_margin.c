@@ -10,24 +10,15 @@
 #include <math.h>
 
 #include <Scintilla.h>
-#include <SciLexer.h>
-
-#ifdef GTK
-#include <gtk/gtk.h>
-#include <ScintillaWidget.h>
-#else
-#include <windows.h>
-#endif
 
 #include "iup.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
-#include "iup_stdcontrols.h"
 
 #include "iupsci_margin.h"
-#include "iup_scintilla.h"
+#include "iupsci.h"
 
 /***** MARGIN *****
 SCI_SETMARGINCURSORN(int margin, int cursor)
@@ -51,9 +42,9 @@ SCI_SETMARGINOPTIONS(int marginOptions)
 SCI_GETMARGINOPTIONS
 */
 
-char* iupScintillaGetMarginTypeNAttrib(Ihandle* ih, int margin)
+char* iupScintillaGetMarginTypeAttribId(Ihandle* ih, int margin)
 {
-  int type = IUP_SSM(ih->handle, SCI_GETMARGINTYPEN, margin, 0);
+  int type = iupScintillaSendMessage(ih, SCI_GETMARGINTYPEN, margin, 0);
 
   if (type == SC_MARGIN_NUMBER)
     return "MARGIN_NUMBER";
@@ -69,27 +60,27 @@ char* iupScintillaGetMarginTypeNAttrib(Ihandle* ih, int margin)
   return "MARGIN_SYMBOL";
 }
 
-int iupScintillaSetMarginTypeNAttrib(Ihandle* ih, int margin, const char* value)
+int iupScintillaSetMarginTypeAttribId(Ihandle* ih, int margin, const char* value)
 {
   if (iupStrEqualNoCase(value, "MARGIN_NUMBER"))
-    IUP_SSM(ih->handle, SCI_SETMARGINTYPEN, margin, SC_MARGIN_NUMBER);
+    iupScintillaSendMessage(ih, SCI_SETMARGINTYPEN, margin, SC_MARGIN_NUMBER);
   else if (iupStrEqualNoCase(value, "MARGIN_TEXT"))
-    IUP_SSM(ih->handle, SCI_SETMARGINTYPEN, margin, SC_MARGIN_TEXT);
+    iupScintillaSendMessage(ih, SCI_SETMARGINTYPEN, margin, SC_MARGIN_TEXT);
   else if (iupStrEqualNoCase(value, "MARGIN_RTEXT"))
-    IUP_SSM(ih->handle, SCI_SETMARGINTYPEN, margin, SC_MARGIN_RTEXT);
+    iupScintillaSendMessage(ih, SCI_SETMARGINTYPEN, margin, SC_MARGIN_RTEXT);
   else if (iupStrEqualNoCase(value, "MARGIN_BACK"))
-    IUP_SSM(ih->handle, SCI_SETMARGINTYPEN, margin, SC_MARGIN_BACK);
+    iupScintillaSendMessage(ih, SCI_SETMARGINTYPEN, margin, SC_MARGIN_BACK);
   else if (iupStrEqualNoCase(value, "MARGIN_FORE"))
-    IUP_SSM(ih->handle, SCI_SETMARGINTYPEN, margin, SC_MARGIN_FORE);
+    iupScintillaSendMessage(ih, SCI_SETMARGINTYPEN, margin, SC_MARGIN_FORE);
   else  /* MARGIN_SYMBOL */
-    IUP_SSM(ih->handle, SCI_SETMARGINTYPEN, margin, SC_MARGIN_SYMBOL);
+    iupScintillaSendMessage(ih, SCI_SETMARGINTYPEN, margin, SC_MARGIN_SYMBOL);
 
   return 0;
 }
 
-char* iupScintillaGetMarginWidthNAttrib(Ihandle* ih, int margin)
+char* iupScintillaGetMarginWidthAttribId(Ihandle* ih, int margin)
 {
-  int pixelWidth = IUP_SSM(ih->handle, SCI_GETMARGINWIDTHN, margin, 0);
+  int pixelWidth = iupScintillaSendMessage(ih, SCI_GETMARGINWIDTHN, margin, 0);
   char* str = iupStrGetMemory(15);
 
   sprintf(str, "%d", pixelWidth);
@@ -97,7 +88,7 @@ char* iupScintillaGetMarginWidthNAttrib(Ihandle* ih, int margin)
   return str;
 }
 
-int iupScintillaSetMarginWidthNAttrib(Ihandle* ih, int margin, const char* value)
+int iupScintillaSetMarginWidthAttribId(Ihandle* ih, int margin, const char* value)
 {
   int pixelWidth;
 
@@ -106,43 +97,43 @@ int iupScintillaSetMarginWidthNAttrib(Ihandle* ih, int margin, const char* value
   if(pixelWidth < 1)
     pixelWidth = 16;
 
-  IUP_SSM(ih->handle, SCI_SETMARGINWIDTHN, margin, pixelWidth);
+  iupScintillaSendMessage(ih, SCI_SETMARGINWIDTHN, margin, pixelWidth);
 
   return 0;
 }
 
-char* iupScintillaGetMarginMaskNAttrib(Ihandle* ih, int margin)
+char* iupScintillaGetMarginMaskAttribId(Ihandle* ih, int margin)
 {
-  if(IUP_SSM(ih->handle, SCI_GETMARGINMASKN, margin, 0) == SC_MASK_FOLDERS)
+  if(iupScintillaSendMessage(ih, SCI_GETMARGINMASKN, margin, 0) == SC_MASK_FOLDERS)
     return "MASK_FOLDERS";
   else
     return "NO_MASK_FOLDERS";
 }
 
-int iupScintillaSetMarginMaskNAttrib(Ihandle* ih, int margin, const char* value)
+int iupScintillaSetMarginMaskAttribId(Ihandle* ih, int margin, const char* value)
 {
   if (iupStrEqualNoCase(value, "MASK_FOLDERS"))
-    IUP_SSM(ih->handle, SCI_SETMARGINMASKN, margin, SC_MASK_FOLDERS);
+    iupScintillaSendMessage(ih, SCI_SETMARGINMASKN, margin, SC_MASK_FOLDERS);
   else
-    IUP_SSM(ih->handle, SCI_SETMARGINMASKN, margin, ~SC_MASK_FOLDERS);
+    iupScintillaSendMessage(ih, SCI_SETMARGINMASKN, margin, ~SC_MASK_FOLDERS);
 
   return 0;
 }
 
-char* iupScintillaGetMarginSensitiveNAttrib(Ihandle* ih, int margin)
+char* iupScintillaGetMarginSensitiveAttribId(Ihandle* ih, int margin)
 {
-  if(IUP_SSM(ih->handle, SCI_SETMARGINSENSITIVEN, margin, 0))
+  if(iupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 0))
     return "YES";
   else
     return "NO";
 }
 
-int iupScintillaSetMarginSensitiveNAttrib(Ihandle* ih, int margin, const char* value)
+int iupScintillaSetMarginSensitiveAttribId(Ihandle* ih, int margin, const char* value)
 {
   if (iupStrEqualNoCase(value, "YES"))
-    IUP_SSM(ih->handle, SCI_SETMARGINSENSITIVEN, margin, 1);
+    iupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 1);
   else
-    IUP_SSM(ih->handle, SCI_SETMARGINSENSITIVEN, margin, 0);
+    iupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 0);
 
   return 0;
 }

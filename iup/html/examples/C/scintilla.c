@@ -10,9 +10,10 @@
 #include <iup_scintilla.h>
 
 const char* sampleCode = {
+  "/* Block comment */\n"
   "#include<stdio.h>\n#include<iup.h>\n\nvoid SampleTest() {\n  printf(\"Printing float: %f\\n\", 12.5);\n}\n\n"
   "int main(int argc, char **argv) {\n"
-  "  // Start up the IupScintilla\n"
+  "  // Start up IUP\n"
   "  IupOpen(&argc, &argv);\n"
   "  IupSetGlobal(\"SINGLEINSTANCE\", \"Iup Sample\");\n\n"
   "  if(!IupGetGlobal(\"SINGLEINSTANCE\")) {\n"
@@ -112,26 +113,35 @@ int action_cb(Ihandle *self, int key, char *txt)
 void set_attribs (Ihandle *sci)
 {
   IupSetAttribute(sci, "CLEARALL", "");
-  IupSetAttribute(sci, "LEXER", "CPP");
+  IupSetAttribute(sci, "LEXERLANGUAGE", "cpp");
 
-  IupSetAttribute(sci, "KEYWORDS0", "int char double float");
+  //IupSetAttribute(sci, "KEYWORDS0", "int char double float");
 
-  IupSetAttribute(sci, "STYLEFGCOLOR", "0 255 0");
-  IupSetAttribute(sci, "STYLEFGCOLOR2", "0 255 0");
-  IupSetAttribute(sci, "STYLEFGCOLOR4", "255 255 0");
-  IupSetAttribute(sci, "STYLEFGCOLOR5", "255 0 0");
-  IupSetAttribute(sci, "STYLEFGCOLOR6", "255 0 255");
-
+  IupSetAttribute(sci, "STYLEFONT0", "Consolas");      // 0-Default style 
+  IupSetAttribute(sci, "STYLEFONTSIZE0", "20");
+  IupSetAttribute(sci, "STYLEFGCOLOR1", "0 128 0");    // 1-C comment 
+  IupSetAttribute(sci, "STYLEFGCOLOR2", "0 128 0");    // 2-C++ comment line 
+  IupSetAttribute(sci, "STYLEFGCOLOR4", "128 0 0");    // 4-Number 
+  IupSetAttribute(sci, "STYLEFGCOLOR5", "0 0 255");    // 5-Keyword 
+  IupSetAttribute(sci, "STYLEFGCOLOR6", "160 20 20");  // 6-String 
+  IupSetAttribute(sci, "STYLEFGCOLOR7", "128 0 0");    // 7-Character 
+  IupSetAttribute(sci, "STYLEFGCOLOR9", "0 0 255");    // 9-Preprocessor block 
+  IupSetAttribute(sci, "STYLEFGCOLOR10", "255 0 255"); // 10-Operator 
   IupSetAttribute(sci, "STYLEBOLD10", "YES");
-  IupSetAttribute(sci, "STYLEHOTSPOT6", "YES");
-  IupSetAttribute(sci, "STYLEFONT32", "Courier New");
-  IupSetAttribute(sci, "STYLEFONTSIZE32", "12");
+// 11-Identifier  
+
+  //IupSetAttribute(sci, "STYLEHOTSPOT6", "YES");
+  
+  //IupSetAttribute(sci, "STYLEFGCOLOR", "0 255 0");
+  
+  //IupSetAttribute(sci, "STYLEFONT32", "Courier New");
+  //IupSetAttribute(sci, "STYLEFONTSIZE32", "12");
 
   IupSetAttribute(sci, "INSERT0", sampleCode);
 
   IupSetAttribute(sci, "MARGINWIDTHN0", "50");
 
-  if (1)
+  if (0)
   {
     IupSetAttribute(sci, "PROPERTY", "fold,1");
     IupSetAttribute(sci, "PROPERTY", "fold.compact,0");
@@ -142,7 +152,6 @@ void set_attribs (Ihandle *sci)
     IupSetAttribute(sci, "MARGINTYPEN1",  "MARGIN_SYMBOL");
     IupSetAttribute(sci, "MARGINMASKN1",  "MASK_FOLDERS");
     IupSetAttribute(sci, "MARGINWIDTHN1", "20");
-
     IupSetAttribute(sci, "MARKERDEFINE", "FOLDER,PLUS");
     IupSetAttribute(sci, "MARKERDEFINE", "FOLDEROPEN,MINUS");
     IupSetAttribute(sci, "MARKERDEFINE", "FOLDEREND,EMPTY");
@@ -169,10 +178,11 @@ void ScintillaTest(void)
 
   // Creates an instance of the Scintilla control
   sci = IupScintilla();
-  IupSetAttribute(sci, "VISIBLECOLUMNS", "80");
-  IupSetAttribute(sci, "VISIBLELINES", "40");
+//  IupSetAttribute(sci, "VISIBLECOLUMNS", "80");
+//  IupSetAttribute(sci, "VISIBLELINES", "40");
   //IupSetAttribute(sci, "SCROLLBAR", "NO");
-  IupSetAttribute(sci, "BORDER", "NO");
+//  IupSetAttribute(sci, "BORDER", "NO");
+  IupSetAttribute(sci, "EXPAND", "Yes");
 
   IupSetCallback(sci, "MARGINCLICK_CB", (Icallback)marginclick_cb);
   IupSetCallback(sci, "DBLCLICK_CB", (Icallback)doubleclick_cb);
@@ -186,11 +196,12 @@ void ScintillaTest(void)
   // Creates a dialog containing the control
   dlg = IupDialog(IupVbox(sci, NULL));
   IupSetAttribute(dlg, "TITLE", "IupScintilla");
-  IupSetAttribute(dlg, "RASTERSIZE", "680x510");
+  IupSetAttribute(dlg, "RASTERSIZE", "700x500");
   IupSetAttribute(dlg, "MARGIN", "10x10");
 
   // Shows dialog
   IupShow(dlg);
+  IupSetAttribute(dlg, "RASTERSIZE", NULL);
 
   set_attribs(sci);
 }
@@ -207,3 +218,33 @@ int main(int argc, char* argv[])
 
   return EXIT_SUCCESS;
 }
+
+
+/* USed to check the syntax highlight */
+#if 0
+/* Block comment */
+#include<stdio.h>
+#include<iup.h>
+
+void SampleTest() {
+  printf("Printing float: %f\n", 12.5);
+}
+
+int main(int argc, char **argv) {
+  // Start up the IupScintilla
+  IupOpen(&argc, &argv);
+  IupSetGlobal("SINGLEINSTANCE", "Iup Sample");
+
+  if(!IupGetGlobal("SINGLEINSTANCE")) {
+    IupClose(); 
+    return EXIT_SUCCESS; 
+  }
+
+  SampleTest();
+  printf("Printing an integer: %d\n", 37);
+
+  IupMainLoop();
+  IupClose();
+  return EXIT_SUCCESS;
+}
+#endif

@@ -10,14 +10,6 @@
 #include <math.h>
 
 #include <Scintilla.h>
-#include <SciLexer.h>
-
-#ifdef GTK
-#include <gtk/gtk.h>
-#include <ScintillaWidget.h>
-#else
-#include <windows.h>
-#endif
 
 #include "iup.h"
 #include "iup_scintilla.h"
@@ -25,10 +17,9 @@
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
-#include "iup_stdcontrols.h"
 
 #include "iupsci_scrolling.h"
-#include "iup_scintilla.h"
+#include "iupsci.h"
 
 /***** SCROLLING AND AUTOMATIC SCROLLING *****/
 
@@ -37,7 +28,7 @@ int iupScintillaSetScrollToAttrib(Ihandle *ih, const char *value)
   int lin, col;
   iupStrToIntInt(value, &lin, &col, ',');
 
-  IUP_SSM(ih->handle, SCI_LINESCROLL, col, lin);
+  iupScintillaSendMessage(ih, SCI_LINESCROLL, col, lin);
 
   return 0;
 }
@@ -49,7 +40,7 @@ int iupScintillaSetScrollToPosAttrib(Ihandle *ih, const char *value)
 
   IupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
 
-  IUP_SSM(ih->handle, SCI_LINESCROLL, col, lin);
+  iupScintillaSendMessage(ih, SCI_LINESCROLL, col, lin);
 
   return 0;
 }

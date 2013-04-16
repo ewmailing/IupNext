@@ -12,27 +12,17 @@
 #include <Scintilla.h>
 #include <SciLexer.h>
 
-#ifdef GTK
-#include <gtk/gtk.h>
-#include <ScintillaWidget.h>
-#else
-#include <windows.h>
-#endif
-
 #include "iup.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
-#include "iup_stdcontrols.h"
 
 #include "iupsci_lexer.h"
-#include "iup_scintilla.h"
+#include "iupsci.h"
 
 /***** LEXER *****
 Attributes not implement yet:
-SCI_SETLEXERLANGUAGE(<unused>, const char *name)
-SCI_GETLEXERLANGUAGE(<unused>, char *name)
 SCI_LOADLEXERLIBRARY(<unused>, const char *path)
 SCI_COLOURISE(int start, int end)
 SCI_CHANGELEXERSTATE(int start, int end)
@@ -52,27 +42,26 @@ SCI_GETSUBSTYLESLENGTH(int styleBase)
 SCI_SETIDENTIFIERS(int style, const char *identifiers)
 */
 
-char* iupScintillaGetLexerAttrib(Ihandle* ih)
-{
-  int value = IUP_SSM(ih->handle, SCI_GETLEXER, 0, 0);
 
-  if (value == SCLEX_CPP)
-    return "CPP";
-  else if (value == SCLEX_LUA)
-    return "LUA";
-  else
-    return "NULL";
+char* iupScintillaGetLexerLanguageAttrib(Ihandle* ih)
+{
+  int len = iupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)NULL);
+  char *str = iupStrGetMemory(len+1);
+  len = iupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)str);
+  if (len)
+  {
+    if (!iupStrEqual(str, "null"))
+      return str;
+  }
+  return NULL;
 }
 
-int iupScintillaSetLexerAttrib(Ihandle* ih, const char* value)
+int iupScintillaSetLexerLanguageAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "CPP"))
-    IUP_SSM(ih->handle, SCI_SETLEXER, SCLEX_CPP, 0);
-  else if (iupStrEqualNoCase(value, "LUA"))
-    IUP_SSM(ih->handle, SCI_SETLEXER, SCLEX_LUA, 0);
+  if (!value)
+    iupScintillaSendMessage(ih, SCI_SETLEXER, SCLEX_NULL, 0);
   else
-    IUP_SSM(ih->handle, SCI_SETLEXER, SCLEX_NULL, 0);
-
+    iupScintillaSendMessage(ih, SCI_SETLEXERLANGUAGE, 0, (sptr_t)value);
   return 0;
 }
 
@@ -80,31 +69,35 @@ int iupScintillaSetKeyWordsAttrib(Ihandle* ih, int keyWordSet, const char* value
 {
   /* Note: You can set up to 9 lists of keywords for use by the current lexer */
   if(keyWordSet >= 0 && keyWordSet < 9)
-    IUP_SSM(ih->handle, SCI_SETKEYWORDS, keyWordSet, (sptr_t)value);
+    iupScintillaSendMessage(ih, SCI_SETKEYWORDS, keyWordSet, (sptr_t)value);
 
   return 0;
 }
 
 char* iupScintillaGetPropertyAttrib(Ihandle* ih)
 {
-  char *strKey = iupStrGetMemory(50);
-  char *strVal = iupStrGetMemory(50);
-  char *str = iupStrGetMemory(101);
+  char* strKey = iupAttribGetStr(ih, "PROPERTYNAME");
+  if (strKey)
+  {
+    int len = (int)iupScintillaSendMessage(ih, SCI_GETPROPERTY, (uptr_t)strKey, (sptr_t)NULL);
+    char *str = iupStrGetMemory(len+1);
 
-  IUP_SSM(ih->handle, SCI_GETPROPERTY, (sptr_t)strKey, (sptr_t)strVal);
-  sprintf(str, "%s,%s", strKey, strVal);
+    len = iupScintillaSendMessage(ih, SCI_GETPROPERTY, (uptr_t)strKey, (sptr_t)str);
+    if (len)
+      return str;
+  }
 
-  return str;
+  return NULL;
 }
 
 int iupScintillaSetPropertyAttrib(Ihandle* ih, const char* value)
 {
-  char *strKey = iupStrGetMemory(50);
-  char *strVal = iupStrGetMemory(50);
+  char strKey[50];
+  char strVal[50];
 
   iupStrToStrStr(value, strKey, strVal, ',');
 
-  IUP_SSM(ih->handle, SCI_SETPROPERTY, (sptr_t)strKey, (sptr_t)strVal);
+  iupScintillaSendMessage(ih, SCI_SETPROPERTY, (uptr_t)strKey, (sptr_t)strVal);
 
   return 0;
 }

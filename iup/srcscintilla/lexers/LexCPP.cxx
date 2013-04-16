@@ -421,7 +421,7 @@ int SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 				preprocessorDefinitionsStart.clear();
 				for (int nDefinition = 0; nDefinition < ppDefinitions.len; nDefinition++) {
 					char *cpDefinition = ppDefinitions.words[nDefinition];
-					char *cpEquals = strchr(cpDefinition, '=');
+					const char *cpEquals = strchr(cpDefinition, '=');
 					if (cpEquals) {
 						std::string name(cpDefinition, cpEquals - cpDefinition);
 						std::string val(cpEquals+1);

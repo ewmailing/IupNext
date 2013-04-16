@@ -10,24 +10,15 @@
 #include <math.h>
 
 #include <Scintilla.h>
-#include <SciLexer.h>
-
-#ifdef GTK
-#include <gtk/gtk.h>
-#include <ScintillaWidget.h>
-#else
-#include <windows.h>
-#endif
 
 #include "iup.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
-#include "iup_stdcontrols.h"
 
 #include "iupsci_markers.h"
-#include "iup_scintilla.h"
+#include "iupsci.h"
 
 /***** MARKERS *****
 SCI_MARKERDEFINEPIXMAP(int markerNumber, const char *xpm)
@@ -54,8 +45,8 @@ SCI_MARKERDELETEHANDLE(int handle)
 
 int iupScintillaSetMarkerDefineAttrib(Ihandle* ih, const char* value)
 {
-  char *strNumb = iupStrGetMemory(25);
-  char *strSymb = iupStrGetMemory(25);
+  char strNumb[25];
+  char strSymb[25];
   int markerNumber, markerSymbol;
 
   iupStrToStrStr(value, strNumb, strSymb, ',');
@@ -146,7 +137,7 @@ int iupScintillaSetMarkerDefineAttrib(Ihandle* ih, const char* value)
   else
     return 0;
 
-  IUP_SSM(ih->handle, SCI_MARKERDEFINE, markerNumber, markerSymbol);
+  iupScintillaSendMessage(ih, SCI_MARKERDEFINE, markerNumber, markerSymbol);
 
   return 0;
 }

@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Language" content="en-us">
 
 
-  <title>IupText</title>
+  <title>IupScintilla</title>
   <link rel="stylesheet" type="text/css" href="../../style.css">
 
   <style type="text/css">
@@ -28,6 +28,9 @@
 	  letter-spacing: normal;
 	  background-color: #FFFFFF;
   }
+  .style4 {
+	font-size: large;
+}
   </style>
 </head>
 
@@ -56,32 +59,36 @@
 </div>
 
 
-<h2>IupScintilla</h2>
+<h2>IupScintilla <span class="style4">(since 3.8)</span></h2>
 
 
   
 <p>
-  Creates a Scintilla text editing component.</p>
+  Creates a multiline source code text editor that uses the Scintilla library.</p>
 <p>
   Scintilla is a free library that provides text-editing functions, with an 
   emphasis on advanced features for source code editing. It comes with complete 
-  source code and a license that permits use in any free project or commercial 
+  source code and a <a href="scintilla.txt">license</a> that permits use in any free project or commercial 
   product, and it is available on <a href="http://www.scintilla.org/">
   http://www.scintilla.org/</a>. IupScintilla library includes the Scintilla 
-  source code, so no external references are needed. Supported by Windows and 
-  GTK drivers only.</p>
-
-
-<h3 style="padding: 4px; background-color: rgb(225, 225, 225); border: 1px solid rgb(128, 128, 128); color: rgb(92, 92, 92); border-top-left-radius: 0.3em; border-top-right-radius: 0.3em; border-bottom-right-radius: 0.3em; border-bottom-left-radius: 0.3em; -webkit-box-shadow: rgb(153, 153, 153) 2px 2px 3px; font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">
-Initialization and Usage</h3>
-<p style="margin-left: 1em; line-height: 20px; color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">
+  3.2 source code, so no external references are needed.</p>
+<p>
+  Supported in Windows and 
+  in the systems the GTK driver is supported.</p>
+  <h3>Initialization and Usage</h3>
+<p>
 The<span class="Apple-converted-space">&nbsp;</span><b>IupScintillaOpen</b><span class="Apple-converted-space">&nbsp;</span>function 
 must be called after a<span class="Apple-converted-space">&nbsp;</span><b>IupOpen</b>, 
 so that the control can be used. The &quot;iup_scintilla.h&quot; file must also be 
-included in the source code. In Windows, the program must be linked to the 
-controls library (iup_scintilla) and the Input Method Manager API (imm32). In 
-GTK, the program must be linked to the controls library (GTK2 = 
-iup_scintillagtk; GTK3 = iup_scintillagtk3).</p>
+included in the source code. The program must be linked to the controls library 
+(iup_scintilla), and with the &quot;imm32.lib&quot; library in Windows.</p>
+<p>To make the control available in Lua use require&quot;iuplua_scintilla&quot; or manually 
+call the initialization function in C, 
+<b>iupscintillalua_open</b>, after calling <b>iuplua_open</b>.
+  &nbsp;When manually calling the function the iuplua_scintilla.h file must also be included in the source code 
+and the program must be linked to the 
+Lua control 
+  library (iuplua_scintilla).</p>
 
 
 <h3><a name="Creation">Creation</a></h3>
@@ -112,7 +119,7 @@ text. Default: the global attribute TXTBGCOLOR.</p>
   Shows a border around the text. 
   Default: "YES".</p>
 
-<p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the control. In Windows the control will still get the focus when clicked. Default: YES (since 3.0).</p>
+<p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the control. In Windows the control will still get the focus when clicked. Default: YES.</p>
 
   
 <p><strong>CARET</strong> (<font size="3">non inheritable</font>):
@@ -138,7 +145,7 @@ visible.</p>
 selection, sets the caret at pos and scrolls the view to make the caret visible, 
 if necessary.</p>
 
-<p><strong>CHARATpos</strong> (<font size="3">non inheritable, read-only</font>): 
+<p><strong>CHARAT<em>pos</em></strong> (<font size="3">non inheritable, read-only</font>): 
 returns the character considering the position &quot;pos&quot;.</p>
 <p><strong>CLEARALL</strong> (<font size="3">non inheritable, </font>
 write-only): deletes all the text (unless the document is read-only).</p>
@@ -155,7 +162,7 @@ Deletes a range of text in the document. It uses a string format &quot;<strong>p
 in order to indicate the start position and text length to delete.</p>
 <p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drop of 
 files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
-then it will be automatically enabled (since 3.0).</p>
+then it will be automatically enabled.</p>
 
   
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
@@ -165,21 +172,31 @@ global attribute TXTFGCOLOR.</p>
 determines how folding lines are drawn. Can be: &quot;LEVELNUMBERS&quot;, 
 &quot;LINEBEFORE_EXPANDED&quot;, &quot;LINEBEFORE_CONTRACTED&quot;, &quot;LINEAFTER_EXPANDED&quot; or 
 &quot;LINEAFTER_CONTRACTED &quot; (default).</p>
-<p><strong>FOLDLEVELid</strong> (<font size="3">non inheritable</font>): sets 
+<p><strong>FOLDLEVEL<em>id</em></strong> (<font size="3">non inheritable</font>): sets 
 and gets the fold level of a &quot;id&quot; line. Can be: &quot;WHITEFLAG&quot;, &quot;HEADERFLAG&quot;, 
 &quot;NUMBERMASK&quot; or &quot;BASE&quot; (default). If you use a lexer, it is not recommend to set 
 the fold level (this is far better handled by the lexer). By contrast, get fold 
 level is useful to decide how to handle user folding requests.</p>
+
+<p><b>FOLDTOGGLE</b> (<font size="3">non inheritable, write-only</font>): 
+Determines if the fold point (line number) may be either expanded, displaying 
+all its child lines, or contracted, hiding all the child lines. </p>
+
 <p><strong>INSERTid</strong> (<font size="3">non inheritable, </font>write-only): Inserts a text string at position 
-&quot;id&quot; or at the current position if pos is -1. If the current position is after 
+&quot;id&quot; or at the current position if pos is -1 or omitted. If the current position is after 
 the insertion point then it is moved along with its surrounding text but no 
 scrolling is performed.</p>
-<p><strong>KEYWORDid</strong> (<font size="3">non inheritable, write-only</font>): 
+<p><strong>KEYWORD<em>id</em></strong> (<font size="3">non inheritable, write-only</font>): 
 keyword list used by the current lexer. Until 9 lists of keywords can set up 
 using id from 0 to 8. The value is a list of keywords separated by spaces, tabs, 
 &quot;\n&quot; or &quot;\r&quot; or any combination of these.</p>
-<p><strong>LEXER</strong> (<font size="3">non inheritable</font>): 
-the lexer text code. Can be: CPP, LUA or NONE.</p>
+<p><strong>LEXERLANGUAGE</strong> (<font size="3">non inheritable</font>): 
+associate the lexer language name. It is case sensitive. Default: not defined. 
+Set to NULL to clear the association. Can be: any name supported by Scintilla. 
+For instance: asm, bash, freebasic, cmake, COBOL, cpp (C++), css, d, diff, 
+eiffel, fortran, hypertext (HTML), xml, lisp, lua (Lua), makefile, matlab, mysql, 
+nsis, pascal, perl, python, ruby, smalltalk, sql, tcl, tex, vb (Visual Basic), 
+and many others. </p>
 
 <p><strong>LINEid</strong> (<font size="3">non inheritable, </font>read-only): 
 returns the text considering the &quot;id&quot; line number. It does not include the &quot;\n&quot; 
@@ -191,22 +208,22 @@ text.</p>
 <p><strong>LINEVALUE</strong> (<font size="3">non inheritable, </font>read-only): returns the text of the line where 
 the caret is. It does not include the &quot;\n&quot; character.</p>
 
-<p><b>MARGINMASKNid </b>(<font size="3">non inheritable</font>): determines if a 
+<p><b>MARGINMASK<em>id</em> </b>(<font size="3">non inheritable</font>): determines if a 
 margin is folding or non-folding. Can be: MASK_FOLDERS or NO_MASK_FOLDERS.</p>
 
-<p><b>MARGINSENSITIVENid </b>(<font size="3">non inheritable</font>): determines 
+<p><b>MARGINSENSITIVE<em>id</em> </b>(<font size="3">non inheritable</font>): determines 
 if a margin is sensitive or not. Margins that are not sensitive act as selection 
 margins which make it easy to select ranges of lines. By default, all margins 
 are insensitive. Can be: YES or NO.</p>
 
-<p><b>MARGINTYPENid </b>(<font size="3">non inheritable</font>): set and get the 
+<p><b>MARGINTYPE<em>id</em> </b>(<font size="3">non inheritable</font>): set and get the 
 type of a margin. The margin argument should be 0, 1, 2, 3 or 4.&nbsp; Each 
 margin can be set to display only symbols, line numbers, or text. You can use 
 the predefined values &quot;MARGIN_SYMBOL&quot;, &quot;MARGIN_NUMBER&quot;, &quot;MARGIN_TEXT&quot;, 
 &quot;MARGIN_RTEXT&quot;, &quot;MARGIN_BACK&quot; or &quot;MARGIN_FORE&quot; (the latter two used for symbol 
 margins that set their background or foreground using the style default colors).</p>
 
-<p><b>MARGINWIDTHNid </b>(<font size="3">non inheritable</font>): width of a 
+<p><b>MARGINWIDTH<em>id</em> </b>(<font size="3">non inheritable</font>): width of a 
 margin in pixels (Default value: 16). A margin with zero width is invisible. The 
 margins are numbered 0 to 4. By default, Scintilla margin 0 is set to display 
 line numbers, margin 1 is set to display non-folding symbols, and margin 2 is 
@@ -281,68 +298,68 @@ correspond to the character after the last selected character. The values ALL an
   
 <p><a href="../attrib/iup_size.html">SIZE</a> (<font size="3">non inheritable</font>): 
 	Since the contents can be changed by the user, the <strong>Natural</strong>
-	<strong>Size</strong> is not affected by the text contents (since 3.0). In 
+	<strong>Size</strong> is not affected by the text contents. In 
 	IUP 2.x the <strong>Natural</strong> <strong>Size</strong> was defined by 
 	the number of lines in the text and the with of the largest line. For IUP 3, 
 	use VISIBLECOLUMNS and VISIBLELINES to control the <strong>Natural Size</strong>.</p>
 
-<p><strong>STYLEBGCOLORid</strong> (<font size="3">non inheritable</font>): 
+<p><strong>STYLEBGCOLOR<em>id</em></strong> (<font size="3">non inheritable</font>): 
 background color for a style (See <a href="#StyleDefinition">Style Definition</a>). 
 Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
 g b&quot;)</span>.</p>
 
-<p><strong>STYLEBOLDid</strong> (<font size="3">non inheritable</font>): the 
+<p><strong>STYLEBOLD<em>id</em></strong> (<font size="3">non inheritable</font>): the 
 boldness of a font (See <a href="#StyleDefinition">Style Definition</a>).</p>
-<p><strong>STYLECASEid</strong> (<font size="3">non inheritable</font>): 
+<p><strong>STYLECASE<em>id</em></strong> (<font size="3">non inheritable</font>): 
 determines how text is displayed (See <a href="#StyleDefinition">Style Definition</a>). Values: LOWERCASE, UPPERCASE or MIXED (default).</p>
 
   
-<p><strong>STYLECHARSETid</strong> (<font size="3">non inheritable</font>): sets 
+<p><strong>STYLECHARSET<em>id</em></strong> (<font size="3">non inheritable</font>): sets 
 and gets a style to use a different character set than the default (See <a href="#StyleDefinition">Style Definition</a>). 
 Can be ANSI (default), EASTEUROPE, RUSSIAN, GB2312, HANGUL or SHIFTJIS.</p>
-<p><strong>STYLECLEARALLid</strong> (<font size="3">non inheritable</font>): 
+<p><strong>STYLECLEARALL<em>id</em></strong> (<font size="3">non inheritable</font>): 
 sets all styles to have the same attributes as default global style (id = 32) (See <a href="#StyleDefinition">Style Definition</a>).</p>
 
-<p><strong>STYLEEOLFILLEDid</strong> (<font size="3">non inheritable</font>): If 
+<p><strong>STYLEEOLFILLED<em>id</em></strong> (<font size="3">non inheritable</font>): If 
 the last character in the line has a style with this attribute set, the 
 remainder of the line up to the right edge of the window is filled with the 
 background colour set for the last character (See <a href="#StyleDefinition">Style Definition</a>). 
 Can be YES (italic) or NO.</p>
-<p><strong>STYLEFGCOLORid</strong> (<font size="3">non inheritable</font>): 
+<p><strong>STYLEFGCOLOR<em>id</em></strong> (<font size="3">non inheritable</font>): 
 foreground color for a style (See <a href="#StyleDefinition">Style Definition</a>). 
 Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
 g b&quot;)</span>.</p>
-<p><strong>STYLEFONTid</strong> (<font size="3">non inheritable</font>): sets 
+<p><strong>STYLEFONT<em>id</em></strong> (<font size="3">non inheritable</font>): sets 
 and gets the font name (See <a href="#StyleDefinition">Style Definition</a>). 
 IupScintilla tracks fonts by name and does care about the casing of font names. 
 On GTK+, Pango is used to display text.</p>
 
-<p><strong>STYLEFONTSIZEid</strong> (<font size="3">non inheritable</font>): 
+<p><strong>STYLEFONTSIZE<em>id</em></strong> (<font size="3">non inheritable</font>): 
 sets and gets the font size (See <a href="#StyleDefinition">Style Definition</a>), 
 using a integer number of points.</p>
 
-<p><strong>STYLEFONTSIZEFRACid</strong> (<font size="3">non inheritable</font>): 
+<p><strong>STYLEFONTSIZEFRAC<em>id</em></strong> (<font size="3">non inheritable</font>): 
 sets and gets the font size (See <a href="#StyleDefinition">Style Definition</a>), 
 using a fractional point size in hundredths of a point. For example, a text size 
 of 9.4 points is set with value = 940.</p>
-<p><strong>STYLEHOTSPOTid</strong> (<font size="3">non inheritable</font>): used 
+<p><strong>STYLEHOTSPOT<em>id</em></strong> (<font size="3">non inheritable</font>): used 
 to mark ranges of text that can detect mouse clicks (See <a href="#StyleDefinition">Style Definition</a>). 
 The cursor changes to a hand over hotspots, and the foreground, and background 
-colours may change and an underline appear to indicate that these areas are 
+colors may change and an underline appear to indicate that these areas are 
 sensitive to clicking. This may be used to allow hyperlinks to other documents. </p>
-<p><strong>STYLEITALICid</strong> (<font size="3">non inheritable</font>): the 
-italicness of a font (See <a href="#StyleDefinition">Style Definition</a>). Can 
+<p><strong>STYLEITALIC<em>id</em></strong> (<font size="3">non inheritable</font>): the 
+italic style of a font (See <a href="#StyleDefinition">Style Definition</a>). Can 
 be YES (italic) or NO.</p>
 
-<p><strong>STYLERESETid</strong> (<font size="3">non inheritable, write-only</font>): 
+<p><strong>STYLERESET<em>id</em></strong> (<font size="3">non inheritable, write-only</font>): 
 Resets to the initial Scintilla style default (See <a href="#StyleDefinition">Style Definition</a>).</p>
 
-<p><strong>STYLEUNDERLINEid</strong> (<font size="3">non inheritable</font>): 
+<p><strong>STYLEUNDERLINE<em>id</em></strong> (<font size="3">non inheritable</font>): 
 determines if the underline is drawn, using a foreground color (See <a href="#StyleDefinition">Style Definition</a>). 
 Can be YES (underline) or NO.</p>
-<p><strong>STYLEVISIBLEid</strong> (<font size="3">non inheritable</font>): 
+<p><strong>STYLEVISIBLE<em>id</em></strong> (<font size="3">non inheritable</font>): 
 determines if the text is visible (YES) or hidden (NO) (See <a href="#StyleDefinition">Style Definition</a>).</p>
-<p><strong>STYLEWEIGHTid</strong> (<font size="3">non inheritable</font>): the 
+<p><strong>STYLEWEIGHT<em>id</em></strong> (<font size="3">non inheritable</font>): the 
 weight of a font (See <a href="#StyleDefinition">Style Definition</a>). 
 Predefined values: NORMAL, SEMIBOLD and BOLD. The weight can also be a number 
 between 1 and 999 with 1 being very light and 999 very heavy.</p>
@@ -350,29 +367,24 @@ between 1 and 999 with 1 being very light and 999 very heavy.</p>
 <p><b>TABSIZE</b> (<font size="3">non inheritable</font>): Controls the number of characters for a tab stop. 
 	Default: 8.</p>
 
-<p><b>TOGGLEFOLD</b> (<font size="3">non inheritable, write-only</font>): 
-Determines if the fold point (line number) may be either expanded, displaying 
-all its child lines, or contracted, hiding all the child lines. </p>
-
 <p><b>VALUE </b>(<font size="3">non inheritable</font>):
   Text entered by the user. The &quot;\n&quot; character indicates a new line. After the element is mapped and if there 
 is no text will return the empty string "". This replaces all the text in the 
 document with the zero terminated text string you pass in.</p>
 <p><b>VALUEMASKED </b>(<font size="3">non inheritable</font>, write-only): sets 
-VALUE but first checks if it is validated by MASK. If not does nothing (since 
-3.4).</p>
+VALUE but first checks if it is validated by MASK. If not does nothing.</p>
 
 <p><strong>VISIBLECOLUMNS</strong>: Defines the number of visible columns for 
 the <strong>Natural</strong> <strong>Size</strong>, this means that will act 
 also as minimum number of visible columns. It uses a wider character size then the one used for the SIZE 
 attribute so strings will fit better without the need of extra columns. As for 
 SIZE you can set to NULL after map to use it as an initial value. Default: 
-5 (since 3.0).</p>
+50.</p>
 
 <p><strong>VISIBLELINES</strong>: Defines the number of 
 visible lines for the <strong>Natural</strong> <strong>Size</strong>, this means 
 that will act also as minimum number of visible lines. As for SIZE you can set 
-to NULL after map to use it as an initial value. Default: 1 (since 3.0).</p>
+to NULL after map to use it as an initial value. Default: 10.</p>
 
 <p><strong>WORDWRAP</strong> (<font size="3">non inheritable</font>): If enabled will force a word wrap of lines that are 
 greater than the with of the control, and the horizontal scrollbar will be removed. Default: NO.</p>
@@ -428,7 +440,7 @@ the clipboard.</p>
 <p><a href="../call/iup_button_cb.html">BUTTON_CB</a>:
   Action generated when any mouse button is 
   pressed or released. Use <a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> to convert 
-	(x,y) coordinates in character positioning (since 3.0).</p>
+	(x,y) coordinates in character positioning.</p>
 
   
   
@@ -470,7 +482,7 @@ Action generated when the user double click </span>in editor.</p>
 click.</p>
 
 <p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a>: Action generated when one or 
-  more files are dropped in the element (since 3.0).</p>
+  more files are dropped in the element.</p>
 
   
 
@@ -520,12 +532,12 @@ click.</p>
 <p><a href="../call/iup_motion_cb.html">MOTION_CB</a>:
   Action generated when the mouse is moved. Use 
 <a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> 
-	to convert (x,y) coordinates in character positioning (since 3.0).</p>
+	to convert (x,y) coordinates in character positioning.</p>
 
   
   
 <p><strong>VALUECHANGED_CB</strong>:
-  Called after the value was interactively changed by the user (since 3.0).</p>
+  Called after the value was interactively changed by the user.</p>
 
 <pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
@@ -568,10 +580,12 @@ are supported. See Notes bellow.</p>
 
 
 <p>
-  List of predefined numbered styles used to set CPP and LUA text attributes. The 
-  &quot;id&quot; number are used in IupScintilla STYLE attributes. Default style 
+  List of numbered styles used to set text attributes. The 
+  &quot;id&quot; number are used in STYLE attributes. Default style 
   is used (id = 0) when the id is not specified in the attribute. Lexer styles 
   can be set from 0 to 255. Invalid IDs are ignored.</p>
+<p>
+  Here are some predefined styles of C++ and Lua:</p>
 
 <table align="center">
 
@@ -606,9 +620,9 @@ are supported. See Notes bellow.</p>
 
 		<th>ID</th>
 
-		<th>CPP styles</th>
+		<th>C++ styles</th>
 
-		<th>LUA styles</th>
+		<th>Lua styles</th>
 
 		</tr>
 
@@ -847,6 +861,8 @@ are supported. See Notes bellow.</p>
   Enter key will add a new line, and the Tab key will 
 	insert a Tab.</p>
 <p>Internal Drag&amp;Drop support is enabled by default.</p>
+<p><strong>IupScintilla</strong> uses attributes and callbacks very similar to 
+the <strong>IupText</strong> control, except for text formatting. </p>
 
 <h4>Navigation, Selection and Clipboard Keys</h4>
 
@@ -1002,57 +1018,18 @@ depending on the driver.</p>
 
 <table align="center">
 
-	<tbody>
-    <tr>
-
-		<th>Windows 7<br>
-
-		</th>
-
-	</tr>
-
 	<tr>
 
-		<td class="bg_vista"><img src="images/iupscintilla_win.png"></td>
+		<td><img src="images/iupscintilla.png"></td>
 
 	</tr>
-
-	
-		<tr>
-
-		<th>Gtk on Windows 7</th>
-
-		</tr>
-		<tr>
-
-		<td class="bg_gtk"><img src="images/iupscintilla_gtkwin.png"></td>
-
-		</tr>
-
-	
-	<tr>
-
-		<th>Gtk on Ubuntu Linux 12.04</th>
-
-	</tr>
-
-	
-	<tr>
-
-		<td class="bg_gtk"><img src="images/iupscintilla_gtk.png"></td>
-
-	</tr>
-
-	
-  </tbody>
 </table>
 
 	
 <h3><a name="SeeAlso">See Also</a></h3>
 
 
-<p><a href="../elem/iuptext.html">IupText</a>, 
-<a href="../elem/iupmultiline.html">IupMultiLine</a></p>
+<p><a href="../elem/iuptext.html">IupText</a></p>
 
 
 </body>

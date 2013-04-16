@@ -226,6 +226,7 @@ iupdrvImageCreateImageRaw
 iupdrvImageGetRawInfo
 iupdrvImageGetRawData
 iupdrvImageDestroy
+
 iupVersionDlg
 iupTableSetFunc
 iupTableSet
@@ -293,6 +294,7 @@ iupMaskCreateInt
 iupMaskCreateFloat
 iupMaskCreate
 iupMaskCheck
+iupMaskGetStr
 iupKeyNameToCode
 iupKeyForEach
 iupKeyCodeToName
@@ -361,6 +363,7 @@ iupBaseSetRasterSizeAttrib
 iupBaseSetActiveAttrib
 iupBaseRegisterVisualAttrib
 iupBaseRegisterCommonAttrib
+iupBaseRegisterCommonCallbacks
 iupBaseGetWidAttrib
 iupBaseGetVisibleAttrib
 iupBaseGetSizeAttrib
@@ -417,3 +420,9 @@ iupDrawSelectRect
 iupDrawFocusRect
 iupGetFontInfo
 
+iupwinMouseMove
+iupwinCreateWindowEx
+iupwinBaseProc
+iupdrvRegisterDragDropAttrib
+iupwinButtonUp
+iupwinButtonDown
