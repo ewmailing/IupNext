@@ -585,7 +585,10 @@ are supported. See Notes bellow.</p>
   is used (id = 0) when the id is not specified in the attribute. Lexer styles 
   can be set from 0 to 255. Invalid IDs are ignored.</p>
 <p>
-  Here are some predefined styles of C++ and Lua:</p>
+  Notice that language keywords and styles are not pre-defined internally. The 
+  application must define them, the Scintillar Lexer will only parse the source 
+  code and attribute the styles accordingly.
+  Here are some known style ids of C++ and Lua:</p>
 
 <table align="center">
 

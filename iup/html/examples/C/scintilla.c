@@ -39,7 +39,7 @@ int marginclick_cb(Ihandle *self, int margin, int line)
   printf("MARGINCLICK_CB = Margin: %d, Line: %d\n", margin, line);
   printf("Fold Level = %s\n", IupGetAttribute(self, str));
 
-  IupSetAttribute(self, "TOGGLEFOLD", buffer);
+  IupSetAttribute(self, "FOLDTOGGLE", buffer);
 
   return IUP_DEFAULT;
 }
@@ -49,7 +49,7 @@ int doubleclick_cb(Ihandle *self, int mod, int line)
   char buffer[100]; 
   sprintf(buffer, "%d", line);
 
-  IupSetAttribute(self, "TOGGLEFOLD", buffer);
+  IupSetAttribute(self, "FOLDTOGGLE", buffer);
 
   printf("DBLCLICK_CB = Modifier: %d, Line: %d\n", mod, line);
   if(mod == 1) printf("SHIFT pressed\n\n");
@@ -138,13 +138,13 @@ void set_attribs (Ihandle *sci)
   IupSetAttribute(sci, "STYLEBOLD10", "YES");
   // 11-Identifier  
 
-  //IupSetAttribute(sci, "STYLEHOTSPOT6", "YES");
+  IupSetAttribute(sci, "STYLEHOTSPOT6", "YES");
   
   IupSetAttribute(sci, "INSERT0", sampleCode);
 
   IupSetAttribute(sci, "MARGINWIDTHN0", "50");
 
-  if (0)
+  if (1)
   {
     IupSetAttribute(sci, "PROPERTY", "fold,1");
     IupSetAttribute(sci, "PROPERTY", "fold.compact,0");

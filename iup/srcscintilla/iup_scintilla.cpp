@@ -413,7 +413,9 @@ static gboolean gtkScintillaButtonEvent(GtkWidget *widget, GdkEventButton *evt, 
   gtkScintillaMoveCursor(NULL, (GtkMovementStep)0, 0, 0, ih);
   return iupgtkButtonEvent(widget, evt, ih);
 }
+
 #else
+
 static int winScintillaWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 {
   SCNotification *pMsg = (SCNotification*)msg_info;
