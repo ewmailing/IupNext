@@ -40,7 +40,7 @@
    http://www.catch22.net/tuts/ole-drag-and-drop
 */
 
-#ifndef __GNUC__
+#if !defined(__GNUC__) && !defined(__BORLANDC__)
 #define USE_SHCREATESTDENUMFMTETC
 #endif
 

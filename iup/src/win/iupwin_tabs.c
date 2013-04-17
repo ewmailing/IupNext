@@ -33,6 +33,11 @@
 #include "iupwin_info.h"
 
 
+#ifndef WS_EX_COMPOSITED
+#define WS_EX_COMPOSITED        0x02000000L
+#endif
+
+
 static Iarray* winTabsGetVisibleArray(Ihandle* ih)
 {
   int init = 0;

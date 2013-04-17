@@ -229,7 +229,7 @@ void iupdrvKeyEncode(int key, unsigned int *keyval, unsigned int *state)
 
 static int winKeyMap2Iup(Iwin2iupkey* table, int i)
 {
-  int code = 0;
+  int code;
   if (GetKeyState(VK_CONTROL) & 0x8000)        /* Ctrl */
     code = table[i].c_iupcode;
   else if (GetKeyState(VK_MENU) & 0x8000)      /* Alt */

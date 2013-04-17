@@ -26,6 +26,10 @@
 #include "iupwin_draw.h"
 
 
+#ifndef ICC_LINK_CLASS
+#define ICC_LINK_CLASS         0x00008000
+#endif
+
 HINSTANCE iupwin_hinstance = 0;    
 int       iupwin_comctl32ver6 = 0;
 

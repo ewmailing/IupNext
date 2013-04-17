@@ -28,6 +28,10 @@
 #include "iupwin_draw.h"
 
 
+#ifndef CDIS_SHOWKEYBOARDCUES
+#define CDIS_SHOWKEYBOARDCUES   0x0200
+#endif
+
 void iupdrvToggleAddCheckBox(int *x, int *y)
 {
   (*x) += 16+8;

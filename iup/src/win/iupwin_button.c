@@ -39,6 +39,9 @@
 #ifndef ODS_NOFOCUSRECT
 #define ODS_NOFOCUSRECT   0x0200
 #endif
+#ifndef CDIS_SHOWKEYBOARDCUES
+#define CDIS_SHOWKEYBOARDCUES   0x0200
+#endif
 
 
 static int winButtonGetBorder(void)

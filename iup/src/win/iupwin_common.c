@@ -40,6 +40,9 @@ static UINT WM_DRAGLISTMSG = 0;
 #ifndef WM_TOUCH
 #define WM_TOUCH            0x0240
 #endif
+#ifndef WS_EX_COMPOSITED
+#define WS_EX_COMPOSITED 0x02000000L
+#endif
 
 int iupwinClassExist(const char* name)
 {
@@ -380,7 +383,7 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 
 LRESULT CALLBACK iupwinBaseWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
-  int ret = 0;
+  int ret;
   LRESULT result = 0;
   IwinProc winProc;
   Ihandle *ih;
@@ -489,7 +492,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     }
   case WM_DRAWITEM:   /* for OWNERDRAW controls */
     {
-      Ihandle *child = NULL;
+      Ihandle *child;
       DRAWITEMSTRUCT *drawitem = (LPDRAWITEMSTRUCT)lp;
       if (!drawitem)
         break;
@@ -744,7 +747,7 @@ static HCURSOR winGetCursor(Ihandle* ih, const char* name)
     {"APPSTARTING", IDC_APPSTARTING}
   };
 
-  HCURSOR cur = NULL;
+  HCURSOR cur;
   char str[200];
   int i, count = sizeof(table)/sizeof(table[0]);
 
