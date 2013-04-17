@@ -11,7 +11,9 @@
 
 const char* sampleCode = {
   "/* Block comment */\n"
-  "#include<stdio.h>\n#include<iup.h>\n\nvoid SampleTest() {\n  printf(\"Printing float: %f\\n\", 12.5);\n}\n\n"
+  "#include<stdio.h>\n#include<iup.h>\n\n"
+  "void SampleTest() {\n  printf(\"Printing float: %f\\n\", 12.5);\n}\n\n"
+  "void SampleTest2() {\n  printf(\"Printing char: %c\\n\", 'c');\n}\n\n"
   "int main(int argc, char **argv) {\n"
   "  // Start up IUP\n"
   "  IupOpen(&argc, &argv);\n"
@@ -20,6 +22,7 @@ const char* sampleCode = {
   "    IupClose(); \n"
   "    return EXIT_SUCCESS; \n  }\n\n"
   "  SampleTest();\n"
+  "  SampleTest2();\n"
   "  printf(\"Printing an integer: %d\\n\", 37);\n\n"
   "  IupMainLoop();\n"
   "  IupClose();\n"
@@ -115,10 +118,15 @@ void set_attribs (Ihandle *sci)
   IupSetAttribute(sci, "CLEARALL", "");
   IupSetAttribute(sci, "LEXERLANGUAGE", "cpp");
 
-  //IupSetAttribute(sci, "KEYWORDS0", "int char double float");
+  IupSetAttribute(sci, "KEYWORDS0", "void struct union enum char short int long double float signed unsigned const static extern auto register volatile bool class private protected public friend inline template virtual asm explicit typename mutable"
+                                    "if else switch case default break goto return for while do continue typedef sizeof NULL new delete throw try catch namespace operator this const_cast static_cast dynamic_cast reinterpret_cast true false using"
+                                    "typeid and and_eq bitand bitor compl not not_eq or or_eq xor xor_eq");
 
-  IupSetAttribute(sci, "STYLEFONT0", "Consolas");      // 0-Default style 
-  IupSetAttribute(sci, "STYLEFONTSIZE0", "20");
+  //IupSetAttribute(sci, "STYLEFONT32", "Courier New");
+  IupSetAttribute(sci, "STYLEFONT32", "Consolas");
+  IupSetAttribute(sci, "STYLEFONTSIZE32", "11");
+  IupSetAttribute(sci, "STYLECLEARALL", "Yes");  /* sets all styles to have the same attributes as 32 */
+
   IupSetAttribute(sci, "STYLEFGCOLOR1", "0 128 0");    // 1-C comment 
   IupSetAttribute(sci, "STYLEFGCOLOR2", "0 128 0");    // 2-C++ comment line 
   IupSetAttribute(sci, "STYLEFGCOLOR4", "128 0 0");    // 4-Number 
@@ -128,15 +136,10 @@ void set_attribs (Ihandle *sci)
   IupSetAttribute(sci, "STYLEFGCOLOR9", "0 0 255");    // 9-Preprocessor block 
   IupSetAttribute(sci, "STYLEFGCOLOR10", "255 0 255"); // 10-Operator 
   IupSetAttribute(sci, "STYLEBOLD10", "YES");
-// 11-Identifier  
+  // 11-Identifier  
 
   //IupSetAttribute(sci, "STYLEHOTSPOT6", "YES");
   
-  //IupSetAttribute(sci, "STYLEFGCOLOR", "0 255 0");
-  
-  //IupSetAttribute(sci, "STYLEFONT32", "Courier New");
-  //IupSetAttribute(sci, "STYLEFONTSIZE32", "12");
-
   IupSetAttribute(sci, "INSERT0", sampleCode);
 
   IupSetAttribute(sci, "MARGINWIDTHN0", "50");
@@ -148,10 +151,10 @@ void set_attribs (Ihandle *sci)
     IupSetAttribute(sci, "PROPERTY", "fold.comment,1");
     IupSetAttribute(sci, "PROPERTY", "fold.preprocessor,1");
 
-    IupSetAttribute(sci, "MARGINWIDTHN1", "0");
-    IupSetAttribute(sci, "MARGINTYPEN1",  "MARGIN_SYMBOL");
-    IupSetAttribute(sci, "MARGINMASKN1",  "MASK_FOLDERS");
-    IupSetAttribute(sci, "MARGINWIDTHN1", "20");
+    IupSetAttribute(sci, "MARGINWIDTH1", "0");
+    IupSetAttribute(sci, "MARGINTYPE1",  "MARGIN_SYMBOL");
+    IupSetAttribute(sci, "MARGINMASK1",  "MASK_FOLDERS");
+    IupSetAttribute(sci, "MARGINWIDTH1", "20");
     IupSetAttribute(sci, "MARKERDEFINE", "FOLDER,PLUS");
     IupSetAttribute(sci, "MARKERDEFINE", "FOLDEROPEN,MINUS");
     IupSetAttribute(sci, "MARKERDEFINE", "FOLDEREND,EMPTY");
@@ -162,7 +165,7 @@ void set_attribs (Ihandle *sci)
 
     IupSetAttribute(sci, "FOLDFLAGS", "LINEAFTER_CONTRACTED");
 
-    IupSetAttribute(sci, "MARGINSENSITIVEN1", "YES");
+    IupSetAttribute(sci, "MARGINSENSITIVE1", "YES");
   }
 
   printf("Number of chars in this text: %s\n", IupGetAttribute(sci, "COUNT"));
@@ -219,32 +222,3 @@ int main(int argc, char* argv[])
   return EXIT_SUCCESS;
 }
 
-
-/* USed to check the syntax highlight */
-#if 0
-/* Block comment */
-#include<stdio.h>
-#include<iup.h>
-
-void SampleTest() {
-  printf("Printing float: %f\n", 12.5);
-}
-
-int main(int argc, char **argv) {
-  // Start up the IupScintilla
-  IupOpen(&argc, &argv);
-  IupSetGlobal("SINGLEINSTANCE", "Iup Sample");
-
-  if(!IupGetGlobal("SINGLEINSTANCE")) {
-    IupClose(); 
-    return EXIT_SUCCESS; 
-  }
-
-  SampleTest();
-  printf("Printing an integer: %d\n", 37);
-
-  IupMainLoop();
-  IupClose();
-  return EXIT_SUCCESS;
-}
-#endif
